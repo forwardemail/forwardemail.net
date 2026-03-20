@@ -1,194 +1,195 @@
-# Node.js-tuotantoinfrastruktuurin optimointi: parhaat käytännöt {#how-to-optimize-nodejs-production-infrastructure-best-practices}
+# Kuinka Optimoida Node.js Tuotantoinfrastruktuuri: Parhaat Käytännöt {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
 <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performance optimization guide" class="rounded-lg" />
+
 
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
-* [573 %:n yhden ytimen suorituskyvyn optimoinnin vallankumouksemme](#our-573-single-core-performance-optimization-revolution)
-  * [Miksi yhden ytimen suorituskyvyn optimointi on tärkeää Node.js:lle](#why-single-core-performance-optimization-matters-for-nodejs)
-  * [Aiheeseen liittyvää sisältöä](#related-content)
-* [Node.js-tuotantoympäristön asennus: Teknologiapinomme](#nodejs-production-environment-setup-our-technology-stack)
-  * [Pakettien hallinta: pnpm tuotantotehokkuutta varten](#package-manager-pnpm-for-production-efficiency)
-  * [Verkkokehys: Koa modernille Node.js-tuotannolle](#web-framework-koa-for-modern-nodejs-production)
-  * [Taustatyön käsittely: Bree tuotannon luotettavuuden parantamiseksi](#background-job-processing-bree-for-production-reliability)
-  * [Virheiden käsittely: @hapi/boom tuotannon luotettavuuden parantamiseksi](#error-handling-hapiboom-for-production-reliability)
-* [Node.js-sovellusten valvonta tuotannossa](#how-to-monitor-nodejs-applications-in-production)
-  * [Järjestelmätason Node.js-tuotannon valvonta](#system-level-nodejs-production-monitoring)
-  * [Sovellustason valvonta Node.js-tuotantoympäristössä](#application-level-monitoring-for-nodejs-production)
-  * [Sovelluskohtainen valvonta](#application-specific-monitoring)
-* [Node.js-tuotannon seuranta PM2-terveystarkastuksilla](#nodejs-production-monitoring-with-pm2-health-checks)
-  * [PM2-terveystarkastusjärjestelmämme](#our-pm2-health-check-system)
-  * [PM2-tuotantokokoonpanomme](#our-pm2-production-configuration)
-  * [Automatisoitu PM2-käyttöönotto](#automated-pm2-deployment)
-* [Tuotantovirheiden käsittely- ja luokittelujärjestelmä](#production-error-handling-and-classification-system)
-  * [isCodeBug-toteutuksemme tuotantokäyttöön](#our-iscodebug-implementation-for-production)
-  * [Integrointi tuotantolokitietojemme kanssa](#integration-with-our-production-logging)
-  * [Aiheeseen liittyvää sisältöä](#related-content-1)
-* [Edistynyt suorituskyvyn virheenkorjaus v8-profiler-nextin ja cpupron avulla](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
-  * [Profilointimenetelmämme Node.js-tuotantoympäristöissä](#our-profiling-approach-for-nodejs-production)
-  * [Kuinka toteutamme keon tilannekuva-analyysin](#how-we-implement-heap-snapshot-analysis)
-  * [Suorituskyvyn virheenkorjauksen työnkulku](#performance-debugging-workflow)
-  * [Suositeltu toteutus Node.js-sovelluksellesi](#recommended-implementation-for-your-nodejs-application)
-  * [Integrointi tuotannonvalvontaamme](#integration-with-our-production-monitoring)
-* [Node.js-tuotantoinfrastruktuurin tietoturva](#nodejs-production-infrastructure-security)
-  * [Järjestelmätason suojaus Node.js-tuotantoympäristössä](#system-level-security-for-nodejs-production)
-  * [Node.js-sovellusten sovellusturvallisuus](#application-security-for-nodejs-applications)
-  * [Infrastruktuurin tietoturvan automaatio](#infrastructure-security-automation)
-  * [Turvallisuussisältömme](#our-security-content)
-* [Node.js-sovellusten tietokanta-arkkitehtuuri](#database-architecture-for-nodejs-applications)
-  * [SQLite-toteutus Node.js-tuotantoympäristöön](#sqlite-implementation-for-nodejs-production)
-  * [MongoDB-toteutus Node.js-tuotantoympäristöön](#mongodb-implementation-for-nodejs-production)
-* [Node.js-tuotannon taustatyön käsittely](#nodejs-production-background-job-processing)
-  * [Bree-palvelimemme asennus tuotantokäyttöön](#our-bree-server-setup-for-production)
-  * [Esimerkkejä tuotantotöistä](#production-job-examples)
-  * [Työaikataulutusmallimme Node.js-tuotantoympäristöön](#our-job-scheduling-patterns-for-nodejs-production)
-* [Node.js-sovellusten automaattinen ylläpito tuotantoympäristöissä](#automated-maintenance-for-production-nodejs-applications)
-  * [Siivoustoimeksiantomme](#our-cleanup-implementation)
-  * [Levytilan hallinta Node.js-tuotantoympäristössä](#disk-space-management-for-nodejs-production)
-  * [Infrastruktuurin kunnossapidon automaatio](#infrastructure-maintenance-automation)
-* [Node.js:n tuotantoympäristön käyttöönoton opas](#nodejs-production-deployment-implementation-guide)
-  * [Tutki varsinaista tuotantoon tarkoitettua koodiamme parhaiden käytäntöjen löytämiseksi](#study-our-actual-code-for-production-best-practices)
-  * [Opi blogikirjoituksistamme](#learn-from-our-blog-posts)
-  * [Infrastruktuurin automatisointi Node.js-tuotantoympäristöön](#infrastructure-automation-for-nodejs-production)
-  * [Tapaustutkimuksemme](#our-case-studies)
-* [Yhteenveto: Node.js:n tuotantoympäristön käyttöönoton parhaat käytännöt](#conclusion-nodejs-production-deployment-best-practices)
-* [Täydellinen resurssiluettelo Node.js-tuotantoympäristöön](#complete-resource-list-for-nodejs-production)
-  * [Keskeiset käyttöönottotiedostomme](#our-core-implementation-files)
-  * [Palvelintoteutuksemme](#our-server-implementations)
-  * [Infrastruktuuriautomaatiomme](#our-infrastructure-automation)
-  * [Tekniset blogikirjoituksemme](#our-technical-blog-posts)
-  * [Yritystapaustutkimukseni](#our-enterprise-case-studies)
-
+* [Meidän 573% Ydinperformanssin Optimointivallankumous](#our-573-single-core-performance-optimization-revolution)
+  * [Miksi Ydinperformanssin Optimointi On Tärkeää Node.js:lle](#why-single-core-performance-optimization-matters-for-nodejs)
+  * [Aiheeseen Liittyvä Sisältö](#related-content)
+* [Node.js Tuotantoympäristön Asetus: Meidän Teknologiapino](#nodejs-production-environment-setup-our-technology-stack)
+  * [Paketinhallinta: pnpm Tuotannon Tehokkuuteen](#package-manager-pnpm-for-production-efficiency)
+  * [Web-kehys: Koa Moderniin Node.js Tuotantoon](#web-framework-koa-for-modern-nodejs-production)
+  * [Taustatyöprosessointi: Bree Tuotannon Luotettavuuteen](#background-job-processing-bree-for-production-reliability)
+  * [Virheenkäsittely: @hapi/boom Tuotannon Luotettavuuteen](#error-handling-hapiboom-for-production-reliability)
+* [Kuinka Valvoa Node.js Sovelluksia Tuotannossa](#how-to-monitor-nodejs-applications-in-production)
+  * [Järjestelmätason Node.js Tuotantovalvonta](#system-level-nodejs-production-monitoring)
+  * [Sovellustason Valvonta Node.js Tuotannossa](#application-level-monitoring-for-nodejs-production)
+  * [Sovelluskohtainen Valvonta](#application-specific-monitoring)
+* [Node.js Tuotantovalvonta PM2:n Terveystarkastuksilla](#nodejs-production-monitoring-with-pm2-health-checks)
+  * [Meidän PM2 Terveystarkastusjärjestelmä](#our-pm2-health-check-system)
+  * [Meidän PM2 Tuotantokonfiguraatio](#our-pm2-production-configuration)
+  * [Automaattinen PM2 Käyttöönotto](#automated-pm2-deployment)
+* [Tuotannon Virheenkäsittely ja Luokittelujärjestelmä](#production-error-handling-and-classification-system)
+  * [Meidän isCodeBug Toteutus Tuotantoon](#our-iscodebug-implementation-for-production)
+  * [Integraatio Meidän Tuotantolokin Kanssa](#integration-with-our-production-logging)
+  * [Aiheeseen Liittyvä Sisältö](#related-content-1)
+* [Edistynyt Suorituskyvyn Virheenkorjaus v8-profiler-nextillä ja cpuprolla](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
+  * [Meidän Profilointimenetelmä Node.js Tuotantoon](#our-profiling-approach-for-nodejs-production)
+  * [Kuinka Toteutamme Heap Snapshot Analyysin](#how-we-implement-heap-snapshot-analysis)
+  * [Suorituskyvyn Virheenkorjaus Työnkulku](#performance-debugging-workflow)
+  * [Suositeltu Toteutus Sinun Node.js Sovelluksellesi](#recommended-implementation-for-your-nodejs-application)
+  * [Integraatio Meidän Tuotantovalvontaan](#integration-with-our-production-monitoring)
+* [Node.js Tuotantoinfrastruktuurin Turvallisuus](#nodejs-production-infrastructure-security)
+  * [Järjestelmätason Turvallisuus Node.js Tuotannossa](#system-level-security-for-nodejs-production)
+  * [Sovellusturvallisuus Node.js Sovelluksille](#application-security-for-nodejs-applications)
+  * [Infrastruktuurin Turvallisuusautomaatiot](#infrastructure-security-automation)
+  * [Meidän Turvallisuussisältö](#our-security-content)
+* [Tietokanta-arkkitehtuuri Node.js Sovelluksille](#database-architecture-for-nodejs-applications)
+  * [SQLite Toteutus Node.js Tuotantoon](#sqlite-implementation-for-nodejs-production)
+  * [MongoDB Toteutus Node.js Tuotantoon](#mongodb-implementation-for-nodejs-production)
+* [Node.js Tuotannon Taustatyöprosessointi](#nodejs-production-background-job-processing)
+  * [Meidän Bree Palvelinasetus Tuotantoon](#our-bree-server-setup-for-production)
+  * [Tuotantotyöesimerkit](#production-job-examples)
+  * [Meidän Työaikataulumallit Node.js Tuotantoon](#our-job-scheduling-patterns-for-nodejs-production)
+* [Automaattinen Ylläpito Node.js Tuotantosovelluksille](#automated-maintenance-for-production-nodejs-applications)
+  * [Meidän Siivoustoteutus](#our-cleanup-implementation)
+  * [Levyn Tilanhallinta Node.js Tuotannossa](#disk-space-management-for-nodejs-production)
+  * [Infrastruktuurin Ylläpitoautomaatiot](#infrastructure-maintenance-automation)
+* [Node.js Tuotantokäyttöönoton Toteutusopas](#nodejs-production-deployment-implementation-guide)
+  * [Tutki Meidän Todellista Koodia Tuotannon Parhaista Käytännöistä](#study-our-actual-code-for-production-best-practices)
+  * [Opi Meidän Blogikirjoituksistamme](#learn-from-our-blog-posts)
+  * [Infrastruktuuriautomaatiot Node.js Tuotantoon](#infrastructure-automation-for-nodejs-production)
+  * [Meidän Case-esimerkit](#our-case-studies)
+* [Yhteenveto: Node.js Tuotantokäyttöönoton Parhaat Käytännöt](#conclusion-nodejs-production-deployment-best-practices)
+* [Täydellinen Resurssilista Node.js Tuotantoon](#complete-resource-list-for-nodejs-production)
+  * [Meidän Ydinimplementaatiotiedostot](#our-core-implementation-files)
+  * [Meidän Palvelinimplementaatiot](#our-server-implementations)
+  * [Meidän Infrastruktuuriautomaatio](#our-infrastructure-automation)
+  * [Meidän Teknisiä Blogikirjoituksia](#our-technical-blog-posts)
+  * [Meidän Yrityscaset](#our-enterprise-case-studies)
 ## Esipuhe {#foreword}
 
-Forward Emaililla olemme vuosia hioneet Node.js-tuotantoympäristöämme. Tämä kattava opas jakaa taisteluissa testatut Node.js-tuotantoympäristön käyttöönoton parhaat käytännöt keskittyen suorituskyvyn optimointiin, valvontaan ja Node.js-sovellusten skaalaamisesta miljoonien päivittäisten tapahtumien käsittelyyn oppimiimme asioihin.
+Forward Emaililla olemme käyttäneet vuosia Node.js-tuotantoympäristön asennuksen hiomiseen. Tämä kattava opas jakaa taisteltuja Node.js-tuotantoon käyttöönoton parhaita käytäntöjä, keskittyen suorituskyvyn optimointiin, valvontaan ja oppeihin, joita olemme saaneet skaalaamalla Node.js-sovelluksia käsittelemään miljoonia päivittäisiä tapahtumia.
 
-## Yhden ytimen suorituskyvyn optimoinnin vallankumouksemme, 573 % {#our-573-single-core-performance-optimization-revolution}
 
-Kun siirryimme Intel-prosessoreista AMD Ryzen -prosessoreihin, saavutimme **573 %:n suorituskyvyn parannuksen** Node.js-sovelluksissamme. Tämä ei ollut vain pieni optimointi – se muutti perusteellisesti Node.js-sovellustemme suorituskykyä tuotannossa ja osoittaa yhden ytimen suorituskyvyn optimoinnin tärkeyden kaikissa Node.js-sovelluksissa.
+## Meidän 573 % Ydinsuorituskyvyn Optimointivallankumouksemme {#our-573-single-core-performance-optimization-revolution}
+
+Kun siirryimme Intelistä AMD Ryzen -prosessoreihin, saavutimme **573 % suorituskyvyn parannuksen** Node.js-sovelluksissamme. Tämä ei ollut vain pieni optimointi — se muutti perustavanlaatuisesti sitä, miten Node.js-sovelluksemme toimivat tuotannossa, ja osoittaa yksiydinsuorituskyvyn optimoinnin tärkeyden mille tahansa Node.js-sovellukselle.
 
 > \[!TIP]
-> Node.js:n tuotantokäyttöönoton parhaiden käytäntöjen kannalta laitteistovalinta on ratkaisevan tärkeää. Valitsimme DataPacket-hostingin erityisesti heidän AMD Ryzen -suorittimensa saatavuuden vuoksi, koska yhden ytimen suorituskyky on ratkaisevan tärkeää Node.js-sovelluksille, koska JavaScriptin suorittaminen on yksisäikeistä.
+> Node.js-tuotantoon käyttöönoton parhaiden käytäntöjen kannalta laitteiston valinta on kriittinen. Valitsimme erityisesti DataPacket-hostauksen heidän AMD Ryzen -saatavuutensa vuoksi, koska yksiydinsuorituskyky on ratkaisevan tärkeää Node.js-sovelluksille, sillä JavaScriptin suoritus on yksisäikeistä.
 
-### Miksi yhden ytimen suorituskyvyn optimointi on tärkeää Node.js:lle {#why-single-core-performance-optimization-matters-for-nodejs}
+### Miksi Ydinsuorituskyvyn Optimointi On Tärkeää Node.js:lle {#why-single-core-performance-optimization-matters-for-nodejs}
 
-Siirtymisemme Intelistä AMD Ryzeniin johti seuraaviin:
+Siirtymämme Intelistä AMD Ryzen -prosessoreihin johti:
 
-* **573 %:n suorituskyvyn parannus** pyyntöjen käsittelyssä (dokumentoitu kohdassa [statussivumme GitHub-ongelma #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **Käsittelyviiveet poistettu** lähes välittömiin vastauksiin (mainittu kohdassa [GitHub-ongelma #298](https://github.com/forwardemail/forwardemail.net/issues/298))
-* **Parempi hinta-laatusuhde** Node.js-tuotantoympäristöissä
-* **Parannetut vasteajat** kaikissa sovelluspäätepisteissämme
+* **573 % suorituskyvyn parannukseen** pyyntöjen käsittelyssä (dokumentoituna [status-sivumme GitHub Issue #1519:ssa](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **Käsittelyviiveiden poistumiseen** lähes välittömiin vastauksiin (mainittu [GitHub Issue #298:ssa](https://github.com/forwardemail/forwardemail.net/issues/298))
+* **Parempaan hinta-suorituskykysuhteeseen** Node.js-tuotantoympäristöissä
+* **Parantuneisiin vasteaikoihin** kaikissa sovelluksemme päätepisteissä
 
-Suorituskyvyn parannus oli niin merkittävä, että pidämme nyt AMD Ryzen -prosessoreita välttämättöminä kaikissa vakavissa Node.js-tuotantoympäristöissä, olipa kyseessä sitten verkkosovellukset, API-rajapinnat, mikropalvelut tai muut Node.js-työkuormat.
+Suorituskyvyn parannus oli niin merkittävä, että pidämme nyt AMD Ryzen -prosessoreita välttämättöminä mille tahansa vakavalle Node.js-tuotantokäyttöönotolle, olipa kyseessä verkkosovellukset, API:t, mikropalvelut tai mikä tahansa muu Node.js-kuormitus.
 
-### Aiheeseen liittyvää sisältöä {#related-content}
+### Aiheeseen Liittyvää Sisältöä {#related-content}
 
-Lisätietoja infrastruktuurivalinnoistamme on täällä:
+Lisätietoja infrastruktuurivalinnoistamme löydät:
 
-* [Paras sähköpostin edelleenlähetyspalvelu](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Suorituskykyvertailuja
-* [Itse isännöity ratkaisu](https://forwardemail.net/blog/docs/self-hosted-solution) - Laitteistosuositukset
+* [Paras Sähköpostin Uudelleenohjauspalvelu](https://forwardemail.net/blog/docs/best-email-forwarding-service) – Suorituskykyvertailut
+* [Itse Isännöity Ratkaisu](https://forwardemail.net/blog/docs/self-hosted-solution) – Laitteistosuositukset
 
-## Node.js-tuotantoympäristön asetukset: Teknologiapinomme {#nodejs-production-environment-setup-our-technology-stack}
 
-Node.js-tuotannon käyttöönoton parhaisiin käytäntöihimme kuuluvat harkitut teknologiavalinnat, jotka perustuvat vuosien tuotantokokemukseen. Tässä on mitä käytämme ja miksi nämä valinnat pätevät kaikkiin Node.js-sovelluksiin:
+## Node.js-tuotantoympäristön Asennus: Teknologiapinomme {#nodejs-production-environment-setup-our-technology-stack}
 
-### Pakettien hallinta: pnpm tuotantotehokkuudelle {#package-manager-pnpm-for-production-efficiency}
+Node.js-tuotantoon käyttöönoton parhaat käytäntömme sisältävät harkittuja teknologisia valintoja vuosien tuotantokokemuksen pohjalta. Tässä mitä käytämme ja miksi nämä valinnat pätevät mihin tahansa Node.js-sovellukseen:
 
-**Käytämme:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (kiinnitetty versio)
+### Pakettien Hallinta: pnpm Tuotannon Tehokkuuteen {#package-manager-pnpm-for-production-efficiency}
 
-Valitsimme pnpm:n npm:n ja yarnin sijaan Node.js-tuotantoympäristömme asetuksiin, koska:
+**Mitä käytämme:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (lukittu versio)
+
+Valitsimme pnpm:n npm:n ja yarnin sijaan Node.js-tuotantoympäristömme asennukseen, koska:
 
 * **Nopeammat asennusajat** CI/CD-putkissa
-* **Levytilan tehokkuus** kovan linkityksen avulla
-* **Tiukka riippuvuuksien ratkaisu**, joka estää haamuriippuvuudet
-* **Parempi suorituskyky** tuotantoympäristöissä
+* **Levytilan tehokkuus** kovien linkkien avulla
+* **Tiukka riippuvuuksien ratkaisu** joka estää näkymättömät riippuvuudet
+* **Parempi suorituskyky** tuotantokäyttöönotossa
 
 > \[!NOTE]
-> Osana Node.js:n tuotantoympäristön käyttöönoton parhaita käytäntöjämme kiinnitämme kriittisten työkalujen, kuten pnpm:n, tarkat versiot varmistaaksemme yhdenmukaisen toiminnan kaikissa ympäristöissä ja tiimin jäsenten koneilla.
+> Osana Node.js-tuotantoon käyttöönoton parhaita käytäntöjä lukitsemme kriittisten työkalujen, kuten pnpm:n, tarkat versiot varmistaaksemme johdonmukaisen toiminnan kaikissa ympäristöissä ja tiimin jäsenten koneilla.
 
-**Toteutuksen tiedot:**
+**Toteutuksen yksityiskohdat:**
 
-* [Package.json-kokoonpanomme](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+* [Paketti.json-konfiguraatiomme](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [NPM-ekosysteemin blogikirjoituksemme](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 
-### Verkkokehys: Koa modernia Node.js-tuotantoa varten {#web-framework-koa-for-modern-nodejs-production}
+### Web-kehys: Koa Moderniin Node.js-tuotantoon {#web-framework-koa-for-modern-nodejs-production}
 
 **Mitä käytämme:**
 
 * [`@koa/router`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@koa/multer`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/koa-simple-ratelimit`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+Valitsimme Koa:n Expressin sijaan Node.js -tuotantoinfrastruktuuriimme sen modernin async/await-tuen ja siistimmän middleware-komposition vuoksi. Perustajamme Nick Baugh on osallistunut sekä Expressin että Koan kehitykseen, mikä antaa meille syvällisen näkemyksen molemmista kehyksistä tuotantokäyttöön.
 
-Valitsimme Koan Expressin sijaan Node.js-tuotantoinfrastruktuuriimme sen modernin async/await-tuen ja selkeämmän väliohjelmistorakenteen vuoksi. Perustajamme Nick Baugh osallistui sekä Expressin että Koan kehittämiseen, antaen meille syvällistä näkemystä molempien frameworkien tuotantokäytöstä.
+Nämä mallit pätevät, olitpa rakentamassa REST-rajapintoja, GraphQL-palvelimia, web-sovelluksia tai mikropalveluita.
 
-Nämä mallit pätevät riippumatta siitä, rakennatko REST-rajapintoja, GraphQL-palvelimia, web-sovelluksia tai mikropalveluita.
-
-**Toteutusesimerkkejämme:**
+**Esimerkkejä toteutuksistamme:**
 
 * [Web-palvelimen asennus](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
-* [API-palvelimen kokoonpano](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
-* [Yhteydenottolomakkeiden käyttöönotto-opas](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
+* [API-palvelimen konfigurointi](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
+* [Yhteydenottolomakkeiden toteutusopas](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 
-### Taustatyön käsittely: Bree tuotannon luotettavuuden varmistamiseksi {#background-job-processing-bree-for-production-reliability}
+### Taustatyöprosessointi: Bree tuotannon luotettavuuteen {#background-job-processing-bree-for-production-reliability}
 
-**Käytämme:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) -ajastinta
+**Käytössämme:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) ajastin
 
-Loimme ja ylläpidämme Breetä, koska olemassa olevat työajoittajamme eivät vastanneet tarpeitamme työsäikeiden tuen ja nykyaikaisten JavaScript-ominaisuuksien suhteen Node.js-tuotantoympäristöissä. Tämä koskee kaikkia Node.js-sovelluksia, jotka tarvitsevat taustaprosessointia, ajoitettuja tehtäviä tai työsäikeitä.
+Loimme ja ylläpidämme Bree:tä, koska olemassa olevat työnajastimet eivät täyttäneet tarpeitamme työntekijäthreadien tuen ja modernien JavaScript-ominaisuuksien osalta tuotannon Node.js -ympäristöissä. Tämä pätee mihin tahansa Node.js -sovellukseen, joka tarvitsee taustaprosessointia, ajoitettuja tehtäviä tai työntekijäthreadit.
 
-**Toteutusesimerkkejämme:**
+**Esimerkkejä toteutuksistamme:**
 
 * [Bree-palvelimen asennus](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
-* [Kaikki työtehtävämme määritelmät](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
-* [PM2-terveystarkastustyö](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
-* [Siivoustyön toteutus](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+* [Kaikki työnmäärityksemme](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+* [PM2:n terveystarkastus tehtävä](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+* [Siivoustehtävän toteutus](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### Virheiden käsittely: @hapi/boom tuotannon luotettavuutta varten {#error-handling-hapiboom-for-production-reliability}
+### Virheenkäsittely: @hapi/boom tuotannon luotettavuuteen {#error-handling-hapiboom-for-production-reliability}
 
-**Käytämme:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**Käytössämme:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Käytämme @hapi/boom-mallia strukturoituihin virhevastauksiin kaikissa Node.js-tuotantosovelluksissamme. Tämä malli toimii kaikissa Node.js-sovelluksissa, jotka tarvitsevat yhdenmukaista virheenkäsittelyä.
+Käytämme @hapi/boom:ia rakenteellisiin virhevastauksiin kaikissa Node.js -tuotantosovelluksissamme. Tämä malli toimii missä tahansa Node.js -sovelluksessa, joka tarvitsee johdonmukaista virheenkäsittelyä.
 
-**Toteutusesimerkkejämme:**
+**Esimerkkejä toteutuksistamme:**
 
-* [Virheiden luokittelun apuohjelma](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-* [Loggerin toteutus](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+* [Virheiden luokittelun apuri](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+* [Lokitus toteutus](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-## Node.js-sovellusten valvonta tuotannossa {#how-to-monitor-nodejs-applications-in-production}
 
-Lähestymistapamme Node.js-sovellusten valvontaan tuotannossa on kehittynyt vuosien mittakaavassa suoritettujen sovellusten myötä. Toteutamme valvontaa useilla tasoilla varmistaaksemme kaikenlaisten Node.js-sovellusten luotettavuuden ja suorituskyvyn.
+## Kuinka valvoa Node.js -sovelluksia tuotannossa {#how-to-monitor-nodejs-applications-in-production}
 
-### Järjestelmätason Node.js-tuotannon valvonta {#system-level-nodejs-production-monitoring}
+Lähestymistapamme Node.js -sovellusten valvontaan tuotannossa on kehittynyt vuosien mittaan, kun olemme ajaneet sovelluksia suuressa mittakaavassa. Toteutamme valvonnan useilla tasoilla varmistaaksemme luotettavuuden ja suorituskyvyn kaikentyyppisille Node.js -sovelluksille.
 
-**Ydintoteutuksemme:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+### Järjestelmätason Node.js -tuotantovalvonta {#system-level-nodejs-production-monitoring}
 
-**Käytämme:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**Ydin toteutuksemme:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-Tuotannon valvontakynnyksemme (varsinaisesta tuotantokoodistamme):
+**Käytössämme:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-* **2 Gt:n keon kokorajoitus** automaattisilla hälytyksillä
-* **25 %:n muistin käyttöaste** -varoituskynnys
-* **80 %:n suorittimen käyttöaste** -varoituskynnys
-* **75 %:n levytilan käyttöaste** -varoituskynnys
+Tuotantovalvontamme kynnysarvot (todellisesta tuotantokoodistamme):
+
+* **2GB heap-koko raja** automaattisilla hälytyksillä
+* **25% muistin käyttö** varoituskynnys
+* **80% CPU:n käyttö** hälytyskynnys
+* **75% levyn käyttö** varoituskynnys
 
 > \[!WARNING]
-> Nämä kynnysarvot toimivat tietyssä laitteistokokoonpanossamme. Kun otat käyttöön Node.js-tuotannon valvonnan, tarkista monitor-server.js-toteutuksemme ymmärtääksesi tarkan logiikan ja mukauttaaksesi arvot kokoonpanoosi.
+> Nämä kynnysarvot toimivat meidän laitteistokonfiguraatiollamme. Kun toteutat Node.js -tuotantovalvontaa, tutustu monitor-server.js -toteutukseemme ymmärtääksesi tarkka logiikka ja mukauta arvot omaan ympäristöösi.
 
-### Sovellustason valvonta Node.js-tuotantoympäristössä {#application-level-monitoring-for-nodejs-production}
+### Sovellustason valvonta Node.js -tuotannossa {#application-level-monitoring-for-nodejs-production}
 
-**Virheluokituksemme:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+**Virheiden luokittelumme:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-Tämä apuohjelma erottaa toisistaan:
+Tämä apuri erottaa:
 
-* **Varsinaisia koodivirheitä**, jotka vaativat välitöntä huomiota
-* **Käyttäjävirheitä**, jotka ovat odotettua toimintaa
-* **Ulkoisten palveluiden toimintahäiriöitä**, joita emme voi hallita
+* **Todelliset koodivirheet**, jotka vaativat välitöntä huomiota
+* **Käyttäjävirheet**, jotka ovat odotettua käyttäytymistä
+* **Ulkoiset palvelun häiriöt**, joita emme voi hallita
 
-Tämä malli koskee kaikkia Node.js-sovelluksia – verkkosovelluksia, API-rajapintoja, mikropalveluita tai taustapalveluita.
+Tämä malli pätee mihin tahansa Node.js -sovellukseen - web-sovelluksiin, rajapintoihin, mikropalveluihin tai taustapalveluihin.
+**Lokituksemme toteutus:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-**Lokikirjaustoteutuksemme:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-
-Toteutamme kattavan kenttien hävityksen suojataksemme arkaluonteisia tietoja ja samalla säilyttääksemme hyödylliset virheenkorjausominaisuudet Node.js-tuotantoympäristössämme.
+Toteutamme kattavan kenttien sensuroinnin suojataksemme arkaluontoisia tietoja samalla kun säilytämme hyödylliset virheenkorjausmahdollisuudet Node.js-tuotantoympäristössämme.
 
 ### Sovelluskohtainen valvonta {#application-specific-monitoring}
 
@@ -198,340 +199,350 @@ Toteutamme kattavan kenttien hävityksen suojataksemme arkaluonteisia tietoja ja
 * [IMAP-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [POP3-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-**Jonon valvonta:** Käytämme 5 Gt:n jonorajoituksia ja 180 sekunnin aikakatkaisuja pyyntöjen käsittelyssä resurssien loppumisen estämiseksi. Nämä mallit koskevat kaikkia Node.js-sovelluksia, joissa on jonoja tai taustalla tapahtuvaa käsittelyä.
+**Jonon valvonta:** Toteutamme 5GB jonorajat ja 180 sekunnin aikakatkaisut pyyntöjen käsittelyssä resurssien loppumisen estämiseksi. Nämä mallit soveltuvat mihin tahansa Node.js-sovellukseen, jossa on jonoja tai taustaprosessointia.
 
-## Node.js-tuotannon valvonta PM2-kuntotarkastuksilla {#nodejs-production-monitoring-with-pm2-health-checks}
 
-Olemme hioneet Node.js-tuotantoympäristöämme PM2:lla vuosien tuotantokokemuksen perusteella. PM2:n kuntotarkistuksemme ovat välttämättömiä minkä tahansa Node.js-sovelluksen luotettavuuden ylläpitämiseksi.
+## Node.js-tuotantovalvonta PM2-terveystarkastuksilla {#nodejs-production-monitoring-with-pm2-health-checks}
 
-### PM2-kuntotarkastusjärjestelmämme {#our-pm2-health-check-system}
+Olemme hioneet Node.js-tuotantoympäristömme asetuksia PM2:n avulla vuosien tuotantokokemuksen perusteella. PM2-terveystarkastuksemme ovat välttämättömiä luotettavuuden ylläpitämiseksi missä tahansa Node.js-sovelluksessa.
 
-**Ydintoteutuksemme:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+### PM2-terveystarkastusjärjestelmämme {#our-pm2-health-check-system}
 
-Node.js-tuotannon valvontamme PM2-terveystarkastuksineen sisältää:
+**Ydinimplementaatiomme:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-* **Suoritetaan 20 minuutin välein** cron-ajoituksen kautta
-* **Vaatii vähintään 15 minuutin käyttöajan** ennen kuin prosessia pidetään terveenä
-* **Tarkistaa prosessin tilan ja muistin käytön**
+Node.js-tuotantovalvontamme PM2-terveystarkastuksilla sisältää:
+
+* **Suoritetaan 20 minuutin välein** cron-ajastuksen avulla
+* **Vaatii vähintään 15 minuutin käyttöajan** ennen prosessin terveeksi katsomista
+* **Varmistaa prosessin tilan ja muistin käytön**
 * **Käynnistää epäonnistuneet prosessit automaattisesti uudelleen**
-* **Estää uudelleenkäynnistyssilmukat** älykkään kuntotarkistuksen avulla
+* **Estää uudelleenkäynnistys-silmukat** älykkään terveystarkastuksen avulla
 
 > \[!CAUTION]
-> Node.js:n tuotantokäyttöönoton parhaiden käytäntöjen mukaisesti vaadimme vähintään 15 minuutin käyttöaikaa ennen kuin prosessia pidetään terveenä, jotta vältetään uudelleenkäynnistyssilmukat. Tämä estää virheiden kaskadoitumisen, kun prosessit kamppailevat muistin tai muiden ongelmien kanssa.
+> Node.js-tuotantoon liittyvien parhaiden käytäntöjen vuoksi vaadimme 15+ minuutin käyttöajan ennen prosessin terveeksi katsomista uudelleenkäynnistys-silmukoiden välttämiseksi. Tämä estää ketjureaktiovirheet, kun prosessit kamppailevat muistin tai muiden ongelmien kanssa.
 
 ### PM2-tuotantokonfiguraatiomme {#our-pm2-production-configuration}
 
-**Ekosysteemimme asetukset:** Tutustu palvelimemme käynnistystiedostoihin Node.js-tuotantoympäristön asennusta varten:
+**Ekosysteemin asetuksemme:** Tutustu palvelimen käynnistystiedostoihimme Node.js-tuotantoympäristön asetuksissa:
 
 * [Web-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
-* [Bree-aikatauluttaja](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+* [Bree-ajastin](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 * [SMTP-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
 
-Nämä mallit pätevät riippumatta siitä, käytätkö Express-sovelluksia, Koa-palvelimia, GraphQL-rajapintoja tai mitä tahansa muuta Node.js-sovellusta.
+Nämä mallit soveltuvat riippumatta siitä, käytätkö Express-sovelluksia, Koa-palvelimia, GraphQL-rajapintoja tai muita Node.js-sovelluksia.
 
-### Automaattinen PM2-käyttöönotto {#automated-pm2-deployment}
+### Automaattinen PM2-julkaisu {#automated-pm2-deployment}
 
-**PM2-käyttöönotto:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
+**PM2-julkaisu:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
-Automatisoimme koko PM2-asennuksemme Ansiblen avulla varmistaaksemme Node.js:n yhdenmukaiset tuotantokäyttöönotot kaikilla palvelimillamme.
+Automatisoimme koko PM2-asetuksemme Ansiblella varmistaaksemme yhdenmukaiset Node.js-tuotantojulkaisut kaikilla palvelimillamme.
 
-## Tuotantovirheiden käsittely- ja luokittelujärjestelmä {#production-error-handling-and-classification-system}
 
-Yksi arvokkaimmista Node.js:n tuotantokäyttöönoton parhaista käytännöistämme on älykäs virheluokittelu, jota sovelletaan kaikkiin Node.js-sovelluksiin:
+## Tuotantovirheiden käsittely- ja luokitusjärjestelmä {#production-error-handling-and-classification-system}
 
-### isCodeBug-toteutuksemme tuotantoympäristöön {#our-iscodebug-implementation-for-production}
+Yksi arvokkaimmista Node.js-tuotantojulkaisuun liittyvistä parhaista käytännöistämme on älykäs virheiden luokittelu, joka soveltuu mihin tahansa Node.js-sovellukseen:
+
+### isCodeBug-toteutuksemme tuotantoon {#our-iscodebug-implementation-for-production}
 
 **Lähde:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-Tämä apuohjelma tarjoaa älykkään virheluokittelun Node.js-sovelluksille tuotannossa seuraaviin tarkoituksiin:
+Tämä apuväline tarjoaa älykkään virheiden luokittelun Node.js-sovelluksille tuotannossa, jotta:
 
-* **Priorisoi todelliset virheet** käyttäjien virheiden sijaan
-* **Paranna tapauksiin reagointiamme** keskittymällä todellisiin ongelmiin
-* **Vähennä odotettujen käyttäjävirheiden aiheuttamaa hälytysväsymystä**
-* **Ymmärrä paremmin** sovellusten ja käyttäjien aiheuttamia ongelmia
+* **Todelliset virheet priorisoidaan** käyttäjävirheiden yli
+* **Parannamme häiriötilanteiden hallintaa** keskittymällä todellisiin ongelmiin
+* **Vähennämme hälytysväsymystä** odotetuista käyttäjävirheistä
+* **Ymmärrämme paremmin** sovelluksen ja käyttäjän aiheuttamat ongelmat
 
-Tämä malli toimii kaikissa Node.js-sovelluksissa – olitpa sitten rakentamassa verkkokauppasivustoja, SaaS-alustoja, API-rajapintoja tai mikropalveluita.
+Tämä malli toimii missä tahansa Node.js-sovelluksessa – olipa kyseessä verkkokaupat, SaaS-alustat, rajapinnat tai mikropalvelut.
 
-### Integrointi tuotantolokitietojemme kanssa {#integration-with-our-production-logging}
+### Integraatio tuotantolokitukseemme {#integration-with-our-production-logging}
 
-**Loggeri-integraatiomme:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+**Lokitusintegraatiomme:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+Our logger käyttää `isCodeBug`-arvoa hälytystasojen ja kenttien peittämisen määrittämiseen, varmistaen, että saamme ilmoituksia todellisista ongelmista samalla kun suodatamme pois melua Node.js-tuotantoympäristössämme.
 
-Loggerimme käyttää `isCodeBug`-muuttujaa hälytystasojen ja kenttien hävittämisen määrittämiseen, varmistaen, että saamme ilmoituksen todellisista ongelmista ja suodatamme samalla pois kohinaa Node.js-tuotantoympäristössämme.
+### Related Content {#related-content-1}
 
-### Aiheeseen liittyvää sisältöä {#related-content-1}
+Lue lisää virheenkäsittelymalleistamme:
 
-Lue lisää virheiden käsittelymalleistamme:
+* [Luotettavan maksujärjestelmän rakentaminen](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Virheenkäsittelymallit
+* [Sähköpostin yksityisyyden suojaus](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Turvallisuuden virheenkäsittely
 
-* [Luotettavan maksujärjestelmän rakentaminen](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Virheiden käsittelymallit
-* [Sähköpostin yksityisyyden suojaus](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Tietoturvavirheiden käsittely
 
-## Edistynyt suorituskyvyn virheenkorjaus v8-profiler-nextin ja cpupron avulla {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
+## Edistynyt suorituskyvyn virheenkorjaus v8-profiler-nextillä ja cpuprolla {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
-Käytämme edistyneitä profilointityökaluja keon tilannevedosten analysointiin ja muistin loppumisen (OOM, Out of Memory) ongelmien, suorituskyvyn pullonkaulojen ja Node.js-muistiongelmien vianmääritykseen tuotantoympäristössämme. Nämä työkalut ovat välttämättömiä kaikille Node.js-sovelluksille, joissa on muistivuotoja tai suorituskykyongelmia.
+Käytämme edistyneitä profilointityökaluja kasamuistikuvausten analysointiin ja OOM (muistin loppuminen) -ongelmien, suorituskykypullonkaulojen sekä Node.js-muistiongelmien virheenkorjaukseen tuotantoympäristössämme. Nämä työkalut ovat välttämättömiä kaikille Node.js-sovelluksille, jotka kokevat muistivuotoja tai suorituskykyongelmia.
 
-### Profilointimenetelmämme Node.js-tuotantoympäristössä {#our-profiling-approach-for-nodejs-production}
+### Profilointilähestymistapamme Node.js-tuotantoon {#our-profiling-approach-for-nodejs-production}
 
 **Suosittelemamme työkalut:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Keon tilannevedosten ja suoritinprofiilien luomiseen
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - Suoritinprofiilien ja keon tilannevedosten analysointiin
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Kasamuistikuvausten ja CPU-profiilien luomiseen
+* [`cpupro`](https://github.com/discoveryjs/cpupro) - CPU-profiilien ja kasamuistikuvausten analysointiin
 
 > \[!TIP]
-> Käytämme v8-profiler-nextiä ja cpuproa yhdessä luodaksemme täydellisen suorituskyvyn virheenkorjaustyönkulun Node.js-sovelluksillemme. Tämä yhdistelmä auttaa meitä tunnistamaan muistivuotoja, suorituskyvyn pullonkauloja ja optimoimaan tuotantokoodiamme.
+> Käytämme v8-profiler-nextiä ja cpuproa yhdessä luodaksemme täydellisen suorituskyvyn virheenkorjausprosessin Node.js-sovelluksillemme. Tämä yhdistelmä auttaa tunnistamaan muistivuodot, suorituskykypullonkaulat ja optimoimaan tuotantokoodimme.
 
-### Keon tilannevedosanalyysin toteuttaminen {#how-we-implement-heap-snapshot-analysis}
+### Kuinka toteutamme kasamuistikuvausanalyysin {#how-we-implement-heap-snapshot-analysis}
 
-**Valvonnan toteutuksemme:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**Valvontatoteutuksemme:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-Tuotannon valvontaamme kuuluu automaattinen keon tilannevedosten luonti, kun muistin kynnysarvot ylittyvät. Tämä auttaa meitä korjaamaan OOM-ongelmia ennen kuin ne aiheuttavat sovellusten kaatumisia.
+Tuotantovalvontamme sisältää automaattisen kasamuistikuvausten luomisen, kun muistirajat ylittyvät. Tämä auttaa meitä virheenkorjaamaan OOM-ongelmia ennen kuin ne aiheuttavat sovelluksen kaatumisia.
 
-**Tärkeimmät toteutusmallit:**
+**Keskeiset toteutusmallit:**
 
-* **Automaattiset tilannevedokset**, kun keon koko ylittää 2 Gt:n kynnyksen
-* **Signaalipohjainen profilointi** tuotantoympäristön tarvittaessa tapahtuvaa analysointia varten
-* **Säilytyskäytännöt** tilannevedosten tallennuksen hallintaan
-* **Integrointi puhdistustöihimme** automatisoitua ylläpitoa varten
+* **Automaattiset kuvaukset** kun kasamuistin koko ylittää 2GB-rajan
+* **Signaalipohjainen profilointi** pyynnöstä tuotannossa
+* **Säilytyskäytännöt** kuvauksien tallennuksen hallintaan
+* **Integraatio siivoustöihimme** automaattista ylläpitoa varten
 
-### Suorituskyvyn virheenkorjauksen työnkulku {#performance-debugging-workflow}
+### Suorituskyvyn virheenkorjausprosessi {#performance-debugging-workflow}
 
-**Tutki varsinaista toteutustamme:**
+**Tutustu toteutukseemme:**
 
-* [Näyttöpalvelimen toteutus](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Keon valvonta ja tilannevedosten luonti
-* [Siivoustyö](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Tilannevedosten säilytys ja puhdistus
-* [Loggeriintegraatio](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Suorituskyvyn lokikirjaus
+* [Monitor-palvelimen toteutus](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Kasamuistin valvonta ja kuvauksen luonti
+* [Siivoustyö](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Kuvauksien säilytys ja siivous
+* [Lokitusintegraatio](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Suorituskyvyn lokitus
 
 ### Suositeltu toteutus Node.js-sovelluksellesi {#recommended-implementation-for-your-nodejs-application}
 
-**Kehon tilannevedosanalyysiä varten:**
+**Kasamuistikuvausanalyysiin:**
 
-1. **Asenna v8-profiler-next** tilannevedosten luomista varten.**Käytä cpuproa** luotujen tilannevedosten analysointiin.**Käytä valvontakynnysarvoja**, jotka ovat samanlaisia kuin monitor-server.js-tiedostossamme.**Määritä automaattinen puhdistus** tilannevedosten tallennuksen hallintaa varten.**Luo signaalinkäsittelijöitä** tuotantoympäristön tarvepohjaista profilointia varten.**
+1. **Asenna v8-profiler-next** kuvauksien luontiin
+2. **Käytä cpuproa** luotujen kuvausten analysointiin
+3. **Toteuta valvontarajat** vastaavasti kuin monitor-server.js:ssä
+4. **Ota käyttöön automaattinen siivous** kuvauksien tallennuksen hallintaan
+5. **Luo signaalinkäsittelijät** pyynnöstä tehtävään profilointiin tuotannossa
 
-**Suorittimen profilointia varten:**
+**CPU-profilointiin:**
 
-1. **Luo CPU-profiileja** korkean kuormituksen aikana
+1. **Luo CPU-profiileja** kuormitushuippujen aikana
 2. **Analysoi cpuprolla** pullonkaulojen tunnistamiseksi
 3. **Keskity kuumiin polkuihin** ja optimointimahdollisuuksiin
-4. **Seuraa suorituskyvyn parannuksia ennen/jälkeen**
+4. **Valvo ennen/jälkeen** suorituskyvyn parannuksia
 
 > \[!WARNING]
-> Keon tilannevedosten ja suoritinprofiilien luominen voi vaikuttaa suorituskykyyn. Suosittelemme rajoituksen käyttöönottoa ja profiloinnin sallimista vain tiettyjä ongelmia tutkittaessa tai huoltokatkosten aikana.
+> Kasamuistikuvausten ja CPU-profiilien luominen voi vaikuttaa suorituskykyyn. Suosittelemme rajoittamaan profilointia ja ottamaan sen käyttöön vain tiettyjen ongelmien tutkimiseen tai ylläpitokatkojen aikana.
 
-### Integrointi tuotannonvalvontaamme {#integration-with-our-production-monitoring}
+### Integraatio tuotantovalvontamme kanssa {#integration-with-our-production-monitoring}
 
-Profilointityökalumme integroituvat laajempaan seurantastrategiaamme:
+Profilointityökalumme integroituvat laajempaan valvontastrategiaamme:
 
-* **Automaattinen käynnistys** muistin/prosessorin kynnysarvojen perusteella
-* **Hälytysten integrointi** suorituskykyongelmien havaitsemisen yhteydessä
-* **Historiallinen analyysi** suorituskykytrendien seuraamiseksi ajan kuluessa
-* **Korrelaatio sovellusmittareiden kanssa** kattavaa virheenkorjausta varten
+* **Automaattinen käynnistys** muisti-/CPU-rajojen perusteella
+* **Hälytysintegratio** suorituskykyongelmien havaitsemiseksi
+* **Historiallinen analyysi** suorituskykytrendejä seuraamaan
+* **Sovellusmittareiden korrelaatio** kattavaan virheenkorjaukseen
+Tämä lähestymistapa on auttanut meitä tunnistamaan ja korjaamaan muistivuotoja, optimoimaan kuumia koodipolkuja ja ylläpitämään vakaata suorituskykyä Node.js-tuotantoympäristössämme.
 
-Tämä lähestymistapa on auttanut meitä tunnistamaan ja ratkaisemaan muistivuotoja, optimoimaan kuumakoodipolkuja ja ylläpitämään vakaata suorituskykyä Node.js-tuotantoympäristössämme.
 
-## Node.js-tuotantoinfrastruktuurin suojaus {#nodejs-production-infrastructure-security}
+## Node.js-tuotantoinfrastruktuurin turvallisuus {#nodejs-production-infrastructure-security}
 
-Toteutamme Node.js-tuotantoinfrastruktuurimme kattavan tietoturvan Ansible-automaation avulla. Nämä käytännöt koskevat kaikkia Node.js-sovelluksia:
+Toteutamme kattavan turvallisuuden Node.js-tuotantoinfrastruktuurillemme Ansible-automaatioiden avulla. Nämä käytännöt koskevat mitä tahansa Node.js-sovellusta:
 
-### Järjestelmätason suojaus Node.js-tuotantoympäristössä {#system-level-security-for-nodejs-production}
+### Järjestelmätason turvallisuus Node.js-tuotannossa {#system-level-security-for-nodejs-production}
 
 **Ansible-toteutuksemme:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 
-Keskeiset turvatoimenpiteemme Node.js-tuotantoympäristöissä:
+Keskeiset turvallisuustoimenpiteemme Node.js-tuotantoympäristöissä:
 
-* **Vaihtotoiminto poistettu käytöstä** estää arkaluonteisten tietojen kirjoittamisen levylle.
-* **Ydinvedokset poistettu käytöstä** estää arkaluonteisia tietoja sisältävien muistivedosten tallentamisen.
-* **USB-tallennustila estetty** estää luvattoman tietojen käytön.
-* **Ydinparametrien säätö** sekä turvallisuuden että suorituskyvyn parantamiseksi.
+* **Swap pois käytöstä** estämään arkaluontoisten tietojen kirjoittaminen levylle
+* **Core dumpit pois käytöstä** estämään muistidumppien sisältämät arkaluontoiset tiedot
+* **USB-tallennustilan esto** estämään luvaton tiedonsaanti
+* **Kernel-parametrien säätö** sekä turvallisuuden että suorituskyvyn parantamiseksi
 
 > \[!WARNING]
-> Kun Node.js:n tuotantokäyttöönoton parhaita käytäntöjä toteutetaan, swap-toiminnon poistaminen käytöstä voi aiheuttaa muistin loppumisesta johtuvia katkoksia, jos sovelluksesi ylittää käytettävissä olevan RAM-muistin. Seuraamme muistin käyttöä tarkasti ja mitoitamme palvelimemme asianmukaisesti.
+> Node.js-tuotantokäyttöönoton parhaiden käytäntöjen toteuttamisessa swapin poistaminen käytöstä voi aiheuttaa muistin loppumiseen liittyviä prosessien tappamisia, jos sovelluksesi ylittää käytettävissä olevan RAM-muistin. Seuraamme muistinkäyttöä tarkasti ja mitoittamme palvelimemme asianmukaisesti.
 
-### Sovelluksen suojaus Node.js-sovelluksille {#application-security-for-nodejs-applications}
+### Sovellusturvallisuus Node.js-sovelluksille {#application-security-for-nodejs-applications}
 
-**Lokikentän poisto:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+**Lokikenttien sensurointimme:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Poistamme lokeista arkaluonteisia kenttiä, kuten salasanoja, tokeneita, API-avaimia ja henkilötietoja. Tämä suojaa käyttäjien yksityisyyttä ja säilyttää samalla virheenkorjausominaisuudet missä tahansa Node.js-tuotantoympäristössä.
+Sensuroimme lokitiedoista arkaluontoiset kentät, kuten salasanat, tokenit, API-avaimet ja henkilötiedot. Tämä suojaa käyttäjien yksityisyyttä samalla kun säilyttää virheenkorjausmahdollisuudet missä tahansa Node.js-tuotantoympäristössä.
 
-### Infrastruktuurin tietoturvan automaatio {#infrastructure-security-automation}
+### Infrastruktuurin turvallisuusautomaatio {#infrastructure-security-automation}
 
-**Täydellinen Ansible-kokoonpanomme Node.js-tuotantoa varten:**
+**Täydellinen Ansible-asetuksemme Node.js-tuotantoon:**
 
-* [Turvallisuusopas](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Turvallisuus playbook](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [SSH-avainten hallinta](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/ssh-keys.yml)
-* [Varmenteiden hallinta](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/certificates.yml)
+* [Sertifikaattien hallinta](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/certificates.yml)
 * [DKIM-asetukset](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/dkim.yml)
 
 ### Turvallisuussisältömme {#our-security-content}
 
-Lue lisää turvallisuuslähestymistavastamme:
+Lisätietoja turvallisuuslähestymistavastamme:
 
-* [Parhaat tietoturvatarkastusyritykset](https://forwardemail.net/blog/docs/best-security-audit-companies)
-* [Quantum Safe -salattu sähköposti](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
+* [Parhaat turvallisuusauditointiyritykset](https://forwardemail.net/blog/docs/best-security-audit-companies)
+* [Kvanteenkestävä salattu sähköposti](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
 * [Miksi avoimen lähdekoodin sähköpostiturvallisuus](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
 
-## Tietokannan arkkitehtuuri Node.js-sovelluksille {#database-architecture-for-nodejs-applications}
 
-Käytämme Node.js-sovelluksillemme optimoitua hybriditietokantamallia. Näitä malleja voidaan soveltaa mihin tahansa Node.js-sovellukseen:
+## Tietokanta-arkkitehtuuri Node.js-sovelluksille {#database-architecture-for-nodejs-applications}
 
-### SQLite-toteutus Node.js-tuotantoympäristöön {#sqlite-implementation-for-nodejs-production}
+Käytämme hybridi-tietokantaratkaisua, joka on optimoitu Node.js-sovelluksillemme. Näitä malleja voidaan soveltaa mihin tahansa Node.js-sovellukseen:
 
-**Mitä käytämme:**
+### SQLite-toteutus Node.js-tuotantoon {#sqlite-implementation-for-nodejs-production}
+
+**Käyttämämme:**
 
 * [`better-sqlite3`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`better-sqlite3-multiple-ciphers`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-**Kokoonpanomme:** [`ansible/playbooks/sqlite.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
+**Konfiguraatiomme:** [`ansible/playbooks/sqlite.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
-Käytämme SQLitea käyttäjäkohtaiseen dataan Node.js-sovelluksissamme, koska se tarjoaa:
+Käytämme SQLitea käyttäjäkohtaisiin tietoihin Node.js-sovelluksissamme, koska se tarjoaa:
 
-* **Tietojen eristäminen** käyttäjää/vuokralaista kohden
-* **Parempi suorituskyky** yhden käyttäjän kyselyissä
-* **Yksinkertaistettu varmuuskopiointi** ja siirto
+* **Tietojen eristämisen** käyttäjä-/vuokralaiskohtaisesti
+* **Parempi suorituskyky** yksittäiskäyttäjän kyselyissä
+* **Yksinkertaistetun varmuuskopioinnin** ja migraation
 * **Vähemmän monimutkaisuutta** verrattuna jaettuihin tietokantoihin
 
-Tämä malli toimii hyvin SaaS-sovelluksille, usean vuokralaisen järjestelmille tai mille tahansa Node.js-sovellukselle, joka tarvitsee datan eristämistä.
+Tämä malli toimii hyvin SaaS-sovelluksissa, monivuokralaisjärjestelmissä tai missä tahansa Node.js-sovelluksessa, joka tarvitsee tietojen eristämistä.
 
-### MongoDB-toteutus Node.js-tuotantoympäristöön {#mongodb-implementation-for-nodejs-production}
+### MongoDB-toteutus Node.js-tuotantoon {#mongodb-implementation-for-nodejs-production}
 
-**Mitä käytämme:**
+**Käyttämämme:**
 
 * [`@ladjs/mongoose`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/mongoose-error-messages`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@zainundin/mongoose-factory`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**Meidän asennuksemme toteutus:** [`helpers/setup-mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-mongoose.js)
 
-**Asetuksemme toteutus:** [`helpers/setup-mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-mongoose.js)
+**Meidän konfiguraatiomme:** [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
 
-**Kokoonpanomme:** [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
+Käytämme MongoDB:tä sovellustietojen tallentamiseen Node.js -tuotantoympäristössämme, koska se tarjoaa:
 
-Käytämme MongoDB:tä sovellusdatalle Node.js-tuotantoympäristössämme, koska se tarjoaa:
-
-* **Joustava skeema** kehittyville tietorakenteille
-* **Parempi suorituskyky** monimutkaisille kyselyille
-* **Vaakasuuntainen skaalaus** -ominaisuudet
-* **Rikas kyselykieli**
+* **Joustavan skeeman** kehittyville tietorakenteille
+* **Parempaa suorituskykyä** monimutkaisissa kyselyissä
+* **Vaakasuoran skaalaamisen** mahdollisuudet
+* **Rikkaan kyselykielen**
 
 > \[!NOTE]
-> Hybridi-lähestymistapamme optimoituu juuri meidän käyttötapaukseemme. Tutki todellisia tietokannan käyttömalleja koodikannassamme ja selvitä, sopiiko tämä lähestymistapa Node.js-sovelluksesi tarpeisiin.
+> Hybridimenetelmämme on optimoitu meidän erityiseen käyttötapaukseemme. Tutki todellisia tietokannan käyttömallejamme koodipohjassa ymmärtääksesi, sopiiko tämä lähestymistapa sinun Node.js -sovelluksesi tarpeisiin.
 
-## Node.js-tuotannon taustatyön käsittely {#nodejs-production-background-job-processing}
 
-Rakensimme taustatyöarkkitehtuurimme Breen ympärille luotettavaa Node.js-tuotantoympäristöä varten. Tämä koskee kaikkia Node.js-sovelluksia, jotka tarvitsevat taustaprosessointia:
+## Node.js -tuotannon taustatehtävien käsittely {#nodejs-production-background-job-processing}
 
-### Bree-palvelimemme tuotantokäyttöönotto {#our-bree-server-setup-for-production}
+Rakensimme taustatehtäväarkkitehtuurimme Bree:n ympärille luotettavaa Node.js -tuotantokäyttöä varten. Tämä koskee mitä tahansa Node.js -sovellusta, joka tarvitsee taustaprosessointia:
 
-**Päätoteutuksemme:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+### Meidän Bree-palvelinasetuksemme tuotantoon {#our-bree-server-setup-for-production}
 
-**Ansible-käyttöönottomme:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
+**Meidän pääasiallinen toteutuksemme:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
-### Tuotantotyön esimerkkejä {#production-job-examples}
+**Meidän Ansible-julkaisu:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
-**Terveydentilan seuranta:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+### Tuotannon tehtäväesimerkit {#production-job-examples}
+
+**Terveystarkkailu:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 **Siivousautomaatio:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-**Kaikki työpaikkamme:** [Selaa koko työpaikkahakemistoamme](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+**Kaikki tehtävämme:** [Selaa täydellistä tehtäväkansiotamme](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
 
-Nämä mallit soveltuvat kaikkiin Node.js-sovelluksiin, jotka tarvitsevat:
+Nämä mallit koskevat mitä tahansa Node.js -sovellusta, joka tarvitsee:
 
-* Ajoitetut tehtävät (tietojenkäsittely, raportit, siivous)
-* Taustakäsittely (kuvien koon muuttaminen, sähköpostien lähettäminen, tietojen tuonti)
-* Kunnonvalvonta ja ylläpito
-* Työsäikeiden käyttöaste prosessoriintensiivisissä tehtävissä
+* Aikataulutettuja tehtäviä (tietojenkäsittely, raportit, siivous)
+* Taustaprosessointia (kuvien koon muuttaminen, sähköpostien lähetys, tietojen tuonti)
+* Terveystarkkailua ja ylläpitoa
+* Työntekijäketjujen hyödyntämistä CPU-intensiivisiin tehtäviin
 
-### Node.js-tuotantoympäristön työajoitusmallimme {#our-job-scheduling-patterns-for-nodejs-production}
+### Meidän tehtävien aikataulutusmallimme Node.js -tuotantoon {#our-job-scheduling-patterns-for-nodejs-production}
 
-Tutki työpaikkahakemistossamme olevia todellisia työaikataulujamme ymmärtääksesi:
+Tutki todellisia tehtävien aikataulutusmallejamme tehtäväkansiossamme ymmärtääksesi:
 
-* Kuinka toteutamme cron-tyyppisen ajoituksen Node.js-tuotannossa
+* Kuinka toteutamme cron-tyyppisen aikataulutuksen Node.js -tuotannossa
 * Virheenkäsittely- ja uudelleenyrityslogiikkamme
-* Työsäikeiden käyttö prosessoriintensiivisissä tehtävissä
+* Kuinka käytämme työntekijäketjuja CPU-intensiivisiin tehtäviin
 
-## Automaattinen ylläpito Node.js-tuotantosovelluksille {#automated-maintenance-for-production-nodejs-applications}
 
-Toteutamme ennakoivaa ylläpitoa estääksemme yleisiä Node.js-tuotanto-ongelmia. Nämä mallit pätevät kaikkiin Node.js-sovelluksiin:
+## Automaattinen ylläpito Node.js -tuotantosovelluksille {#automated-maintenance-for-production-nodejs-applications}
 
-### Siivoustoteutuksemme {#our-cleanup-implementation}
+Toteutamme ennakoivaa ylläpitoa estääksemme yleisiä Node.js -tuotanto-ongelmia. Nämä mallit koskevat mitä tahansa Node.js -sovellusta:
+
+### Meidän siivoustoteutuksemme {#our-cleanup-implementation}
 
 **Lähde:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-Node.js-tuotantosovellusten automaattinen ylläpitomme kohdistuu seuraaviin tavoitteisiin:
+Automaattinen ylläpitomme Node.js -tuotantosovelluksille kohdistuu:
 
-* **Väliaikaiset tiedostot**, jotka ovat yli 24 tuntia vanhoja
-* **Lokitiedostot**, jotka ovat säilytysrajan ulkopuolella
-* **Välimuistitiedostot** ja väliaikaiset tiedot
-* **Ladatut tiedostot**, joita ei enää tarvita
-* **Kehon tilannevedokset** suorituskyvyn virheenkorjauksesta
+* **Väliaikaisiin tiedostoihin**, jotka ovat yli 24 tuntia vanhoja
+* **Lokitiedostoihin**, jotka ylittävät säilytysrajat
+* **Välimuistitiedostoihin** ja väliaikaiseen dataan
+* **Ladattuihin tiedostoihin**, joita ei enää tarvita
+* **Heap-snapshoteihin** suorituskyvyn virheenkorjauksesta
 
-Nämä mallit koskevat kaikkia Node.js-sovelluksia, jotka luovat väliaikaisia tiedostoja, lokeja tai välimuistissa olevia tietoja.
+Nämä mallit koskevat mitä tahansa Node.js -sovellusta, joka tuottaa väliaikaisia tiedostoja, lokeja tai välimuistitietoja.
 
-### Levytilan hallinta Node.js-tuotantoympäristössä {#disk-space-management-for-nodejs-production}
+### Levyn tilan hallinta Node.js -tuotannossa {#disk-space-management-for-nodejs-production}
 
-**Valvontakynnyksemme:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**Meidän valvontakynnyksemme:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-* **Jonorajoitukset** taustakäsittelylle
-* **75 %:n levytilan käyttöaste** varoituskynnys
-* **Automaattinen puhdistus** kynnysten ylittyessä
+* **Jonorajat** taustaprosessointiin
+* **75 % levynkäyttö** varoituskynnys
+* **Automaattinen siivous** kun kynnysarvot ylittyvät
 
-### Infrastruktuurin ylläpidon automatisointi {#infrastructure-maintenance-automation}
+### Infrastruktuurin ylläpidon automaatio {#infrastructure-maintenance-automation}
 
-**Ansible-automaatiomme Node.js-tuotantoon:**
+**Meidän Ansible-automaatio Node.js -tuotantoon:**
 
 * [Ympäristön käyttöönotto](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/env.yml)
-* [Käyttöönottoavainten hallinta](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
+* [Julkaisujen avainten hallinta](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
 
-## Node.js:n tuotantokäyttöönoton toteutusopas {#nodejs-production-deployment-implementation-guide}
 
-### Tutustu tuotantokäytön parhaisiin käytäntöihin varsinaisessa koodissamme {#study-our-actual-code-for-production-best-practices}
+## Node.js -tuotannon käyttöönoton toteutusopas {#nodejs-production-deployment-implementation-guide}
+### Tutki Todellista Koodiamme Tuotantokäytäntöjen Parhaiden Käytäntöjen Osalta {#study-our-actual-code-for-production-best-practices}
 
-**Aloita näillä avaintiedostoilla Node.js-tuotantoympäristön asennusta varten:**
+**Aloita näistä keskeisistä tiedostoista Node.js-tuotantoympäristön asetuksissa:**
 
-1. **Määritys:** [`config/index.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
+1. **Konfigurointi:** [`config/index.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
 2. **Valvonta:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
-3. **Virheiden käsittely:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-4. **Lokikirjaus:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-5. **Prosessin tila:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+3. **Virheenkäsittely:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+4. **Lokitus:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+5. **Prosessin terveystarkastukset:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-### Opi blogikirjoituksistamme {#learn-from-our-blog-posts}
+### Opi Blogikirjoituksistamme {#learn-from-our-blog-posts}
 
 **Tekniset toteutusoppaamme Node.js-tuotantoon:**
 
 * [NPM-pakettien ekosysteemi](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 * [Maksujärjestelmien rakentaminen](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [Sähköpostin yksityisyydensuojan käyttöönotto](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [Sähköpostin yksityisyyden toteutus](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 * [JavaScript-yhteydenottolomakkeet](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
-* [React-sähköpostien integrointi](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
+* [React-sähköpostin integrointi](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
-### Infrastruktuurin automatisointi Node.js-tuotantoympäristöön {#infrastructure-automation-for-nodejs-production}
+### Infrastruktuurin automaatio Node.js-tuotantoon {#infrastructure-automation-for-nodejs-production}
 
-**Ansible-käsikirjamme Node.js:n tuotantokäyttöönottoa varten:**
+**Ansible-playbookimme Node.js-tuotantoon käyttöönoton opetteluun:**
 
-* [Täydellinen pelikirjahakemisto](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
-* [Suojauksen koventaminen](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Täydellinen playbook-kansio](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
+* [Turvallisuuden koventaminen](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [Node.js-asennus](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
-### Tapaustutkimuksemme {#our-case-studies}
+### Case-esimerkkimme {#our-case-studies}
 
-**Yrityskäyttöönottomme:**
+**Yritysratkaisumme:**
 
-* [Linux Foundationin tapaustutkimus](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Kanonisen Ubuntun tapaustutkimus](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
-* [Alumnien sähköpostien edelleenlähetys](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
+* [Linux Foundationin case-esimerkki](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
+* [Canonical Ubuntun case-esimerkki](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Alumnien sähköpostin edelleenlähetys](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 
-## Yhteenveto: Node.js:n tuotantokäyttöönoton parhaat käytännöt {#conclusion-nodejs-production-deployment-best-practices}
 
-Node.js-tuotantoinfrastruktuurimme osoittaa, että Node.js-sovellukset voivat saavuttaa yritystason luotettavuuden seuraavien ominaisuuksien ansiosta:
+## Yhteenveto: Node.js-tuotantokäyttöönoton parhaat käytännöt {#conclusion-nodejs-production-deployment-best-practices}
 
-* **Todistetut laitteistovalinnat** (AMD Ryzen 573 %:n yhden ytimen suorituskyvyn optimointiin)
-* **Taistelussa testattu Node.js-tuotannon valvonta** tietyillä kynnysarvoilla ja automaattisilla vasteilla
-* **Älykäs virheluokittelu** parantaakseen tapahtumiin reagointia tuotantoympäristöissä
-* **Edistynyt suorituskyvyn virheenkorjaus** v8-profiler-nextin ja cpupron avulla OOM:n estämiseksi
-* **Kattava tietoturvan vahvistaminen** Ansible-automaation avulla
-* **Hybriditietokanta-arkkitehtuuri** optimoitu sovellustarpeisiin
-* **Automaattinen ylläpito** yleisten Node.js-tuotanto-ongelmien estämiseksi
+Node.js-tuotantoinfrastruktuurimme osoittaa, että Node.js-sovellukset voivat saavuttaa yritystason luotettavuuden seuraavilla keinoilla:
 
-**Tärkein oppi:** Tutki varsinaisia toteutustiedostojamme ja blogikirjoituksiamme yleisten parhaiden käytäntöjen noudattamisen sijaan. Koodikantaamme tarjoaa reaalimaailman malleja Node.js:n tuotantokäyttöönotolle, joita voidaan mukauttaa mihin tahansa Node.js-sovellukseen – verkkosovelluksiin, API-rajapintoihin, mikropalveluihin tai taustapalveluihin.
+* **Todistetut laitteistovalinnat** (AMD Ryzen 573 %:n yksiydinsuorituskyvyn optimointiin)
+* **Käytännössä testattu Node.js-tuotantovalvonta** tarkkoine kynnysarvoineen ja automaattisine vasteineen
+* **Älykäs virheiden luokittelu** parantamaan häiriötilanteiden hallintaa tuotantoympäristöissä
+* **Edistynyt suorituskyvyn virheenkorjaus** v8-profiler-nextillä ja cpuprolla OOM-tilanteiden estämiseksi
+* **Kattava turvallisuuden koventaminen** Ansible-automaatioiden avulla
+* **Hybriditietokanta-arkkitehtuuri** sovelluksen tarpeisiin optimoituna
+* **Automaattinen ylläpito** yleisten Node.js-tuotanto-ongelmien ehkäisemiseksi
 
-## Täydellinen resurssiluettelo Node.js-tuotantoa varten {#complete-resource-list-for-nodejs-production}
+**Keskeinen opetus:** Tutki todellisia toteutustiedostojamme ja blogikirjoituksiamme sen sijaan, että seuraisit geneerisiä parhaita käytäntöjä. Koodipohjamme tarjoaa käytännön malleja Node.js-tuotantokäyttöönottoon, joita voi soveltaa mihin tahansa Node.js-sovellukseen – verkkosovelluksiin, API:hin, mikropalveluihin tai taustapalveluihin.
+
+
+## Täydellinen resurssilista Node.js-tuotantoon {#complete-resource-list-for-nodejs-production}
 
 ### Keskeiset toteutustiedostomme {#our-core-implementation-files}
 
@@ -539,38 +550,37 @@ Node.js-tuotantoinfrastruktuurimme osoittaa, että Node.js-sovellukset voivat sa
 * [Pakettiriippuvuudet](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [Palvelimen valvonta](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 * [Virheiden luokittelu](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-* [Kirjausjärjestelmä](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+* [Lokitusjärjestelmä](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 * [PM2-terveystarkastukset](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
-* [Automaattinen puhdistus](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+* [Automaattinen siivous](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+### Palvelinratkaisumme {#our-server-implementations}
 
-### Palvelintoteutuksemme {#our-server-implementations}
-
-* [Web-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
+* [Verkkopalvelin](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
-* [Bree-aikatauluttaja](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+* [Bree-ajastin](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 * [SMTP-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
 * [IMAP-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [POP3-palvelin](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-### Infrastruktuuriautomaatiomme {#our-infrastructure-automation}
+### Infrastruktuuriemme automaatio {#our-infrastructure-automation}
 
-* [Kaikki Ansible-pelioppaamme](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
-* [Suojauksen koventaminen](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Kaikki Ansible-playbookimme](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
+* [Turvallisuuden koventaminen](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [Node.js-asennus](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
-* [Tietokannan konfigurointi](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
+* [Tietokantakonfiguraatio](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
-### Tekniset blogikirjoituksemme {#our-technical-blog-posts}
+### Teknisiä blogikirjoituksiamme {#our-technical-blog-posts}
 
-* [NPM-ekosysteemianalyysi](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
-* [Maksujärjestelmän käyttöönotto](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [Sähköpostin tietosuojan tekninen opas](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [NPM-ekosysteemin analyysi](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
+* [Maksujärjestelmän toteutus](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
+* [Sähköpostin yksityisyyden tekninen opas](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 * [JavaScript-yhteydenottolomakkeet](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
-* [React-sähköpostien integrointi](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
-* [Itse isännöidyn ratkaisun opas](https://forwardemail.net/blog/docs/self-hosted-solution)
+* [React-sähköpostin integrointi](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
+* [Itseisännöity ratkaisun opas](https://forwardemail.net/blog/docs/self-hosted-solution)
 
-### Yritystapaustutkimukseni {#our-enterprise-case-studies}
+### Yritysasiakastapauksemme {#our-enterprise-case-studies}
 
-* [Linux Foundationin käyttöönotto](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Kanonisen Ubuntun tapaustutkimus](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Linux Foundationin toteutus](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
+* [Canonical Ubuntun tapaustutkimus](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * [Liittovaltion hallituksen vaatimustenmukaisuus](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 * [Alumnien sähköpostijärjestelmät](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)

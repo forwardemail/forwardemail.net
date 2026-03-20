@@ -1,77 +1,82 @@
-# คู่มือการติดตั้งการโฮสต์อีเมลด้วยตนเองสำหรับ Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# คู่มือการติดตั้ง Forward Email แบบโฮสต์เองสำหรับ Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+
 
 ## สารบัญ {#table-of-contents}
 
 * [ภาพรวม](#overview)
 * [ข้อกำหนดเบื้องต้น](#prerequisites)
-* [ข้อกำหนดของระบบ](#system-requirements)
-* [การติดตั้งแบบทีละขั้นตอน](#step-by-step-installation)
-  * [ขั้นตอนที่ 1: การตั้งค่าระบบเริ่มต้น](#step-1-initial-system-setup)
-  * [ขั้นตอนที่ 2: กำหนดค่าตัวแก้ไข DNS](#step-2-configure-dns-resolvers)
-  * [ขั้นตอนที่ 3: ติดตั้งการอ้างอิงระบบ](#step-3-install-system-dependencies)
-  * [ขั้นตอนที่ 4: ติดตั้งแพ็คเกจ Snap](#step-4-install-snap-packages)
+* [ความต้องการของระบบ](#system-requirements)
+* [การติดตั้งทีละขั้นตอน](#step-by-step-installation)
+  * [ขั้นตอนที่ 1: การตั้งค่าระบบเบื้องต้น](#step-1-initial-system-setup)
+  * [ขั้นตอนที่ 2: กำหนดค่า DNS Resolvers](#step-2-configure-dns-resolvers)
+  * [ขั้นตอนที่ 3: ติดตั้ง Dependencies ของระบบ](#step-3-install-system-dependencies)
+  * [ขั้นตอนที่ 4: ติดตั้งแพ็กเกจ Snap](#step-4-install-snap-packages)
   * [ขั้นตอนที่ 5: ติดตั้ง Docker](#step-5-install-docker)
   * [ขั้นตอนที่ 6: กำหนดค่าบริการ Docker](#step-6-configure-docker-service)
   * [ขั้นตอนที่ 7: กำหนดค่าไฟร์วอลล์](#step-7-configure-firewall)
-  * [ขั้นตอนที่ 8: โคลนที่เก็บอีเมลส่งต่อ](#step-8-clone-forward-email-repository)
+  * [ขั้นตอนที่ 8: โคลนที่เก็บ Forward Email](#step-8-clone-forward-email-repository)
   * [ขั้นตอนที่ 9: ตั้งค่าการกำหนดค่าสภาพแวดล้อม](#step-9-set-up-environment-configuration)
   * [ขั้นตอนที่ 10: กำหนดค่าโดเมนของคุณ](#step-10-configure-your-domain)
   * [ขั้นตอนที่ 11: สร้างใบรับรอง SSL](#step-11-generate-ssl-certificates)
-  * [ขั้นตอนที่ 12: สร้างคีย์การเข้ารหัส](#step-12-generate-encryption-keys)
+  * [ขั้นตอนที่ 12: สร้างกุญแจเข้ารหัส](#step-12-generate-encryption-keys)
   * [ขั้นตอนที่ 13: อัปเดตเส้นทาง SSL ในการกำหนดค่า](#step-13-update-ssl-paths-in-configuration)
-  * [ขั้นตอนที่ 14: ตั้งค่าการตรวจสอบสิทธิ์ขั้นพื้นฐาน](#step-14-set-up-basic-authentication)
-  * [ขั้นตอนที่ 15: ปรับใช้ด้วย Docker Compose](#step-15-deploy-with-docker-compose)
+  * [ขั้นตอนที่ 14: ตั้งค่าการตรวจสอบสิทธิ์พื้นฐาน](#step-14-set-up-basic-authentication)
+  * [ขั้นตอนที่ 15: ดีพลอยด้วย Docker Compose](#step-15-deploy-with-docker-compose)
   * [ขั้นตอนที่ 16: ตรวจสอบการติดตั้ง](#step-16-verify-installation)
 * [การกำหนดค่าหลังการติดตั้ง](#post-installation-configuration)
-  * [การตั้งค่าระเบียน DNS](#dns-records-setup)
+  * [การตั้งค่าบันทึก DNS](#dns-records-setup)
   * [การเข้าสู่ระบบครั้งแรก](#first-login)
-* [การกำหนดค่าการสำรองข้อมูล](#backup-configuration)
-  * [ตั้งค่าการสำรองข้อมูลที่เข้ากันได้กับ S3](#set-up-s3-compatible-backup)
-  * [ตั้งค่างาน Cron สำรอง](#set-up-backup-cron-jobs)
-* [การกำหนดค่าการอัปเดตอัตโนมัติ](#auto-update-configuration)
-* [การบำรุงรักษาและการติดตาม](#maintenance-and-monitoring)
+* [การสำรองข้อมูล](#backup-configuration)
+  * [ตั้งค่าการสำรองข้อมูลแบบเข้ากันได้กับ S3](#set-up-s3-compatible-backup)
+  * [ตั้งค่างาน Cron สำหรับสำรองข้อมูล](#set-up-backup-cron-jobs)
+* [การกำหนดค่าอัปเดตอัตโนมัติ](#auto-update-configuration)
+* [การบำรุงรักษาและการตรวจสอบ](#maintenance-and-monitoring)
   * [ตำแหน่งบันทึก](#log-locations)
-  * [งานบำรุงรักษาตามปกติ](#regular-maintenance-tasks)
+  * [งานบำรุงรักษาปกติ](#regular-maintenance-tasks)
   * [การต่ออายุใบรับรอง](#certificate-renewal)
 * [การแก้ไขปัญหา](#troubleshooting)
-  * [ปัญหาทั่วไป](#common-issues)
-  * [การได้รับความช่วยเหลือ](#getting-help)
-* [แนวทางปฏิบัติที่ดีที่สุดด้านความปลอดภัย](#security-best-practices)
+  * [ปัญหาที่พบบ่อย](#common-issues)
+  * [การขอความช่วยเหลือ](#getting-help)
+* [แนวทางปฏิบัติด้านความปลอดภัยที่ดีที่สุด](#security-best-practices)
 * [บทสรุป](#conclusion)
+
 
 ## ภาพรวม {#overview}
 
-คู่มือนี้ให้คำแนะนำทีละขั้นตอนสำหรับการติดตั้งโซลูชันโฮสต์ด้วยตนเองของ Forward Email บนระบบ Ubuntu คู่มือนี้ออกแบบมาเฉพาะสำหรับ Ubuntu เวอร์ชัน 20.04, 22.04 และ 24.04 LTS
+คู่มือนี้ให้คำแนะนำทีละขั้นตอนสำหรับการติดตั้งโซลูชัน Forward Email แบบโฮสต์เองบนระบบ Ubuntu คู่มือนี้ออกแบบมาเฉพาะสำหรับเวอร์ชัน Ubuntu 20.04, 22.04 และ 24.04 LTS
+
 
 ## ข้อกำหนดเบื้องต้น {#prerequisites}
 
-ก่อนที่จะเริ่มการติดตั้ง ให้แน่ใจว่าคุณมี:
+ก่อนเริ่มการติดตั้ง โปรดตรวจสอบให้แน่ใจว่าคุณมี:
 
-* **เซิร์ฟเวอร์ Ubuntu**: 20.04, 22.04 หรือ 24.04 LTS
-* **สิทธิ์การเข้าถึงระดับรูท**: คุณต้องสามารถรันคำสั่งในฐานะรูทได้ (สิทธิ์การเข้าถึง sudo)
-* **ชื่อโดเมน**: โดเมนที่คุณควบคุมด้วยสิทธิ์การเข้าถึงการจัดการ DNS
+* **Ubuntu Server**: 20.04, 22.04 หรือ 24.04 LTS
+* **สิทธิ์ root**: คุณต้องสามารถรันคำสั่งในฐานะ root (เข้าถึง sudo)
+* **ชื่อโดเมน**: โดเมนที่คุณควบคุมพร้อมสิทธิ์จัดการ DNS
 * **เซิร์ฟเวอร์สะอาด**: แนะนำให้ใช้การติดตั้ง Ubuntu ใหม่
 * **การเชื่อมต่ออินเทอร์เน็ต**: จำเป็นสำหรับการดาวน์โหลดแพ็กเกจและอิมเมจ Docker
 
-## ข้อกำหนดของระบบ {#system-requirements}
 
-* **RAM**: ขั้นต่ำ 2GB (แนะนำให้ใช้ 4GB สำหรับการผลิต)
-* **พื้นที่เก็บข้อมูล**: พื้นที่ว่างขั้นต่ำ 20GB (แนะนำให้ใช้ 50GB ขึ้นไปสำหรับการผลิต)
-* **CPU**: ขั้นต่ำ 1 vCPU (แนะนำให้ใช้ 2+ vCPU สำหรับการผลิต)
-* **เครือข่าย**: ที่อยู่ IP สาธารณะพร้อมพอร์ตต่อไปนี้ที่สามารถเข้าถึงได้:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+## ความต้องการของระบบ {#system-requirements}
+
+* **RAM**: อย่างน้อย 2GB (แนะนำ 4GB สำหรับการใช้งานจริง)
+* **พื้นที่เก็บข้อมูล**: อย่างน้อย 20GB พื้นที่ว่าง (แนะนำ 50GB+ สำหรับการใช้งานจริง)
+* **CPU**: อย่างน้อย 1 vCPU (แนะนำ 2+ vCPU สำหรับการใช้งานจริง)
+* **เครือข่าย**: ที่อยู่ IP สาธารณะพร้อมพอร์ตต่อไปนี้ที่เข้าถึงได้:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## การติดตั้งทีละขั้นตอน {#step-by-step-installation}
 
-### ขั้นตอนที่ 1: การตั้งค่าระบบเริ่มต้น {#step-1-initial-system-setup}
+### ขั้นตอนที่ 1: การตั้งค่าระบบเบื้องต้น {#step-1-initial-system-setup}
 
-ขั้นแรก ตรวจสอบให้แน่ใจว่าระบบของคุณเป็นเวอร์ชันล่าสุด และเปลี่ยนไปใช้ผู้ใช้ root:
+ก่อนอื่น ให้แน่ใจว่าระบบของคุณเป็นเวอร์ชันล่าสุดและสลับไปยังผู้ใช้ root:
 
 ```bash
 # Update system packages
@@ -81,9 +86,9 @@ sudo apt update && sudo apt upgrade -y
 sudo su -
 ```
 
-### ขั้นตอนที่ 2: กำหนดค่าตัวแก้ไข DNS {#step-2-configure-dns-resolvers}
+### ขั้นตอนที่ 2: กำหนดค่า DNS Resolvers {#step-2-configure-dns-resolvers}
 
-กำหนดค่าระบบของคุณเพื่อใช้เซิร์ฟเวอร์ DNS ของ Cloudflare เพื่อการสร้างใบรับรองที่เชื่อถือได้:
+กำหนดค่าระบบของคุณให้ใช้ DNS ของ Cloudflare เพื่อความน่าเชื่อถือในการสร้างใบรับรอง:
 
 ```bash
 # Stop and disable systemd-resolved if running
@@ -106,10 +111,9 @@ nameserver 8.8.4.4
 nameserver 2001:4860:4860::8844
 EOF
 ```
+### Step 3: ติดตั้ง Dependencies ของระบบ {#step-3-install-system-dependencies}
 
-### ขั้นตอนที่ 3: ติดตั้งการอ้างอิงระบบ {#step-3-install-system-dependencies}
-
-ติดตั้งแพ็กเกจที่จำเป็นสำหรับการส่งต่ออีเมล:
+ติดตั้งแพ็กเกจที่จำเป็นสำหรับ Forward Email:
 
 ```bash
 # Update package list
@@ -126,9 +130,9 @@ apt-get install -y \
     snapd
 ```
 
-### ขั้นตอนที่ 4: ติดตั้งแพ็คเกจ Snap {#step-4-install-snap-packages}
+### Step 4: ติดตั้งแพ็กเกจ Snap {#step-4-install-snap-packages}
 
-ติดตั้ง AWS CLI และ Certbot ผ่าน Snap:
+ติดตั้ง AWS CLI และ Certbot ผ่าน snap:
 
 ```bash
 # Install AWS CLI
@@ -140,7 +144,7 @@ snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 ```
 
-### ขั้นตอนที่ 5: ติดตั้ง Docker {#step-5-install-docker}
+### Step 5: ติดตั้ง Docker {#step-5-install-docker}
 
 ติดตั้ง Docker CE และ Docker Compose:
 
@@ -162,7 +166,7 @@ docker --version
 docker compose version
 ```
 
-### ขั้นตอนที่ 6: กำหนดค่าบริการ Docker {#step-6-configure-docker-service}
+### Step 6: กำหนดค่า Docker Service {#step-6-configure-docker-service}
 
 ตรวจสอบให้แน่ใจว่า Docker เริ่มทำงานโดยอัตโนมัติและกำลังทำงานอยู่:
 
@@ -176,7 +180,7 @@ systemctl start docker
 docker info
 ```
 
-หาก Docker ไม่สามารถเริ่มต้นได้ ให้ลองเริ่มต้นด้วยตนเอง:
+หาก Docker เริ่มทำงานไม่สำเร็จ ให้ลองเริ่มด้วยตนเอง:
 
 ```bash
 # Alternative startup method if systemctl fails
@@ -185,9 +189,9 @@ sleep 5
 docker info
 ```
 
-### ขั้นตอนที่ 7: กำหนดค่าไฟร์วอลล์ {#step-7-configure-firewall}
+### Step 7: กำหนดค่า Firewall {#step-7-configure-firewall}
 
-ตั้งค่าไฟร์วอลล์ UFW เพื่อรักษาความปลอดภัยเซิร์ฟเวอร์ของคุณ:
+ตั้งค่าไฟร์วอลล์ UFW เพื่อปกป้องเซิร์ฟเวอร์ของคุณ:
 
 ```bash
 # Set default policies
@@ -221,9 +225,9 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-### ขั้นตอนที่ 8: โคลนที่เก็บข้อมูลอีเมลแบบส่งต่อ {#step-8-clone-forward-email-repository}
+### Step 8: โคลน Forward Email Repository {#step-8-clone-forward-email-repository}
 
-ดาวน์โหลดซอร์สโค้ดการส่งต่ออีเมล:
+ดาวน์โหลดซอร์สโค้ดของ Forward Email:
 
 ```bash
 # Set up variables
@@ -239,7 +243,7 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### ขั้นตอนที่ 9: ตั้งค่าการกำหนดค่าสภาพแวดล้อม {#step-9-set-up-environment-configuration}
+### Step 9: ตั้งค่าการกำหนดค่าสภาพแวดล้อม {#step-9-set-up-environment-configuration}
 
 เตรียมการกำหนดค่าสภาพแวดล้อม:
 
@@ -261,7 +265,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### ขั้นตอนที่ 10: กำหนดค่าโดเมนของคุณ {#step-10-configure-your-domain}
+### Step 10: กำหนดค่าชื่อโดเมนของคุณ {#step-10-configure-your-domain}
 
 ตั้งชื่อโดเมนของคุณและอัปเดตตัวแปรสภาพแวดล้อม:
 
@@ -303,13 +307,12 @@ update_env_file "SELF_HOSTED" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
-
 ### ขั้นตอนที่ 11: สร้างใบรับรอง SSL {#step-11-generate-ssl-certificates}
 
 #### ตัวเลือก A: การท้าทาย DNS ด้วยตนเอง (แนะนำสำหรับผู้ใช้ส่วนใหญ่) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# สร้างใบรับรองโดยใช้การท้าทาย DNS ด้วยตนเอง
 certbot certonly \
   --manual \
   --agree-tos \
@@ -318,23 +321,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**สำคัญ**: เมื่อได้รับแจ้ง คุณจะต้องสร้างระเบียน TXT ใน DNS ของคุณ คุณอาจเห็นคำถามหลายข้อสำหรับโดเมนเดียวกัน - **สร้างทั้งหมด** อย่าลบระเบียน TXT แรกเมื่อเพิ่มระเบียนที่สอง
+**สำคัญ**: เมื่อมีการแจ้งเตือน คุณจะต้องสร้างระเบียน TXT ใน DNS ของคุณ อาจเห็นการท้าทายหลายรายการสำหรับโดเมนเดียวกัน - **สร้างทั้งหมด** อย่าลบระเบียน TXT แรกเมื่อเพิ่มระเบียนที่สอง
 
-#### ตัวเลือก B: Cloudflare DNS (หากคุณใช้ Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### ตัวเลือก B: Cloudflare DNS (ถ้าคุณใช้ Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-หากโดเมนของคุณใช้ Cloudflare สำหรับ DNS คุณสามารถสร้างใบรับรองอัตโนมัติได้:
+ถ้าโดเมนของคุณใช้ Cloudflare สำหรับ DNS คุณสามารถทำให้การสร้างใบรับรองเป็นอัตโนมัติได้:
 
 ```bash
-# Create Cloudflare credentials file
+# สร้างไฟล์ข้อมูลรับรอง Cloudflare
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# ตั้งค่าสิทธิ์ที่เหมาะสม
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# สร้างใบรับรองโดยอัตโนมัติ
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -347,53 +350,53 @@ certbot certonly \
 
 #### คัดลอกใบรับรอง {#copy-certificates}
 
-หลังจากสร้างใบรับรองแล้ว ให้คัดลอกไปยังไดเร็กทอรีแอปพลิเคชัน:
+หลังจากสร้างใบรับรองแล้ว ให้คัดลอกไปยังไดเรกทอรีแอปพลิเคชัน:
 
 ```bash
-# Copy certificates to application SSL directory
+# คัดลอกใบรับรองไปยังไดเรกทอรี SSL ของแอปพลิเคชัน
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# ตรวจสอบว่าใบรับรองถูกคัดลอกแล้ว
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### ขั้นตอนที่ 12: สร้างคีย์การเข้ารหัส {#step-12-generate-encryption-keys}
+### ขั้นตอนที่ 12: สร้างกุญแจเข้ารหัส {#step-12-generate-encryption-keys}
 
-สร้างคีย์การเข้ารหัสต่างๆ ที่จำเป็นสำหรับการดำเนินการที่ปลอดภัย:
+สร้างกุญแจเข้ารหัสต่างๆ ที่จำเป็นสำหรับการทำงานอย่างปลอดภัย:
 
 ```bash
-# Generate helper encryption key
+# สร้างกุญแจช่วยเข้ารหัส
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# สร้างความลับ SRS สำหรับการส่งต่ออีเมล
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# สร้างกุญแจเข้ารหัส TXT
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# สร้างกุญแจส่วนตัว DKIM สำหรับการลงนามอีเมล
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# สร้างกุญแจลายเซ็น webhook
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# ตั้งรหัสผ่านสำหรับการส่ง SMTP
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ สร้างกุญแจเข้ารหัสทั้งหมดสำเร็จ"
 ```
 
-### ขั้นตอนที่ 13: อัปเดตเส้นทาง SSL ในการกำหนดค่า {#step-13-update-ssl-paths-in-configuration}
+### ขั้นตอนที่ 13: อัปเดตเส้นทาง SSL ในการตั้งค่า {#step-13-update-ssl-paths-in-configuration}
 
-กำหนดค่าเส้นทางใบรับรอง SSL ในไฟล์สภาพแวดล้อม:
+กำหนดเส้นทางใบรับรอง SSL ในไฟล์ environment:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# อัปเดตเส้นทาง SSL ให้ชี้ไปยังไฟล์ใบรับรองที่ถูกต้อง
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -403,75 +406,75 @@ sed -i -E \
 
 ### ขั้นตอนที่ 14: ตั้งค่าการตรวจสอบสิทธิ์พื้นฐาน {#step-14-set-up-basic-authentication}
 
-สร้างข้อมูลประจำตัวการตรวจสอบพื้นฐานชั่วคราว:
+สร้างข้อมูลรับรองการตรวจสอบสิทธิ์พื้นฐานชั่วคราว:
 
 ```bash
-# Generate a secure random password
+# สร้างรหัสผ่านสุ่มที่ปลอดภัย
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# อัปเดตไฟล์ environment ด้วยข้อมูลรับรองการตรวจสอบสิทธิ์พื้นฐาน
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# แสดงข้อมูลรับรอง (โปรดบันทึกไว้!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 สำคัญ: โปรดบันทึกข้อมูลเข้าสู่ระบบเหล่านี้!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "ชื่อผู้ใช้: admin"
+echo "รหัสผ่าน: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "คุณจะต้องใช้ข้อมูลเหล่านี้เพื่อเข้าถึงเว็บอินเทอร์เฟซหลังการติดตั้ง"
 echo ""
 ```
 
-### ขั้นตอนที่ 15: ปรับใช้ด้วย Docker Compose {#step-15-deploy-with-docker-compose}
+### ขั้นตอนที่ 15: ติดตั้งด้วย Docker Compose {#step-15-deploy-with-docker-compose}
 
-เริ่มต้นบริการส่งต่ออีเมลทั้งหมด:
+เริ่มบริการ Forward Email ทั้งหมด:
 
 ```bash
-# Set Docker Compose file path
+# กำหนดเส้นทางไฟล์ Docker Compose
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# หยุดคอนเทนเนอร์ที่มีอยู่
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
-# Pull the latest images
+# ดึงอิมเมจล่าสุด
 docker compose -f "$DOCKER_COMPOSE_FILE" pull
 
-# Start all services in detached mode
+# เริ่มบริการทั้งหมดในโหมด detached
 docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Wait a moment for services to start
+# รอสักครู่เพื่อให้บริการเริ่มทำงาน
 sleep 10
 
-# Check service status
+# ตรวจสอบสถานะบริการ
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
-
 ### ขั้นตอนที่ 16: ตรวจสอบการติดตั้ง {#step-16-verify-installation}
 
-ตรวจสอบว่าบริการทั้งหมดทำงานอย่างถูกต้อง:
+ตรวจสอบให้แน่ใจว่าบริการทั้งหมดทำงานอย่างถูกต้อง:
 
 ```bash
-# Check Docker containers
+# ตรวจสอบคอนเทนเนอร์ Docker
 docker ps
 
-# Check service logs for any errors
+# ตรวจสอบบันทึกบริการสำหรับข้อผิดพลาดใดๆ
 docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 
-# Test web interface connectivity
+# ทดสอบการเชื่อมต่ออินเทอร์เฟซเว็บ
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# ตรวจสอบว่าพอร์ตกำลังฟังอยู่หรือไม่
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## การกำหนดค่าหลังการติดตั้ง {#post-installation-configuration}
 
-### การตั้งค่าระเบียน DNS {#dns-records-setup}
+## การตั้งค่าหลังการติดตั้ง {#post-installation-configuration}
 
-คุณต้องกำหนดค่าระเบียน DNS ต่อไปนี้สำหรับโดเมนของคุณ:
+### การตั้งค่าบันทึก DNS {#dns-records-setup}
+
+คุณต้องกำหนดค่าบันทึก DNS ต่อไปนี้สำหรับโดเมนของคุณ:
 
 #### บันทึก MX {#mx-record}
 
@@ -503,7 +506,7 @@ carddav A YOUR_SERVER_IP
 รับคีย์สาธารณะ DKIM ของคุณ:
 
 ```bash
-# Extract DKIM public key
+# ดึงคีย์สาธารณะ DKIM
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
@@ -521,70 +524,73 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### การเข้าสู่ระบบครั้งแรก {#first-login}
 
-1. เปิดเว็บเบราว์เซอร์และไปที่ `https://yourdomain.com`
-2. ป้อนข้อมูลรับรองความถูกต้องพื้นฐานที่คุณบันทึกไว้ก่อนหน้านี้
-3. ทำตามขั้นตอนในตัวช่วยการตั้งค่าเริ่มต้น
+1. เปิดเว็บเบราว์เซอร์ของคุณและไปที่ `https://yourdomain.com`
+2. ป้อนข้อมูลรับรองการยืนยันตัวตนพื้นฐานที่คุณบันทึกไว้ก่อนหน้านี้
+3. ทำตามวิซาร์ดการตั้งค่าเริ่มต้นให้เสร็จสิ้น
 4. สร้างบัญชีอีเมลแรกของคุณ
 
-## การกำหนดค่าการสำรองข้อมูล {#backup-configuration}
 
-### ตั้งค่าการสำรองข้อมูลที่เข้ากันได้กับ S3 {#set-up-s3-compatible-backup}
+## การตั้งค่าการสำรองข้อมูล {#backup-configuration}
 
-กำหนดค่าการสำรองข้อมูลอัตโนมัติไปยังที่เก็บข้อมูลที่รองรับ S3:
+### ตั้งค่าการสำรองข้อมูลแบบเข้ากันได้กับ S3 {#set-up-s3-compatible-backup}
+
+กำหนดค่าการสำรองข้อมูลอัตโนมัติไปยังที่เก็บข้อมูลแบบเข้ากันได้กับ S3:
 
 ```bash
-# Create AWS credentials directory
+# สร้างไดเรกทอรีข้อมูลรับรอง AWS
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# กำหนดค่าข้อมูลรับรอง AWS
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# กำหนดค่าการตั้งค่า AWS
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# สำหรับ S3 ที่ไม่ใช่ AWS (เช่น Cloudflare R2) ให้เพิ่ม URL จุดสิ้นสุด
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### ตั้งค่างาน Cron สำรอง {#set-up-backup-cron-jobs}
+### ตั้งค่างาน cron สำรองข้อมูล {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# ทำให้สคริปต์สำรองข้อมูลสามารถรันได้
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# เพิ่มงาน cron สำรองข้อมูล MongoDB (รันทุกวันตอนเที่ยงคืน)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# เพิ่มงาน cron สำรองข้อมูล Redis (รันทุกวันตอนเที่ยงคืน)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# ตรวจสอบว่างาน cron ถูกเพิ่มแล้ว
 crontab -l
 ```
 
-## การกำหนดค่าการอัปเดตอัตโนมัติ {#auto-update-configuration}
+
+## การตั้งค่าการอัปเดตอัตโนมัติ {#auto-update-configuration}
 
 ตั้งค่าการอัปเดตอัตโนมัติสำหรับการติดตั้ง Forward Email ของคุณ:
 
 ```bash
-# Create auto-update command
+# สร้างคำสั่งอัปเดตอัตโนมัติ
 DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 
-# Add auto-update cron job (runs daily at 1 AM)
+# เพิ่มงาน cron อัปเดตอัตโนมัติ (รันทุกวันตอน 1 โมงเช้า)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# ตรวจสอบว่างาน cron ถูกเพิ่มแล้ว
 crontab -l
 ```
+
 
 ## การบำรุงรักษาและการตรวจสอบ {#maintenance-and-monitoring}
 
@@ -593,7 +599,7 @@ crontab -l
 * **บันทึก Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
 * **บันทึกระบบ**: `/var/log/syslog`
 * **บันทึกการสำรองข้อมูล**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **อัปเดตบันทึกอัตโนมัติ**: `/var/log/autoupdate.log`
+* **บันทึกการอัปเดตอัตโนมัติ**: `/var/log/autoupdate.log`
 
 ### งานบำรุงรักษาปกติ {#regular-maintenance-tasks}
 
@@ -601,78 +607,79 @@ crontab -l
 2. **ตรวจสอบสถานะบริการ**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **ตรวจสอบบันทึก**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **อัปเดตแพ็กเกจระบบ**: `apt update && apt upgrade`
-5. **ต่ออายุใบรับรอง**: ใบรับรองจะต่ออายุอัตโนมัติ แต่ตรวจสอบวันหมดอายุ
+5. **ต่ออายุใบรับรอง**: ใบรับรองจะต่ออายุอัตโนมัติ แต่ควรตรวจสอบวันหมดอายุ
 
 ### การต่ออายุใบรับรอง {#certificate-renewal}
 
-ใบรับรองควรจะต่ออายุโดยอัตโนมัติ แต่คุณสามารถต่ออายุด้วยตนเองได้หากจำเป็น:
+ใบรับรองควรต่ออายุอัตโนมัติ แต่คุณสามารถต่ออายุด้วยตนเองหากจำเป็น:
 
 ```bash
-# Manual certificate renewal
+# ต่ออายุใบรับรองด้วยตนเอง
 certbot renew
 
-# Copy renewed certificates
+# คัดลอกใบรับรองที่ต่ออายุแล้ว
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# รีสตาร์ทบริการเพื่อใช้ใบรับรองใหม่
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
-
 ## การแก้ไขปัญหา {#troubleshooting}
 
 ### ปัญหาทั่วไป {#common-issues}
 
-#### 1. บริการ Docker จะไม่เริ่มต้น {#1-docker-service-wont-start}
+#### 1. บริการ Docker ไม่เริ่มทำงาน {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# ตรวจสอบสถานะ Docker
 systemctl status docker
 
-# Try alternative startup
+# ลองเริ่มต้นใช้งานแบบทางเลือก
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
 #### 2. การสร้างใบรับรองล้มเหลว {#2-certificate-generation-fails}
 
-* ตรวจสอบให้แน่ใจว่าพอร์ต 80 และ 443 สามารถเข้าถึงได้
-* ตรวจสอบว่าระเบียน DNS ชี้ไปที่เซิร์ฟเวอร์ของคุณ
+* ตรวจสอบให้แน่ใจว่า port 80 และ 443 สามารถเข้าถึงได้
+* ยืนยันว่า DNS records ชี้ไปยังเซิร์ฟเวอร์ของคุณ
 * ตรวจสอบการตั้งค่าไฟร์วอลล์
 
-#### 3. ปัญหาในการส่งอีเมล {#3-email-delivery-issues}
+#### 3. ปัญหาการส่งอีเมล {#3-email-delivery-issues}
 
-* ตรวจสอบว่าระเบียน MX ถูกต้อง
-* ตรวจสอบระเบียน SPF, DKIM และ DMARC
-* ตรวจสอบให้แน่ใจว่าผู้ให้บริการโฮสติ้งของคุณไม่ได้บล็อกพอร์ต 25
+* ตรวจสอบว่า MX records ถูกต้อง
+* ตรวจสอบ SPF, DKIM และ DMARC records
+* ตรวจสอบว่า port 25 ไม่ถูกบล็อกโดยผู้ให้บริการโฮสติ้งของคุณ
 
-#### 4. ไม่สามารถเข้าถึงอินเทอร์เฟซเว็บได้ {#4-web-interface-not-accessible}
+#### 4. ไม่สามารถเข้าถึงเว็บอินเทอร์เฟซ {#4-web-interface-not-accessible}
 
 * ตรวจสอบการตั้งค่าไฟร์วอลล์: `ufw status`
-* ตรวจสอบใบรับรอง SSL: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* ตรวจสอบข้อมูลรับรองพื้นฐาน
+* ยืนยันใบรับรอง SSL: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
+* ตรวจสอบข้อมูลรับรองการยืนยันตัวตนแบบ basic auth
 
-### รับความช่วยเหลือ {#getting-help}
+### การขอความช่วยเหลือ {#getting-help}
 
-* **เอกสาร**: <https://forwardemail.net/self-hosted>
-* **ปัญหา GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **การสนับสนุนชุมชน**: ตรวจสอบการสนทนาใน GitHub ของโครงการ
+* **เอกสารประกอบ**: <https://forwardemail.net/self-hosted>
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **ชุมชนสนับสนุน**: ตรวจสอบการสนทนาใน GitHub ของโครงการ
 
-## แนวทางปฏิบัติที่ดีที่สุดด้านความปลอดภัย {#security-best-practices}
 
-1. **อัปเดตระบบอยู่เสมอ**: อัปเดต Ubuntu และแพ็กเกจเป็นประจำ
+## แนวทางปฏิบัติด้านความปลอดภัยที่ดีที่สุด {#security-best-practices}
+
+1. **อัปเดตระบบอย่างสม่ำเสมอ**: อัปเดต Ubuntu และแพ็กเกจต่างๆ อย่างสม่ำเสมอ
 2. **ตรวจสอบบันทึก**: ตั้งค่าการตรวจสอบและแจ้งเตือนบันทึก
-3. **สำรองข้อมูลเป็นประจำ**: ทดสอบขั้นตอนการสำรองข้อมูลและกู้คืนข้อมูล
-4. **ใช้รหัสผ่านที่แข็งแรง**: สร้างรหัสผ่านที่แข็งแรงสำหรับทุกบัญชี
+3. **สำรองข้อมูลเป็นประจำ**: ทดสอบกระบวนการสำรองและกู้คืนข้อมูล
+4. **ใช้รหัสผ่านที่แข็งแรง**: สร้างรหัสผ่านที่แข็งแรงสำหรับบัญชีทั้งหมด
 5. **เปิดใช้งาน Fail2Ban**: พิจารณาติดตั้ง fail2ban เพื่อเพิ่มความปลอดภัย
-6. **ตรวจสอบความปลอดภัยเป็นประจำ**: ตรวจสอบการกำหนดค่าของคุณเป็นระยะ
+6. **ตรวจสอบความปลอดภัยเป็นประจำ**: ทบทวนการตั้งค่าของคุณเป็นระยะ
 
-## ข้อสรุป {#conclusion}
 
-ตอนนี้การติดตั้ง Forward Email แบบโฮสต์เองของคุณน่าจะเสร็จสมบูรณ์แล้วและทำงานบน Ubuntu โปรดจำไว้ว่า:
+## สรุป {#conclusion}
 
-1. กำหนดค่าระเบียน DNS ของคุณอย่างถูกต้อง
+การติดตั้ง Forward Email แบบโฮสต์เองของคุณควรเสร็จสมบูรณ์และทำงานบน Ubuntu แล้ว โปรดจำไว้ว่า:
+
+1. กำหนดค่า DNS records ของคุณอย่างถูกต้อง
 2. ทดสอบการส่งและรับอีเมล
 3. ตั้งค่าการสำรองข้อมูลเป็นประจำ
-4. ตรวจสอบระบบของคุณเป็นประจำ
-5. อัปเดตการติดตั้งของคุณอยู่เสมอ
+4. ตรวจสอบระบบของคุณอย่างสม่ำเสมอ
+5. อัปเดตการติดตั้งของคุณอย่างต่อเนื่อง
 
-สำหรับตัวเลือกการกำหนดค่าเพิ่มเติมและคุณลักษณะขั้นสูง โปรดดูเอกสารการส่งต่ออีเมลอย่างเป็นทางการที่ <https://forwardemail.net/self-hosted#configuration>.
+สำหรับตัวเลือกการกำหนดค่าเพิ่มเติมและฟีเจอร์ขั้นสูง โปรดดูเอกสารอย่างเป็นทางการของ Forward Email ที่ <https://forwardemail.net/self-hosted#configuration>.

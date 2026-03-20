@@ -1,50 +1,53 @@
-# Hur vidarebefordran av e-post skyddar din integritet, domän och säkerhet: En teknisk djupdykning {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
+# Hur Forward Email skyddar din integritet, domän och säkerhet: Den tekniska djupdykningen {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Bästa e-postvidarebefordranstjänst jämförelse" class="rounded-lg" />
+
 
 ## Innehållsförteckning {#table-of-contents}
 
 * [Förord](#foreword)
-* [Filosofin för integritetsskydd för vidarebefordran av e-post](#the-forward-email-privacy-philosophy)
+* [Forward Emails integritetsfilosofi](#the-forward-email-privacy-philosophy)
 * [SQLite-implementering: Hållbarhet och portabilitet för dina data](#sqlite-implementation-durability-and-portability-for-your-data)
-* [Smart kö- och återförsöksmekanism: Säkerställer e-postleverans](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [Smart kö- och omförsöksmekanism: Säkerställer e-postleverans](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
 * [Obegränsade resurser med intelligent hastighetsbegränsning](#unlimited-resources-with-intelligent-rate-limiting)
-* [Sandlådebaserad kryptering för förbättrad säkerhet](#sandboxed-encryption-for-enhanced-security)
-* [E-posthantering i minnet: Ingen disklagring för maximal integritet](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
-* [End-to-End-kryptering med OpenPGP för fullständig integritet](#end-to-end-encryption-with-openpgp-for-complete-privacy)
-* [Flerskiktat innehållsskydd för omfattande säkerhet](#multi-layered-content-protection-for-comprehensive-security)
-* [Hur vi skiljer oss från andra e-posttjänster: Den tekniska fördelen med integritet](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
-  * [Öppen källkods transparens för verifierbar integritet](#open-source-transparency-for-verifiable-privacy)
-  * [Ingen leverantörslåsning för kompromisslös integritet](#no-vendor-lock-in-for-privacy-without-compromise)
-  * [Sandbox-data för sann isolering](#sandboxed-data-for-true-isolation)
+* [Sandboxad kryptering för förbättrad säkerhet](#sandboxed-encryption-for-enhanced-security)
+* [E-postbehandling i minnet: Ingen lagring på disk för maximal integritet](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [End-to-end-kryptering med OpenPGP för fullständig integritet](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [Flerlagers innehållsskydd för omfattande säkerhet](#multi-layered-content-protection-for-comprehensive-security)
+* [Hur vi skiljer oss från andra e-posttjänster: Den tekniska integritetsfördelen](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+  * [Öppen källkodstransparens för verifierbar integritet](#open-source-transparency-for-verifiable-privacy)
+  * [Ingen leverantörslåsning för integritet utan kompromisser](#no-vendor-lock-in-for-privacy-without-compromise)
+  * [Sandboxade data för verklig isolering](#sandboxed-data-for-true-isolation)
   * [Dataportabilitet och kontroll](#data-portability-and-control)
-* [De tekniska utmaningarna med vidarebefordran av e-post med integritet i första hand](#the-technical-challenges-of-privacy-first-email-forwarding)
-  * [Minneshantering för e-postbehandling utan loggning](#memory-management-for-no-logging-email-processing)
-  * [Skräppostdetektering utan innehållsanalys för integritetsbevarande filtrering](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
-  * [Bibehålla kompatibilitet med integritetsfokuserad design](#maintaining-compatibility-with-privacy-first-design)
-* [Bästa praxis för sekretess för användare som vidarebefordrar e-post](#privacy-best-practices-for-forward-email-users)
-* [Slutsats: Framtiden för privat vidarebefordran av e-post](#conclusion-the-future-of-private-email-forwarding)
+* [De tekniska utmaningarna med integritetsfokuserad e-postvidarebefordran](#the-technical-challenges-of-privacy-first-email-forwarding)
+  * [Minneshantering för loggfri e-postbehandling](#memory-management-for-no-logging-email-processing)
+  * [Spamdetektion utan innehållsanalys för integritetsbevarande filtrering](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
+  * [Bibehållen kompatibilitet med integritetsfokuserad design](#maintaining-compatibility-with-privacy-first-design)
+* [Integritetsbästa praxis för Forward Email-användare](#privacy-best-practices-for-forward-email-users)
+* [Slutsats: Framtiden för privat e-postvidarebefordran](#conclusion-the-future-of-private-email-forwarding)
+
 
 ## Förord {#foreword}
 
-I dagens digitala landskap har e-postsekretess blivit viktigare än någonsin. Med dataintrång, övervakningsproblem och riktad reklam baserad på e-postinnehåll söker användare i allt högre grad lösningar som prioriterar deras integritet. På Forward Email har vi byggt vår tjänst från grunden med integritet som hörnsten i vår arkitektur. Det här blogginlägget utforskar de tekniska implementeringar som gör vår tjänst till en av de mest integritetsfokuserade lösningarna för vidarebefordran av e-post som finns tillgängliga.
+I dagens digitala landskap har e-postintegritet blivit viktigare än någonsin. Med dataintrång, övervakningsbekymmer och riktad reklam baserad på e-postinnehåll söker användare i allt högre grad lösningar som prioriterar deras integritet. På Forward Email har vi byggt vår tjänst från grunden med integritet som hörnstenen i vår arkitektur. Detta blogginlägg utforskar de tekniska implementationerna som gör vår tjänst till en av de mest integritetsfokuserade e-postvidarebefordringslösningarna som finns tillgängliga.
 
-## Sekretessfilosofin för vidarebefordran av e-post {#the-forward-email-privacy-philosophy}
 
-Innan vi går in på de tekniska detaljerna är det viktigt att förstå vår grundläggande integritetsfilosofi: **dina e-postmeddelanden tillhör dig och bara dig**. Denna princip vägleder alla tekniska beslut vi fattar, från hur vi hanterar vidarebefordran av e-post till hur vi implementerar kryptering.
+## Forward Emails integritetsfilosofi {#the-forward-email-privacy-philosophy}
 
-Till skillnad från många e-postleverantörer som skannar dina meddelanden i reklamsyfte eller lagrar dem på obestämd tid på sina servrar, fungerar Forward Email med en radikalt annorlunda metod:
+Innan vi dyker in i de tekniska detaljerna är det viktigt att förstå vår grundläggande integritetsfilosofi: **dina e-postmeddelanden tillhör dig och bara dig**. Denna princip styr varje tekniskt beslut vi tar, från hur vi hanterar e-postvidarebefordran till hur vi implementerar kryptering.
 
-1. **Endast bearbetning i minnet** - Vi lagrar inte dina vidarebefordrade e-postmeddelanden på disk
-2. **Ingen metadatalagring** - Vi för inte register över vem som skickar e-post till vem
-3. **100 % öppen källkod** - Hela vår kodbas är transparent och granskningsbar
-4. **End-to-end-kryptering** - Vi stöder OpenPGP för verkligt privat kommunikation
+Till skillnad från många e-postleverantörer som skannar dina meddelanden för reklamändamål eller lagrar dem på obestämd tid på sina servrar, arbetar Forward Email med en radikalt annorlunda metod:
+
+1. **Endast bearbetning i minnet** – Vi lagrar inte dina vidarebefordrade e-postmeddelanden på disk
+2. **Ingen metadata lagring** – Vi sparar inga register över vem som mejlar vem
+3. **100 % öppen källkod** – Vår hela kodbas är transparent och granskbar
+4. **End-to-end-kryptering** – Vi stödjer OpenPGP för verkligt privata kommunikationer
+
 
 ## SQLite-implementering: Hållbarhet och portabilitet för dina data {#sqlite-implementation-durability-and-portability-for-your-data}
 
-En av de viktigaste integritetsfördelarna med Vidarebefordra e-post är vår noggrant utformade [SQLite](https://en.wikipedia.org/wiki/SQLite)-implementering. Vi har finjusterat SQLite med specifika PRAGMA-inställningar och [Förhandsloggning (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) för att säkerställa både hållbarhet och portabilitet för dina data, samtidigt som vi upprätthåller högsta möjliga standard för integritet och säkerhet.
-
-Här är en titt på hur vi har implementerat SQLite med [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) som chiffer för kvantresistent kryptering:
+En av de mest betydande integritetsfördelarna med Forward Email är vår noggrant utformade [SQLite](https://en.wikipedia.org/wiki/SQLite)-implementering. Vi har finjusterat SQLite med specifika PRAGMA-inställningar och [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) för att säkerställa både hållbarhet och portabilitet för dina data, samtidigt som vi upprätthåller de högsta standarderna för integritet och säkerhet.
+Här är en översikt över hur vi har implementerat SQLite med [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) som chiffer för kvantresistent kryptering:
 
 ```javascript
 // Initialize the database with better-sqlite3-multiple-ciphers
@@ -81,13 +84,14 @@ db.pragma('optimize=0x10002;');
 db.pragma('temp_store=1;');
 ```
 
-Den här implementeringen säkerställer att dina data inte bara är säkra utan också portabla. Du kan ta med dig din e-post när som helst genom att exportera i formaten [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) eller SQLite. Och när du vill radera dina data är de verkligen borta – vi tar helt enkelt bort filerna från disklagringen istället för att köra SQL DELETE ROW-kommandon, vilket kan lämna spår i databasen.
+Denna implementation säkerställer att dina data inte bara är säkra utan också portabla. Du kan ta med dig din e-post när som helst genom att exportera i [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) eller SQLite-format. Och när du vill radera dina data är de verkligen borta – vi tar helt enkelt bort filerna från lagringen på disken istället för att köra SQL DELETE ROW-kommandon, vilket kan lämna spår i databasen.
 
-Kvantkrypteringsaspekten av vår implementering använder ChaCha20-Poly1305 som chiffer när vi initierar databasen, vilket ger ett starkt skydd mot både nuvarande och framtida hot mot din dataintegritet.
+Den kvantkrypteringsaspekt som vår implementation använder är ChaCha20-Poly1305 som chiffer när vi initierar databasen, vilket ger starkt skydd mot både nuvarande och framtida hot mot din datasekretess.
 
-## Smart kö och mekanism för återförsök: Säkerställer e-postleverans {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-Istället för att enbart fokusera på hantering av headers har vi implementerat en sofistikerad smart kö- och återförsöksmekanism med vår `getBounceInfo`-metod. Det här systemet säkerställer att dina e-postmeddelanden har bästa möjliga chans att levereras, även när tillfälliga problem uppstår.
+## Smart kö och återförsöksmekanism: Säkerställa e-postleverans {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
+
+Istället för att enbart fokusera på hantering av headers har vi implementerat en sofistikerad smart kö och återförsöksmekanism med vår `getBounceInfo`-metod. Detta system säkerställer att dina e-postmeddelanden har bästa möjliga chans att levereras, även när tillfälliga problem uppstår.
 
 ```javascript
 function getBounceInfo(err) {
@@ -121,21 +125,21 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> Detta är ett utdrag av metoden `getBounceInfo` och inte den faktiska omfattande implementeringen. För den fullständiga koden kan du granska den på [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+> Detta är ett utdrag ur `getBounceInfo`-metoden och inte den faktiska omfattande implementationen. För hela koden kan du granska den på [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-Vi försöker leverera posten igen i fem dagar, ungefär som branschstandarder som [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), vilket ger tillfälliga problem tid att lösa sig själva. Denna metod förbättrar leveransfrekvensen avsevärt samtidigt som sekretessen bibehålls.
+Vi försöker leverera e-post i 5 dagar, liknande branschstandarder som [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), vilket ger tillfälliga problem tid att lösa sig själva. Detta tillvägagångssätt förbättrar leveransgraden avsevärt samtidigt som sekretessen bibehålls.
 
-På liknande sätt redigerar vi även meddelandeinnehållet i utgående SMTP-e-postmeddelanden efter lyckad leverans. Detta är konfigurerat i vårt lagringssystem med en standardlagringsperiod på 30 dagar, som du kan justera i din domäns avancerade inställningar. Efter denna period redigeras och rensas e-postinnehållet automatiskt, med endast ett platshållarmeddelande kvar:
+På liknande sätt redigerar vi också innehållet i utgående SMTP-e-postmeddelanden efter lyckad leverans. Detta konfigureras i vårt lagringssystem med en standard behållningstid på 30 dagar, som du kan justera i din domäns Avancerade inställningar. Efter denna period redigeras och rensas e-postinnehållet automatiskt, med endast ett platshållarmeddelande kvar:
 
 ```txt
-This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
+Detta meddelande skickades framgångsrikt. Det har redigerats och rensats för din säkerhet och integritet. Om du vill öka din meddelande behållningstid, gå till sidan Avancerade inställningar för din domän.
 ```
+Denna metod säkerställer att dina skickade e-postmeddelanden inte lagras på obestämd tid, vilket minskar risken för dataintrång eller obehörig åtkomst till dina kommunikationer.
 
-Denna metod säkerställer att dina skickade e-postmeddelanden inte lagras på obestämd tid, vilket minskar risken för dataintrång eller obehörig åtkomst till din kommunikation.
 
 ## Obegränsade resurser med intelligent hastighetsbegränsning {#unlimited-resources-with-intelligent-rate-limiting}
 
-Även om Forward Email erbjuder obegränsade domäner och alias, har vi implementerat intelligent hastighetsbegränsning för att skydda vårt system från missbruk och säkerställa rättvis användning för alla användare. Till exempel kan icke-företagskunder skapa upp till 50+ alias per dag, vilket förhindrar att vår databas spammas och översvämmas, och gör att våra funktioner för missbruk och skydd i realtid fungerar effektivt.
+Medan Forward Email erbjuder obegränsade domäner och alias, har vi implementerat intelligent hastighetsbegränsning för att skydda vårt system från missbruk och säkerställa rättvis användning för alla användare. Till exempel kan icke-företagskunder skapa upp till 50+ alias per dag, vilket förhindrar att vår databas spammas och översvämmas, och gör det möjligt för våra realtidsfunktioner för missbruks- och skydd att fungera effektivt.
 
 ```javascript
 // Rate limiter implementation
@@ -155,31 +159,30 @@ if (limit.remaining <= 0) {
 }
 ```
 
-Denna balanserade strategi ger dig flexibiliteten att skapa så många e-postadresser som du behöver för omfattande integritetshantering, samtidigt som du bibehåller integriteten och prestandan för vår tjänst för alla användare.
+Denna balanserade metod ger dig flexibiliteten att skapa så många e-postadresser du behöver för omfattande sekretesshantering, samtidigt som den upprätthåller integriteten och prestandan för vår tjänst för alla användare.
 
-## Sandlådebaserad kryptering för förbättrad säkerhet {#sandboxed-encryption-for-enhanced-security}
 
-Vår unika krypteringsmetod i sandlådemiljö ger en avgörande säkerhetsfördel som många användare förbiser när de väljer en e-posttjänst. Låt oss utforska varför det är så viktigt att kryptera data i sandlådemiljö, särskilt e-post.
+## Sandlåds-kryptering för förbättrad säkerhet {#sandboxed-encryption-for-enhanced-security}
 
-Tjänster som Gmail och Proton använder troligtvis delad [relationsdatabaser](https://en.wikipedia.org/wiki/Relational_database), vilket skapar en grundläggande säkerhetsbrist. I en delad databasmiljö, om någon får åtkomst till en användares data, har de potentiellt en väg att komma åt andra användares data också. Detta beror på att all användardata finns i samma databastabeller, endast separerade av användar-ID:n eller liknande identifierare.
+Vår unika sandlåds-krypteringsmetod ger en kritisk säkerhetsfördel som många användare förbiser när de väljer en e-posttjänst. Låt oss utforska varför sandlådsisolering av data, särskilt e-post, är så viktigt.
 
-Vidarebefordra e-post har en fundamentalt annorlunda strategi med vår sandlådebaserade kryptering:
+Tjänster som Gmail och Proton använder troligen delade [relationsdatabaser](https://en.wikipedia.org/wiki/Relational_database), vilket skapar en grundläggande säkerhetssårbarhet. I en delad databas-miljö, om någon får åtkomst till en användares data, har de potentiellt en väg för att komma åt andra användares data också. Detta beror på att all användardata finns i samma databastabeller, separerade endast av användar-ID:n eller liknande identifierare.
 
-1. **Fullständig isolering**: Varje användares data lagras i sin egen krypterade SQLite-databasfil, helt isolerad från andra användare.
+Forward Email tar en fundamentalt annorlunda ansats med vår sandlåds-kryptering:
 
-2. **Oberoende krypteringsnycklar**: Varje databas är krypterad med sin egen unika nyckel som härleds från användarens lösenord.
+1. **Fullständig isolering**: Varje användares data lagras i sin egen krypterade SQLite-databasfil, helt isolerad från andra användare
+2. **Oberoende krypteringsnycklar**: Varje databas krypteras med sin egen unika nyckel härledd från användarens lösenord
+3. **Ingen delad lagring**: Till skillnad från relationsdatabaser där alla användares e-post kan finnas i en enda "emails"-tabell, säkerställer vår metod att data inte blandas ihop
+4. **Djupförsvar**: Även om en användares databas på något sätt skulle komprometteras, skulle det inte ge åtkomst till någon annan användares data
 
-3. **Ingen delad lagring**: Till skillnad från relationsdatabaser där alla användares e-postmeddelanden kan finnas i en enda "e-post"-tabell, säkerställer vår metod ingen sammanblandning av data.
+Denna sandlådsmetod är likt att ha din e-post i ett separat fysiskt valv snarare än i en delad lagringsanläggning med interna avdelare. Det är en grundläggande arkitektonisk skillnad som avsevärt förbättrar din sekretess och säkerhet.
 
-4. **Djupgående försvar**: Även om en användares databas på något sätt komprometteras, skulle den inte ge åtkomst till någon annan användares data.
 
-Denna sandlådebaserade metod liknar att ha din e-post i ett separat fysiskt valv snarare än i en delad lagringsanläggning med interna avdelare. Det är en grundläggande arkitekturskillnad som avsevärt förbättrar din integritet och säkerhet.
+## E-postbehandling i minnet: Ingen lagring på disk för maximal sekretess {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
 
-## E-postbehandling i minnet: Ingen disklagring för maximal integritet {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+För vår e-postvidarebefordran behandlar vi e-postmeddelanden helt i RAM och skriver aldrig dem till disk eller databaser. Denna metod ger oöverträffat skydd mot e-postövervakning och metadata-insamling.
 
-För vår e-postvidarebefordringstjänst bearbetar vi e-postmeddelanden helt i RAM-minnet och skriver dem aldrig till disklagring eller databaser. Denna metod ger oöverträffat skydd mot e-postövervakning och insamling av metadata.
-
-Här är en förenklad översikt över hur vår e-posthantering fungerar:
+Här är en förenklad bild av hur vår e-postbehandling fungerar:
 
 ```javascript
 async function onData(stream, _session, fn) {
@@ -210,12 +213,12 @@ async function onData(stream, _session, fn) {
   }
 }
 ```
+Denna metod innebär att även om våra servrar skulle bli komprometterade, finns det ingen historisk e-postdata för angripare att komma åt. Dina e-postmeddelanden passerar helt enkelt genom vårt system och vidarebefordras omedelbart till sin destination utan att lämna några spår. Denna e-postvidarebefordran utan loggning är grundläggande för att skydda dina kommunikationer från övervakning.
 
-Den här metoden innebär att även om våra servrar komprometteras, skulle det inte finnas någon historisk e-postdata som angripare kan komma åt. Dina e-postmeddelanden passerar helt enkelt genom vårt system och vidarebefordras omedelbart till sin destination utan att lämna spår. Denna metod för vidarebefordran av e-post utan loggning är grundläggande för att skydda din kommunikation från övervakning.
 
 ## End-to-End-kryptering med OpenPGP för fullständig sekretess {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-För användare som behöver högsta möjliga nivå av integritetsskydd från e-postövervakning stöder vi [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) för end-to-end-kryptering. Till skillnad från många e-postleverantörer som kräver proprietära bryggor eller appar fungerar vår implementering med vanliga e-postklienter, vilket gör säker kommunikation tillgänglig för alla.
+För användare som kräver högsta nivå av sekretessskydd mot e-postövervakning stödjer vi [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) för end-to-end-kryptering. Till skillnad från många e-postleverantörer som kräver proprietära bryggor eller appar fungerar vår implementation med standard e-postklienter, vilket gör säker kommunikation tillgänglig för alla.
 
 Så här implementerar vi OpenPGP-kryptering:
 
@@ -250,71 +253,75 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-Denna implementering säkerställer att dina e-postmeddelanden krypteras innan de lämnar din enhet och endast kan dekrypteras av den avsedda mottagaren, vilket håller din kommunikation privat även för oss. Detta är viktigt för att skydda känslig kommunikation från obehörig åtkomst och övervakning.
+Denna implementation säkerställer att dina e-postmeddelanden är krypterade innan de lämnar din enhet och endast kan dekrypteras av den avsedda mottagaren, vilket håller dina kommunikationer privata även för oss. Detta är avgörande för att skydda känslig kommunikation från obehörig åtkomst och övervakning.
 
-## Flerskiktat innehållsskydd för omfattande säkerhet {#multi-layered-content-protection-for-comprehensive-security}
 
-Vidarebefordra e-post erbjuder flera lager av innehållsskydd som är aktiverade som standard för att ge omfattande säkerhet mot olika hot:
+## Flerlagers innehållsskydd för omfattande säkerhet {#multi-layered-content-protection-for-comprehensive-security}
 
-1. **Skydd mot vuxeninnehåll** - Filtrerar bort olämpligt innehåll utan att kompromissa med integriteten
-2. **[Nätfiske](https://en.wikipedia.org/wiki/Phishing)-skydd** - Blockerar försök att stjäla din information samtidigt som anonymiteten bevaras
-3. **Skydd mot körbara filer** - Förhindrar potentiellt skadliga bilagor utan att skanna innehållet
-4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus)-skydd** - Skannar efter skadlig programvara med hjälp av integritetsbevarande tekniker
+Forward Email erbjuder flera lager av innehållsskydd som är aktiverade som standard för att ge omfattande skydd mot olika hot:
 
-Till skillnad från många leverantörer som gör det möjligt att välja bort dessa funktioner, har vi gjort det möjligt att välja bort dem, vilket säkerställer att alla användare drar nytta av dessa skydd som standard. Denna strategi återspeglar vårt engagemang för både integritet och säkerhet, vilket ger en balans som många e-posttjänster misslyckas med att uppnå.
+1. **Skydd mot vuxeninnehåll** – Filtrerar bort olämpligt innehåll utan att kompromissa med sekretessen  
+2. **[Phishing](https://en.wikipedia.org/wiki/Phishing)-skydd** – Blockerar försök att stjäla din information samtidigt som anonymiteten bevaras  
+3. **Skydd mot körbara filer** – Förhindrar potentiellt skadliga bilagor utan att skanna innehållet  
+4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus)-skydd** – Skannar efter skadlig kod med sekretessbevarande tekniker  
+
+Till skillnad från många leverantörer som gör dessa funktioner valbara har vi gjort dem valfria att stänga av, vilket säkerställer att alla användare drar nytta av dessa skydd som standard. Denna metod speglar vårt engagemang för både sekretess och säkerhet och ger en balans som många e-posttjänster misslyckas med att uppnå.
+
 
 ## Hur vi skiljer oss från andra e-posttjänster: Den tekniska sekretessfördelen {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-När man jämför vidarebefordran av e-post med andra e-posttjänster finns det flera viktiga tekniska skillnader som belyser vår integritetsfokuserade strategi:
+När man jämför Forward Email med andra e-posttjänster framhäver flera viktiga tekniska skillnader vårt sekretessfokuserade tillvägagångssätt:
 
-### Öppen källkods transparens för verifierbar integritet {#open-source-transparency-for-verifiable-privacy}
+### Öppen källkodstransparens för verifierbar sekretess {#open-source-transparency-for-verifiable-privacy}
 
-Även om många e-postleverantörer påstår sig vara öppen källkod, håller de ofta sin backend-kod stängd. Vidarebefordran av e-post är 100 % [öppen källkod](https://en.wikipedia.org/wiki/Open_source), inklusive både frontend- och backend-kod. Denna transparens möjliggör oberoende säkerhetsgranskning av alla komponenter, vilket säkerställer att våra integritetspåståenden kan verifieras av vem som helst.
+Medan många e-postleverantörer påstår sig vara öppen källkod håller de ofta sin backend-kod stängd. Forward Email är 100 % [öppen källkod](https://en.wikipedia.org/wiki/Open_source), inklusive både frontend- och backend-kod. Denna transparens möjliggör oberoende säkerhetsgranskning av alla komponenter, vilket säkerställer att våra sekretesspåståenden kan verifieras av vem som helst.
 
-### Ingen leverantörslåsning för integritet utan kompromisser {#no-vendor-lock-in-for-privacy-without-compromise}
+### Ingen leverantörslåsning för sekretess utan kompromisser {#no-vendor-lock-in-for-privacy-without-compromise}
 
-Många integritetsfokuserade e-postleverantörer kräver att du använder deras egna appar eller bryggor. Vidarebefordra e-post fungerar med alla vanliga e-postklienter via protokollen [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) och [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), vilket ger dig friheten att välja din föredragna e-postprogramvara utan att kompromissa med integriteten.
+Många sekretessfokuserade e-postleverantörer kräver att du använder deras proprietära appar eller bryggor. Forward Email fungerar med vilken standard e-postklient som helst via [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) och [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)-protokollen, vilket ger dig friheten att välja din föredragna e-postprogramvara utan att kompromissa med sekretessen.
+### Sandlådedata för verklig isolering {#sandboxed-data-for-true-isolation}
 
-### Sandlådedata för sann isolering {#sandboxed-data-for-true-isolation}
+Till skillnad från tjänster som använder delade databaser där all användardata blandas, säkerställer vår sandlådelösning att varje användares data är helt isolerad. Denna grundläggande arkitektoniska skillnad ger betydligt starkare integritetsgarantier än vad de flesta e-posttjänster erbjuder.
 
-Till skillnad från tjänster som använder delade databaser där alla användares data blandas, säkerställer vår sandlådebaserade metod att varje användares data är helt isolerad. Denna grundläggande arkitekturskillnad ger betydligt starkare integritetsgarantier än vad de flesta e-posttjänster erbjuder.
+### Dataöverförbarhet och kontroll {#data-portability-and-control}
 
-### Dataportabilitet och kontroll {#data-portability-and-control}
+Vi tror att din data tillhör dig, vilket är anledningen till att vi gör det enkelt att exportera dina e-postmeddelanden i standardformat (MBOX, EML, SQLite) och verkligen radera din data när du vill. Denna nivå av kontroll är sällsynt bland e-postleverantörer men avgörande för verklig integritet.
 
-Vi anser att dina uppgifter tillhör dig, och det är därför vi gör det enkelt att exportera dina e-postmeddelanden i standardformat (MBOX, EML, SQLite) och radera dina data när du vill. Denna kontrollnivå är sällsynt bland e-postleverantörer men avgörande för verklig integritet.
 
-## De tekniska utmaningarna med vidarebefordran av e-post med integritet i första hand {#the-technical-challenges-of-privacy-first-email-forwarding}
+## De tekniska utmaningarna med integritetsfokuserad e-postvidarebefordran {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-Att bygga en e-posttjänst som sätter integritet först och främst innebär betydande tekniska utmaningar. Här är några av de hinder vi har övervunnit:
+Att bygga en integritetsfokuserad e-posttjänst innebär betydande tekniska utmaningar. Här är några av de hinder vi har övervunnit:
 
-### Minneshantering för e-postbehandling utan loggning {#memory-management-for-no-logging-email-processing}
+### Minneshantering för e-postbearbetning utan loggning {#memory-management-for-no-logging-email-processing}
 
-Att bearbeta e-postmeddelanden i minnet utan disklagring kräver noggrann minneshantering för att hantera stora volymer e-posttrafik effektivt. Vi har implementerat avancerade minnesoptimeringstekniker för att säkerställa tillförlitlig prestanda utan att kompromissa med vår policy mot lagring, en viktig del av vår integritetsskyddsstrategi.
+Att bearbeta e-postmeddelanden i minnet utan lagring på disk kräver noggrann minneshantering för att effektivt hantera stora volymer e-posttrafik. Vi har implementerat avancerade minnesoptimeringstekniker för att säkerställa pålitlig prestanda utan att kompromissa med vår policy om ingen lagring, en kritisk del av vår integritetsskyddsstrategi.
 
-### Skräppostdetektering utan innehållsanalys för integritetsbevarande filtrering {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
+### Spamdetektion utan innehållsanalys för integritetsbevarande filtrering {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-De flesta [skräppost](https://en.wikipedia.org/wiki/Email_spam)-detekteringssystem förlitar sig på att analysera e-postinnehåll, vilket strider mot våra integritetsprinciper. Vi har utvecklat tekniker för att identifiera skräppostmönster utan att läsa innehållet i dina e-postmeddelanden, och hitta en balans mellan integritet och användbarhet som bevarar konfidentialiteten i din kommunikation.
+De flesta [spam](https://en.wikipedia.org/wiki/Email_spam)-detekteringssystem förlitar sig på att analysera e-postinnehåll, vilket strider mot våra integritetsprinciper. Vi har utvecklat tekniker för att identifiera spammönster utan att läsa innehållet i dina e-postmeddelanden, vilket skapar en balans mellan integritet och användbarhet som bevarar sekretessen i din kommunikation.
 
-### Bibehålla kompatibilitet med integritetsfokuserad design {#maintaining-compatibility-with-privacy-first-design}
+### Upprätthålla kompatibilitet med integritetsfokuserad design {#maintaining-compatibility-with-privacy-first-design}
 
-Att säkerställa kompatibilitet med alla e-postklienter samtidigt som avancerade sekretessfunktioner implementeras har krävt kreativa tekniska lösningar. Vårt team har arbetat outtröttligt för att göra sekretessen sömlös, så att du inte behöver välja mellan bekvämlighet och säkerhet när du skyddar din e-postkommunikation.
+Att säkerställa kompatibilitet med alla e-postklienter samtidigt som avancerade integritetsfunktioner implementeras har krävt kreativa ingenjörslösningar. Vårt team har arbetat outtröttligt för att göra integritet sömlös, så att du inte behöver välja mellan bekvämlighet och säkerhet när du skyddar din e-postkommunikation.
 
-## Bästa praxis för sekretess för användare som vidarebefordrar e-post {#privacy-best-practices-for-forward-email-users}
 
-För att maximera ditt skydd mot e-postövervakning och din integritet när du använder vidarebefordran av e-post rekommenderar vi följande bästa metoder:
+## Bästa integritetspraxis för användare av Forward Email {#privacy-best-practices-for-forward-email-users}
 
-1. **Använd unika alias för olika tjänster** - Skapa ett annat e-postalias för varje tjänst du registrerar dig för för att förhindra spårning mellan tjänster
-2. **Aktivera OpenPGP-kryptering** - Använd end-to-end-kryptering för att säkerställa fullständig integritet
-3. **Rotera regelbundet dina e-postalias** - Uppdatera regelbundet alias för viktiga tjänster för att minimera långsiktig datainsamling
-4. **Använd starka, unika lösenord** - Skydda ditt konto för vidarebefordran av e-post med ett starkt lösenord för att förhindra obehörig åtkomst
-5. **Implementera [IP-adress](https://en.wikipedia.org/wiki/IP_address)-anonymisering** - Överväg att använda [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) tillsammans med vidarebefordran av e-post för fullständig anonymitet
+För att maximera ditt skydd mot e-postövervakning och maximera din integritet när du använder Forward Email rekommenderar vi följande bästa praxis:
 
-## Slutsats: Framtiden för vidarebefordran av privat e-post {#conclusion-the-future-of-private-email-forwarding}
+1. **Använd unika alias för olika tjänster** – Skapa ett annat e-postalias för varje tjänst du registrerar dig hos för att förhindra spårning mellan tjänster
+2. **Aktivera OpenPGP-kryptering** – För känslig kommunikation, använd end-to-end-kryptering för att säkerställa fullständig integritet
+3. **Rotera dina e-postalias regelbundet** – Uppdatera alias för viktiga tjänster med jämna mellanrum för att minimera långsiktig datainsamling
+4. **Använd starka, unika lösenord** – Skydda ditt Forward Email-konto med ett starkt lösenord för att förhindra obehörig åtkomst
+5. **Implementera [IP-adress](https://en.wikipedia.org/wiki/IP_address)-anonymisering** – Överväg att använda en [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) tillsammans med Forward Email för fullständig anonymitet
 
-På Forward Email anser vi att integritet inte bara är en funktion – det är en grundläggande rättighet. Våra tekniska implementeringar återspeglar denna övertygelse och ger dig vidarebefordran av e-post som respekterar din integritet på alla nivåer och skyddar dig från e-postövervakning och insamling av metadata.
 
-I takt med att vi fortsätter att utveckla och förbättra vår tjänst förblir vårt engagemang för integritet orubbligt. Vi undersöker ständigt nya krypteringsmetoder, utforskar ytterligare integritetsskydd och förfinar vår kodbas för att ge den säkraste e-postupplevelsen som möjligt.
+## Slutsats: Framtiden för privat e-postvidarebefordran {#conclusion-the-future-of-private-email-forwarding}
 
-Genom att välja Vidarebefordra e-post väljer du inte bara en e-posttjänst – du stöder en vision av internet där integritet är standard, inte undantag. Följ med oss och bygg en mer privat digital framtid, ett e-postmeddelande i taget.
+På Forward Email tror vi att integritet inte bara är en funktion – det är en grundläggande rättighet. Våra tekniska implementationer speglar denna tro och ger dig e-postvidarebefordran som respekterar din integritet på alla nivåer och skyddar dig från e-postövervakning och metadata-insamling.
 
-<!-- *Nyckelord: privat vidarebefordran av e-post, skydd av e-postsekretess, säker e-posttjänst, öppen källkods-e-post, kvantsäker kryptering, OpenPGP-e-post, e-postbehandling i minnet, e-posttjänst utan loggar, skydd av e-postmetadata, sekretess för e-postrubriker, end-to-end-krypterad e-post, sekretessprioriterat e-postmeddelande, anonym e-postvidarebefordran, bästa praxis för e-postsäkerhet, skydd av e-postinnehåll, nätfiskeskydd, virusskanning för e-post, sekretessfokuserad e-postleverantör, säkra e-postrubriker, implementering av e-postsekretess, skydd mot e-postövervakning, vidarebefordran av e-post utan loggar, förhindra läckage av e-postmetadata, tekniker för e-postsekretess, anonymisering av IP-adresser för e-post, privata e-postalias, säkerhet för vidarebefordran av e-post, e-postsekretess från annonsörer, kvantsäker e-postkryptering, e-postsekretess utan kompromisser, SQLite-e-postlagring, sandlådebaserad e-postkryptering, dataportabilitet för e-post* -->
+När vi fortsätter att utveckla och förbättra vår tjänst förblir vårt engagemang för integritet orubbligt. Vi forskar ständigt på nya krypteringsmetoder, utforskar ytterligare integritetsskydd och förfinar vår kodbas för att erbjuda den mest säkra e-postupplevelsen möjligt.
+
+Genom att välja Forward Email väljer du inte bara en e-posttjänst – du stödjer en vision om internet där integritet är standard, inte undantaget. Följ med oss i att bygga en mer privat digital framtid, ett e-postmeddelande i taget.
+<!-- *Keywords: private email forwarding, email privacy protection, secure email service, open-source email, quantum-safe encryption, OpenPGP email, in-memory email processing, no-log email service, email metadata protection, email header privacy, end-to-end encrypted email, privacy-first email, anonymous email forwarding, email security best practices, email content protection, phishing protection, email virus scanning, privacy-focused email provider, secure email headers, email privacy implementation, protection from email surveillance, no-logging email forwarding, prevent email metadata leakage, email privacy techniques, IP address anonymization for email, private email aliases, email forwarding security, email privacy from advertisers, quantum-resistant email encryption, email privacy without compromise, SQLite email storage, sandboxed email encryption, data portability for email* -->
+

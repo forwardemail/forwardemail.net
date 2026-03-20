@@ -1,76 +1,81 @@
-# ニュースレターを安全に配信するための転送メール機能を備えたListmonk {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+# セキュアなニュースレター配信のための Forward Email と Listmonk の連携 {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+
 
 ## 目次 {#table-of-contents}
 
 * [概要](#overview)
-* [Listmonkとメール転送の理由](#why-listmonk-and-forward-email)
+* [なぜ Listmonk と Forward Email なのか](#why-listmonk-and-forward-email)
 * [前提条件](#prerequisites)
 * [インストール](#installation)
-  * [1. サーバーを更新する](#1-update-your-server)
-  * [2. 依存関係をインストールする](#2-install-dependencies)
-  * [3. Listmonk設定をダウンロードする](#3-download-listmonk-configuration)
-  * [4. ファイアウォール（UFW）を構成する](#4-configure-firewall-ufw)
-  * [5. HTTPSアクセスを構成する](#5-configure-https-access)
-  * [6. Listmonkを起動する](#6-start-listmonk)
-  * [7. Listmonkでメール転送SMTPを設定する](#7-configure-forward-email-smtp-in-listmonk)
-  * [8. バウンス処理を設定する](#8-configure-bounce-processing)
+  * [1. サーバーの更新](#1-update-your-server)
+  * [2. 依存関係のインストール](#2-install-dependencies)
+  * [3. Listmonk 設定のダウンロード](#3-download-listmonk-configuration)
+  * [4. ファイアウォール（UFW）の設定](#4-configure-firewall-ufw)
+  * [5. HTTPS アクセスの設定](#5-configure-https-access)
+  * [6. Listmonk の起動](#6-start-listmonk)
+  * [7. Listmonk での Forward Email SMTP 設定](#7-configure-forward-email-smtp-in-listmonk)
+  * [8. バウンス処理の設定](#8-configure-bounce-processing)
 * [テスト](#testing)
-  * [メーリングリストを作成する](#create-a-mailing-list)
-  * [購読者を追加する](#add-subscribers)
-  * [キャンペーンを作成して送信する](#create-and-send-a-campaign)
+  * [メーリングリストの作成](#create-a-mailing-list)
+  * [購読者の追加](#add-subscribers)
+  * [キャンペーンの作成と送信](#create-and-send-a-campaign)
 * [検証](#verification)
-* [開発者ノート](#developer-notes)
-* [結論](#conclusion)
+* [開発者向けノート](#developer-notes)
+* [まとめ](#conclusion)
+
 
 ## 概要 {#overview}
 
-このガイドでは、強力なオープンソースのニュースレターおよびメーリングリスト管理ツールである[リストモンク](https://listmonk.app/)を、SMTPプロバイダーとして[メールを転送する](https://forwardemail.net/)を使用するように設定する手順を開発者向けに段階的に説明します。この組み合わせにより、安全でプライバシーが確保され、信頼性の高いメール配信を確保しながら、キャンペーンを効果的に管理できます。
+本ガイドは、強力なオープンソースのニュースレターおよびメーリングリスト管理ツールである [Listmonk](https://listmonk.app/) を、SMTP プロバイダーとして [Forward Email](https://forwardemail.net/) を使用するためのステップバイステップの手順を開発者向けに提供します。この組み合わせにより、キャンペーンを効果的に管理しつつ、安全でプライベートかつ信頼性の高いメール配信を実現できます。
 
-* **Listmonk**: 購読者管理、リストの整理、キャンペーンの作成、パフォーマンスの追跡を行います。
-* **メール転送**: セキュアなSMTPサーバーとして機能し、SPF、DKIM、DMARC、TLS暗号化などのセキュリティ機能を組み込んでメールの送信処理を行います。
+* **Listmonk**: 購読者管理、リストの整理、キャンペーン作成、パフォーマンス追跡を担当します。
+* **Forward Email**: セキュアな SMTP サーバーとして機能し、SPF、DKIM、DMARC、TLS 暗号化などの組み込みセキュリティ機能を備えたメールの実際の送信を処理します。
 
-これら 2 つを統合することで、Forward Email の堅牢な配信システムを活用しながら、データとインフラストラクチャを完全に制御できます。
+これらを統合することで、データとインフラの完全なコントロールを保持しつつ、Forward Email の堅牢な配信システムを活用できます。
 
-## Listmonkとメール転送の理由 {#why-listmonk-and-forward-email}
 
-* **オープンソース**: Listmonk と Forward Email の理念は、どちらも透明性と制御性を重視しています。Listmonk はお客様ご自身でホストし、データの所有権を持ちます。
-* **プライバシー重視**: Forward Email はプライバシーを最優先に設計されており、データ保持を最小限に抑え、安全な送信に重点を置いています。
-* **費用対効果が高い**: Listmonk は無料で、Forward Email は充実した無料プランと手頃な価格の有料プランを提供しているため、予算に優しいソリューションとなっています。
-* **スケーラビリティ**: Listmonk は高性能で、Forward Email のインフラストラクチャは大規模な環境でも信頼性の高い配信を実現するように設計されています。
-* **開発者向け**: Listmonk は堅牢な API を提供し、Forward Email は簡単な SMTP 統合と Webhook を提供します。
+## なぜ Listmonk と Forward Email なのか {#why-listmonk-and-forward-email}
+
+* **オープンソース**: Listmonk と Forward Email の理念は透明性とコントロールを重視しています。Listmonk は自身でホストし、データの所有権を保持します。
+* **プライバシー重視**: Forward Email はプライバシーを核に設計されており、データ保持を最小限に抑え、安全な送信に注力しています。
+* **コスト効率**: Listmonk は無料で、Forward Email は寛大な無料プランと手頃な有料プランを提供しており、予算に優しいソリューションです。
+* **スケーラビリティ**: Listmonk は高性能であり、Forward Email のインフラは大規模な配信に対応できるよう設計されています。
+* **開発者フレンドリー**: Listmonk は強力な API を提供し、Forward Email はシンプルな SMTP 統合とウェブフックを提供します。
+
 
 ## 前提条件 {#prerequisites}
 
-始める前に、次のものがあることを確認してください。
+開始する前に、以下を準備してください：
 
-* 最新の Linux ディストリビューション（Ubuntu 20.04 以降を推奨）で動作する仮想プライベートサーバー（VPS）。CPU 1 基以上、RAM 1GB 以上（2GB 推奨）。
-* プロバイダーをお探しですか？[推奨VPSリスト](https://github.com/forwardemail/awesome-mail-server-providers) をご確認ください。
-* ご自身で管理するドメイン名（DNS アクセスが必要です）。
-* [メールを転送する](https://forwardemail.net/) を持つアクティブなアカウント。
-* VPS へのルート権限または `sudo` 権限。
-* Linux のコマンドライン操作に関する基本的な知識。
+* 最近の Linux ディストリビューション（Ubuntu 20.04 以降推奨）を実行する仮想プライベートサーバー（VPS）、最低 1 CPU と 1GB RAM（推奨 2GB）。
+  * プロバイダーが必要ですか？[推奨 VPS リスト](https://github.com/forwardemail/awesome-mail-server-providers) をご覧ください。
+* 管理可能なドメイン名（DNS アクセスが必要）。
+* [Forward Email](https://forwardemail.net/) のアクティブなアカウント。
+* VPS への root または `sudo` アクセス。
+* Linux コマンドライン操作の基本的な知識。
+
 
 ## インストール {#installation}
 
-以下の手順では、Docker と Docker Compose を使用して VPS に Listmonk をインストールする方法について説明します。
+以下の手順では、VPS 上で Docker と Docker Compose を使用して Listmonk をインストールする方法を説明します。
 
-### 1. サーバーを更新する {#1-update-your-server}
+### 1. サーバーの更新 {#1-update-your-server}
 
-システムのパッケージ リストとインストールされているパッケージが最新であることを確認します。
+システムのパッケージリストとインストール済みパッケージを最新にします。
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2. 依存関係をインストールする {#2-install-dependencies}
+### 2. 依存関係のインストール {#2-install-dependencies}
 
-Docker、Docker Compose、UFW (Uncomplicated Firewall) をインストールします。
+Docker、Docker Compose、および UFW（Uncomplicated Firewall）をインストールします。
 
 ```bash
 sudo apt install -y docker.io docker-compose ufw
 ```
 
-### 3. Listmonk設定をダウンロードする {#3-download-listmonk-configuration}
+### 3. Listmonk 設定のダウンロード {#3-download-listmonk-configuration}
 
 Listmonk 用のディレクトリを作成し、公式の `docker-compose.yml` ファイルをダウンロードします。
 
@@ -79,11 +84,10 @@ mkdir listmonk && cd listmonk
 curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/master/docker-compose.yml
 ```
 
-このファイルは、Listmonk アプリケーション コンテナーとそれに必要な PostgreSQL データベース コンテナーを定義します。
+このファイルは Listmonk アプリケーションコンテナと、そのために必要な PostgreSQL データベースコンテナを定義しています。
+### 4. ファイアウォールの設定 (UFW) {#4-configure-firewall-ufw}
 
-### 4. ファイアウォール（UFW）を構成する {#4-configure-firewall-ufw}
-
-ファイアウォールを通過する必須トラフィック（SSH、HTTP、HTTPS）を許可します。SSHが標準以外のポートで実行される場合は、それに応じて調整してください。
+ファイアウォールを通じて必要なトラフィック（SSH、HTTP、HTTPS）を許可します。SSHが標準以外のポートで動作している場合は、適宜調整してください。
 
 ```bash
 sudo ufw allow ssh
@@ -92,146 +96,147 @@ sudo ufw allow https
 sudo ufw enable
 ```
 
-プロンプトが表示されたら、ファイアウォールを有効にすることを確認します。
+プロンプトが表示されたら、ファイアウォールの有効化を確認してください。
 
-### 5. HTTPSアクセスを構成する {#5-configure-https-access}
+### 5. HTTPSアクセスの設定 {#5-configure-https-access}
 
-ListmonkをHTTPS経由で実行することはセキュリティ上非常に重要です。主に2つの選択肢があります。
+ListmonkをHTTPSで実行することはセキュリティ上非常に重要です。主に2つの選択肢があります。
 
-#### オプションA: Cloudflareプロキシの使用（シンプルさのために推奨）{#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### オプションA: Cloudflareプロキシの利用（簡単さのため推奨） {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-ドメインの DNS が Cloudflare によって管理されている場合は、プロキシ機能を活用して簡単に HTTPS を利用できます。
+ドメインのDNSがCloudflareで管理されている場合、彼らのプロキシ機能を利用して簡単にHTTPSを実現できます。
 
-1. **DNS を指定**: Cloudflare で、Listmonk のサブドメイン (例: `listmonk.yourdomain.com`) の `A` レコードを作成し、VPS の IP アドレスを指定します。**プロキシステータス** が **プロキシ済み** (オレンジ色の雲マーク) に設定されていることを確認します。
-2. **Docker Compose を変更**: ダウンロードした `docker-compose.yml` ファイルを編集します。
-```bash
+1. **DNSを設定**: CloudflareでListmonkのサブドメイン（例：`listmonk.yourdomain.com`）の`A`レコードを作成し、VPSのIPアドレスを指すようにします。**Proxy status**が**Proxied**（オレンジの雲）になっていることを確認してください。
+2. **Docker Composeの修正**: ダウンロードした`docker-compose.yml`ファイルを編集します：
+   ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-これにより、Listmonk がポート 80 で内部的にアクセス可能になり、Cloudflare は HTTPS でプロキシし、セキュリティ保護できるようになります。
+   これにより、Listmonkは内部的にポート80でアクセス可能になり、CloudflareがHTTPSでプロキシし保護します。
 
-#### オプションB: リバースプロキシ（Nginx、Caddyなど）の使用 {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
+#### オプションB: リバースプロキシの利用（Nginx、Caddyなど） {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
-あるいは、VPS に Nginx や Caddy などのリバース プロキシを設定して、HTTPS 終了と Listmonk (デフォルトではポート 9000 で実行) へのプロキシ要求を処理することもできます。
+あるいは、VPS上でNginxやCaddyなどのリバースプロキシを設定し、HTTPS終端処理を行い、Listmonk（デフォルトでポート9000で動作）へのリクエストをプロキシする方法もあります。
 
-* Listmonk がローカルからのみアクセスできるようにするため、`docker-compose.yml` にはデフォルトの `ports: - "127.0.0.1:9000:9000"` をそのまま使用します。
-* 選択したリバースプロキシを、ポート 80 と 443 で listen し、SSL 証明書の取得（例：Let's Encrypt 経由）を行い、トラフィックを `http://127.0.0.1:9000` に転送するように設定します。
-* リバースプロキシの詳細な設定はこのガイドの範囲外ですが、オンラインで多くのチュートリアルが利用可能です。
+* `docker-compose.yml`の`ports: - "127.0.0.1:9000:9000"`はそのままにして、Listmonkがローカルのみでアクセス可能な状態を維持します。
+* 選択したリバースプロキシをポート80と443でリッスンさせ、SSL証明書の取得（例：Let's Encrypt）を行い、トラフィックを`http://127.0.0.1:9000`に転送するよう設定します。
+* 詳細なリバースプロキシの設定は本ガイドの範囲外ですが、多くのチュートリアルがオンラインで利用可能です。
 
-### 6. Listmonkを起動します {#6-start-listmonk}
+### 6. Listmonkの起動 {#6-start-listmonk}
 
-`listmonk` ディレクトリに戻り (まだそこにいない場合は)、コンテナをデタッチ モードで起動します。
+`listmonk`ディレクトリに戻り（まだでなければ）、コンテナをデタッチモードで起動します。
 
 ```bash
-cd ~/listmonk # Or the directory where you saved docker-compose.yml
+cd ~/listmonk # またはdocker-compose.ymlを保存したディレクトリ
 docker compose up -d
 ```
 
-Dockerは必要なイメージをダウンロードし、Listmonkアプリケーションとデータベースコンテナを起動します。初回は1～2分かかる場合があります。
+Dockerは必要なイメージをダウンロードし、Listmonkアプリケーションとデータベースのコンテナを起動します。初回は1～2分かかる場合があります。
 
-✅ **Listmonk にアクセス**: これで、設定したドメイン (例: `https://listmonk.yourdomain.com`) 経由で Listmonk Web インターフェースにアクセスできるようになります。
+✅ **Listmonkにアクセス**: 設定したドメイン（例：`https://listmonk.yourdomain.com`）からListmonkのウェブインターフェースにアクセスできるはずです。
 
-### 7. Listmonkでメール転送SMTPを設定する {#7-configure-forward-email-smtp-in-listmonk}
+### 7. ListmonkでForward Email SMTPを設定する {#7-configure-forward-email-smtp-in-listmonk}
 
-次に、転送メール アカウントを使用してメールを送信するように Listmonk を設定します。
+次に、Forward Emailアカウントを使ってListmonkからメールを送信する設定を行います。
 
-1. **転送メールでSMTPを有効にする**：転送メールアカウントのダッシュボードでSMTP認証情報を生成していることを確認してください。まだ生成していない場合は、[SMTP経由でカスタムドメインのメールを送信するためのメール転送ガイド](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp)の手順に従ってください。
-2. **Listmonkを設定する**：Listmonk管理パネルにログインします。
-* **設定 -> SMTP** に移動します。
+1. **Forward EmailでSMTPを有効化**: Forward EmailのアカウントダッシュボードでSMTP認証情報を生成してください。まだの場合は、[Forward EmailのカスタムドメインでSMTPを使ってメールを送信するガイド](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp)を参照してください。
+2. **Listmonkの設定**: Listmonkの管理パネルにログインします。
+   * **設定 -> SMTP** に移動します。
 
-* Listmonkにはメール転送機能が組み込まれています。プロバイダーリストから**ForwardEmail**を選択するか、以下の情報を手動で入力してください。
+   * ListmonkはForward Emailをネイティブサポートしています。プロバイダーリストから**ForwardEmail**を選択するか、以下の詳細を手動で入力してください：
 
-| 設定 | 価値 |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------ |
-| **ホスト** | `smtp.forwardemail.net` |
-| **ポート** | `465` |
-| **認証プロトコル** | `LOGIN` |
-| **ユーザー名** | 転送メールの**SMTPユーザー名** |
-| **パスワード** | 転送メールの**SMTPパスワード** |
-| **TLS** | `SSL/TLS` |
-| **メールから** | ご希望の`From`アドレス（例：`newsletter@yourdomain.com`）。このドメインがメール転送に設定されていることを確認してください。 |
+     | 設定項目           | 値                                                                                                               |
+     | :---------------- | :------------------------------------------------------------------------------------------------------------------ |
+     | **ホスト**          | `smtp.forwardemail.net`                                                                                             |
+     | **ポート**          | `465`                                                                                                               |
+     | **認証プロトコル** | `LOGIN`                                                                                                             |
+     | **ユーザー名**      | Forward Emailの**SMTPユーザー名**                                                                                   |
+     | **パスワード**      | Forward Emailの**SMTPパスワード**                                                                                   |
+     | **TLS**             | `SSL/TLS`                                                                                                           |
+     | **送信元メール**    | 希望する`From`アドレス（例：`newsletter@yourdomain.com`）。このドメインがForward Emailで設定されていることを確認してください。 |
+* **重要**: Forward Emailでの安全な接続には常にポート`465`と`SSL/TLS`を使用してください（推奨）。ポート`587`のSTARTTLSもサポートされていますが、SSL/TLSの使用が推奨されます。
 
-* **重要**: メール転送機能で安全な接続を行うには、必ず`465`ポートと`SSL/TLS`ポートを使用してください。STARTTLS（ポート587）は使用しないでください。
+   * **保存**をクリックします。
+3. **テストメール送信**: SMTP設定ページ内の「テストメール送信」ボタンを使用します。アクセス可能な受信者アドレスを入力し、**送信**をクリックします。メールが受信者の受信箱に届くことを確認してください。
 
-* **保存** をクリックします。
-3. **テストメールを送信**：SMTP設定ページ内の「テストメールを送信」ボタンを使用します。アクセスできる受信者のアドレスを入力し、**送信** をクリックします。メールが受信者の受信トレイに届くことを確認します。
+### 8. バウンス処理の設定 {#8-configure-bounce-processing}
 
-### 8. バウンス処理を設定する {#8-configure-bounce-processing}
+バウンス処理により、Listmonkは配信できなかったメール（例：無効なアドレスなど）を自動的に処理できます。Forward EmailはバウンスをListmonkに通知するためのWebhookを提供しています。
 
-バウンス処理により、Listmonk は配信できなかったメール（例：無効なアドレス）を自動的に処理できます。Forward Email は、バウンスを Listmonk に通知する Webhook を提供します。
+#### Forward Emailの設定 {#forward-email-setup}
 
-#### メール転送設定 {#forward-email-setup}
-
-1. [メール転送ダッシュボード](https://forwardemail.net/) にログインします。
-2. **ドメイン** に移動し、送信に使用しているドメインを選択して、**設定** ページに移動します。
-3. **バウンス Webhook URL** セクションまでスクロールします。
-4. 次の URL を入力します。`<your_listmonk_domain>` は、Listmonk インスタンスにアクセスできる実際のドメインまたはサブドメインに置き換えてください。
-```sh
+1. [Forward Emailダッシュボード](https://forwardemail.net/)にログインします。
+2. **Domains**に移動し、送信に使用しているドメインを選択して**Settings**ページに進みます。
+3. 下にスクロールして**Bounce Webhook URL**セクションを見つけます。
+4. 以下のURLを入力します。`<your_listmonk_domain>`はListmonkインスタンスがアクセス可能な実際のドメインまたはサブドメインに置き換えてください：
+   ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
-*例*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-5. さらに下にスクロールして、**Webhook 署名ペイロード検証キー** セクションに移動します。
-6. 生成された検証キーを**コピー**します。このキーは Listmonk で必要になります。
-7. 転送メールのドメイン設定で変更を保存します。
+   *例*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
+5. さらに下にスクロールして**Webhook Signature Payload Verification Key**セクションを見つけます。
+6. 生成された検証キーを**コピー**します。これはListmonkで必要になります。
+7. Forward Emailのドメイン設定で変更を保存します。
 
-#### Listmonk セットアップ {#listmonk-setup}
+#### Listmonkの設定 {#listmonk-setup}
 
-1. Listmonk 管理パネルで、**「設定」->「バウンス」** に移動します。
-2. **「バウンス処理を有効にする」** を有効にします。
-3. **「バウンス Webhook を有効にする」** を有効にします。
-4. **「Webhook プロバイダー」** セクションまで下にスクロールします。
-5. **「メール転送」** を有効にします。
-6. 「メール転送」ダッシュボードからコピーした **「Webhook 署名ペイロード検証キー」** を「メール転送キー」** フィールドに貼り付けます。
-7. ページ下部の **「保存」** をクリックします。
-8. これでバウンス処理が設定されました。Forward Email が Listmonk から送信されたメールのバウンスを検出すると、Webhook 経由で Listmonk インスタンスに通知され、Listmonk はそれに応じて購読者にマークを付けます。
-9. [テスト](#testing) で以下の手順を完了し、すべてが機能していることを確認します。
+1. Listmonkの管理パネルで**Settings -> Bounces**に移動します。
+2. **Enable bounce processing**を有効にします。
+3. **Enable bounce webhooks**を有効にします。
+4. 下にスクロールして**Webhook Providers**セクションを見つけます。
+5. **Forward Email**を有効にします。
+6. Forward Emailダッシュボードからコピーした**Webhook Signature Payload Verification Key**を**Forward Email Key**フィールドに貼り付けます。
+7. ページ下部の**保存**をクリックします。
+8. これでバウンス処理が設定されました！Forward EmailがListmonkから送信されたメールのバウンスを検出すると、Webhookを通じてListmonkに通知し、Listmonkは該当する購読者を適切にマークします。
+9. 以下の[テスト](#testing)の手順を完了して、すべてが正常に動作していることを確認してください。
+
 
 ## テスト {#testing}
 
-以下は、Listmonk のコア機能の概要です。
+Listmonkの主要な機能の概要は以下の通りです：
 
-### メーリングリストを作成する {#create-a-mailing-list}
+### メーリングリストの作成 {#create-a-mailing-list}
 
-* サイドバーの「**リスト**」に移動します。
-* 「**新しいリスト**」をクリックします。
-* 詳細（名前、タイプ：公開/非公開、説明、タグ）を入力し、「**保存**」します。
+* サイドバーの**Lists**に移動します。
+* **New List**をクリックします。
+* 詳細（名前、タイプ：公開/非公開、説明、タグ）を入力し、**保存**します。
 
-### 購読者を追加 {#add-subscribers}
+### 購読者の追加 {#add-subscribers}
 
-* **「購読者」**セクションに移動します。
-* 購読者を追加するには、以下の方法があります。
-* **手動**: **「新しい購読者」**をクリックします。
-* **インポート**: **「購読者のインポート」**をクリックしてCSVファイルをアップロードします。
-* **API**: プログラムによる追加にはListmonk APIを使用します。
-* 作成時またはインポート時に、購読者を1つ以上のリストに割り当てます。
-* **ベストプラクティス**: ダブルオプトインプロセスを使用します。これは**[設定] -> [オプトインと購読]**で設定できます。
+* **Subscribers**セクションに移動します。
+* 購読者を追加できます：
+  * **手動で**: **New Subscriber**をクリックします。
+  * **インポート**: **Import Subscribers**をクリックしてCSVファイルをアップロードします。
+  * **API**: Listmonk APIを使用してプログラム的に追加します。
+* 作成またはインポート時に購読者を1つ以上のリストに割り当てます。
+* **ベストプラクティス**: ダブルオプトインプロセスを使用してください。これは**Settings -> Opt-in & Subscriptions**で設定できます。
 
-### キャンペーンを作成して送信する {#create-and-send-a-campaign}
+### キャンペーンの作成と送信 {#create-and-send-a-campaign}
 
-* **キャンペーン** -> **新しいキャンペーン** に移動します。
+* **Campaigns** -> **New Campaign**に移動します。
 * キャンペーンの詳細（名前、件名、送信元メール、送信先リスト）を入力します。
-* コンテンツタイプ（リッチテキスト/HTML、プレーンテキスト、HTML）を選択します。
-* メールの本文を作成します。`{{ .Subscriber.Email }}` や `{{ .Subscriber.FirstName }}` などのテンプレート変数を使用できます。
-* **必ず最初にテストメールを送信してください！** 「テスト送信」オプションを使用して、受信トレイでメールをプレビューします。
-* 問題がなければ、**キャンペーンを開始** をクリックしてすぐに送信するか、後で送信するようにスケジュールを設定します。
+* コンテンツタイプ（リッチテキスト/HTML、プレーンテキスト、生HTML）を選択します。
+* メールコンテンツを作成します。`{{ .Subscriber.Email }}`や`{{ .Subscriber.FirstName }}`などのテンプレート変数を使用できます。
+* **必ず最初にテストメールを送信してください！** 「テスト送信」オプションを使って受信箱でメールをプレビューします。
+* 満足したら、**Start Campaign**をクリックして即時送信するか、後でスケジュールします。
+
 
 ## 検証 {#verification}
 
-* **SMTP配信**: ListmonkのSMTP設定ページから定期的にテストメールを送信し、キャンペーンをテストして、メールが正しく配信されていることを確認してください。
-* **バウンス処理**: 無効なメールアドレス（例：`bounce-test@yourdomain.com`。実際のメールアドレスがない場合は、`bounce-test@yourdomain.com`。ただし、結果は異なる場合があります）にテストキャンペーンを送信します。しばらくしてからListmonkでキャンペーンの統計情報を確認し、バウンスが登録されているかどうかを確認してください。
-* **メールヘッダー**: [メールテスター](https://www.mail-tester.com/)などのツールを使用するか、メールヘッダーを手動で検査して、SPF、DKIM、DMARCが適切に設定されていることを確認してください。これは、転送メールが適切に設定されていることを示しています。
-* **転送メールログ**: SMTPサーバーに起因する配信の問題が疑われる場合は、転送メールダッシュボードのログを確認してください。
+* **SMTP配信**: ListmonkのSMTP設定ページやテストキャンペーンを使って定期的にテストメールを送信し、メールが正しく配信されているか確認します。
+* **バウンス処理**: 実際に存在しないメールアドレス（例：`bounce-test@yourdomain.com`、実際にない場合でも結果は異なる可能性があります）にテストキャンペーンを送信します。しばらくしてListmonkのキャンペーン統計でバウンスが記録されているか確認します。
+* **メールヘッダー**: [Mail-Tester](https://www.mail-tester.com/)などのツールを使うか、メールヘッダーを手動で確認して、SPF、DKIM、DMARCが通過しているかを検証し、Forward Email経由の適切な設定を確認します。
+* **Forward Emailログ**: SMTPサーバー由来の配信問題が疑われる場合は、Forward Emailダッシュボードのログを確認してください。
+## Developer Notes {#developer-notes}
 
-## 開発者ノート {#developer-notes}
+* **テンプレート**: ListmonkはGoのテンプレートエンジンを使用しています。高度なパーソナライズにはそのドキュメントを参照してください: `{{ .Subscriber.Attribs.your_custom_field }}`。
+* **API**: Listmonkはリスト、購読者、キャンペーン、テンプレートなどを管理するための包括的なREST APIを提供しています。APIドキュメントへのリンクはListmonkインスタンスのフッターにあります。
+* **カスタムフィールド**: 追加データを保存するために、**設定 -> 購読者フィールド**でカスタム購読者フィールドを定義してください。
+* **Webhook**: バウンス以外にも、Listmonkは他のイベント（例：購読）に対してWebhookを送信でき、他のシステムとの連携が可能です。
 
-* **テンプレート**: Listmonk は Go のテンプレートエンジンを使用しています。高度なパーソナライゼーションについては、ドキュメント `{{ .Subscriber.Attribs.your_custom_field }}` をご覧ください。
-* **API**: Listmonk は、リスト、購読者、キャンペーン、テンプレートなどを管理するための包括的な REST API を提供しています。API ドキュメントへのリンクは、Listmonk インスタンスのフッターにあります。
-* **カスタムフィールド**: **[設定] -> [購読者フィールド]** でカスタム購読者フィールドを定義し、追加データを保存できます。
-* **Webhook**: バウンス以外にも、Listmonk は他のイベント（購読など）に対して Webhook を送信できるため、他のシステムとの統合が可能です。
 
-## 結論 {#conclusion}
+## Conclusion {#conclusion}
 
-Listmonkのセルフホスティング機能と、Forward Emailの安全でプライバシーに配慮した配信機能を統合することで、堅牢かつ倫理的なメールマーケティングプラットフォームを構築できます。高い配信率と自動化されたセキュリティ機能のメリットを享受しながら、オーディエンスデータの完全な所有権を維持できます。
+セルフホスト型のListmonkのパワーと、Forward Emailの安全でプライバシーを尊重した配信を組み合わせることで、堅牢で倫理的なメールマーケティングプラットフォームを構築できます。オーディエンスデータの完全な所有権を維持しつつ、高い配信成功率と自動化されたセキュリティ機能の恩恵を受けられます。
 
-このセットアップは、オープンソース ソフトウェアとユーザーのプライバシーの精神に完全に合致し、独自の電子メール サービスに代わる、スケーラブルでコスト効率が高く、開発者に優しい代替手段を提供します。
+このセットアップは、スケーラブルでコスト効率が高く、開発者に優しいプロプライエタリなメールサービスの代替手段を提供し、オープンソースソフトウェアとユーザープライバシーの理念に完全に合致します。
 
-送信していただきありがとうございます！🚀
+Happy Sending! 🚀

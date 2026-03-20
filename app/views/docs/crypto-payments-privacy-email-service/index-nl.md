@@ -1,38 +1,42 @@
-# Introductie van Crypto Payments: Verbeterde privacy voor uw e-mailservice {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
+# Introductie van Crypto Betalingen: Verbeterde Privacy voor Uw E-mailservice {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
 <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
+
 
 ## Inhoudsopgave {#table-of-contents}
 
 * [Voorwoord](#foreword)
-* [Waarom cryptobetalingen belangrijk zijn](#why-crypto-payments-matter)
-* [Hoe het werkt](#how-it-works)
+* [Waarom Crypto Betalingen Belangrijk Zijn](#why-crypto-payments-matter)
+* [Hoe Het Werkt](#how-it-works)
 * [Privacyvoordelen](#privacy-benefits)
-* [Technische details](#technical-details)
-* [Uw crypto-wallet instellen](#setting-up-your-crypto-wallet)
+* [Technische Details](#technical-details)
+* [Uw Crypto Wallet Instellen](#setting-up-your-crypto-wallet)
   * [MetaMask](#metamask)
-  * [Fantoom](#phantom)
-  * [Coinbase-portemonnee](#coinbase-wallet)
+  * [Phantom](#phantom)
+  * [Coinbase Wallet](#coinbase-wallet)
   * [WalletConnect](#walletconnect)
-* [Aan de slag](#getting-started)
+* [Aan de Slag](#getting-started)
 * [Vooruitkijken](#looking-forward)
+
 
 ## Voorwoord {#foreword}
 
-Bij [E-mail doorsturen](https://forwardemail.net) zijn we constant op zoek naar manieren om uw [privacy](https://en.wikipedia.org/wiki/Privacy)-betalingen en de beveiliging ervan te verbeteren en tegelijkertijd onze service toegankelijker te maken. Vandaag kondigen we met trots aan dat we nu [cryptovaluta](https://en.wikipedia.org/wiki/Cryptocurrency)-betalingen accepteren via de cryptobetalingsintegratie van [Streep's](https://stripe.com).
+Bij [Forward Email](https://forwardemail.net) zijn we voortdurend op zoek naar manieren om uw [privacy](https://en.wikipedia.org/wiki/Privacy) en beveiliging te verbeteren terwijl we onze service toegankelijker maken. Vandaag zijn we verheugd aan te kondigen dat we nu [cryptocurrency](https://en.wikipedia.org/wiki/Cryptocurrency) betalingen accepteren via de crypto betalingsintegratie van [Stripe](https://stripe.com).
 
-## Waarom cryptobetalingen belangrijk zijn {#why-crypto-payments-matter}
 
-[Privacy](https://en.wikipedia.org/wiki/Internet_privacy) is altijd de kern van onze dienstverlening geweest. Hoewel we in het verleden verschillende betaalmethoden hebben aangeboden, bieden betalingen met cryptovaluta een extra laag privacy die perfect aansluit bij onze missie. Door met crypto te betalen, kunt u:
+## Waarom Crypto Betalingen Belangrijk Zijn {#why-crypto-payments-matter}
 
-* Behoud meer anonimiteit bij de aanschaf van onze e-maildiensten
-* Beperk de persoonlijke gegevens die aan uw e-mailaccount zijn gekoppeld
-* Houd uw financiële en e-mailidentiteiten gescheiden
-* Ondersteun het groeiende [gedecentraliseerde financiën](https://en.wikipedia.org/wiki/Decentralized_finance)-ecosysteem
+[Privacy](https://en.wikipedia.org/wiki/Internet_privacy) is altijd de kern van onze service geweest. Hoewel we in het verleden verschillende betaalmethoden hebben aangeboden, bieden crypto betalingen een extra laag privacy die perfect aansluit bij onze missie. Door met crypto te betalen, kunt u:
 
-## Hoe het werkt {#how-it-works}
+* Meer anonimiteit behouden bij het aanschaffen van onze e-mailservices
+* De persoonlijke informatie die aan uw e-mailaccount is gekoppeld verminderen
+* Uw financiële en e-mailidentiteiten gescheiden houden
+* Het groeiende [gedecentraliseerde financiële](https://en.wikipedia.org/wiki/Decentralized_finance) ecosysteem ondersteunen
 
-We hebben het cryptobetalingssysteem [Streep's](https://docs.stripe.com/crypto) geïntegreerd om het proces zo soepel mogelijk te laten verlopen. Zo kunt u betalen voor Forward Email-diensten met cryptocurrency:
+
+## Hoe Het Werkt {#how-it-works}
+
+We hebben het crypto betalingssysteem van [Stripe](https://docs.stripe.com/crypto) geïntegreerd om het proces zo soepel mogelijk te maken. Zo kunt u betalen voor Forward Email diensten met cryptocurrency:
 
 ```mermaid
 flowchart LR
@@ -44,53 +48,54 @@ flowchart LR
     F --> G[Service Activated]
 ```
 
-1. **Selecteer Crypto als betaalmethode**: Bij het afrekenen ziet u "Crypto" als betaaloptie naast traditionele methoden zoals creditcards.
+1. **Selecteer Crypto als Uw Betaalmethode**: Bij het afrekenen ziet u "Crypto" als betaaloptie naast traditionele methoden zoals creditcards.
 
-2. **Kies je cryptocurrency**: Momenteel accepteren we [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) op meerdere blockchains, waaronder [Ethereum](https://ethereum.org), [Solana](https://solana.com) en [Veelhoek](https://polygon.technology). USDC is een stabiele cryptocurrency met een 1:1-waarde ten opzichte van de Amerikaanse dollar.
+2. **Kies Uw Cryptocurrency**: Momenteel accepteren we [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) op meerdere blockchains waaronder [Ethereum](https://ethereum.org), [Solana](https://solana.com) en [Polygon](https://polygon.technology). USDC is een stabiele cryptocurrency die een 1:1 waarde behoudt met de Amerikaanse dollar.
 
-3. **Koppel je wallet**: Je wordt doorgestuurd naar een beveiligde pagina waar je je favoriete cryptowallet kunt koppelen. We ondersteunen meerdere walletopties, waaronder:
-* [MetaMask](https://metamask.io)
-* [Fantoom](https://phantom.app)
-* [Coinbase-portemonnee](https://www.coinbase.com/wallet)
-* [WalletConnect](https://walletconnect.com) (compatibel met veel andere wallets)
+3. **Verbind Uw Wallet**: U wordt doorgestuurd naar een beveiligde pagina waar u uw favoriete crypto wallet kunt verbinden. We ondersteunen meerdere wallet-opties waaronder:
+   * [MetaMask](https://metamask.io)
+   * [Phantom](https://phantom.app)
+   * [Coinbase Wallet](https://www.coinbase.com/wallet)
+   * [WalletConnect](https://walletconnect.com) (compatibel met veel andere wallets)
 
-4. **Voltooi je betaling**: Bevestig de transactie in je wallet en je bent klaar! De betaling wordt verwerkt en je e-mail doorsturen-service wordt direct geactiveerd.
+4. **Voltooi Uw Betaling**: Bevestig de transactie in uw wallet en u bent klaar! De betaling wordt verwerkt en uw Forward Email service wordt direct geactiveerd.
+
 
 ## Privacyvoordelen {#privacy-benefits}
 
-Het gebruik van cryptocurrency voor uw Forward Email-abonnement verbetert uw privacy op verschillende manieren:
+Het gebruik van cryptocurrency voor uw Forward Email abonnement verbetert uw privacy op verschillende manieren:
 
 ```mermaid
 graph TD
-    subgraph "Traditional Payment"
-    A[Credit Card Payment] --> B[Personal Info Required]
-    B --> C[Linked to Banking History]
-    C --> D[Identity Easily Traced]
+    subgraph "Traditionele Betaling"
+    A[Creditcardbetaling] --> B[Persoonlijke Gegevens Vereist]
+    B --> C[Gekoppeld aan Bankgeschiedenis]
+    C --> D[Identiteit Gemakkelijk Te Traceren]
     end
 
-    subgraph "Crypto Payment"
-    E[Crypto Payment] --> F[Minimal Personal Info]
-    F --> G[Pseudonymous Transaction]
-    G --> H[Enhanced Privacy]
+    subgraph "Crypto Betaling"
+    E[Crypto Betaling] --> F[Minimale Persoonlijke Gegevens]
+    F --> G[Pseudonieme Transactie]
+    G --> H[Verbeterde Privacy]
     end
 ```
 
-* **Beperkte persoonlijke gegevens**: In tegenstelling tot creditcardbetalingen zijn bij cryptotransacties uw naam, factuuradres of andere persoonlijke gegevens niet nodig. Lees meer over [transactieprivacy](https://en.wikipedia.org/wiki/Privacy_coin).
-* **Scheiding van traditioneel bankieren**: Uw betaling kan niet worden gekoppeld aan uw bankrekening of kredietgeschiedenis. Lees meer over [financiële privacy](https://en.wikipedia.org/wiki/Financial_privacy).
-* **Blockchain-privacy**: Hoewel blockchaintransacties openbaar zijn, zijn ze pseudoniem en niet direct gekoppeld aan uw identiteit in de echte wereld. Zie [blockchain privacytechnieken](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
-* **Consistent met onze waarden**: Als een privacygerichte e-mailservice geloven wij erin u bij elke stap controle te geven over uw persoonlijke gegevens. Bekijk onze [privacybeleid](/privacy).
-
-## Technische details {#technical-details}
+* **Minder Persoonlijke Informatie**: In tegenstelling tot creditcardbetalingen vereisen crypto transacties uw naam, factuuradres of andere persoonlijke gegevens niet. Lees meer over [transactieprivacy](https://en.wikipedia.org/wiki/Privacy_coin).
+* **Scheiding van Traditionele Banken**: Uw betaling kan niet worden gekoppeld aan uw bankrekening of kredietgeschiedenis. Lees over [financiële privacy](https://en.wikipedia.org/wiki/Financial_privacy).
+* **Blockchain Privacy**: Hoewel blockchain transacties openbaar zijn, zijn ze pseudoniem en niet direct gekoppeld aan uw echte identiteit. Zie [blockchain privacy technieken](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
+* **In Overeenstemming met Onze Waarden**: Als een privacygerichte e-mailservice geloven we in het geven van controle over uw persoonlijke informatie bij elke stap. Bekijk ons [privacybeleid](/privacy).
+## Technische Details {#technical-details}
 
 Voor degenen die geïnteresseerd zijn in de technische aspecten:
 
-* We gebruiken de cryptobetaalinfrastructuur [Streep's](https://docs.stripe.com/crypto/stablecoin-payments), die alle complexiteit van blockchaintransacties aankan.
-* Betalingen worden gedaan in [USDC](https://www.circle.com/en/usdc) op meerdere blockchains, waaronder [Ethereum](https://ethereum.org), [Solana](https://solana.com) en [Veelhoek](https://polygon.technology).
-* Wanneer u in cryptocurrency betaalt, ontvangen wij de tegenwaarde in USD, waardoor we stabiele prijzen kunnen handhaven.
+* We gebruiken de crypto-betaalinfrastructuur van [Stripe](https://docs.stripe.com/crypto/stablecoin-payments), die alle complexiteit van blockchain-transacties afhandelt.
+* Betalingen worden gedaan in [USDC](https://www.circle.com/en/usdc) op meerdere blockchains, waaronder [Ethereum](https://ethereum.org), [Solana](https://solana.com) en [Polygon](https://polygon.technology).
+* Terwijl je betaalt in cryptocurrency, ontvangen wij de equivalente waarde in USD, waardoor we stabiele prijzen kunnen handhaven.
 
-## Uw crypto-wallet instellen {#setting-up-your-crypto-wallet}
 
-Nieuw in cryptocurrency? Zo stel je de wallets in die we ondersteunen:
+## Je Crypto Wallet Instellen {#setting-up-your-crypto-wallet}
+
+Nieuw met cryptocurrency? Zo stel je de wallets in die wij ondersteunen:
 
 ```mermaid
 flowchart LR
@@ -104,68 +109,70 @@ flowchart LR
 
 [MetaMask](https://metamask.io) is een van de populairste Ethereum-wallets.
 
-1. Ga naar [MetaMask downloadpagina](https://metamask.io/download/)
+1. Bezoek de [MetaMask downloadpagina](https://metamask.io/download/)
 2. Installeer de browserextensie of mobiele app
 3. Volg de installatie-instructies om een nieuwe wallet aan te maken
 4. **Belangrijk**: Bewaar je herstelzin veilig
 5. Voeg ETH of USDC toe aan je wallet via een exchange of directe aankoop
-6. [Gedetailleerde MetaMask-installatiehandleiding](https://metamask.io/faqs/)
+6. [Gedetailleerde MetaMask Installatiegids](https://metamask.io/faqs/)
 
-### Spook {#phantom}
+### Phantom {#phantom}
 
-[Fantoom](https://phantom.app) is een toonaangevende Solana-wallet.
+[Phantom](https://phantom.app) is een toonaangevende Solana-wallet.
 
-1. Ga naar [Phantom-website](https://phantom.app/)
-2. Download de juiste versie voor uw apparaat
+1. Bezoek de [Phantom website](https://phantom.app/)
+2. Download de juiste versie voor je apparaat
 3. Maak een nieuwe wallet aan volgens de instructies op het scherm
-4. Maak een veilige back-up van uw herstelzin
-5. Voeg SOL of USDC toe aan uw wallet
-6. [Phantom Wallet-gids](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
+4. Maak een veilige back-up van je herstelzin
+5. Voeg SOL of USDC toe aan je wallet
+6. [Phantom Wallet Gids](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
 
-### Coinbase-portemonnee {#coinbase-wallet}
+### Coinbase Wallet {#coinbase-wallet}
 
-[Coinbase-portemonnee](https://www.coinbase.com/wallet) ondersteunt meerdere blockchains.
+[Coinbase Wallet](https://www.coinbase.com/wallet) ondersteunt meerdere blockchains.
 
-1. Download [Coinbase-portemonnee](https://www.coinbase.com/wallet/downloads)
-2. Maak een nieuwe wallet aan (los van je Coinbase-account)
+1. Download [Coinbase Wallet](https://www.coinbase.com/wallet/downloads)
+2. Maak een nieuwe wallet aan (apart van je Coinbase exchange-account)
 3. Beveilig je herstelzin
-4. Verstuur of koop crypto rechtstreeks in de app
-5. [Coinbase Wallet-gids](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
+4. Stuur of koop crypto direct in de app
+5. [Coinbase Wallet Gids](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
 
 ### WalletConnect {#walletconnect}
 
 [WalletConnect](https://walletconnect.com) is een protocol dat wallets verbindt met websites.
 
-1. Download eerst een WalletConnect-compatibele wallet (er zijn veel opties beschikbaar)
-2. Selecteer WalletConnect tijdens het afrekenen
+1. Download eerst een WalletConnect-compatibele wallet (er zijn veel opties)
+2. Kies tijdens het afrekenen WalletConnect
 3. Scan de QR-code met je wallet-app
-4. Keur de verbinding goed
-5. [WalletConnect-compatibele wallets](https://walletconnect.com/registry/wallets)
+4. Bevestig de verbinding
+5. [WalletConnect Compatibele Wallets](https://walletconnect.com/registry/wallets)
 
-## Aan de slag {#getting-started}
 
-Klaar om je privacy te verbeteren met cryptobetalingen? Selecteer gewoon de optie 'Crypto' tijdens het afrekenen wanneer je je abonnement verlengt of je abonnement upgradet.
+## Aan de Slag {#getting-started}
 
-Voor meer informatie over cryptovaluta en blockchaintechnologie kunt u de volgende bronnen raadplegen:
+Klaar om je privacy te verbeteren met crypto-betalingen? Selecteer gewoon de optie "Crypto" tijdens het afrekenen de volgende keer dat je je abonnement verlengt of je plan upgrade.
 
-* [Wat is cryptocurrency?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedia
-* [Blockchain uitgelegd](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedia
-* [Gids voor digitale privacy](https://www.eff.org/issues/privacy) - Electronic Frontier Foundation
+Voor meer informatie over cryptocurrencies en blockchain-technologie, bekijk deze bronnen:
 
-## Ik kijk uit naar {#looking-forward}
+* [Wat is Cryptocurrency?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedia
+* [Blockchain Uitgelegd](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedia
+* [Digitale Privacy Gids](https://www.eff.org/issues/privacy) - Electronic Frontier Foundation
 
-Het toevoegen van cryptobetalingen is slechts één stap in onze voortdurende toewijding aan [privacy](https://en.wikipedia.org/wiki/Privacy), [beveiliging](https://en.wikipedia.org/wiki/Computer_security) en de keuzevrijheid van gebruikers. Wij zijn van mening dat uw e-mailservice uw privacy op elk niveau moet respecteren: van de berichten die u verstuurt tot de manier waarop u voor de service betaalt.
 
-Zoals altijd stellen we uw feedback over deze nieuwe betaaloptie op prijs. Heeft u vragen over het gebruik van cryptocurrency met Forward Email? Neem dan contact op met onze [ondersteuningsteam](/help).
+## Vooruitkijken {#looking-forward}
+
+Het toevoegen van cryptocurrency-betalingen is slechts een volgende stap in onze voortdurende inzet voor [privacy](https://en.wikipedia.org/wiki/Privacy), [beveiliging](https://en.wikipedia.org/wiki/Computer_security) en gebruikerskeuze. Wij geloven dat je e-maildienst je privacy op elk niveau moet respecteren — van de berichten die je verstuurt tot hoe je betaalt voor de dienst.
+
+Zoals altijd waarderen we je feedback over deze nieuwe betaaloptie. Als je vragen hebt over het gebruik van cryptocurrency met Forward Email, neem dan contact op met ons [ondersteuningsteam](/help).
 
 ---
 
 **Referenties:**
 
-1. [Stripe Crypto-documentatie](https://docs.stripe.com/crypto)
+1. [Stripe Crypto Documentatie](https://docs.stripe.com/crypto)
 2. [USDC Stablecoin](https://www.circle.com/en/usdc)
-3. [Ethereum-blockchain](https://ethereum.org)
+3. [Ethereum Blockchain](https://ethereum.org)
 4. [Solana Blockchain](https://solana.com)
-5. [Polygoonnetwerk](https://polygon.technology)
-6. [Stichting Elektronische Frontier - Privacy](https://www.eff.org/issues/privacy)
-7. [Privacybeleid voor doorsturen van e-mail](/privacy)
+5. [Polygon Network](https://polygon.technology)
+6. [Electronic Frontier Foundation - Privacy](https://www.eff.org/issues/privacy)
+7. [Forward Email Privacybeleid](/privacy)

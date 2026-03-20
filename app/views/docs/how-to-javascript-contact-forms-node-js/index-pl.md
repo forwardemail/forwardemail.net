@@ -1,23 +1,26 @@
-# Przykład kodu Node.js dla formularzy kontaktowych JavaScript {#javascript-contact-forms-nodejs-code-example}
+# Przykład kodu formularzy kontaktowych JavaScript Node.js {#javascript-contact-forms-nodejs-code-example}
+
 
 ## Spis treści {#table-of-contents}
 
 * [Instalacja i wymagania](#install-and-requirements)
 * [Kod źródłowy i przykład](#source-code-and-example)
 
+
 ## Instalacja i wymagania {#install-and-requirements}
 
-Będziesz musiał zainstalować zależność npm `nodemailer`:
+Musisz zainstalować zależność npm `nodemailer`:
 
 ```sh
 npm install nodemailer
 ```
 
+
 ## Kod źródłowy i przykład {#source-code-and-example}
 
-W tym przykładzie do wysyłania i podglądu poczty wychodzącej użyto biblioteki **[Nodemailer](https://github.com/nodemailer/nodemailer)** i jej oficjalnego sponsora **[Przekaż dalej e-mail](https://forwardemail.net)**.
+Ten przykład używa biblioteki **[Nodemailer](https://github.com/nodemailer/nodemailer)** oraz jej oficjalnego sponsora **[Forward Email](https://forwardemail.net)** do wysyłania i podglądu wychodzącej poczty.
 
-Aby wysłać pocztę wychodzącą, musisz <strong class="text-success"><i class="fa fa-key"></i>wygenerować hasło</strong> – postępuj zgodnie z instrukcją **[Przewodnik SMTP po wysyłaniu wiadomości e-mail z niestandardową domeną](/guides/send-email-with-custom-domain-smtp)**.
+Będziesz musiał <strong class="text-success"><i class="fa fa-key"></i> wygenerować hasło</strong>, aby wysyłać pocztę wychodzącą – prosimy o zapoznanie się z naszym **[Przewodnikiem wysyłania e-maili z niestandardową domeną SMTP](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: zastąp wartości `user` i `pass` z:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -45,12 +48,12 @@ await transporter.sendMail({
 });
 ```
 
-Uruchom aplikację, aby wysłać wiadomość e-mail:
+Uruchom aplikację, aby wysłać e-mail:
 
 ```sh
 node app
 ```
 
-Teraz możesz przejść do **[Moje konto → E-maile](/my-account/emails)**, aby zobaczyć status dostarczania wiadomości e-mail w czasie rzeczywistym, dzienniki dostarczalności wiadomości e-mail oraz podglądy w formacie HTML/zwykłego tekstu/załączników.
+Teraz możesz przejść do **[Moje konto → E-maile](/my-account/emails)**, aby zobaczyć status dostarczenia e-maili w czasie rzeczywistym, logi dostarczalności oraz podglądy HTML/tekst zwykły/załączniki.
 
-> P.S. :tada: Możesz również użyć **[podgląd wiadomości e-mail w przeglądarkach i symulatorze iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** i **[twórz szablony wiadomości e-mail za pomocą Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Możesz także **[podglądać e-maile w przeglądarkach i symulatorze iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** oraz **[tworzyć szablony e-maili z Node.js](/docs/send-emails-with-node-js-javascript)**.

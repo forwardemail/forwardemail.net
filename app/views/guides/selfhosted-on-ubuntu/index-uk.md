@@ -1,92 +1,97 @@
-# Посібник з встановлення самостійного хостингу для переадресації електронної пошти в Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# Керівництво з встановлення Forward Email для самостійного хостингу на Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+
 
 ## Зміст {#table-of-contents}
 
 * [Огляд](#overview)
-* [Передумови](#prerequisites)
+* [Вимоги](#prerequisites)
 * [Системні вимоги](#system-requirements)
 * [Покрокове встановлення](#step-by-step-installation)
   * [Крок 1: Початкове налаштування системи](#step-1-initial-system-setup)
-  * [Крок 2: Налаштування DNS-резолверів](#step-2-configure-dns-resolvers)
+  * [Крок 2: Налаштування DNS резолверів](#step-2-configure-dns-resolvers)
   * [Крок 3: Встановлення системних залежностей](#step-3-install-system-dependencies)
-  * [Крок 4: Встановлення пакетів Snap](#step-4-install-snap-packages)
+  * [Крок 4: Встановлення Snap пакетів](#step-4-install-snap-packages)
   * [Крок 5: Встановлення Docker](#step-5-install-docker)
   * [Крок 6: Налаштування служби Docker](#step-6-configure-docker-service)
   * [Крок 7: Налаштування брандмауера](#step-7-configure-firewall)
-  * [Крок 8: Клонування сховища електронної пошти для пересилання](#step-8-clone-forward-email-repository)
+  * [Крок 8: Клонування репозиторію Forward Email](#step-8-clone-forward-email-repository)
   * [Крок 9: Налаштування конфігурації середовища](#step-9-set-up-environment-configuration)
-  * [Крок 10: Налаштуйте свій домен](#step-10-configure-your-domain)
-  * [Крок 11: Згенеруйте SSL-сертифікати](#step-11-generate-ssl-certificates)
-  * [Крок 12: Згенеруйте ключі шифрування](#step-12-generate-encryption-keys)
-  * [Крок 13: Оновіть шляхи SSL у конфігурації](#step-13-update-ssl-paths-in-configuration)
+  * [Крок 10: Налаштування вашого домену](#step-10-configure-your-domain)
+  * [Крок 11: Генерація SSL сертифікатів](#step-11-generate-ssl-certificates)
+  * [Крок 12: Генерація ключів шифрування](#step-12-generate-encryption-keys)
+  * [Крок 13: Оновлення шляхів SSL у конфігурації](#step-13-update-ssl-paths-in-configuration)
   * [Крок 14: Налаштування базової автентифікації](#step-14-set-up-basic-authentication)
   * [Крок 15: Розгортання за допомогою Docker Compose](#step-15-deploy-with-docker-compose)
   * [Крок 16: Перевірка встановлення](#step-16-verify-installation)
-* [Конфігурація після встановлення](#post-installation-configuration)
-  * [Налаштування DNS-записів](#dns-records-setup)
+* [Післявстановлювальна конфігурація](#post-installation-configuration)
+  * [Налаштування DNS записів](#dns-records-setup)
   * [Перший вхід](#first-login)
 * [Конфігурація резервного копіювання](#backup-configuration)
-  * [Налаштування резервного копіювання, сумісного з S3](#set-up-s3-compatible-backup)
-  * [Налаштування резервного копіювання завдань Cron](#set-up-backup-cron-jobs)
-* [Конфігурація автоматичного оновлення](#auto-update-configuration)
-* [Технічне обслуговування та моніторинг](#maintenance-and-monitoring)
-  * [Розташування журналів](#log-locations)
-  * [Регулярні завдання з технічного обслуговування](#regular-maintenance-tasks)
-  * [Поновлення сертифіката](#certificate-renewal)
-* [Усунення несправностей](#troubleshooting)
+  * [Налаштування резервного копіювання сумісного з S3](#set-up-s3-compatible-backup)
+  * [Налаштування cron-завдань для резервного копіювання](#set-up-backup-cron-jobs)
+* [Конфігурація автооновлення](#auto-update-configuration)
+* [Обслуговування та моніторинг](#maintenance-and-monitoring)
+  * [Розташування логів](#log-locations)
+  * [Регулярні завдання з обслуговування](#regular-maintenance-tasks)
+  * [Оновлення сертифікатів](#certificate-renewal)
+* [Вирішення проблем](#troubleshooting)
   * [Поширені проблеми](#common-issues)
   * [Отримання допомоги](#getting-help)
-* [Найкращі практики безпеки](#security-best-practices)
+* [Кращі практики безпеки](#security-best-practices)
 * [Висновок](#conclusion)
+
 
 ## Огляд {#overview}
 
-Цей посібник містить покрокові інструкції щодо встановлення самостійно розміщеного рішення Forward Email на системах Ubuntu. Цей посібник спеціально розроблений для версій Ubuntu 20.04, 22.04 та 24.04 LTS.
+Цей посібник надає покрокові інструкції для встановлення самостійного рішення Forward Email на системах Ubuntu. Посібник спеціально адаптований для версій Ubuntu 20.04, 22.04 та 24.04 LTS.
 
-## Передумови {#prerequisites}
 
-Перш ніж розпочати встановлення, переконайтеся, що у вас є:
+## Вимоги {#prerequisites}
 
-* **Сервер Ubuntu**: 20.04, 22.04 або 24.04 LTS
-* **Root-доступ**: Ви повинні мати можливість виконувати команди від імені root (доступ sudo)
-* **Доменне ім'я**: Домен, яким ви керуєте з доступом до керування DNS
-* **Чистий сервер**: Рекомендується використовувати чисту інсталяцію Ubuntu
-* **Підключення до Інтернету**: Потрібне для завантаження пакетів та образів Docker
+Перед початком встановлення переконайтеся, що у вас є:
+
+* **Ubuntu Server**: 20.04, 22.04 або 24.04 LTS
+* **Доступ root**: Ви повинні мати можливість виконувати команди від імені root (доступ sudo)
+* **Доменне ім’я**: Домен, яким ви керуєте з доступом до управління DNS
+* **Чистий сервер**: Рекомендується використовувати свіжу інсталяцію Ubuntu
+* **Інтернет-з’єднання**: Потрібне для завантаження пакетів та образів Docker
+
 
 ## Системні вимоги {#system-requirements}
 
-* **ОЗП**: Мінімум 2 ГБ (рекомендовано 4 ГБ для виробничої версії)
-* **Сховище**: Мінімум 20 ГБ доступного простору (рекомендовано 50 ГБ+ для виробничої версії)
-* **ЦП**: Мінімум 1 віртуальний ЦП (рекомендовано 2+ віртуальних ЦП для виробничої версії)
-* **Мережа**: Публічна IP-адреса з доступними такими портами:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **ОЗП**: Мінімум 2 ГБ (рекомендується 4 ГБ для продуктивного середовища)
+* **Дисковий простір**: Мінімум 20 ГБ вільного місця (рекомендується 50 ГБ+ для продуктивного середовища)
+* **ЦПУ**: Мінімум 1 віртуальний процесор (рекомендується 2+ віртуальних процесорів для продуктивного середовища)
+* **Мережа**: Публічна IP-адреса з доступними наступними портами:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
 
-## Покрокова інструкція з встановлення {#step-by-step-installation}
+
+## Покрокове встановлення {#step-by-step-installation}
 
 ### Крок 1: Початкове налаштування системи {#step-1-initial-system-setup}
 
-Спочатку переконайтеся, що ваша система оновлена, і перейдіть до root-користувача:
+Спочатку переконайтеся, що ваша система оновлена, і перейдіть до користувача root:
 
 ```bash
-# Update system packages
+# Оновлення системних пакетів
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Перехід до користувача root (потрібно для встановлення)
 sudo su -
 ```
 
-### Крок 2: Налаштування DNS-резолверів {#step-2-configure-dns-resolvers}
+### Крок 2: Налаштування DNS резолверів {#step-2-configure-dns-resolvers}
 
-Налаштуйте свою систему для використання DNS-серверів Cloudflare для надійної генерації сертифікатів:
+Налаштуйте систему на використання DNS-серверів Cloudflare для надійної генерації сертифікатів:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# Зупинити та відключити systemd-resolved, якщо він запущений
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -94,7 +99,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Налаштування DNS резолверів Cloudflare
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -106,16 +111,15 @@ nameserver 8.8.4.4
 nameserver 2001:4860:4860::8844
 EOF
 ```
-
 ### Крок 3: Встановлення системних залежностей {#step-3-install-system-dependencies}
 
-Встановіть необхідні пакети для пересилання електронної пошти:
+Встановіть необхідні пакунки для Forward Email:
 
 ```bash
-# Update package list
+# Оновити список пакунків
 apt-get update -y
 
-# Install basic dependencies
+# Встановити базові залежності
 apt-get install -y \
     ca-certificates \
     curl \
@@ -126,15 +130,15 @@ apt-get install -y \
     snapd
 ```
 
-### Крок 4: Встановлення пакетів Snap {#step-4-install-snap-packages}
+### Крок 4: Встановлення пакунків Snap {#step-4-install-snap-packages}
 
 Встановіть AWS CLI та Certbot через snap:
 
 ```bash
-# Install AWS CLI
+# Встановити AWS CLI
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Встановити Certbot та плагін DNS
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
@@ -142,44 +146,44 @@ snap install certbot-dns-cloudflare
 
 ### Крок 5: Встановлення Docker {#step-5-install-docker}
 
-Встановлення Docker CE та Docker Compose:
+Встановіть Docker CE та Docker Compose:
 
 ```bash
-# Add Docker's official GPG key
+# Додати офіційний GPG ключ Docker
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository
+# Додати репозиторій Docker
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Оновити індекс пакунків та встановити Docker
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Verify Docker installation
+# Перевірити встановлення Docker
 docker --version
 docker compose version
 ```
 
 ### Крок 6: Налаштування служби Docker {#step-6-configure-docker-service}
 
-Переконайтеся, що Docker запускається автоматично та працює:
+Переконайтеся, що Docker запускається автоматично і працює:
 
 ```bash
-# Enable and start Docker service
+# Увімкнути та запустити службу Docker
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Перевірити, що Docker працює
 docker info
 ```
 
 Якщо Docker не запускається, спробуйте запустити його вручну:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Альтернативний спосіб запуску, якщо systemctl не працює
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
@@ -190,86 +194,86 @@ docker info
 Налаштуйте брандмауер UFW для захисту вашого сервера:
 
 ```bash
-# Set default policies
+# Встановити політики за замовчуванням
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# Дозволити SSH (важливо - не заблокуйте себе!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# Дозволити порти, пов’язані з електронною поштою
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (для Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (альтернативний порт)
+ufw allow 2995/tcp  # POP3 (альтернативний порт)
+ufw allow 3456/tcp  # Користувацький порт сервісу
+ufw allow 4000/tcp  # Користувацький порт сервісу
+ufw allow 5000/tcp  # Користувацький порт сервісу
 
-# Allow local database connections
+# Дозволити локальні підключення до бази даних
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Увімкнути брандмауер
 echo "y" | ufw enable
 
-# Check firewall status
+# Перевірити статус брандмауера
 ufw status numbered
 ```
 
-### Крок 8: Клонування сховища електронної пошти для пересилання {#step-8-clone-forward-email-repository}
+### Крок 8: Клонування репозиторію Forward Email {#step-8-clone-forward-email-repository}
 
-Завантажте вихідний код пересилання електронної пошти:
+Завантажте вихідний код Forward Email:
 
 ```bash
-# Set up variables
+# Встановити змінні
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# Клонувати репозиторій
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# Перевірити успішність клонування
 ls -la
 ```
 
-### Крок 9: Налаштування конфігурації середовища {#step-9-set-up-environment-configuration}
+### Крок 9: Підготовка конфігурації середовища {#step-9-set-up-environment-configuration}
 
 Підготуйте конфігурацію середовища:
 
 ```bash
-# Set up directory variables
+# Встановити змінні директорій
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# Скопіювати файл конфігурації за замовчуванням
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# Створити директорію SSL
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# Створити директорії для баз даних
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Крок 10: Налаштуйте свій домен {#step-10-configure-your-domain}
+### Крок 10: Налаштування вашого домену {#step-10-configure-your-domain}
 
-Встановіть ім'я вашого домену та оновіть змінні середовища:
+Встановіть ім’я домену та оновіть змінні середовища:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# Замініть 'yourdomain.com' на ваш фактичний домен
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# Функція для оновлення файлу середовища
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -281,7 +285,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# Оновити змінні середовища, пов’язані з доменом
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -303,13 +307,12 @@ update_env_file "SELF_HOSTED" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
+### Крок 11: Генерація SSL сертифікатів {#step-11-generate-ssl-certificates}
 
-### Крок 11: Згенеруйте SSL-сертифікати {#step-11-generate-ssl-certificates}
-
-#### Варіант A: Ручний виклик DNS (рекомендовано для більшості користувачів) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Варіант A: Ручний DNS виклик (Рекомендовано для більшості користувачів) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# Генерація сертифікатів за допомогою ручного DNS виклику
 certbot certonly \
   --manual \
   --agree-tos \
@@ -318,23 +321,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Важливо**: Коли з’явиться запит, вам потрібно буде створити TXT-записи у вашому DNS. Ви можете зіткнутися з кількома проблемами для одного й того ж домену – **створіть їх УСІ**. Не видаляйте перший TXT-запис під час додавання другого.
+**Важливо**: Коли буде запитано, вам потрібно створити TXT записи у вашому DNS. Ви можете побачити кілька викликів для одного домену - **створіть ВСІ з них**. Не видаляйте перший TXT запис при додаванні другого.
 
-#### Варіант B: DNS Cloudflare (якщо ви використовуєте Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Варіант B: Cloudflare DNS (Якщо ви використовуєте Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
 Якщо ваш домен використовує Cloudflare для DNS, ви можете автоматизувати генерацію сертифікатів:
 
 ```bash
-# Create Cloudflare credentials file
+# Створіть файл облікових даних Cloudflare
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# Встановіть правильні права доступу
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# Автоматична генерація сертифікатів
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -345,55 +348,55 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Копіювати сертифікати {#copy-certificates}
+#### Копіювання сертифікатів {#copy-certificates}
 
-Після створення сертифікатів скопіюйте їх до каталогу програми:
+Після генерації сертифікатів скопіюйте їх у директорію додатку:
 
 ```bash
-# Copy certificates to application SSL directory
+# Копіювання сертифікатів у директорію SSL додатку
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# Перевірка, що сертифікати скопійовані
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### Крок 12: Згенеруйте ключі шифрування {#step-12-generate-encryption-keys}
+### Крок 12: Генерація ключів шифрування {#step-12-generate-encryption-keys}
 
 Створіть різні ключі шифрування, необхідні для безпечної роботи:
 
 ```bash
-# Generate helper encryption key
+# Генерація допоміжного ключа шифрування
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# Генерація секрету SRS для пересилання пошти
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# Генерація TXT ключа шифрування
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# Генерація приватного ключа DKIM для підписування пошти
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# Генерація ключа підпису webhook
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# Встановлення пароля для SMTP транспорту
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Всі ключі шифрування успішно згенеровані"
 ```
 
-### Крок 13: Оновіть шляхи SSL у конфігурації {#step-13-update-ssl-paths-in-configuration}
+### Крок 13: Оновлення шляхів SSL у конфігурації {#step-13-update-ssl-paths-in-configuration}
 
-Налаштуйте шляхи SSL-сертифіката у файлі середовища:
+Налаштуйте шляхи до SSL сертифікатів у файлі середовища:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# Оновлення шляхів SSL для вказівки на правильні файли сертифікатів
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -403,83 +406,83 @@ sed -i -E \
 
 ### Крок 14: Налаштування базової автентифікації {#step-14-set-up-basic-authentication}
 
-Створіть тимчасові базові облікові дані для автентифікації:
+Створіть тимчасові облікові дані базової автентифікації:
 
 ```bash
-# Generate a secure random password
+# Генерація надійного випадкового пароля
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Оновлення файлу середовища з обліковими даними базової автентифікації
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Відображення облікових даних (збережіть їх!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 ВАЖЛИВО: Збережіть ці облікові дані для входу!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "Ім'я користувача: admin"
+echo "Пароль: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Вони знадобляться для доступу до веб-інтерфейсу після встановлення."
 echo ""
 ```
 
 ### Крок 15: Розгортання за допомогою Docker Compose {#step-15-deploy-with-docker-compose}
 
-Запустіть усі служби пересилання електронної пошти:
+Запустіть усі сервіси Forward Email:
 
 ```bash
-# Set Docker Compose file path
+# Встановлення шляху до файлу Docker Compose
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Зупинка існуючих контейнерів
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
-# Pull the latest images
+# Завантаження останніх образів
 docker compose -f "$DOCKER_COMPOSE_FILE" pull
 
-# Start all services in detached mode
+# Запуск усіх сервісів у фоновому режимі
 docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Wait a moment for services to start
+# Зачекайте кілька секунд для запуску сервісів
 sleep 10
 
-# Check service status
+# Перевірка статусу сервісів
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
-
 ### Крок 16: Перевірка встановлення {#step-16-verify-installation}
 
-Перевірте, чи всі служби працюють коректно:
+Переконайтеся, що всі сервіси працюють правильно:
 
 ```bash
-# Check Docker containers
+# Перевірка контейнерів Docker
 docker ps
 
-# Check service logs for any errors
+# Перевірка логів сервісів на наявність помилок
 docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 
-# Test web interface connectivity
+# Тестування підключення до веб-інтерфейсу
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Перевірка, чи порти слухають
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
+
 
 ## Конфігурація після встановлення {#post-installation-configuration}
 
 ### Налаштування DNS-записів {#dns-records-setup}
 
-Вам потрібно налаштувати такі DNS-записи для вашого домену:
+Вам потрібно налаштувати наступні DNS-записи для вашого домену:
 
-#### Запис MX {#mx-record}
+#### MX-запис {#mx-record}
 
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Записи A {#a-records}
+#### A-записи {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -492,28 +495,28 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-#### Запис SPF {#spf-record}
+#### SPF-запис {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
-#### Запис DKIM {#dkim-record}
+#### DKIM-запис {#dkim-record}
 
-Отримайте свій відкритий ключ DKIM:
+Отримайте ваш публічний ключ DKIM:
 
 ```bash
-# Extract DKIM public key
+# Витяг публічного ключа DKIM
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-Створити DNS-запис DKIM:
+Створіть DKIM DNS-запис:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-#### Запис DMARC {#dmarc-record}
+#### DMARC-запис {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -521,158 +524,162 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Перший вхід {#first-login}
 
-1. Відкрийте веббраузер і перейдіть до `https://yourdomain.com`
-2. Введіть основні облікові дані автентифікації, які ви зберегли раніше
-3. Завершіть роботу майстра початкового налаштування
-4. Створіть свій перший обліковий запис електронної пошти
+1. Відкрийте ваш веб-браузер і перейдіть за адресою `https://yourdomain.com`
+2. Введіть облікові дані базової автентифікації, які ви зберегли раніше
+3. Завершіть початковий майстер налаштувань
+4. Створіть вашу першу електронну поштову скриньку
+
 
 ## Конфігурація резервного копіювання {#backup-configuration}
 
 ### Налаштування резервного копіювання, сумісного з S3 {#set-up-s3-compatible-backup}
 
-Налаштуйте автоматичне резервне копіювання на сховище, сумісне з S3:
+Налаштуйте автоматичне резервне копіювання у сховище, сумісне з S3:
 
 ```bash
-# Create AWS credentials directory
+# Створення директорії для AWS облікових даних
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# Налаштування AWS облікових даних
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# Налаштування параметрів AWS
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Для не-AWS S3 (наприклад, Cloudflare R2) додайте URL кінцевої точки
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Налаштувати резервне копіювання завдань Cron {#set-up-backup-cron-jobs}
+### Налаштування cron-завдань для резервного копіювання {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Робимо скрипти резервного копіювання виконуваними
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# Додаємо cron-завдання для резервного копіювання MongoDB (щоденно опівночі)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Додаємо cron-завдання для резервного копіювання Redis (щоденно опівночі)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Перевірка доданих cron-завдань
 crontab -l
 ```
 
-## Конфігурація автоматичного оновлення {#auto-update-configuration}
 
-Налаштуйте автоматичні оновлення для вашої інсталяції Forward Email:
+## Конфігурація автооновлення {#auto-update-configuration}
+
+Налаштуйте автоматичне оновлення вашої установки Forward Email:
 
 ```bash
-# Create auto-update command
+# Створення команди автооновлення
 DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Додаємо cron-завдання для автооновлення (щоденно о 1 годині ночі)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Перевірка доданого cron-завдання
 crontab -l
 ```
 
-## Технічне обслуговування та моніторинг {#maintenance-and-monitoring}
 
-### Розташування журналів {#log-locations}
+## Обслуговування та моніторинг {#maintenance-and-monitoring}
 
-* **Журнали Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
-* **Системні журнали**: `/var/log/syslog`
-* **Журнали резервного копіювання**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Журнали автоматичного оновлення**: `/var/log/autoupdate.log`
+### Розташування логів {#log-locations}
 
-### Регулярні завдання з технічного обслуговування {#regular-maintenance-tasks}
+* **Логи Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
+* **Системні логи**: `/var/log/syslog`
+* **Логи резервного копіювання**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Логи автооновлення**: `/var/log/autoupdate.log`
 
-1. **Моніторинг дискового простору**: `df -h`
-2. **Перевірка стану служби**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
-3. **Перегляд журналів**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
+### Регулярні завдання з обслуговування {#regular-maintenance-tasks}
+
+1. **Моніторинг вільного місця на диску**: `df -h`
+2. **Перевірка стану сервісів**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
+3. **Перегляд логів**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Оновлення системних пакетів**: `apt update && apt upgrade`
-5. **Поновлення сертифікатів**: Сертифікати автоматично поновлюються, але відстежується термін їх дії
+5. **Оновлення сертифікатів**: Сертифікати оновлюються автоматично, але слідкуйте за терміном дії
 
-### Поновлення сертифіката {#certificate-renewal}
+### Оновлення сертифікатів {#certificate-renewal}
 
-Сертифікати повинні автоматично поновлюватися, але за потреби ви можете поновити їх вручну:
+Сертифікати мають оновлюватися автоматично, але ви можете оновити їх вручну за потреби:
 
 ```bash
-# Manual certificate renewal
+# Ручне оновлення сертифікатів
 certbot renew
 
-# Copy renewed certificates
+# Копіювання оновлених сертифікатів
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Перезапуск сервісів для використання нових сертифікатів
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
-
-## Виправлення неполадок {#troubleshooting}
+## Усунення несправностей {#troubleshooting}
 
 ### Поширені проблеми {#common-issues}
 
 #### 1. Служба Docker не запускається {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Перевірте статус Docker
 systemctl status docker
 
-# Try alternative startup
+# Спробуйте альтернативний запуск
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Не вдалося створити сертифікат {#2-certificate-generation-fails}
+#### 2. Помилка генерації сертифіката {#2-certificate-generation-fails}
 
-* Переконайтеся, що порти 80 та 443 доступні
-* Перевірте, чи записи DNS вказують на ваш сервер
+* Переконайтеся, що порти 80 і 443 доступні
+* Перевірте, що DNS-записи вказують на ваш сервер
 * Перевірте налаштування брандмауера
 
 #### 3. Проблеми з доставкою електронної пошти {#3-email-delivery-issues}
 
-* Перевірте правильність записів MX
-* Перевірте записи SPF, DKIM та DMARC
-* Переконайтеся, що порт 25 не заблоковано вашим хостинг-провайдером
+* Перевірте правильність MX-записів
+* Перевірте записи SPF, DKIM і DMARC
+* Переконайтеся, що порт 25 не заблокований вашим хостинг-провайдером
 
 #### 4. Веб-інтерфейс недоступний {#4-web-interface-not-accessible}
 
 * Перевірте налаштування брандмауера: `ufw status`
 * Перевірте SSL-сертифікати: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* Перевірте основні дані для авторизації
+* Перевірте облікові дані базової автентифікації
 
 ### Отримання допомоги {#getting-help}
 
 * **Документація**: <https://forwardemail.net/self-hosted>
-* **Проблеми GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Підтримка спільноти**: Перегляньте обговорення проєкту на GitHub
+* **Проблеми на GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Підтримка спільноти**: Перегляньте обговорення проекту на GitHub
 
-## Рекомендації щодо безпеки {#security-best-practices}
 
-1. **Оновлюйте систему**: Регулярно оновлюйте Ubuntu та пакети
+## Найкращі практики безпеки {#security-best-practices}
+
+1. **Підтримуйте систему в актуальному стані**: Регулярно оновлюйте Ubuntu та пакети
 2. **Моніторинг журналів**: Налаштуйте моніторинг журналів та сповіщення
 3. **Регулярне резервне копіювання**: Тестуйте процедури резервного копіювання та відновлення
-4. **Використовуйте надійні паролі**: Створюйте надійні паролі для всіх облікових записів
-5. **Увімкніть Fail2Ban**: Розгляньте можливість встановлення fail2ban для додаткової безпеки
-6. **Регулярні аудити безпеки**: Періодично переглядайте свою конфігурацію
+4. **Використовуйте надійні паролі**: Генеруйте складні паролі для всіх облікових записів
+5. **Увімкніть Fail2Ban**: Розгляньте можливість встановлення fail2ban для додаткового захисту
+6. **Регулярні аудити безпеки**: Періодично переглядайте вашу конфігурацію
+
 
 ## Висновок {#conclusion}
 
-Ваша власна інсталяція Forward Email тепер має бути завершена та працювати в Ubuntu. Пам’ятайте:
+Ваша самостійна інсталяція Forward Email тепер має бути завершена та працювати на Ubuntu. Не забудьте:
 
-1. Правильно налаштуйте записи DNS
-2. Перевірте надсилання та отримання електронної пошти
-3. Налаштуйте регулярне резервне копіювання
-4. Регулярно контролюйте свою систему
-5. Оновлюйте інсталяцію
+1. Правильно налаштувати DNS-записи
+2. Перевірити відправлення та отримання електронної пошти
+3. Налаштувати регулярне резервне копіювання
+4. Регулярно моніторити систему
+5. Підтримувати інсталяцію в актуальному стані
 
-Щоб дізнатися про додаткові параметри налаштування та розширені функції, зверніться до офіційної документації Forward Email за адресою <https://forwardemail.net/self-hosted#configuration>.
+Для додаткових параметрів конфігурації та розширених функцій звертайтеся до офіційної документації Forward Email за адресою <https://forwardemail.net/self-hosted#configuration>.

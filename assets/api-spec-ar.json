@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n*   Alias Sieve Scripts\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "استخدم اسم المستخدم وكلمة المرور المُولَّدين للمصادقة الأساسية. ينطبق هذا على نقاط النهاية التالية:\n\n* جهات الاتصال المُستعارة (CardDAV)\n\n* التقاويم المُستعارة (CalDAV)\n\n* الرسائل المُستعارة (IMAP/POP3)\n\n* المجلدات المُستعارة (IMAP/POP3)\n\n* نصوص Sieve المُستعارة\n\n**مثال:**\nإذا كان اسم المستخدم المُستعار هو `alias@domain.com` وكلمة المرور هي `GENERATED_PASSWORD`، فستكون القيمة المُشفَّرة بصيغة Base64 هي `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n\n"
       }
     },
     "schemas": {
@@ -41,28 +41,28 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Unique script identifier"
+            "description": "معرّف البرنامج النصي الفريد"
           },
           "name": {
             "type": "string",
-            "description": "Script name"
+            "description": "اسم البرنامج النصي"
           },
           "content": {
             "type": "string",
-            "description": "Sieve script content"
+            "description": "محتوى نص SIeve"
           },
           "alias": {
             "type": "string",
-            "description": "Alias ID this script belongs to"
+            "description": "معرّف الاسم المستعار الذي ينتمي إليه هذا البرنامج النصي"
           },
           "is_active": {
             "type": "boolean",
-            "description": "Whether the script is active",
+            "description": "ما إذا كان البرنامج النصي نشطًا",
             "default": false
           },
           "priority": {
             "type": "integer",
-            "description": "Script priority (lower = higher priority)",
+            "description": "أولوية البرنامج النصي (أقل = أولوية أعلى)",
             "default": 0
           },
           "created_at": {
@@ -1073,6 +1073,7 @@
           "is_draft",
           "is_junk",
           "is_copied",
+          "is_encrypted",
           "is_searchable",
           "is_expired",
           "has_attachment",
@@ -1139,6 +1140,10 @@
           "is_copied": {
             "type": "boolean",
             "description": "هل تم نسخ الرسالة"
+          },
+          "is_encrypted": {
+            "type": "boolean",
+            "description": "ما إذا كانت الرسالة مشفرة (PGP/MIME أو S/MIME)"
           },
           "is_searchable": {
             "type": "boolean",
@@ -1249,6 +1254,7 @@
           "is_draft": false,
           "is_junk": false,
           "is_copied": false,
+          "is_encrypted": false,
           "is_searchable": true,
           "is_expired": false,
           "has_attachment": false,
@@ -1844,6 +1850,22 @@
           "has_custom_verification": {
             "type": "boolean"
           },
+          "has_custom_s3": {
+            "type": "boolean",
+            "description": "ما إذا كان هذا النطاق يستخدم تخزينًا مخصصًا متوافقًا مع S3 لعمليات النسخ الاحتياطي"
+          },
+          "s3_endpoint": {
+            "type": "string",
+            "description": "عنوان URL مخصص لنقطة النهاية المتوافقة مع S3 (على سبيل المثال https://s3.us-east-1.amazonaws.com، https://<accountid>.r2.cloudflarestorage.com)"
+          },
+          "s3_region": {
+            "type": "string",
+            "description": "منطقة S3 (على سبيل المثال us-east-1، تلقائي). القيمة الافتراضية هي تلقائي إذا لم يتم تحديدها."
+          },
+          "s3_bucket": {
+            "type": "string",
+            "description": "اسم حاوية S3 لتخزين النسخ الاحتياطية. يجب أن تكون الحاوية موجودة بالفعل."
+          },
           "require_tls_inbound": {
             "type": "boolean",
             "description": "عند التفعيل، يتم رفض رسائل البريد الإلكتروني الواردة التي لم يتم إرسالها عبر بروتوكول TLS."
@@ -2133,6 +2155,45 @@
           "max_quota_per_alias": {
             "type": "string",
             "description": "حصة التخزين لكل اسم مستعار (على سبيل المثال \"1 جيجابايت\"، مقسمة إلى بايتات)"
+          },
+          "has_custom_s3": {
+            "type": "boolean",
+            "description": "هل تريد تمكين التخزين المخصص المتوافق مع S3 لعمليات النسخ الاحتياطي IMAP/SQLite على هذا النطاق؟"
+          },
+          "s3_endpoint": {
+            "type": "string",
+            "format": "uri",
+            "description": "عنوان URL مخصص لنقطة النهاية المتوافقة مع S3 (على سبيل المثال https://s3.us-east-1.amazonaws.com)"
+          },
+          "s3_access_key_id": {
+            "type": "string",
+            "description": "معرّف مفتاح الوصول إلى S3. مشفر أثناء التخزين. اتركه فارغًا عند التحديث للاحتفاظ بالقيمة الحالية."
+          },
+          "s3_secret_access_key": {
+            "type": "string",
+            "description": "مفتاح الوصول السري لـ S3. مشفر أثناء التخزين. اتركه فارغًا عند التحديث للاحتفاظ بالقيمة الحالية."
+          },
+          "s3_region": {
+            "type": "string",
+            "description": "منطقة S3 (على سبيل المثال us-east-1، تلقائي). القيمة الافتراضية هي تلقائي."
+          },
+          "s3_bucket": {
+            "type": "string",
+            "description": "اسم حاوية S3 لتخزين النسخ الاحتياطية. يجب أن تكون الحاوية موجودة مسبقاً وغير متاحة للعامة."
+          },
+          "allowlist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "قائمة المرسلين المسموح بهم (عناوين IP، أسماء نطاقات كاملة، عناوين بريد إلكتروني، أو نطاقات المستوى الأعلى ذات الأحرف البديلة). عند التعيين، لن تُقبل إلا الرسائل الواردة من هؤلاء المرسلين. تحل هذه القائمة محل القائمة الحالية."
+          },
+          "denylist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "قائمة المرسلين المحظورين (عناوين IP، أسماء النطاقات المؤهلة بالكامل، عناوين البريد الإلكتروني، أو نطاقات المستوى الأعلى ذات الأحرف البديلة). سيتم رفض الرسائل الواردة من هؤلاء المرسلين. تحل هذه القائمة محل القائمة الحالية."
           }
         }
       },
@@ -2403,9 +2464,10 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "مجموعة من المستلمين الصالحين"
+                "description": "مصفوفة من المستلمين الصالحين. مرر مصفوفة فارغة لإزالة جميع المستلمين الذين تتم إعادة توجيههم (على سبيل المثال، بالنسبة للأسماء المستعارة الخاصة بـ IMAP فقط)."
               }
-            ]
+            ],
+            "description": "في حال عدم تحديد المستلمين، يتم الاحتفاظ بالمستلمين الحاليين. مرر مصفوفة فارغة لمسح جميع المستلمين الذين تتم إعادة توجيههم."
           },
           "description": {
             "type": "string",
@@ -2605,6 +2667,55 @@
             "type": "string",
             "format": "email",
             "description": "عنوان البريد الإلكتروني المدعو"
+          }
+        }
+      },
+      "WebSocketEvent": {
+        "type": "object",
+        "required": [
+          "event"
+        ],
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "نوع الحدث",
+            "enum": [
+              "connected",
+              "newMessage",
+              "newRelease"
+            ]
+          },
+          "aliasId": {
+            "type": "string",
+            "description": "معرّف الاسم المستعار (الموجود في الحدث المتصل)"
+          },
+          "mailbox": {
+            "type": "string",
+            "description": "مسار صندوق البريد (الموجود في حدث newMessage)",
+            "example": "INBOX"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "معرّف الرسالة (الموجود في حدث الرسالة الجديدة)",
+            "example": 123
+          },
+          "release": {
+            "type": "object",
+            "description": "كائن الإصدار (الموجود في حدث newRelease)",
+            "properties": {
+              "tagName": {
+                "type": "string",
+                "description": "اسم علامة Git الخاصة بالإصدار"
+              },
+              "name": {
+                "type": "string",
+                "description": "عنوان الإصدار"
+              },
+              "htmlUrl": {
+                "type": "string",
+                "description": "رابط صفحة الإصدار على GitHub"
+              }
+            }
           }
         }
       }
@@ -4232,6 +4343,14 @@
             }
           },
           {
+            "name": "is_encrypted",
+            "in": "query",
+            "description": "التصفية حسب حالة التشفير (PGP/MIME أو S/MIME)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "is_searchable",
             "in": "query",
             "description": "تصفية حسب الحالة القابلة للبحث",
@@ -5377,6 +5496,59 @@
         }
       }
     },
+    "/v1/domains/{domain_id}/test-s3-connection": {
+      "post": {
+        "summary": "اختبار اتصال S3 مخصص",
+        "description": "يختبر هذا الأمر اتصال تخزين S3 المخصص للنطاق المحدد. ويتحقق من صحة بيانات الاعتماد المُهيأة، ووجود الحاوية، وتوفر أذونات الكتابة. يجب تفعيل وتكوين تخزين S3 المخصص للنطاق قبل إجراء الاختبار.",
+        "operationId": "testS3Connection",
+        "tags": [
+          "المجالات"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "اسم النطاق المؤهل بالكامل (FQDN) أو معرف النطاق",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "S3 connection test successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully connected to your custom S3 storage. Credentials are valid and the bucket is accessible."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "إنشاء كلمة مرور شاملة على مستوى المجال",
@@ -6268,10 +6440,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/sieve": {
       "get": {
-        "summary": "List Sieve Scripts",
-        "description": "List all Sieve scripts for an alias. Sieve is a powerful email filtering language defined in RFC 5228.",
+        "summary": "نصوص غربلة القوائم",
+        "description": "اعرض جميع نصوص Sieve الخاصة باسم مستعار. Sieve هي لغة قوية لتصفية البريد الإلكتروني، مُعرّفة في RFC 5228.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6286,7 +6458,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Domain ID or name"
+            "description": "معرّف النطاق أو اسمه"
           },
           {
             "name": "alias_id",
@@ -6295,7 +6467,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Alias ID or name"
+            "description": "اسم مستعار أو اسم"
           }
         ],
         "responses": {
@@ -6321,10 +6493,10 @@
         }
       },
       "post": {
-        "summary": "Create Sieve Script",
-        "description": "Create a new Sieve script for an alias. The script will be validated before saving.",
+        "summary": "إنشاء برنامج غربلة",
+        "description": "أنشئ نصًا برمجيًا جديدًا لـ Sieve لاسم مستعار. سيتم التحقق من صحة النص البرمجي قبل حفظه.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6339,7 +6511,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Domain ID or name"
+            "description": "معرّف النطاق أو اسمه"
           },
           {
             "name": "alias_id",
@@ -6348,7 +6520,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Alias ID or name"
+            "description": "اسم مستعار أو اسم"
           }
         ],
         "requestBody": {
@@ -6363,20 +6535,20 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "Script name"
+                    "description": "اسم البرنامج النصي"
                   },
                   "content": {
                     "type": "string",
-                    "description": "Sieve script content"
+                    "description": "محتوى نص SIeve"
                   },
                   "is_active": {
                     "type": "boolean",
-                    "description": "Whether the script is active",
+                    "description": "ما إذا كان البرنامج النصي نشطًا",
                     "default": false
                   },
                   "priority": {
                     "type": "integer",
-                    "description": "Script priority (lower = higher priority)",
+                    "description": "أولوية البرنامج النصي (أقل = أولوية أعلى)",
                     "default": 0
                   }
                 }
@@ -6409,10 +6581,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/sieve/{script_id}": {
       "get": {
-        "summary": "Get Sieve Script",
-        "description": "Get a specific Sieve script by ID or name.",
+        "summary": "احصل على سكريبت المنخل",
+        "description": "احصل على نص برمجي محدد من نوع Sieve باستخدام المعرف أو الاسم.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6427,7 +6599,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Domain ID or name"
+            "description": "معرّف النطاق أو اسمه"
           },
           {
             "name": "alias_id",
@@ -6436,7 +6608,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Alias ID or name"
+            "description": "اسم مستعار أو اسم"
           },
           {
             "name": "script_id",
@@ -6445,7 +6617,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "responses": {
@@ -6468,10 +6640,10 @@
         }
       },
       "put": {
-        "summary": "Update Sieve Script",
-        "description": "Update an existing Sieve script. The script will be validated before saving.",
+        "summary": "تحديث نص المنخل",
+        "description": "قم بتحديث نص برمجي موجود في Sieve. سيتم التحقق من صحة النص البرمجي قبل حفظه.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6486,7 +6658,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Domain ID or name"
+            "description": "معرّف النطاق أو اسمه"
           },
           {
             "name": "alias_id",
@@ -6495,7 +6667,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Alias ID or name"
+            "description": "اسم مستعار أو اسم"
           },
           {
             "name": "script_id",
@@ -6504,7 +6676,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "requestBody": {
@@ -6515,15 +6687,15 @@
                 "properties": {
                   "content": {
                     "type": "string",
-                    "description": "Sieve script content"
+                    "description": "محتوى نص SIeve"
                   },
                   "description": {
                     "type": "string",
-                    "description": "Script description"
+                    "description": "وصف النص"
                   },
                   "activate": {
                     "type": "boolean",
-                    "description": "Whether to activate the script after update",
+                    "description": "ما إذا كان سيتم تفعيل البرنامج النصي بعد التحديث",
                     "default": false
                   }
                 }
@@ -6554,10 +6726,10 @@
         }
       },
       "delete": {
-        "summary": "Delete Sieve Script",
-        "description": "Delete a Sieve script. Cannot delete an active script.",
+        "summary": "حذف نص التصفية",
+        "description": "حذف نص برمجي من Sieve. لا يمكن حذف نص برمجي نشط.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6572,7 +6744,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Domain ID or name"
+            "description": "معرّف النطاق أو اسمه"
           },
           {
             "name": "alias_id",
@@ -6581,7 +6753,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Alias ID or name"
+            "description": "اسم مستعار أو اسم"
           },
           {
             "name": "script_id",
@@ -6590,7 +6762,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "responses": {
@@ -6611,10 +6783,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/sieve/{script_id}/activate": {
       "post": {
-        "summary": "Activate Sieve Script",
-        "description": "Activate a Sieve script. Only one script can be active at a time - activating a script will deactivate any currently active script.",
+        "summary": "تفعيل برنامج Sieve النصي",
+        "description": "قم بتفعيل سكربت Sieve. لا يمكن تفعيل سوى سكربت واحد في كل مرة - سيؤدي تفعيل سكربت إلى إلغاء تفعيل أي سكربت نشط حاليًا.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6629,7 +6801,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Domain ID or name"
+            "description": "معرّف النطاق أو اسمه"
           },
           {
             "name": "alias_id",
@@ -6638,7 +6810,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Alias ID or name"
+            "description": "اسم مستعار أو اسم"
           },
           {
             "name": "script_id",
@@ -6647,7 +6819,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "responses": {
@@ -6672,10 +6844,10 @@
     },
     "/v1/sieve-scripts": {
       "get": {
-        "summary": "List Sieve Scripts (Alias Auth)",
-        "description": "List all Sieve scripts for the authenticated alias. Uses alias authentication instead of API token.",
+        "summary": "قائمة نصوص التصفية (مصادقة الاسم المستعار)",
+        "description": "اعرض جميع نصوص Sieve للاسم المستعار المُصادق عليه. يستخدم مصادقة الاسم المستعار بدلاً من رمز API.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6702,10 +6874,10 @@
         }
       },
       "post": {
-        "summary": "Create Sieve Script (Alias Auth)",
-        "description": "Create a new Sieve script for the authenticated alias. Uses alias authentication instead of API token.",
+        "summary": "إنشاء نص برمجي للمصفاة (مصادقة الاسم المستعار)",
+        "description": "أنشئ نصًا برمجيًا جديدًا لـ Sieve للاسم المستعار المصادق عليه. يستخدم هذا النص مصادقة الاسم المستعار بدلاً من رمز API.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6724,15 +6896,15 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "Script name"
+                    "description": "اسم البرنامج النصي"
                   },
                   "content": {
                     "type": "string",
-                    "description": "Sieve script content"
+                    "description": "محتوى نص SIeve"
                   },
                   "description": {
                     "type": "string",
-                    "description": "Script description"
+                    "description": "وصف النص"
                   }
                 }
               }
@@ -6761,10 +6933,10 @@
     },
     "/v1/sieve-scripts/{script_id}": {
       "get": {
-        "summary": "Get Sieve Script (Alias Auth)",
-        "description": "Get a specific Sieve script by ID or name for the authenticated alias.",
+        "summary": "الحصول على سكربت Sieve (مصادقة الاسم المستعار)",
+        "description": "احصل على نص برمجي محدد من Sieve عن طريق المعرف أو الاسم للاسم المستعار المصادق عليه.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6779,7 +6951,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "responses": {
@@ -6802,10 +6974,10 @@
         }
       },
       "put": {
-        "summary": "Update Sieve Script (Alias Auth)",
-        "description": "Update an existing Sieve script for the authenticated alias.",
+        "summary": "تحديث برنامج Sieve النصي (مصادقة الاسم المستعار)",
+        "description": "قم بتحديث نص Sieve موجود للاسم المستعار المصادق عليه.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6820,7 +6992,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "requestBody": {
@@ -6831,15 +7003,15 @@
                 "properties": {
                   "content": {
                     "type": "string",
-                    "description": "Sieve script content"
+                    "description": "محتوى نص SIeve"
                   },
                   "description": {
                     "type": "string",
-                    "description": "Script description"
+                    "description": "وصف النص"
                   },
                   "activate": {
                     "type": "boolean",
-                    "description": "Whether to activate the script after update",
+                    "description": "ما إذا كان سيتم تفعيل البرنامج النصي بعد التحديث",
                     "default": false
                   }
                 }
@@ -6870,10 +7042,10 @@
         }
       },
       "delete": {
-        "summary": "Delete Sieve Script (Alias Auth)",
-        "description": "Delete a Sieve script for the authenticated alias. Cannot delete an active script.",
+        "summary": "حذف نص Sieve (مصادقة الاسم المستعار)",
+        "description": "حذف نص برمجي من Sieve للاسم المستعار المصادق عليه. لا يمكن حذف نص برمجي نشط.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6888,7 +7060,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "responses": {
@@ -6909,10 +7081,10 @@
     },
     "/v1/sieve-scripts/{script_id}/activate": {
       "post": {
-        "summary": "Activate Sieve Script (Alias Auth)",
-        "description": "Activate a Sieve script for the authenticated alias. Only one script can be active at a time.",
+        "summary": "تفعيل برنامج Sieve النصي (مصادقة الاسم المستعار)",
+        "description": "قم بتفعيل برنامج Sieve النصي للاسم المستعار المصادق عليه. لا يمكن تفعيل سوى برنامج نصي واحد في كل مرة.",
         "tags": [
-          "Sieve Scripts"
+          "نصوص المنخل"
         ],
         "security": [
           {
@@ -6927,7 +7099,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Sieve script ID or name"
+            "description": "معرف أو اسم نص الفرز"
           }
         ],
         "responses": {
@@ -6946,6 +7118,1641 @@
           },
           "404": {
             "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/ws": {
+      "get": {
+        "tags": [
+          "WebSockets"
+        ],
+        "summary": "إشعارات WebSocket",
+        "description": "اتصل بنقطة نهاية WebSocket لتلقي إشعارات فورية.\n\n**رابط الاتصال:** `wss://api.forwardemail.net/v1/ws`\n\n**المصادقة (اختيارية):**\n\n- **العملاء المصادق عليهم:** أدخل بيانات الاعتماد عبر ترويسة `Authorization` لتلقي كلٍ من الأحداث الخاصة بكل اسم مستعار (IMAP، CalDAV، CardDAV) وأحداث البث العامة (`newRelease`).\n\n- **العملاء غير المصادق عليهم:** اتصل بدون بيانات اعتماد لتلقي أحداث البث العامة فقط (`newRelease`). يُفيد هذا العملاء الذين يحتاجون فقط إلى تلقي إشعارات بتحديثات التطبيق.\n\n\n**طرق المصادقة:**\n\nيجب توفير بيانات المصادقة عبر ترويسة `Authorization` باستخدام مصادقة HTTP الأساسية. **لا يتم دعم معلمات الاستعلام للمصادقة**.\n\n\n**الخيار الأول: مصادقة كلمة المرور المستعارة (مُوصى به)**\n\nاستخدم عنوان بريدك الإلكتروني المستعار وكلمة المرور المُنشأة:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\nheaders: {\nAuthorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n\n}\n});\n\n```\n\n**الخيار الثاني: مصادقة رمز API**\n\nاستخدم رمز API الخاص بك (يتطلب مُعامل الاستعلام `?alias_id=`):\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\nheaders: {\nAuthorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // ملاحظة: كلمة المرور فارغة\n\n}\n});\n\n```\n\n**الخيار الثالث: بدون مصادقة (بث فقط)**\n\nاتصل بدون مصادقة لتلقي أحداث البث العامة فقط:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n\n```\n\n**استجابات الاتصال:**\n\nعند نجاح الاتصال، يُرسل الخادم حدث `connected`:\n\n- **مُصادق عليه:** `{\"event\":\"connected\",\"aliasId\":\"<your-alias-id>\"}`\n- **غير مُصادق عليه:** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\nإذا تلقيتَ `broadcastOnly: true`، فهذا يعني فشل عملية المصادقة أو عدم تقديمها، ولن تتلقى سوى أحداث البث العامة.\n\n\n**ترميز msgpackr:** بشكل افتراضي، تُرسل الرسائل كإطارات نصية بتنسيق JSON. مرر `?msgpackr=true` لتلقي إطارات مُرمّزة بتنسيق msgpackr الثنائي لتقليل استهلاك النطاق الترددي.\n\n\n**السلوك:**\n- قناة للقراءة فقط: يتم تجاهل رسائل العميل تلقائيًا\n- يُرسل الخادم حدث `connected` عند نجاح الاتصال\n- يُرسل الخادم إطارات `ping` دورية؛ يجب على العميل الرد بـ `pong`\n- الحد الأقصى للاتصالات لكل عنوان IP: 30 اتصالًا/دقيقة\n- الحد الأقصى للاتصالات لكل اسم مستعار (مصادق عليه): 10 اتصالات متزامنة\n- الحد الأقصى للاتصالات لكل عنوان IP (غير مصادق عليه): 3 اتصالات متزامنة\n- الحد الأقصى للاتصالات الإجمالية: 10000\n\n**بيانات الحدث:** يتضمن كل حدث حقل `event` يشير إلى نوعه، بالإضافة إلى كائن مورد (`message`، `contact`، `calendarEvent`، `calendar`، `addressBook`، أو `release`) يحتوي على بيانات المورد الكاملة التي تعكس استجابة واجهة برمجة تطبيقات REST المقابلة.\n... **أحداث لكل اسم مستعار (للمصادق عليهم فقط):**\n\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**أحداث البث (لجميع العملاء):**\n- `newRelease` — يتم بث هذا الإشعار عند نشر إصدار جديد من تطبيق Forward Email Mail (https://github.com/forwardemail/mail.forwardemail.net) على GitHub. يقوم الخادم باستطلاع GitHub كل 15 دقيقة ويستخدم بصمة محتوى لاكتشاف التغييرات. **تقييد الوصول إلى الأصول**: عند اكتشاف إصدار جديد ولكن لا توجد أصول متاحة له بعد، يتم تأجيل البث حتى ظهور الأصول.\n\n\n**ملاحظات هامة:**\n\n- معلمات الاستعلام `?token=`، `?username=`، `?password=` **غير مدعومة** للمصادقة.\n\n- يجب أن تتم المصادقة **عبر ترويسة `Authorization` باستخدام مصادقة HTTP الأساسية.\n\n- في حال فشل المصادقة، ستتلقى `broadcastOnly: true` أو خطأ `401 Unauthorized`.\n\n- بالنسبة لمصادقة رمز API، فإن معلمة الاستعلام `?alias_id=` **مطلوبة**.",
+        "operationId": "websocketNotifications",
+        "parameters": [
+          {
+            "name": "alias_id",
+            "in": "query",
+            "description": "**مطلوب لمصادقة رمز API.** معرّف الاسم المستعار المراد الاشتراك به. تُستخدم هذه المعلمة فقط عند المصادقة باستخدام رمز API عبر ترويسة Authorization.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "msgpackr",
+            "in": "query",
+            "description": "اضبط هذا الخيار على \"صحيح\" لاستقبال الإطارات المشفرة بصيغة msgpackr الثنائية بدلاً من نص JSON. يقلل هذا من استهلاك النطاق الترددي بشكل ملحوظ للإشعارات ذات الحجم الكبير.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            }
+          }
+        ],
+        "responses": {
+          "101": {
+            "description": "WebSocket connection established. Events are streamed as messages.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "title": "connected",
+                      "type": "object",
+                      "description": "Sent immediately after a successful connection. The payload differs for authenticated and unauthenticated clients.",
+                      "required": [
+                        "event"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "connected"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string",
+                          "description": "The authenticated alias ID (present only for authenticated clients)"
+                        },
+                        "broadcastOnly": {
+                          "type": "boolean",
+                          "description": "True if the client is unauthenticated and will only receive broadcast events (present only for unauthenticated clients)"
+                        },
+                        "msgpackr": {
+                          "type": "boolean",
+                          "description": "Whether msgpackr encoding is enabled"
+                        }
+                      },
+                      "oneOf": [
+                        {
+                          "title": "Authenticated Example",
+                          "example": {
+                            "event": "connected",
+                            "alias_id": "507f1f77bcf86cd799439011",
+                            "msgpackr": false
+                          }
+                        },
+                        {
+                          "title": "Unauthenticated Example",
+                          "example": {
+                            "event": "connected",
+                            "broadcastOnly": true,
+                            "msgpackr": false
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "title": "newMessage",
+                      "type": "object",
+                      "description": "A new message was appended to a mailbox (IMAP APPEND or delivery).",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "newMessage"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "mailbox",
+                            "message"
+                          ],
+                          "properties": {
+                            "mailbox": {
+                              "type": "string",
+                              "description": "Mailbox path (e.g. \"INBOX\")"
+                            },
+                            "message": {
+                              "type": "object",
+                              "description": "Full message object mirroring GET /v1/messages/:id response",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "folder_id": {
+                                  "type": "string"
+                                },
+                                "folder_path": {
+                                  "type": "string"
+                                },
+                                "thread_id": {
+                                  "type": "string"
+                                },
+                                "header_message_id": {
+                                  "type": "string"
+                                },
+                                "uid": {
+                                  "type": "integer"
+                                },
+                                "modseq": {
+                                  "type": "integer"
+                                },
+                                "flags": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "labels": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "subject": {
+                                  "type": "string"
+                                },
+                                "size": {
+                                  "type": "integer"
+                                },
+                                "is_unread": {
+                                  "type": "boolean"
+                                },
+                                "is_flagged": {
+                                  "type": "boolean"
+                                },
+                                "is_draft": {
+                                  "type": "boolean"
+                                },
+                                "is_junk": {
+                                  "type": "boolean"
+                                },
+                                "is_encrypted": {
+                                  "type": "boolean",
+                                  "description": "Whether the message is encrypted (PGP/MIME or S/MIME)"
+                                },
+                                "is_deleted": {
+                                  "type": "boolean"
+                                },
+                                "is_copied": {
+                                  "type": "boolean"
+                                },
+                                "is_searchable": {
+                                  "type": "boolean"
+                                },
+                                "is_expired": {
+                                  "type": "boolean"
+                                },
+                                "has_attachment": {
+                                  "type": "boolean"
+                                },
+                                "retention_date": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "remote_address": {
+                                  "type": "string"
+                                },
+                                "transaction": {
+                                  "type": "string"
+                                },
+                                "root_id": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "internal_date": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "header_date": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "eml": {
+                                  "type": "string",
+                                  "description": "Raw email in RFC 5322 format. Use PostalMime or similar to parse on client side."
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "message"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "newMessage",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "mailbox": "INBOX",
+                          "message": {
+                            "id": "60d5f484f1a2c8b1f8e4e1a1",
+                            "folder_id": "60d5f484f1a2c8b1f8e4e1a0",
+                            "folder_path": "INBOX",
+                            "uid": 42,
+                            "modseq": 100,
+                            "flags": [],
+                            "labels": [],
+                            "subject": "Hello World",
+                            "size": 1234,
+                            "is_unread": true,
+                            "is_flagged": false,
+                            "is_draft": false,
+                            "is_junk": false,
+                            "has_attachment": false,
+                            "eml": "From: sender@example.com\\r\\nTo: user@example.com\\r\\nSubject: Hello World\\r\\n\\r\\nBody text",
+                            "object": "message",
+                            "is_encrypted": false,
+                            "is_deleted": false,
+                            "is_copied": false,
+                            "is_searchable": true,
+                            "is_expired": false,
+                            "remote_address": "127.0.0.1",
+                            "transaction": "APPEND"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "messagesMoved",
+                      "type": "object",
+                      "description": "Messages were moved between mailboxes.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "messagesMoved"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "sourceMailbox": {
+                              "type": "string",
+                              "description": "Source mailbox ID"
+                            },
+                            "destinationMailbox": {
+                              "type": "string",
+                              "description": "Destination mailbox ID"
+                            },
+                            "destinationPath": {
+                              "type": "string",
+                              "description": "Destination mailbox path"
+                            },
+                            "sourceUid": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer"
+                              },
+                              "description": "UIDs in source mailbox"
+                            },
+                            "destinationUid": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer"
+                              },
+                              "description": "New UIDs in destination mailbox"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "messagesMoved",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "sourceMailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                          "destinationMailbox": "60d5f484f1a2c8b1f8e4e1a2",
+                          "destinationPath": "Trash",
+                          "sourceUid": [
+                            1,
+                            2,
+                            3
+                          ],
+                          "destinationUid": [
+                            10,
+                            11,
+                            12
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "messagesCopied",
+                      "type": "object",
+                      "description": "Messages were copied to another mailbox.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "messagesCopied"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "sourceMailbox": {
+                              "type": "string"
+                            },
+                            "destinationMailbox": {
+                              "type": "string"
+                            },
+                            "destinationPath": {
+                              "type": "string"
+                            },
+                            "sourceUid": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer"
+                              }
+                            },
+                            "destinationUid": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "messagesCopied",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "sourceMailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                          "destinationMailbox": "60d5f484f1a2c8b1f8e4e1a3",
+                          "destinationPath": "Archive",
+                          "sourceUid": [
+                            5
+                          ],
+                          "destinationUid": [
+                            1
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "flagsUpdated",
+                      "type": "object",
+                      "description": "Message flags were changed (e.g. \\\\Seen, \\\\Flagged, \\\\Deleted).",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "flagsUpdated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "mailbox": {
+                              "type": "string",
+                              "description": "Mailbox ID"
+                            },
+                            "uids": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer"
+                              },
+                              "description": "UIDs of affected messages"
+                            },
+                            "flags": {
+                              "type": "object",
+                              "description": "Flag changes applied",
+                              "properties": {
+                                "set": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "add": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "remove": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "flagsUpdated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "mailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                          "uids": [
+                            1,
+                            2
+                          ],
+                          "flags": {
+                            "set": [
+                              "\\\\Seen",
+                              "\\\\Flagged"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "messagesExpunged",
+                      "type": "object",
+                      "description": "Messages were permanently expunged from a mailbox.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "messagesExpunged"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "mailbox": {
+                              "type": "string",
+                              "description": "Mailbox ID"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "messagesExpunged",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "mailbox": "60d5f484f1a2c8b1f8e4e1a0"
+                        }
+                      }
+                    },
+                    {
+                      "title": "mailboxCreated",
+                      "type": "object",
+                      "description": "A new mailbox/folder was created.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "mailboxCreated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "path": {
+                              "type": "string",
+                              "description": "Mailbox path"
+                            },
+                            "mailbox": {
+                              "type": "string",
+                              "description": "Mailbox ID"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "mailboxCreated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "path": "Projects/Work",
+                          "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
+                        }
+                      }
+                    },
+                    {
+                      "title": "mailboxDeleted",
+                      "type": "object",
+                      "description": "A mailbox/folder was deleted.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "mailboxDeleted"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "path": {
+                              "type": "string"
+                            },
+                            "mailbox": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "mailboxDeleted",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "path": "Old Folder",
+                          "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
+                        }
+                      }
+                    },
+                    {
+                      "title": "mailboxRenamed",
+                      "type": "object",
+                      "description": "A mailbox/folder was renamed.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "mailboxRenamed"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "oldPath": {
+                              "type": "string"
+                            },
+                            "newPath": {
+                              "type": "string"
+                            },
+                            "mailbox": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "mailboxRenamed",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "oldPath": "Old Name",
+                          "newPath": "New Name",
+                          "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
+                        }
+                      }
+                    },
+                    {
+                      "title": "calendarCreated",
+                      "type": "object",
+                      "description": "A new calendar was created.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "calendarCreated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "calendar"
+                          ],
+                          "properties": {
+                            "calendar": {
+                              "type": "object",
+                              "description": "Full calendar object mirroring GET /v1/calendars/:id response",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "calendarId": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "color": {
+                                  "type": "string"
+                                },
+                                "order": {
+                                  "type": "integer"
+                                },
+                                "timezone": {
+                                  "type": "string"
+                                },
+                                "readonly": {
+                                  "type": "boolean"
+                                },
+                                "synctoken": {
+                                  "type": "string"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "calendar"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "calendarCreated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "calendar": {
+                            "id": "60d5f484f1a2c8b1f8e4e1b0",
+                            "calendarId": "work-calendar",
+                            "name": "Work",
+                            "description": "Work events",
+                            "color": "#FF5733",
+                            "order": 0,
+                            "timezone": "America/New_York",
+                            "readonly": false,
+                            "object": "calendar"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "calendarUpdated",
+                      "type": "object",
+                      "description": "A calendar was updated.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "calendarUpdated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "calendar"
+                          ],
+                          "properties": {
+                            "calendar": {
+                              "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/10/properties/data/properties/calendar"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "calendarUpdated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "calendar": {
+                            "id": "60d5f484f1a2c8b1f8e4e1b0",
+                            "calendarId": "work-calendar",
+                            "name": "Work (Updated)",
+                            "color": "#00FF00",
+                            "object": "calendar"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "calendarDeleted",
+                      "type": "object",
+                      "description": "A calendar was deleted.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "calendarDeleted"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "calendar"
+                          ],
+                          "properties": {
+                            "calendar": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "calendarId": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "calendar"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "calendarDeleted",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "calendar": {
+                            "id": "60d5f484f1a2c8b1f8e4e1b0",
+                            "calendarId": "work-calendar",
+                            "name": "Work",
+                            "object": "calendar"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "calendarEventCreated",
+                      "type": "object",
+                      "description": "A calendar event was created.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "calendarEventCreated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "calendarEvent"
+                          ],
+                          "properties": {
+                            "calendarEvent": {
+                              "type": "object",
+                              "description": "Full calendar event object with iCal data",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "eventId": {
+                                  "type": "string"
+                                },
+                                "calendarId": {
+                                  "type": "string"
+                                },
+                                "ical": {
+                                  "type": "string",
+                                  "description": "Full iCalendar (RFC 5545) data string"
+                                },
+                                "href": {
+                                  "type": "string"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "calendar_event"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "calendarEventCreated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "calendarEvent": {
+                            "id": "60d5f484f1a2c8b1f8e4e1c0",
+                            "eventId": "meeting-123.ics",
+                            "calendarId": "work-calendar",
+                            "ical": "BEGIN:VCALENDAR\\nVERSION:2.0\\nBEGIN:VEVENT\\nSUMMARY:Team Meeting\\nEND:VEVENT\\nEND:VCALENDAR",
+                            "href": "/dav/user@example.com/work-calendar/meeting-123.ics",
+                            "object": "calendar_event"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "calendarEventUpdated",
+                      "type": "object",
+                      "description": "A calendar event was updated.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "calendarEventUpdated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "calendarEvent"
+                          ],
+                          "properties": {
+                            "calendarEvent": {
+                              "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/13/properties/data/properties/calendarEvent"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "calendarEventUpdated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "calendarEvent": {
+                            "id": "60d5f484f1a2c8b1f8e4e1c0",
+                            "eventId": "meeting-123.ics",
+                            "calendarId": "work-calendar",
+                            "ical": "BEGIN:VCALENDAR\\nVERSION:2.0\\nBEGIN:VEVENT\\nSUMMARY:Team Meeting (Updated)\\nEND:VEVENT\\nEND:VCALENDAR",
+                            "object": "calendar_event"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "calendarEventDeleted",
+                      "type": "object",
+                      "description": "A calendar event was deleted.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "calendarEventDeleted"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "calendarEvent"
+                          ],
+                          "properties": {
+                            "calendarEvent": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "eventId": {
+                                  "type": "string"
+                                },
+                                "calendarId": {
+                                  "type": "string"
+                                },
+                                "ical": {
+                                  "type": "string",
+                                  "description": "Last known iCal data before deletion"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "calendar_event"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "calendarEventDeleted",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "calendarEvent": {
+                            "id": "60d5f484f1a2c8b1f8e4e1c0",
+                            "eventId": "meeting-123.ics",
+                            "calendarId": "work-calendar",
+                            "object": "calendar_event"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "contactCreated",
+                      "type": "object",
+                      "description": "A contact was created.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "contactCreated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "contact"
+                          ],
+                          "properties": {
+                            "contact": {
+                              "type": "object",
+                              "description": "Full contact object with vCard data",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "contactId": {
+                                  "type": "string"
+                                },
+                                "addressBookId": {
+                                  "type": "string"
+                                },
+                                "fullName": {
+                                  "type": "string"
+                                },
+                                "content": {
+                                  "type": "string",
+                                  "description": "Full vCard (RFC 6350) data string"
+                                },
+                                "etag": {
+                                  "type": "string"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "contact"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "contactCreated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "contact": {
+                            "contactId": "john-doe.vcf",
+                            "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
+                            "fullName": "John Doe",
+                            "content": "BEGIN:VCARD\\nVERSION:3.0\\nFN:John Doe\\nEMAIL:john@example.com\\nEND:VCARD",
+                            "etag": "\"abc123\"",
+                            "object": "contact"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "contactUpdated",
+                      "type": "object",
+                      "description": "A contact was updated.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "contactUpdated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "contact"
+                          ],
+                          "properties": {
+                            "contact": {
+                              "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/16/properties/data/properties/contact"
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "contactUpdated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "contact": {
+                            "id": "60d5f484f1a2c8b1f8e4e1e0",
+                            "contactId": "john-doe.vcf",
+                            "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
+                            "fullName": "John Doe (Updated)",
+                            "content": "BEGIN:VCARD\\nVERSION:3.0\\nFN:John Doe (Updated)\\nEMAIL:john@example.com\\nEND:VCARD",
+                            "etag": "\"def456\"",
+                            "object": "contact"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "contactDeleted",
+                      "type": "object",
+                      "description": "A contact was deleted.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "contactDeleted"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "contact"
+                          ],
+                          "properties": {
+                            "contact": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "contactId": {
+                                  "type": "string"
+                                },
+                                "addressBookId": {
+                                  "type": "string"
+                                },
+                                "fullName": {
+                                  "type": "string"
+                                },
+                                "content": {
+                                  "type": "string",
+                                  "description": "Last known vCard data before deletion"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "contact"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "contactDeleted",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "contact": {
+                            "id": "60d5f484f1a2c8b1f8e4e1e0",
+                            "contactId": "john-doe.vcf",
+                            "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
+                            "fullName": "John Doe",
+                            "object": "contact"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "addressBookCreated",
+                      "type": "object",
+                      "description": "An address book was created.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "addressBookCreated"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "addressBook"
+                          ],
+                          "properties": {
+                            "addressBook": {
+                              "type": "object",
+                              "properties": {
+                                "addressBookId": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "address_book"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "addressBookCreated",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "addressBook": {
+                            "addressBookId": "personal",
+                            "name": "Personal Contacts",
+                            "object": "address_book"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "addressBookDeleted",
+                      "type": "object",
+                      "description": "An address book was deleted.",
+                      "required": [
+                        "event",
+                        "alias_id",
+                        "data"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "addressBookDeleted"
+                          ]
+                        },
+                        "alias_id": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "addressBook"
+                          ],
+                          "properties": {
+                            "addressBook": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "addressBookId": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "object": {
+                                  "type": "string",
+                                  "enum": [
+                                    "address_book"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "addressBookDeleted",
+                        "alias_id": "507f1f77bcf86cd799439011",
+                        "data": {
+                          "addressBook": {
+                            "id": "60d5f484f1a2c8b1f8e4e1f0",
+                            "addressBookId": "old-contacts",
+                            "name": "Old Contacts",
+                            "object": "address_book"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "newRelease",
+                      "type": "object",
+                      "description": "A new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) has been published on GitHub, or an existing release has been updated. This is a broadcast event sent to ALL connected clients, regardless of alias. The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: The broadcast is deferred until release assets are available, preventing notifications for releases that are still building.",
+                      "required": [
+                        "event",
+                        "timestamp",
+                        "release"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "newRelease"
+                          ]
+                        },
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "Unix timestamp in milliseconds when the event was emitted"
+                        },
+                        "release": {
+                          "type": "object",
+                          "description": "The GitHub release object for the mail app",
+                          "required": [
+                            "tagName",
+                            "name",
+                            "htmlUrl"
+                          ],
+                          "properties": {
+                            "tagName": {
+                              "type": "string",
+                              "description": "Git tag name of the release (e.g. \"v1.2.3\")"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Release title"
+                            },
+                            "body": {
+                              "type": "string",
+                              "description": "Release notes in Markdown format"
+                            },
+                            "htmlUrl": {
+                              "type": "string",
+                              "format": "uri",
+                              "description": "URL to the release page on GitHub"
+                            },
+                            "prerelease": {
+                              "type": "boolean",
+                              "description": "Whether this is a pre-release"
+                            },
+                            "publishedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "ISO 8601 timestamp of when the release was published"
+                            },
+                            "author": {
+                              "type": "object",
+                              "description": "GitHub user who published the release",
+                              "properties": {
+                                "login": {
+                                  "type": "string",
+                                  "description": "GitHub username"
+                                },
+                                "avatarUrl": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "description": "URL to the user's avatar image"
+                                },
+                                "htmlUrl": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "description": "URL to the user's GitHub profile"
+                                }
+                              }
+                            },
+                            "assets": {
+                              "type": "array",
+                              "description": "Downloadable assets attached to the release",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "description": "Asset file name"
+                                  },
+                                  "size": {
+                                    "type": "integer",
+                                    "description": "Asset file size in bytes"
+                                  },
+                                  "downloadCount": {
+                                    "type": "integer",
+                                    "description": "Number of times the asset has been downloaded"
+                                  },
+                                  "browserDownloadUrl": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "description": "Direct download URL for the asset"
+                                  },
+                                  "contentType": {
+                                    "type": "string",
+                                    "description": "MIME type of the asset"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "newRelease",
+                        "timestamp": 1739348200000,
+                        "release": {
+                          "tagName": "v1.2.3",
+                          "name": "Release v1.2.3",
+                          "body": "This release includes several bug fixes and performance improvements.",
+                          "htmlUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/tag/v1.2.3",
+                          "prerelease": false,
+                          "publishedAt": "2026-02-15T12:00:00Z",
+                          "author": {
+                            "login": "niftylettuce",
+                            "avatarUrl": "https://avatars.githubusercontent.com/u/1127956",
+                            "htmlUrl": "https://github.com/niftylettuce"
+                          },
+                          "assets": [
+                            {
+                              "name": "mail.forwardemail.net-1.2.3.dmg",
+                              "size": 104857600,
+                              "downloadCount": 500,
+                              "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v1.2.3/mail.forwardemail.net-1.2.3.dmg",
+                              "contentType": "application/x-apple-diskimage"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "event"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing or invalid authentication parameters"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
+          },
+          "404": {
+            "description": "Not Found - Alias not found for the provided credentials"
+          },
+          "429": {
+            "description": "Too Many Requests - Rate limit exceeded (30 connections/minute per IP)"
+          },
+          "503": {
+            "description": "Service Unavailable - Global connection limit reached"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
+          },
+          {}
+        ]
+      }
+    },
+    "/v1/domains/{domain_id}/allowlist": {
+      "put": {
+        "summary": "تحديث قائمة النطاقات المسموح بها",
+        "description": "استبدل قائمة السماح لنطاق معين. تقيّد هذه القائمة البريد الوارد إلى المرسلين المحددين فقط. يجب أن يكون كل إدخال عنوان IP صالحًا، أو اسم نطاق مؤهل بالكامل (FQDN)، أو عنوان بريد إلكتروني، أو نطاقًا عامًا من المستوى الأعلى (مثل `*.com`). الحد الأقصى المسموح به هو 1000 إدخال.",
+        "operationId": "updateDomainAllowlist",
+        "tags": [
+          "المجالات"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "اسم النطاق المؤهل بالكامل (FQDN) أو معرف النطاق",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "allowlist": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "مصفوفة من المُرسِلين المُصرَّح لهم (عناوين IP، أو أسماء النطاقات المؤهلة بالكامل، أو عناوين البريد الإلكتروني، أو نطاقات المستوى الأعلى العامة مثل `*.com`). مرِّر مصفوفة فارغة لمسح قائمة المُصرَّح لهم."
+                  }
+                },
+                "required": [
+                  "allowlist"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/denylist": {
+      "put": {
+        "summary": "تحديث قائمة رفض النطاقات",
+        "description": "استبدل قائمة الحظر الخاصة بنطاق معين. سيتم رفض الرسائل الواردة من المرسلين المدرجين في قائمة الحظر. يجب أن يكون كل إدخال عنوان IP صالحًا، أو اسم نطاق مؤهل بالكامل (FQDN)، أو عنوان بريد إلكتروني، أو نطاقًا عامًا من المستوى الأعلى (مثل `*.com`). الحد الأقصى المسموح به هو 1000 إدخال.",
+        "operationId": "updateDomainDenylist",
+        "tags": [
+          "المجالات"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "اسم النطاق المؤهل بالكامل (FQDN) أو معرف النطاق",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "denylist": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "مصفوفة من المُرسِلين المحظورين (عناوين IP، أو أسماء النطاقات المؤهلة بالكامل، أو عناوين البريد الإلكتروني، أو نطاقات المستوى الأعلى العامة مثل `*.com`). مرر مصفوفة فارغة لمسح قائمة الحظر."
+                  }
+                },
+                "required": [
+                  "denylist"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -7005,8 +8812,12 @@
       "description": "نقاط نهاية إدارة مجلدات الأسماء المستعارة (IMAP/POP3)\n\n>[!TIP]\n> نقاط نهاية المجلدات التي يكون مسارها <code>/v1/folders/:path</code> نقطة نهايتها قابلة للتبادل مع معرف المجلد <code>:id</code>. هذا يعني أنه يمكنك الإشارة إلى المجلد إما باستخدام قيمة <code>path</code> أو <code>id</code>.\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة من الاسم المستعار كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط النهائية إدارة كاملة للمجلدات، بما في ذلك الإنشاء وإعادة التسمية والحذف. يمكن أن تتضمن مسارات المجلدات مجلدات رئيسية (على سبيل المثال، \"البريد الوارد/المجلد الفرعي\")، وسيتم إنشاء المجلدات الرئيسية تلقائيًا إذا لم تكن موجودة."
     },
     {
-      "name": "Sieve Scripts",
-      "description": "Sieve script management endpoints\n\n>[!NOTE]\n> Sieve is a powerful email filtering language defined in RFC 5228. Scripts are executed on incoming mail to automatically organize, filter, and respond to messages.\n\n>[!TIP]\n> Supported extensions include: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, and variables. Scripts are validated before saving to ensure they are syntactically correct.\n\n>[!NOTE]\n> **Two authentication methods are supported:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Use your API key as the username with Basic Auth. Requires domain_id and alias_id in the URL path.\n> - **Alias Auth** (`/v1/sieve-scripts`): Use the alias email and generated password as Basic Auth credentials. No domain_id or alias_id needed in the URL.\n\n>[!TIP]\n> Script ID parameters accept either the MongoDB ObjectId or the script name, allowing flexible script identification."
+      "name": "نصوص المنخل",
+      "description": "نقاط نهاية إدارة نصوص Sieve\n\n>[!NOTE]\n> Sieve هي لغة قوية لتصفية البريد الإلكتروني، مُعرّفة في RFC 5228. تُنفّذ النصوص البرمجية على البريد الوارد لتنظيم الرسائل وتصفيتها والرد عليها تلقائيًا.\n\n>[!TIP]\n> تشمل الامتدادات المدعومة: fileinto، reject، ereject، vacation، vacation-seconds، imap4flags، envelope، body، relational، comparator-i;ascii-numeric، copy، date، index، editheader، enotify، regex، subaddress، ihave، duplicate، special-use، mailbox، environment، والمتغيرات. يتم التحقق من صحة النصوص البرمجية قبل حفظها لضمان صحتها النحوية.\n\n\nملاحظة: لا توجد ترجمة\n\nيدعم النظام طريقتين للمصادقة:\n\n- **مصادقة رمز API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): استخدم مفتاح API الخاص بك كاسم مستخدم مع المصادقة الأساسية. يتطلب ذلك وجود domain_id وalias_id في مسار عنوان URL.\n\n- **مصادقة الاسم المستعار** (`/v1/sieve-scripts`): استخدم البريد الإلكتروني للاسم المستعار وكلمة المرور المُنشأة كبيانات اعتماد للمصادقة الأساسية. لا حاجة إلى domain_id أو alias_id في عنوان URL.\n\nنصيحة: لا توجد ترجمة\n\nتقبل معلمات مُعرّف البرنامج النصي إما مُعرّف كائن MongoDB أو اسم البرنامج النصي، مما يسمح بتحديد البرنامج النصي بمرونة."
+    },
+    {
+      "name": "WebSockets",
+      "description": "إشعارات فورية عبر WebSocket. اتصل بنقطة النهاية /v1/ws لتلقي الأحداث مباشرةً. المصادقة اختيارية: يتلقى العملاء المصادق عليهم أحداثًا خاصة بكل اسم مستعار (IMAP، CalDAV، CardDAV) وأحداث بث عامة، بينما يتلقى العملاء غير المصادق عليهم أحداث البث العامة فقط (مثل newRelease). يدعم 20 نوعًا مختلفًا من الأحداث تشمل تسليم الرسائل، والنقل، والنسخ، وتغييرات العلامات، والحذف، وتحديثات وحذف وقراءة صناديق البريد، وتحديثات وحذف وقراءة التقويم، وتحديثات وحذف أحداث التقويم، وتحديثات وحذف جهات الاتصال، وتحديثات وحذف وقراءة دفتر العناوين، وبث إصدارات التطبيقات من تطبيق Forward Email Mail (https://github.com/forwardemail/mail.forwardemail.net)."
     }
   ]
 }

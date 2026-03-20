@@ -1,116 +1,116 @@
-# Email RFC Protocol Support - Complete Standards & Specifications Guide {#email-rfc-protocol-support---complete-standards--specifications-guide}
+# E-posta RFC Protokol Desteği - Tam Standartlar ve Spesifikasyonlar Rehberi {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC E-posta Protokol Kütüphanesi Sahnesi" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [About This Document](#about-this-document)
-  * [Architecture Overview](#architecture-overview)
-* [Email Service Comparison - Protocol Support & RFC Standards Compliance](#email-service-comparison---protocol-support--rfc-standards-compliance)
-  * [Protocol Support Visualization](#protocol-support-visualization)
-* [Core Email Protocols](#core-email-protocols)
-  * [Email Protocol Flow](#email-protocol-flow)
-* [IMAP4 Email Protocol and Extensions](#imap4-email-protocol-and-extensions)
-  * [IMAP Protocol Differences from RFC Specifications](#imap-protocol-differences-from-rfc-specifications)
-  * [IMAP Extensions NOT Supported](#imap-extensions-not-supported)
-* [POP3 Email Protocol and Extensions](#pop3-email-protocol-and-extensions)
-  * [POP3 Protocol Differences from RFC Specifications](#pop3-protocol-differences-from-rfc-specifications)
-  * [POP3 Extensions NOT Supported](#pop3-extensions-not-supported)
-* [SMTP Email Protocol and Extensions](#smtp-email-protocol-and-extensions)
-  * [Delivery Status Notifications (DSN)](#delivery-status-notifications-dsn)
-  * [REQUIRETLS Support](#requiretls-support)
-  * [SMTP Extensions NOT Supported](#smtp-extensions-not-supported)
-* [JMAP Email Protocol](#jmap-email-protocol)
-* [Email Security](#email-security)
-  * [Email Security Architecture](#email-security-architecture)
-* [Email Message Authentication Protocols](#email-message-authentication-protocols)
-  * [Authentication Protocol Support](#authentication-protocol-support)
+## İçindekiler {#table-of-contents}
+
+* [Bu Belge Hakkında](#about-this-document)
+  * [Mimari Genel Bakış](#architecture-overview)
+* [E-posta Servisi Karşılaştırması - Protokol Desteği & RFC Standartlarına Uyum](#email-service-comparison---protocol-support--rfc-standards-compliance)
+  * [Protokol Desteği Görselleştirmesi](#protocol-support-visualization)
+* [Temel E-posta Protokolleri](#core-email-protocols)
+  * [E-posta Protokol Akışı](#email-protocol-flow)
+* [IMAP4 E-posta Protokolü ve Uzantıları](#imap4-email-protocol-and-extensions)
+  * [IMAP Protokolünün RFC Spesifikasyonlarından Farkları](#imap-protocol-differences-from-rfc-specifications)
+  * [Desteklenmeyen IMAP Uzantıları](#imap-extensions-not-supported)
+* [POP3 E-posta Protokolü ve Uzantıları](#pop3-email-protocol-and-extensions)
+  * [POP3 Protokolünün RFC Spesifikasyonlarından Farkları](#pop3-protocol-differences-from-rfc-specifications)
+  * [Desteklenmeyen POP3 Uzantıları](#pop3-extensions-not-supported)
+* [SMTP E-posta Protokolü ve Uzantıları](#smtp-email-protocol-and-extensions)
+  * [Teslim Durumu Bildirimleri (DSN)](#delivery-status-notifications-dsn)
+  * [REQUIRETLS Desteği](#requiretls-support)
+  * [Desteklenmeyen SMTP Uzantıları](#smtp-extensions-not-supported)
+* [JMAP E-posta Protokolü](#jmap-email-protocol)
+* [E-posta Güvenliği](#email-security)
+  * [E-posta Güvenlik Mimarisi](#email-security-architecture)
+* [E-posta Mesajı Kimlik Doğrulama Protokolleri](#email-message-authentication-protocols)
+  * [Kimlik Doğrulama Protokol Desteği](#authentication-protocol-support)
   * [DKIM (DomainKeys Identified Mail)](#dkim-domainkeys-identified-mail)
   * [SPF (Sender Policy Framework)](#spf-sender-policy-framework)
   * [DMARC (Domain-based Message Authentication, Reporting & Conformance)](#dmarc-domain-based-message-authentication-reporting--conformance)
   * [ARC (Authenticated Received Chain)](#arc-authenticated-received-chain)
-  * [Authentication Flow](#authentication-flow)
-* [Email Transport Security Protocols](#email-transport-security-protocols)
-  * [Transport Security Support](#transport-security-support)
+  * [Kimlik Doğrulama Akışı](#authentication-flow)
+* [E-posta Taşıma Güvenlik Protokolleri](#email-transport-security-protocols)
+  * [Taşıma Güvenliği Desteği](#transport-security-support)
   * [TLS (Transport Layer Security)](#tls-transport-layer-security)
   * [MTA-STS (Mail Transfer Agent Strict Transport Security)](#mta-sts-mail-transfer-agent-strict-transport-security)
   * [DANE (DNS-based Authentication of Named Entities)](#dane-dns-based-authentication-of-named-entities)
   * [REQUIRETLS](#requiretls)
-  * [Transport Security Flow](#transport-security-flow)
-* [Email Message Encryption](#email-message-encryption)
-  * [Encryption Support](#encryption-support)
+  * [Taşıma Güvenliği Akışı](#transport-security-flow)
+* [E-posta Mesajı Şifreleme](#email-message-encryption)
+  * [Şifreleme Desteği](#encryption-support)
   * [OpenPGP (Pretty Good Privacy)](#openpgp-pretty-good-privacy)
   * [S/MIME (Secure/Multipurpose Internet Mail Extensions)](#smime-securemultipurpose-internet-mail-extensions)
-  * [SQLite Mailbox Encryption](#sqlite-mailbox-encryption)
-  * [Encryption Comparison](#encryption-comparison)
-  * [Encryption Flow](#encryption-flow)
-* [Extended Functionality](#extended-functionality)
-* [Email Message Format Standards](#email-message-format-standards)
-  * [Format Standards Support](#format-standards-support)
+  * [SQLite Posta Kutusu Şifreleme](#sqlite-mailbox-encryption)
+  * [Şifreleme Karşılaştırması](#encryption-comparison)
+  * [Şifreleme Akışı](#encryption-flow)
+* [Genişletilmiş İşlevsellik](#extended-functionality)
+* [E-posta Mesaj Formatı Standartları](#email-message-format-standards)
+  * [Format Standartları Desteği](#format-standards-support)
   * [MIME (Multipurpose Internet Mail Extensions)](#mime-multipurpose-internet-mail-extensions)
-  * [SMTPUTF8 and Email Address Internationalization](#smtputf8-and-email-address-internationalization)
-* [Calendaring and Contacts Protocols](#calendaring-and-contacts-protocols)
-  * [CalDAV and CardDAV Support](#caldav-and-carddav-support)
-  * [CalDAV (Calendar Access)](#caldav-calendar-access)
-  * [CardDAV (Contact Access)](#carddav-contact-access)
-  * [Tasks and Reminders (CalDAV VTODO)](#tasks-and-reminders-caldav-vtodo)
-  * [CalDAV/CardDAV Synchronization Flow](#caldavcarddav-synchronization-flow)
-  * [Calendaring Extensions NOT Supported](#calendaring-extensions-not-supported)
-* [Email Message Filtering](#email-message-filtering)
+  * [SMTPUTF8 ve E-posta Adresi Uluslararasılaştırması](#smtputf8-and-email-address-internationalization)
+* [Takvim ve Kişiler Protokolleri](#calendaring-and-contacts-protocols)
+  * [CalDAV ve CardDAV Desteği](#caldav-and-carddav-support)
+  * [CalDAV (Takvim Erişimi)](#caldav-calendar-access)
+  * [CardDAV (Kişi Erişimi)](#carddav-contact-access)
+  * [Görevler ve Hatırlatıcılar (CalDAV VTODO)](#tasks-and-reminders-caldav-vtodo)
+  * [CalDAV/CardDAV Senkronizasyon Akışı](#caldavcarddav-synchronization-flow)
+  * [Desteklenmeyen Takvim Uzantıları](#calendaring-extensions-not-supported)
+* [E-posta Mesajı Filtreleme](#email-message-filtering)
   * [Sieve (RFC 5228)](#sieve-rfc-5228)
   * [ManageSieve (RFC 5804)](#managesieve-rfc-5804)
-* [Storage Optimization](#storage-optimization)
-  * [Architecture: Dual-Layer Storage Optimization](#architecture-dual-layer-storage-optimization)
-* [Attachment Deduplication](#attachment-deduplication)
-  * [How It Works](#how-it-works)
-  * [Deduplication Flow](#deduplication-flow)
-  * [Magic Number System](#magic-number-system)
-  * [Key Differences: WildDuck vs Forward Email](#key-differences-wildduck-vs-forward-email)
-* [Brotli Compression](#brotli-compression)
-  * [What Gets Compressed](#what-gets-compressed)
-  * [Compression Configuration](#compression-configuration)
-  * [Magic Header: "FEBR"](#magic-header-febr)
-  * [Compression Process](#compression-process)
-  * [Decompression Process](#decompression-process)
-  * [Backwards Compatibility](#backwards-compatibility)
-  * [Storage Savings Statistics](#storage-savings-statistics)
-  * [Migration Process](#migration-process)
-  * [Combined Storage Efficiency](#combined-storage-efficiency)
-  * [Technical Implementation Details](#technical-implementation-details)
-  * [Why No Other Provider Does This](#why-no-other-provider-does-this)
-* [Modern Features](#modern-features)
-* [Complete REST API for Email Management](#complete-rest-api-for-email-management)
-  * [API Categories (39 Endpoints)](#api-categories-39-endpoints)
-  * [Technical Details](#technical-details)
-  * [Real-World Use Cases](#real-world-use-cases)
-  * [Key API Features](#key-api-features)
-  * [API Architecture](#api-architecture)
-* [iOS Push Notifications](#ios-push-notifications)
-  * [How It Works](#how-it-works-1)
-  * [Key Features](#key-features)
-  * [What Makes This Special](#what-makes-this-special)
-  * [Implementation Details](#implementation-details)
-  * [Comparison with Other Services](#comparison-with-other-services)
-* [Testing and Verification](#testing-and-verification)
-* [Protocol Capability Tests](#protocol-capability-tests)
-  * [Test Methodology](#test-methodology)
-  * [Test Scripts](#test-scripts)
-  * [Test Results Summary](#test-results-summary)
-  * [Detailed Test Results](#detailed-test-results)
-  * [Notes on Test Results](#notes-on-test-results)
-* [Summary](#summary)
-  * [Key Differentiators](#key-differentiators)
+* [Depolama Optimizasyonu](#storage-optimization)
+  * [Mimari: Çift Katmanlı Depolama Optimizasyonu](#architecture-dual-layer-storage-optimization)
+* [Ek Dosya Tekilleştirme](#attachment-deduplication)
+  * [Nasıl Çalışır](#how-it-works)
+  * [Tekilleştirme Akışı](#deduplication-flow)
+  * [Sihirli Numara Sistemi](#magic-number-system)
+  * [Temel Farklar: WildDuck vs Forward Email](#key-differences-wildduck-vs-forward-email)
+* [Brotli Sıkıştırma](#brotli-compression)
+  * [Neler Sıkıştırılır](#what-gets-compressed)
+  * [Sıkıştırma Yapılandırması](#compression-configuration)
+  * [Sihirli Başlık: "FEBR"](#magic-header-febr)
+  * [Sıkıştırma Süreci](#compression-process)
+  * [Açma Süreci](#decompression-process)
+  * [Geriye Dönük Uyumluluk](#backwards-compatibility)
+  * [Depolama Tasarrufu İstatistikleri](#storage-savings-statistics)
+  * [Geçiş Süreci](#migration-process)
+  * [Birleşik Depolama Verimliliği](#combined-storage-efficiency)
+  * [Teknik Uygulama Detayları](#technical-implementation-details)
+  * [Neden Başka Hiçbir Sağlayıcı Bunu Yapmıyor](#why-no-other-provider-does-this)
+* [Modern Özellikler](#modern-features)
+* [E-posta Yönetimi için Tam REST API](#complete-rest-api-for-email-management)
+  * [API Kategorileri (39 Uç Nokta)](#api-categories-39-endpoints)
+  * [Teknik Detaylar](#technical-details)
+  * [Gerçek Dünya Kullanım Senaryoları](#real-world-use-cases)
+  * [Anahtar API Özellikleri](#key-api-features)
+  * [API Mimarisi](#api-architecture)
+* [iOS Push Bildirimleri](#ios-push-notifications)
+  * [Nasıl Çalışır](#how-it-works-1)
+  * [Anahtar Özellikler](#key-features)
+  * [Bunu Özel Kılan Nedir](#what-makes-this-special)
+  * [Uygulama Detayları](#implementation-details)
+  * [Diğer Servislerle Karşılaştırma](#comparison-with-other-services)
+* [Test ve Doğrulama](#testing-and-verification)
+* [Protokol Yetenek Testleri](#protocol-capability-tests)
+  * [Test Metodolojisi](#test-methodology)
+  * [Test Betikleri](#test-scripts)
+  * [Test Sonuçları Özeti](#test-results-summary)
+  * [Detaylı Test Sonuçları](#detailed-test-results)
+  * [Test Sonuçları Notları](#notes-on-test-results)
+* [Özet](#summary)
+  * [Anahtar Farklılaştırıcılar](#key-differentiators)
+## Bu Belge Hakkında {#about-this-document}
 
-## About This Document {#about-this-document}
-
-This document outlines the RFC (Request for Comments) protocol support for Forward Email. Since Forward Email uses [WildDuck](https://github.com/nodemailer/wildduck) under the hood for IMAP/POP3 functionality, the protocol support and limitations documented here reflect WildDuck's implementation.
+Bu belge, Forward Email için RFC (Yorumlar Talebi) protokol desteğini özetlemektedir. Forward Email, IMAP/POP3 işlevselliği için altında [WildDuck](https://github.com/nodemailer/wildduck) kullandığından, burada belgelenen protokol desteği ve sınırlamalar WildDuck'ın uygulamasını yansıtmaktadır.
 
 > \[!IMPORTANT]
-> Forward Email uses [SQLite](https://sqlite.org/) for message storage instead of MongoDB (which WildDuck originally used). This affects certain implementation details documented below.
+> Forward Email, mesaj depolama için MongoDB yerine [SQLite](https://sqlite.org/) kullanır (WildDuck başlangıçta MongoDB kullanıyordu). Bu, aşağıda belgelenen bazı uygulama detaylarını etkiler.
 
-**Source Code:** <https://github.com/forwardemail/forwardemail.net>
+**Kaynak Kodu:** <https://github.com/forwardemail/forwardemail.net>
 
-### Architecture Overview {#architecture-overview}
+### Mimari Genel Bakış {#architecture-overview}
 
 ```mermaid
 graph TB
@@ -142,72 +142,72 @@ graph TB
 
 ---
 
-## Email Service Comparison - Protocol Support & RFC Standards Compliance {#email-service-comparison---protocol-support--rfc-standards-compliance}
+
+## E-posta Servisi Karşılaştırması - Protokol Desteği & RFC Standartlarına Uyum {#email-service-comparison---protocol-support--rfc-standards-compliance}
 
 > \[!IMPORTANT]
-> **Sandboxed and Quantum-resistant Encryption:** Forward Email is the only email service that stores individually encrypted SQLite mailboxes using your password (which only you have). Each mailbox is encrypted with [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305), self-contained, sandboxed, and portable. If you forget your password, you lose your mailbox - not even Forward Email can recover it. See [Quantum-Safe Encrypted Email](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) for details.
+> **Sandboxlanmış ve Kuantum Dirençli Şifreleme:** Forward Email, şifrenizi kullanarak bireysel olarak şifrelenmiş SQLite posta kutularını depolayan tek e-posta servisidir (şifre sadece sizde vardır). Her posta kutusu [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305) ile şifrelenmiş, kendi içinde bağımsız, sandboxlanmış ve taşınabilirdir. Şifrenizi unutursanız posta kutunuzu kaybedersiniz - Forward Email bile kurtaramaz. Detaylar için [Quantum-Safe Encrypted Email](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) sayfasına bakınız.
 
-Compare email protocol support and RFC standards implementation across major email providers:
+Büyük e-posta sağlayıcıları arasında e-posta protokol desteği ve RFC standartlarının uygulanmasını karşılaştırın:
 
-| Feature | Forward Email | Postfix/Dovecot | Gmail | iCloud Mail | Outlook.com | Fastmail | Yahoo/AOL (Verizon) | ProtonMail | Tutanota |
+| Özellik                       | Forward Email                                                                                  | Postfix/Dovecot                                                                    | Gmail                                                                             | iCloud Mail                                           | Outlook.com                                                                                                                                                          | Fastmail                                                                                 | Yahoo/AOL (Verizon)                                                  | ProtonMail                                                                     | Tutanota                                                          |
 | ----------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| **Custom Domain Price** | [Free](https://forwardemail.net/en/pricing) | [Free](https://www.postfix.org/) | [$7.20/mo](https://workspace.google.com/pricing) | [$0.99/mo](https://support.apple.com/en-us/102622) | [$7.20/mo](https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-basic) | [$5/mo](https://www.fastmail.com/pricing/) | [$3.19/mo](https://www.turbify.com/mail) | [$4.99/mo](https://proton.me/mail/pricing) | [$3.27/mo](https://tuta.com/pricing) |
-| **IMAP4rev1 (RFC 3501)** | ✅ [Supported](#imap4-email-protocol-and-extensions) | ✅ [Supported](https://www.dovecot.org/) | ✅ [Supported](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **IMAP4rev2 (RFC 9051)** | ⚠️ [Partial](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) | ⚠️ [Partial](https://www.dovecot.org/) | ⚠️ [31%](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ⚠️ [92%](https://support.apple.com/en-us/102431) | ⚠️ [46%](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ⚠️ [69%](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ⚠️ [85%](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **POP3 (RFC 1939)** | ✅ [Supported](#pop3-email-protocol-and-extensions) | ✅ [Supported](https://www.dovecot.org/) | ✅ [Supported](https://support.google.com/mail/answer/7104828) | ❌ Not Supported | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN4075.html) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **SMTP (RFC 5321)** | ✅ [Supported](#smtp-email-protocol-and-extensions) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/mail/answer/7126229) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN4075.html) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **JMAP (RFC 8620)** | ❌ [Not Supported](#jmap-email-protocol) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.com/dev/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **DKIM (RFC 6376)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://github.com/trusteddomainproject/OpenDKIM) | ✅ [Supported](https://support.google.com/a/answer/174124) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dkim-configure) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **SPF (RFC 7208)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/33786) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/how-office-365-uses-spf-to-prevent-spoofing) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **DMARC (RFC 7489)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/2466580) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dmarc-to-validate-email) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **ARC (RFC 8617)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://github.com/trusteddomainproject/OpenARC) | ✅ [Supported](https://support.google.com/a/answer/2466580) | ❌ Not Supported | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-arc-configure) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ✅ [Supported](https://proton.me/blog/what-is-authenticated-received-chain-arc) | ❌ Not Supported |
-| **MTA-STS (RFC 8461)** | ✅ [Supported](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/9261504) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/security) |
-| **DANE (RFC 7671)** | ⚠️ [Partial](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dane) |
-| **DSN (RFC 3461)** | ✅ [Supported](#smtp-email-protocol-and-extensions) | ✅ [Supported](https://www.postfix.org/DSN_README.html) | ❌ Not Supported | ✅ [Supported](#protocol-capability-tests) | ✅ [Supported](#protocol-capability-tests) | ⚠️ [Unknown](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **REQUIRETLS (RFC 8689)** | ✅ [Supported](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/TLS_README.html#server_require_tls) | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **ManageSieve (RFC 5804)** | ✅ [Supported](#managesieve-rfc-5804) | ✅ [Supported](https://doc.dovecot.org/admin_manual/pigeonhole_managesieve_server/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **OpenPGP (RFC 9580)** | ✅ [Supported](#email-message-encryption) | ⚠️ [Via Plugins](https://www.gnupg.org/) | ⚠️ [Third-party](https://github.com/google/end-to-end) | ⚠️ [Third-party](https://gpgtools.org/) | ⚠️ [Third-party](https://gpg4win.org/) | ⚠️ [Third-party](https://www.fastmail.help/hc/en-us/articles/360060590573) | ⚠️ [Third-party](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Native](https://proton.me/support/pgp-mime-pgp-inline) | ❌ Not Supported |
-| **S/MIME (RFC 8551)** | ✅ [Supported](#email-message-encryption) | ✅ [Supported](https://www.openssl.org/) | ✅ [Supported](https://support.google.com/mail/answer/81126) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/send-view-and-reply-to-encrypted-messages-in-outlook-for-pc-eaa43495-9bbb-4fca-922a-df90dee51980) | ⚠️ [Partial](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/pgp-mime-pgp-inline) | ❌ Not Supported |
-| **CalDAV (RFC 4791)** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ [Supported](https://www.davical.org/) | ✅ [Supported](https://developers.google.com/calendar/caldav/v2/guide) | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Via Bridge](https://proton.me/support/proton-calendar) | ❌ Not Supported |
-| **CardDAV (RFC 6352)** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ [Supported](https://www.davical.org/) | ✅ [Supported](https://developers.google.com/people/carddav) | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Via Bridge](https://proton.me/support/proton-contacts) | ❌ Not Supported |
-| **Tasks (VTODO)** | ✅ [Supported](#tasks-and-reminders-caldav-vtodo) | ✅ [Supported](https://www.davical.org/) | ❌ Not Supported | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **Sieve (RFC 5228)** | ✅ [Supported](#sieve-rfc-5228) | ✅ [Supported](https://www.dovecot.org/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **Catch-All** | ✅ [Supported](https://forwardemail.net/en/faq#can-i-have-multiple-global-catch-all-recipients) | ✅ Supported | ✅ [Supported](https://support.google.com/a/answer/4524505) | ❌ Not Supported | ❌ [Not Supported](https://learn.microsoft.com/en-us/exchange/recipients-in-exchange-online/manage-mail-users) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://tuta.com/support#catch-all-alias) |
-| **Unlimited Aliases** | ✅ [Supported](https://forwardemail.net/en/faq#advanced-features) | ✅ Supported | ✅ [Supported](https://support.google.com/a/answer/33327) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/addresses-and-aliases) | ✅ [Supported](https://tuta.com/support#aliases) |
-| **Two-Factor Auth** | ✅ [Supported](https://forwardemail.net/en/faq#do-you-support-passkeys-and-webauthn) | ✅ Supported | ✅ [Supported](https://support.google.com/accounts/answer/185839) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/account-billing/how-to-use-two-step-verification-with-your-microsoft-account-c7910146-672f-01e9-50a0-93b4585e7eb4) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN5013.html) | ✅ [Supported](https://proton.me/support/two-factor-authentication-2fa) | ✅ [Supported](https://tuta.com/support#two-factor-authentication) |
-| **Push Notifications** | ✅ [Supported](#ios-push-notifications) | ⚠️ Via Plugins | ✅ [Supported](https://developers.google.com/gmail/api/guides/push) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/notifications) | ✅ [Supported](https://tuta.com/support#push-notifications) |
-| **Calendar/Contacts Desktop** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ Supported | ✅ [Supported](https://support.google.com/calendar) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/calendar-and-contacts-in-outlook-com-d3e8a6e6-5c1f-4e3e-9f1e-7c0f0e0c0c0c) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/proton-calendar) | ❌ Not Supported |
-| **Advanced Search** | ✅ [Supported](https://forwardemail.net/en/email-api) | ✅ Supported | ✅ [Supported](https://support.google.com/mail/answer/7190) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/search-for-email-messages-in-outlook-com-6f5f2e92-9d5e-4c4e-9b0e-0c0c0c0c0c0c) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN3561.html) | ✅ [Supported](https://proton.me/support/search-and-filters) | ✅ [Supported](https://tuta.com/support) |
-| **API/Integrations** | ✅ [39 Endpoints](https://forwardemail.net/en/email-api) | ✅ Supported | ✅ [Supported](https://developers.google.com/gmail/api) | ❌ Not Supported | ✅ [Supported](https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/proton-mail-api) | ❌ Not Supported |
-
-### Protocol Support Visualization {#protocol-support-visualization}
+| **Özel Alan Adı Ücreti**       | [Ücretsiz](https://forwardemail.net/en/pricing)                                                | [Ücretsiz](https://www.postfix.org/)                                              | [$7.20/ay](https://workspace.google.com/pricing)                                 | [$0.99/ay](https://support.apple.com/en-us/102622)    | [$7.20/ay](https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-basic)                                                                      | [$5/ay](https://www.fastmail.com/pricing/)                                               | [$3.19/ay](https://www.turbify.com/mail)                             | [$4.99/ay](https://proton.me/mail/pricing)                                     | [$3.27/ay](https://tuta.com/pricing)                              |
+| **IMAP4rev1 (RFC 3501)**      | ✅ [Destekleniyor](#imap4-email-protocol-and-extensions)                                        | ✅ [Destekleniyor](https://www.dovecot.org/)                                       | ✅ [Destekleniyor](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                            | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Destekleniyor](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Köprü Üzerinden](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Desteklenmiyor                                                 |
+| **IMAP4rev2 (RFC 9051)**      | ⚠️ [Kısmi](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)    | ⚠️ [Kısmi](https://www.dovecot.org/)                                              | ⚠️ [%31](https://developers.google.com/workspace/gmail/imap/imap-extensions)      | ⚠️ [%92](https://support.apple.com/en-us/102431)      | ⚠️ [%46](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                                 | ⚠️ [%69](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards)      | ⚠️ [%85](https://senders.yahooinc.com/developer/documentation/)      | ⚠️ [Köprü Üzerinden](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Desteklenmiyor                                                 |
+| **POP3 (RFC 1939)**           | ✅ [Destekleniyor](#pop3-email-protocol-and-extensions)                                         | ✅ [Destekleniyor](https://www.dovecot.org/)                                       | ✅ [Destekleniyor](https://support.google.com/mail/answer/7104828)                 | ❌ Desteklenmiyor                                     | ✅ [Destekleniyor](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                            | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Destekleniyor](https://help.yahoo.com/kb/SLN4075.html)                | ⚠️ [Köprü Üzerinden](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Desteklenmiyor                                                 |
+| **SMTP (RFC 5321)**           | ✅ [Destekleniyor](#smtp-email-protocol-and-extensions)                                         | ✅ [Destekleniyor](https://www.postfix.org/)                                       | ✅ [Destekleniyor](https://support.google.com/mail/answer/7126229)                 | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                            | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Destekleniyor](https://help.yahoo.com/kb/SLN4075.html)                | ⚠️ [Köprü Üzerinden](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Desteklenmiyor                                                 |
+| **JMAP (RFC 8620)**           | ❌ [Desteklenmiyor](#jmap-email-protocol)                                                      | ❌ Desteklenmiyor                                                                   | ❌ Desteklenmiyor                                                                  | ❌ Desteklenmiyor                                     | ❌ Desteklenmiyor                                                                                                                                                      | ✅ [Destekleniyor](https://www.fastmail.com/dev/)                                             | ❌ Desteklenmiyor                                                    | ❌ Desteklenmiyor                                                                | ❌ Desteklenmiyor                                                 |
+| **DKIM (RFC 6376)**           | ✅ [Destekleniyor](#email-message-authentication-protocols)                                     | ✅ [Destekleniyor](https://github.com/trusteddomainproject/OpenDKIM)               | ✅ [Destekleniyor](https://support.google.com/a/answer/174124)                     | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dkim-configure)                                                             | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Destekleniyor](https://help.yahoo.com/kb/SLN25426.html)               | ✅ [Destekleniyor](https://proton.me/support)                                       | ✅ [Destekleniyor](https://tuta.com/support#dkim)                      |
+| **SPF (RFC 7208)**            | ✅ [Destekleniyor](#email-message-authentication-protocols)                                     | ✅ [Destekleniyor](https://www.postfix.org/)                                       | ✅ [Destekleniyor](https://support.google.com/a/answer/33786)                      | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/how-office-365-uses-spf-to-prevent-spoofing)                              | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Destekleniyor](https://help.yahoo.com/kb/SLN25426.html)               | ✅ [Destekleniyor](https://proton.me/support)                                       | ✅ [Destekleniyor](https://tuta.com/support#dkim)                      |
+| **DMARC (RFC 7489)**          | ✅ [Destekleniyor](#email-message-authentication-protocols)                                     | ✅ [Destekleniyor](https://www.postfix.org/)                                       | ✅ [Destekleniyor](https://support.google.com/a/answer/2466580)                    | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dmarc-to-validate-email)                                              | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Destekleniyor](https://help.yahoo.com/kb/SLN25426.html)               | ✅ [Destekleniyor](https://proton.me/support)                                       | ✅ [Destekleniyor](https://tuta.com/support#dkim)                      |
+| **ARC (RFC 8617)**            | ✅ [Destekleniyor](#email-message-authentication-protocols)                                     | ✅ [Destekleniyor](https://github.com/trusteddomainproject/OpenARC)                | ✅ [Destekleniyor](https://support.google.com/a/answer/2466580)                    | ❌ Desteklenmiyor                                     | ✅ [Destekleniyor](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-arc-configure)                                                              | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Destekleniyor](https://senders.yahooinc.com/developer/documentation/) | ✅ [Destekleniyor](https://proton.me/blog/what-is-authenticated-received-chain-arc) | ❌ Desteklenmiyor                                                 |
+| **MTA-STS (RFC 8461)**        | ✅ [Destekleniyor](#email-transport-security-protocols)                                         | ✅ [Destekleniyor](https://www.postfix.org/)                                       | ✅ [Destekleniyor](https://support.google.com/a/answer/9261504)                    | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about)                                                                      | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Destekleniyor](https://senders.yahooinc.com/developer/documentation/) | ✅ [Destekleniyor](https://proton.me/support)                                       | ✅ [Destekleniyor](https://tuta.com/security)                          |
+| **DANE (RFC 7671)**           | ✅ [Destekleniyor](#email-transport-security-protocols)                                         | ✅ [Destekleniyor](https://www.postfix.org/)                                       | ❌ Desteklenmiyor                                                                  | ❌ Desteklenmiyor                                     | ❌ Desteklenmiyor                                                                                                                                                      | ❌ Desteklenmiyor                                                                          | ❌ Desteklenmiyor                                                    | ✅ [Destekleniyor](https://proton.me/support)                                       | ✅ [Destekleniyor](https://tuta.com/support#dane)                      |
+| **DSN (RFC 3461)**            | ✅ [Destekleniyor](#smtp-email-protocol-and-extensions)                                         | ✅ [Destekleniyor](https://www.postfix.org/DSN_README.html)                        | ❌ Desteklenmiyor                                                                  | ✅ [Destekleniyor](#protocol-capability-tests)           | ✅ [Destekleniyor](#protocol-capability-tests)                                                                                                                            | ⚠️ [Bilinmiyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards)  | ❌ Desteklenmiyor                                                    | ⚠️ [Köprü Üzerinden](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Desteklenmiyor                                                 |
+| **REQUIRETLS (RFC 8689)**     | ✅ [Destekleniyor](#email-transport-security-protocols)                                         | ✅ [Destekleniyor](https://www.postfix.org/TLS_README.html#server_require_tls)     | ⚠️ Bilinmiyor                                                                     | ⚠️ Bilinmiyor                                        | ⚠️ Bilinmiyor                                                                                                                                                           | ⚠️ Bilinmiyor                                                                             | ⚠️ Bilinmiyor                                                       | ⚠️ [Köprü Üzerinden](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Desteklenmiyor                                                 |
+| **ManageSieve (RFC 5804)**    | ✅ [Destekleniyor](#managesieve-rfc-5804)                                                       | ✅ [Destekleniyor](https://doc.dovecot.org/admin_manual/pigeonhole_managesieve_server/) | ❌ Desteklenmiyor                                                                  | ❌ Desteklenmiyor                                     | ❌ Desteklenmiyor                                                                                                                                                      | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Desteklenmiyor                                                    | ❌ Desteklenmiyor                                                                | ❌ Desteklenmiyor                                                 |
+| **OpenPGP (RFC 9580)**        | ✅ [Destekleniyor](#email-message-encryption)                                                   | ⚠️ [Eklentilerle](https://www.gnupg.org/)                                         | ⚠️ [Üçüncü taraf](https://github.com/google/end-to-end)                          | ⚠️ [Üçüncü taraf](https://gpgtools.org/)               | ⚠️ [Üçüncü taraf](https://gpg4win.org/)                                                                                                                               | ⚠️ [Üçüncü taraf](https://www.fastmail.help/hc/en-us/articles/360060590573)               | ⚠️ [Üçüncü taraf](https://help.yahoo.com/kb/SLN25426.html)            | ✅ [Yerel](https://proton.me/support/pgp-mime-pgp-inline)                      | ❌ Desteklenmiyor                                                 |
+| **S/MIME (RFC 8551)**         | ✅ [Destekleniyor](#email-message-encryption)                                                   | ✅ [Destekleniyor](https://www.openssl.org/)                                       | ✅ [Destekleniyor](https://support.google.com/mail/answer/81126)                 | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://support.microsoft.com/en-us/office/send-view-and-reply-to-encrypted-messages-in-outlook-for-pc-eaa43495-9bbb-4fca-922a-df90dee51980)           | ⚠️ [Kısmi](https://www.fastmail.help/hc/en-us/articles/360060590573)                   | ❌ Desteklenmiyor                                                    | ✅ [Destekleniyor](https://proton.me/support/pgp-mime-pgp-inline)                   | ❌ Desteklenmiyor                                                 |
+| **CalDAV (RFC 4791)**         | ✅ [Destekleniyor](#calendaring-and-contacts-protocols)                                         | ✅ [Destekleniyor](https://www.davical.org/)                                       | ✅ [Destekleniyor](https://developers.google.com/calendar/caldav/v2/guide)       | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ❌ Desteklenmiyor                                                                                                                                                      | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Desteklenmiyor                                                    | ✅ [Köprü Üzerinden](https://proton.me/support/proton-calendar)                      | ❌ Desteklenmiyor                                                 |
+| **CardDAV (RFC 6352)**        | ✅ [Destekleniyor](#calendaring-and-contacts-protocols)                                         | ✅ [Destekleniyor](https://www.davical.org/)                                       | ✅ [Destekleniyor](https://developers.google.com/people/carddav)                 | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ❌ Desteklenmiyor                                                                                                                                                      | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Desteklenmiyor                                                    | ✅ [Köprü Üzerinden](https://proton.me/support/proton-contacts)                      | ❌ Desteklenmiyor                                                 |
+| **Görevler (VTODO)**          | ✅ [Destekleniyor](#tasks-and-reminders-caldav-vtodo)                                           | ✅ [Destekleniyor](https://www.davical.org/)                                       | ❌ Desteklenmiyor                                                                  | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ❌ Desteklenmiyor                                                                                                                                                      | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Desteklenmiyor                                                    | ❌ Desteklenmiyor                                                                | ❌ Desteklenmiyor                                                 |
+| **Sieve (RFC 5228)**          | ✅ [Destekleniyor](#sieve-rfc-5228)                                                             | ✅ [Destekleniyor](https://www.dovecot.org/)                                       | ❌ Desteklenmiyor                                                                  | ❌ Desteklenmiyor                                     | ❌ Desteklenmiyor                                                                                                                                                      | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Desteklenmiyor                                                    | ❌ Desteklenmiyor                                                                | ❌ Desteklenmiyor                                                 |
+| **Catch-All**                 | ✅ [Destekleniyor](https://forwardemail.net/en/faq#can-i-have-multiple-global-catch-all-recipients) | ✅ Destekleniyor                                                                    | ✅ [Destekleniyor](https://support.google.com/a/answer/4524505)                  | ❌ Desteklenmiyor                                     | ❌ [Desteklenmiyor](https://learn.microsoft.com/en-us/exchange/recipients-in-exchange-online/manage-mail-users)                                                        | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Desteklenmiyor                                                    | ❌ Desteklenmiyor                                                                | ✅ [Destekleniyor](https://tuta.com/support#catch-all-alias)           |
+| **Sınırsız Takma Adlar**      | ✅ [Destekleniyor](https://forwardemail.net/en/faq#advanced-features)                           | ✅ Destekleniyor                                                                    | ✅ [Destekleniyor](https://support.google.com/a/answer/33327)                    | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://support.microsoft.com/en-us/office/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2)                           | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Desteklenmiyor                                                    | ✅ [Destekleniyor](https://proton.me/support/addresses-and-aliases)                 | ✅ [Destekleniyor](https://tuta.com/support#aliases)                   |
+| **İki Faktörlü Kimlik Doğrulama** | ✅ [Destekleniyor](https://forwardemail.net/en/faq#do-you-support-passkeys-and-webauthn)        | ✅ Destekleniyor                                                                    | ✅ [Destekleniyor](https://support.google.com/accounts/answer/185839)            | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://support.microsoft.com/en-us/account-billing/how-to-use-two-step-verification-with-your-microsoft-account-c7910146-672f-01e9-50a0-93b4585e7eb4) | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Destekleniyor](https://help.yahoo.com/kb/SLN5013.html)                | ✅ [Destekleniyor](https://proton.me/support/two-factor-authentication-2fa)         | ✅ [Destekleniyor](https://tuta.com/support#two-factor-authentication) |
+| **Push Bildirimleri**         | ✅ [Destekleniyor](#ios-push-notifications)                                                     | ⚠️ Eklentilerle                                                                     | ✅ [Destekleniyor](https://developers.google.com/gmail/api/guides/push)          | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks)                                                                        | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Desteklenmiyor                                                    | ✅ [Destekleniyor](https://proton.me/support/notifications)                         | ✅ [Destekleniyor](https://tuta.com/support#push-notifications)        |
+| **Takvim/Rehber Masaüstü**   | ✅ [Destekleniyor](#calendaring-and-contacts-protocols)                                         | ✅ Destekleniyor                                                                    | ✅ [Destekleniyor](https://support.google.com/calendar)                          | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://support.microsoft.com/en-us/office/calendar-and-contacts-in-outlook-com-d3e8a6e6-5c1f-4e3e-9f1e-7c0f0e0c0c0c)                                  | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Desteklenmiyor                                                    | ✅ [Destekleniyor](https://proton.me/support/proton-calendar)                       | ❌ Desteklenmiyor                                                 |
+| **Gelişmiş Arama**            | ✅ [Destekleniyor](https://forwardemail.net/en/email-api)                                       | ✅ Destekleniyor                                                                    | ✅ [Destekleniyor](https://support.google.com/mail/answer/7190)                  | ✅ [Destekleniyor](https://support.apple.com/en-us/102431) | ✅ [Destekleniyor](https://support.microsoft.com/en-us/office/search-for-email-messages-in-outlook-com-6f5f2e92-9d5e-4c4e-9b0e-0c0c0c0c0c0c)                              | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Destekleniyor](https://help.yahoo.com/kb/SLN3561.html)                | ✅ [Destekleniyor](https://proton.me/support/search-and-filters)                    | ✅ [Destekleniyor](https://tuta.com/support)                           |
+| **API/Entegrasyonlar**        | ✅ [39 Uç Nokta](https://forwardemail.net/en/email-api)                                         | ✅ Destekleniyor                                                                    | ✅ [Destekleniyor](https://developers.google.com/gmail/api)                      | ❌ Desteklenmiyor                                     | ✅ [Destekleniyor](https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview)                                                                               | ✅ [Destekleniyor](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Desteklenmiyor                                                    | ✅ [Destekleniyor](https://proton.me/support/proton-mail-api)                       | ❌ Desteklenmiyor                                                 |
+### Protokol Desteği Görselleştirmesi {#protocol-support-visualization}
 
 ```mermaid
 graph LR
-    subgraph "Email Protocols"
+    subgraph "E-posta Protokolleri"
         IMAP[IMAP4rev1/rev2]
         POP3[POP3]
         SMTP[SMTP]
         JMAP[JMAP]
     end
 
-    subgraph "Security"
+    subgraph "Güvenlik"
         AUTH[DKIM/SPF/DMARC/ARC]
         TLS[MTA-STS/DANE/REQUIRETLS]
         ENC[OpenPGP/S-MIME]
     end
 
-    subgraph "Extended"
+    subgraph "Genişletilmiş"
         CAL[CalDAV/CardDAV]
         FILTER[Sieve]
         API[REST API]
     end
 
-    IMAP -.->|Supported| AUTH
-    SMTP -.->|Supported| AUTH
-    SMTP -.->|Supported| TLS
-    IMAP -.->|Supported| ENC
-    SMTP -.->|Supported| ENC
+    IMAP -.->|Destekleniyor| AUTH
+    SMTP -.->|Destekleniyor| AUTH
+    SMTP -.->|Destekleniyor| TLS
+    IMAP -.->|Destekleniyor| ENC
+    SMTP -.->|Destekleniyor| ENC
 
     style IMAP fill:#9f9,stroke:#333
     style POP3 fill:#9f9,stroke:#333
@@ -223,357 +223,354 @@ graph LR
 
 ---
 
-## Core Email Protocols {#core-email-protocols}
 
-### Email Protocol Flow {#email-protocol-flow}
+## Temel E-posta Protokolleri {#core-email-protocols}
+
+### E-posta Protokol Akışı {#email-protocol-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Client as Email Client
-    participant SMTP as SMTP Server
-    participant IMAP as IMAP Server
-    participant Storage as SQLite Storage
+    participant Client as E-posta İstemcisi
+    participant SMTP as SMTP Sunucusu
+    participant IMAP as IMAP Sunucusu
+    participant Storage as SQLite Depolama
 
-    Client->>SMTP: Send Email (SMTP)
-    SMTP->>Storage: Store Message
-    Storage-->>SMTP: Confirm
+    Client->>SMTP: E-posta Gönder (SMTP)
+    SMTP->>Storage: Mesajı Kaydet
+    Storage-->>SMTP: Onayla
     SMTP-->>Client: 250 OK
 
-    Client->>IMAP: Fetch Messages (IMAP)
-    IMAP->>Storage: Query Messages
-    Storage-->>IMAP: Return Messages
-    IMAP-->>Client: * FETCH Response
+    Client->>IMAP: Mesajları Getir (IMAP)
+    IMAP->>Storage: Mesajları Sorgula
+    Storage-->>IMAP: Mesajları Döndür
+    IMAP-->>Client: * FETCH Yanıtı
 ```
 
-## IMAP4 Email Protocol and Extensions {#imap4-email-protocol-and-extensions}
+
+## IMAP4 E-posta Protokolü ve Uzantıları {#imap4-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) features.
+> Forward Email, IMAP4rev1 (RFC 3501) ve IMAP4rev2 (RFC 9051) özelliklerinin kısmi desteği ile uyumludur.
 
-Forward Email provides robust IMAP4 support through the WildDuck mail server implementation. The server implements IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) extensions.
+Forward Email, WildDuck posta sunucusu uygulaması aracılığıyla sağlam IMAP4 desteği sunar. Sunucu, IMAP4rev1 (RFC 3501) protokolünü IMAP4rev2 (RFC 9051) uzantılarının kısmi desteği ile uygular.
 
-Forward Email's IMAP functionality is provided by the [WildDuck](https://github.com/nodemailer/wildduck) dependency. The following email RFCs are supported:
+Forward Email'in IMAP işlevselliği, [WildDuck](https://github.com/nodemailer/wildduck) bağımlılığı tarafından sağlanmaktadır. Aşağıdaki e-posta RFC'leri desteklenmektedir:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
-| [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) | Internet Message Access Protocol (IMAP) - Version 4rev1 | Full support with intentional differences (see below) |
-| [RFC 2177](https://datatracker.ietf.org/doc/html/rfc2177) | IMAP4 IDLE command | Push-style notifications |
-| [RFC 2342](https://datatracker.ietf.org/doc/html/rfc2342) | IMAP4 Namespace | Mailbox namespace support |
-| [RFC 2087](https://datatracker.ietf.org/doc/html/rfc2087) | IMAP4 QUOTA extension | Storage quota management |
-| [RFC 2971](https://datatracker.ietf.org/doc/html/rfc2971) | IMAP4 ID extension | Client/server identification |
-| [RFC 5161](https://datatracker.ietf.org/doc/html/rfc5161) | IMAP4 ENABLE Extension | Enable IMAP extensions |
-| [RFC 4959](https://datatracker.ietf.org/doc/html/rfc4959) | IMAP Extension for SASL Initial Client Response (SASL-IR) | Initial client response |
-| [RFC 3691](https://datatracker.ietf.org/doc/html/rfc3691) | IMAP4 UNSELECT command | Close mailbox without EXPUNGE |
-| [RFC 4315](https://datatracker.ietf.org/doc/html/rfc4315) | IMAP UIDPLUS extension | Enhanced UID commands |
-| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Extensions: Quick Flag Changes Resynchronization (CONDSTORE) | Conditional STORE |
-| [RFC 6154](https://datatracker.ietf.org/doc/html/rfc6154) | IMAP LIST Extension for Special-Use Mailboxes | Special mailbox attributes |
-| [RFC 6851](https://datatracker.ietf.org/doc/html/rfc6851) | IMAP MOVE Extension | Atomic MOVE command |
-| [RFC 6855](https://datatracker.ietf.org/doc/html/rfc6855) | IMAP Support for UTF-8 | UTF-8 support |
-| [RFC 3348](https://datatracker.ietf.org/doc/html/rfc3348) | IMAP4 Child Mailbox Extension | Child mailbox information |
-| [RFC 7889](https://datatracker.ietf.org/doc/html/rfc7889) | IMAP4 Extension for Advertising Maximum Upload Size (APPENDLIMIT) | Maximum upload size |
+| RFC                                                       | Başlık                                                           | Uygulama Notları                                     |
+| --------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------- |
+| [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) | İnternet Mesaj Erişim Protokolü (IMAP) - Sürüm 4rev1             | Tam destek, kasıtlı farklılıklar ile (aşağıya bakınız) |
+| [RFC 2177](https://datatracker.ietf.org/doc/html/rfc2177) | IMAP4 IDLE komutu                                                | Push tarzı bildirimler                               |
+| [RFC 2342](https://datatracker.ietf.org/doc/html/rfc2342) | IMAP4 Ad Alanı                                                  | Posta kutusu ad alanı desteği                         |
+| [RFC 2087](https://datatracker.ietf.org/doc/html/rfc2087) | IMAP4 QUOTA uzantısı                                            | Depolama kota yönetimi                               |
+| [RFC 2971](https://datatracker.ietf.org/doc/html/rfc2971) | IMAP4 ID uzantısı                                               | İstemci/sunucu tanımlaması                            |
+| [RFC 5161](https://datatracker.ietf.org/doc/html/rfc5161) | IMAP4 ENABLE Uzantısı                                           | IMAP uzantılarını etkinleştirme                       |
+| [RFC 4959](https://datatracker.ietf.org/doc/html/rfc4959) | SASL İlk İstemci Yanıtına Yönelik IMAP Uzantısı (SASL-IR)        | İlk istemci yanıtı                                   |
+| [RFC 3691](https://datatracker.ietf.org/doc/html/rfc3691) | IMAP4 UNSELECT komutu                                           | EXPUNGE olmadan posta kutusunu kapatma               |
+| [RFC 4315](https://datatracker.ietf.org/doc/html/rfc4315) | IMAP UIDPLUS uzantısı                                           | Gelişmiş UID komutları                                |
+| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Uzantıları: Hızlı Bayrak Değişiklikleri Yeniden Senkronizasyonu (CONDSTORE) | Koşullu STORE                                        |
+| [RFC 6154](https://datatracker.ietf.org/doc/html/rfc6154) | Özel Kullanım Posta Kutuları için IMAP LIST Uzantısı             | Özel posta kutusu özellikleri                         |
+| [RFC 6851](https://datatracker.ietf.org/doc/html/rfc6851) | IMAP MOVE Uzantısı                                              | Atomik MOVE komutu                                   |
+| [RFC 6855](https://datatracker.ietf.org/doc/html/rfc6855) | UTF-8 için IMAP Desteği                                         | UTF-8 desteği                                        |
+| [RFC 3348](https://datatracker.ietf.org/doc/html/rfc3348) | IMAP4 Alt Posta Kutusu Uzantısı                                 | Alt posta kutusu bilgisi                             |
+| [RFC 7889](https://datatracker.ietf.org/doc/html/rfc7889) | Maksimum Yükleme Boyutunu Bildirmek için IMAP4 Uzantısı (APPENDLIMIT) | Maksimum yükleme boyutu                              |
+**Desteklenen IMAP Uzantıları:**
 
-**Supported IMAP Extensions:**
+| Uzantı            | RFC          | Durum       | Açıklama                       |
+| ----------------- | ------------ | ----------- | ----------------------------- |
+| IDLE              | RFC 2177     | ✅ Destekleniyor | Push tarzı bildirimler         |
+| NAMESPACE         | RFC 2342     | ✅ Destekleniyor | Posta kutusu isim alanı desteği |
+| QUOTA             | RFC 2087     | ✅ Destekleniyor | Depolama kotası yönetimi       |
+| ID                | RFC 2971     | ✅ Destekleniyor | İstemci/sunucu kimlik doğrulama |
+| ENABLE            | RFC 5161     | ✅ Destekleniyor | IMAP uzantılarını etkinleştir  |
+| SASL-IR           | RFC 4959     | ✅ Destekleniyor | İlk istemci yanıtı             |
+| UNSELECT          | RFC 3691     | ✅ Destekleniyor | EXPUNGE olmadan posta kutusunu kapatma |
+| UIDPLUS           | RFC 4315     | ✅ Destekleniyor | Gelişmiş UID komutları         |
+| CONDSTORE         | RFC 7162     | ✅ Destekleniyor | Koşullu STORE                 |
+| SPECIAL-USE       | RFC 6154     | ✅ Destekleniyor | Özel posta kutusu öznitelikleri |
+| MOVE              | RFC 6851     | ✅ Destekleniyor | Atomik MOVE komutu            |
+| UTF8=ACCEPT       | RFC 6855     | ✅ Destekleniyor | UTF-8 desteği                 |
+| CHILDREN          | RFC 3348     | ✅ Destekleniyor | Alt posta kutusu bilgisi      |
+| APPENDLIMIT       | RFC 7889     | ✅ Destekleniyor | Maksimum yükleme boyutu       |
+| XLIST             | Standart dışı | ✅ Destekleniyor | Gmail uyumlu klasör listesi   |
+| XAPPLEPUSHSERVICE | Standart dışı | ✅ Destekleniyor | Apple Push Bildirim Servisi   |
 
-| Extension | RFC | Status | Description |
-| ----------------- | ------------ | ----------- | ------------------------------- |
-| IDLE | RFC 2177 | ✅ Supported | Push-style notifications |
-| NAMESPACE | RFC 2342 | ✅ Supported | Mailbox namespace support |
-| QUOTA | RFC 2087 | ✅ Supported | Storage quota management |
-| ID | RFC 2971 | ✅ Supported | Client/server identification |
-| ENABLE | RFC 5161 | ✅ Supported | Enable IMAP extensions |
-| SASL-IR | RFC 4959 | ✅ Supported | Initial client response |
-| UNSELECT | RFC 3691 | ✅ Supported | Close mailbox without EXPUNGE |
-| UIDPLUS | RFC 4315 | ✅ Supported | Enhanced UID commands |
-| CONDSTORE | RFC 7162 | ✅ Supported | Conditional STORE |
-| SPECIAL-USE | RFC 6154 | ✅ Supported | Special mailbox attributes |
-| MOVE | RFC 6851 | ✅ Supported | Atomic MOVE command |
-| UTF8=ACCEPT | RFC 6855 | ✅ Supported | UTF-8 support |
-| CHILDREN | RFC 3348 | ✅ Supported | Child mailbox information |
-| APPENDLIMIT | RFC 7889 | ✅ Supported | Maximum upload size |
-| XLIST | Non-standard | ✅ Supported | Gmail-compatible folder listing |
-| XAPPLEPUSHSERVICE | Non-standard | ✅ Supported | Apple Push Notification Service |
-
-### IMAP Protocol Differences from RFC Specifications {#imap-protocol-differences-from-rfc-specifications}
+### RFC Spesifikasyonlarından IMAP Protokol Farkları {#imap-protocol-differences-from-rfc-specifications}
 
 > \[!WARNING]
-> The following differences from RFC specifications may affect client compatibility.
+> Aşağıdaki RFC spesifikasyonlarından farklılıklar istemci uyumluluğunu etkileyebilir.
 
-Forward Email intentionally deviates from some IMAP RFC specifications. These differences are inherited from WildDuck and are documented below:
+Forward Email, bazı IMAP RFC spesifikasyonlarından kasıtlı olarak sapmaktadır. Bu farklılıklar WildDuck'tan miras alınmış olup aşağıda belgelenmiştir:
 
-* **No \Recent flag:** The `\Recent` flag is not implemented. All messages are returned without this flag.
-* **RENAME doesn't affect subfolders:** When renaming a folder, subfolders are not automatically renamed. The folder hierarchy is flat in the database.
-* **INBOX cannot be renamed:** [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) permits renaming INBOX, but Forward Email explicitly prohibits it. See [WildDuck source code](https://github.com/nodemailer/wildduck/blob/master/imap-core/lib/commands/rename.js#L27).
-* **No unsolicited FLAGS responses:** When flags are changed, no unsolicited FLAGS responses are sent to the client.
-* **STORE returns NO for deleted messages:** Attempting to modify flags on deleted messages returns NO instead of silently ignoring.
-* **CHARSET ignored in SEARCH:** The `CHARSET` argument in SEARCH commands is ignored. All searches use UTF-8.
-* **MODSEQ metadata ignored:** `MODSEQ` metadata in STORE commands is ignored.
-* **SEARCH TEXT and SEARCH BODY:** Forward Email uses [SQLite FTS5](https://www.sqlite.org/fts5.html) (Full-Text Search) instead of MongoDB's `$text` search. This provides:
-  * Support for `NOT` operator (MongoDB doesn't support this)
-  * Ranked search results
-  * Sub-100ms search performance on large mailboxes
-* **Autoexpunge behavior:** Messages marked with `\Deleted` are automatically expunged when the mailbox is closed.
-* **Message fidelity:** Some message modifications may not preserve the exact original message structure.
+* **\Recent bayrağı yok:** `\Recent` bayrağı uygulanmamıştır. Tüm mesajlar bu bayraksız olarak döndürülür.
+* **RENAME alt klasörleri etkilemez:** Bir klasör yeniden adlandırıldığında, alt klasörler otomatik olarak yeniden adlandırılmaz. Klasör hiyerarşisi veritabanında düz yapıdadır.
+* **INBOX yeniden adlandırılamaz:** [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) INBOX'un yeniden adlandırılmasına izin verirken, Forward Email bunu açıkça yasaklar. Bkz. [WildDuck kaynak kodu](https://github.com/nodemailer/wildduck/blob/master/imap-core/lib/commands/rename.js#L27).
+* **İzinsiz FLAGS yanıtları yok:** Bayraklar değiştirildiğinde, istemciye izinsiz FLAGS yanıtları gönderilmez.
+* **STORE silinmiş mesajlar için NO döner:** Silinmiş mesajların bayraklarını değiştirmeye çalışmak, sessizce yok saymak yerine NO döner.
+* **SEARCH'te CHARSET göz ardı edilir:** SEARCH komutlarındaki `CHARSET` argümanı göz ardı edilir. Tüm aramalar UTF-8 kullanır.
+* **MODSEQ meta verisi göz ardı edilir:** STORE komutlarındaki `MODSEQ` meta verisi dikkate alınmaz.
+* **SEARCH TEXT ve SEARCH BODY:** Forward Email, MongoDB'nin `$text` araması yerine [SQLite FTS5](https://www.sqlite.org/fts5.html) (Tam Metin Arama) kullanır. Bu şunları sağlar:
+  * `NOT` operatörü desteği (MongoDB desteklemez)
+  * Sıralı arama sonuçları
+  * Büyük posta kutularında 100ms altı arama performansı
+* **Otomatik expunge davranışı:** `\Deleted` olarak işaretlenen mesajlar posta kutusu kapatıldığında otomatik olarak expunge edilir.
+* **Mesaj bütünlüğü:** Bazı mesaj değişiklikleri orijinal mesaj yapısını tam olarak korumayabilir.
 
-**IMAP4rev2 Partial Support:**
+**IMAP4rev2 Kısmi Destek:**
 
-Forward Email implements IMAP4rev1 (RFC 3501) with partial IMAP4rev2 (RFC 9051) support. The following IMAP4rev2 features are **not yet supported**:
+Forward Email, IMAP4rev1 (RFC 3501) uygular ve IMAP4rev2 (RFC 9051) özelliklerinin bir kısmını destekler. Aşağıdaki IMAP4rev2 özellikleri **henüz desteklenmemektedir**:
 
-* **LIST-STATUS** - Combined LIST and STATUS commands
-* **LITERAL-** - Non-synchronizing literals (minus variant)
-* **OBJECTID** - Unique object identifiers
-* **SAVEDATE** - Save date attribute
-* **REPLACE** - Atomic message replacement
-* **UNAUTHENTICATE** - Close authentication without closing connection
+* **LIST-STATUS** - Birleşik LIST ve STATUS komutları
+* **LITERAL-** - Senkronize olmayan literal'ler (eksi varyant)
+* **OBJECTID** - Benzersiz nesne kimlikleri
+* **SAVEDATE** - Kaydetme tarihi özniteliği
+* **REPLACE** - Atomik mesaj değiştirme
+* **UNAUTHENTICATE** - Bağlantıyı kapatmadan kimlik doğrulamayı sonlandırma
 
-**Relaxed Body Structure Handling:**
+**Gevşek Gövde Yapısı İşleme:**
 
-Forward Email uses "relaxed body" handling for malformed MIME structures, which may differ from strict RFC interpretation. This improves compatibility with real-world emails that don't perfectly conform to standards.
+Forward Email, hatalı MIME yapıları için "gevşek gövde" işleme kullanır; bu, katı RFC yorumundan farklı olabilir. Bu, standartlara tam uymayan gerçek dünya e-postalarıyla uyumluluğu artırır.
+**METADATA Uzantısı (RFC 5464):**
 
-**METADATA Extension (RFC 5464):**
+IMAP METADATA uzantısı **desteklenmemektedir**. Bu uzantı hakkında daha fazla bilgi için [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) sayfasına bakınız. Bu özelliğin eklenmesiyle ilgili tartışma [WildDuck Issue #937](https://github.com/zone-eu/wildduck/issues/937) adresinde bulunabilir.
 
-The IMAP METADATA extension is **not supported**. For more information about this extension, see [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464). Discussion about adding this feature can be found in [WildDuck Issue #937](https://github.com/zone-eu/wildduck/issues/937).
+### Desteklenmeyen IMAP Uzantıları {#imap-extensions-not-supported}
 
-### IMAP Extensions NOT Supported {#imap-extensions-not-supported}
+Aşağıdaki IMAP uzantıları [IANA IMAP Capabilities Registry](https://www.iana.org/assignments/imap-capabilities/imap-capabilities.xhtml) listesinden desteklenmemektedir:
 
-The following IMAP extensions from the [IANA IMAP Capabilities Registry](https://www.iana.org/assignments/imap-capabilities/imap-capabilities.xhtml) are NOT supported:
-
-| RFC | Title | Reason |
+| RFC                                                       | Başlık                                                                                                          | Sebep                                                                                                                                  |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 2086](https://datatracker.ietf.org/doc/html/rfc2086) | IMAP4 ACL extension | Shared folders not implemented. See [WildDuck Issue #427](https://github.com/zone-eu/wildduck/issues/427) |
-| [RFC 5256](https://datatracker.ietf.org/doc/html/rfc5256) | IMAP SORT and THREAD Extensions | Threading implemented internally but not via RFC 5256 protocol. See [WildDuck Issue #12](https://github.com/zone-eu/wildduck/issues/12) |
-| [RFC 5162](https://datatracker.ietf.org/doc/html/rfc5162) | IMAP4 Extensions for Quick Mailbox Resynchronization (QRESYNC) | Not implemented |
-| [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) | IMAP METADATA Extension | Metadata operations ignored. See [WildDuck documentation](https://datatracker.ietf.org/doc/html/rfc5464) |
-| [RFC 5258](https://datatracker.ietf.org/doc/html/rfc5258) | IMAP4 LIST Command Extensions | Not implemented |
-| [RFC 5267](https://datatracker.ietf.org/doc/html/rfc5267) | Contexts for IMAP4 | Not implemented |
-| [RFC 5465](https://datatracker.ietf.org/doc/html/rfc5465) | IMAP NOTIFY Extension | Not implemented |
-| [RFC 5466](https://datatracker.ietf.org/doc/html/rfc5466) | IMAP4 FILTERS Extension | Not implemented |
-| [RFC 6203](https://datatracker.ietf.org/doc/html/rfc6203) | IMAP4 Extension for Fuzzy Search | Not implemented |
-| [RFC 6785](https://datatracker.ietf.org/doc/html/rfc6785) | IMAP4 Implementation Recommendations | Recommendations not fully followed |
-| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Extensions: Quick Flag Changes Resynchronization (CONDSTORE) and Quick Mailbox Resynchronization (QRESYNC) | Not implemented |
-| [RFC 8437](https://datatracker.ietf.org/doc/html/rfc8437) | IMAP UNAUTHENTICATE Extension for Connection Reuse | Not implemented |
-| [RFC 8438](https://datatracker.ietf.org/doc/html/rfc8438) | IMAP Extension for STATUS=SIZE | Not implemented |
-| [RFC 8457](https://datatracker.ietf.org/doc/html/rfc8457) | IMAP "$Important" Keyword and "\Important" Special-Use Attribute | Not implemented |
-| [RFC 8474](https://datatracker.ietf.org/doc/html/rfc8474) | IMAP Extension for Object Identifiers | Not implemented |
-| [RFC 9051](https://datatracker.ietf.org/doc/html/rfc9051) | Internet Message Access Protocol (IMAP) - Version 4rev2 | Forward Email implements IMAP4rev1 ([RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501)) |
-
----
-
-## POP3 Email Protocol and Extensions {#pop3-email-protocol-and-extensions}
+| [RFC 2086](https://datatracker.ietf.org/doc/html/rfc2086) | IMAP4 ACL uzantısı                                                                                              | Paylaşılan klasörler uygulanmamıştır. Bkz. [WildDuck Issue #427](https://github.com/zone-eu/wildduck/issues/427)                        |
+| [RFC 5256](https://datatracker.ietf.org/doc/html/rfc5256) | IMAP SORT ve THREAD Uzantıları                                                                                   | Threading dahili olarak uygulanmıştır ancak RFC 5256 protokolü ile değil. Bkz. [WildDuck Issue #12](https://github.com/zone-eu/wildduck/issues/12) |
+| [RFC 5162](https://datatracker.ietf.org/doc/html/rfc5162) | IMAP4 Hızlı Klasör Yeniden Senkronizasyonu (QRESYNC) Uzantıları                                                  | Uygulanmamıştır                                                                                                                        |
+| [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) | IMAP METADATA Uzantısı                                                                                          | Metadata işlemleri göz ardı edilmektedir. Bkz. [WildDuck dokümantasyonu](https://datatracker.ietf.org/doc/html/rfc5464)                 |
+| [RFC 5258](https://datatracker.ietf.org/doc/html/rfc5258) | IMAP4 LIST Komut Uzantıları                                                                                     | Uygulanmamıştır                                                                                                                        |
+| [RFC 5267](https://datatracker.ietf.org/doc/html/rfc5267) | IMAP4 için Bağlamlar                                                                                            | Uygulanmamıştır                                                                                                                        |
+| [RFC 5465](https://datatracker.ietf.org/doc/html/rfc5465) | IMAP NOTIFY Uzantısı                                                                                            | Uygulanmamıştır                                                                                                                        |
+| [RFC 5466](https://datatracker.ietf.org/doc/html/rfc5466) | IMAP4 FİLTRELER Uzantısı                                                                                        | Uygulanmamıştır                                                                                                                        |
+| [RFC 6203](https://datatracker.ietf.org/doc/html/rfc6203) | IMAP4 Bulanık Arama Uzantısı                                                                                    | Uygulanmamıştır                                                                                                                        |
+| [RFC 6785](https://datatracker.ietf.org/doc/html/rfc6785) | IMAP4 Uygulama Önerileri                                                                                        | Öneriler tam olarak takip edilmemiştir                                                                                                |
+| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Uzantıları: Hızlı Bayrak Değişiklikleri Yeniden Senkronizasyonu (CONDSTORE) ve Hızlı Klasör Yeniden Senkronizasyonu (QRESYNC) | Uygulanmamıştır                                                                                                                        |
+| [RFC 8437](https://datatracker.ietf.org/doc/html/rfc8437) | Bağlantı Yeniden Kullanımı için IMAP UNAUTHENTICATE Uzantısı                                                    | Uygulanmamıştır                                                                                                                        |
+| [RFC 8438](https://datatracker.ietf.org/doc/html/rfc8438) | STATUS=SIZE için IMAP Uzantısı                                                                                   | Uygulanmamıştır                                                                                                                        |
+| [RFC 8457](https://datatracker.ietf.org/doc/html/rfc8457) | IMAP "$Important" Anahtar Kelimesi ve "\Important" Özel Kullanım Özelliği                                        | Uygulanmamıştır                                                                                                                        |
+| [RFC 8474](https://datatracker.ietf.org/doc/html/rfc8474) | Nesne Tanımlayıcıları için IMAP Uzantısı                                                                        | Uygulanmamıştır                                                                                                                        |
+| [RFC 9051](https://datatracker.ietf.org/doc/html/rfc9051) | İnternet Mesaj Erişim Protokolü (IMAP) - Sürüm 4rev2                                                            | Forward Email IMAP4rev1 ([RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501)) uygular                                            |
+## POP3 E-posta Protokolü ve Uzantıları {#pop3-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports POP3 (RFC 1939) with standard extensions for email retrieval.
+> Forward Email, e-posta alımı için standart uzantılarla POP3 (RFC 1939) desteği sunar.
 
-Forward Email's POP3 functionality is provided by the [WildDuck](https://github.com/nodemailer/wildduck) dependency. The following email RFCs are supported:
+Forward Email'in POP3 işlevselliği [WildDuck](https://github.com/nodemailer/wildduck) bağımlılığı tarafından sağlanmaktadır. Aşağıdaki e-posta RFC'leri desteklenmektedir:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
-| [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) | Post Office Protocol - Version 3 (POP3) | Full support with intentional differences (see below) |
-| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | Using TLS with IMAP, POP3 and ACAP | STARTTLS support |
-| [RFC 2449](https://datatracker.ietf.org/doc/html/rfc2449) | POP3 Extension Mechanism | CAPA command support |
+| RFC                                                       | Başlık                                  | Uygulama Notları                                    |
+| --------------------------------------------------------- | --------------------------------------- | --------------------------------------------------- |
+| [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) | Posta Ofisi Protokolü - Sürüm 3 (POP3) | Tam destek, kasıtlı farklılıklar ile (aşağıya bakınız) |
+| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | IMAP, POP3 ve ACAP ile TLS Kullanımı    | STARTTLS desteği                                    |
+| [RFC 2449](https://datatracker.ietf.org/doc/html/rfc2449) | POP3 Uzantı Mekanizması                 | CAPA komutu desteği                                 |
 
-Forward Email provides POP3 support for clients that prefer this simpler protocol over IMAP. POP3 is ideal for users who want to download emails to a single device and remove them from the server.
+Forward Email, IMAP yerine bu daha basit protokolü tercih eden istemciler için POP3 desteği sağlar. POP3, e-postaları tek bir cihaza indirip sunucudan kaldırmak isteyen kullanıcılar için idealdir.
 
-**Supported POP3 Extensions:**
+**Desteklenen POP3 Uzantıları:**
 
-| Extension | RFC | Status | Description |
-| --------- | -------- | ----------- | -------------------------- |
-| TOP | RFC 1939 | ✅ Supported | Retrieve message headers |
-| USER | RFC 1939 | ✅ Supported | Username authentication |
-| UIDL | RFC 1939 | ✅ Supported | Unique message identifiers |
-| EXPIRE | RFC 2449 | ✅ Supported | Message expiration policy |
+| Uzantı   | RFC      | Durum       | Açıklama                   |
+| -------- | -------- | ----------- | -------------------------- |
+| TOP      | RFC 1939 | ✅ Destekli | Mesaj başlıklarını alma    |
+| USER     | RFC 1939 | ✅ Destekli | Kullanıcı adı doğrulama    |
+| UIDL     | RFC 1939 | ✅ Destekli | Benzersiz mesaj tanımlayıcıları |
+| EXPIRE   | RFC 2449 | ✅ Destekli | Mesaj son kullanma politikası |
 
-### POP3 Protocol Differences from RFC Specifications {#pop3-protocol-differences-from-rfc-specifications}
+### POP3 Protokolünün RFC Spesifikasyonlarından Farkları {#pop3-protocol-differences-from-rfc-specifications}
 
 > \[!WARNING]
-> POP3 has inherent limitations compared to IMAP.
+> POP3, IMAP'e kıyasla doğasında sınırlamalara sahiptir.
 
 > \[!IMPORTANT]
-> **Critical Difference: Forward Email vs WildDuck POP3 DELE Behavior**
+> **Kritik Fark: Forward Email ve WildDuck POP3 DELE Davranışı**
 >
-> Forward Email implements RFC-compliant permanent deletion for POP3 `DELE` commands, unlike WildDuck which moves messages to Trash.
+> Forward Email, POP3 `DELE` komutları için RFC uyumlu kalıcı silme uygular; WildDuck ise mesajları Çöp Kutusuna taşır.
 
-**Forward Email Behavior** ([source code](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js)):
+**Forward Email Davranışı** ([kaynak kodu](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js)):
 
-* `DELE` → `QUIT` permanently deletes messages
-* Follows [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specification exactly
-* Matches behavior of Dovecot (default), Postfix, and other standards-compliant servers
+* `DELE` → `QUIT` mesajları kalıcı olarak siler
+* [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) spesifikasyonuna tam uyum sağlar
+* Dovecot (varsayılan), Postfix ve diğer standart uyumlu sunucularla aynı davranışı gösterir
 
-**WildDuck Behavior** ([discussion](https://github.com/zone-eu/wildduck/issues/937)):
+**WildDuck Davranışı** ([tartışma](https://github.com/zone-eu/wildduck/issues/937)):
 
-* `DELE` → `QUIT` moves messages to Trash (Gmail-like)
-* Intentional design decision for user safety
-* Non-RFC-compliant but prevents accidental data loss
+* `DELE` → `QUIT` mesajları Çöp Kutusuna taşır (Gmail benzeri)
+* Kullanıcı güvenliği için kasıtlı tasarım kararı
+* RFC uyumlu değil ancak kazara veri kaybını önler
 
-**Why Forward Email Differs:**
+**Neden Forward Email Farklıdır:**
 
-* **RFC Compliance:** Adheres to [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specification
-* **User Expectations:** Download-and-delete workflow expects permanent deletion
-* **Storage Management:** Proper disk space reclamation
-* **Interoperability:** Consistent with other RFC-compliant servers
+* **RFC Uyumu:** [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) spesifikasyonuna bağlı kalır
+* **Kullanıcı Beklentileri:** İndir ve sil iş akışı kalıcı silmeyi bekler
+* **Depolama Yönetimi:** Disk alanının doğru şekilde geri kazanılması
+* **Uyumluluk:** Diğer RFC uyumlu sunucularla tutarlılık
 
 > \[!NOTE]
-> **POP3 Message Listing:** Forward Email lists ALL messages from INBOX with no limit. This differs from WildDuck which limits to 250 messages by default. See [source code](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js).
+> **POP3 Mesaj Listesi:** Forward Email, INBOX'taki TÜM mesajları sınır olmadan listeler. Bu, varsayılan olarak 250 mesajla sınırlayan WildDuck'tan farklıdır. Bakınız [kaynak kodu](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js).
 
-**Single-Device Access:**
+**Tek Cihaz Erişimi:**
 
-POP3 is designed for single-device access. Messages are typically downloaded and removed from the server, making it unsuitable for multi-device synchronization.
+POP3, tek cihaz erişimi için tasarlanmıştır. Mesajlar genellikle indirilir ve sunucudan kaldırılır, bu nedenle çoklu cihaz senkronizasyonu için uygun değildir.
 
-**No Folder Support:**
+**Klasör Desteği Yoktur:**
 
-POP3 only accesses the INBOX folder. Other folders (Sent, Drafts, Trash, etc.) are not accessible via POP3.
+POP3 yalnızca INBOX klasörüne erişir. Diğer klasörler (Gönderilen, Taslaklar, Çöp Kutusu vb.) POP3 üzerinden erişilebilir değildir.
 
-**Limited Message Management:**
+**Sınırlı Mesaj Yönetimi:**
 
-POP3 provides basic message retrieval and deletion. Advanced features like flagging, moving, or searching messages are not available.
+POP3 temel mesaj alma ve silme sağlar. Bayraklama, taşıma veya mesaj arama gibi gelişmiş özellikler mevcut değildir.
 
-### POP3 Extensions NOT Supported {#pop3-extensions-not-supported}
+### Desteklenmeyen POP3 Uzantıları {#pop3-extensions-not-supported}
 
-The following POP3 extensions from the [IANA POP3 Extension Mechanism Registry](https://www.iana.org/assignments/pop3-extension-mechanism/pop3-extension-mechanism.xhtml) are NOT supported:
-
-| RFC | Title | Reason |
-| --------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------- |
-| [RFC 6856](https://datatracker.ietf.org/doc/html/rfc6856) | Post Office Protocol Version 3 (POP3) Support for UTF-8 | Not implemented in WildDuck POP3 server |
-| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | STLS command | Only STARTTLS supported, not STLS |
-| [RFC 3206](https://datatracker.ietf.org/doc/html/rfc3206) | The SYS and AUTH POP Response Codes | Not implemented |
+Aşağıdaki POP3 uzantıları [IANA POP3 Uzantı Mekanizması Kaydı](https://www.iana.org/assignments/pop3-extension-mechanism/pop3-extension-mechanism.xhtml) tarafından belirtilmiş olup desteklenmemektedir:
+| RFC                                                       | Başlık                                                | Sebep                                  |
+| --------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------- |
+| [RFC 6856](https://datatracker.ietf.org/doc/html/rfc6856) | Posta Ofisi Protokolü Sürüm 3 (POP3) için UTF-8 Desteği | WildDuck POP3 sunucusunda uygulanmamış |
+| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | STLS komutu                                           | Sadece STARTTLS destekleniyor, STLS değil |
+| [RFC 3206](https://datatracker.ietf.org/doc/html/rfc3206) | SYS ve AUTH POP Yanıt Kodları                          | Uygulanmamış                         |
 
 ---
 
-## SMTP Email Protocol and Extensions {#smtp-email-protocol-and-extensions}
+
+## SMTP E-posta Protokolü ve Uzantıları {#smtp-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports SMTP (RFC 5321) with modern extensions for secure and reliable email delivery.
+> Forward Email, güvenli ve güvenilir e-posta teslimatı için modern uzantılarla birlikte SMTP (RFC 5321) destekler.
 
-Forward Email's SMTP functionality is provided by multiple components: [smtp-server](https://github.com/nodemailer/smtp-server) (nodemailer), [zone-mta](https://github.com/zone-eu/zone-mta), and custom implementations. The following email RFCs are supported:
+Forward Email'in SMTP işlevselliği birden fazla bileşen tarafından sağlanır: [smtp-server](https://github.com/nodemailer/smtp-server) (nodemailer), [zone-mta](https://github.com/zone-eu/zone-mta) ve özel uygulamalar. Aşağıdaki e-posta RFC'leri desteklenmektedir:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------ |
-| [RFC 5321](https://datatracker.ietf.org/doc/html/rfc5321) | Simple Mail Transfer Protocol (SMTP) | Full support |
-| [RFC 3207](https://datatracker.ietf.org/doc/html/rfc3207) | SMTP Service Extension for Secure SMTP over Transport Layer Security (STARTTLS) | TLS/SSL support |
-| [RFC 4954](https://datatracker.ietf.org/doc/html/rfc4954) | SMTP Service Extension for Authentication (AUTH) | PLAIN, LOGIN, CRAM-MD5, XOAUTH2 |
-| [RFC 6531](https://datatracker.ietf.org/doc/html/rfc6531) | SMTP Extension for Internationalized Email (SMTPUTF8) | Native unicode email address support |
-| [RFC 3461](https://datatracker.ietf.org/doc/html/rfc3461) | SMTP Service Extension for Delivery Status Notifications (DSN) | Full DSN support |
-| [RFC 3463](https://datatracker.ietf.org/doc/html/rfc3463) | Enhanced Mail System Status Codes | Enhanced status codes in responses |
-| [RFC 1870](https://datatracker.ietf.org/doc/html/rfc1870) | SMTP Service Extension for Message Size Declaration (SIZE) | Maximum message size advertisement |
-| [RFC 2920](https://datatracker.ietf.org/doc/html/rfc2920) | SMTP Service Extension for Command Pipelining (PIPELINING) | Command pipelining support |
-| [RFC 1652](https://datatracker.ietf.org/doc/html/rfc1652) | SMTP Service Extension for 8bit-MIMEtransport (8BITMIME) | 8-bit MIME support |
-| [RFC 6152](https://datatracker.ietf.org/doc/html/rfc6152) | SMTP Service Extension for 8-bit MIME Transport | 8-bit MIME support |
-| [RFC 2034](https://datatracker.ietf.org/doc/html/rfc2034) | SMTP Service Extension for Returning Enhanced Error Codes (ENHANCEDSTATUSCODES) | Enhanced status codes |
+| RFC                                                       | Başlık                                                                           | Uygulama Notları                   |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------- |
+| [RFC 5321](https://datatracker.ietf.org/doc/html/rfc5321) | Basit Posta Aktarım Protokolü (SMTP)                                             | Tam destek                       |
+| [RFC 3207](https://datatracker.ietf.org/doc/html/rfc3207) | Taşıma Katmanı Güvenliği Üzerinden Güvenli SMTP için SMTP Hizmet Uzantısı (STARTTLS) | TLS/SSL desteği                  |
+| [RFC 4954](https://datatracker.ietf.org/doc/html/rfc4954) | Kimlik Doğrulama için SMTP Hizmet Uzantısı (AUTH)                                | PLAIN, LOGIN, CRAM-MD5, XOAUTH2  |
+| [RFC 6531](https://datatracker.ietf.org/doc/html/rfc6531) | Uluslararasılaştırılmış E-posta için SMTP Uzantısı (SMTPUTF8)                     | Yerel unicode e-posta adresi desteği |
+| [RFC 3461](https://datatracker.ietf.org/doc/html/rfc3461) | Teslimat Durumu Bildirimleri için SMTP Hizmet Uzantısı (DSN)                     | Tam DSN desteği                  |
+| [RFC 3463](https://datatracker.ietf.org/doc/html/rfc3463) | Gelişmiş Posta Sistemi Durum Kodları                                            | Yanıtlarda gelişmiş durum kodları |
+| [RFC 1870](https://datatracker.ietf.org/doc/html/rfc1870) | Mesaj Boyutu Bildirimi için SMTP Hizmet Uzantısı (SIZE)                         | Maksimum mesaj boyutu bildirimi   |
+| [RFC 2920](https://datatracker.ietf.org/doc/html/rfc2920) | Komut Boru Hattı için SMTP Hizmet Uzantısı (PIPELINING)                         | Komut boru hattı desteği          |
+| [RFC 1652](https://datatracker.ietf.org/doc/html/rfc1652) | 8bit-MIME taşıma için SMTP Hizmet Uzantısı (8BITMIME)                           | 8-bit MIME desteği                |
+| [RFC 6152](https://datatracker.ietf.org/doc/html/rfc6152) | 8-bit MIME Taşıma için SMTP Hizmet Uzantısı                                    | 8-bit MIME desteği                |
+| [RFC 2034](https://datatracker.ietf.org/doc/html/rfc2034) | Gelişmiş Hata Kodları Döndürme için SMTP Hizmet Uzantısı (ENHANCEDSTATUSCODES)   | Gelişmiş durum kodları            |
 
-Forward Email implements a full-featured SMTP server with support for modern extensions that enhance security, reliability, and functionality.
+Forward Email, güvenlik, güvenilirlik ve işlevselliği artıran modern uzantılarla tam özellikli bir SMTP sunucusu uygular.
 
-**Supported SMTP Extensions:**
+**Desteklenen SMTP Uzantıları:**
 
-| Extension | RFC | Status | Description |
-| ------------------- | -------- | ----------- | ------------------------------------- |
-| PIPELINING | RFC 2920 | ✅ Supported | Command pipelining |
-| SIZE | RFC 1870 | ✅ Supported | Message size declaration (52MB limit) |
-| ETRN | RFC 1985 | ✅ Supported | Remote queue processing |
-| STARTTLS | RFC 3207 | ✅ Supported | Upgrade to TLS |
-| ENHANCEDSTATUSCODES | RFC 2034 | ✅ Supported | Enhanced status codes |
-| 8BITMIME | RFC 6152 | ✅ Supported | 8-bit MIME transport |
-| DSN | RFC 3461 | ✅ Supported | Delivery Status Notifications |
-| CHUNKING | RFC 3030 | ✅ Supported | Chunked message transfer |
-| SMTPUTF8 | RFC 6531 | ⚠️ Partial | UTF-8 email addresses (partial) |
-| REQUIRETLS | RFC 8689 | ✅ Supported | Require TLS for delivery |
-
-### Delivery Status Notifications (DSN) {#delivery-status-notifications-dsn}
+| Uzantı              | RFC      | Durum       | Açıklama                            |
+| ------------------- | -------- | ----------- | ---------------------------------- |
+| PIPELINING          | RFC 2920 | ✅ Destekleniyor | Komut boru hattı                   |
+| SIZE                | RFC 1870 | ✅ Destekleniyor | Mesaj boyutu bildirimi (52MB sınırı) |
+| ETRN                | RFC 1985 | ✅ Destekleniyor | Uzaktan kuyruk işleme              |
+| STARTTLS            | RFC 3207 | ✅ Destekleniyor | TLS'ye yükseltme                  |
+| ENHANCEDSTATUSCODES | RFC 2034 | ✅ Destekleniyor | Gelişmiş durum kodları             |
+| 8BITMIME            | RFC 6152 | ✅ Destekleniyor | 8-bit MIME taşıma                 |
+| DSN                 | RFC 3461 | ✅ Destekleniyor | Teslimat Durumu Bildirimleri       |
+| CHUNKING            | RFC 3030 | ✅ Destekleniyor | Parçalı mesaj transferi            |
+| SMTPUTF8            | RFC 6531 | ⚠️ Kısmi    | UTF-8 e-posta adresleri (kısmi)    |
+| REQUIRETLS          | RFC 8689 | ✅ Destekleniyor | Teslimat için TLS zorunluluğu       |
+### Teslimat Durumu Bildirimleri (DSN) {#delivery-status-notifications-dsn}
 
 > \[!TIP]
-> DSN provides detailed delivery status information for sent emails.
+> DSN, gönderilen e-postalar için ayrıntılı teslimat durumu bilgisi sağlar.
 
-Forward Email fully supports **DSN (RFC 3461)**, which allows senders to request delivery status notifications. This feature provides:
+Forward Email, göndericilerin teslimat durumu bildirimleri talep etmesine olanak tanıyan **DSN (RFC 3461)** özelliğini tam olarak destekler. Bu özellik şunları sağlar:
 
-* **Success notifications** when messages are delivered
-* **Failure notifications** with detailed error information
-* **Delay notifications** when delivery is temporarily delayed
+* Mesajlar teslim edildiğinde **başarı bildirimleri**
+* Ayrıntılı hata bilgisi içeren **başarısızlık bildirimleri**
+* Teslimat geçici olarak geciktiğinde **gecikme bildirimleri**
 
-DSN is particularly useful for:
+DSN özellikle şunlar için faydalıdır:
 
-* Confirming important message delivery
-* Troubleshooting delivery issues
-* Automated email processing systems
-* Compliance and audit requirements
+* Önemli mesajların teslimatının teyit edilmesi
+* Teslimat sorunlarının giderilmesi
+* Otomatik e-posta işleme sistemleri
+* Uyumluluk ve denetim gereksinimleri
 
-### REQUIRETLS Support {#requiretls-support}
+### REQUIRETLS Desteği {#requiretls-support}
 
 > \[!IMPORTANT]
-> Forward Email is one of the few providers that explicitly advertises and enforces REQUIRETLS.
+> Forward Email, REQUIRETLS'yi açıkça duyuran ve zorunlu kılan birkaç sağlayıcıdan biridir.
 
-Forward Email supports **REQUIRETLS (RFC 8689)**, which ensures that email messages are only delivered over TLS-encrypted connections. This provides:
+Forward Email, e-posta mesajlarının yalnızca TLS şifreli bağlantılar üzerinden teslim edilmesini sağlayan **REQUIRETLS (RFC 8689)** özelliğini destekler. Bu özellik şunları sağlar:
 
-* **End-to-end encryption** for the entire delivery path
-* **User-facing enforcement** via checkbox in email composer
-* **Rejection of unencrypted delivery** attempts
-* **Enhanced security** for sensitive communications
+* Tüm teslimat yolu için **uçtan uca şifreleme**
+* E-posta oluşturucuda kullanıcıya yönelik **zorunluluk onayı** (checkbox)
+* Şifrelenmemiş teslimat girişimlerinin **reddedilmesi**
+* Hassas iletişimler için **artırılmış güvenlik**
 
-### SMTP Extensions NOT Supported {#smtp-extensions-not-supported}
+### Desteklenmeyen SMTP Uzantıları {#smtp-extensions-not-supported}
 
-The following SMTP extensions from the [IANA SMTP Service Extensions Registry](https://www.iana.org/assignments/smtp) are NOT supported:
+Aşağıdaki [IANA SMTP Servis Uzantıları Kaydı](https://www.iana.org/assignments/smtp) içindeki SMTP uzantıları desteklenmemektedir:
 
-| RFC | Title | Reason |
+| RFC                                                       | Başlık                                                                                           | Sebep                |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------- |
-| [RFC 4865](https://datatracker.ietf.org/doc/html/rfc4865) | SMTP Submission Service Extension for Future Message Release (FUTURERELEASE) | Not implemented |
-| [RFC 6710](https://datatracker.ietf.org/doc/html/rfc6710) | SMTP Extension for Message Transfer Priorities (MT-PRIORITY) | Not implemented |
-| [RFC 7293](https://datatracker.ietf.org/doc/html/rfc7293) | The Require-Recipient-Valid-Since Header Field and SMTP Service Extension | Not implemented |
-| [RFC 7372](https://datatracker.ietf.org/doc/html/rfc7372) | Email Auth Status Codes | Not fully implemented |
-| [RFC 4468](https://datatracker.ietf.org/doc/html/rfc4468) | Message Submission BURL Extension | Not implemented |
-| [RFC 3030](https://datatracker.ietf.org/doc/html/rfc3030) | SMTP Service Extensions for Transmission of Large and Binary MIME Messages (CHUNKING, BINARYMIME) | Not implemented |
-| [RFC 2852](https://datatracker.ietf.org/doc/html/rfc2852) | Deliver By SMTP Service Extension | Not implemented |
+| [RFC 4865](https://datatracker.ietf.org/doc/html/rfc4865) | Gelecekteki Mesaj Yayını için SMTP Gönderim Servis Uzantısı (FUTURERELEASE)                      | Uygulanmadı          |
+| [RFC 6710](https://datatracker.ietf.org/doc/html/rfc6710) | Mesaj Transfer Öncelikleri için SMTP Uzantısı (MT-PRIORITY)                                      | Uygulanmadı          |
+| [RFC 7293](https://datatracker.ietf.org/doc/html/rfc7293) | Require-Recipient-Valid-Since Başlık Alanı ve SMTP Servis Uzantısı                               | Uygulanmadı          |
+| [RFC 7372](https://datatracker.ietf.org/doc/html/rfc7372) | E-posta Kimlik Doğrulama Durum Kodları                                                          | Tam olarak uygulanmadı|
+| [RFC 4468](https://datatracker.ietf.org/doc/html/rfc4468) | Mesaj Gönderim BURL Uzantısı                                                                     | Uygulanmadı          |
+| [RFC 3030](https://datatracker.ietf.org/doc/html/rfc3030) | Büyük ve İkili MIME Mesajlarının Gönderimi için SMTP Servis Uzantıları (CHUNKING, BINARYMIME)    | Uygulanmadı          |
+| [RFC 2852](https://datatracker.ietf.org/doc/html/rfc2852) | SMTP Servis Uzantısı ile Teslim Etme Zamanı                                                     | Uygulanmadı          |
 
 ---
 
-## JMAP Email Protocol {#jmap-email-protocol}
+
+## JMAP E-posta Protokolü {#jmap-email-protocol}
 
 > \[!CAUTION]
-> JMAP is **not currently supported** by Forward Email.
+> JMAP şu anda Forward Email tarafından **desteklenmemektedir**.
 
-| RFC | Title | Status | Reason |
-| --------------------------------------------------------- | ----------------------------------------- | --------------- | ---------------------------------------------------------------------- |
-| [RFC 8620](https://datatracker.ietf.org/doc/html/rfc8620) | The JSON Meta Application Protocol (JMAP) | ❌ Not Supported | Forward Email uses IMAP/POP3/SMTP and a comprehensive REST API instead |
+| RFC                                                       | Başlık                                     | Durum           | Sebep                                                                 |
+| --------------------------------------------------------- | ----------------------------------------- | --------------- | -------------------------------------------------------------------- |
+| [RFC 8620](https://datatracker.ietf.org/doc/html/rfc8620) | JSON Meta Uygulama Protokolü (JMAP)       | ❌ Desteklenmiyor | Forward Email bunun yerine IMAP/POP3/SMTP ve kapsamlı bir REST API kullanır |
 
-**JMAP (JSON Meta Application Protocol)** is a modern email protocol designed to replace IMAP.
+**JMAP (JSON Meta Uygulama Protokolü)**, IMAP'in yerini almak üzere tasarlanmış modern bir e-posta protokolüdür.
 
-**Why JMAP is Not Supported:**
+**JMAP'in Desteklenmemesinin Nedeni:**
 
-> "JMAP is a beast that should not have been invented. It tries to convert TCP/IMAP (already a bad protocol by todays standards) into HTTP/JSON, just using a different transport while keeping the spirit." — Andris Reinman, [HN Discussion](https://news.ycombinator.com/item?id=18890011)
+> "JMAP, icat edilmemesi gereken bir canavar. TCP/IMAP'i (bugünün standartlarına göre zaten kötü bir protokol) HTTP/JSON'a dönüştürmeye çalışıyor, sadece farklı bir taşıma kullanarak ruhunu koruyor." — Andris Reinman, [HN Tartışması](https://news.ycombinator.com/item?id=18890011)
+> "JMAP 10 yıldan fazla bir süredir var ve neredeyse hiç benimsenme yok" – Andris Reinman, [GitHub Tartışması](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
 
-> "JMAP is more than 10 years old, and there is almost no adoption at all" – Andris Reinman, [GitHub Discussion](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
+Ayrıca ek yorumlar için <https://hn.algolia.com/?dateRange=all&page=0&prefix=true&query=jmap%20andris&sort=byDate&type=comment> adresine bakınız.
 
-Also see additional comments at <https://hn.algolia.com/?dateRange=all&page=0&prefix=true&query=jmap%20andris&sort=byDate&type=comment>.
+Forward Email şu anda mükemmel IMAP, POP3 ve SMTP desteği sağlamaya odaklanmakta olup, e-posta yönetimi için kapsamlı bir REST API sunmaktadır. JMAP desteği, kullanıcı talebi ve ekosistem benimsenmesine bağlı olarak gelecekte değerlendirilebilir.
 
-Forward Email currently focuses on providing excellent IMAP, POP3, and SMTP support, along with a comprehensive REST API for email management. JMAP support may be considered in the future based on user demand and ecosystem adoption.
-
-**Alternative:** Forward Email offers a [Complete REST API](#complete-rest-api-for-email-management) with 39 endpoints that provides similar functionality to JMAP for programmatic email access.
+**Alternatif:** Forward Email, programatik e-posta erişimi için JMAP ile benzer işlevsellik sunan 39 uç noktaya sahip [Tam REST API](#complete-rest-api-for-email-management) sunar.
 
 ---
 
-## Email Security {#email-security}
 
-### Email Security Architecture {#email-security-architecture}
+## E-posta Güvenliği {#email-security}
+
+### E-posta Güvenlik Mimarisi {#email-security-architecture}
 
 ```mermaid
 graph TB
-    subgraph "Outbound Security"
-        DKIM[DKIM Signing]
-        SPF[SPF Records]
-        DMARC[DMARC Policy]
-        ARC[ARC Sealing]
+    subgraph "Giden Güvenliği"
+        DKIM[DKIM İmzalama]
+        SPF[SPF Kayıtları]
+        DMARC[DMARC Politikası]
+        ARC[ARC Mühürleme]
     end
 
-    subgraph "Transport Security"
-        TLS[TLS Encryption]
+    subgraph "Taşıma Güvenliği"
+        TLS[TLS Şifreleme]
         MTASTS[MTA-STS]
         DANE[DANE TLSA]
         REQTLS[REQUIRETLS]
     end
 
-    subgraph "Message Security"
+    subgraph "Mesaj Güvenliği"
         PGP[OpenPGP]
         SMIME[S/MIME]
-        ENCRYPT[SQLite Encryption]
+        ENCRYPT[SQLite Şifreleme]
     end
 
-    Email[Outgoing Email] --> DKIM
+    Email[Giden E-posta] --> DKIM
     DKIM --> SPF
     SPF --> DMARC
     DMARC --> ARC
@@ -584,86 +581,86 @@ graph TB
     REQTLS --> PGP
     PGP --> SMIME
     SMIME --> ENCRYPT
-    ENCRYPT --> Delivered[Delivered Securely]
+    ENCRYPT --> Delivered[Güvenli Bir Şekilde Teslim Edildi]
 
     style Email fill:#9cf,stroke:#333
     style Delivered fill:#9f9,stroke:#333
     style ENCRYPT fill:#f9f,stroke:#333,stroke-width:3px
 ```
 
-## Email Message Authentication Protocols {#email-message-authentication-protocols}
+
+## E-posta Mesajı Doğrulama Protokolleri {#email-message-authentication-protocols}
 
 > \[!NOTE]
-> Forward Email implements all major email authentication protocols to prevent spoofing and ensure message integrity.
+> Forward Email, sahtekarlığı önlemek ve mesaj bütünlüğünü sağlamak için tüm önemli e-posta doğrulama protokollerini uygular.
 
-Forward Email uses the [mailauth](https://github.com/postalsys/mailauth) library for email authentication. The following RFCs are supported:
+Forward Email, e-posta doğrulaması için [mailauth](https://github.com/postalsys/mailauth) kütüphanesini kullanır. Desteklenen RFC'ler şunlardır:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [RFC 6376](https://datatracker.ietf.org/doc/html/rfc6376) | DomainKeys Identified Mail (DKIM) Signatures | Full DKIM signing and verification |
-| [RFC 8463](https://datatracker.ietf.org/doc/html/rfc8463) | A New Cryptographic Signature Method for DKIM (Ed25519-SHA256) | Supports both RSA-SHA256 and Ed25519-SHA256 signing algorithms |
-| [RFC 7208](https://datatracker.ietf.org/doc/html/rfc7208) | Sender Policy Framework (SPF) | SPF record validation |
-| [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-based Message Authentication, Reporting, and Conformance (DMARC) | DMARC policy enforcement |
-| [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC) | ARC sealing and validation |
+| RFC                                                       | Başlık                                                                 | Uygulama Notları                                             |
+| --------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [RFC 6376](https://datatracker.ietf.org/doc/html/rfc6376) | DomainKeys Identified Mail (DKIM) İmzaları                            | Tam DKIM imzalama ve doğrulama                               |
+| [RFC 8463](https://datatracker.ietf.org/doc/html/rfc8463) | DKIM için Yeni Bir Kriptografik İmza Yöntemi (Ed25519-SHA256)         | Hem RSA-SHA256 hem de Ed25519-SHA256 imzalama algoritmalarını destekler |
+| [RFC 7208](https://datatracker.ietf.org/doc/html/rfc7208) | Gönderen Politika Çerçevesi (SPF)                                    | SPF kayıt doğrulaması                                        |
+| [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Alan Tabanlı Mesaj Doğrulama, Raporlama ve Uyum (DMARC)               | DMARC politika uygulaması                                    |
+| [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Doğrulanmış Alınan Zinciri (ARC)                                     | ARC mühürleme ve doğrulama                                  |
 
-Email authentication protocols verify that messages are genuinely from the claimed sender and haven't been tampered with during transit.
+E-posta doğrulama protokolleri, mesajların gerçekten iddia edilen göndericiden geldiğini ve iletim sırasında değiştirilmediğini doğrular.
 
-### Authentication Protocol Support {#authentication-protocol-support}
+### Doğrulama Protokolü Desteği {#authentication-protocol-support}
 
-| Protocol | RFC | Status | Description |
-| --------- | -------- | ----------- | ---------------------------------------------------------------------- |
-| **DKIM** | RFC 6376 | ✅ Supported | DomainKeys Identified Mail - Cryptographic signatures |
-| **SPF** | RFC 7208 | ✅ Supported | Sender Policy Framework - IP address authorization |
-| **DMARC** | RFC 7489 | ✅ Supported | Domain-based Message Authentication - Policy enforcement |
-| **ARC** | RFC 8617 | ✅ Supported | Authenticated Received Chain - Preserve authentication across forwards |
-
+| Protokol  | RFC      | Durum       | Açıklama                                                            |
+| --------- | -------- | ----------- | ------------------------------------------------------------------ |
+| **DKIM**  | RFC 6376 | ✅ Destekleniyor | DomainKeys Identified Mail - Kriptografik imzalar                  |
+| **SPF**   | RFC 7208 | ✅ Destekleniyor | Gönderen Politika Çerçevesi - IP adresi yetkilendirmesi           |
+| **DMARC** | RFC 7489 | ✅ Destekleniyor | Alan Tabanlı Mesaj Doğrulama - Politika uygulaması                 |
+| **ARC**   | RFC 8617 | ✅ Destekleniyor | Doğrulanmış Alınan Zinciri - İletiler arası doğrulamanın korunması |
 ### DKIM (DomainKeys Identified Mail) {#dkim-domainkeys-identified-mail}
 
-**DKIM** adds a cryptographic signature to email headers, allowing recipients to verify that the message was authorized by the domain owner and hasn't been modified in transit.
+**DKIM**, e-posta başlıklarına kriptografik bir imza ekleyerek alıcıların mesajın alan adı sahibi tarafından yetkilendirildiğini ve iletim sırasında değiştirilmediğini doğrulamasını sağlar.
 
-Forward Email uses [mailauth](https://github.com/postalsys/mailauth) for DKIM signing and verification.
+Forward Email, DKIM imzalama ve doğrulama için [mailauth](https://github.com/postalsys/mailauth) kullanır.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* Automatic DKIM signing for all outbound messages
-* Support for RSA and Ed25519 keys
-* Multiple selector support
-* DKIM verification for inbound messages
+* Tüm giden mesajlar için otomatik DKIM imzalama
+* RSA ve Ed25519 anahtar desteği
+* Çoklu seçici desteği
+* Gelen mesajlar için DKIM doğrulaması
 
 ### SPF (Sender Policy Framework) {#spf-sender-policy-framework}
 
-**SPF** allows domain owners to specify which IP addresses are authorized to send email on behalf of their domain.
+**SPF**, alan adı sahiplerinin alan adları adına e-posta göndermeye yetkili IP adreslerini belirtmelerine olanak tanır.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* SPF record validation for inbound messages
-* Automatic SPF checking with detailed results
-* Support for include, redirect, and all mechanisms
-* Configurable SPF policies per domain
+* Gelen mesajlar için SPF kaydı doğrulaması
+* Ayrıntılı sonuçlarla otomatik SPF kontrolü
+* include, redirect ve all mekanizmaları desteği
+* Alan adına göre yapılandırılabilir SPF politikaları
 
 ### DMARC (Domain-based Message Authentication, Reporting & Conformance) {#dmarc-domain-based-message-authentication-reporting--conformance}
 
-**DMARC** builds on SPF and DKIM to provide policy enforcement and reporting.
+**DMARC**, SPF ve DKIM üzerine inşa edilerek politika uygulama ve raporlama sağlar.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* DMARC policy enforcement (none, quarantine, reject)
-* Alignment checking for SPF and DKIM
-* DMARC aggregate reporting
-* Per-domain DMARC policies
+* DMARC politika uygulaması (none, quarantine, reject)
+* SPF ve DKIM için hizalama kontrolü
+* DMARC toplu raporlama
+* Alan adına göre DMARC politikaları
 
 ### ARC (Authenticated Received Chain) {#arc-authenticated-received-chain}
 
-**ARC** preserves email authentication results across forwarding and mailing list modifications.
+**ARC**, e-posta kimlik doğrulama sonuçlarını yönlendirme ve posta listesi değişiklikleri boyunca korur.
 
-Forward Email uses the [mailauth](https://github.com/postalsys/mailauth) library for ARC verification and sealing.
+Forward Email, ARC doğrulama ve mühürleme için [mailauth](https://github.com/postalsys/mailauth) kütüphanesini kullanır.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* ARC sealing for forwarded messages
-* ARC validation for inbound messages
-* Chain verification across multiple hops
-* Preserves original authentication results
+* Yönlendirilmiş mesajlar için ARC mühürleme
+* Gelen mesajlar için ARC doğrulama
+* Birden fazla atlama boyunca zincir doğrulaması
+* Orijinal kimlik doğrulama sonuçlarını korur
 
 ### Authentication Flow {#authentication-flow}
 
@@ -688,115 +685,115 @@ sequenceDiagram
 
 ---
 
+
 ## Email Transport Security Protocols {#email-transport-security-protocols}
 
 > \[!IMPORTANT]
-> Forward Email implements multiple layers of transport security to protect emails in transit.
+> Forward Email, iletim halindeki e-postaları korumak için birden fazla katmanlı taşıma güvenliği uygular.
 
-Forward Email implements modern transport security protocols:
+Forward Email, modern taşıma güvenliği protokollerini uygular:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461) | SMTP MTA Strict Transport Security (MTA-STS) | ✅ Supported | Extensively used on IMAP, SMTP, and MX servers. See [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) and [get-transporter.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-transporter.js) |
-| [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) | SMTP TLS Reporting | ✅ Supported | Via [mailauth](https://github.com/postalsys/mailauth) library |
-| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | The DNS-Based Authentication of Named Entities (DANE) Protocol: Updates and Operational Guidance | ✅ Supported | Full DANE verification for outbound SMTP connections. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
-| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA | ✅ Supported | Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
-| [RFC 8314](https://datatracker.ietf.org/doc/html/rfc8314) | Cleartext Considered Obsolete: Use of Transport Layer Security (TLS) for Email Submission and Access | ✅ Supported | TLS required for all connections |
-| [RFC 8689](https://datatracker.ietf.org/doc/html/rfc8689) | SMTP Service Extension for Requiring TLS (REQUIRETLS) | ✅ Supported | Full support for REQUIRETLS SMTP extension and "TLS-Required" header |
+| RFC                                                       | Başlık                                                                                              | Durum       | Uygulama Notları                                                                                                                                                                                                                                                                              |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461) | SMTP MTA Strict Transport Security (MTA-STS)                                                       | ✅ Destekleniyor | IMAP, SMTP ve MX sunucularında yaygın olarak kullanılır. Bkz. [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) ve [get-transporter.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-transporter.js) |
+| [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) | SMTP TLS Reporting                                                                                 | ✅ Destekleniyor | [mailauth](https://github.com/postalsys/mailauth) kütüphanesi aracılığıyla                                                                                                                                                                                                                   |
+| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | The DNS-Based Authentication of Named Entities (DANE) Protocol: Updates and Operational Guidance   | ✅ Destekleniyor | Giden SMTP bağlantıları için tam DANE doğrulaması. Bkz. [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22)                                                                                                                                                                    |
+| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA| ✅ Destekleniyor | Tam RFC 6698 desteği: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE kullanım türleri. Bkz. [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22)                                                                                                                                               |
+| [RFC 8314](https://datatracker.ietf.org/doc/html/rfc8314) | Cleartext Considered Obsolete: Use of Transport Layer Security (TLS) for Email Submission and Access| ✅ Destekleniyor | Tüm bağlantılar için TLS zorunludur                                                                                                                                                                                                                                                          |
+| [RFC 8689](https://datatracker.ietf.org/doc/html/rfc8689) | SMTP Service Extension for Requiring TLS (REQUIRETLS)                                              | ✅ Destekleniyor | REQUIRETLS SMTP uzantısı ve "TLS-Required" başlığı için tam destek                                                                                                                                                                                                                            |
+Taşıma güvenlik protokolleri, e-posta mesajlarının posta sunucuları arasında iletim sırasında şifrelenmesini ve kimlik doğrulamasını sağlar.
 
-Transport security protocols ensure that email messages are encrypted and authenticated during transmission between mail servers.
+### Taşıma Güvenliği Desteği {#transport-security-support}
 
-### Transport Security Support {#transport-security-support}
+| Protokol      | RFC      | Durum       | Açıklama                                         |
+| ------------- | -------- | ----------- | ------------------------------------------------ |
+| **TLS**       | RFC 8314 | ✅ Destekleniyor | Taşıma Katmanı Güvenliği - Şifreli bağlantılar   |
+| **MTA-STS**   | RFC 8461 | ✅ Destekleniyor | Posta Aktarım Aracısı Sıkı Taşıma Güvenliği      |
+| **DANE**      | RFC 7671 | ✅ Destekleniyor | İsimlendirilmiş Varlıkların DNS Tabanlı Doğrulaması |
+| **REQUIRETLS**| RFC 8689 | ✅ Destekleniyor | Tüm teslimat yolu için TLS gerektirir             |
 
-| Protocol | RFC | Status | Description |
-| -------------- | -------- | ----------- | ------------------------------------------------ |
-| **TLS** | RFC 8314 | ✅ Supported | Transport Layer Security - Encrypted connections |
-| **MTA-STS** | RFC 8461 | ✅ Supported | Mail Transfer Agent Strict Transport Security |
-| **DANE** | RFC 7671 | ✅ Supported | DNS-based Authentication of Named Entities |
-| **REQUIRETLS** | RFC 8689 | ✅ Supported | Require TLS for entire delivery path |
+### TLS (Taşıma Katmanı Güvenliği) {#tls-transport-layer-security}
 
-### TLS (Transport Layer Security) {#tls-transport-layer-security}
+Forward Email, tüm e-posta bağlantıları (SMTP, IMAP, POP3) için TLS şifrelemesini zorunlu kılar.
 
-Forward Email enforces TLS encryption for all email connections (SMTP, IMAP, POP3).
+**Temel Özellikler:**
 
-**Key Features:**
+* TLS 1.2 ve TLS 1.3 desteği
+* Otomatik sertifika yönetimi
+* Mükemmel İleri Gizlilik (PFS)
+* Sadece güçlü şifreleme takımları
 
-* TLS 1.2 and TLS 1.3 support
-* Automatic certificate management
-* Perfect Forward Secrecy (PFS)
-* Strong cipher suites only
+### MTA-STS (Posta Aktarım Aracısı Sıkı Taşıma Güvenliği) {#mta-sts-mail-transfer-agent-strict-transport-security}
 
-### MTA-STS (Mail Transfer Agent Strict Transport Security) {#mta-sts-mail-transfer-agent-strict-transport-security}
+**MTA-STS**, e-postanın yalnızca TLS ile şifrelenmiş bağlantılar üzerinden teslim edilmesini HTTPS üzerinden bir politika yayınlayarak sağlar.
 
-**MTA-STS** ensures that email is only delivered over TLS-encrypted connections by publishing a policy via HTTPS.
+Forward Email, MTA-STS'yi [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) kullanarak uygular.
 
-Forward Email implements MTA-STS using [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js).
+**Temel Özellikler:**
 
-**Key Features:**
+* Otomatik MTA-STS politika yayını
+* Performans için politika önbellekleme
+* Düşürme saldırısı önleme
+* Sertifika doğrulama zorunluluğu
 
-* Automatic MTA-STS policy publication
-* Policy caching for performance
-* Downgrade attack prevention
-* Certificate validation enforcement
-
-### DANE (DNS-based Authentication of Named Entities) {#dane-dns-based-authentication-of-named-entities}
+### DANE (İsimlendirilmiş Varlıkların DNS Tabanlı Doğrulaması) {#dane-dns-based-authentication-of-named-entities}
 
 > \[!NOTE]
-> Forward Email now provides full DANE support for outbound SMTP connections.
+> Forward Email artık giden SMTP bağlantıları için tam DANE desteği sağlar.
 
-**DANE** uses DNSSEC to publish TLS certificate information in DNS, allowing mail servers to verify certificates without relying on certificate authorities.
+**DANE**, TLS sertifika bilgilerini DNS'te yayınlamak için DNSSEC kullanır ve posta sunucularının sertifika otoritelerine güvenmeden sertifikaları doğrulamasına olanak tanır.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* ✅ Full DANE verification for outbound SMTP connections
-* ✅ Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types
-* ✅ Certificate verification against TLSA records during TLS upgrade
-* ✅ Parallel TLSA resolution for multiple MX hosts
-* ✅ Automatic detection of native `dns.resolveTlsa` (Node.js v22.15.0+, v23.9.0+)
-* ✅ Custom resolver support for older Node.js versions via [Tangerine](https://github.com/forwardemail/tangerine)
-* Requires DNSSEC-signed domains
+* ✅ Giden SMTP bağlantıları için tam DANE doğrulaması
+* ✅ Tam RFC 6698 desteği: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE kullanım türleri
+* ✅ TLS yükseltme sırasında TLSA kayıtlarına karşı sertifika doğrulaması
+* ✅ Birden fazla MX sunucusu için paralel TLSA çözümlemesi
+* ✅ Yerel `dns.resolveTlsa` otomatik algılama (Node.js v22.15.0+, v23.9.0+)
+* ✅ Eski Node.js sürümleri için [Tangerine](https://github.com/forwardemail/tangerine) üzerinden özel çözümleyici desteği
+* DNSSEC ile imzalanmış alan adları gerektirir
 
 > \[!TIP]
-> **Implementation Details:** DANE support was added via [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22), which provides comprehensive DANE/TLSA support for outbound SMTP connections.
+> **Uygulama Detayları:** DANE desteği, giden SMTP bağlantıları için kapsamlı DANE/TLSA desteği sağlayan [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) ile eklendi.
 
 ### REQUIRETLS {#requiretls}
 
 > \[!TIP]
-> Forward Email is one of the few providers with user-facing REQUIRETLS support.
+> Forward Email, kullanıcıya yönelik REQUIRETLS desteği sunan az sayıdaki sağlayıcıdan biridir.
 
-**REQUIRETLS** ensures that email messages are only delivered over TLS-encrypted connections for the entire delivery path.
+**REQUIRETLS**, e-posta mesajlarının tüm teslimat yolu boyunca yalnızca TLS ile şifrelenmiş bağlantılar üzerinden teslim edilmesini sağlar.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* User-facing checkbox in email composer
-* Automatic rejection of unencrypted delivery
-* End-to-end TLS enforcement
-* Detailed failure notifications
+* E-posta oluşturucuda kullanıcıya yönelik onay kutusu
+* Şifrelenmemiş teslimatın otomatik reddi
+* Uçtan uca TLS zorunluluğu
+* Ayrıntılı hata bildirimleri
 
 > \[!TIP]
-> **User-Facing TLS Enforcement:** Forward Email provides a checkbox under **My Account > Domains > Settings** to enforce TLS for all inbound connections. When enabled, this feature rejects any inbound email not sent over a TLS-encrypted connection with a 530 error code, ensuring all incoming mail is encrypted in transit.
+> **Kullanıcıya Yönelik TLS Zorunluluğu:** Forward Email, **Hesabım > Alan Adları > Ayarlar** altında tüm gelen bağlantılar için TLS zorunluluğu sağlayan bir onay kutusu sunar. Etkinleştirildiğinde, bu özellik TLS ile şifrelenmemiş herhangi bir gelen e-postayı 530 hata kodu ile reddeder ve tüm gelen postanın iletim sırasında şifreli olmasını garanti eder.
 
-### Transport Security Flow {#transport-security-flow}
+### Taşıma Güvenliği Akışı {#transport-security-flow}
 
 ```mermaid
 graph LR
-    subgraph "Connection Security"
+    subgraph "Bağlantı Güvenliği"
         TLS[TLS 1.2/1.3]
-        CERT[Certificate Validation]
+        CERT[Sertifika Doğrulama]
     end
 
-    subgraph "Policy Enforcement"
-        MTASTS[MTA-STS Policy]
-        DANE[DANE TLSA Records]
-        REQTLS[REQUIRETLS Flag]
+    subgraph "Politika Uygulaması"
+        MTASTS[MTA-STS Politikası]
+        DANE[DANE TLSA Kayıtları]
+        REQTLS[REQUIRETLS Bayrağı]
     end
 
-    Client[Email Client] -->|Encrypted| TLS
+    Client[E-posta İstemcisi] -->|Şifreli| TLS
     TLS --> CERT
     CERT --> MTASTS
     MTASTS --> DANE
     DANE --> REQTLS
-    REQTLS -->|Secure Delivery| Server[Recipient Server]
+    REQTLS -->|Güvenli Teslimat| Server[Alıcı Sunucu]
 
     style TLS fill:#9f9,stroke:#333
     style CERT fill:#9f9,stroke:#333
@@ -804,418 +801,413 @@ graph LR
     style DANE fill:#9f9,stroke:#333
     style REQTLS fill:#9f9,stroke:#333
 ```
-
----
-
-
-## Email Message Encryption {#email-message-encryption}
+## E-posta Mesaj Şifreleme {#email-message-encryption}
 
 > \[!NOTE]
-> Forward Email supports both OpenPGP and S/MIME for end-to-end email encryption.
+> Forward Email, uçtan uca e-posta şifrelemesi için hem OpenPGP hem de S/MIME desteği sunar.
 
-Forward Email supports OpenPGP and S/MIME encryption:
+Forward Email, OpenPGP ve S/MIME şifrelemesini destekler:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 9580](https://datatracker.ietf.org/doc/html/rfc9580) | OpenPGP (supersedes RFC 4880) | ✅ Supported | Via [OpenPGP.js v6+](https://github.com/openpgpjs/openpgpjs) integration. See [FAQ](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) |
-| [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) | Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 4.0 Message Specification | ✅ Supported | Both RSA and ECC algorithms supported. See [FAQ](https://forwardemail.net/en/faq#do-you-support-smime-encryption) |
+| RFC                                                       | Başlık                                                                                  | Durum       | Uygulama Notları                                                                                                                                                                                    |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 9580](https://datatracker.ietf.org/doc/html/rfc9580) | OpenPGP (RFC 4880'in yerini alır)                                                       | ✅ Destekleniyor | [OpenPGP.js v6+](https://github.com/openpgpjs/openpgpjs) entegrasyonu ile. Bakınız [SSS](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) |
+| [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) | Güvenli/Çok Amaçlı İnternet Posta Uzantıları (S/MIME) Sürüm 4.0 Mesaj Spesifikasyonu     | ✅ Destekleniyor | Hem RSA hem ECC algoritmaları desteklenir. Bakınız [SSS](https://forwardemail.net/en/faq#do-you-support-smime-encryption)                                                                             |
 
-Message encryption protocols protect email content from being read by anyone except the intended recipient, even if the message is intercepted during transit.
+Mesaj şifreleme protokolleri, mesaj transit sırasında ele geçirilse bile, e-posta içeriğinin yalnızca hedef alıcı tarafından okunmasını sağlar.
 
-### Encryption Support {#encryption-support}
+### Şifreleme Desteği {#encryption-support}
 
-| Protocol | RFC | Status | Description |
+| Protokol    | RFC      | Durum       | Açıklama                                    |
 | ----------- | -------- | ----------- | -------------------------------------------- |
-| **OpenPGP** | RFC 9580 | ✅ Supported | Pretty Good Privacy - Public key encryption |
-| **S/MIME** | RFC 8551 | ✅ Supported | Secure/Multipurpose Internet Mail Extensions |
-| **WKD** | Draft | ✅ Supported | Web Key Directory - Automatic key discovery |
+| **OpenPGP** | RFC 9580 | ✅ Destekleniyor | Pretty Good Privacy - Açık anahtarlı şifreleme |
+| **S/MIME**  | RFC 8551 | ✅ Destekleniyor | Güvenli/Çok Amaçlı İnternet Posta Uzantıları  |
+| **WKD**     | Taslak   | ✅ Destekleniyor | Web Anahtar Dizini - Otomatik anahtar keşfi   |
 
 ### OpenPGP (Pretty Good Privacy) {#openpgp-pretty-good-privacy}
 
-**OpenPGP** provides end-to-end encryption using public key cryptography. Forward Email supports OpenPGP through the [Web Key Directory (WKD)](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) protocol.
+**OpenPGP**, açık anahtarlı kriptografi kullanarak uçtan uca şifreleme sağlar. Forward Email, [Web Key Directory (WKD)](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) protokolü aracılığıyla OpenPGP'yi destekler.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* Automatic key discovery via WKD
-* PGP/MIME support for encrypted attachments
-* Key management through email client
-* Compatible with GPG, Mailvelope, and other OpenPGP tools
+* WKD üzerinden otomatik anahtar keşfi
+* Şifreli ekler için PGP/MIME desteği
+* E-posta istemcisi üzerinden anahtar yönetimi
+* GPG, Mailvelope ve diğer OpenPGP araçları ile uyumlu
 
-**How to Use:**
+**Nasıl Kullanılır:**
 
-1. Generate a PGP key pair in your email client
-2. Upload your public key to Forward Email's WKD
-3. Your key is automatically discoverable by other users
-4. Send and receive encrypted emails seamlessly
+1. E-posta istemcinizde bir PGP anahtar çifti oluşturun
+2. Açık anahtarınızı Forward Email'in WKD'sine yükleyin
+3. Anahtarınız diğer kullanıcılar tarafından otomatik olarak keşfedilir
+4. Şifreli e-postalar gönderip alın, sorunsuzca kullanın
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 
-**S/MIME** provides email encryption and digital signatures using X.509 certificates.
+**S/MIME**, X.509 sertifikaları kullanarak e-posta şifreleme ve dijital imzalar sağlar.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* Certificate-based encryption
-* Digital signatures for message authentication
-* Native support in most email clients
-* Enterprise-grade security
+* Sertifika tabanlı şifreleme
+* Mesaj doğrulaması için dijital imzalar
+* Çoğu e-posta istemcisinde yerel destek
+* Kurumsal düzeyde güvenlik
 
-**How to Use:**
+**Nasıl Kullanılır:**
 
-1. Obtain an S/MIME certificate from a Certificate Authority
-2. Install the certificate in your email client
-3. Configure your client to encrypt/sign messages
-4. Exchange certificates with recipients
+1. Bir Sertifika Otoritesinden S/MIME sertifikası alın
+2. Sertifikayı e-posta istemcinize yükleyin
+3. İstemcinizi mesajları şifrelemek/imzalamak için yapılandırın
+4. Alıcılarla sertifikalarınızı değiş tokuş edin
 
-### SQLite Mailbox Encryption {#sqlite-mailbox-encryption}
+### SQLite Posta Kutusu Şifreleme {#sqlite-mailbox-encryption}
 
 > \[!IMPORTANT]
-> Forward Email provides an additional layer of security with encrypted SQLite mailboxes.
+> Forward Email, şifrelenmiş SQLite posta kutuları ile ek bir güvenlik katmanı sağlar.
 
-Beyond message-level encryption, Forward Email encrypts entire mailboxes using [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305).
+Mesaj düzeyindeki şifrelemenin ötesinde, Forward Email tüm posta kutularını [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305) kullanarak şifreler.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* **Password-based encryption** - Only you have the password
-* **Quantum-resistant** - ChaCha20-Poly1305 cipher
-* **Zero-knowledge** - Forward Email cannot decrypt your mailbox
-* **Sandboxed** - Each mailbox is isolated and portable
-* **Unrecoverable** - If you forget your password, your mailbox is lost
+* **Parola tabanlı şifreleme** - Parolaya sadece siz sahipsiniz
+* **Kuantum dirençli** - ChaCha20-Poly1305 şifreleme algoritması
+* **Sıfır bilgi** - Forward Email posta kutunuzu çözemiyor
+* **Sandbox'lı** - Her posta kutusu izole ve taşınabilir
+* **Kurtarılamaz** - Parolanızı unutursanız posta kutunuz kaybolur
+### Şifreleme Karşılaştırması {#encryption-comparison}
 
-### Encryption Comparison {#encryption-comparison}
-
-| Feature | OpenPGP | S/MIME | SQLite Encryption |
+| Özellik               | OpenPGP           | S/MIME             | SQLite Şifreleme  |
 | --------------------- | ----------------- | ------------------ | ----------------- |
-| **End-to-End** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Key Management** | Self-managed | CA-issued | Password-based |
-| **Client Support** | Requires plugin | Native | Transparent |
-| **Use Case** | Personal | Enterprise | Storage |
-| **Quantum-Resistant** | ⚠️ Depends on key | ⚠️ Depends on cert | ✅ Yes |
+| **Uçtan Uca**         | ✅ Evet            | ✅ Evet             | ✅ Evet            |
+| **Anahtar Yönetimi**  | Kendi yönetimi    | CA tarafından verilmiş | Parola tabanlı    |
+| **İstemci Desteği**   | Eklenti gerektirir | Yerel              | Şeffaf            |
+| **Kullanım Alanı**    | Kişisel           | Kurumsal           | Depolama          |
+| **Kuantum Dirençli**  | ⚠️ Anahtara bağlı | ⚠️ Sertifikaya bağlı | ✅ Evet            |
 
-### Encryption Flow {#encryption-flow}
+### Şifreleme Akışı {#encryption-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Sender as Sender
+    participant Sender as Gönderen
     participant FE as Forward Email
-    participant Storage as Encrypted Storage
-    participant Recipient as Recipient
+    participant Storage as Şifreli Depolama
+    participant Recipient as Alıcı
 
-    Sender->>Sender: Encrypt with PGP/S-MIME
-    Sender->>FE: Send Encrypted Email
-    FE->>Storage: Store in Encrypted Mailbox
-    Note over Storage: ChaCha20-Poly1305<br/>Password-based
-    Storage-->>FE: Encrypted Data
-    FE->>Recipient: Deliver Encrypted Email
-    Recipient->>Recipient: Decrypt with Private Key
+    Sender->>Sender: PGP/S-MIME ile Şifrele
+    Sender->>FE: Şifreli E-posta Gönder
+    FE->>Storage: Şifreli Posta Kutusuna Kaydet
+    Note over Storage: ChaCha20-Poly1305<br/>Parola tabanlı
+    Storage-->>FE: Şifreli Veri
+    FE->>Recipient: Şifreli E-postayı Teslim Et
+    Recipient->>Recipient: Özel Anahtarla Şifre Çöz
 ```
 
 ---
 
-## Extended Functionality {#extended-functionality}
 
-## Email Message Format Standards {#email-message-format-standards}
+## Genişletilmiş İşlevsellik {#extended-functionality}
+
+
+## E-posta Mesaj Formatı Standartları {#email-message-format-standards}
 
 > \[!NOTE]
-> Forward Email supports modern email format standards for rich content and internationalization.
+> Forward Email, zengin içerik ve uluslararasılaştırma için modern e-posta format standartlarını destekler.
 
-Forward Email supports standard email message formats:
+Forward Email standart e-posta mesaj formatlarını destekler:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------- | -------------------- |
-| [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) | Internet Message Format | Full support |
-| [RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045) | MIME Part One: Format of Internet Message Bodies | Full MIME support |
-| [RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046) | MIME Part Two: Media Types | Full MIME support |
-| [RFC 2047](https://datatracker.ietf.org/doc/html/rfc2047) | MIME Part Three: Message Header Extensions for Non-ASCII Text | Full MIME support |
-| [RFC 2048](https://datatracker.ietf.org/doc/html/rfc2048) | MIME Part Four: Registration Procedures | Full MIME support |
-| [RFC 2049](https://datatracker.ietf.org/doc/html/rfc2049) | MIME Part Five: Conformance Criteria and Examples | Full MIME support |
+| RFC                                                       | Başlık                                                        | Uygulama Notları    |
+| --------------------------------------------------------- | ------------------------------------------------------------- | ------------------- |
+| [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) | İnternet Mesaj Formatı                                        | Tam destek          |
+| [RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045) | MIME Bölüm Bir: İnternet Mesaj Gövdelerinin Formatı           | Tam MIME desteği    |
+| [RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046) | MIME Bölüm İki: Medya Türleri                                 | Tam MIME desteği    |
+| [RFC 2047](https://datatracker.ietf.org/doc/html/rfc2047) | MIME Bölüm Üç: ASCII Olmayan Metin için Mesaj Başlık Uzantıları | Tam MIME desteği    |
+| [RFC 2048](https://datatracker.ietf.org/doc/html/rfc2048) | MIME Bölüm Dört: Kayıt Prosedürleri                           | Tam MIME desteği    |
+| [RFC 2049](https://datatracker.ietf.org/doc/html/rfc2049) | MIME Bölüm Beş: Uyum Kriterleri ve Örnekler                   | Tam MIME desteği    |
 
-Email format standards define how email messages are structured, encoded, and displayed.
+E-posta format standartları, e-posta mesajlarının nasıl yapılandırıldığı, kodlandığı ve görüntülendiğini tanımlar.
 
-### Format Standards Support {#format-standards-support}
+### Format Standartları Desteği {#format-standards-support}
 
-| Standard | RFC | Status | Description |
-| ------------------ | ------------- | ----------- | ------------------------------------- |
-| **MIME** | RFC 2045-2049 | ✅ Supported | Multipurpose Internet Mail Extensions |
-| **SMTPUTF8** | RFC 6531 | ⚠️ Partial | Internationalized email addresses |
-| **EAI** | RFC 6530 | ⚠️ Partial | Email Address Internationalization |
-| **Message Format** | RFC 5322 | ✅ Supported | Internet Message Format |
-| **MIME Security** | RFC 1847 | ✅ Supported | Security Multiparts for MIME |
+| Standart           | RFC           | Durum       | Açıklama                             |
+| ------------------ | ------------- | ----------- | ----------------------------------- |
+| **MIME**           | RFC 2045-2049 | ✅ Destekleniyor | Çok Amaçlı İnternet Posta Uzantıları |
+| **SMTPUTF8**       | RFC 6531      | ⚠️ Kısmi    | Uluslararasılaştırılmış e-posta adresleri |
+| **EAI**            | RFC 6530      | ⚠️ Kısmi    | E-posta Adresi Uluslararasılaştırması |
+| **Mesaj Formatı**  | RFC 5322      | ✅ Destekleniyor | İnternet Mesaj Formatı              |
+| **MIME Güvenliği** | RFC 1847      | ✅ Destekleniyor | MIME için Güvenlik Çok Parçaları    |
 
-### MIME (Multipurpose Internet Mail Extensions) {#mime-multipurpose-internet-mail-extensions}
+### MIME (Çok Amaçlı İnternet Posta Uzantıları) {#mime-multipurpose-internet-mail-extensions}
 
-**MIME** allows emails to contain multiple parts with different content types (text, HTML, attachments, etc.).
+**MIME**, e-postaların farklı içerik türlerine (metin, HTML, ekler vb.) sahip birden çok bölüm içermesine olanak tanır.
 
-**Supported MIME Features:**
+**Desteklenen MIME Özellikleri:**
 
-* Multipart messages (mixed, alternative, related)
-* Content-Type headers
+* Çok parçalı mesajlar (karışık, alternatif, ilişkili)
+* Content-Type başlıkları
 * Content-Transfer-Encoding (7bit, 8bit, quoted-printable, base64)
-* Inline images and attachments
-* Rich HTML content
+* Satır içi resimler ve ekler
+* Zengin HTML içeriği
 
-### SMTPUTF8 and Email Address Internationalization {#smtputf8-and-email-address-internationalization}
+### SMTPUTF8 ve E-posta Adresi Uluslararasılaştırması {#smtputf8-and-email-address-internationalization}
 
 > \[!WARNING]
-> SMTPUTF8 support is partial - not all features are fully implemented.
+> SMTPUTF8 desteği kısmi - tüm özellikler tam olarak uygulanmamıştır.
+**SMTPUTF8**, e-posta adreslerinin ASCII olmayan karakterler içermesine izin verir (örneğin, `用户@例え.jp`).
 
-**SMTPUTF8** allows email addresses to contain non-ASCII characters (e.g., `用户@例え.jp`).
+**Mevcut Durum:**
 
-**Current Status:**
-
-* ⚠️ Partial support for internationalized email addresses
-* ✅ UTF-8 content in message bodies
-* ⚠️ Limited support for non-ASCII local parts
+* ⚠️ Uluslararasılaştırılmış e-posta adresleri için kısmi destek
+* ✅ Mesaj gövdelerinde UTF-8 içeriği
+* ⚠️ ASCII olmayan yerel parçalar için sınırlı destek
 
 ---
 
-## Calendaring and Contacts Protocols {#calendaring-and-contacts-protocols}
+
+## Takvim ve Kişiler Protokolleri {#calendaring-and-contacts-protocols}
 
 > \[!NOTE]
-> Forward Email provides full CalDAV and CardDAV support for calendar and contact synchronization.
+> Forward Email, takvim ve kişi senkronizasyonu için tam CalDAV ve CardDAV desteği sağlar.
 
-Forward Email supports CalDAV and CardDAV via the [caldav-adapter](https://github.com/forwardemail/caldav-adapter) library:
+Forward Email, [caldav-adapter](https://github.com/forwardemail/caldav-adapter) kütüphanesi aracılığıyla CalDAV ve CardDAV destekler:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------------------- | ----------- | ------------------------------ |
-| [RFC 4791](https://datatracker.ietf.org/doc/html/rfc4791) | Calendaring Extensions to WebDAV (CalDAV) | ✅ Supported | Calendar access and management |
-| [RFC 6352](https://datatracker.ietf.org/doc/html/rfc6352) | CardDAV: vCard Extensions to WebDAV | ✅ Supported | Contact access and management |
-| [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) | Internet Calendaring and Scheduling Core Object Specification (iCalendar) | ✅ Supported | iCalendar format support |
-| [RFC 6350](https://datatracker.ietf.org/doc/html/rfc6350) | vCard Format Specification | ✅ Supported | vCard 4.0 format support |
-| [RFC 6638](https://datatracker.ietf.org/doc/html/rfc6638) | Scheduling Extensions to CalDAV | ✅ Supported | CalDAV scheduling with iMIP support. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
-| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar Transport-Independent Interoperability Protocol (iTIP) | ✅ Supported | iTIP support for REQUEST, REPLY, CANCEL, and VFREEBUSY methods. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
-| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar Message-Based Interoperability Protocol (iMIP) | ✅ Supported | Email-based calendar invitations with response links. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| RFC                                                       | Başlık                                                                   | Durum       | Uygulama Notları                                                                                                                                                                      |
+| --------------------------------------------------------- | ------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 4791](https://datatracker.ietf.org/doc/html/rfc4791) | WebDAV için Takvim Uzantıları (CalDAV)                                   | ✅ Destekleniyor | Takvim erişimi ve yönetimi                                                                                                                                                            |
+| [RFC 6352](https://datatracker.ietf.org/doc/html/rfc6352) | CardDAV: WebDAV için vCard Uzantıları                                    | ✅ Destekleniyor | Kişi erişimi ve yönetimi                                                                                                                                                               |
+| [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) | İnternet Takvim ve Planlama Temel Nesne Spesifikasyonu (iCalendar)       | ✅ Destekleniyor | iCalendar format desteği                                                                                                                                                               |
+| [RFC 6350](https://datatracker.ietf.org/doc/html/rfc6350) | vCard Format Spesifikasyonu                                              | ✅ Destekleniyor | vCard 4.0 format desteği                                                                                                                                                               |
+| [RFC 6638](https://datatracker.ietf.org/doc/html/rfc6638) | CalDAV için Planlama Uzantıları                                          | ✅ Destekleniyor | iMIP desteği ile CalDAV planlaması. Bkz. [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80)                            |
+| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar Taşıma Bağımsız Birlikte Çalışabilirlik Protokolü (iTIP)       | ✅ Destekleniyor | REQUEST, REPLY, CANCEL ve VFREEBUSY yöntemleri için iTIP desteği. Bkz. [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar Mesaj Tabanlı Birlikte Çalışabilirlik Protokolü (iMIP)          | ✅ Destekleniyor | Yanıt bağlantıları içeren e-posta tabanlı takvim davetiyeleri. Bkz. [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80)           |
 
-CalDAV and CardDAV are protocols that allow calendar and contact data to be accessed, shared, and synchronized across devices.
+CalDAV ve CardDAV, takvim ve kişi verilerinin cihazlar arasında erişilmesini, paylaşılmasını ve senkronize edilmesini sağlayan protokollerdir.
 
-### CalDAV and CardDAV Support {#caldav-and-carddav-support}
+### CalDAV ve CardDAV Desteği {#caldav-and-carddav-support}
 
-| Protocol | RFC | Status | Description |
-| ------------- | -------- | ----------- | ----------------------------------- |
-| **CalDAV** | RFC 4791 | ✅ Supported | Calendar access and synchronization |
-| **CardDAV** | RFC 6352 | ✅ Supported | Contact access and synchronization |
-| **iCalendar** | RFC 5545 | ✅ Supported | Calendar data format |
-| **vCard** | RFC 6350 | ✅ Supported | Contact data format |
-| **VTODO** | RFC 5545 | ✅ Supported | Task/reminder support |
-| **CalDAV Scheduling** | RFC 6638 | ✅ Supported | Calendar scheduling extensions |
-| **iTIP** | RFC 5546 | ✅ Supported | Transport-independent interoperability |
-| **iMIP** | RFC 6047 | ✅ Supported | Email-based calendar invitations |
+| Protokol              | RFC      | Durum       | Açıklama                             |
+| --------------------- | -------- | ----------- | ---------------------------------- |
+| **CalDAV**            | RFC 4791 | ✅ Destekleniyor | Takvim erişimi ve senkronizasyonu   |
+| **CardDAV**           | RFC 6352 | ✅ Destekleniyor | Kişi erişimi ve senkronizasyonu      |
+| **iCalendar**         | RFC 5545 | ✅ Destekleniyor | Takvim veri formatı                 |
+| **vCard**             | RFC 6350 | ✅ Destekleniyor | Kişi veri formatı                   |
+| **VTODO**             | RFC 5545 | ✅ Destekleniyor | Görev/hatırlatma desteği            |
+| **CalDAV Planlama**   | RFC 6638 | ✅ Destekleniyor | Takvim planlama uzantıları          |
+| **iTIP**              | RFC 5546 | ✅ Destekleniyor | Taşıma-bağımsız birlikte çalışabilirlik |
+| **iMIP**              | RFC 6047 | ✅ Destekleniyor | E-posta tabanlı takvim davetiyeleri |
+### CalDAV (Takvim Erişimi) {#caldav-calendar-access}
 
-### CalDAV (Calendar Access) {#caldav-calendar-access}
+**CalDAV**, herhangi bir cihaz veya uygulamadan takvimlere erişmenizi ve yönetmenizi sağlar.
 
-**CalDAV** allows you to access and manage calendars from any device or application.
+**Temel Özellikler:**
 
-**Key Features:**
+* Çoklu cihaz senkronizasyonu
+* Paylaşılan takvimler
+* Takvim abonelikleri
+* Etkinlik davetleri ve yanıtları
+* Tekrarlayan etkinlikler
+* Saat dilimi desteği
 
-* Multi-device synchronization
-* Shared calendars
-* Calendar subscriptions
-* Event invitations and responses
-* Recurring events
-* Timezone support
+**Uyumlu İstemciler:**
 
-**Compatible Clients:**
-
-* Apple Calendar (macOS, iOS)
+* Apple Takvim (macOS, iOS)
 * Mozilla Thunderbird
 * Evolution
-* GNOME Calendar
-* Any CalDAV-compatible client
+* GNOME Takvim
+* Herhangi bir CalDAV uyumlu istemci
 
-### CardDAV (Contact Access) {#carddav-contact-access}
+### CardDAV (Kişi Erişimi) {#carddav-contact-access}
 
-**CardDAV** allows you to access and manage contacts from any device or application.
+**CardDAV**, herhangi bir cihaz veya uygulamadan kişilere erişmenizi ve yönetmenizi sağlar.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* Multi-device synchronization
-* Shared address books
-* Contact groups
-* Photo support
-* Custom fields
-* vCard 4.0 support
+* Çoklu cihaz senkronizasyonu
+* Paylaşılan adres defterleri
+* Kişi grupları
+* Fotoğraf desteği
+* Özel alanlar
+* vCard 4.0 desteği
 
-**Compatible Clients:**
+**Uyumlu İstemciler:**
 
-* Apple Contacts (macOS, iOS)
+* Apple Kişiler (macOS, iOS)
 * Mozilla Thunderbird
 * Evolution
-* GNOME Contacts
-* Any CardDAV-compatible client
+* GNOME Kişiler
+* Herhangi bir CardDAV uyumlu istemci
 
-### Tasks and Reminders (CalDAV VTODO) {#tasks-and-reminders-caldav-vtodo}
+### Görevler ve Hatırlatıcılar (CalDAV VTODO) {#tasks-and-reminders-caldav-vtodo}
 
 > \[!TIP]
-> Forward Email supports tasks and reminders through CalDAV VTODO.
+> Forward Email, CalDAV VTODO aracılığıyla görevler ve hatırlatıcıları destekler.
 
-**VTODO** is part of the iCalendar format and allows task management through CalDAV.
+**VTODO**, iCalendar formatının bir parçasıdır ve CalDAV üzerinden görev yönetimine olanak tanır.
 
-**Key Features:**
+**Temel Özellikler:**
 
-* Task creation and management
-* Due dates and priorities
-* Task completion tracking
-* Recurring tasks
-* Task lists/categories
+* Görev oluşturma ve yönetimi
+* Son tarihler ve öncelikler
+* Görev tamamlama takibi
+* Tekrarlayan görevler
+* Görev listeleri/kategorileri
 
-**Compatible Clients:**
+**Uyumlu İstemciler:**
 
-* Apple Reminders (macOS, iOS)
-* Mozilla Thunderbird (with Lightning)
+* Apple Hatırlatıcılar (macOS, iOS)
+* Mozilla Thunderbird (Lightning ile)
 * Evolution
 * GNOME To Do
-* Any CalDAV client with VTODO support
+* VTODO desteği olan herhangi bir CalDAV istemcisi
 
-### CalDAV/CardDAV Synchronization Flow {#caldavcarddav-synchronization-flow}
+### CalDAV/CardDAV Senkronizasyon Akışı {#caldavcarddav-synchronization-flow}
 
 ```mermaid
 sequenceDiagram
-    participant iOS as iOS Device
-    participant Mac as macOS Device
-    participant FE as Forward Email<br/>CalDAV/CardDAV Server
-    participant Android as Android Device
+    participant iOS as iOS Cihazı
+    participant Mac as macOS Cihazı
+    participant FE as Forward Email<br/>CalDAV/CardDAV Sunucusu
+    participant Android as Android Cihazı
 
-    iOS->>FE: Create Event/Contact
-    FE->>FE: Store in Database
-    FE-->>Mac: Push Notification
-    Mac->>FE: Sync Request
-    FE-->>Mac: Updated Data
-    FE-->>Android: Push Notification
-    Android->>FE: Sync Request
-    FE-->>Android: Updated Data
+    iOS->>FE: Etkinlik/Kişi Oluştur
+    FE->>FE: Veritabanına Kaydet
+    FE-->>Mac: Push Bildirimi
+    Mac->>FE: Senkronizasyon Talebi
+    FE-->>Mac: Güncellenmiş Veri
+    FE-->>Android: Push Bildirimi
+    Android->>FE: Senkronizasyon Talebi
+    FE-->>Android: Güncellenmiş Veri
 
-    Note over iOS,Android: All devices stay in sync
+    Note over iOS,Android: Tüm cihazlar senkronize kalır
 ```
 
-### Calendaring Extensions NOT Supported {#calendaring-extensions-not-supported}
+### Desteklenmeyen Takvim Uzantıları {#calendaring-extensions-not-supported}
 
-The following calendaring extensions are NOT supported:
+Aşağıdaki takvim uzantıları DESTEKLENMEMEKTEDİR:
 
-| RFC | Title | Reason |
-| --------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [RFC 4918](https://datatracker.ietf.org/doc/html/rfc4918) | HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV) | CalDAV uses WebDAV concepts but doesn't implement full RFC 4918 |
-| [RFC 6578](https://datatracker.ietf.org/doc/html/rfc6578) | Collection Synchronization for WebDAV | Not implemented |
-| [RFC 3744](https://datatracker.ietf.org/doc/html/rfc3744) | WebDAV Access Control Protocol | Not implemented |
+| RFC                                                       | Başlık                                                              | Sebep                                                           |
+| --------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [RFC 4918](https://datatracker.ietf.org/doc/html/rfc4918) | Web Dağıtımlı Yazarlık ve Sürümleme için HTTP Uzantıları (WebDAV)    | CalDAV WebDAV kavramlarını kullanır ancak tam RFC 4918'i uygulamaz |
+| [RFC 6578](https://datatracker.ietf.org/doc/html/rfc6578) | WebDAV için Koleksiyon Senkronizasyonu                              | Uygulanmamıştır                                                |
+| [RFC 3744](https://datatracker.ietf.org/doc/html/rfc3744) | WebDAV Erişim Kontrol Protokolü                                     | Uygulanmamıştır                                                |
 
 ---
 
-## Email Message Filtering {#email-message-filtering}
+
+## E-posta Mesaj Filtreleme {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email provides **full Sieve and ManageSieve support** for server-side email filtering. Create powerful rules to automatically sort, filter, forward, and respond to incoming messages.
+> Forward Email, sunucu tarafı e-posta filtreleme için **tam Sieve ve ManageSieve desteği** sağlar. Gelen mesajları otomatik olarak sıralamak, filtrelemek, iletmek ve yanıtlamak için güçlü kurallar oluşturun.
 
 ### Sieve (RFC 5228) {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) is a standardized, powerful scripting language for server-side email filtering. Forward Email implements comprehensive Sieve support with 24 extensions.
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)), sunucu tarafı e-posta filtreleme için standartlaştırılmış, güçlü bir betik dilidir. Forward Email, 24 uzantı ile kapsamlı Sieve desteği uygular.
 
-**Source Code:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
+**Kaynak Kodu:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### Core Sieve RFCs Supported {#core-sieve-rfcs-supported}
+#### Desteklenen Temel Sieve RFC'leri {#core-sieve-rfcs-supported}
 
-| RFC | Title | Status |
+| RFC                                                                                    | Başlık                                                        | Durum          |
 | -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Sieve: An Email Filtering Language | ✅ Full Support |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | Sieve Email Filtering: Reject and Extended Reject Extensions | ✅ Full Support |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | Sieve Email Filtering: Vacation Extension | ✅ Full Support |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | Sieve Vacation Extension: "Seconds" Parameter | ✅ Full Support |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | Sieve Email Filtering: Imap4flags Extension | ✅ Full Support |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | Sieve Email Filtering: Body Extension | ✅ Full Support |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | Sieve Email Filtering: Variables Extension | ✅ Full Support |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | Sieve Email Filtering: Relational Extension | ✅ Full Support |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Internet Application Protocol Collation Registry | ✅ Full Support |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | Sieve Extension: Copying Without Side Effects | ✅ Full Support |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | Sieve Email Filtering: Editheader Extension | ✅ Full Support |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | Sieve Email Filtering: Date and Index Extensions | ✅ Full Support |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | Sieve Email Filtering: Extension for Notifications | ✅ Full Support |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | Sieve Email Filtering: Environment Extension | ✅ Full Support |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Sieve Email Filtering: Extensions for Checking Mailbox Status | ✅ Full Support |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | Sieve Email Filtering: Delivering to Special-Use Mailboxes | ✅ Full Support |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | Sieve Email Filtering: Detecting Duplicate Deliveries | ✅ Full Support |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | Sieve Email Filtering: Ihave Extension | ✅ Full Support |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | Sieve Email Filtering: Subaddress Extension | ✅ Full Support |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve Email Filtering: Regular Expression Extension | ✅ Full Support |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: Bir E-posta Filtreleme Dili                            | ✅ Tam Destek  |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve E-posta Filtreleme: Reddetme ve Genişletilmiş Reddetme Uzantıları | ✅ Tam Destek  |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve E-posta Filtreleme: Tatil Uzantısı                      | ✅ Tam Destek  |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve Tatil Uzantısı: "Seconds" Parametresi                   | ✅ Tam Destek  |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve E-posta Filtreleme: Imap4flags Uzantısı                 | ✅ Tam Destek  |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve E-posta Filtreleme: Gövde Uzantısı                      | ✅ Tam Destek  |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve E-posta Filtreleme: Değişkenler Uzantısı                | ✅ Tam Destek  |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve E-posta Filtreleme: İlişkisel Uzantı                    | ✅ Tam Destek  |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | İnternet Uygulama Protokolü Sıralama Kaydı                     | ✅ Tam Destek  |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve Uzantısı: Yan Etkiler Olmadan Kopyalama                  | ✅ Tam Destek  |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve E-posta Filtreleme: Editheader Uzantısı                 | ✅ Tam Destek  |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve E-posta Filtreleme: Tarih ve İndeks Uzantıları          | ✅ Tam Destek  |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve E-posta Filtreleme: Bildirimler için Uzantı             | ✅ Tam Destek  |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve E-posta Filtreleme: Ortam Uzantısı                      | ✅ Tam Destek  |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve E-posta Filtreleme: Posta Kutusu Durumu Kontrolü Uzantıları | ✅ Tam Destek  |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve E-posta Filtreleme: Özel Kullanım Posta Kutularına Teslim | ✅ Tam Destek  |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve E-posta Filtreleme: Çift Teslimatları Tespit Etme       | ✅ Tam Destek  |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve E-posta Filtreleme: Ihave Uzantısı                      | ✅ Tam Destek  |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve E-posta Filtreleme: Altadres Uzantısı                   | ✅ Tam Destek  |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve E-posta Filtreleme: Düzenli İfade Uzantısı              | ✅ Tam Destek  |
+#### Desteklenen Sieve Uzantıları {#supported-sieve-extensions}
 
-#### Supported Sieve Extensions {#supported-sieve-extensions}
-
-| Extension | Description | Integration |
+| Uzantı                      | Açıklama                                | Entegrasyon                                |
 | ---------------------------- | ---------------------------------------- | ------------------------------------------ |
-| `fileinto` | File messages into specific folders | Messages stored in specified IMAP folder |
-| `reject` / `ereject` | Reject messages with an error | SMTP rejection with bounce message |
-| `vacation` | Automatic vacation/out-of-office replies | Queued via Emails.queue with rate limiting |
-| `vacation-seconds` | Fine-grained vacation response intervals | TTL from `:seconds` parameter |
-| `imap4flags` | Set IMAP flags (\Seen, \Flagged, etc.) | Flags applied during message storage |
-| `envelope` | Test envelope sender/recipient | Access to SMTP envelope data |
-| `body` | Test message body content | Full body text matching |
-| `variables` | Store and use variables in scripts | Variable expansion with modifiers |
-| `relational` | Relational comparisons | `:count`, `:value` with gt/lt/eq |
-| `comparator-i;ascii-numeric` | Numeric comparisons | Numeric string comparison |
-| `copy` | Copy messages while redirecting | `:copy` flag on fileinto/redirect |
-| `editheader` | Add or delete message headers | Headers modified before storage |
-| `date` | Test date/time values | `currentdate` and header date tests |
-| `index` | Access specific header occurrences | `:index` for multi-value headers |
-| `regex` | Regular expression matching | Full regex support in tests |
-| `enotify` | Send notifications | `mailto:` notifications via Emails.queue |
-| `environment` | Access environment information | Domain, host, remote-ip from session |
-| `mailbox` | Test mailbox existence | `mailboxexists` test |
-| `special-use` | File into special-use mailboxes | Maps \Junk, \Trash, etc. to folders |
-| `duplicate` | Detect duplicate messages | Redis-based duplicate tracking |
-| `ihave` | Test for extension availability | Runtime capability checking |
-| `subaddress` | Access user+detail address parts | `:user` and `:detail` address parts |
+| `fileinto`                   | Mesajları belirli klasörlere dosyalama  | Mesajlar belirtilen IMAP klasöründe saklanır |
+| `reject` / `ereject`         | Mesajları hata ile reddetme              | SMTP reddi ve geri dönen mesaj             |
+| `vacation`                   | Otomatik tatil/ofis dışı yanıtları       | Emails.queue ile sıraya alınır, oran sınırlaması ile |
+| `vacation-seconds`           | İnce ayarlı tatil yanıt aralıkları       | `:seconds` parametresinden TTL             |
+| `imap4flags`                 | IMAP bayraklarını ayarlama (\Seen, \Flagged, vb.) | Mesaj saklama sırasında bayraklar uygulanır |
+| `envelope`                   | Zarf gönderen/alıcı testi                 | SMTP zarf verilerine erişim                  |
+| `body`                       | Mesaj gövdesi içeriğini test etme         | Tam gövde metni eşleştirme                   |
+| `variables`                  | Betiklerde değişken saklama ve kullanma  | Değişken genişletme ve modifikasyonlar      |
+| `relational`                 | İlişkisel karşılaştırmalar                | `:count`, `:value` ile gt/lt/eq              |
+| `comparator-i;ascii-numeric` | Sayısal karşılaştırmalar                   | Sayısal dize karşılaştırması                  |
+| `copy`                       | Yönlendirme sırasında mesajları kopyalama | fileinto/redirect üzerinde `:copy` bayrağı   |
+| `editheader`                 | Mesaj başlıklarını ekleme veya silme      | Saklamadan önce başlıklar değiştirilir       |
+| `date`                       | Tarih/saat değerlerini test etme           | `currentdate` ve başlık tarih testleri        |
+| `index`                      | Belirli başlık tekrarlarına erişim         | Çok değerli başlıklar için `:index`           |
+| `regex`                      | Düzenli ifade eşleştirme                   | Testlerde tam regex desteği                    |
+| `enotify`                    | Bildirim gönderme                          | Emails.queue üzerinden `mailto:` bildirimleri |
+| `environment`                | Ortam bilgilerine erişim                    | Oturumdan domain, host, remote-ip             |
+| `mailbox`                    | Posta kutusu varlığını test etme            | `mailboxexists` testi                          |
+| `special-use`                | Özel kullanım posta kutularına dosyalama   | \Junk, \Trash vb. klasörlere eşleme            |
+| `duplicate`                  | Çift mesajları tespit etme                   | Redis tabanlı çift takip                       |
+| `ihave`                      | Uzantı kullanılabilirliğini test etme        | Çalışma zamanı yetenek kontrolü                |
+| `subaddress`                 | Kullanıcı+detay adres parçalarına erişim     | `:user` ve `:detail` adres parçaları          |
 
-#### Sieve Extensions NOT Supported {#sieve-extensions-not-supported}
+#### Desteklenmeyen Sieve Uzantıları {#sieve-extensions-not-supported}
 
-| Extension | RFC | Reason |
-| --------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Security risk (script injection), requires global script storage |
-| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Requires IMAP METADATA extension |
-| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Requires Sent folder integration |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Parser changes required for ${hex:} syntax |
-| `foreverypart` / `mime` / `extracttext` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Complex MIME tree manipulation |
-
-#### Sieve Processing Flow {#sieve-processing-flow}
+| Uzantı                               | RFC                                                       | Sebep                                                           |
+| ------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| `include`                            | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Güvenlik riski (betik enjeksiyonu), global betik depolama gerektirir |
+| `mboxmetadata` / `servermetadata`    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA uzantısı gerektirir                              |
+| `fcc`                                | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Gönderilenler klasörü entegrasyonu gerektirir                  |
+| `encoded-character`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | `${hex:}` sözdizimi için ayrıştırıcı değişiklikleri gerekir    |
+| `foreverypart` / `mime` / `extracttext` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Karmaşık MIME ağacı manipülasyonu                              |
+#### Eleme İşleme Akışı {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
-    participant MX as MX Server
-    participant Sieve as Sieve Engine
-    participant Redis as Redis Cache
-    participant SQLite as SQLite Storage
-    participant Queue as Email Queue
+    participant MX as MX Sunucusu
+    participant Sieve as Eleme Motoru
+    participant Redis as Redis Önbelleği
+    participant SQLite as SQLite Depolama
+    participant Queue as E-posta Kuyruğu
 
-    MX->>Sieve: Incoming message
-    Sieve->>Sieve: Parse active script
-    Sieve->>Sieve: Execute rules
+    MX->>Sieve: Gelen mesaj
+    Sieve->>Sieve: Aktif betiği ayrıştır
+    Sieve->>Sieve: Kuralları uygula
 
-    alt fileinto action
-        Sieve->>SQLite: Store in folder with flags
-    else redirect action
-        Sieve->>Queue: Queue for delivery
-    else vacation action
-        Sieve->>Redis: Check rate limit
-        Redis-->>Sieve: OK to send
-        Sieve->>Queue: Queue vacation reply
-    else reject action
-        Sieve->>MX: Return SMTP rejection
-    else discard action
-        Sieve->>Sieve: Drop message silently
+    alt fileinto eylemi
+        Sieve->>SQLite: Bayraklarla klasöre kaydet
+    else yönlendirme eylemi
+        Sieve->>Queue: Teslimat için sıraya al
+    else tatil eylemi
+        Sieve->>Redis: Oran sınırını kontrol et
+        Redis-->>Sieve: Göndermek için tamam
+        Sieve->>Queue: Tatil yanıtını sıraya al
+    else reddetme eylemi
+        Sieve->>MX: SMTP reddini geri gönder
+    else atma eylemi
+        Sieve->>Sieve: Mesajı sessizce düşür
     end
 
-    Sieve-->>MX: Processing complete
+    Sieve-->>MX: İşlem tamamlandı
 ```
 
-#### Security Features {#security-features}
+#### Güvenlik Özellikleri {#security-features}
 
-Forward Email's Sieve implementation includes comprehensive security protections:
+Forward Email'in Eleme uygulaması kapsamlı güvenlik korumaları içerir:
 
-* **CVE-2023-26430 Protection**: Prevents redirect loops and mail bombing attacks
-* **Rate Limiting**: Limits on redirects (10/message, 100/day) and vacation replies
-* **Denylist Checking**: Redirect addresses checked against denylist
-* **Protected Headers**: DKIM, ARC, and authentication headers cannot be modified via editheader
-* **Script Size Limits**: Maximum script size enforced
-* **Execution Timeouts**: Scripts terminated if execution exceeds time limit
+* **CVE-2023-26430 Koruması**: Yönlendirme döngülerini ve posta bombardımanı saldırılarını önler
+* **Oran Sınırlandırması**: Yönlendirmelerde (10/mesaj, 100/gün) ve tatil yanıtlarında sınırlar
+* **Engelleme Listesi Kontrolü**: Yönlendirme adresleri engelleme listesine karşı kontrol edilir
+* **Korunan Başlıklar**: DKIM, ARC ve kimlik doğrulama başlıkları editheader ile değiştirilemez
+* **Betiğin Boyut Sınırları**: Maksimum betik boyutu uygulanır
+* **Çalışma Süresi Aşımı**: Çalışma süresi sınırı aşılırsa betikler sonlandırılır
 
-#### Example Sieve Scripts {#example-sieve-scripts}
+#### Örnek Eleme Betikleri {#example-sieve-scripts}
 
-**File newsletters into a folder:**
+**Bültenleri bir klasöre dosyalama:**
 
 ```sieve
 require ["fileinto"];
@@ -1225,16 +1217,16 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Vacation auto-responder with fine-grained timing:**
+**İnce ayarlı zamanlamalı tatil otomatik yanıtlayıcısı:**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
 
-vacation :seconds 3600 :subject "Out of Office"
-    "I'm currently away and will respond within 24 hours.";
+vacation :seconds 3600 :subject "Ofiste Değilim"
+    "Şu anda uzaktayım ve 24 saat içinde yanıt vereceğim.";
 ```
 
-**Spam filtering with flags:**
+**Bayraklarla spam filtreleme:**
 
 ```sieve
 require ["fileinto", "imap4flags"];
@@ -1245,7 +1237,7 @@ if header :contains "X-Spam-Status" "Yes" {
 }
 ```
 
-**Complex filtering with variables:**
+**Değişkenlerle karmaşık filtreleme:**
 
 ```sieve
 require ["variables", "fileinto", "regex"];
@@ -1257,53 +1249,54 @@ if header :regex "From" "(.+)@example\\.com" {
 ```
 
 > \[!TIP]
-> For complete documentation, example scripts, and configuration instructions, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
+> Tam dokümantasyon, örnek betikler ve yapılandırma talimatları için [SSS: Eleme e-posta filtrelemesini destekliyor musunuz?](/faq#do-you-support-sieve-email-filtering) sayfasına bakınız.
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 
-Forward Email provides full ManageSieve protocol support for remotely managing Sieve scripts.
+Forward Email, Eleme betiklerini uzaktan yönetmek için tam ManageSieve protokol desteği sağlar.
 
-**Source Code:** [`managesieve-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/managesieve-server.js)
+**Kaynak Kodu:** [`managesieve-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/managesieve-server.js)
 
-| RFC | Title | Status |
+| RFC                                                       | Başlık                                         | Durum          |
 | --------------------------------------------------------- | ---------------------------------------------- | -------------- |
-| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | A Protocol for Remotely Managing Sieve Scripts | ✅ Full Support |
+| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | Eleme Betiklerini Uzaktan Yönetmek İçin Protokol | ✅ Tam Destek  |
 
-#### ManageSieve Server Configuration {#managesieve-server-configuration}
+#### ManageSieve Sunucu Yapılandırması {#managesieve-server-configuration}
 
-| Setting | Value |
-| ------------------ | ----------------------- |
-| **Server** | `imap.forwardemail.net` |
-| **Port (STARTTLS)** | `2190` (recommended) |
-| **Port (Implicit TLS)** | `4190` |
-| **Authentication** | PLAIN (over TLS) |
+| Ayar                    | Değer                   |
+| ----------------------- | ----------------------- |
+| **Sunucu**              | `imap.forwardemail.net` |
+| **Port (STARTTLS)**     | `2190` (önerilen)       |
+| **Port (Gizli TLS)**    | `4190`                  |
+| **Kimlik Doğrulama**    | PLAIN (TLS üzerinden)   |
 
-#### Supported ManageSieve Commands {#supported-managesieve-commands}
+> **Not:** 2190 portu STARTTLS kullanır (düz bağlantıdan TLS'ye yükseltme) ve [sieve-connect](https://github.com/philpennock/sieve-connect) dahil çoğu ManageSieve istemcisi ile uyumludur. 4190 portu ise bağlantı başlangıcından itibaren TLS (gizli TLS) kullanır ve bu özelliği destekleyen istemciler içindir.
 
-| Command | Description |
-| -------------- | --------------------------------------- |
-| `AUTHENTICATE` | Authenticate using PLAIN mechanism |
-| `CAPABILITY` | List server capabilities and extensions |
-| `HAVESPACE` | Check if script can be stored |
-| `PUTSCRIPT` | Upload a new script |
-| `LISTSCRIPTS` | List all scripts with active status |
-| `SETACTIVE` | Activate a script |
-| `GETSCRIPT` | Download a script |
-| `DELETESCRIPT` | Delete a script |
-| `RENAMESCRIPT` | Rename a script |
-| `CHECKSCRIPT` | Validate script syntax |
-| `NOOP` | Keep connection alive |
-| `LOGOUT` | End session |
+#### Desteklenen ManageSieve Komutları {#supported-managesieve-commands}
 
-#### Compatible ManageSieve Clients {#compatible-managesieve-clients}
+| Komut          | Açıklama                               |
+| -------------- | ------------------------------------- |
+| `AUTHENTICATE` | PLAIN mekanizması ile kimlik doğrulama |
+| `CAPABILITY`   | Sunucu yetenekleri ve uzantıları listeler |
+| `HAVESPACE`    | Betiğin saklanabilirliğini kontrol eder |
+| `PUTSCRIPT`    | Yeni betik yükler                      |
+| `LISTSCRIPTS`  | Tüm betikleri ve aktif durumlarını listeler |
+| `SETACTIVE`    | Bir betiği aktif yapar                 |
+| `GETSCRIPT`    | Betiği indirir                        |
+| `DELETESCRIPT` | Betiği siler                         |
+| `RENAMESCRIPT` | Betiğin adını değiştirir              |
+| `CHECKSCRIPT`  | Betik sözdizimini doğrular            |
+| `NOOP`         | Bağlantıyı canlı tutar                |
+| `LOGOUT`       | Oturumu sonlandırır                   |
+#### Uyumlu ManageSieve İstemcileri {#compatible-managesieve-clients}
 
-* **Thunderbird**: Built-in Sieve support via [Sieve add-on](https://addons.thunderbird.net/addon/sieve/)
-* **Roundcube**: [ManageSieve plugin](https://plugins.roundcube.net/packages/johndoh/sieve)
-* **KMail**: Native ManageSieve support
-* **sieve-connect**: Command-line client
-* **Any RFC 5804 compliant client**
+* **Thunderbird**: [Sieve eklentisi](https://addons.thunderbird.net/addon/sieve/) aracılığıyla yerleşik Sieve desteği
+* **Roundcube**: [ManageSieve eklentisi](https://plugins.roundcube.net/packages/johndoh/sieve)
+* **KMail**: Yerel ManageSieve desteği
+* **sieve-connect**: Komut satırı istemcisi
+* **Herhangi bir RFC 5804 uyumlu istemci**
 
-#### ManageSieve Protocol Flow {#managesieve-protocol-flow}
+#### ManageSieve Protokol Akışı {#managesieve-protocol-flow}
 
 ```mermaid
 sequenceDiagram
@@ -1318,7 +1311,7 @@ sequenceDiagram
     Client->>MS: AUTHENTICATE "PLAIN" [credentials]
     MS->>DB: Verify credentials
     DB-->>MS: OK
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: LISTSCRIPTS
     MS->>DB: Query SieveScripts
@@ -1328,39 +1321,40 @@ sequenceDiagram
     Client->>MS: PUTSCRIPT "newfilter" {script}
     MS->>MS: Validate syntax
     MS->>DB: Store script
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: SETACTIVE "newfilter"
     MS->>DB: Update active script
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: LOGOUT
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 ```
 
-#### Web Interface and API {#web-interface-and-api}
+#### Web Arayüzü ve API {#web-interface-and-api}
 
-In addition to ManageSieve, Forward Email provides:
+ManageSieve'e ek olarak, Forward Email şunları sağlar:
 
-* **Web Dashboard**: Create and manage Sieve scripts through the web interface at My Account → Domains → Aliases → Sieve Scripts
-* **REST API**: Programmatic access to Sieve script management via the [Forward Email API](/api#sieve-scripts)
+* **Web Kontrol Paneli**: My Account → Domains → Aliases → Sieve Scripts üzerinden web arayüzü ile Sieve betikleri oluşturma ve yönetme
+* **REST API**: [Forward Email API](/api#sieve-scripts) aracılığıyla programatik Sieve betik yönetimi erişimi
 
 > \[!TIP]
-> For detailed setup instructions and client configuration, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
+> Detaylı kurulum talimatları ve istemci yapılandırması için bkz. [SSS: Sieve e-posta filtrelemesini destekliyor musunuz?](/faq#do-you-support-sieve-email-filtering)
 
 ---
 
-## Storage Optimization {#storage-optimization}
+
+## Depolama Optimizasyonu {#storage-optimization}
 
 > \[!IMPORTANT]
-> **Industry-First Storage Technology:** Forward Email is the **only email provider in the world** that combines attachment deduplication with Brotli compression on email content. This dual-layer optimization gives you **2-3x more effective storage** compared to traditional email providers.
+> **Sektörde Bir İlk Depolama Teknolojisi:** Forward Email, e-posta içeriğinde Brotli sıkıştırması ile ek dosya çoğaltmalarını birleştiren **dünyadaki tek e-posta sağlayıcısıdır**. Bu çift katmanlı optimizasyon, geleneksel e-posta sağlayıcılarına kıyasla size **2-3 kat daha etkili depolama** sağlar.
 
-Forward Email implements two revolutionary storage optimization techniques that dramatically reduce mailbox size while maintaining full RFC compliance and message fidelity:
+Forward Email, tam RFC uyumluluğu ve mesaj bütünlüğünü koruyarak posta kutusu boyutunu dramatik şekilde azaltan iki devrim niteliğinde depolama optimizasyonu tekniği uygular:
 
-1. **Attachment Deduplication** - Eliminates duplicate attachments across all emails
-2. **Brotli Compression** - Reduces storage by 46-86% for metadata and 50% for attachments
+1. **Ek Dosya Çoğaltma Önleme** - Tüm e-postalar arasında yinelenen ek dosyaları ortadan kaldırır
+2. **Brotli Sıkıştırma** - Meta verilerde %46-86, ek dosyalarda %50 depolama azaltımı sağlar
 
-### Architecture: Dual-Layer Storage Optimization {#architecture-dual-layer-storage-optimization}
+### Mimari: Çift Katmanlı Depolama Optimizasyonu {#architecture-dual-layer-storage-optimization}
 
 ```mermaid
 graph TB
@@ -1390,113 +1384,113 @@ graph TB
 
 ---
 
-## Attachment Deduplication {#attachment-deduplication}
 
-Forward Email implements attachment deduplication based on [WildDuck's proven approach](https://docs.wildduck.email/docs/in-depth/attachment-deduplication/), adapted for SQLite storage.
+## Ek Dosya Çoğaltma Önleme {#attachment-deduplication}
+
+Forward Email, SQLite depolama için uyarlanmış [WildDuck'un kanıtlanmış yaklaşımı](https://docs.wildduck.email/docs/in-depth/attachment-deduplication/) temelinde ek dosya çoğaltma önleme uygular.
 
 > \[!NOTE]
-> **What is Deduplicated:** "Attachment" refers to the **encoded** MIME node contents (base64 or quoted-printable), not the decoded file. This preserves DKIM and GPG signature validity.
+> **Çoğaltılan Nedir:** "Ek dosya", kodlanmış MIME düğüm içeriği anlamına gelir (base64 veya quoted-printable), çözümlenmiş dosya değil. Bu, DKIM ve GPG imza geçerliliğini korur.
 
-### How It Works {#how-it-works}
+### Nasıl Çalışır {#how-it-works}
 
-**WildDuck's Original Implementation (MongoDB GridFS):**
+**WildDuck'un Orijinal Uygulaması (MongoDB GridFS):**
 
-> Wild Duck IMAP server de-duplicates attachments. "Attachment" in this case means the base64 or quoted-printable encoded mime node contents, not the decoded file. Even though using encoded content means a lot of false negatives (the same file in different emails might be counted as different attachment) it is needed to guarantee the validity of different signature schemes (DKIM, GPG etc.). A message retrieved from Wild Duck looks exactly the same as the message that was stored even though Wild Duck parses the message into a tree-like object and rebuilds the message when retrieving.
+> Wild Duck IMAP sunucusu ek dosyaları çoğaltmaz. Buradaki "ek dosya", base64 veya quoted-printable kodlanmış mime düğüm içeriği anlamına gelir, çözümlenmiş dosya değil. Kodlanmış içerik kullanmak birçok yanlış negatif (aynı dosyanın farklı e-postalarda farklı ek dosya olarak sayılması) anlamına gelse de, farklı imza şemalarının (DKIM, GPG vb.) geçerliliğini garanti etmek için gereklidir. Wild Duck'tan alınan bir mesaj, mesajı ağaç benzeri bir nesneye ayrıştırıp geri oluşturmasına rağmen, saklanan mesajla tamamen aynıdır.
+**Forward Email'in SQLite Uygulaması:**
 
-**Forward Email's SQLite Implementation:**
+Forward Email, şifreli SQLite depolama için bu yaklaşımı aşağıdaki süreçle uyarlamaktadır:
 
-Forward Email adapts this approach for encrypted SQLite storage with the following process:
+1. **Hash Hesaplama**: Bir ek bulunduğunda, ek gövdesinden [`rev-hash`](https://github.com/sindresorhus/rev-hash) kütüphanesi kullanılarak bir hash hesaplanır
+2. **Arama**: `Attachments` tablosunda eşleşen hash'e sahip bir ek olup olmadığı kontrol edilir
+3. **Referans Sayımı**:
+   * Varsa: Referans sayacı 1 artırılır ve sihirli sayaç rastgele bir sayı ile artırılır
+   * Yeni ise: Sayaç = 1 olan yeni bir ek girişi oluşturulur
+4. **Silme Güvenliği**: Yanlış pozitifleri önlemek için çift sayaç sistemi (referans + sihirli) kullanılır
+5. **Çöp Toplama**: Her iki sayaç sıfıra ulaştığında ekler hemen silinir
 
-1. **Hash Calculation**: When an attachment is found, a hash is calculated using the [`rev-hash`](https://github.com/sindresorhus/rev-hash) library from the attachment body
-2. **Lookup**: Check if an attachment with matching hash exists in the `Attachments` table
-3. **Reference Counting**:
-   * If exists: Increment reference counter by 1 and magic counter by random number
-   * If new: Create new attachment entry with counter = 1
-4. **Deletion Safety**: Uses dual-counter system (reference + magic) to prevent false positives
-5. **Garbage Collection**: Attachments are deleted immediately when both counters reach zero
+**Kaynak Kodu:** [`helpers/attachment-storage.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/attachment-storage.js)
 
-**Source Code:** [`helpers/attachment-storage.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/attachment-storage.js)
-
-### Deduplication Flow {#deduplication-flow}
+### Çoğaltma Önleme Akışı {#deduplication-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Email as New Email
-    participant Parser as MIME Parser
-    participant Hash as Hash Calculator
-    participant DB as SQLite Database
-    participant Storage as Attachment Storage
+    participant Email as Yeni E-posta
+    participant Parser as MIME Ayrıştırıcı
+    participant Hash as Hash Hesaplayıcı
+    participant DB as SQLite Veritabanı
+    participant Storage as Ek Depolama
 
-    Email->>Parser: Parse MIME tree
-    Parser->>Hash: Extract attachment body
-    Hash->>Hash: Calculate rev-hash
-    Hash->>DB: Query: SELECT * WHERE hash=?
+    Email->>Parser: MIME ağacını ayrıştır
+    Parser->>Hash: Ek gövdesini çıkar
+    Hash->>Hash: rev-hash hesapla
+    Hash->>DB: Sorgu: SELECT * WHERE hash=?
 
-    alt Attachment Exists
-        DB-->>Storage: Found (increment counters)
+    alt Ek Var
+        DB-->>Storage: Bulundu (sayaçları artır)
         Storage->>DB: UPDATE counter+1, magic+random
-        DB-->>Email: Reference existing attachment
-    else New Attachment
-        Storage->>DB: INSERT new attachment
-        DB-->>Email: Store new attachment
+        DB-->>Email: Mevcut eki referans göster
+    else Yeni Ek
+        Storage->>DB: Yeni ek ekle
+        DB-->>Email: Yeni eki depola
     end
 ```
 
-### Magic Number System {#magic-number-system}
+### Sihirli Sayı Sistemi {#magic-number-system}
 
-Forward Email uses WildDuck's "magic number" system (inspired by [Mail.ru](https://github.com/zone-eu/wildduck)) to prevent false positives during deletion:
+Forward Email, silme sırasında yanlış pozitifleri önlemek için WildDuck'ın "sihirli sayı" sistemini ([Mail.ru](https://github.com/zone-eu/wildduck) ilham alınarak) kullanır:
 
-* Every message gets a **random number** assigned
-* Attachment's **magic counter** is incremented by that random number when message is added
-* Magic counter is decremented by the same number when message is deleted
-* Attachment is only deleted when **both counters** (reference + magic) reach zero
+* Her mesaja **rastgele bir sayı** atanır
+* Mesaj eklendiğinde ekin **sihirli sayacı** bu rastgele sayı kadar artırılır
+* Mesaj silindiğinde sihirli sayaç aynı sayı kadar azaltılır
+* Ek ancak **her iki sayaç** (referans + sihirli) sıfıra ulaştığında silinir
 
-This dual-counter system ensures that if something goes wrong during deletion (e.g., crash, network error), the attachment is not deleted prematurely.
+Bu çift sayaç sistemi, silme sırasında bir sorun (örneğin, çökme, ağ hatası) olursa ekin erken silinmesini engeller.
 
-### Key Differences: WildDuck vs Forward Email {#key-differences-wildduck-vs-forward-email}
+### Temel Farklar: WildDuck vs Forward Email {#key-differences-wildduck-vs-forward-email}
 
-| Feature | WildDuck (MongoDB) | Forward Email (SQLite) |
+| Özellik                | WildDuck (MongoDB)       | Forward Email (SQLite)       |
 | ---------------------- | ------------------------ | ---------------------------- |
-| **Storage Backend** | MongoDB GridFS (chunked) | SQLite BLOB (direct) |
-| **Hash Algorithm** | SHA256 | rev-hash (SHA-256 based) |
-| **Reference Counting** | ✅ Yes | ✅ Yes |
-| **Magic Numbers** | ✅ Yes (Mail.ru inspired) | ✅ Yes (same system) |
-| **Garbage Collection** | Delayed (separate job) | Immediate (on zero counters) |
-| **Compression** | ❌ None | ✅ Brotli (see below) |
-| **Encryption** | ❌ Optional | ✅ Always (ChaCha20-Poly1305) |
+| **Depolama Altyapısı** | MongoDB GridFS (parçalı) | SQLite BLOB (doğrudan)       |
+| **Hash Algoritması**   | SHA256                   | rev-hash (SHA-256 tabanlı)  |
+| **Referans Sayımı**    | ✅ Evet                   | ✅ Evet                      |
+| **Sihirli Sayılar**    | ✅ Evet (Mail.ru ilhamlı) | ✅ Evet (aynı sistem)        |
+| **Çöp Toplama**        | Gecikmeli (ayrı iş)      | Anında (sayaç sıfırda)       |
+| **Sıkıştırma**         | ❌ Yok                   | ✅ Brotli (aşağıya bakınız)  |
+| **Şifreleme**          | ❌ İsteğe bağlı          | ✅ Her zaman (ChaCha20-Poly1305) |
 
 ---
 
-## Brotli Compression {#brotli-compression}
+
+## Brotli Sıkıştırma {#brotli-compression}
 
 > \[!IMPORTANT]
-> **World's First:** Forward Email is the **only email service in the world** that uses Brotli compression on email content. This provides **46-86% storage savings** on top of attachment deduplication.
+> **Dünyanın İlkleri:** Forward Email, e-posta içeriğinde Brotli sıkıştırma kullanan **dünyadaki tek e-posta servisidir**. Bu, ek çoğaltma önlemenin üstüne **%46-86 arasında depolama tasarrufu** sağlar.
 
-Forward Email implements Brotli compression for both attachment bodies and message metadata, providing massive storage savings while maintaining backwards compatibility.
+Forward Email, hem ek gövdeleri hem de mesaj meta verileri için Brotli sıkıştırmayı uygular; bu sayede büyük depolama tasarrufu sağlarken geriye dönük uyumluluğu korur.
 
-**Implementation:** [`helpers/msgpack-helpers.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/msgpack-helpers.js)
+**Uygulama:** [`helpers/msgpack-helpers.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/msgpack-helpers.js)
 
-### What Gets Compressed {#what-gets-compressed}
+### Neler Sıkıştırılır {#what-gets-compressed}
 
-**1. Attachment Bodies** (`encodeAttachmentBody`)
+**1. Ek Gövdeleri** (`encodeAttachmentBody`)
 
-* **Old formats**: Hex-encoded string (2x size) or raw Buffer
-* **New format**: Brotli-compressed Buffer with "FEBR" magic header
-* **Compression decision**: Only compresses if it saves space (accounts for 4-byte header)
-* **Storage savings**: Up to **50%** (hex → native BLOB)
+* **Eski formatlar**: Hex kodlu string (2 kat boyut) veya ham Buffer
+* **Yeni format**: "FEBR" sihirli başlığı ile Brotli sıkıştırılmış Buffer
+* **Sıkıştırma kararı**: Sadece yer tasarrufu sağlıyorsa sıkıştırır (4 baytlık başlık dikkate alınır)
+* **Depolama tasarrufu**: %50'ye kadar (hex → yerel BLOB)
+**2. Mesaj Meta Verisi** (`encodeMetadata`)
 
-**2. Message Metadata** (`encodeMetadata`)
+İçerir: `mimeTree`, `headers`, `envelope`, `flags`
 
-Includes: `mimeTree`, `headers`, `envelope`, `flags`
+* **Eski format**: JSON metin dizisi
+* **Yeni format**: Brotli ile sıkıştırılmış Buffer
+* **Depolama tasarrufu**: Mesaj karmaşıklığına bağlı olarak **%46-86**
 
-* **Old format**: JSON text string
-* **New format**: Brotli-compressed Buffer
-* **Storage savings**: **46-86%** depending on message complexity
-
-### Compression Configuration {#compression-configuration}
+### Sıkıştırma Yapılandırması {#compression-configuration}
 
 ```javascript
-// Brotli compression options optimized for speed (level 4 is a good balance)
+// Hız için optimize edilmiş Brotli sıkıştırma seçenekleri (seviye 4 iyi bir denge)
 const BROTLI_COMPRESS_OPTIONS = {
   params: {
     [zlib.constants.BROTLI_PARAM_QUALITY]: 4
@@ -1504,44 +1498,44 @@ const BROTLI_COMPRESS_OPTIONS = {
 };
 ```
 
-**Why Level 4?**
+**Neden Seviye 4?**
 
-* **Fast compression/decompression**: Sub-millisecond processing
-* **Good compression ratio**: 46-86% savings
-* **Balanced performance**: Optimal for real-time email operations
+* **Hızlı sıkıştırma/açma**: Milisaniyeden kısa işlem süresi
+* **İyi sıkıştırma oranı**: %46-86 tasarruf
+* **Dengeli performans**: Gerçek zamanlı e-posta işlemleri için optimal
 
-### Magic Header: "FEBR" {#magic-header-febr}
+### Sihirli Başlık: "FEBR" {#magic-header-febr}
 
-Forward Email uses a 4-byte magic header to identify compressed attachment bodies:
+Forward Email, sıkıştırılmış ek gövdelerini tanımlamak için 4 baytlık sihirli başlık kullanır:
 
 ```
 "FEBR" = Forward Email BRotli
 Hex: 0x46 0x45 0x42 0x52
 ```
 
-**Why a magic header?**
+**Neden sihirli başlık?**
 
-* **Format detection**: Instantly identify compressed vs uncompressed data
-* **Backwards compatibility**: Old hex strings and raw Buffers still work
-* **Collision avoidance**: "FEBR" is unlikely to appear at the start of legitimate attachment data
+* **Format tespiti**: Sıkıştırılmış ve sıkıştırılmamış veriyi anında ayırt eder
+* **Geriye dönük uyumluluk**: Eski hex dizileri ve ham Bufferlar hala çalışır
+* **Çakışma önleme**: "FEBR" meşru ek verilerinin başında görünmesi olası değildir
 
-### Compression Process {#compression-process}
+### Sıkıştırma Süreci {#compression-process}
 
 ```mermaid
 flowchart TB
-    Input[Attachment Body or Metadata]
-    CheckType{Data Type?}
-    Compress[Brotli Compress<br/>Level 4]
-    CheckSize{Compressed<br/>Smaller?}
-    AddHeader[Add FEBR<br/>Magic Header]
+    Input[Ek Gövdesi veya Meta Veri]
+    CheckType{Veri Türü?}
+    Compress[Brotli Sıkıştır<br/>Seviye 4]
+    CheckSize{Sıkıştırılmış<br/>Daha Küçük mü?}
+    AddHeader[FEBR<br/>Sihirli Başlık Ekle]
     Store[(SQLite BLOB)]
 
     Input --> CheckType
-    CheckType -->|Attachment| Compress
-    CheckType -->|Metadata| Compress
+    CheckType -->|Ek| Compress
+    CheckType -->|Meta Veri| Compress
     Compress --> CheckSize
-    CheckSize -->|Yes| AddHeader
-    CheckSize -->|No| StoreRaw[Store Uncompressed]
+    CheckSize -->|Evet| AddHeader
+    CheckSize -->|Hayır| StoreRaw[Sıkıştırılmamış Olarak Sakla]
     AddHeader --> Store
     StoreRaw --> Store
 
@@ -1549,298 +1543,296 @@ flowchart TB
     style Store fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
-### Decompression Process {#decompression-process}
+### Açma Süreci {#decompression-process}
 
 ```mermaid
 flowchart TB
-    Read[(Read from SQLite)]
+    Read[(SQLite'den Oku)]
     CheckFormat{Format?}
-    HasMagic{Has FEBR<br/>Header?}
-    Decompress[Brotli Decompress]
-    ParseJSON[Parse JSON]
-    HexDecode[Hex Decode]
-    Return[Return Data]
+    HasMagic{FEBR<br/>Başlığı Var mı?}
+    Decompress[Brotli Aç]
+    ParseJSON[JSON Ayrıştır]
+    HexDecode[Hex Kod Çöz]
+    Return[Veriyi Döndür]
 
     Read --> CheckFormat
     CheckFormat -->|Buffer| HasMagic
-    CheckFormat -->|String| IsJSON{Is JSON?}
-    HasMagic -->|Yes| Decompress
-    HasMagic -->|No| Return
+    CheckFormat -->|Dize| IsJSON{JSON mi?}
+    HasMagic -->|Evet| Decompress
+    HasMagic -->|Hayır| Return
     Decompress --> Return
-    IsJSON -->|Yes| ParseJSON
-    IsJSON -->|No| HexDecode
+    IsJSON -->|Evet| ParseJSON
+    IsJSON -->|Hayır| HexDecode
     ParseJSON --> Return
     HexDecode --> Return
 
     style Decompress fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-### Backwards Compatibility {#backwards-compatibility}
+### Geriye Dönük Uyumluluk {#backwards-compatibility}
 
-All decode functions **auto-detect** the storage format:
+Tüm decode fonksiyonları **depolama formatını otomatik algılar**:
 
-| Format | Detection Method | Handling |
-| --------------------- | -------------------------------------- | --------------------------------------------- |
-| **Brotli-compressed** | Check for "FEBR" magic header | Decompress with `zlib.brotliDecompressSync()` |
-| **Raw Buffer** | `Buffer.isBuffer()` without magic | Return as-is |
-| **Hex string** | Check for even length + [0-9a-f] chars | Decode with `Buffer.from(value, 'hex')` |
-| **JSON string** | Check for `{` or `[` first character | Parse with `JSON.parse()` |
+| Format                | Algılama Yöntemi                      | İşlem                                         |
+| --------------------- | ------------------------------------ | --------------------------------------------- |
+| **Brotli sıkıştırılmış** | "FEBR" sihirli başlığı kontrolü      | `zlib.brotliDecompressSync()` ile aç           |
+| **Ham Buffer**        | Sihirli başlıksız `Buffer.isBuffer()` | Olduğu gibi döndür                            |
+| **Hex dizesi**        | Çift uzunluk + [0-9a-f] karakter kontrolü | `Buffer.from(value, 'hex')` ile kod çöz       |
+| **JSON dizesi**       | İlk karakter `{` veya `[` kontrolü    | `JSON.parse()` ile ayrıştır                    |
 
-This ensures **zero data loss** during migration from old to new storage formats.
+Bu, eski depolama formatlarından yeni formatlara geçişte **sıfır veri kaybı** sağlar.
 
-### Storage Savings Statistics {#storage-savings-statistics}
+### Depolama Tasarrufu İstatistikleri {#storage-savings-statistics}
 
-**Measured savings from production data:**
+**Üretim verilerinden ölçülen tasarruflar:**
 
-| Data Type | Old Format | New Format | Savings |
+| Veri Türü             | Eski Format             | Yeni Format            | Tasarruf   |
 | --------------------- | ----------------------- | ---------------------- | ---------- |
-| **Attachment bodies** | Hex-encoded string (2x) | Brotli-compressed BLOB | **50%** |
-| **Message metadata** | JSON text | Brotli-compressed BLOB | **46-86%** |
-| **Mailbox flags** | JSON text | Brotli-compressed BLOB | **60-80%** |
+| **Ek gövdeleri**      | Hex kodlu dize (2x)     | Brotli sıkıştırılmış BLOB | **%50**    |
+| **Mesaj meta verisi**  | JSON metin              | Brotli sıkıştırılmış BLOB | **%46-86** |
+| **Posta kutusu bayrakları** | JSON metin              | Brotli sıkıştırılmış BLOB | **%60-80** |
 
-**Source:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
+**Kaynak:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
 
-### Migration Process {#migration-process}
+### Geçiş Süreci {#migration-process}
 
-Forward Email provides automatic, idempotent migration from old to new storage formats:
-
-```javascript
-// Migration statistics tracked:
+Forward Email, eski depolama formatlarından yeni formatlara otomatik, idempotent geçiş sağlar:
+// Takip edilen göç istatistikleri:
 {
   attachmentsMigrated: 0,
   messagesMigrated: 0,
   mailboxesMigrated: 0,
-  bytesSaved: 0  // Total bytes saved from compression
+  bytesSaved: 0  // Sıkıştırmadan toplam tasarruf edilen bayt
 }
 ```
 
-**Migration steps:**
+**Göç adımları:**
 
-1. Attachment bodies: hex encoding → native BLOB (50% savings)
-2. Message metadata: JSON text → brotli-compressed BLOB (46-86% savings)
-3. Mailbox flags: JSON text → brotli-compressed BLOB (60-80% savings)
+1. Eklenti gövdeleri: hex kodlama → yerel BLOB ( %50 tasarruf)
+2. Mesaj meta verisi: JSON metni → brotli sıkıştırılmış BLOB (%46-86 tasarruf)
+3. Posta kutusu bayrakları: JSON metni → brotli sıkıştırılmış BLOB (%60-80 tasarruf)
 
-**Source:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
-
----
-
-### Combined Storage Efficiency {#combined-storage-efficiency}
-
-> \[!TIP]
-> **Real-World Impact:** With attachment deduplication + Brotli compression, Forward Email users get **2-3x more effective storage** compared to traditional email providers.
-
-**Example Scenario:**
-
-Traditional email provider (1GB mailbox):
-
-* 1GB disk space = 1GB of emails
-* No deduplication: Same attachment stored 10 times = 10x storage waste
-* No compression: Full JSON metadata stored = 2-3x storage waste
-
-Forward Email (1GB mailbox):
-
-* 1GB disk space ≈ **2-3GB of emails** (effective storage)
-* Deduplication: Same attachment stored once, referenced 10 times
-* Compression: 46-86% savings on metadata, 50% on attachments
-* Encryption: ChaCha20-Poly1305 (no storage overhead)
-
-**Comparison Table:**
-
-| Provider | Storage Technology | Effective Storage (1GB mailbox) |
-| ----------------- | -------------------------------------------- | ------------------------------- |
-| Gmail | None | 1GB |
-| iCloud | None | 1GB |
-| Outlook.com | None | 1GB |
-| Fastmail | None | 1GB |
-| ProtonMail | Encryption only | 1GB |
-| Tutanota | Encryption only | 1GB |
-| **Forward Email** | **Deduplication + Compression + Encryption** | **2-3GB** ✨ |
-
-### Technical Implementation Details {#technical-implementation-details}
-
-**Performance:**
-
-* Brotli level 4: Sub-millisecond compression/decompression
-* No performance penalty from compression
-* SQLite FTS5: Sub-50ms search with NVMe SSD
-
-**Security:**
-
-* Compression happens **after** encryption (SQLite database is encrypted)
-* ChaCha20-Poly1305 encryption + Brotli compression
-* Zero-knowledge: Only user has decryption password
-
-**RFC Compliance:**
-
-* Messages retrieved look **exactly the same** as stored
-* DKIM signatures remain valid (encoded content preserved)
-* GPG signatures remain valid (no modification to signed content)
-
-### Why No Other Provider Does This {#why-no-other-provider-does-this}
-
-**Complexity:**
-
-* Requires deep integration with storage layer
-* Backwards compatibility is challenging
-* Migration from old formats is complex
-
-**Performance concerns:**
-
-* Compression adds CPU overhead (solved with Brotli level 4)
-* Decompression on every read (solved with SQLite caching)
-
-**Forward Email's Advantage:**
-
-* Built from the ground up with optimization in mind
-* SQLite allows direct BLOB manipulation
-* Encrypted per-user databases enable safe compression
+**Kaynak:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
 
 ---
 
+### Birleşik Depolama Verimliliği {#combined-storage-efficiency}
+
+> \[!TIP]
+> **Gerçek Dünya Etkisi:** Eklenti çoğaltma + Brotli sıkıştırma ile Forward Email kullanıcıları, geleneksel e-posta sağlayıcılarına kıyasla **2-3 kat daha etkili depolama** elde eder.
+
+**Örnek Senaryo:**
+
+Geleneksel e-posta sağlayıcısı (1GB posta kutusu):
+
+* 1GB disk alanı = 1GB e-posta
+* Çoğaltma yok: Aynı eklenti 10 kez saklanır = 10 kat depolama israfı
+* Sıkıştırma yok: Tam JSON meta veri saklanır = 2-3 kat depolama israfı
+
+Forward Email (1GB posta kutusu):
+
+* 1GB disk alanı ≈ **2-3GB e-posta** (etkili depolama)
+* Çoğaltma: Aynı eklenti bir kez saklanır, 10 kez referans verilir
+* Sıkıştırma: Meta veride %46-86, eklentilerde %50 tasarruf
+* Şifreleme: ChaCha20-Poly1305 (depolama yükü yok)
+
+**Karşılaştırma Tablosu:**
+
+| Sağlayıcı          | Depolama Teknolojisi                         | Etkili Depolama (1GB posta kutusu) |
+| ------------------ | -------------------------------------------- | --------------------------------- |
+| Gmail              | Yok                                          | 1GB                              |
+| iCloud             | Yok                                          | 1GB                              |
+| Outlook.com        | Yok                                          | 1GB                              |
+| Fastmail           | Yok                                          | 1GB                              |
+| ProtonMail         | Sadece şifreleme                             | 1GB                              |
+| Tutanota           | Sadece şifreleme                             | 1GB                              |
+| **Forward Email**  | **Çoğaltma + Sıkıştırma + Şifreleme**       | **2-3GB** ✨                      |
+
+### Teknik Uygulama Detayları {#technical-implementation-details}
+
+**Performans:**
+
+* Brotli seviye 4: Milisaniyenin altında sıkıştırma/açma
+* Sıkıştırmadan performans kaybı yok
+* SQLite FTS5: NVMe SSD ile 50ms altı arama
+
+**Güvenlik:**
+
+* Sıkıştırma **şifrelemeden sonra** gerçekleşir (SQLite veritabanı şifreli)
+* ChaCha20-Poly1305 şifreleme + Brotli sıkıştırma
+* Sıfır bilgi: Şifre çözme parolası sadece kullanıcıda
+
+**RFC Uyumluluğu:**
+
+* Alınan mesajlar saklandığı gibi **tam olarak aynı** görünür
+* DKIM imzaları geçerliliğini korur (kodlanmış içerik korunur)
+* GPG imzaları geçerliliğini korur (imzalanan içerik değiştirilmez)
+
+### Neden Başka Hiçbir Sağlayıcı Bunu Yapmıyor {#why-no-other-provider-does-this}
+
+**Karmaşıklık:**
+
+* Depolama katmanıyla derin entegrasyon gerektirir
+* Geriye dönük uyumluluk zordur
+* Eski formatlardan göç karmaşıktır
+
+**Performans endişeleri:**
+
+* Sıkıştırma CPU yükü ekler (Brotli seviye 4 ile çözüldü)
+* Her okuma işleminde açma (SQLite önbellekleme ile çözüldü)
+
+**Forward Email'in Avantajı:**
+
+* Baştan sona optimizasyon düşünülerek inşa edildi
+* SQLite doğrudan BLOB manipülasyonuna izin verir
+* Kullanıcı başına şifreli veritabanları güvenli sıkıştırma sağlar
+
 ---
 
-## Modern Features {#modern-features}
+---
 
-## Complete REST API for Email Management {#complete-rest-api-for-email-management}
+
+## Modern Özellikler {#modern-features}
+
+
+## E-posta Yönetimi için Tam REST API {#complete-rest-api-for-email-management}
 
 > \[!TIP]
-> Forward Email provides a comprehensive REST API with 39 endpoints for programmatic email management.
+> Forward Email, programatik e-posta yönetimi için 39 uç noktaya sahip kapsamlı bir REST API sağlar.
 
 > \[!TIP]
-> **Unique Industry Feature:** Unlike every other email service, Forward Email provides complete programmatic access to your mailbox, calendar, contacts, messages, and folders via a comprehensive REST API. This is direct interaction with your encrypted SQLite database file storing all your data.
+> **Benzersiz Sektör Özelliği:** Diğer tüm e-posta servislerinin aksine, Forward Email posta kutunuz, takviminiz, kişileriniz, mesajlarınız ve klasörlerinize kapsamlı bir REST API aracılığıyla tam programatik erişim sunar. Bu, tüm verilerinizi depolayan şifreli SQLite veritabanı dosyanızla doğrudan etkileşimdir.
 
-Forward Email offers a complete REST API that provides unprecedented access to your email data. No other email service (including Gmail, iCloud, Outlook, ProtonMail, Tuta, or Fastmail) offers this level of comprehensive, direct database access.
+Forward Email, e-posta verilerinize eşi benzeri görülmemiş erişim sağlayan tam bir REST API sunar. Gmail, iCloud, Outlook, ProtonMail, Tuta veya Fastmail dahil hiçbir başka e-posta servisi bu düzeyde kapsamlı, doğrudan veritabanı erişimi sunmaz.
+**API Dokümantasyonu:** <https://forwardemail.net/en/email-api>
 
-**API Documentation:** <https://forwardemail.net/en/email-api>
+### API Kategorileri (39 Uç Nokta) {#api-categories-39-endpoints}
 
-### API Categories (39 Endpoints) {#api-categories-39-endpoints}
+**1. Mesajlar API'si** (5 uç nokta) - E-posta mesajları üzerinde tam CRUD işlemleri:
 
-**1. Messages API** (5 endpoints) - Full CRUD operations on email messages:
+* `GET /v1/messages` - 15+ gelişmiş arama parametresi ile mesajları listele (başka hiçbir servis bunu sunmaz)
+* `POST /v1/messages` - Mesaj oluştur/gönder
+* `GET /v1/messages/:id` - Mesajı al
+* `PUT /v1/messages/:id` - Mesajı güncelle (bayraklar, klasörler)
+* `DELETE /v1/messages/:id` - Mesajı sil
 
-* `GET /v1/messages` - List messages with 15+ advanced search parameters (no other service offers this)
-* `POST /v1/messages` - Create/send messages
-* `GET /v1/messages/:id` - Retrieve message
-* `PUT /v1/messages/:id` - Update message (flags, folders)
-* `DELETE /v1/messages/:id` - Delete message
-
-*Example: Find all invoices from last quarter with attachments:*
+*Örnek: Geçen çeyreğe ait ekli tüm faturaları bul:*
 
 ```bash
 curl -u "alias@domain.com:password" \
   "https://api.forwardemail.net/v1/messages?q=subject:invoice+has:attachment+after:2024-01-01+before:2024-04-01"
 ```
 
-See [Advanced Search Documentation](https://forwardemail.net/en/email-api)
+Bkz. [Gelişmiş Arama Dokümantasyonu](https://forwardemail.net/en/email-api)
 
-**2. Folders API** (5 endpoints) - Full IMAP folder management via REST:
+**2. Klasörler API'si** (5 uç nokta) - REST üzerinden tam IMAP klasör yönetimi:
 
-* `GET /v1/folders` - List all folders
-* `POST /v1/folders` - Create folder
-* `GET /v1/folders/:id` - Retrieve folder
-* `PUT /v1/folders/:id` - Update folder
-* `DELETE /v1/folders/:id` - Delete folder
+* `GET /v1/folders` - Tüm klasörleri listele
+* `POST /v1/folders` - Klasör oluştur
+* `GET /v1/folders/:id` - Klasörü al
+* `PUT /v1/folders/:id` - Klasörü güncelle
+* `DELETE /v1/folders/:id` - Klasörü sil
 
-**3. Contacts API** (5 endpoints) - CardDAV contact storage via REST:
+**3. Kişiler API'si** (5 uç nokta) - REST üzerinden CardDAV kişi depolama:
 
-* `GET /v1/contacts` - List contacts
-* `POST /v1/contacts` - Create contact (vCard format)
-* `GET /v1/contacts/:id` - Retrieve contact
-* `PUT /v1/contacts/:id` - Update contact
-* `DELETE /v1/contacts/:id` - Delete contact
+* `GET /v1/contacts` - Kişileri listele
+* `POST /v1/contacts` - Kişi oluştur (vCard formatında)
+* `GET /v1/contacts/:id` - Kişiyi al
+* `PUT /v1/contacts/:id` - Kişiyi güncelle
+* `DELETE /v1/contacts/:id` - Kişiyi sil
 
-**4. Calendars API** (5 endpoints) - Calendar container management:
+**4. Takvimler API'si** (5 uç nokta) - Takvim konteyner yönetimi:
 
-* `GET /v1/calendars` - List calendar containers
-* `POST /v1/calendars` - Create calendar (e.g., "Work Calendar", "Personal Calendar")
-* `GET /v1/calendars/:id` - Retrieve calendar
-* `PUT /v1/calendars/:id` - Update calendar
-* `DELETE /v1/calendars/:id` - Delete calendar
+* `GET /v1/calendars` - Takvim konteynerlerini listele
+* `POST /v1/calendars` - Takvim oluştur (örneğin, "İş Takvimi", "Kişisel Takvim")
+* `GET /v1/calendars/:id` - Takvimi al
+* `PUT /v1/calendars/:id` - Takvimi güncelle
+* `DELETE /v1/calendars/:id` - Takvimi sil
 
-**5. Calendar Events API** (5 endpoints) - Event scheduling within calendars:
+**5. Takvim Etkinlikleri API'si** (5 uç nokta) - Takvimler içinde etkinlik planlama:
 
-* `GET /v1/calendar-events` - List events
-* `POST /v1/calendar-events` - Create event with attendees
-* `GET /v1/calendar-events/:id` - Retrieve event
-* `PUT /v1/calendar-events/:id` - Update event
-* `DELETE /v1/calendar-events/:id` - Delete event
+* `GET /v1/calendar-events` - Etkinlikleri listele
+* `POST /v1/calendar-events` - Katılımcılarla etkinlik oluştur
+* `GET /v1/calendar-events/:id` - Etkinliği al
+* `PUT /v1/calendar-events/:id` - Etkinliği güncelle
+* `DELETE /v1/calendar-events/:id` - Etkinliği sil
 
-*Example: Create a calendar event:*
+*Örnek: Takvim etkinliği oluştur:*
 
 ```bash
 curl -u "alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
-  -d '{"title":"Team Meeting","start":"2024-12-20T10:00:00Z","attendees":["team@example.com"],"calendar_id":"calendar123"}' \
+  -d '{"title":"Takım Toplantısı","start":"2024-12-20T10:00:00Z","attendees":["team@example.com"],"calendar_id":"calendar123"}' \
   https://api.forwardemail.net/v1/calendar-events
 ```
 
-### Technical Details {#technical-details}
+### Teknik Detaylar {#technical-details}
 
-* **Authentication:** Simple `alias:password` authentication (no OAuth complexity)
-* **Performance:** Sub-50ms response times with SQLite FTS5 and NVMe SSD storage
-* **Zero Network Latency:** Direct database access, not proxied through external services
+* **Kimlik Doğrulama:** Basit `alias:password` kimlik doğrulama (OAuth karmaşası yok)
+* **Performans:** SQLite FTS5 ve NVMe SSD depolama ile 50ms altı yanıt süreleri
+* **Sıfır Ağ Gecikmesi:** Harici servisler üzerinden proxy olmadan doğrudan veritabanı erişimi
 
-### Real-World Use Cases {#real-world-use-cases}
+### Gerçek Dünya Kullanım Senaryoları {#real-world-use-cases}
 
-* **Email Analytics:** Build custom dashboards tracking email volume, response times, sender statistics
+* **E-posta Analitiği:** E-posta hacmi, yanıt süreleri, gönderen istatistiklerini takip eden özel panolar oluşturun
 
-* **Automated Workflows:** Trigger actions based on email content (invoice processing, support tickets)
+* **Otomatik İş Akışları:** E-posta içeriğine göre tetiklenen işlemler (fatura işleme, destek talepleri)
 
-* **CRM Integration:** Sync email conversations with your CRM automatically
+* **CRM Entegrasyonu:** E-posta konuşmalarını CRM'inizle otomatik senkronize edin
 
-* **Compliance & Discovery:** Search and export emails for legal/compliance requirements
+* **Uyumluluk & Keşif:** Yasal/uyumluluk gereksinimleri için e-postaları arayın ve dışa aktarın
 
-* **Custom Email Clients:** Build specialized email interfaces for your workflow
+* **Özel E-posta İstemcileri:** İş akışınıza özel e-posta arayüzleri oluşturun
 
-* **Business Intelligence:** Analyze communication patterns, response rates, customer engagement
+* **İş Zekası:** İletişim kalıplarını, yanıt oranlarını, müşteri etkileşimini analiz edin
 
-* **Document Management:** Extract and categorize attachments automatically
+* **Doküman Yönetimi:** Ekleri otomatik olarak çıkarın ve kategorize edin
 
-* [Complete Documentation](https://forwardemail.net/en/email-api)
+* [Tam Dokümantasyon](https://forwardemail.net/en/email-api)
 
-* [Complete API Reference](https://forwardemail.net/en/email-api)
+* [Tam API Referansı](https://forwardemail.net/en/email-api)
 
-* [Advanced Search Guide](https://forwardemail.net/en/email-api)
+* [Gelişmiş Arama Kılavuzu](https://forwardemail.net/en/email-api)
 
-* [30+ Integration Examples](https://forwardemail.net/en/email-api)
+* [30+ Entegrasyon Örneği](https://forwardemail.net/en/email-api)
 
-* [Technical Architecture](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)
+* [Teknik Mimari](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)
 
-Forward Email offers a modern REST API that provides full control over email accounts, domains, aliases, and messages. This API serves as a powerful alternative to JMAP and provides functionality beyond traditional email protocols.
+Forward Email, e-posta hesapları, alan adları, takma adlar ve mesajlar üzerinde tam kontrol sağlayan modern bir REST API sunar. Bu API, JMAP'e güçlü bir alternatif olarak hizmet verir ve geleneksel e-posta protokollerinin ötesinde işlevsellik sağlar.
 
-| Category | Endpoints | Description |
+| Kategori                | Uç Noktalar | Açıklama                             |
 | ----------------------- | --------- | --------------------------------------- |
-| **Account Management** | 8 | User accounts, authentication, settings |
-| **Domain Management** | 12 | Custom domains, DNS, verification |
-| **Alias Management** | 6 | Email aliases, forwarding, catch-all |
-| **Message Management** | 7 | Send, receive, search, delete messages |
-| **Calendar & Contacts** | 4 | CalDAV/CardDAV access via API |
-| **Logs & Analytics** | 2 | Email logs, delivery reports |
+| **Hesap Yönetimi**      | 8         | Kullanıcı hesapları, kimlik doğrulama, ayarlar |
+| **Alan Adı Yönetimi**   | 12        | Özel alan adları, DNS, doğrulama       |
+| **Takma Ad Yönetimi**   | 6         | E-posta takma adları, yönlendirme, catch-all    |
+| **Mesaj Yönetimi**      | 7         | Mesaj gönderme, alma, arama, silme  |
+| **Takvim & Kişiler**   | 4         | CalDAV/CardDAV API erişimi           |
+| **Kayıtlar & Analitik** | 2         | E-posta kayıtları, teslimat raporları            |
+### Temel API Özellikleri {#key-api-features}
 
-### Key API Features {#key-api-features}
+**Gelişmiş Arama:**
 
-**Advanced Search:**
-
-The API provides powerful search capabilities with query syntax similar to Gmail:
+API, Gmail'e benzer sorgu sözdizimi ile güçlü arama yetenekleri sunar:
 
 ```
 GET /v1/messages?q=subject:invoice+has:attachment+after:2024-01-01+before:2024-04-01
 ```
 
-**Supported Search Operators:**
+**Desteklenen Arama Operatörleri:**
 
-* `from:` - Search by sender
-* `to:` - Search by recipient
-* `subject:` - Search by subject
-* `has:attachment` - Messages with attachments
-* `is:unread` - Unread messages
-* `is:starred` - Starred messages
-* `after:` - Messages after date
-* `before:` - Messages before date
-* `label:` - Messages with label
-* `filename:` - Attachment filename
+* `from:` - Gönderen bazında arama
+* `to:` - Alıcı bazında arama
+* `subject:` - Konu bazında arama
+* `has:attachment` - Ekli mesajlar
+* `is:unread` - Okunmamış mesajlar
+* `is:starred` - Yıldızlı mesajlar
+* `after:` - Tarihten sonraki mesajlar
+* `before:` - Tarihten önceki mesajlar
+* `label:` - Etiketli mesajlar
+* `filename:` - Ek dosya adı
 
-**Calendar Event Management:**
+**Takvim Etkinliği Yönetimi:**
 
 ```
 GET /v1/calendar-events
@@ -1849,50 +1841,50 @@ PUT /v1/calendar-events/:id
 DELETE /v1/calendar-events/:id
 ```
 
-**Webhook Integrations:**
+**Webhook Entegrasyonları:**
 
-The API supports webhooks for real-time notifications of email events (received, sent, bounced, etc.).
+API, e-posta olayları (alındı, gönderildi, geri döndü vb.) için gerçek zamanlı bildirimler sağlayan webhook'ları destekler.
 
-**Authentication:**
+**Kimlik Doğrulama:**
 
-* API key authentication
-* OAuth 2.0 support
-* Rate limiting: 1000 requests/hour
+* API anahtarı kimlik doğrulaması
+* OAuth 2.0 desteği
+* Oran sınırlaması: Saatte 1000 istek
 
-**Data Format:**
+**Veri Formatı:**
 
-* JSON request/response
-* RESTful design
-* Pagination support
+* JSON istek/yanıt
+* RESTful tasarım
+* Sayfalama desteği
 
-**Security:**
+**Güvenlik:**
 
-* HTTPS only
-* API key rotation
-* IP whitelisting (optional)
-* Request signing (optional)
+* Sadece HTTPS
+* API anahtarı rotasyonu
+* IP beyaz listeleme (isteğe bağlı)
+* İstek imzalama (isteğe bağlı)
 
-### API Architecture {#api-architecture}
+### API Mimarisi {#api-architecture}
 
 ```mermaid
 graph LR
-    subgraph "Client Applications"
-        Web[Web App]
-        Mobile[Mobile App]
-        Script[Automation Script]
+    subgraph "İstemci Uygulamaları"
+        Web[Web Uygulaması]
+        Mobile[Mobil Uygulama]
+        Script[Otomasyon Scripti]
     end
 
     subgraph "Forward Email API"
-        Auth[Authentication]
-        Routes[API Routes]
-        Logic[Business Logic]
+        Auth[Kimlik Doğrulama]
+        Routes[API Yolları]
+        Logic[İş Mantığı]
     end
 
-    subgraph "Backend Services"
-        IMAP[IMAP Server]
-        SMTP[SMTP Server]
-        CalDAV[CalDAV Server]
-        DB[(SQLite Database)]
+    subgraph "Arka Uç Servisleri"
+        IMAP[IMAP Sunucusu]
+        SMTP[SMTP Sunucusu]
+        CalDAV[CalDAV Sunucusu]
+        DB[(SQLite Veritabanı)]
     end
 
     Web --> Auth
@@ -1912,183 +1904,184 @@ graph LR
 
 ---
 
-## iOS Push Notifications {#ios-push-notifications}
+
+## iOS Push Bildirimleri {#ios-push-notifications}
 
 > \[!TIP]
-> Forward Email supports native iOS push notifications through XAPPLEPUSHSERVICE for instant email delivery.
+> Forward Email, anlık e-posta teslimi için XAPPLEPUSHSERVICE aracılığıyla yerel iOS push bildirimlerini destekler.
 
 > \[!IMPORTANT]
-> **Unique Feature:** Forward Email is one of the few open-source email servers that supports native iOS push notifications for email, contacts, and calendars via the `XAPPLEPUSHSERVICE` IMAP extension. This was reverse-engineered from Apple's protocol and provides instant delivery to iOS devices without battery drain.
+> **Benzersiz Özellik:** Forward Email, `XAPPLEPUSHSERVICE` IMAP uzantısı aracılığıyla e-posta, kişiler ve takvimler için yerel iOS push bildirimlerini destekleyen birkaç açık kaynaklı e-posta sunucusundan biridir. Bu, Apple'ın protokolünden tersine mühendislik ile elde edilmiştir ve iOS cihazlarına pil tüketimi olmadan anlık teslimat sağlar.
 
-Forward Email implements Apple's proprietary XAPPLEPUSHSERVICE extension, providing native push notifications for iOS devices without requiring background polling.
+Forward Email, Apple'ın özel XAPPLEPUSHSERVICE uzantısını uygular ve arka plan sorgulaması gerektirmeden iOS cihazları için yerel push bildirimleri sağlar.
 
-### How It Works {#how-it-works-1}
+### Nasıl Çalışır {#how-it-works-1}
 
-**XAPPLEPUSHSERVICE** is a non-standard IMAP extension that allows iOS Mail app to receive instant push notifications when new emails arrive.
+**XAPPLEPUSHSERVICE**, iOS Mail uygulamasının yeni e-postalar geldiğinde anlık push bildirimleri almasını sağlayan standart dışı bir IMAP uzantısıdır.
 
-Forward Email implements the proprietary Apple Push Notification service (APNs) integration for IMAP, allowing iOS Mail app to receive instant push notifications when new emails arrive.
+Forward Email, iOS Mail uygulamasının yeni e-postalar geldiğinde anlık push bildirimleri almasını sağlayan Apple Push Notification service (APNs) entegrasyonunu IMAP için uygular.
 
 ```mermaid
 sequenceDiagram
     participant Server as Forward Email
     participant APNS as Apple Push<br/>Notification Service
-    participant iOS as iOS Device
-    participant Mail as Mail App
+    participant iOS as iOS Cihazı
+    participant Mail as Mail Uygulaması
 
-    iOS->>Server: Register for Push (XAPPLEPUSHSERVICE)
-    Server->>Server: Store device token
+    iOS->>Server: Push için Kayıt (XAPPLEPUSHSERVICE)
+    Server->>Server: Cihaz jetonunu sakla
 
-    Note over Server: New email arrives
+    Note over Server: Yeni e-posta geldi
 
-    Server->>APNS: Send push notification
-    APNS->>iOS: Deliver notification
-    iOS->>Mail: Wake up Mail app
-    Mail->>Server: Fetch new messages (IMAP)
-    Server-->>Mail: Return new messages
-    Mail->>Mail: Display notification
+    Server->>APNS: Push bildirimi gönder
+    APNS->>iOS: Bildirimi teslim et
+    iOS->>Mail: Mail uygulamasını uyandır
+    Mail->>Server: Yeni mesajları al (IMAP)
+    Server-->>Mail: Yeni mesajları döndür
+    Mail->>Mail: Bildirimi göster
 ```
 
-### Key Features {#key-features}
+### Temel Özellikler {#key-features}
 
-**Instant Delivery:**
+**Anlık Teslimat:**
 
-* Push notifications arrive within seconds
-* No battery-draining background polling
-* Works even when Mail app is closed
+* Push bildirimleri saniyeler içinde gelir
+* Pil tüketen arka plan sorgulaması yok
+* Mail uygulaması kapalıyken bile çalışır
 
 <!---->
 
-* **Instant Delivery:** Emails, calendar events, and contacts appear on your iPhone/iPad immediately, not on a polling schedule
-* **Battery Efficient:** Uses Apple's push infrastructure instead of maintaining constant IMAP connections
-* **Topic-Based Push:** Supports push notifications for specific mailboxes, not just INBOX
-* **No Third-Party Apps Required:** Works with the native iOS Mail, Calendar, and Contacts apps
+* **Anlık Teslimat:** E-postalar, takvim etkinlikleri ve kişiler iPhone/iPad'inizde hemen görünür, sorgulama planında değil
+* **Pil Verimli:** Sürekli IMAP bağlantıları yerine Apple'ın push altyapısını kullanır
+* **Konu Bazlı Push:** Sadece INBOX değil, belirli posta kutuları için push bildirimlerini destekler
+* **Üçüncü Parti Uygulama Gerektirmez:** Yerel iOS Mail, Takvim ve Kişiler uygulamaları ile çalışır
+**Yerel Entegrasyon:**
 
-**Native Integration:**
+* iOS Mail uygulamasına entegre
+* Üçüncü taraf uygulama gerektirmez
+* Kesintisiz kullanıcı deneyimi
 
-* Built into iOS Mail app
-* No third-party apps required
-* Seamless user experience
+**Gizlilik Odaklı:**
 
-**Privacy-Focused:**
+* Cihaz tokenları şifrelenir
+* APNS üzerinden mesaj içeriği gönderilmez
+* Sadece "yeni posta" bildirimi gönderilir
 
-* Device tokens are encrypted
-* No message content sent through APNS
-* Only "new mail" notification sent
+**Pil Verimli:**
 
-**Battery Efficient:**
+* Sürekli IMAP sorgulaması yok
+* Cihaz bildirim gelene kadar uyur
+* Minimum pil etkisi
 
-* No constant IMAP polling
-* Device sleeps until notification arrives
-* Minimal battery impact
-
-### What Makes This Special {#what-makes-this-special}
+### Bunu Özel Kılan Nedir {#what-makes-this-special}
 
 > \[!IMPORTANT]
-> Most email providers don't support XAPPLEPUSHSERVICE, forcing iOS devices to poll for new mail every 15 minutes.
+> Çoğu e-posta sağlayıcısı XAPPLEPUSHSERVICE'i desteklemez, bu da iOS cihazlarının her 15 dakikada bir yeni posta için sorgulama yapmasını zorunlu kılar.
 
-Most open-source email servers (including Dovecot, Postfix, Cyrus IMAP) do NOT support iOS push notifications. Users must either:
+Çoğu açık kaynaklı e-posta sunucusu (Dovecot, Postfix, Cyrus IMAP dahil) iOS push bildirimlerini desteklemez. Kullanıcılar ya:
 
-* Use IMAP IDLE (keeps connection open, drains battery)
-* Use polling (checks every 15-30 minutes, delayed notifications)
-* Use proprietary email apps with their own push infrastructure
+* IMAP IDLE kullanmak zorundadır (bağlantıyı açık tutar, pil tüketir)
+* Sorgulama kullanmak zorundadır (her 15-30 dakikada kontrol eder, bildirimler gecikir)
+* Kendi push altyapısına sahip özel e-posta uygulamalarını kullanmak zorundadır
 
-Forward Email provides the same instant push notification experience as commercial services like Gmail, iCloud, and Fastmail.
+Forward Email, Gmail, iCloud ve Fastmail gibi ticari servislerle aynı anlık push bildirim deneyimini sunar.
 
-**Comparison with Other Providers:**
+**Diğer Sağlayıcılarla Karşılaştırma:**
 
-| Provider | Push Support | Polling Interval | Battery Impact |
-| ----------------- | -------------- | ---------------- | -------------- |
-| **Forward Email** | ✅ Native Push | Instant | Minimal |
-| Gmail | ✅ Native Push | Instant | Minimal |
-| iCloud | ✅ Native Push | Instant | Minimal |
-| Yahoo | ✅ Native Push | Instant | Minimal |
-| Outlook.com | ❌ Polling | 15 minutes | Moderate |
-| Fastmail | ❌ Polling | 15 minutes | Moderate |
-| ProtonMail | ⚠️ Bridge only | Via Bridge | High |
-| Tutanota | ❌ App only | N/A | N/A |
+| Sağlayıcı        | Push Desteği   | Sorgulama Aralığı | Pil Etkisi     |
+| ---------------- | -------------- | ----------------- | -------------- |
+| **Forward Email** | ✅ Yerel Push  | Anlık             | Minimum        |
+| Gmail             | ✅ Yerel Push  | Anlık             | Minimum        |
+| iCloud            | ✅ Yerel Push  | Anlık             | Minimum        |
+| Yahoo             | ✅ Yerel Push  | Anlık             | Minimum        |
+| Outlook.com       | ❌ Sorgulama   | 15 dakika         | Orta           |
+| Fastmail          | ❌ Sorgulama   | 15 dakika         | Orta           |
+| ProtonMail        | ⚠️ Sadece Köprü| Köprü Üzerinden   | Yüksek         |
+| Tutanota          | ❌ Sadece Uygulama | Uygulanamaz    | Uygulanamaz    |
 
-### Implementation Details {#implementation-details}
+### Uygulama Detayları {#implementation-details}
 
-**IMAP CAPABILITY Response:**
+**IMAP CAPABILITY Yanıtı:**
 
 ```
 * CAPABILITY IMAP4rev1 ... XAPPLEPUSHSERVICE ...
 ```
 
-**Registration Process:**
+**Kayıt Süreci:**
 
-1. iOS Mail app detects XAPPLEPUSHSERVICE capability
-2. App registers device token with Forward Email
-3. Forward Email stores token and associates with account
-4. When new mail arrives, Forward Email sends push via APNS
-5. iOS wakes up Mail app to fetch new messages
+1. iOS Mail uygulaması XAPPLEPUSHSERVICE yeteneğini algılar
+2. Uygulama cihaz tokenını Forward Email'e kaydeder
+3. Forward Email tokenı saklar ve hesapla ilişkilendirir
+4. Yeni posta geldiğinde Forward Email APNS üzerinden push gönderir
+5. iOS Mail uygulamasını yeni mesajları almak için uyandırır
 
-**Security:**
+**Güvenlik:**
 
-* Device tokens are encrypted at rest
-* Tokens expire and are refreshed automatically
-* No message content exposed to APNS
-* End-to-end encryption maintained
+* Cihaz tokenları dinlenme halinde şifrelenir
+* Tokenlar süresi dolduğunda otomatik yenilenir
+* Mesaj içeriği APNS'ye ifşa edilmez
+* Uçtan uca şifreleme korunur
 
 <!---->
 
-* **IMAP Extension:** `XAPPLEPUSHSERVICE`
-* **Source Code:** [WildDuck Issue #711](https://github.com/zone-eu/wildduck/issues/711)
-* **Setup:** Automatic - no configuration needed, works out of the box with iOS Mail app
+* **IMAP Uzantısı:** `XAPPLEPUSHSERVICE`
+* **Kaynak Kodu:** [WildDuck Issue #711](https://github.com/zone-eu/wildduck/issues/711)
+* **Kurulum:** Otomatik - yapılandırma gerekmez, iOS Mail uygulaması ile kutudan çıkar çıkmaz çalışır
 
-### Comparison with Other Services {#comparison-with-other-services}
+### Diğer Servislerle Karşılaştırma {#comparison-with-other-services}
 
-| Service | iOS Push Support | Method |
+| Servis        | iOS Push Desteği | Yöntem                                   |
 | ------------- | ---------------- | ---------------------------------------- |
-| Forward Email | ✅ Yes | `XAPPLEPUSHSERVICE` (reverse-engineered) |
-| Gmail | ✅ Yes | Proprietary Gmail app + Google push |
-| iCloud Mail | ✅ Yes | Native Apple integration |
-| Outlook.com | ✅ Yes | Proprietary Outlook app + Microsoft push |
-| Fastmail | ✅ Yes | `XAPPLEPUSHSERVICE` |
-| Dovecot | ❌ No | IMAP IDLE or polling only |
-| Postfix | ❌ No | IMAP IDLE or polling only |
-| Cyrus IMAP | ❌ No | IMAP IDLE or polling only |
+| Forward Email | ✅ Evet          | `XAPPLEPUSHSERVICE` (tersine mühendislik) |
+| Gmail         | ✅ Evet          | Özel Gmail uygulaması + Google push      |
+| iCloud Mail   | ✅ Evet          | Yerel Apple entegrasyonu                 |
+| Outlook.com   | ✅ Evet          | Özel Outlook uygulaması + Microsoft push |
+| Fastmail      | ✅ Evet          | `XAPPLEPUSHSERVICE`                      |
+| Dovecot       | ❌ Hayır         | Sadece IMAP IDLE veya sorgulama          |
+| Postfix       | ❌ Hayır         | Sadece IMAP IDLE veya sorgulama          |
+| Cyrus IMAP    | ❌ Hayır         | Sadece IMAP IDLE veya sorgulama          |
 
 **Gmail Push:**
 
-Gmail uses a proprietary push system that only works with the Gmail app. iOS Mail app must poll Gmail IMAP servers.
+Gmail, sadece Gmail uygulamasıyla çalışan özel bir push sistemi kullanır. iOS Mail uygulaması Gmail IMAP sunucularını sorgulamak zorundadır.
 
 **iCloud Push:**
 
-iCloud has native push support similar to Forward Email, but only for @icloud.com addresses.
+iCloud, Forward Email'e benzer yerel push desteğine sahiptir, ancak sadece @icloud.com adresleri için geçerlidir.
 
 **Outlook.com:**
 
-Outlook.com does not support XAPPLEPUSHSERVICE, requiring iOS Mail to poll every 15 minutes.
+Outlook.com XAPPLEPUSHSERVICE'i desteklemez, bu nedenle iOS Mail her 15 dakikada bir sorgulama yapmak zorundadır.
 
 **Fastmail:**
 
-Fastmail does not support XAPPLEPUSHSERVICE. Users must use the Fastmail app for push notifications or accept 15-minute polling delays.
+Fastmail XAPPLEPUSHSERVICE'i desteklemez. Kullanıcılar push bildirimleri için Fastmail uygulamasını kullanmalı veya 15 dakikalık sorgulama gecikmesini kabul etmelidir.
 
 ---
 
-## Testing and Verification {#testing-and-verification}
 
-## Protocol Capability Tests {#protocol-capability-tests}
+## Test ve Doğrulama {#testing-and-verification}
 
+
+## Protokol Yeteneği Testleri {#protocol-capability-tests}
 > \[!NOTE]
-> This section provides the results of our latest protocol capability tests, conducted on January 22, 2026.
+> Bu bölüm, 22 Ocak 2026 tarihinde gerçekleştirilen en son protokol yetenek testlerimizin sonuçlarını sunmaktadır.
 
-This section contains the actual CAPABILITY/CAPA/EHLO responses from all tested providers. All tests were run on **January 22, 2026**.
+Bu bölüm, test edilen tüm sağlayıcılardan alınan gerçek CAPABILITY/CAPA/EHLO yanıtlarını içermektedir. Tüm testler **22 Ocak 2026** tarihinde yapılmıştır.
 
-These tests help verify the advertised and actual support for various email protocols and extensions across major providers.
+Bu testler, büyük sağlayıcılar arasında çeşitli e-posta protokolleri ve uzantılarının ilan edilen ve gerçek desteklerini doğrulamaya yardımcı olur.
 
-### Test Methodology {#test-methodology}
+### Test Metodolojisi {#test-methodology}
 
-**Test Environment:**
+**Test Ortamı:**
 
-* **Date:** January 22, 2026 at 02:37 UTC
-* **Location:** AWS EC2 instance
+* **Tarih:** 22 Ocak 2026, 02:37 UTC
+* **Konum:** AWS EC2 örneği
 * **IPv4:** 54.167.216.197
 * **IPv6:** 2600:4040:46da:9a00:b19e:3ad4:426c:2f48
-* **Tools:** OpenSSL s_client, bash scripts
+* **Araçlar:** OpenSSL s_client, bash betikleri
 
-**Providers Tested:**
+**Test Edilen Sağlayıcılar:**
 
 * Forward Email
 * Gmail
@@ -2097,11 +2090,11 @@ These tests help verify the advertised and actual support for various email prot
 * Fastmail
 * Yahoo/AOL (Verizon)
 
-### Test Scripts {#test-scripts}
+### Test Betikleri {#test-scripts}
 
-For full transparency, the exact scripts used for these tests are provided below.
+Tam şeffaflık için, bu testlerde kullanılan tam betikler aşağıda verilmiştir.
 
-#### IMAP Capability Test Script {#imap-capability-test-script}
+#### IMAP Yetenek Test Betiği {#imap-capability-test-script}
 
 ```bash
 #!/bin/bash
@@ -2149,7 +2142,7 @@ echo "Test completed"
 echo "========================================="
 ```
 
-#### POP3 Capability Test Script {#pop3-capability-test-script}
+#### POP3 Yetenek Test Betiği {#pop3-capability-test-script}
 
 ```bash
 #!/bin/bash
@@ -2172,9 +2165,9 @@ echo "--- Outlook.com (outlook.office365.com:995) ---"
 echo -e "CAPA\nQUIT" | timeout 10 openssl s_client -connect outlook.office365.com:995 -crlf -quiet 2>&1 | grep -A 20 "CAPA"
 echo ""
 
-# iCloud (Note: iCloud does not support POP3)
-echo "--- iCloud (No POP3 support) ---"
-echo "iCloud does not support POP3"
+# iCloud (Not: iCloud POP3 desteklemez)
+echo "--- iCloud (POP3 desteği yok) ---"
+echo "iCloud POP3 desteklememektedir"
 echo ""
 
 # Fastmail
@@ -2196,17 +2189,16 @@ echo "========================================="
 echo "Test completed"
 echo "========================================="
 ```
-
-#### SMTP Capability Test Script {#smtp-capability-test-script}
+#### SMTP Yetenek Testi Betiği {#smtp-capability-test-script}
 
 ```bash
 #!/bin/bash
-# SMTP Capability Test Script
-# Tests SMTP EHLO for various email providers
+# SMTP Yetenek Testi Betiği
+# Çeşitli e-posta sağlayıcıları için SMTP EHLO testleri yapar
 
 echo "========================================="
-echo "SMTP CAPABILITY TEST"
-echo "Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+echo "SMTP YETENEK TESTİ"
+echo "Tarih: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
 echo "========================================="
 echo ""
 
@@ -2241,13 +2233,13 @@ echo -e "EHLO test.com\nQUIT" | timeout 10 openssl s_client -connect smtp.forwar
 echo ""
 
 echo "========================================="
-echo "Test completed"
+echo "Test tamamlandı"
 echo "========================================="
 ```
 
-### Test Results Summary {#test-results-summary}
+### Test Sonuçları Özeti {#test-results-summary}
 
-#### IMAP (CAPABILITY) {#imap-capability}
+#### IMAP (YETENEK) {#imap-capability}
 
 **Forward Email**
 
@@ -2406,10 +2398,9 @@ IMPLEMENTATION Cyrus
 250-ENHANCEDSTATUSCODES
 250-STARTTLS
 ```
+### Detaylı Test Sonuçları {#detailed-test-results}
 
-### Detailed Test Results {#detailed-test-results}
-
-#### IMAP Test Results {#imap-test-results}
+#### IMAP Test Sonuçları {#imap-test-results}
 
 **Gmail:**
 `* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 XYZZY SASL-IR AUTH=XOAUTH2 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN AUTH=OAUTHBEARER`
@@ -2421,7 +2412,7 @@ IMPLEMENTATION Cyrus
 `* CAPABILITY XAPPLEPUSHSERVICE IMAP4 IMAP4rev1 SASL-IR AUTH=ATOKEN AUTH=PLAIN AUTH=ATOKEN2 AUTH=XOAUTH2`
 
 **Fastmail:**
-Connection timed out. See notes below.
+Bağlantı zaman aşımına uğradı. Aşağıdaki notlara bakınız.
 
 **Yahoo:**
 `* CAPABILITY IMAP4rev1 SASL-IR AUTH=PLAIN AUTH=XOAUTH2 AUTH=OAUTHBEARER ID MOVE NAMESPACE XYMHIGHESTMODSEQ UIDPLUS LITERAL+ CHILDREN UNSELECT X-MSG-EXT OBJECTID IDLE ENABLE UIDONLY X-ALL-MAIL X-UIDONLY LIST-EXTENDED LIST-STATUS SPECIAL-USE PARTIAL APPENDLIMIT=41697280`
@@ -2429,27 +2420,27 @@ Connection timed out. See notes below.
 **Forward Email:**
 `* CAPABILITY XAPPLEPUSHSERVICE IMAP4rev1 APPENDLIMIT=52428800 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN CHILDREN CONDSTORE ENABLE ID IDLE MOVE NAMESPACE QUOTA SASL-IR SPECIAL-USE UIDPLUS UNSELECT UTF8=ACCEPT XLIST`
 
-#### POP3 Test Results {#pop3-test-results}
+#### POP3 Test Sonuçları {#pop3-test-results}
 
 **Gmail:**
-Connection did not return CAPA response without authentication.
+Bağlantı kimlik doğrulaması olmadan CAPA yanıtı döndürmedi.
 
 **Outlook.com:**
-Connection did not return CAPA response without authentication.
+Bağlantı kimlik doğrulaması olmadan CAPA yanıtı döndürmedi.
 
 **iCloud:**
-Not Supported.
+Desteklenmiyor.
 
 **Fastmail:**
-Connection timed out. See notes below.
+Bağlantı zaman aşımına uğradı. Aşağıdaki notlara bakınız.
 
 **Yahoo:**
 `+OK CAPA list follows... SASL PLAIN XOAUTH2`
 
 **Forward Email:**
-Connection did not return CAPA response without authentication.
+Bağlantı kimlik doğrulaması olmadan CAPA yanıtı döndürmedi.
 
-#### SMTP Test Results {#smtp-test-results}
+#### SMTP Test Sonuçları {#smtp-test-results}
 
 **Gmail:**
 `250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH`
@@ -2469,67 +2460,67 @@ Connection did not return CAPA response without authentication.
 **Forward Email:**
 `250-DSN`, `250-REQUIRETLS`
 
-### Notes on Test Results {#notes-on-test-results}
+### Test Sonuçları Hakkında Notlar {#notes-on-test-results}
 
 > \[!NOTE]
-> Important observations and limitations from the test results.
+> Test sonuçlarından önemli gözlemler ve sınırlamalar.
 
-1. **Fastmail Timeouts**: Fastmail connections timed out during testing, likely due to rate limiting or firewall restrictions from the test server IP. Fastmail is known to have robust IMAP/POP3/SMTP support based on their documentation.
+1. **Fastmail Zaman Aşımı:** Fastmail bağlantıları test sırasında zaman aşımına uğradı, muhtemelen test sunucusu IP'sinden kaynaklanan hız sınırlaması veya güvenlik duvarı kısıtlamaları nedeniyle. Fastmail, belgelerine göre sağlam IMAP/POP3/SMTP desteğine sahiptir.
 
-2. **POP3 CAPA Responses**: Several providers (Gmail, Outlook.com, Forward Email) did not return CAPA responses without authentication. This is common security practice for POP3 servers.
+2. **POP3 CAPA Yanıtları:** Bazı sağlayıcılar (Gmail, Outlook.com, Forward Email) kimlik doğrulaması olmadan CAPA yanıtı döndürmedi. Bu, POP3 sunucuları için yaygın bir güvenlik uygulamasıdır.
 
-3. **DSN Support**: Only Outlook.com, iCloud, and Forward Email explicitly advertise DSN support in their SMTP EHLO responses. This doesn't necessarily mean other providers don't support DSN, but they don't advertise it.
+3. **DSN Desteği:** Yalnızca Outlook.com, iCloud ve Forward Email SMTP EHLO yanıtlarında DSN desteğini açıkça bildiriyor. Bu, diğer sağlayıcıların DSN desteklemediği anlamına gelmez, sadece bunu duyurmadıkları anlamına gelir.
 
-4. **REQUIRETLS**: Only Forward Email explicitly advertises REQUIRETLS support with user-facing enforcement checkbox. Other providers may support it internally but don't advertise it in EHLO.
+4. **REQUIRETLS:** Yalnızca Forward Email, kullanıcıya yönelik zorunlu TLS desteğini onay kutusuyla açıkça bildiriyor. Diğer sağlayıcılar dahili olarak destekleyebilir ancak EHLO'da duyurmazlar.
 
-5. **Test Environment**: Tests were conducted from AWS EC2 instance (IP: 54.167.216.197 IPv4, 2600:4040:46da:9a00:b19e:3ad4:426c:2f48 IPv6) on January 22, 2026 at 02:37 UTC.
+5. **Test Ortamı:** Testler 22 Ocak 2026, 02:37 UTC tarihinde AWS EC2 örneğinden (IP: 54.167.216.197 IPv4, 2600:4040:46da:9a00:b19e:3ad4:426c:2f48 IPv6) gerçekleştirildi.
 
 ---
 
-## Summary {#summary}
 
-Forward Email provides comprehensive RFC protocol support across all major email standards:
+## Özet {#summary}
 
-* **IMAP4rev1:** 16 supported RFCs with intentional differences documented
-* **POP3:** 4 supported RFCs with RFC-compliant permanent deletion
-* **SMTP:** 11 supported extensions including SMTPUTF8, DSN, and PIPELINING
-* **Authentication:** DKIM, SPF, DMARC, ARC fully supported
-* **Transport Security:** MTA-STS and REQUIRETLS fully supported, DANE partial support
-* **Encryption:** OpenPGP v6 and S/MIME supported
-* **Calendaring:** CalDAV, CardDAV, and VTODO fully supported
-* **API Access:** Complete REST API with 39 endpoints for direct database access
-* **iOS Push:** Native push notifications for email, contacts, and calendars via `XAPPLEPUSHSERVICE`
+Forward Email, tüm büyük e-posta standartlarında kapsamlı RFC protokol desteği sunar:
 
-### Key Differentiators {#key-differentiators}
+* **IMAP4rev1:** 16 desteklenen RFC, belgelenmiş kasıtlı farklılıklarla
+* **POP3:** RFC uyumlu kalıcı silme ile 4 desteklenen RFC
+* **SMTP:** SMTPUTF8, DSN ve PIPELINING dahil 11 desteklenen uzantı
+* **Kimlik Doğrulama:** DKIM, SPF, DMARC, ARC tam destekli
+* **Taşıma Güvenliği:** MTA-STS ve REQUIRETLS tam destekli, DANE kısmi destekli
+* **Şifreleme:** OpenPGP v6 ve S/MIME destekli
+* **Takvim:** CalDAV, CardDAV ve VTODO tam destekli
+* **API Erişimi:** Doğrudan veritabanı erişimi için 39 uç noktalı tam REST API
+* **iOS Push:** E-posta, kişiler ve takvimler için yerel push bildirimleri `XAPPLEPUSHSERVICE` aracılığıyla
+
+### Temel Farklılaştırıcılar {#key-differentiators}
 
 > \[!TIP]
-> Forward Email stands out with unique features not found in other providers.
+> Forward Email, diğer sağlayıcılarda bulunmayan benzersiz özelliklerle öne çıkar.
 
-**What Makes Forward Email Unique:**
+**Forward Email'i Benzersiz Kılanlar:**
 
-1. **Quantum-Safe Encryption** - Only provider with ChaCha20-Poly1305 encrypted SQLite mailboxes
-2. **Zero-Knowledge Architecture** - Your password encrypts your mailbox; we can't decrypt it
-3. **Free Custom Domains** - No monthly fees for custom domain email
-4. **REQUIRETLS Support** - User-facing checkbox to enforce TLS for entire delivery path
-5. **Comprehensive API** - 39 REST API endpoints for full programmatic control
-6. **iOS Push Notifications** - Native XAPPLEPUSHSERVICE support for instant delivery
-7. **Open Source** - Full source code available on GitHub
-8. **Privacy-Focused** - No data mining, no ads, no tracking
+1. **Kuantum Güvenli Şifreleme** - ChaCha20-Poly1305 şifreli SQLite posta kutularına sahip tek sağlayıcı
+2. **Sıfır Bilgi Mimarisi** - Şifreniz posta kutunuzu şifreler; biz çözemeyiz
+3. **Ücretsiz Özel Alan Adları** - Özel alan adı e-postası için aylık ücret yok
+4. **REQUIRETLS Desteği** - Tüm teslimat yolu için TLS zorunluluğunu kullanıcıya yönelik onay kutusuyla uygular
+5. **Kapsamlı API** - Tam programatik kontrol için 39 REST API uç noktası
+6. **iOS Push Bildirimleri** - Anında teslimat için yerel XAPPLEPUSHSERVICE desteği
+7. **Açık Kaynak** - Tam kaynak kodu GitHub’da mevcut
+8. **Gizlilik Odaklı** - Veri madenciliği yok, reklam yok, takip yok
+* **Sandboxed Şifreleme:** Bireysel olarak şifrelenmiş SQLite posta kutularına sahip tek e-posta servisi
+* **RFC Uyumluluğu:** Kolaylıktan çok standartlara uyumu önceliklendirir (örneğin, POP3 DELE)
+* **Tam API:** Tüm e-posta verilerine doğrudan programatik erişim
+* **Açık Kaynak:** Tam şeffaf uygulama
 
-* **Sandboxed Encryption:** Only email service with individually encrypted SQLite mailboxes
-* **RFC Compliance:** Prioritizes standards compliance over convenience (e.g., POP3 DELE)
-* **Complete API:** Direct programmatic access to all email data
-* **Open Source:** Fully transparent implementation
+**Protokol Destek Özeti:**
 
-**Protocol Support Summary:**
-
-| Category | Support Level | Details |
-| -------------------- | ------------- | --------------------------------------------- |
-| **Core Protocols** | ✅ Excellent | IMAP4rev1, POP3, SMTP fully supported |
-| **Modern Protocols** | ⚠️ Partial | IMAP4rev2 partial support, JMAP not supported |
-| **Security** | ✅ Excellent | DKIM, SPF, DMARC, ARC, MTA-STS, REQUIRETLS |
-| **Encryption** | ✅ Excellent | OpenPGP, S/MIME, SQLite encryption |
-| **CalDAV/CardDAV** | ✅ Excellent | Full calendar and contact sync |
-| **Filtering** | ✅ Excellent | Sieve (24 extensions) and ManageSieve |
-| **API** | ✅ Excellent | 39 REST API endpoints |
-| **Push** | ✅ Excellent | Native iOS push notifications |
+| Kategori             | Destek Seviyesi | Detaylar                                      |
+| -------------------- | --------------- | --------------------------------------------- |
+| **Temel Protokoller** | ✅ Mükemmel     | IMAP4rev1, POP3, SMTP tam desteklenir         |
+| **Modern Protokoller**| ⚠️ Kısmi       | IMAP4rev2 kısmi destek, JMAP desteklenmez     |
+| **Güvenlik**         | ✅ Mükemmel     | DKIM, SPF, DMARC, ARC, MTA-STS, REQUIRETLS    |
+| **Şifreleme**        | ✅ Mükemmel     | OpenPGP, S/MIME, SQLite şifreleme              |
+| **CalDAV/CardDAV**   | ✅ Mükemmel     | Tam takvim ve kişi senkronizasyonu             |
+| **Filtreleme**       | ✅ Mükemmel     | Sieve (24 uzantı) ve ManageSieve               |
+| **API**              | ✅ Mükemmel     | 39 REST API uç noktası                          |
+| **Push**             | ✅ Mükemmel     | Yerel iOS push bildirimleri                     |

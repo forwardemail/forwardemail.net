@@ -1,23 +1,26 @@
 # JavaScript 联系表单 Node.js 代码示例 {#javascript-contact-forms-nodejs-code-example}
 
+
 ## 目录 {#table-of-contents}
 
 * [安装和要求](#install-and-requirements)
 * [源代码和示例](#source-code-and-example)
 
+
 ## 安装和要求 {#install-and-requirements}
 
-您将需要安装 `nodemailer` npm 依赖项：
+您需要安装 `nodemailer` npm 依赖：
 
 ```sh
 npm install nodemailer
 ```
 
+
 ## 源代码和示例 {#source-code-and-example}
 
-本示例使用 **[Nodemailer](https://github.com/nodemailer/nodemailer)** 库及其官方赞助商 **[转发电子邮件](https://forwardemail.net)** 来发送和预览出站邮件。
+此示例使用 **[Nodemailer](https://github.com/nodemailer/nodemailer)** 库及其官方赞助商 **[Forward Email](https://forwardemail.net)** 来发送和预览外发邮件。
 
-您需要<strong class="text-success"><i class="fa fa-key"></i>生成密码</strong>才能发送外发邮件 - 请遵循我们的**[使用自定义域名发送电子邮件 SMTP 指南](/guides/send-email-with-custom-domain-smtp)**。
+您需要 <strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong> 来发送外发邮件 – 请参阅我们的 **[使用自定义域 SMTP 发送邮件指南](/guides/send-email-with-custom-domain-smtp)**。
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -45,12 +48,12 @@ await transporter.sendMail({
 });
 ```
 
-运行应用程序来发送电子邮件：
+运行应用以发送邮件：
 
 ```sh
 node app
 ```
 
-现在您可以前往**[我的账户 → 电子邮件](/my-account/emails)**查看实时电子邮件传递状态、电子邮件传递日志以及 HTML/纯文本/附件预览。
+现在您可以前往 **[我的账户 → 邮箱](/my-account/emails)** 查看您的实时邮件发送状态、邮件可达性日志，以及 HTML/纯文本/附件预览。
 
-> 附言：tada：您还可以**[在浏览器和 iOS 模拟器中预览电子邮件](/docs/test-preview-email-rendering-browsers-ios-simulator)**和**[使用 Node.js 创建电子邮件模板](/docs/send-emails-with-node-js-javascript)**。
+> P.S. :tada: 您还可以 **[在浏览器和 iOS 模拟器中预览邮件](/docs/test-preview-email-rendering-browsers-ios-simulator)** 以及 **[使用 Node.js 创建邮件模板](/docs/send-emails-with-node-js-javascript)**。

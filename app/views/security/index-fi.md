@@ -1,158 +1,166 @@
-# Tietoturvakäytännöt {#security-practices}
+# Turvakäytännöt {#security-practices}
 
 <img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" class="rounded-lg" />
+
 
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
 * [Infrastruktuurin turvallisuus](#infrastructure-security)
   * [Turvalliset datakeskukset](#secure-data-centers)
-  * [Verkkoturvallisuus](#network-security)
-* [Sähköpostin suojaus](#email-security)
+  * [Verkon turvallisuus](#network-security)
+* [Sähköpostin turvallisuus](#email-security)
   * [Salaus](#encryption)
   * [Todennus ja valtuutus](#authentication-and-authorization)
-  * [Väärinkäytösten vastaiset toimenpiteet](#anti-abuse-measures)
+  * [Väärinkäytön estotoimet](#anti-abuse-measures)
 * [Tietosuoja](#data-protection)
   * [Tietojen minimointi](#data-minimization)
   * [Varmuuskopiointi ja palautus](#backup-and-recovery)
 * [Palveluntarjoajat](#service-providers)
-* [Vaatimustenmukaisuus ja tilintarkastus](#compliance-and-auditing)
+* [Säädösten noudattaminen ja auditointi](#compliance-and-auditing)
   * [Säännölliset turvallisuusarvioinnit](#regular-security-assessments)
-  * [Vaatimustenmukaisuus](#compliance)
-* [Tapahtumavaste](#incident-response)
-* [Tietoturvakehityksen elinkaari](#security-development-lifecycle)
-* [Palvelimen suojaus](#server-hardening)
+  * [Säädösten noudattaminen](#compliance)
+* [Häiriötilanteisiin reagointi](#incident-response)
+* [Turvallisen kehityksen elinkaari](#security-development-lifecycle)
+* [Palvelimen koventaminen](#server-hardening)
 * [Palvelutasosopimus](#service-level-agreement)
-* [Avoimen lähdekoodin tietoturva](#open-source-security)
-* [Työntekijöiden turvallisuus](#employee-security)
+* [Avoimen lähdekoodin turvallisuus](#open-source-security)
+* [Henkilöstön turvallisuus](#employee-security)
 * [Jatkuva parantaminen](#continuous-improvement)
 * [Lisäresurssit](#additional-resources)
 
+
 ## Esipuhe {#foreword}
 
-Forward Emaililla turvallisuus on meille tärkeintä. Olemme ottaneet käyttöön kattavia turvatoimenpiteitä sähköpostiviestiesi ja henkilötietojesi suojaamiseksi. Tässä asiakirjassa esitetään turvallisuuskäytäntömme ja toimenpiteet, joilla varmistamme sähköpostisi luottamuksellisuuden, eheyden ja saatavuuden.
+Forward Emaililla turvallisuus on meille ensisijainen prioriteetti. Olemme ottaneet käyttöön kattavat turvatoimet suojataksemme sähköpostiviestintäsi ja henkilökohtaiset tietosi. Tämä dokumentti kuvaa turvakäytäntömme ja toimenpiteet, joilla varmistamme sähköpostisi luottamuksellisuuden, eheyden ja saatavuuden.
 
-## Infrastruktuurin suojaus {#infrastructure-security}
 
-### Suojatut datakeskukset {#secure-data-centers}
+## Infrastruktuurin turvallisuus {#infrastructure-security}
 
-Infrastruktuurimme sijaitsee SOC 2 -yhteensopivissa datakeskuksissa, joissa on:
+### Turvalliset datakeskukset {#secure-data-centers}
+
+Infrastruktuurimme sijaitsee SOC 2 -vaatimusten mukaisissa datakeskuksissa, joissa on:
 
 * 24/7 fyysinen turvallisuus ja valvonta
-* Biometriset pääsynvalvontajärjestelmät
-* Redundantti sähköjärjestelmä
-* Edistynyt palonilmaisu ja -sammutus
+* Biometriset kulunvalvontajärjestelmät
+* Varavoimajärjestelmät
+* Edistynyt palontunnistus ja sammutusjärjestelmät
 * Ympäristön valvonta
 
-### Verkkoturvallisuus {#network-security}
+### Verkon turvallisuus {#network-security}
 
-Toteutamme useita verkkoturvallisuuden kerroksia:
+Käytämme useita kerroksia verkkoturvallisuutta:
 
-* Yritystason palomuurit tiukoilla käyttöoikeusluetteloilla
-* DDoS-suojaus ja sen lieventäminen
-* Säännöllinen verkon haavoittuvuuksien skannaus
+* Yritystason palomuurit tiukoilla pääsynvalvontalistoilla
+* DDoS-suojaus ja -lieventäminen
+* Säännölliset verkon haavoittuvuusskannaukset
 * Tunkeutumisen havaitsemis- ja estojärjestelmät
-* Liikenteen salaus kaikkien palvelun päätepisteiden välillä
-* Porttiskannaussuojaus ja epäilyttävän toiminnan automaattinen esto
+* Liikenteen salaus kaikkien palvelupisteiden välillä
+* Porttiskannauksen suojaus automaattisella epäilyttävän toiminnan estolla
 
 > \[!IMPORTANT]
-> Kaikki siirrettävä data salataan TLS 1.2+ -salauksella ja moderneilla salausmenetelmillä.
+> Kaikki siirrettävä data on salattu TLS 1.2+ -protokollalla ja moderneilla salausalgoritmeilla.
 
-## Sähköpostin suojaus {#email-security}
+
+## Sähköpostin turvallisuus {#email-security}
 
 ### Salaus {#encryption}
 
-* **Tilankulkukerroksen suojaus (TLS)**: Kaikki sähköpostiliikenne salataan siirron aikana TLS 1.2:lla tai uudemmalla.
-* **Päästä päähän -salaus**: Tuki OpenPGP/MIME- ja S/MIME-standardeille.
-* **Tallennussalaus**: Kaikki tallennetut sähköpostit salataan lepotilassa ChaCha20-Poly1305-salauksella SQLite-tiedostoissa.
-* **Täydellinen levyn salaus**: LUKS v2 -salaus koko levylle.
-* **Kattava suojaus**: Toteutamme salauksen levossa, salauksen muistissa ja salauksen siirron aikana.
+* **Transport Layer Security (TLS)**: Kaikki sähköpostiliikenne on salattu siirron aikana TLS 1.2 -versiolla tai uudemmalla
+* **Päästä päähän -salauksen tuki**: OpenPGP/MIME- ja S/MIME-standardien tuki
+* **Tallennussalaus**: Kaikki tallennetut sähköpostit on salattu levossa ChaCha20-Poly1305-salauksella SQLite-tiedostoissa
+* **Koko levyn salaus**: LUKS v2 -salauksen käyttö koko levylle
+* **Kattava suojaus**: Käytämme salausta levossa, muistissa ja siirrossa
 
 > \[!NOTE]
-> Olemme maailman ensimmäinen ja ainoa sähköpostipalvelu, joka käyttää **[kvanttiherkät ja yksilöllisesti salatut SQLite-postilaatikot](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**-palvelua.
+> Olemme maailman ensimmäinen ja ainoa sähköpostipalvelu, joka käyttää **[kvanttiturvallisia ja yksilöllisesti salattuja SQLite-postilaatikoita](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Todennus ja valtuutus {#authentication-and-authorization}
 
 * **DKIM-allekirjoitus**: Kaikki lähtevät sähköpostit allekirjoitetaan DKIM:llä
-* **SPF ja DMARC**: Täysi tuki SPF:lle ja DMARC:lle sähköpostihuijausten estämiseksi
-* **MTA-STS**: Tuki MTA-STS:lle TLS-salauksen varmistamiseksi
-* **Monivaiheinen todennus**: Saatavilla kaikille tileille
+* **SPF ja DMARC**: Täysi tuki SPF:lle ja DMARC:lle sähköpostin väärentämisen estämiseksi
+* **MTA-STS**: Tuki MTA-STS:lle TLS-salauksen pakottamiseksi
+* **Monivaiheinen todennus**: Saatavilla kaikille tilin kirjautumisille
 
-### Väärinkäytösten vastaiset toimenpiteet {#anti-abuse-measures}
+### Väärinkäytön estotoimet {#anti-abuse-measures}
 
-* **Roskapostin suodatus**: Monikerroksinen roskapostin tunnistus koneoppimisen avulla
+* **Roskapostisuodatus**: Monikerroksinen roskapostin tunnistus koneoppimisen avulla
 * **Virustarkistus**: Kaikkien liitteiden reaaliaikainen tarkistus
-* **Nopeuden rajoittaminen**: Suojaus raa'alta voimalta ja luettelointihyökkäyksiltä
-* **IP-maine**: Lähettävän IP-osoitteen maineen valvonta
-* **Sisällön suodatus**: Haitallisten URL-osoitteiden ja tietojenkalasteluyritysten havaitseminen
+* **Nopeusrajoitus**: Suojaus murtamis- ja tunnusten arvailuiskuja vastaan
+* **IP-maineen seuranta**: Lähettävän IP-osoitteen maineen valvonta
+* **Sisällön suodatus**: Haitallisten URL-osoitteiden ja tietojenkalasteluyritysten tunnistus
+
 
 ## Tietosuoja {#data-protection}
 
 ### Tietojen minimointi {#data-minimization}
 
-Noudatamme tiedon minimoinnin periaatetta:
+Noudatamme tietojen minimoinnin periaatetta:
 
-* Keräämme vain palvelumme tarjoamiseen tarvittavat tiedot.
-* Sähköpostin sisältö käsitellään muistissa, eikä sitä tallenneta pysyvästi, ellei IMAP/POP3-toimitus sitä vaadi.
-* Lokit anonymisoidaan ja säilytetään vain niin kauan kuin on tarpeen.
-
+* Keräämme vain palvelumme tarjoamiseen välttämättömät tiedot
+* Sähköpostin sisältöä käsitellään muistissa, eikä sitä tallenneta pysyvästi, ellei IMAP/POP3-toimitus sitä vaadi
+* Lokit anonymisoidaan ja säilytetään vain niin kauan kuin on tarpeen
 ### Varmuuskopiointi ja palautus {#backup-and-recovery}
 
-* Automatisoidut päivittäiset varmuuskopiot salauksella
-* Maantieteellisesti hajautettu varmuuskopiotallennustila
-* Säännöllinen varmuuskopioiden palautuksen testaus
-* Katastrofien jälkeiset palautusmenettelyt määritellyillä RPO- ja RTO-arvoilla
+* Automaattiset päivittäiset varmuuskopiot salauksella
+* Maantieteellisesti hajautettu varmuuskopioiden tallennus
+* Säännölliset varmuuskopioiden palautustestaukset
+* Katastrofipalautusmenettelyt määritellyillä RPO- ja RTO-arvoilla
+
 
 ## Palveluntarjoajat {#service-providers}
 
-Valitsemme palveluntarjoajamme huolellisesti varmistaaksemme, että ne täyttävät korkeat turvallisuusstandardimme. Alla on lueteltu kansainväliseen tiedonsiirtoon käyttämämme palveluntarjoajat ja niiden GDPR-vaatimustenmukaisuusstatus:
+Valitsemme palveluntarjoajamme huolellisesti varmistaaksemme, että ne täyttävät korkeat turvallisuusvaatimuksemme. Alla ovat kansainväliseen tietojen siirtoon käyttämämme palveluntarjoajat ja heidän GDPR-yhteensopivuustilanteensa:
 
-| Palveluntarjoaja | Tarkoitus | DPF-sertifioitu | GDPR-vaatimustenmukaisuussivu |
-| --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
-| [Cloudflare](https://www.cloudflare.com) | CDN, DDoS-suojaus, DNS | ✅ Kyllä | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
-| [DataPacket](https://www.datapacket.com) | Palvelininfrastruktuuri | ❌ Ei | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
-| [Digital Ocean](https://www.digitalocean.com) | Pilvi-infrastruktuuri | ❌ Ei | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
-| [GitHub](https://github.com) | Lähdekoodin hosting, CI/CD | ✅ Kyllä | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
-| [Vultr](https://www.vultr.com) | Pilvi-infrastruktuuri | ❌ Ei | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
-| [Stripe](https://stripe.com) | Maksun käsittely | ✅ Kyllä | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
-| [PayPal](https://www.paypal.com) | Maksun käsittely | ❌ Ei | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| Palveluntarjoaja                              | Tarkoitus                  | DPF Sertifioitu | GDPR-yhteensopivuussivu                                                                              |
+| --------------------------------------------- | -------------------------- | --------------- | --------------------------------------------------------------------------------------------------- |
+| [Cloudflare](https://www.cloudflare.com)      | CDN, DDoS-suojaus, DNS     | ✅ Kyllä         | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/)                                       |
+| [DataPacket](https://www.datapacket.com)      | Palvelininfrastruktuuri    | ❌ Ei           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                     |
+| [Digital Ocean](https://www.digitalocean.com) | Pilvi-infrastruktuuri      | ❌ Ei           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                        |
+| [GitHub](https://github.com)                  | Lähdekoodin isännöinti, CI/CD | ✅ Kyllä         | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Vultr](https://www.vultr.com)                | Pilvi-infrastruktuuri      | ❌ Ei           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                         |
+| [Stripe](https://stripe.com)                  | Maksujen käsittely         | ✅ Kyllä         | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                    |
+| [PayPal](https://www.paypal.com)              | Maksujen käsittely         | ❌ Ei           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                   |
 
-Käytämme näitä palveluntarjoajia varmistaaksemme luotettavan ja turvallisen palvelun toimituksen samalla, kun noudatamme kansainvälisiä tietosuojamääräyksiä. Kaikki tiedonsiirrot suoritetaan asianmukaisin suojatoimin henkilötietojesi suojaamiseksi.
+Käytämme näitä palveluntarjoajia varmistaaksemme luotettavan ja turvallisen palvelun toimituksen samalla kun noudatamme kansainvälisiä tietosuojamääräyksiä. Kaikki tietojen siirrot toteutetaan asianmukaisin suojatoimin henkilötietojesi turvaamiseksi.
 
-## Vaatimustenmukaisuus ja auditointi {#compliance-and-auditing}
 
-### Säännölliset tietoturva-arvioinnit {#regular-security-assessments}
+## Yhteensopivuus ja auditointi {#compliance-and-auditing}
 
-Tiimimme valvoo, tarkistaa ja arvioi säännöllisesti koodikantaa, palvelimia, infrastruktuuria ja käytäntöjä. Toteutamme kattavan tietoturvaohjelman, joka sisältää:
+### Säännölliset turvallisuusarvioinnit {#regular-security-assessments}
 
-* SSH-avainten säännöllinen kierrätys
-* Jatkuva käyttölokien valvonta
-* Automaattinen tietoturvaskannaus
-* Ennakoiva haavoittuvuuksien hallinta
-* Säännöllinen tietoturvakoulutus kaikille tiimin jäsenille
+Tiimimme valvoo, tarkistaa ja arvioi säännöllisesti koodipohjaa, palvelimia, infrastruktuuria ja käytäntöjä. Toteutamme kattavan turvallisuusohjelman, joka sisältää:
 
-### Vaatimustenmukaisuus {#compliance}
+* SSH-avainten säännöllisen kierrätyksen
+* Pääsylokien jatkuvan valvonnan
+* Automaattisen turvallisuusskannauksen
+* Ennakoivan haavoittuvuuksien hallinnan
+* Säännöllisen turvallisuuskoulutuksen kaikille tiimin jäsenille
 
-* [GDPR](https://forwardemail.net/gdpr)-yhteensopivat tietojenkäsittelykäytännöt
+### Yhteensopivuus {#compliance}
+
+* [GDPR](https://forwardemail.net/gdpr) -yhteensopivat tietojenkäsittelykäytännöt
 * [Tietojenkäsittelysopimus (DPA)](https://forwardemail.net/dpa) saatavilla yritysasiakkaille
-* CCPA-yhteensopivat tietosuojakäytännöt
-* SOC 2 Type II -auditoidut prosessit
+* CCPA-yhteensopivat tietosuojakontrollit
+* SOC 2 Type II -auditoinnit prosesseissa
 
-## Tapahtumavastaus {#incident-response}
 
-Tietoturvapoikkeamien varautumissuunnitelmamme sisältää:
+## Tapahtumavaste {#incident-response}
+
+Turvallisuustapahtumien vasteohjelmamme sisältää:
 
 1. **Havaitseminen**: Automaattiset valvonta- ja hälytysjärjestelmät
-2. **Eristäminen**: Vaikutuksen kohteena olevien järjestelmien välitön eristäminen
-3. **Hävittämistoimenpiteet**: Uhan poistaminen ja perussyyanalyysi
+2. **Rajoittaminen**: Vaikutettujen järjestelmien välitön eristäminen
+3. **Poistaminen**: Uhan poistaminen ja juurisyyn analyysi
 4. **Palauttaminen**: Palveluiden turvallinen palauttaminen
-5. **Ilmoitus**: Oikea-aikainen viestintä vaikutusten kohteena olevien käyttäjien kanssa
-6. **Tapahtuman jälkeinen analyysi**: Kattava tarkastelu ja parantaminen
+5. **Ilmoittaminen**: Ajantasainen viestintä vaikutuksista kärsineille käyttäjille
+6. **Tapahtuman jälkeinen analyysi**: Kattava tarkastelu ja parannukset
 
 > \[!WARNING]
-> Jos huomaat tietoturvahaavoittuvuuden, ilmoita siitä välittömästi osoitteeseen <security@forwardemail.net>.
+> Jos löydät turvallisuuspuutteen, ilmoita siitä välittömästi osoitteeseen <security@forwardemail.net>.
 
-## Tietoturvakehityksen elinkaari {#security-development-lifecycle}
+
+## Turvallisen kehityksen elinkaari {#security-development-lifecycle}
 
 ```mermaid
 flowchart LR
@@ -168,67 +176,85 @@ flowchart LR
     E -.-> J[Final Security Review]
     F -.-> K[Vulnerability Management]
 ```
-
 Kaikki koodi käy läpi:
 
-* Tietoturvavaatimusten kerääminen
-* Uhkien mallintaminen suunnittelun aikana
+* Turvavaatimusten keräämisen
+* Uhkamallinnuksen suunnittelun aikana
 * Turvalliset koodauskäytännöt
-* Staattinen ja dynaaminen sovellusten tietoturvatestaus
-* Koodin tarkastelu tietoturvapainotteisesti
-* Riippuvuussuhteiden haavoittuvuuksien skannaus
+* Staattisen ja dynaamisen sovellusturvatestauksen
+* Koodikatselmoinnin, jossa keskitytään turvallisuuteen
+* Riippuvuuksien haavoittuvuusskannauksen
 
-## Palvelimen suojaus {#server-hardening}
 
-[Ansible-kokoonpano](https://github.com/forwardemail/forwardemail.net/tree/master/ansible)-objektimme toteuttaa useita palvelimen suojaustoimenpiteitä:
+## Palvelimen koventaminen {#server-hardening}
 
-* **USB-käyttö poistettu käytöstä**: Fyysiset portit on poistettu käytöstä lisäämällä usb-storage-ydinmoduuli mustalle listalle.* **Palomuurisäännöt**: Tiukat iptables-säännöt, jotka sallivat vain tarvittavat yhteydet.* **SSH-kovetus**: Vain avainpohjainen todennus, ei salasanakirjautumista, pääkäyttäjän kirjautuminen poistettu käytöstä.* **Palvelun eristäminen**: Jokainen palvelu toimii minimaalisilla vaadituilla oikeuksilla.* **Automaattiset päivitykset**: Tietoturvakorjaukset asennetaan automaattisesti.* **Suojattu käynnistys**: Vahvistettu käynnistysprosessi peukaloinnin estämiseksi.* **Ytimen koventaminen**: Suojatut ytimen parametrit ja sysctl-määritykset.* **Tiedostojärjestelmän rajoitukset**: noexec-, nosuid- ja nodev-liityntävaihtoehdot tarvittaessa.* **Ydinvedokset poistettu käytöstä**: Järjestelmä on määritetty estämään ydinvedokset tietoturvasyistä.* **Vaihto pois käytöstä**: Vaihtomuisti poistettu käytöstä tietovuotojen estämiseksi.* **Porttiskannauksen suojaus**: Porttiskannausyritysten automaattinen tunnistus ja esto.* **Läpinäkyvät valtavat sivut poistettu käytöstä**: THP poistettu käytöstä suorituskyvyn ja tietoturvan parantamiseksi.* **Järjestelmäpalvelun koventaminen**: Ei-välttämättömät palvelut, kuten Apport, poistettu käytöstä.* **Käyttäjä Hallinta**: Vähiten oikeuksien periaate, jossa on erilliset deploy- ja devops-käyttäjät
-* **Tiedostokuvaajien rajoitukset**: Suuremmat rajoitukset paremman suorituskyvyn ja tietoturvan saavuttamiseksi
+Meidän [Ansible-konfiguraatiomme](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) toteuttaa lukuisia palvelimen koventamistoimia:
+
+* **USB-yhteys poistettu käytöstä**: Fyysiset portit on poistettu käytöstä mustalistamalla usb-storage-ytin moduuli
+* **Palomuurisäännöt**: Tiukat iptables-säännöt, jotka sallivat vain tarvittavat yhteydet
+* **SSH-koventaminen**: Vain avainpohjainen todennus, ei salasanasisäänkirjautumista, root-kirjautuminen poistettu käytöstä
+* **Palveluiden eristäminen**: Jokainen palvelu toimii vähimmillä tarvittavilla oikeuksilla
+* **Automaattiset päivitykset**: Turvapäivitykset asennetaan automaattisesti
+* **Turvallinen käynnistys**: Varmennettu käynnistysprosessi manipuloinnin estämiseksi
+* **Ytimen koventaminen**: Turvalliset ydinparametrit ja sysctl-konfiguraatiot
+* **Tiedostojärjestelmän rajoitukset**: noexec, nosuid ja nodev liitosehdot soveltuvin osin
+* **Core dumpien poisto käytöstä**: Järjestelmä on konfiguroitu estämään core dumpit turvallisuuden vuoksi
+* **Swap-muistin poisto käytöstä**: Swap-muisti poistettu käytöstä tietovuotojen estämiseksi
+* **Porttiskannauksen suojaus**: Automaattinen porttiskannausyritysten tunnistus ja esto
+* **Läpinäkyvien suurten sivujen poisto käytöstä**: THP poistettu käytöstä suorituskyvyn ja turvallisuuden parantamiseksi
+* **Järjestelmäpalveluiden koventaminen**: Ei-välttämättömät palvelut kuten Apport poistettu käytöstä
+* **Käyttäjähallinta**: Vähimmän oikeuden periaate erillisillä deploy- ja devops-käyttäjillä
+* **Tiedostokuvauksen rajat**: Rajojen nostaminen paremman suorituskyvyn ja turvallisuuden vuoksi
+
 
 ## Palvelutasosopimus {#service-level-agreement}
 
-Ylläpidämme palvelun korkeaa käytettävyyttä ja luotettavuutta. Infrastruktuurimme on suunniteltu redundanssia ja vikasietoisuutta silmällä pitäen, jotta sähköpostipalvelusi pysyy toiminnassa. Vaikka emme julkaise virallista palvelutasosopimusta, olemme sitoutuneet:
+Pidämme yllä korkeaa palvelun saatavuutta ja luotettavuutta. Infrastruktuurimme on suunniteltu redundanssia ja vikasietoisuutta varten varmistaaksemme, että sähköpostipalvelusi pysyy toiminnassa. Vaikka emme julkaise virallista SLA-asiakirjaa, sitoudumme:
 
-* 99,9 %+ käyttöaika kaikille palveluille
-* Nopea reagointi palvelun häiriöihin
-* Läpinäkyvä viestintä häiriötilanteissa
-* Säännöllinen ylläpito vähäisen liikenteen aikana
+* Yli 99,9 % käyttöaikaan kaikille palveluille
+* Nopeaan reagointiin palvelukatkojen aikana
+* Läpinäkyvään viestintään häiriötilanteissa
+* Säännölliseen ylläpitoon vähäliikenteisinä aikoina
 
-## Avoimen lähdekoodin suojaus {#open-source-security}
 
-[avoimen lähdekoodin palvelu](https://github.com/forwardemail/forwardemail.net):na tietoturvamme hyötyy seuraavista eduista:
+## Avoimen lähdekoodin turvallisuus {#open-source-security}
 
-* Läpinäkyvä koodi, jota kuka tahansa voi auditoida
-* Yhteisön johtamat tietoturvaparannukset
-* Haavoittuvuuksien nopea tunnistaminen ja korjaaminen
-* Ei tietoturvaa hämärän takia
+Avoimen lähdekoodin palveluna [open-source service](https://github.com/forwardemail/forwardemail.net) turvallisuutemme hyötyy:
 
-## Työntekijän suojaus {#employee-security}
+* Läpinäkyvästä koodista, jota kuka tahansa voi tarkastaa
+* Yhteisön ohjaamista turvallisuusparannuksista
+* Haavoittuvuuksien nopeasta tunnistamisesta ja korjaamisesta
+* Ei turvallisuutta piilottamisen kautta
 
-* Kaikkien työntekijöiden taustatarkastukset
-* Tietoturvakoulutus
-* Vähiten oikeuksiin perustuvan käyttöoikeuden periaate
-* Säännöllinen tietoturvakoulutus
+
+## Työntekijöiden turvallisuus {#employee-security}
+
+* Taustatarkastukset kaikille työntekijöille
+* Turvallisuustietoisuuskoulutus
+* Vähimmän oikeuden pääsy
+* Säännöllinen turvallisuuskoulutus
+
 
 ## Jatkuva parantaminen {#continuous-improvement}
 
-Parannamme jatkuvasti tietoturvaamme seuraavilla tavoilla:
+Parannamme jatkuvasti turvallisuusasemiamme seuraavasti:
 
-* Tietoturvatrendien ja uusien uhkien seuranta
-* Tietoturvakäytäntöjen säännöllinen tarkastelu ja päivitykset
-* Palaute tietoturvatutkijoilta ja käyttäjiltä
-* Osallistuminen tietoturvayhteisöön
+* Turvallisuustrendien ja uusien uhkien seuranta
+* Turvallisuuspolitiikkojen säännöllinen tarkastelu ja päivitys
+* Palautteen kerääminen tietoturvatutkijoilta ja käyttäjiltä
+* Osallistuminen turvallisuusyhteisöön
 
-Jos haluat lisätietoja turvallisuuskäytännöistämme tai ilmoittaa turvallisuusongelmista, ota yhteyttä osoitteeseen <security@forwardemail.net>.
+Lisätietoja turvallisuuskäytännöistämme tai turvallisuushuolien raportoinnista saa ottamalla yhteyttä osoitteeseen <security@forwardemail.net>.
+
 
 ## Lisäresurssit {#additional-resources}
 
 * [Tietosuojakäytäntö](https://forwardemail.net/en/privacy)
 * [Palveluehdot](https://forwardemail.net/en/terms)
-* [GDPR-vaatimustenmukaisuus](https://forwardemail.net/gdpr)
+* [GDPR-yhteensopivuus](https://forwardemail.net/gdpr)
 * [Tietojenkäsittelysopimus (DPA)](https://forwardemail.net/dpa)
 * [Ilmoita väärinkäytöstä](https://forwardemail.net/en/report-abuse)
-* [Tietoturvakäytäntö](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
+* [Turvallisuuspolitiikka](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [GitHub-arkisto](https://github.com/forwardemail/forwardemail.net)
-* [FAQ](https://forwardemail.net/en/faq)
+* [GitHub-repositorio](https://github.com/forwardemail/forwardemail.net)
+* [UKK](https://forwardemail.net/en/faq)

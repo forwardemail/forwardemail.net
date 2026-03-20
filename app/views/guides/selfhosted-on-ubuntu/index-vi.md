@@ -1,92 +1,97 @@
-# Hướng dẫn cài đặt tự lưu trữ Email chuyển tiếp cho Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# Hướng Dẫn Cài Đặt Forward Email Tự Lưu Trữ cho Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
 
-## Mục lục {#table-of-contents}
 
-* [Tổng quan](#overview)
-* [Điều kiện tiên quyết](#prerequisites)
-* [Yêu cầu hệ thống](#system-requirements)
-* [Cài đặt từng bước](#step-by-step-installation)
-  * [Bước 1: Thiết lập hệ thống ban đầu](#step-1-initial-system-setup)
-  * [Bước 2: Cấu hình Bộ giải quyết DNS](#step-2-configure-dns-resolvers)
-  * [Bước 3: Cài đặt các phụ thuộc hệ thống](#step-3-install-system-dependencies)
-  * [Bước 4: Cài đặt Snap Packages](#step-4-install-snap-packages)
-  * [Bước 5: Cài đặt Docker](#step-5-install-docker)
-  * [Bước 6: Cấu hình dịch vụ Docker](#step-6-configure-docker-service)
-  * [Bước 7: Cấu hình Tường lửa](#step-7-configure-firewall)
-  * [Bước 8: Sao chép kho lưu trữ email chuyển tiếp](#step-8-clone-forward-email-repository)
-  * [Bước 9: Thiết lập cấu hình môi trường](#step-9-set-up-environment-configuration)
-  * [Bước 10: Cấu hình tên miền của bạn](#step-10-configure-your-domain)
-  * [Bước 11: Tạo chứng chỉ SSL](#step-11-generate-ssl-certificates)
-  * [Bước 12: Tạo khóa mã hóa](#step-12-generate-encryption-keys)
-  * [Bước 13: Cập nhật đường dẫn SSL trong cấu hình](#step-13-update-ssl-paths-in-configuration)
-  * [Bước 14: Thiết lập xác thực cơ bản](#step-14-set-up-basic-authentication)
-  * [Bước 15: Triển khai với Docker Compose](#step-15-deploy-with-docker-compose)
-  * [Bước 16: Xác minh cài đặt](#step-16-verify-installation)
-* [Cấu hình sau khi cài đặt](#post-installation-configuration)
-  * [Thiết lập bản ghi DNS](#dns-records-setup)
-  * [Đăng nhập lần đầu](#first-login)
-* [Cấu hình sao lưu](#backup-configuration)
-  * [Thiết lập sao lưu tương thích với S3](#set-up-s3-compatible-backup)
-  * [Thiết lập công việc sao lưu Cron](#set-up-backup-cron-jobs)
-* [Cấu hình tự động cập nhật](#auto-update-configuration)
-* [Bảo trì và Giám sát](#maintenance-and-monitoring)
-  * [Vị trí nhật ký](#log-locations)
-  * [Nhiệm vụ bảo trì thường xuyên](#regular-maintenance-tasks)
-  * [Gia hạn chứng chỉ](#certificate-renewal)
-* [Xử lý sự cố](#troubleshooting)
-  * [Các vấn đề chung](#common-issues)
-  * [Nhận trợ giúp](#getting-help)
-* [Thực hành bảo mật tốt nhất](#security-best-practices)
-* [Phần kết luận](#conclusion)
+## Mục Lục {#table-of-contents}
 
-## Tổng quan về {#overview}
+* [Tổng Quan](#overview)
+* [Yêu Cầu Trước Khi Bắt Đầu](#prerequisites)
+* [Yêu Cầu Hệ Thống](#system-requirements)
+* [Cài Đặt Từng Bước](#step-by-step-installation)
+  * [Bước 1: Thiết Lập Hệ Thống Ban Đầu](#step-1-initial-system-setup)
+  * [Bước 2: Cấu Hình Bộ Giải Mã DNS](#step-2-configure-dns-resolvers)
+  * [Bước 3: Cài Đặt Các Phụ Thuộc Hệ Thống](#step-3-install-system-dependencies)
+  * [Bước 4: Cài Đặt Gói Snap](#step-4-install-snap-packages)
+  * [Bước 5: Cài Đặt Docker](#step-5-install-docker)
+  * [Bước 6: Cấu Hình Dịch Vụ Docker](#step-6-configure-docker-service)
+  * [Bước 7: Cấu Hình Tường Lửa](#step-7-configure-firewall)
+  * [Bước 8: Sao Chép Kho Lưu Trữ Forward Email](#step-8-clone-forward-email-repository)
+  * [Bước 9: Thiết Lập Cấu Hình Môi Trường](#step-9-set-up-environment-configuration)
+  * [Bước 10: Cấu Hình Tên Miền Của Bạn](#step-10-configure-your-domain)
+  * [Bước 11: Tạo Chứng Chỉ SSL](#step-11-generate-ssl-certificates)
+  * [Bước 12: Tạo Khóa Mã Hóa](#step-12-generate-encryption-keys)
+  * [Bước 13: Cập Nhật Đường Dẫn SSL Trong Cấu Hình](#step-13-update-ssl-paths-in-configuration)
+  * [Bước 14: Thiết Lập Xác Thực Cơ Bản](#step-14-set-up-basic-authentication)
+  * [Bước 15: Triển Khai Với Docker Compose](#step-15-deploy-with-docker-compose)
+  * [Bước 16: Kiểm Tra Cài Đặt](#step-16-verify-installation)
+* [Cấu Hình Sau Khi Cài Đặt](#post-installation-configuration)
+  * [Thiết Lập Bản Ghi DNS](#dns-records-setup)
+  * [Đăng Nhập Lần Đầu](#first-login)
+* [Cấu Hình Sao Lưu](#backup-configuration)
+  * [Thiết Lập Sao Lưu Tương Thích S3](#set-up-s3-compatible-backup)
+  * [Thiết Lập Công Việc Cron Sao Lưu](#set-up-backup-cron-jobs)
+* [Cấu Hình Tự Động Cập Nhật](#auto-update-configuration)
+* [Bảo Trì và Giám Sát](#maintenance-and-monitoring)
+  * [Vị Trí Lưu Trữ Nhật Ký](#log-locations)
+  * [Các Nhiệm Vụ Bảo Trì Định Kỳ](#regular-maintenance-tasks)
+  * [Gia Hạn Chứng Chỉ](#certificate-renewal)
+* [Khắc Phục Sự Cố](#troubleshooting)
+  * [Các Vấn Đề Thường Gặp](#common-issues)
+  * [Nhận Trợ Giúp](#getting-help)
+* [Thực Hành Bảo Mật Tốt Nhất](#security-best-practices)
+* [Kết Luận](#conclusion)
 
-Hướng dẫn này cung cấp hướng dẫn từng bước để cài đặt giải pháp tự lưu trữ của Forward Email trên hệ thống Ubuntu. Hướng dẫn này được thiết kế riêng cho các phiên bản Ubuntu 20.04, 22.04 và 24.04 LTS.
 
-## Điều kiện tiên quyết {#prerequisites}
+## Tổng Quan {#overview}
+
+Hướng dẫn này cung cấp các bước chi tiết để cài đặt giải pháp tự lưu trữ Forward Email trên hệ thống Ubuntu. Hướng dẫn này được thiết kế đặc biệt cho các phiên bản Ubuntu 20.04, 22.04 và 24.04 LTS.
+
+
+## Yêu Cầu Trước Khi Bắt Đầu {#prerequisites}
 
 Trước khi bắt đầu cài đặt, hãy đảm bảo bạn có:
 
 * **Ubuntu Server**: 20.04, 22.04 hoặc 24.04 LTS
-* **Quyền truy cập gốc**: Bạn phải có khả năng chạy lệnh dưới quyền root (truy cập sudo)
-* **Tên miền**: Tên miền mà bạn kiểm soát bằng quyền quản lý DNS
-* **Máy chủ sạch**: Khuyến nghị sử dụng bản cài đặt Ubuntu mới
-* **Kết nối Internet**: Cần thiết để tải xuống các gói và hình ảnh Docker
+* **Quyền Root**: Bạn phải có khả năng chạy lệnh với quyền root (quyền sudo)
+* **Tên Miền**: Một tên miền mà bạn kiểm soát với quyền quản lý DNS
+* **Máy Chủ Sạch**: Khuyến nghị sử dụng cài đặt Ubuntu mới
+* **Kết Nối Internet**: Cần thiết để tải các gói và hình ảnh Docker
 
-## Yêu cầu hệ thống {#system-requirements}
 
-* **RAM**: Tối thiểu 2GB (khuyến nghị 4GB cho sản xuất)
-* **Lưu trữ**: Tối thiểu 20GB dung lượng trống (khuyến nghị 50GB trở lên cho sản xuất)
-* **CPU**: Tối thiểu 1 vCPU (khuyến nghị 2+ vCPU cho sản xuất)
-* **Mạng**: Địa chỉ IP công cộng với các cổng sau có thể truy cập:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+## Yêu Cầu Hệ Thống {#system-requirements}
 
-## Hướng dẫn cài đặt từng bước {#step-by-step-installation}
+* **RAM**: Tối thiểu 2GB (khuyến nghị 4GB cho môi trường sản xuất)
+* **Bộ Nhớ**: Tối thiểu 20GB dung lượng trống (khuyến nghị 50GB+ cho môi trường sản xuất)
+* **CPU**: Tối thiểu 1 vCPU (khuyến nghị 2+ vCPU cho môi trường sản xuất)
+* **Mạng**: Địa chỉ IP công khai với các cổng sau được mở:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
 
-### Bước 1: Thiết lập hệ thống ban đầu {#step-1-initial-system-setup}
 
-Trước tiên, hãy đảm bảo hệ thống của bạn được cập nhật và chuyển sang người dùng root:
+## Cài Đặt Từng Bước {#step-by-step-installation}
+
+### Bước 1: Thiết Lập Hệ Thống Ban Đầu {#step-1-initial-system-setup}
+
+Trước tiên, đảm bảo hệ thống của bạn được cập nhật và chuyển sang người dùng root:
 
 ```bash
-# Update system packages
+# Cập nhật các gói hệ thống
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Chuyển sang người dùng root (bắt buộc cho việc cài đặt)
 sudo su -
 ```
 
-### Bước 2: Cấu hình Bộ giải quyết DNS {#step-2-configure-dns-resolvers}
+### Bước 2: Cấu Hình Bộ Giải Mã DNS {#step-2-configure-dns-resolvers}
 
-Cấu hình hệ thống của bạn để sử dụng máy chủ DNS của Cloudflare để tạo chứng chỉ đáng tin cậy:
+Cấu hình hệ thống của bạn sử dụng máy chủ DNS của Cloudflare để đảm bảo việc tạo chứng chỉ đáng tin cậy:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# Dừng và vô hiệu hóa systemd-resolved nếu đang chạy
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -94,7 +99,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Cấu hình bộ giải mã DNS của Cloudflare
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -106,16 +111,15 @@ nameserver 8.8.4.4
 nameserver 2001:4860:4860::8844
 EOF
 ```
-
 ### Bước 3: Cài đặt các phụ thuộc hệ thống {#step-3-install-system-dependencies}
 
 Cài đặt các gói cần thiết cho Forward Email:
 
 ```bash
-# Update package list
+# Cập nhật danh sách gói
 apt-get update -y
 
-# Install basic dependencies
+# Cài đặt các phụ thuộc cơ bản
 apt-get install -y \
     ca-certificates \
     curl \
@@ -131,10 +135,10 @@ apt-get install -y \
 Cài đặt AWS CLI và Certbot qua snap:
 
 ```bash
-# Install AWS CLI
+# Cài đặt AWS CLI
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Cài đặt Certbot và plugin DNS
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
@@ -145,19 +149,19 @@ snap install certbot-dns-cloudflare
 Cài đặt Docker CE và Docker Compose:
 
 ```bash
-# Add Docker's official GPG key
+# Thêm khóa GPG chính thức của Docker
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository
+# Thêm kho Docker
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Cập nhật chỉ mục gói và cài đặt Docker
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Verify Docker installation
+# Kiểm tra cài đặt Docker
 docker --version
 docker compose version
 ```
@@ -167,75 +171,75 @@ docker compose version
 Đảm bảo Docker tự động khởi động và đang chạy:
 
 ```bash
-# Enable and start Docker service
+# Kích hoạt và khởi động dịch vụ Docker
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Kiểm tra Docker đang chạy
 docker info
 ```
 
-Nếu Docker không khởi động được, hãy thử khởi động thủ công:
+Nếu Docker không khởi động được, thử khởi động thủ công:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Phương pháp khởi động thay thế nếu systemctl không thành công
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### Bước 7: Cấu hình Tường lửa {#step-7-configure-firewall}
+### Bước 7: Cấu hình tường lửa {#step-7-configure-firewall}
 
 Thiết lập tường lửa UFW để bảo vệ máy chủ của bạn:
 
 ```bash
-# Set default policies
+# Đặt chính sách mặc định
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# Cho phép SSH (quan trọng - đừng khóa truy cập của bạn!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# Cho phép các cổng liên quan đến email
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (cho Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (cổng thay thế)
+ufw allow 2995/tcp  # POP3 (cổng thay thế)
+ufw allow 3456/tcp  # Cổng dịch vụ tùy chỉnh
+ufw allow 4000/tcp  # Cổng dịch vụ tùy chỉnh
+ufw allow 5000/tcp  # Cổng dịch vụ tùy chỉnh
 
-# Allow local database connections
+# Cho phép kết nối cơ sở dữ liệu cục bộ
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Kích hoạt tường lửa
 echo "y" | ufw enable
 
-# Check firewall status
+# Kiểm tra trạng thái tường lửa
 ufw status numbered
 ```
 
-### Bước 8: Sao chép kho lưu trữ email chuyển tiếp {#step-8-clone-forward-email-repository}
+### Bước 8: Sao chép kho Forward Email {#step-8-clone-forward-email-repository}
 
-Tải xuống mã nguồn Chuyển tiếp Email:
+Tải mã nguồn Forward Email:
 
 ```bash
-# Set up variables
+# Thiết lập biến
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# Sao chép kho
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# Kiểm tra việc sao chép thành công
 ls -la
 ```
 
@@ -244,18 +248,18 @@ ls -la
 Chuẩn bị cấu hình môi trường:
 
 ```bash
-# Set up directory variables
+# Thiết lập biến thư mục
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# Sao chép file môi trường mặc định
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# Tạo thư mục SSL
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# Tạo các thư mục cơ sở dữ liệu
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
@@ -263,13 +267,13 @@ mkdir -p "$SELF_HOST_DIR/redis-backups"
 
 ### Bước 10: Cấu hình tên miền của bạn {#step-10-configure-your-domain}
 
-Đặt tên miền và cập nhật biến môi trường:
+Đặt tên miền của bạn và cập nhật các biến môi trường:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# Thay 'yourdomain.com' bằng tên miền thực tế của bạn
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# Hàm cập nhật file môi trường
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -281,7 +285,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# Cập nhật các biến môi trường liên quan đến tên miền
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -303,13 +307,12 @@ update_env_file "SELF_HOSTED" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
+### Bước 11: Tạo Chứng Chỉ SSL {#step-11-generate-ssl-certificates}
 
-### Bước 11: Tạo chứng chỉ SSL {#step-11-generate-ssl-certificates}
-
-#### Tùy chọn A: Thử thách DNS thủ công (Được khuyến nghị cho hầu hết người dùng) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Tùy chọn A: Thử thách DNS thủ công (Khuyến nghị cho hầu hết người dùng) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# Tạo chứng chỉ sử dụng thử thách DNS thủ công
 certbot certonly \
   --manual \
   --agree-tos \
@@ -318,23 +321,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Quan trọng**: Khi được nhắc, bạn sẽ cần tạo bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều yêu cầu cho cùng một tên miền - **hãy tạo TẤT CẢ các yêu cầu đó**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
+**Quan trọng**: Khi được yêu cầu, bạn sẽ cần tạo các bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều thử thách cho cùng một tên miền - **tạo TẤT CẢ chúng**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
 
-#### Tùy chọn B: Cloudflare DNS (Nếu bạn sử dụng Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Tùy chọn B: DNS Cloudflare (Nếu bạn sử dụng Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-Nếu tên miền của bạn sử dụng Cloudflare cho DNS, bạn có thể tự động tạo chứng chỉ:
+Nếu tên miền của bạn sử dụng Cloudflare cho DNS, bạn có thể tự động hóa việc tạo chứng chỉ:
 
 ```bash
-# Create Cloudflare credentials file
+# Tạo tệp thông tin đăng nhập Cloudflare
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# Đặt quyền truy cập phù hợp
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# Tạo chứng chỉ tự động
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -345,47 +348,47 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Bản sao chứng chỉ {#copy-certificates}
+#### Sao chép Chứng chỉ {#copy-certificates}
 
-Sau khi tạo chứng chỉ, hãy sao chép chúng vào thư mục ứng dụng:
+Sau khi tạo chứng chỉ, sao chép chúng vào thư mục ứng dụng:
 
 ```bash
-# Copy certificates to application SSL directory
+# Sao chép chứng chỉ vào thư mục SSL của ứng dụng
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# Kiểm tra chứng chỉ đã được sao chép
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### Bước 12: Tạo Khóa Mã hóa {#step-12-generate-encryption-keys}
+### Bước 12: Tạo Khóa Mã Hóa {#step-12-generate-encryption-keys}
 
-Tạo các khóa mã hóa khác nhau cần thiết cho hoạt động an toàn:
+Tạo các khóa mã hóa cần thiết cho hoạt động an toàn:
 
 ```bash
-# Generate helper encryption key
+# Tạo khóa mã hóa trợ giúp
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# Tạo bí mật SRS cho chuyển tiếp email
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# Tạo khóa mã hóa TXT
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# Tạo khóa riêng DKIM để ký email
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# Tạo khóa ký webhook
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# Đặt mật khẩu truyền tải SMTP
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Tất cả các khóa mã hóa đã được tạo thành công"
 ```
 
 ### Bước 13: Cập nhật Đường dẫn SSL trong Cấu hình {#step-13-update-ssl-paths-in-configuration}
@@ -393,7 +396,7 @@ echo "✅ All encryption keys generated successfully"
 Cấu hình đường dẫn chứng chỉ SSL trong tệp môi trường:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# Cập nhật đường dẫn SSL để trỏ đến các tệp chứng chỉ chính xác
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -403,75 +406,75 @@ sed -i -E \
 
 ### Bước 14: Thiết lập Xác thực Cơ bản {#step-14-set-up-basic-authentication}
 
-Tạo thông tin xác thực cơ bản tạm thời:
+Tạo thông tin đăng nhập xác thực cơ bản tạm thời:
 
 ```bash
-# Generate a secure random password
+# Tạo mật khẩu ngẫu nhiên an toàn
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Cập nhật tệp môi trường với thông tin xác thực cơ bản
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Hiển thị thông tin đăng nhập (hãy lưu lại!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 QUAN TRỌNG: Lưu lại thông tin đăng nhập này!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "Tên đăng nhập: admin"
+echo "Mật khẩu: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Bạn sẽ cần những thông tin này để truy cập giao diện web sau khi cài đặt."
 echo ""
 ```
 
 ### Bước 15: Triển khai với Docker Compose {#step-15-deploy-with-docker-compose}
 
-Khởi động tất cả các dịch vụ Chuyển tiếp Email:
+Khởi động tất cả dịch vụ Forward Email:
 
 ```bash
-# Set Docker Compose file path
+# Đặt đường dẫn tệp Docker Compose
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Dừng tất cả container hiện có
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
-# Pull the latest images
+# Kéo các hình ảnh mới nhất
 docker compose -f "$DOCKER_COMPOSE_FILE" pull
 
-# Start all services in detached mode
+# Khởi động tất cả dịch vụ ở chế độ nền
 docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Wait a moment for services to start
+# Đợi một chút để dịch vụ khởi động
 sleep 10
 
-# Check service status
+# Kiểm tra trạng thái dịch vụ
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
-
 ### Bước 16: Xác minh cài đặt {#step-16-verify-installation}
 
-Kiểm tra xem tất cả các dịch vụ có đang chạy đúng không:
+Kiểm tra tất cả các dịch vụ đang chạy đúng cách:
 
 ```bash
-# Check Docker containers
+# Kiểm tra các container Docker
 docker ps
 
-# Check service logs for any errors
+# Kiểm tra nhật ký dịch vụ để phát hiện lỗi
 docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 
-# Test web interface connectivity
+# Kiểm tra kết nối giao diện web
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Kiểm tra các cổng đang lắng nghe
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
+
 
 ## Cấu hình sau khi cài đặt {#post-installation-configuration}
 
 ### Thiết lập bản ghi DNS {#dns-records-setup}
 
-Bạn cần cấu hình các bản ghi DNS sau cho tên miền của mình:
+Bạn cần cấu hình các bản ghi DNS sau cho tên miền của bạn:
 
 #### Bản ghi MX {#mx-record}
 
@@ -479,7 +482,7 @@ Bạn cần cấu hình các bản ghi DNS sau cho tên miền của mình:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### A Bản ghi {#a-records}
+#### Bản ghi A {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -492,7 +495,7 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-Bản ghi #### SPF {#spf-record}
+#### Bản ghi SPF {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
@@ -500,10 +503,10 @@ Bản ghi #### SPF {#spf-record}
 
 #### Bản ghi DKIM {#dkim-record}
 
-Nhận khóa công khai DKIM của bạn:
+Lấy khóa công khai DKIM của bạn:
 
 ```bash
-# Extract DKIM public key
+# Trích xuất khóa công khai DKIM
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
@@ -521,158 +524,162 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Đăng nhập lần đầu {#first-login}
 
-1. Mở trình duyệt web và điều hướng đến `https://yourdomain.com`
+1. Mở trình duyệt web và truy cập `https://yourdomain.com`
 2. Nhập thông tin xác thực cơ bản bạn đã lưu trước đó
-3. Hoàn tất trình hướng dẫn thiết lập ban đầu
+3. Hoàn thành trình hướng dẫn thiết lập ban đầu
 4. Tạo tài khoản email đầu tiên của bạn
+
 
 ## Cấu hình sao lưu {#backup-configuration}
 
-### Thiết lập sao lưu tương thích với S3 {#set-up-s3-compatible-backup}
+### Thiết lập sao lưu tương thích S3 {#set-up-s3-compatible-backup}
 
-Cấu hình sao lưu tự động vào bộ lưu trữ tương thích với S3:
+Cấu hình sao lưu tự động đến bộ nhớ tương thích S3:
 
 ```bash
-# Create AWS credentials directory
+# Tạo thư mục chứa thông tin đăng nhập AWS
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# Cấu hình thông tin đăng nhập AWS
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# Cấu hình thiết lập AWS
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Đối với S3 không phải AWS (như Cloudflare R2), thêm URL endpoint
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Thiết lập công việc sao lưu Cron {#set-up-backup-cron-jobs}
+### Thiết lập các công việc cron sao lưu {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Cấp quyền thực thi cho các script sao lưu
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# Thêm công việc cron sao lưu MongoDB (chạy hàng ngày lúc nửa đêm)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Thêm công việc cron sao lưu Redis (chạy hàng ngày lúc nửa đêm)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Kiểm tra các công việc cron đã được thêm
 crontab -l
 ```
 
-## Tự động cập nhật cấu hình {#auto-update-configuration}
+
+## Cấu hình tự động cập nhật {#auto-update-configuration}
 
 Thiết lập cập nhật tự động cho cài đặt Forward Email của bạn:
 
 ```bash
-# Create auto-update command
+# Tạo lệnh tự động cập nhật
 DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Thêm công việc cron tự động cập nhật (chạy hàng ngày lúc 1 giờ sáng)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Kiểm tra công việc cron đã được thêm
 crontab -l
 ```
 
-## Bảo trì và Giám sát {#maintenance-and-monitoring}
 
-### Vị trí nhật ký {#log-locations}
+## Bảo trì và giám sát {#maintenance-and-monitoring}
+
+### Vị trí các nhật ký {#log-locations}
 
 * **Nhật ký Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
 * **Nhật ký hệ thống**: `/var/log/syslog`
 * **Nhật ký sao lưu**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Nhật ký tự động cập nhật**: `/var/log/autoupdate.log`
 
-### Nhiệm vụ bảo trì thường xuyên {#regular-maintenance-tasks}
+### Các công việc bảo trì định kỳ {#regular-maintenance-tasks}
 
-1. **Theo dõi dung lượng đĩa**: `df -h`
+1. **Giám sát dung lượng đĩa**: `df -h`
 2. **Kiểm tra trạng thái dịch vụ**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Xem lại nhật ký**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Cập nhật gói hệ thống**: `apt update && apt upgrade`
-5. **Gia hạn chứng chỉ**: Chứng chỉ tự động gia hạn, nhưng theo dõi thời hạn hết hạn
+5. **Gia hạn chứng chỉ**: Chứng chỉ tự động gia hạn, nhưng cần giám sát ngày hết hạn
 
 ### Gia hạn chứng chỉ {#certificate-renewal}
 
 Chứng chỉ sẽ tự động gia hạn, nhưng bạn có thể gia hạn thủ công nếu cần:
 
 ```bash
-# Manual certificate renewal
+# Gia hạn chứng chỉ thủ công
 certbot renew
 
-# Copy renewed certificates
+# Sao chép chứng chỉ đã gia hạn
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Khởi động lại dịch vụ để sử dụng chứng chỉ mới
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
-
 ## Khắc phục sự cố {#troubleshooting}
 
-### Các vấn đề thường gặp {#common-issues}
+### Các vấn đề phổ biến {#common-issues}
 
-#### 1. Dịch vụ Docker không khởi động {#1-docker-service-wont-start}
+#### 1. Dịch vụ Docker không khởi động được {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Kiểm tra trạng thái Docker
 systemctl status docker
 
-# Try alternative startup
+# Thử khởi động thay thế
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Không tạo được chứng chỉ {#2-certificate-generation-fails}
+#### 2. Lỗi tạo chứng chỉ {#2-certificate-generation-fails}
 
-* Đảm bảo cổng 80 và 443 có thể truy cập được
-* Xác minh bản ghi DNS trỏ đến máy chủ của bạn
+* Đảm bảo các cổng 80 và 443 có thể truy cập được
+* Xác minh các bản ghi DNS trỏ đến máy chủ của bạn
 * Kiểm tra cài đặt tường lửa
 
-#### 3. Sự cố gửi email {#3-email-delivery-issues}
+#### 3. Vấn đề gửi email {#3-email-delivery-issues}
 
-* Kiểm tra bản ghi MX có chính xác không
-* Kiểm tra bản ghi SPF, DKIM và DMARC
-* Đảm bảo cổng 25 không bị nhà cung cấp dịch vụ lưu trữ của bạn chặn
+* Xác minh các bản ghi MX chính xác
+* Kiểm tra các bản ghi SPF, DKIM và DMARC
+* Đảm bảo cổng 25 không bị nhà cung cấp hosting chặn
 
-#### 4. Giao diện web không thể truy cập {#4-web-interface-not-accessible}
+#### 4. Giao diện web không truy cập được {#4-web-interface-not-accessible}
 
 * Kiểm tra cài đặt tường lửa: `ufw status`
 * Xác minh chứng chỉ SSL: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* Kiểm tra thông tin xác thực cơ bản
+* Kiểm tra thông tin xác thực basic auth
 
 ### Nhận trợ giúp {#getting-help}
 
 * **Tài liệu**: <https://forwardemail.net/self-hosted>
-* **Vấn đề GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Hỗ trợ cộng đồng**: Xem các thảo luận trên GitHub của dự án
+* **Vấn đề trên GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Hỗ trợ cộng đồng**: Kiểm tra các thảo luận trên GitHub của dự án
+
 
 ## Thực hành bảo mật tốt nhất {#security-best-practices}
 
-1. **Luôn cập nhật hệ thống**: Thường xuyên cập nhật Ubuntu và các gói
-2. **Theo dõi nhật ký**: Thiết lập giám sát nhật ký và cảnh báo
-3. **Sao lưu thường xuyên**: Kiểm tra quy trình sao lưu và khôi phục
+1. **Giữ hệ thống cập nhật**: Thường xuyên cập nhật Ubuntu và các gói phần mềm
+2. **Giám sát nhật ký**: Thiết lập giám sát và cảnh báo nhật ký
+3. **Sao lưu thường xuyên**: Kiểm tra quy trình sao lưu và phục hồi
 4. **Sử dụng mật khẩu mạnh**: Tạo mật khẩu mạnh cho tất cả tài khoản
-5. **Bật Fail2Ban**: Cân nhắc cài đặt fail2ban để tăng cường bảo mật
-6. **Kiểm tra bảo mật thường xuyên**: Định kỳ xem xét cấu hình của bạn
+5. **Kích hoạt Fail2Ban**: Cân nhắc cài đặt fail2ban để tăng cường bảo mật
+6. **Kiểm tra bảo mật định kỳ**: Định kỳ xem xét cấu hình của bạn
+
 
 ## Kết luận {#conclusion}
 
-Quá trình cài đặt Forward Email tự lưu trữ của bạn hiện đã hoàn tất và đang chạy trên Ubuntu. Hãy nhớ:
+Cài đặt Forward Email tự lưu trữ của bạn giờ đây nên đã hoàn tất và đang chạy trên Ubuntu. Hãy nhớ:
 
-1. Cấu hình đúng bản ghi DNS
-2. Kiểm tra việc gửi và nhận email
-3. Thiết lập sao lưu thường xuyên
-4. Theo dõi hệ thống thường xuyên
-5. Cập nhật cài đặt
+1. Cấu hình các bản ghi DNS đúng cách
+2. Kiểm tra gửi và nhận email
+3. Thiết lập sao lưu định kỳ
+4. Giám sát hệ thống thường xuyên
+5. Giữ cho cài đặt của bạn luôn được cập nhật
 
-Để biết thêm các tùy chọn cấu hình và tính năng nâng cao, hãy tham khảo tài liệu chính thức về Chuyển tiếp Email tại <https://forwardemail.net/self-hosted#configuration>.
+Để biết thêm các tùy chọn cấu hình và tính năng nâng cao, hãy tham khảo tài liệu chính thức của Forward Email tại <https://forwardemail.net/self-hosted#configuration>.

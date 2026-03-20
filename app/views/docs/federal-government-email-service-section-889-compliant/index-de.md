@@ -1,147 +1,152 @@
-# E-Mail weiterleiten: Ihre Section 889-konforme Lösung zur E-Mail-Weiterleitung {#forward-email-your-section-889-compliant-email-forwarding-solution}
+# Forward Email: Ihre Section 889 konforme E-Mail-Weiterleitungslösung {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="Bundesregierung E-Mail-Dienst Section 889 konform" class="rounded-lg" />
+
 
 ## Inhaltsverzeichnis {#table-of-contents}
 
 * [Vorwort](#foreword)
-* [Grundlegendes zur Einhaltung von Abschnitt 889](#understanding-section-889-compliance)
-* [Wie Forward Email die Einhaltung von Abschnitt 889 erreicht](#how-forward-email-achieves-section-889-compliance)
+* [Verständnis der Section 889 Konformität](#understanding-section-889-compliance)
+* [Wie Forward Email die Section 889 Konformität erreicht](#how-forward-email-achieves-section-889-compliance)
   * [Cloudflares Engagement](#cloudflares-commitment)
   * [DataPackets Infrastruktur](#datapackets-infrastructure)
-* [Über Abschnitt 889 hinaus: Umfassendere Einhaltung staatlicher Vorschriften](#beyond-section-889-broader-government-compliance)
-* [Unser Weg nach vorn: Erweiterung des Compliance-Horizonts](#our-path-forward-expanding-compliance-horizons)
+* [Über Section 889 hinaus: Breitere Regierungs-Compliance](#beyond-section-889-broader-government-compliance)
+* [Unser Weg nach vorn: Erweiterung der Compliance-Horizonte](#our-path-forward-expanding-compliance-horizons)
 * [Warum das für Sie wichtig ist](#why-this-matters-for-you)
 * [Sichere, konforme E-Mail-Weiterleitung beginnt hier](#secure-compliant-email-forwarding-starts-here)
-* [Verweise](#references)
+* [Quellen](#references)
+
 
 ## Vorwort {#foreword}
 
-Wir bei Forward Email setzen auf einfache, sichere und vertrauliche E-Mail-Weiterleitung für alle. Wir wissen, dass Compliance für viele Organisationen, insbesondere solche, die mit der US-Regierung zusammenarbeiten, nicht nur ein Schlagwort ist – es ist eine Notwendigkeit. Die Einhaltung der **bundesstaatlichen E-Mail-Vorschriften** ist entscheidend. Deshalb sind wir stolz darauf, bestätigen zu können, dass unser **sicherer E-Mail-Weiterleitungsdienst** die strengen Bundesanforderungen erfüllt, einschließlich [§ 889](https://www.acquisition.gov/Section-889-Policies) des [Nationales Verteidigungsgenehmigungsgesetz (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
+Bei Forward Email glauben wir an einfache, sichere und private E-Mail-Weiterleitung für alle. Wir wissen, dass Compliance für viele Organisationen, insbesondere solche, die mit der US-Regierung zusammenarbeiten, nicht nur ein Schlagwort ist – sondern eine Notwendigkeit. Die Einhaltung der **bundesstaatlichen Vorschriften für E-Mails** ist entscheidend. Deshalb sind wir stolz darauf, bestätigen zu können, dass unser **sicherer E-Mail-Weiterleitungsdienst** so konzipiert ist, dass er strenge bundesstaatliche Anforderungen erfüllt, einschließlich [Section 889](https://www.acquisition.gov/Section-889-Policies) des [National Defense Authorization Act (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
 
-Unser Engagement für die Einhaltung der **E-Mail-Vorschriften der Regierung** wurde kürzlich in die Praxis umgesetzt, als die **US Naval Academy** sich an **Forward Email** wandte. Sie benötigten **sichere E-Mail-Weiterleitungsdienste** und benötigten Unterlagen, die unsere Einhaltung der Bundesvorschriften, einschließlich der **Einhaltung von Abschnitt 889**, bestätigen. Diese Erfahrung dient als wertvolle Fallstudie und belegt unsere Bereitschaft und Fähigkeit, staatlich finanzierte Organisationen zu unterstützen und ihre strengen Anforderungen zu erfüllen. Dieses Engagement gilt allen unseren Nutzern, die eine zuverlässige, **datenschutzorientierte E-Mail-Lösung** suchen.
+Unser Engagement für **Regierungs-E-Mail-Compliance** wurde kürzlich in der Praxis erprobt, als die **US Naval Academy** an **Forward Email** herantrat. Sie benötigten **sichere E-Mail-Weiterleitungsdienste** und verlangten eine Dokumentation, die unsere Einhaltung der bundesstaatlichen Vorschriften, einschließlich der **Section 889 Konformität**, bestätigt. Diese Erfahrung dient als wertvolle Fallstudie, die unsere Bereitschaft und Fähigkeit zeigt, regierungsfinanzierte Organisationen zu unterstützen und deren strenge Anforderungen zu erfüllen. Dieses Engagement gilt für alle unsere Nutzer, die eine zuverlässige, **datenschutzorientierte E-Mail**-Lösung suchen.
 
-## Verständnis der Einhaltung von Abschnitt 889 {#understanding-section-889-compliance}
 
-Was ist Abschnitt 889? Vereinfacht ausgedrückt handelt es sich um ein US-Bundesgesetz, das es Regierungsbehörden verbietet, bestimmte Telekommunikations- und Videoüberwachungsgeräte oder -dienste bestimmter Unternehmen (wie Huawei, ZTE, Hikvision, Dahua und Hytera) zu nutzen oder mit diesen Verträge abzuschließen. Diese Regel, die oft mit dem **Huawei-Verbot** und dem **ZTE-Verbot** in Verbindung gebracht wird, dient dem Schutz der nationalen Sicherheit.
+## Verständnis der Section 889 Konformität {#understanding-section-889-compliance}
+
+Was ist Section 889? Einfach gesagt, handelt es sich um ein US-Bundesgesetz, das Regierungsbehörden verbietet, Geräte oder Dienstleistungen bestimmter Telekommunikations- und Videoüberwachungsanbieter (wie Huawei, ZTE, Hikvision, Dahua und Hytera) zu verwenden oder Verträge mit solchen Unternehmen abzuschließen. Diese Regel, oft verbunden mit dem **Huawei-Verbot** und **ZTE-Verbot**, dient dem Schutz der nationalen Sicherheit.
 
 > \[!NOTE]
-> Abschnitt 889 betrifft insbesondere Geräte und Dienstleistungen von Huawei, ZTE, Hytera, Hikvision und Dahua sowie deren Tochtergesellschaften und verbundene Unternehmen.
+> Section 889 richtet sich speziell gegen Geräte und Dienstleistungen von Huawei, ZTE, Hytera, Hikvision und Dahua, einschließlich deren Tochtergesellschaften und verbundenen Unternehmen.
 
-Für einen **E-Mail-Weiterleitungsdienst für Regierungsaufträge** wie **Forward Email** bedeutet dies, dass wir sicherstellen müssen, dass keiner unserer zugrunde liegenden Infrastrukturanbieter diese verbotene Ausrüstung verwendet, wodurch wir **Abschnitt 889-konform** sind.
+Für einen **E-Mail-Weiterleitungsdienst für Regierungsverträge** wie **Forward Email** bedeutet dies, sicherzustellen, dass keiner unserer zugrundeliegenden Infrastruktur-Anbieter diese verbotenen Geräte verwendet, wodurch wir **Section 889 konform** sind.
 
-## So erreichen Sie mit der Weiterleitung von E-Mails die Einhaltung von Abschnitt 889 {#how-forward-email-achieves-section-889-compliance}
 
-**Wie erfüllt Forward Email die Anforderungen von Abschnitt 889?** Dies erreichen wir durch die sorgfältige Auswahl unserer Infrastrukturpartner. **Forward Email** verlässt sich bei seiner **Abschnitt-889-konformen Infrastruktur** ausschließlich auf zwei Hauptanbieter:
+## Wie Forward Email die Section 889 Konformität erreicht {#how-forward-email-achieves-section-889-compliance}
 
-1. **[Cloudflare](https://www.cloudflare.com/):** Unser Hauptpartner für Netzwerkdienste und **Cloudflare-E-Mail-Sicherheit**.
-2. **[Datenpaket](https://datapacket.com/):** Unser Hauptanbieter für die Serverinfrastruktur (wir verwenden [Digitaler Ozean](https://www.digitalocean.com/) und/oder [Vultr](https://www.vultr.com/) für Failover und werden bald ausschließlich DataPacket verwenden – selbstverständlich haben wir die Einhaltung von Abschnitt 889 von beiden Failover-Anbietern schriftlich bestätigt).
+Also, **wie ist Forward Email Section 889 konform?** Wir erreichen dies durch sorgfältige Auswahl unserer Infrastrukturpartner. **Forward Email** verlässt sich ausschließlich auf zwei Hauptanbieter für seine **Section 889 konforme Infrastruktur**:
+
+1. **[Cloudflare](https://www.cloudflare.com/):** Unser Hauptpartner für Netzwerkdienste und **Cloudflare E-Mail-Sicherheit**.
+2. **[DataPacket](https://datapacket.com/):** Unser Hauptanbieter für Serverinfrastruktur (wir nutzen [Digital Ocean](https://www.digitalocean.com/) und/oder [Vultr](https://www.vultr.com/) für Failover und werden bald vollständig auf DataPacket umstellen – natürlich haben wir die Section 889 Konformität von beiden Failover-Anbietern schriftlich bestätigt).
 
 > \[!IMPORTANT]
-> Unsere ausschließliche Abhängigkeit von Cloudflare und DataPacket, die beide keine gemäß Abschnitt 889 verbotene Ausrüstung verwenden, ist der Grundstein unserer Compliance.
-
-Sowohl [Cloudflare](https://www.cloudflare.com/) als auch [Datenpaket](https://datapacket.com/) verpflichten sich zu hohen Sicherheitsstandards und verwenden keine Geräte, die gemäß Abschnitt 889 verboten sind. **Die Verwendung von Cloudflare und DataPacket zur Einhaltung von Abschnitt 889** ist für unseren Service von grundlegender Bedeutung.
+> Unsere ausschließliche Abhängigkeit von Cloudflare und DataPacket, die beide keine Section 889 verbotenen Geräte verwenden, ist das Fundament unserer Compliance.
+Sowohl [Cloudflare](https://www.cloudflare.com/) als auch [DataPacket](https://datapacket.com/) verpflichten sich zu hohen Sicherheitsstandards und verwenden keine Geräte, die gemäß Abschnitt 889 verboten sind. **Die Nutzung von Cloudflare und DataPacket zur Einhaltung von Abschnitt 889** ist grundlegend für unseren Service.
 
 ### Cloudflares Verpflichtung {#cloudflares-commitment}
 
-[Cloudflare](https://www.cloudflare.com/) geht in seinem **[Verhaltenskodex für Drittanbieter](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)** explizit auf die **Einhaltung von Abschnitt 889** ein. Dort heißt es:
+[Cloudflare](https://www.cloudflare.com/) behandelt ausdrücklich die **Einhaltung von Abschnitt 889** in ihrem **[Verhaltenskodex für Dritte](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)**. Sie erklären:
 
-> „Gemäß Abschnitt 889 des National Defense Authorization Act (NDAA) verwendet Cloudflare in seiner Lieferkette weder Telekommunikationsgeräte, Videoüberwachungsprodukte noch -dienste, die von Huawei Technologies Company, ZTE Corporation, Hytera Communications Corporation, Hangzhou Hikvision Digital Technology Company oder Dahua Technology Company (oder einer Tochtergesellschaft oder einem verbundenen Unternehmen dieser Unternehmen) hergestellt oder bereitgestellt werden, und lässt dies auch nicht zu.“
+> „Gemäß Abschnitt 889 des National Defense Authorization Act (NDAA) verwendet Cloudflare keine Telekommunikationsausrüstung, Videoüberwachungsprodukte oder Dienstleistungen, die von Huawei Technologies Company, ZTE Corporation, Hytera Communications Corporation, Hangzhou Hikvision Digital Technology Company oder Dahua Technology Company (oder einer Tochtergesellschaft oder einem verbundenen Unternehmen dieser Unternehmen) hergestellt oder bereitgestellt werden, noch erlaubt Cloudflare diese in seiner Lieferkette.“
 
-*(Quelle: Cloudflare Third Party Code of Conduct, abgerufen am 29. April 2025)*
+*(Quelle: Cloudflare Verhaltenskodex für Dritte, abgerufen am 29. April 2025)*
 
-Diese klare Aussage bestätigt, dass die von **Forward Email** genutzte [Cloudflares](https://www.cloudflare.com/)-Infrastruktur die Anforderungen von Abschnitt 889 erfüllt.
+Diese klare Aussage bestätigt, dass die Infrastruktur von [Cloudflare](https://www.cloudflare.com/), die **Forward Email** nutzt, die Anforderungen von Abschnitt 889 erfüllt.
 
-### DataPacket-Infrastruktur {#datapackets-infrastructure}
+### DataPackets Infrastruktur {#datapackets-infrastructure}
 
-[Datenpaket](https://datapacket.com/), unser Serveranbieter, verwendet ausschließlich Netzwerkgeräte von **Arista Networks** und **Cisco**. Weder Arista noch Cisco gehören zu den Unternehmen, die gemäß Abschnitt 889 verboten sind. Beide sind etablierte Anbieter, die in sicheren Unternehmens- und Behördenumgebungen weit verbreitet sind und für die Einhaltung strenger Sicherheits- und Compliance-Standards bekannt sind.
+[DataPacket](https://datapacket.com/), unser Serveranbieter, verwendet ausschließlich Netzwerkausrüstung von **Arista Networks** und **Cisco**. Weder Arista noch Cisco gehören zu den Unternehmen, die gemäß Abschnitt 889 verboten sind. Beide sind etablierte Anbieter, die in sicheren Unternehmens- und Regierungsumgebungen weit verbreitet sind und für die Einhaltung strenger Sicherheits- und Compliance-Standards bekannt sind.
 
-Durch die ausschließliche Verwendung von [Cloudflare](https://www.cloudflare.com/) und [Datenpaket](https://datapacket.com/) stellt **Forward Email** sicher, dass die gesamte Servicebereitstellungskette frei von gemäß Abschnitt 889 verbotener Ausrüstung ist, und bietet **eine sichere E-Mail-Weiterleitung für Bundesbehörden** und andere sicherheitsbewusste Benutzer.
+Durch die ausschließliche Nutzung von [Cloudflare](https://www.cloudflare.com/) und [DataPacket](https://datapacket.com/) stellt **Forward Email** sicher, dass die gesamte Servicebereitstellungskette frei von gemäß Abschnitt 889 verbotener Ausrüstung ist und bietet somit **sichere E-Mail-Weiterleitung für Bundesbehörden** und andere sicherheitsbewusste Nutzer.
 
-## Über Abschnitt 889 hinaus: Umfassendere Einhaltung staatlicher Vorschriften {#beyond-section-889-broader-government-compliance}
 
-Unser Engagement für die **E-Mail-Sicherheit von Behörden** und die Einhaltung der Vorschriften geht über Abschnitt 889 hinaus. Obwohl **Forward Email** selbst vertrauliche Behördendaten wie [Kontrollierte nicht klassifizierte Informationen (CUI)](https://en.wikipedia.org/wiki/Controlled_Unclassified_Information) nicht direkt verarbeitet oder speichert, wie dies bei einer großen SaaS-Plattform der Fall wäre, entsprechen unsere **Open-Source-Architektur zur E-Mail-Weiterleitung** und die Abhängigkeit von sicheren, konformen Anbietern den Grundsätzen anderer wichtiger Vorschriften:
+## Über Abschnitt 889 hinaus: Umfassendere Regierungs-Compliance {#beyond-section-889-broader-government-compliance}
 
-* **[FAR (Federal Acquisition Regulation)](https://en.wikipedia.org/wiki/Federal_Acquisition_Regulation):** Durch die Nutzung einer konformen Infrastruktur und einen unkomplizierten kommerziellen Service bieten wir **FAR-konforme** E-Mail-Weiterleitungsprinzipien, die für Regierungsauftragnehmer geeignet sind.
-* **Privacy Act & [FISMA](https://en.wikipedia.org/wiki/Federal_Information_Security_Management_Act_of\_2002):** Wir legen Wert auf **Datenschutz** und bieten die **Privacy Act E-Mail-Prinzipien** an. Wir speichern Ihre E-Mails nicht. E-Mails werden direkt weitergeleitet, wodurch der Datenverkehr minimiert wird. Unsere Infrastrukturanbieter ([Cloudflare](https://www.cloudflare.com/), [Datenpaket](https://datapacket.com/)) verwalten ihre Systeme nach hohen Sicherheitsstandards, die den **FISMA-konformen E-Mail-Prinzipien** entsprechen.
-* **[HIPAA](https://en.wikipedia.org/wiki/Health_Insurance_Portability_and_Accountability_Act):** Für Organisationen, die eine **HIPAA-konforme E-Mail-Weiterleitung** benötigen, kann **Forward Email** Teil einer konformen Lösung sein. Da wir keine E-Mails speichern, liegt die primäre Compliance-Verantwortung bei den Endpunkt-E-Mail-Systemen. Unsere sichere Transportschicht unterstützt jedoch bei korrekter Anwendung die HIPAA-Anforderungen.
+Unser Engagement für **Regierungs-E-Mail-Sicherheit** und Compliance geht über Abschnitt 889 hinaus. Während **Forward Email** selbst keine sensiblen Regierungsdaten wie [Controlled Unclassified Information (CUI)](https://en.wikipedia.org/wiki/Controlled_Unclassified_Information) auf dieselbe Weise verarbeitet oder speichert wie eine große SaaS-Plattform, entspricht unsere **Open-Source-E-Mail-Weiterleitungsarchitektur** und die Nutzung sicherer, konformer Anbieter den Prinzipien weiterer wichtiger Vorschriften:
+
+* **[FAR (Federal Acquisition Regulation)](https://en.wikipedia.org/wiki/Federal_Acquisition_Regulation):** Durch die Nutzung konformer Infrastruktur und das Angebot eines unkomplizierten kommerziellen Dienstes bieten wir **FAR-konforme E-Mail**-Weiterleitungsprinzipien, die für Regierungsauftragnehmer geeignet sind.
+* **Privacy Act & [FISMA](https://en.wikipedia.org/wiki/Federal_Information_Security_Management_Act_of\_2002):** Wir sind von Grund auf **datenschutzorientiert** und bieten **Privacy Act E-Mail**-Prinzipien. Wir speichern Ihre E-Mails nicht. E-Mails werden direkt weitergeleitet, wodurch die Datenverarbeitung minimiert wird. Unsere Infrastruktur-Anbieter ([Cloudflare](https://www.cloudflare.com/), [DataPacket](https://datapacket.com/)) verwalten ihre Systeme nach hohen Sicherheitsstandards, die mit **FISMA-konformen E-Mail**-Prinzipien übereinstimmen.
+* **[HIPAA](https://en.wikipedia.org/wiki/Health_Insurance_Portability_and_Accountability_Act):** Für Organisationen, die **HIPAA-konforme E-Mail-Weiterleitung** benötigen, kann **Forward Email** Teil einer konformen Lösung sein. Da wir keine E-Mails speichern, liegt die Hauptverantwortung für die Compliance bei den Endpunkt-E-Mail-Systemen. Unsere sichere Transportschicht unterstützt jedoch HIPAA-Anforderungen, wenn sie korrekt verwendet wird.
 
 > \[!WARNING]
-> Möglicherweise benötigen Sie bei Ihrem endgültigen E-Mail-Anbieter einen [Geschäftspartnervereinbarung (BAA)](https://en.wikipedia.org/wiki/Business_associate_agreement), nicht **Forward Email** selbst, da wir Ihre E-Mail-Inhalte nicht speichern (es sei denn, Sie verwenden [unsere verschlüsselte IMAP/POP3-Speicherschicht](/blog/docs/best-quantum-safe-encrypted-email-service)).
+> Eine [Business Associate Agreement (BAA)](https://en.wikipedia.org/wiki/Business_associate_agreement) könnte mit Ihrem endgültigen E-Mail-Anbieter erforderlich sein, nicht mit **Forward Email** selbst, da wir Ihre E-Mail-Inhalte nicht speichern (es sei denn, Sie verwenden [unsere verschlüsselte IMAP/POP3-Speicherschicht](/blog/docs/best-quantum-safe-encrypted-email-service)).
+## Unser Weg nach vorn: Erweiterung der Compliance-Horizonte {#our-path-forward-expanding-compliance-horizons}
 
-## Unser Weg nach vorn: Erweiterung des Compliance-Horizonts {#our-path-forward-expanding-compliance-horizons}
+Während unsere Einhaltung von Abschnitt 889 eine entscheidende Grundlage bietet, insbesondere für Bundesauftragnehmer, verstehen wir, dass verschiedene Organisationen und Regierungsbehörden unterschiedliche und sich entwickelnde regulatorische Anforderungen haben. Bei **Forward Email** ist Transparenz der Schlüssel, und wir möchten unsere Perspektive auf die breitere Compliance-Landschaft und unsere zukünftige Ausrichtung teilen.
 
-Unsere Einhaltung von Abschnitt 889 bildet eine wichtige Grundlage, insbesondere für Bundesauftragnehmer. Wir sind uns jedoch bewusst, dass verschiedene Organisationen und Behörden unterschiedliche und sich entwickelnde regulatorische Anforderungen haben. Bei **Forward Email** ist Transparenz entscheidend. Wir möchten unsere Perspektive auf die allgemeine Compliance-Landschaft und unsere zukünftige Ausrichtung mit Ihnen teilen.
+Wir erkennen die Bedeutung von Rahmenwerken und Vorschriften wie:
 
-Wir sind uns der Bedeutung von Rahmenbedingungen und Vorschriften bewusst, wie beispielsweise:
-
-* **[System für Award Management (SAM)](https://sam.gov/):** Unverzichtbar für direkte Bundesaufträge.
-* **[FAR (Federal Acquisition Regulation)](https://www.acquisition.gov/browse/index/far):** Einschließlich Standardklauseln wie [FAR 52.212-4](https://www.acquisition.gov/far/52.212-4) für kommerzielle Dienste.
-* **[DFARS (Ergänzung zur Beschaffungsverordnung des US-Verteidigungsministeriums)](https://en.wikipedia.org/wiki/Defense_Federal_Acquisition_Regulation_Supplement):** Insbesondere [DFARS 252.239-7010](https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.) für Cloud-Dienste des US-Verteidigungsministeriums.
-* **[CMMC (Cybersecurity Maturity Model-Zertifizierung)](https://en.wikipedia.org/wiki/Cybersecurity_Maturity_Model_Certification):** Erforderlich für Auftragnehmer des US-Verteidigungsministeriums, die [Bundesvertragsinformationen (FCI)](https://en.wikipedia.org/wiki/Federal_Contract_Information) oder CUI verarbeiten.
-* **[NIST SP 800-171](https://csrc.nist.gov/pubs/sp/800/171/r3/final):** Grundlage für CMMC Level 2 mit Schwerpunkt auf dem Schutz von CUI. ([NIST](https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology) – National Institute of Standards and Technology)
-* **[FedRAMP (Bundesprogramm für Risiko- und Autorisierungsmanagement)](https://en.wikipedia.org/wiki/FedRAMP):** Standard für Cloud-Dienste von Bundesbehörden.
-* **__PROTECTED_LINK_77__0:** Der übergreifende Rahmen für die Informationssicherheit des Bundes.
-* **__PROTECTED_LINK_77__1:** Für den Umgang mit geschützten Gesundheitsinformationen (PHI).
-* **__PROTECTED_LINK_77__2:** Für den Schutz von Schülerdaten.
-* **__PROTECTED_LINK_77__3:** Für Dienste, die Kinder unter 13 Jahren betreffen.
+* **[System for Award Management (SAM)](https://sam.gov/):** Wesentlich für direkte Bundesaufträge.
+* **[FAR (Federal Acquisition Regulation)](https://www.acquisition.gov/browse/index/far):** Einschließlich Standardklauseln wie [FAR 52.212-4](https://www.acquisition.gov/far/52.212-4) für kommerzielle Dienstleistungen.
+* **[DFARS (Defense Federal Acquisition Regulation Supplement)](https://en.wikipedia.org/wiki/Defense_Federal_Acquisition_Regulation_Supplement):** Insbesondere [DFARS 252.239-7010](https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.) für DoD-Cloud-Dienste.
+* **[CMMC (Cybersecurity Maturity Model Certification)](https://en.wikipedia.org/wiki/Cybersecurity_Maturity_Model_Certification):** Erforderlich für DoD-Auftragnehmer, die mit [Federal Contract Information (FCI)](https://en.wikipedia.org/wiki/Federal_Contract_Information) oder CUI umgehen.
+* **[NIST SP 800-171](https://csrc.nist.gov/pubs/sp/800/171/r3/final):** Die Grundlage für CMMC Level 2, mit Fokus auf den Schutz von CUI. ([NIST](https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology) – National Institute of Standards and Technology)
+* **[FedRAMP (Federal Risk and Authorization Management Program)](https://en.wikipedia.org/wiki/FedRAMP):** Der Standard für Cloud-Dienste, die von Bundesbehörden genutzt werden.
+* **[FISMA (Federal Information Security Modernization Act)](https://www.cisa.gov/topics/cybersecurity-best-practices/fisma):** Der übergeordnete Rahmen für die Informationssicherheit auf Bundesebene.
+* **[HIPAA (Health Insurance Portability and Accountability Act)](https://www.hhs.gov/hipaa/index.html):** Für den Umgang mit geschützten Gesundheitsinformationen (PHI).
+* **[FERPA (Family Educational Rights and Privacy Act)](https://en.wikipedia.org/wiki/Family_Educational_Rights_and_Privacy_Act):** Zum Schutz von Schüler- und Studierendendaten.
+* **[COPPA (Children's Online Privacy Protection Act)](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act):** Für Dienste, die mit Kindern unter 13 Jahren arbeiten.
 
 **Unsere aktuelle Position und zukünftigen Ziele:**
 
-Das Kerndesign von **Forward Email** – datenschutzorientiert, **Open Source** und minimaler Datenverkehr (insbesondere bei unserem Basis-**E-Mail-Weiterleitungsdienst) – entspricht den Prinzipien vieler dieser Vorschriften. Unsere bestehenden Sicherheitspraktiken (Verschlüsselung, Unterstützung moderner E-Mail-Standards) und die Einhaltung von Abschnitt 889 bieten eine solide Grundlage.
+Das Kern-Design von **Forward Email** – **datenschutzorientiert**, **Open Source** und mit minimaler Datenverarbeitung (insbesondere in unserem grundlegenden **E-Mail-Weiterleitungsdienst**) – steht im Einklang mit den *Prinzipien* vieler dieser Vorschriften. Unsere bestehenden Sicherheitspraktiken (Verschlüsselung, Unterstützung moderner E-Mail-Standards) und die Einhaltung von Abschnitt 889 bieten einen starken Ausgangspunkt.
 
-Die Erlangung einer formellen Zertifizierung oder Autorisierung für Frameworks wie **FedRAMP** oder **CMMC** ist jedoch ein erhebliches Unterfangen. Es erfordert eine strenge Dokumentation, die Implementierung spezifischer technischer und verfahrenstechnischer Kontrollen (oft Hunderte davon), unabhängige Bewertungen (wie [3PAO](https://www.fedramp.gov/glossary/#3pao) für FedRAMP – Third-Party Assessment Organization) und kontinuierliche Überwachung.
+Die formale Zertifizierung oder Autorisierung für Rahmenwerke wie **FedRAMP** oder **CMMC** ist jedoch ein bedeutendes Unterfangen. Es erfordert umfangreiche Dokumentation, die Umsetzung spezifischer technischer und prozeduraler Kontrollen (oft hunderte davon), unabhängige Bewertungen (wie [3PAO](https://www.fedramp.gov/glossary/#3pao) für FedRAMP – Third-Party Assessment Organization) und kontinuierliche Überwachung.
 
 > \[!IMPORTANT]
-> Compliance ist nicht nur eine Frage der Technologie; es geht auch um dokumentierte Prozesse, Richtlinien und kontinuierliche Wachsamkeit. Zertifizierungen wie FedRAMP oder CMMC erfordern erhebliche Investitionen und Zeit.
+> Compliance bedeutet nicht nur Technologie; es geht um dokumentierte Prozesse, Richtlinien und ständige Wachsamkeit. Die Erlangung von Zertifizierungen wie FedRAMP oder CMMC erfordert erhebliche Investitionen und Zeit.
 
-**Unsere Verpflichtung:**
+**Unser Engagement:**
 
-Mit dem Wachstum von **Forward Email** und den sich wandelnden Anforderungen unserer Kunden sind wir bestrebt, relevante Compliance-Zertifizierungen zu prüfen und anzustreben. Dazu gehören Pläne für:
+Während **Forward Email** wächst und sich die Bedürfnisse unserer Kunden weiterentwickeln, verpflichten wir uns, relevante Compliance-Zertifizierungen zu prüfen und anzustreben. Dies umfasst Pläne für:
 
-1. **SAM-Registrierung**: Um die direkte Zusammenarbeit mit US-Bundesbehörden zu erleichtern.
-2. **Prozesse formalisieren**: Wir verbessern unsere interne Dokumentation und Verfahren, um sie an Standards wie NIST SP 800-171 anzupassen, die die Grundlage für CMMC bilden.
-3. **FedRAMP-Pfade evaluieren**: Wir prüfen die Anforderungen und die Machbarkeit einer FedRAMP-Autorisierung, wahrscheinlich beginnend mit einem niedrigen oder mittleren Ausgangsniveau, gegebenenfalls unter Nutzung des [TO-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/)-Modells.
-4. **Unterstützung spezifischer Anforderungen**: Wir berücksichtigen Anforderungen wie HIPAA (möglicherweise durch BAAs und spezifische Konfigurationen für gespeicherte Daten) und FERPA (durch entsprechende Vertragsbedingungen und Kontrollen), da wir verstärkt mit Gesundheits- und Bildungseinrichtungen zusammenarbeiten.
-
-Dieser Weg erfordert sorgfältige Planung und Investitionen. Zwar haben wir keine konkreten Zeitpläne für alle Zertifizierungen, doch die Stärkung unserer Compliance-Position, um den Anforderungen staatlicher und regulierter Branchen gerecht zu werden, ist ein zentraler Bestandteil unserer Roadmap.
+1. **SAM-Registrierung:** Zur Erleichterung der direkten Zusammenarbeit mit US-Bundesbehörden.
+2. **Formalierung von Prozessen:** Verbesserung unserer internen Dokumentation und Verfahren zur Ausrichtung an Standards wie NIST SP 800-171, die die Grundlage für CMMC bilden.
+3. **Bewertung von FedRAMP-Pfaden:** Prüfung der Anforderungen und Machbarkeit einer FedRAMP-Autorisierung, wahrscheinlich beginnend mit einem Low- oder Moderate-Baseline, möglicherweise unter Nutzung des [LI-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/) Modells, wo anwendbar.
+4. **Unterstützung spezifischer Anforderungen:** Berücksichtigung von Anforderungen wie HIPAA (möglicherweise durch BAAs und spezifische Konfigurationen für gespeicherte Daten) und FERPA (durch geeignete vertragliche Bedingungen und Kontrollen), wenn wir verstärkt mit Gesundheits- und Bildungseinrichtungen zusammenarbeiten.
+Diese Reise erfordert sorgfältige Planung und Investitionen. Obwohl wir nicht für alle Zertifizierungen sofortige Zeitpläne haben, ist die Stärkung unserer Compliance-Position zur Erfüllung der Anforderungen von Regierungs- und regulierten Branchen ein wichtiger Teil unserer Roadmap.
 
 > \[!NOTE]
-> Wir sind überzeugt, dass unser **Open-Source**-Charakter für einzigartige Transparenz während des gesamten Prozesses sorgt und es unserer Community und unseren Kunden ermöglicht, unser Engagement aus erster Hand zu erleben.
+> Wir sind der Meinung, dass unsere **Open-Source**-Natur während dieses Prozesses einzigartige Transparenz bietet, sodass unsere Community und Kunden unser Engagement aus erster Hand sehen können.
 
-Wir werden unsere Community weiterhin auf dem Laufenden halten, wenn wir auf unserem Weg zur Einhaltung der Vorschriften wichtige Meilensteine erreichen.
+Wir werden unsere Community weiterhin informieren, sobald wir bedeutende Meilensteine auf unserer Compliance-Reise erreichen.
+
 
 ## Warum das für Sie wichtig ist {#why-this-matters-for-you}
 
-Die Wahl eines **Abschnitt 889-konformen E-Mail-Weiterleitungsdienstes** wie **Forward Email** bedeutet:
+Die Wahl eines **Section 889 konformen E-Mail-Weiterleitungsdienstes** wie **Forward Email** bedeutet:
 
-* **Gelassenheit:** Besonders für Behörden, Auftragnehmer und sicherheitsbewusste Organisationen.
-* **Geringeres Risiko:** Vermeidet potenzielle Konflikte mit **bundesstaatlichen E-Mail-Vorschriften**.
-* **Vertrauen:** Demonstriert Engagement für Sicherheit und Lieferkettenintegrität.
+* **Seelenfrieden:** Besonders für Regierungsbehörden, Auftragnehmer und sicherheitsbewusste Organisationen.
+* **Reduziertes Risiko:** Vermeidet potenzielle Konflikte mit **Bundesvorschriften für E-Mails**.
+* **Vertrauen:** Zeigt ein Engagement für Sicherheit und Integrität der Lieferkette.
 
-**Forward Email** bietet eine einfache, zuverlässige und *konforme* Möglichkeit, Ihre Anforderungen an die **E-Mail-Weiterleitung** Ihrer benutzerdefinierten Domain zu verwalten.
+**Forward Email** bietet eine einfache, zuverlässige und *konforme* Möglichkeit, Ihre Anforderungen an die **E-Mail-Weiterleitung** für benutzerdefinierte Domains zu verwalten.
+
 
 ## Sichere, konforme E-Mail-Weiterleitung beginnt hier {#secure-compliant-email-forwarding-starts-here}
 
-**Forward Email** bietet einen **sicheren, privaten und Open-Source-E-Mail-Weiterleitungsdienst**. Unsere **Konformität mit Abschnitt 889**, die wir durch unsere Partnerschaft mit [Cloudflare](https://www.cloudflare.com/) und [Datenpaket](https://datapacket.com/) erreicht haben (was unsere **Forward Email-Konformität für die Arbeit der US Naval Academy** widerspiegelt), ist ein Beweis für dieses Engagement. Egal, ob Sie eine Regierungsbehörde, ein Auftragnehmer oder einfach nur Wert auf **E-Mail-Sicherheit für Behörden** legen – **Forward Email** ist für Sie da.
+**Forward Email** hat sich der Bereitstellung eines **sicheren, privaten und Open-Source E-Mail-Weiterleitungsdienstes** verschrieben. Unsere **Compliance mit Section 889**, erreicht durch unsere Partnerschaft mit [Cloudflare](https://www.cloudflare.com/) und [DataPacket](https://datapacket.com/) (was unsere **Forward Email Compliance für die US Naval Academy** widerspiegelt), ist ein Beleg für dieses Engagement. Ob Sie eine Regierungsstelle, ein Auftragnehmer sind oder einfach Wert auf **Regierungssicherheit bei E-Mails** legen – **Forward Email** ist für Sie gemacht.
 
 Bereit für **sichere, konforme E-Mail-Weiterleitung**? [Melden Sie sich noch heute kostenlos an!](https://forwardemail.net)
 
+
 ## Referenzen {#references}
 
-* **Abschnitt 889 (NDAA):** <https://www.acquisition.gov/Section-889-Policies>
+* **Section 889 (NDAA):** <https://www.acquisition.gov/Section-889-Policies>
 * **Cloudflare:** <https://www.cloudflare.com/>
-* **Cloudflare-Verhaltenskodex für Drittanbieter:** <https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf>
-* **Datenpaket:** <https://datapacket.com/>
-* **System für Vergabemanagement (SAM):** <https://sam.gov/>
-* **Bundesbeschaffungsverordnung (FAR):** <https://www.acquisition.gov/browse/index/far>
+* **Cloudflare Third Party Code of Conduct:** <https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf>
+* **DataPacket:** <https://datapacket.com/>
+* **System for Award Management (SAM):** <https://sam.gov/>
+* **Federal Acquisition Regulation (FAR):** <https://www.acquisition.gov/browse/index/far>
 * **FAR 52.212-4:** <https://www.acquisition.gov/far/52.212-4>
-* **Ergänzung zur Bundesbeschaffungsverordnung des Verteidigungsministeriums (DFARS):** <https://www.acquisition.gov/dfars>
+* **Defense Federal Acquisition Regulation Supplement (DFARS):** <https://www.acquisition.gov/dfars>
 * **DFARS 252.239-7010:** <https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.>
-* **Zertifizierung des Cybersicherheits-Reifegradmodells (CMMC):** <https://dodcio.defense.gov/cmmc/About/>
-* **NIST SP 800-171:** <https://www.cloudflare.com/>0
-* **Bundesweites Risiko- und Autorisierungsmanagementprogramm (FedRAMP):** <https://www.cloudflare.com/>1
-* **Bundesgesetz zur Modernisierung der Informationssicherheit (FISMA):** <https://www.cloudflare.com/>2
-* **Gesetz zur Portabilität und Rechenschaftspflicht von Krankenversicherungen (HIPAA):** <https://www.cloudflare.com/>3
-* **Gesetz über die Rechte und Privatsphäre von Familien im Bildungsbereich (FERPA):** <https://www.cloudflare.com/>4
-* **Gesetz zum Schutz der Online-Privatsphäre von Kindern (COPPA):** <https://www.cloudflare.com/>5
+* **Cybersecurity Maturity Model Certification (CMMC):** <https://dodcio.defense.gov/cmmc/About/>
+* **NIST SP 800-171:** <https://csrc.nist.gov/pubs/sp/800/171/r3/final>
+* **Federal Risk and Authorization Management Program (FedRAMP):** <https://www.fedramp.gov/>
+* **Federal Information Security Modernization Act (FISMA):** <https://www.cisa.gov/topics/cybersecurity-best-practices/fisma>
+* **Health Insurance Portability and Accountability Act (HIPAA):** <https://www.hhs.gov/hipaa/index.html>
+* **Family Educational Rights and Privacy Act (FERPA):** <https://studentprivacy.ed.gov/ferpa>
+* **Children's Online Privacy Protection Act (COPPA):** <https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa>

@@ -1,556 +1,556 @@
-# Complete Guide to Printer, Camera, Fax & Scanner Email Setup {#complete-guide-to-printer-camera-fax--scanner-email-setup}
+# Yazıcı, Kamera, Faks ve Tarayıcı E-posta Kurulumu Tam Rehberi {#complete-guide-to-printer-camera-fax--scanner-email-setup}
 
-Your office equipment needs to send emails - printers alert about toner levels, IP cameras notify about motion detection, fax machines report transmission status, and scanners confirm document processing. The problem? Most email providers dropped support for older devices, leaving your equipment unable to send notifications.
+Ofis ekipmanınızın e-posta göndermesi gerekir - yazıcılar toner seviyeleri hakkında uyarır, IP kameralar hareket algılama hakkında bildirim yapar, faks makineleri iletim durumunu raporlar ve tarayıcılar belge işleme onayı verir. Sorun ne mi? Çoğu e-posta sağlayıcısı eski cihazlar için desteği bıraktı, bu da ekipmanınızın bildirim gönderememesine yol açtı.
 
-[Microsoft Office 365 discontinued TLS 1.0 and TLS 1.1 support in January 2022](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), breaking email for thousands of devices. Many printers, cameras, and fax machines made before 2020 only support these legacy protocols and can't be updated.
+[Microsoft Office 365, Ocak 2022'de TLS 1.0 ve TLS 1.1 desteğini sonlandırdı](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), binlerce cihaz için e-postayı bozdu. 2020 öncesi birçok yazıcı, kamera ve faks makinesi yalnızca bu eski protokolleri destekler ve güncellenemez.
 
-Forward Email fixes this by supporting both modern and legacy devices. We have dedicated ports for current equipment and special legacy ports for older devices that can't be upgraded.
+Forward Email, hem modern hem de eski cihazları destekleyerek bu sorunu çözüyor. Güncel ekipmanlar için özel portlarımız ve yükseltilemeyen eski cihazlar için özel eski portlarımız var.
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy devices through our dual-port strategy. Use port `465` (SSL/TLS, recommended) or `587` (STARTTLS) for modern devices with TLS 1.2+ support, and ports `2455`/`2555` for legacy devices that only support TLS 1.0.
+> Forward Email, çift port stratejimizle hem modern hem de eski cihazları destekler. TLS 1.2+ desteği olan modern cihazlar için `465` (SSL/TLS, önerilen) veya `587` (STARTTLS) portlarını, yalnızca TLS 1.0 destekleyen eski cihazlar için ise `2455`/`2555` portlarını kullanın.
 
-## Table of Contents {#table-of-contents}
 
-* [The TLS Problem Explained](#the-tls-problem-explained)
-* [Forward Email SMTP Configuration Overview](#forward-email-smtp-configuration-overview)
-* [Comprehensive Device Compatibility Matrix](#comprehensive-device-compatibility-matrix)
-* [HP Printer Email Configuration](#hp-printer-email-configuration)
-  * [Modern HP Printers (2020 and Later)](#modern-hp-printers-2020-and-later)
-  * [Legacy HP Printers (Pre-2020 Models)](#legacy-hp-printers-pre-2020-models)
-* [Canon Printer Email Configuration](#canon-printer-email-configuration)
-  * [Current Canon Printers](#current-canon-printers)
-  * [Legacy Canon Printers](#legacy-canon-printers)
-* [Brother Printer Email Configuration](#brother-printer-email-configuration)
-  * [Brother MFC Series Configuration](#brother-mfc-series-configuration)
-  * [Troubleshooting Brother Email Issues](#troubleshooting-brother-email-issues)
-* [Foscam IP Camera Email Configuration](#foscam-ip-camera-email-configuration)
-  * [Understanding Foscam Email Limitations](#understanding-foscam-email-limitations)
-  * [Foscam Email Configuration Steps](#foscam-email-configuration-steps)
-  * [Advanced Foscam Configuration](#advanced-foscam-configuration)
-* [Hikvision Security Camera Email Configuration](#hikvision-security-camera-email-configuration)
-  * [Modern Hikvision Camera Configuration](#modern-hikvision-camera-configuration)
-  * [Legacy Hikvision Camera Configuration](#legacy-hikvision-camera-configuration)
-* [Dahua Security Camera Email Configuration](#dahua-security-camera-email-configuration)
-  * [Dahua Camera Email Setup](#dahua-camera-email-setup)
-  * [Dahua NVR Email Configuration](#dahua-nvr-email-configuration)
-* [Xerox Multifunction Device Email Configuration](#xerox-multifunction-device-email-configuration)
-  * [Xerox MFD Email Setup](#xerox-mfd-email-setup)
-* [Ricoh Multifunction Device Email Configuration](#ricoh-multifunction-device-email-configuration)
-  * [Modern Ricoh MFD Configuration](#modern-ricoh-mfd-configuration)
-  * [Legacy Ricoh Device Configuration](#legacy-ricoh-device-configuration)
-* [Troubleshooting Common Configuration Issues](#troubleshooting-common-configuration-issues)
-  * [Authentication and Credential Issues](#authentication-and-credential-issues)
-  * [TLS and Encryption Problems](#tls-and-encryption-problems)
-  * [Network Connectivity Issues](#network-connectivity-issues)
-  * [Device-Specific Configuration Challenges](#device-specific-configuration-challenges)
-* [Security Considerations and Best Practices](#security-considerations-and-best-practices)
-  * [Credential Management](#credential-management)
-  * [Network Security](#network-security)
-  * [Information Disclosure](#information-disclosure)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Conclusion](#conclusion)
+## İçindekiler {#table-of-contents}
 
-## The TLS Problem Explained {#the-tls-problem-explained}
+* [TLS Sorunu Açıklaması](#the-tls-problem-explained)
+* [Forward Email SMTP Yapılandırma Genel Bakış](#forward-email-smtp-configuration-overview)
+* [Kapsamlı Cihaz Uyumluluk Matrisi](#comprehensive-device-compatibility-matrix)
+* [HP Yazıcı E-posta Yapılandırması](#hp-printer-email-configuration)
+  * [Modern HP Yazıcılar (2020 ve Sonrası)](#modern-hp-printers-2020-and-later)
+  * [Eski HP Yazıcılar (2020 Öncesi Modeller)](#legacy-hp-printers-pre-2020-models)
+* [Canon Yazıcı E-posta Yapılandırması](#canon-printer-email-configuration)
+  * [Güncel Canon Yazıcılar](#current-canon-printers)
+  * [Eski Canon Yazıcılar](#legacy-canon-printers)
+* [Brother Yazıcı E-posta Yapılandırması](#brother-printer-email-configuration)
+  * [Brother MFC Serisi Yapılandırması](#brother-mfc-series-configuration)
+  * [Brother E-posta Sorun Giderme](#troubleshooting-brother-email-issues)
+* [Foscam IP Kamera E-posta Yapılandırması](#foscam-ip-camera-email-configuration)
+  * [Foscam E-posta Kısıtlamalarının Anlaşılması](#understanding-foscam-email-limitations)
+  * [Foscam E-posta Yapılandırma Adımları](#foscam-email-configuration-steps)
+  * [Gelişmiş Foscam Yapılandırması](#advanced-foscam-configuration)
+* [Hikvision Güvenlik Kamerası E-posta Yapılandırması](#hikvision-security-camera-email-configuration)
+  * [Modern Hikvision Kamera Yapılandırması](#modern-hikvision-camera-configuration)
+  * [Eski Hikvision Kamera Yapılandırması](#legacy-hikvision-camera-configuration)
+* [Dahua Güvenlik Kamerası E-posta Yapılandırması](#dahua-security-camera-email-configuration)
+  * [Dahua Kamera E-posta Kurulumu](#dahua-camera-email-setup)
+  * [Dahua NVR E-posta Yapılandırması](#dahua-nvr-email-configuration)
+* [Xerox Çok Fonksiyonlu Cihaz E-posta Yapılandırması](#xerox-multifunction-device-email-configuration)
+  * [Xerox MFD E-posta Kurulumu](#xerox-mfd-email-setup)
+* [Ricoh Çok Fonksiyonlu Cihaz E-posta Yapılandırması](#ricoh-multifunction-device-email-configuration)
+  * [Modern Ricoh MFD Yapılandırması](#modern-ricoh-mfd-configuration)
+  * [Eski Ricoh Cihaz Yapılandırması](#legacy-ricoh-device-configuration)
+* [Yaygın Yapılandırma Sorunları Giderme](#troubleshooting-common-configuration-issues)
+  * [Kimlik Doğrulama ve Kimlik Bilgisi Sorunları](#authentication-and-credential-issues)
+  * [TLS ve Şifreleme Problemleri](#tls-and-encryption-problems)
+  * [Ağ Bağlantısı Sorunları](#network-connectivity-issues)
+  * [Cihaza Özel Yapılandırma Zorlukları](#device-specific-configuration-challenges)
+* [Güvenlik Hususları ve En İyi Uygulamalar](#security-considerations-and-best-practices)
+  * [Kimlik Bilgisi Yönetimi](#credential-management)
+  * [Ağ Güvenliği](#network-security)
+  * [Bilgi Açığa Çıkması](#information-disclosure)
+  * [İzleme ve Bakım](#monitoring-and-maintenance)
+* [Sonuç](#conclusion)
+## TLS Sorunu Açıklaması {#the-tls-problem-explained}
 
-Here's what happened: email security got stricter, but your devices didn't get the memo. Modern equipment supports TLS 1.2+, but older devices are stuck with TLS 1.0. Most email providers dropped support for TLS 1.0, so your devices can't connect.
+Şöyle oldu: e-posta güvenliği sıkılaştı, ancak cihazlarınız bu bilgiyi almadı. Modern ekipman TLS 1.2+ desteklerken, eski cihazlar TLS 1.0 ile sınırlı kaldı. Çoğu e-posta sağlayıcısı TLS 1.0 desteğini bıraktı, bu yüzden cihazlarınız bağlanamıyor.
 
-This affects real operations - security cameras can't send alerts during incidents, printers can't warn about maintenance issues, and fax confirmations get lost. Forward Email's [SMTP server configuration](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) provides multiple ports to keep everything working.
-
-> \[!TIP]
-> Check your device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
-
-## Forward Email SMTP Configuration Overview {#forward-email-smtp-configuration-overview}
-
-Forward Email provides a comprehensive SMTP service designed specifically to address the unique challenges of device email configuration. Our infrastructure supports multiple connection types and security levels, ensuring compatibility with both cutting-edge equipment and legacy devices that remain in active use.
-
-For modern devices with TLS 1.2+ support, use our primary SMTP server at smtp.forwardemail.net with port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections. These ports provide enterprise-grade security and are compatible with all current device firmware versions.
-
-Legacy devices that only support TLS 1.0 can use our specialized compatibility ports. Port 2455 provides SSL/TLS connections with TLS 1.0 support, while port 2555 offers STARTTLS with legacy protocol compatibility. These ports maintain the highest possible security while ensuring continued functionality for older equipment.
-
-Authentication is required for all connections using your Forward Email alias as the username and a generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). This approach provides robust security while maintaining broad compatibility across different device authentication systems.
-
-> \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for device configuration.
-
-## Comprehensive Device Compatibility Matrix {#comprehensive-device-compatibility-matrix}
-
-Understanding which devices require legacy support versus modern configuration helps streamline the setup process and ensures reliable email delivery across your entire device ecosystem.
-
-| Device Category | Modern TLS Support | Legacy TLS Required | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| -------------------------- | ------------------ | ------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| HP Printers (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Certificate validation](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [HP LaserJet Pro MFP Setup Guide](https://support.hp.com/us-en/document/ish_6185297-6063300-16) |
-| HP Printers (Pre-2020) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Firmware limitations](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/) | [Scan to Email Feature Guide](https://support.hp.com/us-en/document/ish_6518575-6518545-16) |
-| Canon Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Authentication setup](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358) | [Canon SMTP Authentication Guide](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html) |
-| Canon Printers (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate issues](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443) | [Advanced E-mail Settings Guide](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html) |
-| Brother Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Port configuration](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/) | [Brother SMTP Setup Guide](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512) |
-| Epson Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Web interface access | [Epson Email Notification Setup](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm) |
-| Foscam IP Cameras | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate validation](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/) | [Foscam Email Setup FAQ](https://www.foscam.com/faqs/view.html?id=63) |
-| Hikvision (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL requirements | [Hikvision Email Setup Guide](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Hikvision (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | Firmware updates | [Legacy Hikvision Configuration](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Dahua Cameras (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Authentication | [Dahua Email Setup Wiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) |
-| Xerox MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [TLS configuration](https://www.support.xerox.com/en-us/article/KB0032169) | [Xerox TLS Configuration Guide](https://www.support.xerox.com/en-us/article/KB0032169) |
-| Ricoh MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL setup | [Ricoh Email Configuration](https://www.ricoh.com/info/2025/0526_1) |
-| Ricoh MFDs (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Basic auth issues](https://www.ricoh.com/info/2025/0526_1) | [Legacy Ricoh Setup](https://www.ricoh.com/info/2025/0526_1) |
-
-This matrix provides a quick reference for determining the appropriate configuration approach for your specific devices. When in doubt, start with modern ports and fall back to legacy ports if connection issues occur.
-
-> \[!NOTE]
-> Device age is not always a reliable indicator of TLS support. Some manufacturers backported TLS 1.2 support to older models through firmware updates, while others discontinued support for legacy products.
-
-## HP Printer Email Configuration {#hp-printer-email-configuration}
-
-HP printers represent one of the largest installed bases of network-connected printing devices, with models ranging from current LaserJet Pro series with full TLS 1.3 support to legacy models that only support TLS 1.0. The configuration process varies significantly between modern and legacy devices, requiring different approaches for optimal compatibility.
-
-### Modern HP Printers (2020 and Later) {#modern-hp-printers-2020-and-later}
-
-Modern HP printers include the LaserJet Pro MFP M404 series, Color LaserJet Pro MFP M479 series, and newer models that support current TLS standards. These devices provide comprehensive email notification capabilities through HP's Embedded Web Server (EWS) interface.
-
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. You can find the IP address by printing a network configuration page from the printer's control panel.
-
-2. **Navigate to the Network tab** and select "Email Server" or "SMTP Settings" depending on your printer model. Some HP printers organize these settings under "System" > "Email Alerts."
-
-3. **Configure the SMTP server settings** by entering `smtp.forwardemail.net` as the server address. Select "SSL/TLS" as the encryption method and enter `465` as the port number for the most reliable connection.
-
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains), not your account login password.
-
-5. **Configure sender information** by entering your Forward Email alias as the "From" address and a descriptive name like "HP Printer - Office" to help identify the source of notifications.
-
-6. **Set up recipient addresses** by adding up to five email addresses that should receive printer notifications. HP printers allow different notification types to be sent to different recipients.
-
-7. **Test the configuration** using HP's built-in email test function. The printer will send a test message to verify that all settings are correct and communication with Forward Email's servers is working properly.
+Bu gerçek operasyonları etkiliyor - güvenlik kameraları olaylar sırasında uyarı gönderemiyor, yazıcılar bakım sorunları hakkında uyarı veremiyor ve faks onayları kayboluyor. Forward Email'in [SMTP sunucu yapılandırması](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) her şeyin çalışmaya devam etmesi için birden fazla port sağlar.
 
 > \[!TIP]
-> HP printers often cache DNS lookups. If you encounter connection issues, restart the printer after configuration to clear any cached DNS entries.
+> Yapılandırmadan önce cihazınızın donanım yazılımı sürümünü ve TLS desteğini kontrol edin. 2020 sonrası üretilen çoğu cihaz modern TLS protokollerini desteklerken, eski cihazlar genellikle eski uyumluluk portlarına ihtiyaç duyar.
 
-### Legacy HP Printers (Pre-2020 Models) {#legacy-hp-printers-pre-2020-models}
 
-Older HP printers, including the LaserJet Pro MFP M277 and similar models, often only support TLS 1.0 and require special configuration to work with modern email providers. These devices frequently display "TLS certificate verification failed" errors when attempting to connect to standard SMTP ports.
+## Forward Email SMTP Yapılandırma Genel Bakış {#forward-email-smtp-configuration-overview}
 
-1. **Access the printer's Embedded Web Server** by entering the printer's IP address in a web browser. Legacy HP printers may require Internet Explorer or compatibility mode for full functionality.
+Forward Email, cihaz e-posta yapılandırmasının benzersiz zorluklarını ele almak üzere özel olarak tasarlanmış kapsamlı bir SMTP hizmeti sunar. Altyapımız, hem en yeni ekipmanlarla hem de aktif olarak kullanılan eski cihazlarla uyumluluğu sağlamak için birden fazla bağlantı türü ve güvenlik seviyesi destekler.
 
-2. **Navigate to the Network or System settings** and locate the "Email" or "SMTP" configuration section. The exact location varies by model and firmware version.
+TLS 1.2+ destekleyen modern cihazlar için, SSL/TLS bağlantıları için port 465 veya STARTTLS bağlantıları için port 587 ile smtp.forwardemail.net ana SMTP sunucumuzu kullanın (önerilir). Bu portlar kurumsal düzeyde güvenlik sağlar ve tüm güncel cihaz donanım yazılımı sürümleriyle uyumludur.
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address. This is crucial - use port 2455 for SSL/TLS connections or port 2555 for STARTTLS connections instead of standard ports.
+Sadece TLS 1.0 destekleyen eski cihazlar, özel uyumluluk portlarımızı kullanabilir. Port 2455 TLS 1.0 destekli SSL/TLS bağlantısı sağlarken, port 2555 eski protokol uyumluluğuyla STARTTLS sunar. Bu portlar en yüksek mümkün güvenliği korurken eski ekipmanın işlevselliğinin devamını sağlar.
 
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use your generated Forward Email password for authentication.
-
-5. **Configure encryption settings** carefully. Select "SSL/TLS" if using port 2455, or "STARTTLS" if using port 2555. Some legacy HP printers may label these options differently.
-
-6. **Set sender and recipient information** using your Forward Email alias as the sender address and configuring appropriate recipient addresses for notifications.
-
-7. **Test the configuration** using the printer's test function. If the test fails with certificate errors, verify that you're using the correct legacy ports (2455 or 2555) rather than standard SMTP ports.
+Tüm bağlantılar için Forward Email takma adınızı kullanıcı adı olarak ve [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) bölümünden oluşturulan şifreyi kullanarak kimlik doğrulaması gereklidir. Bu yöntem, farklı cihaz kimlik doğrulama sistemleri arasında geniş uyumluluk sağlarken güçlü güvenlik sunar.
 
 > \[!CAUTION]
-> Legacy HP printers may not receive firmware updates that address TLS compatibility issues. If configuration continues to fail, consider using a local SMTP relay server as an intermediate solution.
+> SMTP kimlik doğrulaması için hesap giriş şifrenizi asla kullanmayın. Cihaz yapılandırması için her zaman [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) bölümünden oluşturulan şifreyi kullanın.
 
-## Canon Printer Email Configuration {#canon-printer-email-configuration}
 
-Canon printers offer robust email notification capabilities across their imageRUNNER, PIXMA, and MAXIFY product lines. Modern Canon devices support comprehensive TLS configurations, while legacy models may require specific compatibility settings to function with current email providers.
+## Kapsamlı Cihaz Uyumluluk Matrisi {#comprehensive-device-compatibility-matrix}
 
-### Current Canon Printers {#current-canon-printers}
+Hangi cihazların eski destek gerektirdiğini ve hangilerinin modern yapılandırma kullandığını anlamak, kurulum sürecini kolaylaştırır ve tüm cihaz ekosisteminizde güvenilir e-posta teslimatını garanti eder.
 
-Modern Canon printers provide extensive email notification features through the Remote UI web interface, supporting everything from basic status alerts to detailed device management notifications.
-
-1. **Access the Remote UI** by entering the printer's IP address in a web browser. Canon printers typically use a web-based interface for all network configuration tasks.
-
-2. **Navigate to Settings/Registration** and select "Device Management" from the menu. Look for "E-Mail Notification Settings" or similar options depending on your printer model.
-
-3. **Configure the SMTP server** by clicking "Add Destination" and entering smtp.forwardemail.net as the server address. Select "SSL" or "TLS" as the encryption method.
-
-4. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Canon printers clearly distinguish between these encryption methods in their interface.
-
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
-
-6. **Set up sender information** by entering your Forward Email alias as the sender address and configuring a descriptive display name for easy identification of notifications.
-
-7. **Configure notification types** by selecting which events should trigger email alerts. Canon printers support granular control over notification types, including error conditions, maintenance alerts, and security events.
-
-8. **Test the email configuration** using Canon's built-in test function. The printer will send a test notification to verify proper configuration and connectivity.
+| Cihaz Kategorisi           | Modern TLS Desteği  | Eski TLS Gerekli   | Önerilen Portlar | Yaygın Sorunlar                                                                                                                                     | Kurulum Kılavuzu/Ekran Görüntüleri                                                                                                              |
+| -------------------------- | ------------------- | ------------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| HP Yazıcılar (2020+)       | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | [Sertifika doğrulama](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [HP LaserJet Pro MFP Kurulum Kılavuzu](https://support.hp.com/us-en/document/ish_6185297-6063300-16)                                              |
+| HP Yazıcılar (2020 Öncesi) | ❌                   | ✅ Sadece TLS 1.0   | `2455`, `2555`   | [Donanım yazılımı sınırlamaları](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/)                              | [E-postaya Tarama Özelliği Kılavuzu](https://support.hp.com/us-en/document/ish_6518575-6518545-16)                                                |
+| Canon Yazıcılar (Güncel)   | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | [Kimlik doğrulama kurulumu](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358) | [Canon SMTP Kimlik Doğrulama Kılavuzu](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html)                               |
+| Canon Yazıcılar (Eski)     | ❌                   | ✅ Sadece TLS 1.0   | `2455`, `2555`   | [Sertifika sorunları](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443)        | [Gelişmiş E-posta Ayarları Kılavuzu](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html)                                      |
+| Brother Yazıcılar (Güncel) | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | [Port yapılandırması](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/)                      | [Brother SMTP Kurulum Kılavuzu](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512)              |
+| Epson Yazıcılar (Güncel)   | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | Web arayüzü erişimi                                                                                                                                | [Epson E-posta Bildirimi Kurulumu](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm)      |
+| Foscam IP Kameralar        | ❌                   | ✅ Sadece TLS 1.0   | `2455`, `2555`   | [Sertifika doğrulama](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/)                            | [Foscam E-posta Kurulum SSS](https://www.foscam.com/faqs/view.html?id=63)                                                                        |
+| Hikvision (2020+)          | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | SSL gereksinimleri                                                                                                                                  | [Hikvision E-posta Kurulum Kılavuzu](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
+| Hikvision (Eski)           | ❌                   | ✅ Sadece TLS 1.0   | `2455`, `2555`   | Donanım yazılımı güncellemeleri                                                                                                                    | [Eski Hikvision Yapılandırması](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf)  |
+| Dahua Kameralar (Güncel)   | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | Kimlik doğrulama                                                                                                                                   | [Dahua E-posta Kurulum Wiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail)                                                        |
+| Xerox MFD'ler (Güncel)     | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | [TLS yapılandırması](https://www.support.xerox.com/en-us/article/KB0032169)                                                                        | [Xerox TLS Yapılandırma Kılavuzu](https://www.support.xerox.com/en-us/article/KB0032169)                                                         |
+| Ricoh MFD'ler (Güncel)     | ✅ TLS 1.2+          | ❌                  | `465`, `587`     | SSL kurulumu                                                                                                                                       | [Ricoh E-posta Yapılandırması](https://www.ricoh.com/info/2025/0526_1)                                                                          |
+| Ricoh MFD'ler (Eski)       | ❌                   | ✅ Sadece TLS 1.0   | `2455`, `2555`   | [Temel kimlik doğrulama sorunları](https://www.ricoh.com/info/2025/0526_1)                                                                        | [Eski Ricoh Kurulumu](https://www.ricoh.com/info/2025/0526_1)                                                                                   |
+Bu matris, belirli cihazlarınız için uygun yapılandırma yaklaşımını hızlıca belirlemenize yardımcı olur. Şüphe durumunda, modern portlarla başlayın ve bağlantı sorunları yaşanırsa eski portlara geri dönün.
 
 > \[!NOTE]
-> Canon printers often provide detailed error messages that can help troubleshoot configuration issues. Pay attention to specific error codes for faster problem resolution.
+> Cihaz yaşı her zaman TLS desteğinin güvenilir bir göstergesi değildir. Bazı üreticiler, eski modellere firmware güncellemeleriyle TLS 1.2 desteğini geri taşırken, diğerleri eski ürünler için desteği sonlandırmıştır.
 
-### Legacy Canon Printers {#legacy-canon-printers}
 
-Older Canon printers may have limited TLS support and require careful configuration to work with modern email providers. These devices often need legacy-compatible SMTP settings to maintain email notification functionality.
+## HP Yazıcı E-posta Yapılandırması {#hp-printer-email-configuration}
 
-1. **Access the printer's web interface** using the device's IP address. Legacy Canon printers may require specific browser compatibility settings for full functionality.
+HP yazıcılar, tam TLS 1.3 desteğine sahip güncel LaserJet Pro serisinden yalnızca TLS 1.0 destekleyen eski modellere kadar uzanan modellerle, ağ bağlantılı yazıcı cihazlarının en büyük kurulu tabanlarından birini temsil eder. Yapılandırma süreci modern ve eski cihazlar arasında önemli ölçüde farklılık gösterir ve optimal uyumluluk için farklı yaklaşımlar gerektirir.
 
-2. **Navigate to the email configuration section** through the device management or network settings menu. The exact path varies by model and firmware version.
+### Modern HP Yazıcılar (2020 ve Sonrası) {#modern-hp-printers-2020-and-later}
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections or port 2555 for STARTTLS connections.
+Modern HP yazıcılar arasında LaserJet Pro MFP M404 serisi, Color LaserJet Pro MFP M479 serisi ve mevcut TLS standartlarını destekleyen daha yeni modeller bulunur. Bu cihazlar, HP'nin Gömülü Web Sunucusu (EWS) arayüzü aracılığıyla kapsamlı e-posta bildirim yetenekleri sunar.
 
-4. **Set up authentication carefully** by enabling SMTP authentication and using your Forward Email alias and generated password. Legacy Canon printers may have specific authentication requirements.
+1. **Yazıcının web arayüzüne erişin**: Yazıcının IP adresini bir web tarayıcısına girin. IP adresini, yazıcının kontrol panelinden bir ağ yapılandırma sayfası yazdırarak bulabilirsiniz.
 
-5. **Configure encryption settings** by selecting the appropriate TLS option for your chosen port. Ensure the encryption method matches the port configuration (SSL for 2455, STARTTLS for 2555).
+2. **Ağ sekmesine gidin** ve yazıcı modelinize bağlı olarak "E-posta Sunucusu" veya "SMTP Ayarları"nı seçin. Bazı HP yazıcılar bu ayarları "Sistem" > "E-posta Uyarıları" altında düzenler.
 
-6. **Test the configuration** and monitor for certificate validation errors. If issues persist, verify that you're using Forward Email's legacy-compatible ports rather than standard SMTP ports.
+3. **SMTP sunucu ayarlarını yapılandırın**: Sunucu adresi olarak `smtp.forwardemail.net` girin. Şifreleme yöntemi olarak "SSL/TLS" seçin ve en güvenilir bağlantı için port numarası olarak `465` girin.
+
+4. **Kimlik doğrulamayı ayarlayın**: SMTP kimlik doğrulamayı etkinleştirin ve kullanıcı adı olarak Forward Email takma adınızı girin. Hesap giriş şifreniz değil, [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) bölümünden oluşturulan şifreyi kullanın.
+
+5. **Gönderen bilgilerini yapılandırın**: "Kimden" adresi olarak Forward Email takma adınızı ve bildirim kaynağını tanımlamaya yardımcı olacak "HP Yazıcı - Ofis" gibi açıklayıcı bir isim girin.
+
+6. **Alıcı adreslerini ayarlayın**: Yazıcı bildirimlerini alacak en fazla beş e-posta adresi ekleyin. HP yazıcılar, farklı bildirim türlerinin farklı alıcılara gönderilmesine izin verir.
+
+7. **Yapılandırmayı test edin**: HP'nin yerleşik e-posta test işlevini kullanarak yapılandırmayı test edin. Yazıcı, tüm ayarların doğru olduğunu ve Forward Email sunucularıyla iletişimin düzgün çalıştığını doğrulamak için test mesajı gönderecektir.
+
+> \[!TIP]
+> HP yazıcılar genellikle DNS sorgularını önbelleğe alır. Bağlantı sorunları yaşarsanız, yapılandırmadan sonra önbelleğe alınmış DNS girdilerini temizlemek için yazıcıyı yeniden başlatın.
+
+### Eski HP Yazıcılar (2020 Öncesi Modeller) {#legacy-hp-printers-pre-2020-models}
+
+LaserJet Pro MFP M277 ve benzeri modeller dahil eski HP yazıcılar genellikle yalnızca TLS 1.0 destekler ve modern e-posta sağlayıcılarıyla çalışmak için özel yapılandırma gerektirir. Bu cihazlar, standart SMTP portlarına bağlanmaya çalışırken sık sık "TLS sertifika doğrulaması başarısız oldu" hataları gösterir.
+
+1. **Yazıcının Gömülü Web Sunucusuna erişin**: Yazıcının IP adresini bir web tarayıcısına girin. Eski HP yazıcılar tam işlevsellik için Internet Explorer veya uyumluluk modu gerektirebilir.
+
+2. **Ağ veya Sistem ayarlarına gidin** ve "E-posta" veya "SMTP" yapılandırma bölümünü bulun. Tam konum model ve firmware sürümüne göre değişir.
+
+3. **Forward Email'in eski SMTP ayarlarını yapılandırın**: Sunucu adresi olarak smtp.forwardemail.net girin. Bu çok önemlidir - standart portlar yerine SSL/TLS bağlantıları için 2455 portunu veya STARTTLS bağlantıları için 2555 portunu kullanın.
+
+4. **Kimlik doğrulamayı ayarlayın**: SMTP kimlik doğrulamayı etkinleştirin ve kullanıcı adı olarak Forward Email takma adınızı girin. Kimlik doğrulama için oluşturduğunuz Forward Email şifresini kullanın.
+
+5. **Şifreleme ayarlarını dikkatlice yapılandırın**: 2455 portunu kullanıyorsanız "SSL/TLS"yi, 2555 portunu kullanıyorsanız "STARTTLS"yi seçin. Bazı eski HP yazıcılar bu seçenekleri farklı adlandırabilir.
+6. **Gönderen ve alıcı bilgilerini ayarlayın**; Forward Email takma adınızı gönderen adresi olarak kullanarak ve bildirimler için uygun alıcı adreslerini yapılandırarak.
+
+7. **Yazıcının test fonksiyonunu kullanarak yapılandırmayı test edin.** Test sertifika hatalarıyla başarısız olursa, standart SMTP portları yerine doğru eski portları (2455 veya 2555) kullandığınızdan emin olun.
+
+> \[!CAUTION]
+> Eski HP yazıcılar, TLS uyumluluk sorunlarını gideren firmware güncellemelerini almayabilir. Yapılandırma başarısız olmaya devam ederse, ara çözüm olarak yerel bir SMTP relay sunucusu kullanmayı düşünün.
+
+
+## Canon Yazıcı E-posta Yapılandırması {#canon-printer-email-configuration}
+
+Canon yazıcılar, imageRUNNER, PIXMA ve MAXIFY ürün serileri genelinde güçlü e-posta bildirim özellikleri sunar. Modern Canon cihazları kapsamlı TLS yapılandırmalarını desteklerken, eski modeller mevcut e-posta sağlayıcılarıyla çalışmak için belirli uyumluluk ayarları gerektirebilir.
+
+### Güncel Canon Yazıcılar {#current-canon-printers}
+
+Modern Canon yazıcılar, Remote UI web arayüzü üzerinden temel durum uyarılarından ayrıntılı cihaz yönetimi bildirimlerine kadar geniş e-posta bildirim özellikleri sağlar.
+
+1. **Remote UI'ya erişin**; yazıcının IP adresini bir web tarayıcısına girin. Canon yazıcılar genellikle tüm ağ yapılandırma görevleri için web tabanlı bir arayüz kullanır.
+
+2. **Ayarlar/Kayıt bölümüne gidin** ve menüden "Cihaz Yönetimi"ni seçin. Yazıcı modelinize bağlı olarak "E-Posta Bildirim Ayarları" veya benzeri seçenekleri arayın.
+
+3. **SMTP sunucusunu yapılandırın**; "Hedef Ekle"ye tıklayın ve sunucu adresi olarak smtp.forwardemail.net girin. Şifreleme yöntemi olarak "SSL" veya "TLS"yi seçin.
+
+4. **Port numarasını ayarlayın**; SSL/TLS bağlantıları için 465 (önerilen) veya STARTTLS bağlantıları için 587 olarak belirleyin. Canon yazıcılar arayüzlerinde bu şifreleme yöntemlerini açıkça ayırır.
+
+5. **Kimlik doğrulamayı yapılandırın**; SMTP kimlik doğrulamayı etkinleştirin ve kullanıcı adı olarak Forward Email takma adınızı girin. Şifreyi [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) üzerinden oluşturduğunuz şifreyi kullanın.
+
+6. **Gönderen bilgilerini ayarlayın**; Forward Email takma adınızı gönderen adresi olarak girin ve bildirimlerin kolay tanımlanması için açıklayıcı bir görüntüleme adı yapılandırın.
+
+7. **Bildirim türlerini yapılandırın**; hangi olayların e-posta uyarısı tetikleyeceğini seçin. Canon yazıcılar, hata durumları, bakım uyarıları ve güvenlik olayları dahil olmak üzere bildirim türleri üzerinde ayrıntılı kontrol sağlar.
+
+8. **E-posta yapılandırmasını test edin**; Canon’un yerleşik test fonksiyonunu kullanarak. Yazıcı, doğru yapılandırma ve bağlantıyı doğrulamak için test bildirimi gönderecektir.
+
+> \[!NOTE]
+> Canon yazıcılar, yapılandırma sorunlarını gidermeye yardımcı olabilecek ayrıntılı hata mesajları sağlar. Daha hızlı sorun çözümü için belirli hata kodlarına dikkat edin.
+
+### Eski Canon Yazıcılar {#legacy-canon-printers}
+
+Eski Canon yazıcılar sınırlı TLS desteğine sahip olabilir ve modern e-posta sağlayıcılarıyla çalışmak için dikkatli yapılandırma gerektirir. Bu cihazlar genellikle e-posta bildirim işlevselliğini sürdürmek için eski uyumlu SMTP ayarlarına ihtiyaç duyar.
+
+1. **Yazıcının web arayüzüne erişin**; cihazın IP adresini kullanarak. Eski Canon yazıcılar tam işlevsellik için belirli tarayıcı uyumluluk ayarları gerektirebilir.
+
+2. **E-posta yapılandırma bölümüne gidin**; cihaz yönetimi veya ağ ayarları menüsü üzerinden. Tam yol model ve firmware sürümüne göre değişir.
+
+3. **Forward Email’in eski SMTP ayarlarını yapılandırın**; sunucu adresi olarak smtp.forwardemail.net girin ve SSL bağlantıları için 2455 portunu veya STARTTLS bağlantıları için 2555 portunu kullanın.
+
+4. **Kimlik doğrulamayı dikkatlice yapılandırın**; SMTP kimlik doğrulamayı etkinleştirin ve Forward Email takma adınızı ve oluşturduğunuz şifreyi kullanın. Eski Canon yazıcıların özel kimlik doğrulama gereksinimleri olabilir.
+
+5. **Şifreleme ayarlarını yapılandırın**; seçilen port için uygun TLS seçeneğini belirleyin. Şifreleme yönteminin port yapılandırmasıyla eşleştiğinden emin olun (2455 için SSL, 2555 için STARTTLS).
+6. **Yapılandırmayı test edin** ve sertifika doğrulama hatalarını izleyin. Sorunlar devam ederse, standart SMTP portları yerine Forward Email'in eski uyumlu portlarını kullandığınızdan emin olun.
 
 > \[!WARNING]
-> Some legacy Canon printers may not support server certificate validation. While this reduces security, it may be necessary for continued email functionality on older devices.
+> Bazı eski Canon yazıcılar sunucu sertifikası doğrulamasını desteklemeyebilir. Bu durum güvenliği azaltırken, eski cihazlarda e-posta işlevselliğinin devamı için gerekli olabilir.
 
-## Brother Printer Email Configuration {#brother-printer-email-configuration}
 
-Brother printers, particularly the MFC and DCP series, provide comprehensive scan-to-email and notification capabilities. However, many users report configuration challenges when setting up email functionality, especially with Office 365 and other modern email providers that have deprecated legacy authentication methods.
+## Brother Yazıcı E-posta Yapılandırması {#brother-printer-email-configuration}
 
-### Brother MFC Series Configuration {#brother-mfc-series-configuration}
+Brother yazıcılar, özellikle MFC ve DCP serileri, kapsamlı tarama-e-posta ve bildirim özellikleri sunar. Ancak, birçok kullanıcı özellikle Office 365 ve eski kimlik doğrulama yöntemlerini kullanımdan kaldıran diğer modern e-posta sağlayıcıları ile e-posta işlevselliği kurarken yapılandırma zorlukları bildirmektedir.
 
-Brother multifunction printers offer extensive email capabilities, but configuration can be complex due to the variety of authentication and encryption options available.
+### Brother MFC Serisi Yapılandırması {#brother-mfc-series-configuration}
 
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. Brother printers provide a comprehensive web-based configuration system.
+Brother çok işlevli yazıcılar geniş e-posta yetenekleri sunar, ancak mevcut çeşitli kimlik doğrulama ve şifreleme seçenekleri nedeniyle yapılandırma karmaşık olabilir.
 
-2. **Navigate to the Network settings** and select "Email/IFAX" or "Scan to Email" depending on your printer model. Some Brother printers organize these settings under "Administrator Settings."
+1. **Yazıcının web arayüzüne erişin** yazıcının IP adresini bir web tarayıcısına girerek. Brother yazıcılar kapsamlı web tabanlı bir yapılandırma sistemi sağlar.
 
-3. **Configure the SMTP server settings** by entering smtp.forwardemail.net as the server address. Brother printers support both SSL/TLS and STARTTLS encryption methods.
+2. **Ağ ayarlarına gidin** ve yazıcı modelinize bağlı olarak "Email/IFAX" veya "Scan to Email" seçeneğini seçin. Bazı Brother yazıcılar bu ayarları "Yönetici Ayarları" altında düzenler.
 
-4. **Set the appropriate port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption. Brother printers clearly label these options in their interface.
+3. **SMTP sunucu ayarlarını yapılandırın** sunucu adresi olarak smtp.forwardemail.net girerek. Brother yazıcılar hem SSL/TLS hem de STARTTLS şifreleme yöntemlerini destekler.
 
-5. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+4. **Uygun port ve şifrelemeyi ayarlayın** port 465'i SSL/TLS şifrelemesi ile (önerilen) veya port 587'yi STARTTLS şifrelemesi ile seçerek. Brother yazıcılar bu seçenekleri arayüzlerinde açıkça belirtir.
 
-6. **Set up sender information** by configuring your Forward Email alias as the sender address and adding a descriptive name to identify the printer in email notifications.
+5. **SMTP kimlik doğrulamayı yapılandırın** kimlik doğrulamayı etkinleştirerek ve kullanıcı adı olarak Forward Email takma adınızı girerek. Şifre olarak [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) sayfasından oluşturulan şifreyi kullanın.
 
-7. **Configure scan-to-email settings** by setting up address book entries and default scan settings. Brother printers allow extensive customization of scan parameters and recipient management.
+6. **Gönderen bilgilerini ayarlayın** Forward Email takma adınızı gönderen adresi olarak yapılandırın ve e-posta bildirimlerinde yazıcıyı tanımlamak için açıklayıcı bir isim ekleyin.
 
-8. **Test both email notifications and scan-to-email functionality** to ensure complete configuration. Brother printers provide separate test functions for different email features.
+7. **Tarama-e-posta ayarlarını yapılandırın** adres defteri girdileri ve varsayılan tarama ayarlarını kurarak. Brother yazıcılar tarama parametreleri ve alıcı yönetimi konusunda geniş özelleştirme imkanı sunar.
+
+8. **Hem e-posta bildirimlerini hem de tarama-e-posta işlevselliğini test edin** tam yapılandırmayı sağlamak için. Brother yazıcılar farklı e-posta özellikleri için ayrı test fonksiyonları sağlar.
 
 > \[!TIP]
-> Brother printers often require firmware updates to resolve email configuration issues. Check for available updates before troubleshooting connection problems.
+> Brother yazıcılar e-posta yapılandırma sorunlarını çözmek için genellikle firmware güncellemeleri gerektirir. Bağlantı sorunlarını gidermeden önce mevcut güncellemeleri kontrol edin.
 
-### Troubleshooting Brother Email Issues {#troubleshooting-brother-email-issues}
+### Brother E-posta Sorun Giderme {#troubleshooting-brother-email-issues}
 
-Brother printers frequently encounter specific configuration challenges that can be resolved with targeted troubleshooting approaches.
+Brother yazıcılar sıkça belirli yapılandırma sorunlarıyla karşılaşır ve bunlar hedefe yönelik sorun giderme yöntemleriyle çözülebilir.
 
-If your Brother printer displays "Authentication Failed" errors when testing email configuration, verify that you're using your Forward Email alias (not your account email) as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Brother printers are particularly sensitive to authentication credential formatting.
+Brother yazıcınız e-posta yapılandırmasını test ederken "Kimlik Doğrulama Başarısız" hatası veriyorsa, kullanıcı adı olarak Forward Email takma adınızı (hesap e-postanızı değil) ve [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) sayfasından oluşturulan şifreyi kullandığınızdan emin olun. Brother yazıcılar kimlik doğrulama kimlik bilgisi biçimlendirmesine karşı özellikle hassastır.
 
-For printers that won't accept scan-to-email configuration settings, try configuring the settings through the web interface rather than the printer's control panel. The web interface often provides more detailed error messages and configuration options.
+Tarama-e-posta yapılandırma ayarlarını kabul etmeyen yazıcılar için, ayarları yazıcının kontrol paneli yerine web arayüzü üzerinden yapılandırmayı deneyin. Web arayüzü genellikle daha ayrıntılı hata mesajları ve yapılandırma seçenekleri sunar.
 
-When encountering SSL/TLS connection errors, verify that you're using the correct port and encryption combination. Brother printers require exact matches between port numbers and encryption methods - port 465 must use SSL/TLS (recommended), while port 587 must use STARTTLS.
+SSL/TLS bağlantı hatalarıyla karşılaşırsanız, doğru port ve şifreleme kombinasyonunu kullandığınızdan emin olun. Brother yazıcılar port numaraları ile şifreleme yöntemleri arasında tam eşleşme gerektirir - port 465 SSL/TLS (önerilen) kullanmalı, port 587 ise STARTTLS kullanmalıdır.
 
 > \[!CAUTION]
-> Some Brother printer models have known issues with specific SMTP server configurations. If standard configuration fails, consult Brother's support documentation for model-specific workarounds.
+> Bazı Brother yazıcı modellerinde belirli SMTP sunucu yapılandırmaları ile ilgili bilinen sorunlar vardır. Standart yapılandırma başarısız olursa, model özel çözümler için Brother destek dokümantasyonuna başvurun.
+## Foscam IP Kamera E-posta Yapılandırması {#foscam-ip-camera-email-configuration}
 
-## Foscam IP Camera Email Configuration {#foscam-ip-camera-email-configuration}
+Foscam IP kameralar, yaygın olarak eski TLS protokollerini kullanmaları ve sınırlı firmware güncelleme imkanı nedeniyle e-posta yapılandırması açısından en zorlu cihaz kategorilerinden biridir. R2 serisi gibi popüler modeller de dahil olmak üzere çoğu Foscam kamera yalnızca TLS 1.0'ı destekler ve modern şifreleme standartlarını destekleyecek şekilde güncellenemez.
 
-Foscam IP cameras represent one of the most challenging device categories for email configuration due to their widespread use of legacy TLS protocols and limited firmware update availability. Most Foscam cameras, including popular models like the R2 series, only support TLS 1.0 and cannot be updated to support modern encryption standards.
+### Foscam E-posta Sınırlamalarını Anlamak {#understanding-foscam-email-limitations}
 
-### Understanding Foscam Email Limitations {#understanding-foscam-email-limitations}
+Foscam kameralar, belirli yapılandırma yaklaşımları gerektiren benzersiz zorluklar sunar. En sık karşılaşılan hata mesajı "TLS certificate verification failed: unable to get local issuer certificate" olup, bu mesaj kameranın çoğu e-posta sağlayıcısı tarafından kullanılan modern SSL sertifikalarını doğrulayamadığını gösterir.
 
-Foscam cameras present unique challenges that require specific configuration approaches. The most common error message encountered is "TLS certificate verification failed: unable to get local issuer certificate," which indicates that the camera cannot validate modern SSL certificates used by most email providers.
+Bu sorun birkaç faktörden kaynaklanır: güncellenemeyen eski sertifika depoları, TLS 1.0 ile sınırlı TLS protokol desteği ve güvenlik protokolü yükseltmelerini engelleyen firmware kısıtlamaları. Ayrıca, birçok Foscam modeli kullanım ömrünün sonuna ulaşmış olup, bu uyumluluk sorunlarını giderebilecek firmware güncellemeleri artık almamaktadır.
 
-This issue stems from several factors: outdated certificate stores that cannot be updated, limited TLS protocol support that maxes out at TLS 1.0, and firmware limitations that prevent security protocol upgrades. Additionally, many Foscam models have reached end-of-life status and no longer receive firmware updates that could address these compatibility issues.
+Forward Email'in eski SMTP portları, TLS 1.0 uyumluluğunu korurken bu eski cihazlar için mümkün olan en yüksek güvenliği sağlayarak bu sınırlamaları özel olarak ele alır.
 
-Forward Email's legacy SMTP ports specifically address these limitations by maintaining TLS 1.0 compatibility while providing the highest possible security for these older devices.
+### Foscam E-posta Yapılandırma Adımları {#foscam-email-configuration-steps}
 
-### Foscam Email Configuration Steps {#foscam-email-configuration-steps}
+Foscam kameralarında e-posta bildirimlerini yapılandırmak, cihazların TLS sınırlamalarını aşmak için port seçimi ve şifreleme ayarlarına dikkat etmeyi gerektirir.
 
-Configuring email notifications on Foscam cameras requires careful attention to port selection and encryption settings to work around the devices' TLS limitations.
+1. **Kameranın web arayüzüne erişin**: Kameranın IP adresini bir web tarayıcısına girin. Foscam kameralar genellikle web erişimi için 88 numaralı portu kullanır (örneğin, <http://192.168.1.100:88>).
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Foscam cameras typically use port 88 for web access (e.g., <http://192.168.1.100:88>).
+2. **Ayarlar menüsüne gidin** ve kamera modelinize bağlı olarak "Mail Service" veya "Email Settings" seçeneğini seçin. Bazı Foscam kameralar bu ayarları "Alarm" > "Mail Service" altında organize eder.
 
-2. **Navigate to the Settings menu** and select "Mail Service" or "Email Settings" depending on your camera model. Some Foscam cameras organize these settings under "Alarm" > "Mail Service."
+3. **SMTP sunucusunu yapılandırın**: Sunucu adresi olarak smtp.forwardemail.net girin. Bu kritik bir adımdır - standart e-posta sağlayıcılarının SMTP sunucularını kullanmayın çünkü artık TLS 1.0'ı desteklememektedirler.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. This is critical - do not use standard email provider SMTP servers as they no longer support TLS 1.0.
+4. **Port ve şifrelemeyi ayarlayın**: SSL şifreleme için 2455 portunu veya STARTTLS şifreleme için 2555 portunu seçin. Bunlar, Foscam kameralar gibi cihazlar için özel olarak tasarlanmış Forward Email'in eski uyumlu portlarıdır.
 
-4. **Set the port and encryption** by selecting port 2455 for SSL encryption or port 2555 for STARTTLS encryption. These are Forward Email's legacy-compatible ports specifically designed for devices like Foscam cameras.
+5. **Kimlik doğrulamayı yapılandırın**: SMTP kimlik doğrulamayı etkinleştirin ve kullanıcı adı olarak Forward Email takma adınızı girin. Şifreyi [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) üzerinden oluşturulan şifreyi kullanın.
 
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Gönderen ve alıcı bilgilerini ayarlayın**: Gönderen adresi olarak Forward Email takma adınızı yapılandırın ve hareket algılama ile sistem uyarıları için alıcı adresleri ekleyin.
 
-6. **Set up sender and recipient information** by configuring your Forward Email alias as the sender address and adding recipient addresses for motion detection and system alerts.
+7. **Bildirim tetikleyicilerini yapılandırın**: Hareket algılama hassasiyeti, kayıt programları ve e-posta bildirimlerini tetiklemesi gereken diğer olayları ayarlayın.
 
-7. **Configure notification triggers** by setting up motion detection sensitivity, recording schedules, and other events that should trigger email notifications.
-
-8. **Test the email configuration** using Foscam's built-in test function. If the test succeeds, you should receive a test email confirming proper configuration.
+8. **E-posta yapılandırmasını test edin**: Foscam'ın yerleşik test fonksiyonunu kullanarak testi gerçekleştirin. Test başarılı olursa, doğru yapılandırmayı onaylayan bir test e-postası almanız gerekir.
 
 > \[!IMPORTANT]
-> Foscam cameras require Forward Email's legacy ports (2455 or 2555) due to TLS 1.0 limitations. Standard SMTP ports will not work with these devices.
+> Foscam kameralar TLS 1.0 sınırlamaları nedeniyle Forward Email'in eski portlarını (2455 veya 2555) gerektirir. Standart SMTP portları bu cihazlarla çalışmaz.
 
-### Advanced Foscam Configuration {#advanced-foscam-configuration}
+### Gelişmiş Foscam Yapılandırması {#advanced-foscam-configuration}
 
-For users requiring more sophisticated notification setups, Foscam cameras offer additional configuration options that can enhance security monitoring capabilities.
+Daha gelişmiş bildirim ayarları gerektiren kullanıcılar için, Foscam kameralar güvenlik izleme yeteneklerini artırabilecek ek yapılandırma seçenekleri sunar.
 
-Configure motion detection zones to reduce false alarms by defining specific areas of the camera's field of view that should trigger notifications. This prevents unnecessary emails from environmental factors like moving trees or passing vehicles.
+Bildirimleri tetikleyecek kamera görüş alanının belirli bölgelerini tanımlayarak yanlış alarmları azaltmak için hareket algılama bölgelerini yapılandırın. Bu, hareket eden ağaçlar veya geçen araçlar gibi çevresel faktörlerden kaynaklanan gereksiz e-postaların önüne geçer.
 
-Set up recording schedules that align with your monitoring needs, ensuring that email notifications are sent during appropriate time periods. Foscam cameras can suppress notifications during specified hours to prevent overnight alerts for non-critical events.
-
-Configure multiple recipient addresses for different types of alerts, allowing you to route motion detection alerts to security personnel while sending system maintenance alerts to IT staff.
+İzleme ihtiyaçlarınıza uygun kayıt programları ayarlayarak, e-posta bildirimlerinin uygun zaman dilimlerinde gönderilmesini sağlayın. Foscam kameralar, kritik olmayan olaylar için gece boyunca bildirimleri engelleyebilir.
+Farklı türde uyarılar için birden fazla alıcı adresi yapılandırarak, hareket algılama uyarılarını güvenlik personeline yönlendirirken sistem bakım uyarılarını BT personeline gönderebilirsiniz.
 
 > \[!TIP]
-> Foscam cameras can generate significant email volume if motion detection is too sensitive. Start with conservative settings and adjust based on your environment's characteristics.
+> Foscam kameralar, hareket algılama çok hassassa önemli miktarda e-posta oluşturabilir. Çevrenizin özelliklerine göre ayarlamalar yaparak muhafazakar ayarlarla başlayın.
 
-## Hikvision Security Camera Email Configuration {#hikvision-security-camera-email-configuration}
 
-Hikvision cameras represent a significant portion of the global security camera market, with models ranging from basic IP cameras to advanced AI-powered surveillance systems. The email configuration process varies considerably between newer models with modern TLS support and legacy devices that require compatibility workarounds.
+## Hikvision Güvenlik Kamerası E-posta Yapılandırması {#hikvision-security-camera-email-configuration}
 
-### Modern Hikvision Camera Configuration {#modern-hikvision-camera-configuration}
+Hikvision kameralar, temel IP kameralardan gelişmiş yapay zeka destekli gözetim sistemlerine kadar modelleriyle küresel güvenlik kamerası pazarının önemli bir bölümünü temsil eder. E-posta yapılandırma süreci, modern TLS desteği olan yeni modeller ile uyumluluk çözümleri gerektiren eski cihazlar arasında önemli ölçüde farklılık gösterir.
 
-Current Hikvision cameras running recent firmware versions support TLS 1.2+ and provide comprehensive email notification capabilities through their web-based interface.
+### Modern Hikvision Kamera Yapılandırması {#modern-hikvision-camera-configuration}
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Hikvision cameras typically use standard HTTP/HTTPS ports for web access.
+Güncel firmware sürümleriyle çalışan mevcut Hikvision kameralar TLS 1.2+ desteği sunar ve web tabanlı arayüzleri üzerinden kapsamlı e-posta bildirim özellikleri sağlar.
 
-2. **Navigate to Configuration** and select "Network" > "Advanced Settings" > "Email" from the menu structure. The exact path may vary depending on your camera model and firmware version.
+1. **Kameranın web arayüzüne erişin**; kamera IP adresini bir web tarayıcısına girin. Hikvision kameralar genellikle web erişimi için standart HTTP/HTTPS portlarını kullanır.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Hikvision cameras require specific SSL configuration for proper email functionality.
+2. **Yapılandırma bölümüne gidin** ve menü yapısından "Ağ" > "Gelişmiş Ayarlar" > "E-posta" seçeneklerini seçin. Kesin yol, kamera modelinize ve firmware sürümünüze bağlı olarak değişebilir.
 
-4. **Set encryption to SSL** and configure port 465. Hikvision cameras do not support STARTTLS, so SSL encryption on port 465 is the recommended configuration for Forward Email compatibility.
+3. **SMTP sunucusunu yapılandırın**; sunucu adresi olarak smtp.forwardemail.net girin. Hikvision kameralar, doğru e-posta işlevselliği için özel SSL yapılandırması gerektirir.
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for authentication.
+4. **Şifrelemeyi SSL olarak ayarlayın** ve port 465'i yapılandırın. Hikvision kameralar STARTTLS desteklemez, bu nedenle Forward Email uyumluluğu için port 465 üzerinde SSL şifrelemesi önerilen yapılandırmadır.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera in email notifications.
+5. **SMTP kimlik doğrulamayı etkinleştirin** ve kullanıcı adı olarak Forward Email takma adınızı girin. Kimlik doğrulama için [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) bölümünden oluşturulan şifreyi kullanın.
 
-7. **Set up recipient addresses** by adding email addresses that should receive security alerts, motion detection notifications, and system status updates.
+6. **Gönderen bilgilerini yapılandırın**; Forward Email takma adınızı gönderen adresi olarak ayarlayın ve e-posta bildirimlerinde kamerayı tanımlamak için açıklayıcı bir isim ekleyin.
 
-8. **Configure event triggers** by setting up motion detection, line crossing detection, intrusion detection, and other events that should generate email notifications.
+7. **Alıcı adreslerini ayarlayın**; güvenlik uyarılarını, hareket algılama bildirimlerini ve sistem durumu güncellemelerini alacak e-posta adreslerini ekleyin.
 
-9. **Test the email configuration** using Hikvision's built-in test function to verify proper connectivity and authentication with Forward Email's servers.
+8. **Olay tetikleyicilerini yapılandırın**; hareket algılama, çizgi geçiş algılama, izinsiz giriş algılama ve e-posta bildirimleri oluşturması gereken diğer olayları ayarlayın.
+
+9. **E-posta yapılandırmasını test edin**; Forward Email sunucularıyla doğru bağlantı ve kimlik doğrulamayı doğrulamak için Hikvision’un yerleşik test işlevini kullanın.
 
 > \[!NOTE]
-> Hikvision cameras require the most updated firmware versions to support SSL and TLS encryption properly. Check for firmware updates before configuring email settings.
+> Hikvision kameraların SSL ve TLS şifrelemesini düzgün desteklemesi için en güncel firmware sürümlerine sahip olması gerekir. E-posta ayarlarını yapılandırmadan önce firmware güncellemelerini kontrol edin.
 
-### Legacy Hikvision Camera Configuration {#legacy-hikvision-camera-configuration}
+### Eski Hikvision Kamera Yapılandırması {#legacy-hikvision-camera-configuration}
 
-Older Hikvision cameras may have limited TLS support and require Forward Email's legacy-compatible SMTP ports for continued email functionality.
+Eski Hikvision kameralar sınırlı TLS desteğine sahip olabilir ve e-posta işlevselliğinin devamı için Forward Email’in eski uyumlu SMTP portlarını kullanması gerekebilir.
 
-1. **Access the camera's web interface** and navigate to the email configuration section. Legacy Hikvision cameras may have different menu structures than current models.
+1. **Kameranın web arayüzüne erişin** ve e-posta yapılandırma bölümüne gidin. Eski Hikvision kameraların menü yapısı mevcut modellerden farklı olabilir.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+2. **Forward Email’in eski SMTP ayarlarını yapılandırın**; sunucu adresi olarak smtp.forwardemail.net girin ve SSL bağlantıları için port 2455’i kullanın.
 
-3. **Set up authentication** using your Forward Email alias and generated password. Legacy Hikvision cameras may have specific authentication requirements or limitations.
+3. **Kimlik doğrulamayı ayarlayın**; Forward Email takma adınızı ve oluşturulan şifreyi kullanın. Eski Hikvision kameralar belirli kimlik doğrulama gereksinimleri veya sınırlamalarına sahip olabilir.
 
-4. **Configure encryption settings** by selecting SSL encryption to match the legacy port configuration. Ensure the encryption method aligns with port 2455 requirements.
+4. **Şifreleme ayarlarını yapılandırın**; eski port yapılandırmasına uygun olarak SSL şifrelemesini seçin. Şifreleme yöntemi port 2455 gereksinimleriyle uyumlu olmalıdır.
 
-5. **Test the configuration** and monitor for connection errors. Legacy Hikvision cameras may provide limited error reporting, making troubleshooting more challenging.
+5. **Yapılandırmayı test edin** ve bağlantı hatalarını izleyin. Eski Hikvision kameralar sınırlı hata raporlama sağlayabilir, bu da sorun gidermeyi zorlaştırabilir.
 
 > \[!WARNING]
-> Legacy Hikvision cameras may have known security vulnerabilities. Ensure these devices are properly isolated on your network and consider upgrading to current models when possible.
+> Eski Hikvision kameraların bilinen güvenlik açıkları olabilir. Bu cihazların ağınızda uygun şekilde izole edildiğinden emin olun ve mümkün olduğunda güncel modellere yükseltmeyi düşünün.
+## Dahua Güvenlik Kamerası E-posta Yapılandırması {#dahua-security-camera-email-configuration}
 
-## Dahua Security Camera Email Configuration {#dahua-security-camera-email-configuration}
+Dahua kameralar, temel IP kameralardan gelişmiş yapay zeka destekli gözetim sistemlerine kadar geniş ürün yelpazesinde güçlü e-posta bildirim yetenekleri sunar. Yapılandırma süreci, modern cihazlar için genellikle basittir ve mevcut TLS standartları için kapsamlı destek sağlar.
 
-Dahua cameras provide robust email notification capabilities across their extensive product line, from basic IP cameras to advanced AI-powered surveillance systems. The configuration process is generally straightforward for modern devices, with comprehensive support for current TLS standards.
+### Dahua Kamera E-posta Kurulumu {#dahua-camera-email-setup}
 
-### Dahua Camera Email Setup {#dahua-camera-email-setup}
+Dahua kameralar, web arayüzü üzerinden kullanıcı dostu e-posta yapılandırması sunar ve modern SMTP standartlarıyla iyi uyumludur.
 
-Dahua cameras offer user-friendly email configuration through their web interface, with good compatibility for modern SMTP standards.
+1. **Kameranın web arayüzüne erişin** kameranın IP adresini bir web tarayıcısına girerek. Dahua kameralar genellikle sezgisel web tabanlı yapılandırma sistemleri sağlar.
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Dahua cameras typically provide intuitive web-based configuration systems.
+2. **Setup (Kurulum)** menüsüne gidin ve yapılandırma menüsünden "Network" > "Email" seçeneğini seçin. Dahua kameralar, e-posta ayarlarını kolay erişim için özel bir bölümde düzenler.
 
-2. **Navigate to Setup** and select "Network" > "Email" from the configuration menu. Dahua cameras organize email settings in a dedicated section for easy access.
+3. **SMTP sunucusunu yapılandırın** sunucu adresi olarak smtp.forwardemail.net girin. Dahua kameralar hem SSL hem de STARTTLS şifreleme yöntemlerini destekler.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Dahua cameras support both SSL and STARTTLS encryption methods.
+4. **Port ve şifrelemeyi ayarlayın** önerilen SSL/TLS şifrelemesi ile 465 portunu veya STARTTLS şifrelemesi ile 587 portunu seçin.
 
-4. **Set the port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption.
+5. **SMTP kimlik doğrulamayı etkinleştirin** ve kullanıcı adı olarak Forward Email takma adınızı girin. Şifreyi [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) sayfasından oluşturabilirsiniz.
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Gönderen bilgilerini yapılandırın** gönderen adresi olarak Forward Email takma adınızı ayarlayın ve kamera kaynağını tanımlamak için açıklayıcı bir isim ekleyin.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera source.
+7. **Alıcı adreslerini ayarlayın** farklı bildirim türleri için e-posta adresleri ekleyin. Dahua kameralar çeşitli uyarı türleri için birden fazla alıcıyı destekler.
 
-7. **Set up recipient addresses** by adding email addresses for different types of notifications. Dahua cameras support multiple recipients for various alert types.
+8. **Olay tetikleyicilerini yapılandırın** hareket algılama, müdahale uyarıları ve e-posta bildirimleri oluşturması gereken diğer güvenlik olaylarını ayarlayın.
 
-8. **Configure event triggers** by setting up motion detection, tampering alerts, and other security events that should generate email notifications.
-
-9. **Test the email functionality** using Dahua's built-in test feature to verify proper configuration and connectivity.
+9. **E-posta işlevselliğini test edin** Dahua'nın yerleşik test özelliğini kullanarak doğru yapılandırma ve bağlantıyı doğrulayın.
 
 > \[!TIP]
-> Dahua cameras often provide detailed configuration guides through their wiki documentation. Consult [Dahua's email setup guide](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) for model-specific instructions.
+> Dahua kameralar genellikle wiki dokümantasyonları aracılığıyla ayrıntılı yapılandırma rehberleri sunar. Modele özel talimatlar için [Dahua'nın e-posta kurulum rehberine](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) bakın.
 
-### Dahua NVR Email Configuration {#dahua-nvr-email-configuration}
+### Dahua NVR E-posta Yapılandırması {#dahua-nvr-email-configuration}
 
-Dahua Network Video Recorders (NVRs) provide centralized email notification management for multiple cameras, offering efficient administration of large surveillance systems.
+Dahua Ağ Video Kaydedicileri (NVR), birden fazla kamera için merkezi e-posta bildirim yönetimi sağlar ve büyük gözetim sistemlerinin verimli yönetimini sunar.
 
-1. **Access the NVR's web interface** by entering the NVR's IP address in a web browser. Dahua NVRs provide comprehensive management interfaces for system-wide configuration.
+1. **NVR'nin web arayüzüne erişin** NVR'nin IP adresini bir web tarayıcısına girerek. Dahua NVR'ler sistem genelinde yapılandırma için kapsamlı yönetim arayüzleri sağlar.
 
-2. **Navigate to the Email configuration** by selecting "Setup" > "Network" > "Email" from the main menu. NVRs typically organize email settings at the system level.
+2. **E-posta yapılandırmasına gidin** ana menüden "Setup" > "Network" > "Email" seçeneğini seçin. NVR'ler genellikle e-posta ayarlarını sistem düzeyinde organize eder.
 
-3. **Configure SMTP server settings** by entering smtp.forwardemail.net as the server address and selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS.
+3. **SMTP sunucu ayarlarını yapılandırın** sunucu adresi olarak smtp.forwardemail.net girin ve önerilen SSL/TLS şifrelemesi ile 465 portunu veya STARTTLS ile 587 portunu seçin.
 
-4. **Set up authentication** using your Forward Email alias and generated password. NVRs support standard SMTP authentication methods.
+4. **Kimlik doğrulamayı ayarlayın** Forward Email takma adınızı ve oluşturulan şifrenizi kullanarak. NVR'ler standart SMTP kimlik doğrulama yöntemlerini destekler.
 
-5. **Configure notification schedules** by setting up time periods when email notifications should be active. This helps manage notification volume during off-hours.
+5. **Bildirim zamanlamalarını yapılandırın** e-posta bildirimlerinin aktif olacağı zaman dilimlerini ayarlayın. Bu, mesai dışı saatlerde bildirim hacmini yönetmeye yardımcı olur.
 
-6. **Set up event-based notifications** by configuring which camera events should trigger email alerts. NVRs allow granular control over notification triggers across multiple cameras.
+6. **Olay tabanlı bildirimleri ayarlayın** hangi kamera olaylarının e-posta uyarısı tetikleyeceğini yapılandırın. NVR'ler, birden fazla kamera arasında bildirim tetikleyicileri üzerinde ayrıntılı kontrol sağlar.
 
-7. **Test the system-wide email configuration** to ensure proper functionality across all connected cameras and monitoring systems.
+7. **Sistem genelindeki e-posta yapılandırmasını test edin** bağlı tüm kameralar ve izleme sistemleri arasında doğru işlevselliği sağlamak için.
 
-## Xerox Multifunction Device Email Configuration {#xerox-multifunction-device-email-configuration}
+## Xerox Çok Fonksiyonlu Cihaz E-posta Yapılandırması {#xerox-multifunction-device-email-configuration}
 
-Xerox multifunction devices provide enterprise-grade email notification capabilities with comprehensive TLS support and advanced configuration options. Modern Xerox devices support current security standards while maintaining compatibility with various network environments.
+Xerox çok fonksiyonlu cihazlar, kapsamlı TLS desteği ve gelişmiş yapılandırma seçenekleri ile kurumsal düzeyde e-posta bildirim yetenekleri sunar. Modern Xerox cihazları, çeşitli ağ ortamlarıyla uyumluluğu korurken mevcut güvenlik standartlarını destekler.
 
-### Xerox MFD Email Setup {#xerox-mfd-email-setup}
+### Xerox MFD E-posta Kurulumu {#xerox-mfd-email-setup}
 
-Xerox multifunction devices offer sophisticated email configuration through their web-based administrative interface, supporting both basic notifications and advanced workflow integration.
+Xerox çok fonksiyonlu cihazlar, temel bildirimlerin yanı sıra gelişmiş iş akışı entegrasyonunu destekleyen web tabanlı yönetim arayüzü üzerinden sofistike e-posta yapılandırması sunar.
+1. **Cihazın web arayüzüne erişin** cihazın IP adresini bir web tarayıcısına girerek. Xerox cihazları genellikle kapsamlı web tabanlı yönetim araçları sunar.
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Xerox devices typically provide comprehensive web-based administration tools.
+2. **Özellikler menüsüne gidin** ve yapılandırma menüsünden "Bağlantı" > "Protokoller" > "SMTP" seçeneklerini seçin. Xerox cihazları e-posta ayarlarını protokol yapılandırma bölümünde düzenler.
 
-2. **Navigate to Properties** and select "Connectivity" > "Protocols" > "SMTP" from the configuration menu. Xerox devices organize email settings within their protocol configuration section.
+3. **SMTP sunucusunu yapılandırın** sunucu adresi olarak smtp.forwardemail.net girerek. Xerox cihazları yapılandırılabilir TLS sürümleri ve şifreleme yöntemlerini destekler.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Xerox devices support configurable TLS versions and encryption methods.
+4. **TLS yapılandırmasını ayarlayın** minimum desteklenen sürüm olarak TLS 1.2 veya daha yüksek bir sürümü seçerek. Xerox cihazları yöneticilerin gelişmiş güvenlik için belirli TLS gereksinimlerini yapılandırmasına olanak tanır.
 
-4. **Set TLS configuration** by selecting TLS 1.2 or higher as the minimum supported version. Xerox devices allow administrators to configure specific TLS requirements for enhanced security.
+5. **Port ve şifrelemeyi yapılandırın** SSL/TLS bağlantıları için 465 portunu (önerilen) veya STARTTLS bağlantıları için 587 portunu ayarlayarak.
 
-5. **Configure port and encryption** by setting port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections.
+6. **SMTP kimlik doğrulamasını ayarlayın** kimlik doğrulamayı etkinleştirerek ve kullanıcı adı olarak Forward Email takma adınızı girerek. Şifreyi [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) sayfasından oluşturulan şifreyi kullanın.
 
-6. **Set up SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **Gönderen bilgilerini yapılandırın** gönderen adresi olarak Forward Email takma adınızı ayarlayarak ve bildirim yönetimi için uygun yanıt adreslerini yapılandırarak.
 
-7. **Configure sender information** by setting your Forward Email alias as the sender address and configuring appropriate reply-to addresses for notification management.
+8. **Bildirim türlerini ayarlayın** bakım bildirimleri, hata durumları ve güvenlik olayları dahil olmak üzere hangi cihaz olaylarının e-posta uyarısı tetikleyeceğini yapılandırarak.
 
-8. **Set up notification types** by configuring which device events should trigger email alerts, including maintenance notifications, error conditions, and security events.
-
-9. **Test the email configuration** using Xerox's comprehensive test system to verify proper connectivity and authentication.
+9. **E-posta yapılandırmasını test edin** doğru bağlantı ve kimlik doğrulamayı doğrulamak için Xerox’un kapsamlı test sistemini kullanarak.
 
 > \[!NOTE]
-> Xerox devices provide detailed TLS configuration options that allow fine-tuning of security settings. Consult [Xerox's TLS configuration guide](https://www.support.xerox.com/en-us/article/KB0032169) for advanced security requirements.
+> Xerox cihazları güvenlik ayarlarının ince ayarını yapmaya olanak tanıyan ayrıntılı TLS yapılandırma seçenekleri sunar. Gelişmiş güvenlik gereksinimleri için [Xerox’un TLS yapılandırma kılavuzuna](https://www.support.xerox.com/en-us/article/KB0032169) başvurun.
 
-## Ricoh Multifunction Device Email Configuration {#ricoh-multifunction-device-email-configuration}
 
-Ricoh multifunction devices offer robust email capabilities across their extensive product line, from basic office printers to advanced production systems. However, [Ricoh has announced significant changes](https://www.ricoh.com/info/2025/0526\_1) related to Microsoft's basic authentication discontinuation that affects email functionality.
+## Ricoh Çok Fonksiyonlu Cihaz E-posta Yapılandırması {#ricoh-multifunction-device-email-configuration}
 
-### Modern Ricoh MFD Configuration {#modern-ricoh-mfd-configuration}
+Ricoh çok fonksiyonlu cihazları, temel ofis yazıcılarından gelişmiş üretim sistemlerine kadar geniş ürün yelpazesinde güçlü e-posta özellikleri sunar. Ancak, [Ricoh Microsoft’un temel kimlik doğrulama desteğini sonlandırmasıyla ilgili önemli değişiklikler duyurdu](https://www.ricoh.com/info/2025/0526_1) ve bu durum e-posta işlevselliğini etkiler.
 
-Current Ricoh devices support modern TLS standards and provide comprehensive email notification capabilities through their web-based interface.
+### Modern Ricoh MFD Yapılandırması {#modern-ricoh-mfd-configuration}
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Ricoh devices provide intuitive web-based configuration systems.
+Güncel Ricoh cihazları modern TLS standartlarını destekler ve web tabanlı arayüzleri aracılığıyla kapsamlı e-posta bildirim özellikleri sunar.
 
-2. **Navigate to the Email configuration** by selecting "System Settings" > "Administrator Tools" > "Network" > "Email" from the menu structure.
+1. **Cihazın web arayüzüne erişin** cihazın IP adresini bir web tarayıcısına girerek. Ricoh cihazları sezgisel web tabanlı yapılandırma sistemleri sağlar.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Ricoh devices support both SSL and STARTTLS encryption methods.
+2. **E-posta yapılandırmasına gidin** menü yapısından "Sistem Ayarları" > "Yönetici Araçları" > "Ağ" > "E-posta" seçeneklerini seçerek.
 
-4. **Enable SSL on the SMTP server page** to activate TLS encryption. Ricoh's interface may be cryptic, but SSL enablement is required for secure email functionality.
+3. **SMTP sunucusunu yapılandırın** sunucu adresi olarak smtp.forwardemail.net girerek. Ricoh cihazları hem SSL hem de STARTTLS şifreleme yöntemlerini destekler.
 
-5. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Ensure the encryption method matches the selected port.
+4. **SMTP sunucu sayfasında SSL’i etkinleştirin** TLS şifrelemesini aktifleştirmek için. Ricoh arayüzü karmaşık olabilir, ancak güvenli e-posta işlevselliği için SSL etkinleştirilmelidir.
 
-6. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+5. **Port numarasını ayarlayın** SSL/TLS bağlantıları için 465 (önerilen) veya STARTTLS bağlantıları için 587 olarak. Şifreleme yöntemi seçilen port ile uyumlu olmalıdır.
 
-7. **Set up sender information** by configuring your Forward Email alias as the sender address and adding appropriate identification information.
+6. **SMTP kimlik doğrulamasını yapılandırın** kimlik doğrulamayı etkinleştirerek ve kullanıcı adı olarak Forward Email takma adınızı girerek. Şifreyi [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) sayfasından oluşturulan şifreyi kullanın.
 
-8. **Configure notification types** by setting up scan-to-email, device alerts, and maintenance notifications according to your operational requirements.
+7. **Gönderen bilgilerini ayarlayın** gönderen adresi olarak Forward Email takma adınızı yapılandırarak ve uygun tanımlama bilgilerini ekleyerek.
 
-9. **Test the email functionality** using Ricoh's built-in test system to verify proper configuration and connectivity.
+8. **Bildirim türlerini yapılandırın** tarama ile e-posta gönderme, cihaz uyarıları ve bakım bildirimlerini operasyonel gereksinimlerinize göre ayarlayarak.
+
+9. **E-posta işlevselliğini test edin** doğru yapılandırma ve bağlantıyı doğrulamak için Ricoh’un yerleşik test sistemini kullanarak.
 
 > \[!IMPORTANT]
-> Ricoh devices affected by Microsoft's basic authentication changes require updated authentication methods. Ensure your device firmware supports modern authentication or use Forward Email's compatibility features.
+> Microsoft’un temel kimlik doğrulama değişikliklerinden etkilenen Ricoh cihazları güncellenmiş kimlik doğrulama yöntemleri gerektirir. Cihazınızın yazılımının modern kimlik doğrulamayı desteklediğinden emin olun veya Forward Email’in uyumluluk özelliklerini kullanın.
+### Legacy Ricoh Cihaz Yapılandırması {#legacy-ricoh-device-configuration}
 
-### Legacy Ricoh Device Configuration {#legacy-ricoh-device-configuration}
+Eski Ricoh cihazları, sınırlı TLS desteği ve kimlik doğrulama yöntemi kısıtlamaları nedeniyle Forward Email'in eski uyumlu SMTP portlarını gerektirebilir.
 
-Older Ricoh devices may require Forward Email's legacy-compatible SMTP ports due to limited TLS support and authentication method restrictions.
+1. **Cihazın web arayüzüne erişin** ve e-posta yapılandırma bölümüne gidin. Eski Ricoh cihazlarının menü yapıları mevcut modellerden farklı olabilir.
 
-1. **Access the device's web interface** and navigate to the email configuration section. Legacy Ricoh devices may have different menu structures than current models.
+2. **Forward Email'in eski SMTP ayarlarını yapılandırın**; sunucu adresi olarak smtp.forwardemail.net girin ve SSL bağlantıları için 2455 portunu kullanın.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+3. **SSL şifrelemeyi etkinleştirin** ve eski port yapılandırmasıyla eşleşmesini sağlayın. Şifreleme ayarlarının 2455 portu gereksinimleriyle uyumlu olduğundan emin olun.
 
-3. **Enable SSL encryption** to match the legacy port configuration. Ensure the encryption settings align with port 2455 requirements.
+4. **Kimlik doğrulamayı ayarlayın**; Forward Email takma adınızı ve oluşturulan şifrenizi kullanın. Eski Ricoh cihazlarının belirli kimlik doğrulama kısıtlamaları olabilir.
 
-4. **Set up authentication** using your Forward Email alias and generated password. Legacy Ricoh devices may have specific authentication limitations.
+5. **Yapılandırmayı test edin** ve kimlik doğrulama veya bağlantı hatalarını izleyin. Eski cihazlar sorun giderme için sınırlı hata raporlama sağlayabilir.
 
-5. **Test the configuration** and monitor for authentication or connection errors. Legacy devices may provide limited error reporting for troubleshooting.
 
-## Troubleshooting Common Configuration Issues {#troubleshooting-common-configuration-issues}
+## Yaygın Yapılandırma Sorunlarının Giderilmesi {#troubleshooting-common-configuration-issues}
 
-Device email configuration can encounter various issues due to network settings, authentication problems, or protocol compatibility challenges. Understanding common problems and their solutions helps ensure reliable notification delivery across your device ecosystem.
+Cihaz e-posta yapılandırması, ağ ayarları, kimlik doğrulama sorunları veya protokol uyumluluğu zorlukları nedeniyle çeşitli sorunlarla karşılaşabilir. Yaygın problemleri ve çözümlerini anlamak, cihaz ekosisteminizde güvenilir bildirim teslimatını sağlamaya yardımcı olur.
 
-### Authentication and Credential Issues {#authentication-and-credential-issues}
+### Kimlik Doğrulama ve Kimlik Bilgisi Sorunları {#authentication-and-credential-issues}
 
-Authentication failures represent the most common email configuration problem across all device types. These issues typically stem from incorrect credential usage, authentication method mismatches, or account configuration problems.
+Kimlik doğrulama hataları, tüm cihaz türlerinde en yaygın e-posta yapılandırma sorunudur. Bu sorunlar genellikle yanlış kimlik bilgisi kullanımı, kimlik doğrulama yöntemi uyumsuzlukları veya hesap yapılandırma problemlerinden kaynaklanır.
 
-Verify that you're using your Forward Email alias as the username, not your account email address or login credentials. Many devices are sensitive to username formatting and require exact matches with your configured alias.
+Kullanıcı adı olarak Forward Email takma adınızı kullandığınızdan emin olun; hesap e-posta adresiniz veya giriş kimlik bilgileriniz değil. Birçok cihaz kullanıcı adı biçimine duyarlıdır ve yapılandırdığınız takma adla tam eşleşme gerektirir.
 
-Ensure you're using the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) rather than your account login password. SMTP authentication requires the specific generated password for security reasons, and using incorrect credentials will result in authentication failures.
+Hesap giriş şifreniz yerine [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) bölümünden oluşturulan şifreyi kullandığınızdan emin olun. SMTP kimlik doğrulaması güvenlik nedeniyle özel oluşturulan şifreyi gerektirir ve yanlış kimlik bilgileri kimlik doğrulama hatalarına yol açar.
 
-Check that your Forward Email account has proper SMTP access enabled and that any two-factor authentication requirements are properly configured. Some account configurations may restrict SMTP access until properly activated.
+Forward Email hesabınızda uygun SMTP erişiminin etkin olduğundan ve iki faktörlü kimlik doğrulama gereksinimlerinin doğru yapılandırıldığından emin olun. Bazı hesap yapılandırmaları, doğru etkinleştirilene kadar SMTP erişimini kısıtlayabilir.
 
 > \[!TIP]
-> If authentication continues to fail, regenerate your SMTP password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) and update your device configuration with the new credentials.
+> Kimlik doğrulama hataları devam ederse, [Hesabım -> Alan Adları -> Takma Adlar](https://forwardemail.net/my-account/domains) bölümünden SMTP şifrenizi yeniden oluşturun ve cihaz yapılandırmanızı yeni kimlik bilgileriyle güncelleyin.
 
-### TLS and Encryption Problems {#tls-and-encryption-problems}
+### TLS ve Şifreleme Sorunları {#tls-and-encryption-problems}
 
-TLS-related issues often occur when devices attempt to use unsupported encryption protocols or when there's a mismatch between port configuration and encryption settings.
+TLS ile ilgili sorunlar, cihazlar desteklenmeyen şifreleme protokollerini kullanmaya çalıştığında veya port yapılandırması ile şifreleme ayarları arasında uyumsuzluk olduğunda sıkça ortaya çıkar.
 
-For modern devices experiencing TLS errors, verify that you're using the correct port and encryption combination: port 465 with SSL/TLS (recommended) or port 587 with STARTTLS. These settings must match exactly for successful connections.
+Modern cihazlarda TLS hataları yaşanıyorsa, doğru port ve şifreleme kombinasyonunu kullandığınızdan emin olun: port 465 ile SSL/TLS (önerilen) veya port 587 ile STARTTLS. Başarılı bağlantılar için bu ayarlar tam olarak eşleşmelidir.
 
-Legacy devices displaying certificate validation errors should use Forward Email's compatibility ports (2455 or 2555) rather than standard SMTP ports. These ports maintain TLS 1.0 compatibility while providing appropriate security for older devices.
+Sertifika doğrulama hatası gösteren eski cihazlar, standart SMTP portları yerine Forward Email'in uyumluluk portları (2455 veya 2555) kullanılmalıdır. Bu portlar TLS 1.0 uyumluluğunu korurken eski cihazlar için uygun güvenlik sağlar.
 
-If certificate validation continues to fail on legacy devices, check if the device allows certificate validation to be disabled. While this reduces security, it may be necessary for continued functionality on devices that cannot be updated.
+Eski cihazlarda sertifika doğrulama hataları devam ederse, cihazın sertifika doğrulamasını devre dışı bırakmaya izin verip vermediğini kontrol edin. Bu güvenliği azaltır ancak güncellenemeyen cihazlarda işlevselliğin devamı için gerekebilir.
 
 > \[!CAUTION]
-> Disabling certificate validation reduces security and should only be used as a last resort for legacy devices that cannot be updated or replaced.
+> Sertifika doğrulamasını devre dışı bırakmak güvenliği azaltır ve yalnızca güncellenemeyen veya değiştirilemeyen eski cihazlar için son çare olarak kullanılmalıdır.
 
-### Network Connectivity Issues {#network-connectivity-issues}
+### Ağ Bağlantısı Sorunları {#network-connectivity-issues}
 
-Network-related problems can prevent devices from reaching Forward Email's SMTP servers even when configuration settings are correct.
+Ağla ilgili sorunlar, yapılandırma ayarları doğru olsa bile cihazların Forward Email'in SMTP sunucularına ulaşmasını engelleyebilir.
 
-Verify that your network allows outbound connections on the configured SMTP ports. Corporate firewalls or restrictive network policies may block certain ports, requiring firewall rule adjustments or alternative port configurations.
+Ağınızın yapılandırılan SMTP portlarında dış bağlantılara izin verdiğini doğrulayın. Kurumsal güvenlik duvarları veya kısıtlayıcı ağ politikaları bazı portları engelleyebilir; bu durumda güvenlik duvarı kuralı ayarlarının değiştirilmesi veya alternatif port yapılandırmaları gerekebilir.
+DNS çözümlemesini, cihazlarınızın smtp.forwardemail.net adresini doğru IP adreslerine çözümleyebildiğinden emin olarak kontrol edin. DNS sorunları, ağ bağlantısı işlevsel olsa bile bağlantı hatalarına neden olabilir.
 
-Check DNS resolution by ensuring that your devices can resolve smtp.forwardemail.net to the correct IP addresses. DNS issues can cause connection failures even when network connectivity is otherwise functional.
+Cihazın ağ tanılama araçları varsa, ağ bağlantısını test edin. Birçok modern cihaz, bağlantı sorunlarını belirlemeye yardımcı olan yerleşik ağ test yetenekleri sunar.
 
-Test network connectivity from the device's network diagnostic tools if available. Many modern devices provide built-in network testing capabilities that can help identify connectivity issues.
+Cihazlar yavaş veya yüksek gecikmeli ağ bağlantılarında bulunuyorsa, ağ gecikmesi ve zaman aşımı ayarlarını göz önünde bulundurun. Bazı cihazlar, güvenilir e-posta teslimi için zaman aşımı ayarlarının değiştirilmesini gerektirebilir.
 
-Consider network latency and timeout settings if devices are located on slow or high-latency network connections. Some devices may require timeout adjustments for reliable email delivery.
+### Cihaza Özgü Yapılandırma Zorlukları {#device-specific-configuration-challenges}
 
-### Device-Specific Configuration Challenges {#device-specific-configuration-challenges}
+Farklı cihaz üreticileri, e-posta işlevselliğini çeşitli şekillerde uygular; bu da hedefe yönelik çözümler gerektiren üreticiye özgü yapılandırma zorluklarına yol açar.
 
-Different device manufacturers implement email functionality in various ways, leading to manufacturer-specific configuration challenges that require targeted solutions.
+HP yazıcılar DNS sorgularını önbelleğe alabilir ve yapılandırma değişikliklerinden sonra yeniden başlatılmaları gerekebilir. Yapılandırmadan sonra bağlantı sorunları devam ederse, önbelleğe alınmış ağ bilgilerini temizlemek için yazıcıyı yeniden başlatın.
 
-HP printers may cache DNS lookups and require restarts after configuration changes. If connection issues persist after configuration, restart the printer to clear cached network information.
+Brother yazıcılar kimlik doğrulama kimlik bilgisi biçimlendirmesine karşı özellikle hassastır ve güvenilir kurulum için cihaz kontrol paneli yerine web arayüzü üzerinden yapılandırma gerekebilir.
 
-Brother printers are particularly sensitive to authentication credential formatting and may require configuration through the web interface rather than the device control panel for reliable setup.
+Foscam kameralar TLS sınırlamaları nedeniyle belirli port yapılandırmaları gerektirir ve sorun giderme için ayrıntılı hata mesajları sağlamayabilir. Bu cihazlar için Forward Email’in eski portları (2455 veya 2555) kullandığınızdan emin olun.
 
-Foscam cameras require specific port configurations due to TLS limitations and may not provide detailed error messages for troubleshooting. Ensure you're using Forward Email's legacy ports (2455 or 2555) for these devices.
-
-Hikvision cameras require SSL encryption and do not support STARTTLS, limiting configuration options to port 465 with SSL/TLS encryption.
+Hikvision kameralar SSL şifrelemesi gerektirir ve STARTTLS desteklemez; yapılandırma seçenekleri SSL/TLS şifrelemesi ile 465 portu ile sınırlıdır.
 
 > \[!NOTE]
-> When troubleshooting device-specific issues, consult the manufacturer's documentation for known limitations or configuration requirements that may affect email functionality.
+> Cihaza özgü sorunları giderirken, e-posta işlevselliğini etkileyebilecek bilinen sınırlamalar veya yapılandırma gereksinimleri için üreticinin belgelerine başvurun.
 
-## Security Considerations and Best Practices {#security-considerations-and-best-practices}
 
-Configuring email notifications on network devices involves several security considerations that help protect your systems while maintaining reliable notification delivery. Following security best practices prevents unauthorized access and ensures appropriate information disclosure in notifications.
+## Güvenlik Hususları ve En İyi Uygulamalar {#security-considerations-and-best-practices}
 
-### Credential Management {#credential-management}
+Ağ cihazlarında e-posta bildirimlerini yapılandırmak, sistemlerinizi korurken güvenilir bildirim teslimatını sürdürmeye yardımcı olan çeşitli güvenlik hususlarını içerir. Güvenlik en iyi uygulamalarını takip etmek, yetkisiz erişimi önler ve bildirimlerde uygun bilgi açıklamasını sağlar.
 
-Use strong, unique passwords for your Forward Email account and enable two-factor authentication when available. The generated SMTP password should be treated as a sensitive credential and stored securely in device configurations.
+### Kimlik Bilgisi Yönetimi {#credential-management}
 
-Regularly review and rotate SMTP passwords, especially after personnel changes or security incidents. Forward Email allows password regeneration without affecting other account functions.
+Forward Email hesabınız için güçlü, benzersiz parolalar kullanın ve mümkünse iki faktörlü kimlik doğrulamayı etkinleştirin. Oluşturulan SMTP parolası hassas bir kimlik bilgisi olarak kabul edilmeli ve cihaz yapılandırmalarında güvenli şekilde saklanmalıdır.
 
-Avoid using shared credentials across multiple devices when possible. While Forward Email supports multiple device connections with the same credentials, individual device credentials provide better security isolation and audit capabilities.
+Özellikle personel değişiklikleri veya güvenlik olaylarından sonra SMTP parolalarını düzenli olarak gözden geçirin ve değiştirin. Forward Email, diğer hesap işlevlerini etkilemeden parola yenilemeye izin verir.
 
-Document device credentials securely and include them in your organization's credential management system. Proper documentation ensures that email configurations can be maintained and updated as needed.
+Mümkünse, birden fazla cihazda paylaşılan kimlik bilgisi kullanmaktan kaçının. Forward Email aynı kimlik bilgileriyle birden fazla cihaz bağlantısını desteklese de, bireysel cihaz kimlik bilgileri daha iyi güvenlik izolasyonu ve denetim yetenekleri sağlar.
 
-### Network Security {#network-security}
+Cihaz kimlik bilgilerini güvenli şekilde belgeleyin ve kuruluşunuzun kimlik bilgisi yönetim sistemine dahil edin. Doğru dokümantasyon, e-posta yapılandırmalarının gerektiğinde sürdürülmesini ve güncellenmesini sağlar.
 
-Implement appropriate network segmentation to isolate devices from other network resources while maintaining necessary connectivity for email notifications and legitimate access.
+### Ağ Güvenliği {#network-security}
 
-Configure firewall rules to allow necessary SMTP traffic while blocking unnecessary network access. Devices typically only need outbound access to Forward Email's SMTP servers for notification functionality.
+E-posta bildirimleri ve meşru erişim için gerekli bağlantıyı sürdürürken, cihazları diğer ağ kaynaklarından izole etmek için uygun ağ segmentasyonu uygulayın.
 
-Monitor network traffic from devices to identify unusual patterns or unauthorized communication attempts. Unexpected network activity may indicate security issues that require investigation.
+Gerekli SMTP trafiğine izin verirken gereksiz ağ erişimini engellemek için güvenlik duvarı kuralları yapılandırın. Cihazların bildirim işlevselliği için genellikle yalnızca Forward Email’in SMTP sunucularına giden erişime ihtiyacı vardır.
 
-Consider using VLANs or dedicated network segments for device management traffic, including email notifications, to provide additional security isolation.
+Cihazlardan gelen ağ trafiğini izleyerek olağandışı desenleri veya yetkisiz iletişim girişimlerini tespit edin. Beklenmeyen ağ etkinliği, araştırılması gereken güvenlik sorunlarına işaret edebilir.
 
-### Information Disclosure {#information-disclosure}
+Ek güvenlik izolasyonu sağlamak için e-posta bildirimleri dahil cihaz yönetim trafiği için VLAN veya özel ağ segmentleri kullanmayı düşünün.
 
-Review the content of email notifications to ensure they don't contain sensitive information that could be useful to attackers. Some devices include detailed system information, network configurations, or file paths in notification emails.
+### Bilgi Açıklaması {#information-disclosure}
 
-Configure notification filtering to limit the types of information included in email alerts. Many devices allow customization of notification content to balance useful information with security requirements.
+E-posta bildirimlerinin içeriğini gözden geçirerek, saldırganlar için faydalı olabilecek hassas bilgiler içermediğinden emin olun. Bazı cihazlar bildirim e-postalarında ayrıntılı sistem bilgileri, ağ yapılandırmaları veya dosya yolları içerebilir.
+Bildirim filtrelemesini yapılandırarak e-posta uyarılarında dahil edilen bilgi türlerini sınırlayın. Birçok cihaz, faydalı bilgileri güvenlik gereksinimleriyle dengelemek için bildirim içeriğinin özelleştirilmesine izin verir.
 
-Implement appropriate email retention and handling policies for device notifications. Security-related notifications may need to be retained for compliance or forensic purposes.
+Cihaz bildirimleri için uygun e-posta saklama ve işleme politikalarını uygulayın. Güvenlikle ilgili bildirimlerin uyumluluk veya adli amaçlar için saklanması gerekebilir.
 
-Consider the sensitivity of recipient email addresses and ensure that notifications are only sent to authorized personnel who need access to the information.
+Alıcı e-posta adreslerinin hassasiyetini göz önünde bulundurun ve bildirimlerin yalnızca bilgiye erişmesi gereken yetkili personele gönderildiğinden emin olun.
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
+### İzleme ve Bakım {#monitoring-and-maintenance}
 
-Regularly test email notification configurations to ensure continued functionality. Periodic testing helps identify configuration drift, network changes, or service issues before they impact critical alert delivery.
+E-posta bildirim yapılandırmalarını düzenli olarak test ederek işlevselliğin devamını sağlayın. Periyodik testler, kritik uyarı teslimatını etkilemeden önce yapılandırma sapmalarını, ağ değişikliklerini veya hizmet sorunlarını tespit etmeye yardımcı olur.
 
-Monitor email notification patterns for signs of suspicious activity or unauthorized access attempts. Unusual notification volumes or unexpected system events may indicate security issues.
+Şüpheli etkinlik veya yetkisiz erişim girişimi belirtileri için e-posta bildirim desenlerini izleyin. Olağandışı bildirim hacimleri veya beklenmeyen sistem olayları güvenlik sorunlarına işaret edebilir.
 
-Keep device firmware updated when possible to maintain current security standards and protocol support. While some devices have reached end-of-life status, applying available security updates helps protect against known vulnerabilities.
+Mevcut güvenlik standartlarını ve protokol desteğini sürdürmek için mümkün olduğunda cihaz yazılımını güncel tutun. Bazı cihazlar kullanım ömrünün sonuna ulaşmış olsa da, mevcut güvenlik güncellemelerinin uygulanması bilinen güvenlik açıklarına karşı koruma sağlar.
 
-Implement backup notification methods for critical alerts when possible. While email notifications are reliable, having alternative alerting mechanisms provides redundancy for the most important system events.
+Mümkünse kritik uyarılar için yedek bildirim yöntemleri uygulayın. E-posta bildirimleri güvenilir olsa da, alternatif uyarı mekanizmalarının bulunması en önemli sistem olayları için yedeklilik sağlar.
 
-## Conclusion {#conclusion}
 
-Configuring reliable email notifications across diverse device ecosystems requires understanding the complex landscape of TLS compatibility, authentication methods, and manufacturer-specific requirements. Forward Email's comprehensive SMTP service addresses these challenges by providing both modern security standards for current devices and legacy compatibility for older equipment that cannot be updated.
+## Sonuç {#conclusion}
 
-The configuration processes outlined in this guide provide detailed, step-by-step instructions for major device categories, ensuring that administrators can establish reliable email notifications regardless of their specific equipment mix. Forward Email's dual-port strategy specifically addresses the TLS compatibility crisis affecting millions of deployed devices, providing a practical solution that maintains security while ensuring continued functionality.
+Çeşitli cihaz ekosistemlerinde güvenilir e-posta bildirimleri yapılandırmak, TLS uyumluluğu, kimlik doğrulama yöntemleri ve üreticiye özgü gereksinimlerin karmaşık yapısını anlamayı gerektirir. Forward Email'in kapsamlı SMTP hizmeti, güncel cihazlar için modern güvenlik standartları ve güncellenemeyen eski ekipmanlar için eski uyumluluk sağlayarak bu zorlukları ele alır.
 
-Regular testing and maintenance of email notification configurations ensures continued reliability and helps identify potential issues before they impact critical alert delivery. Following the security best practices and troubleshooting guidance in this guide helps maintain secure, reliable notification systems that keep administrators informed about device status and security events.
+Bu kılavuzda açıklanan yapılandırma süreçleri, yöneticilerin belirli ekipman karışımlarına bakılmaksızın güvenilir e-posta bildirimleri kurmasını sağlamak için ana cihaz kategorileri için ayrıntılı, adım adım talimatlar sunar. Forward Email'in çift port stratejisi, milyonlarca kurulu cihazı etkileyen TLS uyumluluk krizine özel olarak çözüm getirerek güvenliği korurken işlevselliğin devamını sağlar.
 
-Whether managing a small office with mixed printer and camera brands or overseeing an enterprise environment with hundreds of devices, Forward Email provides the infrastructure and compatibility needed for reliable email notifications. Our service's focus on device compatibility, combined with comprehensive documentation and support, ensures that critical system alerts reach you when you need them most.
+E-posta bildirim yapılandırmalarının düzenli testi ve bakımı, devam eden güvenilirliği sağlar ve kritik uyarı teslimatını etkilemeden önce potansiyel sorunları tespit etmeye yardımcı olur. Bu kılavuzdaki güvenlik en iyi uygulamalarını ve sorun giderme rehberliğini takip etmek, yöneticilerin cihaz durumu ve güvenlik olayları hakkında bilgilendirildiği güvenli, güvenilir bildirim sistemlerinin sürdürülmesine yardımcı olur.
 
-For additional support with device email configuration or questions about Forward Email's compatibility with specific equipment, visit our [SMTP server configuration FAQ](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) or contact our support team. We're committed to helping you maintain reliable email notifications across all your network-connected devices, regardless of age or manufacturer limitations.
+Karışık yazıcı ve kamera markalarına sahip küçük bir ofisi yönetiyor olun ya da yüzlerce cihazın bulunduğu kurumsal bir ortamı denetliyor olun, Forward Email güvenilir e-posta bildirimleri için gereken altyapı ve uyumluluğu sağlar. Hizmetimizin cihaz uyumluluğuna odaklanması, kapsamlı dokümantasyon ve destek ile birleşerek kritik sistem uyarılarının en çok ihtiyaç duyduğunuz anda size ulaşmasını garanti eder.
+
+Cihaz e-posta yapılandırmasıyla ilgili ek destek veya Forward Email'in belirli ekipmanlarla uyumluluğu hakkında sorularınız için [SMTP sunucu yapılandırma SSS](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) sayfamızı ziyaret edin veya destek ekibimizle iletişime geçin. Yaş veya üretici kısıtlamalarına bakılmaksızın, tüm ağ bağlantılı cihazlarınızda güvenilir e-posta bildirimlerini sürdürmenize yardımcı olmaya kararlıyız.

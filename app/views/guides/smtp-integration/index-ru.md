@@ -1,113 +1,116 @@
 # Примеры интеграции SMTP {#smtp-integration-examples}
 
+
 ## Содержание {#table-of-contents}
 
 * [Предисловие](#foreword)
-* [Как работает обработка SMTP-сообщений Forward Email](#how-forward-emails-smtp-processing-works)
-  * [Система очереди и повторных попыток отправки электронной почты](#email-queue-and-retry-system)
-  * [Защита от фиктивных устройств для повышения надежности](#dummy-proofed-for-reliability)
+* [Как работает SMTP-обработка Forward Email](#how-forward-emails-smtp-processing-works)
+  * [Очередь писем и система повторных попыток](#email-queue-and-retry-system)
+  * [Защищено от ошибок для надежности](#dummy-proofed-for-reliability)
 * [Интеграция с Node.js](#nodejs-integration)
   * [Использование Nodemailer](#using-nodemailer)
   * [Использование Express.js](#using-expressjs)
 * [Интеграция с Python](#python-integration)
   * [Использование smtplib](#using-smtplib)
-  * [Использование Джанго](#using-django)
-* [PHP-интеграция](#php-integration)
+  * [Использование Django](#using-django)
+* [Интеграция с PHP](#php-integration)
   * [Использование PHPMailer](#using-phpmailer)
   * [Использование Laravel](#using-laravel)
-* [Интеграция Ruby](#ruby-integration)
+* [Интеграция с Ruby](#ruby-integration)
   * [Использование Ruby Mail Gem](#using-ruby-mail-gem)
-* [Интеграция Java](#java-integration)
-  * [Использование API Java Mail](#using-javamail-api)
-* [Конфигурация почтового клиента](#email-client-configuration)
-  * [Тандерберд](#thunderbird)
+* [Интеграция с Java](#java-integration)
+  * [Использование JavaMail API](#using-javamail-api)
+* [Настройка почтового клиента](#email-client-configuration)
+  * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (Отправить письмо как)](#gmail-send-mail-as)
-* [Поиск неисправностей](#troubleshooting)
-  * [Распространенные проблемы и решения](#common-issues-and-solutions)
+  * [Gmail (Отправка письма от имени)](#gmail-send-mail-as)
+* [Устранение неполадок](#troubleshooting)
+  * [Распространённые проблемы и решения](#common-issues-and-solutions)
   * [Получение помощи](#getting-help)
 * [Дополнительные ресурсы](#additional-resources)
 * [Заключение](#conclusion)
 
+
 ## Предисловие {#foreword}
 
-В этом руководстве представлены подробные примеры интеграции с SMTP-сервисом Forward Email с использованием различных языков программирования, фреймворков и почтовых клиентов. Наш SMTP-сервис разработан для обеспечения надежности, безопасности и простой интеграции с вашими существующими приложениями.
+Это руководство содержит подробные примеры того, как интегрироваться с SMTP-сервисом Forward Email, используя различные языки программирования, фреймворки и почтовые клиенты. Наш SMTP-сервис разработан так, чтобы быть надежным, безопасным и простым для интеграции с вашими существующими приложениями.
 
-## Как работает обработка SMTP-сообщений при пересылке электронной почты {#how-forward-emails-smtp-processing-works}
 
-Прежде чем углубляться в примеры интеграции, важно понять, как наша служба SMTP обрабатывает электронные письма:
+## Как работает SMTP-обработка Forward Email {#how-forward-emails-smtp-processing-works}
 
-### Система очереди и повторных попыток электронной почты {#email-queue-and-retry-system}
+Прежде чем перейти к примерам интеграции, важно понять, как наш SMTP-сервис обрабатывает письма:
 
-Когда вы отправляете электронное письмо через SMTP на наши серверы:
+### Очередь писем и система повторных попыток {#email-queue-and-retry-system}
 
-1. **Первоначальная обработка**: Электронное письмо проверяется, сканируется на наличие вредоносных программ и проверяется спам-фильтрами.
-2. **Умная очередь**: Электронные письма помещаются в сложную систему очередей для доставки.
-3. **Интеллектуальный механизм повторных попыток**: В случае временной ошибки доставки наша система:
-* Проанализирует ответ об ошибке с помощью функции `getBounceInfo`.
-* Определит, является ли проблема временной (например, «повторите попытку позже», «временно отложено») или постоянной (например, «пользователь неизвестен»).
-* В случае временных проблем пометит письмо для повторной попытки.
-* В случае постоянных проблем создаст уведомление о недоставке.
-4. **5-дневный период повторных попыток**: Мы повторяем попытки доставки в течение 5 дней (аналогично отраслевым стандартам, таким как Postfix), давая время на решение временных проблем.
-5. **Уведомления о статусе доставки**: Отправители получают уведомления о статусе своих электронных писем (доставлено, задержано или отскочил)
+Когда вы отправляете письмо через SMTP на наши серверы:
+
+1. **Первичная обработка**: письмо проверяется, сканируется на наличие вредоносного ПО и проверяется на спам-фильтры
+2. **Умная очередь**: письма помещаются в сложную систему очередей для доставки
+3. **Интеллектуальный механизм повторных попыток**: если доставка временно не удалась, наша система:
+   * Анализирует ответ об ошибке с помощью функции `getBounceInfo`
+   * Определяет, является ли проблема временной (например, «попробуйте позже», «временно отложено») или постоянной (например, «пользователь не найден»)
+   * Для временных проблем помечает письмо для повторной попытки
+   * Для постоянных проблем генерирует уведомление о недоставке
+4. **Период повторных попыток 5 дней**: мы повторяем попытки доставки до 5 дней (аналогично отраслевым стандартам, таким как Postfix), давая время для решения временных проблем
+5. **Уведомления о статусе доставки**: отправители получают уведомления о статусе своих писем (доставлено, задержано или возвращено)
 
 > \[!NOTE]
-> После успешной доставки содержимое исходящего SMTP-сообщения редактируется по истечении настраиваемого срока хранения (по умолчанию 30 дней) в целях безопасности и конфиденциальности. Остаётся только сообщение-заполнитель, указывающее на успешную доставку.
+> После успешной доставки содержимое исходящего SMTP-письма удаляется после настраиваемого периода хранения (по умолчанию 30 дней) для обеспечения безопасности и конфиденциальности. Остаётся только сообщение-заполнитель, указывающее на успешную доставку.
 
-### Защита от фиктивных устройств для надежности {#dummy-proofed-for-reliability}
+### Защищено от ошибок для надежности {#dummy-proofed-for-reliability}
 
-Наша система предназначена для обработки различных крайних случаев:
+Наша система разработана для обработки различных крайних случаев:
 
-* При обнаружении чёрного списка отправка письма будет автоматически повторена.
-* При возникновении проблем с сетью будет предпринята повторная попытка доставки.
-* Если почтовый ящик получателя переполнен, система повторит попытку позже.
-* Если сервер получателя временно недоступен, мы продолжим попытки.
+* Если обнаружен блоклист, письмо автоматически повторно отправляется
+* Если возникают сетевые проблемы, доставка будет повторена
+* Если почтовый ящик получателя заполнен, система повторит попытку позже
+* Если сервер получателя временно недоступен, мы продолжим попытки
 
-Такой подход значительно повышает скорость доставки, сохраняя при этом конфиденциальность и безопасность.
+Такой подход значительно повышает процент успешной доставки, сохраняя при этом конфиденциальность и безопасность.
 
-## Интеграция Node.js {#nodejs-integration}
+
+## Интеграция с Node.js {#nodejs-integration}
 
 ### Использование Nodemailer {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) — популярный модуль для отправки электронных писем из приложений Node.js.
+[Nodemailer](https://nodemailer.com/) — популярный модуль для отправки писем из приложений Node.js.
 
 ```javascript
 const nodemailer = require('nodemailer');
 
-// Create a transporter object
+// Создаём объект транспортера
 const transporter = nodemailer.createTransport({
   host: 'smtp.forwardemail.net',
   port: 465,
-  secure: true, // Use TLS
+  secure: true, // Использовать TLS
   auth: {
     user: 'your-username@your-domain.com',
     pass: 'your-password'
   }
 });
 
-// Send mail with defined transport object
+// Отправка письма с использованием определённого транспортера
 async function sendEmail() {
   try {
     const info = await transporter.sendMail({
-      from: '"Your Name" <your-username@your-domain.com>',
+      from: '"Ваше имя" <your-username@your-domain.com>',
       to: 'recipient@example.com',
-      subject: 'Hello from Forward Email',
-      text: 'Hello world! This is a test email sent using Nodemailer and Forward Email SMTP.',
-      html: '<b>Hello world!</b> This is a test email sent using Nodemailer and Forward Email SMTP.'
+      subject: 'Привет от Forward Email',
+      text: 'Привет, мир! Это тестовое письмо, отправленное с помощью Nodemailer и SMTP Forward Email.',
+      html: '<b>Привет, мир!</b> Это тестовое письмо, отправленное с помощью Nodemailer и SMTP Forward Email.'
     });
 
-    console.log('Message sent: %s', info.messageId);
+    console.log('Сообщение отправлено: %s', info.messageId);
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Ошибка при отправке письма:', error);
   }
 }
 
 sendEmail();
 ```
-
 ### Использование Express.js {#using-expressjs}
 
-Вот как интегрировать пересылку электронной почты SMTP с приложением Express.js:
+Вот как интегрировать Forward Email SMTP с приложением Express.js:
 
 ```javascript
 const express = require('express');
@@ -117,7 +120,7 @@ const port = 3000;
 
 app.use(express.json());
 
-// Configure email transporter
+// Настройка транспортера для отправки почты
 const transporter = nodemailer.createTransport({
   host: 'smtp.forwardemail.net',
   port: 465,
@@ -128,7 +131,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// API endpoint for sending emails
+// API endpoint для отправки писем
 app.post('/send-email', async (req, res) => {
   const { to, subject, text, html } = req.body;
 
@@ -146,7 +149,7 @@ app.post('/send-email', async (req, res) => {
       messageId: info.messageId
     });
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Ошибка при отправке письма:', error);
     res.status(500).json({
       success: false,
       error: error.message
@@ -155,11 +158,12 @@ app.post('/send-email', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Сервер запущен по адресу http://localhost:${port}`);
 });
 ```
 
-## Интеграция Python {#python-integration}
+
+## Интеграция с Python {#python-integration}
 
 ### Использование smtplib {#using-smtplib}
 
@@ -168,46 +172,46 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Email configuration
+# Конфигурация электронной почты
 sender_email = "your-username@your-domain.com"
 receiver_email = "recipient@example.com"
 password = "your-password"
 
-# Create message
+# Создание сообщения
 message = MIMEMultipart("alternative")
-message["Subject"] = "Hello from Forward Email"
+message["Subject"] = "Привет от Forward Email"
 message["From"] = sender_email
 message["To"] = receiver_email
 
-# Create the plain-text and HTML version of your message
-text = "Hello world! This is a test email sent using Python and Forward Email SMTP."
-html = "<html><body><b>Hello world!</b> This is a test email sent using Python and Forward Email SMTP.</body></html>"
+# Создание текстовой и HTML версии сообщения
+text = "Привет, мир! Это тестовое письмо, отправленное с помощью Python и Forward Email SMTP."
+html = "<html><body><b>Привет, мир!</b> Это тестовое письмо, отправленное с помощью Python и Forward Email SMTP.</body></html>"
 
-# Turn these into plain/html MIMEText objects
+# Преобразование в объекты MIMEText для plain/html
 part1 = MIMEText(text, "plain")
 part2 = MIMEText(html, "html")
 
-# Add HTML/plain-text parts to MIMEMultipart message
+# Добавление частей HTML/plain-text в сообщение MIMEMultipart
 message.attach(part1)
 message.attach(part2)
 
-# Send email
+# Отправка письма
 try:
     server = smtplib.SMTP_SSL("smtp.forwardemail.net", 465)
     server.login(sender_email, password)
     server.sendmail(sender_email, receiver_email, message.as_string())
     server.quit()
-    print("Email sent successfully!")
+    print("Письмо успешно отправлено!")
 except Exception as e:
-    print(f"Error sending email: {e}")
+    print(f"Ошибка при отправке письма: {e}")
 ```
 
 ### Использование Django {#using-django}
 
-Для приложений Django добавьте в `settings.py` следующее:
+Для приложений Django добавьте следующее в ваш `settings.py`:
 
 ```python
-# Email settings
+# Настройки электронной почты
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.forwardemail.net'
 EMAIL_PORT = 465
@@ -217,24 +221,25 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Затем отправьте электронное письмо с вашими мнениями:
+Затем отправляйте письма в ваших представлениях:
 
 ```python
 from django.core.mail import send_mail
 
 def send_email_view(request):
     send_mail(
-        'Subject here',
-        'Here is the message.',
+        'Тема письма',
+        'Вот сообщение.',
         'from@your-domain.com',
         ['to@example.com'],
         fail_silently=False,
-        html_message='<b>Here is the HTML message.</b>'
+        html_message='<b>Вот HTML сообщение.</b>'
     )
-    return HttpResponse('Email sent!')
+    return HttpResponse('Письмо отправлено!')
 ```
 
-## Интеграция PHP {#php-integration}
+
+## Интеграция с PHP {#php-integration}
 
 ### Использование PHPMailer {#using-phpmailer}
 
@@ -248,7 +253,7 @@ require 'vendor/autoload.php';
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
+    // Настройки сервера
     $mail->isSMTP();
     $mail->Host       = 'smtp.forwardemail.net';
     $mail->SMTPAuth   = true;
@@ -257,27 +262,26 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
     $mail->Port       = 465;
 
-    // Recipients
-    $mail->setFrom('your-username@your-domain.com', 'Your Name');
-    $mail->addAddress('recipient@example.com', 'Recipient Name');
-    $mail->addReplyTo('your-username@your-domain.com', 'Your Name');
+    // Получатели
+    $mail->setFrom('your-username@your-domain.com', 'Ваше имя');
+    $mail->addAddress('recipient@example.com', 'Имя получателя');
+    $mail->addReplyTo('your-username@your-domain.com', 'Ваше имя');
 
-    // Content
+    // Содержимое
     $mail->isHTML(true);
-    $mail->Subject = 'Hello from Forward Email';
-    $mail->Body    = '<b>Hello world!</b> This is a test email sent using PHPMailer and Forward Email SMTP.';
-    $mail->AltBody = 'Hello world! This is a test email sent using PHPMailer and Forward Email SMTP.';
+    $mail->Subject = 'Привет от Forward Email';
+    $mail->Body    = '<b>Привет, мир!</b> Это тестовое письмо, отправленное с помощью PHPMailer и Forward Email SMTP.';
+    $mail->AltBody = 'Привет, мир! Это тестовое письмо, отправленное с помощью PHPMailer и Forward Email SMTP.';
 
     $mail->send();
-    echo 'Message has been sent';
+    echo 'Сообщение отправлено';
 } catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    echo "Сообщение не может быть отправлено. Ошибка Mailer: {$mail->ErrorInfo}";
 }
 ```
-
 ### Использование Laravel {#using-laravel}
 
-Для приложений Laravel обновите файл `.env`:
+Для приложений Laravel обновите ваш файл `.env`:
 
 ```sh
 MAIL_MAILER=smtp
@@ -290,7 +294,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Затем отправьте электронные письма, используя фасад Laravel Mail:
+Затем отправляйте письма, используя фасад Mail Laravel:
 
 ```php
 <?php
@@ -307,12 +311,13 @@ class EmailController extends Controller
     {
         Mail::to('recipient@example.com')->send(new WelcomeEmail());
 
-        return 'Email sent successfully!';
+        return 'Письмо успешно отправлено!';
     }
 }
 ```
 
-## Интеграция Ruby {#ruby-integration}
+
+## Интеграция с Ruby {#ruby-integration}
 
 ### Использование Ruby Mail Gem {#using-ruby-mail-gem}
 
@@ -335,25 +340,26 @@ end
 mail = Mail.new do
   from     'your-username@your-domain.com'
   to       'recipient@example.com'
-  subject  'Hello from Forward Email'
+  subject  'Привет от Forward Email'
 
   text_part do
-    body 'Hello world! This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body 'Привет, мир! Это тестовое письмо, отправленное с помощью Ruby Mail и Forward Email SMTP.'
   end
 
   html_part do
     content_type 'text/html; charset=UTF-8'
-    body '<b>Hello world!</b> This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body '<b>Привет, мир!</b> Это тестовое письмо, отправленное с помощью Ruby Mail и Forward Email SMTP.'
   end
 end
 
 mail.deliver!
-puts "Email sent successfully!"
+puts "Письмо успешно отправлено!"
 ```
 
-## Интеграция Java {#java-integration}
 
-### Использование API JavaMail {#using-javamail-api}
+## Интеграция с Java {#java-integration}
+
+### Использование JavaMail API {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -362,11 +368,11 @@ import javax.mail.internet.*;
 
 public class SendEmail {
     public static void main(String[] args) {
-        // Sender's email and password
+        // Электронная почта и пароль отправителя
         final String username = "your-username@your-domain.com";
         final String password = "your-password";
 
-        // SMTP server properties
+        // Свойства SMTP сервера
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -375,7 +381,7 @@ public class SendEmail {
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-        // Create session with authenticator
+        // Создание сессии с аутентификатором
         Session session = Session.getInstance(props,
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -384,34 +390,34 @@ public class SendEmail {
             });
 
         try {
-            // Create message
+            // Создание сообщения
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("recipient@example.com"));
-            message.setSubject("Hello from Forward Email");
+            message.setSubject("Привет от Forward Email");
 
-            // Create multipart message
+            // Создание multipart сообщения
             Multipart multipart = new MimeMultipart("alternative");
 
-            // Text part
+            // Текстовая часть
             BodyPart textPart = new MimeBodyPart();
-            textPart.setText("Hello world! This is a test email sent using JavaMail and Forward Email SMTP.");
+            textPart.setText("Привет, мир! Это тестовое письмо, отправленное с помощью JavaMail и Forward Email SMTP.");
 
-            // HTML part
+            // HTML часть
             BodyPart htmlPart = new MimeBodyPart();
-            htmlPart.setContent("<b>Hello world!</b> This is a test email sent using JavaMail and Forward Email SMTP.", "text/html");
+            htmlPart.setContent("<b>Привет, мир!</b> Это тестовое письмо, отправленное с помощью JavaMail и Forward Email SMTP.", "text/html");
 
-            // Add parts to multipart
+            // Добавление частей в multipart
             multipart.addBodyPart(textPart);
             multipart.addBodyPart(htmlPart);
 
-            // Set content
+            // Установка содержимого
             message.setContent(multipart);
 
-            // Send message
+            // Отправка сообщения
             Transport.send(message);
 
-            System.out.println("Email sent successfully!");
+            System.out.println("Письмо успешно отправлено!");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -420,105 +426,105 @@ public class SendEmail {
 }
 ```
 
-## Конфигурация почтового клиента {#email-client-configuration}
+
+## Настройка почтового клиента {#email-client-configuration}
 
 ### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
-    B --> C[Account Actions]
-    C --> D[Add Mail Account]
-    D --> E[Enter Name, Email, Password]
-    E --> F[Manual Config]
-    F --> G[Enter Server Details]
+    A[Открыть Thunderbird] --> B[Настройки аккаунта]
+    B --> C[Действия с аккаунтом]
+    C --> D[Добавить почтовый аккаунт]
+    D --> E[Ввести имя, email, пароль]
+    E --> F[Ручная настройка]
+    F --> G[Ввести данные сервера]
     G --> H[SMTP: smtp.forwardemail.net]
-    H --> I[Port: 465]
-    I --> J[Connection: SSL/TLS]
-    J --> K[Authentication: Normal Password]
-    K --> L[Username: full email address]
-    L --> M[Test and Create Account]
+    H --> I[Порт: 465]
+    I --> J[Соединение: SSL/TLS]
+    J --> K[Аутентификация: Обычный пароль]
+    K --> L[Имя пользователя: полный адрес электронной почты]
+    L --> M[Тест и создание аккаунта]
 ```
-
-1. Откройте Thunderbird и перейдите в раздел «Настройки учётной записи».
-2. Нажмите «Действия учётной записи» и выберите «Добавить учётную запись электронной почты».
-3. Введите своё имя, адрес электронной почты и пароль.
-4. Нажмите «Ручная настройка» и введите следующие данные:
-* Входящий сервер:
-* IMAP: imap.forwardemail.net, порт: 993, SSL/TLS
-* POP3: pop3.forwardemail.net, порт: 995, SSL/TLS
-* Исходящий сервер (SMTP): smtp.forwardemail.net, порт: 465, SSL/TLS
-* Аутентификация: обычная, пароль
-* Имя пользователя: ваш полный адрес электронной почты.
-5. Нажмите «Тест», а затем «Готово».
+1. Откройте Thunderbird и перейдите в Настройки аккаунта  
+2. Нажмите «Действия с аккаунтом» и выберите «Добавить почтовый аккаунт»  
+3. Введите ваше имя, адрес электронной почты и пароль  
+4. Нажмите «Ручная настройка» и введите следующие данные:  
+   * Входящий сервер:  
+     * IMAP: imap.forwardemail.net, Порт: 993, SSL/TLS  
+     * POP3: pop3.forwardemail.net, Порт: 995, SSL/TLS  
+   * Исходящий сервер (SMTP): smtp.forwardemail.net, Порт: 465, SSL/TLS  
+   * Аутентификация: Обычный пароль  
+   * Имя пользователя: ваш полный адрес электронной почты  
+5. Нажмите «Тест» и затем «Готово»  
 
 ### Apple Mail {#apple-mail}
 
-1. Откройте Почту и перейдите в раздел «Почта» > «Настройки» > «Учётные записи».
-2. Нажмите кнопку «+», чтобы добавить новую учётную запись.
-3. Выберите «Другая учётная запись электронной почты» и нажмите «Продолжить».
-4. Введите своё имя, адрес электронной почты и пароль, затем нажмите «Войти».
-5. Если автоматическая настройка не удалась, введите следующие данные:
-* Сервер входящей почты: imap.forwardemail.net (или pop3.forwardemail.net для POP3).
-* Сервер исходящей почты: smtp.forwardemail.net.
-* Имя пользователя: ваш полный адрес электронной почты.
-* Пароль: ваш пароль.
-6. Нажмите «Войти», чтобы завершить настройку.
+1. Откройте Mail и перейдите в Почта > Настройки > Аккаунты  
+2. Нажмите кнопку «+», чтобы добавить новый аккаунт  
+3. Выберите «Другой почтовый аккаунт» и нажмите «Продолжить»  
+4. Введите ваше имя, адрес электронной почты и пароль, затем нажмите «Войти»  
+5. Если автоматическая настройка не удалась, введите следующие данные:  
+   * Входящий почтовый сервер: imap.forwardemail.net (или pop3.forwardemail.net для POP3)  
+   * Исходящий почтовый сервер: smtp.forwardemail.net  
+   * Имя пользователя: ваш полный адрес электронной почты  
+   * Пароль: ваш пароль  
+6. Нажмите «Войти», чтобы завершить настройку  
 
-### Gmail (Отправить письмо как) {#gmail-send-mail-as}
+### Gmail (Отправка почты от имени) {#gmail-send-mail-as}
 
-1. Откройте Gmail и перейдите в раздел «Настройки» > «Учётные записи и импорт».
-2. В разделе «Отправлять почту как» нажмите «Добавить другой адрес электронной почты».
-3. Введите своё имя и адрес электронной почты, затем нажмите «Далее».
-4. Введите следующие данные SMTP-сервера:
-* SMTP-сервер: smtp.forwardemail.net
-* Порт: 465
-* Имя пользователя: ваш полный адрес электронной почты
-* Пароль: ваш пароль
-* Выберите «Защищённое соединение с использованием SSL».
-5. Нажмите «Добавить учётную запись» и подтвердите свой адрес электронной почты.
+1. Откройте Gmail и перейдите в Настройки > Аккаунты и импорт  
+2. В разделе «Отправлять почту как» нажмите «Добавить другой адрес электронной почты»  
+3. Введите ваше имя и адрес электронной почты, затем нажмите «Следующий шаг»  
+4. Введите следующие данные SMTP-сервера:  
+   * SMTP-сервер: smtp.forwardemail.net  
+   * Порт: 465  
+   * Имя пользователя: ваш полный адрес электронной почты  
+   * Пароль: ваш пароль  
+   * Выберите «Защищённое соединение с использованием SSL»  
+5. Нажмите «Добавить аккаунт» и подтвердите ваш адрес электронной почты  
 
 ## Устранение неполадок {#troubleshooting}
 
-### Распространенные проблемы и решения {#common-issues-and-solutions}
+### Распространённые проблемы и решения {#common-issues-and-solutions}
 
-1. **Ошибка аутентификации**
-* Проверьте имя пользователя (полный адрес электронной почты) и пароль
-* Убедитесь, что вы используете правильный порт (465 для SSL/TLS)
-* Проверьте, включён ли в вашей учётной записи доступ по протоколу SMTP
+1. **Ошибка аутентификации**  
+   * Проверьте ваше имя пользователя (полный адрес электронной почты) и пароль  
+   * Убедитесь, что используете правильный порт (465 для SSL/TLS)  
+   * Проверьте, включён ли у вашего аккаунта доступ к SMTP  
 
-2. **Время ожидания подключения**
-* Проверьте подключение к Интернету
-* Убедитесь, что настройки брандмауэра не блокируют SMTP-трафик
-* Используйте порт 465 с SSL/TLS (рекомендуется) или порт 587 с STARTTLS
+2. **Тайм-аут соединения**  
+   * Проверьте ваше интернет-соединение  
+   * Убедитесь, что настройки брандмауэра не блокируют SMTP-трафик  
+   * Попробуйте использовать порт 465 с SSL/TLS (рекомендуется) или порт 587 с STARTTLS  
 
-3. **Сообщение отклонено**
-* Убедитесь, что адрес отправителя совпадает с вашим аутентифицированным адресом электронной почты.
-* Проверьте, не занесён ли ваш IP-адрес в чёрный список.
-* Убедитесь, что содержимое вашего сообщения не попадает под спам-фильтры.
+3. **Сообщение отклонено**  
+   * Убедитесь, что адрес «От» совпадает с вашим аутентифицированным адресом электронной почты  
+   * Проверьте, не находится ли ваш IP в чёрном списке  
+   * Убедитесь, что содержимое сообщения не вызывает срабатывание спам-фильтров  
 
-4. **Ошибки TLS/SSL**
-* Обновите приложение/библиотеку для поддержки современных версий TLS
-* Убедитесь, что сертификаты CA вашей системы актуальны
-* Попробуйте использовать явный TLS вместо неявного
+4. **Ошибки TLS/SSL**  
+   * Обновите ваше приложение/библиотеку для поддержки современных версий TLS  
+   * Убедитесь, что сертификаты CA вашей системы актуальны  
+   * Попробуйте использовать явный TLS вместо неявного TLS  
 
 ### Получение помощи {#getting-help}
 
-Если у вас возникли проблемы, не описанные здесь, пожалуйста:
+Если вы столкнулись с проблемами, не описанными здесь, пожалуйста:  
 
-1. Проверьте раздел [Страница часто задаваемых вопросов](/faq) для ответов на часто задаваемые вопросы.
-2. Ознакомьтесь с разделом [запись в блоге о доставке электронной почты](/blog/docs/best-email-forwarding-service) для получения подробной информации.
-3. Свяжитесь с нашей службой поддержки по адресу <support@forwardemail.net>.
+1. Ознакомьтесь с нашей [страницей FAQ](/faq) для часто задаваемых вопросов  
+2. Просмотрите наш [пост в блоге о доставке электронной почты](/blog/docs/best-email-forwarding-service) для подробной информации  
+3. Свяжитесь с нашей службой поддержки по адресу <support@forwardemail.net>  
 
 ## Дополнительные ресурсы {#additional-resources}
 
-* [Пересылка документации по электронной почте](/docs)
-* [Ограничения и конфигурация SMTP-сервера](/faq#what-are-your-outbound-smtp-limits)
-* [Руководство по передовой практике использования электронной почты](/blog/docs/best-email-forwarding-service)
-* [Практики обеспечения безопасности](/security)
+* [Документация Forward Email](/docs)  
+* [Ограничения и настройка SMTP-сервера](/faq#what-are-your-outbound-smtp-limits)  
+* [Руководство по лучшим практикам электронной почты](/blog/docs/best-email-forwarding-service)  
+* [Практики безопасности](/security)  
 
 ## Заключение {#conclusion}
 
-SMTP-сервис Forward Email обеспечивает надёжную, безопасную и конфиденциальную отправку писем из ваших приложений и почтовых клиентов. Благодаря нашей интеллектуальной системе очередей, 5-дневному механизму повторных попыток и подробным уведомлениям о доставке вы можете быть уверены, что ваши письма дойдут до адресата.
+SMTP-сервис Forward Email предоставляет надёжный, безопасный и ориентированный на конфиденциальность способ отправки писем из ваших приложений и почтовых клиентов. Благодаря нашей интеллектуальной системе очередей, механизму повторных попыток в течение 5 дней и комплексным уведомлениям о статусе доставки вы можете быть уверены, что ваши письма достигнут адресата.  
 
-Для более сложных вариантов использования или индивидуальных интеграций обратитесь в нашу службу поддержки.
+Для более сложных случаев использования или индивидуальных интеграций, пожалуйста, свяжитесь с нашей службой поддержки.

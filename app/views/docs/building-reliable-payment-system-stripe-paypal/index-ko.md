@@ -1,106 +1,110 @@
-# Stripe와 PayPal을 활용한 강력한 결제 시스템 구축: 3중 접근법 {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Stripe와 PayPal로 견고한 결제 시스템을 구축한 방법: 삼중 접근법 {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Stripe와 PayPal 결제 시스템" class="rounded-lg" />
+
 
 ## 목차 {#table-of-contents}
 
-* [머리말](#foreword)
-* [과제: 여러 결제 처리업체, 진실의 단일 소스](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [트리펙타 접근법: 신뢰성의 세 가지 계층](#the-trifecta-approach-three-layers-of-reliability)
-* [1계층: 결제 후 리디렉션](#layer-1-post-checkout-redirects)
-  * [Stripe 체크아웃 구현](#stripe-checkout-implementation)
+* [서문](#foreword)
+* [도전 과제: 여러 결제 프로세서, 하나의 진실 원천](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [삼중 접근법: 세 가지 신뢰성 계층](#the-trifecta-approach-three-layers-of-reliability)
+* [계층 1: 결제 완료 후 리디렉션](#layer-1-post-checkout-redirects)
+  * [Stripe 결제 구현](#stripe-checkout-implementation)
   * [PayPal 결제 흐름](#paypal-payment-flow)
-* [2계층: 서명 검증 기능이 있는 웹훅 핸들러](#layer-2-webhook-handlers-with-signature-verification)
+* [계층 2: 서명 검증이 포함된 웹훅 핸들러](#layer-2-webhook-handlers-with-signature-verification)
   * [Stripe 웹훅 구현](#stripe-webhook-implementation)
   * [PayPal 웹훅 구현](#paypal-webhook-implementation)
-* [3계층: Bree를 사용한 자동화된 작업](#layer-3-automated-jobs-with-bree)
+* [계층 3: Bree를 이용한 자동화 작업](#layer-3-automated-jobs-with-bree)
   * [구독 정확도 검사기](#subscription-accuracy-checker)
   * [PayPal 구독 동기화](#paypal-subscription-synchronization)
-* [엣지 케이스 처리](#handling-edge-cases)
-  * [사기 탐지 및 예방](#fraud-detection-and-prevention)
+* [예외 상황 처리](#handling-edge-cases)
+  * [사기 탐지 및 방지](#fraud-detection-and-prevention)
   * [분쟁 처리](#dispute-handling)
 * [코드 재사용: KISS 및 DRY 원칙](#code-reuse-kiss-and-dry-principles)
-* [VISA 구독 요구 사항 구현](#visa-subscription-requirements-implementation)
-  * [자동 갱신 전 이메일 알림](#automated-pre-renewal-email-notifications)
-  * [엣지 케이스 처리](#handling-edge-cases-1)
-  * [체험 기간 및 구독 약관](#trial-periods-and-subscription-terms)
-* [결론: Trifecta 접근법의 이점](#conclusion-the-benefits-of-our-trifecta-approach)
+* [VISA 구독 요구사항 구현](#visa-subscription-requirements-implementation)
+  * [자동 사전 갱신 이메일 알림](#automated-pre-renewal-email-notifications)
+  * [예외 상황 처리](#handling-edge-cases-1)
+  * [체험 기간 및 구독 조건](#trial-periods-and-subscription-terms)
+* [결론: 삼중 접근법의 이점](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## 서문 {#foreword}
 
-Forward Email은 항상 안정적이고 정확하며 사용자 친화적인 시스템을 구축하는 것을 최우선으로 생각해 왔습니다. 결제 처리 시스템을 구축할 때, 완벽한 데이터 일관성을 유지하면서 여러 결제 처리업체를 처리할 수 있는 솔루션이 필요하다는 것을 인지했습니다. 이 블로그 게시물에서는 개발팀이 Stripe와 PayPal을 통합하여 전체 시스템에서 1:1 실시간 정확성을 보장하는 3중 접근법을 어떻게 활용했는지 자세히 설명합니다.
+Forward Email에서는 항상 신뢰할 수 있고 정확하며 사용자 친화적인 시스템을 만드는 것을 최우선으로 생각해왔습니다. 결제 처리 시스템을 구현할 때, 여러 결제 프로세서를 다루면서도 완벽한 데이터 일관성을 유지할 수 있는 솔루션이 필요하다는 것을 알았습니다. 이 블로그 글에서는 개발팀이 Stripe와 PayPal을 삼중 접근법으로 통합하여 시스템 전반에 걸쳐 1:1 실시간 정확성을 보장한 방법을 자세히 설명합니다.
 
-## 과제: 여러 결제 처리업체, 진실의 단일 소스 {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-개인정보 보호에 중점을 둔 이메일 서비스로서, 저희는 사용자들에게 결제 옵션을 제공하고자 했습니다. Stripe를 통한 신용카드 결제의 간편함을 선호하는 사용자도 있고, PayPal이 제공하는 추가적인 보안 기능을 중시하는 사용자도 있습니다. 하지만 여러 결제 처리업체를 지원하는 것은 상당한 복잡성을 야기합니다.
+## 도전 과제: 여러 결제 프로세서, 하나의 진실 원천 {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-1. 다양한 결제 시스템에서 일관된 데이터를 어떻게 보장할 수 있나요?
-2. 분쟁, 환불 또는 결제 실패와 같은 예외적인 상황은 어떻게 처리할 수 있나요?
-3. 데이터베이스에서 단일 정보 소스를 어떻게 유지할 수 있나요?
+개인정보 보호에 중점을 둔 이메일 서비스로서, 사용자에게 다양한 결제 옵션을 제공하고자 했습니다. 일부는 Stripe를 통한 신용카드 결제의 간편함을 선호하는 반면, 다른 일부는 PayPal이 제공하는 추가 분리 계층을 중요하게 생각합니다. 그러나 여러 결제 프로세서를 지원하는 것은 상당한 복잡성을 수반합니다:
 
-우리의 솔루션은 "트리펙타 접근법"이라고 부르는 것을 구현하는 것이었습니다. 이는 무슨 일이 있어도 중복성을 제공하고 데이터 일관성을 보장하는 3중 계층 시스템입니다.
+1. 서로 다른 결제 시스템 간에 어떻게 일관된 데이터를 보장할 것인가?
+2. 분쟁, 환불 또는 결제 실패와 같은 예외 상황을 어떻게 처리할 것인가?
+3. 데이터베이스에서 단일 진실 원천을 어떻게 유지할 것인가?
 
-## Trifecta 접근 방식: 3단계의 신뢰성 {#the-trifecta-approach-three-layers-of-reliability}
+우리의 해결책은 "삼중 접근법"이라 부르는 세 계층 시스템을 구현하는 것이었습니다. 이 시스템은 중복성을 제공하고 어떤 상황에서도 데이터 일관성을 보장합니다.
 
-당사의 결제 시스템은 완벽한 데이터 동기화를 보장하기 위해 함께 작동하는 세 가지 핵심 구성 요소로 이루어져 있습니다.
 
-1. **결제 후 리디렉션** - 결제 직후 결제 정보 수집
-2. **웹훅 핸들러** - 결제 처리업체의 실시간 이벤트 처리
-3. **자동화된 작업** - 결제 데이터 주기적 확인 및 조정
+## 삼중 접근법: 세 가지 신뢰성 계층 {#the-trifecta-approach-three-layers-of-reliability}
 
-각 구성 요소를 자세히 살펴보고 이들이 서로 어떻게 작동하는지 살펴보겠습니다.
+우리의 결제 시스템은 완벽한 데이터 동기화를 보장하기 위해 함께 작동하는 세 가지 핵심 구성 요소로 이루어져 있습니다:
+
+1. **결제 완료 후 리디렉션** - 결제 직후 결제 정보를 캡처
+2. **웹훅 핸들러** - 결제 프로세서로부터 실시간 이벤트 처리
+3. **자동화 작업** - 주기적으로 결제 데이터를 검증 및 조정
+
+각 구성 요소가 어떻게 함께 작동하는지 살펴보겠습니다.
 
 ```mermaid
 flowchart TD
-    User([User]) --> |Selects plan| Checkout[Checkout Page]
+    User([사용자]) --> |요금제 선택| Checkout[결제 페이지]
 
-    %% Layer 1: Post-checkout redirects
-    subgraph "Layer 1: Post-checkout Redirects"
-        Checkout --> |Credit Card| Stripe[Stripe Checkout]
-        Checkout --> |PayPal| PayPal[PayPal Payment]
+    %% 계층 1: 결제 완료 후 리디렉션
+    subgraph "계층 1: 결제 완료 후 리디렉션"
+        Checkout --> |신용카드| Stripe[Stripe 결제]
+        Checkout --> |PayPal| PayPal[PayPal 결제]
 
-        Stripe --> |Success URL with session_id| SuccessPage[Success Page]
-        PayPal --> |Return URL| SuccessPage
+        Stripe --> |session_id가 포함된 성공 URL| SuccessPage[성공 페이지]
+        PayPal --> |복귀 URL| SuccessPage
 
-        SuccessPage --> |Verify payment| Database[(Database Update)]
+        SuccessPage --> |결제 확인| Database[(데이터베이스 업데이트)]
     end
 
-    %% Layer 2: Webhooks
-    subgraph "Layer 2: Webhook Handlers"
-        StripeEvents[Stripe Events] --> |Real-time notifications| StripeWebhook[Stripe Webhook Handler]
-        PayPalEvents[PayPal Events] --> |Real-time notifications| PayPalWebhook[PayPal Webhook Handler]
+    %% 계층 2: 웹훅
+    subgraph "계층 2: 웹훅 핸들러"
+        StripeEvents[Stripe 이벤트] --> |실시간 알림| StripeWebhook[Stripe 웹훅 핸들러]
+        PayPalEvents[PayPal 이벤트] --> |실시간 알림| PayPalWebhook[PayPal 웹훅 핸들러]
 
-        StripeWebhook --> |Verify signature| ProcessStripeEvent[Process Stripe Event]
-        PayPalWebhook --> |Verify signature| ProcessPayPalEvent[Process PayPal Event]
+        StripeWebhook --> |서명 검증| ProcessStripeEvent[Stripe 이벤트 처리]
+        PayPalWebhook --> |서명 검증| ProcessPayPalEvent[PayPal 이벤트 처리]
 
         ProcessStripeEvent --> Database
         ProcessPayPalEvent --> Database
     end
 
-    %% Layer 3: Automated jobs
-    subgraph "Layer 3: Bree Automated Jobs"
-        BreeScheduler[Bree Scheduler] --> StripeSync[Stripe Sync Job]
-        BreeScheduler --> PayPalSync[PayPal Sync Job]
-        BreeScheduler --> AccuracyCheck[Subscription Accuracy Check]
+    %% 계층 3: 자동화 작업
+    subgraph "계층 3: Bree 자동화 작업"
+        BreeScheduler[Bree 스케줄러] --> StripeSync[Stripe 동기화 작업]
+        BreeScheduler --> PayPalSync[PayPal 동기화 작업]
+        BreeScheduler --> AccuracyCheck[구독 정확도 검사]
 
-        StripeSync --> |Verify & reconcile| Database
-        PayPalSync --> |Verify & reconcile| Database
-        AccuracyCheck --> |Ensure consistency| Database
+        StripeSync --> |검증 및 조정| Database
+        PayPalSync --> |검증 및 조정| Database
+        AccuracyCheck --> |일관성 보장| Database
     end
 
-    %% Edge cases
-    subgraph "Edge Case Handling"
-        ProcessStripeEvent --> |Fraud detection| FraudCheck[Fraud Check]
-        ProcessPayPalEvent --> |Dispute created| DisputeHandler[Dispute Handler]
+    %% 예외 상황
+    subgraph "예외 상황 처리"
+        ProcessStripeEvent --> |사기 탐지| FraudCheck[사기 검사]
+        ProcessPayPalEvent --> |분쟁 생성| DisputeHandler[분쟁 처리]
 
-        FraudCheck --> |Ban user if fraudulent| Database
-        DisputeHandler --> |Accept claim & refund| Database
+        FraudCheck --> |사기 사용자 차단| Database
+        DisputeHandler --> |청구 수락 및 환불| Database
 
-        FraudCheck --> |Send alert| AdminNotification[Admin Notification]
-        DisputeHandler --> |Send alert| AdminNotification
+        FraudCheck --> |알림 전송| AdminNotification[관리자 알림]
+        DisputeHandler --> |알림 전송| AdminNotification
     end
 
-    %% Style definitions
+    %% 스타일 정의
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
     classDef secondary fill:red,stroke:#333,stroke-width:1px;
     classDef tertiary fill:green,stroke:#333,stroke-width:1px;
@@ -109,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
+## 레이어 1: 결제 완료 후 리디렉션 {#layer-1-post-checkout-redirects}
 
-## 레이어 1: 결제 후 리디렉션 {#layer-1-post-checkout-redirects}
+우리의 삼중 접근법의 첫 번째 레이어는 사용자가 결제를 완료한 직후에 발생합니다. Stripe와 PayPal 모두 거래 정보를 포함하여 사용자를 우리 사이트로 리디렉션하는 메커니즘을 제공합니다.
 
-저희의 트리펙타(Trifecta) 접근 방식의 첫 번째 단계는 사용자가 결제를 완료한 직후에 이루어집니다. Stripe와 PayPal은 모두 사용자를 거래 정보와 함께 저희 사이트로 다시 리디렉션하는 메커니즘을 제공합니다.
+### Stripe Checkout 구현 {#stripe-checkout-implementation}
 
-### Stripe 체크아웃 구현 {#stripe-checkout-implementation}
-
-Stripe의 경우, 원활한 결제 경험을 제공하기 위해 Checkout Sessions API를 사용합니다. 사용자가 요금제를 선택하고 신용카드로 결제하면, 결제 성공 및 취소 URL을 포함한 Checkout Session이 생성됩니다.
+Stripe의 경우, 원활한 결제 경험을 위해 Checkout Sessions API를 사용합니다. 사용자가 플랜을 선택하고 신용카드로 결제하기로 하면, 특정 성공 및 취소 URL과 함께 Checkout Session을 생성합니다:
 
 ```javascript
 const options = {
@@ -143,7 +146,7 @@ const options = {
   allow_promotion_codes: true
 };
 
-// Create the checkout session and redirect
+// 체크아웃 세션을 생성하고 리디렉션
 const session = await stripe.checkout.sessions.create(options);
 const redirectTo = session.url;
 if (ctx.accepts('html')) {
@@ -154,11 +157,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-여기서 중요한 부분은 `success_url` 매개변수인데, 이 매개변수에는 `session_id`이 쿼리 매개변수로 포함되어 있습니다. Stripe가 결제 성공 후 사용자를 다시 사이트로 리디렉션할 때, 이 세션 ID를 사용하여 거래를 확인하고 데이터베이스를 업데이트할 수 있습니다.
+여기서 중요한 부분은 `success_url` 매개변수로, 쿼리 매개변수로 `session_id`를 포함합니다. Stripe가 결제 성공 후 사용자를 우리 사이트로 리디렉션할 때, 이 세션 ID를 사용하여 거래를 확인하고 데이터베이스를 적절히 업데이트할 수 있습니다.
 
 ### PayPal 결제 흐름 {#paypal-payment-flow}
 
-PayPal의 경우, 주문 API에 비슷한 접근 방식을 사용합니다.
+PayPal의 경우, Orders API를 사용하여 유사한 방식을 적용합니다:
 
 ```javascript
 const requestBody = {
@@ -210,7 +213,7 @@ const requestBody = {
 };
 ```
 
-Stripe와 마찬가지로, 결제 후 리디렉션을 처리하기 위해 `return_url` 및 `cancel_url` 매개변수를 지정합니다. PayPal이 사용자를 다시 저희 사이트로 리디렉션하면 결제 정보를 캡처하고 데이터베이스를 업데이트할 수 있습니다.
+Stripe와 마찬가지로, 결제 후 리디렉션을 처리하기 위해 `return_url`과 `cancel_url` 매개변수를 지정합니다. PayPal이 사용자를 우리 사이트로 리디렉션할 때, 결제 세부 정보를 캡처하고 데이터베이스를 업데이트할 수 있습니다.
 
 ```mermaid
 sequenceDiagram
@@ -221,75 +224,74 @@ sequenceDiagram
     participant DB as Database
     participant Bree as Bree Job Scheduler
 
-    %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    %% 초기 체크아웃 흐름
+    User->>FE: 플랜 및 결제 방법 선택
 
-    alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
-    else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+    alt 신용카드 결제
+        FE->>Stripe: 체크아웃 세션 생성
+        Stripe-->>FE: 세션 URL 반환
+        FE->>User: Stripe 체크아웃으로 리디렉션
+        User->>Stripe: 결제 완료
+        Stripe->>User: session_id가 포함된 성공 URL로 리디렉션
+        User->>FE: 성공 페이지로 복귀
+        FE->>Stripe: session_id로 세션 검증
+        Stripe-->>FE: 세션 세부 정보 반환
+        FE->>DB: 사용자 플랜 및 결제 상태 업데이트
+    else PayPal 결제
+        FE->>PayPal: 주문 생성
+        PayPal-->>FE: 승인 URL 반환
+        FE->>User: PayPal로 리디렉션
+        User->>PayPal: 결제 승인
+        PayPal->>User: 리턴 URL로 리디렉션
+        User->>FE: 성공 페이지로 복귀
+        FE->>PayPal: 결제 캡처
+        PayPal-->>FE: 결제 세부 정보 반환
+        FE->>DB: 사용자 플랜 및 결제 상태 업데이트
     end
 
-    %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    %% 웹훅 흐름 (비동기)
+    Note over Stripe,PayPal: 결제 이벤트 발생 (비동기)
 
-    alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
-    else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+    alt Stripe 웹훅
+        Stripe->>FE: 이벤트 알림 전송
+        FE->>FE: 웹훅 서명 검증
+        FE->>DB: 이벤트 처리 및 데이터 업데이트
+        FE-->>Stripe: 수신 확인 (200 OK)
+    else PayPal 웹훅
+        PayPal->>FE: 이벤트 알림 전송
+        FE->>FE: 웹훅 서명 검증
+        FE->>DB: 이벤트 처리 및 데이터 업데이트
+        FE-->>PayPal: 수신 확인 (200 OK)
     end
 
-    %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    %% Bree 자동화 작업
+    Note over Bree: 예약 작업이 주기적으로 실행됨
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: 모든 고객 및 구독 정보 조회
+    Stripe-->>Bree: 고객 데이터 반환
+    Bree->>DB: 데이터 비교 및 조정
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: 모든 구독 및 거래 정보 조회
+    PayPal-->>Bree: 구독 데이터 반환
+    Bree->>DB: 데이터 비교 및 조정
 
-    %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    %% 예외 상황: 분쟁 처리
+    Note over User,PayPal: 사용자가 청구에 대해 분쟁 제기
 
-    PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    PayPal->>FE: DISPUTE.CREATED 웹훅
+    FE->>PayPal: 자동으로 클레임 수락
+    FE->>DB: 사용자 상태 업데이트
+    FE->>User: 알림 이메일 발송
 ```
+## Layer 2: 서명 검증이 포함된 웹훅 핸들러 {#layer-2-webhook-handlers-with-signature-verification}
 
-## 레이어 2: 서명 검증 기능이 있는 웹훅 핸들러 {#layer-2-webhook-handlers-with-signature-verification}
+포스트 체크아웃 리디렉션은 대부분의 시나리오에서 잘 작동하지만 완벽하지는 않습니다. 사용자가 리디렉션되기 전에 브라우저를 닫거나 네트워크 문제로 인해 리디렉션이 완료되지 않을 수 있습니다. 이럴 때 웹훅이 필요합니다.
 
-결제 후 리디렉션은 대부분의 상황에서 효과적이지만, 완벽하지는 않습니다. 사용자가 리디렉션되기 전에 브라우저를 닫거나, 네트워크 문제로 리디렉션이 완료되지 않을 수 있습니다. 바로 이 부분에서 웹훅이 필요합니다.
-
-Stripe와 PayPal은 모두 결제 이벤트에 대한 실시간 알림을 전송하는 웹훅 시스템을 제공합니다. 저희는 이러한 알림의 진위 여부를 확인하고 적절하게 처리하는 강력한 웹훅 핸들러를 구현했습니다.
+Stripe와 PayPal 모두 결제 이벤트에 대한 실시간 알림을 보내는 웹훅 시스템을 제공합니다. 우리는 이러한 알림의 진위를 검증하고 적절히 처리하는 견고한 웹훅 핸들러를 구현했습니다.
 
 ### Stripe 웹훅 구현 {#stripe-webhook-implementation}
 
-Stripe 웹훅 핸들러는 들어오는 웹훅 이벤트의 서명을 검증하여 합법적인지 확인합니다.
+우리의 Stripe 웹훅 핸들러는 들어오는 웹훅 이벤트의 서명을 검증하여 합법성을 확인합니다:
 
 ```javascript
 async function webhook(ctx) {
@@ -334,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-`stripe.webhooks.constructEvent` 함수는 엔드포인트 시크릿을 사용하여 서명을 검증합니다. 서명이 유효하면 웹훅 응답 차단을 방지하기 위해 이벤트를 비동기 방식으로 처리합니다.
+`stripe.webhooks.constructEvent` 함수는 엔드포인트 비밀 키를 사용하여 서명을 검증합니다. 서명이 유효하면 웹훅 응답을 차단하지 않도록 비동기적으로 이벤트를 처리합니다.
 
 ### PayPal 웹훅 구현 {#paypal-webhook-implementation}
 
-마찬가지로, PayPal 웹훅 핸들러는 수신 알림의 진위 여부를 확인합니다.
+마찬가지로, 우리의 PayPal 웹훅 핸들러는 들어오는 알림의 진위를 검증합니다:
 
 ```javascript
 async function webhook(ctx) {
@@ -377,16 +379,16 @@ async function webhook(ctx) {
 }
 ```
 
-두 웹훅 핸들러 모두 동일한 패턴을 따릅니다. 서명을 확인하고, 수신을 확인하고, 이벤트를 비동기적으로 처리합니다. 이를 통해 결제 후 리디렉션이 실패하더라도 결제 이벤트를 놓치지 않습니다.
+두 웹훅 핸들러 모두 동일한 패턴을 따릅니다: 서명을 검증하고, 수신을 확인하며, 이벤트를 비동기적으로 처리합니다. 이를 통해 포스트 체크아웃 리디렉션이 실패하더라도 결제 이벤트를 놓치지 않습니다.
 
-## 레이어 3: Bree를 사용한 자동화된 작업 {#layer-3-automated-jobs-with-bree}
 
-트리펙타 방식의 마지막 단계는 결제 데이터를 주기적으로 검증하고 조정하는 자동화된 작업 집합입니다. Node.js용 작업 스케줄러인 Bree를 사용하여 이러한 작업을 정기적으로 실행합니다.
+## Layer 3: Bree를 이용한 자동화 작업 {#layer-3-automated-jobs-with-bree}
+
+우리의 삼중 접근법의 마지막 단계는 결제 데이터를 주기적으로 검증하고 조정하는 자동화 작업 세트입니다. 우리는 Node.js용 작업 스케줄러인 Bree를 사용하여 이러한 작업을 정기적으로 실행합니다.
 
 ### 구독 정확도 검사기 {#subscription-accuracy-checker}
 
-당사의 주요 업무 중 하나는 구독 정확도 검사기로, Stripe의 구독 상태가 당사 데이터베이스에 정확하게 반영되는지 확인합니다.
-
+주요 작업 중 하나는 구독 정확도 검사기로, 데이터베이스가 Stripe의 구독 상태를 정확히 반영하는지 확인합니다:
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -452,11 +454,11 @@ async function mapper(customer) {
 }
 ```
 
-이 작업은 이메일 주소 불일치나 여러 개의 활성 구독 등 데이터베이스와 Stripe 간의 불일치를 확인합니다. 문제가 발견되면 이를 기록하고 관리팀에 알림을 보냅니다.
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### PayPal 구독 동기화 {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-PayPal 구독에 대해서도 비슷한 작업이 있습니다.
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +489,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-이러한 자동화된 작업은 Stripe와 PayPal의 구독 및 결제의 실제 상태를 항상 데이터베이스에 반영하도록 보장하여 최종적인 안전망 역할을 합니다.
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## 예외 상황 처리 {#handling-edge-cases}
 
-강력한 결제 시스템은 예외적인 상황을 원활하게 처리해야 합니다. 몇 가지 일반적인 상황을 어떻게 처리하는지 살펴보겠습니다.
+## Handling Edge Cases {#handling-edge-cases}
 
-### 사기 감지 및 예방 {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-우리는 의심스러운 결제 활동을 자동으로 식별하고 처리하는 정교한 사기 감지 메커니즘을 구현했습니다.
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -540,30 +543,30 @@ case 'charge.failed': {
 }
 ```
 
-이 코드는 여러 번 결제에 실패하고 도메인을 확인하지 않은 사용자를 자동으로 차단하는데, 이는 사기 활동의 강력한 지표입니다.
+이 코드는 여러 번 결제 실패가 발생하고 인증된 도메인이 없는 사용자를 자동으로 차단하는데, 이는 사기 행위의 강력한 지표입니다.
 
 ### 분쟁 처리 {#dispute-handling}
 
-사용자가 요금에 대해 이의를 제기하는 경우 당사는 자동으로 해당 청구를 수락하고 적절한 조치를 취합니다.
+사용자가 결제에 대해 이의를 제기하면, 우리는 자동으로 클레임을 수락하고 적절한 조치를 취합니다:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
-  // accept claim
+  // 클레임 수락
   const agent = await paypalAgent();
   await agent
     .post(`/v1/customer/disputes/${body.resource.dispute_id}/accept-claim`)
     .send({
-      note: 'Full refund to the customer.'
+      note: '고객에게 전액 환불.'
     });
 
-  // Find the payment in our database
+  // 데이터베이스에서 결제 내역 찾기
   const payment = await Payments.findOne({ $or });
-  if (!payment) throw new Error('Payment does not exist');
+  if (!payment) throw new Error('결제가 존재하지 않습니다');
 
   const user = await Users.findById(payment.user);
-  if (!user) throw new Error('User did not exist for customer');
+  if (!user) throw new Error('고객에 해당하는 사용자가 존재하지 않습니다');
 
-  // Cancel the user's subscription if they have one
+  // 사용자가 구독 중이면 구독 취소
   if (isSANB(user[config.userFields.paypalSubscriptionID])) {
     try {
       const agent = await paypalAgent();
@@ -573,30 +576,31 @@ case 'CUSTOMER.DISPUTE.CREATED': {
         }/cancel`
       );
     } catch (err) {
-      // Handle subscription cancellation errors
+      // 구독 취소 오류 처리
     }
   }
 }
 ```
 
-이러한 접근 방식은 고객에게 좋은 경험을 보장하는 동시에 분쟁이 당사 사업에 미치는 영향을 최소화합니다.
+이 방법은 분쟁이 비즈니스에 미치는 영향을 최소화하면서도 좋은 고객 경험을 보장합니다.
+
 
 ## 코드 재사용: KISS 및 DRY 원칙 {#code-reuse-kiss-and-dry-principles}
 
-저희는 결제 시스템 전반에 걸쳐 KISS(Keep It Simple, Stupid) 및 DRY(Don't Repeat Yourself) 원칙을 준수해 왔습니다. 몇 가지 예를 들면 다음과 같습니다.
+우리 결제 시스템 전반에 걸쳐 KISS(Keep It Simple, Stupid)와 DRY(Don't Repeat Yourself) 원칙을 준수해왔습니다. 다음은 몇 가지 예시입니다:
 
-1. **공유 도우미 함수**: 결제 동기화, 이메일 전송 등의 일반적인 작업을 위해 재사용 가능한 도우미 함수를 만들었습니다.
+1. **공유 헬퍼 함수**: 결제 동기화 및 이메일 전송과 같은 공통 작업을 위한 재사용 가능한 헬퍼 함수를 만들었습니다.
 
-2. **일관된 오류 처리**: Stripe와 PayPal 웹훅 핸들러는 모두 오류 처리 및 관리자 알림에 동일한 패턴을 사용합니다.
+2. **일관된 오류 처리**: Stripe와 PayPal 웹훅 핸들러 모두 동일한 패턴으로 오류 처리 및 관리자 알림을 수행합니다.
 
-3. **통합 데이터베이스 스키마**: 당사의 데이터베이스 스키마는 Stripe와 PayPal 데이터를 모두 수용하도록 설계되었으며, 결제 상태, 금액, 플랜 정보에 대한 공통 필드를 갖추고 있습니다.
+3. **통합 데이터베이스 스키마**: 결제 상태, 금액, 플랜 정보 등 공통 필드를 포함하여 Stripe와 PayPal 데이터를 모두 수용할 수 있도록 데이터베이스 스키마를 설계했습니다.
 
-4. **중앙 집중식 구성**: 결제 관련 구성이 단일 파일에 중앙 집중화되어 가격 및 제품 정보를 쉽게 업데이트할 수 있습니다.
+4. **중앙 집중식 구성**: 결제 관련 구성은 단일 파일에 중앙 집중화되어 있어 가격 및 제품 정보를 쉽게 업데이트할 수 있습니다.
 
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        A[Helper Functions] --> B[syncStripePaymentIntent]
+        A[헬퍼 함수] --> B[syncStripePaymentIntent]
         A --> C[syncPayPalOrderPaymentByPaymentId]
         A --> D[syncPayPalSubscriptionPaymentsByUser]
     end
@@ -611,9 +615,9 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        E[Error Handling] --> F[Common Error Logging]
-        E --> G[Admin Email Notifications]
-        E --> H[User Notifications]
+        E[오류 처리] --> F[공통 오류 로깅]
+        E --> G[관리자 이메일 알림]
+        E --> H[사용자 알림]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -626,8 +630,8 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        I[Configuration] --> J[Centralized Payment Config]
-        I --> K[Shared Environment Variables]
+        I[구성] --> J[중앙 집중식 결제 구성]
+        I --> K[공유 환경 변수]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -640,9 +644,9 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        L[Webhook Processing] --> M[Signature Verification]
-        L --> N[Async Event Processing]
-        L --> O[Background Processing]
+        L[웹훅 처리] --> M[서명 검증]
+        L --> N[비동기 이벤트 처리]
+        L --> O[백그라운드 처리]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -655,11 +659,11 @@ graph TD
 ```mermaid
 graph TD
     subgraph "KISS Principle"
-        P[Simple Data Flow] --> Q[Unidirectional Updates]
-        P --> R[Clear Responsibility Separation]
+        P[간단한 데이터 흐름] --> Q[단방향 업데이트]
+        P --> R[명확한 책임 분리]
 
-        S[Explicit Error Handling] --> T[No Silent Failures]
-        S --> U[Comprehensive Logging]
+        S[명시적 오류 처리] --> T[무음 실패 없음]
+        S --> U[포괄적 로깅]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -668,16 +672,14 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
-    subgraph "DRY Principle"
-        V[Shared Logic] --> W[Payment Processing Functions]
-        V --> X[Email Templates]
-        V --> Y[Validation Logic]
+    subgraph "DRY 원칙"
+        V[공유 로직] --> W[결제 처리 함수]
+        V --> X[이메일 템플릿]
+        V --> Y[검증 로직]
 
-        Z[Common Database Operations] --> AA[User Updates]
-        Z --> AB[Payment Recording]
+        Z[공통 데이터베이스 작업] --> AA[사용자 업데이트]
+        Z --> AB[결제 기록]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -687,25 +689,26 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
-## VISA 구독 요구 사항 구현 {#visa-subscription-requirements-implementation}
 
-저희는 세 가지 접근 방식 외에도 VISA의 구독 요건을 준수하는 동시에 사용자 경험을 향상시키기 위한 특정 기능을 구현했습니다. VISA의 핵심 요건 중 하나는 구독료가 청구되기 전에 사용자에게 알림을 제공해야 한다는 것입니다. 특히 체험판에서 유료 구독으로 전환할 때 더욱 그렇습니다.
+## VISA 구독 요구사항 구현 {#visa-subscription-requirements-implementation}
 
-### 자동 갱신 사전 이메일 알림 {#automated-pre-renewal-email-notifications}
+우리의 삼위일체 접근법 외에도, VISA의 구독 요구사항을 준수하면서 사용자 경험을 향상시키기 위해 특정 기능을 구현했습니다. VISA의 주요 요구사항 중 하나는 사용자가 구독 요금이 청구되기 전에, 특히 체험판에서 유료 구독으로 전환될 때 반드시 통지받아야 한다는 점입니다.
 
-저희는 활성 체험 구독이 있는 사용자를 식별하고 첫 결제 전에 알림 이메일을 발송하는 자동화된 시스템을 구축했습니다. 이를 통해 VISA 규정을 준수할 뿐만 아니라, 환불을 줄이고 고객 만족도를 향상시킵니다.
+### 자동 사전 갱신 이메일 알림 {#automated-pre-renewal-email-notifications}
 
-이 기능을 구현한 방법은 다음과 같습니다.
+활성 체험 구독 사용자를 식별하고 첫 결제 전에 알림 이메일을 보내는 자동 시스템을 구축했습니다. 이는 VISA 요구사항을 준수할 뿐만 아니라, 결제 취소를 줄이고 고객 만족도를 높입니다.
+
+이 기능을 구현한 방법은 다음과 같습니다:
 
 ```javascript
-// Find users with trial subscriptions who haven't received a notification yet
+// 알림을 아직 받지 않은 체험 구독 사용자를 찾기
 const users = await Users.find({
   $or: [
     {
       $and: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
         { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // 이미 결제가 된 구독 제외
         ...(paidStripeSubscriptionIds.length > 0
           ? [
               {
@@ -721,7 +724,7 @@ const users = await Users.find({
       $and: [
         { [config.userFields.paypalSubscriptionID]: { $exists: true } },
         { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // 이미 결제가 된 구독 제외
         ...(paidPayPalSubscriptionIds.length > 0
           ? [
               {
@@ -736,22 +739,22 @@ const users = await Users.find({
   ]
 });
 
-// Process each user and send notification
+// 각 사용자 처리 및 알림 전송
 for (const user of users) {
-  // Get subscription details from payment processor
+  // 결제 처리자로부터 구독 세부 정보 가져오기
   const subscription = await getSubscriptionDetails(user);
 
-  // Calculate subscription duration and frequency
+  // 구독 기간 및 빈도 계산
   const duration = getDurationFromPlanId(subscription.plan_id);
   const frequency = getHumanReadableFrequency(duration, user.locale);
   const amount = getPlanAmount(user.plan, duration);
 
-  // Get user's domains for personalized email
+  // 개인화된 이메일을 위한 사용자의 도메인 가져오기
   const domains = await Domains.find({
     'members.user': user._id
   }).sort('name').lean().exec();
 
-  // Send VISA-compliant notification email
+  // VISA 준수 알림 이메일 전송
   await emailHelper({
     template: 'visa-trial-subscription-requirement',
     message: {
@@ -767,7 +770,7 @@ for (const user of users) {
     }
   });
 
-  // Record that notification was sent
+  // 알림 전송 기록
   await Users.findByIdAndUpdate(user._id, {
     $set: {
       [config.userFields.paypalTrialSentAt]: new Date()
@@ -776,18 +779,17 @@ for (const user of users) {
 }
 ```
 
-이 구현을 통해 사용자는 다음 사항에 대한 명확한 세부 정보를 통해 예정된 요금에 대해 항상 알 수 있습니다.
+이 구현은 사용자가 항상 다가오는 결제에 대해 명확한 세부사항과 함께 통지받도록 보장합니다:
 
-1. 첫 번째 요금이 청구되는 시점
-2. 향후 요금 청구 빈도(월별, 연간 등)
+1. 첫 결제 시점
+2. 이후 결제 빈도 (월간, 연간 등)
 3. 청구될 정확한 금액
-4. 구독에 포함되는 도메인
+4. 구독에 포함된 도메인 목록
 
-이 프로세스를 자동화함으로써 VISA의 요구 사항(청구하기 최소 7일 전에 통지해야 함)을 완벽하게 준수하는 동시에 지원 문의를 줄이고 전반적인 사용자 경험을 개선할 수 있습니다.
+이 프로세스를 자동화함으로써, 결제 최소 7일 전에 통지를 요구하는 VISA 요구사항을 완벽히 준수하는 동시에 지원 문의를 줄이고 전반적인 사용자 경험을 향상시킵니다.
+### 엣지 케이스 처리 {#handling-edge-cases-1}
 
-### 예외 상황 처리 {#handling-edge-cases-1}
-
-저희 구현에는 강력한 오류 처리 기능도 포함되어 있습니다. 알림 프로세스 중에 문제가 발생하면 저희 시스템은 자동으로 팀에 다음과 같은 알림을 보냅니다.
+우리 구현에는 강력한 오류 처리도 포함되어 있습니다. 알림 과정에서 문제가 발생하면, 시스템이 자동으로 팀에 경고를 보냅니다:
 
 ```javascript
 try {
@@ -795,12 +797,12 @@ try {
 } catch (err) {
   logger.error(err);
 
-  // Send alert to administrators
+  // 관리자에게 경고 전송
   await emailHelper({
     template: 'alert',
     message: {
       to: config.email.message.from,
-      subject: 'VISA Trial Subscription Requirement Error'
+      subject: 'VISA 체험 구독 요구사항 오류'
     },
     locals: {
       message: `<pre><code>${safeStringify(
@@ -813,13 +815,13 @@ try {
 }
 ```
 
-이를 통해 알림 시스템에 문제가 발생하더라도 당사 팀은 신속하게 문제를 해결하고 VISA 요구 사항을 준수할 수 있습니다.
+이로 인해 알림 시스템에 문제가 있더라도, 우리 팀이 신속하게 대응하여 VISA 요구사항을 준수할 수 있습니다.
 
-VISA 구독 알림 시스템은 규정 준수와 사용자 경험을 모두 염두에 두고 결제 인프라를 구축한 또 다른 사례로, 안정적이고 투명한 결제 처리를 보장하기 위한 3중 접근 방식을 보완합니다.
+VISA 구독 알림 시스템은 결제 인프라를 준수와 사용자 경험을 모두 고려하여 구축한 또 다른 예로, 신뢰할 수 있고 투명한 결제 처리를 보장하는 우리의 삼중 접근법을 보완합니다.
 
-### 체험 기간 및 구독 약관 {#trial-periods-and-subscription-terms}
+### 체험 기간 및 구독 조건 {#trial-periods-and-subscription-terms}
 
-기존 요금제에서 자동 갱신을 활성화한 사용자의 경우, 현재 요금제가 만료될 때까지 요금이 청구되지 않도록 적절한 체험 기간을 계산합니다.
+기존 플랜에서 자동 갱신을 활성화하는 사용자에 대해, 현재 플랜이 만료될 때까지 요금이 청구되지 않도록 적절한 체험 기간을 계산합니다:
 
 ```javascript
 if (
@@ -832,26 +834,27 @@ if (
     ctx.state.user[config.userFields.planExpiresAt]
   ).diff(dayjs(), 'hours');
 
-  // Handle trial period calculation
+  // 체험 기간 계산 처리
 }
 ```
 
-또한 청구 빈도와 취소 정책을 포함한 구독 약관에 대한 명확한 정보를 제공하고, 각 구독에 대한 자세한 메타데이터를 포함하여 적절한 추적 및 관리를 보장합니다.
+또한 구독 조건에 대한 명확한 정보를 제공하며, 청구 주기와 취소 정책을 포함하고, 각 구독에 상세한 메타데이터를 포함하여 적절한 추적 및 관리를 보장합니다.
 
-## 결론: Trifecta 접근 방식의 이점 {#conclusion-the-benefits-of-our-trifecta-approach}
 
-결제 처리에 대한 당사의 3가지 접근 방식은 다음과 같은 몇 가지 주요 이점을 제공했습니다.
+## 결론: 우리의 삼중 접근법의 이점 {#conclusion-the-benefits-of-our-trifecta-approach}
 
-1. **신뢰성**: 3단계의 결제 검증을 구현하여 결제가 누락되거나 잘못 처리되는 일이 없도록 보장합니다.
+우리의 결제 처리 삼중 접근법은 다음과 같은 주요 이점을 제공합니다:
 
-2. **정확성**: 당사 데이터베이스는 항상 Stripe와 PayPal의 구독 및 결제 현황을 정확하게 반영합니다.
+1. **신뢰성**: 세 단계의 결제 검증을 구현하여 결제가 누락되거나 잘못 처리되는 일이 없도록 보장합니다.
 
-3. **유연성**: 사용자는 시스템의 안정성을 손상시키지 않고도 원하는 결제 방법을 선택할 수 있습니다.
+2. **정확성**: 데이터베이스는 Stripe와 PayPal 양쪽의 구독 및 결제 상태를 항상 정확하게 반영합니다.
 
-4. **견고성**: 당사 시스템은 네트워크 장애부터 사기 행위까지 예외적인 상황을 원활하게 처리합니다.
+3. **유연성**: 사용자는 시스템의 신뢰성을 저해하지 않고 선호하는 결제 수단을 선택할 수 있습니다.
 
-여러 프로세서를 지원하는 결제 시스템을 구현하는 경우, 이 트리펙타 방식을 적극 권장합니다. 초기 개발 비용이 더 많이 들지만, 안정성과 정확성 측면에서 장기적인 이점을 얻을 수 있어 그만한 가치가 있습니다.
+4. **견고성**: 네트워크 장애부터 사기 행위까지 엣지 케이스를 원활하게 처리합니다.
 
-Forward Email과 개인정보 보호 중심 이메일 서비스에 대한 자세한 내용은 [웹사이트](https://forwardemail.net)에서 확인하세요.
+여러 결제 프로세서를 지원하는 결제 시스템을 구현 중이라면, 이 삼중 접근법을 강력히 추천합니다. 초기 개발 노력이 더 필요하지만, 신뢰성과 정확성 측면에서 장기적인 이점이 충분히 가치 있습니다.
 
-<!-- *키워드: 결제 처리, Stripe 통합, PayPal 통합, 웹훅 처리, 결제 동기화, 구독 관리, 사기 방지, 분쟁 처리, Node.js 결제 시스템, 멀티 프로세서 결제 시스템, 결제 게이트웨이 통합, 실시간 결제 검증, 결제 데이터 일관성, 구독 청구, 결제 보안, 결제 자동화, 결제 웹훅, 결제 조정, 결제 예외 사례, 결제 오류 처리, VISA 구독 요구 사항, 사전 갱신 알림, 구독 규정 준수* -->
+Forward Email 및 개인정보 보호 중심 이메일 서비스에 대한 자세한 내용은 [웹사이트](https://forwardemail.net)를 방문하세요.
+
+<!-- *Keywords: payment processing, Stripe integration, PayPal integration, webhook handling, payment synchronization, subscription management, fraud prevention, dispute handling, Node.js payment system, multi-processor payment system, payment gateway integration, real-time payment verification, payment data consistency, subscription billing, payment security, payment automation, payment webhooks, payment reconciliation, payment edge cases, payment error handling, VISA subscription requirements, pre-renewal notifications, subscription compliance* -->

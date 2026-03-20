@@ -1,50 +1,53 @@
-# Hoe Forward Email uw privacy, domein en veiligheid beschermt: de technische diepgang {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
+# Hoe Forward Email Uw Privacy, Domein en Beveiliging Beschermt: De Technische Diepgaande Analyse {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Beste e-mail doorstuurservice vergelijking" class="rounded-lg" />
+
 
 ## Inhoudsopgave {#table-of-contents}
 
 * [Voorwoord](#foreword)
-* [De Forward Email Privacy Filosofie](#the-forward-email-privacy-philosophy)
-* [SQLite-implementatie: duurzaamheid en draagbaarheid voor uw gegevens](#sqlite-implementation-durability-and-portability-for-your-data)
-* [Slimme wachtrij en herhaalmechanisme: e-mailbezorging garanderen](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
-* [Onbeperkte bronnen met intelligente snelheidsbeperking](#unlimited-resources-with-intelligent-rate-limiting)
-* [Sandbox-encryptie voor verbeterde beveiliging](#sandboxed-encryption-for-enhanced-security)
-* [In-Memory e-mailverwerking: geen schijfruimte nodig voor maximale privacy](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
-* [End-to-end-encryptie met OpenPGP voor volledige privacy](#end-to-end-encryption-with-openpgp-for-complete-privacy)
-* [Meerlaagse inhoudsbeveiliging voor uitgebreide beveiliging](#multi-layered-content-protection-for-comprehensive-security)
-* [Hoe wij ons onderscheiden van andere e-maildiensten: het technische privacyvoordeel](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+* [De Privacyfilosofie van Forward Email](#the-forward-email-privacy-philosophy)
+* [SQLite-Implementatie: Duurzaamheid en Draagbaarheid voor Uw Gegevens](#sqlite-implementation-durability-and-portability-for-your-data)
+* [Slimme Wachtrij en Herprobeermechanisme: Zekerheid van E-mailbezorging](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [Onbeperkte Middelen met Intelligente Snelheidsbeperking](#unlimited-resources-with-intelligent-rate-limiting)
+* [Sandboxed Encryptie voor Verbeterde Beveiliging](#sandboxed-encryption-for-enhanced-security)
+* [E-mailverwerking in Geheugen: Geen Schijfopslag voor Maximale Privacy](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [End-to-End Encryptie met OpenPGP voor Volledige Privacy](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [Meervoudige Laag Contentbescherming voor Uitgebreide Beveiliging](#multi-layered-content-protection-for-comprehensive-security)
+* [Hoe Wij Verschillen van Andere E-maildiensten: Het Technische Privacyvoordeel](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
   * [Open Source Transparantie voor Verifieerbare Privacy](#open-source-transparency-for-verifiable-privacy)
-  * [Geen leverancierslock-in voor privacy zonder compromissen](#no-vendor-lock-in-for-privacy-without-compromise)
-  * [Sandbox-gegevens voor echte isolatie](#sandboxed-data-for-true-isolation)
-  * [Gegevensportabiliteit en -controle](#data-portability-and-control)
-* [De technische uitdagingen van privacy-eerste e-maildoorsturen](#the-technical-challenges-of-privacy-first-email-forwarding)
-  * [Geheugenbeheer voor e-mailverwerking zonder logboekregistratie](#memory-management-for-no-logging-email-processing)
-  * [Spamdetectie zonder inhoudsanalyse voor privacybeschermende filtering](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
-  * [Compatibiliteit behouden met een privacy-eerst ontwerp](#maintaining-compatibility-with-privacy-first-design)
-* [Best practices voor privacy voor gebruikers van doorgestuurde e-mails](#privacy-best-practices-for-forward-email-users)
-* [Conclusie: De toekomst van privé-e-maildoorsturen](#conclusion-the-future-of-private-email-forwarding)
+  * [Geen Vendor Lock-In voor Privacy Zonder Compromis](#no-vendor-lock-in-for-privacy-without-compromise)
+  * [Sandboxed Data voor Echte Isolatie](#sandboxed-data-for-true-isolation)
+  * [Gegevensdraagbaarheid en Controle](#data-portability-and-control)
+* [De Technische Uitdagingen van Privacy-First E-maildoorsturing](#the-technical-challenges-of-privacy-first-email-forwarding)
+  * [Geheugenbeheer voor Geen-Logging E-mailverwerking](#memory-management-for-no-logging-email-processing)
+  * [Spamdetectie Zonder Contentanalyse voor Privacybewarende Filtering](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
+  * [Compatibiliteit Behouden met Privacy-First Ontwerp](#maintaining-compatibility-with-privacy-first-design)
+* [Privacy Best Practices voor Forward Email Gebruikers](#privacy-best-practices-for-forward-email-users)
+* [Conclusie: De Toekomst van Privé E-maildoorsturing](#conclusion-the-future-of-private-email-forwarding)
+
 
 ## Voorwoord {#foreword}
 
-In het huidige digitale landschap is e-mailprivacy belangrijker dan ooit. Met datalekken, zorgen over surveillance en gerichte advertenties op basis van e-mailinhoud zoeken gebruikers steeds vaker naar oplossingen die hun privacy vooropstellen. Bij Forward Email hebben we onze service vanaf de grond opgebouwd met privacy als hoeksteen van onze architectuur. Deze blogpost onderzoekt de technische implementaties die onze service tot een van de meest privacygerichte e-mailforwardingoplossingen op de markt maken.
+In het digitale landschap van vandaag is e-mailprivacy belangrijker dan ooit. Met datalekken, zorgen over surveillance en gerichte reclame gebaseerd op e-mailinhoud, zoeken gebruikers steeds vaker naar oplossingen die hun privacy vooropstellen. Bij Forward Email hebben we onze dienst vanaf de grond opgebouwd met privacy als hoeksteen van onze architectuur. Deze blogpost onderzoekt de technische implementaties die onze dienst tot een van de meest privacygerichte e-maildoorstuuroplossingen maken.
 
-## De filosofie van Forward Email Privacy {#the-forward-email-privacy-philosophy}
 
-Voordat we ingaan op de technische details, is het belangrijk om onze fundamentele privacyfilosofie te begrijpen: **uw e-mails zijn van u en alleen van u**. Dit principe vormt de basis voor elke technische beslissing die we nemen, van hoe we e-maildoorsturing afhandelen tot hoe we encryptie implementeren.
+## De Privacyfilosofie van Forward Email {#the-forward-email-privacy-philosophy}
 
-In tegenstelling tot veel e-mailproviders, die uw berichten scannen voor reclamedoeleinden of ze voor onbepaalde tijd op hun servers opslaan, werkt Forward Email met een radicaal andere aanpak:
+Voordat we in de technische details duiken, is het belangrijk onze fundamentele privacyfilosofie te begrijpen: **uw e-mails behoren toe aan u en alleen u**. Dit principe stuurt elke technische beslissing die we nemen, van hoe we e-maildoorsturing afhandelen tot hoe we encryptie implementeren.
 
-1. **Alleen in-memory verwerking** - We slaan uw doorgestuurde e-mails niet op schijf op.
-2. **Geen opslag van metadata** - We houden geen gegevens bij van wie wie e-mailt.
-3. **100% open source** - Onze volledige codebase is transparant en controleerbaar.
-4. **End-to-end encryptie** - We ondersteunen OpenPGP voor écht privécommunicatie.
+In tegenstelling tot veel e-mailproviders die uw berichten scannen voor advertentiedoeleinden of ze onbeperkt op hun servers opslaan, werkt Forward Email met een radicaal andere aanpak:
 
-## SQLite-implementatie: duurzaamheid en draagbaarheid voor uw gegevens {#sqlite-implementation-durability-and-portability-for-your-data}
+1. **Alleen verwerking in geheugen** - We slaan uw doorgestuurde e-mails niet op de schijf op
+2. **Geen opslag van metadata** - We bewaren geen gegevens over wie aan wie e-mailt
+3. **100% open source** - Onze volledige codebase is transparant en controleerbaar
+4. **End-to-end encryptie** - We ondersteunen OpenPGP voor echt privé communicatie
 
-Een van de belangrijkste privacyvoordelen van Forward Email is onze zorgvuldig ontworpen [SQLite](https://en.wikipedia.org/wiki/SQLite)-implementatie. We hebben SQLite geoptimaliseerd met specifieke PRAGMA-instellingen en [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) om zowel de duurzaamheid als de overdraagbaarheid van uw gegevens te garanderen, met behoud van de hoogste privacy- en beveiligingsnormen.
 
-Hier ziet u hoe we SQLite hebben geïmplementeerd met [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) als code voor kwantumbestendige encryptie:
+## SQLite-Implementatie: Duurzaamheid en Draagbaarheid voor Uw Gegevens {#sqlite-implementation-durability-and-portability-for-your-data}
+
+Een van de belangrijkste privacyvoordelen van Forward Email is onze zorgvuldig ontworpen [SQLite](https://en.wikipedia.org/wiki/SQLite) implementatie. We hebben SQLite geoptimaliseerd met specifieke PRAGMA-instellingen en [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) om zowel duurzaamheid als draagbaarheid van uw gegevens te garanderen, terwijl we de hoogste normen voor privacy en beveiliging handhaven.
+Hier is een overzicht van hoe we SQLite hebben geïmplementeerd met [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) als de cipher voor kwantumresistente encryptie:
 
 ```javascript
 // Initialize the database with better-sqlite3-multiple-ciphers
@@ -81,13 +84,14 @@ db.pragma('optimize=0x10002;');
 db.pragma('temp_store=1;');
 ```
 
-Deze implementatie zorgt ervoor dat uw gegevens niet alleen veilig, maar ook overdraagbaar zijn. U kunt uw e-mail op elk gewenst moment meenemen door te exporteren in [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) of SQLite-formaat. En wanneer u uw gegevens wilt verwijderen, zijn ze echt weg – we verwijderen de bestanden gewoon van de schijfopslag in plaats van SQL DELETE ROW-opdrachten uit te voeren, die sporen in de database kunnen achterlaten.
+Deze implementatie zorgt ervoor dat je gegevens niet alleen veilig zijn, maar ook draagbaar. Je kunt je e-mail op elk moment meenemen door te exporteren in [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) of SQLite-formaten. En wanneer je je gegevens wilt verwijderen, zijn ze echt weg – we verwijderen simpelweg de bestanden van de schijfopslag in plaats van SQL DELETE ROW-commando’s uit te voeren, die sporen in de database kunnen achterlaten.
 
-Het kwantumversleutelingsaspect van onze implementatie gebruikt ChaCha20-Poly1305 als code wanneer we de database initialiseren. Dit biedt sterke bescherming tegen zowel huidige als toekomstige bedreigingen voor de privacy van uw gegevens.
+Het kwantum-encryptieaspect van onze implementatie gebruikt ChaCha20-Poly1305 als de cipher wanneer we de database initialiseren, wat sterke bescherming biedt tegen zowel huidige als toekomstige bedreigingen voor je gegevensprivacy.
 
-## Slimme wachtrij en herhaalmechanisme: e-mailbezorging garanderen {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-In plaats van ons uitsluitend te richten op headerverwerking, hebben we een geavanceerd slim wachtrij- en retry-mechanisme geïmplementeerd met onze `getBounceInfo`-methode. Dit systeem zorgt ervoor dat uw e-mails de beste kans hebben om te worden afgeleverd, zelfs bij tijdelijke problemen.
+## Slimme Wachtrij en Herprobeermechanisme: Zorgen voor E-mailbezorging {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
+
+In plaats van ons alleen te richten op headerverwerking, hebben we een geavanceerd slim wachtrij- en herprobeermechanisme geïmplementeerd met onze `getBounceInfo`-methode. Dit systeem zorgt ervoor dat je e-mails de beste kans hebben om bezorgd te worden, zelfs wanneer tijdelijke problemen zich voordoen.
 
 ```javascript
 function getBounceInfo(err) {
@@ -121,21 +125,21 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> Dit is een fragment van de methode `getBounceInfo` en niet de daadwerkelijke uitgebreide implementatie. De volledige code is te vinden op [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+> Dit is een fragment van de `getBounceInfo`-methode en niet de daadwerkelijke uitgebreide implementatie. Voor de volledige code kun je deze bekijken op [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-We proberen e-mails 5 dagen lang opnieuw te bezorgen, vergelijkbaar met industriestandaarden zoals [Achtervoegsel](https://en.wikipedia.org/wiki/Postfix_\(software\), waardoor tijdelijke problemen de tijd krijgen om zichzelf op te lossen. Deze aanpak verbetert de bezorgsnelheid aanzienlijk en behoudt de privacy.
+We proberen de mailbezorging 5 dagen opnieuw, vergelijkbaar met industriestandaarden zoals [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), waardoor tijdelijke problemen de tijd krijgen om zichzelf op te lossen. Deze aanpak verbetert de bezorgingspercentages aanzienlijk terwijl de privacy behouden blijft.
 
-In dezelfde geest redigeren we ook de inhoud van uitgaande SMTP-e-mails na succesvolle bezorging. Dit is geconfigureerd in ons opslagsysteem met een standaard bewaartermijn van 30 dagen, die u kunt aanpassen in de geavanceerde instellingen van uw domein. Na deze termijn wordt de inhoud van de e-mail automatisch geredigeerd en verwijderd, waarna alleen een tijdelijke aanduiding overblijft:
+In een vergelijkbare lijn redigeren we ook de berichtinhoud van uitgaande SMTP-e-mails na succesvolle bezorging. Dit is geconfigureerd in ons opslagsysteem met een standaard bewaartermijn van 30 dagen, die je kunt aanpassen in de Geavanceerde Instellingen van je domein. Na deze periode wordt de e-mailinhoud automatisch geredigeerd en verwijderd, waarbij alleen een tijdelijke placeholder-tekst overblijft:
 
 ```txt
 This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
 ```
+Deze aanpak zorgt ervoor dat je verzonden e-mails niet onbeperkt worden opgeslagen, waardoor het risico op datalekken of ongeautoriseerde toegang tot je communicatie wordt verminderd.
 
-Met deze aanpak voorkomt u dat uw verzonden e-mails onbeperkt bewaard blijven. Zo verkleint u het risico op datalekken of ongeautoriseerde toegang tot uw communicatie.
 
 ## Onbeperkte bronnen met intelligente snelheidsbeperking {#unlimited-resources-with-intelligent-rate-limiting}
 
-Hoewel Forward Email een onbeperkt aantal domeinen en aliassen biedt, hebben we intelligente snelheidsbeperking geïmplementeerd om ons systeem te beschermen tegen misbruik en een eerlijk gebruik voor alle gebruikers te garanderen. Niet-zakelijke klanten kunnen bijvoorbeeld tot 50+ aliassen per dag aanmaken. Dit voorkomt dat onze database wordt overspoeld met spam en zorgt ervoor dat onze realtime misbruik- en beschermingsfuncties effectief werken.
+Hoewel Forward Email onbeperkte domeinen en aliassen biedt, hebben we intelligente snelheidsbeperking geïmplementeerd om ons systeem te beschermen tegen misbruik en eerlijke gebruik voor alle gebruikers te waarborgen. Bijvoorbeeld, niet-enterprise klanten kunnen tot 50+ aliassen per dag aanmaken, wat voorkomt dat onze database wordt gespamd en overspoeld, en onze realtime misbruik- en beschermingsfuncties effectief laat functioneren.
 
 ```javascript
 // Rate limiter implementation
@@ -155,28 +159,30 @@ if (limit.remaining <= 0) {
 }
 ```
 
-Deze evenwichtige aanpak biedt u de flexibiliteit om zoveel e-mailadressen aan te maken als u nodig hebt voor uitgebreid privacybeheer, terwijl de integriteit en prestaties van onze service voor alle gebruikers behouden blijven.
+Deze gebalanceerde aanpak geeft je de flexibiliteit om zoveel e-mailadressen aan te maken als je nodig hebt voor uitgebreide privacybeheer, terwijl de integriteit en prestaties van onze dienst voor alle gebruikers behouden blijven.
 
-## Sandbox-encryptie voor verbeterde beveiliging {#sandboxed-encryption-for-enhanced-security}
 
-Onze unieke sandbox-encryptieaanpak biedt een cruciaal beveiligingsvoordeel dat veel gebruikers over het hoofd zien bij het kiezen van een e-mailservice. Laten we eens kijken waarom het sandboxen van gegevens, met name e-mail, zo belangrijk is.
+## Gesandboxte encryptie voor verbeterde beveiliging {#sandboxed-encryption-for-enhanced-security}
 
-Diensten zoals Gmail en Proton gebruiken hoogstwaarschijnlijk gedeelde [relationele databases](https://en.wikipedia.org/wiki/Relational_database), wat een fundamenteel beveiligingslek creëert. Als iemand in een gedeelde databaseomgeving toegang krijgt tot de gegevens van één gebruiker, heeft diegene mogelijk ook toegang tot de gegevens van andere gebruikers. Dit komt doordat alle gebruikersgegevens zich in dezelfde databasetabellen bevinden, gescheiden door gebruikers-ID's of vergelijkbare identificatiegegevens.
+Onze unieke gesandboxte encryptiebenadering biedt een cruciaal beveiligingsvoordeel dat veel gebruikers over het hoofd zien bij het kiezen van een e-maildienst. Laten we onderzoeken waarom het sandboxen van data, vooral e-mail, zo belangrijk is.
 
-Forward Email hanteert een fundamenteel andere aanpak met onze sandbox-encryptie:
+Diensten zoals Gmail en Proton gebruiken hoogstwaarschijnlijk gedeelde [relationele databases](https://en.wikipedia.org/wiki/Relational_database), wat een fundamentele beveiligingskwetsbaarheid creëert. In een gedeelde databaseomgeving, als iemand toegang krijgt tot de data van één gebruiker, heeft diegene mogelijk ook een weg om toegang te krijgen tot de data van andere gebruikers. Dit komt omdat alle gebruikersdata in dezelfde databasetabellen staat, alleen gescheiden door gebruikers-ID's of soortgelijke identificatoren.
 
-1. **Volledige isolatie**: De gegevens van elke gebruiker worden opgeslagen in een eigen, versleutelde SQLite-database, volledig geïsoleerd van andere gebruikers.
-2. **Onafhankelijke encryptiesleutels**: Elke database is versleuteld met een eigen unieke sleutel, afgeleid van het wachtwoord van de gebruiker.
-3. **Geen gedeelde opslag**: In tegenstelling tot relationele databases, waar alle e-mails van gebruikers in één tabel met "e-mails" staan, zorgt onze aanpak ervoor dat gegevens niet worden vermengd.
-4. **Diepgaande verdediging**: Zelfs als de database van één gebruiker op de een of andere manier wordt gecompromitteerd, biedt deze geen toegang tot de gegevens van een andere gebruiker.
+Forward Email hanteert een fundamenteel andere aanpak met onze gesandboxte encryptie:
 
-Deze sandbox-aanpak is vergelijkbaar met het bewaren van uw e-mail in een aparte fysieke kluis in plaats van in een gedeelde opslagruimte met interne scheidingswanden. Het is een fundamenteel architectonisch verschil dat uw privacy en veiligheid aanzienlijk verbetert.
+1. **Volledige isolatie**: De data van elke gebruiker wordt opgeslagen in een eigen versleuteld SQLite databasebestand, volledig geïsoleerd van andere gebruikers
+2. **Onafhankelijke encryptiesleutels**: Elke database is versleuteld met een unieke sleutel die is afgeleid van het wachtwoord van de gebruiker
+3. **Geen gedeelde opslag**: In tegenstelling tot relationele databases waar alle e-mails van gebruikers in één "emails" tabel kunnen staan, zorgt onze aanpak ervoor dat data niet wordt vermengd
+4. **Verdediging in diepte**: Zelfs als de database van één gebruiker op de een of andere manier gecompromitteerd zou worden, geeft dit geen toegang tot de data van andere gebruikers
 
-## In-Memory e-mailverwerking: geen schijfruimte voor maximale privacy {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+Deze gesandboxte aanpak is vergelijkbaar met het hebben van je e-mail in een aparte fysieke kluis in plaats van in een gedeelde opslagfaciliteit met interne scheidingen. Het is een fundamenteel architectonisch verschil dat je privacy en beveiliging aanzienlijk verbetert.
 
-Voor onze e-maildoorstuurservice verwerken we e-mails volledig in het RAM-geheugen en slaan we ze nooit op in schijfruimte of databases. Deze aanpak biedt ongeëvenaarde bescherming tegen e-mailsurveillance en metadataverzameling.
 
-Hieronder vindt u een vereenvoudigd overzicht van hoe onze e-mailverwerking werkt:
+## E-mailverwerking in het geheugen: geen schijfopslag voor maximale privacy {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+
+Voor onze e-maildoorstuurservice verwerken we e-mails volledig in het RAM-geheugen en schrijven we ze nooit naar schijfopslag of databases. Deze aanpak biedt ongeëvenaarde bescherming tegen e-mailbewaking en metadata-verzameling.
+
+Hier is een vereenvoudigde weergave van hoe onze e-mailverwerking werkt:
 
 ```javascript
 async function onData(stream, _session, fn) {
@@ -207,14 +213,14 @@ async function onData(stream, _session, fn) {
   }
 }
 ```
+Deze aanpak betekent dat zelfs als onze servers zouden worden gecompromitteerd, er geen historische e-mailgegevens zijn waar aanvallers toegang toe kunnen krijgen. Je e-mails passeren simpelweg ons systeem en worden onmiddellijk doorgestuurd naar hun bestemming zonder een spoor achter te laten. Deze no-logging e-mail forwarding aanpak is fundamenteel voor het beschermen van je communicatie tegen surveillance.
 
-Deze aanpak betekent dat zelfs als onze servers gecompromitteerd zouden worden, er geen historische e-mailgegevens beschikbaar zouden zijn waar aanvallers toegang toe zouden hebben. Uw e-mails passeren gewoon ons systeem en worden direct doorgestuurd naar hun bestemming, zonder een spoor achter te laten. Deze aanpak, waarbij geen e-mails worden geregistreerd, is essentieel voor de bescherming van uw communicatie tegen surveillance.
 
-## End-to-end-encryptie met OpenPGP voor volledige privacy {#end-to-end-encryption-with-openpgp-for-complete-privacy}
+## End-to-End Encryptie met OpenPGP voor Volledige Privacy {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-Voor gebruikers die de hoogste mate van privacybescherming tegen e-mailsurveillance nodig hebben, ondersteunen we [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) voor end-to-end encryptie. In tegenstelling tot veel e-mailproviders die bedrijfseigen bruggen of apps vereisen, werkt onze implementatie met standaard e-mailclients, waardoor veilige communicatie voor iedereen toegankelijk is.
+Voor gebruikers die het hoogste niveau van privacybescherming tegen e-mail surveillance vereisen, ondersteunen we [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) voor end-to-end encryptie. In tegenstelling tot veel e-mailproviders die propriëtaire bridges of apps vereisen, werkt onze implementatie met standaard e-mailclients, waardoor veilige communicatie voor iedereen toegankelijk is.
 
-Zo implementeren wij OpenPGP-encryptie:
+Dit is hoe we OpenPGP-encryptie implementeren:
 
 ```javascript
 async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
@@ -247,71 +253,75 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-Deze implementatie zorgt ervoor dat uw e-mails versleuteld zijn voordat ze uw apparaat verlaten en alleen door de beoogde ontvanger kunnen worden ontsleuteld. Zo blijft uw communicatie privé, zelfs voor ons. Dit is essentieel om gevoelige communicatie te beschermen tegen ongeautoriseerde toegang en surveillance.
+Deze implementatie zorgt ervoor dat je e-mails worden versleuteld voordat ze je apparaat verlaten en alleen kunnen worden ontsleuteld door de bedoelde ontvanger, waardoor je communicatie privé blijft, zelfs voor ons. Dit is essentieel voor het beschermen van gevoelige communicatie tegen ongeautoriseerde toegang en surveillance.
 
-## Meerlaagse inhoudsbeveiliging voor uitgebreide beveiliging {#multi-layered-content-protection-for-comprehensive-security}
 
-Forward Email biedt meerdere lagen van inhoudsbeveiliging die standaard zijn ingeschakeld om uitgebreide beveiliging te bieden tegen diverse bedreigingen:
+## Meervoudige Laag Contentbescherming voor Uitgebreide Beveiliging {#multi-layered-content-protection-for-comprehensive-security}
 
-1. **Bescherming voor inhoud voor volwassenen** - Filtert ongepaste inhoud zonder de privacy in gevaar te brengen
-2. **[Phishing](https://en.wikipedia.org/wiki/Phishing)-beveiliging** - Blokkeert pogingen om uw gegevens te stelen en behoudt tegelijkertijd uw anonimiteit
-3. **Bescherming voor uitvoerbare bestanden** - Voorkomt potentieel schadelijke bijlagen zonder de inhoud te scannen
-4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus)-beveiliging** - Scant op malware met behulp van privacybeschermende technieken
+Forward Email biedt meerdere lagen contentbescherming die standaard zijn ingeschakeld om uitgebreide beveiliging te bieden tegen diverse bedreigingen:
 
-In tegenstelling tot veel providers die deze functies opt-in aanbieden, hebben wij ze opt-out gemaakt, zodat alle gebruikers standaard profiteren van deze bescherming. Deze aanpak weerspiegelt onze toewijding aan zowel privacy als beveiliging en biedt een balans die veel e-maildiensten niet weten te bereiken.
+1. **Bescherming tegen volwassen inhoud** - Filtert ongepaste inhoud zonder de privacy aan te tasten
+2. **[Phishing](https://en.wikipedia.org/wiki/Phishing) bescherming** - Blokkeert pogingen om je informatie te stelen terwijl anonimiteit behouden blijft
+3. **Bescherming tegen uitvoerbare bestanden** - Voorkomt potentieel schadelijke bijlagen zonder inhoud te scannen
+4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus) bescherming** - Scant op malware met privacybeschermende technieken
 
-## Hoe wij ons onderscheiden van andere e-maildiensten: het technische privacyvoordeel {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
+In tegenstelling tot veel providers die deze functies opt-in maken, hebben wij ze opt-out gemaakt, zodat alle gebruikers standaard profiteren van deze bescherming. Deze aanpak weerspiegelt onze toewijding aan zowel privacy als beveiliging, en biedt een balans die veel e-maildiensten niet bereiken.
 
-Wanneer u Forward Email vergelijkt met andere e-mailservices, benadrukken een aantal belangrijke technische verschillen onze privacy-eerste benadering:
+
+## Hoe Wij Verschillen van Andere E-maildiensten: Het Technische Privacyvoordeel {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
+
+Bij het vergelijken van Forward Email met andere e-maildiensten, benadrukken verschillende belangrijke technische verschillen onze privacy-first aanpak:
 
 ### Open Source Transparantie voor Verifieerbare Privacy {#open-source-transparency-for-verifiable-privacy}
 
-Hoewel veel e-mailproviders beweren open source te zijn, houden ze hun backendcode vaak gesloten. Forward Email is 100% [open source](https://en.wikipedia.org/wiki/Open_source), inclusief zowel frontend- als backendcode. Deze transparantie maakt onafhankelijke beveiligingsaudits van alle componenten mogelijk, waardoor onze privacyclaims door iedereen geverifieerd kunnen worden.
+Hoewel veel e-mailproviders beweren open source te zijn, houden ze vaak hun backend-code gesloten. Forward Email is 100% [open source](https://en.wikipedia.org/wiki/Open_source), inclusief zowel frontend- als backend-code. Deze transparantie maakt onafhankelijke beveiligingsaudits van alle componenten mogelijk, waardoor onze privacyclaims door iedereen geverifieerd kunnen worden.
 
-### Geen leverancierslock-in voor privacy zonder compromissen {#no-vendor-lock-in-for-privacy-without-compromise}
+### Geen Vendor Lock-In voor Privacy Zonder Compromis {#no-vendor-lock-in-for-privacy-without-compromise}
 
-Veel privacygerichte e-mailproviders vereisen dat u hun eigen apps of bruggen gebruikt. Forward Email werkt met elke standaard e-mailclient via de protocollen [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) en [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), waardoor u de vrijheid heeft om uw favoriete e-mailsoftware te kiezen zonder dat dit ten koste gaat van uw privacy.
+Veel privacygerichte e-mailproviders vereisen dat je hun propriëtaire apps of bridges gebruikt. Forward Email werkt met elke standaard e-mailclient via [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) en [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) protocollen, waardoor je de vrijheid hebt om je favoriete e-mailsoftware te kiezen zonder concessies te doen aan privacy.
+### Gesandboxte Gegevens voor Echte Isolatie {#sandboxed-data-for-true-isolation}
 
-### Sandbox-gegevens voor echte isolatie {#sandboxed-data-for-true-isolation}
+In tegenstelling tot diensten die gedeelde databases gebruiken waar alle gebruikersgegevens worden vermengd, zorgt onze gesandboxte aanpak ervoor dat de gegevens van elke gebruiker volledig geïsoleerd zijn. Dit fundamentele architecturale verschil biedt aanzienlijk sterkere privacygaranties dan wat de meeste e-maildiensten bieden.
 
-In tegenstelling tot services die gebruikmaken van gedeelde databases waar alle gebruikersgegevens worden samengevoegd, zorgt onze sandbox-aanpak ervoor dat de gegevens van elke gebruiker volledig geïsoleerd zijn. Dit fundamentele architectuurverschil biedt aanzienlijk sterkere privacygaranties dan wat de meeste e-mailservices bieden.
+### Gegevensoverdraagbaarheid en Controle {#data-portability-and-control}
 
-### Gegevensportabiliteit en -beheer {#data-portability-and-control}
+Wij geloven dat uw gegevens van u zijn, daarom maken we het gemakkelijk om uw e-mails te exporteren in standaardformaten (MBOX, EML, SQLite) en uw gegevens echt te verwijderen wanneer u dat wilt. Dit niveau van controle is zeldzaam onder e-mailproviders maar essentieel voor echte privacy.
 
-Wij geloven dat uw gegevens van u zijn. Daarom maken we het eenvoudig om uw e-mails te exporteren in standaardformaten (MBOX, EML, SQLite) en uw gegevens daadwerkelijk te verwijderen wanneer u dat wilt. Deze mate van controle is zeldzaam bij e-mailproviders, maar essentieel voor echte privacy.
 
-## De technische uitdagingen van privacy-eerste e-maildoorsturen {#the-technical-challenges-of-privacy-first-email-forwarding}
+## De Technische Uitdagingen van Privacy-First E-maildoorsturing {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-Het opzetten van een privacy-eerste e-mailservice brengt aanzienlijke technische uitdagingen met zich mee. Hier zijn enkele van de obstakels die we hebben overwonnen:
+Het bouwen van een privacy-first e-maildienst brengt aanzienlijke technische uitdagingen met zich mee. Hier zijn enkele obstakels die we hebben overwonnen:
 
-### Geheugenbeheer voor e-mailverwerking zonder logboekregistratie {#memory-management-for-no-logging-email-processing}
+### Geheugenbeheer voor Geen-Logging E-mailverwerking {#memory-management-for-no-logging-email-processing}
 
-Het verwerken van e-mails in het geheugen zonder schijfruimte vereist zorgvuldig geheugenbeheer om grote hoeveelheden e-mailverkeer efficiënt te verwerken. We hebben geavanceerde geheugenoptimalisatietechnieken geïmplementeerd om betrouwbare prestaties te garanderen zonder afbreuk te doen aan ons beleid van geen opslag, een cruciaal onderdeel van onze privacybeschermingsstrategie.
+E-mails in het geheugen verwerken zonder opslag op schijf vereist zorgvuldig geheugenbeheer om hoge volumes e-mailverkeer efficiënt te verwerken. We hebben geavanceerde geheugenoptimalisatietechnieken geïmplementeerd om betrouwbare prestaties te garanderen zonder concessies te doen aan ons geen-opslagbeleid, een cruciaal onderdeel van onze privacybeschermingsstrategie.
 
-### Spamdetectie zonder inhoudsanalyse voor privacybeschermende filtering {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
+### Spamdetectie Zonder Inhoudsanalyse voor Privacybehoudende Filtering {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-De meeste [spam](https://en.wikipedia.org/wiki/Email_spam)-detectiesystemen zijn gebaseerd op het analyseren van e-mailinhoud, wat in strijd is met onze privacyprincipes. We hebben technieken ontwikkeld om spampatronen te identificeren zonder de inhoud van uw e-mails te lezen. Zo vinden we een balans tussen privacy en gebruiksgemak, waardoor de vertrouwelijkheid van uw communicatie behouden blijft.
+De meeste [spam](https://en.wikipedia.org/wiki/Email_spam) detectiesystemen zijn afhankelijk van het analyseren van e-mailinhoud, wat in strijd is met onze privacyprincipes. We hebben technieken ontwikkeld om spampatronen te identificeren zonder de inhoud van uw e-mails te lezen, waarmee we een balans vinden tussen privacy en bruikbaarheid die de vertrouwelijkheid van uw communicatie bewaart.
 
-### Compatibiliteit behouden met privacy-eerst ontwerp {#maintaining-compatibility-with-privacy-first-design}
+### Compatibiliteit Behouden met Privacy-First Ontwerp {#maintaining-compatibility-with-privacy-first-design}
 
-Om compatibiliteit met alle e-mailclients te garanderen en tegelijkertijd geavanceerde privacyfuncties te implementeren, waren creatieve technische oplossingen nodig. Ons team heeft onvermoeibaar gewerkt aan een naadloze privacy, zodat u niet hoeft te kiezen tussen gemak en veiligheid bij het beschermen van uw e-mailcommunicatie.
+Het waarborgen van compatibiliteit met alle e-mailclients terwijl we geavanceerde privacyfuncties implementeren, vereiste creatieve technische oplossingen. Ons team heeft onvermoeibaar gewerkt om privacy naadloos te maken, zodat u niet hoeft te kiezen tussen gemak en veiligheid bij het beschermen van uw e-mailcommunicatie.
 
-## Best practices voor privacy voor doorstuurgebruikers van e-mail {#privacy-best-practices-for-forward-email-users}
 
-Om uw bescherming tegen e-mailbewaking te maximaliseren en uw privacy te maximaliseren bij het gebruik van Forward Email, raden wij de volgende best practices aan:
+## Privacy Beste Praktijken voor Forward Email Gebruikers {#privacy-best-practices-for-forward-email-users}
 
-1. **Gebruik unieke aliassen voor verschillende services** - Maak voor elke service waarvoor u zich aanmeldt een aparte e-mailalias aan om cross-service tracking te voorkomen.
-2. **Schakel OpenPGP-versleuteling in** - Gebruik voor gevoelige communicatie end-to-end-versleuteling om volledige privacy te garanderen.
-3. **Rouleer regelmatig uw e-mailaliassen** - Werk aliassen voor belangrijke services periodiek bij om gegevensverzameling op de lange termijn te minimaliseren.
-4. **Gebruik sterke, unieke wachtwoorden** - Bescherm uw Forward Email-account met een sterk wachtwoord om ongeautoriseerde toegang te voorkomen.
-5. **Implementeer [IP-adres](https://en.wikipedia.org/wiki/IP_address)-anonimisering** - Overweeg het gebruik van een [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) in combinatie met Forward Email voor volledige anonimiteit.
+Om uw bescherming tegen e-mailbewaking te maximaliseren en uw privacy te vergroten bij het gebruik van Forward Email, raden wij de volgende beste praktijken aan:
 
-## Conclusie: De toekomst van privé-e-maildoorsturen {#conclusion-the-future-of-private-email-forwarding}
+1. **Gebruik unieke aliassen voor verschillende diensten** - Maak voor elke dienst waarvoor u zich aanmeldt een ander e-mailalias aan om cross-service tracking te voorkomen
+2. **Schakel OpenPGP-encryptie in** - Gebruik end-to-end encryptie voor gevoelige communicatie om volledige privacy te garanderen
+3. **Roteer regelmatig uw e-mailaliassen** - Werk periodiek aliassen bij voor belangrijke diensten om langdurige gegevensverzameling te minimaliseren
+4. **Gebruik sterke, unieke wachtwoorden** - Bescherm uw Forward Email-account met een sterk wachtwoord om ongeautoriseerde toegang te voorkomen
+5. **Implementeer [IP-adres](https://en.wikipedia.org/wiki/IP_address) anonimisatie** - Overweeg het gebruik van een [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) in combinatie met Forward Email voor volledige anonimiteit
 
-Bij Forward Email geloven we dat privacy niet zomaar een functie is, maar een fundamenteel recht. Onze technische implementaties weerspiegelen deze overtuiging en bieden u e-maildoorsturing die uw privacy op elk niveau respecteert en u beschermt tegen e-mailsurveillance en metadataverzameling.
 
-Terwijl we onze service blijven ontwikkelen en verbeteren, blijft onze toewijding aan privacy onverminderd. We onderzoeken voortdurend nieuwe encryptiemethoden, verkennen aanvullende privacybeschermingen en verfijnen onze codebase om de best mogelijke e-mailervaring te bieden.
+## Conclusie: De Toekomst van Privé E-maildoorsturing {#conclusion-the-future-of-private-email-forwarding}
 
-Door te kiezen voor Forward Email kiest u niet zomaar een e-mailservice – u ondersteunt een visie op het internet waar privacy de standaard is, niet de uitzondering. Bouw samen met ons aan een meer private digitale toekomst, één e-mail tegelijk.
+Bij Forward Email geloven we dat privacy niet zomaar een functie is—het is een fundamenteel recht. Onze technische implementaties weerspiegelen dit geloof en bieden u e-maildoorsturing die uw privacy op elk niveau respecteert en u beschermt tegen e-mailbewaking en metadata-verzameling.
 
-<!-- *Trefwoorden: privé-e-maildoorsturen, privacybescherming voor e-mail, beveiligde e-mailservice, open-source-e-mail, kwantumveilige encryptie, OpenPGP-e-mail, in-memory-e-mailverwerking, no-log e-mailservice, bescherming van e-mailmetadata, privacy van e-mailheader, end-to-end versleutelde e-mail, privacy-first e-mail, anonieme e-maildoorsturen, aanbevolen procedures voor e-mailbeveiliging, bescherming van e-mailinhoud, phishingbeveiliging, e-mailvirusscanning, e-mailprovider met privacyfocus, beveiligde e-mailheaders, implementatie van e-mailprivacy, bescherming tegen e-mailsurveillance, no-logging e-maildoorsturen, lekken van e-mailmetadata voorkomen, technieken voor e-mailprivacy, anonimisering van IP-adressen voor e-mail, privé-e-mailaliassen, beveiliging van e-maildoorsturen, privacy van e-mail tegen adverteerders, kwantumveilige e-mailversleuteling, privacy van e-mail zonder compromissen, SQLite-e-mailopslag, sandbox-e-mailversleuteling, gegevensportabiliteit voor e-mail* -->
+Terwijl we onze dienst blijven ontwikkelen en verbeteren, blijft onze toewijding aan privacy onwankelbaar. We doen voortdurend onderzoek naar nieuwe encryptiemethoden, verkennen aanvullende privacybeschermingen en verfijnen onze codebase om de meest veilige e-mailervaring mogelijk te bieden.
+
+Door te kiezen voor Forward Email kiest u niet alleen een e-maildienst—u steunt een visie van het internet waar privacy de standaard is, niet de uitzondering. Doe met ons mee aan het bouwen van een meer privé digitale toekomst, één e-mail tegelijk.
+<!-- *Keywords: private email forwarding, email privacy protection, secure email service, open-source email, quantum-safe encryption, OpenPGP email, in-memory email processing, no-log email service, email metadata protection, email header privacy, end-to-end encrypted email, privacy-first email, anonymous email forwarding, email security best practices, email content protection, phishing protection, email virus scanning, privacy-focused email provider, secure email headers, email privacy implementation, protection from email surveillance, no-logging email forwarding, prevent email metadata leakage, email privacy techniques, IP address anonymization for email, private email aliases, email forwarding security, email privacy from advertisers, quantum-resistant email encryption, email privacy without compromise, SQLite email storage, sandboxed email encryption, data portability for email* -->
+

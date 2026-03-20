@@ -1,75 +1,80 @@
-# Case Study: Hoe Canonical Ubuntu Email Management van stroom voorziet met Forward Email's open-source Enterprise Solution {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
+# Case Study: Hoe Canonical Ubuntu e-mailbeheer aandrijft met Forward Email's open-source enterprise oplossing {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
 <img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="rounded-lg" />
+
 
 ## Inhoudsopgave {#table-of-contents}
 
 * [Voorwoord](#foreword)
-* [De uitdaging: het beheren van een complex e-mailecosysteem](#the-challenge-managing-a-complex-email-ecosystem)
-* [Belangrijkste punten](#key-takeaways)
-* [Waarom e-mail doorsturen?](#why-forward-email)
-* [De implementatie: naadloze SSO-integratie](#the-implementation-seamless-sso-integration)
-  * [Visualisatie van authenticatiestroom](#authentication-flow-visualization)
+* [De Uitdaging: Het beheren van een complex e-mail ecosysteem](#the-challenge-managing-a-complex-email-ecosystem)
+* [Belangrijkste Leerpunten](#key-takeaways)
+* [Waarom Forward Email](#why-forward-email)
+* [De Implementatie: Naadloze SSO-integratie](#the-implementation-seamless-sso-integration)
+  * [Visualisatie van de authenticatiestroom](#authentication-flow-visualization)
   * [Technische implementatiedetails](#technical-implementation-details)
 * [DNS-configuratie en e-mailroutering](#dns-configuration-and-email-routing)
-* [Resultaten: gestroomlijnd e-mailbeheer en verbeterde beveiliging](#results-streamlined-email-management-and-enhanced-security)
+* [Resultaten: Gestroomlijnd e-mailbeheer en verbeterde beveiliging](#results-streamlined-email-management-and-enhanced-security)
   * [Operationele efficiëntie](#operational-efficiency)
   * [Verbeterde beveiliging en privacy](#enhanced-security-and-privacy)
   * [Kostenbesparingen](#cost-savings)
   * [Verbeterde ervaring voor bijdragers](#improved-contributor-experience)
-* [Vooruitkijken: voortdurende samenwerking](#looking-forward-continued-collaboration)
-* [Conclusie: een perfect open-sourcepartnerschap](#conclusion-a-perfect-open-source-partnership)
-* [Ondersteuning van zakelijke klanten](#supporting-enterprise-clients)
+* [Vooruitblik: Voortgezette samenwerking](#looking-forward-continued-collaboration)
+* [Conclusie: Een perfecte open-source samenwerking](#conclusion-a-perfect-open-source-partnership)
+* [Ondersteuning van enterprise klanten](#supporting-enterprise-clients)
   * [Neem contact op](#get-in-touch)
-  * [Over het doorsturen van e-mail](#about-forward-email)
+  * [Over Forward Email](#about-forward-email)
+
 
 ## Voorwoord {#foreword}
 
-In de wereld van open-source software zijn er maar weinig namen die zoveel gewicht in de schaal leggen als [Canoniek](https://en.wikipedia.org/wiki/Canonical_\(company\), het bedrijf achter [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), een van de populairste Linux-distributies wereldwijd. Met een uitgebreid ecosysteem dat meerdere distributies omvat, waaronder Ubuntu, [Vrij](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) en andere, stond Canonical voor unieke uitdagingen bij het beheren van e-mailadressen binnen hun verschillende domeinen. Deze casestudy onderzoekt hoe Canonical samenwerkte met Forward Email om een naadloze, veilige en privacygerichte oplossing voor e-mailbeheer voor bedrijven te creëren die perfect aansluit bij hun open-sourcewaarden.
+In de wereld van open-source software dragen weinig namen zoveel gewicht als [Canonical](https://en.wikipedia.org/wiki/Canonical_\(company\)), het bedrijf achter [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), een van de populairste Linux-distributies wereldwijd. Met een uitgebreid ecosysteem dat meerdere distributies omvat, waaronder Ubuntu, [Kubuntu](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) en anderen, stond Canonical voor unieke uitdagingen bij het beheren van e-mailadressen over hun talrijke domeinen. Deze case study onderzoekt hoe Canonical samenwerkte met Forward Email om een naadloze, veilige en privacygerichte enterprise e-mailbeheeroplossing te creëren die perfect aansluit bij hun open-source waarden.
 
-## De uitdaging: een complex e-mailecosysteem beheren {#the-challenge-managing-a-complex-email-ecosystem}
 
-Het ecosysteem van Canonical is divers en uitgebreid. Met miljoenen gebruikers wereldwijd en duizenden bijdragers in verschillende projecten, vormde het beheer van e-mailadressen over meerdere domeinen een aanzienlijke uitdaging. Kernbijdragers hadden officiële e-mailadressen (@ubuntu.com, @kubuntu.org, enz.) nodig die hun betrokkenheid bij het project weerspiegelden, maar tegelijkertijd de veiligheid en het gebruiksgemak behielden via een robuust Ubuntu-domeinbeheersysteem.
+## De Uitdaging: Het beheren van een complex e-mail ecosysteem {#the-challenge-managing-a-complex-email-ecosystem}
 
-Voordat Canonical Forward Email implementeerde, kampte het met:
+Het ecosysteem van Canonical is divers en omvangrijk. Met miljoenen gebruikers wereldwijd en duizenden bijdragers aan verschillende projecten, bracht het beheren van e-mailadressen over meerdere domeinen aanzienlijke uitdagingen met zich mee. Kernbijdragers hadden officiële e-mailadressen nodig (@ubuntu.com, @kubuntu.org, enz.) die hun betrokkenheid bij het project weerspiegelden, terwijl ze veiligheid en gebruiksgemak behielden via een robuust Ubuntu domeinbeheersysteem.
+
+Voor de implementatie van Forward Email worstelde Canonical met:
 
 * Het beheren van e-mailadressen over meerdere domeinen (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org en @ubuntu.net)
-* Het bieden van een consistente e-mailervaring voor kernmedewerkers
-* Het integreren van e-maildiensten met hun bestaande [Ubuntu One](https://en.wikipedia.org/wiki/Ubuntu_One) Single Sign-On (SSO)-systeem
-* Het vinden van een oplossing die aansluit bij hun toewijding aan privacy, beveiliging en open-source e-mailbeveiliging
-* Het kosteneffectief schalen van hun beveiligde e-mailinfrastructuur
+* Het bieden van een consistente e-mailervaring voor kernbijdragers
+* Het integreren van e-maildiensten met hun bestaande [Ubuntu One](https://en.wikipedia.org/wiki/Ubuntu_One) Single Sign-On (SSO) systeem
+* Het vinden van een oplossing die aansloot bij hun inzet voor privacy, beveiliging en open-source e-mailbeveiliging
+* Het kosteneffectief opschalen van hun veilige e-mailinfrastructuur
 
-## Belangrijkste punten {#key-takeaways}
 
-* Canonical heeft met succes een uniforme oplossing voor e-mailbeheer geïmplementeerd voor meerdere Ubuntu-domeinen.
-* De 100% open-sourcebenadering van Forward Email sloot perfect aan bij de waarden van Canonical.
-* SSO-integratie met Ubuntu One biedt naadloze authenticatie voor medewerkers.
-* Kwantumbestendige encryptie garandeert langdurige beveiliging voor alle e-mailcommunicatie.
-* De oplossing is kosteneffectief schaalbaar om Canonicals groeiende aantal medewerkers te ondersteunen.
+## Belangrijkste Leerpunten {#key-takeaways}
 
-## Waarom e-mail doorsturen {#why-forward-email}
+* Canonical implementeerde met succes een uniforme e-mailbeheeroplossing over meerdere Ubuntu-domeinen
+* Forward Email's 100% open-source aanpak sloot perfect aan bij de waarden van Canonical
+* SSO-integratie met Ubuntu One zorgt voor naadloze authenticatie voor bijdragers
+* Kwantumresistente encryptie garandeert langdurige beveiliging voor alle e-mailcommunicatie
+* De oplossing schaalt kosteneffectief mee met de groeiende groep bijdragers van Canonical
 
-Als enige 100% open-source e-mailprovider met een focus op privacy en beveiliging, paste Forward Email perfect bij Canonical's behoeften op het gebied van e-maildoorsturing voor bedrijven. Onze waarden sloten perfect aan bij Canonical's toewijding aan open-source software en privacy.
 
-Belangrijke factoren die Forward Email tot de ideale keuze maakten, waren onder meer:
+## Waarom Forward Email {#why-forward-email}
+Als de enige 100% open-source e-maildienstverlener met een focus op privacy en beveiliging, was Forward Email een natuurlijke keuze voor de enterprise e-mail forwarding behoeften van Canonical. Onze waarden sloten perfect aan bij Canonical's inzet voor open-source software en privacy.
 
-1. **Volledige open-source codebase**: Ons volledige platform is open-source en beschikbaar op [GitHub](https://en.wikipedia.org/wiki/GitHub), wat transparantie en bijdragen van de community mogelijk maakt. In tegenstelling tot veel "privacygerichte" e-mailproviders die alleen hun front-ends opensourcen en hun back-ends gesloten houden, hebben wij onze volledige codebase – zowel front-end als back-end – voor iedereen beschikbaar gesteld op [GitHub](https://github.com/forwardemail/forwardemail.net).
+Belangrijke factoren die Forward Email de ideale keuze maakten, waren onder andere:
 
-2. **Privacygerichte aanpak**: In tegenstelling tot andere providers slaan wij e-mails niet op in gedeelde databases en gebruiken we robuuste encryptie met TLS. Onze fundamentele privacyfilosofie is simpel: **uw e-mails zijn van u en alleen van u**. Dit principe vormt de basis voor elke technische beslissing die we nemen, van hoe we e-maildoorsturing afhandelen tot hoe we encryptie implementeren.
+1. **Volledig open-source codebase**: Ons gehele platform is open-source en beschikbaar op [GitHub](https://en.wikipedia.org/wiki/GitHub), wat transparantie en bijdragen vanuit de community mogelijk maakt. In tegenstelling tot veel "privacygerichte" e-mailproviders die alleen hun frontends open-source maken terwijl ze hun backends gesloten houden, hebben wij onze volledige codebase—zowel frontend als backend—beschikbaar gesteld voor iedereen om te inspecteren op [GitHub](https://github.com/forwardemail/forwardemail.net).
 
-3. **Niet afhankelijk van derden**: Wij maken geen gebruik van Amazon SES of andere diensten van derden. Hierdoor hebben wij volledige controle over de e-mailinfrastructuur en worden mogelijke privacylekken via diensten van derden uitgesloten.
+2. **Privacygerichte aanpak**: In tegenstelling tot andere providers slaan wij e-mails niet op in gedeelde databases en gebruiken we robuuste encryptie met TLS. Onze fundamentele privacyfilosofie is eenvoudig: **jouw e-mails behoren toe aan jou en alleen aan jou**. Dit principe stuurt elke technische beslissing die we nemen, van hoe we e-mail forwarding afhandelen tot hoe we encryptie implementeren.
 
-4. **Kosteneffectieve schaalbaarheid**: Ons prijsmodel zorgt ervoor dat organisaties kunnen schalen zonder per gebruiker te betalen. Dit maakt het ideaal voor de grote groep bijdragers van Canonical.
+3. **Geen afhankelijkheid van derden**: We gebruiken geen Amazon SES of andere diensten van derden, wat ons volledige controle geeft over de e-mailinfrastructuur en potentiële privacylekken via derden elimineert.
 
-5. **Kwantumbestendige encryptie**: We gebruiken individueel versleutelde SQLite-mailboxen met [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) als code voor [kwantumbestendige encryptie](/blog/docs/best-quantum-safe-encrypted-email-service). Elke mailbox is een apart versleuteld bestand, wat betekent dat toegang tot de gegevens van de ene gebruiker geen toegang verleent aan anderen.
+4. **Kosteneffectieve schaalbaarheid**: Ons prijsmodel stelt organisaties in staat te schalen zonder per gebruiker te betalen, wat ideaal is voor Canonical's grote groep bijdragers.
 
-## De implementatie: naadloze SSO-integratie {#the-implementation-seamless-sso-integration}
+5. **Quantum-resistente encryptie**: We gebruiken individueel versleutelde SQLite-mailboxen met [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) als cipher voor [quantum-resistente encryptie](/blog/docs/best-quantum-safe-encrypted-email-service). Elke mailbox is een apart versleuteld bestand, wat betekent dat toegang tot de data van één gebruiker geen toegang geeft tot die van anderen.
 
-Een van de meest cruciale aspecten van de implementatie was de integratie met Canonical's bestaande Ubuntu One SSO-systeem. Deze integratie zou kernmedewerkers in staat stellen hun @ubuntu.com-e-mailadressen te beheren met hun bestaande Ubuntu One-inloggegevens.
 
-### Visualisatie van authenticatiestroom {#authentication-flow-visualization}
+## De Implementatie: Naadloze SSO-integratie {#the-implementation-seamless-sso-integration}
 
-Het onderstaande diagram illustreert de volledige authenticatie- en e-mailinrichtingsstroom:
+Een van de meest kritieke aspecten van de implementatie was de integratie met Canonical's bestaande Ubuntu One SSO-systeem. Deze integratie zou kernbijdragers in staat stellen hun @ubuntu.com e-mailadressen te beheren met hun bestaande Ubuntu One-gegevens.
+
+### Visualisatie van de authenticatiestroom {#authentication-flow-visualization}
+
+Het volgende diagram illustreert de volledige authenticatie- en e-mailvoorzieningsstroom:
 
 ```mermaid
 flowchart TD
@@ -113,18 +118,17 @@ flowchart TD
 
 ### Technische implementatiedetails {#technical-implementation-details}
 
-De integratie tussen Forward Email en Ubuntu One SSO werd gerealiseerd door een aangepaste implementatie van de Passport-Ubuntu authenticatiestrategie. Dit zorgde voor een naadloze authenticatiestroom tussen Ubuntu One en de systemen van Forward Email.
-
-#### De authenticatiestroom {#the-authentication-flow}
+De integratie tussen Forward Email en Ubuntu One SSO werd gerealiseerd via een aangepaste implementatie van de passport-ubuntu authenticatiestrategie. Dit maakte een naadloze authenticatiestroom mogelijk tussen Ubuntu One en de systemen van Forward Email.
+#### De Authenticatiestroom {#the-authentication-flow}
 
 Het authenticatieproces werkt als volgt:
 
-1. Gebruikers bezoeken de speciale Ubuntu-pagina voor e-mailbeheer op [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu)
-2. Ze klikken op "Inloggen met Ubuntu One" en worden doorgestuurd naar de Ubuntu SSO-service.
-3. Nadat ze zich hebben geauthenticeerd met hun Ubuntu One-inloggegevens, worden ze teruggestuurd naar Forward Email met hun geauthenticeerde profiel.
-4. Forward Email verifieert hun status als bijdrager en bepaalt of beheert hun e-mailadres dienovereenkomstig.
+1. Gebruikers bezoeken de speciale Ubuntu e-mailbeheerpagina op [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu)
+2. Ze klikken op "Log in met Ubuntu One" en worden doorgestuurd naar de Ubuntu SSO-service
+3. Na authenticatie met hun Ubuntu One-gegevens worden ze teruggeleid naar Forward Email met hun geverifieerde profiel
+4. Forward Email controleert hun bijdragerstatus en voorziet of beheert hun e-mailadres dienovereenkomstig
 
-De technische implementatie maakte gebruik van het [`passport-ubuntu`](https://www.npmjs.com/package/passport-ubuntu)-pakket, een [Paspoort](https://www.npmjs.com/package/passport)-strategie voor authenticatie met Ubuntu met behulp van [OpenID](https://en.wikipedia.org/wiki/OpenID). De configuratie omvatte:
+De technische implementatie maakte gebruik van het [`passport-ubuntu`](https://www.npmjs.com/package/passport-ubuntu) pakket, dat een [Passport](https://www.npmjs.com/package/passport) strategie is voor authenticatie met Ubuntu via [OpenID](https://en.wikipedia.org/wiki/OpenID). De configuratie omvatte:
 
 ```javascript
 passport.use(new UbuntuStrategy({
@@ -132,59 +136,59 @@ passport.use(new UbuntuStrategy({
   realm: process.env.UBUNTU_REALM,
   stateless: true
 }, function(identifier, profile, done) {
-  // User verification and email provisioning logic
+  // Gebruikersverificatie en e-mailvoorzieningslogica
 }));
 ```
 
-#### Launchpad API-integratie en -validatie {#launchpad-api-integration-and-validation}
+#### Launchpad API-integratie en Validatie {#launchpad-api-integration-and-validation}
 
-Een cruciaal onderdeel van onze implementatie is de integratie met de API van [Lanceerplatform](https://en.wikipedia.org/wiki/Launchpad_\(website\)) om Ubuntu-gebruikers en hun teamlidmaatschappen te valideren. We hebben herbruikbare helperfuncties ontwikkeld om deze integratie efficiënt en betrouwbaar af te handelen.
+Een cruciaal onderdeel van onze implementatie is de integratie met de API van [Launchpad](https://en.wikipedia.org/wiki/Launchpad_\(website\)) om Ubuntu-gebruikers en hun teamlidmaatschappen te valideren. We hebben herbruikbare hulpfuncties gemaakt om deze integratie efficiënt en betrouwbaar te verwerken.
 
-De helperfunctie `sync-ubuntu-user.js` is verantwoordelijk voor het valideren van gebruikers via de Launchpad API en het beheren van hun e-mailadressen. Hier is een vereenvoudigde versie van hoe het werkt:
+De `sync-ubuntu-user.js` hulpfunctie is verantwoordelijk voor het valideren van gebruikers via de Launchpad API en het beheren van hun e-mailadressen. Hier is een vereenvoudigde versie van hoe het werkt:
 
 ```javascript
 async function syncUbuntuUser(user, map) {
   try {
-    // Validate user object
+    // Valideer gebruikersobject
     if (!_.isObject(user) ||
         !isSANB(user[fields.ubuntuUsername]) ||
         !isSANB(user[fields.ubuntuProfileID]) ||
         !isEmail(user.email))
-      throw new TypeError('Invalid user object');
+      throw new TypeError('Ongeldig gebruikersobject');
 
-    // Get Ubuntu members map if not provided
+    // Haal Ubuntu-ledenmap op als deze niet is meegegeven
     if (!(map instanceof Map))
       map = await getUbuntuMembersMap(resolver);
 
-    // Check if user is banned
+    // Controleer of gebruiker is verbannen
     if (user[config.userFields.isBanned]) {
-      throw new InvalidUbuntuUserError('User was banned', { ignoreHook: true });
+      throw new InvalidUbuntuUserError('Gebruiker was verbannen', { ignoreHook: true });
     }
 
-    // Query Launchpad API to validate user
+    // Vraag Launchpad API aan om gebruiker te valideren
     const url = `https://api.launchpad.net/1.0/~${user[fields.ubuntuUsername]}`;
     const response = await retryRequest(url, { resolver });
     const json = await response.body.json();
 
-    // Validate required boolean properties
+    // Valideer vereiste booleaanse eigenschappen
     if (!json.is_valid)
-      throw new InvalidUbuntuUserError('Property "is_valid" was false');
+      throw new InvalidUbuntuUserError('Eigenschap "is_valid" was onwaar');
 
     if (!json.is_ubuntu_coc_signer)
-      throw new InvalidUbuntuUserError('Property "is_ubuntu_coc_signer" was false');
+      throw new InvalidUbuntuUserError('Eigenschap "is_ubuntu_coc_signer" was onwaar');
 
-    // Process each domain for the user
+    // Verwerk elk domein voor de gebruiker
     await pMap([...map.keys()], async (name) => {
-      // Find domain in database
+      // Zoek domein in database
       const domain = await Domains.findOne({
         name,
         plan: 'team',
         has_txt_record: true
       }).populate('members.user');
 
-      // Process user's email alias for this domain
+      // Verwerk e-mailalias van gebruiker voor dit domein
       if (map.get(name).has(user[fields.ubuntuUsername])) {
-        // User is a member of this team, create or update alias
+        // Gebruiker is lid van dit team, maak alias aan of werk bij
         let alias = await Aliases.findOne({
           user: user._id,
           domain: domain._id,
@@ -192,7 +196,7 @@ async function syncUbuntuUser(user, map) {
         });
 
         if (!alias) {
-          // Create new alias with appropriate error handling
+          // Maak nieuwe alias aan met passende foutafhandeling
           alias = await Aliases.create({
             user: user._id,
             domain: domain._id,
@@ -202,15 +206,15 @@ async function syncUbuntuUser(user, map) {
             is_enabled: true
           });
 
-          // Notify admins about new alias creation
+          // Informeer beheerders over nieuwe aliascreatie
           await emailHelper({
             template: 'alert',
             message: {
               to: adminEmailsForDomain,
-              subject: `New @${domain.name} email address created`
+              subject: `Nieuw @${domain.name} e-mailadres aangemaakt`
             },
             locals: {
-              message: `A new email address ${user[fields.ubuntuUsername].toLowerCase()}@${domain.name} was created for ${user.email}`
+              message: `Een nieuw e-mailadres ${user[fields.ubuntuUsername].toLowerCase()}@${domain.name} is aangemaakt voor ${user.email}`
             }
           });
         }
@@ -219,14 +223,13 @@ async function syncUbuntuUser(user, map) {
 
     return true;
   } catch (err) {
-    // Handle and log errors
+    // Fouten afhandelen en loggen
     await logErrorWithUser(err, user);
     throw err;
   }
 }
 ```
-
-Om het beheer van teamlidmaatschappen in verschillende Ubuntu-domeinen te vereenvoudigen, hebben we een eenvoudige koppeling gemaakt tussen domeinnamen en de bijbehorende Launchpad-teams:
+Om het beheer van teamlidmaatschappen over verschillende Ubuntu-domeinen te vereenvoudigen, hebben we een eenvoudige koppeling gemaakt tussen domeinnamen en hun bijbehorende Launchpad-teams:
 
 ```javascript
 ubuntuTeamMapping: {
@@ -239,104 +242,108 @@ ubuntuTeamMapping: {
 },
 ```
 
-Dankzij deze eenvoudige toewijzing kunnen we het proces van het controleren van teamlidmaatschappen en het toewijzen van e-mailadressen automatiseren. Hierdoor kan het systeem eenvoudig worden onderhouden en uitgebreid wanneer er nieuwe domeinen worden toegevoegd.
+Deze eenvoudige koppeling stelt ons in staat het proces van het controleren van teamlidmaatschappen en het aanmaken van e-mailadressen te automatiseren, waardoor het systeem gemakkelijk te onderhouden en uit te breiden is naarmate er nieuwe domeinen worden toegevoegd.
 
-#### Foutverwerking en meldingen {#error-handling-and-notifications}
+#### Foutafhandeling en Meldingen {#error-handling-and-notifications}
 
-We hebben een robuust systeem voor foutbehandeling geïmplementeerd dat:
+We hebben een robuust foutafhandelingssysteem geïmplementeerd dat:
 
-1. Registreert alle fouten met gedetailleerde gebruikersinformatie.
-2. Stuurt een e-mail naar het Ubuntu-team wanneer er problemen worden gedetecteerd.
-3. Stelt beheerders op de hoogte wanneer nieuwe medewerkers zich aanmelden en e-mailadressen hebben aangemaakt.
-4. Behandelt randgevallen, zoals gebruikers die de Ubuntu-gedragscode niet hebben ondertekend.
+1. Alle fouten logt met gedetailleerde gebruikersinformatie
+2. Het Ubuntu-team e-mailt wanneer problemen worden gedetecteerd
+3. Beheerders op de hoogte stelt wanneer nieuwe bijdragers zich aanmelden en e-mailadressen worden aangemaakt
+4. Randgevallen afhandelt zoals gebruikers die de Ubuntu Code of Conduct nog niet hebben ondertekend
 
-Zo wordt gegarandeerd dat eventuele problemen snel worden geïdentificeerd en opgelost, terwijl de integriteit van het e-mailsysteem behouden blijft.
+Dit zorgt ervoor dat eventuele problemen snel worden geïdentificeerd en opgelost, waardoor de integriteit van het e-mailsysteem behouden blijft.
 
-## DNS-configuratie en e-mailroutering {#dns-configuration-and-email-routing}
 
-Voor elk domein dat via Forward Email wordt beheerd, heeft Canonical een eenvoudige DNS TXT-record toegevoegd voor validatie:
+## DNS-configuratie en E-mailroutering {#dns-configuration-and-email-routing}
+
+Voor elk domein dat via Forward Email wordt beheerd, heeft Canonical een eenvoudige DNS TXT-record toegevoegd voor verificatie:
 
 ```sh
 ❯ dig ubuntu.com txt
 ubuntu.com.             600     IN      TXT     "forward-email-site-verification=6IsURgl2t7"
 ```
 
-Dit verificatierecord bevestigt het domeineigendom en stelt ons systeem in staat om e-mail voor deze domeinen veilig te beheren. Canonical routeert e-mail via onze service via Postfix, wat een betrouwbare en veilige infrastructuur voor e-mailbezorging biedt.
+Deze verificatierecord bevestigt het eigendom van het domein en stelt ons systeem in staat om veilig e-mail voor deze domeinen te beheren. Canonical leidt mail via onze service door via Postfix, wat een betrouwbare en veilige e-mailbezorgingsinfrastructuur biedt.
 
-## Resultaten: Gestroomlijnd e-mailbeheer en verbeterde beveiliging {#results-streamlined-email-management-and-enhanced-security}
 
-De implementatie van de zakelijke oplossing van Forward Email heeft aanzienlijke voordelen opgeleverd voor Canonical's e-mailbeheer in al haar domeinen:
+## Resultaten: Gestroomlijnd E-mailbeheer en Verbeterde Beveiliging {#results-streamlined-email-management-and-enhanced-security}
 
-### Operationele efficiëntie {#operational-efficiency}
+De implementatie van de enterprise-oplossing van Forward Email heeft aanzienlijke voordelen opgeleverd voor het e-mailbeheer van Canonical over al hun domeinen:
+
+### Operationele Efficiëntie {#operational-efficiency}
 
 * **Gecentraliseerd beheer**: Alle Ubuntu-gerelateerde domeinen worden nu beheerd via één interface
-* **Verminderde administratieve overhead**: Geautomatiseerde provisioning en selfservicebeheer voor bijdragers
-* **Vereenvoudigde onboarding**: Nieuwe bijdragers kunnen snel hun officiële e-mailadres krijgen
+* **Verminderde administratieve lasten**: Geautomatiseerde provisioning en selfservicebeheer voor bijdragers
+* **Vereenvoudigde onboarding**: Nieuwe bijdragers kunnen snel hun officiële e-mailadressen krijgen
 
-### Verbeterde beveiliging en privacy {#enhanced-security-and-privacy}
+### Verbeterde Beveiliging en Privacy {#enhanced-security-and-privacy}
 
-* **End-to-end encryptie**: Alle e-mails worden versleuteld met behulp van geavanceerde standaarden
-* **Geen gedeelde databases**: De e-mails van elke gebruiker worden opgeslagen in individuele, versleutelde SQLite-databases, wat zorgt voor een sandbox-encryptiebenadering die fundamenteel veiliger is dan traditionele, gedeelde relationele databases
-* **Open-sourcebeveiliging**: De transparante codebase maakt beveiligingscontroles door de community mogelijk
-* **In-memory processing**: We slaan doorgestuurde e-mails niet op schijf op, wat de privacybescherming verbetert
-* **Geen metadataopslag**: We houden geen gegevens bij van wie wie e-mailt, in tegenstelling tot veel e-mailproviders
+* **End-to-end encryptie**: Alle e-mails worden versleuteld met geavanceerde standaarden
+* **Geen gedeelde databases**: De e-mails van elke gebruiker worden opgeslagen in individuele versleutelde SQLite-databases, wat een sandboxed encryptiebenadering biedt die fundamenteel veiliger is dan traditionele gedeelde relationele databases
+* **Open-source beveiliging**: De transparante codebase maakt community security reviews mogelijk
+* **In-memory verwerking**: We slaan doorgestuurde e-mails niet op de schijf op, wat de privacybescherming versterkt
+* **Geen metadata-opslag**: We bewaren geen gegevens over wie met wie e-mailt, in tegenstelling tot veel e-mailproviders
 
-### Kostenbesparing {#cost-savings}
+### Kostenbesparingen {#cost-savings}
 
-* **Schaalbaar prijsmodel**: Geen kosten per gebruiker, waardoor Canonical medewerkers kan toevoegen zonder de kosten te verhogen
+* **Schaalbaar prijsmodel**: Geen kosten per gebruiker, waardoor Canonical bijdragers kan toevoegen zonder extra kosten
 * **Verminderde infrastructuurbehoeften**: Geen noodzaak om aparte e-mailservers voor verschillende domeinen te onderhouden
-* **Lagere ondersteuningsvereisten**: Selfservicebeheer vermindert het aantal IT-supporttickets
+* **Lagere ondersteuningsbehoefte**: Selfservicebeheer vermindert IT-supporttickets
 
-### Verbeterde ervaring voor medewerkers {#improved-contributor-experience}
+### Verbeterde Ervaring voor Bijdragers {#improved-contributor-experience}
 
-* **Naadloze authenticatie**: Single sign-on met bestaande Ubuntu One-referenties
-* **Consistente branding**: Uniforme ervaring voor alle Ubuntu-gerelateerde services
-* **Betrouwbare e-mailbezorging**: Een hoogwaardige IP-reputatie zorgt ervoor dat e-mails hun bestemming bereiken
+* **Naadloze authenticatie**: Single sign-on met bestaande Ubuntu One-gegevens
+* **Consistente branding**: Uniforme ervaring over alle Ubuntu-gerelateerde diensten
+* **Betrouwbare e-mailbezorging**: Hoge IP-reputatie zorgt ervoor dat e-mails hun bestemming bereiken
 
-De integratie met Forward Email heeft het e-mailbeheerproces van Canonical aanzienlijk gestroomlijnd. Medewerkers kunnen nu hun @ubuntu.com-e-mailadressen naadloos beheren, met minder administratieve overhead en verbeterde beveiliging.
+De integratie met Forward Email heeft het e-mailbeheerproces van Canonical aanzienlijk gestroomlijnd. Bijdragers hebben nu een naadloze ervaring bij het beheren van hun @ubuntu.com e-mailadressen, met minder administratieve lasten en verbeterde beveiliging.
 
-## Vooruitkijken: voortdurende samenwerking {#looking-forward-continued-collaboration}
+
+## Vooruitblik: Voortgezette Samenwerking {#looking-forward-continued-collaboration}
 
 De samenwerking tussen Canonical en Forward Email blijft zich ontwikkelen. We werken samen aan verschillende initiatieven:
-
-* Uitbreiding van e-maildiensten naar extra Ubuntu-gerelateerde domeinen
+* Uitbreiding van e-mailservices naar extra Ubuntu-gerelateerde domeinen
 * Verbetering van de gebruikersinterface op basis van feedback van bijdragers
-* Implementatie van extra beveiligingsfuncties
-* Onderzoek naar nieuwe manieren om onze open-sourcesamenwerking te benutten
+* Implementatie van aanvullende beveiligingsfuncties
+* Verkenning van nieuwe manieren om onze open-source samenwerking te benutten
 
-## Conclusie: een perfect open-sourcepartnerschap {#conclusion-a-perfect-open-source-partnership}
 
-De samenwerking tussen Canonical en Forward Email toont de kracht van partnerschappen gebaseerd op gedeelde waarden. Door te kiezen voor Forward Email als e-mailprovider vond Canonical een oplossing die niet alleen voldeed aan hun technische eisen, maar ook perfect aansloot bij hun toewijding aan opensourcesoftware, privacy en beveiliging.
+## Conclusie: Een Perfecte Open-Source Samenwerking {#conclusion-a-perfect-open-source-partnership}
 
-Voor organisaties die meerdere domeinen beheren en naadloze authenticatie met bestaande systemen nodig hebben, biedt Forward Email een flexibele, veilige en privacygerichte oplossing. Onze [open-sourcebenadering](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) garandeert transparantie en maakt bijdragen vanuit de community mogelijk, waardoor het een ideale keuze is voor organisaties die deze principes hoog in het vaandel hebben staan.
+De samenwerking tussen Canonical en Forward Email toont de kracht van partnerschappen die zijn gebouwd op gedeelde waarden. Door Forward Email te kiezen als hun e-mailserviceprovider vond Canonical een oplossing die niet alleen aan hun technische eisen voldeed, maar ook perfect aansloot bij hun inzet voor open-source software, privacy en beveiliging.
 
-Aangezien Canonical en Forward Email beiden blijven innoveren op hun eigen vakgebied, is dit partnerschap een bewijs van de kracht van open-source-samenwerking en gedeelde waarden bij het creëren van effectieve oplossingen.
+Voor organisaties die meerdere domeinen beheren en naadloze authenticatie met bestaande systemen vereisen, biedt Forward Email een flexibele, veilige en privacygerichte oplossing. Onze [open-source aanpak](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) zorgt voor transparantie en maakt communitybijdragen mogelijk, waardoor het een ideale keuze is voor organisaties die deze principes waarderen.
 
-U kunt onze huidige e-mailbezorgprestaties bekijken op onze [realtime servicestatus](https://status.forwardemail.net). Deze worden continu gecontroleerd om een goede IP-reputatie en e-mailbezorging te garanderen.
+Terwijl zowel Canonical als Forward Email blijven innoveren in hun respectievelijke vakgebieden, staat deze samenwerking als een bewijs van de kracht van open-source samenwerking en gedeelde waarden bij het creëren van effectieve oplossingen.
 
-## Ondersteuning voor zakelijke klanten {#supporting-enterprise-clients}
+Je kunt onze [real-time service status](https://status.forwardemail.net) bekijken om onze huidige e-mailbezorgprestaties te zien, die we continu monitoren om een hoge kwaliteit van IP-reputatie en e-mailbezorgbaarheid te waarborgen.
 
-Hoewel deze casestudy zich richt op onze samenwerking met Canonical, ondersteunt Forward Email met trots talloze zakelijke klanten in verschillende sectoren die waarde hechten aan onze toewijding aan privacy, beveiliging en open-sourceprincipes.
 
-Onze bedrijfsoplossingen zijn afgestemd op de specifieke behoeften van organisaties van elke omvang en bieden:
+## Ondersteuning van Enterprise Klanten {#supporting-enterprise-clients}
 
-* Aangepast domein [e-mailbeheer](/) over meerdere domeinen
+Hoewel deze casestudy zich richt op onze samenwerking met Canonical, ondersteunt Forward Email met trots talrijke enterprise klanten in diverse sectoren die onze inzet voor privacy, beveiliging en open-source principes waarderen.
+
+Onze enterprise oplossingen zijn op maat gemaakt om te voldoen aan de specifieke behoeften van organisaties van elke omvang, met onder andere:
+
+* Beheer van aangepaste domein [e-mail](/) over meerdere domeinen
 * Naadloze integratie met bestaande authenticatiesystemen
-* Speciaal Matrix chatkanaal voor support
-* Verbeterde beveiligingsfuncties, waaronder [kwantumbestendige encryptie](/blog/docs/best-quantum-safe-encrypted-email-service)
-* Volledige dataportabiliteit en -eigendom
+* Toegewijd Matrix chat supportkanaal
+* Verbeterde beveiligingsfuncties inclusief [kwantumveilige encryptie](/blog/docs/best-quantum-safe-encrypted-email-service)
+* Volledige gegevensportabiliteit en eigendom
 * 100% open-source infrastructuur voor transparantie en vertrouwen
 
-### Neem contact op {#get-in-touch}
+### Neem Contact Op {#get-in-touch}
 
-Heeft uw organisatie behoefte aan zakelijke e-mail of wilt u meer weten over hoe Forward Email u kan helpen uw e-mailbeheer te stroomlijnen en tegelijkertijd de privacy en beveiliging te verbeteren? Dan horen we graag van u:
+Als jouw organisatie enterprise e-mailbehoeften heeft of je meer wilt weten over hoe Forward Email kan helpen bij het stroomlijnen van je e-mailbeheer terwijl privacy en beveiliging worden verbeterd, horen we graag van je:
 
-* Stuur ons rechtstreeks een e-mail op `support@forwardemail.net`
-* Dien een hulpverzoek in bij onze [helppagina](https://forwardemail.net/help)
-* Bekijk onze [prijspagina](https://forwardemail.net/pricing) voor zakelijke abonnementen
+* Stuur ons direct een e-mail naar `support@forwardemail.net`
+* Dien een hulpverzoek in via onze [helppagina](https://forwardemail.net/help)
+* Bekijk onze [prijspagina](https://forwardemail.net/pricing) voor enterprise plannen
 
-Ons team staat klaar om uw specifieke behoeften te bespreken en een oplossing op maat te ontwikkelen die aansluit bij de waarden en technische behoeften van uw organisatie.
+Ons team staat klaar om je specifieke wensen te bespreken en een op maat gemaakte oplossing te ontwikkelen die aansluit bij de waarden en technische behoeften van jouw organisatie.
 
-### Over het doorsturen van e-mail {#about-forward-email}
+### Over Forward Email {#about-forward-email}
 
-Forward Email is de 100% open-source en privacygerichte e-mailservice. We bieden e-mailforwarding op maat voor domeinen, SMTP, IMAP en POP3, met een focus op beveiliging, privacy en transparantie. Onze volledige codebase is beschikbaar op [GitHub](https://github.com/forwardemail/forwardemail.net) en we streven ernaar e-mailservices te leveren die de privacy en veiligheid van gebruikers respecteren. Lees meer over [Waarom open-source e-mail de toekomst is](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hoe onze e-maildoorsturing werkt](https://forwardemail.net/blog/docs/best-email-forwarding-service) en [onze aanpak voor de bescherming van e-mailprivacy](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).
+Forward Email is de 100% open-source en privacygerichte e-mailservice. Wij bieden e-maildoorsturing voor aangepaste domeinen, SMTP, IMAP en POP3 diensten met een focus op beveiliging, privacy en transparantie. Onze volledige codebase is beschikbaar op [GitHub](https://github.com/forwardemail/forwardemail.net), en we zetten ons in voor het leveren van e-mailservices die de privacy en beveiliging van gebruikers respecteren. Lees meer over [waarom open-source e-mail de toekomst is](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hoe onze e-maildoorsturing werkt](https://forwardemail.net/blog/docs/best-email-forwarding-service), en [onze aanpak van e-mailprivacybescherming](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).

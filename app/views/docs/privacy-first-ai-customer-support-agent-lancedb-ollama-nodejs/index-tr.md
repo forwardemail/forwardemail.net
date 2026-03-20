@@ -1,219 +1,220 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# LanceDB, Ollama ve Node.js ile Gizliliği Önceliklendiren AI Müşteri Destek Ajanı Oluşturma {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
-
-> \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
-
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
-
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
-
-## Table of Contents {#table-of-contents}
-
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
-
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
-
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
-
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
-
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
-
-**Trained on Human Expertise**: The AI learns from:
-
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
-
-You're getting responses informed by years of human expertise, just delivered faster.
-
-### Consistency Without Burnout {#consistency-without-burnout}
-
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
-
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
-
-Without AI assistance, this constant context-switching leads to:
-
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
-
-**With AI augmentation**, our team:
-
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
-
-### What You Get {#what-you-get}
-
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
-
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
-
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
-
-✅ **Human touch**: Every response reviewed and personalized by our team
-
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="LanceDB Ollama Node.js ile AI müşteri destek ajanı" class="rounded-lg" />
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> Bu doküman, kendi kendine barındırılan bir AI destek ajanı oluşturma yolculuğumuzu kapsıyor. Benzer zorlukları [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog yazımızda yazmıştık. Dürüst olmak gerekirse "AI Startup Graveyard" adlı bir devam yazısı yazmayı düşündük ama belki AI balonu patlayana kadar bir yıl daha beklememiz gerekecek(?). Şimdilik, bu bizim neyin işe yaradığını, neyin yaramadığını ve neden böyle yaptığımızı anlattığımız beyin dökümümüz.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
+Kendi AI müşteri destek ajanımızı böyle inşa ettik. Zor olan yolu seçtik: kendi kendine barındırılan, gizliliği önceliklendiren ve tamamen kontrolümüz altında olan. Neden? Çünkü müşterilerimizin verilerini üçüncü taraf hizmetlere güvenmiyoruz. Bu, GDPR ve DPA gerekliliği ve yapılması gereken doğru şey.
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+Bu eğlenceli bir hafta sonu projesi değildi. Kırık bağımlılıklar, yanıltıcı dokümantasyon ve 2025 açık kaynak AI ekosisteminin genel kaosu içinde geçen bir aylık bir yolculuktu. Bu doküman, ne inşa ettiğimizi, neden inşa ettiğimizi ve yol boyunca karşılaştığımız engelleri kaydeder.
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+## İçindekiler {#table-of-contents}
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+* [Müşteri Faydaları: AI Destekli İnsan Desteği](#customer-benefits-ai-augmented-human-support)
+  * [Daha Hızlı, Daha Doğru Yanıtlar](#faster-more-accurate-responses)
+  * [Tükenmişlik Olmadan Tutarlılık](#consistency-without-burnout)
+  * [Neler Elde Edersiniz](#what-you-get)
+* [Kişisel Bir Yansıma: İki On Yıllık Emek](#a-personal-reflection-the-two-decade-grind)
+* [Neden Gizlilik Önemlidir](#why-privacy-matters)
+* [Maliyet Analizi: Bulut AI vs Kendi Kendine Barındırılan](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [Bulut AI Hizmet Karşılaştırması](#cloud-ai-service-comparison)
+  * [Maliyet Dağılımı: 5GB Bilgi Tabanı](#cost-breakdown-5gb-knowledge-base)
+  * [Kendi Kendine Barındırılan Donanım Maliyetleri](#self-hosted-hardware-costs)
+* [Kendi API'mizi Kullanmak (Dogfooding)](#dogfooding-our-own-api)
+  * [Dogfooding Neden Önemlidir](#why-dogfooding-matters)
+  * [API Kullanım Örnekleri](#api-usage-examples)
+  * [Performans Faydaları](#performance-benefits)
+* [Şifreleme Mimarisi](#encryption-architecture)
+  * [Katman 1: Posta Kutusu Şifrelemesi (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [Katman 2: Mesaj Seviyesi PGP Şifrelemesi](#layer-2-message-level-pgp-encryption)
+  * [Bunun Eğitim İçin Önemi](#why-this-matters-for-training)
+  * [Depolama Güvenliği](#storage-security)
+  * [Yerel Depolama Standart Uygulama](#local-storage-is-standard-practice)
+* [Mimari](#the-architecture)
+  * [Yüksek Seviyeli Akış](#high-level-flow)
+  * [Detaylı Scraper Akışı](#detailed-scraper-flow)
+* [Nasıl Çalışır](#how-it-works)
+  * [Bilgi Tabanı Oluşturma](#building-the-knowledge-base)
+  * [Geçmiş E-postalardan Eğitim](#training-from-historical-emails)
+  * [Gelen E-postaların İşlenmesi](#processing-incoming-emails)
+  * [Vektör Deposu Yönetimi](#vector-store-management)
+* [Vektör Veritabanı Mezarlığı](#the-vector-database-graveyard)
+* [Sistem Gereksinimleri](#system-requirements)
+* [Cron İşleri Yapılandırması](#cron-job-configuration)
+  * [Ortam Değişkenleri](#environment-variables)
+  * [Birden Fazla Gelen Kutusu için Cron İşleri](#cron-jobs-for-multiple-inboxes)
+  * [Cron Zamanlama Dağılımı](#cron-schedule-breakdown)
+  * [Dinamik Tarih Hesaplama](#dynamic-date-calculation)
+  * [İlk Kurulum: Sitemap'ten URL Listesi Çıkarma](#initial-setup-extract-url-list-from-sitemap)
+  * [Cron İşlerini Manuel Test Etme](#testing-cron-jobs-manually)
+  * [Logları İzleme](#monitoring-logs)
+* [Kod Örnekleri](#code-examples)
+  * [Scraping ve İşleme](#scraping-and-processing)
+  * [Geçmiş E-postalardan Eğitim](#training-from-historical-emails-1)
+  * [Bağlam Sorgulama](#querying-for-context)
+* [Gelecek: Spam Tarayıcı Ar-Ge](#the-future-spam-scanner-rd)
+* [Sorun Giderme](#troubleshooting)
+  * [Vektör Boyutu Uyumsuzluğu Hatası](#vector-dimension-mismatch-error)
+  * [Boş Bilgi Tabanı Bağlamı](#empty-knowledge-base-context)
+  * [PGP Şifre Çözme Hataları](#pgp-decryption-failures)
+* [Kullanım İpuçları](#usage-tips)
+  * [Gelen Kutusu Sıfırına Ulaşmak](#achieving-inbox-zero)
+  * [skip-ai Etiketini Kullanmak](#using-the-skip-ai-label)
+  * [E-posta Konu Dizisi ve Tümüne Yanıt](#email-threading-and-reply-all)
+  * [İzleme ve Bakım](#monitoring-and-maintenance)
+* [Test](#testing)
+  * [Testleri Çalıştırma](#running-tests)
+  * [Test Kapsamı](#test-coverage)
+  * [Test Ortamı](#test-environment)
+* [Ana Çıkarımlar](#key-takeaways)
+## Müşteri Avantajları: Yapay Zeka Destekli İnsan Desteği {#customer-benefits-ai-augmented-human-support}
 
-## Why Privacy Matters {#why-privacy-matters}
+Yapay zeka sistemimiz destek ekibimizin yerini almaz—onları daha iyi hale getirir. Bu sizin için ne anlama geliyor, işte burada:
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+### Daha Hızlı, Daha Doğru Yanıtlar {#faster-more-accurate-responses}
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
+**İnsan Döngüsünde**: Her yapay zeka tarafından oluşturulan taslak, size gönderilmeden önce insan destek ekibimiz tarafından gözden geçirilir, düzenlenir ve özenle seçilir. Yapay zeka ilk araştırma ve taslağı hazırlar, böylece ekibimiz kalite kontrol ve kişiselleştirmeye odaklanabilir.
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+**İnsan Uzmanlığı Üzerinden Eğitildi**: Yapay zeka şunlardan öğrenir:
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+* El yazısı bilgi tabanımız ve dokümantasyonumuz
+* İnsanlar tarafından yazılmış blog yazıları ve eğitimler
+* İnsanlar tarafından yazılmış kapsamlı SSS
+* Geçmiş müşteri görüşmeleri (tamamı gerçek insanlar tarafından yönetildi)
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
+Size yılların insan uzmanlığıyla bilgilendirilmiş yanıtlar sunuluyor, sadece daha hızlı teslim ediliyor.
+
+### Tükenmişlik Olmadan Tutarlılık {#consistency-without-burnout}
+
+Küçük ekibimiz her gün yüzlerce destek talebiyle ilgileniyor, her biri farklı teknik bilgi ve zihinsel bağlam değişikliği gerektiriyor:
+
+* Faturalama soruları finansal sistem bilgisi gerektirir
+* DNS sorunları ağ uzmanlığı gerektirir
+* API entegrasyonu programlama bilgisi gerektirir
+* Güvenlik raporları zafiyet değerlendirmesi gerektirir
+
+Yapay zeka yardımı olmadan, bu sürekli bağlam değişikliği şunlara yol açar:
+
+* Daha yavaş yanıt süreleri
+* Yorgunluktan insan hatası
+* Tutarsız yanıt kalitesi
+* Ekip tükenmişliği
+
+**Yapay zeka desteğiyle**, ekibimiz:
+
+* Daha hızlı yanıt verir (Yapay zeka saniyeler içinde taslak hazırlar)
+* Daha az hata yapar (Yapay zeka yaygın hataları yakalar)
+* Tutarlı kaliteyi korur (Yapay zeka her seferinde aynı bilgi tabanına başvurur)
+* Taze ve odaklanmış kalır (daha az araştırma, daha fazla yardım)
+
+### Size Sunulanlar {#what-you-get}
+
+✅ **Hız**: Yapay zeka yanıtları saniyeler içinde taslaklar, insanlar dakikalar içinde gözden geçirip gönderir
+
+✅ **Doğruluk**: Yanıtlar gerçek dokümantasyonumuz ve geçmiş çözümlerimize dayanır
+
+✅ **Tutarlılık**: Saat 9:00 ya da 21:00 olsun aynı yüksek kalitede yanıtlar
+
+✅ **İnsani dokunuş**: Her yanıt ekibimiz tarafından gözden geçirilir ve kişiselleştirilir
+
+✅ **Halüsinasyon yok**: Yapay zeka yalnızca doğrulanmış bilgi tabanımızı kullanır, genel internet verilerini değil
+
+> \[!NOTE]
+> **Her zaman insanlarla konuşuyorsunuz**. Yapay zeka, ekibimizin doğru yanıtı daha hızlı bulmasına yardımcı olan bir araştırma asistanıdır. Bunu, ilgili kitabı anında bulan bir kütüphaneci gibi düşünün—ama kitabı hala bir insan okur ve size açıklar.
+
+
+## Kişisel Bir Yansıma: Yirmi Yıllık Emek {#a-personal-reflection-the-two-decade-grind}
+
+Teknik detaylara girmeden önce kişisel bir not. Yaklaşık yirmi yıldır bu işin içindeyim. Klavyenin başında geçen sonsuz saatler, çözüm arayışındaki amansız çaba, derin ve odaklanmış çalışma—anlamlı bir şey inşa etmenin gerçeği budur. Bu, yeni teknolojilerin heyecan döngülerinde sıklıkla göz ardı edilen bir gerçekliktir.
+
+Yapay zekanın son patlaması özellikle sinir bozucu oldu. Otomasyon hayali, kodumuzu yazacak ve sorunlarımızı çözecek yapay zeka asistanları satılıyor bize. Gerçek? Çıktı çoğunlukla çöplük kodu oluyor ve sıfırdan yazmaktan daha fazla zaman alıyor düzeltmek. Hayatımızı kolaylaştırma vaadi sahte. Bu, inşa etmenin zor ve gerekli işinden bir dikkat dağıtıcı.
+
+Ve açık kaynak katkısının ikilemi var. Zaten yorgun ve tükenmiş durumdasınız. Bir yapay zeka kullanarak detaylı, iyi yapılandırılmış bir hata raporu yazmaya çalışıyorsunuz, böylece bakımcıların sorunu anlaması ve düzeltmesi kolaylaşsın diye. Peki ne oluyor? Azarlanıyorsunuz. Katkınız "konu dışı" veya düşük çaba olarak reddediliyor, tıpkı yakın zamanda gördüğümüz bir [Node.js GitHub sorunu](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321) gibi. Bu, sadece yardım etmeye çalışan kıdemli geliştiricilere bir tokat.
+
+Çalıştığımız ekosistemin gerçeği bu. Sadece bozuk araçlar değil; katkıda bulunanların zamanına ve [çabasına saygı göstermeyen](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) bir kültür var. Bu yazı o gerçeğin bir kroniğidir. Araçlar hakkında bir hikaye, evet, ama aynı zamanda tüm vaatlerine rağmen temelde bozuk bir ekosistemde inşa etmenin insan maliyeti hakkında bir hikayedir.
+## Gizliliğin Önemi {#why-privacy-matters}
+
+[teknik beyaz kitabımız](https://forwardemail.net/technical-whitepaper.pdf) gizlilik felsefemizi derinlemesine ele alır. Kısa versiyon: müşteri verilerini üçüncü taraflara asla gönderemeyiz. Hiçbir zaman. Bu, OpenAI, Anthropic veya bulut tabanlı vektör veritabanları yok demektir. Her şey altyapımızda yerel olarak çalışır. Bu, GDPR uyumluluğu ve DPA taahhütlerimiz için tartışılmazdır.
+
+
+## Maliyet Analizi: Bulut AI vs Kendi Sunucunuzda Barındırma {#cost-analysis-cloud-ai-vs-self-hosted}
+
+Teknik uygulamaya girmeden önce, kendi sunucunuzda barındırmanın maliyet açısından neden önemli olduğundan bahsedelim. Bulut AI hizmetlerinin fiyatlandırma modelleri, müşteri desteği gibi yüksek hacimli kullanım durumları için aşırı pahalıdır.
+
+### Bulut AI Hizmeti Karşılaştırması {#cloud-ai-service-comparison}
+
+| Hizmet          | Sağlayıcı           | Gömme Maliyeti                                                  | LLM Maliyeti (Girdi)                                                      | LLM Maliyeti (Çıktı)    | Gizlilik Politikası                                | GDPR/DPA        | Barındırma        | Veri Paylaşımı    |
 | --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+| **OpenAI**      | OpenAI (ABD)        | [$0.02-0.13/1M token](https://openai.com/api/pricing/)          | $0.15-20/1M token                                                         | $0.60-80/1M token      | [Link](https://openai.com/policies/privacy-policy/) | Sınırlı DPA     | Azure (ABD)       | Evet (eğitim)     |
+| **Claude**      | Anthropic (ABD)     | Yok                                                              | [$3-20/1M token](https://docs.claude.com/en/docs/about-claude/pricing)    | $15-80/1M token        | [Link](https://www.anthropic.com/legal/privacy)     | Sınırlı DPA     | AWS/GCP (ABD)     | Hayır (iddia edilen) |
+| **Gemini**      | Google (ABD)        | [$0.15/1M token](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M token                                                       | $2.50/1M token         | [Link](https://policies.google.com/privacy)         | Sınırlı DPA     | GCP (ABD)         | Evet (iyileştirme) |
+| **DeepSeek**    | DeepSeek (Çin)      | Yok                                                              | [$0.028-0.28/1M token](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M token         | [Link](https://www.deepseek.com/en)                 | Bilinmiyor      | Çin               | Bilinmiyor        |
+| **Mistral**     | Mistral AI (Fransa) | [$0.10/1M token](https://mistral.ai/pricing)                    | $0.40/1M token                                                            | $2.00/1M token         | [Link](https://mistral.ai/terms/)                   | AB GDPR         | AB                | Bilinmiyor        |
+| **Kendi Sunucunuzda** | Siz              | $0 (mevcut donanım)                                              | $0 (mevcut donanım)                                                       | $0 (mevcut donanım)    | Kendi politikanız                                  | Tam uyumluluk   | MacBook M5 + cron | Asla              |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Veri egemenliği endişeleri**: ABD sağlayıcıları (OpenAI, Claude, Gemini) CLOUD Yasası kapsamındadır, bu da ABD hükümetinin verilere erişimini sağlar. DeepSeek (Çin) Çin veri yasalarına tabidir. Mistral (Fransa) AB barındırma ve GDPR uyumluluğu sunarken, tam veri egemenliği ve kontrol için kendi sunucunuzda barındırma tek seçenektir.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Maliyet Dağılımı: 5GB Bilgi Tabanı {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+5GB'lık bir bilgi tabanını işleme maliyetini hesaplayalım (orta ölçekli bir şirket için dokümanlar, e-postalar ve destek geçmişi tipiktir).
 
-**Assumptions:**
+**Varsayımlar:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB metin ≈ 1.25 milyar token (yaklaşık \~4 karakter/token varsayımıyla)
+* İlk gömme oluşturma
+* Aylık yeniden eğitim (tam yeniden gömme)
+* Aylık 10.000 destek sorgusu
+* Ortalama sorgu: 500 token girdi, 300 token çıktı
+**Detaylı Maliyet Dağılımı:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
+| Bileşen                              | OpenAI           | Claude          | Gemini               | Kendi Sunucumuz    |
 | -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **İlk Embedding** (1.25B token)        | $25,000          | N/A             | $187,500             | $0                 |
+| **Aylık Sorgular** (10K × 800 token)   | $1,200-16,000    | $2,400-16,000   | $2,400-3,200         | $0                 |
+| **Aylık Yeniden Eğitim** (1.25B token) | $25,000          | N/A             | $187,500             | $0                 |
+| **İlk Yıl Toplamı**                    | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~ $60 (elektrik)   |
+| **Gizlilik Uyumu**                    | ❌ Sınırlı        | ❌ Sınırlı       | ❌ Sınırlı            | ✅ Tam              |
+| **Veri Egemenliği**                   | ❌ Hayır          | ❌ Hayır         | ❌ Hayır              | ✅ Evet             |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **Gemini'nin embedding maliyetleri felaket boyutunda**: 1M token başına $0.15. Tek bir 5GB bilgi tabanı embedding'i $187,500 tutarındadır. Bu, OpenAI'den 37 kat daha pahalıdır ve üretim için tamamen kullanılamaz hale getirir.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Kendi Sunucumuzun Donanım Maliyetleri {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+Kurulumumuz zaten sahip olduğumuz mevcut donanım üzerinde çalışıyor:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Donanım**: MacBook M5 (geliştirme için zaten sahip olunan)
+* **Ek maliyet**: $0 (mevcut donanım kullanılıyor)
+* **Elektrik**: \~$5/ay (tahmini)
+* **İlk yıl toplamı**: \~$60
+* **Sürekli maliyet**: $60/yıl
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**Yatırım Getirisi (ROI)**: Kendi sunucumuzu kullanmanın marjinal maliyeti neredeyse sıfırdır çünkü mevcut geliştirme donanımını kullanıyoruz. Sistem, yoğun olmayan saatlerde cron işleri ile çalışır.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+## Kendi API'mizi Kendi İçimizde Kullanmak {#dogfooding-our-own-api}
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+Yaptığımız en önemli mimari kararlardan biri, tüm AI işlerinin [Forward Email API](https://forwardemail.net/email-api) 'yi doğrudan kullanmasıydı. Bu sadece iyi bir uygulama değil—aynı zamanda performans optimizasyonu için bir zorlayıcıdır.
 
-When our AI jobs use the same API endpoints as our customers:
+### Kendi İçimizde Kullanmanın Önemi {#why-dogfooding-matters}
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+AI işlerimiz müşterilerimizle aynı API uç noktalarını kullandığında:
 
-### API Usage Examples {#api-usage-examples}
+1. **Performans darboğazları önce bizi etkiler** - Müşterilerden önce biz acısını hissederiz
+2. **Optimizasyon herkese fayda sağlar** - İşlerimiz için yapılan iyileştirmeler otomatik olarak müşteri deneyimini geliştirir
+3. **Gerçek dünya testi** - İşlerimiz binlerce e-postayı işler, sürekli yük testi sağlar
+4. **Kod tekrar kullanımı** - Aynı kimlik doğrulama, hız limitleme, hata yönetimi ve önbellekleme mantığı
 
-**Listing Messages (train-from-history.js):**
+### API Kullanım Örnekleri {#api-usage-examples}
+
+**Mesajları Listeleme (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// GET /v1/messages?folder=INBOX kullanır, BasicAuth ile
+// Yanıt boyutunu azaltmak için eml, raw, nodemailer hariç tutulur (sadece ID'ler gerekli)
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +233,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Döner: [{ id, subject, date, ... }, ...]
+// Tam mesaj içeriği daha sonra GET /v1/messages/:id ile alınır
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Tam Mesajları Alma (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// GET /v1/messages/:id kullanarak ham içerikli tam mesajı alır
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +252,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Döner: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Taslak Yanıtlar Oluşturma (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// POST /v1/messages kullanarak taslak yanıtlar oluşturur
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +276,56 @@ const response = await axios.post(
   }
 );
 ```
+### Performans Faydaları {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Çünkü AI işlerimiz aynı API altyapısı üzerinde çalışıyor:
 
-Because our AI jobs run on the same API infrastructure:
+* **Önbellekleme optimizasyonları** hem işler hem de müşteriler için faydalıdır
+* **Oran sınırlaması** gerçek yük altında test edilir
+* **Hata yönetimi** savaşta test edilmiştir
+* **API yanıt süreleri** sürekli izlenir
+* **Veritabanı sorguları** her iki kullanım durumu için optimize edilmiştir
+* **Bant genişliği optimizasyonu** - Listeleme sırasında `eml`, `raw`, `nodemailer` hariç tutulduğunda yanıt boyutu yaklaşık %90 azalır
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+`train-from-history.js` 1.000 e-postayı işlerken, 1.000'den fazla API çağrısı yapıyor. API'deki herhangi bir verimsizlik hemen ortaya çıkar. Bu, IMAP erişimini, veritabanı sorgularını ve yanıt serileştirmesini optimize etmemizi zorunlu kılar—bu iyileştirmeler doğrudan müşterilerimize fayda sağlar.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Örnek optimizasyon**: Tam içerikle 100 mesaj listelemek = yaklaşık 10MB yanıt. `eml: false, raw: false, nodemailer: false` ile listelemek = yaklaşık 100KB yanıt (100 kat daha küçük).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Şifreleme Mimarisi {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+E-posta depolamamız, AI işlerinin eğitim için gerçek zamanlı olarak çözmesi gereken birden fazla şifreleme katmanı kullanır.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### Katman 1: Posta Kutusu Şifrelemesi (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Tüm IMAP posta kutuları, kuantum güvenli bir şifreleme algoritması olan **chacha20-poly1305** ile şifrelenmiş SQLite veritabanları olarak saklanır. Bu, [kuantum güvenli şifreli e-posta hizmeti blog yazımızda](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) detaylandırılmıştır.
 
-**Key Properties:**
+**Anahtar Özellikler:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Algoritma**: ChaCha20-Poly1305 (AEAD şifreleme)
+* **Kuantum güvenli**: Kuantum bilgisayar saldırılarına dayanıklı
+* **Depolama**: Diskte SQLite veritabanı dosyaları
+* **Erişim**: IMAP/API üzerinden erişildiğinde bellekte şifresi çözülür
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### Katman 2: Mesaj Düzeyi PGP Şifrelemesi {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Birçok destek e-postası ayrıca PGP (OpenPGP standardı) ile şifrelenmiştir. AI işleri, eğitim için içerik çıkarmak üzere bunların şifresini çözmelidir.
 
-**Decryption Flow:**
+**Şifre Çözme Akışı:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. API, şifrelenmiş ham içerikle mesajı döner
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Ham içeriğin PGP ile şifrelenip şifrelenmediğini kontrol et
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Özel anahtarımızla şifreyi çöz
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Şifresi çözülmüş MIME mesajını ayrıştır
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Nodemailer'ı şifresi çözülmüş içerikle doldur
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +337,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**PGP Yapılandırması:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Şifre çözme için özel anahtar (ASCII zırhlı anahtar dosyasının yolu)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Özel anahtar için parola (şifreliyse)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+`pgp-decrypt.js` yardımcı programı:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Özel anahtarı diskten bir kez okur (bellekte önbelleğe alır)
+2. Anahtarı parola ile çözer
+3. Tüm mesaj şifre çözme işlemleri için çözülen anahtarı kullanır
+4. İç içe şifrelenmiş mesajlar için özyinelemeli şifre çözmeyi destekler
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Eğitimin Önemi {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Doğru şifre çözme olmadan, AI şifrelenmiş anlamsız metin üzerinde eğitim yapardı:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +366,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+Şifre çözme ile AI gerçek içerik üzerinde eğitim yapar:
 
 ```
 Subject: Re: Bug Report
@@ -376,128 +377,128 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Depolama Güvenliği {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+Şifre çözme, iş yürütülürken bellekte gerçekleşir ve şifresi çözülmüş içerik, ardından LanceDB vektör veritabanında diske kaydedilen gömme (embedding) haline dönüştürülür.
 
-**Where the data lives:**
+**Verinin bulunduğu yerler:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Vektör veritabanı**: Şifrelenmiş MacBook M5 iş istasyonlarında saklanır
+* **Fiziksel güvenlik**: İş istasyonları her zaman bizimle kalır (veri merkezlerinde değil)
+* **Disk şifrelemesi**: Tüm iş istasyonlarında tam disk şifrelemesi
+* **Ağ güvenliği**: Güvenlik duvarı ile korunur ve genel ağlardan izole edilmiştir
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Gelecekteki veri merkezi dağıtımı:**
+Eğer veri merkezi barındırmaya geçersek, sunucular şunlara sahip olacaktır:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* LUKS tam disk şifrelemesi
+* USB erişimi devre dışı bırakılmış
+* Fiziksel güvenlik önlemleri
+* Ağ izolasyonu
+Güvenlik uygulamalarımız hakkında tam detaylar için, [Güvenlik sayfamıza](https://forwardemail.net/en/security) bakınız.
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> Vektör veritabanı, orijinal düz metin değil, gömme (matematiksel temsil) içerir. Ancak, gömmeler tersine mühendislik ile açığa çıkarılabilir, bu yüzden onları şifrelenmiş, fiziksel olarak güvenli iş istasyonlarında tutuyoruz.
 
-### High-Level Flow {#high-level-flow}
+### Yerel Depolama Standart Uygulama {#local-storage-is-standard-practice}
+
+Gömme verilerini ekibimizin iş istasyonlarında depolamak, e-postayı zaten nasıl işlediğimizden farklı değildir:
+
+* **Thunderbird**: Tam e-posta içeriğini yerel olarak mbox/maildir dosyalarında indirir ve depolar
+* **Webmail istemcileri**: E-posta verilerini tarayıcı depolaması ve yerel veritabanlarında önbelleğe alır
+* **IMAP istemcileri**: Çevrimdışı erişim için mesajların yerel kopyalarını tutar
+* **Bizim AI sistemimiz**: Matematiksel gömmeleri (düz metin değil) LanceDB'de depolar
+
+Temel fark: gömmeler, düz metin e-postadan **daha güvenlidir** çünkü:
+
+1. Matematiksel temsiller, okunabilir metin değildir
+2. Düz metinden daha zor tersine mühendislik yapılabilir
+3. E-posta istemcilerimizle aynı fiziksel güvenliğe tabidir
+
+Eğer ekibimizin Thunderbird veya webmail'i şifrelenmiş iş istasyonlarında kullanması kabul edilebilirse, gömmeleri aynı şekilde depolamak da eşit derecede kabul edilebilir (ve tartışmalı olarak daha güvenlidir).
+
+
+## Mimari {#the-architecture}
+
+İşte temel akış. Basit görünüyor. Değildi.
+
+> \[!NOTE]
+> Tüm işler doğrudan Forward Email API'sini kullanır, böylece performans optimizasyonları hem AI sistemimiz hem de müşterilerimiz için fayda sağlar.
+
+### Yüksek Seviyeli Akış {#high-level-flow}
 
 ```mermaid
 graph TD
-    subgraph "Data Ingestion (Nightly Job)"
-        A[Data Sources] --> B{Scraper}
-        B --> C{Processor<br/>Chunks text}
-        C --> D{Ollama Client<br/>Generates embeddings}
-        D --> E[LanceDB<br/>Vector Store]
+    subgraph "Veri Alımı (Gece İşlemi)"
+        A[Veri Kaynakları] --> B{Kazıyıcı}
+        B --> C{İşleyici<br/>Metni parçalara ayırır}
+        C --> D{Ollama İstemcisi<br/>Gömme üretir}
+        D --> E[LanceDB<br/>Vektör Deposu]
     end
 
-    subgraph "Historical Email Training"
-        F[Email API] --> G{Email Scanner<br/>Decrypt PGP}
-        G --> H{Parse with mailparser}
-        H --> I{Processor<br/>Chunks text}
+    subgraph "Tarihi E-posta Eğitimi"
+        F[E-posta API] --> G{E-posta Tarayıcı<br/>PGP'yi çözer}
+        G --> H{mailparser ile ayrıştır}
+        H --> I{İşleyici<br/>Metni parçalara ayırır}
         I --> D
     end
 
-    subgraph "Live Email Processing"
-        J[New Email] --> K{Email Scanner<br/>Analyze content}
-        K --> L{Response Generator}
-        L -- Query --> E
-        E -- Context --> L
-        L -- Generates --> M[Email Response]
+    subgraph "Canlı E-posta İşleme"
+        J[Yeni E-posta] --> K{E-posta Tarayıcı<br/>İçeriği analiz eder}
+        K --> L{Yanıt Üretici}
+        L -- Sorgu --> E
+        E -- Bağlam --> L
+        L -- Üretir --> M[E-posta Yanıtı]
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Detaylı Kazıyıcı Akışı {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+`scraper.js` veri alımının kalbidir. Farklı veri formatları için ayrıştırıcılar koleksiyonudur.
 
 ```mermaid
 graph TD
-    subgraph "Scraper Components"
-        A[scraper.js] --> B[Local Markdown Parser<br/>docs/*.md]
-        A --> C[PDF Parser<br/>technical-whitepaper.pdf]
-        A --> D[GitHub Issue Parser<br/>@octokit/rest API]
-        A --> E[GitHub Discussion Parser<br/>@octokit/rest API]
-        A --> F[GitHub PR Parser<br/>@octokit/rest API]
-        A --> G[JSON Parser<br/>api-spec.json]
+    subgraph "Kazıyıcı Bileşenleri"
+        A[scraper.js] --> B[Yerel Markdown Ayrıştırıcı<br/>docs/*.md]
+        A --> C[PDF Ayrıştırıcı<br/>technical-whitepaper.pdf]
+        A --> D[GitHub Issue Ayrıştırıcı<br/>@octokit/rest API]
+        A --> E[GitHub Tartışma Ayrıştırıcı<br/>@octokit/rest API]
+        A --> F[GitHub PR Ayrıştırıcı<br/>@octokit/rest API]
+        A --> G[JSON Ayrıştırıcı<br/>api-spec.json]
     end
-    B --> I{Processor<br/>Chunks text}
+    B --> I{İşleyici<br/>Metni parçalara ayırır}
     C --> I
     D --> I
     E --> I
     F --> I
     G --> I
-    I --> J{Ollama Client<br/>mxbai-embed-large embeddings}
+    I --> J{Ollama İstemcisi<br/>mxbai-embed-large gömmeleri}
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## Nasıl Çalışır {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+Süreç üç ana parçaya ayrılmıştır: bilgi tabanı oluşturma, tarihi e-postalardan eğitim ve yeni e-postaları işleme.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### Bilgi Tabanı Oluşturma {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: Bu ana işlemdir. Her gece çalışır, eski vektör deposunu temizler ve sıfırdan yeniden oluşturur. Tüm kaynaklardan içerik almak için `scraper.js`, metni parçalara ayırmak için `processor.js` ve gömme üretmek için `ollama-client.js` kullanır. Son olarak, `vector-store.js` her şeyi LanceDB'de depolar.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+**Veri Kaynakları:**
 
-### Training from Historical Emails {#training-from-historical-emails}
+* Yerel Markdown dosyaları (`docs/*.md`)
+* Teknik beyaz kağıt PDF'si (`assets/technical-whitepaper.pdf`)
+* API spesifikasyon JSON'u (`assets/api-spec.json`)
+* GitHub sorunları (Octokit aracılığıyla)
+* GitHub tartışmaları (Octokit aracılığıyla)
+* GitHub çekme istekleri (Octokit aracılığıyla)
+* Site haritası URL listesi (`$LANCEDB_PATH/valid-urls.json`)
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
+### Tarihi E-postalardan Eğitim {#training-from-historical-emails}
 
-**Email Processing Flow:**
+**`train-from-history.js`**: Bu işlem tüm klasörlerden tarihi e-postaları tarar, PGP ile şifrelenmiş mesajları çözer ve bunları ayrı bir vektör deposuna (`customer_support_history`) ekler. Bu, geçmiş destek etkileşimlerinden bağlam sağlar.
+**E-posta İşleme Akışı:**
 
 ```mermaid
 sequenceDiagram
@@ -535,25 +536,25 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**Temel Özellikler:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **PGP Şifre Çözme**: `GPG_SECURITY_KEY` ortam değişkeni ile `pgp-decrypt.js` yardımcı dosyasını kullanır
+* **Konuşma Gruplama**: İlgili e-postaları konuşma dizilerine gruplar
+* **Meta Veri Koruma**: Klasör, konu, tarih, şifreleme durumu saklanır
+* **Yanıt Bağlamı**: Mesajları yanıtlarıyla ilişkilendirerek daha iyi bağlam sağlar
 
-**Configuration:**
+**Yapılandırma:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# train-from-history için ortam değişkenleri
+HISTORY_SCAN_LIMIT=1000              # İşlenecek maksimum mesaj sayısı
+HISTORY_SCAN_SINCE="2024-01-01"      # Bu tarihten sonraki mesajlar işlenir
+HISTORY_DECRYPT_PGP=true             # PGP şifre çözme denemesi
+GPG_SECURITY_KEY="/path/to/key.asc"  # PGP özel anahtar yolu
+GPG_SECURITY_PASSPHRASE="passphrase" # Anahtar parolası (isteğe bağlı)
 ```
 
-**What Gets Stored:**
+**Saklanan Veriler:**
 
 ```javascript
 {
@@ -575,39 +576,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Tarihsel bağlamı doldurmak için ilk kurulumdan sonra `train-from-history` komutunu çalıştırın. Bu, geçmiş destek etkileşimlerinden öğrenerek yanıt kalitesini önemli ölçüde artırır.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Gelen E-postaların İşlenmesi {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Bu görev, `support@forwardemail.net`, `abuse@forwardemail.net` ve `security@forwardemail.net` posta kutularımızdaki (özellikle `INBOX` IMAP klasör yolu) e-postalar üzerinde çalışır. <https://forwardemail.net/email-api> API'mizi kullanır (örneğin, her posta kutusu için IMAP kimlik bilgileriyle BasicAuth erişimi kullanarak `GET /v1/messages?folder=INBOX`). E-posta içeriğini analiz eder, hem bilgi tabanını (`forward_email_knowledge_base`) hem de tarihsel e-posta vektör deposunu (`customer_support_history`) sorgular ve ardından birleşik bağlamı `response-generator.js`'ye iletir. Generator, Ollama üzerinden `mxbai-embed-large` kullanarak yanıt oluşturur.
 
-**Automated Workflow Features:**
+**Otomatik İş Akışı Özellikleri:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Inbox Zero Otomasyonu**: Taslak başarıyla oluşturulduktan sonra, orijinal mesaj otomatik olarak Arşiv klasörüne taşınır. Bu, gelen kutunuzu temiz tutar ve manuel müdahale olmadan inbox zero hedeflemenize yardımcı olur.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **AI İşleminden Atlama**: AI işlemini engellemek için herhangi bir mesaja (büyük/küçük harf duyarsız) `skip-ai` etiketi ekleyin. Mesaj gelen kutunuzda dokunulmadan kalır ve manuel olarak işlenebilir. Bu, hassas mesajlar veya insan yargısı gerektiren karmaşık durumlar için faydalıdır.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Doğru E-posta Dizileme**: Tüm taslak yanıtlar, standart ` >  ` öneki kullanılarak orijinal mesajı altta alıntılar ve "On \[tarih], \[gönderen] wrote:" formatında e-posta yanıt kurallarına uyar. Bu, e-posta istemcilerinde doğru konuşma bağlamı ve dizileme sağlar.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Herkese Yanıt Davranışı**: Sistem otomatik olarak Reply-To başlıklarını ve CC alıcılarını yönetir:
+   * Reply-To başlığı varsa, bu adres To olarak kullanılır ve orijinal From CC'ye eklenir
+   * Orijinal To ve CC alıcılarının tamamı yanıt CC'sine dahil edilir (kendi adresiniz hariç)
+   * Grup konuşmaları için standart e-posta herkese yanıt kurallarına uyulur
+**Kaynak Sıralaması**: Sistem, kaynakları önceliklendirmek için **ağırlıklı sıralama** kullanır:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
+* SSS: %100 (en yüksek öncelik)
+* Teknik beyaz kitap: %95
+* API spesifikasyonu: %90
+* Resmi dokümanlar: %85
+* GitHub sorunları: %70
+* Tarihsel e-postalar: %50
 
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
-* GitHub issues: 70%
-* Historical emails: 50%
+### Vektör Deposu Yönetimi {#vector-store-management}
 
-### Vector Store Management {#vector-store-management}
+`helpers/customer-support-ai/vector-store.js` içindeki `VectorStore` sınıfı, LanceDB ile arayüzümüzdür.
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
-
-**Adding Documents:**
+**Belge Ekleme:**
 
 ```javascript
 // vector-store.js
@@ -621,126 +621,127 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Depoyu Temizleme:**
 
 ```javascript
-// Option 1: Use the clear() method
+// Seçenek 1: clear() metodunu kullan
 await vectorStore.clear();
 
-// Option 2: Delete the local database directory
+// Seçenek 2: Yerel veritabanı dizinini sil
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+`LANCEDB_PATH` ortam değişkeni, yerel gömülü veritabanı dizinine işaret eder. LanceDB sunucusuz ve gömülüdür, bu yüzden yönetilecek ayrı bir süreç yoktur.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## Vektör Veritabanı Mezarlığı {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
-| ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+Bu ilk büyük engeldi. LanceDB'ye karar vermeden önce birçok vektör veritabanını denedik. İşte her birinde neyin yanlış gittiği.
+
+| Veritabanı   | GitHub                                                      | Ne Yanlış Gitti                                                                                                                                                                                                     | Özel Sorunlar                                                                                                                                                                                                                                                                                                                                                           | Güvenlik Endişeleri                                                                                                                                                                                             |
+| ------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` size `PydanticImportError` ile taş devrinden kalma bir sürüm verir. Çalışan bir sürüm elde etmenin tek yolu kaynaktan derlemektir. Geliştirici dostu değil.                                | Python bağımlılık karmaşası. Birçok kullanıcı bozuk pip kurulumları bildiriyor ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). Dokümanlarda "sadece Docker kullanın" deniyor, bu yerel geliştirme için cevap değil. Windows'ta >99 kayıtla çöker ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: MindsDB'deki ChromaDB entegrasyonu üzerinden rastgele kod yürütme. Docker imajında kritik OS güvenlik açıkları ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                      |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | Eski dokümanlarında referans verilen Homebrew tap'i (`qdrant/qdrant/qdrant`) kayboldu. Gitti. Açıklama yok. Resmi dokümanlar artık sadece "Docker kullanın" diyor.                                                  | Homebrew tap eksik. Yerel macOS ikili dosyası yok. Sadece Docker olması hızlı yerel test için engel.                                                                                                                                                                                                                                                                     | **CVE-2024-2221**: Uzaktan kod yürütmeye izin veren rastgele dosya yükleme açığı (v1.9.0'da düzeltildi). [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/) tarafından zayıf güvenlik olgunluk puanı. |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | Homebrew sürümünde kritik bir kümeleme hatası vardı (`leader not found`). Düzeltmek için belgelenen bayraklar (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) işe yaramadı. Tek düğümlü kurulumlar için temelde bozuk.             | Tek düğümlü modda bile kümeleme hataları. Basit kullanım durumları için aşırı karmaşık.                                                                                                                                                                                                                                                                                   | Önemli CVE bulunmadı, ancak karmaşıklık saldırı yüzeyini artırıyor.                                                                                                                                               |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Bu çalışan tek veritabanıydı. Gömülü ve sunucusuz. Ayrı bir süreç yok. Tek rahatsızlık verici şey kafa karıştırıcı paket isimlendirmesi (`vectordb` kullanımdan kalktı, `@lancedb/lancedb` kullanılmalı) ve dağınık dokümanlar. Buna katlanabiliriz. | Paket isimlendirme karışıklığı (`vectordb` vs `@lancedb/lancedb`), ancak genel olarak sağlam. Gömülü mimari, tüm güvenlik sorunları sınıflarını ortadan kaldırıyor.                                                                                                                                                                                                     | Bilinen CVE yok. Gömülü tasarım ağ saldırı yüzeyini ortadan kaldırıyor.                                                                                                                                           |
+> \[!WARNING]
+> **ChromaDB kritik güvenlik açıklarına sahiptir.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) rastgele kod çalıştırmaya izin verir. Pydantic bağımlılık sorunları nedeniyle pip kurulumu temelde bozuk durumdadır. Üretim kullanımı için kaçının.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **Qdrant'ta dosya yükleme RCE açığı vardı** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) ve bu sadece v1.9.0 sürümünde düzeltildi. Qdrant kullanmanız gerekiyorsa, en son sürümde olduğunuzdan emin olun.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Açık kaynak vektör veritabanı ekosistemi zorludur. Belgelerine güvenmeyin. Her şeyin bozuk olduğunu varsayın, aksi kanıtlanana kadar. Bir yığına bağlı kalmadan önce yerel olarak test edin.
 
-## System Requirements {#system-requirements}
+
+## Sistem Gereksinimleri {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** En son sürüm ([GitHub](https://github.com/ollama/ollama))
+* **Model:** `mxbai-embed-large` Ollama üzerinden
+* **Vektör Veritabanı:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **GitHub Erişimi:** Sorunları kazımak için `@octokit/rest` ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Birincil veritabanı için (`mongoose-to-sqlite` üzerinden)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## Cron İş Yapılandırması {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+Tüm AI işleri MacBook M5 üzerinde cron ile çalıştırılır. İşte birden fazla gelen kutusunda gece yarısı çalışacak şekilde cron işlerinin nasıl ayarlanacağı.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### Ortam Değişkenleri {#environment-variables}
 
-**In `.env` file:**
+İşler bu ortam değişkenlerini gerektirir. Çoğu `.env` dosyasında ayarlanabilir (`@ladjs/env` ile yüklenir), ancak `HISTORY_SCAN_SINCE` crontab içinde dinamik olarak hesaplanmalıdır.
+
+**`.env` dosyasında:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Forward Email API kimlik bilgileri (her gelen kutusu için değişir)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
 FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
 
-# PGP decryption (shared across all inboxes)
+# PGP şifre çözme (tüm gelen kutuları için ortak)
 GPG_SECURITY_KEY=/path/to/private-key.asc
 GPG_SECURITY_PASSPHRASE=your-passphrase
 
-# Historical scan configuration
+# Tarihsel tarama yapılandırması
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# LanceDB yolu
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**Crontab içinde (dinamik olarak hesaplanır):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE crontab içinde shell tarih hesaplaması ile satır içi ayarlanmalıdır
+# .env dosyasında olamaz çünkü @ladjs/env shell komutlarını değerlendirmez
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Birden Fazla Gelen Kutusu için Cron İşleri {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Crontab dosyanızı `crontab -e` ile düzenleyin ve şunları ekleyin:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Bilgi tabanını güncelle (bir kez çalışır, tüm gelen kutuları için ortak)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Geçmişten eğitim - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Geçmişten eğitim - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Geçmişten eğitim - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Gelen kutusunu işle - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Gelen kutusunu işle - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Gelen kutusunu işle - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Cron Programlama Detayı {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
+| İş                      | Program       | Açıklama                                                                          |
+| ----------------------- | ------------- | --------------------------------------------------------------------------------- |
+| `train-from-sitemap.js` | `0 0 * * 0`   | Haftalık (Pazar gece yarısı) - Sitemap'ten tüm URL'leri alır ve bilgi tabanını eğitir |
+| `train-from-history.js` | `0 0 * * *`   | Her gece yarısı - Önceki günün e-postalarını her gelen kutusu için tarar          |
+| `process-inbox.js`      | `*/5 * * * *` | Her 5 dakikada bir - Yeni e-postaları işler ve taslaklar oluşturur                |
 
-| Job | Schedule | Description |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+### Dinamik Tarih Hesaplama {#dynamic-date-calculation}
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+`HISTORY_SCAN_SINCE` değişkeni **crontab içinde satır içi olarak hesaplanmalıdır** çünkü:
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+1. `.env` dosyaları `@ladjs/env` tarafından literal string olarak okunur
+2. Shell komut değişimi `$(...)` `.env` dosyalarında çalışmaz
+3. Tarih her cron çalıştığında taze olarak hesaplanmalıdır
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
-
-**Correct approach (in crontab):**
+**Doğru yaklaşım (crontab içinde):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +751,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Yanlış yaklaşım (.env içinde çalışmaz):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Bu literal string olarak "$(date -v-1d +%Y-%m-%d)" şeklinde okunur
+# Shell komutu olarak değerlendirilmez
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Bu, her gece çalıştırmada önceki günün tarihini dinamik olarak hesaplayarak gereksiz işlemleri önler.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### İlk Kurulum: Sitemap'ten URL Listesi Çıkarma {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+`process-inbox` işini ilk kez çalıştırmadan önce, sitemap'ten URL listesini çıkarmanız **zorunludur**. Bu, LLM'nin referans alabileceği geçerli URL'lerin bir sözlüğünü oluşturur ve URL halüsinasyonunu önler.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# İlk kurulum: Sitemap'ten URL listesi çıkarma
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Bu işlem ne yapar:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. <https://forwardemail.net/sitemap.xml> adresinden tüm URL'leri çeker
+2. Sadece lokalize edilmemiş veya /en/ URL'lerini filtreler (çoğaltılmış içeriği önler)
+3. Dil ön eklerini kaldırır (/en/faq → /faq)
+4. URL listesini basit bir JSON dosyası olarak `$LANCEDB_PATH/valid-urls.json` içine kaydeder
+5. Tarama veya meta veri kazıma yapmaz - sadece geçerli URL'lerin düz bir listesini oluşturur
 
-**Why this matters:**
+**Neden önemli:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* LLM'nin `/dashboard` veya `/login` gibi sahte URL'ler üretmesini engeller
+* Yanıt oluşturucu için geçerli URL'lerin beyaz listesini sağlar
+* Basit, hızlıdır ve vektör veritabanı depolaması gerektirmez
+* Yanıt oluşturucu bu listeyi başlangıçta yükler ve isteme dahil eder
 
-**Add to crontab for weekly updates:**
+**Haftalık güncellemeler için crontab'a ekleyin:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# Sitemap'ten URL listesi çıkarma - haftalık Pazar gece yarısı
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Cron İşlerini Manuel Test Etme {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+Bir işi cron'a eklemeden önce test etmek için:
 
 ```bash
-# Test sitemap training
+# Sitemap eğitimi testi
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Destek gelen kutusu eğitimi testi
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +815,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Logları İzleme {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Her iş, kolay hata ayıklama için ayrı bir dosyaya log kaydeder:
 
 ```bash
-# Watch support inbox processing in real-time
+# Destek gelen kutusu işlemini gerçek zamanlı izle
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Dün geceki eğitim çalışmasını kontrol et
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Tüm işlerdeki hataları görüntüle
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Sorunları izole etmek için her gelen kutusu için ayrı log dosyaları kullanın. Bir gelen kutusunda kimlik doğrulama sorunları varsa, diğer gelen kutularının loglarını kirletmez.
+## Kod Örnekleri {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Kazıma ve İşleme {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +843,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Eski verileri temizle
 await vectorStore.clear();
 
-// Scrape all sources
+// Tüm kaynakları kazı
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`${documents.length} belge kazındı`);
 
-// Process into chunks
+// Parçalara işle
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`${allChunks.length} parça oluşturuldu`);
 
-// Generate embeddings and store
+// Gömüleri oluştur ve depola
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +870,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Tarihsel E-postalardan Eğitim {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +884,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Tüm klasörleri tara (GELEN KUTUSU, Gönderilen Posta, vb.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Konuşma dizilerine grupla
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Her diziyi işle
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Şifresi çözülemeyen şifreli mesajları atla
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Nodemailer'dan önceden ayrıştırılmış içeriği kullan
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // Parçala ve depola
+    const chunks = processor.chunkText(`Konu: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +929,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Bağlam Sorgulama {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +938,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Her iki depoda sorgu yap
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Ağırlıklı sıralama ve çoğaltma burada gerçekleşir
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Yanıt oluştur
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## Gelecek: Spam Tarayıcı Ar-Ge {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Bu proje sadece müşteri desteği için değildi. Bu bir Ar-Ge çalışmasıydı. Artık yerel gömüler, vektör depoları ve bağlam getirme hakkında öğrendiklerimizin tamamını bir sonraki büyük projemize uygulayabiliriz: [Spam Scanner](https://spamscanner.net) için LLM katmanı. Gizlilik, kendi kendine barındırma ve anlamsal anlayışın aynı prensipleri anahtar olacaktır.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Sorun Giderme {#troubleshooting}
+
+### Vektör Boyutu Uyumsuzluğu Hatası {#vector-dimension-mismatch-error}
+
+**Hata:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Neden:** Bu hata, gömü modellerini değiştirirken (örneğin `mistral-small`'dan `mxbai-embed-large`'a) ancak mevcut LanceDB veritabanı farklı bir vektör boyutuyla oluşturulduğunda ortaya çıkar.
+**Çözüm:** Yeni embedding modeli ile bilgi tabanını yeniden eğitmeniz gerekiyor:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Çalışan müşteri destek AI işlerini durdurun
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Mevcut LanceDB veritabanını silin
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Embedding modelinin .env dosyasında doğru ayarlandığını doğrulayın
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Şu şekilde görünmeli: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Ollama'da embedding modelini çekin
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Bilgi tabanını yeniden eğitin
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Bree ile process-inbox işini yeniden başlatın
+# İş otomatik olarak her 5 dakikada bir çalışacaktır
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Neden olur:** Farklı embedding modelleri farklı boyutlarda vektörler üretir:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 boyut
+* `mxbai-embed-large`: 1024 boyut
+* `nomic-embed-text`: 768 boyut
+* `all-minilm`: 384 boyut
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB, vektör boyutunu tablo şemasında saklar. Farklı boyutta sorgu yapıldığında hata verir. Tek çözüm, yeni model ile veritabanını yeniden oluşturmaktır.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Boş Bilgi Tabanı Bağlamı {#empty-knowledge-base-context}
 
-**Symptom:**
+**Belirti:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,220 +1011,222 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Neden:** Bilgi tabanı henüz eğitilmemiş veya LanceDB tablosu mevcut değil.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Çözüm:** Bilgi tabanını doldurmak için eğitim işini çalıştırın:
 
 ```bash
-# Train from historical emails
+# Geçmiş e-postalardan eğitim
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Veya web sitesi/dokümanlardan eğitim (bir scraper varsa)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### PGP Şifre Çözme Hataları {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Belirti:** Mesajlar şifreli olarak görünüyor ancak içerik boş.
 
-**Solution:**
+**Çözüm:**
 
-1. Verify GPG key path is set correctly:
+1. GPG anahtar yolunun doğru ayarlandığını doğrulayın:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Özel anahtar dosyanıza işaret etmeli
 ```
 
-2. Test decryption manually:
+2. Şifre çözmeyi manuel test edin:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Anahtar izinlerini kontrol edin:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# İşlemi çalıştıran kullanıcı tarafından okunabilir olmalı
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Kullanım İpuçları {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Gelen Kutusu Sıfır Hedefine Ulaşmak {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+Sistem, gelen kutusu sıfır hedefine otomatik olarak ulaşmanıza yardımcı olacak şekilde tasarlanmıştır:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Otomatik Arşivleme**: Taslak başarıyla oluşturulduğunda, orijinal mesaj otomatik olarak Arşiv klasörüne taşınır. Bu, gelen kutunuzu manuel müdahale olmadan temiz tutar.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Taslakları İnceleyin**: AI tarafından oluşturulan yanıtları gözden geçirmek için Taslaklar klasörünü düzenli kontrol edin. Göndermeden önce gerektiği gibi düzenleyin.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Manuel Müdahale**: Özel dikkat gerektiren mesajlar için, iş çalışmadan önce `skip-ai` etiketini ekleyin.
 
-To prevent AI processing for specific messages:
+### skip-ai Etiketini Kullanmak {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+Belirli mesajların AI tarafından işlenmesini önlemek için:
 
-**When to use skip-ai:**
+1. **Etiketi ekleyin**: E-posta istemcinizde herhangi bir mesaja `skip-ai` etiketi/label'ı ekleyin (büyük/küçük harf duyarsız)
+2. **Mesaj gelen kutusunda kalır**: Mesaj işlenmez veya arşivlenmez
+3. **Manuel olarak yönetin**: AI müdahalesi olmadan kendiniz yanıtlayabilirsiniz
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**skip-ai ne zaman kullanılır:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Hassas veya gizli mesajlar
+* İnsan yargısı gerektiren karmaşık durumlar
+* VIP müşterilerden gelen mesajlar
+* Hukuki veya uyumlulukla ilgili sorular
+* Acil insan müdahalesi gereken mesajlar
 
-The system follows standard email conventions:
+### E-posta Konu Dizisi ve Tümüne Yanıt {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+Sistem standart e-posta kurallarını takip eder:
+
+**Alıntılanmış Orijinal Mesajlar:**
 
 ```
-Hi there,
+Merhaba,
 
-[AI-generated response]
+[AI tarafından oluşturulan yanıt]
 
 --
-Thank you,
+Teşekkürler,
 Forward Email
 https://forwardemail.net
 
-On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
-> This is the original message
-> with each line quoted
-> using the standard "> " prefix
+15 Oca 2024, Pzt, 15:45 tarihinde John Doe <john@example.com> yazdı:
+> Bu orijinal mesajdır
+> her satır alıntılanmıştır
+> standart "> " öneki kullanılarak
 ```
 
-**Reply-To Handling:**
+**Yanıt-Adres İşleme:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Orijinal mesajda Reply-To başlığı varsa, taslak yanıt o adrese gider
+* Orijinal Gönderen adresi CC'ye eklenir
+* Diğer tüm orijinal To ve CC alıcıları korunur
 
-**Example:**
+**Örnek:**
 
 ```
-Original message:
-  From: john@company.com
-  Reply-To: support@company.com
-  To: support@forwardemail.net
+Orijinal mesaj:
+  Gönderen: john@company.com
+  Yanıt-Adresi: support@company.com
+  Alıcı: support@forwardemail.net
   CC: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
+Taslak yanıt:
+  Alıcı: support@company.com (Yanıt-Adresi)
   CC: john@company.com, manager@company.com
 ```
+### İzleme ve Bakım {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Taslak kalitesini düzenli olarak kontrol edin:**
 
 ```bash
-# View recent drafts
+# Son taslakları görüntüle
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Arşivlemeyi izleyin:**
 
 ```bash
-# Check for archiving errors
+# Arşivleme hatalarını kontrol et
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Atlanan mesajları inceleyin:**
 
 ```bash
-# See which messages were skipped
+# Hangi mesajların atlandığını gör
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Test {#testing}
 
-### Running Tests {#running-tests}
+Müşteri destek AI sistemi, 23 Ava testi ile kapsamlı test kapsamı içerir.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Testleri Çalıştırma {#running-tests}
+
+`better-sqlite3` ile npm paket geçersiz kılma çatışmaları nedeniyle, sağlanan test betiğini kullanın:
 
 ```bash
-# Run all customer support AI tests
+# Tüm müşteri destek AI testlerini çalıştır
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Ayrıntılı çıktı ile çalıştır
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Belirli test dosyasını çalıştır
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Alternatif olarak, testleri doğrudan çalıştırabilirsiniz:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Test Kapsamı {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Site Haritası Alıcısı (6 test):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* Yerel desen regex eşlemesi
+* URL yolu çıkarma ve yerel ayırma
+* Yereller için URL filtreleme mantığı
+* XML ayrıştırma mantığı
+* Yinelenenleri kaldırma mantığı
+* Birleşik filtreleme, ayırma ve yinelenenleri kaldırma
 
-**Message Utils (9 tests):**
+**Mesaj Araçları (9 test):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Gönderen metnini isim ve e-posta ile çıkarma
+* İsim önekine uyan e-posta yalnızca durumunu işleme
+* Mevcutsa from.text kullanma
+* Varsa Reply-To kullanma
+* Reply-To yoksa From kullanma
+* Orijinal CC alıcılarını dahil etme
+* Kendi adresimizi CC’den hariç tutma
+* Reply-To ile From’un CC’de olduğu durumu işleme
+* CC adreslerini yinelenmeden temizleme
 
-**Response Generator (8 tests):**
+**Yanıt Üretici (8 test):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* İstek için URL gruplama mantığı
+* Gönderen isim algılama mantığı
+* İstek yapısı tüm gerekli bölümleri içerir
+* Açılı parantezsiz URL listesi biçimlendirmesi
+* Boş URL listesi işleme
+* İstek içinde yasaklı URL listesi
+* Tarihsel bağlamın dahil edilmesi
+* Hesapla ilgili konular için doğru URL’ler
 
-### Test Environment {#test-environment}
+### Test Ortamı {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+Testler yapılandırma için `.env.test` kullanır. Test ortamı şunları içerir:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Sahte PayPal ve Stripe kimlik bilgileri
+* Test şifreleme anahtarları
+* Devre dışı bırakılmış kimlik doğrulama sağlayıcıları
+* Güvenli test veri yolları
 
-All tests are designed to run without external dependencies or network calls.
+Tüm testler dış bağımlılık veya ağ çağrısı olmadan çalışacak şekilde tasarlanmıştır.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Önemli Noktalar {#key-takeaways}
+
+1. **Öncelik gizlilik:** GDPR/DPA uyumluluğu için kendi sunucunuzda barındırma zorunludur.
+2. **Maliyet önemlidir:** Bulut AI servisleri, üretim iş yükleri için kendi sunucunuzda barındırmaya göre 50-1000 kat daha pahalıdır.
+3. **Ekosistem bozuk:** Çoğu vektör veritabanı geliştirici dostu değildir. Her şeyi yerel olarak test edin.
+4. **Güvenlik açıkları gerçektir:** ChromaDB ve Qdrant kritik RCE açıklarına sahipti.
+5. **LanceDB işe yarıyor:** Gömülü, sunucusuz ve ayrı bir süreç gerektirmiyor.
+6. **Ollama sağlam:** `mxbai-embed-large` ile yerel LLM çıkarımı kullanım durumumuz için iyi çalışıyor.
+7. **Tür uyuşmazlıkları öldürür:** `text` ile `content`, ObjectID ile string. Bu hatalar sessiz ve acımasızdır.
+8. **Ağırlıklı sıralama önemlidir:** Tüm bağlamlar eşit değildir. SSS > GitHub sorunları > Tarihsel e-postalar.
+9. **Tarihsel bağlam altındır:** Geçmiş destek e-postalarından eğitim yanıt kalitesini dramatik şekilde artırır.
+10. **PGP şifre çözme zorunludur:** Birçok destek e-postası şifreli; doğru şifre çözme eğitim için kritik önemdedir.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Forward Email ve gizlilik öncelikli e-posta yaklaşımımız hakkında daha fazla bilgi için [forwardemail.net](https://forwardemail.net) adresini ziyaret edin.

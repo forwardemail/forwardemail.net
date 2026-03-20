@@ -1,25 +1,29 @@
-# Internet-palveluntarjoaja esti portin 25 kiertävän vaihtoehdon {#port-25-blocked-by-isp-workaround}
+# Portti 25 estetty ISP:n toimesta – kiertotapa {#port-25-blocked-by-isp-workaround}
+
 
 ## Sisällysluettelo {#table-of-contents}
 
-* [Kuinka kiertää internet-palveluntarjoajan SMTP-esto portissa 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
-* [Kuinka kiertää internet-palveluntarjoajan lähtevän SMTP:n esto portissa 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
-* [Miten voin tarkistaa, estääkö internet-palveluntarjoajani portteja](#how-can-i-check-if-my-isp-blocks-ports)
+* [Kuinka kiertää ISP:n estämä saapuva SMTP-portti 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
+* [Kuinka kiertää ISP:n estämä lähtevä SMTP-portti 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
+* [Kuinka voin tarkistaa, estääkö ISP portteja](#how-can-i-check-if-my-isp-blocks-ports)
 
-## Kuinka kiertää Internet-palveluntarjoajan portissa 25 olevan saapuvan SMTP-liikenteen esto {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
-Jos sähköpostipalvelimesi IP-osoitteessa ei ole porttia 25 auki, tämä opas on sinua varten.
+## Kuinka kiertää ISP:n estämä saapuva SMTP-portti 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
-Esimerkiksi käytät kotona mukautettua sähköpostipalvelinta ja internet-palveluntarjoajasi on estänyt lähtevän postin portin 25.
+Jos portti 25 ei ole auki sähköpostipalvelimesi IP-osoitteessa, tämä opas on sinua varten.
 
-Koska portissa 25 ei voi olla lähtevää liikennettä, ei portissa todennäköisesti ole myöskään saapuvaa liikennettä tämän eston vuoksi.
+Esimerkiksi, jos käytät kotona omaa sähköpostipalvelinta ja Internet-palveluntarjoajasi ("ISP") on estänyt lähtevän portin 25.
 
-Olettaen, että käytät palveluamme sähköpostien edelleenlähettämiseen, [voit kiertää tämän ongelman usein kysyttyjen kysymysten vastauksemme avulla täällä](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
+Koska et voi käyttää lähtevää liikennettä portissa 25, todennäköisesti et myöskään saa saapuvaa liikennettä portissa 25 tämän eston vuoksi.
 
-## Kuinka kiertää Internet-palveluntarjoajan lähtevän SMTP-liikenteen esto portissa 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
+Oletetaan, että käytät palveluamme sähköpostien edelleenlähetykseen, [voit kiertää tämän ongelman FAQ-vastauksemme avulla täällä](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
 
-Jos internet-palveluntarjoajasi estää lähtevän liikenteen portin 25, sinun on löydettävä vaihtoehtoinen ratkaisu tai otettava heihin yhteyttä.
 
-## Miten voin tarkistaa, estääkö internet-palveluntarjoajani portteja {#how-can-i-check-if-my-isp-blocks-ports}
+## Kuinka kiertää ISP:n estämä lähtevä SMTP-portti 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 
-Voit tarkistaa, onko lähtevän yhteyden portti 25 estetty, ajamalla `telnet smtp.forwardemail.net 25`-komennon komentoriviltä tai päätteeltä.
+Jos ISP estää lähtevän portin 25, sinun täytyy löytää vaihtoehtoinen ratkaisu tai ottaa heihin yhteyttä.
+
+
+## Kuinka voin tarkistaa, estääkö ISP portteja {#how-can-i-check-if-my-isp-blocks-ports}
+
+Voit suorittaa `telnet smtp.forwardemail.net 25` komentoriviltä tai terminaalista nähdäksesi, onko lähtevä portti 25 -yhteytesi estetty.

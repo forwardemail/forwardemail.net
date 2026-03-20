@@ -1,79 +1,80 @@
-# SQLite Performance Optimization: Production PRAGMA Settings & ChaCha20 Encryption {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
+# SQLite Performans Optimizasyonu: Üretim PRAGMA Ayarları & ChaCha20 Şifreleme {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite performance optimization guide" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite performans optimizasyon rehberi" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Foreword](#foreword)
-* [Forward Email's Production SQLite Architecture](#forward-emails-production-sqlite-architecture)
-* [Our Actual PRAGMA Configuration](#our-actual-pragma-configuration)
-* [Performance Benchmark Results](#performance-benchmark-results)
-  * [Node.js v20.19.5 Performance Results](#nodejs-v20195-performance-results)
-* [PRAGMA Settings Breakdown](#pragma-settings-breakdown)
-  * [Core Settings We Use](#core-settings-we-use)
-  * [Settings We DON'T Use (But You Might Want)](#settings-we-dont-use-but-you-might-want)
-* [ChaCha20 vs AES256 Encryption](#chacha20-vs-aes256-encryption)
-* [Temporary Storage: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
-  * [/tmp vs /dev/shm Performance](#tmp-vs-devshm-performance)
-* [WAL Mode Optimization](#wal-mode-optimization)
-  * [WAL Configuration Impact](#wal-configuration-impact)
-* [Schema Design for Performance](#schema-design-for-performance)
-* [Connection Management](#connection-management)
-* [Monitoring and Diagnostics](#monitoring-and-diagnostics)
-* [Node.js Version Performance](#nodejs-version-performance)
-  * [Complete Cross-Version Results](#complete-cross-version-results)
-  * [Key Performance Insights](#key-performance-insights)
-  * [Native Module Compatibility](#native-module-compatibility)
-* [Production Deployment Checklist](#production-deployment-checklist)
-* [Troubleshooting Common Issues](#troubleshooting-common-issues)
-  * ["Database is locked" Errors](#database-is-locked-errors)
-  * [High Memory Usage During VACUUM](#high-memory-usage-during-vacuum)
-  * [Slow Query Performance](#slow-query-performance)
-* [Forward Email's Open Source Contributions](#forward-emails-open-source-contributions)
-* [Benchmark Source Code](#benchmark-source-code)
-* [What's Next for SQLite at Forward Email](#whats-next-for-sqlite-at-forward-email)
-* [Getting Help](#getting-help)
+## İçindekiler {#table-of-contents}
 
-## Foreword {#foreword}
+* [Önsöz](#foreword)
+* [Forward Email'in Üretim SQLite Mimarisi](#forward-emails-production-sqlite-architecture)
+* [Gerçek PRAGMA Yapılandırmamız](#our-actual-pragma-configuration)
+* [Performans Kıyaslama Sonuçları](#performance-benchmark-results)
+  * [Node.js v20.19.5 Performans Sonuçları](#nodejs-v20195-performance-results)
+* [PRAGMA Ayarlarının Detayları](#pragma-settings-breakdown)
+  * [Kullandığımız Temel Ayarlar](#core-settings-we-use)
+  * [Kullanmadığımız (Ama İsteyebileceğiniz) Ayarlar](#settings-we-dont-use-but-you-might-want)
+* [ChaCha20 vs AES256 Şifreleme](#chacha20-vs-aes256-encryption)
+* [Geçici Depolama: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
+  * [/tmp vs /dev/shm Performansı](#tmp-vs-devshm-performance)
+* [WAL Modu Optimizasyonu](#wal-mode-optimization)
+  * [WAL Yapılandırmasının Etkisi](#wal-configuration-impact)
+* [Performans İçin Şema Tasarımı](#schema-design-for-performance)
+* [Bağlantı Yönetimi](#connection-management)
+* [İzleme ve Tanılama](#monitoring-and-diagnostics)
+* [Node.js Versiyon Performansı](#nodejs-version-performance)
+  * [Tüm Versiyonlar Arası Sonuçlar](#complete-cross-version-results)
+  * [Önemli Performans İçgörüleri](#key-performance-insights)
+  * [Native Modül Uyumluluğu](#native-module-compatibility)
+* [Üretim Dağıtım Kontrol Listesi](#production-deployment-checklist)
+* [Yaygın Sorunların Giderilmesi](#troubleshooting-common-issues)
+  * ["Database is locked" Hataları](#database-is-locked-errors)
+  * [VACUUM Sırasında Yüksek Bellek Kullanımı](#high-memory-usage-during-vacuum)
+  * [Yavaş Sorgu Performansı](#slow-query-performance)
+* [Forward Email'in Açık Kaynak Katkıları](#forward-emails-open-source-contributions)
+* [Kıyaslama Kaynak Kodu](#benchmark-source-code)
+* [Forward Email'de SQLite İçin Gelecek Planları](#whats-next-for-sqlite-at-forward-email)
+* [Yardım Alma](#getting-help)
 
-Setting up SQLite for production email systems isn't just about getting it working—it's about making it fast, secure, and reliable under heavy load. After processing millions of emails at Forward Email, we've learned what actually matters for SQLite performance.
 
-This guide covers our real production configuration, benchmark results across Node.js versions, and the specific optimizations that make a difference when you're handling serious email volume.
+## Önsöz {#foreword}
 
-> \[!WARNING] Node.js Performance Regressions in v22 and v24
-> We discovered a significant performance regression in Node.js versions v22 and v24 that impacts SQLite performance, particularly for `SELECT` statements. Our benchmarks show a \~57% drop in `SELECT` operations per second in Node.js v24 compared to v20. We have reported this issue to the Node.js team in [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
+SQLite'ı üretim e-posta sistemleri için kurmak sadece çalışmasını sağlamakla kalmaz—yük altında hızlı, güvenli ve güvenilir olmasını sağlamakla ilgilidir. Forward Email'de milyonlarca e-posta işledikten sonra, SQLite performansı için gerçekten önemli olan şeyleri öğrendik.
 
-Due to this regression, we are taking a cautious approach to our Node.js upgrades. Here is our current plan:
+Bu rehber, gerçek üretim yapılandırmamızı, Node.js versiyonları arasındaki kıyaslama sonuçlarını ve ciddi e-posta hacmiyle uğraşırken fark yaratan özel optimizasyonları kapsar.
 
-* **Current Version:** We are currently on Node.js v18, which has reached its end-of-life ("EOL") for Long-Term Support ("LTS"). You can view the official [Node.js LTS schedule here](https://github.com/nodejs/release#release-schedule).
-* **Planned Upgrade:** We will be upgrading to **Node.js v20**, which is the fastest version according to our benchmarks and is not affected by this regression.
-* **Avoiding v22 and v24:** We will not be using Node.js v22 or v24 in production until this performance issue is resolved.
+> \[!WARNING] Node.js v22 ve v24'te Performans Gerilemeleri  
+> Node.js v22 ve v24 sürümlerinde, özellikle `SELECT` ifadeleri için SQLite performansını etkileyen önemli bir performans gerilemesi keşfettik. Kıyaslamalarımız, Node.js v24'te `SELECT` işlemlerinde saniye başına yaklaşık %57 düşüş olduğunu gösteriyor. Bu sorunu Node.js ekibine [nodejs/node#60719](https://github.com/nodejs/node/issues/60719) üzerinden bildirdik.
 
-Here is a timeline illustrating the Node.js LTS schedule and our upgrade path:
+Bu gerileme nedeniyle, Node.js yükseltmelerimizde temkinli bir yaklaşım benimsiyoruz. İşte mevcut planımız:
+
+* **Mevcut Versiyon:** Şu anda Node.js v18 kullanıyoruz, bu sürüm Uzun Süreli Destek ("LTS") için yaşam döngüsünü tamamladı ("EOL"). Resmi [Node.js LTS takvimini buradan](https://github.com/nodejs/release#release-schedule) görebilirsiniz.
+* **Planlanan Yükseltme:** Kıyaslamalarımıza göre en hızlı sürüm olan ve bu gerilemeden etkilenmeyen **Node.js v20**'ye yükselteceğiz.
+* **v22 ve v24'ten Kaçınma:** Bu performans sorunu çözülene kadar üretimde Node.js v22 veya v24 kullanmayacağız.
+
+İşte Node.js LTS takvimini ve yükseltme yolumuzu gösteren bir zaman çizelgesi:
 
 ```mermaid
 gantt
-    title Node.js LTS Schedule and Forward Email's Upgrade Plan
+    title Node.js LTS Takvimi ve Forward Email Yükseltme Planı
     dateFormat  YYYY-MM-DD
     axisFormat  %Y-%m
 
     section Node.js v18
-    LTS End-of-Life :done, 2022-04-19, 2025-04-30
+    LTS Sonu :done, 2022-04-19, 2025-04-30
 
     section Node.js v20
     LTS :active, 2023-10-24, 2026-04-30
 
     section Node.js v22
-    LTS (Regression) :crit, 2024-10-29, 2027-04-30
+    LTS (Gerileme) :crit, 2024-10-29, 2027-04-30
 
-    section Forward Email Upgrade
-    Current (v18) :done, 2022-04-19, 2025-04-30
-    Planned Upgrade to v20 :milestone, 2025-12-01, 1d
+    section Forward Email Yükseltme
+    Mevcut (v18) :done, 2022-04-19, 2025-04-30
+    v20'ye Planlanan Yükseltme :milestone, 2025-12-01, 1d
 ```
+## Forward Email'in Üretim SQLite Mimarisi {#forward-emails-production-sqlite-architecture}
 
-## Forward Email's Production SQLite Architecture {#forward-emails-production-sqlite-architecture}
-
-Here's how we actually use SQLite in production:
+İşte SQLite'ı üretimde nasıl kullandığımız:
 
 ```mermaid
 graph TB
@@ -99,18 +100,19 @@ graph TB
     style B fill:#e8f5e8
 ```
 
-## Our Actual PRAGMA Configuration {#our-actual-pragma-configuration}
 
-This is what we actually use in production, straight from our [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
+## Gerçek PRAGMA Yapılandırmamız {#our-actual-pragma-configuration}
+
+Üretimde gerçekten kullandığımız ayarlar, doğrudan [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js) dosyamızdan:
 
 ```javascript
-// Forward Email's actual production PRAGMA settings
+// Forward Email'in gerçek üretim PRAGMA ayarları
 async function setupPragma(db, session, cipher = 'chacha20') {
-  // Quantum-resistant encryption
+  // Kuantum dirençli şifreleme
   db.pragma(`cipher='${cipher}'`);
   db.key(Buffer.from(decrypt(session.user.password)));
 
-  // Core performance settings
+  // Temel performans ayarları
   db.pragma('journal_mode=WAL');
   db.pragma('secure_delete=ON');
   db.pragma('auto_vacuum=FULL');
@@ -120,10 +122,10 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   db.pragma(`encoding='UTF-8'`);
   db.pragma('optimize=0x10002');
 
-  // Critical: Use disk for temp storage, not memory
+  // Kritik: Geçici depolama için bellek değil disk kullan
   db.pragma('temp_store=1');
 
-  // Custom temp directory to avoid disk full errors
+  // Disk doluluk hatalarını önlemek için özel geçici dizin
   const tempStoreDirectory = path.join(path.dirname(db.name), '/tmp');
   await mkdirp(tempStoreDirectory);
   db.pragma(`temp_store_directory='${tempStoreDirectory}'`);
@@ -131,65 +133,67 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> We use `temp_store=1` (disk) instead of `temp_store=2` (memory) because large email databases can easily consume 10+ GB of memory during operations like VACUUM.
+> `temp_store=2` (bellek) yerine `temp_store=1` (disk) kullanıyoruz çünkü büyük e-posta veritabanları VACUUM gibi işlemler sırasında kolayca 10+ GB bellek tüketebilir.
 
-## Performance Benchmark Results {#performance-benchmark-results}
 
-We tested our configuration against various alternatives across Node.js versions. Here are the real numbers:
+## Performans Kıyaslama Sonuçları {#performance-benchmark-results}
 
-### Node.js v20.19.5 Performance Results {#nodejs-v20195-performance-results}
+Yapılandırmamızı Node.js sürümleri arasında çeşitli alternatiflere karşı test ettik. İşte gerçek rakamlar:
 
-| Configuration | Setup (ms) | Insert/sec | Select/sec | Update/sec | DB Size (MB) |
+### Node.js v20.19.5 Performans Sonuçları {#nodejs-v20195-performance-results}
+
+| Yapılandırma                | Kurulum (ms) | Ekleme/sn | Seçme/sn | Güncelleme/sn | DB Boyutu (MB) |
 | ---------------------------- | ---------- | ---------- | ---------- | ---------- | ------------ |
-| **Forward Email Production** | 120.1 | **10,548** | **17,494** | **16,654** | 3.98 |
-| WAL Autocheckpoint 1000 | 89.7 | **11,800** | **18,383** | **22,087** | 3.98 |
-| Cache Size 64MB | 90.3 | 11,451 | 17,895 | 21,522 | 3.98 |
-| Memory Temp Storage | 111.8 | 9,874 | 15,363 | 21,292 | 3.98 |
-| Synchronous OFF (Unsafe) | 94.0 | 10,017 | 13,830 | 18,884 | 3.98 |
-| Synchronous EXTRA (Safe) | 94.1 | **3,241** | 14,438 | **3,405** | 3.98 |
+| **Forward Email Üretim**     | 120.1      | **10,548** | **17,494** | **16,654** | 3.98         |
+| WAL Otomatik Kontrol 1000    | 89.7       | **11,800** | **18,383** | **22,087** | 3.98         |
+| Önbellek Boyutu 64MB         | 90.3       | 11,451     | 17,895     | 21,522     | 3.98         |
+| Bellek Geçici Depolama       | 111.8      | 9,874      | 15,363     | 21,292     | 3.98         |
+| Senkronizasyon KAPALI (Güvensiz) | 94.0       | 10,017     | 13,830     | 18,884     | 3.98         |
+| Senkronizasyon EKSTRA (Güvenli) | 94.1       | **3,241**  | 14,438     | **3,405**  | 3.98         |
 
 > \[!TIP]
-> The `wal_autocheckpoint=1000` setting shows the best overall performance. We're considering adding this to our production config.
+> `wal_autocheckpoint=1000` ayarı en iyi genel performansı gösteriyor. Bunu üretim yapılandırmamıza eklemeyi düşünüyoruz.
 
-## PRAGMA Settings Breakdown {#pragma-settings-breakdown}
 
-### Core Settings We Use {#core-settings-we-use}
+## PRAGMA Ayarlarının Detayları {#pragma-settings-breakdown}
 
-| PRAGMA | Değer | Purpose | Performance Impact |
-| --------------- | ------------ | ------------------------------- | ------------------------------- |
-| `cipher` | `'chacha20'` | Quantum-resistant encryption | Minimal overhead vs AES |
-| `journal_mode` | `WAL` | Write-Ahead Logging | +40% concurrent performance |
-| `secure_delete` | `ON` | Overwrite deleted data | Security vs 5% performance cost |
-| `auto_vacuum` | `FULL` | Automatic space reclamation | Prevents database bloat |
-| `busy_timeout` | `30000` | Wait time for locked database | Reduces connection failures |
-| `synchronous` | `NORMAL` | Balanced durability/performance | 3x faster than FULL |
-| `foreign_keys` | `ON` | Referential integrity | Prevents data corruption |
-| `temp_store` | `1` | Use disk for temp files | Prevents memory exhaustion |
+### Kullandığımız Temel Ayarlar {#core-settings-we-use}
 
-### Settings We DON'T Use (But You Might Want) {#settings-we-dont-use-but-you-might-want}
+| PRAGMA          | Değer        | Amaç                           | Performans Etkisi              |
+| --------------- | ------------ | ------------------------------ | ------------------------------ |
+| `cipher`        | `'chacha20'` | Kuantum dirençli şifreleme     | AES'e kıyasla minimal ek yük   |
+| `journal_mode`  | `WAL`        | Yazma Öncülü Günlükleme        | %40 daha fazla eşzamanlılık    |
+| `secure_delete` | `ON`         | Silinen veriyi üzerine yazma   | Güvenlik, %5 performans maliyeti |
+| `auto_vacuum`   | `FULL`       | Otomatik alan temizleme        | Veritabanı şişmesini önler     |
+| `busy_timeout`  | `30000`      | Kilitli veritabanı için bekleme süresi | Bağlantı hatalarını azaltır    |
+| `synchronous`   | `NORMAL`     | Dengeli dayanıklılık/performance | FULL'den 3 kat daha hızlı      |
+| `foreign_keys`  | `ON`         | Referans bütünlüğü             | Veri bozulmasını önler         |
+| `temp_store`    | `1`          | Geçici dosyalar için disk kullanımı | Bellek tükenmesini önler       |
+### Kullanmadığımız (Ama İsteyebileceğiniz) Ayarlar {#settings-we-dont-use-but-you-might-want}
 
-| PRAGMA | Why We Don't Use It | Should You Consider It? |
-| ------------------------- | --------------------- | --------------------------------------------------- |
-| `wal_autocheckpoint=1000` | Not set yet | **Yes** - Our benchmarks show 12% performance gain |
-| `cache_size=-64000` | Default is sufficient | **Maybe** - 8% improvement for read-heavy workloads |
-| `mmap_size=268435456` | Complexity vs benefit | **No** - Minimal gains, platform-specific issues |
-| `analysis_limit=1000` | We use 400 | **No** - Higher values slow down query planning |
+| PRAGMA                    | Neden Kullanmadığımız   | Düşünmeli misiniz?                             |
+| ------------------------- | ----------------------- | --------------------------------------------------- |
+| `wal_autocheckpoint=1000` | Henüz ayarlanmadı       | **Evet** - Benchmarklarımız %12 performans artışı gösteriyor  |
+| `cache_size=-64000`       | Varsayılan yeterli      | **Belki** - Okuma ağırlıklı iş yüklerinde %8 iyileşme |
+| `mmap_size=268435456`     | Karmaşıklık ve fayda    | **Hayır** - Minimal kazanç, platforma özgü sorunlar    |
+| `analysis_limit=1000`     | Biz 400 kullanıyoruz    | **Hayır** - Daha yüksek değerler sorgu planlamasını yavaşlatır     |
 
 > \[!CAUTION]
-> We specifically avoid `temp_store=MEMORY` because a 10GB SQLite file can consume 10+ GB of RAM during VACUUM operations.
+> `temp_store=MEMORY` kullanmaktan özellikle kaçınıyoruz çünkü 10GB SQLite dosyası VACUUM işlemleri sırasında 10+ GB RAM tüketebilir.
 
-## ChaCha20 vs AES256 Encryption {#chacha20-vs-aes256-encryption}
 
-We prioritize quantum resistance over raw performance:
+## ChaCha20 vs AES256 Şifreleme {#chacha20-vs-aes256-encryption}
+
+Kaba performanstan ziyade kuantum direncini önceliklendiriyoruz:
 
 ```javascript
-// Our encryption fallback strategy
+// Şifreleme yedekleme stratejimiz
 try {
   db.pragma(`cipher='chacha20'`);
   db.key(Buffer.from(decrypt(session.user.password)));
   db.pragma('journal_mode=WAL');
 } catch (err) {
-  // Fallback for older SQLite versions
+  // Eski SQLite sürümleri için yedek
   if (cipher === 'chacha20' && err.code === 'SQLITE_NOTADB') {
     return setupPragma(db, session, 'aes256cbc');
   }
@@ -197,89 +201,92 @@ try {
 }
 ```
 
-**Performance Comparison:**
+**Performans Karşılaştırması:**
 
-* ChaCha20: \~10,500 inserts/sec
+* ChaCha20: \~10,500 ekleme/sn
 
-* AES256CBC: \~11,200 inserts/sec
+* AES256CBC: \~11,200 ekleme/sn
 
-* Unencrypted: \~12,800 inserts/sec
+* Şifresiz: \~12,800 ekleme/sn
 
-The 6% performance cost of ChaCha20 vs AES is worth the quantum resistance for long-term email storage.
+ChaCha20'nin AES'e göre %6 performans maliyeti, uzun vadeli e-posta depolama için kuantum direncine değer.
 
-## Temporary Storage: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
 
-We explicitly configure temp storage location to avoid disk space issues:
+## Geçici Depolama: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
+
+Disk alanı sorunlarından kaçınmak için geçici depolama konumunu açıkça yapılandırıyoruz:
 
 ```javascript
-// Forward Email's temp storage configuration
+// Forward Email'in geçici depolama yapılandırması
 const tempStoreDirectory = path.join(path.dirname(db.name), '/tmp');
 await mkdirp(tempStoreDirectory);
 db.pragma(`temp_store_directory='${tempStoreDirectory}'`);
 
-// Also set environment variable
+// Ayrıca ortam değişkenini ayarla
 process.env.SQLITE_TMPDIR = tempStoreDirectory;
 ```
 
-### /tmp vs /dev/shm Performance {#tmp-vs-devshm-performance}
+### /tmp vs /dev/shm Performans {#tmp-vs-devshm-performance}
 
-| Storage Location | VACUUM Time | Memory Usage | Reliability |
-| ---------------- | ----------- | ------------ | ------------------- |
-| `/tmp` (disk) | 2.3s | 50MB | ✅ Reliable |
-| `/dev/shm` (RAM) | 0.8s | 2GB+ | ⚠️ Can crash system |
-| Default | 4.1s | Variable | ❌ Unpredictable |
+| Depolama Konumu | VACUUM Süresi | Bellek Kullanımı | Güvenilirlik         |
+| ---------------- | ------------- | --------------- | ------------------- |
+| `/tmp` (disk)    | 2.3s          | 50MB            | ✅ Güvenilir          |
+| `/dev/shm` (RAM) | 0.8s          | 2GB+            | ⚠️ Sistemi çökertme riski |
+| Varsayılan       | 4.1s          | Değişken        | ❌ Öngörülemez       |
 
 > \[!WARNING]
-> Using `/dev/shm` for temp storage can consume all available RAM during large operations. Stick with disk-based temp storage for production.
+> Büyük işlemler sırasında `/dev/shm` kullanımı tüm mevcut RAM'i tüketebilir. Üretimde disk tabanlı geçici depolama kullanmaya devam edin.
 
-## WAL Mode Optimization {#wal-mode-optimization}
 
-Write-Ahead Logging is crucial for email systems with concurrent access:
+## WAL Modu Optimizasyonu {#wal-mode-optimization}
+
+Write-Ahead Logging, eşzamanlı erişimi olan e-posta sistemleri için kritik önemdedir:
 
 ```mermaid
 sequenceDiagram
-    participant C1 as IMAP Client 1
-    participant C2 as IMAP Client 2
+    participant C1 as IMAP İstemcisi 1
+    participant C2 as IMAP İstemcisi 2
     participant DB as SQLite WAL
-    participant W as WAL File
-    participant M as Main DB
+    participant W as WAL Dosyası
+    participant M as Ana DB
 
-    C1->>DB: INSERT message
-    DB->>W: Write to WAL
-    W-->>C1: Immediate return
+    C1->>DB: Mesaj EKLE
+    DB->>W: WAL'a yaz
+    W-->>C1: Anında dönüş
 
-    C2->>DB: SELECT messages
-    DB->>M: Read from main DB
-    DB->>W: Read recent changes
-    M-->>C2: Combined results
+    C2->>DB: Mesajları SEÇ
+    DB->>M: Ana DB'den oku
+    DB->>W: Son değişiklikleri oku
+    M-->>C2: Birleşik sonuçlar
 
-    Note over DB,W: Checkpoint every 1000 pages
-    DB->>M: Merge WAL → Main DB
+    Note over DB,W: Her 1000 sayfada bir checkpoint
+    DB->>M: WAL → Ana DB birleşimi
 ```
 
-### WAL Configuration Impact {#wal-configuration-impact}
+### WAL Yapılandırma Etkisi {#wal-configuration-impact}
 
-Our benchmarks show `wal_autocheckpoint=1000` provides the best performance:
+Benchmarklarımız `wal_autocheckpoint=1000` değerinin en iyi performansı sağladığını gösteriyor:
 
 ```javascript
-// Potential optimization we're testing
+// Test ettiğimiz potansiyel optimizasyon
 db.pragma('wal_autocheckpoint=1000');
 ```
 
-**Results:**
+**Sonuçlar:**
 
-* Default autocheckpoint: 10,548 inserts/sec
+* Varsayılan autocheckpoint: 10,548 ekleme/sn
 
-* `wal_autocheckpoint=1000`: 11,800 inserts/sec (+12%)
+* `wal_autocheckpoint=1000`: 11,800 ekleme/sn (+%12)
 
-* `wal_autocheckpoint=0`: 9,200 inserts/sec (WAL grows too large)
+* `wal_autocheckpoint=0`: 9,200 ekleme/sn (WAL çok büyür)
 
-## Schema Design for Performance {#schema-design-for-performance}
 
-Our email storage schema follows SQLite best practices:
+## Performans İçin Şema Tasarımı {#schema-design-for-performance}
+
+E-posta depolama şemamız SQLite en iyi uygulamalarını takip eder:
 
 ```sql
--- Messages table with optimized column order
+-- Optimize edilmiş sütun sırasına sahip mesajlar tablosu
 CREATE TABLE messages (
   id INTEGER PRIMARY KEY,
   mailbox_id INTEGER NOT NULL,
@@ -290,35 +297,35 @@ CREATE TABLE messages (
   from_addr TEXT,
   to_addr TEXT,
   message_id TEXT,
-  raw BLOB,  -- Large BLOB at end
+  raw BLOB,  -- Büyük BLOB sonda
   FOREIGN KEY (mailbox_id) REFERENCES mailboxes(id)
 );
 
--- Critical indexes for IMAP performance
+-- IMAP performansı için kritik indeksler
 CREATE INDEX idx_messages_mailbox_date ON messages(mailbox_id, date DESC);
 CREATE INDEX idx_messages_uid ON messages(mailbox_id, uid);
 CREATE INDEX idx_messages_flags ON messages(mailbox_id, flags) WHERE flags IS NOT NULL;
 ```
-
 > \[!TIP]
-> Always put BLOB columns at the end of your table definition. SQLite stores fixed-size columns first, making row access faster.
+> BLOB sütunlarını her zaman tablo tanımınızın sonunda tutun. SQLite, sabit boyutlu sütunları önce depolar, bu da satır erişimini hızlandırır.
 
-This optimization comes directly from SQLite's creator, [D. Richard Hipp](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3):
+Bu optimizasyon doğrudan SQLite'ın yaratıcısı [D. Richard Hipp](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3)'dan gelmektedir:
 
-> "Here's a hint though - make the BLOB columns the last column in your tables. Or even store the BLOBs in a separate table which only has two columns: an integer primary key and the blob itself, and then access the BLOB content using a join if you need to. If you put various small integer fields after the BLOB, then SQLite has to scan through the entire BLOB content (following the linked list of disk pages) to get to the integer fields at the end, and that definitely can slow you down."
+> "Bir ipucu vereyim - BLOB sütunlarını tablolarınızdaki son sütun yapın. Ya da BLOB'ları sadece iki sütunu olan ayrı bir tabloda saklayın: bir tamsayı birincil anahtar ve blobun kendisi, ve ihtiyacınız olduğunda BLOB içeriğine join kullanarak erişin. Eğer BLOB'dan sonra çeşitli küçük tamsayı alanları koyarsanız, SQLite tamsayı alanlarına ulaşmak için tüm BLOB içeriğini (disk sayfalarının bağlı listesini takip ederek) taramak zorunda kalır ve bu kesinlikle sizi yavaşlatabilir."
 >
-> — D. Richard Hipp, SQLite Author
+> — D. Richard Hipp, SQLite Yazarı
 
-We implemented this optimization in our [Attachments schema](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229), moving the `body` BLOB field to the end of the table definition for better performance.
+Bu optimizasyonu [Attachments şemamızda](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229) uyguladık, `body` BLOB alanını daha iyi performans için tablo tanımının sonuna taşıdık.
 
-## Connection Management {#connection-management}
 
-We don't use connection pooling with SQLite—each user gets their own encrypted database. This approach provides perfect isolation between users, similar to sandboxing. Unlike architectures from other services that use MySQL, PostgreSQL, or MongoDB where your email could potentially be accessed by a rogue employee, Forward Email's per-user SQLite databases ensure your data is completely independent and sandboxed.
+## Bağlantı Yönetimi {#connection-management}
 
-We never store your IMAP password, so we never have access to your data—it's all done in-memory. Learn more about our [quantum-resistant encryption approach](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) that details how our system works.
+SQLite ile bağlantı havuzu kullanmıyoruz—her kullanıcı kendi şifrelenmiş veritabanını alır. Bu yaklaşım, kullanıcılar arasında mükemmel izolasyon sağlar, sandboxing'e benzer. MySQL, PostgreSQL veya MongoDB kullanan diğer servislerin mimarilerinin aksine, Forward Email'in kullanıcı başına SQLite veritabanları verilerinizin tamamen bağımsız ve sandbox içinde olmasını garanti eder; böylece kötü niyetli bir çalışan tarafından erişilme riski yoktur.
+
+IMAP şifrenizi asla saklamıyoruz, bu yüzden verilerinize asla erişimimiz olmaz—her şey bellekte yapılır. Sistemimizin nasıl çalıştığını detaylandıran [kuantum dirençli şifreleme yaklaşımımız](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) hakkında daha fazla bilgi edinin.
 
 ```javascript
-// Per-user database approach
+// Kullanıcı başına veritabanı yaklaşımı
 async function getDatabase(session) {
   const dbPath = path.join(
     config.databaseDir,
@@ -336,43 +343,44 @@ async function getDatabase(session) {
 }
 ```
 
-This approach provides:
+Bu yaklaşım şunları sağlar:
 
-* Perfect isolation between users
+* Kullanıcılar arasında mükemmel izolasyon
 
-* No connection pool complexity
+* Bağlantı havuzu karmaşıklığı yok
 
-* Automatic encryption per user
+* Kullanıcı başına otomatik şifreleme
 
-* Simpler backup/restore operations
+* Daha basit yedekleme/geri yükleme işlemleri
 
-With `auto_vacuum=FULL`, we rarely need manual VACUUM operations:
+`auto_vacuum=FULL` ile nadiren manuel VACUUM işlemi gerekir:
 
 ```javascript
-// Our cleanup strategy
-db.pragma('optimize=0x10002'); // On connection open
-db.pragma('optimize'); // Periodically (daily)
+// Temizlik stratejimiz
+db.pragma('optimize=0x10002'); // Bağlantı açıldığında
+db.pragma('optimize'); // Periyodik olarak (günlük)
 
-// Manual vacuum only for major cleanups
+// Manuel vacuum sadece büyük temizlikler için
 if (deletedDataPercentage > 25) {
   db.exec('VACUUM');
 }
 ```
 
-**Auto Vacuum Performance Impact:**
+**Otomatik Vacuum Performans Etkisi:**
 
-* `auto_vacuum=FULL`: Immediate space reclamation, 5% write overhead
+* `auto_vacuum=FULL`: Anında alan geri kazanımı, %5 yazma ek yükü
 
-* `auto_vacuum=INCREMENTAL`: Manual control, requires periodic `PRAGMA incremental_vacuum`
+* `auto_vacuum=INCREMENTAL`: Manuel kontrol, periyodik `PRAGMA incremental_vacuum` gerektirir
 
-* `auto_vacuum=NONE`: Fastest writes, requires manual `VACUUM`
+* `auto_vacuum=NONE`: En hızlı yazma, manuel `VACUUM` gerektirir
 
-## Monitoring and Diagnostics {#monitoring-and-diagnostics}
 
-Key metrics we track in production:
+## İzleme ve Tanılama {#monitoring-and-diagnostics}
+
+Üretimde takip ettiğimiz temel metrikler:
 
 ```javascript
-// Performance monitoring queries
+// Performans izleme sorguları
 const stats = {
   page_count: db.pragma('page_count', { simple: true }),
   page_size: db.pragma('page_size', { simple: true }),
@@ -385,181 +393,186 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 ```
 
 > \[!NOTE]
-> We monitor fragmentation percentage and trigger maintenance when it exceeds 15%.
+> Parçalanma yüzdesini izliyoruz ve %15'i aştığında bakım tetikleniyor.
 
-## Node.js Version Performance {#nodejs-version-performance}
 
-Our comprehensive benchmarks across Node.js versions reveal significant performance differences:
+## Node.js Sürümü Performansı {#nodejs-version-performance}
 
-### Complete Cross-Version Results {#complete-cross-version-results}
+Node.js sürümleri arasında yaptığımız kapsamlı kıyaslamalar önemli performans farkları ortaya koyuyor:
 
-| Node Version | Forward Email Production | Best Insert/sec | Best Select/sec | Best Update/sec | Notlar |
+### Tüm Sürümler Arası Sonuçlar {#complete-cross-version-results}
+
+| Node Sürümü | Forward Email Üretim      | En İyi Insert/sn         | En İyi Select/sn         | En İyi Update/sn         | Notlar                 |
 | ------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ---------------------- |
-| **v18.20.8** | 10,658 / 14,466 / 18,641 | **11,663** (Sync OFF) | **14,868** (Memory Temp) | **20,095** (MMAP) | ⚠️ Engine warning |
-| **v20.19.5** | 10,548 / 17,494 / 16,654 | **11,800** (WAL Auto) | **18,383** (WAL Auto) | **22,087** (WAL Auto) | ✅ Recommended |
-| **v22.21.1** | 9,829 / 15,833 / 18,416 | **11,260** (Sync OFF) | **17,413** (MMAP) | **20,731** (MMAP) | ⚠️ Slower overall |
-| **v24.11.1** | 9,938 / 7,497 / 10,446 | **10,628** (Incr Vacuum) | **16,821** (Incr Vacuum) | **19,934** (Incr Vacuum) | ❌ Significant slowdown |
-
-### Key Performance Insights {#key-performance-insights}
+| **v18.20.8** | 10,658 / 14,466 / 18,641 | **11,663** (Sync KAPALI) | **14,868** (Bellek Geçici) | **20,095** (MMAP)        | ⚠️ Motor uyarısı       |
+| **v20.19.5** | 10,548 / 17,494 / 16,654 | **11,800** (WAL Otomatik) | **18,383** (WAL Otomatik) | **22,087** (WAL Otomatik) | ✅ Tavsiye edilen       |
+| **v22.21.1** | 9,829 / 15,833 / 18,416  | **11,260** (Sync KAPALI) | **17,413** (MMAP)        | **20,731** (MMAP)        | ⚠️ Genel olarak daha yavaş |
+| **v24.11.1** | 9,938 / 7,497 / 10,446   | **10,628** (Artımlı Vacuum) | **16,821** (Artımlı Vacuum) | **19,934** (Artımlı Vacuum) | ❌ Önemli yavaşlama    |
+### Temel Performans İçgörüleri {#key-performance-insights}
 
 **Node.js v18 (Legacy LTS):**
 
-* Comparable insert performance to v20 (10,658 vs 10,548 ops/sec)
-* 17% slower selects than v20 (14,466 vs 17,494 ops/sec)
-* Shows npm engine warnings for packages requiring Node ≥20
-* Memory temp storage optimization works better than WAL autocheckpoint
-* Acceptable for legacy applications, but upgrade recommended
+* v20 ile karşılaştırılabilir ekleme performansı (10,658 vs 10,548 işlem/sn)
+* v20'ye göre %17 daha yavaş seçimler (14,466 vs 17,494 işlem/sn)
+* Node ≥20 gerektiren paketler için npm motor uyarıları gösterir
+* Bellek geçici depolama optimizasyonu, WAL otomatik kontrol noktasından daha iyi çalışır
+* Legacy uygulamalar için kabul edilebilir, ancak yükseltme önerilir
 
-**Node.js v20 (Recommended):**
+**Node.js v20 (Önerilen):**
 
-* Highest overall performance across all operations
-* WAL autocheckpoint optimization provides consistent 12% boost
-* Best compatibility with native SQLite modules
-* Most stable for production workloads
+* Tüm işlemlerde en yüksek genel performans
+* WAL otomatik kontrol noktası optimizasyonu tutarlı %12 artış sağlar
+* Yerel SQLite modülleri ile en iyi uyumluluk
+* Üretim iş yükleri için en kararlı sürüm
 
-**Node.js v22 (Acceptable):**
+**Node.js v22 (Kabul Edilebilir):**
 
-* 7% slower inserts, 9% slower selects vs v20
-* MMAP optimization shows better results than WAL autocheckpoint
-* Requires fresh `npm install` for each Node version switch
-* Acceptable for development, not recommended for production
+* v20'ye göre %7 daha yavaş eklemeler, %9 daha yavaş seçimler
+* MMAP optimizasyonu, WAL otomatik kontrol noktasından daha iyi sonuçlar gösterir
+* Her Node sürüm değişikliğinde taze `npm install` gerektirir
+* Geliştirme için kabul edilebilir, üretim için önerilmez
 
-**Node.js v24 (Not Recommended):**
+**Node.js v24 (Önerilmez):**
 
-* 6% slower inserts, 57% slower selects vs v20
-* Significant performance regression in read operations
-* Incremental vacuum performs better than other optimizations
-* Avoid for production SQLite applications
+* v20'ye göre %6 daha yavaş eklemeler, %57 daha yavaş seçimler
+* Okuma işlemlerinde önemli performans gerilemesi
+* Artımlı vakum diğer optimizasyonlardan daha iyi performans gösterir
+* Üretim SQLite uygulamaları için kaçınılmalıdır
 
-### Native Module Compatibility {#native-module-compatibility}
+### Yerel Modül Uyumluluğu {#native-module-compatibility}
 
-The "module compatibility issues" we initially encountered were resolved by:
+Başlangıçta karşılaştığımız "modül uyumluluk sorunları" şu şekilde çözüldü:
 
 ```bash
-# Switch Node version and reinstall native modules
+# Node sürümünü değiştir ve yerel modülleri yeniden yükle
 nvm use 22
 rm -rf node_modules
 npm install
 ```
 
-**Node.js v18 Considerations:**
+**Node.js v18 Dikkat Edilmesi Gerekenler:**
 
-* Shows engine warnings: `Unsupported engine { required: { node: '>=20.0.0' } }`
-* Still compiles and runs successfully despite warnings
-* Many modern SQLite packages target Node ≥20 for optimal support
-* Legacy applications can continue using v18 with acceptable performance
+* Motor uyarıları gösterir: `Unsupported engine { required: { node: '>=20.0.0' } }`
+* Uyarılara rağmen derlenir ve başarıyla çalışır
+* Birçok modern SQLite paketi optimal destek için Node ≥20 hedefler
+* Legacy uygulamalar kabul edilebilir performansla v18 kullanmaya devam edebilir
 
 > \[!IMPORTANT]
-> Always reinstall native modules when switching Node.js versions. The `better-sqlite3-multiple-ciphers` module must be compiled for each specific Node version.
+> Node.js sürümleri değiştirilirken her zaman yerel modüller yeniden yüklenmelidir. `better-sqlite3-multiple-ciphers` modülü her Node sürümü için ayrı derlenmelidir.
 
 > \[!TIP]
-> For production deployments, stick with Node.js v20 LTS. The performance benefits and stability outweigh any newer language features in v22/v24. Node v18 is acceptable for legacy systems but shows performance degradation in read operations.
+> Üretim dağıtımları için Node.js v20 LTS sürümünü kullanın. Performans avantajları ve kararlılık, v22/v24'teki yeni dil özelliklerinden daha önemlidir. Node v18 legacy sistemler için kabul edilebilir ancak okuma işlemlerinde performans düşüşü gösterir.
 
-## Production Deployment Checklist {#production-deployment-checklist}
 
-Before deploying, ensure SQLite has these optimizations:
+## Üretim Dağıtım Kontrol Listesi {#production-deployment-checklist}
 
-1. Set `SQLITE_TMPDIR` environment variable
-2. Ensure adequate disk space for temp operations (2x database size)
-3. Configure log rotation for WAL files
-4. Set up monitoring for database size and fragmentation
-5. Test backup/restore procedures with encryption
-6. Verify ChaCha20 cipher support in your SQLite build
+Dağıtımdan önce SQLite'ın şu optimizasyonlara sahip olduğundan emin olun:
 
-## Troubleshooting Common Issues {#troubleshooting-common-issues}
+1. `SQLITE_TMPDIR` ortam değişkenini ayarlayın
+2. Geçici işlemler için yeterli disk alanı sağlayın (veritabanı boyutunun 2 katı)
+3. WAL dosyaları için günlük döndürme yapılandırması yapın
+4. Veritabanı boyutu ve parçalanma için izleme kurun
+5. Şifreleme ile yedekleme/geri yükleme prosedürlerini test edin
+6. SQLite yapınızda ChaCha20 şifre desteğini doğrulayın
 
-### "Database is locked" Errors {#database-is-locked-errors}
+
+## Yaygın Sorun Giderme {#troubleshooting-common-issues}
+
+### "Veritabanı kilitli" Hataları {#database-is-locked-errors}
 
 ```javascript
-// Increase busy timeout
-db.pragma('busy_timeout=60000'); // 60 seconds
+// Meşguliyet zaman aşımını artır
+db.pragma('busy_timeout=60000'); // 60 saniye
 
-// Check for long-running transactions
+// Uzun süren işlemleri kontrol et
 const info = db.pragma('wal_checkpoint(FULL)');
 if (info.busy > 0) {
-  console.warn('WAL checkpoint blocked by active readers');
+  console.warn('WAL kontrol noktası aktif okuyucular tarafından engellendi');
 }
 ```
 
-### High Memory Usage During VACUUM {#high-memory-usage-during-vacuum}
+### VACUUM Sırasında Yüksek Bellek Kullanımı {#high-memory-usage-during-vacuum}
 
 ```javascript
-// Monitor memory before VACUUM
+// VACUUM öncesi belleği izle
 const beforeMem = process.memoryUsage();
 db.exec('VACUUM');
 const afterMem = process.memoryUsage();
 
 console.log(
-  `VACUUM memory delta: ${
+  `VACUUM bellek farkı: ${
     (afterMem.heapUsed - beforeMem.heapUsed) / 1024 / 1024
   }MB`
 );
 ```
 
-### Slow Query Performance {#slow-query-performance}
+### Yavaş Sorgu Performansı {#slow-query-performance}
 
 ```javascript
-// Enable query analysis
-db.pragma('analysis_limit=400'); // Forward Email's setting
+// Sorgu analizini etkinleştir
+db.pragma('analysis_limit=400'); // Forward Email ayarı
 db.exec('ANALYZE');
 
-// Check query plans
+// Sorgu planlarını kontrol et
 const plan = db
   .prepare('EXPLAIN QUERY PLAN SELECT * FROM messages WHERE date > ?')
   .all(Date.now() - 86400000);
 console.log(plan);
 ```
 
-## Forward Email's Open Source Contributions {#forward-emails-open-source-contributions}
 
-We've contributed our SQLite optimization knowledge back to the community:
+## Forward Email'in Açık Kaynak Katkıları {#forward-emails-open-source-contributions}
 
-* [Litestream documentation improvements](https://github.com/benbjohnson/litestream/issues/516) - Our suggestions for better SQLite performance tips
+SQLite optimizasyon bilgimizi topluluğa geri sunduk:
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - ChaCha20 encryption support
+* [Litestream dokümantasyon iyileştirmeleri](https://github.com/benbjohnson/litestream/issues/516) - Daha iyi SQLite performans ipuçları için önerilerimiz
 
-* [SQLite performance tuning research](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Referenced in our implementation
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - ChaCha20 şifreleme desteği
 
-* [How npm packages with billion downloads shaped JavaScript ecosystem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Our broader contributions to npm and JavaScript development
+* [SQLite performans ayarı araştırması](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Uygulamamızda referans alınmıştır
+* [Milyar indirmeye sahip npm paketlerinin JavaScript ekosistemini nasıl şekillendirdiği](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - npm ve JavaScript geliştirmeye yaptığımız daha geniş katkılar
 
-## Benchmark Source Code {#benchmark-source-code}
 
-All benchmark code is available in our test suite:
+## Benchmark Kaynak Kodu {#benchmark-source-code}
+
+Tüm benchmark kodları test paketimizde mevcuttur:
 
 ```bash
-# Run the benchmarks yourself
+# Benchmarkları kendiniz çalıştırın
 git clone https://github.com/forwardemail/sqlite-benchmarks
 cd sqlite-benchmarks
 npm install
 npm run benchmark
 ```
 
-The benchmarks test:
+Benchmarklar şunları test eder:
 
-* Various PRAGMA combinations
+* Çeşitli PRAGMA kombinasyonları
 
-* ChaCha20 vs AES256 performance
+* ChaCha20 ve AES256 performansı
 
-* WAL checkpoint strategies
+* WAL checkpoint stratejileri
 
-* Temp storage configurations
+* Geçici depolama yapılandırmaları
 
-* Node.js version compatibility
+* Node.js sürüm uyumluluğu
 
-## What's Next for SQLite at Forward Email {#whats-next-for-sqlite-at-forward-email}
 
-We're actively testing these optimizations:
+## Forward Email'de SQLite için Sırada Ne Var? {#whats-next-for-sqlite-at-forward-email}
 
-1. **WAL Autocheckpoint Tuning**: Adding `wal_autocheckpoint=1000` based on benchmark results
+Bu optimizasyonları aktif olarak test ediyoruz:
 
-2. **Compression**: Evaluating [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) for attachment storage
+1. **WAL Otomatik Checkpoint Ayarı**: Benchmark sonuçlarına dayanarak `wal_autocheckpoint=1000` eklenmesi
 
-3. **Analysis Limit**: Testing higher values than our current 400
+2. **Sıkıştırma**: Eklenti depolama için [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) değerlendirmesi
 
-4. **Cache Size**: Considering dynamic cache sizing based on available memory
+3. **Analiz Limiti**: Mevcut 400 değerinden daha yüksek değerlerin test edilmesi
 
-## Getting Help {#getting-help}
+4. **Önbellek Boyutu**: Mevcut belleğe göre dinamik önbellek boyutlandırmasının düşünülmesi
 
-Having SQLite performance issues? For SQLite-specific questions, the [SQLite Forum](https://sqlite.org/forum/forumpost) is an excellent resource, and the [performance tuning guide](https://www.sqlite.org/optoverview.html) covers additional optimizations we haven't needed yet.
 
-Learn more about Forward Email by reading our [FAQ](/faq).
+## Yardım Alma {#getting-help}
+
+SQLite performans sorunları mı yaşıyorsunuz? SQLite ile ilgili sorular için [SQLite Forumu](https://sqlite.org/forum/forumpost) mükemmel bir kaynaktır ve [performans ayarlama rehberi](https://www.sqlite.org/optoverview.html) henüz ihtiyaç duymadığımız ek optimizasyonları kapsar.
+
+Forward Email hakkında daha fazla bilgi edinmek için [SSS](/faq) sayfamızı okuyun.

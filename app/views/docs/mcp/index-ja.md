@@ -1,17 +1,18 @@
-# Forward Email MCPサーバー {#forward-email-mcp-server}
+# Forward Email MCP Server {#forward-email-mcp-server}
 
 <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
 
 <p class="lead mt-3">
-  <strong>TL;DR:</strong> 当社の<a href="https://github.com/forwardemail/mcp-server">オープンソースMCPサーバー</a>は、Claude、ChatGPT、Cursor、WindsurfなどのAIアシスタントが自然言語を通じてメール、ドメイン、エイリアス、連絡先、カレンダーを管理できるようにします。68のAPIエンドポイントすべてがMCPツールとして公開されています。<code>npx @forwardemail/mcp-server</code>を介してローカルで実行され、認証情報はマシンから離れることはありません。
+  <strong>TL;DR:</strong> 私たちの <a href="https://github.com/forwardemail/mcp-server">オープンソースMCPサーバー</a> は、Claude、ChatGPT、Cursor、WindsurfなどのAIアシスタントが自然言語を通じてメール、ドメイン、エイリアス、連絡先、カレンダーを管理できるようにします。全68のAPIエンドポイントがMCPツールとして公開されています。<code>npx @forwardemail/mcp-server</code> でローカルに実行され、認証情報は決してマシンを離れません。
 </p>
+
 
 ## 目次 {#table-of-contents}
 
 * [MCPとは？](#what-is-mcp)
 * [クイックスタート](#quick-start)
-  * [APIキーの取得](#get-an-api-key)
-  * [Claude Desktop](#claude-desktop)
+  * [APIキーを取得する](#get-an-api-key)
+  * [Claudeデスクトップ](#claude-desktop)
   * [Cursor](#cursor)
   * [Windsurf](#windsurf)
   * [その他のMCPクライアント](#other-mcp-clients)
@@ -20,49 +21,68 @@
   * [エイリアス認証](#alias-auth)
   * [エイリアスパスワードの生成](#generating-an-alias-password)
 * [全68ツール](#all-68-tools)
-  * [アカウント (APIキーまたはエイリアス認証)](#account-api-key-or-alias-auth)
-  * [ドメイン (APIキー)](#domains-api-key)
-  * [エイリアス (APIキー)](#aliases-api-key)
-  * [メール — 送信SMTP (APIキー; 送信は両方をサポート)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [メッセージ — IMAP (エイリアス認証)](#messages--imap-alias-auth)
-  * [フォルダ — IMAP (エイリアス認証)](#folders--imap-alias-auth)
-  * [連絡先 — CardDAV (エイリアス認証)](#contacts--carddav-alias-auth)
-  * [カレンダー — CalDAV (エイリアス認証)](#calendars--caldav-alias-auth)
-  * [カレンダーイベント — CalDAV (エイリアス認証)](#calendar-events--caldav-alias-auth)
-  * [Sieveスクリプト (APIキー)](#sieve-scripts-api-key)
-  * [Sieveスクリプト (エイリアス認証)](#sieve-scripts-alias-auth)
-  * [ドメインメンバーと招待 (APIキー)](#domain-members-and-invites-api-key)
-  * [キャッチオールパスワード (APIキー)](#catch-all-passwords-api-key)
-  * [ログ (APIキー)](#logs-api-key)
-  * [暗号化 (認証なし)](#encrypt-no-auth)
-* [20の現実世界のユースケース](#20-real-world-use-cases)
-* [プロンプト例](#example-prompts)
+  * [アカウント（APIキーまたはエイリアス認証）](#account-api-key-or-alias-auth)
+  * [ドメイン（APIキー）](#domains-api-key)
+  * [エイリアス（APIキー）](#aliases-api-key)
+  * [メール — 送信SMTP（APIキー；Sendは両方対応）](#emails--outbound-smtp-api-key-send-supports-both)
+  * [メッセージ — IMAP（エイリアス認証）](#messages--imap-alias-auth)
+  * [フォルダ — IMAP（エイリアス認証）](#folders--imap-alias-auth)
+  * [連絡先 — CardDAV（エイリアス認証）](#contacts--carddav-alias-auth)
+  * [カレンダー — CalDAV（エイリアス認証）](#calendars--caldav-alias-auth)
+  * [カレンダーイベント — CalDAV（エイリアス認証）](#calendar-events--caldav-alias-auth)
+  * [Sieveスクリプト（APIキー）](#sieve-scripts-api-key)
+  * [Sieveスクリプト（エイリアス認証）](#sieve-scripts-alias-auth)
+  * [ドメインメンバーと招待（APIキー）](#domain-members-and-invites-api-key)
+  * [キャッチオールパスワード（APIキー）](#catch-all-passwords-api-key)
+  * [ログ（APIキー）](#logs-api-key)
+  * [暗号化（認証不要）](#encrypt-no-auth)
+* [20の実用例](#20-real-world-use-cases)
+  * [1. メールの仕分け](#1-email-triage)
+  * [2. ドメイン設定の自動化](#2-domain-setup-automation)
+  * [3. エイリアス一括管理](#3-bulk-alias-management)
+  * [4. メールキャンペーンの監視](#4-email-campaign-monitoring)
+  * [5. 連絡先の同期と整理](#5-contact-sync-and-cleanup)
+  * [6. カレンダー管理](#6-calendar-management)
+  * [7. Sieveスクリプトの自動化](#7-sieve-script-automation)
+  * [8. チームのオンボーディング](#8-team-onboarding)
+  * [9. セキュリティ監査](#9-security-auditing)
+  * [10. メール転送設定](#10-email-forwarding-setup)
+  * [11. 受信箱の検索と分析](#11-inbox-search-and-analysis)
+  * [12. フォルダ整理](#12-folder-organization)
+  * [13. パスワードのローテーション](#13-password-rotation)
+  * [14. DNSレコードの暗号化](#14-dns-record-encryption)
+  * [15. 配信ログの分析](#15-delivery-log-analysis)
+  * [16. マルチドメイン管理](#16-multi-domain-management)
+  * [17. キャッチオール設定](#17-catch-all-configuration)
+  * [18. ドメイン招待管理](#18-domain-invite-management)
+  * [19. S3ストレージのテスト](#19-s3-storage-testing)
+  * [20. メール下書き作成](#20-email-draft-composition)
+* [例示プロンプト](#example-prompts)
 * [環境変数](#environment-variables)
 * [セキュリティ](#security)
-* [プログラムによる使用法](#programmatic-usage)
+* [プログラムによる利用](#programmatic-usage)
 * [オープンソース](#open-source)
 
 
 ## MCPとは？ {#what-is-mcp}
 
-[Model Context Protocol](https://modelcontextprotocol.io) (MCP) は、Anthropicが作成したオープンスタンダードで、AIモデルが外部ツールを安全に呼び出すことを可能にします。API応答をチャットウィンドウにコピー＆ペーストする代わりに、MCPはモデルにサービスへの直接的で構造化されたアクセスを提供します。
+[Model Context Protocol](https://modelcontextprotocol.io)（MCP）は、Anthropicによって作成されたオープンスタンダードで、AIモデルが外部ツールを安全に呼び出せるようにします。APIレスポンスをチャットウィンドウにコピー＆ペーストする代わりに、MCPはモデルにサービスへの直接的かつ構造化されたアクセスを提供します。
 
-当社のMCPサーバーは、[Forward Email API](/email-api)全体（すべてのエンドポイント、すべてのパラメーター）をラップし、MCP互換クライアントが使用できるツールとして公開します。サーバーはstdioトランスポートを使用してローカルマシンで実行されます。認証情報は環境変数に保持され、AIモデルに送信されることはありません。
+私たちのMCPサーバーは、[Forward Email API](/email-api)全体—すべてのエンドポイント、すべてのパラメータ—をラップし、MCP対応クライアントが利用できるツールとして公開します。サーバーはstdioトランスポートを使ってローカルマシン上で動作し、認証情報は環境変数に保持され、AIモデルに送信されることはありません。
 
 
 ## クイックスタート {#quick-start}
 
-### APIキーの取得 {#get-an-api-key}
-
+### APIキーを取得する {#get-an-api-key}
 1. [Forward Emailアカウント](/my-account/domains)にログインします。
-2. **マイアカウント** → **セキュリティ** → **APIキー**に移動します。
-3. 新しいAPIキーを生成し、コピーします。
+2. **マイアカウント** → **セキュリティ** → **APIキー** に移動します。
+3. 新しいAPIキーを生成してコピーします。
 
 ### Claude Desktop {#claude-desktop}
 
-Claude Desktopの設定ファイルに以下を追加します。
+これをClaude Desktopの設定ファイルに追加してください：
 
-**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
 **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
@@ -81,13 +101,13 @@ Claude Desktopの設定ファイルに以下を追加します。
 }
 ```
 
-Claude Desktopを再起動します。ツールピッカーにForward Emailツールが表示されるはずです。
+Claude Desktopを再起動してください。ツールピッカーにForward Emailツールが表示されるはずです。
 
-> **注:** `FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`変数はオプションですが、メールボックスツール（メッセージ、フォルダ、連絡先、カレンダー）には必須です。詳細については、[認証](#authentication)を参照してください。
+> **注意：** `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` の変数はオプションですが、メールボックスツール（メッセージ、フォルダ、連絡先、カレンダー）には必須です。詳細は[認証](#authentication)を参照してください。
 
 ### Cursor {#cursor}
 
-Cursorの設定 → MCP → サーバーを追加 を開きます。
+Cursorの設定を開き → MCP → サーバーを追加：
 
 ```json
 {
@@ -107,11 +127,11 @@ Cursorの設定 → MCP → サーバーを追加 を開きます。
 
 ### Windsurf {#windsurf}
 
-Windsurfの設定 → MCP → サーバーを追加 を開き、上記と同じ設定を追加します。
+Windsurfの設定を開き → MCP → 上記と同じ設定でサーバーを追加してください。
 
 ### その他のMCPクライアント {#other-mcp-clients}
 
-MCP stdioトランスポートをサポートするすべてのクライアントが動作します。コマンドは次のとおりです。
+MCP stdioトランスポートをサポートする任意のクライアントで動作します。コマンドは以下の通りです：
 
 ```sh
 FORWARD_EMAIL_API_KEY=your-api-key \
@@ -123,28 +143,28 @@ FORWARD_EMAIL_API_KEY=your-api-key \
 
 ## 認証 {#authentication}
 
-Forward Email APIは、エンドポイントに応じて2種類の認証情報を使用する**HTTP Basic認証**を使用します。MCPサーバーはこれを自動的に処理します。適切な認証情報を提供するだけで済みます。
+Forward Email APIはエンドポイントに応じて2種類の資格情報を使う**HTTP Basic認証**を使用します。MCPサーバーがこれを自動的に処理するため、適切な資格情報を提供するだけで済みます。
 
 ### APIキー認証 {#api-key-auth}
 
-ほとんどの管理エンドポイント（ドメイン、エイリアス、送信メール、ログ）は、Basic認証のユーザー名として**APIキー**を使用し、パスワードは空です。
+ほとんどの管理用エンドポイント（ドメイン、エイリアス、送信メール、ログ）は、Basic認証のユーザー名に**APIキー**を使い、パスワードは空にします。
 
-これはREST APIで使用するAPIキーと同じです。`FORWARD_EMAIL_API_KEY`環境変数で設定します。
+これはREST APIで使うのと同じAPIキーです。`FORWARD_EMAIL_API_KEY`環境変数で設定してください。
 
 ### エイリアス認証 {#alias-auth}
 
-メールボックスエンドポイント（メッセージ、フォルダ、連絡先、カレンダー、エイリアススコープのSieveスクリプト）は、**エイリアス認証情報**を使用します。ユーザー名としてエイリアスメールアドレス、パスワードとして生成されたパスワードを使用します。
+メールボックス用エンドポイント（メッセージ、フォルダ、連絡先、カレンダー、エイリアススコープのSieveスクリプト）は**エイリアス資格情報**を使います。ユーザー名はエイリアスのメールアドレス、パスワードは生成されたパスワードです。
 
-これらのエンドポイントは、IMAP、CalDAV、CardDAVプロトコルを介してエイリアスごとのデータにアクセスします。APIキーではなく、エイリアスメールと生成されたパスワードが必要です。
+これらのエンドポイントはIMAP、CalDAV、CardDAVプロトコルを通じてエイリアスごとのデータにアクセスします。APIキーではなく、エイリアスメールアドレスと生成されたパスワードが必要です。
 
-エイリアス認証情報は2つの方法で提供できます。
+エイリアス資格情報は以下の2通りで提供できます：
 
-1. **環境変数**（デフォルトのエイリアスに推奨）：`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`を設定します。
-2. **ツール呼び出しごとのパラメーター**：`alias_username`と`alias_password`をエイリアス認証ツールへの引数として渡します。これらは環境変数を上書きするため、複数のエイリアスを扱う場合に便利です。
+1. **環境変数**（デフォルトエイリアスに推奨）：`FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定
+2. **ツール呼び出しごとのパラメータ**：任意のエイリアス認証ツールに `alias_username` と `alias_password` を引数として渡す。環境変数より優先され、複数エイリアスを扱う際に便利です。
 
 ### エイリアスパスワードの生成 {#generating-an-alias-password}
 
-エイリアス認証ツールを使用する前に、エイリアスのパスワードを生成する必要があります。これは`generateAliasPassword`ツールを使用するか、APIを介して行うことができます。
+エイリアス認証ツールを使う前に、エイリアスのパスワードを生成する必要があります。`generateAliasPassword`ツールかAPIで生成可能です：
 
 ```sh
 curl -u "YOUR_API_KEY:" \
@@ -152,341 +172,344 @@ curl -u "YOUR_API_KEY:" \
   -X POST
 ```
 
-応答には`username`（エイリアスメール）と`password`フィールドが含まれます。これらをエイリアス認証情報として使用します。
+レスポンスには `username`（エイリアスメール）と `password` フィールドが含まれます。これらをエイリアス資格情報として使用してください。
 
-> **ヒント:** AIアシスタントに「example.comドメインのuser@example.comエイリアスにパスワードを生成して」と尋ねることもできます。すると、`generateAliasPassword`ツールが呼び出され、認証情報が返されます。
+> **ヒント：** AIアシスタントに「ドメインexample.comのエイリアス<user@example.com>のパスワードを生成して」と依頼すると、`generateAliasPassword`ツールを呼び出して資格情報を返します。
 
-以下の表は、各ツールグループが必要とする認証方法をまとめたものです。
+以下の表は各ツールグループが必要とする認証方法をまとめています：
 
-| ツールグループ | 認証方法 | 認証情報 |
-|-----------|-------------|-------------|
-| アカウント | APIキー **または** エイリアス認証 | どちらか |
-| ドメイン、エイリアス、ドメインメンバー、招待、キャッチオールパスワード | APIキー | `FORWARD_EMAIL_API_KEY` |
-| 送信メール (リスト、取得、削除、制限) | APIキー | `FORWARD_EMAIL_API_KEY` |
-| メール送信 | APIキー **または** エイリアス認証 | どちらか |
-| メッセージ (IMAP) | エイリアス認証 | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| フォルダ (IMAP) | エイリアス認証 | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| 連絡先 (CardDAV) | エイリアス認証 | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| カレンダー (CalDAV) | エイリアス認証 | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| カレンダーイベント (CalDAV) | エイリアス認証 | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| Sieveスクリプト (ドメインスコープ) | APIキー | `FORWARD_EMAIL_API_KEY` |
-| Sieveスクリプト (エイリアススコープ) | エイリアス認証 | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| ログ | APIキー | `FORWARD_EMAIL_API_KEY` |
-| 暗号化 | なし | 認証情報は不要 |
-
-
+| ツールグループ                                               | 認証方法                 | 資格情報                                                     |
+| ------------------------------------------------------------ | ------------------------ | ------------------------------------------------------------ |
+| アカウント                                                   | APIキー **または** エイリアス認証 | どちらでも可                                                |
+| ドメイン、エイリアス、ドメインメンバー、招待、キャッチオールパスワード | APIキー                   | `FORWARD_EMAIL_API_KEY`                                     |
+| 送信メール（一覧、取得、削除、制限）                         | APIキー                   | `FORWARD_EMAIL_API_KEY`                                     |
+| メール送信                                                   | APIキー **または** エイリアス認証 | どちらでも可                                                |
+| メッセージ（IMAP）                                          | エイリアス認証            | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| フォルダ（IMAP）                                           | エイリアス認証            | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| 連絡先（CardDAV）                                         | エイリアス認証            | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| カレンダー（CalDAV）                                       | エイリアス認証            | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| カレンダーイベント（CalDAV）                               | エイリアス認証            | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Sieveスクリプト（ドメインスコープ）                        | APIキー                   | `FORWARD_EMAIL_API_KEY`                                     |
+| Sieveスクリプト（エイリアススコープ）                      | エイリアス認証            | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| ログ                                                       | APIキー                   | `FORWARD_EMAIL_API_KEY`                                     |
+| 暗号化                                                     | なし                      | 資格情報不要                                               |
 ## 全68ツール {#all-68-tools}
 
-すべてのツールは[Forward Email API](/email-api)エンドポイントに直接マッピングされています。パラメーターはAPIドキュメントと同じ名前を使用します。認証方法は各セクションの見出しに記載されています。
+すべてのツールは直接[Forward Email API](/email-api)のエンドポイントに対応しています。パラメータはAPIドキュメントと同じ名前を使用しています。認証方法は各セクションの見出しに記載されています。
+
+### アカウント（APIキーまたはエイリアス認証） {#account-api-key-or-alias-auth}
+
+APIキー認証では、これらはユーザーアカウント情報を返します。エイリアス認証では、ストレージクォータや設定を含むエイリアス/メールボックス情報を返します。
+
+| ツール            | APIエンドポイント      | 説明                         |
+| --------------- | ----------------- | ---------------------------- |
+| `getAccount`    | `GET /v1/account` | アカウント情報を取得          |
+| `updateAccount` | `PUT /v1/account` | アカウント設定を更新          |
+
+### ドメイン（APIキー） {#domains-api-key}
 
-### アカウント (APIキーまたはエイリアス認証) {#account-api-key-or-alias-auth}
+| ツール                  | APIエンドポイント                                     | 説明                       |
+| --------------------- | ------------------------------------------------ | ------------------------- |
+| `listDomains`         | `GET /v1/domains`                                | すべてのドメインを一覧表示   |
+| `createDomain`        | `POST /v1/domains`                               | 新しいドメインを追加         |
+| `getDomain`           | `GET /v1/domains/:domain_id`                     | ドメインの詳細を取得         |
+| `updateDomain`        | `PUT /v1/domains/:domain_id`                     | ドメイン設定を更新           |
+| `deleteDomain`        | `DELETE /v1/domains/:domain_id`                  | ドメインを削除               |
+| `verifyDomainRecords` | `GET /v1/domains/:domain_id/verify-records`      | DNSレコードを検証            |
+| `verifySmtpRecords`   | `GET /v1/domains/:domain_id/verify-smtp`         | SMTP設定を検証              |
+| `testS3Connection`    | `POST /v1/domains/:domain_id/test-s3-connection` | カスタムS3ストレージをテスト  |
+
+### エイリアス（APIキー） {#aliases-api-key}
+
+| ツール                    | APIエンドポイント                                                      | 説明                                |
+| ----------------------- | ----------------------------------------------------------------- | ------------------------------------------ |
+| `listAliases`           | `GET /v1/domains/:domain_id/aliases`                              | ドメインのエイリアスを一覧表示                |
+| `createAlias`           | `POST /v1/domains/:domain_id/aliases`                             | 新しいエイリアスを作成                       |
+| `getAlias`              | `GET /v1/domains/:domain_id/aliases/:alias_id`                    | エイリアスの詳細を取得                       |
+| `updateAlias`           | `PUT /v1/domains/:domain_id/aliases/:alias_id`                    | エイリアスを更新                            |
+| `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | エイリアスを削除                            |
+| `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | エイリアス認証用のIMAP/SMTPパスワードを生成  |
+
+### メール — 送信SMTP（APIキー；Sendは両方対応） {#emails--outbound-smtp-api-key-send-supports-both}
+
+| ツール            | APIエンドポイント            | 認証                  | 説明                         |
+| --------------- | ----------------------- | --------------------- | ---------------------------- |
+| `sendEmail`     | `POST /v1/emails`       | APIキーまたはエイリアス認証 | SMTP経由でメールを送信          |
+| `listEmails`    | `GET /v1/emails`        | APIキー               | 送信済みメールを一覧表示         |
+| `getEmail`      | `GET /v1/emails/:id`    | APIキー               | メールの詳細とステータスを取得   |
+| `deleteEmail`   | `DELETE /v1/emails/:id` | APIキー               | キューにあるメールを削除          |
+| `getEmailLimit` | `GET /v1/emails/limit`  | APIキー               | 送信制限を確認                  |
+
+`sendEmail`ツールは`from`、`to`、`cc`、`bcc`、`subject`、`text`、`html`、`attachments`を受け付けます。これは`POST /v1/emails`エンドポイントと同じです。
+
+### メッセージ — IMAP（エイリアス認証） {#messages--imap-alias-auth}
+
+> **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、環境変数`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`を設定してください。
+| ツール            | API エンドポイント              | 説明                           |
+| --------------- | ------------------------- | ------------------------------------- |
+| `listMessages`  | `GET /v1/messages`        | メールボックス内のメッセージを一覧表示および検索 |
+| `createMessage` | `POST /v1/messages`       | 下書きを作成またはメッセージをアップロード    |
+| `getMessage`    | `GET /v1/messages/:id`    | IDでメッセージを取得                   |
+| `updateMessage` | `PUT /v1/messages/:id`    | フラグを更新（未読、スター付きなど）    |
+| `deleteMessage` | `DELETE /v1/messages/:id` | メッセージを削除                      |
+
+`listMessages` ツールは `subject`、`from`、`to`、`text`、`since`、`before`、`is_unread`、`has_attachment` を含む15以上の検索パラメータをサポートしています。完全なリストは[API docs](/email-api)をご覧ください。
+
+### フォルダ — IMAP（エイリアス認証） {#folders--imap-alias-auth}
+
+> **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
+
+| ツール           | API エンドポイント             | 説明              |
+| -------------- | ------------------------ | ------------------------ |
+| `listFolders`  | `GET /v1/folders`        | すべてのメールボックスフォルダを一覧表示 |
+| `createFolder` | `POST /v1/folders`       | 新しいフォルダを作成      |
+| `getFolder`    | `GET /v1/folders/:id`    | フォルダの詳細を取得       |
+| `updateFolder` | `PUT /v1/folders/:id`    | フォルダ名を変更          |
+| `deleteFolder` | `DELETE /v1/folders/:id` | フォルダを削除            |
 
-APIキー認証の場合、これらはユーザーアカウント情報を返します。エイリアス認証の場合、ストレージクォータや設定を含むエイリアス/メールボックス情報を返します。
-
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `getAccount` | `GET /v1/account` | アカウント情報を取得 |
-| `updateAccount` | `PUT /v1/account` | アカウント設定を更新 |
-
-### ドメイン (APIキー) {#domains-api-key}
+### 連絡先 — CardDAV（エイリアス認証） {#contacts--carddav-alias-auth}
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listDomains` | `GET /v1/domains` | すべてのドメインをリスト表示 |
-| `createDomain` | `POST /v1/domains` | 新しいドメインを追加 |
-| `getDomain` | `GET /v1/domains/:domain_id` | ドメインの詳細を取得 |
-| `updateDomain` | `PUT /v1/domains/:domain_id` | ドメイン設定を更新 |
-| `deleteDomain` | `DELETE /v1/domains/:domain_id` | ドメインを削除 |
-| `verifyDomainRecords` | `GET /v1/domains/:domain_id/verify-records` | DNSレコードを検証 |
-| `verifySmtpRecords` | `GET /v1/domains/:domain_id/verify-smtp` | SMTP設定を検証 |
-| `testS3Connection` | `POST /v1/domains/:domain_id/test-s3-connection` | カスタムS3ストレージをテスト |
-
-### エイリアス (APIキー) {#aliases-api-key}
-
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listAliases` | `GET /v1/domains/:domain_id/aliases` | ドメインのエイリアスをリスト表示 |
-| `createAlias` | `POST /v1/domains/:domain_id/aliases` | 新しいエイリアスを作成 |
-| `getAlias` | `GET /v1/domains/:domain_id/aliases/:alias_id` | エイリアスの詳細を取得 |
-| `updateAlias` | `PUT /v1/domains/:domain_id/aliases/:alias_id` | エイリアスを更新 |
-| `deleteAlias` | `DELETE /v1/domains/:domain_id/aliases/:alias_id` | エイリアスを削除 |
-| `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | エイリアス認証用のIMAP/SMTPパスワードを生成 |
-
-### メール — 送信SMTP (APIキー; 送信は両方をサポート) {#emails--outbound-smtp-api-key-send-supports-both}
-
-| ツール | APIエンドポイント | 認証 | 説明 |
-|------|-------------|------|-------------|
-| `sendEmail` | `POST /v1/emails` | APIキーまたはエイリアス認証 | SMTP経由でメールを送信 |
-| `listEmails` | `GET /v1/emails` | APIキー | 送信メールをリスト表示 |
-| `getEmail` | `GET /v1/emails/:id` | APIキー | メールの詳細とステータスを取得 |
-| `deleteEmail` | `DELETE /v1/emails/:id` | APIキー | キューに入っているメールを削除 |
-| `getEmailLimit` | `GET /v1/emails/limit` | APIキー | 送信制限を確認 |
-
-`sendEmail`ツールは、`from`、`to`、`cc`、`bcc`、`subject`、`text`、`html`、および`attachments`を受け入れます。これは`POST /v1/emails`エンドポイントと同じです。
-
-### メッセージ — IMAP (エイリアス認証) {#messages--imap-alias-auth}
-
-> **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`環境変数を設定してください。
-
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listMessages` | `GET /v1/messages` | メールボックス内のメッセージをリスト表示および検索 |
-| `createMessage` | `POST /v1/messages` | 下書きを作成またはメッセージをアップロード |
-| `getMessage` | `GET /v1/messages/:id` | IDでメッセージを取得 |
-| `updateMessage` | `PUT /v1/messages/:id` | フラグ（既読、スター付きなど）を更新 |
-| `deleteMessage` | `DELETE /v1/messages/:id` | メッセージを削除 |
-
-`listMessages`ツールは、`subject`、`from`、`to`、`text`、`since`、`before`、`is_unread`、`has_attachment`など15以上の検索パラメーターをサポートしています。完全なリストは[APIドキュメント](/email-api)を参照してください。
-
-### フォルダ — IMAP (エイリアス認証) {#folders--imap-alias-auth}
-
-> **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`環境変数を設定してください。
+> **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listFolders` | `GET /v1/folders` | すべてのメールボックスフォルダをリスト表示 |
-| `createFolder` | `POST /v1/folders` | 新しいフォルダを作成 |
-| `getFolder` | `GET /v1/folders/:id` | フォルダの詳細を取得 |
-| `updateFolder` | `PUT /v1/folders/:id` | フォルダ名を変更 |
-| `deleteFolder` | `DELETE /v1/folders/:id` | フォルダを削除 |
+| ツール            | API エンドポイント              | 説明          |
+| --------------- | ------------------------- | -------------------- |
+| `listContacts`  | `GET /v1/contacts`        | すべての連絡先を一覧表示    |
+| `createContact` | `POST /v1/contacts`       | 新しい連絡先を作成 |
+| `getContact`    | `GET /v1/contacts/:id`    | 連絡先の詳細を取得  |
+| `updateContact` | `PUT /v1/contacts/:id`    | 連絡先を更新     |
+| `deleteContact` | `DELETE /v1/contacts/:id` | 連絡先を削除     |
 
-### 連絡先 — CardDAV (エイリアス認証) {#contacts--carddav-alias-auth}
+### カレンダー — CalDAV（エイリアス認証） {#calendars--caldav-alias-auth}
 
-> **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`環境変数を設定してください。
+> **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listContacts` | `GET /v1/contacts` | すべての連絡先をリスト表示 |
-| `createContact` | `POST /v1/contacts` | 新しい連絡先を作成 |
-| `getContact` | `GET /v1/contacts/:id` | 連絡先の詳細を取得 |
-| `updateContact` | `PUT /v1/contacts/:id` | 連絡先を更新 |
-| `deleteContact` | `DELETE /v1/contacts/:id` | 連絡先を削除 |
+| ツール             | API エンドポイント               | 説明           |
+| ---------------- | -------------------------- | --------------------- |
+| `listCalendars`  | `GET /v1/calendars`        | すべてのカレンダーを一覧表示    |
+| `createCalendar` | `POST /v1/calendars`       | 新しいカレンダーを作成 |
+| `getCalendar`    | `GET /v1/calendars/:id`    | カレンダーの詳細を取得  |
+| `updateCalendar` | `PUT /v1/calendars/:id`    | カレンダーを更新     |
+| `deleteCalendar` | `DELETE /v1/calendars/:id` | カレンダーを削除     |
 
-### カレンダー — CalDAV (エイリアス認証) {#calendars--caldav-alias-auth}
+### カレンダーイベント — CalDAV（エイリアス認証） {#calendar-events--caldav-alias-auth}
 
-> **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`環境変数を設定してください。
+> **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listCalendars` | `GET /v1/calendars` | すべてのカレンダーをリスト表示 |
-| `createCalendar` | `POST /v1/calendars` | 新しいカレンダーを作成 |
-| `getCalendar` | `GET /v1/calendars/:id` | カレンダーの詳細を取得 |
-| `updateCalendar` | `PUT /v1/calendars/:id` | カレンダーを更新 |
-| `deleteCalendar` | `DELETE /v1/calendars/:id` | カレンダーを削除 |
+| ツール                  | API エンドポイント                     | 説明        |
+| --------------------- | -------------------------------- | ------------------ |
+| `listCalendarEvents`  | `GET /v1/calendar-events`        | すべてのイベントを一覧表示    |
+| `createCalendarEvent` | `POST /v1/calendar-events`       | 新しいイベントを作成 |
+| `getCalendarEvent`    | `GET /v1/calendar-events/:id`    | イベントの詳細を取得  |
+| `updateCalendarEvent` | `PUT /v1/calendar-events/:id`    | イベントを更新    |
+| `deleteCalendarEvent` | `DELETE /v1/calendar-events/:id` | イベントを削除    |
 
-### カレンダーイベント — CalDAV (エイリアス認証) {#calendar-events--caldav-alias-auth}
+### Sieve スクリプト（API キー） {#sieve-scripts-api-key}
 
-> **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`環境変数を設定してください。
+これらはドメインスコープのパスを使用し、API キーで認証します。
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listCalendarEvents` | `GET /v1/calendar-events` | すべてのイベントをリスト表示 |
-| `createCalendarEvent` | `POST /v1/calendar-events` | 新しいイベントを作成 |
-| `getCalendarEvent` | `GET /v1/calendar-events/:id` | イベントの詳細を取得 |
-| `updateCalendarEvent` | `PUT /v1/calendar-events/:id` | イベントを更新 |
-| `deleteCalendarEvent` | `DELETE /v1/calendar-events/:id` | イベントを削除 |
+| ツール                  | API エンドポイント                                                              | 説明               |
+| --------------------- | ------------------------------------------------------------------------- | ------------------------- |
+| `listSieveScripts`    | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve`                      | エイリアスのスクリプトを一覧表示 |
+| `createSieveScript`   | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve`                     | 新しいスクリプトを作成       |
+| `getSieveScript`      | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id`           | スクリプトの詳細を取得        |
+| `updateSieveScript`   | `PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id`           | スクリプトを更新           |
+| `deleteSieveScript`   | `DELETE /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id`        | スクリプトを削除           |
+| `activateSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate` | スクリプトを有効化         |
+### Sieve Scripts (Alias Auth) {#sieve-scripts-alias-auth}
 
-### Sieveスクリプト (APIキー) {#sieve-scripts-api-key}
+これらはエイリアスレベルの認証を使用します。APIキーを必要とせず、エイリアスごとの自動化に便利です。
 
-これらはドメインスコープのパスを使用し、APIキーで認証します。
+> **エイリアスの認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listSieveScripts` | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve` | エイリアスのスクリプトをリスト表示 |
-| `createSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve` | 新しいスクリプトを作成 |
-| `getSieveScript` | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | スクリプトの詳細を取得 |
-| `updateSieveScript` | `PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | スクリプトを更新 |
-| `deleteSieveScript` | `DELETE /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | スクリプトを削除 |
-| `activateSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate` | スクリプトをアクティブ化 |
+| Tool                           | API Endpoint                                 | Description        |
+| ------------------------------ | -------------------------------------------- | ------------------ |
+| `listSieveScriptsAliasAuth`    | `GET /v1/sieve-scripts`                      | スクリプトの一覧表示       |
+| `createSieveScriptAliasAuth`   | `POST /v1/sieve-scripts`                     | スクリプトの作成    |
+| `getSieveScriptAliasAuth`      | `GET /v1/sieve-scripts/:script_id`           | スクリプトの詳細取得 |
+| `updateSieveScriptAliasAuth`   | `PUT /v1/sieve-scripts/:script_id`           | スクリプトの更新    |
+| `deleteSieveScriptAliasAuth`   | `DELETE /v1/sieve-scripts/:script_id`        | スクリプトの削除    |
+| `activateSieveScriptAliasAuth` | `POST /v1/sieve-scripts/:script_id/activate` | スクリプトの有効化  |
 
-### Sieveスクリプト (エイリアス認証) {#sieve-scripts-alias-auth}
+### Domain Members and Invites (API Key) {#domain-members-and-invites-api-key}
 
-これらはエイリアスレベルの認証を使用します。APIキーを必要とせずに、エイリアスごとの自動化に役立ちます。
+| Tool                 | API Endpoint                                       | Description                |
+| -------------------- | -------------------------------------------------- | -------------------------- |
+| `updateDomainMember` | `PUT /v1/domains/:domain_id/members/:member_id`    | メンバーの役割変更         |
+| `removeDomainMember` | `DELETE /v1/domains/:domain_id/members/:member_id` | メンバーの削除             |
+| `acceptDomainInvite` | `GET /v1/domains/:domain_id/invites`               | 保留中の招待を承諾         |
+| `createDomainInvite` | `POST /v1/domains/:domain_id/invites`              | ドメインへの招待作成       |
+| `removeDomainInvite` | `DELETE /v1/domains/:domain_id/invites`            | 招待の取り消し             |
 
-> **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`環境変数を設定してください。
+### Catch-All Passwords (API Key) {#catch-all-passwords-api-key}
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listSieveScriptsAliasAuth` | `GET /v1/sieve-scripts` | スクリプトをリスト表示 |
-| `createSieveScriptAliasAuth` | `POST /v1/sieve-scripts` | スクリプトを作成 |
-| `getSieveScriptAliasAuth` | `GET /v1/sieve-scripts/:script_id` | スクリプトの詳細を取得 |
-| `updateSieveScriptAliasAuth` | `PUT /v1/sieve-scripts/:script_id` | スクリプトを更新 |
-| `deleteSieveScriptAliasAuth` | `DELETE /v1/sieve-scripts/:script_id` | スクリプトを削除 |
-| `activateSieveScriptAliasAuth` | `POST /v1/sieve-scripts/:script_id/activate` | スクリプトをアクティブ化 |
+| Tool                     | API Endpoint                                                  | Description                 |
+| ------------------------ | ------------------------------------------------------------- | --------------------------- |
+| `listCatchAllPasswords`  | `GET /v1/domains/:domain_id/catch-all-passwords`              | キャッチオールパスワードの一覧表示    |
+| `createCatchAllPassword` | `POST /v1/domains/:domain_id/catch-all-passwords`             | キャッチオールパスワードの作成 |
+| `deleteCatchAllPassword` | `DELETE /v1/domains/:domain_id/catch-all-passwords/:token_id` | キャッチオールパスワードの削除 |
 
-### ドメインメンバーと招待 (APIキー) {#domain-members-and-invites-api-key}
+### Logs (API Key) {#logs-api-key}
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `updateDomainMember` | `PUT /v1/domains/:domain_id/members/:member_id` | メンバーの役割を変更 |
-| `removeDomainMember` | `DELETE /v1/domains/:domain_id/members/:member_id` | メンバーを削除 |
-| `acceptDomainInvite` | `GET /v1/domains/:domain_id/invites` | 保留中の招待を承諾 |
-| `createDomainInvite` | `POST /v1/domains/:domain_id/invites` | ドメインに誰かを招待 |
-| `removeDomainInvite` | `DELETE /v1/domains/:domain_id/invites` | 招待を取り消し |
+| Tool           | API Endpoint            | Description                  |
+| -------------- | ----------------------- | ---------------------------- |
+| `downloadLogs` | `GET /v1/logs/download` | メール配信ログのダウンロード |
 
-### キャッチオールパスワード (APIキー) {#catch-all-passwords-api-key}
+### Encrypt (No Auth) {#encrypt-no-auth}
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `listCatchAllPasswords` | `GET /v1/domains/:domain_id/catch-all-passwords` | キャッチオールパスワードをリスト表示 |
-| `createCatchAllPassword` | `POST /v1/domains/:domain_id/catch-all-passwords` | キャッチオールパスワードを作成 |
-| `deleteCatchAllPassword` | `DELETE /v1/domains/:domain_id/catch-all-passwords/:token_id` | キャッチオールパスワードを削除 |
+| Tool            | API Endpoint       | Description              |
+| --------------- | ------------------ | ------------------------ |
+| `encryptRecord` | `POST /v1/encrypt` | DNS TXTレコードの暗号化 |
 
-### ログ (APIキー) {#logs-api-key}
+このツールは認証を必要としません。DNS TXTレコードで使用する `forward-email=user@example.com` のような転送レコードを暗号化します。
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `downloadLogs` | `GET /v1/logs/download` | メール配信ログをダウンロード |
 
-### 暗号化 (認証なし) {#encrypt-no-auth}
+## 20 Real-World Use Cases {#20-real-world-use-cases}
 
-| ツール | APIエンドポイント | 説明 |
-|------|-------------|-------------|
-| `encryptRecord` | `POST /v1/encrypt` | DNS TXTレコードを暗号化 |
+MCPサーバーをAIアシスタントと連携して使う実用的な方法をご紹介します：
 
-このツールは認証を必要としません。`forward-email=user@example.com`のような転送レコードをDNS TXTレコードで使用するために暗号化します。
+### 1. Email Triage {#1-email-triage}
 
+AIに受信トレイをスキャンして未読メールを要約するよう依頼します。緊急メールのフラグ付け、送信者別の分類、返信の下書き作成など、すべて自然言語で行えます。*(受信トレイアクセスにはエイリアス認証情報が必要です。)*
 
-## 20の現実世界のユースケース {#20-real-world-use-cases}
+### 2. Domain Setup Automation {#2-domain-setup-automation}
 
-MCPサーバーをAIアシスタントと連携させる実用的な方法を以下に示します。
+新しいドメインを設定していますか？AIにドメインの作成、エイリアスの追加、DNSレコードの検証、SMTP設定のテストを依頼しましょう。通常10分かかるダッシュボード操作が会話ひとつで完了します。
 
-### 1. メールトリアージ {#email-triage}
+### 3. Bulk Alias Management {#3-bulk-alias-management}
 
-AIに受信トレイをスキャンさせ、未読メッセージを要約させます。緊急のメールにフラグを立てたり、送信者別に分類したり、返信の下書きを作成したりできます。これらすべてを自然言語で行えます。（受信トレイへのアクセスにはエイリアス認証情報が必要です。）
+新プロジェクト用に20個のエイリアスを作成する必要がありますか？必要な内容を説明すれば、AIが繰り返し作業を代行します。エイリアスの作成、転送ルールの設定、パスワード生成を一括で行えます。
+### 4. Email Campaign Monitoring {#4-email-campaign-monitoring}
 
-### 2. ドメイン設定の自動化 {#domain-setup-automation}
+AIに送信制限の確認、最近の送信メール一覧表示、配信状況の報告を依頼しましょう。トランザクションメールの健全性を監視するのに便利です。
 
-新しいドメインを設定しますか？AIにドメインの作成、エイリアスの追加、DNSレコードの検証、SMTP設定のテストを依頼します。通常、ダッシュボードをクリックして10分かかる作業が、1つの会話で完了します。
+### 5. Contact Sync and Cleanup {#5-contact-sync-and-cleanup}
 
-### 3. 一括エイリアス管理 {#bulk-alias-management}
+CardDAVツールを使ってすべての連絡先を一覧表示し、重複を見つけ、古い情報を更新したり、チャットに貼り付けたスプレッドシートから連絡先を一括作成したりできます。*(エイリアス認証情報が必要です。)*
 
-新しいプロジェクトのために20個のエイリアスを作成する必要がありますか？必要なものを説明し、AIに反復作業を任せます。エイリアスの作成、転送ルールの設定、パスワードの生成を一度に行うことができます。
+### 6. Calendar Management {#6-calendar-management}
 
-### 4. メールキャンペーンの監視 {#email-campaign-monitoring}
+カレンダーの作成、イベントの追加、会議時間の更新、キャンセルされたイベントの削除をすべて会話で行えます。CalDAVツールはカレンダーとイベントの完全なCRUDをサポートします。*(エイリアス認証情報が必要です。)*
 
-AIに送信制限の確認、最近の送信メールのリスト表示、配信ステータスの報告を依頼します。トランザクションメールの健全性を監視するのに役立ちます。
+### 7. Sieve Script Automation {#7-sieve-script-automation}
 
-### 5. 連絡先の同期とクリーンアップ {#contact-sync-and-cleanup}
+Sieveスクリプトは強力ですが、構文が難解です。AIに「<billing@example.com>からのすべてのメールをBillingフォルダに振り分ける」などと依頼すれば、RFC 5228仕様に触れずに動作するスクリプトを作成してくれます。
 
-CardDAVツールを使用して、すべての連絡先をリスト表示し、重複を見つけ、古い情報を更新したり、チャットに貼り付けたスプレッドシートから連絡先を一括作成したりできます。（エイリアス認証情報が必要です。）
+### 8. Team Onboarding {#8-team-onboarding}
 
-### 6. カレンダー管理 {#calendar-management}
+新しいチームメンバーが参加したら、AIにエイリアスの作成、パスワード生成、認証情報を含む歓迎メールの送信、ドメインメンバーへの追加を依頼しましょう。1つのプロンプトで4つのAPIコールを実行します。
 
-カレンダーの作成、イベントの追加、会議時間の更新、キャンセルされたイベントの削除を、すべて会話を通じて行えます。CalDAVツールは、カレンダーとイベントの両方で完全なCRUDをサポートしています。（エイリアス認証情報が必要です。）
+### 9. Security Auditing {#9-security-auditing}
 
-### 7. Sieveスクリプトの自動化 {#sieve-script-automation}
+AIにすべてのドメイン一覧、DNS検証状況、エイリアス設定の確認、未検証レコードのあるドメインの特定を依頼しましょう。自然言語での迅速なセキュリティチェックです。
 
-Sieveスクリプトは強力ですが、構文は難解です。AIにSieveスクリプトの作成を依頼します。「billing@example.comからのすべてのメールをBillingフォルダにフィルタリングする」という指示が、RFC 5228仕様に触れることなく動作するスクリプトになります。
+### 10. Email Forwarding Setup {#10-email-forwarding-setup}
 
-### 8. チームのオンボーディング {#team-onboarding}
+新しいドメインのメール転送を設定する際は、AIにドメイン作成、転送エイリアス追加、DNSレコードの暗号化、設定の正確な検証を依頼しましょう。
 
-新しいチームメンバーが参加したら、AIにエイリアスの作成、パスワードの生成、認証情報を含むウェルカムメールの送信、ドメインメンバーへの追加を依頼します。1つのプロンプトで4つのAPI呼び出しが実行されます。
+### 11. Inbox Search and Analysis {#11-inbox-search-and-analysis}
 
-### 9. セキュリティ監査 {#security-auditing}
+メッセージ検索ツールを使って特定のメールを探せます：「過去30日間に<john@example.com>からの添付ファイル付きメールをすべて見つけて」。15以上の検索パラメータで強力です。*(エイリアス認証情報が必要です。)*
 
-AIにすべてのドメインをリスト表示させ、DNS検証ステータスを確認させ、エイリアス設定をレビューさせ、未検証のレコードを持つドメインを特定させます。自然言語での迅速なセキュリティチェックです。
+### 12. Folder Organization {#12-folder-organization}
 
-### 10. メール転送設定 {#email-forwarding-setup}
+AIに新しいプロジェクト用のフォルダ構造作成、フォルダ間のメッセージ移動、不要になった古いフォルダの整理を依頼しましょう。*(エイリアス認証情報が必要です。)*
 
-新しいドメインのメール転送を設定しますか？AIにドメインの作成、転送エイリアスの追加、DNSレコードの暗号化、すべてが正しく設定されていることの検証を依頼します。
+### 13. Password Rotation {#13-password-rotation}
 
-### 11. 受信トレイの検索と分析 {#inbox-search-and-analysis}
+定期的にエイリアスの新しいパスワードを生成します。AIに各エイリアスの新パスワード生成と新しい認証情報の報告を依頼しましょう。
 
-メッセージ検索ツールを使用して特定のメールを見つけます。「過去30日間にjohn@example.comから送信され、添付ファイルがある未読メールをすべて見つけてください。」15以上の検索パラメーターにより、強力な検索が可能です。（エイリアス認証情報が必要です。）
+### 14. DNS Record Encryption {#14-dns-record-encryption}
 
-### 12. フォルダの整理 {#folder-organization}
+転送レコードをDNSに追加する前に暗号化します。`encryptRecord`ツールは認証不要でこれを処理します — 簡単な一時的暗号化に便利です。
 
-AIに新しいプロジェクトのフォルダ構造の作成、フォルダ間のメッセージの移動、不要になった古いフォルダのクリーンアップを依頼します。（エイリアス認証情報が必要です。）
+### 15. Delivery Log Analysis {#15-delivery-log-analysis}
 
-### 13. パスワードの定期的な変更 {#password-rotation}
+メール配信ログをダウンロードし、AIにバウンス率の分析、問題のある受信者の特定、配信時間の追跡を依頼しましょう。
 
-エイリアスの新しいパスワードを定期的に生成します。AIに各エイリアスの新しいパスワードを生成させ、新しい認証情報を報告させます。
+### 16. Multi-Domain Management {#16-multi-domain-management}
 
-### 14. DNSレコードの暗号化 {#dns-record-encryption}
+複数ドメインを管理している場合、AIにステータスレポートを依頼しましょう：どのドメインが検証済みか、問題のあるドメイン、各ドメインのエイリアス数、送信制限の状況など。
 
-DNSに追加する前に転送レコードを暗号化します。`encryptRecord`ツールは認証なしでこれを処理します。迅速な単発の暗号化に便利です。
+### 17. Catch-All Configuration {#17-catch-all-configuration}
 
-### 15. 配信ログ分析 {#delivery-log-analysis}
+任意のアドレスでメールを受信する必要があるドメインのキャッチオールパスワードを設定します。AIはこれらのパスワードの作成、一覧表示、管理を行えます。
 
-メール配信ログをダウンロードし、AIにバウンス率の分析、問題のある受信者の特定、配信時間の追跡を依頼します。
+### 18. Domain Invite Management {#18-domain-invite-management}
 
-### 16. マルチドメイン管理 {#multi-domain-management}
+チームメンバーをドメイン管理に招待し、保留中の招待状を確認し、期限切れのものを整理しましょう。複数のドメイン管理者がいる組織に便利です。
 
-複数のドメインを管理している場合、AIにステータスレポートを依頼します。どのドメインが検証済みか、問題があるか、各ドメインにいくつのエイリアスがあるか、送信制限はどのようになっているかなどです。
+### 19. S3 Storage Testing {#19-s3-storage-testing}
 
-### 17. キャッチオール設定 {#catch-all-configuration}
+メールバックアップ用にカスタムS3ストレージを使用している場合、AIに接続テストと正常動作の検証を依頼しましょう。
 
-任意のメールアドレスでメールを受信する必要があるドメインにキャッチオールパスワードを設定します。AIはこれらのパスワードを作成、リスト表示、管理できます。
+### 20. Email Draft Composition {#20-email-draft-composition}
 
-### 18. ドメイン招待管理 {#domain-invite-management}
+送信せずにメールボックス内に下書きメールを作成します。送信前のレビュー用メールやメールテンプレート作成に便利です。*(エイリアス認証情報が必要です。)*
 
-チームメンバーをドメイン管理に招待したり、保留中の招待を確認したり、期限切れの招待をクリーンアップしたりできます。複数のドメイン管理者がいる組織に役立ちます。
 
-### 19. S3ストレージのテスト {#s3-storage-testing}
+## Example Prompts {#example-prompts}
 
-メールバックアップにカスタムS3ストレージを使用している場合、AIに接続をテストさせ、正しく動作していることを確認させます。
+AIアシスタントに直接使えるプロンプト例はこちらです：
 
-### 20. メール下書きの作成 {#email-draft-composition}
+**メール送信：**
 
-送信せずにメールボックスに下書きメールを作成します。送信前にレビューが必要なメールの準備や、メールテンプレートの作成に役立ちます。（エイリアス認証情報が必要です。）
-
-
-## プロンプト例 {#example-prompts}
-
-AIアシスタントで直接使用できるプロンプトを以下に示します。
-
-**メール送信:**
-> 「hello@mydomain.comからjohn@example.comに件名『明日の会議』、本文『ジョンさん、午後2時でまだ大丈夫ですか？』というメールを送ってください。」
-
+> "<hello@mydomain.com>から<john@example.com>へ、件名『明日のミーティング』、本文『ジョンさん、午後2時の予定はまだ大丈夫ですか？』のメールを送ってください。"
 **ドメイン管理:**
-> 「私のすべてのドメインをリスト表示し、DNSレコードが未検証のものを教えてください。」
+
+> "私のすべてのドメインをリストアップし、未検証のDNSレコードがあるものを教えてください。"
 
 **エイリアス作成:**
-> 「私の個人メールに転送される新しいエイリアス support@mydomain.com を作成してください。」
 
-**受信トレイ検索 (エイリアス認証情報が必要):**
-> 「先週の未読メールで『請求書』に言及しているものをすべて見つけてください。」
+> "私の個人メールに転送する新しいエイリアス <support@mydomain.com> を作成してください。"
 
-**カレンダー (エイリアス認証情報が必要):**
-> 「『仕事』というカレンダーを作成し、明日の午後2時に『チームの進捗会議』という会議を追加してください。」
+**受信トレイ検索（エイリアス認証情報が必要）:**
+
+> "過去1週間の未読メールで「invoice」という言葉が含まれるものをすべて見つけてください。"
+
+**カレンダー（エイリアス認証情報が必要）:**
+
+> "「Work」というカレンダーを作成し、明日午後2時に「Team Standup」という会議を追加してください。"
 
 **Sieveスクリプト:**
-> 「info@mydomain.com宛てのメールに『ご連絡ありがとうございます。24時間以内に返信いたします。』と自動返信するSieveスクリプトを作成してください。」
+
+> "<info@mydomain.com> 用のSieveスクリプトを書いてください。内容は「お問い合わせありがとうございます。24時間以内にご連絡いたします。」という自動返信です。"
 
 **一括操作:**
-> 「mydomain.comにsales@、support@、billing@、info@のエイリアスを作成し、すべてteam@mydomain.comに転送してください。」
+
+> "mydomain.com の sales@、support@、billing@、info@ のエイリアスをすべて作成し、<team@mydomain.com> に転送してください。"
 
 **セキュリティチェック:**
-> 「私のすべてのドメインのDNSとSMTPの検証ステータスを確認し、注意が必要なものがあれば教えてください。」
 
-**エイリアスパスワードの生成:**
-> 「受信トレイにアクセスできるように、user@example.comエイリアスのパスワードを生成してください。」
+> "私のすべてのドメインのDNSとSMTPの検証状況をチェックし、注意が必要なものがあれば教えてください。"
+
+**エイリアスパスワード生成:**
+
+> "エイリアス <user@example.com> のパスワードを生成して、受信トレイにアクセスできるようにしてください。"
 
 
 ## 環境変数 {#environment-variables}
 
-| 変数 | 必須 | デフォルト | 説明 |
-|----------|----------|---------|-------------|
-| `FORWARD_EMAIL_API_KEY` | はい | — | Forward Email APIキー（APIキーエンドポイントのBasic認証ユーザー名として使用） |
-| `FORWARD_EMAIL_ALIAS_USER` | いいえ | — | メールボックスエンドポイントのエイリアスメールアドレス（例: `user@example.com`） |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | いいえ | — | メールボックスエンドポイントの生成されたエイリアスパスワード |
-| `FORWARD_EMAIL_API_URL` | いいえ | `https://api.forwardemail.net` | APIベースURL（セルフホストまたはテスト用） |
+| 変数名                         | 必須     | デフォルト                      | 説明                                                                           |
+| ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
+| `FORWARD_EMAIL_API_KEY`        | はい     | —                              | Forward Email APIキー（APIキーエンドポイントのBasic認証ユーザー名として使用） |
+| `FORWARD_EMAIL_ALIAS_USER`     | いいえ   | —                              | メールボックスエンドポイント用のエイリアスメールアドレス（例: `user@example.com`） |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | いいえ   | —                              | メールボックスエンドポイント用に生成されたエイリアスパスワード               |
+| `FORWARD_EMAIL_API_URL`        | いいえ   | `https://api.forwardemail.net` | APIのベースURL（セルフホストやテスト用）                                      |
 
 
 ## セキュリティ {#security}
 
-MCPサーバーはローカルマシンで実行されます。セキュリティの仕組みは次のとおりです。
+MCPサーバーはローカルのマシン上で動作します。セキュリティの仕組みは以下の通りです:
 
-*   **認証情報はローカルに保持されます。** APIキーとエイリアス認証情報の両方が環境変数から読み取られ、HTTP Basic認証を介してAPIリクエストの認証に使用されます。これらがAIモデルに送信されることはありません。
-*   **stdioトランスポート。** サーバーはstdin/stdoutを介してAIクライアントと通信します。ネットワークポートは開かれません。
-*   **データストレージなし。** サーバーはステートレスです。メールデータをキャッシュ、ログ記録、または保存することはありません。
-*   **オープンソース。** コードベース全体は[GitHub](https://github.com/forwardemail/mcp-server)で公開されています。すべての行を監査できます。
+* **認証情報はローカルに留まります。** APIキーとエイリアス認証情報は環境変数から読み込まれ、HTTP Basic認証を通じてAPIリクエストの認証に使用されます。AIモデルには一切送信されません。
+* **stdio通信。** サーバーはstdin/stdoutを介してAIクライアントと通信します。ネットワークポートは開放されません。
+* **データ保存なし。** サーバーはステートレスで、メールデータのキャッシュ、ログ、保存は行いません。
+* **オープンソース。** コードベースはすべて[GitHub](https://github.com/forwardemail/mcp-server)に公開されています。すべてのコードを監査可能です。
 
 
-## プログラムによる使用法 {#programmatic-usage}
+## プログラムによる利用 {#programmatic-usage}
 
-サーバーはライブラリとしても使用できます。
+サーバーはライブラリとしても使用できます:
 
 ```js
 const { McpServer } = require('@forwardemail/mcp-server');
@@ -503,4 +526,4 @@ server.listen();
 
 ## オープンソース {#open-source}
 
-Forward Email MCPサーバーは、BUSL-1.1ライセンスの下で[GitHub](https://github.com/forwardemail/mcp-server)でオープンソースとして公開されています。私たちは透明性を信じています。バグを見つけたり、機能が必要な場合は、[問題を報告してください](https://github.com/forwardemail/mcp-server/issues)。
+Forward Email MCP Serverは[GitHubでオープンソース](https://github.com/forwardemail/mcp-server)として公開されており、BUSL-1.1ライセンスの下で提供されています。私たちは透明性を重視しています。バグを見つけた場合や機能要望がある場合は、[issueを開いてください](https://github.com/forwardemail/mcp-server/issues)。

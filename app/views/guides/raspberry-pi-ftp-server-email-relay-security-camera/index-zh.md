@@ -1,135 +1,138 @@
-# Turn Your Raspberry Pi into a Secure FTP Server with Email Relay {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
+# 将您的树莓派变成带邮件中继的安全FTP服务器 {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide will show you how to turn it into a powerful, automated file server with email relay capabilities. Perfect for security cameras, IoT devices, and more.
+有一台闲置的树莓派吗？无论是最新的Pi 5、Pi 4、Pi Zero，还是更旧的型号，本指南将教您如何将其变成一个强大且自动化的文件服务器，并具备邮件中继功能。非常适合安全摄像头、物联网设备等。
 
-**Compatible with:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, and Raspberry Pi Zero.
-
-> \[!NOTE]
-> This guide was tested and verified on a Raspberry Pi 3 Model B running Ubuntu Server 22.04 LTS.
-
-## Table of Contents {#table-of-contents}
-
-* [What We're Building](#what-were-building)
-* [Part 1: Getting Ubuntu Server on Your Pi](#part-1-getting-ubuntu-server-on-your-pi)
-  * [What You'll Need](#what-youll-need)
-  * [Flashing the OS](#flashing-the-os)
-  * [Booting Up & Connecting](#booting-up--connecting)
-* [Part 2: Setting Up a Secure FTP Server](#part-2-setting-up-a-secure-ftp-server)
-  * [Installation & Configuration](#installation--configuration)
-  * [Creating an FTP User](#creating-an-ftp-user)
-* [Part 3: Firewall and Brute-Force Protection](#part-3-firewall-and-brute-force-protection)
-  * [Setting Up UFW](#setting-up-ufw)
-  * [Setting Up Fail2ban](#setting-up-fail2ban)
-* [Part 4: Automated File Processing with Email Notifications](#part-4-automated-file-processing-with-email-notifications)
-  * [Option 1: Using Forward Email API (Recommended)](#option-1-using-forward-email-api-recommended)
-  * [Option 2: Using Other Email Providers](#option-2-using-other-email-providers)
-  * [Create a Systemd Service](#create-a-systemd-service)
-* [Part 5: Email Options for Legacy Devices](#part-5-email-options-for-legacy-devices)
-  * [Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
-  * [Option 2: Set Up a Postfix SMTP Relay](#option-2-set-up-a-postfix-smtp-relay)
-* [Troubleshooting](#troubleshooting)
-* [Wrapping Up](#wrapping-up)
-
-## What We're Building {#what-were-building}
-
-This guide will walk you through setting up a complete system that includes:
-
-* **Ubuntu Server 22.04 LTS:** A rock-solid, lightweight OS for the Pi.
-* **A Secure FTP Server (vsftpd):** For dropping off files securely.
-* **A Firewall (UFW) & Fail2ban:** To keep the bad guys out.
-* **An Automated File Processor:** A script that grabs new files, emails them as attachments, and then cleans up after itself.
-* **Email Options for Legacy Devices:** Two approaches for devices that don't support modern TLS:
-  * Use Forward Email's legacy TLS 1.0 ports (easiest)
-  * Set up a Postfix SMTP relay (works with any email provider)
-
-Ready? Let's dive in.
-
-## Part 1: Getting Ubuntu Server on Your Pi {#part-1-getting-ubuntu-server-on-your-pi}
-
-First things first, get Ubuntu Server running on the Raspberry Pi. This is surprisingly easy thanks to the Raspberry Pi Imager.
-
-### What You'll Need {#what-youll-need}
-
-* Any compatible Raspberry Pi (see list above)
-* A microSD card (8GB minimum, 16GB+ recommended)
-* A computer with a microSD card reader
-* Appropriate power supply for your Pi model
-* Internet access (Ethernet or Wi-Fi)
+**兼容型号：** Raspberry Pi 5、Raspberry Pi 4 Model B、Raspberry Pi 3 Model B+、Raspberry Pi 3 Model B、Raspberry Pi 2 Model B、Raspberry Pi Zero 2 W、Raspberry Pi Zero W 和 Raspberry Pi Zero。
 
 > \[!NOTE]
-> Older models like the Raspberry Pi 2 or Pi Zero may be slower but will work fine for this setup.
+> 本指南已在运行 Ubuntu Server 22.04 LTS 的 Raspberry Pi 3 Model B 上测试验证。
 
-### Flashing the OS {#flashing-the-os}
 
-1. **Get the Raspberry Pi Imager:** Download it from the [official website](https://www.raspberrypi.com/software/).
+## 目录 {#table-of-contents}
 
-2. **Choose the OS:** In the imager, select "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
-   * For 64-bit models (Pi 3, 4, 5, Zero 2 W), choose **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
-   * For older 32-bit models (Pi 2, Pi Zero, Pi Zero W), choose **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+* [我们要构建的内容](#what-were-building)
+* [第1部分：在您的Pi上安装Ubuntu Server](#part-1-getting-ubuntu-server-on-your-pi)
+  * [您需要准备的东西](#what-youll-need)
+  * [刷写操作系统](#flashing-the-os)
+  * [启动与连接](#booting-up--connecting)
+* [第2部分：设置安全FTP服务器](#part-2-setting-up-a-secure-ftp-server)
+  * [安装与配置](#installation--configuration)
+  * [创建FTP用户](#creating-an-ftp-user)
+* [第3部分：防火墙和暴力破解防护](#part-3-firewall-and-brute-force-protection)
+  * [设置UFW](#setting-up-ufw)
+  * [设置Fail2ban](#setting-up-fail2ban)
+* [第4部分：自动文件处理与邮件通知](#part-4-automated-file-processing-with-email-notifications)
+  * [选项1：使用 Forward Email API（推荐）](#option-1-using-forward-email-api-recommended)
+  * [选项2：使用其他邮件服务提供商](#option-2-using-other-email-providers)
+  * [创建Systemd服务](#create-a-systemd-service)
+* [第5部分：旧设备的邮件选项](#part-5-email-options-for-legacy-devices)
+  * [选项1：使用 Forward Email 的旧版 TLS 1.0 端口（推荐）](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
+  * [选项2：设置Postfix SMTP中继](#option-2-set-up-a-postfix-smtp-relay)
+* [故障排除](#troubleshooting)
+* [总结](#wrapping-up)
 
-3. **Pick Your Storage:** Select your microSD card.
+
+## 我们要构建的内容 {#what-were-building}
+
+本指南将引导您搭建一个完整系统，包括：
+
+* **Ubuntu Server 22.04 LTS：** 适合树莓派的稳定轻量级操作系统。
+* **安全FTP服务器（vsftpd）：** 用于安全地上传文件。
+* **防火墙（UFW）和Fail2ban：** 防止恶意攻击。
+* **自动文件处理器：** 脚本自动抓取新文件，将其作为附件发送邮件，然后自动清理。
+* **旧设备的邮件选项：** 两种适用于不支持现代TLS的设备的方案：
+  * 使用 Forward Email 的旧版 TLS 1.0 端口（最简单）
+  * 设置 Postfix SMTP 中继（适用于任何邮件服务提供商）
+
+准备好了吗？我们开始吧。
+
+
+## 第1部分：在您的Pi上安装Ubuntu Server {#part-1-getting-ubuntu-server-on-your-pi}
+
+首先，让树莓派运行Ubuntu Server。借助树莓派官方Imager，这一步非常简单。
+
+### 您需要准备的东西 {#what-youll-need}
+
+* 任何兼容的树莓派（见上方列表）
+* 一张microSD卡（至少8GB，推荐16GB及以上）
+* 带microSD卡读卡器的电脑
+* 适合您Pi型号的电源适配器
+* 网络连接（以太网或Wi-Fi）
+
+> \[!NOTE]
+> 较旧型号如 Raspberry Pi 2 或 Pi Zero 速度可能较慢，但完全可以满足本教程需求。
+
+### 刷写操作系统 {#flashing-the-os}
+
+1. **获取树莓派Imager：** 从[官方网站](https://www.raspberrypi.com/software/)下载。
+
+2. **选择操作系统：** 在Imager中选择“CHOOSE OS” > “Other general-purpose OS” > “Ubuntu”。
+   * 对于64位型号（Pi 3、4、5、Zero 2 W），选择 **“Ubuntu Server 22.04.1 LTS (64-bit)”**。
+   * 对于较旧的32位型号（Pi 2、Pi Zero、Pi Zero W），选择 **“Ubuntu Server 22.04.1 LTS (32-bit)”**。
+
+3. **选择存储设备：** 选择您的microSD卡。
 
 > \[!WARNING]
-> This will wipe your microSD card clean. Make sure you've backed up anything important.
+> 这将清空您的microSD卡。请确保已备份重要数据。
 
-4. **Advanced Options are Your Friend:** Click the gear icon (⚙️) to set up the Pi for headless mode (no monitor or keyboard needed).
-   * **Hostname:** Give your Pi a name (e.g., `pi-server`).
-   * **SSH:** Enable it and set a username and password.
-   * **Wi-Fi:** If you're not using Ethernet, enter your Wi-Fi details.
-   * **Locale:** Set your timezone and keyboard layout.
+4. **高级选项帮大忙：** 点击齿轮图标（⚙️）设置Pi为无头模式（无需显示器和键盘）。
+   * **主机名：** 给您的Pi起个名字（例如 `pi-server`）。
+   * **SSH：** 启用并设置用户名和密码。
+   * **Wi-Fi：** 如果不使用以太网，输入Wi-Fi信息。
+   * **区域设置：** 设置时区和键盘布局。
+5. **写入！** 点击“WRITE”按钮，让镜像程序开始工作。
 
-5. **Write!** Click the "WRITE" button and let the imager do its thing.
+### 启动与连接 {#booting-up--connecting}
 
-### Booting Up & Connecting {#booting-up--connecting}
-
-Once the imager is done, pop the microSD card into the Pi and plug it in. Give it a few minutes to boot up. It's doing some initial setup in the background. Find its IP address from your router's admin page, then connect via SSH:
+镜像写入完成后，将 microSD 卡插入树莓派并接通电源。等待几分钟让它启动。它正在后台进行一些初始设置。从路由器的管理页面找到它的 IP 地址，然后通过 SSH 连接：
 
 ```bash
 ssh your_username@your_pi_ip_address
 ```
 
-You're in! The Raspberry Pi is now ready for configuration.
+你已进入系统！树莓派现在可以进行配置了。
 
-## Part 2: Setting Up a Secure FTP Server {#part-2-setting-up-a-secure-ftp-server}
 
-Next, set up `vsftpd` (Very Secure FTP Daemon), configured for maximum security.
+## 第二部分：设置安全的 FTP 服务器 {#part-2-setting-up-a-secure-ftp-server}
 
-### Installation & Configuration {#installation--configuration}
+接下来，设置 `vsftpd`（非常安全的 FTP 守护进程），配置为最高安全级别。
 
-1. **Install vsftpd:**
+### 安装与配置 {#installation--configuration}
+
+1. **安装 vsftpd：**
 
    ```bash
    sudo apt update
    sudo apt install vsftpd -y
    ```
 
-2. **Backup the config file:**
+2. **备份配置文件：**
 
    ```bash
    sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
    ```
 
-3. **Edit the configuration:**
+3. **编辑配置文件：**
 
    ```bash
    sudo nano /etc/vsftpd.conf
    ```
 
 > \[!TIP]
-> If a line is commented out (starts with a `#`), uncomment it by removing the `#`.
+> 如果某行被注释（以 `#` 开头），请去掉 `#` 取消注释。
 
-Make these changes:
+进行如下修改：
 
-| Setting | 價值 | 目的 (mùdiǎn) |
-| ------------------------ | ----- | --------------------------------------------------------- |
-| `anonymous_enable` | `NO` | Disable anonymous FTP access |
-| `local_enable` | `YES` | Allow local users to log in |
-| `write_enable` | `YES` | Enable file uploads |
-| `local_umask` | `022` | Set file permissions (644 for files, 755 for directories) |
-| `chroot_local_user` | `YES` | Jail users to their home directory |
-| `allow_writeable_chroot` | `YES` | Allow uploads in chroot jail |
+| 设置                     | 值    | 作用                                                     |
+| ------------------------ | ----- | -------------------------------------------------------- |
+| `anonymous_enable`       | `NO`  | 禁止匿名 FTP 访问                                        |
+| `local_enable`           | `YES` | 允许本地用户登录                                         |
+| `write_enable`           | `YES` | 启用文件上传                                             |
+| `local_umask`            | `022` | 设置文件权限（文件为 644，目录为 755）                   |
+| `chroot_local_user`      | `YES` | 将用户限制在其主目录内                                   |
+| `allow_writeable_chroot` | `YES` | 允许在 chroot 环境中上传文件                             |
 
-4. **Add Passive Port Range:** Add these lines to the end of the file. This is needed for the firewall.
+4. **添加被动端口范围：** 在文件末尾添加以下内容。此设置用于防火墙。
 
    ```
    pasv_enable=YES
@@ -137,7 +140,7 @@ Make these changes:
    pasv_max_port=50000
    ```
 
-5. **Enable Logging:** Add these lines to enable logging for Fail2ban.
+5. **启用日志记录：** 添加以下内容以启用 Fail2ban 的日志功能。
 
    ```
    xferlog_enable=YES
@@ -145,34 +148,34 @@ Make these changes:
    log_ftp_protocol=YES
    ```
 
-6. **Save and Restart:** Press `Ctrl+O`, `Enter`, `Ctrl+X`, then restart the service:
+6. **保存并重启服务：** 按 `Ctrl+O`，回车，`Ctrl+X`，然后重启服务：
 
    ```bash
    sudo systemctl restart vsftpd
    ```
 
-### Creating an FTP User {#creating-an-ftp-user}
+### 创建 FTP 用户 {#creating-an-ftp-user}
 
-Create a dedicated, restricted user for FTP access.
+创建一个专用且受限的用户用于 FTP 访问。
 
-1. **Create the user:**
+1. **创建用户：**
 
    ```bash
    sudo adduser ftpuser
    ```
 
-Follow the prompts to set a password. The other fields (name, phone, etc.) can be left blank.
+   按提示设置密码。其他字段（姓名、电话等）可以留空。
 
-2. **Create the directory structure:**
+2. **创建目录结构：**
 
    ```bash
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-* `/home/ftpuser/ftp` - Main FTP directory
-   * `/home/ftpuser/ftp/uploads` - Where files will be uploaded
+   * `/home/ftpuser/ftp` - 主要 FTP 目录
+   * `/home/ftpuser/ftp/uploads` - 文件上传目录
 
-3. **Set permissions:**
+3. **设置权限：**
 
    ```bash
    sudo chown -R ftpuser:ftpuser /home/ftpuser/ftp
@@ -180,35 +183,36 @@ Follow the prompts to set a password. The other fields (name, phone, etc.) can b
    sudo chmod 755 /home/ftpuser/ftp/uploads
    ```
 
-## Part 3: Firewall and Brute-Force Protection {#part-3-firewall-and-brute-force-protection}
 
-Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
+## 第三部分：防火墙与暴力破解防护 {#part-3-firewall-and-brute-force-protection}
 
-### Setting Up UFW {#setting-up-ufw}
+使用 UFW（简单防火墙）和 Fail2ban 保护树莓派安全。
 
-1. **Install UFW:**
+### 设置 UFW {#setting-up-ufw}
+
+1. **安装 UFW：**
 
    ```bash
    sudo apt install ufw -y
    ```
 
-2. **Set default policies:**
+2. **设置默认策略：**
 
    ```bash
    sudo ufw default deny incoming
    sudo ufw default allow outgoing
    ```
 
-3. **Allow SSH (critical!):**
+3. **允许 SSH（关键！）：**
 
    ```bash
    sudo ufw allow ssh comment 'SSH access'
    ```
 
 > \[!WARNING]
-> Always allow SSH before enabling the firewall, or you'll lock yourself out!
+> 启用防火墙前务必允许 SSH，否则你会被锁在外面！
 
-4. **Allow FTP ports:**
+4. **允许 FTP 端口：**
 
    ```bash
    sudo ufw allow 20/tcp comment 'FTP data'
@@ -216,30 +220,29 @@ Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
    sudo ufw allow 40000:50000/tcp comment 'FTP passive mode'
    ```
 
-5. **Enable the firewall:**
+5. **启用防火墙：**
 
    ```bash
    sudo ufw enable
    ```
 
-### Setting Up Fail2ban {#setting-up-fail2ban}
+### 设置 Fail2ban {#setting-up-fail2ban}
 
-Fail2ban automatically blocks IP addresses after repeated failed login attempts.
+Fail2ban 会在多次登录失败后自动封锁 IP 地址。
 
-1. **Install Fail2ban:**
+1. **安装 Fail2ban：**
 
    ```bash
    sudo apt install fail2ban -y
    ```
 
-2. **Create a local configuration:**
+2. **创建本地配置文件：**
 
    ```bash
    sudo nano /etc/fail2ban/jail.local
    ```
 
-3. **Add these configurations:**
-
+3. **添加以下配置：**
    ```ini
    [DEFAULT]
    bantime = 3600
@@ -263,6 +266,7 @@ Fail2ban automatically blocks IP addresses after repeated failed login attempts.
    ```bash
    sudo systemctl restart fail2ban
    ```
+
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
@@ -458,23 +462,23 @@ do
 done
 ```
 
-Make it executable:
+使其可执行：
 
 ```bash
 sudo chmod +x /usr/local/bin/ftp-monitor.sh
 ```
 
-### Create a Systemd Service {#create-a-systemd-service}
+### 创建 Systemd 服务 {#create-a-systemd-service}
 
 ```bash
 sudo nano /etc/systemd/system/ftp-monitor.service
 ```
 
-Add this content:
+添加以下内容：
 
 ```ini
 [Unit]
-Description=FTP Upload Monitor
+Description=FTP 上传监控
 After=network.target
 
 [Service]
@@ -487,7 +491,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable and start the service:
+启用并启动服务：
 
 ```bash
 sudo systemctl daemon-reload
@@ -495,111 +499,110 @@ sudo systemctl enable ftp-monitor.service
 sudo systemctl start ftp-monitor.service
 ```
 
-Check the status:
+检查状态：
 
 ```bash
 sudo systemctl status ftp-monitor.service
 ```
 
-## Part 5: Email Options for Legacy Devices {#part-5-email-options-for-legacy-devices}
 
-Devices like FOSSCAM cameras often don't support modern TLS versions. There are two solutions:
+## 第5部分：旧设备的电子邮件选项 {#part-5-email-options-for-legacy-devices}
 
-### Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
+像 FOSSCAM 摄像头这样的设备通常不支持现代 TLS 版本。有两种解决方案：
 
-If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports specifically for older devices like cameras, printers, scanners, and fax machines.
+### 选项1：使用 Forward Email 的旧版 TLS 1.0 端口（推荐） {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-#### Pricing {#pricing}
+如果您使用 Forward Email，这是最简单的解决方案。Forward Email 提供专门针对旧设备（如摄像头、打印机、扫描仪和传真机）的旧版 TLS 1.0 端口。
 
-Forward Email offers several plans:
+#### 价格 {#pricing}
 
-| Plan | Price | Features |
+Forward Email 提供多个套餐：
+
+| 套餐                    | 价格         | 功能                                   |
 | ----------------------- | ------------ | -------------------------------------- |
-| Free | $0/month | Email forwarding only (no sending) |
-| **Enhanced Protection** | **$3/month** | **SMTP access + legacy TLS 1.0 ports** |
-| Team | $9/month | Enhanced + team features |
-| Enterprise | $250/month | Team + unlimited API requests |
+| 免费                    | $0/月        | 仅邮件转发（不支持发送）               |
+| **增强保护**            | **$3/月**    | **SMTP 访问 + 旧版 TLS 1.0 端口**       |
+| 团队                    | $9/月        | 增强功能 + 团队功能                     |
+| 企业                    | $250/月      | 团队功能 + 无限 API 请求                 |
 
 > \[!IMPORTANT]
-> The **Enhanced Protection plan ($3/month)** or higher is required for SMTP access and legacy TLS 1.0 port support.
+> 需要 **增强保护套餐（$3/月）** 或更高级别套餐才能使用 SMTP 访问和旧版 TLS 1.0 端口支持。
 
-Learn more at [Forward Email Pricing](https://forwardemail.net/en/pricing).
+了解更多请访问 [Forward Email Pricing](https://forwardemail.net/en/pricing)。
 
-#### Generate Your Password {#generate-your-password}
+#### 生成您的密码 {#generate-your-password}
 
-Before configuring your device, generate a password in Forward Email:
+在配置设备之前，请在 Forward Email 中生成密码：
 
-1. Log in to [Forward Email](https://forwardemail.net)
-2. Navigate to **My Account → Domains → \[Your Domain] → Aliases**
-3. Create or select an alias (e.g., `camera@yourdomain.com`)
-4. Click **"Generate Password"** next to the alias
-5. Copy the generated password - you'll use this for SMTP authentication
+1. 登录 [Forward Email](https://forwardemail.net)
+2. 进入 **我的账户 → 域名 → \[您的域名] → 别名**
+3. 创建或选择一个别名（例如 `camera@yourdomain.com`）
+4. 点击别名旁的 **“生成密码”**
+5. 复制生成的密码 — 您将在 SMTP 认证时使用它
 
 > \[!TIP]
-> Each alias can have its own password. This is useful for tracking which device sent which email.
+> 每个别名可以有自己的密码。这有助于跟踪哪个设备发送了邮件。
 
-#### Configure Your Device {#configure-your-device}
+#### 配置您的设备 {#configure-your-device}
 
-Use these settings in your camera, printer, scanner, or other legacy device:
+在您的摄像头、打印机、扫描仪或其他旧设备中使用以下设置：
 
-| Setting | 價值 |
-| --------------- | ------------------------------------------------ |
-| SMTP Server | `smtp.forwardemail.net` |
-| Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` (alternative) |
-| 用户名 | Your alias email (e.g., `camera@yourdomain.com`) |
-| 密碼 | The password from "Generate Password" |
-| Authentication | 必須 |
-| Encryption | SSL/TLS or STARTTLS |
+| 设置           | 值                                               |
+| -------------- | ------------------------------------------------ |
+| SMTP 服务器    | `smtp.forwardemail.net`                          |
+| 端口（SSL/TLS）| `2455`                                           |
+| 端口（STARTTLS）| `2555`（备用）                                  |
+| 用户名         | 您的别名邮箱（例如 `camera@yourdomain.com`）    |
+| 密码           | “生成密码”中获得的密码                           |
+| 认证           | 必须                                            |
+| 加密           | SSL/TLS（推荐）或 STARTTLS                        |
 
 > \[!WARNING]
-> These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Use only if your device cannot support modern TLS 1.2+.
+> 这些端口使用已废弃的 TLS 1.0 协议，存在已知安全漏洞（BEAST、POODLE）。仅当您的设备无法支持现代 TLS 1.2+ 时使用。
 
-Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
+只需用这些设置配置设备，它就会直接通过 Forward Email 发送邮件，无需本地中继服务器。
 
-For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
+更多详情请参见 [Forward Email 关于旧版 TLS 支持的常见问题](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings)。
 
-### Option 2: Set Up a Postfix SMTP Relay {#option-2-set-up-a-postfix-smtp-relay}
+### 选项2：设置 Postfix SMTP 中继 {#option-2-set-up-a-postfix-smtp-relay}
 
-If you're not using Forward Email, or prefer a local relay solution, set up Postfix on the Raspberry Pi to act as a middleman. This works with any email provider (Gmail, Outlook, Yahoo, AOL, etc.).
+如果您不使用 Forward Email，或者更喜欢本地中继方案，可以在 Raspberry Pi 上设置 Postfix 作为中间人。这适用于任何邮件提供商（Gmail、Outlook、Yahoo、AOL 等）。
 
-#### Install Postfix {#install-postfix}
+#### 安装 Postfix {#install-postfix}
 
 ```bash
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules -y
 ```
+安装过程中：
 
-During installation:
+* 选择 **“Internet Site”**
+* 在“系统邮件名称”中输入您的 Pi 主机名（例如，`raspberrypi-ftp`）
 
-* Select **"Internet Site"**
-* Enter your Pi's hostname (e.g., `raspberrypi-ftp`) for "System mail name"
+#### 选择您的电子邮件提供商 {#choose-your-email-provider}
 
-#### Choose Your Email Provider {#choose-your-email-provider}
+| 提供商   | SMTP 服务器             | 端口 | 是否需要应用专用密码？ |
+| -------- | ----------------------- | ---- | ---------------------- |
+| Gmail    | smtp.gmail.com          | 587  | 是                     |
+| Outlook  | smtp-mail.outlook.com   | 587  | 是                     |
+| Yahoo    | smtp.mail.yahoo.com     | 465  | 是                     |
+| AOL      | smtp.aol.com            | 587  | 是                     |
 
-| 供應商 | SMTP Server | Port | App Password Required? |
-| -------- | --------------------- | ---- | ---------------------- |
-| Gmail
-Gmail | smtp.gmail.com | 587 | 是 |
-| Outlook | smtp-mail.outlook.com | 587 | 是 |
-| Yahoo | smtp.mail.yahoo.com | 465 | 是 |
-| AOL | smtp.aol.com | 587 | 是 |
+#### 获取应用专用密码 {#get-an-app-specific-password}
 
-#### Get an App-Specific Password {#get-an-app-specific-password}
+大多数提供商要求第三方应用使用应用专用密码。请从您的电子邮件提供商的安全设置中生成：
 
-Most providers require app passwords for third-party applications. Generate one from your email provider's security settings:
-
-* **Gmail:** [Google Account Security](https://myaccount.google.com/security)
-* **Outlook:** [Microsoft Account Security](https://account.microsoft.com/security)
-* **Yahoo:** [Yahoo Account Security](https://login.yahoo.com/account/security)
-* **AOL:** [AOL Account Security](https://login.aol.com/account/security)
+* **Gmail:** [Google 账户安全](https://myaccount.google.com/security)
+* **Outlook:** [Microsoft 账户安全](https://account.microsoft.com/security)
+* **Yahoo:** [Yahoo 账户安全](https://login.yahoo.com/account/security)
+* **AOL:** [AOL 账户安全](https://login.aol.com/account/security)
 
 > \[!IMPORTANT]
-> Never use your regular email password. Always use an app-specific password.
+> 切勿使用您的常规电子邮件密码。始终使用应用专用密码。
 
-#### Configure SASL Authentication {#configure-sasl-authentication}
+#### 配置 SASL 认证 {#configure-sasl-authentication}
 
-Create the password file for your chosen provider. This example uses Yahoo:
+为您选择的提供商创建密码文件。此示例使用 Yahoo：
 
 ```bash
 sudo mkdir -p /etc/postfix/sasl
@@ -607,28 +610,28 @@ sudo chmod 700 /etc/postfix/sasl
 sudo nano /etc/postfix/sasl/sasl_passwd
 ```
 
-Add this line (adjust server and port for your provider):
+添加此行（根据您的提供商调整服务器和端口）：
 
 ```
 [smtp.mail.yahoo.com]:465 your_email@yahoo.com:your_app_password
 ```
 
-For Gmail, use:
+Gmail 使用：
 
 ```
 [smtp.gmail.com]:587 your_email@gmail.com:your_app_password
 ```
 
-Secure and hash the file:
+保护并生成哈希文件：
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl/sasl_passwd
 sudo postmap /etc/postfix/sasl/sasl_passwd
 ```
 
-#### Configure Email Address Mapping {#configure-email-address-mapping}
+#### 配置电子邮件地址映射 {#configure-email-address-mapping}
 
-Rewrite local email addresses to match your email provider:
+重写本地电子邮件地址以匹配您的电子邮件提供商：
 
 ```bash
 sudo mkdir -p /etc/postfix/map
@@ -636,42 +639,42 @@ sudo chmod 700 /etc/postfix/map
 sudo nano /etc/postfix/map/regex_map
 ```
 
-Add this line (replace `HOSTNAME` with your Pi's hostname and use your email):
+添加此行（将 `HOSTNAME` 替换为您的 Pi 主机名，并使用您的电子邮件）：
 
 ```
 /.+@HOSTNAME/    your_email@provider.com
 ```
 
-Example:
+示例：
 
 ```
 /.+@raspberrypi-ftp/    john@yahoo.com
 ```
 
-Secure the file:
+保护文件：
 
 ```bash
 sudo chmod 600 /etc/postfix/map/regex_map
 ```
 
-#### Configure Postfix Main Settings {#configure-postfix-main-settings}
+#### 配置 Postfix 主设置 {#configure-postfix-main-settings}
 
-Edit the main configuration:
+编辑主配置文件：
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-Find and update the relay host (or add at the end):
+找到并更新中继主机（或添加到文件末尾）：
 
 ```
 relayhost = [smtp.mail.yahoo.com]:465
 ```
 
-Add these settings at the end of the file:
+在文件末尾添加以下设置：
 
 ```
-# SMTP Relay Configuration
+# SMTP 中继配置
 smtp_use_tls = yes
 smtp_sasl_auth_enable = yes
 smtp_sasl_security_options = noanonymous
@@ -681,94 +684,95 @@ smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
 smtp_generic_maps = regexp:/etc/postfix/map/regex_map
 
-# Network settings
+# 网络设置
 inet_interfaces = all
 inet_protocols = ipv4
 mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 ```
 
 > \[!TIP]
-> For Gmail (port 587), set `smtp_tls_wrappermode = no` instead of `yes`.
+> 对于 Gmail（端口 587），将 `smtp_tls_wrappermode` 设置为 `no`，而不是 `yes`。
 
 > \[!WARNING]
-> Update `mynetworks` with your actual network range. Only add trusted networks - any device on these networks can relay mail without authentication.
+> 请根据您的实际网络范围更新 `mynetworks`。仅添加受信任的网络——这些网络上的任何设备都可以无需认证中继邮件。
 
-**Common network ranges:**
+**常见网络范围：**
 
-| Network Range | IP Address Range |
-| ---------------- | --------------------------- |
-| `192.168.0.0/24` | 192.168.0.1 - 192.168.0.254 |
-| `192.168.1.0/24` | 192.168.1.1 - 192.168.1.254 |
-| `10.0.0.0/8` | 10.0.0.0 - 10.255.255.255 |
+| 网络范围          | IP 地址范围                 |
+| ----------------- | --------------------------- |
+| `192.168.0.0/24`  | 192.168.0.1 - 192.168.0.254 |
+| `192.168.1.0/24`  | 192.168.1.1 - 192.168.1.254 |
+| `10.0.0.0/8`      | 10.0.0.0 - 10.255.255.255   |
 
-#### Update Firewall and Restart {#update-firewall-and-restart}
+#### 更新防火墙并重启 {#update-firewall-and-restart}
 
 ```bash
 sudo ufw allow 25/tcp comment 'SMTP for local devices'
 sudo systemctl restart postfix
 ```
 
-Verify Postfix is running:
+验证 Postfix 是否运行：
 
 ```bash
 sudo systemctl status postfix
 ```
 
-#### Test the Relay {#test-the-relay}
+#### 测试中继 {#test-the-relay}
 
-Send a test email:
+发送测试邮件：
 
 ```bash
 echo "Test from Postfix" | mail -s "Test" your_email@provider.com
 ```
 
-Check the logs:
+查看日志：
 
 ```bash
 sudo tail -f /var/log/mail.log
 ```
 
-Look for `status=sent` to confirm success.
+查找 `status=sent` 以确认成功。
 
-#### Configure Your Device {#configure-your-device-1}
+#### 配置您的设备 {#configure-your-device-1}
 
-In your camera or device settings:
+在您的摄像头或设备设置中：
+* **SMTP 服务器：** 你的树莓派 IP 地址（例如，`192.168.1.100`）
+* **SMTP 端口：** `25`
+* **认证：** 无
+* **加密：** 无（仅限本地网络）
 
-* **SMTP Server:** Your Pi's IP address (e.g., `192.168.1.100`)
-* **SMTP Port:** `25`
-* **Authentication:** None
-* **Encryption:** None (local network only)
 
-## Troubleshooting {#troubleshooting}
+## 故障排除 {#troubleshooting}
 
-If issues arise, check these log files:
+如果出现问题，请检查以下日志文件：
 
-**FTP Server:**
+**FTP 服务器：**
 
 ```bash
 sudo tail -f /var/log/vsftpd.log
 ```
 
-**Fail2ban:**
+**Fail2ban：**
 
 ```bash
 sudo fail2ban-client status
 sudo tail -f /var/log/fail2ban.log
 ```
 
-**File Monitor:**
+**文件监控：**
 
 ```bash
 sudo journalctl -u ftp-monitor.service -f
 ```
 
-**Postfix Mail:**
+**Postfix 邮件：**
 
 ```bash
 sudo tail -f /var/log/mail.log
-mailq  # View mail queue
+mailq  # 查看邮件队列
 ```
 
-## Wrapping Up {#wrapping-up}
 
-The Raspberry Pi is now a complete automated system with secure file uploads, automatic email notifications with attachments, and SMTP relay capabilities for legacy devices. Whether using Forward Email's legacy TLS ports or a local Postfix relay, older devices can now send emails reliably through modern email providers.
+## 总结 {#wrapping-up}
+
+树莓派现在是一个完整的自动化系统，具备安全的文件上传、带附件的自动邮件通知以及面向旧设备的 SMTP 中继功能。无论是使用 Forward Email 的传统 TLS 端口，还是本地 Postfix 中继，旧设备现在都能通过现代邮件服务提供商可靠地发送邮件。

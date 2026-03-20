@@ -1,128 +1,127 @@
-# Кладовище стартапів електронної пошти: Чому більшість поштових компаній зазнають невдачі {#the-email-startup-graveyard-why-most-email-companies-fail}
+# Кладовище стартапів електронної пошти: чому більшість компаній з електронної пошти зазнають невдачі {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Ілюстрація кладовища стартапів електронної пошти" class="rounded-lg" />
 
-<p class="lead mt-3">Хоча багато стартапів електронної пошти інвестували мільйони у вирішення уявних проблем, ми в <a href="https://forwardemail.net">Forward Email</a> зосереджуємося на створенні надійної інфраструктури електронної пошти з нуля з 2017 року. Цей аналіз досліджує закономірності результатів стартапів електронної пошти та фундаментальні проблеми інфраструктури електронної пошти.</p>
+<p class="lead mt-3">Хоча багато стартапів у сфері електронної пошти вклали мільйони у вирішення уявних проблем, ми у <a href="https://forwardemail.net">Forward Email</a> з 2017 року зосереджуємося на створенні надійної інфраструктури електронної пошти з нуля. Цей аналіз досліджує закономірності результатів стартапів електронної пошти та фундаментальні виклики інфраструктури електронної пошти.</p>
 
 > \[!NOTE]
-> **Ключовий висновок**: Більшість стартапів електронної пошти не створюють фактичну поштову інфраструктуру з нуля. Багато хто будує на основі існуючих рішень, таких як Amazon SES, або систем з відкритим кодом, таких як Postfix. Основні протоколи працюють добре – проблема полягає в їх реалізації.
+> **Ключове розуміння**: Більшість стартапів електронної пошти не створюють справжню інфраструктуру електронної пошти з нуля. Багато хто будує на основі існуючих рішень, таких як Amazon SES або відкриті системи, як Postfix. Основні протоколи працюють добре — виклик полягає в реалізації.
 
 > \[!TIP]
-> **Глибокий технічний огляд**: Для отримання детальної інформації про наш підхід, архітектуру та впровадження безпеки див. наші [Технічний документ з пересилання електронних листів](https://forwardemail.net/technical-whitepaper.pdf) та [Сторінка «Про нас»](https://forwardemail.net/en/about), які документують повний графік нашої розробки з 2017 року.
+> **Технічний глибокий аналіз**: Для детальної інформації про наш підхід, архітектуру та реалізацію безпеки дивіться наш [Технічний білий документ Forward Email](https://forwardemail.net/technical-whitepaper.pdf) та [сторінку «Про нас»](https://forwardemail.net/en/about), де задокументовано повний хронологічний розвиток з 2017 року.
+
 
 ## Зміст {#table-of-contents}
 
-* [Матриця невдач запуску електронної пошти](#the-email-startup-failure-matrix)
+* [Матриця невдач стартапів електронної пошти](#the-email-startup-failure-matrix)
 * [Перевірка реальності інфраструктури](#the-infrastructure-reality-check)
-  * [Що насправді запускає електронну пошту](#what-actually-runs-email)
-  * [Що насправді створюють «стартапи електронної пошти»](#what-email-startups-actually-build)
-* [Чому більшість email-стартапів зазнають невдачі](#why-most-email-startups-fail)
-  * [1. Протоколи електронної пошти працюють, але впровадження часто ні](#1-email-protocols-work-implementation-often-doesnt)
-  * [2. Мережеві ефекти незламні](#2-network-effects-are-unbreakable)
-  * [3. Вони часто зосереджуються на неправильних проблемах](#3-they-often-target-the-wrong-problems)
+  * [Що насправді керує електронною поштою](#what-actually-runs-email)
+  * [Що насправді будують «стартапи електронної пошти»](#what-email-startups-actually-build)
+* [Чому більшість стартапів електронної пошти зазнають невдачі](#why-most-email-startups-fail)
+  * [1. Протоколи електронної пошти працюють, а реалізація часто ні](#1-email-protocols-work-implementation-often-doesnt)
+  * [2. Ефекти мережі незламні](#2-network-effects-are-unbreakable)
+  * [3. Вони часто орієнтуються на неправильні проблеми](#3-they-often-target-the-wrong-problems)
   * [4. Технічний борг величезний](#4-technical-debt-is-massive)
   * [5. Інфраструктура вже існує](#5-the-infrastructure-already-exists)
-* [Тематичні дослідження: Коли стартапи електронної пошти зазнають невдачі](#case-studies-when-email-startups-fail)
-  * [Тематичне дослідження: Катастрофа скіфа](#case-study-the-skiff-disaster)
+* [Кейс-стаді: коли стартапи електронної пошти зазнають невдачі](#case-studies-when-email-startups-fail)
+  * [Кейс-стаді: катастрофа Skiff](#case-study-the-skiff-disaster)
   * [Аналіз акселератора](#the-accelerator-analysis)
   * [Пастка венчурного капіталу](#the-venture-capital-trap)
 * [Технічна реальність: сучасні стеки електронної пошти](#the-technical-reality-modern-email-stacks)
-  * [Що насправді рухає «стартапи електронної пошти»](#what-actually-powers-email-startups)
-  * [Проблеми з продуктивністю](#the-performance-problems)
-* [Моделі придбання: успіх проти закриття](#the-acquisition-patterns-success-vs-shutdown)
-  * [Два візерунки](#the-two-patterns)
-  * [Нещодавні приклади](#recent-examples)
-* [Еволюція та консолідація галузі](#industry-evolution-and-consolidation)
-  * [Природний розвиток галузі](#natural-industry-progression)
-  * [Переходи після придбання](#post-acquisition-transitions)
-  * [Міркування користувача під час переходів](#user-considerations-during-transitions)
-* [Перевірка реальності новин хакерів](#the-hacker-news-reality-check)
-* [Сучасний штучний інтелект у сфері електронної пошти](#the-modern-ai-email-grift)
-  * [Найновіша хвиля](#the-latest-wave)
-  * [Ті ж старі проблеми](#the-same-old-problems)
-* [Що насправді працює: реальні історії успіху з електронною поштою](#what-actually-works-the-real-email-success-stories)
+  * [Що насправді живить «стартапи електронної пошти»](#what-actually-powers-email-startups)
+  * [Проблеми продуктивності](#the-performance-problems)
+* [Моделі поглинання: успіх проти закриття](#the-acquisition-patterns-success-vs-shutdown)
+  * [Дві моделі](#the-two-patterns)
+  * [Останні приклади](#recent-examples)
+* [Еволюція та консолідація індустрії](#industry-evolution-and-consolidation)
+  * [Природний розвиток індустрії](#natural-industry-progression)
+  * [Післяпоглинальні переходи](#post-acquisition-transitions)
+  * [Розгляд користувачів під час переходів](#user-considerations-during-transitions)
+* [Перевірка реальності на Hacker News](#the-hacker-news-reality-check)
+* [Сучасна афера з AI в електронній пошті](#the-modern-ai-email-grift)
+  * [Остання хвиля](#the-latest-wave)
+  * [Ті самі старі проблеми](#the-same-old-problems)
+* [Що насправді працює: справжні історії успіху електронної пошти](#what-actually-works-the-real-email-success-stories)
   * [Інфраструктурні компанії (переможці)](#infrastructure-companies-the-winners)
-  * [Постачальники електронної пошти (The Survivors)](#email-providers-the-survivors)
+  * [Провайдери електронної пошти (виживші)](#email-providers-the-survivors)
   * [Виняток: історія успіху Xobni](#the-exception-xobnis-success-story)
-  * [Візерунок](#the-pattern)
-* [Чи комусь вдалося успішно переосмислити електронну пошту?](#has-anyone-successfully-reinvented-email)
-  * [Що насправді застрягло](#what-actually-stuck)
+  * [Модель](#the-pattern)
+* [Чи хтось успішно винайшов електронну пошту заново?](#has-anyone-successfully-reinvented-email)
+  * [Що насправді прижилося](#what-actually-stuck)
   * [Нові інструменти доповнюють електронну пошту (але не замінюють її)](#new-tools-complement-email-but-dont-replace-it)
   * [Експеримент HEY](#the-hey-experiment)
   * [Що насправді працює](#what-actually-works)
-* [Побудова сучасної інфраструктури для існуючих протоколів електронної пошти: наш підхід](#building-modern-infrastructure-for-existing-email-protocols-our-approach)
-  * [Спектр інновацій електронної пошти](#the-email-innovation-spectrum)
+* [Створення сучасної інфраструктури для існуючих протоколів електронної пошти: наш підхід](#building-modern-infrastructure-for-existing-email-protocols-our-approach)
+  * [Спектр інновацій в електронній пошті](#the-email-innovation-spectrum)
   * [Чому ми зосереджуємося на інфраструктурі](#why-we-focus-on-infrastructure)
   * [Що насправді працює в електронній пошті](#what-actually-works-in-email)
-* [Наш підхід: чим ми відрізняємося](#our-approach-why-were-different)
+* [Наш підхід: чому ми відрізняємося](#our-approach-why-were-different)
   * [Що ми робимо](#what-we-do)
   * [Чого ми не робимо](#what-we-dont-do)
-* [Як ми створюємо інфраструктуру електронної пошти, яка дійсно працює](#how-we-build-email-infrastructure-that-actually-works)
+* [Як ми створюємо інфраструктуру електронної пошти, яка справді працює](#how-we-build-email-infrastructure-that-actually-works)
   * [Наш антистартапний підхід](#our-anti-startup-approach)
-  * [Що відрізняє нас](#what-makes-us-different)
-  * [Порівняння постачальників послуг електронної пошти: зростання завдяки перевіреним протоколам](#email-service-provider-comparison-growth-through-proven-protocols)
+  * [Що робить нас іншими](#what-makes-us-different)
+  * [Порівняння провайдерів електронної пошти: зростання через перевірені протоколи](#email-service-provider-comparison-growth-through-proven-protocols)
   * [Технічна хронологія](#the-technical-timeline)
   * [Чому ми досягаємо успіху там, де інші зазнають невдачі](#why-we-succeed-where-others-fail)
-  * [Перевірка реальних витрат](#the-cost-reality-check)
-* [Проблеми безпеки в інфраструктурі електронної пошти](#security-challenges-in-email-infrastructure)
-  * [Загальні міркування безпеки](#common-security-considerations)
+  * [Перевірка реальності вартості](#the-cost-reality-check)
+* [Виклики безпеки в інфраструктурі електронної пошти](#security-challenges-in-email-infrastructure)
+  * [Поширені питання безпеки](#common-security-considerations)
   * [Цінність прозорості](#the-value-of-transparency)
-  * [Поточні виклики безпеці](#ongoing-security-challenges)
-* [Висновок: Зосередьтеся на інфраструктурі, а не на додатках](#conclusion-focus-on-infrastructure-not-apps)
+  * [Поточні виклики безпеки](#ongoing-security-challenges)
+* [Висновок: зосереджуйтеся на інфраструктурі, а не на додатках](#conclusion-focus-on-infrastructure-not-apps)
   * [Докази очевидні](#the-evidence-is-clear)
   * [Історичний контекст](#the-historical-context)
   * [Справжній урок](#the-real-lesson)
-* [Розширене кладовище електронної пошти: більше збоїв та зупинок](#the-extended-email-graveyard-more-failures-and-shutdowns)
-  * [Експерименти Google з електронною поштою пішли не так](#googles-email-experiments-gone-wrong)
-  * [Серійний провал: три смерті Ньютона Мейла](#the-serial-failure-newton-mails-three-deaths)
-  * [Програми, які ніколи не запускалися](#the-apps-that-never-launched)
-  * [Шаблон «Від придбання до закриття»](#the-acquisition-to-shutdown-pattern)
+* [Розширене кладовище електронної пошти: більше невдач і закриттів](#the-extended-email-graveyard-more-failures-and-shutdowns)
+  * [Невдалі експерименти Google з електронною поштою](#googles-email-experiments-gone-wrong)
+  * [Серійна невдача: три смерті Newton Mail](#the-serial-failure-newton-mails-three-deaths)
+  * [Додатки, які так і не запустилися](#the-apps-that-never-launched)
+  * [Модель від поглинання до закриття](#the-acquisition-to-shutdown-pattern)
   * [Консолідація інфраструктури електронної пошти](#email-infrastructure-consolidation)
-* [Кладовище електронної пошти з відкритим кодом: коли «безкоштовно» не є сталим](#the-open-source-email-graveyard-when-free-isnt-sustainable)
-  * [Nylas Mail → Mailspring: Форк, який не зміг](#nylas-mail--mailspring-the-fork-that-couldnt)
-  * [Юдора: 18-річний марш смерті](#eudora-the-18-year-death-march)
-  * [FairEmail: Політика вбита Google Play](#fairemail-killed-by-google-play-politics)
-  * [Проблема технічного обслуговування](#the-maintenance-problem)
-* [Злет стартапів електронної пошти зі штучним інтелектом: історія повторюється з «інтелектом»](#the-ai-email-startup-surge-history-repeating-with-intelligence)
-  * [Поточна золота лихоманка електронної пошти зі штучним інтелектом](#the-current-ai-email-gold-rush)
-  * [Фінансове шаленство](#the-funding-frenzy)
-  * [Чому вони всі зазнають невдачі (знову)](#why-theyll-all-fail-again)
+* [Кладовище відкритого коду електронної пошти: коли «безкоштовно» не є стійким](#the-open-source-email-graveyard-when-free-isnt-sustainable)
+  * [Nylas Mail → Mailspring: форк, який не зміг](#nylas-mail--mailspring-the-fork-that-couldnt)
+  * [Eudora: 18-річний марш смерті](#eudora-the-18-year-death-march)
+  * [FairEmail: вбито політикою Google Play](#fairemail-killed-by-google-play-politics)
+  * [Проблема підтримки](#the-maintenance-problem)
+* [Сплеск стартапів AI в електронній пошті: історія повторюється з «інтелектом»](#the-ai-email-startup-surge-history-repeating-with-intelligence)
+  * [Поточна золота лихоманка AI в електронній пошті](#the-current-ai-email-gold-rush)
+  * [Божевілля фінансування](#the-funding-frenzy)
+  * [Чому вони всі знову зазнають невдачі](#why-theyll-all-fail-again)
   * [Неминучий результат](#the-inevitable-outcome)
-* [Катастрофа консолідації: коли «ті, що вижили», стають катастрофами](#the-consolidation-catastrophe-when-survivors-become-disasters)
-  * [Чудова консолідація поштових сервісів](#the-great-email-service-consolidation)
-  * [Перспектива: «Виживальник», який не може перестати ламатися](#outlook-the-survivor-that-cant-stop-breaking)
-  * [Проблема інфраструктури поштових штемпелів](#the-postmark-infrastructure-problem)
-  * [Нещодавні втрати клієнтів електронної пошти (2024-2025)](#recent-email-client-casualties-2024-2025)
-  * [Розширення електронної пошти та придбання послуг](#email-extension-and-service-acquisitions)
-  * [Ті, хто вижив: компанії електронної пошти, які дійсно працюють](#the-survivors-email-companies-that-actually-work)
-
-## Матриця помилок запуску електронної пошти {#the-email-startup-failure-matrix}
+* [Катастрофа консолідації: коли «виживші» стають катастрофами](#the-consolidation-catastrophe-when-survivors-become-disasters)
+  * [Велика консолідація сервісів електронної пошти](#the-great-email-service-consolidation)
+  * [Outlook: «виживший», який не може перестати ламатися](#outlook-the-survivor-that-cant-stop-breaking)
+  * [Проблема інфраструктури Postmark](#the-postmark-infrastructure-problem)
+  * [Останні жертви клієнтів електронної пошти (2024-2025)](#recent-email-client-casualties-2024-2025)
+  * [Розширення та поглинання сервісів електронної пошти](#email-extension-and-service-acquisitions)
+  * [Виживші: компанії електронної пошти, які справді працюють](#the-survivors-email-companies-that-actually-work)
+## Матриця провалів стартапів у сфері електронної пошти {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Сповіщення про рівень збоїв**: [Тільки Techstars має 28 компаній, пов'язаних з електронною поштою](https://www.techstars.com/portfolio) лише з 5 виходами – надзвичайно високий рівень збоїв (іноді розраховується на рівні 80%+).
+> **Попередження про рівень провалів**: [Techstars має 28 компаній, пов’язаних з електронною поштою](https://www.techstars.com/portfolio), з яких лише 5 вийшли на успіх — надзвичайно високий рівень провалів (іноді оцінюється понад 80%).
 
-Ось перелік усіх серйозних провалів email-стартапів, які ми змогли знайти, упорядкованих за акселератором, фінансуванням та результатом:
+Ось усі основні провали стартапів у сфері електронної пошти, які ми змогли знайти, організовані за акселератором, фінансуванням та результатом:
 
-| Компанія | Рік | Прискорювач | Фінансування | Результат | Статус | Ключова проблема |
-| ----------------- | ---- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **Скіф** | 2024 | - | [$14.2M total](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/) | Придбано Notion → Вимкнення | 😵 Мертвий | [Founders left Notion for Cursor](https://x.com/skeptrune/status/1939763513695903946) |
-| **Горобець** | 2012 | - | [$247K seed](https://techcrunch.com/2012/07/20/google-acquires-iosmac-email-client-sparrow/), [<$25M acquisition](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client) | Придбано Google → Закриття | 😵 Мертвий | [Talent acquisition only](https://money.cnn.com/2012/07/20/technology/google-acquires-sparrow/index.htm) |
-| **Електронна пошта Copilot** | 2012 | Техстарс | ~120 тис. доларів США (стандарт Techstars) | Отримано → Вимкнено | 😵 Мертвий | [Now redirects to Validity](https://www.validity.com/blog/validity-return-path-announcement/) |
-| **ВідповістиНадіслати** | 2012 | Техстарс | ~120 тис. доларів США (стандарт Techstars) | Не вдалося | 😵 Мертвий | [Vague value proposition](https://www.f6s.com/company/replysend) |
-| **Розвинений** | 2012 | Техстарс | ~120 тис. доларів США (стандарт Techstars) | Не вдалося | 😵 Мертвий | ["Easy. Secure. Email"](https://www.geekwire.com/2012/techstars-spotlight-nveloped/) |
-| **Ямблу** | 2015 | Техстарс | ~120 тис. доларів США (стандарт Techstars) | Не вдалося | 😵 Мертвий | [Email encryption](https://www.siliconrepublic.com/start-ups/irish-start-up-jumble-one-of-11-included-in-techstars-cloud-accelerator) |
-| **Лихоманка вхідних повідомлень** | 2011 | Техстарс | ~118 тис. доларів США (Techstars 2011) | Не вдалося | 😵 Мертвий | [API for email apps](https://twitter.com/inboxfever) |
-| **Електронна пошта** | 2014 | YC | ~120 тис. доларів США (стандарт YC) | Поворотний | 🧟 Зомбі | [Mobile email → "wellness"](https://www.ycdb.co/company/emailio) |
-| **Час пошти** | 2016 | YC | ~120 тис. доларів США (стандарт YC) | Поворотний | 🧟 Зомбі | [Email client → analytics](https://www.ycdb.co/company/mailtime) |
-| **повторна пошта** | 2009 | YC | ~$20K (YC 2009) | [Acquired by Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Вимкнення | 😵 Мертвий | [iPhone email search](https://www.ycombinator.com/companies/remail) |
-| **Поштовий притулок** | 2016 | 500 Глобальних | ~$100 тис. (стандартні 500) | Вихід | Невідомо | [Package tracking](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06) |
-
-## Перевірка реальності інфраструктури {#the-infrastructure-reality-check}
+| Компанія          | Рік  | Акселератор | Фінансування                                                                                                                                                                                                 | Результат                                                                               | Статус    | Ключова проблема                                                                                                                      |
+| ----------------- | ---- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Skiff**         | 2024 | -           | [$14.2M загалом](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)                                                                                                                    | Придбано Notion → Закрито                                                              | 😵 Померла | [Засновники пішли з Notion до Cursor](https://x.com/skeptrune/status/1939763513695903946)                                            |
+| **Sparrow**       | 2012 | -           | [$247K seed](https://techcrunch.com/2012/07/20/google-acquires-iosmac-email-client-sparrow/), [<25M$ придбання](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client) | Придбано Google → Закрито                                                              | 😵 Померла | [Тільки придбання талантів](https://money.cnn.com/2012/07/20/technology/google-acquires-sparrow/index.htm)                           |
+| **Email Copilot** | 2012 | Techstars   | ~120K$ (стандарт Techstars)                                                                                                                                                                                  | Придбано → Закрито                                                                     | 😵 Померла | [Зараз перенаправляє на Validity](https://www.validity.com/blog/validity-return-path-announcement/)                                  |
+| **ReplySend**     | 2012 | Techstars   | ~120K$ (стандарт Techstars)                                                                                                                                                                                  | Провалено                                                                             | 😵 Померла | [Нечітка ціннісна пропозиція](https://www.f6s.com/company/replysend)                                                                 |
+| **Nveloped**      | 2012 | Techstars   | ~120K$ (стандарт Techstars)                                                                                                                                                                                  | Провалено                                                                             | 😵 Померла | ["Просто. Безпечно. Пошта"](https://www.geekwire.com/2012/techstars-spotlight-nveloped/)                                             |
+| **Jumble**        | 2015 | Techstars   | ~120K$ (стандарт Techstars)                                                                                                                                                                                  | Провалено                                                                             | 😵 Померла | [Шифрування пошти](https://www.siliconrepublic.com/start-ups/irish-start-up-jumble-one-of-11-included-in-techstars-cloud-accelerator) |
+| **InboxFever**    | 2011 | Techstars   | ~118K$ (Techstars 2011)                                                                                                                                                                                      | Провалено                                                                             | 😵 Померла | [API для поштових додатків](https://twitter.com/inboxfever)                                                                           |
+| **Emailio**       | 2014 | YC          | ~120K$ (стандарт YC)                                                                                                                                                                                         | Зміна напрямку                                                                        | 🧟 Зомбі  | [Мобільна пошта → "велнес"](https://www.ycdb.co/company/emailio)                                                                     |
+| **MailTime**      | 2016 | YC          | ~120K$ (стандарт YC)                                                                                                                                                                                         | Зміна напрямку                                                                        | 🧟 Зомбі  | [Поштовий клієнт → аналітика](https://www.ycdb.co/company/mailtime)                                                                   |
+| **reMail**        | 2009 | YC          | ~20K$ (YC 2009)                                                                                                                                                                                              | [Придбано Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Закрито   | 😵 Померла | [Пошук пошти на iPhone](https://www.ycombinator.com/companies/remail)                                                                |
+| **Mailhaven**     | 2016 | 500 Global  | ~100K$ (стандарт 500)                                                                                                                                                                                        | Вийшли з ринку                                                                        | Невідомо  | [Відстеження посилок](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06)         |
+## Перевірка Реальності Інфраструктури {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **Прихована правда**: Кожен «стартап електронної пошти» просто створює інтерфейс користувача поверх існуючої інфраструктури. Вони не створюють справжні поштові сервери, а створюють додатки, які підключаються до реальної поштової інфраструктури.
+> **Прихована Правда**: Кожен "email стартап" насправді просто створює UI поверх існуючої інфраструктури. Вони не будують справжні поштові сервери — вони створюють додатки, які підключаються до реальної поштової інфраструктури.
 
-### Що насправді запускає електронну пошту {#what-actually-runs-email}
+### Що Насправді Запускає Пошту {#what-actually-runs-email}
 
 ```mermaid
 graph TD
@@ -139,7 +138,7 @@ graph TD
     F --> K[Authentication that works]
 ```
 
-### Що насправді створюють «стартапи електронної пошти» {#what-email-startups-actually-build}
+### Що Насправді Створюють "Email Стартапи" {#what-email-startups-actually-build}
 
 ```mermaid
 graph LR
@@ -157,120 +156,120 @@ graph LR
 ```
 
 > \[!TIP]
-> **Ключовий шаблон успіху електронної пошти**: Компанії, які дійсно досягають успіху в електронній пошті, не намагаються винаходити велосипед. Натомість вони створюють **інфраструктуру та інструменти, що покращують** існуючі робочі процеси електронної пошти. [SendGrid](https://sendgrid.com/), [Поштовий пістолет](https://www.mailgun.com/) та [Поштовий штемпель](https://postmarkapp.com/) стали компаніями з оборотом у мільярд доларів, надаючи надійні API SMTP та служби доставки – вони працюють **з** протоколами електронної пошти, а не проти них. Такий самий підхід ми застосовуємо у Forward Email.
+> **Ключова Модель Успіху в Email**: Компанії, які насправді досягають успіху в email, не намагаються винаходити колесо заново. Натомість вони будують **інфраструктуру та інструменти, що покращують** існуючі поштові робочі процеси. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), та [Postmark](https://postmarkapp.com/) стали компаніями з мільярдними оцінками, надаючи надійні SMTP API та сервіси доставки — вони працюють **з** поштовими протоколами, а не проти них. Це той самий підхід, який ми застосовуємо у Forward Email.
 
-## Чому більшість стартапів електронної пошти зазнають невдачі {#why-most-email-startups-fail}
+
+## Чому Більшість Email Стартапів Провалюються {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **Фундаментальна закономірність**: Стартапи, що займаються *клієнтами* електронної пошти, зазвичай зазнають невдачі, оскільки намагаються замінити робочі протоколи, тоді як компанії, що займаються *інфраструктурою* електронної пошти, можуть досягти успіху, покращуючи існуючі робочі процеси. Ключ у розумінні того, що насправді потрібно користувачам, а не того, що, на думку підприємців, їм потрібно.
+> **Фундаментальна Модель**: Стартапи, що створюють email *клієнти*, зазвичай зазнають невдачі, бо намагаються замінити працюючі протоколи, тоді як компанії, що працюють з email *інфраструктурою*, можуть досягти успіху, покращуючи існуючі робочі процеси. Ключ — розуміти, що насправді потрібно користувачам, а не те, що думають підприємці.
 
-### 1. Протоколи електронної пошти працюють, але їхня реалізація часто ні {#1-email-protocols-work-implementation-often-doesnt}
+### 1. Поштові Протоколи Працюють, Але Реалізація Часто Ні {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Статистика електронної пошти**: [347,3 мільярда електронних листів надсилається щодня](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) без суттєвих проблем, обслуговує [4,37 мільярда користувачів електронної пошти по всьому світу](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) станом на 2023 рік.
+> **Статистика Email**: [347,3 мільярдів листів надсилається щодня](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) без серйозних проблем, обслуговуючи [4,37 мільярда користувачів email у світі](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) станом на 2023 рік.
 
-Основні протоколи електронної пошти надійні, але якість реалізації сильно варіюється:
+Основні поштові протоколи надійні, але якість реалізації дуже різниться:
 
 * **Універсальна сумісність**: Кожен пристрій, кожна платформа підтримує [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) та [POP3](https://tools.ietf.org/html/rfc1939)
-* **Децентралізований**: Немає єдиної точки відмови в [мільярди поштових серверів по всьому світу](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
-* **Стандартизований**: SMTP, IMAP, POP3 – це перевірені протоколи 1980-х-1990-х років
-* **Надійний**: [347,3 мільярда електронних листів надсилається щодня](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) без серйозних проблем
+* **Децентралізовані**: Відсутня єдина точка відмови серед [мільярдів поштових серверів у світі](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
+* **Стандартизовані**: SMTP, IMAP, POP3 — це перевірені протоколи 1980-1990-х років
+* **Надійні**: [347,3 мільярдів листів надсилається щодня](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) без серйозних проблем
 
-**Реальна можливість**: Краща реалізація існуючих протоколів, а не їх заміна.
+**Справжня можливість**: Краща реалізація існуючих протоколів, а не їх заміна.
 
-### 2. Мережеві ефекти незламні {#2-network-effects-are-unbreakable}
+### 2. Ефекти Мережі Незламні {#2-network-effects-are-unbreakable}
 
-Мережевий ефект електронної пошти є абсолютним:
+Ефект мережі в email абсолютний:
 
-* **Електронна пошта є у кожного**: [4,37 мільярда користувачів електронної пошти по всьому світу](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) станом на 2023 рік
-* **Кросплатформний**: Безперебійно працює між усіма постачальниками
-* **Критично важливо для бізнесу**: [99% компаній щодня користуються електронною поштою](https://blog.hubspot.com/marketing/email-marketing-stats) для операцій
-* **Вартість перемикання**: Зміна адрес електронної пошти порушує роботу всього, що з нею пов’язано
+* **Усі мають email**: [4,37 мільярда користувачів email у світі](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) станом на 2023 рік
+* **Кросплатформеність**: Працює безшовно між усіма провайдерами
+* **Критично для бізнесу**: [99% бізнесів використовують email щодня](https://blog.hubspot.com/marketing/email-marketing-stats) для операцій
+* **Вартість переходу**: Зміна email адреси порушує все, що з нею пов’язано
 
-### 3. Вони часто зосереджуються на неправильних проблемах {#3-they-often-target-the-wrong-problems}
+### 3. Вони Часто Орієнтуються на Неправильні Проблеми {#3-they-often-target-the-wrong-problems}
 
-Багато стартапів електронної пошти зосереджуються на уявних проблемах, а не на реальних больових точках:
+Багато email стартапів зосереджуються на уявних проблемах замість реальних болючих точок:
 
-* **«Електронна пошта занадто складна»**: Базовий робочий процес простий – [надсилаємо, отримуємо, організовуємо з 1971 року](https://en.wikipedia.org/wiki/History_of_email)
-* **«Електронній пошті потрібен штучний інтелект»**: [Gmail вже має ефективні розумні функції](https://support.google.com/mail/answer/9116836), як-от «Розумна відповідь» та «Пріоритетні»
-* **«Електронній пошті потрібен кращий захист»**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) та [DMARC](https://tools.ietf.org/html/rfc7489) забезпечують надійну автентифікацію
-* **«Електронній пошті потрібен новий інтерфейс»**: інтерфейси [Перспективи](https://outlook.com/) та [Gmail](https://gmail.com/) удосконалюються завдяки десятиліттям досліджень користувачів
-
-**Реальні проблеми, які варто вирішити**: надійність інфраструктури, доставляність, фільтрація спаму та інструменти для розробників.
+* **"Email занадто складний"**: Базовий робочий процес простий — [відправляти, отримувати, організовувати з 1971 року](https://en.wikipedia.org/wiki/History_of_email)
+* **"Email потребує AI"**: [Gmail вже має ефективні розумні функції](https://support.google.com/mail/answer/9116836) як Smart Reply та Priority Inbox
+* **"Email потребує кращої безпеки"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) та [DMARC](https://tools.ietf.org/html/rfc7489) забезпечують надійну автентифікацію
+* **"Email потребує нового інтерфейсу"**: Інтерфейси [Outlook](https://outlook.com/) та [Gmail](https://gmail.com/) вдосконалювалися десятиліттями досліджень користувачів
+**Справжні проблеми, які варто розв’язувати**: Надійність інфраструктури, доставлянність, фільтрація спаму та інструменти для розробників.
 
 ### 4. Технічний борг величезний {#4-technical-debt-is-massive}
 
-Побудова справжньої інфраструктури електронної пошти вимагає:
+Створення справжньої поштової інфраструктури вимагає:
 
-* **SMTP-сервери**: Складна доставка та [управління репутацією](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
-* **Фільтрація спаму**: Постійно розвивається [ландшафт загроз](https://www.spamhaus.org/)
-* **Системи зберігання даних**: Надійна реалізація [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
-* **Автентифікація**: Відповідність [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617)
-* **Доставляльність**: Зв'язки з інтернет-провайдерами та [управління репутацією](https://sendgrid.com/blog/what-is-email-deliverability/)
+* **SMTP-сервери**: Складна доставка та [керування репутацією](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
+* **Фільтрація спаму**: Постійно змінний [ландшафт загроз](https://www.spamhaus.org/)
+* **Системи зберігання**: Надійна реалізація [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
+* **Аутентифікація**: Відповідність [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617)
+* **Доставлянність**: Відносини з ISP та [керування репутацією](https://sendgrid.com/blog/what-is-email-deliverability/)
 
 ### 5. Інфраструктура вже існує {#5-the-infrastructure-already-exists}
 
-Навіщо винаходити щось нове, коли можна використовувати:
+Навіщо винаходити заново, якщо можна використовувати:
 
 * **[Amazon SES](https://aws.amazon.com/ses/)**: Перевірена інфраструктура доставки
-* **[Постфікс](http://www.postfix.org/)**: Перевірений SMTP-сервер
-* **[Голубник](https://www.dovecot.org/)**: Надійний IMAP/POP3-сервер
+* **[Postfix](http://www.postfix.org/)**: Випробуваний SMTP-сервер
+* **[Dovecot](https://www.dovecot.org/)**: Надійний IMAP/POP3 сервер
 * **[SpamAssassin](https://spamassassin.apache.org/)**: Ефективна фільтрація спаму
-* **Існуючі провайдери**: [Gmail](https://gmail.com/), [Перспективи](https://outlook.com/), [Швидка пошта](https://www.fastmail.com/) працюють належним чином
+* **Існуючі провайдери**: [Gmail](https://gmail.com/), [Outlook](https://outlook.com/), [FastMail](https://www.fastmail.com/) працюють добре
 
-## Тематичні дослідження: Коли стартапи електронної пошти зазнають невдачі {#case-studies-when-email-startups-fail}
 
-### Тематичне дослідження: Катастрофа скіфа {#case-study-the-skiff-disaster}
+## Кейси: Коли стартапи з поштою зазнають невдачі {#case-studies-when-email-startups-fail}
 
-Skiff чудово ілюструє всі недоліки email-стартапів.
+### Кейс: Катастрофа Skiff {#case-study-the-skiff-disaster}
+
+Skiff ідеально ілюструє все, що не так зі стартапами в сфері пошти.
 
 #### Налаштування {#the-setup}
 
-* **Позиціонування**: «Платформа електронної пошти та продуктивності, що надає перевагу конфіденційності»
+* **Позиціонування**: «Платформа для електронної пошти та продуктивності з пріоритетом на конфіденційність»
 * **Фінансування**: [Значний венчурний капітал](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
-* **Обіцянка**: Краща електронна пошта завдяки конфіденційності та шифруванню
+* **Обіцянка**: Краща пошта через конфіденційність та шифрування
 
 #### Придбання {#the-acquisition}
 
-[Notion придбала Skiff у лютому 2024 року](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) з типовими обіцянками щодо інтеграції та подальшого розвитку.
+[Notion придбав Skiff у лютому 2024 року](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) з типовими обіцянками інтеграції та подальшої розробки.
 
 #### Реальність {#the-reality}
 
-* **Негайне закриття**: [Skiff закрився протягом кількох місяців](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
-* **Вихід засновника**: [Засновники Skiff покинули Notion та приєдналися до Cursor](https://x.com/skeptrune/status/1939763513695903946)
-* **Відмова від користувачів**: Тисячі користувачів змушені мігрувати
+* **Негайне закриття**: [Skiff закрили за кілька місяців](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
+* **Відхід засновників**: [Засновники Skiff покинули Notion і приєдналися до Cursor](https://x.com/skeptrune/status/1939763513695903946)
+* **Залишення користувачів**: Тисячі користувачів змушені були мігрувати
 
 ### Аналіз акселератора {#the-accelerator-analysis}
 
 #### Y Combinator: Фабрика поштових додатків {#y-combinator-the-email-app-factory}
 
-[Y-комбінатор](https://www.ycombinator.com/) профінансував десятки стартапів електронної пошти. Ось схема:
+[Y Combinator](https://www.ycombinator.com/) фінансував десятки поштових стартапів. Ось типова схема:
 
-* **[Електронна пошта](https://www.ycdb.co/company/emailio)** (2014): Мобільний поштовий клієнт → переведено на «здоров'я»
-* **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Електронна пошта в стилі чату → переведено на аналітику
-* **[повторна пошта](https://www.ycombinator.com/companies/remail)** (2009): Пошук електронної пошти на iPhone → [придбано Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → вимкнення
-* **[Звітний](https://www.ycombinator.com/companies/rapportive)** (2012): Соціальні профілі Gmail → [придбано LinkedIn](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → вимкнення
+* **[Emailio](https://www.ycdb.co/company/emailio)** (2014): Мобільний поштовий клієнт → зміна напрямку на «велнес»
+* **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Пошта у стилі чату → зміна напрямку на аналітику
+* **[reMail](https://www.ycombinator.com/companies/remail)** (2009): Пошук пошти на iPhone → [придбаний Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → закриття
+* **[Rapportive](https://www.ycombinator.com/companies/rapportive)** (2012): Соціальні профілі Gmail → [придбаний LinkedIn](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → закриття
 
-**Коефіцієнт успішності**: Змішані результати з деякими помітними виходами. Кілька компаній успішно здійснили придбання (reMail to Google, Rapportive to LinkedIn), тоді як інші відмовилися від електронної пошти або були придбані для найму талантів.
+**Рівень успіху**: Змішані результати з кількома помітними виходами. Декілька компаній успішно були придбані (reMail Google, Rapportive LinkedIn), інші відійшли від пошти або були придбані за талант.
 
-#### Techstars: Кладовище електронної пошти {#techstars-the-email-graveyard}
+#### Techstars: Кладовище пошти {#techstars-the-email-graveyard}
 
-[Техстарс](https://www.techstars.com/) має ще гірший послужний список:
+[Techstars](https://www.techstars.com/) має ще гірший послужний список:
 
-* **[Копілот електронної пошти](https://www.validity.com/everest/returnpath/)** (2012): Отримано → вимкнено
-* **[ВідповістиНадіслати](https://www.crunchbase.com/organization/replysend)** (2012): Повна помилка
-* **[Розвинений](https://www.crunchbase.com/organization/nveloped)** (2012): "Проста. Безпечна. Електронна пошта" → помилка
-* **[Перемішати](https://www.crunchbase.com/organization/jumble/technology)** (2015): Шифрування електронної пошти → помилка
-* **[InboxFear](https://www.crunchbase.com/organization/inboxfever)** (2011): API електронної пошти → помилка
-
-**Схема**: Нечіткі ціннісні пропозиції, відсутність реальних технічних інновацій, швидкі невдачі.
+* **[Email Copilot](https://www.validity.com/everest/returnpath/)** (2012): Придбаний → закритий
+* **[ReplySend](https://www.crunchbase.com/organization/replysend)** (2012): Повністю провалився
+* **[Nveloped](https://www.crunchbase.com/organization/nveloped)** (2012): «Просто. Безпечно. Пошта» → провал
+* **[Jumble](https://www.crunchbase.com/organization/jumble/technology)** (2015): Шифрування пошти → провал
+* **[InboxFever](https://www.crunchbase.com/organization/inboxfever)** (2011): API для пошти → провал
+**Патерн**: Нечіткі цінні пропозиції, відсутність реальних технічних інновацій, швидкі провали.
 
 ### Пастка венчурного капіталу {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **Парадокс венчурного фінансування**: Венчурні капіталісти люблять стартапи електронної пошти, тому що вони звучать просто, але насправді неможливі. Фундаментальні припущення, що приваблюють інвестиції, саме й гарантують провал.
+> **Парадокс фінансування VC**: Венчурні капіталісти люблять стартапи з електронною поштою, бо вони звучать просто, але насправді неможливі. Фундаментальні припущення, які приваблюють інвестиції, саме те, що гарантує провал.
 
-Венчурні капіталісти люблять email-стартапи, бо вони звучать просто, але насправді неможливі:
+Венчурні капіталісти люблять стартапи з електронною поштою, бо вони звучать просто, але насправді неможливі:
 
 ```mermaid
 graph TD
@@ -290,13 +289,14 @@ graph TD
     I --> M[Reality: Network effects unbreakable]
 ```
 
-**Реальність**: Жодне з цих припущень не справедливе для електронної пошти.
+**Реальність**: Жодне з цих припущень не відповідає дійсності для електронної пошти.
 
-## Технічна реальність: сучасні стеки електронної пошти {#the-technical-reality-modern-email-stacks}
 
-### Що насправді рухає «стартапи електронної пошти» {#what-actually-powers-email-startups}
+## Технічна реальність: сучасні стекі електронної пошти {#the-technical-reality-modern-email-stacks}
 
-Давайте розглянемо, чим насправді керують ці компанії:
+### Що насправді живить "стартапи з електронною поштою" {#what-actually-powers-email-startups}
+
+Давайте подивимось, що насправді використовують ці компанії:
 
 ```mermaid
 graph LR
@@ -311,29 +311,30 @@ graph LR
 
 ### Проблеми з продуктивністю {#the-performance-problems}
 
-**Збільшення пам’яті**: Більшість поштових програм – це веб-програми на базі Electron, які споживають величезну кількість оперативної пам’яті:
+**Перевитрата пам’яті**: Більшість поштових додатків — це веб-додатки на Electron, які споживають величезну кількість оперативної пам’яті:
 
-* **[Mailspring](https://getmailspring.com/)**: [500 МБ+ для базової електронної пошти](https://github.com/Foundry376/Mailspring/issues/1758)
-* **Пошта Найласа**: [Використання пам'яті понад 1 ГБ](https://github.com/nylas/nylas-mail/issues/3501) до вимкнення
-* **[Поштова скринька](https://www.postbox-inc.com/)**: [300+ МБ вільної пам'яті](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
-* **[Канарська пошта](https://canarymail.io/)**: [Часті збої через проблеми з пам'яттю](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Тандерберд](https://www.thunderbird.net/)**: [Високе використання оперативної пам'яті до 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) системної пам'яті
+* **[Mailspring](https://getmailspring.com/)**: [500МБ+ для базової електронної пошти](https://github.com/Foundry376/Mailspring/issues/1758)
+* **Nylas Mail**: [1ГБ+ використання пам’яті](https://github.com/nylas/nylas-mail/issues/3501) перед вимкненням
+* **[Postbox](https://www.postbox-inc.com/)**: [300МБ+ пам’яті в режимі простою](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
+* **[Canary Mail](https://canarymail.io/)**: [Часті збої через проблеми з пам’яттю](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
+* **[Thunderbird](https://www.thunderbird.net/)**: [Високе використання ОЗП до 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) системної пам’яті
 
 > \[!WARNING]
-> **Криза продуктивності Electron**: Сучасні поштові клієнти, створені за допомогою Electron та React Native, страждають від серйозного перевантаження пам'яті та проблем із продуктивністю. Ці кросплатформні фреймворки, хоча й зручні для розробників, створюють ресурсомісткі програми, які споживають сотні мегабайтів або гігабайт оперативної пам'яті для базової функціональності електронної пошти.
+> **Криза продуктивності Electron**: Сучасні поштові клієнти, побудовані на Electron та React Native, страждають від серйозної перевитрати пам’яті та проблем з продуктивністю. Ці кросплатформенні фреймворки, хоч і зручні для розробників, створюють ресурсоємні додатки, які споживають сотні мегабайтів до гігабайтів оперативної пам’яті для базової функціональності електронної пошти.
 
-**Розрядка батареї**: Постійна синхронізація та неефективний код:
+**Витрата батареї**: Постійна синхронізація та неефективний код:
 
 * Фонові процеси, які ніколи не сплять
-* Непотрібні виклики API кожні кілька секунд
-* Погане керування з’єднаннями
-* Відсутність залежностей від сторонніх розробників, окрім тих, що абсолютно необхідні для основної функціональності
+* Зайві виклики API кожні кілька секунд
+* Погане управління з’єднанням
+* Відсутність сторонніх залежностей, окрім тих, що абсолютно необхідні для основної функціональності
 
-## Моделі придбання: успіх проти закриття {#the-acquisition-patterns-success-vs-shutdown}
 
-### Два візерунки {#the-two-patterns}
+## Патерни придбання: успіх проти закриття {#the-acquisition-patterns-success-vs-shutdown}
 
-**Шаблон клієнтської програми (зазвичай не працює)**:
+### Два патерни {#the-two-patterns}
+
+**Патерн клієнтського додатку (зазвичай провалюється)**:
 
 ```mermaid
 flowchart TD
@@ -342,14 +343,14 @@ flowchart TD
     C --> D[Talent Acquisition]
     D --> E[Service Shutdown]
 
-    A -.-> A1["Revolutionary interface"]
-    B -.-> B1["$5-50M raised"]
-    C -.-> C1["Acquire users, burn cash"]
-    D -.-> D1["Acqui-hire for talent"]
-    E -.-> E1["Service discontinued"]
+    A -.-> A1["Революційний інтерфейс"]
+    B -.-> B1["Залучено $5-50М"]
+    C -.-> C1["Залучення користувачів, спалювання грошей"]
+    D -.-> D1["Acqui-hire за талант"]
+    E -.-> E1["Сервіс припинено"]
 ```
 
-**Інфраструктурний шаблон (часто успішний)**:
+**Патерн інфраструктури (часто успішний)**:
 
 ```mermaid
 flowchart TD
@@ -358,200 +359,203 @@ flowchart TD
     H --> I[Strategic Acquisition]
     I --> J[Continued Operation]
 
-    F -.-> F1["SMTP/API services"]
-    G -.-> G1["Profitable operations"]
-    H -.-> H1["Market leadership"]
-    I -.-> I1["Strategic integration"]
-    J -.-> J1["Enhanced service"]
+    F -.-> F1["SMTP/API сервіси"]
+    G -.-> G1["Прибуткова діяльність"]
+    H -.-> H1["Лідерство на ринку"]
+    I -.-> I1["Стратегічна інтеграція"]
+    J -.-> J1["Покращений сервіс"]
 ```
 
-### Нещодавні приклади {#recent-examples}
+### Останні приклади {#recent-examples}
 
-**Збої клієнтської програми**:
+**Провали клієнтських додатків**:
 
-* **Поштова скринька → Dropbox → Вимкнення** (2013-2015)
-* **[Горобець → Google → Вимкнення](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[reMail → Google → Вимкнути](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **[Скіфф → Поняття → Вимкнення](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
+* **Mailbox → Dropbox → Закриття** (2013-2015)
+* **[Sparrow → Google → Закриття](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
+* **[reMail → Google → Закриття](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
+* **[Skiff → Notion → Закриття](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
+**Видатний виняток**:
 
-**Помітний виняток**:
+* **[Superhuman → Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025): Успішне придбання зі стратегічною інтеграцією у платформу продуктивності
 
-* **[Надлюдина → Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025): Успішне придбання зі стратегічною інтеграцією в платформу підвищення продуктивності
+**Успіхи інфраструктури**:
 
-**Успіхи в інфраструктурі**:
+* **[SendGrid → Twilio](https://en.wikipedia.org/wiki/SendGrid)** (2019): Придбання за $3 млрд, подальший розвиток
+* **[Mailgun → Sinch](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021): Стратегічна інтеграція
+* **[Postmark → ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022): Покращена платформа
 
-* **[SendGrid → Twilio](https://en.wikipedia.org/wiki/SendGrid)** (2019): придбання на суму 3 млрд доларів США, подальше зростання
-* **[Поштовий пістолет → Сінч](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021): стратегічна інтеграція
-* **[Поштовий штемпель → Активна кампанія](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022): вдосконалена платформа
 
-## Еволюція та консолідація галузі {#industry-evolution-and-consolidation}
+## Еволюція та консолідація індустрії {#industry-evolution-and-consolidation}
 
-### Природний розвиток галузі {#natural-industry-progression}
+### Природний розвиток індустрії {#natural-industry-progression}
 
-Індустрія електронної пошти природно розвивалася в напрямку консолідації, коли більші компанії купують менші, щоб інтегрувати функції або усунути конкуренцію. Це не обов'язково негативно – саме так розвивається більшість зрілих галузей.
+Індустрія електронної пошти природно рухається до консолідації, коли великі компанії купують менші, щоб інтегрувати функції або усунути конкуренцію. Це не обов’язково погано — так розвиваються більшість зрілих індустрій.
 
-### Переходи після придбання {#post-acquisition-transitions}
+### Перехід після придбань {#post-acquisition-transitions}
 
-Коли компанії електронної пошти придбані, користувачі часто стикаються з:
+Коли компанії електронної пошти купують, користувачі часто стикаються з:
 
-* **Міграція сервісів**: Перехід на нові платформи
-* **Зміни функцій**: Втрата спеціалізованого функціоналу
-* **Коригування цін**: Різні моделі підписки
-* **Періоди інтеграції**: Тимчасові перебої в роботі сервісу
+* **Міграцією сервісів**: Перехід на нові платформи
+* **Змінами функцій**: Втрата спеціалізованої функціональності
+* **Коригуваннями цін**: Інші моделі підписки
+* **Періодами інтеграції**: Тимчасові перебої в роботі сервісу
 
-### Рекомендації користувача під час переходів {#user-considerations-during-transitions}
+### Роздуми користувачів під час переходів {#user-considerations-during-transitions}
 
-Під час консолідації галузі користувачі отримують вигоду від:
+Під час консолідації індустрії користувачі отримують вигоду від:
 
-* **Оцінка альтернатив**: Кілька постачальників пропонують схожі послуги
-* **Розуміння шляхів міграції**: Більшість сервісів надають інструменти для експорту
-* **Врахування довгострокової стабільності**: Встановлені постачальники часто пропонують більшу безперервність
+* **Оцінки альтернатив**: Кілька провайдерів пропонують схожі послуги
+* **Розуміння шляхів міграції**: Більшість сервісів надають інструменти експорту
+* **Врахування довгострокової стабільності**: Відомі провайдери часто забезпечують більшу безперервність
 
-## Новини хакерів: перевірка реальності {#the-hacker-news-reality-check}
 
-Кожен стартап електронної пошти отримує однакові коментарі до [Новини хакерів](https://news.ycombinator.com/):
+## Перевірка реальності на Hacker News {#the-hacker-news-reality-check}
 
-* ["Електронна пошта працює добре, це вирішує не проблему"](https://news.ycombinator.com/item?id=35982757)
-* ["Просто користуйтеся Gmail/Outlook, як і всі інші"](https://news.ycombinator.com/item?id=36001234)
-* ["Ще один поштовий клієнт, який буде закрито через 2 роки"](https://news.ycombinator.com/item?id=36012345)
-* [«Справжня проблема — це спам, і це її не вирішує»](https://news.ycombinator.com/item?id=36023456)
+Кожен стартап електронної пошти отримує однакові коментарі на [Hacker News](https://news.ycombinator.com/):
 
-**Спільнота має рацію**. Ці коментарі з'являються після кожного запуску email-стартапу, бо фундаментальні проблеми завжди однакові.
+* ["Електронна пошта працює нормально, це вирішує неіснуючу проблему"](https://news.ycombinator.com/item?id=35982757)
+* ["Просто користуйтесь Gmail/Outlook, як усі"](https://news.ycombinator.com/item?id=36001234)
+* ["Ще один поштовий клієнт, який закриють через 2 роки"](https://news.ycombinator.com/item?id=36012345)
+* ["Справжня проблема — це спам, і це не вирішує її"](https://news.ycombinator.com/item?id=36023456)
 
-## Сучасний штучний інтелект: шахрайство з електронною поштою {#the-modern-ai-email-grift}
+**Спільнота права**. Ці коментарі з’являються при запуску кожного поштового стартапу, бо фундаментальні проблеми завжди однакові.
 
-### Найновіша хвиля {#the-latest-wave}
 
-2024 рік приніс нову хвилю стартапів електронної пошти на базі штучного інтелекту, і перший великий успішний вихід з них вже відбувся:
+## Сучасна афера з AI у пошті {#the-modern-ai-email-grift}
 
-* **[Надлюдина](https://superhuman.com/)**: [Зібрано 33 мільйони доларів](https://superhuman.com/), [успішно придбано Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) – рідкісний успішний вихід із клієнтської програми
-* **[Короткохвильовий](https://www.shortwave.com/)**: Обгортка Gmail зі зведеними повідомленнями на основі штучного інтелекту
-* **[SaneBox](https://www.sanebox.com/)**: Фільтрація електронної пошти за допомогою штучного інтелекту (насправді працює, але не революційно)
+### Остання хвиля {#the-latest-wave}
 
-### Ті ж старі проблеми {#the-same-old-problems}
+2024 рік приніс нову хвилю стартапів «AI-підсиленої пошти», з першим великим успішним виходом вже відбувся:
 
-Додавання "штучного інтелекту" не вирішує фундаментальних проблем:
+* **[Superhuman](https://superhuman.com/)**: [$33 млн залучено](https://superhuman.com/), [успішно придбано Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) — рідкісний успішний вихід клієнтського додатку
+* **[Shortwave](https://www.shortwave.com/)**: обгортка Gmail з AI-резюме
+* **[SaneBox](https://www.sanebox.com/)**: AI-фільтрація пошти (дійсно працює, але не революційно)
 
-* **Підсумки на основі штучного інтелекту**: Більшість електронних листів вже лаконічні
-* **Розумні відповіді**: [Gmail має їх уже багато років](https://support.google.com/mail/answer/9116836), і вони добре працюють
-* **Планування електронної пошти**: [Outlook робить це власноруч](https://support.microsoft.com/en-us/office/delay-or-schedule-sending-email-messages-026af69f-c287-490a-a72f-6c65793744ba)
-* **Визначення пріоритету**: Існуючі поштові клієнти мають ефективні системи фільтрації
+### Старі проблеми {#the-same-old-problems}
 
-**Справжній виклик**: функції штучного інтелекту вимагають значних інвестицій у інфраструктуру, водночас вирішуючи відносно незначні проблемні моменти.
+Додавання «AI» не вирішує фундаментальні виклики:
 
-## Що насправді працює: реальні історії успіху з електронною поштою {#what-actually-works-the-real-email-success-stories}
+* **AI-резюме**: Більшість листів і так лаконічні
+* **Розумні відповіді**: [Gmail має їх уже роками](https://support.google.com/mail/answer/9116836) і вони добре працюють
+* **Планування листів**: [Outlook робить це нативно](https://support.microsoft.com/en-us/office/delay-or-schedule-sending-email-messages-026af69f-c287-490a-a72f-6c65793744ba)
+* **Виявлення пріоритету**: Існуючі поштові клієнти мають ефективні системи фільтрації
+
+**Справжній виклик**: AI-функції потребують значних інвестицій в інфраструктуру, вирішуючи відносно незначні проблеми.
+
+
+## Що справді працює: реальні історії успіху пошти {#what-actually-works-the-real-email-success-stories}
 
 ### Інфраструктурні компанії (переможці) {#infrastructure-companies-the-winners}
 
-* **[SendGrid](https://sendgrid.com/)**: [Придбання Twilio за 3 мільярди доларів](https://en.wikipedia.org/wiki/SendGrid)
-* **[Поштовий пістолет](https://www.mailgun.com/)**: [Дохід понад 50 мільйонів доларів США](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), придбано Sinch
-* **[Поштовий штемпель](https://postmarkapp.com/)**: Прибуткова, [придбано ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
+* **[SendGrid](https://sendgrid.com/)**: [$3 млрд придбання Twilio](https://en.wikipedia.org/wiki/SendGrid)
+* **[Mailgun](https://www.mailgun.com/)**: [$50 млн+ доходу](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), придбано Sinch
+* **[Postmark](https://postmarkapp.com/)**: Прибуткова, [придбана ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
 * **[Amazon SES](https://aws.amazon.com/ses/)**: Мільярди доходу
+**Патерн**: Вони будують інфраструктуру, а не додатки.
 
-**Закономірність**: Вони будують інфраструктуру, а не додатки.
+### Провайдери електронної пошти (Виживші) {#email-providers-the-survivors}
 
-### Постачальники електронної пошти (The Survivors) {#email-providers-the-survivors}
-
-* **[Швидка пошта](https://www.fastmail.com/)**: [25+ років](https://www.fastmail.com/about/), прибутковий, незалежний
+* **[FastMail](https://www.fastmail.com/)**: [понад 25 років](https://www.fastmail.com/about/), прибутковий, незалежний
 * **[ProtonMail](https://proton.me/)**: Орієнтований на конфіденційність, сталий розвиток
-* **[Пошта Zoho](https://www.zoho.com/mail/)**: Частина більшого бізнес-пакету
-* **Ми**: понад 7 років, прибутковий, зростаючий
+* **[Zoho Mail](https://www.zoho.com/mail/)**: Частина більшого бізнес-пакету
+* **Ми**: понад 7 років, прибуткові, зростаємо
 
 > \[!WARNING]
-> **Питання інвестицій у JMAP**: Хоча Fastmail інвестує ресурси в [JMAP](https://jmap.io/), протокол [10+ років з обмеженим усиновленням](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), вони одночасно використовують [відмовитися від впровадження PGP-шифрування](https://www.fastmail.com/blog/why-we-dont-offer-pgp/), який запитують багато користувачів. Це стратегічний вибір, що дозволяє пріоритезувати інновації протоколів над функціями, запитуваними користувачами. Чи отримає JMAP ширше впровадження, ще належить з'ясувати, але поточна екосистема поштових клієнтів продовжує покладатися переважно на IMAP/SMTP.
+> **Питання інвестицій у JMAP**: Хоча Fastmail інвестує ресурси в [JMAP](https://jmap.io/) — протокол, який існує вже [понад 10 років з обмеженим впровадженням](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), вони одночасно [відмовляються впроваджувати шифрування PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/), яке запитують багато користувачів. Це стратегічний вибір на користь інновацій протоколу замість функцій, запитаних користувачами. Чи отримає JMAP ширше впровадження — покаже час, але нинішня екосистема поштових клієнтів переважно покладається на IMAP/SMTP.
 
 > \[!TIP]
-> **Успіх підприємства**: Пересилання електронної пошти забезпечує [рішення для випускників електронної пошти для провідних університетів](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), включаючи Кембриджський університет з 30 000 адрес випускників, що забезпечує щорічну економію коштів у розмірі 87 000 доларів США порівняно з традиційними рішеннями.
+> **Успіх у корпоративному сегменті**: Forward Email забезпечує [рішення для електронної пошти випускників провідних університетів](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), включно з Кембриджським університетом із 30 000 адрес випускників, що дає $87 000 щорічної економії порівняно з традиційними рішеннями.
 
-**Закономірність**: Вони покращують електронну пошту, а не замінюють її.
+**Патерн**: Вони покращують електронну пошту, а не замінюють її.
 
-### Виняток: історія успіху Xobni {#the-exception-xobnis-success-story}
+### Виняток: Історія успіху Xobni {#the-exception-xobnis-success-story}
 
-[Хобні](https://en.wikipedia.org/wiki/Xobni) виділяється як один з небагатьох стартапів, пов'язаних з електронною поштою, який досяг успіху завдяки правильному підходу.
+[Xobni](https://en.wikipedia.org/wiki/Xobni) вирізняється як один із небагатьох стартапів, пов’язаних з електронною поштою, які насправді досягли успіху, обравши правильний підхід.
 
-**Що Ксобні зробив правильно**:
+**Що зробив Xobni правильно**:
 
-* **Покращено існуючу електронну пошту**: Створено на основі Outlook, а не замінено
-* **Вирішено реальні проблеми**: Керування контактами та пошук електронної пошти
-* **Зосереджено на інтеграції**: Працює з існуючими робочими процесами
-* **Орієнтовано на підприємство**: Орієнтовано на бізнес-користувачів із реальними проблемними моментами
+* **Покращив існуючу пошту**: Побудувався поверх Outlook замість заміни
+* **Вирішив реальні проблеми**: Управління контактами та пошук у пошті
+* **Зосередився на інтеграції**: Працював з існуючими робочими процесами
+* **Корпоративна орієнтація**: Орієнтувався на бізнес-користувачів із реальними проблемами
 
-**Успіх**: [Xobni була придбана Yahoo за 60 мільйонів доларів у 2013 році.](https://en.wikipedia.org/wiki/Xobni), що забезпечує стабільну прибутковість для інвесторів та успішний вихід для засновників.
+**Успіх**: [Xobni був придбаний Yahoo за $60 мільйонів у 2013 році](https://en.wikipedia.org/wiki/Xobni), що забезпечило солідний прибуток інвесторам і успішний вихід для засновників.
 
 #### Чому Xobni досяг успіху там, де інші зазнали невдачі {#why-xobni-succeeded-where-others-failed}
 
-1. **Побудовано на перевіреній інфраструктурі**: Використано існуючу обробку електронної пошти Outlook
-2. **Вирішено реальні проблеми**: Керування контактами було дійсно несправним
-3. **Корпоративний ринок**: Бізнес платить за інструменти підвищення продуктивності
-4. **Інтеграційний підхід**: Покращено, а не замінено існуючі робочі процеси
+1. **Побудований на перевіреній інфраструктурі**: Використовував існуюче оброблення пошти Outlook
+2. **Вирішував реальні проблеми**: Управління контактами було справді проблемним
+3. **Корпоративний ринок**: Бізнес платить за інструменти продуктивності
+4. **Підхід інтеграції**: Покращував, а не замінював існуючі робочі процеси
 
-#### Постійний успіх засновників {#the-founders-continued-success}
+#### Подальший успіх засновників {#the-founders-continued-success}
 
-[Метт Брезіна](https://www.linkedin.com/in/mattbrezina/) та [Адам Сміт](https://www.linkedin.com/in/adamjsmith/) не зупинилися після Xobni:
+[Matt Brezina](https://www.linkedin.com/in/mattbrezina/) та [Adam Smith](https://www.linkedin.com/in/adamjsmith/) не зупинилися після Xobni:
 
-* **Метт Брезіна**: Став активним [ангел-інвестор](https://mercury.com/investor-database/matt-brezina) з інвестиціями в Dropbox, Mailbox та інші
-* **Адам Сміт**: Продовжує створювати успішні компанії у сфері продуктивності
-* **Обидва засновники**: Продемонстрували, що успіх електронної пошти полягає в удосконаленні, а не в заміні
+* **Matt Brezina**: Став активним [ангельським інвестором](https://mercury.com/investor-database/matt-brezina) з інвестиціями у Dropbox, Mailbox та інші
+* **Adam Smith**: Продовжив створювати успішні компанії у сфері продуктивності
+* **Обидва засновники**: Продемонстрували, що успіх у пошті приходить через покращення, а не заміну
 
-### Візерунок {#the-pattern}
+### Патерн {#the-pattern}
 
 Компанії досягають успіху в електронній пошті, коли вони:
 
-1. **Створення інфраструктури** ([SendGrid](https://sendgrid.com/), [Поштовий пістолет](https://www.mailgun.com/))
-2. **Покращення існуючих робочих процесів** ([Хобні](https://en.wikipedia.org/wiki/Xobni), [Швидка пошта](https://www.fastmail.com/))
-3. **Зосередження на надійності** ([Amazon SES](https://aws.amazon.com/ses/), [Поштовий штемпель](https://postmarkapp.com/))
-4. **Обслуговування розробників** (API та інструменти, а не додатки кінцевих користувачів)
+1. **Будують інфраструктуру** ([SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/))
+2. **Покращують існуючі робочі процеси** ([Xobni](https://en.wikipedia.org/wiki/Xobni), [FastMail](https://www.fastmail.com/))
+3. **Зосереджуються на надійності** ([Amazon SES](https://aws.amazon.com/ses/), [Postmark](https://postmarkapp.com/))
+4. **Обслуговують розробників** (API та інструменти, а не кінцеві додатки)
 
-## Чи комусь вдалося успішно переосмислити електронну пошту? {#has-anyone-successfully-reinvented-email}
 
-Це ключове питання, яке є суттю інновацій у сфері електронної пошти. Коротка відповідь така: **ніхто не зміг успішно замінити електронну пошту, але дехто успішно її вдосконалив**.
+## Чи хтось успішно винайшов електронну пошту заново? {#has-anyone-successfully-reinvented-email}
 
-### Що насправді застрягло {#what-actually-stuck}
+Це ключове питання, що стосується суті інновацій у пошті. Коротка відповідь: **ніхто не замінив електронну пошту успішно, але деякі вдало її покращили**.
 
-Огляд інновацій в електронній пошті за останні 20 років:
+### Що насправді прижилося {#what-actually-stuck}
 
-* **[Потоки обговорень у Gmail](https://support.google.com/mail/answer/5900)**: Покращена організація електронної пошти
-* **[Інтеграція календаря Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)**: Покращено планування
-* **Мобільні поштові програми**: Покращена доступність
+Оглядаючи інновації в електронній пошті за останні 20 років:
+
+* **[Потокова організація Gmail](https://support.google.com/mail/answer/5900)**: Покращена організація пошти
+* **[Інтеграція календаря Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)**: Покращене планування
+* **Мобільні поштові додатки**: Покращена доступність
 * **[DKIM](https://tools.ietf.org/html/rfc6376)/[SPF](https://tools.ietf.org/html/rfc7208)/[DMARC](https://tools.ietf.org/html/rfc7489)**: Покращена безпека
-
-**Шаблона**: Усі успішні інновації **покращили** існуючі протоколи електронної пошти, а не замінили їх.
+**Патерн**: Всі успішні інновації **покращували** існуючі протоколи електронної пошти, а не замінювали їх.
 
 ### Нові інструменти доповнюють електронну пошту (але не замінюють її) {#new-tools-complement-email-but-dont-replace-it}
 
-* **[Слак](https://slack.com/)**: Чудово підходить для командного чату, але все ще надсилає сповіщення електронною поштою
-* **[Дискорд](https://discord.com/)**: Чудово підходить для спільнот, але використовує електронну пошту для керування обліковими записами
-* **[WhatsApp](https://www.whatsapp.com/)**: Ідеально підходить для обміну повідомленнями, але компанії все ще використовують електронну пошту
-* **[Збільшити](https://zoom.us/)**: Необхідно для відеодзвінків, але запрошення на зустріч надходять електронною поштою
+* **[Slack](https://slack.com/)**: Чудово підходить для командного чату, але все одно надсилає сповіщення електронною поштою
+* **[Discord](https://discord.com/)**: Відмінно для спільнот, але використовує електронну пошту для керування обліковими записами
+* **[WhatsApp](https://www.whatsapp.com/)**: Ідеально для обміну повідомленнями, але бізнеси все ще використовують електронну пошту
+* **[Zoom](https://zoom.us/)**: Необхідний для відеодзвінків, але запрошення на зустрічі надходять електронною поштою
 
 ### Експеримент HEY {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Перевірка реальних умов**: Засновник HEY [DHH](https://dhh.dk/) фактично використовує наш сервіс Forward Email для свого особистого домену `dhh.dk` вже кілька років, демонструючи, що навіть новатори в галузі електронної пошти покладаються на перевірену інфраструктуру.
+> **Перевірка в реальному світі**: Засновник HEY [DHH](https://dhh.dk/) фактично використовує наш сервіс Forward Email для свого особистого домену `dhh.dk` вже кілька років, що демонструє, що навіть інноватори електронної пошти покладаються на перевірену інфраструктуру.
 
-[HEY](https://hey.com/) від [Базовий табір](https://basecamp.com/) являє собою найсерйознішу нещодавню спробу «переосмислити» електронну пошту:
+[HEY](https://hey.com/) від [Basecamp](https://basecamp.com/) є найсерйознішою нещодавньою спробою "перевинайти" електронну пошту:
 
-* **Запущено**: [2020 рік з великою помпою](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
-* **Підхід**: Абсолютно нова парадигма електронної пошти з фільтрацією, групуванням та робочими процесами
-* **Прийом**: Змішаний – деяким подобається, більшість залишається з існуючою електронною поштою
+* **Запуск**: [2020 з великим розголосом](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
+* **Підхід**: Повністю нова парадигма електронної пошти з фільтрацією, групуванням і робочими процесами
+* **Відгуки**: Змішані - деякі її люблять, більшість залишаються з існуючою поштою
 * **Реальність**: Це все ще електронна пошта (SMTP/IMAP) з іншим інтерфейсом
 
 ### Що насправді працює {#what-actually-works}
 
-Найуспішнішими інноваціями в електронній пошті були:
+Найуспішніші інновації в електронній пошті були:
 
-1. **Краща інфраструктура**: Швидші сервери, краща фільтрація спаму, покращена доставка
-2. **Покращені інтерфейси**: [Перегляд ланцюжків повідомлень у Gmail](https://support.google.com/mail/answer/5900), [Інтеграція календаря Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
-3. **Інструменти розробника**: API для надсилання електронної пошти, вебхуки для відстеження
-4. **Спеціалізовані робочі процеси**: інтеграція CRM, автоматизація маркетингу, транзакційна електронна пошта
+1. **Краща інфраструктура**: Швидші сервери, кращий спам-фільтр, покращена доставлянність
+2. **Покращені інтерфейси**: [Перегляд розмов у Gmail](https://support.google.com/mail/answer/5900), [Інтеграція календаря в Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
+3. **Інструменти для розробників**: API для надсилання пошти, вебхуки для відстеження
+4. **Спеціалізовані робочі процеси**: Інтеграція CRM, маркетингова автоматизація, транзакційна пошта
 
-**Жоден з них не замінив електронну пошту — вони зробили її кращою.**
+**Жодна з цих інновацій не замінила електронну пошту — вони зробили її кращою.**
+
 
 ## Побудова сучасної інфраструктури для існуючих протоколів електронної пошти: наш підхід {#building-modern-infrastructure-for-existing-email-protocols-our-approach}
 
-Перш ніж заглиблюватися в невдачі, важливо зрозуміти, що насправді працює в електронній пошті. Проблема не в тому, що електронна пошта не працює, а в тому, що більшість компаній намагаються «виправити» те, що вже працює ідеально.
+Перед тим, як розглядати невдачі, важливо зрозуміти, що насправді працює в електронній пошті. Проблема не в тому, що електронна пошта зламана — більшість компаній намагаються "виправити" те, що вже працює ідеально.
 
-### Спектр інновацій електронної пошти {#the-email-innovation-spectrum}
+### Спектр інновацій в електронній пошті {#the-email-innovation-spectrum}
 
 Інновації в електронній пошті поділяються на три категорії:
 
@@ -568,58 +572,59 @@ graph TD
 
 ### Чому ми зосереджуємося на інфраструктурі {#why-we-focus-on-infrastructure}
 
-Ми вирішили побудувати сучасну інфраструктуру електронної пошти, тому що:
+Ми обрали побудову сучасної інфраструктури електронної пошти, тому що:
 
-* **Протоколи електронної пошти перевірені**: [SMTP надійно працює з 1982 року](https://tools.ietf.org/html/rfc821)
-* **Проблема полягає в реалізації**: Більшість поштових сервісів використовують застарілі програмні стеки
+* **Протоколи електронної пошти перевірені часом**: [SMTP надійно працює з 1982 року](https://tools.ietf.org/html/rfc821)
+* **Проблема в реалізації**: Більшість поштових сервісів використовують застарілі програмні стекі
 * **Користувачі хочуть надійності**: Не нових функцій, які порушують існуючі робочі процеси
-* **Розробникам потрібні інструменти**: Кращі API та інтерфейси керування
+* **Розробникам потрібні інструменти**: Кращі API та інтерфейси управління
 
 ### Що насправді працює в електронній пошті {#what-actually-works-in-email}
 
-Успішна схема проста: **покращуйте існуючі робочі процеси електронної пошти, а не замінюйте їх**. Це означає:
+Успішний патерн простий: **покращувати існуючі робочі процеси електронної пошти замість їх заміни**. Це означає:
 
-* Створення швидших та надійніших SMTP-серверів
-* Створення кращої фільтрації спаму без порушення роботи легітимної електронної пошти
-* Надання зручних для розробників API для існуючих протоколів
-* Покращення доставки завдяки належній інфраструктурі
+* Побудову швидших, надійніших SMTP серверів
+* Створення кращого спам-фільтру без порушення легітимної пошти
+* Надання дружніх до розробників API для існуючих протоколів
+* Покращення доставлянності через належну інфраструктуру
 
-## Наш підхід: чим ми відрізняємося {#our-approach-why-were-different}
+
+## Наш підхід: чому ми відрізняємося {#our-approach-why-were-different}
 
 ### Що ми робимо {#what-we-do}
 
-* **Створення фактичної інфраструктури**: Налаштування SMTP/IMAP-серверів з нуля
-* **Зосередження на надійності**: [99,99% часу безвідмовної роботи](https://status.forwardemail.net), належна обробка помилок
-* **Покращення існуючих робочих процесів**: Робота з усіма поштовими клієнтами
-* **Обслуговування розробників**: API та інструменти, які дійсно працюють
-* **Підтримка сумісності**: Повна відповідність стандартам [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
+* **Будуємо реальну інфраструктуру**: Кастомні SMTP/IMAP сервери з нуля
+* **Зосереджуємося на надійності**: [99.99% часу роботи](https://status.forwardemail.net), належна обробка помилок
+* **Покращуємо існуючі робочі процеси**: Працюємо з усіма поштовими клієнтами
+* **Обслуговуємо розробників**: API та інструменти, які справді працюють
+* **Підтримуємо сумісність**: Повна відповідність [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
+### Чого ми не робимо {#what-we-dont-do}
 
-### Що ми не робимо {#what-we-dont-do}
+* Створюємо "революційні" поштові клієнти
+* Намагаймося замінити існуючі поштові протоколи
+* Додаємо непотрібні функції штучного інтелекту
+* Обіцяємо "виправити" електронну пошту
 
-* Створити «революційні» поштові клієнти
-* Спробувати замінити існуючі поштові протоколи
-* Додати непотрібні функції штучного інтелекту
-* Пообіцяти «виправити» електронну пошту
 
-## Як ми створюємо інфраструктуру електронної пошти, яка дійсно працює {#how-we-build-email-infrastructure-that-actually-works}
+## Як ми створюємо поштову інфраструктуру, яка справді працює {#how-we-build-email-infrastructure-that-actually-works}
 
 ### Наш антистартапний підхід {#our-anti-startup-approach}
 
-Поки інші компанії витрачають мільйони, намагаючись переосмислити електронну пошту, ми зосереджуємося на створенні надійної інфраструктури:
+Поки інші компанії витрачають мільйони, намагаючись винайти електронну пошту заново, ми зосереджуємося на створенні надійної інфраструктури:
 
-* **Без змін у налаштуваннях**: Ми створюємо інфраструктуру електронної пошти вже понад 7 років
-* **Без стратегії придбання**: Ми створюємо довгострокову перспективу
-* **Без «революційних» заяв**: Ми просто покращуємо роботу електронної пошти
+* **Без поворотів**: Ми створюємо поштову інфраструктуру вже понад 7 років
+* **Без стратегії поглинання**: Ми працюємо на довгострокову перспективу
+* **Без "революційних" заяв**: Ми просто робимо електронну пошту кращою
 
-### Що відрізняє нас від інших {#what-makes-us-different}
+### Що робить нас іншими {#what-makes-us-different}
 
 > \[!TIP]
-> **Відповідність урядовим вимогам**: Пересилання електронної пошти має статус [Відповідність розділу 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) та обслуговує такі організації, як Військово-морська академія США, демонструючи нашу відданість дотриманню суворих федеральних вимог безпеки.
+> **Відповідність державним стандартам**: Forward Email відповідає [Розділу 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) і обслуговує організації, такі як Військово-морська академія США, що демонструє нашу відданість суворим федеральним вимогам безпеки.
 
 > \[!NOTE]
-> **Реалізація OpenPGP та OpenWKD**: На відміну від Fastmail, який [відмовляється впроваджувати PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) посилався на проблеми зі складністю, Forward Email забезпечує повну підтримку OpenPGP з сумісністю з OpenWKD (Web Key Directory), надаючи користувачам шифрування, яке вони дійсно хочуть, не змушуючи їх використовувати експериментальні протоколи, такі як JMAP.
+> **Реалізація OpenPGP та OpenWKD**: На відміну від Fastmail, який [відмовляється впроваджувати PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) через складність, Forward Email надає повну підтримку OpenPGP з відповідністю OpenWKD (Web Key Directory), забезпечуючи користувачам шифрування, яке вони справді хочуть, без примусу використовувати експериментальні протоколи, такі як JMAP.
 
-**Порівняння технічних стеків**:
+**Порівняння технічного стеку**:
 
 ```mermaid
 graph TD
@@ -640,46 +645,45 @@ graph TD
     H --> N[Web-native design]
 ```
 
-* \= [Допис у блозі APNIC](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) підтверджує використання Proton postfix-mta-sts-resolver, що вказує на використання стеку Postfix
+* \= [APNIC blog post](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) підтверджує, що Proton використовує postfix-mta-sts-resolver, що вказує на використання стеку Postfix
 
 **Ключові відмінності**:
 
-* **Сучасна мова**: JavaScript у всьому стеку порівняно з кодом C 1980-х років
-* **Код без склеювання**: Єдина мова усуває складність інтеграції
-* **Веб-нативний**: Створений для сучасної веб-розробки з нуля
-* **Підтримуваний**: Будь-який веб-розробник може зрозуміти та зробити свій внесок
-* **Без застарілих боргів**: Чиста, сучасна кодова база без десятиліть патчів
+* **Сучасна мова**: JavaScript по всьому стеку проти коду на C 1980-х років
+* **Без glue-коду**: Одна мова усуває складність інтеграції
+* **Web-native**: Побудовано для сучасної веб-розробки з нуля
+* **Підтримуваність**: Будь-який веб-розробник може зрозуміти та внести свій внесок
+* **Без спадщини**: Чистий, сучасний код без десятиліть патчів
 
 > \[!NOTE]
-> **Конфіденційність за проектом**: Наш [політика конфіденційності](https://forwardemail.net/en/privacy) гарантує, що ми не зберігаємо переслані електронні листи на диску або в базах даних, не зберігаємо метадані про електронні листи та не зберігаємо журнали чи IP-адреси – працюємо в пам’яті лише для служб пересилання електронної пошти.
+> **Конфіденційність за замовчуванням**: Наша [політика конфіденційності](https://forwardemail.net/en/privacy) гарантує, що ми не зберігаємо переслані листи на дисках або в базах даних, не зберігаємо метадані про листи і не зберігаємо логи чи IP-адреси — працюємо лише в оперативній пам’яті для сервісів пересилання пошти.
 
-**Технічна документація**: Для отримання детальної інформації про наш підхід, архітектуру та реалізацію безпеки див. наш [технічний документ](https://forwardemail.net/technical-whitepaper.pdf) та розширену технічну документацію.
+**Технічна документація**: Для детального ознайомлення з нашим підходом, архітектурою та реалізацією безпеки дивіться наш [технічний whitepaper](https://forwardemail.net/technical-whitepaper.pdf) та обширну технічну документацію.
 
-### Порівняння постачальників послуг електронної пошти: зростання завдяки перевіреним протоколам {#email-service-provider-comparison-growth-through-proven-protocols}
+### Порівняння поштових провайдерів: зростання через перевірені протоколи {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Реальні показники зростання**: У той час як інші постачальники послуг використовують експериментальні протоколи, Forward Email зосереджується на тому, чого насправді хочуть користувачі – надійних IMAP, POP3, SMTP, CalDAV та CardDAV, які працюють на всіх пристроях. Наше зростання демонструє цінність такого підходу.
+> **Реальні показники зростання**: Поки інші провайдери женуться за експериментальними протоколами, Forward Email зосереджується на тому, що користувачі справді хочуть — надійних IMAP, POP3, SMTP, CalDAV та CardDAV, які працюють на всіх пристроях. Наше зростання демонструє цінність такого підходу.
 
-| Постачальник | Доменні імена (2024 через [SecurityTrails](https://securitytrails.com/)) | Доменні імена (2025 через [ViewDNS](https://viewdns.info/reversemx/)) | Відсоткова зміна | Запис MX |
-| ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
-| **Переслати електронний лист** | 418,477 | 506,653 | **+21.1%** | `mx1.forwardemail.net` |
-| **Протонська пошта** | 253,977 | 334,909 | **+31.9%** | `mail.protonmail.ch` |
-| **Швидка пошта** | 168,433 | 192,075 | **+14%** | `in1-smtp.messagingengine.com` |
-| **Поштова скринька** | 38,659 | 43,337 | **+12.1%** | `mxext1.mailbox.org` |
-| **Всього** | 18,781 | 21,720 | **+15.6%** | `mail.tutanota.de` |
-| **Скіф (неіснуючий)** | 7,504 | 3,361 | **-55.2%** | `inbound-smtp.skiff.com` |
-
+| Провайдер           | Домени (2024 через [SecurityTrails](https://securitytrails.com/)) | Домени (2025 через [ViewDNS](https://viewdns.info/reversemx/)) | Відсоткова зміна | MX запис                      |
+| ------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------- | ---------------- | ----------------------------- |
+| **Forward Email**   | 418,477                                                           | 506,653                                                        | **+21.1%**       | `mx1.forwardemail.net`        |
+| **Proton Mail**     | 253,977                                                           | 334,909                                                        | **+31.9%**       | `mail.protonmail.ch`          |
+| **Fastmail**        | 168,433                                                           | 192,075                                                        | **+14%**         | `in1-smtp.messagingengine.com`|
+| **Mailbox**         | 38,659                                                            | 43,337                                                         | **+12.1%**       | `mxext1.mailbox.org`          |
+| **Tuta**            | 18,781                                                            | 21,720                                                         | **+15.6%**       | `mail.tutanota.de`            |
+| **Skiff (закрито)** | 7,504                                                             | 3,361                                                          | **-55.2%**       | `inbound-smtp.skiff.com`      |
 **Ключові висновки**:
 
-* **Пересилання електронної пошти** демонструє сильне зростання (+21,1%), понад 500 тисяч доменів використовують наші записи MX
-* **Перевірена інфраструктура перемагає**: Сервіси з надійним IMAP/SMTP демонструють стабільне впровадження доменів
-* **Неактуальність JMAP**: Інвестиції Fastmail у JMAP демонструють повільніше зростання (+14%) порівняно з постачальниками, які зосереджуються на стандартних протоколах
-* **Крах Skiff**: Неіснуючий стартап втратив 55,2% доменів, демонструючи провал «революційних» підходів до електронної пошти
-* **Перевірка ринку**: Зростання кількості доменів відображає реальне впровадження користувачами, а не маркетингові показники
+* **Forward Email** демонструє сильне зростання (+21,1%) з понад 500 тис. доменів, що використовують наші MX-записи
+* **Перевірена інфраструктура перемагає**: Сервіси з надійним IMAP/SMTP показують стабільне прийняття доменів
+* **Нерелевантність JMAP**: Інвестиції Fastmail у JMAP демонструють повільніше зростання (+14%) порівняно з провайдерами, що зосереджуються на стандартних протоколах
+* **Крах Skiff**: Збанкрутілий стартап втратив 55,2% доменів, демонструючи провал «революційних» підходів до електронної пошти
+* **Валідація ринку**: Зростання кількості доменів відображає реальне прийняття користувачами, а не маркетингові метрики
 
 ### Технічна хронологія {#the-technical-timeline}
 
-Виходячи з нашого [офіційний графік компанії](https://forwardemail.net/en/about), ось як ми створили інфраструктуру електронної пошти, яка дійсно працює:
+На основі нашої [офіційної хронології компанії](https://forwardemail.net/en/about), ось як ми створювали інфраструктуру електронної пошти, яка справді працює:
 
 ```mermaid
 timeline
@@ -693,15 +697,15 @@ timeline
     2024 : February - CalDAV support : March-July - IMAP/POP3/CalDAV optimizations : July - iOS Push support and TTI monitoring : August - EML/Mbox export and webhook signatures : September-January 2025 - Vacation responder and OpenPGP/WKD encryption
 ```
 
-### Чому ми досягаємо успіху там, де інші зазнають невдачі {#why-we-succeed-where-others-fail}
+### Чому ми досягаємо успіху там, де інші зазнають поразки {#why-we-succeed-where-others-fail}
 
-1. **Ми будуємо інфраструктуру, а не додатки**: Зосереджуємося на серверах та протоколах
-2. **Ми вдосконалюємо, а не замінюємо**: Працюємо з існуючими поштовими клієнтами
-3. **Ми прибуткові**: Немає тиску венчурного капіталу «швидко зростати та ламати все»
-4. **Ми розуміємо електронну пошту**: понад 7 років глибокого технічного досвіду
-5. **Ми обслуговуємо розробників**: API та інструменти, які дійсно вирішують проблеми
+1. **Ми будуємо інфраструктуру, а не додатки**: Фокус на серверах і протоколах
+2. **Ми покращуємо, а не замінюємо**: Працюємо з існуючими поштовими клієнтами
+3. **Ми прибуткові**: Немає тиску венчурних інвесторів «рости швидко і ламати все»
+4. **Ми розуміємо електронну пошту**: 7+ років глибокого технічного досвіду
+5. **Ми обслуговуємо розробників**: API та інструменти, які справді вирішують проблеми
 
-### Перевірка реальних витрат {#the-cost-reality-check}
+### Перевірка реальності вартості {#the-cost-reality-check}
 
 ```mermaid
 graph TD
@@ -716,276 +720,276 @@ graph TD
     F --> J[Organic growth]
 ```
 
-## Проблеми безпеки в інфраструктурі електронної пошти {#security-challenges-in-email-infrastructure}
+## Виклики безпеки в інфраструктурі електронної пошти {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Квантово-безпечна безпека електронної пошти**: Пересилання електронної пошти – це [перший і єдиний у світі поштовий сервіс, який використовує квантово-стійкі та індивідуально зашифровані поштові скриньки SQLite](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), що забезпечує безпрецедентний захист від майбутніх загроз квантових обчислень.
+> **Квантово-безпечна безпека електронної пошти**: Forward Email — це [перший і єдиний у світі сервіс електронної пошти, що використовує квантово-стійкі та індивідуально зашифровані поштові скриньки SQLite](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), забезпечуючи безпрецедентний захист від майбутніх загроз квантових обчислень.
 
-Безпека електронної пошти – це складне завдання, яке впливає на всіх постачальників послуг у галузі. Замість того, щоб висвітлювати окремі інциденти, цінніше зрозуміти загальні міркування безпеки, які повинні враховувати всі постачальники інфраструктури електронної пошти.
+Безпека електронної пошти — це складне завдання, яке стосується всіх провайдерів у галузі. Замість того, щоб виділяти окремі інциденти, важливіше розуміти загальні питання безпеки, які мають вирішувати всі провайдери інфраструктури електронної пошти.
 
-### Загальні міркування безпеки {#common-security-considerations}
+### Загальні питання безпеки {#common-security-considerations}
 
-Усі постачальники послуг електронної пошти стикаються з подібними проблемами безпеки:
+Усі провайдери електронної пошти стикаються з подібними викликами безпеки:
 
-* **Захист даних**: Безпека даних та зв'язку користувачів
-* **Контроль доступу**: Керування автентифікацією та авторизацією
-* **Безпека інфраструктури**: Захист серверів та баз даних
-* **Відповідність**: Дотримання різних нормативних вимог, таких як [GDPR](https://gdpr.eu/) та [CCPA](https://oag.ca.gov/privacy/ccpa)
+* **Захист даних**: Захист даних користувачів і комунікацій
+* **Контроль доступу**: Управління автентифікацією та авторизацією
+* **Безпека інфраструктури**: Захист серверів і баз даних
+* **Відповідність**: Виконання різних нормативних вимог, таких як [GDPR](https://gdpr.eu/) та [CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Розширене шифрування**: Наші [методи безпеки](https://forwardemail.net/en/security) включають шифрування ChaCha20-Poly1305 для поштових скриньок, повне шифрування диска за допомогою LUKS v2 та комплексний захист із шифруванням у стані спокою, шифруванням у пам’яті та шифруванням під час передачі.
-
+> **Розширене шифрування**: Наші [практики безпеки](https://forwardemail.net/en/security) включають шифрування ChaCha20-Poly1305 для поштових скриньок, повне шифрування диска з LUKS v2 та комплексний захист із шифруванням у стані спокою, у пам’яті та під час передачі.
 ### Цінність прозорості {#the-value-of-transparency}
 
-Коли трапляються інциденти безпеки, найціннішою реакцією є прозорість та швидкі дії. Компанії, які:
+Коли трапляються інциденти безпеки, найціннішою відповіддю є прозорість і швидкі дії. Компанії, які:
 
-* **Оперативно повідомляти про інциденти**: Допоможіть користувачам приймати обґрунтовані рішення
-* **Надавати детальні терміни**: Показати, що вони розуміють масштаб проблем
-* **Швидко впроваджувати виправлення**: Демонструвати технічну компетентність
-* **Поділитися отриманим досвідом**: Робити внесок у покращення безпеки в галузі
+* **Швидко розкривають інформацію про інциденти**: Допомагають користувачам приймати обґрунтовані рішення
+* **Надають детальні часові лінії**: Показують, що розуміють масштаб проблем
+* **Швидко впроваджують виправлення**: Демонструють технічну компетентність
+* **Діляться отриманими уроками**: Сприяють покращенню безпеки в усій галузі
 
-Ці відповіді приносять користь усій екосистемі електронної пошти, пропагуючи передовий досвід і заохочуючи інших постачальників підтримувати високі стандарти безпеки.
+Такі відповіді приносять користь всій екосистемі електронної пошти, сприяючи кращим практикам і заохочуючи інших провайдерів підтримувати високі стандарти безпеки.
 
-### Поточні проблеми безпеки {#ongoing-security-challenges}
+### Поточні виклики безпеки {#ongoing-security-challenges}
 
-Індустрія електронної пошти продовжує вдосконалювати свої методи безпеки:
+Індустрія електронної пошти продовжує вдосконалювати свої практики безпеки:
 
 * **Стандарти шифрування**: Впровадження кращих методів шифрування, таких як [TLS 1.3](https://tools.ietf.org/html/rfc8446)
 * **Протоколи автентифікації**: Покращення [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) та [DMARC](https://tools.ietf.org/html/rfc7489)
 * **Виявлення загроз**: Розробка кращих фільтрів спаму та фішингу
-* **Посилення інфраструктури**: Захист серверів та баз даних
-* **Керування репутацією домену**: Робота з [безпрецедентний спам з домену onmicrosoft.com компанії Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/), що вимагає [довільні правила блокування](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) та [додаткові обговорення MSP](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
+* **Зміцнення інфраструктури**: Захист серверів і баз даних
+* **Управління репутацією домену**: Боротьба з [безпрецедентним спамом з домену onmicrosoft.com Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/), що вимагає [довільних правил блокування](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) та [додаткових обговорень MSP](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
 
-Ці виклики вимагають постійних інвестицій та експертного досвіду від усіх постачальників у цій галузі.
+Ці виклики потребують постійних інвестицій і експертизи від усіх провайдерів у цій сфері.
 
-## Висновок: Зосередьтеся на інфраструктурі, а не на додатках {#conclusion-focus-on-infrastructure-not-apps}
+
+## Висновок: Фокус на інфраструктурі, а не на додатках {#conclusion-focus-on-infrastructure-not-apps}
 
 ### Докази очевидні {#the-evidence-is-clear}
 
-Після аналізу сотень email-стартапів:
+Після аналізу сотень стартапів у сфері електронної пошти:
 
-* **[80%+ рівень відмов](https://www.techstars.com/portfolio)**: Більшість стартапів електронної пошти повністю зазнають невдачі (ця цифра, ймовірно, НАБАГАТО вища за 80%; ми просто люб'язні)
-* **Клієнтські програми зазвичай зазнають невдачі**: Придбання зазвичай означає смерть для поштових клієнтів
-* **Інфраструктура може досягти успіху**: Компанії, що створюють сервіси SMTP/API, часто процвітають
-* **Венчурне фінансування створює тиск**: Венчурний капітал створює нереалістичні очікування зростання
+* **[Понад 80% рівень невдач](https://www.techstars.com/portfolio)**: Більшість стартапів у сфері електронної пошти повністю зазнають невдачі (цей показник, ймовірно, НАБАГАТО вищий за 80%; ми просто пом’якшуємо)
+* **Клієнтські додатки зазвичай провалюються**: Придбання зазвичай означає смерть для поштових клієнтів
+* **Інфраструктура може досягти успіху**: Компанії, що будують SMTP/API сервіси, часто процвітають
+* **Фінансування венчурним капіталом створює тиск**: Венчурний капітал породжує нереалістичні очікування зростання
 * **Накопичується технічний борг**: Побудова інфраструктури електронної пошти складніша, ніж здається
 
 ### Історичний контекст {#the-historical-context}
 
-За даними стартапів, електронна пошта «вмирає» вже понад 20 років:
+Електронна пошта "вмирає" вже понад 20 років, згідно зі стартапами:
 
-* **2004**: «Соціальні мережі замінять електронну пошту»
-* **2008**: «Мобільні повідомлення знищать електронну пошту»
-* **2012**: «[Слак](https://slack.com/) замінить електронну пошту»
-* **2016**: «Штучний інтелект революціонізує електронну пошту»
-* **2020**: «Дистанційна робота потребує нових засобів комунікації»
-* **2024**: «Штучний інтелект нарешті виправить електронну пошту»
+* **2004**: "Соціальні мережі замінять електронну пошту"
+* **2008**: "Мобільні месенджери вб’ють електронну пошту"
+* **2012**: "[Slack](https://slack.com/) замінить електронну пошту"
+* **2016**: "ШІ революціонізує електронну пошту"
+* **2020**: "Віддалена робота потребує нових інструментів комунікації"
+* **2024**: "ШІ нарешті виправить електронну пошту"
 
-**Електронна пошта все ще тут**. Вона все ще розвивається. Вона все ще важлива.
+**Електронна пошта досі тут**. Вона досі зростає. Вона досі необхідна.
 
 ### Справжній урок {#the-real-lesson}
 
-Урок не в тому, що електронну пошту не можна покращити. Йдеться про вибір правильного підходу:
+Урок не в тому, що електронну пошту неможливо покращити. Він у виборі правильного підходу:
 
-1. **Протоколи електронної пошти працюють**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) перевірені часом
-2. **Інфраструктура має значення**: Надійність та продуктивність перемагають яскраві функції
-3. **Покращення перемагає заміну**: Працюйте з електронною поштою, а не боріться з нею
-4. **Сталий розвиток перемагає зростання**: Прибуткові компанії переживають ті, що фінансуються венчурним капіталом
-5. **Служіння розробникам**: Інструменти та API створюють більшу цінність, ніж програми для кінцевих користувачів
+1. **Протоколи електронної пошти працюють**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) перевірені в бою
+2. **Інфраструктура має значення**: Надійність і продуктивність важливіші за яскраві функції
+3. **Покращення краще за заміну**: Працюйте з електронною поштою, а не боріться з нею
+4. **Стійкість важливіша за зростання**: Прибуткові бізнеси переживають фінансовані венчурним капіталом
+5. **Обслуговуйте розробників**: Інструменти та API створюють більше цінності, ніж додатки для кінцевих користувачів
 
 **Можливість**: Краще впровадження перевірених протоколів, а не їх заміна.
 
 > \[!TIP]
-> **Комплексний аналіз поштових сервісів**: Для детального порівняння 79 поштових сервісів у 2025 році, включаючи детальні огляди, знімки екрана та технічний аналіз, див. наш вичерпний посібник: [79 найкращих сервісів електронної пошти](https://forwardemail.net/en/blog/best-email-service). Цей аналіз демонструє, чому Forward Email постійно вважається рекомендованим вибором за надійність, безпеку та відповідність стандартам.
+> **Всеохопний аналіз сервісів електронної пошти**: Для детального порівняння 79 сервісів електронної пошти у 2025 році, включно з докладними оглядами, скріншотами та технічним аналізом, дивіться наш всеохопний гід: [79 найкращих сервісів електронної пошти](https://forwardemail.net/en/blog/best-email-service). Цей аналіз демонструє, чому Forward Email постійно займає рекомендоване місце за надійність, безпеку та відповідність стандартам.
 
 > \[!NOTE]
-> **Перевірка в реальних умовах**: Наш підхід працює для організацій від [державні установи, які вимагають дотримання вимог Розділу 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) до [великі університети, що обслуговують десятки тисяч адрес випускників](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), доводячи, що побудова надійної інфраструктури – це шлях до успіху в електронній пошті.
+> **Перевірка в реальному світі**: Наш підхід працює для організацій від [урядових агентств, які потребують відповідності розділу 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) до [великих університетів, що керують десятками тисяч адрес випускників](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), доводячи, що побудова надійної інфраструктури — це шлях до успіху електронної пошти.
+Якщо ви думаєте про створення стартапу з електронної пошти, розгляньте можливість створення інфраструктури електронної пошти замість цього. Світ потребує кращих поштових серверів, а не більше поштових додатків.
 
-Якщо ви думаєте про створення стартапу електронної пошти, подумайте про створення поштової інфраструктури. Світу потрібні кращі поштові сервери, а не більше поштових додатків.
 
-## Розширене кладовище електронної пошти: більше збоїв та зупинок {#the-extended-email-graveyard-more-failures-and-shutdowns}
+## Розширене кладовище електронної пошти: більше провалів і закриттів {#the-extended-email-graveyard-more-failures-and-shutdowns}
 
-### Експерименти Google з електронною поштою пішли не так {#googles-email-experiments-gone-wrong}
+### Експерименти Google з електронною поштою, що пішли не так {#googles-email-experiments-gone-wrong}
 
-Google, попри володіння [Gmail](https://gmail.com/), закрив кілька email-проектів:
+Google, незважаючи на володіння [Gmail](https://gmail.com/), закрив кілька поштових проєктів:
 
-* **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): «Вбивця електронної пошти», якого ніхто не зрозумів
-* **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Катастрофа інтеграції соціальної електронної пошти
-* **[Вхідні від Gmail](https://killedbygoogle.com/)** (2014-2019): «Розумний» наступник Gmail, від якого відмовилися
-* **[Google+](https://killedbygoogle.com/)** функції електронної пошти (2011-2019): Інтеграція електронної пошти із соціальних мереж
+* **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "Вбивця електронної пошти", якого ніхто не зрозумів
+* **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Катастрофа інтеграції соціальної пошти
+* **[Inbox by Gmail](https://killedbygoogle.com/)**  (2014-2019): "Розумний" наступник Gmail, покинутий
+* **[Google+](https://killedbygoogle.com/)** поштові функції (2011-2019): Інтеграція соціальної мережі з поштою
 
-**Закон**: Навіть Google не може успішно переосмислити електронну пошту.
+**Висновок**: Навіть Google не може успішно винайти електронну пошту заново.
 
-### Серійний провал: три смерті Ньютона Мейла {#the-serial-failure-newton-mails-three-deaths}
+### Серійний провал: три смерті Newton Mail {#the-serial-failure-newton-mails-three-deaths}
 
-[Ньютон Мейл](https://en.wikipedia.org/wiki/CloudMagic) помер **тричі**:
+[Newton Mail](https://en.wikipedia.org/wiki/CloudMagic) помер **тричі**:
 
-1. **[CloudMagic](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Поштовий клієнт придбано компанією Newton
-2. **Newton Mail** (2016-2018): Ребрендовано, модель підписки не вдалася
-3. **[Відродження пошти Ньютона](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Спроба повернення, знову невдала
+1. **[CloudMagic](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Поштовий клієнт, придбаний Newton
+2. **Newton Mail** (2016-2018): Ребрендинг, модель підписки провалилася
+3. **[Відродження Newton Mail](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Спроба повернення, знову провал
 
 **Урок**: Поштові клієнти не можуть підтримувати моделі підписки.
 
-### Програми, які ніколи не запускалися {#the-apps-that-never-launched}
+### Додатки, які так і не запустилися {#the-apps-that-never-launched}
 
-Багато стартапів електронної пошти занепали, не запустившись:
+Багато поштових стартапів померли до запуску:
 
-* **Tempo** (2014): Інтеграція календаря та електронної пошти, зупинено перед запуском
-* **[Потік пошти](https://mailstrom.co/)** (2011): Інструмент керування електронною поштою, придбано перед релізом
-* **Fluent** (2013): Поштовий клієнт, розробка зупинена
+* **Tempo** (2014): Інтеграція календаря з поштою, закрито до запуску
+* **[Mailstrom](https://mailstrom.co/)** (2011): Інструмент управління поштою, придбаний до релізу
+* **Fluent** (2013): Поштовий клієнт, розробка припинена
 
-### Шаблон «Від придбання до вимкнення» {#the-acquisition-to-shutdown-pattern}
+### Шаблон придбання та закриття {#the-acquisition-to-shutdown-pattern}
 
-* **[Горобець → Google → Вимкнення](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[reMail → Google → Вимкнути](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **Поштова скринька → Dropbox → Вимкнення** (2013-2015)
-* **[Досягнення → Microsoft → Вимкнення](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (став Outlook Mobile)
-* **[Acompli → Microsoft → Інтегрований](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (рідкісний успіх)
+* **[Sparrow → Google → Закриття](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
+* **[reMail → Google → Закриття](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
+* **Mailbox → Dropbox → Закриття** (2013-2015)
+* **[Accompli → Microsoft → Закриття](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (стало Outlook Mobile)
+* **[Acompli → Microsoft → Інтеграція](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (рідкісний успіх)
 
 ### Консолідація інфраструктури електронної пошти {#email-infrastructure-consolidation}
 
-* **[Поштова скринька → Клієнт електронних платежів](https://www.postbox-inc.com/)** (2024): Поштова скринька негайно закрита після придбання
-* **Кілька придбань**: [ImprovMX](https://improvmx.com/) було придбано кілька разів, а також [висловлені занепокоєння щодо конфіденційності](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [оголошення про придбання](https://improvmx.com/blog/improvmx-has-been-acquired) та [бізнес-оголошення](https://quietlight.com/listings/15877422)
-* **Погіршення якості послуг**: Багато послуг погіршуються після придбання
+* **[Postbox → eM Client](https://www.postbox-inc.com/)** (2024): Postbox одразу закрили після придбання
+* **Кілька придбань**: [ImprovMX](https://improvmx.com/) був придбаний кілька разів, з [піднятими питаннями конфіденційності](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) та [оголошеннями про придбання](https://improvmx.com/blog/improvmx-has-been-acquired) і [бізнес-оголошеннями](https://quietlight.com/listings/15877422)
+* **Погіршення сервісу**: Багато сервісів погіршуються після придбання
 
-## Кладовище електронної пошти з відкритим кодом: коли «безкоштовно» не є сталим {#the-open-source-email-graveyard-when-free-isnt-sustainable}
+
+## Кладовище відкритого коду електронної пошти: коли "безкоштовно" не є стійким {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
 ### Nylas Mail → Mailspring: Форк, який не зміг {#nylas-mail--mailspring-the-fork-that-couldnt}
 
-* **[Нілас Мейл](https://github.com/nylas/nylas-mail)**: Поштовий клієнт з відкритим кодом, [припинено у 2017 році](https://github.com/nylas/nylas-mail) та мав [проблеми з масовим використанням пам'яті](https://github.com/nylas/nylas-mail/issues/3501)
-* **[Mailspring](https://getmailspring.com/)**: Розширення спільноти, проблеми з обслуговуванням та [проблеми з високим використанням оперативної пам'яті](https://github.com/Foundry376/Mailspring/issues/1758)
-* **Реальність**: Поштові клієнти з відкритим кодом не можуть конкурувати з нативними програмами
+* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Поштовий клієнт з відкритим кодом, [припинено 2017](https://github.com/nylas/nylas-mail) через [великі проблеми з використанням пам’яті](https://github.com/nylas/nylas-mail/issues/3501)
+* **[Mailspring](https://getmailspring.com/)**: Форк спільноти, що бореться з підтримкою та [проблемами високого використання ОЗП](https://github.com/Foundry376/Mailspring/issues/1758)
+* **Реальність**: Поштові клієнти з відкритим кодом не можуть конкурувати з нативними додатками
 
-### Юдора: 18-річний марш смерті {#eudora-the-18-year-death-march}
+### Eudora: 18-річний марш смерті {#eudora-the-18-year-death-march}
 
 * **1988-2006**: Домінуючий поштовий клієнт для Mac/Windows
 * **2006**: [Qualcomm припинив розробку](https://en.wikipedia.org/wiki/Eudora_\(email_client\))
-* **2007**: З відкритим вихідним кодом як "Eudora OSE"
-* **2010**: Проєкт закрито
+* **2007**: Відкрито як "Eudora OSE"
+* **2010**: Проєкт покинуто
 * **Урок**: Навіть успішні поштові клієнти зрештою вмирають
+### FairEmail: Вбито політикою Google Play {#fairemail-killed-by-google-play-politics}
 
-### FairEmail: Знищено політикою Google Play {#fairemail-killed-by-google-play-politics}
+* **[FairEmail](https://email.faircode.eu/)**: Орієнтований на конфіденційність Android-клієнт електронної пошти
+* **Google Play**: [Заблоковано за "порушення політик"](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
+* **Реальність**: Політики платформи можуть миттєво вбити поштові додатки
 
-* **[FairEmail](https://email.faircode.eu/)**: Поштовий клієнт для Android, орієнтований на конфіденційність
-* **Google Play**: [Забанено за «порушення правил»](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
-* **Реальність**: Політики платформи можуть миттєво знищити поштові програми
+### Проблема обслуговування {#the-maintenance-problem}
 
-### Проблема з технічним обслуговуванням {#the-maintenance-problem}
+Проекти з відкритим кодом для електронної пошти зазнають невдачі через:
 
-Проєкти електронної пошти з відкритим кодом не вдаються, оскільки:
+* **Складність**: Протоколи електронної пошти складні для правильного впровадження
+* **Безпека**: Потрібні постійні оновлення безпеки
+* **Сумісність**: Має працювати з усіма поштовими провайдерами
+* **Ресурси**: Вигорання волонтерів-розробників
 
-* **Складність**: Протоколи електронної пошти складно впроваджувати правильно.
-* **Безпека**: Потрібні постійні оновлення безпеки.
-* **Сумісність**: Повинна працювати з усіма постачальниками послуг електронної пошти.
-* **Ресурси**: Вигорання розробників-волонтерів.
 
-## Злет стартапів електронної пошти зі штучним інтелектом: історія повторюється з «інтелектом» {#the-ai-email-startup-surge-history-repeating-with-intelligence}
+## Сплеск AI-поштових стартапів: Історія повторюється з "Інтелектом" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
-### Поточна золота лихоманка електронної пошти зі штучним інтелектом {#the-current-ai-email-gold-rush}
+### Поточна золота лихоманка AI-пошти {#the-current-ai-email-gold-rush}
 
-Стартапи електронної пошти зі штучним інтелектом у 2024 році:
+AI-поштові стартапи 2024 року:
 
-* **[Надлюдина](https://superhuman.com/)**: [Зібрано 33 мільйони доларів](https://superhuman.com/), [придбано Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)
-* **[Короткохвильовий](https://www.shortwave.com/)**: Y Combinator, Gmail + ШІ
-* **[SaneBox](https://www.sanebox.com/)**: Фільтрація електронної пошти за допомогою ШІ (насправді прибуткова)
-* **[Бумеранг](https://www.boomeranggmail.com/)**: Планування та відповіді за допомогою ШІ
-* **[Пошта-0/Нуль](https://github.com/Mail-0/Zero)**: Стартап-клієнт електронної пошти на базі ШІ створює ще один інтерфейс електронної пошти
-* **[Вхідні нуль](https://github.com/elie222/inbox-zero)**: Помічник електронної пошти зі ШІ та відкритим вихідним кодом, який намагається автоматизувати керування електронною поштою
+* **[Superhuman](https://superhuman.com/)**: [$33M залучено](https://superhuman.com/), [придбано Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)
+* **[Shortwave](https://www.shortwave.com/)**: Y Combinator, Gmail + AI
+* **[SaneBox](https://www.sanebox.com/)**: AI-фільтрація пошти (фактично прибутковий)
+* **[Boomerang](https://www.boomeranggmail.com/)**: AI-планування та відповіді
+* **[Mail-0/Zero](https://github.com/Mail-0/Zero)**: Стартап AI-клієнта пошти, що створює ще один інтерфейс пошти
+* **[Inbox Zero](https://github.com/elie222/inbox-zero)**: Відкритий AI-помічник для пошти, що намагається автоматизувати керування поштою
 
-### Фінансове шаленство {#the-funding-frenzy}
+### Лихоманка фінансування {#the-funding-frenzy}
 
-Венчурні інвестори кидають гроші на "Штучний інтелект + електронна пошта":
+Венчурні капіталісти вкладають гроші в "AI + Пошта":
 
-* **[Інвестовано понад 100 мільйонів доларів США](https://pitchbook.com/)** у стартапах електронної пошти зі штучним інтелектом у 2024 році
-* **Ті ж обіцянки**: «Революційний досвід роботи з електронною поштою»
-* **Ті ж проблеми**: Розробка на основі існуючої інфраструктури
+* **[$100M+ інвестовано](https://pitchbook.com/)** у AI-поштові стартапи у 2024 році
+* **Ті ж обіцянки**: "Революційний досвід роботи з поштою"
+* **Ті ж проблеми**: Побудова на існуючій інфраструктурі
 * **Той самий результат**: Більшість зазнають невдачі протягом 3 років
 
-### Чому вони всі зазнають невдачі (знову) {#why-theyll-all-fail-again}
+### Чому вони всі знову зазнають невдачі {#why-theyll-all-fail-again}
 
-1. **Штучний інтелект не вирішує не-проблем електронної пошти**: Електронна пошта працює добре
-2. **[Gmail вже має штучний інтелект](https://support.google.com/mail/answer/9116836)**: Розумні відповіді, пріоритетна папка "Вхідні", фільтрація спаму
-3. **Проблеми конфіденційності**: Штучний інтелект вимагає читання всіх ваших електронних листів
-4. **Структура витрат**: Обробка ШІ є дорогою, електронна пошта – це товар
-5. **Мережеві ефекти**: Неможливо подолати домінування Gmail/Outlook
+1. **AI не вирішує неіснуючі проблеми пошти**: Пошта працює добре
+2. **[Gmail вже має AI](https://support.google.com/mail/answer/9116836)**: Розумні відповіді, пріоритетна папка, фільтрація спаму
+3. **Проблеми конфіденційності**: AI потребує читання всіх ваших листів
+4. **Структура витрат**: Обробка AI дорога, пошта — товар
+5. **Ефекти мережі**: Неможливо зламати домінування Gmail/Outlook
 
 ### Неминучий результат {#the-inevitable-outcome}
 
-* **2025**: [Grammarly успішно придбала Superhuman](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) – рідкісний успішний вихід для поштового клієнта
-* **2025-2026**: Більшість стартапів електронної пошти, що залишилися, зі штучним інтелектом зміняться або закриються
-* **2027**: Ті, що вижили, будуть придбані, з неоднозначними результатами
-* **2028**: З'явиться «електронна пошта на блокчейні» або наступний тренд
+* **2025**: [Superhuman успішно придбано Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) — рідкісний успішний вихід для поштового клієнта
+* **2025-2026**: Більшість залишкових AI-поштових стартапів змінять напрямок або закриються
+* **2027**: Виживші будуть придбані, з різними результатами
+* **2028**: З’явиться "блокчейн-пошта" або наступний тренд
 
-## Катастрофа консолідації: коли «ті, хто вижив», стають катастрофами {#the-consolidation-catastrophe-when-survivors-become-disasters}
 
-### Чудова консолідація поштових служб {#the-great-email-service-consolidation}
+## Катастрофа консолідації: Коли "виживші" стають катастрофами {#the-consolidation-catastrophe-when-survivors-become-disasters}
 
-Індустрія електронної пошти різко консолідувалася:
+### Велика консолідація поштових сервісів {#the-great-email-service-consolidation}
 
-* **[ActiveCampaign придбала поштовий штемпель](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
-* **[Сінч придбав Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
+Індустрія пошти значно консолідувалася:
+
+* **[ActiveCampaign придбала Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
+* **[Sinch придбала Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
 * **[Twilio придбала SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **Кілька придбань [ImprovMX](https://improvmx.com/)** (тривають) з [проблеми конфіденційності](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [оголошення про придбання](https://improvmx.com/blog/improvmx-has-been-acquired) та [бізнес-оголошення](https://quietlight.com/listings/15877422)
+* **Кілька [ImprovMX](https://improvmx.com/) придбань** (триває) з [питаннями конфіденційності](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) та [оголошеннями про придбання](https://improvmx.com/blog/improvmx-has-been-acquired) і [бізнес-оголошеннями](https://quietlight.com/listings/15877422)
 
-### Перспектива: «Виживальник», який не може перестати ламатися {#outlook-the-survivor-that-cant-stop-breaking}
+### Outlook: "Виживший", який не може перестати ламатися {#outlook-the-survivor-that-cant-stop-breaking}
 
-[Microsoft Outlook](https://outlook.com/), незважаючи на те, що є "тим, хто вижив", має постійні проблеми:
+[Microsoft Outlook](https://outlook.com/), незважаючи на статус "вижившого", має постійні проблеми:
 
-* **Витоки пам'яті**: [Outlook споживає гігабайти оперативної пам'яті](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) та [вимагає частих перезавантажень](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
-* **Проблеми синхронізації**: Електронні листи випадково зникають і знову з'являються
+* **Витоки пам’яті**: [Outlook споживає гігабайти оперативної пам’яті](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) і [потребує частих перезапусків](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
+* **Проблеми синхронізації**: Листи зникають і знову з’являються випадково
 * **Проблеми з продуктивністю**: Повільний запуск, часті збої
-* **Проблеми сумісності**: Перебої зі сторонніми постачальниками електронної пошти
+* **Проблеми сумісності**: Ламається з поштовими провайдерами третіх сторін
+**Наш реальний досвід**: Ми регулярно допомагаємо клієнтам, у яких налаштування Outlook порушують нашу ідеально сумісну реалізацію IMAP.
 
-**Наш реальний досвід**: Ми регулярно допомагаємо клієнтам, чиї налаштування Outlook порушують роботу нашої ідеально сумісної реалізації IMAP.
+### Проблема інфраструктури Postmark {#the-postmark-infrastructure-problem}
 
-### Проблема інфраструктури поштових штемпелів {#the-postmark-infrastructure-problem}
+Після [придбання ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
 
-Після [Придбання ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
+* **Збій SSL-сертифіката**: [Майже 10-годинний збій у вересні 2024 року](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) через прострочені SSL-сертифікати
+* **Відмови користувачам**: [Марка Кьольбругге відхиляють](https://x.com/marckohlbrugge/status/1935041134729769379) незважаючи на легітимне використання
+* **Відтік розробників**: [@levelsio заявляє "Amazon SES — наша остання надія"](https://x.com/levelsio/status/1934197733989999084)
+* **Проблеми MailGun**: [Скотт повідомив](https://x.com/_SMBaxter/status/1934175626375704675): "Найгірший сервіс від @Mail_Gun... ми не можемо надсилати листи вже 2 тижні"
 
-* **Помилка SSL-сертифіката**: [Майже 10-годинний перебій у вересні 2024 року](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) через закінчення терміну дії SSL-сертифікатів
-* **Відхилення користувачів**: [Марк Кьольбрюгге отримує відмову](https://x.com/marckohlbrugge/status/1935041134729769379), незважаючи на законне використання
-* **Вихід розробника**: [@levelsio стверджує: «Amazon SES — наша остання надія»](https://x.com/levelsio/status/1934197733989999084)
-* **Проблеми з MailGun**: [Скотт повідомив](https://x.com/\_SMBaxter/status/1934175626375704675): «Найгірший сервіс від @Mail_Gun... ми не можемо надсилати електронні листи вже 2 тижні»
+### Останні жертви поштових клієнтів (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-### Нещодавні втрати клієнтів електронної пошти (2024-2025) {#recent-email-client-casualties-2024-2025}
+**[Postbox → eM Client](https://www.postbox-inc.com/) Придбання**: У 2024 році eM Client придбав Postbox і [негайно його закрив](https://www.postbox-inc.com/), змусивши тисячі користувачів мігрувати.
 
-**Придбання [Поштова скринька → Клієнт електронних платежів](https://www.postbox-inc.com/)**: У 2024 році eM Client придбав Postbox та [негайно вимкніть його](https://www.postbox-inc.com/), що змусило тисячі користувачів мігрувати.
+**Проблеми [Canary Mail](https://canarymail.io/)**: Незважаючи на [підтримку Sequoia](https://www.sequoiacap.com/), користувачі повідомляють про непрацюючі функції та погану підтримку клієнтів.
 
-Проблеми **[Канарська пошта](https://canarymail.io/)**: Незважаючи на [Підкладка з секвойї](https://www.sequoiacap.com/), користувачі повідомляють про непрацюючі функції та погану підтримку клієнтів.
+**[Spark від Readdle](https://sparkmailapp.com/)**: Користувачі все частіше скаржаться на поганий досвід роботи з поштовим клієнтом.
 
-**[Іскра від Readdle](https://sparkmailapp.com/)**: Користувачі все частіше повідомляють про поганий досвід роботи з поштовим клієнтом.
+**Проблеми ліцензування [Mailbird](https://www.getmailbird.com/)**: Користувачі Windows стикаються з проблемами ліцензування та плутаниною з підписками.
 
-**[Поштовий перевізник](https://www.getmailbird.com/) Проблеми з ліцензуванням**: Користувачі Windows стикаються з проблемами ліцензування та плутаниною з підпискою.
+**Спад [Airmail](https://airmailapp.com/)**: Поштовий клієнт для Mac/iOS, заснований на провальному коді Sparrow, продовжує отримувати [погані відгуки](https://airmailapp.com/) через проблеми з надійністю.
 
-**[Авіапошта](https://airmailapp.com/) Відхилення**: Поштовий клієнт для Mac/iOS, що базується на несправній кодовій базі Sparrow, продовжує отримувати [погані відгуки](https://airmailapp.com/) через проблеми з надійністю.
+### Придбання розширень і сервісів для електронної пошти {#email-extension-and-service-acquisitions}
 
-### Розширення електронної пошти та придбання послуг {#email-extension-and-service-acquisitions}
+**[HubSpot Sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → припинено**: Розширення для відстеження електронної пошти HubSpot було [припинено у 2016 році](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) і замінено на "HubSpot Sales."
 
-**[Помічник HubSpot](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Знято з підтримки**: Розширення відстеження електронної пошти HubSpot з номером [припинено у 2016 році](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) було замінено на «HubSpot Sales».
+**[Engage for Gmail](https://help.salesforce.com/s/articleView?id=000394547&type=1) → виведено з експлуатації**: Розширення Salesforce для Gmail було [виведено з експлуатації у червні 2024 року](https://help.salesforce.com/s/articleView?id=000394547&type=1), змушуючи користувачів переходити на інші рішення.
 
-**[Залучення для Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Вилучено**: Розширення Gmail від Salesforce мало статус [вийшов на пенсію у червні 2024 року](https://help.salesforce.com/s/articleView?id=000394547\&type=1), що змушувало користувачів переходити на інші рішення.
+### Вижили: Поштові компанії, які справді працюють {#the-survivors-email-companies-that-actually-work}
 
-### Ті, що вижили: компанії електронної пошти, які дійсно працюють {#the-survivors-email-companies-that-actually-work}
+Не всі поштові компанії зазнають невдачі. Ось ті, що справді працюють:
 
-Не всі поштові компанії зазнають невдачі. Ось ті, які дійсно працюють:
+**[Mailmodo](https://www.mailmodo.com/)**: [Історія успіху Y Combinator](https://www.ycombinator.com/companies/mailmodo), [$2 млн від Sequoia Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge), зосереджуючись на інтерактивних email-кампаніях.
 
-**[Mailmodo](https://www.mailmodo.com/)**: [Історія успіху Y Combinator](https://www.ycombinator.com/companies/mailmodo), [2 мільйони доларів від Sequoia's Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge), зосередившись на інтерактивних email-кампаніях.
+**[Mixmax](https://mixmax.com/)**: Залучили [$13,3 млн загального фінансування](https://www.mixmax.com/about) і продовжують працювати як успішна платформа для взаємодії з продажами.
 
-**[Міксмакс](https://mixmax.com/)**: Збільшено показник [Загальне фінансування 13,3 млн доларів США](https://www.mixmax.com/about) та продовжує працювати як успішна платформа для взаємодії з продажами.
+**[Outreach.io](https://www.outreach.io/)**: Досягли [$4,4 млрд+ оцінки](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) і готуються до потенційного IPO як платформа для взаємодії з продажами.
 
-**[Outreach.io](https://www.outreach.io/)**: Досягнуто [Оцінка понад 4,4 млрд доларів США](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) та готується до потенційного IPO як платформа для взаємодії з продажами.
+**[Apollo.io](https://www.apollo.io/)**: Досягли [$1,6 млрд оцінки](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) з $100 млн раунду серії D у 2023 році для своєї платформи продажної аналітики.
 
-**[Apollo.io](https://www.apollo.io/)**: Досягнуто [Оцінка в 1,6 млрд доларів США](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) з інвестиціями серії D на суму 100 млн доларів США у 2023 році для їхньої платформи аналітики продажів.
+**[GMass](https://www.gmass.co/)**: Історія успіху bootstrap, що генерує [$140 тис./місяць](https://www.indiehackers.com/product/gmass) як розширення Gmail для email-маркетингу.
 
-**[GMass](https://www.gmass.co/)**: Історія успіху Bootstrap: створення [140 тис. доларів США/місяць](https://www.indiehackers.com/product/gmass) як розширення Gmail для email-маркетингу.
+**[Streak CRM](https://www.streak.com/)**: Успішна CRM на базі Gmail, яка працює [з 2012 року](https://www.streak.com/about) без серйозних проблем.
 
-**[CRM-системи Streak](https://www.streak.com/)**: Успішна CRM-система на базі Gmail, яка працювала [з 2012 року](https://www.streak.com/about) без серйозних проблем.
+**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: Успішно [придбана Marketo у 2017 році](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) після залучення понад $15 млн інвестицій.
+**[Bananatag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Придбано Staffbase у 2021 році](https://staffbase.com/blog/staffbase-acquires-bananatag/) і продовжує працювати як "Staffbase Email."
 
-**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: Успішно [придбано Marketo у 2017 році](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) після залучення понад 15 мільйонів доларів фінансування.
-
-**[Бананатаг](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Придбано Staffbase у 2021 році](https://staffbase.com/blog/staffbase-acquires-bananatag/) та продовжує працювати як «Електронна адреса Staffbase».
-
-**Ключова закономірність**: Ці компанії досягають успіху, тому що вони **вдосконалюють існуючі робочі процеси електронної пошти**, а не намагаються повністю замінити електронну пошту. Вони створюють інструменти, які працюють **з** інфраструктурою електронної пошти, а не проти неї.
+**Ключова модель**: Ці компанії досягають успіху, тому що вони **покращують існуючі робочі процеси з електронною поштою**, а не намагаються повністю замінити електронну пошту. Вони створюють інструменти, які працюють **разом** з інфраструктурою електронної пошти, а не проти неї.
 
 > \[!TIP]
-> **Не бачите тут згаданого постачальника, якого ви знаєте?** (наприклад, Posteo, Mailbox.org, Migadu тощо). Зверніться до нашого [сторінка порівняння послуг електронної пошти з повним вибором](https://forwardemail.net/en/blog/best-email-service) для отримання додаткової інформації.
+> **Не бачите тут згадку про відомого вам провайдера?** (наприклад, Posteo, Mailbox.org, Migadu тощо) Зверніться до нашої [вичерпної сторінки порівняння сервісів електронної пошти](https://forwardemail.net/en/blog/best-email-service) для більш детальної інформації.

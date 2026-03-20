@@ -1,92 +1,97 @@
-# Průvodce instalací samoobslužného hostingu pro přesměrování e-mailů v Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# Průvodce instalací Forward Email pro vlastní hosting na Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+
 
 ## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
-* [Předpoklady](#prerequisites)
+* [Požadavky](#prerequisites)
 * [Systémové požadavky](#system-requirements)
-* [Instalace krok za krokem](#step-by-step-installation)
+* [Krok za krokem instalace](#step-by-step-installation)
   * [Krok 1: Počáteční nastavení systému](#step-1-initial-system-setup)
   * [Krok 2: Konfigurace DNS resolverů](#step-2-configure-dns-resolvers)
   * [Krok 3: Instalace systémových závislostí](#step-3-install-system-dependencies)
-  * [Krok 4: Instalace balíčků Snap](#step-4-install-snap-packages)
+  * [Krok 4: Instalace Snap balíčků](#step-4-install-snap-packages)
   * [Krok 5: Instalace Dockeru](#step-5-install-docker)
-  * [Krok 6: Konfigurace služby Docker](#step-6-configure-docker-service)
+  * [Krok 6: Konfigurace Docker služby](#step-6-configure-docker-service)
   * [Krok 7: Konfigurace firewallu](#step-7-configure-firewall)
-  * [Krok 8: Klonování úložiště e-mailů pro přeposílání](#step-8-clone-forward-email-repository)
-  * [Krok 9: Nastavení konfigurace prostředí](#step-9-set-up-environment-configuration)
-  * [Krok 10: Konfigurace domény](#step-10-configure-your-domain)
+  * [Krok 8: Klonování repozitáře Forward Email](#step-8-clone-forward-email-repository)
+  * [Krok 9: Nastavení konfiguračního prostředí](#step-9-set-up-environment-configuration)
+  * [Krok 10: Konfigurace vaší domény](#step-10-configure-your-domain)
   * [Krok 11: Generování SSL certifikátů](#step-11-generate-ssl-certificates)
   * [Krok 12: Generování šifrovacích klíčů](#step-12-generate-encryption-keys)
-  * [Krok 13: Aktualizace cest SSL v konfiguraci](#step-13-update-ssl-paths-in-configuration)
-  * [Krok 14: Nastavení základního ověřování](#step-14-set-up-basic-authentication)
+  * [Krok 13: Aktualizace SSL cest v konfiguraci](#step-13-update-ssl-paths-in-configuration)
+  * [Krok 14: Nastavení základní autentizace](#step-14-set-up-basic-authentication)
   * [Krok 15: Nasazení pomocí Docker Compose](#step-15-deploy-with-docker-compose)
   * [Krok 16: Ověření instalace](#step-16-verify-installation)
 * [Konfigurace po instalaci](#post-installation-configuration)
   * [Nastavení DNS záznamů](#dns-records-setup)
   * [První přihlášení](#first-login)
-* [Konfigurace zálohy](#backup-configuration)
+* [Zálohování konfigurace](#backup-configuration)
   * [Nastavení zálohování kompatibilního s S3](#set-up-s3-compatible-backup)
-  * [Nastavení zálohování úloh Cron](#set-up-backup-cron-jobs)
-* [Konfigurace automatické aktualizace](#auto-update-configuration)
-* [Údržba a monitorování](#maintenance-and-monitoring)
-  * [Umístění protokolů](#log-locations)
-  * [Pravidelné údržbářské práce](#regular-maintenance-tasks)
-  * [Obnovení certifikátu](#certificate-renewal)
-* [Odstraňování problémů](#troubleshooting)
+  * [Nastavení zálohovacích cron úloh](#set-up-backup-cron-jobs)
+* [Konfigurace automatických aktualizací](#auto-update-configuration)
+* [Údržba a monitoring](#maintenance-and-monitoring)
+  * [Umístění logů](#log-locations)
+  * [Pravidelné údržbové úkoly](#regular-maintenance-tasks)
+  * [Obnova certifikátů](#certificate-renewal)
+* [Řešení problémů](#troubleshooting)
   * [Běžné problémy](#common-issues)
   * [Získání pomoci](#getting-help)
 * [Nejlepší bezpečnostní postupy](#security-best-practices)
 * [Závěr](#conclusion)
 
+
 ## Přehled {#overview}
 
-Tato příručka poskytuje podrobné pokyny k instalaci samoobslužného řešení Forward Email na systémech Ubuntu. Tato příručka je speciálně uzpůsobena pro verze Ubuntu 20.04, 22.04 a 24.04 LTS.
+Tento průvodce poskytuje krok za krokem instrukce pro instalaci vlastního hostingu Forward Email na systémech Ubuntu. Průvodce je speciálně přizpůsoben pro verze Ubuntu 20.04, 22.04 a 24.04 LTS.
 
-## Předpoklady {#prerequisites}
+
+## Požadavky {#prerequisites}
 
 Před zahájením instalace se ujistěte, že máte:
 
 * **Ubuntu Server**: 20.04, 22.04 nebo 24.04 LTS
-* **Přístup root**: Musíte být schopni spouštět příkazy jako root (přístup sudo)
-* **Název domény**: Doména, kterou spravujete s přístupem pro správu DNS
-* **Čistý server**: Doporučuje se použít novou instalaci Ubuntu
-* **Připojení k internetu**: Vyžadováno pro stahování balíčků a obrazů Dockeru
+* **Root přístup**: Musíte být schopni spouštět příkazy jako root (přístup přes sudo)
+* **Doménové jméno**: Doménu, kterou ovládáte s přístupem ke správě DNS
+* **Čistý server**: Doporučuje se použít čerstvou instalaci Ubuntu
+* **Připojení k internetu**: Potřebné pro stahování balíčků a Docker image
+
 
 ## Systémové požadavky {#system-requirements}
 
-* **RAM**: Minimálně 2 GB (pro produkční prostředí doporučeno 4 GB)
-* **Úložiště**: Minimálně 20 GB dostupného místa (pro produkční prostředí doporučeno 50 GB+)
-* **CPU**: Minimálně 1 vCPU (pro produkční prostředí doporučeno 2+ vCPU)
-* **Síť**: Veřejná IP adresa s následujícími dostupnými porty:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **RAM**: Minimálně 2GB (doporučeno 4GB pro produkci)
+* **Úložiště**: Minimálně 20GB volného místa (doporučeno 50GB+ pro produkci)
+* **CPU**: Minimálně 1 vCPU (doporučeno 2+ vCPU pro produkci)
+* **Síť**: Veřejná IP adresa s přístupnými následujícími porty:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
 
-## Podrobná instalace {#step-by-step-installation}
+
+## Krok za krokem instalace {#step-by-step-installation}
 
 ### Krok 1: Počáteční nastavení systému {#step-1-initial-system-setup}
 
-Nejprve se ujistěte, že máte aktuální systém, a přepněte se na uživatele root:
+Nejprve se ujistěte, že je váš systém aktuální a přepněte se na uživatele root:
 
 ```bash
-# Update system packages
+# Aktualizace systémových balíčků
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Přepnutí na uživatele root (vyžadováno pro instalaci)
 sudo su -
 ```
 
 ### Krok 2: Konfigurace DNS resolverů {#step-2-configure-dns-resolvers}
 
-Nakonfigurujte svůj systém tak, aby pro spolehlivé generování certifikátů používal DNS servery Cloudflare:
+Nakonfigurujte systém tak, aby používal Cloudflare DNS servery pro spolehlivou generaci certifikátů:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# Zastavení a zakázání systemd-resolved, pokud běží
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -94,7 +99,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Konfigurace Cloudflare DNS resolverů
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -106,16 +111,15 @@ nameserver 8.8.4.4
 nameserver 2001:4860:4860::8844
 EOF
 ```
-
 ### Krok 3: Instalace systémových závislostí {#step-3-install-system-dependencies}
 
-Nainstalujte požadované balíčky pro přeposílání e-mailů:
+Nainstalujte požadované balíčky pro Forward Email:
 
 ```bash
-# Update package list
+# Aktualizace seznamu balíčků
 apt-get update -y
 
-# Install basic dependencies
+# Instalace základních závislostí
 apt-get install -y \
     ca-certificates \
     curl \
@@ -126,15 +130,15 @@ apt-get install -y \
     snapd
 ```
 
-### Krok 4: Instalace balíčků Snap {#step-4-install-snap-packages}
+### Krok 4: Instalace Snap balíčků {#step-4-install-snap-packages}
 
-Nainstalujte AWS CLI a Certbot pomocí modulu snap:
+Nainstalujte AWS CLI a Certbot přes snap:
 
 ```bash
-# Install AWS CLI
+# Instalace AWS CLI
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Instalace Certbot a DNS pluginu
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
@@ -142,44 +146,44 @@ snap install certbot-dns-cloudflare
 
 ### Krok 5: Instalace Dockeru {#step-5-install-docker}
 
-Instalace Docker CE a Docker Compose:
+Nainstalujte Docker CE a Docker Compose:
 
 ```bash
-# Add Docker's official GPG key
+# Přidání oficiálního GPG klíče Dockeru
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository
+# Přidání Docker repozitáře
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Aktualizace indexu balíčků a instalace Dockeru
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Verify Docker installation
+# Ověření instalace Dockeru
 docker --version
 docker compose version
 ```
 
 ### Krok 6: Konfigurace služby Docker {#step-6-configure-docker-service}
 
-Ujistěte se, že se Docker automaticky spustí a běží:
+Zajistěte, aby se Docker spouštěl automaticky a běžel:
 
 ```bash
-# Enable and start Docker service
+# Povolení a spuštění služby Docker
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Ověření, že Docker běží
 docker info
 ```
 
-Pokud se Docker nespustí, zkuste ho spustit ručně:
+Pokud Docker nelze spustit, zkuste jej spustit ručně:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Alternativní způsob spuštění, pokud systemctl selže
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
@@ -187,89 +191,89 @@ docker info
 
 ### Krok 7: Konfigurace firewallu {#step-7-configure-firewall}
 
-Nastavte si firewall UFW pro zabezpečení serveru:
+Nastavte firewall UFW pro zabezpečení vašeho serveru:
 
 ```bash
-# Set default policies
+# Nastavení výchozích pravidel
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# Povolení SSH (důležité - nezamkněte se ven!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# Povolení portů souvisejících s e-mailem
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (pro Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (alternativní port)
+ufw allow 2995/tcp  # POP3 (alternativní port)
+ufw allow 3456/tcp  # Vlastní port služby
+ufw allow 4000/tcp  # Vlastní port služby
+ufw allow 5000/tcp  # Vlastní port služby
 
-# Allow local database connections
+# Povolení lokálních připojení k databázím
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Aktivace firewallu
 echo "y" | ufw enable
 
-# Check firewall status
+# Kontrola stavu firewallu
 ufw status numbered
 ```
 
-### Krok 8: Klonování úložiště e-mailů pro přeposílání {#step-8-clone-forward-email-repository}
+### Krok 8: Klonování repozitáře Forward Email {#step-8-clone-forward-email-repository}
 
-Stáhněte si zdrojový kód pro přeposílání e-mailů:
+Stáhněte zdrojový kód Forward Email:
 
 ```bash
-# Set up variables
+# Nastavení proměnných
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# Klonování repozitáře
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# Ověření úspěšného klonování
 ls -la
 ```
 
-### Krok 9: Nastavení konfigurace prostředí {#step-9-set-up-environment-configuration}
+### Krok 9: Nastavení konfiguračního prostředí {#step-9-set-up-environment-configuration}
 
-Připravte konfiguraci prostředí:
+Připravte konfigurační prostředí:
 
 ```bash
-# Set up directory variables
+# Nastavení proměnných adresářů
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# Kopírování výchozího konfiguračního souboru
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# Vytvoření adresáře pro SSL
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# Vytvoření adresářů pro databáze
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Krok 10: Konfigurace domény {#step-10-configure-your-domain}
+### Krok 10: Konfigurace vaší domény {#step-10-configure-your-domain}
 
 Nastavte název domény a aktualizujte proměnné prostředí:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# Nahraďte 'yourdomain.com' vaší skutečnou doménou
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# Funkce pro aktualizaci konfiguračního souboru
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -281,7 +285,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# Aktualizace proměnných prostředí souvisejících s doménou
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -303,13 +307,12 @@ update_env_file "SELF_HOSTED" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
-
 ### Krok 11: Generování SSL certifikátů {#step-11-generate-ssl-certificates}
 
-#### Možnost A: Ruční výzva DNS (doporučeno pro většinu uživatelů) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Možnost A: Manuální DNS výzva (Doporučeno pro většinu uživatelů) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# Generování certifikátů pomocí manuální DNS výzvy
 certbot certonly \
   --manual \
   --agree-tos \
@@ -318,23 +321,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Důležité**: Po zobrazení výzvy budete muset ve svém DNS vytvořit záznamy TXT. Pro stejnou doménu se může zobrazit více výzev – **vytvořte VŠECHNY**. Při přidávání druhého záznamu TXT první záznam neodstraňujte.
+**Důležité**: Po výzvě budete muset vytvořit TXT záznamy ve svém DNS. Můžete vidět více výzev pro stejnou doménu - **vytvořte VŠECHNY z nich**. Nepřidávejte druhý TXT záznam bez ponechání prvního.
 
-#### Možnost B: Cloudflare DNS (pokud používáte Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Možnost B: Cloudflare DNS (Pokud používáte Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-Pokud vaše doména používá pro DNS Cloudflare, můžete generování certifikátů automatizovat:
+Pokud vaše doména používá Cloudflare pro DNS, můžete automatizovat generování certifikátů:
 
 ```bash
-# Create Cloudflare credentials file
+# Vytvoření souboru s přihlašovacími údaji pro Cloudflare
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# Nastavení správných oprávnění
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# Automatické generování certifikátů
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -345,15 +348,15 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Kopírovat certifikáty {#copy-certificates}
+#### Kopírování certifikátů {#copy-certificates}
 
 Po vygenerování certifikátů je zkopírujte do adresáře aplikace:
 
 ```bash
-# Copy certificates to application SSL directory
+# Kopírování certifikátů do SSL adresáře aplikace
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# Ověření, že certifikáty byly zkopírovány
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
@@ -362,38 +365,38 @@ ls -la "$SELF_HOST_DIR/ssl/"
 Vytvořte různé šifrovací klíče potřebné pro bezpečný provoz:
 
 ```bash
-# Generate helper encryption key
+# Generování pomocného šifrovacího klíče
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# Generování SRS tajemství pro přeposílání emailů
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# Generování TXT šifrovacího klíče
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# Generování DKIM privátního klíče pro podepisování emailů
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# Generování klíče pro podpis webhooku
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# Nastavení hesla pro SMTP transport
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Všechny šifrovací klíče byly úspěšně vygenerovány"
 ```
 
 ### Krok 13: Aktualizace cest SSL v konfiguraci {#step-13-update-ssl-paths-in-configuration}
 
-Nakonfigurujte cesty k certifikátům SSL v souboru prostředí:
+Nakonfigurujte cesty k SSL certifikátům v souboru prostředí:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# Aktualizace cest SSL tak, aby ukazovaly na správné certifikáty
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -401,85 +404,85 @@ sed -i -E \
   "$SELF_HOST_DIR/$ENV_FILE"
 ```
 
-### Krok 14: Nastavení základního ověřování {#step-14-set-up-basic-authentication}
+### Krok 14: Nastavení základní autentizace {#step-14-set-up-basic-authentication}
 
-Vytvořte dočasné základní ověřovací přihlašovací údaje:
+Vytvořte dočasné přihlašovací údaje pro základní autentizaci:
 
 ```bash
-# Generate a secure random password
+# Generování bezpečného náhodného hesla
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Aktualizace souboru prostředí s přihlašovacími údaji pro základní autentizaci
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Zobrazení přihlašovacích údajů (uložte si je!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 DŮLEŽITÉ: Uložte si tyto přihlašovací údaje!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "Uživatelské jméno: admin"
+echo "Heslo: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Tyto údaje budete potřebovat pro přístup k webovému rozhraní po instalaci."
 echo ""
 ```
 
 ### Krok 15: Nasazení pomocí Docker Compose {#step-15-deploy-with-docker-compose}
 
-Spusťte všechny služby přeposílání e-mailů:
+Spusťte všechny služby Forward Email:
 
 ```bash
-# Set Docker Compose file path
+# Nastavení cesty k Docker Compose souboru
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Zastavení všech existujících kontejnerů
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
-# Pull the latest images
+# Stažení nejnovějších obrazů
 docker compose -f "$DOCKER_COMPOSE_FILE" pull
 
-# Start all services in detached mode
+# Spuštění všech služeb na pozadí
 docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Wait a moment for services to start
+# Chvíli počkejte, než se služby spustí
 sleep 10
 
-# Check service status
+# Kontrola stavu služeb
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
-
 ### Krok 16: Ověření instalace {#step-16-verify-installation}
 
 Zkontrolujte, zda všechny služby běží správně:
 
 ```bash
-# Check Docker containers
+# Zkontrolujte kontejnery Dockeru
 docker ps
 
-# Check service logs for any errors
+# Zkontrolujte logy služeb na případné chyby
 docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 
-# Test web interface connectivity
+# Otestujte konektivitu webového rozhraní
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Zkontrolujte, zda porty naslouchají
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
+
 ## Konfigurace po instalaci {#post-installation-configuration}
 
-### Nastavení záznamů DNS {#dns-records-setup}
+### Nastavení DNS záznamů {#dns-records-setup}
 
-Pro vaši doménu je potřeba nakonfigurovat následující DNS záznamy:
+Musíte nakonfigurovat následující DNS záznamy pro vaši doménu:
 
-#### Záznam MX {#mx-record}
+#### MX záznam {#mx-record}
 
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Záznamy A {#a-records}
+#### A záznamy {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -492,28 +495,28 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-#### Záznam SPF {#spf-record}
+#### SPF záznam {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
-#### Záznam DKIM {#dkim-record}
+#### DKIM záznam {#dkim-record}
 
-Získejte svůj veřejný klíč DKIM:
+Získejte svůj veřejný DKIM klíč:
 
 ```bash
-# Extract DKIM public key
+# Extrahujte veřejný DKIM klíč
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-Vytvořit DNS záznam DKIM:
+Vytvořte DKIM DNS záznam:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-Záznam #### DMARC {#dmarc-record}
+#### DMARC záznam {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -521,103 +524,105 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### První přihlášení {#first-login}
 
-1. Otevřete webový prohlížeč a přejděte na `https://yourdomain.com`
-2. Zadejte základní ověřovací údaje, které jste si dříve uložili
-3. Dokončete průvodce počátečním nastavením
-4. Vytvořte si svůj první e-mailový účet
+1. Otevřete svůj webový prohlížeč a přejděte na `https://yourdomain.com`
+2. Zadejte základní autentizační údaje, které jste si dříve uložili
+3. Dokončete úvodního průvodce nastavením
+4. Vytvořte svůj první e-mailový účet
 
-## Konfigurace zálohy {#backup-configuration}
 
-### Nastavení zálohy kompatibilní s S3 {#set-up-s3-compatible-backup}
+## Konfigurace záloh {#backup-configuration}
 
-Konfigurace automatických záloh do úložiště kompatibilního s S3:
+### Nastavení záloh kompatibilních se S3 {#set-up-s3-compatible-backup}
+
+Nakonfigurujte automatické zálohy do úložiště kompatibilního se S3:
 
 ```bash
-# Create AWS credentials directory
+# Vytvořte adresář pro AWS přihlašovací údaje
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# Nakonfigurujte AWS přihlašovací údaje
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# Nakonfigurujte AWS nastavení
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Pro ne-AWS S3 (např. Cloudflare R2) přidejte URL koncového bodu
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Nastavení zálohování úloh Cron {#set-up-backup-cron-jobs}
+### Nastavení cron úloh pro zálohy {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Nastavte spustitelnost zálohovacích skriptů
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# Přidejte cron úlohu pro zálohu MongoDB (spouští se denně o půlnoci)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Přidejte cron úlohu pro zálohu Redis (spouští se denně o půlnoci)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Ověřte, že cron úlohy byly přidány
 crontab -l
 ```
 
-## Konfigurace automatické aktualizace {#auto-update-configuration}
 
-Nastavte automatické aktualizace pro instalaci služby Forward Email:
+## Konfigurace automatických aktualizací {#auto-update-configuration}
+
+Nastavte automatické aktualizace vaší instalace Forward Email:
 
 ```bash
-# Create auto-update command
+# Vytvořte příkaz pro automatickou aktualizaci
 DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Přidejte cron úlohu pro automatickou aktualizaci (spouští se denně v 1 hodinu ráno)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Ověřte, že cron úloha byla přidána
 crontab -l
 ```
 
-## Údržba a monitorování {#maintenance-and-monitoring}
 
-### Umístění protokolů {#log-locations}
+## Údržba a monitoring {#maintenance-and-monitoring}
 
-* **Protokoly Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
-* **Systémové protokoly**: `/var/log/syslog`
-* **Protokoly záloh**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Protokoly automatické aktualizace**: `/var/log/autoupdate.log`
+### Umístění logů {#log-locations}
 
-### Pravidelné úkoly údržby {#regular-maintenance-tasks}
+* **Logy Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
+* **Systémové logy**: `/var/log/syslog`
+* **Logy záloh**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Logy automatických aktualizací**: `/var/log/autoupdate.log`
 
-1. **Monitorování místa na disku**: `df -h`
-2. **Zkontrolování stavu služby**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
-3. **Zkontrolování protokolů**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
-4. **Aktualizace systémových balíčků**: `apt update && apt upgrade`
-5. **Obnovení certifikátů**: Certifikáty se automaticky obnovují, ale monitorují se jejich platnost.
+### Pravidelné údržbové úkoly {#regular-maintenance-tasks}
 
-### Obnovení certifikátu {#certificate-renewal}
+1. **Sledujte volné místo na disku**: `df -h`
+2. **Zkontrolujte stav služeb**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
+3. **Prohlédněte si logy**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
+4. **Aktualizujte systémové balíčky**: `apt update && apt upgrade`
+5. **Obnovujte certifikáty**: Certifikáty se obnovují automaticky, ale sledujte jejich expiraci
 
-Certifikáty by se měly obnovovat automaticky, ale v případě potřeby je můžete obnovit ručně:
+### Obnova certifikátů {#certificate-renewal}
+
+Certifikáty by se měly obnovovat automaticky, ale můžete je obnovit i ručně:
 
 ```bash
-# Manual certificate renewal
+# Ruční obnova certifikátu
 certbot renew
 
-# Copy renewed certificates
+# Zkopírujte obnovené certifikáty
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Restartujte služby, aby používaly nové certifikáty
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
-
 ## Řešení problémů {#troubleshooting}
 
 ### Běžné problémy {#common-issues}
@@ -625,54 +630,56 @@ docker compose -f "$DOCKER_COMPOSE_FILE" restart
 #### 1. Služba Docker se nespustí {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Zkontrolujte stav Dockeru
 systemctl status docker
 
-# Try alternative startup
+# Zkuste alternativní spuštění
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Generování certifikátu selhalo {#2-certificate-generation-fails}
+#### 2. Generování certifikátu selže {#2-certificate-generation-fails}
 
-* Zajistěte, aby porty 80 a 443 byly přístupné
-* Ověřte, zda záznamy DNS odkazují na váš server
+* Ujistěte se, že porty 80 a 443 jsou přístupné
+* Ověřte, že DNS záznamy směřují na váš server
 * Zkontrolujte nastavení firewallu
 
 #### 3. Problémy s doručováním e-mailů {#3-email-delivery-issues}
 
-* Ověřte správnost záznamů MX
-* Zkontrolujte záznamy SPF, DKIM a DMARC
+* Ověřte, že MX záznamy jsou správné
+* Zkontrolujte SPF, DKIM a DMARC záznamy
 * Ujistěte se, že port 25 není blokován vaším poskytovatelem hostingu
 
 #### 4. Webové rozhraní není přístupné {#4-web-interface-not-accessible}
 
 * Zkontrolujte nastavení firewallu: `ufw status`
 * Ověřte SSL certifikáty: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* Zkontrolujte základní autorizační údaje
+* Zkontrolujte přihlašovací údaje pro základní autentizaci
 
 ### Získání pomoci {#getting-help}
 
 * **Dokumentace**: <https://forwardemail.net/self-hosted>
-* **Problémy s GitHubem**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Podpora komunity**: Podívejte se na diskuze projektu na GitHubu
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Podpora komunity**: Podívejte se na diskuse projektu na GitHubu
+
 
 ## Nejlepší bezpečnostní postupy {#security-best-practices}
 
-1. **Udržujte systém aktuální**: Pravidelně aktualizujte Ubuntu a balíčky
-2. **Monitorujte protokoly**: Nastavte monitorování protokolů a upozornění
-3. **Pravidelně zálohujte**: Testujte postupy zálohování a obnovy
+1. **Udržujte systém aktualizovaný**: Pravidelně aktualizujte Ubuntu a balíčky
+2. **Sledujte logy**: Nastavte monitorování logů a upozornění
+3. **Pravidelně zálohujte**: Testujte zálohovací a obnovovací postupy
 4. **Používejte silná hesla**: Generujte silná hesla pro všechny účty
-5. **Povolte Fail2Ban**: Zvažte instalaci fail2ban pro zvýšení zabezpečení
-6. **Pravidelné bezpečnostní audity**: Pravidelně kontrolujte svou konfiguraci
+5. **Povolte Fail2Ban**: Zvažte instalaci fail2ban pro zvýšení bezpečnosti
+6. **Pravidelné bezpečnostní audity**: Pravidelně kontrolujte vaši konfiguraci
+
 
 ## Závěr {#conclusion}
 
-Vaše samoobslužná instalace služby Forward Email by nyní měla být dokončena a spuštěna v systému Ubuntu. Nezapomeňte:
+Vaše self-hosted instalace Forward Email by nyní měla být dokončena a běžet na Ubuntu. Nezapomeňte:
 
-1. Správně nakonfigurujte záznamy DNS
-2. Otestujte odesílání a příjem e-mailů
-3. Nastavte pravidelné zálohy
-4. Pravidelně monitorujte svůj systém
-5. Udržujte instalaci aktualizovanou
+1. Správně nakonfigurovat DNS záznamy
+2. Otestovat odesílání a přijímání e-mailů
+3. Nastavit pravidelné zálohy
+4. Pravidelně sledovat systém
+5. Udržovat instalaci aktualizovanou
 
-Další možnosti konfigurace a pokročilé funkce naleznete v oficiální dokumentaci k Forward Email na adrese <https://forwardemail.net/self-hosted#configuration>.
+Pro další možnosti konfigurace a pokročilé funkce se podívejte do oficiální dokumentace Forward Email na <https://forwardemail.net/self-hosted#configuration>.

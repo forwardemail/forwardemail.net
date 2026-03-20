@@ -1,247 +1,254 @@
-# Como funciona o encaminhamento de e-mail com o Forward Email: o guia definitivo {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
+# Como o Encaminhamento de Email Funciona com Forward Email: O Guia Definitivo {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Implementação técnica de proteção de privacidade de email" class="rounded-lg" />
+
 
 ## Índice {#table-of-contents}
 
 * [Prefácio](#foreword)
-* [O que é encaminhamento de e-mail](#what-is-email-forwarding)
-* [Como funciona o encaminhamento de e-mail: a explicação técnica](#how-email-forwarding-works-the-technical-explanation)
-  * [O processo de encaminhamento de e-mail](#the-email-forwarding-process)
-  * [O papel do SRS (Sender Rewriting Scheme)](#the-role-of-srs-sender-rewriting-scheme)
-* [Como funciona o encaminhamento de e-mail: uma explicação simples](#how-email-forwarding-works-the-simple-explanation)
-* [Configurando o encaminhamento de e-mail com o Forward Email](#setting-up-email-forwarding-with-forward-email)
-  * [1. Crie uma conta](#1-sign-up-for-an-account)
-  * [2. Adicione seu domínio](#2-add-your-domain)
-  * [3. Configurar registros DNS](#3-configure-dns-records)
-  * [4. Crie encaminhamentos de e-mail](#4-create-email-forwards)
-  * [5. Comece a usar seus novos endereços de e-mail](#5-start-using-your-new-email-addresses)
-* [Recursos avançados do encaminhamento de e-mail](#advanced-features-of-forward-email)
-  * [Endereços descartáveis](#disposable-addresses)
-  * [Vários destinatários e curingas](#multiple-recipients-and-wildcards)
-  * [Integração "Enviar e-mail como"](#send-mail-as-integration)
-  * [Segurança Resistente a Quânticos](#quantum-resistant-security)
-  * [Caixas de correio SQLite criptografadas individualmente](#individually-encrypted-sqlite-mailboxes)
-* [Por que escolher o Forward Email em vez dos concorrentes](#why-choose-forward-email-over-competitors)
-  * [1. 100% código aberto](#1-100-open-source)
-  * [2. Focado na privacidade](#2-privacy-focused)
-  * [3. Sem dependência de terceiros](#3-no-third-party-reliance)
-  * [4. Preços econômicos](#4-cost-effective-pricing)
-  * [5. Recursos ilimitados](#5-unlimited-resources)
-  * [6. Confiável por grandes organizações](#6-trusted-by-major-organizations)
-* [Casos de uso comuns para encaminhamento de e-mail](#common-use-cases-for-email-forwarding)
-  * [Para empresas](#for-businesses)
-  * [Para desenvolvedores](#for-developers)
-  * [Para indivíduos preocupados com a privacidade](#for-privacy-conscious-individuals)
-* [Melhores práticas para encaminhamento de e-mail](#best-practices-for-email-forwarding)
-  * [1. Use endereços descritivos](#1-use-descriptive-addresses)
-  * [2. Implemente a autenticação adequada](#2-implement-proper-authentication)
-  * [3. Revise regularmente seus encaminhamentos](#3-regularly-review-your-forwards)
-  * [4. Configure "Enviar e-mail como" para respostas perfeitas](#4-set-up-send-mail-as-for-seamless-replies)
-  * [5. Use endereços genéricos com cautela](#5-use-catch-all-addresses-cautiously)
+* [O que é Encaminhamento de Email](#what-is-email-forwarding)
+* [Como o Encaminhamento de Email Funciona: A Explicação Técnica](#how-email-forwarding-works-the-technical-explanation)
+  * [O Processo de Encaminhamento de Email](#the-email-forwarding-process)
+  * [O Papel do SRS (Sender Rewriting Scheme)](#the-role-of-srs-sender-rewriting-scheme)
+* [Como o Encaminhamento de Email Funciona: A Explicação Simples](#how-email-forwarding-works-the-simple-explanation)
+* [Configurando o Encaminhamento de Email com Forward Email](#setting-up-email-forwarding-with-forward-email)
+  * [1. Crie uma Conta](#1-sign-up-for-an-account)
+  * [2. Adicione Seu Domínio](#2-add-your-domain)
+  * [3. Configure os Registros DNS](#3-configure-dns-records)
+  * [4. Crie Encaminhamentos de Email](#4-create-email-forwards)
+  * [5. Comece a Usar Seus Novos Endereços de Email](#5-start-using-your-new-email-addresses)
+* [Recursos Avançados do Forward Email](#advanced-features-of-forward-email)
+  * [Endereços Descartáveis](#disposable-addresses)
+  * [Múltiplos Destinatários e Curingas](#multiple-recipients-and-wildcards)
+  * [Integração "Enviar Email Como"](#send-mail-as-integration)
+  * [Segurança Resistente a Computação Quântica](#quantum-resistant-security)
+  * [Caixas de Correio SQLite Criptografadas Individualmente](#individually-encrypted-sqlite-mailboxes)
+* [Por Que Escolher o Forward Email em Relação aos Concorrentes](#why-choose-forward-email-over-competitors)
+  * [1. 100% Código Aberto](#1-100-open-source)
+  * [2. Foco na Privacidade](#2-privacy-focused)
+  * [3. Sem Dependência de Terceiros](#3-no-third-party-reliance)
+  * [4. Preços Econômicos](#4-cost-effective-pricing)
+  * [5. Recursos Ilimitados](#5-unlimited-resources)
+  * [6. Confiado por Grandes Organizações](#6-trusted-by-major-organizations)
+* [Casos Comuns de Uso para Encaminhamento de Email](#common-use-cases-for-email-forwarding)
+  * [Para Empresas](#for-businesses)
+  * [Para Desenvolvedores](#for-developers)
+  * [Para Pessoas Conscientes de Privacidade](#for-privacy-conscious-individuals)
+* [Melhores Práticas para Encaminhamento de Email](#best-practices-for-email-forwarding)
+  * [1. Use Endereços Descritivos](#1-use-descriptive-addresses)
+  * [2. Implemente Autenticação Adequada](#2-implement-proper-authentication)
+  * [3. Revise Seus Encaminhamentos Regularmente](#3-regularly-review-your-forwards)
+  * [4. Configure "Enviar Email Como" para Respostas Sem Interrupções](#4-set-up-send-mail-as-for-seamless-replies)
+  * [5. Use Endereços Catch-All com Cautela](#5-use-catch-all-addresses-cautiously)
 * [Conclusão](#conclusion)
+
 
 ## Prefácio {#foreword}
 
-O encaminhamento de e-mails é uma ferramenta poderosa que pode transformar a forma como você gerencia suas comunicações online. Seja você um empresário que busca criar endereços de e-mail profissionais com seu domínio personalizado, um indivíduo preocupado com a privacidade que busca proteger seu e-mail principal ou um desenvolvedor que precisa de um gerenciamento de e-mails flexível, entender o encaminhamento de e-mails é essencial no cenário digital atual.
+O encaminhamento de email é uma ferramenta poderosa que pode transformar a forma como você gerencia suas comunicações online. Seja você um proprietário de empresa buscando criar endereços de email profissionais com seu domínio personalizado, uma pessoa preocupada com a privacidade querendo proteger seu email principal, ou um desenvolvedor precisando de gerenciamento flexível de email, entender o encaminhamento de email é essencial no cenário digital atual.
 
-Na Forward Email, criamos o serviço de encaminhamento de e-mails mais seguro, privado e flexível do mundo. Neste guia completo, explicaremos como funciona o encaminhamento de e-mails (tanto do ponto de vista técnico quanto prático), guiaremos você pelo nosso processo simples de configuração e destacaremos por que nosso serviço se destaca da concorrência.
+No Forward Email, construímos o serviço de encaminhamento de email mais seguro, privado e flexível do mundo. Neste guia abrangente, explicaremos como o encaminhamento de email funciona (tanto do ponto de vista técnico quanto prático), guiaremos você pelo nosso processo simples de configuração e destacaremos por que nosso serviço se destaca dos concorrentes.
 
-## O que é encaminhamento de e-mail {#what-is-email-forwarding}
 
-O encaminhamento de e-mail é um processo que redireciona automaticamente os e-mails enviados de um endereço de e-mail para outro endereço de destino. Por exemplo, quando alguém envia um e-mail para <contato@seudominio.com>, essa mensagem pode ser encaminhada automaticamente para sua conta pessoal do Gmail, Outlook ou qualquer outra conta de e-mail.
+## O que é Encaminhamento de Email {#what-is-email-forwarding}
 
-Esse recurso aparentemente simples oferece benefícios poderosos:
+O encaminhamento de email é um processo que redireciona automaticamente emails enviados para um endereço de email para outro endereço de destino. Por exemplo, quando alguém envia um email para <contact@yourdomain.com>, essa mensagem pode ser automaticamente encaminhada para sua conta pessoal do Gmail, Outlook ou qualquer outra conta de email.
 
-* **Marca Profissional**: Use endereços de e-mail com seu domínio personalizado (<voce@seudominio.com>) enquanto gerencia tudo da sua caixa de entrada pessoal existente
-* **Proteção de Privacidade**: Crie endereços descartáveis ou específicos para proteger seu e-mail principal
-* **Gerenciamento Simplificado**: Consolide vários endereços de e-mail em uma única caixa de entrada
-* **Flexibilidade**: Crie endereços ilimitados para diferentes finalidades sem precisar gerenciar várias contas
+Essa capacidade aparentemente simples oferece benefícios poderosos:
 
-## Como funciona o encaminhamento de e-mail: a explicação técnica {#how-email-forwarding-works-the-technical-explanation}
+* **Branding Profissional**: Use endereços de email com seu domínio personalizado (<you@yourdomain.com>) enquanto gerencia tudo a partir da sua caixa de entrada pessoal existente
+* **Proteção de Privacidade**: Crie endereços descartáveis ou específicos para propósitos que protejam seu email principal
+* **Gerenciamento Simplificado**: Consolide múltiplos endereços de email em uma única caixa de entrada
+* **Flexibilidade**: Crie endereços ilimitados para diferentes propósitos sem gerenciar múltiplas contas
+## Como o Encaminhamento de Email Funciona: A Explicação Técnica {#how-email-forwarding-works-the-technical-explanation}
 
-Para os interessados nos detalhes técnicos, vamos explorar o que acontece nos bastidores quando um e-mail é encaminhado.
+Para quem se interessa pelos detalhes técnicos, vamos explorar o que acontece nos bastidores quando um email é encaminhado.
 
-### O processo de encaminhamento de e-mail {#the-email-forwarding-process}
+### O Processo de Encaminhamento de Email {#the-email-forwarding-process}
 
-1. **Configuração de DNS**: O processo começa com os registros de DNS do seu domínio. Ao configurar o encaminhamento de e-mail, você configura os registros MX (Mail Exchange) que informam à internet para onde os e-mails do seu domínio devem ser entregues. Esses registros apontam para os nossos servidores de e-mail.
+1. **Configuração de DNS**: O processo começa com os registros DNS do seu domínio. Quando você configura o encaminhamento de email, você configura registros MX (Mail Exchange) que indicam à internet para onde os emails do seu domínio devem ser entregues. Esses registros apontam para nossos servidores de email.
 
-2. **Recebimento de e-mail**: quando alguém envia um e-mail para o seu endereço de domínio personalizado (por exemplo, <você@seudominio.com>), o servidor de e-mail dele consulta os registros MX do seu domínio e entrega a mensagem aos nossos servidores.
+2. **Recepção do Email**: Quando alguém envia um email para o seu endereço de domínio personalizado (por exemplo, <you@yourdomain.com>), o servidor de email deles consulta os registros MX do seu domínio e entrega a mensagem aos nossos servidores.
 
-3. **Processamento e Autenticação**: Nossos servidores recebem o e-mail e realizam diversas funções críticas:
-* Verificam a autenticidade do remetente usando protocolos como SPF, DKIM e DMARC
-* Verificam a existência de conteúdo malicioso
-* Verificam o destinatário em relação às suas regras de encaminhamento
+3. **Processamento e Autenticação**: Nossos servidores recebem o email e realizam várias funções críticas:
+   * Verificar a autenticidade do remetente usando protocolos como SPF, DKIM e DMARC
+   * Escanear por conteúdo malicioso
+   * Verificar o destinatário contra suas regras de encaminhamento
 
-4. **Reescrita de Remetente**: É aqui que a mágica acontece. Implementamos o Esquema de Reescrita de Remetente (SRS) para modificar o caminho de retorno do e-mail. Isso é crucial porque muitos provedores de e-mail rejeitam e-mails encaminhados sem a implementação adequada do SRS, pois podem parecer falsificados.
+4. **Reescrita do Remetente**: É aqui que a mágica acontece. Implementamos o Sender Rewriting Scheme (SRS) para modificar o caminho de retorno do email. Isso é crucial porque muitos provedores de email rejeitam emails encaminhados sem a implementação adequada do SRS, pois podem parecer falsificados.
 
-5. **Encaminhamento**: O e-mail é então enviado para o seu endereço de destino com o conteúdo original intacto.
+5. **Encaminhamento**: O email é então enviado para o seu endereço de destino com o conteúdo original intacto.
 
-6. **Entrega**: O e-mail chega à sua caixa de entrada, parecendo ter sido enviado para seu endereço de encaminhamento, mantendo a aparência profissional do seu domínio personalizado.
+6. **Entrega**: O email chega na sua caixa de entrada, aparecendo como se tivesse sido enviado para o seu endereço de encaminhamento, mantendo a aparência profissional do seu domínio personalizado.
 
-### O papel do SRS (Sender Rewriting Scheme) {#the-role-of-srs-sender-rewriting-scheme}
+### O Papel do SRS (Sender Rewriting Scheme) {#the-role-of-srs-sender-rewriting-scheme}
 
-O SRS merece atenção especial porque é essencial para o encaminhamento confiável de e-mails. Quando um e-mail é encaminhado, o endereço do remetente precisa ser reescrito para garantir que o e-mail passe nas verificações de SPF no destino final.
+O SRS merece atenção especial porque é essencial para o encaminhamento confiável de emails. Quando um email é encaminhado, o endereço do remetente precisa ser reescrito para garantir que o email passe nas verificações SPF no destino final.
 
-Sem o SRS, os e-mails encaminhados frequentemente falham na verificação SPF e são marcados como spam ou rejeitados completamente. Nossa implementação do SRS garante que seus e-mails encaminhados sejam entregues de forma confiável, mantendo as informações do remetente original de forma transparente para você.
+Sem o SRS, emails encaminhados frequentemente falham na verificação SPF e são marcados como spam ou rejeitados completamente. Nossa implementação do SRS garante que seus emails encaminhados sejam entregues de forma confiável enquanto mantém as informações do remetente original de uma maneira transparente para você.
 
-## Como funciona o encaminhamento de e-mail: uma explicação simples {#how-email-forwarding-works-the-simple-explanation}
 
-Se os detalhes técnicos parecem complicados, aqui está uma maneira mais simples de entender o encaminhamento de e-mail:
+## Como o Encaminhamento de Email Funciona: A Explicação Simples {#how-email-forwarding-works-the-simple-explanation}
 
-Pense no encaminhamento de e-mails como o encaminhamento de correspondências físicas. Ao se mudar para uma nova casa, você pode solicitar aos Correios que encaminhem todas as correspondências do seu endereço antigo para o novo. O encaminhamento de e-mails funciona de forma semelhante, mas para mensagens digitais.
+Se os detalhes técnicos parecerem complicados, aqui está uma forma mais simples de entender o encaminhamento de email:
 
-Com encaminhamento de e-mail:
+Pense no encaminhamento de email como o encaminhamento de correspondência física. Quando você se muda para uma nova casa, pode pedir ao serviço postal para encaminhar toda a correspondência do seu endereço antigo para o novo. O encaminhamento de email funciona de forma semelhante, mas para mensagens digitais.
 
-1. Você nos informa quais endereços de e-mail em seu domínio deseja configurar (como <vendas@seudominio.com> ou <contato@seudominio.com>).
-2. Você nos informa onde deseja que esses e-mails sejam entregues (como sua conta do Gmail ou Outlook).
-3. Nós cuidamos de todos os detalhes técnicos para garantir que os e-mails enviados para seus endereços personalizados cheguem com segurança à sua caixa de entrada.
+Com o Forward Email:
 
-Simples assim! Você pode usar endereços de e-mail profissionais sem alterar seu fluxo de trabalho de e-mail atual.
+1. Você nos diz quais endereços de email no seu domínio quer configurar (como <sales@yourdomain.com> ou <contact@yourdomain.com>)
+2. Você nos diz para onde quer que esses emails sejam entregues (como sua conta do Gmail ou Outlook)
+3. Nós cuidamos de todos os detalhes técnicos para garantir que os emails enviados para seus endereços personalizados cheguem com segurança na caixa de entrada especificada
 
-## Configurando o encaminhamento de e-mail com o Forward Email {#setting-up-email-forwarding-with-forward-email}
+É simples assim! Você pode usar endereços de email profissionais sem mudar seu fluxo de trabalho de email existente.
+
+
+## Configurando o Encaminhamento de Email com o Forward Email {#setting-up-email-forwarding-with-forward-email}
 
 Uma das maiores vantagens do Forward Email é a facilidade de configuração. Aqui está um guia passo a passo:
 
-### 1. Crie uma conta {#1-sign-up-for-an-account}
+### 1. Crie uma Conta {#1-sign-up-for-an-account}
 
-Acesse [forwardemail.net](https://forwardemail.net) e crie uma conta gratuita. Nosso processo de cadastro leva menos de um minuto.
+Visite [forwardemail.net](https://forwardemail.net) e crie uma conta gratuita. Nosso processo de cadastro leva menos de um minuto.
 
-### 2. Adicione seu domínio {#2-add-your-domain}
+### 2. Adicione Seu Domínio {#2-add-your-domain}
 
-Após efetuar login, adicione o domínio que deseja usar para encaminhamento de e-mails. Se você ainda não possui um domínio, precisará adquirir um de um registrador de domínios primeiro.
+Depois de logado, adicione o domínio que você quer usar para o encaminhamento de email. Se você ainda não possui um domínio, precisará comprar um em um registrador de domínios primeiro.
 
-### 3. Configurar registros DNS {#3-configure-dns-records}
+### 3. Configure os Registros DNS {#3-configure-dns-records}
 
-Forneceremos os registros DNS exatos que você precisa adicionar ao seu domínio. Normalmente, isso envolve:
+Nós forneceremos os registros DNS exatos que você precisa adicionar ao seu domínio. Normalmente, isso envolve:
 
-* Adicionar registros MX que apontam para nossos servidores de e-mail
+* Adicionar registros MX que apontam para nossos servidores de email
 * Adicionar registros TXT para verificação e segurança
 
 A maioria dos registradores de domínio possui uma interface simples para adicionar esses registros. Fornecemos guias detalhados para todos os principais registradores de domínio para tornar esse processo o mais tranquilo possível.
+### 4. Criar Encaminhamentos de Email {#4-create-email-forwards}
 
-### 4. Criar encaminhamentos de e-mail {#4-create-email-forwards}
+Após seus registros DNS serem verificados (o que geralmente leva apenas alguns minutos), você pode criar encaminhamentos de email. Basta especificar:
 
-Após a verificação dos seus registros DNS (o que geralmente leva apenas alguns minutos), você poderá criar encaminhamentos de e-mail. Basta especificar:
+* O endereço de email no seu domínio (por exemplo, <contact@yourdomain.com>)
+* O destino para onde você quer que os emails sejam enviados (por exemplo, seu endereço pessoal do Gmail)
 
-* O endereço de e-mail do seu domínio (por exemplo, <contato@seudominio.com>)
-* O destino para onde você deseja que os e-mails sejam enviados (por exemplo, seu endereço pessoal do Gmail)
+### 5. Comece a Usar Seus Novos Endereços de Email {#5-start-using-your-new-email-addresses}
 
-### 5. Comece a usar seus novos endereços de e-mail {#5-start-using-your-new-email-addresses}
+É isso! Os emails enviados para seus endereços personalizados do domínio agora serão encaminhados para o destino especificado. Você pode criar quantos encaminhamentos precisar, incluindo endereços catch-all que encaminham todos os emails enviados para qualquer endereço no seu domínio.
 
-Pronto! Os e-mails enviados para os endereços do seu domínio personalizado agora serão encaminhados para o destino especificado. Você pode criar quantos encaminhamentos precisar, incluindo endereços catch-all que encaminham todos os e-mails enviados para qualquer endereço do seu domínio.
 
-## Recursos avançados de encaminhamento de e-mail {#advanced-features-of-forward-email}
+## Recursos Avançados do Forward Email {#advanced-features-of-forward-email}
 
-Embora o encaminhamento básico de e-mail seja poderoso por si só, o Forward Email oferece vários recursos avançados que nos diferenciam:
+Embora o encaminhamento básico de email seja poderoso por si só, o Forward Email oferece vários recursos avançados que nos diferenciam:
 
-### Endereços descartáveis {#disposable-addresses}
+### Endereços Descartáveis {#disposable-addresses}
 
-Crie endereços de e-mail específicos ou anônimos que encaminham para sua conta principal. Você pode atribuir marcadores a esses endereços e ativá-los ou desativá-los a qualquer momento para manter sua caixa de entrada organizada. Seu endereço de e-mail real nunca é exposto.
+Crie endereços de email específicos ou anônimos que encaminham para sua conta principal. Você pode atribuir etiquetas a esses endereços e ativá-los ou desativá-los a qualquer momento para manter sua caixa de entrada organizada. Seu endereço de email real nunca é exposto.
 
-### Vários destinatários e curingas {#multiple-recipients-and-wildcards}
+### Múltiplos Destinatários e Curingas {#multiple-recipients-and-wildcards}
 
-Encaminhe um único endereço para vários destinatários, facilitando o compartilhamento de informações com uma equipe. Você também pode usar endereços curinga (encaminhamento genérico) para receber e-mails enviados para qualquer endereço do seu domínio.
+Encaminhe um único endereço para múltiplos destinatários, facilitando o compartilhamento de informações com uma equipe. Você também pode usar endereços curinga (encaminhamento catch-all) para receber emails enviados para qualquer endereço no seu domínio.
 
-Integração ### "Enviar e-mail como" {#send-mail-as-integration}
+### Integração "Enviar Email Como" {#send-mail-as-integration}
 
-Você nunca mais precisará sair da sua caixa de entrada para enviar e-mails do seu domínio personalizado. Envie e responda mensagens como se fossem de <voce@seudominio.com> diretamente da sua conta do Gmail ou Outlook.
+Você nunca precisará sair da sua caixa de entrada para enviar emails do seu domínio personalizado. Envie e responda mensagens como se fossem de <you@yourdomain.com> diretamente da sua conta Gmail ou Outlook.
 
-### Segurança Resistente a Quânticos {#quantum-resistant-security}
+### Segurança Resistente a Computação Quântica {#quantum-resistant-security}
 
-Somos o primeiro e único serviço de e-mail do mundo a usar criptografia resistente a quantum, protegendo suas comunicações até mesmo contra as ameaças futuras mais avançadas.
+Somos o primeiro e único serviço de email do mundo a usar criptografia resistente à computação quântica, protegendo suas comunicações contra até mesmo as ameaças futuras mais avançadas.
 
-### Caixas de correio SQLite criptografadas individualmente {#individually-encrypted-sqlite-mailboxes}
+### Caixas de Correio SQLite Criptografadas Individualmente {#individually-encrypted-sqlite-mailboxes}
 
-Ao contrário de outros provedores que armazenam todos os e-mails dos usuários em bancos de dados compartilhados, usamos caixas de correio SQLite criptografadas individualmente para privacidade e segurança incomparáveis.
+Ao contrário de outros provedores que armazenam todos os emails dos usuários em bancos de dados compartilhados, usamos caixas de correio SQLite criptografadas individualmente para privacidade e segurança incomparáveis.
 
-## Por que escolher o Forward Email em vez dos concorrentes {#why-choose-forward-email-over-competitors}
 
-O mercado de encaminhamento de e-mail tem vários participantes, mas o Forward Email se destaca de várias maneiras importantes:
+## Por Que Escolher o Forward Email em Relação aos Concorrentes {#why-choose-forward-email-over-competitors}
 
-### 1. 100% de código aberto {#1-100-open-source}
+O mercado de encaminhamento de email tem vários players, mas o Forward Email se destaca em vários aspectos importantes:
 
-Somos o único serviço de encaminhamento de e-mails totalmente de código aberto, incluindo nosso código de back-end. Essa transparência gera confiança e permite auditorias de segurança independentes. Outros serviços podem alegar ser de código aberto, mas não divulgam seu código de back-end.
+### 1. 100% Código Aberto {#1-100-open-source}
 
-### 2. Focado na privacidade {#2-privacy-focused}
+Somos o único serviço de encaminhamento de email que é completamente open-source, incluindo nosso código backend. Essa transparência gera confiança e permite auditorias independentes de segurança. Outros serviços podem alegar ser open-source, mas não liberam seu código backend.
 
-Criamos este serviço porque você tem direito à privacidade. Utilizamos criptografia robusta com TLS, não armazenamos logs SMTP (exceto erros e SMTP de saída) e não gravamos seus e-mails em disco.
+### 2. Foco em Privacidade {#2-privacy-focused}
 
-### 3. Sem dependência de terceiros {#3-no-third-party-reliance}
+Criamos este serviço porque você tem direito à privacidade. Usamos criptografia robusta com TLS, não armazenamos logs SMTP (exceto para erros e SMTP de saída), e não gravamos seus emails em armazenamento de disco.
 
-Ao contrário dos concorrentes que dependem do Amazon SES ou de outros serviços de terceiros, mantemos controle total sobre nossa infraestrutura, aumentando a confiabilidade e a privacidade.
+### 3. Sem Dependência de Terceiros {#3-no-third-party-reliance}
 
-### 4. Preços com boa relação custo-benefício {#4-cost-effective-pricing}
+Ao contrário dos concorrentes que dependem do Amazon SES ou outros serviços de terceiros, mantemos controle total sobre nossa infraestrutura, aumentando tanto a confiabilidade quanto a privacidade.
 
-Nosso modelo de preços permite que você escale com eficiência de custos. Não cobramos por usuário e você pode pagar pelo armazenamento conforme o uso. Por US$ 3/mês, oferecemos mais recursos a um preço menor do que concorrentes como o Gandi (US$ 3,99/mês).
+### 4. Preços Econômicos {#4-cost-effective-pricing}
 
-### 5. Recursos ilimitados {#5-unlimited-resources}
+Nosso modelo de preços permite que você escale de forma econômica. Não cobramos por usuário, e você pode pagar conforme o uso pelo armazenamento. Por $3/mês, oferecemos mais recursos a um preço menor que concorrentes como Gandi ($3,99/mês).
 
-Não impomos limites artificiais em domínios, aliases ou endereços de e-mail como muitos concorrentes fazem.
+### 5. Recursos Ilimitados {#5-unlimited-resources}
 
-### 6. Confiável pelas principais organizações {#6-trusted-by-major-organizations}
+Não impomos limites artificiais em domínios, aliases ou endereços de email como muitos concorrentes fazem.
 
-Nosso serviço é usado por mais de 500.000 domínios, incluindo organizações notáveis como [Academia Naval dos EUA](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [A Fundação Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [Canônico/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales e muitas outras.
+### 6. Confiado por Grandes Organizações {#6-trusted-by-major-organizations}
 
-## Casos de uso comuns para encaminhamento de e-mail {#common-use-cases-for-email-forwarding}
+Nosso serviço é usado por mais de 500.000 domínios, incluindo organizações notáveis como [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales, e muitos outros.
 
-O encaminhamento de e-mail resolve vários desafios para diferentes tipos de usuários:
 
-### Para empresas {#for-businesses}
+## Casos Comuns de Uso para Encaminhamento de Email {#common-use-cases-for-email-forwarding}
+O encaminhamento de email resolve inúmeros desafios para diferentes tipos de usuários:
 
-* Crie endereços de e-mail profissionais para diferentes departamentos (vendas@, suporte@, informações@)
-* Gerencie facilmente as comunicações por e-mail da equipe
+### Para Empresas {#for-businesses}
+
+* Crie endereços de email profissionais para diferentes departamentos (sales@, support@, info@)
+* Gerencie facilmente as comunicações de email da equipe
 * Mantenha a consistência da marca em todas as comunicações
-* Simplifique o gerenciamento de e-mails durante as mudanças de equipe
+* Simplifique o gerenciamento de email durante mudanças de equipe
 
-### Para desenvolvedores {#for-developers}
+### Para Desenvolvedores {#for-developers}
 
-* Configure sistemas de notificação automatizados
+* Configure sistemas automatizados de notificações
 * Crie endereços específicos para diferentes projetos
 * Integre com webhooks para automação avançada
 * Aproveite nossa API para implementações personalizadas
 
-### Para indivíduos preocupados com a privacidade {#for-privacy-conscious-individuals}
+### Para Pessoas Conscientes de Privacidade {#for-privacy-conscious-individuals}
 
-* Crie endereços de e-mail separados para diferentes serviços para rastrear quem compartilha suas informações
+* Crie endereços de email separados para diferentes serviços para rastrear quem compartilha suas informações
 * Use endereços descartáveis para cadastros únicos
-* Mantenha a privacidade protegendo seu endereço de e-mail principal
-* Desative facilmente endereços que começam a receber spam
+* Mantenha a privacidade protegendo seu endereço de email principal
+* Desative facilmente endereços que começarem a receber spam
 
-## Melhores práticas para encaminhamento de e-mail {#best-practices-for-email-forwarding}
 
-Para aproveitar ao máximo o encaminhamento de e-mail, considere estas práticas recomendadas:
+## Melhores Práticas para Encaminhamento de Email {#best-practices-for-email-forwarding}
 
-### 1. Use endereços descritivos {#1-use-descriptive-addresses}
+Para aproveitar ao máximo o encaminhamento de email, considere estas melhores práticas:
 
-Crie endereços de e-mail que indiquem claramente sua finalidade (por exemplo, <newsletter@seudominio.com>, <compras@seudominio.com>) para ajudar a organizar seus e-mails recebidos.
+### 1. Use Endereços Descritivos {#1-use-descriptive-addresses}
 
-### 2. Implementar autenticação adequada {#2-implement-proper-authentication}
+Crie endereços de email que indiquem claramente seu propósito (ex.: <newsletter@yourdomain.com>, <shopping@yourdomain.com>) para ajudar a organizar seu correio recebido.
+
+### 2. Implemente Autenticação Adequada {#2-implement-proper-authentication}
 
 Garanta que seu domínio tenha registros SPF, DKIM e DMARC adequados para maximizar a entregabilidade. O Forward Email facilita isso com nossa configuração guiada.
 
-### 3. Revise regularmente seus encaminhamentos {#3-regularly-review-your-forwards}
+### 3. Revise Regularmente Seus Encaminhamentos {#3-regularly-review-your-forwards}
 
-Audite periodicamente seus encaminhamentos de e-mail para desabilitar aqueles que não são mais necessários ou que estão recebendo spam em excesso.
+Audite periodicamente seus encaminhamentos de email para desativar aqueles que não são mais necessários ou que estejam recebendo spam excessivo.
 
-### 4. Configure "Enviar e-mail como" para respostas contínuas {#4-set-up-send-mail-as-for-seamless-replies}
+### 4. Configure "Enviar Como" para Respostas Sem Interrupções {#4-set-up-send-mail-as-for-seamless-replies}
 
-Configure seu cliente de e-mail principal para enviar e-mails como seus endereços de domínio personalizados para uma experiência consistente ao responder a e-mails encaminhados.
+Configure seu cliente de email principal para enviar mensagens como seus endereços de domínio personalizado para uma experiência consistente ao responder emails encaminhados.
 
-### 5. Use endereços genéricos com cautela {#5-use-catch-all-addresses-cautiously}
+### 5. Use Endereços Catch-All com Cautela {#5-use-catch-all-addresses-cautiously}
 
-Embora endereços genéricos sejam convenientes, eles podem receber mais spam. Considere criar encaminhamentos específicos para comunicações importantes.
+Embora endereços catch-all sejam convenientes, eles podem receber mais spam. Considere criar encaminhamentos específicos para comunicações importantes.
+
 
 ## Conclusão {#conclusion}
 
-O encaminhamento de e-mails é uma ferramenta poderosa que traz profissionalismo, privacidade e simplicidade às suas comunicações por e-mail. Com o Forward Email, você obtém o serviço de encaminhamento de e-mails mais seguro, privado e flexível disponível.
+O encaminhamento de email é uma ferramenta poderosa que traz profissionalismo, privacidade e simplicidade para suas comunicações por email. Com o Forward Email, você obtém o serviço de encaminhamento de email mais seguro, privado e flexível disponível.
 
-Como o único provedor 100% de código aberto com criptografia resistente a quantum e foco em privacidade, criamos um serviço que respeita seus direitos ao mesmo tempo em que oferece funcionalidades excepcionais.
+Como o único provedor 100% open-source com criptografia resistente a computação quântica e foco em privacidade, construímos um serviço que respeita seus direitos enquanto oferece funcionalidade excepcional.
 
-Quer você queira criar endereços de e-mail profissionais para sua empresa, proteger sua privacidade com endereços descartáveis ou simplificar o gerenciamento de várias contas de e-mail, o Forward Email oferece a solução perfeita.
+Seja para criar endereços de email profissionais para sua empresa, proteger sua privacidade com endereços descartáveis ou simplificar o gerenciamento de múltiplas contas de email, o Forward Email oferece a solução perfeita.
 
-Pronto para transformar sua experiência de e-mail? Cadastre-se hoje mesmo e junte-se a mais de 500.000 domínios que já se beneficiam do nosso serviço.
+Pronto para transformar sua experiência com email? [Inscreva-se gratuitamente](https://forwardemail.net) hoje e junte-se a mais de 500.000 domínios que já se beneficiam do nosso serviço.
 
 ---
 
-*Este post foi escrito pela equipe do Forward Email, criadores do serviço de encaminhamento de e-mails mais seguro, privado e flexível do mundo. Visite [forwardemail.net](https://forwardemail.net) para saber mais sobre nosso serviço e começar a encaminhar e-mails com confiança.*
+*Esta postagem no blog foi escrita pela equipe do Forward Email, criadores do serviço de encaminhamento de email mais seguro, privado e flexível do mundo. Visite [forwardemail.net](https://forwardemail.net) para saber mais sobre nosso serviço e começar a encaminhar emails com confiança.*

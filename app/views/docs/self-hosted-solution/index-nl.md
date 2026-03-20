@@ -1,84 +1,87 @@
-# Zelfgehoste e-mail: toewijding aan open source {#self-hosted-email-commitment-to-open-source}
+# Zelfgehoste E-mail: Toewijding aan Open Source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustratie van zelfgehoste e-mailoplossing" class="rounded-lg" />
+
 
 ## Inhoudsopgave {#table-of-contents}
 
 * [Voorwoord](#foreword)
-* [Waarom zelfgehoste e-mail belangrijk is](#why-self-hosted-email-matters)
-  * [Het probleem met traditionele e-maildiensten](#the-problem-with-traditional-email-services)
-  * [Het zelf-gehoste alternatief](#the-self-hosted-alternative)
-* [Onze zelfgehoste implementatie: technisch overzicht](#our-self-hosted-implementation-technical-overview)
-  * [Docker-gebaseerde architectuur voor eenvoud en draagbaarheid](#docker-based-architecture-for-simplicity-and-portability)
-  * [Bash-scriptinstallatie: toegankelijkheid en beveiliging](#bash-script-installation-accessibility-meets-security)
-  * [Quantumveilige encryptie voor toekomstbestendige privacy](#quantum-safe-encryption-for-future-proof-privacy)
-  * [Geautomatiseerd onderhoud en updates](#automated-maintenance-and-updates)
-* [De open-source-verbintenis](#the-open-source-commitment)
-* [Zelf hosten versus beheren: de juiste keuze maken](#self-hosted-vs-managed-making-the-right-choice)
-  * [De realiteit van zelf-hosting van e-mail](#the-reality-of-self-hosting-email)
-  * [Wanneer u voor onze beheerde service kiest](#when-to-choose-our-managed-service)
-* [Aan de slag met zelfgehoste doorstuur-e-mail](#getting-started-with-self-hosted-forward-email)
+* [Waarom Zelfgehoste E-mail Belangrijk Is](#why-self-hosted-email-matters)
+  * [Het Probleem met Traditionele E-maildiensten](#the-problem-with-traditional-email-services)
+  * [Het Zelfgehoste Alternatief](#the-self-hosted-alternative)
+* [Onze Zelfgehoste Implementatie: Technisch Overzicht](#our-self-hosted-implementation-technical-overview)
+  * [Docker-gebaseerde Architectuur voor Eenvoud en Draagbaarheid](#docker-based-architecture-for-simplicity-and-portability)
+  * [Bash Script Installatie: Toegankelijkheid Ontmoet Veiligheid](#bash-script-installation-accessibility-meets-security)
+  * [Quantum-veilige Encryptie voor Toekomstbestendige Privacy](#quantum-safe-encryption-for-future-proof-privacy)
+  * [Geautomatiseerd Onderhoud en Updates](#automated-maintenance-and-updates)
+* [De Open-Source Toewijding](#the-open-source-commitment)
+* [Zelfgehost vs. Beheerd: De Juiste Keuze Maken](#self-hosted-vs-managed-making-the-right-choice)
+  * [De Realiteit van Zelfgehoste E-mail](#the-reality-of-self-hosting-email)
+  * [Wanneer Kiezen voor Onze Beheerde Dienst](#when-to-choose-our-managed-service)
+* [Aan de Slag met Zelfgehoste Forward Email](#getting-started-with-self-hosted-forward-email)
   * [Systeemvereisten](#system-requirements)
   * [Installatiestappen](#installation-steps)
-* [De toekomst van zelfgehoste e-mail](#the-future-of-self-hosted-email)
-* [Conclusie: e-mailvrijheid voor iedereen](#conclusion-email-freedom-for-everyone)
+* [De Toekomst van Zelfgehoste E-mail](#the-future-of-self-hosted-email)
+* [Conclusie: E-mailvrijheid voor Iedereen](#conclusion-email-freedom-for-everyone)
 * [Referenties](#references)
+
 
 ## Voorwoord {#foreword}
 
-In het huidige digitale landschap blijft e-mail de ruggengraat van onze online identiteit en communicatie. Maar naarmate de zorgen over privacy toenemen, staan veel gebruikers voor een lastige keuze: gemak ten koste van privacy, of privacy ten koste van gemak. Bij Forward Email zijn we er altijd van overtuigd geweest dat u niet tussen de twee hoeft te kiezen.
+In het digitale landschap van vandaag blijft e-mail de ruggengraat van onze online identiteit en communicatie. Toch staan veel gebruikers, nu privacyzorgen toenemen, voor een lastige keuze: gemak ten koste van privacy, of privacy ten koste van gemak. Bij Forward Email hebben we altijd geloofd dat je niet tussen die twee hoeft te kiezen.
 
-Vandaag kondigen we met trots een belangrijke mijlpaal in onze reis aan: de lancering van onze zelfgehoste e-mailoplossing. Deze functionaliteit weerspiegelt onze diepste toewijding aan open-sourceprincipes, privacygericht ontwerp en gebruikersondersteuning. Met onze zelfgehoste optie geven we u de volledige controle over uw e-mailcommunicatie.
+Vandaag zijn we verheugd een belangrijke mijlpaal in onze reis aan te kondigen: de lancering van onze zelfgehoste e-mailoplossing. Deze functie vertegenwoordigt onze diepste toewijding aan open-source principes, privacygerichte ontwerpen en gebruikersmachtiging. Met onze zelfgehoste optie leggen we de volledige kracht en controle over je e-mailcommunicatie rechtstreeks in jouw handen.
 
-In deze blogpost onderzoeken we de filosofie achter onze zelfgehoste oplossing, de technische implementatie ervan en waarom dit belangrijk is voor gebruikers die prioriteit geven aan privacy en eigenaarschap in hun digitale communicatie.
+Deze blogpost verkent de filosofie achter onze zelfgehoste oplossing, de technische implementatie en waarom het belangrijk is voor gebruikers die zowel privacy als eigenaarschap in hun digitale communicatie waarderen.
 
-## Waarom zelfgehoste e-mail belangrijk is {#why-self-hosted-email-matters}
 
-Onze zelfgehoste e-mailoplossing is de duidelijkste uiting van onze overtuiging dat echte privacy controle betekent, en controle begint met open source. Voor gebruikers die volledige zeggenschap over hun digitale communicatie eisen, is zelfhosting niet langer een randverschijnsel – het is een essentieel recht. We zijn er trots op dat we achter die overtuiging staan met een volledig open, verifieerbaar platform dat u op uw eigen voorwaarden kunt beheren.
+## Waarom Zelfgehoste E-mail Belangrijk Is {#why-self-hosted-email-matters}
 
-### Het probleem met traditionele e-maildiensten {#the-problem-with-traditional-email-services}
+Onze zelfgehoste e-mailoplossing is de duidelijkste uitdrukking van ons geloof dat echte privacy controle betekent, en controle begint met open source. Voor gebruikers die volledige eigendom over hun digitale communicatie eisen, is zelfhosten niet langer een randidee — het is een fundamenteel recht. We zijn er trots op dat geloof te ondersteunen met een volledig open, verifieerbaar platform dat je op je eigen voorwaarden kunt draaien.
 
-Traditionele e-maildiensten brengen een aantal fundamentele uitdagingen met zich mee voor privacybewuste gebruikers:
+### Het Probleem met Traditionele E-maildiensten {#the-problem-with-traditional-email-services}
 
-1. **Vertrouwensvereisten**: U moet erop vertrouwen dat de provider geen toegang heeft tot uw gegevens, deze niet analyseert of deelt.
-2. **Gecentraliseerde controle**: Uw toegang kan op elk moment en om welke reden dan ook worden ingetrokken.
-3. **Kwetsbaarheid in surveillance**: Gecentraliseerde services zijn belangrijke doelwitten voor surveillance.
-4. **Beperkte transparantie**: De meeste services gebruiken propriëtaire, closed-source software.
-5. **Leverancierslock-in**: Migreren van deze services kan moeilijk of onmogelijk zijn.
+Traditionele e-maildiensten brengen verschillende fundamentele uitdagingen met zich mee voor privacybewuste gebruikers:
 
-Zelfs "privacygerichte" e-mailproviders schieten vaak tekort door alleen hun frontend-applicaties open source te maken, terwijl hun backend-systemen bedrijfseigen en gesloten blijven. Dit creëert een aanzienlijke vertrouwenskloof: je wordt gevraagd hun privacybeloften te geloven zonder de mogelijkheid om ze te verifiëren.
+1. **Vertrouwenseisen**: Je moet de provider vertrouwen dat ze je gegevens niet openen, analyseren of delen
+2. **Gecentraliseerde Controle**: Je toegang kan op elk moment om welke reden dan ook worden ingetrokken
+3. **Kwetsbaarheid voor Toezicht**: Gecentraliseerde diensten zijn primaire doelwitten voor toezicht
+4. **Beperkte Transparantie**: De meeste diensten gebruiken propriëtaire, gesloten software
+5. **Vendor Lock-in**: Migreren weg van deze diensten kan moeilijk of onmogelijk zijn
 
-### Het zelf-gehoste alternatief {#the-self-hosted-alternative}
+Zelfs "privacygerichte" e-mailproviders schieten vaak tekort door alleen hun frontend-applicaties open source te maken terwijl hun backend-systemen propriëtair en gesloten blijven. Dit creëert een aanzienlijk vertrouwensgat — je wordt gevraagd hun privacybeloften te geloven zonder ze te kunnen verifiëren.
 
-Zelf uw e-mail hosten biedt een fundamenteel andere aanpak:
+### Het Zelfgehoste Alternatief {#the-self-hosted-alternative}
+Zelf je e-mail hosten biedt een fundamenteel andere benadering:
 
-1. **Volledige controle**: U bezit en beheert de volledige e-mailinfrastructuur
-2. **Verifieerbare privacy**: Het hele systeem is transparant en controleerbaar
-3. **Geen vertrouwen vereist**: U hoeft uw communicatie niet aan een derde partij toe te vertrouwen
-4. **Aanpassingsvrijheid**: Pas het systeem aan uw specifieke behoeften aan
-5. **Veerkracht**: Uw service blijft doorlopen, ongeacht de beslissingen van uw bedrijf
+1. **Volledige Controle**: Je bezit en beheert de gehele e-mailinfrastructuur
+2. **Verifieerbare Privacy**: Het hele systeem is transparant en controleerbaar
+3. **Geen Vertrouwen Nodig**: Je hoeft een derde partij niet te vertrouwen met je communicatie
+4. **Vrijheid in Aanpassing**: Pas het systeem aan je specifieke behoeften aan
+5. **Veerkracht**: Je service blijft draaien ongeacht beslissingen van bedrijven
 
-Zoals een gebruiker het verwoordde: "Het zelf hosten van mijn e-mail is het digitale equivalent van het verbouwen van mijn eigen voedsel – het kost meer werk, maar ik weet precies wat erin zit."
+Zoals een gebruiker het verwoordde: "Zelf mijn e-mail hosten is het digitale equivalent van mijn eigen voedsel verbouwen—het kost meer werk, maar ik weet precies wat erin zit."
 
-## Onze zelfgehoste implementatie: technisch overzicht {#our-self-hosted-implementation-technical-overview}
 
-Onze zelfgehoste e-mailoplossing is gebaseerd op dezelfde privacy-eerste principes die al onze producten kenmerken. Laten we de technische implementatie bekijken die dit mogelijk maakt.
+## Onze Zelf-gehoste Implementatie: Technisch Overzicht {#our-self-hosted-implementation-technical-overview}
 
-### Docker-gebaseerde architectuur voor eenvoud en draagbaarheid {#docker-based-architecture-for-simplicity-and-portability}
+Onze zelf-gehoste e-mailoplossing is gebouwd op dezelfde privacy-eerst principes die al onze producten leiden. Laten we de technische implementatie verkennen die dit mogelijk maakt.
 
-We hebben onze volledige e-mailinfrastructuur gebundeld met Docker, waardoor deze eenvoudig te implementeren is op vrijwel elk Linux-systeem. Deze containeraanpak biedt verschillende belangrijke voordelen:
+### Docker-gebaseerde Architectuur voor Eenvoud en Draagbaarheid {#docker-based-architecture-for-simplicity-and-portability}
 
-1. **Vereenvoudigde implementatie**: Met één opdracht wordt de volledige infrastructuur ingesteld
-2. **Consistente omgeving**: Lost problemen met "werkt op mijn machine" op
-3. **Geïsoleerde componenten**: Elke service draait in een eigen container voor beveiliging
-4. **Eenvoudige updates**: Eenvoudige opdrachten om de volledige stack bij te werken
-5. **Minimale afhankelijkheden**: Vereist alleen Docker en Docker Compose
+We hebben onze gehele e-mailinfrastructuur verpakt met Docker, waardoor het eenvoudig te implementeren is op vrijwel elk Linux-systeem. Deze container-gebaseerde aanpak biedt verschillende belangrijke voordelen:
 
-De architectuur omvat containers voor:
+1. **Vereenvoudigde Implementatie**: Eén enkele opdracht zet de hele infrastructuur op
+2. **Consistente Omgeving**: Elimineert "werkt op mijn machine" problemen
+3. **Geïsoleerde Componenten**: Elke dienst draait in zijn eigen container voor veiligheid
+4. **Eenvoudige Updates**: Simpele opdrachten om de hele stack bij te werken
+5. **Minimale Afhankelijkheden**: Vereist alleen Docker en Docker Compose
 
-* Webinterface voor beheer
+De architectuur bevat containers voor:
+
+* Webinterface voor administratie
 * SMTP-server voor uitgaande e-mail
-* IMAP/POP3-servers voor het ophalen van e-mail
+* IMAP/POP3-servers voor e-mail ophalen
 * CalDAV-server voor agenda's
 * CardDAV-server voor contacten
 * Database voor configuratieopslag
@@ -88,165 +91,168 @@ De architectuur omvat containers voor:
 > \[!NOTE]
 > Bekijk zeker onze [zelf-gehoste ontwikkelaarsgids](https://forwardemail.net/self-hosted)
 
-### Bash-scriptinstallatie: toegankelijkheid en beveiliging {#bash-script-installation-accessibility-meets-security}
+### Bash Script Installatie: Toegankelijkheid Ontmoet Veiligheid {#bash-script-installation-accessibility-meets-security}
 
-We hebben het installatieproces zo eenvoudig mogelijk ontworpen, waarbij we de beste beveiligingspraktijken in acht hebben genomen:
+We hebben het installatieproces zo eenvoudig mogelijk ontworpen, terwijl we de beste beveiligingspraktijken handhaven:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-Dit ene commando:
+Deze enkele opdracht:
 
-1. Controleert de systeemvereisten
-2. Begeleidt u door de configuratie
-3. Stelt DNS-records in
+1. Verifieert systeemeisen
+2. Begeleidt je door de configuratie
+3. Zet DNS-records op
 4. Configureert TLS-certificaten
-5. Implementeert de Docker-containers
-6. Voert een eerste beveiligingsversterking uit
+5. Zet de Docker-containers uit
+6. Voert initiële beveiligingsversterking uit
 
-Voor degenen die zich zorgen maken over het doorsturen van scripts naar bash (en dat zou je ook moeten doen!), raden we aan het script te controleren vóór de uitvoering. Het is volledig open-source en beschikbaar voor inspectie.
+Voor wie zich zorgen maakt over het doorsturen van scripts naar bash (zoals het hoort!), raden we aan het script vooraf te bekijken. Het is volledig open-source en beschikbaar voor inspectie.
 
-### Quantum-veilige encryptie voor toekomstbestendige privacy {#quantum-safe-encryption-for-future-proof-privacy}
+### Quantum-veilige Encryptie voor Toekomstbestendige Privacy {#quantum-safe-encryption-for-future-proof-privacy}
 
-Net als onze gehoste service implementeert onze zelfgehoste oplossing kwantumbestendige encryptie met ChaCha20-Poly1305 als codering voor SQLite-databases. Deze aanpak beschermt uw e-mailgegevens niet alleen tegen huidige bedreigingen, maar ook tegen toekomstige aanvallen met kwantumcomputers.
+Net als onze gehoste dienst implementeert onze zelf-gehoste oplossing quantum-resistente encryptie met ChaCha20-Poly1305 als cipher voor SQLite-databases. Deze aanpak beschermt je e-mailgegevens niet alleen tegen huidige bedreigingen, maar ook tegen toekomstige aanvallen met quantumcomputers.
 
-Elke mailbox wordt opgeslagen in een eigen, gecodeerd SQLite-databasebestand. Hierdoor is er volledige isolatie tussen gebruikers. Dit is een aanzienlijk beveiligingsvoordeel ten opzichte van traditionele gedeelde databases.
+Elke mailbox wordt opgeslagen in een eigen versleuteld SQLite-databasebestand, wat volledige isolatie tussen gebruikers biedt—een aanzienlijk beveiligingsvoordeel ten opzichte van traditionele gedeelde databasebenaderingen.
 
-### Geautomatiseerd onderhoud en updates {#automated-maintenance-and-updates}
+### Geautomatiseerd Onderhoud en Updates {#automated-maintenance-and-updates}
 
-We hebben uitgebreide onderhoudshulpprogramma's rechtstreeks in de zelf-gehoste oplossing ingebouwd:
+We hebben uitgebreide onderhoudsfuncties direct ingebouwd in de zelf-gehoste oplossing:
 
-1. **Automatische back-ups**: Geplande back-ups van alle kritieke gegevens
-2. **Certificaatvernieuwing**: Geautomatiseerd Let's Encrypt-certificaatbeheer
-3. **Systeemupdates**: Eenvoudige opdracht om te updaten naar de nieuwste versie
-4. **Gezondheidsmonitoring**: Ingebouwde controles om de systeemintegriteit te garanderen
+1. **Automatische Back-ups**: Geplande back-ups van alle kritieke data
+2. **Certificaatvernieuwing**: Geautomatiseerd beheer van Let's Encrypt-certificaten
+3. **Systeemupdates**: Simpele opdracht om naar de nieuwste versie bij te werken
+4. **Gezondheidsmonitoring**: Ingebouwde controles om systeemintegriteit te waarborgen
 
-Deze hulpprogramma's zijn toegankelijk via een eenvoudig interactief menu:
+Deze functies zijn toegankelijk via een eenvoudig interactief menu:
 
 ```bash
 # script prompt
 
-1. Initial setup
-2. Setup Backups
-3. Setup Auto Upgrades
-4. Renew certificates
-5. Restore from Backup
+1. Initiële setup
+2. Back-ups instellen
+3. Automatische upgrades instellen
+4. Certificaten vernieuwen
+5. Herstellen vanaf back-up
 6. Help
-7. Exit
+7. Afsluiten
 ```
 
-## De open-source-verbintenis {#the-open-source-commitment}
 
-Onze zelfgehoste e-mailoplossing is, net als al onze producten, 100% open source – zowel frontend als backend. Dit betekent:
+## De Open-Source Verbintenis {#the-open-source-commitment}
 
-1. **Volledige transparantie**: Elke regel code die uw e-mails verwerkt, is beschikbaar voor openbare controle.
-2. **Bijdragen van de community**: Iedereen kan verbeteringen bijdragen of problemen oplossen.
-3. **Beveiliging door openheid**: Kwetsbaarheden kunnen worden geïdentificeerd en opgelost door een wereldwijde community.
-4. **Geen vendor lock-in**: U bent nooit afhankelijk van het bestaan van ons bedrijf.
+Onze zelf-gehoste e-mailoplossing, net als al onze producten, is 100% open-source—zowel frontend als backend. Dit betekent:
+1. **Volledige Transparantie**: Elke regel code die je e-mails verwerkt is beschikbaar voor publieke controle  
+2. **Community Bijdragen**: Iedereen kan verbeteringen aanleveren of problemen oplossen  
+3. **Beveiliging Door Openheid**: Kwetsbaarheden kunnen door een wereldwijde community worden geïdentificeerd en opgelost  
+4. **Geen Vendor Lock-in**: Je bent nooit afhankelijk van het voortbestaan van ons bedrijf  
 
-De volledige codebase is beschikbaar op GitHub op <https://github.com/forwardemail/forwardemail.net>.
+De volledige codebase is beschikbaar op GitHub via <https://github.com/forwardemail/forwardemail.net>.
 
-## Zelfhosting versus beheer: de juiste keuze maken {#self-hosted-vs-managed-making-the-right-choice}
 
-Hoewel we er trots op zijn een zelfgehoste optie aan te bieden, erkennen we dat dit niet voor iedereen de juiste keuze is. Zelfgehoste e-mail brengt echte verantwoordelijkheden en uitdagingen met zich mee:
+## Zelf-Hosten vs. Beheerd: De Juiste Keuze Maken {#self-hosted-vs-managed-making-the-right-choice}
 
-### De realiteit van zelf-hostende e-mail {#the-reality-of-self-hosting-email}
+Hoewel we trots zijn een zelf-hostoptie aan te bieden, erkennen we dat dit niet voor iedereen de juiste keuze is. Zelf e-mail hosten brengt echte verantwoordelijkheden en uitdagingen met zich mee:
 
-#### Technische overwegingen {#technical-considerations}
+### De Realiteit van Zelf E-mail Hosteren {#the-reality-of-self-hosting-email}
 
-* **Serverbeheer**: U moet een VPS of dedicated server onderhouden
-* **DNS-configuratie**: Een correcte DNS-configuratie is cruciaal voor de leverbaarheid
-* **Beveiligingsupdates**: Het up-to-date houden van beveiligingspatches is essentieel
-* **Spambeheer**: U moet spamfiltering beheren
-* **Back-upstrategie**: Het implementeren van betrouwbare back-ups is uw verantwoordelijkheid
+#### Technische Overwegingen {#technical-considerations}
+
+* **Serverbeheer**: Je moet een VPS of dedicated server onderhouden  
+* **DNS Configuratie**: Juiste DNS-instellingen zijn cruciaal voor afleverbaarheid  
+* **Beveiligingsupdates**: Actueel blijven met beveiligingspatches is essentieel  
+* **Spambeheer**: Je moet spamfiltering zelf afhandelen  
+* **Backup Strategie**: Betrouwbare backups implementeren is jouw verantwoordelijkheid  
 
 #### Tijdsinvestering {#time-investment}
 
-* **Eerste installatie**: Tijd voor installatie, verificatie en het lezen van de documentatie
-* **Doorlopend onderhoud**: Incidentele updates en monitoring
-* **Probleemoplossing**: Incidentele tijd voor het oplossen van problemen
+* **Initiële Setup**: Tijd om op te zetten, te verifiëren en documentatie te lezen  
+* **Doorlopende Onderhoud**: Af en toe updates en monitoring  
+* **Probleemoplossing**: Af en toe tijd voor het oplossen van problemen  
 
-#### Financiële overwegingen {#financial-considerations}
+#### Financiële Overwegingen {#financial-considerations}
 
-* **Serverkosten**: $ 5-$ 20/maand voor een basis VPS
-* **Domeinregistratie**: $ 10-$ 20/jaar
-* **Tijdswaarde**: Uw tijdsinvestering is echt waardevol
+* **Serverkosten**: $5-$20/maand voor een basis VPS  
+* **Domeinregistratie**: $10-$20/jaar  
+* **Waarde van Tijd**: Je tijdsinvestering heeft echte waarde  
 
-### Wanneer kiest u voor onze beheerde service {#when-to-choose-our-managed-service}
+### Wanneer Kiezen voor Onze Beheerde Dienst {#when-to-choose-our-managed-service}
 
-Voor veel gebruikers blijft onze beheerde service de beste optie:
+Voor veel gebruikers blijft onze beheerde dienst de beste optie:
 
-1. **Gemak**: Wij verzorgen al het onderhoud, de updates en de monitoring
-2. **Betrouwbaarheid**: Profiteer van onze gevestigde infrastructuur en expertise
-3. **Ondersteuning**: Krijg hulp bij problemen
-4. **Leverbaarheid**: Profiteer van onze gevestigde IP-reputatie
-5. **Kosteneffectiviteit**: Wanneer u de tijd en kosten meerekent, is onze service vaak voordeliger
+1. **Gemak**: Wij verzorgen alle onderhoud, updates en monitoring  
+2. **Betrouwbaarheid**: Profiteer van onze gevestigde infrastructuur en expertise  
+3. **Ondersteuning**: Hulp wanneer er problemen zijn  
+4. **Afleverbaarheid**: Maak gebruik van onze gevestigde IP-reputatie  
+5. **Kostenbesparing**: Wanneer je de tijdskosten meerekent is onze dienst vaak voordeliger  
 
-Beide opties bieden dezelfde voordelen op het gebied van privacy en open source-transparantie. Het verschil is alleen wie de infrastructuur beheert.
+Beide opties bieden dezelfde privacyvoordelen en open-source transparantie—het verschil is simpelweg wie de infrastructuur beheert.
 
-## Aan de slag met zelfgehoste doorstuur-e-mail {#getting-started-with-self-hosted-forward-email}
 
-Klaar om de controle over uw e-mailinfrastructuur te nemen? Zo gaat u aan de slag:
+## Aan de Slag met Zelf-Hosten van Forward Email {#getting-started-with-self-hosted-forward-email}
+
+Klaar om de controle over je e-mailinfrastructuur te nemen? Zo begin je:
 
 ### Systeemvereisten {#system-requirements}
 
-* Ubuntu 20.04 LTS of nieuwer (aanbevolen)
-* Minimaal 1 GB RAM (2 GB+ aanbevolen)
-* 20 GB opslagruimte aanbevolen
-* Een domeinnaam die u beheert
-* Openbaar IP-adres met ondersteuning voor poort 25
-* Mogelijkheid om [omgekeerde PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) in te stellen
-* Ondersteuning voor IPv4 en IPv6
+* Ubuntu 20.04 LTS of nieuwer (aanbevolen)  
+* Minimaal 1GB RAM (2GB+ aanbevolen)  
+* 20GB opslag aanbevolen  
+* Een domeinnaam die je beheert  
+* Publiek IP-adres met poort 25 ondersteuning  
+* Mogelijkheid om een [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) in te stellen  
+* Ondersteuning voor IPv4 en IPv6  
 
-> \[!TIP]
-> We raden verschillende mailserverproviders aan op <https://forwardemail.net/blog/docs/best-mail-server-providers> (bron: <https://github.com/forwardemail/awesome-mail-server-providers>)
+> \[!TIP]  
+> We raden verschillende mailserverproviders aan op <https://forwardemail.net/blog/docs/best-mail-server-providers> (bron op <https://github.com/forwardemail/awesome-mail-server-providers>)  
 
 ### Installatiestappen {#installation-steps}
 
-1. **Voer het installatiescript uit**:
-```bash
+1. **Voer het Installatiescript uit**:  
+   ```bash
    bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
    ```
 
-2. **Volg de interactieve instructies**:
-* Voer uw domeinnaam in
-* Configureer de beheerdersreferenties
-* Stel DNS-records in zoals aangegeven
-* Kies uw gewenste configuratieopties
+2. **Volg de Interactieve Prompts**:  
+   * Voer je domeinnaam in  
+   * Configureer beheerdersgegevens  
+   * Stel DNS-records in zoals aangegeven  
+   * Kies je gewenste configuratieopties  
 
-3. **Installatie verifiëren**:
-Nadat de installatie is voltooid, kunt u controleren of alles werkt door:
-* De containerstatus te controleren: `docker ps`
-* Een testmail te sturen
-* In te loggen op de webinterface
+3. **Verifieer de Installatie**:  
+   Zodra de installatie voltooid is, kun je controleren of alles werkt door:  
+   * De containerstatus te controleren: `docker ps`  
+   * Een testmail te versturen  
+   * In te loggen op de webinterface  
 
-## De toekomst van zelfgehoste e-mail {#the-future-of-self-hosted-email}
 
-Onze zelfgehoste oplossing is nog maar het begin. We streven ernaar dit aanbod continu te verbeteren met:
+## De Toekomst van Zelf-Hosten van E-mail {#the-future-of-self-hosted-email}
 
-1. **Verbeterde beheertools**: Krachtiger webgebaseerd beheer
-2. **Extra authenticatieopties**: Inclusief ondersteuning voor hardwarematige beveiligingssleutels
-3. **Geavanceerde monitoring**: Beter inzicht in de systeemstatus en -prestaties
-4. **Implementatie voor meerdere servers**: Opties voor configuraties met hoge beschikbaarheid
-5. **Communitygedreven verbeteringen**: Integratie met bijdragen van gebruikers
+Onze zelf-hostoplossing is nog maar het begin. We zetten ons in om deze dienst continu te verbeteren met:
 
-## Conclusie: E-mailvrijheid voor iedereen {#conclusion-email-freedom-for-everyone}
+1. **Verbeterde Beheertools**: Krachtigere webgebaseerde managementopties  
+2. **Extra Authenticatieopties**: Inclusief ondersteuning voor hardware security keys  
+3. **Geavanceerde Monitoring**: Betere inzichten in systeemgezondheid en prestaties  
+4. **Multi-Server Implementatie**: Opties voor hoog-beschikbare configuraties  
+5. **Community-gedreven Verbeteringen**: Integratie van bijdragen van gebruikers
+## Conclusie: E-mailvrijheid voor Iedereen {#conclusion-email-freedom-for-everyone}
 
-De lancering van onze zelfgehoste e-mailoplossing is een belangrijke mijlpaal in onze missie om privacygerichte, transparante e-maildiensten te bieden. Of u nu kiest voor onze beheerde service of zelfgehoste optie, u profiteert van onze onwrikbare toewijding aan open-sourceprincipes en een privacy-eerst ontwerp.
+De lancering van onze zelfgehoste e-mailoplossing vormt een belangrijke mijlpaal in onze missie om privacygerichte, transparante e-mailservices te bieden. Of je nu kiest voor onze beheerde dienst of de zelfgehoste optie, je profiteert van onze niet-aflatende toewijding aan open-source principes en privacy-first ontwerp.
 
-E-mail is te belangrijk om te worden beheerd door gesloten, bedrijfseigen systemen die gegevensverzameling belangrijker vinden dan de privacy van gebruikers. Met de zelfgehoste oplossing van Forward Email zijn we er trots op een echt alternatief te bieden – een alternatief waarmee u volledige controle hebt over uw digitale communicatie.
+E-mail is te belangrijk om gecontroleerd te worden door gesloten, propriëtaire systemen die dataverzameling boven gebruikersprivacy stellen. Met Forward Email's zelfgehoste oplossing zijn we trots een echt alternatief te bieden—een alternatief dat jou volledige controle geeft over je digitale communicatie.
 
-Wij geloven dat privacy niet zomaar een eigenschap is, maar een fundamenteel recht. En met onze zelfgehoste e-mailoptie maken we dat recht toegankelijker dan ooit tevoren.
+Wij geloven dat privacy niet zomaar een functie is; het is een fundamenteel recht. En met onze zelfgehoste e-mailoptie maken we dat recht toegankelijker dan ooit tevoren.
 
-Klaar om de controle over je e-mail te nemen? [Begin vandaag nog](https://forwardemail.net/self-hosted) of ontdek onze [GitHub-repository](https://github.com/forwardemail/forwardemail.net) voor meer informatie.
+Klaar om de controle over je e-mail te nemen? [Begin vandaag nog](https://forwardemail.net/self-hosted) of verken onze [GitHub repository](https://github.com/forwardemail/forwardemail.net) om meer te leren.
 
-## Verwijzingen naar {#references}
 
-\[1] E-mail doorsturen GitHub-repository: <https://github.com/forwardemail/forwardemail.net>
+## Referenties {#references}
 
-\[2] Zelf-gehoste documentatie: <https://forwardemail.net/en/self-hosted>
+\[1] Forward Email GitHub Repository: <https://github.com/forwardemail/forwardemail.net>
 
-\[3] Technische implementatie van e-mailprivacy: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
+\[2] Zelfgehoste Documentatie: <https://forwardemail.net/en/self-hosted>
 
-\[4] Waarom open-source e-mail belangrijk is: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>
+\[3] Technische Implementatie van E-mailprivacy: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
+
+\[4] Waarom Open-Source E-mail Belangrijk Is: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>

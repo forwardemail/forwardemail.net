@@ -1,97 +1,101 @@
-# Forward Email 如何保护您的隐私、域名和安全：技术深度探究 {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
+# Forward Email 如何保护您的隐私、域名和安全：技术深度解析 {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="最佳邮件转发服务比较" class="rounded-lg" />
+
 
 ## 目录 {#table-of-contents}
 
 * [前言](#foreword)
-* [Forward 电子邮件隐私理念](#the-forward-email-privacy-philosophy)
-* [SQLite 实现：数据的持久性和可移植性](#sqlite-implementation-durability-and-portability-for-your-data)
-* [智能队列和重试机制：确保电子邮件送达](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
-* [无限资源与智能速率限制](#unlimited-resources-with-intelligent-rate-limiting)
-* [沙盒加密增强安全性](#sandboxed-encryption-for-enhanced-security)
-* [内存电子邮件处理：无需磁盘存储，最大程度保护隐私](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
-* [使用 OpenPGP 进行端到端加密，确保完全隐私](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [Forward Email 的隐私理念](#the-forward-email-privacy-philosophy)
+* [SQLite 实现：为您的数据提供持久性和可移植性](#sqlite-implementation-durability-and-portability-for-your-data)
+* [智能队列与重试机制：确保邮件送达](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [智能速率限制下的无限资源](#unlimited-resources-with-intelligent-rate-limiting)
+* [沙箱加密以增强安全性](#sandboxed-encryption-for-enhanced-security)
+* [内存中邮件处理：无磁盘存储，最大化隐私](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [使用 OpenPGP 的端到端加密，实现完全隐私](#end-to-end-encryption-with-openpgp-for-complete-privacy)
 * [多层内容保护，全面保障安全](#multi-layered-content-protection-for-comprehensive-security)
-* [我们与其他电子邮件服务的区别：技术隐私优势](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
-  * [开源透明度，实现可验证的隐私](#open-source-transparency-for-verifiable-privacy)
-  * [无需供应商锁定，隐私安全无虞](#no-vendor-lock-in-for-privacy-without-compromise)
-  * [沙盒数据实现真正隔离](#sandboxed-data-for-true-isolation)
-  * [数据可移植性和控制](#data-portability-and-control)
-* [隐私优先电子邮件转发的技术挑战](#the-technical-challenges-of-privacy-first-email-forwarding)
-  * [无日志电子邮件处理的内存管理](#memory-management-for-no-logging-email-processing)
-  * [无需内容分析的垃圾邮件检测，实现隐私保护过滤](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
-  * [保持与隐私优先设计的兼容性](#maintaining-compatibility-with-privacy-first-design)
-* [转发电子邮件用户的隐私最佳实践](#privacy-best-practices-for-forward-email-users)
-* [结论：私人电子邮件转发的未来](#conclusion-the-future-of-private-email-forwarding)
+* [我们与其他邮件服务的区别：技术隐私优势](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+  * [开源透明，隐私可验证](#open-source-transparency-for-verifiable-privacy)
+  * [无供应商锁定，实现无妥协的隐私](#no-vendor-lock-in-for-privacy-without-compromise)
+  * [沙箱数据，真正隔离](#sandboxed-data-for-true-isolation)
+  * [数据可移植性与控制权](#data-portability-and-control)
+* [隐私优先邮件转发的技术挑战](#the-technical-challenges-of-privacy-first-email-forwarding)
+  * [无日志邮件处理的内存管理](#memory-management-for-no-logging-email-processing)
+  * [无内容分析的垃圾邮件检测，实现隐私保护过滤](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
+  * [隐私优先设计下的兼容性维护](#maintaining-compatibility-with-privacy-first-design)
+* [Forward Email 用户的隐私最佳实践](#privacy-best-practices-for-forward-email-users)
+* [结论：私密邮件转发的未来](#conclusion-the-future-of-private-email-forwarding)
+
 
 ## 前言 {#foreword}
 
-在当今的数字时代，电子邮件隐私比以往任何时候都更加重要。由于数据泄露、监控担忧以及基于电子邮件内容的定向广告，用户越来越寻求以隐私为优先的解决方案。在 Forward Email，我们从一开始就以隐私作为架构的基石来构建我们的服务。这篇博文探讨了使我们的服务成为目前最注重隐私的电子邮件转发解决方案之一的技术实现。
+在当今数字环境中，邮件隐私比以往任何时候都更加重要。随着数据泄露、监控担忧以及基于邮件内容的定向广告，用户越来越寻求优先保护隐私的解决方案。在 Forward Email，我们从零开始构建服务，将隐私作为架构的基石。本文将探讨使我们的服务成为最注重隐私的邮件转发解决方案之一的技术实现。
 
-## 转发电子邮件隐私理念 {#the-forward-email-privacy-philosophy}
 
-在深入探讨技术细节之前，务必先了解我们的基本隐私理念：**您的电子邮件只属于您**。从如何处理电子邮件转发到如何实施加密，这一原则指导着我们做出的每一个技术决策。
+## Forward Email 的隐私理念 {#the-forward-email-privacy-philosophy}
 
-与许多出于广告目的扫描您的邮件或将其无限期存储在其服务器上的电子邮件提供商不同，转发电子邮件采用了截然不同的运作方式：
+在深入技术细节之前，理解我们的基本隐私理念至关重要：**您的邮件属于您，且仅属于您**。这一原则指导着我们每一个技术决策，从邮件转发的处理方式到加密的实现。
 
-1. **仅内存处理** - 我们不会将您转发的邮件存储到磁盘
-2. **不存储元数据** - 我们不会记录谁给谁发了邮件
-3. **100% 开源** - 我们的整个代码库透明且可审计
-4. **端到端加密** - 我们支持 OpenPGP，确保真正的私密通信
+与许多为广告目的扫描您的邮件或无限期存储邮件的邮件服务商不同，Forward Email 采用了截然不同的方式：
 
-## SQLite 实现：数据的持久性和可移植性 {#sqlite-implementation-durability-and-portability-for-your-data}
+1. **仅内存处理** - 我们不将您的转发邮件存储到磁盘
+2. **不存储元数据** - 我们不保留谁给谁发邮件的记录
+3. **100% 开源** - 我们的全部代码透明且可审计
+4. **端到端加密** - 我们支持 OpenPGP，实现真正私密的通信
 
-Forward Email 最显著的隐私优势之一，在于我们精心设计的 [SQLite](https://en.wikipedia.org/wiki/SQLite) 实现。我们通过特定的 PRAGMA 设置和 [预写日志（WAL）](https://en.wikipedia.org/wiki/Write-ahead_logging) 对 SQLite 进行了微调，以确保数据的持久性和可移植性，同时保持最高的隐私和安全标准。
 
-下面我们来看看如何使用 [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) 作为抗量子加密的密码来实现 SQLite：
+## SQLite 实现：为您的数据提供持久性和可移植性 {#sqlite-implementation-durability-and-portability-for-your-data}
+
+Forward Email 最大的隐私优势之一是我们精心设计的 [SQLite](https://en.wikipedia.org/wiki/SQLite) 实现。我们通过特定的 PRAGMA 设置和 [预写日志（WAL）](https://en.wikipedia.org/wiki/Write-ahead_logging) 对 SQLite 进行了优化，确保数据的持久性和可移植性，同时保持最高的隐私和安全标准。
+以下是我们如何使用 [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) 作为量子抗性加密密码实现 SQLite 的示例：
 
 ```javascript
-// Initialize the database with better-sqlite3-multiple-ciphers
+// 使用 better-sqlite3-multiple-ciphers 初始化数据库
 const Database = require('better-sqlite3-multiple-ciphers');
 
-// Set up encryption with ChaCha20-Poly1305 cipher
+// 使用 ChaCha20-Poly1305 密码设置加密
 db.pragma(`key="${decrypt(session.user.password)}"`);
 
-// Enable Write-Ahead Logging for durability and performance
+// 启用写前日志以提高持久性和性能
 db.pragma('journal_mode=WAL');
 
-// Overwrite deleted content with zeros for privacy
+// 用零覆盖已删除内容以保护隐私
 db.pragma('secure_delete=ON');
 
-// Enable auto vacuum for efficient storage management
+// 启用自动清理以实现高效存储管理
 db.pragma('auto_vacuum=FULL');
 
-// Set busy timeout for handling concurrent access
+// 设置忙等待超时以处理并发访问
 db.pragma(`busy_timeout=${config.busyTimeout}`);
 
-// Optimize synchronization for reliability
+// 优化同步以提高可靠性
 db.pragma('synchronous=NORMAL');
 
-// Enable foreign key constraints for data integrity
+// 启用外键约束以保证数据完整性
 db.pragma('foreign_keys=ON');
 
-// Set UTF-8 encoding for international character support
+// 设置 UTF-8 编码以支持国际字符
 db.pragma(`encoding='UTF-8'`);
 
-// Optimize database performance
+// 优化数据库性能
 db.pragma('optimize=0x10002;');
 
-// Use disk for temporary storage instead of memory
+// 使用磁盘作为临时存储而非内存
 db.pragma('temp_store=1;');
 ```
 
-此方案不仅确保您的数据安全，而且便于携带。您可以随时将电子邮件导出为 [MBOX](https://en.wikipedia.org/wiki/Email#Storage)、[EML](https://en.wikipedia.org/wiki/Email#Storage) 或 SQLite 格式，轻松携带。即使您想删除数据，数据也真的消失了——我们只需从磁盘存储中删除文件，无需运行 SQL DELETE ROW 命令，因为这些命令会在数据库中留下痕迹。
+此实现确保您的数据不仅安全，而且可移植。您可以随时通过导出为 [MBOX](https://en.wikipedia.org/wiki/Email#Storage)、[EML](https://en.wikipedia.org/wiki/Email#Storage) 或 SQLite 格式来携带您的邮件。当您想删除数据时，数据也是真正被删除的——我们只是从磁盘存储中删除文件，而不是执行 SQL DELETE ROW 命令，因为后者可能会在数据库中留下痕迹。
 
-我们实施的量子加密方面在初始化数据库时使用 ChaCha20-Poly1305 作为密码，为您的数据隐私提供强有力的保护，以抵御当前和未来的威胁。
+我们实现中的量子加密部分在初始化数据库时使用 ChaCha20-Poly1305 作为密码，为您的数据隐私提供对当前和未来威胁的强力保护。
 
-## 智能队列和重试机制：确保电子邮件送达 {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-我们不再仅仅关注邮件头的处理，而是通过 `getBounceInfo` 方法实现了一套完善的智能队列和重试机制。该系统确保您的邮件即使在出现临时问题时也能获得最佳的投递机会。
+## 智能队列和重试机制：确保邮件投递 {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
+
+我们没有仅仅关注邮件头处理，而是通过 `getBounceInfo` 方法实现了一个复杂的智能队列和重试机制。该系统确保您的邮件即使在出现临时问题时也有最佳的投递机会。
 
 ```javascript
 function getBounceInfo(err) {
-  // Initialize bounce info with default values
+  // 使用默认值初始化退信信息
   const bounceInfo = {
     action: err.responseCode >= 500 ? 'reject' : 'defer',
     category: err.category || 'other',
@@ -99,16 +103,16 @@ function getBounceInfo(err) {
     code: err.responseCode || err.code
   };
 
-  // Analyze error response to determine appropriate action
+  // 分析错误响应以确定适当的操作
   const response = err.response || err.message || '';
 
-  // Determine if the issue is temporary or permanent
+  // 判断问题是临时还是永久
   if (response.includes('temporarily deferred') ||
       response.includes('try again later')) {
     bounceInfo.action = 'defer';
   }
 
-  // Categorize the bounce reason for appropriate handling
+  // 分类退信原因以便适当处理
   if (response.includes('mailbox full')) {
     bounceInfo.category = 'full';
     bounceInfo.action = 'defer';
@@ -121,21 +125,21 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> 这是 `getBounceInfo` 方法的摘录，而非实际的完整实现。完整代码可在 [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js) 中查看。
+> 这是 `getBounceInfo` 方法的摘录，并非完整实现。完整代码可在 [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js) 查看。
 
-我们会按照行业标准（例如 [后缀](https://en.wikipedia.org/wiki/Postfix_\(software\)）重试邮件投递 5 天，以便临时问题有时间自行解决。这种方法在保障隐私的同时，显著提高了邮件投递率。
+我们会重试邮件投递长达 5 天，类似于行业标准如 [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\))，给临时问题留出解决时间。这种方法显著提高了投递成功率，同时保持隐私。
 
-同样，我们也会在成功投递后屏蔽外发 SMTP 邮件的内容。此功能在我们的存储系统中配置，默认保留期为 30 天，您可以在域名的“高级设置”中调整。超过此期限后，邮件内容将自动屏蔽并清除，只留下一条占位符消息：
+类似地，我们还会在成功投递后对外发 SMTP 邮件的内容进行脱敏处理。此配置在我们的存储系统中，默认保留期为 30 天，您可以在域的高级设置中调整。超过该期限后，邮件内容会自动被脱敏并清除，只保留占位消息：
 
 ```txt
-This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
+此邮件已成功发送。为保障您的安全和隐私，邮件内容已被脱敏并清除。如需延长邮件保留时间，请前往您的域的高级设置页面。
 ```
+这种方法确保您发送的电子邮件不会无限期存储，从而降低数据泄露或未经授权访问您的通信的风险。
 
-这种方法可确保您发送的电子邮件不会无限期地存储，从而降低数据泄露或未经授权访问您的通信的风险。
 
-## 无限资源，智能速率限制 {#unlimited-resources-with-intelligent-rate-limiting}
+## 具有智能速率限制的无限资源 {#unlimited-resources-with-intelligent-rate-limiting}
 
-虽然 Forward Email 提供无限的域名和别名，但我们实施了智能速率限制，以保护我们的系统免受滥用，并确保所有用户的公平使用。例如，非企业客户每天最多可以创建 50 个以上的别名，这可以防止我们的数据库受到垃圾邮件和洪水攻击，并确保我们的实时滥用和保护功能有效运行。
+虽然 Forward Email 提供无限的域名和别名，但我们实施了智能速率限制，以保护我们的系统免受滥用，并确保所有用户的公平使用。例如，非企业客户每天最多可以创建 50+ 个别名，这防止了我们的数据库被垃圾邮件和洪水攻击，并允许我们的实时滥用和保护功能有效运行。
 
 ```javascript
 // Rate limiter implementation
@@ -155,28 +159,30 @@ if (limit.remaining <= 0) {
 }
 ```
 
-这种平衡的方法为您提供了灵活性，您可以根据需要创建尽可能多的电子邮件地址，以进行全面的隐私管理，同时仍然为所有用户保持我们服务的完整性和性能。
+这种平衡的方法为您提供了灵活性，可以根据需要创建尽可能多的电子邮件地址以实现全面的隐私管理，同时仍然维护我们服务的完整性和性能，惠及所有用户。
 
-## 沙盒加密，增强安全性 {#sandboxed-encryption-for-enhanced-security}
 
-我们独特的沙盒加密方法提供了一项关键的安全优势，而许多用户在选择电子邮件服务时却忽略了这一点。让我们来探讨一下沙盒数据（尤其是电子邮件）为何如此重要。
+## 用于增强安全性的沙箱加密 {#sandboxed-encryption-for-enhanced-security}
 
-Gmail 和 Proton 等服务很可能使用了共享的 [关系数据库](https://en.wikipedia.org/wiki/Relational_database)，这会带来根本性的安全漏洞。在共享数据库环境中，如果有人获得了某个用户数据的访问权限，他们就有可能获得访问其他用户数据的途径。这是因为所有用户数据都驻留在同一个数据库表中，仅通过用户 ID 或类似的标识符进行分隔。
+我们独特的沙箱加密方法提供了一个关键的安全优势，许多用户在选择电子邮件服务时往往忽视了这一点。让我们探讨为什么对数据，尤其是电子邮件进行沙箱处理如此重要。
 
-通过我们的沙盒加密，转发电子邮件采用了根本不同的方法：
+像 Gmail 和 Proton 这样的服务很可能使用共享的[关系数据库](https://en.wikipedia.org/wiki/Relational_database)，这造成了一个根本的安全漏洞。在共享数据库环境中，如果有人获得了一个用户的数据访问权限，他们可能也有途径访问其他用户的数据。这是因为所有用户数据都存储在相同的数据库表中，仅通过用户 ID 或类似标识符进行区分。
 
-1. **完全隔离**：每个用户的数据都存储在各自独立的加密 SQLite 数据库文件中，与其他用户完全隔离。
-2. **独立加密密钥**：每个数据库都使用从用户密码派生的唯一密钥进行加密。
-3. **无共享存储**：与关系型数据库不同，在关系型数据库中，所有用户的电子邮件地址可能都存储在一个“电子邮件”表中，而我们的方法可确保数据不会混合。
-4. **纵深防御**：即使某个用户的数据库以某种方式遭到入侵，也无法访问其他用户的数据。
+Forward Email 采用了根本不同的沙箱加密方法：
 
-这种沙盒化方法类似于将您的电子邮件存放在一个独立的物理保管库中，而不是存放在带有内部隔板的共享存储设施中。这是一个根本性的架构差异，可显著增强您的隐私和安全性。
+1. **完全隔离**：每个用户的数据存储在其自己的加密 SQLite 数据库文件中，完全与其他用户隔离
+2. **独立加密密钥**：每个数据库使用从用户密码派生的唯一密钥进行加密
+3. **无共享存储**：不同于关系数据库中所有用户的电子邮件可能存储在单一的“emails”表中，我们的方法确保数据不混合
+4. **纵深防御**：即使某个用户的数据库被破坏，也无法访问任何其他用户的数据
 
-## 内存电子邮件处理：无需磁盘存储即可实现最大程度的隐私 {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+这种沙箱方法类似于将您的电子邮件存放在一个独立的物理保险库中，而不是在带有内部隔断的共享存储设施中。这是一个根本的架构差异，显著增强了您的隐私和安全性。
 
-对于我们的电子邮件转发服务，我们完全在 RAM 中处理电子邮件，绝不会将其写入磁盘存储或数据库。这种方法提供了无与伦比的保护，可有效防止电子邮件被监控和元数据被收集。
 
-以下是我们的电子邮件处理流程的简化视图：
+## 内存中电子邮件处理：无磁盘存储以实现最大隐私 {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+
+对于我们的电子邮件转发服务，我们完全在内存中处理电子邮件，绝不将其写入磁盘存储或数据库。这种方法为防止电子邮件监控和元数据收集提供了无与伦比的保护。
+
+以下是我们电子邮件处理工作原理的简化示例：
 
 ```javascript
 async function onData(stream, _session, fn) {
@@ -207,14 +213,14 @@ async function onData(stream, _session, fn) {
   }
 }
 ```
+这种方法意味着即使我们的服务器被攻破，攻击者也无法访问任何历史邮件数据。您的邮件只是简单地通过我们的系统，并立即转发到目的地，且不会留下任何痕迹。这种无日志的邮件转发方式是保护您的通信免受监控的基础。
 
-这种方法意味着，即使我们的服务器遭到入侵，攻击者也无法获取任何历史电子邮件数据。您的电子邮件只需通过我们的系统，即可立即转发至目的地，不留任何痕迹。这种无日志电子邮件转发方法对于保护您的通信免受监控至关重要。
 
-## 使用 OpenPGP 进行端到端加密，实现完全隐私 {#end-to-end-encryption-with-openpgp-for-complete-privacy}
+## 使用 OpenPGP 实现端到端加密，保障完全隐私 {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-对于需要最高级别隐私保护以抵御电子邮件监控的用户，我们支持 [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) 端到端加密。与许多需要专有桥接器或应用程序的电子邮件提供商不同，我们的实现与标准电子邮件客户端兼容，确保每个人都能享受安全的通信。
+对于需要最高级别隐私保护以防止邮件监控的用户，我们支持用于端到端加密的 [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy)。与许多需要专有桥接或应用程序的邮件服务提供商不同，我们的实现兼容标准邮件客户端，使安全通信对所有人都可用。
 
-以下是我们实现 OpenPGP 加密的方法：
+以下是我们如何实现 OpenPGP 加密：
 
 ```javascript
 async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
@@ -247,71 +253,75 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-此方案可确保您的电子邮件在离开您的设备之前就已加密，并且只有预期的收件人才能解密，从而确保您的通信内容即使对我们而言也保持私密。这对于保护敏感通信免遭未经授权的访问和监控至关重要。
+此实现确保您的邮件在离开设备之前即被加密，且只有预期收件人能够解密，即使是我们也无法访问您的通信内容。这对于保护敏感通信免受未经授权访问和监控至关重要。
 
-## 多层内容保护，全面保障安全 {#multi-layered-content-protection-for-comprehensive-security}
 
-Forward Email 提供多层内容保护，这些保护默认启用，可提供针对各种威胁的全面安全保护：
+## 多层内容保护，提供全面安全保障 {#multi-layered-content-protection-for-comprehensive-security}
 
-1. **成人内容保护** - 过滤不适当内容，同时不损害隐私
-2. **[网络钓鱼](https://en.wikipedia.org/wiki/Phishing) 保护** - 阻止窃取您信息的企图，同时保持匿名
-3. **可执行文件保护** - 无需扫描内容即可阻止潜在有害附件
-4. **[病毒](https://en.wikipedia.org/wiki/Computer_virus) 保护** - 使用隐私保护技术扫描恶意软件
+Forward Email 提供多层内容保护，默认启用，以全面防御各种威胁：
 
-与许多提供商将这些功能设置为可选功能不同，我们将其设置为可选功能，以确保所有用户默认享受这些保护。这种方法体现了我们对隐私和安全的承诺，实现了许多电子邮件服务无法实现的平衡。
+1. **成人内容保护** - 过滤不当内容，同时不影响隐私
+2. **[网络钓鱼](https://en.wikipedia.org/wiki/Phishing)保护** - 阻止窃取信息的尝试，同时保持匿名
+3. **可执行文件保护** - 阻止潜在有害附件，无需扫描内容
+4. **[病毒](https://en.wikipedia.org/wiki/Computer_virus)保护** - 使用隐私保护技术扫描恶意软件
 
-## 我们与其他电子邮件服务的区别：技术隐私优势 {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
+与许多提供商将这些功能设为可选不同，我们将其设为默认启用，确保所有用户都能享受这些保护。这体现了我们对隐私和安全的承诺，提供了许多邮件服务无法实现的平衡。
 
-将转发电子邮件与其他电子邮件服务进行比较时，几个关键的技术差异凸显了我们的隐私优先方法：
 
-### 开源透明度，实现可验证的隐私 {#open-source-transparency-for-verifiable-privacy}
+## 我们与其他邮件服务的区别：技术隐私优势 {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-虽然许多电子邮件提供商声称自己是开源的，但他们通常保持后端代码的封闭性。Forward Email 100% [开源](https://en.wikipedia.org/wiki/Open_source)，包括前端和后端代码。这种透明性允许对所有组件进行独立的安全审计，确保我们的隐私声明能够被任何人验证。
+将 Forward Email 与其他邮件服务进行比较时，有几个关键技术差异凸显了我们的隐私优先策略：
 
-### 无需供应商锁定，隐私无虞 {#no-vendor-lock-in-for-privacy-without-compromise}
+### 开源透明，确保隐私可验证 {#open-source-transparency-for-verifiable-privacy}
 
-许多注重隐私的电子邮件提供商要求您使用其专有应用程序或桥接器。Forward Email 通过 [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)、[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) 和 [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) 协议与任何标准电子邮件客户端兼容，让您可以自由选择您喜欢的电子邮件软件，而不会损害您的隐私。
+虽然许多邮件提供商声称开源，但通常其后端代码是封闭的。Forward Email 完全是 [开源](https://en.wikipedia.org/wiki/Open_source) 的，包括前端和后端代码。这种透明度允许对所有组件进行独立安全审计，确保我们的隐私声明可被任何人验证。
 
-### 沙盒数据，实现真正的隔离 {#sandboxed-data-for-true-isolation}
+### 无供应商锁定，实现无妥协的隐私 {#no-vendor-lock-in-for-privacy-without-compromise}
 
-与使用共享数据库的服务（所有用户的数据都会混杂在一起）不同，我们的沙盒方法确保每个用户的数据完全隔离。这种根本性的架构差异提供了比大多数电子邮件服务更强大的隐私保障。
+许多注重隐私的邮件提供商要求您使用其专有应用或桥接。Forward Email 通过 [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)、[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) 和 [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) 协议兼容任何标准邮件客户端，让您自由选择喜欢的邮件软件，同时不妥协隐私。
+### 真实隔离的沙箱数据 {#sandboxed-data-for-true-isolation}
 
-### 数据可移植性和控制 {#data-portability-and-control}
+与使用共享数据库、所有用户数据混合存储的服务不同，我们的沙箱方法确保每个用户的数据完全隔离。这一根本性的架构差异提供了远强于大多数电子邮件服务的隐私保障。
 
-我们相信您的数据属于您，因此我们简化了以标准格式（MBOX、EML、SQLite）导出电子邮件的功能，并在您需要时真正删除您的数据。这种级别的控制在电子邮件提供商中并不常见，但对于真正的隐私保护至关重要。
+### 数据可移植性与控制权 {#data-portability-and-control}
 
-## 隐私优先电子邮件转发的技术挑战 {#the-technical-challenges-of-privacy-first-email-forwarding}
+我们相信您的数据属于您自己，这就是为什么我们让您可以轻松以标准格式（MBOX、EML、SQLite）导出您的邮件，并在您需要时真正删除您的数据。这种控制权在电子邮件提供商中非常罕见，但对于真正的隐私至关重要。
 
-构建隐私至上的电子邮件服务面临着巨大的技术挑战。以下是我们克服的一些挑战：
 
-### 无日志电子邮件处理的内存管理 {#memory-management-for-no-logging-email-processing}
+## 以隐私为先的邮件转发的技术挑战 {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-在没有磁盘存储的情况下，在内存中处理电子邮件需要谨慎的内存管理，才能高效地处理大量电子邮件流量。我们实施了先进的内存优化技术，以确保可靠的性能，同时又不损害我们的无存储政策——这是我们隐私保护策略的关键组成部分。
+构建一个以隐私为先的电子邮件服务面临重大技术挑战。以下是我们克服的一些障碍：
 
-### 无需内容分析即可进行隐私保护过滤的垃圾邮件检测 {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
+### 无日志邮件处理的内存管理 {#memory-management-for-no-logging-email-processing}
 
-大多数 [垃圾邮件](https://en.wikipedia.org/wiki/Email_spam) 检测系统依赖于分析电子邮件内容，这与我们的隐私原则相冲突。我们开发了无需阅读电子邮件内容即可识别垃圾邮件模式的技术，在隐私和可用性之间取得平衡，从而保护您的通信机密性。
+在内存中处理邮件而不使用磁盘存储，需要精心的内存管理以高效处理大量邮件流量。我们实施了先进的内存优化技术，确保可靠的性能，同时不违背我们的无存储政策，这是我们隐私保护策略的关键组成部分。
 
-### 保持与隐私优先设计的兼容性 {#maintaining-compatibility-with-privacy-first-design}
+### 无内容分析的垃圾邮件检测以实现隐私保护过滤 {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-确保与所有电子邮件客户端兼容，同时实现高级隐私功能，需要富有创意的工程解决方案。我们的团队不懈努力，致力于实现无缝隐私保护，让您在保护电子邮件通信时无需在便捷性和安全性之间做出取舍。
+大多数[垃圾邮件](https://en.wikipedia.org/wiki/Email_spam)检测系统依赖于分析邮件内容，这与我们的隐私原则相冲突。我们开发了无需读取邮件内容即可识别垃圾邮件模式的技术，在隐私与可用性之间取得平衡，保护您的通信机密性。
 
-## 转发电子邮件用户的隐私最佳实践 {#privacy-best-practices-for-forward-email-users}
+### 在隐私优先设计中保持兼容性 {#maintaining-compatibility-with-privacy-first-design}
 
-为了最大限度地防止电子邮件监视并在使用“转发电子邮件”时最大限度地保护您的隐私，我们建议您采取以下最佳做法：
+在实现先进隐私功能的同时确保与所有邮件客户端兼容，需要创造性的工程解决方案。我们的团队不懈努力，使隐私变得无缝，您无需在便利性和安全性之间做出选择即可保护您的邮件通信。
 
-1. **为不同的服务使用不同的别名** - 为您注册的每项服务创建不同的电子邮件别名，以防止跨服务跟踪
-2. **启用 OpenPGP 加密** - 对于敏感通信，请使用端到端加密以确保完全的隐私
-3. **定期轮换您的电子邮件别名** - 定期更新重要服务的别名，以最大限度地减少长期数据收集
-4. **使用强大的唯一密码** - 使用强密码保护您的转发电子邮件帐户，以防止未经授权的访问
-5. **实施 [IP 地址](https://en.wikipedia.org/wiki/IP_address) 匿名化** - 考虑将 [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) 与转发电子邮件结合使用，以实现完全匿名
 
-## 结论：私人电子邮件转发的未来 {#conclusion-the-future-of-private-email-forwarding}
+## Forward Email 用户的隐私最佳实践 {#privacy-best-practices-for-forward-email-users}
 
-在 Forward Email，我们相信隐私不仅仅是一项功能，更是一项基本权利。我们的技术实现也体现了这一理念，为您提供全方位尊重您隐私的电子邮件转发服务，并保护您免受电子邮件监控和元数据收集的侵害。
+为了最大限度地保护您免受邮件监控并提升使用 Forward Email 时的隐私，我们建议以下最佳实践：
 
-随着我们不断开发和改进服务，我们对隐私的承诺始终坚定不移。我们不断研究新的加密方法，探索额外的隐私保护措施，并不断优化我们的代码库，以提供尽可能最安全的电子邮件体验。
+1. **为不同服务使用唯一别名** - 为您注册的每个服务创建不同的邮件别名，防止跨服务跟踪
+2. **启用 OpenPGP 加密** - 对于敏感通信，使用端到端加密以确保完全隐私
+3. **定期更换邮件别名** - 定期更新重要服务的别名，减少长期数据收集
+4. **使用强且唯一的密码** - 使用强密码保护您的 Forward Email 账户，防止未经授权访问
+5. **实施[IP 地址](https://en.wikipedia.org/wiki/IP_address)匿名化** - 考虑结合使用[VPN](https://en.wikipedia.org/wiki/Virtual_private_network)与 Forward Email 实现完全匿名
 
-选择“转发电子邮件”，您不仅仅是选择了一项电子邮件服务，更是在支持互联网的愿景：隐私是默认的，而非例外。加入我们，通过一封邮件，构建更私密的数字未来。
 
-<!-- *关键词：私人电子邮件转发、电子邮件隐私保护、安全电子邮件服务、开源电子邮件、量子安全加密、OpenPGP 电子邮件、内存电子邮件处理、无日志电子邮件服务、电子邮件元数据保护、电子邮件标头隐私、端到端加密电子邮件、隐私优先电子邮件、匿名电子邮件转发、电子邮件安全最佳实践、电子邮件内容保护、网络钓鱼防护、电子邮件病毒扫描、以隐私为中心的电子邮件提供商、安全电子邮件标头、电子邮件隐私实施、防止电子邮件监视、无日志电子邮件转发、防止电子邮件元数据泄露、电子邮件隐私技术、电子邮件的 IP 地址匿名化、私人电子邮件别名、电子邮件转发安全、来自广告商的电子邮件隐私、抗量子电子邮件加密、不受损害的电子邮件隐私、SQLite 电子邮件存储、沙盒电子邮件加密、电子邮件的数据可移植性* -->
+## 结论：私密邮件转发的未来 {#conclusion-the-future-of-private-email-forwarding}
+
+在 Forward Email，我们相信隐私不仅仅是一项功能——它是一项基本权利。我们的技术实现体现了这一信念，为您提供尊重隐私的邮件转发，保护您免受邮件监控和元数据收集。
+
+随着我们不断开发和改进服务，我们对隐私的承诺始终坚定不移。我们持续研究新的加密方法，探索更多隐私保护措施，并优化代码库，致力于提供最安全的邮件体验。
+
+选择 Forward Email，您不仅是在选择一项邮件服务——您是在支持一个以隐私为默认而非例外的互联网愿景。加入我们，一封邮件一封邮件地共建更私密的数字未来。
+<!-- *Keywords: private email forwarding, email privacy protection, secure email service, open-source email, quantum-safe encryption, OpenPGP email, in-memory email processing, no-log email service, email metadata protection, email header privacy, end-to-end encrypted email, privacy-first email, anonymous email forwarding, email security best practices, email content protection, phishing protection, email virus scanning, privacy-focused email provider, secure email headers, email privacy implementation, protection from email surveillance, no-logging email forwarding, prevent email metadata leakage, email privacy techniques, IP address anonymization for email, private email aliases, email forwarding security, email privacy from advertisers, quantum-resistant email encryption, email privacy without compromise, SQLite email storage, sandboxed email encryption, data portability for email* -->
+

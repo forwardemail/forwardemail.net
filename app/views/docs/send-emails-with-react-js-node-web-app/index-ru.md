@@ -1,21 +1,24 @@
-# Отправка электронных писем с помощью примера веб-приложения React.js Node {#send-emails-with-reactjs-node-web-app-example}
+# Отправка писем с помощью React.js Node веб-приложения {#send-emails-with-reactjs-node-web-app-example}
+
 
 ## Содержание {#table-of-contents}
 
 * [Установка и требования](#install-and-requirements)
 * [Исходный код и пример](#source-code-and-example)
 
+
 ## Установка и требования {#install-and-requirements}
 
-Вам потребуется установить npm-зависимости `@react-email/render` и `nodemailer`:
+Вам нужно установить npm-зависимости `@react-email/render` и `nodemailer`:
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
+
 ## Исходный код и пример {#source-code-and-example}
 
-Создайте шаблон электронной почты с файлом `.jsx` или `.js`:
+Создайте шаблон письма в файле с расширением `.jsx` или `.js`:
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>Посетите наш сайт</Button>
     </Html>
   );
 }
 ```
 
-В этом примере мы используем библиотеку **[Nodemailer](https://github.com/nodemailer/nodemailer)** и ее официального спонсора **[Переслать электронное письмо](https://forwardemail.net)** для отправки и предварительного просмотра исходящей почты.
+В этом примере мы используем библиотеку **[Nodemailer](https://github.com/nodemailer/nodemailer)** и её официального спонсора **[Forward Email](https://forwardemail.net)** для отправки и предварительного просмотра исходящих писем.
 
-Вам потребуется <strong class="text-success"><i class="fa fa-key"></i> сгенерировать пароль</strong> для отправки исходящей почты — пожалуйста, следуйте нашим **[Руководство по отправке электронной почты с использованием пользовательского домена SMTP](/guides/send-email-with-custom-domain-smtp)**.
+Вам нужно <strong class="text-success"><i class="fa fa-key"></i> Сгенерировать пароль</strong> для отправки исходящих писем – пожалуйста, следуйте нашему **[руководству по отправке писем через SMTP с пользовательским доменом](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: замените значения `user` и `pass` из:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -70,12 +73,12 @@ const options = {
 transporter.sendMail(options);
 ```
 
-Запустите приложение, чтобы отправить электронное письмо:
+Запустите приложение для отправки письма:
 
 ```sh
 node app
 ```
 
-Теперь вы можете перейти в **[Моя учетная запись → Электронная почта](/my-account/emails)**, чтобы увидеть статус доставки электронной почты в реальном времени, журналы доставки электронной почты и предварительный просмотр HTML/текста/вложений.
+Теперь вы можете перейти в **[Мой аккаунт → Письма](/my-account/emails)**, чтобы увидеть статус доставки писем в реальном времени, логи доставляемости и предварительный просмотр HTML/текста/вложений.
 
-> P.S. :tada: Вы также можете **[предварительный просмотр писем в браузерах и iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** и **[создавать шаблоны электронных писем с помощью Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Вы также можете **[просматривать письма в браузерах и iOS-симуляторе](/docs/test-preview-email-rendering-browsers-ios-simulator)** и **[создавать шаблоны писем с Node.js](/docs/send-emails-with-node-js-javascript)**.

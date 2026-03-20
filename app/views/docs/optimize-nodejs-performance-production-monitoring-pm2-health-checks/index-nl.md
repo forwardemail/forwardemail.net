@@ -1,196 +1,195 @@
-# Hoe Node.js-productie-infrastructuur te optimaliseren: aanbevolen procedures {#how-to-optimize-nodejs-production-infrastructure-best-practices}
+# Hoe Node.js Productie-Infrastructuur te Optimaliseren: Best Practices {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
 <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performance optimization guide" class="rounded-lg" />
+
 
 ## Inhoudsopgave {#table-of-contents}
 
 * [Voorwoord](#foreword)
-* [Onze 573% Single Core Performance Optimization Revolution](#our-573-single-core-performance-optimization-revolution)
-  * [Waarom Single Core-prestatieoptimalisatie belangrijk is voor Node.js](#why-single-core-performance-optimization-matters-for-nodejs)
-  * [Gerelateerde inhoud](#related-content)
-* [Node.js-productieomgeving instellen: onze technologie-stack](#nodejs-production-environment-setup-our-technology-stack)
-  * [Pakketbeheerder: pnpm voor productie-efficiëntie](#package-manager-pnpm-for-production-efficiency)
-  * [Webframework: Koa voor moderne Node.js-productie](#web-framework-koa-for-modern-nodejs-production)
-  * [Achtergrondtaakverwerking: Bree voor productiebetrouwbaarheid](#background-job-processing-bree-for-production-reliability)
-  * [Foutbehandeling: @hapi/boom voor productiebetrouwbaarheid](#error-handling-hapiboom-for-production-reliability)
-* [Hoe u Node.js-applicaties in productie kunt monitoren](#how-to-monitor-nodejs-applications-in-production)
-  * [Node.js-productiebewaking op systeemniveau](#system-level-nodejs-production-monitoring)
-  * [Monitoring op applicatieniveau voor Node.js-productie](#application-level-monitoring-for-nodejs-production)
-  * [Toepassingsspecifieke monitoring](#application-specific-monitoring)
-* [Node.js-productiebewaking met PM2-gezondheidscontroles](#nodejs-production-monitoring-with-pm2-health-checks)
-  * [Ons PM2-gezondheidscontrolesysteem](#our-pm2-health-check-system)
-  * [Onze PM2-productieconfiguratie](#our-pm2-production-configuration)
-  * [Geautomatiseerde PM2-implementatie](#automated-pm2-deployment)
-* [Systeem voor het afhandelen en classificeren van productiefouten](#production-error-handling-and-classification-system)
-  * [Onze isCodeBug-implementatie voor productie](#our-iscodebug-implementation-for-production)
-  * [Integratie met onze productieregistratie](#integration-with-our-production-logging)
-  * [Gerelateerde inhoud](#related-content-1)
-* [Geavanceerd prestatiedebuggen met v8-profiler-next en cpupro](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
-  * [Onze profileringsaanpak voor Node.js-productie](#our-profiling-approach-for-nodejs-production)
-  * [Hoe we heap snapshot-analyse implementeren](#how-we-implement-heap-snapshot-analysis)
-  * [Workflow voor prestatie-debuggen](#performance-debugging-workflow)
-  * [Aanbevolen implementatie voor uw Node.js-applicatie](#recommended-implementation-for-your-nodejs-application)
-  * [Integratie met onze productiemonitoring](#integration-with-our-production-monitoring)
-* [Beveiliging van Node.js-productie-infrastructuur](#nodejs-production-infrastructure-security)
-  * [Beveiliging op systeemniveau voor Node.js-productie](#system-level-security-for-nodejs-production)
-  * [Toepassingsbeveiliging voor Node.js-toepassingen](#application-security-for-nodejs-applications)
-  * [Automatisering van infrastructuurbeveiliging](#infrastructure-security-automation)
-  * [Onze beveiligingsinhoud](#our-security-content)
-* [Databasearchitectuur voor Node.js-toepassingen](#database-architecture-for-nodejs-applications)
-  * [SQLite-implementatie voor Node.js-productie](#sqlite-implementation-for-nodejs-production)
-  * [MongoDB-implementatie voor Node.js-productie](#mongodb-implementation-for-nodejs-production)
-* [Verwerking van Node.js-productieachtergrondtaken](#nodejs-production-background-job-processing)
-  * [Onze Bree-serveropstelling voor productie](#our-bree-server-setup-for-production)
-  * [Voorbeelden van productiebanen](#production-job-examples)
-  * [Onze taakplanningspatronen voor Node.js-productie](#our-job-scheduling-patterns-for-nodejs-production)
-* [Geautomatiseerd onderhoud voor Node.js-productietoepassingen](#automated-maintenance-for-production-nodejs-applications)
-  * [Onze implementatie van de opruiming](#our-cleanup-implementation)
-  * [Schijfruimtebeheer voor Node.js-productie](#disk-space-management-for-nodejs-production)
-  * [Automatisering van infrastructuuronderhoud](#infrastructure-maintenance-automation)
-* [Implementatiehandleiding voor Node.js-productie-implementatie](#nodejs-production-deployment-implementation-guide)
-  * [Bestudeer onze actuele code voor de beste productiepraktijken](#study-our-actual-code-for-production-best-practices)
-  * [Leer van onze blogberichten](#learn-from-our-blog-posts)
-  * [Infrastructuurautomatisering voor Node.js-productie](#infrastructure-automation-for-nodejs-production)
-  * [Onze casestudies](#our-case-studies)
-* [Conclusie: aanbevolen procedures voor Node.js-productie-implementatie](#conclusion-nodejs-production-deployment-best-practices)
-* [Volledige bronnenlijst voor Node.js-productie](#complete-resource-list-for-nodejs-production)
-  * [Onze kernimplementatiebestanden](#our-core-implementation-files)
-  * [Onze serverimplementaties](#our-server-implementations)
-  * [Onze infrastructuurautomatisering](#our-infrastructure-automation)
-  * [Onze technische blogberichten](#our-technical-blog-posts)
+* [Onze 573% Single Core Prestatie Optimalisatie Revolutie](#our-573-single-core-performance-optimization-revolution)
+  * [Waarom Single Core Prestatie Optimalisatie Belangrijk is voor Node.js](#why-single-core-performance-optimization-matters-for-nodejs)
+  * [Gerelateerde Inhoud](#related-content)
+* [Node.js Productieomgeving Setup: Onze Technologie Stack](#nodejs-production-environment-setup-our-technology-stack)
+  * [Package Manager: pnpm voor Productie Efficiëntie](#package-manager-pnpm-for-production-efficiency)
+  * [Web Framework: Koa voor Moderne Node.js Productie](#web-framework-koa-for-modern-nodejs-production)
+  * [Achtergrond Taakverwerking: Bree voor Productie Betrouwbaarheid](#background-job-processing-bree-for-production-reliability)
+  * [Foutafhandeling: @hapi/boom voor Productie Betrouwbaarheid](#error-handling-hapiboom-for-production-reliability)
+* [Hoe Node.js Applicaties in Productie te Monitoren](#how-to-monitor-nodejs-applications-in-production)
+  * [Systeemniveau Node.js Productie Monitoring](#system-level-nodejs-production-monitoring)
+  * [Applicatieniveau Monitoring voor Node.js Productie](#application-level-monitoring-for-nodejs-production)
+  * [Applicatie-specifieke Monitoring](#application-specific-monitoring)
+* [Node.js Productie Monitoring met PM2 Health Checks](#nodejs-production-monitoring-with-pm2-health-checks)
+  * [Ons PM2 Health Check Systeem](#our-pm2-health-check-system)
+  * [Onze PM2 Productie Configuratie](#our-pm2-production-configuration)
+  * [Geautomatiseerde PM2 Deployment](#automated-pm2-deployment)
+* [Productie Foutafhandeling en Classificatie Systeem](#production-error-handling-and-classification-system)
+  * [Onze isCodeBug Implementatie voor Productie](#our-iscodebug-implementation-for-production)
+  * [Integratie met Onze Productie Logging](#integration-with-our-production-logging)
+  * [Gerelateerde Inhoud](#related-content-1)
+* [Geavanceerde Prestatie Debugging met v8-profiler-next en cpupro](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
+  * [Onze Profilering Aanpak voor Node.js Productie](#our-profiling-approach-for-nodejs-production)
+  * [Hoe Wij Heap Snapshot Analyse Implementeren](#how-we-implement-heap-snapshot-analysis)
+  * [Prestatie Debugging Workflow](#performance-debugging-workflow)
+  * [Aanbevolen Implementatie voor Uw Node.js Applicatie](#recommended-implementation-for-your-nodejs-application)
+  * [Integratie met Onze Productie Monitoring](#integration-with-our-production-monitoring)
+* [Node.js Productie Infrastructuur Beveiliging](#nodejs-production-infrastructure-security)
+  * [Systeemniveau Beveiliging voor Node.js Productie](#system-level-security-for-nodejs-production)
+  * [Applicatiebeveiliging voor Node.js Applicaties](#application-security-for-nodejs-applications)
+  * [Infrastructuur Beveiliging Automatisering](#infrastructure-security-automation)
+  * [Onze Beveiligingsinhoud](#our-security-content)
+* [Database Architectuur voor Node.js Applicaties](#database-architecture-for-nodejs-applications)
+  * [SQLite Implementatie voor Node.js Productie](#sqlite-implementation-for-nodejs-production)
+  * [MongoDB Implementatie voor Node.js Productie](#mongodb-implementation-for-nodejs-production)
+* [Node.js Productie Achtergrond Taakverwerking](#nodejs-production-background-job-processing)
+  * [Onze Bree Server Setup voor Productie](#our-bree-server-setup-for-production)
+  * [Productie Taak Voorbeelden](#production-job-examples)
+  * [Onze Taakplanning Patronen voor Node.js Productie](#our-job-scheduling-patterns-for-nodejs-production)
+* [Geautomatiseerd Onderhoud voor Productie Node.js Applicaties](#automated-maintenance-for-production-nodejs-applications)
+  * [Onze Cleanup Implementatie](#our-cleanup-implementation)
+  * [Schijfruimtebeheer voor Node.js Productie](#disk-space-management-for-nodejs-production)
+  * [Infrastructuur Onderhoud Automatisering](#infrastructure-maintenance-automation)
+* [Node.js Productie Deployment Implementatie Gids](#nodejs-production-deployment-implementation-guide)
+  * [Bestudeer Onze Werkelijke Code voor Productie Best Practices](#study-our-actual-code-for-production-best-practices)
+  * [Leer van Onze Blogposts](#learn-from-our-blog-posts)
+  * [Infrastructuur Automatisering voor Node.js Productie](#infrastructure-automation-for-nodejs-production)
+  * [Onze Case Studies](#our-case-studies)
+* [Conclusie: Node.js Productie Deployment Best Practices](#conclusion-nodejs-production-deployment-best-practices)
+* [Complete Bronnenlijst voor Node.js Productie](#complete-resource-list-for-nodejs-production)
+  * [Onze Kern Implementatie Bestanden](#our-core-implementation-files)
+  * [Onze Server Implementaties](#our-server-implementations)
+  * [Onze Infrastructuur Automatisering](#our-infrastructure-automation)
+  * [Onze Technische Blogposts](#our-technical-blog-posts)
   * [Onze Enterprise Case Studies](#our-enterprise-case-studies)
-
 ## Voorwoord {#foreword}
 
-Bij Forward Email hebben we jarenlang gewerkt aan het perfectioneren van de configuratie van onze Node.js-productieomgeving. Deze uitgebreide gids deelt onze beproefde best practices voor Node.js-productie-implementatie, met de nadruk op prestatieoptimalisatie, monitoring en de lessen die we hebben geleerd bij het schalen van Node.js-applicaties om miljoenen dagelijkse transacties te verwerken.
+Bij Forward Email hebben we jaren besteed aan het perfectioneren van onze Node.js productieomgeving. Deze uitgebreide gids deelt onze beproefde best practices voor Node.js productie-implementatie, met de focus op prestatieoptimalisatie, monitoring en de lessen die we hebben geleerd bij het opschalen van Node.js-applicaties om miljoenen dagelijkse transacties aan te kunnen.
 
-## Onze 573% Single Core Performance Optimalisatie Revolutie {#our-573-single-core-performance-optimization-revolution}
+## Onze 573% Single Core Prestatieoptimalisatie Revolutie {#our-573-single-core-performance-optimization-revolution}
 
-Toen we migreerden van Intel- naar AMD Ryzen-processors, behaalden we een **573% prestatieverbetering** in onze Node.js-applicaties. Dit was niet zomaar een kleine optimalisatie: het veranderde fundamenteel de prestaties van onze Node.js-applicaties in productie en toont het belang aan van single-core prestatieoptimalisatie voor elke Node.js-applicatie.
+Toen we migreerden van Intel naar AMD Ryzen-processors, behaalden we een **573% prestatieverbetering** in onze Node.js-applicaties. Dit was niet zomaar een kleine optimalisatie—het veranderde fundamenteel hoe onze Node.js-applicaties presteren in productie en toont het belang aan van single core prestatieoptimalisatie voor elke Node.js-applicatie.
 
 > \[!TIP]
-> Voor best practices voor Node.js-productie-implementaties is de hardwarekeuze cruciaal. We hebben specifiek gekozen voor DataPacket-hosting vanwege de beschikbaarheid van hun AMD Ryzen, omdat single-core prestaties cruciaal zijn voor Node.js-applicaties, aangezien JavaScript single-threaded wordt uitgevoerd.
+> Voor best practices bij Node.js productie-implementatie is de keuze van hardware cruciaal. We kozen specifiek voor DataPacket hosting vanwege hun AMD Ryzen beschikbaarheid, omdat single-core prestatie essentieel is voor Node.js-applicaties aangezien JavaScript-uitvoering single-threaded is.
 
-### Waarom Single Core-prestatieoptimalisatie belangrijk is voor Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
+### Waarom Single Core Prestatieoptimalisatie Belangrijk is voor Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Onze migratie van Intel naar AMD Ryzen resulteerde in:
 
-* **573% prestatieverbetering** bij aanvraagverwerking (gedocumenteerd in [GitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671)) op onze statuspagina
-* **Verwerkingsvertragingen geëlimineerd** tot vrijwel directe reacties (genoemd in [GitHub Issue #298](https://github.com/forwardemail/forwardemail.net/issues/298))
-* **Betere prijs-prestatieverhouding** voor Node.js-productieomgevingen
-* **Verbeterde responstijden** voor al onze applicatie-endpoints
+* **573% prestatieverbetering** in requestverwerking (gedocumenteerd in [onze statuspagina's GitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **Eliminatie van verwerkingsvertragingen** tot bijna directe reacties (genoemd in [GitHub Issue #298](https://github.com/forwardemail/forwardemail.net/issues/298))
+* **Betere prijs-prestatieverhouding** voor Node.js productieomgevingen
+* **Verbeterde responstijden** over al onze applicatie-eindpunten
 
-De prestatieverbetering was zo significant dat we AMD Ryzen-processors nu essentieel achten voor elke serieuze Node.js-productie-implementatie, of u nu webapplicaties, API's, microservices of andere Node.js-workloads uitvoert.
+De prestatieverbetering was zo significant dat we AMD Ryzen-processors nu essentieel achten voor elke serieuze Node.js productie-implementatie, of je nu webapplicaties, API's, microservices of andere Node.js workloads draait.
 
-### Gerelateerde content {#related-content}
+### Gerelateerde Inhoud {#related-content}
 
-Voor meer informatie over onze infrastructuurkeuzes, bekijk:
+Voor meer details over onze infrastructuurkeuzes, bekijk:
 
-* [Beste e-maildoorstuurservice](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Prestatievergelijkingen
-* [Zelf-gehoste oplossing](https://forwardemail.net/blog/docs/self-hosted-solution) - Hardware-aanbevelingen
+* [Beste Email Forwarding Service](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Prestatievergelijkingen
+* [Zelf-gehoste Oplossing](https://forwardemail.net/blog/docs/self-hosted-solution) - Hardware-aanbevelingen
 
-## Node.js-productieomgeving instellen: onze technologie-stack {#nodejs-production-environment-setup-our-technology-stack}
+## Node.js Productieomgeving Setup: Onze Technologie Stack {#nodejs-production-environment-setup-our-technology-stack}
 
-Onze best practices voor Node.js-productie-implementatie omvatten weloverwogen technologische keuzes, gebaseerd op jarenlange productie-ervaring. Dit is wat we gebruiken en waarom deze keuzes van toepassing zijn op elke Node.js-applicatie:
+Onze best practices voor Node.js productie-implementatie omvatten weloverwogen technologiekeuzes gebaseerd op jarenlange productie-ervaring. Dit is wat we gebruiken en waarom deze keuzes van toepassing zijn op elke Node.js-applicatie:
 
-### Pakketbeheerder: pnpm voor productie-efficiëntie {#package-manager-pnpm-for-production-efficiency}
+### Package Manager: pnpm voor Productie-efficiëntie {#package-manager-pnpm-for-production-efficiency}
 
 **Wat we gebruiken:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (vastgezette versie)
 
-We hebben voor pnpm gekozen boven npm en yarn voor onze Node.js-productieomgeving omdat:
+We kozen pnpm boven npm en yarn voor onze Node.js productieomgeving setup vanwege:
 
-* **Snellere installatietijden** in CI/CD-pipelines
-* **Efficiëntie van schijfruimte** door hardlinking
-* **Strikte afhankelijkheidsresolutie** die fantoomafhankelijkheden voorkomt
+* **Snellere installatietijden** in CI/CD pipelines
+* **Schijfruimte-efficiëntie** door hard linking
+* **Strikte afhankelijkheidsresolutie** die phantom dependencies voorkomt
 * **Betere prestaties** in productie-implementaties
 
 > \[!NOTE]
-> Als onderdeel van onze best practices voor Node.js-productie-implementaties, pinnen we exacte versies van kritieke tools zoals pnpm om consistent gedrag in alle omgevingen en op alle machines van teamleden te garanderen.
+> Als onderdeel van onze best practices voor Node.js productie-implementatie zetten we exacte versies van kritieke tools zoals pnpm vast om consistent gedrag te garanderen over alle omgevingen en machines van teamleden.
 
 **Implementatiedetails:**
 
-* [Onze package.json-configuratie](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
-* [Onze blogpost over het NPM-ecosysteem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
+* [Onze package.json configuratie](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+* [Onze NPM ecosysteem blogpost](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 
-### Webframework: Koa voor moderne Node.js-productie {#web-framework-koa-for-modern-nodejs-production}
+### Web Framework: Koa voor Moderne Node.js Productie {#web-framework-koa-for-modern-nodejs-production}
 
-**Wat wij gebruiken:**
+**Wat we gebruiken:**
 
 * [`@koa/router`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@koa/multer`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/koa-simple-ratelimit`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+We kozen voor Koa boven Express voor onze Node.js productie-infrastructuur vanwege de moderne async/await-ondersteuning en schonere middleware-compositie. Onze oprichter Nick Baugh heeft bijgedragen aan zowel Express als Koa, wat ons diep inzicht geeft in beide frameworks voor productiegebruik.
 
-We kozen Koa boven Express voor onze Node.js-productie-infrastructuur vanwege de moderne async/await-ondersteuning en overzichtelijke middleware-compositie. Onze oprichter Nick Baugh heeft bijgedragen aan zowel Express als Koa, waardoor we diepgaand inzicht hebben gekregen in beide frameworks voor gebruik in productie.
-
-Deze patronen zijn van toepassing ongeacht of u REST API's, GraphQL-servers, webapplicaties of microservices bouwt.
+Deze patronen zijn van toepassing of je nu REST API's, GraphQL-servers, webapplicaties of microservices bouwt.
 
 **Onze implementatievoorbeelden:**
 
-* [Webserverinstallatie](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
-* [API-serverconfiguratie](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
-* [Implementatiehandleiding voor contactformulieren](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
+* [Webserver setup](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
+* [API serverconfiguratie](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
+* [Contactformulier implementatiegids](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 
-### Achtergrondtaakverwerking: Bree voor productiebetrouwbaarheid {#background-job-processing-bree-for-production-reliability}
+### Achtergrondtaakverwerking: Bree voor productbetrouwbaarheid {#background-job-processing-bree-for-production-reliability}
 
 **Wat we gebruiken:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) scheduler
 
-We hebben Bree ontwikkeld en onderhouden omdat bestaande taakplanners niet voldeden aan onze behoeften aan ondersteuning voor worker threads en moderne JavaScript-functionaliteit in Node.js-productieomgevingen. Dit geldt voor elke Node.js-applicatie die achtergrondverwerking, geplande taken of worker threads nodig heeft.
+We hebben Bree gemaakt en onderhouden omdat bestaande taakplanners niet voldeden aan onze behoeften voor worker thread-ondersteuning en moderne JavaScript-functies in productie Node.js-omgevingen. Dit geldt voor elke Node.js-applicatie die achtergrondverwerking, geplande taken of worker threads nodig heeft.
 
 **Onze implementatievoorbeelden:**
 
-* [Bree-serverinstallatie](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
-* [Al onze functieomschrijvingen](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
-* [PM2-gezondheidscontrolebaan](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
-* [Implementatie van opruimwerkzaamheden](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+* [Bree server setup](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+* [Al onze taakdefinities](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+* [PM2 health check taak](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+* [Cleanup taak implementatie](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### Foutbehandeling: @hapi/boom voor productiebetrouwbaarheid {#error-handling-hapiboom-for-production-reliability}
+### Foutafhandeling: @hapi/boom voor productbetrouwbaarheid {#error-handling-hapiboom-for-production-reliability}
 
 **Wat we gebruiken:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-We gebruiken @hapi/boom voor gestructureerde foutreacties in onze Node.js-productieapplicaties. Dit patroon werkt voor elke Node.js-applicatie die consistente foutverwerking nodig heeft.
+We gebruiken @hapi/boom voor gestructureerde foutreacties in al onze Node.js productieapplicaties. Dit patroon werkt voor elke Node.js-applicatie die consistente foutafhandeling nodig heeft.
 
 **Onze implementatievoorbeelden:**
 
-* [Helper voor foutclassificatie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-* [Logger-implementatie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+* [Foutclassificatie helper](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+* [Logger implementatie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+
 
 ## Hoe Node.js-applicaties in productie te monitoren {#how-to-monitor-nodejs-applications-in-production}
 
-Onze aanpak voor het monitoren van Node.js-applicaties in productie is geëvolueerd door de jaren heen, waarin we applicaties op schaal hebben uitgevoerd. We implementeren monitoring op meerdere lagen om de betrouwbaarheid en prestaties van elk type Node.js-applicatie te garanderen.
+Onze aanpak voor het monitoren van Node.js-applicaties in productie is geëvolueerd door jarenlange ervaring met het draaien van applicaties op schaal. We implementeren monitoring op meerdere lagen om betrouwbaarheid en prestaties te waarborgen voor elk type Node.js-applicatie.
 
-### Node.js-productiebewaking op systeemniveau {#system-level-nodejs-production-monitoring}
+### Systeemniveau Node.js productie monitoring {#system-level-nodejs-production-monitoring}
 
 **Onze kernimplementatie:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
 **Wat we gebruiken:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Onze productiebewakingsdrempels (op basis van onze daadwerkelijke productiecode):
+Onze productie monitoring drempels (uit onze daadwerkelijke productiecode):
 
-* **Limiet voor heapgrootte van 2 GB** met automatische waarschuwingen
-* **Waarschuwingsdrempel voor 25% geheugengebruik**
-* **Waarschuwingsdrempel voor 80% CPU-gebruik**
-* **Waarschuwingsdrempel voor 75% schijfgebruik**
+* **2GB heapgrootte limiet** met automatische waarschuwingen
+* **25% geheugengebruik** waarschuwingsdrempel
+* **80% CPU-gebruik** waarschuwingsdrempel
+* **75% schijfgebruik** waarschuwingsdrempel
 
 > \[!WARNING]
-> Deze drempelwaarden werken voor onze specifieke hardwareconfiguratie. Bekijk bij de implementatie van Node.js-productiemonitoring onze monitor-server.js-implementatie om de exacte logica te begrijpen en de waarden aan te passen aan uw configuratie.
+> Deze drempels werken voor onze specifieke hardwareconfiguratie. Bij het implementeren van Node.js productie monitoring, bekijk onze monitor-server.js implementatie om de exacte logica te begrijpen en pas de waarden aan voor jouw setup.
 
-### Monitoring op applicatieniveau voor Node.js-productie {#application-level-monitoring-for-nodejs-production}
+### Applicatieniveau monitoring voor Node.js productie {#application-level-monitoring-for-nodejs-production}
 
 **Onze foutclassificatie:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-Deze helper maakt onderscheid tussen:
+Deze helper onderscheidt tussen:
 
 * **Werkelijke codefouten** die onmiddellijke aandacht vereisen
 * **Gebruikersfouten** die verwacht gedrag zijn
-* **Externe servicefouten** die we niet kunnen beheersen
+* **Externe servicefouten** die we niet kunnen controleren
 
-Dit patroon is van toepassing op alle Node.js-toepassingen: webapps, API's, microservices of achtergrondservices.
-
+Dit patroon is van toepassing op elke Node.js-applicatie - webapps, API's, microservices of achtergrondservices.
 **Onze logging-implementatie:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-We maken gebruik van uitgebreide veldredactie om gevoelige informatie te beschermen, terwijl we tegelijkertijd nuttige debugmogelijkheden in onze Node.js-productieomgeving behouden.
+We implementeren uitgebreide veldredactie om gevoelige informatie te beschermen terwijl we nuttige debugmogelijkheden behouden in onze Node.js productieomgeving.
 
-### Toepassingsspecifieke monitoring {#application-specific-monitoring}
+### Applicatie-specifieke monitoring {#application-specific-monitoring}
 
 **Onze serverimplementaties:**
 
@@ -198,383 +197,388 @@ We maken gebruik van uitgebreide veldredactie om gevoelige informatie te bescher
 * [IMAP-server](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [POP3-server](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-**Wachtrijbewaking:** We implementeren wachtrijlimieten van 5 GB en time-outs van 180 seconden voor de verwerking van aanvragen om resource-uitputting te voorkomen. Deze patronen zijn van toepassing op elke Node.js-applicatie met wachtrijen of achtergrondverwerking.
+**Queue monitoring:** We implementeren 5GB queue-limieten en time-outs van 180 seconden voor verzoekverwerking om uitputting van resources te voorkomen. Deze patronen zijn toepasbaar op elke Node.js-applicatie met queues of achtergrondverwerking.
 
-## Node.js-productiebewaking met PM2-gezondheidscontroles {#nodejs-production-monitoring-with-pm2-health-checks}
 
-We hebben onze Node.js-productieomgeving geoptimaliseerd met PM2, dankzij jarenlange productie-ervaring. Onze PM2-statuscontroles zijn essentieel voor het behoud van de betrouwbaarheid van elke Node.js-applicatie.
+## Node.js productie monitoring met PM2 health checks {#nodejs-production-monitoring-with-pm2-health-checks}
 
-### Ons PM2-gezondheidscontrolesysteem {#our-pm2-health-check-system}
+We hebben onze Node.js productieomgeving met PM2 verfijnd door jarenlange productie-ervaring. Onze PM2 health checks zijn essentieel voor het behouden van betrouwbaarheid in elke Node.js-applicatie.
+
+### Ons PM2 health check systeem {#our-pm2-health-check-system}
 
 **Onze kernimplementatie:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-Onze Node.js-productiemonitoring met PM2-statuscontroles omvat:
+Onze Node.js productie monitoring met PM2 health checks omvat:
 
-* **Wordt elke 20 minuten uitgevoerd** via cron-planning
+* **Wordt elke 20 minuten uitgevoerd** via cron-scheduling
 * **Vereist minimaal 15 minuten uptime** voordat een proces als gezond wordt beschouwd
-* **Valideert de processtatus en het geheugengebruik**
-* **Herstart automatisch mislukte processen**
-* **Voorkomt herstartlussen** door middel van intelligente statuscontrole
+* **Valideert processtatus en geheugengebruik**
+* **Herstart automatisch gefaalde processen**
+* **Voorkomt herstartlussen** door intelligente health checks
 
 > \[!CAUTION]
-> Voor de best practices voor Node.js-productie-implementaties vereisen we een uptime van minimaal 15 minuten voordat een proces als gezond wordt beschouwd om herstartlussen te voorkomen. Dit voorkomt opeenvolgende fouten wanneer processen problemen hebben met geheugen of andere problemen.
+> Voor best practices bij Node.js productie-implementaties vereisen we 15+ minuten uptime voordat een proces als gezond wordt beschouwd om herstartlussen te vermijden. Dit voorkomt kettingfouten wanneer processen worstelen met geheugen of andere problemen.
 
-### Onze PM2-productieconfiguratie {#our-pm2-production-configuration}
+### Onze PM2 productieconfiguratie {#our-pm2-production-configuration}
 
-**Onze ecosysteemconfiguratie:** Bestudeer onze serveropstartbestanden voor de configuratie van de Node.js-productieomgeving:
+**Onze ecosysteemsetup:** Bestudeer onze server-startbestanden voor Node.js productieomgeving setup:
 
 * [Webserver](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API-server](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
-* [Bree-planner](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+* [Bree scheduler](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 * [SMTP-server](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
 
-Deze patronen zijn van toepassing ongeacht of u Express-apps, Koa-servers, GraphQL API's of andere Node.js-toepassingen uitvoert.
+Deze patronen zijn toepasbaar of je nu Express-apps, Koa-servers, GraphQL-API's of andere Node.js-applicaties draait.
 
-### Geautomatiseerde PM2-implementatie {#automated-pm2-deployment}
+### Geautomatiseerde PM2 deployment {#automated-pm2-deployment}
 
-**PM2-implementatie:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
+**PM2 deployment:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
-We automatiseren onze volledige PM2-configuratie via Ansible om consistente Node.js-productie-implementaties op al onze servers te garanderen.
+We automatiseren onze volledige PM2 setup via Ansible om consistente Node.js productie-implementaties op al onze servers te waarborgen.
 
-## Productiefoutverwerkings- en classificatiesysteem {#production-error-handling-and-classification-system}
 
-Een van onze meest waardevolle best practices voor Node.js-productie-implementatie is intelligente foutclassificatie die van toepassing is op elke Node.js-applicatie:
+## Productie foutafhandeling en classificatiesysteem {#production-error-handling-and-classification-system}
+
+Een van onze meest waardevolle best practices voor Node.js productie-implementaties is intelligente foutclassificatie die toepasbaar is op elke Node.js-applicatie:
 
 ### Onze isCodeBug-implementatie voor productie {#our-iscodebug-implementation-for-production}
 
 **Bron:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-Deze helper biedt intelligente foutclassificatie voor Node.js-toepassingen in productie om:
+Deze helper biedt intelligente foutclassificatie voor Node.js-applicaties in productie om:
 
-* **Prioriteit geven aan daadwerkelijke bugs** boven gebruikersfouten
-* **Onze incidentrespons verbeteren** door ons te richten op echte problemen
-* **Minder waarschuwingsmoeheid** door verwachte gebruikersfouten
-* **Beter inzicht** in applicatie- versus door gebruikers gegenereerde problemen
+* **Werkelijke bugs te prioriteren** boven gebruikersfouten
+* **Onze incidentrespons te verbeteren** door te focussen op echte problemen
+* **Alert-moeheid te verminderen** door verwachte gebruikersfouten
+* **Beter inzicht te krijgen** in applicatie- versus gebruikersgegenereerde problemen
 
-Dit patroon werkt voor alle Node.js-toepassingen, of u nu e-commercesites, SaaS-platforms, API's of microservices bouwt.
+Dit patroon werkt voor elke Node.js-applicatie - of je nu e-commerce sites, SaaS-platforms, API's of microservices bouwt.
 
-### Integratie met onze productieregistratie {#integration-with-our-production-logging}
+### Integratie met onze productie-logging {#integration-with-our-production-logging}
 
 **Onze logger-integratie:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+Onze logger gebruikt `isCodeBug` om waarschuwingsniveaus en veldredactie te bepalen, zodat we op de hoogte worden gesteld van echte problemen terwijl we ruis in onze Node.js productieomgeving filteren.
 
-Onze logger gebruikt `isCodeBug` om waarschuwingsniveaus en veldredactie te bepalen. Zo worden we op de hoogte gehouden van echte problemen en wordt ruis in onze Node.js-productieomgeving weggefilterd.
+### Gerelateerde Inhoud {#related-content-1}
 
-### Gerelateerde inhoud {#related-content-1}
+Leer meer over onze foutafhandelingspatronen:
 
-Meer informatie over onze foutverwerkingspatronen:
+* [Betrouwbaar Betaalsysteem Bouwen](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Foutafhandelingspatronen
+* [E-mail Privacybescherming](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Beveiligingsfoutafhandeling
 
-* [Het bouwen van een betrouwbaar betalingssysteem](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Patronen voor foutafhandeling
-* [E-mailprivacybescherming](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Afhandeling van beveiligingsfouten
 
-## Geavanceerde prestatie-debugging met v8-profiler-next en cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
+## Geavanceerde Prestatie-Debugging met v8-profiler-next en cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
-We gebruiken geavanceerde profileringstools om heap snapshots te analyseren en OOM (Out of Memory)-problemen, prestatieknelpunten en Node.js-geheugenproblemen in onze productieomgeving te debuggen. Deze tools zijn essentieel voor elke Node.js-applicatie die geheugenlekken of prestatieproblemen ondervindt.
+We gebruiken geavanceerde profilingtools om heap snapshots te analyseren en OOM (Out of Memory) problemen, prestatieknelpunten en Node.js geheugenproblemen in onze productieomgeving te debuggen. Deze tools zijn essentieel voor elke Node.js applicatie die te maken heeft met geheugenlekken of prestatieproblemen.
 
-### Onze profileringsaanpak voor Node.js-productie {#our-profiling-approach-for-nodejs-production}
+### Onze Profiling Aanpak voor Node.js Productie {#our-profiling-approach-for-nodejs-production}
 
-**Door ons aanbevolen gereedschap:**
+**Aanbevolen tools:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Voor het genereren van heap-snapshots en CPU-profielen
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - Voor het analyseren van CPU-profielen en heap-snapshots
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Voor het genereren van heap snapshots en CPU-profielen
+* [`cpupro`](https://github.com/discoveryjs/cpupro) - Voor het analyseren van CPU-profielen en heap snapshots
 
 > \[!TIP]
-> We gebruiken v8-profiler-next en cpupro samen om een complete performance debugging workflow voor onze Node.js-applicaties te creëren. Deze combinatie helpt ons geheugenlekken en prestatieknelpunten te identificeren en onze productiecode te optimaliseren.
+> We gebruiken v8-profiler-next en cpupro samen om een complete prestatie-debugging workflow te creëren voor onze Node.js applicaties. Deze combinatie helpt ons geheugenlekken, prestatieknelpunten te identificeren en onze productiecode te optimaliseren.
 
-### Hoe we heap-snapshotanalyse implementeren {#how-we-implement-heap-snapshot-analysis}
+### Hoe Wij Heap Snapshot Analyse Implementeren {#how-we-implement-heap-snapshot-analysis}
 
-**Onze monitoring-implementatie:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**Onze monitoring implementatie:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-Onze productiemonitoring omvat het automatisch genereren van heap snapshots wanneer geheugendrempels worden overschreden. Dit helpt ons OOM-problemen te debuggen voordat ze applicatiecrashes veroorzaken.
+Onze productie monitoring omvat automatische generatie van heap snapshots wanneer geheugendrempels worden overschreden. Dit helpt ons OOM-problemen te debuggen voordat ze applicatiecrashes veroorzaken.
 
-**Belangrijkste implementatiepatronen:**
+**Belangrijke implementatiepatronen:**
 
-* **Automatische snapshots** wanneer de heapgrootte de drempelwaarde van 2 GB overschrijdt
-* **Signaalgebaseerde profilering** voor on-demand analyse in productie
-* **Bewaarbeleid** voor het beheer van snapshotopslag
-* **Integratie met onze opschoontaken** voor geautomatiseerd onderhoud
+* **Automatische snapshots** wanneer heapgrootte de 2GB drempel overschrijdt
+* **Signaal-gebaseerde profiling** voor analyse op aanvraag in productie
+* **Beleid voor retentie** voor het beheren van snapshot opslag
+* **Integratie met onze cleanup jobs** voor geautomatiseerd onderhoud
 
-### Prestatie-debugworkflow {#performance-debugging-workflow}
+### Prestatie-Debugging Workflow {#performance-debugging-workflow}
 
 **Bestudeer onze daadwerkelijke implementatie:**
 
-* [Monitor serverimplementatie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Heap monitoring en snapshotgeneratie
-* [Opruimklus](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Snapshotbehoud en -opschoning
-* [Logger-integratie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Prestatielogging
+* [Monitor server implementatie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Heap monitoring en snapshot generatie
+* [Cleanup job](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Snapshot retentie en opruiming
+* [Logger integratie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Prestatie logging
 
-### Aanbevolen implementatie voor uw Node.js-applicatie {#recommended-implementation-for-your-nodejs-application}
+### Aanbevolen Implementatie voor Uw Node.js Applicatie {#recommended-implementation-for-your-nodejs-application}
 
-**Voor heap snapshot-analyse:**
+**Voor heap snapshot analyse:**
 
-1. **Installeer v8-profiler-next** voor het genereren van snapshots
+1. **Installeer v8-profiler-next** voor snapshot generatie
 2. **Gebruik cpupro** voor het analyseren van de gegenereerde snapshots
-3. **Implementeer monitoringdrempels** vergelijkbaar met onze monitor-server.js
-4. **Stel automatische opschoning in** om de snapshotopslag te beheren
-5. **Maak signaalhandlers** voor on-demand profilering in productie
+3. **Implementeer monitoring drempels** vergelijkbaar met onze monitor-server.js
+4. **Stel geautomatiseerde opruiming in** om snapshot opslag te beheren
+5. **Maak signaal handlers aan** voor profiling op aanvraag in productie
 
-**Voor CPU-profilering:**
+**Voor CPU profiling:**
 
-1. **Genereer CPU-profielen** tijdens perioden met hoge belasting
-2. **Analyseer met CPUPro** om knelpunten te identificeren
+1. **Genereer CPU-profielen** tijdens periodes van hoge belasting
+2. **Analyseer met cpupro** om knelpunten te identificeren
 3. **Focus op hot paths** en optimalisatiemogelijkheden
-4. **Monitor prestatieverbeteringen voor/na**
+4. **Monitor voor/na** prestatieverbeteringen
 
 > \[!WARNING]
-> Het genereren van heap snapshots en CPU-profielen kan de prestaties beïnvloeden. We raden aan om throttling te implementeren en profilering alleen in te schakelen bij het onderzoeken van specifieke problemen of tijdens onderhoudsperiodes.
+> Het genereren van heap snapshots en CPU-profielen kan de prestaties beïnvloeden. We raden aan throttling te implementeren en profiling alleen in te schakelen bij het onderzoeken van specifieke problemen of tijdens onderhoudsvensters.
 
-### Integratie met onze productiemonitoring {#integration-with-our-production-monitoring}
+### Integratie met Onze Productie Monitoring {#integration-with-our-production-monitoring}
 
-Onze profileringshulpmiddelen integreren met onze bredere monitoringstrategie:
+Onze profilingtools integreren met onze bredere monitoringstrategie:
 
-* **Automatische triggering** op basis van geheugen-/CPU-drempelwaarden
-* **Waarschuwingsintegratie** wanneer prestatieproblemen worden gedetecteerd
-* **Historische analyse** om prestatietrends in de loop van de tijd te volgen
-* **Correlatie met applicatiestatistieken** voor uitgebreide foutopsporing
+* **Automatische activering** op basis van geheugen/CPU drempels
+* **Alert integratie** wanneer prestatieproblemen worden gedetecteerd
+* **Historische analyse** om prestatie-trends in de tijd te volgen
+* **Correlatie met applicatiemetrics** voor uitgebreide debugging
+Deze aanpak heeft ons geholpen geheugenlekken te identificeren en op te lossen, hot code paths te optimaliseren en stabiele prestaties te behouden in onze Node.js productieomgeving.
 
-Dankzij deze aanpak konden we geheugenlekken identificeren en oplossen, hot code-paden optimaliseren en stabiele prestaties in onze Node.js-productieomgeving garanderen.
 
-## Node.js Productie-infrastructuurbeveiliging {#nodejs-production-infrastructure-security}
+## Node.js Productie Infrastructuur Beveiliging {#nodejs-production-infrastructure-security}
 
-We implementeren uitgebreide beveiliging voor onze Node.js-productie-infrastructuur via Ansible-automatisering. Deze procedures zijn van toepassing op elke Node.js-applicatie:
+We implementeren uitgebreide beveiliging voor onze Node.js productie-infrastructuur via Ansible-automatisering. Deze praktijken zijn van toepassing op elke Node.js-applicatie:
 
-### Systeembeveiliging voor Node.js-productie {#system-level-security-for-nodejs-production}
+### Systeemniveau Beveiliging voor Node.js Productie {#system-level-security-for-nodejs-production}
 
 **Onze Ansible-implementatie:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 
-Onze belangrijkste beveiligingsmaatregelen voor Node.js-productieomgevingen:
+Onze belangrijkste beveiligingsmaatregelen voor Node.js productieomgevingen:
 
-* **Swap uitgeschakeld** om te voorkomen dat gevoelige gegevens naar schijf worden geschreven
-* **Coredumps uitgeschakeld** om te voorkomen dat geheugendumps gevoelige informatie bevatten
-* **USB-opslag geblokkeerd** om ongeautoriseerde gegevenstoegang te voorkomen
-* **Kernelparameterafstemming** voor zowel beveiliging als prestaties
+* **Swap uitgeschakeld** om te voorkomen dat gevoelige gegevens naar de schijf worden geschreven
+* **Core dumps uitgeschakeld** om geheugen dumps met gevoelige informatie te voorkomen
+* **USB-opslag geblokkeerd** om ongeautoriseerde gegevens toegang te voorkomen
+* **Kernel parameter tuning** voor zowel beveiliging als prestaties
 
 > \[!WARNING]
-> Bij het implementeren van best practices voor Node.js-productie-implementaties kan het uitschakelen van swap-bewerkingen leiden tot geheugenuitval als uw applicatie het beschikbare RAM-geheugen overschrijdt. We monitoren het geheugengebruik zorgvuldig en passen onze servers hierop aan.
+> Bij het implementeren van best practices voor Node.js productie-implementatie kan het uitschakelen van swap leiden tot out-of-memory kills als uw applicatie de beschikbare RAM overschrijdt. We monitoren het geheugengebruik zorgvuldig en dimensioneren onze servers passend.
 
-### Toepassingsbeveiliging voor Node.js-toepassingen {#application-security-for-nodejs-applications}
+### Applicatiebeveiliging voor Node.js Applicaties {#application-security-for-nodejs-applications}
 
-**Onze logveldredactie:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+**Onze logveld redactie:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-We verwijderen gevoelige velden uit logs, waaronder wachtwoorden, tokens, API-sleutels en persoonlijke gegevens. Dit beschermt de privacy van gebruikers en behoudt de debugmogelijkheden in elke Node.js-productieomgeving.
+We redigeren gevoelige velden uit logs, waaronder wachtwoorden, tokens, API-sleutels en persoonlijke informatie. Dit beschermt de privacy van gebruikers terwijl debugging-mogelijkheden behouden blijven in elke Node.js productieomgeving.
 
-### Automatisering van infrastructuurbeveiliging {#infrastructure-security-automation}
+### Automatisering van Infrastructuurbeveiliging {#infrastructure-security-automation}
 
-**Onze volledige Ansible-configuratie voor Node.js-productie:**
+**Onze complete Ansible-setup voor Node.js productie:**
 
-* [Beveiligingshandboek](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Beveiligings playbook](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [SSH-sleutelbeheer](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/ssh-keys.yml)
 * [Certificaatbeheer](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/certificates.yml)
 * [DKIM-configuratie](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/dkim.yml)
 
-### Onze beveiligingsinhoud {#our-security-content}
+### Onze Beveiligingsinhoud {#our-security-content}
 
 Lees meer over onze beveiligingsaanpak:
 
-* [Beste beveiligingsauditbedrijven](https://forwardemail.net/blog/docs/best-security-audit-companies)
-* [Quantum Safe versleutelde e-mail](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
-* [Waarom open source e-mailbeveiliging?](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
+* [Beste Beveiligingsauditbedrijven](https://forwardemail.net/blog/docs/best-security-audit-companies)
+* [Quantum Veilige Versleutelde E-mail](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
+* [Waarom Open Source E-mailbeveiliging](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
 
-## Databasearchitectuur voor Node.js-toepassingen {#database-architecture-for-nodejs-applications}
 
-We gebruiken een hybride databasebenadering die geoptimaliseerd is voor onze Node.js-applicaties. Deze patronen kunnen worden aangepast voor elke Node.js-applicatie:
+## Database Architectuur voor Node.js Applicaties {#database-architecture-for-nodejs-applications}
 
-### SQLite-implementatie voor Node.js-productie {#sqlite-implementation-for-nodejs-production}
+We gebruiken een hybride database-aanpak die is geoptimaliseerd voor onze Node.js-applicaties. Deze patronen kunnen worden aangepast voor elke Node.js-applicatie:
 
-**Wat wij gebruiken:**
+### SQLite Implementatie voor Node.js Productie {#sqlite-implementation-for-nodejs-production}
+
+**Wat we gebruiken:**
 
 * [`better-sqlite3`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`better-sqlite3-multiple-ciphers`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 **Onze configuratie:** [`ansible/playbooks/sqlite.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
-We gebruiken SQLite voor gebruikerspecifieke gegevens in onze Node.js-applicaties omdat het het volgende biedt:
+We gebruiken SQLite voor gebruikersspecifieke gegevens in onze Node.js-applicaties omdat het biedt:
 
-* **Gegevensisolatie** per gebruiker/tenant
-* **Betere prestaties** voor query's voor één gebruiker
+* **Data-isolatie** per gebruiker/tenant
+* **Betere prestaties** voor single-user queries
 * **Vereenvoudigde back-up** en migratie
 * **Verminderde complexiteit** vergeleken met gedeelde databases
 
-Dit patroon werkt goed voor SaaS-applicaties, multi-tenant systemen en alle Node.js-applicaties die gegevensisolatie nodig hebben.
+Dit patroon werkt goed voor SaaS-applicaties, multi-tenant systemen of elke Node.js-applicatie die data-isolatie nodig heeft.
 
-### MongoDB-implementatie voor Node.js-productie {#mongodb-implementation-for-nodejs-production}
+### MongoDB Implementatie voor Node.js Productie {#mongodb-implementation-for-nodejs-production}
 
-**Wat wij gebruiken:**
+**Wat we gebruiken:**
 
 * [`@ladjs/mongoose`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/mongoose-error-messages`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@zainundin/mongoose-factory`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
-
-**Onze installatie-implementatie:** [`helpers/setup-mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-mongoose.js)
+**Onze setup-implementatie:** [`helpers/setup-mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-mongoose.js)
 
 **Onze configuratie:** [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
 
-Wij gebruiken MongoDB voor applicatiegegevens in onze Node.js-productieomgeving omdat het het volgende biedt:
+We gebruiken MongoDB voor applicatiegegevens in onze Node.js productieomgeving omdat het biedt:
 
 * **Flexibel schema** voor evoluerende datastructuren
-* **Betere prestaties** voor complexe query's
-* **Horizontale schaalbaarheid**
+* **Betere prestaties** voor complexe queries
+* **Horizontale schaalbaarheid** mogelijkheden
 * **Rijke querytaal**
 
 > \[!NOTE]
-> Onze hybride aanpak is geoptimaliseerd voor onze specifieke use case. Bestudeer onze daadwerkelijke databasegebruikspatronen in de codebase om te zien of deze aanpak past bij de behoeften van uw Node.js-applicatie.
+> Onze hybride aanpak optimaliseert voor onze specifieke use case. Bestudeer onze daadwerkelijke databasegebruikspatronen in de codebase om te begrijpen of deze aanpak past bij de behoeften van jouw Node.js-applicatie.
+
 
 ## Node.js Productie Achtergrondtaakverwerking {#nodejs-production-background-job-processing}
 
-We hebben onze achtergrondtaakarchitectuur rond Bree gebouwd voor een betrouwbare Node.js-productie-implementatie. Dit geldt voor elke Node.js-applicatie die achtergrondverwerking nodig heeft:
+We hebben onze achtergrondtaakarchitectuur gebouwd rond Bree voor betrouwbare Node.js productie-implementatie. Dit geldt voor elke Node.js-applicatie die achtergrondverwerking nodig heeft:
 
-### Onze Bree-serverinstallatie voor productie {#our-bree-server-setup-for-production}
+### Onze Bree Server Setup voor Productie {#our-bree-server-setup-for-production}
 
-**Onze belangrijkste implementatie:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+**Onze hoofdimplementatie:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
 **Onze Ansible-implementatie:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
-### Voorbeelden van productietaken {#production-job-examples}
+### Productie Taakvoorbeelden {#production-job-examples}
 
 **Gezondheidsmonitoring:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-**Automatisering van opruiming:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+**Opruimautomatisering:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-**Al onze vacatures:** [Blader door onze volledige vacaturebank](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+**Al onze taken:** [Blader door onze volledige takenmap](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
 
-Deze patronen zijn van toepassing op elke Node.js-toepassing die het volgende nodig heeft:
+Deze patronen gelden voor elke Node.js-applicatie die nodig heeft:
 
-* Geplande taken (gegevensverwerking, rapporten, opschonen)
-* Achtergrondverwerking (afbeeldingen verkleinen, e-mails verzenden, gegevens importeren)
-* Statusbewaking en -onderhoud
-* Gebruik van workerthreads voor CPU-intensieve taken
+* Geplande taken (gegevensverwerking, rapporten, opruiming)
+* Achtergrondverwerking (afbeeldingsresizing, e-mailverzending, gegevensimport)
+* Gezondheidsmonitoring en onderhoud
+* Gebruik van worker threads voor CPU-intensieve taken
 
-### Onze taakplanningspatronen voor Node.js-productie {#our-job-scheduling-patterns-for-nodejs-production}
+### Onze Taakplanningspatronen voor Node.js Productie {#our-job-scheduling-patterns-for-nodejs-production}
 
-Bestudeer onze actuele planningspatronen in onze vacaturegids om het volgende te begrijpen:
+Bestudeer onze daadwerkelijke taakplanningspatronen in onze takenmap om te begrijpen:
 
-* Hoe we cron-achtige planning implementeren in Node.js-productie
-* Onze foutverwerking en retry-logica
-* Hoe we workerthreads gebruiken voor CPU-intensieve taken
+* Hoe we cron-achtige planning implementeren in Node.js productie
+* Onze foutafhandeling en retry-logica
+* Hoe we worker threads gebruiken voor CPU-intensieve taken
 
-## Geautomatiseerd onderhoud voor Node.js-productietoepassingen {#automated-maintenance-for-production-nodejs-applications}
 
-We implementeren proactief onderhoud om veelvoorkomende productieproblemen in Node.js te voorkomen. Deze patronen zijn van toepassing op elke Node.js-applicatie:
+## Geautomatiseerd Onderhoud voor Productie Node.js Applicaties {#automated-maintenance-for-production-nodejs-applications}
 
-### Onze opruimingsimplementatie {#our-cleanup-implementation}
+We implementeren proactief onderhoud om veelvoorkomende Node.js productieproblemen te voorkomen. Deze patronen gelden voor elke Node.js-applicatie:
+
+### Onze Opruimimplementatie {#our-cleanup-implementation}
 
 **Bron:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-Ons geautomatiseerde onderhoud voor Node.js-productietoepassingen richt zich op:
+Ons geautomatiseerd onderhoud voor Node.js productieapplicaties richt zich op:
 
 * **Tijdelijke bestanden** ouder dan 24 uur
-* **Logbestanden** die de bewaartermijn overschrijden
-* **Cachebestanden** en tijdelijke gegevens
+* **Logbestanden** buiten bewaarbeperkingen
+* **Cachebestanden** en tijdelijke data
 * **Geüploade bestanden** die niet langer nodig zijn
 * **Heap snapshots** van prestatie-debugging
 
-Deze patronen zijn van toepassing op elke Node.js-toepassing die tijdelijke bestanden, logboeken of gecachte gegevens genereert.
+Deze patronen gelden voor elke Node.js-applicatie die tijdelijke bestanden, logs of gecachte data genereert.
 
-### Schijfruimtebeheer voor Node.js-productie {#disk-space-management-for-nodejs-production}
+### Schijfruimtebeheer voor Node.js Productie {#disk-space-management-for-nodejs-production}
 
-**Onze monitoringdrempels:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**Onze monitoringsdrempels:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
 * **Wachtrijlimieten** voor achtergrondverwerking
-* **Waarschuwingsdrempel 75% schijfgebruik**
-* **Automatisch opschonen** bij overschrijding van de drempels
+* **75% schijfgebruik** waarschuwingsdrempel
+* **Automatische opruiming** wanneer drempels worden overschreden
 
-### Automatisering van infrastructuuronderhoud {#infrastructure-maintenance-automation}
+### Automatisering van Infrastructuuronderhoud {#infrastructure-maintenance-automation}
 
-**Onze Ansible-automatisering voor Node.js-productie:**
+**Onze Ansible-automatisering voor Node.js productie:**
 
-* [Implementatie van de omgeving](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/env.yml)
+* [Omgevingsimplementatie](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/env.yml)
 * [Beheer van implementatiesleutels](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
 
-## Implementatiehandleiding voor Node.js-productie-implementatie {#nodejs-production-deployment-implementation-guide}
 
-### Bestudeer onze daadwerkelijke code voor best practices voor productie {#study-our-actual-code-for-production-best-practices}
+## Node.js Productie Implementatiehandleiding {#nodejs-production-deployment-implementation-guide}
+### Bestudeer Onze Werkelijke Code voor Productie Best Practices {#study-our-actual-code-for-production-best-practices}
 
-**Begin met deze sleutelbestanden voor het instellen van de Node.js-productieomgeving:**
+**Begin met deze belangrijke bestanden voor Node.js productieomgeving setup:**
 
 1. **Configuratie:** [`config/index.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
 2. **Monitoring:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 3. **Foutafhandeling:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-4. **Logboekregistratie:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-5. **Processtatus:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+4. **Logging:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+5. **Procesgezondheid:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-### Leer van onze blogberichten {#learn-from-our-blog-posts}
+### Leer van Onze Blogposts {#learn-from-our-blog-posts}
 
-**Onze technische implementatiehandleidingen voor Node.js-productie:**
+**Onze technische implementatiehandleidingen voor Node.js productie:**
 
-* [NPM-pakketten ecosysteem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
-* [Betalingssystemen bouwen](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [Implementatie van e-mailprivacy](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
-* [JavaScript-contactformulieren](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
-* [React E-mailintegratie](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
+* [NPM Packages Ecosysteem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
+* [Betalingssystemen Bouwen](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
+* [E-mail Privacy Implementatie](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [JavaScript Contactformulieren](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
+* [React E-mail Integratie](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
-### Infrastructuurautomatisering voor Node.js-productie {#infrastructure-automation-for-nodejs-production}
+### Infrastructuur Automatisering voor Node.js Productie {#infrastructure-automation-for-nodejs-production}
 
-**Onze Ansible-playbooks om te bestuderen voor Node.js-productie-implementatie:**
+**Onze Ansible playbooks om te bestuderen voor Node.js productie-implementatie:**
 
-* [Volledige handleidingen directory](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
+* [Complete playbooks directory](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
 * [Beveiligingsversterking](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
-* [Node.js-installatie](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
+* [Node.js setup](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
-### Onze casestudies {#our-case-studies}
+### Onze Case Studies {#our-case-studies}
 
-**Onze bedrijfsimplementaties:**
+**Onze enterprise implementaties:**
 
-* [Linux Foundation casestudy](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Canonieke Ubuntu-casestudy](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
-* [Alumni-e-mail doorsturen](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
+* [Linux Foundation Case Study](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
+* [Canonical Ubuntu Case Study](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Alumni E-mail Doorsturen](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 
-## Conclusie: Aanbevolen procedures voor Node.js-productie-implementatie {#conclusion-nodejs-production-deployment-best-practices}
 
-Onze Node.js-productie-infrastructuur laat zien dat Node.js-applicaties betrouwbaarheid op ondernemingsniveau kunnen bereiken door:
+## Conclusie: Node.js Productie-Implementatie Best Practices {#conclusion-nodejs-production-deployment-best-practices}
 
-* **Bewezen hardwarekeuzes** (AMD Ryzen voor 573% single-core prestatie-optimalisatie)
-* **In de praktijk geteste Node.js-productiemonitoring** met specifieke drempels en geautomatiseerde reacties
-* **Slimme foutclassificatie** om de respons op incidenten in productieomgevingen te verbeteren
-* **Geavanceerde prestatiedebugging** met v8-profiler-next en cpupro voor OOM-preventie
-* **Uitgebreide beveiligingsversterking** door Ansible-automatisering
-* **Hybride databasearchitectuur** geoptimaliseerd voor applicatiebehoeften
-* **Geautomatiseerd onderhoud** om veelvoorkomende Node.js-productieproblemen te voorkomen
+Onze Node.js productie-infrastructuur toont aan dat Node.js applicaties enterprise-grade betrouwbaarheid kunnen bereiken door:
 
-**Belangrijkste punt:** Bestudeer onze daadwerkelijke implementatiebestanden en blogposts in plaats van algemene best practices te volgen. Onze codebase biedt realistische patronen voor Node.js-productie-implementatie die kunnen worden aangepast voor elke Node.js-applicatie - webapps, API's, microservices of achtergrondservices.
+* **Bewezen hardware keuzes** (AMD Ryzen voor 573% single core prestatieoptimalisatie)
+* **Beproefde Node.js productie monitoring** met specifieke drempels en geautomatiseerde reacties
+* **Slimme foutclassificatie** om incidentrespons in productieomgevingen te verbeteren
+* **Geavanceerde prestatie-debugging** met v8-profiler-next en cpupro voor OOM preventie
+* **Uitgebreide beveiligingsversterking** via Ansible automatisering
+* **Hybride database architectuur** geoptimaliseerd voor applicatiebehoeften
+* **Geautomatiseerd onderhoud** om veelvoorkomende Node.js productieproblemen te voorkomen
 
-## Volledige bronnenlijst voor Node.js-productie {#complete-resource-list-for-nodejs-production}
+**Belangrijkste conclusie:** Bestudeer onze daadwerkelijke implementatiebestanden en blogposts in plaats van generieke best practices te volgen. Onze codebase biedt praktijkvoorbeelden voor Node.js productie-implementatie die aangepast kunnen worden voor elke Node.js applicatie - webapps, API's, microservices of achtergrondservices.
 
-### Onze kernimplementatiebestanden {#our-core-implementation-files}
+
+## Complete Bronnenlijst voor Node.js Productie {#complete-resource-list-for-nodejs-production}
+
+### Onze Kern Implementatiebestanden {#our-core-implementation-files}
 
 * [Hoofdconfiguratie](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
-* [Pakketafhankelijkheden](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
-* [Serverbewaking](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+* [Package afhankelijkheden](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+* [Server monitoring](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 * [Foutclassificatie](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-* [Logboeksysteem](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-* [PM2-gezondheidscontroles](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+* [Logging systeem](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+* [PM2 gezondheidschecks](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 * [Geautomatiseerde opruiming](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
-
-### Onze serverimplementaties {#our-server-implementations}
+### Onze Serverimplementaties {#our-server-implementations}
 
 * [Webserver](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API-server](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
-* [Bree-planner](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+* [Bree scheduler](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 * [SMTP-server](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
 * [IMAP-server](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [POP3-server](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-### Onze infrastructuurautomatisering {#our-infrastructure-automation}
+### Onze Infrastructuurautomatisering {#our-infrastructure-automation}
 
-* [Al onze Ansible-playbooks](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
+* [Al onze Ansible playbooks](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
 * [Beveiligingsversterking](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
-* [Node.js-installatie](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
+* [Node.js installatie](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 * [Databaseconfiguratie](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
-### Onze technische blogberichten {#our-technical-blog-posts}
+### Onze Technische Blogposts {#our-technical-blog-posts}
 
-* [NPM-ecosysteemanalyse](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
-* [Implementatie van betalingssystemen](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [Technische handleiding voor e-mailprivacy](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
-* [JavaScript-contactformulieren](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
+* [NPM Ecosysteem Analyse](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
+* [Implementatie van Betaalsysteem](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
+* [Technische Gids voor E-mailprivacy](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [JavaScript Contactformulieren](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 * [React E-mailintegratie](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
-* [Zelf-gehoste oplossingsgids](https://forwardemail.net/blog/docs/self-hosted-solution)
+* [Zelfgehoste Oplossing Gids](https://forwardemail.net/blog/docs/self-hosted-solution)
 
 ### Onze Enterprise Case Studies {#our-enterprise-case-studies}
 
-* [Linux Foundation-implementatie](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Canonieke Ubuntu-casestudy](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
-* [Naleving door de federale overheid](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
-* [Alumni e-mailsystemen](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
+* [Linux Foundation Implementatie](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
+* [Canonical Ubuntu Case Study](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Voldoen aan Overheidsvoorschriften](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+* [Alumni E-mailsystemen](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)

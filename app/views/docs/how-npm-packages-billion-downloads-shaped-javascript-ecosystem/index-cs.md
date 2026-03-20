@@ -1,551 +1,551 @@
-# Desetiletí dopadu: Jak naše npm balíčky dosáhly 1 miliardy stažení a formovaly JavaScript {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
+# Dekáda dopadu: Jak naše npm balíčky dosáhly 1 miliardy stažení a formovaly JavaScript {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
 <img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
+
 
 ## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
-* [Průkopníci, kteří nám důvěřují: Isaac Z. Schlueter a přeposílaní e-mailu](#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email)
-  * [Od založení npm k vedení Node.js](#from-npms-creation-to-nodejs-leadership)
-* [Architekt kódu: Cesta Nicka Baugha](#the-architect-behind-the-code-nick-baughs-journey)
-  * [Technický výbor Express a klíčové příspěvky](#express-technical-committee-and-core-contributions)
-  * [Příspěvky rámce Koa](#koa-framework-contributions)
-  * [Od individuálního přispěvatele k vedoucímu organizace](#from-individual-contributor-to-organization-leader)
-* [Naše organizace na GitHubu: Ekosystémy inovací](#our-github-organizations-ecosystems-of-innovation)
-  * [Kabina: Strukturované logování pro moderní aplikace](#cabin-structured-logging-for-modern-applications)
-  * [Skener spamu: Boj proti zneužívání e-mailů](#spam-scanner-fighting-email-abuse)
-  * [Bree: Moderní plánování úloh s pracovními vlákny](#bree-modern-job-scheduling-with-worker-threads)
-  * [Přeposílání e-mailů: Open Source e-mailová infrastruktura](#forward-email-open-source-email-infrastructure)
-  * [Chlapče: Základní nástroje a nástroje Koa](#lad-essential-koa-utilities-and-tools)
-  * [Dostupnost: Monitorování dostupnosti s otevřeným zdrojovým kódem](#upptime-open-source-uptime-monitoring)
-* [Naše příspěvky k ekosystému Forward Email](#our-contributions-to-the-forward-email-ecosystem)
-  * [Od balíčků k výrobě](#from-packages-to-production)
+* [Průkopníci, kteří nám důvěřují: Isaac Z. Schlueter a Forward Email](#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email)
+  * [Od vzniku npm k vedení Node.js](#from-npms-creation-to-nodejs-leadership)
+* [Architekt za kódem: Cesta Nicka Baugha](#the-architect-behind-the-code-nick-baughs-journey)
+  * [Technický výbor Express a příspěvky do jádra](#express-technical-committee-and-core-contributions)
+  * [Příspěvky do frameworku Koa](#koa-framework-contributions)
+  * [Od jednotlivého přispěvatele k vedoucímu organizace](#from-individual-contributor-to-organization-leader)
+* [Naše GitHub organizace: Ekosystémy inovací](#our-github-organizations-ecosystems-of-innovation)
+  * [Cabin: Strukturované logování pro moderní aplikace](#cabin-structured-logging-for-modern-applications)
+  * [Spam Scanner: Boj proti zneužívání e-mailů](#spam-scanner-fighting-email-abuse)
+  * [Bree: Moderní plánování úloh s worker threads](#bree-modern-job-scheduling-with-worker-threads)
+  * [Forward Email: Open source infrastruktura e-mailů](#forward-email-open-source-email-infrastructure)
+  * [Lad: Základní nástroje a utility pro Koa](#lad-essential-koa-utilities-and-tools)
+  * [Upptime: Open source monitorování dostupnosti](#upptime-open-source-uptime-monitoring)
+* [Naše příspěvky do ekosystému Forward Email](#our-contributions-to-the-forward-email-ecosystem)
+  * [Od balíčků k produkci](#from-packages-to-production)
   * [Zpětná vazba](#the-feedback-loop)
-* [Základní principy přeposílání e-mailů: základ pro excelenci](#forward-emails-core-principles-a-foundation-for-excellence)
-  * [Vždy přátelské k vývojářům, zaměřené na bezpečnost a transparentní](#always-developer-friendly-security-focused-and-transparent)
+* [Základní principy Forward Email: Základ pro excelenci](#forward-emails-core-principles-a-foundation-for-excellence)
+  * [Vždy přívětivé k vývojářům, zaměřené na bezpečnost a transparentní](#always-developer-friendly-security-focused-and-transparent)
   * [Dodržování osvědčených principů vývoje softwaru](#adherence-to-time-tested-software-development-principles)
-  * [Zaměření na nedbalé vývojáře z bootstrapů](#targeting-the-scrappy-bootstrapped-developer)
-  * [Principy v praxi: Kódová základna pro forwarding e-maily](#principles-in-practice-the-forward-email-codebase)
-  * [Ochrana osobních údajů již od návrhu](#privacy-by-design)
+  * [Cílení na houževnaté, samostatné vývojáře](#targeting-the-scrappy-bootstrapped-developer)
+  * [Principy v praxi: Kódová základna Forward Email](#principles-in-practice-the-forward-email-codebase)
+  * [Ochrana soukromí od začátku](#privacy-by-design)
   * [Udržitelný open source](#sustainable-open-source)
-* [Čísla nelžou: Naše ohromující statistiky stahování npm](#the-numbers-dont-lie-our-staggering-npm-download-statistics)
-  * [Pohled na náš dopad z ptačí perspektivy](#a-birds-eye-view-of-our-impact)
-  * [Denní dopad ve velkém měřítku](#daily-impact-at-scale)
-  * [Za hranicemi surových čísel](#beyond-the-raw-numbers)
-* [Podpora ekosystému: Naše sponzorství open source](#supporting-the-ecosystem-our-open-source-sponsorships)
+* [Čísla nelžou: Naše ohromující statistiky stažení npm](#the-numbers-dont-lie-our-staggering-npm-download-statistics)
+  * [Přehled našeho dopadu](#a-birds-eye-view-of-our-impact)
+  * [Denní dopad v měřítku](#daily-impact-at-scale)
+  * [Za hranicí čistých čísel](#beyond-the-raw-numbers)
+* [Podpora ekosystému: Naše open source sponzorství](#supporting-the-ecosystem-our-open-source-sponsorships)
   * [Andris Reinman: Průkopník e-mailové infrastruktury](#andris-reinman-email-infrastructure-pioneer)
-  * [Sindre Sorhus: Utility Package Mastermind](#sindre-sorhus-utility-package-mastermind)
-* [Odhalování bezpečnostních zranitelností v ekosystému JavaScriptu](#uncovering-security-vulnerabilities-in-the-javascript-ecosystem)
+  * [Sindre Sorhus: Mistr utility balíčků](#sindre-sorhus-utility-package-mastermind)
+* [Odhalování bezpečnostních zranitelností v JavaScript ekosystému](#uncovering-security-vulnerabilities-in-the-javascript-ecosystem)
   * [Záchrana Koa-Routeru](#the-koa-router-rescue)
   * [Řešení zranitelností ReDoS](#addressing-redos-vulnerabilities)
-  * [Podpora zabezpečení Node.js a Chromia](#advocating-for-nodejs-and-chromium-security)
+  * [Prosazování bezpečnosti Node.js a Chromia](#advocating-for-nodejs-and-chromium-security)
   * [Zabezpečení infrastruktury npm](#securing-npm-infrastructure)
-* [Naše příspěvky k ekosystému Forward Email](#our-contributions-to-the-forward-email-ecosystem-1)
-  * [Vylepšení základních funkcí Nodemaileru](#enhancing-nodemailers-core-functionality)
-  * [Pokročilé ověřování e-mailů pomocí Mailauth](#advancing-email-authentication-with-mailauth)
-  * [Klíčová vylepšení provozuschopnosti](#key-upptime-enhancements)
-* [Lepidlo, které drží všechno pohromadě: Vlastní kód ve velkém měřítku](#the-glue-that-holds-it-all-together-custom-code-at-scale)
-  * [Masivní rozvojové úsilí](#a-massive-development-effort)
-  * [Integrace základních závislostí](#core-dependencies-integration)
+* [Naše příspěvky do ekosystému Forward Email](#our-contributions-to-the-forward-email-ecosystem-1)
+  * [Vylepšení základní funkčnosti Nodemaileru](#enhancing-nodemailers-core-functionality)
+  * [Pokrok v autentizaci e-mailů s Mailauth](#advancing-email-authentication-with-mailauth)
+  * [Klíčová vylepšení Upptime](#key-upptime-enhancements)
+* [Lepidlo, které vše drží pohromadě: Vlastní kód v měřítku](#the-glue-that-holds-it-all-together-custom-code-at-scale)
+  * [Obrovské vývojové úsilí](#a-massive-development-effort)
+  * [Integrace klíčových závislostí](#core-dependencies-integration)
   * [DNS infrastruktura s Tangerine a mx-connect](#dns-infrastructure-with-tangerine-and-mx-connect)
-* [Dopad na podniky: Od open source k řešením kritickým pro misi](#enterprise-impact-from-open-source-to-mission-critical-solutions)
-  * [Případové studie v oblasti kritické e-mailové infrastruktury](#case-studies-in-mission-critical-email-infrastructure)
-* [Deset let open source: Pohled do budoucna](#a-decade-of-open-source-looking-forward)
-
+* [Dopad v podnicích: Od open source k řešením kritickým pro mise](#enterprise-impact-from-open-source-to-mission-critical-solutions)
+  * [Případové studie kritické e-mailové infrastruktury](#case-studies-in-mission-critical-email-infrastructure)
+* [Dekáda open source: Výhled do budoucna](#a-decade-of-open-source-looking-forward)
 ## Předmluva {#foreword}
 
-Ve světě [JavaScript](https://en.wikipedia.org/wiki/JavaScript) a [Node.js](https://en.wikipedia.org/wiki/Node.js) jsou některé balíčky nezbytné – stahují se milionykrát denně a pohánějí aplikace po celém světě. Za těmito nástroji stojí vývojáři zaměření na kvalitu open source. Dnes ukážeme, jak náš tým pomáhá vytvářet a udržovat npm balíčky, které se staly klíčovými součástmi ekosystému JavaScriptu.
+Ve světě [JavaScriptu](https://en.wikipedia.org/wiki/JavaScript) a [Node.js](https://en.wikipedia.org/wiki/Node.js) jsou některé balíčky nezbytné – stahují se milionykrát denně a pohánějí aplikace po celém světě. Za těmito nástroji stojí vývojáři zaměření na kvalitu open source. Dnes ukazujeme, jak náš tým pomáhá vytvářet a udržovat npm balíčky, které se staly klíčovými součástmi ekosystému JavaScriptu.
 
-## Průkopníci, kteří nám důvěřují: Isaac Z. Schlueter a přeposílaný e-mail {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
 
-Jsme hrdí na to, že máme uživatele [Isaac Z. Schlueter](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)). Isaac vytvořil [npm](https://en.wikipedia.org/wiki/Npm_\(software\)) a pomohl vybudovat [Node.js](https://en.wikipedia.org/wiki/Node.js). Jeho důvěra v Forward Email ukazuje naše zaměření na kvalitu a bezpečnost. Isaac používá Forward Email pro několik domén včetně izs.me.
+## Průkopníci, kteří nám důvěřují: Isaac Z. Schlueter a Forward Email {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
 
-Isaacův vliv na JavaScript je obrovský. V roce 2009 byl mezi prvními, kdo si všiml potenciálu Node.js, a spolupracoval s [Ryan Dahl](https://en.wikipedia.org/wiki/Ryan_Dahl), který platformu vytvořil. Jak Isaac řekl v příspěvku [rozhovor s časopisem Increment](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/): „Uprostřed této velmi malé komunity lidí, kteří se snažili přijít na to, jak realizovat serverový JS, přišel Ryan Dahl s Node, což byl zjevně ten správný přístup. Zapojil jsem se do toho a zhruba v polovině roku 2009 jsem se do toho velmi zapojil.“
+Jsme hrdí, že máme mezi uživateli [Isaaca Z. Schluetera](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)). Isaac vytvořil [npm](https://en.wikipedia.org/wiki/Npm_\(software\)) a pomáhal budovat [Node.js](https://en.wikipedia.org/wiki/Node.js). Jeho důvěra ve Forward Email ukazuje náš důraz na kvalitu a bezpečnost. Isaac používá Forward Email pro několik domén včetně izs.me.
+
+Isaacův vliv na JavaScript je obrovský. V roce 2009 byl mezi prvními, kdo viděli potenciál Node.js, když spolupracoval s [Ryanem Dahlem](https://en.wikipedia.org/wiki/Ryan_Dahl), který platformu vytvořil. Jak Isaac řekl v [rozhovoru pro časopis Increment](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/): „Uprostřed této velmi malé komunity lidí, kteří se snažili přijít na to, jak uskutečnit serverový JS, přišel Ryan Dahl s Node, což bylo jasně správné řešení. Vsadil jsem na to a velmi se zapojil někdy v polovině roku 2009.“
 
 > \[!NOTE]
-> Pro ty, kteří se zajímají o historii Node.js, jsou k dispozici vynikající dokumenty, které zachycují jeho vývoj, včetně [Příběh Node.js](https://www.youtube.com/watch?v=LB8KwiiUGy0) a [10 věcí, kterých lituji na Node.js - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). Cenné poznatky o práci Ryana Dahla obsahuje i dokument [osobní webové stránky](https://tinyclouds.org/).
+> Pro zájemce o historii Node.js jsou k dispozici vynikající dokumenty, které sledují jeho vývoj, včetně [The Story of Node.js](https://www.youtube.com/watch?v=LB8KwiiUGy0) a [10 Things I Regret About Node.js - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). Ryan Dahlův [osobní web](https://tinyclouds.org/) také obsahuje cenné poznatky o jeho práci.
 
-### Od založení npm k vedení Node.js {#from-npms-creation-to-nodejs-leadership}
+### Od vzniku npm k vedení Node.js {#from-npms-creation-to-nodejs-leadership}
 
-Isaac vytvořil npm v září 2009 a první použitelná verze byla vydána začátkem roku 2010. Tento správce balíčků vyplnil klíčovou potřebu v Node.js a umožnil vývojářům snadno sdílet a znovu používat kód. Podle [Stránka Node.js na Wikipedii](https://en.wikipedia.org/wiki/Node.js): „V lednu 2010 byl pro prostředí Node.js představen správce balíčků s názvem npm. Správce balíčků umožňuje programátorům publikovat a sdílet balíčky Node.js spolu s doprovodným zdrojovým kódem a je navržen tak, aby zjednodušil instalaci, aktualizaci a odinstalaci balíčků.“
+Isaac vytvořil npm v září 2009, přičemž první použitelná verze byla vydána začátkem roku 2010. Tento správce balíčků vyplnil klíčovou potřebu v Node.js, umožňující vývojářům snadno sdílet a znovu používat kód. Podle [stránky Node.js na Wikipedii](https://en.wikipedia.org/wiki/Node.js): „V lednu 2010 byl pro prostředí Node.js zaveden správce balíčků nazvaný npm. Správce balíčků umožňuje programátorům publikovat a sdílet Node.js balíčky spolu s přiloženým zdrojovým kódem a je navržen tak, aby usnadnil instalaci, aktualizaci a odinstalaci balíčků.“
 
-Když Ryan Dahl v lednu 2012 odstoupil z Node.js, Isaac převzal vedení projektu. Jak je uvedeno na [jeho shrnutí](https://izs.me/resume), „vedl vývoj několika základních API Node.js, včetně modulového systému CommonJS, API souborových systémů a streamů“ a „po dobu 2 let působil jako BDFL (benevolentní diktátor na celý život) projektu, čímž zajišťoval neustále rostoucí kvalitu a spolehlivý proces sestavení pro verze Node.js v0.6 až v0.10.“
+Když se Ryan Dahl v lednu 2012 stáhl z Node.js, Isaac převzal vedení projektu. Jak je uvedeno v [jeho životopise](https://izs.me/resume), „vedl vývoj několika základních Node.js core API, včetně systému modulů CommonJS, API pro souborový systém a streamů“ a „působil jako BDFL (Benevolent Dictator For Life) projektu po dobu 2 let, zajišťující stále rostoucí kvalitu a spolehlivý proces sestavení pro verze Node.js v0.6 až v0.10.“
 
-Isaac provedl Node.js klíčovým obdobím růstu a nastavil standardy, které platformu formují dodnes. Později, v roce 2014, založil společnost npm, Inc. na podporu registru npm, který předtím provozoval sám.
+Isaac vedl Node.js během klíčového období růstu a stanovil standardy, které platformu formují dodnes. Později v roce 2014 založil npm, Inc., aby podporoval npm registry, které dříve provozoval sám.
 
 Děkujeme Isaacovi za jeho obrovský přínos pro JavaScript a nadále používáme mnoho balíčků, které vytvořil. Jeho práce změnila způsob, jakým vytváříme software a jak miliony vývojářů sdílejí kód po celém světě.
 
-## Architekt kódu: Cesta Nicka Baugha {#the-architect-behind-the-code-nick-baughs-journey}
 
-Jádrem našeho úspěchu v oblasti open source technologií je Nick Baugh, zakladatel a majitel společnosti Forward Email. Jeho práce v oblasti JavaScriptu trvá téměř 20 let a formovala způsob, jakým nespočet vývojářů vytváří aplikace. Jeho cesta k open source technologiím ukazuje jak technické dovednosti, tak i vůdčí schopnosti komunity.
+## Architekt za kódem: cesta Nicka Baugha {#the-architect-behind-the-code-nick-baughs-journey}
 
-### Příspěvky technického výboru Express a klíčových prvků {#express-technical-committee-and-core-contributions}
+V srdci našeho úspěchu v open source je Nick Baugh, zakladatel a majitel Forward Email. Jeho práce v JavaScriptu trvá téměř 20 let a ovlivnila, jak nespočet vývojářů vytváří aplikace. Jeho cesta v open source ukazuje jak technické dovednosti, tak vedení komunity.
 
-Nickova odbornost v oblasti webových frameworků mu vynesla místo na [Expresní technický výbor](https://expressjs.com/en/resources/community.html), kde pomáhal s jedním z nejpoužívanějších Node.js frameworků. Nick je nyní uveden jako neaktivní člen na [Stránka komunity Express](https://expressjs.com/en/resources/community.html).
+### Technický výbor Express a hlavní příspěvky {#express-technical-committee-and-core-contributions}
 
+Nickova odbornost v oblasti webových frameworků mu zajistila místo v [Technickém výboru Express](https://expressjs.com/en/resources/community.html), kde pomáhal s jedním z nejpoužívanějších Node.js frameworků. Nick je nyní uveden jako neaktivní člen na [stránce komunity Express](https://expressjs.com/en/resources/community.html).
 > \[!IMPORTANT]
-> Express původně vytvořil TJ Holowaychuk, plodný open source přispěvatel, který formoval velkou část ekosystému Node.js. Jsme vděční za TJ-ovu základní práci a respektujeme jeho [rozhodnutí dát si pauzu](https://news.ycombinator.com/item?id=37687017) za jeho rozsáhlé příspěvky k open source.
+> Express byl původně vytvořen TJ Holowaychukem, plodným přispěvatelem do open source, který formoval velkou část ekosystému Node.js. Jsme vděční za TJho základní práci a respektujeme jeho [rozhodnutí si dát pauzu](https://news.ycombinator.com/item?id=37687017) od jeho rozsáhlých open source příspěvků.
 
-Jako člen [Expresní technický výbor](https://expressjs.com/en/resources/community.html) projevoval Nick velkou pozornost k detailům v otázkách, jako je objasňování dokumentace `req.originalUrl` a opravování problémů se zpracováním vícedílných formulářů.
+Jako člen [Technického výboru Express](https://expressjs.com/en/resources/community.html) Nick prokázal velkou pozornost k detailům v otázkách jako je upřesnění dokumentace `req.originalUrl` a oprava problémů s manipulací multipart formulářů.
 
-### Příspěvky do rámce Koa {#koa-framework-contributions}
+### Příspěvky do frameworku Koa {#koa-framework-contributions}
 
-Nickova práce s [Rámec Koa](https://github.com/koajs/koa) – moderní a jednodušší alternativou k Expressu, kterou také vytvořil TJ Holowaychuk – dále ukazuje jeho odhodlání vytvářet lepší nástroje pro webový vývoj. Jeho příspěvky do Koa zahrnují jak řešení problémů, tak i kódu prostřednictvím pull requestů, řešení ošetření chyb, správu typů obsahu a vylepšení dokumentace.
+Nickova práce s [Koa frameworkem](https://github.com/koajs/koa)—moderní, lehčí alternativou k Express, kterou také vytvořil TJ Holowaychuk—dále ukazuje jeho závazek k lepším nástrojům pro webový vývoj. Jeho příspěvky do Koa zahrnují jak řešení problémů, tak kód prostřednictvím pull requestů, zaměřené na zpracování chyb, správu typů obsahu a zlepšení dokumentace.
 
-Jeho práce v Expressu i Koa mu dává jedinečný pohled na webový vývoj v Node.js a pomáhá našemu týmu vytvářet balíčky, které dobře fungují s různými ekosystémy frameworků.
+Jeho práce napříč Express i Koa mu dává jedinečný pohled na webový vývoj v Node.js, což pomáhá našemu týmu vytvářet balíčky, které dobře fungují v rámci více frameworkových ekosystémů.
 
-### Z individuálního přispěvatele na vedoucího organizace {#from-individual-contributor-to-organization-leader}
+### Od jednotlivého přispěvatele k lídrovi organizace {#from-individual-contributor-to-organization-leader}
 
-Co začalo jako pomoc existujícím projektům, se rozrostlo ve vytváření a údržbu celých ekosystémů balíčků. Nick založil několik organizací na GitHubu – včetně [Chata](https://github.com/cabinjs), [Skener spamu](https://github.com/spamscanner), [Přeposlat e-mail](https://github.com/forwardemail), [Chlapec](https://github.com/ladjs) a [Bree](https://github.com/breejs) – z nichž každá řeší specifické potřeby JavaScriptové komunity.
+Co začalo jako pomoc existujícím projektům, vyrostlo v tvorbu a údržbu celých ekosystémů balíčků. Nick založil několik GitHub organizací—včetně [Cabin](https://github.com/cabinjs), [Spam Scanner](https://github.com/spamscanner), [Forward Email](https://github.com/forwardemail), [Lad](https://github.com/ladjs) a [Bree](https://github.com/breejs)—z nichž každá řeší specifické potřeby v JavaScript komunitě.
 
-Tento posun od přispěvatele k vedoucímu pracovníkovi ukazuje Nickovu vizi dobře navrženého softwaru, který řeší skutečné problémy. Organizováním souvisejících balíčků v rámci specializovaných organizací GitHubu vybudoval ekosystémy nástrojů, které spolupracují a zároveň zůstávají modulární a flexibilní pro širší komunitu vývojářů.
+Tento přechod od přispěvatele k lídrovi ukazuje Nickovu vizi dobře navrženého softwaru, který řeší skutečné problémy. Organizováním souvisejících balíčků pod zaměřené GitHub organizace vybudoval nástrojové ekosystémy, které spolupracují, přitom zůstávají modulární a flexibilní pro širší vývojářskou komunitu.
 
-## Naše organizace na GitHubu: Ekosystémy inovací {#our-github-organizations-ecosystems-of-innovation}
 
-Naši práci s otevřeným zdrojovým kódem organizujeme kolem specializovaných organizací GitHub, z nichž každá řeší specifické potřeby v JavaScriptu. Tato struktura vytváří soudržné rodiny balíčků, které dobře fungují a zároveň si zachovávají modularitu.
+## Naše GitHub organizace: Ekosystémy inovací {#our-github-organizations-ecosystems-of-innovation}
 
-### Kabina: Strukturované protokolování pro moderní aplikace {#cabin-structured-logging-for-modern-applications}
+Naši open source práci organizujeme kolem zaměřených GitHub organizací, z nichž každá řeší specifické potřeby v JavaScriptu. Tato struktura vytváří soudržné rodiny balíčků, které spolu dobře fungují a zároveň zůstávají modulární.
 
-Balíček [Organizace kabiny](https://github.com/cabinjs) je naše verze jednoduchého a výkonného protokolování aplikací. Hlavní balíček [`cabin`](https://github.com/cabinjs/cabin) má téměř 900 hvězdiček na GitHubu a přes 100 000 stažení týdně\[^1]. Cabin poskytuje strukturované protokolování, které funguje s oblíbenými službami, jako jsou Sentry, LogDNA a Papertrail.
+### Cabin: Strukturované logování pro moderní aplikace {#cabin-structured-logging-for-modern-applications}
 
-Cabin je výjimečný svým promyšleným systémem API a pluginů. Podpůrné balíčky jako [`axe`](https://github.com/cabinjs/axe) pro middleware Express a [`parse-request`](https://github.com/cabinjs/parse-request) pro parsování HTTP požadavků ukazují náš závazek poskytovat kompletní řešení, nikoli izolované nástroje.
+[Organizace Cabin](https://github.com/cabinjs) je náš pohled na jednoduché, výkonné logování aplikací. Hlavní balíček [`cabin`](https://github.com/cabinjs/cabin) má téměř 900 hvězdiček na GitHubu a přes 100 000 týdenních stažení\[^1]. Cabin poskytuje strukturované logování, které funguje s populárními službami jako Sentry, LogDNA a Papertrail.
 
-Zvláštní zmínku si zaslouží balíček [`bson-objectid`](https://github.com/cabinjs/bson-objectid), který si za pouhé dva měsíce stáhl více než 1,7 milionukrát.\[^2] Tato odlehčená implementace MongoDB ObjectID se stala volbou pro vývojáře, kteří potřebují ID bez plných závislostí MongoDB.
+Co dělá Cabin výjimečným, je jeho promyšlené API a systém pluginů. Podpůrné balíčky jako [`axe`](https://github.com/cabinjs/axe) pro Express middleware a [`parse-request`](https://github.com/cabinjs/parse-request) pro parsování HTTP požadavků ukazují náš závazek k úplným řešením místo izolovaných nástrojů.
 
-### Kontrola spamu: Boj proti zneužívání e-mailů {#spam-scanner-fighting-email-abuse}
+Balíček [`bson-objectid`](https://github.com/cabinjs/bson-objectid) si zaslouží zvláštní zmínku, s více než 1,7 miliony stažení za pouhé dva měsíce\[^2]. Tato lehká implementace MongoDB ObjectID se stala oblíbenou volbou pro vývojáře, kteří potřebují ID bez plných závislostí na MongoDB.
 
-Balíček [Organizace pro kontrolu spamu](https://github.com/spamscanner) ukazuje náš závazek řešit skutečné problémy. Hlavní balíček [`spamscanner`](https://github.com/spamscanner/spamscanner) poskytuje pokročilou detekci spamu v e-mailech, ale úžasného přijetí se dočkal balíček [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe).
+### Spam Scanner: Boj proti zneužívání e-mailů {#spam-scanner-fighting-email-abuse}
 
-S více než 1,2 miliony stažení za dva měsíce\[^3] opravuje balíček `url-regex-safe` kritické bezpečnostní problémy v jiných regulárních výrazech pro detekci URL. Tento balíček ukazuje náš přístup k open source: nalezení běžného problému (v tomto případě zranitelnosti [Znovu](https://en.wikipedia.org/wiki/ReDoS) v ověřování URL), vytvoření solidního řešení a jeho pečlivá údržba.
+[Organizace Spam Scanner](https://github.com/spamscanner) ukazuje náš závazek řešit skutečné problémy. Hlavní balíček [`spamscanner`](https://github.com/spamscanner/spamscanner) poskytuje pokročilou detekci spamových e-mailů, ale balíček [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe) zaznamenal úžasné přijetí.
 
+S více než 1,2 miliony stažení za dva měsíce\[^3], `url-regex-safe` opravuje kritické bezpečnostní problémy v jiných regulárních výrazech pro detekci URL. Tento balíček ukazuje náš přístup k open source: najít běžný problém (v tomto případě [ReDoS](https://en.wikipedia.org/wiki/ReDoS) zranitelnosti v ověřování URL), vytvořit solidní řešení a pečlivě jej udržovat.
 ### Bree: Moderní plánování úloh s pracovními vlákny {#bree-modern-job-scheduling-with-worker-threads}
 
-Balíček [organizace Bree](https://github.com/breejs) je naší odpovědí na běžný problém Node.js: spolehlivé plánování úloh. Hlavní balíček [`bree`](https://github.com/breejs/bree) s více než 3 100 hvězdičkami na GitHubu poskytuje moderní plánovač úloh využívající pracovní vlákna Node.js pro lepší výkon a spolehlivost.
+Organizace [Bree](https://github.com/breejs) je naší odpovědí na běžný problém v Node.js: spolehlivé plánování úloh. Hlavní balíček [`bree`](https://github.com/breejs/bree), s více než 3 100 hvězdami na GitHubu, poskytuje moderní plánovač úloh využívající pracovní vlákna Node.js pro lepší výkon a spolehlivost.
 
 > \[!NOTE]
-> Bree vznikla poté, co jsme pomohli s údržbou [Program](https://github.com/agenda/agenda) a aplikovali získané poznatky k vytvoření lepšího plánovače úloh. Naše příspěvky do Agendy nám pomohly najít způsoby, jak vylepšit plánování úloh.
+> Bree vzniklo poté, co jsme pomáhali udržovat [Agenda](https://github.com/agenda/agenda), přičemž jsme aplikovali získané zkušenosti k vytvoření lepšího plánovače úloh. Naše příspěvky do Agendy nám pomohly najít způsoby, jak zlepšit plánování úloh.
 
-Co odlišuje Bree od jiných plánovačů, jako je Agenda:
+Co dělá Bree odlišným od jiných plánovačů jako Agenda:
 
-* **Žádné externí závislosti**: Na rozdíl od Agenda, která vyžaduje MongoDB, Bree nevyžaduje Redis ani MongoDB ke správě stavu úloh.
-* **Pracovní vlákna**: Bree používá pracovní vlákna Node.js pro sandboxové procesy, což poskytuje lepší izolaci a výkon.
-* **Jednoduché API**: Bree nabízí detailní kontrolu s jednoduchostí, což usnadňuje implementaci složitých plánovacích potřeb.
-* **Vestavěná podpora**: Ve výchozím nastavení jsou zahrnuty funkce jako plynulé opětovné načítání, cron úlohy, data a uživatelsky přívětivé časy.
+* **Žádné externí závislosti**: Na rozdíl od Agendy, která potřebuje MongoDB, Bree nevyžaduje Redis ani MongoDB pro správu stavu úloh.
+* **Pracovní vlákna**: Bree používá pracovní vlákna Node.js pro sandboxované procesy, což poskytuje lepší izolaci a výkon.
+* **Jednoduché API**: Bree nabízí podrobnou kontrolu s jednoduchostí, což usnadňuje implementaci složitých požadavků na plánování.
+* **Vestavěná podpora**: Funkce jako plynulé přenačítání, cron úlohy, data a uživatelsky přívětivé časy jsou zahrnuty ve výchozím nastavení.
 
-Bree je klíčovou součástí [forwardemail.net](https://github.com/forwardemail/forwardemail.net) a zpracovává kritické úlohy na pozadí, jako je zpracování e-mailů, čištění a plánovaná údržba. Použití Bree v Forward Email ukazuje náš závazek používat v produkčním prostředí vlastní nástroje a zajistit, aby splňovaly vysoké standardy spolehlivosti.
+Bree je klíčovou součástí [forwardemail.net](https://github.com/forwardemail/forwardemail.net), kde zajišťuje kritické úlohy na pozadí jako zpracování e-mailů, úklid a plánovanou údržbu. Použití Bree ve Forward Email ukazuje náš závazek používat vlastní nástroje v produkci a zajistit, že splňují vysoké standardy spolehlivosti.
 
-Také používáme a oceňujeme další skvělé balíčky pracovních vláken, jako je [bazén](https://github.com/piscinajs/piscina), a HTTP klienty, jako je [jedenáct](https://github.com/nodejs/undici). Piscina, stejně jako Bree, používá pracovní vlákna Node.js pro efektivní zpracování úloh. Děkujeme [Matthew Hill](https://github.com/mcollina), který spravuje undici i piscinu, za jeho významný přínos pro Node.js. Matteo působí v technickém řídícím výboru Node.js a výrazně vylepšil možnosti HTTP klientů v Node.js.
+Také používáme a oceňujeme další skvělé balíčky pro pracovní vlákna jako [piscina](https://github.com/piscinajs/piscina) a HTTP klienty jako [undici](https://github.com/nodejs/undici). Piscina, stejně jako Bree, využívá pracovní vlákna Node.js pro efektivní zpracování úloh. Děkujeme [Matteu Collinovi](https://github.com/mcollina), který udržuje jak undici, tak piscina, za jeho významné příspěvky do Node.js. Matteo je členem Technického řídícího výboru Node.js a výrazně zlepšil schopnosti HTTP klientů v Node.js.
 
-### Přeposílání e-mailů: Open Source e-mailová infrastruktura {#forward-email-open-source-email-infrastructure}
+### Forward Email: Open Source e-mailová infrastruktura {#forward-email-open-source-email-infrastructure}
 
-Naším nejambicióznějším projektem je [Přeposlat e-mail](https://github.com/forwardemail), open source e-mailová služba, která poskytuje přeposílání e-mailů, ukládání a služby API. Hlavní repozitář má na GitHubu přes 1100 hvězdiček\[^4], což ukazuje, že komunita si této alternativy k proprietárním e-mailovým službám váží.
+Náš nejambicióznější projekt je [Forward Email](https://github.com/forwardemail), open source e-mailová služba, která poskytuje přeposílání e-mailů, úložiště a API služby. Hlavní repozitář má přes 1 100 hvězd na GitHubu\[^4], což ukazuje ocenění komunity pro tuto alternativu k proprietárním e-mailovým službám.
 
-Balíček [`preview-email`](https://github.com/forwardemail/preview-email) od této organizace, s více než 2,5 miliony stažení za dva měsíce\[^5], se stal nezbytným nástrojem pro vývojáře pracující s šablonami e-mailů. Tím, že poskytuje jednoduchý způsob náhledu e-mailů během vývoje, řeší běžný problém při vytváření aplikací s podporou e-mailu.
+Balíček [`preview-email`](https://github.com/forwardemail/preview-email) z této organizace, s více než 2,5 miliony stažení za dva měsíce\[^5], se stal nezbytným nástrojem pro vývojáře pracující s e-mailovými šablonami. Poskytuje jednoduchý způsob náhledu e-mailů během vývoje, čímž řeší běžný problém při tvorbě aplikací podporujících e-maily.
 
-### Chlapče: Základní nástroje a utility Koa {#lad-essential-koa-utilities-and-tools}
+### Lad: Základní nástroje a utility pro Koa {#lad-essential-koa-utilities-and-tools}
 
-Balíček [organizace Lad](https://github.com/ladjs) poskytuje kolekci základních utilit a nástrojů primárně zaměřených na vylepšení ekosystému frameworku Koa. Tyto balíčky řeší běžné problémy ve webovém vývoji a jsou navrženy tak, aby bezproblémově fungovaly společně a zároveň zůstaly užitečné i samostatně.
+Organizace [Lad](https://github.com/ladjs) poskytuje sbírku základních utilit a nástrojů zaměřených především na rozšíření ekosystému frameworku Koa. Tyto balíčky řeší běžné výzvy ve webovém vývoji a jsou navrženy tak, aby spolu hladce spolupracovaly a zároveň byly samostatně užitečné.
 
 #### koa-better-error-handler: Vylepšené zpracování chyb pro Koa {#koa-better-error-handler-improved-error-handling-for-koa}
 
-[`koa-better-error-handler`](https://github.com/ladjs/koa-better-error-handler) nabízí lepší řešení pro ošetření chyb v aplikacích Koa. S více než 50 hvězdičkami na GitHubu tento balíček umožňuje `ctx.throw` generovat uživatelsky přívětivé chybové zprávy a zároveň řeší několik omezení vestavěného obslužného programu chyb Koa:
+[`koa-better-error-handler`](https://github.com/ladjs/koa-better-error-handler) nabízí lepší řešení zpracování chyb pro aplikace Koa. S více než 50 hvězdami na GitHubu tento balíček umožňuje, aby `ctx.throw` produkovalo uživatelsky přívětivé chybové zprávy a zároveň řeší několik omezení vestavěného zpracování chyb v Koa:
 
-* Detekuje a správně zpracovává chyby DNS Node.js, Mongoose a Redis
-* Používá [Výložník](https://github.com/hapijs/boom) pro vytváření konzistentních a dobře formátovaných chybových odpovědí
-* Zachovává hlavičky (na rozdíl od vestavěného obslužného programu Koa)
-* Zachovává příslušné stavové kódy namísto výchozí hodnoty 500
-* Podporuje flash zprávy a zachování relací
-* Poskytuje seznamy chyb HTML pro chyby validace
+* Detekuje a správně zpracovává chyby Node.js DNS, chyby Mongoose a chyby Redis
+* Používá [Boom](https://github.com/hapijs/boom) pro vytváření konzistentních, dobře formátovaných chybových odpovědí
+* Zachovává hlavičky (na rozdíl od vestavěného zpracování Koa)
+* Udržuje vhodné stavové kódy místo výchozího 500
+* Podporuje flash zprávy a zachování session
+* Poskytuje HTML seznamy chyb pro validační chyby
 * Podporuje více typů odpovědí (HTML, JSON a prostý text)
-
 Tento balíček je obzvláště cenný při použití společně s [`koa-404-handler`](https://github.com/ladjs/koa-404-handler) pro komplexní správu chyb v aplikacích Koa.
 
-Pas ####: Ověření pro chlapce {#passport-authentication-for-lad}
+#### passport: Autentizace pro Lad {#passport-authentication-for-lad}
 
-[`@ladjs/passport`](https://github.com/ladjs/passport) rozšiřuje oblíbený middleware pro ověřování Passport.js o specifická vylepšení pro moderní webové aplikace. Tento balíček podporuje několik strategií ověřování ihned po instalaci:
+[`@ladjs/passport`](https://github.com/ladjs/passport) rozšiřuje populární middleware pro autentizaci Passport.js o specifická vylepšení pro moderní webové aplikace. Tento balíček podporuje více autentizačních strategií ihned po vybalení:
 
-* Lokální ověřování pomocí e-mailu
+* Lokální autentizace pomocí e-mailu
 * Přihlášení přes Apple
-* Ověřování přes GitHub
-* Ověřování přes Google
-* Ověřování jednorázovým heslem (OTP)
+* Autentizace přes GitHub
+* Autentizace přes Google
+* Autentizace pomocí jednorázového hesla (OTP)
 
-Balíček je vysoce přizpůsobitelný a umožňuje vývojářům upravovat názvy polí a fráze tak, aby odpovídaly požadavkům jejich aplikace. Je navržen tak, aby se bezproblémově integroval s Mongoose pro správu uživatelů, což z něj činí ideální řešení pro aplikace založené na Koa, které vyžadují robustní ověřování.
+Balíček je vysoce přizpůsobitelný, umožňuje vývojářům upravit názvy polí a fráze tak, aby odpovídaly požadavkům jejich aplikace. Je navržen tak, aby se bezproblémově integroval s Mongoose pro správu uživatelů, což z něj činí ideální řešení pro aplikace založené na Koa, které potřebují robustní autentizaci.
 
-#### graceful: Elegantní vypnutí aplikace {#graceful-elegant-application-shutdown}
+#### graceful: Elegantní ukončení aplikace {#graceful-elegant-application-shutdown}
 
-[`@ladjs/graceful`](https://github.com/ladjs/graceful) řeší kritický problém elegantního ukončení aplikací Node.js. S více než 70 hvězdičkami na GitHubu tento balíček zajišťuje, že vaše aplikace může být čistě ukončena bez ztráty dat nebo zablokování připojení. Mezi klíčové funkce patří:
+[`@ladjs/graceful`](https://github.com/ladjs/graceful) řeší kritický problém elegantního ukončení aplikací Node.js. S více než 70 hvězdami na GitHubu tento balíček zajišťuje, že vaše aplikace může být ukončena čistě, aniž by došlo ke ztrátě dat nebo ponechání otevřených spojení. Klíčové vlastnosti zahrnují:
 
-* Podpora pro elegantní zavírání HTTP serverů (Express/Koa/Fastify)
-* Bezproblémové ukončení databázových připojení (MongoDB/Mongoose)
-* Správné zavírání Redis klientů
-* Zvládání plánovačů úloh Bree
-* Podpora vlastních obslužných rutin pro vypnutí
-* Konfigurovatelné nastavení časového limitu
-* Integrace s protokolovacími systémy
+* Podpora pro elegantní uzavření HTTP serverů (Express/Koa/Fastify)
+* Čisté ukončení připojení k databázi (MongoDB/Mongoose)
+* Správné uzavření Redis klientů
+* Správa plánovačů úloh Bree
+* Podpora vlastních handlerů pro ukončení
+* Konfigurovatelná časová omezení
+* Integrace se systémy logování
 
-Tento balíček je nezbytný pro produkční aplikace, kde by neočekávané vypnutí mohlo vést ke ztrátě nebo poškození dat. Implementací správných postupů vypnutí pomáhá `@ladjs/graceful` zajistit spolehlivost a stabilitu vaší aplikace.
+Tento balíček je nezbytný pro produkční aplikace, kde neočekávané ukončení může vést ke ztrátě nebo poškození dat. Implementací správných postupů ukončení pomáhá `@ladjs/graceful` zajistit spolehlivost a stabilitu vaší aplikace.
 
-### Doba provozuschopnosti: Monitorování provozuschopnosti open source {#upptime-open-source-uptime-monitoring}
+### Upptime: Open Source monitorování dostupnosti {#upptime-open-source-uptime-monitoring}
 
-[Organizace provozuschopnosti](https://github.com/upptime) představuje náš závazek k transparentnímu monitorování open source. Hlavní repozitář [`upptime`](https://github.com/upptime/upptime) má přes 13 000 hvězdiček na GitHubu, což z něj činí jeden z nejoblíbenějších projektů, do kterých přispíváme. Upptime poskytuje monitor dostupnosti a stavovou stránku s využitím GitHubu, která funguje zcela bez serveru.
+Organizace [Upptime](https://github.com/upptime) představuje náš závazek k transparentnímu, open source monitorování. Hlavní repozitář [`upptime`](https://github.com/upptime/upptime) má přes 13 000 hvězd na GitHubu, což z něj činí jeden z nejpopulárnějších projektů, na kterých přispíváme. Upptime poskytuje monitor dostupnosti a statusovou stránku poháněnou GitHubem, která funguje zcela bez serveru.
 
-Pro naši vlastní stránku se stavem na adrese <https://status.forwardemail.net> používáme Upptime, zdrojový kód je k dispozici na adrese <https://github.com/forwardemail/status.forwardemail.net>..
+Upptime používáme pro naši vlastní statusovou stránku na <https://status.forwardemail.net> s dostupným zdrojovým kódem na <https://github.com/forwardemail/status.forwardemail.net>.
 
 Co dělá Upptime výjimečným, je jeho architektura:
 
-* **100% open source**: Každá komponenta je plně open source a přizpůsobitelná.
-* **Poháněno GitHubem**: Využívá akce, problémy a stránky GitHubu pro bezserverové monitorovací řešení.
-* **Není vyžadován server**: Na rozdíl od tradičních monitorovacích nástrojů Upptime nevyžaduje provozování ani údržbu serveru.
-* **Automatická stavová stránka**: Generuje krásnou stavovou stránku, kterou lze hostovat na stránkách GitHubu.
-* **Výkonná oznámení**: Integruje se s různými notifikačními kanály včetně e-mailu, SMS a Slacku.
+* **100% Open Source**: Každá součást je plně open source a přizpůsobitelná.
+* **Poháněno GitHubem**: Využívá GitHub Actions, Issues a Pages pro bezserverové monitorování.
+* **Není potřeba server**: Na rozdíl od tradičních monitorovacích nástrojů Upptime nevyžaduje provoz nebo údržbu serveru.
+* **Automatická statusová stránka**: Generuje krásnou statusovou stránku, kterou lze hostovat na GitHub Pages.
+* **Výkonná oznámení**: Integruje se s různými kanály oznámení včetně e-mailu, SMS a Slacku.
 
-Abychom vylepšili uživatelský komfort, integrovali jsme do kódové základny forwardemail.net `[@octokit/core](https://github.com/octokit/core.js/)`, abychom mohli zobrazovat aktualizace stavu a incidenty v reálném čase přímo na našich webových stránkách. Tato integrace poskytuje našim uživatelům jasnou transparentnost v případě jakýchkoli problémů v celém našem stacku (web, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree atd.) s okamžitými upozorněními, změnami ikon odznaků, barvami varování a dalšími funkcemi.
+Pro zlepšení uživatelského zážitku jsme integrovali [@octokit/core](https://github.com/octokit/core.js/) do kódu forwardemail.net, aby zobrazoval aktualizace stavu a incidentů v reálném čase přímo na našem webu. Tato integrace poskytuje jasnou transparentnost našim uživatelům v případě jakýchkoli problémů napříč celým naším stackem (Web, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree atd.) s okamžitými toast notifikacemi, změnami ikon odznaků, varovnými barvami a dalšími.
 
-Knihovna @octokit/core nám umožňuje načítat data v reálném čase z našeho repozitáře Upptime na GitHubu, zpracovávat je a zobrazovat uživatelsky přívětivým způsobem. Když dojde k výpadku nebo snížení výkonu jakékoli služby, uživatelé jsou okamžitě informováni pomocí vizuálních indikátorů, aniž by museli opustit hlavní aplikaci. Tato bezproblémová integrace zajišťuje, že naši uživatelé mají vždy aktuální informace o stavu našeho systému, což zvyšuje transparentnost a důvěru.
+Knihovna @octokit/core nám umožňuje získávat data v reálném čase z našeho Upptime GitHub repozitáře, zpracovávat je a zobrazovat uživatelsky přívětivým způsobem. Když má jakákoliv služba výpadek nebo snížený výkon, uživatelé jsou okamžitě upozorněni vizuálními indikátory, aniž by museli opustit hlavní aplikaci. Tato bezproblémová integrace zajišťuje, že naši uživatelé mají vždy aktuální informace o stavu našeho systému, což zvyšuje transparentnost a důvěru.
 
-Projekt Uptime si osvojily stovky organizací, které hledají transparentní a spolehlivý způsob, jak monitorovat své služby a sdělovat stav uživatelům. Úspěch projektu ukazuje sílu budování nástrojů, které využívají stávající infrastrukturu (v tomto případě GitHub) k řešení běžných problémů novými způsoby.
+Upptime bylo přijato stovkami organizací, které hledají transparentní a spolehlivý způsob, jak monitorovat své služby a komunikovat stav uživatelům. Úspěch projektu ukazuje sílu vytváření nástrojů, které využívají existující infrastrukturu (v tomto případě GitHub) k řešení běžných problémů novými způsoby.
+## Naše příspěvky do ekosystému Forward Email {#our-contributions-to-the-forward-email-ecosystem}
 
-## Naše příspěvky k ekosystému přeposílaných e-mailů {#our-contributions-to-the-forward-email-ecosystem}
+Zatímco naše open source balíčky používají vývojáři po celém světě, tvoří také základ naší vlastní služby Forward Email. Tato dvojí role – jako tvůrců i uživatelů těchto nástrojů – nám poskytuje jedinečný pohled na jejich reálné použití a pohání neustálé zlepšování.
 
-Naše balíčky s otevřeným zdrojovým kódem sice používají vývojáři po celém světě, ale zároveň tvoří základ naší vlastní služby Forward Email. Tato dvojí role – jako tvůrců i uživatelů těchto nástrojů – nám dává jedinečný pohled na jejich reálné uplatnění a vede k neustálému zlepšování.
+### Od balíčků k produkci {#from-packages-to-production}
 
-### Z balíčků do produkčního prostředí {#from-packages-to-production}
+Cesta od jednotlivých balíčků k soudržnému produkčnímu systému zahrnuje pečlivou integraci a rozšíření. Pro Forward Email tento proces zahrnuje:
 
-Cesta od jednotlivých balíčků k ucelenému produkčnímu systému zahrnuje pečlivou integraci a rozšiřování. V případě Forward Email tento proces zahrnuje:
+* **Vlastní rozšíření**: Vytváření rozšíření specifických pro Forward Email k našim open source balíčkům, která řeší naše jedinečné požadavky.
+* **Vzorce integrace**: Vývoj vzorců, jak tyto balíčky spolupracují v produkčním prostředí.
+* **Optimalizace výkonu**: Identifikace a řešení výkonových úzkých míst, která se projeví až ve velkém měřítku.
+* **Zesílení bezpečnosti**: Přidání dalších bezpečnostních vrstev specifických pro zpracování e-mailů a ochranu uživatelských dat.
 
-* **Vlastní rozšíření**: Vytváření rozšíření specifických pro Forward Email pro naše balíčky s otevřeným zdrojovým kódem, která splňují naše jedinečné požadavky.
-* **Integrační vzory**: Vývoj vzorů pro interakci těchto balíčků v produkčním prostředí.
-* **Optimalizace výkonu**: Identifikace a řešení úzkých míst ve výkonu, která se objevují pouze ve velkém měřítku.
-* **Zvýšení zabezpečení**: Přidání dalších bezpečnostních vrstev specifických pro zpracování e-mailů a ochranu uživatelských dat.
+Tato práce představuje tisíce hodin vývoje nad rámec samotných základních balíčků, což vede k robustní a bezpečné e-mailové službě, která využívá to nejlepší z našich open source příspěvků.
 
-Tato práce představuje tisíce hodin vývoje nad rámec samotných základních balíčků, výsledkem čehož je robustní a bezpečná e-mailová služba, která využívá to nejlepší z našich open source příspěvků.
+### Zpětná vazba {#the-feedback-loop}
 
-### Zpětnovazební smyčka {#the-feedback-loop}
+Možná nejcennějším aspektem používání našich vlastních balíčků v produkci je zpětná vazba, kterou to vytváří. Když narazíme na omezení nebo okrajové případy ve Forward Email, neřešíme je pouze lokálně – zlepšujeme základní balíčky, což prospívá jak naší službě, tak širší komunitě.
 
-Snad nejcennějším aspektem používání vlastních balíčků v produkčním prostředí je zpětná vazba, kterou vytváří. Když narazíme na omezení nebo hraniční případy v aplikaci Forward Email, neopravujeme je pouze lokálně – vylepšujeme základní balíčky, což prospívá jak naší službě, tak širší komunitě.
+Tento přístup vedl k mnoha vylepšením:
 
-Tento přístup vedl k řadě vylepšení:
+* **Graceful Shutdown v Bree**: Potřeba Forward Email pro nasazení bez výpadků vedla k vylepšeným schopnostem elegantního ukončení v Bree.
+* **Rozpoznávání vzorů ve Spam Scanneru**: Reálné spamové vzory zachycené ve Forward Email ovlivnily detekční algoritmy Spam Scanneru.
+* **Optimalizace výkonu v Cabinu**: Vysoký objem logování v produkci odhalil možnosti optimalizace v Cabinu, které prospívají všem uživatelům.
 
-* **Breeho elegantní vypnutí**: Potřeba nasazení s nulovými prostoji v aplikaci Forward Email vedla k vylepšeným možnostem elegantního vypnutí v Bree.
-* **Rozpoznávání vzorů skeneru spamu**: Detekční algoritmy skeneru spamu byly ovlivněny vzory spamu z reálného světa, se kterými se setkáváme v aplikaci Forward Email.
-* **Optimalizace výkonu v aplikaci Cabin**: Velkoobjemové protokolování v produkčním prostředí odhalilo optimalizační příležitosti v aplikaci Cabin, které prospívají všem uživatelům.
+Udržováním tohoto ctnostného cyklu mezi naší open source prací a produkční službou zajišťujeme, že naše balíčky zůstávají praktickými, v boji prověřenými řešeními, nikoli teoretickými implementacemi.
 
-Udržováním tohoto pozitivního cyklu mezi naší prací s otevřeným zdrojovým kódem a produkčními službami zajišťujeme, že naše balíčky zůstávají praktickými, ověřenými řešeními, nikoli teoretickými implementacemi.
 
-## Základní principy přeposílání e-mailů: základ pro excelenci {#forward-emails-core-principles-a-foundation-for-excellence}
+## Základní principy Forward Email: Základ pro excelenci {#forward-emails-core-principles-a-foundation-for-excellence}
 
-Služba Forward Email je navržena podle souboru základních principů, kterými se řídí veškerá naše vývojová rozhodnutí. Tyto principy, podrobně popsané v našem [webové stránky](/blog/docs/best-quantum-safe-encrypted-email-service#principles), zajišťují, že naše služba zůstane uživatelsky přívětivá, bezpečná a zaměřená na soukromí uživatelů.
+Forward Email je navržen podle sady základních principů, které řídí všechna naše vývojová rozhodnutí. Tyto principy, podrobně popsány na naší [webové stránce](/blog/docs/best-quantum-safe-encrypted-email-service#principles), zajišťují, že naše služba zůstává přívětivá pro vývojáře, bezpečná a zaměřená na ochranu soukromí uživatelů.
 
-### Vždy přátelské k vývojářům, zaměřené na zabezpečení a transparentní {#always-developer-friendly-security-focused-and-transparent}
+### Vždy přívětivý pro vývojáře, zaměřený na bezpečnost a transparentní {#always-developer-friendly-security-focused-and-transparent}
 
-Naší prvořadou zásadou je vytvářet software, který je uživatelsky přívětivý a zároveň zachovává nejvyšší standardy zabezpečení a soukromí. Věříme, že technická dokonalost by nikdy neměla být na úkor použitelnosti a že transparentnost buduje důvěru v naší komunitě.
+Naším prvním a nejdůležitějším principem je vytvářet software, který je přívětivý pro vývojáře a zároveň udržuje nejvyšší standardy bezpečnosti a soukromí. Věříme, že technická dokonalost by nikdy neměla být na úkor použitelnosti a že transparentnost buduje důvěru v naší komunitu.
 
-Tento princip se projevuje v naší podrobné dokumentaci, jasných chybových hlášeních a otevřené komunikaci o úspěších i výzvách. Tím, že zpřístupňujeme celou naši kódovou základnu jako open source, vybízíme k bližšímu zkoumání a spolupráci, čímž posilujeme jak náš software, tak i širší ekosystém.
+Tento princip se projevuje v naší podrobné dokumentaci, jasných chybových hlášeních a otevřené komunikaci o úspěších i výzvách. Tím, že celý náš kód zpřístupňujeme jako open source, zveme k přezkoumání a spolupráci, což posiluje jak náš software, tak širší ekosystém.
 
 ### Dodržování osvědčených principů vývoje softwaru {#adherence-to-time-tested-software-development-principles}
 
-Řídíme se několika zavedenými principy vývoje softwaru, které se osvědčily v průběhu desetiletí:
+Řídíme se několika zavedenými principy vývoje softwaru, které se osvědčily během desetiletí:
 
-* **[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Oddělení úkolů pomocí vzoru Model-View-Controller
-* **[Filozofie Unixu](https://en.wikipedia.org/wiki/Unix_philosophy)**: Vytváření modulárních komponent, které dobře dělají jednu věc
-* **[KISS](https://en.wikipedia.org/wiki/KISS_principle)**: Zachování jednoduchosti a přímočarosti
-* **[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)**: Neopakujte se, podpora opětovného použití kódu
-* **[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)**: Nebudete to potřebovat, vyhněte se předčasné optimalizaci
-* **[Dvanáctifaktor](https://12factor.net/)**: Dodržování osvědčených postupů pro vytváření moderních, škálovatelných aplikací
-* **[Occamova břitva](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Výběr nejjednoduššího řešení, které splňuje požadavky
-* **[Interní testování](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**: Rozsáhlé používání vlastních produktů
+* **[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Oddělení zodpovědností pomocí vzoru Model-View-Controller
+* **[Unix filozofie](https://en.wikipedia.org/wiki/Unix_philosophy)**: Vytváření modulárních komponent, které dělají jednu věc dobře
+* **[KISS](https://en.wikipedia.org/wiki/KISS_principle)**: Držet to jednoduché a přímočaré
+* **[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)**: Nepřepisuj se, podporující opětovné použití kódu
+* **[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)**: Nebudeš to potřebovat, vyhýbání se předčasné optimalizaci
+* **[Twelve Factor](https://12factor.net/)**: Dodržování osvědčených postupů pro tvorbu moderních, škálovatelných aplikací
+* **[Occamova břitva](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Volba nejjednoduššího řešení, které splňuje požadavky
+* **[Dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**: Intenzivní používání vlastních produktů
+Tyto principy nejsou jen teoretické koncepty – jsou zakotveny v našich každodenních vývojových postupech. Například naše dodržování unixové filozofie je patrné v tom, jak jsme strukturovali naše npm balíčky: malé, zaměřené moduly, které lze složit dohromady k řešení složitých problémů.
 
-Tyto principy nejsou jen teoretické koncepty – jsou zakotveny v našich každodenních vývojových postupech. Například naše dodržování filozofie Unixu je patrné ve způsobu, jakým jsme strukturovali naše npm balíčky: malé, cílené moduly, které lze skládat dohromady a řešit tak složité problémy.
+### Cílení na houževnatého, samofinancovaného vývojáře {#targeting-the-scrappy-bootstrapped-developer}
 
-### Zaměřujeme se na nedbalé vývojáře pracující na bootstrapu {#targeting-the-scrappy-bootstrapped-developer}
+Specificky cílíme na houževnatého, samofinancovaného a [ramen-profitable](https://www.paulgraham.com/ramenprofitable.html) vývojáře. Tento fokus formuje vše od našeho cenového modelu až po naše technická rozhodnutí. Rozumíme výzvám budování produktů s omezenými zdroji, protože jsme si tím sami prošli.
 
-Zaměřujeme se konkrétně na nezkušené, bootstrapované a DOČASNÉ vývojáře. Toto zaměření ovlivňuje vše od našeho cenového modelu až po naše technická rozhodnutí. Chápeme výzvy spojené s tvorbou produktů s omezenými zdroji, protože jsme si tím sami prošli.
+Tento princip je obzvlášť důležitý v našem přístupu k open source. Vytváříme a udržujeme balíčky, které řeší skutečné problémy vývojářů bez podnikových rozpočtů, čímž zpřístupňujeme výkonné nástroje všem bez ohledu na jejich zdroje.
 
-Tato zásada je obzvláště důležitá v našem přístupu k open source. Vytváříme a udržujeme balíčky, které řeší skutečné problémy vývojářů bez podnikových rozpočtů a zpřístupňují tak výkonné nástroje všem bez ohledu na jejich zdroje.
+### Principy v praxi: Kódová základna Forward Email {#principles-in-practice-the-forward-email-codebase}
 
-### Principy v praxi: Kódová základna pro přeposílání e-mailů {#principles-in-practice-the-forward-email-codebase}
+Tyto principy jsou jasně viditelné v kódové základně Forward Email. Náš soubor package.json odhaluje promyšlený výběr závislostí, z nichž každá byla vybrána tak, aby odpovídala našim základním hodnotám:
 
-Tyto principy jsou jasně viditelné v kódové základně Forward Email. Náš soubor package.json odhaluje promyšlený výběr závislostí, z nichž každá je vybrána tak, aby odpovídala našim základním hodnotám:
+* Bezpečnostně zaměřené balíčky jako `mailauth` pro autentizaci e-mailů
+* Vývojářsky přívětivé nástroje jako `preview-email` pro snadnější ladění
+* Modulární komponenty jako různé utility `p-*` od Sindre Sorhuse
 
-* Balíčky zaměřené na zabezpečení, jako například `mailauth` pro ověřování e-mailů
-* Nástroje pro vývojáře, jako například `preview-email` pro snadnější ladění
-* Modulární komponenty, jako například různé utility `p-*` od Sindre Sorhus
-
-Důsledným dodržováním těchto zásad v průběhu času jsme vybudovali službu, které mohou vývojáři důvěřovat ohledně své e-mailové infrastruktury – bezpečnou, spolehlivou a v souladu s hodnotami komunity open source.
+Díky důslednému dodržování těchto principů v průběhu času jsme vybudovali službu, které vývojáři mohou důvěřovat se svou e-mailovou infrastrukturou – bezpečnou, spolehlivou a v souladu s hodnotami open source komunity.
 
 ### Ochrana soukromí již v návrhu {#privacy-by-design}
 
-Ochrana osobních údajů není pro Forward Email jen dodatečnou myšlenkou nebo marketingovou funkcí – je to základní designový princip, který ovlivňuje každý aspekt naší služby a kódu:
+Ochrana soukromí není pro Forward Email dodatečná myšlenka nebo marketingová funkce – je to základní princip návrhu, který ovlivňuje každý aspekt naší služby a kódu:
 
-* **Šifrování s nulovým přístupem**: Implementovali jsme systémy, které nám technicky znemožňují číst e-maily uživatelů.
-* **Minimální sběr dat**: Shromažďujeme pouze data nezbytná k poskytování našich služeb, nic víc.
-* **Transparentní zásady**: Naše zásady ochrany osobních údajů jsou napsány jasným a srozumitelným jazykem bez právnického žargonu.
-* **Ověření otevřeného zdrojového kódu**: Naše kódová základna s otevřeným zdrojovým kódem umožňuje bezpečnostním výzkumníkům ověřit naše tvrzení o ochraně soukromí.
+* **Šifrování bez přístupu**: Implementovali jsme systémy, které nám technicky znemožňují číst uživatelské e-maily.
+* **Minimální sběr dat**: Sbíráme pouze data nezbytná pro poskytování naší služby, nic navíc.
+* **Transparentní zásady**: Naše zásady ochrany soukromí jsou napsány jasným, srozumitelným jazykem bez právnického žargonu.
+* **Ověření open source**: Naše open source kódová základna umožňuje bezpečnostním výzkumníkům ověřit naše tvrzení o ochraně soukromí.
 
-Tento závazek se vztahuje i na naše balíčky s otevřeným zdrojovým kódem, které jsou navrženy s ohledem na osvědčené postupy v oblasti zabezpečení a ochrany osobních údajů, a to od základu.
+Tento závazek se vztahuje i na naše open source balíčky, které jsou navrženy s bezpečnostními a soukromí podporujícími nejlepšími praktikami již od základu.
 
 ### Udržitelný open source {#sustainable-open-source}
 
-Věříme, že software s otevřeným zdrojovým kódem potřebuje pro dlouhodobý rozvoj udržitelné modely. Náš přístup zahrnuje:
+Věříme, že open source software potřebuje udržitelné modely, aby mohl dlouhodobě prosperovat. Náš přístup zahrnuje:
 
-* **Komerční podpora**: Nabízíme prémiovou podporu a služby týkající se našich open source nástrojů.
-* **Vyvážené licencování**: Používáme licencí, které chrání jak uživatelské svobody, tak udržitelnost projektu.
-* **Zapojení komunity**: Aktivní spolupráce s přispěvateli s cílem vybudovat podpůrnou komunitu.
-* **Transparentní plány**: Sdílíme naše vývojové plány, abychom uživatelům umožnili odpovídajícím způsobem plánovat.
+* **Komerční podpora**: Nabízíme prémiovou podporu a služby kolem našich open source nástrojů.
+* **Vyvážené licencování**: Používáme licence, které chrání jak svobody uživatelů, tak udržitelnost projektu.
+* **Zapojení komunity**: Aktivně spolupracujeme s přispěvateli, abychom vybudovali podpůrnou komunitu.
+* **Transparentní plány vývoje**: Sdílíme naše plány vývoje, aby uživatelé mohli plánovat dopředu.
 
-Zaměřením se na udržitelnost zajišťujeme, aby naše příspěvky s otevřeným zdrojovým kódem mohly v průběhu času dále růst a zlepšovat se, a ne aby upadaly do zapomnění.
+Zaměřením na udržitelnost zajišťujeme, že naše open source příspěvky mohou nadále růst a zlepšovat se v průběhu času, místo aby upadly v zapomnění.
 
-## Čísla nelžou: Naše ohromující statistiky stahování npm {#the-numbers-dont-lie-our-staggering-npm-download-statistics}
 
-Když mluvíme o dopadu open source softwaru, statistiky stahování poskytují hmatatelné měřítko přijetí a důvěry. Mnoho balíčků, které pomáháme udržovat, dosáhlo rozsahu, jakého jen málo open source projektů kdy dosáhne, s kombinovaným počtem stažení v řádu miliard.
+## Čísla nelžou: Naše ohromující statistiky stažení npm {#the-numbers-dont-lie-our-staggering-npm-download-statistics}
 
-![Nejlepší npm balíčky podle počtu stažení](/img/art/top_packages_bar_chart.svg)
+Když mluvíme o dopadu open source softwaru, statistiky stažení poskytují hmatatelnou míru adopce a důvěry. Mnoho balíčků, které pomáháme udržovat, dosáhlo rozsahu, kterého jen málo open source projektů kdy dosáhne, s celkovým počtem stažení v miliardách.
+
+![Top npm Packages by Downloads](/img/art/top_packages_bar_chart.svg)
 
 > \[!IMPORTANT]
-> I když jsme hrdí na to, že pomáháme udržovat několik hojně stahovaných balíčků v ekosystému JavaScriptu, chceme uznat, že mnoho z těchto balíčků původně vytvořili jiní talentovaní vývojáři. Balíčky jako superagent a supertest původně vytvořil TJ Holowaychuk, jehož plodný přínos k open source sehrál klíčovou roli při formování ekosystému Node.js.
+> I když jsme hrdí na to, že pomáháme udržovat několik vysoce stahovaných balíčků v ekosystému JavaScriptu, chceme uznat, že mnoho z těchto balíčků původně vytvořili jiní talentovaní vývojáři. Balíčky jako superagent a supertest původně vytvořil TJ Holowaychuk, jehož plodné příspěvky do open source byly zásadní pro formování ekosystému Node.js.
+### Přehled našeho dopadu {#a-birds-eye-view-of-our-impact}
 
-### Pohled na náš dopad z ptačí perspektivy {#a-birds-eye-view-of-our-impact}
-
-Během pouhého dvouměsíčního období od února do března 2025 se podílíme na nejlepších balíčcích, které pomáháme udržovat ohromující počty stahování:
+Za pouhé dvouměsíční období od února do března 2025 zaznamenaly nejvýznamnější balíčky, na kterých se podílíme a které pomáháme udržovat, ohromující počet stažení:
 
 * **[superagent](https://www.npmjs.com/package/superagent)**: 84 575 829 stažení\[^7] (původně vytvořil TJ Holowaychuk)
 * **[supertest](https://www.npmjs.com/package/supertest)**: 76 432 591 stažení\[^8] (původně vytvořil TJ Holowaychuk)
-* **[také](https://www.npmjs.com/package/koa)**: 28 539 295 stažení\[^34] (původně vytvořil TJ Holowaychuk)
+* **[koa](https://www.npmjs.com/package/koa)**: 28 539 295 stažení\[^34] (původně vytvořil TJ Holowaychuk)
 * **[@koa/router](https://www.npmjs.com/package/@koa/router)**: 11 007 327 stažení\[^35]
 * **[koa-router](https://www.npmjs.com/package/koa-router)**: 3 498 918 stažení\[^36]
-* **[url-regulární výraz](https://www.npmjs.com/package/url-regex)**: 2 819 520 stažení\[^37]
-* **[náhledový e-mail](https://www.npmjs.com/package/preview-email)**: 2 500 000 stažení\[^9]
-* **[chata](https://www.npmjs.com/package/cabin)**: 1 800 000 stažení\[^10]
-* **[@breejs/později](https://www.npmjs.com/package/@breejs/later)**: 1 709 938 stažení\[^38]
-* **[šablony e-mailů](https://www.npmjs.com/package/email-templates)**: 1 128 139 stažení\[^39]
-* **__PROTECTED_LINK_259__0**: 1 124 686 stažení\[^40]
-* **__PROTECTED_LINK_259__1**: 1 200 000 stažení\[^11]
-* **__PROTECTED_LINK_259__2**: 894 666 stažení\[^41]
-* **__PROTECTED_LINK_259__3**: 839 585 stažení\[^42]
-* **__PROTECTED_LINK_259__4**: 145 000 stažení\[^12]
-* **__PROTECTED_LINK_259__5**: 24 270 stažení\[^30]
+* **[url-regex](https://www.npmjs.com/package/url-regex)**: 2 819 520 stažení\[^37]
+* **[preview-email](https://www.npmjs.com/package/preview-email)**: 2 500 000 stažení\[^9]
+* **[cabin](https://www.npmjs.com/package/cabin)**: 1 800 000 stažení\[^10]
+* **[@breejs/later](https://www.npmjs.com/package/@breejs/later)**: 1 709 938 stažení\[^38]
+* **[email-templates](https://www.npmjs.com/package/email-templates)**: 1 128 139 stažení\[^39]
+* **[get-paths](https://www.npmjs.com/package/get-paths)**: 1 124 686 stažení\[^40]
+* **[url-regex-safe](https://www.npmjs.com/package/url-regex-safe)**: 1 200 000 stažení\[^11]
+* **[dotenv-parse-variables](https://www.npmjs.com/package/dotenv-parse-variables)**: 894 666 stažení\[^41]
+* **[@koa/multer](https://www.npmjs.com/package/@koa/multer)**: 839 585 stažení\[^42]
+* **[spamscanner](https://www.npmjs.com/package/spamscanner)**: 145 000 stažení\[^12]
+* **[bree](https://www.npmjs.com/package/bree)**: 24 270 stažení\[^30]
 
 > \[!NOTE]
-> Několik dalších balíčků, které pomáháme udržovat, ale které jsme nevytvořili, má ještě vyšší počet stažení, včetně `form-data` (738 milionů stažení), `toidentifier` (309 milionů stažení), `stackframe` (116 milionů stažení) a `error-stack-parser` (113 milionů stažení). Je nám ctí, že můžeme k těmto balíčkům přispívat a zároveň respektovat práci jejich původních autorů.
+> Několik dalších balíčků, které pomáháme udržovat, ale nevytvořili jsme je, má ještě vyšší počet stažení, včetně `form-data` (738M+ stažení), `toidentifier` (309M+ stažení), `stackframe` (116M+ stažení) a `error-stack-parser` (113M+ stažení). Je pro nás ctí přispívat do těchto balíčků a zároveň respektovat práci jejich původních autorů.
 
-Nejsou to jen působivá čísla – představují skutečné vývojáře, kteří řeší skutečné problémy s kódem, který pomáháme udržovat. Každé stažení je příkladem, kdy tyto balíčky pomohly někomu vytvořit něco smysluplného, od projektů pro amatéry až po podnikové aplikace, které používají miliony lidí.
+Nejde jen o působivá čísla — představují skutečné vývojáře řešící skutečné problémy s kódem, který pomáháme udržovat. Každé stažení je příležitostí, kdy tyto balíčky pomohly někomu vytvořit něco smysluplného, od hobby projektů až po podnikové aplikace používané miliony.
 
-![Distribuce kategorií balíčků](/img/art/category_pie_chart.svg)
+![Package Categories Distribution](/img/art/category_pie_chart.svg)
 
-### Denní dopad ve velkém měřítku {#daily-impact-at-scale}
+### Denní dopad v rozsahu {#daily-impact-at-scale}
 
-Denní vzorce stahování odhalují konzistentní a vysoký objem využití, přičemž vrcholy dosahují milionů stažení denně\[^13]. Tato konzistence hovoří o stabilitě a spolehlivosti těchto balíčků – vývojáři je nejen zkoušejí, ale integrují je do svých základních pracovních postupů a spoléhají se na ně den co den.
+Denní vzory stahování odhalují konzistentní, vysoký objem používání, s vrcholy dosahujícími milionů stažení za den\[^13]. Tato konzistence svědčí o stabilitě a spolehlivosti těchto balíčků — vývojáři je nejen zkouší; integrují je do svých hlavních pracovních postupů a spoléhají na ně den co den.
 
-Týdenní statistiky stahování ukazují ještě působivější čísla, která se trvale pohybují kolem desítek milionů stažení týdně\[^14]. To představuje masivní dopad na ekosystém JavaScriptu, jelikož tyto balíčky běží v produkčních prostředích po celém světě.
+Týdenní vzory stahování ukazují ještě působivější čísla, která se stabilně pohybují kolem desítek milionů stažení týdně\[^14]. To představuje obrovskou stopu v ekosystému JavaScriptu, přičemž tyto balíčky běží v produkčních prostředích po celém světě.
 
-### Za hranicemi surových čísel {#beyond-the-raw-numbers}
+### Za hranicí čistých čísel {#beyond-the-raw-numbers}
 
-I když jsou statistiky stahování samy o sobě působivé, vypovídají hlouběji o důvěře, kterou komunita vkládá do těchto balíčků. Udržování balíčků v tomto rozsahu vyžaduje neochvějný závazek k:
+I když jsou statistiky stažení samy o sobě působivé, vyprávějí hlubší příběh o důvěře, kterou komunita těmto balíčkům věnuje. Údržba balíčků v takovém rozsahu vyžaduje neochvějný závazek k:
 
-* **Zpětná kompatibilita**: Změny je nutné pečlivě zvážit, aby se předešlo narušení stávajících implementací.
-* **Zabezpečení**: Vzhledem k milionům aplikací závislých na těchto balíčcích by bezpečnostní zranitelnosti mohly mít dalekosáhlé důsledky.
-* **Výkon**: V tomto rozsahu mohou mít i drobná vylepšení výkonu významné celkové výhody.
-* **Dokumentace**: Jasná a komplexní dokumentace je nezbytná pro balíčky používané vývojáři všech úrovní zkušeností.
+* **Zpětné kompatibilitě**: Změny musí být pečlivě zváženy, aby nedošlo k narušení stávajících implementací.
+* **Bezpečnosti**: S miliony aplikací závislých na těchto balíčcích by bezpečnostní zranitelnosti mohly mít dalekosáhlé důsledky.
+* **Výkonu**: V takovém rozsahu mohou i drobná zlepšení výkonu přinést významné kumulativní přínosy.
+* **Dokumentaci**: Jasná, komplexní dokumentace je nezbytná pro balíčky používané vývojáři všech úrovní zkušeností.
 
-Konzistentní růst počtu stažení v průběhu času odráží úspěch v plnění těchto závazků a budování důvěry s komunitou vývojářů prostřednictvím spolehlivých a dobře udržovaných balíčků.
-
-## Podpora ekosystému: Naše sponzorství open source {#supporting-the-ecosystem-our-open-source-sponsorships}
+Konzistentní růst počtu stažení v průběhu času odráží úspěch v plnění těchto závazků a budování důvěry s vývojářskou komunitou prostřednictvím spolehlivých, dobře udržovaných balíčků.
+## Podpora ekosystému: Naše sponzorství open source projektů {#supporting-the-ecosystem-our-open-source-sponsorships}
 
 > \[!TIP]
-> Udržitelnost open source není jen o přispívání kódem – jde také o podporu vývojářů, kteří udržují kritickou infrastrukturu.
+> Udržitelnost open source není jen o přispívání kódu — je to také o podpoře vývojářů, kteří udržují kritickou infrastrukturu.
 
-Kromě našich přímých příspěvků do ekosystému JavaScriptu jsme hrdí na to, že můžeme sponzorovat významné přispěvatele Node.js, jejichž práce tvoří základ mnoha moderních aplikací. Mezi naše sponzorství patří:
+Kromě našich přímých příspěvků do JavaScriptového ekosystému jsme hrdí na to, že sponzorujeme významné přispěvatele do Node.js, jejichž práce tvoří základ mnoha moderních aplikací. Naše sponzorství zahrnují:
 
 ### Andris Reinman: Průkopník e-mailové infrastruktury {#andris-reinman-email-infrastructure-pioneer}
 
-[Andris Reinman](https://github.com/andris9) je tvůrcem knihovny [Nodemailer](https://github.com/nodemailer/nodemailer), nejoblíbenější knihovny pro odesílání e-mailů pro Node.js s více než 14 miliony stažení týdně\[^15]. Jeho práce se rozšiřuje na další kritické komponenty e-mailové infrastruktury, jako jsou [SMTP server](https://github.com/nodemailer/smtp-server), [Analyzátor pošty](https://github.com/nodemailer/mailparser) a [Divoká kachna](https://github.com/nodemailer/wildduck).
+[Andris Reinman](https://github.com/andris9) je tvůrcem [Nodemailer](https://github.com/nodemailer/nodemailer), nejpopulárnější knihovny pro odesílání e-mailů v Node.js s více než 14 miliony týdenních stažení\[^15]. Jeho práce zahrnuje i další klíčové komponenty e-mailové infrastruktury jako [SMTP Server](https://github.com/nodemailer/smtp-server), [Mailparser](https://github.com/nodemailer/mailparser) a [WildDuck](https://github.com/nodemailer/wildduck).
 
-Naše sponzorství pomáhá zajistit neustálou údržbu a vývoj těchto základních nástrojů, které pohánějí e-mailovou komunikaci pro nespočet aplikací Node.js, včetně naší vlastní služby Forward Email.
+Naše sponzorství pomáhá zajistit pokračující údržbu a vývoj těchto nezbytných nástrojů, které pohánějí e-mailovou komunikaci pro nespočet Node.js aplikací, včetně naší vlastní služby Forward Email.
 
-### Sindre Sorhus: Mastermind obslužného balíčku {#sindre-sorhus-utility-package-mastermind}
+### Sindre Sorhus: Mistr utilitárních balíčků {#sindre-sorhus-utility-package-mastermind}
 
-[Sindre Sörhus](https://github.com/sindresorhus) je jedním z nejproduktivnějších open source přispěvatelů v ekosystému JavaScriptu s více než 1 000 npm balíčky. Jeho utility jako [p-mapa](https://github.com/sindresorhus/p-map), [p-opakování](https://github.com/sindresorhus/p-retry) a [je-stream](https://github.com/sindresorhus/is-stream) jsou základními stavebními kameny používanými v celém ekosystému Node.js.
+[Sindre Sorhus](https://github.com/sindresorhus) je jedním z nejplodnějších přispěvatelů do open source v JavaScriptovém ekosystému, s více než 1 000 balíčky na npm na svém kontě. Jeho utility jako [p-map](https://github.com/sindresorhus/p-map), [p-retry](https://github.com/sindresorhus/p-retry) a [is-stream](https://github.com/sindresorhus/is-stream) jsou základními stavebními kameny používanými v celém Node.js ekosystému.
 
-Sponzorováním práce Sindre pomáháme udržovat vývoj těchto klíčových nástrojů, které zefektivňují a zefektivňují vývoj v JavaScriptu.
+Sponzorováním Sindrovy práce pomáháme udržet vývoj těchto klíčových utilit, které činí vývoj v JavaScriptu efektivnějším a spolehlivějším.
 
-Tato sponzorství odrážejí náš závazek k širšímu ekosystému open source. Uvědomujeme si, že náš vlastní úspěch je postaven na základech položených těmito a dalšími přispěvateli, a jsme odhodláni zajistit udržitelnost celého ekosystému.
+Tato sponzorství odrážejí náš závazek k širšímu open source ekosystému. Uvědomujeme si, že náš vlastní úspěch je postaven na základech položených těmito a dalšími přispěvateli, a jsme odhodláni zajistit udržitelnost celého ekosystému.
 
-## Odhalování bezpečnostních zranitelností v ekosystému JavaScriptu {#uncovering-security-vulnerabilities-in-the-javascript-ecosystem}
 
-Náš závazek k open source platformě přesahuje rámec vývoje funkcí a zahrnuje identifikaci a řešení bezpečnostních zranitelností, které by mohly mít dopad na miliony vývojářů. Několik našich nejvýznamnějších příspěvků k ekosystému JavaScriptu se týká oblasti bezpečnosti.
+## Odhalování bezpečnostních zranitelností v JavaScriptovém ekosystému {#uncovering-security-vulnerabilities-in-the-javascript-ecosystem}
+
+Náš závazek k open source přesahuje vývoj funkcí a zahrnuje identifikaci a řešení bezpečnostních zranitelností, které by mohly ovlivnit miliony vývojářů. Několik našich nejvýznamnějších příspěvků do JavaScriptového ekosystému bylo v oblasti bezpečnosti.
 
 ### Záchrana Koa-Routeru {#the-koa-router-rescue}
 
-V únoru 2019 Nick identifikoval kritický problém s údržbou populárního balíčku koa-router. Jelikož měl [informoval Hacker News](https://news.ycombinator.com/item?id=19156707), balíček byl opuštěn jeho původním správcem, takže bezpečnostní zranitelnosti zůstaly neřešeny a komunita bez aktualizací.
+V únoru 2019 Nick identifikoval kritický problém s údržbou populárního balíčku koa-router. Jak [ohlásil na Hacker News](https://news.ycombinator.com/item?id=19156707), balíček byl opuštěn svým původním správcem, což vedlo k neřešeným bezpečnostním zranitelnostem a komunitě bez aktualizací.
 
 > \[!WARNING]
-> Opuštěné balíčky s bezpečnostními zranitelnostmi představují významná rizika pro celý ekosystém, zejména pokud jsou stahovány milionkrát týdně.
+> Opuštěné balíčky s bezpečnostními zranitelnostmi představují významná rizika pro celý ekosystém, zvláště když jsou stahovány miliony krát týdně.
 
-V reakci na to Nick vytvořil [@koa/router](https://github.com/koajs/router) a pomohl upozornit komunitu na situaci. Od té doby tento klíčový balíček spravuje a zajišťuje tak, aby uživatelé Koa měli k dispozici bezpečné a dobře udržované řešení směrování.
+Na reakci Nick vytvořil [@koa/router](https://github.com/koajs/router) a pomohl komunitě situaci oznámit. Od té doby tento kritický balíček udržuje, aby uživatelé Koa měli bezpečné a dobře udržované řešení směrování.
 
 ### Řešení zranitelností ReDoS {#addressing-redos-vulnerabilities}
 
-V roce 2020 Nick identifikoval a vyřešil kritickou zranitelnost [Odmítnutí služby regulárním výrazem (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) v široce používaném balíčku `url-regex`. Tato zranitelnost ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) by mohla útočníkům umožnit způsobit odmítnutí služby poskytnutím speciálně vytvořeného vstupu, který by způsobil katastrofické backtracking v regulárním výrazu.
+V roce 2020 Nick identifikoval a vyřešil kritickou zranitelnost [Regular Expression Denial of Service (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) v široce používaném balíčku `url-regex`. Tato zranitelnost ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) mohla umožnit útočníkům způsobit odmítnutí služby zadáním speciálně vytvořeného vstupu, který způsobil katastrofální zpětné sledování v regulárním výrazu.
 
-Místo pouhé záplaty stávajícího balíčku vytvořil Nick [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), kompletně přepsanou implementaci, která řeší danou zranitelnost a zároveň zachovává kompatibilitu s původním API. Také publikoval [komplexní blogový příspěvek](/blog/docs/url-regex-javascript-node-js), který vysvětluje danou zranitelnost a jak ji zmírnit.
+Místo pouhého záplatu stávajícího balíčku Nick vytvořil [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), zcela přepsanou implementaci, která řeší zranitelnost a zároveň zachovává kompatibilitu s původním API. Také publikoval [komplexní blogový příspěvek](/blog/docs/url-regex-javascript-node-js), který vysvětluje zranitelnost a jak ji zmírnit.
+Tato práce ukazuje náš přístup k bezpečnosti: nejen řešení problémů, ale také vzdělávání komunity a poskytování robustních alternativ, které zabraňují podobným problémům v budoucnu.
 
-Tato práce ukazuje náš přístup k bezpečnosti: nejen řešení problémů, ale i vzdělávání komunity a poskytování robustních alternativ, které v budoucnu zabrání podobným problémům.
+### Prosazování bezpečnosti Node.js a Chromia {#advocating-for-nodejs-and-chromium-security}
 
-### Podpora zabezpečení Node.js a Chromia {#advocating-for-nodejs-and-chromium-security}
+Nick byl také aktivní v prosazování zlepšení bezpečnosti v širším ekosystému. V srpnu 2020 identifikoval významný bezpečnostní problém v Node.js související s jeho zpracováním HTTP hlaviček, který byl popsán v [The Register](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/).
 
-Nick se také aktivně zasazuje o vylepšení zabezpečení v širším ekosystému. V srpnu 2020 identifikoval významný bezpečnostní problém v Node.js související se zpracováním HTTP hlaviček, který byl nahlášen v souboru [Registr](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/).
+Tento problém, který vycházel z opravy v Chromiu, mohl potenciálně umožnit útočníkům obejít bezpečnostní opatření. Nickovo prosazování pomohlo zajistit, že byl problém rychle vyřešen, čímž ochránil miliony aplikací Node.js před možným zneužitím.
 
-Tento problém, který pramenil z opravy v Chromu, mohl útočníkům potenciálně umožnit obejít bezpečnostní opatření. Nickova podpora pomohla zajistit, aby byl problém rychle vyřešen, a ochránila tak miliony aplikací Node.js před potenciálním zneužitím.
+### Zajištění infrastruktury npm {#securing-npm-infrastructure}
 
-### Zabezpečení infrastruktury npm {#securing-npm-infrastructure}
+Později téhož měsíce Nick identifikoval další kritický bezpečnostní problém, tentokrát v e-mailové infrastruktuře npm. Jak bylo uvedeno v [The Register](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/), npm správně neimplementovalo autentizační protokoly DMARC, SPF a DKIM, což mohlo útočníkům umožnit odesílat phishingové e-maily, které vypadaly, že pocházejí od npm.
 
-Později téhož měsíce Nick identifikoval další kritický bezpečnostní problém, tentokrát v e-mailové infrastruktuře npm. Jak bylo uvedeno v dokumentu [Registr](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/), npm správně neimplementoval protokoly ověřování e-mailů DMARC, SPF a DKIM, což útočníkům potenciálně umožňovalo odesílat phishingové e-maily, které vypadaly, jako by pocházely od npm.
+Nickova zpráva vedla ke zlepšení bezpečnostního postavení e-mailů npm, čímž ochránila miliony vývojářů, kteří spoléhají na npm pro správu balíčků, před možnými phishingovými útoky.
 
-Nickova zpráva vedla ke zlepšení zabezpečení e-mailů v npm a ochránila miliony vývojářů, kteří se na npm spoléhají pro správu balíčků, před potenciálními phishingovými útoky.
 
-## Naše příspěvky k ekosystému přeposílaných e-mailů {#our-contributions-to-the-forward-email-ecosystem-1}
+## Naše příspěvky do ekosystému Forward Email {#our-contributions-to-the-forward-email-ecosystem-1}
 
-Přeposílání e-mailů je postaveno na několika klíčových open source projektech, včetně Nodemailer, WildDuck a mailauth. Náš tým k těmto projektům významně přispěl a pomohl identifikovat a opravit závažné problémy, které ovlivňují doručování a zabezpečení e-mailů.
+Forward Email je postaven na několika klíčových open source projektech, včetně Nodemailer, WildDuck a mailauth. Náš tým významně přispěl k těmto projektům, pomáhajíc identifikovat a opravit hluboké problémy, které ovlivňují doručování a bezpečnost e-mailů.
 
-### Vylepšení základních funkcí Nodemaileru {#enhancing-nodemailers-core-functionality}
+### Vylepšení základní funkčnosti Nodemaileru {#enhancing-nodemailers-core-functionality}
 
-[Nodemailer](https://github.com/nodemailer/nodemailer) je páteří odesílání e-mailů v Node.js a naše příspěvky pomohly k jeho robustnějšímu provedení:
+[Nodemailer](https://github.com/nodemailer/nodemailer) je páteří odesílání e-mailů v Node.js a naše příspěvky pomohly učinit jej robustnějším:
 
-* **Vylepšení serveru SMTP**: Opravili jsme chyby v parsování, problémy se zpracováním streamů a problémy s konfigurací TLS v komponentě serveru SMTP\[^16]\[^17].
-* **Vylepšení analyzátoru pošty**: Opravili jsme chyby dekódování sekvence znaků a problémy s analyzátorem, které mohly způsobovat selhání zpracování e-mailů\[^18]\[^19].
+* **Vylepšení SMTP serveru**: Opravili jsme chyby v parsování, problémy se zpracováním streamů a konfigurací TLS v komponentě SMTP serveru\[^16]\[^17].
+* **Vylepšení mail parseru**: Řešili jsme chyby dekódování znakových sekvencí a problémy s parserem adres, které mohly způsobit selhání zpracování e-mailů\[^18]\[^19].
 
-Díky těmto příspěvkům si Nodemailer zachovává spolehlivý základ pro zpracování e-mailů v aplikacích Node.js, včetně Forward Email.
+Tyto příspěvky zajišťují, že Nodemailer zůstává spolehlivým základem pro zpracování e-mailů v aplikacích Node.js, včetně Forward Email.
 
-### Pokročilé ověřování e-mailů pomocí Mailauth {#advancing-email-authentication-with-mailauth}
+### Pokrok v autentizaci e-mailů s Mailauth {#advancing-email-authentication-with-mailauth}
 
-[Ověření pošty](https://github.com/postalsys/mailauth) poskytuje kritické funkce ověřování e-mailů a naše příspěvky výrazně vylepšily jeho možnosti:
+[Mailauth](https://github.com/postalsys/mailauth) poskytuje klíčovou funkčnost autentizace e-mailů a naše příspěvky výrazně zlepšily jeho schopnosti:
 
-* **Vylepšení ověřování DKIM**: Zjistili jsme a nahlásili, že X/Twitter má problémy s DNS cache, které způsobují selhání DKIM u odchozích zpráv. Nahlásili jsme to na Hacker One\[^20].
-* **Vylepšení DMARC a ARC**: Opravili jsme problémy s ověřováním DMARC a ARC, které mohly vést k nesprávným výsledkům ověřování\[^21]\[^22].
-* **Optimalizace výkonu**: Přispěli jsme optimalizacemi, které zlepšují výkon procesů ověřování e-mailů\[^23]\[^24]\[^25]\[^26].
+* **Vylepšení ověřování DKIM**: Objevili jsme a nahlásili jsme, že X/Twitter měl problémy s DNS cache, které způsobovaly selhání DKIM pro jejich odchozí zprávy, a nahlásili jsme to na Hacker One\[^20].
+* **Vylepšení DMARC a ARC**: Opravili jsme problémy s ověřováním DMARC a ARC, které mohly vést k nesprávným výsledkům autentizace\[^21]\[^22].
+* **Optimalizace výkonu**: Přispěli jsme optimalizacemi, které zlepšují výkon procesů autentizace e-mailů\[^23]\[^24]\[^25]\[^26].
 
-Tato vylepšení pomáhají zajistit přesné a spolehlivé ověřování e-mailů a chrání uživatele před phishingovými a spoofingovými útoky.
+Tato vylepšení pomáhají zajistit, že autentizace e-mailů je přesná a spolehlivá, čímž chrání uživatele před phishingem a spoofingem.
 
-### Klíčová vylepšení provozuschopnosti {#key-upptime-enhancements}
+### Klíčová vylepšení Upptime {#key-upptime-enhancements}
 
-Mezi naše příspěvky k Uptime patří:
+Naše příspěvky do Upptime zahrnují:
 
-* **Monitorování SSL certifikátů**: Přidali jsme funkci pro sledování vypršení platnosti SSL certifikátů, čímž jsme zabránili neočekávaným výpadkům způsobeným vypršením platnosti certifikátů\[^27].
-* **Podpora více SMS čísel**: Implementovali jsme podporu pro upozorňování více členů týmu prostřednictvím SMS v případě incidentů, čímž jsme zkrátili dobu odezvy\[^28].
-* **Opravy kontrol IPv6**: Opravili jsme problémy s kontrolami připojení IPv6, čímž jsme zajistili přesnější monitorování v moderních síťových prostředích\[^29].
-* **Podpora tmavého/světlého režimu**: Přidali jsme podporu motivů pro zlepšení uživatelského prostředí stavových stránek\[^31].
-* **Lepší podpora TCP-Ping**: Vylepšili jsme funkci TCP ping, abychom zajistili spolehlivější testování připojení\[^32].
+* **Monitorování SSL certifikátů**: Přidali jsme funkci pro sledování expirace SSL certifikátů, čímž se zabránilo neočekávaným výpadkům kvůli expirovaným certifikátům\[^27].
+* **Podpora více SMS čísel**: Implementovali jsme podporu pro upozornění více členů týmu přes SMS při výskytu incidentů, což zlepšuje reakční časy\[^28].
+* **Opravy kontroly IPv6**: Opravili jsme problémy s kontrolou konektivity IPv6, čímž jsme zajistili přesnější monitorování v moderních síťových prostředích\[^29].
+* **Podpora tmavého/světlého režimu**: Přidali jsme podporu témat pro zlepšení uživatelského zážitku na stránkách stavu\[^31].
+* **Lepší podpora TCP-Ping**: Vylepšili jsme funkčnost TCP ping pro spolehlivější testování připojení\[^32].
+Tyto vylepšení nejenže zlepšují monitorování stavu Forward Email, ale jsou k dispozici celé komunitě uživatelů Upptime, což demonstruje náš závazek ke zlepšování nástrojů, na kterých závisíme.
 
-Tato vylepšení nejen prospívají monitorování stavu Forward Email, ale jsou dostupná pro celou komunitu uživatelů Upptime, což dokazuje náš závazek zlepšovat nástroje, na kterých se spoléháme.
 
-## Lepidlo, které drží vše pohromadě: Vlastní kód ve velkém měřítku {#the-glue-that-holds-it-all-together-custom-code-at-scale}
+## Lepidlo, které vše drží pohromadě: Vlastní kód v rozsahu {#the-glue-that-holds-it-all-together-custom-code-at-scale}
 
-I když jsou naše npm balíčky a příspěvky do stávajících projektů významné, je to právě vlastní kód, který tyto komponenty integruje, co skutečně prezentuje naši technickou odbornost. Kódová základna Forward Email představuje desetiletí vývojového úsilí, které sahá až do roku 2017, kdy projekt začínal jako [bezplatné přeposílání e-mailů](https://github.com/forwardemail/free-email-forwarding), než byl sloučen do monorepozitáře.
+I když jsou naše npm balíčky a příspěvky do existujících projektů významné, právě vlastní kód, který tyto komponenty integruje, skutečně ukazuje naše technické znalosti. Kódová základna Forward Email představuje desetiletí vývojové práce, sahající až do roku 2017, kdy projekt začal jako [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding), než byl sloučen do monorepa.
 
 ### Obrovské vývojové úsilí {#a-massive-development-effort}
 
 Rozsah tohoto vlastního integračního kódu je impozantní:
 
-* **Celkový počet příspěvků**: Více než 3 217 commitů
+* **Celkové příspěvky**: Více než 3 217 commitů
 * **Velikost kódové základny**: Více než 421 545 řádků kódu v souborech JavaScript, Pug, CSS a JSON\[^33]
 
-To představuje tisíce hodin vývojářské práce, ladění a optimalizace výkonu. Je to „tajná přísada“, která transformuje jednotlivé balíčky do soudržné a spolehlivé služby, kterou denně využívají tisíce zákazníků.
+To představuje tisíce hodin vývojové práce, ladění a optimalizace výkonu. Je to „tajná přísada“, která proměňuje jednotlivé balíčky v soudržnou, spolehlivou službu, kterou denně používají tisíce zákazníků.
 
-### Integrace základních závislostí {#core-dependencies-integration}
+### Integrace klíčových závislostí {#core-dependencies-integration}
 
-Kódová základna Forward Email integruje řadu závislostí do jednolivého celku:
+Kódová základna Forward Email integruje řadu závislostí do bezproblémového celku:
 
-* **Zpracování e-mailů**: Integruje Nodemailer pro odesílání, SMTP server pro příjem a Mailparser pro parsování.
-* **Ověřování**: Používá Mailauth pro ověřování DKIM, SPF, DMARC a ARC.
-* **Přeslání DNS**: Využívá Tangerine pro DNS přes HTTPS s globálním ukládáním do mezipaměti.
-* **MX Connection**: Využívá mx-connect s integrací Tangerine pro spolehlivé připojení k poštovnímu serveru.
-* **Plánování úloh**: Využívá Bree pro spolehlivé zpracování úloh na pozadí s pracovními vlákny.
-* **Šablony**: Využívá email-templates k opětovnému použití stylů z webových stránek v komunikaci se zákazníky.
-* **Úložiště e-mailů**: Implementuje individuálně šifrované poštovní schránky SQLite pomocí better-sqlite3-multiple-ciphers se šifrováním ChaCha20-Poly1305 pro kvantově bezpečné soukromí, čímž zajišťuje úplnou izolaci mezi uživateli a přístup ke své poštovní schránce pouze daný uživatel.
+* **Zpracování e-mailů**: Integruje Nodemailer pro odesílání, SMTP Server pro příjem a Mailparser pro parsování
+* **Autentizace**: Používá Mailauth pro ověřování DKIM, SPF, DMARC a ARC
+* **DNS resoluce**: Využívá Tangerine pro DNS-over-HTTPS s globálním cachováním
+* **MX připojení**: Využívá mx-connect s integrací Tangerine pro spolehlivá připojení k mailovým serverům
+* **Plánování úloh**: Používá Bree pro spolehlivé zpracování úloh na pozadí s worker threads
+* **Šablonování**: Používá email-templates pro opětovné použití stylů z webu v komunikaci se zákazníky
+* **Ukládání e-mailů**: Implementuje individuálně šifrované SQLite schránky pomocí better-sqlite3-multiple-ciphers s šifrováním ChaCha20-Poly1305 pro kvantově bezpečné soukromí, zajišťující úplnou izolaci mezi uživateli a že pouze uživatel má přístup ke své schránce
 
-Každá z těchto integrací vyžaduje pečlivé zvážení okrajových případů, dopadů na výkon a bezpečnostních obav. Výsledkem je robustní systém, který spolehlivě zpracovává miliony e-mailových transakcí. Naše implementace SQLite také využívá msgpackr pro efektivní binární serializaci a WebSockets (prostřednictvím ws) pro aktualizace stavu v reálném čase v celé naší infrastruktuře.
+Každá z těchto integrací vyžaduje pečlivé zvážení okrajových případů, dopadů na výkon a bezpečnostních aspektů. Výsledkem je robustní systém, který spolehlivě zpracovává miliony e-mailových transakcí. Naše implementace SQLite také využívá msgpackr pro efektivní binární serializaci a WebSockets (pomocí ws) pro aktualizace stavu v reálném čase napříč naší infrastrukturou.
 
 ### DNS infrastruktura s Tangerine a mx-connect {#dns-infrastructure-with-tangerine-and-mx-connect}
 
-Klíčovou součástí infrastruktury Forward Email je náš systém pro rozpoznávání DNS, který je postaven na dvou klíčových balíčcích:
+Klíčovou součástí infrastruktury Forward Email je náš systém DNS resoluce, postavený kolem dvou klíčových balíčků:
 
-* **[Mandarinka](https://github.com/forwardemail/nodejs-dns-over-https-tangerine)**: Naše implementace Node.js DNS-over-HTTPS poskytuje okamžitou náhradu za standardní DNS resolver s vestavěnými možnostmi opakování, časovými limity, inteligentní rotací serverů a podporou ukládání do mezipaměti.
+* **[Tangerine](https://github.com/forwardemail/nodejs-dns-over-https-tangerine)**: Naše Node.js implementace DNS-over-HTTPS poskytuje náhradu za standardní DNS resolver s vestavěnými opakováními, timeouty, chytrou rotací serverů a podporou cachování.
 
-* **[mx-connect](https://github.com/zone-eu/mx-connect)**: Tento balíček navazuje TCP připojení k MX serverům, přičemž bere cílovou doménu nebo e-mailovou adresu, rozlišuje příslušné MX servery a připojuje se k nim v pořadí priority.
+* **[mx-connect](https://github.com/zone-eu/mx-connect)**: Tento balíček navazuje TCP spojení na MX servery, přijímá cílovou doménu nebo e-mailovou adresu, vyhledává vhodné MX servery a připojuje se k nim podle priority.
 
-Propojili jsme Tangerine s mx-connect prostřednictvím [pull request #4](https://github.com/zone-eu/mx-connect/pull/4), zajištění DNS na aplikační vrstvě přes HTTP požadavky v rámci Forward Email. To poskytuje globální ukládání DNS do mezipaměti ve velkém měřítku s konzistencí 1:1 v jakékoli oblasti, aplikaci nebo procesu – což je zásadní pro spolehlivé doručování e-mailů v distribuovaném systému.
+Tangerine jsme integrovali s mx-connect prostřednictvím [pull requestu #4](https://github.com/zone-eu/mx-connect/pull/4), čímž zajišťujeme DNS přes HTTP požadavky na aplikační vrstvě v celém Forward Email. To poskytuje globální cachování DNS v rozsahu s 1:1 konzistencí napříč jakýmkoli regionem, aplikací nebo procesem — což je klíčové pro spolehlivé doručování e-mailů v distribuovaném systému.
 
-## Dopad na podnik: Od open source k řešením pro kritické účely {#enterprise-impact-from-open-source-to-mission-critical-solutions}
 
-Vrcholem naší desetileté cesty ve vývoji open source bylo, že Forward Email může sloužit nejen jednotlivým vývojářům, ale i velkým podnikům a vzdělávacím institucím, které tvoří páteř samotného hnutí open source.
+## Dopad na podnikání: Od open source k řešením kritickým pro mise {#enterprise-impact-from-open-source-to-mission-critical-solutions}
 
-### Případové studie v infrastruktuře pro kritické účely {#case-studies-in-mission-critical-email-infrastructure}
+Vyvrcholením našeho desetiletého vývoje v open source je to, že Forward Email slouží nejen jednotlivým vývojářům, ale také velkým podnikům a vzdělávacím institucím, které tvoří páteř samotného open source hnutí.
+### Případové studie v infrastruktuře e-mailů kritických pro mise {#case-studies-in-mission-critical-email-infrastructure}
 
-Náš závazek ke spolehlivosti, soukromí a principům open source učinil z Forward Email důvěryhodnou volbu pro organizace s náročnými požadavky na e-mail:
+Naše závazek k spolehlivosti, ochraně soukromí a principům open source učinil z Forward Email důvěryhodnou volbu pro organizace s náročnými požadavky na e-mail:
 
-* **Vzdělávací instituce**: Jak je podrobně popsáno v naší [případové studii pro přeposílání e-mailů absolventů]](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study). Velké univerzity se spoléhají na naši infrastrukturu k udržování celoživotního spojení se stovkami tisíc absolventů prostřednictvím spolehlivých služeb pro přeposílání e-mailů.
+* **Vzdělávací instituce**: Jak je podrobně popsáno v naší [případové studii přesměrování e-mailů absolventů](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), velké univerzity spoléhají na naši infrastrukturu, aby udržely celoživotní spojení se stovkami tisíc absolventů prostřednictvím spolehlivých služeb přesměrování e-mailů.
 
-* **Řešení pro podnikový Linux**: [Případová studie Canonical Ubuntu pro podnikové e-maily](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) ukazuje, jak náš přístup k open source dokonale odpovídá potřebám poskytovatelů podnikového Linuxu a nabízí jim transparentnost a kontrolu, které potřebují.
+* **Podniková řešení Linuxu**: [Případová studie podnikových e-mailů Canonical Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) ukazuje, jak náš open source přístup dokonale odpovídá potřebám poskytovatelů podnikových Linuxových řešení, nabízejíc jim transparentnost a kontrolu, kterou vyžadují.
 
-* **Nadace open source**: Snad nejvíce potvrzující je naše partnerství s Linux Foundation, jak je zdokumentováno v [Případová studie podnikového e-mailu Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), kde naše služba zajišťuje komunikaci pro organizaci, která řídí vývoj Linuxu.
+* **Open Source nadace**: Asi nejvíce potvrzující je naše partnerství s Linux Foundation, jak je zdokumentováno v [případové studii podnikových e-mailů Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), kde naše služba zajišťuje komunikaci pro samotnou organizaci, která spravuje vývoj Linuxu.
 
-Existuje krásná symetrie v tom, jak nám naše balíčky s otevřeným zdrojovým kódem, pečlivě udržované po mnoho let, umožnily vybudovat e-mailovou službu, která nyní podporuje právě ty komunity a organizace, které prosazují software s otevřeným zdrojovým kódem. Tato cesta v plném cyklu – od přispívání jednotlivými balíčky až po pohánění podnikové e-mailové infrastruktury pro lídry v oblasti open source – představuje konečné potvrzení našeho přístupu k vývoji softwaru.
+Existuje krásná symetrie v tom, jak naše open source balíčky, pečlivě udržované po mnoho let, umožnily vybudovat e-mailovou službu, která nyní podporuje právě ty komunity a organizace, které prosazují open source software. Tato cesta v plném kruhu – od přispívání jednotlivých balíčků až po napájení podnikové e-mailové infrastruktury pro lídry open source – představuje konečné potvrzení našeho přístupu k vývoji softwaru.
 
-## Desetiletí open source: Pohled do budoucna {#a-decade-of-open-source-looking-forward}
 
-Když se ohlédneme za desetiletím příspěvků v oblasti open source a těšíme se na dalších deset let, jsme naplněni vděčností komunitě, která naši práci podporovala, a nadšením z toho, co nás čeká.
+## Deset let open source: Pohled do budoucna {#a-decade-of-open-source-looking-forward}
 
-Naše cesta od jednotlivých přispěvatelů balíčků k správcům komplexní e-mailové infrastruktury používané velkými podniky a nadacemi s otevřeným zdrojovým kódem byla pozoruhodná. Je to důkaz síly vývoje s otevřeným zdrojovým kódem a dopadu, který může mít promyšlený a dobře udržovaný software na širší ekosystém.
+Když se ohlížíme za deseti lety přispívání do open source a zároveň hledíme na dalších deset let, jsme plni vděčnosti za komunitu, která nás podporovala, a nadšení pro to, co přijde.
 
-V nadcházejících letech se zavazujeme k:
+Naše cesta od přispěvatelů jednotlivých balíčků k správcům komplexní e-mailové infrastruktury používané velkými podniky a open source nadacemi byla pozoruhodná. Je to důkaz síly open source vývoje a dopadu, jaký může mít promyšlený, dobře udržovaný software na širší ekosystém.
 
-* **Pokračujeme v údržbě a vylepšování našich stávajících balíčků** a zajišťujeme, aby i nadále sloužily jako spolehlivé nástroje pro vývojáře po celém světě.
-* **Rozšiřujeme naše příspěvky k projektům kritické infrastruktury**, zejména v oblasti e-mailů a zabezpečení.
-* **Vylepšujeme možnosti Forward Email** a zároveň si zachováváme náš závazek k ochraně soukromí, zabezpečení a transparentnosti.
-* **Podporujeme další generaci přispěvatelů s otevřeným zdrojovým kódem** prostřednictvím mentoringu, sponzorství a zapojení komunity.
+V nadcházejících letech se zavazujeme:
 
-Věříme, že budoucnost vývoje softwaru je otevřená, založená na spolupráci a postavená na základech důvěry. Doufáme, že tím, že budeme i nadále přispívat k vysoce kvalitním a na bezpečnost zaměřeným balíčkům do ekosystému JavaScriptu, se nám podaří hrát malou roli v budování této budoucnosti.
+* **Pokračovat v údržbě a zlepšování našich stávajících balíčků**, aby zůstaly spolehlivými nástroji pro vývojáře po celém světě.
+* **Rozšiřovat naše příspěvky do kritických infrastrukturních projektů**, zejména v oblasti e-mailů a bezpečnosti.
+* **Zlepšovat schopnosti Forward Email** při zachování našeho závazku k ochraně soukromí, bezpečnosti a transparentnosti.
+* **Podporovat další generaci open source přispěvatelů** prostřednictvím mentorství, sponzorství a zapojení komunity.
 
-Děkujeme všem, kteří využili naše balíčky, přispěli k našim projektům, nahlásili problémy nebo jednoduše šířili informace o naší práci. Vaše podpora umožnila toto desetiletí dopadu a my se těšíme, čeho společně dokážeme v příštích deseti letech.
+Věříme, že budoucnost vývoje softwaru je otevřená, spolupracující a postavená na základech důvěry. Pokračováním v přispívání vysoce kvalitních balíčků zaměřených na bezpečnost do JavaScriptového ekosystému doufáme, že sehráváme malou roli při budování této budoucnosti.
 
-\[^1]: Statistiky stažení npm pro cabin, duben 2025
-\[^2]: Statistiky stažení npm pro bson-objectid, únor-březen 2025
-\[^3]: Statistiky stažení npm pro url-regex-safe, duben 2025
-\[^4]: Počet hvězdiček GitHubu pro forwardemail/forwardemail.net k dubnu 2025
-\[^5]: Statistiky stažení npm pro preview-email, duben 2025
-\[^7]: Statistiky stažení npm pro superagent, únor-březen 2025
-\[^8]: Statistiky stažení npm pro supertest, únor-březen 2025
-\[^9]: Statistiky stažení npm pro preview-email, únor-březen 2025
-\[^10]: Statistiky stažení npm pro cabin, únor-březen 2025
-\[^11]: Statistiky stažení npm pro url-regex-safe, únor-březen 2025
-\[^12]: Statistiky stahování npm pro spamscanner, únor-březen 2025
-\[^13]: Denní vzorce stahování ze statistik npm, duben 2025
-\[^14]: Týdenní vzorce stahování ze statistik npm, duben 2025
-\[^15]: Statistiky stahování npm pro nodemailer, duben 2025
-\[^16]: <https://github.com/nodemailer/smtp-server/issues/155>
-\[^17]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>
-\[^18]: <https://github.com/nodemailer/mailparser/issues/261>
-\[^19]: <https://github.com/nodemailer/nodemailer/issues/1102>
-\[^20]: <https://github.com/postalsys/mailauth/issues/30>
-\[^21]: <https://github.com/postalsys/mailauth/issues/58>
-\[^22]: <https://github.com/postalsys/mailauth/issues/48>
-\[^23]: <https://github.com/postalsys/mailauth/issues/74>
-\[^24]: <https://github.com/postalsys/mailauth/issues/75>
-\[^25]: <https://github.com/postalsys/mailauth/issues/60>
-\[^26]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>0
-\[^27]: Na základě problémů s GitHubem v repozitáři Upptime
-\[^28]: Na základě problémů s GitHubem v repozitáři Upptime
-\[^29]: Na základě problémů s GitHubem v repozitáři Upptime
-\[^30]: statistiky stažení npm pro bree, únor-březen 2025
-\[^31]: Na základě pull requestů z GitHubu pro Upptime
-\[^32]: Na základě pull requestů z GitHubu pro Upptime
-\[^34]: statistiky stažení npm pro koa, únor-březen 2025
-\[^35]: statistiky stažení npm pro @koa/router, únor-březen 2025
-\[^36]: statistiky stažení npm pro koa-router, únor-březen 2025
-\[^37]: Statistiky stahování npm pro url-regex, únor-březen 2025
-\[^38]: Statistiky stahování npm pro @breejs/later, únor-březen 2025
-\[^39]: Statistiky stahování npm pro email-templates, únor-březen 2025
-\[^40]: Statistiky stahování npm pro get-paths, únor-březen 2025
-\[^41]: Statistiky stahování npm pro dotenv-parse-variables, únor-březen 2025
-\[^42]: Statistiky stahování npm pro @koa/multer, únor-březen 2025
+Děkujeme všem, kteří používali naše balíčky, přispívali do našich projektů, hlásili problémy nebo jednoduše šířili povědomí o naší práci. Vaše podpora umožnila tento desetiletý dopad a těšíme se, co společně dokážeme v dalších deseti letech.
+
+\[^1]: statistiky stažení npm pro cabin, duben 2025  
+\[^2]: statistiky stažení npm pro bson-objectid, únor-březen 2025  
+\[^3]: statistiky stažení npm pro url-regex-safe, duben 2025  
+\[^4]: počet hvězd na GitHubu pro forwardemail/forwardemail.net k dubnu 2025  
+\[^5]: statistiky stažení npm pro preview-email, duben 2025  
+\[^7]: statistiky stažení npm pro superagent, únor-březen 2025  
+\[^8]: statistiky stažení npm pro supertest, únor-březen 2025  
+\[^9]: statistiky stažení npm pro preview-email, únor-březen 2025  
+\[^10]: statistiky stažení npm pro cabin, únor-březen 2025  
+\[^11]: statistiky stažení npm pro url-regex-safe, únor-březen 2025  
+\[^12]: statistiky stažení npm pro spamscanner, únor-březen 2025  
+\[^13]: denní vzory stahování ze statistik npm, duben 2025  
+\[^14]: týdenní vzory stahování ze statistik npm, duben 2025  
+\[^15]: statistiky stažení npm pro nodemailer, duben 2025  
+\[^16]: <https://github.com/nodemailer/smtp-server/issues/155>  
+\[^17]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>  
+\[^18]: <https://github.com/nodemailer/mailparser/issues/261>  
+\[^19]: <https://github.com/nodemailer/nodemailer/issues/1102>  
+\[^20]: <https://github.com/postalsys/mailauth/issues/30>  
+\[^21]: <https://github.com/postalsys/mailauth/issues/58>  
+\[^22]: <https://github.com/postalsys/mailauth/issues/48>  
+\[^23]: <https://github.com/postalsys/mailauth/issues/74>  
+\[^24]: <https://github.com/postalsys/mailauth/issues/75>  
+\[^25]: <https://github.com/postalsys/mailauth/issues/60>  
+\[^26]: <https://github.com/postalsys/mailauth/issues/73>  
+\[^27]: Na základě GitHub issues v repozitáři Upptime  
+\[^28]: Na základě GitHub issues v repozitáři Upptime  
+\[^29]: Na základě GitHub issues v repozitáři Upptime  
+\[^30]: statistiky stažení npm pro bree, únor-březen 2025  
+\[^31]: Na základě GitHub pull requestů do Upptime  
+\[^32]: Na základě GitHub pull requestů do Upptime  
+\[^34]: statistiky stažení npm pro koa, únor-březen 2025  
+\[^35]: statistiky stažení npm pro @koa/router, únor-březen 2025  
+\[^36]: statistiky stažení npm pro koa-router, únor-březen 2025  
+\[^37]: statistiky stažení npm pro url-regex, únor-březen 2025  
+\[^38]: statistiky stažení npm pro @breejs/later, únor-březen 2025  
+\[^39]: statistiky stažení npm pro email-templates, únor-březen 2025  
+\[^40]: statistiky stažení npm pro get-paths, únor-březen 2025  
+\[^41]: statistiky stažení npm pro dotenv-parse-variables, únor-březen 2025  
+\[^42]: statistiky stažení npm pro @koa/multer, únor-březen 2025

@@ -1,96 +1,99 @@
-# Selvhostet e-post: Forpliktelse til åpen kildekode {#self-hosted-email-commitment-to-open-source}
+# E-post med egen hosting: Forpliktelse til åpen kildekode {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustrasjon av e-postløsning med egen hosting" class="rounded-lg" />
+
 
 ## Innholdsfortegnelse {#table-of-contents}
 
 * [Forord](#foreword)
-* [Hvorfor selvhostet e-post er viktig](#why-self-hosted-email-matters)
+* [Hvorfor e-post med egen hosting er viktig](#why-self-hosted-email-matters)
   * [Problemet med tradisjonelle e-posttjenester](#the-problem-with-traditional-email-services)
-  * [Det selvhostede alternativet](#the-self-hosted-alternative)
-* [Vår selvhostede implementering: Teknisk oversikt](#our-self-hosted-implementation-technical-overview)
+  * [Alternativet med egen hosting](#the-self-hosted-alternative)
+* [Vår implementering med egen hosting: Teknisk oversikt](#our-self-hosted-implementation-technical-overview)
   * [Docker-basert arkitektur for enkelhet og portabilitet](#docker-based-architecture-for-simplicity-and-portability)
-  * [Installasjon av Bash-skript: Tilgjengelighet møter sikkerhet](#bash-script-installation-accessibility-meets-security)
-  * [Kvantesikker kryptering for fremtidssikkert personvern](#quantum-safe-encryption-for-future-proof-privacy)
+  * [Bash-skriptinstallasjon: Tilgjengelighet møter sikkerhet](#bash-script-installation-accessibility-meets-security)
+  * [Kvantemesig kryptering for fremtidssikker personvern](#quantum-safe-encryption-for-future-proof-privacy)
   * [Automatisert vedlikehold og oppdateringer](#automated-maintenance-and-updates)
-* [Åpen kildekode-forpliktelse](#the-open-source-commitment)
-* [Selvhostet vs. administrert: Ta det riktige valget](#self-hosted-vs-managed-making-the-right-choice)
-  * [Realiteten med selvhosting av e-post](#the-reality-of-self-hosting-email)
+* [Forpliktelsen til åpen kildekode](#the-open-source-commitment)
+* [Egen hosting vs. administrert: Å ta det riktige valget](#self-hosted-vs-managed-making-the-right-choice)
+  * [Realiteten ved å hoste e-post selv](#the-reality-of-self-hosting-email)
   * [Når du bør velge vår administrerte tjeneste](#when-to-choose-our-managed-service)
-* [Komme i gang med selvhostet videresendt e-post](#getting-started-with-self-hosted-forward-email)
+* [Kom i gang med e-post med egen hosting](#getting-started-with-self-hosted-forward-email)
   * [Systemkrav](#system-requirements)
   * [Installasjonstrinn](#installation-steps)
-* [Fremtiden for selvhostet e-post](#the-future-of-self-hosted-email)
+* [Fremtiden for e-post med egen hosting](#the-future-of-self-hosted-email)
 * [Konklusjon: E-postfrihet for alle](#conclusion-email-freedom-for-everyone)
 * [Referanser](#references)
 
+
 ## Forord {#foreword}
 
-I dagens digitale landskap er e-post fortsatt ryggraden i vår identitet og kommunikasjon på nett. Likevel, etter hvert som bekymringene rundt personvern vokser, står mange brukere overfor et vanskelig valg: bekvemmelighet på bekostning av personvern, eller personvern på bekostning av bekvemmelighet. Hos Forward Email har vi alltid ment at du ikke burde måtte velge mellom de to.
+I dagens digitale landskap er e-post fortsatt ryggraden i vår online identitet og kommunikasjon. Likevel, ettersom personvern bekymringer øker, står mange brukere overfor et vanskelig valg: bekvemmelighet på bekostning av personvern, eller personvern på bekostning av bekvemmelighet. Hos Forward Email har vi alltid ment at du ikke skal måtte velge mellom de to.
 
-I dag er vi glade for å kunne kunngjøre en viktig milepæl i reisen vår: lanseringen av vår selvhostede e-postløsning. Denne funksjonen representerer vår dypeste forpliktelse til prinsipper om åpen kildekode, personvernfokusert design og brukermyndighet. Med vårt selvhostede alternativ gir vi deg full makt og kontroll over e-postkommunikasjonen din.
+I dag er vi glade for å kunngjøre en viktig milepæl i vår reise: lanseringen av vår e-postløsning med egen hosting. Denne funksjonen representerer vår dypeste forpliktelse til prinsippene for åpen kildekode, personvernfokusert design og brukermakt. Med vårt alternativ for egen hosting gir vi deg full kraft og kontroll over din e-postkommunikasjon direkte i dine hender.
 
-Dette blogginnlegget utforsker filosofien bak vår selvhostede løsning, den tekniske implementeringen og hvorfor den er viktig for brukere som prioriterer både personvern og eierskap i sin digitale kommunikasjon.
+Dette blogginnlegget utforsker filosofien bak vår løsning med egen hosting, dens tekniske implementering, og hvorfor det betyr noe for brukere som prioriterer både personvern og eierskap i sin digitale kommunikasjon.
 
-## Hvorfor selvhostet e-post er viktig {#why-self-hosted-email-matters}
 
-Vår selvhostede e-postløsning er det tydeligste uttrykket for vår tro på at ekte personvern betyr kontroll, og kontroll starter med åpen kildekode. For brukere som krever fullt eierskap over sin digitale kommunikasjon, er selvhosting ikke lenger en marginal idé – det er en essensiell rettighet. Vi er stolte av å stå bak denne troen med en fullstendig åpen, verifiserbar plattform du kan kjøre på dine egne premisser.
+## Hvorfor e-post med egen hosting er viktig {#why-self-hosted-email-matters}
+
+Vår e-postløsning med egen hosting er det tydeligste uttrykket for vår tro på at ekte personvern betyr kontroll, og kontroll starter med åpen kildekode. For brukere som krever full eierskap over sin digitale kommunikasjon, er egen hosting ikke lenger en marginal idé — det er en grunnleggende rettighet. Vi er stolte av å stå bak denne troen med en fullstendig åpen, verifiserbar plattform du kan kjøre på dine egne premisser.
 
 ### Problemet med tradisjonelle e-posttjenester {#the-problem-with-traditional-email-services}
 
 Tradisjonelle e-posttjenester presenterer flere grunnleggende utfordringer for personvernbevisste brukere:
 
-1. **Tillitskrav**: Du må stole på at leverandøren ikke får tilgang til, analyserer eller deler dataene dine.
-2. **Sentralisert kontroll**: Tilgangen din kan tilbakekalles når som helst og uansett grunn.
-3. **Sårbarhet i overvåking**: Sentraliserte tjenester er primære mål for overvåking.
-4. **Begrenset åpenhet**: De fleste tjenester bruker proprietær programvare med lukket kildekode.
-5. **Leverandørbinding**: Det kan være vanskelig eller umulig å migrere bort fra disse tjenestene.
+1. **Tillitskrav**: Du må stole på at leverandøren ikke får tilgang til, analyserer eller deler dine data
+2. **Sentralisert kontroll**: Din tilgang kan bli trukket tilbake når som helst, av hvilken som helst grunn
+3. **Sårbarhet for overvåkning**: Sentraliserte tjenester er hovedmål for overvåkning
+4. **Begrenset åpenhet**: De fleste tjenester bruker proprietær, lukket programvare
+5. **Leverandørlås**: Det kan være vanskelig eller umulig å migrere bort fra disse tjenestene
 
-Selv e-postleverandører med fokus på personvern kommer ofte til kort ved kun å bruke frontend-applikasjonene sine som åpen kildekode, samtidig som backend-systemene holdes proprietære og lukkede. Dette skaper et betydelig tillitsgap – du blir bedt om å tro på personvernløftene deres uten å kunne bekrefte dem.
+Selv "personvernfokuserte" e-postleverandører faller ofte kort ved kun åpen kildekode frontend-applikasjonene sine, mens backend-systemene forblir proprietære og lukkede. Dette skaper et betydelig tillitsgap — du blir bedt om å tro på deres personvernløfter uten mulighet til å verifisere dem.
 
-### Det selvhostede alternativet {#the-self-hosted-alternative}
+### Alternativet med egen hosting {#the-self-hosted-alternative}
+Selvhosting av e-posten din gir en grunnleggende annerledes tilnærming:
 
-Å hoste e-posten din selv gir en fundamentalt annerledes tilnærming:
+1. **Full Kontroll**: Du eier og kontrollerer hele e-postinfrastrukturen
+2. **Verifiserbar Personvern**: Hele systemet er transparent og reviderbart
+3. **Ingen Tillit Nødvendig**: Du trenger ikke å stole på en tredjepart med kommunikasjonen din
+4. **Frihet til Tilpasning**: Tilpass systemet til dine spesifikke behov
+5. **Robusthet**: Tjenesten din fortsetter uavhengig av beslutninger fra selskaper
 
-1. **Full kontroll**: Du eier og kontrollerer hele e-postinfrastrukturen
-2. **Verifiserbart personvern**: Hele systemet er transparent og reviderbart
-3. **Ingen tillit kreves**: Du trenger ikke å stole på en tredjepart med kommunikasjonen din
-4. **Tilpasningsfrihet**: Tilpass systemet til dine spesifikke behov
-5. **Motstandskraft**: Tjenesten din fortsetter uavhengig av selskapets beslutninger
+Som en bruker uttrykte det: "Å selvhoste e-posten min er det digitale ekvivalenten til å dyrke min egen mat—det krever mer arbeid, men jeg vet nøyaktig hva som er i den."
 
-Som en bruker uttrykte det: «Å være selvhostende for e-posten min er den digitale ekvivalenten til å dyrke min egen mat – det krever mer arbeid, men jeg vet nøyaktig hva som er i den.»
 
-## Vår selvhostede implementering: Teknisk oversikt {#our-self-hosted-implementation-technical-overview}
+## Vår Selvhostede Implementering: Teknisk Oversikt {#our-self-hosted-implementation-technical-overview}
 
-Vår selvhostede e-postløsning er bygget på de samme personvernprinsippene som veileder alle produktene våre. La oss utforske den tekniske implementeringen som gjør dette mulig.
+Vår selvhostede e-postløsning er bygget på de samme personvern-først-prinsippene som styrer alle våre produkter. La oss utforske den tekniske implementeringen som gjør dette mulig.
 
-### Docker-basert arkitektur for enkelhet og portabilitet {#docker-based-architecture-for-simplicity-and-portability}
+### Docker-basert Arkitektur for Enkelhet og Portabilitet {#docker-based-architecture-for-simplicity-and-portability}
 
-Vi har pakket hele e-postinfrastrukturen vår med Docker, noe som gjør det enkelt å distribuere den på så godt som alle Linux-baserte systemer. Denne containeriserte tilnærmingen gir flere viktige fordeler:
+Vi har pakket hele e-postinfrastrukturen vår med Docker, noe som gjør det enkelt å distribuere på praktisk talt alle Linux-baserte systemer. Denne containeriserte tilnærmingen gir flere viktige fordeler:
 
-1. **Forenklet distribusjon**: Én enkelt kommando setter opp hele infrastrukturen
-2. **Konsistent miljø**: Eliminerer problemer med at «fungerer på maskinen min»
-3. **Isolerte komponenter**: Hver tjeneste kjører i sin egen container for sikkerhet
-4. **Enkle oppdateringer**: Enkle kommandoer for å oppdatere hele stakken
-5. **Minimale avhengigheter**: Krever bare Docker og Docker Compose
+1. **Forenklet Distribusjon**: En enkelt kommando setter opp hele infrastrukturen
+2. **Konsistent Miljø**: Eliminerer "det fungerer på min maskin"-problemer
+3. **Isolerte Komponenter**: Hver tjeneste kjører i sin egen container for sikkerhet
+4. **Enkel Oppdatering**: Enkle kommandoer for å oppdatere hele stakken
+5. **Minimale Avhengigheter**: Krever kun Docker og Docker Compose
 
 Arkitekturen inkluderer containere for:
 
 * Webgrensesnitt for administrasjon
 * SMTP-server for utgående e-post
-* IMAP/POP3-servere for henting av e-post
+* IMAP/POP3-servere for e-posthenting
 * CalDAV-server for kalendere
 * CardDAV-server for kontakter
 * Database for konfigurasjonslagring
-* Redis for mellomlagring og ytelse
-* SQLite for sikker, kryptert postbokslagring
+* Redis for caching og ytelse
+* SQLite for sikker, kryptert postkasselagring
 
 > \[!NOTE]
-> Sørg for å sjekke ut vår [veiledning for utviklere med egen hosting](https://forwardemail.net/self-hosted)
+> Sørg for å sjekke ut vår [selvhostede utviklerguide](https://forwardemail.net/self-hosted)
 
-### Bash-skriptinstallasjon: Tilgjengelighet møter sikkerhet {#bash-script-installation-accessibility-meets-security}
+### Bash-skriptinstallasjon: Tilgjengelighet møter Sikkerhet {#bash-script-installation-accessibility-meets-security}
 
-Vi har utformet installasjonsprosessen slik at den skal være så enkel som mulig, samtidig som vi opprettholder beste sikkerhetspraksis:
+Vi har designet installasjonsprosessen for å være så enkel som mulig samtidig som vi opprettholder beste praksis for sikkerhet:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -99,30 +102,30 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 Denne ene kommandoen:
 
 1. Verifiserer systemkrav
-2. Veileder deg gjennom konfigurasjonen
-3. Setter opp DNS-oppføringer
+2. Veileder deg gjennom konfigurasjon
+3. Setter opp DNS-poster
 4. Konfigurerer TLS-sertifikater
 5. Distribuerer Docker-containerne
-6. Utfører innledende sikkerhetsherding
+6. Utfører initial sikkerhetsherding
 
-For de som er bekymret for å kunne bruke skript som piping til bash (noe dere burde være!), oppfordrer vi til å gjennomgå skriptet før det kjøres. Det er fullstendig åpen kildekode og tilgjengelig for inspeksjon.
+For de som er bekymret for å pipe skript til bash (slik man bør være!), oppfordrer vi til å gjennomgå skriptet før kjøring. Det er helt åpen kildekode og tilgjengelig for inspeksjon.
 
-### Kvantesikker kryptering for fremtidssikkert personvern {#quantum-safe-encryption-for-future-proof-privacy}
+### Kvantesikker Kryptering for Fremtidssikkert Personvern {#quantum-safe-encryption-for-future-proof-privacy}
 
-I likhet med vår hostede tjeneste implementerer vår selvhostede løsning kvantebestandig kryptering ved hjelp av ChaCha20-Poly1305 som kryptering for SQLite-databaser. Denne tilnærmingen beskytter e-postdataene dine ikke bare mot nåværende trusler, men også mot fremtidige kvantedatamaskinangrep.
+Som vår hostede tjeneste implementerer vår selvhostede løsning kvante-resistent kryptering ved bruk av ChaCha20-Poly1305 som chiffer for SQLite-databasene. Denne tilnærmingen beskytter e-postdataene dine ikke bare mot dagens trusler, men også mot fremtidige angrep fra kvantedatamaskiner.
 
-Hver postboks lagres i sin egen krypterte SQLite-databasefil, noe som gir fullstendig isolasjon mellom brukere – en betydelig sikkerhetsfordel i forhold til tradisjonelle delte databasemetoder.
+Hver postkasse lagres i sin egen krypterte SQLite-databasefil, noe som gir full isolasjon mellom brukere—en betydelig sikkerhetsfordel sammenlignet med tradisjonelle delte database-tilnærminger.
 
-### Automatisert vedlikehold og oppdateringer {#automated-maintenance-and-updates}
+### Automatisert Vedlikehold og Oppdateringer {#automated-maintenance-and-updates}
 
 Vi har bygget omfattende vedlikeholdsverktøy direkte inn i den selvhostede løsningen:
 
-1. **Automatiske sikkerhetskopier**: Planlagte sikkerhetskopier av alle kritiske data
-2. **Sertifikatfornyelse**: Automatisert administrasjon av Let's Encrypt-sertifikater
-3. **Systemoppdateringer**: Enkel kommando for å oppdatere til den nyeste versjonen
-4. **Helseovervåking**: Innebygde kontroller for å sikre systemintegritet
+1. **Automatiske Sikkerhetskopier**: Planlagte sikkerhetskopier av all kritisk data
+2. **Sertifikatfornyelse**: Automatisert håndtering av Let's Encrypt-sertifikater
+3. **Systemoppdateringer**: Enkel kommando for å oppdatere til nyeste versjon
+4. **Helsesjekk**: Innebygde kontroller for å sikre systemets integritet
 
-Disse verktøyene er tilgjengelige via en enkel interaktiv meny:
+Disse verktøyene er tilgjengelige gjennom en enkel interaktiv meny:
 
 ```bash
 # script prompt
@@ -136,117 +139,120 @@ Disse verktøyene er tilgjengelige via en enkel interaktiv meny:
 7. Exit
 ```
 
-## Forpliktelsen til åpen kildekode {#the-open-source-commitment}
 
-Vår selvhostede e-postløsning, som alle våre produkter, er 100 % åpen kildekode – både frontend og backend. Dette betyr:
+## Forpliktelsen til Åpen Kildekode {#the-open-source-commitment}
 
-1. **Fullstendig åpenhet**: Hver kodelinje som behandler e-postene dine er tilgjengelig for offentlig gransking.
-2. **Bidrag fra fellesskapet**: Alle kan bidra med forbedringer eller fikse problemer.
-3. **Sikkerhet gjennom åpenhet**: Sårbarheter kan identifiseres og fikses av et globalt fellesskap.
-4. **Ingen leverandørbinding**: Du er aldri avhengig av selskapets eksistens.
+Vår selvhostede e-postløsning, som alle våre produkter, er 100 % åpen kildekode—både frontend og backend. Dette betyr:
+1. **Fullstendig Åpenhet**: Hver linje med kode som behandler e-postene dine er tilgjengelig for offentlig granskning  
+2. **Bidrag fra Fellesskapet**: Alle kan bidra med forbedringer eller fikse problemer  
+3. **Sikkerhet Gjennom Åpenhet**: Sårbarheter kan identifiseres og fikses av et globalt fellesskap  
+4. **Ingen Leverandørlås**: Du er aldri avhengig av at vårt selskap eksisterer  
 
 Hele kodebasen er tilgjengelig på GitHub på <https://github.com/forwardemail/forwardemail.net>.
 
-## Selvhostet vs. administrert: Ta det riktige valget {#self-hosted-vs-managed-making-the-right-choice}
 
-Selv om vi er stolte av å tilby et selvhostet alternativ, erkjenner vi at det ikke er det riktige valget for alle. Selvhosting av e-post kommer med reelle ansvar og utfordringer:
+## Selv-hostet vs. Administrert: Å Ta Det Riktige Valget {#self-hosted-vs-managed-making-the-right-choice}
 
-### Realiteten med selvhosting av e-post {#the-reality-of-self-hosting-email}
+Selv om vi er stolte av å tilby et selv-hostet alternativ, erkjenner vi at det ikke er det riktige valget for alle. Selv-hosting av e-post kommer med reelle ansvar og utfordringer:
 
-#### Tekniske hensyn {#technical-considerations}
+### Realiteten ved Selv-hosting av E-post {#the-reality-of-self-hosting-email}
 
-* **Serveradministrasjon**: Du må vedlikeholde en VPS eller dedikert server
-* **DNS-konfigurasjon**: Riktig DNS-oppsett er avgjørende for levering
-* **Sikkerhetsoppdateringer**: Det er viktig å holde seg oppdatert med sikkerhetsoppdateringer
-* **Spamhåndtering**: Du må håndtere spamfiltrering
-* **Sikkerhetskopieringsstrategi**: Implementering av pålitelige sikkerhetskopier er ditt ansvar
+#### Tekniske Betraktninger {#technical-considerations}
+
+* **Serveradministrasjon**: Du må vedlikeholde en VPS eller dedikert server  
+* **DNS-konfigurasjon**: Korrekt DNS-oppsett er kritisk for leveringsdyktighet  
+* **Sikkerhetsoppdateringer**: Å holde seg oppdatert med sikkerhetspatcher er essensielt  
+* **Spam-håndtering**: Du må håndtere spamfiltrering  
+* **Backup-strategi**: Implementering av pålitelige sikkerhetskopier er ditt ansvar  
 
 #### Tidsinvestering {#time-investment}
 
-* **Førstegangsoppsett**: Tid for å sette opp, bekrefte og lese dokumentasjonen
-* **Løpende vedlikehold**: Sporadiske oppdateringer og overvåking
-* **Feilsøking**: Sporadisk tid for å løse problemer
+* **Første Oppsett**: Tid til å sette opp, verifisere og lese dokumentasjonen  
+* **Løpende Vedlikehold**: Sporadiske oppdateringer og overvåking  
+* **Feilsøking**: Sporadisk tid til å løse problemer  
 
-#### Finansielle hensyn {#financial-considerations}
+#### Økonomiske Betraktninger {#financial-considerations}
 
-* **Serverkostnader**: $5–$20/måned for en grunnleggende VPS
-* **Domeneregistrering**: $10–$20/år
-* **Tidsverdi**: Tidsinvesteringen din har reell verdi
+* **Serverkostnader**: $5-$20/måned for en grunnleggende VPS  
+* **Domeneregistrering**: $10-$20/år  
+* **Tidsverdi**: Din tidsinvestering har reell verdi  
 
-### Når du bør velge vår administrerte tjeneste {#when-to-choose-our-managed-service}
+### Når Du Bør Velge Vår Administrerte Tjeneste {#when-to-choose-our-managed-service}
 
 For mange brukere er vår administrerte tjeneste fortsatt det beste alternativet:
 
-1. **Bekvemmelighet**: Vi håndterer alt vedlikehold, oppdateringer og overvåking
-2. **Pålitelighet**: Dra nytte av vår etablerte infrastruktur og ekspertise
-3. **Support**: Få hjelp når problemer oppstår
-4. **Leverbarhet**: Utnytt vårt etablerte IP-rykte
-5. **Kostnadseffektivitet**: Når du tar hensyn til tidskostnader, er tjenesten vår ofte mer økonomisk
+1. **Bekvemmelighet**: Vi håndterer alt vedlikehold, oppdateringer og overvåking  
+2. **Pålitelighet**: Dra nytte av vår etablerte infrastruktur og ekspertise  
+3. **Support**: Få hjelp når problemer oppstår  
+4. **Leveringsdyktighet**: Utnytt vår etablerte IP-omdømme  
+5. **Kostnadseffektivitet**: Når du tar med tidskostnader, er vår tjeneste ofte mer økonomisk  
 
-Begge alternativene gir de samme personvernfordelene og åpenheten som åpen kildekode – forskjellen er rett og slett hvem som administrerer infrastrukturen.
+Begge alternativer gir de samme personvernfordelene og åpen kildekode-åpenheten — forskjellen er bare hvem som administrerer infrastrukturen.
 
-## Komme i gang med selvhostet videresending av e-post {#getting-started-with-self-hosted-forward-email}
 
-Klar til å ta kontroll over e-postinfrastrukturen din? Slik kommer du i gang:
+## Komme i Gang med Selv-hostet Forward Email {#getting-started-with-self-hosted-forward-email}
+
+Klar til å ta kontroll over din e-postinfrastruktur? Slik kommer du i gang:
 
 ### Systemkrav {#system-requirements}
 
-* Ubuntu 20.04 LTS eller nyere (anbefales)
-* Minimum 1 GB RAM (2 GB+ anbefales)
-* 20 GB lagringsplass anbefales
-* Et domenenavn du kontrollerer
-* Offentlig IP-adresse med støtte for port 25
-* Mulighet for å angi [omvendt PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
-* Støtte for IPv4 og IPv6
+* Ubuntu 20.04 LTS eller nyere (anbefalt)  
+* Minimum 1GB RAM (2GB+ anbefales)  
+* 20GB lagringsplass anbefales  
+* Et domenenavn du kontrollerer  
+* Offentlig IP-adresse med port 25-støtte  
+* Mulighet til å sette [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)  
+* Støtte for IPv4 og IPv6  
 
-> \[!TIP]
-> Vi anbefaler flere e-postserverleverandører på <https://forwardemail.net/blog/docs/best-mail-server-providers> (kilde på <https://github.com/forwardemail/awesome-mail-server-providers>)
+> \[!TIP]  
+> Vi anbefaler flere mailserver-leverandører på <https://forwardemail.net/blog/docs/best-mail-server-providers> (kilde på <https://github.com/forwardemail/awesome-mail-server-providers>)  
 
 ### Installasjonstrinn {#installation-steps}
 
-1. **Kjør installasjonsskriptet**:
-```bash
+1. **Kjør Installasjonsskriptet**:  
+   ```bash
    bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
    ```
 
-2. **Følg de interaktive instruksjonene**:
-* Skriv inn domenenavnet ditt
-* Konfigurer administratorlegitimasjon
-* Sett opp DNS-oppføringer som anvist
-* Velg dine foretrukne konfigurasjonsalternativer
+2. **Følg de Interaktive Spørsmålene**:  
+   * Skriv inn domenenavnet ditt  
+   * Konfigurer administratorlegitimasjon  
+   * Sett opp DNS-poster som instruert  
+   * Velg dine foretrukne konfigurasjonsalternativer  
 
-3. **Bekreft installasjon**:
-Når installasjonen er fullført, kan du bekrefte at alt fungerer ved å:
-* Sjekke containerstatus: `docker ps`
-* Sende en test-e-post
-* Logge inn på webgrensesnittet
+3. **Verifiser Installasjonen**:  
+   Når installasjonen er fullført, kan du verifisere at alt fungerer ved å:  
+   * Sjekke containerstatus: `docker ps`  
+   * Sende en test-epost  
+   * Logge inn i webgrensesnittet  
 
-## Fremtiden for selvhostet e-post {#the-future-of-self-hosted-email}
 
-Vår selvhostede løsning er bare begynnelsen. Vi er forpliktet til kontinuerlig å forbedre dette tilbudet med:
+## Fremtiden for Selv-hostet E-post {#the-future-of-self-hosted-email}
 
-1. **Forbedrede administrasjonsverktøy**: Kraftigere nettbasert administrasjon
-2. **Ytterligere autentiseringsalternativer**: Inkludert støtte for maskinvaresikkerhetsnøkler
-3. **Avansert overvåking**: Bedre innsikt i systemtilstand og ytelse
-4. **Implementering av flere servere**: Alternativer for konfigurasjoner med høy tilgjengelighet
-5. **Fellesskapsdrevne forbedringer**: Inkludering av bidrag fra brukere
+Vår selv-hostede løsning er bare begynnelsen. Vi er forpliktet til kontinuerlig forbedring av dette tilbudet med:
 
+1. **Forbedrede Administrasjonsverktøy**: Mer kraftfull web-basert administrasjon  
+2. **Flere Autentiseringsalternativer**: Inkludert støtte for maskinvare-sikkerhetsnøkler  
+3. **Avansert Overvåking**: Bedre innsikt i systemhelse og ytelse  
+4. **Distribusjon på Flere Servere**: Muligheter for høy-tilgjengelighetskonfigurasjoner  
+5. **Fellesskapsdrevne Forbedringer**: Inkorporering av bidrag fra brukere
 ## Konklusjon: E-postfrihet for alle {#conclusion-email-freedom-for-everyone}
 
-Lanseringen av vår selvhostede e-postløsning representerer en viktig milepæl i vårt oppdrag om å tilby personvernfokuserte og transparente e-posttjenester. Enten du velger vår administrerte tjeneste eller selvhostede alternativ, drar du nytte av vår urokkelige forpliktelse til prinsipper om åpen kildekode og design med personvern først.
+Lanseringen av vår selvhostede e-postløsning representerer en betydelig milepæl i vårt oppdrag om å tilby personvernfokuserte, transparente e-posttjenester. Enten du velger vår administrerte tjeneste eller selvhostede alternativ, drar du nytte av vårt urokkelige engasjement for åpen kildekode-prinsipper og personvern-først design.
 
-E-post er for viktig til å bli kontrollert av lukkede, proprietære systemer som prioriterer datainnsamling fremfor brukernes personvern. Med Forward Emails selvhostede løsning er vi stolte av å kunne tilby et ekte alternativ – et som gir deg full kontroll over din digitale kommunikasjon.
+E-post er for viktig til å kontrolleres av lukkede, proprietære systemer som prioriterer datainnsamling over brukerens personvern. Med Forward Emails selvhostede løsning er vi stolte av å tilby et ekte alternativ—et som gir deg full kontroll over dine digitale kommunikasjoner.
 
 Vi mener at personvern ikke bare er en funksjon; det er en grunnleggende rettighet. Og med vårt selvhostede e-postalternativ gjør vi denne retten mer tilgjengelig enn noen gang før.
 
-Klar til å ta kontroll over e-posten din? [Kom i gang i dag](https://forwardemail.net/self-hosted) eller utforsk [GitHub-depotet](https://github.com/forwardemail/forwardemail.net) for å finne ut mer.
+Klar til å ta kontroll over e-posten din? [Kom i gang i dag](https://forwardemail.net/self-hosted) eller utforsk vårt [GitHub-repositorium](https://github.com/forwardemail/forwardemail.net) for å lære mer.
+
 
 ## Referanser {#references}
 
-\[1] Videresend e-post GitHub-arkiv: <https://github.com/forwardemail/forwardemail.net>
+\[1] Forward Email GitHub Repository: <https://github.com/forwardemail/forwardemail.net>
 
 \[2] Selvhostet dokumentasjon: <https://forwardemail.net/en/self-hosted>
 
-\[3] Teknisk implementering av personvern for e-post: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
+\[3] Teknisk implementering av e-postpersonvern: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
 
-\[4] Hvorfor åpen kildekode-e-post er viktig: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>
+\[4] Hvorfor åpen kildekode e-post er viktig: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>

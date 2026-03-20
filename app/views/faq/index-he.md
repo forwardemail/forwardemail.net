@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# שאלות נפוצות {#frequently-asked-questions}
 
 <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## תוכן העניינים {#table-of-contents}
+
+* [התחלה מהירה](#quick-start)
+* [הקדמה](#introduction)
+  * [מה זה Forward Email](#what-is-forward-email)
+  * [מי משתמש ב-Forward Email](#who-uses-forward-email)
+  * [מה ההיסטוריה של Forward Email](#what-is-forward-emails-history)
+  * [כמה מהירה השירות הזה](#how-fast-is-this-service)
+* [לקוחות דואר אלקטרוני](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [מכשירים ניידים](#mobile-devices)
+  * [הגדרת Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
+  * [הגדרת Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
+  * [הגדרת msmtp SMTP Client](#msmtp-smtp-client-configuration)
+  * [לקוחות דואר שורת פקודה](#command-line-email-clients)
+  * [הגדרת דואר ב-Windows](#windows-email-configuration)
+  * [הגדרת Postfix SMTP Relay](#postfix-smtp-relay-configuration)
+  * [איך לשלוח דואר בשם באמצעות Gmail](#how-to-send-mail-as-using-gmail)
+  * [מהו המדריך החינמי הישן לשליחת דואר בשם באמצעות Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [הגדרת ניתוב Gmail מתקדמת](#advanced-gmail-routing-configuration)
+  * [הגדרת ניתוב Outlook מתקדמת](#advanced-outlook-routing-configuration)
+* [פתרון בעיות](#troubleshooting)
+  * [למה אני לא מקבל את מיילי הבדיקה](#why-am-i-not-receiving-my-test-emails)
+  * [איך להגדיר את לקוח הדואר שלי לעבוד עם Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [למה המיילים שלי נוחתים בספאם ובזבל ואיך לבדוק את מוניטין הדומיין שלי](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [מה לעשות אם אני מקבל מיילי ספאם](#what-should-i-do-if-i-receive-spam-emails)
+  * [למה מיילי הבדיקה שנשלחים אליי ב-Gmail מופיעים כ"חשודים"]( #why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [האם אפשר להסיר את via forwardemail dot net ב-Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [ניהול נתונים](#data-management)
+  * [איפה ממוקמים השרתים שלכם](#where-are-your-servers-located)
+  * [איך לייצא ולגבות את תיבת הדואר שלי](#how-do-i-export-and-backup-my-mailbox)
+  * [איך לייבא ולהעביר את תיבת הדואר הקיימת שלי](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [איך להשתמש באחסון תואם S3 לגיבויים](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [איך להמיר גיבויי SQLite לקבצי EML](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [האם אתם תומכים באירוח עצמי](#do-you-support-self-hosting)
+* [הגדרת דואר אלקטרוני](#email-configuration)
+  * [איך להתחיל ולהגדיר העברת דואר](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [האם אפשר להשתמש בכמה שרתי MX להעברה מתקדמת](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [איך להגדיר מענה חופשה (מענה אוטומטי מחוץ למשרד)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [איך להגדיר SPF עבור Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [איך להגדיר DKIM עבור Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [איך להגדיר DMARC עבור Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [איך לצפות בדוחות DMARC](#how-do-i-view-dmarc-reports)
+  * [איך לחבר ולהגדיר את אנשי הקשר שלי](#how-do-i-connect-and-configure-my-contacts)
+  * [איך לחבר ולהגדיר את היומנים שלי](#how-do-i-connect-and-configure-my-calendars)
+  * [איך להוסיף יומנים נוספים ולנהל יומנים קיימים](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [איך לחבר ולהגדיר משימות ותזכורות](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [למה אני לא יכול ליצור משימות ב-macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
+  * [איך להגדיר Tasks.org באנדרואיד](#how-do-i-set-up-tasksorg-on-android)
+  * [איך להגדיר SRS עבור Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [איך להגדיר MTA-STS עבור Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [איך להוסיף תמונת פרופיל לכתובת הדואר שלי](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [תכונות מתקדמות](#advanced-features)
+  * [האם אתם תומכים בניוזלטרים או רשימות דיוור לשיווק בדואר](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [האם אתם תומכים בשליחת דואר באמצעות API](#do-you-support-sending-email-with-api)
+  * [האם אתם תומכים בקבלת דואר באמצעות IMAP](#do-you-support-receiving-email-with-imap)
+  * [האם אתם תומכים ב-POP3](#do-you-support-pop3)
+  * [האם אתם תומכים ביומנים (CalDAV)](#do-you-support-calendars-caldav)
+  * [האם אתם תומכים במשימות ותזכורות (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [האם אתם תומכים באנשי קשר (CardDAV)](#do-you-support-contacts-carddav)
+  * [האם אתם תומכים בשליחת דואר באמצעות SMTP](#do-you-support-sending-email-with-smtp)
+  * [האם אתם תומכים ב-OpenPGP/MIME, הצפנה מקצה לקצה ("E2EE"), ו-Web Key Directory ("WKD")] (#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [האם אתם תומכים בהצפנת S/MIME](#do-you-support-smime-encryption)
+  * [האם אתם תומכים בסינון דואר באמצעות Sieve](#do-you-support-sieve-email-filtering)
+  * [האם אתם תומכים ב-MTA-STS](#do-you-support-mta-sts)
+  * [האם אתם תומכים במפתחות גישה ו-WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [האם אתם תומכים בפרקטיקות מיטביות לדואר אלקטרוני](#do-you-support-email-best-practices)
+  * [האם אתם תומכים ב-webhooks לבאונס](#do-you-support-bounce-webhooks)
+  * [האם אתם תומכים ב-webhooks](#do-you-support-webhooks)
+  * [האם אתם תומכים בביטויים רגולריים או regex](#do-you-support-regular-expressions-or-regex)
+  * [מהם מגבלות ה-SMTP היוצא שלכם](#what-are-your-outbound-smtp-limits)
+  * [האם אני צריך אישור כדי להפעיל SMTP](#do-i-need-approval-to-enable-smtp)
+  * [מהם הגדרות תצורת שרת ה-SMTP שלכם](#what-are-your-smtp-server-configuration-settings)
+  * [מהם הגדרות תצורת שרת ה-IMAP שלכם](#what-are-your-imap-server-configuration-settings)
+  * [מהם הגדרות תצורת שרת ה-POP3 שלכם](#what-are-your-pop3-server-configuration-settings)
+  * [איך להגדיר גילוי אוטומטי של דואר עבור הדומיין שלי](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [אבטחה](#security-1)
+  * [טכניקות חיזוק שרת מתקדמות](#advanced-server-hardening-techniques)
+  * [האם יש לכם תעודות SOC 2 או ISO 27001](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [האם אתם משתמשים בהצפנת TLS להעברת דואר](#do-you-use-tls-encryption-for-email-forwarding)
+  * [האם אתם שומרים על כותרות אימות הדואר](#do-you-preserve-email-authentication-headers)
+  * [האם אתם שומרים על כותרות הדואר המקוריות ומונעים זיוף](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [איך אתם מגנים מפני ספאם והתעללות](#how-do-you-protect-against-spam-and-abuse)
+  * [האם אתם מאחסנים תוכן דואר על הדיסק](#do-you-store-email-content-on-disk)
+  * [האם תוכן הדואר יכול להיחשף בזמן קריסות מערכת](#can-email-content-be-exposed-during-system-crashes)
+  * [מי יש לו גישה לתשתית הדואר שלכם](#who-has-access-to-your-email-infrastructure)
+  * [אילו ספקי תשתית אתם משתמשים](#what-infrastructure-providers-do-you-use)
+  * [האם אתם מציעים הסכם עיבוד נתונים (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [איך אתם מטפלים בהודעות פריצות נתונים](#how-do-you-handle-data-breach-notifications)
+  * [האם אתם מציעים סביבת בדיקה](#do-you-offer-a-test-environment)
+  * [האם אתם מספקים כלים לניטור והתראות](#do-you-provide-monitoring-and-alerting-tools)
+  * [איך אתם מבטיחים זמינות גבוהה](#how-do-you-ensure-high-availability)
+  * [האם אתם עומדים בדרישות סעיף 889 של חוק הסמכת ההגנה הלאומית (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [פרטים מערכתיים וטכניים](#system-and-technical-details)
+  * [האם אתם מאחסנים מיילים ותוכנם](#do-you-store-emails-and-their-contents)
+  * [איך מערכת העברת הדואר שלכם פועלת](#how-does-your-email-forwarding-system-work)
+  * [איך אתם מעבדים מייל להעברה](#how-do-you-process-an-email-for-forwarding)
+  * [איך אתם מטפלים בבעיות מסירת דואר](#how-do-you-handle-email-delivery-issues)
+  * [איך אתם מתמודדים עם חסימת כתובות ה-IP שלכם](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [מהן כתובות הפוסטמאסטר](#what-are-postmaster-addresses)
+  * [מהן כתובות no-reply](#what-are-no-reply-addresses)
+  * [מהן כתובות ה-IP של השרת שלכם](#what-are-your-servers-ip-addresses)
+  * [האם יש לכם רשימת הרשאות (allowlist)](#do-you-have-an-allowlist)
+  * [אילו סיומות דומיין כלולות ברשימת ההרשאות כברירת מחדל](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [מה הקריטריונים שלכם לרשימת ההרשאות](#what-is-your-allowlist-criteria)
+  * [אילו סיומות דומיין אפשר להשתמש בחינם](#what-domain-name-extensions-can-be-used-for-free)
+  * [האם יש לכם רשימת אפור (greylist)](#do-you-have-a-greylist)
+  * [האם יש לכם רשימת חסימה (denylist)](#do-you-have-a-denylist)
+  * [האם יש לכם הגבלת קצב](#do-you-have-rate-limiting)
+  * [איך אתם מגנים מפני backscatter](#how-do-you-protect-against-backscatter)
+  * [מניעת באונסים ממיילרים ידועים](#prevent-bounces-from-known-mail-from-spammers)
+  * [מניעת באונסים מיותרים להגנה מפני backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [איך אתם קובעים טביעת אצבע של מייל](#how-do-you-determine-an-email-fingerprint)
+  * [האם אפשר להעביר מיילים לפורטים אחרים מלבד 25 (למשל אם ספק האינטרנט חסם את פורט 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [האם זה תומך בסימן הפלוס + עבור כינויים ב-Gmail](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [האם זה תומך בתת-דומיינים](#does-it-support-sub-domains)
+  * [האם זה מעביר את כותרות המייל שלי](#does-this-forward-my-emails-headers)
+  * [האם זה נבדק היטב](#is-this-well-tested)
+  * [האם אתם מעבירים הודעות וקודי תגובה של SMTP](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [איך אתם מונעים ספאמרים ומבטיחים מוניטין טוב להעברת דואר](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [איך אתם מבצעים חיפושי DNS על שמות דומיין](#how-do-you-perform-dns-lookups-on-domain-names)
+* [חשבון וחשבוניות](#account-and-billing)
+  * [האם אתם מציעים אחריות להחזר כספי בתכניות בתשלום](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [אם אני משנה תכנית, האם אתם מחשבים פרופורציה ומחזירים את ההפרש](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [האם אפשר להשתמש בשירות העברת הדואר הזה כשרת MX "גיבוי" או "מחליף"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [האם אפשר להשבית כינויים ספציפיים](#can-i-disable-specific-aliases)
+  * [האם אפשר להעביר מיילים למספר נמענים](#can-i-forward-emails-to-multiple-recipients)
+  * [האם אפשר שיהיו לי כמה נמענים כלליים גלובליים](#can-i-have-multiple-global-catch-all-recipients)
+  * [האם יש מגבלה מקסימלית על מספר כתובות הדואר שאני יכול להעביר לכל כינוי](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [האם אפשר להעביר מיילים ברקורסיה](#can-i-recursively-forward-emails)
+  * [האם אנשים יכולים להסיר או להירשם להעברת הדואר שלי ללא רשותי](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [איך זה בחינם](#how-is-it-free)
+  * [מה המגבלה המקסימלית על גודל מייל](#what-is-the-max-email-size-limit)
+  * [האם אתם מאחסנים לוגים של מיילים](#do-you-store-logs-of-emails)
+  * [האם אתם מאחסנים לוגים של שגיאות](#do-you-store-error-logs)
+  * [האם אתם קוראים את המיילים שלי](#do-you-read-my-emails)
+  * [האם אפשר "לשלוח דואר בשם" ב-Gmail עם זה](#can-i-send-mail-as-in-gmail-with-this)
+  * [האם אפשר "לשלוח דואר בשם" ב-Outlook עם זה](#can-i-send-mail-as-in-outlook-with-this)
+  * [האם אפשר "לשלוח דואר בשם" ב-Apple Mail ו-iCloud Mail עם זה](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [האם אפשר להעביר מיילים ללא הגבלה עם זה](#can-i-forward-unlimited-emails-with-this)
+  * [האם אתם מציעים דומיינים ללא הגבלה במחיר אחד](#do-you-offer-unlimited-domains-for-one-price)
+  * [אילו שיטות תשלום אתם מקבלים](#which-payment-methods-do-you-accept)
+* [משאבים נוספים](#additional-resources)
+## התחלה מהירה {#quick-start}
 
-## Quick Start {#quick-start}
+כדי להתחיל עם Forward Email:
 
-To get started with Forward Email:
+1. **צור חשבון** ב-[forwardemail.net/register](https://forwardemail.net/register)
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **הוסף ואמת את הדומיין שלך** תחת [My Account → Domains](/my-account/domains)
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **הוסף וקבע תצורה של כינויים/תיבות דואר אלקטרוני** תחת [My Account → Domains](/my-account/domains) → Aliases
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **בדוק את ההגדרות שלך** על ידי שליחת אימייל לאחד מהכינויים החדשים שלך
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> שינויים ב-DNS יכולים לקחת עד 24-48 שעות להתפשט ברחבי העולם, אך לרוב הם נכנסים לתוקף הרבה יותר מהר.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> לשיפור יכולת המסירה, אנו ממליצים להגדיר רשומות [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), ו-[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## מבוא {#introduction}
+
+### מה זה Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email מתאים לאנשים פרטיים, עסקים קטנים ומפתחים שרוצים כתובות אימייל מקצועיות ללא העלות והתחזוקה של פתרון אירוח דואר מלא.
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+Forward Email הוא **ספק שירות דואר אלקטרוני מלא תכונות** ו-**ספק אירוח דואר אלקטרוני לדומיינים מותאמים אישית**.
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+זהו השירות החינמי והקוד הפתוח היחיד, ומאפשר לך להשתמש בכתובות דואר אלקטרוני עם דומיין מותאם אישית ללא המורכבות של הקמה ותחזוקה של שרת דואר משלך.
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+השירות שלנו מפנה מיילים שנשלחים לדומיין המותאם אישית שלך לחשבון הדואר הקיים שלך – ואתה אפילו יכול להשתמש בנו כספק אירוח דואר ייעודי.
 
-Key features of Forward Email:
+תכונות מרכזיות של Forward Email:
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **דואר אלקטרוני עם דומיין מותאם אישית**: השתמש בכתובות דואר מקצועיות עם שם הדומיין שלך
+* **רמת חינם**: הפניית דואר בסיסית ללא עלות
+* **פרטיות משופרת**: אנחנו לא קוראים את המיילים שלך ולא מוכרים את הנתונים שלך
+* **קוד פתוח**: כל קוד המקור שלנו זמין ב-GitHub
+* **תמיכה ב-SMTP, IMAP ו-POP3**: יכולות מלאות לשליחה וקבלה של דואר אלקטרוני
+* **הצפנה מקצה לקצה**: תמיכה ב-OpenPGP/MIME
+* **כינויים כלליים מותאמים אישית**: צור כינויים ללא הגבלה
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+אתה יכול להשוות אותנו ל-56+ ספקי שירות דואר אלקטרוני אחרים ב-[דף ההשוואה שלנו](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> למד עוד על Forward Email על ידי קריאת [המסמך הטכני החינמי שלנו](/technical-whitepaper.pdf)
 
-### Who uses Forward Email {#who-uses-forward-email}
+### מי משתמש ב-Forward Email {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+אנו מספקים שירות אירוח דואר והפניית דואר ל-500,000+ דומיינים ולמשתמשים הבולטים הבאים:
 
-| Customer | Case Study |
+| לקוח                                   | מקרה בוחן                                                                                               |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| האקדמיה הימית של ארה"ב                  | [:page_facing_up: מקרה בוחן](/blog/docs/federal-government-email-service-section-889-compliant)         |
+| Canonical                                | [:page_facing_up: מקרה בוחן](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Netflix Games                            |                                                                                                          |
+| The Linux Foundation                     | [:page_facing_up: מקרה בוחן](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| The PHP Foundation                       |                                                                                                          |
+| Fox News Radio                           |                                                                                                          |
+| Disney Ad Sales                          |                                                                                                          |
+| jQuery                                   | [:page_facing_up: מקרה בוחן](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| LineageOS                                |                                                                                                          |
+| Ubuntu                                   | [:page_facing_up: מקרה בוחן](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Kubuntu                                  | [:page_facing_up: מקרה בוחן](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Lubuntu                                  | [:page_facing_up: מקרה בוחן](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| אוניברסיטת קיימברידג'                   | [:page_facing_up: מקרה בוחן](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| אוניברסיטת מרילנד                       | [:page_facing_up: מקרה בוחן](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| אוניברסיטת וושינגטון                    | [:page_facing_up: מקרה בוחן](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| אוניברסיטת טאפטס                        | [:page_facing_up: מקרה בוחן](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Swarthmore College                       | [:page_facing_up: מקרה בוחן](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| ממשלת דרום אוסטרליה                     |                                                                                                          |
+| ממשלת הרפובליקה הדומיניקנית             |                                                                                                          |
+| Fly<span>.</span>io                      |                                                                                                          |
+| RCD Hotels                               |                                                                                                          |
+| Isaac Z. Schlueter (npm)                 | [:page_facing_up: מקרה בוחן](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### מהי ההיסטוריה של Forward Email {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+אתה יכול ללמוד עוד על Forward Email ב[דף האודות שלנו](/about).
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### כמה מהירה השירות הזה {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> המערכת שלנו מתוכננת למהירות ואמינות, עם מספר שרתים מיותרים כדי להבטיח שהאימיילים שלך יגיעו במהירות.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Email מספק הודעות עם עיכוב מינימלי, בדרך כלל בתוך שניות מקבלת ההודעה.
 
-Performance metrics:
+מדדי ביצועים:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **זמן אספקה ממוצע**: פחות מ-5-10 שניות מקבלת ההודעה להעברה ([ראה את דף המעקב שלנו זמן לתיבת הדואר "TTI"](/tti))
+* **זמינות**: זמינות שירות של 99.9%+
+* **תשתית גלובלית**: שרתים ממוקמים אסטרטגית לניתוב מיטבי
+* **קנה מידה אוטומטי**: המערכת שלנו מתרחבת בתקופות שיא של אימיילים
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+אנו פועלים בזמן אמת, בניגוד לספקים אחרים שתלויים בתורים עם עיכוב.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+איננו כותבים לדיסק או שומרים לוגים – עם [החריג של שגיאות](#do-you-store-error-logs) ו[SMTP יוצא](#do-you-support-sending-email-with-smtp) (ראה את [מדיניות הפרטיות שלנו](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+הכל נעשה בזיכרון ו[קוד המקור שלנו ב-GitHub](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## לקוחות דואר אלקטרוני {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. צור כינוי חדש ויצר סיסמה בלוח הבקרה של Forward Email
+2. פתח את Thunderbird ועבור ל- **Edit → Account Settings → Account Actions → Add Mail Account**
+3. הזן את שמך, כתובת Forward Email והסיסמה
+4. לחץ על **Configure manually** והזן:
+   * נכנס: IMAP, `imap.forwardemail.net`, פורט 993, SSL/TLS
+   * יוצא: SMTP, `smtp.forwardemail.net`, פורט 465, SSL/TLS (מומלץ; פורט 587 עם STARTTLS נתמך גם כן)
+5. לחץ על **Done**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. צור כינוי חדש ויצר סיסמה בלוח הבקרה של Forward Email
+2. עבור ל- **File → Add Account**
+3. הזן את כתובת Forward Email ולחץ על **Connect**
+4. בחר ב- **Advanced options** וסמן **Let me set up my account manually**
+5. בחר ב- **IMAP** והזן:
+   * נכנס: `imap.forwardemail.net`, פורט 993, SSL
+   * יוצא: `smtp.forwardemail.net`, פורט 465, SSL/TLS (מומלץ; פורט 587 עם STARTTLS נתמך גם כן)
+   * שם משתמש: כתובת האימייל המלאה שלך
+   * סיסמה: הסיסמה שיצרת
+6. לחץ על **Connect**
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. צור כינוי חדש ויצר סיסמה בלוח הבקרה של Forward Email
+2. עבור ל- **Mail → Preferences → Accounts → +**
+3. בחר ב- **Other Mail Account**
+4. הזן את שמך, כתובת Forward Email והסיסמה
+5. עבור הגדרות השרת, הזן:
+   * נכנס: `imap.forwardemail.net`
+   * יוצא: `smtp.forwardemail.net`
+   * שם משתמש: כתובת האימייל המלאה שלך
+   * סיסמה: הסיסמה שיצרת
+6. לחץ על **Sign In**
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. צור כינוי חדש ויצר סיסמה בלוח הבקרה של Forward Email
+2. פתח את eM Client ועבור ל- **Menu → Accounts → + Add Account**
+3. לחץ על **Mail** ואז בחר ב- **Other**
+4. הזן את כתובת Forward Email ולחץ על **Next**
+5. הזן את הגדרות השרת הבאות:
+   * **שרת נכנס**: `imap.forwardemail.net`
+   * **שרת יוצא**: `smtp.forwardemail.net`
+6. הזן את כתובת האימייל המלאה שלך כ- **User name** ואת הסיסמה שיצרת כ- **Password** עבור שני השרתים הנכנס והיוצא.
+7. eM Client יבדוק את החיבור. לאחר שהבדיקה תעבור, לחץ על **Next**.
+8. הזן את שמך ובחר שם לחשבון.
+9. לחץ על **Finish**.
 
-### Mobile Devices {#mobile-devices}
+### מכשירים ניידים {#mobile-devices}
 
-For iOS:
+עבור iOS:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. עבור ל- **Settings → Mail → Accounts → Add Account → Other**
+2. הקש על **Add Mail Account** והזן את פרטיך
+3. עבור הגדרות השרת, השתמש באותן הגדרות IMAP ו-SMTP כמפורט למעלה
 
-For Android:
+עבור Android:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. עבור ל- **Settings → Accounts → Add Account → Personal (IMAP)**
+2. הזן את כתובת Forward Email והסיסמה
+3. עבור הגדרות השרת, השתמש באותן הגדרות IMAP ו-SMTP כמפורט למעלה
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### הגדרת Sendmail SMTP Relay {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+אתה יכול להגדיר את Sendmail להעביר אימיילים דרך שרתי SMTP של Forward Email. זוהי הגדרה נפוצה למערכות ישנות או יישומים שתלויים ב-Sendmail.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">זמן התקנה משוער:</strong>
+  <span>פחות מ-20 דקות</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    זה דורש תוכנית בתשלום עם גישה ל-SMTP מופעלת.
   </span>
 </div>
 
 #### Configuration {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. ערוך את הקובץ `sendmail.mc` שלך, שנמצא בדרך כלל ב-`/etc/mail/sendmail.mc`:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. הוסף את השורות הבאות כדי להגדיר את ה-smart host והאימות:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,26 +352,26 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. צור את קובץ האימות `/etc/mail/authinfo`:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. הוסף את פרטי ההתחברות שלך ל-Forward Email לקובץ `authinfo`:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. צור את מסד הנתונים של האימות ואבטח את הקבצים:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. בנה מחדש את תצורת Sendmail והפעל מחדש את השירות:
 
    ```bash
    sudo make -C /etc/mail
@@ -374,7 +380,7 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
 
 #### Testing {#testing}
 
-Send a test email to verify the configuration:
+שלח דואר אלקטרוני לבדיקה כדי לוודא את התצורה:
 
 ```bash
 echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
@@ -382,57 +388,57 @@ echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
 
 ### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4 הוא MTA פופולרי במערכות מבוססות Debian. ניתן להגדיר אותו להשתמש ב-Forward Email כ-smarthost.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">זמן התקנה משוער:</strong>
+  <span>פחות מ-15 דקות</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    זה דורש תוכנית בתשלום עם גישה ל-SMTP מופעלת.
   </span>
 </div>
 
 #### Configuration {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. הפעל את כלי התצורה של Exim4:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. בחר את האפשרויות הבאות:
+   * **סוג כללי של תצורת דואר:** דואר שנשלח דרך smarthost; מתקבל דרך SMTP או fetchmail
+   * **שם דואר מערכת:** your.hostname
+   * **כתובות IP להאזנה לחיבורים נכנסים של SMTP:** 127.0.0.1 ; ::1
+   * **יעדים אחרים לקבלת דואר:** (השאר ריק)
+   * **דומיינים להעברת דואר עבורם:** (השאר ריק)
+   * **כתובת IP או שם מארח של ה-smarthost היוצא:** smtp.forwardemail.net::465
+   * **להסתיר את שם הדואר המקומי בדואר היוצא?** לא
+   * **לשמור על מספר מינימלי של שאילתות DNS (Dial-on-Demand)?** לא
+   * **שיטת משלוח לדואר מקומי:** פורמט Mbox ב-/var/mail/
+   * **לפצל את התצורה לקבצים קטנים?** לא
 
-3. Edit the `passwd.client` file to add your credentials:
+3. ערוך את הקובץ `passwd.client` כדי להוסיף את פרטי ההתחברות שלך:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. הוסף את השורה הבאה:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. עדכן את התצורה והפעל מחדש את Exim4:
 
    ```bash
    sudo update-exim4.conf
@@ -441,7 +447,7 @@ Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forw
 
 #### Testing {#testing-1}
 
-Send a test email:
+שלח דואר אלקטרוני לבדיקה:
 
 ```bash
 echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
@@ -449,33 +455,32 @@ echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
 
 ### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp הוא לקוח SMTP קל משקל, שימושי לשליחת מיילים מתוך סקריפטים או יישומי שורת פקודה.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">זמן התקנה משוער:</strong>
+  <span>פחות מ-10 דקות</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    זה דורש תוכנית בתשלום עם גישה ל-SMTP מופעלת.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### תצורה {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. צור או ערוך את קובץ התצורה של msmtp ב-`~/.msmtprc`:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. הוסף את התצורה הבאה:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. הגדר הרשאות נכונות לקובץ התצורה:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### בדיקה {#testing-2}
 
-Send a test email:
+שלח דואר אלקטרוני לבדיקה:
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### לקוחות דואר שורת פקודה {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+לקוחות דואר פופולריים בשורת הפקודה כמו [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), ו-[Alpine](https://alpine.x10.mx/alpine/release/) יכולים להיות מוגדרים להשתמש בשרתי ה-SMTP של Forward Email לשליחת דואר. התצורה תהיה דומה להגדרת `msmtp`, שבה תספק את פרטי שרת ה-SMTP ואת האישורים שלך בקבצי התצורה המתאימים (`.muttrc`, `.neomuttrc`, או `.pinerc`).
 
-### Windows Email Configuration {#windows-email-configuration}
+### תצורת דואר ב-Windows {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+למשתמשי Windows, ניתן להגדיר לקוחות דואר פופולריים כמו **Microsoft Outlook** ו-**eM Client** באמצעות הגדרות IMAP ו-SMTP המסופקות בחשבון Forward Email שלך. לשימוש בשורת פקודה או סקריפטים, ניתן להשתמש ב-cmdlet של PowerShell `Send-MailMessage` (אף על פי שהוא נחשב מיושן) או בכלי SMTP קל משקל כמו [E-MailRelay](https://github.com/graeme-walker/emailrelay).
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### תצורת ריליי SMTP ל-Postfix {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+ניתן להגדיר את Postfix להעביר דואר דרך שרתי ה-SMTP של Forward Email. זה שימושי ליישומי שרת שצריכים לשלוח דואר אלקטרוני.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">זמן התקנה משוער:</strong>
+  <span>פחות מ-15 דקות</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    זה דורש תוכנית בתשלום עם גישה ל-SMTP מופעלת.
   </span>
 </div>
 
-#### Installation {#installation}
+#### התקנה {#installation}
 
-1. Install Postfix on your server:
+1. התקן את Postfix בשרת שלך:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. במהלך ההתקנה, בחר "Internet Site" כאשר תתבקש לבחור סוג תצורה.
 
-#### Configuration {#configuration-3}
+#### תצורה {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. ערוך את קובץ התצורה הראשי של Postfix:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. הוסף או שנה את ההגדרות הבאות:
 
 ```
-# SMTP relay configuration
+# תצורת ריליי SMTP
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. צור את קובץ סיסמת SASL:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. הוסף את אישורי Forward Email שלך:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. אבטח ו-hash את קובץ הסיסמה:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. הפעל מחדש את Postfix:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### בדיקה {#testing-3}
 
-Test your configuration by sending a test email:
+בדוק את התצורה שלך על ידי שליחת דואר אלקטרוני לבדיקה:
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### כיצד לשלוח דואר בשם באמצעות Gmail {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">זמן התקנה משוער:</strong>
+  <span>פחות מ-10 דקות</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    התחלה:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    אם עקבת אחר ההוראות למעלה תחת <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">איך להתחיל ולהגדיר העברת דואר אלקטרוני</a>, אז תוכל להמשיך לקרוא למטה.
   </span>
 </div>
 
@@ -631,86 +635,85 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    אנא ודא שקראת את <a href="/terms" class="alert-link" target="_blank">תנאי השימוש</a>, <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a>, ו-<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">מגבלות SMTP יוצאות</a> – השימוש שלך נחשב לאישור והסכמה.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    אם אתה מפתח, אז עיין ב-<a class="alert-link" href="/email-api#outbound-emails" target="_blank">תיעוד API הדואר האלקטרוני</a> שלנו.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> הגדרת SMTP יוצא ופעל לפי הוראות ההתקנה
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. לחץ על <strong class="text-success"><i class="fa fa-key"></i> צור סיסמה</strong> ליד הכינוי שנוצר זה עתה. העתק ללוח והעבר לאחסון מאובטח את הסיסמה שנוצרה המוצגת על המסך.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. עבור אל [Gmail](https://gmail.com) ותחת [הגדרות <i class="fa fa-angle-right"></i> חשבונות וייבוא <i class="fa fa-angle-right"></i> שלח דואר בשם](https://mail.google.com/mail/u/0/#settings/accounts), לחץ על "הוסף כתובת דואר אלקטרוני נוספת"
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. כאשר תתבקש להזין "שם", הזן את השם שברצונך שיופיע כ"שולח" בדואר האלקטרוני שלך (למשל "לינוס טורוולדס").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. כאשר תתבקש להזין "כתובת דואר אלקטרוני", הזן את כתובת הדואר המלאה של כינוי שיצרת תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. בטל את הסימון של "טפל ככינוי"
 
-8. Click "Next Step" to proceed
+8. לחץ על "שלב הבא" כדי להמשיך
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. כאשר תתבקש להזין "שרת SMTP", הזן <code>smtp.forwardemail.net</code> ושנה את הפורט ל-<code>465</code>
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. כאשר תתבקש להזין "שם משתמש", הזן את כתובת הדואר המלאה של כינוי שיצרת תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. כאשר תתבקש להזין "סיסמה", הדבק את הסיסמה מ-<strong class="text-success"><i class="fa fa-key"></i> צור סיסמה</strong> בשלב 3 למעלה
 
-12. Select the radio button for "Secured connection using SSL"
+12. בחר את כפתור הרדיו עבור "חיבור מאובטח באמצעות SSL"
 
-13. Click "Add Account" to proceed
+13. לחץ על "הוסף חשבון" כדי להמשיך
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. פתח לשונית חדשה ב-[Gmail](https://gmail.com) והמתן להגעת דואר האימות שלך (תקבל קוד אימות המאשר שאתה הבעלים של כתובת הדואר שאתה מנסה "לשלוח דואר בשם")
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. כאשר הוא יגיע, העתק והדבק את קוד האימות בהנחיה שקיבלת בשלב הקודם
+16. לאחר שסיימת את זה, חזור למייל ולחץ על הקישור כדי "לאשר את הבקשה". סביר להניח שתצטרך לבצע את הצעד הזה ואת הצעד הקודם כדי שהמייל יוגדר כראוי.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      מזל טוב!
     </strong>
     <span>
-      You've successfully completed all steps.
+      השלמת בהצלחה את כל השלבים.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### מהו המדריך ללא מורשת לשליחת דואר בשם באמצעות Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">חשוב:</strong> מדריך ללא מורשת זה אינו בתוקף מאז מאי 2023 מכיוון ש<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">כעת אנו תומכים ב-SMTP יוצא</a>. אם תשתמש במדריך למטה, אז <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">זה יגרום למייל היוצא שלך</a> להופיע כ-"<span class="notranslate text-danger font-weight-bold">דרך forwardemail dot net</span>" ב-Gmail.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">זמן הערכה להגדרה:</strong>
+  <span>פחות מ-10 דקות</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    התחלה:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    אם עקבת אחר ההוראות למעלה תחת <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">איך להתחיל ולהגדיר העברת דואר</a>, אז תוכל להמשיך לקרוא למטה.
   </span>
 </div>
 
@@ -718,149 +721,147 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. עליך להפעיל את [אימות דו-שלבי של Gmail][gmail-2fa] כדי שזה יעבוד. בקר ב-<https://www.google.com/landing/2step/> אם לא הפעלת אותו.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. לאחר שהפעלת את האימות הדו-שלבי (או אם כבר היה מופעל), בקר ב-<https://myaccount.google.com/apppasswords>.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. כאשר תתבקש לבחור "בחר את האפליקציה והמכשיר עבורם ברצונך ליצור סיסמת אפליקציה":
+   * בחר "Mail" מתפריט הנפתח של "בחר אפליקציה"
+   * בחר "Other" מתפריט הנפתח של "בחר מכשיר"
+   * כאשר תתבקש להזין טקסט, הזן את כתובת המייל של הדומיין המותאם אישית שלך שממנו אתה מפנה (למשל <code><hello@example.com></code> - זה יעזור לך לעקוב במקרה שאתה משתמש בשירות זה עבור חשבונות מרובים)
 
-4. Copy the password to your clipboard that is automatically generated
+4. העתק את הסיסמה ללוח הגזירים שנוצרה אוטומטית
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       חשוב:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       אם אתה משתמש ב-G Suite, בקר בלוח הניהול שלך <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">אפליקציות <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> הגדרות ל-Gmail <i class="fa fa-angle-right"></i> הגדרות</a> וודא שסימנת "אפשר למשתמשים לשלוח דואר דרך שרת SMTP חיצוני...". יהיה עיכוב מסוים עד שהשינוי יופעל, אז אנא המתן כמה דקות.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. עבור ל-[Gmail](https://gmail.com) ותחת [הגדרות <i class="fa fa-angle-right"></i> חשבונות וייבוא <i class="fa fa-angle-right"></i> שלח דואר בשם](https://mail.google.com/mail/u/0/#settings/accounts), לחץ על "הוסף כתובת דואר אלקטרוני נוספת"
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. כאשר תתבקש להזין "שם", הזן את השם שברצונך שיופיע כ"שולח" במייל שלך (למשל "Linus Torvalds")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. כאשר תתבקש להזין "כתובת דואר אלקטרוני", הזן את כתובת המייל עם הדומיין המותאם אישית שהשתמשת בו למעלה (למשל <code><hello@example.com></code>)
+8. בטל את הסימון של "טפל ככינוי"
 
-8. Uncheck "Treat as an alias"
+9. לחץ על "Next Step" כדי להמשיך
 
-9. Click "Next Step" to proceed
+10. כאשר תתבקש להזין "SMTP Server", הזן <code>smtp.gmail.com</code> והשאר את הפורט כ-<code>587</code>
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. כאשר תתבקש להזין "Username", הזן את החלק של כתובת הג'ימייל שלך ללא החלק <span>gmail.com</span> (למשל רק "user" אם האימייל שלי הוא <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        חשוב:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        אם החלק של "Username" מתמלא אוטומטית, אז <u><strong>תצטרך לשנות זאת</strong></u> לחלק של שם המשתמש בכתובת הג'ימייל שלך במקום.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. כאשר תתבקש להזין "Password", הדבק מהלוח את הסיסמה שיצרת בשלב 2 למעלה
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. השאר את כפתור הרדיו מסומן עבור "Secured connection using TLS"
 
-14. Click "Add Account" to proceed
+14. לחץ על "Add Account" כדי להמשיך
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. פתח לשונית חדשה ב-[Gmail](https://gmail.com) והמתן להגעת מייל האימות שלך (תקבל קוד אימות המאשר שאתה הבעלים של כתובת האימייל שאתה מנסה "Send Mail As")
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. ברגע שהוא מגיע, העתק והדבק את קוד האימות בהנחיה שקיבלת בשלב הקודם
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. לאחר שעשית זאת, חזור למייל ולחץ על הקישור כדי "לאשר את הבקשה". סביר להניח שתצטרך לבצע את שלב זה ואת השלב הקודם כדי שהאימייל יוגדר כראוי.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### הגדרת ניתוב מתקדם בג'ימייל {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">זמן הערכה להגדרה:</strong>
+  <span>15-30 דקות</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+אם ברצונך להגדיר ניתוב מתקדם בג'ימייל כך שכינויים שלא תואמים לתיבת דואר יועברו לשרתים של Forward Email, בצע את השלבים הבאים:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. היכנס לקונסולת הניהול של גוגל ב-[admin.google.com](https://admin.google.com)
+2. עבור אל **Apps → Google Workspace → Gmail → Routing**
+3. לחץ על **Add Route** והגדר את ההגדרות הבאות:
 
-**Single Recipient Settings:**
+**הגדרות נמען יחיד:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* בחר "Change envelope recipient" והזן את כתובת הג'ימייל הראשית שלך
+* סמן "Add X-Gm-Original-To header with original recipient"
 
-**Envelope Recipient Patterns:**
+**תבניות נמען למעטפה:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* הוסף תבנית שתתאים לכל תיבות הדואר הלא קיימות (למשל, `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**הגדרות שרת דואר:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* בחר "Route to host" והזן `mx1.forwardemail.net` כשרת הראשי
+* הוסף את `mx2.forwardemail.net` כשרת גיבוי
+* הגדר פורט ל-25
+* בחר "Require TLS" לאבטחה
 
-4. Click **Save** to create the route
+4. לחץ על **Save** כדי ליצור את הנתיב
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    תצורה זו תעבוד רק עבור חשבונות Google Workspace עם דומיינים מותאמים אישית, לא עבור חשבונות ג'ימייל רגילים.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### הגדרת ניתוב מתקדם באאוטלוק {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">זמן הערכה להגדרה:</strong>
+  <span>15-30 דקות</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+למשתמשי Microsoft 365 (לשעבר Office 365) שרוצים להגדיר ניתוב מתקדם כך שכינויים שלא תואמים לתיבת דואר יועברו לשרתים של Forward Email:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
+1. היכנס למרכז הניהול של Microsoft 365 ב-[admin.microsoft.com](https://admin.microsoft.com)
+2. עבור אל **Exchange → Mail flow → Rules**
+3. לחץ על **Add a rule** ובחר **Create a new rule**
+4. תן שם לכלל שלך (למשל, "Forward non-existent mailboxes to Forward Email")
+5. תחת **Apply this rule if**, בחר:
    * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
+   * הזן תבנית שתתאים לכל הכתובות בדומיין שלך (למשל, `*@yourdomain.com`)
+6. תחת **Do the following**, בחר:
    * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
+   * בחר "The following mail server"
+   * הזן `mx1.forwardemail.net` ופורט 25
+   * הוסף את `mx2.forwardemail.net` כשרת גיבוי
+7. תחת **Except if**, בחר:
    * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+   * הוסף את כל תיבות הדואר הקיימות שלך שאינן אמורות להיות מנותבות
+8. הגדר את עדיפות הכלל כדי לוודא שהוא רץ לאחר כללי זרימת דואר אחרים
+9. לחץ על **Save** כדי להפעיל את הכלל
+## פתרון בעיות {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### למה אני לא מקבל את מיילי הבדיקה שלי {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+אם אתה שולח מייל בדיקה לעצמך, ייתכן שהוא לא יופיע בתיבת הדואר הנכנס שלך כי יש לו את אותו כותרת "Message-ID".
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+זו בעיה ידועה מאוד, והיא משפיעה גם על שירותים כמו Gmail.  <a href="https://support.google.com/a/answer/1703601">כאן התשובה הרשמית של Gmail לגבי בעיה זו</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+אם הבעיות ממשיכות, סביר להניח שמדובר בבעיה בהפצת DNS. תצטרך להמתין קצת יותר ולנסות שוב (או לנסות להגדיר ערך TTL נמוך יותר ברשומות <strong class="notranslate">TXT</strong> שלך).
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**עדיין יש בעיות?**  אנא <a href="/help">צור איתנו קשר</a> כדי שנוכל לעזור לחקור את הבעיה ולמצוא פתרון מהיר.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### איך להגדיר את לקוח הדואר האלקטרוני שלי לעבוד עם Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  השירות שלנו עובד עם לקוחות דואר אלקטרוני פופולריים כגון:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
@@ -875,188 +876,235 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  שם המשתמש שלך הוא כתובת האימייל של הכינוי שלך והסיסמה היא מ- <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("סיסמה רגילה").
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>אם אתה משתמש ב-Thunderbird, ודא ש-"Connection security" מוגדר ל-"SSL/TLS" ושיטת האימות מוגדרת ל-"Normal password".</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| סוג  |         שם מארח         |         פרוטוקול        |                                            פורטים                                           |
+| :--: | :---------------------: | :---------------------: | :----------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |  SSL/TLS **מועדף**      |                                      `993` ו-`2993`                                        |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **מומלץ**        | `465` ו-`2465` ל-SSL/TLS (מומלץ) או `587`, `2587`, `2525`, ו-`25` ל-STARTTLS               |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### למה המיילים שלי נוחתים בספאם ובזבל ואיך אני יכול לבדוק את מוניטין הדומיין שלי {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+<section> זה מדריך עבורך אם הדואר היוצא שלך משתמש בשרתים שלנו SMTP (למשל `smtp.forwardemail.net`) (או מועבר דרך `mx1.forwardemail.net` או `mx2.forwardemail.net`) והוא מגיע לתיקיית דואר זבל או דואר לא רצוי של הנמענים.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+אנו עוקבים באופן שגרתי אחרי [כתובות ה-IP שלנו](#what-are-your-servers-ip-addresses) מול [כל רשימות ה-DNS המוכרות](#how-do-you-handle-your-ip-addresses-becoming-blocked), **לכן סביר להניח שמדובר בבעיה ספציפית למוניטין הדומיין**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+מיילים יכולים להגיע לתיקיות דואר זבל ממספר סיבות:
 
-Emails can land in spam folders for several reasons:
+1. **חוסר אימות**: הגדר רשומות [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), ו-[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **מוניטין דומיין**: דומיינים חדשים לרוב יש להם מוניטין ניטרלי עד שהם בונים היסטוריית שליחה.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **טריגרים בתוכן**: מילים או ביטויים מסוימים יכולים להפעיל מסנני דואר זבל.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **דפוסי שליחה**: עליות פתאומיות בנפח המיילים יכולות להיראות חשודות.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+אתה יכול לנסות להשתמש באחד או יותר מהכלים הבאים כדי לבדוק את מוניטין הדומיין והקטגוריזציה שלו:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### כלים לבדיקה של מוניטין ורשימות חסימה {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| שם הכלי                                   | URL                                                          | סוג                    |
+| ------------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| משוב קטגוריזציה של דומיינים ב-Cloudflare   | <https://radar.cloudflare.com/domains/feedback>              | קטגוריזציה            |
+| בודק מוניטין IP ודומיין של Spamhaus         | <https://check.spamhaus.org/>                                | DNSBL                  |
+| מרכז מוניטין IP ודומיין של Cisco Talos      | <https://talosintelligence.com/reputation_center>            | מוניטין                |
+| חיפוש מוניטין IP ודומיין של Barracuda       | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| בדיקת רשימות שחורות של MX Toolbox          | <https://mxtoolbox.com/blacklists.aspx>                      | רשימה שחורה           |
+| כלים לניהול דואר של Google Postmaster       | <https://www.gmail.com/postmaster/>                          | מוניטין                |
+| מרכז השולחים של Yahoo                       | <https://senders.yahooinc.com/>                              | מוניטין                |
+| בדיקת רשימות שחורות של MultiRBL.valli.org  | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | מוניטין                |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| רמות 1, 2 ו-3 של UCEPROTECT                  | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| backscatterer.org של UCEPROTECT               | <https://www.backscatterer.org/>                             | הגנה מפני backscatter  |
+| whitelisted.org של UCEPROTECT                 | <https://www.whitelisted.org/> (דורש תשלום)                  | DNSWL                  |
 
+#### טפסי בקשה להסרת IP לפי ספק {#ip-removal-request-forms-by-provider}
+
+אם כתובת ה-IP שלך נחסמה על ידי ספק דואר מסוים, השתמש בטופס ההסרה המתאים או צור קשר לפי הרשימה הבאה:
+
+| ספק                                   | טופס הסרה / יצירת קשר                                                                                     | הערות                                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | טופס יצירת קשר לשולחים בכמות גדולה          |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | פורטל הסרת IP של Office 365                   |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | מרכז השולחים של Yahoo                         |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | Apple משתמשת ב-Proofpoint למוניטין IP         |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | בדיקת IP והסרה ב-Proofpoint                   |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | חיפוש מוניטין והסרה ב-Barracuda               |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | בקשת איפוס Cloudmark CSI                      |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | טופס בקשה להסרת חסימה GoDaddy                 |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | בקשת הסרת IP Comcast                          |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | פנה לתמיכת Spectrum להסרה                      |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | דואר אלקטרוני לבקשת הסרה                      |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | דואר אלקטרוני לבקשת הסרה                      |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | משתמש ב-Cloudfilter                           |
+| Windstream                             | `abuse@windstream.net`                                                                                     | דואר אלקטרוני לבקשת הסרה                      |
+| t-online.de (גרמניה)                  | `tobr@rx.t-online.de`                                                                                      | דואר אלקטרוני לבקשת הסרה                      |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | השתמש בטופס יצירת קשר או במייל `abuse@orange.fr` |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | טופס יצירת קשר של GMX                         |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | פורטל מנהל דואר Mail.ru                        |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | פורטל מנהל דואר Yandex                         |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | בקשת הוספה לרשימת לבנה של QQ Mail (סינית)    |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | פורטל מנהל דואר Netease                        |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | יצירת קשר דרך קונסולת Alibaba Cloud           |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | קונסולת AWS SES > הסרת מרשימות שחורות         |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | יצירת קשר עם תמיכת SendGrid                   |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | משתמש ברשימות שחורות צד שלישי - פנה ל-RBL הספציפי |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | יצירת קשר עם תמיכת Fastmail                   |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | יצירת קשר עם תמיכת Zoho                       |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | יצירת קשר עם תמיכת Proton                      |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | יצירת קשר עם תמיכת Tutanota                    |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | יצירת קשר עם תמיכת Hushmail                    |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | יצירת קשר עם תמיכת Mailbox.org                 |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | יצירת קשר עם תמיכת Posteo                      |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | יצירת קשר עם תמיכת DuckDuckGo                  |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | יצירת קשר עם תמיכת Sonic                       |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | יצירת קשר עם תמיכת Telus                       |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | יצירת קשר עם תמיכת Vodafone                    |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | יצירת קשר עם תמיכת Spark NZ                    |
+| UOL/BOL (ברזיל)                       | <https://ajuda.uol.com.br/>                                                                                | יצירת קשר עם תמיכת UOL (פורטוגזית)             |
+| Libero (איטליה)                       | <https://aiuto.libero.it/>                                                                                 | יצירת קשר עם תמיכת Libero (איטלקית)            |
+| Telenet (בלגיה)                      | <https://www2.telenet.be/en/support/>                                                                      | יצירת קשר עם תמיכת Telenet                     |
+| Facebook/WhatsApp                      | <https://www.facebook.com/business/help>                                                                   | יצירת קשר עם תמיכת עסקים של Facebook           |
+| LinkedIn                               | <https://www.linkedin.com/help/linkedin>                                                                   | יצירת קשר עם תמיכת LinkedIn                    |
+| Groups.io                              | <https://groups.io/helpcenter>                                                                             | יצירת קשר עם תמיכת Groups.io                   |
+| Earthlink/Vade Secure                  | <https://sendertool.vadesecure.com/en/>                                                                    | כלי שולחים של Vade Secure                      |
+| Cloudflare Email Security              | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | יצירת קשר עם תמיכת Cloudflare                  |
+| Hornetsecurity/Expurgate               | <https://www.hornetsecurity.com/>                                                                          | יצירת קשר עם תמיכת Hornetsecurity              |
+| SpamExperts/Antispamcloud              | <https://www.spamexperts.com/>                                                                             | יצירת קשר דרך ספק האירוח                        |
+| Mail2World                             | <https://www.mail2world.com/support/>                                                                      | יצירת קשר עם תמיכת Mail2World                   |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> התחל עם נפח נמוך של אימיילים איכותיים כדי לבנות מוניטין חיובי לפני שליחה בנפחים גדולים יותר.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> אם הדומיין שלך נמצא ברשימה שחורה, לכל רשימה שחורה יש תהליך הסרה משלה. בדוק את האתרים שלהם להוראות.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> אם אתה זקוק לעזרה נוספת או מגלה שאנו מסומנים בטעות כספאם על ידי ספק שירות אימייל מסוים, אנא <a href="/help">צור קשר איתנו</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### מה עלי לעשות אם אני מקבל אימיילים ספאם {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+עליך להסיר את עצמך מרשימת התפוצה (אם אפשרי) ולחסום את השולח.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+אנא אל תדווח על ההודעה כספאם, אלא העבר אותה למערכת מניעת ההתעללות המנוהלת ידנית וממוקדת פרטיות שלנו.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**כתובת האימייל שאליה יש להעביר ספאם היא:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### מדוע אימיילי הבדיקה שאני שולח לעצמי בג'ימייל מופיעים כ"חשודים" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+אם אתה רואה הודעת שגיאה זו בג'ימייל כשאתה שולח בדיקה לעצמך, או כאשר אדם שאתה שולח לו אימייל עם הכינוי שלך רואה אימייל ממך בפעם הראשונה, אז **אנא אל תדאג** – זו תכונת בטיחות מובנית של ג'ימייל.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+אתה יכול פשוט ללחוץ על "נראה בטוח". לדוגמה, אם תשלח הודעת בדיקה באמצעות תכונת שליחת אימייל בשם (למישהו אחר), הם לא יראו הודעה זו.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+עם זאת, אם הם כן רואים הודעה זו, זה בגלל שהם רגילים לראות את האימיילים שלך מגיעים מ-<john@gmail.com> במקום מ-<john@customdomain.com> (רק דוגמה). ג'ימייל יזהיר את המשתמשים כדי לוודא שהכל בטוח למקרה הצורך, ואין דרך לעקוף זאת.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### האם ניתן להסיר את via forwardemail dot net בג'ימייל {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+נושא זה קשור ל[בעיה ידועה בג'ימייל שבה מופיעה מידע נוסף ליד שם השולח](https://support.google.com/mail/answer/1311182).
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+מאז מאי 2023 אנו תומכים בשליחת אימייל עם SMTP כתוספת לכל המשתמשים בתשלום – מה שאומר שניתן להסיר את <span class="notranslate">via forwardemail dot net</span> בג'ימייל.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+שים לב שנושא זה מיועד במיוחד למשתמשים בתכונת [כיצד לשלוח אימייל בשם באמצעות ג'ימייל](#how-to-send-mail-as-using-gmail).
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+אנא עיין בסעיף על [האם אתם תומכים בשליחת אימייל עם SMTP](#do-you-support-sending-email-with-smtp) להוראות הגדרה.
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## ניהול נתונים {#data-management}
+
+### היכן ממוקמים השרתים שלכם {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> אנו עשויים בקרוב להודיע על מיקום מרכז הנתונים שלנו באיחוד האירופי המופעל תחת [forwardemail.eu](https://forwardemail.eu). הירשם לדיון בכתובת <https://github.com/orgs/forwardemail/discussions/336> לקבלת עדכונים.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+השרתים שלנו ממוקמים בעיקר בדנבר, קולורדו – ראה <https://forwardemail.net/ips> לרשימת כתובות ה-IP המלאה שלנו.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+תוכל ללמוד על מעבדי המשנה שלנו בדפי [GDPR](/gdpr), [DPA](/dpa), ו-[פרטיות](/privacy).
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### כיצד לייצא ולגבות את תיבת הדואר שלי {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+בכל עת תוכל לייצא את תיבות הדואר שלך בפורמטים של [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), או [SQLite](https://en.wikipedia.org/wiki/SQLite) מוצפנים.
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+גש ל-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> הורדת גיבוי ובחר את סוג פורמט הייצוא המועדף עליך.
 
-You will be emailed a link to download the export once it has finished.
+תקבל במייל קישור להורדת הייצוא לאחר סיום התהליך.
 
-Note that this export download link expires after 4 hours for security concerns.
+שים לב שקישור ההורדה של הייצוא פג תוקף לאחר 4 שעות מטעמי אבטחה.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+אם אתה צריך לבדוק את פורמטי ה-EML או Mbox שייצאת, כלים בקוד פתוח אלו עשויים להיות שימושיים:
 
-| Name | Format | Platform | GitHub URL |
+| שם              | פורמט | פלטפורמה     | כתובת GitHub                                        |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer     |  Mbox  | Windows       | <https://github.com/eneam/mboxviewer>               |
+| mbox-web-viewer |  Mbox  | כל הפלטפורמות | <https://github.com/PHMRanger/mbox-web-viewer>      |
+| EmlReader       |   EML  | Windows       | <https://github.com/ayamadori/EmlReader>            |
+| Email viewer    |   EML  | VSCode        | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader      |   EML  | כל הפלטפורמות | <https://github.com/s0ph1e/eml-reader>              |
+בנוסף, אם אתה צריך להמיר קובץ Mbox לקובץ EML, תוכל להשתמש ב-<https://github.com/noelmartinon/mboxzilla>.
 
-Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
+### איך אני מייבא ומעביר את תיבת הדואר הקיימת שלי {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
-
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+אתה יכול בקלות לייבא את הדואר האלקטרוני שלך ל-Forward Email (למשל באמצעות [Thunderbird](https://www.thunderbird.net)) עם ההוראות למטה:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    עליך לעקוב אחרי כל השלבים הבאים כדי לייבא את הדואר האלקטרוני הקיים שלך.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. ייצא את הדואר האלקטרוני שלך מספק הדואר הקיים שלך:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | ספק דואר אלקטרוני | פורמט ייצוא                                  | הוראות ייצוא                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail          | MBOX                                           | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook        | PST                                            | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">טיפ:</strong> <span>אם אתה משתמש ב-Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">פורמט ייצוא PST</a>), תוכל פשוט לעקוב אחרי ההוראות תחת "אחר" למטה. עם זאת, סיפקנו קישורים להמרת PST לפורמט MBOX/EML בהתבסס על מערכת ההפעלה שלך:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba עבור Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst עבור Windows cygwin</a> – (למשל <code>readpst -u -o $OUT_DIR $IN_DIR</code> כאשר מחליפים את <code>$OUT_DIR</code> ו-<code>$IN_DIR</code> בנתיבי תיקיית הפלט ותיקיית הקלט בהתאמה).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst עבור Ubuntu/Linux</a> – (למשל <code>sudo apt-get install readpst</code> ואז <code>readpst -u -o $OUT_DIR $IN_DIR</code>, כאשר מחליפים את <code>$OUT_DIR</code> ו-<code>$IN_DIR</code> בנתיבי תיקיית הפלט ותיקיית הקלט בהתאמה).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst עבור macOS (דרך brew)</a> – (למשל <code>brew install libpst</code> ואז <code>readpst -u -o $OUT_DIR $IN_DIR</code>, כאשר מחליפים את <code>$OUT_DIR</code> ו-<code>$IN_DIR</code> בנתיבי תיקיית הפלט ותיקיית הקלט בהתאמה).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter עבור Windows (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail     | MBOX                                           | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail       | EML                                            | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail    | MBOX/EML                                       | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota       | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi          | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho           | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | אחר           | [השתמש ב-Thunderbird](https://www.thunderbird.net) | הגדר את חשבון הדואר הקיים שלך ב-Thunderbird ואז השתמש בתוסף [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) כדי לייצא ולייבא את הדואר האלקטרוני שלך.  **ייתכן שתוכל גם פשוט להעתיק/להדביק או לגרור/לשחרר מיילים בין חשבון אחד לאחר.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. הורד, התקן ופתח את [Thunderbird](https://www.thunderbird.net).
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. צור חשבון חדש באמצעות כתובת האימייל המלאה של הכינוי שלך (למשל <code><you@yourdomain.com></code>) והסיסמה שנוצרה עבורך.  <strong>אם עדיין אין לך סיסמה שנוצרה, אז <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">עיין בהוראות ההגדרה שלנו</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. הורד והתקן את תוסף [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) ל-Thunderbird.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. צור תיקייה מקומית חדשה ב-Thunderbird, ואז לחץ עליה עם הכפתור הימני → בחר באפשרות `ImportExportTools NG` → בחר `Import mbox file` (לפורמט ייצוא MBOX) – או – `Import messages` / `Import all messages from a directory` (לפורמט ייצוא EML).
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. גרור/שחרר מהתיקייה המקומית לתיקיית IMAP חדשה (או קיימת) ב-Thunderbird שאליה ברצונך להעלות הודעות לאחסון IMAP עם השירות שלנו.  זה יבטיח שהן מגובות אונליין עם אחסון מוצפן SQLite שלנו.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       אם אינך בטוח כיצד לייבא ל-Thunderbird, תוכל לעיין בהוראות הרשמיות בכתובת <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> ו- <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    לאחר שסיימת את תהליך הייצוא והייבוא, ייתכן שתרצה גם להפעיל העברה אוטומטית בחשבון האימייל הקיים שלך ולהגדיר תגובה אוטומטית להודיע לשולחים שיש לך כתובת אימייל חדשה (למשל אם השתמשת בעבר ב-Gmail וכעת אתה משתמש באימייל עם שם הדומיין המותאם שלך).
   </span>
 </div>
 
@@ -1064,224 +1112,431 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      מזל טוב!
     </strong>
     <span>
-      You've successfully completed all steps.
+      השלמת בהצלחה את כל השלבים.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### איך להשתמש באחסון תואם S3 משל עצמי לגיבויים {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+משתמשים בתוכנית בתשלום יכולים להגדיר ספק אחסון תואם [S3](https://en.wikipedia.org/wiki/Amazon_S3) משלהם על בסיס דומיין עבור גיבויים ב-IMAP/SQLite.  משמעות הדבר היא שגיבויי תיבת הדואר המוצפנים שלך יכולים להישמר בתשתית שלך במקום (או בנוסף ל) האחסון המוגדר כברירת מחדל שלנו.
 
-## Email Configuration {#email-configuration}
+הספקים הנתמכים כוללים את [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces), וכל שירות תואם S3 אחר.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### הגדרה {#setup}
+
+1. צור דלי **פרטי** עם ספק אחסון תואם S3 שלך. הדלי חייב לא להיות נגיש לציבור.
+2. צור אישורי גישה (מזהה מפתח גישה ומפתח גישה סודי) עם הרשאות קריאה/כתיבה לדלי.
+3. עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות מתקדמות <i class="fa fa-angle-right"></i> אחסון תואם S3 מותאם אישית.
+4. סמן **"הפעל אחסון תואם S3 מותאם אישית"** ומלא את כתובת ה-URL של נקודת הקצה, מזהה מפתח הגישה, מפתח הגישה הסודי, האזור ושם הדלי.
+5. לחץ על **"בדוק חיבור"** כדי לאמת את האישורים שלך, גישת הדלי והרשאות הכתיבה.
+6. לחץ על **"שמור"** כדי להחיל את ההגדרות.
+
+#### איך הגיבויים עובדים {#how-backups-work}
+
+גיבויים מופעלים אוטומטית עבור כל כינוי IMAP מחובר. שרת ה-IMAP בודק את כל החיבורים הפעילים פעם בשעה ושולח גיבוי עבור כל כינוי מחובר. נעילת Redis מונעת הפעלת גיבויים כפולים בתוך 30 דקות זה מזה, והגיבוי בפועל מדולג אם גיבוי מוצלח כבר הושלם בתוך 24 השעות האחרונות (אלא אם כן הגיבוי נדרש במפורש על ידי משתמש להורדה).
+גיבויים יכולים גם להיות מופעלים ידנית על ידי לחיצה על **"Download Backup"** עבור כל כינוי בלוח הבקרה. גיבויים ידניים תמיד מתבצעים ללא קשר לחלון הזמן של 24 השעות.
+
+תהליך הגיבוי פועל כך:
+
+1. מסד הנתונים SQLite מועתק באמצעות `VACUUM INTO`, שיוצר צילום מצב עקבי ללא הפרעה לחיבורים פעילים ושומר על הצפנת מסד הנתונים.
+2. קובץ הגיבוי מאומת על ידי פתיחתו לאישור שההצפנה עדיין תקפה.
+3. מחושב ערך SHA-256 ומשווה אותו לגיבוי הקיים באחסון. אם הערך תואם, ההעלאה מדולגת (אין שינויים מאז הגיבוי האחרון).
+4. הגיבוי מועלה ל-S3 באמצעות העלאה מרובת חלקים דרך הספרייה [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage).
+5. נוצר URL חתום להורדה (בתוקף ל-4 שעות) ונשלח בדוא"ל למשתמש.
+
+#### פורמטי גיבוי {#backup-formats}
+
+נתמכים שלושה פורמטים של גיבוי:
+
+| פורמט    | סיומת     | תיאור                                                                       |
+| -------- | --------- | --------------------------------------------------------------------------- |
+| `sqlite` | `.sqlite` | צילום מצב של מסד נתונים SQLite מוצפן גולמי (ברירת מחדל לגיבויים אוטומטיים של IMAP) |
+| `mbox`   | `.zip`    | קובץ ZIP מוגן בסיסמה המכיל תיבת דואר בפורמט mbox                            |
+| `eml`    | `.zip`    | קובץ ZIP מוגן בסיסמה המכיל קבצי `.eml` נפרדים לכל הודעה                     |
+
+> **טיפ:** אם יש לך קבצי גיבוי `.sqlite` ואתה רוצה להמיר אותם לקבצי `.eml` באופן מקומי, השתמש בכלי ה-CLI העצמאי שלנו **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. הוא עובד על Windows, Linux ו-macOS ואינו דורש חיבור לרשת.
+
+#### שמות קבצים ומבנה מפתחות {#file-naming-and-key-structure}
+
+בעת שימוש ב**אחסון S3 מותאם אישית**, קבצי הגיבוי נשמרים עם קידומת תאריך-זמן בפורמט [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) כך שכל גיבוי נשמר כאובייקט נפרד. זה נותן לך היסטוריית גיבויים מלאה בדלי שלך.
+
+מבנה המפתח הוא:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+לדוגמה:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+`alias_id` הוא ה-ObjectId של הכינוי ב-MongoDB. ניתן למצוא אותו בדף הגדרות הכינוי או דרך ה-API.
+
+בעת שימוש ב**אחסון ברירת המחדל (מערכתי)**, המפתח הוא שטוח (למשל `65a31c53c36b75ed685f3fda.sqlite`) וכל גיבוי מחליף את הקודם.
+
+> **הערה:** מאחר שאחסון S3 מותאם אישית שומר את כל גרסאות הגיבוי, השימוש באחסון יגדל עם הזמן. אנו ממליצים להגדיר [כללי מחזור חיים](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) בדלי שלך כדי לפקוע אוטומטית גיבויים ישנים (למשל למחוק אובייקטים שגילם מעל 30 או 90 יום).
+
+#### בעלות על נתונים ומדיניות מחיקה {#data-ownership-and-deletion-policy}
+
+הדלי המותאם אישית שלך ב-S3 נמצא בשליטתך המלאה. אנו **אף פעם לא מוחקים או משנים** קבצים בדלי המותאם אישית שלך — לא כאשר כינוי נמחק, לא כאשר דומיין מוסר, ולא במהלך פעולות ניקוי. אנו רק כותבים קבצי גיבוי חדשים לדלי שלך.
+
+משמעות הדבר:
+
+* **מחיקת כינוי** — כאשר אתה מוחק כינוי, אנו מסירים את הגיבוי רק מאחסון ברירת המחדל שלנו. כל הגיבויים שנכתבו בעבר לדלי המותאם אישית שלך נשארים ללא שינוי.
+* **הסרת דומיין** — הסרת דומיין אינה משפיעה על קבצים בדלי המותאם אישית שלך.
+* **ניהול שמירה** — אתה אחראי על ניהול האחסון בדלי שלך, כולל הגדרת כללי מחזור חיים לפקיעת גיבויים ישנים.
+
+אם תבטל את אחסון S3 המותאם אישית או תחזור לאחסון ברירת המחדל שלנו, הקבצים הקיימים בדלי שלך יישמרו. גיבויים עתידיים פשוט ייכתבו לאחסון ברירת המחדל שלנו.
+
+#### אבטחה {#security}
+
+* מזהה מפתח הגישה וסיסמת הגישה שלך **מוצפנים במנוחה** באמצעות [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) לפני שמירתם במסד הנתונים שלנו. הם מפוענחים רק בזמן ריצה בעת ביצוע פעולות גיבוי.
+* אנו מאמתים אוטומטית שהדלי שלך **אינו נגיש לציבור**. אם מתגלה דלי ציבורי, התצורה תידחה בעת השמירה. אם נגישות ציבורית מתגלה בזמן הגיבוי, אנו חוזרים לאחסון ברירת המחדל ומודיעים לכל מנהלי הדומיין בדוא"ל.
+* האישורים מאומתים בעת השמירה באמצעות קריאת [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html) כדי לוודא שהדלי קיים והאישורים נכונים. אם האימות נכשל, אחסון S3 מותאם אישית מבוטל אוטומטית.
+* כל קובץ גיבוי כולל ערך SHA-256 במטא-דאטה של S3, המשמש לזיהוי מסדי נתונים ללא שינוי ולהימנעות מהעלאות מיותרות.
+#### הודעות שגיאה {#error-notifications}
+
+אם גיבוי נכשל בעת שימוש באחסון S3 מותאם אישית שלך (למשל עקב אישורים שפג תוקפם או בעיית חיבור), כל מנהלי הדומיין יקבלו הודעת דואר אלקטרוני. הודעות אלו מוגבלות בקצב של פעם כל 6 שעות כדי למנוע התראות כפולות. אם הדלי שלך מזוהה כנגיש לציבור בזמן הגיבוי, המנהלים יקבלו הודעה פעם ביום.
+
+#### API {#api}
+
+ניתן גם להגדיר אחסון S3 מותאם אישית דרך ה-API:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+כדי לבדוק את החיבור דרך ה-API:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### איך להמיר גיבויי SQLite לקבצי EML {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+אם הורדת או שמרת גיבויי SQLite (או מהאחסון המוגדר כברירת מחדל שלנו או מה-[דלי S3 מותאם אישית שלך](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), תוכל להמיר אותם לקבצי `.eml` סטנדרטיים באמצעות כלי ה-CLI העצמאי שלנו **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. קבצי EML ניתנים לפתיחה עם כל לקוח דואר אלקטרוני ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) וכו') או לייבוא לשרתים אחרים.
+
+#### התקנה {#installation-1}
+
+ניתן להוריד בינארי מוכן מראש (ללא צורך ב-[Node.js](https://github.com/nodejs/node)) או להריץ ישירות עם [Node.js](https://github.com/nodejs/node):
+
+**בינאריים מוכנים מראש** — הורד את הגרסה העדכנית ביותר לפלטפורמה שלך מ-[GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+
+| פלטפורמה | ארכיטקטורה  | קובץ                                 |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **משתמשי macOS:** לאחר ההורדה, ייתכן שתצטרכו להסיר את תכונת הסגר לפני הרצת הבינארי:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (החלף את `./convert-sqlite-to-eml-darwin-arm64` בנתיב האמיתי של הקובץ שהורדת.)
+
+> **משתמשי Linux:** לאחר ההורדה, ייתכן שתצטרכו להפוך את הבינארי להרצה:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (החלף את `./convert-sqlite-to-eml-linux-x64` בנתיב האמיתי של הקובץ שהורדת.)
+
+**מהמקור** (דורש [Node.js](https://github.com/nodejs/node) >= 18):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### שימוש {#usage}
+
+הכלי תומך במצב אינטראקטיבי ובמצב לא אינטראקטיבי.
+
+**מצב אינטראקטיבי** — הרץ ללא ארגומנטים ותתבקש להזין את כל הקלטים:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - המרת גיבוי SQLite ל-EML
+  ========================================
+
+  נתיב לקובץ גיבוי SQLite: /path/to/backup.sqlite
+  סיסמת IMAP/כינוי: ********
+  נתיב ZIP פלט [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**מצב לא אינטראקטיבי** — העבר ארגומנטים דרך דגלי שורת הפקודה לסקריפטים ואוטומציה:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| דגל                | תיאור                                                                          |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `--path <path>`     | נתיב לקובץ גיבוי SQLite מוצפן                                                   |
+| `--password <pass>` | סיסמת IMAP/כינוי לפענוח                                                        |
+| `--output <path>`   | נתיב פלט לקובץ ZIP (ברירת מחדל: נוצר אוטומטית עם חותמת זמן ISO 8601)          |
+| `--help`            | הצג הודעת עזרה                                                                |
+#### פורמט הפלט {#output-format}
+
+הכלי מייצר ארכיון ZIP מוגן בסיסמה (מוצפן AES-256) המכיל:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+קבצי EML מאורגנים לפי תיקיית תיבת הדואר. סיסמת ה-ZIP זהה לסיסמת ה-IMAP/כינוי שלך. כל קובץ `.eml` הוא הודעת דואר אלקטרוני סטנדרטית לפי [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) עם כותרות מלאות, טקסט גוף וקבצים מצורפים שהורכבו מחדש מבסיס הנתונים SQLite.
+
+#### איך זה עובד {#how-it-works}
+
+1. פותח את בסיס הנתונים SQLite המוצפן באמצעות סיסמת ה-IMAP/כינוי שלך (תומך גם ב[ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) וגם ב[AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)).
+2. קורא את טבלת Mailboxes כדי לגלות את מבנה התיקיות.
+3. עבור כל הודעה, מפענח את ה-mimeTree (שמור כ-JSON דחוס ב[Brotli](https://github.com/google/brotli)) מטבלת Messages.
+4. מרכיב מחדש את קובץ ה-EML המלא על ידי הליכה בעץ MIME ושליפת גופי הקבצים המצורפים מטבלת Attachments.
+5. אורז את הכל לארכיון ZIP מוגן בסיסמה באמצעות [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted).
+
+### האם אתם תומכים באירוח עצמי {#do-you-support-self-hosting}
+
+כן, החל ממרץ 2025, אנו תומכים באפשרות אירוח עצמי. קרא את הבלוג [כאן](https://forwardemail.net/blog/docs/self-hosted-solution). עיין במדריך [אירוח עצמי](https://forwardemail.net/self-hosted) כדי להתחיל. ולמי שמעוניין בגרסה מפורטת יותר שלב אחר שלב ראה את המדריכים שלנו ל[אובונטו](https://forwardemail.net/guides/selfhosted-on-ubuntu) או [דביאן](https://forwardemail.net/guides/selfhosted-on-debian).
+
+
+## הגדרת דואר אלקטרוני {#email-configuration}
+
+### איך מתחילים ומגדירים העברת דואר אלקטרוני {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">זמן הערכה להגדרה:</strong>
+  <span>פחות מ-10 דקות</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    התחלה:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    קרא בעיון ופעל לפי השלבים מאחד עד שמונה המפורטים למטה. ודא להחליף את כתובת הדואר <code>user@gmail.com</code> בכתובת שאליה ברצונך להעביר דואר (אם היא לא מדויקת כבר). באופן דומה, ודא להחליף את <code>example.com</code> בשם הדומיין המותאם שלך (אם הוא לא מדויק כבר).
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">אם כבר רשמת את שם הדומיין שלך במקום כלשהו, עליך לדלג לחלוטין על שלב זה ולעבור לשלב שני! אחרת תוכל <a href="/domain-registration" rel="noopener noreferrer">להקליק כאן כדי לרשום את שם הדומיין שלך</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  האם אתה זוכר איפה רשמת את הדומיין שלך? ברגע שתזכור זאת, פעל לפי ההוראות למטה:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    עליך לפתוח לשונית חדשה ולהתחבר לרשם הדומיין שלך. תוכל בקלות להקליק על "Registrar" למטה כדי לעשות זאת אוטומטית. בלשונית החדשה הזו, עליך לנווט לעמוד ניהול ה-DNS ברשם שלך – וסיפקנו את שלבי הניווט שלב אחר שלב בעמודת "Steps to Configure". לאחר שנכנסת לעמוד זה בלשונית החדשה, תוכל לחזור ללשונית זו ולהמשיך לשלב שלוש למטה.
+    <strong class="font-weight-bold">אל תסגור את הלשונית שנפתחה עדיין; תזדקק לה בשלבים הבאים!</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>רשם</th>
+      <th>שלבים להגדרה</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> מרכז דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> ערוך הגדרות DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> השרתים שלי <i class="fa fa-angle-right"></i> ניהול דומיין <i class="fa fa-angle-right"></i> מנהל DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>ל-ROCK: התחבר <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> (הקליק על סמל ▼ ליד ניהול) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      ל-LEGACY: התחבר <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> עורך אזור <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> ניהול</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> רשת <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> עוד <i class="fa fa-angle-right"></i> ניהול דומיין</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> במצב כרטיס, לחץ נהל על הדומיין שלך <i class="fa fa-angle-right"></i> במצב רשימה, לחץ על סמל ההגדרות <i class="fa fa-angle-right"></i> DNS &amp; Nameservers <i class="fa fa-angle-right"></i> רשומות DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> צפה</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> נהל <i class="fa fa-angle-right"></i> (הקליק על סמל ההגדרות) <i class="fa fa-angle-right"></i> לחץ על DNS &amp; Nameservers בתפריט השמאלי</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> לוח בקרה <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> נהל דומיינים <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> סקירה כללית <i class="fa fa-angle-right"></i> נהל <i class="fa fa-angle-right"></i> עורך פשוט <i class="fa fa-angle-right"></i> רשומות</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> ניהול <i class="fa fa-angle-right"></i> ערוך את האזור</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> צפה</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> נהל את הדומיינים שלי <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> נהל DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> צפה</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> הגדר DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> צפה</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> רשימת דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> נהל <i class="fa fa-angle-right"></i> DNS מתקדם</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> הגדר DNS של Netlify</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> מנהל חשבון <i class="fa fa-angle-right"></i> שמות הדומיינים שלי <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> נהל <i class="fa fa-angle-right"></i> שנה לאן הדומיין מפנה <i class="fa fa-angle-right"></i> DNS מתקדם</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> צפה</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> דומיינים מנוהלים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> הגדרות DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> תפריט הבית <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i>
+הגדרות מתקדמות <i class="fa fa-angle-right"></i> רשומות מותאמות</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>שימוש ב-CLI "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> עמוד דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> עמוד דומיינים <i class="fa fa-angle-right"></i> (הקליק על סמל <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> בחר נהל רשומות DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>התחבר <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> הדומיינים שלי</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>אחר</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">חשוב:</strong> לא רואה את שם הרשם שלך ברשימה כאן? פשוט חפש באינטרנט "איך לשנות רשומות DNS ב-$REGISTRAR" (החלף את $REGISTRAR בשם הרשם שלך – לדוגמה "איך לשנות רשומות DNS ב-GoDaddy" אם אתה משתמש ב-GoDaddy).</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">באמצעות עמוד ניהול ה-DNS של הרשם שלך (הלשונית השנייה שפתחת), הגדר את רשומות "MX" הבאות:
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    שים לב שלא צריכים להיות רשומות MX אחרות מוגדרות. שתי הרשומות המוצגות למטה חייבות להתקיים. ודא שאין טעויות כתיב; ושיש לך את mx1 ו-mx2 מאויתות נכון. אם כבר היו רשומות MX קיימות, אנא מחק אותן לחלוטין.
+    ערך ה-"TTL" לא חייב להיות 3600, הוא יכול להיות ערך נמוך או גבוה יותר במידת הצורך.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Priority</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>עדיפות</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1545,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">באמצעות דף ניהול ה-DNS של הרשם שלך (הלשונית השנייה שפתחת), הגדר את רשומת/רשומות <strong class="notranslate">TXT</strong> הבאות:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    אם אתה בתכנית בתשלום, עליך לדלג לחלוטין על שלב זה ולעבור לשלב חמישי! אם אינך בתכנית בתשלום, כתובות הדואר המועברות שלך יהיו ניתנות לחיפוש פומבי – עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> ושדרג את הדומיין שלך לתכנית בתשלום אם תרצה. אם ברצונך ללמוד עוד על תכניות בתשלום ראה את דף ה<a rel="noopener noreferrer" href="/private-business-email" class="alert-link">תמחור</a> שלנו. אחרת תוכל להמשיך לבחור אחד או יותר שילובים מהאפשרות א' ועד אפשרות ו' המפורטות למטה.
   </span>
 </div>
 
@@ -1307,25 +1562,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    אפשרות א':
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    אם אתה מעביר את כל המיילים מהדומיין שלך, (למשל "all@example.com", "hello@example.com", וכו') לכתובת ספציפית "user@gmail.com":
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1338,10 +1593,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    ודא להחליף את הערכים למעלה בעמודת "ערך" עם כתובת הדוא"ל שלך. ערך ה-"TTL" לא חייב להיות 3600, הוא יכול להיות ערך נמוך או גבוה יותר במידת הצורך. ערך TTL נמוך יותר יבטיח שכל שינוי עתידי שתעשה ברשומות ה-DNS שלך יתפשט מהר יותר ברחבי האינטרנט – חשוב על זה כמה זמן זה יישמר בזיכרון המטמון (בשניות). תוכל ללמוד עוד על <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL בוויקיפדיה</a>.
   </span>
 </div>
 
@@ -1350,25 +1605,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    אפשרות ב':
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    אם אתה רק צריך להעביר כתובת דוא"ל אחת (למשל <code>hello@example.com</code> ל-<code>user@gmail.com</code>; זה גם יעביר אוטומטית "hello+test@example.com" ל-"user+test@gmail.com"):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1637,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    אפשרות ג:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    אם אתם מפנים מספר מיילים, תרצו להפריד ביניהם באמצעות פסיק:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1670,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    אפשרות ד:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    ניתן להגדיר כמות אינסופית של מיילים להפניה – רק וודאו שלא לעבור 255 תווים בשורה אחת ושהשורה מתחילה תמיד ב-"forward-email=". דוגמה מוצגת למטה:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1696,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1704,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1712,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1720,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1735,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    אפשרות ה:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    ניתן גם לציין שם דומיין ברשומת <strong class="notranslate">TXT</strong> כדי להגדיר הפניה גלובלית של כינויים (למשל "user@example.com" יופנה ל-"user@example.net"):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1768,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    אפשרות ו:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    ניתן אפילו להשתמש ב-webhooks ככינוי גלובלי או אישי להפניית מיילים. ראו את הדוגמה ואת הסעיף המלא על webhooks שכותרתו <a href="#do-you-support-webhooks" class="alert-link">האם אתם תומכים ב-webhooks</a> למטה.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1800,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    אפשרות G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    ניתן אפילו להשתמש בביטויים רגולריים ("regex") להתאמת כינויים ולטיפול בהחלפות להפניית מיילים. ראה את הדוגמאות והקטע המלא על regex שכותרתו <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">האם אתם תומכים בביטויים רגולריים או regex</a> למטה.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>צריך regex מתקדם עם החלפה?</strong> ראה את הדוגמאות והקטע המלא על regex שכותרתו <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">האם אתם תומכים בביטויים רגולריים או regex</a> למטה.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>דוגמה פשוטה:</strong> אם אני רוצה שכל המיילים שנשלחים ל-`linus@example.com` או ל-`torvalds@example.com` יופנו ל-`user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1841,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    חוקי הפניית catch-all יכולים להיקרא גם "מעבר-דרך".
+    משמעות הדבר היא שמיילים נכנסים שתואמים לפחות חוק הפניית ספציפי אחד ישמשו במקום ה-catch-all.
+    חוקים ספציפיים כוללים כתובות מייל וביטויים רגולריים.
     <br /><br />
-    For example:
+    לדוגמה:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    מיילים שנשלחים ל-<code>hello@example.com</code> **לא** יופנו ל-<code>second@gmail.com</code> (catch-all) עם תצורה זו, ובמקום זאת יגיעו רק ל-<code>first@gmail.com</code>.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">באמצעות דף ניהול ה-DNS של הרשם שלך (הלשונית השנייה שפתחת), הגדר בנוסף את רשומת <strong class="notranslate">TXT</strong> הבאה:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1882,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    אם אתה משתמש ב-Gmail (למשל שלח מייל בשם) או ב-G Suite, תצטרך להוסיף <code>include:_spf.google.com</code> לערך שלמעלה, לדוגמה:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1641,34 +1894,33 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    אם כבר יש לך שורה דומה עם "v=spf1", תצטרך להוסיף <code>include:spf.forwardemail.net</code> ממש לפני כל רשומת "include:host.com" קיימת ולפני ה-" -all" באותה שורה, לדוגמה:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    שים לב שיש הבדל בין "-all" ל-"~all". ה-"-" מציין שבדיקת SPF תיכשל אם לא תתאים, וה-"~" מציין שבדיקת SPF תיכשל ברכות. אנו ממליצים להשתמש בגישה של "-all" כדי למנוע זיוף דומיין.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    ייתכן שתצטרך גם לכלול את רשומת SPF של המארח ממנו אתה שולח מייל (למשל Outlook).
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">אמת את רשומות ה-DNS שלך באמצעות כלי "Verify Records" הזמין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">שלח דואר אלקטרוני ניסיוני כדי לוודא שזה עובד. שים לב שייתכן שייקח זמן עד שרשומות ה-DNS שלך יתפשטו.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    אם אינך מקבל מיילים ניסיוניים, או מקבל מייל ניסיוני שאומר "היזהר עם ההודעה הזו", עיין בתשובות עבור <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">מדוע אינני מקבל את המיילים הניסיוניים שלי</a> ו- <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">מדוע המיילים הניסיוניים שנשלחים אליי בג'ימייל מוצגים כ"חשודים"</a> בהתאמה.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">אם ברצונך "לשלוח דואר בשם" מג'ימייל, תצטרך <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">לצפות בסרטון זה</a></strong>, או לעקוב אחר השלבים תחת <a href="#how-to-send-mail-as-using-gmail">כיצד לשלוח דואר בשם באמצעות ג'ימייל</a> למטה.
 
 </li></ol>
 
@@ -1676,10 +1928,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      מזל טוב!
     </strong>
     <span>
-      You've successfully completed all steps.
+      השלמת בהצלחה את כל השלבים.
     </span>
   </div>
 </div>
@@ -1687,93 +1939,92 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    תוספות אופציונליות מפורטות למטה. שים לב שהתוספות הללו הן אופציונליות לחלוטין ואינן בהכרח נחוצות. רצינו לפחות לספק לך מידע נוסף אם יש צורך.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    תוספת אופציונלית:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    אם אתה משתמש בתכונה <a class="alert-link" href="#how-to-send-mail-as-using-gmail">כיצד לשלוח דואר בשם באמצעות ג'ימייל</a>, ייתכן שתרצה להוסיף את עצמך לרשימת אישור. ראה <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">הוראות אלו מג'ימייל</a> בנושא זה.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### האם ניתן להשתמש בכמה שרתי MX והחלפות עבור העברה מתקדמת {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+כן, אך **עליך לרשום רק שרת MX אחד ברשומות ה-DNS שלך**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+אל תנסה להשתמש ב"עדיפות" כאמצעי להגדיר כמה שרתי MX.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+במקום זאת, עליך להגדיר את שרת ה-MX הקיים שלך להעביר דואר עבור כל כינויים שאינם תואמים לשרתים של השירות שלנו (`mx1.forwardemail.net` ו/או `mx2.forwardemail.net`).
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+אם אתה משתמש ב-Google Workspace ואתה רוצה להעביר את כל הכינויים שאינם תואמים לשירות שלנו, ראה <https://support.google.com/a/answer/6297084>.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+אם אתה משתמש ב-Microsoft 365 (Outlook) ואתה רוצה להעביר את כל הכינויים שאינם תואמים לשירות שלנו, ראה <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> ו- <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### כיצד להגדיר משיב חופשה (משיב אוטומטי מחוץ למשרד) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+גש ל- <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים ויצר או ערוך את הכינוי שברצונך להגדיר עבורו משיב חופשה אוטומטי.
+יש לך את היכולת להגדיר תאריך התחלה, תאריך סיום, נושא והודעה, ולהפעיל או להשבית זאת בכל עת:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* נושא והודעה בטקסט פשוט נתמכים כרגע (אנו משתמשים בחבילת `striptags` פנימית להסרת כל HTML).
+* הנושא מוגבל ל-100 תווים.
+* ההודעה מוגבלת ל-1000 תווים.
+* ההגדרה דורשת תצורת SMTP יוצא (למשל, תצטרך להגדיר רשומות DKIM, DMARC ו-Return-Path ב-DNS).
+  * עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> תצורת SMTP יוצא ופעל לפי הוראות ההגדרה.
+* לא ניתן להפעיל את המענה לחופשה על שמות דומיין ווניטי גלובליים (למשל, [כתובות חד-פעמיות](/disposable-addresses) אינן נתמכות).
+* לא ניתן להפעיל את המענה לחופשה עבור כינויים עם תווים כלליים/תפיסת הכל (`*`) או ביטויים רגולריים.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+בניגוד למערכות דואר כמו `postfix` (למשל, שמשתמשות בהרחבת סינון חופשה `sieve`) – Forward Email מוסיף אוטומטית את חתימת DKIM שלך, מגן מפני בעיות חיבור בעת שליחת תגובות חופשה (למשל, עקב בעיות חיבור SSL/TLS נפוצות ושרתים ישנים), ואפילו תומך ב-Open WKD ו-PGP להצפנת תגובות חופשה.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* כדי למנוע שימוש לרעה, יחויב זיכוי SMTP יוצא אחד עבור כל הודעת מענה חופשה שנשלחת.
+  * כל החשבונות בתשלום כוללים כברירת מחדל 300 זיכויים ליום. אם אתה זקוק לכמות גדולה יותר, אנא צור קשר.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. אנו שולחים רק פעם אחת לכל שולח [ברשימת ההרשאה](#do-you-have-an-allowlist) כל 4 ימים (מה שדומה להתנהגות של Gmail).
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * מטמון Redis שלנו משתמש בטביעת אצבע של `alias_id` ו-`sender`, כאשר `alias_id` הוא מזהה הכינוי ב-MongoDB ו-`sender` הוא או כתובת ה-From (אם ברשימת ההרשאה) או דומיין השורש בכתובת ה-From (אם לא ברשימת ההרשאה). לפשטות, תוקף טביעת האצבע במטמון מוגדר ל-4 ימים.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * הגישה שלנו להשתמש בדומיין השורש המנותח בכתובת ה-From עבור שולחים שאינם ברשימת ההרשאה מונעת שימוש לרעה משולחים יחסית לא מוכרים (למשל, שחקנים זדוניים) ששולחים הצפות של הודעות מענה חופשה.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. אנו שולחים רק כאשר MAIL FROM ו/או From אינם ריקים ואינם מכילים (בלי תלות באותיות) [שם משתמש של מנהל דואר](#what-are-postmaster-addresses) (החלק לפני ה-@ באימייל).
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. איננו שולחים אם להודעה המקורית היו כל הכותרות הבאות (בלי תלות באותיות):
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * כותרת `auto-submitted` עם ערך שאינו שווה ל-`no`.
+   * כותרת `x-auto-response-suppress` עם ערך של `dr`, `autoreply`, `auto-reply`, `auto_reply`, או `all`
+   * כותרת `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, או `x-auto-respond` (ללא תלות בערך).
+   * כותרת `precedence` עם ערך של `bulk`, `autoreply`, `auto-reply`, `auto_reply`, או `list`.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. איננו שולחים אם כתובת ה-MAIL FROM או From מסתיימת ב-`+donotreply`, `-donotreply`, `+noreply`, או `-noreply`.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. איננו שולחים אם החלק של שם המשתמש בכתובת From היה `mdaemon` והייתה כותרת `X-MDDSN-Message` ללא תלות באותיות.
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. איננו שולחים אם הייתה כותרת `content-type` ללא תלות באותיות מסוג `multipart/report`.
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### איך להגדיר SPF עבור Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+באמצעות דף ניהול ה-DNS של הרשם שלך, הגדר את רשומת <strong class="notranslate">TXT</strong> הבאה:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2035,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    אם אתה משתמש ב-Gmail (למשל, שלח דואר בשם) או ב-G Suite, תצטרך להוסיף <code>include:_spf.google.com</code> לערך שלמעלה, לדוגמה:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    אם אתה משתמש ב-Microsoft Outlook או Live.com, תצטרך להוסיף <code>include:spf.protection.outlook.com</code> לרשומת ה-SPF <strong class="notranslate">TXT</strong> שלך, לדוגמה:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1808,450 +2058,501 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    אם כבר יש לך שורה דומה עם "v=spf1", תצטרך להוסיף <code>include:spf.forwardemail.net</code> ממש לפני כל רשומת "include:host.com" קיימת ולפני ה-" -all" באותה שורה, לדוגמה:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    שים לב שיש הבדל בין "-all" ל-"~all". ה-"-" מציין שבדיקת SPF תיכשל אם לא תתאים, וה-"~" מציין שבדיקת SPF תיכשל ברכות (SOFTFAIL). אנו ממליצים להשתמש בגישה של "-all" כדי למנוע זיוף דומיין.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    ייתכן שתצטרך גם לכלול את רשומת ה-SPF של השרת ממנו אתה שולח דואר (למשל Outlook).
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### איך להגדיר DKIM עבור Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+גש ל- <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> תצורת SMTP יוצא ופעל לפי הוראות ההגדרה.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### איך להגדיר DMARC עבור Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+גש ל- <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> תצורת SMTP יוצא ופעל לפי הוראות ההגדרה.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### איך לצפות בדוחות DMARC {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email מספק לוח מחוונים מקיף לדוחות DMARC שמאפשר לך לנטר את ביצועי אימות הדואר האלקטרוני שלך בכל הדומיינים שלך מממשק אחד.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**מהם דוחות DMARC?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+דוחות DMARC (אימות, דיווח והתאמה מבוססי דומיין) הם קבצי XML שנשלחים על ידי שרתי דואר מקבלים שמספרים לך כיצד האימיילים שלך מאומתים. דוחות אלו עוזרים לך להבין:
+
+* כמה מיילים נשלחים מהדומיין שלך
+* האם המיילים עוברים אימות SPF ו-DKIM
+* אילו פעולות מבצעים שרתי הקבלה (קבלה, הסגרה, או דחייה)
+* אילו כתובות IP שולחות מייל בשם הדומיין שלך
+
+**איך לגשת לדוחות DMARC**
+
+גש ל- <a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דוחות DMARC</a> כדי לצפות בלוח המחוונים שלך. ניתן גם לגשת לדוחות ספציפיים לדומיין מ- <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> על ידי לחיצה על כפתור "DMARC" לצד כל דומיין.
+
+**תכונות לוח המחוונים**
+
+לוח המחוונים של דוחות DMARC מספק:
+
+* **מדדי סיכום**: סך הדוחות שהתקבלו, סך ההודעות שנותחו, שיעור התאמת SPF, שיעור התאמת DKIM, ושיעור ההצלחה הכולל
+* **גרף הודעות לאורך זמן**: מגמת ויזואלית של נפח הדואר ושיעורי האימות ב-30 הימים האחרונים
+* **סיכום התאמה**: גרף דונאט המציג את התפלגות ההתאמה בין SPF ל-DKIM
+* **החלטת הודעות**: גרף עמודות מצטברות המציג כיצד שרתי הקבלה טיפלו בהודעות שלך (קבלה, הסגרה, או דחייה)
+* **טבלת דוחות אחרונים**: רשימה מפורטת של דוחות DMARC בודדים עם אפשרויות סינון ודפדוף
+* **סינון לפי דומיין**: סינון דוחות לפי דומיין ספציפי בעת ניהול מספר דומיינים
+**למה זה חשוב**
+
+עבור ארגונים המנהלים מספר דומיינים (כמו חברות גדולות, ארגונים ללא מטרות רווח או סוכנויות), דוחות DMARC הם חיוניים עבור:
+
+* **זיהוי שולחים לא מורשים**: זיהוי אם מישהו מזייף את הדומיין שלך
+* **שיפור מסירת המיילים**: הבטחת שהאימיילים הלגיטימיים שלך עוברים אימות
+* **מעקב אחר תשתית המייל**: מעקב אחרי אילו שירותים וכתובות IP שולחים בשמך
+* **ציות**: שמירה על נראות לאימות המיילים לצורכי ביקורת אבטחה
+
+בניגוד לשירותים אחרים שדורשים כלים נפרדים למעקב DMARC, Forward Email כולל עיבוד והצגת דוחות DMARC כחלק מהחשבון שלך ללא עלות נוספת.
+
+**דרישות**
+
+* דוחות DMARC זמינים רק בתכניות בתשלום
+* על הדומיין שלך להיות מוגדר עם DMARC (ראה [איך להגדיר DMARC עבור Forward Email](#how-do-i-set-up-dmarc-for-forward-email))
+* הדוחות נאספים אוטומטית כאשר שרתי דואר נכנס שולחים אותם לכתובת הדיווח DMARC שהגדרת
+
+**דוחות דואר אלקטרוני שבועיים**
+
+משתמשים בתכניות בתשלום מקבלים אוטומטית סיכומי דוחות DMARC שבועיים בדואר האלקטרוני. דוא"לים אלו כוללים:
+
+* סטטיסטיקות סיכום עבור כל הדומיינים שלך
+* שיעורי התאמה של SPF ו-DKIM
+* פירוט מצב ההודעה (מאושר, בבידוד, נדחה)
+* הארגונים המדווחים המובילים (Google, Microsoft, Yahoo וכו')
+* כתובות IP עם בעיות התאמה שעשויות לדרוש טיפול
+* קישורים ישירים ללוח הבקרה של דוחות DMARC שלך
+
+דוחות שבועיים נשלחים אוטומטית ואינם ניתנים לביטול בנפרד מהודעות דואר אחרות.
+
+### איך מחברים ומגדירים את אנשי הקשר שלי {#how-do-i-connect-and-configure-my-contacts}
+
+**להגדרת אנשי הקשר, השתמש בכתובת CardDAV של:** `https://carddav.forwardemail.net` (או פשוט `carddav.forwardemail.net` אם הלקוח שלך מאפשר זאת)
+
+### איך מחברים ומגדירים את היומנים שלי {#how-do-i-connect-and-configure-my-calendars}
+
+**להגדרת היומן, השתמש בכתובת CalDAV של:** `https://caldav.forwardemail.net` (או פשוט `caldav.forwardemail.net` אם הלקוח שלך מאפשר זאת)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### איך מוסיפים יומנים נוספים ומנהלים יומנים קיימים {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+אם ברצונך להוסיף יומנים נוספים, פשוט הוסף כתובת יומן חדשה של: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**ודא להחליף את `calendar-name` בשם היומן הרצוי שלך**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+ניתן לשנות את שם וצבע היומן לאחר יצירתו – פשוט השתמש באפליקציית היומן המועדפת עליך (למשל Apple Mail או [Thunderbird](https://thunderbird.net)).
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### איך מחברים ומגדירים משימות ותזכורות {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**להגדרת משימות ותזכורות, השתמש באותה כתובת CalDAV כמו ליומנים:** `https://caldav.forwardemail.net` (או פשוט `caldav.forwardemail.net` אם הלקוח שלך מאפשר זאת)
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+משימות ותזכורות יופרדו אוטומטית מאירועי היומן לאוסף ייעודי בשם "Reminders" או "Tasks".
 
-**Setup instructions by platform:**
+**הוראות הגדרה לפי פלטפורמה:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. הוסף חשבון CalDAV חדש בהעדפות מערכת > חשבונות אינטרנט (או הגדרות > חשבונות ב-iOS)
+2. השתמש בשרת `caldav.forwardemail.net`
+3. הזן את הכינוי שלך ב-Forward Email ואת הסיסמה שנוצרה
+4. לאחר ההגדרה, תראה את אוספי "Calendar" ו-"Reminders"
+5. השתמש באפליקציית Reminders ליצירה וניהול משימות
 
-**Android with Tasks.org:**
+**אנדרואיד עם Tasks.org:**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. התקן את Tasks.org מחנות Google Play או F-Droid
+2. עבור להגדרות > סינכרון > הוסף חשבון > CalDAV
+3. הזן את השרת: `https://caldav.forwardemail.net`
+4. הזן את הכינוי שלך ב-Forward Email ואת הסיסמה שנוצרה
+5. Tasks.org יגלה אוטומטית את יומני המשימות שלך
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. התקן את התוסף Lightning אם לא מותקן כבר
+2. צור יומן חדש מסוג "CalDAV"
+3. השתמש בכתובת: `https://caldav.forwardemail.net`
+4. הזן את פרטי ההתחברות שלך ב-Forward Email
+5. אירועים ומשימות יהיו זמינים בממשק היומן
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### למה אני לא יכול ליצור משימות באפליקציית Reminders ב-macOS {#why-cant-i-create-tasks-in-macos-reminders}
+אם יש לך בעיות ביצירת משימות ב-macOS Reminders, נסה את שלבי פתרון הבעיות הבאים:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **בדוק את הגדרת החשבון**: ודא שחשבון CalDAV שלך מוגדר כראוי עם `caldav.forwardemail.net`
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **אמת לוחות שנה נפרדים**: עליך לראות גם "Calendar" וגם "Reminders" בחשבונך. אם אתה רואה רק "Calendar", ייתכן שתמיכת המשימות עדיין לא הופעלה במלואה.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **רענן את החשבון**: נסה להסיר ולהוסיף מחדש את חשבון CalDAV שלך ב-System Preferences > Internet Accounts
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **בדוק את חיבור השרת**: בדוק שאתה יכול לגשת ל-`https://caldav.forwardemail.net` בדפדפן שלך
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **אמת את האישורים**: ודא שאתה משתמש באימייל האליאס הנכון ובסיסמה שנוצרה (לא בסיסמת החשבון שלך)
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **כפה סנכרון**: באפליקציית Reminders, נסה ליצור משימה ואז לרענן את הסנכרון ידנית
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**בעיות נפוצות:**
 
-**Common issues:**
+* **"Reminders calendar not found"**: ייתכן שהשרת צריך רגע כדי ליצור את אוסף ה-Reminders בגישה הראשונה
+* **משימות לא מסונכרנות**: בדוק ששני המכשירים משתמשים באותם אישורי חשבון CalDAV
+* **תוכן מעורבב**: ודא שהמשימות נוצרות בלוח השנה "Reminders", לא בלוח הכללי "Calendar"
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### איך להגדיר את Tasks.org באנדרואיד {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד מצוין עם תמיכת המשימות של Forward Email ב-CalDAV.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**התקנה והגדרה:**
 
-**Installation and Setup:**
+1. **התקן את Tasks.org**:
+   * מחנות Google Play: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * מ-F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **הגדר סנכרון CalDAV**:
+   * פתח את Tasks.org
+   * עבור ל-☰ תפריט > הגדרות > סנכרון
+   * הקש על "Add Account"
+   * בחר "CalDAV"
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+3. **הזן את הגדרות Forward Email**:
+   * **כתובת השרת**: `https://caldav.forwardemail.net`
+   * **שם משתמש**: אליאס Forward Email שלך (למשל, `you@yourdomain.com`)
+   * **סיסמה**: הסיסמה שנוצרה לאליאס שלך
+   * הקש על "Add Account"
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+4. **גילוי חשבון**:
+   * Tasks.org יגלה אוטומטית את לוחות המשימות שלך
+   * עליך לראות את אוסף "Reminders"
+   * הקש על "Subscribe" כדי לאפשר סנכרון ללוח המשימות
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+5. **בדוק סנכרון**:
+   * צור משימת בדיקה ב-Tasks.org
+   * בדוק שהיא מופיעה בלקוחות CalDAV אחרים (כמו macOS Reminders)
+   * אמת שהשינויים מסונכרנים בשני הכיוונים
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+**תכונות זמינות:**
 
-**Features available:**
+* ✅ יצירה ועריכת משימות
+* ✅ תאריכי יעד ותזכורות
+* ✅ השלמת משימות ומצב
+* ✅ רמות עדיפות
+* ✅ משימות משנה והיררכיית משימות
+* ✅ תגיות וקטגוריות
+* ✅ סנכרון דו-כיווני עם לקוחות CalDAV אחרים
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+**פתרון בעיות:**
 
-**Troubleshooting:**
+* אם לא מופיעים לוחות משימות, נסה לרענן ידנית בהגדרות Tasks.org
+* ודא שיצרת לפחות משימה אחת בשרת (ניתן ליצור אחת קודם ב-macOS Reminders)
+* בדוק את חיבור הרשת ל-`caldav.forwardemail.net`
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+### איך להגדיר SRS עבור Forward Email {#how-do-i-set-up-srs-for-forward-email}
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+אנו מגדירים אוטומטית את [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – אין צורך שתעשה זאת בעצמך.
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+### איך להגדיר MTA-STS עבור Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+אנא עיין ב-[החלק שלנו על MTA-STS](#do-you-support-mta-sts) לקבלת מידע נוסף.
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+### איך להוסיף תמונת פרופיל לכתובת האימייל שלי {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+אם אתה משתמש ב-Gmail, עקוב אחר השלבים הבאים:
 
-If you're using Gmail, then follow these steps below:
+1. עבור ל-<https://google.com> ויצא מכל חשבונות האימייל
+2. לחץ על "Sign In" ובתפריט הנפתח לחץ על "other account"
+3. בחר "Use another account"
+4. בחר "Create account"
+5. בחר "Use my current email address instead"
+6. הזן את כתובת האימייל של הדומיין המותאם שלך
+7. קבל את מייל האימות שנשלח לכתובת האימייל שלך
+8. הזן את קוד האימות מהמייל הזה
+9. השלם את פרטי הפרופיל עבור חשבון Google החדש שלך
+10. הסכים לכל מדיניות הפרטיות ותנאי השימוש
+11. עבור ל-<https://google.com> ובפינה הימנית העליונה, לחץ על סמל הפרופיל שלך, ולחץ על כפתור "change"
+12. העלה תמונה או אווטאר חדש לחשבונך
+13. השינויים ייקחו בערך 1-2 שעות להתעדכן, אך לפעמים זה יכול להיות מהיר מאוד.
+14. שלח מייל בדיקה ותמונת הפרופיל אמורה להופיע.
+## תכונות מתקדמות {#advanced-features}
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+### האם אתם תומכים בניוזלטרים או רשימות דיוור למיילים שקשורים לשיווק {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-## Advanced Features {#advanced-features}
+כן, ניתן לקרוא עוד בכתובת <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+שימו לב שבכדי לשמור על מוניטין ה-IP ולהבטיח הגעה, ל-Forward Email יש תהליך סקירה ידני על בסיס דומיין עבור **אישור ניוזלטר**. שלחו מייל ל-<support@forwardemail.net> או פתחו [בקשת עזרה](https://forwardemail.net/help) לאישור. בדרך כלל זה לוקח פחות מ-24 שעות, כאשר רוב הבקשות מאושרות תוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך תהליך זה לאוטומטי עם בקרות ספאם נוספות והתראות. תהליך זה מבטיח שהמיילים שלכם יגיעו לתיבת הדואר הנכנס והודעותיכם לא יסומנו כספאם.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+### האם אתם תומכים בשליחת מייל באמצעות API {#do-you-support-sending-email-with-api}
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+כן, מאז מאי 2023 אנו תומכים בשליחת מייל באמצעות API כתוספת לכל המשתמשים בתשלום.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    אנא ודאו שקראתם את <a href="/terms" class="alert-link" target="_blank">תנאי השימוש</a>, <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a>, ו-<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">מגבלות SMTP יוצאות</a> &ndash; השימוש שלכם נחשב לאישור והסכמה.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+אנא עיינו בסעיף שלנו על [מיילים](/email-api#outbound-emails) בתיעוד ה-API שלנו לאפשרויות, דוגמאות ותובנות נוספות.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+כדי לשלוח מייל יוצא עם ה-API שלנו, עליכם להשתמש בטוקן ה-API שלכם הזמין תחת [האבטחה שלי](/my-account/security).
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### האם אתם תומכים בקבלת מייל באמצעות IMAP {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+כן, מאז 16 באוקטובר 2023 אנו תומכים בקבלת מייל דרך IMAP כתוספת לכל המשתמשים בתשלום.  **אנא קראו את המאמר המעמיק שלנו** על [איך פועל מאפיין אחסון תיבת דואר מוצפנת SQLite שלנו](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    אנא ודאו שקראתם את <a href="/terms" class="alert-link" target="_blank">תנאי השימוש</a> ו-<a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a> &ndash; השימוש שלכם נחשב לאישור והסכמה.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. צרו כינוי חדש לדומיין שלכם תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. לחצו על <strong class="text-success"><i class="fa fa-key"></i> יצירת סיסמה</strong> ליד הכינוי שנוצר זה עתה. העתיקו ללוח והחזיקו את הסיסמה שנוצרה בצורה מאובטחת המוצגת על המסך.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. באמצעות אפליקציית המייל המועדפת עליכם, הוסיפו או הגדירו חשבון עם הכינוי החדש שיצרתם (למשל <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">חלופה קוד פתוח וממוקדת פרטיות</a>.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. כאשר תתבקשו להזין שם שרת IMAP, הזינו `imap.forwardemail.net`
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. כאשר תתבקשו להזין פורט שרת IMAP, הזינו `993` (SSL/TLS) – ראו [פורט IMAP חלופי](/faq#what-are-your-imap-server-configuration-settings) אם יש צורך
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>אם אתם משתמשים ב-Thunderbird, ודאו ש-"אבטחת חיבור" מוגדרת ל-"SSL/TLS" ושיטת האימות מוגדרת ל-"סיסמה רגילה".</span>
    </div>
+6. כאשר תתבקש להזין סיסמת שרת IMAP, הדבק את הסיסמה מ-<strong class="text-success"><i class="fa fa-key"></i> יצירת סיסמה</strong> בשלב 2 למעלה
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **שמור את ההגדרות שלך** – אם יש לך בעיות, אנא <a href="/help">צור קשר איתנו</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      מזל טוב!
     </strong>
     <span>
-      You've successfully completed all steps.
+      השלמת בהצלחה את כל השלבים.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### האם אתם תומכים ב-POP3 {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+כן, החל מ-4 בדצמבר 2023 אנו תומכים ב-[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) כתוספת לכל המשתמשים בתשלום.  **אנא קרא את המאמר המעמיק שלנו** על [איך פועל תכונת אחסון תיבת דואר מוצפנת SQLite שלנו](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    אנא ודא שקראת את <a href="/terms" class="alert-link" target="_blank">תנאי השימוש</a> ואת <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a> שלנו &ndash; השימוש שלך נחשב לאישור והסכמה.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. לחץ על <strong class="text-success"><i class="fa fa-key"></i> יצירת סיסמה</strong> לצד הכינוי החדש שנוצר. העתק ללוח והעבר לאחסון מאובטח את הסיסמה שנוצרה המוצגת על המסך.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. באמצעות אפליקציית הדואר המועדפת עליך, הוסף או הגדר חשבון עם הכינוי החדש שיצרת (למשל <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">חלופה קוד פתוח וממוקדת פרטיות</a>.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. כאשר תתבקש להזין שם שרת POP3, הזן `pop3.forwardemail.net`
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. כאשר תתבקש להזין פורט שרת POP3, הזן `995` (SSL/TLS) – ראה [פורטים חלופיים ל-POP3](/faq#what-are-your-pop3-server-configuration-settings) במידת הצורך
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>אם אתה משתמש ב-Thunderbird, ודא ש-"אבטחת חיבור" מוגדר ל-"SSL/TLS" ושיטת האימות מוגדרת ל-"סיסמה רגילה".</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. כאשר תתבקש להזין סיסמת שרת POP3, הדבק את הסיסמה מ-<strong class="text-success"><i class="fa fa-key"></i> יצירת סיסמה</strong> בשלב 2 למעלה
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **שמור את ההגדרות שלך** – אם יש לך בעיות, אנא <a href="/help">צור קשר איתנו</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      מזל טוב!
     </strong>
     <span>
-      You've successfully completed all steps.
+      השלמת בהצלחה את כל השלבים.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### האם אתם תומכים ביומנים (CalDAV) {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+כן, החל מ-5 בפברואר 2024 הוספנו תכונה זו. השרת שלנו הוא `caldav.forwardemail.net` ומנוטר גם בדף ה-<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">סטטוס</a>.
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך פורט `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| התחברות | דוגמה                      | תיאור                                                                                                                                                                                    |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| שם משתמש | `user@example.com`         | כתובת האימייל של כינוי שקיים לדומיין ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>.               |
+| סיסמה   | `************************` | סיסמה שנוצרה ספציפית לכינוי.                                                                                                                                                            |
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+כדי להשתמש בתמיכה בלוח שנה, ה-**משתמש** חייב להיות כתובת האימייל של כינוי שקיים לדומיין ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> – וה-**סיסמה** חייבת להיות סיסמה שנוצרה ספציפית לכינוי.
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+### האם אתם תומכים במשימות ותזכורות (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+כן, החל מ-14 באוקטובר 2025 הוספנו תמיכה ב-CalDAV VTODO למשימות ותזכורות. זה משתמש באותו שרת כמו התמיכה שלנו בלוח שנה: `caldav.forwardemail.net`.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+שרת ה-CalDAV שלנו תומך גם באירועים בלוח שנה (VEVENT) וגם ברכיבי משימות (VTODO) באמצעות **לוחות שנה מאוחדים**. משמעות הדבר שכל לוח שנה יכול להכיל גם אירועים וגם משימות, ומספק גמישות מקסימלית ותאימות מלאה בין כל לקוחות CalDAV.
 
-**How calendars and lists work:**
+**איך לוחות שנה ורשימות פועלים:**
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+* **כל לוח שנה תומך גם באירועים וגם במשימות** - ניתן להוסיף אירועים, משימות, או שניהם לכל לוח שנה
+* **רשימות תזכורות של אפל** - כל רשימה שתיצור ב-Apple Reminders הופכת ללוח שנה נפרד בשרת
+* **לוחות שנה מרובים** - ניתן ליצור כמה לוחות שנה שתרצה, כל אחד עם שם, צבע וארגון משלו
+* **סינכרון בין לקוחות** - משימות ואירועים מסונכרנים בצורה חלקה בין כל הלקוחות התואמים
 
-**Supported task clients:**
+**לקוחות משימות נתמכים:**
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+* **macOS Reminders** - תמיכה מלאה ונייטיבית ביצירת משימות, עריכה, השלמה וסינכרון
+* **iOS Reminders** - תמיכה מלאה ונייטיבית בכל מכשירי iOS
+* **Tasks.org (אנדרואיד)** - מנהל משימות קוד פתוח פופולרי עם סינכרון CalDAV
+* **Thunderbird** - תמיכה במשימות ולוח שנה בלקוח הדואר השולחני
+* **כל מנהל משימות תואם CalDAV** - תמיכה ברכיב VTODO סטנדרטי
 
-**Task features supported:**
+**תכונות משימות נתמכות:**
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+* יצירה, עריכה ומחיקה של משימות
+* תאריכי יעד ותאריכי התחלה
+* סטטוס השלמת משימה (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* רמות עדיפות למשימות
+* משימות חוזרות
+* תיאורים והערות למשימות
+* סינכרון בין מכשירים מרובים
+* משימות משנה עם מאפיין RELATED-TO
+* תזכורות למשימות עם VALARM
 
-The login credentials are the same as for calendar support:
+פרטי ההתחברות זהים לאלו של תמיכת לוח השנה:
 
-| Login | Example | Description |
+| התחברות | דוגמה                      | תיאור                                                                                                                                                                                    |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| שם משתמש | `user@example.com`         | כתובת האימייל של כינוי שקיים לדומיין ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>.               |
+| סיסמה   | `************************` | סיסמה שנוצרה ספציפית לכינוי.                                                                                                                                                            |
 
-**Important notes:**
+**הערות חשובות:**
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+* **כל רשימת תזכורות היא לוח שנה נפרד** - כשאתה יוצר רשימה חדשה ב-Apple Reminders, נוצרת לוח שנה חדש בשרת CalDAV
+* **משתמשי Thunderbird** - תצטרך להירשם ידנית לכל לוח שנה/רשימה שברצונך לסנכרן, או להשתמש בכתובת הבית של לוח השנה: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **משתמשי אפל** - גילוי לוחות השנה מתבצע אוטומטית, כך שכל לוחות השנה והרשימות שלך יופיעו ב-Calendar.app וב-Reminders.app
+* **לוחות שנה מאוחדים** - כל לוחות השנה תומכים גם באירועים וגם במשימות, ומאפשרים לך גמישות בארגון הנתונים שלך
+### האם אתם תומכים באנשי קשר (CardDAV) {#do-you-support-contacts-carddav}
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+כן, החל מ-12 ביוני 2025 הוספנו תכונה זו. השרת שלנו הוא `carddav.forwardemail.net` ומנוטר גם בדף הסטטוס שלנו <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך פורט `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| התחברות | דוגמה                     | תיאור                                                                                                                                                                                    |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| שם משתמש | `user@example.com`         | כתובת האימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>.                  |
+| סיסמה    | `************************` | סיסמה שנוצרה ספציפית לכינוי.                                                                                                                                                            |
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+כדי להשתמש בתמיכה באנשי קשר, ה**משתמש** חייב להיות כתובת האימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – וה**סיסמה** חייבת להיות סיסמה שנוצרה ספציפית לכינוי.
 
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
+### האם אתם תומכים בשליחת אימייל עם SMTP {#do-you-support-sending-email-with-smtp}
 
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+כן, מאז מאי 2023 אנו תומכים בשליחת אימייל עם SMTP כתוספת לכל המשתמשים בתשלום.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    אנא ודא שקראת את <a href="/terms" class="alert-link" target="_blank">תנאי השימוש</a>, <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a>, ו-<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">מגבלות SMTP יוצא</a> &ndash; השימוש שלך נחשב לאישור והסכמה.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    אם אתה משתמש בג'ימייל, עיין במדריך שלנו <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">שליחת דואר ככתובת מותאמת בג'ימייל</a>. אם אתה מפתח, עיין בתיעוד ה-<a class="alert-link" href="/email-api#outbound-emails" target="_blank">API של האימייל</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> תצורת SMTP יוצא ופעל לפי הוראות ההגדרה
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. לחץ על <strong class="text-success"><i class="fa fa-key"></i> צור סיסמה</strong> ליד הכינוי שנוצר זה עתה. העתק ללוח הגזירים שלך ושמור בבטחה את הסיסמה שנוצרה המוצגת על המסך.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. באמצעות אפליקציית האימייל המועדפת עליך, הוסף או הגדר חשבון עם הכינוי החדש שיצרת (למשל <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>אנו ממליצים להשתמש ב- <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">חלופה קוד פתוח וממוקדת פרטיות</a>.</span>
    </div>
+5. כאשר תתבקש להזין שם שרת SMTP, הזן `smtp.forwardemail.net`
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. כאשר תתבקש להזין פורט של שרת SMTP, הזן `465` (SSL/TLS) – ראה [פורטים חלופיים ל-SMTP](/faq#what-are-your-smtp-server-configuration-settings) אם יש צורך
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>אם אתה משתמש ב-Thunderbird, ודא ש"Connection security" מוגדר ל-"SSL/TLS" וששיטת האימות מוגדרת ל-"Normal password".</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. כאשר תתבקש להזין סיסמת שרת SMTP, הדבק את הסיסמה מ- <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> בשלב 3 למעלה
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **שמור את ההגדרות ושלח את המייל הבדיקה הראשון שלך** – אם יש לך בעיות, אנא <a href="/help">צור קשר</a>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    שים לב שבכדי לשמור על מוניטין כתובת ה-IP ולהבטיח מסירה, יש לנו תהליך סקירה ידני על בסיס דומיין לאישור SMTP יוצא. תהליך זה בדרך כלל לוקח פחות מ-24 שעות, כאשר רוב הבקשות מאושרות בתוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך תהליך זה לאוטומטי עם בקרות ספאם נוספות והתראות. תהליך זה מבטיח שהמיילים שלך יגיעו לתיבת הדואר הנכנס והודעותיך לא יסומנו כספאם.
   </span>
 </div>
 
@@ -2259,98 +2560,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      מזל טוב!
     </strong>
     <span>
-      You've successfully completed all steps.
+      השלמת בהצלחה את כל השלבים.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### האם אתם תומכים ב-OpenPGP/MIME, הצפנה מקצה לקצה ("E2EE"), ו-Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+כן, אנו תומכים ב-[OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [הצפנה מקצה לקצה ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), ובגילוי מפתחות ציבוריים באמצעות [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD). ניתן להגדיר OpenPGP באמצעות [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) או [לאחסן את המפתחות שלך בעצמך](https://wiki.gnupg.org/WKDHosting) (עיין ב-[gist זה להגדרת שרת WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* חיפושי WKD נשמרים במטמון למשך שעה אחת כדי להבטיח מסירה בזמן → לכן אם הוספת, שינית או הסרת את מפתח WKD שלך, אנא שלח לנו מייל ל-`support@forwardemail.net` עם כתובת המייל שלך כדי שננקות את המטמון ידנית.
+* אנו תומכים בהצפנת PGP להודעות שמועברות דרך חיפוש WKD או באמצעות מפתח PGP שהועלה בממשק שלנו.
+* מפתחות שהועלו מקבלים עדיפות כל עוד תיבת הסימון של PGP מופעלת/מסומנת.
+* הודעות שנשלחות ל-webhooks כרגע אינן מוצפנות ב-PGP.
+* אם יש לך מספר כינויים התואמים לכתובת העברה נתונה (למשל regex/wildcard/שילוב מדויק) ואם יותר מאחד מהם מכיל מפתח PGP שהועלה ויש PGP מסומן → אז נשלח לך מייל התראה על שגיאה ולא נצפין את ההודעה עם מפתח ה-PGP שהועלה. זה נדיר מאוד ובדרך כלל חל רק על משתמשים מתקדמים עם כללי כינויים מורכבים.
+* **הצפנת PGP לא תיושם על העברת מייל דרך שרתי MX שלנו אם השולח היה עם מדיניות DMARC של דחייה. אם אתה זקוק להצפנת PGP על *כל* הדואר, אנו ממליצים להשתמש בשירות IMAP שלנו ולהגדיר את מפתח ה-PGP שלך לכינוי שלך עבור דואר נכנס.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**אתה יכול לאמת את הגדרת Web Key Directory שלך ב-<https://wkd.chimbosonic.com/> (קוד פתוח) או ב-<https://www.webkeydirectory.com/> (קנייני).**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    הצפנה אוטומטית:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>אם אתה משתמש ב-<a href="#do-you-support-sending-email-with-smtp" class="alert-link">שירות SMTP היוצא שלנו</a> ושולח הודעות לא מוצפנות, אז ננסה אוטומטית להצפין הודעות על בסיס כל נמען באמצעות <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    עליך לבצע את כל השלבים הבאים כדי לאפשר OpenPGP עבור שם הדומיין המותאם אישית שלך.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. הורד והתקן את התוסף המומלץ של לקוח הדואר האלקטרוני שלך למטה:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | לקוח דואר אלקטרוני | פלטפורמה | תוסף מומלץ                                                                                                                                                                         | הערות                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | ------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird        | שולחן עבודה | [הגדר OpenPGP ב-Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | ל-Thunderbird יש תמיכה מובנית ב-OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                               |
+   | Gmail              | דפדפן    | [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download) (רישיון קנייני)                                                                               | Gmail אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                     |
+   | Apple Mail         | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                       | Apple Mail אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation).                                                                                                                                                                                                                                                                        |
+   | Apple Mail         | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) או [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (רישיון קנייני)                              | Apple Mail אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [PGPro](https://github.com/opensourceios/PGPro/) או [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                     |
+   | Outlook            | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                       | לקוח הדואר של Outlook לשולחן העבודה אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [gpg4win](https://www.gpg4win.de/index.html).                                                                                                                                                                                                                                                                                               |
+   | Outlook            | דפדפן    | [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download) (רישיון קנייני)                                                                               | לקוח הדואר של Outlook בדפדפן אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                             |
+   | Android            | מובייל   | [OpenKeychain](https://www.openkeychain.org/) או [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                    | [לקוחות דואר אנדרואיד](/blog/open-source/android-email-clients) כגון [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) ו-[FairEmail](https://github.com/M66B/FairEmail) תומכים בתוסף בקוד פתוח [OpenKeychain](https://www.openkeychain.org/). ניתן גם להשתמש בתוסף בקוד פתוח (רישוי קנייני) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email).                                      |
+   | Google Chrome      | דפדפן    | [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download) (רישיון קנייני)                                                                               | ניתן להוריד את תוסף הדפדפן בקוד פתוח [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                            |
+   | Mozilla Firefox    | דפדפן    | [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download) (רישיון קנייני)                                                                               | ניתן להוריד את תוסף הדפדפן בקוד פתוח [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                            |
+   | Microsoft Edge     | דפדפן    | [Mailvelope](https://mailvelope.com/)                                                                                                                                              | ניתן להוריד את תוסף הדפדפן בקוד פתוח [Mailvelope](https://mailvelope.com/).                                                                                                                                                                                                                                                                                                                                                             |
+   | Brave              | דפדפן    | [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download) (רישיון קנייני)                                                                               | ניתן להוריד את תוסף הדפדפן בקוד פתוח [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                            |
+   | Balsa              | שולחן עבודה | [הגדר OpenPGP ב-Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                              | ל-Balsa יש תמיכה מובנית ב-OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                                     |
+   | KMail              | שולחן עבודה | [הגדר OpenPGP ב-KMail](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                                  | ל-KMail יש תמיכה מובנית ב-OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                                     |
+   | GNOME Evolution    | שולחן עבודה | [הגדר OpenPGP ב-Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                                | ל-GNOME Evolution יש תמיכה מובנית ב-OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                           |
+   | Terminal           | שולחן עבודה | [הגדר gpg ב-Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                            | ניתן להשתמש בכלי שורת הפקודה בקוד פתוח [gpg](https://www.gnupg.org/download/) כדי ליצור מפתח חדש משורת הפקודה.                                                                                                                                                                                                                                                                                                                       |
+2. פתח את התוסף, צור את המפתח הציבורי שלך, וקבע את תצורת לקוח הדוא"ל שלך לשימוש בו.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. העלה את המפתח הציבורי שלך בכתובת <https://keys.openpgp.org/upload>.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>אתה יכול לבקר ב- <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> כדי לנהל את המפתח שלך בעתיד.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       תוספת אופציונלית:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       אם אתה משתמש בשירות <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">אחסון מוצפן (IMAP/POP3)</a> שלנו ורוצה שכל הדוא"ל המאוחסן במסד הנתונים SQLite שלך (כבר מוצפן) יהיה מוצפן עם המפתח הציבורי שלך, עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> ערוך <i class="fa fa-angle-right"></i> OpenPGP והעלה את המפתח הציבורי שלך.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. הוסף רשומת `CNAME` חדשה לשם הדומיין שלך (למשל `example.com`):
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>שם/מארח/כינוי</th>
          <th class="text-center">TTL</th>
-         <th>Type</th>
-         <th>Answer/Value</th>
+         <th>סוג</th>
+         <th>תשובה/ערך</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,90 +2662,272 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       טיפ:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>אם הכינוי שלך משתמש ב- <a class="alert-link" href="/disposable-addresses" target="_blank">דומיינים זמניים/ווניטי</a> שלנו (למשל <code>hideaddress.net</code>), תוכל לדלג על שלב זה.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      מזל טוב!
     </strong>
     <span>
-      You've successfully completed all steps.
+      השלמת בהצלחה את כל השלבים.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### האם אתם תומכים בהצפנת S/MIME {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+כן, אנו תומכים בהצפנת [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) כפי שמוגדר ב-[RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551). S/MIME מספק הצפנה מקצה לקצה באמצעות תעודות X.509, הנתמכות באופן נרחב על ידי לקוחות דוא"ל ארגוניים.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+אנו תומכים בתעודות RSA ו-ECC (קריפטוגרפיית עקומה אליפטית):
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **תעודות RSA**: מינימום 2048 ביט, מומלץ 4096 ביט
+* **תעודות ECC**: עקומות NIST P-256, P-384, ו-P-521
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+כדי להגדיר הצפנת S/MIME עבור הכינוי שלך:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. השג תעודת S/MIME מרשות תעודות מהימנה (CA) או צור תעודה חתומה עצמית לצורך בדיקה.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       טיפ:
+     </strong>
+     <span>תעודות S/MIME חינמיות זמינות מספקים כמו <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> או <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. ייצא את התעודה שלך בפורמט PEM (רק התעודה הציבורית, לא המפתח הפרטי).
 
-Learn more about passkeys at the following links:
+3. עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> ערוך <i class="fa fa-angle-right"></i> S/MIME והעלה את התעודה הציבורית שלך.
+4. לאחר ההגדרה, כל המיילים הנכנסים לכתובת החילופית שלך יוצפנו באמצעות תעודת S/MIME שלך לפני האחסון או ההעברה.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       הערה:
+     </strong>
+     <span>
+       הצפנת S/MIME מיושמת על הודעות נכנסות שאינן מוצפנות כבר. אם ההודעה כבר מוצפנת באמצעות OpenPGP או S/MIME, היא לא תוצפן מחדש.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       חשוב:
+     </strong>
+     <span>
+       הצפנת S/MIME לא תיושם על העברת מייל דרך שרתי ה-MX שלנו אם השולח קבע מדיניות DMARC של דחייה. אם אתה זקוק להצפנת S/MIME על <em>כל</em> הדואר, אנו ממליצים להשתמש בשירות ה-IMAP שלנו ולהגדיר את תעודת ה-S/MIME שלך עבור הכתובת החילופית לקבלת דואר נכנס.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+לקוחות המייל הבאים כוללים תמיכה מובנית ב-S/MIME:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| לקוח מייל         | פלטפורמה | הערות                                                                                                               |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | תמיכה מובנית ב-S/MIME. עבור אל Mail > Preferences > Accounts > החשבון שלך > Trust כדי להגדיר תעודות.             |
+| Apple Mail        | iOS      | תמיכה מובנית ב-S/MIME. עבור אל Settings > Mail > Accounts > החשבון שלך > Advanced > S/MIME כדי להגדיר.             |
+| Microsoft Outlook | Windows  | תמיכה מובנית ב-S/MIME. עבור אל File > Options > Trust Center > Trust Center Settings > Email Security כדי להגדיר.  |
+| Microsoft Outlook | macOS    | תמיכה מובנית ב-S/MIME. עבור אל Tools > Accounts > Advanced > Security כדי להגדיר.                                  |
+| Thunderbird       | Desktop  | תמיכה מובנית ב-S/MIME. עבור אל Account Settings > End-To-End Encryption > S/MIME כדי להגדיר.                       |
+| GNOME Evolution   | Desktop  | תמיכה מובנית ב-S/MIME. עבור אל Edit > Preferences > Mail Accounts > החשבון שלך > Security כדי להגדיר.              |
+| KMail             | Desktop  | תמיכה מובנית ב-S/MIME. עבור אל Settings > Configure KMail > Identities > הזהות שלך > Cryptography כדי להגדיר.       |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      מזל טוב!
+    </strong>
+    <span>
+      הגדרת בהצלחה את הצפנת S/MIME עבור הכתובת החילופית שלך.
+    </span>
+  </div>
+</div>
+
+### האם אתם תומכים בסינון מיילים באמצעות Sieve {#do-you-support-sieve-email-filtering}
+
+כן! אנו תומכים בסינון מיילים באמצעות [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) כפי שמוגדר ב-[RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve היא שפת סקריפטים חזקה ומאוחדת לסינון מיילים בצד השרת, המאפשרת לארגן, לסנן ולהגיב להודעות נכנסות באופן אוטומטי.
+
+#### הרחבות Sieve נתמכות {#supported-sieve-extensions}
+
+אנו תומכים במערך מקיף של הרחבות Sieve:
+
+| הרחבה                      | RFC                                                                                     | תיאור                                            |
+| -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | לארכוב הודעות לתיקיות ספציפיות                   |
+| `reject` / `ereject`       | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | לדחות הודעות עם שגיאה                              |
+| `vacation`                 | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | תגובות חופשה/מחוץ למשרד אוטומטיות                |
+| `vacation-seconds`         | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | פרקי זמן מדויקים לתגובות חופשה                     |
+| `imap4flags`               | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | הגדרת דגלי IMAP (\Seen, \Flagged וכו')             |
+| `envelope`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | בדיקת שולח/נמען במעטפה                            |
+| `body`                     | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | בדיקת תוכן גוף ההודעה                             |
+| `variables`                | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | אחסון ושימוש במשתנים בסקריפטים                     |
+| `relational`               | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | השוואות יחסיות (גדול מ-, קטן מ-)                   |
+| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                            | השוואות מספריות                                   |
+| `copy`                     | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | העתקת הודעות תוך הפניה מחדש                        |
+| `editheader`               | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | הוספה או מחיקה של כותרות הודעה                      |
+| `date`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | בדיקת ערכי תאריך/שעה                              |
+| `index`                    | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | גישה להופעות ספציפיות בכותרת                       |
+| `regex`                    | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | התאמת ביטוי רגולרי                                |
+| `enotify`                  | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | שליחת התראות (למשל, mailto:)                       |
+| `environment`              | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | גישה למידע סביבתי                                 |
+| `mailbox`                  | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | בדיקת קיום תיבת דואר, יצירת תיבות דואר            |
+| `special-use`              | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | ארכוב לתיבות דואר לשימוש מיוחד (\Junk, \Trash)     |
+| `duplicate`                | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | זיהוי הודעות כפולות                               |
+| `ihave`                    | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | בדיקת זמינות הרחבה                                |
+| `subaddress`               | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | גישה לחלקי כתובת user+detail                      |
+#### הרחבות שלא נתמכות {#extensions-not-supported}
+
+ההרחבות הבאות אינן נתמכות כרגע:
+
+| הרחבה                                                        | סיבה                                                               |
+| ------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `include`                                                    | סיכון אבטחה (הזרקת סקריפטים) ודורש אחסון סקריפטים גלובלי          |
+| `mboxmetadata` / `servermetadata`                            | דורש תמיכה בהרחבת IMAP METADATA                                    |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | טיפול מורכב בעץ MIME שטרם יושם                                    |
+
+#### דוגמאות לסקריפטים של Sieve {#example-sieve-scripts}
+
+**לסווג ניוזלטרים לתיקייה:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**תשובה אוטומטית בזמן חופשה:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "אני כרגע מחוץ למשרד ואענה כשאשוב.";
+```
+
+**סימון הודעות ממקור חשוב:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**דחיית ספאם עם נושאים ספציפיים:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "ההודעה נדחתה עקב תוכן ספאם.";
+}
+```
+
+#### ניהול סקריפטים של Sieve {#managing-sieve-scripts}
+
+ניתן לנהל את סקריפטי ה-Sieve שלכם בכמה דרכים:
+
+1. **ממשק אינטרנט**: גשו ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> סקריפטים של Sieve כדי ליצור ולנהל סקריפטים.
+
+2. **פרוטוקול ManageSieve**: התחברו באמצעות כל לקוח התומך ב-ManageSieve (כמו תוסף Sieve של Thunderbird או [sieve-connect](https://github.com/philpennock/sieve-connect)) לכתובת `imap.forwardemail.net`. השתמשו ביציאה `2190` עם STARTTLS (מומלץ לרוב הלקוחות) או ביציאה `4190` עם TLS מרומז.
+
+3. **API**: השתמשו ב-[REST API](/api#sieve-scripts) שלנו לניהול סקריפטים בתכנות.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    הערה:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+    סינון Sieve מתבצע על הודעות נכנסות לפני שהן נשמרות בתיבת הדואר שלכם. הסקריפטים מבוצעים לפי סדר עדיפות, והפעולה הראשונה שתואמת קובעת כיצד ההודעה מטופלת.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    אבטחה:
+  </strong>
+  <span>
+    לצורך אבטחה, פעולות הפניה מוגבלות ל-10 לכל סקריפט ו-100 ליום. תגובות חופשה מוגבלות בקצב כדי למנוע שימוש לרעה.
+  </span>
+</div>
+
+### האם אתם תומכים ב-MTA-STS {#do-you-support-mta-sts}
+
+כן, מאז 2 במרץ 2023 אנו תומכים ב-[MTA-STS](https://www.hardenize.com/blog/mta-sts). ניתן להשתמש ב-[תבנית זו](https://github.com/jpawlowski/mta-sts.template) אם ברצונכם להפעיל זאת בדומיין שלכם.
+
+ההגדרות שלנו זמינות בפומבי ב-GitHub בכתובת <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+
+### האם אתם תומכים ב-passkeys ו-WebAuthn {#do-you-support-passkeys-and-webauthn}
+
+כן! מאז 13 בדצמבר 2023 הוספנו תמיכה ב-passkeys [עקב ביקוש גבוה](https://github.com/orgs/forwardemail/discussions/182).
+
+Passkeys מאפשרים לכם להיכנס בצורה מאובטחת ללא צורך בסיסמה ואימות דו-שלבי.
+
+ניתן לאמת את זהותכם באמצעות מגע, זיהוי פנים, סיסמה מבוססת מכשיר או PIN.
+
+אנו מאפשרים לנהל עד 30 passkeys בו-זמנית, כך שתוכלו להיכנס עם כל המכשירים שלכם בקלות.
+
+למידע נוסף על passkeys בקישורים הבאים:
+
+* [התחברו לאפליקציות ואתרים עם passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [השתמשו ב-passkeys כדי להיכנס לאפליקציות ואתרים באייפון](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [מאמר ויקיפדיה על Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### האם אתם תומכים בפרקטיקות הטובות ביותר לדואר אלקטרוני {#do-you-support-email-best-practices}
+
+כן. יש לנו תמיכה מובנית ב-SPF, DKIM, DMARC, ARC ו-SRS בכל התכניות. בנוסף, עבדנו רבות עם המחברים המקוריים של המפרטים הללו ומומחים נוספים לדואר אלקטרוני כדי להבטיח שלמות ואחוזי מסירה גבוהים.
+
+### האם אתם תומכים ב-webhooks להחזרות (bounce) {#do-you-support-bounce-webhooks}
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    טיפ:
+  </strong>
+    מחפשים תיעוד על webhooks לדואר אלקטרוני? ראו <a href="/faq#do-you-support-webhooks" class="alert-link">האם אתם תומכים ב-webhooks?</a> למידע נוסף.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+כן, החל מ-14 באוגוסט 2024 הוספנו תכונה זו. כעת ניתן לגשת אל חשבוני → דומיינים → הגדרות → כתובת URL ל-webhook להחזרות ולהגדיר כתובת `http://` או `https://` אליה נשלח בקשת `POST` בכל פעם שדואר יוצא דרך SMTP חוזר.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+זה שימושי לניהול ומעקב אחר דואר יוצא דרך SMTP – וניתן להשתמש בו לשמירת מנויים, הסרה מרשימות, וזיהוי מתי מתרחשות החזרות.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+ה-payload של webhook להחזרות נשלח כ-JSON עם התכונות הבאות:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (מחרוזת) - מזהה הדואר התואם לדואר ב-חשבוני → דואר (SMTP יוצא)
+* `list_id` (מחרוזת) - ערך כותרת `List-ID` (לא תלוי רישיות), אם קיים, מהדואר המקורי היוצא
+* `list_unsubscribe` (מחרוזת) - ערך כותרת `List-Unsubscribe` (לא תלוי רישיות), אם קיים, מהדואר המקורי היוצא
+* `feedback_id` (מחרוזת) - ערך כותרת `Feedback-ID` (לא תלוי רישיות), אם קיים, מהדואר המקורי היוצא
+* `recipient` (מחרוזת) - כתובת הדואר של הנמען שהחזרה או שגיאה התרחשה עבורו
+* `message` (מחרוזת) - הודעת שגיאה מפורטת עבור ההחזרה
+* `response` (מחרוזת) - הודעת תגובת SMTP
+* `response_code` (מספר) - קוד תגובת SMTP מפורש
+* `truth_source` (מחרוזת) - אם קוד התגובה הגיע ממקור מהימן, ערך זה יכיל את שם הדומיין הראשי (למשל `google.com` או `yahoo.com`)
+* `bounce` (אובייקט) - אובייקט המכיל את התכונות הבאות המפרטות את מצב ההחזרה והדחייה
+  * `action` (מחרוזת) - פעולה של ההחזרה (למשל `"reject"`)
+  * `message` (מחרוזת) - סיבת ההחזרה (למשל `"Message Sender Blocked By Receiving Server"`)
+  * `category` (מחרוזת) - קטגוריית ההחזרה (למשל `"block"`)
+  * `code` (מספר) - קוד מצב ההחזרה (למשל `554`)
+  * `status` (מחרוזת) - קוד ההחזרה מתוך הודעת התגובה (למשל `5.7.1`)
+  * `line` (מספר) - מספר שורה מפורש, אם קיים, [מרשימת ניתוח ההחזרות של Zone-MTA](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (למשל `526`)
+* `headers` (אובייקט) - זוגות מפתח-ערך של כותרות עבור הדואר היוצא
+* `bounced_at` (מחרוזת) - תאריך בפורמט [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) למועד בו התרחשה שגיאת ההחזרה
 
-For example:
+לדוגמה:
 
 ```json
 {
@@ -2469,59 +2950,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+הנה כמה הערות נוספות לגבי webhooks להחזרות:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* אם ה-payload של ה-webhook מכיל ערך `list_id`, `list_unsubscribe`, או `feedback_id`, יש לנקוט בפעולה מתאימה להסרת ה-`recipient` מהרשימה במידת הצורך.
+  * אם ערך `bounce.category` היה אחד מ-`"block"`, `"recipient"`, `"spam"`, או `"virus"`, יש להסיר את המשתמש מהרשימה בוודאות.
+* אם יש צורך לאמת את ה-payload של ה-webhook (כדי לוודא שהוא אכן מגיע מהשרת שלנו), ניתן [לפתור את כתובת ה-IP של הלקוח מרחוק באמצעות חיפוש הפוך](https://nodejs.org/api/dns.html#dnspromisesreverseip) – היא צריכה להיות `smtp.forwardemail.net`.
+  * ניתן גם לבדוק את כתובת ה-IP מול [כתובות ה-IP שפרסמנו](#what-are-your-servers-ip-addresses).
+  * גשו אל חשבוני → דומיינים → הגדרות → מפתח אימות חתימת webhook לקבלת מפתח ה-webhook שלכם.
+    * ניתן לסובב מפתח זה בכל עת מסיבות אבטחה.
+    * חשבו והשוו את ערך `X-Webhook-Signature` מבקשת ה-webhook שלנו עם הערך המחושב של הגוף באמצעות מפתח זה. דוגמה כיצד לעשות זאת זמינה ב-[פוסט זה ב-Stack Overflow](https://stackoverflow.com/a/68885281).
+  * ראו את הדיון ב-<https://github.com/forwardemail/free-email-forwarding/issues/235> למידע נוסף.
+* נחכה עד `5` שניות לתגובה מכתובת ה-webhook שלכם עם קוד סטטוס `200`, וננסה שוב עד `1` פעם.
+* אם נגלה שכתובת ה-webhook שלכם מכילה שגיאה בעת ניסיון לשלוח אליה בקשה, נשלח לכם מייל נימוס פעם בשבוע.
+### האם אתם תומכים ב-webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    מחפשים תיעוד על bounce webhooks? ראו <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">האם אתם תומכים ב-bounce webhooks?</a> לקבלת תובנות נוספות.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+כן, מאז 15 במאי 2020 הוספנו תכונה זו. אתם יכולים פשוט להוסיף webhook(s) בדיוק כמו שהייתם עושים עם כל נמען! אנא ודאו כי יש לכם את הפרוטוקול "http" או "https" כמקדים בכתובת ה-URL של ה-webhook.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    הגנת פרטיות משופרת:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    אם אתם בתכנית בתשלום (שכוללת הגנת פרטיות משופרת), אנא גשו ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> ולחצו על "כינויים" לצד הדומיין שלכם כדי להגדיר את ה-webhooks שלכם. אם תרצו ללמוד עוד על תכניות בתשלום ראו את דף ה- <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">תמחור</a>. אחרת, תוכלו להמשיך לעקוב אחר ההוראות למטה.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+אם אתם בתכנית החינמית, פשוט הוסיפו רשומת DNS <strong class="notranslate">TXT</strong> חדשה כפי שמוצג למטה:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+לדוגמה, אם אני רוצה שכל המיילים שנשלחים ל- `alias@example.com` יועברו לנקודת בדיקה חדשה של [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3009,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+או אולי אתם רוצים שכל המיילים שנשלחים ל- `example.com` יועברו לנקודת הקצה הזו:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3030,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**הנה הערות נוספות לגבי webhooks:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* אם אתם צריכים לאמת את מטעני ה-webhook (כדי לוודא שהם אכן מגיעים מהשרת שלנו), תוכלו [לפתור את כתובת ה-IP של הלקוח מרחוק באמצעות חיפוש הפוך](https://nodejs.org/api/dns.html#dnspromisesreverseip) – היא צריכה להיות או `mx1.forwardemail.net` או `mx2.forwardemail.net`.
+  * תוכלו גם לבדוק את ה-IP מול [כתובות ה-IP שפרסמנו](#what-are-your-servers-ip-addresses).
+  * אם אתם בתכנית בתשלום, גשו ל- החשבון שלי → דומיינים → הגדרות → מפתח אימות מטען חתימת webhook כדי לקבל את מפתח ה-webhook שלכם.
+    * ניתן לסובב מפתח זה בכל עת מסיבות אבטחה.
+    * חשבו והשוו את ערך `X-Webhook-Signature` מבקשת ה-webhook שלנו עם הערך המחושב של הגוף באמצעות מפתח זה. דוגמה כיצד לעשות זאת זמינה ב-[פוסט זה ב-Stack Overflow](https://stackoverflow.com/a/68885281).
+  * ראו את הדיון ב- <https://github.com/forwardemail/free-email-forwarding/issues/235> לקבלת תובנות נוספות.
+* אם webhook אינו מגיב עם קוד סטטוס `200`, נשמור את תגובתו ב-[יומן השגיאות שנוצר](#do-you-store-error-logs) – דבר שיכול לסייע בניפוי שגיאות.
+* בקשות HTTP ל-webhook ינסו מחדש עד 3 פעמים בכל ניסיון חיבור SMTP, עם זמן מקסימלי של 60 שניות לכל בקשת POST לנקודת הקצה. **שימו לב שזה לא אומר שהוא מנסה רק 3 פעמים**, הוא ימשיך לנסות לאורך זמן על ידי שליחת קוד SMTP 421 (שמציין לשולח לנסות שוב מאוחר יותר) לאחר ניסיון POST HTTP כושל שלישי. משמעות הדבר היא שהמייל ינסה שוב ושוב במשך ימים עד שיתקבל קוד סטטוס 200.
+* ננסה אוטומטית מחדש בהתבסס על קודי הסטטוס והשגיאה ברירת המחדל המשמשים ב-[שיטת הניסיון של superagent](https://ladjs.github.io/superagent/#retrying-requests) (אנו המתחזקים).
+* אנו מקבצים יחד בקשות HTTP ל-webhook לאותה נקודת קצה בבקשה אחת במקום במספר בקשות כדי לחסוך משאבים ולהאיץ את זמן התגובה. לדוגמה, אם תשלחו מייל ל- <webhook1@example.com>, <webhook2@example.com>, ו- <webhook3@example.com>, וכולם מוגדרים לפגוע באותה כתובת URL מדויקת של נקודת הקצה, תתבצע בקשה אחת בלבד. אנו מקבצים לפי התאמה מדויקת של נקודת הקצה עם שוויון מוחלט.
+* שימו לב שאנו משתמשים בשיטת "simpleParser" של ספריית [mailparser](https://nodemailer.com/extras/mailparser/) כדי לפרש את ההודעה לאובייקט ידידותי ל-JSON.
+* ערך המייל הגולמי כמחרוזת ניתן בתכונה "raw".
+* תוצאות האימות ניתנות כתכונות "dkim", "spf", "arc", "dmarc", ו-"bimi".
+* כותרות המייל המפורשות ניתנות כתכונה "headers" – אך שימו לב שניתן להשתמש גם ב-"headerLines" להקל על איטרציה ופרסינג.
+* הנמענים המקובצים עבור webhook זה מקובצים יחד וניתנים כתכונה "recipients".
+* מידע על סשן SMTP ניתן כתכונה "session". זה מכיל מידע על שולח ההודעה, זמן ההגעה של ההודעה, HELO, ושם המארח של הלקוח. ערך שם המארח של הלקוח כ- `session.clientHostname` הוא או ה-FQDN (מחיפוש PTR הפוך) או `session.remoteAddress` עטוף בסוגריים (למשל `"[127.0.0.1]"`).
+* אם אתם צריכים דרך מהירה לקבל את ערך `X-Original-To`, תוכלו להשתמש בערך של `session.recipient` (ראו דוגמה למטה). הכותרת `X-Original-To` היא כותרת שאנו מוסיפים להודעות לצורך ניפוי שגיאות עם הנמען המקורי (לפני העברת המסכה) של ההודעה.
+* אם אתם צריכים להסיר תכונות `attachments` ו/או `raw` מגוף המטען, פשוט הוסיפו `?attachments=false`, `?raw=false`, או `?attachments=false&raw=false` לכתובת נקודת הקצה של ה-webhook שלכם כפרמטר מחרוזת שאילתה (למשל `https://example.com/webhook?attachments=false&raw=false`).
+* אם יש קבצים מצורפים, הם יתווספו למערך `attachments` עם ערכי Buffer. תוכלו לפרש אותם חזרה לתוכן באמצעות גישה ב-JavaScript כגון:
   ```js
   const data = [
     104,
@@ -2785,48 +3264,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### האם אתם תומכים בביטויים רגולריים או regex {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+כן, מאז 27 בספטמבר 2021 הוספנו תכונה זו. ניתן פשוט לכתוב ביטויים רגולריים ("regex") להתאמת כינויים ולביצוע החלפות.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+כינויים הנתמכים על ידי ביטויים רגולריים הם כאלו שמתחילים ב-`/` ומסתיימים ב-`/` והנמענים שלהם הם כתובות אימייל או webhooks. הנמענים יכולים גם לכלול תמיכה בהחלפות regex (למשל `$1`, `$2`).
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+אנו תומכים בשני דגלים של ביטויים רגולריים כולל `i` ו-`g`. דגל אי-רגישות לאותיות `i` הוא ברירת מחדל קבועה ותמיד נאכף. דגל הגלובלי `g` ניתן להוספה על ידך על ידי הוספת `/g` בסוף הביטוי.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+שים לב שאנו גם תומכים ב- <a href="#can-i-disable-specific-aliases">תכונת כינויים מושבתים</a> עבור חלק הנמען עם התמיכה בביטויים רגולריים.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+ביטויים רגולריים אינם נתמכים ב- <a href="/disposable-addresses" target="_blank">דומיינים גלובליים זמניים</a> (כיוון שזה עלול להיות פרצת אבטחה).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    הגנת פרטיות משופרת:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    אם אתה נמצא בתוכנית בתשלום (שכוללת הגנת פרטיות משופרת), אנא עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> ולחץ על "כינויים" לצד הדומיין שלך כדי להגדיר כינויים, כולל כאלו עם ביטויים רגולריים. אם ברצונך ללמוד עוד על תוכניות בתשלום ראה את דף ה- <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">תמחור</a> שלנו.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### דוגמאות להגנת פרטיות משופרת {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
-      <th>Test</th>
+      <th>שם כינוי</th>
+      <th>השפעה</th>
+      <th>בדיקה</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>אימיילים ל-`linus@example.com` או `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">צפה בבדיקה ב-RegExr</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>אימיילים ל-`24highst@example.com` או `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">צפה בבדיקה ב-RegExr</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2834,34 +3313,34 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    כדי לבדוק את אלה ב- <a href="https://regexr.com" class="alert-link">RegExr</a>, כתוב את הביטוי בתיבת הטקסט העליונה, ואז הקלד דוגמת כינוי בתיבת הטקסט שמתחת. אם זה מתאים, זה יהפוך לכחול.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### דוגמאות לתוכנית החינמית {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+אם אתה בתוכנית החינמית, פשוט הוסף רשומת DNS <strong class="notranslate">TXT</strong> חדשה באמצעות אחת או יותר מהדוגמאות שסופקו למטה:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>דוגמה פשוטה:</strong> אם אני רוצה שכל האימיילים שנשלחים ל-`linus@example.com` או `torvalds@example.com` יועברו ל-`user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3350,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>דוגמת החלפת שם פרטי ושם משפחה:</strong> דמיין שכל כתובות האימייל של החברה שלך הן בפורמט `firstname.lastname@example.com`. אם אני רוצה שכל האימיילים שנשלחים לפורמט `firstname.lastname@example.com` יועברו ל-`firstname.lastname@company.com` עם תמיכה בהחלפות (<a href="https://regexr.com/66hnu" class="alert-link">צפה בבדיקה ב-RegExr</a>):
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3373,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>דוגמה להחלפת סינון סימן פלוס:</strong> אם אני רוצה שכל המיילים שנשלחים ל-`info@example.com` או ל-`support@example.com` יועברו ל-`user+info@gmail.com` או ל-`user+support@gmail.com` בהתאמה (עם תמיכה בהחלפה) (<a href="https://regexr.com/66ho7" class="alert-link">צפה במבחן ב-RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3397,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>דוגמה להחלפת מחרוזת שאילתה ב-webhook:</strong> אולי תרצה שכל המיילים שנשלחים ל-`example.com` יגיעו ל<a href="#do-you-support-webhooks" class="alert-link">webhook</a> ויכילו מפתח דינמי במחרוזת השאילתה בשם "to" עם הערך של חלק שם המשתמש בכתובת המייל (<a href="https://regexr.com/66ho4" class="alert-link">צפה במבחן ב-RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3421,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>דוגמה לדחייה שקטה:</strong> אם אתה רוצה שכל המיילים שתואמים לתבנית מסוימת יושבתו וידחו בשקט (נראה לשולח כאילו ההודעה נשלחה בהצלחה, אך למעשה ההודעה לא מגיעה לשום מקום) עם קוד סטטוס `250` (ראה <a href="#can-i-disable-specific-aliases" class="alert-link">האם ניתן להשבית כינויים ספציפיים</a>), פשוט השתמש באותה שיטה עם סימן קריאה יחיד "!". זה מציין לשולח שההודעה נמסרה בהצלחה, אך למעשה היא לא הגיעה לשום מקום (למשל חור שחור או `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3445,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>דוגמה לדחייה רכה:</strong> אם אתה רוצה שכל המיילים שתואמים לתבנית מסוימת יושבתו וידחו בדחייה רכה עם קוד סטטוס `421` (ראה <a href="#can-i-disable-specific-aliases" class="alert-link">האם ניתן להשבית כינויים ספציפיים</a>), פשוט השתמש באותה שיטה עם שני סימני קריאה "!!". זה מציין לשולח לנסות לשלוח את המייל שוב, והמיילים לכינוי זה ינסו להישלח מחדש במשך כ-5 ימים ואז יידחו לצמיתות.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>דוגמה לדחייה מוחלטת:</strong> אם ברצונך שכל האימיילים התואמים לתבנית מסוימת יושבתו וידחו בדחייה מוחלטת עם קוד סטטוס `550` (ראה <a href="#can-i-disable-specific-aliases" class="alert-link">האם ניתן להשבית כינויים ספציפיים</a>), פשוט השתמש באותה שיטה עם שלוש סימני קריאה "!!!". זה מציין לשולח שגיאה קבועה והאימיילים לא ינסו שוב, הם יידחו עבור כינוי זה.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/שרת/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3016,574 +3493,614 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    סקרן איך לכתוב ביטוי רגולרי או צריך לבדוק את ההחלפה שלך? אתה יכול לגשת לאתר הבדיקה החינמי של ביטויים רגולריים <a href="https://regexr.com" class="alert-link">RegExr</a> בכתובת <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### מהן מגבלות ה-SMTP היוצאות שלך {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+אנחנו מגבילים משתמשים ודומיינים ל-300 הודעות SMTP יוצאות ליום אחד. זה בממוצע מעל 9000 אימיילים בחודש קלנדרי. אם אתה צריך לעבור את הכמות הזו או שיש לך אימיילים גדולים באופן עקבי, אנא [צור קשר](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### האם אני צריך אישור כדי להפעיל SMTP {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+כן, שים לב שבכדי לשמור על מוניטין ה-IP ולהבטיח הגעה, ל-Forward Email יש תהליך סקירה ידני על בסיס דומיין לאישור SMTP יוצא. שלח אימייל ל-<support@forwardemail.net> או פתח [בקשת עזרה](https://forwardemail.net/help) לאישור. בדרך כלל זה לוקח פחות מ-24 שעות, כאשר רוב הבקשות מאושרות תוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך תהליך זה לאוטומטי עם בקרות ספאם נוספות והתראות. תהליך זה מבטיח שהאימיילים שלך יגיעו לתיבת הדואר הנכנס והודעותיך לא יסומנו כספאם.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### מהן הגדרות תצורת שרת ה-SMTP שלך {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+השרת שלנו הוא `smtp.forwardemail.net` ומפוקח גם בדף הסטטוס שלנו <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `465` ו-`2465` עבור SSL/TLS (מומלץ) ו-`587`, `2587`, `2525`, ו-`25` עבור TLS (STARTTLS).
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**מאוקטובר 2025**, אנו תומכים כעת בחיבורים **TLS 1.0 ישן** בפורטים `2455` (SSL/TLS) ו-`2555` (STARTTLS) עבור מכשירים ישנים כגון מדפסות, סורקים, מצלמות, ולקוחות אימייל ישנים שאינם תומכים בגרסאות TLS מודרניות. פורטים אלו ניתנים כחלופה לג'ימייל, יאהו, אאוטלוק וספקים אחרים שהפסיקו לתמוך בפרוטוקולי TLS ישנים.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **תמיכה ב-TLS 1.0 ישן (פורט 2455 ו-2555)**: פורטים אלו משתמשים בפרוטוקול TLS 1.0 המיושן שיש לו פגיעויות אבטחה ידועות (BEAST, POODLE). השתמש בפורטים אלו רק אם המכשיר שלך ממש לא יכול לתמוך ב-TLS 1.2 ומעלה. אנו ממליצים בחום לעדכן את קושחת המכשיר או לעבור ללקוחות אימייל מודרניים מתי שניתן. פורטים אלו מיועדים אך ורק לתאימות חומרה ישנה (מדפסות ישנות, סורקים, מצלמות, מכשירי IoT).
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+|                                     פרוטוקול                                     | שם מארח                |            פורטים            |        IPv4        |        IPv6        | הערות                                  |
 | :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-
-| Login | Example | Description |
+|                              `SSL/TLS` **מומלץ**                             | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | TLS מודרני 1.2+ (מומלץ)          |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | נתמך (מומלץ פורט SSL/TLS `465`)  |
+|                             `SSL/TLS` **ישן בלבד**                            | `smtp.forwardemail.net` |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 רק למכשירים ישנים |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **ישן בלבד** | `smtp.forwardemail.net` |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 רק למכשירים ישנים |
+| התחברות | דוגמה                      | תיאור                                                                                                                                                                                    |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+| שם משתמש | `user@example.com`         | כתובת אימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>.               |
+| סיסמה   | `************************` | כינוי                                                                                                                                                                                    |
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+כדי לשלוח אימייל יוצא באמצעות SMTP, **משתמש SMTP** חייב להיות כתובת האימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> – ו-**סיסמת SMTP** חייבת להיות סיסמה שנוצרה ספציפית לכינוי.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+אנא עיין ב-[האם אתם תומכים בשליחת אימייל עם SMTP](#do-you-support-sending-email-with-smtp) להוראות שלב אחר שלב.
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+### מהן הגדרות תצורת שרת ה-IMAP שלכם {#what-are-your-imap-server-configuration-settings}
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+השרת שלנו הוא `imap.forwardemail.net` ומפוקח גם בדף הסטטוס שלנו <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `993` ו-`2993` עבור SSL/TLS.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         פרוטוקול         | שם מארח                 |     פורטים    |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| `SSL/TLS` **מועדף**      | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Login | Example | Description |
+| התחברות | דוגמה                      | תיאור                                                                                                                                                                                    |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| שם משתמש | `user@example.com`         | כתובת אימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>.               |
+| סיסמה   | `************************` | סיסמה שנוצרה ספציפית לכינוי.                                                                                                                                                            |
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+כדי להתחבר עם IMAP, **משתמש IMAP** חייב להיות כתובת האימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> – ו-**סיסמת IMAP** חייבת להיות סיסמה שנוצרה ספציפית לכינוי.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+אנא עיין ב-[האם אתם תומכים בקבלת אימייל עם IMAP](#do-you-support-receiving-email-with-imap) להוראות שלב אחר שלב.
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+### מהן הגדרות תצורת שרת ה-POP3 שלכם {#what-are-your-pop3-server-configuration-settings}
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+השרת שלנו הוא `pop3.forwardemail.net` ומפוקח גם בדף הסטטוס שלנו <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `995` ו-`2995` עבור SSL/TLS.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         פרוטוקול         | שם מארח                 |     פורטים    |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
-
-| Login | Example | Description |
+| `SSL/TLS` **מועדף**      | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| התחברות | דוגמה                      | תיאור                                                                                                                                                                                   |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| שם משתמש | `user@example.com`         | כתובת האימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>.               |
+| סיסמה   | `************************` | סיסמה שנוצרה ספציפית לכינוי.                                                                                                                                                            |
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+כדי להתחבר עם POP3, ה-**משתמש POP3** חייב להיות כתובת האימייל של כינוי שקיים לדומיין ב- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> – ו-**סיסמת IMAP** חייבת להיות סיסמה שנוצרה ספציפית לכינוי.
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+אנא עיין ב-[האם אתם תומכים ב-POP3](#do-you-support-pop3) לקבלת הוראות שלב אחר שלב.
 
-## Security {#security}
+### כיצד להגדיר גילוי אוטומטי של אימייל לדומיין שלי {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+גילוי אוטומטי של אימייל מאפשר ללקוחות אימייל כגון **Thunderbird**, **Apple Mail**, **Microsoft Outlook**, ומכשירים ניידים לזהות אוטומטית את הגדרות השרת הנכונות של IMAP, SMTP, POP3, CalDAV ו-CardDAV כאשר משתמש מוסיף את חשבון האימייל שלו. זה מוגדר על ידי [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (אימייל) ו-[RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) ומשתמש ברשומות DNS SRV.
+
+Forward Email מפרסם רשומות גילוי אוטומטי ב-`forwardemail.net`. ניתן להוסיף רשומות SRV ישירות לדומיין שלך, או להשתמש בגישת CNAME פשוטה יותר.
+
+#### אפשרות א: רשומות CNAME (הפשוטה ביותר) {#option-a-cname-records-simplest}
+
+הוסף את שתי רשומות ה-CNAME האלה ל-DNS של הדומיין שלך. זה מפקיד את הגילוי האוטומטי לשרתים של Forward Email:
+
+|  סוג  | שם/מארח       | יעד/ערך                      |
+| :---: | -------------- | ---------------------------- |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net` |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+הרשומה `autoconfig` משמשת על ידי **Thunderbird** ולקוחות מבוססי Mozilla אחרים. הרשומה `autodiscover` משמשת על ידי **Microsoft Outlook**.
+
+#### אפשרות ב: רשומות SRV (ישירות) {#option-b-srv-records-direct}
+
+אם אתה מעדיף להוסיף את הרשומות ישירות (או שספק ה-DNS שלך לא תומך ב-CNAME בתת-דומיינים), הוסף את רשומות ה-SRV האלה לדומיין שלך:
+
+| סוג  | שם/מארח           | עדיפות | משקל | פורט | יעד/ערך                   | מטרה                                  |
+| :--: | ------------------ | :----: | :---: | :--: | ------------------------- | ------------------------------------- |
+|  SRV | `_imaps._tcp`      |   0    |  1    |  993 | `imap.forwardemail.net`   | IMAP על SSL/TLS (מועדף)               |
+|  SRV | `_imap._tcp`       |   0    |  0    |  0   | `.`                       | IMAP טקסט פשוט מושבת                 |
+|  SRV | `_submissions._tcp`|   0    |  1    |  465 | `smtp.forwardemail.net`   | שליחת SMTP (SSL/TLS, מומלץ)           |
+|  SRV | `_submission._tcp` |   5    |  1    |  587 | `smtp.forwardemail.net`   | שליחת SMTP (STARTTLS)                  |
+|  SRV | `_pop3s._tcp`      |  10    |  1    |  995 | `pop3.forwardemail.net`   | POP3 על SSL/TLS                      |
+|  SRV | `_pop3._tcp`       |   0    |  0    |  0   | `.`                       | POP3 טקסט פשוט מושבת                 |
+|  SRV | `_caldavs._tcp`    |   0    |  1    |  443 | `caldav.forwardemail.net` | CalDAV על TLS (לוחות שנה)             |
+|  SRV | `_caldav._tcp`     |   0    |  0    |  0   | `.`                       | CalDAV טקסט פשוט מושבת               |
+|  SRV | `_carddavs._tcp`   |   0    |  1    |  443 | `carddav.forwardemail.net`| CardDAV על TLS (אנשי קשר)              |
+|  SRV | `_carddav._tcp`    |   0    |  0    |  0   | `.`                       | CardDAV טקסט פשוט מושבת              |
+> \[!NOTE]
+> ל-IMAP יש ערך עדיפות נמוך יותר (0) מאשר ל-POP3 (10), מה שמורה ללקוחות הדואר להעדיף IMAP על פני POP3 כאשר שניהם זמינים. הרשומות עם יעד של `.` (נקודה בודדת) מציינות שגרסאות הטקסט הפשוט (שאינן מוצפנות) של הפרוטוקולים הללו מושבתות בכוונה לפי [RFC 6186 Section 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4). רשומות ה-SRV של CalDAV ו-CardDAV עוקבות אחרי [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) לגילוי אוטומטי של לוח שנה ופרטי קשר.
+
+#### אילו לקוחות דואר תומכים בגילוי אוטומטי? {#which-email-clients-support-autodiscovery}
+
+| לקוח               | דואר אלקטרוני                                   | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | רשומות `autoconfig` CNAME או SRV                 | רשומות `autoconfig` XML או SRV (RFC 6764) |
+| Apple Mail (macOS) | רשומות SRV (RFC 6186)                            | רשומות SRV (RFC 6764)                     |
+| Apple Mail (iOS)   | רשומות SRV (RFC 6186)                            | רשומות SRV (RFC 6764)                     |
+| Microsoft Outlook  | רשומות `autodiscover` CNAME או `_autodiscover._tcp` SRV | לא נתמך                                  |
+| GNOME (Evolution)  | רשומות SRV (RFC 6186)                            | רשומות SRV (RFC 6764)                     |
+| KDE (KMail)        | רשומות SRV (RFC 6186)                            | רשומות SRV (RFC 6764)                     |
+| eM Client          | `autoconfig` או `autodiscover`                    | רשומות SRV (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> עבור התאימות הטובה ביותר בין כל הלקוחות, אנו ממליצים להשתמש ב**אפשרות א'** (רשומות CNAME) בשילוב עם רשומות SRV מ**אפשרות ב'**. גישת ה-CNAME בלבד מכסה את רוב לקוחות הדואר. רשומות ה-SRV של CalDAV/CardDAV מבטיחות שגם לקוחות לוח שנה ופרטי קשר יוכלו לגלות אוטומטית את הגדרות השרת שלכם.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## אבטחה {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### טכניקות מתקדמות לחיזוק השרת {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
+> \[!TIP]
+> למידע נוסף על תשתית האבטחה שלנו עיינו ב[דף האבטחה שלנו](/security).
+
+Forward Email מיישמת טכניקות רבות לחיזוק השרת כדי להבטיח את אבטחת התשתית והנתונים שלכם:
+
+1. **אבטחת רשת**:
+   * חומת אש IP tables עם כללים מחמירים
+   * Fail2ban להגנה מפני התקפות כוח גס
+   * ביקורות אבטחה סדירות ובדיקות חדירה
+   * גישה מנהלית רק דרך VPN
+
+2. **חיזוק מערכת**:
+   * התקנת חבילות מינימלית
+   * עדכוני אבטחה סדירים
+   * SELinux במצב אכיפה
+   * השבתת גישת SSH לשורש
+   * אימות מבוסס מפתח בלבד
+
+3. **אבטחת יישומים**:
+   * כותרות מדיניות אבטחת תוכן (CSP)
    * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+   * כותרות הגנה מפני XSS
+   * אפשרויות מסגרת וכותרות מדיניות מפנה
+   * ביקורות תלות סדירות
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+4. **הגנת נתונים**:
+   * הצפנת דיסק מלאה עם LUKS
+   * ניהול מפתחות מאובטח
+   * גיבויים סדירים עם הצפנה
+   * שיטות למזעור נתונים
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+5. **ניטור ותגובה**:
+   * זיהוי חדירות בזמן אמת
+   * סריקות אבטחה אוטומטיות
+   * רישום וניתוח מרכזי
+   * נהלי תגובה לאירועים
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> נהלי האבטחה שלנו מתעדכנים באופן רציף כדי להתמודד עם איומים ופגיעויות מתפתחות.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> עבור אבטחה מקסימלית, אנו ממליצים להשתמש בשירות שלנו עם הצפנה מקצה לקצה באמצעות OpenPGP.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### האם יש לכם תעודות SOC 2 או ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email פועלת על תשתית המסופקת על ידי תת-מעבדים מוסמכים כדי להבטיח עמידה בסטנדרטים תעשייתיים.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email אינה מחזיקה ישירות בתעודות SOC 2 Type II או ISO 27001. עם זאת, השירות פועל על תשתית המסופקת על ידי תת-מעבדים מוסמכים:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: מוסמכת SOC 2 Type II ו-SOC 3 Type II (נבדקה על ידי Schellman & Company LLC), מוסמכת ISO 27001 במספר מרכזי נתונים. פרטים: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: מוסמך SOC 2+ (HIPAA), תעודות ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. פרטים: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: תואם SOC 2 (יש לפנות ישירות ל-DataPacket לקבלת תעודה), ספק תשתיות ברמת ארגונית (מיקום דנבר). פרטים: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Email פועל לפי שיטות עבודה מומלצות בתעשייה לבדיקות אבטחה ומעורב באופן קבוע עם חוקרי אבטחה עצמאיים. מקור: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### האם אתם משתמשים בהצפנת TLS להעברת אימיילים {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+כן. Forward Email מחייבת TLS 1.2+ לכל החיבורים (HTTPS, SMTP, IMAP, POP3) ומיישמת MTA-STS לתמיכה משופרת ב-TLS. היישום כולל:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* אכיפת TLS 1.2+ לכל חיבורי האימייל
+* החלפת מפתחות ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) לסודיות מושלמת קדימה
+* חבילות הצפנה מודרניות עם עדכוני אבטחה שוטפים
+* תמיכה ב-HTTP/2 לשיפור ביצועים ואבטחה
+* HSTS (HTTP Strict Transport Security) עם טעינה מוקדמת בדפדפנים מרכזיים
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** לאכיפת TLS מחמירה
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+מקור: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**יישום MTA-STS**: Forward Email מיישמת אכיפה מחמירה של MTA-STS בקוד. כאשר מתרחשות שגיאות TLS ואכיפת MTA-STS פעילה, המערכת מחזירה קודי סטטוס SMTP 421 כדי להבטיח שהאימיילים ינסו להישלח שוב מאוחר יותר במקום להישלח באופן לא מאובטח. פרטי היישום:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* זיהוי שגיאות TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* אכיפת MTA-STS בעזר send-email: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+אימות צד שלישי: <https://www.hardenize.com/report/forwardemail.net/1750312779> מציג דירוג "טוב" לכל אמצעי האבטחה של TLS וההעברה.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### האם אתם שומרים על כותרות אימות האימייל {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+כן. Forward Email מיישמת ושומרת באופן מקיף על כותרות אימות האימייל:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (Sender Policy Framework)**: מיושם ונשמר כראוי
+* **DKIM (DomainKeys Identified Mail)**: תמיכה מלאה עם ניהול מפתחות תקין
+* **DMARC**: אכיפת מדיניות לאימיילים שנכשלו באימות SPF או DKIM
+* **ARC**: למרות שלא מפורט במפורש, ציוני הציות המושלמים של השירות מצביעים על טיפול מקיף בכותרות אימות
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+מקור: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+אימות: מבחן הדואר של Internet.nl מציג ציון 100/100 במיוחד עבור יישום "SPF, DKIM, ו-DMARC". הערכת Hardenize מאשרת דירוג "טוב" ל-SPF ו-DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### האם אתם שומרים על כותרות האימייל המקוריות ומונעים זיופים {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email מיישמת הגנה מתקדמת נגד זיופים למניעת שימוש לרעה באימייל.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email שומרת על כותרות האימות המקוריות תוך יישום הגנה מקיפה נגד זיופים דרך קוד ה-MX:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **שמירת כותרות**: כותרות האימות המקוריות נשמרות במהלך ההעברה
+* **מניעת זיופים**: אכיפת מדיניות DMARC מונעת זיוף כותרות על ידי דחיית אימיילים שנכשלו באימות SPF או DKIM
+* **מניעת הזרקת כותרות**: אימות קלט וניקוי באמצעות ספריית striptags
+* **הגנה מתקדמת**: זיהוי פישינג מתקדם עם גילוי זיופים, מניעת התחזות ומערכות התראה למשתמשים
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**פרטי יישום MX**: הלוגיקה המרכזית לעיבוד האימייל מטופלת בקוד שרת ה-MX, בפרט:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* מטפל הנתונים הראשי של MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* סינון אימייל שרירותי (מניעת זיופים): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+העזר `isArbitrary` מיישם כללי מניעת זיופים מתקדמים הכוללים זיהוי התחזות לדומיין, ביטויים חסומים ודפוסי פישינג שונים.
+### איך אתם מגנים מפני ספאם והתעללות {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email מיישם הגנה רב-שכבתית מקיפה:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **הגבלת קצב**: מיושמת על ניסיונות אימות, נקודות קצה של API, וחיבורים SMTP
+* **בידוד משאבים**: בין משתמשים כדי למנוע השפעה ממשתמשים בעלי נפח גבוה
+* **הגנה מפני DDoS**: הגנה רב-שכבתית דרך מערכת Shield של DataPacket ו-Cloudflare
+* **קנה מידה אוטומטי**: התאמת משאבים דינמית בהתאם לביקוש
+* **מניעת התעללות**: בדיקות מניעת התעללות ספציפיות למשתמש וחסימה מבוססת hash לתוכן זדוני
+* **אימות דואר אלקטרוני**: פרוטוקולי SPF, DKIM, DMARC עם זיהוי מתקדם של פישינג
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+מקורות:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (פרטי הגנת DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### האם אתם מאחסנים תוכן דואר אלקטרוני בדיסק {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email משתמש בארכיטקטורת אפס-ידע שמונעת כתיבת תוכן הדואר האלקטרוני לדיסק.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **ארכיטקטורת אפס-ידע**: תיבות דואר SQLite מוצפנות בנפרד משמעותן ש-Forward Email אינו יכול לגשת לתוכן הדואר
+* **עיבוד בזיכרון**: עיבוד הדואר מתבצע כולו בזיכרון, ללא אחסון בדיסק
+* **אין רישום תוכן**: "איננו רושמים או מאחסנים תוכן דואר אלקטרוני או מטא-נתונים בדיסק"
+* **הצפנה בסביבה מבודדת**: מפתחות ההצפנה לעולם אינם מאוחסנים בדיסק בטקסט ברור
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**ראיות מקוד MX**: שרת MX מעבד דואר כולו בזיכרון ללא כתיבת תוכן לדיסק. המטפל הראשי בעיבוד הדואר מדגים גישה זו בזיכרון: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sources:
+מקורות:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (תקציר)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (פרטי אפס-ידע)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (הצפנה בסביבה מבודדת)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+### האם תוכן הדואר האלקטרוני עלול להיחשף בעת קריסות מערכת {#can-email-content-be-exposed-during-system-crashes}
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+לא. Forward Email מיישם אמצעי הגנה מקיפים מפני חשיפת נתונים בעת קריסות:
 
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
+* **כיבוי Core Dumps**: מונע חשיפת זיכרון בעת קריסות
+* **כיבוי זיכרון החלפה (Swap)**: מושבת לחלוטין למניעת חילוץ נתונים רגישים מקבצי החלפה
+* **ארכיטקטורה בזיכרון**: תוכן הדואר קיים רק בזיכרון נדיף במהלך העיבוד
+* **הגנת מפתחות הצפנה**: מפתחות לעולם אינם מאוחסנים בדיסק בטקסט ברור
+* **אבטחה פיזית**: דיסקים מוצפנים ב-LUKS v2 מונעים גישה פיזית לנתונים
+* **כיבוי אחסון USB**: מונע חילוץ נתונים לא מורשה
 
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+**טיפול בשגיאות לבעיות מערכת**: Forward Email משתמש בפונקציות עזר `isCodeBug` ו-`isTimeoutError` כדי להבטיח שאם מתרחשות בעיות חיבור למסד נתונים, בעיות רשת/DNS/רשימות חסימה, או בעיות חיבור לשרתי על, המערכת מחזירה קודי סטטוס SMTP 421 כדי להבטיח שהדואר ינסה להישלח שוב מאוחר יותר במקום לאבד או לחשוף אותו.
 
-Implementation details:
+פרטי מימוש:
 
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* סיווג שגיאות: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* טיפול בשגיאות timeout בעיבוד MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+מקור: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+### מי יש לו גישה לתשתית הדואר האלקטרוני שלכם {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+Forward Email מיישם בקרות גישה מקיפות לצוות ההנדסה המינימלי של 2-3 אנשים עם דרישות 2FA מחמירות:
 
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+* **בקרת גישה מבוססת תפקידים**: עבור חשבונות צוות עם הרשאות מבוססות משאבים
+* **עקרון ההרשאה המינימלית**: מיושם בכל המערכות
+* **הפרדת תפקידים**: בין תפקידים תפעוליים
+* **ניהול משתמשים**: משתמשים נפרדים לפריסה ול-devops עם הרשאות מובחנות
+* **כיבוי כניסת root**: מחייב גישה דרך חשבונות מאומתים כראוי
+* **2FA מחמיר**: ללא 2FA מבוסס SMS עקב סיכון להתקפות MiTM - רק אפליקציות או טוקנים חומרתיים
+* **רישום ביקורת מקיף**: עם טשטוש נתונים רגישים
+* **זיהוי אנומליות אוטומטי**: לדפוסי גישה חריגים
+* **סקירות אבטחה תקופתיות**: של יומני גישה
+* **מניעת התקפות Evil Maid**: אחסון USB מושבת ואמצעי אבטחה פיזית נוספים
+מקורות:
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (בקרות הרשאה)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (אבטחת רשת)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (מניעת התקפת משרתת רעה)
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### אילו ספקי תשתית אתם משתמשים בהם {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email משתמשת במספר מעבדי משנה לתשתית עם תעודות תאימות מקיפות.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+פרטים מלאים זמינים בדף התאימות שלנו ל-GDPR: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**מעבדי משנה עיקריים לתשתית:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| ספק              | מוסמך במסגרת פרטיות נתונים | דף תאימות GDPR                                                                         |
+| ---------------- | --------------------------- | -------------------------------------------------------------------------------------- |
+| **Cloudflare**   | ✅ כן                       | <https://www.cloudflare.com/trust-hub/gdpr/>                                           |
+| **DataPacket**   | ❌ לא                       | <https://www.datapacket.com/privacy-policy>                                            |
+| **DigitalOcean** | ❌ לא                       | <https://www.digitalocean.com/legal/gdpr>                                              |
+| **GitHub**       | ✅ כן                       | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**        | ❌ לא                       | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                        |
 
-**Detailed Certifications:**
+**תעודות מפורטות:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II (נבדק על ידי Schellman & Company LLC)
+* מוסמך ISO 27001 במספר מרכזי נתונים
+* תואם PCI-DSS
+* מוסמך CSA STAR Level 1
+* מוסמך APEC CBPR PRP
+* פרטים: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
+* מוסמך SOC 2+ (HIPAA)
+* תואם PCI Merchant
+* מוסמך CSA STAR Level 1
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* פרטים: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* תואם SOC 2 (יש לפנות ישירות ל-DataPacket לקבלת תעודה)
+* תשתית ברמת ארגון (מיקום דנבר)
+* הגנה מפני DDoS באמצעות ערימת אבטחת מידע Shield
+* תמיכה טכנית 24/7
+* רשת גלובלית ב-58 מרכזי נתונים
+* פרטים: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* מוסמך במסגרת פרטיות נתונים (EU-U.S., Swiss-U.S., ו-UK Extension)
+* אירוח קוד מקור, CI/CD, וניהול פרויקטים
+* הסכם הגנת נתונים של GitHub זמין
+* פרטים: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**מעבדי תשלום:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: מוסמך במסגרת פרטיות נתונים - <https://stripe.com/legal/privacy-center>
+* **PayPal**: לא מוסמך DPF - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### האם אתם מציעים הסכם עיבוד נתונים (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+כן, Forward Email מציעה הסכם עיבוד נתונים (DPA) מקיף שניתן לחתום עליו במסגרת הסכם הארגוני שלנו. עותק של ה-DPA שלנו זמין בכתובת: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**פרטי ה-DPA:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* מכסה תאימות ל-GDPR ולמסגרות EU-US/Swiss-US Privacy Shield
+* מתקבל אוטומטית עם הסכמתכם לתנאי השירות שלנו
+* אין צורך בחתימה נפרדת עבור DPA סטנדרטי
+* הסדרי DPA מותאמים זמינים דרך רישיון ארגוני
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**מסגרת תאימות GDPR:**
+ה-DPA שלנו מפרט את התאימות ל-GDPR וכן את דרישות העברת הנתונים הבינלאומיות. מידע מלא זמין בכתובת: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+ללקוחות ארגוניים הזקוקים לתנאי DPA מותאמים או להסדרים חוזיים ספציפיים, ניתן לטפל בכך דרך תוכנית **רישיון ארגוני (250$/חודש)** שלנו.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### כיצד אתם מטפלים בהודעות על פרצות אבטחה {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> ארכיטקטורת הידע האפסית של Forward Email מגבילה משמעותית את השפעת הפרצה.
+* **חשיפת נתונים מוגבלת**: אין גישה לתוכן דואר אלקטרוני מוצפן עקב ארכיטקטורת אפס-ידע  
+* **איסוף נתונים מינימלי**: רק מידע בסיסי על המנוי ורישומי IP מוגבלים לצרכי אבטחה  
+* **מסגרות תת-מעבדים**: DigitalOcean, GitHub ו-Vultr מנהלים נהלי תגובה לאירועים התואמים ל-GDPR  
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**מידע על נציג GDPR:**  
+Forward Email מינה נציגי GDPR בהתאם לסעיף 27:  
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
+**נציג האיחוד האירופי:**  
+Osano International Compliance Services Limited  
+ATTN: LFHC  
+3 Dublin Landings, North Wall Quay  
+Dublin 1, D01C4E0  
 
-**EU Representative:**
-Osano International Compliance Services Limited
-ATTN: LFHC
-3 Dublin Landings, North Wall Quay
-Dublin 1, D01C4E0
+**נציג בריטניה:**  
+Osano UK Compliance LTD  
+ATTN: LFHC  
+42-46 Fountain Street, Belfast  
+Antrim, BT1 - 5EF  
 
-**UK Representative:**
-Osano UK Compliance LTD
-ATTN: LFHC
-42-46 Fountain Street, Belfast
-Antrim, BT1 - 5EF
+ללקוחות ארגוניים הזקוקים ל-SLA ספציפיים להודעת הפרות, יש לדון בכך כחלק מהסכם **רישיון ארגוני**.  
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+מקורות:  
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59>  
+* <https://forwardemail.net/gdpr>  
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59>
-* <https://forwardemail.net/gdpr>
+### האם אתם מציעים סביבת בדיקה {#do-you-offer-a-test-environment}  
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+התיעוד הטכני של Forward Email אינו מתאר במפורש מצב סנדבוקס ייעודי. עם זאת, גישות בדיקה אפשריות כוללות:  
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+* **אפשרות אירוח עצמי**: יכולות אירוח עצמי מקיפות ליצירת סביבות בדיקה  
+* **ממשק API**: פוטנציאל לבדיקות תכנותיות של תצורות  
+* **קוד פתוח**: קוד פתוח ב-100% מאפשר ללקוחות לבחון את לוגיקת ההעברה  
+* **ריבוי דומיינים**: תמיכה בריבוי דומיינים עשויה לאפשר יצירת דומיין בדיקה  
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+ללקוחות ארגוניים הזקוקים ליכולות סנדבוקס פורמליות, יש לדון בכך כחלק מהסדר **רישיון ארגוני**.  
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+מקור: <https://github.com/forwardemail/forwardemail.net> (פרטי סביבת פיתוח)  
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+### האם אתם מספקים כלי ניטור והתראות {#do-you-provide-monitoring-and-alerting-tools}  
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+Forward Email מספק ניטור בזמן אמת עם מגבלות מסוימות:  
 
-Forward Email provides real-time monitoring with some limitations:
+**זמין:**  
 
-**Available:**
+* **ניטור מסירה בזמן אמת**: מדדי ביצועים גלויים לציבור עבור ספקי דואר אלקטרוני מרכזיים  
+* **התראות אוטומטיות**: צוות ההנדסה מקבל התראה כאשר זמני המסירה חורגים מ-10 שניות  
+* **ניטור שקוף**: מערכות ניטור בקוד פתוח ב-100%  
+* **ניטור תשתיות**: זיהוי חריגות אוטומטי ורישום ביקורת מקיף  
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+**מגבלות:**  
 
-**Limitations:**
+* אינטגרציות webhook או התראות סטטוס מסירה מבוססות API ללקוחות אינן מתועדות במפורש  
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+ללקוחות ארגוניים הזקוקים ל-webhooks מפורטים לסטטוס מסירה או אינטגרציות ניטור מותאמות, ייתכן שיכולות אלו זמינות במסגרת הסדרי **רישיון ארגוני**.  
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+מקורות:  
 
-Sources:
+* <https://forwardemail.net> (תצוגת ניטור בזמן אמת)  
+* <https://github.com/forwardemail/forwardemail.net> (מימוש ניטור)  
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+### כיצד אתם מבטיחים זמינות גבוהה {#how-do-you-ensure-high-availability}  
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+> \[!IMPORTANT]  
+> Forward Email מיישם רדונדנס מקיף על פני מספר ספקי תשתית.  
 
-> \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+* **תשתית מבוזרת**: מספר ספקים (DigitalOcean, Vultr, DataPacket) באזורים גאוגרפיים שונים  
+* **איזון עומסים גאוגרפי**: איזון עומסים מבוסס Cloudflare עם מיקום גאוגרפי וכשל אוטומטי  
+* **קנה מידה אוטומטי**: התאמת משאבים דינמית בהתאם לביקוש  
+* **הגנה רב-שכבתית מפני DDoS**: באמצעות מערכת Shield של DataPacket ו-Cloudflare  
+* **רדונדנס של שרתים**: מספר שרתים לכל אזור עם כשל אוטומטי  
+* **שכפול מסדי נתונים**: סינכרון נתונים בזמן אמת בין מיקומים מרובים  
+* **ניטור והתראות**: ניטור 24/7 עם תגובה אוטומטית לאירועים  
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+**התחייבות לזמינות**: זמינות שירות של 99.9%+ עם ניטור שקוף זמין ב-<https://forwardemail.net>  
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+מקורות:  
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=18>  
+* <https://www.datapacket.com/datacenters/denver>  
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver>
+### האם אתם עומדים בדרישות סעיף 889 של חוק הסמכת ההגנה הלאומית (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}  
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+> \[!IMPORTANT]  
+> Forward Email עומד במלואו בדרישות סעיף 889 באמצעות בחירה זהירה של שותפי תשתית.  
 
-> \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+כן, Forward Email הוא **תואם לסעיף 889**. סעיף 889 של חוק הסמכת ההגנה הלאומית (NDAA) אוסר על סוכנויות ממשלתיות להשתמש או להתקשר עם גופים המשתמשים בציוד תקשורת ומעקב וידאו מחברות מסוימות (Huawei, ZTE, Hikvision, Dahua, ו-Hytera).
+**כיצד Forward Email משיגה תאימות לסעיף 889:**
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכזיים, שאף אחד מהם אינו משתמש בציוד האסור לפי סעיף 889:
 
-**How Forward Email Achieves Section 889 Compliance:**
+1. **Cloudflare**: השותף הראשי שלנו לשירותי רשת ואבטחת דואר אלקטרוני  
+2. **DataPacket**: הספק הראשי שלנו לתשתית שרתים (המשתמש אך ורק בציוד של Arista Networks ו-Cisco)  
+3. **ספקי גיבוי**: ספקי הגיבוי שלנו Digital Ocean ו-Vultr מאושרים בנוסף בכתב ככפופים לסעיף 889.
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+**התחייבות Cloudflare**: Cloudflare מצהירה במפורש בקוד ההתנהגות שלה כלפי צדדים שלישיים כי אינה משתמשת בציוד תקשורת, מוצרי פיקוח וידאו או שירותים של ישויות האסורות לפי סעיף 889.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**מקרה שימוש ממשלתי**: תאימותנו לסעיף 889 אושרה כאשר **האקדמיה הימית של ארה"ב** בחרה ב-Forward Email לצרכי העברת דואר אלקטרוני מאובטחת, ודורשת תיעוד של תקני התאימות הפדרליים שלנו.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+לפרטים מלאים על מסגרת התאימות הממשלתית שלנו, כולל תקנות פדרליות רחבות יותר, קראו את מחקר המקרה המקיף שלנו: [שירות דואר אלקטרוני ממשלתי פדרלי תואם סעיף 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+## פרטי מערכת וטכניים {#system-and-technical-details}
 
-## System and Technical Details {#system-and-technical-details}
+### האם אתם מאחסנים מיילים ותוכנם {#do-you-store-emails-and-their-contents}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+לא, איננו כותבים לדיסק או מאחסנים לוגים – למעט [שגיאות](#do-you-store-error-logs) ו-[SMTP יוצא](#do-you-support-sending-email-with-smtp) (ראו את [מדיניות הפרטיות שלנו](/privacy)).
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+הכל מתבצע בזיכרון ו-[קוד המקור שלנו ב-GitHub](https://github.com/forwardemail).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+### כיצד פועל מערכת העברת הדואר האלקטרוני שלכם {#how-does-your-email-forwarding-system-work}
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+דואר אלקטרוני מתבסס על [פרוטוקול SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). פרוטוקול זה מורכב מפקודות שנשלחות לשרת (שברוב המקרים פועל על פורט 25). יש חיבור ראשוני, לאחריו השולח מציין מי השולח ("MAIL FROM"), אחר כך לאן הדואר מיועד ("RCPT TO"), ולבסוף את הכותרות וגוף המייל עצמו ("DATA"). זרימת מערכת העברת הדואר שלנו מתוארת ביחס לכל פקודת SMTP להלן:
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+* חיבור ראשוני (ללא שם פקודה, לדוגמה `telnet example.com 25`) - זהו החיבור הראשוני. אנו בודקים שולחים שאינם ברשימת ההרשאה שלנו [allowlist](#do-you-have-an-allowlist) מול רשימת הדחייה שלנו [denylist](#do-you-have-a-denylist). לבסוף, אם שולח אינו ברשימת ההרשאה, אנו בודקים אם הוא נמצא ב-[greylist](#do-you-have-a-greylist).
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* `HELO` - מציין ברכה לזיהוי שם המארח המלא (FQDN), כתובת ה-IP או שם מטפל הדואר של השולח. ערך זה יכול להיות מזויף, לכן איננו מסתמכים עליו ומשתמשים במקום זאת בחיפוש הפוך של שם המארח לפי כתובת ה-IP של החיבור.
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `MAIL FROM` - מציין את כתובת השולח במעטפה של המייל. אם מוזן ערך, הוא חייב להיות כתובת דואר אלקטרוני תקנית לפי RFC 5322. ערכים ריקים מותרים. אנו [בודקים כאן עבור backscatter](#how-do-you-protect-against-backscatter), וגם בודקים את MAIL FROM מול רשימת הדחייה שלנו [denylist](#do-you-have-a-denylist). לבסוף, אנו בודקים שולחים שאינם ברשימת ההרשאה עבור הגבלת קצב (ראו את הסעיף על [הגבלת קצב](#do-you-have-rate-limiting) ו-[רשימת ההרשאה](#do-you-have-an-allowlist) למידע נוסף).
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `RCPT TO` - מציין את הנמען/ים של המייל. אלו חייבים להיות כתובות דואר אלקטרוני תקניות לפי RFC 5322. אנו מאפשרים עד 50 נמענים במעטפה לכל הודעה (זה שונה מכותרת "To" במייל). אנו גם בודקים כאן כתובת תקינה של [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") להגנה מפני זיופים עם שם הדומיין של SRS שלנו.
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `DATA` - זהו החלק המרכזי בשירות שלנו שמעבד מייל. ראו את הסעיף [כיצד אתם מעבדים מייל להעברה](#how-do-you-process-an-email-for-forwarding) למידע נוסף.
+### איך אתם מעבדים אימייל להעברה {#how-do-you-process-an-email-for-forwarding}
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+קטע זה מתאר את התהליך שלנו הקשור לפקודת פרוטוקול SMTP `DATA` בקטע [איך מערכת העברת האימיילים שלכם עובדת](#how-does-your-email-forwarding-system-work) למעלה – זה איך אנו מעבדים את הכותרות, גוף ההודעה, האבטחה, קובעים לאן יש להעביר את ההודעה, ואיך אנו מטפלים בחיבורים.
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+1. אם ההודעה חורגת מהגודל המקסימלי של 50 מגה-בייט, היא נדחית עם קוד שגיאה 552.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+2. אם ההודעה לא כללה כותרת "From", או אם כל אחד מהערכים בכותרת "From" לא היו כתובות אימייל תקניות לפי RFC 5322, היא נדחית עם קוד שגיאה 550.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+3. אם ההודעה כללה יותר מ-25 כותרות "Received", נקבע שהיא נתקעה בלולאת הפניה, והיא נדחית עם קוד שגיאה 550.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+4. באמצעות טביעת האצבע של האימייל (ראה הקטע על [טביעת אצבע](#how-do-you-determine-an-email-fingerprint)), נבדוק אם ההודעה נשלחה מחדש יותר מ-5 ימים (מה שמתאים להתנהגות ברירת המחדל של postfix [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), ואם כן, היא תידחה עם קוד שגיאה 550.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+5. אנו מאחסנים בזיכרון את התוצאות מסריקת האימייל באמצעות [Spam Scanner](https://spamscanner.net).
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+6. אם היו תוצאות כלשהן מסריקות Spam Scanner, ההודעה נדחית עם קוד שגיאה 554. תוצאות אלו כוללות רק את מבחן GTUBE בזמן כתיבת שורות אלו. ראו <https://spamassassin.apache.org/gtube/> למידע נוסף.
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+7. נוסיף את הכותרות הבאות להודעה לצורך איתור באגים ומניעת שימוש לרעה:
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+   * `Received` - נוסיף את כותרת Received הסטנדרטית עם כתובת ה-IP ומארח המקור, סוג ההעברה, מידע על חיבור TLS, תאריך/שעה, ונמען.
+   * `X-Original-To` - הנמען המקורי של ההודעה:
+     * זה שימושי לקביעת היכן האימייל נמסר במקור (בנוסף לכותרת "Received").
+     * נוסף על בסיס כל נמען בזמן IMAP ו/או העברה מוסווית (כדי להגן על הפרטיות).
+   * `X-Forward-Email-Website` - מכיל קישור לאתר שלנו בכתובת <https://forwardemail.net>
+   * `X-Forward-Email-Version` - גרסת [SemVer](https://semver.org/) הנוכחית מתוך `package.json` של קוד המקור שלנו.
+   * `X-Forward-Email-Session-ID` - ערך מזהה סשן המשמש לצורכי איתור באגים (חל רק בסביבות לא ייצור).
+   * `X-Forward-Email-Sender` - רשימה מופרדת בפסיקים הכוללת את כתובת MAIL FROM המקורית (אם לא הייתה ריקה), את שם המארח ההפוך PTR של הלקוח (אם קיים), ואת כתובת ה-IP של השולח.
+   * `X-Forward-Email-ID` - חל רק על SMTP יוצא ומתאים למזהה האימייל המאוחסן ב-My Account → Emails
+   * `X-Report-Abuse` - עם הערך `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - עם הערך `abuse@forwardemail.net`.
+   * `X-Complaints-To` - עם הערך `abuse@forwardemail.net`.
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+8. לאחר מכן נבדוק את ההודעה עבור [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), ו-[DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+   * אם ההודעה נכשלה ב-DMARC והדומיין כלל מדיניות דחייה (למשל `p=reject` [הייתה במדיניות DMARC](https://wikipedia.org/wiki/DMARC)), היא נדחית עם קוד שגיאה 550. בדרך כלל מדיניות DMARC לדומיין נמצאת ברשומת <strong class="notranslate">TXT</strong> של תת-הדומיין `_dmarc` (למשל `dig _dmarc.example.com txt`).
+   * אם ההודעה נכשלה ב-SPF והדומיין כלל מדיניות כישלון מוחלט (למשל `-all` במדיניות SPF במקום `~all` או ללא מדיניות כלל), היא נדחית עם קוד שגיאה 550. בדרך כלל מדיניות SPF לדומיין נמצאת ברשומת <strong class="notranslate">TXT</strong> של הדומיין הראשי (למשל `dig example.com txt`). ראו קטע זה למידע נוסף על [שליחת דואר בשם Gmail](#can-i-send-mail-as-in-gmail-with-this) בנוגע ל-SPF.
+9. כעת אנו מעבדים את הנמענים של ההודעה כפי שנאספו מפקודת `RCPT TO` בסעיף [איך מערכת ההעברה של האימייל שלך עובדת](#how-does-your-email-forwarding-system-work) למעלה. עבור כל נממען, אנו מבצעים את הפעולות הבאות:
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * אנו מחפשים את רשומות <strong class="notranslate">TXT</strong> של שם הדומיין (החלק אחרי הסימן `@`, לדוגמה `example.com` אם כתובת האימייל הייתה `test@example.com`). לדוגמה, אם הדומיין הוא `example.com` אנו מבצעים חיפוש DNS כמו `dig example.com txt`.
+   * אנו מנתחים את כל רשומות ה-<strong class="notranslate">TXT</strong> שמתחילות ב-`forward-email=` (תוכניות חינמיות) או `forward-email-site-verification=` (תוכניות בתשלום). שים לב שאנו מנתחים את שתיהן, כדי לעבד אימיילים בזמן שמשתמש משדרג או מוריד תוכניות.
+   * מתוך רשומות ה-<strong class="notranslate">TXT</strong> המנותחות, אנו עוברים עליהן כדי לחלץ את תצורת ההעברה (כמתואר בסעיף [איך להתחיל ולהגדיר העברת אימייל](#how-do-i-get-started-and-set-up-email-forwarding) למעלה). שים לב שאנו תומכים רק בערך אחד של `forward-email-site-verification=`, ואם מסופקים יותר מאחד, תתרחש שגיאת 550 והשולח יקבל החזרה עבור נמען זה.
+   * באופן רקורסיבי אנו עוברים על תצורת ההעברה שחולצה כדי לקבוע העברה גלובלית, העברה מבוססת ביטויים רגולריים, וכל תצורות ההעברה הנתמכות האחרות – שהן כעת ידועות כ"כתובות העברה" שלנו.
+   * עבור כל כתובת העברה, אנו תומכים בחיפוש רקורסיבי אחד (שיתחיל את סדרת הפעולות הזו מחדש על הכתובת הנתונה). אם נמצא התאמה רקורסיבית, אז התוצאה ההורה תוסר מכתובות ההעברה, והילדים יתווספו.
+   * כתובות ההעברה מנותחות לייחודיות (כיוון שאיננו רוצים לשלוח כפילויות לכתובת אחת או ליצור חיבורים מיותרים של לקוח SMTP).
+   * עבור כל כתובת העברה, אנו מחפשים את שם הדומיין שלה מול נקודת הקצה של ה-API שלנו `/v1/max-forwarded-addresses` (כדי לקבוע לכמה כתובות הדומיין מורשה להעביר אימייל לכל כינוי, לדוגמה 10 כברירת מחדל – ראה את הסעיף על [מגבלה מקסימלית על העברה לכל כינוי](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). אם מגבלה זו מופרזת, תתרחש שגיאת 550 והשולח יקבל החזרה עבור נמען זה.
+   * אנו מחפשים את ההגדרות של הנמען המקורי מול נקודת הקצה של ה-API שלנו `/v1/settings`, התומכת בחיפוש עבור משתמשים בתשלום (עם גיבוי למשתמשים חינמיים). זה מחזיר אובייקט תצורה עבור הגדרות מתקדמות של `port` (מספר, לדוגמה `25`), `has_adult_content_protection` (בוליאני), `has_phishing_protection` (בוליאני), `has_executable_protection` (בוליאני), ו-`has_virus_protection` (בוליאני).
+   * בהתבסס על הגדרות אלו, אנו בודקים את תוצאות סורק הספאם ואם מתרחשות שגיאות, ההודעה נדחית עם קוד שגיאה 554 (לדוגמה אם `has_virus_protection` מופעל, נבדוק את תוצאות סורק הספאם עבור וירוסים). שים לב שכל משתמשי התוכנית החינמית יהיו רשומים לבדיקה נגד תוכן למבוגרים, פישינג, קבצים ניתנים להרצה ווירוסים. כברירת מחדל, כל משתמשי התוכנית בתשלום רשומים גם כן, אך תצורה זו ניתנת לשינוי בדף ההגדרות של דומיין בלוח הבקרה של Forward Email).
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+10. עבור כל כתובות ההעברה של כל נמען שעובד, אנו מבצעים את הפעולות הבאות:
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+    * הכתובת נבדקת מול [רשימת הדחייה](#do-you-have-a-denylist), ואם היא מופיעה שם, תתרחש שגיאת 421 (מציין לשולח לנסות שוב מאוחר יותר).
+    * אם הכתובת היא webhook, אנו מגדירים בוליאני עבור פעולות עתידיות (ראה למטה – אנו מקבצים יחד webhooks דומים כדי לבצע בקשת POST אחת במקום מספר בקשות למשלוח).
+    * אם הכתובת היא כתובת אימייל, אנו מנתחים את המארח עבור פעולות עתידיות (ראה למטה – אנו מקבצים יחד מארחים דומים כדי לבצע חיבור אחד במקום מספר חיבורים נפרדים למשלוח).
+11. אם אין נמענים ואין החזרות, אז אנו מגיבים עם שגיאת 550 של "נמענים לא חוקיים".
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+12. אם יש נמענים, אז אנו עוברים עליהם (מקובצים יחד לפי אותו מארח) ומספקים את המיילים. ראה את הסעיף [כיצד אתם מטפלים בבעיות מסירת דואר אלקטרוני](#how-do-you-handle-email-delivery-issues) למטה לקבלת תובנות נוספות.
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+    * אם מתרחשות שגיאות בעת שליחת המיילים, אז נשמור אותן בזיכרון לעיבוד מאוחר יותר.
+    * ניקח את קוד השגיאה הנמוך ביותר (אם יש) משיגור המיילים – ונשתמש בו כקוד התגובה לפקודת `DATA`. משמעות הדבר היא שמיילים שלא נמסרו ינסו להישלח שוב בדרך כלל על ידי השולח המקורי, בעוד שמיילים שכבר נמסרו לא יישלחו שוב בפעם הבאה שההודעה תישלח (כיוון שאנו משתמשים ב-[Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * אם לא התרחשה אף שגיאה, אז נשלח קוד סטטוס SMTP 250 מוצלח.
+    * החזרה (bounce) מוגדרת כהחזרת מסירה כלשהי שגורמת לקוד סטטוס שהוא >= 500 (כשלונות קבועים).
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+13. אם לא התרחשה החזרה (כשלונות קבועים), אז נחזיר קוד סטטוס SMTP של קוד השגיאה הנמוך ביותר מכשלונות לא קבועים (או קוד סטטוס 250 מוצלח אם לא היו כאלה).
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+14. אם התרחשה החזרה, אז נשלח מיילי החזרה ברקע לאחר החזרת הקוד הנמוך ביותר מכל קודי השגיאה לשולח. עם זאת, אם קוד השגיאה הנמוך ביותר הוא >= 500, אז לא נשלח מיילי החזרה. זאת מכיוון שאם היינו עושים זאת, השולחים היו מקבלים מייל החזרה כפול (למשל אחד מ-MTA היוצא שלהם, כמו Gmail – וגם אחד מאיתנו). ראה את הסעיף על [כיצד אתם מגנים מפני backscatter](#how-do-you-protect-against-backscatter) למטה לקבלת תובנות נוספות.
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+### כיצד אתם מטפלים בבעיות מסירת דואר אלקטרוני {#how-do-you-handle-email-delivery-issues}
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+שים לב שנבצע "Friendly-From" רק אם מדיניות DMARC של השולח לא עברה ו- DKIM לא היה מיושר עם כותרת "From". משמעות הדבר היא שנשנה את כותרת "From" בהודעה, נגדיר "X-Original-From", ונגדיר גם "Reply-To" אם לא היה מוגדר כבר. כמו כן, נסגור מחדש את חותם ARC על ההודעה לאחר שינוי הכותרות הללו.
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+אנו גם משתמשים בניתוח חכם של הודעות שגיאה בכל רמות המערכת שלנו – בקוד שלנו, בבקשות DNS, פנימיות Node.js, בקשות HTTP (למשל 408, 413, ו-429 ממופים לקוד תגובת SMTP 421 אם הנמען הוא webhook), ותשובות שרת הדואר (למשל תגובות עם "defer" או "slowdown" ינסו שוב כ-421).
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+הלוגיקה שלנו פשוטה מאוד והיא גם תנסה שוב במקרה של שגיאות SSL/TLS, בעיות חיבור ועוד. המטרה היא למקסם את המסירה לכל הנמענים עבור תצורת העברה.
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+אם הנמען הוא webhook, אז נאפשר זמן המתנה של 60 שניות לסיום הבקשה עם עד 3 ניסיונות חוזרים (סה"כ 4 בקשות לפני כישלון). שים לב שאנו מפענחים נכון את קודי השגיאה 408, 413, ו-429 וממפים אותם לקוד תגובת SMTP 421.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+אחרת, אם הנמען הוא כתובת דואר אלקטרוני, ננסה לשלוח את המייל עם TLS אופורטוניסטי (ננסה להשתמש ב-STARTTLS אם זמין בשרת הדואר של הנמען). אם מתרחשת שגיאת SSL/TLS בעת ניסיון השליחה, ננסה לשלוח את המייל ללא TLS (ללא שימוש ב-STARTTLS).
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+אם מתרחשות שגיאות DNS או חיבור, נחזיר לפקודת `DATA` קוד תגובת SMTP 421, אחרת אם יש שגיאות ברמה >= 500, יישלחו החזרות.
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+אם נגלה ששרת דואר שאנו מנסים לספק אליו חוסם אחד או יותר מכתובות ה-IP של שרתי הדואר שלנו (למשל באמצעות טכנולוגיה כלשהי למניעת ספאם), נשלח קוד תגובת SMTP 421 לשולח כדי שינסה שוב מאוחר יותר (ואנו נקבל התראה על הבעיה כדי שנוכל לנסות לפתור אותה לפני הניסיון הבא).
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+### כיצד אתם מטפלים בכתובות ה-IP שלכם כאשר הן נחסמות {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+אנו עוקבים באופן שגרתי אחרי כל רשימות הסירוב המרכזיות של DNS ואם כתובות ה-IP של שרתי החלפת הדואר ("MX") שלנו מופיעות ברשימת סירוב מרכזית, נסיר אותן מרשומת ה-DNS A הרלוונטית בסיבוב אם אפשרי עד שהבעיה תיפתר.
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+בעת כתיבת שורות אלו, אנו מופיעים גם בכמה רשימות אישור DNS, ואנו מתייחסים ברצינות למעקב אחרי רשימות סירוב. אם אתם מבחינים בבעיות לפני שנוכל לפתור אותן, אנא הודיעו לנו בכתב בכתובת <support@forwardemail.net>.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+כתובות ה-IP שלנו זמינות לציבור, [ראו את הסעיף הזה למטה לקבלת תובנות נוספות](#what-are-your-servers-ip-addresses).
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+### מהן כתובות הפוסטמאסטר {#what-are-postmaster-addresses}
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
-
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+כדי למנוע החזרות שגויות ושליחת הודעות מענה חופשה לתיבות דואר לא מנוטרות או לא קיימות, אנו מתחזקים רשימה של שמות משתמש בסגנון mailer-daemon:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4119,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [וכל כתובת no-reply](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+ראו [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) לקבלת תובנות נוספות על האופן שבו רשימות כאלה משמשות ליצירת מערכות דואר אלקטרוני יעילות.
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### מהן כתובות no-reply {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+שמות משתמש בדואר אלקטרוני השווים לאחד מהבאים (בלי תלות באותיות גדולות או קטנות) נחשבים לכתובות no-reply:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4146,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+רשימה זו מתוחזקת [כפרויקט קוד פתוח ב-GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### מהן כתובות ה-IP של השרת שלך {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+אנו מפרסמים את כתובות ה-IP שלנו בכתובת <https://forwardemail.net/ips>.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### האם יש לכם רשימת אישור {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+כן, יש לנו [רשימת סיומות שמות דומיין](#what-domain-name-extensions-are-allowlisted-by-default) שמאושרות כברירת מחדל ורשימת אישור דינמית, מטמון ומסתובבת המבוססת על [קריטריונים מחמירים](#what-is-your-allowlist-criteria).
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+כל הדומיינים, האימיילים וכתובות ה-IP של לקוחות משלמים נבדקים אוטומטית מול רשימת הסירוב שלנו כל שעה – מה שמתריע למנהלים שיכולים להתערב ידנית במידת הצורך.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+בנוסף, אם אחד מהדומיינים שלך או כתובות האימייל שלו מופיעים ברשימת סירוב (למשל בשל שליחת ספאם, וירוסים או עקב התקפות התחזות) – מנהלי הדומיין (אתה) ומנהלי הצוות שלנו יקבלו הודעה בדואר אלקטרוני מידית. אנו ממליצים בחום שתגדיר [DMARC](#how-do-i-set-up-dmarc-for-forward-email) כדי למנוע זאת.
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### אילו סיומות שמות דומיין מאושרות כברירת מחדל {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+סיומות שמות הדומיין הבאות נחשבות לאושרו כברירת מחדל (לא משנה אם הן ברשימת הפופולריות של Umbrella או לא):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4373,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+בנוסף, [תחומי על ברנדיים ותאגידיים](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) אלו מותרים כברירת מחדל (למשל `apple` עבור `applecard.apple` עבור דפי חשבון בנק של Apple Card):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4436,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4798,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+נכון ל-18 במרץ 2025 הוספנו גם את הטריטוריות הצרפתיות שמעבר לים לרשימה זו ([לפי בקשת GitHub זו](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4814,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+נכון ל-8 ביולי 2025 הוספנו את המדינות הספציפיות לאירופה הבאות:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4834,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+באוקטובר 2025 הוספנו גם את <code class="notranslate">cz</code> (הרפובליקה הצ'כית) בעקבות ביקוש.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+לא כללנו במפורש את `ru` ו-`ua` עקב פעילות ספאם גבוהה.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### מה הקריטריונים שלך לרשימת ההרשאות {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+יש לנו רשימה סטטית של [סיומות שמות דומיין שמורשות כברירת מחדל](#what-domain-name-extensions-are-allowlisted-by-default) – ואנחנו גם מתחזקים רשימת הרשאות דינמית, מטמון מתגלגל, המבוססת על הקריטריונים המחמירים הבאים:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* דומיין השולח הראשי חייב להיות של [סיומת שם דומיין התואמת לרשימה שאנו מציעים בתוכנית החינמית שלנו](#what-domain-name-extensions-can-be-used-for-free) (עם התוספת של `biz` ו-`info`). אנו כוללים גם התאמות חלקיות ל-`edu`, `gov`, ו-`mil`, כגון `xyz.gov.au` ו-`xyz.edu.au`.
+* דומיין השולח הראשי חייב להיות בין 100,000 הדומיינים הראשיים הייחודיים המובילים לפי תוצאות מנותחות מרשימת הפופולריות של [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* דומיין השולח הראשי חייב להיות בין 50,000 התוצאות המובילות של דומיינים ראשיים ייחודיים המופיעים לפחות ב-4 מתוך 7 הימים האחרונים של UPL (~50%+).
+* דומיין השולח הראשי לא חייב להיות [מסווג](https://radar.cloudflare.com/categorization-feedback/) כתוכן למבוגרים או תוכנת זדון על ידי Cloudflare.
+* לדומיין השולח הראשי חייבים להיות רשומות A או MX מוגדרות.
+* לדומיין השולח הראשי חייבות להיות לפחות אחת מהרשומות הבאות: רשומת A, רשומת MX, רשומת DMARC עם `p=reject` או `p=quarantine`, או רשומת SPF עם מאפיין `-all` או `~all`.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+אם הקריטריונים הללו מתקיימים, דומיין השולח הראשי יישמר במטמון למשך 7 ימים. שים לב שהמשימה האוטומטית שלנו רצה מדי יום – לכן זוהי רשימת הרשאות מתגלגלת שמתעדכנת מדי יום.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+המשימה האוטומטית שלנו תוריד את 7 הימים הקודמים של UPL בזיכרון, תחלץ אותם, ואז תנתח בזיכרון לפי הקריטריונים המחמירים שלמעלה.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+דומיינים פופולריים בזמן כתיבת שורות אלו כגון Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, ועוד – כלולים כמובן.
+אם אתה שולח שאינו ברשימת ההרשאה שלנו, אז בפעם הראשונה ששם הדומיין המלא (FQDN) או כתובת ה-IP שלך ישלחו אימייל, תיחסם [rate limited](#do-you-have-rate-limiting) ו-[greylisted](#do-you-have-a-greylist). שים לב שזו פרקטיקה סטנדרטית שהתקבלה כתקן אימייל. רוב לקוחות שרתי האימייל ינסו לשלוח מחדש אם הם מקבלים שגיאת הגבלת קצב או רשימת אפור (למשל קוד סטטוס שגיאה 421 או ברמת 4xx).
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**שים לב כי שולחים ספציפיים כגון `a@gmail.com`, `b@xyz.edu`, ו-`c@gov.au` עדיין יכולים להיות [denylisted](#do-you-have-a-denylist)** (למשל אם אנו מזהים אוטומטית ספאם, פישינג או תוכנות זדוניות מהשולחים הללו).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### אילו סיומות שמות דומיין ניתן להשתמש בחינם {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+מיום 31 במרץ 2023 אכפנו כלל ספאם כולל חדש כדי להגן על המשתמשים והשירות שלנו.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+הכלל החדש מאפשר שימוש רק בסיומות שמות הדומיין הבאות בתכנית החינמית שלנו:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4982,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### האם יש לכם רשימת אפור {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+כן, יש לנו מדיניות [רשימת אפור למיילים](https://en.wikipedia.org/wiki/Greylisting_\(email\)) מאוד רפה. רשימת האפור חלה רק על שולחים שאינם ברשימת ההרשאה שלנו ונשמרת במטמון שלנו למשך 30 יום.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+לכל שולח חדש, אנו מאחסנים מפתח במסד הנתונים Redis שלנו למשך 30 יום עם ערך שמוגדר לזמן ההגעה הראשוני של הבקשה הראשונה שלו. לאחר מכן אנו דוחים את המייל שלו עם קוד סטטוס retry 450 ומאפשרים לו לעבור רק לאחר שעברו 5 דקות.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+אם הוא המתין בהצלחה 5 דקות מזמן ההגעה הראשוני הזה, אז המיילים שלו יתקבלו ולא יקבלו את קוד הסטטוס 450 הזה.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+המפתח מורכב או מדומיין השורש המלא (FQDN) או מכתובת ה-IP של השולח. משמעות הדבר היא שכל תת-דומיין שעובר את רשימת האפור גם יעבור עבור דומיין השורש, ולהפך (זו המשמעות של מדיניות "רפה מאוד").
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+לדוגמה, אם מייל מגיע מ-`test.example.com` לפני שנראה מייל מ-`example.com`, אז כל מייל מ-`test.example.com` ו/או `example.com` יצטרך להמתין 5 דקות מזמן ההגעה הראשוני של החיבור. איננו גורמים ל-`test.example.com` ו-`example.com` להמתין כל אחד את תקופת 5 הדקות שלו (מדיניות רשימת האפור שלנו חלה ברמת דומיין השורש).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+שימו לב שרשימת האפור אינה חלה על שולחים שנמצאים ברשימת ההרשאה שלנו [allowlist](#do-you-have-an-allowlist) (למשל Meta, Amazon, Netflix, Google, Microsoft בזמן כתיבת שורות אלו).
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### האם יש לכם רשימת חסימה {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+כן, אנו מפעילים רשימת חסימה משלנו ומעדכנים אותה אוטומטית בזמן אמת ובאופן ידני בהתבסס על פעילות ספאם ופעילות זדונית שזוהתה.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+אנו גם מושכים את כל כתובות ה-IP מרשימת החסימה UCEPROTECT Level 1 בכתובת <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> כל שעה ומזינים אותה לרשימת החסימה שלנו עם תוקף של 7 ימים.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+שולחים שנמצאים ברשימת החסימה יקבלו קוד שגיאה 421 (מציין לשולח לנסות שוב מאוחר יותר) אם הם [אינם ברשימת ההרשאה](#do-you-have-an-allowlist).
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+על ידי שימוש בקוד סטטוס 421 במקום 554, ניתן להפחית חיובים שגויים פוטנציאליים בזמן אמת ואז ההודעה יכולה להימסר בהצלחה בניסיון הבא.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**זה מתוכנן שונה משירותי דואר אחרים**, שבהם אם אתה נמצא ברשימת חסימה, מתרחשת תקלה קשה וקבועה. לעיתים קשה לבקש מהשולחים לנסות שוב הודעות (במיוחד מארגונים גדולים), ולכן גישה זו נותנת בערך 5 ימים מהניסיון הראשוני של המייל לשולח, לנמען או לנו להתערב ולהקל על הבעיה (על ידי בקשת הסרת חסימה).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+כל בקשות הסרת חסימה מנוטרות בזמן אמת על ידי מנהלים (למשל כדי שחיובים שגויים חוזרים יוכלו להיות מורשים לצמיתות על ידי מנהלים).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+בקשות להסרת חסימה ניתן לבקש בכתובת <https://forwardemail.net/denylist>. משתמשים בתשלום מקבלים את בקשות ההסרה שלהם מעובדות מיידית, בעוד שמשתמשים ללא תשלום צריכים להמתין שמנהלים יעבדו את בקשתם.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+שולחים שזוהו כמשדרים ספאם או תוכן וירוס יתווספו לרשימת החסימה בגישה הבאה:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. ה-[טביעת האצבע הראשונית של ההודעה](#how-do-you-determine-an-email-fingerprint) מוכנסת לרשימת האפור עם זיהוי ספאם או חסימה מרשימת חסימה של שולח "מהימן" (למשל `gmail.com`, `microsoft.com`, `apple.com`).
+   * אם השולח היה ברשימת ההרשאה, ההודעה מוכנסת לרשימת האפור לשעה אחת.
+   * אם השולח אינו ברשימת ההרשאה, ההודעה מוכנסת לרשימת האפור ל-6 שעות.
+2. אנו מפענחים מפתחות לרשימת החסימה מתוך מידע מהשולח ומההודעה, ולכל אחד מהמפתחות האלה אנו יוצרים (אם לא קיים כבר) מונה, מגדילים אותו ב-1 ושומרים במטמון ל-24 שעות.
+   * עבור שולחים ברשימת ההרשאה:
+     * מוסיפים מפתח לכתובת המייל של "MAIL FROM" במעטפה אם עברה SPF או ללא SPF, ולא הייתה [כתובת פוסטמסטר](#what-are-postmaster-addresses) או [כתובת no-reply](#what-are-no-reply-addresses).
+     * אם כותרת "From" הייתה ברשימת ההרשאה, מוסיפים מפתח לכתובת המייל בכותרת "From" אם עברה SPF או עברה ו-DKIM מיושר.
+     * אם כותרת "From" לא הייתה ברשימת ההרשאה, מוסיפים מפתח לכתובת המייל בכותרת "From" ולשם הדומיין המנותח השורש שלה.
+   * עבור שולחים שאינם ברשימת ההרשאה:
+     * מוסיפים מפתח לכתובת המייל של "MAIL FROM" במעטפה אם עברה SPF.
+     * אם כותרת "From" הייתה ברשימת ההרשאה, מוסיפים מפתח לכתובת המייל בכותרת "From" אם עברה SPF או עברה ו-DKIM מיושר.
+     * אם כותרת "From" לא הייתה ברשימת ההרשאה, מוסיפים מפתח לכתובת המייל בכותרת "From" ולשם הדומיין המנותח השורש שלה.
+     * מוסיפים מפתח לכתובת ה-IP המרוחקת של השולח.
+     * מוסיפים מפתח לשם המארח שנפתר על ידי לקוח באמצעות חיפוש הפוך מכתובת ה-IP של השולח (אם יש).
+     * מוסיפים מפתח לדומיין השורש של שם המארח שנפתר על ידי הלקוח (אם יש, ואם שונה משם המארח שנפתר).
+3. אם המונה מגיע ל-5 עבור שולח ומפתח שאינם ברשימת ההרשאה, אנו מוסיפים את המפתח לרשימת החסימה ל-30 יום ונשלח מייל לצוות התלונות שלנו. מספרים אלה עשויים להשתנות ועדכונים ישתקפו כאן ככל שנעקוב אחר התלונות.
+4. אם המונה מגיע ל-10 עבור שולח ומפתח ברשימת ההרשאה, אנו מוסיפים את המפתח לרשימת החסימה ל-7 ימים ונשלח מייל לצוות התלונות שלנו. מספרים אלה עשויים להשתנות ועדכונים ישתקפו כאן ככל שנעקוב אחר התלונות.
+> **הערה:** בעתיד הקרוב נציג ניטור מוניטין. ניטור מוניטין יחושב במקום זאת מתי יש להכניס שולח לרשימה שחורה בהתבסס על סף אחוזים (בניגוד למונה פשוט כפי שצויין לעיל).
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### האם יש לכם הגבלת קצב {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+הגבלת קצב שולח היא או לפי הדומיין השורש שנלקח מבדיקת PTR הפוכה על כתובת ה-IP של השולח – או אם זה לא מניב תוצאה, אז פשוט משתמשים בכתובת ה-IP של השולח. שימו לב שאנו מתייחסים לזה כ`Sender` להלן.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+שרת ה-MX שלנו מוגבל יומית עבור דואר נכנס המתקבל עבור [אחסון IMAP מוצפן](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* במקום להגביל קצב דואר נכנס המתקבל על בסיס כינוי בודד (למשל `you@yourdomain.com`) – אנו מגבילים קצב לפי שם הדומיין של הכינוי עצמו (למשל `yourdomain.com`). זה מונע מ`Senders` להציף את תיבות הדואר של כל הכינויים בדומיין שלך בבת אחת.
+* יש לנו מגבלות כלליות החלות על כל ה`Senders` בשירות שלנו ללא קשר לנמען:
+  * `Senders` שאנו מחשיבים כ"מהימנים" כמקור אמת (למשל `gmail.com`, `microsoft.com`, `apple.com`) מוגבלים לשליחת 100 גיגה-בייט ליום.
+  * `Senders` שהם [ברשימת ההרשאה](#do-you-have-an-allowlist) מוגבלים לשליחת 10 גיגה-בייט ליום.
+  * כל שאר ה`Senders` מוגבלים לשליחת 1 גיגה-בייט ו/או 1000 הודעות ליום.
+* יש לנו מגבלה ספציפית לכל `Sender` ו-`yourdomain.com` של 1 גיגה-בייט ו/או 1000 הודעות יומיות.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+שרת ה-MX גם מגביל הודעות שמועברות לנמען אחד או יותר דרך הגבלת קצב – אך זה חל רק על `Senders` שאינם ב[רשימת ההרשאה](#do-you-have-an-allowlist):
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* אנו מאפשרים עד 100 חיבורים לשעה, לכל דומיין שורש FQDN של `Sender` שזוהה (או) כתובת ה-IP המרוחקת של `Sender` (אם אין PTR הפוך זמין), ולכל נמען במעטפה. אנו מאחסנים את המפתח להגבלת הקצב כ-hash קריפטוגרפי במסד הנתונים Redis שלנו.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* אם אתה שולח דואר דרך המערכת שלנו, אנא ודא שיש לך PTR הפוך מוגדר לכל כתובות ה-IP שלך (אחרת כל דומיין שורש FQDN ייחודי או כתובת IP שאתה שולח מהם יוגבל בקצב).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* שים לב שאם אתה שולח דרך מערכת פופולרית כמו Amazon SES, אז לא תחווה הגבלת קצב מכיוון ש(בעת כתיבת שורות אלו) Amazon SES מופיע ברשימת ההרשאה שלנו.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* אם אתה שולח מדומיין כמו `test.abc.123.example.com`, אז הגבלת הקצב תוטל על `example.com`. רבים מהספאמרים משתמשים במאות תת-דומיינים כדי לעקוף מסנני ספאם נפוצים שמגבילים קצב רק לפי שמות מארח ייחודיים במקום לפי דומיין שורש FQDN ייחודי.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* `Senders` שעוברים את הגבלת הקצב יידחו עם שגיאה 421.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+שרת ה-IMAP וה-SMTP שלנו מגבילים את הכינויים שלך מלהחזיק יותר מ-`60` חיבורים בו-זמניים.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+שרת ה-MX שלנו מגביל שולחים [שאינם ברשימת ההרשאה](#do-you-have-an-allowlist) מלהקים יותר מ-10 חיבורים בו-זמניים (עם תפוגת מטמון של 3 דקות למונה, המשקפת את זמן ההמתנה של הסוקט שלנו של 3 דקות).
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### איך אתם מגנים מפני backscatter {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+החזרות שגויות או ספאם החזרות (המכונה "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") עלולות לגרום למוניטין שלילי לכתובות ה-IP של השולח.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+אנו נוקטים שני צעדים כדי להגן מפני backscatter, המפורטים בסעיפים הבאים [מניעת החזרות משולחים ידועים ב-MAIL FROM](#prevent-bounces-from-known-mail-from-spammers) ו-[מניעת החזרות מיותרות להגנה מפני backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) להלן.
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### מניעת החזרות משולחים ידועים ב-MAIL FROM {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+אנו מושכים את הרשימה מ-[Backscatter.org](https://www.backscatterer.org/) (מופעל על ידי [UCEPROTECT](https://www.uceprotect.net/)) בכתובת <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> כל שעה ומזינים אותה למסד הנתונים Redis שלנו (אנו גם משווים את ההבדלים מראש; למקרה שהוסרו כתובות IP שצריך לכבד).
+אם MAIL FROM ריק או שווה (בלי תלות באותיות גדולות/קטנות) לאחד מכתובות [postmaster](#what-are-postmaster-addresses) (החלק לפני ה-@ באימייל), אז נבדוק אם כתובת ה-IP של השולח תואמת לאחת מהרשימה הזו.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+אם כתובת ה-IP של השולח מופיעה ברשימה (ואינה ב-[רשימת ההרשאות שלנו](#do-you-have-an-allowlist)), אז נשלח שגיאה 554 עם ההודעה `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  נקבל התראה אם שולח מופיע גם ברשימת Backscatterer וגם ברשימת ההרשאות שלנו כדי שנוכל לפתור את הבעיה במידת הצורך.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+הטכניקות המתוארות בסעיף זה עומדות בהמלצת "מצב בטוח" בכתובת <https://www.backscatterer.org/?target=usage> – שם אנו בודקים את כתובת ה-IP של השולח רק אם תנאים מסוימים כבר התקיימו.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### מניעת החזרות מיותרות להגנה מפני backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+החזרות הן אימיילים שמצביעים על כך שההעברה של האימייל נכשלה לחלוטין אצל הנמען והאימייל לא ינסה להישלח שוב.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+סיבה נפוצה להופעה ברשימת Backscatterer היא החזרות מוטעות או ספאם החזרות, ולכן עלינו להגן מפני זה בכמה דרכים:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. אנו שולחים רק כאשר מתרחשות שגיאות בקוד סטטוס >= 500 (כאשר ניסיונות העברת האימייל נכשלו, לדוגמה Gmail מחזיר שגיאה ברמת 500).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. אנו שולחים רק פעם אחת (אנו משתמשים במפתח טביעת אצבע של ההחזרה ומאחסנים אותו במטמון כדי למנוע שליחת כפילויות). טביעת האצבע היא מפתח שהוא טביעת האצבע של ההודעה בשילוב עם גיבוב של כתובת ההחזרה וקוד השגיאה שלה. ראו את הסעיף על [טביעת אצבע](#how-do-you-determine-an-email-fingerprint) לקבלת תובנות נוספות על חישוב טביעת האצבע של ההודעה. טביעות אצבע של החזרות שנשלחו בהצלחה יפוגו לאחר 7 ימים במטמון Redis שלנו.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. אנו שולחים רק כאשר MAIL FROM ו/או From אינם ריקים ואינם מכילים (בלי תלות באותיות) שם משתמש [postmaster](#what-are-postmaster-addresses) (החלק לפני ה-@ באימייל).
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. איננו שולחים אם להודעה המקורית היו כל אחד מהכותרות הבאות (בלי תלות באותיות):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * כותרת `auto-submitted` עם ערך שאינו שווה ל-`no`.
+   * כותרת `x-auto-response-suppress` עם ערך של `dr`, `autoreply`, `auto-reply`, `auto_reply`, או `all`
+   * כותרת `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, או `x-auto-respond` (ללא תלות בערך).
+   * כותרת `precedence` עם ערך של `bulk`, `autoreply`, `auto-reply`, `auto_reply`, או `list`.
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. איננו שולחים אם כתובת האימייל ב-MAIL FROM או From מסתיימת ב-`+donotreply`, `-donotreply`, `+noreply`, או `-noreply`.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. איננו שולחים אם החלק של שם המשתמש בכתובת From היה `mdaemon` והייתה כותרת `X-MDDSN-Message` ללא תלות באותיות.
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. איננו שולחים אם הייתה כותרת `content-type` ללא תלות באותיות עם הערך `multipart/report`.
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### איך קובעים טביעת אצבע של אימייל {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+טביעת האצבע של אימייל משמשת לקביעת ייחודיות של אימייל ולמניעת שליחת הודעות כפולות ושליחת [החזרות כפולות](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+טביעת האצבע מחושבת מהרשימה הבאה:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* שם המארח FQDN או כתובת IP שפתר הלקוח
+* ערך כותרת `Message-ID` (אם קיים)
+* ערך כותרת `Date` (אם קיים)
+* ערך כותרת `From` (אם קיים)
+* ערך כותרת `To` (אם קיים)
+* ערך כותרת `Cc` (אם קיים)
+* ערך כותרת `Subject` (אם קיים)
+* ערך `Body` (אם קיים)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### האם ניתן להעביר אימיילים לפורטים אחרים מ-25 (למשל אם ספק האינטרנט שלי חסם את פורט 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+כן, מאז 5 במאי 2020 הוספנו תכונה זו. כרגע התכונה ספציפית לדומיין, ולא ספציפית לכינוי. אם אתם צריכים שהיא תהיה ספציפית לכינוי, אנא צרו קשר כדי ליידע אותנו בצרכים שלכם.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    הגנת פרטיות משופרת:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    אם אתם בתוכנית בתשלום (שכוללת הגנת פרטיות משופרת), אנא עברו ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>, לחצו על "הגדרות" ליד הדומיין שלכם, ואז לחצו על "הגדרות". אם תרצו ללמוד עוד על תוכניות בתשלום ראו את דף ה- <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">תמחור</a> שלנו. אחרת תוכלו להמשיך לעקוב אחרי ההוראות למטה.
   </span>
 </div>
+אם אתם בתוכנית החינמית, פשוט הוסיפו רשומת DNS <strong class="notranslate">TXT</strong> חדשה כפי שמוצג למטה, אך שנו את הפורט מ-25 לפורט שתבחרו.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+לדוגמה, אם אני רוצה שכל המיילים שנשלחים ל-`example.com` יועברו לנמענים עם פורט SMTP של 1337 במקום 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4646,9 +5156,9 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    התרחיש הנפוץ ביותר להגדרת העברת פורט מותאמת הוא כאשר רוצים להעביר את כל המיילים שנשלחים ל-example.com לפורט שונה ב-example.com, במקום פורט SMTP הסטנדרטי 25. כדי להגדיר זאת, פשוט הוסיפו את רשומת <strong class="notranslate">TXT</strong> catch-all הבאה.
   <span>
   </span>
 </div>
@@ -4656,15 +5166,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5182,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### האם זה תומך בסימן הפלוס + לכינויים בג'ימייל {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+כן, בהחלט.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### האם זה תומך בתת-דומיינים {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+כן, בהחלט. במקום להשתמש ב-"@", ".", או ריק כשם/מארח/כינוי, פשוט השתמשו בשם תת-הדומיין כערך במקום.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+אם אתם רוצים ש-`foo.example.com` יפנה מיילים, הזינו `foo` כערך שם/מארח/כינוי בהגדרות ה-DNS שלכם (גם עבור רשומות MX וגם עבור <strong class="notranslate">TXT</strong>).
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### האם זה מעביר את כותרות המייל שלי {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+כן, בהחלט.
 
-### Is this well-tested {#is-this-well-tested}
+### האם זה נבדק היטב {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+כן, יש לו בדיקות שנכתבו עם [ava](https://github.com/avajs/ava) ויש גם כיסוי קוד.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### האם אתם מעבירים הודעות וקודי תגובה של SMTP {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+כן, בהחלט. לדוגמה, אם אתם שולחים מייל ל-`hello@example.com` והוא רשום להעברה ל-`user@gmail.com`, אז הודעת התגובה וקוד ה-SMTP משרת ה-"gmail.com" יוחזרו במקום שרת הפרוקסי ב-"mx1.forwardemail.net" או "mx2.forwardemail.net".
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### איך אתם מונעים ספאמרים ומבטיחים מוניטין טוב להעברת מיילים {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+ראו את הסעיפים שלנו על [איך עובד מערכת העברת המייל שלכם](#how-does-your-email-forwarding-system-work), [איך אתם מטפלים בבעיות מסירת מיילים](#how-do-you-handle-email-delivery-issues), ו-[איך אתם מטפלים בכתובות ה-IP שלכם כשהן נחסמות](#how-do-you-handle-your-ip-addresses-becoming-blocked) למעלה.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### איך אתם מבצעים חיפושי DNS על שמות דומיין {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+יצרנו פרויקט תוכנה בקוד פתוח :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) ומשתמשים בו לחיפושי DNS. שרתי ה-DNS ברירת המחדל הם `1.1.1.1` ו-`1.0.0.1`, והשאילתות ל-DNS מתבצעות דרך [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") בשכבת היישום.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) משתמש בשירות ה-DNS הפרטי לצרכנים של [CloudFlare כברירת מחדל][cloudflare-dns].
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## חשבון וחשבוניות {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### האם אתם מציעים אחריות להחזר כספי בתוכניות בתשלום {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+כן! החזרים אוטומטיים מתבצעים כאשר אתם משדרגים, מורידים או מבטלים את החשבון שלכם בתוך 30 ימים מהתחלת התוכנית. זה חל רק על לקוחות בפעם הראשונה.
+### אם אני משנה תוכניות, האם אתם מחשבים פרופורציה ומחזירים את ההפרש {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+איננו מחשבים פרופורציה ואיננו מחזירים את ההפרש כאשר אתה משנה תוכניות. במקום זאת, אנו ממירים את משך הזמן הנותר מתאריך תפוגת התוכנית הקיימת שלך למשך הקרוב ביותר בתוכנית החדשה שלך (מעוגל כלפי מטה לפי חודשים).
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+שים לב שאם תשדרג או תוריד דרגה בין תוכניות בתשלום בתוך חלון של 30 יום מאז שהתחלת תוכנית בתשלום, אז נחזיר אוטומטית את הסכום המלא מהתוכנית הקיימת שלך.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### האם אפשר להשתמש בשירות העברת הדואר הזה כשרת MX "גיבוי" או "מחליף" {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+לא, זה לא מומלץ, כי אפשר להשתמש רק בשרת החלפת דואר אחד בכל פעם. גיבויים בדרך כלל לא מנסים שוב בגלל תצורות עדיפות שגויות ושרתות דואר שאינן מכבדות בדיקת עדיפות החלפת MX.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### האם אפשר להשבית כינויים ספציפיים {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    אם אתה בתוכנית בתשלום, עליך לגשת ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> ערוך כינוי <i class="fa fa-angle-right"></i> הסר סימון מתיבת הסימון "פעיל" <i class="fa fa-angle-right"></i> המשך.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+כן, פשוט ערוך את רשומת ה-DNS <strong class="notranslate">TXT</strong> שלך והוסף לפני הכינוי סימן קריאה אחד, שניים או שלושה (ראה למטה).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+שים לב ש*עליך* לשמור על המיפוי ":" כי זה נדרש אם תחליט אי פעם לכבות זאת (וזה גם משמש לייבוא אם תשדרג לאחת מהתוכניות בתשלום שלנו).
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**לדחייה שקטה (נראה לשולח כאילו ההודעה נשלחה בהצלחה, אך למעשה ההודעה לא מגיעה לשום מקום) (קוד סטטוס `250`):** אם תוסיף לפני כינוי "!" (סימן קריאה יחיד) אז יוחזר קוד סטטוס מוצלח `250` לשולחים שמנסים לשלוח לכתובת זו, אך המיילים עצמם לא יגיעו לשום מקום (למשל חור שחור או `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**לדחייה רכה (קוד סטטוס `421`):** אם תוסיף לפני כינוי "!!" (שני סימני קריאה) אז יוחזר קוד שגיאה רכה `421` לשולחים שמנסים לשלוח לכתובת זו, והמיילים ינסו להישלח שוב עד 5 ימים לפני דחייה והחזרה.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**לדחייה קשה (קוד סטטוס `550`):** אם תוסיף לפני כינוי "!!!" (שלושה סימני קריאה) אז יוחזר קוד שגיאה קבוע `550` לשולחים שמנסים לשלוח לכתובת זו והמיילים יידחו ויחזרו.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+לדוגמה, אם אני רוצה שכל המיילים שנשלחים ל-`alias@example.com` יפסיקו לעבור ל-`user@gmail.com` וידחו ויחזרו (למשל להשתמש בשלושה סימני קריאה):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4766,54 +5276,53 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    אפשר גם לשכתב את כתובת הנמען המועברת ל-"nobody@forwardemail.net" פשוט, מה שיפנה את זה ל-nobody כפי בדוגמה למטה.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    אם אתם רוצים אבטחה מוגברת, תוכלו גם להסיר את החלק ":user@gmail.com" (או ":nobody@forwardemail.net"), ולהשאיר רק "!!!alias" כפי בדוגמה למטה.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5330,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### האם אפשר להעביר מיילים למספר נמענים {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+כן, בהחלט. פשוט ציינו מספר נמענים ברשומות <strong class="notranslate">TXT</strong> שלכם.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+לדוגמה, אם אני רוצה שמייל שנשלח ל-`hello@example.com` יועבר ל-`user+a@gmail.com` ו-`user+b@gmail.com`, אז רשומת ה-<strong class="notranslate">TXT</strong> שלי תיראה כך:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5355,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+או, תוכלו לציין אותם בשתי שורות נפרדות, כמו זו:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5382,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+זה תלוי בכם!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### האם אפשר שיהיו מספר נמענים כלליים גלובליים {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+כן, אפשר. פשוט ציינו מספר נמענים כלליים גלובליים ברשומות <strong class="notranslate">TXT</strong> שלכם.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+לדוגמה, אם אני רוצה שכל מייל שנשלח ל-`*@example.com` (הכוכבית משמעותה שזה כלל כללי aka catch-all) יועבר ל-`user+a@gmail.com` ו-`user+b@gmail.com`, אז רשומת ה-<strong class="notranslate">TXT</strong> שלי תיראה כך:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,190 +5409,188 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+או, תוכלו לציין אותם בשתי שורות נפרדות, כמו זו:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>שם/מארח/כינוי</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>סוג</th>
+      <th>תשובה/ערך</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", או ריק</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+זה תלוי בך!
 
-It's up to you!
+### האם יש מגבלה מקסימלית על מספר כתובות האימייל שאני יכול להעביר לכל כינוי {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+כן, המגבלה ברירת המחדל היא 10. זה לא אומר שאתה יכול להחזיק רק 10 כינויים בדומיין שלך. אתה יכול להחזיק כמה כינויים שתרצה (כמות בלתי מוגבלת). המשמעות היא שאתה יכול להעביר כינוי אחד ל-10 כתובות אימייל ייחודיות בלבד. תוכל להחזיק `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (מ-1 עד 10) – וכל האימיילים ל-`hello@example.com` יועברו ל-`user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (מ-1 עד 10).
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    טיפ:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    צריכים יותר מ-10 נמענים לכל כינוי? שלחו לנו אימייל ונשמח להגדיל את המגבלה בחשבונכם.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### האם ניתן להעביר אימיילים באופן רקורסיבי {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+כן, ניתן, אך עדיין עליך לעמוד במגבלה המקסימלית. אם יש לך `hello:linus@example.com` ו-`linus:user@gmail.com`, אז אימיילים ל-`hello@example.com` יועברו ל-`linus@example.com` ו-`user@gmail.com`. שים לב שתופיע שגיאה אם תנסה להעביר אימיילים באופן רקורסיבי מעבר למגבלה המקסימלית.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### האם אנשים יכולים להסיר או להירשם להעברת האימייל שלי ללא רשותי {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+אנו משתמשים באימות רשומות MX ו-<strong class="notranslate">TXT</strong>, לכן אם תוסיף את רשומות ה-MX וה-<strong class="notranslate">TXT</strong> המתאימות לשירות זה, אז אתה רשום. אם תסיר אותן, אז אתה לא רשום. אתה בעלים של הדומיין וניהול ה-DNS שלך, אז אם מישהו אחר יש לו גישה לכך זו בעיה.
 
-### How is it free {#how-is-it-free}
+### איך זה בחינם {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Email מציע שכבת שירות חינמית באמצעות שילוב של פיתוח קוד פתוח, תשתית יעילה ותכניות בתשלום אופציונליות התומכות בשירות.
 
-Our free tier is supported by:
+השכבה החינמית שלנו נתמכת על ידי:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **פיתוח קוד פתוח**: בסיס הקוד שלנו הוא קוד פתוח, המאפשר תרומות מהקהילה ותפעול שקוף.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **תשתית יעילה**: אופטמיזציה של המערכות שלנו לטיפול בהעברת אימיילים עם מינימום משאבים.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **תכניות פרימיום בתשלום**: משתמשים הזקוקים לתכונות נוספות כמו שליחת SMTP, קבלת IMAP, או אפשרויות פרטיות משופרות מנויים לתכניות בתשלום.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **מגבלות שימוש סבירות**: לשכבה החינמית יש מדיניות שימוש הוגנת למניעת ניצול לרעה.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> אנו מחויבים לשמור על העברת אימייל בסיסית בחינם תוך הצעת תכונות פרימיום למשתמשים עם צרכים מתקדמים יותר.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> אם השירות שלנו חשוב לך, שקול לשדרג לתכנית בתשלום כדי לתמוך בפיתוח ותחזוקה שוטפים.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### מהי המגבלה המקסימלית על גודל האימייל {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+ברירת המחדל שלנו היא מגבלת גודל של 50MB, הכוללת תוכן, כותרות וקבצים מצורפים. שים לב ששירותים כמו Gmail ו-Outlook מאפשרים רק מגבלת גודל של 25MB, ואם תחרוג מהמגבלה בעת שליחה לכתובות אצל ספקים אלו תקבל הודעת שגיאה.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+שגיאה עם קוד תגובה מתאים תוחזר אם יחרגו מגבלת גודל הקובץ.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### האם אתם שומרים יומני אימיילים {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+לא, איננו כותבים לדיסק או שומרים יומנים – למעט [שגיאות](#do-you-store-error-logs) ו-[SMTP יוצא](#do-you-support-sending-email-with-smtp) (ראה את [מדיניות הפרטיות שלנו](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+הכל מתבצע בזיכרון ו-[קוד המקור שלנו ב-GitHub](https://github.com/forwardemail).
 
-### Do you store error logs {#do-you-store-error-logs}
+### האם אתם שומרים יומני שגיאות {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**כן. ניתן לגשת ליומני השגיאות תחת [החשבון שלי → יומנים](/my-account/logs) או [החשבון שלי → דומיינים](/my-account/domains).**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+מאז פברואר 2023, אנו שומרים יומני שגיאות עבור קודי תגובת SMTP `4xx` ו-`5xx` לתקופה של 7 ימים – הכוללים את שגיאת ה-SMTP, מעטפה וכותרות האימייל (איננו שומרים את גוף האימייל או קבצים מצורפים).
+יומני שגיאות מאפשרים לך לבדוק אם חסרים מיילים חשובים ולהפחית זיהוי שגוי של דואר זבל עבור [הדומיינים שלך](/my-account/domains). הם גם משאב מצוין לאיתור תקלות עם [webhooks של דואר אלקטרוני](#do-you-support-webhooks) (מכיוון שיומני השגיאות מכילים את תגובת נקודת הקצה של ה-webhook).
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+יומני שגיאות עבור [הגבלת קצב](#do-you-have-rate-limiting) ו-[רשימת אפור](#do-you-have-a-greylist) אינם נגישים מכיוון שהחיבור מסתיים מוקדם (למשל לפני שניתן להעביר את הפקודות `RCPT TO` ו-`MAIL FROM`).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+ראה את [מדיניות הפרטיות שלנו](/privacy) למידע נוסף.
 
-See our [Privacy Policy](/privacy) for more insight.
+### האם אתם קוראים את המיילים שלי {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+לא, בהחלט לא. ראה את [מדיניות הפרטיות שלנו](/privacy).
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+שירותי העברת דואר אלקטרוני רבים אחרים מאחסנים ועלולים לקרוא את המייל שלך. אין סיבה שמיילים מועברים יישמרו לאחסון בדיסק – ולכן תכננו את הפתרון הראשון בקוד פתוח שעושה הכל בזיכרון בלבד.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+אנו מאמינים שלך יש זכות לפרטיות ואנו מכבדים זאת בקפידה. הקוד שמופעל על השרת הוא [תוכנה בקוד פתוח ב-GitHub](https://github.com/forwardemail) לשקיפות ולבניית אמון.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### האם אני יכול "לשלוח מייל בשם" בג'ימייל עם זה {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+כן! מאז 2 באוקטובר 2018 הוספנו תכונה זו. ראה את [איך לשלוח מייל בשם באמצעות ג'ימייל](#how-to-send-mail-as-using-gmail) למעלה!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+כדאי גם להגדיר את רשומת SPF עבור ג'ימייל בקונפיגורציית ה-DNS שלך ברשומת <strong class="notranslate">TXT</strong>.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    אם אתה משתמש בג'ימייל (למשל Send Mail As) או ב-G Suite, תצטרך להוסיף <code>include:_spf.google.com</code> לרשומת SPF <strong class="notranslate">TXT</strong> שלך, לדוגמה:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### האם אני יכול "לשלוח מייל בשם" באאוטלוק עם זה {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+כן! מאז 2 באוקטובר 2018 הוספנו תכונה זו. פשוט עיין בשני הקישורים של מיקרוסופט למטה:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+כדאי גם להגדיר את רשומת SPF עבור אאוטלוק בקונפיגורציית ה-DNS שלך ברשומת <strong class="notranslate">TXT</strong>.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    חשוב:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    אם אתה משתמש ב-Microsoft Outlook או Live.com, תצטרך להוסיף <code>include:spf.protection.outlook.com</code> לרשומת SPF <strong class="notranslate">TXT</strong> שלך, לדוגמה:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### האם אני יכול "לשלוח מייל בשם" באפל מייל ו-iCloud Mail עם זה {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+אם אתה מנוי ל-iCloud+, תוכל להשתמש בדומיין מותאם אישית. [השירות שלנו גם תואם לאפל מייל](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+אנא ראה <https://support.apple.com/en-us/102540> למידע נוסף.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### האם אני יכול להעביר מיילים ללא הגבלה עם זה {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+כן, עם זאת, שולחים "יחסית לא מוכרים" מוגבלים ל-100 חיבורים לשעה לכל שם מארח או IP. ראה את הסעיף על [הגבלת קצב](#do-you-have-rate-limiting) ו-[רשימת אפור](#do-you-have-a-greylist) למעלה.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+במונח "יחסית לא מוכרים", אנו מתכוונים לשולחים שאינם מופיעים ב-[רשימת ההרשאה](#do-you-have-an-allowlist).
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+אם מגבלה זו תעבור, נשלח קוד תגובה 421 שאומר לשרת הדואר של השולח לנסות שוב מאוחר יותר.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### האם אתם מציעים דומיינים ללא הגבלה במחיר אחד {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+כן. ללא קשר לתכנית שבה אתה נמצא, תשלם רק תעריף חודשי אחד – שמכסה את כל הדומיינים שלך.
+### אילו שיטות תשלום אתם מקבלים {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email מקבל את שיטות התשלום הבאות לתשלום חד-פעמי או חודשי/רבעוני/שנתי:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **כרטיסי אשראי/חיוב/העברות בנקאיות**: ויזה, מאסטרקארד, אמריקן אקספרס, דיסקבר, JCB, דיינרס קלאב, וכו'.
+2. **PayPal**: חברו את חשבון ה-PayPal שלכם לתשלומים קלים
+3. **מטבעות קריפטוגרפיים**: אנו מקבלים תשלומים דרך תשלומי סטייבל-קוין של Stripe ברשתות Ethereum, Polygon ו-Solana
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> אנו מאחסנים מידע מוגבל על תשלומים בשרתים שלנו, הכולל רק מזהי תשלום והפניות ל-[Stripe](https://stripe.com/global) ו-[PayPal](https://www.paypal.com) של עסקאות, לקוחות, מנויים ומזהי תשלום.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> לפרטיות מקסימלית, שקלו להשתמש בתשלומים במטבעות קריפטוגרפיים.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+כל התשלומים מעובדים בצורה מאובטחת דרך Stripe או PayPal. פרטי התשלום שלכם לעולם אינם מאוחסנים בשרתים שלנו.
 
-## Additional Resources {#additional-resources}
+
+## משאבים נוספים {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> המאמרים שלנו למטה מתעדכנים באופן קבוע עם מדריכים, טיפים ומידע טכני חדש. בדקו לעיתים קרובות לתוכן העדכני ביותר.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [מחקרי מקרה ותיעוד למפתחים](/blog/docs)
+* [משאבים](/resources)
+* [מדריכים](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

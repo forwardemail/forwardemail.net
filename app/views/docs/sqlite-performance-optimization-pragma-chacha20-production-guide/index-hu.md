@@ -1,116 +1,117 @@
-# SQLite Performance Optimization: Production PRAGMA Settings & ChaCha20 Encryption {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
+# SQLite Teljesítményoptimalizálás: Termelési PRAGMA Beállítások & ChaCha20 Titkosítás {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite performance optimization guide" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite teljesítményoptimalizálási útmutató" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Foreword](#foreword)
-* [Forward Email's Production SQLite Architecture](#forward-emails-production-sqlite-architecture)
-* [Our Actual PRAGMA Configuration](#our-actual-pragma-configuration)
-* [Performance Benchmark Results](#performance-benchmark-results)
-  * [Node.js v20.19.5 Performance Results](#nodejs-v20195-performance-results)
-* [PRAGMA Settings Breakdown](#pragma-settings-breakdown)
-  * [Core Settings We Use](#core-settings-we-use)
-  * [Settings We DON'T Use (But You Might Want)](#settings-we-dont-use-but-you-might-want)
-* [ChaCha20 vs AES256 Encryption](#chacha20-vs-aes256-encryption)
-* [Temporary Storage: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
-  * [/tmp vs /dev/shm Performance](#tmp-vs-devshm-performance)
-* [WAL Mode Optimization](#wal-mode-optimization)
-  * [WAL Configuration Impact](#wal-configuration-impact)
-* [Schema Design for Performance](#schema-design-for-performance)
-* [Connection Management](#connection-management)
-* [Monitoring and Diagnostics](#monitoring-and-diagnostics)
-* [Node.js Version Performance](#nodejs-version-performance)
-  * [Complete Cross-Version Results](#complete-cross-version-results)
-  * [Key Performance Insights](#key-performance-insights)
-  * [Native Module Compatibility](#native-module-compatibility)
-* [Production Deployment Checklist](#production-deployment-checklist)
-* [Troubleshooting Common Issues](#troubleshooting-common-issues)
-  * ["Database is locked" Errors](#database-is-locked-errors)
-  * [High Memory Usage During VACUUM](#high-memory-usage-during-vacuum)
-  * [Slow Query Performance](#slow-query-performance)
-* [Forward Email's Open Source Contributions](#forward-emails-open-source-contributions)
-* [Benchmark Source Code](#benchmark-source-code)
-* [What's Next for SQLite at Forward Email](#whats-next-for-sqlite-at-forward-email)
-* [Getting Help](#getting-help)
+## Tartalomjegyzék {#table-of-contents}
 
-## Foreword {#foreword}
+* [Előszó](#foreword)
+* [A Forward Email termelési SQLite architektúrája](#forward-emails-production-sqlite-architecture)
+* [A tényleges PRAGMA konfigurációnk](#our-actual-pragma-configuration)
+* [Teljesítmény mérési eredmények](#performance-benchmark-results)
+  * [Node.js v20.19.5 teljesítmény eredmények](#nodejs-v20195-performance-results)
+* [PRAGMA beállítások részletezése](#pragma-settings-breakdown)
+  * [Alapbeállítások, amiket használunk](#core-settings-we-use)
+  * [Beállítások, amiket NEM használunk (de esetleg szeretnél)](#settings-we-dont-use-but-you-might-want)
+* [ChaCha20 vs AES256 titkosítás](#chacha20-vs-aes256-encryption)
+* [Ideiglenes tároló: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
+  * [/tmp vs /dev/shm teljesítmény](#tmp-vs-devshm-performance)
+* [WAL mód optimalizálás](#wal-mode-optimization)
+  * [WAL konfiguráció hatása](#wal-configuration-impact)
+* [Séma tervezés a teljesítményért](#schema-design-for-performance)
+* [Kapcsolatkezelés](#connection-management)
+* [Monitorozás és diagnosztika](#monitoring-and-diagnostics)
+* [Node.js verziók teljesítménye](#nodejs-version-performance)
+  * [Teljes keresztverziós eredmények](#complete-cross-version-results)
+  * [Főbb teljesítmény tanulságok](#key-performance-insights)
+  * [Natív modul kompatibilitás](#native-module-compatibility)
+* [Termelési telepítési ellenőrzőlista](#production-deployment-checklist)
+* [Gyakori problémák elhárítása](#troubleshooting-common-issues)
+  * ["Az adatbázis zárolva van" hibák](#database-is-locked-errors)
+  * [Magas memóriahasználat VACUUM közben](#high-memory-usage-during-vacuum)
+  * [Lassú lekérdezési teljesítmény](#slow-query-performance)
+* [A Forward Email nyílt forráskódú hozzájárulásai](#forward-emails-open-source-contributions)
+* [Benchmark forráskód](#benchmark-source-code)
+* [Mi következik az SQLite számára a Forward Emailnél](#whats-next-for-sqlite-at-forward-email)
+* [Segítségkérés](#getting-help)
 
-Setting up SQLite for production email systems isn't just about getting it working—it's about making it fast, secure, and reliable under heavy load. After processing millions of emails at Forward Email, we've learned what actually matters for SQLite performance.
 
-This guide covers our real production configuration, benchmark results across Node.js versions, and the specific optimizations that make a difference when you're handling serious email volume.
+## Előszó {#foreword}
 
-> \[!WARNING] Node.js Performance Regressions in v22 and v24
-> We discovered a significant performance regression in Node.js versions v22 and v24 that impacts SQLite performance, particularly for `SELECT` statements. Our benchmarks show a \~57% drop in `SELECT` operations per second in Node.js v24 compared to v20. We have reported this issue to the Node.js team in [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
+Az SQLite beállítása termelési e-mail rendszerekhez nem csupán arról szól, hogy működjön — hanem arról is, hogy gyors, biztonságos és megbízható legyen nagy terhelés alatt. Több millió e-mail feldolgozása után a Forward Emailnél megtanultuk, mi számít igazán az SQLite teljesítményében.
 
-Due to this regression, we are taking a cautious approach to our Node.js upgrades. Here is our current plan:
+Ez az útmutató bemutatja a valós termelési konfigurációnkat, a Node.js verziók közötti benchmark eredményeket, valamint azokat a specifikus optimalizációkat, amelyek számítanak, ha komoly e-mail mennyiséget kezelsz.
 
-* **Current Version:** We are currently on Node.js v18, which has reached its end-of-life ("EOL") for Long-Term Support ("LTS"). You can view the official [Node.js LTS schedule here](https://github.com/nodejs/release#release-schedule).
-* **Planned Upgrade:** We will be upgrading to **Node.js v20**, which is the fastest version according to our benchmarks and is not affected by this regression.
-* **Avoiding v22 and v24:** We will not be using Node.js v22 or v24 in production until this performance issue is resolved.
+> \[!WARNING] Node.js teljesítmény visszaesések a v22 és v24 verziókban
+> Jelentős teljesítmény visszaesést fedeztünk fel a Node.js v22 és v24 verzióiban, amely különösen az SQLite `SELECT` lekérdezéseit érinti. Benchmarkjaink szerint a `SELECT` műveletek másodpercenkénti száma körülbelül 57%-kal csökkent a Node.js v24-ben a v20-hoz képest. Ezt a problémát jelentettük a Node.js csapatnak a [nodejs/node#60719](https://github.com/nodejs/node/issues/60719) issue-ban.
 
-Here is a timeline illustrating the Node.js LTS schedule and our upgrade path:
+E visszaesés miatt óvatosan közelítjük meg a Node.js frissítéseket. Íme a jelenlegi tervünk:
+
+* **Jelenlegi verzió:** Jelenleg a Node.js v18-at használjuk, amely elérte az élettartamának végét ("EOL") a hosszú távú támogatás ("LTS") szempontjából. Az hivatalos [Node.js LTS ütemtervet itt tekintheted meg](https://github.com/nodejs/release#release-schedule).
+* **Tervezett frissítés:** Frissíteni fogunk a **Node.js v20** verzióra, amely a benchmarkjaink szerint a leggyorsabb, és nem érinti ez a visszaesés.
+* **v22 és v24 elkerülése:** Nem fogjuk használni a Node.js v22 vagy v24 verziókat termelésben, amíg ez a teljesítményprobléma meg nem oldódik.
+
+Az alábbi idővonal szemlélteti a Node.js LTS ütemtervét és a frissítési tervünket:
 
 ```mermaid
 gantt
-    title Node.js LTS Schedule and Forward Email's Upgrade Plan
+    title Node.js LTS ütemterv és a Forward Email frissítési terve
     dateFormat  YYYY-MM-DD
     axisFormat  %Y-%m
 
     section Node.js v18
-    LTS End-of-Life :done, 2022-04-19, 2025-04-30
+    LTS Élettartam vége :done, 2022-04-19, 2025-04-30
 
     section Node.js v20
     LTS :active, 2023-10-24, 2026-04-30
 
     section Node.js v22
-    LTS (Regression) :crit, 2024-10-29, 2027-04-30
+    LTS (Visszaesés) :crit, 2024-10-29, 2027-04-30
 
-    section Forward Email Upgrade
-    Current (v18) :done, 2022-04-19, 2025-04-30
-    Planned Upgrade to v20 :milestone, 2025-12-01, 1d
+    section Forward Email frissítés
+    Jelenlegi (v18) :done, 2022-04-19, 2025-04-30
+    Tervezett frissítés v20-ra :milestone, 2025-12-01, 1d
 ```
+## Forward Email termelési SQLite architektúrája {#forward-emails-production-sqlite-architecture}
 
-## Forward Email's Production SQLite Architecture {#forward-emails-production-sqlite-architecture}
-
-Here's how we actually use SQLite in production:
+Így használjuk valójában az SQLite-ot termelésben:
 
 ```mermaid
 graph TB
-    A[IMAP/POP3 Client] --> B[Forward Email Server]
-    B --> C[Session Management]
-    C --> D[Database Connection]
-    D --> E[ChaCha20 Encrypted SQLite]
+    A[IMAP/POP3 kliens] --> B[Forward Email szerver]
+    B --> C[Munkamenet-kezelés]
+    C --> D[Adatbázis kapcsolat]
+    D --> E[ChaCha20 titkosított SQLite]
 
-    E --> F[Messages Table]
-    E --> G[Mailboxes Table]
-    E --> H[Attachments Storage]
+    E --> F[Üzenetek tábla]
+    E --> G[Levelezőfiókok tábla]
+    E --> H[Mellékletek tárolása]
 
-    F --> I[WAL Mode]
+    F --> I[WAL mód]
     G --> I
     H --> I
 
-    I --> J[Auto Vacuum]
-    I --> K[Secure Delete]
-    I --> L[Temp Disk Storage]
+    I --> J[Automatikus porszívózás]
+    I --> K[Biztonságos törlés]
+    I --> L[Ideiglenes lemez tárolás]
 
     style E fill:#e1f5fe
     style I fill:#f3e5f5
     style B fill:#e8f5e8
 ```
 
-## Our Actual PRAGMA Configuration {#our-actual-pragma-configuration}
+## A tényleges PRAGMA konfigurációnk {#our-actual-pragma-configuration}
 
-This is what we actually use in production, straight from our [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
+Ez az, amit valójában használunk termelésben, közvetlenül a [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js) fájlból:
 
 ```javascript
-// Forward Email's actual production PRAGMA settings
+// Forward Email tényleges termelési PRAGMA beállításai
 async function setupPragma(db, session, cipher = 'chacha20') {
-  // Quantum-resistant encryption
+  // Kvantumrezisztens titkosítás
   db.pragma(`cipher='${cipher}'`);
   db.key(Buffer.from(decrypt(session.user.password)));
 
-  // Core performance settings
+  // Alapvető teljesítménybeállítások
   db.pragma('journal_mode=WAL');
   db.pragma('secure_delete=ON');
   db.pragma('auto_vacuum=FULL');
@@ -120,10 +121,10 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   db.pragma(`encoding='UTF-8'`);
   db.pragma('optimize=0x10002');
 
-  // Critical: Use disk for temp storage, not memory
+  // Kritikus: ideiglenes tároláshoz lemezt használjunk, ne memóriát
   db.pragma('temp_store=1');
 
-  // Custom temp directory to avoid disk full errors
+  // Egyedi ideiglenes könyvtár a lemez megtelt hibák elkerülésére
   const tempStoreDirectory = path.join(path.dirname(db.name), '/tmp');
   await mkdirp(tempStoreDirectory);
   db.pragma(`temp_store_directory='${tempStoreDirectory}'`);
@@ -131,65 +132,65 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> We use `temp_store=1` (disk) instead of `temp_store=2` (memory) because large email databases can easily consume 10+ GB of memory during operations like VACUUM.
+> A `temp_store=1` (lemez) beállítást használjuk a `temp_store=2` (memória) helyett, mert a nagy email adatbázisok könnyen elfogyaszthatnak 10+ GB memóriát olyan műveletek során, mint a VACUUM.
 
-## Performance Benchmark Results {#performance-benchmark-results}
+## Teljesítmény mérési eredmények {#performance-benchmark-results}
 
-We tested our configuration against various alternatives across Node.js versions. Here are the real numbers:
+Konfigurációnkat különböző alternatívákkal teszteltük Node.js verziók között. Íme a valós számok:
 
-### Node.js v20.19.5 Performance Results {#nodejs-v20195-performance-results}
+### Node.js v20.19.5 teljesítmény eredmények {#nodejs-v20195-performance-results}
 
-| Configuration | Setup (ms) | Insert/sec | Select/sec | Update/sec | DB Size (MB) |
-| ---------------------------- | ---------- | ---------- | ---------- | ---------- | ------------ |
-| **Forward Email Production** | 120.1 | **10,548** | **17,494** | **16,654** | 3.98 |
-| WAL Autocheckpoint 1000 | 89.7 | **11,800** | **18,383** | **22,087** | 3.98 |
-| Cache Size 64MB | 90.3 | 11,451 | 17,895 | 21,522 | 3.98 |
-| Memory Temp Storage | 111.8 | 9,874 | 15,363 | 21,292 | 3.98 |
-| Synchronous OFF (Unsafe) | 94.0 | 10,017 | 13,830 | 18,884 | 3.98 |
-| Synchronous EXTRA (Safe) | 94.1 | **3,241** | 14,438 | **3,405** | 3.98 |
+| Konfiguráció                | Beállítás (ms) | Beszúrás/mp | Lekérdezés/mp | Frissítés/mp | Adatbázis méret (MB) |
+| ---------------------------- | -------------- | ----------- | ------------- | ------------ | -------------------- |
+| **Forward Email termelés**   | 120.1          | **10,548**  | **17,494**    | **16,654**   | 3.98                 |
+| WAL Autocheckpoint 1000      | 89.7           | **11,800**  | **18,383**    | **22,087**   | 3.98                 |
+| Cache méret 64MB             | 90.3           | 11,451      | 17,895        | 21,522       | 3.98                 |
+| Memória ideiglenes tárolás   | 111.8          | 9,874       | 15,363        | 21,292       | 3.98                 |
+| Szinkronizálás KI (Nem biztonságos) | 94.0    | 10,017      | 13,830        | 18,884       | 3.98                 |
+| Szinkronizálás EXTRA (Biztonságos) | 94.1      | **3,241**   | 14,438        | **3,405**    | 3.98                 |
 
 > \[!TIP]
-> The `wal_autocheckpoint=1000` setting shows the best overall performance. We're considering adding this to our production config.
+> A `wal_autocheckpoint=1000` beállítás mutatja a legjobb összteljesítményt. Fontolgatjuk, hogy ezt hozzáadjuk a termelési konfigurációnkhoz.
 
-## PRAGMA Settings Breakdown {#pragma-settings-breakdown}
+## PRAGMA beállítások részletezése {#pragma-settings-breakdown}
 
-### Core Settings We Use {#core-settings-we-use}
+### Alapbeállítások, amiket használunk {#core-settings-we-use}
 
-| PRAGMA | Érték | Purpose | Performance Impact |
-| --------------- | ------------ | ------------------------------- | ------------------------------- |
-| `cipher` | `'chacha20'` | Quantum-resistant encryption | Minimal overhead vs AES |
-| `journal_mode` | `WAL` | Write-Ahead Logging | +40% concurrent performance |
-| `secure_delete` | `ON` | Overwrite deleted data | Security vs 5% performance cost |
-| `auto_vacuum` | `FULL` | Automatic space reclamation | Prevents database bloat |
-| `busy_timeout` | `30000` | Wait time for locked database | Reduces connection failures |
-| `synchronous` | `NORMAL` | Balanced durability/performance | 3x faster than FULL |
-| `foreign_keys` | `ON` | Referential integrity | Prevents data corruption |
-| `temp_store` | `1` | Use disk for temp files | Prevents memory exhaustion |
+| PRAGMA          | Érték        | Cél                             | Teljesítmény hatás             |
+| --------------- | ------------ | ------------------------------- | ------------------------------ |
+| `cipher`        | `'chacha20'` | Kvantumrezisztens titkosítás    | Minimális többletterhelés az AES-hez képest |
+| `journal_mode`  | `WAL`        | Írás-előtti naplózás            | +40% párhuzamos teljesítmény   |
+| `secure_delete` | `ON`         | Törölt adatok felülírása        | Biztonság vs 5% teljesítménycsökkenés |
+| `auto_vacuum`   | `FULL`       | Automatikus helyfelszabadítás   | Megakadályozza az adatbázis duzzadást |
+| `busy_timeout`  | `30000`      | Várakozási idő zárolt adatbázis esetén | Csökkenti a kapcsolódási hibákat |
+| `synchronous`   | `NORMAL`     | Kiegyensúlyozott tartósság/teljesítmény | 3x gyorsabb, mint a FULL       |
+| `foreign_keys`  | `ON`         | Referenciális integritás        | Megakadályozza az adatsérülést |
+| `temp_store`    | `1`          | Ideiglenes fájlokhoz lemez használata | Megakadályozza a memória kimerülését |
+### Beállítások, amiket NEM használunk (de esetleg szeretnél) {#settings-we-dont-use-but-you-might-want}
 
-### Settings We DON'T Use (But You Might Want) {#settings-we-dont-use-but-you-might-want}
-
-| PRAGMA | Why We Don't Use It | Should You Consider It? |
+| PRAGMA                    | Miért nem használjuk   | Érdemes megfontolnod?                             |
 | ------------------------- | --------------------- | --------------------------------------------------- |
-| `wal_autocheckpoint=1000` | Not set yet | **Yes** - Our benchmarks show 12% performance gain |
-| `cache_size=-64000` | Default is sufficient | **Maybe** - 8% improvement for read-heavy workloads |
-| `mmap_size=268435456` | Complexity vs benefit | **No** - Minimal gains, platform-specific issues |
-| `analysis_limit=1000` | We use 400 | **No** - Higher values slow down query planning |
+| `wal_autocheckpoint=1000` | Még nincs beállítva   | **Igen** - Benchmarkjaink 12%-os teljesítménynövekedést mutatnak  |
+| `cache_size=-64000`       | Az alapértelmezett elég | **Talán** - 8% javulás olvasás-intenzív munkaterhelésnél |
+| `mmap_size=268435456`     | Bonyolultság vs előny | **Nem** - Minimális javulás, platformfüggő problémák    |
+| `analysis_limit=1000`     | Mi 400-at használunk  | **Nem** - Magasabb érték lassítja a lekérdezés-tervezést     |
 
 > \[!CAUTION]
-> We specifically avoid `temp_store=MEMORY` because a 10GB SQLite file can consume 10+ GB of RAM during VACUUM operations.
+> Kifejezetten kerüljük a `temp_store=MEMORY` használatát, mert egy 10GB-os SQLite fájl VACUUM műveletek alatt 10+ GB RAM-ot is elfogyaszthat.
 
-## ChaCha20 vs AES256 Encryption {#chacha20-vs-aes256-encryption}
 
-We prioritize quantum resistance over raw performance:
+## ChaCha20 vs AES256 titkosítás {#chacha20-vs-aes256-encryption}
+
+A kvantumellenállóságot részesítjük előnyben a nyers teljesítmény helyett:
 
 ```javascript
-// Our encryption fallback strategy
+// Titkosítási visszaesési stratégia
 try {
   db.pragma(`cipher='chacha20'`);
   db.key(Buffer.from(decrypt(session.user.password)));
   db.pragma('journal_mode=WAL');
 } catch (err) {
-  // Fallback for older SQLite versions
+  // Visszaesés régebbi SQLite verziókhoz
   if (cipher === 'chacha20' && err.code === 'SQLITE_NOTADB') {
     return setupPragma(db, session, 'aes256cbc');
   }
@@ -197,89 +198,92 @@ try {
 }
 ```
 
-**Performance Comparison:**
+**Teljesítmény összehasonlítás:**
 
-* ChaCha20: \~10,500 inserts/sec
+* ChaCha20: \~10,500 beszúrás/mp
 
-* AES256CBC: \~11,200 inserts/sec
+* AES256CBC: \~11,200 beszúrás/mp
 
-* Unencrypted: \~12,800 inserts/sec
+* Titkosítatlan: \~12,800 beszúrás/mp
 
-The 6% performance cost of ChaCha20 vs AES is worth the quantum resistance for long-term email storage.
+A ChaCha20 6%-os teljesítményköltsége az AES-hez képest megéri a kvantumellenállóságot a hosszú távú e-mail tárolásnál.
 
-## Temporary Storage: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
 
-We explicitly configure temp storage location to avoid disk space issues:
+## Ideiglenes tárolás: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
+
+Kifejezetten beállítjuk az ideiglenes tároló helyét, hogy elkerüljük a lemezterület problémákat:
 
 ```javascript
-// Forward Email's temp storage configuration
+// Forward Email ideiglenes tároló konfiguráció
 const tempStoreDirectory = path.join(path.dirname(db.name), '/tmp');
 await mkdirp(tempStoreDirectory);
 db.pragma(`temp_store_directory='${tempStoreDirectory}'`);
 
-// Also set environment variable
+// Környezeti változó beállítása is
 process.env.SQLITE_TMPDIR = tempStoreDirectory;
 ```
 
-### /tmp vs /dev/shm Performance {#tmp-vs-devshm-performance}
+### /tmp vs /dev/shm teljesítmény {#tmp-vs-devshm-performance}
 
-| Storage Location | VACUUM Time | Memory Usage | Reliability |
+| Tároló helye    | VACUUM idő | Memóriahasználat | Megbízhatóság         |
 | ---------------- | ----------- | ------------ | ------------------- |
-| `/tmp` (disk) | 2.3s | 50MB | ✅ Reliable |
-| `/dev/shm` (RAM) | 0.8s | 2GB+ | ⚠️ Can crash system |
-| Default | 4.1s | Variable | ❌ Unpredictable |
+| `/tmp` (lemez)   | 2.3s        | 50MB         | ✅ Megbízható          |
+| `/dev/shm` (RAM) | 0.8s        | 2GB+         | ⚠️ Rendszerösszeomlás lehet |
+| Alapértelmezett  | 4.1s        | Változó      | ❌ Kiszámíthatatlan     |
 
 > \[!WARNING]
-> Using `/dev/shm` for temp storage can consume all available RAM during large operations. Stick with disk-based temp storage for production.
+> A `/dev/shm` ideiglenes tárolóként való használata nagy műveletek alatt az összes elérhető RAM-ot elfogyaszthatja. Termelésben maradj a lemezes ideiglenes tárolónál.
 
-## WAL Mode Optimization {#wal-mode-optimization}
 
-Write-Ahead Logging is crucial for email systems with concurrent access:
+## WAL mód optimalizálás {#wal-mode-optimization}
+
+A Write-Ahead Logging kulcsfontosságú az egyidejű hozzáférésű e-mail rendszerekhez:
 
 ```mermaid
 sequenceDiagram
-    participant C1 as IMAP Client 1
-    participant C2 as IMAP Client 2
+    participant C1 as IMAP kliens 1
+    participant C2 as IMAP kliens 2
     participant DB as SQLite WAL
-    participant W as WAL File
-    participant M as Main DB
+    participant W as WAL fájl
+    participant M as Fő adatbázis
 
-    C1->>DB: INSERT message
-    DB->>W: Write to WAL
-    W-->>C1: Immediate return
+    C1->>DB: Üzenet beszúrása
+    DB->>W: Írás a WAL-ba
+    W-->>C1: Azonnali visszatérés
 
-    C2->>DB: SELECT messages
-    DB->>M: Read from main DB
-    DB->>W: Read recent changes
-    M-->>C2: Combined results
+    C2->>DB: Üzenetek lekérdezése
+    DB->>M: Olvasás a fő adatbázisból
+    DB->>W: Legutóbbi változások olvasása
+    M-->>C2: Összevont eredmények
 
-    Note over DB,W: Checkpoint every 1000 pages
-    DB->>M: Merge WAL → Main DB
+    Note over DB,W: Ellenőrzőpont minden 1000 oldal után
+    DB->>M: WAL összeolvasztása → Fő adatbázis
 ```
 
-### WAL Configuration Impact {#wal-configuration-impact}
+### WAL konfiguráció hatása {#wal-configuration-impact}
 
-Our benchmarks show `wal_autocheckpoint=1000` provides the best performance:
+Benchmarkjaink szerint a `wal_autocheckpoint=1000` adja a legjobb teljesítményt:
 
 ```javascript
-// Potential optimization we're testing
+// Potenciális optimalizáció, amit tesztelünk
 db.pragma('wal_autocheckpoint=1000');
 ```
 
-**Results:**
+**Eredmények:**
 
-* Default autocheckpoint: 10,548 inserts/sec
+* Alapértelmezett autocheckpoint: 10,548 beszúrás/mp
 
-* `wal_autocheckpoint=1000`: 11,800 inserts/sec (+12%)
+* `wal_autocheckpoint=1000`: 11,800 beszúrás/mp (+12%)
 
-* `wal_autocheckpoint=0`: 9,200 inserts/sec (WAL grows too large)
+* `wal_autocheckpoint=0`: 9,200 beszúrás/mp (a WAL túl nagyra nő)
 
-## Schema Design for Performance {#schema-design-for-performance}
 
-Our email storage schema follows SQLite best practices:
+## Sématervezés a teljesítményért {#schema-design-for-performance}
+
+E-mail tároló sémánk követi az SQLite legjobb gyakorlatait:
 
 ```sql
--- Messages table with optimized column order
+-- Üzenetek tábla optimalizált oszloprenddel
 CREATE TABLE messages (
   id INTEGER PRIMARY KEY,
   mailbox_id INTEGER NOT NULL,
@@ -290,35 +294,35 @@ CREATE TABLE messages (
   from_addr TEXT,
   to_addr TEXT,
   message_id TEXT,
-  raw BLOB,  -- Large BLOB at end
+  raw BLOB,  -- Nagy BLOB a végén
   FOREIGN KEY (mailbox_id) REFERENCES mailboxes(id)
 );
 
--- Critical indexes for IMAP performance
+-- Kritikus indexek az IMAP teljesítményhez
 CREATE INDEX idx_messages_mailbox_date ON messages(mailbox_id, date DESC);
 CREATE INDEX idx_messages_uid ON messages(mailbox_id, uid);
 CREATE INDEX idx_messages_flags ON messages(mailbox_id, flags) WHERE flags IS NOT NULL;
 ```
-
 > \[!TIP]
-> Always put BLOB columns at the end of your table definition. SQLite stores fixed-size columns first, making row access faster.
+> Mindig helyezze a BLOB oszlopokat a tábladefiníció végére. Az SQLite először a fix méretű oszlopokat tárolja, így gyorsabb a sorok elérése.
 
-This optimization comes directly from SQLite's creator, [D. Richard Hipp](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3):
+Ez az optimalizáció közvetlenül az SQLite alkotójától, [D. Richard Hipp](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3) származik:
 
-> "Here's a hint though - make the BLOB columns the last column in your tables. Or even store the BLOBs in a separate table which only has two columns: an integer primary key and the blob itself, and then access the BLOB content using a join if you need to. If you put various small integer fields after the BLOB, then SQLite has to scan through the entire BLOB content (following the linked list of disk pages) to get to the integer fields at the end, and that definitely can slow you down."
+> "Egy tipp azonban - tegye a BLOB oszlopokat a táblák utolsó oszlopává. Vagy akár tárolja a BLOB-okat egy külön táblában, amely csak két oszlopból áll: egy egész szám típusú elsődleges kulcsból és magából a blobból, majd szükség esetén egy join segítségével érje el a BLOB tartalmát. Ha különböző kis egész szám mezőket helyez a BLOB után, akkor az SQLite-nak végig kell pásztáznia a teljes BLOB tartalmat (a lemezoldalak láncolt listáját követve), hogy eljusson a végén lévő egész szám mezőkhöz, és ez határozottan lassíthatja a működést."
 >
-> — D. Richard Hipp, SQLite Author
+> — D. Richard Hipp, az SQLite szerzője
 
-We implemented this optimization in our [Attachments schema](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229), moving the `body` BLOB field to the end of the table definition for better performance.
+Ezt az optimalizációt megvalósítottuk a [Mellékletek sémánkban](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229), a `body` BLOB mezőt a tábladefiníció végére helyezve a jobb teljesítmény érdekében.
 
-## Connection Management {#connection-management}
 
-We don't use connection pooling with SQLite—each user gets their own encrypted database. This approach provides perfect isolation between users, similar to sandboxing. Unlike architectures from other services that use MySQL, PostgreSQL, or MongoDB where your email could potentially be accessed by a rogue employee, Forward Email's per-user SQLite databases ensure your data is completely independent and sandboxed.
+## Kapcsolatkezelés {#connection-management}
 
-We never store your IMAP password, so we never have access to your data—it's all done in-memory. Learn more about our [quantum-resistant encryption approach](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) that details how our system works.
+Nem használunk kapcsolatpoolozást SQLite esetén — minden felhasználó saját titkosított adatbázist kap. Ez a megközelítés tökéletes izolációt biztosít a felhasználók között, hasonlóan a sandboxoláshoz. Ellentétben más szolgáltatások architektúráival, amelyek MySQL-t, PostgreSQL-t vagy MongoDB-t használnak, és ahol az e-mailje potenciálisan hozzáférhető lehet egy rosszindulatú alkalmazott számára, a Forward Email felhasználónkénti SQLite adatbázisai garantálják, hogy az adatai teljesen függetlenek és sandboxoltak.
+
+Soha nem tároljuk az IMAP jelszavát, így soha nincs hozzáférésünk az adataihoz — minden memóriában történik. Tudjon meg többet a [kvantumrezisztens titkosítási megközelítésünkről](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security), amely részletezi a rendszerünk működését.
 
 ```javascript
-// Per-user database approach
+// Felhasználónkénti adatbázis megközelítés
 async function getDatabase(session) {
   const dbPath = path.join(
     config.databaseDir,
@@ -336,43 +340,44 @@ async function getDatabase(session) {
 }
 ```
 
-This approach provides:
+Ez a megközelítés biztosítja:
 
-* Perfect isolation between users
+* Tökéletes izoláció a felhasználók között
 
-* No connection pool complexity
+* Nincs kapcsolatpool komplexitás
 
-* Automatic encryption per user
+* Automatikus titkosítás felhasználónként
 
-* Simpler backup/restore operations
+* Egyszerűbb biztonsági mentés/helyreállítás műveletek
 
-With `auto_vacuum=FULL`, we rarely need manual VACUUM operations:
+Az `auto_vacuum=FULL` beállítással ritkán van szükség kézi VACUUM műveletekre:
 
 ```javascript
-// Our cleanup strategy
-db.pragma('optimize=0x10002'); // On connection open
-db.pragma('optimize'); // Periodically (daily)
+// Takarítási stratégia
+db.pragma('optimize=0x10002'); // Kapcsolat megnyitásakor
+db.pragma('optimize'); // Időszakosan (naponta)
 
-// Manual vacuum only for major cleanups
+// Kézi vacuum csak nagyobb takarításokhoz
 if (deletedDataPercentage > 25) {
   db.exec('VACUUM');
 }
 ```
 
-**Auto Vacuum Performance Impact:**
+**Auto Vacuum teljesítményhatás:**
 
-* `auto_vacuum=FULL`: Immediate space reclamation, 5% write overhead
+* `auto_vacuum=FULL`: Azonnali helyfelszabadítás, 5% írási többletterhelés
 
-* `auto_vacuum=INCREMENTAL`: Manual control, requires periodic `PRAGMA incremental_vacuum`
+* `auto_vacuum=INCREMENTAL`: Kézi vezérlés, időszakos `PRAGMA incremental_vacuum` szükséges
 
-* `auto_vacuum=NONE`: Fastest writes, requires manual `VACUUM`
+* `auto_vacuum=NONE`: Leggyorsabb írások, kézi `VACUUM` szükséges
 
-## Monitoring and Diagnostics {#monitoring-and-diagnostics}
 
-Key metrics we track in production:
+## Monitorozás és diagnosztika {#monitoring-and-diagnostics}
+
+Főbb metrikák, amelyeket éles környezetben követünk:
 
 ```javascript
-// Performance monitoring queries
+// Teljesítmény monitorozó lekérdezések
 const stats = {
   page_count: db.pragma('page_count', { simple: true }),
   page_size: db.pragma('page_size', { simple: true }),
@@ -385,181 +390,186 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 ```
 
 > \[!NOTE]
-> We monitor fragmentation percentage and trigger maintenance when it exceeds 15%.
+> Figyeljük a fragmentáció százalékát, és karbantartást indítunk, ha az meghaladja a 15%-ot.
 
-## Node.js Version Performance {#nodejs-version-performance}
 
-Our comprehensive benchmarks across Node.js versions reveal significant performance differences:
+## Node.js verzió teljesítmény {#nodejs-version-performance}
 
-### Complete Cross-Version Results {#complete-cross-version-results}
+Átfogó benchmarkjaink a Node.js verziók között jelentős teljesítménykülönbségeket mutatnak:
 
-| Node Version | Forward Email Production | Best Insert/sec | Best Select/sec | Best Update/sec | Ez a dokumentum a bemutató, amely bemutatja a bemutatott módszerek és technológiákat |
-| ------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ---------------------- |
-| **v18.20.8** | 10,658 / 14,466 / 18,641 | **11,663** (Sync OFF) | **14,868** (Memory Temp) | **20,095** (MMAP) | ⚠️ Engine warning |
-| **v20.19.5** | 10,548 / 17,494 / 16,654 | **11,800** (WAL Auto) | **18,383** (WAL Auto) | **22,087** (WAL Auto) | ✅ Recommended |
-| **v22.21.1** | 9,829 / 15,833 / 18,416 | **11,260** (Sync OFF) | **17,413** (MMAP) | **20,731** (MMAP) | ⚠️ Slower overall |
-| **v24.11.1** | 9,938 / 7,497 / 10,446 | **10,628** (Incr Vacuum) | **16,821** (Incr Vacuum) | **19,934** (Incr Vacuum) | ❌ Significant slowdown |
+### Teljes verziók közötti eredmények {#complete-cross-version-results}
 
-### Key Performance Insights {#key-performance-insights}
+| Node verzió | Forward Email éles | Legjobb beszúrás/mp       | Legjobb lekérdezés/mp     | Legjobb frissítés/mp      | Megjegyzések           |
+| ------------ | ------------------ | ------------------------- | ------------------------- | ------------------------- | ---------------------- |
+| **v18.20.8** | 10,658 / 14,466 / 18,641 | **11,663** (Sync KI)       | **14,868** (Memória Temp) | **20,095** (MMAP)         | ⚠️ Motor figyelmeztetés |
+| **v20.19.5** | 10,548 / 17,494 / 16,654 | **11,800** (WAL Auto)      | **18,383** (WAL Auto)     | **22,087** (WAL Auto)     | ✅ Ajánlott             |
+| **v22.21.1** | 9,829 / 15,833 / 18,416  | **11,260** (Sync KI)       | **17,413** (MMAP)         | **20,731** (MMAP)         | ⚠️ Általánosan lassabb |
+| **v24.11.1** | 9,938 / 7,497 / 10,446   | **10,628** (Incr Vacuum)   | **16,821** (Incr Vacuum)  | **19,934** (Incr Vacuum)  | ❌ Jelentős lassulás    |
+### Fő Teljesítménybeli Megállapítások {#key-performance-insights}
 
 **Node.js v18 (Legacy LTS):**
 
-* Comparable insert performance to v20 (10,658 vs 10,548 ops/sec)
-* 17% slower selects than v20 (14,466 vs 17,494 ops/sec)
-* Shows npm engine warnings for packages requiring Node ≥20
-* Memory temp storage optimization works better than WAL autocheckpoint
-* Acceptable for legacy applications, but upgrade recommended
+* Összehasonlítható beszúrási teljesítmény a v20-hoz képest (10,658 vs 10,548 művelet/mp)
+* 17%-kal lassabb lekérdezések, mint a v20 (14,466 vs 17,494 művelet/mp)
+* npm engine figyelmeztetéseket mutat a Node ≥20-at igénylő csomagoknál
+* Memória ideiglenes tárolás optimalizálás jobban működik, mint a WAL automatikus ellenőrzőpont
+* Elfogadható régi alkalmazásokhoz, de frissítés ajánlott
 
-**Node.js v20 (Recommended):**
+**Node.js v20 (Ajánlott):**
 
-* Highest overall performance across all operations
-* WAL autocheckpoint optimization provides consistent 12% boost
-* Best compatibility with native SQLite modules
-* Most stable for production workloads
+* Legmagasabb összteljesítmény minden műveletnél
+* WAL automatikus ellenőrzőpont optimalizálás következetes 12%-os növekedést biztosít
+* Legjobb kompatibilitás natív SQLite modulokkal
+* Legstabilabb gyártási terhelésekhez
 
-**Node.js v22 (Acceptable):**
+**Node.js v22 (Elfogadható):**
 
-* 7% slower inserts, 9% slower selects vs v20
-* MMAP optimization shows better results than WAL autocheckpoint
-* Requires fresh `npm install` for each Node version switch
-* Acceptable for development, not recommended for production
+* 7%-kal lassabb beszúrások, 9%-kal lassabb lekérdezések a v20-hoz képest
+* MMAP optimalizálás jobb eredményeket mutat, mint a WAL automatikus ellenőrzőpont
+* Minden Node verzióváltásnál friss `npm install` szükséges
+* Fejlesztéshez elfogadható, gyártásban nem ajánlott
 
-**Node.js v24 (Not Recommended):**
+**Node.js v24 (Nem ajánlott):**
 
-* 6% slower inserts, 57% slower selects vs v20
-* Significant performance regression in read operations
-* Incremental vacuum performs better than other optimizations
-* Avoid for production SQLite applications
+* 6%-kal lassabb beszúrások, 57%-kal lassabb lekérdezések a v20-hoz képest
+* Jelentős teljesítményromlás olvasási műveleteknél
+* Inkrementális vacuum jobban teljesít, mint más optimalizációk
+* Kerülendő gyártási SQLite alkalmazásokhoz
 
-### Native Module Compatibility {#native-module-compatibility}
+### Natív Modul Kompatibilitás {#native-module-compatibility}
 
-The "module compatibility issues" we initially encountered were resolved by:
+Az eredetileg tapasztalt "modul kompatibilitási problémák" megoldódtak az alábbi lépésekkel:
 
 ```bash
-# Switch Node version and reinstall native modules
+# Node verzió váltása és natív modulok újratelepítése
 nvm use 22
 rm -rf node_modules
 npm install
 ```
 
-**Node.js v18 Considerations:**
+**Node.js v18 megfontolások:**
 
-* Shows engine warnings: `Unsupported engine { required: { node: '>=20.0.0' } }`
-* Still compiles and runs successfully despite warnings
-* Many modern SQLite packages target Node ≥20 for optimal support
-* Legacy applications can continue using v18 with acceptable performance
+* Motor figyelmeztetéseket mutat: `Unsupported engine { required: { node: '>=20.0.0' } }`
+* Figyelmeztetések ellenére sikeresen fordul és fut
+* Sok modern SQLite csomag Node ≥20-at céloz meg optimális támogatásért
+* Régi alkalmazások tovább használhatják a v18-at elfogadható teljesítménnyel
 
 > \[!IMPORTANT]
-> Always reinstall native modules when switching Node.js versions. The `better-sqlite3-multiple-ciphers` module must be compiled for each specific Node version.
+> Mindig telepítsd újra a natív modulokat Node.js verzióváltáskor. A `better-sqlite3-multiple-ciphers` modult minden egyes Node verzióhoz újra kell fordítani.
 
 > \[!TIP]
-> For production deployments, stick with Node.js v20 LTS. The performance benefits and stability outweigh any newer language features in v22/v24. Node v18 is acceptable for legacy systems but shows performance degradation in read operations.
+> Gyártási telepítéshez ragaszkodj a Node.js v20 LTS-hez. A teljesítménybeli előnyök és stabilitás felülmúlják a v22/v24 újabb nyelvi funkcióit. A Node v18 elfogadható régi rendszerekhez, de olvasási műveleteknél teljesítményromlást mutat.
 
-## Production Deployment Checklist {#production-deployment-checklist}
 
-Before deploying, ensure SQLite has these optimizations:
+## Gyártási Telepítési Ellenőrzőlista {#production-deployment-checklist}
 
-1. Set `SQLITE_TMPDIR` environment variable
-2. Ensure adequate disk space for temp operations (2x database size)
-3. Configure log rotation for WAL files
-4. Set up monitoring for database size and fragmentation
-5. Test backup/restore procedures with encryption
-6. Verify ChaCha20 cipher support in your SQLite build
+Telepítés előtt győződj meg róla, hogy az SQLite rendelkezik ezekkel az optimalizációkkal:
 
-## Troubleshooting Common Issues {#troubleshooting-common-issues}
+1. Állítsd be a `SQLITE_TMPDIR` környezeti változót
+2. Biztosíts elegendő lemezterületet az ideiglenes műveletekhez (2x az adatbázis mérete)
+3. Konfiguráld a WAL fájlok naplóforgatását
+4. Állíts be monitorozást az adatbázis méretére és fragmentációjára
+5. Teszteld a biztonsági mentés/helyreállítás eljárásokat titkosítással
+6. Ellenőrizd a ChaCha20 titkosítás támogatását az SQLite buildben
 
-### "Database is locked" Errors {#database-is-locked-errors}
+
+## Gyakori Hibák Elhárítása {#troubleshooting-common-issues}
+
+### „Az adatbázis zárolva van” hibák {#database-is-locked-errors}
 
 ```javascript
-// Increase busy timeout
-db.pragma('busy_timeout=60000'); // 60 seconds
+// Növeld a foglalt időkorlátot
+db.pragma('busy_timeout=60000'); // 60 másodperc
 
-// Check for long-running transactions
+// Ellenőrizd a hosszú futású tranzakciókat
 const info = db.pragma('wal_checkpoint(FULL)');
 if (info.busy > 0) {
-  console.warn('WAL checkpoint blocked by active readers');
+  console.warn('WAL ellenőrzőpontot aktív olvasók blokkolják');
 }
 ```
 
-### High Memory Usage During VACUUM {#high-memory-usage-during-vacuum}
+### Magas memóriahasználat VACUUM közben {#high-memory-usage-during-vacuum}
 
 ```javascript
-// Monitor memory before VACUUM
+// Memóriafigyelés VACUUM előtt
 const beforeMem = process.memoryUsage();
 db.exec('VACUUM');
 const afterMem = process.memoryUsage();
 
 console.log(
-  `VACUUM memory delta: ${
+  `VACUUM memória változás: ${
     (afterMem.heapUsed - beforeMem.heapUsed) / 1024 / 1024
   }MB`
 );
 ```
 
-### Slow Query Performance {#slow-query-performance}
+### Lassú lekérdezési teljesítmény {#slow-query-performance}
 
 ```javascript
-// Enable query analysis
-db.pragma('analysis_limit=400'); // Forward Email's setting
+// Lekérdezés elemzés engedélyezése
+db.pragma('analysis_limit=400'); // Forward Email beállítása
 db.exec('ANALYZE');
 
-// Check query plans
+// Lekérdezési tervek ellenőrzése
 const plan = db
   .prepare('EXPLAIN QUERY PLAN SELECT * FROM messages WHERE date > ?')
   .all(Date.now() - 86400000);
 console.log(plan);
 ```
 
-## Forward Email's Open Source Contributions {#forward-emails-open-source-contributions}
 
-We've contributed our SQLite optimization knowledge back to the community:
+## Forward Email Nyílt Forráskódú Hozzájárulásai {#forward-emails-open-source-contributions}
 
-* [Litestream documentation improvements](https://github.com/benbjohnson/litestream/issues/516) - Our suggestions for better SQLite performance tips
+Visszajuttattuk SQLite optimalizációs tudásunkat a közösségnek:
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - ChaCha20 encryption support
+* [Litestream dokumentáció fejlesztések](https://github.com/benbjohnson/litestream/issues/516) – Javaslataink jobb SQLite teljesítmény tippekhez
 
-* [SQLite performance tuning research](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Referenced in our implementation
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) – ChaCha20 titkosítás támogatás
 
-* [How npm packages with billion downloads shaped JavaScript ecosystem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Our broader contributions to npm and JavaScript development
+* [SQLite teljesítményhangolási kutatás](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) – Hivatkozott a megvalósításunkban
+* [Hogyan formálták a milliárdos letöltésszámú npm csomagok a JavaScript ökoszisztémát](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Szélesebb körű hozzájárulásaink az npm és a JavaScript fejlesztéséhez
 
-## Benchmark Source Code {#benchmark-source-code}
 
-All benchmark code is available in our test suite:
+## Benchmark Forráskód {#benchmark-source-code}
+
+Az összes benchmark kód elérhető a tesztcsomagunkban:
 
 ```bash
-# Run the benchmarks yourself
+# Futtasd le te magad a benchmarkokat
 git clone https://github.com/forwardemail/sqlite-benchmarks
 cd sqlite-benchmarks
 npm install
 npm run benchmark
 ```
 
-The benchmarks test:
+A benchmarkok tesztelik:
 
-* Various PRAGMA combinations
+* Különböző PRAGMA kombinációkat
 
-* ChaCha20 vs AES256 performance
+* ChaCha20 vs AES256 teljesítményt
 
-* WAL checkpoint strategies
+* WAL checkpoint stratégiákat
 
-* Temp storage configurations
+* Ideiglenes tárolási konfigurációkat
 
-* Node.js version compatibility
+* Node.js verzió kompatibilitást
 
-## What's Next for SQLite at Forward Email {#whats-next-for-sqlite-at-forward-email}
 
-We're actively testing these optimizations:
+## Mi következik az SQLite számára a Forward Email-nél {#whats-next-for-sqlite-at-forward-email}
 
-1. **WAL Autocheckpoint Tuning**: Adding `wal_autocheckpoint=1000` based on benchmark results
+Aktívan teszteljük ezeket az optimalizációkat:
 
-2. **Compression**: Evaluating [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) for attachment storage
+1. **WAL Autocheckpoint hangolás**: `wal_autocheckpoint=1000` hozzáadása a benchmark eredmények alapján
 
-3. **Analysis Limit**: Testing higher values than our current 400
+2. **Tömörítés**: Az [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) értékelése a csatolmánytároláshoz
 
-4. **Cache Size**: Considering dynamic cache sizing based on available memory
+3. **Elemzési limit**: Magasabb értékek tesztelése a jelenlegi 400-nál
 
-## Getting Help {#getting-help}
+4. **Gyorsítótár méret**: Dinamikus gyorsítótár méretezésének megfontolása az elérhető memória alapján
 
-Having SQLite performance issues? For SQLite-specific questions, the [SQLite Forum](https://sqlite.org/forum/forumpost) is an excellent resource, and the [performance tuning guide](https://www.sqlite.org/optoverview.html) covers additional optimizations we haven't needed yet.
 
-Learn more about Forward Email by reading our [FAQ](/faq).
+## Segítségkérés {#getting-help}
+
+SQLite teljesítményproblémáid vannak? SQLite-specifikus kérdések esetén az [SQLite Fórum](https://sqlite.org/forum/forumpost) kiváló forrás, és a [teljesítményhangolási útmutató](https://www.sqlite.org/optoverview.html) további optimalizációkat ismertet, amelyekre még nem volt szükségünk.
+
+Tudj meg többet a Forward Emailről az [GYIK](/faq) elolvasásával.

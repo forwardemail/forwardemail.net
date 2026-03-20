@@ -1,23 +1,26 @@
-# Eksempel på JavaScript-kontaktskjemaer for Node.js-kode {#javascript-contact-forms-nodejs-code-example}
+# JavaScript Kontakt Skjemaer Node.js Kodeeksempel {#javascript-contact-forms-nodejs-code-example}
+
 
 ## Innholdsfortegnelse {#table-of-contents}
 
-* [Installasjon og krav](#install-and-requirements)
-* [Kildekode og eksempel](#source-code-and-example)
+* [Installasjon og Krav](#install-and-requirements)
+* [Kildekode og Eksempel](#source-code-and-example)
 
-## Installasjon og krav {#install-and-requirements}
 
-Du må installere `nodemailer` npm-avhengigheten:
+## Installasjon og Krav {#install-and-requirements}
+
+Du må installere `nodemailer` npm-avhengighet:
 
 ```sh
 npm install nodemailer
 ```
 
-## Kildekode og eksempel {#source-code-and-example}
 
-Dette eksemplet bruker biblioteket **[Nodemailer](https://github.com/nodemailer/nodemailer)** og dets offisielle sponsor **[Videresend e-post](https://forwardemail.net)** til å sende og forhåndsvise utgående e-post.
+## Kildekode og Eksempel {#source-code-and-example}
 
-Du må <strong class="text-success"><i class="fa fa-key"></i> generere passord</strong> for å sende utgående e-post – følg vår **[Send e-post med SMTP-veiledning for tilpasset domene](/guides/send-email-with-custom-domain-smtp)**.
+Dette eksempelet bruker **[Nodemailer](https://github.com/nodemailer/nodemailer)** biblioteket og dets offisielle sponsor **[Forward Email](https://forwardemail.net)** for å sende og forhåndsvise utgående e-post.
+
+Du må <strong class="text-success"><i class="fa fa-key"></i> Generere Passord</strong> for å sende utgående e-post – vennligst følg vår **[Send E-post med Egendefinert Domene SMTP Guide](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: erstatt `user` og `pass` verdier fra:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -51,6 +54,6 @@ Kjør appen for å sende e-posten:
 node app
 ```
 
-Nå kan du gå til **[Min konto → E-poster](/my-account/emails)** for å se leveringsstatusen for e-post i sanntid, logger for e-postlevering og forhåndsvisninger av HTML/klartekst/vedlegg.
+Nå kan du gå til **[Min Konto → E-poster](/my-account/emails)** for å se din sanntidsstatus for e-postlevering, logger for e-postleverbarhet, og forhåndsvisninger av HTML/ren tekst/vedlegg.
 
-> PS: Du kan også **[forhåndsvis e-poster i nettlesere og iOS-simulatoren](/docs/test-preview-email-rendering-browsers-ios-simulator)** og **[lag e-postmaler med Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Du kan også **[forhåndsvise e-poster i nettlesere og iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** og **[lage e-postmaler med Node.js](/docs/send-emails-with-node-js-javascript)**.

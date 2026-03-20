@@ -1,103 +1,107 @@
-# كيف قمنا ببناء نظام دفع قوي مع Stripe وPayPal: نهج ثلاثي {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# كيف بنينا نظام دفع قوي باستخدام Stripe و PayPal: نهج الثلاثية {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="نظام الدفع باستخدام Stripe و PayPal" class="rounded-lg" />
+
 
 ## جدول المحتويات {#table-of-contents}
 
 * [مقدمة](#foreword)
 * [التحدي: معالجات دفع متعددة، مصدر واحد للحقيقة](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [نهج تريفيكتا: ثلاث طبقات من الموثوقية](#the-trifecta-approach-three-layers-of-reliability)
-* [الطبقة 1: عمليات إعادة التوجيه بعد الدفع](#layer-1-post-checkout-redirects)
-  * [تنفيذ عملية الدفع عبر Stripe](#stripe-checkout-implementation)
-  * [تدفق الدفع عبر PayPal](#paypal-payment-flow)
-* [الطبقة 2: معالجات Webhook مع التحقق من التوقيع](#layer-2-webhook-handlers-with-signature-verification)
-  * [تنفيذ Stripe Webhook](#stripe-webhook-implementation)
-  * [تنفيذ PayPal Webhook](#paypal-webhook-implementation)
-* [الطبقة 3: الوظائف الآلية مع Bree](#layer-3-automated-jobs-with-bree)
+* [نهج الثلاثية: ثلاث طبقات من الاعتمادية](#the-trifecta-approach-three-layers-of-reliability)
+* [الطبقة 1: إعادة التوجيه بعد إتمام الدفع](#layer-1-post-checkout-redirects)
+  * [تنفيذ Stripe Checkout](#stripe-checkout-implementation)
+  * [تدفق دفع PayPal](#paypal-payment-flow)
+* [الطبقة 2: معالجات الويب هوك مع التحقق من التوقيع](#layer-2-webhook-handlers-with-signature-verification)
+  * [تنفيذ ويب هوك Stripe](#stripe-webhook-implementation)
+  * [تنفيذ ويب هوك PayPal](#paypal-webhook-implementation)
+* [الطبقة 3: الوظائف الآلية باستخدام Bree](#layer-3-automated-jobs-with-bree)
   * [مدقق دقة الاشتراك](#subscription-accuracy-checker)
-  * [مزامنة اشتراك PayPal](#paypal-subscription-synchronization)
-* [التعامل مع الحالات الطارئة](#handling-edge-cases)
-  * [الكشف عن الاحتيال والوقاية منه](#fraud-detection-and-prevention)
+  * [مزامنة اشتراكات PayPal](#paypal-subscription-synchronization)
+* [التعامل مع الحالات الخاصة](#handling-edge-cases)
+  * [كشف ومنع الاحتيال](#fraud-detection-and-prevention)
   * [معالجة النزاعات](#dispute-handling)
-* [إعادة استخدام الكود: مبادئ KISS وDRY](#code-reuse-kiss-and-dry-principles)
-* [تنفيذ متطلبات اشتراك فيزا](#visa-subscription-requirements-implementation)
-  * [إشعارات البريد الإلكتروني التلقائية قبل التجديد](#automated-pre-renewal-email-notifications)
-  * [التعامل مع الحالات الطارئة](#handling-edge-cases-1)
+* [إعادة استخدام الكود: مبادئ KISS و DRY](#code-reuse-kiss-and-dry-principles)
+* [تنفيذ متطلبات اشتراك VISA](#visa-subscription-requirements-implementation)
+  * [إشعارات البريد الإلكتروني الآلية قبل التجديد](#automated-pre-renewal-email-notifications)
+  * [التعامل مع الحالات الخاصة](#handling-edge-cases-1)
   * [فترات التجربة وشروط الاشتراك](#trial-periods-and-subscription-terms)
-* [الخلاصة: فوائد نهجنا الثلاثي](#conclusion-the-benefits-of-our-trifecta-approach)
+* [الخاتمة: فوائد نهج الثلاثية لدينا](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## مقدمة {#foreword}
 
-في Forward Email، لطالما أولينا أهمية كبيرة لإنشاء أنظمة موثوقة ودقيقة وسهلة الاستخدام. عند تطبيق نظام معالجة المدفوعات لدينا، كنا على دراية بحاجتنا إلى حل قادر على التعامل مع معالجات دفع متعددة مع الحفاظ على اتساق مثالي للبيانات. توضح هذه المدونة بالتفصيل كيف نجح فريق التطوير لدينا في دمج كلٍّ من Stripe وPayPal باستخدام نهج متكامل يضمن دقةً فوريةً وشاملةً في جميع أنحاء نظامنا.
+في Forward Email، كنا دائمًا نولي الأولوية لإنشاء أنظمة موثوقة ودقيقة وسهلة الاستخدام. عندما حان وقت تنفيذ نظام معالجة الدفع الخاص بنا، كنا نعلم أننا بحاجة إلى حل يمكنه التعامل مع معالجات دفع متعددة مع الحفاظ على اتساق البيانات بشكل مثالي. يوضح هذا المنشور كيف دمج فريق التطوير لدينا كل من Stripe و PayPal باستخدام نهج الثلاثية الذي يضمن دقة 1:1 في الوقت الحقيقي عبر نظامنا بأكمله.
+
 
 ## التحدي: معالجات دفع متعددة، مصدر واحد للحقيقة {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-بصفتنا خدمة بريد إلكتروني تُركّز على الخصوصية، أردنا أن نُقدّم لمستخدمينا خيارات دفع مُختلفة. يُفضّل البعض بساطة الدفع ببطاقات الائتمان عبر Stripe، بينما يُقدّر آخرون ميزة الفصل الإضافية التي يُوفّرها PayPal. مع ذلك، يُضيف دعم مُعالجات دفع مُتعددة تعقيدًا كبيرًا:
+بصفتنا خدمة بريد إلكتروني تركز على الخصوصية، أردنا أن نوفر لمستخدمينا خيارات دفع. يفضل البعض بساطة الدفع ببطاقات الائتمان عبر Stripe، بينما يقدر آخرون الطبقة الإضافية من الفصل التي يوفرها PayPal. ومع ذلك، فإن دعم معالجات دفع متعددة يضيف تعقيدًا كبيرًا:
 
-١. كيف نضمن اتساق البيانات عبر أنظمة الدفع المختلفة؟
-٢. كيف نتعامل مع الحالات الطارئة كالنزاعات، أو استرداد الأموال، أو فشل الدفعات؟
-٣. كيف نحافظ على مصدر واحد للحقيقة في قاعدة بياناتنا؟
+1. كيف نضمن اتساق البيانات عبر أنظمة الدفع المختلفة؟
+2. كيف نتعامل مع الحالات الخاصة مثل النزاعات، الاستردادات، أو المدفوعات الفاشلة؟
+3. كيف نحافظ على مصدر واحد للحقيقة في قاعدة بياناتنا؟
 
-كان حلنا هو تنفيذ ما نسميه "نهج الثلاثية" - وهو نظام ثلاثي الطبقات يوفر التكرار ويضمن اتساق البيانات مهما حدث.
+كان حلنا هو تنفيذ ما نسميه "نهج الثلاثية" - نظام ثلاثي الطبقات يوفر التكرار ويضمن اتساق البيانات مهما حدث.
 
-## نهج تريفيكتا: ثلاث طبقات من الموثوقية {#the-trifecta-approach-three-layers-of-reliability}
 
-يتكون نظام الدفع لدينا من ثلاثة مكونات أساسية تعمل معًا لضمان مزامنة البيانات بشكل مثالي:
+## نهج الثلاثية: ثلاث طبقات من الاعتمادية {#the-trifecta-approach-three-layers-of-reliability}
 
-١. **إعادة توجيه ما بعد الدفع** - التقاط معلومات الدفع فورًا بعد الدفع
-٢. **معالجات الويب هوك** - معالجة الأحداث الفورية من معالجات الدفع
-٣. **الوظائف الآلية** - التحقق من بيانات الدفع ومطابقتها دوريًا
+يتكون نظام الدفع لدينا من ثلاثة مكونات حاسمة تعمل معًا لضمان تزامن البيانات بشكل مثالي:
 
-دعونا نتعمق في كل مكون ونرى كيف يعملان معًا.
+1. **إعادة التوجيه بعد إتمام الدفع** - التقاط معلومات الدفع فورًا بعد إتمام الشراء
+2. **معالجات الويب هوك** - معالجة الأحداث في الوقت الحقيقي من معالجات الدفع
+3. **الوظائف الآلية** - التحقق الدوري وتسوية بيانات الدفع
+
+دعونا نغوص في كل مكون ونرى كيف يعملون معًا.
 
 ```mermaid
 flowchart TD
-    User([User]) --> |Selects plan| Checkout[Checkout Page]
+    User([User]) --> |يختار الخطة| Checkout[Checkout Page]
 
     %% Layer 1: Post-checkout redirects
-    subgraph "Layer 1: Post-checkout Redirects"
-        Checkout --> |Credit Card| Stripe[Stripe Checkout]
+    subgraph "الطبقة 1: إعادة التوجيه بعد إتمام الدفع"
+        Checkout --> |بطاقة ائتمان| Stripe[Stripe Checkout]
         Checkout --> |PayPal| PayPal[PayPal Payment]
 
-        Stripe --> |Success URL with session_id| SuccessPage[Success Page]
-        PayPal --> |Return URL| SuccessPage
+        Stripe --> |رابط النجاح مع session_id| SuccessPage[صفحة النجاح]
+        PayPal --> |رابط العودة| SuccessPage
 
-        SuccessPage --> |Verify payment| Database[(Database Update)]
+        SuccessPage --> |التحقق من الدفع| Database[(تحديث قاعدة البيانات)]
     end
 
     %% Layer 2: Webhooks
-    subgraph "Layer 2: Webhook Handlers"
-        StripeEvents[Stripe Events] --> |Real-time notifications| StripeWebhook[Stripe Webhook Handler]
-        PayPalEvents[PayPal Events] --> |Real-time notifications| PayPalWebhook[PayPal Webhook Handler]
+    subgraph "الطبقة 2: معالجات الويب هوك"
+        StripeEvents[Stripe Events] --> |إشعارات في الوقت الحقيقي| StripeWebhook[معالج ويب هوك Stripe]
+        PayPalEvents[PayPal Events] --> |إشعارات في الوقت الحقيقي| PayPalWebhook[معالج ويب هوك PayPal]
 
-        StripeWebhook --> |Verify signature| ProcessStripeEvent[Process Stripe Event]
-        PayPalWebhook --> |Verify signature| ProcessPayPalEvent[Process PayPal Event]
+        StripeWebhook --> |التحقق من التوقيع| ProcessStripeEvent[معالجة حدث Stripe]
+        PayPalWebhook --> |التحقق من التوقيع| ProcessPayPalEvent[معالجة حدث PayPal]
 
         ProcessStripeEvent --> Database
         ProcessPayPalEvent --> Database
     end
 
     %% Layer 3: Automated jobs
-    subgraph "Layer 3: Bree Automated Jobs"
-        BreeScheduler[Bree Scheduler] --> StripeSync[Stripe Sync Job]
-        BreeScheduler --> PayPalSync[PayPal Sync Job]
-        BreeScheduler --> AccuracyCheck[Subscription Accuracy Check]
+    subgraph "الطبقة 3: الوظائف الآلية باستخدام Bree"
+        BreeScheduler[Bree Scheduler] --> StripeSync[وظيفة مزامنة Stripe]
+        BreeScheduler --> PayPalSync[وظيفة مزامنة PayPal]
+        BreeScheduler --> AccuracyCheck[فحص دقة الاشتراك]
 
-        StripeSync --> |Verify & reconcile| Database
-        PayPalSync --> |Verify & reconcile| Database
-        AccuracyCheck --> |Ensure consistency| Database
+        StripeSync --> |التحقق والتسوية| Database
+        PayPalSync --> |التحقق والتسوية| Database
+        AccuracyCheck --> |ضمان الاتساق| Database
     end
 
     %% Edge cases
-    subgraph "Edge Case Handling"
-        ProcessStripeEvent --> |Fraud detection| FraudCheck[Fraud Check]
-        ProcessPayPalEvent --> |Dispute created| DisputeHandler[Dispute Handler]
+    subgraph "التعامل مع الحالات الخاصة"
+        ProcessStripeEvent --> |كشف الاحتيال| FraudCheck[فحص الاحتيال]
+        ProcessPayPalEvent --> |إنشاء نزاع| DisputeHandler[معالجة النزاع]
 
-        FraudCheck --> |Ban user if fraudulent| Database
-        DisputeHandler --> |Accept claim & refund| Database
+        FraudCheck --> |حظر المستخدم إذا كان محتالًا| Database
+        DisputeHandler --> |قبول المطالبة والاسترداد| Database
 
-        FraudCheck --> |Send alert| AdminNotification[Admin Notification]
-        DisputeHandler --> |Send alert| AdminNotification
+        FraudCheck --> |إرسال تنبيه| AdminNotification[إشعار المسؤول]
+        DisputeHandler --> |إرسال تنبيه| AdminNotification
     end
 
     %% Style definitions
@@ -109,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
+## الطبقة 1: إعادة التوجيه بعد إتمام الدفع {#layer-1-post-checkout-redirects}
 
-## الطبقة 1: عمليات إعادة التوجيه بعد الخروج {#layer-1-post-checkout-redirects}
+تحدث الطبقة الأولى من نهجنا الثلاثي مباشرة بعد أن يكمل المستخدم الدفع. توفر كل من Stripe و PayPal آليات لإعادة توجيه المستخدمين إلى موقعنا مع معلومات المعاملة.
 
-تبدأ المرحلة الأولى من نهجنا الثلاثي فور إتمام المستخدم عملية الدفع. يوفر كلٌّ من Stripe وPayPal آليات لإعادة توجيه المستخدمين إلى موقعنا الإلكتروني مع معلومات المعاملة.
+### تنفيذ Stripe Checkout {#stripe-checkout-implementation}
 
-### تنفيذ عملية الدفع الشريطي {#stripe-checkout-implementation}
-
-بالنسبة لـ Stripe، نستخدم واجهة برمجة تطبيقات جلسات الدفع الخاصة بهم لتوفير تجربة دفع سلسة. عندما يختار المستخدم خطةً ويدفع ببطاقة ائتمان، ننشئ جلسة دفع ناجحة ونلغي عناوين URL.
+بالنسبة لـ Stripe، نستخدم واجهة برمجة تطبيقات جلسات Checkout الخاصة بهم لإنشاء تجربة دفع سلسة. عندما يختار المستخدم خطة ويختار الدفع ببطاقة ائتمان، نقوم بإنشاء جلسة Checkout مع عناوين URL محددة للنجاح والإلغاء:
 
 ```javascript
 const options = {
@@ -154,11 +157,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-الجزء المهم هنا هو مُعامل `success_url`، والذي يتضمن مُعامل `session_id` كمُعامل استعلام. عندما يُعيد Stripe توجيه المستخدم إلى موقعنا بعد إتمام عملية دفع ناجحة، يُمكننا استخدام مُعرّف الجلسة هذا للتحقق من المعاملة وتحديث قاعدة بياناتنا وفقًا لذلك.
+الجزء الحاسم هنا هو معلمة `success_url`، التي تتضمن `session_id` كمعلمة استعلام. عندما يعيد Stripe توجيه المستخدم إلى موقعنا بعد دفع ناجح، يمكننا استخدام معرف الجلسة هذا للتحقق من المعاملة وتحديث قاعدة بياناتنا وفقًا لذلك.
 
 ### تدفق دفع PayPal {#paypal-payment-flow}
 
-بالنسبة إلى PayPal، نستخدم نهجًا مشابهًا مع واجهة برمجة تطبيقات الطلبات الخاصة بهم:
+بالنسبة لـ PayPal، نستخدم نهجًا مشابهًا مع واجهة برمجة تطبيقات الطلبات الخاصة بهم:
 
 ```javascript
 const requestBody = {
@@ -210,7 +213,7 @@ const requestBody = {
 };
 ```
 
-كما هو الحال مع Stripe، نحدد معلمتي `return_url` و`cancel_url` لمعالجة عمليات إعادة التوجيه بعد الدفع. عندما يعيد PayPal توجيه المستخدم إلى موقعنا، يمكننا تسجيل تفاصيل الدفع وتحديث قاعدة بياناتنا.
+مماثل لـ Stripe، نحدد معلمات `return_url` و `cancel_url` للتعامل مع إعادة التوجيه بعد الدفع. عندما يعيد PayPal توجيه المستخدم إلى موقعنا، يمكننا التقاط تفاصيل الدفع وتحديث قاعدة بياناتنا.
 
 ```mermaid
 sequenceDiagram
@@ -222,74 +225,73 @@ sequenceDiagram
     participant Bree as Bree Job Scheduler
 
     %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    User->>FE: اختيار الخطة وطريقة الدفع
 
     alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
+        FE->>Stripe: إنشاء جلسة Checkout
+        Stripe-->>FE: إرجاع عنوان URL للجلسة
+        FE->>User: إعادة التوجيه إلى Stripe Checkout
+        User->>Stripe: إتمام الدفع
+        Stripe->>User: إعادة التوجيه إلى عنوان URL النجاح مع session_id
+        User->>FE: العودة إلى صفحة النجاح
+        FE->>Stripe: التحقق من الجلسة باستخدام session_id
+        Stripe-->>FE: إرجاع تفاصيل الجلسة
+        FE->>DB: تحديث خطة المستخدم وحالة الدفع
     else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+        FE->>PayPal: إنشاء طلب
+        PayPal-->>FE: إرجاع عنوان URL للموافقة
+        FE->>User: إعادة التوجيه إلى PayPal
+        User->>PayPal: الموافقة على الدفع
+        PayPal->>User: إعادة التوجيه إلى عنوان URL العودة
+        User->>FE: العودة إلى صفحة النجاح
+        FE->>PayPal: التقاط الدفع
+        PayPal-->>FE: إرجاع تفاصيل الدفع
+        FE->>DB: تحديث خطة المستخدم وحالة الدفع
     end
 
     %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    Note over Stripe,PayPal: تحدث أحداث الدفع (غير متزامنة)
 
     alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
+        Stripe->>FE: إرسال إشعار الحدث
+        FE->>FE: التحقق من توقيع الويب هوك
+        FE->>DB: معالجة الحدث وتحديث البيانات
+        FE-->>Stripe: تأكيد الاستلام (200 OK)
     else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+        PayPal->>FE: إرسال إشعار الحدث
+        FE->>FE: التحقق من توقيع الويب هوك
+        FE->>DB: معالجة الحدث وتحديث البيانات
+        FE-->>PayPal: تأكيد الاستلام (200 OK)
     end
 
     %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    Note over Bree: تشغيل الوظائف المجدولة بشكل دوري
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: الحصول على جميع العملاء والاشتراكات
+    Stripe-->>Bree: إرجاع بيانات العملاء
+    Bree->>DB: مقارنة وتسوية البيانات
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: الحصول على جميع الاشتراكات والمعاملات
+    PayPal-->>Bree: إرجاع بيانات الاشتراك
+    Bree->>DB: مقارنة وتسوية البيانات
 
     %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    Note over User,PayPal: المستخدم يعترض على رسوم
 
-    PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    PayPal->>FE: webhook إنشاء نزاع DISPUTE.CREATED
+    FE->>PayPal: قبول المطالبة تلقائيًا
+    FE->>DB: تحديث حالة المستخدم
+    FE->>User: إرسال بريد إلكتروني للإشعار
 ```
+## الطبقة 2: معالجات الويب هوك مع التحقق من التوقيع {#layer-2-webhook-handlers-with-signature-verification}
 
-## الطبقة 2: معالجات Webhook مع التحقق من التوقيع {#layer-2-webhook-handlers-with-signature-verification}
+بينما تعمل عمليات إعادة التوجيه بعد إتمام الشراء بشكل جيد في معظم السيناريوهات، إلا أنها ليست مضمونة. قد يغلق المستخدمون متصفحهم قبل إعادة التوجيه، أو قد تمنع مشاكل الشبكة إكمال عملية إعادة التوجيه. هنا يأتي دور الويب هوك.
 
-رغم أن عمليات إعادة التوجيه بعد إتمام عملية الشراء تعمل بكفاءة في معظم الحالات، إلا أنها ليست مضمونة النجاح. فقد يُغلق المستخدمون متصفحهم قبل إعادة توجيههم، أو قد تمنع مشاكل في الشبكة إتمام عملية إعادة التوجيه. وهنا يأتي دور خطافات الويب.
+يوفر كل من Stripe و PayPal أنظمة ويب هوك ترسل إشعارات في الوقت الحقيقي حول أحداث الدفع. لقد قمنا بتنفيذ معالجات ويب هوك قوية تتحقق من صحة هذه الإشعارات وتعالجها وفقًا لذلك.
 
-يوفر كلٌّ من Stripe وPayPal أنظمة ويب هوك تُرسل إشعارات فورية حول عمليات الدفع. وقد طبّقنا معالجات ويب هوك فعّالة للتحقق من صحة هذه الإشعارات ومعالجتها وفقًا لذلك.
+### تنفيذ ويب هوك Stripe {#stripe-webhook-implementation}
 
-### تنفيذ خطاف الويب الشريطي {#stripe-webhook-implementation}
-
-يتحقق معالج Webhook Stripe الخاص بنا من توقيع أحداث Webhook الواردة للتأكد من شرعيتها:
+يقوم معالج ويب هوك Stripe الخاص بنا بالتحقق من توقيع أحداث الويب هوك الواردة لضمان شرعيتها:
 
 ```javascript
 async function webhook(ctx) {
@@ -334,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-تتحقق دالة `stripe.webhooks.constructEvent` من صحة التوقيع باستخدام سر نقطة النهاية. إذا كان التوقيع صحيحًا، فسنعالج الحدث بشكل غير متزامن لتجنب حظر استجابة خطاف الويب.
+تتحقق دالة `stripe.webhooks.constructEvent` من التوقيع باستخدام سر نقطة النهاية الخاصة بنا. إذا كان التوقيع صالحًا، نقوم بمعالجة الحدث بشكل غير متزامن لتجنب حجب استجابة الويب هوك.
 
-### تنفيذ خطاف الويب الخاص بـ PayPal {#paypal-webhook-implementation}
+### تنفيذ ويب هوك PayPal {#paypal-webhook-implementation}
 
-على نحو مماثل، يتحقق معالج الويب الخاص بـ PayPal من صحة الإشعارات الواردة:
+بنفس الطريقة، يتحقق معالج ويب هوك PayPal الخاص بنا من صحة الإشعارات الواردة:
 
 ```javascript
 async function webhook(ctx) {
@@ -377,16 +379,16 @@ async function webhook(ctx) {
 }
 ```
 
-يتبع كلا معالجي خطاف الويب نفس النمط: التحقق من التوقيع، وتأكيد الاستلام، ومعالجة الحدث بشكل غير متزامن. هذا يضمن عدم تفويت أي عملية دفع، حتى في حال فشل إعادة التوجيه بعد إتمام عملية الدفع.
+يتبع كلا معالجي الويب هوك نفس النمط: التحقق من التوقيع، تأكيد الاستلام، ومعالجة الحدث بشكل غير متزامن. هذا يضمن أننا لا نفوت أي حدث دفع، حتى إذا فشلت إعادة التوجيه بعد إتمام الشراء.
+
 
 ## الطبقة 3: الوظائف الآلية مع Bree {#layer-3-automated-jobs-with-bree}
 
-الطبقة الأخيرة من نهجنا الثلاثي هي مجموعة من المهام الآلية التي تتحقق من بيانات الدفع وتُطابقها دوريًا. نستخدم Bree، وهو مُجدول مهام لـ Node.js، لتشغيل هذه المهام على فترات منتظمة.
+الطبقة النهائية من نهجنا الثلاثي هي مجموعة من الوظائف الآلية التي تتحقق دوريًا من بيانات الدفع وتقوم بمطابقتها. نستخدم Bree، وهو مجدول وظائف لـ Node.js، لتشغيل هذه الوظائف على فترات منتظمة.
 
-### أداة التحقق من دقة الاشتراك {#subscription-accuracy-checker}
+### مدقق دقة الاشتراك {#subscription-accuracy-checker}
 
-أحد وظائفنا الرئيسية هو التحقق من دقة الاشتراك، والذي يضمن أن قاعدة البيانات الخاصة بنا تعكس بدقة حالة الاشتراك في Stripe:
-
+واحدة من الوظائف الرئيسية لدينا هي مدقق دقة الاشتراك، الذي يضمن أن قاعدة بياناتنا تعكس بدقة حالة الاشتراك في Stripe:
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -452,11 +454,11 @@ async function mapper(customer) {
 }
 ```
 
-تتحقق هذه الوظيفة من وجود أي تناقضات بين قاعدة بياناتنا وStripe، مثل عدم تطابق عناوين البريد الإلكتروني أو تعدد الاشتراكات النشطة. في حال وجود أي مشاكل، تُسجلها وتُرسل تنبيهات إلى فريق الإدارة لدينا.
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### مزامنة اشتراك PayPal {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-لدينا وظيفة مماثلة لاشتراكات PayPal:
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +489,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-تخدم هذه الوظائف الآلية كشبكة أمان نهائية لدينا، مما يضمن أن قاعدة البيانات الخاصة بنا تعكس دائمًا الحالة الحقيقية للاشتراكات والمدفوعات في كل من Stripe وPayPal.
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## التعامل مع الحالات الحدية {#handling-edge-cases}
 
-يجب على نظام الدفع القوي أن يتعامل مع الحالات الطارئة بكفاءة. لنلقِ نظرة على كيفية تعاملنا مع بعض السيناريوهات الشائعة.
+## Handling Edge Cases {#handling-edge-cases}
 
-### اكتشاف الاحتيال والوقاية منه {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-لقد قمنا بتنفيذ آليات متطورة للكشف عن الاحتيال والتي تعمل تلقائيًا على تحديد أنشطة الدفع المشبوهة ومعالجتها:
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -540,30 +543,30 @@ case 'charge.failed': {
 }
 ```
 
-يقوم هذا الرمز بحظر المستخدمين الذين لديهم عمليات شحن فاشلة متعددة وليس لديهم نطاقات تم التحقق منها تلقائيًا، وهو مؤشر قوي على النشاط الاحتيالي.
+يقوم هذا الكود بحظر المستخدمين تلقائيًا الذين لديهم عدة محاولات فشل في الشحنات ولا يملكون نطاقات موثقة، وهو مؤشر قوي على نشاط احتيالي.
 
 ### معالجة النزاعات {#dispute-handling}
 
-عندما يعترض المستخدم على رسوم ما، فإننا نقبل المطالبة تلقائيًا ونتخذ الإجراء المناسب:
+عندما يعترض المستخدم على شحنة، نقبل الادعاء تلقائيًا ونتخذ الإجراء المناسب:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
-  // accept claim
+  // قبول الادعاء
   const agent = await paypalAgent();
   await agent
     .post(`/v1/customer/disputes/${body.resource.dispute_id}/accept-claim`)
     .send({
-      note: 'Full refund to the customer.'
+      note: 'استرداد كامل للمبلغ للعميل.'
     });
 
-  // Find the payment in our database
+  // البحث عن الدفع في قاعدة بياناتنا
   const payment = await Payments.findOne({ $or });
-  if (!payment) throw new Error('Payment does not exist');
+  if (!payment) throw new Error('الدفع غير موجود');
 
   const user = await Users.findById(payment.user);
-  if (!user) throw new Error('User did not exist for customer');
+  if (!user) throw new Error('المستخدم غير موجود للعميل');
 
-  // Cancel the user's subscription if they have one
+  // إلغاء اشتراك المستخدم إذا كان لديه واحد
   if (isSANB(user[config.userFields.paypalSubscriptionID])) {
     try {
       const agent = await paypalAgent();
@@ -573,30 +576,31 @@ case 'CUSTOMER.DISPUTE.CREATED': {
         }/cancel`
       );
     } catch (err) {
-      // Handle subscription cancellation errors
+      // معالجة أخطاء إلغاء الاشتراك
     }
   }
 }
 ```
 
-يقلل هذا النهج من تأثير النزاعات على أعمالنا مع ضمان تجربة جيدة للعملاء.
+تقلل هذه الطريقة من تأثير النزاعات على أعمالنا مع ضمان تجربة جيدة للعميل.
 
-إعادة استخدام الكود ##: مبادئ KISS وDRY {#code-reuse-kiss-and-dry-principles}
 
-في نظام الدفع لدينا، التزمنا بمبدأي KISS (البساطة، البساطة) وDRY (عدم تكرار نفس الشيء). إليك بعض الأمثلة:
+## إعادة استخدام الكود: مبادئ KISS و DRY {#code-reuse-kiss-and-dry-principles}
 
-1. **وظائف المساعدة المشتركة**: لقد أنشأنا وظائف مساعدة قابلة لإعادة الاستخدام للمهام الشائعة مثل مزامنة المدفوعات وإرسال رسائل البريد الإلكتروني.
+على مدار نظام الدفع لدينا، التزمنا بمبادئ KISS (اجعلها بسيطة، غبي) و DRY (لا تكرر نفسك). إليك بعض الأمثلة:
 
-2. **معالجة الأخطاء بشكل متسق**: يستخدم كل من معالجات Webhook الخاصة بـ Stripe وPayPal نفس النمط لمعالجة الأخطاء وإشعارات المسؤول.
+1. **دوال مساعدة مشتركة**: أنشأنا دوال مساعدة قابلة لإعادة الاستخدام للمهام الشائعة مثل مزامنة المدفوعات وإرسال الرسائل الإلكترونية.
 
-3. **مخطط قاعدة البيانات الموحدة**: تم تصميم مخطط قاعدة البيانات لدينا لاستيعاب بيانات Stripe وPayPal، مع حقول مشتركة لحالة الدفع والمبلغ ومعلومات الخطة.
+2. **معالجة أخطاء متسقة**: يستخدم كل من معالجات ويب هوك Stripe و PayPal نفس النمط لمعالجة الأخطاء وإشعارات الإدارة.
 
-4. **التكوين المركزي**: يتم تجميع التكوين المتعلق بالدفع في ملف واحد، مما يجعل من السهل تحديث الأسعار ومعلومات المنتج.
+3. **مخطط قاعدة بيانات موحد**: تم تصميم مخطط قاعدة البيانات لدينا لاستيعاب بيانات كل من Stripe و PayPal، مع حقول مشتركة لحالة الدفع، المبلغ، ومعلومات الخطة.
+
+4. **تكوين مركزي**: يتمركز تكوين الدفع في ملف واحد، مما يسهل تحديث الأسعار ومعلومات المنتج.
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        A[Helper Functions] --> B[syncStripePaymentIntent]
+    subgraph "نماذج إعادة استخدام الكود"
+        A[دوال مساعدة] --> B[syncStripePaymentIntent]
         A --> C[syncPayPalOrderPaymentByPaymentId]
         A --> D[syncPayPalSubscriptionPaymentsByUser]
     end
@@ -610,10 +614,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        E[Error Handling] --> F[Common Error Logging]
-        E --> G[Admin Email Notifications]
-        E --> H[User Notifications]
+    subgraph "نماذج إعادة استخدام الكود"
+        E[معالجة الأخطاء] --> F[تسجيل الأخطاء المشترك]
+        E --> G[إشعارات البريد الإلكتروني للإدارة]
+        E --> H[إشعارات المستخدم]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -625,9 +629,9 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        I[Configuration] --> J[Centralized Payment Config]
-        I --> K[Shared Environment Variables]
+    subgraph "نماذج إعادة استخدام الكود"
+        I[التكوين] --> J[تكوين الدفع المركزي]
+        I --> K[متغيرات البيئة المشتركة]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -639,10 +643,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        L[Webhook Processing] --> M[Signature Verification]
-        L --> N[Async Event Processing]
-        L --> O[Background Processing]
+    subgraph "نماذج إعادة استخدام الكود"
+        L[معالجة ويب هوك] --> M[التحقق من التوقيع]
+        L --> N[معالجة الأحداث غير المتزامنة]
+        L --> O[المعالجة الخلفية]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -654,12 +658,12 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "KISS Principle"
-        P[Simple Data Flow] --> Q[Unidirectional Updates]
-        P --> R[Clear Responsibility Separation]
+    subgraph "مبدأ KISS"
+        P[تدفق بيانات بسيط] --> Q[تحديثات أحادية الاتجاه]
+        P --> R[فصل واضح للمسؤوليات]
 
-        S[Explicit Error Handling] --> T[No Silent Failures]
-        S --> U[Comprehensive Logging]
+        S[معالجة أخطاء صريحة] --> T[عدم وجود فشل صامت]
+        S --> U[تسجيل شامل]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -668,16 +672,14 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
-    subgraph "DRY Principle"
-        V[Shared Logic] --> W[Payment Processing Functions]
-        V --> X[Email Templates]
-        V --> Y[Validation Logic]
+    subgraph "مبدأ DRY"
+        V[المنطق المشترك] --> W[وظائف معالجة الدفع]
+        V --> X[قوالب البريد الإلكتروني]
+        V --> Y[منطق التحقق]
 
-        Z[Common Database Operations] --> AA[User Updates]
-        Z --> AB[Payment Recording]
+        Z[عمليات قاعدة البيانات المشتركة] --> AA[تحديثات المستخدم]
+        Z --> AB[تسجيل الدفع]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -687,25 +689,26 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
-## تنفيذ متطلبات اشتراك VISA {#visa-subscription-requirements-implementation}
 
-بالإضافة إلى نهجنا الثلاثي، طبّقنا ميزات محددة للامتثال لمتطلبات اشتراك VISA مع تحسين تجربة المستخدم. أحد أهم متطلبات VISA هو إشعار المستخدمين قبل تحصيل رسوم الاشتراك، خاصةً عند الانتقال من الاشتراك التجريبي إلى الاشتراك المدفوع.
+## تنفيذ متطلبات الاشتراك في VISA {#visa-subscription-requirements-implementation}
+
+بالإضافة إلى نهجنا الثلاثي، قمنا بتنفيذ ميزات محددة للامتثال لمتطلبات الاشتراك في VISA مع تحسين تجربة المستخدم. أحد المتطلبات الرئيسية من VISA هو أنه يجب إعلام المستخدمين قبل أن يتم تحصيل رسوم الاشتراك منهم، خاصة عند الانتقال من فترة تجريبية إلى اشتراك مدفوع.
 
 ### إشعارات البريد الإلكتروني التلقائية قبل التجديد {#automated-pre-renewal-email-notifications}
 
-لقد أنشأنا نظامًا آليًا يتعرّف على المستخدمين الذين لديهم اشتراكات تجريبية نشطة، ويرسل لهم إشعارًا عبر البريد الإلكتروني قبل أول عملية خصم. هذا لا يضمن التزامنا بمتطلبات VISA فحسب، بل يقلل أيضًا من عمليات استرداد المبالغ المدفوعة ويحسّن رضا العملاء.
+قمنا ببناء نظام تلقائي يحدد المستخدمين الذين لديهم اشتراكات تجريبية نشطة ويرسل لهم بريدًا إلكترونيًا إشعاريًا قبل حدوث أول عملية تحصيل. هذا لا يحافظ فقط على امتثالنا لمتطلبات VISA ولكنه يقلل أيضًا من عمليات الاسترداد ويحسن رضا العملاء.
 
-فيما يلي كيفية تنفيذ هذه الميزة:
+إليك كيف قمنا بتنفيذ هذه الميزة:
 
 ```javascript
-// Find users with trial subscriptions who haven't received a notification yet
+// العثور على المستخدمين الذين لديهم اشتراكات تجريبية ولم يتلقوا إشعارًا بعد
 const users = await Users.find({
   $or: [
     {
       $and: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
         { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // استبعاد الاشتراكات التي تم دفعها بالفعل
         ...(paidStripeSubscriptionIds.length > 0
           ? [
               {
@@ -721,7 +724,7 @@ const users = await Users.find({
       $and: [
         { [config.userFields.paypalSubscriptionID]: { $exists: true } },
         { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // استبعاد الاشتراكات التي تم دفعها بالفعل
         ...(paidPayPalSubscriptionIds.length > 0
           ? [
               {
@@ -736,22 +739,22 @@ const users = await Users.find({
   ]
 });
 
-// Process each user and send notification
+// معالجة كل مستخدم وإرسال الإشعار
 for (const user of users) {
-  // Get subscription details from payment processor
+  // الحصول على تفاصيل الاشتراك من معالج الدفع
   const subscription = await getSubscriptionDetails(user);
 
-  // Calculate subscription duration and frequency
+  // حساب مدة الاشتراك وتكراره
   const duration = getDurationFromPlanId(subscription.plan_id);
   const frequency = getHumanReadableFrequency(duration, user.locale);
   const amount = getPlanAmount(user.plan, duration);
 
-  // Get user's domains for personalized email
+  // الحصول على نطاقات المستخدم للبريد الإلكتروني المخصص
   const domains = await Domains.find({
     'members.user': user._id
   }).sort('name').lean().exec();
 
-  // Send VISA-compliant notification email
+  // إرسال بريد إلكتروني مطابق لمتطلبات VISA
   await emailHelper({
     template: 'visa-trial-subscription-requirement',
     message: {
@@ -767,7 +770,7 @@ for (const user of users) {
     }
   });
 
-  // Record that notification was sent
+  // تسجيل أنه تم إرسال الإشعار
   await Users.findByIdAndUpdate(user._id, {
     $set: {
       [config.userFields.paypalTrialSentAt]: new Date()
@@ -776,18 +779,17 @@ for (const user of users) {
 }
 ```
 
-يضمن هذا التنفيذ أن يكون المستخدمون على علم دائمًا بالرسوم القادمة، مع تفاصيل واضحة حول:
+يضمن هذا التنفيذ أن يتم إعلام المستخدمين دائمًا بالرسوم القادمة، مع تفاصيل واضحة حول:
 
-١. موعد أول عملية تحصيل رسوم
-٢. وتيرة تحصيل الرسوم المستقبلية (شهريًا، سنويًا، إلخ.)
-٣. المبلغ الدقيق الذي سيتم تحصيله
-٤. النطاقات المشمولة باشتراكهم
+1. متى ستحدث أول عملية تحصيل
+2. تكرار الرسوم المستقبلية (شهريًا، سنويًا، إلخ)
+3. المبلغ الدقيق الذي سيتم تحصيله
+4. النطاقات التي يغطيها اشتراكهم
 
-من خلال أتمتة هذه العملية، نحافظ على الامتثال التام لمتطلبات VISA (التي تلزم بالإخطار قبل 7 أيام على الأقل من فرض الرسوم) مع تقليل استفسارات الدعم وتحسين تجربة المستخدم بشكل عام.
+من خلال أتمتة هذه العملية، نحافظ على الامتثال الكامل لمتطلبات VISA (التي تفرض الإشعار قبل 7 أيام على الأقل من التحصيل) مع تقليل استفسارات الدعم وتحسين تجربة المستخدم بشكل عام.
+### التعامل مع الحالات الخاصة {#handling-edge-cases-1}
 
-### التعامل مع الحالات الحدية {#handling-edge-cases-1}
-
-يتضمن تطبيقنا أيضًا معالجةً فعّالة للأخطاء. في حال حدوث أي خطأ أثناء عملية الإشعار، يُنبّه نظامنا فريقنا تلقائيًا:
+تتضمن تطبيقنا أيضًا معالجة أخطاء قوية. إذا حدث أي خطأ أثناء عملية الإشعار، يقوم نظامنا تلقائيًا بتنبيه فريقنا:
 
 ```javascript
 try {
@@ -813,13 +815,13 @@ try {
 }
 ```
 
-وهذا يضمن أنه حتى في حالة وجود مشكلة في نظام الإشعارات، يمكن لفريقنا معالجتها بسرعة والحفاظ على الامتثال لمتطلبات VISA.
+هذا يضمن أنه حتى إذا كان هناك مشكلة في نظام الإشعارات، يمكن لفريقنا التعامل معها بسرعة والحفاظ على الامتثال لمتطلبات VISA.
 
-ويشكل نظام إشعار الاشتراك ببطاقة VISA مثالاً آخر على كيفية بناء البنية التحتية للدفع لدينا مع مراعاة الامتثال وتجربة المستخدم، وهو ما يكمل نهجنا الثلاثي لضمان معالجة المدفوعات بشكل موثوق وشفاف.
+نظام إشعارات الاشتراك في VISA هو مثال آخر على كيفية بناء بنية الدفع لدينا مع مراعاة كل من الامتثال وتجربة المستخدم، مما يكمل نهجنا الثلاثي لضمان معالجة دفع موثوقة وشفافة.
 
 ### فترات التجربة وشروط الاشتراك {#trial-periods-and-subscription-terms}
 
-بالنسبة للمستخدمين الذين يقومون بتمكين التجديد التلقائي للخطط الحالية، فإننا نحسب فترة التجربة المناسبة للتأكد من عدم فرض رسوم عليهم حتى انتهاء صلاحية خطتهم الحالية:
+للمستخدمين الذين يفعلون التجديد التلقائي على الخطط الحالية، نقوم بحساب فترة التجربة المناسبة لضمان عدم تحصيل أي رسوم حتى تنتهي خطتهم الحالية:
 
 ```javascript
 if (
@@ -836,22 +838,20 @@ if (
 }
 ```
 
-كما نقدم معلومات واضحة حول شروط الاشتراك، بما في ذلك تكرار الفواتير وسياسات الإلغاء، ونقوم بتضمين بيانات وصفية مفصلة مع كل اشتراك لضمان التتبع والإدارة المناسبين.
+نقدم أيضًا معلومات واضحة حول شروط الاشتراك، بما في ذلك تكرار الفوترة وسياسات الإلغاء، ونضمن تضمين بيانات وصفية مفصلة مع كل اشتراك لضمان التتبع والإدارة السليمة.
 
 ## الخاتمة: فوائد نهجنا الثلاثي {#conclusion-the-benefits-of-our-trifecta-approach}
 
-لقد قدم لنا نهجنا الثلاثي في معالجة المدفوعات العديد من الفوائد الرئيسية:
+لقد وفر نهجنا الثلاثي في معالجة الدفع عدة فوائد رئيسية:
 
-1. **الموثوقية**: من خلال تنفيذ ثلاث طبقات من التحقق من الدفع، فإننا نضمن عدم تفويت أي دفعة أو معالجتها بشكل غير صحيح.
+1. **الموثوقية**: من خلال تنفيذ ثلاث طبقات من التحقق من الدفع، نضمن عدم فقدان أي دفعة أو معالجتها بشكل خاطئ.
 
-2. **الدقة**: تعكس قاعدة بياناتنا دائمًا الحالة الحقيقية للاشتراكات والمدفوعات في كل من Stripe وPayPal.
+2. **الدقة**: تعكس قاعدة بياناتنا دائمًا الحالة الحقيقية للاشتراكات والمدفوعات في كل من Stripe و PayPal.
 
-3. **المرونة**: يمكن للمستخدمين اختيار طريقة الدفع المفضلة لديهم دون المساس بموثوقية نظامنا.
+3. **المرونة**: يمكن للمستخدمين اختيار طريقة الدفع المفضلة لديهم دون التأثير على موثوقية نظامنا.
 
-4. **المتانة**: يتعامل نظامنا مع الحالات الطارئة بسلاسة، بدءًا من فشل الشبكة وحتى الأنشطة الاحتيالية.
+4. **الصلابة**: يتعامل نظامنا مع الحالات الخاصة بسلاسة، من فشل الشبكة إلى الأنشطة الاحتيالية.
 
-إذا كنت تُطبّق نظام دفع يدعم معالجات متعددة، فنوصي بشدة بهذا النهج الثلاثي. يتطلب هذا جهدًا تطويريًا أوليًا أكبر، لكن فوائده طويلة الأمد من حيث الموثوقية والدقة تستحق العناء.
+إذا كنت تقوم بتنفيذ نظام دفع يدعم عدة معالجات، نوصي بشدة بهذا النهج الثلاثي. يتطلب جهد تطوير أولي أكبر، لكن الفوائد طويلة الأمد من حيث الموثوقية والدقة تستحق ذلك.
 
-لمزيد من المعلومات حول إعادة توجيه البريد الإلكتروني وخدمات البريد الإلكتروني التي تركز على الخصوصية، تفضل بزيارة [موقع إلكتروني](https://forwardemail.net).
-
-<!-- *الكلمات المفتاحية: معالجة الدفع، تكامل Stripe، تكامل PayPal، معالجة خطاف الويب، مزامنة الدفع، إدارة الاشتراك، منع الاحتيال، معالجة النزاعات، نظام دفع Node.js، نظام دفع متعدد المعالجات، تكامل بوابة الدفع، التحقق من الدفع في الوقت الفعلي، اتساق بيانات الدفع، فوترة الاشتراك، أمان الدفع، أتمتة الدفع، خطافات الويب للدفع، تسوية الدفع، حالات الدفع الحدية، معالجة أخطاء الدفع، متطلبات اشتراك VISA، إشعارات ما قبل التجديد، الامتثال للاشتراك* -->
+لمزيد من المعلومات حول Forward Email وخدمات البريد الإلكتروني التي تركز على الخصوصية، قم بزيارة [موقعنا](https://forwardemail.net).

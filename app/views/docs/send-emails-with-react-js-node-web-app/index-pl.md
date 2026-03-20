@@ -1,21 +1,24 @@
-# Wysyłanie wiadomości e-mail za pomocą przykładu aplikacji internetowej Node w React.js {#send-emails-with-reactjs-node-web-app-example}
+# Wysyłanie e-maili za pomocą aplikacji webowej React.js Node {#send-emails-with-reactjs-node-web-app-example}
+
 
 ## Spis treści {#table-of-contents}
 
 * [Instalacja i wymagania](#install-and-requirements)
 * [Kod źródłowy i przykład](#source-code-and-example)
 
+
 ## Instalacja i wymagania {#install-and-requirements}
 
-Będziesz musiał zainstalować zależności npm `@react-email/render` i `nodemailer`:
+Musisz zainstalować zależności npm `@react-email/render` oraz `nodemailer`:
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
+
 ## Kod źródłowy i przykład {#source-code-and-example}
 
-Utwórz szablon wiadomości e-mail przy użyciu pliku `.jsx` lub `.js`:
+Utwórz swój szablon e-maila w pliku `.jsx` lub `.js`:
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>Odwiedź naszą stronę</Button>
     </Html>
   );
 }
 ```
 
-W tym przykładzie używamy biblioteki **[Nodemailer](https://github.com/nodemailer/nodemailer)** i jej oficjalnego sponsora **[Przekaż dalej e-mail](https://forwardemail.net)** do wysyłania i podglądu poczty wychodzącej.
+W tym przykładzie używamy biblioteki **[Nodemailer](https://github.com/nodemailer/nodemailer)** oraz jej oficjalnego sponsora **[Forward Email](https://forwardemail.net)** do wysyłania i podglądu wychodzącej poczty.
 
-Aby wysłać pocztę wychodzącą, musisz <strong class="text-success"><i class="fa fa-key"></i>wygenerować hasło</strong> – postępuj zgodnie z instrukcją **[Przewodnik SMTP po wysyłaniu wiadomości e-mail z niestandardową domeną](/guides/send-email-with-custom-domain-smtp)**.
+Będziesz musiał <strong class="text-success"><i class="fa fa-key"></i> wygenerować hasło</strong>, aby wysyłać wychodzącą pocztę – prosimy o zapoznanie się z naszym **[Przewodnikiem Wysyłania E-maili z niestandardową domeną SMTP](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: zamień wartości `user` i `pass` na:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -70,12 +73,12 @@ const options = {
 transporter.sendMail(options);
 ```
 
-Uruchom aplikację, aby wysłać wiadomość e-mail:
+Uruchom aplikację, aby wysłać e-mail:
 
 ```sh
 node app
 ```
 
-Teraz możesz przejść do **[Moje konto → E-maile](/my-account/emails)**, aby zobaczyć status dostarczania wiadomości e-mail w czasie rzeczywistym, dzienniki dostarczalności wiadomości e-mail oraz podglądy w formacie HTML/zwykłego tekstu/załączników.
+Teraz możesz przejść do **[Moje konto → E-maile](/my-account/emails)**, aby zobaczyć status dostarczania e-maili w czasie rzeczywistym, logi dostarczalności oraz podglądy HTML/tekst zwykły/załączniki.
 
-> P.S. :tada: Możesz również użyć **[podgląd wiadomości e-mail w przeglądarkach i symulatorze iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** i **[twórz szablony wiadomości e-mail za pomocą Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Możesz także **[podglądać e-maile w przeglądarkach i symulatorze iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** oraz **[tworzyć szablony e-maili za pomocą Node.js](/docs/send-emails-with-node-js-javascript)**.

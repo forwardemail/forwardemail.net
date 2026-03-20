@@ -1,65 +1,203 @@
 # Politique de confidentialité {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email privacy policy" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="Politique de confidentialité Forward Email" class="rounded-lg" />
+
 
 ## Table des matières {#table-of-contents}
 
-* [Clause de non-responsabilité](#disclaimer)
+* [Avertissement](#disclaimer)
 * [Informations non collectées](#information-not-collected)
 * [Informations collectées](#information-collected)
+  * [Informations sur le compte](#account-information)
+  * [Stockage des emails](#email-storage)
+  * [Journaux d'erreurs](#error-logs)
+  * [Emails SMTP sortants](#outbound-smtp-emails)
+* [Traitement temporaire des données](#temporary-data-processing)
+  * [Limitation du débit](#rate-limiting)
+  * [Suivi des connexions](#connection-tracking)
+  * [Tentatives d'authentification](#authentication-attempts)
+* [Journaux d'audit](#audit-logs)
+  * [Modifications du compte](#account-changes)
+  * [Modifications des paramètres de domaine](#domain-settings-changes)
+* [Cookies et sessions](#cookies-and-sessions)
+* [Analyses](#analytics)
 * [Informations partagées](#information-shared)
-* [Suppression d'informations](#information-removal)
-* [Informations supplémentaires](#additional-disclosures)
+* [Suppression des informations](#information-removal)
+* [Divulgations supplémentaires](#additional-disclosures)
+
 
 ## Avertissement {#disclaimer}
 
-Veuillez vous référer à notre [Termes](/terms) car il s'applique à l'ensemble du site.
+Veuillez vous référer à nos [Conditions](/terms) qui s'appliquent à l'ensemble du site.
+
 
 ## Informations non collectées {#information-not-collected}
 
-**À l'exception de [erreurs](/faq#do-you-store-error-logs), [e-mails SMTP sortants](/faq#do-you-support-sending-email-with-smtp) et/ou lorsque du spam ou une activité malveillante est détecté (par exemple pour la limitation du débit) :**
+**À l'exception des [journaux d'erreurs](#error-logs), des [emails SMTP sortants](#outbound-smtp-emails), et/ou lorsqu'une activité de spam ou malveillante est détectée (par exemple pour la limitation du débit) :**
 
-* Nous ne stockons aucun e-mail transféré sur disque dur ni dans des bases de données.
-* Nous ne stockons aucune métadonnée relative aux e-mails sur disque dur ni dans des bases de données.
-* Nous ne stockons aucun journal ni adresse IP sur disque dur ni dans des bases de données.
+* Nous ne stockons aucun email transféré sur un stockage disque ni dans des bases de données.
+* Nous ne stockons aucune métadonnée concernant les emails transférés sur un stockage disque ni dans des bases de données.
+* Nous ne stockons aucun journal ni adresse IP sur un stockage disque ni dans des bases de données.
+* Nous n'utilisons aucun service tiers d'analyse ou de télémétrie.
+
 
 ## Informations collectées {#information-collected}
 
-Par souci de transparence, vous pouvez à tout moment <a href="https://github.com/forwardemail" target="_blank" rel="noopener noreferrer">consulter notre code source</a> pour voir comment les informations ci-dessous sont collectées et utilisées :
+Pour plus de transparence, vous pouvez à tout moment <a href="https://github.com/forwardemail" target="_blank" rel="noopener noreferrer">consulter notre code source</a> pour voir comment les informations ci-dessous sont collectées et utilisées.
 
-**Strictement pour des raisons de fonctionnalité et pour améliorer notre service, nous collectons et stockons en toute sécurité les informations suivantes :**
+**Strictement pour la fonctionnalité et pour améliorer notre service, nous collectons et stockons de manière sécurisée les informations suivantes :**
 
-* Nous stockons vos e-mails et vos informations de calendrier dans votre [base de données SQLite cryptée](/blog/docs/best-quantum-safe-encrypted-email-service) uniquement pour votre accès IMAP/POP3/CalDAV/CardDAV et vos fonctionnalités de boîte aux lettres.
-* Veuillez noter que si vous utilisez uniquement nos services de transfert d'e-mails, aucun e-mail n'est stocké sur disque ou base de données, comme décrit dans [Informations non collectées](#information-not-collected).
-* Nos services de transfert d'e-mails fonctionnent uniquement en mémoire (aucune écriture sur disque ni dans les bases de données).
-* Le stockage IMAP/POP3/CalDAV/CardDAV est chiffré au repos, chiffré en transit et stocké sur un disque chiffré LUKS.
-* Les sauvegardes de votre stockage IMAP/POP3/CalDAV/CardDAV sont chiffrées au repos, chiffrées en transit et stockées dans [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
-* Nous stockons un cookie de session pour le trafic de votre site web.
-* Nous stockons l'adresse e-mail que vous nous fournissez.
-* Nous conservons les noms de domaine, les alias et les configurations que vous nous fournissez.
-* Nous conservons les codes de réponse SMTP `4xx` et `5xx` ([journaux d'erreurs](/faq#do-you-store-error-logs)) pendant 7 jours.
-* Nous conservons le code de réponse SMTP [e-mails SMTP sortants](/faq#do-you-support-sending-email-with-smtp) pendant environ 30 jours.
-* Cette durée varie en fonction de l'en-tête « Date » ; nous autorisons l'envoi d'e-mails ultérieurs si un en-tête « Date » futur existe.
-* **Notez qu'une fois qu'un e-mail est correctement distribué ou qu'une erreur permanente survient, nous expurgons et supprimons le corps du message.**
-* Si vous souhaitez configurer la conservation du corps de votre e-mail SMTP sortant au-delà de la durée par défaut de 0 jour (après distribution ou erreur permanente), accédez aux Paramètres avancés de votre domaine et saisissez une valeur comprise entre `0` et `30`.
-* Certains utilisateurs apprécient la fonctionnalité d'aperçu [Mon compte > E-mails](/my-account/emails) pour visualiser le rendu de leurs e-mails. C'est pourquoi nous proposons une période de conservation configurable.
-* Notez que nous prenons également en charge __PROTECTED_LINK_30__0.
-* Toute information supplémentaire que vous nous fournissez volontairement, comme les commentaires ou questions que vous nous envoyez par e-mail ou sur notre page d'aide.
+### Informations sur le compte {#account-information}
 
-## Informations partagées {#information-shared}
+* Nous stockons votre adresse email que vous nous fournissez.
+* Nous stockons vos noms de domaine, alias et configurations que vous nous fournissez.
+* Toute information supplémentaire que vous nous fournissez volontairement, comme des commentaires ou questions envoyés par email ou sur notre page <a href="/help">aide</a>.
 
-Nous ne partageons pas vos informations avec des tiers. Nous n'utilisons pas non plus de logiciels d'analyse ou de télémétrie tiers.
+**Attribution d'inscription** (stockée de manière permanente sur votre compte) :
 
-Nous devrons peut-être nous conformer aux demandes légales ordonnées par le tribunal et nous le ferons (mais gardez à l'esprit [nous ne collectons pas les informations mentionnées ci-dessus sous « Informations non collectées »](#information-not-collected), nous ne pourrons donc pas le fournir pour commencer).
+Lorsque vous créez un compte, nous stockons les informations suivantes pour comprendre comment les utilisateurs découvrent notre service :
 
-## Suppression d'informations {#information-removal}
+* Le domaine du site référent (pas l'URL complète)
+* La première page que vous avez visitée sur notre site
+* Les paramètres de campagne UTM s'ils sont présents dans l'URL
 
-Si, à tout moment, vous souhaitez supprimer les informations que vous nous avez fournies, accédez à <a href="/my-account/security">Mon compte > Sécurité</a> et cliquez sur « Supprimer le compte ».
+### Stockage des emails {#email-storage}
 
-En raison de la prévention et de l'atténuation des abus, votre compte peut nécessiter un examen de suppression manuelle par nos administrateurs si vous le supprimez dans les 5 jours suivant votre premier paiement.
+* Nous stockons les emails et informations de calendrier dans votre [base de données SQLite chiffrée](/blog/docs/best-quantum-safe-encrypted-email-service) strictement pour votre accès IMAP/POP3/CalDAV/CardDAV et la fonctionnalité de la boîte aux lettres.
+  * Notez que si vous utilisez uniquement nos services de transfert d'emails, aucun email n'est stocké sur disque ni dans une base de données comme décrit dans [Informations non collectées](#information-not-collected).
+  * Nos services de transfert d'emails fonctionnent uniquement en mémoire (aucune écriture sur disque ni base de données).
+  * Le stockage IMAP/POP3/CalDAV/CardDAV est chiffré au repos, chiffré en transit, et stocké sur un disque chiffré LUKS.
+  * Les sauvegardes de votre stockage IMAP/POP3/CalDAV/CardDAV sont chiffrées au repos, chiffrées en transit, et stockées sur [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
 
-Ce processus prend généralement moins de 24 heures et a été mis en œuvre en raison du fait que les utilisateurs envoyaient des spams avec notre service, puis supprimaient rapidement leurs comptes, ce qui nous empêchait de bloquer leurs empreintes digitales de méthode de paiement dans Stripe.
+### Journaux d'erreurs {#error-logs}
 
-## Informations supplémentaires {#additional-disclosures}
+* Nous stockons les codes de réponse SMTP `4xx` et `5xx` dans des [journaux d'erreurs](/faq#do-you-store-error-logs) pendant 7 jours.
+* Les journaux d'erreurs contiennent l'erreur SMTP, l'enveloppe, et les en-têtes d'email (nous **ne stockons pas** le corps de l'email ni les pièces jointes).
+* Les journaux d'erreurs peuvent contenir les adresses IP et noms d'hôtes des serveurs expéditeurs à des fins de débogage.
+* Les journaux d'erreurs pour la [limitation du débit](/faq#do-you-have-rate-limiting) et la [liste grise](/faq#do-you-have-a-greylist) ne sont pas accessibles car la connexion se termine tôt (par exemple avant que les commandes `RCPT TO` et `MAIL FROM` puissent être transmises).
+### Emails SMTP sortants {#outbound-smtp-emails}
 
-Ce site est protégé par Cloudflare et ses [politique de confidentialité](https://www.cloudflare.com/privacypolicy/) et [Conditions d'utilisation](https://www.cloudflare.com/website-terms/) s'appliquent.
+* Nous stockons les [emails SMTP sortants](/faq#do-you-support-sending-email-with-smtp) pendant environ 30 jours.
+  * Cette durée varie en fonction de l'en-tête "Date" ; puisque nous autorisons l'envoi d'emails dans le futur si un en-tête "Date" futur existe.
+  * **Notez qu'une fois qu'un email est livré avec succès ou qu'une erreur permanente survient, nous expurgerons et supprimerons le corps du message.**
+  * Si vous souhaitez configurer la conservation du corps du message de vos emails SMTP sortants plus longtemps que la valeur par défaut de 0 jour (après livraison réussie ou erreur permanente), allez dans les Paramètres avancés de votre domaine et saisissez une valeur entre `0` et `30`.
+  * Certains utilisateurs apprécient d'utiliser la fonctionnalité de prévisualisation [Mon compte > Emails](/my-account/emails) pour voir comment leurs emails sont rendus, c'est pourquoi nous supportons une période de conservation configurable.
+  * Notez que nous supportons également [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+
+
+## Traitement temporaire des données {#temporary-data-processing}
+
+Les données suivantes sont traitées temporairement en mémoire ou dans Redis et ne sont **pas** stockées de manière permanente :
+
+### Limitation de débit {#rate-limiting}
+
+* Les adresses IP sont utilisées temporairement dans Redis pour la limitation de débit.
+* Les données de limitation de débit expirent automatiquement (généralement sous 24 heures).
+* Cela empêche les abus et garantit une utilisation équitable de nos services.
+
+### Suivi des connexions {#connection-tracking}
+
+* Le nombre de connexions simultanées est suivi par adresse IP dans Redis.
+* Ces données expirent automatiquement lorsque les connexions se ferment ou après un court délai.
+* Utilisé pour prévenir les abus de connexion et assurer la disponibilité du service.
+
+### Tentatives d'authentification {#authentication-attempts}
+
+* Les tentatives d'authentification échouées sont suivies par adresse IP dans Redis.
+* Ces données expirent automatiquement (généralement sous 24 heures).
+* Utilisé pour prévenir les attaques par force brute sur les comptes utilisateurs.
+
+
+## Journaux d'audit {#audit-logs}
+
+Pour vous aider à surveiller et sécuriser votre compte et vos domaines, nous conservons des journaux d'audit pour certains changements. Ces journaux sont utilisés pour envoyer des emails de notification aux titulaires de compte et aux administrateurs de domaine.
+
+### Modifications du compte {#account-changes}
+
+* Nous suivons les modifications des paramètres importants du compte (par exemple, l'authentification à deux facteurs, le nom affiché, le fuseau horaire).
+* Lorsqu'un changement est détecté, nous envoyons un email de notification à votre adresse email enregistrée.
+* Les champs sensibles (par exemple, mot de passe, jetons API, clés de récupération) sont suivis mais leurs valeurs sont expurgées dans les notifications.
+* Les entrées du journal d'audit sont supprimées après l'envoi de l'email de notification.
+
+### Modifications des paramètres du domaine {#domain-settings-changes}
+
+Pour les domaines avec plusieurs administrateurs, nous fournissons une journalisation d'audit détaillée pour aider les équipes à suivre les modifications de configuration :
+
+**Ce que nous suivons :**
+
+* Les modifications des paramètres du domaine (par exemple, webhooks de rebond, filtrage anti-spam, configuration DKIM)
+* Qui a effectué la modification (adresse email de l'utilisateur)
+* Quand la modification a été effectuée (horodatage)
+* L'adresse IP depuis laquelle la modification a été faite
+* La chaîne user-agent du navigateur/client
+
+**Comment cela fonctionne :**
+
+* Tous les administrateurs du domaine reçoivent un email de notification consolidé unique lorsque les paramètres changent.
+* La notification inclut un tableau montrant chaque modification avec l'utilisateur qui l'a effectuée, son adresse IP et l'horodatage.
+* Les champs sensibles (par exemple, clés webhook, jetons API, clés privées DKIM) sont suivis mais leurs valeurs sont expurgées.
+* Les informations user-agent sont incluses dans une section "Détails techniques" repliable.
+* Les entrées du journal d'audit sont supprimées après l'envoi de l'email de notification.
+
+**Pourquoi nous collectons cela :**
+
+* Pour aider les administrateurs de domaine à maintenir une surveillance de sécurité
+* Pour permettre aux équipes d'auditer qui a effectué des modifications de configuration
+* Pour aider au dépannage en cas de modifications inattendues
+* Pour assurer la responsabilité dans la gestion partagée du domaine
+
+
+## Cookies et sessions {#cookies-and-sessions}
+
+* Nous stockons un cookie dans une session pour le trafic de votre site web.
+* Les cookies sont HTTP-only, signés, et utilisent la protection SameSite.
+* Les cookies de session expirent après 30 jours d'inactivité.
+* Nous ne créons pas de sessions pour les bots ou les crawlers.
+* Nous utilisons les cookies pour :
+  * L'authentification et l'état de connexion
+  * La fonctionnalité "se souvenir de moi" pour l'authentification à deux facteurs
+  * Les messages flash et notifications
+## Analyse {#analytics}
+
+Nous utilisons notre propre système d’analyse axé sur la confidentialité pour comprendre comment nos services sont utilisés. Ce système est conçu avec la confidentialité comme principe fondamental :
+
+**Ce que nous ne collectons PAS :**
+
+* Nous ne stockons pas les adresses IP
+* Nous n’utilisons pas de cookies ni d’identifiants persistants pour l’analyse
+* Nous n’utilisons aucun service d’analyse tiers
+* Nous ne suivons pas les utilisateurs sur plusieurs jours ou sessions
+
+**Ce que nous collectons (anonymisé) :**
+
+* Vues de pages agrégées et utilisation des services (SMTP, IMAP, POP3, API, etc.)
+* Type de navigateur et système d’exploitation (analysé à partir de l’agent utilisateur, données brutes supprimées)
+* Type d’appareil (ordinateur de bureau, mobile, tablette)
+* Domaine référent (pas l’URL complète)
+* Type de client mail pour les protocoles de messagerie (ex. Thunderbird, Outlook)
+
+**Conservation des données :**
+
+* Les données analytiques sont automatiquement supprimées après 30 jours
+* Les identifiants de session tournent quotidiennement et ne peuvent pas être utilisés pour suivre les utilisateurs sur plusieurs jours
+
+
+## Informations Partagées {#information-shared}
+
+Nous ne partageons pas vos informations avec des tiers.
+
+Nous pouvons être amenés à nous conformer à des demandes légales ordonnées par un tribunal (mais gardez à l’esprit que [nous ne collectons pas les informations mentionnées ci-dessus sous « Informations Non Collectées »](#information-not-collected), donc nous ne pourrons pas les fournir).
+
+
+## Suppression des Informations {#information-removal}
+
+Si à tout moment vous souhaitez supprimer les informations que vous nous avez fournies, rendez-vous sur <a href="/my-account/security">Mon Compte > Sécurité</a> et cliquez sur « Supprimer le compte ».
+
+Pour prévenir et atténuer les abus, la suppression de votre compte peut nécessiter une révision manuelle par nos administrateurs si vous le supprimez dans les 5 jours suivant votre premier paiement.
+
+Ce processus prend généralement moins de 24 heures et a été mis en place car des utilisateurs spammaient notre service, puis supprimaient rapidement leurs comptes – ce qui nous empêchait de bloquer leurs empreintes de méthode de paiement dans Stripe.
+
+
+## Divulgations Supplémentaires {#additional-disclosures}
+
+Ce site est protégé par Cloudflare et sa [Politique de Confidentialité](https://www.cloudflare.com/privacypolicy/) ainsi que ses [Conditions d’Utilisation](https://www.cloudflare.com/website-terms/) s’appliquent.

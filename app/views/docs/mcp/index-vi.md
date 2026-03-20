@@ -1,10 +1,11 @@
-# Máy chủ MCP của Forward Email {#forward-email-mcp-server}
+# Forward Email MCP Server {#forward-email-mcp-server}
 
 <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
 
 <p class="lead mt-3">
-  <strong>TL;DR:</strong> <a href="https://github.com/forwardemail/mcp-server">Máy chủ MCP mã nguồn mở</a> của chúng tôi cho phép các trợ lý AI như Claude, ChatGPT, Cursor và Windsurf quản lý email, tên miền, bí danh, danh bạ và lịch của bạn thông qua ngôn ngữ tự nhiên. Tất cả 68 điểm cuối API đều được hiển thị dưới dạng công cụ MCP. Nó chạy cục bộ thông qua <code>npx @forwardemail/mcp-server</code> — thông tin đăng nhập của bạn không bao giờ rời khỏi máy của bạn.
+  <strong>Tóm tắt:</strong> <a href="https://github.com/forwardemail/mcp-server">Máy chủ MCP mã nguồn mở</a> của chúng tôi cho phép các trợ lý AI như Claude, ChatGPT, Cursor và Windsurf quản lý email, tên miền, bí danh, danh bạ và lịch của bạn thông qua ngôn ngữ tự nhiên. Tất cả 68 điểm cuối API đều được cung cấp dưới dạng công cụ MCP. Nó chạy cục bộ qua <code>npx @forwardemail/mcp-server</code> — thông tin đăng nhập của bạn không bao giờ rời khỏi máy của bạn.
 </p>
+
 
 ## Mục lục {#table-of-contents}
 
@@ -14,13 +15,13 @@
   * [Claude Desktop](#claude-desktop)
   * [Cursor](#cursor)
   * [Windsurf](#windsurf)
-  * [Các máy khách MCP khác](#other-mcp-clients)
+  * [Các khách hàng MCP khác](#other-mcp-clients)
 * [Xác thực](#authentication)
-  * [Xác thực bằng khóa API](#api-key-auth)
-  * [Xác thực bằng bí danh](#alias-auth)
+  * [Xác thực khóa API](#api-key-auth)
+  * [Xác thực bí danh](#alias-auth)
   * [Tạo mật khẩu bí danh](#generating-an-alias-password)
 * [Tất cả 68 công cụ](#all-68-tools)
-  * [Tài khoản (Khóa API hoặc Xác thực bí danh)](#account-api-key-or-alias-auth)
+  * [Tài khoản (Xác thực khóa API hoặc bí danh)](#account-api-key-or-alias-auth)
   * [Tên miền (Khóa API)](#domains-api-key)
   * [Bí danh (Khóa API)](#aliases-api-key)
   * [Email — SMTP gửi đi (Khóa API; Gửi hỗ trợ cả hai)](#emails--outbound-smtp-api-key-send-supports-both)
@@ -29,38 +30,57 @@
   * [Danh bạ — CardDAV (Xác thực bí danh)](#contacts--carddav-alias-auth)
   * [Lịch — CalDAV (Xác thực bí danh)](#calendars--caldav-alias-auth)
   * [Sự kiện lịch — CalDAV (Xác thực bí danh)](#calendar-events--caldav-alias-auth)
-  * [Tập lệnh Sieve (Khóa API)](#sieve-scripts-api-key)
-  * [Tập lệnh Sieve (Xác thực bí danh)](#sieve-scripts-alias-auth)
+  * [Kịch bản Sieve (Khóa API)](#sieve-scripts-api-key)
+  * [Kịch bản Sieve (Xác thực bí danh)](#sieve-scripts-alias-auth)
   * [Thành viên và lời mời tên miền (Khóa API)](#domain-members-and-invites-api-key)
   * [Mật khẩu Catch-All (Khóa API)](#catch-all-passwords-api-key)
   * [Nhật ký (Khóa API)](#logs-api-key)
   * [Mã hóa (Không xác thực)](#encrypt-no-auth)
 * [20 trường hợp sử dụng thực tế](#20-real-world-use-cases)
+  * [1. Phân loại email](#1-email-triage)
+  * [2. Tự động thiết lập tên miền](#2-domain-setup-automation)
+  * [3. Quản lý bí danh hàng loạt](#3-bulk-alias-management)
+  * [4. Giám sát chiến dịch email](#4-email-campaign-monitoring)
+  * [5. Đồng bộ và dọn dẹp danh bạ](#5-contact-sync-and-cleanup)
+  * [6. Quản lý lịch](#6-calendar-management)
+  * [7. Tự động hóa kịch bản Sieve](#7-sieve-script-automation)
+  * [8. Đưa đội nhóm vào làm việc](#8-team-onboarding)
+  * [9. Kiểm tra bảo mật](#9-security-auditing)
+  * [10. Thiết lập chuyển tiếp email](#10-email-forwarding-setup)
+  * [11. Tìm kiếm và phân tích hộp thư đến](#11-inbox-search-and-analysis)
+  * [12. Tổ chức thư mục](#12-folder-organization)
+  * [13. Xoay vòng mật khẩu](#13-password-rotation)
+  * [14. Mã hóa bản ghi DNS](#14-dns-record-encryption)
+  * [15. Phân tích nhật ký giao hàng](#15-delivery-log-analysis)
+  * [16. Quản lý đa tên miền](#16-multi-domain-management)
+  * [17. Cấu hình Catch-All](#17-catch-all-configuration)
+  * [18. Quản lý lời mời tên miền](#18-domain-invite-management)
+  * [19. Kiểm tra lưu trữ S3](#19-s3-storage-testing)
+  * [20. Soạn thảo email](#20-email-draft-composition)
 * [Ví dụ về lời nhắc](#example-prompts)
 * [Biến môi trường](#environment-variables)
 * [Bảo mật](#security)
-* [Sử dụng theo chương trình](#programmatic-usage)
+* [Sử dụng lập trình](#programmatic-usage)
 * [Mã nguồn mở](#open-source)
 
 
 ## MCP là gì? {#what-is-mcp}
 
-[Model Context Protocol](https://modelcontextprotocol.io) (MCP) là một tiêu chuẩn mở được tạo bởi Anthropic cho phép các mô hình AI gọi các công cụ bên ngoài một cách an toàn. Thay vì sao chép-dán phản hồi API vào cửa sổ trò chuyện, MCP cung cấp cho mô hình quyền truy cập trực tiếp, có cấu trúc vào các dịch vụ của bạn.
+[Model Context Protocol](https://modelcontextprotocol.io) (MCP) là một tiêu chuẩn mở được tạo ra bởi Anthropic cho phép các mô hình AI gọi các công cụ bên ngoài một cách an toàn. Thay vì sao chép-dán phản hồi API vào cửa sổ trò chuyện, MCP cung cấp cho mô hình quyền truy cập trực tiếp, có cấu trúc vào các dịch vụ của bạn.
 
-Máy chủ MCP của chúng tôi bao bọc toàn bộ [API Forward Email](/email-api) — mọi điểm cuối, mọi tham số — và hiển thị chúng dưới dạng các công cụ mà bất kỳ máy khách tương thích MCP nào cũng có thể sử dụng. Máy chủ chạy cục bộ trên máy của bạn bằng cách sử dụng giao thức stdio. Thông tin đăng nhập của bạn vẫn nằm trong các biến môi trường của bạn và không bao giờ được gửi đến mô hình AI.
+Máy chủ MCP của chúng tôi bao bọc toàn bộ [Forward Email API](/email-api) — mọi điểm cuối, mọi tham số — và cung cấp chúng dưới dạng các công cụ mà bất kỳ khách hàng tương thích MCP nào cũng có thể sử dụng. Máy chủ chạy cục bộ trên máy của bạn sử dụng giao thức stdio. Thông tin đăng nhập của bạn được giữ trong biến môi trường và không bao giờ được gửi đến mô hình AI.
 
 
 ## Bắt đầu nhanh {#quick-start}
 
 ### Lấy khóa API {#get-an-api-key}
-
-1. Đăng nhập vào tài khoản [Forward Email](/my-account/domains) của bạn.
-2. Truy cập **Tài khoản của tôi** → **Bảo mật** → **Khóa API**.
-3. Tạo khóa API mới và sao chép nó.
+1. Đăng nhập vào [tài khoản Forward Email của bạn](/my-account/domains).
+2. Vào **Tài Khoản Của Tôi** → **Bảo Mật** → **Khóa API**.
+3. Tạo một khóa API mới và sao chép nó.
 
 ### Claude Desktop {#claude-desktop}
 
-Thêm đoạn mã này vào tệp cấu hình Claude Desktop của bạn:
+Thêm đoạn này vào tệp cấu hình Claude Desktop của bạn:
 
 **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
@@ -87,7 +107,7 @@ Khởi động lại Claude Desktop. Bạn sẽ thấy các công cụ Forward E
 
 ### Cursor {#cursor}
 
-Mở Cài đặt Cursor → MCP → Thêm máy chủ:
+Mở Cài đặt Cursor → MCP → Thêm Máy chủ:
 
 ```json
 {
@@ -107,11 +127,11 @@ Mở Cài đặt Cursor → MCP → Thêm máy chủ:
 
 ### Windsurf {#windsurf}
 
-Mở Cài đặt Windsurf → MCP → Thêm máy chủ với cấu hình tương tự như trên.
+Mở Cài đặt Windsurf → MCP → Thêm Máy chủ với cấu hình giống như trên.
 
-### Các máy khách MCP khác {#other-mcp-clients}
+### Các Khách Hàng MCP Khác {#other-mcp-clients}
 
-Bất kỳ máy khách nào hỗ trợ giao thức stdio của MCP đều sẽ hoạt động. Lệnh là:
+Bất kỳ khách hàng nào hỗ trợ giao thức MCP stdio đều hoạt động. Lệnh là:
 
 ```sh
 FORWARD_EMAIL_API_KEY=your-api-key \
@@ -123,28 +143,28 @@ FORWARD_EMAIL_API_KEY=your-api-key \
 
 ## Xác thực {#authentication}
 
-API Forward Email sử dụng **xác thực HTTP Basic** với hai loại thông tin đăng nhập khác nhau tùy thuộc vào điểm cuối. Máy chủ MCP xử lý việc này tự động — bạn chỉ cần cung cấp thông tin đăng nhập phù hợp.
+API Forward Email sử dụng **xác thực HTTP Basic** với hai loại thông tin đăng nhập khác nhau tùy theo điểm cuối. Máy chủ MCP xử lý việc này tự động — bạn chỉ cần cung cấp thông tin đăng nhập đúng.
 
-### Xác thực bằng khóa API {#api-key-auth}
+### Xác thực Khóa API {#api-key-auth}
 
-Hầu hết các điểm cuối quản lý (tên miền, bí danh, email gửi đi, nhật ký) sử dụng **khóa API** của bạn làm tên người dùng xác thực Basic với mật khẩu trống.
+Hầu hết các điểm cuối quản lý (tên miền, bí danh, email gửi đi, nhật ký) sử dụng **khóa API** của bạn làm tên đăng nhập Basic auth với mật khẩu để trống.
 
-Đây là cùng một khóa API mà bạn sử dụng cho API REST. Đặt nó thông qua biến môi trường `FORWARD_EMAIL_API_KEY`.
+Đây là cùng một khóa API bạn dùng cho REST API. Thiết lập nó qua biến môi trường `FORWARD_EMAIL_API_KEY`.
 
-### Xác thực bằng bí danh {#alias-auth}
+### Xác thực Bí danh {#alias-auth}
 
-Các điểm cuối hộp thư (tin nhắn, thư mục, danh bạ, lịch, tập lệnh Sieve theo bí danh) sử dụng **thông tin đăng nhập bí danh** — địa chỉ email bí danh làm tên người dùng và mật khẩu được tạo làm mật khẩu.
+Các điểm cuối hộp thư (tin nhắn, thư mục, danh bạ, lịch, kịch bản sieve theo bí danh) sử dụng **thông tin đăng nhập bí danh** — địa chỉ email bí danh làm tên đăng nhập và mật khẩu được tạo làm mật khẩu.
 
-Các điểm cuối này truy cập dữ liệu theo bí danh thông qua các giao thức IMAP, CalDAV và CardDAV. Chúng yêu cầu email bí danh và mật khẩu được tạo, không phải khóa API.
+Các điểm cuối này truy cập dữ liệu theo từng bí danh qua các giao thức IMAP, CalDAV và CardDAV. Chúng yêu cầu email bí danh và mật khẩu được tạo, không phải khóa API.
 
 Bạn có thể cung cấp thông tin đăng nhập bí danh theo hai cách:
 
-1. **Biến môi trường** (được khuyến nghị cho bí danh mặc định): Đặt `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
-2. **Tham số theo từng lần gọi công cụ**: Truyền `alias_username` và `alias_password` làm đối số cho bất kỳ công cụ xác thực bí danh nào. Các tham số này sẽ ghi đè các biến môi trường, điều này hữu ích khi làm việc với nhiều bí danh.
+1. **Biến môi trường** (khuyến nghị cho bí danh mặc định): Thiết lập `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
+2. **Tham số gọi từng công cụ**: Truyền `alias_username` và `alias_password` làm đối số cho bất kỳ công cụ xác thực bí danh nào. Chúng sẽ ghi đè biến môi trường, hữu ích khi làm việc với nhiều bí danh.
 
-### Tạo mật khẩu bí danh {#generating-an-alias-password}
+### Tạo Mật khẩu Bí danh {#generating-an-alias-password}
 
-Trước khi bạn có thể sử dụng các công cụ xác thực bí danh, bạn cần tạo mật khẩu cho bí danh. Bạn có thể thực hiện việc này bằng công cụ `generateAliasPassword` hoặc thông qua API:
+Trước khi sử dụng các công cụ xác thực bí danh, bạn cần tạo mật khẩu cho bí danh. Bạn có thể làm điều này bằng công cụ `generateAliasPassword` hoặc qua API:
 
 ```sh
 curl -u "YOUR_API_KEY:" \
@@ -154,337 +174,340 @@ curl -u "YOUR_API_KEY:" \
 
 Phản hồi bao gồm các trường `username` (email bí danh) và `password`. Sử dụng chúng làm thông tin đăng nhập bí danh của bạn.
 
-> **Mẹo:** Bạn cũng có thể hỏi trợ lý AI của mình: *"Tạo mật khẩu cho bí danh user@example.com trên tên miền example.com"* — nó sẽ gọi công cụ `generateAliasPassword` và trả về thông tin đăng nhập.
+> **Mẹo:** Bạn cũng có thể hỏi trợ lý AI của mình: *"Tạo mật khẩu cho bí danh <user@example.com> trên tên miền example.com"* — nó sẽ gọi công cụ `generateAliasPassword` và trả về thông tin đăng nhập.
 
-Bảng dưới đây tóm tắt phương pháp xác thực mà mỗi nhóm công cụ yêu cầu:
+Bảng dưới đây tóm tắt phương thức xác thực mà mỗi nhóm công cụ yêu cầu:
 
-| Nhóm công cụ | Phương pháp xác thực | Thông tin đăng nhập |
-|-----------|-------------|-------------|
-| Tài khoản | Khóa API **hoặc** Xác thực bí danh | Một trong hai |
-| Tên miền, Bí danh, Thành viên tên miền, Lời mời, Mật khẩu Catch-All | Khóa API | `FORWARD_EMAIL_API_KEY` |
-| Email gửi đi (liệt kê, lấy, xóa, giới hạn) | Khóa API | `FORWARD_EMAIL_API_KEY` |
-| Gửi Email | Khóa API **hoặc** Xác thực bí danh | Một trong hai |
-| Tin nhắn (IMAP) | Xác thực bí danh | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| Thư mục (IMAP) | Xác thực bí danh | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| Danh bạ (CardDAV) | Xác thực bí danh | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| Lịch (CalDAV) | Xác thực bí danh | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| Sự kiện lịch (CalDAV) | Xác thực bí danh | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| Tập lệnh Sieve (phạm vi tên miền) | Khóa API | `FORWARD_EMAIL_API_KEY` |
-| Tập lệnh Sieve (phạm vi bí danh) | Xác thực bí danh | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
-| Nhật ký | Khóa API | `FORWARD_EMAIL_API_KEY` |
-| Mã hóa | Không | Không cần thông tin đăng nhập |
+| Nhóm Công Cụ                                                  | Phương Thức Xác Thực      | Thông Tin Đăng Nhập                                        |
+| ------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------- |
+| Tài khoản                                                    | Khóa API **hoặc** Xác thực Bí danh | Cả hai                                                   |
+| Tên miền, Bí danh, Thành viên tên miền, Lời mời, Mật khẩu Catch-All | Khóa API                   | `FORWARD_EMAIL_API_KEY`                                    |
+| Email gửi đi (danh sách, lấy, xóa, giới hạn)                 | Khóa API                   | `FORWARD_EMAIL_API_KEY`                                    |
+| Gửi Email                                                   | Khóa API **hoặc** Xác thực Bí danh | Cả hai                                                   |
+| Tin nhắn (IMAP)                                              | Xác thực Bí danh           | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Thư mục (IMAP)                                               | Xác thực Bí danh           | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Danh bạ (CardDAV)                                           | Xác thực Bí danh           | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Lịch (CalDAV)                                               | Xác thực Bí danh           | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Sự kiện Lịch (CalDAV)                                       | Xác thực Bí danh           | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Kịch bản Sieve (theo tên miền)                              | Khóa API                   | `FORWARD_EMAIL_API_KEY`                                    |
+| Kịch bản Sieve (theo bí danh)                               | Xác thực Bí danh           | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Nhật ký                                                     | Khóa API                   | `FORWARD_EMAIL_API_KEY`                                    |
+| Mã hóa                                                      | Không                     | Không cần thông tin đăng nhập                               |
+## Tất cả 68 Công cụ {#all-68-tools}
 
+Mỗi công cụ tương ứng trực tiếp với một điểm cuối [Forward Email API](/email-api). Các tham số sử dụng cùng tên như trong tài liệu API. Phương thức xác thực được ghi chú trong tiêu đề mỗi phần.
 
-## Tất cả 68 công cụ {#all-68-tools}
+### Tài khoản (Xác thực API Key hoặc Alias) {#account-api-key-or-alias-auth}
 
-Mỗi công cụ ánh xạ trực tiếp đến một điểm cuối [API Forward Email](/email-api). Các tham số sử dụng cùng tên với tài liệu API. Phương pháp xác thực được ghi chú trong tiêu đề mỗi phần.
+Với xác thực API key, các công cụ này trả về thông tin tài khoản người dùng của bạn. Với xác thực alias, chúng trả về thông tin alias/hộp thư bao gồm hạn mức lưu trữ và cài đặt.
 
-### Tài khoản (Khóa API hoặc Xác thực bí danh) {#account-api-key-or-alias-auth}
+| Công cụ          | Điểm cuối API       | Mô tả                         |
+| --------------- | ------------------- | ----------------------------- |
+| `getAccount`    | `GET /v1/account`   | Lấy thông tin tài khoản của bạn |
+| `updateAccount` | `PUT /v1/account`   | Cập nhật cài đặt tài khoản của bạn |
 
-Với xác thực khóa API, các công cụ này trả về thông tin tài khoản người dùng của bạn. Với xác thực bí danh, chúng trả về thông tin bí danh/hộp thư bao gồm hạn ngạch lưu trữ và cài đặt.
+### Tên miền (API Key) {#domains-api-key}
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `getAccount` | `GET /v1/account` | Lấy thông tin tài khoản của bạn |
-| `updateAccount` | `PUT /v1/account` | Cập nhật cài đặt tài khoản của bạn |
+| Công cụ               | Điểm cuối API                                    | Mô tả                      |
+| --------------------- | ------------------------------------------------ | -------------------------- |
+| `listDomains`         | `GET /v1/domains`                                | Liệt kê tất cả tên miền của bạn |
+| `createDomain`        | `POST /v1/domains`                               | Thêm tên miền mới           |
+| `getDomain`           | `GET /v1/domains/:domain_id`                     | Lấy chi tiết tên miền       |
+| `updateDomain`        | `PUT /v1/domains/:domain_id`                     | Cập nhật cài đặt tên miền   |
+| `deleteDomain`        | `DELETE /v1/domains/:domain_id`                  | Xóa tên miền                |
+| `verifyDomainRecords` | `GET /v1/domains/:domain_id/verify-records`      | Xác minh bản ghi DNS        |
+| `verifySmtpRecords`   | `GET /v1/domains/:domain_id/verify-smtp`         | Xác minh cấu hình SMTP      |
+| `testS3Connection`    | `POST /v1/domains/:domain_id/test-s3-connection` | Kiểm tra lưu trữ S3 tùy chỉnh |
 
-### Tên miền (Khóa API) {#domains-api-key}
+### Alias (API Key) {#aliases-api-key}
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listDomains` | `GET /v1/domains` | Liệt kê tất cả các tên miền của bạn |
-| `createDomain` | `POST /v1/domains` | Thêm một tên miền mới |
-| `getDomain` | `GET /v1/domains/:domain_id` | Lấy chi tiết tên miền |
-| `updateDomain` | `PUT /v1/domains/:domain_id` | Cập nhật cài đặt tên miền |
-| `deleteDomain` | `DELETE /v1/domains/:domain_id` | Xóa một tên miền |
-| `verifyDomainRecords` | `GET /v1/domains/:domain_id/verify-records` | Xác minh bản ghi DNS |
-| `verifySmtpRecords` | `GET /v1/domains/:domain_id/verify-smtp` | Xác minh cấu hình SMTP |
-| `testS3Connection` | `POST /v1/domains/:domain_id/test-s3-connection` | Kiểm tra kết nối lưu trữ S3 tùy chỉnh |
+| Công cụ                 | Điểm cuối API                                                     | Mô tả                                  |
+| ----------------------- | ----------------------------------------------------------------- | -------------------------------------- |
+| `listAliases`           | `GET /v1/domains/:domain_id/aliases`                              | Liệt kê alias cho một tên miền         |
+| `createAlias`           | `POST /v1/domains/:domain_id/aliases`                             | Tạo alias mới                         |
+| `getAlias`              | `GET /v1/domains/:domain_id/aliases/:alias_id`                    | Lấy chi tiết alias                    |
+| `updateAlias`           | `PUT /v1/domains/:domain_id/aliases/:alias_id`                    | Cập nhật alias                        |
+| `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Xóa alias                            |
+| `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Tạo mật khẩu IMAP/SMTP cho xác thực alias |
 
-### Bí danh (Khóa API) {#aliases-api-key}
+### Email — SMTP gửi đi (API Key; Send hỗ trợ cả hai) {#emails--outbound-smtp-api-key-send-supports-both}
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listAliases` | `GET /v1/domains/:domain_id/aliases` | Liệt kê các bí danh cho một tên miền |
-| `createAlias` | `POST /v1/domains/:domain_id/aliases` | Tạo một bí danh mới |
-| `getAlias` | `GET /v1/domains/:domain_id/aliases/:alias_id` | Lấy chi tiết bí danh |
-| `updateAlias` | `PUT /v1/domains/:domain_id/aliases/:alias_id` | Cập nhật một bí danh |
-| `deleteAlias` | `DELETE /v1/domains/:domain_id/aliases/:alias_id` | Xóa một bí danh |
-| `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Tạo mật khẩu IMAP/SMTP để xác thực bí danh |
+| Công cụ          | Điểm cuối API          | Xác thực               | Mô tả                         |
+| --------------- | ---------------------- | ---------------------- | ----------------------------- |
+| `sendEmail`     | `POST /v1/emails`      | API Key hoặc Alias Auth | Gửi email qua SMTP            |
+| `listEmails`    | `GET /v1/emails`       | API Key                | Liệt kê email gửi đi          |
+| `getEmail`      | `GET /v1/emails/:id`   | API Key                | Lấy chi tiết và trạng thái email |
+| `deleteEmail`   | `DELETE /v1/emails/:id`| API Key                | Xóa email trong hàng đợi      |
+| `getEmailLimit` | `GET /v1/emails/limit` | API Key                | Kiểm tra giới hạn gửi của bạn |
 
-### Email — SMTP gửi đi (Khóa API; Gửi hỗ trợ cả hai) {#emails--outbound-smtp-api-key-send-supports-both}
+Công cụ `sendEmail` chấp nhận các tham số `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, và `attachments`. Đây là cùng điểm cuối với `POST /v1/emails`.
 
-| Công cụ | Điểm cuối API | Xác thực | Mô tả |
-|------|-------------|------|-------------|
-| `sendEmail` | `POST /v1/emails` | Khóa API hoặc Xác thực bí danh | Gửi email qua SMTP |
-| `listEmails` | `GET /v1/emails` | Khóa API | Liệt kê các email gửi đi |
-| `getEmail` | `GET /v1/emails/:id` | Khóa API | Lấy chi tiết và trạng thái email |
-| `deleteEmail` | `DELETE /v1/emails/:id` | Khóa API | Xóa một email đang chờ xử lý |
-| `getEmailLimit` | `GET /v1/emails/limit` | Khóa API | Kiểm tra giới hạn gửi của bạn |
+### Tin nhắn — IMAP (Xác thực Alias) {#messages--imap-alias-auth}
 
-Công cụ `sendEmail` chấp nhận `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` và `attachments`. Điều này giống như điểm cuối `POST /v1/emails`.
+> **Yêu cầu thông tin đăng nhập alias.** Truyền `alias_username` và `alias_password` hoặc đặt biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
+| Công cụ          | API Endpoint              | Mô tả                                |
+| --------------- | ------------------------- | ------------------------------------- |
+| `listMessages`  | `GET /v1/messages`        | Liệt kê và tìm kiếm tin nhắn trong hộp thư |
+| `createMessage` | `POST /v1/messages`       | Tạo bản nháp hoặc tải lên một tin nhắn    |
+| `getMessage`    | `GET /v1/messages/:id`    | Lấy tin nhắn theo ID                   |
+| `updateMessage` | `PUT /v1/messages/:id`    | Cập nhật cờ (đã đọc, đánh dấu sao, v.v.)    |
+| `deleteMessage` | `DELETE /v1/messages/:id` | Xóa một tin nhắn                      |
 
-### Tin nhắn — IMAP (Xác thực bí danh) {#messages--imap-alias-auth}
-
-> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc đặt các biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
-
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listMessages` | `GET /v1/messages` | Liệt kê và tìm kiếm tin nhắn trong hộp thư |
-| `createMessage` | `POST /v1/messages` | Tạo bản nháp hoặc tải lên tin nhắn |
-| `getMessage` | `GET /v1/messages/:id` | Lấy tin nhắn theo ID |
-| `updateMessage` | `PUT /v1/messages/:id` | Cập nhật cờ (đã đọc, gắn sao, v.v.) |
-| `deleteMessage` | `DELETE /v1/messages/:id` | Xóa tin nhắn |
-
-Công cụ `listMessages` hỗ trợ hơn 15 tham số tìm kiếm bao gồm `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` và `has_attachment`. Xem [tài liệu API](/email-api) để biết danh sách đầy đủ.
+Công cụ `listMessages` hỗ trợ hơn 15 tham số tìm kiếm bao gồm `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread`, và `has_attachment`. Xem [API docs](/email-api) để biết danh sách đầy đủ.
 
 ### Thư mục — IMAP (Xác thực bí danh) {#folders--imap-alias-auth}
 
-> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc đặt các biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
+> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listFolders` | `GET /v1/folders` | Liệt kê tất cả các thư mục hộp thư |
-| `createFolder` | `POST /v1/folders` | Tạo một thư mục mới |
-| `getFolder` | `GET /v1/folders/:id` | Lấy chi tiết thư mục |
-| `updateFolder` | `PUT /v1/folders/:id` | Đổi tên thư mục |
-| `deleteFolder` | `DELETE /v1/folders/:id` | Xóa thư mục |
+| Công cụ         | API Endpoint             | Mô tả                   |
+| -------------- | ------------------------ | ------------------------ |
+| `listFolders`  | `GET /v1/folders`        | Liệt kê tất cả thư mục hộp thư |
+| `createFolder` | `POST /v1/folders`       | Tạo thư mục mới          |
+| `getFolder`    | `GET /v1/folders/:id`    | Lấy chi tiết thư mục     |
+| `updateFolder` | `PUT /v1/folders/:id`    | Đổi tên thư mục          |
+| `deleteFolder` | `DELETE /v1/folders/:id` | Xóa thư mục              |
 
 ### Danh bạ — CardDAV (Xác thực bí danh) {#contacts--carddav-alias-auth}
 
-> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc đặt các biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
+> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listContacts` | `GET /v1/contacts` | Liệt kê tất cả danh bạ |
-| `createContact` | `POST /v1/contacts` | Tạo một danh bạ mới |
-| `getContact` | `GET /v1/contacts/:id` | Lấy chi tiết danh bạ |
-| `updateContact` | `PUT /v1/contacts/:id` | Cập nhật một danh bạ |
-| `deleteContact` | `DELETE /v1/contacts/:id` | Xóa một danh bạ |
+| Công cụ          | API Endpoint              | Mô tả                 |
+| --------------- | ------------------------- | --------------------- |
+| `listContacts`  | `GET /v1/contacts`        | Liệt kê tất cả danh bạ |
+| `createContact` | `POST /v1/contacts`       | Tạo danh bạ mới       |
+| `getContact`    | `GET /v1/contacts/:id`    | Lấy chi tiết danh bạ  |
+| `updateContact` | `PUT /v1/contacts/:id`    | Cập nhật danh bạ      |
+| `deleteContact` | `DELETE /v1/contacts/:id` | Xóa danh bạ           |
 
 ### Lịch — CalDAV (Xác thực bí danh) {#calendars--caldav-alias-auth}
 
-> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc đặt các biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
+> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listCalendars` | `GET /v1/calendars` | Liệt kê tất cả các lịch |
-| `createCalendar` | `POST /v1/calendars` | Tạo một lịch mới |
-| `getCalendar` | `GET /v1/calendars/:id` | Lấy chi tiết lịch |
-| `updateCalendar` | `PUT /v1/calendars/:id` | Cập nhật một lịch |
-| `deleteCalendar` | `DELETE /v1/calendars/:id` | Xóa một lịch |
+| Công cụ           | API Endpoint               | Mô tả                  |
+| ---------------- | -------------------------- | ---------------------- |
+| `listCalendars`  | `GET /v1/calendars`        | Liệt kê tất cả lịch    |
+| `createCalendar` | `POST /v1/calendars`       | Tạo lịch mới           |
+| `getCalendar`    | `GET /v1/calendars/:id`    | Lấy chi tiết lịch      |
+| `updateCalendar` | `PUT /v1/calendars/:id`    | Cập nhật lịch           |
+| `deleteCalendar` | `DELETE /v1/calendars/:id` | Xóa lịch               |
 
 ### Sự kiện lịch — CalDAV (Xác thực bí danh) {#calendar-events--caldav-alias-auth}
 
-> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc đặt các biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
+> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listCalendarEvents` | `GET /v1/calendar-events` | Liệt kê tất cả các sự kiện |
-| `createCalendarEvent` | `POST /v1/calendar-events` | Tạo một sự kiện mới |
-| `getCalendarEvent` | `GET /v1/calendar-events/:id` | Lấy chi tiết sự kiện |
-| `updateCalendarEvent` | `PUT /v1/calendar-events/:id` | Cập nhật một sự kiện |
-| `deleteCalendarEvent` | `DELETE /v1/calendar-events/:id` | Xóa một sự kiện |
+| Công cụ                | API Endpoint                     | Mô tả                |
+| --------------------- | -------------------------------- | -------------------- |
+| `listCalendarEvents`  | `GET /v1/calendar-events`        | Liệt kê tất cả sự kiện |
+| `createCalendarEvent` | `POST /v1/calendar-events`       | Tạo sự kiện mới       |
+| `getCalendarEvent`    | `GET /v1/calendar-events/:id`    | Lấy chi tiết sự kiện  |
+| `updateCalendarEvent` | `PUT /v1/calendar-events/:id`    | Cập nhật sự kiện      |
+| `deleteCalendarEvent` | `DELETE /v1/calendar-events/:id` | Xóa sự kiện           |
 
-### Tập lệnh Sieve (Khóa API) {#sieve-scripts-api-key}
+### Kịch bản Sieve (Khóa API) {#sieve-scripts-api-key}
 
-Các tập lệnh này sử dụng đường dẫn có phạm vi tên miền và xác thực bằng khóa API của bạn.
+Những kịch bản này sử dụng đường dẫn theo phạm vi tên miền và xác thực bằng khóa API của bạn.
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listSieveScripts` | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve` | Liệt kê các tập lệnh cho một bí danh |
-| `createSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve` | Tạo một tập lệnh mới |
-| `getSieveScript` | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | Lấy chi tiết tập lệnh |
-| `updateSieveScript` | `PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | Cập nhật một tập lệnh |
-| `deleteSieveScript` | `DELETE /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | Xóa một tập lệnh |
-| `activateSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate` | Kích hoạt một tập lệnh |
+| Công cụ                | API Endpoint                                                              | Mô tả                      |
+| --------------------- | ------------------------------------------------------------------------- | -------------------------- |
+| `listSieveScripts`    | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve`                      | Liệt kê kịch bản cho bí danh |
+| `createSieveScript`   | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve`                     | Tạo kịch bản mới           |
+| `getSieveScript`      | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id`           | Lấy chi tiết kịch bản      |
+| `updateSieveScript`   | `PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id`           | Cập nhật kịch bản          |
+| `deleteSieveScript`   | `DELETE /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id`        | Xóa kịch bản               |
+| `activateSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate` | Kích hoạt kịch bản         |
+### Kịch bản Sieve (Xác thực Bí danh) {#sieve-scripts-alias-auth}
 
-### Tập lệnh Sieve (Xác thực bí danh) {#sieve-scripts-alias-auth}
+Chúng sử dụng xác thực cấp độ bí danh. Hữu ích cho tự động hóa theo từng bí danh mà không cần khóa API.
 
-Các tập lệnh này sử dụng xác thực cấp bí danh. Hữu ích cho tự động hóa theo từng bí danh mà không cần khóa API.
+> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
-> **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc đặt các biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
+| Công cụ                       | API Endpoint                                 | Mô tả               |
+| ------------------------------ | -------------------------------------------- | -------------------- |
+| `listSieveScriptsAliasAuth`    | `GET /v1/sieve-scripts`                      | Liệt kê các kịch bản |
+| `createSieveScriptAliasAuth`   | `POST /v1/sieve-scripts`                     | Tạo một kịch bản     |
+| `getSieveScriptAliasAuth`      | `GET /v1/sieve-scripts/:script_id`           | Lấy chi tiết kịch bản |
+| `updateSieveScriptAliasAuth`   | `PUT /v1/sieve-scripts/:script_id`           | Cập nhật một kịch bản |
+| `deleteSieveScriptAliasAuth`   | `DELETE /v1/sieve-scripts/:script_id`        | Xóa một kịch bản     |
+| `activateSieveScriptAliasAuth` | `POST /v1/sieve-scripts/:script_id/activate` | Kích hoạt một kịch bản |
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listSieveScriptsAliasAuth` | `GET /v1/sieve-scripts` | Liệt kê các tập lệnh |
-| `createSieveScriptAliasAuth` | `POST /v1/sieve-scripts` | Tạo một tập lệnh |
-| `getSieveScriptAliasAuth` | `GET /v1/sieve-scripts/:script_id` | Lấy chi tiết tập lệnh |
-| `updateSieveScriptAliasAuth` | `PUT /v1/sieve-scripts/:script_id` | Cập nhật một tập lệnh |
-| `deleteSieveScriptAliasAuth` | `DELETE /v1/sieve-scripts/:script_id` | Xóa một tập lệnh |
-| `activateSieveScriptAliasAuth` | `POST /v1/sieve-scripts/:script_id/activate` | Kích hoạt một tập lệnh |
+### Thành viên và Lời mời Miền (Khóa API) {#domain-members-and-invites-api-key}
 
-### Thành viên và lời mời tên miền (Khóa API) {#domain-members-and-invites-api-key}
-
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `updateDomainMember` | `PUT /v1/domains/:domain_id/members/:member_id` | Thay đổi vai trò của thành viên |
-| `removeDomainMember` | `DELETE /v1/domains/:domain_id/members/:member_id` | Xóa một thành viên |
-| `acceptDomainInvite` | `GET /v1/domains/:domain_id/invites` | Chấp nhận một lời mời đang chờ xử lý |
-| `createDomainInvite` | `POST /v1/domains/:domain_id/invites` | Mời ai đó vào một tên miền |
-| `removeDomainInvite` | `DELETE /v1/domains/:domain_id/invites` | Thu hồi một lời mời |
+| Công cụ               | API Endpoint                                       | Mô tả                      |
+| -------------------- | -------------------------------------------------- | -------------------------- |
+| `updateDomainMember` | `PUT /v1/domains/:domain_id/members/:member_id`    | Thay đổi vai trò thành viên |
+| `removeDomainMember` | `DELETE /v1/domains/:domain_id/members/:member_id` | Xóa thành viên             |
+| `acceptDomainInvite` | `GET /v1/domains/:domain_id/invites`               | Chấp nhận lời mời đang chờ |
+| `createDomainInvite` | `POST /v1/domains/:domain_id/invites`              | Mời ai đó vào miền         |
+| `removeDomainInvite` | `DELETE /v1/domains/:domain_id/invites`            | Thu hồi lời mời            |
 
 ### Mật khẩu Catch-All (Khóa API) {#catch-all-passwords-api-key}
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `listCatchAllPasswords` | `GET /v1/domains/:domain_id/catch-all-passwords` | Liệt kê mật khẩu catch-all |
-| `createCatchAllPassword` | `POST /v1/domains/:domain_id/catch-all-passwords` | Tạo mật khẩu catch-all |
-| `deleteCatchAllPassword` | `DELETE /v1/domains/:domain_id/catch-all-passwords/:token_id` | Xóa mật khẩu catch-all |
+| Công cụ                   | API Endpoint                                                  | Mô tả                      |
+| ------------------------ | ------------------------------------------------------------- | -------------------------- |
+| `listCatchAllPasswords`  | `GET /v1/domains/:domain_id/catch-all-passwords`              | Liệt kê mật khẩu catch-all |
+| `createCatchAllPassword` | `POST /v1/domains/:domain_id/catch-all-passwords`             | Tạo mật khẩu catch-all     |
+| `deleteCatchAllPassword` | `DELETE /v1/domains/:domain_id/catch-all-passwords/:token_id` | Xóa mật khẩu catch-all     |
 
 ### Nhật ký (Khóa API) {#logs-api-key}
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `downloadLogs` | `GET /v1/logs/download` | Tải xuống nhật ký gửi email |
+| Công cụ           | API Endpoint            | Mô tả                        |
+| -------------- | ----------------------- | ---------------------------- |
+| `downloadLogs` | `GET /v1/logs/download` | Tải xuống nhật ký giao nhận email |
 
-### Mã hóa (Không xác thực) {#encrypt-no-auth}
+### Mã hóa (Không Xác thực) {#encrypt-no-auth}
 
-| Công cụ | Điểm cuối API | Mô tả |
-|------|-------------|-------------|
-| `encryptRecord` | `POST /v1/encrypt` | Mã hóa bản ghi DNS TXT |
+| Công cụ          | API Endpoint       | Mô tả                      |
+| --------------- | ------------------ | -------------------------- |
+| `encryptRecord` | `POST /v1/encrypt` | Mã hóa bản ghi DNS TXT     |
 
-Công cụ này không yêu cầu xác thực. Nó mã hóa các bản ghi chuyển tiếp như `forward-email=user@example.com` để sử dụng trong các bản ghi DNS TXT.
+Công cụ này không yêu cầu xác thực. Nó mã hóa các bản ghi chuyển tiếp như `forward-email=user@example.com` để sử dụng trong bản ghi DNS TXT.
 
 
-## 20 trường hợp sử dụng thực tế {#20-real-world-use-cases}
+## 20 Trường hợp Sử dụng Thực tế {#20-real-world-use-cases}
 
 Dưới đây là các cách thực tế để sử dụng máy chủ MCP với trợ lý AI của bạn:
 
-### 1. Phân loại email {#email-triage}
+### 1. Phân loại Email {#1-email-triage}
 
-Yêu cầu AI của bạn quét hộp thư đến và tóm tắt các tin nhắn chưa đọc. Nó có thể gắn cờ các email khẩn cấp, phân loại theo người gửi và soạn thảo trả lời — tất cả thông qua ngôn ngữ tự nhiên. *(Yêu cầu thông tin đăng nhập bí danh để truy cập hộp thư đến.)*
+Yêu cầu AI quét hộp thư đến của bạn và tóm tắt các tin nhắn chưa đọc. Nó có thể đánh dấu email khẩn cấp, phân loại theo người gửi và soạn thảo trả lời — tất cả bằng ngôn ngữ tự nhiên. *(Yêu cầu thông tin đăng nhập bí danh để truy cập hộp thư.)*
 
-### 2. Tự động hóa thiết lập tên miền {#domain-setup-automation}
+### 2. Tự động Thiết lập Miền {#2-domain-setup-automation}
 
-Thiết lập một tên miền mới? Yêu cầu AI tạo tên miền, thêm bí danh của bạn, xác minh bản ghi DNS và kiểm tra cấu hình SMTP. Những gì thường mất 10 phút nhấp qua các bảng điều khiển sẽ trở thành một cuộc trò chuyện.
+Đang thiết lập một miền mới? Yêu cầu AI tạo miền, thêm các bí danh của bạn, xác minh bản ghi DNS và kiểm tra cấu hình SMTP. Những việc thường mất 10 phút nhấp chuột qua các bảng điều khiển giờ chỉ còn một cuộc trò chuyện.
 
-### 3. Quản lý bí danh hàng loạt {#bulk-alias-management}
+### 3. Quản lý Bí danh Số lượng lớn {#3-bulk-alias-management}
 
-Cần tạo 20 bí danh cho một dự án mới? Mô tả những gì bạn cần và để AI xử lý công việc lặp đi lặp lại. Nó có thể tạo bí danh, đặt quy tắc chuyển tiếp và tạo mật khẩu trong một lần.
+Cần tạo 20 bí danh cho một dự án mới? Mô tả nhu cầu của bạn và để AI xử lý công việc lặp đi lặp lại. Nó có thể tạo bí danh, thiết lập quy tắc chuyển tiếp và tạo mật khẩu trong một lần thực hiện.
+### 4. Giám sát Chiến dịch Email {#4-email-campaign-monitoring}
 
-### 4. Giám sát chiến dịch email {#email-campaign-monitoring}
+Yêu cầu AI của bạn kiểm tra giới hạn gửi, liệt kê các email gửi đi gần đây và báo cáo trạng thái giao hàng. Hữu ích để giám sát sức khỏe email giao dịch.
 
-Yêu cầu AI của bạn kiểm tra giới hạn gửi, liệt kê các email gửi đi gần đây và báo cáo về trạng thái gửi. Hữu ích để giám sát tình trạng email giao dịch.
+### 5. Đồng bộ và Dọn dẹp Danh bạ {#5-contact-sync-and-cleanup}
 
-### 5. Đồng bộ hóa và dọn dẹp danh bạ {#contact-sync-and-cleanup}
+Sử dụng công cụ CardDAV để liệt kê tất cả danh bạ, tìm các bản sao, cập nhật thông tin lỗi thời hoặc tạo hàng loạt danh bạ từ bảng tính bạn dán vào trò chuyện. *(Yêu cầu thông tin đăng nhập alias.)*
 
-Sử dụng các công cụ CardDAV để liệt kê tất cả danh bạ, tìm các bản sao, cập nhật thông tin lỗi thời hoặc tạo hàng loạt danh bạ từ một bảng tính bạn dán vào cuộc trò chuyện. *(Yêu cầu thông tin đăng nhập bí danh.)*
+### 6. Quản lý Lịch {#6-calendar-management}
 
-### 6. Quản lý lịch {#calendar-management}
+Tạo lịch, thêm sự kiện, cập nhật thời gian họp và xóa các sự kiện đã hủy — tất cả qua cuộc trò chuyện. Công cụ CalDAV hỗ trợ CRUD đầy đủ trên cả lịch và sự kiện. *(Yêu cầu thông tin đăng nhập alias.)*
 
-Tạo lịch, thêm sự kiện, cập nhật thời gian cuộc họp và xóa các sự kiện đã hủy — tất cả thông qua trò chuyện. Các công cụ CalDAV hỗ trợ CRUD đầy đủ trên cả lịch và sự kiện. *(Yêu cầu thông tin đăng nhập bí danh.)*
+### 7. Tự động hóa Kịch bản Sieve {#7-sieve-script-automation}
 
-### 7. Tự động hóa tập lệnh Sieve {#sieve-script-automation}
+Kịch bản Sieve rất mạnh mẽ nhưng cú pháp khó hiểu. Hãy yêu cầu AI viết kịch bản Sieve cho bạn: "Lọc tất cả email từ <billing@example.com> vào thư mục Billing" sẽ trở thành một kịch bản hoạt động mà không cần chạm vào đặc tả RFC 5228.
 
-Tập lệnh Sieve rất mạnh mẽ nhưng cú pháp của chúng rất khó hiểu. Yêu cầu AI của bạn viết tập lệnh Sieve cho bạn: "Lọc tất cả email từ billing@example.com vào thư mục Thanh toán" trở thành một tập lệnh hoạt động mà không cần chạm vào thông số kỹ thuật RFC 5228.
+### 8. Đưa Thành viên Vào Nhóm {#8-team-onboarding}
 
-### 8. Giới thiệu thành viên nhóm {#team-onboarding}
+Khi một thành viên mới gia nhập, yêu cầu AI tạo alias cho họ, tạo mật khẩu, gửi email chào mừng kèm thông tin đăng nhập và thêm họ làm thành viên miền. Một lệnh, bốn cuộc gọi API.
 
-Khi một thành viên nhóm mới tham gia, hãy yêu cầu AI tạo bí danh của họ, tạo mật khẩu, gửi cho họ một email chào mừng với thông tin đăng nhập của họ và thêm họ làm thành viên tên miền. Một lời nhắc, bốn cuộc gọi API.
+### 9. Kiểm tra Bảo mật {#9-security-auditing}
 
-### 9. Kiểm tra bảo mật {#security-auditing}
+Yêu cầu AI liệt kê tất cả các miền, kiểm tra trạng thái xác minh DNS, xem lại cấu hình alias và xác định các miền có bản ghi chưa được xác minh. Một cuộc quét bảo mật nhanh bằng ngôn ngữ tự nhiên.
 
-Yêu cầu AI của bạn liệt kê tất cả các tên miền, kiểm tra trạng thái xác minh DNS, xem xét cấu hình bí danh và xác định bất kỳ tên miền nào có bản ghi chưa được xác minh. Một cuộc kiểm tra bảo mật nhanh chóng bằng ngôn ngữ tự nhiên.
+### 10. Cài đặt Chuyển tiếp Email {#10-email-forwarding-setup}
 
-### 10. Thiết lập chuyển tiếp email {#email-forwarding-setup}
+Thiết lập chuyển tiếp email cho miền mới? Yêu cầu AI tạo miền, thêm alias chuyển tiếp, mã hóa bản ghi DNS và xác minh mọi thứ được cấu hình đúng.
 
-Thiết lập chuyển tiếp email cho một tên miền mới? Yêu cầu AI tạo tên miền, thêm bí danh chuyển tiếp, mã hóa các bản ghi DNS và xác minh mọi thứ được cấu hình đúng cách.
+### 11. Tìm kiếm và Phân tích Hộp thư {#11-inbox-search-and-analysis}
 
-### 11. Tìm kiếm và phân tích hộp thư đến {#inbox-search-and-analysis}
+Sử dụng công cụ tìm kiếm tin nhắn để tìm email cụ thể: "Tìm tất cả email từ <john@example.com> trong 30 ngày qua có tệp đính kèm." Hơn 15 tham số tìm kiếm làm cho công cụ này rất mạnh mẽ. *(Yêu cầu thông tin đăng nhập alias.)*
 
-Sử dụng các công cụ tìm kiếm tin nhắn để tìm các email cụ thể: "Tìm tất cả email từ john@example.com trong 30 ngày qua có tệp đính kèm." Hơn 15 tham số tìm kiếm làm cho điều này trở nên mạnh mẽ. *(Yêu cầu thông tin đăng nhập bí danh.)*
+### 12. Tổ chức Thư mục {#12-folder-organization}
 
-### 12. Tổ chức thư mục {#folder-organization}
+Yêu cầu AI tạo cấu trúc thư mục cho dự án mới, di chuyển tin nhắn giữa các thư mục hoặc dọn dẹp các thư mục cũ bạn không còn cần nữa. *(Yêu cầu thông tin đăng nhập alias.)*
 
-Yêu cầu AI của bạn tạo cấu trúc thư mục cho một dự án mới, di chuyển tin nhắn giữa các thư mục hoặc dọn dẹp các thư mục cũ mà bạn không còn cần nữa. *(Yêu cầu thông tin đăng nhập bí danh.)*
+### 13. Thay đổi Mật khẩu {#13-password-rotation}
 
-### 13. Xoay vòng mật khẩu {#password-rotation}
+Tạo mật khẩu alias mới theo lịch trình. Yêu cầu AI tạo mật khẩu mới cho mỗi alias và báo cáo thông tin đăng nhập mới.
 
-Tạo mật khẩu bí danh mới theo lịch trình. Yêu cầu AI của bạn tạo mật khẩu mới cho mỗi bí danh và báo cáo thông tin đăng nhập mới.
+### 14. Mã hóa Bản ghi DNS {#14-dns-record-encryption}
 
-### 14. Mã hóa bản ghi DNS {#dns-record-encryption}
+Mã hóa các bản ghi chuyển tiếp trước khi thêm vào DNS. Công cụ `encryptRecord` xử lý việc này mà không cần xác thực — hữu ích cho việc mã hóa nhanh một lần.
 
-Mã hóa các bản ghi chuyển tiếp của bạn trước khi thêm chúng vào DNS. Công cụ `encryptRecord` xử lý việc này mà không cần xác thực — hữu ích cho việc mã hóa một lần nhanh chóng.
+### 15. Phân tích Nhật ký Giao hàng {#15-delivery-log-analysis}
 
-### 15. Phân tích nhật ký gửi {#delivery-log-analysis}
+Tải xuống nhật ký giao hàng email và yêu cầu AI phân tích tỷ lệ trả lại, xác định người nhận có vấn đề hoặc theo dõi thời gian giao hàng.
 
-Tải xuống nhật ký gửi email của bạn và yêu cầu AI phân tích tỷ lệ trả lại, xác định người nhận có vấn đề hoặc theo dõi thời gian gửi.
+### 16. Quản lý Nhiều Miền {#16-multi-domain-management}
 
-### 16. Quản lý đa tên miền {#multi-domain-management}
+Nếu bạn quản lý nhiều miền, yêu cầu AI cung cấp báo cáo trạng thái: miền nào đã được xác minh, miền nào có vấn đề, mỗi miền có bao nhiêu alias và giới hạn gửi như thế nào.
 
-Nếu bạn quản lý nhiều tên miền, hãy yêu cầu AI cung cấp cho bạn báo cáo trạng thái: tên miền nào đã được xác minh, tên miền nào có vấn đề, mỗi tên miền có bao nhiêu bí danh và giới hạn gửi trông như thế nào.
+### 17. Cấu hình Catch-All {#17-catch-all-configuration}
 
-### 17. Cấu hình Catch-All {#catch-all-configuration}
+Thiết lập mật khẩu catch-all cho các miền cần nhận email ở bất kỳ địa chỉ nào. AI có thể tạo, liệt kê và quản lý các mật khẩu này cho bạn.
 
-Thiết lập mật khẩu catch-all cho các tên miền cần nhận email tại bất kỳ địa chỉ nào. AI có thể tạo, liệt kê và quản lý các mật khẩu này cho bạn.
+### 18. Quản lý Lời mời Miền {#18-domain-invite-management}
 
-### 18. Quản lý lời mời tên miền {#domain-invite-management}
+Mời thành viên nhóm quản lý miền, kiểm tra lời mời đang chờ và dọn dẹp các lời mời hết hạn. Hữu ích cho các tổ chức có nhiều quản trị viên miền.
 
-Mời thành viên nhóm quản lý tên miền, kiểm tra lời mời đang chờ xử lý và dọn dẹp những lời mời đã hết hạn. Hữu ích cho các tổ chức có nhiều quản trị viên tên miền.
+### 19. Kiểm tra Lưu trữ S3 {#19-s3-storage-testing}
 
-### 19. Kiểm tra lưu trữ S3 {#s3-storage-testing}
+Nếu bạn sử dụng lưu trữ S3 tùy chỉnh cho sao lưu email, yêu cầu AI kiểm tra kết nối và xác minh nó hoạt động đúng.
 
-Nếu bạn sử dụng lưu trữ S3 tùy chỉnh để sao lưu email, hãy yêu cầu AI kiểm tra kết nối và xác minh nó hoạt động đúng cách.
+### 20. Soạn thảo Email {#20-email-draft-composition}
 
-### 20. Soạn thảo email nháp {#email-draft-composition}
-
-Tạo email nháp trong hộp thư của bạn mà không gửi chúng. Hữu ích để chuẩn bị email cần xem xét trước khi gửi hoặc để xây dựng các mẫu email. *(Yêu cầu thông tin đăng nhập bí danh.)*
+Tạo bản nháp email trong hộp thư của bạn mà không gửi đi. Hữu ích để chuẩn bị email cần xem xét trước khi gửi hoặc để xây dựng mẫu email. *(Yêu cầu thông tin đăng nhập alias.)*
 
 
-## Ví dụ về lời nhắc {#example-prompts}
+## Ví dụ Lệnh {#example-prompts}
 
-Dưới đây là các lời nhắc bạn có thể sử dụng trực tiếp với trợ lý AI của mình:
+Dưới đây là các lệnh bạn có thể sử dụng trực tiếp với trợ lý AI của mình:
 
 **Gửi email:**
-> "Gửi email từ hello@mydomain.com đến john@example.com với chủ đề 'Cuộc họp ngày mai' và nội dung 'Chào John, chúng ta vẫn sẽ gặp nhau lúc 2 giờ chiều chứ?'"
 
+> "Gửi email từ <hello@mydomain.com> đến <john@example.com> với chủ đề 'Cuộc họp ngày mai' và nội dung 'Chào John, chúng ta vẫn họp lúc 2 giờ chiều chứ?'"
 **Quản lý tên miền:**
-> "Liệt kê tất cả các tên miền của tôi và cho tôi biết những tên miền nào có bản ghi DNS chưa được xác minh."
+
+> "Liệt kê tất cả các tên miền của tôi và cho tôi biết tên miền nào có bản ghi DNS chưa được xác minh."
 
 **Tạo bí danh:**
-> "Tạo một bí danh mới support@mydomain.com chuyển tiếp đến email cá nhân của tôi."
+
+> "Tạo một bí danh mới <support@mydomain.com> chuyển tiếp đến email cá nhân của tôi."
 
 **Tìm kiếm hộp thư đến (yêu cầu thông tin đăng nhập bí danh):**
-> "Tìm tất cả các email chưa đọc trong tuần trước có đề cập đến 'hóa đơn'."
+
+> "Tìm tất cả email chưa đọc trong tuần qua có đề cập đến 'invoice'."
 
 **Lịch (yêu cầu thông tin đăng nhập bí danh):**
-> "Tạo một lịch có tên 'Công việc' và thêm một cuộc họp vào ngày mai lúc 2 giờ chiều có tên 'Họp nhóm'."
 
-**Tập lệnh Sieve:**
-> "Viết một tập lệnh Sieve cho info@mydomain.com tự động trả lời email với 'Cảm ơn bạn đã liên hệ, chúng tôi sẽ trả lời bạn trong vòng 24 giờ.'"
+> "Tạo một lịch có tên 'Work' và thêm một cuộc họp vào ngày mai lúc 2 giờ chiều có tên 'Team Standup'."
+
+**Kịch bản Sieve:**
+
+> "Viết một kịch bản Sieve cho <info@mydomain.com> tự động trả lời email với nội dung 'Cảm ơn bạn đã liên hệ, chúng tôi sẽ phản hồi trong vòng 24 giờ.'"
 
 **Thao tác hàng loạt:**
-> "Tạo bí danh cho sales@, support@, billing@ và info@ trên mydomain.com, tất cả đều chuyển tiếp đến team@mydomain.com."
+
+> "Tạo các bí danh cho sales@, support@, billing@, và info@ trên mydomain.com, tất cả chuyển tiếp đến <team@mydomain.com>."
 
 **Kiểm tra bảo mật:**
-> "Kiểm tra trạng thái xác minh DNS và SMTP cho tất cả các tên miền của tôi và cho tôi biết nếu có bất kỳ điều gì cần chú ý."
+
+> "Kiểm tra trạng thái xác minh DNS và SMTP cho tất cả các tên miền của tôi và cho tôi biết nếu có điều gì cần chú ý."
 
 **Tạo mật khẩu bí danh:**
-> "Tạo mật khẩu cho bí danh user@example.com để tôi có thể truy cập hộp thư đến của mình."
+
+> "Tạo mật khẩu cho bí danh <user@example.com> để tôi có thể truy cập hộp thư đến của mình."
 
 
 ## Biến môi trường {#environment-variables}
 
-| Biến | Bắt buộc | Mặc định | Mô tả |
-|----------|----------|---------|-------------|
-| `FORWARD_EMAIL_API_KEY` | Có | — | Khóa API Forward Email của bạn (được sử dụng làm tên người dùng xác thực Basic cho các điểm cuối khóa API) |
-| `FORWARD_EMAIL_ALIAS_USER` | Không | — | Địa chỉ email bí danh cho các điểm cuối hộp thư (ví dụ: `user@example.com`) |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Không | — | Mật khẩu bí danh được tạo cho các điểm cuối hộp thư |
-| `FORWARD_EMAIL_API_URL` | Không | `https://api.forwardemail.net` | URL cơ sở API (cho máy chủ tự lưu trữ hoặc thử nghiệm) |
+| Biến                          | Bắt buộc | Mặc định                      | Mô tả                                                                          |
+| ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
+| `FORWARD_EMAIL_API_KEY`        | Có       | —                              | Khóa API Forward Email của bạn (dùng làm tên đăng nhập Basic auth cho các điểm cuối API-key) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Không    | —                              | Địa chỉ email bí danh cho các điểm cuối hộp thư (ví dụ `user@example.com`)     |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Không    | —                              | Mật khẩu bí danh được tạo cho các điểm cuối hộp thư                            |
+| `FORWARD_EMAIL_API_URL`        | Không    | `https://api.forwardemail.net` | URL cơ sở API (cho tự lưu trữ hoặc thử nghiệm)                                |
 
 
 ## Bảo mật {#security}
 
-Máy chủ MCP chạy cục bộ trên máy của bạn. Đây là cách hoạt động của bảo mật:
+Máy chủ MCP chạy cục bộ trên máy của bạn. Đây là cách bảo mật hoạt động:
 
-* **Thông tin đăng nhập của bạn vẫn ở cục bộ.** Cả khóa API và thông tin đăng nhập bí danh của bạn đều được đọc từ các biến môi trường và được sử dụng để xác thực các yêu cầu API thông qua xác thực HTTP Basic. Chúng không bao giờ được gửi đến mô hình AI.
-* **Giao thức stdio.** Máy chủ giao tiếp với máy khách AI qua stdin/stdout. Không có cổng mạng nào được mở.
-* **Không lưu trữ dữ liệu.** Máy chủ không trạng thái. Nó không lưu trữ, ghi nhật ký hoặc lưu trữ bất kỳ dữ liệu email nào của bạn.
-* **Mã nguồn mở.** Toàn bộ mã nguồn có trên [GitHub](https://github.com/forwardemail/mcp-server). Bạn có thể kiểm tra từng dòng.
+* **Thông tin đăng nhập của bạn được giữ cục bộ.** Cả khóa API và thông tin đăng nhập bí danh của bạn được đọc từ biến môi trường và dùng để xác thực các yêu cầu API qua HTTP Basic auth. Chúng không bao giờ được gửi đến mô hình AI.
+* **Giao tiếp stdio.** Máy chủ giao tiếp với client AI qua stdin/stdout. Không mở bất kỳ cổng mạng nào.
+* **Không lưu trữ dữ liệu.** Máy chủ không trạng thái. Nó không lưu bộ nhớ đệm, ghi nhật ký hay lưu trữ bất kỳ dữ liệu email nào của bạn.
+* **Mã nguồn mở.** Toàn bộ mã nguồn có trên [GitHub](https://github.com/forwardemail/mcp-server). Bạn có thể kiểm tra từng dòng mã.
 
 
-## Sử dụng theo chương trình {#programmatic-usage}
+## Sử dụng lập trình {#programmatic-usage}
 
 Bạn cũng có thể sử dụng máy chủ như một thư viện:
 
@@ -503,5 +526,4 @@ server.listen();
 
 ## Mã nguồn mở {#open-source}
 
-Máy chủ MCP của Forward Email là [mã nguồn mở trên GitHub](https://github.com/forwardemail/mcp-server) theo giấy phép BUSL-1.1. Chúng tôi tin vào sự minh bạch. Nếu bạn tìm thấy lỗi hoặc muốn có một tính năng, hãy [mở một vấn đề](https://github.com/forwardemail/mcp-server/issues).
-
+Forward Email MCP Server là [mã nguồn mở trên GitHub](https://github.com/forwardemail/mcp-server) theo giấy phép BUSL-1.1. Chúng tôi tin vào sự minh bạch. Nếu bạn phát hiện lỗi hoặc muốn một tính năng, [mở một issue](https://github.com/forwardemail/mcp-server/issues).

@@ -1,215 +1,215 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# בניית סוכן תמיכת לקוחות מבוסס בינה מלאכותית עם דגש על פרטיות בעזרת LanceDB, Ollama ו-Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
-
-> \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
-
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
-
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
-
-## Table of Contents {#table-of-contents}
-
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
-
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
-
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
-
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
-
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
-
-**Trained on Human Expertise**: The AI learns from:
-
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
-
-You're getting responses informed by years of human expertise, just delivered faster.
-
-### Consistency Without Burnout {#consistency-without-burnout}
-
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
-
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
-
-Without AI assistance, this constant context-switching leads to:
-
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
-
-**With AI augmentation**, our team:
-
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
-
-### What You Get {#what-you-get}
-
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
-
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
-
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
-
-✅ **Human touch**: Every response reviewed and personalized by our team
-
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="סוכן תמיכת לקוחות מבוסס בינה מלאכותית עם LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> מסמך זה מתאר את המסע שלנו בבניית סוכן תמיכה מבוסס בינה מלאכותית שמתארח בעצמנו. כתבנו על אתגרים דומים בפוסט הבלוג שלנו [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). חשבנו ברצינות לכתוב המשך בשם "AI Startup Graveyard" אבל אולי נצטרך להמתין עוד שנה או כך עד שהבועה של הבינה המלאכותית תתפוצץ(?). לעת עתה, זהו סיכום המחשבות שלנו על מה שעבד, מה שלא עבד, ולמה עשינו זאת כך.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
+כך בנינו את סוכן התמיכה שלנו מבוסס בינה מלאכותית. עשינו זאת בדרך הקשה: אירוח עצמי, דגש על פרטיות, ושליטה מלאה. למה? כי אנחנו לא סומכים על שירותים צד שלישי עם נתוני הלקוחות שלנו. זה דרישה של GDPR ו-DPA, וזה הדבר הנכון לעשות.
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+זה לא היה פרויקט כיפי לסוף שבוע. זה היה מסע של חודש שלם של ניווט בין תלותיות שבורות, תיעוד מטעה, וכאוס כללי באקוסיסטם של בינה מלאכותית בקוד פתוח בשנת 2025. מסמך זה הוא תיעוד של מה שבנינו, למה בנינו, ומה המכשולים שפגשנו בדרך.
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+## תוכן העניינים {#table-of-contents}
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+* [הטבות ללקוח: תמיכה אנושית משודרגת בבינה מלאכותית](#customer-benefits-ai-augmented-human-support)
+  * [תגובות מהירות ומדויקות יותר](#faster-more-accurate-responses)
+  * [עקביות ללא שחיקה](#consistency-without-burnout)
+  * [מה תקבלו](#what-you-get)
+* [הרהור אישי: שני עשורים של עבודה קשה](#a-personal-reflection-the-two-decade-grind)
+* [למה פרטיות חשובה](#why-privacy-matters)
+* [ניתוח עלויות: בינה מלאכותית בענן מול אירוח עצמי](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [השוואת שירותי בינה מלאכותית בענן](#cloud-ai-service-comparison)
+  * [פירוט עלויות: בסיס ידע של 5GB](#cost-breakdown-5gb-knowledge-base)
+  * [עלויות חומרה לאירוח עצמי](#self-hosted-hardware-costs)
+* [שימוש עצמי ב-API שלנו](#dogfooding-our-own-api)
+  * [למה שימוש עצמי חשוב](#why-dogfooding-matters)
+  * [דוגמאות לשימוש ב-API](#api-usage-examples)
+  * [הטבות בביצועים](#performance-benefits)
+* [ארכיטקטורת הצפנה](#encryption-architecture)
+  * [שכבה 1: הצפנת תיבת דואר (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [שכבה 2: הצפנת PGP ברמת ההודעה](#layer-2-message-level-pgp-encryption)
+  * [למה זה חשוב לאימון](#why-this-matters-for-training)
+  * [אבטחת אחסון](#storage-security)
+  * [אחסון מקומי הוא פרקטיקה סטנדרטית](#local-storage-is-standard-practice)
+* [הארכיטקטורה](#the-architecture)
+  * [זרימה ברמה גבוהה](#high-level-flow)
+  * [זרימת סקרייפר מפורטת](#detailed-scraper-flow)
+* [איך זה עובד](#how-it-works)
+  * [בניית בסיס הידע](#building-the-knowledge-base)
+  * [אימון מתוך מיילים היסטוריים](#training-from-historical-emails)
+  * [עיבוד מיילים נכנסים](#processing-incoming-emails)
+  * [ניהול מאגר וקטורים](#vector-store-management)
+* [בית הקברות של מאגרי הוקטורים](#the-vector-database-graveyard)
+* [דרישות מערכת](#system-requirements)
+* [הגדרת משימות Cron](#cron-job-configuration)
+  * [משתני סביבה](#environment-variables)
+  * [משימות Cron לתיבות דואר מרובות](#cron-jobs-for-multiple-inboxes)
+  * [פירוט לוח זמנים של Cron](#cron-schedule-breakdown)
+  * [חישוב תאריכים דינמי](#dynamic-date-calculation)
+  * [הגדרה ראשונית: חילוץ רשימת URL מ-sitemap](#initial-setup-extract-url-list-from-sitemap)
+  * [בדיקת משימות Cron ידנית](#testing-cron-jobs-manually)
+  * [ניטור לוגים](#monitoring-logs)
+* [דוגמאות קוד](#code-examples)
+  * [סריקה ועיבוד](#scraping-and-processing)
+  * [אימון מתוך מיילים היסטוריים](#training-from-historical-emails-1)
+  * [שאילתות להקשר](#querying-for-context)
+* [העתיד: מחקר ופיתוח של סורק ספאם](#the-future-spam-scanner-rd)
+* [פתרון בעיות](#troubleshooting)
+  * [שגיאת אי התאמת מימדי וקטור](#vector-dimension-mismatch-error)
+  * [הקשר ריק בבסיס הידע](#empty-knowledge-base-context)
+  * [כשלונות בפענוח PGP](#pgp-decryption-failures)
+* [טיפים לשימוש](#usage-tips)
+  * [השגת Inbox Zero](#achieving-inbox-zero)
+  * [שימוש בתווית skip-ai](#using-the-skip-ai-label)
+  * [שרשור מיילים ו-reply-all](#email-threading-and-reply-all)
+  * [ניטור ותחזוקה](#monitoring-and-maintenance)
+* [בדיקות](#testing)
+  * [הרצת בדיקות](#running-tests)
+  * [כיסוי בדיקות](#test-coverage)
+  * [סביבת בדיקה](#test-environment)
+* [מסקנות מרכזיות](#key-takeaways)
+## יתרונות ללקוח: תמיכה אנושית משולבת בינה מלאכותית {#customer-benefits-ai-augmented-human-support}
 
-## Why Privacy Matters {#why-privacy-matters}
+מערכת הבינה המלאכותית שלנו לא מחליפה את צוות התמיכה שלנו — היא משפרת אותם. הנה מה שזה אומר עבורך:
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+### תגובות מהירות ומדויקות יותר {#faster-more-accurate-responses}
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
+**אדם בלולאה**: כל טיוטה שנוצרה על ידי הבינה המלאכותית נבדקת, נערכת ומותאמת על ידי צוות התמיכה האנושי שלנו לפני שנשלחת אליך. הבינה המלאכותית מטפלת במחקר הראשוני ובכתיבת הטיוטה, ומשחררת את הצוות שלנו להתמקד בבקרת איכות ובהתאמה אישית.
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+**מאומנת על מומחיות אנושית**: הבינה המלאכותית לומדת מ:
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+* בסיס הידע והתיעוד הכתוב ביד שלנו
+* פוסטים בבלוג ומדריכים שנכתבו על ידי בני אדם
+* שאלות נפוצות מקיפות שלנו (נכתבו על ידי בני אדם)
+* שיחות קודמות עם לקוחות (הכול מטופל על ידי בני אדם אמיתיים)
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
-| --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+אתה מקבל תגובות שמבוססות על שנים של מומחיות אנושית, רק שמסופקות מהר יותר.
+
+### עקביות ללא שחיקה {#consistency-without-burnout}
+
+הצוות הקטן שלנו מטפל במאות בקשות תמיכה מדי יום, שכל אחת דורשת ידע טכני שונה והחלפת הקשר מנטלית:
+
+* שאלות חשבוניות דורשות ידע במערכות פיננסיות
+* בעיות DNS דורשות מומחיות ברשתות
+* אינטגרציית API דורשת ידע בתכנות
+* דיווחי אבטחה דורשים הערכת פגיעויות
+
+ללא סיוע בינה מלאכותית, החלפת ההקשר המתמדת הזו מובילה ל:
+
+* זמני תגובה איטיים יותר
+* טעויות אנוש כתוצאה מעייפות
+* איכות תשובות לא עקבית
+* שחיקת הצוות
+
+**עם שיפור הבינה המלאכותית**, הצוות שלנו:
+
+* מגיב מהר יותר (הבינה המלאכותית מנסחת טיוטות בשניות)
+* עושה פחות טעויות (הבינה המלאכותית תופסת טעויות נפוצות)
+* שומר על איכות עקבית (הבינה המלאכותית מתבססת על אותו בסיס ידע בכל פעם)
+* נשאר רענן וממוקד (פחות זמן מחקר, יותר זמן לעזרה)
+
+### מה אתה מקבל {#what-you-get}
+
+✅ **מהירות**: הבינה המלאכותית מנסחת תגובות בשניות, בני אדם בודקים ושולחים תוך דקות
+
+✅ **דיוק**: תגובות מבוססות על התיעוד והפתרונות הקודמים שלנו
+
+✅ **עקביות**: אותן תשובות איכותיות בין אם זה 9 בבוקר או 9 בערב
+
+✅ **נגיעה אנושית**: כל תגובה נבדקת ומותאמת אישית על ידי הצוות שלנו
+
+✅ **ללא הזיות**: הבינה המלאכותית משתמשת רק בבסיס הידע המאומת שלנו, לא בנתונים כלליים מהאינטרנט
+
+> \[!NOTE]
+> **אתה תמיד מדבר עם בני אדם**. הבינה המלאכותית היא עוזר מחקר שעוזר לצוות שלנו למצוא את התשובה הנכונה מהר יותר. תחשוב עליה כמו על ספרן שמוצא מיד את הספר הרלוונטי — אבל עדיין אדם קורא אותו ומסביר לך.
+
+
+## הרהור אישי: שני עשורים של מאמץ {#a-personal-reflection-the-two-decade-grind}
+
+לפני שנצלול לפרטים הטכניים, הערה אישית. אני עוסק בזה כמעט שני עשורים. השעות האינסופיות מול המקלדת, המרדף הבלתי פוסק אחרי פתרון, המאמץ העמוק והממוקד – זו המציאות של בניית משהו משמעותי. מציאות שלרוב מתעלמים ממנה במחזורי ההייפ של טכנולוגיות חדשות.
+
+הפריצה האחרונה של הבינה המלאכותית הייתה מתסכלת במיוחד. מוכרים לנו חלום של אוטומציה, של עוזרי בינה מלאכותית שיכתבו את הקוד שלנו ויפתרו את הבעיות שלנו. המציאות? הפלט הוא לעיתים קרובות קוד זבל שדורש יותר זמן לתיקון מאשר לכתיבה מאפס. ההבטחה להקל על חיינו היא שקרית. זו הסחת דעת מהעבודה הקשה והנחוצה של הבנייה.
+
+ואז יש את הדילמה של תרומה לקוד פתוח. אתה כבר מותש, עייף מהמאמץ. אתה משתמש בבינה מלאכותית כדי לעזור לך לכתוב דיווח באגים מפורט ומסודר, בתקווה להקל על המתחזקים להבין ולתקן את הבעיה. ומה קורה? אתה מקבל נזיפה. התרומה שלך נדחית כ"לא רלוונטית" או בעלת מאמץ נמוך, כפי שראינו ב-[נושא GitHub של Node.js](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321) לאחרונה. זו סטירה לפנים למפתחים בכירים שמנסים רק לעזור.
+
+זו המציאות של האקוסיסטם שבו אנחנו עובדים. זה לא רק על כלים שבורים; זה על תרבות שלעיתים קרובות לא מכבדת את הזמן ו-[המאמץ של התורמים שלה](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). הפוסט הזה הוא תיעוד של המציאות הזו. זו סיפור על הכלים, כן, אבל גם על המחיר האנושי של בנייה באקוסיסטם שבור שהוא, למרות כל ההבטחות, שבור ביסודו.
+## למה פרטיות חשובה {#why-privacy-matters}
+
+ה[מסמך הטכני שלנו](https://forwardemail.net/technical-whitepaper.pdf) מכסה לעומק את הפילוסופיה שלנו לגבי פרטיות. הגרסה הקצרה: אנחנו לא שולחים נתוני לקוחות לצדדים שלישיים. אף פעם. זאת אומרת, לא ל-OpenAI, לא ל-Anthropic, ולא למסדי נתונים וקטוריים בענן. הכל רץ מקומית על התשתית שלנו. זה לא ניתן למשא ומתן לצורך עמידה ב-GDPR ובהתחייבויות ה-DPA שלנו.
+
+
+## ניתוח עלויות: AI בענן מול אירוח עצמי {#cost-analysis-cloud-ai-vs-self-hosted}
+
+לפני שנכנסים למימוש הטכני, נדבר למה אירוח עצמי חשוב מבחינת עלויות. מודלי התמחור של שירותי AI בענן הופכים אותם ליקרים מאוד לשימושים בהיקף גבוה כמו תמיכת לקוחות.
+
+### השוואת שירותי AI בענן {#cloud-ai-service-comparison}
+
+| שירות          | ספק                 | עלות הטמעה                                                    | עלות LLM (קלט)                                                            | עלות LLM (פלט)         | מדיניות פרטיות                                     | GDPR/DPA        | אירוח             | שיתוף נתונים     |
+| --------------- | ------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
+| **OpenAI**      | OpenAI (ארה"ב)      | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/)       | $0.15-20/1M tokens                                                         | $0.60-80/1M tokens     | [קישור](https://openai.com/policies/privacy-policy/) | DPA מוגבל       | Azure (ארה"ב)     | כן (אימון)        |
+| **Claude**      | Anthropic (ארה"ב)   | N/A                                                           | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing)    | $15-80/1M tokens       | [קישור](https://www.anthropic.com/legal/privacy)     | DPA מוגבל       | AWS/GCP (ארה"ב)   | לא (לטענתם)       |
+| **Gemini**      | Google (ארה"ב)      | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens                                                       | $2.50/1M tokens        | [קישור](https://policies.google.com/privacy)         | DPA מוגבל       | GCP (ארה"ב)       | כן (שיפור)        |
+| **DeepSeek**    | DeepSeek (סין)      | N/A                                                           | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens        | [קישור](https://www.deepseek.com/en)                 | לא ידוע         | סין               | לא ידוע           |
+| **Mistral**     | Mistral AI (צרפת)   | [$0.10/1M tokens](https://mistral.ai/pricing)                 | $0.40/1M tokens                                                            | $2.00/1M tokens        | [קישור](https://mistral.ai/terms/)                   | GDPR אירופאי    | אירופה            | לא ידוע           |
+| **אירוח עצמי**  | אתה                 | $0 (חומרה קיימת)                                             | $0 (חומרה קיימת)                                                          | $0 (חומרה קיימת)      | המדיניות שלך                                      | עמידה מלאה     | MacBook M5 + cron | אף פעם            |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **חששות לגבי ריבונות נתונים**: ספקים מארה"ב (OpenAI, Claude, Gemini) כפופים ל-CLOUD Act, המאפשר לממשלת ארה"ב גישה לנתונים. DeepSeek (סין) פועל תחת חוקי הנתונים הסיניים. בעוד Mistral (צרפת) מציע אירוח באירופה ועמידה ב-GDPR, אירוח עצמי נשאר האפשרות היחידה לריבונות ושליטה מלאה בנתונים.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### פירוט עלויות: בסיס ידע של 5GB {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+בואו נחשב את עלות עיבוד בסיס ידע של 5GB (טיפוסי לחברה בגודל בינוני עם מסמכים, מיילים והיסטוריית תמיכה).
 
-**Assumptions:**
+**הנחות:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB טקסט ≈ 1.25 מיליארד טוקנים (בהנחה של כ-4 תווים לטוקן)
+* יצירת הטמעה ראשונית
+* אימון מחדש חודשי (הטמעה מחדש מלאה)
+* 10,000 פניות תמיכה בחודש
+* פנייה ממוצעת: 500 טוקנים קלט, 300 טוקנים פלט
+**פירוט עלויות מפורט:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
+| רכיב                                  | OpenAI           | Claude          | Gemini               | Self-Hosted        |
 | -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **הטמעה ראשונית** (1.25 מיליארד טוקנים) | $25,000          | N/A             | $187,500             | $0                 |
+| **שאילתות חודשיות** (10K × 800 טוקנים) | $1,200-16,000    | $2,400-16,000   | $2,400-3,200         | $0                 |
+| **אימון מחדש חודשי** (1.25 מיליארד טוקנים) | $25,000          | N/A             | $187,500             | $0                 |
+| **סך הכל לשנה ראשונה**                 | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (חשמל)        |
+| **עמידה בפרטיות**                     | ❌ מוגבל          | ❌ מוגבל         | ❌ מוגבל              | ✅ מלא              |
+| **ריבונות נתונים**                   | ❌ לא             | ❌ לא            | ❌ לא                 | ✅ כן               |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **העלויות של ההטמעה בג'מיני הן קטסטרופליות** במחיר של $0.15 ל-1 מיליון טוקנים. הטמעה של בסיס ידע בגודל 5GB תעלה $187,500. זה יקר פי 37 מ-OpenAI והופך את זה לבלתי שמיש לחלוטין בייצור.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### עלויות חומרה עצמית {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+המערכת שלנו פועלת על חומרה קיימת שבבעלותנו:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **חומרה**: MacBook M5 (כבר בבעלות לפיתוח)
+* **עלות נוספת**: $0 (משתמשים בחומרה קיימת)
+* **חשמל**: \~$5 לחודש (הערכה)
+* **סך הכל לשנה ראשונה**: \~$60
+* **מתמשך**: $60 לשנה
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**תשואה על ההשקעה**: אירוח עצמי כמעט ללא עלות שולית מכיוון שאנו משתמשים בחומרת פיתוח קיימת. המערכת פועלת באמצעות משימות cron בשעות לא שיא.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
+## שימוש פנימי ב-API שלנו {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+אחת ההחלטות האדריכליות החשובות שקיבלנו הייתה שכל עבודות ה-AI ישתמשו ישירות ב-[Forward Email API](https://forwardemail.net/email-api). זה לא רק פרקטיקה טובה — זו פונקציה שמכריחה אופטימיזציה של ביצועים.
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+### למה שימוש פנימי חשוב {#why-dogfooding-matters}
 
-When our AI jobs use the same API endpoints as our customers:
+כאשר עבודות ה-AI שלנו משתמשות באותם נקודות קצה API כמו הלקוחות שלנו:
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+1. **צווארי בקבוק בביצועים משפיעים עלינו ראשונים** - אנו מרגישים את הכאב לפני הלקוחות
+2. **אופטימיזציה מועילה לכולם** - שיפורים לעבודה שלנו משפרים אוטומטית את חוויית הלקוח
+3. **בדיקות בעולם האמיתי** - העבודות שלנו מעבדות אלפי מיילים, ומספקות בדיקות עומס רציפות
+4. **שימוש חוזר בקוד** - אותן לוגיקות אימות, הגבלת קצב, טיפול בשגיאות ומטמון
 
-### API Usage Examples {#api-usage-examples}
+### דוגמאות לשימוש ב-API {#api-usage-examples}
 
-**Listing Messages (train-from-history.js):**
+**רשימת הודעות (train-from-history.js):**
 
 ```javascript
 // Uses GET /v1/messages?folder=INBOX with BasicAuth
@@ -236,7 +236,7 @@ const messages = response.data;
 // Full message content fetched later via GET /v1/messages/:id
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**שליפת הודעות מלאות (forward-email-client.js):**
 
 ```javascript
 // Uses GET /v1/messages/:id to get full message with raw content
@@ -254,7 +254,7 @@ const message = response.data;
 // Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**יצירת טיוטות תגובה (process-inbox.js):**
 
 ```javascript
 // Uses POST /v1/messages to create draft replies
@@ -275,56 +275,56 @@ const response = await axios.post(
   }
 );
 ```
+### יתרונות ביצועים {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+מכיוון שהעבודות של ה-AI שלנו רצות על אותה תשתית API:
 
-Because our AI jobs run on the same API infrastructure:
+* **אופטימיזציות מטמון** מועילות גם לעבודה וגם ללקוחות
+* **הגבלת קצב** נבדקת תחת עומס אמיתי
+* **טיפול בשגיאות** נבדק בשטח
+* **זמני תגובה של ה-API** מנוטרים כל הזמן
+* **שאילתות למסד הנתונים** מותאמות לשני מקרי השימוש
+* **אופטימיזציה של רוחב פס** - החרגת `eml`, `raw`, `nodemailer` ברשימה מפחיתה את גודל התגובה בכ-90%
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+כאשר `train-from-history.js` מעבד 1,000 מיילים, הוא מבצע מעל 1,000 קריאות API. כל חוסר יעילות ב-API מתגלה מיד. זה מאלץ אותנו לאופטימיזציה של גישת IMAP, שאילתות למסד הנתונים וסיריאליזציה של התגובה — שיפורים שמועילים ישירות ללקוחות שלנו.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**דוגמת אופטימיזציה**: רשימת 100 הודעות עם תוכן מלא = תגובה של כ-10MB. רשימה עם `eml: false, raw: false, nodemailer: false` = תגובה של כ-100KB (קטן פי 100).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## ארכיטקטורת הצפנה {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+אחסון המיילים שלנו משתמש בשכבות הצפנה מרובות, שהעבודות של ה-AI חייבות לפענח בזמן אמת לצורך אימון.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### שכבה 1: הצפנת תיבת דואר (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+כל תיבות הדואר ב-IMAP מאוחסנות כקבצי מסד נתונים SQLite מוצפנים עם **chacha20-poly1305**, אלגוריתם הצפנה עמיד בפני מחשוב קוונטי. זה מפורט בפוסט הבלוג שלנו על [שירות מייל מוצפן עמיד בפני קוונטים](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**תכונות מפתח:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **אלגוריתם**: ChaCha20-Poly1305 (צופן AEAD)
+* **עמידות קוונטית**: עמיד בפני התקפות מחשוב קוונטי
+* **אחסון**: קבצי מסד נתונים SQLite בדיסק
+* **גישה**: מפוענח בזיכרון בעת גישה דרך IMAP/API
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### שכבה 2: הצפנת PGP ברמת ההודעה {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+רבים מהמיילים התומכים מוצפנים בנוסף עם PGP (תקן OpenPGP). העבודות של ה-AI חייבות לפענח אותם כדי לחלץ תוכן לאימון.
 
-**Decryption Flow:**
+**זרימת פענוח:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. ה-API מחזיר הודעה עם תוכן גולמי מוצפן
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. בדוק אם התוכן הגולמי מוצפן ב-PGP
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. פענח עם המפתח הפרטי שלנו
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. נתח את הודעת MIME המפוענחת
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. מלא את nodemailer בתוכן מפוענח
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +336,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**הגדרות PGP:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# מפתח פרטי לפענוח (נתיב לקובץ מפתח ASCII-armored)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# סיסמת מפתח פרטי (אם מוצפן)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+העזר `pgp-decrypt.js`:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. קורא את המפתח הפרטי מהדיסק פעם אחת (מטמון בזיכרון)
+2. מפענח את המפתח עם הסיסמה
+3. משתמש במפתח המפוענח לכל פענוח ההודעות
+4. תומך בפענוח רקורסיבי להודעות מוצפנות מקוננות
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### למה זה חשוב לאימון {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+ללא פענוח נכון, ה-AI היה מתאמן על טקסט מוצפן בלתי קריא:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +365,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+עם הפענוח, ה-AI מתאמן על תוכן אמיתי:
 
 ```
 Subject: Re: Bug Report
@@ -376,55 +376,55 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### אבטחת אחסון {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+הפענוח מתבצע בזיכרון במהלך ביצוע העבודה, והתוכן המפוענח מומר לאמבדים (embeddings) שנשמרים במסד הנתונים הווקטורי LanceDB בדיסק.
 
-**Where the data lives:**
+**איפה הנתונים מאוחסנים:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **מסד נתונים וקטורי**: מאוחסן על תחנות עבודה MacBook M5 מוצפנות
+* **אבטחה פיזית**: תחנות העבודה נשארות איתנו כל הזמן (לא במרכזי נתונים)
+* **הצפנת דיסק**: הצפנת דיסק מלאה בכל תחנות העבודה
+* **אבטחת רשת**: מבודדות ומוגנות בחומת אש מהרשתות הציבוריות
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**פריסת מרכז נתונים עתידית:**
+אם נעבור לאירוח במרכז נתונים, השרתים יכללו:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* הצפנת דיסק מלאה LUKS
+* ניתוק גישת USB
+* אמצעי אבטחה פיזיים
+* בידוד רשת
+לפרטים מלאים על נהלי האבטחה שלנו, ראה את [דף האבטחה](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> מסד הנתונים הווקטורי מכיל הטמעות (ייצוגים מתמטיים), לא את הטקסט המקורי. עם זאת, ניתן לתכנן מחדש את ההטמעות, ולכן אנו שומרים אותן על תחנות עבודה מוצפנות ומאובטחות פיזית.
 
-### High-Level Flow {#high-level-flow}
+### אחסון מקומי הוא פרקטיקה סטנדרטית {#local-storage-is-standard-practice}
+
+אחסון ההטמעות על תחנות העבודה של הצוות שלנו אינו שונה מהאופן שבו אנו כבר מטפלים בדואר אלקטרוני:
+
+* **Thunderbird**: מוריד ושומר את תוכן הדואר המלא מקומית בקבצי mbox/maildir
+* **לקוחות דואר אינטרנטיים**: מטמינים נתוני דואר בזיכרון הדפדפן ובמסדי נתונים מקומיים
+* **לקוחות IMAP**: שומרים עותקים מקומיים של הודעות לגישה לא מקוונת
+* **מערכת ה-AI שלנו**: מאחסנת הטמעות מתמטיות (לא טקסט רגיל) ב-LanceDB
+
+ההבדל המרכזי: ההטמעות **מאובטחות יותר** מדואר אלקטרוני בטקסט רגיל כי הן:
+
+1. ייצוגים מתמטיים, לא טקסט קריא
+2. קשות יותר לתכנון מחדש מאשר טקסט רגיל
+3. עדיין כפופות לאותה אבטחה פיזית כמו לקוחות הדואר שלנו
+
+אם זה מקובל שהצוות שלנו ישתמש ב-Thunderbird או בדואר אינטרנטי על תחנות עבודה מוצפנות, זה מקובל באותה מידה (ואף בטוח יותר לטעמנו) לאחסן הטמעות באותו אופן.
+
+
+## הארכיטקטורה {#the-architecture}
+
+הנה הזרימה הבסיסית. זה נראה פשוט. זה לא היה.
+
+> \[!NOTE]
+> כל המשימות משתמשות ישירות ב-Forward Email API, מה שמבטיח ששיפורי ביצועים יועילו גם למערכת ה-AI שלנו וגם ללקוחותינו.
+
+### זרימה ברמה גבוהה {#high-level-flow}
 
 ```mermaid
 graph TD
@@ -451,9 +451,9 @@ graph TD
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### זרימת הסקרייפר המפורטת {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+ה-`scraper.js` הוא הלב של קליטת הנתונים. זו אוסף של מפענחים לפורמטים שונים של נתונים.
 
 ```mermaid
 graph TD
@@ -475,29 +475,29 @@ graph TD
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## איך זה עובד {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+התהליך מחולק לשלושה חלקים עיקריים: בניית בסיס הידע, אימון מדואר אלקטרוני היסטורי, ועיבוד דואר חדש.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### בניית בסיס הידע {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: זו המשימה הראשית. היא רצה מדי לילה, מנקה את מאגר הווקטורים הישן, ובונה אותו מחדש מההתחלה. היא משתמשת ב-`scraper.js` כדי לאסוף תוכן מכל המקורות, ב-`processor.js` כדי לחלק אותו לחלקים, וב-`ollama-client.js` כדי ליצור הטמעות. לבסוף, `vector-store.js` שומר הכל ב-LanceDB.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+**מקורות נתונים:**
 
-### Training from Historical Emails {#training-from-historical-emails}
+* קבצי Markdown מקומיים (`docs/*.md`)
+* קובץ PDF של נייר לבן טכני (`assets/technical-whitepaper.pdf`)
+* JSON של מפרט API (`assets/api-spec.json`)
+* נושאים ב-GitHub (דרך Octokit)
+* דיונים ב-GitHub (דרך Octokit)
+* בקשות משיכה ב-GitHub (דרך Octokit)
+* רשימת כתובות URL של מפת אתר (`$LANCEDB_PATH/valid-urls.json`)
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
+### אימון מדואר אלקטרוני היסטורי {#training-from-historical-emails}
 
-**Email Processing Flow:**
+**`train-from-history.js`**: משימה זו סורקת מיילים היסטוריים מכל התיקיות, מפענחת הודעות מוצפנות ב-PGP, ומוסיפה אותן למאגר וקטורי נפרד (`customer_support_history`). זה מספק הקשר מאינטראקציות תמיכה קודמות.
+**זרימת עיבוד דואר אלקטרוני:**
 
 ```mermaid
 sequenceDiagram
@@ -535,14 +535,14 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**תכונות עיקריות:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **פענוח PGP**: משתמש בעזר `pgp-decrypt.js` עם משתנה הסביבה `GPG_SECURITY_KEY`
+* **קיבוץ שיחות**: מקבץ מיילים קשורים לתוך שרשורי שיחה
+* **שימור מטא-דאטה**: מאחסן תיקייה, נושא, תאריך, מצב הצפנה
+* **הקשר תגובה**: מקשר הודעות עם התגובות שלהן להקשר טוב יותר
 
-**Configuration:**
+**הגדרות:**
 
 ```bash
 # Environment variables for train-from-history
@@ -553,7 +553,7 @@ GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
 GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
-**What Gets Stored:**
+**מה נשמר:**
 
 ```javascript
 {
@@ -575,39 +575,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> הרץ את `train-from-history` לאחר ההגדרה הראשונית כדי למלא את ההקשר ההיסטורי. זה משפר משמעותית את איכות התגובה על ידי למידה מאינטראקציות תמיכה קודמות.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### עיבוד מיילים נכנסים {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: משימה זו פועלת על מיילים בתיבות הדואר שלנו `support@forwardemail.net`, `abuse@forwardemail.net`, ו-`security@forwardemail.net` (במיוחד בתיקיית IMAP `INBOX`). היא מנצלת את ה-API שלנו בכתובת <https://forwardemail.net/email-api> (למשל `GET /v1/messages?folder=INBOX` עם גישת BasicAuth באמצעות אישורי IMAP של כל תיבה). היא מנתחת את תוכן המייל, מבצעת שאילתות הן לבסיס הידע (`forward_email_knowledge_base`) והן לאחסון וקטורי של מיילים היסטוריים (`customer_support_history`), ואז מעבירה את ההקשר המשולב ל-`response-generator.js`. הגנרטור משתמש ב-`mxbai-embed-large` דרך Ollama ליצירת תגובה.
 
-**Automated Workflow Features:**
+**תכונות זרימת עבודה אוטומטית:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **אוטומציה לאינבוקס ריק**: לאחר יצירת טיוטה בהצלחה, ההודעה המקורית מועברת אוטומטית לתיקיית הארכיון. זה שומר על תיבת הדואר נקייה ועוזר להגיע לאינבוקס ריק ללא התערבות ידנית.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **דלג על עיבוד AI**: פשוט הוסף תווית `skip-ai` (לא תלוי רישיות) לכל הודעה כדי למנוע עיבוד AI. ההודעה תישאר בתיבת הדואר ללא שינוי, ותוכל לטפל בה ידנית. זה שימושי להודעות רגישות או מקרים מורכבים שדורשים שיקול דעת אנושי.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **שרשור מיילים תקין**: כל תגובות הטיוטה כוללות את ההודעה המקורית מצוטטת למטה (באמצעות קידומת סטנדרטית ` >  `), בהתאם לנוהלי תגובה במייל עם הפורמט "בתאריך \[date], \[sender] כתב:". זה מבטיח הקשר שיחה ושרשור תקינים בלקוחות דואר אלקטרוני.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **התנהגות השב לכולם**: המערכת מטפלת אוטומטית בכותרות Reply-To ובנמעני CC:
+   * אם קיימת כותרת Reply-To, היא הופכת לכתובת To והכתובת המקורית From מתווספת ל-CC
+   * כל נמעני To ו-CC המקוריים נכללים ב-CC של התגובה (למעט הכתובת שלך)
+   * עוקבת אחרי נוהלי תגובה לכולם סטנדרטיים לשיחות קבוצתיות
+**דירוג מקורות**: המערכת משתמשת ב**דירוג משוקלל** כדי לתת עדיפות למקורות:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
+* שאלות נפוצות: 100% (עדיפות עליונה)
+* נייר טכני: 95%
+* מפרט API: 90%
+* תיעוד רשמי: 85%
+* בעיות GitHub: 70%
+* מיילים היסטוריים: 50%
 
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
-* GitHub issues: 70%
-* Historical emails: 50%
+### ניהול מאגר וקטורים {#vector-store-management}
 
-### Vector Store Management {#vector-store-management}
+מחלקת `VectorStore` בקובץ `helpers/customer-support-ai/vector-store.js` היא הממשק שלנו ל-LanceDB.
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
-
-**Adding Documents:**
+**הוספת מסמכים:**
 
 ```javascript
 // vector-store.js
@@ -621,7 +620,7 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**ניקוי המאגר:**
 
 ```javascript
 // Option 1: Use the clear() method
@@ -631,178 +630,179 @@ await vectorStore.clear();
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+משתנה הסביבה `LANCEDB_PATH` מצביע על תיקיית מסד הנתונים המקומית המוטמעת. LanceDB הוא ללא שרת ומוטמע, כך שאין תהליך נפרד לניהול.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## בית הקברות של מסדי הנתונים הוקטוריים {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
-| ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+זה היה המחסום הראשוני הגדול. ניסינו מספר מסדי נתונים וקטוריים לפני שהחלטנו על LanceDB. הנה מה שהשתבש בכל אחד מהם.
+
+| מסד נתונים  | GitHub                                                      | מה השתבש                                                                                                                                                                                                          | בעיות ספציפיות                                                                                                                                                                                                                                                                                                                                                           | חששות אבטחה                                                                                                                                                                                                    |
+| ------------ | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | הפקודה `pip3 install chromadb` נותנת לך גרסה מימי קדם עם `PydanticImportError`. הדרך היחידה לקבל גרסה עובדת היא לקמפל מהמקור. לא ידידותי למפתחים.                                                          | כאוס תלות בפייתון. משתמשים רבים מדווחים על התקנות pip שבורות ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). התיעוד אומר "פשוט השתמש בדוקר" שזה לא פתרון לפיתוח מקומי. קורסת ב-Windows עם >99 רשומות ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: הרצת קוד שרירותית דרך אינטגרציה של ChromaDB ב-MindsDB. פרצות קריטיות במערכת ההפעלה בתמונת Docker ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                      |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | ה-Homebrew tap (`qdrant/qdrant/qdrant`) שהוזכר בתיעוד הישן שלהם נעלם. נעלם. ללא הסבר. התיעוד הרשמי כעת פשוט אומר "השתמש בדוקר."                                                                             | חסר Homebrew tap. אין בינארי מקומי ל-macOS. שימוש רק בדוקר מהווה מחסום לבדיקות מקומיות מהירות.                                                                                                                                                                                                                                                                       | **CVE-2024-2221**: פרצת העלאת קבצים המאפשרת הרצת קוד מרחוק (תוקן בגרסה 1.9.0). ציון בגרות אבטחה נמוך מ-[IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/).                         |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | גרסת Homebrew סבלה מבאג קריטי באשכול (`leader not found`). הדגלים המתועדים לתיקון (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) לא עבדו. שבור ביסודו עבור התקנות חד-צומתיות.                                            | באגים באשכול גם במצב צומת יחיד. מורכב מדי לשימושים פשוטים.                                                                                                                                                                                                                                                                                                               | לא נמצאו CVE משמעותיים, אך המורכבות מגדילה את שטח הפגיעה.                                                                                                                                                      |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | זה עבד. הוא מוטמע וללא שרת. אין תהליך נפרד. הדבר היחיד שמטריד הוא השם המבלבל של החבילה (`vectordb` מיושן, יש להשתמש ב-`@lancedb/lancedb`) והתיעוד מפוזר. אנחנו מסתדרים עם זה.                             | בלבול בשמות החבילות (`vectordb` מול `@lancedb/lancedb`), אך אחרת יציב. הארכיטקטורה המוטמעת מבטלת קטגוריות שלמות של בעיות אבטחה.                                                                                                                                                                                                                                   | אין CVE ידועים. העיצוב המוטמע מבטל את שטח הפגיעה ברשת.                                                                                                                                                        |
+> \[!WARNING]
+> **ל-ChromaDB יש פרצות אבטחה קריטיות.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) מאפשר הרצת קוד שרירותית. התקנת pip שבורה באופן יסודי עקב בעיות תלות ב-Pydantic. הימנעו משימוש בפרודקשן.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **ל-Qdrant הייתה פרצת RCE בהעלאת קבצים** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) שתוקנה רק בגרסה v1.9.0. אם אתם חייבים להשתמש ב-Qdrant, ודאו שאתם בגרסה העדכנית ביותר.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> מערכת האקוסיסטם של מסדי הנתונים הוקטוריים בקוד פתוח היא לא יציבה. אל תסמכו על התיעוד. הניחו שהכל שבור עד שיוכח אחרת. בדקו מקומית לפני התחייבות לערימה.
 
-## System Requirements {#system-requirements}
+
+## דרישות מערכת {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** העדכנית ביותר ([GitHub](https://github.com/ollama/ollama))
+* **מודל:** `mxbai-embed-large` דרך Ollama
+* **מסד נתונים וקטורי:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **גישה ל-GitHub:** `@octokit/rest` לגרידת בעיות ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** למסד הנתונים הראשי (דרך `mongoose-to-sqlite`)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## הגדרת משימות Cron {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+כל משימות ה-AI רצות דרך cron על MacBook M5. כך מגדירים את משימות ה-cron שירוצו בחצות בלילה על מספר תיבות דואר.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### משתני סביבה {#environment-variables}
 
-**In `.env` file:**
+המשימות דורשות את משתני הסביבה האלה. רובם ניתנים להגדרה בקובץ `.env` (נטען דרך `@ladjs/env`), אך `HISTORY_SCAN_SINCE` חייב להיות מחושב דינמית ב-crontab.
+
+**בקובץ `.env`:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# אישורי API של Forward Email (משתנים לפי תיבת דואר)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
 FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
 
-# PGP decryption (shared across all inboxes)
+# פענוח PGP (משותף לכל תיבות הדואר)
 GPG_SECURITY_KEY=/path/to/private-key.asc
 GPG_SECURITY_PASSPHRASE=your-passphrase
 
-# Historical scan configuration
+# הגדרות סריקה היסטורית
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# נתיב LanceDB
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**ב-crontab (מחושב דינמית):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE חייב להיות מוגדר בשורה ב-crontab עם חישוב תאריך shell
+# לא יכול להיות בקובץ .env כי @ladjs/env לא מבצע eval לפקודות shell
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### משימות Cron למספר תיבות דואר {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+ערכו את ה-crontab עם `crontab -e` והוסיפו:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# עדכון בסיס הידע (רץ פעם אחת, משותף לכל תיבות הדואר)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# אימון מההיסטוריה - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# אימון מההיסטוריה - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# אימון מההיסטוריה - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# עיבוד תיבת דואר - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# עיבוד תיבת דואר - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# עיבוד תיבת דואר - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### פירוט לוח זמנים של Cron {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
-
-| Job | Schedule | Description |
+| משימה                   | לוח זמנים    | תיאור                                                                             |
 | ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+| `train-from-sitemap.js` | `0 0 * * 0`   | שבועי (חצות יום ראשון) - מושך את כל כתובות ה-URL מהמפת אתר ומאמן את בסיס הידע      |
+| `train-from-history.js` | `0 0 * * *`   | חצות יומי - סורק את מיילי היום הקודם לפי תיבת דואר                                |
+| `process-inbox.js`      | `*/5 * * * *` | כל 5 דקות - מעבד מיילים חדשים ומייצר טיוטות                                        |
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+### חישוב תאריך דינמי {#dynamic-date-calculation}
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+המשתנה `HISTORY_SCAN_SINCE` **חייב להיות מחושב ישירות בתוך קובץ ה-crontab** מכיוון ש:
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
+1. קבצי `.env` נקראים כמחרוזות מילוליות על ידי `@ladjs/env`
+2. החלפת פקודות shell `$(...)` לא עובדת בקבצי `.env`
+3. יש לחשב את התאריך מחדש בכל פעם ש-cron רץ
 
-**Correct approach (in crontab):**
+**הגישה הנכונה (בקובץ crontab):**
 
 ```bash
-# macOS (BSD date)
+# macOS (תאריך BSD)
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 
-# Linux (GNU date)
+# Linux (תאריך GNU)
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**גישה שגויה (לא עובדת בקובץ .env):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# זה ייקרא כמחרוזת מילולית "$(date -v-1d +%Y-%m-%d)"
+# ולא יבוצע כפקודת shell
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+זה מבטיח שכל ריצה לילית תחשב את תאריך היום הקודם בצורה דינמית, ומונעת עבודה מיותרת.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### הגדרה ראשונית: חילוץ רשימת כתובות URL מהמפת אתר {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+לפני הרצת משימת process-inbox בפעם הראשונה, **חייבים** לחלץ את רשימת כתובות ה-URL מהמפת אתר. זה יוצר מילון של כתובות URL תקינות שה-LLM יכול להתייחס אליהן ומונע הזיות של כתובות URL.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# הגדרה ראשונית: חילוץ רשימת כתובות URL מהמפת אתר
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**מה זה עושה:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. מושך את כל כתובות ה-URL מ-<https://forwardemail.net/sitemap.xml>
+2. מסנן רק כתובות שאינן מקומיות או כתובות /en/ (מונע תוכן כפול)
+3. מסיר קידומות שפה (/en/faq → /faq)
+4. שומר קובץ JSON פשוט עם רשימת הכתובות ב-`$LANCEDB_PATH/valid-urls.json`
+5. ללא זחילה, ללא גרידת מטא-דאטה - רק רשימה שטוחה של כתובות תקינות
 
-**Why this matters:**
+**למה זה חשוב:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* מונע מה-LLM להזות כתובות URL מזויפות כמו `/dashboard` או `/login`
+* מספק רשימת כתובות תקינות שהגנרטור יכול להתייחס אליהן
+* פשוט, מהיר, ואינו דורש אחסון במסד נתונים וקטורי
+* הגנרטור טוען רשימה זו בהפעלה ומכליל אותה בהנחיה
 
-**Add to crontab for weekly updates:**
+**הוסף ל-crontab לעדכונים שבועיים:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# חילוץ רשימת כתובות URL מהמפת אתר - שבועי, חצות יום ראשון
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### בדיקת משימות Cron ידנית {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+כדי לבדוק משימה לפני הוספה ל-cron:
 
 ```bash
-# Test sitemap training
+# בדיקת אימון מפת אתר
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# בדיקת אימון תיבת דואר תמיכה
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +814,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### ניטור לוגים {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+כל משימה כותבת ללוג נפרד לנוחות איתור תקלות:
 
 ```bash
-# Watch support inbox processing in real-time
+# צפייה בעיבוד תיבת דואר תמיכה בזמן אמת
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# בדיקת ריצת אימון של הלילה האחרון
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# צפייה בכל השגיאות בכל המשימות
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> השתמשו בקבצי לוג נפרדים לכל תיבת דואר כדי לבודד בעיות. אם לתיבת דואר אחת יש בעיות אימות, זה לא יזהם את הלוגים של תיבות אחרות.
+## דוגמאות קוד {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### גרידה ועיבוד {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +842,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// נקה נתונים ישנים
 await vectorStore.clear();
 
-// Scrape all sources
+// גרד את כל המקורות
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`גרדנו ${documents.length} מסמכים`);
 
-// Process into chunks
+// עיבוד לחתיכות
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`נוצרו ${allChunks.length} חתיכות`);
 
-// Generate embeddings and store
+// יצירת הטמעות ואחסון
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +869,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### אימון מאימיילים היסטוריים {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +883,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// סרוק את כל התיקיות (INBOX, דואר שנשלח, וכו')
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// קיבוץ לשיחות
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// עיבוד כל שיחה
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // דלג על הודעות מוצפנות שלא פוענחו
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // השתמש בתוכן שכבר נותח מ-nodemailer
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // חתוך ואחסן
+    const chunks = processor.chunkText(`נושא: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +928,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### שאילתא להקשר {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +937,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// שאילתא בשני המאגרי מידע
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// דירוג משוקלל והסרת כפילויות מתבצעים כאן
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// יצירת תגובה
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## העתיד: מחקר ופיתוח לסורק דואר זבל {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+כל הפרויקט הזה לא היה רק לתמיכה בלקוחות. זה היה מחקר ופיתוח. עכשיו אנחנו יכולים לקחת את כל מה שלמדנו על הטמעות מקומיות, מאגרי וקטורים ושליפת הקשר ולהחיל זאת על הפרויקט הגדול הבא שלנו: שכבת ה-LLM עבור [Spam Scanner](https://spamscanner.net). אותם עקרונות של פרטיות, אירוח עצמי והבנה סמנטית יהיו המפתח.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## פתרון בעיות {#troubleshooting}
+
+### שגיאת אי התאמת מימד וקטור {#vector-dimension-mismatch-error}
+
+**שגיאה:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**סיבה:** שגיאה זו מתרחשת כאשר מחליפים מודל הטמעות (למשל, מ-`mistral-small` ל-`mxbai-embed-large`) אך מסד הנתונים LanceDB הקיים נוצר עם מימד וקטור שונה.
+**פתרון:** עליך לאמן מחדש את בסיס הידע עם מודל ההטמעה החדש:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. עצור כל עבודות AI של תמיכת לקוחות שרצות
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. מחק את מסד הנתונים הקיים של LanceDB
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. ודא שמודל ההטמעה מוגדר נכון בקובץ .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# אמור להראות: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. הורד את מודל ההטמעה ב-Ollama
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. אמן מחדש את בסיס הידע
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. הפעל מחדש את עבודת process-inbox דרך Bree
+# העבודה תרוץ אוטומטית כל 5 דקות
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**מדוע זה קורה:** מודלים שונים של הטמעה מייצרים וקטורים בממדים שונים:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 ממדים
+* `mxbai-embed-large`: 1024 ממדים
+* `nomic-embed-text`: 768 ממדים
+* `all-minilm`: 384 ממדים
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB שומר את מימד הוקטור בסכמת הטבלה. כאשר אתה מבצע שאילתה עם מימד שונה, זה נכשל. הפתרון היחיד הוא ליצור מחדש את מסד הנתונים עם המודל החדש.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### הקשר של בסיס ידע ריק {#empty-knowledge-base-context}
 
-**Symptom:**
+**תסמין:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,77 +1010,78 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**סיבה:** בסיס הידע עדיין לא אומן, או שטבלת LanceDB לא קיימת.
 
-**Solution:** Run the training job to populate the knowledge base:
+**פתרון:** הרץ את עבודת האימון כדי למלא את בסיס הידע:
 
 ```bash
-# Train from historical emails
+# אימון מתוך מיילים היסטוריים
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# או אימון מתוך אתר/מסמכים (אם יש לך סקרייפר)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### כשלונות בפענוח PGP {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**תסמין:** הודעות מוצגות כמוצפנות אך התוכן ריק.
 
-**Solution:**
+**פתרון:**
 
-1. Verify GPG key path is set correctly:
+1. ודא שדרך מפתח GPG מוגדרת נכון:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# אמור להצביע על קובץ המפתח הפרטי שלך
 ```
 
-2. Test decryption manually:
+2. בדוק פענוח ידנית:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. בדוק הרשאות מפתח:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# אמור להיות קריא למשתמש שמריץ את העבודה
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## טיפים לשימוש {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### השגת Inbox Zero {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+המערכת מיועדת לעזור לך להשיג Inbox Zero באופן אוטומטי:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **ארכוב אוטומטי**: כאשר טיוטה נוצרת בהצלחה, ההודעה המקורית מועברת אוטומטית לתיקיית הארכיון. זה שומר על תיבת הדואר נקייה ללא התערבות ידנית.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **סקירת טיוטות**: בדוק את תיקיית הטיוטות באופן קבוע כדי לסקור תגובות שנוצרו על ידי ה-AI. ערוך לפי הצורך לפני השליחה.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **התעלמות ידנית**: עבור הודעות שדורשות תשומת לב מיוחדת, פשוט הוסף את התווית `skip-ai` לפני שהעבודה רצה.
 
-To prevent AI processing for specific messages:
+### שימוש בתווית skip-ai {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+כדי למנוע עיבוד AI להודעות ספציפיות:
 
-**When to use skip-ai:**
+1. **הוסף את התווית**: בלקוח הדואר שלך, הוסף תווית/תג `skip-ai` לכל הודעה (לא רגיש לאותיות)
+2. **ההודעה נשארת בתיבת הדואר**: ההודעה לא תעובד או תועבר לארכיון
+3. **טיפול ידני**: תוכל להשיב לה בעצמך ללא התערבות AI
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**מתי להשתמש ב-skip-ai:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* הודעות רגישות או סודיות
+* מקרים מורכבים שדורשים שיקול דעת אנושי
+* הודעות מלקוחות VIP
+* פניות משפטיות או רגולטוריות
+* הודעות שדורשות תשומת לב אנושית מיידית
 
-The system follows standard email conventions:
+### שרשור מיילים ו-reply-all {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+המערכת פועלת לפי קונבנציות מייל סטנדרטיות:
+
+**הודעות מקור מצוטטות:**
 
 ```
 Hi there,
@@ -1098,13 +1099,13 @@ On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
 > using the standard "> " prefix
 ```
 
-**Reply-To Handling:**
+**טיפול ב-Reply-To:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* אם להודעה המקורית יש כותרת Reply-To, הטיוטה משיבה לכתובת זו
+* כתובת ה-From המקורית מתווספת ל-CC
+* כל הנמענים המקוריים ב-To ו-CC נשמרים
 
-**Example:**
+**דוגמה:**
 
 ```
 Original message:
@@ -1117,113 +1118,114 @@ Draft response:
   To: support@company.com (from Reply-To)
   CC: john@company.com, manager@company.com
 ```
+### ניטור ותחזוקה {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**בדוק את איכות הטיוטה באופן קבוע:**
 
 ```bash
-# View recent drafts
+# הצג טיוטות אחרונות
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**נטר ארכוב:**
 
 ```bash
-# Check for archiving errors
+# בדוק שגיאות בארכוב
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**סקור הודעות שהוחמצו:**
 
 ```bash
-# See which messages were skipped
+# ראה אילו הודעות הוחמצו
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## בדיקות {#testing}
 
-### Running Tests {#running-tests}
+מערכת ה-AI לתמיכת לקוחות כוללת כיסוי בדיקות מקיף עם 23 בדיקות Ava.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### הרצת בדיקות {#running-tests}
+
+בגלל קונפליקטים בהחלפת חבילות npm עם `better-sqlite3`, השתמש בסקריפט הבדיקה המסופק:
 
 ```bash
-# Run all customer support AI tests
+# הרץ את כל בדיקות ה-AI לתמיכת לקוחות
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# הרץ עם פלט מפורט
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# הרץ קובץ בדיקה ספציפי
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+כחלופה, הרץ בדיקות ישירות:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### כיסוי בדיקות {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Sitemap Fetcher (6 בדיקות):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* התאמת תבנית שפה רגולרית
+* חילוץ נתיב URL והסרת שפה
+* לוגיקת סינון URL לשפות
+* לוגיקת ניתוח XML
+* לוגיקת הסרת כפילויות
+* סינון משולב, הסרה והסרת כפילויות
 
-**Message Utils (9 tests):**
+**Message Utils (9 בדיקות):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* חילוץ טקסט השולח עם שם ודוא"ל
+* טיפול בדוא"ל בלבד כאשר השם תואם קידומת
+* שימוש ב-from.text אם זמין
+* שימוש ב-Reply-To אם קיים
+* שימוש ב-From אם אין Reply-To
+* הכללת נמעני CC מקוריים
+* החרגת הכתובת שלנו מ-CC
+* טיפול ב-Reply-To עם From ב-CC
+* הסרת כפילויות בכתובות CC
 
-**Response Generator (8 tests):**
+**Response Generator (8 בדיקות):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* לוגיקת קיבוץ URL עבור הפרומפט
+* לוגיקת זיהוי שם שולח
+* מבנה הפרומפט כולל את כל הסעיפים הנדרשים
+* עיצוב רשימת URL ללא סוגריים זוויתיים
+* טיפול ברשימת URL ריקה
+* רשימת URL אסורות בפרומפט
+* הכללת הקשר היסטורי
+* URL נכונים לנושאים הקשורים לחשבון
 
-### Test Environment {#test-environment}
+### סביבת בדיקה {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+הבדיקות משתמשות בקובץ `.env.test` להגדרות. סביבת הבדיקה כוללת:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* אישורי PayPal ו-Stripe מדומים
+* מפתחות הצפנה לבדיקה
+* ספקי אימות מושבתים
+* נתיבי נתוני בדיקה בטוחים
 
-All tests are designed to run without external dependencies or network calls.
+כל הבדיקות מתוכננות לפעול ללא תלות חיצונית או קריאות רשת.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## נקודות מפתח {#key-takeaways}
+
+1. **פרטיות קודם כל:** אירוח עצמי הוא בלתי ניתן לויתור לציות ל-GDPR/DPA.
+2. **עלות חשובה:** שירותי AI בענן יקרים פי 50-1000 מאירוח עצמי לעומסי ייצור.
+3. **המערכת האקולוגית שבורה:** רוב מסדי הנתונים הווקטוריים אינם ידידותיים למפתחים. בדוק הכל מקומית.
+4. **פגיעויות אבטחה אמיתיות:** ל-ChromaDB ול-Qdrant היו פגיעויות RCE קריטיות.
+5. **LanceDB עובד:** הוא משובץ, ללא שרת ואינו דורש תהליך נפרד.
+6. **Ollama יציב:** אינפרנס LLM מקומי עם `mxbai-embed-large` עובד טוב למקרה השימוש שלנו.
+7. **אי התאמות טיפוס יהרגו אותך:** `text` מול `content`, ObjectID מול מחרוזת. באגים אלו שקטים ואכזריים.
+8. **דירוג משוקלל חשוב:** לא כל ההקשר שווה. FAQ > נושאי GitHub > מיילים היסטוריים.
+9. **הקשר היסטורי הוא זהב:** אימון ממיילי תמיכה מהעבר משפר משמעותית את איכות התגובה.
+10. **פענוח PGP חיוני:** מיילי תמיכה רבים מוצפנים; פענוח נכון קריטי לאימון.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+למידע נוסף על Forward Email והגישה שלנו לפרטיות ראשונה בדוא"ל ב-[forwardemail.net](https://forwardemail.net).

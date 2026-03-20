@@ -1,23 +1,26 @@
-# JavaScript お問い合わせフォーム Node.js コード例 {#javascript-contact-forms-nodejs-code-example}
+# JavaScript 連絡フォーム Node.js コード例 {#javascript-contact-forms-nodejs-code-example}
+
 
 ## 目次 {#table-of-contents}
 
 * [インストールと要件](#install-and-requirements)
 * [ソースコードと例](#source-code-and-example)
 
+
 ## インストールと要件 {#install-and-requirements}
 
-`nodemailer` npm 依存関係をインストールする必要があります。
+`nodemailer` npm 依存関係をインストールする必要があります:
 
 ```sh
 npm install nodemailer
 ```
 
+
 ## ソースコードと例 {#source-code-and-example}
 
-この例では、**[ノードメーラー](https://github.com/nodemailer/nodemailer)** ライブラリとその公式スポンサーである **[メールを転送する](https://forwardemail.net)** を使用して、送信メールを送信およびプレビューします。
+この例では、**[Nodemailer](https://github.com/nodemailer/nodemailer)** ライブラリとその公式スポンサー **[Forward Email](https://forwardemail.net)** を使用して、送信メールの送信とプレビューを行います。
 
-送信メールを送信するには、<strong class="text-success"><i class="fa fa-key"></i>パスワードを生成</strong>する必要があります。**[カスタムドメインでメールを送信するSMTPガイド](/guides/send-email-with-custom-domain-smtp)** に従ってください。
+送信メールを送るには <strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong> する必要があります – ぜひ当社の **[カスタムドメイン SMTP でメールを送信するガイド](/guides/send-email-with-custom-domain-smtp)** に従ってください。
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: 以下の `user` と `pass` の値を置き換えてください:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -45,12 +48,12 @@ await transporter.sendMail({
 });
 ```
 
-アプリを実行してメールを送信します。
+アプリを実行してメールを送信します:
 
 ```sh
 node app
 ```
 
-**[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信ステータス、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できるようになりました。
+次に、**[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信状況、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できます。
 
-> P.S. :tada: **[ブラウザとiOSシミュレータでメールをプレビューする](/docs/test-preview-email-rendering-browsers-ios-simulator)** と **[Node.jsでメールテンプレートを作成する](/docs/send-emails-with-node-js-javascript)** も使用できます。
+> P.S. :tada: また、**[ブラウザや iOS シミュレーターでメールをプレビュー](/docs/test-preview-email-rendering-browsers-ios-simulator)** したり、**[Node.js でメールテンプレートを作成](/docs/send-emails-with-node-js-javascript)** したりすることもできます。

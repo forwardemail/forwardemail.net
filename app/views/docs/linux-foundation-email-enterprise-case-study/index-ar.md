@@ -1,45 +1,49 @@
-# دراسة حالة: كيف تعمل مؤسسة Linux على تحسين إدارة البريد الإلكتروني عبر أكثر من 250 نطاقًا باستخدام البريد الإلكتروني الأمامي {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
+# دراسة حالة: كيف تحسن مؤسسة لينكس إدارة البريد الإلكتروني عبر أكثر من 250 نطاقًا باستخدام Forward Email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="دراسة حالة مؤسسة لينكس لإدارة البريد الإلكتروني في المؤسسات" class="rounded-lg" />
+
 
 ## جدول المحتويات {#table-of-contents}
 
 * [مقدمة](#introduction)
 * [التحدي](#the-challenge)
 * [الحل](#the-solution)
-  * [هندسة مفتوحة المصدر بنسبة 100%](#100-open-source-architecture)
+  * [بنية مفتوحة المصدر 100%](#100-open-source-architecture)
   * [تصميم يركز على الخصوصية](#privacy-focused-design)
-  * [أمان على مستوى المؤسسة](#enterprise-grade-security)
-  * [نموذج المؤسسة ذات السعر الثابت](#fixed-price-enterprise-model)
+  * [أمان بمستوى المؤسسات](#enterprise-grade-security)
+  * [نموذج تسعير ثابت للمؤسسات](#fixed-price-enterprise-model)
   * [واجهة برمجة تطبيقات صديقة للمطورين](#developer-friendly-api)
 * [عملية التنفيذ](#implementation-process)
 * [النتائج والفوائد](#results-and-benefits)
   * [تحسينات الكفاءة](#efficiency-improvements)
   * [إدارة التكاليف](#cost-management)
-  * [تعزيز الأمن](#enhanced-security)
+  * [تعزيز الأمان](#enhanced-security)
   * [تحسين تجربة المستخدم](#improved-user-experience)
-* [خاتمة](#conclusion)
-* [مراجع](#references)
+* [الخاتمة](#conclusion)
+* [المراجع](#references)
+
 
 ## مقدمة {#introduction}
 
-يدير [مؤسسة لينكس](https://en.wikipedia.org/wiki/Linux_Foundation) أكثر من 900 مشروع مفتوح المصدر عبر أكثر من 250 نطاقًا، بما في ذلك [linux.com](https://www.linux.com/) و[jQuery.com](https://jquery.com/). تستكشف دراسة الحالة هذه كيفية تعاونهم مع [إعادة توجيه البريد الإلكتروني](https://forwardemail.net) لتبسيط إدارة البريد الإلكتروني مع الحفاظ على مبادئ المصدر المفتوح.
+تدير [مؤسسة لينكس](https://en.wikipedia.org/wiki/Linux_Foundation) أكثر من 900 مشروع مفتوح المصدر عبر أكثر من 250 نطاقًا، بما في ذلك [linux.com](https://www.linux.com/) و [jQuery.com](https://jquery.com/). تستعرض هذه الدراسة كيف تعاونوا مع [Forward Email](https://forwardemail.net) لتبسيط إدارة البريد الإلكتروني مع الحفاظ على التوافق مع مبادئ المصدر المفتوح.
+
 
 ## التحدي {#the-challenge}
 
-واجهت مؤسسة Linux العديد من التحديات في إدارة البريد الإلكتروني:
+واجهت مؤسسة لينكس عدة تحديات في إدارة البريد الإلكتروني:
 
-* **النطاق**: إدارة البريد الإلكتروني عبر أكثر من 250 نطاقًا بمتطلبات مختلفة
-* **العبء الإداري**: تكوين سجلات DNS، والحفاظ على قواعد إعادة التوجيه، والرد على طلبات الدعم
-* **الأمان**: الحماية من تهديدات البريد الإلكتروني مع الحفاظ على الخصوصية
-* **التكلفة**: كانت الحلول التقليدية لكل مستخدم باهظة التكلفة للغاية نظرًا لحجمها.
-* **التوافق مع المصادر المفتوحة**: الحاجة إلى حلول تتوافق مع التزامهم بقيم المصادر المفتوحة
+* **الحجم**: إدارة البريد الإلكتروني عبر أكثر من 250 نطاقًا بمتطلبات مختلفة
+* **العبء الإداري**: تكوين سجلات DNS، وصيانة قواعد إعادة التوجيه، والرد على طلبات الدعم
+* **الأمان**: الحماية من التهديدات القائمة على البريد الإلكتروني مع الحفاظ على الخصوصية
+* **التكلفة**: كانت الحلول التقليدية القائمة على المستخدم مكلفة جدًا على هذا النطاق
+* **التوافق مع المصدر المفتوح**: الحاجة إلى حلول تتماشى مع التزامهم بقيم المصدر المفتوح
 
-على غرار التحديات التي واجهتها [كانونيكال/أوبونتو](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) مع نطاقات التوزيع المتعددة الخاصة بها، احتاجت مؤسسة Linux إلى حل يمكنه التعامل مع مشاريع متنوعة مع الحفاظ على نهج إدارة موحد.
+مماثل للتحديات التي واجهتها [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) مع نطاقات التوزيع المتعددة الخاصة بهم، كانت مؤسسة لينكس بحاجة إلى حل يمكنه التعامل مع مشاريع متنوعة مع الحفاظ على نهج إدارة موحد.
+
 
 ## الحل {#the-solution}
 
-يوفر Forward Email حلاً شاملاً مع الميزات الرئيسية:
+قدمت Forward Email حلاً شاملاً مع ميزات رئيسية:
 
 ```mermaid
 graph TD
@@ -51,33 +55,33 @@ graph TD
     B --> G[README-First API Approach]
 ```
 
-### بنية مفتوحة المصدر بنسبة 100% {#100-open-source-architecture}
+### بنية مفتوحة المصدر 100% {#100-open-source-architecture}
 
-بصفتها خدمة البريد الإلكتروني الوحيدة التي تعمل بنظام مفتوح المصدر بالكامل (واجهة أمامية وخلفية)، تتوافق خدمة Forward Email تمامًا مع التزام مؤسسة Linux Foundation بمبادئ المصدر المفتوح. وكما هو الحال مع تطبيقنا لـ [كانونيكال/أوبونتو](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)، أتاحت هذه الشفافية لفريقهم الفني التحقق من تطبيقات الأمان، بل وحتى المساهمة في التحسينات.
+كونها الخدمة الوحيدة للبريد الإلكتروني التي تمتلك منصة مفتوحة المصدر بالكامل (الواجهة الأمامية والخلفية)، كانت Forward Email متوافقة تمامًا مع التزام مؤسسة لينكس بمبادئ المصدر المفتوح. وبالمثل مع تنفيذنا مع [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)، سمح هذا الشفافية لفريقهم التقني بالتحقق من تطبيقات الأمان وحتى المساهمة في تحسيناتها.
 
 ### تصميم يركز على الخصوصية {#privacy-focused-design}
 
-يوفر معيار [سياسات الخصوصية](https://forwardemail.net/privacy) الصارم في خدمة Forward Email الأمان الذي تتطلبه مؤسسة Linux Foundation. يضمن معيار [التنفيذ الفني لحماية خصوصية البريد الإلكتروني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) الخاص بنا أمان جميع الاتصالات، دون تسجيل أو مسح لمحتوى البريد الإلكتروني.
+قدمت سياسات الخصوصية الصارمة لـ Forward Email [https://forwardemail.net/privacy](https://forwardemail.net/privacy) الأمان الذي كانت مؤسسة لينكس تحتاجه. يضمن [التنفيذ الفني لحماية خصوصية البريد الإلكتروني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) أن تظل جميع الاتصالات آمنة حسب التصميم، دون تسجيل أو مسح محتوى البريد الإلكتروني.
 
 كما هو مفصل في وثائق التنفيذ الفني لدينا:
 
-لقد بنينا نظامنا بالكامل على مبدأ أن رسائل البريد الإلكتروني ملك لك وحدك. وخلافًا لمقدمي الخدمات الآخرين الذين يمسحون محتوى البريد الإلكتروني لأغراض الإعلان أو تدريب الذكاء الاصطناعي، فإننا نلتزم بسياسة صارمة بعدم التسجيل أو المسح، مما يحافظ على سرية جميع المراسلات.
+> "لقد بنينا نظامنا بأكمله على مبدأ أن رسائل بريدك الإلكتروني تخصك أنت فقط. على عكس مقدمي الخدمات الآخرين الذين يفحصون محتوى البريد الإلكتروني للإعلانات أو تدريب الذكاء الاصطناعي، نحن نلتزم بسياسة صارمة بعدم التسجيل وعدم المسح تحافظ على سرية جميع الاتصالات."
+### أمان بمستوى المؤسسات {#enterprise-grade-security}
 
-### أمان على مستوى المؤسسة {#enterprise-grade-security}
+تم تنفيذ [تشفير مقاوم للحوسبة الكمومية](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) باستخدام ChaCha20-Poly1305 الذي يوفر أمانًا متقدمًا، حيث يكون كل صندوق بريد ملفًا مشفرًا منفصلًا. يضمن هذا النهج أنه حتى إذا أصبحت الحواسيب الكمومية قادرة على كسر معايير التشفير الحالية، ستظل اتصالات مؤسسة لينكس آمنة.
 
-وفّر تطبيق [التشفير المقاوم للكم](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) باستخدام ChaCha20-Poly1305 أمانًا فائق التطور، حيث يُشكّل كل صندوق بريد ملفًا مشفّرًا منفصلًا. يضمن هذا النهج بقاء اتصالات مؤسسة لينكس آمنة حتى في حال تمكّن الحواسيب الكمومية من كسر معايير التشفير الحالية.
+### نموذج المؤسسة بسعر ثابت {#fixed-price-enterprise-model}
 
-### نموذج المؤسسة ذو السعر الثابت {#fixed-price-enterprise-model}
-
-وفّرت خاصية [تسعير المؤسسة](https://forwardemail.net/pricing) من خدمة إعادة توجيه البريد الإلكتروني تكلفة شهرية ثابتة بغض النظر عن النطاقات أو المستخدمين. وقد وفّر هذا النهج وفورات كبيرة في التكاليف للمؤسسات الكبيرة الأخرى، كما هو موضح في خاصية [دراسة حالة البريد الإلكتروني لخريجي الجامعة](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، حيث وفرت المؤسسات ما يصل إلى 99% مقارنةً بحلول البريد الإلكتروني التقليدية لكل مستخدم.
+قدمت [تسعيرة المؤسسات](https://forwardemail.net/pricing) من Forward Email تكلفة شهرية ثابتة بغض النظر عن عدد النطاقات أو المستخدمين. وقد أدى هذا النهج إلى تحقيق وفورات كبيرة في التكاليف لمنظمات كبيرة أخرى، كما هو موضح في [دراسة حالة إعادة توجيه البريد الإلكتروني لخريجي الجامعات](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، حيث وفرت المؤسسات ما يصل إلى 99% مقارنة بحلول البريد الإلكتروني التقليدية لكل مستخدم.
 
 ### واجهة برمجة تطبيقات صديقة للمطورين {#developer-friendly-api}
 
-باتباع [نهج README أولاً](https://tom.preston-werner.com/2010/08/23/readme-driven-development) واستلهامًا من [تصميم واجهة برمجة التطبيقات RESTful الخاصة بـ Stripe](https://amberonrails.com/building-stripes-api)، مكّن [API](https://forwardemail.net/api) من Forward Email التكامل العميق مع مركز التحكم في المشاريع التابع لمؤسسة Linux. كان هذا التكامل حاسمًا لأتمتة إدارة البريد الإلكتروني عبر محفظة مشاريعهم المتنوعة.
+باتباع [نهج README-first](https://tom.preston-werner.com/2010/08/23/readme-driven-development) واستلهامًا من [تصميم API RESTful الخاص بـ Stripe](https://amberonrails.com/building-stripes-api)، مكنت [واجهة برمجة التطبيقات](https://forwardemail.net/api) من Forward Email التكامل العميق مع مركز التحكم في مشاريع مؤسسة لينكس. كان هذا التكامل حاسمًا لأتمتة إدارة البريد الإلكتروني عبر محفظة مشاريعهم المتنوعة.
 
-## عملية تنفيذ {#implementation-process}
 
-وقد تم التنفيذ وفقا لنهج منظم:
+## عملية التنفيذ {#implementation-process}
+
+اتبعت عملية التنفيذ نهجًا منظمًا:
 
 ```mermaid
 flowchart LR
@@ -86,59 +90,61 @@ flowchart LR
     C --> D[Deployment & Training]
 ```
 
-1. **نقل النطاق الأولي**: تكوين سجلات DNS، وإعداد SPF/DKIM/DMARC، ونقل القواعد الحالية
+1. **هجرة النطاق الأولية**: تكوين سجلات DNS، إعداد SPF/DKIM/DMARC، ترحيل القواعد الحالية
 
    ```sh
-   # Example DNS configuration for a Linux Foundation domain
+   # مثال على تكوين DNS لنطاق مؤسسة لينكس
    domain.org.    600    IN    MX    10 mx1.forwardemail.net.
    domain.org.    600    IN    MX    10 mx2.forwardemail.net.
    domain.org.    600    IN    TXT   "v=spf1 include:spf.forwardemail.net -all"
    ```
 
-2. **تكامل واجهة برمجة التطبيقات**: الاتصال بمركز التحكم في المشروع لإدارة الخدمة الذاتية
+2. **تكامل API**: الاتصال بمركز التحكم في المشاريع للإدارة الذاتية
 
-3. **تطوير الميزات المخصصة**: إدارة النطاقات المتعددة، وإعداد التقارير، وسياسات الأمان
+3. **تطوير ميزات مخصصة**: إدارة متعددة النطاقات، التقارير، سياسات الأمان
 
-لقد عملنا بشكل وثيق مع مؤسسة Linux لتطوير ميزات (والتي هي أيضًا مفتوحة المصدر بنسبة 100% حتى يتمكن الجميع من الاستفادة منها) خصيصًا لبيئتهم متعددة المشاريع، على غرار الطريقة التي أنشأنا بها حلولًا مخصصة لـ [أنظمة البريد الإلكتروني لخريجي الجامعات](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
+   عملنا عن كثب مع مؤسسة لينكس لتطوير ميزات (وهي أيضًا مفتوحة المصدر 100% ليستفيد منها الجميع) خصيصًا لبيئة مشاريعهم المتعددة، على غرار الحلول المخصصة التي أنشأناها لـ [أنظمة بريد خريجي الجامعات](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
+
 
 ## النتائج والفوائد {#results-and-benefits}
 
-وقد حقق التنفيذ فوائد كبيرة:
+قدمت عملية التنفيذ فوائد كبيرة:
 
 ### تحسينات الكفاءة {#efficiency-improvements}
 
-* تقليل النفقات الإدارية
-* تسريع عملية دمج المشروع (من أيام إلى دقائق)
-* إدارة مُبسّطة لأكثر من 250 نطاقًا من واجهة واحدة
+* تقليل العبء الإداري
+* تسريع انضمام المشاريع (من أيام إلى دقائق)
+* تبسيط إدارة أكثر من 250 نطاقًا من واجهة واحدة
 
 ### إدارة التكاليف {#cost-management}
 
-* تسعير ثابت بغض النظر عن نمو النطاقات أو عدد المستخدمين
+* تسعير ثابت بغض النظر عن نمو النطاقات أو المستخدمين
 * إلغاء رسوم الترخيص لكل مستخدم
-* على غرار [دراسة حالة جامعية](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، حققت مؤسسة Linux وفورات كبيرة في التكلفة مقارنةً بالحلول التقليدية
+* على غرار [دراسة الحالة الجامعية](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، حققت مؤسسة لينكس وفورات كبيرة في التكاليف مقارنةً بالحلول التقليدية
 
-### أمان معزز {#enhanced-security}
+### تعزيز الأمان {#enhanced-security}
 
-* تشفير مقاوم للكميات عبر جميع النطاقات
-* مصادقة شاملة للبريد الإلكتروني تمنع انتحال الهوية والتصيد الاحتيالي
-* اختبارات وممارسات أمنية عبر [ميزات الأمان](https://forwardemail.net/security)
-* حماية الخصوصية عبر [التنفيذ الفني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* تشفير مقاوم للحوسبة الكمومية عبر جميع النطاقات
+* مصادقة بريد إلكتروني شاملة تمنع الانتحال والتصيد الاحتيالي
+* اختبار الأمان والممارسات عبر [ميزات الأمان](https://forwardemail.net/security)
+* حماية الخصوصية من خلال [التنفيذ الفني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 
 ### تحسين تجربة المستخدم {#improved-user-experience}
 
-* إدارة بريد إلكتروني ذاتية الخدمة لمسؤولي المشاريع
-* تجربة متسقة في جميع نطاقات Linux Foundation
-* تسليم بريد إلكتروني موثوق مع مصادقة قوية
+* إدارة البريد الإلكتروني ذاتية الخدمة لمسؤولي المشاريع
+* تجربة متسقة عبر جميع نطاقات مؤسسة لينكس
+* توصيل بريد إلكتروني موثوق مع مصادقة قوية
 
-## الاستنتاج {#conclusion}
 
-تُظهر شراكة مؤسسة لينكس مع فوروارد إيميل كيف يُمكن للمؤسسات مواجهة تحديات إدارة البريد الإلكتروني المعقدة مع الحفاظ على قيمها الأساسية. باختيارها حلاً يُعطي الأولوية لمبادئ المصادر المفتوحة والخصوصية والأمان، حوّلت مؤسسة لينكس إدارة البريد الإلكتروني من عبء إداري إلى ميزة استراتيجية.
+## الخاتمة {#conclusion}
 
-كما رأينا في عملنا مع كل من [كانونيكال/أوبونتو](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) و[الجامعات الكبرى](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، يمكن للمؤسسات التي لديها مجموعات نطاقات معقدة تحقيق تحسينات كبيرة في الكفاءة والأمان وإدارة التكاليف من خلال حل المؤسسة من Forward Email.
+تُظهر شراكة مؤسسة لينكس مع Forward Email كيف يمكن للمنظمات معالجة تحديات إدارة البريد الإلكتروني المعقدة مع الحفاظ على التوافق مع قيمها الأساسية. من خلال اختيار حل يركز على مبادئ المصدر المفتوح والخصوصية والأمان، حولت مؤسسة لينكس إدارة البريد الإلكتروني من عبء إداري إلى ميزة استراتيجية.
+كما هو موضح في عملنا مع كل من [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) و [الجامعات الكبرى](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، يمكن للمنظمات التي تمتلك محافظ نطاقات معقدة تحقيق تحسينات كبيرة في الكفاءة والأمان وإدارة التكاليف من خلال حل المؤسسات الخاص بـ Forward Email.
 
-لمزيد من المعلومات حول كيفية مساعدة ميزة إعادة توجيه البريد الإلكتروني مؤسستك في إدارة البريد الإلكتروني عبر نطاقات متعددة، تفضل بزيارة [forwardemail.net](https://forwardemail.net) أو استكشف [التوثيق](https://forwardemail.net/email-api) و[أدلة](https://forwardemail.net/guides) المفصلين لدينا.
+لمزيد من المعلومات حول كيفية مساعدة Forward Email لمنظمتك في إدارة البريد الإلكتروني عبر نطاقات متعددة، قم بزيارة [forwardemail.net](https://forwardemail.net) أو استكشف [التوثيق](https://forwardemail.net/email-api) و [الأدلة](https://forwardemail.net/guides) التفصيلية لدينا.
+
 
 ## المراجع {#references}
 
-* مؤسسة لينكس. (٢٠٢٥). "استعراض المشاريع". تم الاسترجاع من <https://www.linuxfoundation.org/projects>
-* ويكيبيديا. (٢٠٢٥). "مؤسسة لينكس". تم الاسترجاع من <https://en.wikipedia.org/wiki/Linux_Foundation>
+* Linux Foundation. (2025). "تصفح المشاريع." تم الاسترجاع من <https://www.linuxfoundation.org/projects>
+* Wikipedia. (2025). "مؤسسة لينكس." تم الاسترجاع من <https://en.wikipedia.org/wiki/Linux_Foundation>

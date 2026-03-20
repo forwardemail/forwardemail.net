@@ -1,38 +1,42 @@
-# Bemutatkozik a kriptofizetés: Fokozott adatvédelem az e-mail szolgáltatásához {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
+# Bemutatkozik a Kripto Fizetés: Fokozott Adatvédelem az Email Szolgáltatásodhoz {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Kriptovaluta fizetések email szolgáltatáshoz" class="rounded-lg" />
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [Miért fontosak a kriptovaluta-fizetések?](#why-crypto-payments-matter)
-* [Hogyan működik](#how-it-works)
-* [Adatvédelmi előnyök](#privacy-benefits)
-* [Műszaki adatok](#technical-details)
-* [Kriptovaluta-tárca beállítása](#setting-up-your-crypto-wallet)
-  * [MetaMaszk](#metamask)
-  * [Fantom](#phantom)
-  * [Coinbase pénztárca](#coinbase-wallet)
+* [Miért Fontosak a Kripto Fizetések](#why-crypto-payments-matter)
+* [Hogyan Működik](#how-it-works)
+* [Adatvédelmi Előnyök](#privacy-benefits)
+* [Technikai Részletek](#technical-details)
+* [Kripto Tárcád Beállítása](#setting-up-your-crypto-wallet)
+  * [MetaMask](#metamask)
+  * [Phantom](#phantom)
+  * [Coinbase Wallet](#coinbase-wallet)
   * [WalletConnect](#walletconnect)
-* [Első lépések](#getting-started)
-* [Előre tekintve](#looking-forward)
+* [Első Lépések](#getting-started)
+* [Előre Tekintve](#looking-forward)
+
 
 ## Előszó {#foreword}
 
-A [E-mail továbbítása](https://forwardemail.net)-nál folyamatosan keressük a módját, hogy javítsuk a [magánélet](https://en.wikipedia.org/wiki/Privacy) biztonságát, miközben szolgáltatásunkat könnyebben hozzáférhetővé tesszük. Ma örömmel jelentjük be, hogy mostantól elfogadjuk a [kriptovaluta](https://en.wikipedia.org/wiki/Cryptocurrency) fizetéseket a [Csíkos](https://stripe.com) kriptofizetési integrációján keresztül.
+A [Forward Email](https://forwardemail.net) csapatánál folyamatosan keressük a módját, hogyan javíthatnánk az Ön [adatvédelmét](https://en.wikipedia.org/wiki/Privacy) és biztonságát, miközben szolgáltatásunkat még hozzáférhetőbbé tesszük. Ma örömmel jelentjük be, hogy mostantól elfogadjuk a [kriptopénzes](https://en.wikipedia.org/wiki/Cryptocurrency) fizetéseket a [Stripe](https://stripe.com) kripto fizetési integrációján keresztül.
 
-## Miért fontosak a kriptofizetések? {#why-crypto-payments-matter}
 
-A [Magánélet](https://en.wikipedia.org/wiki/Internet_privacy) mindig is szolgáltatásunk középpontjában állt. Bár a múltban számos fizetési módot kínáltunk, a kriptovalutával történő fizetés egy további adatvédelmi réteget biztosít, amely tökéletesen illeszkedik küldetésünkhöz. Kriptovalutával fizetve a következőket teheti:
+## Miért Fontosak a Kripto Fizetések {#why-crypto-payments-matter}
 
-* Fokozott anonimitást biztosít e-mail szolgáltatásaink vásárlásakor
-* Csökkenti az e-mail fiókjához kapcsolódó személyes adatok mennyiségét
-* Különíti el pénzügyi és e-mail azonosítóit
-* Támogassa a növekvő [decentralizált pénzügyek](https://en.wikipedia.org/wiki/Decentralized_finance) ökoszisztémát
+Az [adatvédelem](https://en.wikipedia.org/wiki/Internet_privacy) mindig is szolgáltatásunk alapja volt. Bár korábban többféle fizetési módot kínáltunk, a kripto fizetések egy további adatvédelmi réteget biztosítanak, amely tökéletesen illeszkedik küldetésünkhöz. Kriptóval fizetve Ön:
 
-## Hogyan működik {#how-it-works}
+* Nagyobb anonimitást tarthat meg email szolgáltatásaink vásárlásakor
+* Csökkentheti az email fiókjához kötött személyes adatok mennyiségét
+* Elkülönítheti pénzügyi és email azonosítóit
+* Támogathatja a növekvő [decentralizált pénzügyi](https://en.wikipedia.org/wiki/Decentralized_finance) ökoszisztémát
 
-Integráltuk a [Csíkos](https://docs.stripe.com/crypto) kriptovaluta fizetési rendszert, hogy a folyamat a lehető legzökkenőmentesebb legyen. Így fizethet a Forward Email szolgáltatásokért kriptovalutával:
+
+## Hogyan Működik {#how-it-works}
+
+Integráltuk a [Stripe](https://docs.stripe.com/crypto) kripto fizetési rendszerét, hogy a folyamat a lehető legzökkenőmentesebb legyen. Így fizethet a Forward Email szolgáltatásaiért kriptopénzzel:
 
 ```mermaid
 flowchart LR
@@ -44,128 +48,131 @@ flowchart LR
     F --> G[Service Activated]
 ```
 
-1. **Válasszon kriptovalutát fizetési módként**: Fizetéskor a hagyományos fizetési módok, például a hitelkártyák mellett a „Kripto” felirat is megjelenik fizetési lehetőségként.
+1. **Válassza a Kripto Fizetést**: A fizetésnél a "Crypto" opciót fogja látni a hagyományos fizetési módok, például a hitelkártya mellett.
 
-2. **Válassza ki a kriptovalutáját**: Jelenleg a [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) kriptovalutát több blokkláncon is elfogadjuk, beleértve a [Ethereum](https://ethereum.org), [Solana](https://solana.com) és [Poligon](https://polygon.technology) blokkláncokat. Az USDC egy stabil kriptovaluta, amely 1:1 arányban tartja az értékét az amerikai dollárral.
+2. **Válassza Ki a Kriptopénzét**: Jelenleg elfogadjuk az [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) kriptopénzt több blokkláncon, beleértve az [Ethereum](https://ethereum.org), [Solana](https://solana.com) és [Polygon](https://polygon.technology) hálózatokat. Az USDC egy stabil kriptopénz, amely 1:1 arányban követi az amerikai dollár értékét.
 
-3. **Tárca csatlakoztatása**: Átirányítunk egy biztonságos oldalra, ahol csatlakoztathatja a kívánt kriptotárcáját. Több tárcaopciót is támogatunk, beleértve:
-* [MetaMaszk](https://metamask.io)
-* [Fantom](https://phantom.app)
-* [Coinbase pénztárca](https://www.coinbase.com/wallet)
-* [WalletConnect](https://walletconnect.com) (számos más tárcával kompatibilis)
+3. **Csatlakoztassa Tárcáját**: Egy biztonságos oldalra irányítjuk, ahol csatlakoztathatja kedvenc kripto tárcáját. Több tárca opciót támogatunk, többek között:
+   * [MetaMask](https://metamask.io)
+   * [Phantom](https://phantom.app)
+   * [Coinbase Wallet](https://www.coinbase.com/wallet)
+   * [WalletConnect](https://walletconnect.com) (számos más tárcával kompatibilis)
 
-4. **Fizetés befejezése**: Erősítse meg a tranzakciót a tárcájában, és máris készen áll! A fizetés feldolgozásra kerül, és az e-mail továbbítási szolgáltatása azonnal aktiválódik.
+4. **Fejezze be a Fizetést**: Erősítse meg a tranzakciót a tárcájában, és kész is! A fizetés feldolgozásra kerül, és a Forward Email szolgáltatása azonnal aktiválódik.
 
-## Adatvédelmi előnyök {#privacy-benefits}
 
-A Forward Email feliratkozáshoz kriptovaluták használata számos módon javítja az adatvédelmet:
+## Adatvédelmi Előnyök {#privacy-benefits}
+
+A Forward Email előfizetésének kriptopénzzel történő fizetése több szempontból is növeli az adatvédelmet:
 
 ```mermaid
 graph TD
-    subgraph "Traditional Payment"
-    A[Credit Card Payment] --> B[Personal Info Required]
-    B --> C[Linked to Banking History]
-    C --> D[Identity Easily Traced]
+    subgraph "Hagyományos Fizetés"
+    A[Hitelkártyás Fizetés] --> B[Személyes Adatok Szükségesek]
+    B --> C[Banki Előzményekhez Kapcsolódik]
+    C --> D[Azonosítás Könnyen Nyomon Követhető]
     end
 
-    subgraph "Crypto Payment"
-    E[Crypto Payment] --> F[Minimal Personal Info]
-    F --> G[Pseudonymous Transaction]
-    G --> H[Enhanced Privacy]
+    subgraph "Kripto Fizetés"
+    E[Kripto Fizetés] --> F[Minimális Személyes Adat]
+    F --> G[Pseudonim Tranzakció]
+    G --> H[Fokozott Adatvédelem]
     end
 ```
 
-* **Kevesebb személyes adat**: A hitelkártyás fizetésekkel ellentétben a kriptovalutákkal történő tranzakciókhoz nincs szükség a nevére, számlázási címére vagy egyéb személyes adataira. További információ a [tranzakciók adatvédelme](https://en.wikipedia.org/wiki/Privacy_coin) dokumentumról.
-* **Elkülönülés a hagyományos banki szolgáltatásoktól**: A fizetése nem kapcsolható össze bankszámlájával vagy hiteltörténetével. További információ a [pénzügyi adatvédelem](https://en.wikipedia.org/wiki/Financial_privacy) dokumentumról.
-* **Blokklánc-adatvédelem**: Bár a blokklánc-tranzakciók nyilvánosak, álnevesek, és nem kapcsolódnak közvetlenül a valós személyazonosságához. Lásd: [blokklánc adatvédelmi technikák](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
-* **Összhangban az értékeinkkel**: Adatvédelemre összpontosító e-mail-szolgáltatásként hiszünk abban, hogy minden lépésnél Önt kell kézben tartania személyes adatai felett. Tekintse meg a [adatvédelmi irányelvek](/privacy) dokumentumunkat.
+* **Csökkentett Személyes Adatok**: A hitelkártyás fizetésekkel ellentétben a kripto tranzakciók nem igénylik a nevét, számlázási címét vagy egyéb személyes adatait. Tudjon meg többet a [tranzakciós adatvédelemről](https://en.wikipedia.org/wiki/Privacy_coin).
+* **Elkülönülés a Hagyományos Banki Rendszertől**: Fizetése nem köthető össze bankszámlájával vagy hiteltörténetével. Olvasson a [pénzügyi adatvédelemről](https://en.wikipedia.org/wiki/Financial_privacy).
+* **Blokklánc Adatvédelem**: Bár a blokklánc tranzakciók nyilvánosak, azok pseudonimek, és nem közvetlenül kötődnek valós személyazonosságához. Tekintse meg a [blokklánc adatvédelmi technikákat](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
+* **Összhangban Értékeinkkel**: Mint adatvédelem-központú email szolgáltatás, hisszük, hogy Önnek minden lépésnél irányítása alatt kell tartania személyes adatait. Tekintse meg adatvédelmi szabályzatunkat [privacy policy](/privacy).
+## Műszaki részletek {#technical-details}
 
-## Műszaki adatok {#technical-details}
+Azok számára, akiket a műszaki részletek érdekelnek:
 
-Akiket érdekelnek a technikai részletek:
+* A [Stripe](https://docs.stripe.com/crypto/stablecoin-payments) kriptófizetési infrastruktúráját használjuk, amely kezeli a blokklánc tranzakciók minden bonyolultságát.
+* A fizetések [USDC](https://www.circle.com/en/usdc) formájában történnek több blokkláncon, beleértve az [Ethereum](https://ethereum.org), [Solana](https://solana.com) és [Polygon](https://polygon.technology) hálózatokat.
+* Bár kriptovalutában fizetsz, mi az USD megfelelő értékét kapjuk meg, ami lehetővé teszi számunkra az árak stabil szinten tartását.
 
-* A [Csíkos](https://docs.stripe.com/crypto/stablecoin-payments) kriptofizetési infrastruktúrát használjuk, amely a blokklánc-tranzakciók összes összetettségét kezeli.
-* A fizetések [USDC](https://www.circle.com/en/usdc)-ben történnek több blokkláncon, beleértve a [Ethereum](https://ethereum.org), [Solana](https://solana.com) és [Poligon](https://polygon.technology) blokkokat is.
-* Amíg kriptovalutában fizet, mi az egyenértékű értéket USD-ben kapjuk meg, így stabil árakat tudunk fenntartani.
 
-## Kriptovaluta-tárca beállítása {#setting-up-your-crypto-wallet}
+## Kriptotárcád beállítása {#setting-up-your-crypto-wallet}
 
-Új a kriptovaluták világában? Így állíthatod be az általunk támogatott tárcákat:
+Új vagy a kriptovaluták világában? Így állíthatod be az általunk támogatott tárcákat:
 
 ```mermaid
 flowchart LR
-    A[Choose a Wallet] --> B[Install & Create Account]
-    B --> C[Secure Your Recovery Phrase]
-    C --> D[Add Funds to Your Wallet]
-    D --> E[Ready for Payment]
+    A[Tárca kiválasztása] --> B[Telepítés és fiók létrehozása]
+    B --> C[Helyreállító kifejezés biztonságos tárolása]
+    C --> D[Alapok hozzáadása a tárcához]
+    D --> E[Fizetésre kész]
 ```
 
-### MetaMaszk {#metamask}
+### MetaMask {#metamask}
 
-A [MetaMaszk](https://metamask.io) az egyik legnépszerűbb Ethereum tárca.
+A [MetaMask](https://metamask.io) az egyik legnépszerűbb Ethereum tárca.
 
-1. Látogassa meg a [MetaMask letöltési oldal](https://metamask.io/download/) oldalt.
-2. Telepítse a böngészőbővítményt vagy a mobilalkalmazást.
-3. Kövesse a telepítési utasításokat egy új pénztárca létrehozásához.
-4. **Fontos**: Biztonságosan tárolja a helyreállítási kódját.
-5. Adjon hozzá ETH-t vagy USDC-t a pénztárcájához tőzsdén vagy közvetlen vásárláson keresztül.
+1. Látogass el a [MetaMask letöltési oldalára](https://metamask.io/download/)
+2. Telepítsd a böngészőbővítményt vagy a mobilalkalmazást
+3. Kövesd a beállítási utasításokat egy új tárca létrehozásához
+4. **Fontos**: Biztonságosan tárold a helyreállító kifejezést
+5. Adj hozzá ETH-t vagy USDC-t a tárcádhoz egy tőzsdén vagy közvetlen vásárlással
 6. [Részletes MetaMask beállítási útmutató](https://metamask.io/faqs/)
 
-### Fantom {IDEIGLENES_PLACEHOLDER_1
+### Phantom {#phantom}
 
-A [Fantom](https://phantom.app) egy vezető Solana tárca.
+A [Phantom](https://phantom.app) egy vezető Solana tárca.
 
-1. Látogassa meg a [Fantom weboldal](https://phantom.app/) oldalt.
-2. Töltse le az eszközéhez megfelelő verziót.
-3. Hozzon létre egy új tárcát a képernyőn megjelenő utasításokat követve.
-4. Biztonságosan készítsen biztonsági másolatot a helyreállítási jelszaváról.
-5. Adjon hozzá SOL vagy USDC egyenleget a tárcájához.
-6. [Fantom pénztárca útmutató](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
+1. Látogass el a [Phantom weboldalára](https://phantom.app/)
+2. Töltsd le az eszközödnek megfelelő verziót
+3. Hozz létre egy új tárcát a képernyőn megjelenő utasítások szerint
+4. Biztonságosan készíts biztonsági mentést a helyreállító kifejezésről
+5. Adj hozzá SOL-t vagy USDC-t a tárcádhoz
+6. [Phantom tárca útmutató](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
 
-### Coinbase pénztárca {#coinbase-wallet}
+### Coinbase Wallet {#coinbase-wallet}
 
-A [Coinbase pénztárca](https://www.coinbase.com/wallet) több blokkláncot is támogat.
+A [Coinbase Wallet](https://www.coinbase.com/wallet) több blokkláncot is támogat.
 
-1. Töltse le a [Coinbase pénztárca](https://www.coinbase.com/wallet/downloads) alkalmazást.
-2. Hozzon létre egy új tárcát (a Coinbase tőzsdefióktól függetlenül).
-3. Biztosítsa a helyreállítási jelszavát.
-4. Utaljon vagy vásároljon kriptovalutát közvetlenül az alkalmazásban.
-5. [Coinbase pénztárca útmutató](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
+1. Töltsd le a [Coinbase Walletet](https://www.coinbase.com/wallet/downloads)
+2. Hozz létre egy új tárcát (külön a Coinbase tőzsdei fióktól)
+3. Biztosítsd a helyreállító kifejezést
+4. Kriptót közvetlenül az alkalmazásban vásárolhatsz vagy átutalhatsz
+5. [Coinbase Wallet útmutató](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
 
 ### WalletConnect {#walletconnect}
 
 A [WalletConnect](https://walletconnect.com) egy protokoll, amely tárcákat köt össze weboldalakkal.
 
-1. Először töltsön le egy WalletConnect-kompatibilis tárcát (számos lehetőség közül választhat).
-2. A fizetés során válassza a WalletConnect lehetőséget.
-3. Olvassa be a QR-kódot a tárcaalkalmazásával.
-4. Hagyja jóvá a kapcsolatot.
-5. [WalletConnect kompatibilis pénztárcák](https://walletconnect.com/registry/wallets)
+1. Először tölts le egy WalletConnect-kompatibilis tárcát (számos lehetőség elérhető)
+2. A fizetés során válaszd a WalletConnect opciót
+3. Olvasd be a QR-kódot a tárcaalkalmazásoddal
+4. Engedélyezd a kapcsolatot
+5. [WalletConnect kompatibilis tárcák](https://walletconnect.com/registry/wallets)
 
-## Első lépések {#getting-started}
 
-Készen állsz arra, hogy kriptovalutákkal történő fizetésekkel fokozd az adatvédelmedet? Egyszerűen válaszd a „Kripto” lehetőséget a fizetés során, amikor legközelebb megújítod az előfizetésedet vagy frissíted a csomagodat.
+## Kezdés {#getting-started}
 
-A kriptovalutákról és a blokklánc technológiáról további információkat az alábbi forrásokban talál:
+Készen állsz, hogy fokozd az adatvédelmed kriptófizetésekkel? Egyszerűen válaszd a "Kripto" opciót a fizetésnél, amikor legközelebb megújítod az előfizetésed vagy frissíted a csomagod.
 
-* [Mi a kriptovaluta?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedia
-* [Blokklánc magyarázata](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedia
-* [Digitális adatvédelmi útmutató](https://www.eff.org/issues/privacy) - Elektronikus Határ Alapítvány
+További információk a kriptovalutákról és a blokklánc technológiáról:
 
-## Előretekintve {#looking-forward}
+* [Mi az a kriptovaluta?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedia
+* [Blokklánc magyarázat](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedia
+* [Digitális adatvédelmi útmutató](https://www.eff.org/issues/privacy) - Electronic Frontier Foundation
 
-A kriptovalutás fizetések hozzáadása csak egy újabb lépés a [magánélet](https://en.wikipedia.org/wiki/Privacy), a [biztonság](https://en.wikipedia.org/wiki/Computer_security) és a felhasználói választási lehetőségek iránti folyamatos elkötelezettségünkben. Úgy gondoljuk, hogy az e-mail-szolgáltatásnak minden szinten tiszteletben kell tartania az Ön adatainak védelmét – az elküldött üzenetektől kezdve egészen addig, hogy hogyan fizeti a szolgáltatást.
 
-Mint mindig, örömmel fogadjuk visszajelzését ezzel az új fizetési móddal kapcsolatban. Ha kérdése van a kriptovaluták Forward Email funkcióval való használatával kapcsolatban, kérjük, vegye fel a kapcsolatot a [támogató csapat](/help) munkatársunkkal.
+## Előre tekintve {#looking-forward}
+
+A kriptovaluta fizetések hozzáadása csak egy újabb lépés az adatvédelemhez ([privacy](https://en.wikipedia.org/wiki/Privacy)), biztonsághoz ([security](https://en.wikipedia.org/wiki/Computer_security)) és a felhasználói választáshoz való elkötelezettségünkben. Úgy véljük, hogy az e-mail szolgáltatásodnak minden szinten tiszteletben kell tartania az adatvédelmedet – az elküldött üzenetektől kezdve egészen a szolgáltatás fizetéséig.
+
+Mint mindig, szívesen fogadjuk visszajelzésedet erről az új fizetési lehetőségről. Ha kérdéseid vannak a kriptovaluta használatával kapcsolatban a Forward Email szolgáltatásban, kérjük, fordulj a [támogatói csapatunkhoz](/help).
 
 ---
 
-**Referenciák:**
+**Hivatkozások:**
 
-1. [Stripe Crypto dokumentáció](https://docs.stripe.com/crypto)
-2. [USDC stabilérme](https://www.circle.com/en/usdc)
+1. [Stripe Crypto Dokumentáció](https://docs.stripe.com/crypto)
+2. [USDC Stablecoin](https://www.circle.com/en/usdc)
 3. [Ethereum blokklánc](https://ethereum.org)
 4. [Solana blokklánc](https://solana.com)
-5. [Poligonhálózat](https://polygon.technology)
-6. [Elektronikus Határ Alapítvány - Adatvédelem](https://www.eff.org/issues/privacy)
-7. [E-mail továbbítási adatvédelmi irányelvek](/privacy)
+5. [Polygon hálózat](https://polygon.technology)
+6. [Electronic Frontier Foundation - Adatvédelem](https://www.eff.org/issues/privacy)
+7. [Forward Email Adatvédelmi Szabályzat](/privacy)

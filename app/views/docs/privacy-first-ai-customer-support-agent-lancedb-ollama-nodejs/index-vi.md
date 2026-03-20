@@ -1,219 +1,220 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# Xây dựng Đại lý Hỗ trợ Khách hàng AI Ưu tiên Quyền riêng tư với LanceDB, Ollama và Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
 <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
+> Tài liệu này trình bày hành trình xây dựng đại lý hỗ trợ AI tự lưu trữ của chúng tôi. Chúng tôi đã viết về những thách thức tương tự trong bài đăng blog [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Thật lòng chúng tôi đã nghĩ đến việc viết tiếp theo có tên "AI Startup Graveyard" nhưng có lẽ phải đợi thêm một năm nữa cho đến khi bong bóng AI có thể vỡ(?). Hiện tại, đây là bản tổng hợp suy nghĩ của chúng tôi về những gì hiệu quả, những gì không, và lý do chúng tôi làm theo cách này.
 
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
+Đây là cách chúng tôi xây dựng đại lý hỗ trợ khách hàng AI của riêng mình. Chúng tôi làm theo cách khó khăn: tự lưu trữ, ưu tiên quyền riêng tư, và hoàn toàn kiểm soát. Tại sao? Bởi vì chúng tôi không tin tưởng dịch vụ bên thứ ba với dữ liệu khách hàng của mình. Đây là yêu cầu của GDPR và DPA, và cũng là điều đúng đắn cần làm.
 
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
+Đây không phải là một dự án cuối tuần vui vẻ. Đó là hành trình kéo dài một tháng vượt qua các phụ thuộc hỏng, tài liệu gây hiểu lầm, và sự hỗn loạn chung của hệ sinh thái AI mã nguồn mở năm 2025. Tài liệu này ghi lại những gì chúng tôi xây dựng, lý do xây dựng, và những trở ngại gặp phải trên đường đi.
 
-## Table of Contents {#table-of-contents}
 
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
+## Mục lục {#table-of-contents}
 
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
+* [Lợi ích cho Khách hàng: Hỗ trợ Con người được Tăng cường AI](#customer-benefits-ai-augmented-human-support)
+  * [Phản hồi Nhanh hơn, Chính xác hơn](#faster-more-accurate-responses)
+  * [Tính nhất quán mà không bị Kiệt sức](#consistency-without-burnout)
+  * [Những gì Bạn Nhận được](#what-you-get)
+* [Suy ngẫm Cá nhân: Hai Thập kỷ Nỗ lực](#a-personal-reflection-the-two-decade-grind)
+* [Tại sao Quyền riêng tư Quan trọng](#why-privacy-matters)
+* [Phân tích Chi phí: AI Đám mây so với Tự lưu trữ](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [So sánh Dịch vụ AI Đám mây](#cloud-ai-service-comparison)
+  * [Phân tích Chi phí: Cơ sở Kiến thức 5GB](#cost-breakdown-5gb-knowledge-base)
+  * [Chi phí Phần cứng Tự lưu trữ](#self-hosted-hardware-costs)
+* [Tự sử dụng API của chính mình](#dogfooding-our-own-api)
+  * [Tại sao Tự sử dụng Quan trọng](#why-dogfooding-matters)
+  * [Ví dụ Sử dụng API](#api-usage-examples)
+  * [Lợi ích về Hiệu suất](#performance-benefits)
+* [Kiến trúc Mã hóa](#encryption-architecture)
+  * [Lớp 1: Mã hóa Hộp thư (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [Lớp 2: Mã hóa PGP Cấp độ Tin nhắn](#layer-2-message-level-pgp-encryption)
+  * [Tại sao Điều này Quan trọng cho Đào tạo](#why-this-matters-for-training)
+  * [Bảo mật Lưu trữ](#storage-security)
+  * [Lưu trữ Cục bộ là Thực hành Chuẩn](#local-storage-is-standard-practice)
+* [Kiến trúc Tổng thể](#the-architecture)
+  * [Luồng Tổng quan](#high-level-flow)
+  * [Luồng Trình thu thập Chi tiết](#detailed-scraper-flow)
+* [Cách Hoạt động](#how-it-works)
+  * [Xây dựng Cơ sở Kiến thức](#building-the-knowledge-base)
+  * [Đào tạo từ Email Lịch sử](#training-from-historical-emails)
+  * [Xử lý Email Đến](#processing-incoming-emails)
+  * [Quản lý Kho Vector](#vector-store-management)
+* [Nghĩa địa Cơ sở dữ liệu Vector](#the-vector-database-graveyard)
+* [Yêu cầu Hệ thống](#system-requirements)
+* [Cấu hình Cron Job](#cron-job-configuration)
+  * [Biến Môi trường](#environment-variables)
+  * [Cron Jobs cho Nhiều Hộp thư](#cron-jobs-for-multiple-inboxes)
+  * [Phân tích Lịch trình Cron](#cron-schedule-breakdown)
+  * [Tính Toán Ngày Động](#dynamic-date-calculation)
+  * [Thiết lập Ban đầu: Trích xuất Danh sách URL từ Sitemap](#initial-setup-extract-url-list-from-sitemap)
+  * [Kiểm tra Cron Jobs Thủ công](#testing-cron-jobs-manually)
+  * [Giám sát Nhật ký](#monitoring-logs)
+* [Ví dụ Mã nguồn](#code-examples)
+  * [Thu thập và Xử lý](#scraping-and-processing)
+  * [Đào tạo từ Email Lịch sử](#training-from-historical-emails-1)
+  * [Truy vấn để lấy Ngữ cảnh](#querying-for-context)
+* [Tương lai: Nghiên cứu và Phát triển Bộ lọc Spam](#the-future-spam-scanner-rd)
+* [Khắc phục sự cố](#troubleshooting)
+  * [Lỗi Sai Kích thước Vector](#vector-dimension-mismatch-error)
+  * [Ngữ cảnh Cơ sở Kiến thức Trống](#empty-knowledge-base-context)
+  * [Lỗi Giải mã PGP](#pgp-decryption-failures)
+* [Mẹo Sử dụng](#usage-tips)
+  * [Đạt Inbox Zero](#achieving-inbox-zero)
+  * [Sử dụng Nhãn skip-ai](#using-the-skip-ai-label)
+  * [Xâu chuỗi Email và Trả lời Tất cả](#email-threading-and-reply-all)
+  * [Giám sát và Bảo trì](#monitoring-and-maintenance)
+* [Kiểm thử](#testing)
+  * [Chạy Kiểm thử](#running-tests)
+  * [Phủ sóng Kiểm thử](#test-coverage)
+  * [Môi trường Kiểm thử](#test-environment)
+* [Những điểm chính cần nhớ](#key-takeaways)
+## Lợi Ích Khách Hàng: Hỗ Trợ Con Người Được Tăng Cường Bởi AI {#customer-benefits-ai-augmented-human-support}
 
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
+Hệ thống AI của chúng tôi không thay thế đội ngũ hỗ trợ mà làm cho họ tốt hơn. Điều này có nghĩa gì với bạn:
 
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
+### Phản Hồi Nhanh Hơn, Chính Xác Hơn {#faster-more-accurate-responses}
 
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
+**Con Người Trong Vòng Lặp**: Mỗi bản nháp do AI tạo ra đều được đội ngũ hỗ trợ con người của chúng tôi xem xét, chỉnh sửa và chọn lọc trước khi gửi đến bạn. AI đảm nhận việc nghiên cứu và soạn thảo ban đầu, giúp đội ngũ tập trung vào kiểm soát chất lượng và cá nhân hóa.
 
-**Trained on Human Expertise**: The AI learns from:
+**Được Đào Tạo Từ Chuyên Môn Con Người**: AI học từ:
 
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
+* Cơ sở kiến thức và tài liệu do chúng tôi viết tay
+* Các bài viết blog và hướng dẫn do con người tạo ra
+* FAQ toàn diện của chúng tôi (do con người viết)
+* Các cuộc trò chuyện với khách hàng trước đây (tất cả đều do con người xử lý)
 
-You're getting responses informed by years of human expertise, just delivered faster.
+Bạn nhận được phản hồi dựa trên nhiều năm kinh nghiệm con người, chỉ là được gửi nhanh hơn.
 
-### Consistency Without Burnout {#consistency-without-burnout}
+### Tính Nhất Quán Mà Không Bị Kiệt Sức {#consistency-without-burnout}
 
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
+Đội ngũ nhỏ của chúng tôi xử lý hàng trăm yêu cầu hỗ trợ mỗi ngày, mỗi yêu cầu đòi hỏi kiến thức kỹ thuật khác nhau và sự chuyển đổi ngữ cảnh tinh thần:
 
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
+* Câu hỏi về thanh toán đòi hỏi kiến thức hệ thống tài chính
+* Vấn đề DNS đòi hỏi chuyên môn mạng
+* Tích hợp API đòi hỏi kiến thức lập trình
+* Báo cáo bảo mật đòi hỏi đánh giá lỗ hổng
 
-Without AI assistance, this constant context-switching leads to:
+Không có sự trợ giúp của AI, việc chuyển đổi ngữ cảnh liên tục này dẫn đến:
 
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
+* Thời gian phản hồi chậm hơn
+* Sai sót do mệt mỏi
+* Chất lượng câu trả lời không đồng đều
+* Đội ngũ bị kiệt sức
 
-**With AI augmentation**, our team:
+**Với sự tăng cường của AI**, đội ngũ chúng tôi:
 
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
+* Phản hồi nhanh hơn (AI soạn thảo trong vài giây)
+* Ít sai sót hơn (AI phát hiện lỗi phổ biến)
+* Duy trì chất lượng đồng đều (AI tham khảo cùng một cơ sở kiến thức mỗi lần)
+* Giữ được sự tỉnh táo và tập trung (ít thời gian nghiên cứu, nhiều thời gian giúp đỡ hơn)
 
-### What You Get {#what-you-get}
+### Những Gì Bạn Nhận Được {#what-you-get}
 
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
+✅ **Tốc độ**: AI soạn thảo phản hồi trong vài giây, con người xem xét và gửi trong vài phút
 
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
+✅ **Độ chính xác**: Phản hồi dựa trên tài liệu thực tế và các giải pháp trước đây của chúng tôi
 
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
+✅ **Tính nhất quán**: Câu trả lời chất lượng cao như nhau dù là 9 giờ sáng hay 9 giờ tối
 
-✅ **Human touch**: Every response reviewed and personalized by our team
+✅ **Chạm đến con người**: Mỗi phản hồi đều được đội ngũ xem xét và cá nhân hóa
 
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+✅ **Không ảo tưởng**: AI chỉ sử dụng cơ sở kiến thức đã được xác minh của chúng tôi, không phải dữ liệu chung trên internet
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> **Bạn luôn nói chuyện với con người**. AI là trợ lý nghiên cứu giúp đội ngũ tìm câu trả lời đúng nhanh hơn. Hãy nghĩ nó như một thủ thư tìm ngay cuốn sách liên quan — nhưng vẫn có con người đọc và giải thích cho bạn.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+## Một Suy Ngẫm Cá Nhân: Hai Thập Kỷ Nỗ Lực {#a-personal-reflection-the-two-decade-grind}
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
+Trước khi đi sâu vào kỹ thuật, một lời nhắn cá nhân. Tôi đã làm việc này gần hai thập kỷ. Những giờ đồng hồ không ngừng bên bàn phím, sự theo đuổi không ngừng của một giải pháp, sự mài giũa sâu sắc và tập trung – đó là thực tế của việc xây dựng bất cứ điều gì có ý nghĩa. Đây là thực tế thường bị bỏ qua trong các chu kỳ thổi phồng công nghệ mới.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+Sự bùng nổ gần đây của AI thật sự gây thất vọng. Chúng ta được bán một giấc mơ về tự động hóa, về các trợ lý AI sẽ viết mã và giải quyết vấn đề cho chúng ta. Thực tế? Kết quả thường là mã rác cần nhiều thời gian sửa hơn là viết lại từ đầu. Lời hứa làm cuộc sống dễ dàng hơn là giả tạo. Nó là sự phân tâm khỏi công việc khó khăn và cần thiết của việc xây dựng.
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+Và rồi có cái vòng luẩn quẩn khi đóng góp cho mã nguồn mở. Bạn đã quá tải, kiệt sức vì công việc. Bạn dùng AI để giúp viết báo cáo lỗi chi tiết, có cấu trúc tốt, hy vọng giúp người duy trì dễ hiểu và sửa lỗi hơn. Và chuyện gì xảy ra? Bạn bị mắng. Đóng góp của bạn bị bác bỏ là "ngoài chủ đề" hoặc ít nỗ lực, như chúng ta đã thấy trong một [vấn đề GitHub của Node.js](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Đó là một cái tát vào mặt các nhà phát triển kỳ cựu chỉ đang cố gắng giúp đỡ.
 
-## Why Privacy Matters {#why-privacy-matters}
+Đây là thực tế của hệ sinh thái mà chúng ta đang làm việc. Không chỉ là các công cụ hỏng hóc; đó là một văn hóa thường không tôn trọng thời gian và [nỗ lực của những người đóng góp](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Bài viết này là một ghi chép về thực tế đó. Nó là câu chuyện về công cụ, đúng vậy, nhưng cũng là về cái giá con người phải trả khi xây dựng trong một hệ sinh thái hỏng hóc mà dù có nhiều hứa hẹn, vẫn cơ bản là hỏng hóc.
+## Tại sao Quyền Riêng Tư Quan Trọng {#why-privacy-matters}
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+[Whitepaper kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf) của chúng tôi trình bày sâu về triết lý quyền riêng tư. Phiên bản ngắn gọn: chúng tôi không gửi dữ liệu khách hàng cho bên thứ ba. Tuyệt đối không. Điều đó có nghĩa là không có OpenAI, không có Anthropic, không có cơ sở dữ liệu vector lưu trữ trên đám mây. Mọi thứ đều chạy cục bộ trên hạ tầng của chúng tôi. Đây là điều không thể thương lượng để tuân thủ GDPR và các cam kết DPA của chúng tôi.
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+## Phân Tích Chi Phí: AI Đám Mây so với Tự Lưu Trữ {#cost-analysis-cloud-ai-vs-self-hosted}
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+Trước khi đi vào triển khai kỹ thuật, hãy nói về lý do tại sao tự lưu trữ lại quan trọng từ góc độ chi phí. Mô hình giá của các dịch vụ AI đám mây khiến chúng trở nên quá đắt đỏ cho các trường hợp sử dụng có khối lượng lớn như hỗ trợ khách hàng.
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
-| --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+### So Sánh Dịch Vụ AI Đám Mây {#cloud-ai-service-comparison}
+
+| Dịch vụ        | Nhà cung cấp        | Chi phí Nhúng                                                    | Chi phí LLM (Đầu vào)                                                     | Chi phí LLM (Đầu ra)     | Chính sách Quyền riêng tư                           | GDPR/DPA        | Lưu trữ           | Chia sẻ Dữ liệu   |
+| -------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------- | -------------------------------------------------- | --------------- | ----------------- | ----------------- |
+| **OpenAI**     | OpenAI (Mỹ)         | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/)          | $0.15-20/1M tokens                                                         | $0.60-80/1M tokens      | [Link](https://openai.com/policies/privacy-policy/) | DPA giới hạn    | Azure (Mỹ)        | Có (đào tạo)      |
+| **Claude**     | Anthropic (Mỹ)      | N/A                                                              | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing)    | $15-80/1M tokens        | [Link](https://www.anthropic.com/legal/privacy)     | DPA giới hạn    | AWS/GCP (Mỹ)      | Không (tuyên bố)  |
+| **Gemini**     | Google (Mỹ)         | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens                                                       | $2.50/1M tokens         | [Link](https://policies.google.com/privacy)         | DPA giới hạn    | GCP (Mỹ)          | Có (cải thiện)    |
+| **DeepSeek**   | DeepSeek (Trung Quốc) | N/A                                                              | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens         | [Link](https://www.deepseek.com/en)                 | Không rõ       | Trung Quốc        | Không rõ          |
+| **Mistral**    | Mistral AI (Pháp)   | [$0.10/1M tokens](https://mistral.ai/pricing)                    | $0.40/1M tokens                                                            | $2.00/1M tokens         | [Link](https://mistral.ai/terms/)                   | GDPR EU        | EU                | Không rõ          |
+| **Tự Lưu Trữ** | Bạn                 | $0 (phần cứng hiện có)                                           | $0 (phần cứng hiện có)                                                     | $0 (phần cứng hiện có)  | Chính sách của bạn                                | Tuân thủ đầy đủ | MacBook M5 + cron | Không bao giờ     |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Lo ngại về chủ quyền dữ liệu**: Các nhà cung cấp Mỹ (OpenAI, Claude, Gemini) chịu sự điều chỉnh của CLOUD Act, cho phép chính phủ Mỹ truy cập dữ liệu. DeepSeek (Trung Quốc) hoạt động theo luật dữ liệu Trung Quốc. Trong khi Mistral (Pháp) cung cấp lưu trữ tại EU và tuân thủ GDPR, tự lưu trữ vẫn là lựa chọn duy nhất để có chủ quyền và kiểm soát dữ liệu hoàn toàn.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Phân Tích Chi Phí: Cơ Sở Kiến Thức 5GB {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Hãy tính chi phí xử lý một cơ sở kiến thức 5GB (điển hình cho một công ty vừa với tài liệu, email và lịch sử hỗ trợ).
 
-**Assumptions:**
+**Giả định:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB văn bản ≈ 1,25 tỷ token (giả sử ~4 ký tự/token)
+* Tạo nhúng ban đầu
+* Đào tạo lại hàng tháng (tái nhúng toàn bộ)
+* 10.000 truy vấn hỗ trợ mỗi tháng
+* Truy vấn trung bình: 500 token đầu vào, 300 token đầu ra
+**Phân Tích Chi Phí Chi Tiết:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
+| Thành phần                            | OpenAI           | Claude          | Gemini               | Tự Lưu Trữ        |
 | -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **Embedding Ban Đầu** (1.25B tokens)   | $25,000          | N/A             | $187,500             | $0                 |
+| **Truy Vấn Hàng Tháng** (10K × 800 tokens) | $1,200-16,000    | $2,400-16,000   | $2,400-3,200         | $0                 |
+| **Huấn Luyện Lại Hàng Tháng** (1.25B tokens)  | $25,000          | N/A             | $187,500             | $0                 |
+| **Tổng Năm Đầu Tiên**                   | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~ $60 (điện)       |
+| **Tuân Thủ Quyền Riêng Tư**                 | ❌ Hạn chế        | ❌ Hạn chế       | ❌ Hạn chế            | ✅ Đầy đủ           |
+| **Chủ Quyền Dữ Liệu**                   | ❌ Không          | ❌ Không         | ❌ Không              | ✅ Có               |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **Chi phí embedding của Gemini là thảm họa** với $0.15/1M tokens. Một embedding cơ sở tri thức 5GB sẽ tốn $187,500. Đây là chi phí cao gấp 37 lần OpenAI và khiến nó hoàn toàn không thể sử dụng trong sản xuất.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Chi Phí Phần Cứng Tự Lưu Trữ {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+Cấu hình của chúng tôi chạy trên phần cứng hiện có mà chúng tôi đã sở hữu:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Phần cứng**: MacBook M5 (đã sở hữu để phát triển)
+* **Chi phí bổ sung**: $0 (sử dụng phần cứng hiện có)
+* **Điện năng**: ~ $5/tháng (ước tính)
+* **Tổng năm đầu tiên**: ~ $60
+* **Chi phí duy trì**: $60/năm
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**ROI**: Tự lưu trữ gần như không có chi phí biên vì chúng tôi sử dụng phần cứng phát triển hiện có. Hệ thống chạy qua các công việc cron vào giờ thấp điểm.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+## Sử Dụng API Của Chính Mình {#dogfooding-our-own-api}
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+Một trong những quyết định kiến trúc quan trọng nhất mà chúng tôi thực hiện là để tất cả các công việc AI sử dụng trực tiếp [Forward Email API](https://forwardemail.net/email-api). Điều này không chỉ là thực hành tốt—mà còn là một cơ chế thúc đẩy tối ưu hóa hiệu suất.
 
-When our AI jobs use the same API endpoints as our customers:
+### Tại Sao Việc Sử Dụng API Của Chính Mình Lại Quan Trọng {#why-dogfooding-matters}
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+Khi các công việc AI của chúng tôi sử dụng cùng các điểm cuối API như khách hàng:
 
-### API Usage Examples {#api-usage-examples}
+1. **Nút thắt hiệu suất ảnh hưởng đến chúng tôi trước** - Chúng tôi cảm nhận được vấn đề trước khách hàng
+2. **Tối ưu hóa có lợi cho tất cả mọi người** - Cải tiến cho công việc của chúng tôi tự động cải thiện trải nghiệm khách hàng
+3. **Kiểm thử thực tế** - Các công việc của chúng tôi xử lý hàng nghìn email, cung cấp kiểm thử tải liên tục
+4. **Tái sử dụng mã** - Cùng logic xác thực, giới hạn tốc độ, xử lý lỗi và bộ nhớ đệm
 
-**Listing Messages (train-from-history.js):**
+### Ví Dụ Sử Dụng API {#api-usage-examples}
+
+**Liệt Kê Tin Nhắn (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// Sử dụng GET /v1/messages?folder=INBOX với BasicAuth
+// Loại trừ eml, raw, nodemailer để giảm kích thước phản hồi (chỉ cần ID)
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +233,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Trả về: [{ id, subject, date, ... }, ...]
+// Nội dung tin nhắn đầy đủ được lấy sau qua GET /v1/messages/:id
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Lấy Tin Nhắn Đầy Đủ (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// Sử dụng GET /v1/messages/:id để lấy tin nhắn đầy đủ với nội dung raw
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +252,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Trả về: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Tạo Bản Nháp Phản Hồi (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// Sử dụng POST /v1/messages để tạo bản nháp trả lời
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +276,56 @@ const response = await axios.post(
   }
 );
 ```
+### Lợi Ích Về Hiệu Suất {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Bởi vì các công việc AI của chúng tôi chạy trên cùng một hạ tầng API:
 
-Because our AI jobs run on the same API infrastructure:
+* **Tối ưu bộ nhớ đệm** mang lại lợi ích cho cả công việc và khách hàng
+* **Giới hạn tần suất** được kiểm tra dưới tải thực tế
+* **Xử lý lỗi** được thử nghiệm kỹ càng
+* **Thời gian phản hồi API** được giám sát liên tục
+* **Truy vấn cơ sở dữ liệu** được tối ưu cho cả hai trường hợp sử dụng
+* **Tối ưu băng thông** - Loại trừ `eml`, `raw`, `nodemailer` khi liệt kê giảm kích thước phản hồi khoảng \~90%
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+Khi `train-from-history.js` xử lý 1.000 email, nó thực hiện hơn 1.000 cuộc gọi API. Bất kỳ sự không hiệu quả nào trong API sẽ ngay lập tức lộ ra. Điều này buộc chúng tôi phải tối ưu truy cập IMAP, truy vấn cơ sở dữ liệu và tuần tự hóa phản hồi — những cải tiến trực tiếp mang lại lợi ích cho khách hàng của chúng tôi.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Ví dụ tối ưu hóa**: Liệt kê 100 tin nhắn với nội dung đầy đủ = khoảng \~10MB phản hồi. Liệt kê với `eml: false, raw: false, nodemailer: false` = khoảng \~100KB phản hồi (nhỏ hơn 100 lần).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Kiến Trúc Mã Hóa {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+Lưu trữ email của chúng tôi sử dụng nhiều lớp mã hóa, mà các công việc AI phải giải mã theo thời gian thực để huấn luyện.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### Lớp 1: Mã Hóa Hộp Thư (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Tất cả các hộp thư IMAP được lưu dưới dạng cơ sở dữ liệu SQLite được mã hóa bằng **chacha20-poly1305**, một thuật toán mã hóa an toàn trước máy tính lượng tử. Điều này được trình bày chi tiết trong bài viết blog về [dịch vụ email mã hóa an toàn trước lượng tử](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**Các đặc tính chính:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Thuật toán**: ChaCha20-Poly1305 (mã AEAD)
+* **An toàn lượng tử**: Kháng lại các cuộc tấn công máy tính lượng tử
+* **Lưu trữ**: Tệp cơ sở dữ liệu SQLite trên đĩa
+* **Truy cập**: Giải mã trong bộ nhớ khi truy cập qua IMAP/API
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### Lớp 2: Mã Hóa PGP Cấp Tin Nhắn {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Nhiều email hỗ trợ được mã hóa thêm bằng PGP (chuẩn OpenPGP). Các công việc AI phải giải mã những email này để trích xuất nội dung phục vụ huấn luyện.
 
-**Decryption Flow:**
+**Quy trình giải mã:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. API trả về tin nhắn với nội dung thô được mã hóa
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Kiểm tra xem nội dung thô có được mã hóa PGP không
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Giải mã bằng khóa riêng của chúng tôi
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Phân tích tin nhắn MIME đã giải mã
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Điền nodemailer với nội dung đã giải mã
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +337,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**Cấu hình PGP:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Khóa riêng để giải mã (đường dẫn đến tệp khóa ASCII-armored)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Mật khẩu cho khóa riêng (nếu được mã hóa)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+Trợ giúp `pgp-decrypt.js`:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Đọc khóa riêng từ đĩa một lần (được lưu trong bộ nhớ đệm)
+2. Giải mã khóa với mật khẩu
+3. Sử dụng khóa đã giải mã để giải mã tất cả các tin nhắn
+4. Hỗ trợ giải mã đệ quy cho các tin nhắn mã hóa lồng nhau
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Tại Sao Điều Này Quan Trọng Cho Huấn Luyện {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Nếu không giải mã đúng cách, AI sẽ huấn luyện trên dữ liệu mã hóa không có ý nghĩa:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +366,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+Với giải mã, AI huấn luyện trên nội dung thực tế:
 
 ```
 Subject: Re: Bug Report
@@ -376,128 +377,126 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Bảo Mật Lưu Trữ {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+Việc giải mã diễn ra trong bộ nhớ trong quá trình thực thi công việc, và nội dung đã giải mã được chuyển đổi thành embeddings rồi được lưu trong cơ sở dữ liệu vector LanceDB trên đĩa.
 
-**Where the data lives:**
+**Nơi dữ liệu được lưu trữ:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Cơ sở dữ liệu vector**: Lưu trên các máy MacBook M5 được mã hóa
+* **Bảo mật vật lý**: Máy luôn ở trong tầm kiểm soát của chúng tôi (không đặt trong trung tâm dữ liệu)
+* **Mã hóa đĩa**: Mã hóa toàn bộ đĩa trên tất cả máy
+* **Bảo mật mạng**: Tường lửa và cách ly khỏi mạng công cộng
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Triển khai trung tâm dữ liệu trong tương lai:**
+Nếu chúng tôi chuyển sang lưu trữ tại trung tâm dữ liệu, các máy chủ sẽ có:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* Mã hóa toàn bộ đĩa LUKS
+* Vô hiệu hóa truy cập USB
+* Các biện pháp bảo mật vật lý
+* Cách ly mạng
+Để biết chi tiết đầy đủ về các thực hành bảo mật của chúng tôi, xem trang [Bảo mật](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> Cơ sở dữ liệu vector chứa các embeddings (biểu diễn toán học), không phải văn bản gốc. Tuy nhiên, embeddings có thể bị đảo ngược, đó là lý do chúng tôi giữ chúng trên các máy trạm được mã hóa và bảo vệ vật lý.
 
-### High-Level Flow {#high-level-flow}
+### Lưu trữ cục bộ là thực hành tiêu chuẩn {#local-storage-is-standard-practice}
+
+Lưu trữ embeddings trên các máy trạm của nhóm chúng tôi không khác gì cách chúng tôi đã xử lý email:
+
+* **Thunderbird**: Tải xuống và lưu trữ toàn bộ nội dung email cục bộ trong các tệp mbox/maildir
+* **Các trình duyệt webmail**: Bộ nhớ đệm dữ liệu email trong bộ nhớ trình duyệt và cơ sở dữ liệu cục bộ
+* **Các trình khách IMAP**: Duy trì bản sao cục bộ của các tin nhắn để truy cập ngoại tuyến
+* **Hệ thống AI của chúng tôi**: Lưu trữ embeddings toán học (không phải văn bản thuần túy) trong LanceDB
+
+Điểm khác biệt chính: embeddings **bảo mật hơn** so với email văn bản thuần túy vì chúng:
+
+1. Là biểu diễn toán học, không phải văn bản có thể đọc được
+2. Khó bị đảo ngược hơn so với văn bản thuần túy
+3. Vẫn chịu cùng mức độ bảo mật vật lý như các trình khách email của chúng tôi
+
+Nếu việc nhóm chúng tôi sử dụng Thunderbird hoặc webmail trên các máy trạm được mã hóa là chấp nhận được, thì việc lưu trữ embeddings theo cách tương tự cũng hoàn toàn chấp nhận được (và có thể còn bảo mật hơn).
+
+## Kiến trúc {#the-architecture}
+
+Dưới đây là luồng cơ bản. Nó có vẻ đơn giản. Nhưng không phải vậy.
+
+> \[!NOTE]
+> Tất cả các công việc đều sử dụng trực tiếp API Forward Email, đảm bảo các tối ưu hóa hiệu suất mang lại lợi ích cho cả hệ thống AI của chúng tôi và khách hàng.
+
+### Luồng cấp cao {#high-level-flow}
 
 ```mermaid
 graph TD
-    subgraph "Data Ingestion (Nightly Job)"
-        A[Data Sources] --> B{Scraper}
-        B --> C{Processor<br/>Chunks text}
-        C --> D{Ollama Client<br/>Generates embeddings}
-        D --> E[LanceDB<br/>Vector Store]
+    subgraph "Nhập dữ liệu (Công việc hàng đêm)"
+        A[Nguồn dữ liệu] --> B{Trình thu thập}
+        B --> C{Bộ xử lý<br/>Chia nhỏ văn bản}
+        C --> D{Khách hàng Ollama<br/>Tạo embeddings}
+        D --> E[LanceDB<br/>Kho vector]
     end
 
-    subgraph "Historical Email Training"
-        F[Email API] --> G{Email Scanner<br/>Decrypt PGP}
-        G --> H{Parse with mailparser}
-        H --> I{Processor<br/>Chunks text}
+    subgraph "Huấn luyện email lịch sử"
+        F[API Email] --> G{Trình quét email<br/>Giải mã PGP}
+        G --> H{Phân tích với mailparser}
+        H --> I{Bộ xử lý<br/>Chia nhỏ văn bản}
         I --> D
     end
 
-    subgraph "Live Email Processing"
-        J[New Email] --> K{Email Scanner<br/>Analyze content}
-        K --> L{Response Generator}
-        L -- Query --> E
-        E -- Context --> L
-        L -- Generates --> M[Email Response]
+    subgraph "Xử lý email trực tiếp"
+        J[Email mới] --> K{Trình quét email<br/>Phân tích nội dung}
+        K --> L{Trình tạo phản hồi}
+        L -- Truy vấn --> E
+        E -- Ngữ cảnh --> L
+        L -- Tạo ra --> M[Phản hồi email]
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Luồng chi tiết của trình thu thập {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+`scraper.js` là trung tâm của việc nhập dữ liệu. Nó là tập hợp các bộ phân tích cho các định dạng dữ liệu khác nhau.
 
 ```mermaid
 graph TD
-    subgraph "Scraper Components"
-        A[scraper.js] --> B[Local Markdown Parser<br/>docs/*.md]
-        A --> C[PDF Parser<br/>technical-whitepaper.pdf]
-        A --> D[GitHub Issue Parser<br/>@octokit/rest API]
-        A --> E[GitHub Discussion Parser<br/>@octokit/rest API]
-        A --> F[GitHub PR Parser<br/>@octokit/rest API]
-        A --> G[JSON Parser<br/>api-spec.json]
+    subgraph "Các thành phần của trình thu thập"
+        A[scraper.js] --> B[Bộ phân tích Markdown cục bộ<br/>docs/*.md]
+        A --> C[Bộ phân tích PDF<br/>technical-whitepaper.pdf]
+        A --> D[Bộ phân tích Issue GitHub<br/>API @octokit/rest]
+        A --> E[Bộ phân tích Discussion GitHub<br/>API @octokit/rest]
+        A --> F[Bộ phân tích PR GitHub<br/>API @octokit/rest]
+        A --> G[Bộ phân tích JSON<br/>api-spec.json]
     end
-    B --> I{Processor<br/>Chunks text}
+    B --> I{Bộ xử lý<br/>Chia nhỏ văn bản}
     C --> I
     D --> I
     E --> I
     F --> I
     G --> I
-    I --> J{Ollama Client<br/>mxbai-embed-large embeddings}
+    I --> J{Khách hàng Ollama<br/>embeddings mxbai-embed-large}
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
+## Cách hoạt động {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+Quy trình được chia thành ba phần chính: xây dựng cơ sở tri thức, huấn luyện từ email lịch sử, và xử lý email mới.
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+### Xây dựng cơ sở tri thức {#building-the-knowledge-base}
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+**`update-knowledge-base.js`**: Đây là công việc chính. Nó chạy hàng đêm, xóa kho vector cũ và xây dựng lại từ đầu. Nó sử dụng `scraper.js` để lấy nội dung từ tất cả các nguồn, `processor.js` để chia nhỏ, và `ollama-client.js` để tạo embeddings. Cuối cùng, `vector-store.js` lưu trữ tất cả trong LanceDB.
 
-**Data Sources:**
+**Nguồn dữ liệu:**
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+* Các tệp Markdown cục bộ (`docs/*.md`)
+* PDF whitepaper kỹ thuật (`assets/technical-whitepaper.pdf`)
+* JSON đặc tả API (`assets/api-spec.json`)
+* Các issue GitHub (qua Octokit)
+* Các discussion GitHub (qua Octokit)
+* Các pull request GitHub (qua Octokit)
+* Danh sách URL sơ đồ trang web (`$LANCEDB_PATH/valid-urls.json`)
 
-### Training from Historical Emails {#training-from-historical-emails}
+### Huấn luyện từ email lịch sử {#training-from-historical-emails}
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
-
-**Email Processing Flow:**
+**`train-from-history.js`**: Công việc này quét các email lịch sử từ tất cả các thư mục, giải mã các tin nhắn được mã hóa PGP, và thêm chúng vào một kho vector riêng biệt (`customer_support_history`). Điều này cung cấp ngữ cảnh từ các tương tác hỗ trợ trong quá khứ.
+**Quy trình xử lý Email:**
 
 ```mermaid
 sequenceDiagram
@@ -535,25 +534,25 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**Tính năng chính:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **Giải mã PGP**: Sử dụng helper `pgp-decrypt.js` với biến môi trường `GPG_SECURITY_KEY`
+* **Nhóm luồng hội thoại**: Nhóm các email liên quan thành các luồng hội thoại
+* **Bảo toàn metadata**: Lưu trữ thư mục, chủ đề, ngày tháng, trạng thái mã hóa
+* **Ngữ cảnh trả lời**: Liên kết các tin nhắn với câu trả lời của chúng để có ngữ cảnh tốt hơn
 
-**Configuration:**
+**Cấu hình:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# Biến môi trường cho train-from-history
+HISTORY_SCAN_LIMIT=1000              # Số tin nhắn tối đa để xử lý
+HISTORY_SCAN_SINCE="2024-01-01"      # Chỉ xử lý tin nhắn sau ngày này
+HISTORY_DECRYPT_PGP=true             # Cố gắng giải mã PGP
+GPG_SECURITY_KEY="/path/to/key.asc"  # Đường dẫn tới khóa riêng PGP
+GPG_SECURITY_PASSPHRASE="passphrase" # Mật khẩu khóa (tùy chọn)
 ```
 
-**What Gets Stored:**
+**Những gì được lưu trữ:**
 
 ```javascript
 {
@@ -575,39 +574,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Chạy `train-from-history` sau khi thiết lập ban đầu để điền ngữ cảnh lịch sử. Điều này cải thiện đáng kể chất lượng phản hồi bằng cách học từ các tương tác hỗ trợ trước đây.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Xử lý Email đến {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Công việc này chạy trên các email trong hộp thư `support@forwardemail.net`, `abuse@forwardemail.net`, và `security@forwardemail.net` (cụ thể là thư mục IMAP `INBOX`). Nó sử dụng API của chúng tôi tại <https://forwardemail.net/email-api> (ví dụ `GET /v1/messages?folder=INBOX` sử dụng BasicAuth với thông tin đăng nhập IMAP cho từng hộp thư). Nó phân tích nội dung email, truy vấn cả cơ sở tri thức (`forward_email_knowledge_base`) và kho vector email lịch sử (`customer_support_history`), sau đó truyền ngữ cảnh kết hợp cho `response-generator.js`. Bộ tạo sử dụng `mxbai-embed-large` qua Ollama để tạo phản hồi.
 
-**Automated Workflow Features:**
+**Tính năng quy trình tự động:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Tự động Inbox Zero**: Sau khi tạo bản nháp thành công, tin nhắn gốc sẽ tự động được chuyển vào thư mục Lưu trữ. Điều này giữ cho hộp thư đến của bạn sạch sẽ và giúp đạt được inbox zero mà không cần can thiệp thủ công.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **Bỏ qua xử lý AI**: Chỉ cần thêm nhãn `skip-ai` (không phân biệt chữ hoa thường) vào bất kỳ tin nhắn nào để ngăn AI xử lý. Tin nhắn sẽ vẫn ở trong hộp thư đến của bạn mà không bị động chạm, cho phép bạn xử lý thủ công. Điều này hữu ích cho các tin nhắn nhạy cảm hoặc trường hợp phức tạp cần đánh giá của con người.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Luồng hội thoại email đúng chuẩn**: Tất cả các phản hồi bản nháp bao gồm trích dẫn tin nhắn gốc bên dưới (sử dụng tiền tố chuẩn ` >  `), theo quy ước trả lời email với định dạng "Vào ngày \[date], \[sender] đã viết:". Điều này đảm bảo ngữ cảnh hội thoại và luồng hội thoại đúng trong các ứng dụng email.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Hành vi trả lời tất cả**: Hệ thống tự động xử lý các header Reply-To và người nhận CC:
+   * Nếu có header Reply-To, nó sẽ trở thành địa chỉ To và địa chỉ From gốc được thêm vào CC
+   * Tất cả người nhận To và CC gốc đều được bao gồm trong CC trả lời (trừ địa chỉ của bạn)
+   * Tuân theo quy ước trả lời tất cả chuẩn cho các cuộc hội thoại nhóm
+**Xếp hạng Nguồn**: Hệ thống sử dụng **xếp hạng có trọng số** để ưu tiên các nguồn:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
+* FAQ: 100% (ưu tiên cao nhất)
+* Bài báo kỹ thuật: 95%
+* Đặc tả API: 90%
+* Tài liệu chính thức: 85%
+* Vấn đề GitHub: 70%
+* Email lịch sử: 50%
 
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
-* GitHub issues: 70%
-* Historical emails: 50%
+### Quản lý Kho Vector {#vector-store-management}
 
-### Vector Store Management {#vector-store-management}
+Lớp `VectorStore` trong `helpers/customer-support-ai/vector-store.js` là giao diện của chúng tôi với LanceDB.
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
-
-**Adding Documents:**
+**Thêm Tài liệu:**
 
 ```javascript
 // vector-store.js
@@ -621,7 +619,7 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Xóa Kho:**
 
 ```javascript
 // Option 1: Use the clear() method
@@ -631,116 +629,117 @@ await vectorStore.clear();
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+Biến môi trường `LANCEDB_PATH` trỏ đến thư mục cơ sở dữ liệu nhúng cục bộ. LanceDB là serverless và nhúng, nên không có tiến trình riêng biệt để quản lý.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## Nghĩa trang Cơ sở dữ liệu Vector {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
+Đây là trở ngại lớn đầu tiên. Chúng tôi đã thử nhiều cơ sở dữ liệu vector trước khi chọn LanceDB. Dưới đây là những gì đã xảy ra với từng cái.
+
+| Cơ sở dữ liệu | GitHub                                                      | Những Vấn đề Gặp Phải                                                                                                                                                                                                | Vấn đề Cụ thể                                                                                                                                                                                                                                                                                                                                                             | Mối Quan Tâm về Bảo mật                                                                                                                                                                                        |
 | ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` cung cấp cho bạn một phiên bản cổ đại với lỗi `PydanticImportError`. Cách duy nhất để có phiên bản hoạt động là biên dịch từ mã nguồn. Không thân thiện với nhà phát triển.                | Hỗn loạn phụ thuộc Python. Nhiều người dùng báo cáo lỗi cài đặt pip ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). Tài liệu nói "chỉ dùng Docker" nhưng đó không phải là câu trả lời cho phát triển cục bộ. Bị crash trên Windows với >99 bản ghi ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Thực thi mã tùy ý qua tích hợp ChromaDB trong MindsDB. Lỗ hổng hệ điều hành nghiêm trọng trong ảnh Docker ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                      |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | Homebrew tap (`qdrant/qdrant/qdrant`) được tham chiếu trong tài liệu cũ đã biến mất. Không còn nữa. Không có lời giải thích. Tài liệu chính thức giờ chỉ nói "dùng Docker."                                         | Thiếu Homebrew tap. Không có nhị phân macOS gốc. Chỉ dùng Docker gây khó khăn cho việc thử nghiệm nhanh cục bộ.                                                                                                                                                                                                                                                         | **CVE-2024-2221**: Lỗ hổng tải tệp tùy ý cho phép thực thi mã từ xa (đã sửa trong v1.9.0). Điểm bảo mật thấp từ [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/).                           |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | Phiên bản Homebrew có lỗi clustering nghiêm trọng (`leader not found`). Các cờ được tài liệu hóa để sửa lỗi (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) không hoạt động. Cơ bản là hỏng cho cấu hình một nút.                   | Lỗi clustering ngay cả trong chế độ một nút. Quá phức tạp cho các trường hợp sử dụng đơn giản.                                                                                                                                                                                                                                                                           | Không có CVE lớn, nhưng độ phức tạp làm tăng bề mặt tấn công.                                                                                                                                                    |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Cái này hoạt động. Nó nhúng và serverless. Không có tiến trình riêng biệt. Phiền toái duy nhất là tên gói gây nhầm lẫn (`vectordb` đã lỗi thời, dùng `@lancedb/lancedb`) và tài liệu rải rác. Chúng tôi có thể chấp nhận. | Nhầm lẫn tên gói (`vectordb` vs `@lancedb/lancedb`), nhưng nhìn chung ổn định. Kiến trúc nhúng loại bỏ toàn bộ các loại vấn đề bảo mật.                                                                                                                                                                                                                                   | Không có CVE đã biết. Thiết kế nhúng nghĩa là không có bề mặt tấn công mạng.                                                                                                                                      |
+> \[!WARNING]
+> **ChromaDB có các lỗ hổng bảo mật nghiêm trọng.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) cho phép thực thi mã tùy ý. Việc cài đặt pip bị hỏng cơ bản do các vấn đề phụ thuộc Pydantic. Tránh sử dụng trong môi trường sản xuất.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **Qdrant đã có lỗ hổng RCE tải tệp lên** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) chỉ được sửa trong phiên bản v1.9.0. Nếu bạn phải sử dụng Qdrant, hãy đảm bảo bạn đang dùng phiên bản mới nhất.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Hệ sinh thái cơ sở dữ liệu vector mã nguồn mở còn nhiều khó khăn. Đừng tin tưởng tài liệu. Giả định mọi thứ đều bị hỏng cho đến khi được chứng minh ngược lại. Hãy thử nghiệm cục bộ trước khi cam kết sử dụng một bộ công cụ.
 
-## System Requirements {#system-requirements}
+
+## Yêu Cầu Hệ Thống {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** Phiên bản mới nhất ([GitHub](https://github.com/ollama/ollama))
+* **Mô hình:** `mxbai-embed-large` qua Ollama
+* **Cơ sở dữ liệu Vector:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **Truy cập GitHub:** `@octokit/rest` để lấy dữ liệu issues ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Cho cơ sở dữ liệu chính (qua `mongoose-to-sqlite`)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## Cấu Hình Cron Job {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+Tất cả các công việc AI chạy qua cron trên MacBook M5. Dưới đây là cách thiết lập các cron job chạy vào nửa đêm trên nhiều hộp thư.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### Biến Môi Trường {#environment-variables}
 
-**In `.env` file:**
+Các công việc yêu cầu các biến môi trường này. Hầu hết có thể được đặt trong file `.env` (được tải qua `@ladjs/env`), nhưng `HISTORY_SCAN_SINCE` phải được tính toán động trong crontab.
+
+**Trong file `.env`:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Thông tin đăng nhập API Forward Email (thay đổi theo từng hộp thư)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
-FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
+FORWARD_EMAIL_ALIAS_PASSWORD=mật-khẩu-imap-của-bạn
 
-# PGP decryption (shared across all inboxes)
+# Giải mã PGP (chia sẻ cho tất cả các hộp thư)
 GPG_SECURITY_KEY=/path/to/private-key.asc
-GPG_SECURITY_PASSPHRASE=your-passphrase
+GPG_SECURITY_PASSPHRASE=mật-khẩu-của-bạn
 
-# Historical scan configuration
+# Cấu hình quét lịch sử
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# Đường dẫn LanceDB
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**Trong crontab (tính toán động):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE phải được đặt trực tiếp trong crontab với lệnh shell date
+# Không thể đặt trong file .env vì @ladjs/env không thực thi lệnh shell
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Cron Jobs cho Nhiều Hộp Thư {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Chỉnh sửa crontab của bạn với `crontab -e` và thêm:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Cập nhật cơ sở tri thức (chạy một lần, dùng chung cho tất cả các hộp thư)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Huấn luyện từ lịch sử - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Huấn luyện từ lịch sử - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Huấn luyện từ lịch sử - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Xử lý hộp thư - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Xử lý hộp thư - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Xử lý hộp thư - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Phân Tích Lịch Trình Cron {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
-
-| Job | Schedule | Description |
+| Công việc                | Lịch trình   | Mô tả                                                                             |
 | ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+| `train-from-sitemap.js` | `0 0 * * 0`   | Hàng tuần (chủ nhật nửa đêm) - Lấy tất cả URL từ sitemap và huấn luyện cơ sở kiến thức |
+| `train-from-history.js` | `0 0 * * *`   | Hàng ngày vào nửa đêm - Quét email ngày trước theo từng hộp thư                   |
+| `process-inbox.js`      | `*/5 * * * *` | Mỗi 5 phút - Xử lý email mới và tạo bản nháp                                      |
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+### Tính Toán Ngày Động {#dynamic-date-calculation}
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+Biến `HISTORY_SCAN_SINCE` **phải được tính toán trực tiếp trong crontab** vì:
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
+1. Các file `.env` được đọc dưới dạng chuỗi ký tự nguyên thủy bởi `@ladjs/env`
+2. Thay thế lệnh shell `$(...)` không hoạt động trong file `.env`
+3. Ngày cần được tính mới mỗi lần cron chạy
 
-**Correct approach (in crontab):**
+**Cách làm đúng (trong crontab):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +749,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Cách làm sai (không hoạt động trong .env):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Điều này sẽ được đọc như chuỗi nguyên thủy "$(date -v-1d +%Y-%m-%d)"
+# KHÔNG được thực thi như lệnh shell
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Điều này đảm bảo mỗi lần chạy ban đêm sẽ tính ngày của ngày trước đó một cách động, tránh công việc thừa.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### Thiết Lập Ban Đầu: Trích Xuất Danh Sách URL từ Sitemap {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+Trước khi chạy công việc process-inbox lần đầu tiên, bạn **phải** trích xuất danh sách URL từ sitemap. Việc này tạo ra một từ điển các URL hợp lệ mà LLM có thể tham khảo và ngăn ngừa việc ảo tưởng URL.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# Thiết lập lần đầu: Trích xuất danh sách URL từ sitemap
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Việc này làm gì:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. Lấy tất cả URL từ <https://forwardemail.net/sitemap.xml>
+2. Lọc chỉ các URL không có địa phương hóa hoặc URL /en/ (tránh nội dung trùng lặp)
+3. Loại bỏ tiền tố ngôn ngữ (/en/faq → /faq)
+4. Lưu một file JSON đơn giản với danh sách URL vào `$LANCEDB_PATH/valid-urls.json`
+5. Không thu thập dữ liệu, không lấy metadata - chỉ là danh sách phẳng các URL hợp lệ
 
-**Why this matters:**
+**Tại sao điều này quan trọng:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* Ngăn LLM ảo tưởng các URL giả như `/dashboard` hoặc `/login`
+* Cung cấp danh sách trắng các URL hợp lệ để bộ tạo phản hồi tham khảo
+* Đơn giản, nhanh và không cần lưu trữ trong cơ sở dữ liệu vector
+* Bộ tạo phản hồi tải danh sách này khi khởi động và bao gồm nó trong prompt
 
-**Add to crontab for weekly updates:**
+**Thêm vào crontab để cập nhật hàng tuần:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# Trích xuất danh sách URL từ sitemap - hàng tuần vào chủ nhật nửa đêm
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Kiểm Tra Công Việc Cron Thủ Công {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+Để kiểm tra một công việc trước khi thêm vào cron:
 
 ```bash
-# Test sitemap training
+# Kiểm tra huấn luyện sitemap
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Kiểm tra huấn luyện hộp thư hỗ trợ
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +813,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Giám Sát Nhật Ký {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Mỗi công việc ghi nhật ký vào một file riêng để dễ dàng gỡ lỗi:
 
 ```bash
-# Watch support inbox processing in real-time
+# Xem xử lý hộp thư hỗ trợ theo thời gian thực
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Kiểm tra lần chạy huấn luyện đêm qua
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Xem tất cả lỗi trong các công việc
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Sử dụng các file nhật ký riêng biệt cho từng hộp thư để cô lập sự cố. Nếu một hộp thư gặp vấn đề xác thực, nó sẽ không làm nhiễu loạn nhật ký của các hộp thư khác.
+## Ví dụ mã {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Thu thập và Xử lý {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +841,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Xóa dữ liệu cũ
 await vectorStore.clear();
 
-// Scrape all sources
+// Thu thập tất cả các nguồn
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`Đã thu thập ${documents.length} tài liệu`);
 
-// Process into chunks
+// Xử lý thành các đoạn
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`Đã tạo ra ${allChunks.length} đoạn`);
 
-// Generate embeddings and store
+// Tạo embeddings và lưu trữ
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +868,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Huấn luyện từ Email Lịch sử {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +882,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Quét tất cả các thư mục (INBOX, Thư đã gửi, v.v.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Nhóm thành các chuỗi hội thoại
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Xử lý từng chuỗi
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Bỏ qua các tin nhắn mã hóa không thể giải mã
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Sử dụng nội dung đã phân tích từ nodemailer
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // Chia đoạn và lưu trữ
+    const chunks = processor.chunkText(`Chủ đề: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +927,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Truy vấn ngữ cảnh {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +936,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Truy vấn cả hai kho
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Xếp hạng có trọng số và loại bỏ trùng lặp diễn ra ở đây
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Tạo phản hồi
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## Tương lai: Nghiên cứu & Phát triển Bộ lọc Spam {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Toàn bộ dự án này không chỉ dành cho hỗ trợ khách hàng. Đây là R&D. Giờ đây chúng ta có thể áp dụng tất cả những gì đã học về embeddings cục bộ, kho vector và truy xuất ngữ cảnh vào dự án lớn tiếp theo của chúng ta: lớp LLM cho [Spam Scanner](https://spamscanner.net). Các nguyên tắc về quyền riêng tư, tự lưu trữ và hiểu ngữ nghĩa sẽ là chìa khóa.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Khắc phục sự cố {#troubleshooting}
+
+### Lỗi Sai Kích thước Vector {#vector-dimension-mismatch-error}
+
+**Lỗi:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Nguyên nhân:** Lỗi này xảy ra khi bạn chuyển đổi mô hình embedding (ví dụ, từ `mistral-small` sang `mxbai-embed-large`) nhưng cơ sở dữ liệu LanceDB hiện có được tạo với kích thước vector khác.
+**Giải pháp:** Bạn cần huấn luyện lại cơ sở tri thức với mô hình embedding mới:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Dừng tất cả các công việc AI hỗ trợ khách hàng đang chạy
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Xóa cơ sở dữ liệu LanceDB hiện tại
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Xác nhận mô hình embedding được thiết lập đúng trong .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Nên hiển thị: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Kéo mô hình embedding trong Ollama
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Huấn luyện lại cơ sở tri thức
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Khởi động lại công việc process-inbox qua Bree
+# Công việc sẽ tự động chạy mỗi 5 phút
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Tại sao điều này xảy ra:** Các mô hình embedding khác nhau tạo ra các vector có kích thước khác nhau:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 chiều
+* `mxbai-embed-large`: 1024 chiều
+* `nomic-embed-text`: 768 chiều
+* `all-minilm`: 384 chiều
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB lưu kích thước vector trong schema bảng. Khi bạn truy vấn với kích thước khác, nó sẽ lỗi. Giải pháp duy nhất là tạo lại cơ sở dữ liệu với mô hình mới.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Ngữ cảnh Cơ sở Tri thức Trống {#empty-knowledge-base-context}
 
-**Symptom:**
+**Triệu chứng:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,220 +1009,222 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Nguyên nhân:** Cơ sở tri thức chưa được huấn luyện hoặc bảng LanceDB không tồn tại.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Giải pháp:** Chạy công việc huấn luyện để điền dữ liệu vào cơ sở tri thức:
 
 ```bash
-# Train from historical emails
+# Huấn luyện từ email lịch sử
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Hoặc huấn luyện từ website/tài liệu (nếu bạn có trình thu thập dữ liệu)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### Lỗi Giải mã PGP {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Triệu chứng:** Tin nhắn hiển thị là đã mã hóa nhưng nội dung trống.
 
-**Solution:**
+**Giải pháp:**
 
-1. Verify GPG key path is set correctly:
+1. Xác nhận đường dẫn khóa GPG được thiết lập đúng:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Nên trỏ tới file khóa riêng tư của bạn
 ```
 
-2. Test decryption manually:
+2. Thử giải mã thủ công:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Kiểm tra quyền truy cập khóa:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# Nên có quyền đọc cho người dùng chạy công việc
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Mẹo Sử dụng {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Đạt Inbox Zero {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+Hệ thống được thiết kế để giúp bạn đạt inbox zero tự động:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Lưu trữ tự động**: Khi một bản nháp được tạo thành công, tin nhắn gốc sẽ tự động được chuyển vào thư mục Lưu trữ. Điều này giữ cho hộp thư đến của bạn sạch sẽ mà không cần can thiệp thủ công.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Xem lại bản nháp**: Kiểm tra thư mục Bản nháp thường xuyên để xem lại các phản hồi do AI tạo. Chỉnh sửa nếu cần trước khi gửi.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Ghi đè thủ công**: Đối với các tin nhắn cần chú ý đặc biệt, chỉ cần thêm nhãn `skip-ai` trước khi công việc chạy.
 
-To prevent AI processing for specific messages:
+### Sử dụng nhãn skip-ai {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+Để ngăn AI xử lý các tin nhắn cụ thể:
 
-**When to use skip-ai:**
+1. **Thêm nhãn**: Trong ứng dụng email của bạn, thêm nhãn/thẻ `skip-ai` vào bất kỳ tin nhắn nào (không phân biệt chữ hoa/thường)
+2. **Tin nhắn giữ nguyên trong hộp thư đến**: Tin nhắn sẽ không được xử lý hoặc lưu trữ
+3. **Xử lý thủ công**: Bạn có thể trả lời tin nhắn đó mà không bị AI can thiệp
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**Khi nào nên dùng skip-ai:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Tin nhắn nhạy cảm hoặc bảo mật
+* Các trường hợp phức tạp cần đánh giá của con người
+* Tin nhắn từ khách hàng VIP
+* Các yêu cầu liên quan pháp lý hoặc tuân thủ
+* Tin nhắn cần sự chú ý ngay lập tức của con người
 
-The system follows standard email conventions:
+### Xâu chuỗi Email và Trả lời Tất cả {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+Hệ thống tuân theo các quy ước email tiêu chuẩn:
+
+**Tin nhắn gốc được trích dẫn:**
 
 ```
-Hi there,
+Chào bạn,
 
-[AI-generated response]
+[Phản hồi do AI tạo]
 
 --
-Thank you,
+Cảm ơn bạn,
 Forward Email
 https://forwardemail.net
 
-On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
-> This is the original message
-> with each line quoted
-> using the standard "> " prefix
+Vào Thứ Hai, ngày 15 tháng 1 năm 2024, 3:45 PM John Doe <john@example.com> đã viết:
+> Đây là tin nhắn gốc
+> với mỗi dòng được trích dẫn
+> sử dụng tiền tố chuẩn "> "
 ```
 
-**Reply-To Handling:**
+**Xử lý Reply-To:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Nếu tin nhắn gốc có header Reply-To, bản nháp sẽ trả lời tới địa chỉ đó
+* Địa chỉ From gốc được thêm vào CC
+* Tất cả các người nhận To và CC gốc khác được giữ nguyên
 
-**Example:**
+**Ví dụ:**
 
 ```
-Original message:
+Tin nhắn gốc:
   From: john@company.com
   Reply-To: support@company.com
   To: support@forwardemail.net
   CC: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
+Bản nháp trả lời:
+  To: support@company.com (từ Reply-To)
   CC: john@company.com, manager@company.com
 ```
+### Giám sát và Bảo trì {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Kiểm tra chất lượng bản nháp thường xuyên:**
 
 ```bash
-# View recent drafts
+# Xem các bản nháp gần đây
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Giám sát việc lưu trữ:**
 
 ```bash
-# Check for archiving errors
+# Kiểm tra lỗi lưu trữ
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Xem lại các tin nhắn bị bỏ qua:**
 
 ```bash
-# See which messages were skipped
+# Xem những tin nhắn nào bị bỏ qua
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Kiểm thử {#testing}
 
-### Running Tests {#running-tests}
+Hệ thống AI hỗ trợ khách hàng bao gồm phạm vi kiểm thử toàn diện với 23 bài kiểm thử Ava.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Chạy Kiểm thử {#running-tests}
+
+Do xung đột ghi đè gói npm với `better-sqlite3`, hãy sử dụng script kiểm thử được cung cấp:
 
 ```bash
-# Run all customer support AI tests
+# Chạy tất cả các kiểm thử AI hỗ trợ khách hàng
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Chạy với đầu ra chi tiết
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Chạy file kiểm thử cụ thể
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Ngoài ra, chạy kiểm thử trực tiếp:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Phạm vi Kiểm thử {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Sitemap Fetcher (6 bài kiểm thử):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* So khớp regex mẫu locale
+* Trích xuất đường dẫn URL và loại bỏ locale
+* Logic lọc URL theo locale
+* Logic phân tích XML
+* Logic loại bỏ trùng lặp
+* Kết hợp lọc, loại bỏ locale và loại trùng
 
-**Message Utils (9 tests):**
+**Message Utils (9 bài kiểm thử):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Trích xuất văn bản người gửi với tên và email
+* Xử lý chỉ email khi tên trùng tiền tố
+* Sử dụng from.text nếu có
+* Sử dụng Reply-To nếu có
+* Sử dụng From nếu không có Reply-To
+* Bao gồm người nhận CC gốc
+* Loại bỏ địa chỉ của chúng ta khỏi CC
+* Xử lý Reply-To với From trong CC
+* Loại bỏ trùng địa chỉ CC
 
-**Response Generator (8 tests):**
+**Response Generator (8 bài kiểm thử):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* Logic nhóm URL cho prompt
+* Logic phát hiện tên người gửi
+* Cấu trúc prompt bao gồm tất cả phần cần thiết
+* Định dạng danh sách URL không có dấu ngoặc nhọn
+* Xử lý danh sách URL trống
+* Danh sách URL bị cấm trong prompt
+* Bao gồm ngữ cảnh lịch sử
+* URL chính xác cho các chủ đề liên quan tài khoản
 
-### Test Environment {#test-environment}
+### Môi trường Kiểm thử {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+Các kiểm thử sử dụng `.env.test` để cấu hình. Môi trường kiểm thử bao gồm:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Thông tin giả lập PayPal và Stripe
+* Khóa mã hóa kiểm thử
+* Vô hiệu hóa các nhà cung cấp xác thực
+* Đường dẫn dữ liệu kiểm thử an toàn
 
-All tests are designed to run without external dependencies or network calls.
+Tất cả kiểm thử được thiết kế để chạy mà không cần phụ thuộc bên ngoài hoặc gọi mạng.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Những điểm chính cần nhớ {#key-takeaways}
+
+1. **Ưu tiên quyền riêng tư:** Tự lưu trữ là bắt buộc để tuân thủ GDPR/DPA.
+2. **Chi phí quan trọng:** Dịch vụ AI đám mây đắt hơn 50-1000 lần so với tự lưu trữ cho khối lượng công việc sản xuất.
+3. **Hệ sinh thái đang bị phá vỡ:** Hầu hết cơ sở dữ liệu vector không thân thiện với nhà phát triển. Hãy kiểm thử mọi thứ cục bộ.
+4. **Lỗ hổng bảo mật là có thật:** ChromaDB và Qdrant từng có lỗ hổng RCE nghiêm trọng.
+5. **LanceDB hoạt động tốt:** Nó được nhúng, không cần máy chủ và không yêu cầu tiến trình riêng biệt.
+6. **Ollama ổn định:** Suy luận LLM cục bộ với `mxbai-embed-large` hoạt động tốt cho trường hợp của chúng ta.
+7. **Sai lệch kiểu dữ liệu sẽ giết bạn:** `text` vs. `content`, ObjectID vs. string. Những lỗi này âm thầm và nghiêm trọng.
+8. **Xếp hạng có trọng số quan trọng:** Không phải ngữ cảnh nào cũng bằng nhau. FAQ > Vấn đề GitHub > Email lịch sử.
+9. **Ngữ cảnh lịch sử là vàng:** Huấn luyện từ email hỗ trợ quá khứ cải thiện đáng kể chất lượng phản hồi.
+10. **Giải mã PGP là thiết yếu:** Nhiều email hỗ trợ được mã hóa; giải mã đúng cách rất quan trọng cho huấn luyện.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Tìm hiểu thêm về Forward Email và cách tiếp cận ưu tiên quyền riêng tư của chúng tôi tại [forwardemail.net](https://forwardemail.net).

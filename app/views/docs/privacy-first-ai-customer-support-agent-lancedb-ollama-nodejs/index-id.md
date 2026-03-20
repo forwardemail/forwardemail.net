@@ -1,219 +1,220 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# Membangun Agen Dukungan Pelanggan AI yang Mengutamakan Privasi dengan LanceDB, Ollama, dan Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
 <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
+> Dokumen ini membahas perjalanan kami membangun agen dukungan AI yang di-host sendiri. Kami menulis tentang tantangan serupa dalam posting blog kami [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Kami sebenarnya berpikir untuk menulis kelanjutan berjudul "AI Startup Graveyard" tapi mungkin kami harus menunggu satu tahun lagi sampai gelembung AI mungkin pecah(?). Untuk saat ini, ini adalah catatan pemikiran kami tentang apa yang berhasil, apa yang tidak, dan mengapa kami melakukannya dengan cara ini.
 
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
+Inilah cara kami membangun agen dukungan pelanggan AI kami sendiri. Kami melakukannya dengan cara yang sulit: di-host sendiri, mengutamakan privasi, dan sepenuhnya di bawah kendali kami. Kenapa? Karena kami tidak mempercayai layanan pihak ketiga dengan data pelanggan kami. Ini adalah persyaratan GDPR dan DPA, dan ini adalah hal yang benar untuk dilakukan.
 
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
+Ini bukan proyek akhir pekan yang menyenangkan. Ini adalah perjalanan selama sebulan menavigasi ketergantungan yang rusak, dokumentasi yang menyesatkan, dan kekacauan umum ekosistem AI open-source di tahun 2025. Dokumen ini adalah catatan tentang apa yang kami bangun, mengapa kami membangunnya, dan hambatan yang kami temui sepanjang jalan.
 
-## Table of Contents {#table-of-contents}
 
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
+## Daftar Isi {#table-of-contents}
 
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
+* [Manfaat untuk Pelanggan: Dukungan Manusia yang Ditingkatkan AI](#customer-benefits-ai-augmented-human-support)
+  * [Respon Lebih Cepat dan Akurat](#faster-more-accurate-responses)
+  * [Konsistensi Tanpa Kelelahan](#consistency-without-burnout)
+  * [Apa yang Anda Dapatkan](#what-you-get)
+* [Refleksi Pribadi: Perjuangan Dua Dekade](#a-personal-reflection-the-two-decade-grind)
+* [Mengapa Privasi Penting](#why-privacy-matters)
+* [Analisis Biaya: AI Cloud vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [Perbandingan Layanan AI Cloud](#cloud-ai-service-comparison)
+  * [Rincian Biaya: Basis Pengetahuan 5GB](#cost-breakdown-5gb-knowledge-base)
+  * [Biaya Perangkat Keras Self-Hosted](#self-hosted-hardware-costs)
+* [Menggunakan API Kami Sendiri](#dogfooding-our-own-api)
+  * [Mengapa Menggunakan Sendiri Itu Penting](#why-dogfooding-matters)
+  * [Contoh Penggunaan API](#api-usage-examples)
+  * [Manfaat Performa](#performance-benefits)
+* [Arsitektur Enkripsi](#encryption-architecture)
+  * [Lapisan 1: Enkripsi Kotak Surat (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [Lapisan 2: Enkripsi PGP Tingkat Pesan](#layer-2-message-level-pgp-encryption)
+  * [Mengapa Ini Penting untuk Pelatihan](#why-this-matters-for-training)
+  * [Keamanan Penyimpanan](#storage-security)
+  * [Penyimpanan Lokal adalah Praktik Standar](#local-storage-is-standard-practice)
+* [Arsitektur](#the-architecture)
+  * [Alur Tingkat Tinggi](#high-level-flow)
+  * [Alur Scraper Detail](#detailed-scraper-flow)
+* [Cara Kerjanya](#how-it-works)
+  * [Membangun Basis Pengetahuan](#building-the-knowledge-base)
+  * [Pelatihan dari Email Historis](#training-from-historical-emails)
+  * [Memproses Email Masuk](#processing-incoming-emails)
+  * [Manajemen Penyimpanan Vektor](#vector-store-management)
+* [Kuburan Database Vektor](#the-vector-database-graveyard)
+* [Persyaratan Sistem](#system-requirements)
+* [Konfigurasi Cron Job](#cron-job-configuration)
+  * [Variabel Lingkungan](#environment-variables)
+  * [Cron Job untuk Beberapa Kotak Masuk](#cron-jobs-for-multiple-inboxes)
+  * [Rincian Jadwal Cron](#cron-schedule-breakdown)
+  * [Perhitungan Tanggal Dinamis](#dynamic-date-calculation)
+  * [Pengaturan Awal: Ekstrak Daftar URL dari Sitemap](#initial-setup-extract-url-list-from-sitemap)
+  * [Pengujian Cron Job Secara Manual](#testing-cron-jobs-manually)
+  * [Memantau Log](#monitoring-logs)
+* [Contoh Kode](#code-examples)
+  * [Scraping dan Pemrosesan](#scraping-and-processing)
+  * [Pelatihan dari Email Historis](#training-from-historical-emails-1)
+  * [Query untuk Konteks](#querying-for-context)
+* [Masa Depan: R&D Pemindai Spam](#the-future-spam-scanner-rd)
+* [Pemecahan Masalah](#troubleshooting)
+  * [Kesalahan Ketidaksesuaian Dimensi Vektor](#vector-dimension-mismatch-error)
+  * [Konteks Basis Pengetahuan Kosong](#empty-knowledge-base-context)
+  * [Kegagalan Dekripsi PGP](#pgp-decryption-failures)
+* [Tips Penggunaan](#usage-tips)
+  * [Mencapai Inbox Zero](#achieving-inbox-zero)
+  * [Menggunakan Label skip-ai](#using-the-skip-ai-label)
+  * [Pengelolaan Thread Email dan Balas Semua](#email-threading-and-reply-all)
+  * [Pemantauan dan Pemeliharaan](#monitoring-and-maintenance)
+* [Pengujian](#testing)
+  * [Menjalankan Pengujian](#running-tests)
+  * [Cakupan Pengujian](#test-coverage)
+  * [Lingkungan Pengujian](#test-environment)
+* [Poin Penting](#key-takeaways)
+## Manfaat Pelanggan: Dukungan Manusia yang Ditingkatkan AI {#customer-benefits-ai-augmented-human-support}
 
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
+Sistem AI kami tidak menggantikan tim dukungan kami—melainkan membuat mereka lebih baik. Berikut arti hal ini bagi Anda:
 
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
+### Respon Lebih Cepat dan Lebih Akurat {#faster-more-accurate-responses}
 
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
+**Manusia dalam Proses**: Setiap draf yang dihasilkan AI ditinjau, diedit, dan dikurasi oleh tim dukungan manusia kami sebelum dikirimkan kepada Anda. AI menangani riset awal dan pembuatan draf, membebaskan tim kami untuk fokus pada kontrol kualitas dan personalisasi.
 
-**Trained on Human Expertise**: The AI learns from:
+**Dilatih dengan Keahlian Manusia**: AI belajar dari:
 
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
+* Basis pengetahuan dan dokumentasi yang ditulis tangan oleh kami
+* Posting blog dan tutorial yang dibuat oleh manusia
+* FAQ komprehensif kami (ditulis oleh manusia)
+* Percakapan pelanggan sebelumnya (semua ditangani oleh manusia nyata)
 
-You're getting responses informed by years of human expertise, just delivered faster.
+Anda mendapatkan jawaban yang diinformasikan oleh bertahun-tahun keahlian manusia, hanya disampaikan lebih cepat.
 
-### Consistency Without Burnout {#consistency-without-burnout}
+### Konsistensi Tanpa Kelelahan {#consistency-without-burnout}
 
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
+Tim kecil kami menangani ratusan permintaan dukungan setiap hari, masing-masing memerlukan pengetahuan teknis yang berbeda dan pergantian konteks mental:
 
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
+* Pertanyaan penagihan memerlukan pengetahuan sistem keuangan
+* Masalah DNS memerlukan keahlian jaringan
+* Integrasi API memerlukan pengetahuan pemrograman
+* Laporan keamanan memerlukan penilaian kerentanan
 
-Without AI assistance, this constant context-switching leads to:
+Tanpa bantuan AI, pergantian konteks yang konstan ini menyebabkan:
 
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
+* Waktu respon yang lebih lambat
+* Kesalahan manusia akibat kelelahan
+* Kualitas jawaban yang tidak konsisten
+* Kelelahan tim
 
-**With AI augmentation**, our team:
+**Dengan peningkatan AI**, tim kami:
 
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
+* Merespon lebih cepat (AI membuat draf dalam hitungan detik)
+* Membuat lebih sedikit kesalahan (AI menangkap kesalahan umum)
+* Menjaga kualitas yang konsisten (AI merujuk ke basis pengetahuan yang sama setiap saat)
+* Tetap segar dan fokus (waktu riset lebih sedikit, waktu membantu lebih banyak)
 
-### What You Get {#what-you-get}
+### Apa yang Anda Dapatkan {#what-you-get}
 
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
+✅ **Kecepatan**: AI membuat draf jawaban dalam hitungan detik, manusia meninjau dan mengirim dalam beberapa menit
 
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
+✅ **Akurasi**: Jawaban berdasarkan dokumentasi dan solusi masa lalu kami yang sebenarnya
 
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
+✅ **Konsistensi**: Jawaban berkualitas tinggi yang sama baik di jam 9 pagi maupun 9 malam
 
-✅ **Human touch**: Every response reviewed and personalized by our team
+✅ **Sentuhan manusia**: Setiap jawaban ditinjau dan dipersonalisasi oleh tim kami
 
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+✅ **Tanpa halusinasi**: AI hanya menggunakan basis pengetahuan terverifikasi kami, bukan data internet umum
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> **Anda selalu berbicara dengan manusia**. AI adalah asisten riset yang membantu tim kami menemukan jawaban yang tepat lebih cepat. Anggaplah seperti pustakawan yang langsung menemukan buku yang relevan—tetapi manusia tetap yang membacanya dan menjelaskannya kepada Anda.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+## Refleksi Pribadi: Perjuangan Dua Dekade {#a-personal-reflection-the-two-decade-grind}
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
+Sebelum kita menyelami hal teknis, sebuah catatan pribadi. Saya telah menjalani ini hampir dua dekade. Jam-jam tanpa henti di depan keyboard, pengejaran tanpa henti akan solusi, kerja keras yang dalam dan fokus – inilah realitas membangun sesuatu yang bermakna. Ini adalah realitas yang sering diabaikan dalam siklus hype teknologi baru.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+Ledakan AI baru-baru ini sangat membuat frustrasi. Kita dijual mimpi otomasi, asisten AI yang akan menulis kode kita dan menyelesaikan masalah kita. Kenyataannya? Outputnya sering kali adalah kode sampah yang memerlukan waktu lebih lama untuk diperbaiki daripada jika ditulis dari awal. Janji membuat hidup kita lebih mudah adalah palsu. Ini adalah pengalih perhatian dari kerja keras yang diperlukan untuk membangun.
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+Dan kemudian ada dilema kontribusi open-source. Anda sudah terbagi-bagi, kelelahan dari perjuangan. Anda menggunakan AI untuk membantu menulis laporan bug yang rinci dan terstruktur dengan baik, berharap memudahkan pemelihara memahami dan memperbaiki masalah. Dan apa yang terjadi? Anda dimarahi. Kontribusi Anda dianggap "di luar topik" atau usaha rendah, seperti yang kita lihat dalam [isu GitHub Node.js terbaru](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Ini adalah tamparan bagi pengembang senior yang hanya mencoba membantu.
 
-## Why Privacy Matters {#why-privacy-matters}
+Inilah realitas ekosistem tempat kita bekerja. Ini bukan hanya tentang alat yang rusak; ini tentang budaya yang sering gagal menghormati waktu dan [usaha para kontributornya](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Tulisan ini adalah kronik dari realitas itu. Ini adalah cerita tentang alat, ya, tetapi juga tentang biaya manusia dari membangun dalam ekosistem yang rusak yang, meskipun penuh janji, pada dasarnya rusak.
+## Mengapa Privasi Penting {#why-privacy-matters}
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+[Whitepaper teknis](https://forwardemail.net/technical-whitepaper.pdf) kami membahas filosofi privasi kami secara mendalam. Versi singkatnya: kami tidak mengirim data pelanggan ke pihak ketiga. Tidak pernah. Itu berarti tidak ada OpenAI, tidak ada Anthropic, tidak ada basis data vektor yang dihosting di cloud. Semuanya berjalan secara lokal di infrastruktur kami. Ini tidak dapat ditawar demi kepatuhan GDPR dan komitmen DPA kami.
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+## Analisis Biaya: AI Cloud vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+Sebelum masuk ke implementasi teknis, mari kita bahas mengapa self-hosting penting dari perspektif biaya. Model harga layanan AI cloud membuatnya sangat mahal untuk kasus penggunaan volume tinggi seperti dukungan pelanggan.
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
-| --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+### Perbandingan Layanan AI Cloud {#cloud-ai-service-comparison}
+
+| Layanan        | Penyedia            | Biaya Embedding                                                  | Biaya LLM (Input)                                                          | Biaya LLM (Output)      | Kebijakan Privasi                                   | GDPR/DPA        | Hosting           | Berbagi Data      |
+| -------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | -------------------------------------------------- | --------------- | ----------------- | ----------------- |
+| **OpenAI**     | OpenAI (AS)         | [$0.02-0.13/1M token](https://openai.com/api/pricing/)           | $0.15-20/1M token                                                          | $0.60-80/1M token      | [Link](https://openai.com/policies/privacy-policy/) | DPA Terbatas    | Azure (AS)        | Ya (pelatihan)    |
+| **Claude**     | Anthropic (AS)      | N/A                                                              | [$3-20/1M token](https://docs.claude.com/en/docs/about-claude/pricing)     | $15-80/1M token        | [Link](https://www.anthropic.com/legal/privacy)    | DPA Terbatas    | AWS/GCP (AS)      | Tidak (klaim)     |
+| **Gemini**     | Google (AS)         | [$0.15/1M token](https://ai.google.dev/gemini-api/docs/pricing)  | $0.30-1.00/1M token                                                        | $2.50/1M token         | [Link](https://policies.google.com/privacy)        | DPA Terbatas    | GCP (AS)          | Ya (peningkatan)  |
+| **DeepSeek**   | DeepSeek (China)    | N/A                                                              | [$0.028-0.28/1M token](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M token         | [Link](https://www.deepseek.com/en)                | Tidak diketahui | China             | Tidak diketahui   |
+| **Mistral**    | Mistral AI (Prancis)| [$0.10/1M token](https://mistral.ai/pricing)                     | $0.40/1M token                                                            | $2.00/1M token         | [Link](https://mistral.ai/terms/)                  | GDPR UE         | UE                | Tidak diketahui   |
+| **Self-Hosted**| Anda                | $0 (perangkat keras yang ada)                                   | $0 (perangkat keras yang ada)                                             | $0 (perangkat keras yang ada) | Kebijakan Anda                                   | Kepatuhan penuh | MacBook M5 + cron | Tidak pernah      |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Kekhawatiran kedaulatan data**: Penyedia AS (OpenAI, Claude, Gemini) tunduk pada CLOUD Act, yang memungkinkan pemerintah AS mengakses data. DeepSeek (China) beroperasi di bawah hukum data China. Meskipun Mistral (Prancis) menawarkan hosting UE dan kepatuhan GDPR, self-hosting tetap menjadi satu-satunya opsi untuk kedaulatan dan kontrol data penuh.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Rincian Biaya: Basis Pengetahuan 5GB {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Mari kita hitung biaya memproses basis pengetahuan 5GB (tipikal untuk perusahaan menengah dengan dokumen, email, dan riwayat dukungan).
 
-**Assumptions:**
+**Asumsi:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB teks ≈ 1,25 miliar token (dengan asumsi \~4 karakter/token)
+* Pembuatan embedding awal
+* Pelatihan ulang bulanan (embedding ulang penuh)
+* 10.000 kueri dukungan per bulan
+* Rata-rata kueri: 500 token input, 300 token output
+**Rincian Biaya Terperinci:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
+| Komponen                              | OpenAI           | Claude          | Gemini               | Self-Hosted        |
 | -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **Embedding Awal** (1,25M token)       | $25,000          | N/A             | $187,500             | $0                 |
+| **Query Bulanan** (10K × 800 token)    | $1,200-16,000    | $2,400-16,000   | $2,400-3,200         | $0                 |
+| **Pelatihan Ulang Bulanan** (1,25M token) | $25,000          | N/A             | $187,500             | $0                 |
+| **Total Tahun Pertama**                | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (listrik)     |
+| **Kepatuhan Privasi**                  | ❌ Terbatas      | ❌ Terbatas     | ❌ Terbatas          | ✅ Penuh            |
+| **Kedaulatan Data**                    | ❌ Tidak         | ❌ Tidak        | ❌ Tidak             | ✅ Ya               |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **Biaya embedding Gemini sangat tinggi** yaitu $0,15/1J token. Embedding basis pengetahuan 5GB saja akan menghabiskan biaya $187,500. Ini 37x lebih mahal daripada OpenAI dan membuatnya sama sekali tidak layak digunakan untuk produksi.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Biaya Perangkat Keras Self-Hosted {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+Setup kami berjalan pada perangkat keras yang sudah kami miliki:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Perangkat Keras**: MacBook M5 (sudah dimiliki untuk pengembangan)
+* **Biaya tambahan**: $0 (menggunakan perangkat keras yang ada)
+* **Listrik**: \~$5/bulan (perkiraan)
+* **Total tahun pertama**: \~$60
+* **Berjalan terus**: $60/tahun
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**ROI**: Self-hosting pada dasarnya tidak memiliki biaya marginal karena kami menggunakan perangkat keras pengembangan yang sudah ada. Sistem berjalan melalui cron job pada jam-jam sepi.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+## Menggunakan API Kami Sendiri {#dogfooding-our-own-api}
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+Salah satu keputusan arsitektur terpenting yang kami buat adalah agar semua pekerjaan AI menggunakan [Forward Email API](https://forwardemail.net/email-api) secara langsung. Ini bukan hanya praktik yang baik—melainkan fungsi pendorong untuk optimasi performa.
 
-When our AI jobs use the same API endpoints as our customers:
+### Mengapa Menggunakan Sendiri Itu Penting {#why-dogfooding-matters}
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+Ketika pekerjaan AI kami menggunakan endpoint API yang sama dengan pelanggan kami:
 
-### API Usage Examples {#api-usage-examples}
+1. **Kendala performa terasa pada kami terlebih dahulu** - Kami merasakan masalah sebelum pelanggan
+2. **Optimasi menguntungkan semua pihak** - Perbaikan untuk pekerjaan kami otomatis meningkatkan pengalaman pelanggan
+3. **Pengujian dunia nyata** - Pekerjaan kami memproses ribuan email, memberikan pengujian beban berkelanjutan
+4. **Penggunaan ulang kode** - Autentikasi, pembatasan laju, penanganan error, dan caching yang sama
 
-**Listing Messages (train-from-history.js):**
+### Contoh Penggunaan API {#api-usage-examples}
+
+**Mendaftar Pesan (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// Menggunakan GET /v1/messages?folder=INBOX dengan BasicAuth
+// Mengecualikan eml, raw, nodemailer untuk mengurangi ukuran respons (hanya perlu ID)
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +233,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Mengembalikan: [{ id, subject, date, ... }, ...]
+// Isi pesan lengkap diambil kemudian via GET /v1/messages/:id
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Mengambil Pesan Lengkap (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// Menggunakan GET /v1/messages/:id untuk mendapatkan pesan lengkap dengan konten raw
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +252,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Mengembalikan: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Membuat Draft Balasan (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// Menggunakan POST /v1/messages untuk membuat draft balasan
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +276,56 @@ const response = await axios.post(
   }
 );
 ```
+### Manfaat Kinerja {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Karena pekerjaan AI kami berjalan pada infrastruktur API yang sama:
 
-Because our AI jobs run on the same API infrastructure:
+* **Optimasi caching** menguntungkan baik pekerjaan maupun pelanggan
+* **Pembatasan laju** diuji di bawah beban nyata
+* **Penanganan kesalahan** telah teruji dalam praktik
+* **Waktu respons API** dipantau secara konstan
+* **Query database** dioptimalkan untuk kedua kasus penggunaan
+* **Optimasi bandwidth** - Mengecualikan `eml`, `raw`, `nodemailer` saat listing mengurangi ukuran respons sekitar \~90%
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+Ketika `train-from-history.js` memproses 1.000 email, itu membuat lebih dari 1.000 panggilan API. Setiap ketidakefisienan dalam API langsung terlihat. Ini memaksa kami untuk mengoptimalkan akses IMAP, query database, dan serialisasi respons—perbaikan yang langsung menguntungkan pelanggan kami.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Contoh optimasi**: Listing 100 pesan dengan konten penuh = \~10MB respons. Listing dengan `eml: false, raw: false, nodemailer: false` = \~100KB respons (100x lebih kecil).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Arsitektur Enkripsi {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+Penyimpanan email kami menggunakan beberapa lapisan enkripsi, yang harus didekripsi oleh pekerjaan AI secara real-time untuk pelatihan.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### Lapisan 1: Enkripsi Kotak Surat (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Semua kotak surat IMAP disimpan sebagai database SQLite yang dienkripsi dengan **chacha20-poly1305**, algoritma enkripsi yang aman terhadap komputer kuantum. Ini dijelaskan secara rinci dalam [posting blog layanan email terenkripsi aman kuantum kami](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**Properti Utama:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Algoritma**: ChaCha20-Poly1305 (cipher AEAD)
+* **Aman kuantum**: Tahan terhadap serangan komputasi kuantum
+* **Penyimpanan**: File database SQLite di disk
+* **Akses**: Didekripsi di memori saat diakses melalui IMAP/API
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### Lapisan 2: Enkripsi PGP Tingkat Pesan {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Banyak email dukungan juga dienkripsi dengan PGP (standar OpenPGP). Pekerjaan AI harus mendekripsi ini untuk mengekstrak konten untuk pelatihan.
 
-**Decryption Flow:**
+**Alur Dekripsi:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. API mengembalikan pesan dengan konten raw terenkripsi
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Periksa apakah konten raw terenkripsi PGP
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Dekripsi dengan kunci privat kami
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Parse pesan MIME yang sudah didekripsi
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Isi nodemailer dengan konten yang sudah didekripsi
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +337,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**Konfigurasi PGP:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Kunci privat untuk dekripsi (path ke file kunci ASCII-armored)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Passphrase untuk kunci privat (jika terenkripsi)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+Helper `pgp-decrypt.js`:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Membaca kunci privat dari disk sekali saja (disimpan di memori)
+2. Mendekripsi kunci dengan passphrase
+3. Menggunakan kunci yang sudah didekripsi untuk semua dekripsi pesan
+4. Mendukung dekripsi rekursif untuk pesan terenkripsi bersarang
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Mengapa Ini Penting untuk Pelatihan {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Tanpa dekripsi yang tepat, AI akan melatih pada teks terenkripsi yang tidak dapat dimengerti:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +366,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+Dengan dekripsi, AI melatih pada konten sebenarnya:
 
 ```
 Subject: Re: Bug Report
@@ -376,128 +377,128 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Keamanan Penyimpanan {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+Dekripsi terjadi di memori selama eksekusi pekerjaan, dan konten yang sudah didekripsi diubah menjadi embeddings yang kemudian disimpan di database vektor LanceDB di disk.
 
-**Where the data lives:**
+**Tempat data disimpan:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Database vektor**: Disimpan di workstation MacBook M5 terenkripsi
+* **Keamanan fisik**: Workstation selalu bersama kami (tidak di pusat data)
+* **Enkripsi disk**: Enkripsi disk penuh di semua workstation
+* **Keamanan jaringan**: Firewall dan terisolasi dari jaringan publik
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Rencana penempatan di pusat data di masa depan:**
+Jika kami pindah ke hosting pusat data, server akan memiliki:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* Enkripsi disk penuh LUKS
+* Akses USB dinonaktifkan
+* Langkah keamanan fisik
+* Isolasi jaringan
+Untuk detail lengkap tentang praktik keamanan kami, lihat [Halaman Keamanan](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> Basis data vektor berisi embeddings (representasi matematis), bukan teks asli. Namun, embeddings berpotensi direkayasa balik, itulah sebabnya kami menyimpannya di workstation yang terenkripsi dan aman secara fisik.
 
-### High-Level Flow {#high-level-flow}
+### Penyimpanan Lokal adalah Praktik Standar {#local-storage-is-standard-practice}
+
+Menyimpan embeddings di workstation tim kami tidak berbeda dengan bagaimana kami sudah menangani email:
+
+* **Thunderbird**: Mengunduh dan menyimpan konten email lengkap secara lokal dalam file mbox/maildir
+* **Klien webmail**: Menyimpan cache data email di penyimpanan browser dan basis data lokal
+* **Klien IMAP**: Mempertahankan salinan lokal pesan untuk akses offline
+* **Sistem AI kami**: Menyimpan embeddings matematis (bukan teks asli) di LanceDB
+
+Perbedaan utamanya: embeddings **lebih aman** daripada email teks asli karena mereka:
+
+1. Representasi matematis, bukan teks yang dapat dibaca
+2. Lebih sulit direkayasa balik dibandingkan teks asli
+3. Masih tunduk pada keamanan fisik yang sama seperti klien email kami
+
+Jika boleh bagi tim kami menggunakan Thunderbird atau webmail di workstation terenkripsi, maka sama boleh (dan bahkan lebih aman) menyimpan embeddings dengan cara yang sama.
+
+
+## Arsitektur {#the-architecture}
+
+Berikut alur dasarnya. Terlihat sederhana. Tapi tidak mudah.
+
+> \[!NOTE]
+> Semua pekerjaan menggunakan API Forward Email secara langsung, memastikan optimasi performa menguntungkan sistem AI kami dan pelanggan kami.
+
+### Alur Tingkat Tinggi {#high-level-flow}
 
 ```mermaid
 graph TD
     subgraph "Data Ingestion (Nightly Job)"
-        A[Data Sources] --> B{Scraper}
-        B --> C{Processor<br/>Chunks text}
-        C --> D{Ollama Client<br/>Generates embeddings}
-        D --> E[LanceDB<br/>Vector Store]
+        A[Sumber Data] --> B{Scraper}
+        B --> C{Processor<br/>Memecah teks}
+        C --> D{Klien Ollama<br/>Menghasilkan embeddings}
+        D --> E[LanceDB<br/>Penyimpanan Vektor]
     end
 
-    subgraph "Historical Email Training"
-        F[Email API] --> G{Email Scanner<br/>Decrypt PGP}
-        G --> H{Parse with mailparser}
-        H --> I{Processor<br/>Chunks text}
+    subgraph "Pelatihan Email Historis"
+        F[API Email] --> G{Pemindai Email<br/>Mendekripsi PGP}
+        G --> H{Parsing dengan mailparser}
+        H --> I{Processor<br/>Memecah teks}
         I --> D
     end
 
-    subgraph "Live Email Processing"
-        J[New Email] --> K{Email Scanner<br/>Analyze content}
-        K --> L{Response Generator}
+    subgraph "Pemrosesan Email Langsung"
+        J[Email Baru] --> K{Pemindai Email<br/>Menganalisis konten}
+        K --> L{Generator Respon}
         L -- Query --> E
-        E -- Context --> L
-        L -- Generates --> M[Email Response]
+        E -- Konteks --> L
+        L -- Menghasilkan --> M[Respon Email]
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Alur Scraper Detail {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+`scraper.js` adalah inti dari pengambilan data. Ini adalah kumpulan parser untuk berbagai format data.
 
 ```mermaid
 graph TD
-    subgraph "Scraper Components"
-        A[scraper.js] --> B[Local Markdown Parser<br/>docs/*.md]
-        A --> C[PDF Parser<br/>technical-whitepaper.pdf]
-        A --> D[GitHub Issue Parser<br/>@octokit/rest API]
-        A --> E[GitHub Discussion Parser<br/>@octokit/rest API]
-        A --> F[GitHub PR Parser<br/>@octokit/rest API]
-        A --> G[JSON Parser<br/>api-spec.json]
+    subgraph "Komponen Scraper"
+        A[scraper.js] --> B[Parser Markdown Lokal<br/>docs/*.md]
+        A --> C[Parser PDF<br/>technical-whitepaper.pdf]
+        A --> D[Parser Issue GitHub<br/>API @octokit/rest]
+        A --> E[Parser Diskusi GitHub<br/>API @octokit/rest]
+        A --> F[Parser PR GitHub<br/>API @octokit/rest]
+        A --> G[Parser JSON<br/>api-spec.json]
     end
-    B --> I{Processor<br/>Chunks text}
+    B --> I{Processor<br/>Memecah teks}
     C --> I
     D --> I
     E --> I
     F --> I
     G --> I
-    I --> J{Ollama Client<br/>mxbai-embed-large embeddings}
+    I --> J{Klien Ollama<br/>embeddings mxbai-embed-large}
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## Cara Kerjanya {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+Proses dibagi menjadi tiga bagian utama: membangun basis pengetahuan, melatih dari email historis, dan memproses email baru.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### Membangun Basis Pengetahuan {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: Ini adalah pekerjaan utama. Berjalan setiap malam, menghapus penyimpanan vektor lama, dan membangunnya kembali dari awal. Menggunakan `scraper.js` untuk mengambil konten dari semua sumber, `processor.js` untuk memecahnya, dan `ollama-client.js` untuk menghasilkan embeddings. Akhirnya, `vector-store.js` menyimpan semuanya di LanceDB.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+**Sumber Data:**
 
-### Training from Historical Emails {#training-from-historical-emails}
+* File Markdown lokal (`docs/*.md`)
+* PDF whitepaper teknis (`assets/technical-whitepaper.pdf`)
+* JSON spesifikasi API (`assets/api-spec.json`)
+* Issue GitHub (melalui Octokit)
+* Diskusi GitHub (melalui Octokit)
+* Pull request GitHub (melalui Octokit)
+* Daftar URL sitemap (`$LANCEDB_PATH/valid-urls.json`)
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
+### Melatih dari Email Historis {#training-from-historical-emails}
 
-**Email Processing Flow:**
+**`train-from-history.js`**: Pekerjaan ini memindai email historis dari semua folder, mendekripsi pesan yang dienkripsi PGP, dan menambahkannya ke penyimpanan vektor terpisah (`customer_support_history`). Ini memberikan konteks dari interaksi dukungan masa lalu.
+**Alur Pemrosesan Email:**
 
 ```mermaid
 sequenceDiagram
@@ -535,25 +536,25 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**Fitur Utama:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **Dekripsi PGP**: Menggunakan helper `pgp-decrypt.js` dengan variabel lingkungan `GPG_SECURITY_KEY`
+* **Pengelompokan Thread**: Mengelompokkan email terkait ke dalam thread percakapan
+* **Preservasi Metadata**: Menyimpan folder, subjek, tanggal, status enkripsi
+* **Konteks Balasan**: Menghubungkan pesan dengan balasannya untuk konteks yang lebih baik
 
-**Configuration:**
+**Konfigurasi:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# Variabel lingkungan untuk train-from-history
+HISTORY_SCAN_LIMIT=1000              # Maksimal pesan yang diproses
+HISTORY_SCAN_SINCE="2024-01-01"      # Hanya proses pesan setelah tanggal ini
+HISTORY_DECRYPT_PGP=true             # Coba dekripsi PGP
+GPG_SECURITY_KEY="/path/to/key.asc"  # Jalur ke kunci privat PGP
+GPG_SECURITY_PASSPHRASE="passphrase" # Passphrase kunci (opsional)
 ```
 
-**What Gets Stored:**
+**Yang Disimpan:**
 
 ```javascript
 {
@@ -575,39 +576,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Jalankan `train-from-history` setelah pengaturan awal untuk mengisi konteks historis. Ini secara dramatis meningkatkan kualitas respons dengan belajar dari interaksi dukungan sebelumnya.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Memproses Email Masuk {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Job ini berjalan pada email di kotak surat `support@forwardemail.net`, `abuse@forwardemail.net`, dan `security@forwardemail.net` (khususnya folder IMAP `INBOX`). Job ini memanfaatkan API kami di <https://forwardemail.net/email-api> (misalnya `GET /v1/messages?folder=INBOX` menggunakan akses BasicAuth dengan kredensial IMAP untuk setiap kotak surat). Job ini menganalisis isi email, melakukan query ke basis pengetahuan (`forward_email_knowledge_base`) dan penyimpanan vektor email historis (`customer_support_history`), lalu menggabungkan konteks tersebut ke `response-generator.js`. Generator menggunakan `mxbai-embed-large` melalui Ollama untuk membuat respons.
 
-**Automated Workflow Features:**
+**Fitur Alur Kerja Otomatis:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Otomasi Inbox Zero**: Setelah berhasil membuat draft, pesan asli secara otomatis dipindahkan ke folder Arsip. Ini menjaga kotak masuk tetap bersih dan membantu mencapai inbox zero tanpa intervensi manual.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **Lewati Pemrosesan AI**: Cukup tambahkan label `skip-ai` (tidak sensitif huruf) pada pesan apa pun untuk mencegah pemrosesan AI. Pesan akan tetap di inbox tanpa disentuh, memungkinkan Anda menanganinya secara manual. Ini berguna untuk pesan sensitif atau kasus kompleks yang memerlukan penilaian manusia.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Pengelolaan Thread Email yang Tepat**: Semua draft balasan menyertakan pesan asli yang dikutip di bawahnya (menggunakan prefix standar ` >  `), mengikuti konvensi balasan email dengan format "Pada \[tanggal], \[pengirim] menulis:". Ini memastikan konteks percakapan dan pengelompokan thread yang tepat di klien email.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Perilaku Balas Semua**: Sistem secara otomatis menangani header Reply-To dan penerima CC:
+   * Jika header Reply-To ada, maka menjadi alamat To dan From asli ditambahkan ke CC
+   * Semua penerima To dan CC asli disertakan dalam CC balasan (kecuali alamat Anda sendiri)
+   * Mengikuti konvensi balas semua standar untuk percakapan grup
+**Peringkat Sumber**: Sistem menggunakan **peringkat berbobot** untuk memprioritaskan sumber:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
+* FAQ: 100% (prioritas tertinggi)
+* Whitepaper teknis: 95%
+* Spesifikasi API: 90%
+* Dokumen resmi: 85%
+* Masalah GitHub: 70%
+* Email historis: 50%
 
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
-* GitHub issues: 70%
-* Historical emails: 50%
+### Manajemen Vector Store {#vector-store-management}
 
-### Vector Store Management {#vector-store-management}
+Kelas `VectorStore` di `helpers/customer-support-ai/vector-store.js` adalah antarmuka kami ke LanceDB.
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
-
-**Adding Documents:**
+**Menambahkan Dokumen:**
 
 ```javascript
 // vector-store.js
@@ -621,126 +621,127 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Mengosongkan Store:**
 
 ```javascript
-// Option 1: Use the clear() method
+// Opsi 1: Gunakan metode clear()
 await vectorStore.clear();
 
-// Option 2: Delete the local database directory
+// Opsi 2: Hapus direktori database lokal
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+Variabel lingkungan `LANCEDB_PATH` menunjuk ke direktori database embedded lokal. LanceDB bersifat serverless dan embedded, jadi tidak ada proses terpisah yang harus dikelola.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## Kuburan Database Vektor {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
+Ini adalah hambatan besar pertama. Kami mencoba beberapa database vektor sebelum akhirnya memilih LanceDB. Berikut yang salah dengan masing-masing.
+
+| Database     | GitHub                                                      | Apa yang Salah                                                                                                                                                                                                      | Masalah Spesifik                                                                                                                                                                                                                                                                                                                                                           | Kekhawatiran Keamanan                                                                                                                                                                                                |
 | ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` memberikan versi kuno dengan `PydanticImportError`. Satu-satunya cara mendapatkan versi yang berfungsi adalah dengan mengompilasi dari sumber. Tidak ramah pengembang.                        | Kekacauan dependensi Python. Banyak pengguna melaporkan instalasi pip yang rusak ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). Dokumentasi mengatakan "gunakan Docker saja" yang bukan jawaban untuk pengembangan lokal. Crash di Windows dengan >99 catatan ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Eksekusi kode sewenang-wenang melalui integrasi ChromaDB di MindsDB. Kerentanan OS kritis di image Docker ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                      |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | Homebrew tap (`qdrant/qdrant/qdrant`) yang disebutkan di dokumentasi lama sudah hilang. Menghilang tanpa penjelasan. Dokumentasi resmi sekarang hanya mengatakan "gunakan Docker."                                  | Homebrew tap hilang. Tidak ada binary native untuk macOS. Hanya Docker menjadi hambatan untuk pengujian lokal cepat.                                                                                                                                                                                                                                                                           | **CVE-2024-2221**: Kerentanan upload file sewenang-wenang yang memungkinkan eksekusi kode jarak jauh (diperbaiki di v1.9.0). Skor kematangan keamanan lemah dari [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | Versi Homebrew memiliki bug clustering kritis (`leader not found`). Flag yang didokumentasikan untuk memperbaikinya (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) tidak berfungsi. Secara fundamental rusak untuk setup node tunggal. | Bug clustering bahkan dalam mode node tunggal. Terlalu rumit untuk kasus penggunaan sederhana.                                                                                                                                                                                                                                                                                           | Tidak ada CVE besar ditemukan, tapi kompleksitas meningkatkan permukaan serangan.                                                                                                                                                    |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Ini berhasil. Embedded dan serverless. Tidak ada proses terpisah. Satu-satunya gangguan adalah penamaan paket yang membingungkan (`vectordb` sudah usang, gunakan `@lancedb/lancedb`) dan dokumentasi yang tersebar. Kami bisa menerima itu. | Kebingungan penamaan paket (`vectordb` vs `@lancedb/lancedb`), tapi selain itu solid. Arsitektur embedded menghilangkan kelas masalah keamanan secara keseluruhan.                                                                                                                                                                                                                     | Tidak ada CVE yang diketahui. Desain embedded berarti tidak ada permukaan serangan jaringan.                                                                                                                                                  |
+> \[!WARNING]
+> **ChromaDB memiliki kerentanan keamanan kritis.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) memungkinkan eksekusi kode sewenang-wenang. Instalasi pip secara fundamental rusak dengan masalah dependensi Pydantic. Hindari untuk penggunaan produksi.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **Qdrant memiliki kerentanan RCE unggah file** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) yang hanya diperbaiki di v1.9.0. Jika Anda harus menggunakan Qdrant, pastikan Anda menggunakan versi terbaru.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Ekosistem basis data vektor open-source masih kasar. Jangan percaya dokumentasi. Asumsikan semuanya rusak sampai terbukti sebaliknya. Uji secara lokal sebelum berkomitmen pada sebuah stack.
 
-## System Requirements {#system-requirements}
+
+## Persyaratan Sistem {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** Terbaru ([GitHub](https://github.com/ollama/ollama))
+* **Model:** `mxbai-embed-large` melalui Ollama
+* **Basis Data Vektor:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **Akses GitHub:** `@octokit/rest` untuk scraping issues ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Untuk basis data utama (melalui `mongoose-to-sqlite`)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## Konfigurasi Cron Job {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+Semua pekerjaan AI dijalankan melalui cron di MacBook M5. Berikut cara mengatur cron job agar berjalan pada tengah malam di beberapa inbox.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### Variabel Lingkungan {#environment-variables}
 
-**In `.env` file:**
+Pekerjaan ini memerlukan variabel lingkungan berikut. Sebagian besar dapat diatur di file `.env` (dimuat melalui `@ladjs/env`), tetapi `HISTORY_SCAN_SINCE` harus dihitung secara dinamis di crontab.
+
+**Di file `.env`:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Kredensial API Forward Email (berubah per inbox)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
-FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
+FORWARD_EMAIL_ALIAS_PASSWORD=password-imap-anda
 
-# PGP decryption (shared across all inboxes)
+# Dekripsi PGP (dibagikan ke semua inbox)
 GPG_SECURITY_KEY=/path/to/private-key.asc
-GPG_SECURITY_PASSPHRASE=your-passphrase
+GPG_SECURITY_PASSPHRASE=passphrase-anda
 
-# Historical scan configuration
+# Konfigurasi pemindaian historis
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# Path LanceDB
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**Di crontab (dihitung secara dinamis):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE harus diatur inline di crontab dengan perhitungan tanggal shell
+# Tidak bisa di file .env karena @ladjs/env tidak mengevaluasi perintah shell
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Cron Jobs untuk Beberapa Inbox {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Edit crontab Anda dengan `crontab -e` dan tambahkan:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Perbarui basis pengetahuan (berjalan sekali, dibagikan ke semua inbox)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Latih dari riwayat - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Latih dari riwayat - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Latih dari riwayat - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Proses inbox - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Proses inbox - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Proses inbox - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Rincian Jadwal Cron {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
+| Pekerjaan               | Jadwal       | Deskripsi                                                                         |
+| ----------------------- | ------------ | --------------------------------------------------------------------------------- |
+| `train-from-sitemap.js` | `0 0 * * 0`  | Mingguan (Minggu tengah malam) - Mengambil semua URL dari sitemap dan melatih basis pengetahuan |
+| `train-from-history.js` | `0 0 * * *`  | Tengah malam setiap hari - Memindai email hari sebelumnya per inbox               |
+| `process-inbox.js`      | `*/5 * * * *`| Setiap 5 menit - Memproses email baru dan menghasilkan draft                      |
 
-| Job | Schedule | Description |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+### Perhitungan Tanggal Dinamis {#dynamic-date-calculation}
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+Variabel `HISTORY_SCAN_SINCE` **harus dihitung secara langsung di crontab** karena:
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+1. File `.env` dibaca sebagai string literal oleh `@ladjs/env`
+2. Substitusi perintah shell `$(...)` tidak berfungsi di file `.env`
+3. Tanggal perlu dihitung ulang setiap kali cron berjalan
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
-
-**Correct approach (in crontab):**
+**Pendekatan yang benar (di crontab):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +751,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Pendekatan yang salah (tidak berfungsi di .env):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Ini akan dibaca sebagai string literal "$(date -v-1d +%Y-%m-%d)"
+# TIDAK dievaluasi sebagai perintah shell
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Ini memastikan setiap proses malam menghitung tanggal hari sebelumnya secara dinamis, menghindari pekerjaan yang berulang.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### Pengaturan Awal: Ekstrak Daftar URL dari Sitemap {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+Sebelum menjalankan pekerjaan process-inbox untuk pertama kali, Anda **harus** mengekstrak daftar URL dari sitemap. Ini membuat kamus URL valid yang dapat dirujuk oleh LLM dan mencegah halusinasi URL.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# Pengaturan pertama kali: Ekstrak daftar URL dari sitemap
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Apa yang dilakukan ini:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. Mengambil semua URL dari <https://forwardemail.net/sitemap.xml>
+2. Memfilter hanya URL non-lokal atau URL /en/ (menghindari konten duplikat)
+3. Menghapus awalan lokal (/en/faq → /faq)
+4. Menyimpan file JSON sederhana dengan daftar URL ke `$LANCEDB_PATH/valid-urls.json`
+5. Tidak melakukan crawling, tidak mengumpulkan metadata - hanya daftar URL valid datar
 
-**Why this matters:**
+**Mengapa ini penting:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* Mencegah LLM menghalusinasi URL palsu seperti `/dashboard` atau `/login`
+* Menyediakan daftar putih URL valid untuk generator respons merujuk
+* Sederhana, cepat, dan tidak memerlukan penyimpanan database vektor
+* Generator respons memuat daftar ini saat startup dan menyertakannya dalam prompt
 
-**Add to crontab for weekly updates:**
+**Tambahkan ke crontab untuk pembaruan mingguan:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# Ekstrak daftar URL dari sitemap - mingguan pada Minggu tengah malam
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Menguji Pekerjaan Cron Secara Manual {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+Untuk menguji pekerjaan sebelum menambahkannya ke cron:
 
 ```bash
-# Test sitemap training
+# Uji pelatihan sitemap
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Uji pelatihan inbox dukungan
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +815,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Memantau Log {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Setiap pekerjaan mencatat ke file terpisah untuk memudahkan debugging:
 
 ```bash
-# Watch support inbox processing in real-time
+# Pantau pemrosesan inbox dukungan secara real-time
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Periksa pelatihan malam kemarin
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Lihat semua error di seluruh pekerjaan
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Gunakan file log terpisah per inbox untuk mengisolasi masalah. Jika satu inbox mengalami masalah autentikasi, itu tidak akan mencemari log inbox lain.
+## Contoh Kode {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Scraping dan Pemrosesan {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +843,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Bersihkan data lama
 await vectorStore.clear();
 
-// Scrape all sources
+// Scrape semua sumber
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`Scraped ${documents.length} dokumen`);
 
-// Process into chunks
+// Proses menjadi potongan
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`Menghasilkan ${allChunks.length} potongan`);
 
-// Generate embeddings and store
+// Hasilkan embeddings dan simpan
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +870,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Pelatihan dari Email Historis {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,29 +884,29 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Pindai semua folder (INBOX, Sent Mail, dll.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Kelompokkan menjadi thread percakapan
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Proses setiap thread
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Lewati pesan terenkripsi yang tidak bisa didekripsi
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Gunakan konten yang sudah diparsing dari nodemailer
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
+    // Potong dan simpan
     const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
@@ -929,7 +929,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Query untuk Konteks {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +938,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Query kedua penyimpanan
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Peringkat berbobot dan deduplikasi terjadi di sini
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Hasilkan respons
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## Masa Depan: R\&D Pemindai Spam {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Seluruh proyek ini bukan hanya untuk dukungan pelanggan. Ini adalah R\&D. Sekarang kita dapat mengambil semua yang telah kita pelajari tentang embeddings lokal, penyimpanan vektor, dan pengambilan konteks dan menerapkannya pada proyek besar kita berikutnya: lapisan LLM untuk [Spam Scanner](https://spamscanner.net). Prinsip yang sama tentang privasi, self-hosting, dan pemahaman semantik akan menjadi kunci.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Pemecahan Masalah {#troubleshooting}
+
+### Kesalahan Ketidaksesuaian Dimensi Vektor {#vector-dimension-mismatch-error}
+
+**Kesalahan:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Penyebab:** Kesalahan ini terjadi ketika Anda mengganti model embedding (misalnya, dari `mistral-small` ke `mxbai-embed-large`) tetapi database LanceDB yang ada dibuat dengan dimensi vektor yang berbeda.
+**Solusi:** Anda perlu melatih ulang basis pengetahuan dengan model embedding baru:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Hentikan semua pekerjaan AI dukungan pelanggan yang sedang berjalan
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Hapus database LanceDB yang ada
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Verifikasi model embedding sudah diatur dengan benar di .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Seharusnya menampilkan: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Tarik model embedding di Ollama
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Latih ulang basis pengetahuan
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Mulai ulang pekerjaan process-inbox melalui Bree
+# Pekerjaan ini akan berjalan otomatis setiap 5 menit
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Mengapa ini terjadi:** Model embedding yang berbeda menghasilkan vektor dengan dimensi yang berbeda:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 dimensi
+* `mxbai-embed-large`: 1024 dimensi
+* `nomic-embed-text`: 768 dimensi
+* `all-minilm`: 384 dimensi
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB menyimpan dimensi vektor dalam skema tabel. Ketika Anda melakukan query dengan dimensi yang berbeda, itu gagal. Satu-satunya solusi adalah membuat ulang database dengan model baru.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Konteks Basis Pengetahuan Kosong {#empty-knowledge-base-context}
 
-**Symptom:**
+**Gejala:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,82 +1011,83 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Penyebab:** Basis pengetahuan belum dilatih, atau tabel LanceDB tidak ada.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Solusi:** Jalankan pekerjaan pelatihan untuk mengisi basis pengetahuan:
 
 ```bash
-# Train from historical emails
+# Latih dari email historis
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Atau latih dari website/dokumen (jika Anda memiliki scraper)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### Kegagalan Dekripsi PGP {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Gejala:** Pesan muncul sebagai terenkripsi tetapi kontennya kosong.
 
-**Solution:**
+**Solusi:**
 
-1. Verify GPG key path is set correctly:
+1. Verifikasi jalur kunci GPG sudah diatur dengan benar:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Seharusnya menunjuk ke file kunci privat Anda
 ```
 
-2. Test decryption manually:
+2. Uji dekripsi secara manual:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Periksa izin kunci:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# Harus dapat dibaca oleh pengguna yang menjalankan pekerjaan
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Tips Penggunaan {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Mencapai Inbox Zero {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+Sistem dirancang untuk membantu Anda mencapai inbox zero secara otomatis:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Pengarsipan Otomatis**: Saat draft berhasil dibuat, pesan asli secara otomatis dipindahkan ke folder Arsip. Ini menjaga inbox Anda tetap bersih tanpa intervensi manual.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Tinjau Draft**: Periksa folder Draft secara rutin untuk meninjau balasan yang dihasilkan AI. Edit sesuai kebutuhan sebelum mengirim.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Override Manual**: Untuk pesan yang memerlukan perhatian khusus, cukup tambahkan label `skip-ai` sebelum pekerjaan dijalankan.
 
-To prevent AI processing for specific messages:
+### Menggunakan Label skip-ai {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+Untuk mencegah pemrosesan AI pada pesan tertentu:
 
-**When to use skip-ai:**
+1. **Tambahkan label**: Di klien email Anda, tambahkan label/tag `skip-ai` pada pesan apa pun (tidak sensitif huruf)
+2. **Pesan tetap di inbox**: Pesan tidak akan diproses atau diarsipkan
+3. **Tangani secara manual**: Anda dapat membalasnya sendiri tanpa gangguan AI
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**Kapan menggunakan skip-ai:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Pesan sensitif atau rahasia
+* Kasus kompleks yang memerlukan penilaian manusia
+* Pesan dari pelanggan VIP
+* Pertanyaan terkait hukum atau kepatuhan
+* Pesan yang memerlukan perhatian manusia segera
 
-The system follows standard email conventions:
+### Pengelolaan Thread Email dan Balas Semua {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+Sistem mengikuti konvensi email standar:
+
+**Pesan Asli yang Dikutip:**
 
 ```
 Hi there,
 
-[AI-generated response]
+[Balasan yang dihasilkan AI]
 
 --
 Thank you,
@@ -1098,132 +1100,133 @@ On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
 > using the standard "> " prefix
 ```
 
-**Reply-To Handling:**
+**Penanganan Reply-To:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Jika pesan asli memiliki header Reply-To, draft membalas ke alamat tersebut
+* Alamat From asli ditambahkan ke CC
+* Semua penerima To dan CC asli lainnya dipertahankan
 
-**Example:**
+**Contoh:**
 
 ```
-Original message:
+Pesan asli:
   From: john@company.com
   Reply-To: support@company.com
   To: support@forwardemail.net
   CC: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
+Draft balasan:
+  To: support@company.com (dari Reply-To)
   CC: john@company.com, manager@company.com
 ```
+### Pemantauan dan Pemeliharaan {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Periksa kualitas draft secara berkala:**
 
 ```bash
-# View recent drafts
+# Lihat draft terbaru
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Pantau pengarsipan:**
 
 ```bash
-# Check for archiving errors
+# Periksa kesalahan pengarsipan
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Tinjau pesan yang dilewati:**
 
 ```bash
-# See which messages were skipped
+# Lihat pesan mana yang dilewati
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Pengujian {#testing}
 
-### Running Tests {#running-tests}
+Sistem AI dukungan pelanggan mencakup cakupan pengujian komprehensif dengan 23 tes Ava.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Menjalankan Tes {#running-tests}
+
+Karena konflik override paket npm dengan `better-sqlite3`, gunakan skrip tes yang disediakan:
 
 ```bash
-# Run all customer support AI tests
+# Jalankan semua tes AI dukungan pelanggan
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Jalankan dengan output verbose
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Jalankan file tes tertentu
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Sebagai alternatif, jalankan tes langsung:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Cakupan Tes {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Pengambil Sitemap (6 tes):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* Pencocokan pola regex locale
+* Ekstraksi path URL dan penghilangan locale
+* Logika penyaringan URL untuk locale
+* Logika parsing XML
+* Logika deduplikasi
+* Kombinasi penyaringan, penghilangan, dan deduplikasi
 
-**Message Utils (9 tests):**
+**Utilitas Pesan (9 tes):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Ekstrak teks pengirim dengan nama dan email
+* Tangani email saja saat nama cocok dengan prefix
+* Gunakan from.text jika tersedia
+* Gunakan Reply-To jika ada
+* Gunakan From jika tidak ada Reply-To
+* Sertakan penerima CC asli
+* Kecualikan alamat kami sendiri dari CC
+* Tangani Reply-To dengan From di CC
+* Deduplikasi alamat CC
 
-**Response Generator (8 tests):**
+**Generator Respons (8 tes):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* Logika pengelompokan URL untuk prompt
+* Logika deteksi nama pengirim
+* Struktur prompt mencakup semua bagian yang diperlukan
+* Format daftar URL tanpa tanda kurung sudut
+* Penanganan daftar URL kosong
+* Daftar URL terlarang dalam prompt
+* Penyertaan konteks historis
+* URL yang benar untuk topik terkait akun
 
-### Test Environment {#test-environment}
+### Lingkungan Tes {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+Tes menggunakan `.env.test` untuk konfigurasi. Lingkungan tes mencakup:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Kredensial PayPal dan Stripe tiruan
+* Kunci enkripsi tes
+* Penyedia autentikasi dinonaktifkan
+* Jalur data tes yang aman
 
-All tests are designed to run without external dependencies or network calls.
+Semua tes dirancang untuk dijalankan tanpa ketergantungan eksternal atau panggilan jaringan.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Poin Penting {#key-takeaways}
+
+1. **Privasi utama:** Self-hosting adalah keharusan untuk kepatuhan GDPR/DPA.
+2. **Biaya penting:** Layanan AI cloud 50-1000x lebih mahal daripada self-hosting untuk beban kerja produksi.
+3. **Ekosistem bermasalah:** Sebagian besar database vektor tidak ramah pengembang. Uji semuanya secara lokal.
+4. **Kerentanan keamanan nyata:** ChromaDB dan Qdrant pernah memiliki kerentanan RCE kritis.
+5. **LanceDB bekerja:** Terbenam, tanpa server, dan tidak memerlukan proses terpisah.
+6. **Ollama solid:** Inferensi LLM lokal dengan `mxbai-embed-large` bekerja baik untuk kasus kami.
+7. **Ketidaksesuaian tipe membunuh:** `text` vs. `content`, ObjectID vs. string. Bug ini diam dan brutal.
+8. **Peringkat berbobot penting:** Tidak semua konteks sama. FAQ > isu GitHub > email historis.
+9. **Konteks historis adalah emas:** Pelatihan dari email dukungan masa lalu secara dramatis meningkatkan kualitas respons.
+10. **Dekripsi PGP penting:** Banyak email dukungan terenkripsi; dekripsi yang tepat sangat penting untuk pelatihan.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Pelajari lebih lanjut tentang Forward Email dan pendekatan privasi kami terhadap email di [forwardemail.net](https://forwardemail.net).

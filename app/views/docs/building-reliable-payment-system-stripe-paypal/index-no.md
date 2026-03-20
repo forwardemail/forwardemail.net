@@ -1,54 +1,58 @@
 # Hvordan vi bygde et robust betalingssystem med Stripe og PayPal: En trifecta-tilnærming {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Betalingssystem med Stripe og PayPal" class="rounded-lg" />
+
 
 ## Innholdsfortegnelse {#table-of-contents}
 
 * [Forord](#foreword)
-* [Utfordringen: Flere betalingsbehandlere, én kilde til sannhet](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Utfordringen: Flere betalingsprosessorer, én sannhetskilde](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [Trifecta-tilnærmingen: Tre lag med pålitelighet](#the-trifecta-approach-three-layers-of-reliability)
-* [Lag 1: Omdirigeringer etter betaling](#layer-1-post-checkout-redirects)
+* [Lag 1: Omdirigeringer etter utsjekk](#layer-1-post-checkout-redirects)
   * [Stripe Checkout-implementering](#stripe-checkout-implementation)
-  * [PayPal-betalingsflyt](#paypal-payment-flow)
+  * [PayPal betalingsflyt](#paypal-payment-flow)
 * [Lag 2: Webhook-håndterere med signaturverifisering](#layer-2-webhook-handlers-with-signature-verification)
-  * [Stripe Webhook-implementering](#stripe-webhook-implementation)
-  * [PayPal Webhook-implementering](#paypal-webhook-implementation)
+  * [Stripe webhook-implementering](#stripe-webhook-implementation)
+  * [PayPal webhook-implementering](#paypal-webhook-implementation)
 * [Lag 3: Automatiserte jobber med Bree](#layer-3-automated-jobs-with-bree)
-  * [Abonnementsnøyaktighetstester](#subscription-accuracy-checker)
-  * [PayPal-abonnementssynkronisering](#paypal-subscription-synchronization)
-* [Håndtering av Edge-saker](#handling-edge-cases)
-  * [Svindeldeteksjon og -forebygging](#fraud-detection-and-prevention)
-  * [Tvistehåndtering](#dispute-handling)
-* [Gjenbruk av kode: KISS- og DRY-prinsippene](#code-reuse-kiss-and-dry-principles)
-* [Implementering av VISA-abonnementskrav](#visa-subscription-requirements-implementation)
-  * [Automatiske e-postvarsler før fornyelse](#automated-pre-renewal-email-notifications)
-  * [Håndtering av Edge-saker](#handling-edge-cases-1)
+  * [Abonnementsnøyaktighetskontroll](#subscription-accuracy-checker)
+  * [PayPal abonnements-synkronisering](#paypal-subscription-synchronization)
+* [Håndtering av kanttilfeller](#handling-edge-cases)
+  * [Svindeldeteksjon og forebygging](#fraud-detection-and-prevention)
+  * [Håndtering av tvister](#dispute-handling)
+* [Gjenbruk av kode: KISS- og DRY-prinsipper](#code-reuse-kiss-and-dry-principles)
+* [Implementering av VISA-abonnements-krav](#visa-subscription-requirements-implementation)
+  * [Automatiserte e-postvarsler før fornyelse](#automated-pre-renewal-email-notifications)
+  * [Håndtering av kanttilfeller](#handling-edge-cases-1)
   * [Prøveperioder og abonnementsvilkår](#trial-periods-and-subscription-terms)
-* [Konklusjon: Fordelene med vår Trifecta-tilnærming](#conclusion-the-benefits-of-our-trifecta-approach)
+* [Konklusjon: Fordelene med vår trifecta-tilnærming](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## Forord {#foreword}
 
-Hos Forward Email har vi alltid prioritert å lage systemer som er pålitelige, nøyaktige og brukervennlige. Da det gjaldt implementeringen av betalingssystemet vårt, visste vi at vi trengte en løsning som kunne håndtere flere betalingsbehandlere samtidig som vi opprettholdt perfekt datakonsistens. Dette blogginnlegget beskriver hvordan utviklingsteamet vårt integrerte både Stripe og PayPal ved hjelp av en trifekta-tilnærming som sikrer 1:1 sanntidsnøyaktighet på tvers av hele systemet vårt.
+Hos Forward Email har vi alltid prioritert å lage systemer som er pålitelige, nøyaktige og brukervennlige. Da vi skulle implementere vårt betalingssystem, visste vi at vi trengte en løsning som kunne håndtere flere betalingsprosessorer samtidig som den opprettholdt perfekt datakonsistens. Dette blogginnlegget beskriver hvordan vårt utviklingsteam integrerte både Stripe og PayPal ved hjelp av en trifecta-tilnærming som sikrer 1:1 sanntidsnøyaktighet i hele systemet vårt.
 
-## Utfordringen: Flere betalingsbehandlere, én kilde til sannhet {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Som en personvernfokusert e-posttjeneste ønsket vi å gi brukerne våre betalingsalternativer. Noen foretrekker enkelheten med kredittkortbetalinger via Stripe, mens andre verdsetter det ekstra laget med separasjon som PayPal tilbyr. Imidlertid introduserer støtte for flere betalingsbehandlere betydelig kompleksitet:
+## Utfordringen: Flere betalingsprosessorer, én sannhetskilde {#the-challenge-multiple-payment-processors-one-source-of-truth}
+
+Som en personvernfokusert e-posttjeneste ønsket vi å gi brukerne våre betalingsvalg. Noen foretrekker enkelheten ved kredittkortbetalinger gjennom Stripe, mens andre verdsetter det ekstra skillet som PayPal gir. Å støtte flere betalingsprosessorer introduserer imidlertid betydelig kompleksitet:
 
 1. Hvordan sikrer vi konsistente data på tvers av ulike betalingssystemer?
-2. Hvordan håndterer vi marginale saker som tvister, refusjoner eller mislykkede betalinger?
+2. Hvordan håndterer vi kanttilfeller som tvister, refusjoner eller mislykkede betalinger?
 3. Hvordan opprettholder vi én sannhetskilde i databasen vår?
 
-Løsningen vår var å implementere det vi kaller «trifecta-tilnærmingen» – et trelagssystem som gir redundans og sikrer datakonsistens uansett hva som skjer.
+Vår løsning var å implementere det vi kaller "trifecta-tilnærmingen" – et trelags system som gir redundans og sikrer datakonsistens uansett hva som skjer.
+
 
 ## Trifecta-tilnærmingen: Tre lag med pålitelighet {#the-trifecta-approach-three-layers-of-reliability}
 
-Betalingssystemet vårt består av tre kritiske komponenter som samarbeider for å sikre perfekt datasynkronisering:
+Vårt betalingssystem består av tre kritiske komponenter som samarbeider for å sikre perfekt datasynkronisering:
 
-1. **Omdirigeringer etter betaling** – Henter betalingsinformasjon umiddelbart etter betaling
-2. **Webhook-behandlere** – Behandler sanntidshendelser fra betalingsbehandlere
-3. **Automatiserte jobber** – Verifiserer og avstemmer betalingsdata med jevne mellomrom
+1. **Omdirigeringer etter utsjekk** – Fange betalingsinformasjon umiddelbart etter utsjekk
+2. **Webhook-håndterere** – Behandle sanntidshendelser fra betalingsprosessorer
+3. **Automatiserte jobber** – Periodisk verifisere og avstemme betalingsdata
 
-La oss dykke ned i hver komponent og se hvordan de fungerer sammen.
+La oss gå nærmere inn på hver komponent og se hvordan de fungerer sammen.
 
 ```mermaid
 flowchart TD
@@ -109,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
+## Lag 1: Omdirigeringer etter utsjekking {#layer-1-post-checkout-redirects}
 
-## Lag 1: Omdirigeringer etter betaling {#layer-1-post-checkout-redirects}
-
-Det første laget av vår trifecta-tilnærming skjer umiddelbart etter at en bruker har fullført en betaling. Både Stripe og PayPal tilbyr mekanismer for å omdirigere brukere tilbake til nettstedet vårt med transaksjonsinformasjon.
+Det første laget i vår trefoldige tilnærming skjer umiddelbart etter at en bruker fullfører en betaling. Både Stripe og PayPal tilbyr mekanismer for å omdirigere brukere tilbake til vårt nettsted med transaksjonsinformasjon.
 
 ### Stripe Checkout-implementering {#stripe-checkout-implementation}
 
-For Stripe bruker vi deres Checkout Sessions API for å skape en sømløs betalingsopplevelse. Når en bruker velger en plan og velger å betale med kredittkort, oppretter vi en Checkout Session med spesifikke URL-er for suksess og kansellering:
+For Stripe bruker vi deres Checkout Sessions API for å skape en sømløs betalingsopplevelse. Når en bruker velger en plan og velger å betale med kredittkort, oppretter vi en Checkout Session med spesifikke URL-er for suksess og avbrytelse:
 
 ```javascript
 const options = {
@@ -154,9 +157,9 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Den kritiske delen her er `success_url`-parameteren, som inkluderer `session_id` som en spørreparameter. Når Stripe omdirigerer brukeren tilbake til nettstedet vårt etter en vellykket betaling, kan vi bruke denne økt-ID-en til å bekrefte transaksjonen og oppdatere databasen vår deretter.
+Den kritiske delen her er `success_url`-parameteren, som inkluderer `session_id` som en spørringsparameter. Når Stripe omdirigerer brukeren tilbake til vårt nettsted etter en vellykket betaling, kan vi bruke denne sesjons-ID-en for å verifisere transaksjonen og oppdatere databasen vår deretter.
 
-### PayPal-betalingsflyt {#paypal-payment-flow}
+### PayPal betalingsflyt {#paypal-payment-flow}
 
 For PayPal bruker vi en lignende tilnærming med deres Orders API:
 
@@ -210,7 +213,7 @@ const requestBody = {
 };
 ```
 
-I likhet med Stripe spesifiserer vi parameterne `return_url` og `cancel_url` for å håndtere viderekoblinger etter betaling. Når PayPal omdirigerer brukeren tilbake til nettstedet vårt, kan vi registrere betalingsdetaljene og oppdatere databasen vår.
+På samme måte som med Stripe spesifiserer vi `return_url` og `cancel_url`-parametere for å håndtere omdirigeringer etter betaling. Når PayPal omdirigerer brukeren tilbake til vårt nettsted, kan vi fange betalingsdetaljene og oppdatere databasen vår.
 
 ```mermaid
 sequenceDiagram
@@ -222,79 +225,78 @@ sequenceDiagram
     participant Bree as Bree Job Scheduler
 
     %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    User->>FE: Velg plan og betalingsmetode
 
-    alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
-    else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+    alt Kredittkortbetaling
+        FE->>Stripe: Opprett Checkout Session
+        Stripe-->>FE: Returner sesjons-URL
+        FE->>User: Omdiriger til Stripe Checkout
+        User->>Stripe: Fullfør betaling
+        Stripe->>User: Omdiriger til suksess-URL med session_id
+        User->>FE: Returner til suksessside
+        FE->>Stripe: Verifiser sesjon med session_id
+        Stripe-->>FE: Returner sesjonsdetaljer
+        FE->>DB: Oppdater brukerplan og betalingsstatus
+    else PayPal-betaling
+        FE->>PayPal: Opprett ordre
+        PayPal-->>FE: Returner godkjennings-URL
+        FE->>User: Omdiriger til PayPal
+        User->>PayPal: Godkjenn betaling
+        PayPal->>User: Omdiriger til retur-URL
+        User->>FE: Returner til suksessside
+        FE->>PayPal: Fang betaling
+        PayPal-->>FE: Returner betalingsdetaljer
+        FE->>DB: Oppdater brukerplan og betalingsstatus
     end
 
-    %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    %% Webhook-flyt (asynkron)
+    Note over Stripe,PayPal: Betalingshendelser skjer (asynkront)
 
     alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
+        Stripe->>FE: Send hendelsesvarsel
+        FE->>FE: Verifiser webhook-signatur
+        FE->>DB: Behandle hendelse og oppdatere data
+        FE-->>Stripe: Bekreft mottak (200 OK)
     else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+        PayPal->>FE: Send hendelsesvarsel
+        FE->>FE: Verifiser webhook-signatur
+        FE->>DB: Behandle hendelse og oppdatere data
+        FE-->>PayPal: Bekreft mottak (200 OK)
     end
 
-    %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    %% Bree automatiserte jobber
+    Note over Bree: Planlagte jobber kjører periodisk
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: Hent alle kunder og abonnementer
+    Stripe-->>Bree: Returner kundedata
+    Bree->>DB: Sammenlign og avstem data
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: Hent alle abonnementer og transaksjoner
+    PayPal-->>Bree: Returner abonnementsdata
+    Bree->>DB: Sammenlign og avstem data
 
-    %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    %% Kanttilfelle: Håndtering av tvist
+    Note over User,PayPal: Bruker bestrider en belastning
 
     PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    FE->>PayPal: Godta krav automatisk
+    FE->>DB: Oppdater brukerstatus
+    FE->>User: Send varslings-e-post
 ```
-
 ## Lag 2: Webhook-håndterere med signaturverifisering {#layer-2-webhook-handlers-with-signature-verification}
 
-Selv om viderekoblinger etter betaling fungerer bra i de fleste tilfeller, er de ikke idiotsikre. Brukere kan lukke nettleseren før de blir omdirigert, eller nettverksproblemer kan forhindre at viderekoblingen fullføres. Det er her webhooks kommer inn i bildet.
+Selv om omdirigeringer etter utsjekking fungerer godt i de fleste scenarier, er de ikke idiotsikre. Brukere kan lukke nettleseren før de blir omdirigert, eller nettverksproblemer kan hindre at omdirigeringen fullføres. Det er her webhooks kommer inn.
 
-Både Stripe og PayPal tilbyr webhook-systemer som sender varsler i sanntid om betalingshendelser. Vi har implementert robuste webhook-håndterere som bekrefter ektheten til disse varslene og behandler dem deretter.
+Både Stripe og PayPal tilbyr webhook-systemer som sender sanntidsvarsler om betalingshendelser. Vi har implementert robuste webhook-håndterere som verifiserer ektheten av disse varslene og behandler dem deretter.
 
-### Stripe Webhook-implementering {#stripe-webhook-implementation}
+### Stripe Webhook-implementasjon {#stripe-webhook-implementation}
 
 Vår Stripe webhook-håndterer verifiserer signaturen til innkommende webhook-hendelser for å sikre at de er legitime:
 
 ```javascript
 async function webhook(ctx) {
   const sig = ctx.request.get('stripe-signature');
-  // throw an error if something was wrong
+  // kast en feil hvis noe var galt
   if (!isSANB(sig))
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   const event = stripe.webhooks.constructEvent(
@@ -302,18 +304,18 @@ async function webhook(ctx) {
     sig,
     env.STRIPE_ENDPOINT_SECRET
   );
-  // throw an error if something was wrong
+  // kast en feil hvis noe var galt
   if (!event)
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   ctx.logger.info('stripe webhook', { event });
-  // return a response to acknowledge receipt of the event
+  // returner et svar for å bekrefte mottak av hendelsen
   ctx.body = { received: true };
-  // run in background
+  // kjør i bakgrunnen
   processEvent(ctx, event)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err, { event });
-      // email admin errors
+      // send e-post til admin ved feil
       emailHelper({
         template: 'alert',
         message: {
@@ -334,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-`stripe.webhooks.constructEvent`-funksjonen verifiserer signaturen ved hjelp av vår endepunktshemmelighet. Hvis signaturen er gyldig, behandler vi hendelsen asynkront for å unngå å blokkere webhook-responsen.
+Funksjonen `stripe.webhooks.constructEvent` verifiserer signaturen ved hjelp av vårt endepunkthemmelighet. Hvis signaturen er gyldig, behandler vi hendelsen asynkront for å unngå å blokkere webhook-responsen.
 
-### PayPal Webhook-implementering {#paypal-webhook-implementation}
+### PayPal Webhook-implementasjon {#paypal-webhook-implementation}
 
-På samme måte bekrefter PayPals webhook-håndterer ektheten av innkommende varsler:
+På samme måte verifiserer vår PayPal webhook-håndterer ektheten av innkommende varsler:
 
 ```javascript
 async function webhook(ctx) {
@@ -346,17 +348,17 @@ async function webhook(ctx) {
     paypal.notification.webhookEvent.verify,
     paypal.notification.webhookEvent
   )(ctx.request.headers, ctx.request.body, env.PAYPAL_WEBHOOK_ID);
-  // throw an error if something was wrong
+  // kast en feil hvis noe var galt
   if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
     throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
-  // return a response to acknowledge receipt of the event
+  // returner et svar for å bekrefte mottak av hendelsen
   ctx.body = { received: true };
-  // run in background
+  // kjør i bakgrunnen
   processEvent(ctx)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err);
-      // email admin errors
+      // send e-post til admin ved feil
       emailHelper({
         template: 'alert',
         message: {
@@ -377,16 +379,16 @@ async function webhook(ctx) {
 }
 ```
 
-Begge webhook-håndtererne følger samme mønster: bekrefter signaturen, bekrefter mottak og behandler hendelsen asynkront. Dette sikrer at vi aldri går glipp av en betalingshendelse, selv om omdirigeringen etter betaling mislykkes.
+Begge webhook-håndtererne følger samme mønster: verifiser signaturen, bekreft mottak, og behandle hendelsen asynkront. Dette sikrer at vi aldri går glipp av en betalingshendelse, selv om omdirigeringen etter utsjekking feiler.
+
 
 ## Lag 3: Automatiserte jobber med Bree {#layer-3-automated-jobs-with-bree}
 
-Det siste laget i vår trifecta-tilnærming er et sett med automatiserte jobber som med jevne mellomrom verifiserer og avstemmer betalingsdata. Vi bruker Bree, en jobbplanlegger for Node.js, til å kjøre disse jobbene med jevne mellomrom.
+Det siste laget i vår trefoldige tilnærming er et sett med automatiserte jobber som periodisk verifiserer og avstemmer betalingsdata. Vi bruker Bree, en jobbscheduler for Node.js, for å kjøre disse jobbene med jevne mellomrom.
 
-### Nøyaktighetskontroll for abonnement {#subscription-accuracy-checker}
+### Abonnementsnøyaktighetskontroll {#subscription-accuracy-checker}
 
-En av våre viktigste oppgaver er abonnementsnøyaktighetskontrollen, som sikrer at databasen vår nøyaktig gjenspeiler abonnementsstatusen i Stripe:
-
+En av våre nøkkeljobber er abonnementsnøyaktighetskontrollen, som sikrer at databasen vår nøyaktig gjenspeiler abonnementsstatusen i Stripe:
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -452,11 +454,11 @@ async function mapper(customer) {
 }
 ```
 
-Denne jobben sjekker for avvik mellom databasen vår og Stripe, for eksempel uoverensstemmelser i e-postadresser eller flere aktive abonnementer. Hvis den finner noen problemer, logger den dem og sender varsler til administrasjonsteamet vårt.
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### PayPal-abonnementssynkronisering {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-Vi har en lignende jobb for PayPal-abonnementer:
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +489,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Disse automatiserte jobbene fungerer som vårt siste sikkerhetsnett, og sikrer at databasen vår alltid gjenspeiler den sanne statusen for abonnementer og betalinger i både Stripe og PayPal.
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## Håndtering av kantsaker {#handling-edge-cases}
 
-Et robust betalingssystem må håndtere marginale tilfeller på en elegant måte. La oss se på hvordan vi håndterer noen vanlige scenarioer.
+## Handling Edge Cases {#handling-edge-cases}
 
-### Svindeldeteksjon og -forebygging {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-Vi har implementert sofistikerte svindeldeteksjonsmekanismer som automatisk identifiserer og håndterer mistenkelige betalingsaktiviteter:
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -540,30 +543,30 @@ case 'charge.failed': {
 }
 ```
 
-Denne koden utestenger automatisk brukere som har flere mislykkede belastninger og ingen bekreftede domener, noe som er en sterk indikator på svindelaktivitet.
+Denne koden utestenger automatisk brukere som har flere mislykkede belastninger og ingen verifiserte domener, noe som er en sterk indikasjon på svindelaktivitet.
 
 ### Håndtering av tvister {#dispute-handling}
 
-Når en bruker bestrider en belastning, godtar vi automatisk kravet og iverksetter nødvendige tiltak:
+Når en bruker bestrider en belastning, godtar vi automatisk kravet og tar passende tiltak:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
-  // accept claim
+  // godta kravet
   const agent = await paypalAgent();
   await agent
     .post(`/v1/customer/disputes/${body.resource.dispute_id}/accept-claim`)
     .send({
-      note: 'Full refund to the customer.'
+      note: 'Full refusjon til kunden.'
     });
 
-  // Find the payment in our database
+  // Finn betalingen i databasen vår
   const payment = await Payments.findOne({ $or });
-  if (!payment) throw new Error('Payment does not exist');
+  if (!payment) throw new Error('Betalingen eksisterer ikke');
 
   const user = await Users.findById(payment.user);
-  if (!user) throw new Error('User did not exist for customer');
+  if (!user) throw new Error('Bruker eksisterte ikke for kunden');
 
-  // Cancel the user's subscription if they have one
+  // Avbryt brukerens abonnement hvis de har ett
   if (isSANB(user[config.userFields.paypalSubscriptionID])) {
     try {
       const agent = await paypalAgent();
@@ -573,30 +576,31 @@ case 'CUSTOMER.DISPUTE.CREATED': {
         }/cancel`
       );
     } catch (err) {
-      // Handle subscription cancellation errors
+      // Håndter feil ved avbestilling av abonnement
     }
   }
 }
 ```
 
-Denne tilnærmingen minimerer virkningen av tvister på virksomheten vår, samtidig som den sikrer en god kundeopplevelse.
+Denne tilnærmingen minimerer virkningen av tvister på virksomheten vår samtidig som den sikrer en god kundeopplevelse.
+
 
 ## Gjenbruk av kode: KISS- og DRY-prinsippene {#code-reuse-kiss-and-dry-principles}
 
-Gjennom hele betalingssystemet vårt har vi fulgt KISS-prinsippene (Keep It Simple, Stupid) og DRY-prinsippene (Don't Repeat Yourself). Her er noen eksempler:
+Gjennom hele betalingssystemet vårt har vi fulgt KISS (Keep It Simple, Stupid) og DRY (Don't Repeat Yourself) prinsippene. Her er noen eksempler:
 
-1. **Delt hjelpefunksjon**: Vi har laget gjenbrukbare hjelpefunksjoner for vanlige oppgaver som synkronisering av betalinger og sending av e-post.
+1. **Delte hjelpefunksjoner**: Vi har laget gjenbrukbare hjelpefunksjoner for vanlige oppgaver som synkronisering av betalinger og sending av e-poster.
 
-2. **Konsekvent feilhåndtering**: Både Stripe- og PayPal-webhook-håndterere bruker samme mønster for feilhåndtering og administratorvarsler.
+2. **Konsistent feilhåndtering**: Både Stripe- og PayPal-webhook-håndterere bruker samme mønster for feilhåndtering og admin-varsler.
 
-3. **Enhetlig databaseskjema**: Databaseskjemaet vårt er utformet for å håndtere både Stripe- og PayPal-data, med felles felt for betalingsstatus, beløp og planinformasjon.
+3. **Enhetlig databaseskjema**: Databaseskjemaet vårt er designet for å håndtere både Stripe- og PayPal-data, med felles felt for betalingsstatus, beløp og planinformasjon.
 
 4. **Sentralisert konfigurasjon**: Betalingsrelatert konfigurasjon er sentralisert i én fil, noe som gjør det enkelt å oppdatere priser og produktinformasjon.
 
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        A[Helper Functions] --> B[syncStripePaymentIntent]
+        A[Hjelpefunksjoner] --> B[syncStripePaymentIntent]
         A --> C[syncPayPalOrderPaymentByPaymentId]
         A --> D[syncPayPalSubscriptionPaymentsByUser]
     end
@@ -611,9 +615,9 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        E[Error Handling] --> F[Common Error Logging]
-        E --> G[Admin Email Notifications]
-        E --> H[User Notifications]
+        E[Feilhåndtering] --> F[Vanlig feillogging]
+        E --> G[Admin e-postvarsler]
+        E --> H[Brukervarsler]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -626,8 +630,8 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        I[Configuration] --> J[Centralized Payment Config]
-        I --> K[Shared Environment Variables]
+        I[Konfigurasjon] --> J[Sentralisert betalingskonfigurasjon]
+        I --> K[Delte miljøvariabler]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -640,9 +644,9 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        L[Webhook Processing] --> M[Signature Verification]
-        L --> N[Async Event Processing]
-        L --> O[Background Processing]
+        L[Webhook-behandling] --> M[Signaturverifisering]
+        L --> N[Asynkron hendelsesbehandling]
+        L --> O[Bakgrunnsbehandling]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -654,12 +658,12 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "KISS Principle"
-        P[Simple Data Flow] --> Q[Unidirectional Updates]
-        P --> R[Clear Responsibility Separation]
+    subgraph "KISS-prinsippet"
+        P[Enkel dataflyt] --> Q[Enveis oppdateringer]
+        P --> R[Klart ansvarsfordeling]
 
-        S[Explicit Error Handling] --> T[No Silent Failures]
-        S --> U[Comprehensive Logging]
+        S[Eksplisitt feilhåndtering] --> T[Ingen stille feil]
+        S --> U[Omfattende logging]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -668,8 +672,6 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
     subgraph "DRY Principle"
         V[Shared Logic] --> W[Payment Processing Functions]
@@ -687,15 +689,16 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
+
 ## Implementering av VISA-abonnementskrav {#visa-subscription-requirements-implementation}
 
-I tillegg til vår trifecta-tilnærming har vi implementert spesifikke funksjoner for å overholde VISAs abonnementskrav samtidig som vi forbedrer brukeropplevelsen. Et viktig krav fra VISA er at brukere må varsles før de belastes for et abonnement, spesielt når de går over fra en prøveperiode til et betalt abonnement.
+I tillegg til vår trefoldige tilnærming har vi implementert spesifikke funksjoner for å overholde VISAs abonnementskrav samtidig som vi forbedrer brukeropplevelsen. Et viktig krav fra VISA er at brukere må varsles før de blir belastet for et abonnement, spesielt når de går fra prøveperiode til betalt abonnement.
 
-### Automatiske e-postvarsler før fornyelse {#automated-pre-renewal-email-notifications}
+### Automatiserte e-postvarsler før fornyelse {#automated-pre-renewal-email-notifications}
 
-Vi har bygget et automatisert system som identifiserer brukere med aktive prøveabonnementer og sender dem en e-postvarsling før den første belastningen skjer. Dette sørger ikke bare for at vi overholder VISA-kravene, men reduserer også tilbakeføringer og forbedrer kundetilfredsheten.
+Vi har bygget et automatisert system som identifiserer brukere med aktive prøveabonnementer og sender dem en varslings-e-post før den første belastningen skjer. Dette sikrer ikke bare at vi overholder VISAs krav, men reduserer også tilbakeføringer og forbedrer kundetilfredsheten.
 
-Slik implementerte vi denne funksjonen:
+Slik har vi implementert denne funksjonen:
 
 ```javascript
 // Find users with trial subscriptions who haven't received a notification yet
@@ -776,18 +779,17 @@ for (const user of users) {
 }
 ```
 
-Denne implementeringen sikrer at brukerne alltid er informert om kommende belastninger, med tydelige detaljer om:
+Denne implementeringen sikrer at brukerne alltid blir informert om kommende belastninger, med klare detaljer om:
 
 1. Når den første belastningen vil skje
-2. Hyppigheten av fremtidige belastninger (månedlig, årlig osv.)
-3. Det nøyaktige beløpet de vil bli belastet
-4. Hvilke domener dekkes av abonnementet deres
+2. Hyppigheten av fremtidige belastninger (månedlig, årlig, osv.)
+3. Det eksakte beløpet de vil bli belastet
+4. Hvilke domener som dekkes av abonnementet deres
 
-Ved å automatisere denne prosessen opprettholder vi perfekt samsvar med VISAs krav (som krever varsling minst 7 dager før belastning), samtidig som vi reduserer antall supportforespørsler og forbedrer den generelle brukeropplevelsen.
+Ved å automatisere denne prosessen opprettholder vi full overholdelse av VISAs krav (som krever varsling minst 7 dager før belastning) samtidig som vi reduserer supporthenvendelser og forbedrer den totale brukeropplevelsen.
+### Håndtering av kanttilfeller {#handling-edge-cases-1}
 
-### Håndtering av kantsaker {#handling-edge-cases-1}
-
-Implementeringen vår inkluderer også robust feilhåndtering. Hvis noe går galt under varslingsprosessen, varsler systemet vårt automatisk teamet vårt:
+Vår implementering inkluderer også robust feilhåndtering. Hvis noe går galt under varslingsprosessen, varsler systemet vårt automatisk teamet vårt:
 
 ```javascript
 try {
@@ -795,7 +797,7 @@ try {
 } catch (err) {
   logger.error(err);
 
-  // Send alert to administrators
+  // Send varsel til administratorer
   await emailHelper({
     template: 'alert',
     message: {
@@ -813,13 +815,13 @@ try {
 }
 ```
 
-Dette sikrer at selv om det skulle oppstå et problem med varslingssystemet, kan teamet vårt raskt løse det og opprettholde samsvar med VISAs krav.
+Dette sikrer at selv om det oppstår et problem med varslingssystemet, kan teamet vårt raskt ta tak i det og opprettholde samsvar med VISAs krav.
 
-VISA-abonnementsvarslingssystemet er et annet eksempel på hvordan vi har bygget betalingsinfrastrukturen vår med tanke på både samsvar og brukeropplevelse, og komplementerer vår trifekte tilnærming for å sikre pålitelig og transparent betalingsbehandling.
+VISA-abonnementsvarslingssystemet er et annet eksempel på hvordan vi har bygget vår betalingsinfrastruktur med både samsvar og brukeropplevelse i tankene, som utfyller vår trifecta-tilnærming for å sikre pålitelig og transparent betalingsbehandling.
 
-### Prøveperioder og abonnementsvilkår {#trial-periods-and-subscription-terms}
+### Prøveperioder og abonnementsbetingelser {#trial-periods-and-subscription-terms}
 
-For brukere som aktiverer automatisk fornyelse på eksisterende abonnementer, beregner vi den passende prøveperioden for å sikre at de ikke blir belastet før deres nåværende abonnement utløper:
+For brukere som aktiverer automatisk fornyelse på eksisterende planer, beregner vi passende prøveperiode for å sikre at de ikke blir belastet før deres nåværende plan utløper:
 
 ```javascript
 if (
@@ -832,26 +834,24 @@ if (
     ctx.state.user[config.userFields.planExpiresAt]
   ).diff(dayjs(), 'hours');
 
-  // Handle trial period calculation
+  // Håndter beregning av prøveperiode
 }
 ```
 
-Vi gir også tydelig informasjon om abonnementsvilkår, inkludert faktureringsfrekvens og kanselleringsregler, og inkluderer detaljerte metadata med hvert abonnement for å sikre riktig sporing og administrasjon.
+Vi gir også klar informasjon om abonnementsbetingelser, inkludert faktureringsfrekvens og avbestillingsregler, og inkluderer detaljert metadata med hvert abonnement for å sikre riktig sporing og administrasjon.
 
-## Konklusjon: Fordelene med vår Trifecta-tilnærming {#conclusion-the-benefits-of-our-trifecta-approach}
+## Konklusjon: Fordelene med vår trifecta-tilnærming {#conclusion-the-benefits-of-our-trifecta-approach}
 
-Vår trifekta tilnærming til betalingsbehandling har gitt flere viktige fordeler:
+Vår trifecta-tilnærming til betalingsbehandling har gitt flere viktige fordeler:
 
-1. **Pålitelighet**: Ved å implementere tre lag med betalingsverifisering sikrer vi at ingen betalinger går glipp av eller behandles feil.
+1. **Pålitelighet**: Ved å implementere tre lag med betalingsverifisering sikrer vi at ingen betalinger blir oversett eller feilbehandlet.
 
-2. **Nøyaktighet**: Databasen vår gjenspeiler alltid den sanne statusen for abonnementer og betalinger i både Stripe og PayPal.
+2. **Nøyaktighet**: Vår database reflekterer alltid den faktiske tilstanden til abonnementer og betalinger i både Stripe og PayPal.
 
-3. **Fleksibilitet**: Brukere kan velge sin foretrukne betalingsmåte uten at det går på bekostning av påliteligheten til systemet vårt.
+3. **Fleksibilitet**: Brukere kan velge sin foretrukne betalingsmetode uten å gå på kompromiss med systemets pålitelighet.
 
-4. **Robusthet**: Systemet vårt håndterer kantsaker på en elegant måte, fra nettverksfeil til svindelaktiviteter.
+4. **Robusthet**: Systemet vårt håndterer kanttilfeller elegant, fra nettverksfeil til svindelaktiviteter.
 
-Hvis du implementerer et betalingssystem som støtter flere prosessorer, anbefaler vi denne trifecta-tilnærmingen på det sterkeste. Det krever mer utviklingsinnsats på forhånd, men de langsiktige fordelene når det gjelder pålitelighet og nøyaktighet er vel verdt det.
+Hvis du implementerer et betalingssystem som støtter flere prosessorer, anbefaler vi sterkt denne trifecta-tilnærmingen. Det krever mer utviklingsinnsats i starten, men de langsiktige fordelene når det gjelder pålitelighet og nøyaktighet er vel verdt det.
 
-Hvis du vil ha mer informasjon om videresending av e-post og våre personvernfokuserte e-posttjenester, kan du gå til [nettside](https://forwardemail.net).
-
-<!-- *Nøkkelord: betalingsbehandling, Stripe-integrasjon, PayPal-integrasjon, webhook-håndtering, betalingssynkronisering, abonnementsadministrasjon, svindelforebygging, tvistehåndtering, Node.js-betalingssystem, flerprosessorbetalingssystem, integrasjon av betalingsgateway, sanntids betalingsverifisering, konsistens av betalingsdata, abonnementsfakturering, betalingssikkerhet, betalingsautomatisering, betalingswebhooks, betalingsavstemming, betalingsfeiltilfeller, håndtering av betalingsfeil, VISA-abonnementskrav, varsler før fornyelse, abonnementssamsvar* -->
+For mer informasjon om Forward Email og våre personvernfokuserte e-posttjenester, besøk vår [nettside](https://forwardemail.net).

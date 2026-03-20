@@ -1,54 +1,58 @@
-# Cómo construimos un sistema de pago robusto con Stripe y PayPal: un enfoque trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Cómo Construimos un Sistema de Pago Robusto con Stripe y PayPal: Un Enfoque de Trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
 <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
 
-## Tabla de contenido {#table-of-contents}
 
-* [Prefacio](#foreword)
-* [El desafío: múltiples procesadores de pagos, una sola fuente de verdad](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [El enfoque Trifecta: tres niveles de confiabilidad](#the-trifecta-approach-three-layers-of-reliability)
-* [Capa 1: Redirecciones posteriores al pago](#layer-1-post-checkout-redirects)
+## Tabla de Contenidos {#table-of-contents}
+
+* [Prólogo](#foreword)
+* [El Desafío: Múltiples Procesadores de Pago, Una Fuente de Verdad](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [El Enfoque de Trifecta: Tres Capas de Confiabilidad](#the-trifecta-approach-three-layers-of-reliability)
+* [Capa 1: Redirecciones Post-Checkout](#layer-1-post-checkout-redirects)
   * [Implementación de Stripe Checkout](#stripe-checkout-implementation)
-  * [Flujo de pago de PayPal](#paypal-payment-flow)
-* [Capa 2: Controladores de webhook con verificación de firma](#layer-2-webhook-handlers-with-signature-verification)
-  * [Implementación del webhook de Stripe](#stripe-webhook-implementation)
-  * [Implementación del webhook de PayPal](#paypal-webhook-implementation)
-* [Capa 3: Trabajos automatizados con Bree](#layer-3-automated-jobs-with-bree)
-  * [Comprobador de precisión de suscripciones](#subscription-accuracy-checker)
-  * [Sincronización de suscripciones de PayPal](#paypal-subscription-synchronization)
-* [Manejo de casos extremos](#handling-edge-cases)
-  * [Detección y prevención de fraudes](#fraud-detection-and-prevention)
-  * [Manejo de disputas](#dispute-handling)
-* [Reutilización de código: principios KISS y DRY](#code-reuse-kiss-and-dry-principles)
-* [Implementación de los requisitos de suscripción a VISA](#visa-subscription-requirements-implementation)
-  * [Notificaciones automáticas por correo electrónico previas a la renovación](#automated-pre-renewal-email-notifications)
-  * [Manejo de casos extremos](#handling-edge-cases-1)
-  * [Períodos de prueba y términos de suscripción](#trial-periods-and-subscription-terms)
-* [Conclusión: Los beneficios de nuestro enfoque trifecta](#conclusion-the-benefits-of-our-trifecta-approach)
+  * [Flujo de Pago con PayPal](#paypal-payment-flow)
+* [Capa 2: Manejadores de Webhooks con Verificación de Firma](#layer-2-webhook-handlers-with-signature-verification)
+  * [Implementación de Webhook de Stripe](#stripe-webhook-implementation)
+  * [Implementación de Webhook de PayPal](#paypal-webhook-implementation)
+* [Capa 3: Trabajos Automatizados con Bree](#layer-3-automated-jobs-with-bree)
+  * [Verificador de Precisión de Suscripciones](#subscription-accuracy-checker)
+  * [Sincronización de Suscripciones de PayPal](#paypal-subscription-synchronization)
+* [Manejo de Casos Límite](#handling-edge-cases)
+  * [Detección y Prevención de Fraudes](#fraud-detection-and-prevention)
+  * [Manejo de Disputas](#dispute-handling)
+* [Reutilización de Código: Principios KISS y DRY](#code-reuse-kiss-and-dry-principles)
+* [Implementación de Requisitos de Suscripción VISA](#visa-subscription-requirements-implementation)
+  * [Notificaciones Automatizadas por Email Antes de la Renovación](#automated-pre-renewal-email-notifications)
+  * [Manejo de Casos Límite](#handling-edge-cases-1)
+  * [Períodos de Prueba y Términos de Suscripción](#trial-periods-and-subscription-terms)
+* [Conclusión: Los Beneficios de Nuestro Enfoque de Trifecta](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## Prólogo {#foreword}
 
-En Forward Email, siempre hemos priorizado la creación de sistemas fiables, precisos y fáciles de usar. Al implementar nuestro sistema de procesamiento de pagos, sabíamos que necesitábamos una solución que pudiera gestionar múltiples procesadores de pago y, al mismo tiempo, mantener una consistencia perfecta de los datos. Esta entrada de blog detalla cómo nuestro equipo de desarrollo integró Stripe y PayPal mediante un enfoque trifecta que garantiza una precisión 1:1 en tiempo real en todo nuestro sistema.
+En Forward Email, siempre hemos priorizado la creación de sistemas que sean confiables, precisos y fáciles de usar. Cuando llegó el momento de implementar nuestro sistema de procesamiento de pagos, sabíamos que necesitábamos una solución que pudiera manejar múltiples procesadores de pago manteniendo una consistencia perfecta de datos. Esta publicación detalla cómo nuestro equipo de desarrollo integró tanto Stripe como PayPal usando un enfoque de trifecta que garantiza una precisión 1:1 en tiempo real en todo nuestro sistema.
 
-## El desafío: múltiples procesadores de pagos, una fuente de verdad {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Como servicio de correo electrónico centrado en la privacidad, queríamos ofrecer a nuestros usuarios opciones de pago. Algunos prefieren la simplicidad de los pagos con tarjeta de crédito a través de Stripe, mientras que otros valoran la separación adicional que ofrece PayPal. Sin embargo, la compatibilidad con varios procesadores de pago presenta una complejidad significativa:
+## El Desafío: Múltiples Procesadores de Pago, Una Fuente de Verdad {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-1. ¿Cómo garantizamos la consistencia de los datos en los diferentes sistemas de pago?
-2. ¿Cómo gestionamos casos excepcionales como disputas, reembolsos o pagos fallidos?
-3. ¿Cómo mantenemos una única fuente de información veraz en nuestra base de datos?
+Como un servicio de correo electrónico enfocado en la privacidad, queríamos ofrecer a nuestros usuarios opciones de pago. Algunos prefieren la simplicidad de los pagos con tarjeta de crédito a través de Stripe, mientras que otros valoran la capa adicional de separación que proporciona PayPal. Sin embargo, soportar múltiples procesadores de pago introduce una complejidad significativa:
 
-Nuestra solución fue implementar lo que llamamos el "enfoque trifecta": un sistema de tres capas que proporciona redundancia y garantiza la consistencia de los datos pase lo que pase.
+1. ¿Cómo aseguramos datos consistentes entre diferentes sistemas de pago?
+2. ¿Cómo manejamos casos límite como disputas, reembolsos o pagos fallidos?
+3. ¿Cómo mantenemos una única fuente de verdad en nuestra base de datos?
 
-## El enfoque Trifecta: tres capas de confiabilidad {#the-trifecta-approach-three-layers-of-reliability}
+Nuestra solución fue implementar lo que llamamos el "enfoque de trifecta": un sistema de tres capas que proporciona redundancia y asegura la consistencia de datos sin importar lo que suceda.
 
-Nuestro sistema de pago consta de tres componentes críticos que trabajan juntos para garantizar una sincronización perfecta de datos:
 
-1. **Redirecciones posteriores al pago**: captura de información de pago inmediatamente después del pago.
-2. **Gestores de webhooks**: procesamiento de eventos en tiempo real de los procesadores de pagos.
-3. **Trabajos automatizados**: verificación y conciliación periódica de los datos de pago.
+## El Enfoque de Trifecta: Tres Capas de Confiabilidad {#the-trifecta-approach-three-layers-of-reliability}
 
-Profundicemos en cada componente y veamos cómo funcionan juntos.
+Nuestro sistema de pagos consta de tres componentes críticos que trabajan juntos para asegurar una sincronización perfecta de datos:
+
+1. **Redirecciones post-checkout** - Capturando la información de pago inmediatamente después del checkout
+2. **Manejadores de webhooks** - Procesando eventos en tiempo real desde los procesadores de pago
+3. **Trabajos automatizados** - Verificando y conciliando periódicamente los datos de pago
+
+Vamos a profundizar en cada componente y ver cómo trabajan juntos.
 
 ```mermaid
 flowchart TD
@@ -109,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
+## Capa 1: Redirecciones Post-Compra {#layer-1-post-checkout-redirects}
 
-## Capa 1: Redirecciones posteriores al pago {#layer-1-post-checkout-redirects}
-
-La primera capa de nuestro enfoque trifecta se implementa inmediatamente después de que el usuario complete un pago. Tanto Stripe como PayPal ofrecen mecanismos para redirigir a los usuarios a nuestro sitio web con la información de la transacción.
+La primera capa de nuestro enfoque trifecta ocurre inmediatamente después de que un usuario completa un pago. Tanto Stripe como PayPal proporcionan mecanismos para redirigir a los usuarios de vuelta a nuestro sitio con información de la transacción.
 
 ### Implementación de Stripe Checkout {#stripe-checkout-implementation}
 
-En Stripe, utilizamos su API de Sesiones de Pago para crear una experiencia de pago fluida. Cuando un usuario selecciona un plan y decide pagar con tarjeta de crédito, creamos una Sesión de Pago con URL específicas de éxito y cancelación:
+Para Stripe, usamos su API de Sesiones de Checkout para crear una experiencia de pago fluida. Cuando un usuario selecciona un plan y elige pagar con tarjeta de crédito, creamos una Sesión de Checkout con URLs específicas de éxito y cancelación:
 
 ```javascript
 const options = {
@@ -154,11 +157,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-La parte crítica aquí es el parámetro `success_url`, que incluye `session_id` como parámetro de consulta. Cuando Stripe redirige al usuario a nuestro sitio web tras un pago exitoso, podemos usar este ID de sesión para verificar la transacción y actualizar nuestra base de datos en consecuencia.
+La parte crítica aquí es el parámetro `success_url`, que incluye el `session_id` como un parámetro de consulta. Cuando Stripe redirige al usuario de vuelta a nuestro sitio después de un pago exitoso, podemos usar este ID de sesión para verificar la transacción y actualizar nuestra base de datos en consecuencia.
 
-### Flujo de pago de PayPal {#paypal-payment-flow}
+### Flujo de Pago con PayPal {#paypal-payment-flow}
 
-Para PayPal, utilizamos un enfoque similar con su API de pedidos:
+Para PayPal, usamos un enfoque similar con su API de Órdenes:
 
 ```javascript
 const requestBody = {
@@ -210,7 +213,7 @@ const requestBody = {
 };
 ```
 
-Al igual que en Stripe, especificamos los parámetros `return_url` y `cancel_url` para gestionar las redirecciones posteriores al pago. Cuando PayPal redirige al usuario a nuestro sitio web, podemos capturar los detalles del pago y actualizar nuestra base de datos.
+Similar a Stripe, especificamos los parámetros `return_url` y `cancel_url` para manejar las redirecciones post-pago. Cuando PayPal redirige al usuario de vuelta a nuestro sitio, podemos capturar los detalles del pago y actualizar nuestra base de datos.
 
 ```mermaid
 sequenceDiagram
@@ -222,79 +225,78 @@ sequenceDiagram
     participant Bree as Bree Job Scheduler
 
     %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    User->>FE: Seleccionar plan y método de pago
 
-    alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
-    else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+    alt Pago con Tarjeta de Crédito
+        FE->>Stripe: Crear Sesión de Checkout
+        Stripe-->>FE: Retornar URL de sesión
+        FE->>User: Redirigir a Stripe Checkout
+        User->>Stripe: Completar pago
+        Stripe->>User: Redirigir a URL de éxito con session_id
+        User->>FE: Volver a la página de éxito
+        FE->>Stripe: Verificar sesión usando session_id
+        Stripe-->>FE: Retornar detalles de la sesión
+        FE->>DB: Actualizar plan de usuario y estado de pago
+    else Pago con PayPal
+        FE->>PayPal: Crear Orden
+        PayPal-->>FE: Retornar URL de aprobación
+        FE->>User: Redirigir a PayPal
+        User->>PayPal: Aprobar pago
+        PayPal->>User: Redirigir a URL de retorno
+        User->>FE: Volver a la página de éxito
+        FE->>PayPal: Capturar pago
+        PayPal-->>FE: Retornar detalles del pago
+        FE->>DB: Actualizar plan de usuario y estado de pago
     end
 
     %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    Note over Stripe,PayPal: Ocurren eventos de pago (async)
 
-    alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
-    else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+    alt Webhook de Stripe
+        Stripe->>FE: Enviar notificación de evento
+        FE->>FE: Verificar firma del webhook
+        FE->>DB: Procesar evento y actualizar datos
+        FE-->>Stripe: Confirmar recepción (200 OK)
+    else Webhook de PayPal
+        PayPal->>FE: Enviar notificación de evento
+        FE->>FE: Verificar firma del webhook
+        FE->>DB: Procesar evento y actualizar datos
+        FE-->>PayPal: Confirmar recepción (200 OK)
     end
 
-    %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    %% Trabajos automatizados de Bree
+    Note over Bree: Trabajos programados se ejecutan periódicamente
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: Obtener todos los clientes y suscripciones
+    Stripe-->>Bree: Retornar datos de clientes
+    Bree->>DB: Comparar y conciliar datos
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: Obtener todas las suscripciones y transacciones
+    PayPal-->>Bree: Retornar datos de suscripciones
+    Bree->>DB: Comparar y conciliar datos
 
-    %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    %% Caso límite: Manejo de disputas
+    Note over User,PayPal: Usuario disputa un cargo
 
-    PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    PayPal->>FE: webhook DISPUTE.CREATED
+    FE->>PayPal: Aceptar reclamo automáticamente
+    FE->>DB: Actualizar estado del usuario
+    FE->>User: Enviar correo de notificación
 ```
+## Capa 2: Manejadores de Webhook con Verificación de Firma {#layer-2-webhook-handlers-with-signature-verification}
 
-## Capa 2: Controladores de webhook con verificación de firma {#layer-2-webhook-handlers-with-signature-verification}
+Aunque las redirecciones post-checkout funcionan bien para la mayoría de los escenarios, no son infalibles. Los usuarios podrían cerrar su navegador antes de ser redirigidos, o problemas de red podrían impedir que la redirección se complete. Ahí es donde entran los webhooks.
 
-Aunque las redirecciones posteriores al pago funcionan bien en la mayoría de los casos, no son infalibles. Los usuarios podrían cerrar el navegador antes de ser redirigidos, o problemas de red podrían impedir que la redirección se complete. Aquí es donde entran en juego los webhooks.
+Tanto Stripe como PayPal proporcionan sistemas de webhook que envían notificaciones en tiempo real sobre eventos de pago. Hemos implementado manejadores de webhook robustos que verifican la autenticidad de estas notificaciones y las procesan en consecuencia.
 
-Tanto Stripe como PayPal ofrecen sistemas de webhooks que envían notificaciones en tiempo real sobre eventos de pago. Hemos implementado robustos controladores de webhooks que verifican la autenticidad de estas notificaciones y las procesan como corresponde.
+### Implementación del Webhook de Stripe {#stripe-webhook-implementation}
 
-### Implementación del webhook de Stripe {#stripe-webhook-implementation}
-
-Nuestro controlador de webhook de Stripe verifica la firma de los eventos de webhook entrantes para garantizar que sean legítimos:
+Nuestro manejador de webhook de Stripe verifica la firma de los eventos entrantes para asegurarse de que sean legítimos:
 
 ```javascript
 async function webhook(ctx) {
   const sig = ctx.request.get('stripe-signature');
-  // throw an error if something was wrong
+  // lanzar un error si algo está mal
   if (!isSANB(sig))
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   const event = stripe.webhooks.constructEvent(
@@ -302,18 +304,18 @@ async function webhook(ctx) {
     sig,
     env.STRIPE_ENDPOINT_SECRET
   );
-  // throw an error if something was wrong
+  // lanzar un error si algo está mal
   if (!event)
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   ctx.logger.info('stripe webhook', { event });
-  // return a response to acknowledge receipt of the event
+  // devolver una respuesta para reconocer la recepción del evento
   ctx.body = { received: true };
-  // run in background
+  // ejecutar en segundo plano
   processEvent(ctx, event)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err, { event });
-      // email admin errors
+      // enviar correo electrónico al administrador sobre errores
       emailHelper({
         template: 'alert',
         message: {
@@ -334,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-La función `stripe.webhooks.constructEvent` verifica la firma utilizando nuestro secreto de endpoint. Si la firma es válida, procesamos el evento de forma asíncrona para evitar bloquear la respuesta del webhook.
+La función `stripe.webhooks.constructEvent` verifica la firma usando nuestro secreto de endpoint. Si la firma es válida, procesamos el evento de forma asíncrona para evitar bloquear la respuesta del webhook.
 
-### Implementación del webhook de PayPal {#paypal-webhook-implementation}
+### Implementación del Webhook de PayPal {#paypal-webhook-implementation}
 
-De manera similar, nuestro controlador de webhook de PayPal verifica la autenticidad de las notificaciones entrantes:
+De manera similar, nuestro manejador de webhook de PayPal verifica la autenticidad de las notificaciones entrantes:
 
 ```javascript
 async function webhook(ctx) {
@@ -346,17 +348,17 @@ async function webhook(ctx) {
     paypal.notification.webhookEvent.verify,
     paypal.notification.webhookEvent
   )(ctx.request.headers, ctx.request.body, env.PAYPAL_WEBHOOK_ID);
-  // throw an error if something was wrong
+  // lanzar un error si algo está mal
   if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
     throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
-  // return a response to acknowledge receipt of the event
+  // devolver una respuesta para reconocer la recepción del evento
   ctx.body = { received: true };
-  // run in background
+  // ejecutar en segundo plano
   processEvent(ctx)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err);
-      // email admin errors
+      // enviar correo electrónico al administrador sobre errores
       emailHelper({
         template: 'alert',
         message: {
@@ -377,16 +379,16 @@ async function webhook(ctx) {
 }
 ```
 
-Ambos manejadores de webhooks siguen el mismo patrón: verificar la firma, acusar recibo y procesar el evento de forma asíncrona. Esto garantiza que nunca se nos pase por alto un evento de pago, incluso si falla la redirección posterior al pago.
+Ambos manejadores de webhook siguen el mismo patrón: verificar la firma, reconocer la recepción y procesar el evento de forma asíncrona. Esto asegura que nunca perdamos un evento de pago, incluso si la redirección post-checkout falla.
 
-## Capa 3: Trabajos automatizados con Bree {#layer-3-automated-jobs-with-bree}
 
-La capa final de nuestro enfoque trifecta consiste en un conjunto de tareas automatizadas que verifican y concilian periódicamente los datos de pago. Utilizamos Bree, un programador de tareas para Node.js, para ejecutar estas tareas a intervalos regulares.
+## Capa 3: Trabajos Automatizados con Bree {#layer-3-automated-jobs-with-bree}
 
-### Comprobador de precisión de suscripciones {#subscription-accuracy-checker}
+La capa final de nuestro enfoque trifecta es un conjunto de trabajos automatizados que verifican y concilian periódicamente los datos de pago. Usamos Bree, un programador de trabajos para Node.js, para ejecutar estos trabajos a intervalos regulares.
 
-Una de nuestras tareas principales es el verificador de precisión de suscripciones, que garantiza que nuestra base de datos refleje con precisión el estado de la suscripción en Stripe:
+### Verificador de Precisión de Suscripciones {#subscription-accuracy-checker}
 
+Uno de nuestros trabajos clave es el verificador de precisión de suscripciones, que asegura que nuestra base de datos refleje con exactitud el estado de la suscripción en Stripe:
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -452,11 +454,11 @@ async function mapper(customer) {
 }
 ```
 
-Esta tarea verifica si hay discrepancias entre nuestra base de datos y Stripe, como direcciones de correo electrónico no coincidentes o múltiples suscripciones activas. Si encuentra algún problema, lo registra y envía alertas a nuestro equipo de administración.
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### Sincronización de suscripción de PayPal {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-Tenemos un trabajo similar para las suscripciones de PayPal:
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +489,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Estos trabajos automatizados sirven como nuestra red de seguridad final, garantizando que nuestra base de datos siempre refleje el estado real de las suscripciones y los pagos tanto en Stripe como en PayPal.
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## Manejo de casos extremos {#handling-edge-cases}
 
-Un sistema de pagos robusto debe gestionar casos extremos con agilidad. Veamos cómo gestionamos algunos escenarios comunes.
+## Handling Edge Cases {#handling-edge-cases}
 
-### Detección y prevención de fraudes {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-Hemos implementado sofisticados mecanismos de detección de fraude que identifican y manejan automáticamente actividades de pago sospechosas:
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -540,30 +543,30 @@ case 'charge.failed': {
 }
 ```
 
-Este código prohíbe automáticamente a los usuarios que tienen múltiples cargos fallidos y ningún dominio verificado, lo que es un fuerte indicador de actividad fraudulenta.
+Este código bloquea automáticamente a los usuarios que tienen múltiples cargos fallidos y ningún dominio verificado, lo cual es un fuerte indicador de actividad fraudulenta.
 
-### Manejo de disputas {#dispute-handling}
+### Manejo de Disputas {#dispute-handling}
 
-Cuando un usuario disputa un cargo, automáticamente aceptamos el reclamo y tomamos las medidas apropiadas:
+Cuando un usuario disputa un cargo, aceptamos automáticamente la reclamación y tomamos las acciones apropiadas:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
-  // accept claim
+  // aceptar reclamación
   const agent = await paypalAgent();
   await agent
     .post(`/v1/customer/disputes/${body.resource.dispute_id}/accept-claim`)
     .send({
-      note: 'Full refund to the customer.'
+      note: 'Reembolso completo al cliente.'
     });
 
-  // Find the payment in our database
+  // Encontrar el pago en nuestra base de datos
   const payment = await Payments.findOne({ $or });
-  if (!payment) throw new Error('Payment does not exist');
+  if (!payment) throw new Error('El pago no existe');
 
   const user = await Users.findById(payment.user);
-  if (!user) throw new Error('User did not exist for customer');
+  if (!user) throw new Error('El usuario no existía para el cliente');
 
-  // Cancel the user's subscription if they have one
+  // Cancelar la suscripción del usuario si tiene una
   if (isSANB(user[config.userFields.paypalSubscriptionID])) {
     try {
       const agent = await paypalAgent();
@@ -573,30 +576,31 @@ case 'CUSTOMER.DISPUTE.CREATED': {
         }/cancel`
       );
     } catch (err) {
-      // Handle subscription cancellation errors
+      // Manejar errores de cancelación de suscripción
     }
   }
 }
 ```
 
-Este enfoque minimiza el impacto de las disputas en nuestro negocio y al mismo tiempo garantiza una buena experiencia del cliente.
+Este enfoque minimiza el impacto de las disputas en nuestro negocio mientras asegura una buena experiencia para el cliente.
 
-## Reutilización de código: Principios KISS y DRY {#code-reuse-kiss-and-dry-principles}
 
-En todo nuestro sistema de pagos, nos hemos adherido a los principios KISS (Keep It Simple, Stupid) y DRY (Don't Repeat Yourself). Aquí tienes algunos ejemplos:
+## Reutilización de Código: Principios KISS y DRY {#code-reuse-kiss-and-dry-principles}
 
-1. **Funciones auxiliares compartidas**: Hemos creado funciones auxiliares reutilizables para tareas comunes como sincronizar pagos y enviar correos electrónicos.
+A lo largo de nuestro sistema de pagos, hemos seguido los principios KISS (Keep It Simple, Stupid - Mantenlo Simple, Estúpido) y DRY (Don't Repeat Yourself - No te Repitas). Aquí algunos ejemplos:
 
-2. **Manejo de errores consistente**: Los controladores de webhook de Stripe y PayPal utilizan el mismo patrón para el manejo de errores y las notificaciones de administrador.
+1. **Funciones Auxiliares Compartidas**: Hemos creado funciones auxiliares reutilizables para tareas comunes como sincronizar pagos y enviar correos electrónicos.
 
-3. **Esquema de base de datos unificado**: Nuestro esquema de base de datos está diseñado para admitir datos de Stripe y PayPal, con campos comunes para el estado del pago, el monto y la información del plan.
+2. **Manejo Consistente de Errores**: Los manejadores de webhook de Stripe y PayPal usan el mismo patrón para el manejo de errores y notificaciones a administradores.
 
-4. **Configuración centralizada**: La configuración relacionada con los pagos está centralizada en un solo archivo, lo que facilita la actualización de precios e información del producto.
+3. **Esquema Unificado de Base de Datos**: Nuestro esquema de base de datos está diseñado para acomodar datos tanto de Stripe como de PayPal, con campos comunes para estado de pago, monto e información del plan.
+
+4. **Configuración Centralizada**: La configuración relacionada con pagos está centralizada en un solo archivo, facilitando la actualización de precios e información de productos.
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        A[Helper Functions] --> B[syncStripePaymentIntent]
+    subgraph "Patrones de Reutilización de Código"
+        A[Funciones Auxiliares] --> B[syncStripePaymentIntent]
         A --> C[syncPayPalOrderPaymentByPaymentId]
         A --> D[syncPayPalSubscriptionPaymentsByUser]
     end
@@ -610,10 +614,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        E[Error Handling] --> F[Common Error Logging]
-        E --> G[Admin Email Notifications]
-        E --> H[User Notifications]
+    subgraph "Patrones de Reutilización de Código"
+        E[Manejo de Errores] --> F[Registro Común de Errores]
+        E --> G[Notificaciones por Email a Admin]
+        E --> H[Notificaciones a Usuarios]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -625,9 +629,9 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        I[Configuration] --> J[Centralized Payment Config]
-        I --> K[Shared Environment Variables]
+    subgraph "Patrones de Reutilización de Código"
+        I[Configuración] --> J[Configuración Centralizada de Pagos]
+        I --> K[Variables de Entorno Compartidas]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -639,10 +643,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        L[Webhook Processing] --> M[Signature Verification]
-        L --> N[Async Event Processing]
-        L --> O[Background Processing]
+    subgraph "Patrones de Reutilización de Código"
+        L[Procesamiento de Webhooks] --> M[Verificación de Firma]
+        L --> N[Procesamiento Asíncrono de Eventos]
+        L --> O[Procesamiento en Segundo Plano]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -654,12 +658,12 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "KISS Principle"
-        P[Simple Data Flow] --> Q[Unidirectional Updates]
-        P --> R[Clear Responsibility Separation]
+    subgraph "Principio KISS"
+        P[Flujo de Datos Simple] --> Q[Actualizaciones Unidireccionales]
+        P --> R[Separación Clara de Responsabilidades]
 
-        S[Explicit Error Handling] --> T[No Silent Failures]
-        S --> U[Comprehensive Logging]
+        S[Manejo Explícito de Errores] --> T[Sin Fallos Silenciosos]
+        S --> U[Registro Exhaustivo]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -668,16 +672,14 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
-    subgraph "DRY Principle"
-        V[Shared Logic] --> W[Payment Processing Functions]
-        V --> X[Email Templates]
-        V --> Y[Validation Logic]
+    subgraph "Principio DRY"
+        V[Lógica Compartida] --> W[Funciones de Procesamiento de Pagos]
+        V --> X[Plantillas de Email]
+        V --> Y[Lógica de Validación]
 
-        Z[Common Database Operations] --> AA[User Updates]
-        Z --> AB[Payment Recording]
+        Z[Operaciones Comunes de Base de Datos] --> AA[Actualizaciones de Usuario]
+        Z --> AB[Registro de Pagos]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -687,25 +689,26 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
-## Implementación de requisitos de suscripción de VISA {#visa-subscription-requirements-implementation}
 
-Además de nuestro enfoque tripartito, hemos implementado funciones específicas para cumplir con los requisitos de suscripción de VISA y, al mismo tiempo, mejorar la experiencia del usuario. Un requisito clave de VISA es que los usuarios deben recibir una notificación antes de que se les cobre una suscripción, especialmente al pasar de una suscripción de prueba a una de pago.
+## Implementación de Requisitos de Suscripción VISA {#visa-subscription-requirements-implementation}
 
-### Notificaciones automáticas por correo electrónico previas a la renovación {#automated-pre-renewal-email-notifications}
+Además de nuestro enfoque trifecta, hemos implementado características específicas para cumplir con los requisitos de suscripción de VISA mientras mejoramos la experiencia del usuario. Un requisito clave de VISA es que los usuarios deben ser notificados antes de que se les cobre una suscripción, especialmente al pasar de una prueba a una suscripción pagada.
 
-Hemos desarrollado un sistema automatizado que identifica a los usuarios con suscripciones de prueba activas y les envía una notificación por correo electrónico antes de su primer cargo. Esto no solo nos permite cumplir con los requisitos de VISA, sino que también reduce las devoluciones de cargos y mejora la satisfacción del cliente.
+### Notificaciones Automáticas por Email Antes de la Renovación {#automated-pre-renewal-email-notifications}
+
+Hemos construido un sistema automatizado que identifica a los usuarios con suscripciones de prueba activas y les envía un correo de notificación antes de que ocurra su primer cobro. Esto no solo nos mantiene en cumplimiento con los requisitos de VISA, sino que también reduce las devoluciones de cargo y mejora la satisfacción del cliente.
 
 Así es como implementamos esta función:
 
 ```javascript
-// Find users with trial subscriptions who haven't received a notification yet
+// Encontrar usuarios con suscripciones de prueba que aún no han recibido una notificación
 const users = await Users.find({
   $or: [
     {
       $and: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
         { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Excluir suscripciones que ya han tenido pagos
         ...(paidStripeSubscriptionIds.length > 0
           ? [
               {
@@ -721,7 +724,7 @@ const users = await Users.find({
       $and: [
         { [config.userFields.paypalSubscriptionID]: { $exists: true } },
         { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Excluir suscripciones que ya han tenido pagos
         ...(paidPayPalSubscriptionIds.length > 0
           ? [
               {
@@ -736,22 +739,22 @@ const users = await Users.find({
   ]
 });
 
-// Process each user and send notification
+// Procesar cada usuario y enviar notificación
 for (const user of users) {
-  // Get subscription details from payment processor
+  // Obtener detalles de la suscripción del procesador de pagos
   const subscription = await getSubscriptionDetails(user);
 
-  // Calculate subscription duration and frequency
+  // Calcular duración y frecuencia de la suscripción
   const duration = getDurationFromPlanId(subscription.plan_id);
   const frequency = getHumanReadableFrequency(duration, user.locale);
   const amount = getPlanAmount(user.plan, duration);
 
-  // Get user's domains for personalized email
+  // Obtener los dominios del usuario para un email personalizado
   const domains = await Domains.find({
     'members.user': user._id
   }).sort('name').lean().exec();
 
-  // Send VISA-compliant notification email
+  // Enviar email de notificación conforme a VISA
   await emailHelper({
     template: 'visa-trial-subscription-requirement',
     message: {
@@ -767,7 +770,7 @@ for (const user of users) {
     }
   });
 
-  // Record that notification was sent
+  // Registrar que la notificación fue enviada
   await Users.findByIdAndUpdate(user._id, {
     $set: {
       [config.userFields.paypalTrialSentAt]: new Date()
@@ -776,18 +779,17 @@ for (const user of users) {
 }
 ```
 
-Esta implementación garantiza que los usuarios estén siempre informados sobre los próximos cargos, con detalles claros sobre:
+Esta implementación asegura que los usuarios siempre estén informados sobre los próximos cargos, con detalles claros sobre:
 
-1. Cuándo se realizará el primer cobro
-2. La frecuencia de los cobros futuros (mensuales, anuales, etc.)
-3. El importe exacto que se les cobrará
+1. Cuándo ocurrirá el primer cobro
+2. La frecuencia de los cargos futuros (mensual, anual, etc.)
+3. El monto exacto que se les cobrará
 4. Qué dominios están cubiertos por su suscripción
 
-Al automatizar este proceso, mantenemos un perfecto cumplimiento con los requisitos de VISA (que exigen notificación al menos 7 días antes del cobro) al tiempo que reducimos las consultas de soporte y mejoramos la experiencia general del usuario.
+Al automatizar este proceso, mantenemos un cumplimiento perfecto con los requisitos de VISA (que exigen notificación al menos 7 días antes del cobro) mientras reducimos consultas al soporte y mejoramos la experiencia general del usuario.
+### Manejo de Casos Límite {#handling-edge-cases-1}
 
-### Manejo de casos extremos {#handling-edge-cases-1}
-
-Nuestra implementación también incluye un sólido sistema de gestión de errores. Si algo falla durante el proceso de notificación, nuestro sistema alerta automáticamente a nuestro equipo:
+Nuestra implementación también incluye un manejo robusto de errores. Si algo sale mal durante el proceso de notificación, nuestro sistema alerta automáticamente a nuestro equipo:
 
 ```javascript
 try {
@@ -795,12 +797,12 @@ try {
 } catch (err) {
   logger.error(err);
 
-  // Send alert to administrators
+  // Enviar alerta a los administradores
   await emailHelper({
     template: 'alert',
     message: {
       to: config.email.message.from,
-      subject: 'VISA Trial Subscription Requirement Error'
+      subject: 'Error en el Requisito de Suscripción de Prueba VISA'
     },
     locals: {
       message: `<pre><code>${safeStringify(
@@ -813,13 +815,13 @@ try {
 }
 ```
 
-Esto garantiza que incluso si hay un problema con el sistema de notificación, nuestro equipo puede abordarlo rápidamente y mantener el cumplimiento de los requisitos de VISA.
+Esto asegura que incluso si hay un problema con el sistema de notificaciones, nuestro equipo pueda abordarlo rápidamente y mantener el cumplimiento con los requisitos de VISA.
 
-El sistema de notificación de suscripciones de VISA es otro ejemplo de cómo hemos construido nuestra infraestructura de pagos teniendo en cuenta tanto el cumplimiento como la experiencia del usuario, complementando nuestro enfoque trifecta para garantizar un procesamiento de pagos confiable y transparente.
+El sistema de notificación de suscripción VISA es otro ejemplo de cómo hemos construido nuestra infraestructura de pagos pensando tanto en el cumplimiento como en la experiencia del usuario, complementando nuestro enfoque trifecta para asegurar un procesamiento de pagos confiable y transparente.
 
-### Períodos de prueba y términos de suscripción {#trial-periods-and-subscription-terms}
+### Períodos de Prueba y Términos de Suscripción {#trial-periods-and-subscription-terms}
 
-Para los usuarios que habilitan la renovación automática en planes existentes, calculamos el período de prueba adecuado para garantizar que no se les cobre hasta que expire su plan actual:
+Para los usuarios que habilitan la renovación automática en planes existentes, calculamos el período de prueba adecuado para asegurar que no se les cobre hasta que su plan actual expire:
 
 ```javascript
 if (
@@ -832,26 +834,27 @@ if (
     ctx.state.user[config.userFields.planExpiresAt]
   ).diff(dayjs(), 'hours');
 
-  // Handle trial period calculation
+  // Manejar el cálculo del período de prueba
 }
 ```
 
-También proporcionamos información clara sobre los términos de suscripción, incluida la frecuencia de facturación y las políticas de cancelación, e incluimos metadatos detallados con cada suscripción para garantizar un seguimiento y una gestión adecuados.
+También proporcionamos información clara sobre los términos de suscripción, incluyendo la frecuencia de facturación y las políticas de cancelación, e incluimos metadatos detallados con cada suscripción para asegurar un seguimiento y gestión adecuados.
 
-## Conclusión: Los beneficios de nuestro enfoque trifecta {#conclusion-the-benefits-of-our-trifecta-approach}
+
+## Conclusión: Los Beneficios de Nuestro Enfoque Trifecta {#conclusion-the-benefits-of-our-trifecta-approach}
 
 Nuestro enfoque trifecta para el procesamiento de pagos ha proporcionado varios beneficios clave:
 
-1. **Confiabilidad**: Al implementar tres capas de verificación de pago, garantizamos que ningún pago se pierda o se procese incorrectamente.
+1. **Confiabilidad**: Al implementar tres capas de verificación de pagos, aseguramos que ningún pago se pierda o procese incorrectamente.
 
 2. **Precisión**: Nuestra base de datos siempre refleja el estado real de las suscripciones y pagos tanto en Stripe como en PayPal.
 
 3. **Flexibilidad**: Los usuarios pueden elegir su método de pago preferido sin comprometer la confiabilidad de nuestro sistema.
 
-4. **Robustez**: Nuestro sistema maneja casos extremos con elegancia, desde fallas de red hasta actividades fraudulentas.
+4. **Robustez**: Nuestro sistema maneja casos límite con gracia, desde fallos de red hasta actividades fraudulentas.
 
-Si está implementando un sistema de pago compatible con varios procesadores, le recomendamos encarecidamente este enfoque tripartito. Requiere un mayor esfuerzo de desarrollo inicial, pero los beneficios a largo plazo en términos de fiabilidad y precisión valen la pena.
+Si estás implementando un sistema de pagos que soporte múltiples procesadores, recomendamos encarecidamente este enfoque trifecta. Requiere más esfuerzo de desarrollo inicial, pero los beneficios a largo plazo en términos de confiabilidad y precisión valen la pena.
 
-Para obtener más información sobre Forward Email y nuestros servicios de correo electrónico centrados en la privacidad, visite nuestro [sitio web](https://forwardemail.net).
+Para más información sobre Forward Email y nuestros servicios de correo electrónico enfocados en la privacidad, visita nuestro [sitio web](https://forwardemail.net).
 
-<!-- *Palabras clave: procesamiento de pagos, integración de Stripe, integración de PayPal, manejo de webhooks, sincronización de pagos, gestión de suscripciones, prevención de fraudes, manejo de disputas, sistema de pago Node.js, sistema de pago multiprocesador, integración de pasarela de pagos, verificación de pagos en tiempo real, consistencia de datos de pago, facturación de suscripciones, seguridad de pagos, automatización de pagos, webhooks de pago, conciliación de pagos, casos límite de pago, manejo de errores de pago, requisitos de suscripción de VISA, notificaciones previas a la renovación, cumplimiento de suscripciones* -->
+<!-- *Keywords: payment processing, Stripe integration, PayPal integration, webhook handling, payment synchronization, subscription management, fraud prevention, dispute handling, Node.js payment system, multi-processor payment system, payment gateway integration, real-time payment verification, payment data consistency, subscription billing, payment security, payment automation, payment webhooks, payment reconciliation, payment edge cases, payment error handling, VISA subscription requirements, pre-renewal notifications, subscription compliance* -->

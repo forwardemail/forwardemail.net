@@ -1,118 +1,121 @@
-# Bedste sikkerhedsrevisionsfirmaer {#best-security-audit-companies}
+# Bedste Sikkerhedsrevisionsfirmaer {#best-security-audit-companies}
 
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+
 
 ## Indholdsfortegnelse {#table-of-contents}
 
 * [Oversigt](#overview)
-* [Vores evalueringsproces](#our-evaluation-process)
-* [Anbefalede sikkerhedsrevisionsfirmaer](#recommended-security-audit-companies)
+* [Vores Evalueringsproces](#our-evaluation-process)
+* [Anbefalede Sikkerhedsrevisionsfirmaer](#recommended-security-audit-companies)
   * [Cure53](#cure53)
-  * [Radikalt åben sikkerhed](#radically-open-security)
+  * [Radically Open Security](#radically-open-security)
   * [Assured AB](#assured-ab)
-  * [Spor af bits](#trail-of-bits)
-* [Virksomhedssammenligning](#company-comparison)
+  * [Trail of Bits](#trail-of-bits)
+* [Firma Sammenligning](#company-comparison)
 * [Udvælgelseskriterier](#selection-criteria)
+
 
 ## Oversigt {#overview}
 
-Forward Email har aktivt evalueret cybersikkerhedsforskningsfirmaer for at udføre omfattende revisioner af vores open source-kodebase på [GitHub](https://github.com/forwardemail) og serverinfrastruktur. Efter omfattende research og evaluering i løbet af de seneste par år har vi identificeret adskillige exceptionelle sikkerhedsrevisionsfirmaer, der konsekvent demonstrerer arbejde af høj kvalitet, teknisk ekspertise og overensstemmelse med vores privatlivsfokuserede værdier.
+Forward Email har aktivt evalueret cybersikkerhedsforskningsfirmaer til at udføre omfattende revisioner af vores open source-kodebase på [GitHub](https://github.com/forwardemail) og serverinfrastruktur. Efter omfattende research og evaluering gennem de seneste år har vi identificeret flere fremragende sikkerhedsrevisionsfirmaer, der konsekvent leverer arbejde af høj kvalitet, teknisk ekspertise og er i overensstemmelse med vores privatlivsfokuserede værdier.
 
-Dette dokument repræsenterer vores resultater og anbefalinger til organisationer, der søger professionelle sikkerhedsrevisionstjenester. De virksomheder, der er anført her, har alle vist exceptionelle evner inden for penetrationstest, kodegennemgang, infrastrukturvurdering og sikkerhedsforskning.
+Dette dokument repræsenterer vores fund og anbefalinger til organisationer, der søger professionelle sikkerhedsrevisionstjenester. De virksomheder, der er nævnt her, har alle vist enestående evner inden for penetrationstest, kodegennemgang, infrastrukturvurdering og sikkerhedsforskning.
 
-## Vores evalueringsproces {#our-evaluation-process}
 
-Vores evalueringsproces fokuserede på flere nøglefaktorer, der er afgørende for organisationer, der kræver grundige sikkerhedsvurderinger. Vi undersøgte hver virksomheds historik, tekniske ekspertise, gennemsigtighed i rapportering og engagement i open source-principper. De virksomheder, der er omtalt i denne guide, har alle vist konsekvent ekspertise i løbet af vores flerårige evalueringsperiode.
+## Vores Evalueringsproces {#our-evaluation-process}
 
-Det er vigtigt at bemærke, at virksomhederne nedenfor ikke er rangeret i nogen bestemt rækkefølge. Hver organisation bringer unikke styrker og specialiseringer til cybersikkerhedsområdet, og det bedste valg afhænger af specifikke projektkrav, budgetmæssige overvejelser og organisatoriske behov.
+Vores evalueringsproces fokuserede på flere nøglefaktorer, som er afgørende for organisationer, der kræver grundige sikkerhedsvurderinger. Vi undersøgte hver virksomheds historik, tekniske ekspertise, gennemsigtighed i rapportering og engagement i open source-principper. De virksomheder, der er med i denne guide, har alle vist konsekvent ekspertise i løbet af vores flerårige evalueringsperiode.
 
-## Anbefalede sikkerhedsrevisionsfirmaer {#recommended-security-audit-companies}
+Det er vigtigt at bemærke, at de nedenfor nævnte virksomheder ikke er rangeret i nogen bestemt rækkefølge. Hver organisation bringer unikke styrker og specialiseringer til cybersikkerhedsområdet, og det bedste valg afhænger af specifikke projektkrav, budgetovervejelser og organisatoriske behov.
+
+
+## Anbefalede Sikkerhedsrevisionsfirmaer {#recommended-security-audit-companies}
 
 ### Cure53 {#cure53}
 
-**Sted**: Berlin, Tyskland
-**Hjemmeside**: <https://cure53.de/>
-**Specialisering**: "Fin penetrationstest for fine hjemmesider"
+**Placering**: Berlin, Tyskland  
+**Hjemmeside**: <https://cure53.de/>  
+**Specialisering**: "Fine penetration tests for fine websites"
 
-Cure53 er et tysk cybersikkerhedsfirma, der er kendt for deres omhyggelige tilgang til sikkerhedstestning og penetrationstestning af webapplikationer. Med base i Berlin har de etableret sig som førende inden for området gennem deres omfattende testmetoder og detaljerede rapporteringspraksis.
+Cure53 er et tysk cybersikkerhedsfirma kendt for deres omhyggelige tilgang til sikkerhedstest af webapplikationer og penetrationstest. Med base i Berlin har de etableret sig som ledere inden for feltet gennem deres omfattende testmetoder og detaljerede rapporteringspraksis.
 
-Virksomheden har opbygget en imponerende portefølje af sikkerhedsvurderinger for højprofilerede kunder og open source-projekter. Deres arbejde demonstrerer en dyb forståelse af moderne webteknologier, kryptografiske implementeringer og infrastruktursikkerhed. Cure53's rapporter er særligt bemærkelsesværdige for deres tekniske dybde og handlingsrettede anbefalinger.
+Firmaet har opbygget en imponerende portefølje af sikkerhedsvurderinger for højprofilerede kunder og open source-projekter. Deres arbejde demonstrerer en dyb forståelse af moderne webteknologier, kryptografiske implementeringer og infrastruktursikkerhed. Cure53's rapporter er særligt bemærkelsesværdige for deres tekniske dybde og handlingsorienterede anbefalinger.
 
-**Væsentlige publikationer og rapporter**:
+**Bemærkelsesværdige Publikationer og Rapporter**:
 
-* [Mullvad Servers Sikkerhedsvurdering 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Omfattende evaluering af infrastruktursikkerhed
-* [Mullvad Apps/API-sikkerhedsvurdering 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Analyse af applikations- og API-sikkerhed
-* [Mullvad Servers Sikkerhedsvurdering 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Opfølgende vurdering af infrastruktur
+* [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - Omfattende infrastruktur sikkerhedsvurdering  
+* [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - Applikations- og API-sikkerhedsanalyse  
+* [Mullvad Servers Security Assessment 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - Opfølgende infrastrukturanalyse
 
-### Radikalt åben sikkerhed {#radically-open-security}
+### Radically Open Security {#radically-open-security}
 
-**Sted**: Amsterdam, Holland
-**Hjemmeside**: <https://www.radicallyopensecurity.com/>
-**Specialisering**: "Non-profit computersikkerhedsrådgivning"
+**Placering**: Amsterdam, Holland  
+**Hjemmeside**: <https://www.radicallyopensecurity.com/>  
+**Specialisering**: "Non-Profit Computer Security Consultancy"
 
-Radically Open Security (ROS) fungerer som en unik non-profit konsulentvirksomhed inden for computersikkerhed, der er i perfekt overensstemmelse med open source-principper og gennemsigtighedsværdier. ROS, der er baseret i Amsterdam, har været pionerer inden for en innovativ tilgang til sikkerhedsrådgivning ved at gøre deres metoder og resultater offentligt tilgængelige, når det er muligt.
+Radically Open Security (ROS) fungerer som en unik non-profit computer sikkerhedskonsulentvirksomhed, der passer perfekt til open source-principper og værdier om gennemsigtighed. Med base i Amsterdam har ROS banet vejen for en innovativ tilgang til sikkerhedsrådgivning ved at gøre deres metoder og resultater offentligt tilgængelige, når det er muligt.
 
-Deres non-profit-model giver dem mulighed for udelukkende at fokusere på sikkerhedsresultater frem for profitmaksimering, hvilket ofte resulterer i mere grundige vurderinger og ægte anbefalinger. ROS har særlig ekspertise inden for privatlivsfokuserede teknologier, VPN-tjenester og applikationer, der håndterer følsomme brugerdata.
+Deres non-profit model gør det muligt for dem udelukkende at fokusere på sikkerhedsresultater frem for profitmaksimering, hvilket ofte resulterer i mere grundige vurderinger og ægte anbefalinger. ROS har særlig ekspertise inden for privatlivsfokuserede teknologier, VPN-tjenester og applikationer, der håndterer følsomme brugerdata.
+**Bemærkelsesværdige Publikationer og Rapporter**:
 
-**Væsentlige publikationer og rapporter**:
+* [Droid2Tracking Security Assessment](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Mobil tracking analyse
+* [Tauri Programme Security Assessment 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluering af tværplatform applikationsrammeværk
+* [Mullvad VPN Security Assessment 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN tjenestesikkerhedsanalyse
 
-* [Droid2Tracking sikkerhedsvurdering](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Analyse af mobilsporing
-* [Tauri-programmets sikkerhedsvurdering 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluering af applikationsrammeværk på tværs af platforme
-* [Mullvad VPN Sikkerhedsvurdering 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Analyse af VPN-tjenestesikkerhed
+### Assured AB {#assured-ab}
 
-### Sikret AB {#assured-ab}
-
-**Sted**: Göteborg, Sverige
-**Hjemmeside**: <https://www.assured.se/>
+**Lokation**: Göteborg, Sverige  
+**Hjemmeside**: <https://www.assured.se/>  
 **Specialisering**: "Eksperter i teknisk cybersikkerhed"
 
-Assured AB er et svensk cybersikkerhedskonsulentfirma, der har etableret sig som førende inden for tekniske cybersikkerhedsvurderinger. Med base i Göteborg bringer de dybdegående teknisk ekspertise til komplekse sikkerhedsudfordringer, især inden for områder som e-mailinfrastruktur, DNS-sikkerhed og API-vurderinger.
+Assured AB er et svensk cybersikkerhedskonsulentfirma, der har etableret sig som en leder inden for tekniske cybersikkerhedsvurderinger. Med base i Göteborg bringer de dyb teknisk ekspertise til komplekse sikkerhedsudfordringer, især inden for områder der involverer e-mail infrastruktur, DNS-sikkerhed og API-vurderinger.
 
-Virksomhedens tilgang lægger vægt på grundig teknisk analyse kombineret med praktiske, implementerbare anbefalinger. Deres rapporter demonstrerer enestående sans for detaljer og en omfattende forståelse af moderne sikkerhedstrusler og strategier til afbødning.
+Virksomhedens tilgang lægger vægt på grundig teknisk analyse kombineret med praktiske, implementerbare anbefalinger. Deres rapporter demonstrerer enestående opmærksomhed på detaljer og en omfattende forståelse af moderne sikkerhedstrusler og afbødningsstrategier.
 
-**Væsentlige publikationer og rapporter**:
+**Bemærkelsesværdige Publikationer og Rapporter**:
 
-* [Mullvad e-mailserveres sikkerhedsrevision 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Sikkerhedsvurdering af e-mailinfrastruktur
-* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API-sikkerhedsevaluering
-* [Mullvad DNS-serversikkerhedsrevision 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Vurdering af DNS-infrastruktur
+* [Mullvad Email Servers Security Audit 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Vurdering af e-mail infrastruktur sikkerhed
+* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API sikkerhedsevaluering
+* [Mullvad DNS Server Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Vurdering af DNS infrastruktur
 
-### Spor af bits {#trail-of-bits}
+### Trail of Bits {#trail-of-bits}
 
-**Sted**: New York, New York, USA
-**Hjemmeside**: <https://www.trailofbits.com/>
+**Lokation**: New York, New York, USA  
+**Hjemmeside**: <https://www.trailofbits.com/>  
 **Specialisering**: "Vi retter ikke bare fejl, vi retter software."
 
-Trail of Bits er en fremtrædende amerikansk cybersikkerhedsvirksomhed, der har opnået anerkendelse for deres innovative tilgang til softwaresikkerhed. Med base i New York har de udviklet banebrydende værktøjer og metoder, der har fremmet hele cybersikkerhedsfeltet. Deres motto, "Vi retter ikke bare fejl, vi retter software," afspejler deres engagement i at håndtere systemiske sikkerhedsproblemer snarere end blot overfladiske sårbarheder.
+Trail of Bits er et fremtrædende amerikansk cybersikkerhedsfirma, der har opnået anerkendelse for deres innovative tilgang til softwaresikkerhed. Med base i New York har de udviklet banebrydende værktøjer og metoder, som har rykket hele cybersikkerhedsområdet fremad. Deres motto, "Vi retter ikke bare fejl, vi retter software," afspejler deres engagement i at løse systemiske sikkerhedsproblemer fremfor blot overfladiske sårbarheder.
 
-Virksomheden har særlig ekspertise inden for blockchain-sikkerhed, kryptografiske implementeringer og komplekse softwaresystemer. Trail of Bits er også kendt for deres bidrag til open source-sikkerhedsværktøjer og deres tankelederskab inden for nye sikkerhedsdomæner.
+Virksomheden har særlig ekspertise inden for blockchain-sikkerhed, kryptografiske implementeringer og komplekse softwaresystemer. Trail of Bits er også kendt for deres bidrag til open source sikkerhedsværktøjer og deres tankelederskab inden for nye sikkerhedsområder.
 
-**Væsentlige publikationer og rapporter**:
+**Bemærkelsesværdige Publikationer og Rapporter**:
 
-* [Homebrew Sikkerhedsanmeldelse 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Sikkerhedsvurdering af pakkehåndtering
-* [Hey Security-anmeldelse](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Sikkerhedsevaluering af e-mailtjeneste
-* [cURL-sikkerhedsgennemgang 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Sikkerhedsanalyse af netværksbibliotek
+* [Homebrew Security Review 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Vurdering af pakkehåndteringssikkerhed
+* [Hey Security Review](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Evaluering af e-mail tjenestesikkerhed
+* [cURL Security Review 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Analyse af netværksbibliotekssikkerhed
+
 
 ## Virksomhedssammenligning {#company-comparison}
 
-| Selskab | Beliggenhed | Fokusområde | Bemærkelsesværdige styrker | Offentlige rapporter |
-| --------------------------- | ---------------------- | ------------------------ | ----------------------------------------------------- | -------------------------- |
-| **Cure53** | Berlin, Tyskland | Webapplikationssikkerhed | Detaljeret penetrationstest, omfattende rapportering | 3+ Mullvad-vurderinger |
-| **Radikal åben sikkerhed** | Amsterdam, Holland | Privatliv og åben kildekode | Nonprofitmodel, gennemsigtighed, VPN-ekspertise | Offentlig deling af metoder |
-| **Garanteret AB** | Göteborg, Sverige | Teknisk infrastruktur | E-mail/DNS-sikkerhed, API-vurderinger | Specialiserede serverrevisioner |
-| **Spor af bits** | New York, USA | Softwaresikkerhed | Blockchain, kryptografi, sikkerhedsværktøjer | Open source-bidrag |
-
+| Virksomhed                  | Lokation               | Fokusområde             | Bemærkelsesværdige Styrker                           | Offentlige Rapporter       |
+| --------------------------- | ---------------------- | ----------------------- | --------------------------------------------------- | -------------------------- |
+| **Cure53**                  | Berlin, Tyskland       | Webapplikationssikkerhed | Detaljeret penetrationstest, omfattende rapportering | 3+ Mullvad vurderinger     |
+| **Radically Open Security** | Amsterdam, Holland     | Privatliv & Open Source  | Non-profit model, gennemsigtighed, VPN ekspertise    | Offentlig metode deling    |
+| **Assured AB**              | Göteborg, Sverige      | Teknisk Infrastruktur   | E-mail/DNS sikkerhed, API vurderinger                | Specialiserede serverrevisioner |
+| **Trail of Bits**           | New York, USA          | Softwaresikkerhed       | Blockchain, kryptografi, sikkerhedsværktøjer         | Open source bidrag         |
 ## Udvælgelseskriterier {#selection-criteria}
 
-Da vi evaluerede disse sikkerhedsrevisionsvirksomheder, overvejede vi flere kritiske faktorer, som organisationer bør vurdere, når de vælger en sikkerhedspartner:
+Når vi vurderede disse sikkerhedsrevisionsfirmaer, tog vi flere kritiske faktorer i betragtning, som organisationer bør vurdere, når de vælger en sikkerhedspartner:
 
-**Teknisk ekspertise**: Alle anbefalede virksomheder demonstrerer dybdegående teknisk viden på tværs af flere domæner, herunder webapplikationssikkerhed, infrastrukturvurdering, kryptografiske implementeringer og nye teknologier.
+**Teknisk ekspertise**: Alle anbefalede firmaer demonstrerer dyb teknisk viden på tværs af flere domæner, herunder webapplikationssikkerhed, infrastrukturvurdering, kryptografiske implementeringer og nye teknologier.
 
-**Gennemsigtighed og rapportering**: Hvert firma leverer omfattende og handlingsrettede rapporter, der tydeligt kommunikerer resultater, risikovurderinger og afhjælpningsstrategier. Mange bidrager også til det bredere sikkerhedsmiljø gennem offentlig forskning og open source-værktøjer.
+**Gennemsigtighed og rapportering**: Hvert firma leverer omfattende, handlingsorienterede rapporter, der klart kommunikerer fund, risikovurderinger og afhjælpningsstrategier. Mange bidrager også til det bredere sikkerhedsfællesskab gennem offentlig forskning og open source-værktøjer.
 
-**Trafikhistorik**: De anførte virksomheder har etableret dokumenterede resultater med højprofilerede kunder og komplekse sikkerhedsudfordringer. Deres offentlige rapporter viser ensartet kvalitet og grundighed.
+**Track record**: De listede firmaer har etableret dokumenterede resultater med højprofilerede kunder og komplekse sikkerhedsudfordringer. Deres offentlige rapporter viser konsekvent kvalitet og grundighed.
 
-**Overensstemmelse med værdier**: For organisationer, der prioriterer privatliv, open source-principper og gennemsigtighed, har disse virksomheder vist engagement i disse værdier gennem deres arbejde og forretningspraksis.
+**Overensstemmelse med værdier**: For organisationer, der prioriterer privatliv, open source-principper og gennemsigtighed, har disse firmaer vist engagement i disse værdier gennem deres arbejde og forretningspraksis.
 
-**Kontinuerlig forbedring**: Alle anbefalede virksomheder holder sig ajour med udviklende trusselslandskaber og nye teknologier og sikrer, at deres vurderinger forbliver relevante og omfattende.
+**Kontinuerlig forbedring**: Alle anbefalede firmaer holder sig opdaterede med det udviklende trusselslandskab og nye teknologier, hvilket sikrer, at deres vurderinger forbliver relevante og omfattende.
 
-Sikkerhedsrevisionslandskabet udvikler sig løbende, og vi anbefaler, at organisationer udfører deres egen evaluering baseret på specifikke behov, budgetbegrænsninger og projektkrav. Enhver af disse virksomheder vil dog tilbyde exceptionelle sikkerhedsvurderingstjenester til organisationer, der tager beskyttelsen af deres infrastruktur og brugerdata alvorligt.
+Sikkerhedsrevisionslandskabet fortsætter med at udvikle sig, og vi anbefaler, at organisationer foretager deres egen evaluering baseret på specifikke behov, budgetbegrænsninger og projektkrav. Dog vil ethvert af disse firmaer levere fremragende sikkerhedsvurderingstjenester til organisationer, der tager beskyttelsen af deres infrastruktur og brugerdata alvorligt.

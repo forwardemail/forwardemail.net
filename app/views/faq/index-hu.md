@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# Gyakran Ismételt Kérdések {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email gyakran ismételt kérdések" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## Tartalomjegyzék {#table-of-contents}
+
+* [Gyors Kezdés](#quick-start)
+* [Bevezetés](#introduction)
+  * [Mi az a Forward Email](#what-is-forward-email)
+  * [Ki használja a Forward Emailt](#who-uses-forward-email)
+  * [Mi a Forward Email története](#what-is-forward-emails-history)
+  * [Milyen gyors ez a szolgáltatás](#how-fast-is-this-service)
+* [Email Kliensek](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [Mobil Eszközök](#mobile-devices)
+  * [Sendmail SMTP Relay Beállítás](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Beállítás](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP Ügyfél Beállítás](#msmtp-smtp-client-configuration)
+  * [Parancssoros Email Kliensek](#command-line-email-clients)
+  * [Windows Email Beállítás](#windows-email-configuration)
+  * [Postfix SMTP Relay Beállítás](#postfix-smtp-relay-configuration)
+  * [Hogyan küldjek levelet Gmail használatával](#how-to-send-mail-as-using-gmail)
+  * [Mi a régi ingyenes útmutató a Gmail használatával történő levélküldéshez](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Fejlett Gmail irányítási beállítások](#advanced-gmail-routing-configuration)
+  * [Fejlett Outlook irányítási beállítások](#advanced-outlook-routing-configuration)
+* [Hibaelhárítás](#troubleshooting)
+  * [Miért nem kapom meg a teszt emailjeimet](#why-am-i-not-receiving-my-test-emails)
+  * [Hogyan állítsam be az email kliensemet a Forward Email használatához](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Miért kerülnek az emailjeim a Spam és Levélszemét mappába, és hogyan ellenőrizhetem a domain hírnevemet](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [Mit tegyek, ha spam emailt kapok](#what-should-i-do-if-i-receive-spam-emails)
+  * [Miért jelennek meg a Gmailben magamnak küldött teszt emailjeim "gyanús" jelzéssel](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Eltávolíthatom a via forwardemail dot net-et Gmailben](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Adatkezelés](#data-management)
+  * [Hol találhatók a szervereitek](#where-are-your-servers-located)
+  * [Hogyan exportálhatom és készíthetek biztonsági mentést a postaládámról](#how-do-i-export-and-backup-my-mailbox)
+  * [Hogyan importálhatom és migrálhatom a meglévő postaládámat](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Hogyan használhatom saját S3-kompatibilis tárhelyemet biztonsági mentésekhez](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [Hogyan konvertálhatom az SQLite biztonsági mentéseket EML fájlokká](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [Támogatjátok az önálló üzemeltetést](#do-you-support-self-hosting)
+* [Email Beállítások](#email-configuration)
+  * [Hogyan kezdjem el és állítsam be az email továbbítást](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Használhatok több MX cserélőt és szervert fejlett továbbításhoz](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [Hogyan állítsak be szabadságválaszt (irodán kívüli automatikus válaszadó)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Hogyan állítsam be az SPF-et a Forward Emailhez](#how-do-i-set-up-spf-for-forward-email)
+  * [Hogyan állítsam be a DKIM-et a Forward Emailhez](#how-do-i-set-up-dkim-for-forward-email)
+  * [Hogyan állítsam be a DMARC-ot a Forward Emailhez](#how-do-i-set-up-dmarc-for-forward-email)
+  * [Hogyan tekinthetem meg a DMARC jelentéseket](#how-do-i-view-dmarc-reports)
+  * [Hogyan csatlakoztassam és állítsam be a kapcsolataimat](#how-do-i-connect-and-configure-my-contacts)
+  * [Hogyan csatlakoztassam és állítsam be a naptáraimat](#how-do-i-connect-and-configure-my-calendars)
+  * [Hogyan adjak hozzá több naptárt és kezeljem a meglévőket](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [Hogyan csatlakoztassam és állítsam be a feladatokat és emlékeztetőket](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Miért nem tudok feladatokat létrehozni a macOS Emlékeztetőkben](#why-cant-i-create-tasks-in-macos-reminders)
+  * [Hogyan állítsam be a Tasks.org-ot Androidon](#how-do-i-set-up-tasksorg-on-android)
+  * [Hogyan állítsam be az SRS-t a Forward Emailhez](#how-do-i-set-up-srs-for-forward-email)
+  * [Hogyan állítsam be az MTA-STS-t a Forward Emailhez](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [Hogyan adjak profilképet az email címemhez](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Fejlett Funkciók](#advanced-features)
+  * [Támogatjátok a hírleveleket vagy marketing célú levelezőlistákat](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Támogatjátok az API-n keresztüli email küldést](#do-you-support-sending-email-with-api)
+  * [Támogatjátok az IMAP-on keresztüli email fogadást](#do-you-support-receiving-email-with-imap)
+  * [Támogatjátok a POP3-at](#do-you-support-pop3)
+  * [Támogatjátok a naptárakat (CalDAV)](#do-you-support-calendars-caldav)
+  * [Támogatjátok a feladatokat és emlékeztetőket (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Támogatjátok a kapcsolatokat (CardDAV)](#do-you-support-contacts-carddav)
+  * [Támogatjátok az SMTP-n keresztüli email küldést](#do-you-support-sending-email-with-smtp)
+  * [Támogatjátok az OpenPGP/MIME-t, a végpontok közötti titkosítást ("E2EE") és a Web Key Directory-t ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Támogatjátok az S/MIME titkosítást](#do-you-support-smime-encryption)
+  * [Támogatjátok a Sieve email szűrést](#do-you-support-sieve-email-filtering)
+  * [Támogatjátok az MTA-STS-t](#do-you-support-mta-sts)
+  * [Támogatjátok a passkey-ket és a WebAuthn-t](#do-you-support-passkeys-and-webauthn)
+  * [Támogatjátok az email legjobb gyakorlatait](#do-you-support-email-best-practices)
+  * [Támogatjátok a visszapattanási webhookokat](#do-you-support-bounce-webhooks)
+  * [Támogatjátok a webhookokat](#do-you-support-webhooks)
+  * [Támogatjátok a reguláris kifejezéseket vagy regex-et](#do-you-support-regular-expressions-or-regex)
+  * [Mik az SMTP kimenő korlátaitok](#what-are-your-outbound-smtp-limits)
+  * [Szükséges engedély az SMTP engedélyezéséhez](#do-i-need-approval-to-enable-smtp)
+  * [Mik az SMTP szerver beállításai](#what-are-your-smtp-server-configuration-settings)
+  * [Mik az IMAP szerver beállításai](#what-are-your-imap-server-configuration-settings)
+  * [Mik a POP3 szerver beállításai](#what-are-your-pop3-server-configuration-settings)
+  * [Hogyan állítsam be az email automatikus felismerést a domainemhez](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [Biztonság](#security-1)
+  * [Fejlett szerver megerősítési technikák](#advanced-server-hardening-techniques)
+  * [Van SOC 2 vagy ISO 27001 tanúsítványotok](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Használtok TLS titkosítást az email továbbításhoz](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Megőrzitek az email hitelesítési fejlécet](#do-you-preserve-email-authentication-headers)
+  * [Megőrzitek az eredeti email fejlécet és megakadályozzátok a hamisítást](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [Hogyan védekeztek a spam és visszaélések ellen](#how-do-you-protect-against-spam-and-abuse)
+  * [Tároltok email tartalmat lemezen](#do-you-store-email-content-on-disk)
+  * [Kiszivároghat az email tartalom rendszerösszeomlás esetén](#can-email-content-be-exposed-during-system-crashes)
+  * [Kik férnek hozzá az email infrastruktúrátokhoz](#who-has-access-to-your-email-infrastructure)
+  * [Milyen infrastruktúra szolgáltatókat használtok](#what-infrastructure-providers-do-you-use)
+  * [Kínáltok adatfeldolgozási megállapodást (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [Hogyan kezelitek az adatvédelmi incidens értesítéseket](#how-do-you-handle-data-breach-notifications)
+  * [Kínáltok teszt környezetet](#do-you-offer-a-test-environment)
+  * [Biztosítotok monitorozó és riasztó eszközöket](#do-you-provide-monitoring-and-alerting-tools)
+  * [Hogyan biztosítjátok a magas rendelkezésre állást](#how-do-you-ensure-high-availability)
+  * [Megfeleltek a Nemzeti Védelmi Engedélyezési Törvény (NDAA) 889. szakaszának](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [Rendszer és Technikai Részletek](#system-and-technical-details)
+  * [Tároltok email-eket és azok tartalmát](#do-you-store-emails-and-their-contents)
+  * [Hogyan működik az email továbbító rendszeretek](#how-does-your-email-forwarding-system-work)
+  * [Hogyan dolgoztok fel egy emailt továbbításra](#how-do-you-process-an-email-for-forwarding)
+  * [Hogyan kezelitek az email kézbesítési problémákat](#how-do-you-handle-email-delivery-issues)
+  * [Hogyan kezelitek, ha az IP címeitek blokkolva lesznek](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [Mik a postmaster címek](#what-are-postmaster-addresses)
+  * [Mik a no-reply címek](#what-are-no-reply-addresses)
+  * [Mik a szerveretek IP címei](#what-are-your-servers-ip-addresses)
+  * [Van engedélyező listátok](#do-you-have-an-allowlist)
+  * [Milyen domain név kiterjesztések vannak alapértelmezetten engedélyezve](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [Mi az engedélyező lista kritériuma](#what-is-your-allowlist-criteria)
+  * [Milyen domain név kiterjesztések használhatók ingyenesen](#what-domain-name-extensions-can-be-used-for-free)
+  * [Van szürkelistátok](#do-you-have-a-greylist)
+  * [Van tiltólistátok](#do-you-have-a-denylist)
+  * [Van korlátozás a forgalomra](#do-you-have-rate-limiting)
+  * [Hogyan védekeztek a visszapattanás ellen](#how-do-you-protect-against-backscatter)
+  * [Megakadályozzátok a visszapattanásokat ismert MAIL FROM spammerek esetén](#prevent-bounces-from-known-mail-from-spammers)
+  * [Megakadályozzátok a felesleges visszapattanásokat a visszapattanás elleni védelem érdekében](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [Hogyan határozzátok meg egy email ujjlenyomatát](#how-do-you-determine-an-email-fingerprint)
+  * [Továbbíthatok emailt más portokra, mint a 25 (pl. ha az ISP-m blokkolta a 25-ös portot)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Támogatja a plusz + jelet Gmail aliasokhoz](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Támogatja az aldomain-eket](#does-it-support-sub-domains)
+  * [Továbbítja az email fejlécet](#does-this-forward-my-emails-headers)
+  * [Jól tesztelt](#is-this-well-tested)
+  * [Átadja az SMTP válasz üzeneteket és kódokat](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [Hogyan akadályozzátok meg a spammereket és biztosítjátok a jó email továbbítási hírnevet](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Hogyan végeztek DNS lekérdezéseket domain nevekre](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Fiók és Számlázás](#account-and-billing)
+  * [Kínáltok pénzvisszafizetési garanciát a fizetős csomagokra](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [Ha váltok csomagot, arányosan visszatérítitek a különbözetet](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Használhatom ezt az email továbbító szolgáltatást "tartalék" vagy "átváltó" MX szerverként](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Letilthatok konkrét aliasokat](#can-i-disable-specific-aliases)
+  * [Továbbíthatok emailt több címzettnek](#can-i-forward-emails-to-multiple-recipients)
+  * [Lehet több globális catch-all címzettem](#can-i-have-multiple-global-catch-all-recipients)
+  * [Van maximális limit az aliasonként továbbítható email címek számára](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Továbbíthatok emailt rekurzívan](#can-i-recursively-forward-emails)
+  * [Lehet valaki engedély nélkül regisztrálni vagy leiratkozni az email továbbításomról](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [Hogyan ingyenes](#how-is-it-free)
+  * [Mi az email maximális méretkorlátja](#what-is-the-max-email-size-limit)
+  * [Tároltok email naplókat](#do-you-store-logs-of-emails)
+  * [Tároltok hibajelentési naplókat](#do-you-store-error-logs)
+  * [Olvassátok az emailjeimet](#do-you-read-my-emails)
+  * [Tudok "küldeni levélként" Gmailben ezzel](#can-i-send-mail-as-in-gmail-with-this)
+  * [Tudok "küldeni levélként" Outlookban ezzel](#can-i-send-mail-as-in-outlook-with-this)
+  * [Tudok "küldeni levélként" Apple Mailben és iCloud Mailben ezzel](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Továbbíthatok korlátlan emailt ezzel](#can-i-forward-unlimited-emails-with-this)
+  * [Kínáltok korlátlan domaineket egy áron](#do-you-offer-unlimited-domains-for-one-price)
+  * [Milyen fizetési módokat fogadtok el](#which-payment-methods-do-you-accept)
+* [További Források](#additional-resources)
+## Gyors kezdés {#quick-start}
 
-## Quick Start {#quick-start}
+A Forward Email használatának megkezdéséhez:
 
-To get started with Forward Email:
+1. **Hozzon létre egy fiókot** a [forwardemail.net/register](https://forwardemail.net/register) oldalon
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **Adja hozzá és igazolja domainjét** a [Saját fiók → Domainok](/my-account/domains) menüpont alatt
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **Adjon hozzá és konfiguráljon e-mail aliasokat/postafiókokat** a [Saját fiók → Domainok](/my-account/domains) → Aliasok alatt
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **Tesztelje beállításait** úgy, hogy küld egy e-mailt az egyik új aliasára
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> A DNS-változások globális propagálása 24-48 órát is igénybe vehet, bár gyakran sokkal hamarabb érvénybe lépnek.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> A jobb kézbesíthetőség érdekében javasoljuk a [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) és [DMARC](#how-do-i-set-up-dmarc-for-forward-email) rekordok beállítását.
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## Bevezetés {#introduction}
+
+### Mi az a Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> A Forward Email tökéletes egyének, kisvállalkozások és fejlesztők számára, akik professzionális e-mail címeket szeretnének költségek és teljes e-mail tárhely megoldás karbantartása nélkül.
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+A Forward Email egy **teljes körű e-mail szolgáltató** és **egyedi domain nevekhez e-mail tárhely szolgáltató**.
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+Ez az egyetlen ingyenes és nyílt forráskódú szolgáltatás, amely lehetővé teszi, hogy egyedi domain e-mail címeket használjon anélkül, hogy saját e-mail szervert kellene beállítania és karbantartania.
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+Szolgáltatásunk továbbítja az Ön egyedi domainjére küldött e-maileket a meglévő e-mail fiókjába – és akár dedikált e-mail tárhely szolgáltatóként is használhat minket.
 
-Key features of Forward Email:
+A Forward Email főbb jellemzői:
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **Egyedi domain e-mail**: Használjon professzionális e-mail címeket saját domain nevével
+* **Ingyenes szint**: Alapvető e-mail továbbítás díjmentesen
+* **Fokozott adatvédelem**: Nem olvassuk el az e-mailjeit, és nem adjuk el adatait
+* **Nyílt forráskód**: Teljes kódunk elérhető a GitHubon
+* **SMTP, IMAP és POP3 támogatás**: Teljes körű e-mail küldési és fogadási képességek
+* **Végpontok közötti titkosítás**: OpenPGP/MIME támogatás
+* **Egyedi Catch-All aliasok**: Korlátlan e-mail alias létrehozása
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+Összehasonlíthat minket több mint 56 másik e-mail szolgáltatóval a [Email összehasonlító oldalunkon](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Tudjon meg többet a Forward Emailről ingyenes [Műszaki fehér könyvünk](/technical-whitepaper.pdf) elolvasásával
 
-### Who uses Forward Email {#who-uses-forward-email}
+### Kik használják a Forward Emailt {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+E-mail tárhelyet és továbbítási szolgáltatást nyújtunk több mint 500 000 domainnek és az alábbi ismert felhasználóknak:
 
-| Customer | Case Study |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| Ügyfél                                  | Esettanulmány                                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| U.S. Naval Academy                      | [:page_facing_up: Esettanulmány](/blog/docs/federal-government-email-service-section-889-compliant)    |
+| Canonical                               | [:page_facing_up: Esettanulmány](/blog/docs/canonical-ubuntu-email-enterprise-case-study)              |
+| Netflix Games                           |                                                                                                        |
+| The Linux Foundation                    | [:page_facing_up: Esettanulmány](/blog/docs/linux-foundation-email-enterprise-case-study)              |
+| The PHP Foundation                      |                                                                                                        |
+| Fox News Radio                          |                                                                                                        |
+| Disney Ad Sales                         |                                                                                                        |
+| jQuery                                  | [:page_facing_up: Esettanulmány](/blog/docs/linux-foundation-email-enterprise-case-study)              |
+| LineageOS                              |                                                                                                        |
+| Ubuntu                                 | [:page_facing_up: Esettanulmány](/blog/docs/canonical-ubuntu-email-enterprise-case-study)              |
+| Kubuntu                                | [:page_facing_up: Esettanulmány](/blog/docs/canonical-ubuntu-email-enterprise-case-study)              |
+| Lubuntu                                | [:page_facing_up: Esettanulmány](/blog/docs/canonical-ubuntu-email-enterprise-case-study)              |
+| The University of Cambridge             | [:page_facing_up: Esettanulmány](/blog/docs/alumni-email-forwarding-university-case-study)             |
+| The University of Maryland              | [:page_facing_up: Esettanulmány](/blog/docs/alumni-email-forwarding-university-case-study)             |
+| The University of Washington            | [:page_facing_up: Esettanulmány](/blog/docs/alumni-email-forwarding-university-case-study)             |
+| Tufts University                      | [:page_facing_up: Esettanulmány](/blog/docs/alumni-email-forwarding-university-case-study)             |
+| Swarthmore College                    | [:page_facing_up: Esettanulmány](/blog/docs/alumni-email-forwarding-university-case-study)             |
+| Government of South Australia           |                                                                                                        |
+| Government of Dominican Republic        |                                                                                                        |
+| Fly<span>.</span>io                     |                                                                                                        |
+| RCD Hotels                            |                                                                                                        |
+| Isaac Z. Schlueter (npm)                | [:page_facing_up: Esettanulmány](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                        |
+### Mi a Forward Email története {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+További információkat a Forward Emailről a [Rólunk oldalunkon](/about) talál.
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### Milyen gyors ez a szolgáltatás {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Rendszerünk a sebességre és megbízhatóságra van tervezve, több redundáns szerverrel, hogy az e-mailek gyorsan kézbesítésre kerüljenek.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+A Forward Email minimális késéssel továbbítja az üzeneteket, általában néhány másodpercen belül a beérkezéstől számítva.
 
-Performance metrics:
+Teljesítménymutatók:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **Átlagos kézbesítési idő**: kevesebb, mint 5-10 másodperc a beérkezéstől a továbbításig ([lásd a Beérkező idő "TTI" monitorozó oldalunkat](/tti))
+* **Üzemidő**: 99,9%+ szolgáltatás elérhetőség
+* **Globális infrastruktúra**: stratégiailag elhelyezett szerverek az optimális útvonal érdekében
+* **Automatikus skálázás**: rendszerünk a csúcsidőszakokban skálázódik
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+Valós időben működünk, ellentétben más szolgáltatókkal, amelyek késleltetett sorokat használnak.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nem írunk lemezre vagy tárolunk naplókat – kivéve a [hibákat](#do-you-store-error-logs) és a [kimenő SMTP-t](#do-you-support-sending-email-with-smtp) (lásd az [Adatvédelmi irányelveinket](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Minden memóriában történik, és [a forráskódunk elérhető a GitHubon](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## E-mail kliensek {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Hozz létre egy új álnevet és generálj jelszót a Forward Email irányítópultodon
+2. Nyisd meg a Thunderbirdöt, majd menj a **Szerkesztés → Fiókbeállítások → Fiókműveletek → E-mail fiók hozzáadása** menüpontra
+3. Írd be a neved, a Forward Email címed és a jelszavad
+4. Kattints a **Kézi beállítás** gombra, és add meg:
+   * Bejövő: IMAP, `imap.forwardemail.net`, 993-as port, SSL/TLS
+   * Kimenő: SMTP, `smtp.forwardemail.net`, 465-ös port, SSL/TLS (ajánlott; 587-es port STARTTLS-sel is támogatott)
+5. Kattints a **Kész** gombra
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Hozz létre egy új álnevet és generálj jelszót a Forward Email irányítópultodon
+2. Menj a **Fájl → Fiók hozzáadása** menüpontra
+3. Írd be a Forward Email címed és kattints a **Csatlakozás** gombra
+4. Válaszd az **Speciális beállítások** lehetőséget, majd a **Fiókom kézi beállítása** opciót
+5. Válaszd az **IMAP**-ot és add meg:
+   * Bejövő: `imap.forwardemail.net`, 993-as port, SSL
+   * Kimenő: `smtp.forwardemail.net`, 465-ös port, SSL/TLS (ajánlott; 587-es port STARTTLS-sel is támogatott)
+   * Felhasználónév: Teljes e-mail címed
+   * Jelszó: A generált jelszavad
+6. Kattints a **Csatlakozás** gombra
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Hozz létre egy új álnevet és generálj jelszót a Forward Email irányítópultodon
+2. Menj a **Mail → Beállítások → Fiókok → +** menüpontra
+3. Válaszd az **Egyéb e-mail fiók** lehetőséget
+4. Írd be a neved, a Forward Email címed és a jelszavad
+5. A szerverbeállításokhoz add meg:
+   * Bejövő: `imap.forwardemail.net`
+   * Kimenő: `smtp.forwardemail.net`
+   * Felhasználónév: Teljes e-mail címed
+   * Jelszó: A generált jelszavad
+6. Kattints a **Bejelentkezés** gombra
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Hozz létre egy új álnevet és generálj jelszót a Forward Email irányítópultodon
+2. Nyisd meg az eM Clientet, majd menj a **Menü → Fiókok → + Fiók hozzáadása** menüpontra
+3. Kattints a **Levelezés** lehetőségre, majd válaszd az **Egyéb** opciót
+4. Írd be a Forward Email címed és kattints a **Tovább** gombra
+5. Add meg a következő szerverbeállításokat:
+   * **Bejövő szerver**: `imap.forwardemail.net`
+   * **Kimenő szerver**: `smtp.forwardemail.net`
+6. Írd be teljes e-mail címedet **Felhasználónévként**, és a generált jelszavadat **Jelszóként** mind a bejövő, mind a kimenő szerverhez.
+7. Az eM Client teszteli a kapcsolatot. Ha sikeres, kattints a **Tovább** gombra.
+8. Írd be a neved és válassz fióknevet.
+9. Kattints a **Befejezés** gombra.
 
-### Mobile Devices {#mobile-devices}
+### Mobil eszközök {#mobile-devices}
 
-For iOS:
+iOS esetén:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Menj a **Beállítások → Mail → Fiókok → Fiók hozzáadása → Egyéb** menüpontra
+2. Koppints a **Mail fiók hozzáadása** lehetőségre és írd be az adataidat
+3. A szerverbeállításokhoz használd a fent megadott IMAP és SMTP beállításokat
 
-For Android:
+Android esetén:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Menj a **Beállítások → Fiókok → Fiók hozzáadása → Személyes (IMAP)** menüpontra
+2. Írd be a Forward Email címed és jelszavad
+3. A szerverbeállításokhoz használd a fent megadott IMAP és SMTP beállításokat
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Sendmail SMTP Relay konfiguráció {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+Beállíthatod a Sendmailt, hogy a Forward Email SMTP szerverein keresztül továbbítsa az e-maileket. Ez egy gyakori konfiguráció régebbi rendszerek vagy Sendmailre támaszkodó alkalmazások esetén.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>Kevesebb, mint 20 perc</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Ehhez fizetős csomag szükséges SMTP-hozzáféréssel.
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### Konfiguráció {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. Szerkessze a `sendmail.mc` fájlt, amely általában az `/etc/mail/sendmail.mc` helyen található:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. Adja hozzá a következő sorokat az okos hoszt és az autentikáció meghatározásához:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. Hozza létre az autentikációs fájlt `/etc/mail/authinfo` néven:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. Adja hozzá a Forward Email hitelesítő adatait az `authinfo` fájlhoz:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. Generálja az autentikációs adatbázist és állítsa be a fájlok jogosultságait:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Építse újra a Sendmail konfigurációt és indítsa újra a szolgáltatást:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### Tesztelés {#testing}
 
-Send a test email to verify the configuration:
+Küldjön egy teszt e-mailt a konfiguráció ellenőrzéséhez:
 
 ```bash
-echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+echo "Teszt e-mail Sendmailből" | mail -s "Sendmail teszt" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Exim4 SMTP Relay konfiguráció {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Az Exim4 egy népszerű MTA Debian-alapú rendszereken. Beállítható úgy, hogy a Forward Email-t használja smarthostként.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>Kevesebb, mint 15 perc</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Ehhez fizetős csomag szükséges SMTP-hozzáféréssel.
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### Konfiguráció {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Futtassa az Exim4 konfigurációs eszközt:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. Válassza ki a következő opciókat:
+   * **Általános levélkonfiguráció típusa:** levél küldése smarthoston keresztül; fogadás SMTP vagy fetchmail által
+   * **Rendszer levelezési neve:** your.hostname
+   * **IP-címek, amelyeken az SMTP bejövő kapcsolatokra figyel:** 127.0.0.1 ; ::1
+   * **Egyéb célállomások, amelyeknek elfogadott a levél:** (hagyja üresen)
+   * **Tartományok, amelyeknek továbbít levelet:** (hagyja üresen)
+   * **Kimenő smarthost IP-címe vagy hosztneve:** smtp.forwardemail.net::465
+   * **Rejtse el a helyi levelezési nevet a kimenő levelekben?** Nem
+   * **Minimalizálja a DNS-lekérdezések számát (Dial-on-Demand)?** Nem
+   * **Helyi levelek kézbesítési módja:** Mbox formátum a /var/mail/ könyvtárban
+   * **Ossza fel a konfigurációt kis fájlokra?** Nem
 
-3. Edit the `passwd.client` file to add your credentials:
+3. Szerkessze a `passwd.client` fájlt a hitelesítő adatok hozzáadásához:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. Adja hozzá a következő sort:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. Frissítse a konfigurációt és indítsa újra az Exim4-et:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### Tesztelés {#testing-1}
 
-Send a test email:
+Küldjön egy teszt e-mailt:
 
 ```bash
-echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+echo "Teszt Exim4-ből" | mail -s "Exim4 teszt" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### msmtp SMTP kliens konfiguráció {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+Az msmtp egy könnyű SMTP kliens, amely hasznos e-mailek küldésére szkriptekből vagy parancssori alkalmazásokból.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>Kevesebb, mint 10 perc</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Ehhez fizetős csomag szükséges, amelyen engedélyezve van az SMTP hozzáférés.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### Konfiguráció {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. Hozza létre vagy szerkessze az msmtp konfigurációs fájlt a `~/.msmtprc` helyen:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. Adja hozzá a következő konfigurációt:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. Állítsa be a konfigurációs fájl megfelelő jogosultságait:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### Tesztelés {#testing-2}
 
-Send a test email:
+Küldjön egy teszt e-mailt:
 
 ```bash
-echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
+echo "Ez egy teszt e-mail az msmtp-től" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### Parancssoros e-mail kliensek {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+Népszerű parancssoros e-mail kliensek, mint a [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) és az [Alpine](https://alpine.x10.mx/alpine/release/) konfigurálhatók a Forward Email SMTP szervereinek használatára az e-mailek küldéséhez. A konfiguráció hasonló lesz az `msmtp` beállításhoz, ahol megadja az SMTP szerver adatait és hitelesítő adatait a megfelelő konfigurációs fájlokban (`.muttrc`, `.neomuttrc` vagy `.pinerc`).
 
-### Windows Email Configuration {#windows-email-configuration}
+### Windows e-mail konfiguráció {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+Windows felhasználók számára népszerű e-mail kliensek, mint a **Microsoft Outlook** és az **eM Client** konfigurálhatók az IMAP és SMTP beállításokkal, amelyeket a Forward Email fiókjában talál. Parancssoros vagy szkriptelési célokra használhatja a PowerShell `Send-MailMessage` parancsát (bár ez elavultnak számít), vagy egy könnyű SMTP relay eszközt, például az [E-MailRelay](https://github.com/graeme-walker/emailrelay)-t.
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Postfix SMTP relay konfiguráció {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Beállíthatja a Postfixet, hogy a Forward Email SMTP szerverein keresztül továbbítsa az e-maileket. Ez hasznos szerveralkalmazások számára, amelyeknek e-maileket kell küldeniük.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>Kevesebb, mint 15 perc</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Ehhez fizetős csomag szükséges, amelyen engedélyezve van az SMTP hozzáférés.
   </span>
 </div>
 
-#### Installation {#installation}
+#### Telepítés {#installation}
 
-1. Install Postfix on your server:
+1. Telepítse a Postfixet a szerverére:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. A telepítés során válassza az "Internet Site" opciót, amikor a konfiguráció típusát kéri.
 
-#### Configuration {#configuration-3}
+#### Konfiguráció {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Szerkessze a Postfix fő konfigurációs fájlját:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. Adja hozzá vagy módosítsa ezeket a beállításokat:
 
 ```
-# SMTP relay configuration
+# SMTP relay konfiguráció
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. Hozza létre a SASL jelszó fájlt:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Adja hozzá a Forward Email hitelesítő adatait:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. Biztosítsa és hash-elje a jelszó fájlt:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Indítsa újra a Postfixet:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### Tesztelés {#testing-3}
 
-Test your configuration by sending a test email:
+Tesztelje a konfigurációt egy teszt e-mail küldésével:
 
 ```bash
-echo "Test email body" | mail -s "Test Subject" recipient@example.com
+echo "Teszt e-mail törzse" | mail -s "Teszt tárgy" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Hogyan küldjünk levelet Gmail használatával {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>Kevesebb, mint 10 perc</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Kezdés:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Ha követte a fenti utasításokat a <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Hogyan kezdjek hozzá és állítsam be az e-mail továbbítást</a> alatt, akkor folytathatja az olvasást alább.
   </span>
 </div>
 
@@ -631,236 +635,233 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Kérjük, győződjön meg róla, hogy elolvasta a <a href="/terms" class="alert-link" target="_blank">Felhasználási feltételeinket</a>, <a href="/privacy" class="alert-link" target="_blank">Adatvédelmi irányelveinket</a>, és az <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">SMTP-kimeneti korlátokat</a> – az Ön használata a feltételek elfogadásának és egyetértésének minősül.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Ha fejlesztő, kérjük, tekintse meg az <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API dokumentációt</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Menjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Kimenő SMTP konfiguráció és kövesse a beállítási utasításokat
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontban (pl. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Kattintson a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra az újonnan létrehozott alias mellett. Másolja a vágólapjára, és biztonságosan tárolja a képernyőn megjelenő generált jelszót.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. Menjen a [Gmail](https://gmail.com) oldalra, és a [Beállítások <i class="fa fa-angle-right"></i> Fiókok és importálás <i class="fa fa-angle-right"></i> Küldés másik e-mail címről](https://mail.google.com/mail/u/0/#settings/accounts) menüpont alatt kattintson az „Új e-mail cím hozzáadása” gombra
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. Amikor a „Név” mező megjelenik, írja be azt a nevet, amelyet szeretne, hogy az e-mailje „Feladóként” mutasson (pl. „Linus Torvalds”).
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. Amikor az „E-mail cím” mező megjelenik, írja be annak az aliasnak a teljes e-mail címét, amelyet a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok alatt hozott létre (pl. <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. Törölje a jelölést a „Kezelés aliaszként” opcióból
 
-8. Click "Next Step" to proceed
+8. Kattintson a „Következő lépés” gombra a folytatáshoz
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. Amikor az „SMTP szerver” mező megjelenik, írja be: <code>smtp.forwardemail.net</code> és állítsa a portot <code>465</code>-re
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. Amikor a „Felhasználónév” mező megjelenik, írja be annak az aliasnak a teljes e-mail címét, amelyet a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok alatt hozott létre (pl. <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. Amikor a „Jelszó” mező megjelenik, illessze be a 3. lépésben a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombbal kapott jelszót
 
-12. Select the radio button for "Secured connection using SSL"
+12. Válassza ki az „SSL használatával biztonságos kapcsolat” rádiógombot
 
-13. Click "Add Account" to proceed
+13. Kattintson a „Fiók hozzáadása” gombra a folytatáshoz
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. Nyisson meg egy új lapot a [Gmail](https://gmail.com) oldalon, és várja meg, amíg megérkezik az ellenőrző e-mail (kapni fog egy ellenőrző kódot, amely megerősíti, hogy Ön a tulajdonosa annak az e-mail címnek, amelyről „Küldés másként” próbál)
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. Amint megérkezik, másolja ki és illessze be az ellenőrző kódot a korábbi lépésben megjelenő kérés mezőjébe
+16. Miután ezzel végeztél, térj vissza az e-mailhez, és kattints a "kérés megerősítése" linkre. Valószínűleg ezt a lépést és az előzőt is meg kell tenned ahhoz, hogy az e-mail helyesen legyen konfigurálva.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulálunk!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Sikeresen befejezted az összes lépést.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Mi az a legacy free útmutató a Send Mail As használatához Gmailen keresztül {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Fontos:</strong> Ez a legacy free útmutató 2023 májusa óta elavult, mivel <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">most már támogatjuk a kimenő SMTP-t</a>. Ha az alábbi útmutatót használod, akkor <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">ez azt eredményezi, hogy a kimenő e-mailed</a> a Gmailben "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" felirattal jelenik meg.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>Kevesebb, mint 10 perc</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Kezdés:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Ha követted a fentiekben a <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Hogyan kezdjek hozzá és állítsam be az e-mail továbbítást</a> című utasításokat, akkor folytathatod az olvasást alább.
   </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Hogyan küldjünk levelet Gmailen keresztül Send Mail As használatával" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. Ehhez szükséged van a [Gmail kétlépcsős azonosításának][gmail-2fa] engedélyezésére. Látogass el a <https://www.google.com/landing/2step/> oldalra, ha még nincs engedélyezve.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. Miután a kétlépcsős azonosítás engedélyezve lett (vagy ha már korábban engedélyezve volt), látogass el a <https://myaccount.google.com/apppasswords> oldalra.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. Amikor megkérdezi, hogy "Válaszd ki az alkalmazást és az eszközt, amelyhez alkalmazásjelszót szeretnél generálni":
+   * Válaszd ki a "Mail" opciót az "Alkalmazás kiválasztása" legördülő menüből
+   * Válaszd ki az "Egyéb" opciót az "Eszköz kiválasztása" legördülő menüből
+   * Amikor szöveges bevitelt kér, írd be a továbbított egyedi domainhez tartozó e-mail címedet (pl. <code><hello@example.com></code> - ez segít nyomon követni, ha több fiókhoz használod ezt a szolgáltatást)
 
-4. Copy the password to your clipboard that is automatically generated
+4. Másold ki a vágólapodra az automatikusan generált jelszót
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       Fontos:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       Ha G Suite-ot használsz, látogass el az admin panelre <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Alkalmazások <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Gmail beállítások <i class="fa fa-angle-right"></i> Beállítások</a>, és győződj meg róla, hogy be van jelölve az "Engedélyezd a felhasználóknak, hogy küldjenek levelet külső SMTP szerveren keresztül..." opció. Ennek a változásnak az aktiválásához eltarthat néhány percig, kérjük, várj türelemmel.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. Lépj be a [Gmail](https://gmail.com) fiókodba, és a [Beállítások <i class="fa fa-angle-right"></i> Fiókok és importálás <i class="fa fa-angle-right"></i> Levél küldése másik címről](https://mail.google.com/mail/u/0/#settings/accounts) menüpont alatt kattints az "Újabb e-mail cím hozzáadása" gombra
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. Amikor a "Név" mező megjelenik, írd be azt a nevet, amelyet szeretnél, hogy az e-mailed "Feladóként" mutasson (pl. "Linus Torvalds")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. Amikor az "E-mail cím" mező megjelenik, írd be az előzőekben használt egyedi domainhez tartozó e-mail címet (pl. <code><hello@example.com></code>)
+8. Töröld a jelölést a „Treat as an alias” opcióból
 
-8. Uncheck "Treat as an alias"
+9. Kattints a „Next Step” gombra a folytatáshoz
 
-9. Click "Next Step" to proceed
+10. Amikor az „SMTP Server” megadására kér, írd be a <code>smtp.gmail.com</code>-ot, és hagyd a portot <code>587</code>-en
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. Amikor a „Username” megadására kér, írd be a Gmail címed azon részét, amely nem tartalmazza a <span>gmail.com</span> részt (pl. csak „user”, ha az email címem <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        Fontos:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        Ha a „Username” mező automatikusan kitöltődik, akkor <u><strong>ezt meg kell változtatnod</strong></u> a Gmail címed felhasználónév részére.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. Amikor a „Password” megadására kér, illeszd be a vágólapról a 2. lépésben generált jelszót
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. Hagyd bejelölve a „Secured connection using TLS” rádiógombot
 
-14. Click "Add Account" to proceed
+14. Kattints az „Add Account” gombra a folytatáshoz
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. Nyiss meg egy új fület a [Gmail](https://gmail.com) oldalon, és várd meg, amíg megérkezik az ellenőrző email (kapni fogsz egy ellenőrző kódot, amely igazolja, hogy te vagy az email cím tulajdonosa, amelyről a „Send Mail As” funkciót próbálod beállítani)
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. Amint megérkezik, másold ki és illeszd be az ellenőrző kódot a korábbi lépésben megjelenő kérés mezőbe
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. Miután ezt megtetted, térj vissza az emailhez, és kattints a „confirm the request” linkre. Valószínűleg ezt a lépést és az előzőt is el kell végezned ahhoz, hogy az email helyesen legyen konfigurálva.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### Haladó Gmail útválasztási beállítások {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>15-30 perc</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+Ha szeretnél haladó útválasztást beállítani Gmailben úgy, hogy az aliasok, amelyek nem egyeznek meg egy postafiókkal, továbbítódjanak a Forward Email levelezőszervereire, kövesd az alábbi lépéseket:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. Jelentkezz be a Google Admin konzolba a [admin.google.com](https://admin.google.com) címen
+2. Navigálj az **Apps → Google Workspace → Gmail → Routing** menüpontra
+3. Kattints az **Add Route** gombra, és állítsd be a következőket:
 
-**Single Recipient Settings:**
+**Egyedi címzett beállítások:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* Válaszd a „Change envelope recipient” opciót, és írd be a fő Gmail címedet
+* Jelöld be az „Add X-Gm-Original-To header with original recipient” opciót
 
-**Envelope Recipient Patterns:**
+**Boríték címzett minták:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* Adj hozzá egy mintát, amely lefedi az összes nem létező postafiókot (pl. `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**Email szerver beállítások:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* Válaszd a „Route to host” opciót, és add meg elsődleges szerverként az `mx1.forwardemail.net` címet
+* Add hozzá a `mx2.forwardemail.net` címet tartalék szerverként
+* Állítsd be a portot 25-re
+* Válaszd a „Require TLS” opciót a biztonság érdekében
 
-4. Click **Save** to create the route
+4. Kattints a **Save** gombra az útvonal létrehozásához
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    Ez a beállítás csak Google Workspace fiókoknál működik egyedi domainekkel, nem pedig normál Gmail fiókoknál.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### Haladó Outlook útválasztási beállítások {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>15-30 perc</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Microsoft 365 (korábban Office 365) felhasználók számára, akik haladó útválasztást szeretnének beállítani úgy, hogy az aliasok, amelyek nem egyeznek meg egy postafiókkal, továbbítódjanak a Forward Email levelezőszervereire:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
-   * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
-   * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
-   * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+1. Jelentkezz be a Microsoft 365 admin központba a [admin.microsoft.com](https://admin.microsoft.com) címen
+2. Navigálj az **Exchange → Mail flow → Rules** menüpontra
+3. Kattints az **Add a rule** gombra, majd válaszd a **Create a new rule** opciót
+4. Nevezd el a szabályt (pl. „Forward non-existent mailboxes to Forward Email”)
+5. Az **Apply this rule if** résznél válaszd:
+   * „The recipient address matches...”
+   * Írj be egy mintát, amely lefedi az összes címet a domaineden (pl. `*@yourdomain.com`)
+6. A **Do the following** résznél válaszd:
+   * „Redirect the message to...”
+   * Válaszd a „The following mail server” opciót
+   * Írd be az `mx1.forwardemail.net` címet és a 25-ös portot
+   * Add hozzá a `mx2.forwardemail.net` címet tartalék szerverként
+7. Az **Except if** résznél válaszd:
+   * „The recipient is...”
+   * Add meg az összes meglévő postafiókot, amelyeket nem szeretnél továbbítani
+8. Állítsd be a szabály prioritását, hogy más levelezési szabályok után fusson le
+9. Kattints a **Save** gombra a szabály aktiválásához
+## Hibakeresés {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### Miért nem kapom meg a teszt e-mailjeimet? {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+Ha magadnak küldesz teszt e-mailt, akkor az nem biztos, hogy megjelenik a beérkező levelek között, mert ugyanazzal a "Message-ID" fejléc értékkel rendelkezik.
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+Ez egy széles körben ismert probléma, amely érinti például a Gmail szolgáltatást is.  <a href="https://support.google.com/a/answer/1703601">Itt található a hivatalos Gmail válasz erre a problémára</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+Ha továbbra is problémáid vannak, akkor valószínűleg DNS propagációs gond áll fenn. Várnod kell egy kicsit, majd próbáld újra (vagy próbálj meg alacsonyabb TTL értéket beállítani a <strong class="notranslate">TXT</strong> rekordjaidnál).
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**Még mindig problémáid vannak?**  Kérjük, <a href="/help">lépj kapcsolatba velünk</a>, hogy segíthessünk kivizsgálni a problémát és gyors megoldást találni.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Hogyan állítsam be az e-mail kliensemet, hogy működjön a Forward Email szolgáltatással? {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  Szolgáltatásunk népszerű e-mail kliensekkel működik együtt, mint például:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
@@ -875,188 +876,235 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  A felhasználóneved az alias e-mail címed, a jelszó pedig a <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normál jelszó") gombbal generált jelszó.
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Ha Thunderbirdöt használsz, akkor győződj meg róla, hogy a "Kapcsolat biztonsága" "SSL/TLS"-re van állítva, az azonosítási mód pedig "Normál jelszó".</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| Típus |         Hosztnév        |         Protokoll        |                                            Portok                                           |
+| :----: | :---------------------: | :---------------------: | :----------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |  SSL/TLS **ajánlott**  |                                      `993` és `2993`                                      |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **ajánlott** | `465` és `2465` SSL/TLS-hez (ajánlott) vagy `587`, `2587`, `2525`, és `25` STARTTLS-hez |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Miért kerülnek az e-mailjeim a Spam és Levélszemét mappába, és hogyan ellenőrizhetem a domain hírnevemet? {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+Ez a szakasz útmutatást ad, ha a kimenő leveleid a mi SMTP szervereinken keresztül mennek (pl. `smtp.forwardemail.net`) (vagy továbbítva az `mx1.forwardemail.net` vagy `mx2.forwardemail.net` szervereken keresztül), és a címzettek Spam vagy Levélszemét mappájába érkeznek.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+Rendszeresen ellenőrizzük [IP címeinket](#what-are-your-servers-ip-addresses) [minden elismert DNS tiltólistával](#how-do-you-handle-your-ip-addresses-becoming-blocked), **ezért valószínűleg domain-hírnévvel kapcsolatos probléma áll fenn**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+A levelek több okból is a spam mappába kerülhetnek:
 
-Emails can land in spam folders for several reasons:
+1. **Hitelesítés hiánya**: Állítsd be a [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) és [DMARC](#how-do-i-set-up-dmarc-for-forward-email) rekordokat.
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **Domain hírnév**: Az új domainek gyakran semleges hírnévvel rendelkeznek, amíg nem építenek fel küldési előzményt.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **Tartalmi kiváltók**: Bizonyos szavak vagy kifejezések kiválthatják a spam szűrőket.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **Küldési minták**: A hirtelen megnövekedett levélmennyiség gyanúsnak tűnhet.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+Próbálhatod az alábbi eszközök egyikét vagy többet használni a domain hírnevének és kategorizálásának ellenőrzésére:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### Hírnév és Tiltólista Ellenőrző Eszközök {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| Eszköz neve                                | URL                                                          | Típus                  |
+| ------------------------------------------ | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare Domain Categorization Feedback  | <https://radar.cloudflare.com/domains/feedback>              | Kategorizálás          |
+| Spamhaus IP és Domain Hírnév Ellenőrző    | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP és Domain Hírnév Központ    | <https://talosintelligence.com/reputation_center>            | Hírnév                 |
+| Barracuda IP és Domain Hírnév Lekérdezés  | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox Tiltólista Ellenőrzés           | <https://mxtoolbox.com/blacklists.aspx>                      | Tiltólista             |
+| Google Postmaster Eszközök                  | <https://www.gmail.com/postmaster/>                          | Hírnév                 |
+| Yahoo Sender Hub                            | <https://senders.yahooinc.com/>                              | Hírnév                 |
+| MultiRBL.valli.org Tiltólista Ellenőrzés  | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | Hírnév                 |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT szintek 1, 2 és 3                | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT backscatterer.org                 | <https://www.backscatterer.org/>                             | Backscatter védelem    |
+| UCEPROTECT whitelisted.org                   | <https://www.whitelisted.org/> (díjköteles)                   | DNSWL                  |
 
+#### IP Eltávolítási Kérelem Űrlapok Szolgáltatónként {#ip-removal-request-forms-by-provider}
+
+Ha az IP címedet egy adott e-mail szolgáltató blokkolta, használd a megfelelő eltávolítási űrlapot vagy az alábbi elérhetőségeket:
+
+| Szolgáltató                            | Eltávolítási űrlap / Kapcsolat                                                                                 | Megjegyzések                                 |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                         | <https://support.google.com/mail/contact/bulk_send_new>                                                        | Tömeges küldő kapcsolatfelvételi űrlap       |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                    | Office 365 IP eltávolító portál               |
+| Yahoo/AOL/Verizon                    | <https://senders.yahooinc.com/>                                                                                | Yahoo Sender Hub                             |
+| Apple/iCloud                       | <https://ipcheck.proofpoint.com/>                                                                              | Az Apple a Proofpoint-et használja IP hírnévhez |
+| Proofpoint                         | <https://ipcheck.proofpoint.com/>                                                                              | Proofpoint IP ellenőrzés és eltávolítás      |
+| Barracuda Networks                 | <https://www.barracudacentral.org/lookups/lookup-reputation>                                                   | Barracuda hírnév lekérdezés és eltávolítás   |
+| Cloudmark                        | <https://csi.cloudmark.com/en/reset/>                                                                          | Cloudmark CSI visszaállítási kérelem          |
+| GoDaddy/SecureServer               | <https://unblock.secureserver.net>                                                                             | GoDaddy IP feloldási kérelem űrlap            |
+| Comcast/Xfinity                  | <https://spa.xfinity.com/report>                                                                               | Comcast IP eltávolítási kérelem               |
+| Charter/Spectrum                 | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                    | Spectrum támogatás elérése eltávolításhoz    |
+| AT&T                               | `abuse_rbl@abuse-att.net`                                                                                      | E-mail eltávolítási kérelemhez                |
+| Cox Communications               | `unblock.request@cox.net`                                                                                      | E-mail eltávolítási kérelemhez                |
+| CenturyLink/Lumen                | `abuse@centurylink.com`                                                                                        | Cloudfilter használata                        |
+| Windstream                       | `abuse@windstream.net`                                                                                         | E-mail eltávolítási kérelemhez                |
+| t-online.de (Németország)         | `tobr@rx.t-online.de`                                                                                          | E-mail eltávolítási kérelemhez                |
+| Orange France                    | <https://postmaster.orange.fr/>                                                                                | Kapcsolatfelvételi űrlap vagy `abuse@orange.fr` e-mail |
+| GMX                             | <https://postmaster.gmx.net/en/contact>                                                                        | GMX postmaster kapcsolatfelvételi űrlap       |
+| Mail.ru                         | <https://postmaster.mail.ru/>                                                                                  | Mail.ru postmaster portál                      |
+| Yandex                          | <https://postmaster.yandex.ru/>                                                                                | Yandex postmaster portál                       |
+| QQ Mail (Tencent)                | <https://open.mail.qq.com/>                                                                                    | QQ Mail fehérlista kérelem (kínai)            |
+| Netease (163.com)                | <https://mail.163.com/postmaster/>                                                                             | Netease postmaster portál                      |
+| Alibaba/Aliyun/HiChina           | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                           | Kapcsolat az Alibaba Cloud konzolon keresztül |
+| Amazon SES                      | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                                   | AWS SES konzol > Tiltólista eltávolítás       |
+| SendGrid                       | <https://support.sendgrid.com/>                                                                                | SendGrid ügyfélszolgálat                       |
+| Mimecast                       | <https://community.mimecast.com/>                                                                              | Harmadik féltől származó RBL-ek használata - konkrét RBL kapcsolat |
+| Fastmail                       | <https://www.fastmail.com/support/>                                                                            | Fastmail ügyfélszolgálat                       |
+| Zoho                           | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address>     | Zoho ügyfélszolgálat                           |
+| ProtonMail                     | <https://proton.me/support/contact>                                                                            | Proton ügyfélszolgálat                         |
+| Tutanota                       | <https://tutanota.com/support>                                                                                 | Tutanota ügyfélszolgálat                       |
+| Hushmail                      | <https://www.hushmail.com/support/>                                                                            | Hushmail ügyfélszolgálat                       |
+| Mailbox.org                   | <https://mailbox.org/en/support>                                                                               | Mailbox.org ügyfélszolgálat                    |
+| Posteo                        | <https://posteo.de/en/site/contact>                                                                            | Posteo ügyfélszolgálat                         |
+| DuckDuckGo Email              | <https://duckduckgo.com/email/support>                                                                         | DuckDuckGo ügyfélszolgálat                     |
+| Sonic.net                    | <https://www.sonic.com/support>                                                                                | Sonic ügyfélszolgálat                          |
+| Telus                        | <https://www.telus.com/en/support>                                                                             | Telus ügyfélszolgálat                          |
+| Vodafone Germany             | <https://www.vodafone.de/hilfe/>                                                                               | Vodafone ügyfélszolgálat                       |
+| Xtra (Spark NZ)              | <https://www.spark.co.nz/help/>                                                                                | Spark NZ ügyfélszolgálat                       |
+| UOL/BOL (Brazília)           | <https://ajuda.uol.com.br/>                                                                                    | UOL ügyfélszolgálat (portugál)                 |
+| Libero (Olaszország)          | <https://aiuto.libero.it/>                                                                                     | Libero ügyfélszolgálat (olasz)                 |
+| Telenet (Belgium)            | <https://www2.telenet.be/en/support/>                                                                          | Telenet ügyfélszolgálat                        |
+| Facebook/WhatsApp            | <https://www.facebook.com/business/help>                                                                       | Facebook üzleti ügyfélszolgálat                 |
+| LinkedIn                    | <https://www.linkedin.com/help/linkedin>                                                                       | LinkedIn ügyfélszolgálat                       |
+| Groups.io                   | <https://groups.io/helpcenter>                                                                                 | Groups.io ügyfélszolgálat                      |
+| Earthlink/Vade Secure       | <https://sendertool.vadesecure.com/en/>                                                                        | Vade Secure küldő eszköz                       |
+| Cloudflare Email Security   | <https://www.cloudflare.com/products/zero-trust/email-security/>                                               | Cloudflare ügyfélszolgálat                      |
+| Hornetsecurity/Expurgate    | <https://www.hornetsecurity.com/>                                                                              | Hornetsecurity ügyfélszolgálat                  |
+| SpamExperts/Antispamcloud   | <https://www.spamexperts.com/>                                                                                 | Hosting szolgáltatón keresztüli kapcsolat      |
+| Mail2World                 | <https://www.mail2world.com/support/>                                                                          | Mail2World ügyfélszolgálat                      |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Kezdjen alacsony mennyiségű, magas minőségű e-mailekkel, hogy pozitív hírnevet építsen ki, mielőtt nagyobb mennyiségben küldene.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Ha a domainje szerepel egy feketelistán, minden feketelistának megvan a saját eltávolítási folyamata. Ellenőrizze a weboldalaikat az utasításokért.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Ha további segítségre van szüksége, vagy úgy találja, hogy tévesen spamként van listázva egy bizonyos e-mail szolgáltató által, kérjük, <a href="/help">lépjen kapcsolatba velünk</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### Mit tegyek, ha spam e-maileket kapok {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+Le kell iratkoznia a levelezőlistáról (ha lehetséges), és le kell tiltania a feladót.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+Kérjük, ne jelentsen be üzenetet spamként, hanem továbbítsa azt a kézzel válogatott és adatvédelmi szempontból fókuszált visszaélés-megelőző rendszerünknek.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**A spam továbbítására szolgáló e-mail cím:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Miért jelennek meg a saját magamnak küldött teszt e-mailek a Gmailben „gyanúsként”? {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+Ha ezt a hibaüzenetet látja a Gmailben, amikor magának küld tesztet, vagy amikor az aliasával e-mailt váltó személy először látja az Ön e-mailjét, akkor **kérjük, ne aggódjon** – ez a Gmail beépített biztonsági funkciója.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+Egyszerűen kattintson a „Biztonságosnak tűnik” gombra. Például, ha a „küldés másként” funkcióval küldene tesztüzenetet (valaki másnak), akkor ők nem fogják látni ezt az üzenetet.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+Ha mégis látják ezt az üzenetet, az azért van, mert általában az <john@gmail.com> címről szoktak e-maileket kapni Öntől, nem pedig a <john@customdomain.com> címről (ez csak egy példa). A Gmail figyelmezteti a felhasználókat, hogy megbizonyosodjon arról, hogy minden biztonságos, nincs megkerülő megoldás.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Eltávolíthatom a via forwardemail dot net megjelenést a Gmailben? {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+Ez a téma kapcsolódik egy [széles körben ismert Gmail problémához, ahol extra információ jelenik meg a feladó neve mellett](https://support.google.com/mail/answer/1311182).
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+2023 májusa óta támogatjuk az SMTP-vel történő e-mail küldést kiegészítőként minden fizetős felhasználó számára – ami azt jelenti, hogy eltávolíthatja a <span class="notranslate">via forwardemail dot net</span> megjelenést a Gmailben.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+Vegye figyelembe, hogy ez a GYIK téma kifejezetten azoknak szól, akik a [Hogyan küldjünk levelet Gmail használatával](#how-to-send-mail-as-using-gmail) funkciót használják.
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+Kérjük, tekintse meg a [Támogatják-e az SMTP-vel történő e-mail küldést](#do-you-support-sending-email-with-smtp) szakaszt a konfigurációs utasításokért.
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## Adatkezelés {#data-management}
+
+### Hol találhatók a szervereik? {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Hamarosan bejelenthetjük az EU adatközpontunk helyszínét, amely a [forwardemail.eu](https://forwardemail.eu) alatt működik. Iratkozzon fel a beszélgetésre a <https://github.com/orgs/forwardemail/discussions/336> címen a frissítésekért.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+Szervereink elsősorban Denverben, Colorado államban találhatók – a teljes IP-cím listánkat lásd a <https://forwardemail.net/ips> oldalon.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+A feldolgozó alvállalkozóinkról a [GDPR](/gdpr), [DPA](/dpa) és [Adatvédelem](/privacy) oldalainkon tájékozódhat.
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### Hogyan exportálhatom és készíthetek biztonsági mentést a postafiókomról? {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+Bármikor exportálhatja postafiókjait [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) vagy titkosított [SQLite](https://en.wikipedia.org/wiki/SQLite) formátumban.
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Fiókom <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok <i class="fa fa-angle-right"></i> Biztonsági mentés letöltése menüpontra, és válassza ki a kívánt export formátumot.
 
-You will be emailed a link to download the export once it has finished.
+Az exportálás befejezése után e-mailben kap egy letöltési linket.
 
-Note that this export download link expires after 4 hours for security concerns.
+Megjegyzés: a biztonsági okokból ez a letöltési link 4 óra után lejár.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+Ha meg szeretné tekinteni az exportált EML vagy Mbox formátumokat, ezek az open-source eszközök hasznosak lehetnek:
 
-| Name | Format | Platform | GitHub URL |
-| --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
-
+| Név             | Formátum | Platform      | GitHub URL                                          |
+| --------------- | :------: | ------------- | -------------------------------------------------- |
+| MBox Viewer     |  Mbox    | Windows       | <https://github.com/eneam/mboxviewer>              |
+| mbox-web-viewer |  Mbox    | Minden platform | <https://github.com/PHMRanger/mbox-web-viewer>    |
+| EmlReader       |   EML    | Windows       | <https://github.com/ayamadori/EmlReader>           |
+| Email viewer    |   EML    | VSCode        | <https://github.com/joelharkes/vscode_email_viewer>|
+| eml-reader      |   EML    | Minden platform | <https://github.com/s0ph1e/eml-reader>             |
 Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
+### Hogyan importáljam és migráljam a meglévő postafiókomat {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+Könnyedén importálhatja az e-mailjeit a Forward Email szolgáltatásba (például [Thunderbird](https://www.thunderbird.net) használatával) az alábbi utasítások szerint:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    Az e-mailje meglévő importálásához kövesse az alábbi összes lépést.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. Exportálja az e-mailjeit a meglévő e-mail szolgáltatójától:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | E-mail szolgáltató | Export formátum                                | Exportálási utasítások                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | ------------------ | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail              | MBOX                                           | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook            | PST                                            | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tipp:</strong> <span>Ha Outlookot használ (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export formátum</a>), akkor egyszerűen követheti az alábbi "Egyéb" részben található utasításokat. Azonban az alábbi linkeken megtalálja a PST MBOX/EML formátumba konvertálásának lehetőségeit az operációs rendszerének megfelelően:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba Windowsra</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst Windows cygwinhez</a> – (pl. <code>readpst -u -o $OUT_DIR $IN_DIR</code>, ahol a <code>$OUT_DIR</code> és <code>$IN_DIR</code> az output és input könyvtárak elérési útjai).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst Ubuntu/Linuxhoz</a> – (pl. <code>sudo apt-get install readpst</code>, majd <code>readpst -u -o $OUT_DIR $IN_DIR</code>, ahol a <code>$OUT_DIR</code> és <code>$IN_DIR</code> az output és input könyvtárak elérési útjai).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst macOS-hez (brew segítségével)</a> – (pl. <code>brew install libpst</code>, majd <code>readpst -u -o $OUT_DIR $IN_DIR</code>, ahol a <code>$OUT_DIR</code> és <code>$IN_DIR</code> az output és input könyvtárak elérési útjai).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter Windowsra (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail         | MBOX                                           | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail           | EML                                            | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail        | MBOX/EML                                       | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota           | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi              | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho               | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | Egyéb              | [Használja a Thunderbirdöt](https://www.thunderbird.net) | Állítsa be meglévő e-mail fiókját a Thunderbirdben, majd használja az [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) bővítményt az e-mailek exportálásához és importálásához.  **Lehet, hogy egyszerűen másolással/beillesztéssel vagy húzással is át tudja vinni az e-maileket egyik fiókból a másikba.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. Töltse le, telepítse és nyissa meg a [Thunderbird](https://www.thunderbird.net) programot.
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. Hozzon létre egy új fiókot az alias teljes e-mail címével (pl. <code><you@yourdomain.com></code>) és a generált jelszavával.  <strong>Ha még nincs generált jelszava, akkor <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">tekintse meg a beállítási útmutatónkat</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. Töltse le és telepítse a [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird bővítményt.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. Hozzon létre egy új helyi mappát a Thunderbirdben, majd kattintson rá jobb gombbal → válassza az `ImportExportTools NG` opciót → válassza az `Import mbox file` lehetőséget (MBOX export formátum esetén) – vagy – az `Import messages` / `Import all messages from a directory` lehetőséget (EML export formátum esetén).
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. Húzza át a helyi mappából az üzeneteket egy új (vagy meglévő) IMAP mappába a Thunderbirdben, ahová az üzeneteket fel szeretné tölteni az IMAP tárhelyre a szolgáltatásunkkal.  Ez biztosítja, hogy az üzenetek online biztonsági mentésre kerüljenek az SQLite titkosított tárolónkban.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Ha bizonytalan, hogyan importáljon Thunderbirdbe, akkor hivatkozhat a hivatalos útmutatókra a <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> és a <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a> oldalakon.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    Miután befejezte az exportálási és importálási folyamatot, érdemes lehet engedélyezni a továbbítást a meglévő e-mail fiókján, és beállítani egy automatikus válaszadót, amely értesíti a küldőket, hogy új e-mail címe van (pl. ha korábban Gmailt használt, és most egy egyedi domain névvel rendelkező e-mailt használ).
   </span>
 </div>
 
@@ -1064,224 +1112,431 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulálunk!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Sikeresen végrehajtotta az összes lépést.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### Hogyan használhatom a saját S3-kompatibilis tárolómat biztonsági mentésekhez {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+A fizetős csomagok felhasználói domainenként konfigurálhatják saját [S3](https://en.wikipedia.org/wiki/Amazon_S3)-kompatibilis tárolószolgáltatójukat az IMAP/SQLite biztonsági mentésekhez. Ez azt jelenti, hogy a titkosított postaláda biztonsági mentései a saját infrastruktúrájukon tárolhatók az alapértelmezett tárolónk helyett (vagy mellett).
 
-## Email Configuration {#email-configuration}
+A támogatott szolgáltatók közé tartozik az [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces) és bármely más S3-kompatibilis szolgáltatás.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### Beállítás {#setup}
+
+1. Hozzon létre egy **privát** tárolót (bucket) az S3-kompatibilis szolgáltatójánál. A tároló nem lehet nyilvánosan elérhető.
+2. Hozzon létre hozzáférési adatokat (hozzáférési kulcsazonosító és titkos hozzáférési kulcs) olvasási/írási jogosultsággal a tárolóhoz.
+3. Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain nevek</a> <i class="fa fa-angle-right"></i> Speciális beállítások <i class="fa fa-angle-right"></i> Egyedi S3-kompatibilis tároló oldalra.
+4. Jelölje be az **„Egyedi S3-kompatibilis tároló engedélyezése”** opciót, és töltse ki a végpont URL-jét, hozzáférési kulcsazonosítóját, titkos hozzáférési kulcsát, régióját és a tároló nevét.
+5. Kattintson a **„Kapcsolat tesztelése”** gombra a hitelesítő adatok, a tároló elérése és az írási jogosultságok ellenőrzéséhez.
+6. Kattintson a **„Mentés”** gombra a beállítások alkalmazásához.
+
+#### Hogyan működnek a biztonsági mentések {#how-backups-work}
+
+A biztonsági mentések automatikusan indulnak minden csatlakoztatott IMAP alias esetén. Az IMAP szerver óránként egyszer ellenőrzi az összes aktív kapcsolatot, és biztonsági mentést indít minden csatlakoztatott alias számára. Egy Redis-alapú zárolás megakadályozza, hogy 30 percen belül ismétlődő biztonsági mentések fussanak, és a tényleges biztonsági mentés kihagyásra kerül, ha az elmúlt 24 órában már sikeres mentés történt (kivéve, ha a mentést a felhasználó kifejezetten letöltés céljából kérte).
+A biztonsági mentések manuálisan is elindíthatók a műszerfalon bármelyik alias mellett a **"Biztonsági mentés letöltése"** gombra kattintva. A manuális biztonsági mentések mindig lefutnak, függetlenül a 24 órás időablaktól.
+
+A biztonsági mentés folyamata a következő:
+
+1. Az SQLite adatbázis `VACUUM INTO` használatával kerül másolásra, amely megszakítás nélkül hoz létre egy konzisztens pillanatképet, és megőrzi az adatbázis titkosítását.
+2. A biztonsági mentés fájl megnyitásával ellenőrzésre kerül, hogy a titkosítás továbbra is érvényes-e.
+3. Egy SHA-256 hash kerül kiszámításra és összehasonlításra a tárolt meglévő biztonsági mentéssel. Ha a hash megegyezik, a feltöltés kihagyásra kerül (nincs változás az utolsó mentés óta).
+4. A biztonsági mentés az [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage) könyvtár segítségével multipart feltöltéssel kerül feltöltésre az S3-ra.
+5. Egy aláírt letöltési URL (4 órán át érvényes) generálódik és e-mailben elküldésre kerül a felhasználónak.
+
+#### Biztonsági mentési formátumok {#backup-formats}
+
+Három biztonsági mentési formátum támogatott:
+
+| Formátum | Kiterjesztés | Leírás                                                                 |
+| -------- | ------------ | --------------------------------------------------------------------- |
+| `sqlite` | `.sqlite`    | Nyers titkosított SQLite adatbázis pillanatkép (alapértelmezett automatikus IMAP mentésekhez) |
+| `mbox`   | `.zip`       | Jelszóval védett ZIP, amely a postaládát mbox formátumban tartalmazza |
+| `eml`    | `.zip`       | Jelszóval védett ZIP, amely egyedi `.eml` fájlokat tartalmaz üzenetenként |
+
+> **Tipp:** Ha rendelkezel `.sqlite` biztonsági mentési fájlokkal és helyben szeretnéd őket `.eml` fájlokká konvertálni, használd önálló CLI eszközünket, a **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**-t. Ez Windows, Linux és macOS rendszereken működik, és nem igényel hálózati kapcsolatot.
+
+#### Fájlnév és kulcs szerkezet {#file-naming-and-key-structure}
+
+Egyedi S3 tároló használata esetén a biztonsági mentési fájlok [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) időbélyeg előtaggal kerülnek tárolásra, így minden mentés külön objektumként megőrződik. Ez teljes biztonsági mentési előzményt biztosít a saját tárolódban.
+
+A kulcs formátuma:
+
+```
+{ISO 8601 időbélyeg}-{alias_id}.{kiterjesztés}
+```
+
+Például:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+Az `alias_id` az alias MongoDB ObjectId-ja. Megtalálhatod az alias beállítási oldalán vagy az API-n keresztül.
+
+Alapértelmezett (rendszer) tároló használata esetén a kulcs lapos (pl. `65a31c53c36b75ed685f3fda.sqlite`), és minden mentés felülírja az előzőt.
+
+> **Megjegyzés:** Mivel az egyedi S3 tároló megőrzi az összes biztonsági mentés verziót, a tárolóhasználat idővel növekedni fog. Ajánljuk, hogy konfigurálj [élettartam-szabályokat](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) a tárolódon, hogy automatikusan lejárjanak a régi mentések (pl. töröld a 30 vagy 90 napnál régebbi objektumokat).
+
+#### Adattulajdon és törlési szabályzat {#data-ownership-and-deletion-policy}
+
+Az egyedi S3 tárolód teljes mértékben a te irányításod alatt áll. Mi **soha nem törlünk vagy módosítunk** fájlokat az egyedi S3 tárolódban — sem alias törléskor, sem domain eltávolításakor, sem bármilyen takarítási művelet során. Csak új biztonsági mentési fájlokat írunk a tárolódba.
+
+Ez azt jelenti:
+
+* **Alias törlés** — Amikor törölsz egy alias-t, csak az alapértelmezett rendszer tárolóból töröljük a biztonsági mentést. Az egyedi S3 tárolóban korábban írt mentések érintetlenek maradnak.
+* **Domain eltávolítás** — A domain eltávolítása nem érinti az egyedi tároló fájljait.
+* **Megőrzés kezelése** — A tároló kezeléséért, beleértve az élettartam-szabályok beállítását a régi mentések lejáratására, te vagy felelős a saját tárolódban.
+
+Ha letiltod az egyedi S3 tárolót vagy visszaváltasz az alapértelmezett tárolóra, a tárolódban lévő meglévő fájlok megőrződnek. A jövőbeni mentések egyszerűen az alapértelmezett tárolóba kerülnek.
+
+#### Biztonság {#security}
+
+* A hozzáférési kulcsazonosító és titkos kulcs **titkosítva van tároláskor** [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) használatával, mielőtt az adatbázisunkba kerülne. Csak futásidőben kerülnek visszafejtésre a biztonsági mentési műveletek során.
+* Automatikusan ellenőrizzük, hogy a tárolód **nem nyilvánosan elérhető**. Ha nyilvános tárolót észlelünk, a konfiguráció mentéskor elutasításra kerül. Ha nyilvános hozzáférés észlelhető a mentés idején, visszatérünk az alapértelmezett tárolóra, és e-mailben értesítjük az összes domain adminisztrátort.
+* A hitelesítő adatok mentéskor egy [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html) hívással kerülnek ellenőrzésre, hogy a tároló létezik és a hitelesítő adatok helyesek-e. Sikertelen ellenőrzés esetén az egyedi S3 tároló automatikusan letiltásra kerül.
+* Minden biztonsági mentési fájl tartalmaz egy SHA-256 hash-t az S3 metaadataiban, amelyet az változatlan adatbázisok felismerésére és a felesleges feltöltések kihagyására használunk.
+#### Hibajelzések {#error-notifications}
+
+Ha egy mentés sikertelen a saját egyedi S3 tároló használatakor (pl. lejárt hitelesítő adatok vagy kapcsolódási probléma miatt), az összes domain adminisztrátor e-mailben értesítést kap. Ezek az értesítések óránként legfeljebb egyszer küldhetők az ismétlődő riasztások elkerülése érdekében. Ha a mentés idején a vödör nyilvánosan elérhetőnek van észlelve, az adminisztrátorok naponta egyszer kapnak értesítést.
+
+#### API {#api}
+
+Az egyedi S3 tárolót az API-n keresztül is konfigurálhatja:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+A kapcsolat tesztelése az API-n keresztül:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### Hogyan konvertálhatom az SQLite mentéseket EML fájlokká {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+Ha letölti vagy tárolja az SQLite mentéseket (akár az alapértelmezett tárolónkból, akár a saját [egyedi S3 vödréből](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), azokat a szabványos `.eml` fájlokká alakíthatja a különálló CLI eszközünkkel, a **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** segítségével. Az EML fájlok bármelyik e-mail klienssel megnyithatók ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) stb.), vagy importálhatók más levelezőszerverekbe.
+
+#### Telepítés {#installation-1}
+
+Letölthet egy előre elkészített binárist (nem szükséges [Node.js](https://github.com/nodejs/node)) vagy futtathatja közvetlenül [Node.js](https://github.com/nodejs/node) segítségével:
+
+**Előre elkészített binárisok** — Töltse le a legfrissebb kiadást a platformjához a [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases) oldalról:
+
+| Platform | Architektúra  | Fájl                                 |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **macOS felhasználók:** A letöltés után előfordulhat, hogy el kell távolítani a karantén attribútumot a bináris futtatása előtt:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (Cserélje ki a `./convert-sqlite-to-eml-darwin-arm64` részt a letöltött fájl tényleges elérési útjára.)
+
+> **Linux felhasználók:** A letöltés után előfordulhat, hogy futtathatóvá kell tenni a binárist:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (Cserélje ki a `./convert-sqlite-to-eml-linux-x64` részt a letöltött fájl tényleges elérési útjára.)
+
+**Forrásból** ([Node.js](https://github.com/nodejs/node) >= 18 szükséges):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### Használat {#usage}
+
+Az eszköz támogatja az interaktív és nem interaktív módot is.
+
+**Interaktív mód** — argumentumok nélkül futtatva minden bemenetre kérdez:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - SQLite mentés konvertálása EML-be
+  ================================================
+
+  SQLite mentés fájl elérési útja: /path/to/backup.sqlite
+  IMAP/alias jelszó: ********
+  Kimeneti ZIP elérési út [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**Nem interaktív mód** — parancssori kapcsolókkal adhat meg argumentumokat szkriptekhez és automatizáláshoz:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| Kapcsoló             | Leírás                                                                        |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `--path <path>`      | Az titkosított SQLite mentés fájl elérési útja                                |
+| `--password <pass>`  | IMAP/alias jelszó a dekódoláshoz                                              |
+| `--output <path>`    | A ZIP fájl kimeneti elérési útja (alapértelmezett: ISO 8601 időbélyeggel generált) |
+| `--help`             | Súgó üzenet megjelenítése                                                     |
+#### Kimeneti formátum {#output-format}
+
+Az eszköz egy jelszóval védett ZIP archívumot készít (AES-256 titkosítással), amely tartalmazza:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+Az EML fájlok a postaláda mappái szerint vannak rendszerezve. A ZIP jelszó megegyezik az IMAP/alias jelszavaddal. Minden `.eml` fájl egy szabványos [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) e-mail üzenet teljes fejlécével, törzsszövegével és a SQLite adatbázisból rekonstruált csatolmányokkal.
+
+#### Hogyan működik {#how-it-works}
+
+1. Megnyitja a titkosított SQLite adatbázist az IMAP/alias jelszavaddal (támogatja mind a [ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305), mind az [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) titkosítást).
+2. Beolvassa a Mailboxes táblát a mappaszerkezet feltérképezéséhez.
+3. Minden üzenethez dekódolja a mimeTree-t (amely [Brotli](https://github.com/google/brotli) tömörítésű JSON formátumban van tárolva) a Messages táblából.
+4. Rekonstruálja a teljes EML-t a MIME fa bejárásával és a csatolmányok törzsének lekérésével az Attachments táblából.
+5. Mindent egy jelszóval védett ZIP archívumba csomagol a [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted) segítségével.
+
+### Támogatjátok az önálló üzemeltetést? {#do-you-support-self-hosting}
+
+Igen, 2025 márciusa óta támogatjuk az önálló üzemeltetési lehetőséget. Olvasd el a blogot [itt](https://forwardemail.net/blog/docs/self-hosted-solution). Nézd meg az [önálló üzemeltetési útmutatót](https://forwardemail.net/self-hosted) a kezdéshez. Azok számára, akik részletesebb, lépésről lépésre bontott verziót szeretnének, elérhetőek az [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) és [Debian](https://forwardemail.net/guides/selfhosted-on-debian) alapú útmutatók.
+
+
+## E-mail beállítás {#email-configuration}
+
+### Hogyan kezdjek hozzá és állítsam be az e-mail továbbítást? {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Becsült beállítási idő:</strong>
+  <span>Kevesebb, mint 10 perc</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Kezdés:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    Figyelmesen olvasd el és kövesd az alábbi egytől nyolcig felsorolt lépéseket. Mindig cseréld ki a <code>user@gmail.com</code> e-mail címet arra az e-mail címre, amelyre továbbítani szeretnéd az üzeneteket (ha még nem pontos). Hasonlóképpen cseréld ki az <code>example.com</code> domaint a saját egyedi domain nevedre (ha még nem pontos).
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">Ha már regisztráltad a domain neved valahol, akkor ezt a lépést teljesen át kell ugrani, és lépj a második lépésre! Ellenkező esetben <a href="/domain-registration" rel="noopener noreferrer">kattints ide a domain neved regisztrálásához</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  Emlékszel, hol regisztráltad a domain neved? Ha igen, akkor kövesd az alábbi utasításokat:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    Nyiss meg egy új fület, és jelentkezz be a domain regisztrátorodhoz. Egyszerűen kattinthatsz az alábbi "Regisztrátor" linkre, hogy automatikusan megnyíljon. Ebben az új fülben navigálj el a DNS kezelő oldalra a regisztrátornál – az alábbi "Lépések a beállításhoz" oszlopban megtalálod a részletes navigációs lépéseket. Miután eljutottál erre az oldalra az új fülön, visszatérhetsz ehhez a fülhöz, és folytathatod a harmadik lépéssel.
+    <strong class="font-weight-bold">Ne zárd be még az újonnan megnyitott fület; szükséged lesz rá a további lépésekhez!</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>Regisztrátor</th>
+      <th>Lépések a beállításhoz</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Domainközpont <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> DNS beállítások szerkesztése</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Válaszd ki a domained)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Saját szerverek <i class="fa fa-angle-right"></i> Domain kezelés <i class="fa fa-angle-right"></i> DNS kezelő</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>ROCK: Jelentkezz be <i class="fa fa-angle-right"></i> Domain-ek <i class="fa fa-angle-right"></i> (Kattints a ▼ ikonra a kezelő mellett) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      LEGACY: Jelentkezz be <i class="fa fa-angle-right"></i> Domain-ek <i class="fa fa-angle-right"></i> Zóna szerkesztő <i class="fa fa-angle-right"></i> (Válaszd ki a domained)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Válaszd ki a domained)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> (Válaszd ki a domained)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Kezelés</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Hálózat <i class="fa fa-angle-right"></i> Domain-ek <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> Továbbiak <i class="fa fa-angle-right"></i> Domain kezelése</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Kártyanézetben kattints a kezelőre a domainednél <i class="fa fa-angle-right"></i> Listanézetben kattints a fogaskerék ikonra <i class="fa fa-angle-right"></i> DNS és névszerverek <i class="fa fa-angle-right"></i> DNS rekordok</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Nézd meg</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> Kezelés <i class="fa fa-angle-right"></i> (kattints a fogaskerék ikonra) <i class="fa fa-angle-right"></i> Kattints a DNS és névszerverek menüpontra a bal oldali menüben</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domain-ek <i class="fa fa-angle-right"></i> Domain kezelése <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Áttekintés <i class="fa fa-angle-right"></i> Kezelés <i class="fa fa-angle-right"></i> Egyszerű szerkesztő <i class="fa fa-angle-right"></i> Rekordok</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> Kezelés <i class="fa fa-angle-right"></i> Zóna szerkesztése</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Nézd meg</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Domainjeim kezelése <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> DNS kezelése</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Nézd meg</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> DNS konfigurálása</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Nézd meg</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Domain lista <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> Kezelés <i class="fa fa-angle-right"></i> Haladó DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> Netlify DNS beállítása</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Fiókkezelő <i class="fa fa-angle-right"></i> Domain neveim <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> Kezelés <i class="fa fa-angle-right"></i> Domain céljának módosítása <i class="fa fa-angle-right"></i> Haladó DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Nézd meg</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Kezelt domain-ek <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> DNS beállítások</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Főmenü <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Domain-ek <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i>
+Haladó beállítások <i class="fa fa-angle-right"></i> Egyedi rekordok</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>"now" CLI használata <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Domain oldal <i class="fa fa-angle-right"></i> (Válaszd ki a domained) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Domain oldal <i class="fa fa-angle-right"></i> (Kattints a <i class="fa fa-ellipsis-h"></i> ikonra) <i class="fa fa-angle-right"></i> Válaszd a DNS rekordok kezelése lehetőséget</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>Jelentkezz be <i class="fa fa-angle-right"></i> Domain-ek <i class="fa fa-angle-right"></i> Saját domain-ek</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>Más</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Fontos:</strong> Nem találod a regisztrátorod nevét a listában? Egyszerűen keress rá az interneten a "hogyan változtassuk meg a DNS rekordokat $REGISTRÁTOR-nál" kifejezésre (ahol $REGISTRÁTOR helyére a regisztrátorod nevét írd, pl. "hogyan változtassuk meg a DNS rekordokat GoDaddy-nál", ha GoDaddy-t használsz).</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">A regisztrátorod DNS kezelő oldalán (a másik megnyitott fülön) állítsd be a következő "MX" rekordokat:
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    Vegye figyelembe, hogy NEM lehet más MX rekord beállítva. Mindkét alább látható rekordnak LÉTEZNIE KELL. Győződjön meg róla, hogy nincs elírás; és hogy mind a mx1, mind az mx2 helyesen van írva. Ha már léteztek MX rekordok, kérjük, törölje őket teljesen.
+    A "TTL" értéknek nem kell feltétlenül 3600-nak lennie, szükség esetén lehet alacsonyabb vagy magasabb érték is.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Priority</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Prioritás</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1545,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Használja a regisztrátor DNS kezelő oldalát (a másik megnyitott fülön), és állítsa be a következő <strong class="notranslate">TXT</strong> rekord(oka)t:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    Ha fizetős csomagon van, akkor ezt a lépést teljesen ki kell hagynia, és lépjen az ötödik lépésre! Ha nem fizetős csomagon van, akkor az átirányított címek nyilvánosan kereshetőek lesznek – menjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> oldalra, és ha szeretné, frissítse a domainjét fizetős csomagra. Ha többet szeretne megtudni a fizetős csomagokról, nézze meg a <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Árazás</a> oldalunkat. Egyébként folytathatja az alább felsorolt A-tól F-ig terjedő lehetőségek közül egy vagy több kombináció kiválasztásával.
   </span>
 </div>
 
@@ -1307,25 +1562,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    A lehetőség:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    Ha az összes e-mailt a domainjéről (pl. "all@example.com", "hello@example.com" stb.) egy adott címre, például "user@gmail.com"-ra továbbítja:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1338,10 +1593,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Győződjön meg róla, hogy a fenti "Érték" oszlopban szereplő értékeket a saját e-mail címére cseréli. A "TTL" értéknek nem kell feltétlenül 3600-nak lennie, szükség esetén lehet alacsonyabb vagy magasabb érték is. Az alacsonyabb TTL érték biztosítja, hogy a DNS rekordok jövőbeni változásai gyorsabban terjedjenek el az interneten – gondoljon erre úgy, mint arra, hogy mennyi ideig lesz memóriában (másodpercekben). További információkat talál a <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL-ről a Wikipédián</a>.
   </span>
 </div>
 
@@ -1350,25 +1605,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    B lehetőség:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    Ha csak egyetlen e-mail címet kell továbbítania (pl. <code>hello@example.com</code> címről <code>user@gmail.com</code> címre; ez automatikusan továbbítja a "hello+test@example.com" címet is "user+test@gmail.com"-ra):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1637,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    C lehetőség:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    Ha több e-mailt továbbítasz, akkor vesszővel kell elválasztanod őket:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1670,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    D lehetőség:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    Végtelen számú továbbító e-mailt beállíthatsz – csak ügyelj arra, hogy egy sorban ne legyen több mint 255 karakter, és minden sort "forward-email=" kezdetűvel indíts. Az alábbi példa mutatja:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1696,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1704,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1712,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1720,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1735,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    E lehetőség:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    Megadhatsz egy domain nevet is a <strong class="notranslate">TXT</strong> rekordodban, hogy globális alias továbbítást állíts be (pl. a "user@example.com" továbbítva lesz a "user@example.net" címre):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1768,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    F lehetőség:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    Még webhookokat is használhatsz globális vagy egyéni aliasokként az e-mailek továbbításához. Lásd az alábbi példát és a webhookokról szóló teljes szakaszt a <a href="#do-you-support-webhooks" class="alert-link">Támogatjátok a webhookokat?</a> cím alatt.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1800,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    G opció:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    Használhatsz akár reguláris kifejezéseket ("regex") az aliasok egyeztetésére és az e-mailek továbbításának kezelésére. Lásd az alábbi példákat és a teljes regex szakaszt <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Támogatjátok a reguláris kifejezéseket vagy regexet?</a>.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>Haladó regex helyettesítéssel?</strong> Lásd az alábbi példákat és a teljes regex szakaszt <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Támogatjátok a reguláris kifejezéseket vagy regexet?</a>.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Egyszerű példa:</strong> Ha azt szeretném, hogy minden `linus@example.com` vagy `torvalds@example.com` címre érkező e-mail továbbítódjon a `user@gmail.com` címre:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1841,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    A catch-all továbbítási szabályokat "átengedő" szabályként is lehet értelmezni.
+    Ez azt jelenti, hogy a bejövő e-mailek, amelyek legalább egy konkrét továbbítási szabálynak megfelelnek, azt a szabályt használják a catch-all helyett.
+    A konkrét szabályok közé tartoznak az e-mail címek és a reguláris kifejezések.
     <br /><br />
-    For example:
+    Például:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    Az <code>hello@example.com</code> címre küldött e-mailek **nem** lesznek továbbítva a <code>second@gmail.com</code> (catch-all) címre ezzel a beállítással, hanem csak a <code>first@gmail.com</code> címre érkeznek meg.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Használd a regisztrátorod DNS kezelő oldalát (a másik megnyitott fülön), és állítsd be a következő <strong class="notranslate">TXT</strong> rekordot is:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1882,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Ha Gmailt (pl. Küldés másként) vagy G Suite-ot használsz, akkor a fenti értékhez hozzá kell fűznöd a <code>include:_spf.google.com</code> részt, például:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1641,34 +1894,33 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Ha már van hasonló "v=spf1" sorod, akkor a <code>include:spf.forwardemail.net</code> részt a meglévő "include:host.com" rekordok elé és a sor végén lévő "-all" elé kell beszúrnod, például:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Fontos különbség van a "-all" és a "~all" között. A "-" azt jelzi, hogy az SPF ellenőrzés HIBÁS lesz, ha nem egyezik, míg a "~" azt, hogy az SPF ellenőrzés SOFTFAIL lesz. Ajánlott a "-all" használata a domain hamisítás megelőzésére.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Előfordulhat, hogy az SPF rekordot a levelező szerveredhez (pl. Outlook) is hozzá kell adnod.
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">Ellenőrizze DNS rekordjait a "Rekordok ellenőrzése" eszközünkkel, amely elérhető a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Beállítás menüpont alatt.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Küldjön egy teszt e-mailt, hogy megerősítse, működik. Vegye figyelembe, hogy a DNS rekordok terjedése eltarthat egy ideig.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    Ha nem kap teszt e-maileket, vagy olyan teszt e-mailt kap, amely azt írja, hogy "Legyen óvatos ezzel az üzenettel", akkor nézze meg a válaszokat a <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Miért nem kapom meg a teszt e-maileimet</a> és a <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Miért jelennek meg a Gmailben magamnak küldött teszt e-mailek "gyanúsként"</a> kérdésekre.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Ha szeretne a Gmailből "Levél küldése másként" funkciót használni, akkor <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">nézze meg ezt a videót</a></strong>, vagy kövesse az alábbi <a href="#how-to-send-mail-as-using-gmail">Levél küldése másként Gmail használatával</a> lépéseit.
 
 </li></ol>
 
@@ -1676,10 +1928,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulálunk!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Sikeresen végrehajtotta az összes lépést.
     </span>
   </div>
 </div>
@@ -1687,93 +1939,92 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    Az opcionális kiegészítők alább találhatók. Vegye figyelembe, hogy ezek a kiegészítők teljesen opcionálisak, és nem feltétlenül szükségesek. Csak azért adtuk meg őket, hogy szükség esetén további információval szolgáljunk.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    Opcionális kiegészítő:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    Ha használja a <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Levél küldése másként Gmail használatával</a> funkciót, akkor érdemes lehet felvennie magát egy engedélyezési listára. Erről további információt talál a <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">Gmail útmutatójában</a>.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Használhatok több MX cserehelyet és szervert a fejlett továbbításhoz? {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+Igen, de **DNS rekordjaiban csak egy MX cserehelyet szabad megadnia**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+Ne próbálja meg a "Prioritás" beállítást több MX cserehely konfigurálására használni.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+Ehelyett konfigurálnia kell meglévő MX cserehelyét úgy, hogy az összes nem egyező alias leveleit továbbítsa szolgáltatásunk cserehelyeire (`mx1.forwardemail.net` és/vagy `mx2.forwardemail.net`).
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Ha Google Workspace-t használ, és szeretné az összes nem egyező alias leveleit szolgáltatásunkhoz továbbítani, akkor nézze meg a <https://support.google.com/a/answer/6297084> oldalt.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Ha Microsoft 365-öt (Outlook) használ, és szeretné az összes nem egyező alias leveleit szolgáltatásunkhoz továbbítani, akkor nézze meg a <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> és a <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations> oldalakat.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Hogyan állítsak be szabadságválaszt (irodán kívüli automatikus válaszadó) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontra, és hozzon létre vagy szerkesszen egy alias-t, amelyhez szabadságválaszt szeretne beállítani.
+Lehetőséged van beállítani egy kezdő dátumot, befejező dátumot, tárgyat és üzenetet, valamint bármikor engedélyezni vagy letiltani azt:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* Jelenleg csak egyszerű szöveges tárgy és üzenet támogatott (belsejében a `striptags` csomagot használjuk az esetleges HTML eltávolítására).
+* A tárgy legfeljebb 100 karakter hosszú lehet.
+* Az üzenet legfeljebb 1000 karakter hosszú lehet.
+* A beállításhoz szükséges a kimenő SMTP konfiguráció (pl. be kell állítanod a DKIM, DMARC és Return-Path DNS rekordokat).
+  * Lépj a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Kimenő SMTP konfiguráció oldalra, és kövesd a beállítási utasításokat.
+* A szabadságválaszoló nem engedélyezhető globális vanity domain neveken (pl. a [eldobható címek](/disposable-addresses) nem támogatottak).
+* A szabadságválaszoló nem engedélyezhető wildcard/catch-all (`*`) vagy reguláris kifejezéseket tartalmazó aliasokra.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+Ellentétben olyan levelezőrendszerekkel, mint a `postfix` (pl. amelyek a `sieve` szabadság szűrő kiterjesztést használják) – a Forward Email automatikusan hozzáadja a DKIM aláírásodat, megbízhatóan kezeli a kapcsolat problémákat a szabadságválaszok küldésekor (pl. gyakori SSL/TLS kapcsolat problémák és régebbi szerverek esetén), és még támogatja az Open WKD és PGP titkosítást is a szabadságválaszokhoz.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* A visszaélések megelőzése érdekében minden elküldött szabadságválasz üzenet után 1 kimenő SMTP kredit kerül levonásra.
+  * Minden fizetős fiók alapértelmezés szerint napi 300 kreditet tartalmaz. Ha nagyobb mennyiségre van szükséged, kérjük, lépj kapcsolatba velünk.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. Csak egyszer küldünk minden [engedélyezett](#do-you-have-an-allowlist) feladónak 4 naponta (ami hasonló a Gmail viselkedéséhez).
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Redis gyorsítótárunk az `alias_id` és `sender` ujjlenyomatát használja, ahol az `alias_id` az alias MongoDB azonosítója, a `sender` pedig vagy a Feladó címe (ha engedélyezett), vagy a Feladó címének gyökér domainje (ha nem engedélyezett). Egyszerűség kedvéért ennek az ujjlenyomatnak a lejárati ideje a gyorsítótárban 4 napra van állítva.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * Az a megközelítés, hogy a nem engedélyezett feladók esetén a Feladó címében elemzett gyökér domaint használjuk, megakadályozza, hogy viszonylag ismeretlen feladók (pl. rosszindulatú szereplők) túlterheljék a szabadságválaszoló üzeneteket.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. Csak akkor küldünk, ha a MAIL FROM és/vagy a Feladó nem üres, és nem tartalmaz (kis- és nagybetűtől függetlenül) [postmaster felhasználónevet](#what-are-postmaster-addresses) (az emailben az @ előtti részt).
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. Nem küldünk, ha az eredeti üzenet tartalmazta az alábbi fejlécet (kis- és nagybetűtől függetlenül):
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * `auto-submitted` fejléc, amely értéke nem `no`.
+   * `x-auto-response-suppress` fejléc, amely értéke `dr`, `autoreply`, `auto-reply`, `auto_reply` vagy `all`.
+   * `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` vagy `x-auto-respond` fejléc (értéktől függetlenül).
+   * `precedence` fejléc, amely értéke `bulk`, `autoreply`, `auto-reply`, `auto_reply` vagy `list`.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. Nem küldünk, ha a MAIL FROM vagy a Feladó email cím `+donotreply`, `-donotreply`, `+noreply` vagy `-noreply` végződésű.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. Nem küldünk, ha a Feladó email cím felhasználó része `mdaemon` volt, és tartalmazott egy kis- és nagybetűtől független `X-MDDSN-Message` fejlécet.
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. Nem küldünk, ha volt kis- és nagybetűtől független `content-type` fejléc `multipart/report` értékkel.
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Hogyan állítsam be az SPF-et a Forward Emailhez {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+A regisztrátorod DNS kezelő oldalán állítsd be a következő <strong class="notranslate">TXT</strong> rekordot:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2035,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Ha Gmailt (pl. Küldés másként) vagy G Suite-ot használsz, akkor a fenti értékhez hozzá kell fűznöd az <code>include:_spf.google.com</code> részt, például:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Ha Microsoft Outlookot vagy Live.com-ot használ, hozzá kell adnia az <code>include:spf.protection.outlook.com</code> elemet az SPF <strong class="notranslate">TXT</strong> rekordjához, például:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1808,450 +2058,501 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Ha már van hasonló "v=spf1" sor, akkor az <code>include:spf.forwardemail.net</code> elemet az összes meglévő "include:host.com" rekord elé és a "-all" elé ugyanabban a sorban kell beszúrni, például:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Vegye figyelembe, hogy különbség van a "-all" és a "~all" között. A "-" azt jelzi, hogy az SPF ellenőrzésnek MEG KELL SIKERÜLNIE, különben HIBÁZIK, míg a "~" azt jelzi, hogy az SPF ellenőrzés SOFTFAIL lesz. Ajánljuk a "-all" használatát a domain hamisítás megelőzésére.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Előfordulhat, hogy az SPF rekordot a levelet küldő hosztra (pl. Outlook) is be kell illeszteni.
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Hogyan állítsam be a DKIM-et a Forward Emailhez {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Fiókom <i class="fa fa-angle-right"></i> Domainjeim</a> <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Kimenő SMTP konfiguráció menüpontra, és kövesse a beállítási utasításokat.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Hogyan állítsam be a DMARC-ot a Forward Emailhez {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Fiókom <i class="fa fa-angle-right"></i> Domainjeim</a> <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Kimenő SMTP konfiguráció menüpontra, és kövesse a beállítási utasításokat.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### Hogyan tekinthetem meg a DMARC jelentéseket {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+A Forward Email átfogó DMARC jelentés kezelőfelületet biztosít, amely lehetővé teszi, hogy egyetlen felületen figyelje az összes domainje e-mail hitelesítési teljesítményét.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**Mik azok a DMARC jelentések?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+A DMARC (Domain-based Message Authentication, Reporting, and Conformance) jelentések XML fájlok, amelyeket a fogadó levelezőszerverek küldenek, és tájékoztatnak arról, hogyan hitelesítik az e-mailjeit. Ezek a jelentések segítenek megérteni:
+
+* Hány e-mailt küldenek a domainjéről
+* Átmennek-e ezek az e-mailek SPF és DKIM hitelesítésen
+* Milyen intézkedéseket tesznek a fogadó szerverek (elfogadás, karantén, elutasítás)
+* Mely IP-címek küldenek e-mailt a domainje nevében
+
+**Hogyan férhetek hozzá a DMARC jelentésekhez**
+
+Lépjen a <a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">Fiókom <i class="fa fa-angle-right"></i> DMARC jelentések</a> oldalra a kezelőfelület megtekintéséhez. Domainenkénti jelentésekhez a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Fiókom <i class="fa fa-angle-right"></i> Domainjeim</a> oldalon kattintson a "DMARC" gombra bármely domain mellett.
+
+**A kezelőfelület funkciói**
+
+A DMARC jelentések kezelőfelülete a következőket nyújtja:
+
+* **Összefoglaló mutatók**: Összes beérkezett jelentés, elemzett üzenetek száma, SPF illeszkedési arány, DKIM illeszkedési arány és általános sikerességi arány
+* **Üzenetek időbeli alakulása diagram**: Az elmúlt 30 nap e-mail mennyiségének és hitelesítési arányainak vizuális trendje
+* **Illeszkedési összefoglaló**: Kördiagram az SPF és DKIM illeszkedés megoszlásáról
+* **Üzenetkezelés**: Halmozott oszlopdiagram arról, hogyan kezelte a fogadó szerver az e-maileket (elfogadva, karanténba helyezve vagy elutasítva)
+* **Legutóbbi jelentések táblázata**: Részletes lista az egyéni DMARC jelentésekről szűréssel és lapozással
+* **Domain szűrés**: Szűrje a jelentéseket adott domain szerint, ha több domaint kezel
+**Miért Fontos Ez**
+
+Több domaint kezelő szervezetek számára (például vállalatok, non-profit szervezetek vagy ügynökségek) a DMARC jelentések elengedhetetlenek a következőkhöz:
+
+* **Jogtalan küldők azonosítása**: Felismerni, ha valaki a domained nevében hamisít
+* **Kézbesíthetőség javítása**: Biztosítani, hogy a jogos e-mailek átmenjenek az hitelesítésen
+* **E-mail infrastruktúra figyelése**: Követni, mely szolgáltatások és IP-címek küldenek a nevedben
+* **Megfelelőség**: Átláthatóság fenntartása az e-mail hitelesítésben biztonsági auditokhoz
+
+Ellentétben más szolgáltatásokkal, amelyek külön DMARC figyelő eszközöket igényelnek, a Forward Email tartalmazza a DMARC jelentések feldolgozását és megjelenítését az fiókod részeként, további költség nélkül.
+
+**Követelmények**
+
+* A DMARC jelentések csak fizetős csomagokhoz érhetők el
+* A domainednek DMARC konfiguráltnak kell lennie (lásd [Hogyan állítsam be a DMARC-ot a Forward Emailhez](#how-do-i-set-up-dmarc-for-forward-email))
+* A jelentések automatikusan gyűjtődnek, amikor a fogadó levelezőszerverek elküldik azokat a beállított DMARC jelentési címre
+
+**Heti E-mail Jelentések**
+
+A fizetős csomagok felhasználói automatikusan heti DMARC jelentés összefoglalókat kapnak e-mailben. Ezek az e-mailek tartalmazzák:
+
+* Összefoglaló statisztikák az összes domainedről
+* SPF és DKIM igazodási arányok
+* Üzenet státusz bontás (elfogadott, karanténba helyezett, elutasított)
+* Legtöbb jelentést küldő szervezetek (Google, Microsoft, Yahoo, stb.)
+* IP-címek, amelyeknél igazodási problémák lehetnek, és figyelmet igényelhetnek
+* Közvetlen linkek a DMARC Jelentések irányítópultjához
+
+A heti jelentések automatikusan érkeznek, és nem kapcsolhatók ki külön az egyéb e-mail értesítésektől.
+
+### Hogyan csatlakoztassam és konfiguráljam a kapcsolataimat {#how-do-i-connect-and-configure-my-contacts}
+
+**A kapcsolatok konfigurálásához használd a következő CardDAV URL-t:** `https://carddav.forwardemail.net` (vagy egyszerűen `carddav.forwardemail.net`, ha az ügyfeled ezt engedi)
+
+### Hogyan csatlakoztassam és konfiguráljam a naptáraimat {#how-do-i-connect-and-configure-my-calendars}
+
+**A naptár konfigurálásához használd a következő CalDAV URL-t:** `https://caldav.forwardemail.net` (vagy egyszerűen `caldav.forwardemail.net`, ha az ügyfeled ezt engedi)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### Hogyan adjak hozzá több naptárt és kezeljem a meglévő naptárakat {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+Ha további naptárakat szeretnél hozzáadni, egyszerűen adj hozzá egy új naptár URL-t: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**ne felejtsd el a `calendar-name` részt a kívánt naptár nevére cserélni**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+A naptár nevét és színét a létrehozás után is megváltoztathatod – csak használd a kedvenc naptár alkalmazásodat (pl. Apple Mail vagy [Thunderbird](https://thunderbird.net)).
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### Hogyan csatlakoztassam és konfiguráljam a feladatokat és emlékeztetőket {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**A feladatok és emlékeztetők konfigurálásához használd ugyanazt a CalDAV URL-t, mint a naptárakhoz:** `https://caldav.forwardemail.net` (vagy egyszerűen `caldav.forwardemail.net`, ha az ügyfeled ezt engedi)
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+A feladatok és emlékeztetők automatikusan elkülönülnek a naptári eseményektől, saját "Emlékeztetők" vagy "Feladatok" naptár gyűjteménybe.
 
-**Setup instructions by platform:**
+**Beállítási útmutató platformonként:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. Adj hozzá egy új CalDAV fiókot a Rendszerbeállítások > Internetes fiókok menüben (vagy Beállítások > Fiókok iOS-en)
+2. Használd a `caldav.forwardemail.net` szervert
+3. Add meg a Forward Email aliasodat és a generált jelszót
+4. A beállítás után megjelenik mind a "Naptár", mind az "Emlékeztetők" gyűjtemény
+5. Használd az Emlékeztetők alkalmazást a feladatok létrehozásához és kezeléséhez
 
-**Android with Tasks.org:**
+**Android Tasks.org alkalmazással:**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Telepítsd a Tasks.org alkalmazást a Google Play Áruházból vagy F-Droidból
+2. Menj a Beállítások > Szinkronizáció > Fiók hozzáadása > CalDAV menübe
+3. Add meg a szervert: `https://caldav.forwardemail.net`
+4. Add meg a Forward Email aliasodat és a generált jelszót
+5. A Tasks.org automatikusan megtalálja a feladat naptárakat
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Telepítsd a Lightning bővítményt, ha még nincs telepítve
+2. Hozz létre egy új naptárat "CalDAV" típusúként
+3. Használd az URL-t: `https://caldav.forwardemail.net`
+4. Add meg a Forward Email hitelesítő adataidat
+5. Az események és feladatok is elérhetők lesznek a naptár felületen
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### Miért nem tudok feladatokat létrehozni a macOS Emlékeztetők alkalmazásban {#why-cant-i-create-tasks-in-macos-reminders}
+Ha problémáid vannak feladatok létrehozásával a macOS Emlékeztetők alkalmazásban, próbáld ki az alábbi hibaelhárítási lépéseket:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **Fiók beállításának ellenőrzése**: Győződj meg róla, hogy a CalDAV fiókod megfelelően van konfigurálva a `caldav.forwardemail.net` címmel
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **Külön naptárak ellenőrzése**: Látnod kell mind a „Naptár”, mind az „Emlékeztetők” elemet a fiókodban. Ha csak a „Naptár” látható, akkor a feladattámogatás még nem aktiválódott teljesen.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **Fiók frissítése**: Próbáld meg eltávolítani, majd újra hozzáadni a CalDAV fiókodat a Rendszerbeállítások > Internetes fiókok menüben
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **Szerverkapcsolat ellenőrzése**: Teszteld, hogy el tudod-e érni a `https://caldav.forwardemail.net` címet a böngésződben
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **Hitelesítő adatok ellenőrzése**: Győződj meg róla, hogy a helyes alias e-mail címet és a generált jelszót használod (nem a fiók jelszavát)
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **Szinkronizálás kényszerítése**: Az Emlékeztetők alkalmazásban próbálj meg létrehozni egy feladatot, majd manuálisan frissíteni a szinkront
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**Gyakori problémák:**
 
-**Common issues:**
+* **„Emlékeztető naptár nem található”**: A szervernek eltarthat egy pillanatig, amíg az első hozzáféréskor létrehozza az Emlékeztetők gyűjteményt
+* **Feladatok nem szinkronizálódnak**: Ellenőrizd, hogy mindkét eszköz ugyanazt a CalDAV fiók hitelesítő adatokat használja
+* **Vegyes tartalom**: Győződj meg róla, hogy a feladatokat az „Emlékeztetők” naptárban hozod létre, nem az általános „Naptár”-ban
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### Hogyan állítsam be a Tasks.org alkalmazást Androidon {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+A Tasks.org egy népszerű, nyílt forráskódú feladatkezelő, amely kiválóan működik a Forward Email CalDAV feladattámogatásával.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**Telepítés és beállítás:**
 
-**Installation and Setup:**
+1. **Tasks.org telepítése**:
+   * Google Play Áruházból: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * F-Droidról: [Tasks.org az F-Droidon](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **CalDAV szinkronizáció beállítása**:
+   * Nyisd meg a Tasks.org-ot
+   * Menj a ☰ Menü > Beállítások > Szinkronizáció menüpontra
+   * Koppints az „Fiók hozzáadása” gombra
+   * Válaszd a „CalDAV” lehetőséget
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+3. **Forward Email beállításainak megadása**:
+   * **Szerver URL**: `https://caldav.forwardemail.net`
+   * **Felhasználónév**: A Forward Email aliasod (pl. `te@domained.hu`)
+   * **Jelszó**: Az aliashoz generált jelszó
+   * Koppints az „Fiók hozzáadása” gombra
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+4. **Fiók felfedezése**:
+   * A Tasks.org automatikusan megtalálja a feladatnaptáraidat
+   * Látnod kell az „Emlékeztetők” gyűjteményt
+   * Koppints a „Feliratkozás” gombra a feladatnaptár szinkronizálásának engedélyezéséhez
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+5. **Szinkronizáció tesztelése**:
+   * Hozz létre egy tesztfeladatot a Tasks.org-ban
+   * Ellenőrizd, hogy megjelenik-e más CalDAV kliensekben (például macOS Emlékeztetők)
+   * Győződj meg róla, hogy a változások kétirányúan szinkronizálódnak
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+**Elérhető funkciók:**
 
-**Features available:**
+* ✅ Feladat létrehozása és szerkesztése
+* ✅ Határidők és emlékeztetők
+* ✅ Feladatok teljesítése és állapota
+* ✅ Prioritási szintek
+* ✅ Alkategóriák és feladathierarchia
+* ✅ Címkék és kategóriák
+* ✅ Kétirányú szinkronizáció más CalDAV kliensekkel
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+**Hibaelhárítás:**
 
-**Troubleshooting:**
+* Ha nem jelennek meg feladatnaptárak, próbáld meg manuálisan frissíteni a Tasks.org beállításaiban
+* Győződj meg róla, hogy legalább egy feladat létre van hozva a szerveren (először létrehozhatsz egyet a macOS Emlékeztetőkben)
+* Ellenőrizd a hálózati kapcsolatot a `caldav.forwardemail.net` címmel
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+### Hogyan állítsam be az SRS-t a Forward Emailhez {#how-do-i-set-up-srs-for-forward-email}
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+Az [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) („SRS”) automatikusan be van állítva – neked nem kell ezt külön megtenned.
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+### Hogyan állítsam be az MTA-STS-t a Forward Emailhez {#how-do-i-set-up-mta-sts-for-forward-email}
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+Kérjük, tekintsd meg [az MTA-STS-ről szóló szakaszunkat](#do-you-support-mta-sts) további információkért.
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+### Hogyan adjak profilképet az e-mail címemhez {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+Ha Gmailt használsz, kövesd az alábbi lépéseket:
 
-If you're using Gmail, then follow these steps below:
+1. Lépj a <https://google.com> oldalra, és jelentkezz ki minden e-mail fiókból
+2. Kattints a „Bejelentkezés” gombra, majd a legördülő menüből válaszd az „egyéb fiók” lehetőséget
+3. Válaszd az „Egy másik fiók használata” opciót
+4. Válaszd a „Fiók létrehozása” lehetőséget
+5. Válaszd a „Jelenlegi e-mail címem használata helyette” opciót
+6. Add meg a saját domaines e-mail címedet
+7. Vedd át a megerősítő e-mailt, amit erre a címre küldtek
+8. Írd be a megerősítő kódot az e-mailből
+9. Töltsd ki az új Google fiókod profiladatait
+10. Fogadd el az összes Adatvédelmi és Használati feltételt
+11. Lépj vissza a <https://google.com> oldalra, a jobb felső sarokban kattints a profil ikonodra, majd a „módosítás” gombra
+12. Tölts fel egy új képet vagy avatárt a fiókodhoz
+13. A változások körülbelül 1-2 órán belül érvénybe lépnek, de néha nagyon gyorsan is megtörténhetnek
+14. Küldj egy teszt e-mailt, és a profilképnek meg kell jelennie.
+## Haladó funkciók {#advanced-features}
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+### Támogatjátok a hírleveleket vagy marketing célú levelezőlistákat? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-## Advanced Features {#advanced-features}
+Igen, bővebben olvashatsz róla a <https://forwardemail.net/guides/newsletter-with-listmonk> oldalon.
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+Kérjük, vedd figyelembe, hogy az IP-hírnév megőrzése és a kézbesíthetőség biztosítása érdekében a Forward Email kézi felülvizsgálati folyamatot alkalmaz domainenként a **hírlevél jóváhagyásához**. Küldj e-mailt a <support@forwardemail.net> címre vagy nyiss egy [segítségkérést](https://forwardemail.net/help) a jóváhagyáshoz. Ez általában kevesebb, mint 24 órát vesz igénybe, a legtöbb kérés 1-2 órán belül teljesül. A közeljövőben célunk, hogy ezt a folyamatot azonnalivá tegyük további spam-ellenőrzésekkel és riasztásokkal. Ez a folyamat biztosítja, hogy az e-mailek eljussanak a beérkező levelek közé, és az üzenetek ne kerüljenek spamként megjelölésre.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+### Támogatjátok az e-mailek küldését API-n keresztül? {#do-you-support-sending-email-with-api}
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+Igen, 2023 májusa óta támogatjuk az e-mailek küldését API-n keresztül, mint kiegészítő szolgáltatást minden fizetős felhasználó számára.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Kérjük, győződj meg róla, hogy elolvastad a <a href="/terms" class="alert-link" target="_blank">Felhasználási feltételeinket</a>, az <a href="/privacy" class="alert-link" target="_blank">Adatvédelmi irányelveinket</a>, valamint az <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">SMTP-korlátokat</a> – a használatoddal ezek elfogadását és tudomásul vételét jelented.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+Kérjük, tekintsd meg az API dokumentációnk [E-mailek](/email-api#outbound-emails) szakaszát a lehetőségek, példák és további információk érdekében.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+Az API-n keresztüli kimenő e-mail küldéshez használd az [Saját biztonságom](/my-account/security) alatt elérhető API tokenedet.
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### Támogatjátok az e-mailek fogadását IMAP-on keresztül? {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Igen, 2023. október 16-tól támogatjuk az e-mailek fogadását IMAP-on keresztül, mint kiegészítő szolgáltatást minden fizetős felhasználó számára.  **Kérjük, olvasd el részletes cikkünket** arról, [hogyan működik a titkosított SQLite postafiók tárolási funkciónk](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Kérjük, győződj meg róla, hogy elolvastad a <a href="/terms" class="alert-link" target="_blank">Felhasználási feltételeinket</a> és az <a href="/privacy" class="alert-link" target="_blank">Adatvédelmi irányelveinket</a> – a használatoddal ezek elfogadását és tudomásul vételét jelented.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Hozz létre egy új alias-t a domainedhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok alatt (pl. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Kattints a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra az újonnan létrehozott alias mellett. Másold a vágólapodra, és biztonságosan tárold a képernyőn megjelenő jelszót.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. A kedvenc e-mail alkalmazásodban adj hozzá vagy konfigurálj egy fiókot az új alias-szal (pl. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Ajánljuk a <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, a <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, az <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> vagy <a href="/blog/open-source" class="alert-link" target="_blank">egy nyílt forráskódú és adatvédelmi szempontból fókuszált alternatíva</a> használatát.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. Amikor az IMAP szerver nevét kéri, írd be: `imap.forwardemail.net`
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. Amikor az IMAP szerver portját kéri, írd be: `993` (SSL/TLS) – szükség esetén lásd az [alternatív IMAP portokat](/faq#what-are-your-imap-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Ha Thunderbird-öt használsz, győződj meg róla, hogy a "Kapcsolat biztonsága" "SSL/TLS"-re van állítva, az "Hitelesítési mód" pedig "Normál jelszó".</span>
    </div>
+6. Amikor az IMAP szerver jelszavát kéri, illessze be a jelszót a fenti 2. lépésben található <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombbal
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Mentse el a beállításokat** – ha problémái vannak, kérjük, <a href="/help">lépjen kapcsolatba velünk</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulálunk!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Sikeresen végrehajtotta az összes lépést.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### Támogatják a POP3-at? {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Igen, 2023. december 4-től minden fizetős felhasználó számára elérhető kiegészítőként támogatjuk a [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) protokollt. **Kérjük, olvassa el részletes cikkünket** arról, [hogyan működik a titkosított SQLite leveleződoboz tárolási funkciónk](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Kérjük, győződjön meg róla, hogy elolvasta a <a href="/terms" class="alert-link" target="_blank">Felhasználási feltételeinket</a> és az <a href="/privacy" class="alert-link" target="_blank">Adatvédelmi irányelveinket</a> – a használatával elfogadja és egyetért azokkal.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontban (pl. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Kattintson a frissen létrehozott alias mellett található <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra. Másolja a vágólapra, és biztonságosan tárolja a képernyőn megjelenő jelszót.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. A kedvenc levelezőprogramjában adjon hozzá vagy konfiguráljon egy fiókot az új alias-szal (pl. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Ajánljuk a <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, a <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, az <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> vagy <a href="/blog/open-source" class="alert-link" target="_blank">egy nyílt forráskódú és adatvédelmi szempontból előnyös alternatíva</a> használatát.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. Amikor a POP3 szerver nevét kéri, írja be: `pop3.forwardemail.net`
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. Amikor a POP3 szerver portját kéri, írja be: `995` (SSL/TLS) – szükség esetén lásd az [alternatív POP3 portokat](/faq#what-are-your-pop3-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Ha Thunderbirdöt használ, győződjön meg róla, hogy a "Kapcsolat biztonsága" "SSL/TLS"-re van állítva, az "Hitelesítési mód" pedig "Normál jelszó".</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. Amikor a POP3 szerver jelszavát kéri, illessze be a fenti 2. lépésben található <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombbal létrehozott jelszót
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Mentse el a beállításokat** – ha problémái vannak, kérjük, <a href="/help">lépjen kapcsolatba velünk</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulálunk!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Sikeresen végrehajtotta az összes lépést.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### Támogatják a naptárakat (CalDAV)? {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Igen, 2024. február 5-től elérhető ez a funkció. A szerverünk címe `caldav.forwardemail.net`, és elérhető a <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">állapotoldalunkon</a> is.
+Támogatja mind az IPv4-et, mind az IPv6-ot, és elérhető a `443` porton (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+| Bejelentkezés | Példa                     | Leírás                                                                                                                                                                                   |
+| ------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Felhasználónév | `user@example.com`        | Egy alias e-mail címe, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt. |
+| Jelszó        | `************************` | Alias-specifikus generált jelszó.                                                                                                                                                        |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+A naptártámogatás használatához a **felhasználónévnek** az alias e-mail címének kell lennie, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt – és a **jelszónak** alias-specifikus generált jelszónak kell lennie.
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+### Támogatják a feladatokat és emlékeztetőket (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+Igen, 2025. október 14-től hozzáadtuk a CalDAV VTODO támogatást a feladatokhoz és emlékeztetőkhöz. Ez ugyanazt a szervert használja, mint a naptártámogatásunk: `caldav.forwardemail.net`.
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+A CalDAV szerverünk támogatja mind a naptári eseményeket (VEVENT), mind a feladatokat (VTODO) **egységes naptárak** használatával. Ez azt jelenti, hogy minden naptár tartalmazhat eseményeket és feladatokat is, maximális rugalmasságot és kompatibilitást biztosítva minden CalDAV kliens számára.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+**Hogyan működnek a naptárak és listák:**
 
-**How calendars and lists work:**
+* **Minden naptár támogatja az eseményeket és a feladatokat is** – Bármelyik naptárhoz hozzáadhatsz eseményeket, feladatokat vagy mindkettőt
+* **Apple Emlékeztetők listák** – Minden lista, amit az Apple Emlékeztetőkben létrehozol, külön naptárként jelenik meg a szerveren
+* **Több naptár** – Annyi naptárat hozhatsz létre, amennyire szükséged van, mindegyik saját névvel, színnel és szervezéssel
+* **Kliens-közi szinkronizáció** – A feladatok és események zökkenőmentesen szinkronizálódnak minden kompatibilis kliens között
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+**Támogatott feladatkezelő kliensek:**
 
-**Supported task clients:**
+* **macOS Emlékeztetők** – Teljes natív támogatás a feladat létrehozásához, szerkesztéséhez, befejezéséhez és szinkronizálásához
+* **iOS Emlékeztetők** – Teljes natív támogatás minden iOS eszközön
+* **Tasks.org (Android)** – Népszerű nyílt forráskódú feladatkezelő CalDAV szinkronnal
+* **Thunderbird** – Feladat- és naptártámogatás az asztali e-mail kliensben
+* **Bármely CalDAV-kompatibilis feladatkezelő** – Szabványos VTODO komponens támogatás
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+**Támogatott feladatfunkciók:**
 
-**Task features supported:**
+* Feladat létrehozása, szerkesztése és törlése
+* Határidők és kezdő dátumok
+* Feladat állapota (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Feladat prioritási szintek
+* Ismétlődő feladatok
+* Feladat leírások és jegyzetek
+* Több eszköz közötti szinkronizáció
+* Alkategóriák RELATED-TO tulajdonsággal
+* Feladat emlékeztetők VALARM-mal
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+A bejelentkezési adatok megegyeznek a naptártámogatáséval:
 
-The login credentials are the same as for calendar support:
+| Bejelentkezés | Példa                     | Leírás                                                                                                                                                                                   |
+| ------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Felhasználónév | `user@example.com`        | Egy alias e-mail címe, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt. |
+| Jelszó        | `************************` | Alias-specifikus generált jelszó.                                                                                                                                                        |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+**Fontos megjegyzések:**
 
-**Important notes:**
+* **Minden Emlékeztetők lista külön naptár** – Amikor új listát hozol létre az Apple Emlékeztetőkben, az új naptárat hoz létre a CalDAV szerveren
+* **Thunderbird felhasználók** – Minden naptárra/listára manuálisan kell feliratkozni, amelyet szinkronizálni szeretnél, vagy használhatod a naptár fő URL-jét: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple felhasználók** – A naptárak automatikusan felfedeződnek, így minden naptárad és listád megjelenik a Calendar.app és a Reminders.app alkalmazásban
+* **Egységes naptárak** – Minden naptár támogatja az eseményeket és a feladatokat is, így rugalmasan szervezheted az adataidat
+### Támogatjátok a névjegyeket (CardDAV) {#do-you-support-contacts-carddav}
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+Igen, 2025. június 12-től hozzáadtuk ezt a funkciót. A szerverünk a `carddav.forwardemail.net`, és a <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">állapotoldalunkon</a> is figyeljük.
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+Mind IPv4-et, mind IPv6-ot támogat, és a `443` (HTTPS) porton érhető el.
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+| Bejelentkezés | Példa                     | Leírás                                                                                                                                                                                   |
+| ------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Felhasználónév | `user@example.com`        | Egy alias e-mail címe, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt. |
+| Jelszó        | `************************` | Alias-specifikus generált jelszó.                                                                                                                                                        |
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+A névjegyek támogatásának használatához a **felhasználónévnek** az alias e-mail címének kell lennie, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt – és a **jelszónak** alias-specifikus generált jelszónak kell lennie.
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+### Támogatjátok az e-mailek küldését SMTP-vel? {#do-you-support-sending-email-with-smtp}
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
-
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
-
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+Igen, 2023 májusa óta támogatjuk az SMTP-vel történő e-mail küldést kiegészítőként minden fizetős felhasználó számára.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Kérjük, győződjön meg róla, hogy elolvasta a <a href="/terms" class="alert-link" target="_blank">Felhasználási feltételeinket</a>, az <a href="/privacy" class="alert-link" target="_blank">Adatvédelmi irányelveinket</a>, és az <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">SMTP-korlátokat</a> – a használatával elismeri és elfogadja ezeket.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Ha Gmailt használ, kérjük, tekintse meg a <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Küldés Gmail egyéni domainként útmutatónkat</a>. Ha fejlesztő, akkor tekintse meg az <a class="alert-link" href="/email-api#outbound-emails" target="_blank">e-mail API dokumentációt</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Kimenő SMTP konfiguráció oldalra, és kövesse a beállítási utasításokat
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontban (pl. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Kattintson a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra az újonnan létrehozott alias mellett. Másolja a vágólapjára, és biztonságosan tárolja a képernyőn megjelenő generált jelszót.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. A kedvenc e-mail alkalmazásával adjon hozzá vagy konfiguráljon egy fiókot az új aliasával (pl. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Ajánljuk a <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> vagy <a href="/blog/open-source" class="alert-link" target="_blank">egy nyílt forráskódú és adatvédelmi szempontból fókuszált alternatíva</a> használatát.</span>
    </div>
+5. Amikor az SMTP szerver nevét kéri, írja be: `smtp.forwardemail.net`
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. Amikor az SMTP szerver portját kéri, írja be: `465` (SSL/TLS) – szükség esetén lásd az [alternatív SMTP portokat](/faq#what-are-your-smtp-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Ha Thunderbirdöt használ, győződjön meg róla, hogy a "Kapcsolat biztonsága" "SSL/TLS"-re van állítva, azonosítási módszer pedig "Normál jelszó".</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. Amikor az SMTP szerver jelszavát kéri, illessze be a 3. lépésben fent a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> alatt létrehozott jelszót
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **Mentse el a beállításokat, és küldje el az első teszt e-mailt** – ha problémája van, kérjük, <a href="/help">lépjen kapcsolatba velünk</a>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    Kérjük, vegye figyelembe, hogy az IP-hírnév fenntartása és a kézbesíthetőség biztosítása érdekében manuális felülvizsgálati folyamatot alkalmazunk domainenként az SMTP kimenő engedélyezéséhez. Ez általában kevesebb, mint 24 órát vesz igénybe, a legtöbb kérelmet 1-2 órán belül teljesítjük. A közeljövőben célunk, hogy ezt a folyamatot azonnalivá tegyük további spam-ellenőrzésekkel és riasztásokkal. Ez a folyamat biztosítja, hogy az e-mailjei eljussanak a beérkező levelek közé, és az üzenetei ne kerüljenek spamként megjelölésre.
   </span>
 </div>
 
@@ -2259,98 +2560,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulálunk!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Sikeresen végrehajtotta az összes lépést.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### Támogatják az OpenPGP/MIME-t, a végpontok közötti titkosítást ("E2EE") és a Web Key Directory-t ("WKD")? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Igen, támogatjuk az [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), a [végpontok közötti titkosítást ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), valamint a nyilvános kulcsok felfedezését a [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD) segítségével. Az OpenPGP-t konfigurálhatja a [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) oldalon, vagy [önállóan is hosztolhatja a kulcsait](https://wiki.gnupg.org/WKDHosting) (lásd [ezt a gist-et a WKD szerver beállításához](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* A WKD lekérdezések 1 órán keresztül vannak gyorsítótárazva a gyors e-mail kézbesítés érdekében → ezért ha hozzáad, módosít vagy eltávolít egy WKD kulcsot, kérjük, küldjön nekünk e-mailt a `support@forwardemail.net` címre az e-mail címével, hogy manuálisan törölhessük a gyorsítótárat.
+* Támogatjuk a PGP titkosítást azokra az üzenetekre, amelyeket WKD lekérdezés vagy az általunk biztosított felületen feltöltött PGP kulcs segítségével továbbítanak.
+* A feltöltött kulcsok elsőbbséget élveznek, amíg a PGP jelölőnégyzet be van kapcsolva/be van pipálva.
+* A webhookokra küldött üzenetek jelenleg nem titkosítottak PGP-vel.
+* Ha egy adott továbbítási címhez több alias is illeszkedik (pl. regex/wildcard/pontos kombináció), és ezek közül több tartalmaz feltöltött PGP kulcsot és be van kapcsolva a PGP → akkor hibajelző e-mailt küldünk, és nem titkosítjuk az üzenetet a feltöltött PGP kulccsal. Ez nagyon ritka, és általában csak haladó felhasználók összetett alias szabályaira vonatkozik.
+* **A PGP titkosítás nem kerül alkalmazásra az MX szervereinken keresztüli e-mail továbbítás esetén, ha a feladó DMARC szabálya reject volt. Ha *minden* levélre PGP titkosítást igényel, javasoljuk az IMAP szolgáltatásunk használatát, és konfigurálja PGP kulcsát az aliasához a bejövő levelekhez.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**A Web Key Directory beállítását ellenőrizheti a <https://wkd.chimbosonic.com/> (nyílt forráskódú) vagy a <https://www.webkeydirectory.com/> (proprietáris) oldalakon.**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    Automatikus titkosítás:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>Ha a <a href="#do-you-support-sending-email-with-smtp" class="alert-link">kimenő SMTP szolgáltatásunkat</a> használja, és titkosítatlan üzeneteket küld, akkor automatikusan megpróbáljuk az üzeneteket címzettenként titkosítani a <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a> segítségével.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    Az OpenPGP engedélyezéséhez a saját domain nevedhez az alábbi lépéseket mindenképpen követned kell.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. Töltsd le és telepítsd az alábbiakban az e-mail kliensed által ajánlott bővítményt:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | E-mail kliens   | Platform | Ajánlott bővítmény                                                                                                                                                                    | Megjegyzések                                                                                                                                                                                                                                                                                                                                                                                                                             |
+   | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird     | Asztali  | [OpenPGP konfigurálása Thunderbirdben](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | A Thunderbird beépített támogatást nyújt az OpenPGP-hez.                                                                                                                                                                                                                                                                                                                                                                                 |
+   | Gmail           | Böngésző | [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) (proprietary license)                                                                            | A Gmail nem támogatja az OpenPGP-t, azonban letöltheted a nyílt forráskódú [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) bővítményt.                                                                                                                                                                                                                                                               |
+   | Apple Mail      | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                          | Az Apple Mail nem támogatja az OpenPGP-t, azonban letöltheted a nyílt forráskódú [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) bővítményt.                                                                                                                                                                                                                                                    |
+   | Apple Mail      | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) vagy [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license)                           | Az Apple Mail nem támogatja az OpenPGP-t, azonban letöltheted a nyílt forráskódú [PGPro](https://github.com/opensourceios/PGPro/) vagy [FlowCrypt](https://flowcrypt.com/download) bővítményt.                                                                                                                                                                                                                                             |
+   | Outlook         | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                          | Az Outlook asztali levelezőkliense nem támogatja az OpenPGP-t, azonban letöltheted a nyílt forráskódú [gpg4win](https://www.gpg4win.de/index.html) bővítményt.                                                                                                                                                                                                                                                                           |
+   | Outlook         | Böngésző | [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) (proprietary license)                                                                            | Az Outlook webes levelezőkliense nem támogatja az OpenPGP-t, azonban letöltheted a nyílt forráskódú [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) bővítményt.                                                                                                                                                                                                                                     |
+   | Android         | Mobil    | [OpenKeychain](https://www.openkeychain.org/) vagy [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                       | Az [Android levelezőkliensek](/blog/open-source/android-email-clients), mint például a [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) és a [FairEmail](https://github.com/M66B/FairEmail) támogatják a nyílt forráskódú [OpenKeychain](https://www.openkeychain.org/) bővítményt. Alternatívaként használhatod a nyílt forráskódú (proprietary licencelésű) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) bővítményt is. |
+   | Google Chrome   | Böngésző | [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) (proprietary license)                                                                            | Letöltheted a nyílt forráskódú böngészőbővítményt, a [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) bővítményt.                                                                                                                                                                                                                                                                                   |
+   | Mozilla Firefox | Böngésző | [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) (proprietary license)                                                                            | Letöltheted a nyílt forráskódú böngészőbővítményt, a [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) bővítményt.                                                                                                                                                                                                                                                                                   |
+   | Microsoft Edge  | Böngésző | [Mailvelope](https://mailvelope.com/)                                                                                                                                                 | Letöltheted a nyílt forráskódú böngészőbővítményt, a [Mailvelope](https://mailvelope.com/) bővítményt.                                                                                                                                                                                                                                                                                                                                   |
+   | Brave           | Böngésző | [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) (proprietary license)                                                                            | Letöltheted a nyílt forráskódú böngészőbővítményt, a [Mailvelope](https://mailvelope.com/) vagy [FlowCrypt](https://flowcrypt.com/download) bővítményt.                                                                                                                                                                                                                                                                                   |
+   | Balsa           | Asztali  | [OpenPGP konfigurálása Balsában](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                         | A Balsa beépített támogatást nyújt az OpenPGP-hez.                                                                                                                                                                                                                                                                                                                                                                                       |
+   | KMail           | Asztali  | [OpenPGP konfigurálása KMailben](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                             | A KMail beépített támogatást nyújt az OpenPGP-hez.                                                                                                                                                                                                                                                                                                                                                                                       |
+   | GNOME Evolution | Asztali  | [OpenPGP konfigurálása Evolutionben](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                            | A GNOME Evolution beépített támogatást nyújt az OpenPGP-hez.                                                                                                                                                                                                                                                                                                                                                                             |
+   | Terminál        | Asztali  | [gpg konfigurálása Terminálban](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                      | Használhatod a nyílt forráskódú [gpg parancssori eszközt](https://www.gnupg.org/download/) új kulcs generálásához parancssorból.                                                                                                                                                                                                                                                                                                         |
+2. Nyissa meg a bővítményt, hozza létre a nyilvános kulcsát, és állítsa be az e-mail kliensét, hogy azt használja.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. Töltse fel a nyilvános kulcsát a <https://keys.openpgp.org/upload> címen.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>Ellátogathat a <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> oldalra, hogy a jövőben kezelje a kulcsát.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       Opcionális kiegészítő:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       Ha használja a <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">titkosított tárolás (IMAP/POP3)</a> szolgáltatásunkat, és szeretné, hogy <i>minden</i> e-mail, amely az (már titkosított) SQLite adatbázisában tárolódik, a nyilvános kulcsával legyen titkosítva, akkor lépjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Tartományok</a> <i class="fa fa-angle-right"></i> Átirányítások (pl. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Szerkesztés <i class="fa fa-angle-right"></i> OpenPGP menüpontra, és töltse fel a nyilvános kulcsát.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. Adjon hozzá egy új `CNAME` rekordot a domain nevéhez (pl. `example.com`):
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>Név/Host/Átirányítás</th>
          <th class="text-center">TTL</th>
-         <th>Type</th>
-         <th>Answer/Value</th>
+         <th>Típus</th>
+         <th>Válasz/Érték</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,102 +2662,284 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Tipp:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>Ha az átirányítása a <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/eldobható domaineket</a> használ (pl. <code>hideaddress.net</code>), akkor ezt a lépést kihagyhatja.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulálunk!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Sikeresen végrehajtotta az összes lépést.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### Támogatják az S/MIME titkosítást {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+Igen, támogatjuk az [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) titkosítást az [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) szabvány szerint. Az S/MIME végpontok közötti titkosítást biztosít X.509 tanúsítványok használatával, amelyet széles körben támogatnak a vállalati e-mail kliensek.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Támogatjuk mind az RSA, mind az ECC (Elliptic Curve Cryptography) tanúsítványokat:
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **RSA tanúsítványok**: minimum 2048 bit, ajánlott 4096 bit
+* **ECC tanúsítványok**: P-256, P-384 és P-521 NIST görbék
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+Az S/MIME titkosítás beállításához az átirányításához:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. Szerezzen be egy S/MIME tanúsítványt egy megbízható tanúsítványkiadótól (CA), vagy generáljon egy önaláírt tanúsítványt teszteléshez.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tipp:
+     </strong>
+     <span>Ingyenes S/MIME tanúsítványok elérhetők olyan szolgáltatóktól, mint az <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> vagy az <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. Exportálja a tanúsítványát PEM formátumban (csak a nyilvános tanúsítványt, a privát kulcsot nem).
 
-Learn more about passkeys at the following links:
+3. Lépjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Tartományok</a> <i class="fa fa-angle-right"></i> Átirányítások (pl. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Szerkesztés <i class="fa fa-angle-right"></i> S/MIME menüpontra, és töltse fel a nyilvános tanúsítványát.
+4. Miután beállította, az aliasára érkező összes bejövő e-mail titkosítva lesz az Ön S/MIME tanúsítványával, mielőtt tárolásra vagy továbbításra kerülne.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Megjegyzés:
+     </strong>
+     <span>
+       Az S/MIME titkosítás azokra a bejövő üzenetekre vonatkozik, amelyek még nincsenek titkosítva. Ha egy üzenet már OpenPGP vagy S/MIME titkosítással rendelkezik, azt nem titkosítjuk újra.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Fontos:
+     </strong>
+     <span>
+       Az S/MIME titkosítás nem kerül alkalmazásra az e-mailek továbbítására a mi MX szervereinken keresztül, ha a feladó DMARC szabályzata elutasítás (reject) volt. Ha <em>minden</em> levélre szüksége van S/MIME titkosításra, akkor javasoljuk, hogy használja IMAP szolgáltatásunkat, és állítsa be az S/MIME tanúsítványát az aliasához a bejövő levelekhez.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+A következő e-mail kliensek beépített S/MIME támogatással rendelkeznek:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| E-mail kliens     | Platform | Megjegyzések                                                                                                         |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | Beépített S/MIME támogatás. Menjen a Mail > Preferences > Accounts > az Ön fiókja > Trust menüponthoz a tanúsítványok beállításához.      |
+| Apple Mail        | iOS      | Beépített S/MIME támogatás. Menjen a Settings > Mail > Accounts > az Ön fiókja > Advanced > S/MIME menüponthoz a beállításhoz.          |
+| Microsoft Outlook | Windows  | Beépített S/MIME támogatás. Menjen a File > Options > Trust Center > Trust Center Settings > Email Security menüponthoz a beállításhoz. |
+| Microsoft Outlook | macOS    | Beépített S/MIME támogatás. Menjen a Tools > Accounts > Advanced > Security menüponthoz a beállításhoz.                                 |
+| Thunderbird       | Desktop  | Beépített S/MIME támogatás. Menjen a Account Settings > End-To-End Encryption > S/MIME menüponthoz a beállításhoz.                      |
+| GNOME Evolution   | Desktop  | Beépített S/MIME támogatás. Menjen a Edit > Preferences > Mail Accounts > az Ön fiókja > Security menüponthoz a beállításhoz.           |
+| KMail             | Desktop  | Beépített S/MIME támogatás. Menjen a Settings > Configure KMail > Identities > az Ön identitása > Cryptography menüponthoz a beállításhoz. |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Gratulálunk!
+    </strong>
+    <span>
+      Sikeresen beállította az S/MIME titkosítást az aliasához.
+    </span>
+  </div>
+</div>
+
+### Támogatják a Sieve e-mail szűrést? {#do-you-support-sieve-email-filtering}
+
+Igen! Támogatjuk a [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) e-mail szűrést az [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) szerint. A Sieve egy hatékony, szabványosított szkriptnyelv szerveroldali e-mail szűréshez, amely lehetővé teszi, hogy automatikusan rendszerezze, szűrje és válaszoljon a bejövő üzenetekre.
+
+#### Támogatott Sieve kiterjesztések {#supported-sieve-extensions}
+
+Átfogó Sieve kiterjesztés készletet támogatunk:
+
+| Kiterjesztés                | RFC                                                                                   | Leírás                                          |
+| --------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                             | Üzenetek fájlba helyezése adott mappákba        |
+| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                             | Üzenetek elutasítása hibával                      |
+| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                             | Automatikus szabadság/külső válaszok             |
+| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                             | Finomhangolt szabadság válasz intervallumok      |
+| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                             | IMAP zászlók beállítása (\Seen, \Flagged, stb.) |
+| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                             | Boríték feladó/címzett tesztelése                 |
+| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                             | Üzenet törzstartalom tesztelése                   |
+| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                             | Változók tárolása és használata szkriptekben     |
+| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                             | Relációs összehasonlítások (nagyobb, kisebb)     |
+| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                             | Numerikus összehasonlítások                        |
+| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                             | Üzenetek másolása átirányítás közben               |
+| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                             | Üzenet fejléc hozzáadása vagy törlése              |
+| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                             | Dátum/idő értékek tesztelése                       |
+| `index`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                             | Meghatározott fejléc előfordulások elérése        |
+| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)| Reguláris kifejezés egyezés                        |
+| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                             | Értesítések küldése (pl. mailto:)                  |
+| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                             | Környezeti információk elérése                      |
+| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                             | Postafiók létezésének tesztelése, postafiókok létrehozása |
+| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                             | Speciális használatú postafiókokba fájlba helyezés (\Junk, \Trash) |
+| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                             | Duplikált üzenetek felismerése                     |
+| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                             | Kiterjesztés elérhetőségének tesztelése            |
+| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                             | Felhasználó+részlet címrészek elérése              |
+#### Nem támogatott kiterjesztések {#extensions-not-supported}
+
+A következő kiterjesztések jelenleg nem támogatottak:
+
+| Kiterjesztés                                                   | Ok                                                                  |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `include`                                                      | Biztonsági kockázat (szkript befecskendezés) és globális szkript tárolást igényel |
+| `mboxmetadata` / `servermetadata`                              | IMAP METADATA kiterjesztés támogatást igényel                      |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | Összetett MIME fa kezelés még nincs megvalósítva                   |
+
+#### Példa Sieve szkriptek {#example-sieve-scripts}
+
+**Hírlevelek mappába helyezése:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Automatikus válasz szabadság alatt:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "Jelenleg nem vagyok az irodában, és visszatérésem után válaszolok.";
+```
+
+**Fontos feladótól érkező üzenetek megjelölése:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**Spam elutasítása meghatározott tárgyakkal:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Az üzenet spam tartalom miatt elutasítva.";
+}
+```
+
+#### Sieve szkriptek kezelése {#managing-sieve-scripts}
+
+Sieve szkripteket többféleképpen kezelhet:
+
+1. **Webes felület**: Lépjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Fiókom <i class="fa fa-angle-right"></i> Tartományok</a> <i class="fa fa-angle-right"></i> Átirányítások <i class="fa fa-angle-right"></i> Sieve szkriptek oldalra a szkriptek létrehozásához és kezeléséhez.
+
+2. **ManageSieve protokoll**: Csatlakozzon bármilyen ManageSieve-kompatibilis klienssel (például Thunderbird Sieve bővítményével vagy a [sieve-connect](https://github.com/philpennock/sieve-connect) eszközzel) az `imap.forwardemail.net` címre. Használja a `2190` portot STARTTLS-sel (ajánlott a legtöbb kliens számára) vagy a `4190` portot implicit TLS-sel.
+
+3. **API**: Használja a [REST API](/api#sieve-scripts) felületünket a szkriptek programozott kezeléséhez.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Megjegyzés:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+    A Sieve szűrés a bejövő üzenetekre vonatkozik, mielőtt azok a postaládába kerülnének. A szkriptek prioritás szerint futnak, és az első egyező művelet határozza meg az üzenet kezelését.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Biztonság:
+  </strong>
+  <span>
+    Biztonsági okokból az átirányítási műveletek szkriptenként legfeljebb 10, naponta pedig 100 alkalommal engedélyezettek. A szabadság alatti válaszok korlátozottak a visszaélések megelőzése érdekében.
+  </span>
+</div>
+
+### Támogatják az MTA-STS-t? {#do-you-support-mta-sts}
+
+Igen, 2023. március 2-től támogatjuk az [MTA-STS](https://www.hardenize.com/blog/mta-sts) protokollt. Használhatja [ezt a sablont](https://github.com/jpawlowski/mta-sts.template), ha engedélyezni szeretné a tartományán.
+
+Konfigurációnk nyilvánosan elérhető a GitHubon: <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+
+### Támogatják a passkey-eket és a WebAuthn-t? {#do-you-support-passkeys-and-webauthn}
+
+Igen! 2023. december 13-tól támogatjuk a passkey-eket [a nagy érdeklődés miatt](https://github.com/orgs/forwardemail/discussions/182).
+
+A passkey-ek lehetővé teszik a biztonságos bejelentkezést jelszó és kétfaktoros hitelesítés nélkül.
+
+Azonosításra használhat érintést, arcfelismerést, eszközalapú jelszót vagy PIN-kódot.
+
+Egyszerre akár 30 passkey-t is kezelhet, így könnyedén bejelentkezhet az összes eszközéről.
+
+További információk a passkey-ekről az alábbi linkeken:
+
+* [Bejelentkezés alkalmazásokba és weboldalakra passkey-ekkel](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Passkey-k használata iPhone-on alkalmazásokba és weboldalakra való bejelentkezéshez](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Passkey-k a Wikipédián](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Támogatjátok az email legjobb gyakorlatait? {#do-you-support-email-best-practices}
+
+Igen. Beépített támogatást nyújtunk az SPF, DKIM, DMARC, ARC és SRS protokollokhoz minden csomagban. Emellett szorosan együttműködtünk ezen szabványok eredeti szerzőivel és más email szakértőkkel a tökéletesség és a magas kézbesíthetőség biztosítása érdekében.
+
+### Támogatjátok a bounce webhookokat? {#do-you-support-bounce-webhooks}
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tipp:
+  </strong>
+    Dokumentációt keresel az email webhookokról? Nézd meg a <a href="/faq#do-you-support-webhooks" class="alert-link">Támogatjátok a webhookokat?</a> részt további információkért.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+Igen, 2024. augusztus 14-től elérhető ez a funkció. Mostantól a Saját fiók → Domain-ek → Beállítások → Bounce Webhook URL menüpontban beállíthatsz egy `http://` vagy `https://` URL-t, amelyre minden kimenő SMTP email visszapattanásakor `POST` kérést küldünk.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+Ez hasznos az SMTP kimenő levelezésed kezeléséhez és figyeléséhez – használható feliratkozók karbantartására, leiratkozás kezelésére és a visszapattanások észlelésére.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+A bounce webhook payload JSON formátumban érkezik az alábbi tulajdonságokkal:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (String) - az email azonosítója, amely megfelel a Saját fiók → Email-ek (kimenő SMTP) részben található emailnek
+* `list_id` (String) - az eredeti kimenő email `List-ID` fejlécének (kis- és nagybetűtől független) értéke, ha van ilyen
+* `list_unsubscribe` (String) - az eredeti kimenő email `List-Unsubscribe` fejlécének (kis- és nagybetűtől független) értéke, ha van ilyen
+* `feedback_id` (String) - az eredeti kimenő email `Feedback-ID` fejlécének (kis- és nagybetűtől független) értéke, ha van ilyen
+* `recipient` (String) - a visszapattant vagy hibás címzett email címe
+* `message` (String) - részletes hibaüzenet a visszapattanásról
+* `response` (String) - az SMTP válaszüzenet
+* `response_code` (Number) - az SMTP válaszkód értelmezett száma
+* `truth_source` (String) - ha a válaszkód megbízható forrásból származik, itt a gyökér domain neve jelenik meg (pl. `google.com` vagy `yahoo.com`)
+* `bounce` (Object) - egy objektum, amely a visszapattanás és elutasítás részleteit tartalmazza az alábbi tulajdonságokkal
+  * `action` (String) - visszapattanási művelet (pl. `"reject"`)
+  * `message` (String) - visszapattanási ok (pl. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - visszapattanási kategória (pl. `"block"`)
+  * `code` (Number) - visszapattanási státuszkód (pl. `554`)
+  * `status` (String) - visszapattanási kód a válaszüzenetből (pl. `5.7.1`)
+  * `line` (Number) - értelmezett sor száma, ha van, [a Zone-MTA bounce elemző listából](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (pl. `526`)
+* `headers` (Object) - kulcs-érték pár a kimenő email fejlécéből
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formátumú dátum, amikor a visszapattanási hiba történt
 
-For example:
+Például:
 
 ```json
 {
   "email_id": "66bcce793ef7b2a0928e14ba",
   "recipient": "example@gmail.com",
-  "message": "The email account that you tried to reach is over quota.",
-  "response": "552 5.2.2 The email account that you tried to reach is over quota.",
+  "message": "Az email fiók, amelyet el szerettél volna érni, túllépte a kvótát.",
+  "response": "552 5.2.2 Az email fiók, amelyet el szerettél volna érni, túllépte a kvótát.",
   "response_code": 552,
   "truth_source": "google.com",
   "bounce": {
     "action": "reject",
-    "message": "Gmail Mailbox is full",
+    "message": "A Gmail postaláda tele van",
     "category": "capacity",
     "code": 552,
     "status": "5.2.2",
@@ -2469,59 +2950,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+Néhány további megjegyzés a bounce webhookokkal kapcsolatban:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* Ha a webhook payload tartalmaz `list_id`, `list_unsubscribe` vagy `feedback_id` értéket, akkor szükség esetén megfelelő lépéseket kell tenned a `recipient` eltávolítására a listáról.
+  * Ha a `bounce.category` értéke `"block"`, `"recipient"`, `"spam"` vagy `"virus"` volt, akkor mindenképpen el kell távolítanod a felhasználót a listáról.
+* Ha ellenőrizni szeretnéd a webhook payloadokat (hogy valóban a szerverünkről érkeznek-e), akkor [oldd meg a távoli kliens IP címének kliens hosztnevét egy visszakereséssel](https://nodejs.org/api/dns.html#dnspromisesreverseip) – ennek `smtp.forwardemail.net`-nek kell lennie.
+  * Ellenőrizheted az IP-t a [közzétett IP címeink](#what-are-your-servers-ip-addresses) között is.
+  * Menj a Saját fiók → Domain-ek → Beállítások → Webhook Signature Payload Verification Key menüponthoz, hogy megszerezd a webhook kulcsodat.
+    * Ezt a kulcsot bármikor megváltoztathatod biztonsági okokból.
+    * Számítsd ki és hasonlítsd össze az `X-Webhook-Signature` értéket a webhook kérésből a kulccsal számított törzzsel. Ennek egy példája elérhető [ebben a Stack Overflow bejegyzésben](https://stackoverflow.com/a/68885281).
+  * További információkért lásd a vitát a <https://github.com/forwardemail/free-email-forwarding/issues/235> oldalon.
+* Maximum `5` másodpercig várjuk, hogy a webhook végpontod `200` státuszkóddal válaszoljon, és legfeljebb `1` alkalommal próbálkozunk újra.
+* Ha észleljük, hogy a bounce webhook URL-ed hibát jelez, amikor kérés küldése történik, akkor hetente egyszer udvariassági emailt küldünk neked.
+### Támogatjátok a webhookokat? {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    Bounce webhookokról keresel dokumentációt? Nézd meg a <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Támogatjátok a bounce webhookokat?</a> részt további információkért.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+Igen, 2020. május 15-től elérhető ez a funkció. Egyszerűen hozzáadhatsz webhook(oka)t ugyanúgy, mint bármelyik címzettet! Kérjük, győződj meg róla, hogy a webhook URL-je "http" vagy "https" protokollal kezdődik.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Fokozott adatvédelem:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Ha fizetős csomagod van (amely fokozott adatvédelmet kínál), akkor kérjük, menj a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> oldalra, és kattints a domained melletti "Aliasok" gombra a webhookok konfigurálásához. Ha többet szeretnél megtudni a fizetős csomagokról, nézd meg az <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Árazás</a> oldalunkat. Egyébként folytathatod az alábbi utasításokat.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+Ha ingyenes csomagod van, akkor egyszerűen adj hozzá egy új DNS <strong class="notranslate">TXT</strong> rekordot az alábbi módon:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+Például, ha azt szeretném, hogy minden az `alias@example.com` címre érkező email továbbítódjon egy új [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) teszt végpontra:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3009,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+Vagy talán azt szeretnéd, hogy minden az `example.com` címre érkező email erre a végpontra továbbítódjon:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3030,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**Íme további megjegyzések a webhookokkal kapcsolatban:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* Ha ellenőrizned kell a webhook payloadokat (hogy biztosan a mi szerverünkről érkeznek-e), akkor [oldd meg a távoli kliens IP címének kliens hosztnevét fordított lekérdezéssel](https://nodejs.org/api/dns.html#dnspromisesreverseip) – ennek `mx1.forwardemail.net` vagy `mx2.forwardemail.net` kell legyen.
+  * Ellenőrizheted az IP-t a [közzétett IP címeinkkel](#what-are-your-servers-ip-addresses) is.
+  * Ha fizetős csomagod van, akkor menj a Saját fiók → Domain-ek → Beállítások → Webhook aláírás payload ellenőrző kulcs oldalra a webhook kulcsod megszerzéséhez.
+    * Biztonsági okokból bármikor megváltoztathatod ezt a kulcsot.
+    * Számítsd ki és hasonlítsd össze az `X-Webhook-Signature` értéket a webhook kérésből a kulccsal számított törzsértékkel. Egy példa erre elérhető ezen a [Stack Overflow bejegyzésen](https://stackoverflow.com/a/68885281).
+  * További információkért lásd a <https://github.com/forwardemail/free-email-forwarding/issues/235> vitát.
+* Ha egy webhook nem válaszol `200` státuszkóddal, akkor a válaszát eltároljuk a [hiba naplóban](#do-you-store-error-logs) – ami hasznos a hibakereséshez.
+* A webhook HTTP kérések legfeljebb 3-szor próbálkoznak minden SMTP kapcsolat kísérlet során, 60 másodperces maximális időkorláttal endpoint POST kérésenként. **Fontos megjegyezni, hogy ez nem azt jelenti, hogy csak 3-szor próbálkozik**, valójában folyamatosan próbálkozik az idő múlásával, SMTP 421-es kódot küldve (ami azt jelzi a küldőnek, hogy próbálja újra később) a 3. sikertelen HTTP POST kérés után. Ez azt jelenti, hogy az email napokig folyamatosan próbálkozik, amíg 200 státuszkódot nem kap.
+* Automatikusan újrapróbálkozunk az alapértelmezett státusz és hibakódok alapján, amelyeket a [superagent retry metódusa](https://ladjs.github.io/superagent/#retrying-requests) használ (mi vagyunk a karbantartók).
+* Egyesítjük ugyanarra az endpointra irányuló webhook HTTP kéréseket egyetlen kérésbe (nem több külön kérés), hogy erőforrást takarítsunk meg és gyorsítsuk a válaszidőt. Például, ha emailt küldesz a <webhook1@example.com>, <webhook2@example.com> és <webhook3@example.com> címekre, és mindegyik ugyanarra a *pontos* végpont URL-re van konfigurálva, akkor csak egy kérés lesz elküldve. Az egyesítés pontos végpont egyezés alapján történik, szigorú egyenlőséggel.
+* Megjegyzendő, hogy a [mailparser](https://nodemailer.com/extras/mailparser/) könyvtár "simpleParser" metódusát használjuk az üzenet JSON-barát objektummá alakításához.
+* A nyers email érték Stringként a "raw" tulajdonságban található.
+* Az autentikációs eredmények a "dkim", "spf", "arc", "dmarc" és "bimi" tulajdonságokban vannak.
+* A feldolgozott email fejléc a "headers" tulajdonságban található – de megjegyzendő, hogy a "headerLines" is használható egyszerűbb iteráláshoz és feldolgozáshoz.
+* A webhookhoz tartozó csoportosított címzettek a "recipients" tulajdonságban vannak.
+* Az SMTP munkamenet információi a "session" tulajdonságban találhatók. Ez tartalmazza az üzenet küldőjének adatait, az üzenet érkezési idejét, a HELO-t és a kliens hosztnevét. A kliens hoszt neve `session.clientHostname` értékként vagy a teljesen minősített domain név (fordított PTR lekérdezésből), vagy a `session.remoteAddress` zárójelezve (pl. `"[127.0.0.1]"`).
+* Ha gyorsan szeretnéd lekérdezni az `X-Original-To` értékét, használhatod a `session.recipient` értékét (lásd az alábbi példát). Az `X-Original-To` egy olyan fejléc, amelyet hibakereséshez adunk az üzenetekhez az eredeti címzett (maszkolt továbbítás előtt) megjelenítésére.
+* Ha el szeretnéd távolítani az `attachments` és/vagy `raw` tulajdonságokat a payload törzsből, egyszerűen add hozzá a `?attachments=false`, `?raw=false` vagy `?attachments=false&raw=false` lekérdezési paramétereket a webhook végpontod URL-jéhez (pl. `https://example.com/webhook?attachments=false&raw=false`).
+* Ha vannak csatolmányok, azok a `attachments` tömbhöz lesznek hozzáfűzve Buffer értékekkel. Ezeket vissza tudod alakítani tartalommá JavaScript segítségével, például:
   ```js
   const data = [
     104,
@@ -2785,48 +3264,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### Támogatjátok a reguláris kifejezéseket vagy regexet? {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+Igen, 2021. szeptember 27-től hozzáadtuk ezt a funkciót. Egyszerűen írhat reguláris kifejezéseket ("regex") az aliasok egyezéséhez és helyettesítések végrehajtásához.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+A reguláris kifejezést támogató aliasok azok, amelyek `/`-vel kezdődnek és `/`-vel végződnek, és a címzettek email címek vagy webhookok. A címzettek tartalmazhatnak regex helyettesítést is (pl. `$1`, `$2`).
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+Két reguláris kifejezés zászlót támogatunk, az `i` és a `g`-t. Az `i` kis- és nagybetűket nem érzékelő zászló állandó alapértelmezett, és mindig érvényesül. A globális `g` zászlót Ön adhatja hozzá azzal, hogy a záró `/` után `/g`-t ír.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+Megjegyzendő, hogy a regex támogatásunkkal a címzett részhez támogatjuk az <a href="#can-i-disable-specific-aliases">letiltott alias funkciót</a> is.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+A reguláris kifejezések nem támogatottak a <a href="/disposable-addresses" target="_blank">globális vanity domaineken</a> (mivel ez biztonsági kockázatot jelenthet).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Fokozott adatvédelmi védelem:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    Ha fizetős csomagon van (amely fokozott adatvédelmi védelmet tartalmaz), kérjük, menjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> oldalra, és kattintson a domainje melletti "Aliasok" gombra az aliasok konfigurálásához, beleértve a reguláris kifejezéseket is. Ha többet szeretne megtudni a fizetős csomagokról, nézze meg a <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Árazás</a> oldalunkat.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### Példák a fokozott adatvédelmi védelemhez {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
-      <th>Test</th>
+      <th>Alias név</th>
+      <th>Hatás</th>
+      <th>Teszt</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-mailek a `linus@example.com` vagy `torvalds@example.com` címekre</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">teszt megtekintése a RegExr-en</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-mailek a `24highst@example.com` vagy `24highstreet@example.com` címekre</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">teszt megtekintése a RegExr-en</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2834,34 +3313,34 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    Ezeket a <a href="https://regexr.com" class="alert-link">RegExr</a> oldalon tesztelheti, írja be a kifejezést a felső mezőbe, majd egy példány alias-t az alatta lévő szövegmezőbe. Ha egyezik, kék színű lesz.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### Példák az ingyenes csomaghoz {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+Ha az ingyenes csomagon van, egyszerűen adjon hozzá egy új DNS <strong class="notranslate">TXT</strong> rekordot az alábbi példák egyikével vagy többel:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Egyszerű példa:</strong> Ha azt szeretném, hogy minden email, amely a `linus@example.com` vagy `torvalds@example.com` címekre érkezik, továbbítódjon a `user@gmail.com` címre:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3350,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>Keresztnév Vezetéknév helyettesítési példa:</strong> Tegyük fel, hogy az összes céges email címe a `firstname.lastname@example.com` mintát követi. Ha azt szeretném, hogy minden email, amely a `firstname.lastname@example.com` mintára érkezik, továbbítódjon a `firstname.lastname@company.com` címre helyettesítési támogatással (<a href="https://regexr.com/66hnu" class="alert-link">teszt megtekintése a RegExr-en</a>):
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3373,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>Plusz szimbólum szűrés helyettesítési példa:</strong> Ha azt szeretném, hogy minden email, ami az `info@example.com` vagy `support@example.com` címre érkezik, továbbítódjon a `user+info@gmail.com` vagy `user+support@gmail.com` címre (helyettesítési támogatással) (<a href="https://regexr.com/66ho7" class="alert-link">teszt megtekintése RegExr-en</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3397,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>Webhook lekérdezési karakterlánc helyettesítési példa:</strong> Talán azt szeretnéd, hogy minden email, ami az `example.com` címre érkezik, egy <a href="#do-you-support-webhooks" class="alert-link">webhookhoz</a> menjen, és dinamikus lekérdezési kulcsa legyen "to", amelynek értéke az email cím felhasználónév része (<a href="https://regexr.com/66ho4" class="alert-link">teszt megtekintése RegExr-en</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3421,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>Csendes elutasítás példa:</strong> Ha azt szeretnéd, hogy minden email, ami egy bizonyos mintának megfelel, le legyen tiltva és csendesen elutasítva legyen (a feladó számára úgy tűnik, mintha az üzenet sikeresen elküldésre került volna, de valójában sehová sem jut el) `250` státuszkóddal (lásd <a href="#can-i-disable-specific-aliases" class="alert-link">Lehet-e letiltani bizonyos aliasokat</a>), akkor egyszerűen használd ugyanazt a megközelítést egyetlen felkiáltójellel "!". Ez azt jelzi a feladónak, hogy az üzenet sikeresen kézbesítve lett, de valójában sehová sem jutott (pl. fekete lyuk vagy `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3445,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>Lágy elutasítás példa:</strong> Ha azt szeretnéd, hogy minden email, ami egy bizonyos mintának megfelel, le legyen tiltva és lágy elutasítással legyen visszautasítva `421` státuszkóddal (lásd <a href="#can-i-disable-specific-aliases" class="alert-link">Lehet-e letiltani bizonyos aliasokat</a>), akkor egyszerűen használd ugyanazt a megközelítést dupla felkiáltójellel "!!". Ez azt jelzi a feladónak, hogy próbálja újra elküldeni az emailt, és az ilyen aliasra érkező emaileket körülbelül 5 napig újrapróbálják, majd véglegesen elutasítják.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>Kemény elutasítás példája:</strong> Ha azt szeretné, hogy egy bizonyos mintának megfelelő összes e-mail le legyen tiltva és kemény elutasítással, `550` státuszkóddal visszautasítva legyen (lásd <a href="#can-i-disable-specific-aliases" class="alert-link">Lehet-e letiltani bizonyos aliasokat</a>), akkor egyszerűen használja ugyanazt a megközelítést három felkiáltójellel "!!!". Ez azt jelzi a küldőnek, hogy állandó hiba történt, és az e-mailek nem próbálkoznak újra, el lesznek utasítva ezen alias esetén.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Gép/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3016,574 +3493,614 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    Kíváncsi, hogyan írjon reguláris kifejezést, vagy tesztelni szeretné a helyettesítést? Látogasson el az ingyenes reguláris kifejezés tesztelő weboldalra, a <a href="https://regexr.com" class="alert-link">RegExr</a>-re a <a href="https://regexr.com/" class="alert-link">https://regexr.com</a> címen.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### Mik az Önök kimenő SMTP korlátai {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+Felhasználókat és domaineket napi 300 kimenő SMTP üzenetre korlátozunk. Ez havi átlagban több mint 9000 e-mailt jelent. Ha ennél többre van szüksége, vagy rendszeresen nagy méretű e-maileket küld, kérjük, [vegye fel velünk a kapcsolatot](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### Szükséges engedély az SMTP engedélyezéséhez? {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Igen, kérjük, vegye figyelembe, hogy az IP-hírnév megőrzése és a kézbesíthetőség biztosítása érdekében a Forward Email manuális felülvizsgálati folyamatot alkalmaz domainenként a kimenő SMTP engedélyezéséhez. Küldjön e-mailt a <support@forwardemail.net> címre vagy nyisson egy [segítségkérést](https://forwardemail.net/help) az engedélyezéshez. Ez általában kevesebb, mint 24 órát vesz igénybe, a legtöbb kérés 1-2 órán belül teljesül. A közeljövőben célunk, hogy ezt a folyamatot azonnalivá tegyük további spam-ellenőrzésekkel és riasztásokkal. Ez a folyamat biztosítja, hogy az Ön e-mailjei eljussanak a beérkező levelek közé, és az üzenetek ne kerüljenek spam mappába.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### Mik az SMTP szerver konfigurációs beállításai? {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Szerverünk a `smtp.forwardemail.net`, amelyet a <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">állapotoldalunkon</a> is figyelünk.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+Támogatja az IPv4 és IPv6 protokollokat, és elérhető a `465` és `2465` portokon SSL/TLS-hez (ajánlott), valamint a `587`, `2587`, `2525` és `25` portokon TLS-hez (STARTTLS).
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**2025 októberétől** támogatjuk a **régi TLS 1.0** kapcsolatokat a `2455` (SSL/TLS) és `2555` (STARTTLS) portokon régebbi eszközök, például nyomtatók, szkennerek, kamerák és régi e-mail kliensek számára, amelyek nem támogatják a modern TLS verziókat. Ezek a portok alternatívát kínálnak a Gmail, Yahoo, Outlook és más szolgáltatók számára, amelyek megszüntették a régebbi TLS protokollok támogatását.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **Régi TLS 1.0 támogatás (2455 és 2555 portok)**: Ezek a portok az elavult TLS 1.0 protokollt használják, amely ismert biztonsági sebezhetőségekkel rendelkezik (BEAST, POODLE). Csak akkor használja ezeket a portokat, ha az eszköze feltétlenül nem támogatja a TLS 1.2 vagy újabb verziókat. Erősen ajánljuk az eszköz firmware-ének frissítését vagy modern e-mail kliensek használatát, amikor csak lehetséges. Ezek a portok kizárólag régi hardverek kompatibilitására szolgálnak (régi nyomtatók, szkennerek, kamerák, IoT eszközök).
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
-| :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+|                                     Protokoll                                     | Hosztnév                 |            Portok            |        IPv4        |        IPv6        | Megjegyzések                           |
+| :------------------------------------------------------------------------------: | ------------------------ | :--------------------------: | :----------------: | :----------------: | ------------------------------------- |
+|                              `SSL/TLS` **Ajánlott**                             | `smtp.forwardemail.net`  |        `465`, `2465`         | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Ajánlott)            |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net`  | `587`, `2587`, `2525`, `25`  | :white_check_mark: | :white_check_mark: | Támogatott (előnyben részesítendő az SSL/TLS `465` port) |
+|                             `SSL/TLS` **Csak régi**                             | `smtp.forwardemail.net`  |            `2455`            | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 csak régi eszközöknek |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Csak régi**   | `smtp.forwardemail.net`  |            `2555`            | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 csak régi eszközöknek |
+| Bejelentkezés | Példa                     | Leírás                                                                                                                                                                                   |
+| ------------ | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Felhasználónév | `user@example.com`        | Egy alias e-mail címe, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt. |
+| Jelszó       | `************************` | Alias                                                                                                                                                                                    |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+Ahhoz, hogy SMTP-vel küldjön kimenő e-mailt, az **SMTP felhasználónév** az alias e-mail címe kell legyen, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt – és az **SMTP jelszó** alias-specifikusan generált jelszó kell legyen.
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+Kérjük, tekintse meg a [Támogatják az e-mail küldést SMTP-vel](#do-you-support-sending-email-with-smtp) részt a lépésről lépésre szóló útmutatásért.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+### Mik az IMAP szerver konfigurációs beállításai {#what-are-your-imap-server-configuration-settings}
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+A szerverünk `imap.forwardemail.net`, és a <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">állapotoldalunkon</a> is figyeljük.
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Támogatja az IPv4 és IPv6 protokollokat, és elérhető a `993` és `2993` portokon SSL/TLS kapcsolaton keresztül.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
+|         Protokoll        | Hosztnév                 |     Portok    |        IPv4        |        IPv6        |
+| :----------------------: | ------------------------ | :-----------: | :----------------: | :----------------: |
+| `SSL/TLS` **Előnyben**   | `imap.forwardemail.net`  | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| Bejelentkezés | Példa                     | Leírás                                                                                                                                                                                   |
+| ------------ | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Felhasználónév | `user@example.com`        | Egy alias e-mail címe, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt. |
+| Jelszó       | `************************` | Alias-specifikusan generált jelszó.                                                                                                                                                       |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Ahhoz, hogy IMAP-pal csatlakozzon, az **IMAP felhasználónév** az alias e-mail címe kell legyen, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt – és az **IMAP jelszó** alias-specifikusan generált jelszó kell legyen.
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+Kérjük, tekintse meg a [Támogatják az e-mail fogadást IMAP-pal](#do-you-support-receiving-email-with-imap) részt a lépésről lépésre szóló útmutatásért.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+### Mik az POP3 szerver konfigurációs beállításai {#what-are-your-pop3-server-configuration-settings}
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+A szerverünk `pop3.forwardemail.net`, és a <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">állapotoldalunkon</a> is figyeljük.
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Támogatja az IPv4 és IPv6 protokollokat, és elérhető a `995` és `2995` portokon SSL/TLS kapcsolaton keresztül.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+|         Protokoll        | Hosztnév                 |     Portok    |        IPv4        |        IPv6        |
+| :----------------------: | ------------------------ | :-----------: | :----------------: | :----------------: |
+| `SSL/TLS` **Előnyben**   | `pop3.forwardemail.net`  | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| Bejelentkezés | Példa                     | Leírás                                                                                                                                                                                  |
+| ------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Felhasználónév | `user@example.com`        | Egy alias e-mail címe, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt. |
+| Jelszó       | `************************` | Alias-specifikus generált jelszó.                                                                                                                                                       |
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+Ahhoz, hogy POP3-mal csatlakozzon, a **POP3 felhasználónév** az alias e-mail címe kell legyen, amely létezik a domainhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> alatt – és az **IMAP jelszó** alias-specifikus generált jelszó kell legyen.
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Kérjük, tekintse meg a [Támogatjátok a POP3-at](#do-you-support-pop3) részt a lépésről lépésre szóló útmutatóért.
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+### Hogyan állíthatom be az e-mail automatikus felismerést a domainemhez {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+Az e-mail automatikus felismerés lehetővé teszi az olyan e-mail kliensek számára, mint a **Thunderbird**, **Apple Mail**, **Microsoft Outlook** és mobil eszközök, hogy automatikusan felismerjék a helyes IMAP, SMTP, POP3, CalDAV és CardDAV szerverbeállításokat, amikor a felhasználó hozzáadja az e-mail fiókját. Ezt az [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (e-mail) és az [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) szabványok definiálják, és DNS SRV rekordokat használnak.
 
-## Security {#security}
+A Forward Email autodiscovery rekordokat tesz közzé a `forwardemail.net` domainen. Vagy közvetlenül hozzáadhat SRV rekordokat a domainjéhez, vagy használhat egy egyszerűbb CNAME megoldást.
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+#### A lehetőség: CNAME rekordok (legkönnyebb) {#option-a-cname-records-simplest}
+
+Adja hozzá ezt a két CNAME rekordot a domain DNS-éhez. Ez az autodiscovery-t a Forward Email szervereire delegálja:
+
+|  Típus | Név/Host       | Cél/Érték                      |
+| :----: | -------------- | ------------------------------ |
+| CNAME  | `autoconfig`   | `autoconfig.forwardemail.net`  |
+| CNAME  | `autodiscover` | `autodiscover.forwardemail.net` |
+
+Az `autoconfig` rekordot a **Thunderbird** és más Mozilla-alapú kliensek használják. Az `autodiscover` rekordot a **Microsoft Outlook** használja.
+
+#### B lehetőség: SRV rekordok (közvetlen) {#option-b-srv-records-direct}
+
+Ha inkább közvetlenül szeretné hozzáadni a rekordokat (vagy a DNS szolgáltatója nem támogatja a CNAME-t az aldomainen), adja hozzá ezeket az SRV rekordokat a domainjéhez:
+
+| Típus | Név/Host           | Prioritás | Súly | Port | Cél/Érték                  | Cél                                   |
+| :----: | ------------------ | :-------: | :---: | :--: | -------------------------- | ------------------------------------ |
+| SRV   | `_imaps._tcp`       |     0     |  1    |  993 | `imap.forwardemail.net`    | IMAP SSL/TLS-en keresztül (ajánlott) |
+| SRV   | `_imap._tcp`        |     0     |  0    |   0  | `.`                        | Egyszerű szöveges IMAP letiltva      |
+| SRV   | `_submissions._tcp` |     0     |  1    |  465 | `smtp.forwardemail.net`    | SMTP beküldés (SSL/TLS, ajánlott)    |
+| SRV   | `_submission._tcp`  |     5     |  1    |  587 | `smtp.forwardemail.net`    | SMTP beküldés (STARTTLS)              |
+| SRV   | `_pop3s._tcp`       |    10     |  1    |  995 | `pop3.forwardemail.net`    | POP3 SSL/TLS-en keresztül             |
+| SRV   | `_pop3._tcp`        |     0     |  0    |   0  | `.`                        | Egyszerű szöveges POP3 letiltva      |
+| SRV   | `_caldavs._tcp`     |     0     |  1    |  443 | `caldav.forwardemail.net`  | CalDAV TLS-en keresztül (naptárak)   |
+| SRV   | `_caldav._tcp`      |     0     |  0    |   0  | `.`                        | Egyszerű szöveges CalDAV letiltva    |
+| SRV   | `_carddavs._tcp`    |     0     |  1    |  443 | `carddav.forwardemail.net` | CardDAV TLS-en keresztül (névjegyek) |
+| SRV   | `_carddav._tcp`     |     0     |  0    |   0  | `.`                        | Egyszerű szöveges CardDAV letiltva   |
+> \[!NOTE]
+> Az IMAP alacsonyabb prioritású értékkel rendelkezik (0), mint a POP3 (10), ami azt jelzi az e-mail klienseknek, hogy ha mindkettő elérhető, akkor az IMAP-et részesítsék előnyben a POP3 helyett. Azok a rekordok, amelyek célpontja `.` (egyetlen pont), azt jelzik, hogy ezen protokollok titkosítatlan (plaintext) verziói szándékosan le vannak tiltva az [RFC 6186 3.4 szakasza](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4) szerint. A CalDAV és CardDAV SRV rekordok a naptár- és névjegy automatikus felfedezéshez az [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) szabványt követik.
+
+#### Mely e-mail kliensek támogatják az automatikus felfedezést? {#which-email-clients-support-autodiscovery}
+
+| Kliens             | E-mail                                           | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | `autoconfig` CNAME vagy SRV rekordok             | `autoconfig` XML vagy SRV rekordok (RFC 6764) |
+| Apple Mail (macOS) | SRV rekordok (RFC 6186)                           | SRV rekordok (RFC 6764)                     |
+| Apple Mail (iOS)   | SRV rekordok (RFC 6186)                           | SRV rekordok (RFC 6764)                     |
+| Microsoft Outlook  | `autodiscover` CNAME vagy `_autodiscover._tcp` SRV | Nem támogatott                             |
+| GNOME (Evolution)  | SRV rekordok (RFC 6186)                           | SRV rekordok (RFC 6764)                     |
+| KDE (KMail)        | SRV rekordok (RFC 6186)                           | SRV rekordok (RFC 6764)                     |
+| eM Client          | `autoconfig` vagy `autodiscover`                  | SRV rekordok (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> A legjobb kompatibilitás érdekében minden klienssel javasoljuk az **A opció** (CNAME rekordok) használatát az **B opció** SRV rekordjaival kombinálva. A CNAME megközelítés önmagában lefedi a legtöbb e-mail klienst. A CalDAV/CardDAV SRV rekordok biztosítják, hogy a naptár- és névjegy kliensek is automatikusan felfedezhessék a szerver beállításait.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## Biztonság {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### Fejlett szerverbiztosítási technikák {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
+> \[!TIP]
+> Tudjon meg többet biztonsági infrastruktúránkról a [Biztonsági oldalunkon](/security).
+
+A Forward Email számos szerverbiztosítási technikát alkalmaz infrastruktúránk és adatai védelme érdekében:
+
+1. **Hálózatbiztonság**:
+   * IP tables tűzfal szigorú szabályokkal
+   * Fail2ban a brute force támadások ellen
+   * Rendszeres biztonsági auditok és behatolás-tesztelések
+   * Csak VPN-en keresztüli adminisztratív hozzáférés
+
+2. **Rendszerbiztosítás**:
+   * Minimális csomagtelepítés
+   * Rendszeres biztonsági frissítések
+   * SELinux érvényesítő módban
+   * Root SSH hozzáférés letiltva
+   * Csak kulcs alapú hitelesítés
+
+3. **Alkalmazásbiztonság**:
+   * Content Security Policy (CSP) fejlécek
    * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+   * XSS elleni védelmi fejlécek
+   * Frame opciók és referrer policy fejlécek
+   * Rendszeres függőség auditok
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+4. **Adatvédelem**:
+   * Teljes lemezes titkosítás LUKS-szal
+   * Biztonságos kulcskezelés
+   * Rendszeres titkosított biztonsági mentések
+   * Adatminimalizálási gyakorlatok
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+5. **Megfigyelés és reagálás**:
+   * Valós idejű behatolás-észlelés
+   * Automatikus biztonsági szkennelés
+   * Központosított naplózás és elemzés
+   * Eseménykezelési eljárások
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Biztonsági gyakorlatainkat folyamatosan frissítjük az új fenyegetések és sebezhetőségek kezelésére.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Maximális biztonság érdekében javasoljuk szolgáltatásunk használatát végpontok közötti titkosítással OpenPGP segítségével.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### Van SOC 2 vagy ISO 27001 tanúsítványuk? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> A Forward Email olyan infrastruktúrán működik, amelyet tanúsított alvállalkozók biztosítanak az iparági szabványoknak való megfelelés érdekében.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+A Forward Email közvetlenül nem rendelkezik SOC 2 Type II vagy ISO 27001 tanúsítványokkal. Azonban a szolgáltatás tanúsított alvállalkozók által biztosított infrastruktúrán működik:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: SOC 2 Type II és SOC 3 Type II tanúsított (a Schellman & Company LLC auditálta), ISO 27001 tanúsított több adatközpontban. Részletek: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: SOC 2+ (HIPAA) tanúsított, ISO/IEC tanúsítványok: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Részletek: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: SOC 2 kompatibilis (a tanúsítvány megszerzéséhez közvetlenül a DataPackethez kell fordulni), vállalati szintű infrastruktúra szolgáltató (Denver helyszín). Részletek: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+A Forward Email követi az iparági legjobb gyakorlatokat a biztonsági auditok terén, és rendszeresen együttműködik független biztonsági kutatókkal. Forrás: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### Használnak TLS titkosítást az e-mailek továbbításához? {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+Igen. A Forward Email szigorúan érvényesíti a TLS 1.2+ használatát minden kapcsolathoz (HTTPS, SMTP, IMAP, POP3), és megvalósítja az MTA-STS-t a továbbfejlesztett TLS támogatás érdekében. A megvalósítás tartalmazza:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* TLS 1.2+ érvényesítése minden e-mail kapcsolathoz
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) kulcscsere a tökéletes előre titoktartásért
+* Modern titkosító készletek rendszeres biztonsági frissítésekkel
+* HTTP/2 támogatás a jobb teljesítmény és biztonság érdekében
+* HSTS (HTTP Strict Transport Security) előtöltéssel a főbb böngészőkben
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** a szigorú TLS érvényesítéshez
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+Forrás: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**MTA-STS megvalósítás**: A Forward Email szigorú MTA-STS érvényesítést valósít meg a kódbázisban. Amikor TLS hibák lépnek fel és az MTA-STS érvényesítve van, a rendszer 421 SMTP státuszkódokat ad vissza, hogy az e-mailek később újrapróbálkozzanak, ahelyett, hogy biztonságtalanul kézbesülnének. A megvalósítás részletei:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* TLS hiba észlelés: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* MTA-STS érvényesítés a send-email segédfüggvényben: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+Harmadik fél általi validáció: <https://www.hardenize.com/report/forwardemail.net/1750312779> "Jó" értékeléseket mutat minden TLS és szállítási biztonsági intézkedésre.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### Megőrzik az e-mail hitelesítési fejlécet? {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+Igen. A Forward Email átfogóan megvalósítja és megőrzi az e-mail hitelesítési fejléceket:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (Sender Policy Framework)**: Megfelelően megvalósított és megőrzött
+* **DKIM (DomainKeys Identified Mail)**: Teljes támogatás megfelelő kulcskezeléssel
+* **DMARC**: Házirend érvényesítés az SPF vagy DKIM ellenőrzésen megbukó e-mailek esetén
+* **ARC**: Bár nincs kifejezetten részletezve, a szolgáltatás tökéletes megfelelési pontszámai átfogó hitelesítési fejléc kezelést sugallnak
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+Forrás: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Validáció: Az Internet.nl Mail Test 100/100 pontszámot mutat kifejezetten az "SPF, DKIM és DMARC" megvalósításra. A Hardenize értékelés "Jó" minősítést ad az SPF és DMARC esetén: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Megőrzik az eredeti e-mail fejléceket és megakadályozzák a hamisítást? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> A Forward Email kifinomult hamisítás elleni védelmet valósít meg az e-mail visszaélések megelőzésére.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+A Forward Email megőrzi az eredeti e-mail fejléceket, miközben átfogó hamisítás elleni védelmet valósít meg az MX kódbázison keresztül:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **Fejléc megőrzése**: Az eredeti hitelesítési fejlécek megmaradnak a továbbítás során
+* **Hamisítás elleni védelem**: A DMARC házirend érvényesítése megakadályozza a fejléc hamisítást azáltal, hogy elutasítja az SPF vagy DKIM ellenőrzésen megbukó e-maileket
+* **Fejléc injekció megelőzése**: Bemeneti érvényesítés és tisztítás a striptags könyvtár használatával
+* **Fejlett védelem**: Kifinomult adathalászat felismerés hamisítás és személyesítés elleni védelemmel, valamint felhasználói értesítési rendszerekkel
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**MX megvalósítás részletei**: Az alapvető e-mail feldolgozó logikát az MX szerver kódbázisa kezeli, különösen:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Fő MX adatkezelő: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Tetszőleges e-mail szűrés (hamisítás elleni): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+Az `isArbitrary` segédfüggvény kifinomult hamisítás elleni szabályokat valósít meg, beleértve a domain személyesítés, tiltott kifejezések és különféle adathalász minták felismerését.
+### Hogyan védik meg a spam és visszaélések ellen {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+A Forward Email átfogó, többrétegű védelmet valósít meg:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **Korlátozott sebesség**: Alkalmazva hitelesítési kísérletekre, API végpontokra és SMTP kapcsolatokra
+* **Erőforrás izoláció**: Felhasználók között, hogy megakadályozza a nagy forgalmú felhasználók hatását
+* **DDoS védelem**: Többrétegű védelem a DataPacket Shield rendszerén és a Cloudflare-en keresztül
+* **Automatikus skálázás**: Dinamikus erőforrás-igazítás a kereslet alapján
+* **Visszaélés megelőzés**: Felhasználóspecifikus visszaélés-megelőző ellenőrzések és hash-alapú blokkolás rosszindulatú tartalom esetén
+* **E-mail hitelesítés**: SPF, DKIM, DMARC protokollok fejlett adathalászat-észleléssel
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+Források:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (DDoS védelem részletei)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### Tárolnak-e e-mail tartalmat lemezen {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> A Forward Email nulla-tudású architektúrát használ, amely megakadályozza, hogy az e-mail tartalom lemezre íródjon.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **Nulla-tudású architektúra**: Egyénileg titkosított SQLite postaládák, így a Forward Email nem fér hozzá az e-mail tartalomhoz
+* **Memóriában történő feldolgozás**: Az e-mailek feldolgozása teljes egészében memóriában történik, elkerülve a lemezhasználatot
+* **Nincs tartalom naplózás**: „Nem naplózunk vagy tárolunk e-mail tartalmat vagy metaadatokat lemezen”
+* **Sandboxolt titkosítás**: A titkosítási kulcsok soha nem tárolódnak lemezen tiszta szövegként
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX kódalap bizonyíték**: Az MX szerver az e-maileket teljes egészében memóriában dolgozza fel, anélkül, hogy a tartalmat lemezre írna. A fő e-mail feldolgozó kezelő ezt a memóriában történő megközelítést mutatja be: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sources:
+Források:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Összefoglaló)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Nulla-tudás részletek)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxolt titkosítás)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+### Kiszivároghat-e az e-mail tartalom rendszerösszeomlás esetén {#can-email-content-be-exposed-during-system-crashes}
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+Nem. A Forward Email átfogó védelmi intézkedéseket alkalmaz az összeomlás miatti adatkiszivárgás ellen:
 
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
+* **Core dumpok letiltva**: Megakadályozza a memória kiszivárgását összeomláskor
+* **Swap memória letiltva**: Teljesen letiltva, hogy megakadályozza az érzékeny adatok kinyerését a swap fájlokból
+* **Memóriában történő architektúra**: Az e-mail tartalom csak a feldolgozás ideje alatt létezik a volatilis memóriában
+* **Titkosítási kulcs védelem**: A kulcsok soha nem tárolódnak lemezen tiszta szövegként
+* **Fizikai biztonság**: LUKS v2 titkosított lemezek megakadályozzák az adatok fizikai elérését
+* **USB tároló letiltva**: Megakadályozza az illetéktelen adatkinyerést
 
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+**Hibakezelés rendszerproblémák esetén**: A Forward Email `isCodeBug` és `isTimeoutError` segédfüggvényeket használ annak biztosítására, hogy ha bármilyen adatbázis-kapcsolódási probléma, DNS hálózati/blokkolási probléma vagy upstream kapcsolódási probléma lép fel, a rendszer 421 SMTP státuszkódot ad vissza, így az e-mailek később újrapróbálkoznak, nem vesznek el vagy nem szivárognak ki.
 
-Implementation details:
+Megvalósítási részletek:
 
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Hibakategorizálás: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Timeout hiba kezelése MX feldolgozásban: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Forrás: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+### Kik férnek hozzá az e-mail infrastruktúrához {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+A Forward Email átfogó hozzáférés-ellenőrzést valósít meg minimális, 2-3 fős mérnöki csapatának hozzáférésére szigorú 2FA követelményekkel:
 
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+* **Szerepkör alapú hozzáférés-vezérlés**: Csapatfiókokhoz erőforrás-alapú jogosultságokkal
+* **Legkisebb jogosultság elve**: Minden rendszerben alkalmazva
+* **Feladatok szétválasztása**: Működési szerepek között
+* **Felhasználókezelés**: Külön telepítő és devops felhasználók eltérő jogosultságokkal
+* **Root bejelentkezés letiltva**: Hozzáférés csak megfelelően hitelesített fiókokon keresztül
+* **Szigorú 2FA**: Nincs SMS alapú 2FA a MiTM támadások kockázata miatt – csak alkalmazás alapú vagy hardver tokenek
+* **Átfogó audit naplózás**: Érzékeny adatok maszkolásával
+* **Automatizált anomália észlelés**: Szokatlan hozzáférési mintákra
+* **Rendszeres biztonsági felülvizsgálatok**: Hozzáférési naplókról
+* **Evil Maid támadás elleni védelem**: USB tároló letiltva és egyéb fizikai biztonsági intézkedések
+Források:
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Engedélyezési szabályok)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Hálózatbiztonság)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid támadás megelőzése)
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### Milyen infrastruktúra szolgáltatókat használnak {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> A Forward Email több infrastruktúra alvállalkozót használ átfogó megfelelőségi tanúsítványokkal.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+A teljes részletek elérhetők a GDPR megfelelőségi oldalunkon: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**Elsődleges infrastruktúra alvállalkozók:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Szolgáltató     | Adatvédelmi keretrendszer tanúsítva | GDPR megfelelőségi oldal                                                                 |
+| --------------- | ----------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Cloudflare**  | ✅ Igen                             | <https://www.cloudflare.com/trust-hub/gdpr/>                                            |
+| **DataPacket**  | ❌ Nem                             | <https://www.datapacket.com/privacy-policy>                                              |
+| **DigitalOcean**| ❌ Nem                             | <https://www.digitalocean.com/legal/gdpr>                                                |
+| **GitHub**      | ✅ Igen                             | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**       | ❌ Nem                             | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
-**Detailed Certifications:**
+**Részletes tanúsítványok:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II (a Schellman & Company LLC auditálta)
+* ISO 27001 tanúsítvány több adatközpontban
+* PCI-DSS megfelelőség
+* CSA STAR 1. szintű tanúsítvány
+* APEC CBPR PRP tanúsítvány
+* Részletek: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
+* SOC 2+ (HIPAA) tanúsítvány
+* PCI kereskedői megfelelőség
+* CSA STAR 1. szintű tanúsítvány
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* Részletek: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* SOC 2 megfelelőség (tanúsítvány beszerzéséhez közvetlenül a DataPackethez kell fordulni)
+* Vállalati szintű infrastruktúra (Denver helyszín)
+* DDoS védelem a Shield kiberbiztonsági csomagon keresztül
+* 24/7 technikai támogatás
+* Globális hálózat 58 adatközponttal
+* Részletek: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* Adatvédelmi keretrendszer tanúsítva (EU-USA, Svájc-USA és UK kiterjesztés)
+* Forráskód tárolás, CI/CD és projektmenedzsment
+* GitHub Adatvédelmi Megállapodás elérhető
+* Részletek: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**Fizetési feldolgozók:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Adatvédelmi keretrendszer tanúsítva - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Nem DPF tanúsított - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Kínálnak adatfeldolgozási megállapodást (DPA)? {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+Igen, a Forward Email átfogó Adatfeldolgozási Megállapodást (DPA) kínál, amely aláírható vállalati szerződésünk részeként. A DPA másolata elérhető itt: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**DPA részletek:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* Lefedi a GDPR megfelelést és az EU-USA/Svájc-USA Privacy Shield keretrendszereket
+* Automatikusan elfogadott a Szolgáltatási Feltételeink elfogadásakor
+* A szabványos DPA-hoz nincs szükség külön aláírásra
+* Egyedi DPA megállapodások elérhetők vállalati licenc keretében
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**GDPR megfelelőségi keretrendszer:**
+DPA-nk részletezi a GDPR-nak és a nemzetközi adatátviteli követelményeknek való megfelelést. Teljes információ elérhető itt: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+Vállalati ügyfelek számára, akik egyedi DPA feltételeket vagy specifikus szerződéses megállapodásokat igényelnek, ezek a **Vállalati Licenc ($250/hónap)** programunkon keresztül kezelhetők.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### Hogyan kezelik az adatvédelmi incidensek értesítését? {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> A Forward Email nulla tudású architektúrája jelentősen korlátozza a biztonsági incidens hatását.
+* **Korlátozott adatközlés**: Nem fér hozzá titkosított e-mail tartalomhoz a nulla-tudás architektúra miatt
+* **Minimális adatgyűjtés**: Csak alapvető előfizetői információk és korlátozott IP-naplók biztonsági célokra
+* **Alvállalkozói keretrendszerek**: A DigitalOcean, GitHub és Vultr GDPR-kompatibilis incidenskezelési eljárásokat tart fenn
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**GDPR képviselői információk:**
+A Forward Email a 27. cikknek megfelelően GDPR képviselőket nevezett ki:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
-Osano International Compliance Services Limited
-ATTN: LFHC
-3 Dublin Landings, North Wall Quay
+**EU képviselő:**
+Osano International Compliance Services Limited  
+ATTN: LFHC  
+3 Dublin Landings, North Wall Quay  
 Dublin 1, D01C4E0
 
-**UK Representative:**
-Osano UK Compliance LTD
-ATTN: LFHC
-42-46 Fountain Street, Belfast
+**UK képviselő:**
+Osano UK Compliance LTD  
+ATTN: LFHC  
+42-46 Fountain Street, Belfast  
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+Vállalati ügyfelek számára, akik specifikus adatvédelmi incidens értesítési SLA-kat igényelnek, ezekről az **Enterprise License** megállapodás részeként kell egyeztetni.
 
-Sources:
+Források:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### Kínálnak tesztkörnyezetet {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+A Forward Email műszaki dokumentációja nem ír le kifejezetten dedikált sandbox módot. Azonban a lehetséges tesztelési megközelítések a következők:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **Önmagad általi hosztolás lehetősége**: Teljes körű önálló hosztolási képességek tesztkörnyezetek létrehozásához
+* **API interfész**: Konfigurációk programozott tesztelésének lehetősége
+* **Nyílt forráskód**: 100%-ban nyílt forráskódú kód lehetővé teszi az ügyfelek számára az átirányítási logika vizsgálatát
+* **Több domain támogatása**: Több domain támogatása teszt domain létrehozását is lehetővé teheti
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+Vállalati ügyfelek számára, akik formális sandbox képességeket igényelnek, ezt az **Enterprise License** megállapodás részeként kell egyeztetni.
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+Forrás: <https://github.com/forwardemail/forwardemail.net> (Fejlesztői környezet részletei)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### Biztosítanak monitorozó és riasztó eszközöket {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+A Forward Email valós idejű monitorozást biztosít bizonyos korlátozásokkal:
 
-**Available:**
+**Elérhető:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **Valós idejű kézbesítési monitorozás**: Nyilvánosan látható teljesítménymutatók a főbb e-mail szolgáltatók esetében
+* **Automatikus riasztás**: A mérnöki csapat értesítése, ha a kézbesítési idő meghaladja a 10 másodpercet
+* **Átlátható monitorozás**: 100%-ban nyílt forráskódú monitorozó rendszerek
+* **Infrastruktúra monitorozás**: Automatikus anomáliaészlelés és átfogó audit naplózás
 
-**Limitations:**
+**Korlátozások:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* Ügyféloldali webhookok vagy API-alapú kézbesítési státusz értesítések nem dokumentáltak kifejezetten
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+Vállalati ügyfelek számára, akik részletes kézbesítési státusz webhookokat vagy egyedi monitorozási integrációkat igényelnek, ezek a képességek elérhetők lehetnek **Enterprise License** megállapodások keretében.
 
-Sources:
+Források:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (Valós idejű monitorozás megjelenítése)
+* <https://github.com/forwardemail/forwardemail.net> (Monitorozás megvalósítása)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### Hogyan biztosítják a magas rendelkezésre állást {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> A Forward Email átfogó redundanciát valósít meg több infrastruktúra szolgáltató között.
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **Elosztott infrastruktúra**: Több szolgáltató (DigitalOcean, Vultr, DataPacket) földrajzi régiók szerint
+* **Földrajzi terheléselosztás**: Cloudflare alapú földrajzi hely szerinti terheléselosztás automatikus failover-rel
+* **Automatikus skálázás**: Dinamikus erőforrás-igazítás a kereslet alapján
+* **Többrétegű DDoS védelem**: A DataPacket Shield rendszerén és a Cloudflare-en keresztül
+* **Szerver redundancia**: Több szerver régiónként automatikus failover-rel
+* **Adatbázis replikáció**: Valós idejű adat szinkronizáció több helyszín között
+* **Monitorozás és riasztás**: 0-24 órás monitorozás automatikus incidenskezeléssel
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**Üzemidő vállalás**: 99,9%+ szolgáltatás rendelkezésre állás átlátható monitorozással elérhető a <https://forwardemail.net> címen
 
-Sources:
+Források:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Megfelelnek a Nemzeti Védelmi Engedélyezési Törvény (NDAA) 889. szakaszának? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> A Forward Email teljes mértékben megfelel a 889. szakasznak az infrastruktúra partnerek gondos kiválasztásával.
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+Igen, a Forward Email **megfelel a 889. szakasznak**. A Nemzeti Védelmi Engedélyezési Törvény (NDAA) 889. szakasza megtiltja a kormányzati szerveknek, hogy olyan entitásokkal használjanak vagy szerződjenek, amelyek telekommunikációs és videó megfigyelő berendezéseket használnak bizonyos cégektől (Huawei, ZTE, Hikvision, Dahua és Hytera).
+**Hogyan éri el a Forward Email a 889-es szakasz szerinti megfelelést:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+A Forward Email kizárólag két kulcsfontosságú infrastruktúra szolgáltatóra támaszkodik, egyikük sem használ a 889-es szakasz által tiltott berendezéseket:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: Elsődleges partnerünk hálózati szolgáltatások és e-mail biztonság terén
+2. **DataPacket**: Elsődleges szolgáltatónk a szerver infrastruktúrához (kizárólag Arista Networks és Cisco berendezéseket használva)
+3. **Biztonsági szolgáltatók**: A Digital Ocean és Vultr biztonsági szolgáltatóink írásban is megerősítették, hogy megfelelnek a 889-es szakasznak.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**A Cloudflare elkötelezettsége**: A Cloudflare kifejezetten kijelenti a Harmadik Fél Magatartási Kódexében, hogy nem használ távközlési berendezéseket, videó megfigyelő termékeket vagy szolgáltatásokat a 889-es szakasz által tiltott entitásoktól.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**Kormányzati felhasználási eset**: A 889-es szakasz szerinti megfelelőségünket az is igazolta, hogy a **US Naval Academy** a Forward Emailt választotta biztonságos e-mail továbbítási igényeihez, amelyhez dokumentációt kértek szövetségi megfelelőségi szabványainkról.
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+A kormányzati megfelelőségi keretrendszerünkről, beleértve a szélesebb szövetségi szabályozásokat is, részletesen olvashat a következő átfogó esettanulmányban: [Szövetségi kormányzati e-mail szolgáltatás 889-es szakasz szerinti megfelelőséggel](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## Rendszer- és műszaki részletek {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### Tárolnak-e e-maileket és azok tartalmát {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nem, nem írunk lemezre és nem tárolunk naplókat – kivéve a [hibákat](#do-you-store-error-logs) és a [kimenő SMTP-t](#do-you-support-sending-email-with-smtp) (lásd az [Adatvédelmi irányelveinket](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Minden a memóriában történik, és [a forráskódunk elérhető a GitHubon](https://github.com/forwardemail).
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### Hogyan működik az e-mail továbbító rendszerük {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+Az e-mail az [SMTP protokollra](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) támaszkodik. Ez a protokoll parancsokból áll, amelyeket egy szervernek küldenek (leggyakrabban a 25-ös porton fut). Először létrejön a kapcsolat, majd a küldő jelzi, hogy kitől érkezik az üzenet ("MAIL FROM"), ezt követi a címzett ("RCPT TO"), végül az e-mail fejléc és törzs ("DATA"). Az e-mail továbbító rendszerünk folyamata az egyes SMTP parancsokhoz viszonyítva az alábbiak szerint alakul:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Kezdeti kapcsolat (parancsnév nélkül, pl. `telnet example.com 25`) – Ez a kezdeti kapcsolat. Ellenőrizzük azokat a küldőket, akik nincsenek az [engedélyező listánkon](#do-you-have-an-allowlist) a [tiltó listánk](#do-you-have-a-denylist) alapján. Végül, ha a küldő nincs az engedélyező listán, akkor megnézzük, hogy [szürkelistán](#do-you-have-a-greylist) vannak-e.
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` – Ez egy üdvözlés, amely a küldő FQDN-jét, IP-címét vagy levelező kezelő nevét azonosítja. Ez az érték hamisítható, ezért nem támaszkodunk erre az adatra, helyette a kapcsolat IP-címének fordított hosztnév lekérdezését használjuk.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` – Ez az e-mail boríték küldő címét jelzi. Ha érték van megadva, az érvényes RFC 5322 e-mail cím kell legyen. Üres értékek megengedettek. Itt [ellenőrizzük a visszapattanást](#how-do-you-protect-against-backscatter), és a MAIL FROM-ot összevetjük a [tiltó listánkkal](#do-you-have-a-denylist). Végül az engedélyező listán nem szereplő küldőket sebességkorlátozás alá vetjük (lásd a [Sebességkorlátozás](#do-you-have-rate-limiting) és az [engedélyező lista](#do-you-have-an-allowlist) szakaszokat további információkért).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` – Ez az e-mail címzett(ek)et jelzi. Ezeknek érvényes RFC 5322 e-mail címeknek kell lenniük. Üzenetenként legfeljebb 50 boríték címzettet engedélyezünk (ez eltér az e-mail "To" fejlécétől). Itt ellenőrizzük a [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") érvényes címét is, hogy megvédjük a hamisítást az SRS domain nevünkkel.
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` – Ez a szolgáltatásunk magja, amely feldolgozza az e-mailt. Részletesebb betekintésért lásd az alábbi [Hogyan dolgoznak fel egy e-mailt továbbításra](#how-do-you-process-an-email-for-forwarding) szakaszt.
+### Hogyan dolgoz fel egy e-mailt továbbításra {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+Ez a szakasz leírja az SMTP protokoll `DATA` parancsához kapcsolódó folyamatunkat a fentebb található [Hogyan működik az e-mail továbbító rendszer](#how-does-your-email-forwarding-system-work) szakaszban – ez az, ahogyan feldolgozzuk egy e-mail fejlécét, törzsét, biztonságát, meghatározzuk, hová kell kézbesíteni, és hogyan kezeljük a kapcsolatokat.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. Ha az üzenet meghaladja az 50 MB maximális méretet, akkor 552-es hibakóddal elutasításra kerül.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. Ha az üzenet nem tartalmazott "From" fejlécet, vagy ha a "From" fejléc bármely értéke nem volt érvényes RFC 5322 e-mail cím, akkor 550-es hibakóddal elutasításra kerül.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. Ha az üzenet több mint 25 "Received" fejlécet tartalmazott, akkor úgy ítéltük meg, hogy egy átirányítási ciklusban ragadt, és 550-es hibakóddal elutasításra kerül.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. Az e-mail ujjlenyomatának felhasználásával (lásd a [Fingerprinting](#how-do-you-determine-an-email-fingerprint) szakaszt), ellenőrizzük, hogy az üzenetet megpróbálták-e újraküldeni több mint 5 napig (ami megfelel a [postfix alapértelmezett viselkedésének](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), és ha igen, akkor 550-es hibakóddal elutasításra kerül.
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. Memóriában tároljuk az e-mail szkennelésének eredményeit a [Spam Scanner](https://spamscanner.net) használatával.
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Ha bármilyen tetszőleges eredmény született a Spam Scannerből, akkor 554-es hibakóddal elutasításra kerül. A tetszőleges eredmények jelenleg csak a GTUBE tesztet tartalmazzák a jelen írás idején. További információkért lásd: <https://spamassassin.apache.org/gtube/>.
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. A következő fejléceket adjuk hozzá az üzenethez hibakeresési és visszaélés-megelőzési célból:
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` – hozzáadjuk ezt a szabványos Received fejlécet az eredeti IP-vel és hosttal, átvitel típusával, TLS kapcsolat információval, dátummal/idővel és címzettel.
+   * `X-Original-To` – az üzenet eredeti címzettje:
+     * Ez hasznos annak meghatározásához, hogy az e-mailt eredetileg hová kézbesítették (a "Received" fejléc mellett).
+     * Ezt címzettenként adjuk hozzá az IMAP és/vagy maszkolt továbbítás idején (a magánélet védelme érdekében).
+   * `X-Forward-Email-Website` – tartalmaz egy linket a weboldalunkra: <https://forwardemail.net>
+   * `X-Forward-Email-Version` – a kódbázisunk `package.json` fájljából származó aktuális [SemVer](https://semver.org/) verzió.
+   * `X-Forward-Email-Session-ID` – egy munkamenetazonosító érték hibakeresési célokra (csak nem éles környezetben alkalmazandó).
+   * `X-Forward-Email-Sender` – vesszővel elválasztott lista, amely tartalmazza az eredeti boríték MAIL FROM címét (ha nem volt üres), a visszafelé mutató PTR kliens FQDN-jét (ha létezik), és a feladó IP-címét.
+   * `X-Forward-Email-ID` – ez csak a kimenő SMTP-re vonatkozik, és megfelel a My Account → Emails alatt tárolt e-mail azonosítónak.
+   * `X-Report-Abuse` – értéke `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` – értéke `abuse@forwardemail.net`.
+   * `X-Complaints-To` – értéke `abuse@forwardemail.net`.
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. Ezután ellenőrizzük az üzenetet [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) és [DMARC](https://en.wikipedia.org/wiki/DMARC) szempontjából.
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * Ha az üzenet megbukott a DMARC vizsgálaton, és a domain rendelkezett elutasítási szabállyal (pl. `p=reject` [a DMARC szabályzatban](https://wikipedia.org/wiki/DMARC)), akkor 550-es hibakóddal elutasításra kerül. Egy domain DMARC szabályzata általában a `_dmarc` aldomain <strong class="notranslate">TXT</strong> rekordjában található (pl. `dig _dmarc.example.com txt`).
+   * Ha az üzenet megbukott az SPF vizsgálaton, és a domain kemény elutasítási szabállyal rendelkezett (pl. az SPF szabályzatban `-all` szerepelt a `~all` vagy a szabályzat hiánya helyett), akkor 550-es hibakóddal elutasításra kerül. Egy domain SPF szabályzata általában a gyökérdomain <strong class="notranslate">TXT</strong> rekordjában található (pl. `dig example.com txt`). További információkért lásd a [levelek küldése Gmailben](#can-i-send-mail-as-in-gmail-with-this) szakaszt az SPF kapcsán.
+9. Most feldolgozzuk az üzenet címzettjeit, amelyeket az `RCPT TO` parancsból gyűjtöttünk össze a fentebb található [Hogyan működik az e-mail továbbító rendszered](#how-does-your-email-forwarding-system-work) szakaszban. Minden egyes címzettnél a következő műveleteket végezzük el:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * Lekérdezzük a domain név <strong class="notranslate">TXT</strong> rekordjait (az `@` jel utáni rész, pl. `example.com`, ha az e-mail cím `test@example.com` volt). Például, ha a domain `example.com`, akkor egy DNS lekérdezést végzünk, például `dig example.com txt`.
+   * Feldolgozzuk az összes olyan <strong class="notranslate">TXT</strong> rekordot, amely `forward-email=` (ingyenes csomagok) vagy `forward-email-site-verification=` (fizetős csomagok) kezdettel rendelkezik. Megjegyzés: mindkettőt feldolgozzuk, hogy kezelni tudjuk az e-maileket, miközben a felhasználó csomagot vált vagy visszalép.
+   * Ezekből a feldolgozott <strong class="notranslate">TXT</strong> rekordokból végigiterálunk, hogy kinyerjük a továbbítási konfigurációt (ahogy azt a fentebb található [Hogyan kezdjek hozzá és állítsam be az e-mail továbbítást](#how-do-i-get-started-and-set-up-email-forwarding) szakaszban leírtuk). Megjegyzés: csak egy `forward-email-site-verification=` értéket támogatunk, és ha többet adnak meg, akkor 550-es hibakód lép fel, és a feladó visszapattanást kap erre a címzettre.
+   * Rekurzívan végigiterálunk a kinyert továbbítási konfiguráción, hogy meghatározzuk a globális továbbítást, a reguláris kifejezés alapú továbbítást, és minden más támogatott továbbítási konfigurációt – amelyek mostantól "Továbbítási Címek" néven ismertek.
+   * Minden Továbbítási Címhez egy rekurzív lekérdezést támogatunk (ami elindítja ezen műveletsorozatot az adott címen). Ha rekurzív egyezést találunk, akkor a szülő eredményt eltávolítjuk a Továbbítási Címek közül, és a gyerekeket hozzáadjuk.
+   * A Továbbítási Címeket egyediség szempontjából feldolgozzuk (mivel nem akarunk duplikált címekre küldeni vagy felesleges SMTP kliens kapcsolatokat létrehozni).
+   * Minden Továbbítási Címhez lekérdezzük a domain nevét az API végpontunkon `/v1/max-forwarded-addresses` (hogy meghatározzuk, hány címre engedélyezett a domain az e-mail továbbítást aliasonként, pl. alapértelmezés szerint 10 – lásd a [maximum korlát az aliasonként továbbítható e-mail címek számára](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) szakaszt). Ha ez a korlát túllépésre kerül, akkor 550-es hibakód lép fel, és a feladó visszapattanást kap erre a címzettre.
+   * Lekérdezzük az eredeti címzett beállításait az API végpontunkon `/v1/settings`, amely támogatja a fizetős felhasználók lekérdezését (ingyenes felhasználók számára tartalék megoldással). Ez visszaad egy konfigurációs objektumot az alábbi fejlett beállításokkal: `port` (Szám, pl. `25`), `has_adult_content_protection` (Logikai), `has_phishing_protection` (Logikai), `has_executable_protection` (Logikai), és `has_virus_protection` (Logikai).
+   * Ezek alapján a beállítások alapján ellenőrizzük a Spam Szűrő eredményeket, és ha bármilyen hiba előfordul, az üzenetet elutasítjuk 554-es hibakóddal (pl. ha a `has_virus_protection` engedélyezve van, akkor ellenőrizzük a Spam Szűrő eredményeit vírusokra). Megjegyzés: minden ingyenes csomagos felhasználó automatikusan be van kapcsolva az ellenőrzésekre felnőtt tartalom, adathalászat, futtatható fájlok és vírusok tekintetében. Alapértelmezés szerint minden fizetős felhasználó is be van kapcsolva, de ez a konfiguráció módosítható a domain Beállítások oldalán a Forward Email irányítópulton.
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. Minden feldolgozott címzett Továbbítási Címeihez a következő műveleteket végezzük el:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * A címet ellenőrizzük a [tiltólistánk](#do-you-have-a-denylist), és ha szerepel rajta, akkor 421-es hibakód lép fel (ami azt jelzi a feladónak, hogy próbálkozzon később újra).
+    * Ha a cím webhook, akkor egy logikai változót állítunk be a későbbi műveletekhez (lásd lentebb – hasonló webhookokat csoportosítunk, hogy egy POST kérést küldjünk több helyett a kézbesítéshez).
+    * Ha a cím e-mail cím, akkor a hosztot feldolgozzuk a későbbi műveletekhez (lásd lentebb – hasonló hosztokat csoportosítunk, hogy egy kapcsolatot hozzunk létre több egyéni kapcsolat helyett a kézbesítéshez).
+11. Ha nincsenek címzettek és nincsenek visszapattanások, akkor egy 550-es hibával válaszolunk: "Érvénytelen címzettek".
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. Ha vannak címzettek, akkor végigiterálunk rajtuk (ugyanazon gazdagép szerint csoportosítva), és kézbesítjük az e-maileket. További részletekért lásd az alábbi [Hogyan kezelitek az e-mail kézbesítési problémákat](#how-do-you-handle-email-delivery-issues) szakaszt.
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * Ha bármilyen hiba történik az e-mailek küldése közben, akkor azokat memóriában tároljuk későbbi feldolgozásra.
+    * A legalacsonyabb hibakódot (ha van) vesszük az e-mailek küldése során – és ezt használjuk válaszkódként a `DATA` parancshoz. Ez azt jelenti, hogy a nem kézbesített e-maileket általában az eredeti feladó újrapróbálja, míg a már kézbesített e-maileket nem küldjük újra a következő üzenetküldéskor (mivel használjuk a [Ujjlenyomat-képzést](#how-do-you-determine-an-email-fingerprint)).
+    * Ha nem történt hiba, akkor 250-es sikeres SMTP válaszkódot küldünk.
+    * Visszapattanásnak minősül minden kézbesítési kísérlet, amely >= 500-as státuszkóddal végződik (állandó hibák).
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. Ha nem történt visszapattanás (állandó hiba), akkor az SMTP válaszkód a nem állandó hibák közül a legalacsonyabb hibakód lesz (vagy 250-es sikeres státuszkód, ha nem volt hiba).
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. Ha visszapattanások történtek, akkor háttérben küldjük ki a visszapattanó e-maileket, miután visszaadtuk a feladónak az összes hibakód közül a legalacsonyabbat. Ha azonban a legalacsonyabb hibakód >= 500, akkor nem küldünk visszapattanó e-maileket. Ennek oka, hogy ha küldenénk, akkor a feladók dupla visszapattanó e-mailt kapnának (például egyet a saját kimenő MTA-juktól, mint a Gmail – és egyet tőlünk). További részletekért lásd az alábbi [Hogyan védekeztek a visszacsatolás ellen](#how-do-you-protect-against-backscatter) szakaszt.
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+### Hogyan kezelitek az e-mail kézbesítési problémákat {#how-do-you-handle-email-delivery-issues}
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+Megjegyzendő, hogy "Friendly-From" átírást csak akkor végzünk az e-maileken, ha a feladó DMARC szabályzata nem teljesült ÉS egyetlen DKIM aláírás sem volt összhangban a "From" fejlécével. Ez azt jelenti, hogy módosítjuk az üzenet "From" fejlécét, beállítjuk az "X-Original-From" fejlécet, és ha még nem volt beállítva, akkor egy "Reply-To" fejlécet is hozzáadunk. Az ARC pecsétet is újra lezárjuk az üzeneten ezeknek a fejléceknek a módosítása után.
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+Minden szinten okos hibafeldolgozást alkalmazunk – a kódunkban, DNS lekérdezéseknél, Node.js belső működésében, HTTP kéréseknél (pl. 408, 413 és 429 kódokat 421 SMTP válaszkódra térképezünk, ha a címzett webhook), és a levelezőszerver válaszainál (pl. "defer" vagy "slowdown" válaszokat 421 hibaként újrapróbálunk).
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+A logikánk egyszerű és megbízható, és újrapróbálkozást végez SSL/TLS hibák, kapcsolódási problémák és egyéb esetekben is. A cél az, hogy maximalizáljuk a kézbesíthetőséget minden címzett számára egy továbbító konfiguráció esetén.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+Ha a címzett webhook, akkor engedélyezünk 60 másodperces időkorlátot a kérés befejezésére, legfeljebb 3 újrapróbálkozással (összesen 4 kérés sikertelenség előtt). Megjegyzendő, hogy helyesen értelmezzük a 408, 413 és 429 hibakódokat, és azokat 421 SMTP válaszkódra térképezzük.
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+Ha a címzett e-mail cím, akkor megpróbáljuk az e-mailt opportunisztikus TLS-sel küldeni (megpróbáljuk használni a STARTTLS-t, ha elérhető a címzett levelezőszerverén). Ha SSL/TLS hiba történik az e-mail küldése közben, akkor megpróbáljuk TLS nélkül elküldeni az e-mailt (STARTTLS használata nélkül).
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+Ha bármilyen DNS vagy kapcsolódási hiba történik, akkor a `DATA` parancsnál 421-es SMTP válaszkódot adunk vissza, egyébként ha >= 500-as hibák vannak, akkor visszapattanókat küldünk.
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+Ha észleljük, hogy egy e-mail szerver, amelyhez kézbesíteni próbálunk, blokkolja az egyik vagy több levelező IP címünket (például bármilyen technológia miatt, amit a spammerek visszatartására használnak), akkor 421-es SMTP válaszkódot küldünk, hogy a feladó később újrapróbálhassa az üzenetet (és értesülünk a problémáról, hogy remélhetőleg megoldhassuk a következő próbálkozás előtt).
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+### Hogyan kezelitek, ha az IP címeitek blokkolva lesznek {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+Rendszeresen figyeljük az összes jelentős DNS tiltólistát, és ha bármelyik levelezési csere ("MX") IP-címünk szerepel egy jelentős tiltólistán, akkor lehetőség szerint eltávolítjuk azt a releváns DNS A rekord körforgásból, amíg a probléma meg nem oldódik.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+A jelen írás idején több DNS engedélyező listán is szereplünk, és komolyan vesszük a tiltólisták figyelését. Ha bármilyen problémát észlel, mielőtt mi meg tudnánk oldani, kérjük, írásban értesítsen minket a <support@forwardemail.net> címen.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+IP-címeink nyilvánosan elérhetők, [lásd az alábbi szakaszt további információért](#what-are-your-servers-ip-addresses).
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Mik azok a postmaster címek {#what-are-postmaster-addresses}
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+A tévesen továbbított visszapattanások és az automatikus válaszadó üzenetek nem felügyelt vagy nem létező postafiókoknak történő küldésének megakadályozása érdekében fenntartunk egy listát mailer-daemon jellegű felhasználónevekről:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4119,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [és bármely no-reply cím](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+További információért lásd az [RFC 5320 4.6 szakaszát](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6), amely bemutatja, hogyan használják az ilyen listákat hatékony e-mail rendszerek létrehozásához.
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### Mik azok a no-reply címek {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+Az alábbi (kis- és nagybetűtől független) e-mail felhasználónevek bármelyike no-reply címnek minősül:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4146,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Ezt a listát [nyílt forráskódú projektként tartjuk karban a GitHubon](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### Mik az Ön szerverének IP-címei {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+IP-címeinket közzétesszük a <https://forwardemail.net/ips> címen.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### Van engedélyező listája? {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+Igen, van egy [alapértelmezés szerint engedélyezett domain névkiterjesztések listája](#what-domain-name-extensions-are-allowlisted-by-default), valamint egy dinamikus, gyorsítótárazott és folyamatosan frissülő engedélyező listánk, amely [szigorú kritériumokon](#what-is-your-allowlist-criteria) alapul.
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+Minden fizetős ügyfél által használt domain, e-mail és IP-cím automatikusan óránként ellenőrizve van a tiltólistánkon – amely riasztja az adminisztrátorokat, akik szükség esetén manuálisan beavatkozhatnak.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+Ezen felül, ha valamelyik domainje vagy annak e-mail címei tiltólistára kerülnek (például spamküldés, vírusok vagy személyiséglopási támadások miatt) – akkor a domain adminisztrátorokat (Önt) és a mi csapatunk adminisztrátorait azonnal e-mailben értesítjük. Erősen ajánljuk, hogy [állítsa be a DMARC-ot](#how-do-i-set-up-dmarc-for-forward-email) ennek megelőzésére.
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### Mely domain névkiterjesztések vannak alapértelmezés szerint engedélyezve {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+Az alábbi domain névkiterjesztések alapértelmezés szerint engedélyezettnek számítanak (függetlenül attól, hogy szerepelnek-e az Umbrella Popularity Listán vagy sem):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4373,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+Ezen felül ezek a [márka- és vállalati legfelső szintű domainek](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) alapértelmezés szerint engedélyezettek (pl. `apple` az `applecard.apple` esetén az Apple Card bankszámlakivonatokhoz):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4436,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4798,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+2025. március 18-tól ezeket a francia tengerentúli területeket is hozzáadtuk ehhez a listához ([a GitHub kérés alapján](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4814,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+2025. július 8-tól ezeket a kizárólag Európára jellemző országokat adtuk hozzá:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4834,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+2025 októberében a <code class="notranslate">cz</code> (Csehország) is hozzáadásra került a kereslet miatt.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+Kifejezetten nem vettük fel a `ru` és `ua` domaineket a magas spam aktivitás miatt.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### Mi az engedélyezési listád kritériuma {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+Van egy statikus lista a [alapértelmezetten engedélyezett domain név kiterjesztésekről](#what-domain-name-extensions-are-allowlisted-by-default) – és fenntartunk egy dinamikus, gyorsítótárazott, gördülő engedélyezési listát az alábbi szigorú kritériumok alapján:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* A feladó gyökérdomainjének olyan [domain név kiterjesztésnek kell lennie, amely megfelel az ingyenes csomagunkban kínált listának](#what-domain-name-extensions-can-be-used-for-free) (a `biz` és `info` hozzáadásával). Tartalmazzuk továbbá az `edu`, `gov` és `mil` részleges egyezéseket is, például `xyz.gov.au` és `xyz.edu.au`.
+* A feladó gyökérdomainjének az [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL") 100 000 legnépszerűbb egyedi gyökérdomainje között kell lennie.
+* A feladó gyökérdomainjének az UPL-ben az elmúlt 7 napból legalább 4 napban meg kell jelennie, és a top 50 000 eredmény között kell lennie (kb. 50%+).
+* A feladó gyökérdomainjének nem szabad a Cloudflare által [felnőtt tartalomként vagy rosszindulatú programként kategorizáltnak](https://radar.cloudflare.com/categorization-feedback/) lennie.
+* A feladó gyökérdomainjének rendelkeznie kell A vagy MX rekorddal.
+* A feladó gyökérdomainjének rendelkeznie kell A rekord(ok)kal, MX rekord(ok)kal, DMARC rekorddal `p=reject` vagy `p=quarantine` értékkel, vagy SPF rekorddal `-all` vagy `~all` minősítővel.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+Ha ezek a kritériumok teljesülnek, akkor a feladó gyökérdomainjét 7 napra gyorsítótárazzuk. Megjegyzendő, hogy az automatizált folyamatunk naponta fut – tehát ez egy gördülő engedélyezési lista gyorsítótár, amely naponta frissül.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+Az automatizált folyamat letölti az előző 7 nap UPL-jeit memóriába, kicsomagolja azokat, majd a fentiek szerinti szigorú kritériumok alapján elemzi őket memóriában.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+Az írás idején népszerű domainek, mint a Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify és még sok más természetesen beletartoznak.
+Ha Ön olyan feladó, aki nincs az engedélyezett listánkon, akkor amikor először küld e-mailt az FQDN gyökérdomainje vagy IP-címe, akkor [rate limited](#do-you-have-rate-limiting) és [greylisted](#do-you-have-a-greylist) lesz. Vegye figyelembe, hogy ez egy szabványos gyakorlat, amelyet e-mail szabványként alkalmaznak. A legtöbb e-mail szerver kliens megpróbálja újraküldeni az üzenetet, ha rate limit vagy greylist hibát kap (pl. 421 vagy 4xx szintű hibakód).
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**Vegye figyelembe, hogy bizonyos feladók, mint például `a@gmail.com`, `b@xyz.edu` és `c@gov.au` továbbra is lehetnek [denylisted](#do-you-have-a-denylist)** (például ha automatikusan észleljük a spameket, adathalászatot vagy rosszindulatú programokat ezekről a feladókról).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### Milyen domain névkiterjesztések használhatók ingyenesen {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+2023. március 31-től új, átfogó spam szabályt vezettünk be felhasználóink és szolgáltatásunk védelme érdekében.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+Ez az új szabály csak az alábbi domain névkiterjesztések használatát engedélyezi az ingyenes csomagunkban:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4982,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### Van szürkelista {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+Igen, nagyon laza [email szürkelista](https://en.wikipedia.org/wiki/Greylisting_\(email\)) szabályzatot alkalmazunk. A szürkelista csak az engedélyező listánkon nem szereplő feladókra vonatkozik, és 30 napig marad a gyorsítótárunkban.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+Bármely új feladó esetén eltárolunk egy kulcsot a Redis adatbázisunkban 30 napra, amelynek értéke az első kérésük kezdeti érkezési ideje. Ezután elutasítjuk az e-mailjüket egy 450-es újrapróbálkozási státuszkóddal, és csak akkor engedjük át, ha eltelt 5 perc.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+Ha sikeresen megvárják az 5 percet a kezdeti érkezési időtől számítva, akkor az e-mailjeiket elfogadjuk, és nem kapják meg a 450-es státuszkódot.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+A kulcs vagy a teljesen minősített domain név (FQDN) gyökérdomainje, vagy a feladó IP-címe. Ez azt jelenti, hogy bármely aldomain, amely átmegy a szürkelistán, a gyökérdomain esetében is átmegy, és fordítva (ezt értjük nagyon laza szabályzat alatt).
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+Például, ha egy e-mail a `test.example.com`-ról érkezik, mielőtt látnánk e-mailt az `example.com`-ról, akkor bármely e-mail a `test.example.com`-ról és/vagy az `example.com`-ról 5 percet kell várjon a kapcsolat kezdeti érkezési idejétől számítva. Nem váratjuk meg külön-külön a `test.example.com`-ot és az `example.com`-ot 5-5 percig (a szürkelistázási szabályzatunk a gyökérdomain szintjén érvényes).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+Megjegyzendő, hogy a szürkelista nem vonatkozik az [engedélyező listánkon](#do-you-have-an-allowlist) szereplő feladókra (pl. Meta, Amazon, Netflix, Google, Microsoft a jelen írás idején).
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### Van tiltólista {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+Igen, saját tiltólistát működtetünk, amelyet automatikusan, valós időben és manuálisan frissítünk a spam és rosszindulatú tevékenység észlelése alapján.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+Minden órában lehúzzuk az összes IP-címet az UCEPROTECT 1. szintű tiltólistájáról a <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> címen, és 7 napos lejárattal betápláljuk a tiltólistánkba.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+A tiltólistán szereplő feladók 421-es hibakódot kapnak (ami azt jelzi a feladónak, hogy próbálja újra később), ha [nincsenek engedélyezve](#do-you-have-an-allowlist).
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+A 421-es státuszkód használatával a 554-es helyett a potenciális téves riasztások valós időben enyhíthetők, és az üzenet sikeresen kézbesíthető a következő próbálkozáskor.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**Ez eltér más levelező szolgáltatásoktól**, ahol ha blokkolólistára kerülsz, kemény és végleges hiba történik. Gyakran nehéz a feladókat újrapróbálkozásra kérni (különösen nagy szervezetektől), ezért ez a megközelítés nagyjából 5 napot ad az első e-mail próbálkozástól számítva, hogy a feladó, a címzett vagy mi közbeléphessünk és megoldjuk a problémát (pl. tiltólista eltávolítás kérésével).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+Minden tiltólista eltávolítási kérelmet valós időben figyelnek az adminok (pl. hogy az ismétlődő téves riasztásokat az adminok véglegesen engedélyezhessék).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+Tiltólista eltávolítási kérelmek kérhetők a <https://forwardemail.net/denylist> címen. A fizetős felhasználók kérelmei azonnal feldolgozásra kerülnek, míg a nem fizetősöknek várniuk kell az adminok feldolgozására.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+Azokat a feladókat, akik spameket vagy vírusos tartalmat küldenek, a következő módon tesszük tiltólistára:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. Az [elsődleges üzenet ujjlenyomatát](#how-do-you-determine-an-email-fingerprint) szürkelistázzuk, ha spam vagy blokkolólista kerül észlelésre egy „megbízható” feladótól (pl. `gmail.com`, `microsoft.com`, `apple.com`).
+   * Ha a feladó engedélyezett volt, az üzenet 1 órára szürkelistázva lesz.
+   * Ha a feladó nem engedélyezett, az üzenet 6 órára szürkelistázva lesz.
+2. A tiltólista kulcsokat a feladótól és az üzenettől származó információkból kinyerjük, és mindegyikhez létrehozunk (ha még nem létezik) egy számlálót, amelyet 1-gyel növelünk, és 24 órára gyorsítótárazunk.
+   * Engedélyezett feladók esetén:
+     * Hozzáadunk egy kulcsot a boríték „MAIL FROM” e-mail címéhez, ha az SPF-je megfelelt vagy nem volt SPF, és nem [postmaster felhasználónév](#what-are-postmaster-addresses) vagy [no-reply felhasználónév](#what-are-no-reply-addresses).
+     * Ha a „From” fejléc engedélyezett volt, akkor hozzáadunk egy kulcsot a „From” fejléc e-mail címéhez, ha az SPF-je megfelelt vagy megfelelt és DKIM-je igazolt volt.
+     * Ha a „From” fejléc nem volt engedélyezett, akkor hozzáadunk egy kulcsot a „From” fejléc e-mail címéhez és annak gyökér elemzett domain nevéhez.
+   * Nem engedélyezett feladók esetén:
+     * Hozzáadunk egy kulcsot a boríték „MAIL FROM” e-mail címéhez, ha az SPF-je megfelelt.
+     * Ha a „From” fejléc engedélyezett volt, akkor hozzáadunk egy kulcsot a „From” fejléc e-mail címéhez, ha az SPF-je megfelelt vagy megfelelt és DKIM-je igazolt volt.
+     * Ha a „From” fejléc nem volt engedélyezett, akkor hozzáadunk egy kulcsot a „From” fejléc e-mail címéhez és annak gyökér elemzett domain nevéhez.
+     * Hozzáadunk egy kulcsot a feladó távoli IP-címéhez.
+     * Hozzáadunk egy kulcsot a feladó IP-címéből visszakeresett kliens feloldott hosztnévhez (ha van).
+     * Hozzáadunk egy kulcsot a kliens feloldott hosztnevének gyökér domainjéhez (ha van, és eltér a kliens feloldott hosztnevétől).
+3. Ha a számláló eléri az 5-öt egy nem engedélyezett feladó és kulcs esetén, akkor 30 napra tiltólistára tesszük a kulcsot, és e-mailt küldünk a visszaélés kezelő csapatunknak. Ezek a számok változhatnak, és a frissítések itt lesznek tükrözve, miközben figyeljük a visszaéléseket.
+4. Ha a számláló eléri a 10-et egy engedélyezett feladó és kulcs esetén, akkor 7 napra tiltólistára tesszük a kulcsot, és e-mailt küldünk a visszaélés kezelő csapatunknak. Ezek a számok változhatnak, és a frissítések itt lesznek tükrözve, miközben figyeljük a visszaéléseket.
+> **MEGJEGYZÉS:** A közeljövőben bevezetjük a hírnévfigyelést. A hírnévfigyelés a küldő tiltólistára vételét egy százalékos küszöbérték alapján fogja kiszámítani (a fent említett egyszerű számláló helyett).
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### Van korlátozás a küldési sebességre {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+A küldői sebességkorlátozás vagy a küldő IP-címének visszafelé PTR lekérdezéséből kinyert gyökérdomain alapján történik – vagy ha ez nem ad eredményt, akkor egyszerűen a küldő IP-címét használja. Megjegyezzük, hogy ezt alább `Sender`-ként említjük.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+MX szervereink napi korlátokat állítanak be a bejövő levelekre, amelyeket [titkosított IMAP tárolásra](/blog/docs/best-quantum-safe-encrypted-email-service) fogadnak:
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* Ahelyett, hogy egyedi aliasokra (pl. `you@yourdomain.com`) korlátoznánk a bejövő levelek sebességét, az alias domain neve alapján korlátozunk (pl. `yourdomain.com`). Ez megakadályozza, hogy a `Sender`-ek egyszerre elárasszák az összes alias postaládáját a domainen belül.
+* Általános korlátok vonatkoznak minden `Sender`-re a szolgáltatásunkban, függetlenül a címzettől:
+  * Azokat a `Sender`-eket, amelyeket "megbízhatónak" tekintünk (pl. `gmail.com`, `microsoft.com`, `apple.com`), napi 100 GB küldésre korlátozzuk.
+  * Azokat a `Sender`-eket, amelyek [engedélyezettek](#do-you-have-an-allowlist), napi 10 GB küldésre korlátozzuk.
+  * Minden más `Sender` napi 1 GB és/vagy 1000 üzenet küldésére korlátozott.
+* Egyedi korlát van beállítva minden `Sender` és `yourdomain.com` esetén napi 1 GB és/vagy 1000 üzenet küldésére.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+Az MX szerverek a továbbított üzeneteket is korlátozzák sebességkorlátozással – de ez csak azokra a `Sender`-ekre vonatkozik, amelyek nincsenek rajta a [engedélyezett listán](#do-you-have-an-allowlist):
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* Óránként legfeljebb 100 kapcsolat engedélyezett, `Sender`-enként, a feloldott FQDN gyökérdomain vagy a `Sender` távoli IP-címe (ha nincs visszafelé PTR), és az átvevő boríték címzettje szerint. A sebességkorlátozás kulcsát kriptográfiai hash-ként tároljuk Redis adatbázisunkban.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* Ha a rendszerünkön keresztül küldesz e-mailt, kérjük, győződj meg róla, hogy minden IP-címedhez be van állítva visszafelé PTR (különben minden egyedi FQDN gyökérdomain vagy IP-cím, amiről küldesz, külön korlátozás alá esik).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Megjegyzendő, hogy ha olyan népszerű rendszeren keresztül küldesz, mint az Amazon SES, akkor nem leszel korlátozva, mivel (a jelen írás idején) az Amazon SES szerepel az engedélyezett listánkon.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* Ha olyan domainről küldesz, mint például `test.abc.123.example.com`, akkor a korlátozás az `example.com`-ra vonatkozik. Sok spamküldő több száz aldomain-t használ, hogy megkerülje azokat a spam szűrőket, amelyek csak egyedi hosztneveket korlátoznak, nem pedig egyedi FQDN gyökérdomain-eket.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* Azok a `Sender`-ek, amelyek túllépik a sebességkorlátot, 421-es hibával lesznek elutasítva.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+IMAP és SMTP szervereink korlátozzák, hogy aliasaid egyszerre ne legyenek több mint `60` egyidejű kapcsolattal.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+MX szervereink korlátozzák a [nem engedélyezett](#do-you-have-an-allowlist) küldőket, hogy ne létesíthessenek 10-nél több egyidejű kapcsolatot (a számláló 3 perces gyorsítótár lejárattal, amely tükrözi a 3 perces socket időtúllépést).
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### Hogyan védekeztek a visszapattanó levelek ellen {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+A tévesen érkező visszapattanó levelek vagy visszapattanó spam (ismertebb nevén "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") negatív hírnevet okozhat a küldő IP-címeknek.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+Két lépést teszünk a visszapattanó levelek elleni védelem érdekében, amelyeket az alábbi szakaszok részleteznek: [Ismert MAIL FROM spamküldők visszapattanóinak megakadályozása](#prevent-bounces-from-known-mail-from-spammers) és [Felesleges visszapattanók megakadályozása a visszapattanó levelek elleni védelem érdekében](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### Ismert MAIL FROM spamküldők visszapattanóinak megakadályozása {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+Az adatbázist a [Backscatter.org](https://www.backscatterer.org/) (amelyet a [UCEPROTECT](https://www.uceprotect.net/) működtet) oldalról töltjük le óránként a <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> címen, és betápláljuk Redis adatbázisunkba (előzetesen összehasonlítjuk a különbségeket is, hogy tiszteletben tartsuk az esetlegesen eltávolított IP-ket).
+Ha a MAIL FROM üres VAGY megegyezik (kis- és nagybetűtől függetlenül) bármelyik [postmaster címmel](#what-are-postmaster-addresses) (az emailben az @ előtti rész), akkor ellenőrizzük, hogy a feladó IP-címe szerepel-e ezen a listán.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+Ha a feladó IP-címe szerepel a listán (és nincs az [engedélyezett listánkon](#do-you-have-an-allowlist)), akkor egy 554-es hibát küldünk a következő üzenettel: `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Értesítést kapunk, ha egy feladó mind a Backscatterer listán, mind az engedélyezett listánkon szerepel, hogy szükség esetén megoldhassuk a problémát.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+A jelen szakaszban leírt technikák megfelelnek a <https://www.backscatterer.org/?target=usage> oldalon található "SAFE MODE" ajánlásnak – ahol csak akkor ellenőrizzük a feladó IP-címét, ha bizonyos feltételek már teljesültek.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### Felesleges visszapattanások megelőzése a backscatter elleni védelem érdekében {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+A visszapattanások olyan e-mailek, amelyek azt jelzik, hogy az e-mail továbbítása a címzettnek teljesen meghiúsult, és az e-mailt nem próbálják újra elküldeni.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+A Backscatterer listára kerülés egyik gyakori oka a tévesen irányított visszapattanások vagy visszapattanó spam, ezért ezt többféleképpen kell védenünk:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. Csak akkor küldünk, ha >= 500-as státuszkódú hibák fordulnak elő (amikor a továbbítani próbált e-mailek meghiúsultak, pl. a Gmail 500-as szintű hibával válaszol).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. Csak egyszer küldünk, és csak egyszer (egy kiszámított visszapattanási ujjlenyomat kulcsot használunk, és eltároljuk a gyorsítótárban, hogy megakadályozzuk a duplikált küldést). A visszapattanási ujjlenyomat egy kulcs, amely az üzenet ujjlenyomatából és a visszapattanási cím és hibakódjának hash-éből áll össze. További részletekért lásd a [Fingerprinting](#how-do-you-determine-an-email-fingerprint) szakaszt az üzenet ujjlenyomatának kiszámításáról. A sikeresen elküldött visszapattanási ujjlenyomatok 7 nap után lejárnak a Redis gyorsítótárunkban.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. Csak akkor küldünk, ha a MAIL FROM és/vagy a From nem üres, és nem tartalmaz (kis- és nagybetűtől függetlenül) [postmaster felhasználónevet](#what-are-postmaster-addresses) (az emailben az @ előtti rész).
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. Nem küldünk, ha az eredeti üzenet bármelyik alábbi fejlécet tartalmazta (kis- és nagybetűtől függetlenül):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * `auto-submitted` fejléc, amelynek értéke nem `no`.
+   * `x-auto-response-suppress` fejléc, amelynek értéke `dr`, `autoreply`, `auto-reply`, `auto_reply` vagy `all`.
+   * `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` vagy `x-auto-respond` fejléc (értéktől függetlenül).
+   * `precedence` fejléc, amelynek értéke `bulk`, `autoreply`, `auto-reply`, `auto_reply` vagy `list`.
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. Nem küldünk, ha a MAIL FROM vagy a From e-mail cím `+donotreply`, `-donotreply`, `+noreply` vagy `-noreply` végződésű.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. Nem küldünk, ha a From e-mail cím felhasználóneve `mdaemon` volt, és volt egy kis- és nagybetűtől független `X-MDDSN-Message` fejléc.
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. Nem küldünk, ha volt egy kis- és nagybetűtől független `content-type` fejléc, amely `multipart/report` értékű volt.
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### Hogyan határozzuk meg egy e-mail ujjlenyomatát {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+Az e-mail ujjlenyomatát az e-mail egyediségének meghatározására használjuk, és hogy megakadályozzuk az ismétlődő üzenetek kézbesítését és a [duplikált visszapattanások](#prevent-unnecessary-bounces-to-protect-against-backscatter) elküldését.
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+Az ujjlenyomat a következő elemekből kerül kiszámításra:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* A kliens által feloldott FQDN hosztnév vagy IP-cím
+* `Message-ID` fejléc értéke (ha van)
+* `Date` fejléc értéke (ha van)
+* `From` fejléc értéke (ha van)
+* `To` fejléc értéke (ha van)
+* `Cc` fejléc értéke (ha van)
+* `Subject` fejléc értéke (ha van)
+* `Body` értéke (ha van)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### Tudok-e e-maileket továbbítani más portokra, mint a 25 (pl. ha az internetszolgáltatóm blokkolta a 25-ös portot) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+Igen, 2020. május 5-től elérhető ez a funkció. Jelenleg a funkció domain-specifikus, nem alias-specifikus. Ha alias-specifikus megoldásra van szüksége, kérjük, vegye fel velünk a kapcsolatot, hogy jelezze igényeit.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Fokozott adatvédelmi védelem:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Ha fizetős csomagon van (amely fokozott adatvédelmi védelmet tartalmaz), kérjük, látogasson el a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> oldalra, kattintson a domainje melletti "Beállítások" gombra, majd a "Beállítások" fülre. Ha többet szeretne megtudni a fizetős csomagokról, tekintse meg a <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Árazás</a> oldalunkat. Egyébként folytathatja az alábbi utasítások követését.
   </span>
 </div>
+Ha az ingyenes csomagon vagy, akkor egyszerűen adj hozzá egy új DNS <strong class="notranslate">TXT</strong> rekordot az alábbiak szerint, de változtasd meg a portot 25-ről a választott portra.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+Például, ha azt szeretném, hogy az összes `example.com`-ra érkező e-mail az alias címzettek SMTP portjára, 1337-re továbbítódjon a 25 helyett:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4646,9 +5156,9 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    A leggyakoribb eset egyedi port továbbítás beállítására az, amikor az összes example.com-ra érkező e-mailt egy másik portra szeretnéd továbbítani az example.com-on belül, nem pedig az SMTP szabványos 25-ös portjára. Ehhez egyszerűen add hozzá a következő <strong class="notranslate">TXT</strong> catch-all rekordot.
   <span>
   </span>
 </div>
@@ -4656,15 +5166,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5182,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Támogatja a plusz + jelet a Gmail aliasokhoz? {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+Igen, abszolút.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### Támogatja az aldomain-eket? {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+Igen, abszolút. Ahelyett, hogy "@", ".", vagy üres értéket használnál név/host/alias mezőben, egyszerűen az aldomain nevet kell megadnod értékként.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+Ha például a `foo.example.com`-ra szeretnéd továbbítani az e-maileket, akkor a DNS beállításaidban (mind az MX, mind a <strong class="notranslate">TXT</strong> rekordoknál) a név/host/alias értékeként `foo`-t add meg.
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### Továbbítja az e-mail fejlécét? {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+Igen, abszolút.
 
-### Is this well-tested {#is-this-well-tested}
+### Jól tesztelt ez a rendszer? {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+Igen, vannak tesztek írva [ava](https://github.com/avajs/ava) segítségével, és kódlefedettség is rendelkezésre áll.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### Átadja az SMTP válaszüzeneteket és kódokat? {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+Igen, abszolút. Például, ha egy `hello@example.com` címre küldesz e-mailt, és az tovább van irányítva a `user@gmail.com` címre, akkor az SMTP válaszüzenet és kód a "gmail.com" SMTP szervertől érkezik vissza, nem pedig a "mx1.forwardemail.net" vagy "mx2.forwardemail.net" proxy szervertől.
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### Hogyan akadályozzátok meg a spammereket és biztosítjátok a jó e-mail továbbítási hírnevet? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+Lásd a fentebb található [Hogyan működik az e-mail továbbító rendszeretek](#how-does-your-email-forwarding-system-work), [Hogyan kezelitek az e-mail kézbesítési problémákat](#how-do-you-handle-email-delivery-issues), és [Hogyan kezelitek, ha az IP címeitek blokkolva lesznek](#how-do-you-handle-your-ip-addresses-becoming-blocked) szakaszokat.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### Hogyan végzitek a DNS lekérdezéseket domain neveken? {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+Létrehoztunk egy nyílt forráskódú szoftverprojektet :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) néven, és ezt használjuk DNS lekérdezésekhez. Az alapértelmezett DNS szerverek a `1.1.1.1` és `1.0.0.1`, és a DNS lekérdezések [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") protokollon keresztül történnek az alkalmazás rétegben.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) alapértelmezés szerint a [CloudFlare adatvédelmi szempontból elsődleges fogyasztói DNS szolgáltatását][cloudflare-dns] használja.
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## Fiók és Számlázás {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### Van pénzvisszafizetési garancia a fizetős csomagokra? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+Igen! Automatikus visszatérítés történik, ha 30 napon belül frissítesz, visszalépsz vagy törlöd a fiókodat a csomagod első indítása óta. Ez csak az első alkalommal vásárló ügyfelekre vonatkozik.
+### Ha váltok a csomagok között, akkor arányosítotok és visszatérítitek a különbözetet? {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+Nem arányosítunk és nem térítünk vissza különbözetet, amikor csomagot váltasz. Ehelyett az aktuális csomagod lejárati dátumától számított fennmaradó időtartamot átváltjuk az új csomagodhoz legközelebbi relatív időtartamra (hónapokra lefelé kerekítve).
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+Fontos megjegyezni, hogy ha 30 napon belül váltasz fizetős csomagok között az első fizetős csomagod elindítása óta, akkor automatikusan visszatérítjük az aktuális csomagod teljes összegét.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Használhatom ezt az e-mail továbbító szolgáltatást „tartalék” vagy „átváltó” MX szerverként? {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+Nem, ez nem ajánlott, mivel egyszerre csak egy levelezőszervert lehet használni. A tartalék szervereket általában soha nem próbálják újra a prioritási hibák miatt, és a levelezőszerverek nem tartják be az MX prioritás ellenőrzést.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### Kikapcsolhatok bizonyos aliasokat? {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    Ha fizetős csomagod van, akkor a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok <i class="fa fa-angle-right"></i> Alias szerkesztése <i class="fa fa-angle-right"></i> Az „Aktív” jelölőnégyzet törlése <i class="fa fa-angle-right"></i> Folytatás menüpontot kell használnod.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+Igen, egyszerűen szerkeszd a DNS <strong class="notranslate">TXT</strong> rekordodat, és az alias elé tegyél egy, kettő vagy három felkiáltójelet (lásd lent).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+Fontos, hogy megőrizd a ":" elválasztót, mert erre szükség van, ha később ki akarod kapcsolni ezt a funkciót (és importáláskor is használatos, ha fizetős csomagra váltasz).
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**Csendes elutasítás esetén (a küldő úgy látja, mintha az üzenet sikeresen elküldésre került volna, de valójában nem jut el sehova) (állapotkód `250`):** Ha az alias elé egy "!" (egyszeres felkiáltójel) kerül, akkor a küldőknek `250` státuszkódot ad vissza, de az e-mailek nem jutnak el sehova (pl. fekete lyuk vagy `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**Lágy elutasítás esetén (állapotkód `421`):** Ha az alias elé "!!" (kettős felkiáltójel) kerül, akkor a küldőknek `421` lágy hibakódot ad vissza, és az e-maileket akár 5 napig újrapróbálják, mielőtt elutasítják és visszapattintják.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**Kemény elutasítás esetén (állapotkód `550`):** Ha az alias elé "!!!" (három felkiáltójel) kerül, akkor a küldőknek `550` állandó hibakódot ad vissza, és az e-maileket elutasítják és visszapattintják.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+Például, ha azt szeretném, hogy az összes `alias@example.com` címre érkező e-mail ne jusson el a `user@gmail.com` címre, hanem elutasításra és visszapattanásra kerüljön (három felkiáltójel használatával):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4766,54 +5276,53 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    Át is írhatod a továbbított címzett címét egyszerűen "nobody@forwardemail.net"-re, ami az alábbi példában látható módon senkihez irányítja az üzenetet.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    Ha fokozott biztonságot szeretnél, akkor eltávolíthatod a ":user@gmail.com" (vagy ":nobody@forwardemail.net") részt is, így csak a "!!!alias" marad, ahogy az alábbi példában.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5330,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### Tudok több címzettnek is továbbítani e-maileket {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+Igen, természetesen. Csak adj meg több címzettet a <strong class="notranslate">TXT</strong> rekordjaidban.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Például, ha azt szeretném, hogy a `hello@example.com` címre érkező e-mail továbbítódjon a `user+a@gmail.com` és a `user+b@gmail.com` címekre, akkor a <strong class="notranslate">TXT</strong> rekordom így nézne ki:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5355,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Vagy megadhatod őket két külön sorban is, például így:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5382,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+Rajtad múlik!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### Lehet több globális catch-all címzett is {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+Igen, lehet. Csak adj meg több globális catch-all címzettet a <strong class="notranslate">TXT</strong> rekordjaidban.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Például, ha azt szeretném, hogy minden `*@example.com` címre érkező e-mail (az asterisk azt jelenti, hogy ez egy helyettesítő karakter, azaz catch-all) továbbítódjon a `user+a@gmail.com` és a `user+b@gmail.com` címekre, akkor a <strong class="notranslate">TXT</strong> rekordom így nézne ki:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,190 +5409,188 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Vagy megadhatod őket két külön sorban is, például így:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Név/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", vagy üres</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+Rajtad múlik!
 
-It's up to you!
+### Van-e maximális korlát arra, hogy hány email címet továbbíthatok aliasonként {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+Igen, az alapértelmezett korlát 10. Ez NEM azt jelenti, hogy csak 10 aliasod lehet a domain neveden. Annyi aliasod lehet, amennyit csak szeretnél (korlátlan mennyiség). Ez azt jelenti, hogy egy alias csak 10 egyedi email címre továbbítható. Lehet például `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (1-től 10-ig) – és a `hello@example.com`-ra érkező emailek továbbításra kerülnek a `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (1-től 10-ig) címekre.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Tipp:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    Több mint 10 címzett aliasonként? Küldj nekünk egy emailt, és örömmel növeljük a fiókod korlátját.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### Tudok-e rekurzívan továbbítani emaileket {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+Igen, tudsz, azonban továbbra is be kell tartanod a maximális korlátot. Ha van `hello:linus@example.com` és `linus:user@gmail.com`, akkor a `hello@example.com`-ra érkező emailek továbbításra kerülnek a `linus@example.com` és a `user@gmail.com` címekre. Figyelem, hibaüzenet jelenik meg, ha megpróbálsz a maximális korláton túl rekurzívan továbbítani emaileket.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Tudnak-e az emberek engedélyem nélkül leiratkozni vagy regisztrálni az email továbbításomat {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+MX és <strong class="notranslate">TXT</strong> rekord ellenőrzést használunk, ezért ha hozzáadod a szolgáltatás megfelelő MX és <strong class="notranslate">TXT</strong> rekordjait, akkor regisztrált vagy. Ha eltávolítod őket, akkor le vagy iratkozva. A domain és DNS kezelés a te tulajdonodban van, így ha valaki hozzáfér ehhez, az problémát jelent.
 
-### How is it free {#how-is-it-free}
+### Hogyan lehet ingyenes {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+A Forward Email ingyenes szintet kínál nyílt forráskódú fejlesztés, hatékony infrastruktúra és opcionális fizetős csomagok kombinációján keresztül, amelyek támogatják a szolgáltatást.
 
-Our free tier is supported by:
+Az ingyenes szintünket az alábbiak támogatják:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **Nyílt forráskódú fejlesztés**: A kódunk nyílt forráskódú, lehetővé téve a közösségi hozzájárulásokat és átlátható működést.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **Hatékony infrastruktúra**: Optimalizáltuk rendszereinket, hogy minimális erőforrásokkal kezeljék az email továbbítást.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **Fizetős prémium csomagok**: Azok a felhasználók, akik további funkciókat, például SMTP küldést, IMAP fogadást vagy fejlettebb adatvédelmi lehetőségeket igényelnek, előfizetnek fizetős csomagjainkra.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **Ésszerű használati korlátok**: Az ingyenes szint tisztességes használati szabályokat tartalmaz az visszaélések megelőzésére.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Elkötelezettek vagyunk amellett, hogy az alap email továbbítás ingyenes maradjon, miközben prémium funkciókat kínálunk a fejlettebb igényű felhasználóknak.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Ha értékesnek találod a szolgáltatásunkat, fontold meg a fizetős csomagra való váltást, hogy támogasd a folyamatos fejlesztést és karbantartást.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### Mi az email méretkorlátja {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+Alapértelmezés szerint 50MB méretkorlát van, amely tartalmazza a tartalmat, fejlécet és csatolmányokat. Figyelem, olyan szolgáltatások, mint a Gmail és az Outlook csak 25MB méretkorlátot engedélyeznek, és ha ezt túlléped, amikor ezekhez a szolgáltatókhoz küldesz, hibaüzenetet kapsz.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+Hiba megfelelő válaszkóddal visszaadásra kerül, ha a fájlméret-korlátot túllépik.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### Tároltok-e email naplókat {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nem, nem írunk lemezre és nem tárolunk naplókat – az [hibák kivételével](#do-you-store-error-logs) és az [SMTP küldés esetén](#do-you-support-sending-email-with-smtp) (lásd a [Adatvédelmi Szabályzatunkat](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Minden memóriában történik, és [a forráskódunk elérhető a GitHubon](https://github.com/forwardemail).
 
-### Do you store error logs {#do-you-store-error-logs}
+### Tároltok-e hibanaplókat {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**Igen. A hibanaplók elérhetők a [Saját fiók → Naplók](/my-account/logs) vagy a [Saját fiók → Domain-ek](/my-account/domains) alatt.**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+2023 februárjától a `4xx` és `5xx` SMTP válaszkódokra vonatkozó hibanaplókat 7 napig tároljuk – amelyek tartalmazzák az SMTP hibát, borítékot és az email fejlécet (az email törzsét és csatolmányokat **nem** tároljuk).
+A hibanaplók lehetővé teszik, hogy ellenőrizze a hiányzó fontos e-maileket, és csökkentse a spam hamis pozitív eredményeit a [domainjeihez](/my-account/domains). Emellett nagyszerű források a [e-mail webhookok] (#do-you-support-webhooks) hibakereséséhez (mivel a hibanaplók tartalmazzák a webhook végpont válaszát).
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+A [sebességkorlátozás] (#do-you-have-rate-limiting) és a [szürkelista] (#do-you-have-a-greylist) hibanaplói nem elérhetők, mivel a kapcsolat korán megszakad (pl. mielőtt az `RCPT TO` és `MAIL FROM` parancsok továbbíthatók lennének).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+További információért lásd az [Adatvédelmi irányelveinket](/privacy).
 
-See our [Privacy Policy](/privacy) for more insight.
+### Elolvassa az e-mailjeimet? {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+Nem, egyáltalán nem. Lásd az [Adatvédelmi irányelveinket](/privacy).
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+Sok más e-mail továbbító szolgáltatás tárolja és potenciálisan elolvashatja az e-mailjeit. Nincs ok arra, hogy a továbbított e-maileket lemezre tárolják – ezért terveztük meg az első nyílt forráskódú megoldást, amely mindent memóriában kezel.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+Úgy véljük, hogy joga van a magánélethez, és ezt szigorúan tiszteletben tartjuk. A szerverre telepített kód [nyílt forráskódú szoftver a GitHubon](https://github.com/forwardemail) az átláthatóság és a bizalom építése érdekében.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### Tudok "küldeni e-mailt másként" Gmailben ezzel? {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+Igen! 2018. október 2-től elérhető ez a funkció. Lásd fent a [Hogyan küldjünk e-mailt másként Gmail használatával](#how-to-send-mail-as-using-gmail) részt!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Állítsa be a Gmail SPF rekordját is a DNS konfigurációjában <strong class="notranslate">TXT</strong> rekordként.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Ha Gmailt (pl. Küldés másként) vagy G Suite-ot használ, akkor hozzá kell adnia a <code>include:_spf.google.com</code> elemet az SPF <strong class="notranslate">TXT</strong> rekordjához, például:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### Tudok "küldeni e-mailt másként" Outlookban ezzel? {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+Igen! 2018. október 2-től elérhető ez a funkció. Egyszerűen tekintse meg az alábbi két Microsoft linket:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Állítsa be az Outlook SPF rekordját is a DNS konfigurációjában <strong class="notranslate">TXT</strong> rekordként.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Fontos:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Ha Microsoft Outlookot vagy Live.com-ot használ, hozzá kell adnia a <code>include:spf.protection.outlook.com</code> elemet az SPF <strong class="notranslate">TXT</strong> rekordjához, például:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Tudok "küldeni e-mailt másként" Apple Mailben és iCloud Mailben ezzel? {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+Ha iCloud+ előfizető vagy, használhatsz egyéni domaint. [Szolgáltatásunk kompatibilis az Apple Mail-lel is](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+További információért lásd: <https://support.apple.com/en-us/102540>.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### Tudok korlátlan e-maileket továbbítani ezzel? {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+Igen, azonban a "viszonylag ismeretlen" küldőket óránként 100 kapcsolatban korlátozzuk hostnévenként vagy IP-címenként. Lásd a fentiekben a [Sebességkorlátozás](#do-you-have-rate-limiting) és [Szürkelista](#do-you-have-a-greylist) részeket.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+A "viszonylag ismeretlen" alatt azokat a küldőket értjük, akik nem szerepelnek az [engedélyező listán] (#do-you-have-an-allowlist).
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+Ha ezt a korlátot túllépik, 421-es válaszkódot küldünk, amely azt jelzi a küldő levelezőszerverének, hogy próbálkozzon később újra.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### Kínálnak korlátlan domaineket egy áron? {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+Igen. Függetlenül attól, hogy melyik csomagot választja, csak egy havi díjat fizet – amely az összes domainjét lefedi.
+### Milyen fizetési módokat fogadnak el {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+A Forward Email az alábbi egyszeri vagy havi/negyedéves/éves fizetési módokat fogadja el:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **Hitel-/Bankkártyák/Banki átutalások**: Visa, Mastercard, American Express, Discover, JCB, Diners Club stb.
+2. **PayPal**: Csatlakoztassa PayPal-fiókját a könnyű fizetéshez
+3. **Kriptovaluta**: Elfogadunk fizetéseket a Stripe stabilcoin fizetésein keresztül az Ethereum, Polygon és Solana hálózatokon
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Korlátozott fizetési információkat tárolunk a szervereinken, amelyek csak fizetési azonosítókat és hivatkozásokat tartalmaznak a [Stripe](https://stripe.com/global) és [PayPal](https://www.paypal.com) tranzakciók, ügyfelek, előfizetések és fizetések azonosítóihoz.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> A maximális adatvédelem érdekében fontolja meg a kriptovaluta fizetések használatát.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+Minden fizetés biztonságosan történik a Stripe vagy a PayPal rendszerein keresztül. A fizetési adatait soha nem tároljuk a szervereinken.
 
-## Additional Resources {#additional-resources}
+
+## További források {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Az alábbi cikkeinket rendszeresen frissítjük új útmutatókkal, tippekkel és műszaki információkkal. Gyakran nézzen vissza a legfrissebb tartalomért.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [Esettanulmányok és fejlesztői dokumentáció](/blog/docs)
+* [Források](/resources)
+* [Útmutatók](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

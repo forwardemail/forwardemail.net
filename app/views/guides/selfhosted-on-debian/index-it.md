@@ -1,98 +1,102 @@
-# Guida all'installazione di Forward Email Self-Hosting per Debian {#forward-email-self-hosting-installation-guide-for-debian}
+# Guida all'Installazione di Forward Email in Self-Hosting per Debian {#forward-email-self-hosting-installation-guide-for-debian}
+
 
 ## Indice {#table-of-contents}
 
 * [Panoramica](#overview)
 * [Prerequisiti](#prerequisites)
-* [Requisiti di sistema](#system-requirements)
-* [Installazione passo passo](#step-by-step-installation)
-  * [Fase 1: Configurazione iniziale del sistema](#step-1-initial-system-setup)
-  * [Passaggio 2: configurare i risolutori DNS](#step-2-configure-dns-resolvers)
-  * [Passaggio 3: installare le dipendenze di sistema](#step-3-install-system-dependencies)
-  * [Passaggio 4: installare e configurare Snapd](#step-4-install-and-configure-snapd)
-  * [Passaggio 5: installare i pacchetti Snap](#step-5-install-snap-packages)
-  * [Passaggio 6: installare Docker](#step-6-install-docker)
-  * [Passaggio 7: configurare il servizio Docker](#step-7-configure-docker-service)
-  * [Passaggio 8: installare e configurare il firewall UFW](#step-8-install-and-configure-ufw-firewall)
-  * [Passaggio 9: clona il repository di posta elettronica inoltrata](#step-9-clone-forward-email-repository)
-  * [Passaggio 10: impostare la configurazione dell'ambiente](#step-10-set-up-environment-configuration)
-  * [Passaggio 11: configura il tuo dominio](#step-11-configure-your-domain)
-  * [Passaggio 12: Generare certificati SSL](#step-12-generate-ssl-certificates)
-  * [Passaggio 13: Generare le chiavi di crittografia](#step-13-generate-encryption-keys)
-  * [Passaggio 14: aggiornare i percorsi SSL nella configurazione](#step-14-update-ssl-paths-in-configuration)
-  * [Passaggio 15: impostare l'autenticazione di base](#step-15-set-up-basic-authentication)
-  * [Passaggio 16: distribuzione con Docker Compose](#step-16-deploy-with-docker-compose)
-  * [Passaggio 17: verifica dell'installazione](#step-17-verify-installation)
-* [Configurazione post-installazione](#post-installation-configuration)
-  * [Configurazione dei record DNS](#dns-records-setup)
-  * [Primo accesso](#first-login)
-* [Configurazione di backup](#backup-configuration)
-  * [Imposta backup compatibile con S3](#set-up-s3-compatible-backup)
-  * [Imposta i Cron Job di Backup](#set-up-backup-cron-jobs)
-* [Configurazione di aggiornamento automatico](#auto-update-configuration)
-* [Considerazioni specifiche di Debian](#debian-specific-considerations)
-  * [Differenze nella gestione dei pacchetti](#package-management-differences)
-  * [Gestione dei servizi](#service-management)
-  * [Configurazione di rete](#network-configuration)
-* [Manutenzione e monitoraggio](#maintenance-and-monitoring)
-  * [Posizioni dei registri](#log-locations)
-  * [Attività di manutenzione ordinaria](#regular-maintenance-tasks)
-  * [Rinnovo del certificato](#certificate-renewal)
-* [Risoluzione dei problemi](#troubleshooting)
-  * [Problemi specifici di Debian](#debian-specific-issues)
-  * [Problemi comuni](#common-issues)
-  * [Ottenere aiuto](#getting-help)
-* [Migliori pratiche di sicurezza](#security-best-practices)
+* [Requisiti di Sistema](#system-requirements)
+* [Installazione Passo-Passo](#step-by-step-installation)
+  * [Passo 1: Configurazione Iniziale del Sistema](#step-1-initial-system-setup)
+  * [Passo 2: Configurare i Resolver DNS](#step-2-configure-dns-resolvers)
+  * [Passo 3: Installare le Dipendenze di Sistema](#step-3-install-system-dependencies)
+  * [Passo 4: Installare e Configurare Snapd](#step-4-install-and-configure-snapd)
+  * [Passo 5: Installare i Pacchetti Snap](#step-5-install-snap-packages)
+  * [Passo 6: Installare Docker](#step-6-install-docker)
+  * [Passo 7: Configurare il Servizio Docker](#step-7-configure-docker-service)
+  * [Passo 8: Installare e Configurare il Firewall UFW](#step-8-install-and-configure-ufw-firewall)
+  * [Passo 9: Clonare il Repository di Forward Email](#step-9-clone-forward-email-repository)
+  * [Passo 10: Configurare l'Ambiente](#step-10-set-up-environment-configuration)
+  * [Passo 11: Configurare il Tuo Dominio](#step-11-configure-your-domain)
+  * [Passo 12: Generare i Certificati SSL](#step-12-generate-ssl-certificates)
+  * [Passo 13: Generare le Chiavi di Crittografia](#step-13-generate-encryption-keys)
+  * [Passo 14: Aggiornare i Percorsi SSL nella Configurazione](#step-14-update-ssl-paths-in-configuration)
+  * [Passo 15: Configurare l'Autenticazione Base](#step-15-set-up-basic-authentication)
+  * [Passo 16: Deploy con Docker Compose](#step-16-deploy-with-docker-compose)
+  * [Passo 17: Verificare l'Installazione](#step-17-verify-installation)
+* [Configurazione Post-Installazione](#post-installation-configuration)
+  * [Configurazione dei Record DNS](#dns-records-setup)
+  * [Primo Accesso](#first-login)
+* [Configurazione Backup](#backup-configuration)
+  * [Configurare Backup Compatibile S3](#set-up-s3-compatible-backup)
+  * [Configurare Cron Job per Backup](#set-up-backup-cron-jobs)
+* [Configurazione Auto-Aggiornamento](#auto-update-configuration)
+* [Considerazioni Specifiche per Debian](#debian-specific-considerations)
+  * [Differenze nella Gestione dei Pacchetti](#package-management-differences)
+  * [Gestione dei Servizi](#service-management)
+  * [Configurazione di Rete](#network-configuration)
+* [Manutenzione e Monitoraggio](#maintenance-and-monitoring)
+  * [Posizione dei Log](#log-locations)
+  * [Attività di Manutenzione Regolari](#regular-maintenance-tasks)
+  * [Rinnovo dei Certificati](#certificate-renewal)
+* [Risoluzione dei Problemi](#troubleshooting)
+  * [Problemi Specifici di Debian](#debian-specific-issues)
+  * [Problemi Comuni](#common-issues)
+  * [Come Ottenere Aiuto](#getting-help)
+* [Best Practice di Sicurezza](#security-best-practices)
 * [Conclusione](#conclusion)
+
 
 ## Panoramica {#overview}
 
-Questa guida fornisce istruzioni dettagliate per l'installazione della soluzione self-hosted di Forward Email su sistemi Debian. Questa guida è specificamente pensata per Debian 11 (Bullseye) e Debian 12 (Bookworm).
+Questa guida fornisce istruzioni passo-passo per installare la soluzione self-hosted di Forward Email su sistemi Debian. La guida è specificamente pensata per Debian 11 (Bullseye) e Debian 12 (Bookworm).
+
 
 ## Prerequisiti {#prerequisites}
 
 Prima di iniziare l'installazione, assicurati di avere:
 
 * **Server Debian**: Versione 11 (Bullseye) o 12 (Bookworm)
-* **Accesso root**: Devi essere in grado di eseguire comandi come root (accesso sudo)
-* **Nome di dominio**: Un dominio che controlli con accesso di gestione DNS
-* **Server pulito**: Si consiglia di utilizzare una nuova installazione di Debian
+* **Accesso Root**: Devi poter eseguire comandi come root (accesso sudo)
+* **Nome Dominio**: Un dominio che controlli con accesso alla gestione DNS
+* **Server Pulito**: Si consiglia di usare un'installazione Debian fresca
 * **Connessione Internet**: Necessaria per scaricare pacchetti e immagini Docker
 
-## Requisiti di sistema {#system-requirements}
 
-* **RAM**: minimo 2 GB (4 GB consigliati per la produzione)
-* **Archiviazione**: minimo 20 GB di spazio disponibile (oltre 50 GB consigliati per la produzione)
-* **CPU**: minimo 1 vCPU (oltre 2 vCPU consigliate per la produzione)
-* **Rete**: indirizzo IP pubblico con le seguenti porte accessibili:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+## Requisiti di Sistema {#system-requirements}
 
-## Installazione passo passo {#step-by-step-installation}
+* **RAM**: Minimo 2GB (4GB consigliati per produzione)
+* **Storage**: Minimo 20GB di spazio disponibile (50GB+ consigliati per produzione)
+* **CPU**: Minimo 1 vCPU (2+ vCPU consigliati per produzione)
+* **Rete**: Indirizzo IP pubblico con le seguenti porte accessibili:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
 
-### Passaggio 1: configurazione iniziale del sistema {#step-1-initial-system-setup}
 
-Per prima cosa, assicurati che il tuo sistema sia aggiornato e passa all'utente root:
+## Installazione Passo-Passo {#step-by-step-installation}
+
+### Passo 1: Configurazione Iniziale del Sistema {#step-1-initial-system-setup}
+
+Per prima cosa, assicurati che il sistema sia aggiornato e passa all'utente root:
 
 ```bash
-# Update system packages
+# Aggiorna i pacchetti di sistema
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Passa all'utente root (richiesto per l'installazione)
 sudo su -
 ```
+### Step 2: Configurare i Resolver DNS {#step-2-configure-dns-resolvers}
 
-### Passaggio 2: configurare i risolutori DNS {#step-2-configure-dns-resolvers}
-
-Configura il tuo sistema per utilizzare i server DNS di Cloudflare per una generazione affidabile di certificati:
+Configura il tuo sistema per utilizzare i server DNS di Cloudflare per una generazione affidabile dei certificati:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# Stoppa e disabilita systemd-resolved se in esecuzione
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -100,7 +104,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Configura i resolver DNS di Cloudflare
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -113,15 +117,15 @@ nameserver 2001:4860:4860::8844
 EOF
 ```
 
-### Passaggio 3: Installa le dipendenze di sistema {#step-3-install-system-dependencies}
+### Step 3: Installare le Dipendenze di Sistema {#step-3-install-system-dependencies}
 
-Installa i pacchetti necessari per Forward Email su Debian:
+Installa i pacchetti richiesti per Forward Email su Debian:
 
 ```bash
-# Update package list
+# Aggiorna la lista dei pacchetti
 apt-get update -y
 
-# Install basic dependencies (Debian-specific package list)
+# Installa le dipendenze di base (lista pacchetti specifica per Debian)
 apt-get install -y \
     ca-certificates \
     curl \
@@ -133,139 +137,138 @@ apt-get install -y \
     software-properties-common
 ```
 
-### Passaggio 4: installa e configura Snapd {#step-4-install-and-configure-snapd}
+### Step 4: Installare e Configurare Snapd {#step-4-install-and-configure-snapd}
 
 Debian non include snapd di default, quindi dobbiamo installarlo e configurarlo:
 
 ```bash
-# Install snapd
+# Installa snapd
 apt-get install -y snapd
 
-# Enable and start snapd service
+# Abilita e avvia il servizio snapd
 systemctl enable snapd
 systemctl start snapd
 
-# Create symlink for snap to work properly
+# Crea un collegamento simbolico per far funzionare correttamente snap
 ln -sf /var/lib/snapd/snap /snap
 
-# Wait for snapd to be ready
+# Attendi che snapd sia pronto
 sleep 10
 
-# Verify snapd is working
+# Verifica che snapd funzioni
 snap version
 ```
 
-### Passaggio 5: installa i pacchetti Snap {#step-5-install-snap-packages}
+### Step 5: Installare i Pacchetti Snap {#step-5-install-snap-packages}
 
 Installa AWS CLI e Certbot tramite snap:
 
 ```bash
-# Install AWS CLI
+# Installa AWS CLI
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Installa Certbot e il plugin DNS
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 
-# Verify installations
+# Verifica le installazioni
 aws --version
 certbot --version
 ```
 
-### Passaggio 6: installa Docker {#step-6-install-docker}
+### Step 6: Installare Docker {#step-6-install-docker}
 
 Installa Docker CE e Docker Compose su Debian:
 
 ```bash
-# Add Docker's official GPG key (Debian-specific)
+# Aggiungi la chiave GPG ufficiale di Docker (specifica per Debian)
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository (Debian-specific)
+# Aggiungi il repository Docker (specifico per Debian)
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Aggiorna l'indice dei pacchetti e installa Docker
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Install standalone docker-compose as fallback (if plugin doesn't work)
+# Installa docker-compose standalone come fallback (se il plugin non funziona)
 if ! command -v docker-compose &> /dev/null; then
     apt-get install -y docker-compose
 fi
 
-# Verify Docker installation
+# Verifica l'installazione di Docker
 docker --version
 docker compose version || docker-compose --version
 ```
 
-### Passaggio 7: configurare il servizio Docker {#step-7-configure-docker-service}
+### Step 7: Configurare il Servizio Docker {#step-7-configure-docker-service}
 
 Assicurati che Docker si avvii automaticamente e sia in esecuzione:
 
 ```bash
-# Enable and start Docker service
+# Abilita e avvia il servizio Docker
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Verifica che Docker sia in esecuzione
 docker info
 ```
 
 Se Docker non si avvia, prova ad avviarlo manualmente:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Metodo alternativo di avvio se systemctl fallisce
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### Passaggio 8: installare e configurare il firewall UFW {#step-8-install-and-configure-ufw-firewall}
+### Step 8: Installare e Configurare il Firewall UFW {#step-8-install-and-configure-ufw-firewall}
 
 Le installazioni minime di Debian potrebbero non includere UFW, quindi installalo prima:
 
 ```bash
-# Install UFW if not present
+# Installa UFW se non presente
 if ! command -v ufw &> /dev/null; then
     apt-get update -y
     apt-get install -y ufw
 fi
 
-# Set default policies
+# Imposta le politiche predefinite
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# Consenti SSH (importante - non chiuderti fuori!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# Consenti le porte relative all'email
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (per Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (porta alternativa)
+ufw allow 2995/tcp  # POP3 (porta alternativa)
+ufw allow 3456/tcp  # Porta servizio personalizzata
+ufw allow 4000/tcp  # Porta servizio personalizzata
+ufw allow 5000/tcp  # Porta servizio personalizzata
 
-# Allow local database connections
+# Consenti connessioni locali al database
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Abilita il firewall
 echo "y" | ufw enable
 
-# Check firewall status
+# Controlla lo stato del firewall
 ufw status numbered
 ```
-
-### Passaggio 9: Clona il repository di posta elettronica inoltro {#step-9-clone-forward-email-repository}
+### Passo 9: Clona il Repository di Forward Email {#step-9-clone-forward-email-repository}
 
 Scarica il codice sorgente di Forward Email:
 
@@ -283,9 +286,9 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### Passaggio 10: Imposta la configurazione dell'ambiente {#step-10-set-up-environment-configuration}
+### Passo 10: Configura l'Ambiente {#step-10-set-up-environment-configuration}
 
-Preparare la configurazione dell'ambiente:
+Prepara la configurazione dell'ambiente:
 
 ```bash
 # Set up directory variables
@@ -305,7 +308,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Passaggio 11: configura il tuo dominio {#step-11-configure-your-domain}
+### Passo 11: Configura il Tuo Dominio {#step-11-configure-your-domain}
 
 Imposta il nome del tuo dominio e aggiorna le variabili d'ambiente:
 
@@ -348,9 +351,9 @@ update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
 
-### Passaggio 12: Genera certificati SSL {#step-12-generate-ssl-certificates}
+### Passo 12: Genera i Certificati SSL {#step-12-generate-ssl-certificates}
 
-#### Opzione A: Sfida DNS manuale (consigliata per la maggior parte degli utenti) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Opzione A: Sfida DNS Manuale (Consigliata per la maggior parte degli utenti) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -362,11 +365,11 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Importante**: quando richiesto, dovrai creare record TXT nel tuo DNS. Potresti visualizzare più richieste di verifica per lo stesso dominio: **creale TUTTE**. Non rimuovere il primo record TXT quando aggiungi il secondo.
+**Importante**: Quando richiesto, dovrai creare record TXT nel tuo DNS. Potresti vedere più sfide per lo stesso dominio - **crea TUTTE**. Non rimuovere il primo record TXT quando aggiungi il secondo.
 
-#### Opzione B: DNS Cloudflare (se utilizzi Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Opzione B: DNS Cloudflare (Se usi Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-Se il tuo dominio utilizza Cloudflare per DNS, puoi automatizzare la generazione del certificato:
+Se il tuo dominio utilizza Cloudflare per il DNS, puoi automatizzare la generazione dei certificati:
 
 ```bash
 # Create Cloudflare credentials file
@@ -389,9 +392,9 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Copia certificati {#copy-certificates}
+#### Copia i Certificati {#copy-certificates}
 
-Dopo aver generato il certificato, copiarlo nella directory dell'applicazione:
+Dopo la generazione dei certificati, copiali nella directory dell'applicazione:
 
 ```bash
 # Copy certificates to application SSL directory
@@ -401,9 +404,9 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### Passaggio 13: Genera chiavi di crittografia {#step-13-generate-encryption-keys}
+### Passo 13: Genera le Chiavi di Crittografia {#step-13-generate-encryption-keys}
 
-Creare le varie chiavi di crittografia necessarie per un funzionamento sicuro:
+Crea le varie chiavi di crittografia necessarie per il funzionamento sicuro:
 
 ```bash
 # Generate helper encryption key
@@ -429,15 +432,14 @@ update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 # Set SMTP transport password
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Tutte le chiavi di crittografia sono state generate con successo"
 ```
+### Passo 14: Aggiorna i Percorsi SSL nella Configurazione {#step-14-update-ssl-paths-in-configuration}
 
-### Passaggio 14: Aggiorna i percorsi SSL nella configurazione {#step-14-update-ssl-paths-in-configuration}
-
-Configurare i percorsi del certificato SSL nel file di ambiente:
+Configura i percorsi del certificato SSL nel file di ambiente:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# Aggiorna i percorsi SSL per puntare ai file di certificato corretti
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -445,63 +447,63 @@ sed -i -E \
   "$SELF_HOST_DIR/$ENV_FILE"
 ```
 
-### Passaggio 15: Imposta l'autenticazione di base {#step-15-set-up-basic-authentication}
+### Passo 15: Configura l'Autenticazione Base {#step-15-set-up-basic-authentication}
 
-Crea credenziali di autenticazione di base temporanee:
+Crea credenziali temporanee per l'autenticazione base:
 
 ```bash
-# Generate a secure random password
+# Genera una password casuale sicura
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Aggiorna il file di ambiente con le credenziali di autenticazione base
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Mostra le credenziali (salvale!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 IMPORTANTE: Salva queste credenziali di accesso!"
 echo "=================================="
 echo "Username: admin"
 echo "Password: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Ti serviranno per accedere all'interfaccia web dopo l'installazione."
 echo ""
 ```
 
-### Passaggio 16: distribuzione con Docker Compose {#step-16-deploy-with-docker-compose}
+### Passo 16: Distribuisci con Docker Compose {#step-16-deploy-with-docker-compose}
 
-Avvia tutti i servizi di inoltro email:
+Avvia tutti i servizi di Forward Email:
 
 ```bash
-# Set Docker Compose file path
+# Imposta il percorso del file Docker Compose
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Ferma eventuali container esistenti
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" down
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" down
 fi
 
-# Pull the latest images
+# Scarica le immagini più recenti
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" pull
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" pull
 fi
 
-# Start all services in detached mode
+# Avvia tutti i servizi in modalità detached
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 fi
 
-# Wait a moment for services to start
+# Attendi un momento per l'avvio dei servizi
 sleep 10
 
-# Check service status
+# Controlla lo stato dei servizi
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" ps
 else
@@ -509,31 +511,32 @@ else
 fi
 ```
 
-### Passaggio 17: verifica dell'installazione {#step-17-verify-installation}
+### Passo 17: Verifica l'Installazione {#step-17-verify-installation}
 
-Verificare che tutti i servizi funzionino correttamente:
+Controlla che tutti i servizi siano in esecuzione correttamente:
 
 ```bash
-# Check Docker containers
+# Controlla i container Docker
 docker ps
 
-# Check service logs for any errors
+# Controlla i log dei servizi per eventuali errori
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 fi
 
-# Test web interface connectivity
+# Testa la connettività dell'interfaccia web
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Controlla se le porte sono in ascolto
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## Configurazione post-installazione {#post-installation-configuration}
 
-### Configurazione record DNS {#dns-records-setup}
+## Configurazione Post-Installazione {#post-installation-configuration}
+
+### Configurazione dei Record DNS {#dns-records-setup}
 
 Devi configurare i seguenti record DNS per il tuo dominio:
 
@@ -543,7 +546,7 @@ Devi configurare i seguenti record DNS per il tuo dominio:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### A Registra {#a-records}
+#### Record A {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -567,11 +570,11 @@ carddav A YOUR_SERVER_IP
 Ottieni la tua chiave pubblica DKIM:
 
 ```bash
-# Extract DKIM public key
+# Estrai la chiave pubblica DKIM
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-Crea record DNS DKIM:
+Crea il record DNS DKIM:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
@@ -583,144 +586,147 @@ default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 ```
 
-### Primo accesso {#first-login}
+### Primo Accesso {#first-login}
 
-1. Apri il browser web e vai a `https://yourdomain.com`
-2. Inserisci le credenziali di autenticazione di base salvate in precedenza
-3. Completa la configurazione guidata iniziale
+1. Apri il tuo browser web e vai su `https://yourdomain.com`
+2. Inserisci le credenziali di autenticazione base che hai salvato in precedenza
+3. Completa la procedura guidata di configurazione iniziale
 4. Crea il tuo primo account email
 
-## Configurazione di backup {#backup-configuration}
 
-### Imposta backup compatibile con S3 {#set-up-s3-compatible-backup}
+## Configurazione del Backup {#backup-configuration}
 
-Configurare backup automatici su storage compatibile con S3:
+### Configura Backup Compatibile S3 {#set-up-s3-compatible-backup}
+
+Configura backup automatici su storage compatibile S3:
 
 ```bash
-# Create AWS credentials directory
+# Crea la directory per le credenziali AWS
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# Configura le credenziali AWS
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# Configura le impostazioni AWS
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Per S3 non AWS (come Cloudflare R2), aggiungi l'URL endpoint
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
-
-### Imposta i processi cron di backup {#set-up-backup-cron-jobs}
+### Configurare i Cron Job per il Backup {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Rendi eseguibili gli script di backup
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# Aggiungi il cron job per il backup di MongoDB (esegue ogni giorno a mezzanotte)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Aggiungi il cron job per il backup di Redis (esegue ogni giorno a mezzanotte)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Verifica che i cron job siano stati aggiunti
 crontab -l
 ```
 
-## Configurazione di aggiornamento automatico {#auto-update-configuration}
 
-Imposta gli aggiornamenti automatici per l'installazione di Forward Email:
+## Configurazione dell'Aggiornamento Automatico {#auto-update-configuration}
+
+Configura gli aggiornamenti automatici per la tua installazione di Forward Email:
 
 ```bash
-# Create auto-update command (use appropriate docker compose command)
+# Crea il comando di auto-aggiornamento (usa il comando docker compose appropriato)
 if command -v docker-compose &> /dev/null; then
     DOCKER_UPDATE_CMD="docker-compose -f $DOCKER_COMPOSE_FILE pull && docker-compose -f $DOCKER_COMPOSE_FILE up -d"
 else
     DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 fi
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Aggiungi il cron job per l'auto-aggiornamento (esegue ogni giorno alle 1 di notte)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Verifica che il cron job sia stato aggiunto
 crontab -l
 ```
 
-## Considerazioni specifiche per Debian {#debian-specific-considerations}
 
-### Differenze nella gestione dei pacchetti {#package-management-differences}
+## Considerazioni Specifiche per Debian {#debian-specific-considerations}
 
-* **Snapd**: Non installato di default su Debian, richiede l'installazione manuale
-* **Docker**: Utilizza repository specifici di Debian e chiavi GPG
+### Differenze nella Gestione dei Pacchetti {#package-management-differences}
+
+* **Snapd**: Non installato di default su Debian, richiede installazione manuale
+* **Docker**: Usa repository e chiavi GPG specifiche per Debian
 * **UFW**: Potrebbe non essere incluso nelle installazioni minime di Debian
-* **systemd**: Il comportamento potrebbe differire leggermente da Ubuntu
+* **systemd**: Il comportamento può differire leggermente da Ubuntu
 
-### Gestione del servizio {#service-management}
+### Gestione dei Servizi {#service-management}
 
 ```bash
-# Check service status (Debian-specific commands)
+# Controlla lo stato dei servizi (comandi specifici per Debian)
 systemctl status snapd
 systemctl status docker
 systemctl status ufw
 
-# Restart services if needed
+# Riavvia i servizi se necessario
 systemctl restart snapd
 systemctl restart docker
 ```
 
-### Configurazione di rete {#network-configuration}
+### Configurazione di Rete {#network-configuration}
 
-Debian può avere nomi o configurazioni di interfaccia di rete diversi:
+Debian potrebbe avere nomi o configurazioni delle interfacce di rete differenti:
 
 ```bash
-# Check network interfaces
+# Controlla le interfacce di rete
 ip addr show
 
-# Check routing
+# Controlla il routing
 ip route show
 
-# Check DNS resolution
+# Controlla la risoluzione DNS
 nslookup google.com
 ```
 
-## Manutenzione e monitoraggio {#maintenance-and-monitoring}
 
-### Posizioni dei registri {#log-locations}
+## Manutenzione e Monitoraggio {#maintenance-and-monitoring}
 
-* **Log di Docker Compose**: utilizzare il comando Docker Compose appropriato in base all'installazione
+### Posizione dei Log {#log-locations}
+
+* **Log di Docker Compose**: Usa il comando docker compose appropriato in base all'installazione
 * **Log di sistema**: `/var/log/syslog`
 * **Log di backup**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Log di aggiornamento automatico**: `/var/log/autoupdate.log`
+* **Log di auto-aggiornamento**: `/var/log/autoupdate.log`
 * **Log di Snapd**: `journalctl -u snapd`
 
-### Attività di manutenzione ordinaria {#regular-maintenance-tasks}
+### Attività di Manutenzione Regolare {#regular-maintenance-tasks}
 
-1. **Monitoraggio dello spazio su disco**: `df -h`
-2. **Controllo dello stato del servizio**: utilizzare il comando Docker Compose appropriato
-3. **Controllo dei log**: controllare i log delle applicazioni e di sistema
+1. **Monitora lo spazio su disco**: `df -h`
+2. **Controlla lo stato dei servizi**: Usa il comando docker compose appropriato
+3. **Rivedi i log**: Controlla sia i log dell'applicazione che quelli di sistema
 4. **Aggiorna i pacchetti di sistema**: `apt update && apt upgrade`
-5. **Monitoraggio degli snapd**: `snap list` e `snap refresh`
+5. **Monitora snapd**: `snap list` e `snap refresh`
 
-### Rinnovo del certificato {#certificate-renewal}
+### Rinnovo del Certificato {#certificate-renewal}
 
-I certificati dovrebbero rinnovarsi automaticamente, ma è possibile rinnovarli manualmente se necessario:
+I certificati dovrebbero rinnovarsi automaticamente, ma puoi rinnovarli manualmente se necessario:
 
 ```bash
-# Manual certificate renewal
+# Rinnovo manuale del certificato
 certbot renew
 
-# Copy renewed certificates
+# Copia i certificati rinnovati
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Riavvia i servizi per usare i nuovi certificati
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" restart
 else
@@ -728,23 +734,24 @@ else
 fi
 ```
 
-## Risoluzione dei problemi {#troubleshooting}
 
-### Problemi specifici di Debian {#debian-specific-issues}
+## Risoluzione dei Problemi {#troubleshooting}
+
+### Problemi Specifici di Debian {#debian-specific-issues}
 
 #### 1. Snapd non funziona {#1-snapd-not-working}
 
 ```bash
-# Check snapd status
+# Controlla lo stato di snapd
 systemctl status snapd
 
-# Restart snapd
+# Riavvia snapd
 systemctl restart snapd
 
-# Check snap path
+# Controlla il percorso di snap
 echo $PATH | grep snap
 
-# Add snap to PATH if missing
+# Aggiungi snap al PATH se manca
 echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -752,85 +759,86 @@ source ~/.bashrc
 #### 2. Comando Docker Compose non trovato {#2-docker-compose-command-not-found}
 
 ```bash
-# Check which docker compose command is available
+# Controlla quale comando docker compose è disponibile
 command -v docker-compose
 command -v docker
 
-# Use the appropriate command in scripts
+# Usa il comando appropriato negli script
 if command -v docker-compose &> /dev/null; then
-    echo "Using docker-compose"
+    echo "Usando docker-compose"
 else
-    echo "Using docker compose"
+    echo "Usando docker compose"
 fi
 ```
-
-#### 3. Problemi di installazione del pacchetto {#3-package-installation-issues}
+#### 3. Problemi di Installazione dei Pacchetti {#3-package-installation-issues}
 
 ```bash
-# Update package cache
+# Aggiorna la cache dei pacchetti
 apt update
 
-# Fix broken packages
+# Risolvi pacchetti danneggiati
 apt --fix-broken install
 
-# Check for held packages
+# Controlla i pacchetti bloccati
 apt-mark showhold
 ```
 
-### Problemi comuni {#common-issues}
+### Problemi Comuni {#common-issues}
 
-#### 1. Il servizio Docker non si avvia {#1-docker-service-wont-start}
+#### 1. Il Servizio Docker Non Si Avvia {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Controlla lo stato di Docker
 systemctl status docker
 
-# Check Docker logs
+# Controlla i log di Docker
 journalctl -u docker
 
-# Try alternative startup
+# Prova un avvio alternativo
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. La generazione del certificato non riesce {#2-certificate-generation-fails}
+#### 2. Fallimento nella Generazione del Certificato {#2-certificate-generation-fails}
 
 * Assicurati che le porte 80 e 443 siano accessibili
 * Verifica che i record DNS puntino al tuo server
 * Controlla le impostazioni del firewall con `ufw status`
 
-#### 3. Problemi di recapito delle e-mail {#3-email-delivery-issues}
+#### 3. Problemi di Consegna Email {#3-email-delivery-issues}
 
 * Verifica che i record MX siano corretti
 * Controlla i record SPF, DKIM e DMARC
 * Assicurati che la porta 25 non sia bloccata dal tuo provider di hosting
 
-### Ottenere aiuto {#getting-help}
+### Ottenere Aiuto {#getting-help}
 
 * **Documentazione**: <https://forwardemail.net/self-hosted>
-* **Problemi GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Problemi su GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Documentazione Debian**: <https://www.debian.org/doc/>
 
-## Procedure consigliate per la sicurezza {#security-best-practices}
 
-1. **Mantieni il sistema aggiornato**: Aggiorna regolarmente Debian e i pacchetti
-2. **Monitora i log**: Imposta il monitoraggio dei log e gli avvisi
-3. **Esegui backup regolarmente**: Testa le procedure di backup e ripristino
-4. **Usa password complesse**: Genera password complesse per tutti gli account
-5. **Abilita Fail2Ban**: Valuta l'installazione di fail2ban per una maggiore sicurezza
-6. **Verifiche di sicurezza regolari**: Rivedi periodicamente la tua configurazione
+## Best Practice di Sicurezza {#security-best-practices}
+
+1. **Mantieni il Sistema Aggiornato**: Aggiorna regolarmente Debian e i pacchetti
+2. **Monitora i Log**: Configura il monitoraggio e gli avvisi dei log
+3. **Esegui Backup Regolari**: Testa le procedure di backup e ripristino
+4. **Usa Password Forti**: Genera password robuste per tutti gli account
+5. **Abilita Fail2Ban**: Considera l’installazione di fail2ban per una sicurezza aggiuntiva
+6. **Audit di Sicurezza Regolari**: Rivedi periodicamente la tua configurazione
 7. **Monitora Snapd**: Mantieni aggiornati i pacchetti snap con `snap refresh`
+
 
 ## Conclusione {#conclusion}
 
-L'installazione self-hosted di Forward Email dovrebbe ora essere completa e funzionante su Debian. Ricorda di:
+La tua installazione self-hosted di Forward Email dovrebbe ora essere completa e funzionante su Debian. Ricorda di:
 
-1. Configura correttamente i tuoi record DNS
-2. Testa l'invio e la ricezione delle email
-3. Imposta backup regolari
-4. Monitora regolarmente il tuo sistema
-5. Mantieni aggiornata l'installazione
-6. Monitora snapd e i pacchetti snap
+1. Configurare correttamente i record DNS
+2. Testare l’invio e la ricezione delle email
+3. Impostare backup regolari
+4. Monitorare regolarmente il sistema
+5. Mantenere aggiornata l’installazione
+6. Monitorare snapd e i pacchetti snap
 
-Le principali differenze rispetto a Ubuntu sono l'installazione di snapd e la configurazione del repository Docker. Una volta configurati correttamente, l'applicazione Forward Email si comporta in modo identico su entrambi i sistemi.
+Le principali differenze rispetto a Ubuntu sono l’installazione di snapd e la configurazione del repository Docker. Una volta configurati correttamente, l’applicazione Forward Email si comporta in modo identico su entrambi i sistemi.
 
-Per ulteriori opzioni di configurazione e funzionalità avanzate, fare riferimento alla documentazione ufficiale di Forward Email all'indirizzo <https://forwardemail.net/self-hosted#configuration>.
+Per opzioni di configurazione aggiuntive e funzionalità avanzate, consulta la documentazione ufficiale di Forward Email su <https://forwardemail.net/self-hosted#configuration>.

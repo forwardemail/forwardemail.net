@@ -1,343 +1,344 @@
-# API Email Hoàn chỉnh Đầu tiên: Cách Forward Email Cách mạng hóa Quản lý Email {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# API Email Hoàn Chỉnh Đầu Tiên: Cách Forward Email Cách Mạng Hóa Quản Lý Email {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>Tóm tắt:</strong> Chúng tôi đã xây dựng API REST hoàn chỉnh đầu tiên trên thế giới cho việc quản lý email với khả năng tìm kiếm nâng cao mà không dịch vụ nào khác cung cấp. Trong khi Gmail, Outlook và Apple buộc các nhà phát triển phải sử dụng IMAP hoặc API bị giới hạn tốc độ, Forward Email cung cấp các thao tác CRUD cực nhanh cho tin nhắn, thư mục, danh bạ và lịch thông qua giao diện REST thống nhất với hơn 15 tham số tìm kiếm. Đây chính là API email mà các nhà phát triển đã chờ đợi.
+  <strong>Tóm tắt nhanh:</strong> Chúng tôi đã xây dựng API REST hoàn chỉnh đầu tiên trên thế giới cho quản lý email với khả năng tìm kiếm nâng cao mà không dịch vụ nào khác có. Trong khi Gmail, Outlook và Apple bắt các nhà phát triển phải chịu cảnh địa ngục IMAP hoặc API giới hạn tốc độ, Forward Email cung cấp các thao tác CRUD cực nhanh cho tin nhắn, thư mục, danh bạ và lịch qua giao diện REST thống nhất với hơn 15 tham số tìm kiếm. Đây chính là API email mà các nhà phát triển đã chờ đợi.
 </p>
 
-## Mục lục {#table-of-contents}
 
-* [Vấn đề về API Email](#the-email-api-problem)
-* [Những gì các nhà phát triển thực sự đang nói](#what-developers-are-actually-saying)
-* [Giải pháp mang tính cách mạng của Forward Email](#forward-emails-revolutionary-solution)
-  * [Tại sao chúng tôi xây dựng điều này](#why-we-built-this)
-  * [Xác thực đơn giản](#simple-authentication)
-* [20 Điểm cuối Thay đổi Mọi thứ](#20-endpoints-that-change-everything)
-  * [Tin nhắn (5 điểm cuối)](#messages-5-endpoints)
-  * [Thư mục (5 điểm cuối)](#folders-5-endpoints)
-  * [Danh bạ (5 điểm cuối)](#contacts-5-endpoints)
+## Mục Lục {#table-of-contents}
+
+* [Vấn Đề API Email](#the-email-api-problem)
+* [Những Gì Các Nhà Phát Triển Thực Sự Nói](#what-developers-are-actually-saying)
+* [Giải Pháp Cách Mạng Của Forward Email](#forward-emails-revolutionary-solution)
+  * [Tại Sao Chúng Tôi Xây Dựng Điều Này](#why-we-built-this)
+  * [Xác Thực Đơn Giản](#simple-authentication)
+* [20 Điểm Cuối Thay Đổi Mọi Thứ](#20-endpoints-that-change-everything)
+  * [Tin Nhắn (5 điểm cuối)](#messages-5-endpoints)
+  * [Thư Mục (5 điểm cuối)](#folders-5-endpoints)
+  * [Danh Bạ (5 điểm cuối)](#contacts-5-endpoints)
   * [Lịch (5 điểm cuối)](#calendars-5-endpoints)
-* [Tìm kiếm nâng cao: Không có dịch vụ nào khác so sánh](#advanced-search-no-other-service-compares)
-  * [Bối cảnh API tìm kiếm đã bị phá vỡ](#the-search-api-landscape-is-broken)
-  * [API tìm kiếm mang tính cách mạng của Forward Email](#forward-emails-revolutionary-search-api)
-  * [Ví dụ tìm kiếm trong thế giới thực](#real-world-search-examples)
-  * [Ưu điểm về hiệu suất](#performance-advantages)
-  * [Tính năng tìm kiếm không ai khác có](#search-features-no-one-else-has)
-  * [Tại sao điều này quan trọng đối với các nhà phát triển](#why-this-matters-for-developers)
-  * [Việc triển khai kỹ thuật](#the-technical-implementation)
-* [Kiến trúc hiệu suất cực nhanh](#blazing-fast-performance-architecture)
-  * [Tiêu chuẩn hiệu suất](#performance-benchmarks)
-  * [Kiến trúc ưu tiên quyền riêng tư](#privacy-first-architecture)
-* [Tại sao chúng tôi khác biệt: So sánh đầy đủ](#why-were-different-the-complete-comparison)
-  * [Những hạn chế chính của nhà cung cấp](#major-provider-limitations)
-  * [Ưu điểm của chuyển tiếp email](#forward-email-advantages)
-  * [Vấn đề minh bạch nguồn mở](#the-open-source-transparency-problem)
-* [Hơn 30 ví dụ tích hợp thực tế](#30-real-world-integration-examples)
-  * [1. Cải tiến biểu mẫu liên hệ WordPress](#1-wordpress-contact-form-enhancement)
-  * [2. Zapier thay thế cho tự động hóa email](#2-zapier-alternative-for-email-automation)
-  * [3. Đồng bộ hóa email CRM](#3-crm-email-synchronization)
-  * [4. Xử lý đơn hàng thương mại điện tử](#4-e-commerce-order-processing)
-  * [5. Hỗ trợ tích hợp phiếu](#5-support-ticket-integration)
-  * [6. Hệ thống quản lý bản tin](#6-newsletter-management-system)
-  * [7. Quản lý tác vụ dựa trên email](#7-email-based-task-management)
-  * [8. Tổng hợp email nhiều tài khoản](#8-multi-account-email-aggregation)
-  * [9. Bảng điều khiển phân tích email nâng cao](#9-advanced-email-analytics-dashboard)
-  * [10. Lưu trữ email thông minh](#10-smart-email-archiving)
-  * [11. Tích hợp Email vào Lịch](#11-email-to-calendar-integration)
-  * [12. Sao lưu và tuân thủ email](#12-email-backup-and-compliance)
-  * [13. Quản lý nội dung dựa trên email](#13-email-based-content-management)
-  * [14. Quản lý mẫu email](#14-email-template-management)
-  * [15. Tự động hóa quy trình làm việc dựa trên email](#15-email-based-workflow-automation)
-  * [16. Giám sát bảo mật email](#16-email-security-monitoring)
-  * [17. Thu thập khảo sát qua email](#17-email-based-survey-collection)
-  * [18. Giám sát hiệu suất email](#18-email-performance-monitoring)
-  * [19. Đánh giá khách hàng tiềm năng dựa trên email](#19-email-based-lead-qualification)
-  * [20. Quản lý dự án dựa trên email](#20-email-based-project-management)
-  * [21. Quản lý hàng tồn kho dựa trên email](#21-email-based-inventory-management)
-  * [22. Xử lý hóa đơn qua email](#22-email-based-invoice-processing)
-  * [23. Đăng ký sự kiện qua email](#23-email-based-event-registration)
-  * [24. Quy trình phê duyệt tài liệu qua email](#24-email-based-document-approval-workflow)
-  * [25. Phân tích phản hồi của khách hàng qua email](#25-email-based-customer-feedback-analysis)
-  * [26. Kênh tuyển dụng qua email](#26-email-based-recruitment-pipeline)
-  * [27. Xử lý báo cáo chi phí qua email](#27-email-based-expense-report-processing)
-  * [28. Báo cáo đảm bảo chất lượng dựa trên email](#28-email-based-quality-assurance-reporting)
-  * [29. Quản lý nhà cung cấp dựa trên email](#29-email-based-vendor-management)
-  * [30. Giám sát mạng xã hội qua email](#30-email-based-social-media-monitoring)
-* [Bắt đầu](#getting-started)
-  * [1. Tạo tài khoản email chuyển tiếp của bạn](#1-create-your-forward-email-account)
-  * [2. Tạo thông tin xác thực API](#2-generate-api-credentials)
-  * [3. Thực hiện lệnh gọi API đầu tiên của bạn](#3-make-your-first-api-call)
-  * [4. Khám phá Tài liệu](#4-explore-the-documentation)
-* [Tài nguyên kỹ thuật](#technical-resources)
+* [Tìm Kiếm Nâng Cao: Không Dịch Vụ Nào Sánh Kịp](#advanced-search-no-other-service-compares)
+  * [Cảnh Quan API Tìm Kiếm Đang Bị Hỏng](#the-search-api-landscape-is-broken)
+  * [API Tìm Kiếm Cách Mạng Của Forward Email](#forward-emails-revolutionary-search-api)
+  * [Ví Dụ Tìm Kiếm Thực Tế](#real-world-search-examples)
+  * [Ưu Thế Về Hiệu Suất](#performance-advantages)
+  * [Tính Năng Tìm Kiếm Không Ai Có](#search-features-no-one-else-has)
+  * [Tại Sao Điều Này Quan Trọng Với Các Nhà Phát Triển](#why-this-matters-for-developers)
+  * [Triển Khai Kỹ Thuật](#the-technical-implementation)
+* [Kiến Trúc Hiệu Suất Cực Nhanh](#blazing-fast-performance-architecture)
+  * [Tiêu Chuẩn Hiệu Suất](#performance-benchmarks)
+  * [Kiến Trúc Ưu Tiên Quyền Riêng Tư](#privacy-first-architecture)
+* [Tại Sao Chúng Tôi Khác Biệt: So Sánh Toàn Diện](#why-were-different-the-complete-comparison)
+  * [Hạn Chế Của Các Nhà Cung Cấp Lớn](#major-provider-limitations)
+  * [Ưu Điểm Của Forward Email](#forward-email-advantages)
+  * [Vấn Đề Minh Bạch Mã Nguồn Mở](#the-open-source-transparency-problem)
+* [Hơn 30 Ví Dụ Tích Hợp Thực Tế](#30-real-world-integration-examples)
+  * [1. Nâng Cấp Mẫu Liên Hệ WordPress](#1-wordpress-contact-form-enhancement)
+  * [2. Thay Thế Zapier Cho Tự Động Hóa Email](#2-zapier-alternative-for-email-automation)
+  * [3. Đồng Bộ Email CRM](#3-crm-email-synchronization)
+  * [4. Xử Lý Đơn Hàng Thương Mại Điện Tử](#4-e-commerce-order-processing)
+  * [5. Tích Hợp Phiếu Hỗ Trợ](#5-support-ticket-integration)
+  * [6. Hệ Thống Quản Lý Bản Tin](#6-newsletter-management-system)
+  * [7. Quản Lý Công Việc Qua Email](#7-email-based-task-management)
+  * [8. Tổng Hợp Email Đa Tài Khoản](#8-multi-account-email-aggregation)
+  * [9. Bảng Điều Khiển Phân Tích Email Nâng Cao](#9-advanced-email-analytics-dashboard)
+  * [10. Lưu Trữ Email Thông Minh](#10-smart-email-archiving)
+  * [11. Tích Hợp Email Với Lịch](#11-email-to-calendar-integration)
+  * [12. Sao Lưu Và Tuân Thủ Email](#12-email-backup-and-compliance)
+  * [13. Quản Lý Nội Dung Qua Email](#13-email-based-content-management)
+  * [14. Quản Lý Mẫu Email](#14-email-template-management)
+  * [15. Tự Động Hóa Quy Trình Qua Email](#15-email-based-workflow-automation)
+  * [16. Giám Sát Bảo Mật Email](#16-email-security-monitoring)
+  * [17. Thu Thập Khảo Sát Qua Email](#17-email-based-survey-collection)
+  * [18. Giám Sát Hiệu Suất Email](#18-email-performance-monitoring)
+  * [19. Đánh Giá Khách Hàng Tiềm Năng Qua Email](#19-email-based-lead-qualification)
+  * [20. Quản Lý Dự Án Qua Email](#20-email-based-project-management)
+  * [21. Quản Lý Tồn Kho Qua Email](#21-email-based-inventory-management)
+  * [22. Xử Lý Hóa Đơn Qua Email](#22-email-based-invoice-processing)
+  * [23. Đăng Ký Sự Kiện Qua Email](#23-email-based-event-registration)
+  * [24. Quy Trình Phê Duyệt Tài Liệu Qua Email](#24-email-based-document-approval-workflow)
+  * [25. Phân Tích Phản Hồi Khách Hàng Qua Email](#25-email-based-customer-feedback-analysis)
+  * [26. Quy Trình Tuyển Dụng Qua Email](#26-email-based-recruitment-pipeline)
+  * [27. Xử Lý Báo Cáo Chi Phí Qua Email](#27-email-based-expense-report-processing)
+  * [28. Báo Cáo Đảm Bảo Chất Lượng Qua Email](#28-email-based-quality-assurance-reporting)
+  * [29. Quản Lý Nhà Cung Cấp Qua Email](#29-email-based-vendor-management)
+  * [30. Giám Sát Mạng Xã Hội Qua Email](#30-email-based-social-media-monitoring)
+* [Bắt Đầu](#getting-started)
+  * [1. Tạo Tài Khoản Forward Email Của Bạn](#1-create-your-forward-email-account)
+  * [2. Tạo Thông Tin API](#2-generate-api-credentials)
+  * [3. Thực Hiện Lần Gọi API Đầu Tiên](#3-make-your-first-api-call)
+  * [4. Khám Phá Tài Liệu](#4-explore-the-documentation)
+* [Tài Nguyên Kỹ Thuật](#technical-resources)
+## Vấn Đề API Email {#the-email-api-problem}
 
-## Sự cố API Email {#the-email-api-problem}
+API email về cơ bản là hỏng. Chấm hết.
 
-API email về cơ bản đã bị hỏng. Chấm hết.
+Mỗi nhà cung cấp email lớn đều bắt các nhà phát triển phải chọn một trong hai lựa chọn tồi tệ:
 
-Mọi nhà cung cấp email lớn đều buộc các nhà phát triển phải đưa ra một trong hai lựa chọn tồi tệ sau:
+1. **Địa ngục IMAP**: Vật lộn với giao thức 30 năm tuổi được thiết kế cho các ứng dụng máy tính để bàn, không phải ứng dụng hiện đại
+2. **API bị hạn chế**: API chỉ đọc, giới hạn tần suất, phức tạp với OAuth không thể quản lý dữ liệu email thực tế của bạn
 
-1. **Địa ngục IMAP**: Vật lộn với giao thức 30 năm tuổi được thiết kế cho máy khách để bàn, chứ không phải ứng dụng hiện đại
-2. **API bị hạn chế**: API OAuth phức tạp, chỉ đọc, giới hạn tốc độ, không thể quản lý dữ liệu email thực tế của bạn
-
-Kết quả là gì? Các nhà phát triển hoặc từ bỏ hoàn toàn việc tích hợp email hoặc mất nhiều tuần để xây dựng các trình bao bọc IMAP dễ hỏng liên tục.
+Kết quả? Các nhà phát triển hoặc từ bỏ hoàn toàn việc tích hợp email hoặc tốn hàng tuần xây dựng các lớp bao IMAP mong manh liên tục bị lỗi.
 
 > \[!WARNING]
-> **Bí mật đen tối**: Hầu hết các "API email" chỉ là API gửi. Bạn không thể lập trình để sắp xếp thư mục, đồng bộ danh bạ hoặc quản lý lịch thông qua một giao diện REST đơn giản. Cho đến bây giờ.
+> **Bí mật bẩn thỉu**: Hầu hết "API email" chỉ là API gửi thư. Bạn không thể lập trình để tổ chức thư mục, đồng bộ danh bạ, hoặc quản lý lịch qua một giao diện REST đơn giản. Cho đến bây giờ.
 
-## Những gì các nhà phát triển thực sự đang nói {#what-developers-are-actually-saying}
 
-Sự thất vọng là có thật và được ghi chép lại ở khắp mọi nơi:
+## Những Gì Các Nhà Phát Triển Thực Sự Nói {#what-developers-are-actually-saying}
 
-> "Gần đây tôi đã thử tích hợp Gmail vào ứng dụng của mình, và tôi đã dành quá nhiều thời gian cho nó. Tôi quyết định rằng việc hỗ trợ Gmail là không đáng."
+Sự thất vọng là có thật và được ghi nhận khắp nơi:
+
+> "Gần đây tôi đã cố gắng tích hợp Gmail vào ứng dụng của mình, và tôi đã dành quá nhiều thời gian cho nó. Tôi quyết định không đáng để hỗ trợ Gmail."
 >
-> *- [Nhà phát triển Hacker News](https://news.ycombinator.com/item?id=42106944), 147 lượt bình chọn*
+> *- [Nhà phát triển Hacker News](https://news.ycombinator.com/item?id=42106944), 147 lượt thích*
 
-> "Có phải tất cả các API email đều tầm thường không? Chúng có vẻ hạn chế hoặc bị giới hạn theo một cách nào đó."
+> "Tất cả các API email đều tầm thường sao? Chúng có vẻ bị giới hạn hoặc hạn chế theo một cách nào đó."
 >
-> *- [Thảo luận trên Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
+> *- [Thảo luận Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> "Tại sao việc phát triển email lại tệ đến vậy?"
+> "Tại sao phát triển email lại phải tệ như vậy?"
 >
 > *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 bình luận về nỗi đau của nhà phát triển*
 
-> "Điều gì khiến API Gmail hiệu quả hơn IMAP? Một lý do khác khiến API Gmail hiệu quả hơn nhiều là vì nó chỉ cần tải xuống mỗi thư một lần. Với IMAP, mỗi thư phải được tải xuống và lập chỉ mục..."
+> "Điều gì làm cho API Gmail hiệu quả hơn IMAP? Một lý do nữa là API Gmail chỉ cần tải xuống mỗi tin nhắn một lần. Với IMAP, mỗi tin nhắn phải được tải xuống và lập chỉ mục..."
 >
-> *- [Câu hỏi Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) với 47 lượt bình chọn*
+> *- [Câu hỏi Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) với 47 lượt thích*
 
-Bằng chứng ở khắp mọi nơi:
+Bằng chứng có ở khắp nơi:
 
-* **Các vấn đề về SMTP của WordPress**: [631 vấn đề GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) về lỗi gửi email
-* **Hạn chế của Zapier**: [Khiếu nại của cộng đồng](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) về giới hạn 10 email/giờ và lỗi phát hiện IMAP
-* **Các dự án API IMAP**: [Nhiều](https://github.com/ewildgoose/imap-api) [mã nguồn mở](https://emailengine.app/) [các dự án](https://www.npmjs.com/package/imapflow) tồn tại chuyên biệt để "chuyển đổi IMAP sang REST" vì không có nhà cung cấp nào cung cấp tính năng này
-* **Những khó chịu với API Gmail**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) có 4.847 câu hỏi được gắn thẻ "gmail-api" với các khiếu nại phổ biến về giới hạn tốc độ và độ phức tạp
+* **Vấn đề SMTP WordPress**: [631 vấn đề GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) về thất bại trong việc gửi email
+* **Hạn chế Zapier**: [Phàn nàn cộng đồng](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) về giới hạn 10 email/giờ và lỗi phát hiện IMAP
+* **Dự án API IMAP**: [Nhiều](https://github.com/ewildgoose/imap-api) [dự án mã nguồn mở](https://emailengine.app/) [tồn tại](https://www.npmjs.com/package/imapflow) nhằm "chuyển IMAP sang REST" vì không nhà cung cấp nào cung cấp điều này
+* **Sự thất vọng với API Gmail**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) có 4,847 câu hỏi gắn thẻ "gmail-api" với các phàn nàn phổ biến về giới hạn tần suất và sự phức tạp
 
-## Giải pháp mang tính cách mạng của Email chuyển tiếp {#forward-emails-revolutionary-solution}
 
-**Chúng tôi là dịch vụ email đầu tiên cung cấp các hoạt động CRUD hoàn chỉnh cho mọi dữ liệu email thông qua REST API thống nhất.**
+## Giải Pháp Cách Mạng Của Forward Email {#forward-emails-revolutionary-solution}
 
-Đây không chỉ là một API gửi dữ liệu đơn thuần. Đây là khả năng kiểm soát hoàn toàn theo chương trình đối với:
+**Chúng tôi là dịch vụ email đầu tiên cung cấp đầy đủ các thao tác CRUD cho tất cả dữ liệu email qua một API REST thống nhất.**
+
+Đây không chỉ là một API gửi thư nữa. Đây là quyền kiểm soát lập trình hoàn chỉnh đối với:
 
 * **Tin nhắn**: Tạo, đọc, cập nhật, xóa, tìm kiếm, di chuyển, đánh dấu
-* **Thư mục**: Quản lý thư mục IMAP đầy đủ thông qua các điểm cuối REST
-* **Danh bạ**: Lưu trữ và đồng bộ hóa danh bạ [ThẻDAV](https://tools.ietf.org/html/rfc6352)
-* **Lịch**: Sự kiện lịch [CalDAV](https://tools.ietf.org/html/rfc4791) và lịch trình
+* **Thư mục**: Quản lý thư mục IMAP đầy đủ qua các điểm cuối REST
+* **Danh bạ**: Lưu trữ và đồng bộ danh bạ theo [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **Lịch**: Sự kiện và lịch trình theo [CalDAV](https://tools.ietf.org/html/rfc4791)
 
-### Lý do chúng tôi xây dựng {#why-we-built-this}
+### Tại Sao Chúng Tôi Xây Dựng Điều Này {#why-we-built-this}
 
-**Vấn đề**: Mọi nhà cung cấp dịch vụ email đều coi email như một hộp đen. Bạn có thể gửi email, thậm chí đọc chúng bằng OAuth phức tạp, nhưng bạn không thể thực sự *quản lý* dữ liệu email của mình theo chương trình.
+**Vấn đề**: Mỗi nhà cung cấp email đều coi email như một hộp đen. Bạn có thể gửi email, có thể đọc chúng với OAuth phức tạp, nhưng bạn không thể thực sự *quản lý* dữ liệu email của mình một cách lập trình.
 
-**Tầm nhìn của chúng tôi**: Email phải dễ tích hợp như bất kỳ API hiện đại nào. Không cần thư viện IMAP. Không cần OAuth phức tạp. Không cần giới hạn tốc độ. Chỉ cần các điểm cuối REST đơn giản và hoạt động.
+**Tầm nhìn của chúng tôi**: Email nên dễ tích hợp như bất kỳ API hiện đại nào. Không thư viện IMAP. Không phức tạp OAuth. Không ác mộng giới hạn tần suất. Chỉ đơn giản là các điểm cuối REST hoạt động.
 
-**Kết quả**: Dịch vụ email đầu tiên cho phép bạn xây dựng một ứng dụng email hoàn chỉnh, tích hợp CRM hoặc hệ thống tự động hóa chỉ bằng các yêu cầu HTTP.
+**Kết quả**: Dịch vụ email đầu tiên nơi bạn có thể xây dựng một ứng dụng email hoàn chỉnh, tích hợp CRM, hoặc hệ thống tự động hóa chỉ bằng các yêu cầu HTTP.
 
-### Xác thực đơn giản {#simple-authentication}
+### Xác Thực Đơn Giản {#simple-authentication}
 
-Không có [Độ phức tạp của OAuth](https://oauth.net/2/). Không có [mật khẩu dành riêng cho ứng dụng](https://support.google.com/accounts/answer/185833). Chỉ có thông tin đăng nhập bí danh của bạn:
+Không [phức tạp OAuth](https://oauth.net/2/). Không [mật khẩu ứng dụng riêng biệt](https://support.google.com/accounts/answer/185833). Chỉ cần thông tin đăng nhập bí danh của bạn:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
-
-## 20 Điểm cuối Thay đổi Mọi thứ {#20-endpoints-that-change-everything}
+## 20 Điểm cuối Thay Đổi Mọi Thứ {#20-endpoints-that-change-everything}
 
 ### Tin nhắn (5 điểm cuối) {#messages-5-endpoints}
 
-* `GET /v1/messages` - Liệt kê các tin nhắn có lọc (`?folder=`, `?is_unread=`, `?is_flagged=`)
-* `POST /v1/messages` - Gửi tin nhắn mới trực tiếp đến các thư mục
-* `GET /v1/messages/:id` - Truy xuất tin nhắn cụ thể với đầy đủ siêu dữ liệu
+* `GET /v1/messages` - Liệt kê tin nhắn với bộ lọc (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `POST /v1/messages` - Gửi tin nhắn mới trực tiếp vào thư mục
+* `GET /v1/messages/:id` - Lấy tin nhắn cụ thể với đầy đủ siêu dữ liệu
 * `PUT /v1/messages/:id` - Cập nhật tin nhắn (cờ, thư mục, trạng thái đã đọc)
 * `DELETE /v1/messages/:id` - Xóa tin nhắn vĩnh viễn
 
 ### Thư mục (5 điểm cuối) {#folders-5-endpoints}
 
-* `GET /v1/folders` - Liệt kê tất cả các thư mục có trạng thái đăng ký
-* `POST /v1/folders` - Tạo thư mục mới với các thuộc tính tùy chỉnh
-* `GET /v1/folders/:id` - Lấy thông tin chi tiết về thư mục và số lượng tin nhắn
-* `PUT /v1/folders/:id` - Cập nhật thuộc tính và đăng ký thư mục
-* `DELETE /v1/folders/:id` - Xóa thư mục và xử lý việc di chuyển tin nhắn
+* `GET /v1/folders` - Liệt kê tất cả thư mục với trạng thái đăng ký
+* `POST /v1/folders` - Tạo thư mục mới với thuộc tính tùy chỉnh
+* `GET /v1/folders/:id` - Lấy chi tiết thư mục và số lượng tin nhắn
+* `PUT /v1/folders/:id` - Cập nhật thuộc tính thư mục và đăng ký
+* `DELETE /v1/folders/:id` - Xóa thư mục và xử lý di chuyển tin nhắn
 
 ### Danh bạ (5 điểm cuối) {#contacts-5-endpoints}
 
-* `GET /v1/contacts` - Liệt kê danh bạ với chức năng tìm kiếm và phân trang
-* `POST /v1/contacts` - Tạo danh bạ mới với hỗ trợ vCard đầy đủ
-* `GET /v1/contacts/:id` - Truy xuất danh bạ với tất cả các trường và siêu dữ liệu
+* `GET /v1/contacts` - Liệt kê danh bạ với tìm kiếm và phân trang
+* `POST /v1/contacts` - Tạo danh bạ mới với hỗ trợ đầy đủ vCard
+* `GET /v1/contacts/:id` - Lấy danh bạ với tất cả trường và siêu dữ liệu
 * `PUT /v1/contacts/:id` - Cập nhật thông tin danh bạ với xác thực ETag
-* `DELETE /v1/contacts/:id` - Xóa danh bạ với chức năng xử lý theo tầng
+* `DELETE /v1/contacts/:id` - Xóa danh bạ với xử lý liên quan
 
 ### Lịch (5 điểm cuối) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - Liệt kê các sự kiện lịch với tính năng lọc ngày
+* `GET /v1/calendars` - Liệt kê sự kiện lịch với bộ lọc ngày
 * `POST /v1/calendars` - Tạo sự kiện lịch với người tham dự và lặp lại
-* `GET /v1/calendars/:id` - Nhận thông tin chi tiết về sự kiện với tính năng xử lý múi giờ
-* `PUT /v1/calendars/:id` - Cập nhật sự kiện với tính năng phát hiện xung đột
+* `GET /v1/calendars/:id` - Lấy chi tiết sự kiện với xử lý múi giờ
+* `PUT /v1/calendars/:id` - Cập nhật sự kiện với phát hiện xung đột
 * `DELETE /v1/calendars/:id` - Xóa sự kiện với thông báo người tham dự
 
-## Tìm kiếm nâng cao: Không có dịch vụ nào khác so sánh {#advanced-search-no-other-service-compares}
 
-**Forward Email là dịch vụ email duy nhất cung cấp khả năng tìm kiếm toàn diện, theo chương trình trên tất cả các trường tin nhắn thông qua REST API.**
+## Tìm kiếm Nâng cao: Không Dịch Vụ Nào Sánh Kịp {#advanced-search-no-other-service-compares}
 
-Trong khi các nhà cung cấp khác chỉ cung cấp chức năng lọc cơ bản, chúng tôi đã xây dựng API tìm kiếm email tiên tiến nhất từ trước đến nay. Không có API Gmail, API Outlook hay bất kỳ dịch vụ nào khác có thể sánh bằng khả năng tìm kiếm của chúng tôi.
+**Forward Email là dịch vụ email duy nhất cung cấp tìm kiếm toàn diện, có thể lập trình trên tất cả các trường tin nhắn thông qua REST API.**
 
-### Bối cảnh API tìm kiếm bị phá vỡ {#the-search-api-landscape-is-broken}
+Trong khi các nhà cung cấp khác chỉ cung cấp bộ lọc cơ bản, chúng tôi đã xây dựng API tìm kiếm email tiên tiến nhất từng được tạo ra. Không API Gmail, API Outlook hay bất kỳ dịch vụ nào khác có thể sánh kịp khả năng tìm kiếm của chúng tôi.
 
-**Giới hạn tìm kiếm của API Gmail:**
+### Cảnh Quan API Tìm Kiếm Đang Bị Phá Vỡ {#the-search-api-landscape-is-broken}
+
+**Hạn chế Tìm kiếm API Gmail:**
 
 * ✅ Chỉ tham số `q` cơ bản
 * ❌ Không tìm kiếm theo trường cụ thể
-* ❌ Không lọc theo phạm vi ngày
+* ❌ Không lọc theo khoảng ngày
 * ❌ Không lọc theo kích thước
-* ❌ Không lọc tệp đính kèm
-* ❌ Chỉ giới hạn trong cú pháp tìm kiếm của Gmail
+* ❌ Không lọc theo tệp đính kèm
+* ❌ Giới hạn cú pháp tìm kiếm của Gmail
 
-**Hạn chế tìm kiếm của API Outlook:**
+**Hạn chế Tìm kiếm API Outlook:**
 
 * ✅ Tham số `$search` cơ bản
 * ❌ Không nhắm mục tiêu trường nâng cao
 * ❌ Không kết hợp truy vấn phức tạp
-* ❌ Giới hạn tốc độ tích cực
-* ❌ Yêu cầu cú pháp OData phức tạp
+* ❌ Giới hạn tốc độ nghiêm ngặt
+* ❌ Cần cú pháp OData phức tạp
 
 **Apple iCloud:**
 
-* ❌ Không có API nào cả
-* ❌ Chỉ tìm kiếm IMAP (nếu bạn có thể làm cho nó hoạt động)
+* ❌ Không có API
+* ❌ Chỉ tìm kiếm IMAP (nếu bạn có thể làm nó hoạt động)
 
 **ProtonMail & Tuta:**
 
 * ❌ Không có API công khai
-* ❌ Không có khả năng tìm kiếm theo chương trình
+* ❌ Không có khả năng tìm kiếm lập trình
 
-### Chuyển tiếp API tìm kiếm mang tính cách mạng của Email {#forward-emails-revolutionary-search-api}
+### API Tìm Kiếm Cách Mạng của Forward Email {#forward-emails-revolutionary-search-api}
 
-**Chúng tôi cung cấp hơn 15 tham số tìm kiếm mà không dịch vụ nào khác cung cấp:**
+**Chúng tôi cung cấp hơn 15 tham số tìm kiếm mà không dịch vụ nào có:**
 
-| Khả năng tìm kiếm | Chuyển tiếp Email | API Gmail | API Outlook | Người khác |
+| Khả năng Tìm kiếm             | Forward Email                          | Gmail API    | Outlook API        | Khác   |
 | ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **Tìm kiếm theo trường cụ thể** | ✅ Chủ đề, nội dung, từ, đến, cc, tiêu đề | ❌ | ❌ | ❌ |
-| **Tìm kiếm chung đa lĩnh vực** | ✅ `?search=` trên tất cả các trường | ✅ `q=` cơ bản | ✅ `$search=` cơ bản | ❌ |
-| **Lọc theo phạm vi ngày** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **Lọc theo kích thước** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **Lọc tệp đính kèm** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **Tìm kiếm tiêu đề** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **Tìm kiếm ID tin nhắn** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **Bộ lọc kết hợp** | ✅ Nhiều tham số với logic AND | ❌ | ❌ | ❌ |
-| **Không phân biệt chữ hoa chữ thường** | ✅ Tất cả tìm kiếm | ✅ | ✅ | ❌ |
-| **Hỗ trợ phân trang** | ✅ Hoạt động với tất cả các tham số tìm kiếm | ✅ | ✅ | ❌ |
+| **Tìm kiếm theo trường cụ thể** | ✅ Chủ đề, nội dung, người gửi, người nhận, cc, tiêu đề | ❌            | ❌                  | ❌      |
+| **Tìm kiếm tổng quát đa trường** | ✅ `?search=` trên tất cả các trường     | ✅ Cơ bản `q=` | ✅ Cơ bản `$search=` | ❌      |
+| **Lọc theo khoảng ngày**       | ✅ `?since=` & `?before=`               | ❌            | ❌                  | ❌      |
+| **Lọc theo kích thước**        | ✅ `?min_size=` & `?max_size=`          | ❌            | ❌                  | ❌      |
+| **Lọc theo tệp đính kèm**      | ✅ `?has_attachments=true/false`        | ❌            | ❌                  | ❌      |
+| **Tìm kiếm tiêu đề**           | ✅ `?headers=X-Priority`                | ❌            | ❌                  | ❌      |
+| **Tìm kiếm theo ID tin nhắn** | ✅ `?message_id=abc123`                 | ❌            | ❌                  | ❌      |
+| **Kết hợp bộ lọc**             | ✅ Nhiều tham số với logic AND          | ❌            | ❌                  | ❌      |
+| **Không phân biệt chữ hoa/thường** | ✅ Tất cả tìm kiếm                     | ✅            | ✅                  | ❌      |
+| **Hỗ trợ phân trang**          | ✅ Hoạt động với tất cả tham số tìm kiếm | ✅            | ✅                  | ❌      |
+### Ví dụ Tìm kiếm Thực tế {#real-world-search-examples}
 
-### Ví dụ tìm kiếm trong thế giới thực {#real-world-search-examples}
-
-**Tìm tất cả hóa đơn từ quý trước:**
+**Tìm Tất cả Hóa đơn từ Quý trước:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - Đơn giản và mạnh mẽ
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - Không thể với tìm kiếm giới hạn của họ
+# Không có lọc theo khoảng thời gian
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - Cú pháp OData phức tạp, chức năng hạn chế
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
-**Tìm kiếm tệp đính kèm lớn từ người gửi cụ thể:**
+**Tìm kiếm Tệp đính kèm Lớn từ Người gửi Cụ thể:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - Lọc toàn diện
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - Không thể lọc theo kích thước hoặc tệp đính kèm theo lập trình
+# Outlook API - Không có lọc kích thước
+# Khác - Không có API sẵn có
 ```
 
-**Tìm kiếm đa trường phức tạp:**
+**Tìm kiếm Phức tạp Nhiều Trường:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - Khả năng truy vấn nâng cao
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - Giới hạn chỉ tìm kiếm văn bản cơ bản
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - Tìm kiếm cơ bản không nhắm mục tiêu trường
 GET /me/messages?$search="quarterly"
 ```
 
-### Ưu điểm về hiệu suất {#performance-advantages}
+### Ưu điểm Hiệu suất {#performance-advantages}
 
-**Hiệu suất tìm kiếm email chuyển tiếp:**
+**Hiệu suất Tìm kiếm Forward Email:**
 
 * ⚡ **Thời gian phản hồi dưới 100ms** cho các tìm kiếm phức tạp
-* 🔍 **Tối ưu hóa biểu thức chính quy** với lập chỉ mục phù hợp
-* 📊 **Thực thi truy vấn song song** cho cả đếm và dữ liệu
-* 💾 **Sử dụng bộ nhớ hiệu quả** với các truy vấn tinh gọn
+* 🔍 **Tối ưu Regex** với lập chỉ mục đúng cách
+* 📊 **Thực thi truy vấn song song** cho đếm và dữ liệu
+* 💾 **Sử dụng bộ nhớ hiệu quả** với truy vấn gọn nhẹ
 
-**Vấn đề về hiệu suất của đối thủ cạnh tranh:**
+**Vấn đề Hiệu suất của Đối thủ:**
 
-* 🐌 **API Gmail**: Giới hạn tốc độ ở mức 250 đơn vị hạn ngạch cho mỗi người dùng mỗi giây
-* 🐌 **API Outlook**: Điều tiết mạnh mẽ với các yêu cầu lùi lại phức tạp
-* 🐌 **Khác**: Không có API nào để so sánh
+* 🐌 **Gmail API**: Giới hạn tốc độ 250 đơn vị hạn mức mỗi người dùng mỗi giây
+* 🐌 **Outlook API**: Giới hạn nghiêm ngặt với yêu cầu giảm tải phức tạp
+* 🐌 **Khác**: Không có API để so sánh
 
-### Tính năng tìm kiếm không ai khác có {#search-features-no-one-else-has}
+### Tính năng Tìm kiếm Không Ai Có {#search-features-no-one-else-has}
 
-#### 1. Tìm kiếm theo tiêu đề cụ thể {#1-header-specific-search}
+#### 1. Tìm kiếm Cụ thể theo Header {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# Tìm tin nhắn với header cụ thể
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. Trí thông minh dựa trên kích thước {#2-size-based-intelligence}
+#### 2. Trí tuệ Dựa trên Kích thước {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# Tìm email bản tin (thường lớn)
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# Tìm phản hồi nhanh (thường nhỏ)
 GET /v1/messages?max_size=1000&to=support
 ```
 
-#### 3. Quy trình làm việc dựa trên tệp đính kèm {#3-attachment-based-workflows}
+#### 3. Quy trình Làm việc Dựa trên Tệp đính kèm {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# Tìm tất cả tài liệu gửi cho nhóm pháp lý
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# Tìm email không có tệp đính kèm để dọn dẹp
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
-#### 4. Logic nghiệp vụ kết hợp {#4-combined-business-logic}
+#### 4. Kết hợp Logic Kinh doanh {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# Tìm tin nhắn đánh dấu khẩn cấp từ VIP có tệp đính kèm
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
-### Tại sao điều này quan trọng đối với các nhà phát triển {#why-this-matters-for-developers}
+### Tại sao Điều này Quan trọng với Nhà phát triển {#why-this-matters-for-developers}
 
-**Xây dựng các ứng dụng trước đây không thể thực hiện được:**
+**Xây dựng Ứng dụng Trước đây Không Thể:**
 
-1. **Phân tích Email Nâng cao**: Phân tích các mẫu email theo kích thước, người gửi, nội dung
-2. **Quản lý Email Thông minh**: Tự động sắp xếp dựa trên các tiêu chí phức tạp
-3. **Tuân thủ và Khám phá**: Tìm các email cụ thể theo yêu cầu pháp lý
-4. **Trí tuệ Kinh doanh**: Trích xuất thông tin chi tiết từ các mẫu giao tiếp email
-5. **Quy trình làm việc tự động**: Kích hoạt các hành động dựa trên bộ lọc email phức tạp
+1. **Phân tích Email Nâng cao**: Phân tích mẫu email theo kích thước, người gửi, nội dung
+2. **Quản lý Email Thông minh**: Tự động tổ chức dựa trên tiêu chí phức tạp
+3. **Tuân thủ và Khám phá**: Tìm email cụ thể cho yêu cầu pháp lý
+4. **Trí tuệ Kinh doanh**: Trích xuất thông tin từ mẫu giao tiếp email
+5. **Quy trình Tự động**: Kích hoạt hành động dựa trên bộ lọc email tinh vi
 
-### Triển khai kỹ thuật {#the-technical-implementation}
+### Triển khai Kỹ thuật {#the-technical-implementation}
 
 API tìm kiếm của chúng tôi sử dụng:
 
-* **Tối ưu hóa biểu thức chính quy** với các chiến lược lập chỉ mục phù hợp
+* **Tối ưu Regex** với chiến lược lập chỉ mục đúng
 * **Thực thi song song** để tăng hiệu suất
-* **Xác thực đầu vào** để tăng cường bảo mật
-* **Xử lý lỗi toàn diện** để tăng cường độ tin cậy
+* **Xác thực đầu vào** để bảo mật
+* **Xử lý lỗi toàn diện** để đảm bảo độ tin cậy
 
 ```javascript
-// Example: Complex search implementation
+// Ví dụ: Triển khai tìm kiếm phức tạp
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -355,18 +356,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// Kết hợp với logic AND
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **Lợi thế cho nhà phát triển**: Với API tìm kiếm của Forward Email, bạn có thể xây dựng các ứng dụng email có chức năng ngang ngửa với ứng dụng máy tính để bàn trong khi vẫn duy trì tính đơn giản của API REST.
+> **Lợi thế Nhà phát triển**: Với API tìm kiếm của Forward Email, bạn có thể xây dựng ứng dụng email có chức năng tương đương với các client trên máy tính để bàn trong khi vẫn giữ được sự đơn giản của REST API.
+## Kiến Trúc Hiệu Suất Siêu Nhanh {#blazing-fast-performance-architecture}
 
-## Kiến trúc hiệu suất cực nhanh {#blazing-fast-performance-architecture}
-
-Cơ sở kỹ thuật của chúng tôi được xây dựng để đạt được tốc độ và độ tin cậy:
+Ngăn xếp kỹ thuật của chúng tôi được xây dựng để đạt tốc độ và độ tin cậy:
 
 ```mermaid
 graph LR
@@ -376,105 +376,105 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Điểm chuẩn hiệu suất {#performance-benchmarks}
+### Các Chỉ Số Hiệu Suất {#performance-benchmarks}
 
-**Tại sao chúng tôi nhanh như chớp:**
+**Tại Sao Chúng Tôi Nhanh Như Chớp:**
 
-| Thành phần | Công nghệ | Lợi ích hiệu suất |
+| Thành phần  | Công nghệ                                                                        | Lợi ích Hiệu Suất                           |
 | ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **Kho** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | Nhanh hơn 10 lần so với SATA truyền thống |
-| **Cơ sở dữ liệu** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Độ trễ mạng bằng không, tuần tự hóa được tối ưu hóa |
-| **Phần cứng** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) kim loại trần | Không có chi phí ảo hóa |
-| **Lưu trữ đệm** | Trong bộ nhớ + liên tục | Thời gian phản hồi dưới mili giây |
-| **Sao lưu** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) được mã hóa | Độ tin cậy cấp doanh nghiệp |
+| **Lưu trữ**  | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                             | Nhanh gấp 10 lần so với SATA truyền thống    |
+| **Cơ sở dữ liệu** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr)   | Không độ trễ mạng, tối ưu hóa tuần tự hóa     |
+| **Phần cứng** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) bare metal | Không có chi phí ảo hóa                       |
+| **Bộ nhớ đệm**  | Trong bộ nhớ + lưu trữ bền vững                                                  | Thời gian phản hồi dưới mili giây             |
+| **Sao lưu**  | [Cloudflare R2](https://www.cloudflare.com/products/r2/) được mã hóa              | Độ tin cậy cấp doanh nghiệp                   |
 
-**Số liệu hiệu suất thực tế:**
+**Số Liệu Hiệu Suất Thực Tế:**
 
 * **Thời gian phản hồi API**: trung bình < 50ms
-* **Truy xuất tin nhắn**: < 10ms đối với tin nhắn được lưu trong bộ nhớ đệm
-* **Thao tác thư mục**: < 5ms đối với thao tác siêu dữ liệu
-* **Đồng bộ hóa danh bạ**: Hơn 1000 danh bạ/giây
-* **Thời gian hoạt động**: 99,99% SLA với cơ sở hạ tầng dự phòng
+* **Truy xuất tin nhắn**: < 10ms cho tin nhắn đã được lưu trong bộ nhớ đệm
+* **Thao tác thư mục**: < 5ms cho các thao tác metadata
+* **Đồng bộ danh bạ**: hơn 1000 liên hệ/giây
+* **Thời gian hoạt động**: 99.99% SLA với hạ tầng dự phòng
 
-### Kiến trúc ưu tiên quyền riêng tư {#privacy-first-architecture}
+### Kiến Trúc Ưu Tiên Bảo Mật {#privacy-first-architecture}
 
-**Thiết kế Zero-Knowledge**: Chỉ bạn mới có quyền truy cập bằng mật khẩu IMAP - chúng tôi không thể đọc email của bạn. [kiến trúc không kiến thức](https://forwardemail.net/en/security) của chúng tôi đảm bảo quyền riêng tư hoàn toàn trong khi vẫn mang lại hiệu suất vượt trội.
+**Thiết Kế Không Kiến Thức**: Chỉ bạn mới có quyền truy cập với mật khẩu IMAP của bạn - chúng tôi không thể đọc email của bạn. [Kiến trúc không kiến thức](https://forwardemail.net/en/security) của chúng tôi đảm bảo sự riêng tư tuyệt đối đồng thời mang lại hiệu suất vượt trội.
 
-## Tại sao chúng tôi khác biệt: So sánh đầy đủ {#why-were-different-the-complete-comparison}
 
-### Giới hạn chính của nhà cung cấp {#major-provider-limitations}
+## Tại Sao Chúng Tôi Khác Biệt: So Sánh Toàn Diện {#why-were-different-the-complete-comparison}
 
-| Nhà cung cấp | Các vấn đề cốt lõi | Những hạn chế cụ thể |
+### Hạn Chế Của Các Nhà Cung Cấp Chính {#major-provider-limitations}
+
+| Nhà cung cấp    | Vấn đề chính                             | Hạn chế cụ thể                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **API Gmail** | Chỉ đọc, OAuth phức tạp, API riêng biệt | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) cho danh bạ/lịch |
-| **API Outlook** | Đã lỗi thời, Gây nhầm lẫn, Tập trung vào doanh nghiệp | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Đồ thị, REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **Apple iCloud** | Không có API công khai | • [No public API whatsoever](https://support.apple.com/en-us/102654)<br>• [IMAP-only with 1000 emails/day limit](https://support.apple.com/en-us/102654)<br>• [App-specific passwords required](https://support.apple.com/en-us/102654)<br>• [500 recipients per message limit](https://support.apple.com/en-us/102654) |
-| **ProtonMail** | Không có API, tuyên bố nguồn mở sai sự thật | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge software required](https://proton.me/mail/bridge) để truy cập IMAP<br>• [Claims "open source"](https://proton.me/blog/open-source) nhưng [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **Tổng cộng** | Không có API, tính minh bạch gây hiểu lầm | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) nhưng [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) ngăn chặn tích hợp tiêu chuẩn |
-| **Email Zapier** | Giới hạn tỷ lệ nghiêm ngặt | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
+| **Gmail API**    | Chỉ đọc, OAuth phức tạp, API riêng biệt   | • [Không thể sửa đổi tin nhắn hiện có](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Nhãn ≠ thư mục](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [Giới hạn 1 tỷ đơn vị hạn mức/ngày](https://developers.google.com/gmail/api/reference/quota)<br>• [Yêu cầu API riêng biệt](https://developers.google.com/workspace) cho danh bạ/lịch                                                           |
+| **Outlook API**  | Bị ngưng, gây nhầm lẫn, tập trung doanh nghiệp | • [Các điểm cuối REST bị ngưng tháng 3 năm 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Nhiều API gây nhầm lẫn](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graph, REST)<br>• [Độ phức tạp Microsoft Graph](https://learn.microsoft.com/en-us/graph/overview)<br>• [Giới hạn truy cập nghiêm ngặt](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud** | Không có API công khai                   | • [Không có API công khai](https://support.apple.com/en-us/102654)<br>• [Chỉ IMAP với giới hạn 1000 email/ngày](https://support.apple.com/en-us/102654)<br>• [Yêu cầu mật khẩu ứng dụng riêng biệt](https://support.apple.com/en-us/102654)<br>• [Giới hạn 500 người nhận mỗi tin nhắn](https://support.apple.com/en-us/102654)                                                                                                                                              |
+| **ProtonMail**   | Không có API, tuyên bố mã nguồn mở sai lệch | • [Không có API công khai](https://proton.me/support/protonmail-bridge-clients)<br>• [Cần phần mềm Bridge](https://proton.me/mail/bridge) để truy cập IMAP<br>• [Tuyên bố "mã nguồn mở"](https://proton.me/blog/open-source) nhưng [mã máy chủ là độc quyền](https://github.com/ProtonMail)<br>• [Chỉ giới hạn cho các gói trả phí](https://proton.me/pricing)                                                                                                         |
+| **Tuta**         | Không có API, minh bạch gây hiểu nhầm     | • [Không có REST API để quản lý email](https://tuta.com/support#technical)<br>• [Tuyên bố "mã nguồn mở"](https://tuta.com/blog/posts/open-source-email) nhưng [phần backend đóng](https://github.com/tutao/tutanota)<br>• [Không hỗ trợ IMAP/SMTP](https://tuta.com/support#imap)<br>• [Mã hóa độc quyền](https://tuta.com/encryption) ngăn cản tích hợp chuẩn                                                                                               |
+| **Zapier Email** | Giới hạn tốc độ nghiêm trọng              | • [Giới hạn 10 email mỗi giờ](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Không truy cập thư mục IMAP](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Khả năng phân tích hạn chế](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)                                 |
+### Lợi Ích Của Chuyển Tiếp Email {#forward-email-advantages}
 
-### Chuyển tiếp Email Ưu điểm {#forward-email-advantages}
-
-| Tính năng | Chuyển tiếp Email | Cuộc thi |
+| Tính năng          | Chuyển Tiếp Email                                                                             | Đối Thủ Cạnh Tranh                        |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **CRUD hoàn chỉnh** | ✅ Tạo, đọc, cập nhật, xóa toàn bộ dữ liệu | ❌ Chỉ đọc hoặc thao tác giới hạn |
-| **API hợp nhất** | ✅ Tin nhắn, thư mục, danh bạ, lịch trong một API | ❌ API riêng biệt hoặc thiếu tính năng |
-| **Xác thực đơn giản** | ✅ Xác thực cơ bản với thông tin đăng nhập bí danh | ❌ OAuth phức tạp với nhiều phạm vi |
-| **Không giới hạn tỷ lệ** | ✅ Giới hạn rộng rãi được thiết kế cho các ứng dụng thực tế | ❌ Hạn ngạch hạn chế làm gián đoạn quy trình làm việc |
-| **Tự lưu trữ** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Chỉ khóa nhà cung cấp |
-| **Sự riêng tư** | ✅ Không có kiến thức, được mã hóa, riêng tư | ❌ Khai thác dữ liệu và mối quan ngại về quyền riêng tư |
-| **Hiệu suất** | ✅ Thời gian phản hồi dưới 50ms, lưu trữ NVMe | ❌ Độ trễ mạng, độ trễ điều tiết |
+| **CRUD Hoàn Chỉnh** | ✅ Tạo, đọc, cập nhật, xóa đầy đủ cho tất cả dữ liệu                                         | ❌ Chỉ đọc hoặc thao tác giới hạn           |
+| **API Thống Nhất**  | ✅ Tin nhắn, thư mục, danh bạ, lịch trong một API duy nhất                                   | ❌ API riêng biệt hoặc thiếu tính năng      |
+| **Xác Thực Đơn Giản** | ✅ Xác thực cơ bản với thông tin đăng nhập bí danh                                         | ❌ OAuth phức tạp với nhiều phạm vi         |
+| **Không Giới Hạn Tốc Độ** | ✅ Giới hạn rộng rãi thiết kế cho ứng dụng thực tế                                      | ❌ Hạn ngạch nghiêm ngặt gây gián đoạn quy trình |
+| **Tự Lưu Trữ**     | ✅ [Tùy chọn tự lưu trữ hoàn chỉnh](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Chỉ khóa nhà cung cấp                    |
+| **Bảo Mật**        | ✅ Không biết gì, mã hóa, riêng tư                                                           | ❌ Khai thác dữ liệu và lo ngại về quyền riêng tư |
+| **Hiệu Suất**      | ✅ Phản hồi dưới 50ms, lưu trữ NVMe                                                          | ❌ Độ trễ mạng, giới hạn băng thông         |
 
-### Vấn đề minh bạch nguồn mở {#the-open-source-transparency-problem}
+### Vấn Đề Minh Bạch Mã Nguồn Mở {#the-open-source-transparency-problem}
 
-**ProtonMail và Tuta tự quảng cáo là "nguồn mở" và "minh bạch", nhưng đây là cách tiếp thị gây hiểu lầm, vi phạm các nguyên tắc bảo mật hiện đại.**
+**ProtonMail và Tuta tự quảng cáo là "mã nguồn mở" và "minh bạch," nhưng đây là chiêu tiếp thị gây hiểu lầm vi phạm nguyên tắc bảo mật hiện đại.**
 
 > \[!WARNING]
-> **Tuyên bố sai lệch về tính minh bạch**: Cả ProtonMail và Tuta đều quảng cáo rầm rộ thông tin xác thực "nguồn mở" của họ trong khi vẫn giữ mã máy chủ quan trọng nhất của họ là mã độc quyền và đóng.
+> **Tuyên Bố Minh Bạch Sai Lệch**: Cả ProtonMail và Tuta đều quảng bá mạnh mẽ "mã nguồn mở" trong khi giữ mã máy chủ quan trọng nhất là độc quyền và đóng.
 
-**Sự lừa dối của ProtonMail:**
+**Sự Lừa Dối Của ProtonMail:**
 
-* **Khiếu nại**: ["Chúng tôi là mã nguồn mở"](https://proton.me/blog/open-source) được giới thiệu nổi bật trong tiếp thị
-* **Thực tế**: [Mã máy chủ hoàn toàn độc quyền](https://github.com/ProtonMail) - chỉ các ứng dụng khách hàng mới là mã nguồn mở
-* **Tác động**: Người dùng không thể xác minh các khiếu nại về mã hóa phía máy chủ, xử lý dữ liệu hoặc quyền riêng tư
-* **Vi phạm tính minh bạch**: Không có cách nào để kiểm tra hệ thống xử lý và lưu trữ email thực tế
+* **Tuyên bố**: ["Chúng tôi là mã nguồn mở"](https://proton.me/blog/open-source) được quảng cáo nổi bật
+* **Thực tế**: [Mã máy chủ hoàn toàn độc quyền](https://github.com/ProtonMail) - chỉ ứng dụng khách là mã nguồn mở
+* **Ảnh hưởng**: Người dùng không thể xác minh mã hóa máy chủ, xử lý dữ liệu hay tuyên bố bảo mật
+* **Vi phạm Minh bạch**: Không có cách nào kiểm tra hệ thống xử lý và lưu trữ email thực tế
 
-**Tiếp thị gây hiểu lầm của Tuta:**
+**Chiêu Tiếp Thị Gây Hiểu Lầm Của Tuta:**
 
-* **Khẳng định**: ["Email nguồn mở"](https://tuta.com/blog/posts/open-source-email) là điểm bán hàng cốt lõi
-* **Thực tế**: [Cơ sở hạ tầng phụ trợ là nguồn đóng](https://github.com/tutao/tutanota) - chỉ có giao diện người dùng khả dụng
-* **Tác động**: Mã hóa độc quyền ngăn chặn các giao thức email tiêu chuẩn (IMAP/SMTP)
-* **Chiến lược khóa**: Mã hóa tùy chỉnh buộc phải phụ thuộc vào nhà cung cấp
+* **Tuyên bố**: ["Email mã nguồn mở"](https://tuta.com/blog/posts/open-source-email) là điểm bán hàng chính
+* **Thực tế**: [Hạ tầng backend là mã đóng](https://github.com/tutao/tutanota) - chỉ frontend được công khai
+* **Ảnh hưởng**: Mã hóa độc quyền ngăn cản các giao thức email chuẩn (IMAP/SMTP)
+* **Chiến lược Khóa Nhà Cung Cấp**: Mã hóa tùy chỉnh buộc phụ thuộc nhà cung cấp
 
-**Tại sao điều này quan trọng đối với quyền riêng tư hiện đại:**
+**Tại Sao Điều Này Quan Trọng Với Bảo Mật Hiện Đại:**
 
-Vào năm 2025, quyền riêng tư thực sự đòi hỏi sự minh bạch hoàn toàn. Khi các nhà cung cấp dịch vụ email tuyên bố "mã nguồn mở" nhưng lại ẩn mã máy chủ của họ:
+Năm 2025, bảo mật thực sự đòi hỏi **minh bạch hoàn toàn**. Khi nhà cung cấp email tuyên bố "mã nguồn mở" nhưng giấu mã máy chủ:
 
-1. **Mã hóa không thể xác minh**: Bạn không thể kiểm tra cách dữ liệu của mình thực sự được mã hóa.
-2. **Thực hành Dữ liệu Ẩn**: Việc xử lý dữ liệu phía máy chủ vẫn là một hộp đen.
-3. **Bảo mật Dựa trên Niềm tin**: Bạn phải tin tưởng các tuyên bố của họ mà không cần xác minh.
-4. **Khóa Nhà cung cấp**: Các hệ thống độc quyền ngăn chặn khả năng di chuyển dữ liệu.
+1. **Mã hóa không thể kiểm chứng**: Bạn không thể kiểm tra cách dữ liệu được mã hóa thực sự
+2. **Thao tác dữ liệu ẩn**: Xử lý dữ liệu máy chủ vẫn là hộp đen
+3. **Bảo mật dựa trên niềm tin**: Bạn phải tin tưởng mà không có xác minh
+4. **Khóa nhà cung cấp**: Hệ thống độc quyền ngăn cản chuyển đổi dữ liệu
 
-**Tính minh bạch thực sự của Email chuyển tiếp:**
+**Minh Bạch Thực Sự Của Forward Email:**
 
-* ✅ **[Mã nguồn mở hoàn chỉnh](https://github.com/forwardemail/forwardemail.net)** - mã máy chủ và máy khách
-* ✅ **[Có sẵn dịch vụ tự lưu trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - chạy phiên bản của riêng bạn
-* ✅ **Giao thức chuẩn** - Tương thích IMAP, SMTP, CardDAV, CalDAV
-* ✅ **Bảo mật có thể kiểm tra** - mọi dòng mã đều có thể được kiểm tra
-* ✅ **Không bị ràng buộc bởi nhà cung cấp** - dữ liệu của bạn, quyền kiểm soát của bạn
+* ✅ **[Mã nguồn mở hoàn chỉnh](https://github.com/forwardemail/forwardemail.net)** - mã máy chủ và khách
+* ✅ **[Có thể tự lưu trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - chạy phiên bản riêng của bạn
+* ✅ **Giao thức chuẩn** - tương thích IMAP, SMTP, CardDAV, CalDAV
+* ✅ **Bảo mật có thể kiểm tra** - từng dòng mã đều có thể xem xét
+* ✅ **Không khóa nhà cung cấp** - dữ liệu của bạn, bạn kiểm soát
 
 > \[!TIP]
-> **Mã nguồn mở thực sự cho phép bạn xác minh mọi khiếu nại.** Với Forward Email, bạn có thể kiểm tra mã hóa, xem xét cách chúng tôi xử lý dữ liệu và thậm chí chạy phiên bản của riêng bạn. Đó là sự minh bạch thực sự.
+> **Mã nguồn mở thực sự nghĩa là bạn có thể kiểm chứng mọi tuyên bố.** Với Forward Email, bạn có thể kiểm tra mã hóa, xem xét xử lý dữ liệu, và thậm chí tự chạy phiên bản riêng. Đó mới là minh bạch thật sự.
 
-## Hơn 30 ví dụ tích hợp thực tế {#30-real-world-integration-examples}
 
-### 1. Cải tiến biểu mẫu liên hệ WordPress {#1-wordpress-contact-form-enhancement}
+## Hơn 30 Ví Dụ Tích Hợp Thực Tế {#30-real-world-integration-examples}
 
-**Vấn đề**: [Lỗi cấu hình SMTP của WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 vấn đề GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
+### 1. Nâng Cao Mẫu Liên Hệ WordPress {#1-wordpress-contact-form-enhancement}
+**Vấn đề**: [Lỗi cấu hình SMTP WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 vấn đề trên GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))  
 **Giải pháp**: Tích hợp API trực tiếp bỏ qua hoàn toàn [SMTP](https://tools.ietf.org/html/rfc5321)
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// Biểu mẫu liên hệ WordPress lưu vào thư mục Sent
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -483,20 +483,20 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'Biểu mẫu liên hệ: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
 });
 ```
 
-### 2. Zapier thay thế cho tự động hóa email {#2-zapier-alternative-for-email-automation}
+### 2. Giải pháp thay thế Zapier cho Tự động hóa Email {#2-zapier-alternative-for-email-automation}
 
-**Vấn đề**: [Giới hạn 10 email/giờ của Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) và [Lỗi phát hiện IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-**Giải pháp**: Tự động hóa không giới hạn với khả năng kiểm soát email toàn diện
+**Vấn đề**: [Giới hạn 10 email/giờ của Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) và [lỗi phát hiện IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)  
+**Giải pháp**: Tự động hóa không giới hạn với kiểm soát email đầy đủ
 
 ```javascript
-// Auto-organize emails by sender domain
+// Tự động tổ chức email theo tên miền người gửi
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -507,13 +507,13 @@ for (const message of messages) {
 }
 ```
 
-### 3. Đồng bộ hóa Email CRM {#3-crm-email-synchronization}
+### 3. Đồng bộ Email CRM {#3-crm-email-synchronization}
 
-**Vấn đề**: Quản lý liên hệ thủ công giữa email và [Hệ thống CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**Giải pháp**: Đồng bộ hóa hai chiều với API liên hệ [ThẻDAV](https://tools.ietf.org/html/rfc6352)
+**Vấn đề**: Quản lý thủ công liên hệ giữa email và [hệ thống CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)  
+**Giải pháp**: Đồng bộ hai chiều với API liên hệ [CardDAV](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
-// Sync new email contacts to CRM
+// Đồng bộ liên hệ email mới vào CRM
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -524,13 +524,13 @@ for (const contact of newContacts) {
 }
 ```
 
-### 4. Xử lý đơn hàng thương mại điện tử {#4-e-commerce-order-processing}
+### 4. Xử lý Đơn hàng Thương mại điện tử {#4-e-commerce-order-processing}
 
-**Vấn đề**: Xử lý thủ công email đơn hàng cho [nền tảng thương mại điện tử](https://en.wikipedia.org/wiki/E-commerce)
+**Vấn đề**: Xử lý email đơn hàng thủ công cho các [nền tảng thương mại điện tử](https://en.wikipedia.org/wiki/E-commerce)  
 **Giải pháp**: Quy trình quản lý đơn hàng tự động
 
 ```javascript
-// Process order confirmation emails
+// Xử lý email xác nhận đơn hàng
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
   msg.subject.includes('Order Confirmation')
@@ -546,13 +546,13 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. Hỗ trợ tích hợp phiếu {#5-support-ticket-integration}
+### 5. Tích hợp Phiếu hỗ trợ {#5-support-ticket-integration}
 
-**Vấn đề**: Chuỗi email nằm rải rác trên [nền tảng trợ giúp](https://en.wikipedia.org/wiki/Help_desk_software)
-**Giải pháp**: Theo dõi toàn bộ chuỗi email
+**Vấn đề**: Chuỗi email phân tán trên các [nền tảng helpdesk](https://en.wikipedia.org/wiki/Help_desk_software)  
+**Giải pháp**: Theo dõi chuỗi email hoàn chỉnh
 
 ```javascript
-// Create support ticket from email thread
+// Tạo phiếu hỗ trợ từ chuỗi email
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -568,13 +568,13 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. Hệ thống quản lý bản tin {#6-newsletter-management-system}
+### 6. Hệ thống Quản lý Bản tin {#6-newsletter-management-system}
 
-**Vấn đề**: Tích hợp [nền tảng bản tin](https://en.wikipedia.org/wiki/Email_marketing) hạn chế
-**Giải pháp**: Quản lý toàn bộ vòng đời thuê bao
+**Vấn đề**: Tích hợp hạn chế với các [nền tảng bản tin](https://en.wikipedia.org/wiki/Email_marketing)  
+**Giải pháp**: Quản lý vòng đời người đăng ký hoàn chỉnh
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// Tự động quản lý đăng ký bản tin
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
   msg.subject.toLowerCase().includes('unsubscribe')
@@ -589,11 +589,10 @@ for (const msg of unsubscribes) {
 }
 ```
 
-### 7. Quản lý tác vụ dựa trên email {#7-email-based-task-management}
+### 7. Quản lý Công việc dựa trên Email {#7-email-based-task-management}
 
-**Vấn đề**: Hộp thư đến quá tải và [theo dõi nhiệm vụ](https://en.wikipedia.org/wiki/Task_management)
-**Giải pháp**: Chuyển đổi email thành các tác vụ có thể thực hiện được
-
+**Vấn đề**: Hộp thư đến quá tải và [theo dõi công việc](https://en.wikipedia.org/wiki/Task_management)  
+**Giải pháp**: Chuyển email thành các công việc có thể hành động được
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -607,10 +606,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. Tổng hợp email nhiều tài khoản {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**Vấn đề**: Quản lý [nhiều tài khoản email](https://en.wikipedia.org/wiki/Email_client) giữa các nhà cung cấp
-**Giải pháp**: Giao diện hộp thư đến hợp nhất
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -625,10 +624,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. Bảng điều khiển phân tích email nâng cao {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**Vấn đề**: Không có thông tin chi tiết về [mẫu email](https://en.wikipedia.org/wiki/Email_analytics) với bộ lọc tinh vi
-**Giải pháp**: Phân tích email tùy chỉnh bằng tính năng tìm kiếm nâng cao
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -675,10 +674,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. Lưu trữ email thông minh {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**Vấn đề**: [tổ chức email](https://en.wikipedia.org/wiki/Email_management) thủ công
-**Giải pháp**: Phân loại email thông minh
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -696,10 +695,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. Tích hợp Email vào Lịch {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**Vấn đề**: Tạo [sự kiện lịch](https://tools.ietf.org/html/rfc4791) thủ công từ email
-**Giải pháp**: Tự động trích xuất và tạo sự kiện
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -723,10 +722,10 @@ for (const email of meetingEmails) {
 }
 ```
 
-### 12. Sao lưu và tuân thủ email {#12-email-backup-and-compliance}
+### 12. Sao lưu Email và Tuân thủ {#12-email-backup-and-compliance}
 
-**Vấn đề**: [Lưu giữ email](https://en.wikipedia.org/wiki/Email_retention_policy) và các yêu cầu tuân thủ
-**Giải pháp**: Sao lưu tự động với tính năng bảo toàn siêu dữ liệu
+**Vấn đề**: [Lưu giữ email](https://en.wikipedia.org/wiki/Email_retention_policy) và yêu cầu tuân thủ  
+**Giải pháp**: Sao lưu tự động với bảo tồn siêu dữ liệu
 
 ```javascript
 // Backup emails with full metadata
@@ -745,10 +744,10 @@ const backup = {
 await saveToComplianceStorage(backup);
 ```
 
-### 13. Quản lý nội dung dựa trên email {#13-email-based-content-management}
+### 13. Quản lý Nội dung Dựa trên Email {#13-email-based-content-management}
 
-**Vấn đề**: Quản lý nội dung gửi qua email cho [Nền tảng CMS](https://en.wikipedia.org/wiki/Content_management_system)
-**Giải pháp**: Email như một hệ thống quản lý nội dung
+**Vấn đề**: Quản lý các bài gửi nội dung qua email cho các [nền tảng CMS](https://en.wikipedia.org/wiki/Content_management_system)  
+**Giải pháp**: Email như hệ thống quản lý nội dung
 
 ```javascript
 // Process content submissions from email
@@ -767,9 +766,9 @@ for (const submission of submissions) {
 }
 ```
 
-### 14. Quản lý mẫu email {#14-email-template-management}
+### 14. Quản lý Mẫu Email {#14-email-template-management}
 
-**Vấn đề**: [mẫu email](https://en.wikipedia.org/wiki/Email_template) không nhất quán trong toàn nhóm
+**Vấn đề**: Mẫu [email](https://en.wikipedia.org/wiki/Email_template) không đồng nhất trong nhóm  
 **Giải pháp**: Hệ thống mẫu tập trung với API
 
 ```javascript
@@ -786,10 +785,10 @@ await fetch('/v1/messages', {
 });
 ```
 
-### 15. Tự động hóa quy trình làm việc dựa trên email {#15-email-based-workflow-automation}
+### 15. Tự động hóa Quy trình làm việc Dựa trên Email {#15-email-based-workflow-automation}
 
-**Vấn đề**: [quy trình phê duyệt](https://en.wikipedia.org/wiki/Workflow) thủ công qua email
-**Giải pháp**: Kích hoạt quy trình làm việc tự động
+**Vấn đề**: Quy trình [phê duyệt](https://en.wikipedia.org/wiki/Workflow) thủ công qua email  
+**Giải pháp**: Kích hoạt quy trình tự động
 
 ```javascript
 // Process approval emails
@@ -808,9 +807,9 @@ for (const approval of approvals) {
 }
 ```
 
-### 16. Giám sát bảo mật email {#16-email-security-monitoring}
+### 16. Giám sát An ninh Email {#16-email-security-monitoring}
 
-**Vấn đề**: [phát hiện mối đe dọa an ninh](https://en.wikipedia.org/wiki/Email_security) thủ công
+**Vấn đề**: Phát hiện [mối đe dọa an ninh](https://en.wikipedia.org/wiki/Email_security) thủ công  
 **Giải pháp**: Phân tích mối đe dọa tự động
 
 ```javascript
@@ -828,9 +827,9 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. Thu thập khảo sát qua email {#17-email-based-survey-collection}
+### 17. Thu thập Khảo sát Dựa trên Email {#17-email-based-survey-collection}
 
-**Vấn đề**: Xử lý [phản hồi khảo sát](https://en.wikipedia.org/wiki/Survey_methodology) thủ công
+**Vấn đề**: Xử lý phản hồi [khảo sát](https://en.wikipedia.org/wiki/Survey_methodology) thủ công  
 **Giải pháp**: Tổng hợp phản hồi tự động
 
 ```javascript
@@ -848,10 +847,10 @@ const surveyData = responses.map(email => ({
 await updateSurveyResults(surveyData);
 ```
 
-### 18. Giám sát hiệu suất email {#18-email-performance-monitoring}
+### 18. Giám sát Hiệu suất Email {#18-email-performance-monitoring}
 
-**Vấn đề**: Không thể xem được [hiệu suất gửi email](https://en.wikipedia.org/wiki/Email_deliverability)
-**Giải pháp**: Số liệu email theo thời gian thực
+**Vấn đề**: Không có khả năng quan sát [hiệu suất gửi email](https://en.wikipedia.org/wiki/Email_deliverability)  
+**Giải pháp**: Thống kê email theo thời gian thực
 
 ```javascript
 // Monitor email delivery performance
@@ -863,10 +862,9 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
+### 19. Đánh Giá Khách Hàng Tiềm Năng Dựa Trên Email {#19-email-based-lead-qualification}
 
-### 19. Xác định khách hàng tiềm năng dựa trên email {#19-email-based-lead-qualification}
-
-**Vấn đề**: [điểm dẫn đầu](https://en.wikipedia.org/wiki/Lead_scoring) thủ công từ các tương tác qua email
+**Vấn đề**: Đánh giá [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) thủ công từ các tương tác email  
 **Giải pháp**: Quy trình đánh giá khách hàng tiềm năng tự động
 
 ```javascript
@@ -882,9 +880,9 @@ for (const prospect of prospects) {
 }
 ```
 
-### 20. Quản lý dự án dựa trên email {#20-email-based-project-management}
+### 20. Quản Lý Dự Án Dựa Trên Email {#20-email-based-project-management}
 
-**Vấn đề**: [Cập nhật dự án](https://en.wikipedia.org/wiki/Project_management) nằm rải rác trong các chuỗi email
+**Vấn đề**: [Cập nhật dự án](https://en.wikipedia.org/wiki/Project_management) phân tán trên các chuỗi email  
 **Giải pháp**: Trung tâm giao tiếp dự án tập trung
 
 ```javascript
@@ -904,10 +902,10 @@ for (const email of projectEmails) {
 }
 ```
 
-### 21. Quản lý hàng tồn kho dựa trên email {#21-email-based-inventory-management}
+### 21. Quản Lý Tồn Kho Dựa Trên Email {#21-email-based-inventory-management}
 
-**Vấn đề**: Cập nhật hàng tồn kho thủ công từ email của nhà cung cấp
-**Giải pháp**: Theo dõi hàng tồn kho tự động từ thông báo qua email
+**Vấn đề**: Cập nhật tồn kho thủ công từ email nhà cung cấp  
+**Giải pháp**: Theo dõi tồn kho tự động từ thông báo email
 
 ```javascript
 // Process inventory updates from supplier emails
@@ -933,10 +931,10 @@ for (const email of inventoryEmails) {
 }
 ```
 
-### 22. Xử lý hóa đơn qua email {#22-email-based-invoice-processing}
+### 22. Xử Lý Hóa Đơn Dựa Trên Email {#22-email-based-invoice-processing}
 
-**Vấn đề**: Tích hợp [xử lý hóa đơn](https://en.wikipedia.org/wiki/Invoice_processing) và kế toán thủ công
-**Giải pháp**: Tự động trích xuất hóa đơn và đồng bộ hóa hệ thống kế toán
+**Vấn đề**: Xử lý [hóa đơn](https://en.wikipedia.org/wiki/Invoice_processing) thủ công và tích hợp kế toán  
+**Giải pháp**: Trích xuất hóa đơn tự động và đồng bộ hệ thống kế toán
 
 ```javascript
 // Extract invoice data from email attachments
@@ -962,10 +960,10 @@ for (const email of invoiceEmails) {
 }
 ```
 
-### 23. Đăng ký sự kiện qua email {#23-email-based-event-registration}
+### 23. Đăng Ký Sự Kiện Dựa Trên Email {#23-email-based-event-registration}
 
-**Vấn đề**: Xử lý [đăng ký sự kiện](https://en.wikipedia.org/wiki/Event_management) thủ công từ phản hồi email
-**Giải pháp**: Tự động quản lý người tham dự và tích hợp lịch
+**Vấn đề**: Xử lý đăng ký [sự kiện](https://en.wikipedia.org/wiki/Event_management) thủ công từ phản hồi email  
+**Giải pháp**: Quản lý người tham dự tự động và tích hợp lịch
 
 ```javascript
 // Process event registration emails
@@ -996,11 +994,10 @@ for (const registration of registrations) {
   });
 }
 ```
+### 24. Quy Trình Phê Duyệt Tài Liệu Qua Email {#24-email-based-document-approval-workflow}
 
-### 24. Quy trình phê duyệt tài liệu qua email {#24-email-based-document-approval-workflow}
-
-**Vấn đề**: Chuỗi [phê duyệt tài liệu](https://en.wikipedia.org/wiki/Document_management_system) phức tạp qua email
-**Giải pháp**: Theo dõi phê duyệt tự động và quản lý phiên bản tài liệu
+**Vấn đề**: Chuỗi [phê duyệt tài liệu](https://en.wikipedia.org/wiki/Document_management_system) phức tạp qua email  
+**Giải pháp**: Theo dõi phê duyệt tự động và phiên bản tài liệu
 
 ```javascript
 // Track document approval workflow
@@ -1028,10 +1025,10 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. Phân tích phản hồi của khách hàng qua email {#25-email-based-customer-feedback-analysis}
+### 25. Phân Tích Phản Hồi Khách Hàng Qua Email {#25-email-based-customer-feedback-analysis}
 
-**Vấn đề**: Thu thập [phản hồi của khách hàng](https://en.wikipedia.org/wiki/Customer_feedback) thủ công và phân tích cảm xúc
-**Giải pháp**: Xử lý phản hồi và theo dõi cảm xúc tự động
+**Vấn đề**: Thu thập và phân tích cảm xúc [phản hồi khách hàng](https://en.wikipedia.org/wiki/Customer_feedback) thủ công  
+**Giải pháp**: Xử lý phản hồi tự động và theo dõi cảm xúc
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1060,9 +1057,9 @@ for (const email of feedbackEmails) {
 }
 ```
 
-### 26. Quy trình tuyển dụng qua email {#26-email-based-recruitment-pipeline}
+### 26. Quy Trình Tuyển Dụng Qua Email {#26-email-based-recruitment-pipeline}
 
-**Vấn đề**: [tuyển dụng](https://en.wikipedia.org/wiki/Recruitment) thủ công và theo dõi ứng viên
+**Vấn đề**: Theo dõi [tuyển dụng](https://en.wikipedia.org/wiki/Recruitment) và ứng viên thủ công  
 **Giải pháp**: Quản lý ứng viên và lên lịch phỏng vấn tự động
 
 ```javascript
@@ -1094,10 +1091,10 @@ for (const application of applications) {
 }
 ```
 
-### 27. Xử lý báo cáo chi phí qua email {#27-email-based-expense-report-processing}
+### 27. Xử Lý Báo Cáo Chi Phí Qua Email {#27-email-based-expense-report-processing}
 
-**Vấn đề**: Nộp và phê duyệt [báo cáo chi phí](https://en.wikipedia.org/wiki/Expense_report) thủ công
-**Giải pháp**: Quy trình trích xuất và phê duyệt chi phí tự động
+**Vấn đề**: Nộp và phê duyệt [báo cáo chi phí](https://en.wikipedia.org/wiki/Expense_report) thủ công  
+**Giải pháp**: Trích xuất chi phí và quy trình phê duyệt tự động
 
 ```javascript
 // Process expense report emails
@@ -1128,10 +1125,9 @@ for (const email of expenseEmails) {
   }
 }
 ```
+### 28. Báo Cáo Đảm Bảo Chất Lượng Dựa Trên Email {#28-email-based-quality-assurance-reporting}
 
-### 28. Báo cáo đảm bảo chất lượng dựa trên email {#28-email-based-quality-assurance-reporting}
-
-**Vấn đề**: Theo dõi sự cố [đảm bảo chất lượng](https://en.wikipedia.org/wiki/Quality_assurance) thủ công
+**Vấn đề**: Theo dõi [đảm bảo chất lượng](https://en.wikipedia.org/wiki/Quality_assurance) thủ công  
 **Giải pháp**: Quản lý sự cố QA và theo dõi lỗi tự động
 
 ```javascript
@@ -1169,9 +1165,9 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. Quản lý nhà cung cấp dựa trên email {#29-email-based-vendor-management}
+### 29. Quản Lý Nhà Cung Cấp Dựa Trên Email {#29-email-based-vendor-management}
 
-**Vấn đề**: [giao tiếp nhà cung cấp](https://en.wikipedia.org/wiki/Vendor_management) thủ công và theo dõi hợp đồng
+**Vấn đề**: Giao tiếp với [nhà cung cấp](https://en.wikipedia.org/wiki/Vendor_management) và theo dõi hợp đồng thủ công  
 **Giải pháp**: Quản lý quan hệ nhà cung cấp tự động
 
 ```javascript
@@ -1211,10 +1207,10 @@ for (const email of vendorEmails) {
 }
 ```
 
-### 30. Giám sát phương tiện truyền thông xã hội dựa trên email {#30-email-based-social-media-monitoring}
+### 30. Giám Sát Mạng Xã Hội Dựa Trên Email {#30-email-based-social-media-monitoring}
 
-**Vấn đề**: Theo dõi và phản hồi đề cập [phương tiện truyền thông xã hội](https://en.wikipedia.org/wiki/Social_media_monitoring) thủ công
-**Giải pháp**: Xử lý cảnh báo mạng xã hội tự động và điều phối phản hồi
+**Vấn đề**: Theo dõi và phản hồi các đề cập trên [mạng xã hội](https://en.wikipedia.org/wiki/Social_media_monitoring) thủ công  
+**Giải pháp**: Xử lý cảnh báo mạng xã hội tự động và phối hợp phản hồi
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1256,24 +1252,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
-## Bắt đầu {#getting-started}
 
-### 1. Tạo tài khoản email chuyển tiếp của bạn {#1-create-your-forward-email-account}
+## Bắt Đầu {#getting-started}
+
+### 1. Tạo Tài Khoản Email Chuyển Tiếp Của Bạn {#1-create-your-forward-email-account}
 
 Đăng ký tại [forwardemail.net](https://forwardemail.net) và xác minh tên miền của bạn.
 
-### 2. Tạo thông tin xác thực API {#2-generate-api-credentials}
+### 2. Tạo Thông Tin Đăng Nhập API {#2-generate-api-credentials}
 
-Email bí danh và mật khẩu của bạn đóng vai trò là thông tin xác thực API - không cần thiết lập thêm.
-
-### 3. Thực hiện lệnh gọi API đầu tiên của bạn {#3-make-your-first-api-call}
+Email bí danh và mật khẩu của bạn đóng vai trò là thông tin đăng nhập API - không cần thiết lập thêm.
+### 3. Thực Hiện Cuộc Gọi API Đầu Tiên Của Bạn {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# Liệt kê các tin nhắn của bạn
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# Tạo một liên hệ mới
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1281,20 +1277,21 @@ curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/contacts
 ```
 
-### 4. Khám phá Tài liệu {#4-explore-the-documentation}
+### 4. Khám Phá Tài Liệu {#4-explore-the-documentation}
 
-Truy cập [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) để biết tài liệu API đầy đủ với các ví dụ tương tác.
+Truy cập [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) để xem tài liệu API đầy đủ với các ví dụ tương tác.
 
-## Tài nguyên kỹ thuật {#technical-resources}
 
-* **[Tài liệu API đầy đủ](https://forwardemail.net/en/email-api)** - Đặc tả OpenAPI 3.0 tương tác
-* **[Hướng dẫn tự lưu trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Triển khai Chuyển tiếp Email trên cơ sở hạ tầng của bạn
-* **[Sách trắng bảo mật](https://forwardemail.net/technical-whitepaper.pdf)** - Kiến trúc kỹ thuật và chi tiết bảo mật
-* **[Kho lưu trữ GitHub](https://github.com/forwardemail/forwardemail.net)** - Cơ sở mã nguồn mở
-* **[Hỗ trợ nhà phát triển](mailto:api@forwardemail.net)** - Truy cập trực tiếp vào nhóm kỹ thuật của chúng tôi
+## Tài Nguyên Kỹ Thuật {#technical-resources}
+
+* **[Tài Liệu API Đầy Đủ](https://forwardemail.net/en/email-api)** - Đặc tả OpenAPI 3.0 tương tác
+* **[Hướng Dẫn Tự Lưu Trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Triển khai Forward Email trên hạ tầng của bạn
+* **[Sách Trắng Bảo Mật](https://forwardemail.net/technical-whitepaper.pdf)** - Kiến trúc kỹ thuật và chi tiết bảo mật
+* **[Kho Mã Nguồn GitHub](https://github.com/forwardemail/forwardemail.net)** - Mã nguồn mở
+* **[Hỗ Trợ Nhà Phát Triển](mailto:api@forwardemail.net)** - Truy cập trực tiếp đội ngũ kỹ sư của chúng tôi
 
 ---
 
-**Bạn đã sẵn sàng cách mạng hóa tích hợp email của mình chưa?** [Bắt đầu xây dựng với API của Forward Email ngay hôm nay](https://forwardemail.net/en/email-api) và trải nghiệm nền tảng quản lý email hoàn chỉnh đầu tiên được thiết kế dành cho nhà phát triển.
+**Sẵn sàng cách mạng hóa tích hợp email của bạn?** [Bắt đầu xây dựng với API của Forward Email ngay hôm nay](https://forwardemail.net/en/email-api) và trải nghiệm nền tảng quản lý email hoàn chỉnh đầu tiên được thiết kế dành cho nhà phát triển.
 
-*Chuyển tiếp Email: Dịch vụ email cuối cùng cũng có API phù hợp.*
+*Forward Email: Dịch vụ email cuối cùng hiểu đúng về API.*

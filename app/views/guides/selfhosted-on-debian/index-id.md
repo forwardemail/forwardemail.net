@@ -1,35 +1,36 @@
-# Panduan Instalasi Email Teruskan Hosting Mandiri untuk Debian {#forward-email-self-hosting-installation-guide-for-debian}
+# Panduan Instalasi Self-Hosting Forward Email untuk Debian {#forward-email-self-hosting-installation-guide-for-debian}
+
 
 ## Daftar Isi {#table-of-contents}
 
-* [Ringkasan](#overview)
+* [Ikhtisar](#overview)
 * [Prasyarat](#prerequisites)
 * [Persyaratan Sistem](#system-requirements)
 * [Instalasi Langkah demi Langkah](#step-by-step-installation)
   * [Langkah 1: Pengaturan Sistem Awal](#step-1-initial-system-setup)
-  * [Langkah 2: Konfigurasikan DNS Resolver](#step-2-configure-dns-resolvers)
-  * [Langkah 3: Instal Ketergantungan Sistem](#step-3-install-system-dependencies)
-  * [Langkah 4: Instal dan Konfigurasi Snapd](#step-4-install-and-configure-snapd)
-  * [Langkah 5: Instal Paket Snap](#step-5-install-snap-packages)
-  * [Langkah 6: Instal Docker](#step-6-install-docker)
-  * [Langkah 7: Konfigurasikan Layanan Docker](#step-7-configure-docker-service)
-  * [Langkah 8: Instal dan Konfigurasikan Firewall UFW](#step-8-install-and-configure-ufw-firewall)
-  * [Langkah 9: Kloning Repositori Email Teruskan](#step-9-clone-forward-email-repository)
-  * [Langkah 10: Siapkan Konfigurasi Lingkungan](#step-10-set-up-environment-configuration)
-  * [Langkah 11: Konfigurasikan Domain Anda](#step-11-configure-your-domain)
-  * [Langkah 12: Hasilkan Sertifikat SSL](#step-12-generate-ssl-certificates)
-  * [Langkah 13: Hasilkan Kunci Enkripsi](#step-13-generate-encryption-keys)
+  * [Langkah 2: Konfigurasi DNS Resolver](#step-2-configure-dns-resolvers)
+  * [Langkah 3: Instalasi Dependensi Sistem](#step-3-install-system-dependencies)
+  * [Langkah 4: Instalasi dan Konfigurasi Snapd](#step-4-install-and-configure-snapd)
+  * [Langkah 5: Instalasi Paket Snap](#step-5-install-snap-packages)
+  * [Langkah 6: Instalasi Docker](#step-6-install-docker)
+  * [Langkah 7: Konfigurasi Layanan Docker](#step-7-configure-docker-service)
+  * [Langkah 8: Instalasi dan Konfigurasi Firewall UFW](#step-8-install-and-configure-ufw-firewall)
+  * [Langkah 9: Clone Repository Forward Email](#step-9-clone-forward-email-repository)
+  * [Langkah 10: Pengaturan Konfigurasi Lingkungan](#step-10-set-up-environment-configuration)
+  * [Langkah 11: Konfigurasi Domain Anda](#step-11-configure-your-domain)
+  * [Langkah 12: Generate Sertifikat SSL](#step-12-generate-ssl-certificates)
+  * [Langkah 13: Generate Kunci Enkripsi](#step-13-generate-encryption-keys)
   * [Langkah 14: Perbarui Jalur SSL dalam Konfigurasi](#step-14-update-ssl-paths-in-configuration)
-  * [Langkah 15: Siapkan Autentikasi Dasar](#step-15-set-up-basic-authentication)
+  * [Langkah 15: Pengaturan Otentikasi Dasar](#step-15-set-up-basic-authentication)
   * [Langkah 16: Deploy dengan Docker Compose](#step-16-deploy-with-docker-compose)
   * [Langkah 17: Verifikasi Instalasi](#step-17-verify-installation)
 * [Konfigurasi Pasca-Instalasi](#post-installation-configuration)
-  * [Pengaturan Catatan DNS](#dns-records-setup)
+  * [Pengaturan Rekaman DNS](#dns-records-setup)
   * [Login Pertama](#first-login)
-* [Konfigurasi Cadangan](#backup-configuration)
-  * [Siapkan Cadangan yang Kompatibel dengan S3](#set-up-s3-compatible-backup)
-  * [Siapkan Pekerjaan Cron Cadangan](#set-up-backup-cron-jobs)
-* [Konfigurasi Pembaruan Otomatis](#auto-update-configuration)
+* [Konfigurasi Backup](#backup-configuration)
+  * [Pengaturan Backup Kompatibel S3](#set-up-s3-compatible-backup)
+  * [Pengaturan Cron Job Backup](#set-up-backup-cron-jobs)
+* [Konfigurasi Auto-Update](#auto-update-configuration)
 * [Pertimbangan Khusus Debian](#debian-specific-considerations)
   * [Perbedaan Manajemen Paket](#package-management-differences)
   * [Manajemen Layanan](#service-management)
@@ -45,9 +46,11 @@
 * [Praktik Terbaik Keamanan](#security-best-practices)
 * [Kesimpulan](#conclusion)
 
+
 ## Ikhtisar {#overview}
 
-Panduan ini memberikan petunjuk langkah demi langkah untuk menginstal solusi self-hosted Forward Email di sistem Debian. Panduan ini dirancang khusus untuk Debian 11 (Bullseye) dan Debian 12 (Bookworm).
+Panduan ini memberikan instruksi langkah demi langkah untuk menginstal solusi self-hosted Forward Email pada sistem Debian. Panduan ini secara khusus disesuaikan untuk Debian 11 (Bullseye) dan Debian 12 (Bookworm).
+
 
 ## Prasyarat {#prerequisites}
 
@@ -56,43 +59,44 @@ Sebelum memulai instalasi, pastikan Anda memiliki:
 * **Server Debian**: Versi 11 (Bullseye) atau 12 (Bookworm)
 * **Akses Root**: Anda harus dapat menjalankan perintah sebagai root (akses sudo)
 * **Nama Domain**: Domain yang Anda kendalikan dengan akses manajemen DNS
-* **Server Bersih**: Disarankan menggunakan instalasi Debian baru
+* **Server Bersih**: Disarankan menggunakan instalasi Debian yang baru
 * **Koneksi Internet**: Diperlukan untuk mengunduh paket dan image Docker
+
 
 ## Persyaratan Sistem {#system-requirements}
 
-* **RAM**: Minimal 2GB (disarankan 4GB untuk produksi)
-* **Penyimpanan**: Minimal 20GB ruang kosong (disarankan 50GB+ untuk produksi)
-* **CPU**: Minimal 1 vCPU (disarankan 2+ vCPU untuk produksi)
-* **Jaringan**: Alamat IP publik dengan port berikut yang dapat diakses:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **RAM**: Minimum 2GB (4GB disarankan untuk produksi)
+* **Penyimpanan**: Minimum 20GB ruang tersedia (50GB+ disarankan untuk produksi)
+* **CPU**: Minimum 1 vCPU (2+ vCPU disarankan untuk produksi)
+* **Jaringan**: Alamat IP publik dengan port berikut dapat diakses:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## Instalasi Langkah demi Langkah {#step-by-step-installation}
 
 ### Langkah 1: Pengaturan Sistem Awal {#step-1-initial-system-setup}
 
-Pertama, pastikan sistem Anda sudah diperbarui dan beralihlah ke pengguna root:
+Pertama, pastikan sistem Anda diperbarui dan beralih ke pengguna root:
 
 ```bash
-# Update system packages
+# Update paket sistem
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Beralih ke pengguna root (diperlukan untuk instalasi)
 sudo su -
 ```
+### Step 2: Konfigurasikan DNS Resolver {#step-2-configure-dns-resolvers}
 
-### Langkah 2: Konfigurasikan DNS Resolver {#step-2-configure-dns-resolvers}
-
-Konfigurasikan sistem Anda untuk menggunakan server DNS Cloudflare untuk pembuatan sertifikat yang andal:
+Konfigurasikan sistem Anda untuk menggunakan server DNS Cloudflare agar pembuatan sertifikat lebih andal:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# Hentikan dan nonaktifkan systemd-resolved jika sedang berjalan
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -100,7 +104,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Konfigurasikan resolver DNS Cloudflare
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -113,15 +117,15 @@ nameserver 2001:4860:4860::8844
 EOF
 ```
 
-### Langkah 3: Instal Ketergantungan Sistem {#step-3-install-system-dependencies}
+### Step 3: Instalasi Dependensi Sistem {#step-3-install-system-dependencies}
 
-Instal paket yang diperlukan untuk Forward Email di Debian:
+Instal paket yang dibutuhkan untuk Forward Email di Debian:
 
 ```bash
-# Update package list
+# Perbarui daftar paket
 apt-get update -y
 
-# Install basic dependencies (Debian-specific package list)
+# Instal dependensi dasar (daftar paket khusus Debian)
 apt-get install -y \
     ca-certificates \
     curl \
@@ -133,141 +137,140 @@ apt-get install -y \
     software-properties-common
 ```
 
-### Langkah 4: Instal dan Konfigurasi Snapd {#step-4-install-and-configure-snapd}
+### Step 4: Instal dan Konfigurasikan Snapd {#step-4-install-and-configure-snapd}
 
-Debian tidak menyertakan snapd secara default, jadi kita perlu menginstal dan mengonfigurasinya:
+Debian tidak menyertakan snapd secara default, jadi kita perlu menginstal dan mengkonfigurasinya:
 
 ```bash
-# Install snapd
+# Instal snapd
 apt-get install -y snapd
 
-# Enable and start snapd service
+# Aktifkan dan mulai layanan snapd
 systemctl enable snapd
 systemctl start snapd
 
-# Create symlink for snap to work properly
+# Buat symlink agar snap dapat berjalan dengan benar
 ln -sf /var/lib/snapd/snap /snap
 
-# Wait for snapd to be ready
+# Tunggu hingga snapd siap
 sleep 10
 
-# Verify snapd is working
+# Verifikasi snapd berfungsi
 snap version
 ```
 
-### Langkah 5: Instal Paket Snap {#step-5-install-snap-packages}
+### Step 5: Instal Paket Snap {#step-5-install-snap-packages}
 
 Instal AWS CLI dan Certbot melalui snap:
 
 ```bash
-# Install AWS CLI
+# Instal AWS CLI
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Instal Certbot dan plugin DNS
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 
-# Verify installations
+# Verifikasi instalasi
 aws --version
 certbot --version
 ```
 
-### Langkah 6: Instal Docker {#step-6-install-docker}
+### Step 6: Instal Docker {#step-6-install-docker}
 
 Instal Docker CE dan Docker Compose di Debian:
 
 ```bash
-# Add Docker's official GPG key (Debian-specific)
+# Tambahkan kunci GPG resmi Docker (khusus Debian)
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository (Debian-specific)
+# Tambahkan repositori Docker (khusus Debian)
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Perbarui indeks paket dan instal Docker
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Install standalone docker-compose as fallback (if plugin doesn't work)
+# Instal docker-compose standalone sebagai cadangan (jika plugin tidak berfungsi)
 if ! command -v docker-compose &> /dev/null; then
     apt-get install -y docker-compose
 fi
 
-# Verify Docker installation
+# Verifikasi instalasi Docker
 docker --version
 docker compose version || docker-compose --version
 ```
 
-### Langkah 7: Konfigurasikan Layanan Docker {#step-7-configure-docker-service}
+### Step 7: Konfigurasikan Layanan Docker {#step-7-configure-docker-service}
 
-Pastikan Docker dimulai secara otomatis dan berjalan:
+Pastikan Docker mulai secara otomatis dan sedang berjalan:
 
 ```bash
-# Enable and start Docker service
+# Aktifkan dan mulai layanan Docker
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Verifikasi Docker sedang berjalan
 docker info
 ```
 
-Jika Docker gagal memulai, coba memulainya secara manual:
+Jika Docker gagal mulai, coba mulai secara manual:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Metode alternatif memulai jika systemctl gagal
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### Langkah 8: Instal dan Konfigurasikan Firewall UFW {#step-8-install-and-configure-ufw-firewall}
+### Step 8: Instal dan Konfigurasikan Firewall UFW {#step-8-install-and-configure-ufw-firewall}
 
 Instalasi minimal Debian mungkin tidak menyertakan UFW, jadi instal terlebih dahulu:
 
 ```bash
-# Install UFW if not present
+# Instal UFW jika belum ada
 if ! command -v ufw &> /dev/null; then
     apt-get update -y
     apt-get install -y ufw
 fi
 
-# Set default policies
+# Atur kebijakan default
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# Izinkan SSH (penting - jangan terkunci keluar!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# Izinkan port terkait email
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (untuk Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (port alternatif)
+ufw allow 2995/tcp  # POP3 (port alternatif)
+ufw allow 3456/tcp  # Port layanan khusus
+ufw allow 4000/tcp  # Port layanan khusus
+ufw allow 5000/tcp  # Port layanan khusus
 
-# Allow local database connections
+# Izinkan koneksi database lokal
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Aktifkan firewall
 echo "y" | ufw enable
 
-# Check firewall status
+# Periksa status firewall
 ufw status numbered
 ```
+### Langkah 9: Kloning Repository Forward Email {#step-9-clone-forward-email-repository}
 
-### Langkah 9: Kloning Repositori Email Penerusan {#step-9-clone-forward-email-repository}
-
-Unduh kode sumber Email Teruskan:
+Unduh kode sumber Forward Email:
 
 ```bash
 # Set up variables
@@ -348,9 +351,9 @@ update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
 
-### Langkah 12: Buat Sertifikat SSL {#step-12-generate-ssl-certificates}
+### Langkah 12: Hasilkan Sertifikat SSL {#step-12-generate-ssl-certificates}
 
-#### Opsi A: Tantangan DNS Manual (Disarankan untuk sebagian besar pengguna) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Opsi A: Tantangan DNS Manual (Direkomendasikan untuk sebagian besar pengguna) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -362,9 +365,9 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Penting**: Saat diminta, Anda perlu membuat data TXT di DNS Anda. Anda mungkin melihat beberapa tantangan untuk domain yang sama - **buat SEMUANYA**. Jangan hapus data TXT pertama saat menambahkan yang kedua.
+**Penting**: Saat diminta, Anda harus membuat catatan TXT di DNS Anda. Anda mungkin melihat beberapa tantangan untuk domain yang sama - **buat SEMUANYA**. Jangan hapus catatan TXT pertama saat menambahkan yang kedua.
 
-#### Opsi B: DNS Cloudflare (Jika Anda menggunakan Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Opsi B: Cloudflare DNS (Jika Anda menggunakan Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
 Jika domain Anda menggunakan Cloudflare untuk DNS, Anda dapat mengotomatiskan pembuatan sertifikat:
 
@@ -391,7 +394,7 @@ certbot certonly \
 
 #### Salin Sertifikat {#copy-certificates}
 
-Setelah sertifikat dibuat, salin ke direktori aplikasi:
+Setelah pembuatan sertifikat, salin ke direktori aplikasi:
 
 ```bash
 # Copy certificates to application SSL directory
@@ -431,13 +434,12 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
 echo "✅ All encryption keys generated successfully"
 ```
-
-### Langkah 14: Perbarui Jalur SSL dalam Konfigurasi {#step-14-update-ssl-paths-in-configuration}
+### Step 14: Perbarui Jalur SSL dalam Konfigurasi {#step-14-update-ssl-paths-in-configuration}
 
 Konfigurasikan jalur sertifikat SSL dalam file lingkungan:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# Perbarui jalur SSL untuk menunjuk ke file sertifikat yang benar
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -445,63 +447,63 @@ sed -i -E \
   "$SELF_HOST_DIR/$ENV_FILE"
 ```
 
-### Langkah 15: Siapkan Autentikasi Dasar {#step-15-set-up-basic-authentication}
+### Step 15: Atur Otentikasi Dasar {#step-15-set-up-basic-authentication}
 
-Buat kredensial autentikasi dasar sementara:
+Buat kredensial otentikasi dasar sementara:
 
 ```bash
-# Generate a secure random password
+# Buat password acak yang aman
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Perbarui file lingkungan dengan kredensial otentikasi dasar
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Tampilkan kredensial (simpan ini!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 PENTING: Simpan kredensial login ini!"
 echo "=================================="
 echo "Username: admin"
 echo "Password: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Anda akan membutuhkan ini untuk mengakses antarmuka web setelah instalasi."
 echo ""
 ```
 
-### Langkah 16: Deploy dengan Docker Compose {#step-16-deploy-with-docker-compose}
+### Step 16: Deploy dengan Docker Compose {#step-16-deploy-with-docker-compose}
 
-Mulai semua layanan Email Teruskan:
+Mulai semua layanan Forward Email:
 
 ```bash
-# Set Docker Compose file path
+# Tetapkan jalur file Docker Compose
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Hentikan kontainer yang sedang berjalan
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" down
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" down
 fi
 
-# Pull the latest images
+# Tarik image terbaru
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" pull
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" pull
 fi
 
-# Start all services in detached mode
+# Mulai semua layanan dalam mode terpisah
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 fi
 
-# Wait a moment for services to start
+# Tunggu sebentar agar layanan mulai
 sleep 10
 
-# Check service status
+# Periksa status layanan
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" ps
 else
@@ -509,33 +511,34 @@ else
 fi
 ```
 
-### Langkah 17: Verifikasi Instalasi {#step-17-verify-installation}
+### Step 17: Verifikasi Instalasi {#step-17-verify-installation}
 
-Periksa apakah semua layanan berjalan dengan benar:
+Periksa bahwa semua layanan berjalan dengan benar:
 
 ```bash
-# Check Docker containers
+# Periksa kontainer Docker
 docker ps
 
-# Check service logs for any errors
+# Periksa log layanan untuk kesalahan
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 fi
 
-# Test web interface connectivity
+# Uji konektivitas antarmuka web
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Periksa apakah port sedang mendengarkan
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
+
 ## Konfigurasi Pasca-Instalasi {#post-installation-configuration}
 
-### Penyiapan Rekaman DNS {#dns-records-setup}
+### Pengaturan Rekaman DNS {#dns-records-setup}
 
-Anda perlu mengonfigurasi catatan DNS berikut untuk domain Anda:
+Anda perlu mengonfigurasi rekaman DNS berikut untuk domain Anda:
 
 #### Rekaman MX {#mx-record}
 
@@ -543,7 +546,7 @@ Anda perlu mengonfigurasi catatan DNS berikut untuk domain Anda:
 @ MX 10 mx.yourdomain.com
 ```
 
-Rekaman A {####
+#### Rekaman A {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -567,7 +570,7 @@ carddav A YOUR_SERVER_IP
 Dapatkan kunci publik DKIM Anda:
 
 ```bash
-# Extract DKIM public key
+# Ekstrak kunci publik DKIM
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
@@ -585,93 +588,95 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Login Pertama {#first-login}
 
-1. Buka peramban web Anda dan navigasikan ke `https://yourdomain.com`
-2. Masukkan kredensial autentikasi dasar yang Anda simpan sebelumnya
-3. Selesaikan panduan pengaturan awal
+1. Buka browser web Anda dan navigasikan ke `https://yourdomain.com`
+2. Masukkan kredensial otentikasi dasar yang Anda simpan sebelumnya
+3. Selesaikan wizard pengaturan awal
 4. Buat akun email pertama Anda
 
-## Konfigurasi Pencadangan {#backup-configuration}
 
-### Siapkan Cadangan yang Kompatibel dengan S3 {#set-up-s3-compatible-backup}
+## Konfigurasi Cadangan {#backup-configuration}
 
-Konfigurasikan pencadangan otomatis ke penyimpanan yang kompatibel dengan S3:
+### Atur Cadangan Kompatibel S3 {#set-up-s3-compatible-backup}
+
+Konfigurasikan cadangan otomatis ke penyimpanan kompatibel S3:
 
 ```bash
-# Create AWS credentials directory
+# Buat direktori kredensial AWS
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# Konfigurasikan kredensial AWS
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# Konfigurasikan pengaturan AWS
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Untuk S3 non-AWS (seperti Cloudflare R2), tambahkan URL endpoint
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
-
-### Siapkan Pekerjaan Cron Cadangan {#set-up-backup-cron-jobs}
+### Atur Cron Job Backup {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Jadikan skrip backup dapat dieksekusi
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# Tambahkan cron job backup MongoDB (berjalan setiap hari pada tengah malam)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Tambahkan cron job backup Redis (berjalan setiap hari pada tengah malam)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Verifikasi cron job telah ditambahkan
 crontab -l
 ```
 
+
 ## Konfigurasi Pembaruan Otomatis {#auto-update-configuration}
 
-Siapkan pembaruan otomatis untuk instalasi Email Terusan Anda:
+Atur pembaruan otomatis untuk instalasi Forward Email Anda:
 
 ```bash
-# Create auto-update command (use appropriate docker compose command)
+# Buat perintah pembaruan otomatis (gunakan perintah docker compose yang sesuai)
 if command -v docker-compose &> /dev/null; then
     DOCKER_UPDATE_CMD="docker-compose -f $DOCKER_COMPOSE_FILE pull && docker-compose -f $DOCKER_COMPOSE_FILE up -d"
 else
     DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 fi
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Tambahkan cron job pembaruan otomatis (berjalan setiap hari pukul 1 pagi)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Verifikasi cron job telah ditambahkan
 crontab -l
 ```
+
 
 ## Pertimbangan Khusus Debian {#debian-specific-considerations}
 
 ### Perbedaan Manajemen Paket {#package-management-differences}
 
-* **Snapd**: Tidak terinstal secara default di Debian, memerlukan instalasi manual
-* **Docker**: Menggunakan repositori khusus Debian dan kunci GPG
-* **UFW**: Mungkin tidak disertakan dalam instalasi minimal Debian
-* **systemd**: Perilakunya mungkin sedikit berbeda dari Ubuntu
+* **Snapd**: Tidak terpasang secara default di Debian, memerlukan instalasi manual
+* **Docker**: Menggunakan repositori dan kunci GPG khusus Debian
+* **UFW**: Mungkin tidak termasuk dalam instalasi minimal Debian
+* **systemd**: Perilaku mungkin sedikit berbeda dari Ubuntu
 
 ### Manajemen Layanan {#service-management}
 
 ```bash
-# Check service status (Debian-specific commands)
+# Periksa status layanan (perintah khusus Debian)
 systemctl status snapd
 systemctl status docker
 systemctl status ufw
 
-# Restart services if needed
+# Restart layanan jika diperlukan
 systemctl restart snapd
 systemctl restart docker
 ```
@@ -681,27 +686,28 @@ systemctl restart docker
 Debian mungkin memiliki nama antarmuka jaringan atau konfigurasi yang berbeda:
 
 ```bash
-# Check network interfaces
+# Periksa antarmuka jaringan
 ip addr show
 
-# Check routing
+# Periksa routing
 ip route show
 
-# Check DNS resolution
+# Periksa resolusi DNS
 nslookup google.com
 ```
+
 
 ## Pemeliharaan dan Pemantauan {#maintenance-and-monitoring}
 
 ### Lokasi Log {#log-locations}
 
-**Log Docker Compose**: Gunakan perintah Docker Compose yang sesuai berdasarkan instalasi
-* **Log Sistem**: `/var/log/syslog`
-* **Log Cadangan**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Log Pembaruan Otomatis**: `/var/log/autoupdate.log`
-* **Log Snapd**: `journalctl -u snapd`
+* **Log Docker Compose**: Gunakan perintah docker compose yang sesuai berdasarkan instalasi
+* **Log sistem**: `/var/log/syslog`
+* **Log backup**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Log pembaruan otomatis**: `/var/log/autoupdate.log`
+* **Log snapd**: `journalctl -u snapd`
 
-### Tugas Pemeliharaan Reguler {#regular-maintenance-tasks}
+### Tugas Pemeliharaan Rutin {#regular-maintenance-tasks}
 
 1. **Pantau ruang disk**: `df -h`
 2. **Periksa status layanan**: Gunakan perintah docker compose yang sesuai
@@ -711,22 +717,23 @@ nslookup google.com
 
 ### Pembaruan Sertifikat {#certificate-renewal}
 
-Sertifikat harus diperbarui secara otomatis, tetapi Anda dapat memperbaruinya secara manual jika diperlukan:
+Sertifikat seharusnya diperbarui otomatis, tetapi Anda dapat memperbaruinya secara manual jika diperlukan:
 
 ```bash
-# Manual certificate renewal
+# Pembaruan sertifikat manual
 certbot renew
 
-# Copy renewed certificates
+# Salin sertifikat yang diperbarui
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Restart layanan untuk menggunakan sertifikat baru
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" restart
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" restart
 fi
 ```
+
 
 ## Pemecahan Masalah {#troubleshooting}
 
@@ -735,16 +742,16 @@ fi
 #### 1. Snapd Tidak Berfungsi {#1-snapd-not-working}
 
 ```bash
-# Check snapd status
+# Periksa status snapd
 systemctl status snapd
 
 # Restart snapd
 systemctl restart snapd
 
-# Check snap path
+# Periksa path snap
 echo $PATH | grep snap
 
-# Add snap to PATH if missing
+# Tambahkan snap ke PATH jika hilang
 echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -752,85 +759,86 @@ source ~/.bashrc
 #### 2. Perintah Docker Compose Tidak Ditemukan {#2-docker-compose-command-not-found}
 
 ```bash
-# Check which docker compose command is available
+# Periksa perintah docker compose mana yang tersedia
 command -v docker-compose
 command -v docker
 
-# Use the appropriate command in scripts
+# Gunakan perintah yang sesuai dalam skrip
 if command -v docker-compose &> /dev/null; then
-    echo "Using docker-compose"
+    echo "Menggunakan docker-compose"
 else
-    echo "Using docker compose"
+    echo "Menggunakan docker compose"
 fi
 ```
-
 #### 3. Masalah Instalasi Paket {#3-package-installation-issues}
 
 ```bash
-# Update package cache
+# Perbarui cache paket
 apt update
 
-# Fix broken packages
+# Perbaiki paket yang rusak
 apt --fix-broken install
 
-# Check for held packages
+# Periksa paket yang ditahan
 apt-mark showhold
 ```
 
 ### Masalah Umum {#common-issues}
 
-#### 1. Layanan Docker Tidak Dapat Dimulai {#1-docker-service-wont-start}
+#### 1. Layanan Docker Tidak Mulai {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Periksa status Docker
 systemctl status docker
 
-# Check Docker logs
+# Periksa log Docker
 journalctl -u docker
 
-# Try alternative startup
+# Coba startup alternatif
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Pembuatan Sertifikat Gagal {#2-certificate-generation-fails}
+#### 2. Gagal Membuat Sertifikat {#2-certificate-generation-fails}
 
 * Pastikan port 80 dan 443 dapat diakses
-* Pastikan data DNS mengarah ke server Anda
+* Verifikasi catatan DNS mengarah ke server Anda
 * Periksa pengaturan firewall dengan `ufw status`
 
 #### 3. Masalah Pengiriman Email {#3-email-delivery-issues}
 
-* Pastikan data MX sudah benar
-* Periksa data SPF, DKIM, dan DMARC
+* Verifikasi catatan MX sudah benar
+* Periksa catatan SPF, DKIM, dan DMARC
 * Pastikan port 25 tidak diblokir oleh penyedia hosting Anda
 
 ### Mendapatkan Bantuan {#getting-help}
 
-**Dokumentasi**: <https://forwardemail.net/self-hosted>
-* **Masalah GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Dokumentasi**: <https://forwardemail.net/self-hosted>
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Dokumentasi Debian**: <https://www.debian.org/doc/>
+
 
 ## Praktik Terbaik Keamanan {#security-best-practices}
 
-1. **Pastikan Sistem Tetap Terkini**: Perbarui Debian dan paket secara berkala
-2. **Pantau Log**: Atur pemantauan dan pemberitahuan log
-3. **Cadangkan Secara Berkala**: Uji prosedur pencadangan dan pemulihan
-4. **Gunakan Kata Sandi yang Kuat**: Buat kata sandi yang kuat untuk semua akun
-5. **Aktifkan Fail2Ban**: Pertimbangkan untuk menginstal fail2ban untuk keamanan tambahan
+1. **Jaga Sistem Tetap Terbaru**: Perbarui Debian dan paket secara rutin
+2. **Pantau Log**: Atur pemantauan log dan pemberitahuan
+3. **Backup Secara Rutin**: Uji prosedur backup dan pemulihan
+4. **Gunakan Kata Sandi Kuat**: Buat kata sandi kuat untuk semua akun
+5. **Aktifkan Fail2Ban**: Pertimbangkan memasang fail2ban untuk keamanan tambahan
 6. **Audit Keamanan Berkala**: Tinjau konfigurasi Anda secara berkala
-7. **Pantau Snapd**: Pastikan paket snap selalu diperbarui dengan `snap refresh`
+7. **Pantau Snapd**: Jaga paket snap tetap terbaru dengan `snap refresh`
+
 
 ## Kesimpulan {#conclusion}
 
-Instalasi Forward Email self-hosted Anda sekarang sudah selesai dan berjalan di Debian. Jangan lupa untuk:
+Instalasi Forward Email self-hosted Anda sekarang seharusnya sudah selesai dan berjalan di Debian. Ingat untuk:
 
-1. Konfigurasikan rekaman DNS Anda dengan benar
+1. Konfigurasikan catatan DNS Anda dengan benar
 2. Uji pengiriman dan penerimaan email
-3. Siapkan pencadangan rutin
+3. Atur backup secara rutin
 4. Pantau sistem Anda secara berkala
-5. Selalu perbarui instalasi Anda
-6. Pantau paket snapd dan snap
+5. Jaga instalasi Anda tetap terbaru
+6. Pantau snapd dan paket snap
 
-Perbedaan utama dari Ubuntu terletak pada instalasi snapd dan konfigurasi repositori Docker. Setelah keduanya diatur dengan benar, aplikasi Forward Email akan berfungsi sama di kedua sistem.
+Perbedaan utama dari Ubuntu adalah instalasi snapd dan konfigurasi repositori Docker. Setelah ini diatur dengan benar, aplikasi Forward Email berperilaku identik di kedua sistem.
 
-Untuk opsi konfigurasi tambahan dan fitur lanjutan, lihat dokumentasi Forward Email resmi di <https://forwardemail.net/self-hosted#configuration>.
+Untuk opsi konfigurasi tambahan dan fitur lanjutan, lihat dokumentasi resmi Forward Email di <https://forwardemail.net/self-hosted#configuration>.

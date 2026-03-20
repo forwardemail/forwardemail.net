@@ -1,97 +1,101 @@
-# Hogyan védi az e-mail továbbítása az Ön adatait, domainjét és biztonságát: Technikai áttekintés {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
+# Hogyan védi a Forward Email az Ön adatvédelmét, domainjét és biztonságát: A technikai mélyreható elemzés {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Legjobb email továbbító szolgáltatás összehasonlítás" class="rounded-lg" />
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [Az e-mail továbbításának adatvédelmi filozófiája](#the-forward-email-privacy-philosophy)
-* [SQLite implementáció: Tartósság és hordozhatóság az adataidnak](#sqlite-implementation-durability-and-portability-for-your-data)
-* [Intelligens sorba állítás és újrapróbálkozási mechanizmus: Az e-mailek kézbesítésének biztosítása](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [A Forward Email adatvédelmi filozófiája](#the-forward-email-privacy-philosophy)
+* [SQLite megvalósítás: Tartósság és hordozhatóság az Ön adatai számára](#sqlite-implementation-durability-and-portability-for-your-data)
+* [Okos sor és újrapróbálkozási mechanizmus: Az email kézbesítés biztosítása](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
 * [Korlátlan erőforrások intelligens sebességkorlátozással](#unlimited-resources-with-intelligent-rate-limiting)
-* [Sandboxos titkosítás a fokozott biztonság érdekében](#sandboxed-encryption-for-enhanced-security)
-* [Memórián belüli e-mail-feldolgozás: Nincs lemezterület a maximális adatvédelem érdekében](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
-* [Végponttól végpontig terjedő titkosítás OpenPGP-vel a teljes adatvédelem érdekében](#end-to-end-encryption-with-openpgp-for-complete-privacy)
-* [Többrétegű tartalomvédelem az átfogó biztonság érdekében](#multi-layered-content-protection-for-comprehensive-security)
-* [Miben különbözünk más e-mail szolgáltatásoktól: A technikai adatvédelmi előny](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
-  * [Nyílt forráskódú átláthatóság az ellenőrizhető adatvédelem érdekében](#open-source-transparency-for-verifiable-privacy)
-  * [Nincs szállítói függőség az adatvédelem kompromisszumok nélküli biztosítása érdekében](#no-vendor-lock-in-for-privacy-without-compromise)
-  * [Sandboxban tárolt adatok a valódi izolációhoz](#sandboxed-data-for-true-isolation)
-  * [Adathordozhatóság és -ellenőrzés](#data-portability-and-control)
-* [Az adatvédelmet szem előtt tartó e-mail-továbbítás technikai kihívásai](#the-technical-challenges-of-privacy-first-email-forwarding)
-  * [Memóriakezelés naplózásmentes e-mail-feldolgozáshoz](#memory-management-for-no-logging-email-processing)
-  * [Spamészlelés tartalomelemzés nélkül az adatvédelmet megőrző szűrés érdekében](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
-  * [Az adatvédelmet szem előtt tartó tervezéssel való kompatibilitás fenntartása](#maintaining-compatibility-with-privacy-first-design)
-* [Adatvédelmi bevált gyakorlatok e-mail-továbbítási felhasználók számára](#privacy-best-practices-for-forward-email-users)
-* [Konklúzió: A privát e-mail-továbbítás jövője](#conclusion-the-future-of-private-email-forwarding)
+* [Sandboxolt titkosítás a fokozott biztonságért](#sandboxed-encryption-for-enhanced-security)
+* [Memóriában történő email feldolgozás: Nincs lemez tárolás a maximális adatvédelemért](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [Végpontok közötti titkosítás OpenPGP-vel a teljes adatvédelemért](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [Többrétegű tartalomvédelem az átfogó biztonságért](#multi-layered-content-protection-for-comprehensive-security)
+* [Miben különbözünk más email szolgáltatóktól: A technikai adatvédelmi előny](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+  * [Nyílt forráskódú átláthatóság az ellenőrizhető adatvédelemért](#open-source-transparency-for-verifiable-privacy)
+  * [Nincs vendor lock-in kompromisszum nélküli adatvédelemért](#no-vendor-lock-in-for-privacy-without-compromise)
+  * [Sandboxolt adatok az igazi elszigeteltségért](#sandboxed-data-for-true-isolation)
+  * [Adathordozhatóság és kontroll](#data-portability-and-control)
+* [Az adatvédelmi szempontokat elsődlegesen kezelő email továbbítás technikai kihívásai](#the-technical-challenges-of-privacy-first-email-forwarding)
+  * [Memóriakezelés naplózás nélküli email feldolgozáshoz](#memory-management-for-no-logging-email-processing)
+  * [Spam felismerés tartalomelemzés nélkül az adatvédelmet megőrző szűréshez](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
+  * [Kompatibilitás fenntartása az adatvédelmi szempontokat elsődlegesen kezelő tervezéssel](#maintaining-compatibility-with-privacy-first-design)
+* [Adatvédelmi legjobb gyakorlatok a Forward Email felhasználói számára](#privacy-best-practices-for-forward-email-users)
+* [Összegzés: A privát email továbbítás jövője](#conclusion-the-future-of-private-email-forwarding)
+
 
 ## Előszó {#foreword}
 
-A mai digitális környezetben az e-mailek védelme minden eddiginél fontosabbá vált. Az adatvédelmi incidensek, a megfigyelési aggályok és az e-mailek tartalmán alapuló célzott hirdetések miatt a felhasználók egyre inkább olyan megoldásokat keresnek, amelyek az adatvédelmüket helyezik előtérbe. A Forward Emailnél a nulláról építettük fel szolgáltatásunkat, az adatvédelmet architektúránk sarokkövének tekintve. Ez a blogbejegyzés azokat a technikai megvalósításokat vizsgálja, amelyek szolgáltatásunkat az egyik leginkább adatvédelemre összpontosító e-mail továbbítási megoldássá teszik.
+A mai digitális környezetben az email adatvédelem fontosabb, mint valaha. Az adatvédelmi incidensek, megfigyelési aggályok és az email tartalmán alapuló célzott hirdetések miatt a felhasználók egyre inkább olyan megoldásokat keresnek, amelyek elsődlegesen az adatvédelmet helyezik előtérbe. A Forward Email-nél szolgáltatásunkat az alapoktól kezdve az adatvédelemre építettük. Ez a blogbejegyzés bemutatja azokat a technikai megvalósításokat, amelyek miatt szolgáltatásunk az egyik leginkább adatvédelmi fókuszú email továbbító megoldás a piacon.
 
-## Az e-mailek továbbításának adatvédelmi filozófiája {#the-forward-email-privacy-philosophy}
 
-Mielőtt belemerülnénk a technikai részletekbe, fontos megérteni alapvető adatvédelmi filozófiánkat: **az e-mailjeid csakis a tiéid**. Ez az elv vezérli minden technikai döntésünket, az e-mail-továbbítás kezelésétől kezdve a titkosítás megvalósításáig.
+## A Forward Email adatvédelmi filozófiája {#the-forward-email-privacy-philosophy}
 
-Sok olyan e-mail szolgáltatóval ellentétben, amelyek reklámozási célokra szkennelik az üzeneteidet, vagy határozatlan ideig tárolják azokat a szervereiken, a Forward Email gyökeresen más megközelítést alkalmaz:
+Mielőtt belemennénk a technikai részletekbe, fontos megérteni alapvető adatvédelmi filozófiánkat: **az Ön emailjei Önéi és csak Önéi**. Ez az elv vezérli minden technikai döntésünket, az email továbbítás kezelésétől a titkosítás megvalósításáig.
 
-1. **Csak memórián belüli feldolgozás** – A továbbított e-maileket nem tároljuk lemezen.
-2. **Nincs metaadat-tárolás** – Nem nyilvántartjuk, hogy ki kinek küld e-mailt.
-3. **100%-ban nyílt forráskódú** – A teljes kódbázisunk átlátható és auditálható.
-4. **Végponttól végpontig terjedő titkosítás** – Támogatjuk az OpenPGP-t a valóban privát kommunikáció érdekében.
+Ellentétben sok email szolgáltatóval, akik reklámcélból átvizsgálják az üzeneteit vagy korlátlan ideig tárolják azokat szervereiken, a Forward Email radikálisan más megközelítést alkalmaz:
 
-## SQLite implementáció: Tartósság és hordozhatóság az adataid számára {#sqlite-implementation-durability-and-portability-for-your-data}
+1. **Csak memóriában történő feldolgozás** – Nem tároljuk továbbított emailjeit lemezen
+2. **Nincs metaadat tárolás** – Nem vezetünk nyilvántartást arról, ki kinek küld emailt
+3. **100% nyílt forráskód** – Teljes kódunk átlátható és auditálható
+4. **Végpontok közötti titkosítás** – Támogatjuk az OpenPGP-t a valóban privát kommunikációért
 
-A Forward Email egyik legjelentősebb adatvédelmi előnye a gondosan megtervezett [SQLite](https://en.wikipedia.org/wiki/SQLite) implementációnk. Az SQLite-ot specifikus PRAGMA beállításokkal és [Előre írási naplózás (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging)-gyel finomhangoltuk, hogy biztosítsuk az adataid tartósságát és hordozhatóságát, miközben fenntartjuk a legmagasabb szintű adatvédelmet és biztonságot.
 
-Íme egy pillantás arra, hogyan implementáltuk az SQLite-ot [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) titkosítással a kvantumrezisztens titkosításhoz:
+## SQLite megvalósítás: Tartósság és hordozhatóság az Ön adatai számára {#sqlite-implementation-durability-and-portability-for-your-data}
+
+A Forward Email egyik legjelentősebb adatvédelmi előnye a gondosan megtervezett [SQLite](https://en.wikipedia.org/wiki/SQLite) megvalósításunk. Speciális PRAGMA beállításokkal és [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) használatával finomhangoltuk az SQLite-ot, hogy biztosítsuk adatai tartósságát és hordozhatóságát, miközben a legmagasabb adatvédelmi és biztonsági szintet tartjuk fenn.
+Íme, hogyan valósítottuk meg az SQLite-ot a [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) titkosító algoritmussal a kvantumrezisztens titkosításhoz:
 
 ```javascript
-// Initialize the database with better-sqlite3-multiple-ciphers
+// Inicializáljuk az adatbázist a better-sqlite3-multiple-ciphers segítségével
 const Database = require('better-sqlite3-multiple-ciphers');
 
-// Set up encryption with ChaCha20-Poly1305 cipher
+// Beállítjuk a titkosítást ChaCha20-Poly1305 titkosítóval
 db.pragma(`key="${decrypt(session.user.password)}"`);
 
-// Enable Write-Ahead Logging for durability and performance
+// Engedélyezzük a Write-Ahead Loggingot a tartósság és teljesítmény érdekében
 db.pragma('journal_mode=WAL');
 
-// Overwrite deleted content with zeros for privacy
+// Törölt tartalom felülírása nullákkal a magánszféra védelmében
 db.pragma('secure_delete=ON');
 
-// Enable auto vacuum for efficient storage management
+// Automatikus takarítás engedélyezése a hatékony tároláskezeléshez
 db.pragma('auto_vacuum=FULL');
 
-// Set busy timeout for handling concurrent access
+// Foglalt állapot időkorlát beállítása a párhuzamos hozzáférés kezeléséhez
 db.pragma(`busy_timeout=${config.busyTimeout}`);
 
-// Optimize synchronization for reliability
+// Szinkronizáció optimalizálása a megbízhatóság érdekében
 db.pragma('synchronous=NORMAL');
 
-// Enable foreign key constraints for data integrity
+// Külső kulcs korlátozások engedélyezése az adatintegritásért
 db.pragma('foreign_keys=ON');
 
-// Set UTF-8 encoding for international character support
+// UTF-8 kódolás beállítása a nemzetközi karaktertámogatáshoz
 db.pragma(`encoding='UTF-8'`);
 
-// Optimize database performance
+// Adatbázis teljesítményének optimalizálása
 db.pragma('optimize=0x10002;');
 
-// Use disk for temporary storage instead of memory
+// Ideiglenes tárolás lemezre állítása memória helyett
 db.pragma('temp_store=1;');
 ```
 
-Ez a megvalósítás biztosítja, hogy adatai nemcsak biztonságosak, hanem hordozhatóak is legyenek. E-mailjeit bármikor magával viheti és használhatja [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) vagy SQLite formátumban történő exportálással. És amikor törölni szeretné adatait, azok valóban elvesznek – egyszerűen töröljük a fájlokat a lemezről ahelyett, hogy SQL DELETE ROW parancsokat futtatnánk, amelyek nyomokat hagyhatnak az adatbázisban.
+Ez a megvalósítás biztosítja, hogy az adatai nemcsak biztonságosak, hanem hordozhatók is legyenek. Bármikor elviheti az e-mailjeit, ha exportálja őket [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) vagy SQLite formátumban. És amikor törölni szeretné az adatait, azok valóban eltűnnek – egyszerűen töröljük a fájlokat a lemezről, ahelyett, hogy SQL DELETE ROW parancsokat futtatnánk, amelyek nyomokat hagyhatnak az adatbázisban.
 
-A megvalósításunk kvantumtitkosítási aspektusa a ChaCha20-Poly1305 titkosítást használja az adatbázis inicializálásakor, így erős védelmet nyújt mind a jelenlegi, mind a jövőbeli adatvédelmi fenyegetésekkel szemben.
+A kvantumtitkosítási aspektusunk a ChaCha20-Poly1305 titkosítót használja az adatbázis inicializálásakor, erős védelmet nyújtva az adatai magánszféráját fenyegető jelenlegi és jövőbeli veszélyek ellen.
 
-## Intelligens sorba állítás és újrapróbálkozási mechanizmus: E-mail kézbesítésének biztosítása {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-Ahelyett, hogy kizárólag a fejléckezelésre koncentrálnánk, egy kifinomult intelligens várakozási sorba állítási és újrapróbálkozási mechanizmust valósítottunk meg a `getBounceInfo` metódusunkkal. Ez a rendszer biztosítja, hogy az e-mailek kézbesítésének lehető legnagyobb esélye legyen, még átmeneti problémák esetén is.
+## Okos sor és újrapróbálkozási mechanizmus: az e-mailek kézbesítésének biztosítása {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
+
+Ahelyett, hogy kizárólag a fejléc kezelésére koncentrálnánk, kifinomult okos sort és újrapróbálkozási mechanizmust valósítottunk meg a `getBounceInfo` metódusunkkal. Ez a rendszer biztosítja, hogy az e-mailjei a lehető legnagyobb eséllyel kézbesítésre kerüljenek, még akkor is, ha átmeneti problémák merülnek fel.
 
 ```javascript
 function getBounceInfo(err) {
-  // Initialize bounce info with default values
+  // Alapértelmezett értékekkel inicializáljuk a visszapattanási információkat
   const bounceInfo = {
     action: err.responseCode >= 500 ? 'reject' : 'defer',
     category: err.category || 'other',
@@ -99,16 +103,16 @@ function getBounceInfo(err) {
     code: err.responseCode || err.code
   };
 
-  // Analyze error response to determine appropriate action
+  // Elemzi a hibaválaszt a megfelelő intézkedés meghatározásához
   const response = err.response || err.message || '';
 
-  // Determine if the issue is temporary or permanent
+  // Meghatározza, hogy a probléma átmeneti vagy végleges-e
   if (response.includes('temporarily deferred') ||
       response.includes('try again later')) {
     bounceInfo.action = 'defer';
   }
 
-  // Categorize the bounce reason for appropriate handling
+  // Kategorizálja a visszapattanás okát a megfelelő kezeléshez
   if (response.includes('mailbox full')) {
     bounceInfo.category = 'full';
     bounceInfo.action = 'defer';
@@ -121,21 +125,21 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> Ez a `getBounceInfo` metódus egy részlete, és nem a tényleges részletes megvalósítás. A teljes kódot a [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js) oldalon tekintheti meg.
+> Ez a `getBounceInfo` metódus egy kivonata, nem a teljes kiterjedt megvalósítás. A teljes kódot megtekintheti a [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js) oldalon.
 
-A kézbesítést 5 napig újrapróbáljuk, hasonlóan az iparági szabványokhoz, mint például a [Utófix](https://en.wikipedia.org/wiki/Postfix_\(software\)), így az átmeneti problémáknak van idejük megoldódni. Ez a megközelítés jelentősen javítja a kézbesítési arányt, miközben megőrzi az adatvédelmet.
+Az e-mailek kézbesítését 5 napig újrapróbáljuk, hasonlóan az iparági szabványokhoz, mint például a [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), így az átmeneti problémák időt kapnak a megoldódásra. Ez a megközelítés jelentősen javítja a kézbesítési arányokat, miközben megőrzi a magánszférát.
 
-Hasonlóképpen, a kimenő SMTP e-mailek tartalmát is szerkesztjük a sikeres kézbesítés után. Ez a tárolórendszerünkben 30 napos alapértelmezett megőrzési időszakkal van konfigurálva, amelyet a domain Speciális beállításaiban módosíthat. Ezen időszak lejárta után az e-mail tartalmát automatikusan szerkesztjük és töröljük, csak egy helyőrző üzenet marad meg:
+Hasonlóképpen, a sikeres kézbesítés után az SMTP kimenő e-mailek üzenettartalmát is töröljük. Ez a tárolórendszerünkben van konfigurálva alapértelmezett 30 napos megőrzési idővel, amelyet a domain Speciális beállításai között módosíthat. Ez idő után az e-mail tartalma automatikusan törlésre és eltávolításra kerül, csak egy helyőrző üzenet marad:
 
 ```txt
-This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
+Ez az üzenet sikeresen elküldésre került. Biztonsága és magánszférája érdekében törlésre és eltávolításra került. Ha szeretné növelni az üzenetmegőrzési időt, kérjük, lépjen a domain Speciális beállítások oldalára.
 ```
+Ez a megközelítés biztosítja, hogy az elküldött e-mailek ne maradjanak korlátlan ideig tárolva, csökkentve ezzel az adatvédelmi incidensek vagy illetéktelen hozzáférések kockázatát a kommunikációidhoz.
 
-Ez a megközelítés biztosítja, hogy az elküldött e-mailek ne maradjanak határozatlan ideig tárolva, csökkentve az adatvédelmi incidensek vagy a kommunikációhoz való jogosulatlan hozzáférés kockázatát.
 
 ## Korlátlan erőforrások intelligens sebességkorlátozással {#unlimited-resources-with-intelligent-rate-limiting}
 
-Bár a Forward Email korlátlan számú domaint és aliast kínál, intelligens díjszabás-korlátozást vezettünk be, hogy megvédjük rendszerünket a visszaélésektől és biztosítsuk a tisztességes használatot minden felhasználó számára. Például a nem vállalati ügyfelek akár napi 50+ aliast is létrehozhatnak, ami megakadályozza az adatbázisunk spammelését és elárasztását, valamint lehetővé teszi a valós idejű visszaélés- és védelmi funkcióink hatékony működését.
+Miközben a Forward Email korlátlan domaineket és aliasokat kínál, intelligens sebességkorlátozást vezettünk be, hogy megvédjük rendszerünket a visszaélésektől, és biztosítsuk a tisztességes használatot minden felhasználó számára. Például a nem vállalati ügyfelek naponta legfeljebb 50+ alias létrehozására jogosultak, ami megakadályozza adatbázisunk spamelését és túlterhelését, valamint lehetővé teszi valós idejű visszaélés- és védelmi funkcióink hatékony működését.
 
 ```javascript
 // Rate limiter implementation
@@ -155,28 +159,30 @@ if (limit.remaining <= 0) {
 }
 ```
 
-Ez a kiegyensúlyozott megközelítés rugalmasságot biztosít Önnek, hogy annyi e-mail címet hozzon létre, amennyire szüksége van az átfogó adatvédelem-kezeléshez, miközben továbbra is megőrzi szolgáltatásunk integritását és teljesítményét minden felhasználó számára.
+Ez az egyensúlyozott megközelítés lehetővé teszi, hogy annyi e-mail címet hozz létre, amennyire szükséged van a teljes körű adatvédelemhez, miközben megőrzi szolgáltatásunk integritását és teljesítményét minden felhasználó számára.
 
-## Sandboxos titkosítás a fokozott biztonság érdekében {#sandboxed-encryption-for-enhanced-security}
 
-Egyedülálló, sandboxos titkosítási megközelítésünk egy kritikus biztonsági előnyt biztosít, amelyet sok felhasználó figyelmen kívül hagy, amikor e-mail szolgáltatást választ. Vizsgáljuk meg, miért olyan fontos az adatok, különösen az e-mailek sandboxos titkosítása.
+## Homokozós titkosítás a fokozott biztonságért {#sandboxed-encryption-for-enhanced-security}
 
-Az olyan szolgáltatások, mint a Gmail és a Proton, valószínűleg megosztott [relációs adatbázisok](https://en.wikipedia.org/wiki/Relational_database)-t használnak, ami alapvető biztonsági rést okoz. Megosztott adatbázis-környezetben, ha valaki hozzáférést szerez egy felhasználó adataihoz, potenciálisan hozzáférhet más felhasználók adataihoz is. Ez azért van, mert minden felhasználói adat ugyanabban az adatbázistáblában található, csak felhasználói azonosítók vagy hasonló azonosítók választják el őket.
+Egyedi homokozós titkosítási megközelítésünk kritikus biztonsági előnyt nyújt, amit sok felhasználó figyelmen kívül hagy e-mail szolgáltató választásakor. Nézzük meg, miért olyan fontos az adatok, különösen az e-mailek homokozós elkülönítése.
 
-A Forward Email alapvetően eltérő megközelítést alkalmaz a sandboxos titkosításunkkal:
+Olyan szolgáltatások, mint a Gmail és a Proton valószínűleg megosztott [relációs adatbázisokat](https://en.wikipedia.org/wiki/Relational_database) használnak, ami alapvető biztonsági sebezhetőséget jelent. Megosztott adatbázis környezetben, ha valaki hozzáfér egy felhasználó adataihoz, potenciálisan hozzáférhet más felhasználók adataihoz is. Ez azért van, mert az összes felhasználói adat ugyanabban az adatbázis táblában található, amelyeket csak felhasználói azonosítók vagy hasonló jelölők választanak el.
 
-1. **Teljes elszigetelés**: Minden felhasználó adatai a saját titkosított SQLite adatbázisfájljában tárolódnak, teljesen elszigetelve a többi felhasználótól.
-2. **Független titkosítási kulcsok**: Minden adatbázis a felhasználó jelszavából származó egyedi kulccsal van titkosítva.
-3. **Nincs megosztott tárhely**: A relációs adatbázisokkal ellentétben, ahol az összes felhasználó e-mail címe egyetlen „e-mail” táblázatban lehet, a mi megközelítésünk biztosítja, hogy az adatok ne keveredjenek.
-4. **Mélyreható védelem**: Még ha az egyik felhasználó adatbázisa valamilyen módon veszélybe kerülne is, az nem biztosítana hozzáférést más felhasználók adataihoz.
+A Forward Email alapvetően más megközelítést alkalmaz homokozós titkosításával:
 
-Ez a sandboxos megközelítés hasonló ahhoz, mintha az e-mailjeid egy különálló fizikai trezorban lennének, ahelyett, hogy egy belső elválasztókkal rendelkező megosztott tárolóhelyen lennének. Ez egy alapvető építészeti különbség, amely jelentősen növeli az adatvédelmet és a biztonságot.
+1. **Teljes elkülönítés**: Minden felhasználó adata saját, titkosított SQLite adatbázisfájlban tárolódik, teljesen elkülönítve a többi felhasználótól
+2. **Független titkosítási kulcsok**: Minden adatbázis a felhasználó jelszavából származtatott egyedi kulccsal van titkosítva
+3. **Nincs megosztott tárolás**: Ellentétben a relációs adatbázisokkal, ahol az összes felhasználó e-mailje egyetlen "emails" táblában lehet, megközelítésünk biztosítja az adatok szétválasztását
+4. **Többrétegű védelem**: Még ha egy felhasználó adatbázisa valahogy kompromittálódna is, az nem biztosít hozzáférést más felhasználók adataihoz
 
-## Memórián belüli e-mail-feldolgozás: Nincs lemezterület a maximális adatvédelem érdekében {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+Ez a homokozós megközelítés olyan, mintha az e-mailed egy külön fizikai széfben lenne, nem pedig egy megosztott tárolóhelyen belső válaszfalakkal. Ez egy alapvető architekturális különbség, amely jelentősen növeli az adatvédelmedet és biztonságodat.
 
-E-mail-továbbítási szolgáltatásunk során az e-maileket teljes egészében RAM-ban dolgozzuk fel, és soha nem írjuk őket lemezre vagy adatbázisba. Ez a megközelítés páratlan védelmet nyújt az e-mail-figyelés és a metaadatok gyűjtése ellen.
 
-Íme egy leegyszerűsített áttekintés arról, hogyan működik az e-mail-feldolgozásunk:
+## Memóriában történő e-mail feldolgozás: Nincs lemezre írás a maximális adatvédelemért {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+
+E-mail továbbító szolgáltatásunknál az e-maileket teljes egészében a RAM-ban dolgozzuk fel, és soha nem írjuk lemezre vagy adatbázisba. Ez a megközelítés páratlan védelmet nyújt az e-mail megfigyelés és metaadatgyűjtés ellen.
+
+Íme egy egyszerűsített áttekintés arról, hogyan működik az e-mail feldolgozásunk:
 
 ```javascript
 async function onData(stream, _session, fn) {
@@ -207,12 +213,12 @@ async function onData(stream, _session, fn) {
   }
 }
 ```
+Ez a megközelítés azt jelenti, hogy még ha a szervereinket meg is támadnák, az támadók számára nem lenne elérhető történelmi e-mail adat. Az e-mailjei egyszerűen áthaladnak a rendszerünkön, és azonnal továbbítódnak a célállomásukra nyom nélkül. Ez a naplózás nélküli e-mail továbbítási megoldás alapvető a kommunikációja megfigyeléstől való védelmében.
 
-Ez a megközelítés azt jelenti, hogy még ha szervereinket feltörnék is, a támadók nem férhetnének hozzá a korábbi e-mail adatokhoz. Az e-mailek egyszerűen áthaladnak a rendszerünkön, és azonnal továbbítódnak a célállomásukra, nyom nélkül. Ez a naplózásmentes e-mail-továbbítási megközelítés alapvető fontosságú a kommunikáció megfigyelés elleni védelme érdekében.
 
-## Végponttól végpontig terjedő titkosítás OpenPGP-vel a teljes adatvédelem érdekében {#end-to-end-encryption-with-openpgp-for-complete-privacy}
+## Végpontok közötti titkosítás OpenPGP-vel a teljes adatvédelemért {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-Azoknak a felhasználóknak, akiknek a legmagasabb szintű adatvédelmet kell biztosítaniuk az e-mail-megfigyelés ellen, a [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) végpontok közötti titkosítást támogatjuk. Sok olyan e-mail-szolgáltatóval ellentétben, amelyek saját hidakat vagy alkalmazásokat igényelnek, a mi implementációnk szabványos e-mail kliensekkel működik, így a biztonságos kommunikáció mindenki számára elérhető.
+Azoknak a felhasználóknak, akik a legmagasabb szintű adatvédelmet igénylik az e-mail megfigyeléssel szemben, támogatjuk az [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) végpontok közötti titkosítást. Ellentétben sok olyan e-mail szolgáltatóval, amely saját fejlesztésű hidakat vagy alkalmazásokat igényel, a mi megvalósításunk szabványos e-mail kliensekkel működik, így a biztonságos kommunikáció mindenki számára elérhetővé válik.
 
 Így valósítjuk meg az OpenPGP titkosítást:
 
@@ -247,71 +253,75 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-Ez a megvalósítás biztosítja, hogy az e-mailek titkosítva legyenek, mielőtt elhagynák az eszközét, és csak a címzett tudja visszafejteni őket, így a kommunikáció még előttünk is privát marad. Ez elengedhetetlen a bizalmas kommunikáció jogosulatlan hozzáférés és megfigyelés elleni védelméhez.
+Ez a megvalósítás biztosítja, hogy az e-mailjei titkosítva legyenek, mielőtt elhagynák az eszközét, és csak a címzett tudja azokat visszafejteni, így a kommunikációja még tőlünk is privát marad. Ez elengedhetetlen a bizalmas kommunikáció jogosulatlan hozzáférés és megfigyelés elleni védelméhez.
 
-## Többrétegű tartalomvédelem az átfogó biztonság érdekében {#multi-layered-content-protection-for-comprehensive-security}
 
-A Forward Email többrétegű tartalomvédelmet kínál, amelyek alapértelmezés szerint engedélyezve vannak, hogy átfogó védelmet nyújtsanak a különféle fenyegetésekkel szemben:
+## Többrétegű tartalomvédelem átfogó biztonságért {#multi-layered-content-protection-for-comprehensive-security}
 
-1. **Felnőtt tartalom elleni védelem** – Kiszűri a nem megfelelő tartalmat az adatvédelem veszélyeztetése nélkül.
-2. **[Adathalászat](https://en.wikipedia.org/wiki/Phishing) védelem** – Blokkolja az adatlopási kísérleteket, miközben megőrzi az anonimitást.
-3. **Futtatható fájlok elleni védelem** – Megakadályozza a potenciálisan káros mellékleteket a tartalom vizsgálata nélkül.
-4. **[Vírus](https://en.wikipedia.org/wiki/Computer_virus) védelem** – Adatvédelmet megőrző technikákkal keres kártevőket.
+A Forward Email több rétegű tartalomvédelmet kínál, amelyek alapértelmezés szerint engedélyezve vannak, hogy átfogó védelmet nyújtsanak különféle fenyegetésekkel szemben:
 
-Sok más szolgáltatóval ellentétben, akik ezeket a funkciókat előfizetéshez kötik, mi letilthatóvá tettük őket, biztosítva, hogy minden felhasználó alapértelmezés szerint élvezhesse ezeket a védelmeket. Ez a megközelítés tükrözi az adatvédelem és a biztonság iránti elkötelezettségünket, olyan egyensúlyt teremtve, amelyet sok e-mail szolgáltatás nem tud elérni.
+1. **Felnőtt tartalom elleni védelem** – Szűri a nem megfelelő tartalmakat anélkül, hogy veszélyeztetné az adatvédelmet
+2. **[Adathalászat](https://en.wikipedia.org/wiki/Phishing) elleni védelem** – Megakadályozza az információlopási kísérleteket, miközben megőrzi az anonimitást
+3. **Futtatható fájlok elleni védelem** – Megakadályozza a potenciálisan káros csatolmányokat anélkül, hogy a tartalmat átvizsgálná
+4. **[Vírus](https://en.wikipedia.org/wiki/Computer_virus) elleni védelem** – Kártevőket keres adatvédelmet biztosító módszerekkel
 
-## Miben különbözünk más e-mail szolgáltatásoktól: A technikai adatvédelmi előny {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
+Ellentétben sok szolgáltatóval, akiknél ezek a funkciók választhatók, nálunk alapértelmezettként engedélyezettek, így minden felhasználó automatikusan élvezheti ezeket a védelmeket. Ez a megközelítés tükrözi elkötelezettségünket az adatvédelem és a biztonság iránt, egyensúlyt teremtve, amit sok e-mail szolgáltatás nem képes megvalósítani.
 
-Amikor összehasonlítjuk az e-mail továbbítását más e-mail szolgáltatásokkal, számos fontos technikai különbség kiemeli az adatvédelmet előtérbe helyező megközelítésünket:
 
-### Nyílt forráskódú átláthatóság az ellenőrizhető adatvédelem érdekében {#open-source-transparency-for-verifiable-privacy}
+## Miben különbözünk más e-mail szolgáltatóktól: a technikai adatvédelmi előny {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-Bár sok e-mail szolgáltató nyílt forráskódúnak vallja magát, gyakran zárt háttérkódot használnak. A Forward Email 100%-ban [nyílt forráskódú](https://en.wikipedia.org/wiki/Open_source), beleértve mind a frontend, mind a backend kódot. Ez az átláthatóság lehetővé teszi az összes komponens független biztonsági auditálását, biztosítva, hogy adatvédelmi állításainkat bárki ellenőrizhesse.
+Amikor a Forward Emailt más e-mail szolgáltatókkal hasonlítjuk össze, több kulcsfontosságú technikai különbség emeli ki adatvédelmi fókuszú megközelítésünket:
 
-### Nincs szállítói függőség az adatvédelem kompromisszumok nélküli biztosítása érdekében {#no-vendor-lock-in-for-privacy-without-compromise}
+### Nyílt forráskódú átláthatóság az ellenőrizhető adatvédelemért {#open-source-transparency-for-verifiable-privacy}
 
-Sok adatvédelmet előtérbe helyező e-mail-szolgáltató megköveteli, hogy a saját alkalmazásaikat vagy hídjaikat használd. A Forward Email bármilyen szabványos e-mail klienssel működik a [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) és [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) protokollokon keresztül, így szabadon választhatod ki a kívánt e-mail szoftvert az adatvédelem feláldozása nélkül.
+Bár sok e-mail szolgáltató állítja, hogy nyílt forráskódú, gyakran a háttérrendszerük kódja zárt marad. A Forward Email 100%-ban [nyílt forráskódú](https://en.wikipedia.org/wiki/Open_source), beleértve a frontend és backend kódot is. Ez az átláthatóság lehetővé teszi az összes komponens független biztonsági auditját, biztosítva, hogy adatvédelmi állításainkat bárki ellenőrizhesse.
 
-### Sandboxban tárolt adatok valódi izolációhoz {#sandboxed-data-for-true-isolation}
+### Nincs szolgáltatófüggőség kompromisszumok nélkül {#no-vendor-lock-in-for-privacy-without-compromise}
 
-A megosztott adatbázisokat használó szolgáltatásokkal ellentétben, ahol az összes felhasználó adatai összekeverednek, a mi sandboxos megközelítésünk biztosítja, hogy minden felhasználó adatai teljesen elkülönüljenek. Ez az alapvető architektúrális különbség lényegesen erősebb adatvédelmi garanciákat nyújt, mint amit a legtöbb e-mail szolgáltatás kínál.
+Sok adatvédelmi fókuszú e-mail szolgáltató megköveteli saját fejlesztésű alkalmazások vagy hidak használatát. A Forward Email bármely szabványos e-mail klienssel működik az [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) és [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) protokollokon keresztül, így szabadon választhatja meg kedvenc e-mail szoftverét anélkül, hogy az adatvédelem rovására menne.
+### Valódi izolációt biztosító sandboxolt adatok {#sandboxed-data-for-true-isolation}
 
-### Adatok hordozhatósága és ellenőrzése {#data-portability-and-control}
+Ellentétben azokkal a szolgáltatásokkal, amelyek megosztott adatbázisokat használnak, ahol az összes felhasználó adatai összekeverednek, a mi sandboxolt megközelítésünk biztosítja, hogy minden felhasználó adatai teljesen elkülönüljenek. Ez az alapvető architekturális különbség jelentősen erősebb adatvédelmi garanciákat nyújt, mint amit a legtöbb e-mail szolgáltatás kínál.
 
-Úgy gondoljuk, hogy az adataid a tieid, ezért egyszerűvé tesszük az e-mailek szabványos formátumokban (MBOX, EML, SQLite) történő exportálását, és az adatok valódi törlését, amikor csak szeretnéd. Ez a szintű kontroll ritka az e-mail szolgáltatók körében, de elengedhetetlen a valódi adatvédelemhez.
+### Adathordozhatóság és irányítás {#data-portability-and-control}
 
-## Az adatvédelmet elsődlegesen szem előtt tartó e-mail-továbbítás technikai kihívásai {#the-technical-challenges-of-privacy-first-email-forwarding}
+Úgy gondoljuk, hogy az adataid a tiéd, ezért megkönnyítjük az e-mailek exportálását szabványos formátumokban (MBOX, EML, SQLite), és valóban törölheted az adataidat, amikor csak szeretnéd. Ez a szintű irányítás ritka az e-mail szolgáltatók között, de elengedhetetlen a valódi adatvédelemhez.
 
-Egy adatvédelmet előtérbe helyező e-mail szolgáltatás kiépítése jelentős technikai kihívásokkal jár. Íme néhány akadály, amit leküzdöttünk:
 
-### Memóriakezelés naplózás nélküli e-mail-feldolgozáshoz {#memory-management-for-no-logging-email-processing}
+## Az adatvédelmi szempontokat elsődlegesen szem előtt tartó e-mail továbbítás technikai kihívásai {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-A memóriában tárolt, lemezes tárhely nélküli e-mail-feldolgozás gondos memóriakezelést igényel a nagy mennyiségű e-mail-forgalom hatékony kezeléséhez. Fejlett memóriaoptimalizálási technikákat vezettünk be a megbízható teljesítmény biztosítása érdekében anélkül, hogy veszélyeztetnénk a tárhelymentes szabályzatunkat, amely adatvédelmi stratégiánk kritikus fontosságú eleme.
+Egy adatvédelmi szempontból elsődleges e-mail szolgáltatás felépítése jelentős technikai kihívásokkal jár. Íme néhány akadály, amelyet leküzdöttünk:
 
-### Spamészlelés tartalomelemzés nélkül az adatvédelmet megőrző szűréshez {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
+### Memóriakezelés naplózás nélküli e-mail feldolgozáshoz {#memory-management-for-no-logging-email-processing}
 
-A legtöbb [spam](https://en.wikipedia.org/wiki/Email_spam) észlelési rendszer az e-mailek tartalmának elemzésére támaszkodik, ami ütközik adatvédelmi alapelveinkkel. Kifejlesztettünk olyan technikákat, amelyekkel az e-mailek tartalmának elolvasása nélkül azonosíthatjuk a spammintákat, egyensúlyt teremtve az adatvédelem és a használhatóság között, miközben megőrzi a kommunikáció bizalmasságát.
+Az e-mailek memóriában történő feldolgozása lemezhasználat nélkül gondos memóriakezelést igényel a nagy mennyiségű e-mail forgalom hatékony kezelése érdekében. Fejlett memóriaoptimalizációs technikákat vezettünk be, hogy megbízható teljesítményt biztosítsunk anélkül, hogy kompromisszumot kötnénk a naplózásmentes tárolási szabályzatunkkal, amely adatvédelmi stratégiánk kritikus eleme.
 
-### Az adatvédelmet szem előtt tartó tervezéssel való kompatibilitás fenntartása {#maintaining-compatibility-with-privacy-first-design}
+### Spam felismerés tartalomelemzés nélkül, adatvédelmet megőrző szűréshez {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-Az összes e-mail klienssel való kompatibilitás biztosítása a fejlett adatvédelmi funkciók megvalósítása mellett kreatív mérnöki megoldásokat igényelt. Csapatunk fáradhatatlanul dolgozott azon, hogy az adatvédelem zökkenőmentes legyen, így nem kell választania a kényelem és a biztonság között az e-mail kommunikáció védelme során.
+A legtöbb [spam](https://en.wikipedia.org/wiki/Email_spam) felismerő rendszer az e-mailek tartalmának elemzésére támaszkodik, ami ellentétes az adatvédelmi elveinkkel. Olyan technikákat fejlesztettünk ki, amelyek képesek spam mintázatokat azonosítani anélkül, hogy elolvasnánk az e-mailek tartalmát, így egyensúlyt teremtve az adatvédelem és a használhatóság között, megőrizve kommunikációid bizalmasságát.
 
-## Adatvédelmi bevált gyakorlatok e-mail-továbbítási felhasználók számára {#privacy-best-practices-for-forward-email-users}
+### Kompatibilitás fenntartása az adatvédelmi szempontokat elsődlegesen szem előtt tartó tervezéssel {#maintaining-compatibility-with-privacy-first-design}
 
-Az e-mail-megfigyelés elleni védelem maximalizálása és az e-mail továbbítása használatakor az alábbi ajánlott gyakorlatokat javasoljuk:
+Az összes e-mail klienssel való kompatibilitás biztosítása miközben fejlett adatvédelmi funkciókat valósítunk meg, kreatív mérnöki megoldásokat igényelt. Csapatunk fáradhatatlanul dolgozott azon, hogy az adatvédelem zökkenőmentes legyen, így neked nem kell választanod a kényelem és a biztonság között, amikor e-mail kommunikációidat véded.
 
-1. **Használjon egyedi aliasokat a különböző szolgáltatásokhoz** - Hozzon létre külön e-mail aliast minden egyes szolgáltatáshoz, amelyre feliratkozik, hogy megakadályozza a szolgáltatások közötti követést.
-2. **Engedélyezze az OpenPGP titkosítást** - Bizalmas kommunikáció esetén használjon végponttól végpontig terjedő titkosítást a teljes adatvédelem biztosítása érdekében.
-3. **Rendszeresen cserélje le az e-mail aliasait** - Időről időre frissítse a fontos szolgáltatások aliasait a hosszú távú adatgyűjtés minimalizálása érdekében.
-4. **Használjon erős, egyedi jelszavakat** - Védje e-mail továbbítási fiókját erős jelszóval a jogosulatlan hozzáférés megakadályozása érdekében.
-5. **Implementálja a [IP-cím](https://en.wikipedia.org/wiki/IP_address) anonimizálást** - Fontolja meg a [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) használatát a továbbítási e-maillel együtt a teljes anonimitás érdekében.
 
-## Konklúzió: A privát e-mail-továbbítás jövője {#conclusion-the-future-of-private-email-forwarding}
+## Adatvédelmi legjobb gyakorlatok a Forward Email felhasználók számára {#privacy-best-practices-for-forward-email-users}
 
-A Forward Emailnél hiszünk abban, hogy az adatvédelem nem csupán egy funkció – hanem alapvető jog. Technikai megvalósításaink ezt a meggyőződést tükrözik, olyan e-mail-továbbítást biztosítva, amely minden szinten tiszteletben tartja az Ön adatainak védelmét, és megvédi Önt az e-mail-megfigyeléstől és a metaadatok gyűjtésétől.
+Az e-mail megfigyelés elleni védelem maximalizálása és az adatvédelem növelése érdekében a Forward Email használata során az alábbi legjobb gyakorlatokat javasoljuk:
 
-Szolgáltatásunk folyamatos fejlesztése és javítása során az adatvédelem iránti elkötelezettségünk továbbra is töretlen. Folyamatosan új titkosítási módszereket kutatunk, további adatvédelmi lehetőségeket vizsgálunk, és finomítjuk kódbázisunkat, hogy a lehető legbiztonságosabb e-mail élményt nyújtsuk.
+1. **Használj egyedi aliasokat különböző szolgáltatásokhoz** – Hozz létre külön e-mail aliasokat minden szolgáltatáshoz, amelyre regisztrálsz, hogy megakadályozd a szolgáltatások közötti követést
+2. **Kapcsold be az OpenPGP titkosítást** – Érzékeny kommunikáció esetén használj végpontok közötti titkosítást a teljes adatvédelem érdekében
+3. **Rendszeresen cseréld az e-mail aliasokat** – Időszakosan frissítsd az aliasokat fontos szolgáltatásokhoz, hogy minimalizáld a hosszú távú adatgyűjtést
+4. **Használj erős, egyedi jelszavakat** – Védd a Forward Email fiókodat erős jelszóval, hogy megakadályozd a jogosulatlan hozzáférést
+5. **Valósíts meg [IP-cím](https://en.wikipedia.org/wiki/IP_address) anonimizálást** – Fontold meg egy [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) használatát a Forward Email mellett a teljes anonimitás érdekében
 
-Az E-mail továbbítása választásával nem csupán egy e-mail szolgáltatást választasz – támogatod az internet azon vízióját, ahol az adatvédelem az alapértelmezett, nem pedig a kivétel. Csatlakozz hozzánk egy privátabb digitális jövő építésében, e-mailről e-mailre.
 
-<!-- *Kulcsszavak: privát e-mail továbbítás, e-mail adatvédelem, biztonságos e-mail szolgáltatás, nyílt forráskódú e-mail, kvantumbiztonságos titkosítás, OpenPGP e-mail, memóriában tárolt e-mail feldolgozás, naplózásmentes e-mail szolgáltatás, e-mail metaadat-védelem, e-mail fejléc adatvédelme, végponttól végpontig titkosított e-mail, adatvédelem-első e-mail, névtelen e-mail továbbítás, e-mail biztonsági legjobb gyakorlatok, e-mail tartalomvédelem, adathalászat elleni védelem, e-mail víruskeresés, adatvédelem-központú e-mail szolgáltató, biztonságos e-mail fejlécek, e-mail adatvédelem megvalósítása, védelem az e-mail megfigyelés ellen, naplózásmentes e-mail továbbítás, e-mail metaadat-szivárgás megakadályozása, e-mail adatvédelmi technikák, IP-cím anonimizálás e-mailekhez, privát e-mail aliasok, e-mail továbbítás biztonsága, e-mail adatvédelem a hirdetőktől, kvantumrezisztens e-mail titkosítás, e-mail adatvédelem kompromisszumok nélkül, SQLite e-mail tárolás, sandboxos e-mail titkosítás, adathordozhatóság e-mailekhez* -->
+## Összegzés: Az adatvédelmi szempontokat elsődlegesen szem előtt tartó e-mail továbbítás jövője {#conclusion-the-future-of-private-email-forwarding}
+
+A Forward Email-nél hisszük, hogy az adatvédelem nem csupán egy funkció – alapvető jog. Műszaki megvalósításaink ezt a hitet tükrözik, olyan e-mail továbbítást biztosítva, amely minden szinten tiszteletben tartja az adatvédelmedet, és megvéd az e-mail megfigyeléstől és metaadat-gyűjtéstől.
+
+Ahogy tovább fejlesztjük és tökéletesítjük szolgáltatásunkat, elkötelezettségünk az adatvédelem iránt változatlan marad. Folyamatosan kutatunk új titkosítási módszereket, további adatvédelmi megoldásokat vizsgálunk, és finomítjuk kódalapunkat, hogy a lehető legbiztonságosabb e-mail élményt nyújtsuk.
+
+A Forward Email választásával nem csupán egy e-mail szolgáltatást választasz – támogatod azt a víziót, amely szerint az interneten az adatvédelem az alapértelmezett, nem pedig a kivétel. Csatlakozz hozzánk egy privátabb digitális jövő építésében, egy e-maillel egyszerre.
+<!-- *Keywords: private email forwarding, email privacy protection, secure email service, open-source email, quantum-safe encryption, OpenPGP email, in-memory email processing, no-log email service, email metadata protection, email header privacy, end-to-end encrypted email, privacy-first email, anonymous email forwarding, email security best practices, email content protection, phishing protection, email virus scanning, privacy-focused email provider, secure email headers, email privacy implementation, protection from email surveillance, no-logging email forwarding, prevent email metadata leakage, email privacy techniques, IP address anonymization for email, private email aliases, email forwarding security, email privacy from advertisers, quantum-resistant email encryption, email privacy without compromise, SQLite email storage, sandboxed email encryption, data portability for email* -->
+

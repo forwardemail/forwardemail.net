@@ -1,135 +1,138 @@
-# Turn Your Raspberry Pi into a Secure FTP Server with Email Relay {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
+# Raspberry Pi'nizi E-posta Aktarımlı Güvenli Bir FTP Sunucusuna Dönüştürün {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide will show you how to turn it into a powerful, automated file server with email relay capabilities. Perfect for security cameras, IoT devices, and more.
+Elinizde toz tutan bir Raspberry Pi mi var? En yeni Pi 5, Pi 4, Pi Zero veya daha eski bir model olsun, bu rehber size onu güçlü, otomatik dosya sunucusuna ve e-posta aktarımlı bir sisteme nasıl dönüştüreceğinizi gösterecek. Güvenlik kameraları, IoT cihazları ve daha fazlası için mükemmel.
 
-**Compatible with:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, and Raspberry Pi Zero.
-
-> \[!NOTE]
-> This guide was tested and verified on a Raspberry Pi 3 Model B running Ubuntu Server 22.04 LTS.
-
-## Table of Contents {#table-of-contents}
-
-* [What We're Building](#what-were-building)
-* [Part 1: Getting Ubuntu Server on Your Pi](#part-1-getting-ubuntu-server-on-your-pi)
-  * [What You'll Need](#what-youll-need)
-  * [Flashing the OS](#flashing-the-os)
-  * [Booting Up & Connecting](#booting-up--connecting)
-* [Part 2: Setting Up a Secure FTP Server](#part-2-setting-up-a-secure-ftp-server)
-  * [Installation & Configuration](#installation--configuration)
-  * [Creating an FTP User](#creating-an-ftp-user)
-* [Part 3: Firewall and Brute-Force Protection](#part-3-firewall-and-brute-force-protection)
-  * [Setting Up UFW](#setting-up-ufw)
-  * [Setting Up Fail2ban](#setting-up-fail2ban)
-* [Part 4: Automated File Processing with Email Notifications](#part-4-automated-file-processing-with-email-notifications)
-  * [Option 1: Using Forward Email API (Recommended)](#option-1-using-forward-email-api-recommended)
-  * [Option 2: Using Other Email Providers](#option-2-using-other-email-providers)
-  * [Create a Systemd Service](#create-a-systemd-service)
-* [Part 5: Email Options for Legacy Devices](#part-5-email-options-for-legacy-devices)
-  * [Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
-  * [Option 2: Set Up a Postfix SMTP Relay](#option-2-set-up-a-postfix-smtp-relay)
-* [Troubleshooting](#troubleshooting)
-* [Wrapping Up](#wrapping-up)
-
-## What We're Building {#what-were-building}
-
-This guide will walk you through setting up a complete system that includes:
-
-* **Ubuntu Server 22.04 LTS:** A rock-solid, lightweight OS for the Pi.
-* **A Secure FTP Server (vsftpd):** For dropping off files securely.
-* **A Firewall (UFW) & Fail2ban:** To keep the bad guys out.
-* **An Automated File Processor:** A script that grabs new files, emails them as attachments, and then cleans up after itself.
-* **Email Options for Legacy Devices:** Two approaches for devices that don't support modern TLS:
-  * Use Forward Email's legacy TLS 1.0 ports (easiest)
-  * Set up a Postfix SMTP relay (works with any email provider)
-
-Ready? Let's dive in.
-
-## Part 1: Getting Ubuntu Server on Your Pi {#part-1-getting-ubuntu-server-on-your-pi}
-
-First things first, get Ubuntu Server running on the Raspberry Pi. This is surprisingly easy thanks to the Raspberry Pi Imager.
-
-### What You'll Need {#what-youll-need}
-
-* Any compatible Raspberry Pi (see list above)
-* A microSD card (8GB minimum, 16GB+ recommended)
-* A computer with a microSD card reader
-* Appropriate power supply for your Pi model
-* Internet access (Ethernet or Wi-Fi)
+**Uyumlu modeller:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W ve Raspberry Pi Zero.
 
 > \[!NOTE]
-> Older models like the Raspberry Pi 2 or Pi Zero may be slower but will work fine for this setup.
+> Bu rehber, Ubuntu Server 22.04 LTS çalışan bir Raspberry Pi 3 Model B üzerinde test edilip doğrulanmıştır.
 
-### Flashing the OS {#flashing-the-os}
 
-1. **Get the Raspberry Pi Imager:** Download it from the [official website](https://www.raspberrypi.com/software/).
+## İçindekiler {#table-of-contents}
 
-2. **Choose the OS:** In the imager, select "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
-   * For 64-bit models (Pi 3, 4, 5, Zero 2 W), choose **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
-   * For older 32-bit models (Pi 2, Pi Zero, Pi Zero W), choose **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+* [Ne İnşa Ediyoruz](#what-were-building)
+* [Bölüm 1: Pi'nize Ubuntu Server Kurmak](#part-1-getting-ubuntu-server-on-your-pi)
+  * [İhtiyacınız Olanlar](#what-youll-need)
+  * [İşletim Sistemini Yazdırmak](#flashing-the-os)
+  * [Başlatma ve Bağlanma](#booting-up--connecting)
+* [Bölüm 2: Güvenli Bir FTP Sunucusu Kurmak](#part-2-setting-up-a-secure-ftp-server)
+  * [Kurulum ve Yapılandırma](#installation--configuration)
+  * [Bir FTP Kullanıcısı Oluşturmak](#creating-an-ftp-user)
+* [Bölüm 3: Güvenlik Duvarı ve Brute-Force Koruması](#part-3-firewall-and-brute-force-protection)
+  * [UFW Kurulumu](#setting-up-ufw)
+  * [Fail2ban Kurulumu](#setting-up-fail2ban)
+* [Bölüm 4: E-posta Bildirimli Otomatik Dosya İşleme](#part-4-automated-file-processing-with-email-notifications)
+  * [Seçenek 1: Forward Email API Kullanımı (Önerilen)](#option-1-using-forward-email-api-recommended)
+  * [Seçenek 2: Diğer E-posta Sağlayıcıları](#option-2-using-other-email-providers)
+  * [Bir Systemd Servisi Oluşturmak](#create-a-systemd-service)
+* [Bölüm 5: Eski Cihazlar İçin E-posta Seçenekleri](#part-5-email-options-for-legacy-devices)
+  * [Seçenek 1: Forward Email'in Legacy TLS 1.0 Portlarını Kullanmak (Önerilen)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
+  * [Seçenek 2: Postfix SMTP Aktarıcısı Kurmak](#option-2-set-up-a-postfix-smtp-relay)
+* [Sorun Giderme](#troubleshooting)
+* [Sonuçlandırma](#wrapping-up)
 
-3. **Pick Your Storage:** Select your microSD card.
+
+## Ne İnşa Ediyoruz {#what-were-building}
+
+Bu rehber sizi aşağıdakileri içeren tam bir sistem kurulumunda yönlendirecek:
+
+* **Ubuntu Server 22.04 LTS:** Pi için sağlam ve hafif bir işletim sistemi.
+* **Güvenli Bir FTP Sunucusu (vsftpd):** Dosyaları güvenli şekilde bırakmak için.
+* **Güvenlik Duvarı (UFW) ve Fail2ban:** Kötü niyetlileri engellemek için.
+* **Otomatik Dosya İşleyici:** Yeni dosyaları alıp e-posta eki olarak gönderen ve ardından kendini temizleyen bir betik.
+* **Eski Cihazlar İçin E-posta Seçenekleri:** Modern TLS desteklemeyen cihazlar için iki yöntem:
+  * Forward Email'in legacy TLS 1.0 portlarını kullanmak (en kolay)
+  * Postfix SMTP aktarıcısı kurmak (herhangi bir e-posta sağlayıcısıyla çalışır)
+
+Hazır mısınız? Başlayalım.
+
+
+## Bölüm 1: Pi'nize Ubuntu Server Kurmak {#part-1-getting-ubuntu-server-on-your-pi}
+
+İlk olarak, Raspberry Pi üzerinde Ubuntu Server çalıştırın. Raspberry Pi Imager sayesinde bu şaşırtıcı derecede kolay.
+
+### İhtiyacınız Olanlar {#what-youll-need}
+
+* Yukarıdaki listede belirtilen herhangi bir uyumlu Raspberry Pi
+* Bir microSD kart (en az 8GB, 16GB+ önerilir)
+* MicroSD kart okuyuculu bir bilgisayar
+* Pi modelinize uygun güç kaynağı
+* İnternet bağlantısı (Ethernet veya Wi-Fi)
+
+> \[!NOTE]
+> Raspberry Pi 2 veya Pi Zero gibi eski modeller daha yavaş olabilir ancak bu kurulum için sorunsuz çalışacaktır.
+
+### İşletim Sistemini Yazdırmak {#flashing-the-os}
+
+1. **Raspberry Pi Imager'ı edinin:** [resmi web sitesinden](https://www.raspberrypi.com/software/) indirin.
+
+2. **İşletim Sistemini Seçin:** Imager'da "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu" seçeneklerini takip edin.
+   * 64-bit modeller (Pi 3, 4, 5, Zero 2 W) için **"Ubuntu Server 22.04.1 LTS (64-bit)"** seçin.
+   * Eski 32-bit modeller (Pi 2, Pi Zero, Pi Zero W) için **"Ubuntu Server 22.04.1 LTS (32-bit)"** seçin.
+
+3. **Depolama Alanınızı Seçin:** MicroSD kartınızı seçin.
 
 > \[!WARNING]
-> This will wipe your microSD card clean. Make sure you've backed up anything important.
+> Bu işlem microSD kartınızı tamamen silecektir. Önemli verilerinizi yedeklediğinizden emin olun.
 
-4. **Advanced Options are Your Friend:** Click the gear icon (⚙️) to set up the Pi for headless mode (no monitor or keyboard needed).
-   * **Hostname:** Give your Pi a name (e.g., `pi-server`).
-   * **SSH:** Enable it and set a username and password.
-   * **Wi-Fi:** If you're not using Ethernet, enter your Wi-Fi details.
-   * **Locale:** Set your timezone and keyboard layout.
+4. **Gelişmiş Seçenekler Sizin Dostunuz:** Dişli simgesine (⚙️) tıklayarak Pi'nizi monitör ve klavye olmadan (headless) kullanmak için ayarlayın.
+   * **Hostname:** Pi'nize bir isim verin (örneğin, `pi-server`).
+   * **SSH:** Etkinleştirin ve bir kullanıcı adı ile şifre belirleyin.
+   * **Wi-Fi:** Ethernet kullanmıyorsanız Wi-Fi bilgilerinizi girin.
+   * **Yerel Ayar:** Saat diliminizi ve klavye düzeninizi ayarlayın.
+5. **Yaz!** "WRITE" düğmesine tıklayın ve imajlayıcının işini yapmasına izin verin.
 
-5. **Write!** Click the "WRITE" button and let the imager do its thing.
+### Başlatma ve Bağlanma {#booting-up--connecting}
 
-### Booting Up & Connecting {#booting-up--connecting}
-
-Once the imager is done, pop the microSD card into the Pi and plug it in. Give it a few minutes to boot up. It's doing some initial setup in the background. Find its IP address from your router's admin page, then connect via SSH:
+İmajlayıcı işi bitirdikten sonra, microSD kartı Pi'ye takın ve fişe takın. Başlaması için birkaç dakika bekleyin. Arka planda bazı ilk ayarları yapıyor. Yönlendiricinizin yönetim sayfasından IP adresini bulun, ardından SSH ile bağlanın:
 
 ```bash
 ssh your_username@your_pi_ip_address
 ```
 
-You're in! The Raspberry Pi is now ready for configuration.
+Giriş yaptınız! Raspberry Pi artık yapılandırmaya hazır.
 
-## Part 2: Setting Up a Secure FTP Server {#part-2-setting-up-a-secure-ftp-server}
 
-Next, set up `vsftpd` (Very Secure FTP Daemon), configured for maximum security.
+## Bölüm 2: Güvenli Bir FTP Sunucusu Kurma {#part-2-setting-up-a-secure-ftp-server}
 
-### Installation & Configuration {#installation--configuration}
+Sonraki adım, maksimum güvenlik için yapılandırılmış `vsftpd` (Çok Güvenli FTP Daemon) kurmaktır.
 
-1. **Install vsftpd:**
+### Kurulum ve Yapılandırma {#installation--configuration}
+
+1. **vsftpd'yi yükleyin:**
 
    ```bash
    sudo apt update
    sudo apt install vsftpd -y
    ```
 
-2. **Backup the config file:**
+2. **Yapılandırma dosyasını yedekleyin:**
 
    ```bash
    sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
    ```
 
-3. **Edit the configuration:**
+3. **Yapılandırmayı düzenleyin:**
 
    ```bash
    sudo nano /etc/vsftpd.conf
    ```
 
 > \[!TIP]
-> If a line is commented out (starts with a `#`), uncomment it by removing the `#`.
+> Eğer bir satır yorum satırıysa (başında `#` varsa), `#` işaretini kaldırarak yorumdan çıkarın.
 
-Make these changes:
+Aşağıdaki değişiklikleri yapın:
 
-| Setting | Değer | Purpose |
+| Ayar                     | Değer | Amaç                                                      |
 | ------------------------ | ----- | --------------------------------------------------------- |
-| `anonymous_enable` | `NO` | Disable anonymous FTP access |
-| `local_enable` | `YES` | Allow local users to log in |
-| `write_enable` | `YES` | Enable file uploads |
-| `local_umask` | `022` | Set file permissions (644 for files, 755 for directories) |
-| `chroot_local_user` | `YES` | Jail users to their home directory |
-| `allow_writeable_chroot` | `YES` | Allow uploads in chroot jail |
+| `anonymous_enable`       | `NO`  | Anonim FTP erişimini devre dışı bırak                      |
+| `local_enable`           | `YES` | Yerel kullanıcıların giriş yapmasına izin ver              |
+| `write_enable`           | `YES` | Dosya yüklemelerini etkinleştir                            |
+| `local_umask`            | `022` | Dosya izinlerini ayarla (dosyalar için 644, dizinler için 755) |
+| `chroot_local_user`      | `YES` | Kullanıcıları ev dizinlerine hapset                         |
+| `allow_writeable_chroot` | `YES` | Chroot jail içinde yüklemelere izin ver                     |
 
-4. **Add Passive Port Range:** Add these lines to the end of the file. This is needed for the firewall.
+4. **Pasif Port Aralığını Ekle:** Dosyanın sonuna aşağıdaki satırları ekleyin. Bu, güvenlik duvarı için gereklidir.
 
    ```
    pasv_enable=YES
@@ -137,7 +140,7 @@ Make these changes:
    pasv_max_port=50000
    ```
 
-5. **Enable Logging:** Add these lines to enable logging for Fail2ban.
+5. **Kayıtları Etkinleştir:** Fail2ban için kayıt tutmayı etkinleştirmek üzere aşağıdaki satırları ekleyin.
 
    ```
    xferlog_enable=YES
@@ -145,34 +148,34 @@ Make these changes:
    log_ftp_protocol=YES
    ```
 
-6. **Save and Restart:** Press `Ctrl+O`, `Enter`, `Ctrl+X`, then restart the service:
+6. **Kaydet ve Yeniden Başlat:** `Ctrl+O`, `Enter`, `Ctrl+X` tuşlarına basın, ardından servisi yeniden başlatın:
 
    ```bash
    sudo systemctl restart vsftpd
    ```
 
-### Creating an FTP User {#creating-an-ftp-user}
+### Bir FTP Kullanıcısı Oluşturma {#creating-an-ftp-user}
 
-Create a dedicated, restricted user for FTP access.
+FTP erişimi için özel, kısıtlanmış bir kullanıcı oluşturun.
 
-1. **Create the user:**
+1. **Kullanıcıyı oluşturun:**
 
    ```bash
    sudo adduser ftpuser
    ```
 
-Follow the prompts to set a password. The other fields (name, phone, etc.) can be left blank.
+   Parola belirlemek için yönergeleri izleyin. Diğer alanlar (isim, telefon vb.) boş bırakılabilir.
 
-2. **Create the directory structure:**
+2. **Dizin yapısını oluşturun:**
 
    ```bash
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-* `/home/ftpuser/ftp` - Main FTP directory
-   * `/home/ftpuser/ftp/uploads` - Where files will be uploaded
+   * `/home/ftpuser/ftp` - Ana FTP dizini
+   * `/home/ftpuser/ftp/uploads` - Dosyaların yükleneceği yer
 
-3. **Set permissions:**
+3. **İzinleri ayarlayın:**
 
    ```bash
    sudo chown -R ftpuser:ftpuser /home/ftpuser/ftp
@@ -180,66 +183,66 @@ Follow the prompts to set a password. The other fields (name, phone, etc.) can b
    sudo chmod 755 /home/ftpuser/ftp/uploads
    ```
 
-## Part 3: Firewall and Brute-Force Protection {#part-3-firewall-and-brute-force-protection}
 
-Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
+## Bölüm 3: Güvenlik Duvarı ve Kaba Kuvvet Koruması {#part-3-firewall-and-brute-force-protection}
 
-### Setting Up UFW {#setting-up-ufw}
+Pi'yi UFW (Basit Güvenlik Duvarı) ve Fail2ban ile güvence altına alın.
 
-1. **Install UFW:**
+### UFW Kurulumu {#setting-up-ufw}
+
+1. **UFW'yi yükleyin:**
 
    ```bash
    sudo apt install ufw -y
    ```
 
-2. **Set default policies:**
+2. **Varsayılan politikaları ayarlayın:**
 
    ```bash
    sudo ufw default deny incoming
    sudo ufw default allow outgoing
    ```
 
-3. **Allow SSH (critical!):**
+3. **SSH'ye izin verin (kritik!):**
 
    ```bash
-   sudo ufw allow ssh comment 'SSH access'
+   sudo ufw allow ssh comment 'SSH erişimi'
    ```
 
 > \[!WARNING]
-> Always allow SSH before enabling the firewall, or you'll lock yourself out!
+> Güvenlik duvarını etkinleştirmeden önce her zaman SSH'ye izin verin, yoksa kendinizi kilitlersiniz!
 
-4. **Allow FTP ports:**
+4. **FTP portlarına izin verin:**
 
    ```bash
-   sudo ufw allow 20/tcp comment 'FTP data'
-   sudo ufw allow 21/tcp comment 'FTP control'
-   sudo ufw allow 40000:50000/tcp comment 'FTP passive mode'
+   sudo ufw allow 20/tcp comment 'FTP veri'
+   sudo ufw allow 21/tcp comment 'FTP kontrol'
+   sudo ufw allow 40000:50000/tcp comment 'FTP pasif mod'
    ```
 
-5. **Enable the firewall:**
+5. **Güvenlik duvarını etkinleştirin:**
 
    ```bash
    sudo ufw enable
    ```
 
-### Setting Up Fail2ban {#setting-up-fail2ban}
+### Fail2ban Kurulumu {#setting-up-fail2ban}
 
-Fail2ban automatically blocks IP addresses after repeated failed login attempts.
+Fail2ban, tekrar eden başarısız giriş denemelerinden sonra IP adreslerini otomatik olarak engeller.
 
-1. **Install Fail2ban:**
+1. **Fail2ban'ı yükleyin:**
 
    ```bash
    sudo apt install fail2ban -y
    ```
 
-2. **Create a local configuration:**
+2. **Yerel yapılandırma dosyası oluşturun:**
 
    ```bash
    sudo nano /etc/fail2ban/jail.local
    ```
 
-3. **Add these configurations:**
-
+3. **Aşağıdaki yapılandırmaları ekleyin:**
    ```ini
    [DEFAULT]
    bantime = 3600
@@ -263,6 +266,7 @@ Fail2ban automatically blocks IP addresses after repeated failed login attempts.
    ```bash
    sudo systemctl restart fail2ban
    ```
+
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
@@ -458,23 +462,23 @@ do
 done
 ```
 
-Make it executable:
+Çalıştırılabilir yapın:
 
 ```bash
 sudo chmod +x /usr/local/bin/ftp-monitor.sh
 ```
 
-### Create a Systemd Service {#create-a-systemd-service}
+### Systemd Servisi Oluşturun {#create-a-systemd-service}
 
 ```bash
 sudo nano /etc/systemd/system/ftp-monitor.service
 ```
 
-Add this content:
+Bu içeriği ekleyin:
 
 ```ini
 [Unit]
-Description=FTP Upload Monitor
+Description=FTP Yükleme Monitörü
 After=network.target
 
 [Service]
@@ -487,7 +491,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable and start the service:
+Servisi etkinleştirin ve başlatın:
 
 ```bash
 sudo systemctl daemon-reload
@@ -495,110 +499,110 @@ sudo systemctl enable ftp-monitor.service
 sudo systemctl start ftp-monitor.service
 ```
 
-Check the status:
+Durumu kontrol edin:
 
 ```bash
 sudo systemctl status ftp-monitor.service
 ```
 
-## Part 5: Email Options for Legacy Devices {#part-5-email-options-for-legacy-devices}
 
-Devices like FOSSCAM cameras often don't support modern TLS versions. There are two solutions:
+## Bölüm 5: Eski Cihazlar için E-posta Seçenekleri {#part-5-email-options-for-legacy-devices}
 
-### Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
+FOSSCAM kameralar gibi cihazlar genellikle modern TLS sürümlerini desteklemez. İki çözüm vardır:
 
-If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports specifically for older devices like cameras, printers, scanners, and fax machines.
+### Seçenek 1: Forward Email'in Eski TLS 1.0 Portlarını Kullanın (Önerilen) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-#### Pricing {#pricing}
+Forward Email kullanıyorsanız, bu en kolay çözümdür. Forward Email, kameralar, yazıcılar, tarayıcılar ve faks makineleri gibi eski cihazlar için özel olarak eski TLS 1.0 portları sağlar.
 
-Forward Email offers several plans:
+#### Fiyatlandırma {#pricing}
 
-| Plan | Price | Features |
-| ----------------------- | ------------ | -------------------------------------- |
-| Free | $0/month | Email forwarding only (no sending) |
-| **Enhanced Protection** | **$3/month** | **SMTP access + legacy TLS 1.0 ports** |
-| Team | $9/month | Enhanced + team features |
-| Enterprise | $250/month | Team + unlimited API requests |
+Forward Email birkaç plan sunar:
+
+| Plan                    | Fiyat        | Özellikler                             |
+| ----------------------- | ------------ | ------------------------------------ |
+| Ücretsiz                | $0/ay        | Sadece e-posta yönlendirme (gönderim yok) |
+| **Gelişmiş Koruma**     | **$3/ay**    | **SMTP erişimi + eski TLS 1.0 portları** |
+| Takım                   | $9/ay        | Gelişmiş + takım özellikleri         |
+| Kurumsal                | $250/ay      | Takım + sınırsız API istekleri       |
 
 > \[!IMPORTANT]
-> The **Enhanced Protection plan ($3/month)** or higher is required for SMTP access and legacy TLS 1.0 port support.
+> SMTP erişimi ve eski TLS 1.0 port desteği için **Gelişmiş Koruma planı ($3/ay)** veya üzeri gereklidir.
 
-Learn more at [Forward Email Pricing](https://forwardemail.net/en/pricing).
+Daha fazla bilgi için [Forward Email Fiyatlandırma](https://forwardemail.net/en/pricing) sayfasına bakın.
 
-#### Generate Your Password {#generate-your-password}
+#### Şifrenizi Oluşturun {#generate-your-password}
 
-Before configuring your device, generate a password in Forward Email:
+Cihazınızı yapılandırmadan önce Forward Email'de bir şifre oluşturun:
 
-1. Log in to [Forward Email](https://forwardemail.net)
-2. Navigate to **My Account → Domains → \[Your Domain] → Aliases**
-3. Create or select an alias (e.g., `camera@yourdomain.com`)
-4. Click **"Generate Password"** next to the alias
-5. Copy the generated password - you'll use this for SMTP authentication
+1. [Forward Email](https://forwardemail.net) sitesine giriş yapın
+2. **Hesabım → Alan Adları → \[Alan Adınız] → Takma Adlar** bölümüne gidin
+3. Bir takma ad oluşturun veya seçin (örneğin, `camera@yourdomain.com`)
+4. Takma adın yanındaki **"Şifre Oluştur"** butonuna tıklayın
+5. Oluşturulan şifreyi kopyalayın - SMTP kimlik doğrulaması için bunu kullanacaksınız
 
 > \[!TIP]
-> Each alias can have its own password. This is useful for tracking which device sent which email.
+> Her takma adın kendi şifresi olabilir. Bu, hangi cihazın hangi e-postayı gönderdiğini takip etmek için faydalıdır.
 
-#### Configure Your Device {#configure-your-device}
+#### Cihazınızı Yapılandırın {#configure-your-device}
 
-Use these settings in your camera, printer, scanner, or other legacy device:
+Kameranızda, yazıcınızda, tarayıcınızda veya diğer eski cihazlarda bu ayarları kullanın:
 
-| Setting | Değer |
+| Ayar            | Değer                                            |
 | --------------- | ------------------------------------------------ |
-| SMTP Server | `smtp.forwardemail.net` |
-| Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` (alternative) |
-| Username | Your alias email (e.g., `camera@yourdomain.com`) |
-| Şifre | The password from "Generate Password" |
-| Authentication | Gerekli |
-| Encryption | SSL/TLS or STARTTLS |
+| SMTP Sunucusu   | `smtp.forwardemail.net`                          |
+| Port (SSL/TLS)  | `2455`                                           |
+| Port (STARTTLS) | `2555` (alternatif)                              |
+| Kullanıcı Adı   | Takma ad e-posta adresiniz (örneğin `camera@yourdomain.com`) |
+| Şifre           | "Şifre Oluştur" ile aldığınız şifre             |
+| Kimlik Doğrulama| Gerekli                                         |
+| Şifreleme       | SSL/TLS (önerilen) veya STARTTLS                  |
 
 > \[!WARNING]
-> These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Use only if your device cannot support modern TLS 1.2+.
+> Bu portlar, bilinen güvenlik açıkları (BEAST, POODLE) bulunan eski TLS 1.0 protokolünü kullanır. Cihazınız modern TLS 1.2+ desteklemiyorsa kullanın.
 
-Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
+Cihazınızı bu ayarlarla yapılandırın, böylece yerel bir aktarma sunucusuna ihtiyaç duymadan doğrudan Forward Email üzerinden e-posta gönderebilir.
 
-For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
+Daha fazla detay için [Forward Email Eski TLS Desteği SSS](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) sayfasına bakın.
 
-### Option 2: Set Up a Postfix SMTP Relay {#option-2-set-up-a-postfix-smtp-relay}
+### Seçenek 2: Postfix SMTP Aktarıcısı Kurun {#option-2-set-up-a-postfix-smtp-relay}
 
-If you're not using Forward Email, or prefer a local relay solution, set up Postfix on the Raspberry Pi to act as a middleman. This works with any email provider (Gmail, Outlook, Yahoo, AOL, etc.).
+Forward Email kullanmıyorsanız veya yerel bir aktarma çözümü tercih ediyorsanız, Raspberry Pi üzerinde Postfix kurarak aracı olarak kullanabilirsiniz. Bu, Gmail, Outlook, Yahoo, AOL gibi herhangi bir e-posta sağlayıcısıyla çalışır.
 
-#### Install Postfix {#install-postfix}
+#### Postfix Kurulumu {#install-postfix}
 
 ```bash
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules -y
 ```
+Kurulum sırasında:
 
-During installation:
+* **"Internet Site"** seçin
+* "Sistem posta adı" için Pi'nizin ana bilgisayar adını girin (örneğin, `raspberrypi-ftp`)
 
-* Select **"Internet Site"**
-* Enter your Pi's hostname (e.g., `raspberrypi-ftp`) for "System mail name"
+#### E-posta Sağlayıcınızı Seçin {#choose-your-email-provider}
 
-#### Choose Your Email Provider {#choose-your-email-provider}
+| Sağlayıcı | SMTP Sunucusu         | Port | Uygulama Şifresi Gerekli mi? |
+| --------- | --------------------- | ---- | ---------------------------- |
+| Gmail     | smtp.gmail.com        | 587  | Evet                         |
+| Outlook   | smtp-mail.outlook.com | 587  | Evet                         |
+| Yahoo     | smtp.mail.yahoo.com   | 465  | Evet                         |
+| AOL       | smtp.aol.com          | 587  | Evet                         |
 
-| Ürün | SMTP Server | Port | App Password Required? |
-| -------- | --------------------- | ---- | ---------------------- |
-| Gmail | smtp.gmail.com | 587 | Evet |
-| Outlook | smtp-mail.outlook.com | 587 | Evet |
-| Yahoo | smtp.mail.yahoo.com | 465 | Evet |
-| AOL | smtp.aol.com | 587 | Evet |
+#### Uygulamaya Özel Şifre Alın {#get-an-app-specific-password}
 
-#### Get an App-Specific Password {#get-an-app-specific-password}
+Çoğu sağlayıcı üçüncü taraf uygulamalar için uygulama şifreleri gerektirir. Bunları e-posta sağlayıcınızın güvenlik ayarlarından oluşturun:
 
-Most providers require app passwords for third-party applications. Generate one from your email provider's security settings:
-
-* **Gmail:** [Google Account Security](https://myaccount.google.com/security)
-* **Outlook:** [Microsoft Account Security](https://account.microsoft.com/security)
-* **Yahoo:** [Yahoo Account Security](https://login.yahoo.com/account/security)
-* **AOL:** [AOL Account Security](https://login.aol.com/account/security)
+* **Gmail:** [Google Hesap Güvenliği](https://myaccount.google.com/security)
+* **Outlook:** [Microsoft Hesap Güvenliği](https://account.microsoft.com/security)
+* **Yahoo:** [Yahoo Hesap Güvenliği](https://login.yahoo.com/account/security)
+* **AOL:** [AOL Hesap Güvenliği](https://login.aol.com/account/security)
 
 > \[!IMPORTANT]
-> Never use your regular email password. Always use an app-specific password.
+> Normal e-posta şifrenizi asla kullanmayın. Her zaman uygulamaya özel şifre kullanın.
 
-#### Configure SASL Authentication {#configure-sasl-authentication}
+#### SASL Kimlik Doğrulamasını Yapılandırın {#configure-sasl-authentication}
 
-Create the password file for your chosen provider. This example uses Yahoo:
+Seçtiğiniz sağlayıcı için şifre dosyasını oluşturun. Bu örnek Yahoo kullanmaktadır:
 
 ```bash
 sudo mkdir -p /etc/postfix/sasl
@@ -606,28 +610,28 @@ sudo chmod 700 /etc/postfix/sasl
 sudo nano /etc/postfix/sasl/sasl_passwd
 ```
 
-Add this line (adjust server and port for your provider):
+Bu satırı ekleyin (sağlayıcınıza göre sunucu ve portu ayarlayın):
 
 ```
 [smtp.mail.yahoo.com]:465 your_email@yahoo.com:your_app_password
 ```
 
-For Gmail, use:
+Gmail için kullanın:
 
 ```
 [smtp.gmail.com]:587 your_email@gmail.com:your_app_password
 ```
 
-Secure and hash the file:
+Dosyayı güvenli hale getirin ve hashleyin:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl/sasl_passwd
 sudo postmap /etc/postfix/sasl/sasl_passwd
 ```
 
-#### Configure Email Address Mapping {#configure-email-address-mapping}
+#### E-posta Adresi Eşlemesini Yapılandırın {#configure-email-address-mapping}
 
-Rewrite local email addresses to match your email provider:
+Yerel e-posta adreslerini e-posta sağlayıcınıza uyacak şekilde yeniden yazın:
 
 ```bash
 sudo mkdir -p /etc/postfix/map
@@ -635,42 +639,42 @@ sudo chmod 700 /etc/postfix/map
 sudo nano /etc/postfix/map/regex_map
 ```
 
-Add this line (replace `HOSTNAME` with your Pi's hostname and use your email):
+Bu satırı ekleyin (`HOSTNAME` yerine Pi'nizin ana bilgisayar adını ve kendi e-postanızı kullanın):
 
 ```
 /.+@HOSTNAME/    your_email@provider.com
 ```
 
-Example:
+Örnek:
 
 ```
 /.+@raspberrypi-ftp/    john@yahoo.com
 ```
 
-Secure the file:
+Dosyayı güvenli hale getirin:
 
 ```bash
 sudo chmod 600 /etc/postfix/map/regex_map
 ```
 
-#### Configure Postfix Main Settings {#configure-postfix-main-settings}
+#### Postfix Ana Ayarlarını Yapılandırın {#configure-postfix-main-settings}
 
-Edit the main configuration:
+Ana yapılandırmayı düzenleyin:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-Find and update the relay host (or add at the end):
+Relay host'u bulun ve güncelleyin (veya dosyanın sonuna ekleyin):
 
 ```
 relayhost = [smtp.mail.yahoo.com]:465
 ```
 
-Add these settings at the end of the file:
+Dosyanın sonuna şu ayarları ekleyin:
 
 ```
-# SMTP Relay Configuration
+# SMTP Relay Yapılandırması
 smtp_use_tls = yes
 smtp_sasl_auth_enable = yes
 smtp_sasl_security_options = noanonymous
@@ -680,69 +684,69 @@ smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
 smtp_generic_maps = regexp:/etc/postfix/map/regex_map
 
-# Network settings
+# Ağ ayarları
 inet_interfaces = all
 inet_protocols = ipv4
 mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 ```
 
 > \[!TIP]
-> For Gmail (port 587), set `smtp_tls_wrappermode = no` instead of `yes`.
+> Gmail (port 587) için `smtp_tls_wrappermode = yes` yerine `smtp_tls_wrappermode = no` olarak ayarlayın.
 
 > \[!WARNING]
-> Update `mynetworks` with your actual network range. Only add trusted networks - any device on these networks can relay mail without authentication.
+> `mynetworks` değerini gerçek ağ aralığınızla güncelleyin. Sadece güvenilir ağları ekleyin - bu ağlardaki herhangi bir cihaz kimlik doğrulama olmadan posta iletebilir.
 
-**Common network ranges:**
+**Yaygın ağ aralıkları:**
 
-| Network Range | IP Address Range |
+| Ağ Aralığı       | IP Adresi Aralığı           |
 | ---------------- | --------------------------- |
 | `192.168.0.0/24` | 192.168.0.1 - 192.168.0.254 |
 | `192.168.1.0/24` | 192.168.1.1 - 192.168.1.254 |
-| `10.0.0.0/8` | 10.0.0.0 - 10.255.255.255 |
+| `10.0.0.0/8`     | 10.0.0.0 - 10.255.255.255   |
 
-#### Update Firewall and Restart {#update-firewall-and-restart}
+#### Güvenlik Duvarını Güncelleyin ve Yeniden Başlatın {#update-firewall-and-restart}
 
 ```bash
-sudo ufw allow 25/tcp comment 'SMTP for local devices'
+sudo ufw allow 25/tcp comment 'Yerel cihazlar için SMTP'
 sudo systemctl restart postfix
 ```
 
-Verify Postfix is running:
+Postfix'in çalıştığını doğrulayın:
 
 ```bash
 sudo systemctl status postfix
 ```
 
-#### Test the Relay {#test-the-relay}
+#### Relay'i Test Edin {#test-the-relay}
 
-Send a test email:
+Test e-postası gönderin:
 
 ```bash
-echo "Test from Postfix" | mail -s "Test" your_email@provider.com
+echo "Postfix'ten Test" | mail -s "Test" your_email@provider.com
 ```
 
-Check the logs:
+Logları kontrol edin:
 
 ```bash
 sudo tail -f /var/log/mail.log
 ```
 
-Look for `status=sent` to confirm success.
+Başarıyı doğrulamak için `status=sent` ifadesini arayın.
 
-#### Configure Your Device {#configure-your-device-1}
+#### Cihazınızı Yapılandırın {#configure-your-device-1}
 
-In your camera or device settings:
+Kamera veya cihaz ayarlarınızda:
+* **SMTP Sunucusu:** Pi'nizin IP adresi (örneğin, `192.168.1.100`)
+* **SMTP Portu:** `25`
+* **Kimlik Doğrulama:** Yok
+* **Şifreleme:** Yok (yalnızca yerel ağ)
 
-* **SMTP Server:** Your Pi's IP address (e.g., `192.168.1.100`)
-* **SMTP Port:** `25`
-* **Authentication:** None
-* **Encryption:** None (local network only)
 
-## Troubleshooting {#troubleshooting}
+## Sorun Giderme {#troubleshooting}
 
-If issues arise, check these log files:
+Sorunlar ortaya çıkarsa, bu günlük dosyalarını kontrol edin:
 
-**FTP Server:**
+**FTP Sunucusu:**
 
 ```bash
 sudo tail -f /var/log/vsftpd.log
@@ -755,19 +759,20 @@ sudo fail2ban-client status
 sudo tail -f /var/log/fail2ban.log
 ```
 
-**File Monitor:**
+**Dosya İzleyici:**
 
 ```bash
 sudo journalctl -u ftp-monitor.service -f
 ```
 
-**Postfix Mail:**
+**Postfix Posta:**
 
 ```bash
 sudo tail -f /var/log/mail.log
-mailq  # View mail queue
+mailq  # Posta kuyruğunu görüntüle
 ```
 
-## Wrapping Up {#wrapping-up}
 
-The Raspberry Pi is now a complete automated system with secure file uploads, automatic email notifications with attachments, and SMTP relay capabilities for legacy devices. Whether using Forward Email's legacy TLS ports or a local Postfix relay, older devices can now send emails reliably through modern email providers.
+## Sonuçlandırma {#wrapping-up}
+
+Raspberry Pi artık güvenli dosya yüklemeleri, ekli otomatik e-posta bildirimleri ve eski cihazlar için SMTP aktarma yetenekleri ile tam otomatik bir sistemdir. Forward Email'in eski TLS portlarını veya yerel bir Postfix aktarıcısını kullanıyor olun, eski cihazlar artık modern e-posta sağlayıcıları üzerinden güvenilir şekilde e-posta gönderebilir.

@@ -1,556 +1,557 @@
-# Complete Guide to Printer, Camera, Fax & Scanner Email Setup {#complete-guide-to-printer-camera-fax--scanner-email-setup}
+# プリンター、カメラ、ファックス＆スキャナーのメール設定完全ガイド {#complete-guide-to-printer-camera-fax--scanner-email-setup}
 
-Your office equipment needs to send emails - printers alert about toner levels, IP cameras notify about motion detection, fax machines report transmission status, and scanners confirm document processing. The problem? Most email providers dropped support for older devices, leaving your equipment unable to send notifications.
+オフィス機器はメールを送信する必要があります。プリンターはトナー残量を通知し、IPカメラは動体検知を知らせ、ファックス機は送信状況を報告し、スキャナーは文書処理を確認します。問題は？ほとんどのメールプロバイダーが古い機器のサポートを終了し、機器が通知を送信できなくなっていることです。
 
-[Microsoft Office 365 discontinued TLS 1.0 and TLS 1.1 support in January 2022](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), breaking email for thousands of devices. Many printers, cameras, and fax machines made before 2020 only support these legacy protocols and can't be updated.
+[Microsoft Office 365は2022年1月にTLS 1.0およびTLS 1.1のサポートを終了しました](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off)、これにより数千台の機器のメール送信ができなくなりました。2020年以前に製造された多くのプリンター、カメラ、ファックス機はこれらの旧プロトコルのみをサポートし、アップデートできません。
 
-Forward Email fixes this by supporting both modern and legacy devices. We have dedicated ports for current equipment and special legacy ports for older devices that can't be upgraded.
+Forward Emailは、最新機器と旧機器の両方をサポートすることでこれを解決します。最新機器用の専用ポートと、アップグレードできない旧機器用の特別なレガシーポートを用意しています。
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy devices through our dual-port strategy. Use port `465` (SSL/TLS, recommended) or `587` (STARTTLS) for modern devices with TLS 1.2+ support, and ports `2455`/`2555` for legacy devices that only support TLS 1.0.
+> Forward Emailはデュアルポート戦略により最新機器と旧機器の両方をサポートします。TLS 1.2以上対応の最新機器にはポート`465`（SSL/TLS推奨）または`587`（STARTTLS）を使用し、TLS 1.0のみ対応の旧機器にはポート`2455`/`2555`を使用してください。
 
-## Table of Contents {#table-of-contents}
 
-* [The TLS Problem Explained](#the-tls-problem-explained)
-* [Forward Email SMTP Configuration Overview](#forward-email-smtp-configuration-overview)
-* [Comprehensive Device Compatibility Matrix](#comprehensive-device-compatibility-matrix)
-* [HP Printer Email Configuration](#hp-printer-email-configuration)
-  * [Modern HP Printers (2020 and Later)](#modern-hp-printers-2020-and-later)
-  * [Legacy HP Printers (Pre-2020 Models)](#legacy-hp-printers-pre-2020-models)
-* [Canon Printer Email Configuration](#canon-printer-email-configuration)
-  * [Current Canon Printers](#current-canon-printers)
-  * [Legacy Canon Printers](#legacy-canon-printers)
-* [Brother Printer Email Configuration](#brother-printer-email-configuration)
-  * [Brother MFC Series Configuration](#brother-mfc-series-configuration)
-  * [Troubleshooting Brother Email Issues](#troubleshooting-brother-email-issues)
-* [Foscam IP Camera Email Configuration](#foscam-ip-camera-email-configuration)
-  * [Understanding Foscam Email Limitations](#understanding-foscam-email-limitations)
-  * [Foscam Email Configuration Steps](#foscam-email-configuration-steps)
-  * [Advanced Foscam Configuration](#advanced-foscam-configuration)
-* [Hikvision Security Camera Email Configuration](#hikvision-security-camera-email-configuration)
-  * [Modern Hikvision Camera Configuration](#modern-hikvision-camera-configuration)
-  * [Legacy Hikvision Camera Configuration](#legacy-hikvision-camera-configuration)
-* [Dahua Security Camera Email Configuration](#dahua-security-camera-email-configuration)
-  * [Dahua Camera Email Setup](#dahua-camera-email-setup)
-  * [Dahua NVR Email Configuration](#dahua-nvr-email-configuration)
-* [Xerox Multifunction Device Email Configuration](#xerox-multifunction-device-email-configuration)
-  * [Xerox MFD Email Setup](#xerox-mfd-email-setup)
-* [Ricoh Multifunction Device Email Configuration](#ricoh-multifunction-device-email-configuration)
-  * [Modern Ricoh MFD Configuration](#modern-ricoh-mfd-configuration)
-  * [Legacy Ricoh Device Configuration](#legacy-ricoh-device-configuration)
-* [Troubleshooting Common Configuration Issues](#troubleshooting-common-configuration-issues)
-  * [Authentication and Credential Issues](#authentication-and-credential-issues)
-  * [TLS and Encryption Problems](#tls-and-encryption-problems)
-  * [Network Connectivity Issues](#network-connectivity-issues)
-  * [Device-Specific Configuration Challenges](#device-specific-configuration-challenges)
-* [Security Considerations and Best Practices](#security-considerations-and-best-practices)
-  * [Credential Management](#credential-management)
-  * [Network Security](#network-security)
-  * [Information Disclosure](#information-disclosure)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Conclusion](#conclusion)
+## 目次 {#table-of-contents}
 
-## The TLS Problem Explained {#the-tls-problem-explained}
+* [TLS問題の説明](#the-tls-problem-explained)
+* [Forward Email SMTP設定概要](#forward-email-smtp-configuration-overview)
+* [包括的な機器互換性マトリックス](#comprehensive-device-compatibility-matrix)
+* [HPプリンターのメール設定](#hp-printer-email-configuration)
+  * [最新のHPプリンター（2020年以降）](#modern-hp-printers-2020-and-later)
+  * [旧型HPプリンター（2020年以前モデル）](#legacy-hp-printers-pre-2020-models)
+* [Canonプリンターのメール設定](#canon-printer-email-configuration)
+  * [現行Canonプリンター](#current-canon-printers)
+  * [旧型Canonプリンター](#legacy-canon-printers)
+* [Brotherプリンターのメール設定](#brother-printer-email-configuration)
+  * [Brother MFCシリーズ設定](#brother-mfc-series-configuration)
+  * [Brotherメール問題のトラブルシューティング](#troubleshooting-brother-email-issues)
+* [Foscam IPカメラのメール設定](#foscam-ip-camera-email-configuration)
+  * [Foscamメールの制限理解](#understanding-foscam-email-limitations)
+  * [Foscamメール設定手順](#foscam-email-configuration-steps)
+  * [高度なFoscam設定](#advanced-foscam-configuration)
+* [Hikvisionセキュリティカメラのメール設定](#hikvision-security-camera-email-configuration)
+  * [最新Hikvisionカメラ設定](#modern-hikvision-camera-configuration)
+  * [旧型Hikvisionカメラ設定](#legacy-hikvision-camera-configuration)
+* [Dahuaセキュリティカメラのメール設定](#dahua-security-camera-email-configuration)
+  * [Dahuaカメラメール設定](#dahua-camera-email-setup)
+  * [Dahua NVRメール設定](#dahua-nvr-email-configuration)
+* [Xerox複合機のメール設定](#xerox-multifunction-device-email-configuration)
+  * [Xerox MFDメール設定](#xerox-mfd-email-setup)
+* [Ricoh複合機のメール設定](#ricoh-multifunction-device-email-configuration)
+  * [最新Ricoh MFD設定](#modern-ricoh-mfd-configuration)
+  * [旧型Ricoh機器設定](#legacy-ricoh-device-configuration)
+* [よくある設定問題のトラブルシューティング](#troubleshooting-common-configuration-issues)
+  * [認証と資格情報の問題](#authentication-and-credential-issues)
+  * [TLSおよび暗号化の問題](#tls-and-encryption-problems)
+  * [ネットワーク接続の問題](#network-connectivity-issues)
+  * [機器固有の設定課題](#device-specific-configuration-challenges)
+* [セキュリティ考慮事項とベストプラクティス](#security-considerations-and-best-practices)
+  * [資格情報管理](#credential-management)
+  * [ネットワークセキュリティ](#network-security)
+  * [情報漏洩防止](#information-disclosure)
+  * [監視とメンテナンス](#monitoring-and-maintenance)
+* [結論](#conclusion)
+## TLS問題の説明 {#the-tls-problem-explained}
 
-Here's what happened: email security got stricter, but your devices didn't get the memo. Modern equipment supports TLS 1.2+, but older devices are stuck with TLS 1.0. Most email providers dropped support for TLS 1.0, so your devices can't connect.
+こういうことが起きました：メールセキュリティは厳しくなったのに、あなたのデバイスはその通知を受け取っていません。最新の機器はTLS 1.2以上をサポートしていますが、古いデバイスはTLS 1.0のままです。ほとんどのメールプロバイダーはTLS 1.0のサポートを終了したため、あなたのデバイスは接続できません。
 
-This affects real operations - security cameras can't send alerts during incidents, printers can't warn about maintenance issues, and fax confirmations get lost. Forward Email's [SMTP server configuration](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) provides multiple ports to keep everything working.
-
-> \[!TIP]
-> Check your device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
-
-## Forward Email SMTP Configuration Overview {#forward-email-smtp-configuration-overview}
-
-Forward Email provides a comprehensive SMTP service designed specifically to address the unique challenges of device email configuration. Our infrastructure supports multiple connection types and security levels, ensuring compatibility with both cutting-edge equipment and legacy devices that remain in active use.
-
-For modern devices with TLS 1.2+ support, use our primary SMTP server at smtp.forwardemail.net with port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections. These ports provide enterprise-grade security and are compatible with all current device firmware versions.
-
-Legacy devices that only support TLS 1.0 can use our specialized compatibility ports. Port 2455 provides SSL/TLS connections with TLS 1.0 support, while port 2555 offers STARTTLS with legacy protocol compatibility. These ports maintain the highest possible security while ensuring continued functionality for older equipment.
-
-Authentication is required for all connections using your Forward Email alias as the username and a generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). This approach provides robust security while maintaining broad compatibility across different device authentication systems.
-
-> \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for device configuration.
-
-## Comprehensive Device Compatibility Matrix {#comprehensive-device-compatibility-matrix}
-
-Understanding which devices require legacy support versus modern configuration helps streamline the setup process and ensures reliable email delivery across your entire device ecosystem.
-
-| Device Category | Modern TLS Support | Legacy TLS Required | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| -------------------------- | ------------------ | ------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| HP Printers (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Certificate validation](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [HP LaserJet Pro MFP Setup Guide](https://support.hp.com/us-en/document/ish_6185297-6063300-16) |
-| HP Printers (Pre-2020) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Firmware limitations](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/) | [Scan to Email Feature Guide](https://support.hp.com/us-en/document/ish_6518575-6518545-16) |
-| Canon Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Authentication setup](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358) | [Canon SMTP Authentication Guide](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html) |
-| Canon Printers (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate issues](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443) | [Advanced E-mail Settings Guide](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html) |
-| Brother Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Port configuration](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/) | [Brother SMTP Setup Guide](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512) |
-| Epson Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Web interface access | [Epson Email Notification Setup](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm) |
-| Foscam IP Cameras | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate validation](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/) | [Foscam Email Setup FAQ](https://www.foscam.com/faqs/view.html?id=63) |
-| Hikvision (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL requirements | [Hikvision Email Setup Guide](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Hikvision (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | Firmware updates | [Legacy Hikvision Configuration](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Dahua Cameras (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Authentication | [Dahua Email Setup Wiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) |
-| Xerox MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [TLS configuration](https://www.support.xerox.com/en-us/article/KB0032169) | [Xerox TLS Configuration Guide](https://www.support.xerox.com/en-us/article/KB0032169) |
-| Ricoh MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL setup | [Ricoh Email Configuration](https://www.ricoh.com/info/2025/0526_1) |
-| Ricoh MFDs (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Basic auth issues](https://www.ricoh.com/info/2025/0526_1) | [Legacy Ricoh Setup](https://www.ricoh.com/info/2025/0526_1) |
-
-This matrix provides a quick reference for determining the appropriate configuration approach for your specific devices. When in doubt, start with modern ports and fall back to legacy ports if connection issues occur.
-
-> \[!NOTE]
-> Device age is not always a reliable indicator of TLS support. Some manufacturers backported TLS 1.2 support to older models through firmware updates, while others discontinued support for legacy products.
-
-## HP Printer Email Configuration {#hp-printer-email-configuration}
-
-HP printers represent one of the largest installed bases of network-connected printing devices, with models ranging from current LaserJet Pro series with full TLS 1.3 support to legacy models that only support TLS 1.0. The configuration process varies significantly between modern and legacy devices, requiring different approaches for optimal compatibility.
-
-### Modern HP Printers (2020 and Later) {#modern-hp-printers-2020-and-later}
-
-Modern HP printers include the LaserJet Pro MFP M404 series, Color LaserJet Pro MFP M479 series, and newer models that support current TLS standards. These devices provide comprehensive email notification capabilities through HP's Embedded Web Server (EWS) interface.
-
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. You can find the IP address by printing a network configuration page from the printer's control panel.
-
-2. **Navigate to the Network tab** and select "Email Server" or "SMTP Settings" depending on your printer model. Some HP printers organize these settings under "System" > "Email Alerts."
-
-3. **Configure the SMTP server settings** by entering `smtp.forwardemail.net` as the server address. Select "SSL/TLS" as the encryption method and enter `465` as the port number for the most reliable connection.
-
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains), not your account login password.
-
-5. **Configure sender information** by entering your Forward Email alias as the "From" address and a descriptive name like "HP Printer - Office" to help identify the source of notifications.
-
-6. **Set up recipient addresses** by adding up to five email addresses that should receive printer notifications. HP printers allow different notification types to be sent to different recipients.
-
-7. **Test the configuration** using HP's built-in email test function. The printer will send a test message to verify that all settings are correct and communication with Forward Email's servers is working properly.
+これは実際の運用に影響します—セキュリティカメラは事件発生時にアラートを送信できず、プリンターはメンテナンスの警告を出せず、ファックスの確認も失われます。Forward Emailの[SMTPサーバー設定](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings)は複数のポートを提供し、すべてを正常に動作させます。
 
 > \[!TIP]
-> HP printers often cache DNS lookups. If you encounter connection issues, restart the printer after configuration to clear any cached DNS entries.
+> 設定前にデバイスのファームウェアバージョンとTLSサポートを確認してください。2020年以降に製造されたほとんどのデバイスは最新のTLSプロトコルをサポートしていますが、古いデバイスは通常レガシー互換ポートが必要です。
 
-### Legacy HP Printers (Pre-2020 Models) {#legacy-hp-printers-pre-2020-models}
 
-Older HP printers, including the LaserJet Pro MFP M277 and similar models, often only support TLS 1.0 and require special configuration to work with modern email providers. These devices frequently display "TLS certificate verification failed" errors when attempting to connect to standard SMTP ports.
+## Forward Email SMTP設定概要 {#forward-email-smtp-configuration-overview}
 
-1. **Access the printer's Embedded Web Server** by entering the printer's IP address in a web browser. Legacy HP printers may require Internet Explorer or compatibility mode for full functionality.
+Forward Emailは、デバイスのメール設定に特有の課題に対応するために設計された包括的なSMTPサービスを提供しています。当社のインフラは複数の接続タイプとセキュリティレベルをサポートし、最新機器と依然として使用されているレガシーデバイスの両方に対応しています。
 
-2. **Navigate to the Network or System settings** and locate the "Email" or "SMTP" configuration section. The exact location varies by model and firmware version.
+TLS 1.2以上をサポートする最新デバイスには、smtp.forwardemail.netのプライマリSMTPサーバーを使用し、SSL/TLS接続にはポート465（推奨）、STARTTLS接続にはポート587を使用してください。これらのポートは企業レベルのセキュリティを提供し、すべての現行デバイスファームウェアバージョンと互換性があります。
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address. This is crucial - use port 2455 for SSL/TLS connections or port 2555 for STARTTLS connections instead of standard ports.
+TLS 1.0のみをサポートするレガシーデバイスは、当社の専用互換ポートを使用できます。ポート2455はTLS 1.0対応のSSL/TLS接続を提供し、ポート2555はレガシープロトコル互換のSTARTTLSを提供します。これらのポートは可能な限り高いセキュリティを維持しつつ、古い機器の機能継続を保証します。
 
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use your generated Forward Email password for authentication.
-
-5. **Configure encryption settings** carefully. Select "SSL/TLS" if using port 2455, or "STARTTLS" if using port 2555. Some legacy HP printers may label these options differently.
-
-6. **Set sender and recipient information** using your Forward Email alias as the sender address and configuring appropriate recipient addresses for notifications.
-
-7. **Test the configuration** using the printer's test function. If the test fails with certificate errors, verify that you're using the correct legacy ports (2455 or 2555) rather than standard SMTP ports.
+すべての接続には認証が必要で、ユーザー名にはForward Emailのエイリアスを、パスワードには[マイアカウント -> ドメイン -> エイリアス](https://forwardemail.net/my-account/domains)から生成されたパスワードを使用してください。この方法は堅牢なセキュリティを提供しつつ、異なるデバイス認証システム間での広範な互換性を維持します。
 
 > \[!CAUTION]
-> Legacy HP printers may not receive firmware updates that address TLS compatibility issues. If configuration continues to fail, consider using a local SMTP relay server as an intermediate solution.
+> SMTP認証にはアカウントのログインパスワードを絶対に使用しないでください。デバイス設定には必ず[マイアカウント -> ドメイン -> エイリアス](https://forwardemail.net/my-account/domains)から生成されたパスワードを使用してください。
 
-## Canon Printer Email Configuration {#canon-printer-email-configuration}
 
-Canon printers offer robust email notification capabilities across their imageRUNNER, PIXMA, and MAXIFY product lines. Modern Canon devices support comprehensive TLS configurations, while legacy models may require specific compatibility settings to function with current email providers.
+## 包括的なデバイス互換性マトリックス {#comprehensive-device-compatibility-matrix}
 
-### Current Canon Printers {#current-canon-printers}
+どのデバイスがレガシーサポートを必要とし、どのデバイスが最新設定を必要とするかを理解することで、設定プロセスを効率化し、デバイス全体の信頼できるメール配信を確保できます。
 
-Modern Canon printers provide extensive email notification features through the Remote UI web interface, supporting everything from basic status alerts to detailed device management notifications.
-
-1. **Access the Remote UI** by entering the printer's IP address in a web browser. Canon printers typically use a web-based interface for all network configuration tasks.
-
-2. **Navigate to Settings/Registration** and select "Device Management" from the menu. Look for "E-Mail Notification Settings" or similar options depending on your printer model.
-
-3. **Configure the SMTP server** by clicking "Add Destination" and entering smtp.forwardemail.net as the server address. Select "SSL" or "TLS" as the encryption method.
-
-4. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Canon printers clearly distinguish between these encryption methods in their interface.
-
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
-
-6. **Set up sender information** by entering your Forward Email alias as the sender address and configuring a descriptive display name for easy identification of notifications.
-
-7. **Configure notification types** by selecting which events should trigger email alerts. Canon printers support granular control over notification types, including error conditions, maintenance alerts, and security events.
-
-8. **Test the email configuration** using Canon's built-in test function. The printer will send a test notification to verify proper configuration and connectivity.
+| デバイスカテゴリ            | 最新TLSサポート | レガシーTLS必要 | 推奨ポート       | 一般的な問題                                                                                                                                       | 設定ガイド/スクリーンショット                                                                                                                          |
+| -------------------------- | ---------------- | --------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HPプリンター（2020年以降）  | ✅ TLS 1.2+      | ❌              | `465`, `587`    | [証明書検証](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707)             | [HP LaserJet Pro MFP設定ガイド](https://support.hp.com/us-en/document/ish_6185297-6063300-16)                                                        |
+| HPプリンター（2020年以前）  | ❌               | ✅ TLS 1.0のみ  | `2455`, `2555`  | [ファームウェア制限](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/)                                           | [スキャンメール機能ガイド](https://support.hp.com/us-en/document/ish_6518575-6518545-16)                                                            |
+| Canonプリンター（現行）      | ✅ TLS 1.2+      | ❌              | `465`, `587`    | [認証設定](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358)                   | [Canon SMTP認証ガイド](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html)                                                 |
+| Canonプリンター（レガシー）  | ❌               | ✅ TLS 1.0のみ  | `2455`, `2555`  | [証明書問題](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443)                  | [高度なメール設定ガイド](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html)                                                    |
+| Brotherプリンター（現行）    | ✅ TLS 1.2+      | ❌              | `465`, `587`    | [ポート設定](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/)                              | [Brother SMTP設定ガイド](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512)                        |
+| Epsonプリンター（現行）      | ✅ TLS 1.2+      | ❌              | `465`, `587`    | Webインターフェースアクセス                                                                                                                      | [Epsonメール通知設定](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm)                      |
+| Foscam IPカメラ             | ❌               | ✅ TLS 1.0のみ  | `2455`, `2555`  | [証明書検証](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/)                                    | [Foscamメール設定FAQ](https://www.foscam.com/faqs/view.html?id=63)                                                                                  |
+| Hikvision（2020年以降）      | ✅ TLS 1.2+      | ❌              | `465`, `587`    | SSL要件                                                                                                                                           | [Hikvisionメール設定ガイド](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf)        |
+| Hikvision（レガシー）        | ❌               | ✅ TLS 1.0のみ  | `2455`, `2555`  | ファームウェア更新                                                                                                                                 | [レガシーHikvision設定](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf)             |
+| Dahuaカメラ（現行）          | ✅ TLS 1.2+      | ❌              | `465`, `587`    | 認証                                                                                                                                               | [Dahuaメール設定Wiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail)                                                                  |
+| Xerox MFD（現行）            | ✅ TLS 1.2+      | ❌              | `465`, `587`    | [TLS設定](https://www.support.xerox.com/en-us/article/KB0032169)                                                                                   | [Xerox TLS設定ガイド](https://www.support.xerox.com/en-us/article/KB0032169)                                                                        |
+| Ricoh MFD（現行）            | ✅ TLS 1.2+      | ❌              | `465`, `587`    | SSL設定                                                                                                                                           | [Ricohメール設定](https://www.ricoh.com/info/2025/0526_1)                                                                                          |
+| Ricoh MFD（レガシー）        | ❌               | ✅ TLS 1.0のみ  | `2455`, `2555`  | [ベーシック認証問題](https://www.ricoh.com/info/2025/0526_1)                                                                                      | [レガシーRicoh設定](https://www.ricoh.com/info/2025/0526_1)                                                                                        |
+このマトリックスは、特定のデバイスに適した設定方法を迅速に判断するためのリファレンスを提供します。迷った場合は、まず最新のポートから試し、接続問題が発生した場合はレガシーポートに切り替えてください。
 
 > \[!NOTE]
-> Canon printers often provide detailed error messages that can help troubleshoot configuration issues. Pay attention to specific error codes for faster problem resolution.
+> デバイスの年式はTLSサポートの信頼できる指標とは限りません。メーカーによっては、ファームウェアアップデートで古いモデルにTLS 1.2サポートをバックポートしている場合もあれば、レガシー製品のサポートを終了している場合もあります。
 
-### Legacy Canon Printers {#legacy-canon-printers}
 
-Older Canon printers may have limited TLS support and require careful configuration to work with modern email providers. These devices often need legacy-compatible SMTP settings to maintain email notification functionality.
+## HPプリンターのメール設定 {#hp-printer-email-configuration}
 
-1. **Access the printer's web interface** using the device's IP address. Legacy Canon printers may require specific browser compatibility settings for full functionality.
+HPプリンターは、ネットワーク接続された印刷デバイスの中で最大級の設置ベースを持ち、最新のLaserJet Proシリーズ（TLS 1.3完全対応）からTLS 1.0のみ対応のレガシーモデルまで幅広く存在します。設定プロセスは最新機種とレガシー機種で大きく異なり、最適な互換性を得るために異なるアプローチが必要です。
 
-2. **Navigate to the email configuration section** through the device management or network settings menu. The exact path varies by model and firmware version.
+### 最新のHPプリンター（2020年以降） {#modern-hp-printers-2020-and-later}
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections or port 2555 for STARTTLS connections.
+最新のHPプリンターには、LaserJet Pro MFP M404シリーズ、Color LaserJet Pro MFP M479シリーズ、そして現在のTLS標準をサポートする新しいモデルが含まれます。これらのデバイスは、HPのEmbedded Web Server（EWS）インターフェースを通じて包括的なメール通知機能を提供します。
 
-4. **Set up authentication carefully** by enabling SMTP authentication and using your Forward Email alias and generated password. Legacy Canon printers may have specific authentication requirements.
+1. **プリンターのIPアドレスをウェブブラウザに入力して**、プリンターのウェブインターフェースにアクセスします。IPアドレスはプリンターのコントロールパネルからネットワーク構成ページを印刷して確認できます。
 
-5. **Configure encryption settings** by selecting the appropriate TLS option for your chosen port. Ensure the encryption method matches the port configuration (SSL for 2455, STARTTLS for 2555).
+2. **「ネットワーク」タブに移動し**、プリンターのモデルに応じて「Email Server」または「SMTP設定」を選択します。HPプリンターによっては「システム」 > 「Email Alerts」の下にこれらの設定がある場合もあります。
 
-6. **Test the configuration** and monitor for certificate validation errors. If issues persist, verify that you're using Forward Email's legacy-compatible ports rather than standard SMTP ports.
+3. **SMTPサーバー設定を構成します**。サーバーアドレスに`smtp.forwardemail.net`を入力し、暗号化方式は「SSL/TLS」を選択、ポート番号は最も安定した接続のために`465`を指定します。
+
+4. **認証を設定します**。SMTP認証を有効にし、ユーザー名にForward Emailのエイリアスを入力します。パスワードは[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)から生成したものを使用し、アカウントのログインパスワードは使用しないでください。
+
+5. **送信者情報を設定します**。Forward Emailのエイリアスを「From」アドレスとして入力し、「HP Printer - Office」など通知元を識別しやすい説明的な名前を設定します。
+
+6. **受信者アドレスを設定します**。プリンター通知を受け取る最大5つのメールアドレスを追加します。HPプリンターは通知の種類ごとに異なる受信者を設定可能です。
+
+7. **HPの組み込みメールテスト機能を使って設定をテストします**。プリンターがテストメッセージを送信し、設定が正しくForward Emailのサーバーと通信できているかを確認します。
+
+> \[!TIP]
+> HPプリンターはDNSルックアップをキャッシュすることがあります。接続問題が発生した場合は、設定後にプリンターを再起動してキャッシュされたDNSエントリをクリアしてください。
+
+### レガシーHPプリンター（2020年以前のモデル） {#legacy-hp-printers-pre-2020-models}
+
+古いHPプリンター（LaserJet Pro MFP M277など）は、多くの場合TLS 1.0のみをサポートし、最新のメールプロバイダーと連携するためには特別な設定が必要です。これらのデバイスは標準のSMTPポートに接続しようとすると「TLS証明書の検証に失敗しました」というエラーを頻繁に表示します。
+
+1. **プリンターのIPアドレスをウェブブラウザに入力してEmbedded Web Serverにアクセスします**。レガシーHPプリンターは完全な機能のためにInternet Explorerや互換モードが必要な場合があります。
+
+2. **「ネットワーク」または「システム」設定に移動し、「Email」または「SMTP」設定セクションを探します**。場所はモデルやファームウェアバージョンによって異なります。
+
+3. **Forward EmailのレガシーSMTP設定を構成します**。サーバーアドレスに`smtp.forwardemail.net`を入力します。ここが重要です - SSL/TLS接続にはポート`2455`、STARTTLS接続にはポート`2555`を使用し、標準ポートは使わないでください。
+
+4. **認証を設定します**。SMTP認証を有効にし、ユーザー名にForward Emailのエイリアスを入力します。認証には生成したForward Emailのパスワードを使用してください。
+
+5. **暗号化設定を慎重に構成します**。ポート`2455`を使用する場合は「SSL/TLS」を選択し、ポート`2555`を使用する場合は「STARTTLS」を選択します。レガシーHPプリンターではこれらのオプションの表記が異なる場合があります。
+6. **送信者および受信者情報を設定**し、Forward Emailのエイリアスを送信者アドレスとして使用し、通知用の適切な受信者アドレスを設定します。
+
+7. **プリンターのテスト機能を使って設定をテスト**します。テストが証明書エラーで失敗する場合は、標準のSMTPポートではなく正しいレガシーポート（2455または2555）を使用しているか確認してください。
+
+> \[!CAUTION]
+> レガシーのHPプリンターはTLS互換性の問題を解決するファームウェアアップデートを受け取らない場合があります。設定が引き続き失敗する場合は、ローカルSMTPリレーサーバーを中間ソリューションとして検討してください。
+
+
+## Canonプリンターのメール設定 {#canon-printer-email-configuration}
+
+CanonプリンターはimageRUNNER、PIXMA、MAXIFY製品ライン全体で強力なメール通知機能を提供しています。最新のCanon機器は包括的なTLS設定をサポートしていますが、レガシーモデルは現在のメールプロバイダーと連携するために特定の互換性設定が必要な場合があります。
+
+### 現行Canonプリンター {#current-canon-printers}
+
+最新のCanonプリンターはRemote UIウェブインターフェースを通じて幅広いメール通知機能を提供し、基本的なステータスアラートから詳細なデバイス管理通知まで対応しています。
+
+1. **プリンターのIPアドレスをウェブブラウザに入力してRemote UIにアクセス**します。Canonプリンターは通常、すべてのネットワーク設定作業にウェブベースのインターフェースを使用します。
+
+2. **「設定/登録」へ移動し、メニューから「デバイス管理」を選択**します。プリンターのモデルによっては「E-Mail通知設定」などの類似オプションを探してください。
+
+3. **「宛先追加」をクリックしてSMTPサーバーを設定**し、サーバーアドレスにsmtp.forwardemail.netを入力します。暗号化方式として「SSL」または「TLS」を選択します。
+
+4. **ポート番号を設定**し、SSL/TLS接続の場合は465（推奨）、STARTTLS接続の場合は587を指定します。Canonプリンターのインターフェースではこれらの暗号化方式が明確に区別されています。
+
+5. **SMTP認証を有効にして認証情報を設定**し、ユーザー名にForward Emailのエイリアスを入力します。パスワードは[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)から生成したものを使用してください。
+
+6. **送信者情報を設定**し、Forward Emailのエイリアスを送信者アドレスとして入力し、通知の識別が容易になるよう説明的な表示名を設定します。
+
+7. **通知タイプを設定**し、どのイベントでメール通知を送信するかを選択します。Canonプリンターはエラー状態、メンテナンスアラート、セキュリティイベントなど通知タイプを細かく制御できます。
+
+8. **Canonの内蔵テスト機能を使ってメール設定をテスト**します。プリンターはテスト通知を送信して設定と接続の正確さを検証します。
+
+> \[!NOTE]
+> Canonプリンターは設定問題のトラブルシューティングに役立つ詳細なエラーメッセージを提供することが多いです。特定のエラーコードに注意して迅速な問題解決を図ってください。
+
+### レガシーCanonプリンター {#legacy-canon-printers}
+
+古いCanonプリンターはTLSサポートが限定的で、最新のメールプロバイダーと連携するために慎重な設定が必要です。これらの機器はメール通知機能を維持するためにレガシー互換のSMTP設定を必要とすることが多いです。
+
+1. **プリンターのIPアドレスを使ってウェブインターフェースにアクセス**します。レガシーCanonプリンターは完全な機能のために特定のブラウザ互換設定が必要な場合があります。
+
+2. **デバイス管理またはネットワーク設定メニューからメール設定セクションに移動**します。正確なパスはモデルやファームウェアバージョンによって異なります。
+
+3. **Forward EmailのレガシーSMTP設定を構成**し、サーバーアドレスにsmtp.forwardemail.netを入力、SSL接続の場合はポート2455、STARTTLS接続の場合はポート2555を使用します。
+
+4. **SMTP認証を慎重に設定**し、Forward Emailのエイリアスと生成したパスワードを使用します。レガシーCanonプリンターは特定の認証要件がある場合があります。
+
+5. **暗号化設定を構成**し、選択したポートに適したTLSオプションを選びます。暗号化方式がポート設定と一致していることを確認してください（2455はSSL、2555はSTARTTLS）。
+6. **設定をテスト**し、証明書検証エラーがないか監視します。問題が続く場合は、標準のSMTPポートではなくForward Emailのレガシー互換ポートを使用していることを確認してください。
 
 > \[!WARNING]
-> Some legacy Canon printers may not support server certificate validation. While this reduces security, it may be necessary for continued email functionality on older devices.
+> 一部のレガシーCanonプリンターはサーバー証明書の検証をサポートしていない場合があります。これはセキュリティを低下させますが、古いデバイスでのメール機能を継続するために必要な場合があります。
 
-## Brother Printer Email Configuration {#brother-printer-email-configuration}
 
-Brother printers, particularly the MFC and DCP series, provide comprehensive scan-to-email and notification capabilities. However, many users report configuration challenges when setting up email functionality, especially with Office 365 and other modern email providers that have deprecated legacy authentication methods.
+## Brotherプリンターのメール設定 {#brother-printer-email-configuration}
 
-### Brother MFC Series Configuration {#brother-mfc-series-configuration}
+Brotherプリンター、特にMFCおよびDCPシリーズは、包括的なスキャンメール送信および通知機能を提供します。しかし、多くのユーザーが特にOffice 365やレガシー認証方式を廃止した他の最新メールプロバイダーでのメール機能設定に課題を報告しています。
 
-Brother multifunction printers offer extensive email capabilities, but configuration can be complex due to the variety of authentication and encryption options available.
+### Brother MFCシリーズの設定 {#brother-mfc-series-configuration}
 
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. Brother printers provide a comprehensive web-based configuration system.
+Brotherの複合機は広範なメール機能を提供しますが、利用可能な認証および暗号化オプションの多様さから設定が複雑になることがあります。
 
-2. **Navigate to the Network settings** and select "Email/IFAX" or "Scan to Email" depending on your printer model. Some Brother printers organize these settings under "Administrator Settings."
+1. **プリンターのIPアドレスをウェブブラウザに入力して**プリンターのウェブインターフェースにアクセスします。Brotherプリンターは包括的なウェブベースの設定システムを提供しています。
 
-3. **Configure the SMTP server settings** by entering smtp.forwardemail.net as the server address. Brother printers support both SSL/TLS and STARTTLS encryption methods.
+2. **ネットワーク設定に移動し**、プリンターのモデルに応じて「Email/IFAX」または「Scan to Email」を選択します。Brotherプリンターの中にはこれらの設定を「管理者設定」内にまとめているものもあります。
 
-4. **Set the appropriate port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption. Brother printers clearly label these options in their interface.
+3. **SMTPサーバー設定を構成**し、サーバーアドレスにsmtp.forwardemail.netを入力します。BrotherプリンターはSSL/TLSおよびSTARTTLSの両方の暗号化方式をサポートしています。
 
-5. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+4. **適切なポートと暗号化を設定**し、ポート465でSSL/TLS暗号化（推奨）またはポート587でSTARTTLS暗号化を選択します。Brotherプリンターのインターフェースではこれらのオプションが明確に表示されています。
 
-6. **Set up sender information** by configuring your Forward Email alias as the sender address and adding a descriptive name to identify the printer in email notifications.
+5. **SMTP認証を設定**し、認証を有効にしてForward Emailのエイリアスをユーザー名として入力します。パスワードは[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)から生成したものを使用してください。
 
-7. **Configure scan-to-email settings** by setting up address book entries and default scan settings. Brother printers allow extensive customization of scan parameters and recipient management.
+6. **送信者情報を設定**し、Forward Emailのエイリアスを送信者アドレスとして構成し、メール通知でプリンターを識別するための説明的な名前を追加します。
 
-8. **Test both email notifications and scan-to-email functionality** to ensure complete configuration. Brother printers provide separate test functions for different email features.
+7. **スキャンメール送信設定を構成**し、アドレス帳エントリとデフォルトのスキャン設定を設定します。Brotherプリンターはスキャンパラメーターや受信者管理の詳細なカスタマイズを可能にします。
+
+8. **メール通知とスキャンメール送信機能の両方をテスト**して完全な設定を確認します。Brotherプリンターは異なるメール機能ごとに別々のテスト機能を提供しています。
 
 > \[!TIP]
-> Brother printers often require firmware updates to resolve email configuration issues. Check for available updates before troubleshooting connection problems.
+> Brotherプリンターはメール設定の問題を解決するためにファームウェアの更新が必要な場合があります。接続問題のトラブルシューティング前に利用可能な更新を確認してください。
 
-### Troubleshooting Brother Email Issues {#troubleshooting-brother-email-issues}
+### Brotherのメール問題のトラブルシューティング {#troubleshooting-brother-email-issues}
 
-Brother printers frequently encounter specific configuration challenges that can be resolved with targeted troubleshooting approaches.
+Brotherプリンターは特定の設定課題に頻繁に直面しますが、対象を絞ったトラブルシューティングで解決可能です。
 
-If your Brother printer displays "Authentication Failed" errors when testing email configuration, verify that you're using your Forward Email alias (not your account email) as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Brother printers are particularly sensitive to authentication credential formatting.
+Brotherプリンターでメール設定のテスト時に「認証失敗」エラーが表示される場合は、ユーザー名にアカウントメールではなくForward Emailのエイリアスを使用し、[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)から生成したパスワードを使用していることを確認してください。Brotherプリンターは認証資格情報の形式に特に敏感です。
 
-For printers that won't accept scan-to-email configuration settings, try configuring the settings through the web interface rather than the printer's control panel. The web interface often provides more detailed error messages and configuration options.
+スキャンメール送信設定を受け付けないプリンターの場合は、プリンターの操作パネルではなくウェブインターフェースから設定を試みてください。ウェブインターフェースはより詳細なエラーメッセージと設定オプションを提供することが多いです。
 
-When encountering SSL/TLS connection errors, verify that you're using the correct port and encryption combination. Brother printers require exact matches between port numbers and encryption methods - port 465 must use SSL/TLS (recommended), while port 587 must use STARTTLS.
+SSL/TLS接続エラーが発生した場合は、正しいポートと暗号化の組み合わせを使用しているか確認してください。Brotherプリンターはポート番号と暗号化方式の正確な組み合わせを要求します。ポート465はSSL/TLS（推奨）、ポート587はSTARTTLSを使用する必要があります。
 
 > \[!CAUTION]
-> Some Brother printer models have known issues with specific SMTP server configurations. If standard configuration fails, consult Brother's support documentation for model-specific workarounds.
+> 一部のBrotherプリンターモデルは特定のSMTPサーバー設定に関して既知の問題があります。標準設定で失敗する場合は、モデル固有の回避策についてBrotherのサポートドキュメントを参照してください。
+## Foscam IPカメラのメール設定 {#foscam-ip-camera-email-configuration}
 
-## Foscam IP Camera Email Configuration {#foscam-ip-camera-email-configuration}
+Foscam IPカメラは、レガシーTLSプロトコルの広範な使用とファームウェア更新の制限により、メール設定が最も難しいデバイスカテゴリの一つです。R2シリーズなどの人気モデルを含むほとんどのFoscamカメラはTLS 1.0のみをサポートしており、最新の暗号化標準に対応するためのアップデートはできません。
 
-Foscam IP cameras represent one of the most challenging device categories for email configuration due to their widespread use of legacy TLS protocols and limited firmware update availability. Most Foscam cameras, including popular models like the R2 series, only support TLS 1.0 and cannot be updated to support modern encryption standards.
+### Foscamメールの制限を理解する {#understanding-foscam-email-limitations}
 
-### Understanding Foscam Email Limitations {#understanding-foscam-email-limitations}
+Foscamカメラは特有の課題があり、特定の設定方法が必要です。最も一般的に遭遇するエラーメッセージは「TLS certificate verification failed: unable to get local issuer certificate」で、これはカメラがほとんどのメールプロバイダーで使用されている最新のSSL証明書を検証できないことを示しています。
 
-Foscam cameras present unique challenges that require specific configuration approaches. The most common error message encountered is "TLS certificate verification failed: unable to get local issuer certificate," which indicates that the camera cannot validate modern SSL certificates used by most email providers.
+この問題は、更新できない古い証明書ストア、TLSプロトコルのサポートがTLS 1.0までに制限されていること、そしてセキュリティプロトコルのアップグレードを妨げるファームウェアの制限など、複数の要因に起因します。さらに、多くのFoscamモデルは既に製造終了となっており、これらの互換性問題を解決するファームウェア更新を受け取っていません。
 
-This issue stems from several factors: outdated certificate stores that cannot be updated, limited TLS protocol support that maxes out at TLS 1.0, and firmware limitations that prevent security protocol upgrades. Additionally, many Foscam models have reached end-of-life status and no longer receive firmware updates that could address these compatibility issues.
+Forward EmailのレガシーSMTPポートは、TLS 1.0の互換性を維持しつつ、これらの古いデバイスに可能な限り最高のセキュリティを提供することで、これらの制限に対応しています。
 
-Forward Email's legacy SMTP ports specifically address these limitations by maintaining TLS 1.0 compatibility while providing the highest possible security for these older devices.
+### Foscamメール設定手順 {#foscam-email-configuration-steps}
 
-### Foscam Email Configuration Steps {#foscam-email-configuration-steps}
+Foscamカメラでメール通知を設定するには、デバイスのTLS制限を回避するためにポート選択と暗号化設定に細心の注意が必要です。
 
-Configuring email notifications on Foscam cameras requires careful attention to port selection and encryption settings to work around the devices' TLS limitations.
+1. **カメラのウェブインターフェースにアクセス** するには、ウェブブラウザにカメラのIPアドレスを入力します。Foscamカメラは通常、ウェブアクセスにポート88を使用します（例: <http://192.168.1.100:88>）。
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Foscam cameras typically use port 88 for web access (e.g., <http://192.168.1.100:88>).
+2. **設定メニューに移動** し、カメラモデルに応じて「Mail Service」または「Email Settings」を選択します。Foscamカメラの一部はこれらの設定を「Alarm」 > 「Mail Service」の下にまとめています。
 
-2. **Navigate to the Settings menu** and select "Mail Service" or "Email Settings" depending on your camera model. Some Foscam cameras organize these settings under "Alarm" > "Mail Service."
+3. **SMTPサーバーを設定** する際は、サーバーアドレスに smtp.forwardemail.net を入力してください。これは非常に重要です。標準のメールプロバイダーのSMTPサーバーはTLS 1.0をサポートしなくなっているため使用しないでください。
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. This is critical - do not use standard email provider SMTP servers as they no longer support TLS 1.0.
+4. **ポートと暗号化を設定** し、SSL暗号化にはポート2455、STARTTLS暗号化にはポート2555を選択します。これらはFoscamカメラのようなデバイス向けに設計されたForward Emailのレガシー互換ポートです。
 
-4. **Set the port and encryption** by selecting port 2455 for SSL encryption or port 2555 for STARTTLS encryption. These are Forward Email's legacy-compatible ports specifically designed for devices like Foscam cameras.
+5. **認証を設定** し、SMTP認証を有効にしてForward Emailのエイリアスをユーザー名として入力します。パスワードは [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) から生成してください。
 
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **送信者と受信者情報を設定** し、送信者アドレスにForward Emailのエイリアスを設定し、動体検知やシステムアラート用の受信者アドレスを追加します。
 
-6. **Set up sender and recipient information** by configuring your Forward Email alias as the sender address and adding recipient addresses for motion detection and system alerts.
+7. **通知トリガーを設定** し、動体検知の感度、録画スケジュール、メール通知をトリガーすべきその他のイベントを設定します。
 
-7. **Configure notification triggers** by setting up motion detection sensitivity, recording schedules, and other events that should trigger email notifications.
-
-8. **Test the email configuration** using Foscam's built-in test function. If the test succeeds, you should receive a test email confirming proper configuration.
+8. **メール設定をテスト** するには、Foscamの内蔵テスト機能を使用します。テストが成功すれば、適切に設定されたことを確認するテストメールが届きます。
 
 > \[!IMPORTANT]
-> Foscam cameras require Forward Email's legacy ports (2455 or 2555) due to TLS 1.0 limitations. Standard SMTP ports will not work with these devices.
+> FoscamカメラはTLS 1.0の制限により、Forward Emailのレガシーポート（2455または2555）が必要です。標準のSMTPポートはこれらのデバイスでは動作しません。
 
-### Advanced Foscam Configuration {#advanced-foscam-configuration}
+### 高度なFoscam設定 {#advanced-foscam-configuration}
 
-For users requiring more sophisticated notification setups, Foscam cameras offer additional configuration options that can enhance security monitoring capabilities.
+より高度な通知設定が必要なユーザー向けに、Foscamカメラはセキュリティ監視機能を強化できる追加の設定オプションを提供しています。
 
-Configure motion detection zones to reduce false alarms by defining specific areas of the camera's field of view that should trigger notifications. This prevents unnecessary emails from environmental factors like moving trees or passing vehicles.
+動体検知ゾーンを設定して誤報を減らすために、通知をトリガーすべきカメラの視野内の特定のエリアを定義します。これにより、動く木や通過する車両などの環境要因による不要なメールを防止できます。
 
-Set up recording schedules that align with your monitoring needs, ensuring that email notifications are sent during appropriate time periods. Foscam cameras can suppress notifications during specified hours to prevent overnight alerts for non-critical events.
-
-Configure multiple recipient addresses for different types of alerts, allowing you to route motion detection alerts to security personnel while sending system maintenance alerts to IT staff.
+監視ニーズに合わせた録画スケジュールを設定し、適切な時間帯にメール通知が送信されるようにします。Foscamカメラは指定した時間帯に通知を抑制し、夜間の重要でないイベントのアラートを防ぐことができます。
+複数の受信者アドレスを異なる種類のアラートに対して設定し、動体検知アラートを警備担当者にルーティングし、システムメンテナンスアラートをITスタッフに送信できるようにします。
 
 > \[!TIP]
-> Foscam cameras can generate significant email volume if motion detection is too sensitive. Start with conservative settings and adjust based on your environment's characteristics.
+> Foscamカメラは動体検知の感度が高すぎると大量のメールが発生する可能性があります。保守的な設定から始め、環境の特性に応じて調整してください。
 
-## Hikvision Security Camera Email Configuration {#hikvision-security-camera-email-configuration}
 
-Hikvision cameras represent a significant portion of the global security camera market, with models ranging from basic IP cameras to advanced AI-powered surveillance systems. The email configuration process varies considerably between newer models with modern TLS support and legacy devices that require compatibility workarounds.
+## Hikvisionセキュリティカメラのメール設定 {#hikvision-security-camera-email-configuration}
 
-### Modern Hikvision Camera Configuration {#modern-hikvision-camera-configuration}
+Hikvisionカメラは世界のセキュリティカメラ市場の大部分を占めており、基本的なIPカメラから高度なAI搭載監視システムまで様々なモデルがあります。メール設定の手順は、最新のTLS対応モデルと互換性確保のための回避策が必要な旧型機器で大きく異なります。
 
-Current Hikvision cameras running recent firmware versions support TLS 1.2+ and provide comprehensive email notification capabilities through their web-based interface.
+### 最新Hikvisionカメラの設定 {#modern-hikvision-camera-configuration}
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Hikvision cameras typically use standard HTTP/HTTPS ports for web access.
+最新のファームウェアを搭載したHikvisionカメラはTLS 1.2以上をサポートし、ウェブベースのインターフェースを通じて包括的なメール通知機能を提供します。
 
-2. **Navigate to Configuration** and select "Network" > "Advanced Settings" > "Email" from the menu structure. The exact path may vary depending on your camera model and firmware version.
+1. **カメラのIPアドレスをウェブブラウザに入力して** カメラのウェブインターフェースにアクセスします。Hikvisionカメラは通常、標準のHTTP/HTTPSポートを使用します。
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Hikvision cameras require specific SSL configuration for proper email functionality.
+2. **「Configuration」から「Network」 > 「Advanced Settings」 > 「Email」** のメニューに移動します。正確なパスはカメラのモデルやファームウェアバージョンによって異なる場合があります。
 
-4. **Set encryption to SSL** and configure port 465. Hikvision cameras do not support STARTTLS, so SSL encryption on port 465 is the recommended configuration for Forward Email compatibility.
+3. **SMTPサーバーを設定** し、サーバーアドレスにsmtp.forwardemail.netを入力します。Hikvisionカメラは適切なメール機能のために特定のSSL設定が必要です。
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for authentication.
+4. **暗号化方式をSSLに設定し、ポート465を使用** します。HikvisionカメラはSTARTTLSをサポートしていないため、Forward Emailとの互換性のためにポート465のSSL暗号化が推奨されます。
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera in email notifications.
+5. **SMTP認証を有効にし、Forward Emailのエイリアスをユーザー名として入力** します。認証には[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)で生成したパスワードを使用してください。
 
-7. **Set up recipient addresses** by adding email addresses that should receive security alerts, motion detection notifications, and system status updates.
+6. **送信者情報を設定** し、送信者アドレスにForward Emailのエイリアスを指定し、メール通知でカメラを識別できる説明的な名前を追加します。
 
-8. **Configure event triggers** by setting up motion detection, line crossing detection, intrusion detection, and other events that should generate email notifications.
+7. **受信者アドレスを設定** し、セキュリティアラート、動体検知通知、システムステータス更新を受け取るメールアドレスを追加します。
 
-9. **Test the email configuration** using Hikvision's built-in test function to verify proper connectivity and authentication with Forward Email's servers.
+8. **イベントトリガーを設定** し、動体検知、ラインクロス検知、侵入検知など、メール通知を生成するイベントを構成します。
+
+9. **Hikvisionの内蔵テスト機能を使ってメール設定をテスト** し、Forward Emailサーバーとの接続と認証が正しく行われているか確認します。
 
 > \[!NOTE]
-> Hikvision cameras require the most updated firmware versions to support SSL and TLS encryption properly. Check for firmware updates before configuring email settings.
+> HikvisionカメラはSSLおよびTLS暗号化を正しくサポートするために最新のファームウェアが必要です。メール設定の前にファームウェアの更新を確認してください。
 
-### Legacy Hikvision Camera Configuration {#legacy-hikvision-camera-configuration}
+### 旧型Hikvisionカメラの設定 {#legacy-hikvision-camera-configuration}
 
-Older Hikvision cameras may have limited TLS support and require Forward Email's legacy-compatible SMTP ports for continued email functionality.
+古いHikvisionカメラはTLSサポートが限定的で、メール機能を維持するためにForward Emailのレガシー互換SMTPポートを使用する必要があります。
 
-1. **Access the camera's web interface** and navigate to the email configuration section. Legacy Hikvision cameras may have different menu structures than current models.
+1. **カメラのウェブインターフェースにアクセスし、メール設定セクションに移動** します。旧型Hikvisionカメラは最新モデルとメニュー構造が異なる場合があります。
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+2. **Forward EmailのレガシーSMTP設定を構成** し、サーバーアドレスにsmtp.forwardemail.netを入力し、SSL接続用にポート2455を使用します。
 
-3. **Set up authentication** using your Forward Email alias and generated password. Legacy Hikvision cameras may have specific authentication requirements or limitations.
+3. **認証を設定** し、Forward Emailのエイリアスと生成したパスワードを使用します。旧型Hikvisionカメラは特定の認証要件や制限がある場合があります。
 
-4. **Configure encryption settings** by selecting SSL encryption to match the legacy port configuration. Ensure the encryption method aligns with port 2455 requirements.
+4. **暗号化設定をSSLに選択** し、レガシーポートの設定に合わせます。暗号化方式がポート2455の要件に合致していることを確認してください。
 
-5. **Test the configuration** and monitor for connection errors. Legacy Hikvision cameras may provide limited error reporting, making troubleshooting more challenging.
+5. **設定をテストし、接続エラーを監視** します。旧型Hikvisionカメラはエラー報告が限定的な場合があり、トラブルシューティングが難しいことがあります。
 
 > \[!WARNING]
-> Legacy Hikvision cameras may have known security vulnerabilities. Ensure these devices are properly isolated on your network and consider upgrading to current models when possible.
+> 旧型Hikvisionカメラには既知のセキュリティ脆弱性がある場合があります。これらの機器はネットワーク上で適切に隔離し、可能な場合は最新モデルへのアップグレードを検討してください。
+## Dahua セキュリティカメラのメール設定 {#dahua-security-camera-email-configuration}
 
-## Dahua Security Camera Email Configuration {#dahua-security-camera-email-configuration}
+Dahuaのカメラは、基本的なIPカメラから高度なAI搭載監視システムまで、幅広い製品ラインで堅牢なメール通知機能を提供しています。設定プロセスは一般的に最新のデバイスで簡単で、現在のTLS標準に完全対応しています。
 
-Dahua cameras provide robust email notification capabilities across their extensive product line, from basic IP cameras to advanced AI-powered surveillance systems. The configuration process is generally straightforward for modern devices, with comprehensive support for current TLS standards.
+### Dahua カメラのメール設定 {#dahua-camera-email-setup}
 
-### Dahua Camera Email Setup {#dahua-camera-email-setup}
+Dahuaのカメラは、ウェブインターフェースを通じて使いやすいメール設定を提供し、最新のSMTP標準に良好に対応しています。
 
-Dahua cameras offer user-friendly email configuration through their web interface, with good compatibility for modern SMTP standards.
+1. **カメラのIPアドレスをウェブブラウザに入力して、カメラのウェブインターフェースにアクセスします。** Dahuaのカメラは直感的なウェブベースの設定システムを通常備えています。
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Dahua cameras typically provide intuitive web-based configuration systems.
+2. **「Setup」に移動し、設定メニューから「Network」>「Email」を選択します。** Dahuaのカメラはメール設定を専用セクションにまとめており、アクセスが容易です。
 
-2. **Navigate to Setup** and select "Network" > "Email" from the configuration menu. Dahua cameras organize email settings in a dedicated section for easy access.
+3. **SMTPサーバーを設定します。** サーバーアドレスに smtp.forwardemail.net を入力します。DahuaのカメラはSSLおよびSTARTTLSの両方の暗号化方式をサポートしています。
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Dahua cameras support both SSL and STARTTLS encryption methods.
+4. **ポートと暗号化方式を設定します。** ポート465でSSL/TLS暗号化（推奨）またはポート587でSTARTTLS暗号化を選択します。
 
-4. **Set the port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption.
+5. **SMTP認証を有効にし、Forward Emailのエイリアスをユーザー名として入力します。** パスワードは [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) から生成してください。
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **送信者情報を設定します。** Forward Emailのエイリアスを送信者アドレスとして設定し、カメラの識別に役立つ説明的な名前を追加します。
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera source.
+7. **受信者アドレスを設定します。** さまざまな通知タイプ用に複数のメールアドレスを追加します。Dahuaのカメラは複数の受信者をサポートしています。
 
-7. **Set up recipient addresses** by adding email addresses for different types of notifications. Dahua cameras support multiple recipients for various alert types.
+8. **イベントトリガーを設定します。** 動体検知、改ざん警告、その他のセキュリティイベントでメール通知を生成するように設定します。
 
-8. **Configure event triggers** by setting up motion detection, tampering alerts, and other security events that should generate email notifications.
-
-9. **Test the email functionality** using Dahua's built-in test feature to verify proper configuration and connectivity.
+9. **Dahuaの内蔵テスト機能を使ってメール機能をテストし、設定と接続が正しいことを確認します。**
 
 > \[!TIP]
-> Dahua cameras often provide detailed configuration guides through their wiki documentation. Consult [Dahua's email setup guide](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) for model-specific instructions.
+> Dahuaのカメラは詳細な設定ガイドをWikiドキュメントで提供していることが多いです。モデル固有の手順については [Dahuaのメール設定ガイド](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) を参照してください。
 
-### Dahua NVR Email Configuration {#dahua-nvr-email-configuration}
+### Dahua NVRのメール設定 {#dahua-nvr-email-configuration}
 
-Dahua Network Video Recorders (NVRs) provide centralized email notification management for multiple cameras, offering efficient administration of large surveillance systems.
+Dahuaのネットワークビデオレコーダー（NVR）は、複数のカメラのメール通知管理を集中化し、大規模な監視システムの効率的な管理を可能にします。
 
-1. **Access the NVR's web interface** by entering the NVR's IP address in a web browser. Dahua NVRs provide comprehensive management interfaces for system-wide configuration.
+1. **NVRのIPアドレスをウェブブラウザに入力して、NVRのウェブインターフェースにアクセスします。** DahuaのNVRはシステム全体の設定に対応した包括的な管理インターフェースを提供します。
 
-2. **Navigate to the Email configuration** by selecting "Setup" > "Network" > "Email" from the main menu. NVRs typically organize email settings at the system level.
+2. **メインメニューから「Setup」>「Network」>「Email」を選択してメール設定に移動します。** NVRは通常、システムレベルでメール設定を整理しています。
 
-3. **Configure SMTP server settings** by entering smtp.forwardemail.net as the server address and selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS.
+3. **SMTPサーバー設定を行います。** サーバーアドレスに smtp.forwardemail.net を入力し、ポート465のSSL/TLS暗号化（推奨）またはポート587のSTARTTLSを選択します。
 
-4. **Set up authentication** using your Forward Email alias and generated password. NVRs support standard SMTP authentication methods.
+4. **認証設定を行います。** Forward Emailのエイリアスと生成したパスワードを使用します。NVRは標準的なSMTP認証方式をサポートしています。
 
-5. **Configure notification schedules** by setting up time periods when email notifications should be active. This helps manage notification volume during off-hours.
+5. **通知スケジュールを設定します。** メール通知を有効にする時間帯を設定し、営業時間外の通知量を管理します。
 
-6. **Set up event-based notifications** by configuring which camera events should trigger email alerts. NVRs allow granular control over notification triggers across multiple cameras.
+6. **イベントベースの通知を設定します。** どのカメライベントでメールアラートを発生させるかを設定します。NVRは複数カメラにわたる通知トリガーを細かく制御できます。
 
-7. **Test the system-wide email configuration** to ensure proper functionality across all connected cameras and monitoring systems.
+7. **システム全体のメール設定をテストし、接続されたすべてのカメラと監視システムで正常に機能することを確認します。**
 
-## Xerox Multifunction Device Email Configuration {#xerox-multifunction-device-email-configuration}
 
-Xerox multifunction devices provide enterprise-grade email notification capabilities with comprehensive TLS support and advanced configuration options. Modern Xerox devices support current security standards while maintaining compatibility with various network environments.
+## Xerox 複合機のメール設定 {#xerox-multifunction-device-email-configuration}
 
-### Xerox MFD Email Setup {#xerox-mfd-email-setup}
+Xeroxの複合機は、包括的なTLSサポートと高度な設定オプションを備えたエンタープライズグレードのメール通知機能を提供します。最新のXeroxデバイスは現在のセキュリティ標準に対応しつつ、多様なネットワーク環境との互換性を維持しています。
 
-Xerox multifunction devices offer sophisticated email configuration through their web-based administrative interface, supporting both basic notifications and advanced workflow integration.
+### Xerox MFDのメール設定 {#xerox-mfd-email-setup}
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Xerox devices typically provide comprehensive web-based administration tools.
+Xeroxの複合機は、ウェブベースの管理インターフェースを通じて高度なメール設定を提供し、基本的な通知から高度なワークフロー統合まで対応しています。
+1. **デバイスのIPアドレスをウェブブラウザに入力して、デバイスのウェブインターフェースにアクセスします。** Xeroxデバイスは通常、包括的なウェブベースの管理ツールを提供しています。
 
-2. **Navigate to Properties** and select "Connectivity" > "Protocols" > "SMTP" from the configuration menu. Xerox devices organize email settings within their protocol configuration section.
+2. **プロパティに移動し、設定メニューから「Connectivity」 > 「Protocols」 > 「SMTP」を選択します。** Xeroxデバイスはメール設定をプロトコル構成セクション内に整理しています。
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Xerox devices support configurable TLS versions and encryption methods.
+3. **SMTPサーバーを設定します。サーバーアドレスにsmtp.forwardemail.netを入力してください。** XeroxデバイスはTLSのバージョンや暗号化方式の設定をサポートしています。
 
-4. **Set TLS configuration** by selecting TLS 1.2 or higher as the minimum supported version. Xerox devices allow administrators to configure specific TLS requirements for enhanced security.
+4. **TLSの設定を行い、TLS 1.2以上を最低サポートバージョンとして選択します。** Xeroxデバイスは管理者が強化されたセキュリティのために特定のTLS要件を設定できます。
 
-5. **Configure port and encryption** by setting port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections.
+5. **ポートと暗号化を設定します。SSL/TLS接続にはポート465（推奨）、STARTTLS接続にはポート587を設定してください。**
 
-6. **Set up SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **SMTP認証を設定します。認証を有効にし、ユーザー名にForward Emailのエイリアスを入力します。パスワードは[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)から生成してください。**
 
-7. **Configure sender information** by setting your Forward Email alias as the sender address and configuring appropriate reply-to addresses for notification management.
+7. **送信者情報を設定します。送信者アドレスにForward Emailのエイリアスを設定し、通知管理のために適切な返信先アドレスを設定してください。**
 
-8. **Set up notification types** by configuring which device events should trigger email alerts, including maintenance notifications, error conditions, and security events.
+8. **通知タイプを設定します。メンテナンス通知、エラー状態、セキュリティイベントなど、どのデバイスイベントでメールアラートを送信するかを設定してください。**
 
-9. **Test the email configuration** using Xerox's comprehensive test system to verify proper connectivity and authentication.
+9. **Xeroxの包括的なテストシステムを使用して、メール設定の接続性と認証を確認します。**
 
 > \[!NOTE]
-> Xerox devices provide detailed TLS configuration options that allow fine-tuning of security settings. Consult [Xerox's TLS configuration guide](https://www.support.xerox.com/en-us/article/KB0032169) for advanced security requirements.
+> Xeroxデバイスは詳細なTLS設定オプションを提供しており、セキュリティ設定の微調整が可能です。高度なセキュリティ要件については、[XeroxのTLS設定ガイド](https://www.support.xerox.com/en-us/article/KB0032169)を参照してください。
+
 
 ## Ricoh Multifunction Device Email Configuration {#ricoh-multifunction-device-email-configuration}
 
-Ricoh multifunction devices offer robust email capabilities across their extensive product line, from basic office printers to advanced production systems. However, [Ricoh has announced significant changes](https://www.ricoh.com/info/2025/0526\_1) related to Microsoft's basic authentication discontinuation that affects email functionality.
+Ricohの複合機は、基本的なオフィスプリンターから高度な生産システムまで、幅広い製品ラインで強力なメール機能を提供しています。ただし、[RicohはMicrosoftの基本認証廃止に関連する重要な変更](https://www.ricoh.com/info/2025/0526_1)を発表しており、メール機能に影響があります。
 
 ### Modern Ricoh MFD Configuration {#modern-ricoh-mfd-configuration}
 
-Current Ricoh devices support modern TLS standards and provide comprehensive email notification capabilities through their web-based interface.
+現在のRicohデバイスは最新のTLS標準をサポートし、ウェブベースのインターフェースを通じて包括的なメール通知機能を提供しています。
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Ricoh devices provide intuitive web-based configuration systems.
+1. **デバイスのIPアドレスをウェブブラウザに入力して、デバイスのウェブインターフェースにアクセスします。** Ricohデバイスは直感的なウェブベースの設定システムを提供しています。
 
-2. **Navigate to the Email configuration** by selecting "System Settings" > "Administrator Tools" > "Network" > "Email" from the menu structure.
+2. **メニュー構造から「System Settings」 > 「Administrator Tools」 > 「Network」 > 「Email」を選択してメール設定に移動します。**
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Ricoh devices support both SSL and STARTTLS encryption methods.
+3. **SMTPサーバーを設定します。サーバーアドレスにsmtp.forwardemail.netを入力してください。** RicohデバイスはSSLおよびSTARTTLSの両方の暗号化方式をサポートしています。
 
-4. **Enable SSL on the SMTP server page** to activate TLS encryption. Ricoh's interface may be cryptic, but SSL enablement is required for secure email functionality.
+4. **SMTPサーバーページでSSLを有効にしてTLS暗号化をアクティブにします。** Ricohのインターフェースは分かりにくい場合がありますが、安全なメール機能にはSSLの有効化が必要です。
 
-5. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Ensure the encryption method matches the selected port.
+5. **ポート番号を設定します。SSL/TLS接続には465（推奨）、STARTTLS接続には587を設定してください。暗号化方式が選択したポートに一致していることを確認してください。**
 
-6. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **SMTP認証を設定します。認証を有効にし、ユーザー名にForward Emailのエイリアスを入力します。パスワードは[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)から生成してください。**
 
-7. **Set up sender information** by configuring your Forward Email alias as the sender address and adding appropriate identification information.
+7. **送信者情報を設定します。送信者アドレスにForward Emailのエイリアスを設定し、適切な識別情報を追加してください。**
 
-8. **Configure notification types** by setting up scan-to-email, device alerts, and maintenance notifications according to your operational requirements.
+8. **通知タイプを設定します。スキャンメール送信、デバイスアラート、メンテナンス通知など、運用要件に応じて設定してください。**
 
-9. **Test the email functionality** using Ricoh's built-in test system to verify proper configuration and connectivity.
+9. **Ricohの組み込みテストシステムを使用して、メール機能の設定と接続性を確認します。**
 
 > \[!IMPORTANT]
-> Ricoh devices affected by Microsoft's basic authentication changes require updated authentication methods. Ensure your device firmware supports modern authentication or use Forward Email's compatibility features.
+> Microsoftの基本認証変更の影響を受けるRicohデバイスは、認証方法の更新が必要です。デバイスのファームウェアが最新の認証方式をサポートしていることを確認するか、Forward Emailの互換機能を使用してください。
+### レガシーRicohデバイスの設定 {#legacy-ricoh-device-configuration}
 
-### Legacy Ricoh Device Configuration {#legacy-ricoh-device-configuration}
+古いRicohデバイスは、TLSサポートの制限や認証方法の制約により、Forward Emailのレガシー互換SMTPポートを使用する必要がある場合があります。
 
-Older Ricoh devices may require Forward Email's legacy-compatible SMTP ports due to limited TLS support and authentication method restrictions.
+1. **デバイスのウェブインターフェースにアクセス**し、メール設定セクションに移動します。レガシーRicohデバイスは、現在のモデルとは異なるメニュー構造を持っている場合があります。
 
-1. **Access the device's web interface** and navigate to the email configuration section. Legacy Ricoh devices may have different menu structures than current models.
+2. **Forward EmailのレガシーSMTP設定を構成**し、サーバーアドレスにsmtp.forwardemail.netを入力し、SSL接続にはポート2455を使用します。
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+3. **SSL暗号化を有効化**して、レガシーポートの設定に合わせます。暗号化設定がポート2455の要件に合致していることを確認してください。
 
-3. **Enable SSL encryption** to match the legacy port configuration. Ensure the encryption settings align with port 2455 requirements.
+4. **認証を設定**し、Forward Emailのエイリアスと生成されたパスワードを使用します。レガシーRicohデバイスには特定の認証制限がある場合があります。
 
-4. **Set up authentication** using your Forward Email alias and generated password. Legacy Ricoh devices may have specific authentication limitations.
+5. **設定をテスト**し、認証や接続エラーがないか監視します。レガシーデバイスはトラブルシューティングのためのエラー報告が制限されている場合があります。
 
-5. **Test the configuration** and monitor for authentication or connection errors. Legacy devices may provide limited error reporting for troubleshooting.
 
-## Troubleshooting Common Configuration Issues {#troubleshooting-common-configuration-issues}
+## 一般的な設定問題のトラブルシューティング {#troubleshooting-common-configuration-issues}
 
-Device email configuration can encounter various issues due to network settings, authentication problems, or protocol compatibility challenges. Understanding common problems and their solutions helps ensure reliable notification delivery across your device ecosystem.
+デバイスのメール設定は、ネットワーク設定、認証問題、プロトコル互換性の課題により様々な問題が発生することがあります。一般的な問題とその解決策を理解することで、デバイス環境全体で信頼性の高い通知配信を確保できます。
 
-### Authentication and Credential Issues {#authentication-and-credential-issues}
+### 認証および資格情報の問題 {#authentication-and-credential-issues}
 
-Authentication failures represent the most common email configuration problem across all device types. These issues typically stem from incorrect credential usage, authentication method mismatches, or account configuration problems.
+認証失敗は、すべてのデバイスタイプで最も一般的なメール設定の問題です。これらの問題は通常、資格情報の誤使用、認証方法の不一致、またはアカウント設定の問題に起因します。
 
-Verify that you're using your Forward Email alias as the username, not your account email address or login credentials. Many devices are sensitive to username formatting and require exact matches with your configured alias.
+ユーザー名としてForward Emailのエイリアスを使用していることを確認してください。アカウントのメールアドレスやログイン資格情報ではありません。多くのデバイスはユーザー名の形式に敏感で、設定したエイリアスと正確に一致する必要があります。
 
-Ensure you're using the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) rather than your account login password. SMTP authentication requires the specific generated password for security reasons, and using incorrect credentials will result in authentication failures.
+[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)から生成されたパスワードを使用していることを確認してください。アカウントのログインパスワードではありません。SMTP認証にはセキュリティ上、特定の生成パスワードが必要であり、誤った資格情報を使用すると認証失敗になります。
 
-Check that your Forward Email account has proper SMTP access enabled and that any two-factor authentication requirements are properly configured. Some account configurations may restrict SMTP access until properly activated.
+Forward Emailアカウントで適切なSMTPアクセスが有効になっていること、二要素認証の要件が正しく設定されていることを確認してください。一部のアカウント設定では、適切に有効化されるまでSMTPアクセスが制限される場合があります。
 
 > \[!TIP]
-> If authentication continues to fail, regenerate your SMTP password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) and update your device configuration with the new credentials.
+> 認証が引き続き失敗する場合は、[My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)からSMTPパスワードを再生成し、新しい資格情報でデバイス設定を更新してください。
 
-### TLS and Encryption Problems {#tls-and-encryption-problems}
+### TLSおよび暗号化の問題 {#tls-and-encryption-problems}
 
-TLS-related issues often occur when devices attempt to use unsupported encryption protocols or when there's a mismatch between port configuration and encryption settings.
+TLS関連の問題は、デバイスがサポートされていない暗号化プロトコルを使用しようとした場合や、ポート設定と暗号化設定が不一致の場合に発生しやすいです。
 
-For modern devices experiencing TLS errors, verify that you're using the correct port and encryption combination: port 465 with SSL/TLS (recommended) or port 587 with STARTTLS. These settings must match exactly for successful connections.
+TLSエラーが発生する最新デバイスの場合、正しいポートと暗号化の組み合わせを使用しているか確認してください：ポート465でSSL/TLS（推奨）またはポート587でSTARTTLS。これらの設定は成功する接続のために正確に一致する必要があります。
 
-Legacy devices displaying certificate validation errors should use Forward Email's compatibility ports (2455 or 2555) rather than standard SMTP ports. These ports maintain TLS 1.0 compatibility while providing appropriate security for older devices.
+証明書検証エラーを表示するレガシーデバイスは、標準SMTPポートの代わりにForward Emailの互換ポート（2455または2555）を使用してください。これらのポートはTLS 1.0互換性を維持しつつ、古いデバイスに適切なセキュリティを提供します。
 
-If certificate validation continues to fail on legacy devices, check if the device allows certificate validation to be disabled. While this reduces security, it may be necessary for continued functionality on devices that cannot be updated.
+レガシーデバイスで証明書検証が引き続き失敗する場合、デバイスが証明書検証を無効にできるか確認してください。これはセキュリティを低下させますが、更新できないデバイスでの継続的な機能のために必要な場合があります。
 
 > \[!CAUTION]
-> Disabling certificate validation reduces security and should only be used as a last resort for legacy devices that cannot be updated or replaced.
+> 証明書検証を無効にするとセキュリティが低下し、更新や交換ができないレガシーデバイスに対してのみ最終手段として使用してください。
 
-### Network Connectivity Issues {#network-connectivity-issues}
+### ネットワーク接続の問題 {#network-connectivity-issues}
 
-Network-related problems can prevent devices from reaching Forward Email's SMTP servers even when configuration settings are correct.
+ネットワーク関連の問題により、設定が正しくてもデバイスがForward EmailのSMTPサーバーに到達できない場合があります。
 
-Verify that your network allows outbound connections on the configured SMTP ports. Corporate firewalls or restrictive network policies may block certain ports, requiring firewall rule adjustments or alternative port configurations.
+ネットワークが設定したSMTPポートでのアウトバウンド接続を許可していることを確認してください。企業のファイアウォールや制限のあるネットワークポリシーが特定のポートをブロックしている場合、ファイアウォールルールの調整や代替ポートの設定が必要です。
+DNS解決を確認するには、デバイスがsmtp.forwardemail.netを正しいIPアドレスに解決できることを確認してください。DNSの問題は、ネットワーク接続が正常でも接続失敗の原因となることがあります。
 
-Check DNS resolution by ensuring that your devices can resolve smtp.forwardemail.net to the correct IP addresses. DNS issues can cause connection failures even when network connectivity is otherwise functional.
+利用可能な場合は、デバイスのネットワーク診断ツールからネットワーク接続をテストしてください。多くの最新デバイスには、接続問題の特定に役立つ組み込みのネットワークテスト機能があります。
 
-Test network connectivity from the device's network diagnostic tools if available. Many modern devices provide built-in network testing capabilities that can help identify connectivity issues.
+デバイスが遅いまたは高遅延のネットワーク接続上にある場合は、ネットワーク遅延やタイムアウト設定を考慮してください。信頼性の高いメール配信のために、タイムアウトの調整が必要な場合があります。
 
-Consider network latency and timeout settings if devices are located on slow or high-latency network connections. Some devices may require timeout adjustments for reliable email delivery.
+### デバイス固有の設定上の課題 {#device-specific-configuration-challenges}
 
-### Device-Specific Configuration Challenges {#device-specific-configuration-challenges}
+異なるデバイスメーカーはメール機能を様々に実装しており、メーカー固有の設定課題が発生し、それに対する特定の解決策が必要です。
 
-Different device manufacturers implement email functionality in various ways, leading to manufacturer-specific configuration challenges that require targeted solutions.
+HPプリンターはDNSルックアップをキャッシュし、設定変更後に再起動が必要な場合があります。設定後も接続問題が続く場合は、プリンターを再起動してキャッシュされたネットワーク情報をクリアしてください。
 
-HP printers may cache DNS lookups and require restarts after configuration changes. If connection issues persist after configuration, restart the printer to clear cached network information.
+Brotherプリンターは認証資格情報のフォーマットに特に敏感で、信頼性の高い設定のためにはデバイスのコントロールパネルではなくウェブインターフェースを通じた設定が必要な場合があります。
 
-Brother printers are particularly sensitive to authentication credential formatting and may require configuration through the web interface rather than the device control panel for reliable setup.
+FoscamカメラはTLSの制限により特定のポート設定が必要で、トラブルシューティングのための詳細なエラーメッセージを提供しないことがあります。これらのデバイスにはForward Emailのレガシーポート（2455または2555）を使用していることを確認してください。
 
-Foscam cameras require specific port configurations due to TLS limitations and may not provide detailed error messages for troubleshooting. Ensure you're using Forward Email's legacy ports (2455 or 2555) for these devices.
-
-Hikvision cameras require SSL encryption and do not support STARTTLS, limiting configuration options to port 465 with SSL/TLS encryption.
+HikvisionカメラはSSL暗号化を必要とし、STARTTLSをサポートしていないため、設定オプションはSSL/TLS暗号化のポート465に限定されます。
 
 > \[!NOTE]
-> When troubleshooting device-specific issues, consult the manufacturer's documentation for known limitations or configuration requirements that may affect email functionality.
+> デバイス固有の問題をトラブルシュートする際は、メール機能に影響を与える既知の制限や設定要件についてメーカーのドキュメントを参照してください。
 
-## Security Considerations and Best Practices {#security-considerations-and-best-practices}
 
-Configuring email notifications on network devices involves several security considerations that help protect your systems while maintaining reliable notification delivery. Following security best practices prevents unauthorized access and ensures appropriate information disclosure in notifications.
+## セキュリティ上の考慮事項とベストプラクティス {#security-considerations-and-best-practices}
 
-### Credential Management {#credential-management}
+ネットワークデバイスでメール通知を設定する際には、システムを保護しつつ信頼性の高い通知配信を維持するためのいくつかのセキュリティ上の考慮事項があります。セキュリティのベストプラクティスに従うことで、不正アクセスを防ぎ、通知に含まれる情報の適切な開示を確保します。
 
-Use strong, unique passwords for your Forward Email account and enable two-factor authentication when available. The generated SMTP password should be treated as a sensitive credential and stored securely in device configurations.
+### 資格情報管理 {#credential-management}
 
-Regularly review and rotate SMTP passwords, especially after personnel changes or security incidents. Forward Email allows password regeneration without affecting other account functions.
+Forward Emailアカウントには強力でユニークなパスワードを使用し、可能な場合は二要素認証を有効にしてください。生成されたSMTPパスワードは機密資格情報として扱い、デバイス設定内で安全に保管してください。
 
-Avoid using shared credentials across multiple devices when possible. While Forward Email supports multiple device connections with the same credentials, individual device credentials provide better security isolation and audit capabilities.
+特に人事異動やセキュリティインシデントの後は、SMTPパスワードを定期的に見直し、変更してください。Forward Emailは他のアカウント機能に影響を与えずにパスワードの再生成を可能にします。
 
-Document device credentials securely and include them in your organization's credential management system. Proper documentation ensures that email configurations can be maintained and updated as needed.
+可能な限り複数デバイスでの共有資格情報の使用は避けてください。Forward Emailは同じ資格情報で複数デバイスの接続をサポートしますが、個別のデバイス資格情報の方がセキュリティの分離と監査機能に優れています。
 
-### Network Security {#network-security}
+デバイス資格情報は安全に文書化し、組織の資格情報管理システムに含めてください。適切な文書化により、メール設定の維持と更新が容易になります。
 
-Implement appropriate network segmentation to isolate devices from other network resources while maintaining necessary connectivity for email notifications and legitimate access.
+### ネットワークセキュリティ {#network-security}
 
-Configure firewall rules to allow necessary SMTP traffic while blocking unnecessary network access. Devices typically only need outbound access to Forward Email's SMTP servers for notification functionality.
+メール通知や正当なアクセスに必要な接続を維持しつつ、デバイスを他のネットワークリソースから分離するために適切なネットワークセグメンテーションを実施してください。
 
-Monitor network traffic from devices to identify unusual patterns or unauthorized communication attempts. Unexpected network activity may indicate security issues that require investigation.
+不要なネットワークアクセスをブロックしつつ、必要なSMTPトラフィックを許可するファイアウォールルールを設定してください。デバイスは通常、通知機能のためにForward EmailのSMTPサーバーへのアウトバウンドアクセスのみが必要です。
 
-Consider using VLANs or dedicated network segments for device management traffic, including email notifications, to provide additional security isolation.
+デバイスからのネットワークトラフィックを監視し、異常なパターンや不正な通信試行を特定してください。予期しないネットワーク活動は調査が必要なセキュリティ問題を示す場合があります。
 
-### Information Disclosure {#information-disclosure}
+メール通知を含むデバイス管理トラフィック用にVLANや専用ネットワークセグメントを使用することを検討し、追加のセキュリティ分離を提供してください。
 
-Review the content of email notifications to ensure they don't contain sensitive information that could be useful to attackers. Some devices include detailed system information, network configurations, or file paths in notification emails.
+### 情報開示 {#information-disclosure}
 
-Configure notification filtering to limit the types of information included in email alerts. Many devices allow customization of notification content to balance useful information with security requirements.
+メール通知の内容を確認し、攻撃者に有用となる可能性のある機密情報が含まれていないことを確認してください。一部のデバイスは通知メールに詳細なシステム情報、ネットワーク設定、またはファイルパスを含むことがあります。
+通知フィルタリングを設定して、メールアラートに含まれる情報の種類を制限します。多くのデバイスは、役立つ情報とセキュリティ要件のバランスを取るために通知内容のカスタマイズを可能にしています。
 
-Implement appropriate email retention and handling policies for device notifications. Security-related notifications may need to be retained for compliance or forensic purposes.
+デバイス通知のために適切なメール保持および取り扱いポリシーを実施します。セキュリティ関連の通知は、コンプライアンスやフォレンジック目的で保持する必要がある場合があります。
 
-Consider the sensitivity of recipient email addresses and ensure that notifications are only sent to authorized personnel who need access to the information.
+受信者のメールアドレスの機密性を考慮し、通知が情報へのアクセスが必要な権限のある担当者のみに送信されるようにします。
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
+### 監視とメンテナンス {#monitoring-and-maintenance}
 
-Regularly test email notification configurations to ensure continued functionality. Periodic testing helps identify configuration drift, network changes, or service issues before they impact critical alert delivery.
+メール通知の設定を定期的にテストして、機能が継続していることを確認します。定期的なテストは、重要なアラートの配信に影響を与える前に、設定のずれ、ネットワークの変更、サービスの問題を特定するのに役立ちます。
 
-Monitor email notification patterns for signs of suspicious activity or unauthorized access attempts. Unusual notification volumes or unexpected system events may indicate security issues.
+メール通知のパターンを監視して、不審な活動や不正アクセスの試みの兆候を検出します。異常な通知量や予期しないシステムイベントは、セキュリティ問題を示している可能性があります。
 
-Keep device firmware updated when possible to maintain current security standards and protocol support. While some devices have reached end-of-life status, applying available security updates helps protect against known vulnerabilities.
+可能な場合は、デバイスのファームウェアを最新の状態に保ち、最新のセキュリティ基準とプロトコルのサポートを維持します。一部のデバイスはサポート終了状態に達していますが、利用可能なセキュリティアップデートを適用することで既知の脆弱性から保護できます。
 
-Implement backup notification methods for critical alerts when possible. While email notifications are reliable, having alternative alerting mechanisms provides redundancy for the most important system events.
+可能な場合は、重要なアラートのためにバックアップ通知方法を実装します。メール通知は信頼性がありますが、代替のアラート手段を持つことで最も重要なシステムイベントに対する冗長性を確保できます。
 
-## Conclusion {#conclusion}
 
-Configuring reliable email notifications across diverse device ecosystems requires understanding the complex landscape of TLS compatibility, authentication methods, and manufacturer-specific requirements. Forward Email's comprehensive SMTP service addresses these challenges by providing both modern security standards for current devices and legacy compatibility for older equipment that cannot be updated.
+## 結論 {#conclusion}
 
-The configuration processes outlined in this guide provide detailed, step-by-step instructions for major device categories, ensuring that administrators can establish reliable email notifications regardless of their specific equipment mix. Forward Email's dual-port strategy specifically addresses the TLS compatibility crisis affecting millions of deployed devices, providing a practical solution that maintains security while ensuring continued functionality.
+多様なデバイスエコシステムにわたって信頼性の高いメール通知を構成するには、TLS互換性、認証方法、メーカー固有の要件という複雑な状況を理解する必要があります。Forward Emailの包括的なSMTPサービスは、最新デバイス向けの現代的なセキュリティ基準と、更新できない古い機器向けのレガシー互換性の両方を提供することで、これらの課題に対応しています。
 
-Regular testing and maintenance of email notification configurations ensures continued reliability and helps identify potential issues before they impact critical alert delivery. Following the security best practices and troubleshooting guidance in this guide helps maintain secure, reliable notification systems that keep administrators informed about device status and security events.
+本ガイドで示した構成手順は、主要なデバイスカテゴリごとに詳細かつ段階的な指示を提供し、管理者が特定の機器構成に関係なく信頼性の高いメール通知を確立できるようにします。Forward Emailのデュアルポート戦略は、数百万台の導入済みデバイスに影響を与えるTLS互換性の危機に特化して対応し、セキュリティを維持しつつ機能継続を確保する実用的な解決策を提供します。
 
-Whether managing a small office with mixed printer and camera brands or overseeing an enterprise environment with hundreds of devices, Forward Email provides the infrastructure and compatibility needed for reliable email notifications. Our service's focus on device compatibility, combined with comprehensive documentation and support, ensures that critical system alerts reach you when you need them most.
+メール通知設定の定期的なテストとメンテナンスは、信頼性の継続を保証し、重要なアラート配信に影響を与える前に潜在的な問題を特定するのに役立ちます。本ガイドのセキュリティベストプラクティスおよびトラブルシューティングガイダンスに従うことで、管理者がデバイスの状態やセキュリティイベントについて常に把握できる安全で信頼性の高い通知システムを維持できます。
 
-For additional support with device email configuration or questions about Forward Email's compatibility with specific equipment, visit our [SMTP server configuration FAQ](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) or contact our support team. We're committed to helping you maintain reliable email notifications across all your network-connected devices, regardless of age or manufacturer limitations.
+混在するプリンターやカメラブランドを持つ小規模オフィスの管理であれ、数百台のデバイスを監督する企業環境であれ、Forward Emailは信頼性の高いメール通知に必要なインフラと互換性を提供します。当サービスのデバイス互換性への注力と包括的なドキュメントおよびサポートにより、重要なシステムアラートが必要なときに確実に届くことを保証します。
+
+デバイスのメール設定に関する追加サポートや、特定機器とのForward Emailの互換性に関するご質問は、当社の[SMTPサーバー設定FAQ](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings)をご覧いただくか、サポートチームまでお問い合わせください。年式やメーカーの制限に関わらず、ネットワーク接続されたすべてのデバイスで信頼性の高いメール通知を維持できるよう支援いたします。

@@ -1,23 +1,26 @@
-# Příklad kódu Node.js pro kontaktní formuláře v JavaScriptu {#javascript-contact-forms-nodejs-code-example}
+# JavaScript Kontaktní Formuláře Node.js Příklad Kódu {#javascript-contact-forms-nodejs-code-example}
+
 
 ## Obsah {#table-of-contents}
 
-* [Instalace a požadavky](#install-and-requirements)
-* [Zdrojový kód a příklad](#source-code-and-example)
+* [Instalace a Požadavky](#install-and-requirements)
+* [Zdrojový Kód a Příklad](#source-code-and-example)
 
-## Instalace a požadavky {#install-and-requirements}
 
-Budete muset nainstalovat závislost `nodemailer` na npm:
+## Instalace a Požadavky {#install-and-requirements}
+
+Budete potřebovat nainstalovat npm závislost `nodemailer`:
 
 ```sh
 npm install nodemailer
 ```
 
-## Zdrojový kód a příklad {#source-code-and-example}
 
-Tento příklad používá knihovnu **[Nodemailer](https://github.com/nodemailer/nodemailer)** a jejího oficiálního sponzora **[Přeposlat e-mail](https://forwardemail.net)** k odesílání a zobrazení náhledu odchozí pošty.
+## Zdrojový Kód a Příklad {#source-code-and-example}
 
-Pro odesílání odchozí pošty budete muset <strong class="text-success"><i class="fa fa-key"></i>vygenerovat heslo</strong> – postupujte podle našich pokynů **[Průvodce odesíláním e-mailů pomocí SMTP pro vlastní doménu](/guides/send-email-with-custom-domain-smtp)**.
+Tento příklad používá knihovnu **[Nodemailer](https://github.com/nodemailer/nodemailer)** a jejího oficiálního sponzora **[Forward Email](https://forwardemail.net)** pro odesílání a náhled odchozí pošty.
+
+Budete muset <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat Heslo</strong> pro odesílání odchozí pošty – prosím, postupujte podle našeho **[Průvodce Odesíláním E-mailu s Vlastní Doménou SMTP](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: nahraďte hodnoty `user` a `pass` z:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -51,6 +54,6 @@ Spusťte aplikaci pro odeslání e-mailu:
 node app
 ```
 
-Nyní můžete přejít na stránku **[Můj účet → E-maily](/my-account/emails)** a zobrazit stav doručení e-mailů v reálném čase, protokoly doručitelnosti e-mailů a náhledy HTML/prostého textu/příloh.
+Nyní můžete přejít na **[Můj Účet → E-maily](/my-account/emails)** a zobrazit stav doručení e-mailu v reálném čase, protokoly doručitelnosti e-mailů a náhledy HTML/čistého textu/příloh.
 
-> P.S. :tada: Můžete také použít **[náhled e-mailů v prohlížečích a simulátoru iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** a **[vytvářet šablony e-mailů pomocí Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Můžete také **[náhled e-mailů v prohlížečích a iOS Simulatoru](/docs/test-preview-email-rendering-browsers-ios-simulator)** a **[vytvářet e-mailové šablony s Node.js](/docs/send-emails-with-node-js-javascript)**.

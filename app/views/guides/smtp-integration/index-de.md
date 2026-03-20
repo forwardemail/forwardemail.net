@@ -1,75 +1,79 @@
 # SMTP-Integrationsbeispiele {#smtp-integration-examples}
 
+
 ## Inhaltsverzeichnis {#table-of-contents}
 
 * [Vorwort](#foreword)
-* [So funktioniert die SMTP-Verarbeitung von Forward Email](#how-forward-emails-smtp-processing-works)
-  * [E-Mail-Warteschlange und Wiederholungssystem](#email-queue-and-retry-system)
-  * [Für absolute Zuverlässigkeit](#dummy-proofed-for-reliability)
+* [Wie die SMTP-Verarbeitung von Forward Email funktioniert](#how-forward-emails-smtp-processing-works)
+  * [E-Mail-Warteschlange und Wiederholsystem](#email-queue-and-retry-system)
+  * [Einfach und zuverlässig gestaltet](#dummy-proofed-for-reliability)
 * [Node.js-Integration](#nodejs-integration)
-  * [Verwenden von Nodemailer](#using-nodemailer)
-  * [Verwenden von Express.js](#using-expressjs)
+  * [Verwendung von Nodemailer](#using-nodemailer)
+  * [Verwendung von Express.js](#using-expressjs)
 * [Python-Integration](#python-integration)
-  * [Verwenden von smtplib](#using-smtplib)
-  * [Verwenden von Django](#using-django)
+  * [Verwendung von smtplib](#using-smtplib)
+  * [Verwendung von Django](#using-django)
 * [PHP-Integration](#php-integration)
-  * [Verwenden von PHPMailer](#using-phpmailer)
-  * [Verwenden von Laravel](#using-laravel)
+  * [Verwendung von PHPMailer](#using-phpmailer)
+  * [Verwendung von Laravel](#using-laravel)
 * [Ruby-Integration](#ruby-integration)
-  * [Verwenden von Ruby Mail Gem](#using-ruby-mail-gem)
+  * [Verwendung des Ruby Mail Gems](#using-ruby-mail-gem)
 * [Java-Integration](#java-integration)
-  * [Verwenden der Java Mail API](#using-javamail-api)
+  * [Verwendung der JavaMail API](#using-javamail-api)
 * [E-Mail-Client-Konfiguration](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (E-Mail senden als)](#gmail-send-mail-as)
+  * [Gmail (Senden als)](#gmail-send-mail-as)
 * [Fehlerbehebung](#troubleshooting)
   * [Häufige Probleme und Lösungen](#common-issues-and-solutions)
-  * [Hilfe bekommen](#getting-help)
-* [Weitere Ressourcen](#additional-resources)
-* [Abschluss](#conclusion)
+  * [Hilfe erhalten](#getting-help)
+* [Zusätzliche Ressourcen](#additional-resources)
+* [Fazit](#conclusion)
+
 
 ## Vorwort {#foreword}
 
-Diese Anleitung bietet detaillierte Beispiele zur Integration des SMTP-Dienstes von Forward Email mithilfe verschiedener Programmiersprachen, Frameworks und E-Mail-Clients. Unser SMTP-Dienst ist zuverlässig, sicher und lässt sich problemlos in Ihre bestehenden Anwendungen integrieren.
+Dieser Leitfaden bietet detaillierte Beispiele, wie man den SMTP-Dienst von Forward Email mit verschiedenen Programmiersprachen, Frameworks und E-Mail-Clients integriert. Unser SMTP-Dienst ist darauf ausgelegt, zuverlässig, sicher und einfach in Ihre bestehenden Anwendungen integrierbar zu sein.
 
-## Funktionsweise der SMTP-Verarbeitung beim Weiterleiten von E-Mails {#how-forward-emails-smtp-processing-works}
 
-Bevor wir uns in die Integrationsbeispiele vertiefen, ist es wichtig zu verstehen, wie unser SMTP-Dienst E-Mails verarbeitet:
+## Wie die SMTP-Verarbeitung von Forward Email funktioniert {#how-forward-emails-smtp-processing-works}
 
-### E-Mail-Warteschlange und Wiederholungssystem {#email-queue-and-retry-system}
+Bevor wir zu den Integrationsbeispielen kommen, ist es wichtig zu verstehen, wie unser SMTP-Dienst E-Mails verarbeitet:
+
+### E-Mail-Warteschlange und Wiederholsystem {#email-queue-and-retry-system}
 
 Wenn Sie eine E-Mail per SMTP an unsere Server senden:
 
-1. **Erstverarbeitung**: Die E-Mail wird validiert, auf Malware geprüft und mit Spamfiltern abgeglichen.
-2. **Smart Queuing**: E-Mails werden zur Zustellung in ein ausgeklügeltes Warteschlangensystem gestellt.
-3. **Intelligenter Wiederholungsmechanismus**: Bei vorübergehenden Zustellungsfehlern führt unser System Folgendes durch:
-* Analyse der Fehlerantwort mithilfe unserer Funktion `getBounceInfo`
-* Feststellung, ob das Problem vorübergehend (z. B. „Später erneut versuchen“, „vorübergehend verschoben“) oder dauerhaft (z. B. „Benutzer unbekannt“) ist.
-* Bei vorübergehenden Problemen wird die E-Mail zur Wiederholung markiert.
-* Bei dauerhaften Problemen wird eine Benachrichtigung über eine Zurückweisung generiert.
-4. **5-tägige Wiederholungsfrist**: Wir versuchen die Zustellung bis zu 5 Tage lang erneut (ähnlich wie bei Industriestandards wie Postfix), um vorübergehenden Problemen Zeit zur Behebung zu geben.
-5. **Benachrichtigungen zum Zustellungsstatus**: Absender erhalten Benachrichtigungen über den Status ihrer E-Mails (zugestellt, verzögert oder zurückgewiesen).
+1. **Erstverarbeitung**: Die E-Mail wird validiert, auf Malware gescannt und gegen Spamfilter geprüft
+2. **Intelligente Warteschlange**: E-Mails werden in ein ausgeklügeltes Warteschlangensystem zur Zustellung eingereiht
+3. **Intelligenter Wiederholmechanismus**: Falls die Zustellung vorübergehend fehlschlägt, wird unser System:
+   * Die Fehlermeldung mit unserer Funktion `getBounceInfo` analysieren
+   * Bestimmen, ob das Problem temporär (z. B. „später erneut versuchen“, „vorübergehend zurückgestellt“) oder dauerhaft (z. B. „Benutzer unbekannt“) ist
+   * Bei temporären Problemen die E-Mail für einen erneuten Zustellversuch markieren
+   * Bei dauerhaften Problemen eine Bounce-Benachrichtigung erzeugen
+4. **5-Tage-Wiederholzeitraum**: Wir versuchen die Zustellung bis zu 5 Tage lang erneut (ähnlich wie branchenübliche Standards wie Postfix), um temporäre Probleme zu beheben
+5. **Zustellstatus-Benachrichtigungen**: Absender erhalten Benachrichtigungen über den Status ihrer E-Mails (zugestellt, verzögert oder zurückgewiesen)
 
 > \[!NOTE]
-> Nach erfolgreicher Zustellung werden ausgehende SMTP-E-Mail-Inhalte nach einer konfigurierbaren Aufbewahrungsfrist (standardmäßig 30 Tage) aus Sicherheits- und Datenschutzgründen redigiert. Es bleibt lediglich eine Platzhalternachricht mit der erfolgreichen Zustellung erhalten.
+> Nach erfolgreicher Zustellung wird der Inhalt ausgehender SMTP-E-Mails nach einer konfigurierbaren Aufbewahrungsfrist (Standard 30 Tage) aus Sicherheits- und Datenschutzgründen entfernt. Es bleibt nur eine Platzhalternachricht, die die erfolgreiche Zustellung anzeigt.
 
-### Dummy-geprüft für Zuverlässigkeit {#dummy-proofed-for-reliability}
+### Einfach und zuverlässig gestaltet {#dummy-proofed-for-reliability}
 
-Unser System ist für die Handhabung verschiedener Sonderfälle ausgelegt:
+Unser System ist darauf ausgelegt, verschiedene Randfälle zu bewältigen:
 
-* Wird eine Sperrliste erkannt, wird die E-Mail automatisch erneut zugestellt.
-* Bei Netzwerkproblemen wird die Zustellung erneut versucht.
-* Ist das Postfach des Empfängers voll, wird der Zustellversuch später wiederholt.
-* Ist der Empfangsserver vorübergehend nicht erreichbar, versuchen wir es erneut.
+* Wird eine Blockliste erkannt, wird die E-Mail automatisch erneut zugestellt
+* Bei Netzwerkproblemen erfolgt ein erneuter Zustellversuch
+* Ist das Postfach des Empfängers voll, wird das System später erneut versuchen
+* Ist der empfangende Server vorübergehend nicht erreichbar, versuchen wir es weiter
 
 Dieser Ansatz verbessert die Zustellraten erheblich und gewährleistet gleichzeitig Datenschutz und Sicherheit.
 
+
 ## Node.js-Integration {#nodejs-integration}
 
-### Nodemailer verwenden {#using-nodemailer}
+### Verwendung von Nodemailer {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) ist ein beliebtes Modul zum Senden von E-Mails aus Node.js-Anwendungen.
+[Nodemailer](https://nodemailer.com/) ist ein beliebtes Modul zum Versenden von E-Mails aus Node.js-Anwendungen.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -104,8 +108,7 @@ async function sendEmail() {
 
 sendEmail();
 ```
-
-### Verwenden von Express.js {#using-expressjs}
+### Verwendung von Express.js {#using-expressjs}
 
 So integrieren Sie Forward Email SMTP in eine Express.js-Anwendung:
 
@@ -117,7 +120,7 @@ const port = 3000;
 
 app.use(express.json());
 
-// Configure email transporter
+// Konfigurieren des E-Mail-Transporters
 const transporter = nodemailer.createTransport({
   host: 'smtp.forwardemail.net',
   port: 465,
@@ -128,7 +131,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// API endpoint for sending emails
+// API-Endpunkt zum Senden von E-Mails
 app.post('/send-email', async (req, res) => {
   const { to, subject, text, html } = req.body;
 
@@ -146,7 +149,7 @@ app.post('/send-email', async (req, res) => {
       messageId: info.messageId
     });
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Fehler beim Senden der E-Mail:', error);
     res.status(500).json({
       success: false,
       error: error.message
@@ -155,59 +158,60 @@ app.post('/send-email', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server läuft unter http://localhost:${port}`);
 });
 ```
 
+
 ## Python-Integration {#python-integration}
 
-### Verwenden von smtplib {#using-smtplib}
+### Verwendung von smtplib {#using-smtplib}
 
 ```python
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Email configuration
+# E-Mail-Konfiguration
 sender_email = "your-username@your-domain.com"
 receiver_email = "recipient@example.com"
 password = "your-password"
 
-# Create message
+# Nachricht erstellen
 message = MIMEMultipart("alternative")
-message["Subject"] = "Hello from Forward Email"
+message["Subject"] = "Hallo von Forward Email"
 message["From"] = sender_email
 message["To"] = receiver_email
 
-# Create the plain-text and HTML version of your message
-text = "Hello world! This is a test email sent using Python and Forward Email SMTP."
-html = "<html><body><b>Hello world!</b> This is a test email sent using Python and Forward Email SMTP.</body></html>"
+# Erstellen der Text- und HTML-Version der Nachricht
+text = "Hallo Welt! Dies ist eine Test-E-Mail, die mit Python und Forward Email SMTP gesendet wurde."
+html = "<html><body><b>Hallo Welt!</b> Dies ist eine Test-E-Mail, die mit Python und Forward Email SMTP gesendet wurde.</body></html>"
 
-# Turn these into plain/html MIMEText objects
+# Umwandeln in plain/html MIMEText-Objekte
 part1 = MIMEText(text, "plain")
 part2 = MIMEText(html, "html")
 
-# Add HTML/plain-text parts to MIMEMultipart message
+# HTML-/Plain-Text-Teile zur MIMEMultipart-Nachricht hinzufügen
 message.attach(part1)
 message.attach(part2)
 
-# Send email
+# E-Mail senden
 try:
     server = smtplib.SMTP_SSL("smtp.forwardemail.net", 465)
     server.login(sender_email, password)
     server.sendmail(sender_email, receiver_email, message.as_string())
     server.quit()
-    print("Email sent successfully!")
+    print("E-Mail erfolgreich gesendet!")
 except Exception as e:
-    print(f"Error sending email: {e}")
+    print(f"Fehler beim Senden der E-Mail: {e}")
 ```
 
-### Verwenden von Django {#using-django}
+### Verwendung von Django {#using-django}
 
-Fügen Sie für Django-Anwendungen Folgendes zu Ihrem `settings.py` hinzu:
+Für Django-Anwendungen fügen Sie Folgendes zu Ihrer `settings.py` hinzu:
 
 ```python
-# Email settings
+# E-Mail-Einstellungen
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.forwardemail.net'
 EMAIL_PORT = 465
@@ -217,22 +221,23 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Senden Sie dann E-Mails in Ihren Ansichten:
+Dann senden Sie E-Mails in Ihren Views:
 
 ```python
 from django.core.mail import send_mail
 
 def send_email_view(request):
     send_mail(
-        'Subject here',
-        'Here is the message.',
+        'Betreff hier',
+        'Hier ist die Nachricht.',
         'from@your-domain.com',
         ['to@example.com'],
         fail_silently=False,
-        html_message='<b>Here is the HTML message.</b>'
+        html_message='<b>Hier ist die HTML-Nachricht.</b>'
     )
-    return HttpResponse('Email sent!')
+    return HttpResponse('E-Mail gesendet!')
 ```
+
 
 ## PHP-Integration {#php-integration}
 
@@ -248,7 +253,7 @@ require 'vendor/autoload.php';
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
+    // Server-Einstellungen
     $mail->isSMTP();
     $mail->Host       = 'smtp.forwardemail.net';
     $mail->SMTPAuth   = true;
@@ -257,27 +262,26 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
     $mail->Port       = 465;
 
-    // Recipients
-    $mail->setFrom('your-username@your-domain.com', 'Your Name');
-    $mail->addAddress('recipient@example.com', 'Recipient Name');
-    $mail->addReplyTo('your-username@your-domain.com', 'Your Name');
+    // Empfänger
+    $mail->setFrom('your-username@your-domain.com', 'Ihr Name');
+    $mail->addAddress('recipient@example.com', 'Empfängername');
+    $mail->addReplyTo('your-username@your-domain.com', 'Ihr Name');
 
-    // Content
+    // Inhalt
     $mail->isHTML(true);
-    $mail->Subject = 'Hello from Forward Email';
-    $mail->Body    = '<b>Hello world!</b> This is a test email sent using PHPMailer and Forward Email SMTP.';
-    $mail->AltBody = 'Hello world! This is a test email sent using PHPMailer and Forward Email SMTP.';
+    $mail->Subject = 'Hallo von Forward Email';
+    $mail->Body    = '<b>Hallo Welt!</b> Dies ist eine Test-E-Mail, die mit PHPMailer und Forward Email SMTP gesendet wurde.';
+    $mail->AltBody = 'Hallo Welt! Dies ist eine Test-E-Mail, die mit PHPMailer und Forward Email SMTP gesendet wurde.';
 
     $mail->send();
-    echo 'Message has been sent';
+    echo 'Nachricht wurde gesendet';
 } catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    echo "Nachricht konnte nicht gesendet werden. Mailer-Fehler: {$mail->ErrorInfo}";
 }
 ```
-
 ### Verwendung von Laravel {#using-laravel}
 
-Aktualisieren Sie für Laravel-Anwendungen Ihre Datei `.env`:
+Für Laravel-Anwendungen aktualisieren Sie Ihre `.env`-Datei:
 
 ```sh
 MAIL_MAILER=smtp
@@ -290,7 +294,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Senden Sie dann E-Mails mithilfe der Mail-Fassade von Laravel:
+Senden Sie dann E-Mails mit der Mail-Fassade von Laravel:
 
 ```php
 <?php
@@ -307,14 +311,15 @@ class EmailController extends Controller
     {
         Mail::to('recipient@example.com')->send(new WelcomeEmail());
 
-        return 'Email sent successfully!';
+        return 'E-Mail erfolgreich gesendet!';
     }
 }
 ```
 
+
 ## Ruby-Integration {#ruby-integration}
 
-### Verwenden von Ruby Mail Gem {#using-ruby-mail-gem}
+### Verwendung des Ruby Mail Gems {#using-ruby-mail-gem}
 
 ```ruby
 require 'mail'
@@ -335,25 +340,26 @@ end
 mail = Mail.new do
   from     'your-username@your-domain.com'
   to       'recipient@example.com'
-  subject  'Hello from Forward Email'
+  subject  'Hallo von Forward Email'
 
   text_part do
-    body 'Hello world! This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body 'Hallo Welt! Dies ist eine Test-E-Mail, die mit Ruby Mail und Forward Email SMTP gesendet wurde.'
   end
 
   html_part do
     content_type 'text/html; charset=UTF-8'
-    body '<b>Hello world!</b> This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body '<b>Hallo Welt!</b> Dies ist eine Test-E-Mail, die mit Ruby Mail und Forward Email SMTP gesendet wurde.'
   end
 end
 
 mail.deliver!
-puts "Email sent successfully!"
+puts "E-Mail erfolgreich gesendet!"
 ```
+
 
 ## Java-Integration {#java-integration}
 
-### Verwenden der JavaMail-API {#using-javamail-api}
+### Verwendung der JavaMail API {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -362,11 +368,11 @@ import javax.mail.internet.*;
 
 public class SendEmail {
     public static void main(String[] args) {
-        // Sender's email and password
+        // E-Mail und Passwort des Absenders
         final String username = "your-username@your-domain.com";
         final String password = "your-password";
 
-        // SMTP server properties
+        // SMTP-Server-Eigenschaften
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -375,7 +381,7 @@ public class SendEmail {
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-        // Create session with authenticator
+        // Sitzung mit Authentifikator erstellen
         Session session = Session.getInstance(props,
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -384,34 +390,34 @@ public class SendEmail {
             });
 
         try {
-            // Create message
+            // Nachricht erstellen
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("recipient@example.com"));
-            message.setSubject("Hello from Forward Email");
+            message.setSubject("Hallo von Forward Email");
 
-            // Create multipart message
+            // Multipart-Nachricht erstellen
             Multipart multipart = new MimeMultipart("alternative");
 
-            // Text part
+            // Textteil
             BodyPart textPart = new MimeBodyPart();
-            textPart.setText("Hello world! This is a test email sent using JavaMail and Forward Email SMTP.");
+            textPart.setText("Hallo Welt! Dies ist eine Test-E-Mail, die mit JavaMail und Forward Email SMTP gesendet wurde.");
 
-            // HTML part
+            // HTML-Teil
             BodyPart htmlPart = new MimeBodyPart();
-            htmlPart.setContent("<b>Hello world!</b> This is a test email sent using JavaMail and Forward Email SMTP.", "text/html");
+            htmlPart.setContent("<b>Hallo Welt!</b> Dies ist eine Test-E-Mail, die mit JavaMail und Forward Email SMTP gesendet wurde.", "text/html");
 
-            // Add parts to multipart
+            // Teile zum Multipart hinzufügen
             multipart.addBodyPart(textPart);
             multipart.addBodyPart(htmlPart);
 
-            // Set content
+            // Inhalt setzen
             message.setContent(multipart);
 
-            // Send message
+            // Nachricht senden
             Transport.send(message);
 
-            System.out.println("Email sent successfully!");
+            System.out.println("E-Mail erfolgreich gesendet!");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -420,105 +426,105 @@ public class SendEmail {
 }
 ```
 
+
 ## E-Mail-Client-Konfiguration {#email-client-configuration}
 
 ### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
-    B --> C[Account Actions]
-    C --> D[Add Mail Account]
-    D --> E[Enter Name, Email, Password]
-    E --> F[Manual Config]
-    F --> G[Enter Server Details]
+    A[Thunderbird öffnen] --> B[Konto-Einstellungen]
+    B --> C[Konto-Aktionen]
+    C --> D[Mail-Konto hinzufügen]
+    D --> E[Name, E-Mail, Passwort eingeben]
+    E --> F[Manuelle Konfiguration]
+    F --> G[Serverdetails eingeben]
     G --> H[SMTP: smtp.forwardemail.net]
     H --> I[Port: 465]
-    I --> J[Connection: SSL/TLS]
-    J --> K[Authentication: Normal Password]
-    K --> L[Username: full email address]
-    L --> M[Test and Create Account]
+    I --> J[Verbindung: SSL/TLS]
+    J --> K[Authentifizierung: Normales Passwort]
+    K --> L[Benutzername: vollständige E-Mail-Adresse]
+    L --> M[Testen und Konto erstellen]
 ```
-
-1. Öffnen Sie Thunderbird und gehen Sie zu den Kontoeinstellungen.
-2. Klicken Sie auf „Kontoaktionen“ und wählen Sie „E-Mail-Konto hinzufügen“.
-3. Geben Sie Ihren Namen, Ihre E-Mail-Adresse und Ihr Passwort ein.
-4. Klicken Sie auf „Manuelle Konfiguration“ und geben Sie die folgenden Daten ein:
-* Posteingangsserver:
-* IMAP: imap.forwardemail.net, Port: 993, SSL/TLS
-* POP3: pop3.forwardemail.net, Port: 995, SSL/TLS
-* Postausgangsserver (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS
-* Authentifizierung: Normales Passwort
-* Benutzername: Ihre vollständige E-Mail-Adresse
-5. Klicken Sie auf „Testen“ und dann auf „Fertig“.
+1. Öffnen Sie Thunderbird und gehen Sie zu Kontoeinstellungen  
+2. Klicken Sie auf „Kontenaktionen“ und wählen Sie „E-Mail-Konto hinzufügen“  
+3. Geben Sie Ihren Namen, Ihre E-Mail-Adresse und Ihr Passwort ein  
+4. Klicken Sie auf „Manuelle Konfiguration“ und geben Sie die folgenden Daten ein:  
+   * Eingehender Server:  
+     * IMAP: imap.forwardemail.net, Port: 993, SSL/TLS  
+     * POP3: pop3.forwardemail.net, Port: 995, SSL/TLS  
+   * Ausgehender Server (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS  
+   * Authentifizierung: Normales Passwort  
+   * Benutzername: Ihre vollständige E-Mail-Adresse  
+5. Klicken Sie auf „Testen“ und dann auf „Fertig“  
 
 ### Apple Mail {#apple-mail}
 
-1. Öffnen Sie Mail und gehen Sie zu Mail > Einstellungen > Konten.
-2. Klicken Sie auf das „+“, um ein neues Konto hinzuzufügen.
-3. Wählen Sie „Anderes E-Mail-Konto“ und klicken Sie auf „Weiter“.
-4. Geben Sie Ihren Namen, Ihre E-Mail-Adresse und Ihr Passwort ein und klicken Sie anschließend auf „Anmelden“.
-5. Falls die automatische Einrichtung fehlschlägt, geben Sie bitte folgende Daten ein:
-* Posteingangsserver: imap.forwardemail.net (oder pop3.forwardemail.net für POP3)
-* Postausgangsserver: smtp.forwardemail.net
-* Benutzername: Ihre vollständige E-Mail-Adresse
-* Passwort: Ihr Passwort
-6. Klicken Sie auf „Anmelden“, um die Einrichtung abzuschließen
+1. Öffnen Sie Mail und gehen Sie zu Mail > Einstellungen > Accounts  
+2. Klicken Sie auf die „+“-Schaltfläche, um ein neues Konto hinzuzufügen  
+3. Wählen Sie „Anderes E-Mail-Konto“ und klicken Sie auf „Fortfahren“  
+4. Geben Sie Ihren Namen, Ihre E-Mail-Adresse und Ihr Passwort ein und klicken Sie auf „Anmelden“  
+5. Wenn die automatische Einrichtung fehlschlägt, geben Sie die folgenden Daten ein:  
+   * Eingehender Mailserver: imap.forwardemail.net (oder pop3.forwardemail.net für POP3)  
+   * Ausgehender Mailserver: smtp.forwardemail.net  
+   * Benutzername: Ihre vollständige E-Mail-Adresse  
+   * Passwort: Ihr Passwort  
+6. Klicken Sie auf „Anmelden“, um die Einrichtung abzuschließen  
 
-### Gmail (E-Mail senden als) {#gmail-send-mail-as}
+### Gmail (Senden als) {#gmail-send-mail-as}
 
-1. Öffnen Sie Gmail und gehen Sie zu Einstellungen > Konten und Importieren.
-2. Klicken Sie unter „E-Mail senden als“ auf „Weitere E-Mail-Adresse hinzufügen“.
-3. Geben Sie Ihren Namen und Ihre E-Mail-Adresse ein und klicken Sie anschließend auf „Nächster Schritt“.
-4. Geben Sie die folgenden SMTP-Serverdaten ein:
-* SMTP-Server: smtp.forwardemail.net
-* Port: 465
-* Benutzername: Ihre vollständige E-Mail-Adresse
-* Passwort: Ihr Passwort
-* Wählen Sie „Gesicherte Verbindung mit SSL“ aus.
-5. Klicken Sie auf „Konto hinzufügen“ und bestätigen Sie Ihre E-Mail-Adresse.
+1. Öffnen Sie Gmail und gehen Sie zu Einstellungen > Konten und Import  
+2. Unter „Senden als“ klicken Sie auf „Weitere E-Mail-Adresse hinzufügen“  
+3. Geben Sie Ihren Namen und Ihre E-Mail-Adresse ein und klicken Sie auf „Nächster Schritt“  
+4. Geben Sie die folgenden SMTP-Serverdaten ein:  
+   * SMTP-Server: smtp.forwardemail.net  
+   * Port: 465  
+   * Benutzername: Ihre vollständige E-Mail-Adresse  
+   * Passwort: Ihr Passwort  
+   * Wählen Sie „Gesicherte Verbindung mit SSL“  
+5. Klicken Sie auf „Konto hinzufügen“ und verifizieren Sie Ihre E-Mail-Adresse  
 
 ## Fehlerbehebung {#troubleshooting}
 
 ### Häufige Probleme und Lösungen {#common-issues-and-solutions}
 
-1. **Authentifizierung fehlgeschlagen**
-* Bestätigen Sie Ihren Benutzernamen (vollständige E-Mail-Adresse) und Ihr Passwort.
-* Stellen Sie sicher, dass Sie den richtigen Port verwenden (465 für SSL/TLS).
-* Prüfen Sie, ob für Ihr Konto SMTP-Zugriff aktiviert ist.
+1. **Authentifizierung fehlgeschlagen**  
+   * Überprüfen Sie Ihren Benutzernamen (vollständige E-Mail-Adresse) und Ihr Passwort  
+   * Stellen Sie sicher, dass Sie den richtigen Port verwenden (465 für SSL/TLS)  
+   * Prüfen Sie, ob Ihr Konto SMTP-Zugriff aktiviert hat  
 
-2. **Verbindungs-Timeout**
-* Überprüfen Sie Ihre Internetverbindung.
-* Stellen Sie sicher, dass die Firewall-Einstellungen den SMTP-Verkehr nicht blockieren.
-* Verwenden Sie Port 465 mit SSL/TLS (empfohlen) oder Port 587 mit STARTTLS.
+2. **Verbindungszeitüberschreitung**  
+   * Überprüfen Sie Ihre Internetverbindung  
+   * Stellen Sie sicher, dass Ihre Firewall SMTP-Verkehr nicht blockiert  
+   * Versuchen Sie Port 465 mit SSL/TLS (empfohlen) oder Port 587 mit STARTTLS  
 
-3. **Nachricht abgelehnt**
-* Stellen Sie sicher, dass Ihre Absenderadresse mit Ihrer authentifizierten E-Mail-Adresse übereinstimmt.
-* Prüfen Sie, ob Ihre IP-Adresse auf der schwarzen Liste steht.
-* Stellen Sie sicher, dass Ihr Nachrichteninhalt keine Spamfilter auslöst.
+3. **Nachricht abgelehnt**  
+   * Stellen Sie sicher, dass Ihre „Von“-Adresse mit Ihrer authentifizierten E-Mail übereinstimmt  
+   * Prüfen Sie, ob Ihre IP auf einer Blacklist steht  
+   * Vergewissern Sie sich, dass der Inhalt Ihrer Nachricht keine Spamfilter auslöst  
 
-4. **TLS/SSL-Fehler**
-* Aktualisieren Sie Ihre Anwendung/Bibliothek, um moderne TLS-Versionen zu unterstützen.
-* Stellen Sie sicher, dass die CA-Zertifikate Ihres Systems aktuell sind.
-* Versuchen Sie explizites TLS anstelle von implizitem TLS.
+4. **TLS/SSL-Fehler**  
+   * Aktualisieren Sie Ihre Anwendung/Bibliothek, um moderne TLS-Versionen zu unterstützen  
+   * Stellen Sie sicher, dass die CA-Zertifikate Ihres Systems aktuell sind  
+   * Versuchen Sie explizites TLS statt implizitem TLS  
 
 ### Hilfe erhalten {#getting-help}
 
-Wenn Sie auf Probleme stoßen, die hier nicht behandelt werden, gehen Sie bitte wie folgt vor:
+Wenn Sie auf Probleme stoßen, die hier nicht behandelt werden, bitte:  
 
-1. Häufig gestellte Fragen finden Sie in unserem [FAQ-Seite](/faq).
-2. Detaillierte Informationen finden Sie in unserem [Blogbeitrag zur E-Mail-Zustellung](/blog/docs/best-email-forwarding-service).
-3. Kontaktieren Sie unser Support-Team unter <support@forwardemail.net>.
+1. Prüfen Sie unsere [FAQ-Seite](/faq) für häufige Fragen  
+2. Lesen Sie unseren [Blogbeitrag zur E-Mail-Zustellung](/blog/docs/best-email-forwarding-service) für detaillierte Informationen  
+3. Kontaktieren Sie unser Support-Team unter <support@forwardemail.net>  
 
 ## Zusätzliche Ressourcen {#additional-resources}
 
-* [E-Mail-Dokumentation weiterleiten](/docs)
-* [SMTP-Server-Limits und -Konfiguration](/faq#what-are-your-outbound-smtp-limits)
-* [Leitfaden zu Best Practices für E-Mails](/blog/docs/best-email-forwarding-service)
-* [Sicherheitspraktiken](/security)
+* [Forward Email Dokumentation](/docs)  
+* [SMTP-Server-Limits und Konfiguration](/faq#what-are-your-outbound-smtp-limits)  
+* [Leitfaden zu Best Practices für E-Mails](/blog/docs/best-email-forwarding-service)  
+* [Sicherheitspraktiken](/security)  
 
 ## Fazit {#conclusion}
 
-Der SMTP-Dienst von Forward Email bietet eine zuverlässige, sichere und datenschutzfreundliche Möglichkeit, E-Mails aus Ihren Anwendungen und E-Mail-Clients zu versenden. Dank unseres intelligenten Warteschlangensystems, der 5-tägigen Wiederholungsfunktion und umfassender Benachrichtigungen zum Zustellstatus können Sie sicher sein, dass Ihre E-Mails ihr Ziel erreichen.
+Der SMTP-Dienst von Forward Email bietet eine zuverlässige, sichere und datenschutzorientierte Möglichkeit, E-Mails von Ihren Anwendungen und E-Mail-Clients zu senden. Mit unserem intelligenten Warteschlangensystem, dem 5-Tage-Wiederholungsmechanismus und umfassenden Zustellstatusbenachrichtigungen können Sie sicher sein, dass Ihre E-Mails ihr Ziel erreichen.  
 
-Für erweiterte Anwendungsfälle oder benutzerdefinierte Integrationen wenden Sie sich bitte an unser Supportteam.
+Für fortgeschrittene Anwendungsfälle oder individuelle Integrationen kontaktieren Sie bitte unser Support-Team.

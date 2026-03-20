@@ -1,208 +1,245 @@
 # 이메일 API {#email-api}
 
+
 ## 목차 {#table-of-contents}
 
-* [도서관](#libraries)
+* [라이브러리](#libraries)
 * [기본 URI](#base-uri)
-* [입증](#authentication)
+* [인증](#authentication)
+  * [API 토큰 인증 (대부분의 엔드포인트에 권장)](#api-token-authentication-recommended-for-most-endpoints)
+  * [별칭 자격 증명 인증 (발신 이메일용)](#alias-credentials-authentication-for-outbound-email)
+  * [별칭 전용 엔드포인트](#alias-only-endpoints)
 * [오류](#errors)
 * [현지화](#localization)
-* [쪽수 매기기](#pagination)
+* [페이지네이션](#pagination)
 * [로그](#logs)
-  * [로그 검색](#retrieve-logs)
+  * [로그 조회](#retrieve-logs)
 * [계정](#account)
   * [계정 생성](#create-account)
-  * [계정 검색](#retrieve-account)
+  * [계정 조회](#retrieve-account)
   * [계정 업데이트](#update-account)
-* [별칭 연락처(CardDAV)](#alias-contacts-carddav)
+* [별칭 연락처 (CardDAV)](#alias-contacts-carddav)
   * [연락처 목록](#list-contacts)
-  * [연락처 만들기](#create-contact)
-  * [연락처 검색](#retrieve-contact)
+  * [연락처 생성](#create-contact)
+  * [연락처 조회](#retrieve-contact)
   * [연락처 업데이트](#update-contact)
   * [연락처 삭제](#delete-contact)
-* [별칭 달력(CalDAV)](#alias-calendars-caldav)
+* [별칭 캘린더 (CalDAV)](#alias-calendars-caldav)
   * [캘린더 목록](#list-calendars)
-  * [캘린더 만들기](#create-calendar)
-  * [달력 검색](#retrieve-calendar)
+  * [캘린더 생성](#create-calendar)
+  * [캘린더 조회](#retrieve-calendar)
   * [캘린더 업데이트](#update-calendar)
   * [캘린더 삭제](#delete-calendar)
-* [별칭 메시지(IMAP/POP3)](#alias-messages-imappop3)
-  * [메시지 나열 및 검색](#list-and-search-for-messages)
-  * [메시지 작성](#create-message)
-  * [메시지 검색](#retrieve-message)
+* [별칭 메시지 (IMAP/POP3)](#alias-messages-imappop3)
+  * [메시지 목록 및 검색](#list-and-search-for-messages)
+  * [메시지 생성](#create-message)
+  * [메시지 조회](#retrieve-message)
   * [메시지 업데이트](#update-message)
   * [메시지 삭제](#delete-message)
-* [별칭 폴더(IMAP/POP3)](#alias-folders-imappop3)
+* [별칭 폴더 (IMAP/POP3)](#alias-folders-imappop3)
   * [폴더 목록](#list-folders)
-  * [폴더 만들기](#create-folder)
-  * [폴더 검색](#retrieve-folder)
+  * [폴더 생성](#create-folder)
+  * [폴더 조회](#retrieve-folder)
   * [폴더 업데이트](#update-folder)
   * [폴더 삭제](#delete-folder)
   * [폴더 복사](#copy-folder)
-* [아웃바운드 이메일](#outbound-emails)
-  * [아웃바운드 SMTP 이메일 제한 가져오기](#get-outbound-smtp-email-limit)
-  * [아웃바운드 SMTP 이메일 나열](#list-outbound-smtp-emails)
-  * [아웃바운드 SMTP 이메일 생성](#create-outbound-smtp-email)
-  * [아웃바운드 SMTP 이메일 검색](#retrieve-outbound-smtp-email)
-  * [아웃바운드 SMTP 이메일 삭제](#delete-outbound-smtp-email)
+* [발신 이메일](#outbound-emails)
+  * [발신 SMTP 이메일 한도 조회](#get-outbound-smtp-email-limit)
+  * [발신 SMTP 이메일 목록](#list-outbound-smtp-emails)
+  * [발신 SMTP 이메일 생성](#create-outbound-smtp-email)
+  * [발신 SMTP 이메일 조회](#retrieve-outbound-smtp-email)
+  * [발신 SMTP 이메일 삭제](#delete-outbound-smtp-email)
 * [도메인](#domains)
   * [도메인 목록](#list-domains)
   * [도메인 생성](#create-domain)
-  * [도메인 검색](#retrieve-domain)
-  * [도메인 레코드 확인](#verify-domain-records)
-  * [도메인 SMTP 레코드 확인](#verify-domain-smtp-records)
-  * [도메인 전체의 포괄적인 비밀번호 나열](#list-domain-wide-catch-all-passwords)
-  * [도메인 전체에 적용되는 포괄적인 비밀번호 생성](#create-domain-wide-catch-all-password)
-  * [도메인 전체의 포괄적인 비밀번호 제거](#remove-domain-wide-catch-all-password)
+  * [도메인 조회](#retrieve-domain)
+  * [도메인 레코드 검증](#verify-domain-records)
+  * [도메인 SMTP 레코드 검증](#verify-domain-smtp-records)
+  * [도메인 전체 캐치올 비밀번호 목록](#list-domain-wide-catch-all-passwords)
+  * [도메인 전체 캐치올 비밀번호 생성](#create-domain-wide-catch-all-password)
+  * [도메인 전체 캐치올 비밀번호 제거](#remove-domain-wide-catch-all-password)
   * [도메인 업데이트](#update-domain)
   * [도메인 삭제](#delete-domain)
-* [초대합니다](#invites)
+* [초대](#invites)
   * [도메인 초대 수락](#accept-domain-invite)
-  * [도메인 초대 만들기](#create-domain-invite)
+  * [도메인 초대 생성](#create-domain-invite)
   * [도메인 초대 제거](#remove-domain-invite)
-* [회원들](#members)
+* [멤버](#members)
   * [도메인 멤버 업데이트](#update-domain-member)
   * [도메인 멤버 제거](#remove-domain-member)
 * [별칭](#aliases)
   * [별칭 비밀번호 생성](#generate-an-alias-password)
-  * [도메인 별칭 나열](#list-domain-aliases)
-  * [새 도메인 별칭 만들기](#create-new-domain-alias)
-  * [도메인 별칭 검색](#retrieve-domain-alias)
+  * [도메인 별칭 목록](#list-domain-aliases)
+  * [새 도메인 별칭 생성](#create-new-domain-alias)
+  * [도메인 별칭 조회](#retrieve-domain-alias)
   * [도메인 별칭 업데이트](#update-domain-alias)
   * [도메인 별칭 삭제](#delete-domain-alias)
 * [암호화](#encrypt)
   * [TXT 레코드 암호화](#encrypt-txt-record)
 
+
 ## 라이브러리 {#libraries}
 
-현재 API 래퍼는 출시되지 않았지만, 가까운 시일 내에 출시할 예정입니다. 특정 프로그래밍 언어의 API 래퍼 출시 알림을 받으시려면 <api@forwardemail.net>으로 이메일을 보내주세요. 그동안 애플리케이션에서 추천 HTTP 요청 라이브러리를 사용하거나 아래 예시처럼 [컬](https://stackoverflow.com/a/27442239/3586413)을 사용하시면 됩니다.
+현재 API 래퍼를 아직 출시하지 않았지만, 가까운 시일 내에 출시할 계획입니다. 특정 프로그래밍 언어의 API 래퍼가 출시되면 알림을 받고 싶으시면 <api@forwardemail.net>으로 이메일을 보내주세요. 그동안에는 애플리케이션에서 아래 권장 HTTP 요청 라이브러리를 사용하거나, 아래 예제처럼 [curl](https://stackoverflow.com/a/27442239/3586413)을 사용하실 수 있습니다.
 
-| 언어 | 도서관 |
+| 언어       | 라이브러리                                                             |
 | ---------- | ---------------------------------------------------------------------- |
-| 루비 | [Faraday](https://github.com/lostisland/faraday) |
-| 파이썬 | [requests](https://github.com/psf/requests) |
-| 자바 | [OkHttp](https://github.com/square/okhttp/) |
-| PHP | [guzzle](https://github.com/guzzle/guzzle) |
-| 자바스크립트 | [superagent](https://github.com/ladjs/superagent) (우리는 유지 관리자입니다) |
-| Node.js | [superagent](https://github.com/ladjs/superagent) (우리는 유지 관리자입니다) |
-| 가다 | [net/http](https://golang.org/pkg/net/http/) |
-| .NET | [RestSharp](https://github.com/restsharp/RestSharp) |
+| Ruby       | [Faraday](https://github.com/lostisland/faraday)                       |
+| Python     | [requests](https://github.com/psf/requests)                            |
+| Java       | [OkHttp](https://github.com/square/okhttp/)                            |
+| PHP        | [guzzle](https://github.com/guzzle/guzzle)                             |
+| JavaScript | [superagent](https://github.com/ladjs/superagent) (우리가 유지관리자임) |
+| Node.js    | [superagent](https://github.com/ladjs/superagent) (우리가 유지관리자임) |
+| Go         | [net/http](https://golang.org/pkg/net/http/)                           |
+| .NET       | [RestSharp](https://github.com/restsharp/RestSharp)                    |
+## Base URI {#base-uri}
 
-## 기본 URI {#base-uri}
+현재 HTTP 기본 URI 경로는: `BASE_URI`입니다.
 
-현재 HTTP 기본 URI 경로는 `BASE_URI`입니다.
 
-## 인증 {#authentication}
+## Authentication {#authentication}
 
-모든 엔드포인트에서는 [API 키](https://forwardemail.net/my-account/security)을 요청의 [기본 권한 부여](https://en.wikipedia.org/wiki/Basic_access_authentication) 헤더의 "사용자 이름" 값으로 설정해야 합니다([별칭 연락처](#alias-contacts), [별칭 달력](#alias-calendars) 및 [별칭 사서함](#alias-mailboxes)는 예외이며, 이들은 [생성된 별칭 사용자 이름 및 비밀번호](/faq#do-you-support-receiving-email-with-imap)를 사용합니다).
+모든 엔드포인트는 [기본 인증(Basic Authorization)](https://en.wikipedia.org/wiki/Basic_access_authentication)을 사용한 인증이 필요합니다. 두 가지 인증 방법을 지원합니다:
 
-걱정하지 마세요. 이것이 무엇인지 확실하지 않다면 아래에 예를 제공했습니다.
+### API 토큰 인증 (대부분의 엔드포인트에 권장) {#api-token-authentication-recommended-for-most-endpoints}
 
-## 오류 {#errors}
+[API 키](https://forwardemail.net/my-account/security)를 "username" 값으로 설정하고 비밀번호는 비워둡니다:
+
+```sh
+curl BASE_URI/v1/account \
+  -u API_TOKEN:
+```
+
+API 토큰 뒤의 콜론(`:`)에 주의하세요 – 이는 기본 인증 형식에서 비밀번호가 비어 있음을 나타냅니다.
+
+### 별칭 자격 증명 인증 (발신 이메일용) {#alias-credentials-authentication-for-outbound-email}
+
+[발신 SMTP 이메일 생성](#create-outbound-smtp-email) 엔드포인트는 별칭 이메일 주소와 [생성된 별칭 비밀번호](/faq#do-you-support-receiving-email-with-imap)를 사용한 인증도 지원합니다:
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@yourdomain.com:your_generated_password" \
+  -d "to=recipient@example.com" \
+  -d "subject=Hello" \
+  -d "text=Test email"
+```
+
+이 방법은 이미 SMTP 자격 증명을 사용하는 애플리케이션에서 이메일을 보낼 때 유용하며 SMTP에서 API로의 마이그레이션을 원활하게 합니다.
+
+### 별칭 전용 엔드포인트 {#alias-only-endpoints}
+
+[별칭 연락처](#alias-contacts-carddav), [별칭 캘린더](#alias-calendars-caldav), [별칭 메시지](#alias-messages-imappop3), 그리고 [별칭 폴더](#alias-folders-imappop3) 엔드포인트는 별칭 자격 증명이 필요하며 API 토큰 인증을 지원하지 않습니다.
+
+걱정하지 마세요 – 아래에 예제가 제공되어 있으니 잘 모르실 경우 참고하세요.
+
+
+## Errors {#errors}
 
 오류가 발생하면 API 요청의 응답 본문에 자세한 오류 메시지가 포함됩니다.
 
-| 암호 | 이름 |
+| 코드 | 이름                  |
 | ---- | --------------------- |
-| 200 | OK |
-| 400 | 잘못된 요청 |
-| 401 | 무단 |
-| 403 | 금지됨 |
-| 404 | 찾을 수 없음 |
-| 429 | 요청이 너무 많습니다 |
-| 500 | 내부 서버 오류 |
-| 501 | 구현되지 않음 |
-| 502 | 배드 게이트웨이 |
-| 503 | 서비스를 이용할 수 없습니다 |
-| 504 | 게이트웨이 시간 초과 |
+| 200  | 정상                   |
+| 400  | 잘못된 요청            |
+| 401  | 인증 실패              |
+| 403  | 금지됨                 |
+| 404  | 찾을 수 없음           |
+| 429  | 요청 과다              |
+| 500  | 내부 서버 오류         |
+| 501  | 구현되지 않음          |
+| 502  | 잘못된 게이트웨이      |
+| 503  | 서비스 이용 불가       |
+| 504  | 게이트웨이 시간 초과   |
 
 > \[!TIP]
-> 5xx 상태 코드가 표시될 경우(발생해서는 안 되는 현상입니다), <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>으로 문의해 주시면 즉시 문제를 해결해 드리겠습니다.
+> 5xx 상태 코드가 발생하면(발생하지 않아야 하지만) <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>로 연락해 주시면 즉시 문제 해결을 도와드리겠습니다.
 
-## 현지화 {#localization}
 
-저희 서비스는 25개 이상의 언어로 번역됩니다. 모든 API 응답 메시지는 API 요청을 보낸 사용자가 마지막으로 감지한 로캘로 번역됩니다. 사용자 지정 `Accept-Language` 헤더를 전달하여 이 설정을 재정의할 수 있습니다. 이 페이지 하단의 언어 드롭다운을 사용하여 자유롭게 사용해 보세요.
+## Localization {#localization}
 
-## 페이지 매김 {#pagination}
+저희 서비스는 25개 이상의 언어로 번역되어 있습니다. 모든 API 응답 메시지는 API 요청을 하는 사용자의 마지막 감지된 로케일로 번역됩니다. `Accept-Language` 헤더를 전달하여 이를 재정의할 수 있습니다. 이 페이지 하단의 언어 드롭다운을 사용해 자유롭게 시도해 보세요.
+
+
+## Pagination {#pagination}
 
 > \[!NOTE]
-> 2024년 11월 1일부터 [도메인 목록](#list-domains) 및 [도메인 별칭 나열](#list-domain-aliases)의 API 엔드포인트는 페이지당 최대 결과 수가 `1000`으로 기본 설정됩니다. 이 동작을 미리 적용하려면 엔드포인트 쿼리 URL에 `?paginate=true`를 추가 쿼리 문자열 매개변수로 전달하면 됩니다.
+> 2024년 11월 1일부터 [도메인 목록](#list-domains) 및 [도메인 별칭 목록](#list-domain-aliases) API 엔드포인트는 기본적으로 페이지당 최대 결과 수가 `1000`으로 설정됩니다. 이 동작을 조기에 적용하려면 엔드포인트 쿼리 URL에 추가 쿼리스트링 매개변수로 `?paginate=true`를 전달할 수 있습니다.
 
-페이지 매김은 결과를 나열하는 모든 API 엔드포인트에서 지원됩니다.
+페이지네이션은 결과 목록을 반환하는 모든 API 엔드포인트에서 지원됩니다.
 
-간단히 쿼리 문자열 속성 `page`(및 선택적으로 `limit`)을 제공하세요.
+단순히 쿼리스트링 속성 `page` (선택적으로 `limit`)를 제공하세요.
 
-`page` 속성은 `1`보다 크거나 같은 숫자여야 합니다. `limit`(숫자)를 제공하는 경우, 최소값은 `10`이고 최대값은 `50`입니다(별도로 명시되지 않는 한).
+`page` 속성은 `1` 이상인 숫자여야 합니다. `limit`을 제공하는 경우(역시 숫자) 최소값은 `10`, 최대값은 `50`입니다(별도 명시가 없는 한).
 
-| 쿼리 문자열 매개변수 | 필수의 | 유형 | 설명 |
-| --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `page` | 아니요 | 숫자 | 반환할 결과 페이지입니다. 지정하지 않으면 `page` 값은 `1`이 됩니다. `1`보다 크거나 같은 숫자여야 합니다. |
-| `limit` | 아니요 | 숫자 | 페이지당 반환할 결과 수입니다. 지정하지 않으면 기본값은 `10`입니다. `1` 이상, `50` 이하여야 합니다. |
+| 쿼리스트링 매개변수 | 필수 여부 | 타입   | 설명                                                                                                                                                   |
+| --------------------- | -------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `page`                | 아니요   | 숫자   | 반환할 결과 페이지. 지정하지 않으면 기본값은 `1`입니다. `1` 이상인 숫자여야 합니다.                                                                   |
+| `limit`               | 아니요   | 숫자   | 페이지당 반환할 결과 수. 지정하지 않으면 기본값은 `10`입니다. `1` 이상 `50` 이하의 숫자여야 합니다.                                                  |
+더 많은 결과가 있는지 여부를 결정하기 위해, 다음과 같은 HTTP 응답 헤더를 제공합니다(프로그래밍 방식으로 페이지네이션을 하기 위해 파싱할 수 있습니다):
 
-추가 결과가 있는지 확인하기 위해 다음과 같은 HTTP 응답 헤더를 제공합니다(프로그래밍 방식으로 페이지를 나누기 위해 구문 분석 가능):
-
-| HTTP 응답 헤더 | 예 | 설명 |
+| HTTP Response Header | Example                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                                                                                                                        |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `X-Page-Count` | `X-Page-Count: 3` | 사용 가능한 총 페이지 수입니다. |
-| `X-Page-Current` | `X-Page-Current: 1` | 반환된 결과의 현재 페이지(예: `page` 쿼리 문자열 매개변수 기반). |
-| `X-Page-Size` | `X-Page-Size: 10` | 페이지에서 반환된 결과의 총 수(예: `limit` 쿼리 문자열 매개변수와 반환된 실제 결과 기준). |
-| `X-Item-Count` | `X-Item-Count: 30` | 모든 페이지에서 사용 가능한 항목의 총 수입니다. |
-| `Link` | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | 예시와 같이 구문 분석할 수 있는 `Link` HTTP 응답 헤더가 제공됩니다. 이는 [similar to GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers)입니다. (예: 관련성이 없거나 사용할 수 없는 값은 모두 제공되지 않습니다. 예를 들어, 다른 페이지가 없는 경우 `"next"`은 제공되지 않습니다.) |
-
-> 요청 예시:
+| `X-Page-Count`       | `X-Page-Count: 3`                                                                                                                                                                                                                                        | 사용 가능한 총 페이지 수입니다.                                                                                                                                                                                                                                                                                                                                    |
+| `X-Page-Current`     | `X-Page-Current: 1`                                                                                                                                                                                                                                      | 반환된 결과의 현재 페이지입니다(예: `page` 쿼리스트링 매개변수를 기준으로 함).                                                                                                                                                                                                                                                                                |
+| `X-Page-Size`        | `X-Page-Size: 10`                                                                                                                                                                                                                                        | 반환된 페이지 내 결과의 총 개수입니다(예: `limit` 쿼리스트링 매개변수 및 실제 반환된 결과를 기준으로 함).                                                                                                                                                                                                                                       |
+| `X-Item-Count`       | `X-Item-Count: 30`                                                                                                                                                                                                                                       | 모든 페이지에 걸쳐 사용 가능한 총 항목 수입니다.                                                                                                                                                                                                                                                                                                              |
+| `Link`               | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | 예제와 같이 파싱할 수 있는 `Link` HTTP 응답 헤더를 제공합니다. 이는 [GitHub와 유사합니다](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (예: 관련 없거나 사용 불가능한 경우 모든 값이 제공되지 않을 수 있습니다. 예를 들어, 다음 페이지가 없으면 `"next"`가 제공되지 않습니다). |
+> 예시 요청:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
+
 ## 로그 {#logs}
 
-### 로그 검색 {#retrieve-logs}
+### 로그 가져오기 {#retrieve-logs}
 
-저희 API를 통해 프로그래밍 방식으로 계정 로그를 다운로드할 수 있습니다. 이 엔드포인트에 요청을 제출하면 계정의 모든 로그가 처리되어 완료되면 첨부 파일([지압](https://en.wikipedia.org/wiki/Gzip) 압축 [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) 스프레드시트 파일)로 이메일로 전송됩니다.
+저희 API는 계정의 로그를 프로그래밍 방식으로 다운로드할 수 있도록 합니다. 이 엔드포인트에 요청을 제출하면 계정의 모든 로그를 처리하여 완료 시 첨부파일([Gzip](https://en.wikipedia.org/wiki/Gzip) 압축된 [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) 스프레드시트 파일)로 이메일로 보내드립니다.
 
-이를 통해 [크론 작업](https://en.wikipedia.org/wiki/Cron)을 사용하여 백그라운드 작업을 생성하거나 [Node.js 작업 스케줄링 소프트웨어 Bree](https://github.com/breejs/bree)을 사용하여 원할 때마다 로그를 수신할 수 있습니다. 이 엔드포인트는 하루에 `10`개의 요청으로 제한됩니다.
+이를 통해 [Cron job](https://en.wikipedia.org/wiki/Cron)이나 저희 [Node.js 작업 스케줄링 소프트웨어 Bree](https://github.com/breejs/bree)를 사용하여 원하는 시점에 로그를 받을 수 있는 백그라운드 작업을 생성할 수 있습니다. 이 엔드포인트는 하루에 `10`회 요청으로 제한됩니다.
 
-첨부 파일은 `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`의 소문자 형식이며, 이메일 자체에는 검색된 로그에 대한 간략한 요약이 포함되어 있습니다. [내 계정 → 로그](/my-account/logs)에서 언제든지 로그를 다운로드할 수도 있습니다.
+첨부파일 이름은 소문자 형태의 `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`이며, 이메일 본문에는 가져온 로그의 간략한 요약이 포함되어 있습니다. 또한 언제든지 [내 계정 → 로그](/my-account/logs)에서 로그를 다운로드할 수 있습니다.
 
 > `GET /v1/logs/download`
 
-| 쿼리 문자열 매개변수 | 필수의 | 유형 | 설명 |
-| --------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | 아니요 | 문자열(FQDN) | 정규화된 도메인("FQDN")으로 로그를 필터링합니다. FQDN을 제공하지 않으면 모든 도메인의 모든 로그가 검색됩니다. |
-| `q` | 아니요 | 끈 | 이메일, 도메인, 별칭 이름, IP 주소 또는 날짜(`M/Y`, `M/D/YY`, `M-D`, `M-D-YY` 또는 `M.D.YY` 형식)로 로그를 검색합니다. |
-| `bounce_category` | 아니요 | 끈 | 특정 반송 카테고리(예: `blocklist`)로 로그를 검색합니다. |
-| `response_code` | 아니요 | 숫자 | 특정 오류 응답 코드(예: `421` 또는 `550`)로 로그를 검색합니다. |
+| 쿼리스트링 매개변수 | 필수 | 타입          | 설명                                                                                                                         |
+| --------------------- | ---- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `domain`              | 아니오 | 문자열 (FQDN) | 완전한 도메인 이름("FQDN")으로 로그를 필터링합니다. 제공하지 않으면 모든 도메인의 모든 로그가 검색됩니다.                     |
+| `q`                   | 아니오 | 문자열        | 이메일, 도메인, 별칭 이름, IP 주소 또는 날짜(`M/Y`, `M/D/YY`, `M-D`, `M-D-YY`, 또는 `M.D.YY` 형식)로 로그를 검색합니다.       |
+| `bounce_category`     | 아니오 | 문자열        | 특정 반송 카테고리(예: `blocklist`)로 로그를 검색합니다.                                                                     |
+| `response_code`       | 아니오 | 숫자          | 특정 오류 응답 코드(예: `421` 또는 `550`)로 로그를 검색합니다.                                                                |
 
-> 요청 예시:
+> 예시 요청:
 
 ```sh
 curl BASE_URI/v1/logs/download \
   -u API_TOKEN:
 ```
 
-> Cron 작업 예시(매일 자정):
+> 예시 Cron 작업 (매일 자정):
 
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-[Crontab.guru](https://crontab.guru/)와 같은 서비스를 사용하면 Cron 작업 표현식 구문을 검증할 수 있습니다.
+Cron 작업 표현식 구문을 검증하려면 [Crontab.guru](https://crontab.guru/)와 같은 서비스를 사용할 수 있습니다.
 
-> Cron 작업 예시(매일 자정에 **그리고 전날의 로그와 함께**):
+> 예시 Cron 작업 (매일 자정 **및 전날 로그 포함**):
 
-MacOS의 경우:
+MacOS용:
 
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date -v-1d -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
-Linux 및 Ubuntu의 경우:
+Linux 및 Ubuntu용:
 
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date --date "-1 days" -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
+
 
 ## 계정 {#account}
 
@@ -210,12 +247,12 @@ Linux 및 Ubuntu의 경우:
 
 > `POST /v1/account`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| -------------- | -------- | -------------- | ------------- |
-| `email` | 예 | 문자열(이메일) | 이메일 주소 |
-| `password` | 예 | 끈 | 비밀번호 |
+| 본문 매개변수 | 필수 | 타입           | 설명         |
+| -------------- | ---- | -------------- | ------------ |
+| `email`        | 예   | 문자열 (이메일) | 이메일 주소  |
+| `password`     | 예   | 문자열         | 비밀번호     |
 
-> 요청 예시:
+> 예시 요청:
 
 ```sh
 curl -X POST BASE_URI/v1/account \
@@ -223,11 +260,11 @@ curl -X POST BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-### 계정 검색 {#retrieve-account}
+### 계정 조회 {#retrieve-account}
 
 > `GET /v1/account`
 
-> 요청 예시:
+> 예시 요청:
 
 ```sh
 curl BASE_URI/v1/account \
@@ -238,14 +275,14 @@ curl BASE_URI/v1/account \
 
 > `PUT /v1/account`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| -------------- | -------- | -------------- | -------------------- |
-| `email` | 아니요 | 문자열(이메일) | 이메일 주소 |
-| `given_name` | 아니요 | 끈 | 이름 |
-| `family_name` | 아니요 | 끈 | 성 |
-| `avatar_url` | 아니요 | 문자열(URL) | 아바타 이미지에 대한 링크 |
+| 본문 매개변수 | 필수 | 타입           | 설명               |
+| -------------- | ---- | -------------- | ------------------ |
+| `email`        | 아니오 | 문자열 (이메일) | 이메일 주소        |
+| `given_name`   | 아니오 | 문자열         | 이름               |
+| `family_name`  | 아니오 | 문자열         | 성                 |
+| `avatar_url`   | 아니오 | 문자열 (URL)   | 아바타 이미지 링크 |
 
-> 요청 예시:
+> 예시 요청:
 
 ```sh
 curl -X PUT BASE_URI/v1/account \
@@ -253,180 +290,183 @@ curl -X PUT BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-## 별칭 연락처(CardDAV) {#alias-contacts-carddav}
+
+## 별칭 연락처 (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 권한 부여 헤더로 [입증](#authentication) "username"이 별칭 사용자 이름과 동일하고, "password"가 별칭에서 생성된 비밀번호와 동일해야 합니다.
-
+> 다른 API 엔드포인트와 달리, 이들은 [인증](#authentication)에서 "username"이 별칭 사용자 이름과 같고 "password"가 별칭 생성 비밀번호와 같은 Basic Authorization 헤더를 요구합니다.
 > \[!WARNING]
-> 이 엔드포인트 섹션은 현재 개발 중이며 2024년에 출시될 예정입니다(희망 사항). 그동안 웹사이트 탐색 메뉴의 "앱" 드롭다운 메뉴에서 IMAP 클라이언트를 사용해 주세요.
+> 이 엔드포인트 섹션은 진행 중이며 (희망컨대) 2024년에 출시될 예정입니다. 그동안은 웹사이트 내비게이션의 "Apps" 드롭다운에서 IMAP 클라이언트를 사용해 주세요.
 
 ### 연락처 목록 {#list-contacts}
 
 > `GET /v1/contacts`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 연락처 만들기 {#create-contact}
+### 연락처 생성 {#create-contact}
 
 > `POST /v1/contacts`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 연락처 검색 {#retrieve-contact}
+### 연락처 조회 {#retrieve-contact}
 
 > `GET /v1/contacts/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
 ### 연락처 업데이트 {#update-contact}
 
 > `PUT /v1/contacts/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
 ### 연락처 삭제 {#delete-contact}
 
 > `DELETE /v1/contacts/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
-## 별칭 캘린더(CalDAV) {#alias-calendars-caldav}
+
+## 별칭 캘린더 (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 권한 부여 헤더로 [입증](#authentication) "username"이 별칭 사용자 이름과 동일하고, "password"가 별칭에서 생성된 비밀번호와 동일해야 합니다.
+> 다른 API 엔드포인트와 달리, 이들은 [인증](#authentication)에서 "username"이 별칭 사용자 이름과 같고 "password"가 별칭 생성 비밀번호와 같은 Basic Authorization 헤더를 요구합니다.
 
 > \[!WARNING]
-> 이 엔드포인트 섹션은 현재 개발 중이며 2024년에 출시될 예정입니다(희망 사항). 그동안 웹사이트 탐색 메뉴의 "앱" 드롭다운 메뉴에서 IMAP 클라이언트를 사용해 주세요.
+> 이 엔드포인트 섹션은 진행 중이며 (희망컨대) 2024년에 출시될 예정입니다. 그동안은 웹사이트 내비게이션의 "Apps" 드롭다운에서 IMAP 클라이언트를 사용해 주세요.
 
 ### 캘린더 목록 {#list-calendars}
 
 > `GET /v1/calendars`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 캘린더 만들기 {#create-calendar}
+### 캘린더 생성 {#create-calendar}
 
 > `POST /v1/calendars`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 캘린더 검색 {#retrieve-calendar}
+### 캘린더 조회 {#retrieve-calendar}
 
 > `GET /v1/calendars/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 캘린더 업데이트 {#update-calendar}}
+### 캘린더 업데이트 {#update-calendar}
 
 > `PUT /v1/calendars/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
 ### 캘린더 삭제 {#delete-calendar}
 
 > `DELETE /v1/calendars/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
-## 별칭 메시지(IMAP/POP3) {#alias-messages-imappop3}
+
+## 별칭 메시지 (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 권한 부여 헤더로 [입증](#authentication) "username"이 별칭 사용자 이름과 동일하고, "password"가 별칭에서 생성된 비밀번호와 동일해야 합니다.
+> 다른 API 엔드포인트와 달리, 이들은 [인증](#authentication)에서 "username"이 별칭 사용자 이름과 같고 "password"가 별칭 생성 비밀번호와 같은 Basic Authorization 헤더를 요구합니다.
 
 > \[!WARNING]
-> 이 엔드포인트 섹션은 현재 개발 중이며 2024년에 출시될 예정입니다(희망 사항). 그동안 웹사이트 탐색 메뉴의 "앱" 드롭다운 메뉴에서 IMAP 클라이언트를 사용해 주세요.
+> 이 엔드포인트 섹션은 진행 중이며 (희망컨대) 2024년에 출시될 예정입니다. 그동안은 웹사이트 내비게이션의 "Apps" 드롭다운에서 IMAP 클라이언트를 사용해 주세요.
 
-귀하의 도메인에 대한 설정 지침을 따랐는지 확인하세요.
+도메인 설정 지침을 반드시 따르셨는지 확인해 주세요.
 
-해당 지침은 FAQ 섹션 [IMAP을 사용하여 이메일 수신을 지원하시나요?](/faq#do-you-support-receiving-email-with-imap)에서 확인할 수 있습니다.
+이 지침은 FAQ 섹션 [IMAP으로 이메일 수신을 지원하나요?](/faq#do-you-support-receiving-email-with-imap)에서 확인할 수 있습니다.
 
-### 메시지 나열 및 검색 {#list-and-search-for-messages}
+### 메시지 목록 및 검색 {#list-and-search-for-messages}
 
 > `GET /v1/messages`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 메시지 만들기 {#create-message}
+### 메시지 생성 {#create-message}
 
 > \[!NOTE]
-> 이 명령은 이메일을 **전송**하지 않습니다. 단지 메시지를 사서함 폴더에 추가할 뿐입니다(예: IMAP `APPEND` 명령과 유사). 이메일을 보내려면 아래 [아웃바운드 SMTP 이메일 생성](#create-outbound-smtp-email)를 참조하세요. 아웃바운드 SMTP 이메일을 생성한 후, 이 엔드포인트를 사용하여 별칭 사서함에 사본을 추가하여 저장할 수 있습니다.
+> 이 작업은 이메일을 **전송하지 않습니다** – 단순히 메시지를 메일박스 폴더에 추가하는 것뿐입니다 (예: IMAP `APPEND` 명령과 유사합니다). 이메일을 보내고 싶다면 아래 [아웃바운드 SMTP 이메일 생성](#create-outbound-smtp-email)을 참조하세요. 아웃바운드 SMTP 이메일을 생성한 후, 이 엔드포인트를 사용해 별칭 메일박스에 복사본을 추가하여 저장할 수 있습니다.
 
 > `POST /v1/messages`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 메시지 검색 {#retrieve-message}
+### 메시지 조회 {#retrieve-message}
 
 > `GET /v1/messages/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 업데이트 메시지 {#update-message}
+### 메시지 업데이트 {#update-message}
 
 > `PUT /v1/messages/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
 ### 메시지 삭제 {#delete-message}
 
 > `DELETE /v1/messages:id`
 
-**곧 출시**
+**곧 출시 예정**
 
-## 별칭 폴더(IMAP/POP3) {#alias-folders-imappop3}
+
+## 별칭 폴더 (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> 폴더 경로 <code>/v1/folders/:path</code>를 엔드포인트로 사용하는 폴더 엔드포인트는 폴더 ID <code>:id</code>와 상호 교환 가능합니다. 즉, <code>path</code> 또는 <code>id</code> 값으로 폴더를 참조할 수 있습니다.
+> 폴더 엔드포인트는 폴더 경로 <code>/v1/folders/:path</code>와 폴더 ID <code>:id</code>를 상호 교환하여 사용할 수 있습니다. 즉, 폴더를 <code>path</code> 또는 <code>id</code> 값으로 참조할 수 있습니다.
 
 > \[!WARNING]
-> 이 엔드포인트 섹션은 현재 개발 중이며 2024년에 출시될 예정입니다(희망 사항). 그동안 웹사이트 탐색 메뉴의 "앱" 드롭다운 메뉴에서 IMAP 클라이언트를 사용해 주세요.
+> 이 엔드포인트 섹션은 진행 중이며 (희망컨대) 2024년에 출시될 예정입니다. 그동안은 웹사이트 내비게이션의 "Apps" 드롭다운에서 IMAP 클라이언트를 사용해 주세요.
 
 ### 폴더 목록 {#list-folders}
 
 > `GET /v1/folders`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 폴더 만들기 {#create-folder}
+### 폴더 생성 {#create-folder}
 
 > `POST /v1/folders`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 폴더 {#retrieve-folder}}을 검색합니다.
+### 폴더 조회 {#retrieve-folder}
 
 > `GET /v1/folders/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
-### 폴더 업데이트 {#update-folder}}
+### 폴더 업데이트 {#update-folder}
 
 > `PUT /v1/folders/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
 ### 폴더 삭제 {#delete-folder}
 
 > `DELETE /v1/folders/:id`
 
-**곧 출시**
+**곧 출시 예정**
 
 ### 폴더 복사 {#copy-folder}
 
 > `POST /v1/folders/:id/copy`
 
-**곧 출시**
+**곧 출시 예정**
 
-## 발신 이메일 {#outbound-emails}
 
-귀하의 도메인에 대한 설정 지침을 따랐는지 확인하세요.
+## 아웃바운드 이메일 {#outbound-emails}
 
-이 지침은 [내 계정 → 도메인 → 설정 → 아웃바운드 SMTP 구성](/my-account/domains)에서 확인할 수 있습니다. 도메인을 사용하여 아웃바운드 SMTP를 전송하려면 DKIM, 반환 경로 및 DMARC를 설정해야 합니다.
+도메인 설정 지침을 반드시 따르셨는지 확인해 주세요.
 
-### 아웃바운드 SMTP 이메일 제한 가져오기 {#get-outbound-smtp-email-limit}
+이 지침은 [내 계정 → 도메인 → 설정 → 아웃바운드 SMTP 구성](/my-account/domains)에서 확인할 수 있습니다. 도메인으로 아웃바운드 SMTP를 보내려면 DKIM, Return-Path, DMARC 설정이 필요합니다.
+### 발신 SMTP 이메일 한도 조회 {#get-outbound-smtp-email-limit}
 
-이는 계정별로 매일 발송되는 SMTP 메시지 수를 나타내는 `count`과 `limit`을 포함하는 JSON 객체를 반환하는 간단한 엔드포인트입니다.
+이 엔드포인트는 계정별 일일 SMTP 발신 메시지 수에 대한 `count`와 `limit`을 포함하는 JSON 객체를 반환하는 간단한 엔드포인트입니다.
 
 > `GET /v1/emails/limit`
 
@@ -437,21 +477,21 @@ curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### 아웃바운드 SMTP 이메일 나열 {#list-outbound-smtp-emails}
+### 발신 SMTP 이메일 목록 {#list-outbound-smtp-emails}
 
-이 엔드포인트는 이메일의 `message`, `headers`, `rejectedErrors`에 대한 속성 값을 반환하지 않습니다.
+이 엔드포인트는 이메일의 `message`, `headers`, 또는 `rejectedErrors` 속성 값을 반환하지 않습니다.
 
-해당 속성과 값을 반환하려면 이메일 ID와 함께 [이메일 검색](#retrieve-email) 엔드포인트를 사용하세요.
+해당 속성과 값을 반환하려면 이메일 ID와 함께 [이메일 조회](#retrieve-email) 엔드포인트를 사용하세요.
 
 > `GET /v1/emails`
 
-| 쿼리 문자열 매개변수 | 필수의 | 유형 | 설명 |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | 아니요 | 문자열(RegExp 지원) | 메타데이터로 이메일 검색 |
-| `domain` | 아니요 | 문자열(RegExp 지원) | 도메인 이름으로 이메일 검색 |
-| `sort` | 아니요 | 끈 | 특정 필드를 기준으로 정렬합니다(해당 필드의 역방향으로 정렬하려면 `-`처럼 하이픈 하나를 접두사로 붙입니다). 설정하지 않으면 기본값은 `created_at`입니다. |
-| `page` | 아니요 | 숫자 | 자세한 내용은 [Pagination](#pagination)을 참조하세요. |
-| `limit` | 아니요 | 숫자 | 자세한 내용은 [Pagination](#pagination)을 참조하세요. |
+| 쿼리스트링 매개변수 | 필수 여부 | 타입                      | 설명                                                                                                                                               |
+| --------------------- | -------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `q`                   | 아니요   | 문자열 (정규식 지원)       | 메타데이터로 이메일 검색                                                                                                                           |
+| `domain`              | 아니요   | 문자열 (정규식 지원)       | 도메인 이름으로 이메일 검색                                                                                                                        |
+| `sort`                | 아니요   | 문자열                    | 특정 필드로 정렬 (해당 필드의 역순 정렬은 단일 하이픈 `-` 접두사 사용). 설정하지 않으면 기본값은 `created_at` 입니다.                             |
+| `page`                | 아니요   | 숫자                      | 자세한 내용은 [페이지네이션](#pagination) 참고                                                                                                     |
+| `limit`               | 아니요   | 숫자                      | 자세한 내용은 [페이지네이션](#pagination) 참고                                                                                                     |
 
 > 요청 예시:
 
@@ -460,47 +500,48 @@ curl BASE_URI/v1/emails?limit=1 \
   -u API_TOKEN:
 ```
 
-### 아웃바운드 SMTP 이메일 생성 {#create-outbound-smtp-email}
+### 발신 SMTP 이메일 생성 {#create-outbound-smtp-email}
 
-이메일 생성을 위한 API는 Nodemailer의 메시지 옵션 구성에서 영감을 받아 개발되었으며, 이를 활용합니다. 아래 모든 본문 매개변수는 [Nodemailer 메시지 구성](https://nodemailer.com/message/)을 참조하세요.
+이메일 생성 API는 Nodemailer의 메시지 옵션 구성을 참고하고 활용합니다. 아래 본문 파라미터에 대해서는 [Nodemailer 메시지 구성](https://nodemailer.com/message/)을 참고하세요.
 
-`envelope`과 `dkim`(자동으로 설정됨)을 제외하고 모든 Nodemailer 옵션이 지원됩니다. 보안상의 이유로 `disableFileAccess`와 `disableUrlAccess` 옵션은 `true`로 자동 설정됩니다.
+`envelope`와 `dkim`을 제외하고(이 두 옵션은 자동 설정됨) 모든 Nodemailer 옵션을 지원합니다. 보안상 `disableFileAccess`와 `disableUrlAccess` 옵션은 자동으로 `true`로 설정됩니다.
 
-**헤더를 포함한 전체 이메일 원본과 함께 `raw`의 단일 옵션을 전달하거나** 아래에 개별 본문 매개변수 옵션을 전달해야 합니다.
+헤더를 포함한 전체 원시 이메일을 `raw` 단일 옵션으로 전달하거나, 아래 개별 본문 파라미터 옵션을 전달해야 합니다.
 
-이 API 엔드포인트는 헤더에 이모지가 발견되면 자동으로 인코딩합니다(예: `Subject: 🤓 Hello` 제목은 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`로 자동 변환됨). 저희의 목표는 개발자 친화적이고 더미 검증이 가능한 이메일 API를 만드는 것이었습니다.
+이 API 엔드포인트는 헤더에 이모지가 포함된 경우 자동으로 인코딩합니다(예: `Subject: 🤓 Hello`는 자동으로 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`로 변환). 개발자 친화적이고 실수 방지에 중점을 둔 이메일 API를 목표로 합니다.
+
+**인증:** 이 엔드포인트는 [API 토큰 인증](#api-token-authentication-recommended-for-most-endpoints)과 [별칭 자격 증명 인증](#alias-credentials-authentication-for-outbound-email)을 모두 지원합니다. 자세한 내용은 위의 [인증](#authentication) 섹션을 참고하세요.
 
 > `POST /v1/emails`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| ---------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `from` | 아니요 | 문자열(이메일) | 발신자의 이메일 주소(도메인의 별칭으로 존재해야 함). |
-| `to` | 아니요 | 문자열 또는 배열 | "받는 사람" 헤더에 대한 수신자 목록(쉼표로 구분) 또는 배열입니다. |
-| `cc` | 아니요 | 문자열 또는 배열 | "Cc" 헤더에 대한 수신자 목록(쉼표로 구분) 또는 배열입니다. |
-| `bcc` | 아니요 | 문자열 또는 배열 | "Bcc" 헤더에 대한 수신자 목록(쉼표로 구분) 또는 배열입니다. |
-| `subject` | 아니요 | 끈 | 이메일의 제목. |
-| `text` | 아니요 | 문자열 또는 버퍼 | 메시지의 평문 버전. |
-| `html` | 아니요 | 문자열 또는 버퍼 | 메시지의 HTML 버전입니다. |
-| `attachments` | 아니요 | 정렬 | 첨부 파일 객체의 배열([Nodemailer's common fields](https://nodemailer.com/message/#common-fields) 참조). |
-| `sender` | 아니요 | 끈 | "발신자" 헤더의 이메일 주소([Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields) 참조). |
-| `replyTo` | 아니요 | 끈 | "답장" 헤더에 대한 이메일 주소입니다. |
-| `inReplyTo` | 아니요 | 끈 | 메시지가 답장되는 메시지 ID입니다. |
-| `references` | 아니요 | 문자열 또는 배열 | 공백으로 구분된 목록 또는 메시지 ID 배열입니다. |
-| `attachDataUrls` | 아니요 | 부울 | `true`이면 메시지의 HTML 콘텐츠에 있는 `data:` 이미지를 내장 첨부 파일로 변환합니다. |
-| `watchHtml` | 아니요 | 끈 | Apple Watch 전용 HTML 버전의 메시지([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), 최신 시계에서는 이 설정을 요구하지 않음). |
-| `amp` | 아니요 | 끈 | AMP4EMAIL 전용 HTML 버전의 메시지([Nodemailer's example](https://nodemailer.com/message/#amp-example) 참조). |
-| `icalEvent` | 아니요 | 물체 | 대체 메시지 콘텐츠로 사용할 iCalendar 이벤트입니다([Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/) 참조). |
-| `alternatives` | 아니요 | 정렬 | 대체 메시지 콘텐츠의 배열([Nodemailer's alternative content](https://nodemailer.com/message/alternatives/) 참조). |
-| `encoding` | 아니요 | 끈 | 텍스트 및 HTML 문자열에 대한 인코딩(기본값은 `"utf-8"`이지만 `"hex"` 및 `"base64"` 인코딩 값도 지원함). |
-| `raw` | 아니요 | 문자열 또는 버퍼 | Nodemailer에서 생성된 메시지 대신 사용할 사용자 지정 RFC822 형식 메시지([Nodemailer's custom source](https://nodemailer.com/message/custom-source/) 참조). |
-| `textEncoding` | 아니요 | 끈 | 텍스트 값에 강제로 사용하도록 설정된 인코딩(`"quoted-printable"` 또는 `"base64"`). 기본값은 감지된 값 중 가장 가까운 값입니다(ASCII의 경우 `"quoted-printable"`). |
-| `priority` | 아니요 | 끈 | 이메일의 우선순위 수준(`"high"`, `"normal"`(기본값), 또는 `"low"`). `"normal"` 값은 우선순위 헤더를 설정하지 않습니다(이는 기본 동작입니다). `"high"` 또는 `"low"` 값이 설정되면 `X-Priority`, `X-MSMail-Priority`, `Importance` 헤더는 [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240)이 됩니다. |
-| `headers` | 아니요 | 객체 또는 배열 | 설정할 추가 헤더 필드의 개체 또는 배열([Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/) 참조). |
-| `messageId` | 아니요 | 끈 | "Message-ID" 헤더에 대한 선택적 Message-ID 값(설정하지 않으면 기본값이 자동으로 생성됩니다. 값은 [adhere to the RFC2822 specification](https://stackoverflow.com/a/4031705)이어야 합니다). |
-| `date` | 아니요 | 문자열 또는 날짜 | 구문 분석 후 Date 헤더가 누락된 경우 사용되는 선택적 Date 값입니다. 그렇지 않은 경우 현재 UTC 문자열이 사용됩니다. 날짜 헤더는 현재 시간보다 30일 이상 앞설 수 없습니다. |
-| `list` | 아니요 | 물체 | `List-*` 헤더의 선택적 개체([Nodemailer's list headers](https://nodemailer.com/message/list-headers/) 참조). |
-
-> 요청 예시:
+| 본문 파라미터     | 필수 여부 | 타입             | 설명                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | -------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `from`           | 아니요   | 문자열 (이메일)  | 발신자 이메일 주소 (도메인의 별칭으로 존재해야 함).                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `to`             | 아니요   | 문자열 또는 배열 | "To" 헤더의 수신자 목록 (쉼표로 구분된 문자열 또는 배열).                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `cc`             | 아니요   | 문자열 또는 배열 | "Cc" 헤더의 수신자 목록 (쉼표로 구분된 문자열 또는 배열).                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `bcc`            | 아니요   | 문자열 또는 배열 | "Bcc" 헤더의 수신자 목록 (쉼표로 구분된 문자열 또는 배열).                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `subject`        | 아니요   | 문자열           | 이메일 제목.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `text`           | 아니요   | 문자열 또는 버퍼 | 메시지의 일반 텍스트 버전.                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `html`           | 아니요   | 문자열 또는 버퍼 | 메시지의 HTML 버전.                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `attachments`    | 아니요   | 배열             | 첨부파일 객체 배열 ([Nodemailer의 공통 필드](https://nodemailer.com/message/#common-fields) 참고).                                                                                                                                                                                                                                                                                                                                                            |
+| `sender`         | 아니요   | 문자열           | "Sender" 헤더의 이메일 주소 ([Nodemailer의 고급 필드](https://nodemailer.com/message/#more-advanced-fields) 참고).                                                                                                                                                                                                                                                                                                                                             |
+| `replyTo`        | 아니요   | 문자열           | "Reply-To" 헤더의 이메일 주소.                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `inReplyTo`      | 아니요   | 문자열           | 메시지가 회신하는 Message-ID.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `references`     | 아니요   | 문자열 또는 배열 | 공백으로 구분된 Message-ID 목록 또는 배열.                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `attachDataUrls` | 아니요   | 불리언           | `true`일 경우 메시지 HTML 내용 내 `data:` 이미지들을 임베디드 첨부파일로 변환.                                                                                                                                                                                                                                                                                                                                                                                  |
+| `watchHtml`      | 아니요   | 문자열           | Apple Watch 전용 HTML 메시지 버전 ([Nodemailer 문서](https://nodemailer.com/message/#content-options) 기준, 최신 워치는 설정 불필요).                                                                                                                                                                                                                                                                                                                        |
+| `amp`            | 아니요   | 문자열           | AMP4EMAIL 전용 HTML 메시지 버전 ([Nodemailer 예시](https://nodemailer.com/message/#amp-example) 참고).                                                                                                                                                                                                                                                                                                                                                          |
+| `icalEvent`      | 아니요   | 객체             | 대체 메시지 콘텐츠로 사용할 iCalendar 이벤트 ([Nodemailer 캘린더 이벤트](https://nodemailer.com/message/calendar-events/) 참고).                                                                                                                                                                                                                                                                                                                              |
+| `alternatives`   | 아니요   | 배열             | 대체 메시지 콘텐츠 배열 ([Nodemailer 대체 콘텐츠](https://nodemailer.com/message/alternatives/) 참고).                                                                                                                                                                                                                                                                                                                                                          |
+| `encoding`       | 아니요   | 문자열           | 텍스트 및 HTML 문자열 인코딩 (기본값은 `"utf-8"`, `"hex"` 및 `"base64"` 인코딩도 지원).                                                                                                                                                                                                                                                                                                                                                                         |
+| `raw`            | 아니요   | 문자열 또는 버퍼 | Nodemailer가 생성하는 메시지 대신 사용할 맞춤형 RFC822 형식 메시지 ([Nodemailer 맞춤 소스](https://nodemailer.com/message/custom-source/) 참고).                                                                                                                                                                                                                                                                                                               |
+| `textEncoding`   | 아니요   | 문자열           | 텍스트 값에 강제 적용할 인코딩 (`"quoted-printable"` 또는 `"base64"` 중 하나). 기본값은 감지된 가장 근접한 값 (ASCII의 경우 `"quoted-printable"` 사용).                                                                                                                                                                                                                                                                                                      |
+| `priority`       | 아니요   | 문자열           | 이메일 우선순위 (`"high"`, `"normal"` (기본값), `"low"` 중 하나). `"normal"` 값은 우선순위 헤더를 설정하지 않음 (기본 동작). `"high"` 또는 `"low"` 설정 시 `X-Priority`, `X-MSMail-Priority`, `Importance` 헤더가 [적절히 설정됨](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
+| `headers`        | 아니요   | 객체 또는 배열   | 추가로 설정할 헤더 필드 객체 또는 배열 ([Nodemailer 맞춤 헤더](https://nodemailer.com/message/custom-headers/) 참고).                                                                                                                                                                                                                                                                                                                                           |
+| `messageId`      | 아니요   | 문자열           | "Message-ID" 헤더에 사용할 선택적 Message-ID 값 (설정하지 않으면 기본값이 자동 생성됨 – 값은 [RFC2822 규격](https://stackoverflow.com/a/4031705)을 준수해야 함).                                                                                                                                                                                                                                                                                                |
+| `date`           | 아니요   | 문자열 또는 날짜 | 파싱 후 Date 헤더가 없으면 사용할 선택적 날짜 값, 설정하지 않으면 현재 UTC 문자열 사용. 날짜 헤더는 현재 시간보다 30일 이상 미래일 수 없음.                                                                                                                                                                                                                                                                                                               |
+| `list`           | 아니요   | 객체             | 선택적 `List-*` 헤더 객체 ([Nodemailer 리스트 헤더](https://nodemailer.com/message/list-headers/) 참고).                                                                                                                                                                                                                                                                                                                                                         |
+> 예제 요청 (API 토큰):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -511,7 +552,18 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=test"
 ```
 
-> 요청 예시:
+> 예제 요청 (별칭 자격 증명):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@DOMAIN_NAME:GENERATED_PASSWORD" \
+  -d "from=alias@DOMAIN_NAME" \
+  -d "to=EMAIL" \
+  -d "subject=test" \
+  -d "text=test"
+```
+
+> 예제 요청 (원시 이메일):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -519,78 +571,78 @@ curl -X POST BASE_URI/v1/emails \
   -d "raw=`cat file.eml`"
 ```
 
-### 아웃바운드 SMTP 이메일 검색 {#retrieve-outbound-smtp-email}
+### 발신 SMTP 이메일 조회 {#retrieve-outbound-smtp-email}
 
 > `GET /v1/emails/:id`
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### 아웃바운드 SMTP 이메일 삭제 {#delete-outbound-smtp-email}
+### 발신 SMTP 이메일 삭제 {#delete-outbound-smtp-email}
 
-이메일을 삭제하면 현재 상태가 `"pending"`, `"queued"` 또는 `"deferred"` 중 하나인 경우에만 상태가 `"rejected"`으로 설정되고 이후 대기열에서 처리되지 않습니다. 이메일은 생성 및/또는 발송 후 30일이 지나면 자동으로 삭제될 수 있으므로 클라이언트, 데이터베이스 또는 애플리케이션에 아웃바운드 SMTP 이메일 사본을 보관해야 합니다. 필요한 경우 데이터베이스에서 이메일 ID 값을 참조할 수 있습니다. 이 값은 [이메일 만들기](#create-email) 및 [이메일 검색](#retrieve-email) 엔드포인트 모두에서 반환됩니다.
+이메일 삭제는 현재 상태가 `"pending"`, `"queued"`, 또는 `"deferred"` 중 하나일 경우에만 상태를 `"rejected"`로 설정하며(그 후 큐에서 처리하지 않음) 수행됩니다. 이메일은 생성 및/또는 발송 후 30일이 지나면 자동으로 삭제될 수 있으므로, 클라이언트, 데이터베이스 또는 애플리케이션에 발신 SMTP 이메일 사본을 보관해야 합니다. 원하시면 데이터베이스에서 이메일 ID 값을 참조할 수 있으며, 이 값은 [이메일 생성](#create-email) 및 [이메일 조회](#retrieve-email) 엔드포인트 모두에서 반환됩니다.
 
 > `DELETE /v1/emails/:id`
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl -X DELETE BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
+
 ## 도메인 {#domains}
 
 > \[!TIP]
-> 도메인 이름 <code>/v1/domains/:domain_name</code>을 엔드포인트로 사용하는 도메인 엔드포인트는 도메인 ID <code>:domain_id</code>와 상호 교환 가능합니다. 즉, <code>name</code> 또는 <code>id</code> 값으로 도메인을 참조할 수 있습니다.
+> 도메인 이름 <code>/v1/domains/:domain_name</code>을 사용하는 도메인 엔드포인트는 도메인 ID <code>:domain_id</code>와 상호 교환 가능합니다. 즉, 도메인을 <code>name</code> 또는 <code>id</code> 값으로 참조할 수 있습니다.
 
 ### 도메인 목록 {#list-domains}
 
 > \[!NOTE]
-> 2024년 11월 1일부터 [도메인 목록](#list-domains) 및 [도메인 별칭 나열](#list-domain-aliases)의 API 엔드포인트는 페이지당 최대 결과 수가 `1000`으로 기본 설정됩니다. 이 동작을 미리 적용하려면 엔드포인트 쿼리 URL에 `?paginate=true`를 추가 쿼리 문자열 매개변수로 전달하면 됩니다. 자세한 내용은 [쪽수 매기기](#pagination)를 참조하세요.
+> 2024년 11월 1일부터 [도메인 목록](#list-domains) 및 [도메인 별칭 목록](#list-domain-aliases) API 엔드포인트는 페이지당 최대 결과 수가 기본적으로 `1000`으로 설정됩니다. 이 동작을 조기에 적용하려면 엔드포인트 쿼리 URL에 추가 쿼리 문자열 매개변수로 `?paginate=true`를 전달할 수 있습니다. 자세한 내용은 [페이지네이션](#pagination)을 참조하세요.
 
 > `GET /v1/domains`
 
-| 쿼리 문자열 매개변수 | 필수의 | 유형 | 설명 |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | 아니요 | 문자열(RegExp 지원) | 이름으로 도메인 검색 |
-| `name` | 아니요 | 문자열(RegExp 지원) | 이름으로 도메인 검색 |
-| `sort` | 아니요 | 끈 | 특정 필드를 기준으로 정렬합니다(해당 필드의 역방향으로 정렬하려면 `-`처럼 하이픈 하나를 접두사로 붙입니다). 설정하지 않으면 기본값은 `created_at`입니다. |
-| `page` | 아니요 | 숫자 | 자세한 내용은 [Pagination](#pagination)을 참조하세요. |
-| `limit` | 아니요 | 숫자 | 자세한 내용은 [Pagination](#pagination)을 참조하세요. |
+| 쿼리 문자열 매개변수 | 필수 | 유형                      | 설명                                                                                                                                               |
+| --------------------- | ---- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `q`                   | 아니요 | 문자열 (정규식 지원)       | 도메인 이름으로 검색                                                                                                                               |
+| `name`                | 아니요 | 문자열 (정규식 지원)       | 도메인 이름으로 검색                                                                                                                               |
+| `sort`                | 아니요 | 문자열                    | 특정 필드로 정렬 (해당 필드의 역순 정렬은 접두사로 단일 하이픈 `-` 사용). 설정하지 않으면 기본값은 `created_at`입니다.                            |
+| `page`                | 아니요 | 숫자                      | 자세한 내용은 [페이지네이션](#pagination) 참조                                                                                                    |
+| `limit`               | 아니요 | 숫자                      | 자세한 내용은 [페이지네이션](#pagination) 참조                                                                                                    |
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl BASE_URI/v1/domains \
   -u API_TOKEN:
 ```
 
-### 도메인 {#create-domain}}을 만듭니다.
+### 도메인 생성 {#create-domain}
 
 > `POST /v1/domains`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | 예 | 문자열(FQDN 또는 IP) | 정규화된 도메인 이름("FQDN") 또는 IP 주소 |
-| `team_domain` | 아니요 | 문자열(도메인 ID 또는 도메인 이름, FQDN) | 이 도메인을 다른 도메인의 동일한 팀에 자동으로 할당합니다. 즉, 이 도메인의 모든 구성원이 팀 구성원으로 할당되고 `plan`도 자동으로 `team`로 설정됩니다. 필요한 경우 이 값을 `"none"`로 설정하여 명시적으로 비활성화할 수 있지만, 반드시 그럴 필요는 없습니다. |
-| `plan` | 아니요 | 문자열(열거 가능) | 플랜 유형(`"free"`, `"enhanced_protection"` 또는 `"team"`여야 함, 기본값은 `"free"` 또는 사용자의 현재 유료 플랜(플랜을 사용하는 경우)) |
-| `catchall` | 아니요 | 문자열(구분된 이메일 주소) 또는 부울 | 기본 포괄 별칭을 생성합니다. 기본값은 `true`입니다. `true`인 경우 API 사용자의 이메일 주소를 수신자로 사용하고, `false`인 경우 포괄 별칭을 생성하지 않습니다. 문자열을 전달하면 수신자로 사용할 이메일 주소 목록이 구분 기호로 표시됩니다(줄 바꿈, 공백, 쉼표로 구분). |
-| `has_adult_content_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 성인 콘텐츠 보호를 활성화할지 여부 |
-| `has_phishing_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 피싱 보호를 활성화할지 여부 |
-| `has_executable_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 실행 파일 보호를 활성화할지 여부 |
-| `has_virus_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 바이러스 보호 기능을 활성화할지 여부 |
-| `has_recipient_verification` | 아니요 | 부울 | 이메일이 통과하기 위해 별칭 수신자가 이메일 확인 링크를 클릭해야 하는지 여부에 대한 글로벌 도메인 기본값 |
-| `ignore_mx_check` | 아니요 | 부울 | 도메인의 MX 레코드 확인을 무시할지 여부입니다. 이는 주로 고급 MX 교환 구성 규칙을 사용하고 기존 MX 교환을 그대로 유지하며 저희 MX 교환으로 전달해야 하는 사용자를 위한 기능입니다. |
-| `retention_days` | 아니요 | 숫자 | `0`과 `30` 사이의 정수로, 성공적으로 전송되거나 영구적으로 오류가 발생한 아웃바운드 SMTP 이메일을 저장하는 보존 일수에 해당합니다. 기본값은 `0`이며, 보안을 위해 아웃바운드 SMTP 이메일이 즉시 삭제되고 수정됩니다. |
-| `bounce_webhook` | 아니요 | 문자열(URL) 또는 부울(false) | 반송 웹훅을 보낼 `http://` 또는 `https://` 웹훅 URL을 선택하세요. 아웃바운드 SMTP 실패(예: 소프트 또는 하드 실패 - 구독자 관리 및 아웃바운드 이메일 프로그래밍 방식 관리 가능)에 대한 정보와 함께 `POST` 요청을 이 URL로 전송합니다. |
-| `max_quota_per_alias` | 아니요 | 끈 | 이 도메인 이름에 대한 별칭의 최대 저장 용량입니다. [bytes](https://github.com/visionmedia/bytes.js)에서 구문 분석할 "1GB"와 같은 값을 입력하세요. |
-
-> 요청 예시:
+| 본문 매개변수                   | 필수 | 유형                                          | 설명                                                                                                                                                                                                                                                                                                               |
+| ------------------------------ | ---- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`                       | 예   | 문자열 (FQDN 또는 IP)                         | 완전한 도메인 이름("FQDN") 또는 IP 주소                                                                                                                                                                                                                                                                           |
+| `team_domain`                  | 아니요 | 문자열 (도메인 ID 또는 도메인 이름; FQDN)     | 이 도메인을 다른 도메인과 동일한 팀에 자동 할당합니다. 즉, 이 도메인의 모든 구성원이 팀 멤버로 할당되며, `plan`도 자동으로 `team`으로 설정됩니다. 필요 시 명시적으로 비활성화하려면 `"none"`으로 설정할 수 있지만, 일반적으로 필요하지 않습니다.                                                                                  |
+| `plan`                         | 아니요 | 문자열 (열거형)                               | 플랜 유형 (반드시 `"free"`, `"enhanced_protection"`, 또는 `"team"` 중 하나여야 하며, 기본값은 `"free"` 또는 사용자의 현재 유료 플랜)                                                                                                                                                                               |
+| `catchall`                     | 아니요 | 문자열 (구분된 이메일 주소) 또는 불리언       | 기본 캐치올 별칭 생성 여부, 기본값은 `true` (true일 경우 API 사용자 이메일 주소를 수신자로 사용, false일 경우 캐치올 생성 안 함). 문자열이 전달되면 줄 바꿈, 공백, 쉼표로 구분된 이메일 주소 목록을 수신자로 사용                                                                                                         |
+| `has_adult_content_protection` | 아니요 | 불리언                                       | 이 도메인에서 스팸 스캐너 성인 콘텐츠 보호 기능 활성화 여부                                                                                                                                                                                                                                                       |
+| `has_phishing_protection`      | 아니요 | 불리언                                       | 이 도메인에서 스팸 스캐너 피싱 보호 기능 활성화 여부                                                                                                                                                                                                                                                              |
+| `has_executable_protection`    | 아니요 | 불리언                                       | 이 도메인에서 스팸 스캐너 실행 파일 보호 기능 활성화 여부                                                                                                                                                                                                                                                        |
+| `has_virus_protection`         | 아니요 | 불리언                                       | 이 도메인에서 스팸 스캐너 바이러스 보호 기능 활성화 여부                                                                                                                                                                                                                                                         |
+| `has_recipient_verification`   | 아니요 | 불리언                                       | 별칭 수신자가 이메일 흐름을 위해 이메일 인증 링크를 클릭해야 하는지 여부에 대한 전역 도메인 기본값                                                                                                                                                                                                                   |
+| `ignore_mx_check`              | 아니요 | 불리언                                       | 도메인 검증 시 MX 레코드 검사를 무시할지 여부. 주로 고급 MX 교환 구성 규칙이 있고 기존 MX 교환을 유지하며 당사로 전달해야 하는 사용자를 위한 옵션                                                                                                                             |
+| `retention_days`               | 아니요 | 숫자                                         | 성공적으로 전달되거나 영구 오류가 발생한 후 발신 SMTP 이메일을 저장할 보존 일수 (0~30 사이 정수). 기본값은 `0`이며, 이는 보안을 위해 발신 SMTP 이메일이 즉시 삭제 및 편집됨을 의미                                                                                                                             |
+| `bounce_webhook`               | 아니요 | 문자열 (URL) 또는 불리언 (false)              | 반송 웹훅을 전송할 선택한 `http://` 또는 `https://` 웹훅 URL. 발신 SMTP 실패(예: 소프트 또는 하드 실패)에 대한 정보를 포함하는 `POST` 요청을 이 URL로 전송하여 구독자를 관리하고 발신 이메일을 프로그래밍 방식으로 관리할 수 있음                                                                                   |
+| `max_quota_per_alias`          | 아니요 | 문자열                                        | 이 도메인 이름의 별칭에 대한 저장 최대 할당량. [bytes](https://github.com/visionmedia/bytes.js)에서 파싱할 수 있는 "1 GB"와 같은 값을 입력하세요.                                                                                                                                                                   |
+> 예제 요청:
 
 ```sh
 curl -X POST BASE_URI/v1/domains \
@@ -599,71 +651,71 @@ curl -X POST BASE_URI/v1/domains \
   -d plan=free
 ```
 
-### 도메인 {#retrieve-domain}}을 검색합니다.
+### 도메인 조회 {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### 도메인 레코드 확인 {#verify-domain-records}
+### 도메인 레코드 검증 {#verify-domain-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-records`
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
-### 도메인 SMTP 레코드 확인 {#verify-domain-smtp-records}
+### 도메인 SMTP 레코드 검증 {#verify-domain-smtp-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### 도메인 전체의 포괄적인 비밀번호 나열 {#list-domain-wide-catch-all-passwords}
+### 도메인 전체 수신 비밀번호 목록 {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### 도메인 전체에 적용되는 포괄적인 비밀번호 만들기 {#create-domain-wide-catch-all-password}
+### 도메인 전체 수신 비밀번호 생성 {#create-domain-wide-catch-all-password}
 
 > `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | 아니요 | 끈 | 도메인 전체에 적용되는 포괄적인 비밀번호에 사용할 사용자 지정 새 비밀번호입니다. 무작위로 생성되는 강력한 비밀번호를 받으려면 API 요청 본문에서 이 부분을 비워 두거나 아예 생략할 수 있습니다. |
-| `description` | 아니요 | 끈 | 이 설명은 조직 목적으로만 사용됩니다. |
+| Body Parameter | 필수 | 타입   | 설명                                                                                                                                                                                                                      |
+| -------------- | ---- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password` | 아니오 | String | 도메인 전체 수신 비밀번호로 사용할 사용자 지정 새 비밀번호입니다.  API 요청 본문에서 이 값을 비워두거나 아예 생략하면 무작위로 생성된 강력한 비밀번호가 발급됩니다.                                                                 |
+| `description`  | 아니오 | String | 조직 목적의 설명입니다.                                                                                                                                                                                                   |
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### 도메인 전체의 포괄적인 비밀번호 제거 {#remove-domain-wide-catch-all-password}
+### 도메인 전체 수신 비밀번호 삭제 {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
-> 요청 예시:
+> 예제 요청:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
@@ -674,20 +726,19 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `smtp_port` | 아니요 | 문자열 또는 숫자 | SMTP 전달을 위해 구성할 사용자 지정 포트(기본값은 `"25"`) |
-| `has_adult_content_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 성인 콘텐츠 보호를 활성화할지 여부 |
-| `has_phishing_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 피싱 보호를 활성화할지 여부 |
-| `has_executable_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 실행 파일 보호를 활성화할지 여부 |
-| `has_virus_protection` | 아니요 | 부울 | 이 도메인에서 스팸 스캐너 바이러스 보호 기능을 활성화할지 여부 |
-| `has_recipient_verification` | 아니요 | 부울 | 이메일이 통과하기 위해 별칭 수신자가 이메일 확인 링크를 클릭해야 하는지 여부에 대한 글로벌 도메인 기본값 |
-| `ignore_mx_check` | 아니요 | 부울 | 도메인의 MX 레코드 확인을 무시할지 여부입니다. 이는 주로 고급 MX 교환 구성 규칙을 사용하고 기존 MX 교환을 그대로 유지하며 저희 MX 교환으로 전달해야 하는 사용자를 위한 기능입니다. |
-| `retention_days` | 아니요 | 숫자 | `0`과 `30` 사이의 정수로, 성공적으로 전송되거나 영구적으로 오류가 발생한 아웃바운드 SMTP 이메일을 저장하는 보존 일수에 해당합니다. 기본값은 `0`이며, 보안을 위해 아웃바운드 SMTP 이메일이 즉시 삭제되고 수정됩니다. |
-| `bounce_webhook` | 아니요 | 문자열(URL) 또는 부울(false) | 반송 웹훅을 보낼 `http://` 또는 `https://` 웹훅 URL을 선택하세요. 아웃바운드 SMTP 실패(예: 소프트 또는 하드 실패 - 구독자 관리 및 아웃바운드 이메일 프로그래밍 방식 관리 가능)에 대한 정보와 함께 `POST` 요청을 이 URL로 전송합니다. |
-| `max_quota_per_alias` | 아니요 | 끈 | 이 도메인 이름에 대한 별칭의 최대 저장 용량입니다. [bytes](https://github.com/visionmedia/bytes.js)에서 구문 분석할 "1GB"와 같은 값을 입력하세요. |
-
-> 요청 예시:
+| Body Parameter                 | 필수 | 타입                            | 설명                                                                                                                                                                                                                                                                                     |
+| ------------------------------ | ---- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `smtp_port`                    | 아니오 | String 또는 Number              | SMTP 포워딩에 사용할 사용자 지정 포트 (기본값은 `"25"`)                                                                                                                                                                                                                                  |
+| `has_adult_content_protection` | 아니오 | Boolean                        | 이 도메인에서 스팸 스캐너의 성인 콘텐츠 보호 기능 활성화 여부                                                                                                                                                                                                                            |
+| `has_phishing_protection`      | 아니오 | Boolean                        | 이 도메인에서 스팸 스캐너의 피싱 보호 기능 활성화 여부                                                                                                                                                                                                                                  |
+| `has_executable_protection`    | 아니오 | Boolean                        | 이 도메인에서 스팸 스캐너의 실행 파일 보호 기능 활성화 여부                                                                                                                                                                                                                            |
+| `has_virus_protection`         | 아니오 | Boolean                        | 이 도메인에서 스팸 스캐너의 바이러스 보호 기능 활성화 여부                                                                                                                                                                                                                              |
+| `has_recipient_verification`   | 아니오 | Boolean                        | 별칭 수신자가 이메일 흐름을 위해 이메일 인증 링크를 클릭해야 하는지 여부에 대한 전역 도메인 기본값                                                                                                                                                                                        |
+| `ignore_mx_check`              | 아니오 | Boolean                        | 도메인 검증 시 MX 레코드 검사를 무시할지 여부. 주로 고급 MX 교환 구성 규칙이 있고 기존 MX 교환을 유지하며 당사로 포워딩해야 하는 사용자를 위한 설정입니다.                                                                                                                             |
+| `retention_days`               | 아니오 | Number                         | 성공적으로 전달되거나 영구 오류가 발생한 후 보관할 아웃바운드 SMTP 이메일의 보관 일수로 `0`에서 `30` 사이의 정수입니다. 기본값은 `0`이며, 이는 아웃바운드 SMTP 이메일이 즉시 삭제 및 편집됨을 의미합니다.                                                                                 |
+| `bounce_webhook`               | 아니오 | String (URL) 또는 Boolean (false) | 반송 웹훅을 보낼 선택한 `http://` 또는 `https://` 웹훅 URL입니다. 아웃바운드 SMTP 실패(예: 소프트 또는 하드 실패)에 대한 정보를 이 URL로 `POST` 요청하여 구독자를 관리하고 아웃바운드 이메일을 프로그래밍 방식으로 관리할 수 있습니다.                                               |
+| `max_quota_per_alias`          | 아니오 | String                         | 이 도메인 이름의 별칭에 대한 최대 저장 용량 할당량입니다. [bytes](https://github.com/visionmedia/bytes.js)에서 파싱할 수 있는 "1 GB"와 같은 값을 입력하세요.                                                                                                                           |
+> Example Request:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
@@ -698,36 +749,37 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
 
 > `DELETE /v1/domains/:domain_name`
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-##이 {#invites}}을 초대합니다.
+
+## 초대 {#invites}
 
 ### 도메인 초대 수락 {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
-### 도메인 초대 만들기 {#create-domain-invite}
+### 도메인 초대 생성 {#create-domain-invite}
 
 > `POST /v1/domains/DOMAIN_NAME/invites`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| -------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
-| `email` | 예 | 문자열(이메일) | 도메인 회원 목록에 초대할 이메일 주소 |
-| `group` | 예 | 문자열(열거 가능) | 사용자를 도메인 멤버십에 추가할 그룹(`"admin"` 또는 `"user"` 중 하나일 수 있음) |
+| Body Parameter | 필수 | 유형                | 설명                                                                                      |
+| -------------- | ---- | ------------------- | ----------------------------------------------------------------------------------------- |
+| `email`        | 예   | 문자열 (이메일)     | 도메인 멤버 목록에 초대할 이메일 주소                                                    |
+| `group`        | 예   | 문자열 (열거형)     | 도메인 멤버십에 사용자를 추가할 그룹 ( `"admin"` 또는 `"user"` 중 하나일 수 있음)         |
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
@@ -737,67 +789,68 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> 초대받는 사용자가 이미 다른 도메인의 승인된 회원이고, 초대하는 관리자가 회원으로 등록되어 있는 경우, 초대는 자동으로 승인되고 이메일은 전송되지 않습니다.
+> 초대받는 사용자가 이미 관리자가 속한 다른 도메인의 승인된 멤버인 경우, 초대는 자동으로 수락되며 이메일이 전송되지 않습니다.
 
-### 도메인 초대 삭제 {#remove-domain-invite}
+### 도메인 초대 제거 {#remove-domain-invite}
 
 > `DELETE /v1/domains/:domain_name/invites`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| -------------- | -------- | -------------- | ------------------------------------------------ |
-| `email` | 예 | 문자열(이메일) | 도메인 회원 목록에서 제거할 이메일 주소 |
+| Body Parameter | 필수 | 유형           | 설명                                      |
+| -------------- | ---- | -------------- | ----------------------------------------- |
+| `email`        | 예   | 문자열 (이메일) | 도메인 멤버 목록에서 제거할 이메일 주소    |
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
-## 회원 {#members}
+
+## 멤버 {#members}
 
 ### 도메인 멤버 업데이트 {#update-domain-member}
 
 > `PUT /v1/domains/DOMAIN_NAME/members/MEMBER_ID`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| -------------- | -------- | ------------------- | -------------------------------------------------------------------------------------------- |
-| `group` | 예 | 문자열(열거 가능) | 사용자를 도메인 멤버십으로 업데이트할 그룹(`"admin"` 또는 `"user"` 중 하나일 수 있음) |
+| Body Parameter | 필수 | 유형                | 설명                                                                                  |
+| -------------- | ---- | ------------------- | ------------------------------------------------------------------------------------- |
+| `group`        | 예   | 문자열 (열거형)     | 도메인 멤버십에서 사용자를 업데이트할 그룹 ( `"admin"` 또는 `"user"` 중 하나일 수 있음) |
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
   -u API_TOKEN:
 ```
 
-### 도메인 구성원 {#remove-domain-member}}을 제거합니다.
+### 도메인 멤버 제거 {#remove-domain-member}
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
   -u API_TOKEN:
 ```
 
+
 ## 별칭 {#aliases}
 
 ### 별칭 비밀번호 생성 {#generate-an-alias-password}
 
-지침을 이메일로 보내지 않으면 사용자 이름과 비밀번호는 성공적인 요청의 JSON 응답 본문에 `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` 형식으로 포함됩니다.
+이메일로 안내를 보내지 않으면, 성공적인 요청의 JSON 응답 본문에 `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` 형식으로 사용자 이름과 비밀번호가 포함됩니다.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | 아니요 | 끈 | 별칭에 사용할 사용자 지정 새 비밀번호입니다. 무작위로 생성되고 강력한 비밀번호를 받으려면 API 요청 본문에서 이 부분을 비워 두거나 아예 생략할 수 있습니다. |
-| `password` | 아니요 | 끈 | 별칭에 대한 기존 비밀번호를 사용하여 기존 IMAP 사서함 저장소를 삭제하지 않고 비밀번호를 변경할 수 있습니다(기존 비밀번호가 더 이상 없는 경우 아래의 `is_override` 옵션 참조). |
-| `is_override` | 아니요 | 부울 | **주의해서 사용하세요**: 이 옵션을 사용하면 기존 별칭 비밀번호와 데이터베이스가 완전히 무시되고, 기존 IMAP 저장소가 영구적으로 삭제되며 별칭의 SQLite 이메일 데이터베이스가 완전히 재설정됩니다. 이 별칭에 기존 사서함이 연결되어 있는 경우 가능하면 백업해 두세요. |
-| `emailed_instructions` | 아니요 | 끈 | 별칭 비밀번호와 설정 지침을 보낼 이메일 주소입니다. |
-
-> 요청 예시:
+| Body Parameter         | 필수 | 유형    | 설명                                                                                                                                                                                                                                                                                         |
+| ---------------------- | ---- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password`         | 아니오 | 문자열  | 별칭에 사용할 사용자 지정 새 비밀번호입니다. 무작위로 생성된 강력한 비밀번호를 원하면 API 요청 본문에서 이 값을 비워두거나 생략할 수 있습니다.                                                                                                                                            |
+| `password`             | 아니오 | 문자열  | 기존 IMAP 메일박스 저장소를 삭제하지 않고 비밀번호를 변경할 때 사용하는 기존 별칭 비밀번호입니다 (`is_override` 옵션을 참조하세요, 기존 비밀번호를 모를 경우).                                                                                                                             |
+| `is_override`          | 아니오 | 불리언  | **주의해서 사용하세요**: 기존 별칭 비밀번호와 데이터베이스를 완전히 덮어쓰며, 기존 IMAP 저장소를 영구 삭제하고 별칭의 SQLite 이메일 데이터베이스를 완전히 초기화합니다. 기존 메일박스가 연결되어 있다면 가능하면 백업을 하세요.                                                                 |
+| `emailed_instructions` | 아니오 | 문자열  | 별칭 비밀번호와 설정 안내를 보낼 이메일 주소입니다.                                                                                                                                                                                                                                         |
+> Example Request:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password \
@@ -807,63 +860,62 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### 도메인 별칭 목록 {#list-domain-aliases}
 
 > \[!NOTE]
-> 2024년 11월 1일부터 [도메인 목록](#list-domains) 및 [도메인 별칭 나열](#list-domain-aliases)의 API 엔드포인트는 페이지당 최대 결과 수가 `1000`으로 기본 설정됩니다. 이 동작을 미리 적용하려면 엔드포인트 쿼리 URL에 `?paginate=true`를 추가 쿼리 문자열 매개변수로 전달하면 됩니다. 자세한 내용은 [쪽수 매기기](#pagination)를 참조하세요.
+> 2024년 11월 1일부터 [도메인 목록](#list-domains) 및 [도메인 별칭 목록](#list-domain-aliases) API 엔드포인트는 페이지당 최대 결과 수가 기본값으로 `1000`이 됩니다. 이 동작을 조기에 사용하려면, 엔드포인트 쿼리 URL에 추가 쿼리스트링 매개변수로 `?paginate=true`를 전달할 수 있습니다. 자세한 내용은 [페이지네이션](#pagination)을 참조하세요.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
-| 쿼리 문자열 매개변수 | 필수의 | 유형 | 설명 |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | 아니요 | 문자열(RegExp 지원) | 이름, 레이블 또는 수신자로 도메인의 별칭 검색 |
-| `name` | 아니요 | 문자열(RegExp 지원) | 이름으로 도메인의 별칭 검색 |
-| `recipient` | 아니요 | 문자열(RegExp 지원) | 수신자별로 도메인의 별칭 검색 |
-| `sort` | 아니요 | 끈 | 특정 필드를 기준으로 정렬합니다(해당 필드의 역방향으로 정렬하려면 `-`처럼 하이픈 하나를 접두사로 붙입니다). 설정하지 않으면 기본값은 `created_at`입니다. |
-| `page` | 아니요 | 숫자 | 자세한 내용은 [Pagination](#pagination)을 참조하세요. |
-| `limit` | 아니요 | 숫자 | 자세한 내용은 [Pagination](#pagination)을 참조하세요. |
+| 쿼리스트링 매개변수       | 필수 여부 | 타입                         | 설명                                                                                                                                               |
+| ------------------------- | -------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `q`                       | 아니요   | 문자열 (정규식 지원)          | 이름, 라벨 또는 수신자로 도메인 내 별칭 검색                                                                                                      |
+| `name`                    | 아니요   | 문자열 (정규식 지원)          | 이름으로 도메인 내 별칭 검색                                                                                                                     |
+| `recipient`               | 아니요   | 문자열 (정규식 지원)          | 수신자로 도메인 내 별칭 검색                                                                                                                     |
+| `sort`                    | 아니요   | 문자열                       | 특정 필드로 정렬 (해당 필드의 역순 정렬은 접두사로 단일 하이픈 `-` 사용). 설정하지 않으면 기본값은 `created_at` 입니다.                         |
+| `page`                    | 아니요   | 숫자                         | 자세한 내용은 [페이지네이션](#pagination) 참조                                                                                                   |
+| `limit`                   | 아니요   | 숫자                         | 자세한 내용은 [페이지네이션](#pagination) 참조                                                                                                   |
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
   -u API_TOKEN:
 ```
 
-### 새 도메인 별칭 만들기 {#create-new-domain-alias}
+### 새 도메인 별칭 생성 {#create-new-domain-alias}
 
 > `POST /v1/domains/DOMAIN_NAME/aliases`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | 아니요 | 끈 | 별칭 이름(제공되지 않거나 비어 있는 경우 무작위 별칭이 생성됩니다) |
-| `recipients` | 아니요 | 문자열 또는 배열 | 수신자 목록(줄 바꿈/공백/쉼표로 구분된 문자열 또는 유효한 이메일 주소, 정규화된 도메인 이름("FQDN"), IP 주소 및/또는 웹훅 URL의 배열이어야 함 - 제공되지 않거나 빈 배열인 경우 API 요청을 하는 사용자의 이메일이 수신자로 설정됨) |
-| `description` | 아니요 | 끈 | 별칭 설명 |
-| `labels` | 아니요 | 문자열 또는 배열 | 라벨 목록(줄 바꿈/공백/쉼표로 구분된 문자열 또는 배열이어야 함) |
-| `has_recipient_verification` | 아니요 | 부울 | 이메일이 통과하려면 수신자가 이메일 확인 링크를 클릭하도록 요구합니다(요청 본문에 명시적으로 설정되지 않은 경우 도메인 설정이 기본값으로 지정됨) |
-| `is_enabled` | 아니요 | 부울 | 이 별칭을 활성화할지 비활성화할지 여부(비활성화 시 이메일은 아무 곳으로도 라우팅되지 않고 성공 상태 코드를 반환합니다). 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용하여 부울로 변환됩니다. |
-| `error_code_if_disabled` | 아니요 | 숫자(`250`, `421` 또는 `550`) | 이 별칭으로 수신되는 이메일은 `is_enabled`이 `false`이고, `250`(블랙홀 또는 `/dev/null` 등 아무 곳에도 조용히 전달되지 않음), `421`(약식 거부, 최대 5일 동안 재시도), 또는 `550`(영구 실패 및 거부)인 경우 거부됩니다. 기본값은 `250`입니다. |
-| `has_imap` | 아니요 | 부울 | 이 별칭에 대해 IMAP 저장소를 활성화할지 비활성화할지 여부(비활성화된 경우 수신된 인바운드 이메일이 [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service)에 저장되지 않음. 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용하여 부울로 변환됨) |
-| `has_pgp` | 아니요 | 부울 | 별칭 `public_key`을 사용하여 [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service)에 대해 [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)을 활성화할지 비활성화할지 여부입니다. |
-| `public_key` | 아니요 | 끈 | ASCII Armor 형식의 OpenPGP 공개 키([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); 예: `support@forwardemail.net`에 대한 GPG 키). 이는 `has_pgp`을 `true`로 설정한 경우에만 적용됩니다. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | 아니요 | 끈 | 이 별칭에 대한 최대 저장 용량 할당량입니다. 도메인의 현재 최대 용량으로 재설정하려면 비워 두거나, [bytes](https://github.com/visionmedia/bytes.js)에서 구문 분석할 "1GB"와 같은 값을 입력하세요. 이 값은 도메인 관리자만 조정할 수 있습니다. |
-| `vacation_responder_is_enabled` | 아니요 | 부울 | 자동 휴가 응답 기능을 활성화할지 비활성화할지 여부. |
-| `vacation_responder_start_date` | 아니요 | 끈 | 휴가 응답 시작일(활성화되어 있고 시작일이 설정되지 않은 경우 이미 시작된 것으로 간주합니다). `MM/DD/YYYY`, `YYYY-MM-DD`과 같은 날짜 형식과 `dayjs`를 사용한 스마트 파싱을 통해 기타 날짜 형식을 지원합니다. |
-| `vacation_responder_end_date` | 아니요 | 끈 | 휴가 응답 종료일(활성화되어 있고 종료일을 설정하지 않은 경우, 종료되지 않고 계속 응답하는 것으로 간주합니다). `MM/DD/YYYY`, `YYYY-MM-DD`과 같은 날짜 형식과 `dayjs`를 사용한 스마트 파싱을 통해 기타 날짜 형식을 지원합니다. |
-| `vacation_responder_subject` | 아니요 | 끈 | 부재중 자동응답 메일 제목(예: "부재중")을 일반 텍스트로 입력합니다. `striptags`을 사용하여 모든 HTML을 제거합니다. |
-| `vacation_responder_message` | 아니요 | 끈 | 휴가 응답자에게 보낼 일반 텍스트 메시지입니다. 예: "2월까지 부재중입니다.". `striptags`을 사용하여 모든 HTML을 제거합니다. |
-
-> 요청 예시:
+| 본문 매개변수                     | 필수 여부 | 타입                                   | 설명                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`                           | 아니요   | 문자열                                 | 별칭 이름 (제공하지 않거나 빈 값일 경우, 무작위 별칭이 생성됩니다)                                                                                                                                                                                                                                                                                                                        |
+| `recipients`                     | 아니요   | 문자열 또는 배열                       | 수신자 목록 (유효한 이메일 주소, 완전한 도메인 이름("FQDN"), IP 주소 및/또는 웹훅 URL이 줄바꿈/공백/쉼표로 구분된 문자열 또는 배열이어야 하며, 제공하지 않거나 빈 배열일 경우 API 요청을 하는 사용자의 이메일이 수신자로 설정됩니다)                                                                                                                                                |
+| `description`                    | 아니요   | 문자열                                 | 별칭 설명                                                                                                                                                                                                                                                                                                                                                                                 |
+| `labels`                        | 아니요   | 문자열 또는 배열                       | 라벨 목록 (줄바꿈/공백/쉼표로 구분된 문자열 또는 배열이어야 합니다)                                                                                                                                                                                                                                                                                                                     |
+| `has_recipient_verification`     | 아니요   | 불리언                                | 이메일 흐름을 위해 수신자가 이메일 인증 링크를 클릭하도록 요구 (요청 본문에 명시적으로 설정하지 않으면 도메인 설정을 기본값으로 사용)                                                                                                                                                                                                                                                     |
+| `is_enabled`                    | 아니요   | 불리언                                | 이 별칭을 활성화 또는 비활성화 여부 (비활성화 시 이메일은 어디로도 라우팅되지 않고 성공 상태 코드를 반환). 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용해 불리언으로 변환됩니다.                                                                                                                                                                   |
+| `error_code_if_disabled`         | 아니요   | 숫자 (`250`, `421`, 또는 `550`)       | `is_enabled`가 `false`일 때 이 별칭으로 들어오는 이메일을 거부하는 코드. `250` (조용히 어디에도 전달하지 않음, 예: 블랙홀 또는 `/dev/null`), `421` (소프트 거부; 약 5일간 재시도), `550` (영구 실패 및 거부) 중 하나를 선택. 기본값은 `250`입니다.                                                                                                                                        |
+| `has_imap`                      | 아니요   | 불리언                                | 이 별칭에 대해 IMAP 저장소 활성화 여부 (비활성화 시 수신된 이메일은 [IMAP 저장소](/blog/docs/best-quantum-safe-encrypted-email-service)에 저장되지 않음). 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용해 불리언으로 변환됩니다.                                                                                                                        |
+| `has_pgp`                       | 아니요   | 불리언                                | 별칭의 `public_key`를 사용하여 [IMAP/POP3/CalDAV/CardDAV 암호화 이메일 저장소](/blog/docs/best-quantum-safe-encrypted-email-service)에 대해 [OpenPGP 암호화](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)를 활성화 또는 비활성화 여부                                                                                                         |
+| `public_key`                    | 아니요   | 문자열                                 | ASCII Armor 형식의 OpenPGP 공개 키 ([예시 보기](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); 예: `support@forwardemail.net`의 GPG 키). `has_pgp`가 `true`로 설정된 경우에만 적용됩니다. [FAQ에서 종단 간 암호화에 대해 자세히 알아보기](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
+| `max_quota`                     | 아니요   | 문자열                                 | 이 별칭의 저장소 최대 할당량. 비워두면 도메인의 현재 최대 할당량으로 재설정되며, "1 GB"와 같이 [bytes](https://github.com/visionmedia/bytes.js)로 파싱 가능한 값을 입력할 수 있습니다. 이 값은 도메인 관리자만 조정할 수 있습니다.                                                                                                                                                   |
+| `vacation_responder_is_enabled` | 아니요   | 불리언                                | 자동 부재중 응답기 활성화 여부                                                                                                                                                                                                                                                                                                                                                              |
+| `vacation_responder_start_date` | 아니요   | 문자열                                 | 부재중 응답기 시작 날짜 (활성화되어 있고 시작 날짜가 설정되지 않은 경우 이미 시작된 것으로 간주). `MM/DD/YYYY`, `YYYY-MM-DD` 등과 같은 날짜 형식 및 `dayjs`를 사용한 스마트 파싱을 지원합니다.                                                                                                                                                                                    |
+| `vacation_responder_end_date`   | 아니요   | 문자열                                 | 부재중 응답기 종료 날짜 (활성화되어 있고 종료 날짜가 설정되지 않은 경우 종료되지 않고 계속 응답하는 것으로 간주). `MM/DD/YYYY`, `YYYY-MM-DD` 등과 같은 날짜 형식 및 `dayjs`를 사용한 스마트 파싱을 지원합니다.                                                                                                                                                                        |
+| `vacation_responder_subject`    | 아니요   | 문자열                                 | 부재중 응답기 제목(평문), 예: "부재중". 여기서는 `striptags`를 사용해 모든 HTML을 제거합니다.                                                                                                                                                                                                                                                                                               |
+| `vacation_responder_message`    | 아니요   | 문자열                                 | 부재중 응답기 메시지(평문), 예: "2월까지 부재중입니다.". 여기서는 `striptags`를 사용해 모든 HTML을 제거합니다.                                                                                                                                                                                                                                                                                 |
+> Example Request:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 
-### 도메인 별칭 검색 {#retrieve-domain-alias}
+### 도메인 별칭 조회 {#retrieve-domain-alias}
 
-`id` 또는 `name` 값을 통해 도메인 별칭을 검색할 수 있습니다.
+도메인 별칭은 `id` 또는 `name` 값으로 조회할 수 있습니다.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
@@ -872,7 +924,7 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 > `GET /v1/domains/:domain_name/aliases/:alias_name`
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
@@ -883,26 +935,25 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | 아니요 | 끈 | 별칭 |
-| `recipients` | 아니요 | 문자열 또는 배열 | 수신자 목록(줄 바꿈/공백/쉼표로 구분된 문자열 또는 유효한 이메일 주소, 정규화된 도메인 이름("FQDN"), IP 주소 및/또는 웹훅 URL의 배열이어야 함) |
-| `description` | 아니요 | 끈 | 별칭 설명 |
-| `labels` | 아니요 | 문자열 또는 배열 | 라벨 목록(줄 바꿈/공백/쉼표로 구분된 문자열 또는 배열이어야 함) |
-| `has_recipient_verification` | 아니요 | 부울 | 이메일이 통과하려면 수신자가 이메일 확인 링크를 클릭하도록 요구합니다(요청 본문에 명시적으로 설정되지 않은 경우 도메인 설정이 기본값으로 지정됨) |
-| `is_enabled` | 아니요 | 부울 | 이 별칭을 활성화할지 비활성화할지 여부(비활성화 시 이메일은 아무 곳으로도 라우팅되지 않고 성공 상태 코드를 반환합니다). 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용하여 부울로 변환됩니다. |
-| `error_code_if_disabled` | 아니요 | 숫자(`250`, `421` 또는 `550`) | 이 별칭으로 수신되는 이메일은 `is_enabled`이 `false`이고, `250`(블랙홀 또는 `/dev/null` 등 아무 곳에도 조용히 전달되지 않음), `421`(약식 거부, 최대 5일 동안 재시도), 또는 `550`(영구 실패 및 거부)인 경우 거부됩니다. 기본값은 `250`입니다. |
-| `has_imap` | 아니요 | 부울 | 이 별칭에 대해 IMAP 저장소를 활성화할지 비활성화할지 여부(비활성화된 경우 수신된 인바운드 이메일이 [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service)에 저장되지 않음. 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용하여 부울로 변환됨) |
-| `has_pgp` | 아니요 | 부울 | 별칭 `public_key`을 사용하여 [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service)에 대해 [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)을 활성화할지 비활성화할지 여부입니다. |
-| `public_key` | 아니요 | 끈 | ASCII Armor 형식의 OpenPGP 공개 키([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); 예: `support@forwardemail.net`에 대한 GPG 키). 이는 `has_pgp`을 `true`로 설정한 경우에만 적용됩니다. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | 아니요 | 끈 | 이 별칭에 대한 최대 저장 용량 할당량입니다. 도메인의 현재 최대 용량으로 재설정하려면 비워 두거나, [bytes](https://github.com/visionmedia/bytes.js)에서 구문 분석할 "1GB"와 같은 값을 입력하세요. 이 값은 도메인 관리자만 조정할 수 있습니다. |
-| `vacation_responder_is_enabled` | 아니요 | 부울 | 자동 휴가 응답 기능을 활성화할지 비활성화할지 여부. |
-| `vacation_responder_start_date` | 아니요 | 끈 | 휴가 응답 시작일(활성화되어 있고 시작일이 설정되지 않은 경우 이미 시작된 것으로 간주합니다). `MM/DD/YYYY`, `YYYY-MM-DD`과 같은 날짜 형식과 `dayjs`를 사용한 스마트 파싱을 통해 기타 날짜 형식을 지원합니다. |
-| `vacation_responder_end_date` | 아니요 | 끈 | 휴가 응답 종료일(활성화되어 있고 종료일을 설정하지 않은 경우, 종료되지 않고 계속 응답하는 것으로 간주합니다). `MM/DD/YYYY`, `YYYY-MM-DD`과 같은 날짜 형식과 `dayjs`를 사용한 스마트 파싱을 통해 기타 날짜 형식을 지원합니다. |
-| `vacation_responder_subject` | 아니요 | 끈 | 부재중 자동응답 메일 제목(예: "부재중")을 일반 텍스트로 입력합니다. `striptags`을 사용하여 모든 HTML을 제거합니다. |
-| `vacation_responder_message` | 아니요 | 끈 | 휴가 응답자에게 보낼 일반 텍스트 메시지입니다. 예: "2월까지 부재중입니다.". `striptags`을 사용하여 모든 HTML을 제거합니다. |
-
-> 요청 예시:
+| Body Parameter                  | 필수 여부 | 타입                                   | 설명                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`                          | 아니요   | 문자열                                 | 별칭 이름                                                                                                                                                                                                                                                                                                                                                                                 |
+| `recipients`                    | 아니요   | 문자열 또는 배열                       | 수신자 목록 (유효한 이메일 주소, 완전한 도메인 이름("FQDN"), IP 주소 및/또는 웹훅 URL이 줄바꿈/공백/쉼표로 구분된 문자열 또는 배열이어야 함)                                                                                                                                                                                                                                              |
+| `description`                   | 아니요   | 문자열                                 | 별칭 설명                                                                                                                                                                                                                                                                                                                                                                                |
+| `labels`                        | 아니요   | 문자열 또는 배열                       | 라벨 목록 (줄바꿈/공백/쉼표로 구분된 문자열 또는 배열이어야 함)                                                                                                                                                                                                                                                                                                                        |
+| `has_recipient_verification`    | 아니요   | 불리언                                | 이메일이 정상적으로 전달되기 위해 수신자가 이메일 인증 링크를 클릭하도록 요구 (요청 본문에 명시적으로 설정하지 않으면 도메인 설정을 기본값으로 사용)                                                                                                                                                                                                                                   |
+| `is_enabled`                    | 아니요   | 불리언                                | 이 별칭을 활성화 또는 비활성화할지 여부 (비활성화 시 이메일은 어디로도 라우팅되지 않고 성공 상태 코드만 반환). 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용해 불리언으로 변환됨                                                                                                                                                                   |
+| `error_code_if_disabled`        | 아니요   | 숫자 (`250`, `421`, 또는 `550`)       | `is_enabled`가 `false`일 때 이 별칭으로 들어오는 이메일을 거부하는 코드. `250` (조용히 어디에도 전달하지 않음, 예: 블랙홀 또는 `/dev/null`), `421` (소프트 거부; 약 5일간 재시도), `550` (영구 실패 및 거부) 중 하나. 기본값은 `250`                                                                                                                                                     |
+| `has_imap`                      | 아니요   | 불리언                                | 이 별칭에 대해 IMAP 저장소를 활성화 또는 비활성화할지 여부 (비활성화 시 수신된 이메일은 [IMAP 저장소](/blog/docs/best-quantum-safe-encrypted-email-service)에 저장되지 않음). 값이 전달되면 [boolean](https://github.com/thenativeweb/boolean#quick-start)을 사용해 불리언으로 변환됨                                                                                                          |
+| `has_pgp`                       | 아니요   | 불리언                                | 별칭의 `public_key`를 사용하여 [IMAP/POP3/CalDAV/CardDAV 암호화 이메일 저장소](/blog/docs/best-quantum-safe-encrypted-email-service)에 대해 [OpenPGP 암호화](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)를 활성화 또는 비활성화할지 여부                                                                                                         |
+| `public_key`                    | 아니요   | 문자열                                 | ASCII Armor 형식의 OpenPGP 공개 키 ([예시 보기](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); 예: `support@forwardemail.net`의 GPG 키). `has_pgp`가 `true`로 설정된 경우에만 적용됨. [FAQ에서 종단 간 암호화에 대해 자세히 알아보기](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) |
+| `max_quota`                     | 아니요   | 문자열                                 | 이 별칭의 저장 용량 최대 할당량. 비워두면 도메인의 현재 최대 할당량으로 재설정되며, "1 GB"와 같이 [bytes](https://github.com/visionmedia/bytes.js)로 파싱 가능한 값을 입력할 수 있음. 이 값은 도메인 관리자만 조정 가능                                                                                                                                                              |
+| `vacation_responder_is_enabled` | 아니요   | 불리언                                | 자동 부재중 응답기 활성화 또는 비활성화 여부                                                                                                                                                                                                                                                                                                                                             |
+| `vacation_responder_start_date` | 아니요   | 문자열                                 | 부재중 응답기 시작 날짜 (활성화되어 있고 시작 날짜가 설정되지 않은 경우 이미 시작된 것으로 간주). `MM/DD/YYYY`, `YYYY-MM-DD` 등 다양한 날짜 형식을 `dayjs`를 사용해 스마트하게 파싱하여 지원                                                                                                                                                                                     |
+| `vacation_responder_end_date`   | 아니요   | 문자열                                 | 부재중 응답기 종료 날짜 (활성화되어 있고 종료 날짜가 설정되지 않은 경우 종료되지 않고 계속 응답하는 것으로 간주). `MM/DD/YYYY`, `YYYY-MM-DD` 등 다양한 날짜 형식을 `dayjs`를 사용해 스마트하게 파싱하여 지원                                                                                                                                                                         |
+| `vacation_responder_subject`    | 아니요   | 문자열                                 | 부재중 응답기 제목 (평문), 예: "부재중". 모든 HTML은 `striptags`를 사용해 제거됨                                                                                                                                                                                                                                                                                                         |
+| `vacation_responder_message`    | 아니요   | 문자열                                 | 부재중 응답기 메시지 (평문), 예: "2월까지 부재중입니다.". 모든 HTML은 `striptags`를 사용해 제거됨                                                                                                                                                                                                                                                                                           |
+> Example Request:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
@@ -913,26 +964,27 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
 
 > `DELETE /v1/domains/:domain_name/aliases/:alias_id`
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
   -u API_TOKEN:
 ```
 
-## {#encrypt}}을 암호화합니다.
 
-무료 플랜에서도 기록 암호화를 무료로 제공합니다. 개인정보 보호는 단순한 기능이 아니라 제품의 모든 측면에 기본적으로 내장되어야 합니다. [개인정보 보호 가이드 토론](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) 및 [우리의 GitHub 이슈](https://github.com/forwardemail/forwardemail.net/issues/254)에서 많은 요청이 있었으므로 이 기능을 추가했습니다.
+## 암호화 {#encrypt}
+
+무료 플랜에서도 비용 없이 레코드를 암호화할 수 있습니다. 개인정보 보호는 기능이 아니라 제품의 모든 측면에 본질적으로 내장되어야 합니다. [Privacy Guides 토론](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)과 [저희 GitHub 이슈](https://github.com/forwardemail/forwardemail.net/issues/254)에서 많은 요청을 받아 이를 추가했습니다.
 
 ### TXT 레코드 암호화 {#encrypt-txt-record}
 
 > `POST /v1/encrypt`
 
-| 신체 매개변수 | 필수의 | 유형 | 설명 |
-| -------------- | -------- | ------ | -------------------------------------------- |
-| `input` | 예 | 끈 | 유효한 전달 이메일 일반 텍스트 TXT 레코드 |
+| Body Parameter | 필수 | 유형   | 설명                                  |
+| -------------- | ---- | ------ | ------------------------------------ |
+| `input`        | 예   | 문자열 | 유효한 Forward Email 일반 텍스트 TXT 레코드 |
 
-> 요청 예시:
+> Example Request:
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \

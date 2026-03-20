@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# Câu Hỏi Thường Gặp {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Các câu hỏi thường gặp về Forward Email" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## Mục Lục {#table-of-contents}
+
+* [Bắt Đầu Nhanh](#quick-start)
+* [Giới Thiệu](#introduction)
+  * [Forward Email là gì](#what-is-forward-email)
+  * [Ai sử dụng Forward Email](#who-uses-forward-email)
+  * [Lịch sử của Forward Email là gì](#what-is-forward-emails-history)
+  * [Dịch vụ này nhanh như thế nào](#how-fast-is-this-service)
+* [Khách Hàng Email](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [Thiết Bị Di Động](#mobile-devices)
+  * [Cấu Hình Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
+  * [Cấu Hình Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
+  * [Cấu Hình msmtp SMTP Client](#msmtp-smtp-client-configuration)
+  * [Khách Hàng Email Dòng Lệnh](#command-line-email-clients)
+  * [Cấu Hình Email Windows](#windows-email-configuration)
+  * [Cấu Hình Postfix SMTP Relay](#postfix-smtp-relay-configuration)
+  * [Cách Gửi Mail As sử dụng Gmail](#how-to-send-mail-as-using-gmail)
+  * [Hướng Dẫn Miễn Phí Cũ cho Send Mail As sử dụng Gmail là gì](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Cấu Hình Định Tuyến Gmail Nâng Cao](#advanced-gmail-routing-configuration)
+  * [Cấu Hình Định Tuyến Outlook Nâng Cao](#advanced-outlook-routing-configuration)
+* [Khắc Phục Sự Cố](#troubleshooting)
+  * [Tại sao tôi không nhận được email thử nghiệm của mình](#why-am-i-not-receiving-my-test-emails)
+  * [Làm thế nào để cấu hình khách hàng email của tôi để làm việc với Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Tại sao email của tôi lại vào thư Spam và Junk và làm sao để kiểm tra uy tín tên miền của tôi](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [Tôi nên làm gì nếu nhận được email spam](#what-should-i-do-if-i-receive-spam-emails)
+  * [Tại sao email thử nghiệm gửi cho chính tôi trong Gmail lại hiển thị là "đáng ngờ"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Tôi có thể loại bỏ via forwardemail dot net trong Gmail không](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Quản Lý Dữ Liệu](#data-management)
+  * [Máy chủ của bạn đặt ở đâu](#where-are-your-servers-located)
+  * [Làm thế nào để xuất và sao lưu hộp thư của tôi](#how-do-i-export-and-backup-my-mailbox)
+  * [Làm thế nào để nhập và di chuyển hộp thư hiện có của tôi](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Làm thế nào để sử dụng bộ nhớ tương thích S3 của riêng tôi cho sao lưu](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [Làm thế nào để chuyển đổi sao lưu SQLite sang tập tin EML](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [Bạn có hỗ trợ tự lưu trữ không](#do-you-support-self-hosting)
+* [Cấu Hình Email](#email-configuration)
+  * [Làm thế nào để bắt đầu và thiết lập chuyển tiếp email](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Tôi có thể sử dụng nhiều MX exchanges và máy chủ cho chuyển tiếp nâng cao không](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [Làm thế nào để thiết lập trả lời tự động khi nghỉ phép (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Làm thế nào để thiết lập SPF cho Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [Làm thế nào để thiết lập DKIM cho Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [Làm thế nào để thiết lập DMARC cho Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [Làm thế nào để xem Báo Cáo DMARC](#how-do-i-view-dmarc-reports)
+  * [Làm thế nào để kết nối và cấu hình danh bạ của tôi](#how-do-i-connect-and-configure-my-contacts)
+  * [Làm thế nào để kết nối và cấu hình lịch của tôi](#how-do-i-connect-and-configure-my-calendars)
+  * [Làm thế nào để thêm nhiều lịch hơn và quản lý các lịch hiện có](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [Làm thế nào để kết nối và cấu hình công việc và nhắc nhở](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Tại sao tôi không thể tạo công việc trong macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
+  * [Làm thế nào để thiết lập Tasks.org trên Android](#how-do-i-set-up-tasksorg-on-android)
+  * [Làm thế nào để thiết lập SRS cho Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [Làm thế nào để thiết lập MTA-STS cho Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [Làm thế nào để thêm ảnh hồ sơ vào địa chỉ email của tôi](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Tính Năng Nâng Cao](#advanced-features)
+  * [Bạn có hỗ trợ bản tin hoặc danh sách gửi thư cho email liên quan đến marketing không](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Bạn có hỗ trợ gửi email bằng API không](#do-you-support-sending-email-with-api)
+  * [Bạn có hỗ trợ nhận email bằng IMAP không](#do-you-support-receiving-email-with-imap)
+  * [Bạn có hỗ trợ POP3 không](#do-you-support-pop3)
+  * [Bạn có hỗ trợ lịch (CalDAV) không](#do-you-support-calendars-caldav)
+  * [Bạn có hỗ trợ công việc và nhắc nhở (CalDAV VTODO) không](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Bạn có hỗ trợ danh bạ (CardDAV) không](#do-you-support-contacts-carddav)
+  * [Bạn có hỗ trợ gửi email bằng SMTP không](#do-you-support-sending-email-with-smtp)
+  * [Bạn có hỗ trợ OpenPGP/MIME, mã hóa đầu-cuối ("E2EE"), và Web Key Directory ("WKD") không](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Bạn có hỗ trợ mã hóa S/MIME không](#do-you-support-smime-encryption)
+  * [Bạn có hỗ trợ lọc email bằng Sieve không](#do-you-support-sieve-email-filtering)
+  * [Bạn có hỗ trợ MTA-STS không](#do-you-support-mta-sts)
+  * [Bạn có hỗ trợ passkeys và WebAuthn không](#do-you-support-passkeys-and-webauthn)
+  * [Bạn có hỗ trợ các thực hành tốt nhất về email không](#do-you-support-email-best-practices)
+  * [Bạn có hỗ trợ bounce webhooks không](#do-you-support-bounce-webhooks)
+  * [Bạn có hỗ trợ webhooks không](#do-you-support-webhooks)
+  * [Bạn có hỗ trợ biểu thức chính quy hoặc regex không](#do-you-support-regular-expressions-or-regex)
+  * [Giới hạn SMTP gửi đi của bạn là gì](#what-are-your-outbound-smtp-limits)
+  * [Tôi có cần phê duyệt để bật SMTP không](#do-i-need-approval-to-enable-smtp)
+  * [Cài đặt cấu hình máy chủ SMTP của bạn là gì](#what-are-your-smtp-server-configuration-settings)
+  * [Cài đặt cấu hình máy chủ IMAP của bạn là gì](#what-are-your-imap-server-configuration-settings)
+  * [Cài đặt cấu hình máy chủ POP3 của bạn là gì](#what-are-your-pop3-server-configuration-settings)
+  * [Làm thế nào để thiết lập tự động phát hiện email cho tên miền của tôi](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [Bảo Mật](#security-1)
+  * [Kỹ Thuật Tăng Cường Máy Chủ Nâng Cao](#advanced-server-hardening-techniques)
+  * [Bạn có chứng nhận SOC 2 hoặc ISO 27001 không](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Bạn có sử dụng mã hóa TLS cho chuyển tiếp email không](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Bạn có giữ nguyên các header xác thực email không](#do-you-preserve-email-authentication-headers)
+  * [Bạn có giữ nguyên header email gốc và ngăn chặn giả mạo không](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [Bạn bảo vệ chống spam và lạm dụng như thế nào](#how-do-you-protect-against-spam-and-abuse)
+  * [Bạn có lưu trữ nội dung email trên đĩa không](#do-you-store-email-content-on-disk)
+  * [Nội dung email có thể bị lộ trong trường hợp hệ thống bị sự cố không](#can-email-content-be-exposed-during-system-crashes)
+  * [Ai có quyền truy cập vào hạ tầng email của bạn](#who-has-access-to-your-email-infrastructure)
+  * [Bạn sử dụng nhà cung cấp hạ tầng nào](#what-infrastructure-providers-do-you-use)
+  * [Bạn có cung cấp Thỏa Thuận Xử Lý Dữ Liệu (DPA) không](#do-you-offer-a-data-processing-agreement-dpa)
+  * [Bạn xử lý thông báo vi phạm dữ liệu như thế nào](#how-do-you-handle-data-breach-notifications)
+  * [Bạn có cung cấp môi trường thử nghiệm không](#do-you-offer-a-test-environment)
+  * [Bạn có cung cấp công cụ giám sát và cảnh báo không](#do-you-provide-monitoring-and-alerting-tools)
+  * [Bạn đảm bảo tính sẵn sàng cao như thế nào](#how-do-you-ensure-high-availability)
+  * [Bạn có tuân thủ Mục 889 của Đạo Luật Ủy Quyền Quốc Phòng (NDAA) không](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [Chi Tiết Hệ Thống và Kỹ Thuật](#system-and-technical-details)
+  * [Bạn có lưu trữ email và nội dung của chúng không](#do-you-store-emails-and-their-contents)
+  * [Hệ thống chuyển tiếp email của bạn hoạt động như thế nào](#how-does-your-email-forwarding-system-work)
+  * [Bạn xử lý một email để chuyển tiếp như thế nào](#how-do-you-process-an-email-for-forwarding)
+  * [Bạn xử lý các vấn đề giao nhận email như thế nào](#how-do-you-handle-email-delivery-issues)
+  * [Bạn xử lý khi địa chỉ IP của bạn bị chặn như thế nào](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [Địa chỉ postmaster là gì](#what-are-postmaster-addresses)
+  * [Địa chỉ no-reply là gì](#what-are-no-reply-addresses)
+  * [Địa chỉ IP của máy chủ bạn là gì](#what-are-your-servers-ip-addresses)
+  * [Bạn có danh sách cho phép không](#do-you-have-an-allowlist)
+  * [Các phần mở rộng tên miền nào được cho phép mặc định](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [Tiêu chí danh sách cho phép của bạn là gì](#what-is-your-allowlist-criteria)
+  * [Các phần mở rộng tên miền nào có thể sử dụng miễn phí](#what-domain-name-extensions-can-be-used-for-free)
+  * [Bạn có danh sách xám không](#do-you-have-a-greylist)
+  * [Bạn có danh sách từ chối không](#do-you-have-a-denylist)
+  * [Bạn có giới hạn tốc độ không](#do-you-have-rate-limiting)
+  * [Bạn bảo vệ chống lại backscatter như thế nào](#how-do-you-protect-against-backscatter)
+  * [Ngăn chặn bounce từ các spammer MAIL FROM đã biết](#prevent-bounces-from-known-mail-from-spammers)
+  * [Ngăn chặn bounce không cần thiết để bảo vệ chống lại backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [Bạn xác định dấu vân tay email như thế nào](#how-do-you-determine-an-email-fingerprint)
+  * [Tôi có thể chuyển tiếp email đến các cổng khác ngoài 25 (ví dụ nếu ISP của tôi đã chặn cổng 25) không](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Nó có hỗ trợ ký hiệu cộng + cho bí danh Gmail không](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Nó có hỗ trợ các tên miền phụ không](#does-it-support-sub-domains)
+  * [Nó có chuyển tiếp các header email của tôi không](#does-this-forward-my-emails-headers)
+  * [Nó có được kiểm tra kỹ lưỡng không](#is-this-well-tested)
+  * [Bạn có truyền các thông điệp và mã phản hồi SMTP không](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [Bạn ngăn chặn spammer và đảm bảo uy tín chuyển tiếp email tốt như thế nào](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Bạn thực hiện tra cứu DNS trên tên miền như thế nào](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Tài Khoản và Thanh Toán](#account-and-billing)
+  * [Bạn có đảm bảo hoàn tiền cho các gói trả phí không](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [Nếu tôi đổi gói, bạn có tính tỷ lệ và hoàn tiền phần chênh lệch không](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Tôi có thể chỉ sử dụng dịch vụ chuyển tiếp email này như một máy chủ MX "dự phòng" hoặc "dự phòng chuyển đổi" không](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Tôi có thể vô hiệu hóa các bí danh cụ thể không](#can-i-disable-specific-aliases)
+  * [Tôi có thể chuyển tiếp email đến nhiều người nhận không](#can-i-forward-emails-to-multiple-recipients)
+  * [Tôi có thể có nhiều người nhận toàn cầu catch-all không](#can-i-have-multiple-global-catch-all-recipients)
+  * [Có giới hạn tối đa số địa chỉ email tôi có thể chuyển tiếp cho mỗi bí danh không](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Tôi có thể chuyển tiếp email theo kiểu đệ quy không](#can-i-recursively-forward-emails)
+  * [Mọi người có thể hủy đăng ký hoặc đăng ký chuyển tiếp email của tôi mà không có sự cho phép của tôi không](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [Nó miễn phí như thế nào](#how-is-it-free)
+  * [Giới hạn kích thước email tối đa là bao nhiêu](#what-is-the-max-email-size-limit)
+  * [Bạn có lưu trữ nhật ký email không](#do-you-store-logs-of-emails)
+  * [Bạn có lưu trữ nhật ký lỗi không](#do-you-store-error-logs)
+  * [Bạn có đọc email của tôi không](#do-you-read-my-emails)
+  * [Tôi có thể "gửi mail as" trong Gmail với cái này không](#can-i-send-mail-as-in-gmail-with-this)
+  * [Tôi có thể "gửi mail as" trong Outlook với cái này không](#can-i-send-mail-as-in-outlook-with-this)
+  * [Tôi có thể "gửi mail as" trong Apple Mail và iCloud Mail với cái này không](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Tôi có thể chuyển tiếp email không giới hạn với cái này không](#can-i-forward-unlimited-emails-with-this)
+  * [Bạn có cung cấp tên miền không giới hạn với một mức giá không](#do-you-offer-unlimited-domains-for-one-price)
+  * [Bạn chấp nhận các phương thức thanh toán nào](#which-payment-methods-do-you-accept)
+* [Tài Nguyên Bổ Sung](#additional-resources)
+## Bắt Đầu Nhanh {#quick-start}
 
-## Quick Start {#quick-start}
+Để bắt đầu với Forward Email:
 
-To get started with Forward Email:
+1. **Tạo tài khoản** tại [forwardemail.net/register](https://forwardemail.net/register)
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **Thêm và xác minh tên miền của bạn** trong [Tài Khoản Của Tôi → Tên Miền](/my-account/domains)
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **Thêm và cấu hình các bí danh/hộp thư email** trong [Tài Khoản Của Tôi → Tên Miền](/my-account/domains) → Bí Danh
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **Kiểm tra thiết lập của bạn** bằng cách gửi email đến một trong các bí danh mới của bạn
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> Thay đổi DNS có thể mất đến 24-48 giờ để lan truyền toàn cầu, mặc dù thường có hiệu lực sớm hơn nhiều.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Để tăng cường khả năng gửi thành công, chúng tôi khuyến nghị thiết lập các bản ghi [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), và [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## Giới Thiệu {#introduction}
+
+### Forward Email là gì {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email rất phù hợp cho cá nhân, doanh nghiệp nhỏ và nhà phát triển muốn có địa chỉ email chuyên nghiệp mà không phải chịu chi phí và bảo trì của một giải pháp lưu trữ email đầy đủ.
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+Forward Email là một **nhà cung cấp dịch vụ email đầy đủ tính năng** và **nhà cung cấp lưu trữ email cho tên miền tùy chỉnh**.
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+Đây là dịch vụ duy nhất miễn phí và mã nguồn mở, cho phép bạn sử dụng địa chỉ email tên miền tùy chỉnh mà không phải phức tạp trong việc thiết lập và duy trì máy chủ email riêng.
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+Dịch vụ của chúng tôi chuyển tiếp email gửi đến tên miền tùy chỉnh của bạn đến tài khoản email hiện có của bạn – và bạn thậm chí có thể sử dụng chúng tôi làm nhà cung cấp lưu trữ email chuyên dụng.
 
-Key features of Forward Email:
+Các tính năng chính của Forward Email:
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **Email Tên Miền Tùy Chỉnh**: Sử dụng địa chỉ email chuyên nghiệp với tên miền riêng của bạn
+* **Gói Miễn Phí**: Chuyển tiếp email cơ bản không mất phí
+* **Bảo Mật Nâng Cao**: Chúng tôi không đọc email của bạn hoặc bán dữ liệu của bạn
+* **Mã Nguồn Mở**: Toàn bộ mã nguồn của chúng tôi có trên GitHub
+* **Hỗ Trợ SMTP, IMAP, và POP3**: Khả năng gửi và nhận email đầy đủ
+* **Mã Hóa Đầu Cuối**: Hỗ trợ OpenPGP/MIME
+* **Bí Danh Catch-All Tùy Chỉnh**: Tạo không giới hạn bí danh email
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+Bạn có thể so sánh chúng tôi với hơn 56 nhà cung cấp dịch vụ email khác trên [trang So Sánh Email của chúng tôi](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Tìm hiểu thêm về Forward Email bằng cách đọc [Bản Báo Cáo Kỹ Thuật](/technical-whitepaper.pdf) miễn phí của chúng tôi
 
-### Who uses Forward Email {#who-uses-forward-email}
+### Ai sử dụng Forward Email {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+Chúng tôi cung cấp dịch vụ lưu trữ email và chuyển tiếp email cho hơn 500,000 tên miền và các khách hàng nổi bật sau:
 
-| Customer | Case Study |
+| Khách Hàng                              | Nghiên Cứu Trường Hợp                                                                                   |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| Học Viện Hải Quân Hoa Kỳ                | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/federal-government-email-service-section-889-compliant)         |
+| Canonical                              | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Netflix Games                         |                                                                                                          |
+| The Linux Foundation                  | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| The PHP Foundation                    |                                                                                                          |
+| Fox News Radio                       |                                                                                                          |
+| Disney Ad Sales                      |                                                                                                          |
+| jQuery                               | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| LineageOS                            |                                                                                                          |
+| Ubuntu                               | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Kubuntu                              | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Lubuntu                              | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Đại Học Cambridge                   | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Đại Học Maryland                    | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Đại Học Washington                 | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Đại Học Tufts                      | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Swarthmore College                 | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Chính Phủ Nam Úc                  |                                                                                                          |
+| Chính Phủ Cộng Hòa Dominican     |                                                                                                          |
+| Fly<span>.</span>io               |                                                                                                          |
+| RCD Hotels                       |                                                                                                          |
+| Isaac Z. Schlueter (npm)          | [:page_facing_up: Nghiên Cứu Trường Hợp](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### Lịch sử của Forward Email {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+Bạn có thể tìm hiểu thêm về Forward Email trên [trang Giới thiệu của chúng tôi](/about).
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### Dịch vụ này nhanh như thế nào {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Hệ thống của chúng tôi được thiết kế để nhanh chóng và đáng tin cậy, với nhiều máy chủ dự phòng để đảm bảo email của bạn được gửi đi kịp thời.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Email chuyển tiếp tin nhắn với độ trễ tối thiểu, thường trong vòng vài giây sau khi nhận.
 
-Performance metrics:
+Các chỉ số hiệu suất:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **Thời gian giao hàng trung bình**: Dưới 5-10 giây từ lúc nhận đến khi chuyển tiếp ([xem trang giám sát Thời gian vào hộp thư "TTI"](/tti))
+* **Thời gian hoạt động**: Độ sẵn sàng dịch vụ trên 99,9%
+* **Hạ tầng toàn cầu**: Máy chủ được đặt chiến lược để định tuyến tối ưu
+* **Tự động mở rộng**: Hệ thống của chúng tôi mở rộng trong các thời điểm cao điểm gửi email
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+Chúng tôi hoạt động theo thời gian thực, không giống các nhà cung cấp khác dựa vào hàng đợi trì hoãn.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Chúng tôi không ghi vào đĩa hoặc lưu trữ nhật ký – ngoại trừ [lỗi](#do-you-store-error-logs) và [SMTP gửi đi](#do-you-support-sending-email-with-smtp) (xem [Chính sách Bảo mật](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Mọi thứ được thực hiện trong bộ nhớ và [mã nguồn của chúng tôi có trên GitHub](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## Các ứng dụng Email {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Tạo một bí danh mới và tạo mật khẩu trong bảng điều khiển Forward Email của bạn
+2. Mở Thunderbird và vào **Chỉnh sửa → Cài đặt tài khoản → Hành động tài khoản → Thêm tài khoản thư**
+3. Nhập tên, địa chỉ Forward Email và mật khẩu của bạn
+4. Nhấn **Cấu hình thủ công** và nhập:
+   * Máy chủ đến: IMAP, `imap.forwardemail.net`, cổng 993, SSL/TLS
+   * Máy chủ đi: SMTP, `smtp.forwardemail.net`, cổng 465, SSL/TLS (khuyến nghị; cổng 587 với STARTTLS cũng được hỗ trợ)
+5. Nhấn **Xong**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Tạo một bí danh mới và tạo mật khẩu trong bảng điều khiển Forward Email của bạn
+2. Vào **Tệp → Thêm tài khoản**
+3. Nhập địa chỉ Forward Email của bạn và nhấn **Kết nối**
+4. Chọn **Tùy chọn nâng cao** và chọn **Cho phép tôi thiết lập tài khoản thủ công**
+5. Chọn **IMAP** và nhập:
+   * Máy chủ đến: `imap.forwardemail.net`, cổng 993, SSL
+   * Máy chủ đi: `smtp.forwardemail.net`, cổng 465, SSL/TLS (khuyến nghị; cổng 587 với STARTTLS cũng được hỗ trợ)
+   * Tên đăng nhập: Địa chỉ email đầy đủ của bạn
+   * Mật khẩu: Mật khẩu bạn đã tạo
+6. Nhấn **Kết nối**
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Tạo một bí danh mới và tạo mật khẩu trong bảng điều khiển Forward Email của bạn
+2. Vào **Mail → Tùy chọn → Tài khoản → +**
+3. Chọn **Tài khoản Thư khác**
+4. Nhập tên, địa chỉ Forward Email và mật khẩu của bạn
+5. Đối với cài đặt máy chủ, nhập:
+   * Máy chủ đến: `imap.forwardemail.net`
+   * Máy chủ đi: `smtp.forwardemail.net`
+   * Tên đăng nhập: Địa chỉ email đầy đủ của bạn
+   * Mật khẩu: Mật khẩu bạn đã tạo
+6. Nhấn **Đăng nhập**
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Tạo một bí danh mới và tạo mật khẩu trong bảng điều khiển Forward Email của bạn
+2. Mở eM Client và vào **Menu → Tài khoản → + Thêm tài khoản**
+3. Nhấn vào **Thư** rồi chọn **Khác**
+4. Nhập địa chỉ Forward Email của bạn và nhấn **Tiếp theo**
+5. Nhập các cài đặt máy chủ sau:
+   * **Máy chủ đến**: `imap.forwardemail.net`
+   * **Máy chủ đi**: `smtp.forwardemail.net`
+6. Nhập địa chỉ email đầy đủ của bạn làm **Tên người dùng** và mật khẩu bạn đã tạo làm **Mật khẩu** cho cả máy chủ đến và đi.
+7. eM Client sẽ kiểm tra kết nối. Khi thành công, nhấn **Tiếp theo**.
+8. Nhập tên của bạn và chọn tên tài khoản.
+9. Nhấn **Hoàn tất**.
 
-### Mobile Devices {#mobile-devices}
+### Thiết bị di động {#mobile-devices}
 
-For iOS:
+Đối với iOS:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Vào **Cài đặt → Thư → Tài khoản → Thêm tài khoản → Khác**
+2. Nhấn **Thêm tài khoản thư** và nhập thông tin của bạn
+3. Đối với cài đặt máy chủ, sử dụng các cài đặt IMAP và SMTP như trên
 
-For Android:
+Đối với Android:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Vào **Cài đặt → Tài khoản → Thêm tài khoản → Cá nhân (IMAP)**
+2. Nhập địa chỉ Forward Email và mật khẩu của bạn
+3. Đối với cài đặt máy chủ, sử dụng các cài đặt IMAP và SMTP như trên
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Cấu hình Sendmail SMTP Relay {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+Bạn có thể cấu hình Sendmail để chuyển tiếp email qua các máy chủ SMTP của Forward Email. Đây là thiết lập phổ biến cho các hệ thống cũ hoặc ứng dụng dựa vào Sendmail.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">Thời gian thiết lập ước tính:</strong>
+  <span>Ít hơn 20 phút</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Điều này yêu cầu gói trả phí với quyền truy cập SMTP được bật.
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### Cấu hình {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. Chỉnh sửa tệp `sendmail.mc` của bạn, thường nằm tại `/etc/mail/sendmail.mc`:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. Thêm các dòng sau để định nghĩa smart host và xác thực:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. Tạo tệp xác thực `/etc/mail/authinfo`:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. Thêm thông tin đăng nhập Forward Email của bạn vào tệp `authinfo`:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. Tạo cơ sở dữ liệu xác thực và bảo mật các tệp:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Xây dựng lại cấu hình Sendmail và khởi động lại dịch vụ:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### Kiểm tra {#testing}
 
-Send a test email to verify the configuration:
+Gửi email thử để xác minh cấu hình:
 
 ```bash
 echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Cấu hình Exim4 SMTP Relay {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4 là một MTA phổ biến trên các hệ thống dựa trên Debian. Bạn có thể cấu hình nó để sử dụng Forward Email làm smarthost.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Thời gian thiết lập ước tính:</strong>
+  <span>Ít hơn 15 phút</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Điều này yêu cầu gói trả phí với quyền truy cập SMTP được bật.
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### Cấu hình {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Chạy công cụ cấu hình Exim4:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. Chọn các tùy chọn sau:
+   * **Loại cấu hình mail chung:** mail gửi qua smarthost; nhận qua SMTP hoặc fetchmail
+   * **Tên mail hệ thống:** your.hostname
+   * **Địa chỉ IP để lắng nghe kết nối SMTP đến:** 127.0.0.1 ; ::1
+   * **Các điểm đến khác mà mail được chấp nhận:** (để trống)
+   * **Tên miền để chuyển tiếp mail:** (để trống)
+   * **Địa chỉ IP hoặc tên host của smarthost gửi đi:** smtp.forwardemail.net::465
+   * **Ẩn tên mail cục bộ trong mail gửi đi?** Không
+   * **Giữ số lượng truy vấn DNS tối thiểu (Dial-on-Demand)?** Không
+   * **Phương thức giao hàng cho mail cục bộ:** Định dạng Mbox trong /var/mail/
+   * **Chia cấu hình thành các tệp nhỏ?** Không
 
-3. Edit the `passwd.client` file to add your credentials:
+3. Chỉnh sửa tệp `passwd.client` để thêm thông tin đăng nhập của bạn:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. Thêm dòng sau:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. Cập nhật cấu hình và khởi động lại Exim4:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### Kiểm tra {#testing-1}
 
-Send a test email:
+Gửi email thử:
 
 ```bash
 echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### Cấu hình msmtp SMTP Client {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp là một client SMTP nhẹ, hữu ích để gửi email từ các script hoặc ứng dụng dòng lệnh.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Thời gian thiết lập ước tính:</strong>
+  <span>Ít hơn 10 phút</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Điều này yêu cầu gói trả phí với quyền truy cập SMTP được bật.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### Cấu hình {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. Tạo hoặc chỉnh sửa tệp cấu hình msmtp tại `~/.msmtprc`:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. Thêm cấu hình sau:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. Đặt quyền truy cập chính xác cho tệp cấu hình:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### Kiểm tra {#testing-2}
 
-Send a test email:
+Gửi email thử:
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### Các trình khách email dòng lệnh {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+Các trình khách email dòng lệnh phổ biến như [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), và [Alpine](https://alpine.x10.mx/alpine/release/) có thể được cấu hình để sử dụng máy chủ SMTP của Forward Email để gửi thư. Cấu hình sẽ tương tự như thiết lập `msmtp`, nơi bạn cung cấp chi tiết máy chủ SMTP và thông tin đăng nhập của bạn trong các tệp cấu hình tương ứng (`.muttrc`, `.neomuttrc`, hoặc `.pinerc`).
 
-### Windows Email Configuration {#windows-email-configuration}
+### Cấu hình email trên Windows {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+Đối với người dùng Windows, bạn có thể cấu hình các trình khách email phổ biến như **Microsoft Outlook** và **eM Client** sử dụng các thiết lập IMAP và SMTP được cung cấp trong tài khoản Forward Email của bạn. Đối với việc sử dụng dòng lệnh hoặc scripting, bạn có thể dùng cmdlet `Send-MailMessage` của PowerShell (mặc dù nó được coi là lỗi thời) hoặc một công cụ chuyển tiếp SMTP nhẹ như [E-MailRelay](https://github.com/graeme-walker/emailrelay).
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Cấu hình chuyển tiếp SMTP Postfix {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Bạn có thể cấu hình Postfix để chuyển tiếp email qua các máy chủ SMTP của Forward Email. Điều này hữu ích cho các ứng dụng máy chủ cần gửi email.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Thời gian thiết lập ước tính:</strong>
+  <span>Dưới 15 phút</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Điều này yêu cầu gói trả phí với quyền truy cập SMTP được bật.
   </span>
 </div>
 
-#### Installation {#installation}
+#### Cài đặt {#installation}
 
-1. Install Postfix on your server:
+1. Cài đặt Postfix trên máy chủ của bạn:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. Trong quá trình cài đặt, chọn "Internet Site" khi được hỏi loại cấu hình.
 
-#### Configuration {#configuration-3}
+#### Cấu hình {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Chỉnh sửa tệp cấu hình chính của Postfix:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. Thêm hoặc sửa các thiết lập sau:
 
 ```
-# SMTP relay configuration
+# Cấu hình chuyển tiếp SMTP
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. Tạo tệp mật khẩu SASL:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Thêm thông tin đăng nhập Forward Email của bạn:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. Bảo mật và băm tệp mật khẩu:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Khởi động lại Postfix:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### Kiểm tra {#testing-3}
 
-Test your configuration by sending a test email:
+Kiểm tra cấu hình bằng cách gửi email thử:
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Cách gửi thư dưới dạng sử dụng Gmail {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Thời gian thiết lập ước tính:</strong>
+  <span>Dưới 10 phút</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Bắt đầu:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Nếu bạn đã làm theo hướng dẫn ở trên trong <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Làm thế nào để bắt đầu và thiết lập chuyển tiếp email</a>, thì bạn có thể tiếp tục đọc bên dưới.
   </span>
 </div>
 
@@ -631,86 +635,85 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Vui lòng đảm bảo bạn đã đọc <a href="/terms" class="alert-link" target="_blank">Điều khoản</a>, <a href="/privacy" class="alert-link" target="_blank">Chính sách bảo mật</a>, và <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Giới hạn SMTP gửi đi</a> &ndash; việc bạn sử dụng được coi là sự thừa nhận và đồng ý.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Nếu bạn là nhà phát triển, hãy tham khảo <a class="alert-link" href="/email-api#outbound-emails" target="_blank">tài liệu API email</a> của chúng tôi.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Truy cập <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Cài đặt <i class="fa fa-angle-right"></i> Cấu hình SMTP gửi đi và làm theo hướng dẫn thiết lập
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được tạo hiển thị trên màn hình.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. Truy cập [Gmail](https://gmail.com) và trong [Cài đặt <i class="fa fa-angle-right"></i> Tài khoản và Nhập khẩu <i class="fa fa-angle-right"></i> Gửi thư dưới dạng](https://mail.google.com/mail/u/0/#settings/accounts), nhấp "Thêm địa chỉ email khác"
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. Khi được yêu cầu "Tên", nhập tên bạn muốn hiển thị trong phần "Từ" của email (ví dụ "Linus Torvalds").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. Khi được yêu cầu "Địa chỉ email", nhập địa chỉ email đầy đủ của bí danh bạn đã tạo trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. Bỏ chọn "Xử lý như một bí danh"
 
-8. Click "Next Step" to proceed
+8. Nhấp "Bước tiếp theo" để tiếp tục
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. Khi được yêu cầu "Máy chủ SMTP", nhập <code>smtp.forwardemail.net</code> và đổi cổng thành <code>465</code>
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. Khi được yêu cầu "Tên đăng nhập", nhập địa chỉ email đầy đủ của bí danh bạn đã tạo trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. Khi được yêu cầu "Mật khẩu", dán mật khẩu từ <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> ở bước 3 phía trên
 
-12. Select the radio button for "Secured connection using SSL"
+12. Chọn nút radio cho "Kết nối bảo mật sử dụng SSL"
 
-13. Click "Add Account" to proceed
+13. Nhấp "Thêm tài khoản" để tiếp tục
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. Mở tab mới đến [Gmail](https://gmail.com) và chờ email xác minh của bạn đến (bạn sẽ nhận được mã xác minh xác nhận bạn là chủ sở hữu của địa chỉ email bạn đang cố gắng "Gửi thư dưới dạng")
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. Khi nhận được, sao chép và dán mã xác minh vào lời nhắc bạn nhận được ở bước trước đó
+16. Khi bạn đã làm xong bước đó, quay lại email và nhấp vào liên kết để "xác nhận yêu cầu". Bạn rất có thể sẽ cần thực hiện bước này và bước trước đó để email được cấu hình đúng cách.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Chúc mừng!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Bạn đã hoàn thành tất cả các bước thành công.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Hướng dẫn miễn phí cũ cho Send Mail As sử dụng Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Quan trọng:</strong> Hướng dẫn miễn phí cũ này đã bị ngưng sử dụng kể từ tháng 5 năm 2023 vì <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">chúng tôi hiện hỗ trợ SMTP gửi đi</a>. Nếu bạn sử dụng hướng dẫn bên dưới, thì <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">điều này sẽ khiến email gửi đi của bạn</a> hiển thị "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" trong Gmail.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Thời gian ước tính thiết lập:</strong>
+  <span>Dưới 10 phút</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Bắt đầu:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Nếu bạn đã làm theo hướng dẫn ở trên trong phần <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Làm thế nào để bắt đầu và thiết lập chuyển tiếp email</a>, thì bạn có thể tiếp tục đọc bên dưới.
   </span>
 </div>
 
@@ -718,149 +721,147 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. Bạn cần bật [Xác thực hai yếu tố của Gmail][gmail-2fa] để điều này hoạt động. Truy cập <https://www.google.com/landing/2step/> nếu bạn chưa bật.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. Khi Xác thực hai yếu tố được bật (hoặc nếu bạn đã bật trước đó), hãy truy cập <https://myaccount.google.com/apppasswords>.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. Khi được yêu cầu "Chọn ứng dụng và thiết bị bạn muốn tạo mật khẩu ứng dụng cho":
+   * Chọn "Mail" trong menu thả xuống "Chọn ứng dụng"
+   * Chọn "Other" trong menu thả xuống "Chọn thiết bị"
+   * Khi được yêu cầu nhập văn bản, hãy nhập địa chỉ email của tên miền tùy chỉnh mà bạn đang chuyển tiếp từ đó (ví dụ <code><hello@example.com></code> - điều này sẽ giúp bạn theo dõi nếu bạn sử dụng dịch vụ này cho nhiều tài khoản)
 
-4. Copy the password to your clipboard that is automatically generated
+4. Sao chép mật khẩu được tạo tự động vào bộ nhớ tạm của bạn
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       Quan trọng:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       Nếu bạn đang sử dụng G Suite, hãy truy cập bảng điều khiển quản trị của bạn <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> và đảm bảo đánh dấu chọn "Cho phép người dùng gửi thư qua máy chủ SMTP bên ngoài...". Sẽ có một khoảng thời gian chậm trễ để thay đổi này được kích hoạt, vì vậy vui lòng chờ vài phút.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. Truy cập [Gmail](https://gmail.com) và trong phần [Cài đặt <i class="fa fa-angle-right"></i> Tài khoản và Nhập <i class="fa fa-angle-right"></i> Gửi thư dưới dạng](https://mail.google.com/mail/u/0/#settings/accounts), nhấp vào "Thêm địa chỉ email khác"
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. Khi được yêu cầu "Tên", nhập tên mà bạn muốn hiển thị trong phần "Từ" của email (ví dụ "Linus Torvalds")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. Khi được yêu cầu "Địa chỉ email", nhập địa chỉ email với tên miền tùy chỉnh bạn đã dùng ở trên (ví dụ <code><hello@example.com></code>)
+8. Bỏ chọn "Xử lý như một bí danh"
 
-8. Uncheck "Treat as an alias"
+9. Nhấn "Bước tiếp theo" để tiếp tục
 
-9. Click "Next Step" to proceed
+10. Khi được yêu cầu nhập "Máy chủ SMTP", nhập <code>smtp.gmail.com</code> và giữ nguyên cổng là <code>587</code>
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. Khi được yêu cầu nhập "Tên đăng nhập", nhập phần địa chỉ Gmail của bạn không bao gồm phần <span>gmail.com</span> (ví dụ chỉ nhập "user" nếu email của tôi là <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        Quan trọng:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        Nếu phần "Tên đăng nhập" được tự động điền, thì <u><strong>bạn sẽ cần thay đổi điều này</strong></u> thành phần tên đăng nhập của địa chỉ Gmail của bạn thay vào đó.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. Khi được yêu cầu nhập "Mật khẩu", dán mật khẩu bạn đã tạo ở bước 2 phía trên từ bộ nhớ tạm của bạn
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. Giữ nguyên nút radio đã chọn cho "Kết nối bảo mật sử dụng TLS"
 
-14. Click "Add Account" to proceed
+14. Nhấn "Thêm tài khoản" để tiếp tục
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. Mở tab mới đến [Gmail](https://gmail.com) và chờ email xác minh của bạn đến (bạn sẽ nhận được mã xác minh xác nhận bạn là chủ sở hữu của địa chỉ email mà bạn đang cố gắng "Gửi thư như")
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. Khi email đến, sao chép và dán mã xác minh vào lời nhắc bạn nhận được ở bước trước
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. Sau khi làm xong, quay lại email và nhấn vào liên kết để "xác nhận yêu cầu". Bạn rất có thể sẽ cần thực hiện bước này và bước trước đó để email được cấu hình đúng.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### Cấu hình định tuyến Gmail nâng cao {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Thời gian ước tính thiết lập:</strong>
+  <span>15-30 phút</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+Nếu bạn muốn thiết lập định tuyến nâng cao trong Gmail để các bí danh không khớp với hộp thư sẽ được chuyển tiếp đến các máy chủ thư của Forward Email, hãy làm theo các bước sau:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. Đăng nhập vào bảng điều khiển quản trị Google của bạn tại [admin.google.com](https://admin.google.com)
+2. Vào **Apps → Google Workspace → Gmail → Routing**
+3. Nhấn vào **Add Route** và cấu hình các thiết lập sau:
 
-**Single Recipient Settings:**
+**Cài đặt người nhận đơn lẻ:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* Chọn "Change envelope recipient" và nhập địa chỉ Gmail chính của bạn
+* Chọn "Add X-Gm-Original-To header with original recipient"
 
-**Envelope Recipient Patterns:**
+**Mẫu người nhận phong bì:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* Thêm một mẫu khớp với tất cả các hộp thư không tồn tại (ví dụ, `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**Cài đặt máy chủ email:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* Chọn "Route to host" và nhập `mx1.forwardemail.net` làm máy chủ chính
+* Thêm `mx2.forwardemail.net` làm máy chủ dự phòng
+* Đặt cổng là 25
+* Chọn "Require TLS" để bảo mật
 
-4. Click **Save** to create the route
+4. Nhấn **Save** để tạo định tuyến
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    Cấu hình này chỉ hoạt động cho các tài khoản Google Workspace với tên miền tùy chỉnh, không áp dụng cho các tài khoản Gmail thông thường.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### Cấu hình định tuyến Outlook nâng cao {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Thời gian ước tính thiết lập:</strong>
+  <span>15-30 phút</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Đối với người dùng Microsoft 365 (trước đây là Office 365) muốn thiết lập định tuyến nâng cao để các bí danh không khớp với hộp thư sẽ được chuyển tiếp đến các máy chủ thư của Forward Email:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
+1. Đăng nhập vào trung tâm quản trị Microsoft 365 tại [admin.microsoft.com](https://admin.microsoft.com)
+2. Vào **Exchange → Mail flow → Rules**
+3. Nhấn **Add a rule** và chọn **Create a new rule**
+4. Đặt tên cho quy tắc của bạn (ví dụ, "Chuyển tiếp các hộp thư không tồn tại đến Forward Email")
+5. Trong phần **Apply this rule if**, chọn:
    * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
+   * Nhập mẫu khớp với tất cả địa chỉ tại tên miền của bạn (ví dụ, `*@yourdomain.com`)
+6. Trong phần **Do the following**, chọn:
    * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
+   * Chọn "The following mail server"
+   * Nhập `mx1.forwardemail.net` và cổng 25
+   * Thêm `mx2.forwardemail.net` làm máy chủ dự phòng
+7. Trong phần **Except if**, chọn:
    * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+   * Thêm tất cả các hộp thư hiện có của bạn mà không nên chuyển tiếp
+8. Đặt độ ưu tiên của quy tắc để đảm bảo nó chạy sau các quy tắc luồng thư khác
+9. Nhấn **Save** để kích hoạt quy tắc
+## Khắc phục sự cố {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### Tại sao tôi không nhận được email thử nghiệm của mình {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+Nếu bạn gửi email thử nghiệm cho chính mình, thì nó có thể không xuất hiện trong hộp thư đến của bạn vì nó có cùng tiêu đề "Message-ID".
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+Đây là một vấn đề được biết rộng rãi, và cũng ảnh hưởng đến các dịch vụ như Gmail.  <a href="https://support.google.com/a/answer/1703601">Đây là câu trả lời chính thức của Gmail về vấn đề này</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+Nếu bạn tiếp tục gặp sự cố, thì rất có thể là do vấn đề với việc truyền phát DNS.  Bạn sẽ cần đợi lâu hơn một chút và thử lại (hoặc thử đặt giá trị TTL thấp hơn trên các bản ghi <strong class="notranslate">TXT</strong> của bạn).
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**Vẫn gặp sự cố?**  Vui lòng <a href="/help">liên hệ với chúng tôi</a> để chúng tôi có thể giúp điều tra vấn đề và tìm giải pháp nhanh chóng.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Làm thế nào để cấu hình trình khách email của tôi để làm việc với Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  Dịch vụ của chúng tôi hoạt động với các trình khách email phổ biến như:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
@@ -875,188 +876,235 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  Tên đăng nhập của bạn là địa chỉ email bí danh của bạn và mật khẩu lấy từ <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Mật khẩu bình thường").
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Nếu bạn đang sử dụng Thunderbird, hãy đảm bảo "Connection security" được đặt thành "SSL/TLS" và phương thức xác thực được đặt thành "Normal password".</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| Loại |         Tên máy chủ        |         Giao thức        |                                            Cổng                                           |
+| :--: | :------------------------: | :---------------------: | :----------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net`    |  SSL/TLS **Ưu tiên**    |                                      `993` và `2993`                                      |
+| SMTP | `smtp.forwardemail.net`    | SSL/TLS **Khuyến nghị** | `465` và `2465` cho SSL/TLS (khuyến nghị) hoặc `587`, `2587`, `2525`, và `25` cho STARTTLS |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Tại sao email của tôi lại vào thư mục Spam và Junk và làm thế nào để kiểm tra uy tín tên miền của tôi {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+Phần này hướng dẫn bạn nếu thư gửi đi của bạn sử dụng máy chủ SMTP của chúng tôi (ví dụ `smtp.forwardemail.net`) (hoặc được chuyển tiếp qua `mx1.forwardemail.net` hoặc `mx2.forwardemail.net`) và thư đó bị đưa vào thư mục Spam hoặc Junk của người nhận.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+Chúng tôi thường xuyên theo dõi [địa chỉ IP](#what-are-your-servers-ip-addresses) của mình trên [tất cả các danh sách DNS uy tín](#how-do-you-handle-your-ip-addresses-becoming-blocked), **do đó rất có thể đây là vấn đề liên quan đến uy tín tên miền cụ thể**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+Email có thể bị đưa vào thư mục spam vì một số lý do sau:
 
-Emails can land in spam folders for several reasons:
+1. **Thiếu xác thực**: Thiết lập các bản ghi [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), và [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **Uy tín tên miền**: Các tên miền mới thường có uy tín trung lập cho đến khi thiết lập được lịch sử gửi thư.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **Kích hoạt bộ lọc nội dung**: Một số từ hoặc cụm từ có thể kích hoạt bộ lọc spam.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **Mẫu gửi thư**: Tăng đột ngột về số lượng email gửi đi có thể bị coi là đáng ngờ.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+Bạn có thể thử sử dụng một hoặc nhiều công cụ sau để kiểm tra uy tín và phân loại tên miền của bạn:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### Công cụ kiểm tra uy tín và danh sách chặn {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| Tên công cụ                                | URL                                                          | Loại                   |
+| ------------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare Domain Categorization Feedback   | <https://radar.cloudflare.com/domains/feedback>              | Phân loại              |
+| Spamhaus IP and Domain Reputation Checker   | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center>            | Uy tín                 |
+| Barracuda IP and Domain Reputation Lookup   | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox Blacklist Check                  | <https://mxtoolbox.com/blacklists.aspx>                      | Danh sách đen          |
+| Google Postmaster Tools                     | <https://www.gmail.com/postmaster/>                          | Uy tín                 |
+| Yahoo Sender Hub                            | <https://senders.yahooinc.com/>                              | Uy tín                 |
+| MultiRBL.valli.org Blacklist Check          | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | Uy tín                 |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT's Levels 1, 2, and 3             | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT's backscatterer.org              | <https://www.backscatterer.org/>                             | Bảo vệ chống phản hồi  |
+| UCEPROTECT's whitelisted.org                | <https://www.whitelisted.org/> (yêu cầu phí)                 | DNSWL                  |
 
+#### Biểu mẫu yêu cầu gỡ chặn IP theo nhà cung cấp {#ip-removal-request-forms-by-provider}
+
+Nếu địa chỉ IP của bạn bị chặn bởi nhà cung cấp email cụ thể, hãy sử dụng biểu mẫu gỡ chặn hoặc liên hệ phù hợp dưới đây:
+
+| Nhà cung cấp                           | Biểu mẫu gỡ chặn / Liên hệ                                                                                 | Ghi chú                                      |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | Biểu mẫu liên hệ người gửi hàng loạt         |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | Cổng gỡ chặn IP Office 365                    |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | Yahoo Sender Hub                             |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | Apple sử dụng Proofpoint cho uy tín IP        |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | Kiểm tra và gỡ chặn IP Proofpoint             |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | Tra cứu và gỡ chặn uy tín Barracuda           |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | Yêu cầu đặt lại Cloudmark CSI                  |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | Biểu mẫu yêu cầu gỡ chặn IP GoDaddy            |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | Yêu cầu gỡ chặn IP Comcast                     |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | Liên hệ hỗ trợ Spectrum để gỡ chặn             |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | Email yêu cầu gỡ chặn                          |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | Email yêu cầu gỡ chặn                          |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | Sử dụng Cloudfilter                           |
+| Windstream                             | `abuse@windstream.net`                                                                                     | Email yêu cầu gỡ chặn                          |
+| t-online.de (Đức)                     | `tobr@rx.t-online.de`                                                                                      | Email yêu cầu gỡ chặn                          |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | Sử dụng biểu mẫu liên hệ hoặc email `abuse@orange.fr` |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | Biểu mẫu liên hệ postmaster GMX               |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | Cổng postmaster Mail.ru                        |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | Cổng postmaster Yandex                         |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | Đăng ký whitelist QQ Mail (Tiếng Trung)       |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | Cổng postmaster Netease                        |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | Liên hệ qua bảng điều khiển Alibaba Cloud     |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | Bảng điều khiển AWS SES > Gỡ chặn danh sách đen |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | Liên hệ hỗ trợ SendGrid                        |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | Sử dụng RBL bên thứ ba - liên hệ RBL cụ thể   |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | Liên hệ hỗ trợ Fastmail                        |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | Liên hệ hỗ trợ Zoho                            |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | Liên hệ hỗ trợ Proton                          |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | Liên hệ hỗ trợ Tutanota                        |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | Liên hệ hỗ trợ Hushmail                        |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | Liên hệ hỗ trợ Mailbox.org                     |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | Liên hệ hỗ trợ Posteo                          |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | Liên hệ hỗ trợ DuckDuckGo                      |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | Liên hệ hỗ trợ Sonic                           |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | Liên hệ hỗ trợ Telus                           |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | Liên hệ hỗ trợ Vodafone                        |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | Liên hệ hỗ trợ Spark NZ                        |
+| UOL/BOL (Brazil)                       | <https://ajuda.uol.com.br/>                                                                                | Liên hệ hỗ trợ UOL (Tiếng Bồ Đào Nha)         |
+| Libero (Italy)                         | <https://aiuto.libero.it/>                                                                                 | Liên hệ hỗ trợ Libero (Tiếng Ý)                |
+| Telenet (Belgium)                      | <https://www2.telenet.be/en/support/>                                                                      | Liên hệ hỗ trợ Telenet                         |
+| Facebook/WhatsApp                      | <https://www.facebook.com/business/help>                                                                   | Liên hệ hỗ trợ doanh nghiệp Facebook           |
+| LinkedIn                               | <https://www.linkedin.com/help/linkedin>                                                                   | Liên hệ hỗ trợ LinkedIn                        |
+| Groups.io                              | <https://groups.io/helpcenter>                                                                             | Liên hệ hỗ trợ Groups.io                        |
+| Earthlink/Vade Secure                  | <https://sendertool.vadesecure.com/en/>                                                                    | Công cụ người gửi Vade Secure                   |
+| Cloudflare Email Security              | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | Liên hệ hỗ trợ Cloudflare                      |
+| Hornetsecurity/Expurgate               | <https://www.hornetsecurity.com/>                                                                          | Liên hệ hỗ trợ Hornetsecurity                   |
+| SpamExperts/Antispamcloud              | <https://www.spamexperts.com/>                                                                             | Liên hệ qua nhà cung cấp hosting                |
+| Mail2World                             | <https://www.mail2world.com/support/>                                                                      | Liên hệ hỗ trợ Mail2World                       |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Bắt đầu với số lượng email chất lượng cao thấp để xây dựng danh tiếng tích cực trước khi gửi với số lượng lớn hơn.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Nếu tên miền của bạn nằm trong danh sách đen, mỗi danh sách đen có quy trình gỡ bỏ riêng. Kiểm tra trang web của họ để biết hướng dẫn.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Nếu bạn cần hỗ trợ thêm hoặc phát hiện chúng tôi bị liệt kê nhầm là spam bởi một nhà cung cấp dịch vụ email nào đó, vui lòng <a href="/help">liên hệ với chúng tôi</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### Tôi nên làm gì nếu nhận được email rác {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+Bạn nên hủy đăng ký khỏi danh sách gửi email (nếu có thể) và chặn người gửi.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+Vui lòng không báo cáo tin nhắn là spam, thay vào đó hãy chuyển tiếp nó đến hệ thống phòng chống lạm dụng được quản lý thủ công và tập trung vào quyền riêng tư của chúng tôi.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**Địa chỉ email để chuyển tiếp spam là:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Tại sao các email thử nghiệm gửi cho chính tôi trong Gmail lại hiển thị là "đáng ngờ" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+Nếu bạn thấy thông báo lỗi này trong Gmail khi gửi thử cho chính mình, hoặc khi người bạn gửi email với bí danh của bạn lần đầu tiên nhận được email từ bạn, thì **xin đừng lo lắng** – vì đây là tính năng bảo mật tích hợp của Gmail.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+Bạn chỉ cần nhấn "Looks safe". Ví dụ, nếu bạn gửi tin nhắn thử nghiệm sử dụng tính năng gửi mail như (send mail as) cho người khác, họ sẽ không thấy thông báo này.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+Tuy nhiên nếu họ thấy thông báo này, đó là vì họ thường quen nhận email từ <john@gmail.com> thay vì <john@customdomain.com> (chỉ là ví dụ). Gmail cảnh báo người dùng để đảm bảo an toàn, không có cách nào bỏ qua.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Tôi có thể loại bỏ phần via forwardemail dot net trong Gmail không {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+Chủ đề này liên quan đến [vấn đề phổ biến trong Gmail khi thông tin bổ sung xuất hiện bên cạnh tên người gửi](https://support.google.com/mail/answer/1311182).
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+Từ tháng 5 năm 2023, chúng tôi hỗ trợ gửi email bằng SMTP như một tiện ích bổ sung cho tất cả người dùng trả phí – điều này có nghĩa là bạn có thể loại bỏ <span class="notranslate">via forwardemail dot net</span> trong Gmail.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+Lưu ý rằng chủ đề FAQ này dành riêng cho những người sử dụng tính năng [Cách gửi mail như sử dụng Gmail](#how-to-send-mail-as-using-gmail).
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+Vui lòng xem phần [Bạn có hỗ trợ gửi email bằng SMTP không](#do-you-support-sending-email-with-smtp) để biết hướng dẫn cấu hình.
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## Quản lý dữ liệu {#data-management}
+
+### Máy chủ của bạn đặt ở đâu {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Chúng tôi có thể sớm công bố vị trí trung tâm dữ liệu EU được lưu trữ tại [forwardemail.eu](https://forwardemail.eu). Đăng ký thảo luận tại <https://github.com/orgs/forwardemail/discussions/336> để cập nhật.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+Máy chủ của chúng tôi chủ yếu đặt tại Denver, Colorado – xem <https://forwardemail.net/ips> để biết danh sách đầy đủ các địa chỉ IP.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+Bạn có thể tìm hiểu về các nhà xử lý phụ của chúng tôi trên các trang [GDPR](/gdpr), [DPA](/dpa), và [Quyền riêng tư](/privacy).
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### Làm thế nào để xuất và sao lưu hộp thư của tôi {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+Bất cứ lúc nào bạn có thể xuất hộp thư của mình dưới định dạng [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), hoặc [SQLite](https://en.wikipedia.org/wiki/SQLite) được mã hóa.
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+Đi tới <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh <i class="fa fa-angle-right"></i> Tải xuống sao lưu và chọn loại định dạng xuất ưa thích của bạn.
 
-You will be emailed a link to download the export once it has finished.
+Bạn sẽ nhận được email chứa liên kết tải xuống sau khi quá trình xuất hoàn tất.
 
-Note that this export download link expires after 4 hours for security concerns.
+Lưu ý rằng liên kết tải xuống này hết hạn sau 4 giờ vì lý do bảo mật.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+Nếu bạn cần kiểm tra các định dạng EML hoặc Mbox đã xuất, thì các công cụ mã nguồn mở sau có thể hữu ích:
 
-| Name | Format | Platform | GitHub URL |
-| --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
+| Tên             | Định dạng | Nền tảng     | URL GitHub                                          |
+| --------------- | :-------: | ------------ | -------------------------------------------------- |
+| MBox Viewer     |   Mbox    | Windows      | <https://github.com/eneam/mboxviewer>              |
+| mbox-web-viewer |   Mbox    | Tất cả nền tảng | <https://github.com/PHMRanger/mbox-web-viewer>     |
+| EmlReader       |    EML    | Windows      | <https://github.com/ayamadori/EmlReader>           |
+| Email viewer    |    EML    | VSCode       | <https://github.com/joelharkes/vscode_email_viewer>|
+| eml-reader      |    EML    | Tất cả nền tảng | <https://github.com/s0ph1e/eml-reader>             |
+Ngoài ra nếu bạn cần chuyển đổi file Mbox sang file EML, bạn có thể sử dụng <https://github.com/noelmartinon/mboxzilla>.
 
-Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
+### Làm thế nào để tôi nhập và di chuyển hộp thư hiện có của mình {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
-
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+Bạn có thể dễ dàng nhập email của mình vào Forward Email (ví dụ sử dụng [Thunderbird](https://www.thunderbird.net)) theo hướng dẫn dưới đây:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    Bạn phải làm theo tất cả các bước sau để nhập email hiện có của mình.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. Xuất email từ nhà cung cấp email hiện tại của bạn:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | Nhà cung cấp Email | Định dạng Xuất                               | Hướng dẫn Xuất                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | ------------------ | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail              | MBOX                                         | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook            | PST                                          | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Mẹo:</strong> <span>Nếu bạn đang sử dụng Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">định dạng xuất PST</a>), thì bạn có thể làm theo hướng dẫn trong phần "Khác" bên dưới. Tuy nhiên chúng tôi đã cung cấp các liên kết dưới đây để chuyển đổi PST sang định dạng MBOX/EML dựa trên hệ điều hành của bạn:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba cho Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst cho Windows cygwin</a> – (ví dụ <code>readpst -u -o $OUT_DIR $IN_DIR</code> thay thế <code>$OUT_DIR</code> và <code>$IN_DIR</code> bằng đường dẫn thư mục xuất và thư mục nhập tương ứng).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst cho Ubuntu/Linux</a> – (ví dụ <code>sudo apt-get install readpst</code> rồi <code>readpst -u -o $OUT_DIR $IN_DIR</code>, thay thế <code>$OUT_DIR</code> và <code>$IN_DIR</code> bằng đường dẫn thư mục xuất và thư mục nhập tương ứng).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst cho macOS (qua brew)</a> – (ví dụ <code>brew install libpst</code> rồi <code>readpst -u -o $OUT_DIR $IN_DIR</code>, thay thế <code>$OUT_DIR</code> và <code>$IN_DIR</code> bằng đường dẫn thư mục xuất và thư mục nhập tương ứng).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter cho Windows (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail         | MBOX                                         | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail           | EML                                          | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail        | MBOX/EML                                     | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota           | EML                                          | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi              | EML                                          | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho               | EML                                          | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | Khác               | [Sử dụng Thunderbird](https://www.thunderbird.net) | Thiết lập tài khoản email hiện có của bạn trong Thunderbird rồi sử dụng plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) để xuất và nhập email.  **Bạn cũng có thể đơn giản sao chép/dán hoặc kéo/thả email giữa các tài khoản với nhau.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. Tải xuống, cài đặt và mở [Thunderbird](https://www.thunderbird.net).
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. Tạo một tài khoản mới sử dụng địa chỉ email đầy đủ của bí danh của bạn (ví dụ <code><you@yourdomain.com></code>) và mật khẩu đã tạo của bạn.  <strong>Nếu bạn chưa có mật khẩu được tạo, thì <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">tham khảo hướng dẫn thiết lập của chúng tôi</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. Tải xuống và cài đặt plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) cho Thunderbird.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. Tạo một thư mục cục bộ mới trong Thunderbird, sau đó nhấp chuột phải vào nó → chọn tùy chọn `ImportExportTools NG` → chọn `Import mbox file` (cho định dạng xuất MBOX) – hoặc – `Import messages` / `Import all messages from a directory` (cho định dạng xuất EML).
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. Kéo/thả từ thư mục cục bộ sang một thư mục IMAP mới (hoặc đã tồn tại) trong Thunderbird mà bạn muốn tải lên các tin nhắn vào bộ nhớ IMAP với dịch vụ của chúng tôi.  Điều này sẽ đảm bảo chúng được sao lưu trực tuyến với bộ nhớ mã hóa SQLite của chúng tôi.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Nếu bạn bối rối về cách nhập vào Thunderbird, bạn có thể tham khảo hướng dẫn chính thức tại <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> và <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    Khi bạn đã hoàn thành quá trình xuất và nhập, bạn cũng có thể muốn bật chuyển tiếp trên tài khoản email hiện tại của mình và thiết lập trả lời tự động để thông báo cho người gửi rằng bạn có địa chỉ email mới (ví dụ nếu trước đây bạn sử dụng Gmail và bây giờ sử dụng email với tên miền tùy chỉnh của bạn).
   </span>
 </div>
 
@@ -1064,201 +1112,407 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Chúc mừng!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Bạn đã hoàn thành tất cả các bước thành công.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### Làm thế nào để tôi sử dụng bộ nhớ tương thích S3 của riêng tôi cho việc sao lưu {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+Người dùng gói trả phí có thể cấu hình nhà cung cấp bộ nhớ tương thích [S3](https://en.wikipedia.org/wiki/Amazon_S3) của riêng họ trên cơ sở từng tên miền cho sao lưu IMAP/SQLite.  Điều này có nghĩa là các bản sao lưu hộp thư mã hóa của bạn có thể được lưu trữ trên hạ tầng của riêng bạn thay vì (hoặc bổ sung cho) bộ nhớ mặc định của chúng tôi.
 
-## Email Configuration {#email-configuration}
+Các nhà cung cấp được hỗ trợ bao gồm [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces), và bất kỳ dịch vụ tương thích S3 nào khác.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### Thiết lập {#setup}
+
+1. Tạo một bucket **riêng tư** với nhà cung cấp tương thích S3 của bạn. Bucket không được truy cập công khai.
+2. Tạo thông tin xác thực truy cập (access key ID và secret access key) với quyền đọc/ghi vào bucket.
+3. Truy cập <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Cài đặt nâng cao <i class="fa fa-angle-right"></i> Bộ nhớ tương thích S3 tùy chỉnh.
+4. Đánh dấu **"Bật bộ nhớ tương thích S3 tùy chỉnh"** và điền URL điểm cuối, access key ID, secret access key, vùng, và tên bucket của bạn.
+5. Nhấn **"Kiểm tra kết nối"** để xác minh thông tin xác thực, quyền truy cập bucket, và quyền ghi.
+6. Nhấn **"Lưu"** để áp dụng cài đặt.
+
+#### Cách hoạt động của sao lưu {#how-backups-work}
+
+Sao lưu được kích hoạt tự động cho mỗi bí danh IMAP được kết nối. Máy chủ IMAP kiểm tra tất cả các kết nối hoạt động mỗi giờ một lần và gửi một bản sao lưu cho mỗi bí danh được kết nối. Một khóa dựa trên Redis ngăn chặn việc chạy sao lưu trùng lặp trong vòng 30 phút, và bản sao lưu thực tế sẽ bị bỏ qua nếu một bản sao lưu thành công đã được hoàn thành trong vòng 24 giờ qua (trừ khi bản sao lưu được yêu cầu rõ ràng bởi người dùng để tải xuống).
+Sao lưu cũng có thể được kích hoạt thủ công bằng cách nhấp vào **"Download Backup"** cho bất kỳ bí danh nào trong bảng điều khiển. Sao lưu thủ công luôn chạy bất kể cửa sổ 24 giờ.
+
+Quy trình sao lưu hoạt động như sau:
+
+1. Cơ sở dữ liệu SQLite được sao chép bằng `VACUUM INTO`, tạo ra một bản chụp nhất quán mà không làm gián đoạn các kết nối đang hoạt động và giữ nguyên mã hóa cơ sở dữ liệu.
+2. Tệp sao lưu được xác minh bằng cách mở nó để xác nhận mã hóa vẫn còn hợp lệ.
+3. Một hàm băm SHA-256 được tính toán và so sánh với bản sao lưu hiện có trong bộ nhớ. Nếu hàm băm khớp, việc tải lên sẽ bị bỏ qua (không có thay đổi kể từ lần sao lưu cuối).
+4. Sao lưu được tải lên S3 bằng cách sử dụng tải lên đa phần qua thư viện [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage).
+5. Một URL tải xuống có chữ ký (hợp lệ trong 4 giờ) được tạo và gửi email cho người dùng.
+
+#### Backup Formats {#backup-formats}
+
+Hỗ trợ ba định dạng sao lưu:
+
+| Định dạng | Phần mở rộng | Mô tả                                                                 |
+| -------- | ------------ | -------------------------------------------------------------------- |
+| `sqlite` | `.sqlite`    | Bản chụp cơ sở dữ liệu SQLite được mã hóa thô (mặc định cho sao lưu IMAP tự động) |
+| `mbox`   | `.zip`       | Tệp ZIP được bảo vệ bằng mật khẩu chứa hộp thư theo định dạng mbox   |
+| `eml`    | `.zip`       | Tệp ZIP được bảo vệ bằng mật khẩu chứa các tệp `.eml` riêng lẻ cho mỗi tin nhắn |
+
+> **Mẹo:** Nếu bạn có các tệp sao lưu `.sqlite` và muốn chuyển đổi chúng thành các tệp `.eml` cục bộ, hãy sử dụng công cụ CLI độc lập của chúng tôi **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Nó hoạt động trên Windows, Linux và macOS và không yêu cầu kết nối mạng.
+
+#### File Naming and Key Structure {#file-naming-and-key-structure}
+
+Khi sử dụng **lưu trữ S3 tùy chỉnh**, các tệp sao lưu được lưu với tiền tố dấu thời gian [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) để mỗi bản sao lưu được giữ dưới dạng một đối tượng riêng biệt. Điều này cung cấp cho bạn lịch sử sao lưu đầy đủ trong bucket của riêng bạn.
+
+Định dạng khóa là:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+Ví dụ:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+`alias_id` là ObjectId MongoDB của bí danh. Bạn có thể tìm thấy nó trong trang cài đặt bí danh hoặc qua API.
+
+Khi sử dụng **lưu trữ mặc định (hệ thống)**, khóa là phẳng (ví dụ `65a31c53c36b75ed685f3fda.sqlite`) và mỗi bản sao lưu sẽ ghi đè lên bản sao lưu trước đó.
+
+> **Lưu ý:** Vì lưu trữ S3 tùy chỉnh giữ lại tất cả các phiên bản sao lưu, việc sử dụng bộ nhớ sẽ tăng theo thời gian. Chúng tôi khuyến nghị cấu hình [quy tắc vòng đời](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) trên bucket của bạn để tự động hết hạn các bản sao lưu cũ (ví dụ xóa các đối tượng cũ hơn 30 hoặc 90 ngày).
+
+#### Data Ownership and Deletion Policy {#data-ownership-and-deletion-policy}
+
+Bucket S3 tùy chỉnh của bạn hoàn toàn do bạn kiểm soát. Chúng tôi **không bao giờ xóa hoặc sửa đổi** các tệp trong bucket S3 tùy chỉnh của bạn — không khi nào xóa bí danh, không khi nào xóa tên miền, và không trong bất kỳ hoạt động dọn dẹp nào. Chúng tôi chỉ ghi các tệp sao lưu mới vào bucket của bạn.
+
+Điều này có nghĩa:
+
+* **Xóa bí danh** — Khi bạn xóa một bí danh, chúng tôi chỉ xóa bản sao lưu khỏi lưu trữ hệ thống mặc định của chúng tôi. Bất kỳ bản sao lưu nào đã ghi vào bucket S3 tùy chỉnh của bạn vẫn không bị ảnh hưởng.
+* **Xóa tên miền** — Việc xóa tên miền không ảnh hưởng đến các tệp trong bucket tùy chỉnh của bạn.
+* **Quản lý lưu giữ** — Bạn chịu trách nhiệm quản lý bộ nhớ trong bucket của riêng bạn, bao gồm cấu hình quy tắc vòng đời để hết hạn các bản sao lưu cũ.
+
+Nếu bạn tắt lưu trữ S3 tùy chỉnh hoặc chuyển về lưu trữ mặc định của chúng tôi, các tệp hiện có trong bucket của bạn vẫn được giữ nguyên. Các bản sao lưu trong tương lai sẽ được ghi vào lưu trữ mặc định của chúng tôi.
+
+#### Security {#security}
+
+* Khóa truy cập ID và khóa truy cập bí mật của bạn được **mã hóa khi lưu trữ** bằng [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) trước khi được lưu trong cơ sở dữ liệu của chúng tôi. Chúng chỉ được giải mã khi chạy để thực hiện các thao tác sao lưu.
+* Chúng tôi tự động xác thực rằng bucket của bạn **không công khai truy cập**. Nếu phát hiện bucket công khai, cấu hình sẽ bị từ chối khi lưu. Nếu phát hiện truy cập công khai khi sao lưu, chúng tôi sẽ chuyển sang lưu trữ mặc định và thông báo cho tất cả quản trị viên tên miền qua email.
+* Thông tin xác thực được xác thực khi lưu qua cuộc gọi [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html) để đảm bảo bucket tồn tại và thông tin xác thực chính xác. Nếu xác thực thất bại, lưu trữ S3 tùy chỉnh sẽ tự động bị vô hiệu hóa.
+* Mỗi tệp sao lưu bao gồm một hàm băm SHA-256 trong metadata S3 của nó, được sử dụng để phát hiện cơ sở dữ liệu không thay đổi và bỏ qua việc tải lên thừa.
+#### Thông báo lỗi {#error-notifications}
+
+Nếu một bản sao lưu thất bại khi sử dụng lưu trữ S3 tùy chỉnh của bạn (ví dụ do thông tin đăng nhập hết hạn hoặc sự cố kết nối), tất cả quản trị viên miền sẽ được thông báo qua email. Các thông báo này được giới hạn tần suất gửi mỗi 6 giờ để tránh cảnh báo trùng lặp. Nếu bucket của bạn được phát hiện có thể truy cập công khai vào thời điểm sao lưu, quản trị viên sẽ được thông báo một lần mỗi ngày.
+
+#### API {#api}
+
+Bạn cũng có thể cấu hình lưu trữ S3 tùy chỉnh qua API:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+Để kiểm tra kết nối qua API:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### Làm thế nào để chuyển đổi bản sao lưu SQLite sang file EML {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+Nếu bạn tải xuống hoặc lưu trữ các bản sao lưu SQLite (dù từ lưu trữ mặc định của chúng tôi hoặc [bucket S3 tùy chỉnh của bạn](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), bạn có thể chuyển đổi chúng thành các file `.eml` chuẩn bằng công cụ CLI độc lập của chúng tôi **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. File EML có thể được mở bằng bất kỳ ứng dụng email nào ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), v.v.) hoặc nhập vào các máy chủ mail khác.
+
+#### Cài đặt {#installation-1}
+
+Bạn có thể tải xuống bản nhị phân đã được biên dịch sẵn (không cần [Node.js](https://github.com/nodejs/node)) hoặc chạy trực tiếp với [Node.js](https://github.com/nodejs/node):
+
+**Bản nhị phân đã biên dịch sẵn** — Tải bản phát hành mới nhất cho nền tảng của bạn từ [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+
+| Nền tảng | Kiến trúc     | File                                  |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **Người dùng macOS:** Sau khi tải xuống, bạn có thể cần xóa thuộc tính cách ly trước khi chạy file nhị phân:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (Thay `./convert-sqlite-to-eml-darwin-arm64` bằng đường dẫn thực tế đến file đã tải.)
+
+> **Người dùng Linux:** Sau khi tải xuống, bạn có thể cần cấp quyền thực thi cho file nhị phân:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (Thay `./convert-sqlite-to-eml-linux-x64` bằng đường dẫn thực tế đến file đã tải.)
+
+**Từ mã nguồn** (yêu cầu [Node.js](https://github.com/nodejs/node) >= 18):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### Cách sử dụng {#usage}
+
+Công cụ hỗ trợ cả chế độ tương tác và không tương tác.
+
+**Chế độ tương tác** — chạy mà không có tham số và bạn sẽ được hỏi nhập tất cả thông tin:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - Chuyển đổi bản sao lưu SQLite sang EML
+  =============================================
+
+  Đường dẫn đến file sao lưu SQLite: /path/to/backup.sqlite
+  Mật khẩu IMAP/bí danh: ********
+  Đường dẫn ZIP đầu ra [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**Chế độ không tương tác** — truyền tham số qua các cờ dòng lệnh để lập trình và tự động hóa:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| Cờ                  | Mô tả                                                                         |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `--path <path>`     | Đường dẫn đến file sao lưu SQLite được mã hóa                                  |
+| `--password <pass>` | Mật khẩu IMAP/bí danh để giải mã                                             |
+| `--output <path>`   | Đường dẫn đầu ra cho file ZIP (mặc định: tự động tạo với dấu thời gian ISO 8601) |
+| `--help`            | Hiển thị thông báo trợ giúp                                                    |
+#### Định Dạng Đầu Ra {#output-format}
+
+Công cụ tạo ra một tệp ZIP được bảo vệ bằng mật khẩu (mã hóa AES-256) chứa:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+Các tệp EML được tổ chức theo thư mục hộp thư. Mật khẩu ZIP giống với mật khẩu IMAP/bí danh của bạn. Mỗi tệp `.eml` là một tin nhắn email chuẩn theo [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) với đầy đủ tiêu đề, nội dung và tệp đính kèm được tái tạo từ cơ sở dữ liệu SQLite.
+
+#### Cách Thức Hoạt Động {#how-it-works}
+
+1. Mở cơ sở dữ liệu SQLite được mã hóa bằng mật khẩu IMAP/bí danh của bạn (hỗ trợ cả mã hóa [ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) và [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)).
+2. Đọc bảng Mailboxes để phát hiện cấu trúc thư mục.
+3. Với mỗi tin nhắn, giải mã mimeTree (được lưu dưới dạng JSON nén bằng [Brotli](https://github.com/google/brotli)) từ bảng Messages.
+4. Tái tạo đầy đủ tệp EML bằng cách duyệt cây MIME và lấy nội dung tệp đính kèm từ bảng Attachments.
+5. Đóng gói tất cả vào tệp ZIP được bảo vệ bằng mật khẩu sử dụng [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted).
+
+### Bạn có hỗ trợ tự lưu trữ không {#do-you-support-self-hosting}
+
+Có, kể từ tháng 3 năm 2025, chúng tôi hỗ trợ tùy chọn tự lưu trữ. Đọc bài blog [tại đây](https://forwardemail.net/blog/docs/self-hosted-solution). Xem hướng dẫn [tự lưu trữ](https://forwardemail.net/self-hosted) để bắt đầu. Và với những ai quan tâm đến phiên bản hướng dẫn chi tiết hơn, xem các hướng dẫn dựa trên [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) hoặc [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
+## Cấu Hình Email {#email-configuration}
+
+### Làm thế nào để bắt đầu và thiết lập chuyển tiếp email {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Thời gian ước tính để thiết lập:</strong>
+  <span>Ít hơn 10 phút</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Bắt đầu:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    Đọc kỹ và làm theo các bước từ một đến tám được liệt kê dưới đây. Hãy chắc chắn thay thế địa chỉ email <code>user@gmail.com</code> bằng địa chỉ email bạn muốn chuyển tiếp email đến (nếu chưa chính xác). Tương tự, hãy thay thế <code>example.com</code> bằng tên miền tùy chỉnh của bạn (nếu chưa chính xác).
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">Nếu bạn đã đăng ký tên miền của mình ở đâu đó, thì bạn phải hoàn toàn bỏ qua bước này và chuyển sang bước hai! Nếu chưa, bạn có thể <a href="/domain-registration" rel="noopener noreferrer">nhấn vào đây để đăng ký tên miền của bạn</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  Bạn có nhớ nơi bạn đã đăng ký tên miền không? Khi nhớ ra, hãy làm theo hướng dẫn dưới đây:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    Bạn phải mở một tab mới và đăng nhập vào nhà đăng ký tên miền của bạn. Bạn có thể dễ dàng nhấn vào "Registrar" bên dưới để tự động làm điều này. Trong tab mới này, bạn phải điều hướng đến trang quản lý DNS tại nhà đăng ký – và chúng tôi đã cung cấp các bước điều hướng từng bước dưới cột "Steps to Configure". Khi bạn đã vào trang này trong tab mới, bạn có thể quay lại tab này và tiếp tục bước ba bên dưới.
+    <strong class="font-weight-bold">Đừng đóng tab vừa mở; bạn sẽ cần nó cho các bước tiếp theo!</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>Nhà đăng ký</th>
+      <th>Các bước cấu hình</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Trung tâm tên miền <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Chỉnh sửa cài đặt DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Quản lý tên miền <i class="fa fa-angle-right"></i> Trình quản lý DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>DÀNH CHO ROCK: Đăng nhập <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Nhấn biểu tượng ▼ bên cạnh quản lý) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      DÀNH CHO LEGACY: Đăng nhập <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Quản lý</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Mạng <i class="fa fa-angle-right"></i> Tên miền <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Thêm <i class="fa fa-angle-right"></i> Quản lý tên miền</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Trong chế độ xem thẻ, nhấn quản lý tên miền <i class="fa fa-angle-right"></i> Trong chế độ xem danh sách, nhấn biểu tượng bánh răng <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> Bản ghi DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Xem</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Quản lý <i class="fa fa-angle-right"></i> (nhấn biểu tượng bánh răng) <i class="fa fa-angle-right"></i> Nhấn vào DNS &amp; Nameservers trong menu bên trái</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Bảng điều khiển <i class="fa fa-angle-right"></i> Tên miền <i class="fa fa-angle-right"></i> Quản lý tên miền <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Tổng quan <i class="fa fa-angle-right"></i> Quản lý <i class="fa fa-angle-right"></i> Trình chỉnh sửa đơn giản <i class="fa fa-angle-right"></i> Bản ghi</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Quản lý <i class="fa fa-angle-right"></i> Chỉnh sửa vùng</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Xem</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Quản lý tên miền của tôi <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Quản lý DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Xem</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Cấu hình DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Xem</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Danh sách tên miền <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Quản lý <i class="fa fa-angle-right"></i> DNS nâng cao</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Thiết lập DNS Netlify</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Quản lý tài khoản <i class="fa fa-angle-right"></i> Tên miền của tôi <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Quản lý <i class="fa fa-angle-right"></i> Thay đổi nơi tên miền trỏ đến <i class="fa fa-angle-right"></i> DNS nâng cao</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Xem</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Tên miền được quản lý <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> Cài đặt DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Menu chính <i class="fa fa-angle-right"></i> Cài đặt <i class="fa fa-angle-right"></i> Tên miền <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i>
+Cài đặt nâng cao <i class="fa fa-angle-right"></i> Bản ghi tùy chỉnh</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>Sử dụng CLI "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Trang tên miền <i class="fa fa-angle-right"></i> (Chọn tên miền của bạn) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Trang tên miền <i class="fa fa-angle-right"></i> (Nhấn biểu tượng <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Chọn Quản lý bản ghi DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>Đăng nhập <i class="fa fa-angle-right"></i> Tên miền <i class="fa fa-angle-right"></i> Tên miền của tôi</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>Khác</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Quan trọng:</strong> Không thấy tên nhà đăng ký của bạn trong danh sách? Chỉ cần tìm kiếm trên Internet với từ khóa "cách thay đổi bản ghi DNS trên $REGISTRAR" (thay $REGISTRAR bằng tên nhà đăng ký của bạn – ví dụ "cách thay đổi bản ghi DNS trên GoDaddy" nếu bạn dùng GoDaddy).</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">Sử dụng trang quản lý DNS của nhà đăng ký (tab khác bạn đã mở), thiết lập các bản ghi "MX" sau:
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    Lưu ý rằng KHÔNG được thiết lập bất kỳ bản ghi MX nào khác. Cả hai bản ghi được hiển thị bên dưới PHẢI tồn tại. Hãy chắc chắn không có lỗi chính tả; và bạn đã viết đúng mx1 và mx2. Nếu đã có các bản ghi MX tồn tại, vui lòng xóa chúng hoàn toàn.
+    Giá trị "TTL" không nhất thiết phải là 3600, có thể là giá trị thấp hơn hoặc cao hơn nếu cần thiết.
   </span>
 </div>
 
@@ -1274,14 +1528,14 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1544,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Sử dụng trang quản lý DNS của nhà đăng ký của bạn (tab khác mà bạn đã mở), thiết lập các bản ghi <strong class="notranslate">TXT</strong> sau:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    Nếu bạn đang sử dụng gói trả phí, thì bạn phải hoàn toàn bỏ qua bước này và chuyển sang bước năm! Nếu bạn không sử dụng gói trả phí, thì các địa chỉ chuyển tiếp của bạn sẽ có thể tìm kiếm công khai – hãy vào <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> và nâng cấp tên miền của bạn lên gói trả phí nếu muốn. Nếu bạn muốn tìm hiểu thêm về các gói trả phí, xem trang <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Giá cả</a> của chúng tôi. Nếu không, bạn có thể tiếp tục chọn một hoặc nhiều kết hợp từ Tùy chọn A đến Tùy chọn F được liệt kê bên dưới.
   </span>
 </div>
 
@@ -1307,10 +1561,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    Tùy chọn A:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    Nếu bạn đang chuyển tiếp tất cả email từ tên miền của bạn, (ví dụ "all@example.com", "hello@example.com", v.v.) đến một địa chỉ cụ thể "user@gmail.com":
   </span>
 </div>
 
@@ -1325,7 +1579,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1338,10 +1592,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Hãy chắc chắn thay thế các giá trị ở trên trong cột "Giá trị" bằng địa chỉ email của bạn. Giá trị "TTL" không nhất thiết phải là 3600, có thể là giá trị thấp hơn hoặc cao hơn nếu cần thiết. Giá trị thời gian sống ("TTL") thấp hơn sẽ đảm bảo các thay đổi trong tương lai đối với bản ghi DNS của bạn được truyền tải nhanh hơn trên Internet – hãy nghĩ đây là thời gian lưu trong bộ nhớ đệm (tính bằng giây). Bạn có thể tìm hiểu thêm về <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL trên Wikipedia</a>.
   </span>
 </div>
 
@@ -1350,25 +1604,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    Tùy chọn B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    Nếu bạn chỉ cần chuyển tiếp một địa chỉ email duy nhất (ví dụ <code>hello@example.com</code> đến <code>user@gmail.com</code>; điều này cũng sẽ tự động chuyển tiếp "hello+test@example.com" đến "user+test@gmail.com"):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1636,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    Tùy chọn C:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    Nếu bạn đang chuyển tiếp nhiều email, thì bạn sẽ muốn phân tách chúng bằng dấu phẩy:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1669,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    Tùy chọn D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    Bạn có thể thiết lập vô số email chuyển tiếp – chỉ cần đảm bảo không vượt quá 255 ký tự trong một dòng và bắt đầu mỗi dòng bằng "forward-email=". Ví dụ được cung cấp bên dưới:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1695,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1703,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1711,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1719,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1734,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    Tùy chọn E:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    Bạn cũng có thể chỉ định một tên miền trong bản ghi <strong class="notranslate">TXT</strong> của bạn để có chuyển tiếp bí danh toàn cầu (ví dụ "user@example.com" sẽ được chuyển tiếp đến "user@example.net"):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1767,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    Tùy chọn F:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    Bạn thậm chí có thể sử dụng webhooks làm bí danh toàn cầu hoặc cá nhân để chuyển tiếp email đến. Xem ví dụ và phần đầy đủ về webhooks có tiêu đề <a href="#do-you-support-webhooks" class="alert-link">Bạn có hỗ trợ webhooks không</a> bên dưới.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1799,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    Tùy chọn G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    Bạn thậm chí có thể sử dụng biểu thức chính quy ("regex") để khớp các bí danh và xử lý thay thế để chuyển tiếp email đến. Xem các ví dụ và phần đầy đủ về regex có tiêu đề <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Bạn có hỗ trợ biểu thức chính quy hay regex không</a> bên dưới.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>Cần regex nâng cao với thay thế?</strong> Xem các ví dụ và phần đầy đủ về regex có tiêu đề <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Bạn có hỗ trợ biểu thức chính quy hay regex không</a> bên dưới.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Ví dụ đơn giản:</strong> Nếu tôi muốn tất cả email gửi đến `linus@example.com` hoặc `torvalds@example.com` được chuyển tiếp đến `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1840,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    Các quy tắc chuyển tiếp bắt tất cả cũng có thể được mô tả là "rơi qua".
+    Điều này có nghĩa là các email đến khớp với ít nhất một quy tắc chuyển tiếp cụ thể sẽ được sử dụng thay vì quy tắc bắt tất cả.
+    Các quy tắc cụ thể bao gồm địa chỉ email và biểu thức chính quy.
     <br /><br />
-    For example:
+    Ví dụ:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    Email gửi đến <code>hello@example.com</code> sẽ **không** được chuyển tiếp đến <code>second@gmail.com</code> (bắt tất cả) với cấu hình này, và thay vào đó chỉ được gửi đến <code>first@gmail.com</code>.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Sử dụng trang quản lý DNS của nhà đăng ký của bạn (tab khác mà bạn đã mở), thêm vào đó thiết lập bản ghi <strong class="notranslate">TXT</strong> sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1881,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Nếu bạn đang sử dụng Gmail (ví dụ Gửi thư như) hoặc G Suite, thì bạn cần thêm <code>include:_spf.google.com</code> vào giá trị trên, ví dụ:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1641,34 +1893,33 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Nếu bạn đã có một dòng tương tự với "v=spf1", thì bạn cần thêm <code>include:spf.forwardemail.net</code> ngay trước bất kỳ bản ghi "include:host.com" nào hiện có và trước "-all" trong cùng dòng, ví dụ:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Lưu ý rằng có sự khác biệt giữa "-all" và "~all". Dấu "-" chỉ ra rằng kiểm tra SPF sẽ THẤT BẠI nếu không khớp, và "~" chỉ ra rằng kiểm tra SPF sẽ SOFTFAIL. Chúng tôi khuyến nghị sử dụng cách tiếp cận "-all" để ngăn chặn giả mạo tên miền.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Bạn cũng có thể cần bao gồm bản ghi SPF cho máy chủ mà bạn gửi thư từ đó (ví dụ Outlook).
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">Xác minh các bản ghi DNS của bạn bằng công cụ "Verify Records" có sẵn tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Tên Miền</a> <i class="fa fa-angle-right"></i> Thiết Lập.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Gửi một email thử để xác nhận nó hoạt động. Lưu ý rằng có thể mất một thời gian để các bản ghi DNS của bạn được truyền bá.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    Nếu bạn không nhận được email thử, hoặc nhận được email thử có nội dung "Hãy cẩn thận với tin nhắn này", thì hãy xem câu trả lời cho <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Tại sao tôi không nhận được email thử</a> và <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Tại sao email thử gửi cho chính tôi trong Gmail lại hiển thị là "đáng ngờ"</a> tương ứng.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Nếu bạn muốn "Gửi Thư Như" từ Gmail, thì bạn cần <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">xem video này</a></strong>, hoặc làm theo các bước dưới mục <a href="#how-to-send-mail-as-using-gmail">Cách Gửi Thư Như Sử Dụng Gmail</a> bên dưới.
 
 </li></ol>
 
@@ -1676,10 +1927,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Chúc mừng!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Bạn đã hoàn thành tất cả các bước thành công.
     </span>
   </div>
 </div>
@@ -1687,93 +1938,92 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    Các tiện ích bổ sung tùy chọn được liệt kê bên dưới. Lưu ý rằng các tiện ích bổ sung này hoàn toàn tùy chọn và có thể không cần thiết. Chúng tôi muốn ít nhất cung cấp cho bạn thông tin bổ sung nếu cần thiết.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    Tiện ích Bổ sung Tùy chọn:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    Nếu bạn đang sử dụng tính năng <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Cách Gửi Thư Như sử dụng Gmail</a>, thì bạn có thể muốn thêm chính mình vào danh sách cho phép. Xem <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">hướng dẫn này của Gmail</a> về chủ đề này.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Tôi có thể sử dụng nhiều máy chủ MX và máy chủ cho chuyển tiếp nâng cao không {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+Có, nhưng **bạn chỉ nên có một máy chủ MX được liệt kê trong các bản ghi DNS của bạn**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+Không nên cố gắng sử dụng "Ưu tiên" như một cách để cấu hình nhiều máy chủ MX.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+Thay vào đó, bạn cần cấu hình máy chủ MX hiện tại của bạn để chuyển tiếp thư cho tất cả các bí danh không khớp đến các máy chủ của dịch vụ chúng tôi (`mx1.forwardemail.net` và/hoặc `mx2.forwardemail.net`).
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Nếu bạn đang sử dụng Google Workspace và muốn chuyển tiếp tất cả các bí danh không khớp đến dịch vụ của chúng tôi, thì xem <https://support.google.com/a/answer/6297084>.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Nếu bạn đang sử dụng Microsoft 365 (Outlook) và muốn chuyển tiếp tất cả các bí danh không khớp đến dịch vụ của chúng tôi, thì xem <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> và <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Làm thế nào để tôi thiết lập trả lời tự động khi đi nghỉ (trả lời tự động khi vắng mặt) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+Đi đến <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Tên Miền</a> <i class="fa fa-angle-right"></i> Bí Danh và tạo mới hoặc chỉnh sửa bí danh mà bạn muốn cấu hình trả lời tự động khi đi nghỉ.
+Bạn có khả năng cấu hình ngày bắt đầu, ngày kết thúc, chủ đề và tin nhắn, và bật hoặc tắt nó bất cứ lúc nào:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* Chủ đề và tin nhắn dạng văn bản thuần túy hiện được hỗ trợ (chúng tôi sử dụng gói `striptags` nội bộ để loại bỏ bất kỳ HTML nào).
+* Chủ đề giới hạn trong 100 ký tự.
+* Tin nhắn giới hạn trong 1000 ký tự.
+* Việc thiết lập yêu cầu cấu hình SMTP gửi đi (ví dụ: bạn sẽ cần thiết lập các bản ghi DNS DKIM, DMARC và Return-Path).
+  * Truy cập <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Cài đặt <i class="fa fa-angle-right"></i> Cấu hình SMTP gửi đi và làm theo hướng dẫn thiết lập.
+* Trình trả lời tự động khi nghỉ phép không thể được bật trên các tên miền vanity toàn cục (ví dụ: [địa chỉ dùng một lần](/disposable-addresses) không được hỗ trợ).
+* Trình trả lời tự động khi nghỉ phép không thể được bật cho các bí danh có ký tự đại diện/catch-all (`*`) hoặc biểu thức chính quy.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+Không giống như các hệ thống mail như `postfix` (ví dụ: sử dụng phần mở rộng bộ lọc nghỉ phép `sieve`) – Forward Email tự động thêm chữ ký DKIM của bạn, bảo vệ giả mạo các sự cố kết nối khi gửi phản hồi nghỉ phép (ví dụ: do các sự cố kết nối SSL/TLS phổ biến và các máy chủ duy trì cũ), và thậm chí hỗ trợ Open WKD và mã hóa PGP cho các phản hồi nghỉ phép.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* Để ngăn chặn lạm dụng, 1 tín chỉ SMTP gửi đi sẽ bị trừ cho mỗi tin nhắn trả lời nghỉ phép được gửi.
+  * Tất cả các tài khoản trả phí mặc định bao gồm 300 tín chỉ mỗi ngày. Nếu bạn cần số lượng lớn hơn, vui lòng liên hệ với chúng tôi.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. Chúng tôi chỉ gửi một lần cho mỗi người gửi [được phép](#do-you-have-an-allowlist) mỗi 4 ngày (tương tự như hành vi của Gmail).
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Bộ nhớ đệm Redis của chúng tôi sử dụng dấu vân tay của `alias_id` và `sender`, trong đó `alias_id` là ID MongoDB của bí danh và `sender` là địa chỉ From (nếu được phép) hoặc tên miền gốc trong địa chỉ From (nếu không được phép). Để đơn giản, thời gian hết hạn của dấu vân tay này trong bộ nhớ đệm được đặt là 4 ngày.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * Cách tiếp cận của chúng tôi sử dụng tên miền gốc phân tích trong địa chỉ From cho người gửi không được phép giúp ngăn chặn lạm dụng từ các người gửi tương đối không rõ (ví dụ: các tác nhân độc hại) gửi tràn ngập các tin nhắn trả lời nghỉ phép.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. Chúng tôi chỉ gửi khi MAIL FROM và/hoặc From không để trống và không chứa (không phân biệt chữ hoa chữ thường) một [tên người dùng postmaster](#what-are-postmaster-addresses) (phần trước dấu @ trong email).
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. Chúng tôi không gửi nếu tin nhắn gốc có bất kỳ tiêu đề nào sau đây (không phân biệt chữ hoa chữ thường):
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * Tiêu đề `auto-submitted` với giá trị khác `no`.
+   * Tiêu đề `x-auto-response-suppress` với giá trị là `dr`, `autoreply`, `auto-reply`, `auto_reply`, hoặc `all`
+   * Tiêu đề `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, hoặc `x-auto-respond` (bất kể giá trị).
+   * Tiêu đề `precedence` với giá trị là `bulk`, `autoreply`, `auto-reply`, `auto_reply`, hoặc `list`.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. Chúng tôi không gửi nếu địa chỉ MAIL FROM hoặc From kết thúc bằng `+donotreply`, `-donotreply`, `+noreply`, hoặc `-noreply`.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. Chúng tôi không gửi nếu phần tên người dùng của địa chỉ email From là `mdaemon` và có tiêu đề không phân biệt chữ hoa chữ thường là `X-MDDSN-Message`.
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. Chúng tôi không gửi nếu có tiêu đề `content-type` không phân biệt chữ hoa chữ thường là `multipart/report`.
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Làm thế nào để tôi thiết lập SPF cho Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+Sử dụng trang quản lý DNS của nhà đăng ký của bạn, thiết lập bản ghi <strong class="notranslate">TXT</strong> sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Host/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Giá trị/Trả lời</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2034,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Nếu bạn đang sử dụng Gmail (ví dụ: Gửi thư như) hoặc G Suite, bạn sẽ cần thêm <code>include:_spf.google.com</code> vào giá trị trên, ví dụ:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Nếu bạn đang sử dụng Microsoft Outlook hoặc Live.com, bạn cần thêm <code>include:spf.protection.outlook.com</code> vào bản ghi SPF <strong class="notranslate">TXT</strong> của bạn, ví dụ:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1808,450 +2057,501 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Nếu bạn đã có một dòng tương tự với "v=spf1", thì bạn cần thêm <code>include:spf.forwardemail.net</code> ngay trước bất kỳ bản ghi "include:host.com" nào hiện có và trước "-all" trong cùng một dòng, ví dụ:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Lưu ý rằng có sự khác biệt giữa "-all" và "~all". Dấu "-" chỉ ra rằng kiểm tra SPF sẽ THẤT BẠI nếu không khớp, và dấu "~" chỉ ra rằng kiểm tra SPF sẽ SOFTFAIL. Chúng tôi khuyên bạn nên sử dụng cách tiếp cận "-all" để ngăn chặn giả mạo tên miền.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Bạn cũng có thể cần bao gồm bản ghi SPF cho máy chủ mà bạn đang gửi thư (ví dụ: Outlook).
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Làm thế nào để thiết lập DKIM cho Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Đi đến <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Tên Miền</a> <i class="fa fa-angle-right"></i> Cài Đặt <i class="fa fa-angle-right"></i> Cấu Hình SMTP Đi Ra và làm theo hướng dẫn thiết lập.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Làm thế nào để thiết lập DMARC cho Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Đi đến <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Tên Miền</a> <i class="fa fa-angle-right"></i> Cài Đặt <i class="fa fa-angle-right"></i> Cấu Hình SMTP Đi Ra và làm theo hướng dẫn thiết lập.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### Làm thế nào để xem Báo Cáo DMARC {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email cung cấp một bảng điều khiển Báo Cáo DMARC toàn diện cho phép bạn theo dõi hiệu suất xác thực email của mình trên tất cả các tên miền từ một giao diện duy nhất.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**Báo Cáo DMARC là gì?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+Báo cáo DMARC (Xác thực, Báo cáo và Tuân thủ Tin nhắn dựa trên Tên miền) là các tệp XML được gửi bởi các máy chủ nhận thư cho bạn biết cách email của bạn được xác thực như thế nào. Những báo cáo này giúp bạn hiểu:
+
+* Có bao nhiêu email được gửi từ tên miền của bạn
+* Liệu những email đó có vượt qua xác thực SPF và DKIM hay không
+* Các hành động mà máy chủ nhận thực hiện (chấp nhận, cách ly, hoặc từ chối)
+* Địa chỉ IP nào đang gửi email thay mặt cho tên miền của bạn
+
+**Cách Truy Cập Báo Cáo DMARC**
+
+Đi đến <a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Báo Cáo DMARC</a> để xem bảng điều khiển của bạn. Bạn cũng có thể truy cập báo cáo theo tên miền từ <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Tên Miền</a> bằng cách nhấn nút "DMARC" bên cạnh bất kỳ tên miền nào.
+
+**Tính Năng Bảng Điều Khiển**
+
+Bảng điều khiển Báo Cáo DMARC cung cấp:
+
+* **Chỉ Số Tóm Tắt**: Tổng số báo cáo nhận được, tổng số tin nhắn đã phân tích, tỷ lệ căn chỉnh SPF, tỷ lệ căn chỉnh DKIM, và tỷ lệ vượt tổng thể
+* **Biểu Đồ Tin Nhắn Theo Thời Gian**: Xu hướng trực quan về khối lượng email và tỷ lệ xác thực trong 30 ngày qua
+* **Tóm Tắt Căn Chỉnh**: Biểu đồ donut hiển thị phân bố căn chỉnh SPF và DKIM
+* **Phân Loại Tin Nhắn**: Biểu đồ thanh xếp chồng cho thấy cách máy chủ nhận xử lý email của bạn (chấp nhận, cách ly, hoặc từ chối)
+* **Bảng Báo Cáo Gần Đây**: Danh sách chi tiết các báo cáo DMARC cá nhân với bộ lọc và phân trang
+* **Lọc Theo Tên Miền**: Lọc báo cáo theo tên miền cụ thể khi quản lý nhiều tên miền
+**Tại Sao Điều Này Quan Trọng**
+
+Đối với các tổ chức quản lý nhiều tên miền (như doanh nghiệp, tổ chức phi lợi nhuận hoặc đại lý), báo cáo DMARC rất cần thiết để:
+
+* **Xác định người gửi không được phép**: Phát hiện nếu ai đó giả mạo tên miền của bạn
+* **Cải thiện khả năng gửi thư**: Đảm bảo email hợp pháp của bạn vượt qua xác thực
+* **Giám sát hạ tầng email**: Theo dõi các dịch vụ và IP đang gửi thay mặt bạn
+* **Tuân thủ**: Duy trì khả năng nhìn thấy xác thực email cho các cuộc kiểm tra bảo mật
+
+Không giống như các dịch vụ khác yêu cầu công cụ giám sát DMARC riêng biệt, Forward Email bao gồm xử lý và trực quan hóa báo cáo DMARC như một phần của tài khoản của bạn mà không mất thêm phí.
+
+**Yêu Cầu**
+
+* Báo cáo DMARC chỉ có sẵn cho các gói trả phí
+* Tên miền của bạn phải được cấu hình DMARC (xem [Làm thế nào để thiết lập DMARC cho Forward Email](#how-do-i-set-up-dmarc-for-forward-email))
+* Báo cáo được tự động thu thập khi các máy chủ nhận thư gửi chúng đến địa chỉ báo cáo DMARC bạn đã cấu hình
+
+**Báo Cáo Email Hàng Tuần**
+
+Người dùng gói trả phí tự động nhận được tóm tắt báo cáo DMARC hàng tuần qua email. Các email này bao gồm:
+
+* Thống kê tóm tắt cho tất cả các tên miền của bạn
+* Tỷ lệ căn chỉnh SPF và DKIM
+* Phân tích tình trạng tin nhắn (chấp nhận, cách ly, từ chối)
+* Các tổ chức báo cáo hàng đầu (Google, Microsoft, Yahoo, v.v.)
+* Địa chỉ IP có vấn đề căn chỉnh có thể cần chú ý
+* Liên kết trực tiếp đến bảng điều khiển Báo cáo DMARC của bạn
+
+Báo cáo hàng tuần được gửi tự động và không thể tắt riêng biệt so với các thông báo email khác.
+
+### Làm thế nào để kết nối và cấu hình danh bạ của tôi {#how-do-i-connect-and-configure-my-contacts}
+
+**Để cấu hình danh bạ, sử dụng URL CardDAV:** `https://carddav.forwardemail.net` (hoặc đơn giản là `carddav.forwardemail.net` nếu ứng dụng của bạn cho phép)
+
+### Làm thế nào để kết nối và cấu hình lịch của tôi {#how-do-i-connect-and-configure-my-calendars}
+
+**Để cấu hình lịch, sử dụng URL CalDAV:** `https://caldav.forwardemail.net` (hoặc đơn giản là `caldav.forwardemail.net` nếu ứng dụng của bạn cho phép)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### Làm thế nào để thêm nhiều lịch hơn và quản lý các lịch hiện có {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+Nếu bạn muốn thêm lịch bổ sung, chỉ cần thêm URL lịch mới: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**hãy chắc chắn thay thế `calendar-name` bằng tên lịch bạn muốn**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+Bạn có thể thay đổi tên và màu của lịch sau khi tạo – chỉ cần sử dụng ứng dụng lịch bạn thích (ví dụ Apple Mail hoặc [Thunderbird](https://thunderbird.net)).
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### Làm thế nào để kết nối và cấu hình tác vụ và nhắc nhở {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**Để cấu hình tác vụ và nhắc nhở, sử dụng cùng URL CalDAV với lịch:** `https://caldav.forwardemail.net` (hoặc đơn giản là `caldav.forwardemail.net` nếu ứng dụng của bạn cho phép)
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+Tác vụ và nhắc nhở sẽ tự động được tách riêng khỏi sự kiện lịch thành bộ sưu tập lịch "Reminders" hoặc "Tasks".
 
-**Setup instructions by platform:**
+**Hướng dẫn thiết lập theo nền tảng:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. Thêm tài khoản CalDAV mới trong System Preferences > Internet Accounts (hoặc Settings > Accounts trên iOS)
+2. Sử dụng `caldav.forwardemail.net` làm máy chủ
+3. Nhập bí danh Forward Email và mật khẩu đã tạo
+4. Sau khi thiết lập, bạn sẽ thấy cả bộ sưu tập "Calendar" và "Reminders"
+5. Sử dụng ứng dụng Reminders để tạo và quản lý tác vụ
 
-**Android with Tasks.org:**
+**Android với Tasks.org:**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Cài đặt Tasks.org từ Google Play Store hoặc F-Droid
+2. Vào Settings > Synchronization > Add Account > CalDAV
+3. Nhập máy chủ: `https://caldav.forwardemail.net`
+4. Nhập bí danh Forward Email và mật khẩu đã tạo
+5. Tasks.org sẽ tự động phát hiện các lịch tác vụ của bạn
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Cài đặt add-on Lightning nếu chưa có
+2. Tạo lịch mới với loại "CalDAV"
+3. Sử dụng URL: `https://caldav.forwardemail.net`
+4. Nhập thông tin đăng nhập Forward Email của bạn
+5. Cả sự kiện và tác vụ sẽ có sẵn trong giao diện lịch
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### Tại sao tôi không thể tạo tác vụ trong macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+Nếu bạn gặp khó khăn khi tạo tác vụ trong macOS Reminders, hãy thử các bước khắc phục sự cố sau:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **Kiểm tra cài đặt tài khoản**: Đảm bảo tài khoản CalDAV của bạn được cấu hình đúng với `caldav.forwardemail.net`
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **Xác minh lịch riêng biệt**: Bạn nên thấy cả "Calendar" và "Reminders" trong tài khoản của mình. Nếu bạn chỉ thấy "Calendar", có thể tính năng hỗ trợ tác vụ chưa được kích hoạt đầy đủ.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **Làm mới tài khoản**: Thử xóa và thêm lại tài khoản CalDAV trong System Preferences > Internet Accounts
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **Kiểm tra kết nối máy chủ**: Kiểm tra xem bạn có thể truy cập `https://caldav.forwardemail.net` trong trình duyệt không
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **Xác minh thông tin đăng nhập**: Đảm bảo bạn đang sử dụng email bí danh đúng và mật khẩu được tạo (không phải mật khẩu tài khoản của bạn)
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **Ép đồng bộ**: Trong ứng dụng Reminders, thử tạo một tác vụ rồi thủ công làm mới đồng bộ
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**Các vấn đề thường gặp:**
 
-**Common issues:**
+* **"Reminders calendar not found"**: Máy chủ có thể cần một chút thời gian để tạo bộ sưu tập Reminders khi truy cập lần đầu
+* **Tác vụ không đồng bộ**: Kiểm tra cả hai thiết bị đều sử dụng cùng thông tin đăng nhập tài khoản CalDAV
+* **Nội dung hỗn hợp**: Đảm bảo các tác vụ được tạo trong lịch "Reminders", không phải "Calendar" chung
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### Làm thế nào để thiết lập Tasks.org trên Android {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.org là một ứng dụng quản lý tác vụ mã nguồn mở phổ biến, hoạt động rất tốt với hỗ trợ tác vụ CalDAV của Forward Email.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**Cài đặt và Thiết lập:**
 
-**Installation and Setup:**
+1. **Cài đặt Tasks.org**:
+   * Từ Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * Từ F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **Cấu hình đồng bộ CalDAV**:
+   * Mở Tasks.org
+   * Vào ☰ Menu > Settings > Synchronization
+   * Nhấn "Add Account"
+   * Chọn "CalDAV"
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
-
-3. **Enter Forward Email settings**:
+3. **Nhập cài đặt Forward Email**:
    * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+   * **Username**: Bí danh Forward Email của bạn (ví dụ: `you@yourdomain.com`)
+   * **Password**: Mật khẩu được tạo riêng cho bí danh của bạn
+   * Nhấn "Add Account"
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+4. **Phát hiện tài khoản**:
+   * Tasks.org sẽ tự động phát hiện các lịch tác vụ của bạn
+   * Bạn sẽ thấy bộ sưu tập "Reminders" xuất hiện
+   * Nhấn "Subscribe" để bật đồng bộ cho lịch tác vụ
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+5. **Kiểm tra đồng bộ**:
+   * Tạo một tác vụ thử trong Tasks.org
+   * Kiểm tra xem nó có xuất hiện trong các ứng dụng CalDAV khác (như macOS Reminders) không
+   * Xác nhận các thay đổi đồng bộ hai chiều
 
-**Features available:**
+**Các tính năng có sẵn:**
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+* ✅ Tạo và chỉnh sửa tác vụ
+* ✅ Ngày đến hạn và nhắc nhở
+* ✅ Hoàn thành và trạng thái tác vụ
+* ✅ Mức độ ưu tiên
+* ✅ Tác vụ con và cấu trúc phân cấp tác vụ
+* ✅ Thẻ và danh mục
+* ✅ Đồng bộ hai chiều với các ứng dụng CalDAV khác
 
-**Troubleshooting:**
+**Khắc phục sự cố:**
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+* Nếu không thấy lịch tác vụ nào, thử làm mới thủ công trong cài đặt Tasks.org
+* Đảm bảo bạn đã tạo ít nhất một tác vụ trên máy chủ (bạn có thể tạo trước trong macOS Reminders)
+* Kiểm tra kết nối mạng tới `caldav.forwardemail.net`
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+### Làm thế nào để thiết lập SRS cho Forward Email {#how-do-i-set-up-srs-for-forward-email}
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+Chúng tôi tự động cấu hình [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – bạn không cần phải làm điều này.
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+### Làm thế nào để thiết lập MTA-STS cho Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+Vui lòng tham khảo [phần của chúng tôi về MTA-STS](#do-you-support-mta-sts) để biết thêm thông tin.
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+### Làm thế nào để thêm ảnh hồ sơ vào địa chỉ email của tôi {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-If you're using Gmail, then follow these steps below:
+Nếu bạn đang sử dụng Gmail, hãy làm theo các bước dưới đây:
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+1. Truy cập <https://google.com> và đăng xuất khỏi tất cả các tài khoản email
+2. Nhấn "Sign In" và trong menu thả xuống chọn "other account"
+3. Chọn "Use another account"
+4. Chọn "Create account"
+5. Chọn "Use my current email address instead"
+6. Nhập địa chỉ email tên miền tùy chỉnh của bạn
+7. Lấy email xác minh được gửi đến địa chỉ email của bạn
+8. Nhập mã xác minh từ email này
+9. Hoàn thành thông tin hồ sơ cho tài khoản Google mới của bạn
+10. Đồng ý với tất cả các chính sách Quyền riêng tư và Điều khoản sử dụng
+11. Truy cập <https://google.com> và ở góc trên bên phải, nhấn vào biểu tượng hồ sơ của bạn, rồi nhấn nút "change"
+12. Tải lên ảnh hoặc avatar mới cho tài khoản của bạn
+13. Thay đổi sẽ mất khoảng 1-2 giờ để cập nhật, nhưng đôi khi có thể rất nhanh.
+14. Gửi email thử và ảnh hồ sơ sẽ hiển thị.
+## Tính Năng Nâng Cao {#advanced-features}
 
-## Advanced Features {#advanced-features}
+### Bạn có hỗ trợ bản tin hoặc danh sách gửi thư cho email liên quan đến marketing không {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+Vâng, bạn có thể đọc thêm tại <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+Xin lưu ý rằng để duy trì uy tín IP và đảm bảo khả năng gửi thành công, Forward Email có quy trình xem xét thủ công theo từng tên miền cho **phê duyệt bản tin**. Gửi email tới <support@forwardemail.net> hoặc mở một [yêu cầu trợ giúp](https://forwardemail.net/help) để được phê duyệt. Thông thường quá trình này mất chưa đến 24 giờ, với hầu hết các yêu cầu được chấp thuận trong vòng 1-2 giờ. Trong tương lai gần, chúng tôi dự định làm cho quy trình này trở nên tức thì với các kiểm soát spam bổ sung và cảnh báo. Quy trình này đảm bảo email của bạn đến được hộp thư đến và tin nhắn của bạn không bị đánh dấu là spam.
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+### Bạn có hỗ trợ gửi email bằng API không {#do-you-support-sending-email-with-api}
 
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+Vâng, kể từ tháng 5 năm 2023, chúng tôi hỗ trợ gửi email bằng API như một tiện ích bổ sung cho tất cả người dùng trả phí.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Vui lòng đảm bảo bạn đã đọc <a href="/terms" class="alert-link" target="_blank">Điều khoản</a>, <a href="/privacy" class="alert-link" target="_blank">Chính sách bảo mật</a>, và <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Giới hạn SMTP gửi đi</a> &ndash; việc bạn sử dụng được coi là sự thừa nhận và đồng ý.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+Vui lòng xem phần [Emails](/email-api#outbound-emails) trong tài liệu API của chúng tôi để biết các tùy chọn, ví dụ và thông tin chi tiết hơn.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+Để gửi email gửi đi bằng API của chúng tôi, bạn phải sử dụng token API có sẵn trong [My Security](/my-account/security).
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### Bạn có hỗ trợ nhận email bằng IMAP không {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Vâng, kể từ ngày 16 tháng 10 năm 2023, chúng tôi hỗ trợ nhận email qua IMAP như một tiện ích bổ sung cho tất cả người dùng trả phí.  **Vui lòng đọc bài viết chuyên sâu của chúng tôi** về [cách tính năng lưu trữ hộp thư SQLite được mã hóa hoạt động](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Vui lòng đảm bảo bạn đã đọc <a href="/terms" class="alert-link" target="_blank">Điều khoản</a> và <a href="/privacy" class="alert-link" target="_blank">Chính sách bảo mật</a> &ndash; việc bạn sử dụng được coi là sự thừa nhận và đồng ý.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Tạo Mật khẩu</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được hiển thị trên màn hình.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Sử dụng ứng dụng email ưa thích của bạn, thêm hoặc cấu hình tài khoản với bí danh mới tạo (ví dụ <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Chúng tôi khuyên bạn nên sử dụng <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, hoặc <a href="/blog/open-source" class="alert-link" target="_blank">một lựa chọn thay thế mã nguồn mở và tập trung vào quyền riêng tư</a>.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. Khi được yêu cầu tên máy chủ IMAP, nhập `imap.forwardemail.net`
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. Khi được yêu cầu cổng máy chủ IMAP, nhập `993` (SSL/TLS) – xem [cổng IMAP thay thế](/faq#what-are-your-imap-server-configuration-settings) nếu cần thiết
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Nếu bạn sử dụng Thunderbird, hãy đảm bảo "Bảo mật kết nối" được đặt thành "SSL/TLS" và phương thức xác thực được đặt thành "Mật khẩu bình thường".</span>
    </div>
+6. Khi được yêu cầu nhập mật khẩu máy chủ IMAP, hãy dán mật khẩu từ <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ở bước 2 phía trên
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Lưu cài đặt của bạn** – nếu bạn gặp sự cố, vui lòng <a href="/help">liên hệ với chúng tôi</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Chúc mừng!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Bạn đã hoàn thành tất cả các bước thành công.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### Bạn có hỗ trợ POP3 {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Có, kể từ ngày 4 tháng 12 năm 2023, chúng tôi hỗ trợ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) như một tiện ích bổ sung cho tất cả người dùng trả phí.  **Vui lòng đọc bài viết chuyên sâu của chúng tôi** về [cách tính năng lưu trữ hộp thư SQLite được mã hóa hoạt động](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Vui lòng đảm bảo bạn đã đọc <a href="/terms" class="alert-link" target="_blank">Điều khoản</a> và <a href="/privacy" class="alert-link" target="_blank">Chính sách bảo mật</a> của chúng tôi &ndash; việc bạn sử dụng được coi là sự thừa nhận và đồng ý.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được tạo hiển thị trên màn hình.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Sử dụng ứng dụng email ưa thích của bạn, thêm hoặc cấu hình tài khoản với bí danh mới tạo (ví dụ <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Chúng tôi khuyên bạn nên sử dụng <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, hoặc <a href="/blog/open-source" class="alert-link" target="_blank">một lựa chọn mã nguồn mở và tập trung vào quyền riêng tư</a>.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. Khi được yêu cầu nhập tên máy chủ POP3, hãy nhập `pop3.forwardemail.net`
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. Khi được yêu cầu nhập cổng máy chủ POP3, hãy nhập `995` (SSL/TLS) – xem [cổng POP3 thay thế](/faq#what-are-your-pop3-server-configuration-settings) nếu cần thiết
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Nếu bạn sử dụng Thunderbird, hãy đảm bảo "Bảo mật kết nối" được đặt thành "SSL/TLS" và Phương thức xác thực được đặt thành "Mật khẩu bình thường".</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. Khi được yêu cầu nhập mật khẩu máy chủ POP3, hãy dán mật khẩu từ <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ở bước 2 phía trên
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Lưu cài đặt của bạn** – nếu bạn gặp sự cố, vui lòng <a href="/help">liên hệ với chúng tôi</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Chúc mừng!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Bạn đã hoàn thành tất cả các bước thành công.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### Bạn có hỗ trợ lịch (CalDAV) {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Có, kể từ ngày 5 tháng 2 năm 2024, chúng tôi đã thêm tính năng này. Máy chủ của chúng tôi là `caldav.forwardemail.net` và cũng được giám sát trên <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">trang trạng thái</a> của chúng tôi.
+Nó hỗ trợ cả IPv4 và IPv6 và có sẵn qua cổng `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+| Đăng nhập | Ví dụ                      | Mô tả                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tên đăng nhập | `user@example.com`         | Địa chỉ email của một bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a>. |
+| Mật khẩu  | `************************` | Mật khẩu được tạo riêng cho bí danh.                                                                                                                                                     |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Để sử dụng hỗ trợ lịch, **người dùng** phải là địa chỉ email của một bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> – và **mật khẩu** phải là mật khẩu được tạo riêng cho bí danh.
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+### Bạn có hỗ trợ tác vụ và nhắc nhở (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+Có, kể từ ngày 14 tháng 10 năm 2025, chúng tôi đã thêm hỗ trợ CalDAV VTODO cho tác vụ và nhắc nhở. Điều này sử dụng cùng máy chủ với hỗ trợ lịch của chúng tôi: `caldav.forwardemail.net`.
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+Máy chủ CalDAV của chúng tôi hỗ trợ cả sự kiện lịch (VEVENT) và thành phần tác vụ (VTODO) sử dụng **lịch hợp nhất**. Điều này có nghĩa là mỗi lịch có thể chứa cả sự kiện và tác vụ, cung cấp sự linh hoạt tối đa và tương thích trên tất cả các khách hàng CalDAV.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+**Cách hoạt động của lịch và danh sách:**
 
-**How calendars and lists work:**
+* **Mỗi lịch hỗ trợ cả sự kiện và tác vụ** - Bạn có thể thêm sự kiện, tác vụ hoặc cả hai vào bất kỳ lịch nào
+* **Danh sách Apple Reminders** - Mỗi danh sách bạn tạo trong Apple Reminders trở thành một lịch riêng biệt trên máy chủ
+* **Nhiều lịch** - Bạn có thể tạo bao nhiêu lịch tùy ý, mỗi lịch có tên, màu sắc và tổ chức riêng
+* **Đồng bộ chéo khách hàng** - Tác vụ và sự kiện đồng bộ liền mạch giữa tất cả các khách hàng tương thích
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+**Các khách hàng tác vụ được hỗ trợ:**
 
-**Supported task clients:**
+* **macOS Reminders** - Hỗ trợ đầy đủ gốc cho tạo, chỉnh sửa, hoàn thành và đồng bộ tác vụ
+* **iOS Reminders** - Hỗ trợ đầy đủ gốc trên tất cả các thiết bị iOS
+* **Tasks.org (Android)** - Trình quản lý tác vụ mã nguồn mở phổ biến với đồng bộ CalDAV
+* **Thunderbird** - Hỗ trợ tác vụ và lịch trong khách hàng email trên máy tính để bàn
+* **Bất kỳ trình quản lý tác vụ tương thích CalDAV nào** - Hỗ trợ thành phần VTODO tiêu chuẩn
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+**Các tính năng tác vụ được hỗ trợ:**
 
-**Task features supported:**
+* Tạo, chỉnh sửa và xóa tác vụ
+* Ngày đến hạn và ngày bắt đầu
+* Trạng thái hoàn thành tác vụ (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Mức độ ưu tiên tác vụ
+* Tác vụ định kỳ
+* Mô tả và ghi chú tác vụ
+* Đồng bộ đa thiết bị
+* Tác vụ con với thuộc tính RELATED-TO
+* Nhắc nhở tác vụ với VALARM
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+Thông tin đăng nhập giống như đối với hỗ trợ lịch:
 
-The login credentials are the same as for calendar support:
+| Đăng nhập | Ví dụ                      | Mô tả                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tên đăng nhập | `user@example.com`         | Địa chỉ email của một bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a>. |
+| Mật khẩu  | `************************` | Mật khẩu được tạo riêng cho bí danh.                                                                                                                                                     |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+**Lưu ý quan trọng:**
 
-**Important notes:**
+* **Mỗi danh sách Reminders là một lịch riêng biệt** - Khi bạn tạo danh sách mới trong Apple Reminders, nó sẽ tạo một lịch mới trên máy chủ CalDAV
+* **Người dùng Thunderbird** - Bạn cần đăng ký thủ công từng lịch/danh sách bạn muốn đồng bộ, hoặc sử dụng URL trang chủ lịch: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Người dùng Apple** - Việc phát hiện lịch diễn ra tự động, vì vậy tất cả lịch và danh sách của bạn sẽ xuất hiện trong Calendar.app và Reminders.app
+* **Lịch hợp nhất** - Tất cả các lịch đều hỗ trợ cả sự kiện và tác vụ, mang lại sự linh hoạt trong cách bạn tổ chức dữ liệu của mình
+### Bạn có hỗ trợ danh bạ (CardDAV) {#do-you-support-contacts-carddav}
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+Vâng, kể từ ngày 12 tháng 6 năm 2025 chúng tôi đã thêm tính năng này. Máy chủ của chúng tôi là `carddav.forwardemail.net` và cũng được giám sát trên <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">trang trạng thái</a>.
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+Nó hỗ trợ cả IPv4 và IPv6 và có thể truy cập qua cổng `443` (HTTPS).
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+| Đăng nhập | Ví dụ                      | Mô tả                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tên đăng nhập | `user@example.com`         | Địa chỉ email của bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a>.         |
+| Mật khẩu  | `************************` | Mật khẩu được tạo riêng cho bí danh.                                                                                                                                                      |
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+Để sử dụng hỗ trợ danh bạ, **người dùng** phải là địa chỉ email của một bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> – và **mật khẩu** phải là mật khẩu được tạo riêng cho bí danh đó.
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+### Bạn có hỗ trợ gửi email bằng SMTP không {#do-you-support-sending-email-with-smtp}
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
-
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
-
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+Vâng, kể từ tháng 5 năm 2023 chúng tôi hỗ trợ gửi email bằng SMTP như một tiện ích bổ sung cho tất cả người dùng trả phí.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Vui lòng đảm bảo bạn đã đọc <a href="/terms" class="alert-link" target="_blank">Điều khoản</a>, <a href="/privacy" class="alert-link" target="_blank">Chính sách bảo mật</a>, và <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Giới hạn SMTP gửi đi</a> &ndash; việc bạn sử dụng được coi là sự thừa nhận và đồng ý.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Nếu bạn đang sử dụng Gmail, hãy tham khảo <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Hướng dẫn Gửi thư như với Gmail</a> của chúng tôi. Nếu bạn là nhà phát triển, hãy tham khảo <a class="alert-link" href="/email-api#outbound-emails" target="_blank">tài liệu API email</a> của chúng tôi.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Truy cập <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> <i class="fa fa-angle-right"></i> Cài đặt <i class="fa fa-angle-right"></i> Cấu hình SMTP gửi đi và làm theo hướng dẫn thiết lập
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Tạo một bí danh mới cho miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được tạo hiển thị trên màn hình.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. Sử dụng ứng dụng email ưa thích của bạn, thêm hoặc cấu hình tài khoản với bí danh mới tạo (ví dụ <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Chúng tôi khuyên bạn nên sử dụng <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, hoặc <a href="/blog/open-source" class="alert-link" target="_blank">một lựa chọn thay thế mã nguồn mở và tập trung vào quyền riêng tư</a>.</span>
    </div>
+5. Khi được yêu cầu nhập tên máy chủ SMTP, hãy nhập `smtp.forwardemail.net`
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. Khi được yêu cầu nhập cổng máy chủ SMTP, hãy nhập `465` (SSL/TLS) – xem [cổng SMTP thay thế](/faq#what-are-your-smtp-server-configuration-settings) nếu cần thiết
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Nếu bạn đang sử dụng Thunderbird, hãy đảm bảo "Bảo mật kết nối" được đặt thành "SSL/TLS" và phương thức Xác thực được đặt thành "Mật khẩu bình thường".</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. Khi được yêu cầu nhập mật khẩu máy chủ SMTP, hãy dán mật khẩu từ <strong class="text-success"><i class="fa fa-key"></i> Tạo Mật Khẩu</strong> trong bước 3 ở trên
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **Lưu cài đặt của bạn và gửi email thử nghiệm đầu tiên** – nếu bạn gặp sự cố, vui lòng <a href="/help">liên hệ với chúng tôi</a>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    Xin lưu ý rằng để duy trì uy tín IP và đảm bảo khả năng gửi thư, chúng tôi có quy trình xem xét thủ công trên cơ sở từng tên miền để phê duyệt SMTP gửi đi. Thông thường quy trình này mất chưa đến 24 giờ, với hầu hết các yêu cầu được xử lý trong vòng 1-2 giờ. Trong tương lai gần, chúng tôi dự định làm cho quy trình này trở nên tức thì với các kiểm soát spam bổ sung và cảnh báo. Quy trình này đảm bảo email của bạn đến được hộp thư đến và tin nhắn của bạn không bị đánh dấu là spam.
   </span>
 </div>
 
@@ -2259,98 +2559,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Chúc mừng!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Bạn đã hoàn thành tất cả các bước thành công.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### Bạn có hỗ trợ OpenPGP/MIME, mã hóa đầu cuối ("E2EE"), và Thư mục Khóa Web ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Vâng, chúng tôi hỗ trợ [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [mã hóa đầu cuối ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), và việc tìm kiếm khóa công khai sử dụng [Thư mục Khóa Web ("WKD")](https://wiki.gnupg.org/WKD). Bạn có thể cấu hình OpenPGP bằng cách sử dụng [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) hoặc [tự lưu trữ khóa của riêng bạn](https://wiki.gnupg.org/WKDHosting) (tham khảo [gist này để thiết lập máy chủ WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* Tra cứu WKD được lưu trong bộ nhớ đệm trong 1 giờ để đảm bảo việc gửi email kịp thời → do đó nếu bạn thêm, thay đổi hoặc xóa khóa WKD của mình, vui lòng gửi email cho chúng tôi tại `support@forwardemail.net` kèm theo địa chỉ email của bạn để chúng tôi có thể xóa bộ nhớ đệm thủ công.
+* Chúng tôi hỗ trợ mã hóa PGP cho các tin nhắn được chuyển tiếp qua tra cứu WKD hoặc sử dụng khóa PGP đã tải lên trên giao diện của chúng tôi.
+* Khóa đã tải lên sẽ được ưu tiên miễn là hộp kiểm PGP được bật/đánh dấu.
+* Tin nhắn gửi đến webhook hiện tại không được mã hóa bằng PGP.
+* Nếu bạn có nhiều bí danh phù hợp với một địa chỉ chuyển tiếp nhất định (ví dụ: kết hợp regex/wildcard/chính xác) và nếu hơn một trong số đó chứa khóa PGP đã tải lên và có PGP được đánh dấu → thì chúng tôi sẽ gửi cho bạn email cảnh báo lỗi và sẽ không mã hóa tin nhắn bằng khóa PGP đã tải lên của bạn. Điều này rất hiếm và thường chỉ áp dụng cho người dùng nâng cao với các quy tắc bí danh phức tạp.
+* **Mã hóa PGP sẽ không được áp dụng cho việc chuyển tiếp email qua máy chủ MX của chúng tôi nếu người gửi có chính sách DMARC là từ chối. Nếu bạn cần mã hóa PGP cho *tất cả* thư thì chúng tôi đề xuất sử dụng dịch vụ IMAP của chúng tôi và cấu hình khóa PGP cho bí danh của bạn cho thư đến.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**Bạn có thể xác thực thiết lập Thư mục Khóa Web của mình tại <https://wkd.chimbosonic.com/> (mã nguồn mở) hoặc <https://www.webkeydirectory.com/> (bản quyền).**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    Mã hóa Tự động:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>Nếu bạn đang sử dụng <a href="#do-you-support-sending-email-with-smtp" class="alert-link">dịch vụ SMTP gửi đi</a> của chúng tôi và gửi các tin nhắn chưa được mã hóa, thì chúng tôi sẽ tự động cố gắng mã hóa tin nhắn trên cơ sở từng người nhận bằng cách sử dụng <a class="alert-link" href="https://wiki.gnupg.org/WKD">Thư mục Khóa Web ("WKD")</a>.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    Bạn phải làm theo tất cả các bước sau để kích hoạt OpenPGP cho tên miền tùy chỉnh của bạn.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. Tải xuống và cài đặt plugin được đề xuất cho ứng dụng email của bạn dưới đây:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | Ứng dụng Email | Nền tảng | Plugin Được Đề Xuất                                                                                                                                                                    | Ghi chú                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird     | Máy tính để bàn  | [Cấu hình OpenPGP trong Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird có hỗ trợ OpenPGP tích hợp sẵn.                                                                                                                                                                                                                                                                                                                                                                                            |
+   | Gmail           | Trình duyệt  | [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download) (giấy phép độc quyền)                                                                            | Gmail không hỗ trợ OpenPGP, tuy nhiên bạn có thể tải plugin mã nguồn mở [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                    |
+   | Apple Mail      | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                          | Apple Mail không hỗ trợ OpenPGP, tuy nhiên bạn có thể tải plugin mã nguồn mở [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation).                                                                                                                                                                                                                                                       |
+   | Apple Mail      | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) hoặc [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (giấy phép độc quyền)                           | Apple Mail không hỗ trợ OpenPGP, tuy nhiên bạn có thể tải plugin mã nguồn mở [PGPro](https://github.com/opensourceios/PGPro/) hoặc [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                    |
+   | Outlook         | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                          | Ứng dụng email máy tính để bàn Outlook không hỗ trợ OpenPGP, tuy nhiên bạn có thể tải plugin mã nguồn mở [gpg4win](https://www.gpg4win.de/index.html).                                                                                                                                                                                                                                                                                    |
+   | Outlook         | Trình duyệt  | [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download) (giấy phép độc quyền)                                                                            | Ứng dụng email web Outlook không hỗ trợ OpenPGP, tuy nhiên bạn có thể tải plugin mã nguồn mở [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                          |
+   | Android         | Di động   | [OpenKeychain](https://www.openkeychain.org/) hoặc [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                       | [Các ứng dụng email Android](/blog/open-source/android-email-clients) như [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) và [FairEmail](https://github.com/M66B/FairEmail) đều hỗ trợ plugin mã nguồn mở [OpenKeychain](https://www.openkeychain.org/). Bạn cũng có thể sử dụng plugin mã nguồn mở (giấy phép độc quyền) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+   | Google Chrome   | Trình duyệt  | [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download) (giấy phép độc quyền)                                                                            | Bạn có thể tải tiện ích mở rộng trình duyệt mã nguồn mở [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                 |
+   | Mozilla Firefox | Trình duyệt  | [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download) (giấy phép độc quyền)                                                                            | Bạn có thể tải tiện ích mở rộng trình duyệt mã nguồn mở [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                 |
+   | Microsoft Edge  | Trình duyệt  | [Mailvelope](https://mailvelope.com/)                                                                                                                                                 | Bạn có thể tải tiện ích mở rộng trình duyệt mã nguồn mở [Mailvelope](https://mailvelope.com/).                                                                                                                                                                                                                                                                                                                                                |
+   | Brave           | Trình duyệt  | [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download) (giấy phép độc quyền)                                                                            | Bạn có thể tải tiện ích mở rộng trình duyệt mã nguồn mở [Mailvelope](https://mailvelope.com/) hoặc [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                 |
+   | Balsa           | Máy tính để bàn  | [Cấu hình OpenPGP trong Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                            | Balsa có hỗ trợ OpenPGP tích hợp sẵn.                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | KMail           | Máy tính để bàn  | [Cấu hình OpenPGP trong KMail](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                                 | KMail có hỗ trợ OpenPGP tích hợp sẵn.                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | GNOME Evolution | Máy tính để bàn  | [Cấu hình OpenPGP trong Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                               | GNOME Evolution có hỗ trợ OpenPGP tích hợp sẵn.                                                                                                                                                                                                                                                                                                                                                                                        |
+   | Terminal        | Máy tính để bàn  | [Cấu hình gpg trong Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                           | Bạn có thể sử dụng công cụ dòng lệnh mã nguồn mở [gpg](https://www.gnupg.org/download/) để tạo khóa mới từ dòng lệnh.                                                                                                                                                                                                                                                                                                            |
+2. Mở plugin, tạo khóa công khai của bạn và cấu hình trình khách email để sử dụng nó.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. Tải lên khóa công khai của bạn tại <https://keys.openpgp.org/upload>.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>Bạn có thể truy cập <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> để quản lý khóa của bạn trong tương lai.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       Tùy chọn bổ sung:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       Nếu bạn đang sử dụng dịch vụ <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">lưu trữ mã hóa (IMAP/POP3)</a> của chúng tôi và muốn <i>tất cả</i> email được lưu trong cơ sở dữ liệu SQLite (đã được mã hóa) của bạn được mã hóa bằng khóa công khai của bạn, thì hãy vào <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Chỉnh sửa <i class="fa fa-angle-right"></i> OpenPGP và tải lên khóa công khai của bạn.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. Thêm một bản ghi `CNAME` mới vào tên miền của bạn (ví dụ `example.com`):
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>Tên/Máy chủ/Bí danh</th>
          <th class="text-center">TTL</th>
-         <th>Type</th>
-         <th>Answer/Value</th>
+         <th>Loại</th>
+         <th>Trả lời/Giá trị</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,90 +2661,272 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Mẹo:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>Nếu bí danh của bạn đang sử dụng <a class="alert-link" href="/disposable-addresses" target="_blank">tên miền vanity/dùng một lần</a> của chúng tôi (ví dụ <code>hideaddress.net</code>), thì bạn có thể bỏ qua bước này.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Chúc mừng!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Bạn đã hoàn thành tất cả các bước thành công.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### Bạn có hỗ trợ mã hóa S/MIME {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+Có, chúng tôi hỗ trợ mã hóa [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) như được định nghĩa trong [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551). S/MIME cung cấp mã hóa đầu cuối sử dụng chứng chỉ X.509, được hỗ trợ rộng rãi bởi các trình khách email doanh nghiệp.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Chúng tôi hỗ trợ cả chứng chỉ RSA và ECC (Mã hóa đường cong elliptic):
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **Chứng chỉ RSA**: tối thiểu 2048-bit, khuyến nghị 4096-bit
+* **Chứng chỉ ECC**: các đường cong NIST P-256, P-384 và P-521
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+Để cấu hình mã hóa S/MIME cho bí danh của bạn:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. Lấy chứng chỉ S/MIME từ một Cơ quan cấp chứng chỉ (CA) đáng tin cậy hoặc tạo chứng chỉ tự ký để thử nghiệm.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Mẹo:
+     </strong>
+     <span>Các chứng chỉ S/MIME miễn phí có sẵn từ các nhà cung cấp như <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> hoặc <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. Xuất chứng chỉ của bạn ở định dạng PEM (chỉ chứng chỉ công khai, không phải khóa riêng).
 
-Learn more about passkeys at the following links:
+3. Truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Chỉnh sửa <i class="fa fa-angle-right"></i> S/MIME và tải lên chứng chỉ công khai của bạn.
+4. Khi đã cấu hình, tất cả email đến alias của bạn sẽ được mã hóa bằng chứng chỉ S/MIME trước khi được lưu trữ hoặc chuyển tiếp.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Lưu ý:
+     </strong>
+     <span>
+       Mã hóa S/MIME được áp dụng cho các tin nhắn đến chưa được mã hóa. Nếu một tin nhắn đã được mã hóa bằng OpenPGP hoặc S/MIME, nó sẽ không bị mã hóa lại.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Quan trọng:
+     </strong>
+     <span>
+       Mã hóa S/MIME sẽ không được áp dụng cho việc chuyển tiếp email qua các máy chủ MX của chúng tôi nếu người gửi có chính sách DMARC là từ chối. Nếu bạn cần mã hóa S/MIME cho <em>tất cả</em> thư, chúng tôi đề xuất sử dụng dịch vụ IMAP của chúng tôi và cấu hình chứng chỉ S/MIME cho alias của bạn đối với thư đến.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+Các ứng dụng email sau đây có hỗ trợ S/MIME tích hợp sẵn:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| Ứng dụng Email    | Nền tảng | Ghi chú                                                                                                               |
+| ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | Hỗ trợ S/MIME tích hợp sẵn. Vào Mail > Preferences > Accounts > tài khoản của bạn > Trust để cấu hình chứng chỉ.       |
+| Apple Mail        | iOS      | Hỗ trợ S/MIME tích hợp sẵn. Vào Settings > Mail > Accounts > tài khoản của bạn > Advanced > S/MIME để cấu hình.        |
+| Microsoft Outlook | Windows  | Hỗ trợ S/MIME tích hợp sẵn. Vào File > Options > Trust Center > Trust Center Settings > Email Security để cấu hình.   |
+| Microsoft Outlook | macOS    | Hỗ trợ S/MIME tích hợp sẵn. Vào Tools > Accounts > Advanced > Security để cấu hình.                                   |
+| Thunderbird       | Desktop  | Hỗ trợ S/MIME tích hợp sẵn. Vào Account Settings > End-To-End Encryption > S/MIME để cấu hình.                        |
+| GNOME Evolution   | Desktop  | Hỗ trợ S/MIME tích hợp sẵn. Vào Edit > Preferences > Mail Accounts > tài khoản của bạn > Security để cấu hình.         |
+| KMail             | Desktop  | Hỗ trợ S/MIME tích hợp sẵn. Vào Settings > Configure KMail > Identities > danh tính của bạn > Cryptography để cấu hình.|
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Chúc mừng!
+    </strong>
+    <span>
+      Bạn đã cấu hình thành công mã hóa S/MIME cho alias của mình.
+    </span>
+  </div>
+</div>
+
+### Bạn có hỗ trợ lọc email bằng Sieve {#do-you-support-sieve-email-filtering}
+
+Có! Chúng tôi hỗ trợ lọc email bằng [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) theo định nghĩa trong [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve là một ngôn ngữ kịch bản chuẩn, mạnh mẽ để lọc email phía máy chủ, cho phép bạn tự động tổ chức, lọc và phản hồi các tin nhắn đến.
+
+#### Các phần mở rộng Sieve được hỗ trợ {#supported-sieve-extensions}
+
+Chúng tôi hỗ trợ một bộ phần mở rộng Sieve toàn diện:
+
+| Phần mở rộng                | RFC                                                                                      | Mô tả                                            |
+| -------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                                | Lưu tin nhắn vào các thư mục cụ thể               |
+| `reject` / `ereject`       | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                                | Từ chối tin nhắn với lỗi                          |
+| `vacation`                 | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                                | Trả lời tự động khi nghỉ/vắng mặt                  |
+| `vacation-seconds`         | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                                | Khoảng thời gian trả lời nghỉ chi tiết hơn         |
+| `imap4flags`               | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                                | Đặt cờ IMAP (\Seen, \Flagged, v.v.)               |
+| `envelope`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                                | Kiểm tra người gửi/người nhận trong phong bì      |
+| `body`                     | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                                | Kiểm tra nội dung thân tin nhắn                    |
+| `variables`                | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                                | Lưu trữ và sử dụng biến trong kịch bản             |
+| `relational`               | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                                | So sánh quan hệ (lớn hơn, nhỏ hơn)                 |
+| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | So sánh số học                                    |
+| `copy`                     | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                                | Sao chép tin nhắn khi chuyển tiếp                  |
+| `editheader`               | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                                | Thêm hoặc xóa tiêu đề tin nhắn                      |
+| `date`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                                | Kiểm tra giá trị ngày/giờ                           |
+| `index`                    | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                                | Truy cập các lần xuất hiện tiêu đề cụ thể          |
+| `regex`                    | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)   | So khớp biểu thức chính quy                         |
+| `enotify`                  | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                                | Gửi thông báo (ví dụ: mailto:)                      |
+| `environment`              | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                                | Truy cập thông tin môi trường                       |
+| `mailbox`                  | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                                | Kiểm tra sự tồn tại hộp thư, tạo hộp thư           |
+| `special-use`              | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                                | Lưu vào các hộp thư đặc biệt (\Junk, \Trash)       |
+| `duplicate`                | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                                | Phát hiện tin nhắn trùng lặp                        |
+| `ihave`                    | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                                | Kiểm tra sự có mặt của phần mở rộng                 |
+| `subaddress`               | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                                | Truy cập các phần địa chỉ user+detail               |
+#### Các Tiện Ích Mở Rộng Không Hỗ Trợ {#extensions-not-supported}
+
+Các tiện ích mở rộng sau hiện không được hỗ trợ:
+
+| Tiện Ích Mở Rộng                                               | Lý Do                                                              |
+| -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `include`                                                     | Rủi ro bảo mật (chèn script) và yêu cầu lưu trữ script toàn cục   |
+| `mboxmetadata` / `servermetadata`                             | Yêu cầu hỗ trợ tiện ích mở rộng IMAP METADATA                     |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | Chưa triển khai thao tác phức tạp trên cây MIME                   |
+
+#### Ví Dụ Các Script Sieve {#example-sieve-scripts}
+
+**Lưu bản tin vào thư mục:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Tự động trả lời khi đi nghỉ:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "Tôi hiện đang nghỉ và sẽ trả lời khi trở lại.";
+```
+
+**Đánh dấu thư từ người gửi quan trọng:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**Từ chối thư rác với các chủ đề cụ thể:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Tin nhắn bị từ chối do nội dung spam.";
+}
+```
+
+#### Quản Lý Các Script Sieve {#managing-sieve-scripts}
+
+Bạn có thể quản lý các script Sieve của mình bằng nhiều cách:
+
+1. **Giao Diện Web**: Truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Sieve Scripts để tạo và quản lý script.
+
+2. **Giao Thức ManageSieve**: Kết nối bằng bất kỳ client tương thích ManageSieve nào (như tiện ích Sieve của Thunderbird hoặc [sieve-connect](https://github.com/philpennock/sieve-connect)) tới `imap.forwardemail.net`. Sử dụng cổng `2190` với STARTTLS (khuyến nghị cho hầu hết client) hoặc cổng `4190` với TLS ngầm định.
+
+3. **API**: Sử dụng [REST API](/api#sieve-scripts) của chúng tôi để quản lý script một cách lập trình.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Lưu ý:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+    Lọc Sieve được áp dụng cho các thư đến trước khi chúng được lưu vào hộp thư của bạn. Các script được thực thi theo thứ tự ưu tiên, và hành động phù hợp đầu tiên sẽ quyết định cách xử lý thư.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Bảo mật:
+  </strong>
+  <span>
+    Vì lý do bảo mật, các hành động chuyển tiếp bị giới hạn 10 lần mỗi script và 100 lần mỗi ngày. Phản hồi nghỉ phép cũng bị giới hạn tần suất để ngăn chặn lạm dụng.
+  </span>
+</div>
+
+### Bạn có hỗ trợ MTA-STS không? {#do-you-support-mta-sts}
+
+Có, kể từ ngày 2 tháng 3 năm 2023 chúng tôi hỗ trợ [MTA-STS](https://www.hardenize.com/blog/mta-sts). Bạn có thể sử dụng [mẫu này](https://github.com/jpawlowski/mta-sts.template) nếu muốn kích hoạt trên tên miền của mình.
+
+Cấu hình của chúng tôi được công khai trên GitHub tại <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+
+### Bạn có hỗ trợ passkeys và WebAuthn không? {#do-you-support-passkeys-and-webauthn}
+
+Có! Kể từ ngày 13 tháng 12 năm 2023, chúng tôi đã thêm hỗ trợ passkeys [do nhu cầu cao](https://github.com/orgs/forwardemail/discussions/182).
+
+Passkeys cho phép bạn đăng nhập an toàn mà không cần mật khẩu và xác thực hai yếu tố.
+
+Bạn có thể xác thực danh tính bằng cảm ứng, nhận diện khuôn mặt, mật khẩu thiết bị hoặc mã PIN.
+
+Chúng tôi cho phép bạn quản lý tối đa 30 passkeys cùng lúc, giúp bạn đăng nhập dễ dàng với tất cả thiết bị của mình.
+
+Tìm hiểu thêm về passkeys tại các liên kết sau:
+
+* [Đăng nhập vào ứng dụng và trang web của bạn bằng passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Sử dụng passkeys để đăng nhập vào ứng dụng và trang web trên iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Bài viết Wikipedia về Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Bạn có hỗ trợ các thực hành tốt nhất về email không {#do-you-support-email-best-practices}
+
+Có. Chúng tôi có hỗ trợ tích hợp cho SPF, DKIM, DMARC, ARC và SRS trên tất cả các gói. Chúng tôi cũng đã làm việc rộng rãi với các tác giả gốc của các đặc tả này và các chuyên gia email khác để đảm bảo sự hoàn hảo và khả năng gửi thư cao.
+
+### Bạn có hỗ trợ webhook bounce không {#do-you-support-bounce-webhooks}
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Mẹo:
+  </strong>
+    Bạn đang tìm tài liệu về webhook email? Xem <a href="/faq#do-you-support-webhooks" class="alert-link">Bạn có hỗ trợ webhook không?</a> để biết thêm thông tin.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+Có, kể từ ngày 14 tháng 8 năm 2024 chúng tôi đã thêm tính năng này. Bạn có thể truy cập Tài khoản của tôi → Tên miền → Cài đặt → URL Webhook Bounce và cấu hình một URL `http://` hoặc `https://` mà chúng tôi sẽ gửi yêu cầu `POST` đến mỗi khi email SMTP gửi đi bị trả lại.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+Điều này hữu ích để bạn quản lý và giám sát SMTP gửi đi – và có thể dùng để duy trì người đăng ký, hủy đăng ký, và phát hiện khi nào xảy ra bounce.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+Payload webhook bounce được gửi dưới dạng JSON với các thuộc tính sau:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (Chuỗi) - ID email tương ứng với một email trong Tài khoản của tôi → Email (SMTP gửi đi)
+* `list_id` (Chuỗi) - giá trị header `List-ID` (không phân biệt chữ hoa chữ thường), nếu có, từ email gửi đi gốc
+* `list_unsubscribe` (Chuỗi) - giá trị header `List-Unsubscribe` (không phân biệt chữ hoa chữ thường), nếu có, từ email gửi đi gốc
+* `feedback_id` (Chuỗi) - giá trị header `Feedback-ID` (không phân biệt chữ hoa chữ thường), nếu có, từ email gửi đi gốc
+* `recipient` (Chuỗi) - địa chỉ email của người nhận bị bounce hoặc lỗi
+* `message` (Chuỗi) - thông báo lỗi chi tiết cho bounce
+* `response` (Chuỗi) - thông điệp phản hồi SMTP
+* `response_code` (Số) - mã phản hồi SMTP đã được phân tích
+* `truth_source` (Chuỗi) - nếu mã phản hồi đến từ nguồn tin cậy, giá trị này sẽ được điền tên miền gốc (ví dụ `google.com` hoặc `yahoo.com`)
+* `bounce` (Đối tượng) - một đối tượng chứa các thuộc tính sau mô tả trạng thái bounce và từ chối
+  * `action` (Chuỗi) - hành động bounce (ví dụ `"reject"`)
+  * `message` (Chuỗi) - lý do bounce (ví dụ `"Message Sender Blocked By Receiving Server"`)
+  * `category` (Chuỗi) - loại bounce (ví dụ `"block"`)
+  * `code` (Số) - mã trạng thái bounce (ví dụ `554`)
+  * `status` (Chuỗi) - mã bounce từ thông điệp phản hồi (ví dụ `5.7.1`)
+  * `line` (Số) - số dòng đã phân tích, nếu có, [từ danh sách phân tích bounce Zone-MTA](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (ví dụ `526`)
+* `headers` (Đối tượng) - cặp khóa-giá trị của các header cho email gửi đi
+* `bounced_at` (Chuỗi) - ngày giờ định dạng [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) khi lỗi bounce xảy ra
 
-For example:
+Ví dụ:
 
 ```json
 {
@@ -2469,59 +2949,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+Dưới đây là một vài lưu ý bổ sung về webhook bounce:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* Nếu payload webhook chứa giá trị `list_id`, `list_unsubscribe`, hoặc `feedback_id`, thì bạn nên thực hiện hành động thích hợp để loại bỏ `recipient` khỏi danh sách nếu cần thiết.
+  * Nếu giá trị `bounce.category` là một trong `"block"`, `"recipient"`, `"spam"`, hoặc `"virus"`, thì bạn chắc chắn nên loại bỏ người dùng khỏi danh sách.
+* Nếu bạn cần xác minh payload webhook (để đảm bảo chúng thực sự đến từ máy chủ của chúng tôi), bạn có thể [giải quyết địa chỉ IP client từ hostname bằng tra cứu ngược](https://nodejs.org/api/dns.html#dnspromisesreverseip) – nó nên là `smtp.forwardemail.net`.
+  * Bạn cũng có thể kiểm tra IP với [các địa chỉ IP đã công bố của chúng tôi](#what-are-your-servers-ip-addresses).
+  * Truy cập Tài khoản của tôi → Tên miền → Cài đặt → Khóa Xác minh Payload Chữ ký Webhook để lấy khóa webhook của bạn.
+    * Bạn có thể thay đổi khóa này bất cứ lúc nào vì lý do bảo mật.
+    * Tính toán và so sánh giá trị `X-Webhook-Signature` từ yêu cầu webhook của chúng tôi với giá trị body đã tính toán bằng khóa này. Ví dụ cách làm có tại [bài đăng Stack Overflow này](https://stackoverflow.com/a/68885281).
+  * Xem thảo luận tại <https://github.com/forwardemail/free-email-forwarding/issues/235> để biết thêm thông tin.
+* Chúng tôi sẽ chờ tối đa `5` giây để endpoint webhook của bạn phản hồi với mã trạng thái `200`, và sẽ thử lại tối đa `1` lần.
+* Nếu chúng tôi phát hiện URL webhook bounce của bạn có lỗi khi cố gắng gửi yêu cầu, chúng tôi sẽ gửi email nhắc nhở bạn một lần mỗi tuần.
+### Bạn có hỗ trợ webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    Bạn đang tìm tài liệu về bounce webhooks? Xem <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Bạn có hỗ trợ bounce webhooks không?</a> để biết thêm thông tin.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+Vâng, kể từ ngày 15 tháng 5 năm 2020 chúng tôi đã thêm tính năng này. Bạn có thể đơn giản thêm webhook(s) giống như bạn làm với bất kỳ người nhận nào! Vui lòng đảm bảo rằng bạn đã thêm tiền tố "http" hoặc "https" trong URL của webhook.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Bảo vệ quyền riêng tư nâng cao:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Nếu bạn đang sử dụng gói trả phí (có tính năng bảo vệ quyền riêng tư nâng cao), thì vui lòng truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> và nhấp vào "Bí danh" bên cạnh tên miền của bạn để cấu hình webhook. Nếu bạn muốn tìm hiểu thêm về các gói trả phí, xem trang <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Giá cả</a> của chúng tôi. Nếu không, bạn có thể tiếp tục làm theo hướng dẫn bên dưới.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+Nếu bạn đang sử dụng gói miễn phí, thì chỉ cần thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới như dưới đây:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+Ví dụ, nếu tôi muốn tất cả email gửi đến `alias@example.com` được chuyển tiếp đến một điểm kiểm tra [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) mới:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Host/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3008,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+Hoặc có thể bạn muốn tất cả email gửi đến `example.com` được chuyển tiếp đến điểm cuối này:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Host/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3029,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**Dưới đây là các ghi chú bổ sung liên quan đến webhooks:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* Nếu bạn cần xác minh payload webhook (để đảm bảo chúng thực sự đến từ máy chủ của chúng tôi), thì bạn có thể [giải quyết địa chỉ IP máy khách từ hostname bằng tra cứu ngược](https://nodejs.org/api/dns.html#dnspromisesreverseip) – nó nên là `mx1.forwardemail.net` hoặc `mx2.forwardemail.net`.
+  * Bạn cũng có thể kiểm tra IP với [các địa chỉ IP đã công bố của chúng tôi](#what-are-your-servers-ip-addresses).
+  * Nếu bạn đang sử dụng gói trả phí, thì hãy vào Tài khoản của tôi → Tên miền → Cài đặt → Khóa xác minh payload chữ ký webhook để lấy khóa webhook của bạn.
+    * Bạn có thể thay đổi khóa này bất cứ lúc nào vì lý do bảo mật.
+    * Tính toán và so sánh giá trị `X-Webhook-Signature` từ yêu cầu webhook của chúng tôi với giá trị thân đã tính toán sử dụng khóa này. Ví dụ về cách làm điều này có tại [bài đăng Stack Overflow này](https://stackoverflow.com/a/68885281).
+  * Xem thảo luận tại <https://github.com/forwardemail/free-email-forwarding/issues/235> để biết thêm thông tin.
+* Nếu webhook không phản hồi với mã trạng thái `200`, thì chúng tôi sẽ lưu phản hồi đó vào [nhật ký lỗi được tạo](#do-you-store-error-logs) – điều này hữu ích cho việc gỡ lỗi.
+* Các yêu cầu HTTP webhook sẽ thử lại tối đa 3 lần trong mỗi lần kết nối SMTP, với thời gian chờ tối đa 60 giây cho mỗi yêu cầu POST đến điểm cuối. **Lưu ý rằng điều này không có nghĩa là nó chỉ thử lại 3 lần**, thực tế nó sẽ thử lại liên tục theo thời gian bằng cách gửi mã SMTP 421 (báo cho người gửi thử lại sau) sau lần thử POST HTTP thứ 3 thất bại. Điều này có nghĩa email sẽ thử lại liên tục trong nhiều ngày cho đến khi đạt mã trạng thái 200.
+* Chúng tôi sẽ tự động thử lại dựa trên các mã trạng thái và lỗi mặc định được sử dụng trong [phương thức retry của superagent](https://ladjs.github.io/superagent/#retrying-requests) (chúng tôi là người duy trì).
+* Chúng tôi gom nhóm các yêu cầu HTTP webhook đến cùng một điểm cuối thành một yêu cầu thay vì nhiều yêu cầu để tiết kiệm tài nguyên và tăng tốc độ phản hồi. Ví dụ, nếu bạn gửi email đến <webhook1@example.com>, <webhook2@example.com>, và <webhook3@example.com>, và tất cả đều được cấu hình để gọi cùng một URL điểm cuối *chính xác*, thì chỉ có một yêu cầu được gửi. Chúng tôi gom nhóm dựa trên sự trùng khớp chính xác của điểm cuối với so sánh nghiêm ngặt.
+* Lưu ý rằng chúng tôi sử dụng phương thức "simpleParser" của thư viện [mailparser](https://nodemailer.com/extras/mailparser/) để phân tích thông điệp thành đối tượng thân thiện với JSON.
+* Giá trị email thô dưới dạng Chuỗi được cung cấp dưới thuộc tính "raw".
+* Kết quả xác thực được cung cấp dưới các thuộc tính "dkim", "spf", "arc", "dmarc", và "bimi".
+* Các tiêu đề email đã phân tích được cung cấp dưới thuộc tính "headers" – nhưng cũng lưu ý bạn có thể dùng "headerLines" để dễ dàng lặp và phân tích hơn.
+* Các người nhận được nhóm cho webhook này được gom lại và cung cấp dưới thuộc tính "recipients".
+* Thông tin phiên SMTP được cung cấp dưới thuộc tính "session". Điều này chứa thông tin về người gửi tin nhắn, thời gian đến của tin nhắn, HELO, và hostname của máy khách. Giá trị hostname máy khách dưới `session.clientHostname` là FQDN (từ tra cứu PTR ngược) hoặc là `session.remoteAddress` được bao trong dấu ngoặc (ví dụ `"[127.0.0.1]"`).
+* Nếu bạn cần cách nhanh để lấy giá trị của `X-Original-To`, thì bạn có thể dùng giá trị của `session.recipient` (xem ví dụ bên dưới). Tiêu đề `X-Original-To` là tiêu đề chúng tôi thêm vào tin nhắn để gỡ lỗi với người nhận gốc (trước khi chuyển tiếp ẩn danh) của tin nhắn.
+* Nếu bạn cần loại bỏ thuộc tính `attachments` và/hoặc `raw` khỏi payload thân, chỉ cần thêm `?attachments=false`, `?raw=false`, hoặc `?attachments=false&raw=false` vào điểm cuối webhook của bạn dưới dạng tham số truy vấn (ví dụ `https://example.com/webhook?attachments=false&raw=false`).
+* Nếu có tệp đính kèm, chúng sẽ được thêm vào mảng `attachments` với giá trị Buffer. Bạn có thể phân tích lại nội dung bằng cách sử dụng phương pháp với JavaScript như:
   ```js
   const data = [
     104,
@@ -2785,48 +3263,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### Bạn có hỗ trợ biểu thức chính quy hay regex không {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+Vâng, kể từ ngày 27 tháng 9 năm 2021, chúng tôi đã thêm tính năng này. Bạn có thể đơn giản viết các biểu thức chính quy ("regex") để khớp các bí danh và thực hiện thay thế.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+Các bí danh hỗ trợ biểu thức chính quy là những bí danh bắt đầu bằng `/` và kết thúc bằng `/` và người nhận của chúng là địa chỉ email hoặc webhook. Người nhận cũng có thể bao gồm hỗ trợ thay thế regex (ví dụ: `$1`, `$2`).
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+Chúng tôi hỗ trợ hai cờ biểu thức chính quy bao gồm `i` và `g`. Cờ không phân biệt chữ hoa chữ thường `i` là mặc định vĩnh viễn và luôn được áp dụng. Cờ toàn cục `g` có thể được bạn thêm vào bằng cách gắn `/g` vào cuối dấu `/`.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+Lưu ý rằng chúng tôi cũng hỗ trợ <a href="#can-i-disable-specific-aliases">tính năng vô hiệu hóa bí danh</a> cho phần người nhận với hỗ trợ regex của chúng tôi.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+Biểu thức chính quy không được hỗ trợ trên <a href="/disposable-addresses" target="_blank">các tên miền vanity toàn cầu</a> (vì điều này có thể là một lỗ hổng bảo mật).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Bảo vệ quyền riêng tư nâng cao:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    Nếu bạn đang sử dụng gói trả phí (có tính năng bảo vệ quyền riêng tư nâng cao), vui lòng truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> và nhấp vào "Bí danh" bên cạnh tên miền của bạn để cấu hình các bí danh, bao gồm cả những bí danh có biểu thức chính quy. Nếu bạn muốn tìm hiểu thêm về các gói trả phí, xem trang <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Giá cả</a> của chúng tôi.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### Ví dụ cho Bảo vệ quyền riêng tư nâng cao {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
-      <th>Test</th>
+      <th>Tên bí danh</th>
+      <th>Hiệu quả</th>
+      <th>Kiểm tra</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>Email gửi đến `linus@example.com` hoặc `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">xem kiểm tra trên RegExr</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>Email gửi đến `24highst@example.com` hoặc `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">xem kiểm tra trên RegExr</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2834,34 +3312,34 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    Để kiểm tra những điều này tại <a href="https://regexr.com" class="alert-link">RegExr</a>, hãy viết biểu thức trong ô trên cùng, sau đó nhập một bí danh ví dụ vào ô bên dưới. Nếu khớp, nó sẽ chuyển sang màu xanh.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### Ví dụ cho gói miễn phí {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+Nếu bạn đang sử dụng gói miễn phí, chỉ cần thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới sử dụng một hoặc nhiều ví dụ được cung cấp dưới đây:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Ví dụ đơn giản:</strong> Nếu tôi muốn tất cả email gửi đến `linus@example.com` hoặc `torvalds@example.com` được chuyển tiếp đến `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Host/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3349,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>Ví dụ thay thế Họ Tên:</strong> Giả sử tất cả địa chỉ email công ty của bạn đều theo mẫu `firstname.lastname@example.com`. Nếu tôi muốn tất cả email gửi đến mẫu `firstname.lastname@example.com` được chuyển tiếp đến `firstname.lastname@company.com` với hỗ trợ thay thế (<a href="https://regexr.com/66hnu" class="alert-link">xem kiểm tra trên RegExr</a>):
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3372,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>Ví dụ thay thế lọc ký hiệu cộng:</strong> Nếu tôi muốn tất cả email gửi đến `info@example.com` hoặc `support@example.com` được chuyển tiếp đến `user+info@gmail.com` hoặc `user+support@gmail.com` tương ứng (với hỗ trợ thay thế) (<a href="https://regexr.com/66ho7" class="alert-link">xem thử nghiệm trên RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3396,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>Ví dụ thay thế chuỗi truy vấn Webhook:</strong> Có thể bạn muốn tất cả email gửi đến `example.com` đi đến một <a href="#do-you-support-webhooks" class="alert-link">webhook</a> và có một khóa chuỗi truy vấn động là "to" với giá trị là phần tên người dùng của địa chỉ email (<a href="https://regexr.com/66ho4" class="alert-link">xem thử nghiệm trên RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3420,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>Ví dụ từ chối im lặng:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối im lặng (người gửi sẽ thấy như thể tin nhắn đã gửi thành công, nhưng thực tế không đi đến đâu) với mã trạng thái `250` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì chỉ cần sử dụng cách tương tự với một dấu chấm than "!". Điều này báo cho người gửi rằng tin nhắn đã được gửi thành công, nhưng thực tế không đi đến đâu (ví dụ như hố đen hoặc `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3444,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>Ví dụ từ chối mềm:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối mềm với mã trạng thái `421` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì chỉ cần sử dụng cách tương tự với hai dấu chấm than "!!". Điều này báo cho người gửi thử lại email của họ, và email đến bí danh này sẽ được thử lại trong khoảng 5 ngày rồi mới từ chối vĩnh viễn.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>Ví dụ từ chối cứng:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối cứng với mã trạng thái `550` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì chỉ cần sử dụng cùng cách tiếp cận với ba dấu chấm than "!!!". Điều này báo cho người gửi biết lỗi vĩnh viễn và email sẽ không được thử lại, chúng sẽ bị từ chối cho bí danh này.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3016,574 +3492,614 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    Bạn tò mò cách viết biểu thức chính quy hoặc cần kiểm tra thay thế của mình? Bạn có thể truy cập trang web kiểm tra biểu thức chính quy miễn phí <a href="https://regexr.com" class="alert-link">RegExr</a> tại <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### Giới hạn SMTP gửi đi của bạn là gì {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+Chúng tôi giới hạn người dùng và tên miền ở mức 300 tin nhắn SMTP gửi đi mỗi ngày. Điều này trung bình hơn 9000 email trong một tháng lịch. Nếu bạn cần vượt quá số lượng này hoặc có email lớn liên tục, vui lòng [liên hệ với chúng tôi](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### Tôi có cần phê duyệt để bật SMTP không {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Có, xin lưu ý rằng để duy trì uy tín IP và đảm bảo khả năng gửi thư, Forward Email có quy trình xem xét thủ công trên cơ sở từng tên miền để phê duyệt SMTP gửi đi. Gửi email tới <support@forwardemail.net> hoặc mở một [yêu cầu trợ giúp](https://forwardemail.net/help) để được phê duyệt. Thông thường mất chưa đến 24 giờ, với hầu hết yêu cầu được chấp nhận trong vòng 1-2 giờ. Trong tương lai gần, chúng tôi dự định làm cho quy trình này trở nên tức thì với các kiểm soát spam bổ sung và cảnh báo. Quy trình này đảm bảo email của bạn đến hộp thư đến và tin nhắn của bạn không bị đánh dấu là spam.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### Cài đặt cấu hình máy chủ SMTP của bạn là gì {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Máy chủ của chúng tôi là `smtp.forwardemail.net` và cũng được giám sát trên <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">trang trạng thái</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+Nó hỗ trợ cả IPv4 và IPv6 và có sẵn qua các cổng `465` và `2465` cho SSL/TLS (khuyến nghị) và `587`, `2587`, `2525`, và `25` cho TLS (STARTTLS).
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**Từ tháng 10 năm 2025**, chúng tôi hiện hỗ trợ **kết nối TLS 1.0 cũ** trên các cổng `2455` (SSL/TLS) và `2555` (STARTTLS) cho các thiết bị cũ như máy in, máy quét, camera và các ứng dụng email cũ không thể hỗ trợ các phiên bản TLS hiện đại. Các cổng này được cung cấp như một lựa chọn thay thế cho Gmail, Yahoo, Outlook và các nhà cung cấp khác đã ngừng hỗ trợ các giao thức TLS cũ.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **Hỗ trợ TLS 1.0 cũ (Cổng 2455 và 2555)**: Các cổng này sử dụng giao thức TLS 1.0 đã lỗi thời và có các lỗ hổng bảo mật đã biết (BEAST, POODLE). Chỉ sử dụng các cổng này nếu thiết bị của bạn hoàn toàn không thể hỗ trợ TLS 1.2 trở lên. Chúng tôi khuyến nghị mạnh mẽ nâng cấp firmware thiết bị hoặc chuyển sang các ứng dụng email hiện đại bất cứ khi nào có thể. Các cổng này chỉ dành cho tương thích phần cứng cũ (máy in, máy quét, camera, thiết bị IoT cũ).
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+|                                     Giao thức                                     | Tên máy chủ             |            Cổng             |        IPv4        |        IPv6        | Ghi chú                                |
 | :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+|                              `SSL/TLS` **Ưu tiên**                              | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | TLS 1.2+ hiện đại (Khuyến nghị)        |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Hỗ trợ (ưu tiên cổng SSL/TLS `465`)    |
+|                             `SSL/TLS` **Chỉ dành cho cũ**                       | `smtp.forwardemail.net` |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 chỉ dành cho thiết bị cũ |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Chỉ dành cho cũ** | `smtp.forwardemail.net` |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 chỉ dành cho thiết bị cũ |
+| Đăng nhập | Ví dụ                      | Mô tả                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tên đăng nhập | `user@example.com`         | Địa chỉ email của bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a>.         |
+| Mật khẩu  | `************************` | Bí danh                                                                                                                                                                                  |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+Để gửi email đi bằng SMTP, **người dùng SMTP** phải là địa chỉ email của một bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> – và **mật khẩu SMTP** phải là mật khẩu được tạo riêng cho bí danh đó.
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+Vui lòng tham khảo [Bạn có hỗ trợ gửi email bằng SMTP không](#do-you-support-sending-email-with-smtp) để biết hướng dẫn từng bước.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+### Cấu hình máy chủ IMAP của bạn là gì {#what-are-your-imap-server-configuration-settings}
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+Máy chủ của chúng tôi là `imap.forwardemail.net` và cũng được giám sát trên <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">trang trạng thái</a> của chúng tôi.
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Nó hỗ trợ cả IPv4 và IPv6 và có thể truy cập qua các cổng `993` và `2993` cho SSL/TLS.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
+|         Giao thức         | Tên máy chủ             |     Cổng      |        IPv4        |        IPv6        |
+| :----------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
+| `SSL/TLS` **Ưu tiên**     | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| Đăng nhập | Ví dụ                      | Mô tả                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tên đăng nhập | `user@example.com`         | Địa chỉ email của bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a>.         |
+| Mật khẩu  | `************************` | Mật khẩu được tạo riêng cho bí danh.                                                                                                                                                     |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Để kết nối với IMAP, **người dùng IMAP** phải là địa chỉ email của một bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> – và **mật khẩu IMAP** phải là mật khẩu được tạo riêng cho bí danh đó.
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+Vui lòng tham khảo [Bạn có hỗ trợ nhận email bằng IMAP không](#do-you-support-receiving-email-with-imap) để biết hướng dẫn từng bước.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+### Cấu hình máy chủ POP3 của bạn là gì {#what-are-your-pop3-server-configuration-settings}
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+Máy chủ của chúng tôi là `pop3.forwardemail.net` và cũng được giám sát trên <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">trang trạng thái</a> của chúng tôi.
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Nó hỗ trợ cả IPv4 và IPv6 và có thể truy cập qua các cổng `995` và `2995` cho SSL/TLS.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+|         Giao thức         | Tên máy chủ             |     Cổng      |        IPv4        |        IPv6        |
+| :----------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
+| `SSL/TLS` **Ưu tiên**     | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| Đăng nhập | Ví dụ                      | Mô tả                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tên đăng nhập | `user@example.com`         | Địa chỉ email của bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Miền</a>.       |
+| Mật khẩu  | `************************` | Mật khẩu được tạo riêng cho bí danh.                                                                                                                                                      |
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+Để kết nối với POP3, **người dùng POP3** phải là địa chỉ email của bí danh tồn tại cho miền tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Miền</a> – và **mật khẩu IMAP** phải là mật khẩu được tạo riêng cho bí danh.
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Vui lòng tham khảo [Bạn có hỗ trợ POP3 không](#do-you-support-pop3) để biết hướng dẫn từng bước.
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+### Làm thế nào để tôi thiết lập tự động phát hiện email cho miền của mình {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+Tự động phát hiện email cho phép các ứng dụng email như **Thunderbird**, **Apple Mail**, **Microsoft Outlook**, và các thiết bị di động tự động phát hiện các cài đặt máy chủ IMAP, SMTP, POP3, CalDAV, và CardDAV chính xác khi người dùng thêm tài khoản email của họ. Điều này được định nghĩa bởi [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (email) và [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) và sử dụng các bản ghi DNS SRV.
 
-## Security {#security}
+Forward Email công bố các bản ghi tự động phát hiện trên `forwardemail.net`. Bạn có thể thêm các bản ghi SRV trực tiếp vào miền của mình, hoặc sử dụng phương pháp CNAME đơn giản hơn.
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+#### Lựa chọn A: Bản ghi CNAME (đơn giản nhất) {#option-a-cname-records-simplest}
+
+Thêm hai bản ghi CNAME này vào DNS của miền bạn. Điều này ủy quyền tự động phát hiện cho các máy chủ của Forward Email:
+
+|  Loại | Tên/Host      | Đích/Giá trị                   |
+| :----:| --------------| ------------------------------ |
+| CNAME | `autoconfig`  | `autoconfig.forwardemail.net`  |
+| CNAME | `autodiscover`| `autodiscover.forwardemail.net`|
+
+Bản ghi `autoconfig` được sử dụng bởi **Thunderbird** và các ứng dụng dựa trên Mozilla khác. Bản ghi `autodiscover` được sử dụng bởi **Microsoft Outlook**.
+
+#### Lựa chọn B: Bản ghi SRV (trực tiếp) {#option-b-srv-records-direct}
+
+Nếu bạn muốn thêm bản ghi trực tiếp (hoặc nhà cung cấp DNS của bạn không hỗ trợ CNAME trên các tên miền phụ), hãy thêm các bản ghi SRV này vào miền của bạn:
+
+| Loại | Tên/Host           | Ưu tiên | Trọng số | Cổng | Đích/Giá trị               | Mục đích                              |
+| :---:| -------------------| :------:| :-------:| :---:| --------------------------| -------------------------------------|
+|  SRV | `_imaps._tcp`      |    0    |    1     |  993 | `imap.forwardemail.net`    | IMAP qua SSL/TLS (ưu tiên)            |
+|  SRV | `_imap._tcp`       |    0    |    0     |   0  | `.`                        | IMAP không mã hóa bị vô hiệu hóa      |
+|  SRV | `_submissions._tcp`|    0    |    1     |  465 | `smtp.forwardemail.net`    | Gửi SMTP (SSL/TLS, khuyến nghị)       |
+|  SRV | `_submission._tcp` |    5    |    1     |  587 | `smtp.forwardemail.net`    | Gửi SMTP (STARTTLS)                   |
+|  SRV | `_pop3s._tcp`      |   10    |    1     |  995 | `pop3.forwardemail.net`    | POP3 qua SSL/TLS                      |
+|  SRV | `_pop3._tcp`       |    0    |    0     |   0  | `.`                        | POP3 không mã hóa bị vô hiệu hóa      |
+|  SRV | `_caldavs._tcp`    |    0    |    1     |  443 | `caldav.forwardemail.net`  | CalDAV qua TLS (lịch)                 |
+|  SRV | `_caldav._tcp`     |    0    |    0     |   0  | `.`                        | CalDAV không mã hóa bị vô hiệu hóa    |
+|  SRV | `_carddavs._tcp`   |    0    |    1     |  443 | `carddav.forwardemail.net` | CardDAV qua TLS (danh bạ)             |
+|  SRV | `_carddav._tcp`    |    0    |    0     |   0  | `.`                        | CardDAV không mã hóa bị vô hiệu hóa   |
+> \[!NOTE]
+> IMAP có giá trị ưu tiên thấp hơn (0) so với POP3 (10), điều này cho phép các ứng dụng email ưu tiên IMAP hơn POP3 khi cả hai đều có sẵn. Các bản ghi với mục tiêu là `.` (một dấu chấm đơn) cho thấy các phiên bản văn bản thuần túy (không mã hóa) của các giao thức đó bị vô hiệu hóa theo [RFC 6186 Mục 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4). Các bản ghi SRV CalDAV và CardDAV tuân theo [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) để tự động phát hiện lịch và danh bạ.
+
+#### Những ứng dụng email nào hỗ trợ tự động phát hiện? {#which-email-clients-support-autodiscovery}
+
+| Ứng dụng           | Email                                            | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | Bản ghi `autoconfig` CNAME hoặc SRV              | Bản ghi `autoconfig` XML hoặc SRV (RFC 6764) |
+| Apple Mail (macOS) | Bản ghi SRV (RFC 6186)                           | Bản ghi SRV (RFC 6764)                     |
+| Apple Mail (iOS)   | Bản ghi SRV (RFC 6186)                           | Bản ghi SRV (RFC 6764)                     |
+| Microsoft Outlook  | Bản ghi `autodiscover` CNAME hoặc SRV `_autodiscover._tcp` | Không hỗ trợ                              |
+| GNOME (Evolution)  | Bản ghi SRV (RFC 6186)                           | Bản ghi SRV (RFC 6764)                     |
+| KDE (KMail)        | Bản ghi SRV (RFC 6186)                           | Bản ghi SRV (RFC 6764)                     |
+| eM Client          | `autoconfig` hoặc `autodiscover`                  | Bản ghi SRV (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Để tương thích tốt nhất với tất cả các ứng dụng, chúng tôi khuyên bạn nên sử dụng **Tùy chọn A** (bản ghi CNAME) kết hợp với các bản ghi SRV từ **Tùy chọn B**. Phương pháp CNAME đơn lẻ đã bao phủ phần lớn các ứng dụng email. Các bản ghi SRV CalDAV/CardDAV đảm bảo rằng các ứng dụng lịch và danh bạ cũng có thể tự động phát hiện cài đặt máy chủ của bạn.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## Bảo mật {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### Kỹ thuật tăng cường bảo mật máy chủ nâng cao {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
+> \[!TIP]
+> Tìm hiểu thêm về hạ tầng bảo mật của chúng tôi trên [trang Bảo mật của chúng tôi](/security).
+
+Forward Email triển khai nhiều kỹ thuật tăng cường bảo mật máy chủ để đảm bảo an toàn cho hạ tầng và dữ liệu của bạn:
+
+1. **Bảo mật mạng**:
+   * Tường lửa IP tables với các quy tắc nghiêm ngặt
+   * Fail2ban để bảo vệ chống tấn công brute force
+   * Kiểm tra bảo mật và thử nghiệm xâm nhập định kỳ
+   * Truy cập quản trị chỉ qua VPN
+
+2. **Tăng cường hệ thống**:
+   * Cài đặt gói tối thiểu
+   * Cập nhật bảo mật định kỳ
+   * SELinux ở chế độ enforcing
+   * Vô hiệu hóa truy cập SSH root
+   * Chỉ xác thực bằng khóa
+
+3. **Bảo mật ứng dụng**:
+   * Header Chính sách Bảo mật Nội dung (CSP)
    * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+   * Header bảo vệ XSS
+   * Header tùy chọn khung và chính sách referrer
+   * Kiểm tra phụ thuộc định kỳ
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+4. **Bảo vệ dữ liệu**:
+   * Mã hóa toàn bộ ổ đĩa với LUKS
+   * Quản lý khóa an toàn
+   * Sao lưu định kỳ có mã hóa
+   * Thực hành giảm thiểu dữ liệu
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+5. **Giám sát và phản ứng**:
+   * Phát hiện xâm nhập thời gian thực
+   * Quét bảo mật tự động
+   * Ghi nhật ký và phân tích tập trung
+   * Quy trình phản ứng sự cố
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Các thực hành bảo mật của chúng tôi liên tục được cập nhật để đối phó với các mối đe dọa và lỗ hổng mới phát sinh.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Để bảo mật tối đa, chúng tôi khuyên bạn sử dụng dịch vụ của chúng tôi với mã hóa đầu cuối qua OpenPGP.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### Bạn có chứng nhận SOC 2 hoặc ISO 27001 không? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email hoạt động trên hạ tầng do các nhà cung cấp phụ có chứng nhận cung cấp nhằm đảm bảo tuân thủ các tiêu chuẩn ngành.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email không trực tiếp sở hữu chứng nhận SOC 2 Loại II hoặc ISO 27001. Tuy nhiên, dịch vụ hoạt động trên hạ tầng do các nhà cung cấp phụ có chứng nhận:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: được chứng nhận SOC 2 Loại II và SOC 3 Loại II (được kiểm toán bởi Schellman & Company LLC), chứng nhận ISO 27001 tại nhiều trung tâm dữ liệu. Chi tiết: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: được chứng nhận SOC 2+ (HIPAA), các chứng nhận ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Chi tiết: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: tuân thủ SOC 2 (liên hệ trực tiếp với DataPacket để lấy chứng nhận), nhà cung cấp hạ tầng cấp doanh nghiệp (địa điểm Denver). Chi tiết: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Email tuân theo các thực hành tốt nhất trong ngành cho các cuộc kiểm toán bảo mật và thường xuyên hợp tác với các nhà nghiên cứu bảo mật độc lập. Nguồn: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### Bạn có sử dụng mã hóa TLS cho việc chuyển tiếp email không {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+Có. Forward Email nghiêm ngặt áp dụng TLS 1.2+ cho tất cả các kết nối (HTTPS, SMTP, IMAP, POP3) và triển khai MTA-STS để tăng cường hỗ trợ TLS. Việc triển khai bao gồm:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* Áp dụng TLS 1.2+ cho tất cả các kết nối email
+* Trao đổi khóa ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) cho bảo mật chuyển tiếp hoàn hảo
+* Bộ mã hóa hiện đại với các bản cập nhật bảo mật thường xuyên
+* Hỗ trợ HTTP/2 để cải thiện hiệu suất và bảo mật
+* HSTS (HTTP Strict Transport Security) với tính năng tải trước trên các trình duyệt lớn
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** để thực thi TLS nghiêm ngặt
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+Nguồn: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**Triển khai MTA-STS**: Forward Email thực thi việc áp dụng MTA-STS nghiêm ngặt trong mã nguồn. Khi xảy ra lỗi TLS và MTA-STS được áp dụng, hệ thống trả về mã trạng thái SMTP 421 để đảm bảo email được thử gửi lại sau thay vì bị gửi đi không an toàn. Chi tiết triển khai:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* Phát hiện lỗi TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* Áp dụng MTA-STS trong helper gửi email: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+Xác thực bên thứ ba: <https://www.hardenize.com/report/forwardemail.net/1750312779> cho thấy đánh giá "Tốt" cho tất cả các biện pháp bảo mật TLS và truyền tải.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### Bạn có giữ nguyên các header xác thực email không {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+Có. Forward Email triển khai đầy đủ và giữ nguyên các header xác thực email:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (Sender Policy Framework)**: Triển khai và giữ nguyên đúng cách
+* **DKIM (DomainKeys Identified Mail)**: Hỗ trợ đầy đủ với quản lý khóa đúng chuẩn
+* **DMARC**: Thực thi chính sách cho các email không đạt xác thực SPF hoặc DKIM
+* **ARC**: Mặc dù không được mô tả chi tiết, điểm tuân thủ hoàn hảo của dịch vụ cho thấy xử lý toàn diện các header xác thực
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+Nguồn: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Xác thực: Bài kiểm tra Mail Test của Internet.nl cho điểm 100/100 riêng cho việc triển khai "SPF, DKIM, và DMARC". Đánh giá Hardenize xác nhận điểm "Tốt" cho SPF và DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Bạn có giữ nguyên các header email gốc và ngăn chặn giả mạo không {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email triển khai bảo vệ chống giả mạo tinh vi để ngăn chặn việc lạm dụng email.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email giữ nguyên các header email gốc đồng thời thực thi bảo vệ chống giả mạo toàn diện thông qua mã nguồn MX:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **Giữ nguyên Header**: Các header xác thực gốc được duy trì trong quá trình chuyển tiếp
+* **Chống giả mạo**: Thực thi chính sách DMARC ngăn chặn giả mạo header bằng cách từ chối các email không đạt xác thực SPF hoặc DKIM
+* **Ngăn chặn chèn header**: Kiểm tra và làm sạch đầu vào sử dụng thư viện striptags
+* **Bảo vệ nâng cao**: Phát hiện phishing tinh vi với phát hiện giả mạo, ngăn chặn mạo danh và hệ thống thông báo người dùng
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**Chi tiết triển khai MX**: Logic xử lý email chính được thực hiện bởi mã nguồn máy chủ MX, cụ thể:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Bộ xử lý dữ liệu MX chính: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Lọc email tùy ý (chống giả mạo): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+Helper `isArbitrary` triển khai các quy tắc chống giả mạo tinh vi bao gồm phát hiện mạo danh tên miền, các cụm từ bị chặn và nhiều mẫu phishing khác nhau.
+### Làm thế nào bạn bảo vệ chống lại spam và lạm dụng {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email triển khai bảo vệ đa lớp toàn diện:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **Giới hạn Tốc độ**: Áp dụng cho các lần thử xác thực, các điểm cuối API và kết nối SMTP
+* **Cách ly Tài nguyên**: Giữa các người dùng để ngăn ảnh hưởng từ người dùng có lưu lượng cao
+* **Bảo vệ DDoS**: Bảo vệ đa lớp thông qua hệ thống Shield của DataPacket và Cloudflare
+* **Tự động Mở rộng**: Điều chỉnh tài nguyên động dựa trên nhu cầu
+* **Phòng chống Lạm dụng**: Kiểm tra phòng chống lạm dụng theo người dùng và chặn dựa trên băm cho nội dung độc hại
+* **Xác thực Email**: Các giao thức SPF, DKIM, DMARC với phát hiện phishing nâng cao
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+Nguồn:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (Chi tiết bảo vệ DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### Bạn có lưu trữ nội dung email trên đĩa không {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email sử dụng kiến trúc không kiến thức (zero-knowledge) ngăn nội dung email được ghi vào đĩa.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **Kiến trúc Không Kiến Thức**: Hộp thư SQLite được mã hóa riêng biệt có nghĩa là Forward Email không thể truy cập nội dung email
+* **Xử lý Trong Bộ Nhớ**: Xử lý email diễn ra hoàn toàn trong bộ nhớ, tránh lưu trữ trên đĩa
+* **Không Ghi Nhật Ký Nội Dung**: "Chúng tôi không ghi nhật ký hoặc lưu trữ nội dung email hoặc siêu dữ liệu lên đĩa"
+* **Mã hóa trong Môi trường Cách ly**: Khóa mã hóa không bao giờ được lưu trữ trên đĩa dưới dạng văn bản thuần túy
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**Bằng chứng từ Mã nguồn MX**: Máy chủ MX xử lý email hoàn toàn trong bộ nhớ mà không ghi nội dung ra đĩa. Bộ xử lý chính cho email minh họa cách tiếp cận trong bộ nhớ này: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sources:
+Nguồn:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Tóm tắt)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Chi tiết zero-knowledge)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Mã hóa trong môi trường cách ly)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+### Nội dung email có thể bị lộ khi hệ thống bị sự cố không {#can-email-content-be-exposed-during-system-crashes}
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+Không. Forward Email triển khai các biện pháp bảo vệ toàn diện chống lộ dữ liệu do sự cố hệ thống:
 
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
+* **Tắt Core Dumps**: Ngăn lộ bộ nhớ khi sự cố xảy ra
+* **Tắt Bộ nhớ Swap**: Hoàn toàn tắt để ngăn trích xuất dữ liệu nhạy cảm từ file swap
+* **Kiến trúc Trong Bộ Nhớ**: Nội dung email chỉ tồn tại trong bộ nhớ tạm thời khi xử lý
+* **Bảo vệ Khóa Mã hóa**: Khóa không bao giờ được lưu trên đĩa dưới dạng văn bản thuần túy
+* **Bảo mật Vật lý**: Đĩa mã hóa LUKS v2 ngăn truy cập vật lý vào dữ liệu
+* **Tắt Lưu trữ USB**: Ngăn trích xuất dữ liệu trái phép
 
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+**Xử lý lỗi cho các vấn đề hệ thống**: Forward Email sử dụng các hàm trợ giúp `isCodeBug` và `isTimeoutError` để đảm bảo nếu có sự cố kết nối cơ sở dữ liệu, sự cố mạng/DNS/blocklist hoặc sự cố kết nối upstream xảy ra, hệ thống trả về mã trạng thái SMTP 421 để đảm bảo email sẽ được thử lại sau thay vì bị mất hoặc lộ.
 
-Implementation details:
+Chi tiết triển khai:
 
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Phân loại lỗi: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Xử lý lỗi timeout trong xử lý MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Nguồn: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+### Ai có quyền truy cập vào hạ tầng email của bạn {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+Forward Email triển khai kiểm soát truy cập toàn diện cho nhóm kỹ sư tối thiểu 2-3 người với yêu cầu 2FA nghiêm ngặt:
 
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+* **Kiểm soát Truy cập Theo Vai trò**: Cho các tài khoản nhóm với quyền dựa trên tài nguyên
+* **Nguyên tắc Quyền Ít Nhất**: Áp dụng trên tất cả hệ thống
+* **Phân tách Nhiệm vụ**: Giữa các vai trò vận hành
+* **Quản lý Người dùng**: Người dùng deploy và devops riêng biệt với quyền khác nhau
+* **Tắt đăng nhập Root**: Buộc truy cập qua các tài khoản được xác thực đúng cách
+* **2FA Nghiêm ngặt**: Không dùng 2FA qua SMS do rủi ro tấn công MiTM - chỉ dùng app hoặc token phần cứng
+* **Ghi nhật ký Kiểm toán Toàn diện**: Có che dữ liệu nhạy cảm
+* **Phát hiện Bất thường Tự động**: Cho các mẫu truy cập bất thường
+* **Đánh giá Bảo mật Định kỳ**: Đối với nhật ký truy cập
+* **Phòng chống Tấn công Evil Maid**: Tắt lưu trữ USB và các biện pháp bảo mật vật lý khác
+Nguồn:
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Kiểm soát ủy quyền)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Bảo mật mạng)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Phòng chống tấn công evil maid)
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### Bạn sử dụng nhà cung cấp hạ tầng nào {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email sử dụng nhiều nhà xử lý phụ hạ tầng với các chứng nhận tuân thủ toàn diện.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+Chi tiết đầy đủ có trên trang tuân thủ GDPR của chúng tôi: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**Nhà xử lý phụ hạ tầng chính:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Nhà cung cấp     | Chứng nhận Khung Bảo mật Dữ liệu | Trang Tuân thủ GDPR                                                                       |
+| ---------------- | -------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Cloudflare**   | ✅ Có                            | <https://www.cloudflare.com/trust-hub/gdpr/>                                               |
+| **DataPacket**   | ❌ Không                         | <https://www.datapacket.com/privacy-policy>                                                |
+| **DigitalOcean** | ❌ Không                         | <https://www.digitalocean.com/legal/gdpr>                                                  |
+| **GitHub**       | ✅ Có                            | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**        | ❌ Không                         | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                            |
 
-**Detailed Certifications:**
+**Chứng nhận chi tiết:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Loại II & SOC 3 Loại II (được kiểm toán bởi Schellman & Company LLC)
+* Chứng nhận ISO 27001 tại nhiều trung tâm dữ liệu
+* Tuân thủ PCI-DSS
+* Chứng nhận CSA STAR Cấp độ 1
+* Chứng nhận APEC CBPR PRP
+* Chi tiết: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
+* Chứng nhận SOC 2+ (HIPAA)
+* Tuân thủ PCI Merchant
+* Chứng nhận CSA STAR Cấp độ 1
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* Chi tiết: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* Tuân thủ SOC 2 (liên hệ trực tiếp DataPacket để lấy chứng nhận)
+* Hạ tầng cấp doanh nghiệp (vị trí Denver)
+* Bảo vệ DDoS qua bộ công nghệ an ninh mạng Shield
+* Hỗ trợ kỹ thuật 24/7
+* Mạng lưới toàn cầu với 58 trung tâm dữ liệu
+* Chi tiết: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* Chứng nhận Khung Bảo mật Dữ liệu (EU-Mỹ, Thụy Sĩ-Mỹ, và Mở rộng Vương quốc Anh)
+* Lưu trữ mã nguồn, CI/CD, và quản lý dự án
+* Có Thỏa thuận Bảo vệ Dữ liệu GitHub
+* Chi tiết: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**Nhà xử lý thanh toán:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Chứng nhận Khung Bảo mật Dữ liệu - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Không được chứng nhận DPF - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Bạn có cung cấp Thỏa thuận Xử lý Dữ liệu (DPA) không {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+Có, Forward Email cung cấp Thỏa thuận Xử lý Dữ liệu (DPA) toàn diện có thể ký kết cùng với hợp đồng doanh nghiệp của chúng tôi. Bản sao DPA có tại: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**Chi tiết DPA:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* Bao gồm tuân thủ GDPR và các khung bảo mật EU-Mỹ/Thụy Sĩ-Mỹ
+* Tự động được chấp nhận khi đồng ý với Điều khoản Dịch vụ của chúng tôi
+* Không cần chữ ký riêng cho DPA tiêu chuẩn
+* Có thể sắp xếp DPA tùy chỉnh qua Giấy phép Doanh nghiệp
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**Khung Tuân thủ GDPR:**
+DPA của chúng tôi chi tiết việc tuân thủ GDPR cũng như các yêu cầu chuyển dữ liệu quốc tế. Thông tin đầy đủ có tại: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+Đối với khách hàng doanh nghiệp cần điều khoản DPA tùy chỉnh hoặc thỏa thuận hợp đồng cụ thể, có thể được xử lý qua chương trình **Giấy phép Doanh nghiệp (250$/tháng)** của chúng tôi.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### Bạn xử lý thông báo vi phạm dữ liệu như thế nào {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Kiến trúc không kiến thức của Forward Email hạn chế đáng kể tác động của vi phạm.
+* **Tiếp xúc dữ liệu hạn chế**: Không thể truy cập nội dung email được mã hóa do kiến trúc không biết gì (zero-knowledge)
+* **Thu thập dữ liệu tối thiểu**: Chỉ thông tin cơ bản của người đăng ký và nhật ký IP giới hạn cho mục đích bảo mật
+* **Khung xử lý phụ**: DigitalOcean, GitHub và Vultr duy trì quy trình phản ứng sự cố tuân thủ GDPR
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**Thông tin đại diện GDPR:**
+Forward Email đã chỉ định đại diện GDPR theo Điều 27:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
+**Đại diện EU:**
 Osano International Compliance Services Limited
 ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**UK Representative:**
+**Đại diện Vương quốc Anh:**
 Osano UK Compliance LTD
 ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+Đối với khách hàng doanh nghiệp yêu cầu SLA thông báo vi phạm cụ thể, điều này nên được thảo luận trong khuôn khổ thỏa thuận **Enterprise License**.
 
-Sources:
+Nguồn:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### Bạn có cung cấp môi trường thử nghiệm không {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+Tài liệu kỹ thuật của Forward Email không mô tả rõ ràng chế độ sandbox riêng biệt. Tuy nhiên, các phương pháp thử nghiệm tiềm năng bao gồm:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **Tùy chọn tự lưu trữ**: Khả năng tự lưu trữ toàn diện để tạo môi trường thử nghiệm
+* **Giao diện API**: Khả năng thử nghiệm cấu hình theo chương trình
+* **Mã nguồn mở**: Mã nguồn 100% mở cho phép khách hàng kiểm tra logic chuyển tiếp
+* **Nhiều tên miền**: Hỗ trợ nhiều tên miền có thể cho phép tạo tên miền thử nghiệm
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+Đối với khách hàng doanh nghiệp yêu cầu khả năng sandbox chính thức, điều này nên được thảo luận trong khuôn khổ thỏa thuận **Enterprise License**.
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+Nguồn: <https://github.com/forwardemail/forwardemail.net> (Chi tiết môi trường phát triển)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### Bạn có cung cấp công cụ giám sát và cảnh báo không {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+Forward Email cung cấp giám sát thời gian thực với một số giới hạn:
 
-**Available:**
+**Có sẵn:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **Giám sát giao hàng thời gian thực**: Các chỉ số hiệu suất công khai cho các nhà cung cấp email lớn
+* **Cảnh báo tự động**: Đội ngũ kỹ thuật được cảnh báo khi thời gian giao hàng vượt quá 10 giây
+* **Giám sát minh bạch**: Hệ thống giám sát mã nguồn mở 100%
+* **Giám sát hạ tầng**: Phát hiện bất thường tự động và ghi nhật ký kiểm toán toàn diện
 
-**Limitations:**
+**Giới hạn:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* Các webhook dành cho khách hàng hoặc thông báo trạng thái giao hàng dựa trên API không được tài liệu hóa rõ ràng
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+Đối với khách hàng doanh nghiệp yêu cầu webhook trạng thái giao hàng chi tiết hoặc tích hợp giám sát tùy chỉnh, các khả năng này có thể có thông qua thỏa thuận **Enterprise License**.
 
-Sources:
+Nguồn:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (Hiển thị giám sát thời gian thực)
+* <https://github.com/forwardemail/forwardemail.net> (Triển khai giám sát)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### Làm thế nào bạn đảm bảo tính khả dụng cao {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email triển khai dự phòng toàn diện trên nhiều nhà cung cấp hạ tầng.
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **Hạ tầng phân tán**: Nhiều nhà cung cấp (DigitalOcean, Vultr, DataPacket) trên các vùng địa lý khác nhau
+* **Cân bằng tải theo địa lý**: Cân bằng tải định vị địa lý dựa trên Cloudflare với chuyển đổi dự phòng tự động
+* **Tự động mở rộng**: Điều chỉnh tài nguyên động dựa trên nhu cầu
+* **Bảo vệ DDoS đa lớp**: Qua hệ thống Shield của DataPacket và Cloudflare
+* **Dự phòng máy chủ**: Nhiều máy chủ mỗi vùng với chuyển đổi dự phòng tự động
+* **Sao chép cơ sở dữ liệu**: Đồng bộ dữ liệu thời gian thực trên nhiều vị trí
+* **Giám sát và cảnh báo**: Giám sát 24/7 với phản ứng sự cố tự động
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**Cam kết thời gian hoạt động**: 99,9%+ khả dụng dịch vụ với giám sát minh bạch có sẵn tại <https://forwardemail.net>
 
-Sources:
+Nguồn:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Bạn có tuân thủ Mục 889 của Đạo luật Ủy quyền Quốc phòng Quốc gia (NDAA) không {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email hoàn toàn tuân thủ Mục 889 thông qua việc lựa chọn cẩn thận các đối tác hạ tầng.
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+Có, Forward Email **tuân thủ Mục 889**. Mục 889 của Đạo luật Ủy quyền Quốc phòng Quốc gia (NDAA) cấm các cơ quan chính phủ sử dụng hoặc ký hợp đồng với các thực thể sử dụng thiết bị viễn thông và giám sát video từ các công ty cụ thể (Huawei, ZTE, Hikvision, Dahua và Hytera).
+**Cách Forward Email Đạt Được Tuân Thủ Mục 889:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+Forward Email hoàn toàn dựa vào hai nhà cung cấp hạ tầng chính, không sử dụng thiết bị bị cấm theo Mục 889:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: Đối tác chính của chúng tôi về dịch vụ mạng và bảo mật email
+2. **DataPacket**: Nhà cung cấp chính của chúng tôi về hạ tầng máy chủ (chỉ sử dụng thiết bị của Arista Networks và Cisco)
+3. **Nhà cung cấp dự phòng**: Các nhà cung cấp dự phòng của chúng tôi là Digital Ocean và Vultr cũng được xác nhận bằng văn bản tuân thủ Mục 889.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**Cam kết của Cloudflare**: Cloudflare tuyên bố rõ ràng trong Bộ Quy Tắc Ứng Xử Bên Thứ Ba của họ rằng họ không sử dụng thiết bị viễn thông, sản phẩm giám sát video hoặc dịch vụ từ bất kỳ thực thể nào bị cấm theo Mục 889.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**Trường hợp sử dụng của Chính phủ**: Việc tuân thủ Mục 889 của chúng tôi đã được xác nhận khi **Học viện Hải quân Hoa Kỳ** chọn Forward Email cho nhu cầu chuyển tiếp email an toàn của họ, yêu cầu tài liệu về các tiêu chuẩn tuân thủ liên bang của chúng tôi.
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+Để biết chi tiết đầy đủ về khung tuân thủ của chính phủ, bao gồm các quy định liên bang rộng hơn, hãy đọc nghiên cứu trường hợp toàn diện của chúng tôi: [Dịch vụ Email Chính phủ Liên bang Tuân thủ Mục 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## Chi tiết Hệ thống và Kỹ thuật {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### Bạn có lưu trữ email và nội dung của chúng không {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Không, chúng tôi không ghi vào đĩa hoặc lưu trữ nhật ký – ngoại trừ [lỗi](#do-you-store-error-logs) và [SMTP gửi đi](#do-you-support-sending-email-with-smtp) (xem [Chính sách Bảo mật](/privacy) của chúng tôi).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Mọi thứ được thực hiện trong bộ nhớ và [mã nguồn của chúng tôi có trên GitHub](https://github.com/forwardemail).
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### Hệ thống chuyển tiếp email của bạn hoạt động như thế nào {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+Email dựa trên [giao thức SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Giao thức này bao gồm các lệnh gửi đến máy chủ (thường chạy trên cổng 25). Có một kết nối ban đầu, sau đó người gửi chỉ định địa chỉ gửi ("MAIL FROM"), tiếp theo là địa chỉ nhận ("RCPT TO"), và cuối cùng là phần tiêu đề và nội dung email ("DATA"). Luồng hệ thống chuyển tiếp email của chúng tôi được mô tả tương ứng với từng lệnh giao thức SMTP dưới đây:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Kết nối ban đầu (không có tên lệnh, ví dụ `telnet example.com 25`) - Đây là kết nối ban đầu. Chúng tôi kiểm tra người gửi không có trong [danh sách cho phép](#do-you-have-an-allowlist) so với [danh sách cấm](#do-you-have-a-denylist). Cuối cùng, nếu người gửi không có trong danh sách cho phép, chúng tôi kiểm tra xem họ có bị [đưa vào danh sách xám](#do-you-have-a-greylist) hay không.
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` - Đây là lời chào để xác định tên miền đầy đủ (FQDN), địa chỉ IP hoặc tên trình xử lý thư của người gửi. Giá trị này có thể bị giả mạo, vì vậy chúng tôi không dựa vào dữ liệu này mà thay vào đó sử dụng tra cứu tên máy chủ ngược của địa chỉ IP kết nối.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` - Đây là địa chỉ gửi thư trong phong bì của email. Nếu có giá trị nhập vào, nó phải là địa chỉ email hợp lệ theo RFC 5322. Giá trị trống được phép. Chúng tôi [kiểm tra chống lại thư phản hồi ngược](#how-do-you-protect-against-backscatter) tại đây, và cũng kiểm tra MAIL FROM với [danh sách cấm](#do-you-have-a-denylist). Cuối cùng, chúng tôi kiểm tra người gửi không có trong danh sách cho phép để giới hạn tần suất (xem phần [Giới hạn tần suất](#do-you-have-rate-limiting) và [danh sách cho phép](#do-you-have-an-allowlist) để biết thêm thông tin).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` - Đây là người nhận của email. Đây phải là các địa chỉ email hợp lệ theo RFC 5322. Chúng tôi chỉ cho phép tối đa 50 người nhận trong phong bì cho mỗi tin nhắn (khác với trường "To" trong tiêu đề email). Chúng tôi cũng kiểm tra địa chỉ [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") hợp lệ tại đây để bảo vệ chống giả mạo với tên miền SRS của chúng tôi.
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` - Đây là phần cốt lõi của dịch vụ chúng tôi xử lý email. Xem phần [Bạn xử lý email để chuyển tiếp như thế nào](#how-do-you-process-an-email-for-forwarding) bên dưới để hiểu rõ hơn.
+### Bạn xử lý một email để chuyển tiếp như thế nào {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+Phần này mô tả quy trình của chúng tôi liên quan đến lệnh giao thức SMTP `DATA` trong phần [Hệ thống chuyển tiếp email của bạn hoạt động như thế nào](#how-does-your-email-forwarding-system-work) ở trên – đó là cách chúng tôi xử lý các tiêu đề, nội dung, bảo mật của email, xác định nơi cần gửi đến, và cách chúng tôi xử lý các kết nối.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. Nếu tin nhắn vượt quá kích thước tối đa 50mb, thì nó sẽ bị từ chối với mã lỗi 552.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. Nếu tin nhắn không chứa tiêu đề "From", hoặc nếu bất kỳ giá trị nào trong tiêu đề "From" không phải là địa chỉ email hợp lệ theo RFC 5322, thì nó sẽ bị từ chối với mã lỗi 550.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. Nếu tin nhắn có hơn 25 tiêu đề "Received", thì được xác định là bị kẹt trong vòng lặp chuyển hướng, và nó sẽ bị từ chối với mã lỗi 550.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. Sử dụng dấu vân tay của email (xem phần về [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), chúng tôi sẽ kiểm tra xem tin nhắn đã được thử gửi lại hơn 5 ngày chưa (điều này khớp với [hành vi mặc định của postfix](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), và nếu có, thì nó sẽ bị từ chối với mã lỗi 550.
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. Chúng tôi lưu trữ trong bộ nhớ kết quả quét email bằng cách sử dụng [Spam Scanner](https://spamscanner.net).
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Nếu có bất kỳ kết quả tùy ý nào từ Spam Scanner, thì nó sẽ bị từ chối với mã lỗi 554. Kết quả tùy ý chỉ bao gồm bài kiểm tra GTUBE tại thời điểm viết này. Xem <https://spamassassin.apache.org/gtube/> để hiểu thêm.
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. Chúng tôi sẽ thêm các tiêu đề sau vào tin nhắn để phục vụ mục đích gỡ lỗi và ngăn chặn lạm dụng:
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` - chúng tôi thêm tiêu đề Received tiêu chuẩn này với IP và host nguồn gốc, loại truyền tải, thông tin kết nối TLS, ngày/giờ, và người nhận.
+   * `X-Original-To` - người nhận gốc của tin nhắn:
+     * Điều này hữu ích để xác định nơi email được gửi đến ban đầu (ngoài tiêu đề "Received").
+     * Tiêu đề này được thêm theo từng người nhận vào thời điểm IMAP và/hoặc chuyển tiếp ẩn danh (để bảo vệ quyền riêng tư).
+   * `X-Forward-Email-Website` - chứa liên kết đến trang web của chúng tôi tại <https://forwardemail.net>
+   * `X-Forward-Email-Version` - phiên bản [SemVer](https://semver.org/) hiện tại từ `package.json` của mã nguồn chúng tôi.
+   * `X-Forward-Email-Session-ID` - giá trị ID phiên dùng cho mục đích gỡ lỗi (chỉ áp dụng trong môi trường không phải sản xuất).
+   * `X-Forward-Email-Sender` - danh sách phân tách bằng dấu phẩy chứa địa chỉ MAIL FROM phong bì gốc (nếu không trống), tên máy khách PTR ngược FQDN (nếu có), và địa chỉ IP của người gửi.
+   * `X-Forward-Email-ID` - chỉ áp dụng cho SMTP gửi đi và tương ứng với ID email được lưu trong Tài khoản của tôi → Emails
+   * `X-Report-Abuse` - với giá trị `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - với giá trị `abuse@forwardemail.net`.
+   * `X-Complaints-To` - với giá trị `abuse@forwardemail.net`.
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. Sau đó chúng tôi kiểm tra tin nhắn với [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), và [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * Nếu tin nhắn không đạt DMARC và tên miền có chính sách từ chối (ví dụ `p=reject` [có trong chính sách DMARC](https://wikipedia.org/wiki/DMARC)), thì nó sẽ bị từ chối với mã lỗi 550. Thông thường chính sách DMARC cho một tên miền có thể được tìm thấy trong bản ghi <strong class="notranslate">TXT</strong> phụ miền `_dmarc` (ví dụ `dig _dmarc.example.com txt`).
+   * Nếu tin nhắn không đạt SPF và tên miền có chính sách thất bại nghiêm ngặt (ví dụ `-all` có trong chính sách SPF thay vì `~all` hoặc không có chính sách), thì nó sẽ bị từ chối với mã lỗi 550. Thông thường chính sách SPF cho một tên miền có thể được tìm thấy trong bản ghi <strong class="notranslate">TXT</strong> của tên miền gốc (ví dụ `dig example.com txt`). Xem phần này để biết thêm thông tin về [gửi mail như với Gmail](#can-i-send-mail-as-in-gmail-with-this) liên quan đến SPF.
+9. Bây giờ chúng ta xử lý các người nhận của tin nhắn như đã thu thập từ lệnh `RCPT TO` trong phần [Hệ thống chuyển tiếp email của bạn hoạt động như thế nào](#how-does-your-email-forwarding-system-work) ở trên. Đối với mỗi người nhận, chúng ta thực hiện các thao tác sau:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * Chúng ta tra cứu các bản ghi <strong class="notranslate">TXT</strong> của tên miền (phần sau ký hiệu `@`, ví dụ `example.com` nếu địa chỉ email là `test@example.com`). Ví dụ, nếu tên miền là `example.com` thì chúng ta thực hiện tra cứu DNS như `dig example.com txt`.
+   * Chúng ta phân tích tất cả các bản ghi <strong class="notranslate">TXT</strong> bắt đầu bằng `forward-email=` (gói miễn phí) hoặc `forward-email-site-verification=` (gói trả phí). Lưu ý rằng chúng ta phân tích cả hai để xử lý email trong khi người dùng đang nâng cấp hoặc hạ cấp gói.
+   * Từ các bản ghi <strong class="notranslate">TXT</strong> đã phân tích, chúng ta lặp qua để trích xuất cấu hình chuyển tiếp (như mô tả trong phần [Làm thế nào để bắt đầu và thiết lập chuyển tiếp email](#how-do-i-get-started-and-set-up-email-forwarding) ở trên). Lưu ý rằng chúng tôi chỉ hỗ trợ một giá trị `forward-email-site-verification=`, và nếu có nhiều hơn một giá trị được cung cấp, thì sẽ xảy ra lỗi 550 và người gửi sẽ nhận được thư trả lại cho người nhận này.
+   * Đệ quy, chúng ta lặp qua cấu hình chuyển tiếp đã trích xuất để xác định chuyển tiếp toàn cục, chuyển tiếp dựa trên regex, và tất cả các cấu hình chuyển tiếp được hỗ trợ khác – hiện được gọi là "Địa chỉ Chuyển tiếp" của chúng tôi.
+   * Đối với mỗi Địa chỉ Chuyển tiếp, chúng tôi hỗ trợ một lần tra cứu đệ quy (sẽ bắt đầu lại chuỗi các thao tác này trên địa chỉ được cho). Nếu tìm thấy kết quả đệ quy, thì kết quả cha sẽ bị loại khỏi Địa chỉ Chuyển tiếp, và các kết quả con sẽ được thêm vào.
+   * Địa chỉ Chuyển tiếp được phân tích để đảm bảo tính duy nhất (vì chúng tôi không muốn gửi trùng lặp đến một địa chỉ hoặc tạo thêm các kết nối SMTP không cần thiết).
+   * Đối với mỗi Địa chỉ Chuyển tiếp, chúng tôi tra cứu tên miền của nó qua điểm cuối API `/v1/max-forwarded-addresses` (để xác định số lượng địa chỉ mà tên miền được phép chuyển tiếp email đến mỗi bí danh, ví dụ mặc định là 10 – xem phần [giới hạn tối đa về số lượng địa chỉ email tôi có thể chuyển tiếp đến mỗi bí danh](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Nếu vượt quá giới hạn này, sẽ xảy ra lỗi 550 và người gửi sẽ nhận được thư trả lại cho người nhận này.
+   * Chúng tôi tra cứu cài đặt của người nhận gốc qua điểm cuối API `/v1/settings`, hỗ trợ tra cứu cho người dùng trả phí (với phương án dự phòng cho người dùng miễn phí). Điều này trả về một đối tượng cấu hình cho các cài đặt nâng cao như `port` (Số, ví dụ `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), và `has_virus_protection` (Boolean).
+   * Dựa trên các cài đặt này, chúng tôi kiểm tra kết quả của Bộ quét Spam và nếu có lỗi xảy ra, tin nhắn sẽ bị từ chối với mã lỗi 554 (ví dụ nếu `has_virus_protection` được bật, chúng tôi sẽ kiểm tra kết quả Bộ quét Spam về virus). Lưu ý rằng tất cả người dùng gói miễn phí sẽ được tự động kiểm tra nội dung người lớn, lừa đảo, tệp thực thi và virus. Mặc định, tất cả người dùng gói trả phí cũng được tự động kiểm tra, nhưng cấu hình này có thể thay đổi trong trang Cài đặt cho một tên miền trong bảng điều khiển Forward Email).
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. Đối với mỗi Địa chỉ Chuyển tiếp của người nhận đã xử lý, chúng tôi thực hiện các thao tác sau:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * Địa chỉ được kiểm tra trong [danh sách từ chối](#do-you-have-a-denylist), và nếu có trong danh sách, sẽ xảy ra lỗi 421 (báo cho người gửi thử lại sau).
+    * Nếu địa chỉ là webhook, chúng tôi đặt một biến Boolean cho các thao tác sau này (xem bên dưới – chúng tôi nhóm các webhook tương tự lại để thực hiện một yêu cầu POST thay vì nhiều yêu cầu cho việc gửi).
+    * Nếu địa chỉ là địa chỉ email, chúng tôi phân tích máy chủ cho các thao tác sau này (xem bên dưới – chúng tôi nhóm các máy chủ tương tự lại để tạo một kết nối thay vì nhiều kết nối riêng biệt cho việc gửi).
+11. Nếu không có người nhận và không có thư bị trả lại, thì chúng tôi sẽ phản hồi với lỗi 550 "Người nhận không hợp lệ".
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. Nếu có người nhận, thì chúng tôi sẽ lặp qua họ (nhóm lại theo cùng một máy chủ) và gửi email. Xem phần [Bạn xử lý các vấn đề giao hàng email như thế nào](#how-do-you-handle-email-delivery-issues) bên dưới để hiểu thêm.
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * Nếu có lỗi xảy ra khi gửi email, thì chúng tôi sẽ lưu trữ chúng trong bộ nhớ để xử lý sau.
+    * Chúng tôi sẽ lấy mã lỗi thấp nhất (nếu có) từ việc gửi email – và sử dụng đó làm mã phản hồi cho lệnh `DATA`. Điều này có nghĩa là các email không được gửi sẽ thường được người gửi gốc thử lại, trong khi các email đã được gửi sẽ không bị gửi lại lần tiếp theo (vì chúng tôi sử dụng [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * Nếu không có lỗi xảy ra, thì chúng tôi sẽ gửi mã trạng thái phản hồi SMTP 250 thành công.
+    * Một thư bị trả lại được xác định là bất kỳ lần thử giao hàng nào dẫn đến mã trạng thái >= 500 (lỗi vĩnh viễn).
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. Nếu không có thư bị trả lại (lỗi vĩnh viễn), thì chúng tôi sẽ trả về mã trạng thái phản hồi SMTP là mã lỗi thấp nhất từ các lỗi không vĩnh viễn (hoặc mã trạng thái 250 thành công nếu không có lỗi nào).
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. Nếu có thư bị trả lại thì chúng tôi sẽ gửi email trả lại trong nền sau khi trả về mã lỗi thấp nhất trong tất cả các mã lỗi cho người gửi. Tuy nhiên, nếu mã lỗi thấp nhất >= 500, thì chúng tôi sẽ không gửi bất kỳ email trả lại nào. Điều này là vì nếu gửi, người gửi sẽ nhận được email trả lại kép (ví dụ một từ MTA gửi đi của họ, như Gmail – và một từ chúng tôi). Xem phần [Bạn bảo vệ chống lại backscatter như thế nào](#how-do-you-protect-against-backscatter) bên dưới để hiểu thêm.
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+### Bạn xử lý các vấn đề giao hàng email như thế nào {#how-do-you-handle-email-delivery-issues}
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+Lưu ý rằng chúng tôi sẽ thực hiện "Friendly-From" rewrite trên email chỉ khi chính sách DMARC của người gửi không đạt và không có chữ ký DKIM nào phù hợp với tiêu đề "From". Điều này có nghĩa là chúng tôi sẽ thay đổi tiêu đề "From" trên tin nhắn, đặt "X-Original-From", và cũng đặt "Reply-To" nếu nó chưa được đặt. Chúng tôi cũng sẽ đóng lại con dấu ARC trên tin nhắn sau khi thay đổi các tiêu đề này.
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+Chúng tôi cũng sử dụng phân tích thông minh các thông báo lỗi ở mọi cấp độ trong hệ thống của mình – trong mã, yêu cầu DNS, nội bộ Node.js, yêu cầu HTTP (ví dụ 408, 413, và 429 được ánh xạ thành mã phản hồi SMTP 421 nếu người nhận là webhook), và phản hồi máy chủ thư (ví dụ các phản hồi có "defer" hoặc "slowdown" sẽ được thử lại như lỗi 421).
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+Logic của chúng tôi rất dễ hiểu và cũng sẽ thử lại với các lỗi SSL/TLS, sự cố kết nối, và nhiều hơn nữa. Mục tiêu của việc làm cho logic dễ hiểu là tối đa hóa khả năng gửi thành công đến tất cả người nhận cho cấu hình chuyển tiếp.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+Nếu người nhận là webhook, thì chúng tôi sẽ cho phép thời gian chờ 60 giây để yêu cầu hoàn thành với tối đa 3 lần thử lại (tổng cộng 4 yêu cầu trước khi thất bại). Lưu ý rằng chúng tôi phân tích đúng các mã lỗi 408, 413, và 429 và ánh xạ chúng thành mã phản hồi SMTP 421.
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+Nếu người nhận là địa chỉ email, thì chúng tôi sẽ cố gắng gửi email với TLS cơ hội (chúng tôi cố gắng sử dụng STARTTLS nếu có trên máy chủ thư người nhận). Nếu xảy ra lỗi SSL/TLS khi cố gắng gửi email, thì chúng tôi sẽ cố gắng gửi email mà không dùng TLS (không sử dụng STARTTLS).
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+Nếu có lỗi DNS hoặc kết nối xảy ra, thì chúng tôi sẽ trả về lệnh `DATA` mã phản hồi SMTP 421, nếu có lỗi cấp >= 500, thì sẽ gửi thư trả lại.
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+Nếu chúng tôi phát hiện máy chủ email mà chúng tôi cố gắng gửi đến đã chặn một hoặc nhiều địa chỉ IP mail exchange của chúng tôi (ví dụ bởi công nghệ họ dùng để trì hoãn spammer), thì chúng tôi sẽ gửi mã phản hồi SMTP 421 để người gửi thử lại tin nhắn sau (và chúng tôi được cảnh báo về vấn đề để hy vọng giải quyết trước lần thử tiếp theo).
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+### Bạn xử lý các địa chỉ IP của mình bị chặn như thế nào {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+Chúng tôi thường xuyên theo dõi tất cả các danh sách từ chối DNS lớn và nếu bất kỳ địa chỉ IP trao đổi thư ("MX") nào của chúng tôi bị liệt kê trong một danh sách từ chối lớn, chúng tôi sẽ loại bỏ nó khỏi bản ghi DNS A vòng quay liên quan nếu có thể cho đến khi vấn đề được giải quyết.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+Tại thời điểm viết bài này, chúng tôi cũng được liệt kê trong một số danh sách cho phép DNS, và chúng tôi rất nghiêm túc trong việc theo dõi các danh sách từ chối. Nếu bạn thấy bất kỳ vấn đề nào trước khi chúng tôi có cơ hội giải quyết, vui lòng thông báo cho chúng tôi bằng văn bản tại <support@forwardemail.net>.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+Địa chỉ IP của chúng tôi được công khai, [xem phần này bên dưới để hiểu rõ hơn](#what-are-your-servers-ip-addresses).
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Địa chỉ postmaster là gì {#what-are-postmaster-addresses}
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+Để ngăn chặn các thư trả lại bị gửi sai và gửi các thông báo trả lời tự động kỳ nghỉ đến các hộp thư không được giám sát hoặc không tồn tại, chúng tôi duy trì một danh sách các tên người dùng giống mailer-daemon:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4118,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [và bất kỳ địa chỉ không trả lời nào](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+Xem [RFC 5320 Mục 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) để hiểu rõ hơn về cách các danh sách như thế này được sử dụng để tạo ra các hệ thống email hiệu quả.
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### Địa chỉ không trả lời là gì {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+Tên người dùng email bằng bất kỳ giá trị nào sau đây (không phân biệt chữ hoa chữ thường) được coi là địa chỉ không trả lời:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4145,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Danh sách này được duy trì [như một dự án mã nguồn mở trên GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### Địa chỉ IP của máy chủ bạn là gì {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+Chúng tôi công bố địa chỉ IP của mình tại <https://forwardemail.net/ips>.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### Bạn có danh sách cho phép không {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+Có, chúng tôi có một [danh sách các phần mở rộng tên miền](#what-domain-name-extensions-are-allowlisted-by-default) được phép theo mặc định và một danh sách cho phép động, được lưu trong bộ nhớ đệm và xoay vòng dựa trên [tiêu chí nghiêm ngặt](#what-is-your-allowlist-criteria).
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+Tất cả các tên miền, email và địa chỉ IP được sử dụng bởi khách hàng trả phí đều được kiểm tra tự động với danh sách từ chối của chúng tôi hàng giờ – điều này cảnh báo các quản trị viên có thể can thiệp thủ công nếu cần thiết.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+Ngoài ra, nếu một trong các tên miền hoặc địa chỉ email của bạn bị liệt vào danh sách từ chối (ví dụ: do gửi thư rác, virus hoặc do các cuộc tấn công giả mạo) – thì quản trị viên tên miền (bạn) và quản trị viên nhóm của chúng tôi sẽ được thông báo ngay lập tức qua email. Chúng tôi khuyến nghị mạnh mẽ rằng bạn [cấu hình DMARC](#how-do-i-set-up-dmarc-for-forward-email) để ngăn chặn điều này.
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### Các phần mở rộng tên miền nào được phép theo mặc định {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+Các phần mở rộng tên miền sau được coi là được phép theo mặc định (bất kể chúng có nằm trong Danh sách Phổ biến Umbrella hay không):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4372,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+Ngoài ra, những [miền cấp cao thương hiệu và doanh nghiệp](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) này được phép mặc định (ví dụ `apple` cho `applecard.apple` cho sao kê ngân hàng Apple Card):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4435,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4797,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+Tính đến ngày 18 tháng 3 năm 2025, chúng tôi cũng đã thêm các lãnh thổ hải ngoại của Pháp này vào danh sách này ([theo yêu cầu GitHub này](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4813,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+Tính đến ngày 8 tháng 7 năm 2025, chúng tôi đã thêm các quốc gia riêng biệt ở châu Âu này:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4833,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+Vào tháng 10 năm 2025, chúng tôi cũng đã thêm <code class="notranslate">cz</code> (Cộng hòa Séc) do nhu cầu.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+Chúng tôi đặc biệt không bao gồm `ru` và `ua` do hoạt động spam cao.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### Tiêu chí danh sách cho phép của bạn là gì {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+Chúng tôi có một danh sách tĩnh các [phần mở rộng tên miền được phép theo mặc định](#what-domain-name-extensions-are-allowlisted-by-default) – và chúng tôi cũng duy trì một danh sách cho phép động, được lưu trong bộ nhớ đệm, dựa trên các tiêu chí nghiêm ngặt sau:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* Tên miền gốc của người gửi phải thuộc [phần mở rộng tên miền phù hợp với danh sách mà chúng tôi cung cấp trong gói miễn phí](#what-domain-name-extensions-can-be-used-for-free) (có bổ sung `biz` và `info`).  Chúng tôi cũng bao gồm các khớp một phần với `edu`, `gov`, và `mil`, chẳng hạn như `xyz.gov.au` và `xyz.edu.au`.
+* Tên miền gốc của người gửi phải nằm trong top 100.000 kết quả tên miền gốc duy nhất được phân tích từ [Danh sách phổ biến Umbrella](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Tên miền gốc của người gửi phải nằm trong top 50.000 kết quả từ các tên miền gốc duy nhất xuất hiện ít nhất 4 trong 7 ngày gần đây của UPL (~50%+).
+* Tên miền gốc của người gửi không được [được phân loại](https://radar.cloudflare.com/categorization-feedback/) là nội dung người lớn hoặc phần mềm độc hại bởi Cloudflare.
+* Tên miền gốc của người gửi phải có bản ghi A hoặc MX được thiết lập.
+* Tên miền gốc của người gửi phải có bản ghi A, bản ghi MX, bản ghi DMARC với `p=reject` hoặc `p=quarantine`, hoặc bản ghi SPF với bộ phân loại `-all` hoặc `~all`.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+Nếu tiêu chí này được đáp ứng, thì tên miền gốc của người gửi sẽ được lưu trong bộ nhớ đệm trong 7 ngày. Lưu ý rằng công việc tự động của chúng tôi chạy hàng ngày – do đó đây là bộ nhớ đệm danh sách cho phép cuộn cập nhật hàng ngày.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+Công việc tự động của chúng tôi sẽ tải xuống 7 ngày trước của UPL trong bộ nhớ, giải nén chúng, và sau đó phân tích trong bộ nhớ theo các tiêu chí nghiêm ngặt ở trên.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+Các tên miền phổ biến tại thời điểm viết bài như Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, và nhiều hơn nữa – tất nhiên đều được bao gồm.
+Nếu bạn là người gửi không có trong danh sách cho phép của chúng tôi, thì lần đầu tiên tên miền gốc FQDN hoặc địa chỉ IP của bạn gửi email, bạn sẽ bị [giới hạn tần suất](#do-you-have-rate-limiting) và [đưa vào danh sách xám](#do-you-have-a-greylist).  Lưu ý rằng đây là thực tiễn tiêu chuẩn được áp dụng như một tiêu chuẩn email.  Hầu hết các máy chủ email sẽ cố gắng gửi lại nếu họ nhận được lỗi giới hạn tần suất hoặc danh sách xám (ví dụ: mã trạng thái lỗi cấp 421 hoặc 4xx).
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**Lưu ý rằng các người gửi cụ thể như `a@gmail.com`, `b@xyz.edu`, và `c@gov.au` vẫn có thể bị [đưa vào danh sách chặn](#do-you-have-a-denylist)** (ví dụ: nếu chúng tôi tự động phát hiện spam, lừa đảo, hoặc phần mềm độc hại từ những người gửi đó).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### Những phần mở rộng tên miền nào có thể sử dụng miễn phí {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+Tính đến ngày 31 tháng 3 năm 2023, chúng tôi đã thực thi một quy tắc chống spam tổng quát mới để bảo vệ người dùng và dịch vụ của mình.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+Quy tắc mới này chỉ cho phép các phần mở rộng tên miền sau được sử dụng trong gói miễn phí của chúng tôi:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4981,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### Bạn có sử dụng greylist {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+Vâng, chúng tôi sử dụng chính sách [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) rất lỏng lẻo. Greylisting chỉ áp dụng cho những người gửi không có trong danh sách cho phép của chúng tôi và được lưu trong bộ nhớ đệm của chúng tôi trong 30 ngày.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+Đối với bất kỳ người gửi mới nào, chúng tôi lưu một khóa trong cơ sở dữ liệu Redis của mình trong 30 ngày với giá trị được đặt là thời gian đến ban đầu của yêu cầu đầu tiên của họ. Sau đó, chúng tôi từ chối email của họ với mã trạng thái thử lại 450 và chỉ cho phép email đó đi qua khi đã qua 5 phút.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+Nếu họ đã chờ thành công 5 phút kể từ thời gian đến ban đầu này, thì email của họ sẽ được chấp nhận và họ sẽ không nhận mã trạng thái 450 này.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+Khóa bao gồm hoặc là tên miền gốc FQDN hoặc địa chỉ IP của người gửi. Điều này có nghĩa là bất kỳ tên miền phụ nào vượt qua greylist cũng sẽ vượt qua cho tên miền gốc, và ngược lại (đây là điều chúng tôi gọi là chính sách "rất lỏng lẻo").
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+Ví dụ, nếu một email đến từ `test.example.com` trước khi chúng tôi thấy một email đến từ `example.com`, thì bất kỳ email nào từ `test.example.com` và/hoặc `example.com` sẽ phải chờ 5 phút kể từ thời gian đến ban đầu của kết nối. Chúng tôi không bắt cả `test.example.com` và `example.com` phải chờ riêng biệt 5 phút (chính sách greylisting của chúng tôi áp dụng ở cấp độ tên miền gốc).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+Lưu ý rằng greylisting không áp dụng cho bất kỳ người gửi nào trong [danh sách cho phép](#do-you-have-an-allowlist) của chúng tôi (ví dụ: Meta, Amazon, Netflix, Google, Microsoft tại thời điểm viết này).
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### Bạn có sử dụng denylist {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+Vâng, chúng tôi vận hành denylist riêng của mình và cập nhật nó tự động theo thời gian thực và thủ công dựa trên các hoạt động spam và độc hại được phát hiện.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+Chúng tôi cũng lấy tất cả các địa chỉ IP từ denylist UCEPROTECT Cấp 1 tại <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> mỗi giờ và đưa vào denylist của chúng tôi với thời hạn 7 ngày.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+Người gửi bị phát hiện trong denylist sẽ nhận mã lỗi 421 (báo cho người gửi thử lại sau) nếu họ [không có trong danh sách cho phép](#do-you-have-an-allowlist).
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+Bằng cách sử dụng mã trạng thái 421 thay vì 554, các trường hợp dương tính giả tiềm năng có thể được giảm thiểu ngay lập tức và sau đó tin nhắn có thể được gửi thành công trong lần thử tiếp theo.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**Điều này được thiết kế khác với các dịch vụ thư khác**, nơi nếu bạn bị đưa vào danh sách chặn, sẽ xảy ra lỗi cứng và vĩnh viễn. Thường rất khó để yêu cầu người gửi thử lại tin nhắn (đặc biệt từ các tổ chức lớn), do đó cách tiếp cận này cho phép khoảng 5 ngày kể từ lần thử email đầu tiên để người gửi, người nhận hoặc chúng tôi can thiệp và giải quyết vấn đề (bằng cách yêu cầu gỡ bỏ denylist).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+Tất cả các yêu cầu gỡ bỏ denylist được quản trị viên giám sát theo thời gian thực (ví dụ: để các trường hợp dương tính giả lặp lại có thể được quản trị viên cho phép vĩnh viễn).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+Yêu cầu gỡ bỏ denylist có thể được gửi tại <https://forwardemail.net/denylist>. Người dùng trả phí sẽ được xử lý yêu cầu gỡ bỏ denylist ngay lập tức, trong khi người dùng không trả phí phải chờ quản trị viên xử lý yêu cầu.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+Người gửi bị phát hiện gửi spam hoặc nội dung virus sẽ được thêm vào denylist theo cách sau:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. [Dấu vân tay tin nhắn ban đầu](#how-do-you-determine-an-email-fingerprint) bị greylist khi phát hiện spam hoặc bị chặn từ người gửi "đáng tin cậy" (ví dụ: `gmail.com`, `microsoft.com`, `apple.com`).
+   * Nếu người gửi đã được cho phép, tin nhắn bị greylist trong 1 giờ.
+   * Nếu người gửi không được cho phép, tin nhắn bị greylist trong 6 giờ.
+2. Chúng tôi phân tích các khóa denylist từ thông tin của người gửi và tin nhắn, và với mỗi khóa này chúng tôi tạo (nếu chưa tồn tại) một bộ đếm, tăng nó lên 1, và lưu trong bộ nhớ đệm 24 giờ.
+   * Đối với người gửi được cho phép:
+     * Thêm một khóa cho địa chỉ email "MAIL FROM" trong phong bì nếu nó có SPF hợp lệ hoặc không có SPF, và không phải là [tên người dùng postmaster](#what-are-postmaster-addresses) hoặc [tên người dùng no-reply](#what-are-no-reply-addresses).
+     * Nếu tiêu đề "From" được cho phép, thì thêm một khóa cho địa chỉ email trong tiêu đề "From" nếu nó có SPF hợp lệ hoặc DKIM hợp lệ và căn chỉnh.
+     * Nếu tiêu đề "From" không được cho phép, thì thêm một khóa cho địa chỉ email trong tiêu đề "From" và tên miền gốc đã phân tích.
+   * Đối với người gửi không được cho phép:
+     * Thêm một khóa cho địa chỉ email "MAIL FROM" trong phong bì nếu nó có SPF hợp lệ.
+     * Nếu tiêu đề "From" được cho phép, thì thêm một khóa cho địa chỉ email trong tiêu đề "From" nếu nó có SPF hợp lệ hoặc DKIM hợp lệ và căn chỉnh.
+     * Nếu tiêu đề "From" không được cho phép, thì thêm một khóa cho địa chỉ email trong tiêu đề "From" và tên miền gốc đã phân tích.
+     * Thêm một khóa cho địa chỉ IP từ xa của người gửi.
+     * Thêm một khóa cho tên máy chủ được phân giải của client bằng tra cứu ngược từ địa chỉ IP của người gửi (nếu có).
+     * Thêm một khóa cho tên miền gốc của tên máy chủ được phân giải của client (nếu có, và nếu khác với tên máy chủ được phân giải của client).
+3. Nếu bộ đếm đạt 5 đối với người gửi và khóa không được cho phép, thì chúng tôi đưa khóa vào denylist trong 30 ngày và gửi email cho đội ngũ xử lý lạm dụng của chúng tôi. Các con số này có thể thay đổi và sẽ được cập nhật tại đây khi chúng tôi giám sát lạm dụng.
+4. Nếu bộ đếm đạt 10 đối với người gửi và khóa được cho phép, thì chúng tôi đưa khóa vào denylist trong 7 ngày và gửi email cho đội ngũ xử lý lạm dụng của chúng tôi. Các con số này có thể thay đổi và sẽ được cập nhật tại đây khi chúng tôi giám sát lạm dụng.
+> **LƯU Ý:** Trong tương lai gần, chúng tôi sẽ giới thiệu giám sát uy tín. Giám sát uy tín sẽ tính toán khi nào cần đưa người gửi vào danh sách đen dựa trên ngưỡng phần trăm (thay vì bộ đếm sơ khai như đã nêu ở trên).
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### Bạn có giới hạn tốc độ {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+Giới hạn tốc độ người gửi được thực hiện theo tên miền gốc phân tích từ tra cứu PTR ngược trên địa chỉ IP của người gửi – hoặc nếu không có kết quả, thì đơn giản sử dụng địa chỉ IP của người gửi. Lưu ý rằng chúng tôi gọi đây là `Sender` bên dưới.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+Máy chủ MX của chúng tôi có giới hạn hàng ngày cho thư đến nhận được cho [lưu trữ IMAP được mã hóa](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* Thay vì giới hạn tốc độ thư đến nhận được trên từng bí danh riêng lẻ (ví dụ `you@yourdomain.com`) – chúng tôi giới hạn theo tên miền của bí danh đó (ví dụ `yourdomain.com`). Điều này ngăn chặn `Senders` gửi tràn vào hộp thư của tất cả các bí danh trên toàn bộ tên miền của bạn cùng lúc.
+* Chúng tôi có các giới hạn chung áp dụng cho tất cả `Senders` trên toàn dịch vụ bất kể người nhận:
+  * `Senders` mà chúng tôi coi là "đáng tin cậy" như nguồn thông tin chính xác (ví dụ `gmail.com`, `microsoft.com`, `apple.com`) bị giới hạn gửi 100 GB mỗi ngày.
+  * `Senders` được [cho phép trong danh sách trắng](#do-you-have-an-allowlist) bị giới hạn gửi 10 GB mỗi ngày.
+  * Tất cả các `Senders` khác bị giới hạn gửi 1 GB và/hoặc 1000 tin nhắn mỗi ngày.
+* Chúng tôi có giới hạn cụ thể cho từng `Sender` và `yourdomain.com` là 1 GB và/hoặc 1000 tin nhắn mỗi ngày.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+Máy chủ MX cũng giới hạn tin nhắn được chuyển tiếp đến một hoặc nhiều người nhận thông qua giới hạn tốc độ – nhưng điều này chỉ áp dụng cho `Senders` không có trong [danh sách trắng](#do-you-have-an-allowlist):
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* Chúng tôi chỉ cho phép tối đa 100 kết nối mỗi giờ, mỗi tên miền gốc FQDN được phân giải của `Sender` (hoặc) địa chỉ IP từ xa của `Sender` (nếu không có PTR ngược), và mỗi người nhận trong phong bì. Chúng tôi lưu khóa giới hạn tốc độ dưới dạng băm mật mã trong cơ sở dữ liệu Redis của mình.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* Nếu bạn gửi email qua hệ thống của chúng tôi, vui lòng đảm bảo bạn đã thiết lập PTR ngược cho tất cả địa chỉ IP của bạn (nếu không, mỗi tên miền gốc FQDN hoặc địa chỉ IP duy nhất bạn gửi sẽ bị giới hạn tốc độ).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Lưu ý rằng nếu bạn gửi qua hệ thống phổ biến như Amazon SES, thì bạn sẽ không bị giới hạn tốc độ vì (tại thời điểm viết bài này) Amazon SES đã được liệt kê trong danh sách trắng của chúng tôi.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* Nếu bạn gửi từ một tên miền như `test.abc.123.example.com`, thì giới hạn tốc độ sẽ được áp dụng cho `example.com`. Nhiều kẻ gửi thư rác sử dụng hàng trăm tên miền phụ để tránh các bộ lọc thư rác phổ biến chỉ giới hạn tốc độ theo tên máy chủ duy nhất thay vì tên miền gốc FQDN duy nhất.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* `Senders` vượt quá giới hạn tốc độ sẽ bị từ chối với lỗi 421.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+Máy chủ IMAP và SMTP của chúng tôi giới hạn bí danh của bạn không được có hơn `60` kết nối đồng thời cùng lúc.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+Máy chủ MX của chúng tôi giới hạn các người gửi [không có trong danh sách trắng](#do-you-have-an-allowlist) không được thiết lập hơn 10 kết nối đồng thời (với thời gian lưu bộ đếm trong bộ nhớ cache là 3 phút, tương ứng với thời gian chờ socket của chúng tôi là 3 phút).
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### Làm thế nào bạn bảo vệ chống lại backscatter {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+Các thư trả lại sai hướng hoặc thư rác trả lại (được gọi là "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") có thể gây ảnh hưởng tiêu cực đến uy tín địa chỉ IP người gửi.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+Chúng tôi thực hiện hai bước để bảo vệ chống lại backscatter, được trình bày chi tiết trong các phần sau đây [Ngăn chặn thư trả lại từ các kẻ gửi MAIL FROM đã biết](#prevent-bounces-from-known-mail-from-spammers) và [Ngăn chặn thư trả lại không cần thiết để bảo vệ chống lại backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### Ngăn chặn thư trả lại từ các kẻ gửi MAIL FROM đã biết {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+Chúng tôi lấy danh sách từ [Backscatter.org](https://www.backscatterer.org/) (được hỗ trợ bởi [UCEPROTECT](https://www.uceprotect.net/)) tại <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> mỗi giờ và đưa vào cơ sở dữ liệu Redis của chúng tôi (chúng tôi cũng so sánh sự khác biệt trước; trong trường hợp có IP nào bị loại bỏ cần được tôn trọng).
+Nếu MAIL FROM để trống HOẶC bằng (không phân biệt chữ hoa chữ thường) bất kỳ địa chỉ [postmaster](#what-are-postmaster-addresses) nào (phần trước dấu @ trong email), thì chúng tôi sẽ kiểm tra xem IP người gửi có khớp với một trong danh sách này không.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+Nếu IP người gửi được liệt kê (và không nằm trong [danh sách cho phép](#do-you-have-an-allowlist) của chúng tôi), thì chúng tôi sẽ gửi lỗi 554 với thông báo `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  Chúng tôi sẽ được cảnh báo nếu một người gửi nằm trong cả danh sách Backscatterer và danh sách cho phép để có thể giải quyết vấn đề nếu cần thiết.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+Các kỹ thuật được mô tả trong phần này tuân thủ khuyến nghị "SAFE MODE" tại <https://www.backscatterer.org/?target=usage> – nơi chúng tôi chỉ kiểm tra IP người gửi nếu một số điều kiện nhất định đã được đáp ứng.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### Ngăn chặn trả lại không cần thiết để bảo vệ chống lại backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+Bounces là các email báo hiệu việc chuyển tiếp email hoàn toàn thất bại đến người nhận và email sẽ không được thử lại.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+Một lý do phổ biến khiến bị liệt kê trong danh sách Backscatterer là do trả lại sai địa chỉ hoặc spam trả lại, vì vậy chúng ta phải bảo vệ chống lại điều này bằng một vài cách:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. Chúng tôi chỉ gửi khi xảy ra lỗi mã trạng thái >= 500 (khi các email cố gắng chuyển tiếp đã thất bại, ví dụ Gmail trả về lỗi cấp 500).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. Chúng tôi chỉ gửi một lần duy nhất (chúng tôi sử dụng một khóa dấu vân tay bounce được tính toán và lưu trong bộ nhớ đệm để ngăn gửi trùng lặp).  Dấu vân tay bounce là một khóa là dấu vân tay của tin nhắn kết hợp với một hàm băm của địa chỉ bounce và mã lỗi của nó).  Xem phần [Fingerprinting](#how-do-you-determine-an-email-fingerprint) để hiểu thêm về cách tính dấu vân tay tin nhắn.  Các dấu vân tay bounce gửi thành công sẽ hết hạn sau 7 ngày trong bộ nhớ đệm Redis của chúng tôi.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. Chúng tôi chỉ gửi khi MAIL FROM và/hoặc From không để trống và không chứa (không phân biệt chữ hoa chữ thường) tên người dùng [postmaster](#what-are-postmaster-addresses) (phần trước dấu @ trong email).
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. Chúng tôi không gửi nếu tin nhắn gốc có bất kỳ header nào sau đây (không phân biệt chữ hoa chữ thường):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * Header `auto-submitted` với giá trị khác `no`.
+   * Header `x-auto-response-suppress` với giá trị `dr`, `autoreply`, `auto-reply`, `auto_reply`, hoặc `all`
+   * Header `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, hoặc `x-auto-respond` (bất kể giá trị).
+   * Header `precedence` với giá trị `bulk`, `autoreply`, `auto-reply`, `auto_reply`, hoặc `list`.
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. Chúng tôi không gửi nếu địa chỉ email MAIL FROM hoặc From kết thúc bằng `+donotreply`, `-donotreply`, `+noreply`, hoặc `-noreply`.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. Chúng tôi không gửi nếu phần tên người dùng của địa chỉ email From là `mdaemon` và có header `X-MDDSN-Message` không phân biệt chữ hoa chữ thường.
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. Chúng tôi không gửi nếu có header `content-type` không phân biệt chữ hoa chữ thường là `multipart/report`.
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### Làm thế nào để xác định dấu vân tay email {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+Dấu vân tay email được sử dụng để xác định tính duy nhất của một email và ngăn chặn việc gửi các tin nhắn trùng lặp và [trả lại trùng lặp](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+Dấu vân tay được tính toán từ danh sách sau:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* Tên máy chủ FQDN hoặc địa chỉ IP được client phân giải
+* Giá trị header `Message-ID` (nếu có)
+* Giá trị header `Date` (nếu có)
+* Giá trị header `From` (nếu có)
+* Giá trị header `To` (nếu có)
+* Giá trị header `Cc` (nếu có)
+* Giá trị header `Subject` (nếu có)
+* Giá trị `Body` (nếu có)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### Tôi có thể chuyển tiếp email đến các cổng khác ngoài 25 (ví dụ nếu ISP của tôi đã chặn cổng 25) không {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+Có, kể từ ngày 5 tháng 5 năm 2020 chúng tôi đã thêm tính năng này.  Hiện tại tính năng này áp dụng theo tên miền, không theo alias.  Nếu bạn cần tính năng theo alias, vui lòng liên hệ với chúng tôi để cho biết nhu cầu của bạn.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Bảo vệ quyền riêng tư nâng cao:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Nếu bạn đang sử dụng gói trả phí (có tính năng bảo vệ quyền riêng tư nâng cao), vui lòng truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a>, nhấp vào "Thiết lập" bên cạnh tên miền của bạn, sau đó nhấp vào "Cài đặt".  Nếu bạn muốn tìm hiểu thêm về các gói trả phí, xem trang <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Bảng giá</a> của chúng tôi.  Nếu không, bạn có thể tiếp tục theo các hướng dẫn bên dưới.
   </span>
 </div>
+Nếu bạn đang sử dụng gói miễn phí, thì chỉ cần thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới như hình dưới đây, nhưng thay đổi cổng từ 25 sang cổng bạn chọn.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+Ví dụ, nếu tôi muốn tất cả email gửi đến `example.com` được chuyển tiếp đến cổng SMTP của người nhận bí danh là 1337 thay vì 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4646,9 +5155,9 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    Kịch bản phổ biến nhất cho thiết lập chuyển tiếp cổng tùy chỉnh là khi bạn muốn chuyển tiếp tất cả email gửi đến example.com đến một cổng khác tại example.com, không phải cổng SMTP chuẩn là 25. Để thiết lập điều này, chỉ cần thêm bản ghi <strong class="notranslate">TXT</strong> catch-all sau.
   <span>
   </span>
 </div>
@@ -4656,15 +5165,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5181,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Có hỗ trợ ký hiệu cộng + cho bí danh Gmail không {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+Có, hoàn toàn có.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### Có hỗ trợ các tên miền phụ không {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+Có, hoàn toàn có. Thay vì sử dụng "@", ".", hoặc để trống làm tên/máy chủ/bí danh, bạn chỉ cần sử dụng tên miền phụ làm giá trị thay thế.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+Nếu bạn muốn `foo.example.com` chuyển tiếp email, thì nhập `foo` làm giá trị tên/máy chủ/bí danh trong cài đặt DNS của bạn (cho cả bản ghi MX và <strong class="notranslate">TXT</strong>).
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### Điều này có chuyển tiếp các tiêu đề email của tôi không {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+Có, hoàn toàn có.
 
-### Is this well-tested {#is-this-well-tested}
+### Điều này đã được kiểm tra kỹ chưa {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+Có, nó có các bài kiểm tra được viết bằng [ava](https://github.com/avajs/ava) và cũng có độ bao phủ mã.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### Bạn có chuyển tiếp các thông điệp và mã phản hồi SMTP không {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+Có, hoàn toàn có. Ví dụ nếu bạn gửi email đến `hello@example.com` và nó được đăng ký chuyển tiếp đến `user@gmail.com`, thì thông điệp và mã phản hồi SMTP từ máy chủ SMTP "gmail.com" sẽ được trả về thay vì máy chủ proxy tại "mx1.forwardemail.net" hoặc "mx2.forwardemail.net".
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### Làm thế nào bạn ngăn chặn spammer và đảm bảo uy tín chuyển tiếp email tốt {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+Xem các phần của chúng tôi về [Hệ thống chuyển tiếp email của bạn hoạt động như thế nào](#how-does-your-email-forwarding-system-work), [Bạn xử lý các vấn đề giao nhận email như thế nào](#how-do-you-handle-email-delivery-issues), và [Bạn xử lý khi địa chỉ IP của bạn bị chặn như thế nào](#how-do-you-handle-your-ip-addresses-becoming-blocked) ở trên.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### Làm thế nào bạn thực hiện tra cứu DNS trên tên miền {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+Chúng tôi đã tạo một dự án phần mềm mã nguồn mở :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) và sử dụng nó để tra cứu DNS. Các máy chủ DNS mặc định được sử dụng là `1.1.1.1` và `1.0.0.1`, và các truy vấn DNS được thực hiện qua [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") ở tầng ứng dụng.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) sử dụng [dịch vụ DNS dành cho người dùng ưu tiên quyền riêng tư của CloudFlare theo mặc định][cloudflare-dns].
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## Tài khoản và Thanh toán {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### Bạn có cung cấp đảm bảo hoàn tiền cho các gói trả phí không {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+Có! Hoàn tiền tự động xảy ra khi bạn nâng cấp, hạ cấp hoặc hủy tài khoản trong vòng 30 ngày kể từ khi gói của bạn bắt đầu. Điều này chỉ áp dụng cho khách hàng lần đầu.
+### Nếu tôi chuyển đổi gói, bạn có tính tỷ lệ và hoàn tiền phần chênh lệch không {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+Chúng tôi không tính tỷ lệ hay hoàn tiền phần chênh lệch khi bạn chuyển đổi gói. Thay vào đó, chúng tôi sẽ chuyển đổi thời gian còn lại từ ngày hết hạn của gói hiện tại sang thời gian tương đối gần nhất cho gói mới của bạn (làm tròn xuống theo tháng).
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+Lưu ý rằng nếu bạn nâng cấp hoặc hạ cấp giữa các gói trả phí trong vòng 30 ngày kể từ khi bắt đầu gói trả phí đầu tiên, thì chúng tôi sẽ tự động hoàn tiền toàn bộ số tiền của gói hiện tại.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Tôi có thể chỉ sử dụng dịch vụ chuyển tiếp email này như một máy chủ MX "dự phòng" hoặc "dự phòng chuyển tiếp" không {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+Không, điều này không được khuyến nghị, vì bạn chỉ có thể sử dụng một máy chủ trao đổi thư tại một thời điểm. Các máy chủ dự phòng thường không được thử lại do cấu hình ưu tiên sai và các máy chủ thư không tôn trọng việc kiểm tra ưu tiên trao đổi MX.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### Tôi có thể tắt các bí danh cụ thể không {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    Nếu bạn đang sử dụng gói trả phí, thì bạn phải vào <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh <i class="fa fa-angle-right"></i> Chỉnh sửa bí danh <i class="fa fa-angle-right"></i> Bỏ chọn hộp kiểm "Hoạt động" <i class="fa fa-angle-right"></i> Tiếp tục.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+Có, chỉ cần chỉnh sửa bản ghi DNS <strong class="notranslate">TXT</strong> của bạn và thêm tiền tố cho bí danh bằng một, hai hoặc ba dấu chấm than (xem bên dưới).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+Lưu ý rằng bạn *nên* giữ nguyên dấu ":" trong ánh xạ, vì điều này cần thiết nếu bạn quyết định bật lại (và nó cũng được sử dụng để nhập nếu bạn nâng cấp lên một trong các gói trả phí của chúng tôi).
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**Đối với từ chối im lặng (người gửi sẽ thấy như thể tin nhắn đã gửi thành công, nhưng thực tế không đi đâu) (mã trạng thái `250`):** Nếu bạn thêm tiền tố cho bí danh bằng "!" (một dấu chấm than) thì nó sẽ trả về mã trạng thái thành công `250` cho người gửi cố gắng gửi đến địa chỉ này, nhưng email sẽ không đi đâu (ví dụ như hố đen hoặc `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**Đối với từ chối mềm (mã trạng thái `421`):** Nếu bạn thêm tiền tố cho bí danh bằng "!!" (hai dấu chấm than) thì nó sẽ trả về mã lỗi mềm `421` cho người gửi cố gắng gửi đến địa chỉ này, và email thường sẽ được thử lại trong tối đa 5 ngày trước khi bị từ chối và trả lại.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**Đối với từ chối cứng (mã trạng thái `550`):** Nếu bạn thêm tiền tố cho bí danh bằng "!!!" (ba dấu chấm than) thì nó sẽ trả về mã lỗi vĩnh viễn `550` cho người gửi cố gắng gửi đến địa chỉ này và email sẽ bị từ chối và trả lại.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+Ví dụ, nếu tôi muốn tất cả email gửi đến `alias@example.com` ngừng chuyển tiếp đến `user@gmail.com` và bị từ chối và trả lại (ví dụ sử dụng ba dấu chấm than):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4766,54 +5275,53 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    Bạn cũng có thể viết lại địa chỉ người nhận được chuyển tiếp thành "nobody@forwardemail.net", điều này sẽ chuyển hướng đến nobody như trong ví dụ dưới đây.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    Nếu bạn muốn tăng cường bảo mật, bạn cũng có thể loại bỏ phần ":user@gmail.com" (hoặc ":nobody@forwardemail.net"), chỉ để lại "!!!alias" như trong ví dụ dưới đây.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5329,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### Tôi có thể chuyển tiếp email đến nhiều người nhận không {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+Có, hoàn toàn có thể. Chỉ cần chỉ định nhiều người nhận trong các bản ghi <strong class="notranslate">TXT</strong> của bạn.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Ví dụ, nếu tôi muốn một email gửi đến `hello@example.com` được chuyển tiếp đến `user+a@gmail.com` và `user+b@gmail.com`, thì bản ghi <strong class="notranslate">TXT</strong> của tôi sẽ trông như sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5354,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Hoặc, bạn có thể chỉ định chúng trên hai dòng riêng biệt, như sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5381,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+Tùy bạn quyết định!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### Tôi có thể có nhiều người nhận toàn cục bắt tất cả không {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+Có, bạn có thể. Chỉ cần chỉ định nhiều người nhận toàn cục bắt tất cả trong các bản ghi <strong class="notranslate">TXT</strong> của bạn.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Ví dụ, nếu tôi muốn mọi email gửi đến `*@example.com` (dấu hoa thị có nghĩa là ký tự đại diện hay bắt tất cả) được chuyển tiếp đến `user+a@gmail.com` và `user+b@gmail.com`, thì bản ghi <strong class="notranslate">TXT</strong> của tôi sẽ trông như sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,190 +5408,188 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Hoặc, bạn có thể chỉ định chúng trên hai dòng riêng biệt, như sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Tên/Máy chủ/Bí danh</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Loại</th>
+      <th>Trả lời/Giá trị</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", hoặc để trống</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+Tùy bạn quyết định!
 
-It's up to you!
+### Có giới hạn tối đa về số lượng địa chỉ email tôi có thể chuyển tiếp cho mỗi bí danh không {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+Có, giới hạn mặc định là 10. Điều này KHÔNG có nghĩa là bạn chỉ có thể có 10 bí danh trên tên miền của mình. Bạn có thể có bao nhiêu bí danh tùy thích (không giới hạn). Nó có nghĩa là bạn chỉ có thể chuyển tiếp một bí danh đến 10 địa chỉ email duy nhất. Bạn có thể có `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (từ 1-10) – và bất kỳ email nào gửi đến `hello@example.com` sẽ được chuyển tiếp đến `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (từ 1-10).
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Mẹo:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    Cần nhiều hơn 10 người nhận cho mỗi bí danh? Gửi email cho chúng tôi và chúng tôi sẽ vui lòng tăng giới hạn tài khoản của bạn.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### Tôi có thể chuyển tiếp email đệ quy không {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+Có, bạn có thể, tuy nhiên bạn vẫn phải tuân thủ giới hạn tối đa. Nếu bạn có `hello:linus@example.com` và `linus:user@gmail.com`, thì email gửi đến `hello@example.com` sẽ được chuyển tiếp đến `linus@example.com` và `user@gmail.com`. Lưu ý rằng sẽ có lỗi xảy ra nếu bạn cố gắng chuyển tiếp email đệ quy vượt quá giới hạn tối đa.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Người khác có thể hủy đăng ký hoặc đăng ký chuyển tiếp email của tôi mà không có sự cho phép không {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+Chúng tôi sử dụng xác minh bản ghi MX và <strong class="notranslate">TXT</strong>, do đó nếu bạn thêm các bản ghi MX và <strong class="notranslate">TXT</strong> tương ứng của dịch vụ này, thì bạn đã đăng ký. Nếu bạn xóa chúng, thì bạn đã hủy đăng ký. Bạn sở hữu tên miền và quản lý DNS của mình, nên nếu ai đó có quyền truy cập vào đó thì đó là một vấn đề.
 
-### How is it free {#how-is-it-free}
+### Làm sao mà nó miễn phí {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Email cung cấp một gói miễn phí thông qua sự kết hợp giữa phát triển mã nguồn mở, hạ tầng hiệu quả và các gói trả phí tùy chọn hỗ trợ dịch vụ.
 
-Our free tier is supported by:
+Gói miễn phí của chúng tôi được hỗ trợ bởi:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **Phát triển Mã Nguồn Mở**: Mã nguồn của chúng tôi là mã nguồn mở, cho phép cộng đồng đóng góp và vận hành minh bạch.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **Hạ tầng Hiệu quả**: Chúng tôi đã tối ưu hệ thống để xử lý chuyển tiếp email với tài nguyên tối thiểu.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **Gói Cao cấp Trả phí**: Người dùng cần các tính năng bổ sung như gửi SMTP, nhận IMAP hoặc tùy chọn bảo mật nâng cao sẽ đăng ký các gói trả phí.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **Giới hạn Sử dụng Hợp lý**: Gói miễn phí có chính sách sử dụng công bằng để ngăn chặn lạm dụng.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Chúng tôi cam kết giữ chuyển tiếp email cơ bản miễn phí trong khi cung cấp các tính năng cao cấp cho người dùng có nhu cầu nâng cao hơn.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Nếu bạn thấy dịch vụ của chúng tôi có giá trị, hãy cân nhắc nâng cấp lên gói trả phí để hỗ trợ phát triển và bảo trì liên tục.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### Giới hạn kích thước email tối đa là bao nhiêu {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+Chúng tôi mặc định giới hạn kích thước 50MB, bao gồm nội dung, tiêu đề và tệp đính kèm. Lưu ý rằng các dịch vụ như Gmail và Outlook chỉ cho phép giới hạn 25MB, và nếu bạn vượt quá giới hạn khi gửi đến các địa chỉ tại những nhà cung cấp đó, bạn sẽ nhận được thông báo lỗi.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+Một lỗi với mã phản hồi thích hợp sẽ được trả về nếu vượt quá giới hạn kích thước tệp.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### Bạn có lưu trữ nhật ký email không {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Không, chúng tôi không ghi vào đĩa hoặc lưu trữ nhật ký – ngoại trừ [lỗi](#do-you-store-error-logs) và [SMTP gửi đi](#do-you-support-sending-email-with-smtp) (xem [Chính sách Bảo mật](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Mọi thứ được xử lý trong bộ nhớ và [mã nguồn của chúng tôi có trên GitHub](https://github.com/forwardemail).
 
-### Do you store error logs {#do-you-store-error-logs}
+### Bạn có lưu trữ nhật ký lỗi không {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**Có. Bạn có thể truy cập nhật ký lỗi tại [Tài khoản của tôi → Nhật ký](/my-account/logs) hoặc [Tài khoản của tôi → Tên miền](/my-account/domains).**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+Từ tháng 2 năm 2023, chúng tôi lưu trữ nhật ký lỗi cho các mã phản hồi SMTP `4xx` và `5xx` trong vòng 7 ngày – bao gồm lỗi SMTP, phong bì và tiêu đề email (chúng tôi **không** lưu trữ nội dung email hay tệp đính kèm).
+Các nhật ký lỗi cho phép bạn kiểm tra các email quan trọng bị thiếu và giảm thiểu các trường hợp nhận diện nhầm spam cho [các tên miền của bạn](/my-account/domains). Chúng cũng là một nguồn tài nguyên tuyệt vời để gỡ lỗi các vấn đề với [webhook email](#do-you-support-webhooks) (vì nhật ký lỗi chứa phản hồi từ điểm cuối webhook).
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+Nhật ký lỗi cho [giới hạn tần suất] (#do-you-have-rate-limiting) và [danh sách xám] (#do-you-have-a-greylist) không thể truy cập được vì kết nối kết thúc sớm (ví dụ: trước khi các lệnh `RCPT TO` và `MAIL FROM` có thể được truyền).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+Xem [Chính sách Bảo mật](/privacy) của chúng tôi để hiểu thêm.
 
-See our [Privacy Policy](/privacy) for more insight.
+### Bạn có đọc email của tôi không {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+Không, tuyệt đối không. Xem [Chính sách Bảo mật](/privacy) của chúng tôi.
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+Nhiều dịch vụ chuyển tiếp email khác lưu trữ và có thể đọc email của bạn. Không có lý do gì để các email được chuyển tiếp phải được lưu trữ trên ổ đĩa – và vì vậy chúng tôi đã thiết kế giải pháp mã nguồn mở đầu tiên thực hiện tất cả trong bộ nhớ.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+Chúng tôi tin rằng bạn nên có quyền riêng tư và chúng tôi tôn trọng nghiêm ngặt điều đó. Mã nguồn được triển khai trên máy chủ là [phần mềm mã nguồn mở trên GitHub](https://github.com/forwardemail) để minh bạch và xây dựng niềm tin.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### Tôi có thể "gửi thư như" trong Gmail với cái này không {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+Có! Từ ngày 2 tháng 10 năm 2018, chúng tôi đã thêm tính năng này. Xem [Cách gửi thư như sử dụng Gmail](#how-to-send-mail-as-using-gmail) ở trên!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Bạn cũng nên thiết lập bản ghi SPF cho Gmail trong cấu hình DNS của bạn với bản ghi <strong class="notranslate">TXT</strong>.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Nếu bạn đang sử dụng Gmail (ví dụ như Gửi thư như) hoặc G Suite, bạn cần thêm <code>include:_spf.google.com</code> vào bản ghi SPF <strong class="notranslate">TXT</strong> của bạn, ví dụ:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### Tôi có thể "gửi thư như" trong Outlook với cái này không {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+Có! Từ ngày 2 tháng 10 năm 2018, chúng tôi đã thêm tính năng này. Chỉ cần xem hai liên kết từ Microsoft dưới đây:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Bạn cũng nên thiết lập bản ghi SPF cho Outlook trong cấu hình DNS của bạn với bản ghi <strong class="notranslate">TXT</strong>.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Quan trọng:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Nếu bạn đang sử dụng Microsoft Outlook hoặc Live.com, bạn cần thêm <code>include:spf.protection.outlook.com</code> vào bản ghi SPF <strong class="notranslate">TXT</strong> của bạn, ví dụ:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Tôi có thể "gửi thư như" trong Apple Mail và iCloud Mail với cái này không {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+Nếu bạn là người đăng ký iCloud+, bạn có thể sử dụng tên miền tùy chỉnh. [Dịch vụ của chúng tôi cũng tương thích với Apple Mail](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+Vui lòng xem <https://support.apple.com/en-us/102540> để biết thêm thông tin.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### Tôi có thể chuyển tiếp email không giới hạn với cái này không {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+Có, tuy nhiên các người gửi "tương đối chưa biết" bị giới hạn tần suất ở mức 100 kết nối mỗi giờ cho mỗi tên máy chủ hoặc IP. Xem phần về [Giới hạn tần suất](#do-you-have-rate-limiting) và [Danh sách xám](#do-you-have-a-greylist) ở trên.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+Bằng "tương đối chưa biết", chúng tôi ám chỉ các người gửi không xuất hiện trong [danh sách cho phép](#do-you-have-an-allowlist).
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+Nếu vượt quá giới hạn này, chúng tôi sẽ gửi mã phản hồi 421, yêu cầu máy chủ gửi thư thử lại sau.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### Bạn có cung cấp tên miền không giới hạn với một mức giá không {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+Có. Bất kể bạn đang sử dụng gói nào, bạn chỉ phải trả một mức phí hàng tháng – bao gồm tất cả các tên miền của bạn.
+### Bạn chấp nhận những phương thức thanh toán nào {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email chấp nhận các phương thức thanh toán một lần hoặc hàng tháng/hàng quý/hàng năm sau:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **Thẻ tín dụng/thẻ ghi nợ/chuyển khoản ngân hàng**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, v.v.
+2. **PayPal**: Kết nối tài khoản PayPal của bạn để thanh toán dễ dàng
+3. **Tiền điện tử**: Chúng tôi chấp nhận thanh toán qua các khoản thanh toán stablecoin của Stripe trên các mạng Ethereum, Polygon và Solana
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Chúng tôi lưu trữ thông tin thanh toán giới hạn trên máy chủ của mình, chỉ bao gồm các định danh thanh toán và tham chiếu đến các giao dịch, khách hàng, đăng ký và ID thanh toán của [Stripe](https://stripe.com/global) và [PayPal](https://www.paypal.com).
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Để bảo mật tối đa, hãy cân nhắc sử dụng thanh toán bằng tiền điện tử.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+Tất cả các khoản thanh toán đều được xử lý an toàn qua Stripe hoặc PayPal. Thông tin thanh toán của bạn không bao giờ được lưu trữ trên máy chủ của chúng tôi.
 
-## Additional Resources {#additional-resources}
+
+## Tài nguyên bổ sung {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Các bài viết dưới đây của chúng tôi được cập nhật thường xuyên với các hướng dẫn, mẹo và thông tin kỹ thuật mới. Hãy thường xuyên quay lại để xem nội dung mới nhất.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [Nghiên cứu trường hợp & Tài liệu dành cho nhà phát triển](/blog/docs)
+* [Tài nguyên](/resources)
+* [Hướng dẫn](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

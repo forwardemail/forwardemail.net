@@ -1,103 +1,107 @@
-# Stripe ve PayPal ile Güçlü Bir Ödeme Sistemi Nasıl Oluşturduk: Üçlü Yaklaşım {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Stripe ve PayPal ile Güçlü Bir Ödeme Sistemi Nasıl Kurduk: Üçlü Yaklaşım {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Stripe ve PayPal ile ödeme sistemi" class="rounded-lg" />
+
 
 ## İçindekiler {#table-of-contents}
 
 * [Önsöz](#foreword)
-* [Zorluk: Birden Fazla Ödeme İşlemcisi, Tek Bir Gerçek Kaynağı](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [Trifecta Yaklaşımı: Üç Katmanlı Güvenilirlik](#the-trifecta-approach-three-layers-of-reliability)
+* [Zorluk: Birden Fazla Ödeme İşleyicisi, Tek Doğru Kaynak](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Üçlü Yaklaşım: Üç Katmanlı Güvenilirlik](#the-trifecta-approach-three-layers-of-reliability)
 * [Katman 1: Ödeme Sonrası Yönlendirmeler](#layer-1-post-checkout-redirects)
-  * [Stripe Ödeme Uygulaması](#stripe-checkout-implementation)
+  * [Stripe Checkout Uygulaması](#stripe-checkout-implementation)
   * [PayPal Ödeme Akışı](#paypal-payment-flow)
 * [Katman 2: İmza Doğrulamalı Webhook İşleyicileri](#layer-2-webhook-handlers-with-signature-verification)
   * [Stripe Webhook Uygulaması](#stripe-webhook-implementation)
   * [PayPal Webhook Uygulaması](#paypal-webhook-implementation)
 * [Katman 3: Bree ile Otomatik İşler](#layer-3-automated-jobs-with-bree)
-  * [Abonelik Doğruluk Denetleyicisi](#subscription-accuracy-checker)
+  * [Abonelik Doğruluk Kontrolü](#subscription-accuracy-checker)
   * [PayPal Abonelik Senkronizasyonu](#paypal-subscription-synchronization)
-* [Sınır Durumların Ele Alınması](#handling-edge-cases)
+* [Kenar Durumların Yönetimi](#handling-edge-cases)
   * [Dolandırıcılık Tespiti ve Önleme](#fraud-detection-and-prevention)
-  * [Anlaşmazlıkların Çözümü](#dispute-handling)
-* [Kod Yeniden Kullanımı: KISS ve DRY İlkeleri](#code-reuse-kiss-and-dry-principles)
-* [VISA Abonelik Gereksinimlerinin Uygulanması](#visa-subscription-requirements-implementation)
+  * [İhtilaf Yönetimi](#dispute-handling)
+* [Kodun Yeniden Kullanımı: KISS ve DRY İlkeleri](#code-reuse-kiss-and-dry-principles)
+* [VISA Abonelik Gereksinimleri Uygulaması](#visa-subscription-requirements-implementation)
   * [Otomatik Yenileme Öncesi E-posta Bildirimleri](#automated-pre-renewal-email-notifications)
-  * [Sınır Durumların Ele Alınması](#handling-edge-cases-1)
+  * [Kenar Durumların Yönetimi](#handling-edge-cases-1)
   * [Deneme Süreleri ve Abonelik Koşulları](#trial-periods-and-subscription-terms)
-* [Sonuç: Trifecta Yaklaşımımızın Faydaları](#conclusion-the-benefits-of-our-trifecta-approach)
+* [Sonuç: Üçlü Yaklaşımımızın Faydaları](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## Önsöz {#foreword}
 
-Forward Email olarak, her zaman güvenilir, doğru ve kullanıcı dostu sistemler oluşturmaya öncelik verdik. Ödeme işleme sistemimizi uygulamaya koyarken, mükemmel veri tutarlılığını korurken birden fazla ödeme işlemcisini idare edebilecek bir çözüme ihtiyacımız olduğunu biliyorduk. Bu blog yazısı, geliştirme ekibimizin tüm sistemimizde 1:1 gerçek zamanlı doğruluk sağlayan üçlü bir yaklaşım kullanarak hem Stripe'ı hem de PayPal'ı nasıl entegre ettiğini ayrıntılarıyla anlatıyor.
+Forward Email olarak, her zaman güvenilir, doğru ve kullanıcı dostu sistemler oluşturmayı önceliklendirdik. Ödeme işleme sistemimizi uygularken, birden fazla ödeme işleyicisini yönetebilen ve mükemmel veri tutarlılığı sağlayan bir çözüme ihtiyacımız olduğunu biliyorduk. Bu blog yazısı, geliştirme ekibimizin Stripe ve PayPal’ı nasıl entegre ettiğini ve tüm sistemimizde 1:1 gerçek zamanlı doğruluk sağlayan üçlü yaklaşımı detaylandırmaktadır.
 
-## Zorluk: Birden Fazla Ödeme İşlemcisi, Tek Bir Gerçek Kaynağı {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Gizlilik odaklı bir e-posta hizmeti olarak, kullanıcılarımıza ödeme seçenekleri sunmak istedik. Bazıları Stripe üzerinden kredi kartıyla ödeme yapmanın kolaylığını tercih ederken, bazıları PayPal'ın sağladığı ek ayrım katmanını tercih ediyor. Ancak, birden fazla ödeme işlemcisini desteklemek önemli ölçüde karmaşıklığa yol açıyor:
+## Zorluk: Birden Fazla Ödeme İşleyicisi, Tek Doğru Kaynak {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-1. Farklı ödeme sistemleri arasında tutarlı verileri nasıl sağlıyoruz?
-2. Anlaşmazlıklar, iadeler veya başarısız ödemeler gibi uç durumları nasıl ele alıyoruz?
-3. Veritabanımızda tek bir bilgi kaynağını nasıl koruyoruz?
+Gizliliğe odaklı bir e-posta servisi olarak, kullanıcılarımıza ödeme seçenekleri sunmak istedik. Bazıları Stripe üzerinden kredi kartı ödemelerinin sadeliğini tercih ederken, diğerleri PayPal’ın sağladığı ek ayrım katmanını değerli buluyor. Ancak, birden fazla ödeme işleyicisini desteklemek önemli karmaşıklıklar getiriyor:
 
-Çözümümüz, "üçlü yaklaşım" adını verdiğimiz, ne olursa olsun yedeklilik sağlayan ve veri tutarlılığını garanti eden üç katmanlı bir sistemi uygulamak oldu.
+1. Farklı ödeme sistemlerinde tutarlı veriyi nasıl sağlarız?
+2. İhtilaflar, iadeler veya başarısız ödemeler gibi kenar durumları nasıl yönetiriz?
+3. Veritabanımızda tek bir doğru kaynak nasıl korunur?
 
-## Trifecta Yaklaşımı: Üç Katmanlı Güvenilirlik {#the-trifecta-approach-three-layers-of-reliability}
+Çözümümüz, “üçlü yaklaşım” dediğimiz - yedeklilik sağlayan ve ne olursa olsun veri tutarlılığını garanti eden üç katmanlı bir sistem uygulamaktı.
 
-Ödeme sistemimiz, kusursuz veri senkronizasyonunu sağlamak için birlikte çalışan üç kritik bileşenden oluşur:
 
-1. **Ödeme sonrası yönlendirmeler** - Ödeme bilgilerinin ödemeden hemen sonra alınması
-2. **Webhook işleyicileri** - Ödeme işlemcilerinden gelen gerçek zamanlı olayların işlenmesi
-3. **Otomatik işler** - Ödeme verilerinin periyodik olarak doğrulanması ve uzlaştırılması
+## Üçlü Yaklaşım: Üç Katmanlı Güvenilirlik {#the-trifecta-approach-three-layers-of-reliability}
 
-Her bir bileşeni daha yakından inceleyelim ve birlikte nasıl çalıştıklarını görelim.
+Ödeme sistemimiz, mükemmel veri senkronizasyonunu sağlamak için birlikte çalışan üç kritik bileşenden oluşur:
+
+1. **Ödeme sonrası yönlendirmeler** - Ödeme bilgilerini hemen ödeme sonrası yakalamak
+2. **Webhook işleyicileri** - Ödeme işleyicilerinden gerçek zamanlı olayları işlemek
+3. **Otomatik işler** - Ödeme verilerini periyodik olarak doğrulamak ve uzlaştırmak
+
+Her bileşene yakından bakalım ve nasıl birlikte çalıştıklarını görelim.
 
 ```mermaid
 flowchart TD
     User([User]) --> |Selects plan| Checkout[Checkout Page]
 
     %% Layer 1: Post-checkout redirects
-    subgraph "Layer 1: Post-checkout Redirects"
-        Checkout --> |Credit Card| Stripe[Stripe Checkout]
-        Checkout --> |PayPal| PayPal[PayPal Payment]
+    subgraph "Katman 1: Ödeme Sonrası Yönlendirmeler"
+        Checkout --> |Kredi Kartı| Stripe[Stripe Checkout]
+        Checkout --> |PayPal| PayPal[PayPal Ödemesi]
 
-        Stripe --> |Success URL with session_id| SuccessPage[Success Page]
-        PayPal --> |Return URL| SuccessPage
+        Stripe --> |session_id içeren Başarı URL'si| SuccessPage[Başarı Sayfası]
+        PayPal --> |Dönüş URL'si| SuccessPage
 
-        SuccessPage --> |Verify payment| Database[(Database Update)]
+        SuccessPage --> |Ödemeyi doğrula| Database[(Veritabanı Güncelleme)]
     end
 
     %% Layer 2: Webhooks
-    subgraph "Layer 2: Webhook Handlers"
-        StripeEvents[Stripe Events] --> |Real-time notifications| StripeWebhook[Stripe Webhook Handler]
-        PayPalEvents[PayPal Events] --> |Real-time notifications| PayPalWebhook[PayPal Webhook Handler]
+    subgraph "Katman 2: Webhook İşleyicileri"
+        StripeEvents[Stripe Olayları] --> |Gerçek zamanlı bildirimler| StripeWebhook[Stripe Webhook İşleyicisi]
+        PayPalEvents[PayPal Olayları] --> |Gerçek zamanlı bildirimler| PayPalWebhook[PayPal Webhook İşleyicisi]
 
-        StripeWebhook --> |Verify signature| ProcessStripeEvent[Process Stripe Event]
-        PayPalWebhook --> |Verify signature| ProcessPayPalEvent[Process PayPal Event]
+        StripeWebhook --> |İmza doğrula| ProcessStripeEvent[Stripe Olayını İşle]
+        PayPalWebhook --> |İmza doğrula| ProcessPayPalEvent[PayPal Olayını İşle]
 
         ProcessStripeEvent --> Database
         ProcessPayPalEvent --> Database
     end
 
     %% Layer 3: Automated jobs
-    subgraph "Layer 3: Bree Automated Jobs"
-        BreeScheduler[Bree Scheduler] --> StripeSync[Stripe Sync Job]
-        BreeScheduler --> PayPalSync[PayPal Sync Job]
-        BreeScheduler --> AccuracyCheck[Subscription Accuracy Check]
+    subgraph "Katman 3: Bree Otomatik İşleri"
+        BreeScheduler[Bree Zamanlayıcı] --> StripeSync[Stripe Senkronizasyon İşlemi]
+        BreeScheduler --> PayPalSync[PayPal Senkronizasyon İşlemi]
+        BreeScheduler --> AccuracyCheck[Abonelik Doğruluk Kontrolü]
 
-        StripeSync --> |Verify & reconcile| Database
-        PayPalSync --> |Verify & reconcile| Database
-        AccuracyCheck --> |Ensure consistency| Database
+        StripeSync --> |Doğrula & uzlaştır| Database
+        PayPalSync --> |Doğrula & uzlaştır| Database
+        AccuracyCheck --> |Tutarlılığı sağla| Database
     end
 
     %% Edge cases
-    subgraph "Edge Case Handling"
-        ProcessStripeEvent --> |Fraud detection| FraudCheck[Fraud Check]
-        ProcessPayPalEvent --> |Dispute created| DisputeHandler[Dispute Handler]
+    subgraph "Kenar Durumların Yönetimi"
+        ProcessStripeEvent --> |Dolandırıcılık tespiti| FraudCheck[Dolandırıcılık Kontrolü]
+        ProcessPayPalEvent --> |İhtilaf oluşturuldu| DisputeHandler[İhtilaf Yöneticisi]
 
-        FraudCheck --> |Ban user if fraudulent| Database
-        DisputeHandler --> |Accept claim & refund| Database
+        FraudCheck --> |Dolandırıcı ise kullanıcıyı engelle| Database
+        DisputeHandler --> |Talebi kabul et & iade yap| Database
 
-        FraudCheck --> |Send alert| AdminNotification[Admin Notification]
-        DisputeHandler --> |Send alert| AdminNotification
+        FraudCheck --> |Uyarı gönder| AdminNotification[Yönetici Bildirimi]
+        DisputeHandler --> |Uyarı gönder| AdminNotification
     end
 
     %% Style definitions
@@ -109,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
-
 ## Katman 1: Ödeme Sonrası Yönlendirmeler {#layer-1-post-checkout-redirects}
 
-Üçlü yaklaşımımızın ilk aşaması, bir kullanıcı ödemeyi tamamladıktan hemen sonra gerçekleşir. Hem Stripe hem de PayPal, kullanıcıları işlem bilgileriyle sitemize geri yönlendirmek için mekanizmalar sunar.
+Üçlü yaklaşımımızın ilk katmanı, bir kullanıcı ödemeyi tamamlar tamamlamaz gerçekleşir. Hem Stripe hem de PayPal, kullanıcıları işlem bilgileriyle birlikte sitemize geri yönlendirmek için mekanizmalar sağlar.
 
-### Stripe Ödeme Uygulaması {#stripe-checkout-implementation}
+### Stripe Checkout Uygulaması {#stripe-checkout-implementation}
 
-Stripe için, sorunsuz bir ödeme deneyimi oluşturmak amacıyla Ödeme Oturumları API'sini kullanıyoruz. Bir kullanıcı bir plan seçip kredi kartıyla ödeme yapmayı seçtiğinde, belirli bir başarıyla bir Ödeme Oturumu oluşturuyoruz ve URL'leri iptal ediyoruz:
+Stripe için, sorunsuz bir ödeme deneyimi yaratmak amacıyla Checkout Sessions API'sini kullanıyoruz. Bir kullanıcı bir plan seçip kredi kartıyla ödemeyi tercih ettiğinde, belirli başarı ve iptal URL'leri ile bir Checkout Session oluşturuyoruz:
 
 ```javascript
 const options = {
@@ -143,7 +146,7 @@ const options = {
   allow_promotion_codes: true
 };
 
-// Create the checkout session and redirect
+// Checkout oturumunu oluştur ve yönlendir
 const session = await stripe.checkout.sessions.create(options);
 const redirectTo = session.url;
 if (ctx.accepts('html')) {
@@ -154,11 +157,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Buradaki kritik nokta, `session_id`'i sorgu parametresi olarak içeren `success_url` parametresidir. Stripe, başarılı bir ödemenin ardından kullanıcıyı sitemize yönlendirdiğinde, işlemi doğrulamak ve veritabanımızı buna göre güncellemek için bu oturum kimliğini kullanabiliriz.
+Buradaki kritik kısım, `success_url` parametresidir; bu parametre, sorgu parametresi olarak `session_id` içerir. Stripe, başarılı bir ödeme sonrası kullanıcıyı sitemize geri yönlendirdiğinde, bu oturum ID'sini kullanarak işlemi doğrulayabilir ve veritabanımızı buna göre güncelleyebiliriz.
 
 ### PayPal Ödeme Akışı {#paypal-payment-flow}
 
-PayPal için, Siparişler API'sinde benzer bir yaklaşım kullanıyoruz:
+PayPal için, benzer bir yaklaşımı Orders API ile kullanıyoruz:
 
 ```javascript
 const requestBody = {
@@ -210,7 +213,7 @@ const requestBody = {
 };
 ```
 
-Stripe'a benzer şekilde, ödeme sonrası yönlendirmeleri yönetmek için `return_url` ve `cancel_url` parametrelerini belirliyoruz. PayPal kullanıcıyı sitemize yönlendirdiğinde, ödeme ayrıntılarını yakalayıp veritabanımızı güncelleyebiliyoruz.
+Stripe'da olduğu gibi, ödeme sonrası yönlendirmeleri yönetmek için `return_url` ve `cancel_url` parametrelerini belirtiyoruz. PayPal kullanıcıyı sitemize geri yönlendirdiğinde, ödeme detaylarını yakalayıp veritabanımızı güncelleyebiliriz.
 
 ```mermaid
 sequenceDiagram
@@ -221,80 +224,79 @@ sequenceDiagram
     participant DB as Database
     participant Bree as Bree Job Scheduler
 
-    %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    %% İlk ödeme akışı
+    User->>FE: Plan ve ödeme yöntemi seçimi
 
-    alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
-    else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+    alt Kredi Kartı Ödemesi
+        FE->>Stripe: Checkout Oturumu Oluştur
+        Stripe-->>FE: Oturum URL'si Döndür
+        FE->>User: Stripe Checkout'a Yönlendir
+        User->>Stripe: Ödemeyi Tamamla
+        Stripe->>User: session_id ile başarı URL'sine yönlendir
+        User->>FE: Başarı sayfasına geri dön
+        FE->>Stripe: session_id kullanarak oturumu doğrula
+        Stripe-->>FE: Oturum detaylarını döndür
+        FE->>DB: Kullanıcı planı ve ödeme durumunu güncelle
+    else PayPal Ödemesi
+        FE->>PayPal: Sipariş Oluştur
+        PayPal-->>FE: Onay URL'si Döndür
+        FE->>User: PayPal'a Yönlendir
+        User->>PayPal: Ödemeyi onayla
+        PayPal->>User: dönüş URL'sine yönlendir
+        User->>FE: Başarı sayfasına geri dön
+        FE->>PayPal: Ödemeyi yakala
+        PayPal-->>FE: Ödeme detaylarını döndür
+        FE->>DB: Kullanıcı planı ve ödeme durumunu güncelle
     end
 
-    %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    %% Webhook akışı (eşzamansız)
+    Note over Stripe,PayPal: Ödeme olayları gerçekleşir (eşzamansız)
 
     alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
+        Stripe->>FE: Olay bildirimi gönder
+        FE->>FE: Webhook imzasını doğrula
+        FE->>DB: Olayı işle ve veriyi güncelle
+        FE-->>Stripe: Alındı onayı (200 OK)
     else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+        PayPal->>FE: Olay bildirimi gönder
+        FE->>FE: Webhook imzasını doğrula
+        FE->>DB: Olayı işle ve veriyi güncelle
+        FE-->>PayPal: Alındı onayı (200 OK)
     end
 
-    %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    %% Bree otomatik işleri
+    Note over Bree: Planlı işler periyodik olarak çalışır
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: Tüm müşterileri ve abonelikleri al
+    Stripe-->>Bree: Müşteri verilerini döndür
+    Bree->>DB: Verileri karşılaştır ve uzlaştır
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: Tüm abonelikleri ve işlemleri al
+    PayPal-->>Bree: Abonelik verilerini döndür
+    Bree->>DB: Verileri karşılaştır ve uzlaştır
 
-    %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    %% Kenar durum: İtiraz yönetimi
+    Note over User,PayPal: Kullanıcı bir işlemi itiraz ediyor
 
-    PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    PayPal->>FE: DISPUTE.CREATED webhook'u
+    FE->>PayPal: Talebi otomatik kabul et
+    FE->>DB: Kullanıcı durumunu güncelle
+    FE->>User: Bildirim e-postası gönder
 ```
-
 ## Katman 2: İmza Doğrulamalı Webhook İşleyicileri {#layer-2-webhook-handlers-with-signature-verification}
 
-Ödeme sonrası yönlendirmeler çoğu senaryo için iyi çalışsa da, kusursuz değillerdir. Kullanıcılar yönlendirilmeden önce tarayıcılarını kapatabilir veya ağ sorunları yönlendirmenin tamamlanmasını engelleyebilir. İşte webhook'lar tam da bu noktada devreye girer.
+Post-checkout yönlendirmeleri çoğu senaryo için iyi çalışsa da, kusursuz değildir. Kullanıcılar yönlendirilmeden önce tarayıcılarını kapatabilir veya ağ sorunları yönlendirmenin tamamlanmasını engelleyebilir. İşte burada webhooklar devreye girer.
 
-Hem Stripe hem de PayPal, ödeme olayları hakkında gerçek zamanlı bildirimler gönderen webhook sistemleri sunmaktadır. Bu bildirimlerin gerçekliğini doğrulayan ve buna göre işleyen güçlü webhook işleyicileri uyguladık.
+Hem Stripe hem de PayPal, ödeme olayları hakkında gerçek zamanlı bildirimler gönderen webhook sistemleri sağlar. Bu bildirimlerin doğruluğunu doğrulayan ve bunları uygun şekilde işleyen sağlam webhook işleyicileri uyguladık.
 
 ### Stripe Webhook Uygulaması {#stripe-webhook-implementation}
 
-Stripe webhook işleyicimiz, gelen webhook olaylarının imzasını doğrulayarak bunların meşru olduğundan emin olur:
+Stripe webhook işleyicimiz, gelen webhook olaylarının imzasını doğrulayarak bunların meşru olduğunu garanti eder:
 
 ```javascript
 async function webhook(ctx) {
   const sig = ctx.request.get('stripe-signature');
-  // throw an error if something was wrong
+  // bir sorun varsa hata fırlat
   if (!isSANB(sig))
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   const event = stripe.webhooks.constructEvent(
@@ -302,23 +304,23 @@ async function webhook(ctx) {
     sig,
     env.STRIPE_ENDPOINT_SECRET
   );
-  // throw an error if something was wrong
+  // bir sorun varsa hata fırlat
   if (!event)
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   ctx.logger.info('stripe webhook', { event });
-  // return a response to acknowledge receipt of the event
+  // olayı aldığımızı onaylamak için yanıt döndür
   ctx.body = { received: true };
-  // run in background
+  // arka planda çalıştır
   processEvent(ctx, event)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err, { event });
-      // email admin errors
+      // yöneticiye hata e-postası gönder
       emailHelper({
         template: 'alert',
         message: {
           to: config.email.message.from,
-          subject: `Error with Stripe Webhook (Event ID ${event.id})`
+          subject: `Stripe Webhook Hatası (Olay ID ${event.id})`
         },
         locals: {
           message: `<pre><code>${safeStringify(
@@ -334,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-`stripe.webhooks.constructEvent` işlevi, imzayı uç nokta sırrımızı kullanarak doğrular. İmza geçerliyse, webhook yanıtının engellenmesini önlemek için olayı eşzamansız olarak işleriz.
+`stripe.webhooks.constructEvent` fonksiyonu, uç nokta sırrımızı kullanarak imzayı doğrular. İmza geçerliyse, webhook yanıtını engellememek için olayı asenkron olarak işleriz.
 
 ### PayPal Webhook Uygulaması {#paypal-webhook-implementation}
 
-Benzer şekilde, PayPal webhook işleyicimiz gelen bildirimlerin gerçekliğini doğrular:
+Benzer şekilde, PayPal webhook işleyicimiz gelen bildirimlerin doğruluğunu doğrular:
 
 ```javascript
 async function webhook(ctx) {
@@ -346,22 +348,22 @@ async function webhook(ctx) {
     paypal.notification.webhookEvent.verify,
     paypal.notification.webhookEvent
   )(ctx.request.headers, ctx.request.body, env.PAYPAL_WEBHOOK_ID);
-  // throw an error if something was wrong
+  // bir sorun varsa hata fırlat
   if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
     throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
-  // return a response to acknowledge receipt of the event
+  // olayı aldığımızı onaylamak için yanıt döndür
   ctx.body = { received: true };
-  // run in background
+  // arka planda çalıştır
   processEvent(ctx)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err);
-      // email admin errors
+      // yöneticiye hata e-postası gönder
       emailHelper({
         template: 'alert',
         message: {
           to: config.email.message.from,
-          subject: `Error with PayPal Webhook (Event ID ${ctx.request.body.id})`
+          subject: `PayPal Webhook Hatası (Olay ID ${ctx.request.body.id})`
         },
         locals: {
           message: `<pre><code>${safeStringify(
@@ -377,16 +379,16 @@ async function webhook(ctx) {
 }
 ```
 
-Her iki webhook işleyicisi de aynı modeli izler: imzayı doğrular, alındıyı onaylar ve olayı eşzamansız olarak işler. Bu sayede, ödeme sonrası yönlendirme başarısız olsa bile hiçbir ödeme olayını kaçırmayız.
+Her iki webhook işleyicisi de aynı deseni takip eder: imzayı doğrula, alındığını onayla ve olayı asenkron olarak işle. Bu, post-checkout yönlendirmesi başarısız olsa bile hiçbir ödeme olayını kaçırmamamızı sağlar.
+
 
 ## Katman 3: Bree ile Otomatik İşler {#layer-3-automated-jobs-with-bree}
 
-Üçlü yaklaşımımızın son katmanı, ödeme verilerini periyodik olarak doğrulayıp uzlaştıran bir dizi otomatik iş. Bu işleri düzenli aralıklarla çalıştırmak için Node.js için bir iş zamanlayıcısı olan Bree'yi kullanıyoruz.
+Üçlü yaklaşımımızın son katmanı, ödeme verilerini periyodik olarak doğrulayan ve mutabakat yapan otomatik işlerden oluşur. Bu işleri düzenli aralıklarla çalıştırmak için Node.js için bir iş zamanlayıcısı olan Bree'yi kullanıyoruz.
 
 ### Abonelik Doğruluk Denetleyicisi {#subscription-accuracy-checker}
 
-Ana işlerimizden biri, veritabanımızın Stripe'taki abonelik durumunu doğru bir şekilde yansıtmasını sağlayan abonelik doğruluğu denetleyicisidir:
-
+Ana işlerimizden biri olan abonelik doğruluk denetleyicisi, veritabanımızın Stripe'daki abonelik durumunu doğru şekilde yansıttığından emin olur:
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -452,11 +454,11 @@ async function mapper(customer) {
 }
 ```
 
-Bu görev, veritabanımız ile Stripe arasında uyumsuz e-posta adresleri veya birden fazla aktif abonelik gibi tutarsızlıkları kontrol eder. Herhangi bir sorun tespit ederse, bunları kaydeder ve yönetici ekibimize uyarılar gönderir.
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### PayPal Abonelik Senkronizasyonu {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-PayPal abonelikleri için de benzer bir çalışmamız var:
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +489,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Bu otomatik işler, veritabanımızın hem Stripe hem de PayPal'daki aboneliklerin ve ödemelerin gerçek durumunu her zaman yansıtmasını sağlayarak nihai güvenlik ağımız görevi görür.
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## Uç Durumların Ele Alınması {#handling-edge-cases}
 
-Güçlü bir ödeme sistemi, uç durumları zarif bir şekilde ele almalıdır. Bazı yaygın senaryoları nasıl ele aldığımıza bir bakalım.
+## Handling Edge Cases {#handling-edge-cases}
 
-### Dolandırıcılık Tespiti ve Önleme {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-Şüpheli ödeme faaliyetlerini otomatik olarak tespit edip işleyen gelişmiş dolandırıcılık tespit mekanizmaları uyguladık:
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -540,30 +543,30 @@ case 'charge.failed': {
 }
 ```
 
-Bu kod, birden fazla başarısız ödemesi olan ve doğrulanmış alan adı olmayan kullanıcıları otomatik olarak yasaklar; bu, dolandırıcılık faaliyetinin güçlü bir göstergesidir.
+Bu kod, birden fazla başarısız ödeme girişimi olan ve doğrulanmış alan adı bulunmayan kullanıcıları otomatik olarak engeller; bu, dolandırıcılık faaliyetlerinin güçlü bir göstergesidir.
 
-### Anlaşmazlıkların Çözümü {#dispute-handling}
+### İtiraz İşleme {#dispute-handling}
 
-Bir kullanıcı bir ücrete itiraz ettiğinde, talebi otomatik olarak kabul eder ve uygun işlemi yaparız:
+Bir kullanıcı bir ödemeye itiraz ettiğinde, talebi otomatik olarak kabul eder ve uygun işlemi yaparız:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
-  // accept claim
+  // talebi kabul et
   const agent = await paypalAgent();
   await agent
     .post(`/v1/customer/disputes/${body.resource.dispute_id}/accept-claim`)
     .send({
-      note: 'Full refund to the customer.'
+      note: 'Müşteriye tam geri ödeme.'
     });
 
-  // Find the payment in our database
+  // Ödemeyi veritabanımızda bul
   const payment = await Payments.findOne({ $or });
-  if (!payment) throw new Error('Payment does not exist');
+  if (!payment) throw new Error('Ödeme mevcut değil');
 
   const user = await Users.findById(payment.user);
-  if (!user) throw new Error('User did not exist for customer');
+  if (!user) throw new Error('Müşteri için kullanıcı mevcut değildi');
 
-  // Cancel the user's subscription if they have one
+  // Kullanıcının aboneliği varsa iptal et
   if (isSANB(user[config.userFields.paypalSubscriptionID])) {
     try {
       const agent = await paypalAgent();
@@ -573,30 +576,31 @@ case 'CUSTOMER.DISPUTE.CREATED': {
         }/cancel`
       );
     } catch (err) {
-      // Handle subscription cancellation errors
+      // Abonelik iptali hatalarını yönet
     }
   }
 }
 ```
 
-Bu yaklaşım, iyi bir müşteri deneyimi sağlarken, anlaşmazlıkların işletmemiz üzerindeki etkisini en aza indirir.
+Bu yaklaşım, itirazların işimize etkisini en aza indirirken iyi bir müşteri deneyimi sağlar.
 
-## Kod Yeniden Kullanımı: KISS ve DRY İlkeleri {#code-reuse-kiss-and-dry-principles}
 
-Ödeme sistemimiz boyunca KISS (Basit Tut, Aptal) ve DRY (Kendini Tekrarlama) ilkelerine bağlı kaldık. İşte bazı örnekler:
+## Kod Tekrarı: KISS ve DRY İlkeleri {#code-reuse-kiss-and-dry-principles}
 
-1. **Paylaşılan Yardımcı Fonksiyonlar**: Ödemeleri senkronize etme ve e-posta gönderme gibi yaygın görevler için yeniden kullanılabilir yardımcı fonksiyonlar oluşturduk.
+Ödeme sistemimiz boyunca, KISS (Keep It Simple, Stupid - Basit Tut, Aptal) ve DRY (Don't Repeat Yourself - Kendini Tekrarlama) ilkelerine bağlı kaldık. İşte bazı örnekler:
 
-2. **Tutarlı Hata İşleme**: Hem Stripe hem de PayPal webhook işleyicileri hata işleme ve yönetici bildirimleri için aynı deseni kullanır.
+1. **Paylaşılan Yardımcı Fonksiyonlar**: Ödemeleri senkronize etmek ve e-posta göndermek gibi yaygın görevler için yeniden kullanılabilir yardımcı fonksiyonlar oluşturduk.
 
-3. **Birleşik Veritabanı Şeması**: Veritabanı şemalarımız, ödeme durumu, tutar ve plan bilgileri için ortak alanlarla hem Stripe hem de PayPal verilerini barındıracak şekilde tasarlanmıştır.
+2. **Tutarlı Hata Yönetimi**: Hem Stripe hem de PayPal webhook işleyicileri, hata yönetimi ve yönetici bildirimleri için aynı deseni kullanır.
 
-4. **Merkezi Yapılandırma**: Ödemeyle ilgili yapılandırma tek bir dosyada merkezileştirilmiştir, bu sayede fiyatlandırma ve ürün bilgilerini güncellemek kolaydır.
+3. **Birleşik Veritabanı Şeması**: Veritabanı şemamız, ödeme durumu, tutar ve plan bilgisi gibi ortak alanlarla hem Stripe hem de PayPal verilerini barındıracak şekilde tasarlanmıştır.
+
+4. **Merkezi Konfigürasyon**: Ödeme ile ilgili konfigürasyon tek bir dosyada toplanmıştır, böylece fiyatlandırma ve ürün bilgilerini güncellemek kolaydır.
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        A[Helper Functions] --> B[syncStripePaymentIntent]
+    subgraph "Kod Tekrarı Desenleri"
+        A[Yardımcı Fonksiyonlar] --> B[syncStripePaymentIntent]
         A --> C[syncPayPalOrderPaymentByPaymentId]
         A --> D[syncPayPalSubscriptionPaymentsByUser]
     end
@@ -610,10 +614,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        E[Error Handling] --> F[Common Error Logging]
-        E --> G[Admin Email Notifications]
-        E --> H[User Notifications]
+    subgraph "Kod Tekrarı Desenleri"
+        E[Hata Yönetimi] --> F[Ortak Hata Kaydı]
+        E --> G[Yönetici E-posta Bildirimleri]
+        E --> H[Kullanıcı Bildirimleri]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -625,9 +629,9 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        I[Configuration] --> J[Centralized Payment Config]
-        I --> K[Shared Environment Variables]
+    subgraph "Kod Tekrarı Desenleri"
+        I[Konfigürasyon] --> J[Merkezi Ödeme Konfigürasyonu]
+        I --> K[Paylaşılan Ortam Değişkenleri]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -639,10 +643,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        L[Webhook Processing] --> M[Signature Verification]
-        L --> N[Async Event Processing]
-        L --> O[Background Processing]
+    subgraph "Kod Tekrarı Desenleri"
+        L[Webhook İşleme] --> M[İmza Doğrulama]
+        L --> N[Asenkron Olay İşleme]
+        L --> O[Arka Plan İşleme]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -654,12 +658,12 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "KISS Principle"
-        P[Simple Data Flow] --> Q[Unidirectional Updates]
-        P --> R[Clear Responsibility Separation]
+    subgraph "KISS İlkesi"
+        P[Basit Veri Akışı] --> Q[Tek Yönlü Güncellemeler]
+        P --> R[Açık Sorumluluk Ayrımı]
 
-        S[Explicit Error Handling] --> T[No Silent Failures]
-        S --> U[Comprehensive Logging]
+        S[Açık Hata Yönetimi] --> T[Sessiz Hatalar Yok]
+        S --> U[Kapsamlı Kayıt Tutma]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -668,16 +672,14 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
-    subgraph "DRY Principle"
-        V[Shared Logic] --> W[Payment Processing Functions]
-        V --> X[Email Templates]
-        V --> Y[Validation Logic]
+    subgraph "DRY Prensibi"
+        V[Paylaşılan Mantık] --> W[Ödeme İşleme Fonksiyonları]
+        V --> X[E-posta Şablonları]
+        V --> Y[Doğrulama Mantığı]
 
-        Z[Common Database Operations] --> AA[User Updates]
-        Z --> AB[Payment Recording]
+        Z[Ortak Veritabanı İşlemleri] --> AA[Kullanıcı Güncellemeleri]
+        Z --> AB[Ödeme Kaydı]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -686,26 +688,27 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
 
 ## VISA Abonelik Gereksinimleri Uygulaması {#visa-subscription-requirements-implementation}
 
-Üçlü yaklaşımımıza ek olarak, VISA'nın abonelik gerekliliklerini karşılamak ve kullanıcı deneyimini iyileştirmek için belirli özellikler uyguladık. VISA'nın temel gerekliliklerinden biri, özellikle deneme aboneliğinden ücretli aboneliğe geçiş yaparken, kullanıcıların abonelik ücreti alınmadan önce bilgilendirilmeleridir.
+Üçlü yaklaşımımıza ek olarak, VISA'nın abonelik gereksinimlerine uyum sağlamak ve kullanıcı deneyimini geliştirmek için belirli özellikler uyguladık. VISA'nın önemli bir gereksinimi, kullanıcıların abonelik için ücretlendirilmeden önce, özellikle deneme sürümünden ücretli aboneliğe geçerken, bilgilendirilmesidir.
 
-### Otomatik Ön Yenileme E-posta Bildirimleri {#automated-pre-renewal-email-notifications}
+### Otomatik Ön-Yenileme E-posta Bildirimleri {#automated-pre-renewal-email-notifications}
 
-Aktif deneme aboneliği olan kullanıcıları tespit eden ve ilk ücretlendirmeleri gerçekleşmeden önce onlara bir bildirim e-postası gönderen otomatik bir sistem oluşturduk. Bu sistem, yalnızca VISA gerekliliklerine uymamızı sağlamakla kalmıyor, aynı zamanda geri ödemeleri azaltıyor ve müşteri memnuniyetini artırıyor.
+Aktif deneme aboneliği olan kullanıcıları tespit eden ve ilk ücretlendirme gerçekleşmeden önce onlara bildirim e-postası gönderen otomatik bir sistem kurduk. Bu, sadece VISA gereksinimlerine uyum sağlamamıza yardımcı olmakla kalmaz, aynı zamanda geri ödeme taleplerini azaltır ve müşteri memnuniyetini artırır.
 
-Bu özelliği şu şekilde uyguladık:
+Bu özelliği şöyle uyguladık:
 
 ```javascript
-// Find users with trial subscriptions who haven't received a notification yet
+// Bildirim almamış deneme aboneliği olan kullanıcıları bul
 const users = await Users.find({
   $or: [
     {
       $and: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
         { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Zaten ödeme yapılmış abonelikleri hariç tut
         ...(paidStripeSubscriptionIds.length > 0
           ? [
               {
@@ -721,7 +724,7 @@ const users = await Users.find({
       $and: [
         { [config.userFields.paypalSubscriptionID]: { $exists: true } },
         { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Zaten ödeme yapılmış abonelikleri hariç tut
         ...(paidPayPalSubscriptionIds.length > 0
           ? [
               {
@@ -736,22 +739,22 @@ const users = await Users.find({
   ]
 });
 
-// Process each user and send notification
+// Her kullanıcı için işlemleri yap ve bildirim gönder
 for (const user of users) {
-  // Get subscription details from payment processor
+  // Ödeme işlemcisinden abonelik detaylarını al
   const subscription = await getSubscriptionDetails(user);
 
-  // Calculate subscription duration and frequency
+  // Abonelik süresi ve sıklığını hesapla
   const duration = getDurationFromPlanId(subscription.plan_id);
   const frequency = getHumanReadableFrequency(duration, user.locale);
   const amount = getPlanAmount(user.plan, duration);
 
-  // Get user's domains for personalized email
+  // Kişiselleştirilmiş e-posta için kullanıcının alan adlarını al
   const domains = await Domains.find({
     'members.user': user._id
   }).sort('name').lean().exec();
 
-  // Send VISA-compliant notification email
+  // VISA uyumlu bildirim e-postası gönder
   await emailHelper({
     template: 'visa-trial-subscription-requirement',
     message: {
@@ -767,7 +770,7 @@ for (const user of users) {
     }
   });
 
-  // Record that notification was sent
+  // Bildirimin gönderildiğini kaydet
   await Users.findByIdAndUpdate(user._id, {
     $set: {
       [config.userFields.paypalTrialSentAt]: new Date()
@@ -776,18 +779,17 @@ for (const user of users) {
 }
 ```
 
-Bu uygulama, kullanıcıların yaklaşan ücretler hakkında her zaman net ayrıntılarla bilgilendirilmesini sağlar:
+Bu uygulama, kullanıcıların yaklaşan ücretlendirmeler hakkında her zaman bilgilendirilmelerini sağlar ve açıkça şunları içerir:
 
-1. İlk ücretlendirmenin ne zaman gerçekleşeceği
-2. Gelecekteki ücretlerin sıklığı (aylık, yıllık vb.)
-3. Tam olarak ne kadar ücretlendirilecekleri
-4. Aboneliklerinin hangi alan adlarını kapsadığı
+1. İlk ücretlendirme ne zaman gerçekleşecek
+2. Gelecekteki ücretlendirmelerin sıklığı (aylık, yıllık vb.)
+3. Ücretlendirilecek kesin tutar
+4. Abonelik kapsamındaki alan adları
 
-Bu süreci otomatikleştirerek, VISA'nın gerekliliklerine (ücretlendirmeden en az 7 gün önce bildirim yapılmasını zorunlu kılan) mükemmel uyumu koruyoruz, destek taleplerini azaltıyor ve genel kullanıcı deneyimini iyileştiriyoruz.
+Bu süreci otomatikleştirerek, VISA'nın gerektirdiği (ücretlendirmeden en az 7 gün önce bildirim yapılması zorunluluğu) tam uyumu sağlarken, destek taleplerini azaltır ve genel kullanıcı deneyimini iyileştiririz.
+### Kenar Durumların Yönetimi {#handling-edge-cases-1}
 
-### Uç Durumların Ele Alınması {#handling-edge-cases-1}
-
-Uygulamamız aynı zamanda güçlü bir hata yönetimi de içeriyor. Bildirim sürecinde herhangi bir sorun yaşanması durumunda, sistemimiz ekibimizi otomatik olarak uyarıyor:
+Uygulamamız ayrıca sağlam hata yönetimini de içerir. Bildirim sürecinde herhangi bir sorun oluşursa, sistemimiz otomatik olarak ekibimizi uyarır:
 
 ```javascript
 try {
@@ -795,12 +797,12 @@ try {
 } catch (err) {
   logger.error(err);
 
-  // Send alert to administrators
+  // Yöneticilere uyarı gönder
   await emailHelper({
     template: 'alert',
     message: {
       to: config.email.message.from,
-      subject: 'VISA Trial Subscription Requirement Error'
+      subject: 'VISA Deneme Aboneliği Gereksinim Hatası'
     },
     locals: {
       message: `<pre><code>${safeStringify(
@@ -813,13 +815,13 @@ try {
 }
 ```
 
-Bu sayede bildirim sisteminde bir sorun olsa bile ekibimiz bunu hızlı bir şekilde çözebilir ve VISA gerekliliklerine uyumu sağlayabilir.
+Bu, bildirim sisteminde bir sorun olsa bile ekibimizin hızlıca müdahale edip VISA'nın gereksinimlerine uyumu sürdürebilmesini sağlar.
 
-VISA abonelik bildirim sistemi, ödeme altyapımızı hem uyumluluğu hem de kullanıcı deneyimini göz önünde bulundurarak nasıl oluşturduğumuzun bir başka örneğidir ve güvenilir, şeffaf ödeme işlemlerini garanti altına almaya yönelik üçlü yaklaşımımızı tamamlar.
+VISA abonelik bildirim sistemi, ödeme altyapımızı hem uyumluluk hem de kullanıcı deneyimi göz önünde bulundurarak nasıl inşa ettiğimizin bir diğer örneğidir. Güvenilir, şeffaf ödeme işlemi sağlamak için üçlü yaklaşımımızı tamamlar.
 
-### Deneme Süreleri ve Abonelik Koşulları {#trial-periods-and-subscription-terms}
+### Deneme Süreleri ve Abonelik Şartları {#trial-periods-and-subscription-terms}
 
-Mevcut planlarda otomatik yenilemeyi etkinleştiren kullanıcılar için, mevcut planları sona erene kadar ücretlendirilmemelerini sağlamak amacıyla uygun deneme süresini hesaplarız:
+Mevcut planlarda otomatik yenilemeyi etkinleştiren kullanıcılar için, mevcut planları sona erene kadar ücretlendirilmemelerini sağlamak amacıyla uygun deneme süresini hesaplıyoruz:
 
 ```javascript
 if (
@@ -832,26 +834,26 @@ if (
     ctx.state.user[config.userFields.planExpiresAt]
   ).diff(dayjs(), 'hours');
 
-  // Handle trial period calculation
+  // Deneme süresi hesaplamasını yönet
 }
 ```
 
-Ayrıca, faturalandırma sıklığı ve iptal politikaları da dahil olmak üzere abonelik koşulları hakkında net bilgiler sağlıyoruz ve uygun izleme ve yönetimi sağlamak için her aboneliğe ayrıntılı meta veriler ekliyoruz.
+Ayrıca, faturalandırma sıklığı ve iptal politikaları dahil olmak üzere abonelik şartları hakkında net bilgiler sağlıyor ve her abonelikle birlikte doğru takip ve yönetim için detaylı meta veriler ekliyoruz.
 
-## Sonuç: Trifecta Yaklaşımımızın Faydaları {#conclusion-the-benefits-of-our-trifecta-approach}
+## Sonuç: Üçlü Yaklaşımımızın Faydaları {#conclusion-the-benefits-of-our-trifecta-approach}
 
-Ödeme işleme konusundaki üçlü yaklaşımımız birçok önemli avantaj sağladı:
+Ödeme işlemlerinde kullandığımız üçlü yaklaşım birkaç önemli fayda sağlamıştır:
 
 1. **Güvenilirlik**: Üç katmanlı ödeme doğrulaması uygulayarak hiçbir ödemenin kaçırılmamasını veya yanlış işlenmemesini sağlıyoruz.
 
-2. **Doğruluk**: Veritabanımız her zaman hem Stripe hem de PayPal'daki aboneliklerin ve ödemelerin gerçek durumunu yansıtır.
+2. **Doğruluk**: Veritabanımız her zaman Stripe ve PayPal’daki abonelikler ve ödemelerin gerçek durumunu yansıtır.
 
-3. **Esneklik**: Kullanıcılar, sistemimizin güvenilirliğinden ödün vermeden tercih ettikleri ödeme yöntemini seçebilirler.
+3. **Esneklik**: Kullanıcılar tercih ettikleri ödeme yöntemini sistemimizin güvenilirliğinden ödün vermeden seçebilirler.
 
-4. **Sağlamlık**: Sistemimiz, ağ arızalarından dolandırıcılık faaliyetlerine kadar uç durumları zarif bir şekilde ele alır.
+4. **Dayanıklılık**: Sistemimiz, ağ hatalarından dolandırıcılık faaliyetlerine kadar kenar durumları sorunsuz yönetir.
 
-Birden fazla işlemciyi destekleyen bir ödeme sistemi uyguluyorsanız, bu üçlü yaklaşımı şiddetle tavsiye ederiz. Başlangıçta daha fazla geliştirme çabası gerektirir, ancak güvenilirlik ve doğruluk açısından uzun vadeli faydaları buna fazlasıyla değer.
+Birden fazla ödeme işlemcisini destekleyen bir ödeme sistemi uyguluyorsanız, bu üçlü yaklaşımı şiddetle tavsiye ederiz. Başlangıçta daha fazla geliştirme çabası gerektirir, ancak uzun vadede güvenilirlik ve doğruluk açısından sağladığı faydalar buna değerdir.
 
-Forward Email ve gizlilik odaklı e-posta hizmetlerimiz hakkında daha fazla bilgi edinmek için [web sitesi](https://forwardemail.net) sayfamızı ziyaret edin.
+Forward Email ve gizlilik odaklı e-posta hizmetlerimiz hakkında daha fazla bilgi için [web sitemizi](https://forwardemail.net) ziyaret edin.
 
-<!-- *Anahtar kelimeler: ödeme işleme, Stripe entegrasyonu, PayPal entegrasyonu, webhook kullanımı, ödeme senkronizasyonu, abonelik yönetimi, dolandırıcılık önleme, anlaşmazlık yönetimi, Node.js ödeme sistemi, çoklu işlemcili ödeme sistemi, ödeme ağ geçidi entegrasyonu, gerçek zamanlı ödeme doğrulaması, ödeme verisi tutarlılığı, abonelik faturalandırması, ödeme güvenliği, ödeme otomasyonu, ödeme webhook'ları, ödeme uzlaştırma, ödeme uç durumları, ödeme hatası yönetimi, VISA abonelik gereksinimleri, yenileme öncesi bildirimler, abonelik uyumluluğu* -->
+<!-- *Anahtar kelimeler: ödeme işlemleri, Stripe entegrasyonu, PayPal entegrasyonu, webhook yönetimi, ödeme senkronizasyonu, abonelik yönetimi, dolandırıcılık önleme, itiraz yönetimi, Node.js ödeme sistemi, çoklu işlemci ödeme sistemi, ödeme geçidi entegrasyonu, gerçek zamanlı ödeme doğrulaması, ödeme verisi tutarlılığı, abonelik faturalandırması, ödeme güvenliği, ödeme otomasyonu, ödeme webhookları, ödeme mutabakatı, ödeme kenar durumları, ödeme hata yönetimi, VISA abonelik gereksinimleri, ön yenileme bildirimleri, abonelik uyumu* -->

@@ -1,9 +1,11 @@
 # JavaScript İletişim Formları Node.js Kod Örneği {#javascript-contact-forms-nodejs-code-example}
 
+
 ## İçindekiler {#table-of-contents}
 
 * [Kurulum ve Gereksinimler](#install-and-requirements)
-* [Kaynak Kodu ve Örnek](#source-code-and-example)
+* [Kaynak Kod ve Örnek](#source-code-and-example)
+
 
 ## Kurulum ve Gereksinimler {#install-and-requirements}
 
@@ -13,11 +15,12 @@
 npm install nodemailer
 ```
 
-## Kaynak Kodu ve Örnek {#source-code-and-example}
 
-Bu örnek, giden postaları göndermek ve önizlemek için **[Nodemailer](https://github.com/nodemailer/nodemailer)** kütüphanesini ve resmi sponsoru **[E-postayı İlet](https://forwardemail.net)**'i kullanır.
+## Kaynak Kod ve Örnek {#source-code-and-example}
 
-Giden e-posta göndermek için <strong class="text-success"><i class="fa fa-key"></i>Şifre Oluştur</strong>'a ihtiyacınız olacak - lütfen **[Özel Alan Adıyla E-posta Gönderme SMTP Kılavuzu](/guides/send-email-with-custom-domain-smtp)** adımlarını izleyin.
+Bu örnek, **[Nodemailer](https://github.com/nodemailer/nodemailer)** kütüphanesini ve resmi sponsoru **[Forward Email](https://forwardemail.net)** kullanarak giden postaları gönderir ve önizler.
+
+Giden posta göndermek için <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluşturmanız</strong> gerekecek – lütfen **[Özel Alan Adı SMTP ile E-posta Gönderme Rehberi](/guides/send-email-with-custom-domain-smtp)**'mizi takip edin.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: `user` ve `pass` değerlerini şuradan değiştirin:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -45,12 +48,12 @@ await transporter.sendMail({
 });
 ```
 
-E-postayı göndermek için uygulamayı çalıştırın:
+Postayı göndermek için uygulamayı çalıştırın:
 
 ```sh
 node app
 ```
 
-Artık gerçek zamanlı e-posta teslim durumunuzu, e-posta teslim edilebilirlik günlüklerinizi ve HTML/düz metin/ek önizlemelerinizi görmek için **[Hesabım → E-postalar](/my-account/emails)** adresine gidebilirsiniz.
+Şimdi gerçek zamanlı e-posta teslimat durumunuzu, e-posta teslim edilebilirlik kayıtlarını ve HTML/düz metin/ek önizlemelerini görmek için **[Hesabım → E-postalar](/my-account/emails)** sayfasına gidebilirsiniz.
 
-> Not: :tada: Ayrıca **[tarayıcılarda ve iOS Simülatöründe e-postaları önizleme](/docs/test-preview-email-rendering-browsers-ios-simulator)** ve **[Node.js ile e-posta şablonları oluşturun](/docs/send-emails-with-node-js-javascript)** de yapabilirsiniz.
+> Not: :tada: Ayrıca **[tarayıcılarda ve iOS Simülatöründe e-postaları önizleyebilir](/docs/test-preview-email-rendering-browsers-ios-simulator)** ve **[Node.js ile e-posta şablonları oluşturabilirsiniz](/docs/send-emails-with-node-js-javascript)**.

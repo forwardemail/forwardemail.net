@@ -1,291 +1,292 @@
-# Pierwszy kompletny interfejs API poczty e-mail: Jak Forward Email zrewolucjonizował zarządzanie pocztą e-mail {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# Pierwsze Kompleksowe API do Emaili: Jak Forward Email Zrewolucjonizował Zarządzanie Emailami {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>TL;DR:</strong> Stworzyliśmy pierwsze na świecie kompletne API REST do zarządzania pocztą e-mail z zaawansowanymi możliwościami wyszukiwania, których nie oferuje żadna inna usługa. Podczas gdy Gmail, Outlook i Apple zmuszają programistów do korzystania z piekła IMAP lub API o ograniczonej przepustowości, Forward Email zapewnia błyskawiczne operacje CRUD dla wiadomości, folderów, kontaktów i kalendarzy poprzez ujednolicony interfejs REST z ponad 15 parametrami wyszukiwania. To jest właśnie to API, na które czekali programiści.
+  <strong>TL;DR:</strong> Stworzyliśmy pierwsze na świecie kompletne REST API do zarządzania emailami z zaawansowanymi możliwościami wyszukiwania, których nie oferuje żadna inna usługa. Podczas gdy Gmail, Outlook i Apple zmuszają deweloperów do korzystania z piekła IMAP lub API z limitami, Forward Email dostarcza błyskawicznie szybkie operacje CRUD na wiadomościach, folderach, kontaktach i kalendarzach przez zunifikowany interfejs REST z ponad 15 parametrami wyszukiwania. To jest API do emaili, na które deweloperzy czekali.
 </p>
 
-## Spis treści {#table-of-contents}
 
-* [Problem z API poczty e-mail](#the-email-api-problem)
-* [Co tak naprawdę mówią deweloperzy](#what-developers-are-actually-saying)
-* [Rewolucyjne rozwiązanie Forward Email](#forward-emails-revolutionary-solution)
-  * [Dlaczego to zbudowaliśmy](#why-we-built-this)
-  * [Proste uwierzytelnianie](#simple-authentication)
-* [20 punktów końcowych, które zmieniają wszystko](#20-endpoints-that-change-everything)
-  * [Wiadomości (5 punktów końcowych)](#messages-5-endpoints)
-  * [Foldery (5 punktów końcowych)](#folders-5-endpoints)
-  * [Kontakty (5 punktów końcowych)](#contacts-5-endpoints)
-  * [Kalendarze (5 punktów końcowych)](#calendars-5-endpoints)
-* [Zaawansowane wyszukiwanie: Żadna inna usługa nie może się z Tobą równać](#advanced-search-no-other-service-compares)
-  * [Krajobraz API wyszukiwania jest zepsuty](#the-search-api-landscape-is-broken)
-  * [Rewolucyjne API wyszukiwania Forward Email](#forward-emails-revolutionary-search-api)
-  * [Przykłady wyszukiwania w świecie rzeczywistym](#real-world-search-examples)
-  * [Zalety wydajnościowe](#performance-advantages)
-  * [Funkcje wyszukiwania, których nikt inny nie ma](#search-features-no-one-else-has)
-  * [Dlaczego to ma znaczenie dla programistów](#why-this-matters-for-developers)
-  * [Wdrożenie techniczne](#the-technical-implementation)
-* [Błyskawicznie szybka architektura wydajnościowa](#blazing-fast-performance-architecture)
-  * [Testy wydajności](#performance-benchmarks)
-  * [Architektura stawiająca prywatność na pierwszym miejscu](#privacy-first-architecture)
-* [Dlaczego jesteśmy inni: kompletne porównanie](#why-were-different-the-complete-comparison)
-  * [Ograniczenia głównych dostawców](#major-provider-limitations)
-  * [Zalety przekazywania wiadomości e-mail](#forward-email-advantages)
-  * [Problem przejrzystości oprogramowania typu open source](#the-open-source-transparency-problem)
-* [Ponad 30 przykładów integracji w świecie rzeczywistym](#30-real-world-integration-examples)
-  * [1. Ulepszenie formularza kontaktowego WordPress](#1-wordpress-contact-form-enhancement)
-  * [2. Alternatywa dla Zapiera do automatyzacji poczty e-mail](#2-zapier-alternative-for-email-automation)
-  * [3. Synchronizacja poczty e-mail CRM](#3-crm-email-synchronization)
-  * [4. Przetwarzanie zamówień e-commerce](#4-e-commerce-order-processing)
-  * [5. Integracja zgłoszeń pomocy technicznej](#5-support-ticket-integration)
-  * [6. System zarządzania newsletterem](#6-newsletter-management-system)
-  * [7. Zarządzanie zadaniami za pomocą poczty e-mail](#7-email-based-task-management)
-  * [8. Agregacja poczty e-mail z wielu kont](#8-multi-account-email-aggregation)
-  * [9. Zaawansowany panel analityki wiadomości e-mail](#9-advanced-email-analytics-dashboard)
-  * [10. Inteligentne archiwizowanie wiadomości e-mail](#10-smart-email-archiving)
-  * [11. Integracja poczty e-mail z kalendarzem](#11-email-to-calendar-integration)
-  * [12. Kopia zapasowa poczty e-mail i zgodność z przepisami](#12-email-backup-and-compliance)
-  * [13. Zarządzanie treścią w oparciu o pocztę e-mail](#13-email-based-content-management)
-  * [14. Zarządzanie szablonami wiadomości e-mail](#14-email-template-management)
-  * [15. Automatyzacja przepływu pracy oparta na poczcie e-mail](#15-email-based-workflow-automation)
-  * [16. Monitorowanie bezpieczeństwa poczty elektronicznej](#16-email-security-monitoring)
-  * [17. Zbieranie ankiet za pośrednictwem poczty e-mail](#17-email-based-survey-collection)
-  * [18. Monitorowanie wydajności poczty e-mail](#18-email-performance-monitoring)
-  * [19. Kwalifikacja potencjalnych klientów na podstawie wiadomości e-mail](#19-email-based-lead-qualification)
-  * [20. Zarządzanie projektami w oparciu o pocztę e-mail](#20-email-based-project-management)
-  * [21. Zarządzanie zapasami za pomocą poczty e-mail](#21-email-based-inventory-management)
-  * [22. Przetwarzanie faktur za pośrednictwem poczty e-mail](#22-email-based-invoice-processing)
-  * [23. Rejestracja na wydarzenie za pośrednictwem poczty e-mail](#23-email-based-event-registration)
-  * [24. Przepływ pracy zatwierdzania dokumentów za pośrednictwem poczty e-mail](#24-email-based-document-approval-workflow)
-  * [25. Analiza opinii klientów na podstawie wiadomości e-mail](#25-email-based-customer-feedback-analysis)
-  * [26. Proces rekrutacji oparty na poczcie e-mail](#26-email-based-recruitment-pipeline)
-  * [27. Przetwarzanie raportów wydatków na podstawie wiadomości e-mail](#27-email-based-expense-report-processing)
-  * [28. Raportowanie zapewnienia jakości w oparciu o pocztę e-mail](#28-email-based-quality-assurance-reporting)
-  * [29. Zarządzanie dostawcami za pomocą poczty e-mail](#29-email-based-vendor-management)
-  * [30. Monitorowanie mediów społecznościowych za pomocą poczty e-mail](#30-email-based-social-media-monitoring)
-* [Rozpoczęcie pracy](#getting-started)
-  * [1. Utwórz konto e-mail do przekazywania dalej](#1-create-your-forward-email-account)
-  * [2. Wygeneruj dane uwierzytelniające API](#2-generate-api-credentials)
-  * [3. Wykonaj pierwsze wywołanie API](#3-make-your-first-api-call)
-  * [4. Przeglądaj dokumentację](#4-explore-the-documentation)
-* [Zasoby techniczne](#technical-resources)
+## Spis Treści {#table-of-contents}
 
-## Problem z interfejsem API poczty e-mail {#the-email-api-problem}
+* [Problem z API do Emaili](#the-email-api-problem)
+* [Co Naprawdę Mówią Deweloperzy](#what-developers-are-actually-saying)
+* [Rewolucyjne Rozwiązanie Forward Email](#forward-emails-revolutionary-solution)
+  * [Dlaczego To Zbudowaliśmy](#why-we-built-this)
+  * [Prosta Autoryzacja](#simple-authentication)
+* [20 Endpointów, Które Zmienią Wszystko](#20-endpoints-that-change-everything)
+  * [Wiadomości (5 endpointów)](#messages-5-endpoints)
+  * [Foldery (5 endpointów)](#folders-5-endpoints)
+  * [Kontakty (5 endpointów)](#contacts-5-endpoints)
+  * [Kalendarze (5 endpointów)](#calendars-5-endpoints)
+* [Zaawansowane Wyszukiwanie: Żadna Inna Usługa Nie Ma Równych](#advanced-search-no-other-service-compares)
+  * [Krajobraz API Wyszukiwania jest Złamany](#the-search-api-landscape-is-broken)
+  * [Rewolucyjne API Wyszukiwania Forward Email](#forward-emails-revolutionary-search-api)
+  * [Przykłady Wyszukiwania z Życia](#real-world-search-examples)
+  * [Zalety Wydajności](#performance-advantages)
+  * [Funkcje Wyszukiwania, Których Nikt Inny Nie Ma](#search-features-no-one-else-has)
+  * [Dlaczego To Ma Znaczenie dla Deweloperów](#why-this-matters-for-developers)
+  * [Techniczna Implementacja](#the-technical-implementation)
+* [Błyskawiczna Architektura Wydajności](#blazing-fast-performance-architecture)
+  * [Benchmarki Wydajności](#performance-benchmarks)
+  * [Architektura Priorytetująca Prywatność](#privacy-first-architecture)
+* [Dlaczego Jesteśmy Inni: Kompleksowe Porównanie](#why-were-different-the-complete-comparison)
+  * [Główne Ograniczenia Dostawców](#major-provider-limitations)
+  * [Zalety Forward Email](#forward-email-advantages)
+  * [Problem Transparentności Open-Source](#the-open-source-transparency-problem)
+* [Ponad 30 Przykładów Integracji z Życia](#30-real-world-integration-examples)
+  * [1. Ulepszenie Formularza Kontaktowego WordPress](#1-wordpress-contact-form-enhancement)
+  * [2. Alternatywa dla Zapier do Automatyzacji Emaili](#2-zapier-alternative-for-email-automation)
+  * [3. Synchronizacja Emaili w CRM](#3-crm-email-synchronization)
+  * [4. Przetwarzanie Zamówień w E-commerce](#4-e-commerce-order-processing)
+  * [5. Integracja Zgłoszeń Serwisowych](#5-support-ticket-integration)
+  * [6. System Zarządzania Newsletterem](#6-newsletter-management-system)
+  * [7. Zarządzanie Zadaniami przez Email](#7-email-based-task-management)
+  * [8. Agregacja Emaili z Wielu Kont](#8-multi-account-email-aggregation)
+  * [9. Zaawansowany Panel Analityki Emaili](#9-advanced-email-analytics-dashboard)
+  * [10. Inteligentne Archiwizowanie Emaili](#10-smart-email-archiving)
+  * [11. Integracja Email-Kalendarz](#11-email-to-calendar-integration)
+  * [12. Kopie Zapasowe i Zgodność Emaili](#12-email-backup-and-compliance)
+  * [13. Zarządzanie Treścią przez Email](#13-email-based-content-management)
+  * [14. Zarządzanie Szablonami Emaili](#14-email-template-management)
+  * [15. Automatyzacja Procesów przez Email](#15-email-based-workflow-automation)
+  * [16. Monitorowanie Bezpieczeństwa Emaili](#16-email-security-monitoring)
+  * [17. Zbieranie Ankiet przez Email](#17-email-based-survey-collection)
+  * [18. Monitorowanie Wydajności Emaili](#18-email-performance-monitoring)
+  * [19. Kwalifikacja Leadów przez Email](#19-email-based-lead-qualification)
+  * [20. Zarządzanie Projektami przez Email](#20-email-based-project-management)
+  * [21. Zarządzanie Zapasami przez Email](#21-email-based-inventory-management)
+  * [22. Przetwarzanie Faktur przez Email](#22-email-based-invoice-processing)
+  * [23. Rejestracja na Wydarzenia przez Email](#23-email-based-event-registration)
+  * [24. Workflow Zatwierdzania Dokumentów przez Email](#24-email-based-document-approval-workflow)
+  * [25. Analiza Opinii Klientów przez Email](#25-email-based-customer-feedback-analysis)
+  * [26. Pipeline Rekrutacyjny przez Email](#26-email-based-recruitment-pipeline)
+  * [27. Przetwarzanie Raportów Kosztów przez Email](#27-email-based-expense-report-processing)
+  * [28. Raportowanie Kontroli Jakości przez Email](#28-email-based-quality-assurance-reporting)
+  * [29. Zarządzanie Dostawcami przez Email](#29-email-based-vendor-management)
+  * [30. Monitorowanie Mediów Społecznościowych przez Email](#30-email-based-social-media-monitoring)
+* [Pierwsze Kroki](#getting-started)
+  * [1. Załóż Konto Forward Email](#1-create-your-forward-email-account)
+  * [2. Wygeneruj Dane Dostępowe do API](#2-generate-api-credentials)
+  * [3. Wykonaj Pierwsze Wywołanie API](#3-make-your-first-api-call)
+  * [4. Zapoznaj się z Dokumentacją](#4-explore-the-documentation)
+* [Zasoby Techniczne](#technical-resources)
+## Problem z API e-mail {#the-email-api-problem}
 
-Interfejsy API poczty e-mail są zasadniczo zepsute. Kropka.
+API e-mail są zasadniczo zepsute. Kropka.
 
-Każdy duży dostawca poczty e-mail stawia programistów przed jedną z dwóch fatalnych decyzji:
+Każdy większy dostawca e-mail zmusza programistów do wyboru jednej z dwóch okropnych opcji:
 
-1. **Piekło IMAP**: Zmaganie się z 30-letnim protokołem przeznaczonym dla klientów stacjonarnych, a nie dla nowoczesnych aplikacji
-2. **Uszkodzone API**: Ograniczone pod względem przepustowości, tylko do odczytu, złożone interfejsy API OAuth, które nie potrafią zarządzać rzeczywistymi danymi e-mail
+1. **Piekło IMAP**: Walka z 30-letnim protokołem zaprojektowanym dla klientów desktopowych, a nie nowoczesnych aplikacji
+2. **Okrojone API**: Ograniczone ilościowo, tylko do odczytu, skomplikowane OAuth API, które nie potrafią zarządzać twoimi rzeczywistymi danymi e-mail
 
-Efekt? Deweloperzy albo całkowicie rezygnują z integracji poczty e-mail, albo tracą tygodnie na tworzenie niestabilnych wrapperów IMAP, które ciągle się psują.
+Efekt? Programiści albo całkowicie rezygnują z integracji e-mail, albo tracą tygodnie na budowanie kruchego wrappera IMAP, który ciągle się psuje.
 
 > \[!WARNING]
-> **Brudny Sekret**: Większość „interfejsów API poczty e-mail” to po prostu interfejsy API do wysyłania. Nie można programowo organizować folderów, synchronizować kontaktów ani zarządzać kalendarzami za pomocą prostego interfejsu REST. Aż do teraz.
+> **Brudny sekret**: Większość „API e-mail” to tylko API do wysyłania. Nie możesz programowo organizować folderów, synchronizować kontaktów ani zarządzać kalendarzami przez prosty interfejs REST. Do teraz.
 
-## Co tak naprawdę mówią programiści {#what-developers-are-actually-saying}
+
+## Co naprawdę mówią programiści {#what-developers-are-actually-saying}
 
 Frustracja jest prawdziwa i udokumentowana wszędzie:
 
-> „Niedawno próbowałem zintegrować Gmaila z moją aplikacją i poświęciłem na to za dużo czasu. Doszedłem do wniosku, że nie warto wspierać Gmaila”.
-
-> > *- [Twórca Hacker News](https://news.ycombinator.com/item?id=42106944), 147 głosów na tak*
-
-> „Czy wszystkie interfejsy API poczty e-mail są przeciętne? Wydają się w jakiś sposób ograniczone lub restrykcyjne”.
+> „Niedawno próbowałem zintegrować Gmail w mojej aplikacji i poświęciłem na to za dużo czasu. Zdecydowałem, że nie warto wspierać Gmaila.”
 >
-> *- [Dyskusja na Reddicie r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
+> *- [programista z Hacker News](https://news.ycombinator.com/item?id=42106944), 147 głosów poparcia*
 
-> „Dlaczego tworzenie poczty e-mail musi być do bani?”
-
-> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 komentarzy dotyczących bólu programisty*
-
-> „Co sprawia, że API Gmaila jest wydajniejsze niż IMAP? Innym powodem, dla którego API Gmaila jest znacznie wydajniejsze, jest to, że wystarczy pobrać każdą wiadomość tylko raz. W przypadku IMAP każda wiadomość musi zostać pobrana i zindeksowana...”
+> „Czy wszystkie API e-mail są przeciętne? Wydają się w jakiś sposób ograniczone lub restrykcyjne.”
 >
-> *- [Pytanie na Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) z 47 głosami na tak*
+> *- [dyskusja na Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
+
+> „Dlaczego rozwój e-mail musi być taki trudny?”
+>
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 komentarzy o problemach programistów*
+
+> „Co sprawia, że API Gmail jest bardziej wydajne niż IMAP? Kolejnym powodem, dla którego API Gmail jest znacznie bardziej wydajne, jest to, że musi pobrać każdą wiadomość tylko raz. W IMAP każda wiadomość musi być pobrana i zindeksowana...”
+>
+> *- [pytanie na Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) z 47 głosami poparcia*
 
 Dowody są wszędzie:
 
-* **Problemy z SMTP w WordPressie**: [631 problemów w serwisie GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) – problemy z dostarczaniem wiadomości e-mail
-* **Ograniczenia Zapiera**: [Skargi społeczności](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) – limit około 10 wiadomości e-mail na godzinę i błędy wykrywania IMAP
-* **Projekty API IMAP**: [Wiele](https://github.com/ewildgoose/imap-api), [oprogramowanie typu open source](https://emailengine.app/) i [projektowanie](https://www.npmjs.com/package/imapflow) istnieją specjalnie po to, aby „konwertować IMAP na REST”, ponieważ żaden dostawca tego nie oferuje
-* **Frustracje związane z API Gmaila**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) ma 4847 pytań oznaczonych tagiem „gmail-api” z typowymi skargami dotyczącymi limitów przepustowości i złożoności
+* **Problemy SMTP WordPressa**: [631 zgłoszeń na GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) dotyczących niepowodzeń dostarczania e-maili
+* **Ograniczenia Zapiera**: [Skargi społeczności](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) na limity 10 e-maili/godzinę i błędy wykrywania IMAP
+* **Projekty API IMAP**: [Wiele](https://github.com/ewildgoose/imap-api) [projektów open-source](https://emailengine.app/) [istnieje](https://www.npmjs.com/package/imapflow) specjalnie po to, by „konwertować IMAP na REST”, ponieważ żaden dostawca tego nie oferuje
+* **Frustracje z API Gmail**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) ma 4 847 pytań oznaczonych tagiem „gmail-api” z typowymi skargami na limity i złożoność
+
 
 ## Rewolucyjne rozwiązanie Forward Email {#forward-emails-revolutionary-solution}
 
-**Jesteśmy pierwszą firmą świadczącą usługi poczty elektronicznej oferującą kompletne operacje CRUD dla wszystkich danych e-mail za pośrednictwem ujednoliconego interfejsu API REST.**
+**Jesteśmy pierwszą usługą e-mail oferującą pełne operacje CRUD na wszystkich danych e-mail przez zunifikowane API REST.**
 
-To nie jest po prostu kolejny interfejs API do wysyłania. To pełna, programowa kontrola nad:
+To nie jest kolejne API do wysyłania. To pełna programowa kontrola nad:
 
-* **Wiadomości**: Tworzenie, odczytywanie, aktualizowanie, usuwanie, wyszukiwanie, przenoszenie, oznaczanie flagą
-* **Foldery**: Pełne zarządzanie folderami IMAP za pośrednictwem punktów końcowych REST
-* **Kontakty**: Przechowywanie i synchronizacja kontaktów [CardDAV](https://tools.ietf.org/html/rfc6352)
-* **Kalendarze**: Wydarzenia w kalendarzu [CalDAV](https://tools.ietf.org/html/rfc4791) i planowanie
+* **Wiadomościami**: Tworzenie, odczyt, aktualizacja, usuwanie, wyszukiwanie, przenoszenie, oznaczanie
+* **Folderami**: Pełne zarządzanie folderami IMAP przez endpointy REST
+* **Kontaktami**: Przechowywanie i synchronizacja kontaktów [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **Kalendarzami**: Wydarzenia i planowanie w kalendarzu [CalDAV](https://tools.ietf.org/html/rfc4791)
 
-### Dlaczego zbudowaliśmy to {#why-we-built-this}
+### Dlaczego to zbudowaliśmy {#why-we-built-this}
 
-**Problem**: Każdy dostawca poczty elektronicznej traktuje pocztę e-mail jak czarną skrzynkę. Możesz wysyłać e-maile, a nawet je odczytywać za pomocą złożonego protokołu OAuth, ale nie możesz w pełni *zarządzać* swoimi danymi e-mail programowo.
+**Problem**: Każdy dostawca e-mail traktuje e-mail jako czarną skrzynkę. Możesz wysyłać e-maile, może je czytać przez skomplikowane OAuth, ale nie możesz naprawdę *zarządzać* swoimi danymi e-mail programowo.
 
-**Nasza wizja**: E-mail powinien być tak łatwy w integracji, jak każde nowoczesne API. Bez bibliotek IMAP. Bez skomplikowanego OAuth. Bez koszmarów związanych z limitami przepustowości. Tylko proste, działające punkty końcowe REST.
+**Nasza wizja**: E-mail powinien być tak łatwy do integracji jak każde nowoczesne API. Bez bibliotek IMAP. Bez złożoności OAuth. Bez koszmarów limitów. Tylko proste endpointy REST, które działają.
 
-**Rezultat**: Pierwsza usługa poczty e-mail, dzięki której możesz zbudować kompletnego klienta poczty e-mail, zintegrować system CRM lub zautomatyzować system, wykorzystując wyłącznie żądania HTTP.
+**Efekt**: Pierwsza usługa e-mail, gdzie możesz zbudować kompletny klient e-mail, integrację CRM lub system automatyzacji używając tylko zapytań HTTP.
 
-### Proste uwierzytelnianie {#simple-authentication}
+### Prosta autoryzacja {#simple-authentication}
 
-Brak [Złożoność OAuth](https://oauth.net/2/). Brak [hasła specyficzne dla aplikacji](https://support.google.com/accounts/answer/185833). Tylko dane uwierzytelniające aliasu:
+Bez [złożoności OAuth](https://oauth.net/2/). Bez [hasła specyficznego dla aplikacji](https://support.google.com/accounts/answer/185833). Tylko twoje dane aliasu:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
-
-## 20 punktów końcowych, które zmieniają wszystko {#20-endpoints-that-change-everything}
+## 20 Punktów Końcowych, Które Zmienią Wszystko {#20-endpoints-that-change-everything}
 
 ### Wiadomości (5 punktów końcowych) {#messages-5-endpoints}
 
-* `GET /v1/messages` – Wyświetla wiadomości z filtrowaniem (`?folder=`, `?is_unread=`, `?is_flagged=`)
-* `POST /v1/messages` – Wysyła nowe wiadomości bezpośrednio do folderów
-* `GET /v1/messages/:id` – Pobiera konkretną wiadomość z pełnymi metadanymi
-* `PUT /v1/messages/:id` – Aktualizuje wiadomość (flagi, folder, status odczytu)
-* `DELETE /v1/messages/:id` – Trwale usuwa wiadomość
+* `GET /v1/messages` - Lista wiadomości z filtrowaniem (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `POST /v1/messages` - Wysyłanie nowych wiadomości bezpośrednio do folderów
+* `GET /v1/messages/:id` - Pobierz konkretną wiadomość z pełnymi metadanymi
+* `PUT /v1/messages/:id` - Aktualizuj wiadomość (flagi, folder, status przeczytania)
+* `DELETE /v1/messages/:id` - Trwale usuń wiadomość
 
 ### Foldery (5 punktów końcowych) {#folders-5-endpoints}
 
-* `GET /v1/folders` – Wyświetla listę wszystkich folderów ze statusem subskrypcji
-* `POST /v1/folders` – Tworzy nowy folder z niestandardowymi właściwościami
-* `GET /v1/folders/:id` – Pobiera szczegóły folderu i liczbę wiadomości
-* `PUT /v1/folders/:id` – Aktualizuje właściwości folderu i subskrypcję
-* `DELETE /v1/folders/:id` – Usuwa folder i obsługuje relokację wiadomości
+* `GET /v1/folders` - Lista wszystkich folderów ze statusem subskrypcji
+* `POST /v1/folders` - Utwórz nowy folder z niestandardowymi właściwościami
+* `GET /v1/folders/:id` - Pobierz szczegóły folderu i liczbę wiadomości
+* `PUT /v1/folders/:id` - Aktualizuj właściwości folderu i subskrypcję
+* `DELETE /v1/folders/:id` - Usuń folder i obsłuż przeniesienie wiadomości
 
 ### Kontakty (5 punktów końcowych) {#contacts-5-endpoints}
 
-* `GET /v1/contacts` – Wyświetla listę kontaktów z wyszukiwaniem i paginacją
-* `POST /v1/contacts` – Tworzy nowy kontakt z pełną obsługą vCard
-* `GET /v1/contacts/:id` – Pobiera kontakt ze wszystkimi polami i metadanymi
-* `PUT /v1/contacts/:id` – Aktualizuje dane kontaktowe z walidacją ETag
-* `DELETE /v1/contacts/:id` – Kasuje kontakt z obsługą kaskadową
+* `GET /v1/contacts` - Lista kontaktów z wyszukiwaniem i paginacją
+* `POST /v1/contacts` - Utwórz nowy kontakt z pełnym wsparciem vCard
+* `GET /v1/contacts/:id` - Pobierz kontakt ze wszystkimi polami i metadanymi
+* `PUT /v1/contacts/:id` - Aktualizuj informacje kontaktowe z walidacją ETag
+* `DELETE /v1/contacts/:id` - Usuń kontakt z obsługą kaskadową
 
 ### Kalendarze (5 punktów końcowych) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` – Wyświetla wydarzenia w kalendarzu z filtrowaniem dat
-* `POST /v1/calendars` – Tworzy wydarzenie w kalendarzu z uczestnikami i możliwością powtarzania
-* `GET /v1/calendars/:id` – Pobiera szczegóły wydarzenia z obsługą strefy czasowej
-* `PUT /v1/calendars/:id` – Aktualizuje wydarzenie z wykrywaniem konfliktów
-* `DELETE /v1/calendars/:id` – Usuwa wydarzenie z powiadomieniami dla uczestników
+* `GET /v1/calendars` - Lista wydarzeń kalendarza z filtrowaniem po dacie
+* `POST /v1/calendars` - Utwórz wydarzenie kalendarza z uczestnikami i powtarzalnością
+* `GET /v1/calendars/:id` - Pobierz szczegóły wydarzenia z obsługą stref czasowych
+* `PUT /v1/calendars/:id` - Aktualizuj wydarzenie z wykrywaniem konfliktów
+* `DELETE /v1/calendars/:id` - Usuń wydarzenie z powiadomieniami dla uczestników
 
-## Wyszukiwanie zaawansowane: Żadna inna usługa nie porównuje {#advanced-search-no-other-service-compares}
 
-**Forward Email to jedyna usługa poczty e-mail oferująca kompleksowe, programowe wyszukiwanie we wszystkich polach wiadomości za pośrednictwem interfejsu API REST.**
+## Zaawansowane Wyszukiwanie: Żadna Inna Usługa Nie Dorównuje {#advanced-search-no-other-service-compares}
 
-Podczas gdy inni dostawcy oferują co najwyżej podstawowe filtrowanie, my stworzyliśmy najbardziej zaawansowane API wyszukiwania e-maili, jakie kiedykolwiek stworzono. Żadne API Gmaila, API Outlooka ani żadna inna usługa nie dorównuje naszym możliwościom wyszukiwania.
+**Forward Email to jedyna usługa e-mail, która oferuje kompleksowe, programistyczne wyszukiwanie we wszystkich polach wiadomości przez REST API.**
 
-### Krajobraz interfejsu API wyszukiwania jest zepsuty {#the-search-api-landscape-is-broken}
+Podczas gdy inni dostawcy oferują co najwyżej podstawowe filtrowanie, my stworzyliśmy najbardziej zaawansowane API do wyszukiwania e-maili, jakie kiedykolwiek powstało. Żadne API Gmail, Outlook ani żadna inna usługa nie dorównuje naszym możliwościom wyszukiwania.
 
-**Ograniczenia wyszukiwania w interfejsie API Gmaila:**
+### Krajobraz API Wyszukiwania jest Uszkodzony {#the-search-api-landscape-is-broken}
+
+**Ograniczenia wyszukiwania w Gmail API:**
 
 * ✅ Tylko podstawowy parametr `q`
-* ❌ Brak wyszukiwania według pola
-* ❌ Brak filtrowania zakresu dat
-* ❌ Brak filtrowania według rozmiaru
+* ❌ Brak wyszukiwania specyficznego dla pola
+* ❌ Brak filtrowania po zakresie dat
+* ❌ Brak filtrowania po rozmiarze
 * ❌ Brak filtrowania załączników
-* ❌ Ograniczenie do składni wyszukiwania Gmaila
+* ❌ Ograniczone do składni wyszukiwania Gmaila
 
-**Ograniczenia wyszukiwania w interfejsie API programu Outlook:**
+**Ograniczenia wyszukiwania w Outlook API:**
 
 * ✅ Podstawowy parametr `$search`
 * ❌ Brak zaawansowanego celowania w pola
 * ❌ Brak złożonych kombinacji zapytań
-* ❌ Agresywne ograniczanie szybkości
-* ❌ Wymagana złożona składnia OData
+* ❌ Agresywne ograniczenia szybkości
+* ❌ Wymagana skomplikowana składnia OData
 
 **Apple iCloud:**
 
-* ❌ Brak API
-* ❌ Tylko wyszukiwanie IMAP (jeśli uda Ci się je uruchomić)
+* ❌ Brak jakiegokolwiek API
+* ❌ Tylko wyszukiwanie IMAP (jeśli uda się je uruchomić)
 
-**ProtonMail i Tuta:**
+**ProtonMail & Tuta:**
 
-* ❌ Brak publicznych interfejsów API
-* ❌ Brak możliwości wyszukiwania programowego
+* ❌ Brak publicznych API
+* ❌ Brak programistycznych możliwości wyszukiwania
 
-### Rewolucyjny interfejs API wyszukiwania Forward Email {#forward-emails-revolutionary-search-api}
+### Rewolucyjne API Wyszukiwania Forward Email {#forward-emails-revolutionary-search-api}
 
 **Oferujemy ponad 15 parametrów wyszukiwania, których nie zapewnia żadna inna usługa:**
 
-| Możliwość wyszukiwania | Przekaż dalej e-mail | Interfejs API Gmaila | Interfejs API programu Outlook | Inni |
+| Możliwość wyszukiwania         | Forward Email                          | Gmail API    | Outlook API        | Inne   |
 | ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **Wyszukiwanie według pola** | ✅ Temat, treść, od, do, DW, nagłówki | ❌ | ❌ | ❌ |
-| **Ogólne wyszukiwanie wielodziedzinowe** | ✅ `?search=` we wszystkich polach | ✅ Podstawowy `q=` | ✅ Podstawowy `$search=` | ❌ |
-| **Filtrowanie zakresu dat** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **Filtrowanie na podstawie rozmiaru** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **Filtrowanie załączników** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **Wyszukiwanie w nagłówku** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **Wyszukiwanie identyfikatorów wiadomości** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **Filtry łączone** | ✅ Wiele parametrów z logiką AND | ❌ | ❌ | ❌ |
-| **Bez uwzględniania wielkości liter** | ✅ Wszystkie wyszukiwania | ✅ | ✅ | ❌ |
-| **Obsługa paginacji** | ✅ Działa ze wszystkimi parametrami wyszukiwania | ✅ | ✅ | ❌ |
-
-### Przykłady wyszukiwania w świecie rzeczywistym {#real-world-search-examples}
+| **Wyszukiwanie specyficzne dla pola** | ✅ Temat, treść, od, do, DW, nagłówki    | ❌            | ❌                  | ❌      |
+| **Wielopolowe wyszukiwanie ogólne** | ✅ `?search=` we wszystkich polach       | ✅ Podstawowe `q=` | ✅ Podstawowe `$search=` | ❌      |
+| **Filtrowanie po zakresie dat** | ✅ `?since=` & `?before=`               | ❌            | ❌                  | ❌      |
+| **Filtrowanie po rozmiarze**   | ✅ `?min_size=` & `?max_size=`          | ❌            | ❌                  | ❌      |
+| **Filtrowanie załączników**    | ✅ `?has_attachments=true/false`        | ❌            | ❌                  | ❌      |
+| **Wyszukiwanie w nagłówkach** | ✅ `?headers=X-Priority`                | ❌            | ❌                  | ❌      |
+| **Wyszukiwanie po ID wiadomości** | ✅ `?message_id=abc123`                 | ❌            | ❌                  | ❌      |
+| **Łączenie filtrów**           | ✅ Wiele parametrów z logiką AND         | ❌            | ❌                  | ❌      |
+| **Niewrażliwość na wielkość liter** | ✅ Wszystkie wyszukiwania               | ✅            | ✅                  | ❌      |
+| **Obsługa paginacji**          | ✅ Działa ze wszystkimi parametrami wyszukiwania | ✅            | ✅                  | ❌      |
+### Przykłady wyszukiwania w rzeczywistych zastosowaniach {#real-world-search-examples}
 
 **Znajdź wszystkie faktury z ostatniego kwartału:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - Proste i potężne
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - Niemożliwe z ich ograniczonym wyszukiwaniem
+# Brak filtrowania zakresu dat
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - Złożona składnia OData, ograniczona funkcjonalność
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
-**Szukaj dużych załączników od konkretnego nadawcy:**
+**Wyszukaj duże załączniki od konkretnego nadawcy:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - Kompleksowe filtrowanie
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - Nie można programowo filtrować po rozmiarze ani załącznikach
+# Outlook API - Brak filtrowania po rozmiarze
+# Inne - Brak dostępnych API
 ```
 
-**Kompleksowe wyszukiwanie wielopolowe:**
+**Złożone wyszukiwanie wielopolowe:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - Zaawansowane możliwości zapytań
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - Ograniczone do podstawowego wyszukiwania tekstowego
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - Podstawowe wyszukiwanie bez celowania w pola
 GET /me/messages?$search="quarterly"
 ```
 
-### Zalety wydajnościowe {#performance-advantages}
+### Zalety wydajności {#performance-advantages}
 
-**Wydajność wyszukiwania wiadomości e-mail:**
+**Wydajność wyszukiwania Forward Email:**
 
-* ⚡ **Czas odpowiedzi poniżej 100 ms** dla złożonych wyszukiwań
-* 🔍 **Optymalizacja wyrażeń regularnych** z odpowiednim indeksowaniem
-* 📊 **Równoległe wykonywanie zapytań** dla liczb i danych
-* 💾 **Efektywne wykorzystanie pamięci** dzięki oszczędnym zapytaniom
+* ⚡ **Czasy odpowiedzi poniżej 100 ms** dla złożonych wyszukiwań
+* 🔍 **Optymalizacja regex** z właściwym indeksowaniem
+* 📊 **Równoległe wykonywanie zapytań** dla liczenia i danych
+* 💾 **Efektywne wykorzystanie pamięci** dzięki lekkim zapytaniom
 
 **Problemy z wydajnością konkurencji:**
 
-* 🐌 **API Gmaila**: Ograniczenie przepustowości do 250 jednostek limitu na użytkownika na sekundę
-* 🐌 **API Outlooka**: Agresywne ograniczanie przepustowości ze złożonymi wymaganiami dotyczącymi backoffu
-* 🐌 **Inne**: Brak interfejsów API do porównania
+* 🐌 **Gmail API**: Limit 250 jednostek kwoty na użytkownika na sekundę
+* 🐌 **Outlook API**: Agresywne ograniczenia złożone z wymogami backoffu
+* 🐌 **Inne**: Brak API do porównania
 
 ### Funkcje wyszukiwania, których nikt inny nie ma {#search-features-no-one-else-has}
 
-#### 1. Wyszukiwanie specyficzne dla nagłówka {#1-header-specific-search}
+#### 1. Wyszukiwanie specyficzne dla nagłówków {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# Znajdź wiadomości z określonymi nagłówkami
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
@@ -293,51 +294,51 @@ GET /v1/messages?headers=X-Spam-Score
 #### 2. Inteligencja oparta na rozmiarze {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# Znajdź e-maile newsletterów (zazwyczaj duże)
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# Znajdź szybkie odpowiedzi (zazwyczaj małe)
 GET /v1/messages?max_size=1000&to=support
 ```
 
-#### 3. Przepływy pracy oparte na załącznikach {#3-attachment-based-workflows}
+#### 3. Workflow oparte na załącznikach {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# Znajdź wszystkie dokumenty wysłane do zespołu prawnego
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# Znajdź e-maile bez załączników do sprzątania
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
 #### 4. Połączona logika biznesowa {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# Znajdź pilne oznaczone wiadomości od VIP-ów z załącznikami
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
 ### Dlaczego to ma znaczenie dla programistów {#why-this-matters-for-developers}
 
-**Tworzenie aplikacji, które wcześniej były niemożliwe:**
+**Buduj aplikacje, które wcześniej były niemożliwe:**
 
-1. **Zaawansowana analityka wiadomości e-mail**: Analizuj wzorce wiadomości e-mail według rozmiaru, nadawcy i treści
-2. **Inteligentne zarządzanie wiadomościami e-mail**: Automatyczna organizacja na podstawie złożonych kryteriów
-3. **Zgodność i wykrywanie**: Znajdź konkretne wiadomości e-mail pod kątem wymogów prawnych
-4. **Business Intelligence**: Wyciągnij wnioski ze wzorców komunikacji e-mail
-5. **Zautomatyzowane przepływy pracy**: Wyzwalaj działania na podstawie zaawansowanych filtrów wiadomości e-mail
+1. **Zaawansowana analiza e-maili**: Analizuj wzorce e-maili według rozmiaru, nadawcy, treści
+2. **Inteligentne zarządzanie e-mailami**: Automatyczna organizacja na podstawie złożonych kryteriów
+3. **Zgodność i odkrywanie**: Znajdź konkretne e-maile dla wymogów prawnych
+4. **Business Intelligence**: Wydobywaj wnioski z wzorców komunikacji e-mailowej
+5. **Automatyczne workflowy**: Wyzwalaj akcje na podstawie zaawansowanych filtrów e-maili
 
-### Implementacja techniczna {#the-technical-implementation}
+### Techniczna implementacja {#the-technical-implementation}
 
 Nasze API wyszukiwania wykorzystuje:
 
-* **Optymalizacja wyrażeń regularnych** z odpowiednimi strategiami indeksowania
-* **Równoległe wykonywanie** dla zwiększenia wydajności
-* **Walidacja danych wejściowych** dla bezpieczeństwa
-* **Kompleksowa obsługa błędów** dla zwiększenia niezawodności
+* **Optymalizację regex** z właściwymi strategiami indeksowania
+* **Równoległe wykonywanie** dla wydajności
+* **Walidację wejścia** dla bezpieczeństwa
+* **Kompleksową obsługę błędów** dla niezawodności
 
 ```javascript
-// Example: Complex search implementation
+// Przykład: implementacja złożonego wyszukiwania
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -355,18 +356,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// Połącz z logiką AND
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **Zaleta dla programistów**: Dzięki interfejsowi API wyszukiwania Forward Email możesz tworzyć aplikacje pocztowe, które pod względem funkcjonalności dorównują klientom stacjonarnym, zachowując jednocześnie prostotę interfejsów API REST.
+> **Przewaga dla programistów**: Dzięki API wyszukiwania Forward Email możesz tworzyć aplikacje e-mailowe, które dorównują funkcjonalnością klientom desktopowym, zachowując jednocześnie prostotę REST API.
+## Architektura Ekstremalnie Szybkiej Wydajności {#blazing-fast-performance-architecture}
 
-## Błyskawicznie szybka architektura wydajności {#blazing-fast-performance-architecture}
-
-Nasz zestaw rozwiązań technicznych został stworzony z myślą o szybkości i niezawodności:
+Nasz stos technologiczny jest zbudowany pod kątem szybkości i niezawodności:
 
 ```mermaid
 graph LR
@@ -376,105 +376,105 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Testy wydajności {#performance-benchmarks}
+### Testy Wydajności {#performance-benchmarks}
 
-**Dlaczego jesteśmy błyskawiczni:**
+**Dlaczego jesteśmy błyskawicznie szybcy:**
 
-| Część | Technologia | Korzyść wydajnościowa |
-| ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **Składowanie** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | 10x szybszy niż tradycyjny SATA |
-| **Baza danych** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Zerowe opóźnienie sieciowe, zoptymalizowana serializacja |
-| **Sprzęt komputerowy** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) goły metal | Brak narzutu wirtualizacji |
-| **Buforowanie** | W pamięci + trwałe | Czas reakcji poniżej milisekundy |
-| **Kopie zapasowe** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) zaszyfrowane | Niezawodność klasy korporacyjnej |
+| Komponent   | Technologia                                                                       | Korzyść wydajnościowa                        |
+| ----------- | -------------------------------------------------------------------------------- | -------------------------------------------- |
+| **Pamięć**  | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                           | 10x szybsze niż tradycyjne SATA              |
+| **Baza danych** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Zero opóźnień sieciowych, zoptymalizowana serializacja |
+| **Sprzęt**  | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) bare metal | Brak narzutu wirtualizacji                    |
+| **Cache**   | W pamięci + trwały                                                                | Czas odpowiedzi poniżej milisekundy           |
+| **Kopie zapasowe** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) szyfrowane           | Niezawodność klasy korporacyjnej              |
 
 **Rzeczywiste liczby wydajności:**
 
-* **Czas reakcji API**: średnio < 50 ms
-* **Pobieranie wiadomości**: < 10 ms dla wiadomości z pamięci podręcznej
-* **Operacje na folderach**: < 5 ms dla operacji na metadanych
-* **Synchronizacja kontaktów**: ponad 1000 kontaktów na sekundę
-* **Czas sprawności**: 99,99% SLA z redundantną infrastrukturą
+* **Czas odpowiedzi API**: średnio < 50ms
+* **Pobieranie wiadomości**: < 10ms dla wiadomości z cache
+* **Operacje na folderach**: < 5ms dla operacji na metadanych
+* **Synchronizacja kontaktów**: 1000+ kontaktów/sekundę
+* **Dostępność**: 99,99% SLA z redundantną infrastrukturą
 
-### Architektura stawiająca prywatność na pierwszym miejscu {#privacy-first-architecture}
+### Architektura z Priorytetem Prywatności {#privacy-first-architecture}
 
-**Projekt Zero-Knowledge**: Tylko Ty masz dostęp do swoich wiadomości e-mail za pomocą hasła IMAP – nie możemy ich odczytać. Nasz [architektura zerowej wiedzy](https://forwardemail.net/en/security) zapewnia pełną prywatność, a jednocześnie imponującą wydajność.
+**Projekt Zero-Knowledge**: Tylko Ty masz dostęp za pomocą swojego hasła IMAP – nie możemy czytać Twoich e-maili. Nasza [architektura zero-knowledge](https://forwardemail.net/en/security) zapewnia pełną prywatność przy jednoczesnym dostarczaniu ekstremalnej wydajności.
 
-## Dlaczego jesteśmy inni: kompletne porównanie {#why-were-different-the-complete-comparison}
 
-### Główne ograniczenia dostawcy {#major-provider-limitations}
+## Dlaczego Jesteśmy Inni: Pełne Porównanie {#why-were-different-the-complete-comparison}
 
-| Dostawca | Podstawowe problemy | Ograniczenia szczegółowe |
-| ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **API Gmaila** | Tylko do odczytu, złożone OAuth, oddzielne interfejsy API | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) dla kontaktów/kalendarza |
-| **API Outlooka** | Przestarzałe, mylące, skoncentrowane na przedsiębiorstwach | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graf, REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **Apple iCloud** | Brak publicznego API | • [No public API whatsoever](https://support.apple.com/en-us/102654)<br>• [IMAP-only with 1000 emails/day limit](https://support.apple.com/en-us/102654)<br>• [App-specific passwords required](https://support.apple.com/en-us/102654)<br>• [500 recipients per message limit](https://support.apple.com/en-us/102654) |
-| **ProtonMail** | Brak API, fałszywe twierdzenia o otwartym kodzie źródłowym | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge software required](https://proton.me/mail/bridge) dla dostępu IMAP<br>• [Claims "open source"](https://proton.me/blog/open-source) ale [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **Całkowity** | Brak API, myląca przejrzystość | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email), ale [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) uniemożliwia standardowe integracje |
-| **E-mail Zapier** | Ograniczenia prędkości przesyłu danych | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
+### Główne Ograniczenia Dostawców {#major-provider-limitations}
 
-### Zalety przekazywania wiadomości e-mail {#forward-email-advantages}
+| Dostawca         | Główne Problemy                          | Konkretne Ograniczenia                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gmail API**    | Tylko do odczytu, złożony OAuth, osobne API | • [Nie można modyfikować istniejących wiadomości](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Etykiety ≠ foldery](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [Limit 1 miliarda jednostek kwoty/dzień](https://developers.google.com/gmail/api/reference/quota)<br>• [Wymaga osobnych API](https://developers.google.com/workspace) dla kontaktów/kalendarza                                                           |
+| **Outlook API**  | Przestarzałe, mylące, nastawione na przedsiębiorstwa | • [REST endpoints przestarzałe od marca 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Wiele mylących API](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graph, REST)<br>• [Złożoność Microsoft Graph](https://learn.microsoft.com/en-us/graph/overview)<br>• [Agresywne ograniczenia](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud** | Brak publicznego API                    | • [Brak jakiegokolwiek publicznego API](https://support.apple.com/en-us/102654)<br>• [Tylko IMAP z limitem 1000 e-maili/dzień](https://support.apple.com/en-us/102654)<br>• [Wymagane hasła specyficzne dla aplikacji](https://support.apple.com/en-us/102654)<br>• [Limit 500 odbiorców na wiadomość](https://support.apple.com/en-us/102654)                                                                                                                                              |
+| **ProtonMail**   | Brak API, fałszywe twierdzenia o open-source | • [Brak publicznego API](https://proton.me/support/protonmail-bridge-clients)<br>• [Wymagane oprogramowanie Bridge](https://proton.me/mail/bridge) do dostępu IMAP<br>• [Twierdzenia o "open source"](https://proton.me/blog/open-source), ale [kod serwera jest własnościowy](https://github.com/ProtonMail)<br>• [Dostępne tylko w planach płatnych](https://proton.me/pricing)                                                                                                         |
+| **Tuta**         | Brak API, myląca transparentność       | • [Brak REST API do zarządzania e-mailami](https://tuta.com/support#technical)<br>• [Twierdzenia o "open source"](https://tuta.com/blog/posts/open-source-email), ale [backend jest zamknięty](https://github.com/tutao/tutanota)<br>• [Brak wsparcia dla IMAP/SMTP](https://tuta.com/support#imap)<br>• [Własnościowe szyfrowanie](https://tuta.com/encryption) uniemożliwia standardowe integracje                                                                                               |
+| **Zapier Email** | Surowe limity szybkości                 | • [Limit 10 e-maili na godzinę](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Brak dostępu do folderów IMAP](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Ograniczone możliwości parsowania](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)                                 |
+### Zalety Forward Email {#forward-email-advantages}
 
-| Funkcja | Przekaż dalej e-mail | Konkurs |
+| Funkcja            | Forward Email                                                                                | Konkurencja                               |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **Kompletny CRUD** | ✅ Pełne tworzenie, odczytywanie, aktualizowanie i usuwanie wszystkich danych | ❌ Operacje tylko do odczytu lub ograniczone |
-| **Ujednolicone API** | ✅ Wiadomości, foldery, kontakty, kalendarze w jednym API | ❌ Osobne API lub brakujące funkcje |
-| **Proste uwierzytelnianie** | ✅ Podstawowe uwierzytelnianie z danymi uwierzytelniającymi alias | ❌ Złożone OAuth z wieloma zakresami |
-| **Brak ograniczeń prędkości** | ✅ Hojne limity zaprojektowane z myślą o rzeczywistych zastosowaniach | ❌ Ograniczenia kwotowe, które zakłócają przepływy pracy |
-| **Samodzielny hosting** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Tylko blokada dostawcy |
-| **Prywatność** | ✅ Zero-wiedza, szyfrowanie, prywatność | ❌ Eksploracja danych i obawy dotyczące prywatności |
-| **Wydajność** | ✅ Reakcje poniżej 50 ms, pamięć masowa NVMe | ❌ Opóźnienia sieciowe, opóźnienia związane z ograniczaniem przepustowości |
+| **Pełne CRUD**     | ✅ Pełne tworzenie, odczyt, aktualizacja, usuwanie dla wszystkich danych                      | ❌ Tylko odczyt lub ograniczone operacje  |
+| **Zunifikowane API** | ✅ Wiadomości, foldery, kontakty, kalendarze w jednym API                                    | ❌ Oddzielne API lub brak funkcji          |
+| **Prosta autoryzacja** | ✅ Podstawowa autoryzacja z danymi aliasu                                                 | ❌ Złożony OAuth z wieloma zakresami       |
+| **Brak limitów szybkości** | ✅ Hojne limity zaprojektowane dla rzeczywistych zastosowań                            | ❌ Restrykcyjne limity przerywające pracę  |
+| **Samodzielne hostowanie** | ✅ [Pełna opcja samodzielnego hostowania](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Tylko zamknięty vendor lock-in          |
+| **Prywatność**     | ✅ Zero-knowledge, szyfrowane, prywatne                                                      | ❌ Eksploatacja danych i problemy z prywatnością |
+| **Wydajność**      | ✅ Odpowiedzi poniżej 50 ms, pamięć NVMe                                                     | ❌ Opóźnienia sieciowe, ograniczenia       |
 
-### Problem przejrzystości oprogramowania typu open source {#the-open-source-transparency-problem}
+### Problem transparentności open source {#the-open-source-transparency-problem}
 
-**ProtonMail i Tuta reklamują się jako firmy „open source” i „transparentne”, ale jest to marketing wprowadzający w błąd i naruszający współczesne zasady prywatności.**
+**ProtonMail i Tuta reklamują się jako „open source” i „transparentne”, ale jest to mylący marketing naruszający współczesne zasady prywatności.**
 
 > \[!WARNING]
-> **Fałszywe twierdzenia o przejrzystości**: Zarówno ProtonMail, jak i Tuta wyraźnie reklamują swoje dane uwierzytelniające typu „open source”, jednocześnie utrzymując, że ich najważniejszy kod po stronie serwera jest zastrzeżony i zamknięty.
+> **Fałszywe twierdzenia o transparentności**: Zarówno ProtonMail, jak i Tuta wyraźnie reklamują swoje „open source” podczas gdy ich najważniejszy kod po stronie serwera jest własnościowy i zamknięty.
 
-**Oszustwo ProtonMail:**
+**Dezinformacja ProtonMail:**
 
-* **Twierdzenia**: [„Jesteśmy open source”](https://proton.me/blog/open-source) jest szeroko prezentowany w materiałach marketingowych
-* **Rzeczywistość**: [Kod serwera jest całkowicie zastrzeżony](https://github.com/ProtonMail) – tylko aplikacje klienckie są open source
-* **Wpływ**: Użytkownicy nie mogą zweryfikować szyfrowania po stronie serwera, przetwarzania danych ani oświadczeń dotyczących prywatności
-* **Naruszenie przejrzystości**: Brak możliwości audytu rzeczywistych systemów przetwarzania i przechowywania wiadomości e-mail
+* **Twierdzenia**: ["Jesteśmy open source"](https://proton.me/blog/open-source) wyraźnie podkreślane w marketingu
+* **Rzeczywistość**: [Kod serwera jest całkowicie własnościowy](https://github.com/ProtonMail) – tylko aplikacje klienckie są open source
+* **Skutek**: Użytkownicy nie mogą zweryfikować szyfrowania po stronie serwera, obsługi danych ani twierdzeń o prywatności
+* **Naruszenie transparentności**: Brak możliwości audytu faktycznych systemów przetwarzania i przechowywania e-maili
 
-**Wprowadzający w błąd marketing Tuty:**
+**Mylący marketing Tuta:**
 
-* **Twierdzenia**: [„E-mail o otwartym kodzie źródłowym”](https://tuta.com/blog/posts/open-source-email) jako główny argument sprzedażowy
-* **Rzeczywistość**: [Infrastruktura zaplecza jest zamknięta](https://github.com/tutao/tutanota) — dostępny jest tylko frontend
-* **Skutek**: Własnościowe szyfrowanie uniemożliwia korzystanie ze standardowych protokołów poczty e-mail (IMAP/SMTP)
-* **Strategia blokady**: Niestandardowe szyfrowanie wymusza zależność od dostawcy
+* **Twierdzenia**: ["Open source email"](https://tuta.com/blog/posts/open-source-email) jako główny punkt sprzedaży
+* **Rzeczywistość**: [Infrastruktura backendowa jest zamknięta](https://github.com/tutao/tutanota) – dostępny jest tylko frontend
+* **Skutek**: Własnościowe szyfrowanie uniemożliwia standardowe protokoły e-mail (IMAP/SMTP)
+* **Strategia lock-in**: Niestandardowe szyfrowanie wymusza zależność od dostawcy
 
-**Dlaczego ma to znaczenie dla współczesnej prywatności:**
+**Dlaczego to ma znaczenie dla współczesnej prywatności:**
 
-W 2025 roku prawdziwa prywatność wymaga **pełnej przejrzystości**. Kiedy dostawcy poczty e-mail twierdzą, że są „open source”, ale ukrywają kod swojego serwera:
+W 2025 roku prawdziwa prywatność wymaga **pełnej transparentności**. Gdy dostawcy e-maili twierdzą „open source”, ale ukrywają kod serwera:
 
-1. **Niezweryfikowane szyfrowanie**: Nie możesz sprawdzić, jak Twoje dane są faktycznie szyfrowane.
-2. **Ukryte praktyki dotyczące danych**: Przetwarzanie danych po stronie serwera pozostaje czarną skrzynką.
-3. **Bezpieczeństwo oparte na zaufaniu**: Musisz ufać ich zapewnieniom bez weryfikacji.
-4. **Uzależnienie od dostawcy**: Systemy zastrzeżone uniemożliwiają przenoszenie danych.
+1. **Nieweryfikowalne szyfrowanie**: Nie możesz sprawdzić, jak twoje dane są faktycznie szyfrowane
+2. **Ukryte praktyki danych**: Obsługa danych po stronie serwera pozostaje czarną skrzynką
+3. **Bezpieczeństwo oparte na zaufaniu**: Musisz ufać ich twierdzeniom bez możliwości weryfikacji
+4. **Vendor lock-in**: Własnościowe systemy uniemożliwiają przenoszenie danych
 
-**Prawdziwa przejrzystość przesyłania dalej wiadomości e-mail:**
+**Prawdziwa transparentność Forward Email:**
 
-* ✅ **[Całkowicie otwarte oprogramowanie](https://github.com/forwardemail/forwardemail.net)** – kod serwera i klienta
-* ✅ **[Dostępny hosting własny](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – uruchom własną instancję
-* ✅ **Standardowe protokoły** – zgodność z IMAP, SMTP, CardDAV, CalDAV
-* ✅ **Audytowalne bezpieczeństwo** – możliwość sprawdzenia każdej linijki kodu
-* ✅ **Brak uzależnienia od dostawcy** – Twoje dane, Twoja kontrola
+* ✅ **[Pełne open source](https://github.com/forwardemail/forwardemail.net)** – kod serwera i klienta
+* ✅ **[Dostępne samodzielne hostowanie](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – uruchom własną instancję
+* ✅ **Standardowe protokoły** – kompatybilność IMAP, SMTP, CardDAV, CalDAV
+* ✅ **Audytowalne bezpieczeństwo** – każdy wiersz kodu można sprawdzić
+* ✅ **Brak vendor lock-in** – twoje dane, twoja kontrola
 
 > \[!TIP]
-> **Prawdziwe oprogramowanie open source oznacza, że możesz zweryfikować każde zgłoszenie.** Dzięki Forward Email możesz audytować nasze szyfrowanie, sprawdzać przetwarzanie danych, a nawet uruchamiać własną instancję. To prawdziwa transparentność.
+> **Prawdziwe open source oznacza, że możesz zweryfikować każde twierdzenie.** Z Forward Email możesz audytować nasze szyfrowanie, przeglądać obsługę danych, a nawet uruchomić własną instancję. To prawdziwa transparentność.
 
-## Ponad 30 przykładów integracji w świecie rzeczywistym {#30-real-world-integration-examples}
+
+## Ponad 30 przykładów integracji w rzeczywistych zastosowaniach {#30-real-world-integration-examples}
 
 ### 1. Ulepszenie formularza kontaktowego WordPress {#1-wordpress-contact-form-enhancement}
-
-**Problem**: [Błędy konfiguracji SMTP WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 problemów w serwisie GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**Rozwiązanie**: Bezpośrednia integracja API całkowicie pomija [SMTP](https://tools.ietf.org/html/rfc5321)
+**Problem**: [Problemy z konfiguracją SMTP w WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 zgłoszeń na GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
+**Solution**: Bezpośrednia integracja API omija całkowicie [SMTP](https://tools.ietf.org/html/rfc5321)
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// Formularz kontaktowy WordPress, który zapisuje do folderu Wysłane
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -483,20 +483,20 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'Formularz kontaktowy: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
 });
 ```
 
-### 2. Alternatywa dla Zapiera do automatyzacji poczty e-mail {#2-zapier-alternative-for-email-automation}
+### 2. Alternatywa Zapier do automatyzacji e-maili {#2-zapier-alternative-for-email-automation}
 
-**Problem**: [Limit 10 wiadomości e-mail na godzinę w Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) i [Błędy wykrywania IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-**Rozwiązanie**: Nieograniczona automatyzacja z pełną kontrolą poczty e-mail
+**Problem**: [Limit 10 e-maili na godzinę w Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) oraz [problemy z wykrywaniem IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
+**Solution**: Nieograniczona automatyzacja z pełną kontrolą nad e-mailami
 
 ```javascript
-// Auto-organize emails by sender domain
+// Automatyczne organizowanie e-maili według domeny nadawcy
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -507,13 +507,13 @@ for (const message of messages) {
 }
 ```
 
-### 3. Synchronizacja poczty e-mail CRM {#3-crm-email-synchronization}
+### 3. Synchronizacja e-maili z CRM {#3-crm-email-synchronization}
 
-**Problem**: Ręczne zarządzanie kontaktami między pocztą e-mail a [Systemy CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**Rozwiązanie**: Dwukierunkowa synchronizacja z API kontaktów [CardDAV](https://tools.ietf.org/html/rfc6352)
+**Problem**: Ręczne zarządzanie kontaktami między e-mailami a [systemami CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)
+**Solution**: Dwukierunkowa synchronizacja z API kontaktów [CardDAV](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
-// Sync new email contacts to CRM
+// Synchronizacja nowych kontaktów e-mail do CRM
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -526,14 +526,14 @@ for (const contact of newContacts) {
 
 ### 4. Przetwarzanie zamówień e-commerce {#4-e-commerce-order-processing}
 
-**Problem**: Ręczne przetwarzanie zamówień e-mailem dla [platformy e-commerce](https://en.wikipedia.org/wiki/E-commerce)
-**Rozwiązanie**: Zautomatyzowany proces zarządzania zamówieniami
+**Problem**: Ręczne przetwarzanie e-maili z zamówieniami dla [platform e-commerce](https://en.wikipedia.org/wiki/E-commerce)
+**Solution**: Zautomatyzowany pipeline zarządzania zamówieniami
 
 ```javascript
-// Process order confirmation emails
+// Przetwarzanie e-maili potwierdzających zamówienia
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
-  msg.subject.includes('Order Confirmation')
+  msg.subject.includes('Potwierdzenie zamówienia')
 );
 
 for (const order of orderEmails) {
@@ -546,13 +546,13 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. Integracja zgłoszeń pomocy technicznej {#5-support-ticket-integration}
+### 5. Integracja zgłoszeń wsparcia {#5-support-ticket-integration}
 
-**Problem**: Wątki e-mail rozproszone w [platformy pomocy technicznej](https://en.wikipedia.org/wiki/Help_desk_software)
-**Rozwiązanie**: Pełne śledzenie wątków e-mail
+**Problem**: Wątki e-mail rozproszone po [platformach helpdesk](https://en.wikipedia.org/wiki/Help_desk_software)
+**Solution**: Kompletny tracking wątków e-mail
 
 ```javascript
-// Create support ticket from email thread
+// Tworzenie zgłoszenia wsparcia z wątku e-mail
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -568,16 +568,16 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. System zarządzania newsletterami {#6-newsletter-management-system}
+### 6. System zarządzania newsletterem {#6-newsletter-management-system}
 
-**Problem**: Ograniczona liczba integracji [platforma newslettera](https://en.wikipedia.org/wiki/Email_marketing)
-**Rozwiązanie**: Pełne zarządzanie cyklem życia abonenta
+**Problem**: Ograniczone integracje z [platformami newsletterowymi](https://en.wikipedia.org/wiki/Email_marketing)
+**Solution**: Kompleksowe zarządzanie cyklem życia subskrybenta
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// Automatyczne zarządzanie subskrypcjami newslettera
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
-  msg.subject.toLowerCase().includes('unsubscribe')
+  msg.subject.toLowerCase().includes('wypisz się')
 );
 
 for (const msg of unsubscribes) {
@@ -589,11 +589,10 @@ for (const msg of unsubscribes) {
 }
 ```
 
-### 7. Zarządzanie zadaniami za pomocą poczty e-mail {#7-email-based-task-management}
+### 7. Zarządzanie zadaniami oparte na e-mailach {#7-email-based-task-management}
 
-**Problem**: Przeciążenie skrzynki odbiorczej i [śledzenie zadań](https://en.wikipedia.org/wiki/Task_management)
-**Rozwiązanie**: Konwersja wiadomości e-mail na zadania do wykonania
-
+**Problem**: Przeładowanie skrzynki odbiorczej i [śledzenie zadań](https://en.wikipedia.org/wiki/Task_management)
+**Solution**: Konwersja e-maili na zadania do wykonania
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -607,10 +606,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. Agregacja wiadomości e-mail z wielu kont {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**Problem**: Zarządzanie [wiele kont e-mail](https://en.wikipedia.org/wiki/Email_client) między dostawcami
-**Rozwiązanie**: Ujednolicony interfejs skrzynki odbiorczej
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -625,10 +624,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. Zaawansowany panel analityki wiadomości e-mail {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**Problem**: Brak wglądu w [wzorce wiadomości e-mail](https://en.wikipedia.org/wiki/Email_analytics) przy użyciu zaawansowanego filtrowania
-**Rozwiązanie**: Niestandardowa analiza wiadomości e-mail z wykorzystaniem zaawansowanych funkcji wyszukiwania
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -675,10 +674,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. Inteligentna archiwizacja wiadomości e-mail {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**Problem**: Ręczny [organizacja poczty e-mail](https://en.wikipedia.org/wiki/Email_management)
-**Rozwiązanie**: Inteligentna kategoryzacja wiadomości e-mail
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -696,10 +695,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. Integracja poczty e-mail z kalendarzem {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**Problem**: Ręczne tworzenie [wydarzenie w kalendarzu](https://tools.ietf.org/html/rfc4791) z wiadomości e-mail
-**Rozwiązanie**: Automatyczne wyodrębnianie i tworzenie zdarzeń
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -723,10 +722,10 @@ for (const email of meetingEmails) {
 }
 ```
 
-### 12. Kopia zapasowa poczty e-mail i zgodność {#12-email-backup-and-compliance}
+### 12. Kopia zapasowa i zgodność e-maili {#12-email-backup-and-compliance}
 
-**Problem**: [Przechowywanie wiadomości e-mail](https://en.wikipedia.org/wiki/Email_retention_policy) i wymagania zgodności
-**Rozwiązanie**: Automatyczne tworzenie kopii zapasowych z zachowaniem metadanych
+**Problem**: [Przechowywanie e-maili](https://en.wikipedia.org/wiki/Email_retention_policy) i wymagania dotyczące zgodności  
+**Rozwiązanie**: Automatyczna kopia zapasowa z zachowaniem metadanych
 
 ```javascript
 // Backup emails with full metadata
@@ -745,9 +744,9 @@ const backup = {
 await saveToComplianceStorage(backup);
 ```
 
-### 13. Zarządzanie treścią w oparciu o pocztę e-mail {#13-email-based-content-management}
+### 13. Zarządzanie treścią oparte na e-mailach {#13-email-based-content-management}
 
-**Problem**: Zarządzanie przesyłaniem treści pocztą elektroniczną dla [Platformy CMS](https://en.wikipedia.org/wiki/Content_management_system)
+**Problem**: Zarządzanie zgłoszeniami treści przez e-mail dla [platform CMS](https://en.wikipedia.org/wiki/Content_management_system)  
 **Rozwiązanie**: E-mail jako system zarządzania treścią
 
 ```javascript
@@ -767,10 +766,10 @@ for (const submission of submissions) {
 }
 ```
 
-### 14. Zarządzanie szablonami wiadomości e-mail {#14-email-template-management}
+### 14. Zarządzanie szablonami e-mail {#14-email-template-management}
 
-**Problem**: Niespójny [szablony e-maili](https://en.wikipedia.org/wiki/Email_template) w obrębie zespołu
-**Rozwiązanie**: Scentralizowany system szablonów z API
+**Problem**: Niespójne [szablony e-mail](https://en.wikipedia.org/wiki/Email_template) w zespole  
+**Rozwiązanie**: Centralny system szablonów z API
 
 ```javascript
 // Send templated emails with dynamic content
@@ -786,10 +785,10 @@ await fetch('/v1/messages', {
 });
 ```
 
-### 15. Automatyzacja przepływu pracy oparta na poczcie e-mail {#15-email-based-workflow-automation}
+### 15. Automatyzacja procesów oparta na e-mailach {#15-email-based-workflow-automation}
 
-**Problem**: Ręczne wysłanie [procesy zatwierdzania](https://en.wikipedia.org/wiki/Workflow) e-mailem
-**Rozwiązanie**: Automatyczne wyzwalacze przepływu pracy
+**Problem**: Ręczne [procesy zatwierdzania](https://en.wikipedia.org/wiki/Workflow) przez e-mail  
+**Rozwiązanie**: Automatyczne wyzwalacze procesów
 
 ```javascript
 // Process approval emails
@@ -808,9 +807,9 @@ for (const approval of approvals) {
 }
 ```
 
-### 16. Monitorowanie bezpieczeństwa poczty e-mail {#16-email-security-monitoring}
+### 16. Monitorowanie bezpieczeństwa e-maili {#16-email-security-monitoring}
 
-**Problem**: Ręczne [wykrywanie zagrożeń bezpieczeństwa](https://en.wikipedia.org/wiki/Email_security)
+**Problem**: Ręczne [wykrywanie zagrożeń bezpieczeństwa](https://en.wikipedia.org/wiki/Email_security)  
 **Rozwiązanie**: Automatyczna analiza zagrożeń
 
 ```javascript
@@ -828,10 +827,10 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. Zbieranie ankiet za pośrednictwem poczty e-mail {#17-email-based-survey-collection}
+### 17. Zbieranie ankiet za pomocą e-maili {#17-email-based-survey-collection}
 
-**Problem**: Ręczne przetwarzanie [odpowiedź na ankietę](https://en.wikipedia.org/wiki/Survey_methodology)
-**Rozwiązanie**: Automatyczna agregacja odpowiedzi
+**Problem**: Ręczne przetwarzanie [odpowiedzi ankietowych](https://en.wikipedia.org/wiki/Survey_methodology)  
+**Rozwiązanie**: Automatyczne agregowanie odpowiedzi
 
 ```javascript
 // Collect and process survey responses
@@ -848,10 +847,10 @@ const surveyData = responses.map(email => ({
 await updateSurveyResults(surveyData);
 ```
 
-### 18. Monitorowanie wydajności poczty e-mail {#18-email-performance-monitoring}
+### 18. Monitorowanie wydajności e-maili {#18-email-performance-monitoring}
 
-**Problem**: Brak widoczności [wydajność dostarczania wiadomości e-mail](https://en.wikipedia.org/wiki/Email_deliverability)
-**Rozwiązanie**: Metryki wiadomości e-mail w czasie rzeczywistym
+**Problem**: Brak widoczności w [wydajność dostarczania e-maili](https://en.wikipedia.org/wiki/Email_deliverability)  
+**Rozwiązanie**: Metryki e-mail w czasie rzeczywistym
 
 ```javascript
 // Monitor email delivery performance
@@ -863,11 +862,10 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
+### 19. Kwalifikacja leadów na podstawie e-maili {#19-email-based-lead-qualification}
 
-### 19. Kwalifikacja potencjalnych klientów na podstawie wiadomości e-mail {#19-email-based-lead-qualification}
-
-**Problem**: Ręczne [punktacja potencjalnych klientów](https://en.wikipedia.org/wiki/Lead_scoring) z interakcji e-mailowych
-**Rozwiązanie**: Zautomatyzowany proces kwalifikacji potencjalnych klientów
+**Problem**: Ręczne [ocenianie leadów](https://en.wikipedia.org/wiki/Lead_scoring) na podstawie interakcji e-mailowych  
+**Rozwiązanie**: Zautomatyzowany proces kwalifikacji leadów
 
 ```javascript
 // Score leads based on email engagement
@@ -882,10 +880,10 @@ for (const prospect of prospects) {
 }
 ```
 
-### 20. Zarządzanie projektami oparte na poczcie e-mail {#20-email-based-project-management}
+### 20. Zarządzanie projektami na podstawie e-maili {#20-email-based-project-management}
 
-**Problem**: [Aktualizacje projektu](https://en.wikipedia.org/wiki/Project_management) rozproszony w wątkach e-mail
-**Rozwiązanie**: Centralne centrum komunikacji projektu
+**Problem**: [Aktualizacje projektów](https://en.wikipedia.org/wiki/Project_management) rozproszone w wątkach e-mailowych  
+**Rozwiązanie**: Centralne centrum komunikacji projektowej
 
 ```javascript
 // Extract project updates from emails
@@ -904,10 +902,10 @@ for (const email of projectEmails) {
 }
 ```
 
-### 21. Zarządzanie zapasami za pomocą poczty e-mail {#21-email-based-inventory-management}
+### 21. Zarządzanie zapasami na podstawie e-maili {#21-email-based-inventory-management}
 
-**Problem**: Ręczne aktualizacje stanu zapasów z wiadomości e-mail od dostawców
-**Rozwiązanie**: Automatyczne śledzenie stanu zapasów z powiadomień e-mail
+**Problem**: Ręczne aktualizacje zapasów na podstawie e-maili od dostawców  
+**Rozwiązanie**: Zautomatyzowane śledzenie zapasów z powiadomień e-mailowych
 
 ```javascript
 // Process inventory updates from supplier emails
@@ -933,10 +931,10 @@ for (const email of inventoryEmails) {
 }
 ```
 
-### 22. Przetwarzanie faktur za pomocą poczty e-mail {#22-email-based-invoice-processing}
+### 22. Przetwarzanie faktur na podstawie e-maili {#22-email-based-invoice-processing}
 
-**Problem**: Ręczna integracja [przetwarzanie faktur](https://en.wikipedia.org/wiki/Invoice_processing) i księgowości
-**Rozwiązanie**: Automatyczne pobieranie faktur i synchronizacja z systemem księgowym
+**Problem**: Ręczne [przetwarzanie faktur](https://en.wikipedia.org/wiki/Invoice_processing) i integracja z systemem księgowym  
+**Rozwiązanie**: Automatyczne wyodrębnianie faktur i synchronizacja z systemem księgowym
 
 ```javascript
 // Extract invoice data from email attachments
@@ -962,10 +960,10 @@ for (const email of invoiceEmails) {
 }
 ```
 
-### 23. Rejestracja na wydarzenie za pośrednictwem poczty e-mail {#23-email-based-event-registration}
+### 23. Rejestracja na wydarzenia na podstawie e-maili {#23-email-based-event-registration}
 
-**Problem**: Ręczne przetwarzanie [rejestracja na wydarzenie](https://en.wikipedia.org/wiki/Event_management) z odpowiedzi e-mail
-**Rozwiązanie**: Automatyczne zarządzanie uczestnikami i integracja kalendarza
+**Problem**: Ręczne przetwarzanie [rejestracji na wydarzenia](https://en.wikipedia.org/wiki/Event_management) z odpowiedzi e-mailowych  
+**Rozwiązanie**: Automatyczne zarządzanie uczestnikami i integracja z kalendarzem
 
 ```javascript
 // Process event registration emails
@@ -996,10 +994,9 @@ for (const registration of registrations) {
   });
 }
 ```
+### 24. Workflow zatwierdzania dokumentów oparty na e-mailach {#24-email-based-document-approval-workflow}
 
-### 24. Przepływ pracy zatwierdzania dokumentów za pomocą poczty e-mail {#24-email-based-document-approval-workflow}
-
-**Problem**: Złożone łańcuchy [zatwierdzenie dokumentu](https://en.wikipedia.org/wiki/Document_management_system) przesyłane e-mailem
+**Problem**: Złożone łańcuchy [zatwierdzania dokumentów](https://en.wikipedia.org/wiki/Document_management_system) za pomocą e-maili  
 **Rozwiązanie**: Automatyczne śledzenie zatwierdzeń i wersjonowanie dokumentów
 
 ```javascript
@@ -1028,9 +1025,9 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. Analiza opinii klientów na podstawie wiadomości e-mail {#25-email-based-customer-feedback-analysis}
+### 25. Analiza opinii klientów oparta na e-mailach {#25-email-based-customer-feedback-analysis}
 
-**Problem**: Ręczne zbieranie danych [opinie klientów](https://en.wikipedia.org/wiki/Customer_feedback) i analiza sentymentu
+**Problem**: Ręczne zbieranie [opinii klientów](https://en.wikipedia.org/wiki/Customer_feedback) i analiza sentymentu  
 **Rozwiązanie**: Automatyczne przetwarzanie opinii i śledzenie sentymentu
 
 ```javascript
@@ -1060,9 +1057,9 @@ for (const email of feedbackEmails) {
 }
 ```
 
-### 26. Proces rekrutacji oparty na poczcie e-mail {#26-email-based-recruitment-pipeline}
+### 26. Pipeline rekrutacyjny oparty na e-mailach {#26-email-based-recruitment-pipeline}
 
-**Problem**: Ręczne [rekrutacja](https://en.wikipedia.org/wiki/Recruitment) i śledzenie kandydatów
+**Problem**: Ręczne [rekrutowanie](https://en.wikipedia.org/wiki/Recruitment) i śledzenie kandydatów  
 **Rozwiązanie**: Automatyczne zarządzanie kandydatami i planowanie rozmów kwalifikacyjnych
 
 ```javascript
@@ -1094,10 +1091,10 @@ for (const application of applications) {
 }
 ```
 
-### 27. Przetwarzanie raportów wydatków na podstawie wiadomości e-mail {#27-email-based-expense-report-processing}
+### 27. Przetwarzanie raportów wydatków opartych na e-mailach {#27-email-based-expense-report-processing}
 
-**Problem**: Ręczne przesyłanie i zatwierdzanie [raport wydatków](https://en.wikipedia.org/wiki/Expense_report)
-**Rozwiązanie**: Zautomatyzowany proces pobierania i zatwierdzania wydatków
+**Problem**: Ręczne składanie i zatwierdzanie [raportów wydatków](https://en.wikipedia.org/wiki/Expense_report)  
+**Rozwiązanie**: Automatyczne wyodrębnianie wydatków i workflow zatwierdzania
 
 ```javascript
 // Process expense report emails
@@ -1128,11 +1125,10 @@ for (const email of expenseEmails) {
   }
 }
 ```
+### 28. Raportowanie Jakości oparte na Emailach {#28-email-based-quality-assurance-reporting}
 
-### 28. Raportowanie zapewnienia jakości w oparciu o pocztę e-mail {#28-email-based-quality-assurance-reporting}
-
-**Problem**: Ręczne śledzenie zgłoszeń [zapewnienie jakości](https://en.wikipedia.org/wiki/Quality_assurance)
-**Rozwiązanie**: Automatyczne zarządzanie zgłoszeniami i śledzenie błędów w dziale kontroli jakości
+**Problem**: Ręczne śledzenie problemów z [zapewnieniem jakości](https://en.wikipedia.org/wiki/Quality_assurance)  
+**Rozwiązanie**: Zautomatyzowane zarządzanie problemami QA i śledzenie błędów
 
 ```javascript
 // Process QA bug reports from email
@@ -1169,10 +1165,10 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. Zarządzanie dostawcami za pomocą poczty e-mail {#29-email-based-vendor-management}
+### 29. Zarządzanie Dostawcami oparte na Emailach {#29-email-based-vendor-management}
 
-**Problem**: Ręczne śledzenie [komunikacja z dostawcą](https://en.wikipedia.org/wiki/Vendor_management) i umów
-**Rozwiązanie**: Automatyczne zarządzanie relacjami z dostawcami
+**Problem**: Ręczna komunikacja z [dostawcami](https://en.wikipedia.org/wiki/Vendor_management) i śledzenie umów  
+**Rozwiązanie**: Zautomatyzowane zarządzanie relacjami z dostawcami
 
 ```javascript
 // Track vendor communications and contracts
@@ -1211,10 +1207,10 @@ for (const email of vendorEmails) {
 }
 ```
 
-### 30. Monitorowanie mediów społecznościowych na podstawie poczty e-mail {#30-email-based-social-media-monitoring}
+### 30. Monitorowanie Mediów Społecznościowych oparte na Emailach {#30-email-based-social-media-monitoring}
 
-**Problem**: Ręczne śledzenie wzmianek [media społecznościowe](https://en.wikipedia.org/wiki/Social_media_monitoring) i reagowanie na nie
-**Rozwiązanie**: Automatyczne przetwarzanie alertów w mediach społecznościowych i koordynacja reakcji
+**Problem**: Ręczne śledzenie i reagowanie na wzmianki w [mediach społecznościowych](https://en.wikipedia.org/wiki/Social_media_monitoring)  
+**Rozwiązanie**: Zautomatyzowane przetwarzanie alertów z mediów społecznościowych i koordynacja odpowiedzi
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1256,24 +1252,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
-## Wprowadzenie {#getting-started}
 
-### 1. Utwórz konto e-mail do przekazywania {#1-create-your-forward-email-account}
+## Pierwsze kroki {#getting-started}
+
+### 1. Utwórz swoje konto do przekazywania emaili {#1-create-your-forward-email-account}
 
 Zarejestruj się na [forwardemail.net](https://forwardemail.net) i zweryfikuj swoją domenę.
 
 ### 2. Wygeneruj dane uwierzytelniające API {#2-generate-api-credentials}
 
-Twój alias e-mail i hasło stanowią dane uwierzytelniające API — nie jest wymagana żadna dodatkowa konfiguracja.
-
-### 3. Wykonaj pierwsze wywołanie API {#3-make-your-first-api-call}
+Twój alias email i hasło służą jako dane uwierzytelniające API – nie jest wymagana dodatkowa konfiguracja.
+### 3. Wykonaj swoje pierwsze wywołanie API {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# Wyświetl swoje wiadomości
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# Utwórz nowy kontakt
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1283,18 +1279,19 @@ curl -u "your-alias@domain.com:password" \
 
 ### 4. Przeglądaj dokumentację {#4-explore-the-documentation}
 
-Odwiedź [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api), aby uzyskać pełną dokumentację API z interaktywnymi przykładami.
+Odwiedź [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) po pełną dokumentację API z interaktywnymi przykładami.
+
 
 ## Zasoby techniczne {#technical-resources}
 
-* **[Pełna dokumentacja API](https://forwardemail.net/en/email-api)** – Interaktywna specyfikacja OpenAPI 3.0
-* **[Przewodnik po samodzielnym hostingu](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – Wdrażanie funkcji Forward Email w Twojej infrastrukturze
-* **[Biała księga bezpieczeństwa](https://forwardemail.net/technical-whitepaper.pdf)** – Szczegóły techniczne dotyczące architektury i bezpieczeństwa
-* **[Repozytorium GitHub](https://github.com/forwardemail/forwardemail.net)** – Baza kodu open source
-* **[Wsparcie dla programistów](mailto:api@forwardemail.net)** – Bezpośredni dostęp do naszego zespołu inżynierów
+* **[Pełna dokumentacja API](https://forwardemail.net/en/email-api)** - Interaktywna specyfikacja OpenAPI 3.0
+* **[Przewodnik po samodzielnym hostingu](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Wdróż Forward Email na swojej infrastrukturze
+* **[Biała księga bezpieczeństwa](https://forwardemail.net/technical-whitepaper.pdf)** - Architektura techniczna i szczegóły bezpieczeństwa
+* **[Repozytorium GitHub](https://github.com/forwardemail/forwardemail.net)** - Kod źródłowy open source
+* **[Wsparcie dla programistów](mailto:api@forwardemail.net)** - Bezpośredni kontakt z naszym zespołem inżynierów
 
 ---
 
-**Gotowy na zrewolucjonizowanie integracji poczty e-mail?** [Zacznij budować z API Forward Email już dziś](https://forwardemail.net/en/email-api) i poznaj pierwszą kompleksową platformę do zarządzania pocztą e-mail przeznaczoną dla programistów.
+**Gotowy, aby zrewolucjonizować integrację e-mail?** [Zacznij budować z API Forward Email już dziś](https://forwardemail.net/en/email-api) i doświadcz pierwszej kompletnej platformy do zarządzania e-mailami stworzonej dla programistów.
 
-*Forward Email: Usługa poczty e-mail, która w końcu poprawnie obsługuje interfejsy API.*
+*Forward Email: Usługa e-mail, która wreszcie rozumie API.*

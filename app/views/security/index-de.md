@@ -1,6 +1,7 @@
 # Sicherheitspraktiken {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email Sicherheitspraktiken" class="rounded-lg" />
+
 
 ## Inhaltsverzeichnis {#table-of-contents}
 
@@ -11,26 +12,28 @@
 * [E-Mail-Sicherheit](#email-security)
   * [Verschlüsselung](#encryption)
   * [Authentifizierung und Autorisierung](#authentication-and-authorization)
-  * [Maßnahmen zur Missbrauchsbekämpfung](#anti-abuse-measures)
+  * [Missbrauchsschutzmaßnahmen](#anti-abuse-measures)
 * [Datenschutz](#data-protection)
   * [Datenminimierung](#data-minimization)
-  * [Sicherung und Wiederherstellung](#backup-and-recovery)
-* [Dienstanbieter](#service-providers)
+  * [Backup und Wiederherstellung](#backup-and-recovery)
+* [Dienstleister](#service-providers)
 * [Compliance und Auditing](#compliance-and-auditing)
   * [Regelmäßige Sicherheitsbewertungen](#regular-security-assessments)
-  * [Einhaltung](#compliance)
-* [Reaktion auf Vorfälle](#incident-response)
-* [Sicherheitsentwicklungslebenszyklus](#security-development-lifecycle)
-* [Serverhärtung](#server-hardening)
-* [Service-Level-Agreement](#service-level-agreement)
-* [Open Source-Sicherheit](#open-source-security)
+  * [Compliance](#compliance)
+* [Vorfallreaktion](#incident-response)
+* [Sicherheitsentwicklungszyklus](#security-development-lifecycle)
+* [Server-Härtung](#server-hardening)
+* [Service Level Agreement](#service-level-agreement)
+* [Open Source Sicherheit](#open-source-security)
 * [Mitarbeitersicherheit](#employee-security)
 * [Kontinuierliche Verbesserung](#continuous-improvement)
-* [Weitere Ressourcen](#additional-resources)
+* [Zusätzliche Ressourcen](#additional-resources)
+
 
 ## Vorwort {#foreword}
 
-Bei Forward Email hat Sicherheit oberste Priorität. Wir haben umfassende Sicherheitsmaßnahmen zum Schutz Ihrer E-Mail-Kommunikation und Ihrer persönlichen Daten implementiert. Dieses Dokument beschreibt unsere Sicherheitspraktiken und die Maßnahmen, die wir ergreifen, um die Vertraulichkeit, Integrität und Verfügbarkeit Ihrer E-Mails zu gewährleisten.
+Bei Forward Email hat Sicherheit oberste Priorität. Wir haben umfassende Sicherheitsmaßnahmen implementiert, um Ihre E-Mail-Kommunikation und persönlichen Daten zu schützen. Dieses Dokument beschreibt unsere Sicherheitspraktiken und die Schritte, die wir unternehmen, um die Vertraulichkeit, Integrität und Verfügbarkeit Ihrer E-Mails zu gewährleisten.
+
 
 ## Infrastruktursicherheit {#infrastructure-security}
 
@@ -38,121 +41,126 @@ Bei Forward Email hat Sicherheit oberste Priorität. Wir haben umfassende Sicher
 
 Unsere Infrastruktur wird in SOC 2-konformen Rechenzentren gehostet mit:
 
-* Physische Sicherheit und Überwachung rund um die Uhr
-* Biometrische Zugangskontrollen
-* Redundante Stromversorgung
-* Fortschrittliche Branderkennung und -bekämpfung
-* Umgebungsüberwachung
+* 24/7 physischer Sicherheit und Überwachung
+* Biometrischen Zugangskontrollen
+* Redundanten Stromversorgungssystemen
+* Fortschrittlicher Branddetektion und -bekämpfung
+* Umweltüberwachung
 
 ### Netzwerksicherheit {#network-security}
 
-Wir implementieren mehrere Ebenen der Netzwerksicherheit:
+Wir implementieren mehrere Schichten der Netzwerksicherheit:
 
-* Enterprise-Firewalls mit strengen Zugriffskontrolllisten
-* DDoS-Schutz und -Minderung
-* Regelmäßige Netzwerk-Schwachstellen-Scans
-* Systeme zur Erkennung und Abwehr von Angriffen
-* Verschlüsselung des Datenverkehrs zwischen allen Dienstendpunkten
-* Port-Scan-Schutz mit automatischer Blockierung verdächtiger Aktivitäten
+* Firewalls auf Unternehmensniveau mit strengen Zugriffskontrolllisten
+* DDoS-Schutz und -Abmilderung
+* Regelmäßige Netzwerkschwachstellen-Scans
+* Systeme zur Erkennung und Verhinderung von Eindringversuchen
+* Verkehrsverschlüsselung zwischen allen Service-Endpunkten
+* Schutz vor Port-Scans mit automatischer Sperrung verdächtiger Aktivitäten
 
 > \[!IMPORTANT]
-> Alle übertragenen Daten werden mit TLS 1.2+ und modernen Verschlüsselungspaketen verschlüsselt.
+> Alle Daten während der Übertragung werden mit TLS 1.2+ und modernen Chiffren verschlüsselt.
+
 
 ## E-Mail-Sicherheit {#email-security}
 
 ### Verschlüsselung {#encryption}
 
-* **Transport Layer Security (TLS)**: Der gesamte E-Mail-Verkehr wird während der Übertragung mit TLS 1.2 oder höher verschlüsselt.
-* **Ende-zu-Ende-Verschlüsselung**: Unterstützung der Standards OpenPGP/MIME und S/MIME.
-* **Speicherverschlüsselung**: Alle gespeicherten E-Mails werden im Ruhezustand mit ChaCha20-Poly1305-Verschlüsselung in SQLite-Dateien verschlüsselt.
-* **Vollständige Festplattenverschlüsselung**: LUKS v2-Verschlüsselung für die gesamte Festplatte.
-* **Umfassender Schutz**: Wir implementieren Verschlüsselung im Ruhezustand, Verschlüsselung im Speicher und Verschlüsselung während der Übertragung.
+* **Transport Layer Security (TLS)**: Der gesamte E-Mail-Verkehr wird während der Übertragung mit TLS 1.2 oder höher verschlüsselt
+* **Ende-zu-Ende-Verschlüsselung**: Unterstützung der Standards OpenPGP/MIME und S/MIME
+* **Speicherverschlüsselung**: Alle gespeicherten E-Mails sind im Ruhezustand mit ChaCha20-Poly1305-Verschlüsselung in SQLite-Dateien verschlüsselt
+* **Vollständige Festplattenverschlüsselung**: LUKS v2-Verschlüsselung für die gesamte Festplatte
+* **Umfassender Schutz**: Wir implementieren Verschlüsselung im Ruhezustand, im Speicher und während der Übertragung
 
 > \[!NOTE]
-> Wir sind der weltweit erste und einzige E-Mail-Dienst, der **[quantenresistente und individuell verschlüsselte SQLite-Postfächer](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)** verwendet.
+> Wir sind der weltweit erste und einzige E-Mail-Dienst, der **[quantensichere und individuell verschlüsselte SQLite-Mailboxen](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)** verwendet.
 
 ### Authentifizierung und Autorisierung {#authentication-and-authorization}
 
-* **DKIM-Signierung**: Alle ausgehenden E-Mails werden mit DKIM signiert.
-* **SPF und DMARC**: Vollständige Unterstützung von SPF und DMARC zur Verhinderung von E-Mail-Spoofing.
-* **MTA-STS**: Unterstützung von MTA-STS zur Durchsetzung der TLS-Verschlüsselung.
-* **Multi-Faktor-Authentifizierung**: Verfügbar für alle Kontozugriffe.
+* **DKIM-Signierung**: Alle ausgehenden E-Mails werden mit DKIM signiert
+* **SPF und DMARC**: Vollständige Unterstützung von SPF und DMARC zur Verhinderung von E-Mail-Spoofing
+* **MTA-STS**: Unterstützung von MTA-STS zur Durchsetzung der TLS-Verschlüsselung
+* **Multi-Faktor-Authentifizierung**: Für alle Konto-Zugriffe verfügbar
 
-### Maßnahmen gegen Missbrauch {#anti-abuse-measures}
+### Missbrauchsschutzmaßnahmen {#anti-abuse-measures}
 
-* **Spamfilterung**: Mehrschichtige Spam-Erkennung mit maschinellem Lernen
-* **Virenscan**: Echtzeit-Scan aller Anhänge
-* **Ratenbegrenzung**: Schutz vor Brute-Force- und Enumeration-Angriffen
-* **IP-Reputation**: Überwachung der IP-Reputation des Absenders
-* **Inhaltsfilterung**: Erkennung schädlicher URLs und Phishing-Versuche
+* **Spam-Filterung**: Mehrschichtige Spam-Erkennung mit maschinellem Lernen
+* **Virenscanning**: Echtzeit-Scan aller Anhänge
+* **Ratenbegrenzung**: Schutz vor Brute-Force- und Enumerationsangriffen
+* **IP-Reputation**: Überwachung der Reputation der sendenden IP
+* **Inhaltsfilterung**: Erkennung von bösartigen URLs und Phishing-Versuchen
+
 
 ## Datenschutz {#data-protection}
 
 ### Datenminimierung {#data-minimization}
 
-Wir befolgen den Grundsatz der Datenminimierung:
+Wir folgen dem Prinzip der Datenminimierung:
 
-* Wir erheben nur die für die Bereitstellung unseres Dienstes erforderlichen Daten.
-* E-Mail-Inhalte werden im Speicher verarbeitet und nicht dauerhaft gespeichert, es sei denn, sie werden für die IMAP-/POP3-Zustellung benötigt.
-* Protokolle werden anonymisiert und nur so lange wie nötig gespeichert.
-
-### Sicherung und Wiederherstellung {#backup-and-recovery}
+* Wir erfassen nur die Daten, die zur Bereitstellung unseres Dienstes notwendig sind
+* E-Mail-Inhalte werden im Speicher verarbeitet und nur dann dauerhaft gespeichert, wenn es für die IMAP/POP3-Zustellung erforderlich ist
+* Protokolle werden anonymisiert und nur so lange aufbewahrt, wie es notwendig ist
+### Backup und Wiederherstellung {#backup-and-recovery}
 
 * Automatisierte tägliche Backups mit Verschlüsselung
-* Geografisch verteilter Backup-Speicher
-* Regelmäßige Tests zur Backup-Wiederherstellung
-* Disaster-Recovery-Verfahren mit definierten RPOs und RTOs
+* Geografisch verteilte Backup-Speicherung
+* Regelmäßige Tests der Backup-Wiederherstellung
+* Notfallwiederherstellungsverfahren mit definiertem RPO und RTO
+
 
 ## Dienstanbieter {#service-providers}
 
-Wir wählen unsere Dienstleister sorgfältig aus, um sicherzustellen, dass sie unseren hohen Sicherheitsstandards entsprechen. Nachfolgend finden Sie die Anbieter, die wir für den internationalen Datentransfer nutzen, und ihren DSGVO-Konformitätsstatus:
+Wir wählen unsere Dienstanbieter sorgfältig aus, um sicherzustellen, dass sie unsere hohen Sicherheitsstandards erfüllen. Nachfolgend sind die Anbieter aufgeführt, die wir für den internationalen Datentransfer nutzen, sowie deren GDPR-Konformitätsstatus:
 
-| Anbieter | Zweck | DPF-zertifiziert | DSGVO-Konformitätsseite |
-| --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
-| [Cloudflare](https://www.cloudflare.com) | CDN, DDoS-Schutz, DNS | ✅ Ja | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
-| [DataPacket](https://www.datapacket.com) | Server-Infrastruktur | ❌ Nein | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
-| [Digital Ocean](https://www.digitalocean.com) | Cloud-Infrastruktur | ❌ Nein | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
-| [GitHub](https://github.com) | Quellcode-Hosting, CI/CD | ✅ Ja | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
-| [Vultr](https://www.vultr.com) | Cloud-Infrastruktur | ❌ Nein | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
-| [Stripe](https://stripe.com) | Zahlungsabwicklung | ✅ Ja | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
-| [PayPal](https://www.paypal.com) | Zahlungsabwicklung | ❌ Nein | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| Anbieter                                      | Zweck                      | DPF Zertifiziert | GDPR-Konformitätsseite                                                                                  |
+| --------------------------------------------- | -------------------------- | --------------- | ------------------------------------------------------------------------------------------------------- |
+| [Cloudflare](https://www.cloudflare.com)      | CDN, DDoS-Schutz, DNS      | ✅ Ja            | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/)                                           |
+| [DataPacket](https://www.datapacket.com)      | Serverinfrastruktur        | ❌ Nein          | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
+| [Digital Ocean](https://www.digitalocean.com) | Cloud-Infrastruktur        | ❌ Nein          | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
+| [GitHub](https://github.com)                  | Quellcode-Hosting, CI/CD   | ✅ Ja            | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Vultr](https://www.vultr.com)                | Cloud-Infrastruktur        | ❌ Nein          | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
+| [Stripe](https://stripe.com)                  | Zahlungsabwicklung         | ✅ Ja            | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
+| [PayPal](https://www.paypal.com)              | Zahlungsabwicklung         | ❌ Nein          | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |
 
-Wir nutzen diese Anbieter, um eine zuverlässige und sichere Servicebereitstellung unter Einhaltung internationaler Datenschutzbestimmungen zu gewährleisten. Alle Datenübertragungen erfolgen unter Einhaltung angemessener Sicherheitsvorkehrungen zum Schutz Ihrer personenbezogenen Daten.
+Wir nutzen diese Anbieter, um eine zuverlässige, sichere Servicebereitstellung zu gewährleisten und gleichzeitig die Einhaltung internationaler Datenschutzbestimmungen sicherzustellen. Alle Datenübertragungen erfolgen mit geeigneten Schutzmaßnahmen zum Schutz Ihrer persönlichen Daten.
 
-## Compliance und Auditing {#compliance-and-auditing}
+
+## Compliance und Prüfung {#compliance-and-auditing}
 
 ### Regelmäßige Sicherheitsbewertungen {#regular-security-assessments}
 
-Unser Team überwacht, überprüft und bewertet regelmäßig Codebasis, Server, Infrastruktur und Praktiken. Wir implementieren ein umfassendes Sicherheitsprogramm, das Folgendes umfasst:
+Unser Team überwacht, überprüft und bewertet regelmäßig den Codebestand, die Server, die Infrastruktur und die Praktiken. Wir implementieren ein umfassendes Sicherheitsprogramm, das Folgendes umfasst:
 
-* Regelmäßige Rotation der SSH-Schlüssel
+* Regelmäßiger Wechsel der SSH-Schlüssel
 * Kontinuierliche Überwachung der Zugriffsprotokolle
-* Automatisierte Sicherheitsscans
+* Automatisierte Sicherheitsüberprüfungen
 * Proaktives Schwachstellenmanagement
 * Regelmäßige Sicherheitsschulungen für alle Teammitglieder
 
-### Konformität {#compliance}
+### Compliance {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr)-konforme Datenverarbeitungspraktiken
-* [Datenverarbeitungsvereinbarung (DPA)](https://forwardemail.net/dpa) für Geschäftskunden verfügbar
+* [GDPR](https://forwardemail.net/gdpr) konforme Datenverarbeitungspraktiken
+* [Datenverarbeitungsvertrag (DPA)](https://forwardemail.net/dpa) verfügbar für Geschäftskunden
 * CCPA-konforme Datenschutzkontrollen
-* SOC 2 Typ II-geprüfte Prozesse
+* SOC 2 Typ II geprüfte Prozesse
+
 
 ## Vorfallreaktion {#incident-response}
 
-Unser Reaktionsplan für Sicherheitsvorfälle umfasst:
+Unser Sicherheitsvorfallreaktionsplan umfasst:
 
-1. **Erkennung**: Automatisierte Überwachungs- und Warnsysteme
+1. **Erkennung**: Automatisierte Überwachungs- und Alarmsysteme
 2. **Eindämmung**: Sofortige Isolierung betroffener Systeme
-3. **Beseitigung**: Beseitigung der Bedrohung und Ursachenanalyse
+3. **Beseitigung**: Entfernung der Bedrohung und Ursachenanalyse
 4. **Wiederherstellung**: Sichere Wiederherstellung der Dienste
 5. **Benachrichtigung**: Zeitnahe Kommunikation mit betroffenen Nutzern
-6. **Analyse nach dem Vorfall**: Umfassende Überprüfung und Verbesserung
+6. **Nachanalyse**: Umfassende Überprüfung und Verbesserung
 
 > \[!WARNING]
-> Sollten Sie eine Sicherheitslücke entdecken, melden Sie diese bitte umgehend an <security@forwardemail.net>.
+> Wenn Sie eine Sicherheitslücke entdecken, melden Sie diese bitte umgehend an <security@forwardemail.net>.
 
-## Sicherheitsentwicklungslebenszyklus {#security-development-lifecycle}
+
+## Sicherheitsentwicklungszyklus {#security-development-lifecycle}
 
 ```mermaid
 flowchart LR
@@ -168,80 +176,85 @@ flowchart LR
     E -.-> J[Final Security Review]
     F -.-> K[Vulnerability Management]
 ```
+Aller Code durchläuft:
 
-Der gesamte Code wird folgenden Vorgängen unterzogen:
-
-* Erfassung von Sicherheitsanforderungen
-* Bedrohungsmodellierung während der Entwicklung
+* Erfassung der Sicherheitsanforderungen
+* Bedrohungsmodellierung während der Planung
 * Sichere Programmierpraktiken
-* Statische und dynamische Tests der Anwendungssicherheit
-* Codeüberprüfung mit Sicherheitsfokus
-* Überprüfung von Abhängigkeitsschwachstellen
+* Statische und dynamische Anwendungssicherheitstests
+* Code-Review mit Sicherheitsfokus
+* Scannen von Abhängigkeits-Schwachstellen
 
-## Serverhärtung {#server-hardening}
 
-Unser [Ansible-Konfiguration](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementiert zahlreiche Maßnahmen zur Serverhärtung:
+## Server-Härtung {#server-hardening}
 
-* **USB-Zugriff deaktiviert**: Physische Ports werden durch Blacklisting des Kernelmoduls „usb-storage“ deaktiviert.
-* **Firewall-Regeln**: Strenge iptables-Regeln erlauben nur notwendige Verbindungen.
-* **SSH-Härtung**: Nur schlüsselbasierte Authentifizierung, keine Passwortanmeldung, Root-Anmeldung deaktiviert.
-* **Dienstisolierung**: Jeder Dienst läuft mit den erforderlichen Mindestberechtigungen.
-* **Automatische Updates**: Sicherheitspatches werden automatisch eingespielt.
-* **Sicherer Start**: Verifizierter Startvorgang zum Schutz vor Manipulationen.
-* **Kernel-Härtung**: Sichere Kernel-Parameter und Sysctl-Konfigurationen.
-* **Dateisystembeschränkungen**: Mount-Optionen „noexec“, „nosuid“ und „nodev“, sofern zutreffend.
-* **Core Dumps deaktiviert**: Das System ist so konfiguriert, dass Core Dumps aus Sicherheitsgründen verhindert werden.
-* **Auslagerung deaktiviert**: Auslagerungsspeicher deaktiviert, um Datenlecks zu vermeiden.
-* **Port-Scan-Schutz**: Automatische Erkennung und Blockierung von Port-Scan-Versuchen.
-* **Transparent Huge Pages deaktiviert**: THP deaktiviert für verbesserte Leistung und Sicherheit.
-* **Systemdienst Härtung**: Nicht unbedingt erforderliche Dienste wie Apport deaktiviert.
-* **Benutzerverwaltung**: Prinzip der geringsten Rechte mit separaten Deployment- und DevOps-Benutzern.
-* **Dateideskriptor-Limits**: Erhöhte Limits für bessere Leistung und Sicherheit.
+Unsere [Ansible-Konfiguration](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementiert zahlreiche Maßnahmen zur Server-Härtung:
 
-## Service-Level-Vereinbarung {#service-level-agreement}
+* **USB-Zugriff deaktiviert**: Physische Ports sind durch Blacklisting des usb-storage Kernel-Moduls deaktiviert
+* **Firewall-Regeln**: Strenge iptables-Regeln, die nur notwendige Verbindungen erlauben
+* **SSH-Härtung**: Nur schlüsselbasierte Authentifizierung, kein Passwort-Login, Root-Login deaktiviert
+* **Dienst-Isolierung**: Jeder Dienst läuft mit minimal erforderlichen Rechten
+* **Automatische Updates**: Sicherheitspatches werden automatisch angewendet
+* **Secure Boot**: Verifizierter Boot-Prozess zur Verhinderung von Manipulationen
+* **Kernel-Härtung**: Sichere Kernel-Parameter und sysctl-Konfigurationen
+* **Dateisystem-Beschränkungen**: noexec, nosuid und nodev Mount-Optionen wo angebracht
+* **Core Dumps deaktiviert**: System so konfiguriert, dass Core Dumps aus Sicherheitsgründen verhindert werden
+* **Swap deaktiviert**: Swap-Speicher deaktiviert, um Datenlecks zu verhindern
+* **Port-Scan-Schutz**: Automatische Erkennung und Blockierung von Port-Scan-Versuchen
+* **Transparent Huge Pages deaktiviert**: THP deaktiviert für bessere Leistung und Sicherheit
+* **Systemdienst-Härtung**: Nicht essentielle Dienste wie Apport deaktiviert
+* **Benutzerverwaltung**: Prinzip der geringsten Rechte mit separaten Deploy- und DevOps-Benutzern
+* **Dateideskriptor-Limits**: Erhöhte Limits für bessere Leistung und Sicherheit
 
-Wir gewährleisten eine hohe Serviceverfügbarkeit und Zuverlässigkeit. Unsere Infrastruktur ist auf Redundanz und Fehlertoleranz ausgelegt, um die Betriebsbereitschaft Ihres E-Mail-Dienstes sicherzustellen. Obwohl wir kein formelles SLA-Dokument veröffentlichen, verpflichten wir uns zu Folgendem:
 
-* Über 99,9 % Verfügbarkeit für alle Dienste
-* Schnelle Reaktion auf Servicestörungen
-* Transparente Kommunikation bei Störungen
-* Regelmäßige Wartung in Zeiten mit geringem Datenverkehr
+## Service Level Agreement {#service-level-agreement}
 
-## Open Source-Sicherheit {#open-source-security}
+Wir gewährleisten ein hohes Maß an Verfügbarkeit und Zuverlässigkeit der Dienste. Unsere Infrastruktur ist für Redundanz und Fehlertoleranz ausgelegt, um sicherzustellen, dass Ihr E-Mail-Dienst betriebsbereit bleibt. Obwohl wir kein formelles SLA-Dokument veröffentlichen, verpflichten wir uns zu:
+
+* 99,9 %+ Betriebszeit für alle Dienste
+* Schnelle Reaktion auf Dienstunterbrechungen
+* Transparente Kommunikation während Vorfällen
+* Regelmäßige Wartung in verkehrsarmen Zeiten
+
+
+## Open Source Sicherheit {#open-source-security}
 
 Als [Open-Source-Dienst](https://github.com/forwardemail/forwardemail.net) profitiert unsere Sicherheit von:
 
-* Transparenter Code, der von jedem geprüft werden kann
-* Community-getriebene Sicherheitsverbesserungen
-* Schnelle Identifizierung und Behebung von Schwachstellen
-* Keine Sicherheit durch Unklarheit
+* Transparentem Code, der von jedem geprüft werden kann
+* Community-getriebenen Sicherheitsverbesserungen
+* Schneller Identifikation und Behebung von Schwachstellen
+* Kein Sicherheit durch Verschleierung
+
 
 ## Mitarbeitersicherheit {#employee-security}
 
-* Hintergrundüberprüfungen aller Mitarbeiter
-* Schulungen zum Sicherheitsbewusstsein
-* Least-Privilege-Prinzip
+* Hintergrundüberprüfungen für alle Mitarbeiter
+* Schulungen zur Sicherheitsbewusstseinsbildung
+* Prinzip der geringsten Rechte beim Zugriff
 * Regelmäßige Sicherheitsschulungen
+
 
 ## Kontinuierliche Verbesserung {#continuous-improvement}
 
-Wir verbessern unsere Sicherheitslage kontinuierlich durch:
+Wir verbessern kontinuierlich unsere Sicherheitslage durch:
 
 * Überwachung von Sicherheitstrends und neuen Bedrohungen
 * Regelmäßige Überprüfung und Aktualisierung der Sicherheitsrichtlinien
-* Feedback von Sicherheitsforschern und -nutzern
+* Feedback von Sicherheitsforschern und Nutzern
 * Teilnahme an der Sicherheits-Community
 
-Wenn Sie weitere Informationen zu unseren Sicherheitspraktiken wünschen oder Sicherheitsbedenken melden möchten, wenden Sie sich bitte an <security@forwardemail.net>.
+Für weitere Informationen zu unseren Sicherheitspraktiken oder um Sicherheitsbedenken zu melden, kontaktieren Sie bitte <security@forwardemail.net>.
+
 
 ## Zusätzliche Ressourcen {#additional-resources}
 
-* [Datenschutzrichtlinie](https://forwardemail.net/en/privacy)
-* [Servicebedingungen](https://forwardemail.net/en/terms)
+* [Datenschutzerklärung](https://forwardemail.net/en/privacy)
+* [Nutzungsbedingungen](https://forwardemail.net/en/terms)
 * [DSGVO-Konformität](https://forwardemail.net/gdpr)
 * [Datenverarbeitungsvereinbarung (DPA)](https://forwardemail.net/dpa)
 * [Missbrauch melden](https://forwardemail.net/en/report-abuse)
 * [Sicherheitsrichtlinie](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [GitHub-Repository](https://github.com/forwardemail/forwardemail.net)
+* [GitHub Repository](https://github.com/forwardemail/forwardemail.net)
 * [FAQ](https://forwardemail.net/en/faq)

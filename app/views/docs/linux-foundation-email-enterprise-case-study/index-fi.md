@@ -1,45 +1,49 @@
-# Case-tutkimus: Miten Linux Foundation optimoi sähköpostien hallinnan yli 250 verkkotunnuksessa sähköpostin edelleenlähetyksen avulla {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
+# Case Study: Kuinka Linux Foundation Optimoi Sähköpostinhallinnan Yli 250 Verkkotunnuksessa Forward Emailin Avulla {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
 <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
+
 
 ## Sisällysluettelo {#table-of-contents}
 
 * [Johdanto](#introduction)
 * [Haaste](#the-challenge)
 * [Ratkaisu](#the-solution)
-  * [100 % avoimen lähdekoodin arkkitehtuuri](#100-open-source-architecture)
-  * [Yksityisyyteen keskittyvä suunnittelu](#privacy-focused-design)
-  * [Yritystason tietoturva](#enterprise-grade-security)
-  * [Kiinteähintainen yritysmalli](#fixed-price-enterprise-model)
+  * [100 % Avoimen Lähdekoodin Arkkitehtuuri](#100-open-source-architecture)
+  * [Yksityisyyteen Keskittyvä Suunnittelu](#privacy-focused-design)
+  * [Yritystason Turvallisuus](#enterprise-grade-security)
+  * [Kiinteähintainen Yritysmalli](#fixed-price-enterprise-model)
   * [Kehittäjäystävällinen API](#developer-friendly-api)
 * [Toteutusprosessi](#implementation-process)
-* [Tulokset ja hyödyt](#results-and-benefits)
-  * [Tehokkuuden parannukset](#efficiency-improvements)
-  * [Kustannusten hallinta](#cost-management)
-  * [Parannettu turvallisuus](#enhanced-security)
-  * [Parannettu käyttökokemus](#improved-user-experience)
-* [Johtopäätös](#conclusion)
-* [Viitteet](#references)
+* [Tulokset ja Hyödyt](#results-and-benefits)
+  * [Tehokkuuden Parannukset](#efficiency-improvements)
+  * [Kustannusten Hallinta](#cost-management)
+  * [Parannettu Turvallisuus](#enhanced-security)
+  * [Parannettu Käyttäjäkokemus](#improved-user-experience)
+* [Yhteenveto](#conclusion)
+* [Lähteet](#references)
+
 
 ## Johdanto {#introduction}
 
-[Linux-säätiö](https://en.wikipedia.org/wiki/Linux_Foundation) hallinnoi yli 900 avoimen lähdekoodin projektia yli 250 verkkotunnuksella, mukaan lukien [linux.com](https://www.linux.com/) ja [jQuery.com](https://jquery.com/). Tässä tapaustutkimuksessa tarkastellaan, miten he tekivät yhteistyötä [Lähetä sähköpostia eteenpäin](https://forwardemail.net):n kanssa sähköpostin hallinnan virtaviivaistamiseksi samalla, kun ne noudattavat avoimen lähdekoodin periaatteita.
+[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) hallinnoi yli 900 avoimen lähdekoodin projektia yli 250 verkkotunnuksessa, mukaan lukien [linux.com](https://www.linux.com/) ja [jQuery.com](https://jquery.com/). Tässä tapaustutkimuksessa tarkastellaan, miten he tekivät yhteistyötä [Forward Emailin](https://forwardemail.net) kanssa sähköpostinhallinnan virtaviivaistamiseksi samalla kun säilyttivät avoimen lähdekoodin periaatteiden mukaisuuden.
+
 
 ## Haaste {#the-challenge}
 
-Linux Foundation kohtasi useita sähköpostin hallintaan liittyviä haasteita:
+Linux Foundation kohtasi useita sähköpostinhallinnan haasteita:
 
-* **Skaala**: Sähköpostin hallinta yli 250 eri verkkotunnuksella, joilla on erilaiset vaatimukset
-* **Hallinnollinen taakka**: DNS-tietueiden konfigurointi, edelleenlähetyssääntöjen ylläpito ja tukipyyntöihin vastaaminen
-* **Turvallisuus**: Sähköpostipohjaisten uhkien torjunta yksityisyyttä säilyttäen
-* **Kustannukset**: Perinteiset käyttäjäkohtaiset ratkaisut olivat kohtuuttoman kalliita kokoluokassaan
-* **Avoimen lähdekoodin mukaisuus**: Tarve ratkaisuille, jotka vastaavat heidän sitoutumistaan avoimen lähdekoodin arvoihin
+* **Laajuus**: Sähköpostin hallinta yli 250 verkkotunnuksessa, joissa on erilaiset vaatimukset
+* **Hallinnollinen Kuorma**: DNS-tietueiden konfigurointi, edelleenlähetyssääntöjen ylläpito ja tukipyyntöihin vastaaminen
+* **Turvallisuus**: Suojaus sähköpostipohjaisia uhkia vastaan samalla kun yksityisyys säilyy
+* **Kustannukset**: Perinteiset käyttäjäkohtaiset ratkaisut olivat heidän mittakaavassaan kohtuuttoman kalliita
+* **Avoimen Lähdekoodin Mukaisuus**: Tarve ratkaisuille, jotka vastaavat heidän sitoutumistaan avoimen lähdekoodin arvoihin
 
-Samoin kuin [Kanoninen/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) kohtasi haasteita useiden jakelualueidensa kanssa, Linux Foundation tarvitsi ratkaisun, joka pystyisi käsittelemään erilaisia projekteja säilyttäen samalla yhtenäisen hallintatavan.
+Samankaltaisesti kuin [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) kohtasi haasteita monien jakelutunnusten kanssa, Linux Foundation tarvitsi ratkaisun, joka pystyy käsittelemään monipuolisia projekteja säilyttäen yhtenäisen hallintatavan.
+
 
 ## Ratkaisu {#the-solution}
 
-Forward Email tarjosi kattavan ratkaisun, jonka tärkeimmät ominaisuudet:
+Forward Email tarjosi kattavan ratkaisun keskeisillä ominaisuuksilla:
 
 ```mermaid
 graph TD
@@ -51,45 +55,44 @@ graph TD
     B --> G[README-First API Approach]
 ```
 
-### 100 % avoimen lähdekoodin arkkitehtuuri {#100-open-source-architecture}
+### 100 % Avoimen Lähdekoodin Arkkitehtuuri {#100-open-source-architecture}
 
-Ainoana sähköpostipalveluna, jolla on täysin avoimen lähdekoodin alusta (sekä käyttöliittymä että taustajärjestelmä), Forward Email sopi täydellisesti Linux Foundationin sitoutumiseen avoimen lähdekoodin periaatteisiin. Samoin kuin [Kanoninen/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)-toteutuksellamme, tämä läpinäkyvyys mahdollisti heidän tekniselle tiimilleen tietoturvan toteutusten tarkistamisen ja jopa parannusten tekemisen.
+Ainoana sähköpostipalveluna, jolla on täysin avoimen lähdekoodin alusta (sekä frontend että backend), Forward Email sopi täydellisesti Linux Foundationin sitoutumiseen avoimen lähdekoodin periaatteisiin. Samoin kuin toteutuksemme [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) kanssa, tämä läpinäkyvyys mahdollisti heidän teknisen tiiminsä varmistaa turvallisuusratkaisut ja jopa osallistua parannuksiin.
 
-### Tietosuojaa kunnioittava suunnittelu {#privacy-focused-design}
+### Yksityisyyteen Keskittyvä Suunnittelu {#privacy-focused-design}
 
-Forward Emailin tiukka [tietosuojakäytännöt](https://forwardemail.net/privacy) tarjosi Linux Foundationin vaatiman suojauksen. [sähköpostin yksityisyyden suojauksen tekninen toteutus](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)-ominaisuuden ansiosta kaikki viestintä pysyy suojattuna rakenteensa ansiosta ilman sähköpostin sisällön lokikirjausta tai skannausta.
+Forward Emailin tiukat [yksityisyyskäytännöt](https://forwardemail.net/privacy) tarjosivat Linux Foundationille vaaditun turvallisuuden. Meidän [sähköpostin yksityisyyden suojauksen tekninen toteutus](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) varmistaa, että kaikki viestintä pysyy suunnittelultaan turvallisena, ilman sähköpostisisällön lokitusta tai skannausta.
 
-Kuten teknisessä toteutusdokumentaatiossamme on yksityiskohtaisesti kuvattu:
+Kuten teknisessä toteutusdokumentaatiossamme on kuvattu:
 
-> "Olemme rakentaneet koko järjestelmämme periaatteelle, että sähköpostisi kuuluvat sinulle ja vain sinulle. Toisin kuin muut palveluntarjoajat, jotka skannaavat sähköpostisisältöä mainosten tai tekoälykoulutuksen varalta, meillä on tiukka lokien ja skannauksen kieltokäytäntö, joka säilyttää kaiken viestinnän luottamuksellisuuden."
+> "Olemme rakentaneet koko järjestelmämme periaatteen ympärille, että sähköpostisi kuuluvat sinulle ja vain sinulle. Toisin kuin muut palveluntarjoajat, jotka skannaavat sähköpostisisältöä mainontaa tai tekoälyn koulutusta varten, me ylläpidämme tiukkaa ei-lokitusta, ei-skannausta -käytäntöä, joka säilyttää kaiken viestinnän luottamuksellisuuden."
+### Yritystason turvallisuus {#enterprise-grade-security}
 
-### Yritystason suojaus {#enterprise-grade-security}
-
-[kvanttiresistentti salaus](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service):n toteutus ChaCha20-Poly1305:llä tarjosi huippuluokan tietoturvan, jossa jokainen postilaatikko oli erillinen salattu tiedosto. Tämä lähestymistapa varmistaa, että vaikka kvanttitietokoneet pystyisivät rikkomaan nykyisiä salausstandardeja, Linux Foundationin tietoliikenne pysyy turvallisena.
+[Kvantiresistentin salauksen](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) toteutus ChaCha20-Poly1305 -algoritmilla tarjosi huipputason turvallisuuden, jossa jokainen postilaatikko oli erillinen salattu tiedosto. Tämä lähestymistapa varmistaa, että vaikka kvanttitietokoneet pystyisivät murtamaan nykyiset salausstandardit, Linux Foundationin viestintä pysyy turvattuna.
 
 ### Kiinteähintainen yritysmalli {#fixed-price-enterprise-model}
 
-Forward Emailin [yrityshinnoittelu](https://forwardemail.net/pricing) tarjosi kiinteän kuukausimaksun verkkotunnuksista tai käyttäjistä riippumatta. Tämä lähestymistapa on tuottanut merkittäviä kustannussäästöjä muille suurille organisaatioille, kuten [yliopiston alumnien sähköpostitapaustutkimus](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)-ratkaisumme osoittaa, jossa organisaatiot säästivät jopa 99 % perinteisiin käyttäjäkohtaisiin sähköpostiratkaisuihin verrattuna.
+Forward Emailin [yrityshinnasto](https://forwardemail.net/pricing) tarjosi kiinteän kuukausihinnan riippumatta domaineista tai käyttäjistä. Tämä lähestymistapa on tuonut merkittäviä kustannussäästöjä muille suurille organisaatioille, kuten osoitetaan [yliopiston alumnisähköpostin tapaustutkimuksessa](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), jossa laitokset säästivät jopa 99 % verrattuna perinteisiin käyttäjäkohtaisiin sähköpostiratkaisuihin.
 
 ### Kehittäjäystävällinen API {#developer-friendly-api}
 
-[README-ensin-lähestymistapa](https://tom.preston-werner.com/2010/08/23/readme-driven-development)-mallin mukaisesti ja [Stripen RESTful-rajapinnan suunnittelu](https://amberonrails.com/building-stripes-api):n inspiroimana Forward Emailin [API](https://forwardemail.net/api) mahdollisti syvän integraation Linux Foundationin projektinhallintakeskukseen. Tämä integraatio oli ratkaisevan tärkeää sähköpostin hallinnan automatisoimiseksi heidän monipuolisessa projektiportfoliossaan.
+Seuraamalla [README-ensimmäistä lähestymistapaa](https://tom.preston-werner.com/2010/08/23/readme-driven-development) ja saaden inspiraatiota [Stripen RESTful API -suunnittelusta](https://amberonrails.com/building-stripes-api), Forward Emailin [API](https://forwardemail.net/api) mahdollisti syvän integraation Linux Foundationin Project Control Centeriin. Tämä integraatio oli ratkaisevan tärkeä sähköpostinhallinnan automatisoinnissa heidän monipuolisessa projektisalkussaan.
 
-## Käyttöönottoprosessi {#implementation-process}
+## Toteutusprosessi {#implementation-process}
 
-Toteutus noudatti strukturoitua lähestymistapaa:
+Toteutus eteni rakenteellisesti:
 
 ```mermaid
 flowchart LR
-    A[Initial Domain Migration] --> B[API Integration]
-    B --> C[Custom Feature Development]
-    C --> D[Deployment & Training]
+    A[Alkuperäinen domainin siirto] --> B[API-integraatio]
+    B --> C[Ominaisuuksien räätälöinti]
+    C --> D[Julkaisu & koulutus]
 ```
 
-1. **Alkuperäinen verkkotunnuksen siirto**: DNS-tietueiden määrittäminen, SPF/DKIM/DMARC-asetusten määrittäminen, olemassa olevien sääntöjen siirto
+1. **Alkuperäinen domainin siirto**: DNS-tietueiden konfigurointi, SPF/DKIM/DMARC:n asennus, olemassa olevien sääntöjen siirto
 
    ```sh
-   # Example DNS configuration for a Linux Foundation domain
+   # Esimerkki DNS-konfiguraatiosta Linux Foundationin domainille
    domain.org.    600    IN    MX    10 mx1.forwardemail.net.
    domain.org.    600    IN    MX    10 mx2.forwardemail.net.
    domain.org.    600    IN    TXT   "v=spf1 include:spf.forwardemail.net -all"
@@ -97,48 +100,48 @@ flowchart LR
 
 2. **API-integraatio**: Yhdistäminen Project Control Centeriin itsepalveluhallintaa varten
 
-3. **Mukautettujen ominaisuuksien kehitys**: Usean verkkotunnuksen hallinta, raportointi, suojauskäytännöt
+3. **Ominaisuuksien räätälöinti**: Monidomain-hallinta, raportointi, turvallisuuspolitiikat
 
-Teimme tiivistä yhteistyötä Linux Foundationin kanssa kehittääksemme ominaisuuksia (jotka ovat myös 100 % avoimen lähdekoodin tuotteita, jotta kaikki voivat hyötyä niistä) erityisesti heidän moniprojektiympäristöönsä, samalla tavalla kuin loimme räätälöityjä ratkaisuja [yliopiston alumnien sähköpostijärjestelmät](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study):lle.
+   Teimme tiivistä yhteistyötä Linux Foundationin kanssa kehittääksemme ominaisuuksia (jotka ovat myös 100 % avoimen lähdekoodin, jotta kaikki voivat hyötyä niistä) erityisesti heidän moniprojektisympäristöönsä, samalla tavalla kuin loimme räätälöityjä ratkaisuja [yliopiston alumnisähköpostijärjestelmille](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
 
 ## Tulokset ja hyödyt {#results-and-benefits}
 
-Käyttöönotto toi merkittäviä etuja:
+Toteutus toi merkittäviä hyötyjä:
 
 ### Tehokkuuden parannukset {#efficiency-improvements}
 
-* Vähemmän hallinnollisia kuluja
+* Hallinnollisen taakan vähentyminen
 * Nopeampi projektien käyttöönotto (päivistä minuutteihin)
-* Virtaviivaistettu kaikkien yli 250 verkkotunnuksen hallinta yhdestä käyttöliittymästä
+* Yli 250 domainin hallinta yhdestä käyttöliittymästä
 
 ### Kustannusten hallinta {#cost-management}
 
-* Kiinteä hinnoittelu riippumatta verkkotunnusten tai käyttäjien määrän kasvusta
-* Käyttäjäkohtaisten lisenssimaksujen poistaminen
-* [yliopiston tapaustutkimus](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study):n tavoin Linux Foundation saavutti huomattavia kustannussäästöjä perinteisiin ratkaisuihin verrattuna
+* Kiinteä hinnoittelu riippumatta domainien tai käyttäjien kasvusta
+* Käyttäjäkohtaisista lisenssimaksuista luopuminen
+* Samoin kuin [yliopiston tapaustutkimuksessa](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), Linux Foundation saavutti merkittäviä kustannussäästöjä verrattuna perinteisiin ratkaisuihin
 
-### Parannettu suojaus {#enhanced-security}
+### Parannettu turvallisuus {#enhanced-security}
 
-* Kvanttisuojattu salaus kaikilla verkkotunnuksilla
-* Kattava sähköpostin todennus, joka estää huijaukset ja tietojenkalastelun
-* Tietoturvatestaus ja -käytännöt [turvaominaisuudet](https://forwardemail.net/security):n kautta
-* Yksityisyyden suojaus [tekninen toteutus](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation):n kautta
+* Kvantiresistentti salaus kaikissa domaineissa
+* Kattava sähköpostin todennus, joka estää väärentämisen ja kalastelun
+* Turvallisuustestaus ja käytännöt [turvaominaisuuksien](https://forwardemail.net/security) kautta
+* Yksityisyyden suoja teknisen toteutuksemme avulla [täällä](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 
-### Parannettu käyttökokemus {#improved-user-experience}
+### Parannettu käyttäjäkokemus {#improved-user-experience}
 
-* Itsepalvelu sähköpostinhallinta projektin ylläpitäjille
-* Yhtenäinen kokemus kaikilla Linux Foundation -verkkotunnuksilla
-* Luotettava sähköpostin toimitus vankalla todennuksella
+* Itsepalvelusähköpostinhallinta projektin ylläpitäjille
+* Johdonmukainen käyttökokemus kaikissa Linux Foundationin domaineissa
+* Luotettava sähköpostin toimitus vahvalla todennuksella
 
-## Johtopäätös {#conclusion}
+## Yhteenveto {#conclusion}
 
-Linux Foundationin kumppanuus Forward Emailin kanssa osoittaa, kuinka organisaatiot voivat ratkaista monimutkaisia sähköpostinhallinnan haasteita ja samalla säilyttää linjansa ydinarvojensa kanssa. Valitsemalla ratkaisun, joka asettaa etusijalle avoimen lähdekoodin periaatteet, yksityisyyden ja turvallisuuden, Linux Foundation on muuttanut sähköpostinhallinnan hallinnollisesta taakasta strategiseksi eduksi.
+Linux Foundationin kumppanuus Forward Emailin kanssa osoittaa, kuinka organisaatiot voivat ratkaista monimutkaisia sähköpostinhallinnan haasteita samalla kun ne säilyttävät ydinarvonsa. Valitsemalla ratkaisun, joka priorisoi avoimen lähdekoodin periaatteet, yksityisyyden ja turvallisuuden, Linux Foundation on muuttanut sähköpostinhallinnan hallinnollisesta taakasta strategiseksi eduksi.
+Kuten olemme havainneet työskennellessämme sekä [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) että [suurten yliopistojen](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) kanssa, monimutkaisia verkkotunnusportfolioita hallinnoivat organisaatiot voivat saavuttaa merkittäviä parannuksia tehokkuudessa, turvallisuudessa ja kustannusten hallinnassa Forward Emailin yritysratkaisun avulla.
 
-Kuten työmme sekä [Kanoninen/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study):n että [suuret yliopistot](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study):n kanssa osoitti, organisaatiot, joilla on monimutkaisia verkkotunnusportfolioita, voivat saavuttaa merkittäviä parannuksia tehokkuudessa, tietoturvassa ja kustannusten hallinnassa Forward Emailin yritysratkaisun avulla.
+Lisätietoja siitä, miten Forward Email voi auttaa organisaatiotasi hallitsemaan sähköpostia useiden verkkotunnusten välillä, löydät osoitteesta [forwardemail.net](https://forwardemail.net) tai tutustu yksityiskohtaiseen [dokumentaatioomme](https://forwardemail.net/email-api) ja [oppaisiimme](https://forwardemail.net/guides).
 
-Lisätietoja siitä, miten sähköpostin edelleenlähetys voi auttaa organisaatiotasi hallitsemaan sähköpostia useilla verkkotunnuksilla, saat osoitteesta [forwardemail.net](https://forwardemail.net) tai tutustumalla yksityiskohtaisiin [dokumentaatio](https://forwardemail.net/email-api)- ja [oppaat](https://forwardemail.net/guides)-sivuihimme.
 
 ## Viitteet {#references}
 
-* Linux Foundation. (2025). "Selaa projekteja." Haettu osoitteesta <https://www.linuxfoundation.org/projects>
+* Linux Foundation. (2025). "Browse Projects." Haettu osoitteesta <https://www.linuxfoundation.org/projects>
 * Wikipedia. (2025). "Linux Foundation." Haettu osoitteesta <https://en.wikipedia.org/wiki/Linux_Foundation>

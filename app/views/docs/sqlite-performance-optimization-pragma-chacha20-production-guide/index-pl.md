@@ -1,55 +1,57 @@
-# SQLite Performance Optimization: Production PRAGMA Settings & ChaCha20 Encryption {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
+# Optymalizacja wydajności SQLite: ustawienia PRAGMA produkcji i szyfrowanie ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite performance optimization guide" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/sqlite.webp" alt="Przewodnik po optymalizacji wydajności SQLite" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Foreword](#foreword)
-* [Forward Email's Production SQLite Architecture](#forward-emails-production-sqlite-architecture)
-* [Our Actual PRAGMA Configuration](#our-actual-pragma-configuration)
-* [Performance Benchmark Results](#performance-benchmark-results)
-  * [Node.js v20.19.5 Performance Results](#nodejs-v20195-performance-results)
-* [PRAGMA Settings Breakdown](#pragma-settings-breakdown)
-  * [Core Settings We Use](#core-settings-we-use)
-  * [Settings We DON'T Use (But You Might Want)](#settings-we-dont-use-but-you-might-want)
-* [ChaCha20 vs AES256 Encryption](#chacha20-vs-aes256-encryption)
-* [Temporary Storage: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
-  * [/tmp vs /dev/shm Performance](#tmp-vs-devshm-performance)
-* [WAL Mode Optimization](#wal-mode-optimization)
-  * [WAL Configuration Impact](#wal-configuration-impact)
-* [Schema Design for Performance](#schema-design-for-performance)
-* [Connection Management](#connection-management)
-* [Monitoring and Diagnostics](#monitoring-and-diagnostics)
-* [Node.js Version Performance](#nodejs-version-performance)
-  * [Complete Cross-Version Results](#complete-cross-version-results)
-  * [Key Performance Insights](#key-performance-insights)
-  * [Native Module Compatibility](#native-module-compatibility)
-* [Production Deployment Checklist](#production-deployment-checklist)
-* [Troubleshooting Common Issues](#troubleshooting-common-issues)
-  * ["Database is locked" Errors](#database-is-locked-errors)
-  * [High Memory Usage During VACUUM](#high-memory-usage-during-vacuum)
-  * [Slow Query Performance](#slow-query-performance)
-* [Forward Email's Open Source Contributions](#forward-emails-open-source-contributions)
-* [Benchmark Source Code](#benchmark-source-code)
-* [What's Next for SQLite at Forward Email](#whats-next-for-sqlite-at-forward-email)
-* [Getting Help](#getting-help)
+## Spis treści {#table-of-contents}
 
-## Foreword {#foreword}
+* [Przedmowa](#foreword)
+* [Architektura produkcyjna SQLite w Forward Email](#forward-emails-production-sqlite-architecture)
+* [Nasza aktualna konfiguracja PRAGMA](#our-actual-pragma-configuration)
+* [Wyniki testów wydajności](#performance-benchmark-results)
+  * [Wyniki wydajności Node.js v20.19.5](#nodejs-v20195-performance-results)
+* [Analiza ustawień PRAGMA](#pragma-settings-breakdown)
+  * [Podstawowe ustawienia, których używamy](#core-settings-we-use)
+  * [Ustawienia, których NIE używamy (ale możesz chcieć)](#settings-we-dont-use-but-you-might-want)
+* [Szyfrowanie ChaCha20 vs AES256](#chacha20-vs-aes256-encryption)
+* [Pamięć tymczasowa: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
+  * [Wydajność /tmp vs /dev/shm](#tmp-vs-devshm-performance)
+* [Optymalizacja trybu WAL](#wal-mode-optimization)
+  * [Wpływ konfiguracji WAL](#wal-configuration-impact)
+* [Projektowanie schematu pod kątem wydajności](#schema-design-for-performance)
+* [Zarządzanie połączeniami](#connection-management)
+* [Monitorowanie i diagnostyka](#monitoring-and-diagnostics)
+* [Wydajność wersji Node.js](#nodejs-version-performance)
+  * [Pełne wyniki międzywersyjne](#complete-cross-version-results)
+  * [Kluczowe wnioski dotyczące wydajności](#key-performance-insights)
+  * [Kompatybilność modułów natywnych](#native-module-compatibility)
+* [Lista kontrolna wdrożenia produkcyjnego](#production-deployment-checklist)
+* [Rozwiązywanie typowych problemów](#troubleshooting-common-issues)
+  * [Błędy "Database is locked"]( #database-is-locked-errors)
+  * [Wysokie zużycie pamięci podczas VACUUM](#high-memory-usage-during-vacuum)
+  * [Wolne działanie zapytań](#slow-query-performance)
+* [Wkład open source Forward Email](#forward-emails-open-source-contributions)
+* [Kod źródłowy testów wydajności](#benchmark-source-code)
+* [Co dalej z SQLite w Forward Email](#whats-next-for-sqlite-at-forward-email)
+* [Uzyskiwanie pomocy](#getting-help)
 
-Setting up SQLite for production email systems isn't just about getting it working—it's about making it fast, secure, and reliable under heavy load. After processing millions of emails at Forward Email, we've learned what actually matters for SQLite performance.
 
-This guide covers our real production configuration, benchmark results across Node.js versions, and the specific optimizations that make a difference when you're handling serious email volume.
+## Przedmowa {#foreword}
 
-> \[!WARNING] Node.js Performance Regressions in v22 and v24
-> We discovered a significant performance regression in Node.js versions v22 and v24 that impacts SQLite performance, particularly for `SELECT` statements. Our benchmarks show a \~57% drop in `SELECT` operations per second in Node.js v24 compared to v20. We have reported this issue to the Node.js team in [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
+Konfiguracja SQLite dla produkcyjnych systemów e-mail to nie tylko kwestia uruchomienia — chodzi o to, by działał szybko, bezpiecznie i niezawodnie pod dużym obciążeniem. Po przetworzeniu milionów wiadomości e-mail w Forward Email nauczyliśmy się, co naprawdę ma znaczenie dla wydajności SQLite.
 
-Due to this regression, we are taking a cautious approach to our Node.js upgrades. Here is our current plan:
+Ten przewodnik obejmuje naszą rzeczywistą konfigurację produkcyjną, wyniki testów wydajności na różnych wersjach Node.js oraz konkretne optymalizacje, które robią różnicę, gdy obsługujesz poważny wolumen e-maili.
 
-* **Current Version:** We are currently on Node.js v18, which has reached its end-of-life ("EOL") for Long-Term Support ("LTS"). You can view the official [Node.js LTS schedule here](https://github.com/nodejs/release#release-schedule).
-* **Planned Upgrade:** We will be upgrading to **Node.js v20**, which is the fastest version according to our benchmarks and is not affected by this regression.
-* **Avoiding v22 and v24:** We will not be using Node.js v22 or v24 in production until this performance issue is resolved.
+> \[!WARNING] Regresje wydajności Node.js w wersjach v22 i v24  
+> Odkryliśmy znaczącą regresję wydajności w wersjach Node.js v22 i v24, która wpływa na wydajność SQLite, szczególnie dla zapytań `SELECT`. Nasze testy wykazały spadek liczby operacji `SELECT` na sekundę o około 57% w Node.js v24 w porównaniu do v20. Zgłosiliśmy ten problem zespołowi Node.js w [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
 
-Here is a timeline illustrating the Node.js LTS schedule and our upgrade path:
+Z powodu tej regresji podchodzimy ostrożnie do aktualizacji Node.js. Oto nasz obecny plan:
+
+* **Aktualna wersja:** Obecnie korzystamy z Node.js v18, który osiągnął koniec wsparcia ("EOL") dla Long-Term Support ("LTS"). Oficjalny [harmonogram LTS Node.js znajdziesz tutaj](https://github.com/nodejs/release#release-schedule).
+* **Planowana aktualizacja:** Zamierzamy przejść na **Node.js v20**, który według naszych testów jest najszybszą wersją i nie jest dotknięty tą regresją.
+* **Unikanie v22 i v24:** Nie będziemy używać Node.js v22 ani v24 w produkcji, dopóki problem z wydajnością nie zostanie rozwiązany.
+
+Poniżej znajduje się harmonogram ilustrujący plan LTS Node.js oraz naszą ścieżkę aktualizacji:
 
 ```mermaid
 gantt
@@ -70,10 +72,9 @@ gantt
     Current (v18) :done, 2022-04-19, 2025-04-30
     Planned Upgrade to v20 :milestone, 2025-12-01, 1d
 ```
+## Architektura produkcyjna SQLite Forward Email {#forward-emails-production-sqlite-architecture}
 
-## Forward Email's Production SQLite Architecture {#forward-emails-production-sqlite-architecture}
-
-Here's how we actually use SQLite in production:
+Oto jak faktycznie używamy SQLite w produkcji:
 
 ```mermaid
 graph TB
@@ -99,9 +100,10 @@ graph TB
     style B fill:#e8f5e8
 ```
 
-## Our Actual PRAGMA Configuration {#our-actual-pragma-configuration}
 
-This is what we actually use in production, straight from our [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
+## Nasza faktyczna konfiguracja PRAGMA {#our-actual-pragma-configuration}
+
+To jest to, czego faktycznie używamy w produkcji, prosto z naszego [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
 
 ```javascript
 // Forward Email's actual production PRAGMA settings
@@ -131,65 +133,67 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> We use `temp_store=1` (disk) instead of `temp_store=2` (memory) because large email databases can easily consume 10+ GB of memory during operations like VACUUM.
+> Używamy `temp_store=1` (dysk) zamiast `temp_store=2` (pamięć), ponieważ duże bazy danych e-mail mogą łatwo zużywać ponad 10 GB pamięci podczas operacji takich jak VACUUM.
 
-## Performance Benchmark Results {#performance-benchmark-results}
 
-We tested our configuration against various alternatives across Node.js versions. Here are the real numbers:
+## Wyniki testów wydajności {#performance-benchmark-results}
 
-### Node.js v20.19.5 Performance Results {#nodejs-v20195-performance-results}
+Testowaliśmy naszą konfigurację w porównaniu z różnymi alternatywami na różnych wersjach Node.js. Oto rzeczywiste liczby:
 
-| Configuration | Setup (ms) | Insert/sec | Select/sec | Update/sec | DB Size (MB) |
+### Wyniki wydajności Node.js v20.19.5 {#nodejs-v20195-performance-results}
+
+| Konfiguracja                | Setup (ms) | Wstawianie/s | Selekcja/s | Aktualizacja/s | Rozmiar DB (MB) |
 | ---------------------------- | ---------- | ---------- | ---------- | ---------- | ------------ |
-| **Forward Email Production** | 120.1 | **10,548** | **17,494** | **16,654** | 3.98 |
-| WAL Autocheckpoint 1000 | 89.7 | **11,800** | **18,383** | **22,087** | 3.98 |
-| Cache Size 64MB | 90.3 | 11,451 | 17,895 | 21,522 | 3.98 |
-| Memory Temp Storage | 111.8 | 9,874 | 15,363 | 21,292 | 3.98 |
-| Synchronous OFF (Unsafe) | 94.0 | 10,017 | 13,830 | 18,884 | 3.98 |
-| Synchronous EXTRA (Safe) | 94.1 | **3,241** | 14,438 | **3,405** | 3.98 |
+| **Forward Email Production** | 120.1      | **10,548** | **17,494** | **16,654** | 3.98         |
+| WAL Autocheckpoint 1000      | 89.7       | **11,800** | **18,383** | **22,087** | 3.98         |
+| Cache Size 64MB              | 90.3       | 11,451     | 17,895     | 21,522     | 3.98         |
+| Memory Temp Storage          | 111.8      | 9,874      | 15,363     | 21,292     | 3.98         |
+| Synchronous OFF (Unsafe)     | 94.0       | 10,017     | 13,830     | 18,884     | 3.98         |
+| Synchronous EXTRA (Safe)     | 94.1       | **3,241**  | 14,438     | **3,405**  | 3.98         |
 
 > \[!TIP]
-> The `wal_autocheckpoint=1000` setting shows the best overall performance. We're considering adding this to our production config.
+> Ustawienie `wal_autocheckpoint=1000` pokazuje najlepszą ogólną wydajność. Rozważamy dodanie tego do naszej konfiguracji produkcyjnej.
 
-## PRAGMA Settings Breakdown {#pragma-settings-breakdown}
 
-### Core Settings We Use {#core-settings-we-use}
+## Szczegóły ustawień PRAGMA {#pragma-settings-breakdown}
 
-| PRAGMA | Wartość | Purpose | Performance Impact |
-| --------------- | ------------ | ------------------------------- | ------------------------------- |
-| `cipher` | `'chacha20'` | Quantum-resistant encryption | Minimal overhead vs AES |
-| `journal_mode` | `WAL` | Write-Ahead Logging | +40% concurrent performance |
-| `secure_delete` | `ON` | Overwrite deleted data | Security vs 5% performance cost |
-| `auto_vacuum` | `FULL` | Automatic space reclamation | Prevents database bloat |
-| `busy_timeout` | `30000` | Wait time for locked database | Reduces connection failures |
-| `synchronous` | `NORMAL` | Balanced durability/performance | 3x faster than FULL |
-| `foreign_keys` | `ON` | Referential integrity | Prevents data corruption |
-| `temp_store` | `1` | Use disk for temp files | Prevents memory exhaustion |
+### Podstawowe ustawienia, których używamy {#core-settings-we-use}
 
-### Settings We DON'T Use (But You Might Want) {#settings-we-dont-use-but-you-might-want}
+| PRAGMA          | Wartość        | Cel                            | Wpływ na wydajność             |
+| --------------- | -------------- | ------------------------------ | ------------------------------ |
+| `cipher`        | `'chacha20'`   | Szyfrowanie odporne na kwanty  | Minimalny narzut w porównaniu do AES |
+| `journal_mode`  | `WAL`          | Write-Ahead Logging            | +40% wydajności współbieżnej   |
+| `secure_delete` | `ON`           | Nadpisywanie usuniętych danych | Bezpieczeństwo kosztem 5% wydajności |
+| `auto_vacuum`   | `FULL`         | Automatyczne odzyskiwanie przestrzeni | Zapobiega rozrostowi bazy danych |
+| `busy_timeout`  | `30000`        | Czas oczekiwania na zablokowaną bazę | Zmniejsza liczbę błędów połączenia |
+| `synchronous`   | `NORMAL`       | Zrównoważona trwałość/wydajność | 3x szybsze niż FULL            |
+| `foreign_keys`  | `ON`           | Integralność referencyjna      | Zapobiega uszkodzeniom danych  |
+| `temp_store`    | `1`            | Użycie dysku do plików tymczasowych | Zapobiega wyczerpaniu pamięci  |
+### Ustawienia, których NIE używamy (ale możesz chcieć) {#settings-we-dont-use-but-you-might-want}
 
-| PRAGMA | Why We Don't Use It | Should You Consider It? |
-| ------------------------- | --------------------- | --------------------------------------------------- |
-| `wal_autocheckpoint=1000` | Not set yet | **Yes** - Our benchmarks show 12% performance gain |
-| `cache_size=-64000` | Default is sufficient | **Maybe** - 8% improvement for read-heavy workloads |
-| `mmap_size=268435456` | Complexity vs benefit | **No** - Minimal gains, platform-specific issues |
-| `analysis_limit=1000` | We use 400 | **No** - Higher values slow down query planning |
+| PRAGMA                    | Dlaczego go nie używamy | Czy powinieneś to rozważyć?                         |
+| ------------------------- | ----------------------- | -------------------------------------------------- |
+| `wal_autocheckpoint=1000` | Jeszcze nie ustawione   | **Tak** - Nasze testy pokazują 12% wzrost wydajności |
+| `cache_size=-64000`       | Domyślne jest wystarczające | **Może** - 8% poprawa dla obciążeń z przewagą odczytów |
+| `mmap_size=268435456`     | Złożoność vs korzyść    | **Nie** - Minimalne zyski, problemy specyficzne dla platformy |
+| `analysis_limit=1000`     | Używamy 400             | **Nie** - Wyższe wartości spowalniają planowanie zapytań |
 
 > \[!CAUTION]
-> We specifically avoid `temp_store=MEMORY` because a 10GB SQLite file can consume 10+ GB of RAM during VACUUM operations.
+> Specjalnie unikamy `temp_store=MEMORY`, ponieważ plik SQLite o rozmiarze 10 GB może zużywać ponad 10 GB RAM podczas operacji VACUUM.
 
-## ChaCha20 vs AES256 Encryption {#chacha20-vs-aes256-encryption}
 
-We prioritize quantum resistance over raw performance:
+## Szyfrowanie ChaCha20 vs AES256 {#chacha20-vs-aes256-encryption}
+
+Priorytetem jest dla nas odporność na komputery kwantowe ponad surową wydajność:
 
 ```javascript
-// Our encryption fallback strategy
+// Nasza strategia zapasowego szyfrowania
 try {
   db.pragma(`cipher='chacha20'`);
   db.key(Buffer.from(decrypt(session.user.password)));
   db.pragma('journal_mode=WAL');
 } catch (err) {
-  // Fallback for older SQLite versions
+  // Zapas dla starszych wersji SQLite
   if (cipher === 'chacha20' && err.code === 'SQLITE_NOTADB') {
     return setupPragma(db, session, 'aes256cbc');
   }
@@ -197,44 +201,46 @@ try {
 }
 ```
 
-**Performance Comparison:**
+**Porównanie wydajności:**
 
-* ChaCha20: \~10,500 inserts/sec
+* ChaCha20: ~10 500 wstawek/sek
 
-* AES256CBC: \~11,200 inserts/sec
+* AES256CBC: ~11 200 wstawek/sek
 
-* Unencrypted: \~12,800 inserts/sec
+* Nieszyfrowane: ~12 800 wstawek/sek
 
-The 6% performance cost of ChaCha20 vs AES is worth the quantum resistance for long-term email storage.
+6% koszt wydajności ChaCha20 względem AES jest wart odporności kwantowej dla długoterminowego przechowywania maili.
 
-## Temporary Storage: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
 
-We explicitly configure temp storage location to avoid disk space issues:
+## Pamięć tymczasowa: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
+
+Wyraźnie konfigurujemy lokalizację pamięci tymczasowej, aby uniknąć problemów z miejscem na dysku:
 
 ```javascript
-// Forward Email's temp storage configuration
+// Konfiguracja pamięci tymczasowej Forward Email
 const tempStoreDirectory = path.join(path.dirname(db.name), '/tmp');
 await mkdirp(tempStoreDirectory);
 db.pragma(`temp_store_directory='${tempStoreDirectory}'`);
 
-// Also set environment variable
+// Ustaw też zmienną środowiskową
 process.env.SQLITE_TMPDIR = tempStoreDirectory;
 ```
 
-### /tmp vs /dev/shm Performance {#tmp-vs-devshm-performance}
+### Wydajność /tmp vs /dev/shm {#tmp-vs-devshm-performance}
 
-| Storage Location | VACUUM Time | Memory Usage | Reliability |
-| ---------------- | ----------- | ------------ | ------------------- |
-| `/tmp` (disk) | 2.3s | 50MB | ✅ Reliable |
-| `/dev/shm` (RAM) | 0.8s | 2GB+ | ⚠️ Can crash system |
-| Default | 4.1s | Variable | ❌ Unpredictable |
+| Lokalizacja pamięci | Czas VACUUM | Zużycie pamięci | Niezawodność          |
+| ------------------- | ----------- | --------------- | --------------------- |
+| `/tmp` (dysk)       | 2,3s        | 50MB            | ✅ Niezawodne          |
+| `/dev/shm` (RAM)    | 0,8s        | 2GB+            | ⚠️ Może zawiesić system |
+| Domyślne            | 4,1s        | Zmienna         | ❌ Nieprzewidywalne    |
 
 > \[!WARNING]
-> Using `/dev/shm` for temp storage can consume all available RAM during large operations. Stick with disk-based temp storage for production.
+> Używanie `/dev/shm` jako pamięci tymczasowej może zużyć całą dostępną pamięć RAM podczas dużych operacji. W środowisku produkcyjnym trzymaj się pamięci tymczasowej opartej na dysku.
 
-## WAL Mode Optimization {#wal-mode-optimization}
 
-Write-Ahead Logging is crucial for email systems with concurrent access:
+## Optymalizacja trybu WAL {#wal-mode-optimization}
+
+Write-Ahead Logging jest kluczowy dla systemów mailowych z równoczesnym dostępem:
 
 ```mermaid
 sequenceDiagram
@@ -257,29 +263,30 @@ sequenceDiagram
     DB->>M: Merge WAL → Main DB
 ```
 
-### WAL Configuration Impact {#wal-configuration-impact}
+### Wpływ konfiguracji WAL {#wal-configuration-impact}
 
-Our benchmarks show `wal_autocheckpoint=1000` provides the best performance:
+Nasze testy pokazują, że `wal_autocheckpoint=1000` zapewnia najlepszą wydajność:
 
 ```javascript
-// Potential optimization we're testing
+// Potencjalna optymalizacja, którą testujemy
 db.pragma('wal_autocheckpoint=1000');
 ```
 
-**Results:**
+**Wyniki:**
 
-* Default autocheckpoint: 10,548 inserts/sec
+* Domyślny autocheckpoint: 10 548 wstawek/sek
 
-* `wal_autocheckpoint=1000`: 11,800 inserts/sec (+12%)
+* `wal_autocheckpoint=1000`: 11 800 wstawek/sek (+12%)
 
-* `wal_autocheckpoint=0`: 9,200 inserts/sec (WAL grows too large)
+* `wal_autocheckpoint=0`: 9 200 wstawek/sek (WAL rośnie zbyt duży)
 
-## Schema Design for Performance {#schema-design-for-performance}
 
-Our email storage schema follows SQLite best practices:
+## Projekt schematu dla wydajności {#schema-design-for-performance}
+
+Nasz schemat przechowywania maili stosuje najlepsze praktyki SQLite:
 
 ```sql
--- Messages table with optimized column order
+-- Tabela wiadomości z zoptymalizowaną kolejnością kolumn
 CREATE TABLE messages (
   id INTEGER PRIMARY KEY,
   mailbox_id INTEGER NOT NULL,
@@ -290,35 +297,35 @@ CREATE TABLE messages (
   from_addr TEXT,
   to_addr TEXT,
   message_id TEXT,
-  raw BLOB,  -- Large BLOB at end
+  raw BLOB,  -- Duży BLOB na końcu
   FOREIGN KEY (mailbox_id) REFERENCES mailboxes(id)
 );
 
--- Critical indexes for IMAP performance
+-- Krytyczne indeksy dla wydajności IMAP
 CREATE INDEX idx_messages_mailbox_date ON messages(mailbox_id, date DESC);
 CREATE INDEX idx_messages_uid ON messages(mailbox_id, uid);
 CREATE INDEX idx_messages_flags ON messages(mailbox_id, flags) WHERE flags IS NOT NULL;
 ```
-
 > \[!TIP]
-> Always put BLOB columns at the end of your table definition. SQLite stores fixed-size columns first, making row access faster.
+> Zawsze umieszczaj kolumny BLOB na końcu definicji tabeli. SQLite najpierw przechowuje kolumny o stałym rozmiarze, co przyspiesza dostęp do wierszy.
 
-This optimization comes directly from SQLite's creator, [D. Richard Hipp](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3):
+Ta optymalizacja pochodzi bezpośrednio od twórcy SQLite, [D. Richarda Hippa](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3):
 
-> "Here's a hint though - make the BLOB columns the last column in your tables. Or even store the BLOBs in a separate table which only has two columns: an integer primary key and the blob itself, and then access the BLOB content using a join if you need to. If you put various small integer fields after the BLOB, then SQLite has to scan through the entire BLOB content (following the linked list of disk pages) to get to the integer fields at the end, and that definitely can slow you down."
+> "Oto wskazówka - umieść kolumny BLOB jako ostatnie w swoich tabelach. Lub nawet przechowuj BLOB-y w osobnej tabeli, która ma tylko dwie kolumny: całkowity klucz główny i sam blob, a następnie uzyskuj dostęp do zawartości BLOB za pomocą join, jeśli potrzebujesz. Jeśli umieścisz różne małe pola całkowite po BLOB-ie, to SQLite musi przeszukać całą zawartość BLOB (podążając za listą powiązanych stron dysku), aby dostać się do pól całkowitych na końcu, co zdecydowanie może Cię spowolnić."
 >
-> — D. Richard Hipp, SQLite Author
+> — D. Richard Hipp, autor SQLite
 
-We implemented this optimization in our [Attachments schema](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229), moving the `body` BLOB field to the end of the table definition for better performance.
+Wdrożyliśmy tę optymalizację w naszym [schemacie załączników](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229), przesuwając pole BLOB `body` na koniec definicji tabeli dla lepszej wydajności.
 
-## Connection Management {#connection-management}
 
-We don't use connection pooling with SQLite—each user gets their own encrypted database. This approach provides perfect isolation between users, similar to sandboxing. Unlike architectures from other services that use MySQL, PostgreSQL, or MongoDB where your email could potentially be accessed by a rogue employee, Forward Email's per-user SQLite databases ensure your data is completely independent and sandboxed.
+## Zarządzanie połączeniami {#connection-management}
 
-We never store your IMAP password, so we never have access to your data—it's all done in-memory. Learn more about our [quantum-resistant encryption approach](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) that details how our system works.
+Nie używamy puli połączeń z SQLite — każdy użytkownik ma swoją własną zaszyfrowaną bazę danych. Takie podejście zapewnia idealną izolację między użytkownikami, podobnie jak sandboxing. W przeciwieństwie do architektur innych usług korzystających z MySQL, PostgreSQL lub MongoDB, gdzie Twój e-mail mógłby potencjalnie zostać odczytany przez nieuczciwego pracownika, bazy SQLite per użytkownik w Forward Email gwarantują, że Twoje dane są całkowicie niezależne i odizolowane.
+
+Nigdy nie przechowujemy Twojego hasła IMAP, więc nigdy nie mamy dostępu do Twoich danych — wszystko odbywa się w pamięci. Dowiedz się więcej o naszym [kwantowo-odpornym podejściu do szyfrowania](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security), które szczegółowo opisuje działanie naszego systemu.
 
 ```javascript
-// Per-user database approach
+// Podejście z bazą danych per użytkownik
 async function getDatabase(session) {
   const dbPath = path.join(
     config.databaseDir,
@@ -336,43 +343,44 @@ async function getDatabase(session) {
 }
 ```
 
-This approach provides:
+To podejście zapewnia:
 
-* Perfect isolation between users
+* Idealną izolację między użytkownikami
 
-* No connection pool complexity
+* Brak złożoności puli połączeń
 
-* Automatic encryption per user
+* Automatyczne szyfrowanie per użytkownik
 
-* Simpler backup/restore operations
+* Prostszą obsługę kopii zapasowych/przywracania
 
-With `auto_vacuum=FULL`, we rarely need manual VACUUM operations:
+Dzięki `auto_vacuum=FULL` rzadko potrzebujemy ręcznych operacji VACUUM:
 
 ```javascript
-// Our cleanup strategy
-db.pragma('optimize=0x10002'); // On connection open
-db.pragma('optimize'); // Periodically (daily)
+// Nasza strategia sprzątania
+db.pragma('optimize=0x10002'); // Przy otwarciu połączenia
+db.pragma('optimize'); // Okresowo (codziennie)
 
-// Manual vacuum only for major cleanups
+// Ręczne vacuum tylko przy większych porządkach
 if (deletedDataPercentage > 25) {
   db.exec('VACUUM');
 }
 ```
 
-**Auto Vacuum Performance Impact:**
+**Wpływ Auto Vacuum na wydajność:**
 
-* `auto_vacuum=FULL`: Immediate space reclamation, 5% write overhead
+* `auto_vacuum=FULL`: Natychmiastowe odzyskiwanie przestrzeni, 5% narzutu na zapis
 
-* `auto_vacuum=INCREMENTAL`: Manual control, requires periodic `PRAGMA incremental_vacuum`
+* `auto_vacuum=INCREMENTAL`: Ręczna kontrola, wymaga okresowego `PRAGMA incremental_vacuum`
 
-* `auto_vacuum=NONE`: Fastest writes, requires manual `VACUUM`
+* `auto_vacuum=NONE`: Najszybsze zapisy, wymaga ręcznego `VACUUM`
 
-## Monitoring and Diagnostics {#monitoring-and-diagnostics}
 
-Key metrics we track in production:
+## Monitorowanie i diagnostyka {#monitoring-and-diagnostics}
+
+Kluczowe metryki, które śledzimy w produkcji:
 
 ```javascript
-// Performance monitoring queries
+// Zapytania monitorujące wydajność
 const stats = {
   page_count: db.pragma('page_count', { simple: true }),
   page_size: db.pragma('page_size', { simple: true }),
@@ -385,181 +393,186 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 ```
 
 > \[!NOTE]
-> We monitor fragmentation percentage and trigger maintenance when it exceeds 15%.
+> Monitorujemy procent fragmentacji i uruchamiamy konserwację, gdy przekracza 15%.
 
-## Node.js Version Performance {#nodejs-version-performance}
 
-Our comprehensive benchmarks across Node.js versions reveal significant performance differences:
+## Wydajność wersji Node.js {#nodejs-version-performance}
 
-### Complete Cross-Version Results {#complete-cross-version-results}
+Nasze kompleksowe benchmarki na różnych wersjach Node.js ujawniają znaczące różnice w wydajności:
 
-| Node Version | Forward Email Production | Best Insert/sec | Best Select/sec | Best Update/sec | Notatki |
+### Pełne wyniki między wersjami {#complete-cross-version-results}
+
+| Wersja Node | Forward Email Produkcja | Najlepsze Insert/s       | Najlepsze Select/s       | Najlepsze Update/s       | Uwagi                  |
 | ------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ---------------------- |
-| **v18.20.8** | 10,658 / 14,466 / 18,641 | **11,663** (Sync OFF) | **14,868** (Memory Temp) | **20,095** (MMAP) | ⚠️ Engine warning |
-| **v20.19.5** | 10,548 / 17,494 / 16,654 | **11,800** (WAL Auto) | **18,383** (WAL Auto) | **22,087** (WAL Auto) | ✅ Recommended |
-| **v22.21.1** | 9,829 / 15,833 / 18,416 | **11,260** (Sync OFF) | **17,413** (MMAP) | **20,731** (MMAP) | ⚠️ Slower overall |
-| **v24.11.1** | 9,938 / 7,497 / 10,446 | **10,628** (Incr Vacuum) | **16,821** (Incr Vacuum) | **19,934** (Incr Vacuum) | ❌ Significant slowdown |
-
-### Key Performance Insights {#key-performance-insights}
+| **v18.20.8** | 10,658 / 14,466 / 18,641 | **11,663** (Sync OFF)    | **14,868** (Memory Temp) | **20,095** (MMAP)        | ⚠️ Ostrzeżenie silnika  |
+| **v20.19.5** | 10,548 / 17,494 / 16,654 | **11,800** (WAL Auto)    | **18,383** (WAL Auto)    | **22,087** (WAL Auto)    | ✅ Zalecane             |
+| **v22.21.1** | 9,829 / 15,833 / 18,416  | **11,260** (Sync OFF)    | **17,413** (MMAP)        | **20,731** (MMAP)        | ⚠️ Ogólnie wolniejsze   |
+| **v24.11.1** | 9,938 / 7,497 / 10,446   | **10,628** (Incr Vacuum) | **16,821** (Incr Vacuum) | **19,934** (Incr Vacuum) | ❌ Znaczące spowolnienie |
+### Kluczowe Wnioski Wydajnościowe {#key-performance-insights}
 
 **Node.js v18 (Legacy LTS):**
 
-* Comparable insert performance to v20 (10,658 vs 10,548 ops/sec)
-* 17% slower selects than v20 (14,466 vs 17,494 ops/sec)
-* Shows npm engine warnings for packages requiring Node ≥20
-* Memory temp storage optimization works better than WAL autocheckpoint
-* Acceptable for legacy applications, but upgrade recommended
+* Porównywalna wydajność wstawiania do v20 (10,658 vs 10,548 operacji/sek)
+* 17% wolniejsze zapytania SELECT niż w v20 (14,466 vs 17,494 operacji/sek)
+* Pokazuje ostrzeżenia silnika npm dla pakietów wymagających Node ≥20
+* Optymalizacja tymczasowego przechowywania w pamięci działa lepiej niż automatyczne punktowanie kontrolne WAL
+* Akceptowalny dla aplikacji legacy, ale zalecana aktualizacja
 
-**Node.js v20 (Recommended):**
+**Node.js v20 (Zalecany):**
 
-* Highest overall performance across all operations
-* WAL autocheckpoint optimization provides consistent 12% boost
-* Best compatibility with native SQLite modules
-* Most stable for production workloads
+* Najwyższa ogólna wydajność we wszystkich operacjach
+* Optymalizacja automatycznego punktowania kontrolnego WAL zapewnia stały wzrost o 12%
+* Najlepsza kompatybilność z natywnymi modułami SQLite
+* Najbardziej stabilny dla obciążeń produkcyjnych
 
-**Node.js v22 (Acceptable):**
+**Node.js v22 (Akceptowalny):**
 
-* 7% slower inserts, 9% slower selects vs v20
-* MMAP optimization shows better results than WAL autocheckpoint
-* Requires fresh `npm install` for each Node version switch
-* Acceptable for development, not recommended for production
+* 7% wolniejsze wstawiania, 9% wolniejsze zapytania SELECT w porównaniu do v20
+* Optymalizacja MMAP daje lepsze wyniki niż automatyczne punktowanie kontrolne WAL
+* Wymaga świeżej instalacji `npm install` przy każdej zmianie wersji Node
+* Akceptowalny do rozwoju, niezalecany do produkcji
 
-**Node.js v24 (Not Recommended):**
+**Node.js v24 (Nie Zalecany):**
 
-* 6% slower inserts, 57% slower selects vs v20
-* Significant performance regression in read operations
-* Incremental vacuum performs better than other optimizations
-* Avoid for production SQLite applications
+* 6% wolniejsze wstawiania, 57% wolniejsze zapytania SELECT w porównaniu do v20
+* Znaczna regresja wydajności w operacjach odczytu
+* Inkrementalne odkurzanie działa lepiej niż inne optymalizacje
+* Unikać w produkcyjnych aplikacjach SQLite
 
-### Native Module Compatibility {#native-module-compatibility}
+### Kompatybilność Natywnych Modułów {#native-module-compatibility}
 
-The "module compatibility issues" we initially encountered were resolved by:
+"Początkowe problemy z kompatybilnością modułów" zostały rozwiązane przez:
 
 ```bash
-# Switch Node version and reinstall native modules
+# Zmiana wersji Node i ponowna instalacja natywnych modułów
 nvm use 22
 rm -rf node_modules
 npm install
 ```
 
-**Node.js v18 Considerations:**
+**Uwagi dotyczące Node.js v18:**
 
-* Shows engine warnings: `Unsupported engine { required: { node: '>=20.0.0' } }`
-* Still compiles and runs successfully despite warnings
-* Many modern SQLite packages target Node ≥20 for optimal support
-* Legacy applications can continue using v18 with acceptable performance
+* Pokazuje ostrzeżenia silnika: `Unsupported engine { required: { node: '>=20.0.0' } }`
+* Nadal kompiluje się i działa pomimo ostrzeżeń
+* Wiele nowoczesnych pakietów SQLite celuje w Node ≥20 dla optymalnego wsparcia
+* Aplikacje legacy mogą nadal używać v18 z akceptowalną wydajnością
 
 > \[!IMPORTANT]
-> Always reinstall native modules when switching Node.js versions. The `better-sqlite3-multiple-ciphers` module must be compiled for each specific Node version.
+> Zawsze ponownie instaluj natywne moduły przy zmianie wersji Node.js. Moduł `better-sqlite3-multiple-ciphers` musi być kompilowany dla każdej konkretnej wersji Node.
 
 > \[!TIP]
-> For production deployments, stick with Node.js v20 LTS. The performance benefits and stability outweigh any newer language features in v22/v24. Node v18 is acceptable for legacy systems but shows performance degradation in read operations.
+> Do wdrożeń produkcyjnych trzymaj się Node.js v20 LTS. Korzyści wydajnościowe i stabilność przewyższają nowe funkcje językowe w v22/v24. Node v18 jest akceptowalny dla systemów legacy, ale wykazuje pogorszenie wydajności w operacjach odczytu.
 
-## Production Deployment Checklist {#production-deployment-checklist}
 
-Before deploying, ensure SQLite has these optimizations:
+## Lista Kontrolna Wdrożenia Produkcyjnego {#production-deployment-checklist}
 
-1. Set `SQLITE_TMPDIR` environment variable
-2. Ensure adequate disk space for temp operations (2x database size)
-3. Configure log rotation for WAL files
-4. Set up monitoring for database size and fragmentation
-5. Test backup/restore procedures with encryption
-6. Verify ChaCha20 cipher support in your SQLite build
+Przed wdrożeniem upewnij się, że SQLite ma następujące optymalizacje:
 
-## Troubleshooting Common Issues {#troubleshooting-common-issues}
+1. Ustaw zmienną środowiskową `SQLITE_TMPDIR`
+2. Zapewnij odpowiednią przestrzeń dyskową dla operacji tymczasowych (2x rozmiar bazy danych)
+3. Skonfiguruj rotację logów dla plików WAL
+4. Ustaw monitoring rozmiaru bazy i fragmentacji
+5. Przetestuj procedury backup/restore z szyfrowaniem
+6. Zweryfikuj wsparcie szyfru ChaCha20 w swojej kompilacji SQLite
 
-### "Database is locked" Errors {#database-is-locked-errors}
+
+## Rozwiązywanie Typowych Problemów {#troubleshooting-common-issues}
+
+### Błędy "Database is locked" {#database-is-locked-errors}
 
 ```javascript
-// Increase busy timeout
-db.pragma('busy_timeout=60000'); // 60 seconds
+// Zwiększ timeout oczekiwania
+db.pragma('busy_timeout=60000'); // 60 sekund
 
-// Check for long-running transactions
+// Sprawdź długotrwałe transakcje
 const info = db.pragma('wal_checkpoint(FULL)');
 if (info.busy > 0) {
-  console.warn('WAL checkpoint blocked by active readers');
+  console.warn('Punkt kontrolny WAL zablokowany przez aktywnych czytelników');
 }
 ```
 
-### High Memory Usage During VACUUM {#high-memory-usage-during-vacuum}
+### Wysokie zużycie pamięci podczas VACUUM {#high-memory-usage-during-vacuum}
 
 ```javascript
-// Monitor memory before VACUUM
+// Monitoruj pamięć przed VACUUM
 const beforeMem = process.memoryUsage();
 db.exec('VACUUM');
 const afterMem = process.memoryUsage();
 
 console.log(
-  `VACUUM memory delta: ${
+  `Różnica pamięci po VACUUM: ${
     (afterMem.heapUsed - beforeMem.heapUsed) / 1024 / 1024
   }MB`
 );
 ```
 
-### Slow Query Performance {#slow-query-performance}
+### Wolna wydajność zapytań {#slow-query-performance}
 
 ```javascript
-// Enable query analysis
-db.pragma('analysis_limit=400'); // Forward Email's setting
+// Włącz analizę zapytań
+db.pragma('analysis_limit=400'); // ustawienie Forward Email
 db.exec('ANALYZE');
 
-// Check query plans
+// Sprawdź plany zapytań
 const plan = db
   .prepare('EXPLAIN QUERY PLAN SELECT * FROM messages WHERE date > ?')
   .all(Date.now() - 86400000);
 console.log(plan);
 ```
 
-## Forward Email's Open Source Contributions {#forward-emails-open-source-contributions}
 
-We've contributed our SQLite optimization knowledge back to the community:
+## Wkład Open Source Forward Email {#forward-emails-open-source-contributions}
 
-* [Litestream documentation improvements](https://github.com/benbjohnson/litestream/issues/516) - Our suggestions for better SQLite performance tips
+Podzieliliśmy się naszą wiedzą o optymalizacji SQLite ze społecznością:
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - ChaCha20 encryption support
+* [Ulepszenia dokumentacji Litestream](https://github.com/benbjohnson/litestream/issues/516) - Nasze sugestie dotyczące lepszych wskazówek wydajności SQLite
 
-* [SQLite performance tuning research](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Referenced in our implementation
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - wsparcie szyfrowania ChaCha20
 
-* [How npm packages with billion downloads shaped JavaScript ecosystem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Our broader contributions to npm and JavaScript development
+* [Badania nad tuningiem wydajności SQLite](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Referencje w naszej implementacji
+* [Jak pakiety npm z miliardem pobrań ukształtowały ekosystem JavaScript](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Nasz szerszy wkład w rozwój npm i JavaScript
+
 
 ## Benchmark Source Code {#benchmark-source-code}
 
-All benchmark code is available in our test suite:
+Cały kod benchmarków jest dostępny w naszym zestawie testów:
 
 ```bash
-# Run the benchmarks yourself
+# Uruchom benchmarki samodzielnie
 git clone https://github.com/forwardemail/sqlite-benchmarks
 cd sqlite-benchmarks
 npm install
 npm run benchmark
 ```
 
-The benchmarks test:
+Benchmarki testują:
 
-* Various PRAGMA combinations
+* Różne kombinacje PRAGMA
 
-* ChaCha20 vs AES256 performance
+* Wydajność ChaCha20 vs AES256
 
-* WAL checkpoint strategies
+* Strategie punktów kontrolnych WAL
 
-* Temp storage configurations
+* Konfiguracje pamięci tymczasowej
 
-* Node.js version compatibility
+* Kompatybilność z wersjami Node.js
+
 
 ## What's Next for SQLite at Forward Email {#whats-next-for-sqlite-at-forward-email}
 
-We're actively testing these optimizations:
+Aktywnie testujemy następujące optymalizacje:
 
-1. **WAL Autocheckpoint Tuning**: Adding `wal_autocheckpoint=1000` based on benchmark results
+1. **Dostrajanie WAL Autocheckpoint**: Dodanie `wal_autocheckpoint=1000` na podstawie wyników benchmarków
 
-2. **Compression**: Evaluating [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) for attachment storage
+2. **Kompresja**: Ocena [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) do przechowywania załączników
 
-3. **Analysis Limit**: Testing higher values than our current 400
+3. **Limit analizy**: Testowanie wartości wyższych niż obecne 400
 
-4. **Cache Size**: Considering dynamic cache sizing based on available memory
+4. **Rozmiar pamięci podręcznej**: Rozważanie dynamicznego rozmiaru pamięci podręcznej w zależności od dostępnej pamięci
+
 
 ## Getting Help {#getting-help}
 
-Having SQLite performance issues? For SQLite-specific questions, the [SQLite Forum](https://sqlite.org/forum/forumpost) is an excellent resource, and the [performance tuning guide](https://www.sqlite.org/optoverview.html) covers additional optimizations we haven't needed yet.
+Masz problemy z wydajnością SQLite? W przypadku pytań dotyczących SQLite doskonałym źródłem jest [SQLite Forum](https://sqlite.org/forum/forumpost), a [przewodnik po optymalizacji wydajności](https://www.sqlite.org/optoverview.html) zawiera dodatkowe optymalizacje, których jeszcze nie potrzebowaliśmy.
 
-Learn more about Forward Email by reading our [FAQ](/faq).
+Dowiedz się więcej o Forward Email, czytając naszą [FAQ](/faq).

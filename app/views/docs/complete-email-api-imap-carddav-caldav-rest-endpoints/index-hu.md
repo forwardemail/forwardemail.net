@@ -1,343 +1,344 @@
-# Az első teljes e-mail API: Hogyan forradalmasította a Forward Email az e-mail-kezelést {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# Az első teljes körű e-mail API: Hogyan forradalmasította a Forward Email az e-mail kezelést {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>TL;DR:</strong> Mi építettük a világ első teljes REST API-ját e-mail-kezeléshez, olyan fejlett keresési lehetőségekkel, amelyeket egyetlen más szolgáltatás sem kínál. Míg a Gmail, az Outlook és az Apple az IMAP pokolba vagy sebességkorlátozott API-kba kényszeríti a fejlesztőket, a Forward Email villámgyors CRUD műveleteket biztosít üzenetek, mappák, névjegyek és naptárak számára egy egységes REST felületen keresztül, több mint 15 keresési paraméterrel. Erre vártak az e-mail API-fejlesztők.
+  <strong>Röviden:</strong> Megalkottuk a világ első teljes körű REST API-ját e-mail kezeléshez, fejlett keresési lehetőségekkel, amelyeket más szolgáltatás nem kínál. Míg a Gmail, Outlook és Apple az IMAP poklába vagy korlátozott API-kba kényszeríti a fejlesztőket, a Forward Email villámgyors CRUD műveleteket biztosít üzenetek, mappák, névjegyek és naptárak számára egy egységes REST interfészen keresztül, több mint 15 keresési paraméterrel. Ez az az e-mail API, amire a fejlesztők vártak.
 </p>
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
-* [Az e-mail API problémája](#the-email-api-problem)
-* [Amit a fejlesztők valójában mondanak](#what-developers-are-actually-saying)
-* [Forradalmi megoldás az e-mail továbbítására](#forward-emails-revolutionary-solution)
+* [Az e-mail API probléma](#the-email-api-problem)
+* [Mit mondanak valójában a fejlesztők](#what-developers-are-actually-saying)
+* [A Forward Email forradalmi megoldása](#forward-emails-revolutionary-solution)
   * [Miért építettük ezt](#why-we-built-this)
   * [Egyszerű hitelesítés](#simple-authentication)
 * [20 végpont, ami mindent megváltoztat](#20-endpoints-that-change-everything)
   * [Üzenetek (5 végpont)](#messages-5-endpoints)
   * [Mappák (5 végpont)](#folders-5-endpoints)
-  * [Kapcsolatok (5 végpont)](#contacts-5-endpoints)
+  * [Névjegyek (5 végpont)](#contacts-5-endpoints)
   * [Naptárak (5 végpont)](#calendars-5-endpoints)
-* [Összetett keresés: Nincs ehhez hasonló szolgáltatás](#advanced-search-no-other-service-compares)
-  * [A Search API környezete hibás](#the-search-api-landscape-is-broken)
+* [Fejlett keresés: Egyetlen más szolgáltatás sem ér fel hozzá](#advanced-search-no-other-service-compares)
+  * [A keresési API helyzete romokban](#the-search-api-landscape-is-broken)
   * [A Forward Email forradalmi keresési API-ja](#forward-emails-revolutionary-search-api)
   * [Valós keresési példák](#real-world-search-examples)
-  * [Teljesítménybeli előnyök](#performance-advantages)
-  * [Olyan keresési funkciók, amelyek senki másnak nincsenek](#search-features-no-one-else-has)
-  * [Miért fontos ez a fejlesztők számára?](#why-this-matters-for-developers)
+  * [Teljesítményelőnyök](#performance-advantages)
+  * [Keresési funkciók, amik másnak nincsenek](#search-features-no-one-else-has)
+  * [Miért fontos ez a fejlesztőknek](#why-this-matters-for-developers)
   * [A technikai megvalósítás](#the-technical-implementation)
-* [Villámgyors teljesítményű architektúra](#blazing-fast-performance-architecture)
-  * [Teljesítménymutatók](#performance-benchmarks)
-  * [Adatvédelem-első architektúra](#privacy-first-architecture)
-* [Miért vagyunk mások: A teljes összehasonlítás](#why-were-different-the-complete-comparison)
-  * [Főbb szolgáltatói korlátozások](#major-provider-limitations)
-  * [E-mail továbbításának előnyei](#forward-email-advantages)
-  * [A nyílt forráskódú átláthatósági probléma](#the-open-source-transparency-problem)
+* [Villámgyors teljesítmény architektúra](#blazing-fast-performance-architecture)
+  * [Teljesítmény mérőszámok](#performance-benchmarks)
+  * [Adatvédelmi szemléletű architektúra](#privacy-first-architecture)
+* [Miért vagyunk mások: Teljes összehasonlítás](#why-were-different-the-complete-comparison)
+  * [Főbb szolgáltató korlátozások](#major-provider-limitations)
+  * [A Forward Email előnyei](#forward-email-advantages)
+  * [Az open-source átláthatósági probléma](#the-open-source-transparency-problem)
 * [30+ valós integrációs példa](#30-real-world-integration-examples)
-  * [1. WordPress kapcsolatfelvételi űrlap fejlesztése](#1-wordpress-contact-form-enhancement)
-  * [2. Zapier alternatíva az e-mail automatizáláshoz](#2-zapier-alternative-for-email-automation)
-  * [3. CRM e-mail szinkronizálás](#3-crm-email-synchronization)
-  * [4. E-kereskedelmi megrendelések feldolgozása](#4-e-commerce-order-processing)
-  * [5. Támogatási jegyek integrációja](#5-support-ticket-integration)
-  * [6. Hírlevélkezelő rendszer](#6-newsletter-management-system)
+  * [1. WordPress kapcsolatfelvételi űrlap fejlesztés](#1-wordpress-contact-form-enhancement)
+  * [2. Zapier alternatíva e-mail automatizáláshoz](#2-zapier-alternative-for-email-automation)
+  * [3. CRM e-mail szinkronizáció](#3-crm-email-synchronization)
+  * [4. E-kereskedelmi rendelésfeldolgozás](#4-e-commerce-order-processing)
+  * [5. Támogatási jegy integráció](#5-support-ticket-integration)
+  * [6. Hírlevél kezelő rendszer](#6-newsletter-management-system)
   * [7. E-mail alapú feladatkezelés](#7-email-based-task-management)
-  * [8. Többfiókos e-mail összesítés](#8-multi-account-email-aggregation)
-  * [9. Speciális e-mail-elemzési irányítópult](#9-advanced-email-analytics-dashboard)
-  * [10. Intelligens e-mail archiválás](#10-smart-email-archiving)
+  * [8. Több fiókos e-mail aggregáció](#8-multi-account-email-aggregation)
+  * [9. Fejlett e-mail analitika irányítópult](#9-advanced-email-analytics-dashboard)
+  * [10. Okos e-mail archiválás](#10-smart-email-archiving)
   * [11. E-mail-naptár integráció](#11-email-to-calendar-integration)
   * [12. E-mail biztonsági mentés és megfelelőség](#12-email-backup-and-compliance)
   * [13. E-mail alapú tartalomkezelés](#13-email-based-content-management)
-  * [14. E-mail sablonok kezelése](#14-email-template-management)
-  * [15. E-mail-alapú munkafolyamat-automatizálás](#15-email-based-workflow-automation)
-  * [16. E-mail biztonsági monitorozás](#16-email-security-monitoring)
-  * [17. E-mail alapú kérdőívgyűjtés](#17-email-based-survey-collection)
-  * [18. E-mail teljesítményfigyelés](#18-email-performance-monitoring)
-  * [19. E-mail alapú érdeklődő-minősítés](#19-email-based-lead-qualification)
+  * [14. E-mail sablonkezelés](#14-email-template-management)
+  * [15. E-mail alapú munkafolyamat automatizálás](#15-email-based-workflow-automation)
+  * [16. E-mail biztonsági megfigyelés](#16-email-security-monitoring)
+  * [17. E-mail alapú felmérésgyűjtés](#17-email-based-survey-collection)
+  * [18. E-mail teljesítmény monitorozás](#18-email-performance-monitoring)
+  * [19. E-mail alapú lead minősítés](#19-email-based-lead-qualification)
   * [20. E-mail alapú projektmenedzsment](#20-email-based-project-management)
-  * [21. E-mail alapú készletgazdálkodás](#21-email-based-inventory-management)
+  * [21. E-mail alapú készletkezelés](#21-email-based-inventory-management)
   * [22. E-mail alapú számlafeldolgozás](#22-email-based-invoice-processing)
   * [23. E-mail alapú eseményregisztráció](#23-email-based-event-registration)
-  * [24. E-mail alapú dokumentum-jóváhagyási munkafolyamat](#24-email-based-document-approval-workflow)
-  * [25. E-mail alapú ügyfél-visszajelzés-elemzés](#25-email-based-customer-feedback-analysis)
+  * [24. E-mail alapú dokumentum jóváhagyási munkafolyamat](#24-email-based-document-approval-workflow)
+  * [25. E-mail alapú ügyfél visszajelzés elemzés](#25-email-based-customer-feedback-analysis)
   * [26. E-mail alapú toborzási folyamat](#26-email-based-recruitment-pipeline)
-  * [27. E-mail alapú költségjelentés-feldolgozás](#27-email-based-expense-report-processing)
-  * [28. E-mail alapú minőségbiztosítási jelentéskészítés](#28-email-based-quality-assurance-reporting)
-  * [29. E-mail alapú szállítókezelés](#29-email-based-vendor-management)
-  * [30. E-mail alapú közösségi média monitorozás](#30-email-based-social-media-monitoring)
+  * [27. E-mail alapú költségjelentés feldolgozás](#27-email-based-expense-report-processing)
+  * [28. E-mail alapú minőségbiztosítási jelentés](#28-email-based-quality-assurance-reporting)
+  * [29. E-mail alapú beszállítókezelés](#29-email-based-vendor-management)
+  * [30. E-mail alapú közösségi média megfigyelés](#30-email-based-social-media-monitoring)
 * [Első lépések](#getting-started)
-  * [1. Hozd létre az e-mail továbbítási fiókodat](#1-create-your-forward-email-account)
-  * [2. API hitelesítő adatok generálása](#2-generate-api-credentials)
-  * [3. Első API-hívás végrehajtása](#3-make-your-first-api-call)
-  * [4. A dokumentáció áttekintése](#4-explore-the-documentation)
-* [Műszaki források](#technical-resources)
+  * [1. Hozd létre Forward Email fiókodat](#1-create-your-forward-email-account)
+  * [2. Generálj API hitelesítő adatokat](#2-generate-api-credentials)
+  * [3. Hajtsd végre első API hívásodat](#3-make-your-first-api-call)
+  * [4. Fedezd fel a dokumentációt](#4-explore-the-documentation)
+* [Technikai források](#technical-resources)
+## Az Email API Probléma {#the-email-api-problem}
 
-## Az e-mail API problémája {#the-email-api-problem}
+Az email API-k alapvetően hibásak. Pont.
 
-Az e-mail API-k alapvetően hibásak. Pont.
+Minden nagy email szolgáltató két szörnyű választás egyikére kényszeríti a fejlesztőket:
 
-Minden nagyobb e-mail szolgáltató két szörnyű választási lehetőség egyikébe kényszeríti a fejlesztőket:
+1. **IMAP Pokol**: Egy 30 éves protokollal küzdeni, amely asztali kliensekhez készült, nem modern alkalmazásokhoz
+2. **Megnyomorított API-k**: Korlátozott, csak olvasható, OAuth-komplex API-k, amelyek nem tudják kezelni a tényleges email adataidat
 
-1. **IMAP pokol**: Küzdelem egy 30 éves protokollal, amelyet asztali kliensekhez terveztek, nem modern alkalmazásokhoz.
-2. **Megnyomorodott API-k**: Sebességkorlátozott, csak olvasható, OAuth-komplex API-k, amelyek nem tudják kezelni a tényleges e-mail adatait.
-
-Az eredmény? A fejlesztők vagy teljesen elhagyják az e-mail integrációt, vagy heteket pazarolnak arra, hogy törékeny, folyamatosan hibás IMAP-burkolókat építsenek.
+Az eredmény? A fejlesztők vagy teljesen feladják az email integrációt, vagy heteket pazarolnak törékeny IMAP csomagolók építésére, amelyek folyamatosan elromlanak.
 
 > \[!WARNING]
-> **A piszkos titok**: A legtöbb „e-mail API” csak küldő API. Nem lehet programozottan mappákat rendezni, névjegyeket szinkronizálni vagy naptárakat kezelni egy egyszerű REST felületen keresztül. Eddig.
+> **A piszkos titok**: A legtöbb "email API" valójában csak küldő API. Nem tudsz programozottan mappákat rendezni, névjegyeket szinkronizálni vagy naptárakat kezelni egy egyszerű REST interfészen keresztül. Egészen mostanáig.
 
-## Amit a fejlesztők valójában mondanak {#what-developers-are-actually-saying}
+
+## Amit a Fejlesztők Valójában Mondanak {#what-developers-are-actually-saying}
 
 A frusztráció valós és mindenhol dokumentált:
 
-> „Nemrég megpróbáltam integrálni a Gmailt az alkalmazásomba, és túl sok időt töltöttem vele. Úgy döntöttem, hogy nem éri meg támogatni a Gmailt.”
+> "Nemrég próbáltam integrálni a Gmailt az alkalmazásomba, és túl sok időt öntöttem bele. Úgy döntöttem, nem éri meg támogatni a Gmailt."
+>
+> *- [Hacker News fejlesztő](https://news.ycombinator.com/item?id=42106944), 147 szavazat*
 
-> > *- [Hacker News fejlesztő](https://news.ycombinator.com/item?id=42106944), 147 szavazat*
+> "Minden email API középszerű? Úgy tűnik, valamilyen módon korlátozottak vagy restriktívek."
+>
+> *- [Reddit r/SaaS beszélgetés](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> „Minden e-mail API középszerű? Valamilyen módon korlátozottnak vagy korlátozónak tűnnek.”
+> "Miért kell az email fejlesztésnek szívásnak lennie?"
+>
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 hozzászólás fejlesztői fájdalomról*
 
-> > *- [Reddit r/SaaS beszélgetés](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
-
-> „Miért kell az e-mail fejlesztésnek pocséknak lennie?”
-
-> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 hozzászólás a fejlesztői fájdalomról*
-
-> „Mi teszi a Gmail API-t hatékonyabbá az IMAP-nál? A Gmail API sokkal hatékonyabbá tételének másik oka az, hogy minden üzenetet csak egyszer kell letöltenie. Az IMAP használatával minden üzenetet le kell tölteni és indexelni kell...”
+> "Mi teszi a Gmail API-t hatékonyabbá az IMAP-nál? Egy másik ok, amiért a Gmail API sokkal hatékonyabb, hogy csak egyszer kell letölteni minden üzenetet. IMAP esetén minden üzenetet le kell tölteni és indexelni..."
 >
 > *- [Stack Overflow kérdés](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) 47 szavazattal*
 
-A bizonyítékok mindenhol ott vannak:
+A bizonyíték mindenhol ott van:
 
-* **WordPress SMTP problémák**: [631 GitHub-problémák](https://github.com/awesomemotive/WP-Mail-SMTP/issues) az e-mail kézbesítési hibákról
-* **Zapier korlátozások**: [Közösségi panaszok](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) körülbelül 10 e-mail/óra limit és IMAP észlelési hibák
-* **IMAP API projektek**: [Több](https://github.com/ewildgoose/imap-api) [nyílt forráskódú](https://emailengine.app/) A [projektek](https://www.npmjs.com/package/imapflow) kifejezetten az "IMAP REST-té konvertálására" szolgál, mert ezt egyetlen szolgáltató sem kínálja.
-* **Gmail API problémák**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) 4847 kérdést tett fel "gmail-api" címkével, gyakori panaszokkal a sebességkorlátokkal és a bonyolultsággal kapcsolatban.
+* **WordPress SMTP problémák**: [631 GitHub issue](https://github.com/awesomemotive/WP-Mail-SMTP/issues) az email kézbesítési hibákról
+* **Zapier korlátok**: [Közösségi panaszok](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) 10 email/óra limitről és IMAP felismerési hibákról
+* **IMAP API projektek**: [Több](https://github.com/ewildgoose/imap-api) [nyílt forráskódú](https://emailengine.app/) [projekt](https://www.npmjs.com/package/imapflow) létezik kifejezetten az "IMAP REST-re konvertálására", mert ezt egyetlen szolgáltató sem kínálja
+* **Gmail API frusztrációk**: A [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) 4,847 "gmail-api" címkével ellátott kérdése gyakori panaszokkal a korlátozásokról és a komplexitásról
 
-## Forradalmi megoldás az e-mail továbbítására {#forward-emails-revolutionary-solution}
 
-**Mi vagyunk az első e-mail szolgáltató, amely teljes körű CRUD műveleteket kínál minden e-mail adathoz egy egységes REST API-n keresztül.**
+## A Forward Email Forradalmi Megoldása {#forward-emails-revolutionary-solution}
 
-Ez nem csak egy újabb küldő API. Ez teljes programozott kontrollt biztosít a következők felett:
+**Mi vagyunk az első email szolgáltatás, amely teljes CRUD műveleteket kínál az összes email adatodra egy egységes REST API-n keresztül.**
 
-* **Üzenetek**: Létrehozás, olvasás, frissítés, törlés, keresés, áthelyezés, megjelölés
-* **Mappák**: Teljes IMAP mappakezelés REST végpontokon keresztül
-* **Névjegyek**: [CardDAV](https://tools.ietf.org/html/rfc6352) névjegytárolás és szinkronizálás
-* **Naptárak**: [CalDAV](https://tools.ietf.org/html/rfc4791) naptáresemények és ütemezés
+Ez nem csak egy újabb küldő API. Ez teljes programozott irányítás a következő felett:
 
-### Miért építettük ezt a {#why-we-built-this}}
+* **Üzenetek**: Létrehozás, olvasás, frissítés, törlés, keresés, mozgatás, megjelölés
+* **Mappák**: Teljes IMAP mappa kezelés REST végpontokon keresztül
+* **Névjegyek**: [CardDAV](https://tools.ietf.org/html/rfc6352) névjegy tárolás és szinkronizáció
+* **Naptárak**: [CalDAV](https://tools.ietf.org/html/rfc4791) naptár események és ütemezés
 
-**A probléma**: Minden e-mail szolgáltató fekete dobozként kezeli az e-maileket. Küldhetsz e-maileket, esetleg el is olvashatod őket komplex OAuth hitelesítéssel, de az e-mail adataid *kezelése* nem igazán lehetséges programozottan.
+### Miért Építettük Ezt {#why-we-built-this}
 
-**Víziónk**: Az e-mail integrálása olyan egyszerű kell, hogy legyen, mint bármely modern API. Nincsenek IMAP könyvtárak. Nincs bonyolult OAuth. Nincsenek rémálmok a sebességkorlátozással kapcsolatban. Csak egyszerű, működő REST végpontok.
+**A Probléma**: Minden email szolgáltató fekete dobozként kezeli az emailt. Tudsz emailt küldeni, talán olvasni bonyolult OAuth-pal, de nem tudod igazán *kezelni* az email adataidat programozottan.
 
-**Az eredmény**: Az első olyan e-mail szolgáltatás, ahol teljes e-mail klienst, CRM-integrációt vagy automatizálási rendszert építhetsz fel pusztán HTTP-kérések használatával.
+**A Látomásunk**: Az email integráció legyen olyan egyszerű, mint bármely modern API. Nincs IMAP könyvtár. Nincs OAuth komplexitás. Nincsenek korlátozási rémálmok. Csak egyszerű REST végpontok, amelyek működnek.
 
-### Egyszerű hitelesítés {#simple-authentication}
+**Az Eredmény**: Az első email szolgáltatás, ahol teljes email klienst, CRM integrációt vagy automatizációs rendszert építhetsz kizárólag HTTP kérésekkel.
 
-Nincs [OAuth összetettség](https://oauth.net/2/). Nincs [alkalmazásspecifikus jelszavak](https://support.google.com/accounts/answer/185833). Csak az alias hitelesítő adatai:
+### Egyszerű Hitelesítés {#simple-authentication}
+
+Nincs [OAuth komplexitás](https://oauth.net/2/). Nincsenek [alkalmazás-specifikus jelszavak](https://support.google.com/accounts/answer/185833). Csak az alias hitelesítő adataid:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
-
-## 20 végpont, ami mindent megváltoztat {#20-endpoints-that-change-everything}
+## 20 Végpont, Ami Minden Megváltoztat {#20-endpoints-that-change-everything}
 
 ### Üzenetek (5 végpont) {#messages-5-endpoints}
 
 * `GET /v1/messages` - Üzenetek listázása szűréssel (`?folder=`, `?is_unread=`, `?is_flagged=`)
-* `POST /v1/messages` - Új üzenetek küldése közvetlenül a mappákba
-* `GET /v1/messages/:id` - Adott üzenet lekérése teljes metaadataival
-* `PUT /v1/messages/:id` - Üzenet frissítése (jelzők, mappa, olvasási állapot)
+* `POST /v1/messages` - Új üzenetek küldése közvetlenül mappákba
+* `GET /v1/messages/:id` - Egy adott üzenet lekérése teljes metaadatokkal
+* `PUT /v1/messages/:id` - Üzenet frissítése (jelölők, mappa, olvasottság)
 * `DELETE /v1/messages/:id` - Üzenet végleges törlése
 
 ### Mappák (5 végpont) {#folders-5-endpoints}
 
-* `GET /v1/folders` - Feliratkozási állapotú összes mappa listázása
-* `POST /v1/folders` - Új mappa létrehozása egyéni tulajdonságokkal
-* `GET /v1/folders/:id` - Mappaadatok és üzenetek számának lekérése
-* `PUT /v1/folders/:id` - Mappatulajdonságok és előfizetés frissítése
-* `DELETE /v1/folders/:id` - Mappa törlése és üzenetek áthelyezésének kezelése
+* `GET /v1/folders` - Mappák listázása előfizetési státusszal
+* `POST /v1/folders` - Új mappa létrehozása egyedi tulajdonságokkal
+* `GET /v1/folders/:id` - Mappa részleteinek és üzenetszámok lekérése
+* `PUT /v1/folders/:id` - Mappa tulajdonságainak és előfizetésének frissítése
+* `DELETE /v1/folders/:id` - Mappa törlése és az üzenetek áthelyezésének kezelése
 
 ### Kapcsolatok (5 végpont) {#contacts-5-endpoints}
 
 * `GET /v1/contacts` - Kapcsolatok listázása kereséssel és lapozással
-* `POST /v1/contacts` - Új kapcsolat létrehozása teljes vCard-támogatással
-* `GET /v1/contacts/:id` - Kapcsolat lekérése az összes mezővel és metaadattal
-* `PUT /v1/contacts/:id` - Kapcsolati adatok frissítése ETag-érvényesítéssel
-* `DELETE /v1/contacts/:id` - Kapcsolat törlése kaszkádkezeléssel
+* `POST /v1/contacts` - Új kapcsolat létrehozása teljes vCard támogatással
+* `GET /v1/contacts/:id` - Kapcsolat lekérése minden mezővel és metaadattal
+* `PUT /v1/contacts/:id` - Kapcsolati adatok frissítése ETag érvényesítéssel
+* `DELETE /v1/contacts/:id` - Kapcsolat törlése kaszkád kezeléssel
 
 ### Naptárak (5 végpont) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - Naptáresemények listázása dátumszűréssel
-* `POST /v1/calendars` - Naptáresemény létrehozása résztvevőkkel és ismétlődéssel
-* `GET /v1/calendars/:id` - Esemény részleteinek lekérése időzóna-kezeléssel
+* `GET /v1/calendars` - Naptári események listázása dátumszűréssel
+* `POST /v1/calendars` - Naptári esemény létrehozása résztvevőkkel és ismétlődéssel
+* `GET /v1/calendars/:id` - Esemény részleteinek lekérése időzóna kezeléssel
 * `PUT /v1/calendars/:id` - Esemény frissítése ütközésészleléssel
-* `DELETE /v1/calendars/:id` - Esemény törlése résztvevői értesítésekkel
+* `DELETE /v1/calendars/:id` - Esemény törlése résztvevő értesítésekkel
 
-## Összetett keresés: Nincs ehhez hasonló szolgáltatás: {#advanced-search-no-other-service-compares}
 
-**A Forward Email az egyetlen e-mail szolgáltatás, amely átfogó, programozott keresést kínál az összes üzenetmezőben REST API-n keresztül.**
+## Fejlett Keresés: Egyik Szolgáltatás Sem Érhet Hozzánk {#advanced-search-no-other-service-compares}
 
-Míg más szolgáltatók legfeljebb alapvető szűrést kínálnak, mi megépítettük a valaha készült legfejlettebb e-mail kereső API-t. Egyetlen Gmail API, Outlook API vagy más szolgáltatás sem közelíti meg a mi keresési képességeinket.
+**A Forward Email az egyetlen e-mail szolgáltatás, amely átfogó, programozható keresést kínál az összes üzenetmezőn keresztül REST API-n.**
 
-### A Search API környezete hibás {#the-search-api-landscape-is-broken}
+Míg más szolgáltatók legfeljebb alap szűrést kínálnak, mi építettük a valaha volt legfejlettebb e-mail kereső API-t. Sem a Gmail API, sem az Outlook API, sem más szolgáltatás nem ér fel a keresési képességeinkhez.
 
-**Gmail API keresési korlátai:**
+### A Kereső API Helyzete Szétesett {#the-search-api-landscape-is-broken}
 
-* ✅ Csak az alapvető `q` paraméter
+**Gmail API Keresési Korlátozások:**
+
+* ✅ Csak alap `q` paraméter
 * ❌ Nincs mezőspecifikus keresés
-* ❌ Nincs dátumtartomány-szűrés
-* ❌ Nincs méretalapú szűrés
-* ❌ Nincs mellékletszűrés
-* ❌ A Gmail keresési szintaxisára korlátozva
+* ❌ Nincs dátumtartomány szűrés
+* ❌ Nincs méret alapú szűrés
+* ❌ Nincs csatolmány szűrés
+* ❌ Csak a Gmail keresési szintaxis korlátozott használata
 
-**Az Outlook API keresési korlátai:**
+**Outlook API Keresési Korlátozások:**
 
 * ✅ Alap `$search` paraméter
-* ❌ Nincs speciális mezőcélzás
-* ❌ Nincsenek összetett lekérdezéskombinációk
-* ❌ Agresszív sebességkorlátozás
-* ❌ Összetett OData szintaxis szükséges
+* ❌ Nincs fejlett mezőcélzás
+* ❌ Nincs összetett lekérdezés kombináció
+* ❌ Aggresszív sebességkorlátozás
+* ❌ Bonyolult OData szintaxis szükséges
 
 **Apple iCloud:**
 
-* ❌ Nincs API
-* ❌ Csak IMAP keresés (ha működik)
+* ❌ Egyáltalán nincs API
+* ❌ Csak IMAP keresés (ha működésre bírja az ember)
 
-**ProtonMail és Tuta:**
+**ProtonMail & Tuta:**
 
-* ❌ Nincsenek nyilvános API-k
-* ❌ Nincsenek programozott keresési lehetőségek
+* ❌ Nincs nyilvános API
+* ❌ Nincs programozható keresési lehetőség
 
-### Forward Email keresési API {#forward-emails-revolutionary-search-api}
+### A Forward Email Forradalmi Kereső API-ja {#forward-emails-revolutionary-search-api}
 
-**Több mint 15 keresési paramétert kínálunk, amelyeket más szolgáltatás nem biztosít:**
+**15+ keresési paramétert kínálunk, amit más szolgáltatás nem nyújt:**
 
-| Keresési képesség | E-mail továbbítása | Gmail API | Outlook API | Mások |
-| ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **Mezőspecifikus keresés** | ✅ Tárgy, törzs, feladó, címzett, másolat, fejlécek | ❌ | ❌ | ❌ |
-| **Több mezős általános keresés** | ✅ `?search=` minden mezőben | ✅ Alapvető `q=` | ✅ Alapvető `$search=` | ❌ |
-| **Dátumtartomány szűrése** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **Méretalapú szűrés** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **Mellékletszűrés** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **Fejléc keresése** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **Üzenetazonosító keresése** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **Kombinált szűrők** | ✅ Több paraméter ÉS logikával | ❌ | ❌ | ❌ |
-| **Kis- és nagybetűket nem megkülönböztető** | ✅ Minden keresés | ✅ | ✅ | ❌ |
-| **Oldalszámozás támogatása** | ✅ Minden keresési paraméterrel működik | ✅ | ✅ | ❌ |
+| Keresési Képesség             | Forward Email                        | Gmail API    | Outlook API        | Egyéb  |
+| ------------------------------ | ---------------------------------- | ------------ | ------------------ | ------ |
+| **Mezőspecifikus Keresés**     | ✅ Tárgy, törzs, feladó, címzett, másolat, fejléc | ❌            | ❌                  | ❌      |
+| **Többmezős Általános Keresés**| ✅ `?search=` az összes mezőn át    | ✅ Alap `q=` | ✅ Alap `$search=`  | ❌      |
+| **Dátumtartomány Szűrés**      | ✅ `?since=` & `?before=`           | ❌            | ❌                  | ❌      |
+| **Méret Alapú Szűrés**         | ✅ `?min_size=` & `?max_size=`      | ❌            | ❌                  | ❌      |
+| **Csatolmány Szűrés**          | ✅ `?has_attachments=true/false`    | ❌            | ❌                  | ❌      |
+| **Fejléc Keresés**             | ✅ `?headers=X-Priority`            | ❌            | ❌                  | ❌      |
+| **Üzenetazonosító Keresés**    | ✅ `?message_id=abc123`             | ❌            | ❌                  | ❌      |
+| **Összetett Szűrők**           | ✅ Több paraméter AND logikával     | ❌            | ❌                  | ❌      |
+| **Nagybetű-Kisbetű Érzéketlen**| ✅ Minden keresés                   | ✅            | ✅                  | ❌      |
+| **Lapozás Támogatás**           | ✅ Minden keresési paraméterrel működik | ✅            | ✅                  | ❌      |
+### Valós Példák Keresésre {#real-world-search-examples}
 
-### Valós keresési példák {#real-world-search-examples}
-
-**Az előző negyedév összes számlájának megkeresése:**
+**Az elmúlt negyedév összes számlájának megtalálása:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - Egyszerű és hatékony
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - Lehetetlen a korlátozott keresési lehetőségeik miatt
+# Nincs elérhető dátumtartomány szűrés
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - Bonyolult OData szintaxis, korlátozott funkcionalitás
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
-**Nagyméretű mellékletek keresése adott feladótól:**
+**Nagy méretű csatolmányok keresése adott feladótól:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - Átfogó szűrés
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - Nem lehet programozottan méret vagy csatolmány alapján szűrni
+# Outlook API - Nincs méret szerinti szűrés
+# Egyéb - Nincs elérhető API
 ```
 
-**Összetett, többmezős keresés:**
+**Összetett, több mezős keresés:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - Fejlett lekérdezési képességek
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - Csak alap szöveges keresés lehetséges
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - Alap keresés mezőcélzás nélkül
 GET /me/messages?$search="quarterly"
 ```
 
-### Teljesítménybeli előnyök {#performance-advantages}
+### Teljesítmény Előnyök {#performance-advantages}
 
-**E-mail továbbítási keresési teljesítménye:**
+**Forward Email keresési teljesítmény:**
 
-* ⚡ **100 ms alatti válaszidők** összetett keresésekhez
-* 🔍 **Reguláris kifejezések optimalizálása** megfelelő indexeléssel
-* 📊 **Párhuzamos lekérdezés-végrehajtás** darabszámhoz és adatokhoz
-* 💾 **Hatékony memória-kihasználás** lean lekérdezésekkel
+* ⚡ **100 ms alatti válaszidők** összetett kereséseknél
+* 🔍 **Regex optimalizáció** megfelelő indexeléssel
+* 📊 **Párhuzamos lekérdezés végrehajtás** számláláshoz és adatokhoz
+* 💾 **Hatékony memóriahasználat** karcsú lekérdezésekkel
 
-**Versenytársi teljesítményproblémák:**
+**Versenytársak teljesítményproblémái:**
 
-* 🐌 **Gmail API**: A sebesség felhasználónként másodpercenként legfeljebb 250 kvótaegységre korlátozódik.
-* 🐌 **Outlook API**: Agresszív sávszélesség-szabályozás összetett várakozási követelményekkel.
-* 🐌 **Egyéb**: Nincsenek összehasonlítható API-k.
+* 🐌 **Gmail API**: Felhasználónként másodpercenként 250 kvótaegységre korlátozva
+* 🐌 **Outlook API**: Aggresszív korlátozás, bonyolult visszalépési szabályokkal
+* 🐌 **Egyéb**: Nincs összehasonlítható API
 
-### Keresési funkciók, amelyek senki másnak nincsenek {#search-features-no-one-else-has}
+### Egyedi Keresési Funkciók, Amik Másnak Nincsenek {#search-features-no-one-else-has}
 
-#### 1. Fejlécspecifikus keresés {#1-header-specific-search}
+#### 1. Fejléc-specifikus keresés {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# Üzenetek keresése adott fejléc alapján
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. Méretalapú intelligencia {#2-size-based-intelligence}
+#### 2. Méret alapú intelligencia {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# Hírlevelek keresése (általában nagy méretűek)
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# Gyors válaszok keresése (általában kicsik)
 GET /v1/messages?max_size=1000&to=support
 ```
 
-#### 3. Mellékletalapú munkafolyamatok {#3-attachment-based-workflows}
+#### 3. Csatolmány-alapú munkafolyamatok {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# Minden dokumentum keresése, amit a jogi csapatnak küldtek
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# Csatolmány nélküli emailek keresése takarításhoz
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
 #### 4. Kombinált üzleti logika {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# Sürgős, megjelölt üzenetek keresése VIP feladóktól csatolmányokkal
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
-### Miért fontos ez a fejlesztők számára {#why-this-matters-for-developers}
+### Miért Fontos Ez a Fejlesztők Számára {#why-this-matters-for-developers}
 
-**Olyan alkalmazások készítése, amelyek korábban lehetetlenek voltak:**
+**Olyan alkalmazások építése, amik korábban lehetetlenek voltak:**
 
-1. **Speciális e-mail-analitika**: E-mail-minták elemzése méret, feladó és tartalom szerint
-2. **Intelligens e-mail-kezelés**: Automatikus rendezés összetett kritériumok alapján
-3. **Megfelelőség és felderítés**: Jogi követelményeknek megfelelő e-mailek keresése
-4. **Üzleti intelligencia**: Betekintések kinyerése az e-mail-kommunikációs mintákból
-5. **Automatizált munkafolyamatok**: Műveletek indítása kifinomult e-mail-szűrők alapján
+1. **Fejlett email elemzés**: Email minták elemzése méret, feladó, tartalom alapján
+2. **Intelligens email kezelés**: Automatikus rendszerezés összetett feltételek alapján
+3. **Megfelelőség és feltárás**: Specifikus emailek megtalálása jogi követelményekhez
+4. **Üzleti intelligencia**: Információk kinyerése email kommunikációs mintákból
+5. **Automatizált munkafolyamatok**: Műveletek indítása kifinomult email szűrők alapján
 
-### A technikai megvalósítás {#the-technical-implementation}
+### A Technikai Megvalósítás {#the-technical-implementation}
 
-Keresési API-nk a következőket használja:
+Keresési API-nk használja:
 
-* **Reguláris kifejezések optimalizálása** megfelelő indexelési stratégiákkal
-* **Párhuzamos végrehajtás** a teljesítmény érdekében
-* **Beviteli validáció** a biztonság érdekében
-* **Átfogó hibakezelés** a megbízhatóság érdekében
+* **Regex optimalizációt** megfelelő indexelési stratégiákkal
+* **Párhuzamos végrehajtást** a teljesítményért
+* **Bemeneti érvényesítést** a biztonságért
+* **Átfogó hibakezelést** a megbízhatóságért
 
 ```javascript
-// Example: Complex search implementation
+// Példa: Összetett keresés megvalósítása
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -355,18 +356,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// Kombinálás ÉS logikával
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **Fejlesztői előny**: A Forward Email keresési API-jával olyan e-mail alkalmazásokat hozhat létre, amelyek funkcionalitásban vetekednek az asztali kliensekkel, miközben megőrzik a REST API-k egyszerűségét.
+> **Fejlesztői előny**: A Forward Email keresési API-jával olyan email alkalmazásokat építhetsz, amelyek funkcionalitásban vetekednek az asztali kliensekkel, miközben megőrzik a REST API-k egyszerűségét.
+## Villámgyors Teljesítmény Architektúra {#blazing-fast-performance-architecture}
 
-## Villámgyors teljesítményű architektúra {#blazing-fast-performance-architecture}
-
-Technikai rendszerünket a sebességre és a megbízhatóságra építettük:
+Műszaki stackünk a sebességre és megbízhatóságra épül:
 
 ```mermaid
 graph LR
@@ -376,105 +376,105 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Teljesítmény-összehasonlító tesztek {#performance-benchmarks}
+### Teljesítmény Referenciák {#performance-benchmarks}
 
 **Miért vagyunk villámgyorsak:**
 
-| Összetevő | Technológia | Teljesítménynövelő |
-| ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **Tárolás** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | 10-szer gyorsabb, mint a hagyományos SATA |
-| **Adatbázis** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Nulla hálózati késleltetés, optimalizált szerializáció |
-| **Hardver** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) csupasz fém | Nincsenek virtualizációs költségek |
-| **Gyorsítótárolás** | Memóriában tárolt + perzisztens | Milliszekundumos válaszidők |
-| **Biztonsági mentések** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) titkosítva | Vállalati szintű megbízhatóság |
+| Összetevő   | Technológia                                                                       | Teljesítmény Előny                           |
+| ------------| --------------------------------------------------------------------------------- | --------------------------------------------- |
+| **Tárolás** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                            | 10x gyorsabb, mint a hagyományos SATA         |
+| **Adatbázis** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Nulla hálózati késleltetés, optimalizált sorosítás |
+| **Hardver** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) natív    | Nincs virtualizációs többletterhelés          |
+| **Gyorsítótár** | Memóriában + perzisztens                                                        | Szubmilliszekundumos válaszidők               |
+| **Biztonsági mentések** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) titkosított        | Vállalati szintű megbízhatóság                 |
 
-**Valós teljesítményadatok:**
+**Valódi Teljesítmény Számok:**
 
-* **API válaszidő**: átlagosan < 50 ms
-* **Üzenet lekérése**: < 10 ms gyorsítótárazott üzenetek esetén
-* **Mappa műveletek**: < 5 ms metaadat-műveletek esetén
-* **Kapcsolat szinkronizálása**: 1000+ kapcsolat/másodperc
-* **Üzemidő**: 99,99%-os SLA redundáns infrastruktúrával
+* **API válaszidő**: < 50ms átlag
+* **Üzenet lekérés**: < 10ms gyorsítótárazott üzeneteknél
+* **Mappaműveletek**: < 5ms metaadat műveleteknél
+* **Kapcsolat szinkronizálás**: 1000+ kapcsolat/másodperc
+* **Üzemidő**: 99,99% SLA redundáns infrastruktúrával
 
-### Adatvédelem-első architektúra {#privacy-first-architecture}
+### Adatvédelmi Központú Architektúra {#privacy-first-architecture}
 
-**Nulla tudásalapú tervezés**: Csak Ön férhet hozzá az IMAP jelszavával – mi nem tudjuk elolvasni az e-mailjeit. A [nulla tudású architektúra](https://forwardemail.net/en/security) jelszavunk teljes adatvédelmet biztosít, miközben kiváló teljesítményt nyújt.
+**Zero-Knowledge Tervezés**: Csak Ön fér hozzá az IMAP jelszavával – mi nem olvassuk az e-mailjeit. A [zero-knowledge architektúránk](https://forwardemail.net/en/security) teljes adatvédelmet biztosít, miközben villámgyors teljesítményt nyújt.
 
-## Miért vagyunk mások: Teljes körű összehasonlítás {#why-were-different-the-complete-comparison}
 
-### Főbb szolgáltatói korlátozások {#major-provider-limitations}
+## Miért Vagyunk Mások: Teljes Összehasonlítás {#why-were-different-the-complete-comparison}
 
-| Szolgáltató | Alapvető problémák | Specifikus korlátozások |
-| ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gmail API** | Csak olvasható, összetett OAuth, külön API-k | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) névjegyekhez/naptárhoz |
-| **Outlook API** | Elavult, zavaró, vállalati fókuszú | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Grafikon, REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **Apple iCloud** | Nincs nyilvános API | • [No public API whatsoever](https://support.apple.com/en-us/102654)<br>• [IMAP-only with 1000 emails/day limit](https://support.apple.com/en-us/102654)<br>• [App-specific passwords required](https://support.apple.com/en-us/102654)<br>• [500 recipients per message limit](https://support.apple.com/en-us/102654) |
-| **ProtonMail** | Nincs API, hamis nyílt forráskódú állítások | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge software required](https://proton.me/mail/bridge) IMAP hozzáféréshez<br>• [Claims "open source"](https://proton.me/blog/open-source) de [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **Teljes** | Nincs API, félrevezető átláthatóság | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email), de [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) megakadályozza a szabványos integrációkat |
-| **Zapier e-mail** | Szigorú árkorlátozások | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
+### Fő Szolgáltató Korlátozások {#major-provider-limitations}
 
-### E-mail továbbításának előnyei {#forward-email-advantages}
+| Szolgáltató      | Fő Problémák                            | Specifikus Korlátozások                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gmail API**    | Csak olvasható, Bonyolult OAuth, Külön API-k | • [Nem lehet módosítani meglévő üzeneteket](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Címkék ≠ mappák](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 milliárd kvóta egység/nap limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Külön API-k szükségesek](https://developers.google.com/workspace) névjegyek/naptár kezeléséhez |
+| **Outlook API**  | Elavult, Zavaros, Vállalati fókuszú    | • [REST végpontok 2024 márciusában elavultak](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Több zavaró API](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graph, REST)<br>• [Microsoft Graph bonyolultság](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggresszív korlátozások](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud** | Nincs nyilvános API                   | • [Egyáltalán nincs nyilvános API](https://support.apple.com/en-us/102654)<br>• [Csak IMAP, napi 1000 e-mail limit](https://support.apple.com/en-us/102654)<br>• [Alkalmazás-specifikus jelszavak szükségesek](https://support.apple.com/en-us/102654)<br>• [500 címzett üzenetenkénti limit](https://support.apple.com/en-us/102654)                                                                                              |
+| **ProtonMail**   | Nincs API, Hamis nyílt forráskód állítások | • [Nincs elérhető nyilvános API](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge szoftver szükséges](https://proton.me/mail/bridge) az IMAP hozzáféréshez<br>• [Állítják, hogy "nyílt forráskódú"](https://proton.me/blog/open-source), de [a szerver kód zárt](https://github.com/ProtonMail)<br>• [Csak fizetős csomagokhoz elérhető](https://proton.me/pricing)                                                                 |
+| **Tuta**         | Nincs API, Félrevezető átláthatóság    | • [Nincs REST API e-mail kezeléshez](https://tuta.com/support#technical)<br>• [Állítják, hogy "nyílt forráskódú"](https://tuta.com/blog/posts/open-source-email), de [a backend zárt](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP nem támogatott](https://tuta.com/support#imap)<br>• [Saját titkosítás](https://tuta.com/encryption) akadályozza a szabványos integrációkat                                                                 |
+| **Zapier Email** | Súlyos Korlátozások a Sebességben      | • [Óránként 10 e-mail limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Nincs IMAP mappa hozzáférés](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Korlátozott elemzési képességek](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)
+### Előnyök az Email Továbbításban {#forward-email-advantages}
 
-| Jellemző | E-mail továbbítása | Verseny |
-| ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **Teljes CRUD** | ✅ Teljes körű létrehozás, olvasás, frissítés és törlés az összes adathoz | ❌ Csak olvasható vagy korlátozott műveletek |
-| **Egységes API** | ✅ Üzenetek, mappák, névjegyek, naptárak egyetlen API-ban | ❌ Külön API-k vagy hiányzó funkciók |
-| **Egyszerű hitelesítés** | ✅ Alapszintű hitelesítés alias hitelesítő adatokkal | ❌ Komplex OAuth több hatókörrel |
-| **Nincsenek díjkorlátok** | ✅ Nagylelkű korlátok valós alkalmazásokhoz tervezve | ❌ Korlátozó kvóták, amelyek megzavarják a munkafolyamatokat |
-| **Saját tárhely** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Csak szállítói zárolás |
-| **Magánélet** | ✅ Nulla tudás, titkosított, privát | ❌ Adatbányászat és adatvédelmi aggályok |
-| **Teljesítmény** | ✅ 50 ms alatti válaszidő, NVMe tárhely | ❌ Hálózati késleltetés, szabályozási késések |
+| Jellemző           | Email Továbbítás                                                                              | Versenytársak                            |
+| ------------------ | -------------------------------------------------------------------------------------------- | --------------------------------------- |
+| **Teljes CRUD**    | ✅ Teljes létrehozás, olvasás, frissítés, törlés minden adat esetén                           | ❌ Csak olvasás vagy korlátozott műveletek |
+| **Egységes API**   | ✅ Üzenetek, mappák, névjegyek, naptárak egy API-ban                                         | ❌ Külön API-k vagy hiányzó funkciók     |
+| **Egyszerű hitelesítés** | ✅ Alap hitelesítés alias hitelesítő adatokkal                                              | ❌ Bonyolult OAuth több jogosultsággal   |
+| **Nincs korlátozás** | ✅ Nagylelkű korlátok, valós alkalmazásokhoz tervezve                                        | ❌ Korlátozó kvóták, amelyek megszakítják a munkafolyamatokat |
+| **Ön-tárhely**     | ✅ [Teljes ön-tárhely opció](https://forwardemail.net/en/blog/docs/self-hosted-solution)     | ❌ Csak szolgáltatófüggőség              |
+| **Adatvédelem**    | ✅ Nulla tudás, titkosított, privát                                                           | ❌ Adatbányászat és adatvédelmi aggályok |
+| **Teljesítmény**   | ✅ 50 ms alatti válaszidő, NVMe tárolás                                                      | ❌ Hálózati késleltetés, korlátozások    |
 
-### A nyílt forráskódú átláthatósági probléma {#the-open-source-transparency-problem}
+### Az Nyílt Forráskódú Átláthatóság Problémája {#the-open-source-transparency-problem}
 
-**A ProtonMail és a Tuta „nyílt forráskódú” és „átlátható” szoftverként reklámozza magát, de ez félrevezető marketing, amely sérti a modern adatvédelmi elveket.**
+**A ProtonMail és a Tuta "nyílt forráskódúként" és "átláthatóként" hirdetik magukat, de ez félrevezető marketing, amely sérti a modern adatvédelmi elveket.**
 
 > \[!WARNING]
-> **Hamis átláthatósági állítások**: Mind a ProtonMail, mind a Tuta kiemelten reklámozza „nyílt forráskódú” hitelesítő adatait, miközben a legfontosabb szerveroldali kódjukat zártként és titokban tartják.
+> **Hamis átláthatósági állítások**: Mind a ProtonMail, mind a Tuta hangsúlyosan hirdeti "nyílt forráskódú" hitelességét, miközben legkritikusabb szerveroldali kódjuk zárt és tulajdonosi.
 
 **A ProtonMail megtévesztése:**
 
-* **Állítások**: A ["Nyílt forráskódúak vagyunk"](https://proton.me/blog/open-source) kiemelt helyen szerepel a marketingben
-* **Valóság**: [A szerverkód teljes mértékben szabadalmaztatott](https://github.com/ProtonMail) - csak a kliensalkalmazások nyílt forráskódúak
-* **Hatás**: A felhasználók nem tudják ellenőrizni a szerveroldali titkosítást, az adatkezelést vagy az adatvédelmi állításokat
-* **Átláthatósági irányelvek megsértése**: Nincs mód a tényleges e-mail-feldolgozó és -tároló rendszerek auditálására
+* **Állítások**: ["Mi nyílt forráskódúak vagyunk"](https://proton.me/blog/open-source) kiemelten a marketingben
+* **Valóság**: [A szerverkód teljesen tulajdonosi](https://github.com/ProtonMail) – csak a kliensalkalmazások nyílt forráskódúak
+* **Hatás**: A felhasználók nem ellenőrizhetik a szerveroldali titkosítást, adatkezelést vagy adatvédelmi állításokat
+* **Átláthatósági megsértés**: Nincs mód az e-mail feldolgozó és tároló rendszerek auditálására
 
-**Tuta félrevezető marketingje:**
+**A Tuta félrevezető marketingje:**
 
-* **Állítások**: A ["Nyílt forráskódú e-mail"](https://tuta.com/blog/posts/open-source-email), mint alapvető értékesítési pont
-* **Valóság**: A [A háttérinfrastruktúra zárt forráskódú](https://github.com/tutao/tutanota) – csak a frontend érhető el
-* **Hatás**: A saját fejlesztésű titkosítás megakadályozza a szabványos e-mail protokollok (IMAP/SMTP) használatát
-* **Rögzítési stratégia**: Az egyéni titkosítás kikényszeríti a gyártótól való függőséget
+* **Állítások**: ["Nyílt forráskódú e-mail"](https://tuta.com/blog/posts/open-source-email) mint fő értékesítési pont
+* **Valóság**: [A háttérinfrastruktúra zárt forráskódú](https://github.com/tutao/tutanota) – csak a frontend elérhető
+* **Hatás**: A tulajdonosi titkosítás megakadályozza a szabványos e-mail protokollokat (IMAP/SMTP)
+* **Zárolási stratégia**: Egyedi titkosítás szolgáltatófüggőséget kényszerít
 
 **Miért fontos ez a modern adatvédelem szempontjából:**
 
-2025-ben a valódi adatvédelem **teljes átláthatóságot** követel. Amikor az e-mail-szolgáltatók „nyílt forráskódúnak” vallják magukat, de elrejtik a szerverkódjukat:
+2025-ben az igazi adatvédelem **teljes átláthatóságot** követel meg. Amikor az e-mail szolgáltatók "nyílt forráskódúnak" mondják magukat, de elrejtik a szerverkódot:
 
-1. **Ellenőrizhetetlen titkosítás**: Nem auditálható, hogy az adataid hogyan vannak valójában titkosítva.
-2. **Rejtett adatkezelési gyakorlatok**: A szerveroldali adatkezelés továbbra is titoktartás alatt áll.
-3. **Bizalomalapú biztonság**: Ellenőrzés nélkül meg kell bíznod az állításaikban.
-4. **Beszállítóhoz kötöttség**: A saját fejlesztésű rendszerek megakadályozzák az adatok hordozhatóságát.
+1. **Ellenőrizhetetlen titkosítás**: Nem auditálhatod, hogyan titkosítják az adataidat
+2. **Rejtett adatkezelési gyakorlatok**: A szerveroldali adatkezelés fekete doboz marad
+3. **Bizalmi alapú biztonság**: Hitelnélküli állításokat kell elfogadnod
+4. **Szolgáltatófüggőség**: A tulajdonosi rendszerek megakadályozzák az adathordozhatóságot
 
-**Az e-mail továbbításának valódi átláthatósága:**
+**A Forward Email valódi átláthatósága:**
 
-* ✅ **[Teljesen nyílt forráskódú](https://github.com/forwardemail/forwardemail.net)** - szerver és kliens kód
-* ✅ **[Saját tárhely elérhető](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - saját példány futtatása
-* ✅ **Standard protokollok** - IMAP, SMTP, CardDAV, CalDAV kompatibilitás
-* ✅ **Auditálható biztonság** - minden kódsor ellenőrizhető
-* ✅ **Nincs gyártóhoz kötöttség** - az Ön adatai, az Ön irányítása
+* ✅ **[Teljes nyílt forráskód](https://github.com/forwardemail/forwardemail.net)** – szerver és kliens kód
+* ✅ **[Ön-tárhely elérhető](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – saját példány futtatása
+* ✅ **Szabványos protokollok** – IMAP, SMTP, CardDAV, CalDAV kompatibilitás
+* ✅ **Auditálható biztonság** – minden kódsor ellenőrizhető
+* ✅ **Nincs szolgáltatófüggőség** – a te adataid, a te irányításod
 
 > \[!TIP]
-> **A valódi nyílt forráskód azt jelenti, hogy minden állítást ellenőrizhet.** A Forward Email segítségével auditálhatja titkosításunkat, áttekintheti adatkezelésünket, sőt akár saját példányt is futtathat. Ez az igazi átláthatóság.
+> **Az igazi nyílt forráskód azt jelenti, hogy minden állítást ellenőrizhetsz.** A Forward Email-lel auditálhatod a titkosításunkat, áttekintheted az adatkezelést, és akár saját példányt is futtathatsz. Ez az igazi átláthatóság.
+
 
 ## Több mint 30 valós integrációs példa {#30-real-world-integration-examples}
 
-### 1. WordPress kapcsolatfelvételi űrlap fejlesztése {#1-wordpress-contact-form-enhancement}
-
-**Probléma**: [WordPress SMTP konfigurációs hibák](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 GitHub-problémák](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**Megoldás**: A közvetlen API-integráció teljesen megkerüli a [SMTP](https://tools.ietf.org/html/rfc5321)-t
+### 1. WordPress Kapcsolati Űrlap Fejlesztés {#1-wordpress-contact-form-enhancement}
+**Probléma**: [WordPress SMTP konfigurációs hibák](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 GitHub probléma](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
+**Megoldás**: Közvetlen API integráció teljesen megkerüli az [SMTP](https://tools.ietf.org/html/rfc5321)-t
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// WordPress kapcsolatfelvételi űrlap, amely a Kimenő mappába ment
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -483,20 +483,20 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'Kapcsolatfelvételi űrlap: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
 });
 ```
 
-### 2. Zapier alternatíva az e-mail automatizáláshoz {#2-zapier-alternative-for-email-automation}
+### 2. Zapier alternatíva e-mail automatizáláshoz {#2-zapier-alternative-for-email-automation}
 
-**Probléma**: [A Zapier óránként 10 e-mail korláttal rendelkezik](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) és [IMAP-észlelési hibák](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-**Megoldás**: Korlátlan automatizálás teljes e-mail-vezérléssel
+**Probléma**: [Zapier 10 e-mail/óra korlátja](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) és [IMAP észlelési hibák](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
+**Megoldás**: Korlátlan automatizálás teljes e-mail vezérléssel
 
 ```javascript
-// Auto-organize emails by sender domain
+// E-mailek automatikus rendezése feladó domain alapján
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -507,13 +507,13 @@ for (const message of messages) {
 }
 ```
 
-### 3. CRM e-mail szinkronizálás {#3-crm-email-synchronization}
+### 3. CRM e-mail szinkronizáció {#3-crm-email-synchronization}
 
-**Probléma**: Manuális kapcsolatkezelés e-mail és [CRM rendszerek](https://en.wikipedia.org/wiki/Customer_relationship_management) között
-**Megoldás**: Kétirányú szinkronizálás a [CardDAV](https://tools.ietf.org/html/rfc6352) kapcsolat API-val
+**Probléma**: Manuális kapcsolattartás e-mail és [CRM rendszerek](https://en.wikipedia.org/wiki/Customer_relationship_management) között
+**Megoldás**: Kétirányú szinkronizáció [CardDAV](https://tools.ietf.org/html/rfc6352) kapcsolati API-val
 
 ```javascript
-// Sync new email contacts to CRM
+// Új e-mail kapcsolatok szinkronizálása a CRM-be
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -524,13 +524,13 @@ for (const contact of newContacts) {
 }
 ```
 
-### 4. E-kereskedelmi megrendelések feldolgozása {#4-e-commerce-order-processing}
+### 4. E-kereskedelmi rendelés feldolgozás {#4-e-commerce-order-processing}
 
-**Probléma**: Manuális rendelési e-mail feldolgozás a [e-kereskedelmi platformok](https://en.wikipedia.org/wiki/E-commerce) felhasználóhoz
+**Probléma**: Manuális rendelés e-mail feldolgozás [e-kereskedelmi platformokon](https://en.wikipedia.org/wiki/E-commerce)
 **Megoldás**: Automatizált rendeléskezelési folyamat
 
 ```javascript
-// Process order confirmation emails
+// Rendelés visszaigazoló e-mailek feldolgozása
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
   msg.subject.includes('Order Confirmation')
@@ -546,12 +546,13 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. Támogatási jegyek integrációja {#5-support-ticket-integration}
+### 5. Támogatási jegy integráció {#5-support-ticket-integration}
 
-**Probléma**: Az e-mail-szálak szétszórva jelennek meg a [ügyfélszolgálati platformok](https://en.wikipedia.org/wiki/Help_desk_software) mappában.**Megoldás**: Teljes körű e-mail-szálkövetés.
+**Probléma**: E-mail szálak szétszórva [helpdesk platformokon](https://en.wikipedia.org/wiki/Help_desk_software)
+**Megoldás**: Teljes e-mail szál követés
 
 ```javascript
-// Create support ticket from email thread
+// Támogatási jegy létrehozása e-mail szálból
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -567,13 +568,13 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. Hírlevélkezelő rendszer {#6-newsletter-management-system}
+### 6. Hírlevél kezelő rendszer {#6-newsletter-management-system}
 
 **Probléma**: Korlátozott [hírlevél platform](https://en.wikipedia.org/wiki/Email_marketing) integrációk
-**Megoldás**: Teljes körű előfizetői életciklus-kezelés
+**Megoldás**: Teljes előfizetői életciklus kezelése
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// Hírlevél feliratkozások automatikus kezelése
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
   msg.subject.toLowerCase().includes('unsubscribe')
@@ -590,9 +591,8 @@ for (const msg of unsubscribes) {
 
 ### 7. E-mail alapú feladatkezelés {#7-email-based-task-management}
 
-**Probléma**: A Beérkezett üzenetek túlterheltsége és [feladatkövetés](https://en.wikipedia.org/wiki/Task_management)
+**Probléma**: Bejövő levelek túlterheltsége és [feladatkövetés](https://en.wikipedia.org/wiki/Task_management)
 **Megoldás**: E-mailek átalakítása végrehajtható feladatokká
-
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -606,10 +606,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. Többfiókos e-mail-összesítés {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**Probléma**: [több e-mail fiók](https://en.wikipedia.org/wiki/Email_client) kezelése több szolgáltató között
-**Megoldás**: Egységes postafiók felület
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -624,10 +624,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. Speciális e-mail-elemzési irányítópult {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**Probléma**: Nincs betekintés a [e-mail minták](https://en.wikipedia.org/wiki/Email_analytics) objektumba kifinomult szűréssel
-**Megoldás**: Egyéni e-mail elemzések speciális keresési funkciókkal
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -674,10 +674,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. Intelligens e-mail archiválás {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**Probléma**: Manuális [e-mail szervezés](https://en.wikipedia.org/wiki/Email_management)
-**Megoldás**: Intelligens e-mail kategorizálás
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -695,10 +695,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. E-mail-naptár integráció {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**Probléma**: Manuális [naptári esemény](https://tools.ietf.org/html/rfc4791) létrehozása e-mailekből
-**Megoldás**: Automatikus eseménykinyerés és -létrehozás
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -722,13 +722,13 @@ for (const email of meetingEmails) {
 }
 ```
 
-### 12. E-mail biztonsági mentés és megfelelőség {#12-email-backup-and-compliance}
+### 12. E-mail Biztonsági Mentés és Megfelelőség {#12-email-backup-and-compliance}
 
-**Probléma**: [E-mail-megőrzés](https://en.wikipedia.org/wiki/Email_retention_policy) és megfelelőségi követelmények
+**Probléma**: [E-mail megőrzési](https://en.wikipedia.org/wiki/Email_retention_policy) és megfelelőségi követelmények  
 **Megoldás**: Automatikus biztonsági mentés metaadatok megőrzésével
 
 ```javascript
-// Backup emails with full metadata
+// E-mailek biztonsági mentése teljes metaadatokkal
 const allMessages = await fetch('/v1/messages');
 const backup = {
   timestamp: new Date(),
@@ -744,13 +744,13 @@ const backup = {
 await saveToComplianceStorage(backup);
 ```
 
-### 13. E-mail alapú tartalomkezelés {#13-email-based-content-management}
+### 13. E-mail Alapú Tartalomkezelés {#13-email-based-content-management}
 
-**Probléma**: Tartalombeküldések kezelése e-mailben a [CMS platformok](https://en.wikipedia.org/wiki/Content_management_system) felhasználó számára
-**Megoldás**: E-mail tartalomkezelő rendszerként
+**Probléma**: Tartalom beküldések kezelése e-mailen keresztül [CMS platformok](https://en.wikipedia.org/wiki/Content_management_system) számára  
+**Megoldás**: E-mail mint tartalomkezelő rendszer
 
 ```javascript
-// Process content submissions from email
+// Tartalom beküldések feldolgozása e-mailből
 const messages = await fetch('/v1/messages?folder=Submissions');
 const submissions = messages.filter(msg =>
   msg.to.some(addr => addr.includes('submit@'))
@@ -766,13 +766,13 @@ for (const submission of submissions) {
 }
 ```
 
-### 14. E-mail sablonok kezelése {#14-email-template-management}
+### 14. E-mail Sablonkezelés {#14-email-template-management}
 
-**Probléma**: Inkonzisztens [e-mail sablonok](https://en.wikipedia.org/wiki/Email_template) a csapaton belül
+**Probléma**: Inkonzisztens [e-mail sablonok](https://en.wikipedia.org/wiki/Email_template) a csapatban  
 **Megoldás**: Központosított sablonrendszer API-val
 
 ```javascript
-// Send templated emails with dynamic content
+// Sablonosított e-mailek küldése dinamikus tartalommal
 const template = await getEmailTemplate('welcome');
 await fetch('/v1/messages', {
   method: 'POST',
@@ -785,13 +785,13 @@ await fetch('/v1/messages', {
 });
 ```
 
-### 15. E-mail-alapú munkafolyamat-automatizálás {#15-email-based-workflow-automation}
+### 15. E-mail Alapú Munkafolyamat Automatizálás {#15-email-based-workflow-automation}
 
-**Probléma**: Manuális [jóváhagyási folyamatok](https://en.wikipedia.org/wiki/Workflow) e-mailben
-**Megoldás**: Automatizált munkafolyamat-eseményindítók
+**Probléma**: Manuális [jóváhagyási folyamatok](https://en.wikipedia.org/wiki/Workflow) e-mailen keresztül  
+**Megoldás**: Automatizált munkafolyamat-indítók
 
 ```javascript
-// Process approval emails
+// Jóváhagyási e-mailek feldolgozása
 const messages = await fetch('/v1/messages?folder=Approvals');
 const approvals = messages.filter(msg =>
   msg.subject.includes('APPROVAL')
@@ -807,13 +807,13 @@ for (const approval of approvals) {
 }
 ```
 
-### 16. E-mail biztonság figyelése {#16-email-security-monitoring}
+### 16. E-mail Biztonsági Megfigyelés {#16-email-security-monitoring}
 
-**Probléma**: Manuális [biztonsági fenyegetések észlelése](https://en.wikipedia.org/wiki/Email_security)
-**Megoldás**: Automatizált fenyegetéselemzés
+**Probléma**: Manuális [biztonsági fenyegetés felismerés](https://en.wikipedia.org/wiki/Email_security)  
+**Megoldás**: Automatizált fenyegetés elemzés
 
 ```javascript
-// Monitor for suspicious emails
+// Gyanús e-mailek figyelése
 const recentEmails = await fetch('/v1/messages');
 for (const email of recentEmails) {
   const threatScore = analyzeThreat(email);
@@ -827,13 +827,13 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. E-mail alapú felmérésgyűjtés {#17-email-based-survey-collection}
+### 17. E-mail Alapú Felmérés Gyűjtés {#17-email-based-survey-collection}
 
-**Probléma**: Manuális [felmérésre adott válasz](https://en.wikipedia.org/wiki/Survey_methodology) feldolgozás
-**Megoldás**: Automatikus válaszösszesítés
+**Probléma**: Manuális [felmérés válaszok](https://en.wikipedia.org/wiki/Survey_methodology) feldolgozása  
+**Megoldás**: Automatikus válaszgyűjtés
 
 ```javascript
-// Collect and process survey responses
+// Felmérés válaszok gyűjtése és feldolgozása
 const messages = await fetch('/v1/messages?folder=Surveys');
 const responses = messages.filter(msg =>
   msg.subject.includes('Survey Response')
@@ -847,13 +847,13 @@ const surveyData = responses.map(email => ({
 await updateSurveyResults(surveyData);
 ```
 
-### 18. E-mail teljesítményfigyelés {#18-email-performance-monitoring}
+### 18. E-mail Teljesítmény Figyelés {#18-email-performance-monitoring}
 
-**Probléma**: Nincs rálátás a [e-mail kézbesítési teljesítmény](https://en.wikipedia.org/wiki/Email_deliverability) elemre
-**Megoldás**: Valós idejű e-mail-metrikák
+**Probléma**: Nincs átláthatóság az [e-mail kézbesítési teljesítmény](https://en.wikipedia.org/wiki/Email_deliverability) terén  
+**Megoldás**: Valós idejű e-mail mutatók
 
 ```javascript
-// Monitor email delivery performance
+// E-mail kézbesítési teljesítmény figyelése
 const sentEmails = await fetch('/v1/messages?folder=Sent');
 const deliveryStats = {
   sent: sentEmails.length,
@@ -862,11 +862,10 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
+### 19. E-mail alapú lead minősítés {#19-email-based-lead-qualification}
 
-### 19. E-mail alapú érdeklődő minősítése {#19-email-based-lead-qualification}
-
-**Probléma**: Manuális [érdeklődő pontozás](https://en.wikipedia.org/wiki/Lead_scoring) az e-mailes interakciókból
-**Megoldás**: Automatizált érdeklődő-minősítési folyamat
+**Probléma**: Manuális [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) e-mail interakciókból  
+**Megoldás**: Automatikus lead minősítési folyamat
 
 ```javascript
 // Score leads based on email engagement
@@ -883,7 +882,7 @@ for (const prospect of prospects) {
 
 ### 20. E-mail alapú projektmenedzsment {#20-email-based-project-management}
 
-**Probléma**: [Projektfrissítések](https://en.wikipedia.org/wiki/Project_management) szétszórva az e-mail-szálakban
+**Probléma**: [Projektfrissítések](https://en.wikipedia.org/wiki/Project_management) szétszórva e-mail szálakban  
 **Megoldás**: Központosított projektkommunikációs központ
 
 ```javascript
@@ -903,10 +902,10 @@ for (const email of projectEmails) {
 }
 ```
 
-### 21. E-mail alapú készletgazdálkodás {#21-email-based-inventory-management}
+### 21. E-mail alapú készletkezelés {#21-email-based-inventory-management}
 
-**Probléma**: Manuális készletfrissítések beszállítói e-mailekből
-**Megoldás**: Automatizált készletkövetés e-mail értesítésekből
+**Probléma**: Manuális készletfrissítés beszállítói e-mailekből  
+**Megoldás**: Automatikus készletkövetés e-mail értesítésekből
 
 ```javascript
 // Process inventory updates from supplier emails
@@ -934,8 +933,8 @@ for (const email of inventoryEmails) {
 
 ### 22. E-mail alapú számlafeldolgozás {#22-email-based-invoice-processing}
 
-**Probléma**: Manuális [számlafeldolgozás](https://en.wikipedia.org/wiki/Invoice_processing) és könyvelési integráció
-**Megoldás**: Automatizált számlakivonatolás és könyvelési rendszer szinkronizálása
+**Probléma**: Manuális [számlafeldolgozás](https://en.wikipedia.org/wiki/Invoice_processing) és könyvelési integráció  
+**Megoldás**: Automatikus számla kinyerés és könyvelési rendszer szinkronizáció
 
 ```javascript
 // Extract invoice data from email attachments
@@ -963,8 +962,8 @@ for (const email of invoiceEmails) {
 
 ### 23. E-mail alapú eseményregisztráció {#23-email-based-event-registration}
 
-**Probléma**: Manuális [eseményregisztráció](https://en.wikipedia.org/wiki/Event_management) feldolgozás e-mail válaszokból
-**Megoldás**: Automatizált résztvevőkezelés és naptárintegráció
+**Probléma**: Manuális [eseményregisztráció](https://en.wikipedia.org/wiki/Event_management) feldolgozás e-mail válaszokból  
+**Megoldás**: Automatikus résztvevőkezelés és naptár integráció
 
 ```javascript
 // Process event registration emails
@@ -995,11 +994,10 @@ for (const registration of registrations) {
   });
 }
 ```
+### 24. E-mail alapú dokumentum jóváhagyási munkafolyamat {#24-email-based-document-approval-workflow}
 
-### 24. E-mail alapú dokumentum-jóváhagyási munkafolyamat {#24-email-based-document-approval-workflow}
-
-**Probléma**: Komplex [dokumentum jóváhagyása](https://en.wikipedia.org/wiki/Document_management_system) láncok e-mailben
-**Megoldás**: Automatizált jóváhagyáskövetés és dokumentumverziókezelés
+**Probléma**: Bonyolult [dokumentum jóváhagyási](https://en.wikipedia.org/wiki/Document_management_system) láncok e-mailen keresztül  
+**Megoldás**: Automatizált jóváhagyás követés és dokumentum verziókezelés
 
 ```javascript
 // Track document approval workflow
@@ -1027,10 +1025,10 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. E-mail alapú ügyfél-visszajelzés elemzés {#25-email-based-customer-feedback-analysis}
+### 25. E-mail alapú ügyfél visszajelzés elemzés {#25-email-based-customer-feedback-analysis}
 
-**Probléma**: Manuális [vásárlói visszajelzések](https://en.wikipedia.org/wiki/Customer_feedback) gyűjtés és véleményelemzés
-**Megoldás**: Automatizált visszajelzés-feldolgozás és véleménykövetés
+**Probléma**: Manuális [ügyfél visszajelzés](https://en.wikipedia.org/wiki/Customer_feedback) gyűjtés és érzelem elemzés  
+**Megoldás**: Automatizált visszajelzés feldolgozás és érzelem követés
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1061,8 +1059,8 @@ for (const email of feedbackEmails) {
 
 ### 26. E-mail alapú toborzási folyamat {#26-email-based-recruitment-pipeline}
 
-**Probléma**: Manuális [toborzás](https://en.wikipedia.org/wiki/Recruitment) és jelöltkövetés
-**Megoldás**: Automatizált jelöltkezelés és interjúütemezés
+**Probléma**: Manuális [toborzás](https://en.wikipedia.org/wiki/Recruitment) és jelölt követés  
+**Megoldás**: Automatizált jelöltkezelés és interjú ütemezés
 
 ```javascript
 // Process job application emails
@@ -1093,10 +1091,10 @@ for (const application of applications) {
 }
 ```
 
-### 27. E-mail alapú költségjelentés-feldolgozás {#27-email-based-expense-report-processing}
+### 27. E-mail alapú költségelszámolás feldolgozás {#27-email-based-expense-report-processing}
 
-**Probléma**: Manuális [költségjelentés](https://en.wikipedia.org/wiki/Expense_report) beküldés és jóváhagyás
-**Megoldás**: Automatizált költségkinyerési és jóváhagyási munkafolyamat
+**Probléma**: Manuális [költségelszámolás](https://en.wikipedia.org/wiki/Expense_report) benyújtás és jóváhagyás  
+**Megoldás**: Automatizált költség kinyerés és jóváhagyási munkafolyamat
 
 ```javascript
 // Process expense report emails
@@ -1127,10 +1125,9 @@ for (const email of expenseEmails) {
   }
 }
 ```
+### 28. E-mail alapú minőségbiztosítási jelentés {#28-email-based-quality-assurance-reporting}
 
-### 28. E-mail alapú minőségbiztosítási jelentéskészítés {#28-email-based-quality-assurance-reporting}
-
-**Probléma**: Manuális [minőségbiztosítás](https://en.wikipedia.org/wiki/Quality_assurance) hibakövetés
+**Probléma**: Manuális [minőségbiztosítás](https://en.wikipedia.org/wiki/Quality_assurance) hibakövetés  
 **Megoldás**: Automatizált QA hibakezelés és hibakövetés
 
 ```javascript
@@ -1168,10 +1165,10 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. E-mail alapú szállítókezelés {#29-email-based-vendor-management}
+### 29. E-mail alapú beszállítókezelés {#29-email-based-vendor-management}
 
-**Probléma**: Manuális [szállítói kommunikáció](https://en.wikipedia.org/wiki/Vendor_management) és szerződéskövetés
-**Megoldás**: Automatizált szállítói kapcsolatkezelés
+**Probléma**: Manuális [beszállítói kommunikáció](https://en.wikipedia.org/wiki/Vendor_management) és szerződéskövetés  
+**Megoldás**: Automatizált beszállítói kapcsolatok kezelése
 
 ```javascript
 // Track vendor communications and contracts
@@ -1212,8 +1209,8 @@ for (const email of vendorEmails) {
 
 ### 30. E-mail alapú közösségi média figyelés {#30-email-based-social-media-monitoring}
 
-**Probléma**: Manuális [közösségi média](https://en.wikipedia.org/wiki/Social_media_monitoring) említéskövetés és válasz
-**Megoldás**: Automatizált közösségi média riasztásfeldolgozás és válaszkoordináció
+**Probléma**: Manuális [közösségi média](https://en.wikipedia.org/wiki/Social_media_monitoring) említéskövetés és válaszadás  
+**Megoldás**: Automatizált közösségi média riasztások feldolgozása és válasz koordinációja
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1255,24 +1252,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
+
 ## Első lépések {#getting-started}
 
-### 1. Hozza létre továbbított e-mail fiókját {#1-create-your-forward-email-account}
+### 1. Hozd létre az átirányító e-mail fiókodat {#1-create-your-forward-email-account}
 
-Regisztráljon a [forwardemail.net](https://forwardemail.net) oldalon, és igazolja a domainjét.
+Regisztrálj a [forwardemail.net](https://forwardemail.net) oldalon, és igazold a domainedet.
 
-### 2. API hitelesítő adatok generálása {#2-generate-api-credentials}
+### 2. Generáld le az API hitelesítő adatokat {#2-generate-api-credentials}
 
-Az alias e-mail címed és jelszavad API hitelesítő adatokként szolgálnak – további beállításra nincs szükség.
-
-### 3. Első API-hívás végrehajtása {#3-make-your-first-api-call}
+Az alias e-mail címed és jelszavad szolgálnak API hitelesítő adatként – további beállítás nem szükséges.
+### 3. Tegye meg az első API hívását {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# Listázza az üzeneteit
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# Hozzon létre egy új kapcsolatot
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1280,20 +1277,21 @@ curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/contacts
 ```
 
-### 4. Tekintse meg a dokumentációt {#4-explore-the-documentation}
+### 4. Fedezze fel a dokumentációt {#4-explore-the-documentation}
 
-A teljes API dokumentációért interaktív példákkal ellátogat a [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) oldalra.
+Látogasson el a [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) oldalra a teljes API dokumentációért interaktív példákkal.
+
 
 ## Műszaki források {#technical-resources}
 
 * **[Teljes API dokumentáció](https://forwardemail.net/en/email-api)** - Interaktív OpenAPI 3.0 specifikáció
-* **[Saját tárhely útmutató](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - E-mail továbbításának telepítése az infrastruktúrán
-* **[Biztonsági tanulmány](https://forwardemail.net/technical-whitepaper.pdf)** - Műszaki architektúra és biztonsági részletek
-* **[GitHub adattár](https://github.com/forwardemail/forwardemail.net)** - Nyílt forráskódú kódbázis
-* **[Fejlesztői támogatás](mailto:api@forwardemail.net)** - Közvetlen hozzáférés a mérnöki csapatunkhoz
+* **[Önálló telepítési útmutató](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Telepítse a Forward Email szolgáltatást a saját infrastruktúrájára
+* **[Biztonsági fehér könyv](https://forwardemail.net/technical-whitepaper.pdf)** - Műszaki architektúra és biztonsági részletek
+* **[GitHub tárhely](https://github.com/forwardemail/forwardemail.net)** - Nyílt forráskódú kódalap
+* **[Fejlesztői támogatás](mailto:api@forwardemail.net)** - Közvetlen kapcsolat a mérnöki csapatunkkal
 
 ---
 
-**Készen állsz az e-mail integráció forradalmasítására?** [Kezdje el az építkezést még ma a Forward Email API-jával](https://forwardemail.net/en/email-api) és tapasztald meg az első, fejlesztők számára tervezett teljes e-mail-kezelő platformot.
+**Készen áll arra, hogy forradalmasítsa az e-mail integrációját?** [Kezdje el építeni a Forward Email API-jával még ma](https://forwardemail.net/en/email-api), és tapasztalja meg az első teljes körű e-mail kezelő platformot, amelyet kifejezetten fejlesztőknek terveztek.
 
-*E-mail továbbítása: Az e-mail szolgáltatás, amely végre jól kezeli az API-kat.*
+*Forward Email: Az e-mail szolgáltatás, amely végre jól kezeli az API-kat.*

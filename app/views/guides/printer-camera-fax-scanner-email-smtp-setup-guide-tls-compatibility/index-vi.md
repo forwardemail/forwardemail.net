@@ -1,556 +1,556 @@
-# Complete Guide to Printer, Camera, Fax & Scanner Email Setup {#complete-guide-to-printer-camera-fax--scanner-email-setup}
+# Hướng Dẫn Toàn Diện Cài Đặt Email Cho Máy In, Camera, Fax & Máy Quét {#complete-guide-to-printer-camera-fax--scanner-email-setup}
 
-Your office equipment needs to send emails - printers alert about toner levels, IP cameras notify about motion detection, fax machines report transmission status, and scanners confirm document processing. The problem? Most email providers dropped support for older devices, leaving your equipment unable to send notifications.
+Thiết bị văn phòng của bạn cần gửi email - máy in cảnh báo mức mực, camera IP thông báo phát hiện chuyển động, máy fax báo cáo trạng thái truyền, và máy quét xác nhận xử lý tài liệu. Vấn đề? Hầu hết nhà cung cấp email đã ngừng hỗ trợ các thiết bị cũ, khiến thiết bị của bạn không thể gửi thông báo.
 
-[Microsoft Office 365 discontinued TLS 1.0 and TLS 1.1 support in January 2022](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), breaking email for thousands of devices. Many printers, cameras, and fax machines made before 2020 only support these legacy protocols and can't be updated.
+[Microsoft Office 365 đã ngừng hỗ trợ TLS 1.0 và TLS 1.1 từ tháng 1 năm 2022](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), làm gián đoạn email cho hàng ngàn thiết bị. Nhiều máy in, camera và máy fax sản xuất trước năm 2020 chỉ hỗ trợ các giao thức cũ này và không thể cập nhật.
 
-Forward Email fixes this by supporting both modern and legacy devices. We have dedicated ports for current equipment and special legacy ports for older devices that can't be upgraded.
+Forward Email khắc phục điều này bằng cách hỗ trợ cả thiết bị hiện đại và thiết bị cũ. Chúng tôi có các cổng riêng dành cho thiết bị hiện tại và các cổng đặc biệt dành cho thiết bị cũ không thể nâng cấp.
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy devices through our dual-port strategy. Use port `465` (SSL/TLS, recommended) or `587` (STARTTLS) for modern devices with TLS 1.2+ support, and ports `2455`/`2555` for legacy devices that only support TLS 1.0.
+> Forward Email hỗ trợ cả thiết bị hiện đại và thiết bị cũ thông qua chiến lược hai cổng của chúng tôi. Sử dụng cổng `465` (SSL/TLS, khuyến nghị) hoặc `587` (STARTTLS) cho thiết bị hiện đại hỗ trợ TLS 1.2+, và các cổng `2455`/`2555` cho thiết bị cũ chỉ hỗ trợ TLS 1.0.
 
-## Table of Contents {#table-of-contents}
 
-* [The TLS Problem Explained](#the-tls-problem-explained)
-* [Forward Email SMTP Configuration Overview](#forward-email-smtp-configuration-overview)
-* [Comprehensive Device Compatibility Matrix](#comprehensive-device-compatibility-matrix)
-* [HP Printer Email Configuration](#hp-printer-email-configuration)
-  * [Modern HP Printers (2020 and Later)](#modern-hp-printers-2020-and-later)
-  * [Legacy HP Printers (Pre-2020 Models)](#legacy-hp-printers-pre-2020-models)
-* [Canon Printer Email Configuration](#canon-printer-email-configuration)
-  * [Current Canon Printers](#current-canon-printers)
-  * [Legacy Canon Printers](#legacy-canon-printers)
-* [Brother Printer Email Configuration](#brother-printer-email-configuration)
-  * [Brother MFC Series Configuration](#brother-mfc-series-configuration)
-  * [Troubleshooting Brother Email Issues](#troubleshooting-brother-email-issues)
-* [Foscam IP Camera Email Configuration](#foscam-ip-camera-email-configuration)
-  * [Understanding Foscam Email Limitations](#understanding-foscam-email-limitations)
-  * [Foscam Email Configuration Steps](#foscam-email-configuration-steps)
-  * [Advanced Foscam Configuration](#advanced-foscam-configuration)
-* [Hikvision Security Camera Email Configuration](#hikvision-security-camera-email-configuration)
-  * [Modern Hikvision Camera Configuration](#modern-hikvision-camera-configuration)
-  * [Legacy Hikvision Camera Configuration](#legacy-hikvision-camera-configuration)
-* [Dahua Security Camera Email Configuration](#dahua-security-camera-email-configuration)
-  * [Dahua Camera Email Setup](#dahua-camera-email-setup)
-  * [Dahua NVR Email Configuration](#dahua-nvr-email-configuration)
-* [Xerox Multifunction Device Email Configuration](#xerox-multifunction-device-email-configuration)
-  * [Xerox MFD Email Setup](#xerox-mfd-email-setup)
-* [Ricoh Multifunction Device Email Configuration](#ricoh-multifunction-device-email-configuration)
-  * [Modern Ricoh MFD Configuration](#modern-ricoh-mfd-configuration)
-  * [Legacy Ricoh Device Configuration](#legacy-ricoh-device-configuration)
-* [Troubleshooting Common Configuration Issues](#troubleshooting-common-configuration-issues)
-  * [Authentication and Credential Issues](#authentication-and-credential-issues)
-  * [TLS and Encryption Problems](#tls-and-encryption-problems)
-  * [Network Connectivity Issues](#network-connectivity-issues)
-  * [Device-Specific Configuration Challenges](#device-specific-configuration-challenges)
-* [Security Considerations and Best Practices](#security-considerations-and-best-practices)
-  * [Credential Management](#credential-management)
-  * [Network Security](#network-security)
-  * [Information Disclosure](#information-disclosure)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Conclusion](#conclusion)
+## Mục Lục {#table-of-contents}
 
-## The TLS Problem Explained {#the-tls-problem-explained}
+* [Giải Thích Vấn Đề TLS](#the-tls-problem-explained)
+* [Tổng Quan Cấu Hình SMTP Forward Email](#forward-email-smtp-configuration-overview)
+* [Bảng Tương Thích Thiết Bị Toàn Diện](#comprehensive-device-compatibility-matrix)
+* [Cấu Hình Email Máy In HP](#hp-printer-email-configuration)
+  * [Máy In HP Hiện Đại (2020 và Sau)](#modern-hp-printers-2020-and-later)
+  * [Máy In HP Cũ (Mẫu Trước 2020)](#legacy-hp-printers-pre-2020-models)
+* [Cấu Hình Email Máy In Canon](#canon-printer-email-configuration)
+  * [Máy In Canon Hiện Tại](#current-canon-printers)
+  * [Máy In Canon Cũ](#legacy-canon-printers)
+* [Cấu Hình Email Máy In Brother](#brother-printer-email-configuration)
+  * [Cấu Hình Dòng Brother MFC](#brother-mfc-series-configuration)
+  * [Khắc Phục Sự Cố Email Brother](#troubleshooting-brother-email-issues)
+* [Cấu Hình Email Camera IP Foscam](#foscam-ip-camera-email-configuration)
+  * [Hiểu Về Giới Hạn Email Foscam](#understanding-foscam-email-limitations)
+  * [Các Bước Cấu Hình Email Foscam](#foscam-email-configuration-steps)
+  * [Cấu Hình Nâng Cao Foscam](#advanced-foscam-configuration)
+* [Cấu Hình Email Camera An Ninh Hikvision](#hikvision-security-camera-email-configuration)
+  * [Cấu Hình Camera Hikvision Hiện Đại](#modern-hikvision-camera-configuration)
+  * [Cấu Hình Camera Hikvision Cũ](#legacy-hikvision-camera-configuration)
+* [Cấu Hình Email Camera An Ninh Dahua](#dahua-security-camera-email-configuration)
+  * [Cài Đặt Email Camera Dahua](#dahua-camera-email-setup)
+  * [Cấu Hình Email NVR Dahua](#dahua-nvr-email-configuration)
+* [Cấu Hình Email Thiết Bị Đa Chức Năng Xerox](#xerox-multifunction-device-email-configuration)
+  * [Cài Đặt Email MFD Xerox](#xerox-mfd-email-setup)
+* [Cấu Hình Email Thiết Bị Đa Chức Năng Ricoh](#ricoh-multifunction-device-email-configuration)
+  * [Cấu Hình MFD Ricoh Hiện Đại](#modern-ricoh-mfd-configuration)
+  * [Cấu Hình Thiết Bị Ricoh Cũ](#legacy-ricoh-device-configuration)
+* [Khắc Phục Sự Cố Cấu Hình Thường Gặp](#troubleshooting-common-configuration-issues)
+  * [Vấn Đề Xác Thực và Thông Tin Đăng Nhập](#authentication-and-credential-issues)
+  * [Vấn Đề TLS và Mã Hóa](#tls-and-encryption-problems)
+  * [Vấn Đề Kết Nối Mạng](#network-connectivity-issues)
+  * [Thách Thức Cấu Hình Riêng Cho Thiết Bị](#device-specific-configuration-challenges)
+* [Các Lưu Ý Bảo Mật và Thực Tiễn Tốt Nhất](#security-considerations-and-best-practices)
+  * [Quản Lý Thông Tin Đăng Nhập](#credential-management)
+  * [Bảo Mật Mạng](#network-security)
+  * [Tiết Lộ Thông Tin](#information-disclosure)
+  * [Giám Sát và Bảo Trì](#monitoring-and-maintenance)
+* [Kết Luận](#conclusion)
+## Vấn Đề TLS Được Giải Thích {#the-tls-problem-explained}
 
-Here's what happened: email security got stricter, but your devices didn't get the memo. Modern equipment supports TLS 1.2+, but older devices are stuck with TLS 1.0. Most email providers dropped support for TLS 1.0, so your devices can't connect.
+Chuyện đã xảy ra như sau: bảo mật email trở nên nghiêm ngặt hơn, nhưng thiết bị của bạn thì không nhận được thông báo. Thiết bị hiện đại hỗ trợ TLS 1.2+, nhưng các thiết bị cũ vẫn chỉ dùng TLS 1.0. Hầu hết nhà cung cấp email đã ngừng hỗ trợ TLS 1.0, nên thiết bị của bạn không thể kết nối được.
 
-This affects real operations - security cameras can't send alerts during incidents, printers can't warn about maintenance issues, and fax confirmations get lost. Forward Email's [SMTP server configuration](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) provides multiple ports to keep everything working.
-
-> \[!TIP]
-> Check your device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
-
-## Forward Email SMTP Configuration Overview {#forward-email-smtp-configuration-overview}
-
-Forward Email provides a comprehensive SMTP service designed specifically to address the unique challenges of device email configuration. Our infrastructure supports multiple connection types and security levels, ensuring compatibility with both cutting-edge equipment and legacy devices that remain in active use.
-
-For modern devices with TLS 1.2+ support, use our primary SMTP server at smtp.forwardemail.net with port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections. These ports provide enterprise-grade security and are compatible with all current device firmware versions.
-
-Legacy devices that only support TLS 1.0 can use our specialized compatibility ports. Port 2455 provides SSL/TLS connections with TLS 1.0 support, while port 2555 offers STARTTLS with legacy protocol compatibility. These ports maintain the highest possible security while ensuring continued functionality for older equipment.
-
-Authentication is required for all connections using your Forward Email alias as the username and a generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). This approach provides robust security while maintaining broad compatibility across different device authentication systems.
-
-> \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for device configuration.
-
-## Comprehensive Device Compatibility Matrix {#comprehensive-device-compatibility-matrix}
-
-Understanding which devices require legacy support versus modern configuration helps streamline the setup process and ensures reliable email delivery across your entire device ecosystem.
-
-| Device Category | Modern TLS Support | Legacy TLS Required | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| -------------------------- | ------------------ | ------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| HP Printers (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Certificate validation](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [HP LaserJet Pro MFP Setup Guide](https://support.hp.com/us-en/document/ish_6185297-6063300-16) |
-| HP Printers (Pre-2020) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Firmware limitations](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/) | [Scan to Email Feature Guide](https://support.hp.com/us-en/document/ish_6518575-6518545-16) |
-| Canon Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Authentication setup](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358) | [Canon SMTP Authentication Guide](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html) |
-| Canon Printers (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate issues](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443) | [Advanced E-mail Settings Guide](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html) |
-| Brother Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Port configuration](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/) | [Brother SMTP Setup Guide](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512) |
-| Epson Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Web interface access | [Epson Email Notification Setup](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm) |
-| Foscam IP Cameras | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate validation](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/) | [Foscam Email Setup FAQ](https://www.foscam.com/faqs/view.html?id=63) |
-| Hikvision (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL requirements | [Hikvision Email Setup Guide](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Hikvision (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | Firmware updates | [Legacy Hikvision Configuration](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Dahua Cameras (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Authentication | [Dahua Email Setup Wiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) |
-| Xerox MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [TLS configuration](https://www.support.xerox.com/en-us/article/KB0032169) | [Xerox TLS Configuration Guide](https://www.support.xerox.com/en-us/article/KB0032169) |
-| Ricoh MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL setup | [Ricoh Email Configuration](https://www.ricoh.com/info/2025/0526_1) |
-| Ricoh MFDs (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Basic auth issues](https://www.ricoh.com/info/2025/0526_1) | [Legacy Ricoh Setup](https://www.ricoh.com/info/2025/0526_1) |
-
-This matrix provides a quick reference for determining the appropriate configuration approach for your specific devices. When in doubt, start with modern ports and fall back to legacy ports if connection issues occur.
-
-> \[!NOTE]
-> Device age is not always a reliable indicator of TLS support. Some manufacturers backported TLS 1.2 support to older models through firmware updates, while others discontinued support for legacy products.
-
-## HP Printer Email Configuration {#hp-printer-email-configuration}
-
-HP printers represent one of the largest installed bases of network-connected printing devices, with models ranging from current LaserJet Pro series with full TLS 1.3 support to legacy models that only support TLS 1.0. The configuration process varies significantly between modern and legacy devices, requiring different approaches for optimal compatibility.
-
-### Modern HP Printers (2020 and Later) {#modern-hp-printers-2020-and-later}
-
-Modern HP printers include the LaserJet Pro MFP M404 series, Color LaserJet Pro MFP M479 series, and newer models that support current TLS standards. These devices provide comprehensive email notification capabilities through HP's Embedded Web Server (EWS) interface.
-
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. You can find the IP address by printing a network configuration page from the printer's control panel.
-
-2. **Navigate to the Network tab** and select "Email Server" or "SMTP Settings" depending on your printer model. Some HP printers organize these settings under "System" > "Email Alerts."
-
-3. **Configure the SMTP server settings** by entering `smtp.forwardemail.net` as the server address. Select "SSL/TLS" as the encryption method and enter `465` as the port number for the most reliable connection.
-
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains), not your account login password.
-
-5. **Configure sender information** by entering your Forward Email alias as the "From" address and a descriptive name like "HP Printer - Office" to help identify the source of notifications.
-
-6. **Set up recipient addresses** by adding up to five email addresses that should receive printer notifications. HP printers allow different notification types to be sent to different recipients.
-
-7. **Test the configuration** using HP's built-in email test function. The printer will send a test message to verify that all settings are correct and communication with Forward Email's servers is working properly.
+Điều này ảnh hưởng đến hoạt động thực tế - camera an ninh không thể gửi cảnh báo khi có sự cố, máy in không thể cảnh báo về vấn đề bảo trì, và các xác nhận fax bị thất lạc. Cấu hình [máy chủ SMTP của Forward Email](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) cung cấp nhiều cổng để giữ mọi thứ hoạt động.
 
 > \[!TIP]
-> HP printers often cache DNS lookups. If you encounter connection issues, restart the printer after configuration to clear any cached DNS entries.
+> Kiểm tra phiên bản firmware và hỗ trợ TLS của thiết bị trước khi cấu hình. Hầu hết thiết bị sản xuất sau năm 2020 đều hỗ trợ các giao thức TLS hiện đại, trong khi các thiết bị cũ thường cần các cổng tương thích với giao thức cũ.
 
-### Legacy HP Printers (Pre-2020 Models) {#legacy-hp-printers-pre-2020-models}
 
-Older HP printers, including the LaserJet Pro MFP M277 and similar models, often only support TLS 1.0 and require special configuration to work with modern email providers. These devices frequently display "TLS certificate verification failed" errors when attempting to connect to standard SMTP ports.
+## Tổng Quan Cấu Hình SMTP Forward Email {#forward-email-smtp-configuration-overview}
 
-1. **Access the printer's Embedded Web Server** by entering the printer's IP address in a web browser. Legacy HP printers may require Internet Explorer or compatibility mode for full functionality.
+Forward Email cung cấp dịch vụ SMTP toàn diện được thiết kế đặc biệt để giải quyết các thách thức riêng biệt trong cấu hình email cho thiết bị. Hạ tầng của chúng tôi hỗ trợ nhiều loại kết nối và mức độ bảo mật khác nhau, đảm bảo tương thích với cả thiết bị hiện đại và các thiết bị cũ vẫn đang được sử dụng.
 
-2. **Navigate to the Network or System settings** and locate the "Email" or "SMTP" configuration section. The exact location varies by model and firmware version.
+Đối với thiết bị hiện đại hỗ trợ TLS 1.2+, sử dụng máy chủ SMTP chính của chúng tôi tại smtp.forwardemail.net với cổng 465 cho kết nối SSL/TLS (khuyến nghị) hoặc cổng 587 cho kết nối STARTTLS. Các cổng này cung cấp bảo mật cấp doanh nghiệp và tương thích với tất cả các phiên bản firmware thiết bị hiện tại.
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address. This is crucial - use port 2455 for SSL/TLS connections or port 2555 for STARTTLS connections instead of standard ports.
+Các thiết bị cũ chỉ hỗ trợ TLS 1.0 có thể sử dụng các cổng tương thích chuyên biệt của chúng tôi. Cổng 2455 cung cấp kết nối SSL/TLS với hỗ trợ TLS 1.0, trong khi cổng 2555 cung cấp STARTTLS với khả năng tương thích giao thức cũ. Các cổng này duy trì mức bảo mật cao nhất có thể trong khi đảm bảo thiết bị cũ vẫn hoạt động bình thường.
 
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use your generated Forward Email password for authentication.
-
-5. **Configure encryption settings** carefully. Select "SSL/TLS" if using port 2455, or "STARTTLS" if using port 2555. Some legacy HP printers may label these options differently.
-
-6. **Set sender and recipient information** using your Forward Email alias as the sender address and configuring appropriate recipient addresses for notifications.
-
-7. **Test the configuration** using the printer's test function. If the test fails with certificate errors, verify that you're using the correct legacy ports (2455 or 2555) rather than standard SMTP ports.
+Tất cả kết nối đều yêu cầu xác thực bằng bí danh Forward Email của bạn làm tên đăng nhập và mật khẩu được tạo từ [Tài Khoản Của Tôi -> Tên Miền -> Bí Danh](https://forwardemail.net/my-account/domains). Cách làm này cung cấp bảo mật mạnh mẽ đồng thời duy trì khả năng tương thích rộng rãi với các hệ thống xác thực thiết bị khác nhau.
 
 > \[!CAUTION]
-> Legacy HP printers may not receive firmware updates that address TLS compatibility issues. If configuration continues to fail, consider using a local SMTP relay server as an intermediate solution.
+> Không bao giờ sử dụng mật khẩu đăng nhập tài khoản của bạn để xác thực SMTP. Luôn sử dụng mật khẩu được tạo từ [Tài Khoản Của Tôi -> Tên Miền -> Bí Danh](https://forwardemail.net/my-account/domains) để cấu hình thiết bị.
 
-## Canon Printer Email Configuration {#canon-printer-email-configuration}
 
-Canon printers offer robust email notification capabilities across their imageRUNNER, PIXMA, and MAXIFY product lines. Modern Canon devices support comprehensive TLS configurations, while legacy models may require specific compatibility settings to function with current email providers.
+## Ma Trận Tương Thích Thiết Bị Toàn Diện {#comprehensive-device-compatibility-matrix}
 
-### Current Canon Printers {#current-canon-printers}
+Hiểu được thiết bị nào cần hỗ trợ giao thức cũ và thiết bị nào dùng cấu hình hiện đại giúp đơn giản hóa quá trình thiết lập và đảm bảo gửi email đáng tin cậy trên toàn bộ hệ sinh thái thiết bị của bạn.
 
-Modern Canon printers provide extensive email notification features through the Remote UI web interface, supporting everything from basic status alerts to detailed device management notifications.
-
-1. **Access the Remote UI** by entering the printer's IP address in a web browser. Canon printers typically use a web-based interface for all network configuration tasks.
-
-2. **Navigate to Settings/Registration** and select "Device Management" from the menu. Look for "E-Mail Notification Settings" or similar options depending on your printer model.
-
-3. **Configure the SMTP server** by clicking "Add Destination" and entering smtp.forwardemail.net as the server address. Select "SSL" or "TLS" as the encryption method.
-
-4. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Canon printers clearly distinguish between these encryption methods in their interface.
-
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
-
-6. **Set up sender information** by entering your Forward Email alias as the sender address and configuring a descriptive display name for easy identification of notifications.
-
-7. **Configure notification types** by selecting which events should trigger email alerts. Canon printers support granular control over notification types, including error conditions, maintenance alerts, and security events.
-
-8. **Test the email configuration** using Canon's built-in test function. The printer will send a test notification to verify proper configuration and connectivity.
+| Loại Thiết Bị              | Hỗ Trợ TLS Hiện Đại | Cần TLS Cũ          | Cổng Khuyến Nghị  | Vấn Đề Thường Gặp                                                                                                                                    | Hướng Dẫn Cài Đặt/Hình Ảnh                                                                                                                      |
+| -------------------------- | ------------------- | ------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Máy in HP (2020+)           | ✅ TLS 1.2+          | ❌                   | `465`, `587`      | [Xác thực chứng chỉ](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707)      | [Hướng Dẫn Cài Đặt HP LaserJet Pro MFP](https://support.hp.com/us-en/document/ish_6185297-6063300-16)                                              |
+| Máy in HP (Trước 2020)      | ❌                   | ✅ Chỉ TLS 1.0       | `2455`, `2555`    | [Giới hạn firmware](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/)                                              | [Hướng Dẫn Tính Năng Scan to Email](https://support.hp.com/us-en/document/ish_6518575-6518545-16)                                                  |
+| Máy in Canon (Hiện tại)     | ✅ TLS 1.2+          | ❌                   | `465`, `587`      | [Cài đặt xác thực](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358)              | [Hướng Dẫn Xác Thực SMTP Canon](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html)                                        |
+| Máy in Canon (Cũ)           | ❌                   | ✅ Chỉ TLS 1.0       | `2455`, `2555`    | [Vấn đề chứng chỉ](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443)               | [Hướng Dẫn Cài Đặt Email Nâng Cao](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html)                                         |
+| Máy in Brother (Hiện tại)   | ✅ TLS 1.2+          | ❌                   | `465`, `587`      | [Cấu hình cổng](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/)                             | [Hướng Dẫn Cài Đặt SMTP Brother](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512)               |
+| Máy in Epson (Hiện tại)     | ✅ TLS 1.2+          | ❌                   | `465`, `587`      | Truy cập giao diện web                                                                                                                               | [Cài Đặt Thông Báo Email Epson](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm)           |
+| Camera IP Foscam            | ❌                   | ✅ Chỉ TLS 1.0       | `2455`, `2555`    | [Xác thực chứng chỉ](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/)                               | [FAQ Cài Đặt Email Foscam](https://www.foscam.com/faqs/view.html?id=63)                                                                           |
+| Hikvision (2020+)           | ✅ TLS 1.2+          | ❌                   | `465`, `587`      | Yêu cầu SSL                                                                                                                                           | [Hướng Dẫn Cài Đặt Email Hikvision](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
+| Hikvision (Cũ)              | ❌                   | ✅ Chỉ TLS 1.0       | `2455`, `2555`    | Cập nhật firmware                                                                                                                                     | [Cấu Hình Hikvision Cũ](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf)            |
+| Camera Dahua (Hiện tại)     | ✅ TLS 1.2+          | ❌                   | `465`, `587`      | Xác thực                                                                                                                                              | [Wiki Cài Đặt Email Dahua](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail)                                                           |
+| Máy đa chức năng Xerox (Hiện tại) | ✅ TLS 1.2+    | ❌                   | `465`, `587`      | [Cấu hình TLS](https://www.support.xerox.com/en-us/article/KB0032169)                                                                                 | [Hướng Dẫn Cấu Hình TLS Xerox](https://www.support.xerox.com/en-us/article/KB0032169)                                                             |
+| Máy đa chức năng Ricoh (Hiện tại) | ✅ TLS 1.2+    | ❌                   | `465`, `587`      | Cài đặt SSL                                                                                                                                           | [Cấu Hình Email Ricoh](https://www.ricoh.com/info/2025/0526_1)                                                                                   |
+| Máy đa chức năng Ricoh (Cũ) | ❌                   | ✅ Chỉ TLS 1.0       | `2455`, `2555`    | [Vấn đề xác thực cơ bản](https://www.ricoh.com/info/2025/0526_1)                                                                                      | [Cài Đặt Ricoh Cũ](https://www.ricoh.com/info/2025/0526_1)                                                                                        |
+Ma trận này cung cấp một tham chiếu nhanh để xác định phương pháp cấu hình phù hợp cho các thiết bị cụ thể của bạn. Khi không chắc chắn, hãy bắt đầu với các cổng hiện đại và chuyển sang các cổng cũ nếu xảy ra sự cố kết nối.
 
 > \[!NOTE]
-> Canon printers often provide detailed error messages that can help troubleshoot configuration issues. Pay attention to specific error codes for faster problem resolution.
+> Tuổi thiết bị không phải lúc nào cũng là chỉ số đáng tin cậy về hỗ trợ TLS. Một số nhà sản xuất đã cập nhật hỗ trợ TLS 1.2 cho các mẫu cũ thông qua cập nhật firmware, trong khi những nhà sản xuất khác đã ngừng hỗ trợ các sản phẩm cũ.
 
-### Legacy Canon Printers {#legacy-canon-printers}
 
-Older Canon printers may have limited TLS support and require careful configuration to work with modern email providers. These devices often need legacy-compatible SMTP settings to maintain email notification functionality.
+## Cấu hình Email Máy in HP {#hp-printer-email-configuration}
 
-1. **Access the printer's web interface** using the device's IP address. Legacy Canon printers may require specific browser compatibility settings for full functionality.
+Máy in HP đại diện cho một trong những cơ sở thiết bị in kết nối mạng lớn nhất, với các mẫu từ dòng LaserJet Pro hiện tại hỗ trợ đầy đủ TLS 1.3 đến các mẫu cũ chỉ hỗ trợ TLS 1.0. Quá trình cấu hình thay đổi đáng kể giữa các thiết bị hiện đại và cũ, yêu cầu các phương pháp khác nhau để đạt được khả năng tương thích tối ưu.
 
-2. **Navigate to the email configuration section** through the device management or network settings menu. The exact path varies by model and firmware version.
+### Máy in HP hiện đại (2020 trở đi) {#modern-hp-printers-2020-and-later}
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections or port 2555 for STARTTLS connections.
+Máy in HP hiện đại bao gồm dòng LaserJet Pro MFP M404, Color LaserJet Pro MFP M479 và các mẫu mới hơn hỗ trợ các tiêu chuẩn TLS hiện tại. Các thiết bị này cung cấp khả năng thông báo email toàn diện thông qua giao diện HP Embedded Web Server (EWS).
 
-4. **Set up authentication carefully** by enabling SMTP authentication and using your Forward Email alias and generated password. Legacy Canon printers may have specific authentication requirements.
+1. **Truy cập giao diện web của máy in** bằng cách nhập địa chỉ IP của máy in vào trình duyệt web. Bạn có thể tìm địa chỉ IP bằng cách in trang cấu hình mạng từ bảng điều khiển của máy in.
 
-5. **Configure encryption settings** by selecting the appropriate TLS option for your chosen port. Ensure the encryption method matches the port configuration (SSL for 2455, STARTTLS for 2555).
+2. **Đi đến tab Mạng** và chọn "Email Server" hoặc "SMTP Settings" tùy theo mẫu máy in của bạn. Một số máy in HP tổ chức các cài đặt này dưới mục "System" > "Email Alerts."
 
-6. **Test the configuration** and monitor for certificate validation errors. If issues persist, verify that you're using Forward Email's legacy-compatible ports rather than standard SMTP ports.
+3. **Cấu hình các thiết lập máy chủ SMTP** bằng cách nhập `smtp.forwardemail.net` làm địa chỉ máy chủ. Chọn "SSL/TLS" làm phương thức mã hóa và nhập `465` làm số cổng để có kết nối ổn định nhất.
+
+4. **Thiết lập xác thực** bằng cách bật xác thực SMTP và nhập bí danh Forward Email của bạn làm tên người dùng. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains), không phải mật khẩu đăng nhập tài khoản của bạn.
+
+5. **Cấu hình thông tin người gửi** bằng cách nhập bí danh Forward Email của bạn làm địa chỉ "From" và một tên mô tả như "HP Printer - Office" để giúp nhận biết nguồn thông báo.
+
+6. **Thiết lập địa chỉ người nhận** bằng cách thêm tối đa năm địa chỉ email sẽ nhận thông báo từ máy in. Máy in HP cho phép gửi các loại thông báo khác nhau đến các người nhận khác nhau.
+
+7. **Kiểm tra cấu hình** bằng chức năng kiểm tra email tích hợp của HP. Máy in sẽ gửi một tin nhắn thử để xác minh rằng tất cả các cài đặt đều chính xác và việc liên lạc với máy chủ Forward Email hoạt động tốt.
+
+> \[!TIP]
+> Máy in HP thường lưu bộ nhớ đệm tra cứu DNS. Nếu bạn gặp sự cố kết nối, hãy khởi động lại máy in sau khi cấu hình để xóa các mục DNS đã lưu.
+
+### Máy in HP cũ (Mẫu trước 2020) {#legacy-hp-printers-pre-2020-models}
+
+Các máy in HP cũ hơn, bao gồm LaserJet Pro MFP M277 và các mẫu tương tự, thường chỉ hỗ trợ TLS 1.0 và yêu cầu cấu hình đặc biệt để làm việc với các nhà cung cấp email hiện đại. Các thiết bị này thường hiển thị lỗi "TLS certificate verification failed" khi cố gắng kết nối với các cổng SMTP tiêu chuẩn.
+
+1. **Truy cập Embedded Web Server của máy in** bằng cách nhập địa chỉ IP của máy in vào trình duyệt web. Máy in HP cũ có thể yêu cầu Internet Explorer hoặc chế độ tương thích để hoạt động đầy đủ.
+
+2. **Đi đến cài đặt Mạng hoặc Hệ thống** và tìm phần cấu hình "Email" hoặc "SMTP." Vị trí chính xác thay đổi tùy theo mẫu máy và phiên bản firmware.
+
+3. **Cấu hình các thiết lập SMTP cũ của Forward Email** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Điều này rất quan trọng - sử dụng cổng 2455 cho kết nối SSL/TLS hoặc cổng 2555 cho kết nối STARTTLS thay vì các cổng tiêu chuẩn.
+
+4. **Thiết lập xác thực** bằng cách bật xác thực SMTP và nhập bí danh Forward Email của bạn làm tên người dùng. Sử dụng mật khẩu Forward Email đã tạo để xác thực.
+
+5. **Cấu hình cài đặt mã hóa** một cách cẩn thận. Chọn "SSL/TLS" nếu sử dụng cổng 2455, hoặc "STARTTLS" nếu sử dụng cổng 2555. Một số máy in HP cũ có thể đặt tên các tùy chọn này khác nhau.
+6. **Đặt thông tin người gửi và người nhận** bằng cách sử dụng bí danh Forward Email của bạn làm địa chỉ người gửi và cấu hình các địa chỉ người nhận phù hợp cho các thông báo.
+
+7. **Kiểm tra cấu hình** bằng chức năng kiểm tra của máy in. Nếu kiểm tra thất bại với lỗi chứng chỉ, hãy xác minh rằng bạn đang sử dụng các cổng kế thừa đúng (2455 hoặc 2555) thay vì các cổng SMTP tiêu chuẩn.
+
+> \[!CAUTION]
+> Máy in HP kế thừa có thể không nhận được các bản cập nhật firmware để khắc phục các vấn đề tương thích TLS. Nếu cấu hình vẫn tiếp tục thất bại, hãy cân nhắc sử dụng máy chủ chuyển tiếp SMTP cục bộ như một giải pháp trung gian.
+
+
+## Cấu hình Email Máy In Canon {#canon-printer-email-configuration}
+
+Máy in Canon cung cấp khả năng thông báo email mạnh mẽ trên các dòng sản phẩm imageRUNNER, PIXMA và MAXIFY của họ. Các thiết bị Canon hiện đại hỗ trợ cấu hình TLS toàn diện, trong khi các mẫu kế thừa có thể yêu cầu các thiết lập tương thích cụ thể để hoạt động với các nhà cung cấp email hiện nay.
+
+### Máy In Canon Hiện Đại {#current-canon-printers}
+
+Máy in Canon hiện đại cung cấp các tính năng thông báo email rộng rãi thông qua giao diện web Remote UI, hỗ trợ từ các cảnh báo trạng thái cơ bản đến các thông báo quản lý thiết bị chi tiết.
+
+1. **Truy cập Remote UI** bằng cách nhập địa chỉ IP của máy in vào trình duyệt web. Máy in Canon thường sử dụng giao diện web cho tất cả các tác vụ cấu hình mạng.
+
+2. **Đi đến Settings/Registration** và chọn "Device Management" từ menu. Tìm "E-Mail Notification Settings" hoặc các tùy chọn tương tự tùy theo mẫu máy in của bạn.
+
+3. **Cấu hình máy chủ SMTP** bằng cách nhấp vào "Add Destination" và nhập smtp.forwardemail.net làm địa chỉ máy chủ. Chọn "SSL" hoặc "TLS" làm phương thức mã hóa.
+
+4. **Đặt số cổng** là 465 cho kết nối SSL/TLS (khuyến nghị) hoặc 587 cho kết nối STARTTLS. Máy in Canon phân biệt rõ ràng giữa các phương thức mã hóa này trong giao diện của họ.
+
+5. **Cấu hình xác thực** bằng cách bật xác thực SMTP và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+
+6. **Thiết lập thông tin người gửi** bằng cách nhập bí danh Forward Email của bạn làm địa chỉ người gửi và cấu hình tên hiển thị mô tả để dễ dàng nhận biết các thông báo.
+
+7. **Cấu hình loại thông báo** bằng cách chọn các sự kiện sẽ kích hoạt cảnh báo email. Máy in Canon hỗ trợ kiểm soát chi tiết các loại thông báo, bao gồm các điều kiện lỗi, cảnh báo bảo trì và sự kiện bảo mật.
+
+8. **Kiểm tra cấu hình email** bằng chức năng kiểm tra tích hợp của Canon. Máy in sẽ gửi một thông báo thử nghiệm để xác minh cấu hình và kết nối đúng.
+
+> \[!NOTE]
+> Máy in Canon thường cung cấp các thông báo lỗi chi tiết có thể giúp khắc phục sự cố cấu hình. Hãy chú ý đến các mã lỗi cụ thể để giải quyết vấn đề nhanh hơn.
+
+### Máy In Canon Kế Thừa {#legacy-canon-printers}
+
+Các máy in Canon cũ hơn có thể hỗ trợ TLS hạn chế và yêu cầu cấu hình cẩn thận để hoạt động với các nhà cung cấp email hiện đại. Những thiết bị này thường cần các thiết lập SMTP tương thích kế thừa để duy trì chức năng thông báo email.
+
+1. **Truy cập giao diện web của máy in** bằng địa chỉ IP của thiết bị. Máy in Canon kế thừa có thể yêu cầu các thiết lập tương thích trình duyệt cụ thể để hoạt động đầy đủ.
+
+2. **Đi đến phần cấu hình email** thông qua menu quản lý thiết bị hoặc cài đặt mạng. Đường dẫn chính xác thay đổi tùy theo mẫu máy và phiên bản firmware.
+
+3. **Cấu hình các thiết lập SMTP kế thừa của Forward Email** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ và sử dụng cổng 2455 cho kết nối SSL hoặc cổng 2555 cho kết nối STARTTLS.
+
+4. **Thiết lập xác thực cẩn thận** bằng cách bật xác thực SMTP và sử dụng bí danh Forward Email cùng mật khẩu đã tạo. Máy in Canon kế thừa có thể có các yêu cầu xác thực cụ thể.
+
+5. **Cấu hình các thiết lập mã hóa** bằng cách chọn tùy chọn TLS phù hợp với cổng bạn chọn. Đảm bảo phương thức mã hóa phù hợp với cấu hình cổng (SSL cho 2455, STARTTLS cho 2555).
+6. **Kiểm tra cấu hình** và theo dõi lỗi xác thực chứng chỉ. Nếu vấn đề vẫn tiếp diễn, hãy xác minh rằng bạn đang sử dụng các cổng tương thích với Forward Email thay vì các cổng SMTP tiêu chuẩn.
 
 > \[!WARNING]
-> Some legacy Canon printers may not support server certificate validation. While this reduces security, it may be necessary for continued email functionality on older devices.
+> Một số máy in Canon đời cũ có thể không hỗ trợ xác thực chứng chỉ máy chủ. Mặc dù điều này làm giảm tính bảo mật, nhưng có thể cần thiết để duy trì chức năng email trên các thiết bị cũ hơn.
 
-## Brother Printer Email Configuration {#brother-printer-email-configuration}
 
-Brother printers, particularly the MFC and DCP series, provide comprehensive scan-to-email and notification capabilities. However, many users report configuration challenges when setting up email functionality, especially with Office 365 and other modern email providers that have deprecated legacy authentication methods.
+## Cấu hình Email cho Máy in Brother {#brother-printer-email-configuration}
 
-### Brother MFC Series Configuration {#brother-mfc-series-configuration}
+Máy in Brother, đặc biệt là dòng MFC và DCP, cung cấp các khả năng quét tới email và thông báo toàn diện. Tuy nhiên, nhiều người dùng báo cáo gặp khó khăn trong việc cấu hình chức năng email, đặc biệt với Office 365 và các nhà cung cấp email hiện đại khác đã loại bỏ các phương thức xác thực cũ.
 
-Brother multifunction printers offer extensive email capabilities, but configuration can be complex due to the variety of authentication and encryption options available.
+### Cấu hình dòng Brother MFC {#brother-mfc-series-configuration}
 
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. Brother printers provide a comprehensive web-based configuration system.
+Máy in đa chức năng Brother cung cấp nhiều khả năng email, nhưng việc cấu hình có thể phức tạp do có nhiều tùy chọn xác thực và mã hóa khác nhau.
 
-2. **Navigate to the Network settings** and select "Email/IFAX" or "Scan to Email" depending on your printer model. Some Brother printers organize these settings under "Administrator Settings."
+1. **Truy cập giao diện web của máy in** bằng cách nhập địa chỉ IP của máy in vào trình duyệt web. Máy in Brother cung cấp hệ thống cấu hình dựa trên web toàn diện.
 
-3. **Configure the SMTP server settings** by entering smtp.forwardemail.net as the server address. Brother printers support both SSL/TLS and STARTTLS encryption methods.
+2. **Đi tới cài đặt Mạng** và chọn "Email/IFAX" hoặc "Scan to Email" tùy theo mẫu máy in của bạn. Một số máy in Brother tổ chức các cài đặt này dưới mục "Administrator Settings."
 
-4. **Set the appropriate port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption. Brother printers clearly label these options in their interface.
+3. **Cấu hình cài đặt máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Máy in Brother hỗ trợ cả hai phương thức mã hóa SSL/TLS và STARTTLS.
 
-5. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+4. **Chọn cổng và mã hóa phù hợp** bằng cách chọn cổng 465 với mã hóa SSL/TLS (khuyến nghị) hoặc cổng 587 với mã hóa STARTTLS. Máy in Brother ghi rõ các tùy chọn này trong giao diện của họ.
 
-6. **Set up sender information** by configuring your Forward Email alias as the sender address and adding a descriptive name to identify the printer in email notifications.
+5. **Cấu hình xác thực SMTP** bằng cách bật xác thực và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-7. **Configure scan-to-email settings** by setting up address book entries and default scan settings. Brother printers allow extensive customization of scan parameters and recipient management.
+6. **Thiết lập thông tin người gửi** bằng cách cấu hình bí danh Forward Email của bạn làm địa chỉ người gửi và thêm tên mô tả để nhận diện máy in trong các thông báo email.
 
-8. **Test both email notifications and scan-to-email functionality** to ensure complete configuration. Brother printers provide separate test functions for different email features.
+7. **Cấu hình các cài đặt quét tới email** bằng cách thiết lập các mục trong sổ địa chỉ và các cài đặt quét mặc định. Máy in Brother cho phép tùy chỉnh rộng rãi các tham số quét và quản lý người nhận.
+
+8. **Kiểm tra cả chức năng thông báo email và quét tới email** để đảm bảo cấu hình hoàn chỉnh. Máy in Brother cung cấp các chức năng kiểm tra riêng biệt cho các tính năng email khác nhau.
 
 > \[!TIP]
-> Brother printers often require firmware updates to resolve email configuration issues. Check for available updates before troubleshooting connection problems.
+> Máy in Brother thường yêu cầu cập nhật firmware để giải quyết các vấn đề cấu hình email. Hãy kiểm tra các bản cập nhật có sẵn trước khi khắc phục sự cố kết nối.
 
-### Troubleshooting Brother Email Issues {#troubleshooting-brother-email-issues}
+### Khắc phục sự cố Email Brother {#troubleshooting-brother-email-issues}
 
-Brother printers frequently encounter specific configuration challenges that can be resolved with targeted troubleshooting approaches.
+Máy in Brother thường gặp các thách thức cấu hình cụ thể có thể được giải quyết bằng các phương pháp khắc phục sự cố có mục tiêu.
 
-If your Brother printer displays "Authentication Failed" errors when testing email configuration, verify that you're using your Forward Email alias (not your account email) as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Brother printers are particularly sensitive to authentication credential formatting.
+Nếu máy in Brother của bạn hiển thị lỗi "Authentication Failed" khi kiểm tra cấu hình email, hãy xác minh rằng bạn đang sử dụng bí danh Forward Email của mình (không phải email tài khoản) làm tên đăng nhập và mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Máy in Brother đặc biệt nhạy cảm với định dạng thông tin xác thực.
 
-For printers that won't accept scan-to-email configuration settings, try configuring the settings through the web interface rather than the printer's control panel. The web interface often provides more detailed error messages and configuration options.
+Đối với các máy in không chấp nhận cài đặt quét tới email, hãy thử cấu hình các cài đặt qua giao diện web thay vì bảng điều khiển của máy in. Giao diện web thường cung cấp các thông báo lỗi chi tiết hơn và các tùy chọn cấu hình.
 
-When encountering SSL/TLS connection errors, verify that you're using the correct port and encryption combination. Brother printers require exact matches between port numbers and encryption methods - port 465 must use SSL/TLS (recommended), while port 587 must use STARTTLS.
+Khi gặp lỗi kết nối SSL/TLS, hãy xác minh rằng bạn đang sử dụng đúng kết hợp cổng và phương thức mã hóa. Máy in Brother yêu cầu sự khớp chính xác giữa số cổng và phương thức mã hóa - cổng 465 phải sử dụng SSL/TLS (khuyến nghị), trong khi cổng 587 phải sử dụng STARTTLS.
 
 > \[!CAUTION]
-> Some Brother printer models have known issues with specific SMTP server configurations. If standard configuration fails, consult Brother's support documentation for model-specific workarounds.
+> Một số mẫu máy in Brother có các vấn đề đã biết với các cấu hình máy chủ SMTP cụ thể. Nếu cấu hình tiêu chuẩn không thành công, hãy tham khảo tài liệu hỗ trợ của Brother để biết các giải pháp thay thế theo mẫu máy.
+## Cấu Hình Email Camera IP Foscam {#foscam-ip-camera-email-configuration}
 
-## Foscam IP Camera Email Configuration {#foscam-ip-camera-email-configuration}
+Camera IP Foscam là một trong những loại thiết bị khó cấu hình email nhất do chúng sử dụng rộng rãi các giao thức TLS cũ và hạn chế cập nhật firmware. Hầu hết các camera Foscam, bao gồm các mẫu phổ biến như dòng R2, chỉ hỗ trợ TLS 1.0 và không thể cập nhật để hỗ trợ các tiêu chuẩn mã hóa hiện đại.
 
-Foscam IP cameras represent one of the most challenging device categories for email configuration due to their widespread use of legacy TLS protocols and limited firmware update availability. Most Foscam cameras, including popular models like the R2 series, only support TLS 1.0 and cannot be updated to support modern encryption standards.
+### Hiểu Về Hạn Chế Email Của Foscam {#understanding-foscam-email-limitations}
 
-### Understanding Foscam Email Limitations {#understanding-foscam-email-limitations}
+Camera Foscam gặp những thách thức đặc thù đòi hỏi các cách cấu hình riêng biệt. Thông báo lỗi phổ biến nhất là "TLS certificate verification failed: unable to get local issuer certificate," cho thấy camera không thể xác thực các chứng chỉ SSL hiện đại được hầu hết nhà cung cấp email sử dụng.
 
-Foscam cameras present unique challenges that require specific configuration approaches. The most common error message encountered is "TLS certificate verification failed: unable to get local issuer certificate," which indicates that the camera cannot validate modern SSL certificates used by most email providers.
+Vấn đề này xuất phát từ nhiều nguyên nhân: kho chứng chỉ lỗi thời không thể cập nhật, hỗ trợ giao thức TLS giới hạn tối đa ở TLS 1.0, và hạn chế firmware ngăn cản nâng cấp giao thức bảo mật. Thêm vào đó, nhiều mẫu Foscam đã hết vòng đời và không còn nhận cập nhật firmware để khắc phục các vấn đề tương thích này.
 
-This issue stems from several factors: outdated certificate stores that cannot be updated, limited TLS protocol support that maxes out at TLS 1.0, and firmware limitations that prevent security protocol upgrades. Additionally, many Foscam models have reached end-of-life status and no longer receive firmware updates that could address these compatibility issues.
+Cổng SMTP kế thừa của Forward Email được thiết kế đặc biệt để giải quyết các hạn chế này bằng cách duy trì tương thích TLS 1.0 đồng thời cung cấp mức bảo mật cao nhất có thể cho các thiết bị cũ.
 
-Forward Email's legacy SMTP ports specifically address these limitations by maintaining TLS 1.0 compatibility while providing the highest possible security for these older devices.
+### Các Bước Cấu Hình Email Cho Foscam {#foscam-email-configuration-steps}
 
-### Foscam Email Configuration Steps {#foscam-email-configuration-steps}
+Cấu hình thông báo email trên camera Foscam cần chú ý kỹ đến lựa chọn cổng và thiết lập mã hóa để khắc phục giới hạn TLS của thiết bị.
 
-Configuring email notifications on Foscam cameras requires careful attention to port selection and encryption settings to work around the devices' TLS limitations.
+1. **Truy cập giao diện web của camera** bằng cách nhập địa chỉ IP của camera vào trình duyệt web. Camera Foscam thường sử dụng cổng 88 để truy cập web (ví dụ: <http://192.168.1.100:88>).
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Foscam cameras typically use port 88 for web access (e.g., <http://192.168.1.100:88>).
+2. **Đi tới menu Cài đặt** và chọn "Mail Service" hoặc "Email Settings" tùy theo mẫu camera. Một số camera Foscam tổ chức các cài đặt này dưới mục "Alarm" > "Mail Service."
 
-2. **Navigate to the Settings menu** and select "Mail Service" or "Email Settings" depending on your camera model. Some Foscam cameras organize these settings under "Alarm" > "Mail Service."
+3. **Cấu hình máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Đây là bước quan trọng - không sử dụng máy chủ SMTP của nhà cung cấp email tiêu chuẩn vì chúng không còn hỗ trợ TLS 1.0.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. This is critical - do not use standard email provider SMTP servers as they no longer support TLS 1.0.
+4. **Chọn cổng và mã hóa** bằng cách chọn cổng 2455 cho mã hóa SSL hoặc cổng 2555 cho mã hóa STARTTLS. Đây là các cổng tương thích kế thừa của Forward Email được thiết kế riêng cho các thiết bị như camera Foscam.
 
-4. **Set the port and encryption** by selecting port 2455 for SSL encryption or port 2555 for STARTTLS encryption. These are Forward Email's legacy-compatible ports specifically designed for devices like Foscam cameras.
+5. **Cấu hình xác thực** bằng cách bật xác thực SMTP và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Thiết lập thông tin người gửi và người nhận** bằng cách cấu hình bí danh Forward Email làm địa chỉ người gửi và thêm các địa chỉ người nhận cho cảnh báo phát hiện chuyển động và cảnh báo hệ thống.
 
-6. **Set up sender and recipient information** by configuring your Forward Email alias as the sender address and adding recipient addresses for motion detection and system alerts.
+7. **Cấu hình các trình kích hoạt thông báo** bằng cách thiết lập độ nhạy phát hiện chuyển động, lịch ghi hình và các sự kiện khác sẽ kích hoạt gửi email.
 
-7. **Configure notification triggers** by setting up motion detection sensitivity, recording schedules, and other events that should trigger email notifications.
-
-8. **Test the email configuration** using Foscam's built-in test function. If the test succeeds, you should receive a test email confirming proper configuration.
+8. **Kiểm tra cấu hình email** bằng chức năng kiểm tra tích hợp của Foscam. Nếu kiểm tra thành công, bạn sẽ nhận được email thử nghiệm xác nhận cấu hình đúng.
 
 > \[!IMPORTANT]
-> Foscam cameras require Forward Email's legacy ports (2455 or 2555) due to TLS 1.0 limitations. Standard SMTP ports will not work with these devices.
+> Camera Foscam yêu cầu sử dụng các cổng kế thừa của Forward Email (2455 hoặc 2555) do giới hạn TLS 1.0. Các cổng SMTP tiêu chuẩn sẽ không hoạt động với các thiết bị này.
 
-### Advanced Foscam Configuration {#advanced-foscam-configuration}
+### Cấu Hình Nâng Cao Cho Foscam {#advanced-foscam-configuration}
 
-For users requiring more sophisticated notification setups, Foscam cameras offer additional configuration options that can enhance security monitoring capabilities.
+Đối với người dùng cần thiết lập thông báo phức tạp hơn, camera Foscam cung cấp các tùy chọn cấu hình bổ sung giúp nâng cao khả năng giám sát an ninh.
 
-Configure motion detection zones to reduce false alarms by defining specific areas of the camera's field of view that should trigger notifications. This prevents unnecessary emails from environmental factors like moving trees or passing vehicles.
+Cấu hình các vùng phát hiện chuyển động để giảm cảnh báo sai bằng cách xác định các khu vực cụ thể trong trường nhìn của camera sẽ kích hoạt thông báo. Điều này ngăn chặn các email không cần thiết do các yếu tố môi trường như cây cối chuyển động hoặc xe cộ đi qua.
 
-Set up recording schedules that align with your monitoring needs, ensuring that email notifications are sent during appropriate time periods. Foscam cameras can suppress notifications during specified hours to prevent overnight alerts for non-critical events.
-
-Configure multiple recipient addresses for different types of alerts, allowing you to route motion detection alerts to security personnel while sending system maintenance alerts to IT staff.
+Thiết lập lịch ghi hình phù hợp với nhu cầu giám sát của bạn, đảm bảo các thông báo email được gửi trong các khoảng thời gian thích hợp. Camera Foscam có thể tắt thông báo trong các giờ nhất định để tránh cảnh báo qua đêm cho các sự kiện không quan trọng.
+Cấu hình nhiều địa chỉ người nhận cho các loại cảnh báo khác nhau, cho phép bạn chuyển tiếp cảnh báo phát hiện chuyển động đến nhân viên bảo vệ trong khi gửi cảnh báo bảo trì hệ thống đến nhân viên IT.
 
 > \[!TIP]
-> Foscam cameras can generate significant email volume if motion detection is too sensitive. Start with conservative settings and adjust based on your environment's characteristics.
+> Camera Foscam có thể tạo ra lượng email lớn nếu phát hiện chuyển động quá nhạy. Bắt đầu với các cài đặt thận trọng và điều chỉnh dựa trên đặc điểm môi trường của bạn.
 
-## Hikvision Security Camera Email Configuration {#hikvision-security-camera-email-configuration}
 
-Hikvision cameras represent a significant portion of the global security camera market, with models ranging from basic IP cameras to advanced AI-powered surveillance systems. The email configuration process varies considerably between newer models with modern TLS support and legacy devices that require compatibility workarounds.
+## Cấu hình Email Camera An Ninh Hikvision {#hikvision-security-camera-email-configuration}
 
-### Modern Hikvision Camera Configuration {#modern-hikvision-camera-configuration}
+Camera Hikvision chiếm phần lớn thị trường camera an ninh toàn cầu, với các mẫu từ camera IP cơ bản đến hệ thống giám sát tiên tiến sử dụng AI. Quá trình cấu hình email thay đổi đáng kể giữa các mẫu mới hỗ trợ TLS hiện đại và các thiết bị cũ yêu cầu các giải pháp tương thích.
 
-Current Hikvision cameras running recent firmware versions support TLS 1.2+ and provide comprehensive email notification capabilities through their web-based interface.
+### Cấu hình Camera Hikvision Hiện Đại {#modern-hikvision-camera-configuration}
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Hikvision cameras typically use standard HTTP/HTTPS ports for web access.
+Các camera Hikvision hiện tại chạy phiên bản firmware mới hỗ trợ TLS 1.2+ và cung cấp khả năng thông báo email toàn diện qua giao diện web.
 
-2. **Navigate to Configuration** and select "Network" > "Advanced Settings" > "Email" from the menu structure. The exact path may vary depending on your camera model and firmware version.
+1. **Truy cập giao diện web của camera** bằng cách nhập địa chỉ IP của camera vào trình duyệt web. Camera Hikvision thường sử dụng các cổng HTTP/HTTPS tiêu chuẩn để truy cập web.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Hikvision cameras require specific SSL configuration for proper email functionality.
+2. **Đi tới Configuration** và chọn "Network" > "Advanced Settings" > "Email" trong cấu trúc menu. Đường dẫn chính xác có thể khác nhau tùy theo mẫu camera và phiên bản firmware.
 
-4. **Set encryption to SSL** and configure port 465. Hikvision cameras do not support STARTTLS, so SSL encryption on port 465 is the recommended configuration for Forward Email compatibility.
+3. **Cấu hình máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Camera Hikvision yêu cầu cấu hình SSL cụ thể để email hoạt động đúng.
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for authentication.
+4. **Đặt mã hóa thành SSL** và cấu hình cổng 465. Camera Hikvision không hỗ trợ STARTTLS, vì vậy mã hóa SSL trên cổng 465 là cấu hình được khuyến nghị để tương thích với Forward Email.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera in email notifications.
+5. **Bật xác thực SMTP** và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) để xác thực.
 
-7. **Set up recipient addresses** by adding email addresses that should receive security alerts, motion detection notifications, and system status updates.
+6. **Cấu hình thông tin người gửi** bằng cách đặt bí danh Forward Email của bạn làm địa chỉ người gửi và thêm tên mô tả để nhận biết camera trong các thông báo email.
 
-8. **Configure event triggers** by setting up motion detection, line crossing detection, intrusion detection, and other events that should generate email notifications.
+7. **Thiết lập địa chỉ người nhận** bằng cách thêm các địa chỉ email sẽ nhận cảnh báo an ninh, thông báo phát hiện chuyển động và cập nhật trạng thái hệ thống.
 
-9. **Test the email configuration** using Hikvision's built-in test function to verify proper connectivity and authentication with Forward Email's servers.
+8. **Cấu hình các sự kiện kích hoạt** bằng cách thiết lập phát hiện chuyển động, phát hiện vượt hàng rào, phát hiện xâm nhập và các sự kiện khác sẽ tạo thông báo email.
+
+9. **Kiểm tra cấu hình email** bằng chức năng kiểm tra tích hợp của Hikvision để xác minh kết nối và xác thực đúng với máy chủ Forward Email.
 
 > \[!NOTE]
-> Hikvision cameras require the most updated firmware versions to support SSL and TLS encryption properly. Check for firmware updates before configuring email settings.
+> Camera Hikvision yêu cầu phiên bản firmware mới nhất để hỗ trợ mã hóa SSL và TLS đúng cách. Kiểm tra cập nhật firmware trước khi cấu hình email.
 
-### Legacy Hikvision Camera Configuration {#legacy-hikvision-camera-configuration}
+### Cấu hình Camera Hikvision Cũ {#legacy-hikvision-camera-configuration}
 
-Older Hikvision cameras may have limited TLS support and require Forward Email's legacy-compatible SMTP ports for continued email functionality.
+Các camera Hikvision cũ có thể hỗ trợ TLS hạn chế và yêu cầu các cổng SMTP tương thích với Forward Email phiên bản cũ để duy trì chức năng email.
 
-1. **Access the camera's web interface** and navigate to the email configuration section. Legacy Hikvision cameras may have different menu structures than current models.
+1. **Truy cập giao diện web của camera** và điều hướng đến phần cấu hình email. Camera Hikvision cũ có thể có cấu trúc menu khác với các mẫu hiện đại.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+2. **Cấu hình các thiết lập SMTP phiên bản cũ của Forward Email** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ và sử dụng cổng 2455 cho kết nối SSL.
 
-3. **Set up authentication** using your Forward Email alias and generated password. Legacy Hikvision cameras may have specific authentication requirements or limitations.
+3. **Thiết lập xác thực** sử dụng bí danh Forward Email và mật khẩu đã tạo. Camera Hikvision cũ có thể có yêu cầu hoặc giới hạn xác thực riêng.
 
-4. **Configure encryption settings** by selecting SSL encryption to match the legacy port configuration. Ensure the encryption method aligns with port 2455 requirements.
+4. **Cấu hình các thiết lập mã hóa** bằng cách chọn mã hóa SSL để phù hợp với cấu hình cổng phiên bản cũ. Đảm bảo phương thức mã hóa phù hợp với yêu cầu cổng 2455.
 
-5. **Test the configuration** and monitor for connection errors. Legacy Hikvision cameras may provide limited error reporting, making troubleshooting more challenging.
+5. **Kiểm tra cấu hình** và theo dõi lỗi kết nối. Camera Hikvision cũ có thể cung cấp báo cáo lỗi hạn chế, làm cho việc khắc phục sự cố khó khăn hơn.
 
 > \[!WARNING]
-> Legacy Hikvision cameras may have known security vulnerabilities. Ensure these devices are properly isolated on your network and consider upgrading to current models when possible.
+> Camera Hikvision cũ có thể có các lỗ hổng bảo mật đã biết. Đảm bảo các thiết bị này được cách ly đúng cách trên mạng của bạn và cân nhắc nâng cấp lên các mẫu hiện đại khi có thể.
+## Cấu Hình Email Camera An Ninh Dahua {#dahua-security-camera-email-configuration}
 
-## Dahua Security Camera Email Configuration {#dahua-security-camera-email-configuration}
+Camera Dahua cung cấp khả năng thông báo email mạnh mẽ trên toàn bộ dòng sản phẩm của họ, từ các camera IP cơ bản đến các hệ thống giám sát tiên tiến sử dụng AI. Quá trình cấu hình thường khá đơn giản đối với các thiết bị hiện đại, với hỗ trợ đầy đủ cho các tiêu chuẩn TLS hiện nay.
 
-Dahua cameras provide robust email notification capabilities across their extensive product line, from basic IP cameras to advanced AI-powered surveillance systems. The configuration process is generally straightforward for modern devices, with comprehensive support for current TLS standards.
+### Cài Đặt Email Camera Dahua {#dahua-camera-email-setup}
 
-### Dahua Camera Email Setup {#dahua-camera-email-setup}
+Camera Dahua cung cấp cấu hình email thân thiện với người dùng thông qua giao diện web, với khả năng tương thích tốt cho các tiêu chuẩn SMTP hiện đại.
 
-Dahua cameras offer user-friendly email configuration through their web interface, with good compatibility for modern SMTP standards.
+1. **Truy cập giao diện web của camera** bằng cách nhập địa chỉ IP của camera vào trình duyệt web. Camera Dahua thường cung cấp hệ thống cấu hình dựa trên web trực quan.
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Dahua cameras typically provide intuitive web-based configuration systems.
+2. **Đi tới Setup** và chọn "Network" > "Email" từ menu cấu hình. Camera Dahua tổ chức các thiết lập email trong một phần riêng biệt để dễ dàng truy cập.
 
-2. **Navigate to Setup** and select "Network" > "Email" from the configuration menu. Dahua cameras organize email settings in a dedicated section for easy access.
+3. **Cấu hình máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Camera Dahua hỗ trợ cả hai phương thức mã hóa SSL và STARTTLS.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Dahua cameras support both SSL and STARTTLS encryption methods.
+4. **Đặt cổng và mã hóa** bằng cách chọn cổng 465 với mã hóa SSL/TLS (khuyến nghị) hoặc cổng 587 với mã hóa STARTTLS.
 
-4. **Set the port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption.
+5. **Bật xác thực SMTP** và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Cấu hình thông tin người gửi** bằng cách đặt bí danh Forward Email của bạn làm địa chỉ người gửi và thêm tên mô tả để nhận biết nguồn camera.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera source.
+7. **Thiết lập địa chỉ người nhận** bằng cách thêm các địa chỉ email cho các loại thông báo khác nhau. Camera Dahua hỗ trợ nhiều người nhận cho các loại cảnh báo khác nhau.
 
-7. **Set up recipient addresses** by adding email addresses for different types of notifications. Dahua cameras support multiple recipients for various alert types.
+8. **Cấu hình các sự kiện kích hoạt** bằng cách thiết lập phát hiện chuyển động, cảnh báo can thiệp và các sự kiện an ninh khác sẽ tạo ra thông báo email.
 
-8. **Configure event triggers** by setting up motion detection, tampering alerts, and other security events that should generate email notifications.
-
-9. **Test the email functionality** using Dahua's built-in test feature to verify proper configuration and connectivity.
+9. **Kiểm tra chức năng email** bằng cách sử dụng tính năng kiểm tra tích hợp của Dahua để xác minh cấu hình và kết nối đúng.
 
 > \[!TIP]
-> Dahua cameras often provide detailed configuration guides through their wiki documentation. Consult [Dahua's email setup guide](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) for model-specific instructions.
+> Camera Dahua thường cung cấp các hướng dẫn cấu hình chi tiết qua tài liệu wiki của họ. Tham khảo [hướng dẫn cài đặt email của Dahua](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) để biết chỉ dẫn theo từng mẫu.
 
-### Dahua NVR Email Configuration {#dahua-nvr-email-configuration}
+### Cấu Hình Email Đầu Ghi NVR Dahua {#dahua-nvr-email-configuration}
 
-Dahua Network Video Recorders (NVRs) provide centralized email notification management for multiple cameras, offering efficient administration of large surveillance systems.
+Đầu ghi hình mạng Dahua (NVR) cung cấp quản lý thông báo email tập trung cho nhiều camera, giúp quản trị hiệu quả các hệ thống giám sát lớn.
 
-1. **Access the NVR's web interface** by entering the NVR's IP address in a web browser. Dahua NVRs provide comprehensive management interfaces for system-wide configuration.
+1. **Truy cập giao diện web của NVR** bằng cách nhập địa chỉ IP của NVR vào trình duyệt web. NVR Dahua cung cấp giao diện quản lý toàn diện cho cấu hình hệ thống.
 
-2. **Navigate to the Email configuration** by selecting "Setup" > "Network" > "Email" from the main menu. NVRs typically organize email settings at the system level.
+2. **Đi tới cấu hình Email** bằng cách chọn "Setup" > "Network" > "Email" từ menu chính. NVR thường tổ chức các thiết lập email ở cấp hệ thống.
 
-3. **Configure SMTP server settings** by entering smtp.forwardemail.net as the server address and selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS.
+3. **Cấu hình máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ và chọn cổng 465 với mã hóa SSL/TLS (khuyến nghị) hoặc cổng 587 với STARTTLS.
 
-4. **Set up authentication** using your Forward Email alias and generated password. NVRs support standard SMTP authentication methods.
+4. **Thiết lập xác thực** sử dụng bí danh Forward Email và mật khẩu đã tạo. NVR hỗ trợ các phương thức xác thực SMTP tiêu chuẩn.
 
-5. **Configure notification schedules** by setting up time periods when email notifications should be active. This helps manage notification volume during off-hours.
+5. **Cấu hình lịch trình thông báo** bằng cách thiết lập các khoảng thời gian khi thông báo email nên được kích hoạt. Điều này giúp quản lý lượng thông báo trong giờ nghỉ.
 
-6. **Set up event-based notifications** by configuring which camera events should trigger email alerts. NVRs allow granular control over notification triggers across multiple cameras.
+6. **Thiết lập thông báo dựa trên sự kiện** bằng cách cấu hình các sự kiện camera nào sẽ kích hoạt cảnh báo email. NVR cho phép kiểm soát chi tiết các kích hoạt thông báo trên nhiều camera.
 
-7. **Test the system-wide email configuration** to ensure proper functionality across all connected cameras and monitoring systems.
+7. **Kiểm tra cấu hình email toàn hệ thống** để đảm bảo chức năng hoạt động đúng trên tất cả các camera và hệ thống giám sát kết nối.
 
-## Xerox Multifunction Device Email Configuration {#xerox-multifunction-device-email-configuration}
+## Cấu Hình Email Thiết Bị Đa Chức Năng Xerox {#xerox-multifunction-device-email-configuration}
 
-Xerox multifunction devices provide enterprise-grade email notification capabilities with comprehensive TLS support and advanced configuration options. Modern Xerox devices support current security standards while maintaining compatibility with various network environments.
+Thiết bị đa chức năng Xerox cung cấp khả năng thông báo email cấp doanh nghiệp với hỗ trợ TLS toàn diện và các tùy chọn cấu hình nâng cao. Các thiết bị Xerox hiện đại hỗ trợ các tiêu chuẩn bảo mật hiện hành đồng thời duy trì khả năng tương thích với nhiều môi trường mạng khác nhau.
 
-### Xerox MFD Email Setup {#xerox-mfd-email-setup}
+### Cài Đặt Email Thiết Bị Đa Chức Năng Xerox {#xerox-mfd-email-setup}
 
-Xerox multifunction devices offer sophisticated email configuration through their web-based administrative interface, supporting both basic notifications and advanced workflow integration.
+Thiết bị đa chức năng Xerox cung cấp cấu hình email tinh vi thông qua giao diện quản trị dựa trên web, hỗ trợ cả thông báo cơ bản và tích hợp quy trình làm việc nâng cao.
+1. **Truy cập giao diện web của thiết bị** bằng cách nhập địa chỉ IP của thiết bị vào trình duyệt web. Các thiết bị Xerox thường cung cấp công cụ quản trị dựa trên web toàn diện.
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Xerox devices typically provide comprehensive web-based administration tools.
+2. **Điều hướng đến Properties** và chọn "Connectivity" > "Protocols" > "SMTP" từ menu cấu hình. Các thiết bị Xerox tổ chức các cài đặt email trong phần cấu hình giao thức của chúng.
 
-2. **Navigate to Properties** and select "Connectivity" > "Protocols" > "SMTP" from the configuration menu. Xerox devices organize email settings within their protocol configuration section.
+3. **Cấu hình máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Các thiết bị Xerox hỗ trợ các phiên bản TLS và phương thức mã hóa có thể cấu hình.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Xerox devices support configurable TLS versions and encryption methods.
+4. **Đặt cấu hình TLS** bằng cách chọn TLS 1.2 hoặc cao hơn làm phiên bản tối thiểu được hỗ trợ. Các thiết bị Xerox cho phép quản trị viên cấu hình các yêu cầu TLS cụ thể để tăng cường bảo mật.
 
-4. **Set TLS configuration** by selecting TLS 1.2 or higher as the minimum supported version. Xerox devices allow administrators to configure specific TLS requirements for enhanced security.
+5. **Cấu hình cổng và mã hóa** bằng cách đặt cổng 465 cho kết nối SSL/TLS (khuyến nghị) hoặc cổng 587 cho kết nối STARTTLS.
 
-5. **Configure port and encryption** by setting port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections.
+6. **Thiết lập xác thực SMTP** bằng cách bật xác thực và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-6. **Set up SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **Cấu hình thông tin người gửi** bằng cách đặt bí danh Forward Email của bạn làm địa chỉ người gửi và cấu hình các địa chỉ reply-to phù hợp để quản lý thông báo.
 
-7. **Configure sender information** by setting your Forward Email alias as the sender address and configuring appropriate reply-to addresses for notification management.
+8. **Thiết lập các loại thông báo** bằng cách cấu hình các sự kiện thiết bị nào sẽ kích hoạt cảnh báo email, bao gồm thông báo bảo trì, điều kiện lỗi và sự kiện bảo mật.
 
-8. **Set up notification types** by configuring which device events should trigger email alerts, including maintenance notifications, error conditions, and security events.
-
-9. **Test the email configuration** using Xerox's comprehensive test system to verify proper connectivity and authentication.
+9. **Kiểm tra cấu hình email** bằng hệ thống kiểm tra toàn diện của Xerox để xác minh kết nối và xác thực đúng.
 
 > \[!NOTE]
-> Xerox devices provide detailed TLS configuration options that allow fine-tuning of security settings. Consult [Xerox's TLS configuration guide](https://www.support.xerox.com/en-us/article/KB0032169) for advanced security requirements.
+> Các thiết bị Xerox cung cấp các tùy chọn cấu hình TLS chi tiết cho phép tinh chỉnh các thiết lập bảo mật. Tham khảo [hướng dẫn cấu hình TLS của Xerox](https://www.support.xerox.com/en-us/article/KB0032169) cho các yêu cầu bảo mật nâng cao.
 
-## Ricoh Multifunction Device Email Configuration {#ricoh-multifunction-device-email-configuration}
 
-Ricoh multifunction devices offer robust email capabilities across their extensive product line, from basic office printers to advanced production systems. However, [Ricoh has announced significant changes](https://www.ricoh.com/info/2025/0526\_1) related to Microsoft's basic authentication discontinuation that affects email functionality.
+## Cấu hình Email cho Thiết bị Đa chức năng Ricoh {#ricoh-multifunction-device-email-configuration}
 
-### Modern Ricoh MFD Configuration {#modern-ricoh-mfd-configuration}
+Các thiết bị đa chức năng Ricoh cung cấp khả năng email mạnh mẽ trên toàn bộ dòng sản phẩm của họ, từ máy in văn phòng cơ bản đến hệ thống sản xuất tiên tiến. Tuy nhiên, [Ricoh đã thông báo những thay đổi quan trọng](https://www.ricoh.com/info/2025/0526_1) liên quan đến việc Microsoft ngừng hỗ trợ xác thực cơ bản ảnh hưởng đến chức năng email.
 
-Current Ricoh devices support modern TLS standards and provide comprehensive email notification capabilities through their web-based interface.
+### Cấu hình Ricoh MFD hiện đại {#modern-ricoh-mfd-configuration}
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Ricoh devices provide intuitive web-based configuration systems.
+Các thiết bị Ricoh hiện tại hỗ trợ các tiêu chuẩn TLS hiện đại và cung cấp khả năng thông báo email toàn diện thông qua giao diện web của chúng.
 
-2. **Navigate to the Email configuration** by selecting "System Settings" > "Administrator Tools" > "Network" > "Email" from the menu structure.
+1. **Truy cập giao diện web của thiết bị** bằng cách nhập địa chỉ IP của thiết bị vào trình duyệt web. Các thiết bị Ricoh cung cấp hệ thống cấu hình dựa trên web trực quan.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Ricoh devices support both SSL and STARTTLS encryption methods.
+2. **Điều hướng đến cấu hình Email** bằng cách chọn "System Settings" > "Administrator Tools" > "Network" > "Email" từ cấu trúc menu.
 
-4. **Enable SSL on the SMTP server page** to activate TLS encryption. Ricoh's interface may be cryptic, but SSL enablement is required for secure email functionality.
+3. **Cấu hình máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Các thiết bị Ricoh hỗ trợ cả phương thức mã hóa SSL và STARTTLS.
 
-5. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Ensure the encryption method matches the selected port.
+4. **Bật SSL trên trang máy chủ SMTP** để kích hoạt mã hóa TLS. Giao diện của Ricoh có thể khó hiểu, nhưng việc bật SSL là bắt buộc để có chức năng email an toàn.
 
-6. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+5. **Đặt số cổng** thành 465 cho kết nối SSL/TLS (khuyến nghị) hoặc 587 cho kết nối STARTTLS. Đảm bảo phương thức mã hóa phù hợp với cổng đã chọn.
 
-7. **Set up sender information** by configuring your Forward Email alias as the sender address and adding appropriate identification information.
+6. **Cấu hình xác thực SMTP** bằng cách bật xác thực và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-8. **Configure notification types** by setting up scan-to-email, device alerts, and maintenance notifications according to your operational requirements.
+7. **Thiết lập thông tin người gửi** bằng cách cấu hình bí danh Forward Email của bạn làm địa chỉ người gửi và thêm thông tin nhận dạng phù hợp.
 
-9. **Test the email functionality** using Ricoh's built-in test system to verify proper configuration and connectivity.
+8. **Cấu hình các loại thông báo** bằng cách thiết lập scan-to-email, cảnh báo thiết bị và thông báo bảo trì theo yêu cầu vận hành của bạn.
+
+9. **Kiểm tra chức năng email** bằng hệ thống kiểm tra tích hợp của Ricoh để xác minh cấu hình và kết nối đúng.
 
 > \[!IMPORTANT]
-> Ricoh devices affected by Microsoft's basic authentication changes require updated authentication methods. Ensure your device firmware supports modern authentication or use Forward Email's compatibility features.
+> Các thiết bị Ricoh bị ảnh hưởng bởi thay đổi xác thực cơ bản của Microsoft yêu cầu các phương thức xác thực cập nhật. Đảm bảo firmware thiết bị của bạn hỗ trợ xác thực hiện đại hoặc sử dụng các tính năng tương thích của Forward Email.
+### Cấu Hình Thiết Bị Ricoh Cũ {#legacy-ricoh-device-configuration}
 
-### Legacy Ricoh Device Configuration {#legacy-ricoh-device-configuration}
+Các thiết bị Ricoh cũ có thể yêu cầu các cổng SMTP tương thích với phiên bản cũ của Forward Email do hỗ trợ TLS hạn chế và các giới hạn về phương thức xác thực.
 
-Older Ricoh devices may require Forward Email's legacy-compatible SMTP ports due to limited TLS support and authentication method restrictions.
+1. **Truy cập giao diện web của thiết bị** và điều hướng đến phần cấu hình email. Các thiết bị Ricoh cũ có thể có cấu trúc menu khác với các mẫu hiện tại.
 
-1. **Access the device's web interface** and navigate to the email configuration section. Legacy Ricoh devices may have different menu structures than current models.
+2. **Cấu hình các thiết lập SMTP phiên bản cũ của Forward Email** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ và sử dụng cổng 2455 cho kết nối SSL.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+3. **Bật mã hóa SSL** để phù hợp với cấu hình cổng phiên bản cũ. Đảm bảo các thiết lập mã hóa phù hợp với yêu cầu của cổng 2455.
 
-3. **Enable SSL encryption** to match the legacy port configuration. Ensure the encryption settings align with port 2455 requirements.
+4. **Thiết lập xác thực** sử dụng bí danh Forward Email và mật khẩu đã tạo. Các thiết bị Ricoh cũ có thể có các giới hạn xác thực cụ thể.
 
-4. **Set up authentication** using your Forward Email alias and generated password. Legacy Ricoh devices may have specific authentication limitations.
+5. **Kiểm tra cấu hình** và theo dõi các lỗi xác thực hoặc kết nối. Các thiết bị cũ có thể cung cấp báo cáo lỗi hạn chế để hỗ trợ khắc phục sự cố.
 
-5. **Test the configuration** and monitor for authentication or connection errors. Legacy devices may provide limited error reporting for troubleshooting.
 
-## Troubleshooting Common Configuration Issues {#troubleshooting-common-configuration-issues}
+## Khắc Phục Sự Cố Cấu Hình Thường Gặp {#troubleshooting-common-configuration-issues}
 
-Device email configuration can encounter various issues due to network settings, authentication problems, or protocol compatibility challenges. Understanding common problems and their solutions helps ensure reliable notification delivery across your device ecosystem.
+Cấu hình email trên thiết bị có thể gặp nhiều vấn đề do thiết lập mạng, sự cố xác thực hoặc thách thức tương thích giao thức. Hiểu các vấn đề phổ biến và cách giải quyết giúp đảm bảo việc gửi thông báo đáng tin cậy trên toàn bộ hệ sinh thái thiết bị của bạn.
 
-### Authentication and Credential Issues {#authentication-and-credential-issues}
+### Vấn Đề Xác Thực và Thông Tin Đăng Nhập {#authentication-and-credential-issues}
 
-Authentication failures represent the most common email configuration problem across all device types. These issues typically stem from incorrect credential usage, authentication method mismatches, or account configuration problems.
+Lỗi xác thực là vấn đề cấu hình email phổ biến nhất trên tất cả các loại thiết bị. Những vấn đề này thường bắt nguồn từ việc sử dụng thông tin đăng nhập sai, không khớp phương thức xác thực hoặc cấu hình tài khoản không đúng.
 
-Verify that you're using your Forward Email alias as the username, not your account email address or login credentials. Many devices are sensitive to username formatting and require exact matches with your configured alias.
+Xác minh rằng bạn đang sử dụng bí danh Forward Email làm tên người dùng, không phải địa chỉ email tài khoản hoặc thông tin đăng nhập. Nhiều thiết bị nhạy cảm với định dạng tên người dùng và yêu cầu phải khớp chính xác với bí danh đã cấu hình.
 
-Ensure you're using the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) rather than your account login password. SMTP authentication requires the specific generated password for security reasons, and using incorrect credentials will result in authentication failures.
+Đảm bảo bạn đang sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) thay vì mật khẩu đăng nhập tài khoản. Xác thực SMTP yêu cầu mật khẩu được tạo riêng vì lý do bảo mật, và sử dụng thông tin đăng nhập sai sẽ dẫn đến lỗi xác thực.
 
-Check that your Forward Email account has proper SMTP access enabled and that any two-factor authentication requirements are properly configured. Some account configurations may restrict SMTP access until properly activated.
+Kiểm tra xem tài khoản Forward Email của bạn đã bật quyền truy cập SMTP đúng cách và các yêu cầu xác thực hai yếu tố đã được cấu hình chính xác chưa. Một số cấu hình tài khoản có thể hạn chế truy cập SMTP cho đến khi được kích hoạt đúng cách.
 
 > \[!TIP]
-> If authentication continues to fail, regenerate your SMTP password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) and update your device configuration with the new credentials.
+> Nếu xác thực vẫn tiếp tục thất bại, hãy tạo lại mật khẩu SMTP từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) và cập nhật cấu hình thiết bị với thông tin đăng nhập mới.
 
-### TLS and Encryption Problems {#tls-and-encryption-problems}
+### Vấn Đề TLS và Mã Hóa {#tls-and-encryption-problems}
 
-TLS-related issues often occur when devices attempt to use unsupported encryption protocols or when there's a mismatch between port configuration and encryption settings.
+Các vấn đề liên quan đến TLS thường xảy ra khi thiết bị cố gắng sử dụng các giao thức mã hóa không được hỗ trợ hoặc khi có sự không khớp giữa cấu hình cổng và thiết lập mã hóa.
 
-For modern devices experiencing TLS errors, verify that you're using the correct port and encryption combination: port 465 with SSL/TLS (recommended) or port 587 with STARTTLS. These settings must match exactly for successful connections.
+Đối với các thiết bị hiện đại gặp lỗi TLS, hãy xác minh rằng bạn đang sử dụng đúng cổng và kết hợp mã hóa: cổng 465 với SSL/TLS (được khuyến nghị) hoặc cổng 587 với STARTTLS. Các thiết lập này phải khớp chính xác để kết nối thành công.
 
-Legacy devices displaying certificate validation errors should use Forward Email's compatibility ports (2455 or 2555) rather than standard SMTP ports. These ports maintain TLS 1.0 compatibility while providing appropriate security for older devices.
+Các thiết bị cũ hiển thị lỗi xác thực chứng chỉ nên sử dụng các cổng tương thích của Forward Email (2455 hoặc 2555) thay vì các cổng SMTP tiêu chuẩn. Các cổng này duy trì khả năng tương thích TLS 1.0 đồng thời cung cấp bảo mật phù hợp cho các thiết bị cũ.
 
-If certificate validation continues to fail on legacy devices, check if the device allows certificate validation to be disabled. While this reduces security, it may be necessary for continued functionality on devices that cannot be updated.
+Nếu việc xác thực chứng chỉ tiếp tục thất bại trên các thiết bị cũ, hãy kiểm tra xem thiết bị có cho phép tắt xác thực chứng chỉ hay không. Mặc dù điều này làm giảm bảo mật, nhưng có thể cần thiết để duy trì chức năng trên các thiết bị không thể cập nhật.
 
 > \[!CAUTION]
-> Disabling certificate validation reduces security and should only be used as a last resort for legacy devices that cannot be updated or replaced.
+> Tắt xác thực chứng chỉ làm giảm bảo mật và chỉ nên được sử dụng như biện pháp cuối cùng cho các thiết bị cũ không thể cập nhật hoặc thay thế.
 
-### Network Connectivity Issues {#network-connectivity-issues}
+### Vấn Đề Kết Nối Mạng {#network-connectivity-issues}
 
-Network-related problems can prevent devices from reaching Forward Email's SMTP servers even when configuration settings are correct.
+Các vấn đề liên quan đến mạng có thể ngăn thiết bị kết nối đến máy chủ SMTP của Forward Email ngay cả khi các thiết lập cấu hình đúng.
 
-Verify that your network allows outbound connections on the configured SMTP ports. Corporate firewalls or restrictive network policies may block certain ports, requiring firewall rule adjustments or alternative port configurations.
+Xác minh rằng mạng của bạn cho phép kết nối ra ngoài trên các cổng SMTP đã cấu hình. Tường lửa công ty hoặc chính sách mạng hạn chế có thể chặn một số cổng, yêu cầu điều chỉnh quy tắc tường lửa hoặc cấu hình cổng thay thế.
+Kiểm tra phân giải DNS bằng cách đảm bảo rằng các thiết bị của bạn có thể phân giải smtp.forwardemail.net đến các địa chỉ IP chính xác. Các sự cố DNS có thể gây ra lỗi kết nối ngay cả khi kết nối mạng vẫn hoạt động bình thường.
 
-Check DNS resolution by ensuring that your devices can resolve smtp.forwardemail.net to the correct IP addresses. DNS issues can cause connection failures even when network connectivity is otherwise functional.
+Kiểm tra kết nối mạng từ các công cụ chẩn đoán mạng của thiết bị nếu có. Nhiều thiết bị hiện đại cung cấp khả năng kiểm tra mạng tích hợp giúp xác định các sự cố kết nối.
 
-Test network connectivity from the device's network diagnostic tools if available. Many modern devices provide built-in network testing capabilities that can help identify connectivity issues.
+Xem xét độ trễ mạng và cài đặt thời gian chờ nếu các thiết bị nằm trên các kết nối mạng chậm hoặc có độ trễ cao. Một số thiết bị có thể cần điều chỉnh thời gian chờ để đảm bảo gửi email đáng tin cậy.
 
-Consider network latency and timeout settings if devices are located on slow or high-latency network connections. Some devices may require timeout adjustments for reliable email delivery.
+### Thách Thức Cấu Hình Riêng Cho Thiết Bị {#device-specific-configuration-challenges}
 
-### Device-Specific Configuration Challenges {#device-specific-configuration-challenges}
+Các nhà sản xuất thiết bị khác nhau triển khai chức năng email theo nhiều cách khác nhau, dẫn đến các thách thức cấu hình riêng biệt theo nhà sản xuất cần các giải pháp cụ thể.
 
-Different device manufacturers implement email functionality in various ways, leading to manufacturer-specific configuration challenges that require targeted solutions.
+Máy in HP có thể lưu bộ nhớ đệm tra cứu DNS và cần khởi động lại sau khi thay đổi cấu hình. Nếu sự cố kết nối vẫn tiếp diễn sau khi cấu hình, hãy khởi động lại máy in để xóa thông tin mạng được lưu trong bộ nhớ đệm.
 
-HP printers may cache DNS lookups and require restarts after configuration changes. If connection issues persist after configuration, restart the printer to clear cached network information.
+Máy in Brother đặc biệt nhạy cảm với định dạng thông tin xác thực và có thể yêu cầu cấu hình qua giao diện web thay vì bảng điều khiển thiết bị để thiết lập đáng tin cậy.
 
-Brother printers are particularly sensitive to authentication credential formatting and may require configuration through the web interface rather than the device control panel for reliable setup.
+Camera Foscam yêu cầu cấu hình cổng cụ thể do giới hạn TLS và có thể không cung cấp thông báo lỗi chi tiết để khắc phục sự cố. Đảm bảo bạn đang sử dụng các cổng kế thừa của Forward Email (2455 hoặc 2555) cho các thiết bị này.
 
-Foscam cameras require specific port configurations due to TLS limitations and may not provide detailed error messages for troubleshooting. Ensure you're using Forward Email's legacy ports (2455 or 2555) for these devices.
-
-Hikvision cameras require SSL encryption and do not support STARTTLS, limiting configuration options to port 465 with SSL/TLS encryption.
+Camera Hikvision yêu cầu mã hóa SSL và không hỗ trợ STARTTLS, giới hạn các tùy chọn cấu hình chỉ ở cổng 465 với mã hóa SSL/TLS.
 
 > \[!NOTE]
-> When troubleshooting device-specific issues, consult the manufacturer's documentation for known limitations or configuration requirements that may affect email functionality.
+> Khi khắc phục sự cố riêng cho thiết bị, hãy tham khảo tài liệu của nhà sản xuất để biết các giới hạn hoặc yêu cầu cấu hình đã biết có thể ảnh hưởng đến chức năng email.
 
-## Security Considerations and Best Practices {#security-considerations-and-best-practices}
 
-Configuring email notifications on network devices involves several security considerations that help protect your systems while maintaining reliable notification delivery. Following security best practices prevents unauthorized access and ensures appropriate information disclosure in notifications.
+## Các Cân Nhắc Bảo Mật và Thực Tiễn Tốt Nhất {#security-considerations-and-best-practices}
 
-### Credential Management {#credential-management}
+Cấu hình thông báo email trên các thiết bị mạng liên quan đến một số cân nhắc bảo mật giúp bảo vệ hệ thống của bạn đồng thời duy trì việc gửi thông báo đáng tin cậy. Tuân thủ các thực tiễn bảo mật tốt nhất giúp ngăn chặn truy cập trái phép và đảm bảo tiết lộ thông tin phù hợp trong các thông báo.
 
-Use strong, unique passwords for your Forward Email account and enable two-factor authentication when available. The generated SMTP password should be treated as a sensitive credential and stored securely in device configurations.
+### Quản Lý Thông Tin Xác Thực {#credential-management}
 
-Regularly review and rotate SMTP passwords, especially after personnel changes or security incidents. Forward Email allows password regeneration without affecting other account functions.
+Sử dụng mật khẩu mạnh, duy nhất cho tài khoản Forward Email của bạn và bật xác thực hai yếu tố khi có thể. Mật khẩu SMTP được tạo ra nên được coi là thông tin xác thực nhạy cảm và lưu trữ an toàn trong cấu hình thiết bị.
 
-Avoid using shared credentials across multiple devices when possible. While Forward Email supports multiple device connections with the same credentials, individual device credentials provide better security isolation and audit capabilities.
+Thường xuyên xem xét và thay đổi mật khẩu SMTP, đặc biệt sau khi có thay đổi nhân sự hoặc sự cố bảo mật. Forward Email cho phép tạo lại mật khẩu mà không ảnh hưởng đến các chức năng khác của tài khoản.
 
-Document device credentials securely and include them in your organization's credential management system. Proper documentation ensures that email configurations can be maintained and updated as needed.
+Tránh sử dụng thông tin xác thực dùng chung cho nhiều thiết bị nếu có thể. Mặc dù Forward Email hỗ trợ nhiều thiết bị kết nối với cùng thông tin xác thực, nhưng thông tin xác thực riêng cho từng thiết bị cung cấp khả năng cô lập bảo mật và kiểm tra tốt hơn.
 
-### Network Security {#network-security}
+Ghi chép thông tin xác thực thiết bị một cách an toàn và đưa vào hệ thống quản lý thông tin xác thực của tổ chức bạn. Việc ghi chép đúng cách đảm bảo cấu hình email có thể được duy trì và cập nhật khi cần thiết.
 
-Implement appropriate network segmentation to isolate devices from other network resources while maintaining necessary connectivity for email notifications and legitimate access.
+### Bảo Mật Mạng {#network-security}
 
-Configure firewall rules to allow necessary SMTP traffic while blocking unnecessary network access. Devices typically only need outbound access to Forward Email's SMTP servers for notification functionality.
+Triển khai phân đoạn mạng phù hợp để cô lập các thiết bị khỏi các tài nguyên mạng khác trong khi vẫn duy trì kết nối cần thiết cho thông báo email và truy cập hợp lệ.
 
-Monitor network traffic from devices to identify unusual patterns or unauthorized communication attempts. Unexpected network activity may indicate security issues that require investigation.
+Cấu hình các quy tắc tường lửa để cho phép lưu lượng SMTP cần thiết đồng thời chặn truy cập mạng không cần thiết. Các thiết bị thường chỉ cần truy cập ra ngoài đến các máy chủ SMTP của Forward Email để gửi thông báo.
 
-Consider using VLANs or dedicated network segments for device management traffic, including email notifications, to provide additional security isolation.
+Giám sát lưu lượng mạng từ các thiết bị để phát hiện các mẫu bất thường hoặc các cố gắng giao tiếp trái phép. Hoạt động mạng bất thường có thể chỉ ra các vấn đề bảo mật cần điều tra.
 
-### Information Disclosure {#information-disclosure}
+Xem xét sử dụng VLAN hoặc phân đoạn mạng riêng cho lưu lượng quản lý thiết bị, bao gồm thông báo email, để cung cấp thêm sự cô lập bảo mật.
 
-Review the content of email notifications to ensure they don't contain sensitive information that could be useful to attackers. Some devices include detailed system information, network configurations, or file paths in notification emails.
+### Tiết Lộ Thông Tin {#information-disclosure}
 
-Configure notification filtering to limit the types of information included in email alerts. Many devices allow customization of notification content to balance useful information with security requirements.
+Xem xét nội dung các thông báo email để đảm bảo chúng không chứa thông tin nhạy cảm có thể hữu ích cho kẻ tấn công. Một số thiết bị bao gồm thông tin hệ thống chi tiết, cấu hình mạng hoặc đường dẫn tập tin trong email thông báo.
+Cấu hình lọc thông báo để giới hạn các loại thông tin được bao gồm trong cảnh báo email. Nhiều thiết bị cho phép tùy chỉnh nội dung thông báo nhằm cân bằng giữa thông tin hữu ích và yêu cầu bảo mật.
 
-Implement appropriate email retention and handling policies for device notifications. Security-related notifications may need to be retained for compliance or forensic purposes.
+Thực hiện các chính sách lưu giữ và xử lý email phù hợp cho các thông báo thiết bị. Các thông báo liên quan đến bảo mật có thể cần được lưu giữ để tuân thủ hoặc phục vụ mục đích pháp y.
 
-Consider the sensitivity of recipient email addresses and ensure that notifications are only sent to authorized personnel who need access to the information.
+Xem xét mức độ nhạy cảm của địa chỉ email người nhận và đảm bảo rằng thông báo chỉ được gửi đến những nhân sự được ủy quyền cần truy cập thông tin.
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
+### Giám sát và Bảo trì {#monitoring-and-maintenance}
 
-Regularly test email notification configurations to ensure continued functionality. Periodic testing helps identify configuration drift, network changes, or service issues before they impact critical alert delivery.
+Thường xuyên kiểm tra cấu hình thông báo email để đảm bảo chức năng liên tục. Việc kiểm tra định kỳ giúp phát hiện sự lệch cấu hình, thay đổi mạng hoặc sự cố dịch vụ trước khi chúng ảnh hưởng đến việc gửi cảnh báo quan trọng.
 
-Monitor email notification patterns for signs of suspicious activity or unauthorized access attempts. Unusual notification volumes or unexpected system events may indicate security issues.
+Giám sát các mẫu thông báo email để phát hiện dấu hiệu hoạt động đáng ngờ hoặc các cố gắng truy cập trái phép. Lượng thông báo bất thường hoặc các sự kiện hệ thống không mong đợi có thể chỉ ra các vấn đề bảo mật.
 
-Keep device firmware updated when possible to maintain current security standards and protocol support. While some devices have reached end-of-life status, applying available security updates helps protect against known vulnerabilities.
+Giữ firmware thiết bị được cập nhật khi có thể để duy trì các tiêu chuẩn bảo mật hiện hành và hỗ trợ giao thức. Mặc dù một số thiết bị đã hết vòng đời, việc áp dụng các bản cập nhật bảo mật có sẵn giúp bảo vệ chống lại các lỗ hổng đã biết.
 
-Implement backup notification methods for critical alerts when possible. While email notifications are reliable, having alternative alerting mechanisms provides redundancy for the most important system events.
+Triển khai các phương pháp thông báo dự phòng cho các cảnh báo quan trọng khi có thể. Mặc dù thông báo qua email đáng tin cậy, việc có các cơ chế cảnh báo thay thế cung cấp sự dự phòng cho các sự kiện hệ thống quan trọng nhất.
 
-## Conclusion {#conclusion}
 
-Configuring reliable email notifications across diverse device ecosystems requires understanding the complex landscape of TLS compatibility, authentication methods, and manufacturer-specific requirements. Forward Email's comprehensive SMTP service addresses these challenges by providing both modern security standards for current devices and legacy compatibility for older equipment that cannot be updated.
+## Kết luận {#conclusion}
 
-The configuration processes outlined in this guide provide detailed, step-by-step instructions for major device categories, ensuring that administrators can establish reliable email notifications regardless of their specific equipment mix. Forward Email's dual-port strategy specifically addresses the TLS compatibility crisis affecting millions of deployed devices, providing a practical solution that maintains security while ensuring continued functionality.
+Cấu hình thông báo email đáng tin cậy trên các hệ sinh thái thiết bị đa dạng đòi hỏi hiểu biết về bối cảnh phức tạp của khả năng tương thích TLS, các phương thức xác thực và yêu cầu riêng của nhà sản xuất. Dịch vụ SMTP toàn diện của Forward Email giải quyết những thách thức này bằng cách cung cấp cả tiêu chuẩn bảo mật hiện đại cho các thiết bị hiện tại và khả năng tương thích với thiết bị cũ không thể cập nhật.
 
-Regular testing and maintenance of email notification configurations ensures continued reliability and helps identify potential issues before they impact critical alert delivery. Following the security best practices and troubleshooting guidance in this guide helps maintain secure, reliable notification systems that keep administrators informed about device status and security events.
+Quy trình cấu hình được trình bày trong hướng dẫn này cung cấp các chỉ dẫn chi tiết, từng bước cho các loại thiết bị chính, đảm bảo quản trị viên có thể thiết lập thông báo email đáng tin cậy bất kể sự đa dạng thiết bị của họ. Chiến lược hai cổng của Forward Email đặc biệt giải quyết cuộc khủng hoảng tương thích TLS ảnh hưởng đến hàng triệu thiết bị đã triển khai, cung cấp giải pháp thực tiễn duy trì bảo mật đồng thời đảm bảo chức năng liên tục.
 
-Whether managing a small office with mixed printer and camera brands or overseeing an enterprise environment with hundreds of devices, Forward Email provides the infrastructure and compatibility needed for reliable email notifications. Our service's focus on device compatibility, combined with comprehensive documentation and support, ensures that critical system alerts reach you when you need them most.
+Việc kiểm tra và bảo trì định kỳ cấu hình thông báo email đảm bảo độ tin cậy liên tục và giúp phát hiện các vấn đề tiềm ẩn trước khi chúng ảnh hưởng đến việc gửi cảnh báo quan trọng. Tuân thủ các thực hành bảo mật tốt nhất và hướng dẫn khắc phục sự cố trong hướng dẫn này giúp duy trì hệ thống thông báo an toàn, đáng tin cậy, giữ cho quản trị viên luôn được thông báo về trạng thái thiết bị và các sự kiện bảo mật.
 
-For additional support with device email configuration or questions about Forward Email's compatibility with specific equipment, visit our [SMTP server configuration FAQ](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) or contact our support team. We're committed to helping you maintain reliable email notifications across all your network-connected devices, regardless of age or manufacturer limitations.
+Dù quản lý một văn phòng nhỏ với các thương hiệu máy in và camera hỗn hợp hay giám sát môi trường doanh nghiệp với hàng trăm thiết bị, Forward Email cung cấp hạ tầng và khả năng tương thích cần thiết cho các thông báo email đáng tin cậy. Tập trung của dịch vụ chúng tôi vào khả năng tương thích thiết bị, kết hợp với tài liệu và hỗ trợ toàn diện, đảm bảo các cảnh báo hệ thống quan trọng đến được bạn khi bạn cần nhất.
+
+Để được hỗ trợ thêm về cấu hình email thiết bị hoặc các câu hỏi về khả năng tương thích của Forward Email với thiết bị cụ thể, hãy truy cập [Câu hỏi thường gặp về cấu hình máy chủ SMTP](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) hoặc liên hệ với đội ngũ hỗ trợ của chúng tôi. Chúng tôi cam kết giúp bạn duy trì các thông báo email đáng tin cậy trên tất cả các thiết bị kết nối mạng của bạn, bất kể tuổi đời hay giới hạn của nhà sản xuất.

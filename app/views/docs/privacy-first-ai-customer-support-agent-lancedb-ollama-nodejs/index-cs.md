@@ -1,219 +1,220 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# Vytvoření AI zákaznické podpory s důrazem na soukromí pomocí LanceDB, Ollama a Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
-
-> \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
-
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
-
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
-
-## Table of Contents {#table-of-contents}
-
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
-
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
-
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
-
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
-
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
-
-**Trained on Human Expertise**: The AI learns from:
-
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
-
-You're getting responses informed by years of human expertise, just delivered faster.
-
-### Consistency Without Burnout {#consistency-without-burnout}
-
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
-
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
-
-Without AI assistance, this constant context-switching leads to:
-
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
-
-**With AI augmentation**, our team:
-
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
-
-### What You Get {#what-you-get}
-
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
-
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
-
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
-
-✅ **Human touch**: Every response reviewed and personalized by our team
-
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI zákaznická podpora s LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> Tento dokument popisuje naši cestu při vytváření samo-hostované AI podpory. Podobné výzvy jsme popsali v našem blogovém příspěvku [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Upřímně jsme uvažovali o napsání pokračování s názvem „AI Startup Graveyard“, ale možná budeme muset počkat další rok nebo tak, dokud bublina AI potenciálně nepraskne(?). Prozatím je to naše shrnutí toho, co fungovalo, co ne, a proč jsme to dělali tímto způsobem.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
+Takto jsme vytvořili vlastní AI zákaznickou podporu. Udělali jsme to těžkou cestou: samo-hostovaně, s důrazem na soukromí a plně pod naší kontrolou. Proč? Protože nedůvěřujeme službám třetích stran s daty našich zákazníků. Je to požadavek GDPR a DPA a je to správné.
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+Nebyl to zábavný víkendový projekt. Byla to měsíční cesta plná řešení rozbitých závislostí, zavádějící dokumentace a obecného chaosu open-source AI ekosystému v roce 2025. Tento dokument je záznamem toho, co jsme vytvořili, proč jsme to vytvořili a jaké překážky jsme na cestě potkali.
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+## Obsah {#table-of-contents}
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+* [Výhody pro zákazníky: AI rozšířená lidská podpora](#customer-benefits-ai-augmented-human-support)
+  * [Rychlejší a přesnější odpovědi](#faster-more-accurate-responses)
+  * [Konzistence bez vyhoření](#consistency-without-burnout)
+  * [Co získáte](#what-you-get)
+* [Osobní zamyšlení: Dvacetiletá dřina](#a-personal-reflection-the-two-decade-grind)
+* [Proč je soukromí důležité](#why-privacy-matters)
+* [Analýza nákladů: Cloud AI vs samo-hostované řešení](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [Porovnání cloudových AI služeb](#cloud-ai-service-comparison)
+  * [Rozpis nákladů: znalostní báze 5GB](#cost-breakdown-5gb-knowledge-base)
+  * [Náklady na samo-hostovaný hardware](#self-hosted-hardware-costs)
+* [Používání vlastní API](#dogfooding-our-own-api)
+  * [Proč je používání vlastní API důležité](#why-dogfooding-matters)
+  * [Příklady použití API](#api-usage-examples)
+  * [Výhody výkonu](#performance-benefits)
+* [Šifrovací architektura](#encryption-architecture)
+  * [Vrstva 1: Šifrování schránky (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [Vrstva 2: Šifrování zpráv na úrovni PGP](#layer-2-message-level-pgp-encryption)
+  * [Proč je to důležité pro trénink](#why-this-matters-for-training)
+  * [Zabezpečení úložiště](#storage-security)
+  * [Lokální úložiště je standardní praxe](#local-storage-is-standard-practice)
+* [Architektura](#the-architecture)
+  * [Vysoká úroveň toku](#high-level-flow)
+  * [Podrobný tok scraperu](#detailed-scraper-flow)
+* [Jak to funguje](#how-it-works)
+  * [Vytváření znalostní báze](#building-the-knowledge-base)
+  * [Trénink z historických e-mailů](#training-from-historical-emails)
+  * [Zpracování příchozích e-mailů](#processing-incoming-emails)
+  * [Správa vektorového úložiště](#vector-store-management)
+* [Hřbitov vektorových databází](#the-vector-database-graveyard)
+* [Systémové požadavky](#system-requirements)
+* [Konfigurace Cron úloh](#cron-job-configuration)
+  * [Proměnné prostředí](#environment-variables)
+  * [Cron úlohy pro více schránek](#cron-jobs-for-multiple-inboxes)
+  * [Rozpis Cron rozvrhu](#cron-schedule-breakdown)
+  * [Dynamický výpočet data](#dynamic-date-calculation)
+  * [Počáteční nastavení: extrakce seznamu URL ze sitemap](#initial-setup-extract-url-list-from-sitemap)
+  * [Manuální testování Cron úloh](#testing-cron-jobs-manually)
+  * [Monitorování logů](#monitoring-logs)
+* [Ukázky kódu](#code-examples)
+  * [Scraping a zpracování](#scraping-and-processing)
+  * [Trénink z historických e-mailů](#training-from-historical-emails-1)
+  * [Dotazování na kontext](#querying-for-context)
+* [Budoucnost: výzkum a vývoj spamového skeneru](#the-future-spam-scanner-rd)
+* [Řešení problémů](#troubleshooting)
+  * [Chyba nesouladu rozměrů vektoru](#vector-dimension-mismatch-error)
+  * [Prázdný kontext znalostní báze](#empty-knowledge-base-context)
+  * [Selhání dešifrování PGP](#pgp-decryption-failures)
+* [Tipy pro použití](#usage-tips)
+  * [Jak dosáhnout Inbox Zero](#achieving-inbox-zero)
+  * [Používání štítku skip-ai](#using-the-skip-ai-label)
+  * [Řetězení e-mailů a odpověď všem](#email-threading-and-reply-all)
+  * [Monitorování a údržba](#monitoring-and-maintenance)
+* [Testování](#testing)
+  * [Spouštění testů](#running-tests)
+  * [Pokrytí testy](#test-coverage)
+  * [Testovací prostředí](#test-environment)
+* [Klíčové poznatky](#key-takeaways)
+## Výhody pro zákazníky: AI rozšířená lidská podpora {#customer-benefits-ai-augmented-human-support}
 
-## Why Privacy Matters {#why-privacy-matters}
+Náš AI systém nenahrazuje náš podpůrný tým – dělá ho lepším. Co to pro vás znamená:
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+### Rychlejší a přesnější odpovědi {#faster-more-accurate-responses}
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
+**Člověk v procesu**: Každý AI generovaný návrh je před odesláním zkontrolován, upraven a vybrán naším lidským podpůrným týmem. AI se stará o počáteční výzkum a tvorbu návrhu, což uvolňuje náš tým, aby se mohl soustředit na kontrolu kvality a personalizaci.
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+**Trénováno na lidské odbornosti**: AI se učí z:
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+* Naší ručně psané znalostní databáze a dokumentace
+* Blogových příspěvků a tutoriálů napsaných lidmi
+* Našich komplexních FAQ (psaných lidmi)
+* Minulých zákaznických konverzací (vše řešeno skutečnými lidmi)
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
-| --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+Dostáváte odpovědi založené na letech lidské odbornosti, jen doručené rychleji.
+
+### Konzistence bez vyhoření {#consistency-without-burnout}
+
+Náš malý tým denně řeší stovky požadavků na podporu, z nichž každý vyžaduje různé technické znalosti a mentální přepínání kontextu:
+
+* Otázky ohledně fakturace vyžadují znalost finančního systému
+* Problémy s DNS vyžadují znalost sítí
+* Integrace API vyžaduje programátorské znalosti
+* Bezpečnostní hlášení vyžadují hodnocení zranitelností
+
+Bez pomoci AI toto neustálé přepínání kontextu vede k:
+
+* Pomalejším reakcím
+* Lidským chybám způsobeným únavou
+* Nekonzistentní kvalitě odpovědí
+* Vyhoření týmu
+
+**S AI rozšířením** náš tým:
+
+* Reaguje rychleji (AI vytváří návrhy během sekund)
+* Dělá méně chyb (AI zachytává běžné omyly)
+* Udržuje konzistentní kvalitu (AI vždy odkazuje na stejnou znalostní databázi)
+* Zůstává svěží a soustředěný (méně času na výzkum, více času na pomoc)
+
+### Co získáte {#what-you-get}
+
+✅ **Rychlost**: AI vytváří návrhy odpovědí během sekund, lidé je zkontrolují a odešlou během minut
+
+✅ **Přesnost**: Odpovědi založené na naší skutečné dokumentaci a minulých řešeních
+
+✅ **Konzistence**: Stejně kvalitní odpovědi ať je 9 ráno nebo 9 večer
+
+✅ **Lidský přístup**: Každá odpověď je zkontrolována a personalizována naším týmem
+
+✅ **Žádné halucinace**: AI používá pouze naši ověřenou znalostní databázi, ne obecná internetová data
+
+> \[!NOTE]
+> **Vždy komunikujete s lidmi**. AI je výzkumný asistent, který našemu týmu pomáhá rychleji najít správnou odpověď. Představte si to jako knihovníka, který okamžitě najde relevantní knihu – ale člověk ji stále čte a vysvětluje vám ji.
+
+
+## Osobní zamyšlení: Dvacetiletý zápřah {#a-personal-reflection-the-two-decade-grind}
+
+Než se ponoříme do technických detailů, osobní poznámka. Dělám to téměř dvě desetiletí. Nekonečné hodiny u klávesnice, neúnavné hledání řešení, hluboký, soustředěný zápřah – to je realita budování něčeho smysluplného. Realita, která je často přehlížena v hype cyklech nových technologií.
+
+Nedávný výbuch AI byl obzvlášť frustrující. Prodávají nám sen o automatizaci, o AI asistentech, kteří napíšou náš kód a vyřeší naše problémy. Realita? Výstup je často odpadkový kód, který vyžaduje více času na opravu, než by trvalo napsat ho od začátku. Příslib usnadnění života je falešný. Je to rozptýlení od tvrdé, nezbytné práce budování.
+
+A pak je tu začarovaný kruh přispívání do open-source. Už jste vyčerpaní, unavení z toho zápřahu. Použijete AI, abyste napsali podrobný, dobře strukturovaný bug report, doufajíc, že to ulehčí správcům pochopit a opravit problém. A co se stane? Dostanete výtku. Váš příspěvek je odmítnut jako „mimo téma“ nebo málo náročný, jak jsme viděli v nedávném [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Je to facka pro zkušené vývojáře, kteří se jen snaží pomoci.
+
+To je realita ekosystému, ve kterém pracujeme. Nejde jen o rozbité nástroje; jde o kulturu, která často nedokáže ocenit čas a [úsilí svých přispěvatelů](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Tento příspěvek je kronikou této reality. Je to příběh o nástrojích, ano, ale také o lidských nákladech budování v rozbitém ekosystému, který je navzdory všem slibům zásadně rozbitý.
+## Proč je soukromí důležité {#why-privacy-matters}
+
+Náš [technický whitepaper](https://forwardemail.net/technical-whitepaper.pdf) podrobně popisuje naši filozofii ochrany soukromí. Krátká verze: nikdy neposíláme data zákazníků třetím stranám. Nikdy. To znamená žádné OpenAI, žádné Anthropic, žádné cloudové vektorové databáze. Vše běží lokálně na naší infrastruktuře. Toto je nezpochybnitelné pro dodržení GDPR a našich závazků DPA.
+
+
+## Analýza nákladů: Cloudové AI vs vlastní hosting {#cost-analysis-cloud-ai-vs-self-hosted}
+
+Než se pustíme do technické implementace, pojďme si říct, proč je vlastní hosting důležitý z hlediska nákladů. Cenové modely cloudových AI služeb je činí nepřijatelně drahými pro použití s vysokým objemem, jako je zákaznická podpora.
+
+### Porovnání cloudových AI služeb {#cloud-ai-service-comparison}
+
+| Služba         | Poskytovatel        | Cena za embedding                                               | Cena LLM (vstup)                                                          | Cena LLM (výstup)       | Zásady ochrany soukromí                            | GDPR/DPA        | Hosting           | Sdílení dat      |
+| -------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------- | ------------------------------------------------- | --------------- | ----------------- | ---------------- |
+| **OpenAI**     | OpenAI (USA)        | [$0.02-0.13/1M tokenů](https://openai.com/api/pricing/)          | $0.15-20/1M tokenů                                                         | $0.60-80/1M tokenů      | [Odkaz](https://openai.com/policies/privacy-policy/) | Omezené DPA     | Azure (USA)       | Ano (trénink)    |
+| **Claude**     | Anthropic (USA)     | N/A                                                              | [$3-20/1M tokenů](https://docs.claude.com/en/docs/about-claude/pricing)    | $15-80/1M tokenů        | [Odkaz](https://www.anthropic.com/legal/privacy)   | Omezené DPA     | AWS/GCP (USA)     | Ne (uváděno)     |
+| **Gemini**     | Google (USA)        | [$0.15/1M tokenů](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokenů                                                       | $2.50/1M tokenů         | [Odkaz](https://policies.google.com/privacy)       | Omezené DPA     | GCP (USA)         | Ano (vylepšení)  |
+| **DeepSeek**   | DeepSeek (Čína)     | N/A                                                              | [$0.028-0.28/1M tokenů](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokenů         | [Odkaz](https://www.deepseek.com/en)               | Neznámé         | Čína              | Neznámé          |
+| **Mistral**    | Mistral AI (Francie)| [$0.10/1M tokenů](https://mistral.ai/pricing)                    | $0.40/1M tokenů                                                            | $2.00/1M tokenů         | [Odkaz](https://mistral.ai/terms/)                 | EU GDPR         | EU                | Neznámé          |
+| **Vlastní hosting** | Vy               | $0 (stávající hardware)                                          | $0 (stávající hardware)                                                    | $0 (stávající hardware) | Vaše zásady                                        | Plná shoda      | MacBook M5 + cron | Nikdy            |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Obavy o suverenitu dat**: Poskytovatelé z USA (OpenAI, Claude, Gemini) podléhají CLOUD Act, který umožňuje přístup americké vládě k datům. DeepSeek (Čína) funguje podle čínských zákonů o datech. Zatímco Mistral (Francie) nabízí hosting v EU a soulad s GDPR, vlastní hosting zůstává jedinou možností pro úplnou suverenitu a kontrolu nad daty.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Rozpis nákladů: 5GB znalostní báze {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Spočítejme náklady na zpracování 5GB znalostní báze (typické pro středně velkou firmu s dokumenty, e-maily a historií podpory).
 
-**Assumptions:**
+**Předpoklady:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB textu ≈ 1,25 miliardy tokenů (při předpokladu \~4 znaky/token)
+* Počáteční generování embeddingů
+* Měsíční přeškolení (plné nové embeddingy)
+* 10 000 dotazů na podporu měsíčně
+* Průměrný dotaz: 500 tokenů vstup, 300 tokenů výstup
+**Podrobný rozpis nákladů:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
+| Komponenta                            | OpenAI           | Claude          | Gemini               | Self-Hosted        |
 | -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **Počáteční embedding** (1,25 mld. tokenů) | 25 000 $         | N/A             | 187 500 $            | 0 $                |
+| **Měsíční dotazy** (10K × 800 tokenů) | 1 200–16 000 $   | 2 400–16 000 $  | 2 400–3 200 $        | 0 $                |
+| **Měsíční přeškolení** (1,25 mld. tokenů) | 25 000 $         | N/A             | 187 500 $            | 0 $                |
+| **Celkem za první rok**               | 325 200–217 000 $| 28 800–192 000 $| 2 278 800–2 226 000 $| ~60 $ (elektřina)  |
+| **Soulad s ochranou soukromí**       | ❌ Omezený        | ❌ Omezený       | ❌ Omezený            | ✅ Plný             |
+| **Datová suverenita**                  | ❌ Ne             | ❌ Ne            | ❌ Ne                 | ✅ Ano              |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **Náklady na embedding u Gemini jsou katastrofální** při 0,15 $/1M tokenů. Embedding jedné 5GB znalostní báze by stál 187 500 $. To je 37× dražší než u OpenAI a činí to Gemini zcela nepoužitelným pro produkci.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Náklady na hardware pro self-hosting {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+Naše nastavení běží na stávajícím hardwaru, který již vlastníme:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Hardware**: MacBook M5 (již vlastněný pro vývoj)
+* **Další náklady**: 0 $ (používá existující hardware)
+* **Elektřina**: ~5 $/měsíc (odhad)
+* **Celkem za první rok**: ~60 $
+* **Průběžné náklady**: 60 $/rok
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**ROI**: Self-hosting má prakticky nulové marginální náklady, protože používáme stávající vývojový hardware. Systém běží pomocí cron úloh v době mimo špičku.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+## Používání vlastního API {#dogfooding-our-own-api}
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+Jedním z nejdůležitějších architektonických rozhodnutí bylo, aby všechny AI úlohy používaly přímo [Forward Email API](https://forwardemail.net/email-api). Není to jen dobrá praxe — je to hnací síla pro optimalizaci výkonu.
 
-When our AI jobs use the same API endpoints as our customers:
+### Proč je používání vlastního API důležité {#why-dogfooding-matters}
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+Když naše AI úlohy používají stejné API koncové body jako naši zákazníci:
 
-### API Usage Examples {#api-usage-examples}
+1. **Výkonnostní úzká místa postihnou nás první** – Bolest pocítíme dříve než zákazníci
+2. **Optimalizace prospívá všem** – Vylepšení pro naše úlohy automaticky zlepšují zákaznickou zkušenost
+3. **Testování v reálném světě** – Naše úlohy zpracovávají tisíce e-mailů, což poskytuje kontinuální zátěžové testování
+4. **Znovupoužití kódu** – Stejná autentizace, omezení rychlosti, zpracování chyb a logika cachování
 
-**Listing Messages (train-from-history.js):**
+### Příklady použití API {#api-usage-examples}
+
+**Výpis zpráv (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// Používá GET /v1/messages?folder=INBOX s BasicAuth
+// Vylučuje eml, raw, nodemailer pro snížení velikosti odpovědi (potřebujeme jen ID)
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +233,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Vrací: [{ id, subject, date, ... }, ...]
+// Plný obsah zprávy se načítá později přes GET /v1/messages/:id
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Načítání plných zpráv (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// Používá GET /v1/messages/:id pro získání plné zprávy s raw obsahem
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +252,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Vrací: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Vytváření konceptů odpovědí (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// Používá POST /v1/messages pro vytvoření konceptů odpovědí
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +276,56 @@ const response = await axios.post(
   }
 );
 ```
+### Výkonnostní výhody {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Protože naše AI úlohy běží na stejné API infrastruktuře:
 
-Because our AI jobs run on the same API infrastructure:
+* **Optimalizace cache** prospívají jak úlohám, tak zákazníkům
+* **Omezení rychlosti (rate limiting)** je testováno při reálné zátěži
+* **Zpracování chyb** je prověřené v praxi
+* **Časy odezvy API** jsou neustále monitorovány
+* **Dotazy do databáze** jsou optimalizovány pro oba případy použití
+* **Optimalizace šířky pásma** – Vynechání `eml`, `raw`, `nodemailer` při výpisu snižuje velikost odpovědi přibližně o 90 %
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+Když `train-from-history.js` zpracovává 1 000 e-mailů, provádí přes 1 000 API volání. Jakákoli neefektivita v API se okamžitě projeví. To nás nutí optimalizovat přístup k IMAP, dotazy do databáze a serializaci odpovědí – vylepšení, která přímo prospívají našim zákazníkům.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Příklad optimalizace**: Výpis 100 zpráv s plným obsahem = přibližně 10 MB odpověď. Výpis s `eml: false, raw: false, nodemailer: false` = přibližně 100 KB odpověď (100× menší).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Šifrovací architektura {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+Naše úložiště e-mailů používá více vrstev šifrování, které musí AI úlohy dešifrovat v reálném čase pro trénink.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### Vrstva 1: Šifrování schránky (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Všechny IMAP schránky jsou uloženy jako SQLite databáze zašifrované pomocí **chacha20-poly1305**, kvantově bezpečného šifrovacího algoritmu. Podrobnosti najdete v našem [blogovém příspěvku o kvantově bezpečné šifrované e-mailové službě](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**Klíčové vlastnosti:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Algoritmus**: ChaCha20-Poly1305 (AEAD šifra)
+* **Kvantově bezpečné**: Odolné vůči útokům kvantových počítačů
+* **Uložení**: SQLite databázové soubory na disku
+* **Přístup**: Dešifrováno v paměti při přístupu přes IMAP/API
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### Vrstva 2: Šifrování zpráv na úrovni PGP {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Mnoho podpůrných e-mailů je navíc šifrováno pomocí PGP (standard OpenPGP). AI úlohy je musí dešifrovat, aby mohly extrahovat obsah pro trénink.
 
-**Decryption Flow:**
+**Průběh dešifrování:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. API vrací zprávu s šifrovaným raw obsahem
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Zkontrolovat, zda je raw obsah PGP-šifrovaný
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Dešifrovat pomocí našeho privátního klíče
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Parsovat dešifrovanou MIME zprávu
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Naplnit nodemailer dešifrovaným obsahem
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +337,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**Konfigurace PGP:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Privátní klíč pro dešifrování (cesta k ASCII-armored klíči)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Heslo k privátnímu klíči (pokud je šifrovaný)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+Pomocný skript `pgp-decrypt.js`:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Jednou načte privátní klíč z disku (uloží do paměti)
+2. Dešifruje klíč pomocí hesla
+3. Používá dešifrovaný klíč pro všechna dešifrování zpráv
+4. Podporuje rekurzivní dešifrování pro vnořené šifrované zprávy
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Proč je to důležité pro trénink {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Bez správného dešifrování by se AI trénovala na zašifrovaném nesmyslu:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +366,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+S dešifrováním se AI trénuje na skutečném obsahu:
 
 ```
 Subject: Re: Bug Report
@@ -376,55 +377,55 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Bezpečnost úložiště {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+Dešifrování probíhá v paměti během vykonávání úlohy a dešifrovaný obsah je převeden na embeddingy, které jsou následně uloženy v LanceDB vektorové databázi na disku.
 
-**Where the data lives:**
+**Kde data žijí:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Vektorová databáze**: Uložena na zašifrovaných pracovních stanicích MacBook M5
+* **Fyzická bezpečnost**: Pracovní stanice jsou u nás po celou dobu (nejsou v datových centrech)
+* **Šifrování disku**: Plné šifrování disku na všech pracovních stanicích
+* **Síťová bezpečnost**: Firewall a izolace od veřejných sítí
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Budoucí nasazení v datovém centru:**
+Pokud někdy přejdeme na hosting v datovém centru, servery budou mít:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* LUKS plné šifrování disku
+* Zakázaný přístup přes USB
+* Fyzická bezpečnostní opatření
+* Síťovou izolaci
+Pro úplné informace o našich bezpečnostních postupech navštivte naši [bezpečnostní stránku](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> Vektorová databáze obsahuje embeddingy (matematické reprezentace), nikoli původní prostý text. Nicméně embeddingy mohou být potenciálně zpětně analyzovány, proto je uchováváme na šifrovaných, fyzicky zabezpečených pracovních stanicích.
 
-### High-Level Flow {#high-level-flow}
+### Lokální ukládání je standardní praxe {#local-storage-is-standard-practice}
+
+Ukládání embeddingů na pracovních stanicích našeho týmu se nijak neliší od toho, jak již zacházíme s e-maily:
+
+* **Thunderbird**: Stahuje a ukládá celý obsah e-mailu lokálně do souborů mbox/maildir
+* **Webmail klienti**: Kešují data e-mailů v úložišti prohlížeče a lokálních databázích
+* **IMAP klienti**: Uchovávají lokální kopie zpráv pro offline přístup
+* **Náš AI systém**: Ukládá matematické embeddingy (nikoli prostý text) v LanceDB
+
+Klíčový rozdíl: embeddingy jsou **bezpečnější** než prostý text e-mailu, protože jsou:
+
+1. Matematické reprezentace, nikoli čitelný text
+2. Obtížněji zpětně analyzovatelné než prostý text
+3. Stále podléhají stejné fyzické bezpečnosti jako naše e-mailové klienty
+
+Pokud je pro náš tým přijatelné používat Thunderbird nebo webmail na šifrovaných pracovních stanicích, je stejně přijatelné (a pravděpodobně bezpečnější) ukládat embeddingy stejným způsobem.
+
+
+## Architektura {#the-architecture}
+
+Zde je základní tok. Vypadá jednoduše. Nebylo to tak.
+
+> \[!NOTE]
+> Všechny úlohy používají přímo Forward Email API, což zajišťuje, že optimalizace výkonu prospívají jak našemu AI systému, tak našim zákazníkům.
+
+### Vysoká úroveň toku {#high-level-flow}
 
 ```mermaid
 graph TD
@@ -451,9 +452,9 @@ graph TD
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Podrobný tok scraperu {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+`scraper.js` je srdcem získávání dat. Je to sbírka parserů pro různé datové formáty.
 
 ```mermaid
 graph TD
@@ -475,29 +476,29 @@ graph TD
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## Jak to funguje {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+Proces je rozdělen do tří hlavních částí: budování znalostní báze, trénink z historických e-mailů a zpracování nových e-mailů.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### Budování znalostní báze {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: Toto je hlavní úloha. Spouští se každou noc, vymaže starý vektorový obchod a znovu jej vytvoří od začátku. Používá `scraper.js` k získání obsahu ze všech zdrojů, `processor.js` k rozdělení textu na části a `ollama-client.js` k vytvoření embeddingů. Nakonec `vector-store.js` uloží vše do LanceDB.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+**Datové zdroje:**
 
-### Training from Historical Emails {#training-from-historical-emails}
+* Lokální Markdown soubory (`docs/*.md`)
+* Technický whitepaper PDF (`assets/technical-whitepaper.pdf`)
+* API specifikace JSON (`assets/api-spec.json`)
+* GitHub issues (přes Octokit)
+* GitHub diskuse (přes Octokit)
+* GitHub pull requesty (přes Octokit)
+* Seznam URL sitemap (`$LANCEDB_PATH/valid-urls.json`)
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
+### Trénink z historických e-mailů {#training-from-historical-emails}
 
-**Email Processing Flow:**
+**`train-from-history.js`**: Tato úloha prohledává historické e-maily ze všech složek, dešifruje PGP zašifrované zprávy a přidává je do samostatného vektorového obchodu (`customer_support_history`). To poskytuje kontext z minulých podpůrných interakcí.
+**Průběh zpracování e-mailů:**
 
 ```mermaid
 sequenceDiagram
@@ -535,25 +536,25 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**Klíčové vlastnosti:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **PGP dešifrování**: Používá pomocný skript `pgp-decrypt.js` s proměnnou prostředí `GPG_SECURITY_KEY`
+* **Seskupování vláken**: Seskupuje související e-maily do konverzačních vláken
+* **Zachování metadat**: Ukládá složku, předmět, datum, stav šifrování
+* **Kontext odpovědi**: Propojuje zprávy s jejich odpověďmi pro lepší kontext
 
-**Configuration:**
+**Konfigurace:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# Proměnné prostředí pro train-from-history
+HISTORY_SCAN_LIMIT=1000              # Max počet zpráv k zpracování
+HISTORY_SCAN_SINCE="2024-01-01"      # Zpracovávat pouze zprávy po tomto datu
+HISTORY_DECRYPT_PGP=true             # Pokus o PGP dešifrování
+GPG_SECURITY_KEY="/path/to/key.asc"  # Cesta k soukromému PGP klíči
+GPG_SECURITY_PASSPHRASE="passphrase" # Heslo ke klíči (volitelné)
 ```
 
-**What Gets Stored:**
+**Co se ukládá:**
 
 ```javascript
 {
@@ -575,39 +576,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Spusťte `train-from-history` po počátečním nastavení pro naplnění historického kontextu. To výrazně zlepšuje kvalitu odpovědí učením se z minulých interakcí podpory.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Zpracování příchozích e-mailů {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Tento úkol běží na e-mailech v našich schránkách `support@forwardemail.net`, `abuse@forwardemail.net` a `security@forwardemail.net` (konkrétně v IMAP složce `INBOX`). Využívá naši API na <https://forwardemail.net/email-api> (např. `GET /v1/messages?folder=INBOX` s přístupem BasicAuth pomocí našich IMAP přihlašovacích údajů pro každou schránku). Analyzuje obsah e-mailu, dotazuje se jak na znalostní bázi (`forward_email_knowledge_base`), tak na historické vektorové úložiště e-mailů (`customer_support_history`), a poté předává kombinovaný kontext do `response-generator.js`. Generátor používá `mxbai-embed-large` přes Ollama k vytvoření odpovědi.
 
-**Automated Workflow Features:**
+**Funkce automatizovaného workflow:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Automatizace Inbox Zero**: Po úspěšném vytvoření konceptu je původní zpráva automaticky přesunuta do složky Archiv. To udržuje vaši doručenou poštu čistou a pomáhá dosáhnout inbox zero bez manuálního zásahu.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **Přeskočení AI zpracování**: Jednoduše přidejte štítek `skip-ai` (bez ohledu na velikost písmen) k jakékoli zprávě, aby se zabránilo AI zpracování. Zpráva zůstane nedotčena ve vaší doručené poště, což vám umožní ji řešit ručně. To je užitečné pro citlivé zprávy nebo složité případy vyžadující lidský úsudek.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Správné řazení e-mailových vláken**: Všechny koncepty odpovědí obsahují původní zprávu citovanou níže (pomocí standardního prefixu ` >  `), podle konvencí e-mailových odpovědí ve formátu "Dne \[datum] napsal \[odesílatel]:". To zajišťuje správný kontext konverzace a řazení ve e-mailových klientech.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Chování Odpovědět všem**: Systém automaticky zpracovává hlavičky Reply-To a příjemce CC:
+   * Pokud existuje hlavička Reply-To, stává se adresou To a původní From je přidán do CC
+   * Všichni původní příjemci To a CC jsou zahrnuti do odpovědi v CC (kromě vaší vlastní adresy)
+   * Dodržuje standardní konvence odpovědi všem pro skupinové konverzace
+**Hodnocení zdrojů**: Systém používá **vážené hodnocení** k prioritizaci zdrojů:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
+* FAQ: 100 % (nejvyšší priorita)
+* Technický whitepaper: 95 %
+* API specifikace: 90 %
+* Oficiální dokumentace: 85 %
+* GitHub issues: 70 %
+* Historické e-maily: 50 %
 
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
-* GitHub issues: 70%
-* Historical emails: 50%
+### Správa Vector Store {#vector-store-management}
 
-### Vector Store Management {#vector-store-management}
+Třída `VectorStore` v `helpers/customer-support-ai/vector-store.js` je naše rozhraní k LanceDB.
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
-
-**Adding Documents:**
+**Přidávání dokumentů:**
 
 ```javascript
 // vector-store.js
@@ -621,126 +621,127 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Vymazání úložiště:**
 
 ```javascript
-// Option 1: Use the clear() method
+// Možnost 1: Použijte metodu clear()
 await vectorStore.clear();
 
-// Option 2: Delete the local database directory
+// Možnost 2: Smažte lokální adresář databáze
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+Prostředí `LANCEDB_PATH` ukazuje na lokální adresář embedded databáze. LanceDB je serverless a embedded, takže není potřeba žádný samostatný proces k řízení.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## Hřbitov vektorových databází {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
-| ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+To byla první velká překážka. Vyzkoušeli jsme několik vektorových databází, než jsme se rozhodli pro LanceDB. Tady je, co se u každé pokazilo.
+
+| Databáze    | GitHub                                                      | Co se pokazilo                                                                                                                                                                                                      | Konkrétní problémy                                                                                                                                                                                                                                                                                                                                                       | Bezpečnostní obavy                                                                                                                                                                                               |
+| ----------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` vám nainstaluje verzi z pravěku s `PydanticImportError`. Jediný způsob, jak získat funkční verzi, je kompilace ze zdroje. Není to přátelské pro vývojáře.                                  | Chaos v závislostech Pythonu. Více uživatelů hlásí nefunkční pip instalace ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). Dokumentace říká „použijte Docker“, což není odpověď pro lokální vývoj. Padají na Windows při >99 záznamech ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Spuštění libovolného kódu přes integraci ChromaDB v MindsDB. Kritické zranitelnosti OS v Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                                   |
+| **Qdrant**  | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | Homebrew tap (`qdrant/qdrant/qdrant`) uvedený v jejich staré dokumentaci zmizel. Beze stopy. Bez vysvětlení. Oficiální dokumentace nyní jen říká „použijte Docker.“                                                  | Chybějící Homebrew tap. Žádný nativní binární soubor pro macOS. Pouze Docker je překážkou pro rychlé lokální testování.                                                                                                                                                                                                                                               | **CVE-2024-2221**: Zranitelnost umožňující nahrání libovolného souboru a vzdálené spuštění kódu (opraveno ve verzi v1.9.0). Nízké skóre bezpečnostní zralosti od [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | Verze pro Homebrew měla kritickou chybu v clusterování (`leader not found`). Dokumentované příznaky pro opravu (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) nefungovaly. Základně nefunkční pro jednonodové nasazení.          | Chyby v clusterování i v režimu jedné uzlu. Překomplikované pro jednoduché případy použití.                                                                                                                                                                                                                                                                               | Nebyly nalezeny závažné CVE, ale složitost zvyšuje povrch útoku.                                                                                                                                                   |
+| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Tato fungovala. Je embedded a serverless. Žádný samostatný proces. Jedinou nepříjemností je matoucí pojmenování balíčků (`vectordb` je zastaralý, používejte `@lancedb/lancedb`) a roztříštěná dokumentace. To zvládneme. | Matoucí pojmenování balíčků (`vectordb` vs `@lancedb/lancedb`), ale jinak spolehlivé. Embedded architektura eliminuje celé třídy bezpečnostních problémů.                                                                                                                                                                                                             | Žádné známé CVE. Embedded design znamená žádný síťový povrch útoku.                                                                                                                                               |
+> \[!WARNING]
+> **ChromaDB má kritické bezpečnostní zranitelnosti.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) umožňuje spuštění libovolného kódu. Instalace přes pip je zásadně rozbitá kvůli problémům se závislostí Pydantic. Vyhněte se použití v produkci.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **Qdrant měl zranitelnost RCE při nahrávání souborů** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)), která byla opravena až ve verzi v1.9.0. Pokud musíte používat Qdrant, ujistěte se, že máte nejnovější verzi.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Ekosystém open-source vektorových databází je drsný. Nedůvěřujte dokumentaci. Předpokládejte, že je vše rozbité, dokud se neprokáže opak. Testujte lokálně před závazkem ke stacku.
 
-## System Requirements {#system-requirements}
+
+## Systémové požadavky {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** Nejnovější ([GitHub](https://github.com/ollama/ollama))
+* **Model:** `mxbai-embed-large` přes Ollama
+* **Vektorová databáze:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **Přístup na GitHub:** `@octokit/rest` pro scrapování issues ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Pro primární databázi (přes `mongoose-to-sqlite`)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## Konfigurace Cron Jobu {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+Všechny AI úlohy běží přes cron na MacBooku M5. Zde je návod, jak nastavit cron joby, aby běžely o půlnoci napříč více schránkami.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### Proměnné prostředí {#environment-variables}
 
-**In `.env` file:**
+Úlohy vyžadují tyto proměnné prostředí. Většinu lze nastavit v souboru `.env` (načítáno přes `@ladjs/env`), ale `HISTORY_SCAN_SINCE` musí být dynamicky vypočítáno v crontabu.
+
+**V souboru `.env`:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Přihlašovací údaje Forward Email API (mění se podle schránky)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
 FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
 
-# PGP decryption (shared across all inboxes)
+# PGP dešifrování (sdílené napříč všemi schránkami)
 GPG_SECURITY_KEY=/path/to/private-key.asc
 GPG_SECURITY_PASSPHRASE=your-passphrase
 
-# Historical scan configuration
+# Konfigurace historického skenování
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# Cesta k LanceDB
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**V crontabu (dynamicky vypočítáno):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE musí být nastaven inline v crontabu s výpočtem shellového data
+# Nemůže být v .env, protože @ladjs/env nevyhodnocuje shellové příkazy
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Cron joby pro více schránek {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Upravte svůj crontab pomocí `crontab -e` a přidejte:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Aktualizace znalostní báze (běží jednou, sdíleno napříč všemi schránkami)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Trénink z historie - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Trénink z historie - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Trénink z historie - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Zpracování schránky - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Zpracování schránky - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Zpracování schránky - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Rozpis plánu Cron {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
+| Úloha                    | Plán         | Popis                                                                             |
+| ------------------------ | ------------ | --------------------------------------------------------------------------------- |
+| `train-from-sitemap.js`  | `0 0 * * 0`  | Týdně (nedělní půlnoc) - Stáhne všechny URL ze sitemap a trénuje znalostní bázi   |
+| `train-from-history.js`  | `0 0 * * *`  | Denně o půlnoci - Prohledává e-maily z předchozího dne podle schránky             |
+| `process-inbox.js`       | `*/5 * * * *`| Každých 5 minut - Zpracovává nové e-maily a generuje koncepty                     |
 
-| Job | Schedule | Description |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+### Dynamický výpočet data {#dynamic-date-calculation}
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+Proměnná `HISTORY_SCAN_SINCE` **musí být vypočítána přímo v crontabu** protože:
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+1. `.env` soubory jsou `@ladjs/env` čteny jako doslovné řetězce
+2. Shellová substituce příkazů `$(...)` nefunguje v `.env` souborech
+3. Datum musí být vypočítáno vždy čerstvě při každém spuštění cronu
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
-
-**Correct approach (in crontab):**
+**Správný přístup (v crontabu):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +751,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Nesprávný přístup (nefunguje v .env):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Toto bude čteno jako doslovný řetězec "$(date -v-1d +%Y-%m-%d)"
+# NEvyhodnoceno jako shellový příkaz
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Tím je zajištěno, že každé noční spuštění dynamicky vypočítá datum předchozího dne a vyhne se zbytečné práci.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### Počáteční nastavení: Extrakce seznamu URL ze sitemap {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+Před prvním spuštěním úlohy process-inbox **musíte** extrahovat seznam URL ze sitemap. Tím se vytvoří slovník platných URL, na které může LLM odkazovat, a zabrání se halucinacím URL.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# První nastavení: Extrakce seznamu URL ze sitemap
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Co to dělá:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. Stáhne všechny URL z <https://forwardemail.net/sitemap.xml>
+2. Filtruje pouze ne-lokalizované URL nebo /en/ URL (zabraňuje duplicitnímu obsahu)
+3. Odstraní prefixy lokalizace (/en/faq → /faq)
+4. Uloží jednoduchý JSON soubor se seznamem URL do `$LANCEDB_PATH/valid-urls.json`
+5. Žádné procházení, žádné stahování metadat – jen plochý seznam platných URL
 
-**Why this matters:**
+**Proč je to důležité:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* Zabraňuje LLM v halucinování falešných URL jako `/dashboard` nebo `/login`
+* Poskytuje whitelist platných URL, na které může generátor odpovědí odkazovat
+* Jednoduché, rychlé a nevyžaduje ukládání do vektorové databáze
+* Generátor odpovědí tento seznam načítá při startu a zahrnuje ho do promptu
 
-**Add to crontab for weekly updates:**
+**Přidat do crontabu pro týdenní aktualizace:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# Extrakce seznamu URL ze sitemap - týdně v neděli o půlnoci
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Manuální testování cron úloh {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+Pro otestování úlohy před přidáním do cronu:
 
 ```bash
-# Test sitemap training
+# Test tréninku ze sitemap
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Test tréninku podpůrné schránky
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +815,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Monitorování logů {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Každá úloha zapisuje do samostatného souboru pro snadné ladění:
 
 ```bash
-# Watch support inbox processing in real-time
+# Sledujte zpracování podpůrné schránky v reálném čase
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Zkontrolujte poslední noční běh tréninku
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Zobrazte všechny chyby napříč úlohami
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Používejte samostatné logy pro každou schránku, abyste izolovali problémy. Pokud má jedna schránka problémy s autentizací, neovlivní to logy ostatních schránek.
+## Příklady kódu {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Scraping a zpracování {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +843,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Vymazat stará data
 await vectorStore.clear();
 
-// Scrape all sources
+// Scrape všechny zdroje
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`Scrapováno ${documents.length} dokumentů`);
 
-// Process into chunks
+// Zpracovat do částí
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`Vygenerováno ${allChunks.length} částí`);
 
-// Generate embeddings and store
+// Generovat embeddingy a uložit
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +870,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Trénink z historických emailů {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +884,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Prohledat všechny složky (INBOX, Odeslaná pošta, atd.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Seskupit do konverzačních vláken
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Zpracovat každé vlákno
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Přeskočit šifrované zprávy, které nebyly dešifrovány
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Použít již parsovaný obsah z nodemaileru
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // Rozdělit na části a uložit
+    const chunks = processor.chunkText(`Předmět: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +929,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Dotazování na kontext {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +938,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Dotazovat obě úložiště
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Vážené řazení a deduplikace probíhá zde
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Generovat odpověď
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## Budoucnost: Výzkum a vývoj Spam Scanneru {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Tento celý projekt nebyl jen pro zákaznickou podporu. Byl to výzkum a vývoj. Nyní můžeme vše, co jsme se naučili o lokálních embeddingech, vektorových úložištích a získávání kontextu, aplikovat na náš další velký projekt: vrstvu LLM pro [Spam Scanner](https://spamscanner.net). Stejné principy ochrany soukromí, self-hostingu a sémantického porozumění budou klíčové.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Řešení problémů {#troubleshooting}
+
+### Chyba nesouladu rozměrů vektorů {#vector-dimension-mismatch-error}
+
+**Chyba:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Příčina:** Tato chyba nastává, když přepnete embedding modely (např. z `mistral-small` na `mxbai-embed-large`), ale existující databáze LanceDB byla vytvořena s jiným rozměrem vektoru.
+**Řešení:** Je potřeba znovu natrénovat znalostní bázi s novým embedding modelem:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Zastavte všechny běžící úlohy zákaznické podpory AI
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Odstraňte existující databázi LanceDB
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Ověřte, že embedding model je správně nastaven v .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Mělo by ukázat: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Stáhněte embedding model v Ollama
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Znovu natrénujte znalostní bázi
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Restartujte úlohu process-inbox přes Bree
+# Úloha poběží automaticky každých 5 minut
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Proč se to děje:** Různé embedding modely produkují vektory s různými dimenzemi:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 dimenzí
+* `mxbai-embed-large`: 1024 dimenzí
+* `nomic-embed-text`: 768 dimenzí
+* `all-minilm`: 384 dimenzí
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB ukládá dimenzi vektoru ve schématu tabulky. Když dotazujete s jinou dimenzí, dojde k chybě. Jediným řešením je znovu vytvořit databázi s novým modelem.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Kontext prázdné znalostní báze {#empty-knowledge-base-context}
 
-**Symptom:**
+**Příznak:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,220 +1011,222 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Příčina:** Znalostní báze ještě nebyla natrénována, nebo tabulka LanceDB neexistuje.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Řešení:** Spusťte tréninkovou úlohu pro naplnění znalostní báze:
 
 ```bash
-# Train from historical emails
+# Trénink z historických emailů
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Nebo trénink z webu/dokumentace (pokud máte scraper)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### Selhání dešifrování PGP {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Příznak:** Zprávy jsou označeny jako zašifrované, ale obsah je prázdný.
 
-**Solution:**
+**Řešení:**
 
-1. Verify GPG key path is set correctly:
+1. Ověřte, že cesta k GPG klíči je správně nastavena:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Měla by ukazovat na váš soukromý klíč
 ```
 
-2. Test decryption manually:
+2. Otestujte dešifrování ručně:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Zkontrolujte oprávnění klíče:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# Měl by být čitelný uživatelem, který spouští úlohu
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Tipy pro použití {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Jak dosáhnout Inbox Zero {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+Systém je navržen tak, aby vám automaticky pomohl dosáhnout inbox zero:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Automatické archivování**: Když je koncept úspěšně vytvořen, původní zpráva je automaticky přesunuta do složky Archiv. To udržuje vaši doručenou poštu čistou bez manuálního zásahu.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Kontrola konceptů**: Pravidelně kontrolujte složku Koncepty, kde jsou AI generované odpovědi. Upravit je můžete před odesláním.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Manuální přepsání**: Pro zprávy vyžadující zvláštní pozornost jednoduše přidejte štítek `skip-ai` před spuštěním úlohy.
 
-To prevent AI processing for specific messages:
+### Použití štítku skip-ai {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+Chcete-li zabránit AI zpracování konkrétních zpráv:
 
-**When to use skip-ai:**
+1. **Přidejte štítek**: Ve vašem emailovém klientu přidejte štítek/tag `skip-ai` k libovolné zprávě (bez ohledu na velikost písmen)
+2. **Zpráva zůstane v inboxu**: Zpráva nebude zpracována ani archivována
+3. **Zpracujte ručně**: Můžete na ni odpovědět sami bez zásahu AI
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**Kdy použít skip-ai:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Citlivé nebo důvěrné zprávy
+* Komplexní případy vyžadující lidský úsudek
+* Zprávy od VIP zákazníků
+* Právní nebo compliance dotazy
+* Zprávy vyžadující okamžitou lidskou pozornost
 
-The system follows standard email conventions:
+### Vlákna emailů a odpověď všem {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+Systém dodržuje standardní emailové konvence:
+
+**Citované původní zprávy:**
 
 ```
-Hi there,
+Ahoj,
 
-[AI-generated response]
+[AI-generovaná odpověď]
 
 --
-Thank you,
+Děkujeme,
 Forward Email
 https://forwardemail.net
 
-On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
-> This is the original message
-> with each line quoted
-> using the standard "> " prefix
+Dne Po, 15. ledna 2024, 15:45 John Doe <john@example.com> napsal:
+> Toto je původní zpráva
+> s každým řádkem citovaným
+> pomocí standardního prefixu "> "
 ```
 
-**Reply-To Handling:**
+**Zpracování Reply-To:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Pokud má původní zpráva hlavičku Reply-To, koncept odpovídá na tuto adresu
+* Původní adresa From je přidána do CC
+* Všichni ostatní původní příjemci To a CC jsou zachováni
 
-**Example:**
+**Příklad:**
 
 ```
-Original message:
+Původní zpráva:
   From: john@company.com
   Reply-To: support@company.com
   To: support@forwardemail.net
   CC: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
+Koncept odpovědi:
+  To: support@company.com (z Reply-To)
   CC: john@company.com, manager@company.com
 ```
+### Monitoring a údržba {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Pravidelně kontrolujte kvalitu konceptů:**
 
 ```bash
-# View recent drafts
+# Zobrazit nedávné koncepty
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Sledujte archivaci:**
 
 ```bash
-# Check for archiving errors
+# Zkontrolovat chyby při archivaci
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Zkontrolujte přeskočené zprávy:**
 
 ```bash
-# See which messages were skipped
+# Zobrazit, které zprávy byly přeskočeny
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Testování {#testing}
 
-### Running Tests {#running-tests}
+Systém AI zákaznické podpory zahrnuje komplexní testovací pokrytí s 23 testy Ava.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Spuštění testů {#running-tests}
+
+Kvůli konfliktům přepisů npm balíčků s `better-sqlite3` použijte poskytnutý testovací skript:
 
 ```bash
-# Run all customer support AI tests
+# Spustit všechny testy AI zákaznické podpory
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Spustit s podrobným výstupem
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Spustit konkrétní testovací soubor
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Alternativně spusťte testy přímo:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Pokrytí testů {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Sběrač Sitemap (6 testů):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* Regex shoda vzoru locale
+* Extrakce cesty URL a odstranění locale
+* Logika filtrování URL podle locale
+* Logika parsování XML
+* Logika deduplikace
+* Kombinované filtrování, odstraňování a deduplikace
 
-**Message Utils (9 tests):**
+**Nástroje pro zprávy (9 testů):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Extrakce textu odesílatele s jménem a emailem
+* Zpracování pouze emailu, pokud jméno odpovídá prefixu
+* Použití from.text, pokud je k dispozici
+* Použití Reply-To, pokud je přítomen
+* Použití From, pokud není Reply-To
+* Zahrnutí původních příjemců CC
+* Vyloučení naší vlastní adresy z CC
+* Zpracování Reply-To s From v CC
+* Deduplikace adres v CC
 
-**Response Generator (8 tests):**
+**Generátor odpovědí (8 testů):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* Logika seskupování URL pro prompt
+* Detekce jména odesílatele
+* Struktura promptu obsahuje všechny požadované sekce
+* Formátování seznamu URL bez úhlových závorek
+* Zpracování prázdného seznamu URL
+* Seznam zakázaných URL v promptu
+* Začlenění historického kontextu
+* Správné URL pro témata související s účtem
 
-### Test Environment {#test-environment}
+### Testovací prostředí {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+Testy používají konfiguraci z `.env.test`. Testovací prostředí zahrnuje:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Mock PayPal a Stripe přihlašovací údaje
+* Testovací šifrovací klíče
+* Zakázané autentizační poskytovatele
+* Bezpečné cesty k testovacím datům
 
-All tests are designed to run without external dependencies or network calls.
+Všechny testy jsou navrženy tak, aby běžely bez externích závislostí nebo síťových volání.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Klíčové poznatky {#key-takeaways}
+
+1. **Soukromí na prvním místě:** Vlastní hosting je nezbytný pro soulad s GDPR/DPA.
+2. **Cena je důležitá:** Cloudové AI služby jsou 50-1000x dražší než vlastní hosting pro produkční zátěže.
+3. **Ekosystém je rozbitý:** Většina vektorových databází není přívětivá pro vývojáře. Testujte vše lokálně.
+4. **Bezpečnostní zranitelnosti jsou reálné:** ChromaDB a Qdrant měly kritické RCE zranitelnosti.
+5. **LanceDB funguje:** Je zabudovaná, bezserverová a nevyžaduje samostatný proces.
+6. **Ollama je spolehlivá:** Lokální inference LLM s `mxbai-embed-large` dobře funguje pro náš případ použití.
+7. **Neshody typů vás zabijí:** `text` vs. `content`, ObjectID vs. string. Tyto chyby jsou tiché a kruté.
+8. **Vážené hodnocení je důležité:** Ne každý kontext je stejný. FAQ > GitHub issues > Historické emaily.
+9. **Historický kontext je zlato:** Trénink z minulých podpůrných emailů dramaticky zlepšuje kvalitu odpovědí.
+10. **PGP dešifrování je nezbytné:** Mnoho podpůrných emailů je šifrovaných; správné dešifrování je klíčové pro trénink.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Zjistěte více o Forward Email a našem přístupu k emailu zaměřeném na soukromí na [forwardemail.net](https://forwardemail.net).

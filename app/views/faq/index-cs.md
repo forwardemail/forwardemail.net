@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# Často kladené otázky {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email často kladené otázky" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## Obsah {#table-of-contents}
+
+* [Rychlý start](#quick-start)
+* [Úvod](#introduction)
+  * [Co je Forward Email](#what-is-forward-email)
+  * [Kdo používá Forward Email](#who-uses-forward-email)
+  * [Jaká je historie Forward Email](#what-is-forward-emails-history)
+  * [Jak rychlá je tato služba](#how-fast-is-this-service)
+* [Emailoví klienti](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [Mobilní zařízení](#mobile-devices)
+  * [Konfigurace Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
+  * [Konfigurace Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
+  * [Konfigurace msmtp SMTP klienta](#msmtp-smtp-client-configuration)
+  * [Emailoví klienti příkazové řádky](#command-line-email-clients)
+  * [Konfigurace emailu ve Windows](#windows-email-configuration)
+  * [Konfigurace Postfix SMTP Relay](#postfix-smtp-relay-configuration)
+  * [Jak odesílat poštu jako pomocí Gmail](#how-to-send-mail-as-using-gmail)
+  * [Co je starý bezplatný průvodce pro Send Mail As pomocí Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Pokročilá konfigurace směrování Gmail](#advanced-gmail-routing-configuration)
+  * [Pokročilá konfigurace směrování Outlook](#advanced-outlook-routing-configuration)
+* [Řešení problémů](#troubleshooting)
+  * [Proč nedostávám své testovací emaily](#why-am-i-not-receiving-my-test-emails)
+  * [Jak nakonfigurovat emailového klienta pro práci s Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Proč moje emaily končí ve spamu a jak mohu zkontrolovat reputaci mé domény](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [Co mám dělat, když dostávám spamové emaily](#what-should-i-do-if-i-receive-spam-emails)
+  * [Proč jsou moje testovací emaily zaslané sobě v Gmail označeny jako "podezřelé"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Mohu odstranit "via forwardemail dot net" v Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Správa dat](#data-management)
+  * [Kde jsou vaše servery umístěny](#where-are-your-servers-located)
+  * [Jak exportovat a zálohovat svou poštovní schránku](#how-do-i-export-and-backup-my-mailbox)
+  * [Jak importovat a migrovat svou stávající poštovní schránku](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Jak používat vlastní S3-kompatibilní úložiště pro zálohy](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [Jak převést SQLite zálohy na EML soubory](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [Podporujete self-hosting](#do-you-support-self-hosting)
+* [Konfigurace emailu](#email-configuration)
+  * [Jak začít a nastavit přeposílání emailů](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Mohu použít více MX výměn a serverů pro pokročilé přeposílání](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [Jak nastavit automatickou odpověď na dovolenou (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Jak nastavit SPF pro Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [Jak nastavit DKIM pro Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [Jak nastavit DMARC pro Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [Jak zobrazit DMARC zprávy](#how-do-i-view-dmarc-reports)
+  * [Jak připojit a nakonfigurovat kontakty](#how-do-i-connect-and-configure-my-contacts)
+  * [Jak připojit a nakonfigurovat kalendáře](#how-do-i-connect-and-configure-my-calendars)
+  * [Jak přidat více kalendářů a spravovat stávající kalendáře](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [Jak připojit a nakonfigurovat úkoly a připomínky](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Proč nemohu vytvářet úkoly v macOS Připomínkách](#why-cant-i-create-tasks-in-macos-reminders)
+  * [Jak nastavit Tasks.org na Androidu](#how-do-i-set-up-tasksorg-on-android)
+  * [Jak nastavit SRS pro Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [Jak nastavit MTA-STS pro Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [Jak přidat profilový obrázek k mé emailové adrese](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Pokročilé funkce](#advanced-features)
+  * [Podporujete newslettery nebo mailing listy pro marketingové emaily](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Podporujete odesílání emailů přes API](#do-you-support-sending-email-with-api)
+  * [Podporujete příjem emailů přes IMAP](#do-you-support-receiving-email-with-imap)
+  * [Podporujete POP3](#do-you-support-pop3)
+  * [Podporujete kalendáře (CalDAV)](#do-you-support-calendars-caldav)
+  * [Podporujete úkoly a připomínky (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Podporujete kontakty (CardDAV)](#do-you-support-contacts-carddav)
+  * [Podporujete odesílání emailů přes SMTP](#do-you-support-sending-email-with-smtp)
+  * [Podporujete OpenPGP/MIME, end-to-end šifrování ("E2EE") a Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Podporujete S/MIME šifrování](#do-you-support-smime-encryption)
+  * [Podporujete Sieve filtrování emailů](#do-you-support-sieve-email-filtering)
+  * [Podporujete MTA-STS](#do-you-support-mta-sts)
+  * [Podporujete passkeys a WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Podporujete nejlepší praktiky emailu](#do-you-support-email-best-practices)
+  * [Podporujete bounce webhooks](#do-you-support-bounce-webhooks)
+  * [Podporujete webhooks](#do-you-support-webhooks)
+  * [Podporujete regulární výrazy nebo regex](#do-you-support-regular-expressions-or-regex)
+  * [Jaké jsou vaše limity pro odchozí SMTP](#what-are-your-outbound-smtp-limits)
+  * [Potřebuji schválení pro povolení SMTP](#do-i-need-approval-to-enable-smtp)
+  * [Jaká jsou nastavení konfigurace vašeho SMTP serveru](#what-are-your-smtp-server-configuration-settings)
+  * [Jaká jsou nastavení konfigurace vašeho IMAP serveru](#what-are-your-imap-server-configuration-settings)
+  * [Jaká jsou nastavení konfigurace vašeho POP3 serveru](#what-are-your-pop3-server-configuration-settings)
+  * [Jak nastavit autodiscovery emailu pro mou doménu](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [Bezpečnost](#security-1)
+  * [Pokročilé techniky zpevnění serveru](#advanced-server-hardening-techniques)
+  * [Máte certifikace SOC 2 nebo ISO 27001](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Používáte TLS šifrování pro přeposílání emailů](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Zachováváte hlavičky autentizace emailu](#do-you-preserve-email-authentication-headers)
+  * [Zachováváte původní hlavičky emailu a zabraňujete spoofingu](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [Jak chráníte proti spamu a zneužití](#how-do-you-protect-against-spam-and-abuse)
+  * [Ukládáte obsah emailů na disk](#do-you-store-email-content-on-disk)
+  * [Může být obsah emailu vystaven při havárii systému](#can-email-content-be-exposed-during-system-crashes)
+  * [Kdo má přístup k vaší emailové infrastruktuře](#who-has-access-to-your-email-infrastructure)
+  * [Jaké poskytovatele infrastruktury používáte](#what-infrastructure-providers-do-you-use)
+  * [Nabízíte smlouvu o zpracování dat (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [Jak řešíte oznámení o narušení dat](#how-do-you-handle-data-breach-notifications)
+  * [Nabízíte testovací prostředí](#do-you-offer-a-test-environment)
+  * [Poskytujete nástroje pro monitorování a upozornění](#do-you-provide-monitoring-and-alerting-tools)
+  * [Jak zajišťujete vysokou dostupnost](#how-do-you-ensure-high-availability)
+  * [Jste v souladu s oddílem 889 zákona o národní obraně (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [Systémové a technické detaily](#system-and-technical-details)
+  * [Ukládáte emaily a jejich obsah](#do-you-store-emails-and-their-contents)
+  * [Jak funguje váš systém přeposílání emailů](#how-does-your-email-forwarding-system-work)
+  * [Jak zpracováváte email pro přeposílání](#how-do-you-process-an-email-for-forwarding)
+  * [Jak řešíte problémy s doručením emailů](#how-do-you-handle-email-delivery-issues)
+  * [Jak řešíte blokování vašich IP adres](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [Co jsou adresy postmaster](#what-are-postmaster-addresses)
+  * [Co jsou adresy no-reply](#what-are-no-reply-addresses)
+  * [Jaké jsou IP adresy vašich serverů](#what-are-your-servers-ip-addresses)
+  * [Máte allowlist](#do-you-have-an-allowlist)
+  * [Jaké doménové přípony jsou ve výchozím nastavení na allowlistu](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [Jaká jsou kritéria pro váš allowlist](#what-is-your-allowlist-criteria)
+  * [Jaké doménové přípony lze používat zdarma](#what-domain-name-extensions-can-be-used-for-free)
+  * [Máte greylist](#do-you-have-a-greylist)
+  * [Máte denylist](#do-you-have-a-denylist)
+  * [Máte omezení rychlosti (rate limiting)](#do-you-have-rate-limiting)
+  * [Jak chráníte proti backscatter](#how-do-you-protect-against-backscatter)
+  * [Zabraňujete bounce od známých spammerů MAIL FROM](#prevent-bounces-from-known-mail-from-spammers)
+  * [Zabraňujete zbytečným bounce pro ochranu proti backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [Jak určujete otisk emailu (email fingerprint)](#how-do-you-determine-an-email-fingerprint)
+  * [Mohu přeposílat emaily na porty jiné než 25 (např. pokud můj ISP zablokoval port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Podporuje to symbol plus + pro Gmail aliasy](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Podporuje to subdomény](#does-it-support-sub-domains)
+  * [Přeposílá to hlavičky mého emailu](#does-this-forward-my-emails-headers)
+  * [Je to dobře otestované](#is-this-well-tested)
+  * [Přenášíte SMTP odpovědi a kódy](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [Jak zabraňujete spammerům a zajišťujete dobrou reputaci přeposílání emailů](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Jak provádíte DNS dotazy na doménová jména](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Účet a fakturace](#account-and-billing)
+  * [Nabízíte záruku vrácení peněz u placených plánů](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [Pokud přejdu na jiný plán, provádíte poměrné vrácení peněz](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Mohu používat tuto službu přeposílání emailů jako "fallback" nebo "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Mohu zakázat konkrétní aliasy](#can-i-disable-specific-aliases)
+  * [Mohu přeposílat emaily na více příjemců](#can-i-forward-emails-to-multiple-recipients)
+  * [Mohu mít více globálních catch-all příjemců](#can-i-have-multiple-global-catch-all-recipients)
+  * [Existuje maximální limit počtu emailových adres, na které mohu přeposílat za alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Mohu přeposílat emaily rekurzivně](#can-i-recursively-forward-emails)
+  * [Mohou lidé odregistrovat nebo registrovat mé přeposílání emailů bez mého svolení](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [Jak je to zdarma](#how-is-it-free)
+  * [Jaký je maximální limit velikosti emailu](#what-is-the-max-email-size-limit)
+  * [Ukládáte logy emailů](#do-you-store-logs-of-emails)
+  * [Ukládáte logy chyb](#do-you-store-error-logs)
+  * [Čtete mé emaily](#do-you-read-my-emails)
+  * [Mohu "odesílat poštu jako" v Gmail s tímto](#can-i-send-mail-as-in-gmail-with-this)
+  * [Mohu "odesílat poštu jako" v Outlook s tímto](#can-i-send-mail-as-in-outlook-with-this)
+  * [Mohu "odesílat poštu jako" v Apple Mail a iCloud Mail s tímto](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Mohu přeposílat neomezené množství emailů s tímto](#can-i-forward-unlimited-emails-with-this)
+  * [Nabízíte neomezené domény za jednu cenu](#do-you-offer-unlimited-domains-for-one-price)
+  * [Jaké způsoby platby přijímáte](#which-payment-methods-do-you-accept)
+* [Další zdroje](#additional-resources)
+## Rychlý start {#quick-start}
 
-## Quick Start {#quick-start}
+Pro začátek s Forward Email:
 
-To get started with Forward Email:
+1. **Vytvořte si účet** na [forwardemail.net/register](https://forwardemail.net/register)
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **Přidejte a ověřte svou doménu** v [Můj účet → Domény](/my-account/domains)
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **Přidejte a nakonfigurujte e-mailové aliasy/schránky** v [Můj účet → Domény](/my-account/domains) → Aliasy
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **Otestujte své nastavení** odesláním e-mailu na jeden z vašich nových aliasů
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> Změny DNS mohou trvat až 24-48 hodin, než se globálně projeví, i když často se projeví mnohem dříve.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Pro lepší doručitelnost doporučujeme nastavit záznamy [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) a [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## Úvod {#introduction}
+
+### Co je Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email je ideální pro jednotlivce, malé firmy a vývojáře, kteří chtějí profesionální e-mailové adresy bez nákladů a údržby plnohodnotného e-mailového hostingu.
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+Forward Email je **plnohodnotný poskytovatel e-mailových služeb** a **poskytovatel e-mailového hostingu pro vlastní domény**.
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+Je to jediná bezplatná a open-source služba, která vám umožní používat e-mailové adresy s vlastní doménou bez složitosti nastavování a správy vlastního e-mailového serveru.
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+Naše služba přeposílá e-maily zaslané na vaši vlastní doménu do vašeho stávajícího e-mailového účtu – a můžete nás dokonce používat jako svého dedikovaného poskytovatele e-mailového hostingu.
 
-Key features of Forward Email:
+Klíčové vlastnosti Forward Email:
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **E-mail s vlastní doménou**: Používejte profesionální e-mailové adresy s vlastní doménou
+* **Bezplatná úroveň**: Základní přeposílání e-mailů zdarma
+* **Zvýšené soukromí**: Nečteme vaše e-maily ani neprodáváme vaše data
+* **Open Source**: Celý náš kód je dostupný na GitHubu
+* **Podpora SMTP, IMAP a POP3**: Plné možnosti odesílání a přijímání e-mailů
+* **End-to-End šifrování**: Podpora OpenPGP/MIME
+* **Vlastní catch-all aliasy**: Vytvářejte neomezené množství e-mailových aliasů
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+Můžete nás porovnat s více než 56 dalšími poskytovateli e-mailových služeb na [naší stránce srovnání e-mailů](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Více o Forward Email se dozvíte v našem bezplatném [Technickém whitepaperu](/technical-whitepaper.pdf)
 
-### Who uses Forward Email {#who-uses-forward-email}
+### Kdo používá Forward Email {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+Poskytujeme e-mailový hosting a službu přeposílání e-mailů pro více než 500 000 domén a tyto významné uživatele:
 
-| Customer | Case Study |
+| Zákazník                                | Případová studie                                                                                          |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| U.S. Naval Academy                       | [:page_facing_up: Případová studie](/blog/docs/federal-government-email-service-section-889-compliant)   |
+| Canonical                                | [:page_facing_up: Případová studie](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| Netflix Games                            |                                                                                                          |
+| The Linux Foundation                     | [:page_facing_up: Případová studie](/blog/docs/linux-foundation-email-enterprise-case-study)             |
+| The PHP Foundation                       |                                                                                                          |
+| Fox News Radio                           |                                                                                                          |
+| Disney Ad Sales                          |                                                                                                          |
+| jQuery                                   | [:page_facing_up: Případová studie](/blog/docs/linux-foundation-email-enterprise-case-study)             |
+| LineageOS                                |                                                                                                          |
+| Ubuntu                                   | [:page_facing_up: Případová studie](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| Kubuntu                                  | [:page_facing_up: Případová studie](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| Lubuntu                                  | [:page_facing_up: Případová studie](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| The University of Cambridge              | [:page_facing_up: Případová studie](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| The University of Maryland               | [:page_facing_up: Případová studie](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| The University of Washington             | [:page_facing_up: Případová studie](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| Tufts University                         | [:page_facing_up: Případová studie](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| Swarthmore College                       | [:page_facing_up: Případová studie](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| Government of South Australia            |                                                                                                          |
+| Government of Dominican Republic         |                                                                                                          |
+| Fly<span>.</span>io                      |                                                                                                          |
+| RCD Hotels                               |                                                                                                          |
+| Isaac Z. Schlueter (npm)                 | [:page_facing_up: Případová studie](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### Jaká je historie Forward Email {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+Více o Forward Email se můžete dozvědět na [naší stránce O nás](/about).
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### Jak rychlá je tato služba {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Náš systém je navržen pro rychlost a spolehlivost, s několika redundantními servery, které zajišťují, že vaše e-maily jsou doručeny okamžitě.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Email doručuje zprávy s minimálním zpožděním, obvykle během několika sekund od přijetí.
 
-Performance metrics:
+Výkonnostní metriky:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **Průměrná doba doručení**: Méně než 5-10 sekund od přijetí po přeposlání ([viz naše stránka monitorování Čas do schránky "TTI"](/tti))
+* **Dostupnost služby**: 99,9 %+
+* **Globální infrastruktura**: Servery strategicky umístěné pro optimální směrování
+* **Automatické škálování**: Náš systém se škáluje během špiček v e-mailovém provozu
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+Pracujeme v reálném čase, na rozdíl od jiných poskytovatelů, kteří spoléhají na zpožděné fronty.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nezapisujeme na disk ani neukládáme logy – s [výjimkou chyb](#do-you-store-error-logs) a [odchozího SMTP](#do-you-support-sending-email-with-smtp) (viz naše [Zásady ochrany osobních údajů](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Vše probíhá v paměti a [náš zdrojový kód je na GitHubu](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## E-mailoví klienti {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Vytvořte nový alias a vygenerujte heslo ve vašem Forward Email dashboardu
+2. Otevřete Thunderbird a přejděte na **Úpravy → Nastavení účtu → Akce účtu → Přidat e-mailový účet**
+3. Zadejte své jméno, Forward Email adresu a heslo
+4. Klikněte na **Konfigurovat ručně** a zadejte:
+   * Příchozí: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+   * Odchozí: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (doporučeno; port 587 s STARTTLS je také podporován)
+5. Klikněte na **Hotovo**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Vytvořte nový alias a vygenerujte heslo ve vašem Forward Email dashboardu
+2. Přejděte na **Soubor → Přidat účet**
+3. Zadejte svou Forward Email adresu a klikněte na **Připojit**
+4. Zvolte **Pokročilé možnosti** a vyberte **Nechte mě nastavit účet ručně**
+5. Vyberte **IMAP** a zadejte:
+   * Příchozí: `imap.forwardemail.net`, port 993, SSL
+   * Odchozí: `smtp.forwardemail.net`, port 465, SSL/TLS (doporučeno; port 587 s STARTTLS je také podporován)
+   * Uživatelské jméno: Vaše celá e-mailová adresa
+   * Heslo: Vámi vygenerované heslo
+6. Klikněte na **Připojit**
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Vytvořte nový alias a vygenerujte heslo ve vašem Forward Email dashboardu
+2. Přejděte na **Mail → Předvolby → Účty → +**
+3. Vyberte **Jiný e-mailový účet**
+4. Zadejte své jméno, Forward Email adresu a heslo
+5. Pro nastavení serveru zadejte:
+   * Příchozí: `imap.forwardemail.net`
+   * Odchozí: `smtp.forwardemail.net`
+   * Uživatelské jméno: Vaše celá e-mailová adresa
+   * Heslo: Vámi vygenerované heslo
+6. Klikněte na **Přihlásit se**
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Vytvořte nový alias a vygenerujte heslo ve vašem Forward Email dashboardu
+2. Otevřete eM Client a přejděte na **Menu → Účty → + Přidat účet**
+3. Klikněte na **Mail** a poté vyberte **Jiný**
+4. Zadejte svou Forward Email adresu a klikněte na **Další**
+5. Zadejte následující nastavení serveru:
+   * **Příchozí server**: `imap.forwardemail.net`
+   * **Odchozí server**: `smtp.forwardemail.net`
+6. Zadejte svou celou e-mailovou adresu jako **Uživatelské jméno** a vámi vygenerované heslo jako **Heslo** pro oba servery.
+7. eM Client otestuje připojení. Po úspěšném testu klikněte na **Další**.
+8. Zadejte své jméno a vyberte název účtu.
+9. Klikněte na **Dokončit**.
 
-### Mobile Devices {#mobile-devices}
+### Mobilní zařízení {#mobile-devices}
 
-For iOS:
+Pro iOS:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Přejděte na **Nastavení → Mail → Účty → Přidat účet → Jiný**
+2. Klepněte na **Přidat e-mailový účet** a zadejte své údaje
+3. Pro nastavení serveru použijte stejná nastavení IMAP a SMTP jako výše
 
-For Android:
+Pro Android:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Přejděte na **Nastavení → Účty → Přidat účet → Osobní (IMAP)**
+2. Zadejte svou Forward Email adresu a heslo
+3. Pro nastavení serveru použijte stejná nastavení IMAP a SMTP jako výše
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Konfigurace Sendmail SMTP Relay {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+Můžete nakonfigurovat Sendmail tak, aby přeposílal e-maily přes SMTP servery Forward Email. Toto je běžné nastavení pro starší systémy nebo aplikace, které spoléhají na Sendmail.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>Méně než 20 minut</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Toto vyžaduje placený plán s povoleným přístupem k SMTP.
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### Konfigurace {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. Upravte svůj soubor `sendmail.mc`, který se obvykle nachází v `/etc/mail/sendmail.mc`:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. Přidejte následující řádky pro definování smart hosta a autentizace:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. Vytvořte autentizační soubor `/etc/mail/authinfo`:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. Přidejte své přihlašovací údaje Forward Email do souboru `authinfo`:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. Vygenerujte autentizační databázi a zabezpečte soubory:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Přestavte konfiguraci Sendmail a restartujte službu:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### Testování {#testing}
 
-Send a test email to verify the configuration:
+Pošlete testovací e-mail pro ověření konfigurace:
 
 ```bash
-echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+echo "Testovací e-mail ze Sendmailu" | mail -s "Test Sendmail" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Konfigurace Exim4 SMTP Relay {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4 je populární MTA na systémech založených na Debianu. Můžete jej nakonfigurovat tak, aby používal Forward Email jako smarthost.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>Méně než 15 minut</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Toto vyžaduje placený plán s povoleným přístupem k SMTP.
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### Konfigurace {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Spusťte konfigurační nástroj Exim4:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. Vyberte následující možnosti:
+   * **Obecný typ konfigurace pošty:** pošta odesílaná přes smarthost; přijímána přes SMTP nebo fetchmail
+   * **Název systémové pošty:** your.hostname
+   * **IP adresy pro příjem SMTP připojení:** 127.0.0.1 ; ::1
+   * **Další cíle, pro které je pošta přijímána:** (ponechat prázdné)
+   * **Domény, pro které se přeposílá pošta:** (ponechat prázdné)
+   * **IP adresa nebo název hostitele odchozího smarthostu:** smtp.forwardemail.net::465
+   * **Skrýt lokální název pošty v odchozí poště?** Ne
+   * **Minimalizovat počet DNS dotazů (Dial-on-Demand)?** Ne
+   * **Metoda doručení lokální pošty:** formát Mbox v /var/mail/
+   * **Rozdělit konfiguraci do malých souborů?** Ne
 
-3. Edit the `passwd.client` file to add your credentials:
+3. Upravte soubor `passwd.client` a přidejte své přihlašovací údaje:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. Přidejte následující řádek:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. Aktualizujte konfiguraci a restartujte Exim4:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### Testování {#testing-1}
 
-Send a test email:
+Pošlete testovací e-mail:
 
 ```bash
-echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+echo "Test z Exim4" | mail -s "Test Exim4" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### Konfigurace SMTP klienta msmtp {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp je lehký SMTP klient, který je užitečný pro odesílání e-mailů ze skriptů nebo příkazové řádky.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>Méně než 10 minut</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Toto vyžaduje placený plán s povoleným přístupem k SMTP.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### Konfigurace {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. Vytvořte nebo upravte konfigurační soubor msmtp na `~/.msmtprc`:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. Přidejte následující konfiguraci:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. Nastavte správná oprávnění pro konfigurační soubor:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### Testování {#testing-2}
 
-Send a test email:
+Odešlete testovací e-mail:
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### E-mailoví klienti příkazové řádky {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+Populární e-mailoví klienti příkazové řádky jako [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) a [Alpine](https://alpine.x10.mx/alpine/release/) lze nakonfigurovat pro použití SMTP serverů Forward Email pro odesílání pošty. Konfigurace bude podobná nastavení `msmtp`, kde zadáte údaje o SMTP serveru a své přihlašovací údaje do příslušných konfiguračních souborů (`.muttrc`, `.neomuttrc` nebo `.pinerc`).
 
-### Windows Email Configuration {#windows-email-configuration}
+### Konfigurace e-mailu ve Windows {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+Pro uživatele Windows můžete nakonfigurovat populární e-mailové klienty jako **Microsoft Outlook** a **eM Client** pomocí IMAP a SMTP nastavení poskytnutých ve vašem účtu Forward Email. Pro použití v příkazové řádce nebo skriptech můžete použít PowerShell cmdlet `Send-MailMessage` (i když je považován za zastaralý) nebo lehký SMTP relay nástroj jako [E-MailRelay](https://github.com/graeme-walker/emailrelay).
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Konfigurace Postfix SMTP relé {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Můžete nakonfigurovat Postfix tak, aby přeposílal e-maily přes SMTP servery Forward Email. To je užitečné pro serverové aplikace, které potřebují odesílat e-maily.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>Méně než 15 minut</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Toto vyžaduje placený plán s povoleným přístupem k SMTP.
   </span>
 </div>
 
-#### Installation {#installation}
+#### Instalace {#installation}
 
-1. Install Postfix on your server:
+1. Nainstalujte Postfix na váš server:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. Během instalace vyberte "Internet Site" při výzvě k typu konfigurace.
 
-#### Configuration {#configuration-3}
+#### Konfigurace {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Upravte hlavní konfigurační soubor Postfixu:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. Přidejte nebo upravte tyto nastavení:
 
 ```
-# SMTP relay configuration
+# Konfigurace SMTP relé
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. Vytvořte soubor s hesly SASL:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Přidejte své přihlašovací údaje Forward Email:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. Zabezpečte a zahashujte soubor s hesly:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Restartujte Postfix:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### Testování {#testing-3}
 
-Test your configuration by sending a test email:
+Otestujte konfiguraci odesláním testovacího e-mailu:
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Jak odesílat poštu jako pomocí Gmailu {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>Méně než 10 minut</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Začínáme:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Pokud jste postupovali podle pokynů výše v <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Jak začít a nastavit přeposílání e-mailů</a>, můžete pokračovat ve čtení níže.
   </span>
 </div>
 
@@ -631,236 +635,233 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Ujistěte se, že jste si přečetli naše <a href="/terms" class="alert-link" target="_blank">Podmínky</a>, <a href="/privacy" class="alert-link" target="_blank">Zásady ochrany osobních údajů</a> a <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Limity odchozího SMTP</a> &ndash; vaše používání je považováno za potvrzení a souhlas.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Pokud jste vývojář, podívejte se na naši <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentaci API pro e-maily</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Konfigurace odchozího SMTP a postupujte podle pokynů pro nastavení
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Vytvořte nový alias pro svou doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu. Zkopírujte do schránky a bezpečně uložte zobrazené heslo.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. Přejděte na [Gmail](https://gmail.com) a v [Nastavení <i class="fa fa-angle-right"></i> Účty a import <i class="fa fa-angle-right"></i> Odesílat poštu jako](https://mail.google.com/mail/u/0/#settings/accounts) klikněte na "Přidat další e-mailovou adresu"
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. Když budete vyzváni k zadání "Jména", zadejte jméno, které chcete, aby se zobrazovalo jako odesílatel (např. "Linus Torvalds").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. Když budete vyzváni k zadání "E-mailové adresy", zadejte plnou e-mailovou adresu aliasu, který jste vytvořili v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. Zrušte zaškrtnutí "Považovat za alias"
 
-8. Click "Next Step" to proceed
+8. Klikněte na "Další krok" pro pokračování
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. Když budete vyzváni k zadání "SMTP serveru", zadejte <code>smtp.forwardemail.net</code> a změňte port na <code>465</code>
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. Když budete vyzváni k zadání "Uživatelského jména", zadejte plnou e-mailovou adresu aliasu, který jste vytvořili v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. Když budete vyzváni k zadání "Hesla", vložte heslo z <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> z kroku 3 výše
 
-12. Select the radio button for "Secured connection using SSL"
+12. Vyberte možnost "Zabezpečené připojení pomocí SSL"
 
-13. Click "Add Account" to proceed
+13. Klikněte na "Přidat účet" pro pokračování
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. Otevřete novou kartu na [Gmail](https://gmail.com) a počkejte na příchod ověřovacího e-mailu (obdržíte ověřovací kód, který potvrzuje, že jste vlastníkem e-mailové adresy, ze které se pokoušíte odesílat poštu)
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. Jakmile dorazí, zkopírujte a vložte ověřovací kód do výzvy, kterou jste obdrželi v předchozím kroku
+16. Jakmile to uděláte, vraťte se do e-mailu a klikněte na odkaz „potvrdit žádost“. Pravděpodobně budete muset provést tento krok i předchozí krok, aby byl e-mail správně nakonfigurován.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulujeme!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Úspěšně jste dokončili všechny kroky.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Co je to legacy free průvodce pro Send Mail As pomocí Gmailu {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Důležité:</strong> Tento legacy free průvodce je od května 2023 zastaralý, protože <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">nyní podporujeme odchozí SMTP</a>. Pokud použijete níže uvedený průvodce, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">způsobí to, že váš odchozí e-mail</a> bude v Gmailu zobrazovat „<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>“.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>Méně než 10 minut</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Začínáme:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Pokud jste postupovali podle pokynů výše v části <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Jak začít a nastavit přeposílání e-mailů</a>, můžete pokračovat ve čtení níže.
   </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Jak odesílat poštu jako pomocí Gmailu" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. Musíte mít povolenou [dvojfaktorovou autentizaci Gmailu][gmail-2fa], aby to fungovalo. Navštivte <https://www.google.com/landing/2step/>, pokud ji nemáte povolenou.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. Jakmile je dvojfaktorová autentizace povolena (nebo pokud ji již máte povolenou), navštivte <https://myaccount.google.com/apppasswords>.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. Když budete vyzváni k „Výběru aplikace a zařízení, pro které chcete vygenerovat heslo aplikace“:
+   * Vyberte „Mail“ v rozbalovacím seznamu „Vyberte aplikaci“
+   * Vyberte „Jiné“ v rozbalovacím seznamu „Vyberte zařízení“
+   * Když budete vyzváni k zadání textu, zadejte e-mailovou adresu vaší vlastní domény, ze které přeposíláte (např. <code><hello@example.com></code> – pomůže vám to sledovat, pokud tuto službu používáte pro více účtů)
 
-4. Copy the password to your clipboard that is automatically generated
+4. Zkopírujte heslo, které se automaticky vygeneruje, do schránky
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       Důležité:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       Pokud používáte G Suite, navštivte svůj administrátorský panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Aplikace <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Nastavení pro Gmail <i class="fa fa-angle-right"></i> Nastavení</a> a ujistěte se, že je zaškrtnuto „Povolit uživatelům odesílat poštu přes externí SMTP server...“. Aktivace této změny může chvíli trvat, proto prosím počkejte několik minut.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. Přejděte na [Gmail](https://gmail.com) a v [Nastavení <i class="fa fa-angle-right"></i> Účty a import <i class="fa fa-angle-right"></i> Odesílat poštu jako](https://mail.google.com/mail/u/0/#settings/accounts) klikněte na „Přidat další e-mailovou adresu“
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. Když budete vyzváni k zadání „Jména“, zadejte jméno, které chcete, aby se zobrazovalo jako odesílatel (např. „Linus Torvalds“)
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. Když budete vyzváni k zadání „E-mailové adresy“, zadejte e-mailovou adresu s vlastní doménou, kterou jste použili výše (např. <code><hello@example.com></code>)
+8. Zrušte zaškrtnutí "Treat as an alias"
 
-8. Uncheck "Treat as an alias"
+9. Klikněte na "Next Step" pro pokračování
 
-9. Click "Next Step" to proceed
+10. Když budete vyzváni k zadání "SMTP Server", zadejte <code>smtp.gmail.com</code> a ponechte port jako <code>587</code>
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. Když budete vyzváni k zadání "Username", zadejte část své Gmailové adresy bez části <span>gmail.com</span> (např. jen "user", pokud je můj e-mail <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        Důležité:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        Pokud je část "Username" automaticky vyplněna, pak <u><strong>ji budete muset změnit</strong></u> na uživatelskou část vaší Gmailové adresy.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. Když budete vyzváni k zadání "Password", vložte ze schránky heslo, které jste vygenerovali v kroku 2 výše
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. Nechte zaškrtnutou volbu "Secured connection using TLS"
 
-14. Click "Add Account" to proceed
+14. Klikněte na "Add Account" pro pokračování
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. Otevřete novou kartu na [Gmail](https://gmail.com) a počkejte na příchod ověřovacího e-mailu (obdržíte ověřovací kód, který potvrzuje, že jste vlastníkem e-mailové adresy, ze které se pokoušíte "Send Mail As")
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. Jakmile dorazí, zkopírujte a vložte ověřovací kód do výzvy, kterou jste obdrželi v předchozím kroku
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. Poté se vraťte k e-mailu a klikněte na odkaz pro "confirm the request". Pravděpodobně budete muset provést tento krok i předchozí, aby byl e-mail správně nakonfigurován.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### Pokročilá konfigurace směrování Gmailu {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>15-30 minut</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+Pokud chcete nastavit pokročilé směrování v Gmailu tak, aby aliasy, které neodpovídají žádné schránce, byly přeposílány na mail servery Forward Email, postupujte podle těchto kroků:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. Přihlaste se do své Google Admin konzole na [admin.google.com](https://admin.google.com)
+2. Přejděte na **Apps → Google Workspace → Gmail → Routing**
+3. Klikněte na **Add Route** a nakonfigurujte následující nastavení:
 
-**Single Recipient Settings:**
+**Nastavení pro jednoho příjemce:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* Vyberte "Change envelope recipient" a zadejte svou primární Gmailovou adresu
+* Zaškrtněte "Add X-Gm-Original-To header with original recipient"
 
-**Envelope Recipient Patterns:**
+**Vzory příjemců obálky:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* Přidejte vzor, který odpovídá všem neexistujícím schránkám (např. `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**Nastavení e-mailového serveru:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* Vyberte "Route to host" a zadejte `mx1.forwardemail.net` jako primární server
+* Přidejte `mx2.forwardemail.net` jako záložní server
+* Nastavte port na 25
+* Vyberte "Require TLS" pro zabezpečení
 
-4. Click **Save** to create the route
+4. Klikněte na **Save** pro vytvoření směrování
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    Tato konfigurace bude fungovat pouze pro účty Google Workspace s vlastními doménami, nikoli pro běžné Gmailové účty.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### Pokročilá konfigurace směrování Outlooku {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>15-30 minut</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Pro uživatele Microsoft 365 (dříve Office 365), kteří chtějí nastavit pokročilé směrování tak, aby aliasy, které neodpovídají žádné schránce, byly přeposílány na mail servery Forward Email:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
+1. Přihlaste se do administrátorského centra Microsoft 365 na [admin.microsoft.com](https://admin.microsoft.com)
+2. Přejděte na **Exchange → Mail flow → Rules**
+3. Klikněte na **Add a rule** a vyberte **Create a new rule**
+4. Pojmenujte pravidlo (např. "Forward non-existent mailboxes to Forward Email")
+5. V části **Apply this rule if** vyberte:
    * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
+   * Zadejte vzor, který odpovídá všem adresám ve vaší doméně (např. `*@yourdomain.com`)
+6. V části **Do the following** vyberte:
    * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
+   * Zvolte "The following mail server"
+   * Zadejte `mx1.forwardemail.net` a port 25
+   * Přidejte `mx2.forwardemail.net` jako záložní server
+7. V části **Except if** vyberte:
    * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+   * Přidejte všechny existující schránky, které nemají být přeposílány
+8. Nastavte prioritu pravidla tak, aby se spouštělo po ostatních pravidlech pro tok pošty
+9. Klikněte na **Save** pro aktivaci pravidla
+## Řešení problémů {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### Proč nedostávám své testovací e-maily {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+Pokud si posíláte testovací e-mail sami sobě, nemusí se zobrazit ve vaší doručené poště, protože má stejný záhlaví "Message-ID".
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+Toto je široce známý problém, který ovlivňuje také služby jako Gmail.  <a href="https://support.google.com/a/answer/1703601">Zde je oficiální odpověď Gmailu týkající se tohoto problému</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+Pokud problémy přetrvávají, pravděpodobně jde o problém s propagací DNS. Budete muset počkat o něco déle a zkusit to znovu (nebo zkusit nastavit nižší hodnotu TTL u svých <strong class="notranslate">TXT</strong> záznamů).
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**Stále máte problémy?**  Prosím <a href="/help">kontaktujte nás</a>, abychom mohli pomoci problém vyšetřit a najít rychlé řešení.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Jak nakonfigurovat svůj e-mailový klient pro práci s Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  Naše služba funguje s populárními e-mailovými klienty, jako jsou:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
@@ -875,7 +876,7 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  Vaše uživatelské jméno je e-mailová adresa vašeho aliasu a heslo je z <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> („Normální heslo“).
 </div>
 
 <div class="alert my-3 alert-warning">
@@ -883,180 +884,227 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
   <strong class="font-weight-bold">
     Tip:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Pokud používáte Thunderbird, ujistěte se, že „Zabezpečení připojení“ je nastaveno na „SSL/TLS“ a metoda ověřování je nastavena na „Normální heslo“.</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| Typ  |         Hostname        |         Protokol        |                                            Porty                                           |
+| :--: | :---------------------: | :---------------------: | :----------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |  SSL/TLS **preferováno**  |                                      `993` a `2993`                                      |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **doporučeno** | `465` a `2465` pro SSL/TLS (doporučeno) nebo `587`, `2587`, `2525` a `25` pro STARTTLS |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Proč moje e-maily končí ve spamu a nevyžádané poště a jak mohu zkontrolovat reputaci své domény {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+Tato sekce vás provede, pokud váš odchozí e-mail používá naše SMTP servery (např. `smtp.forwardemail.net`) (nebo je přeposílán přes `mx1.forwardemail.net` nebo `mx2.forwardemail.net`) a je doručován do složky Spam nebo Nevyžádaná pošta příjemců.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+Pravidelně monitorujeme naše [IP adresy](#what-are-your-servers-ip-addresses) proti [všem renomovaným DNS blacklistům](#how-do-you-handle-your-ip-addresses-becoming-blocked), **proto je velmi pravděpodobné, že se jedná o problém specifický pro reputaci domény**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+E-maily mohou skončit ve složkách spamu z několika důvodů:
 
-Emails can land in spam folders for several reasons:
+1. **Chybějící autentizace**: Nastavte záznamy [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) a [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **Reputace domény**: Nové domény často mají neutrální reputaci, dokud si nevytvoří historii odesílání.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **Spouštěče obsahu**: Některá slova nebo fráze mohou spustit spamové filtry.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **Vzor odesílání**: Náhlé zvýšení objemu e-mailů může vypadat podezřele.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+Můžete zkusit použít jeden nebo více z těchto nástrojů ke kontrole reputace a kategorizace vaší domény:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### Nástroje pro kontrolu reputace a blacklistů {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| Název nástroje                              | URL                                                          | Typ                    |
+| ------------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare Domain Categorization Feedback   | <https://radar.cloudflare.com/domains/feedback>              | Kategorizace           |
+| Spamhaus IP and Domain Reputation Checker   | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center>            | Reputace               |
+| Barracuda IP and Domain Reputation Lookup   | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox Blacklist Check                  | <https://mxtoolbox.com/blacklists.aspx>                      | Blacklist              |
+| Google Postmaster Tools                     | <https://www.gmail.com/postmaster/>                          | Reputace               |
+| Yahoo Sender Hub                            | <https://senders.yahooinc.com/>                              | Reputace               |
+| MultiRBL.valli.org Blacklist Check          | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | Reputace               |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT's Levels 1, 2, and 3             | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT's backscatterer.org              | <https://www.backscatterer.org/>                             | Ochrana proti backscatteru |
+| UCEPROTECT's whitelisted.org                | <https://www.whitelisted.org/> (vyžaduje poplatek)           | DNSWL                  |
 
+#### Formuláře pro žádost o odstranění IP podle poskytovatele {#ip-removal-request-forms-by-provider}
+
+Pokud byla vaše IP adresa zablokována konkrétním poskytovatelem e-mailu, použijte příslušný formulář pro odstranění nebo kontakt níže:
+
+| Poskytovatel                           | Formulář pro odstranění / Kontakt                                                                                     | Poznámky                                     |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | Formulář pro kontakt hromadných odesílatelů |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | Portál pro odstranění IP z Office 365       |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | Yahoo Sender Hub                             |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | Apple používá Proofpoint pro reputaci IP    |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | Kontrola a odstranění IP u Proofpoint       |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | Kontrola reputace a odstranění u Barracuda  |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | Žádost o reset u Cloudmark CSI               |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | Formulář pro odblokování IP u GoDaddy        |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | Žádost o odstranění IP u Comcast             |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | Kontaktujte podporu Spectrum pro odstranění  |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | E-mail pro žádost o odstranění               |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | E-mail pro žádost o odstranění               |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | Používá Cloudfilter                          |
+| Windstream                             | `abuse@windstream.net`                                                                                     | E-mail pro žádost o odstranění               |
+| t-online.de (Německo)                  | `tobr@rx.t-online.de`                                                                                      | E-mail pro žádost o odstranění               |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | Použijte kontaktní formulář nebo e-mail `abuse@orange.fr` |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | Kontaktní formulář GMX postmastera           |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | Portál Mail.ru postmastera                    |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | Portál Yandex postmastera                     |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | Žádost o zařazení na whitelist QQ Mail (čínsky) |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | Portál Netease postmastera                    |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | Kontakt přes konzoli Alibaba Cloud            |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | Konzole AWS SES > Odstranění z blacklistu    |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | Kontaktujte podporu SendGrid                  |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | Používá třetí strany RBL - kontaktujte konkrétní RBL |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | Kontaktujte podporu Fastmail                  |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | Kontaktujte podporu Zoho                      |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | Kontaktujte podporu Proton                     |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | Kontaktujte podporu Tutanota                   |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | Kontaktujte podporu Hushmail                   |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | Kontaktujte podporu Mailbox.org                |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | Kontaktujte podporu Posteo                      |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | Kontaktujte podporu DuckDuckGo                  |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | Kontaktujte podporu Sonic                       |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | Kontaktujte podporu Telus                       |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | Kontaktujte podporu Vodafone                    |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | Kontaktujte podporu Spark NZ                    |
+| UOL/BOL (Brazílie)                     | <https://ajuda.uol.com.br/>                                                                                | Kontaktujte podporu UOL (portugalsky)          |
+| Libero (Itálie)                       | <https://aiuto.libero.it/>                                                                                 | Kontaktujte podporu Libero (italsky)           |
+| Telenet (Belgie)                      | <https://www2.telenet.be/en/support/>                                                                      | Kontaktujte podporu Telenet                      |
+| Facebook/WhatsApp                      | <https://www.facebook.com/business/help>                                                                   | Kontaktujte podporu Facebook business           |
+| LinkedIn                               | <https://www.linkedin.com/help/linkedin>                                                                   | Kontaktujte podporu LinkedIn                     |
+| Groups.io                              | <https://groups.io/helpcenter>                                                                             | Kontaktujte podporu Groups.io                    |
+| Earthlink/Vade Secure                  | <https://sendertool.vadesecure.com/en/>                                                                    | Nástroj odesílatele Vade Secure                  |
+| Cloudflare Email Security              | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | Kontaktujte podporu Cloudflare                   |
+| Hornetsecurity/Expurgate               | <https://www.hornetsecurity.com/>                                                                          | Kontaktujte podporu Hornetsecurity               |
+| SpamExperts/Antispamcloud              | <https://www.spamexperts.com/>                                                                             | Kontakt přes poskytovatele hostingu              |
+| Mail2World                             | <https://www.mail2world.com/support/>                                                                      | Kontaktujte podporu Mail2World                    |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Začněte s nízkým objemem vysoce kvalitních e-mailů, abyste si vybudovali pozitivní reputaci před odesíláním ve větších objemech.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Pokud je vaše doména na černé listině, každá černá listina má svůj vlastní proces odstranění. Zkontrolujte jejich webové stránky pro pokyny.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Pokud potřebujete další pomoc nebo zjistíte, že jsme falešně označeni jako spam určitým poskytovatelem e-mailových služeb, prosím <a href="/help">kontaktujte nás</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### Co mám dělat, když obdržím spamové e-maily {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+Měli byste se odhlásit z e-mailového seznamu (pokud je to možné) a zablokovat odesílatele.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+Prosím, neoznamujte zprávu jako spam, ale přepošlete ji našemu ručně spravovanému a na ochranu soukromí zaměřenému systému prevence zneužití.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**E-mailová adresa, na kterou přeposílat spam, je:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Proč se mé testovací e-maily zaslané sobě v Gmailu zobrazují jako „podezřelé“ {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+Pokud vidíte tuto chybovou zprávu v Gmailu, když si pošlete test sami sobě, nebo když osoba, které posíláte e-mail s vaším aliasem, vidí od vás e-mail poprvé, **prosím, nebojte se** – jedná se o vestavěnou bezpečnostní funkci Gmailu.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+Jednoduše klikněte na „Vypadá to bezpečně“. Například pokud byste poslali testovací zprávu pomocí funkce odeslat jako (někomu jinému), tato zpráva se nezobrazí.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+Pokud se jim však tato zpráva zobrazí, je to proto, že byli zvyklí vidět vaše e-maily přicházet z <john@gmail.com> místo <john@customdomain.com> (jen příklad). Gmail uživatele upozorní, aby se ujistil, že je vše v pořádku, a to bez možnosti obejití.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Mohu odstranit „via forwardemail dot net“ v Gmailu {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+Toto téma souvisí s [dobře známým problémem v Gmailu, kdy se vedle jména odesílatele zobrazují další informace](https://support.google.com/mail/answer/1311182).
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+Od května 2023 podporujeme odesílání e-mailů přes SMTP jako doplněk pro všechny placené uživatele – což znamená, že můžete odstranit <span class="notranslate">via forwardemail dot net</span> v Gmailu.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+Upozorňujeme, že toto FAQ je specifické pro ty, kteří používají funkci [Jak odesílat poštu jako pomocí Gmailu](#how-to-send-mail-as-using-gmail).
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+Pro pokyny k nastavení si prosím přečtěte sekci [Podporujete odesílání e-mailů přes SMTP](#do-you-support-sending-email-with-smtp).
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## Správa dat {#data-management}
+
+### Kde se nacházejí vaše servery {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Brzy můžeme oznámit naši lokalitu datového centra v EU hostovanou pod [forwardemail.eu](https://forwardemail.eu). Přihlaste se k odběru diskuse na <https://github.com/orgs/forwardemail/discussions/336> pro aktualizace.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+Naše servery se nacházejí převážně v Denveru, Colorado – kompletní seznam IP adres najdete na <https://forwardemail.net/ips>.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+O našich subzpracovatelích se můžete dozvědět na našich stránkách [GDPR](/gdpr), [DPA](/dpa) a [Ochrana soukromí](/privacy).
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### Jak exportovat a zálohovat svou poštovní schránku {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+Kdykoli můžete exportovat své poštovní schránky ve formátech [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) nebo šifrovaných [SQLite](https://en.wikipedia.org/wiki/SQLite).
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Stáhnout zálohu a vyberte preferovaný typ exportu.
 
-You will be emailed a link to download the export once it has finished.
+Po dokončení exportu vám bude zaslán odkaz ke stažení.
 
-Note that this export download link expires after 4 hours for security concerns.
+Upozorňujeme, že odkaz ke stažení exportu vyprší po 4 hodinách z bezpečnostních důvodů.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+Pokud potřebujete prohlédnout exportované formáty EML nebo Mbox, mohou být užitečné tyto open-source nástroje:
 
-| Name | Format | Platform | GitHub URL |
-| --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
-
+| Název           | Formát | Platforma    | GitHub URL                                          |
+| --------------- | :----: | ----------- | --------------------------------------------------- |
+| MBox Viewer     |  Mbox  | Windows     | <https://github.com/eneam/mboxviewer>               |
+| mbox-web-viewer |  Mbox  | Všechny platformy | <https://github.com/PHMRanger/mbox-web-viewer>      |
+| EmlReader       |   EML  | Windows     | <https://github.com/ayamadori/EmlReader>            |
+| Email viewer    |   EML  | VSCode      | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader      |   EML  | Všechny platformy | <https://github.com/s0ph1e/eml-reader>              |
 Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
+### Jak importovat a migrovat svou stávající poštovní schránku {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+Svůj e-mail můžete snadno importovat do Forward Email (např. pomocí [Thunderbirdu](https://www.thunderbird.net)) podle níže uvedených pokynů:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    Musíte dodržet všechny následující kroky, abyste mohli importovat svůj stávající e-mail.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. Exportujte svůj e-mail od svého stávajícího poskytovatele e-mailu:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | Poskytovatel e-mailu | Formát exportu                                | Pokyny k exportu                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | -------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail                | MBOX                                          | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook              | PST                                           | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>Pokud používáte Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">formát exportu PST</a>), můžete jednoduše postupovat podle pokynů v části "Jiné" níže. Nicméně níže jsme poskytli odkazy na převod PST do formátu MBOX/EML podle vašeho operačního systému:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba pro Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst pro Windows cygwin</a> – (např. <code>readpst -u -o $OUT_DIR $IN_DIR</code> s nahrazením <code>$OUT_DIR</code> a <code>$IN_DIR</code> cestami k výstupnímu a vstupnímu adresáři).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst pro Ubuntu/Linux</a> – (např. <code>sudo apt-get install readpst</code> a poté <code>readpst -u -o $OUT_DIR $IN_DIR</code>, s nahrazením <code>$OUT_DIR</code> a <code>$IN_DIR</code> cestami k výstupnímu a vstupnímu adresáři).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst pro macOS (přes brew)</a> – (např. <code>brew install libpst</code> a poté <code>readpst -u -o $OUT_DIR $IN_DIR</code>, s nahrazením <code>$OUT_DIR</code> a <code>$IN_DIR</code> cestami k výstupnímu a vstupnímu adresáři).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter pro Windows (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail           | MBOX                                          | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail             | EML                                           | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail          | MBOX/EML                                      | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota             | EML                                           | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi                | EML                                           | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho                 | EML                                           | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | Jiné                 | [Použijte Thunderbird](https://www.thunderbird.net) | Nastavte svůj stávající e-mailový účet v Thunderbirdu a poté použijte plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) k exportu a importu svého e-mailu.  **Také můžete jednoduše zkopírovat/vložit nebo přetáhnout e-maily mezi účty.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. Stáhněte, nainstalujte a otevřete [Thunderbird](https://www.thunderbird.net).
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. Vytvořte nový účet pomocí plné e-mailové adresy vašeho aliasu (např. <code><you@yourdomain.com></code>) a vašeho vygenerovaného hesla.  <strong>Pokud ještě nemáte vygenerované heslo, pak <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">se podívejte na naše pokyny k nastavení</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. Stáhněte a nainstalujte Thunderbird plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/).
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. V Thunderbirdu vytvořte novou lokální složku, poté na ni klikněte pravým tlačítkem → vyberte možnost `ImportExportTools NG` → zvolte `Import mbox file` (pro exportní formát MBOX) – nebo – `Import messages` / `Import all messages from a directory` (pro exportní formát EML).
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. Přetáhněte zprávy z lokální složky do nové (nebo existující) IMAP složky v Thunderbirdu, do které chcete zprávy nahrát do IMAP úložiště u naší služby.  Tím zajistíte, že budou zálohovány online v našem SQLite šifrovaném úložišti.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Pokud si nejste jisti, jak importovat do Thunderbirdu, můžete se podívat na oficiální pokyny na <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> a <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    Po dokončení exportu a importu možná budete chtít také povolit přeposílání na vašem stávajícím e-mailovém účtu a nastavit automatickou odpověď, která upozorní odesílatele, že máte novou e-mailovou adresu (např. pokud jste dříve používali Gmail a nyní používáte e-mail s vlastní doménou).
   </span>
 </div>
 
@@ -1064,201 +1112,408 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulujeme!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Úspěšně jste dokončili všechny kroky.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### Jak mohu používat vlastní S3-kompatibilní úložiště pro zálohy {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+Uživatelé placených plánů si mohou nakonfigurovat vlastního poskytovatele úložiště kompatibilního s [S3](https://en.wikipedia.org/wiki/Amazon_S3) na bázi jednotlivých domén pro zálohy IMAP/SQLite.  To znamená, že vaše šifrované zálohy poštovní schránky mohou být uloženy na vaší vlastní infrastruktuře místo (nebo kromě) našeho výchozího úložiště.
 
-## Email Configuration {#email-configuration}
+Podporovaní poskytovatelé zahrnují [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces) a jakoukoli jinou službu kompatibilní se S3.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### Nastavení {#setup}
+
+1. Vytvořte **soukromý** bucket u vašeho S3-kompatibilního poskytovatele. Bucket nesmí být veřejně přístupný.
+2. Vytvořte přístupové údaje (access key ID a secret access key) s oprávněními pro čtení/zápis do bucketu.
+3. Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Pokročilá nastavení <i class="fa fa-angle-right"></i> Vlastní S3-kompatibilní úložiště.
+4. Zaškrtněte **"Povolit vlastní S3-kompatibilní úložiště"** a vyplňte URL koncového bodu, access key ID, secret access key, region a název bucketu.
+5. Klikněte na **"Testovat připojení"** pro ověření vašich přihlašovacích údajů, přístupu k bucketu a oprávnění k zápisu.
+6. Klikněte na **"Uložit"** pro aplikaci nastavení.
+
+#### Jak fungují zálohy {#how-backups-work}
+
+Zálohy jsou automaticky spouštěny pro každý připojený IMAP alias. IMAP server kontroluje všechny aktivní připojení jednou za hodinu a spouští zálohu pro každý připojený alias. Zámek založený na Redis zabraňuje spuštění duplicitních záloh během 30 minut od sebe a skutečná záloha je přeskočena, pokud byla úspěšná záloha dokončena během posledních 24 hodin (pokud záloha nebyla explicitně požadována uživatelem ke stažení).
+Zálohy lze také spustit ručně kliknutím na **"Stáhnout zálohu"** u jakéhokoli aliasu na ovládacím panelu. Ruční zálohy se vždy spustí bez ohledu na 24hodinové okno.
+
+Proces zálohování funguje následovně:
+
+1. SQLite databáze je zkopírována pomocí `VACUUM INTO`, což vytvoří konzistentní snímek bez přerušení aktivních připojení a zachová šifrování databáze.
+2. Záložní soubor je ověřen otevřením, aby se potvrdilo, že šifrování je stále platné.
+3. Vypočítá se SHA-256 hash a porovná se s existující zálohou v úložišti. Pokud se hash shoduje, nahrávání se přeskočí (žádné změny od poslední zálohy).
+4. Záloha je nahrána do S3 pomocí multipart upload přes knihovnu [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage).
+5. Je vygenerována podepsaná URL pro stažení (platná 4 hodiny) a odeslána uživateli e-mailem.
+
+#### Formáty záloh {#backup-formats}
+
+Jsou podporovány tři formáty záloh:
+
+| Formát   | Přípona  | Popis                                                                       |
+| -------- | -------- | --------------------------------------------------------------------------- |
+| `sqlite` | `.sqlite`| Surový šifrovaný snímek SQLite databáze (výchozí pro automatické IMAP zálohy)|
+| `mbox`   | `.zip`   | ZIP chráněný heslem obsahující poštovní schránku ve formátu mbox            |
+| `eml`    | `.zip`   | ZIP chráněný heslem obsahující jednotlivé `.eml` soubory pro každou zprávu  |
+
+> **Tip:** Pokud máte záložní soubory `.sqlite` a chcete je lokálně převést na `.eml` soubory, použijte náš samostatný CLI nástroj **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Funguje na Windows, Linuxu i macOS a nevyžaduje síťové připojení.
+
+#### Pojmenování souborů a struktura klíčů {#file-naming-and-key-structure}
+
+Při použití **vlastního S3 úložiště** jsou záložní soubory ukládány s prefixem časového razítka ve formátu [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601), takže každá záloha je uchována jako samostatný objekt. To vám poskytuje kompletní historii záloh ve vašem vlastním bucketu.
+
+Formát klíče je:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+Například:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+`alias_id` je MongoDB ObjectId aliasu. Najdete ho na stránce nastavení aliasu nebo přes API.
+
+Při použití **výchozího (systémového) úložiště** je klíč plochý (např. `65a31c53c36b75ed685f3fda.sqlite`) a každá záloha přepíše tu předchozí.
+
+> **Poznámka:** Protože vlastní S3 úložiště uchovává všechny verze záloh, využití úložiště bude časem růst. Doporučujeme nastavit [pravidla životního cyklu](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) ve vašem bucketu pro automatické vypršení starých záloh (např. mazání objektů starších než 30 nebo 90 dní).
+
+#### Vlastnictví dat a politika mazání {#data-ownership-and-deletion-policy}
+
+Váš vlastní S3 bucket je zcela pod vaší kontrolou. My **nikdy nemažeme ani neměníme** soubory ve vašem vlastním S3 bucketu — ani při smazání aliasu, ani při odebrání domény, ani během jakýchkoli úklidových operací. Pouze zapisujeme nové záložní soubory do vašeho bucketu.
+
+To znamená:
+
+* **Smazání aliasu** — Když smažete alias, odstraníme zálohu pouze z našeho výchozího systémového úložiště. Jakékoli zálohy dříve uložené ve vašem vlastním S3 bucketu zůstanou nedotčeny.
+* **Odebrání domény** — Odebrání domény neovlivní soubory ve vašem vlastním bucketu.
+* **Správa uchovávání** — Za správu úložiště ve vašem vlastním bucketu odpovídáte vy, včetně nastavení pravidel životního cyklu pro vypršení starých záloh.
+
+Pokud zakážete vlastní S3 úložiště nebo přepnete zpět na naše výchozí úložiště, existující soubory ve vašem bucketu zůstanou zachovány. Budoucí zálohy budou jednoduše ukládány do našeho výchozího úložiště.
+
+#### Bezpečnost {#security}
+
+* Vaše přístupové ID a tajný přístupový klíč jsou **zašifrovány v klidu** pomocí [AES-256-GCM](https://cs.wikipedia.org/wiki/Galois/Counter_Mode) před uložením do naší databáze. Jsou dešifrovány pouze za běhu při provádění zálohovacích operací.
+* Automaticky ověřujeme, že váš bucket **není veřejně přístupný**. Pokud je detekován veřejný bucket, konfigurace bude při ukládání odmítnuta. Pokud je veřejný přístup zjištěn v době zálohy, přepneme na naše výchozí úložiště a všechny správce domény upozorníme e-mailem.
+* Přihlašovací údaje jsou ověřovány při ukládání pomocí volání [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html), aby se zajistilo, že bucket existuje a údaje jsou správné. Pokud ověření selže, vlastní S3 úložiště je automaticky deaktivováno.
+* Každý záložní soubor obsahuje SHA-256 hash v metadatech S3, který se používá k detekci nezměněných databází a přeskočení zbytečných nahrání.
+#### Oznámení o chybách {#error-notifications}
+
+Pokud záloha selže při použití vašeho vlastního úložiště S3 (např. kvůli vypršení platnosti přihlašovacích údajů nebo problému s připojením), všichni správci domény budou upozorněni e-mailem. Tato oznámení jsou omezena na jednu zprávu každých 6 hodin, aby se zabránilo duplicitním upozorněním. Pokud je váš bucket při zálohování detekován jako veřejně přístupný, správci budou upozorněni jednou denně.
+
+#### API {#api}
+
+Vlastní úložiště S3 můžete také nakonfigurovat přes API:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+Pro otestování připojení přes API:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### Jak převést SQLite zálohy na EML soubory {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+Pokud si stáhnete nebo uložíte SQLite zálohy (buď z našeho výchozího úložiště, nebo z vašeho vlastního [vlastního S3 bucketu](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), můžete je převést na standardní `.eml` soubory pomocí našeho samostatného CLI nástroje **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML soubory lze otevřít v libovolném e-mailovém klientu ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) atd.) nebo importovat do jiných poštovních serverů.
+
+#### Instalace {#installation-1}
+
+Můžete si stáhnout předkompilovaný binární soubor (není potřeba [Node.js](https://github.com/nodejs/node)) nebo jej spustit přímo s [Node.js](https://github.com/nodejs/node):
+
+**Předkompilované binárky** — Stáhněte si nejnovější verzi pro vaši platformu z [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+
+| Platforma | Architektura  | Soubor                               |
+| --------- | ------------- | ----------------------------------- |
+| Linux     | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux     | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS     | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows   | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **Uživatelé macOS:** Po stažení možná budete muset odstranit karanténní atribut před spuštěním binárky:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (Nahraďte `./convert-sqlite-to-eml-darwin-arm64` skutečnou cestou ke staženému souboru.)
+
+> **Uživatelé Linuxu:** Po stažení možná budete muset nastavit binárku jako spustitelnou:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (Nahraďte `./convert-sqlite-to-eml-linux-x64` skutečnou cestou ke staženému souboru.)
+
+**Ze zdroje** (vyžaduje [Node.js](https://github.com/nodejs/node) >= 18):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### Použití {#usage}
+
+Nástroj podporuje jak interaktivní, tak neinteraktivní režim.
+
+**Interaktivní režim** — spusťte bez argumentů a budete vyzváni k zadání všech vstupů:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - Převod SQLite zálohy na EML
+  ===========================================
+
+  Cesta k SQLite záložnímu souboru: /path/to/backup.sqlite
+  IMAP/alias heslo: ********
+  Výstupní cesta ZIP [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**Neinteraktivní režim** — předávejte argumenty přes příkazové přepínače pro skriptování a automatizaci:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| Přepínač            | Popis                                                                          |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `--path <path>`     | Cesta k zašifrovanému SQLite záložnímu souboru                                 |
+| `--password <pass>` | IMAP/alias heslo pro dešifrování                                               |
+| `--output <path>`   | Výstupní cesta pro ZIP soubor (výchozí: automaticky generováno s ISO 8601 časem) |
+| `--help`            | Zobrazit nápovědu                                                             |
+#### Výstupní formát {#output-format}
+
+Nástroj vytváří ZIP archiv chráněný heslem (šifrovaný AES-256), který obsahuje:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+Soubory EML jsou uspořádány podle složek poštovní schránky. Heslo k ZIP archivu je stejné jako vaše heslo k IMAPu/přezdívce. Každý soubor `.eml` je standardní [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) emailová zpráva s kompletními hlavičkami, textem těla a přílohami rekonstruovanými ze SQLite databáze.
+
+#### Jak to funguje {#how-it-works}
+
+1. Otevírá zašifrovanou SQLite databázi pomocí vašeho hesla k IMAPu/přezdívce (podporuje šifry [ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) i [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)).
+2. Čte tabulku Mailboxes pro zjištění struktury složek.
+3. Pro každou zprávu dekóduje mimeTree (uložený jako JSON komprimovaný pomocí [Brotli](https://github.com/google/brotli)) z tabulky Messages.
+4. Rekonstruuje celý EML procházením MIME stromu a načítáním těla příloh z tabulky Attachments.
+5. Vše zabalí do ZIP archivu chráněného heslem pomocí [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted).
+
+### Podporujete self-hosting {#do-you-support-self-hosting}
+
+Ano, od března 2025 podporujeme možnost self-hostingu. Přečtěte si blog [zde](https://forwardemail.net/blog/docs/self-hosted-solution). Začněte s [návodem pro self-hosting](https://forwardemail.net/self-hosted). A pro zájemce o podrobnější krok za krokem verzi máme naše návody založené na [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) nebo [Debianu](https://forwardemail.net/guides/selfhosted-on-debian).
+
+
+## Konfigurace e-mailu {#email-configuration}
+
+### Jak začít a nastavit přeposílání e-mailů {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Odhadovaný čas nastavení:</strong>
+  <span>Méně než 10 minut</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Začínáme:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    Pečlivě si přečtěte a dodržujte kroky jedna až osm uvedené níže. Nezapomeňte nahradit e-mailovou adresu <code>user@gmail.com</code> adresou, na kterou chcete e-maily přeposílat (pokud již není správná). Stejně tak nahraďte <code>example.com</code> vaší vlastní doménou (pokud již není správná).
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">Pokud jste již někde zaregistrovali svou doménu, tento krok úplně přeskočte a pokračujte krokem dvě! Jinak můžete <a href="/domain-registration" rel="noopener noreferrer">kliknout zde a zaregistrovat svou doménu</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  Pamatujete si, kde jste doménu zaregistrovali? Jakmile si to vzpomenete, postupujte podle níže uvedených pokynů:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    Musíte otevřít novou záložku a přihlásit se ke svému registrátorovi domény. Můžete jednoduše kliknout na svého "Registrátora" níže, čímž se to automaticky provede. V této nové záložce musíte přejít na stránku správy DNS u svého registrátora – a níže v sloupci "Kroky konfigurace" jsme poskytli podrobný návod krok za krokem. Jakmile se dostanete na tuto stránku v nové záložce, můžete se vrátit do této záložky a pokračovat krokem tři níže.
+    <strong class="font-weight-bold">Zatím nezavírejte otevřenou záložku; budete ji potřebovat pro další kroky!</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>Registrátor</th>
+      <th>Kroky konfigurace</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Centrum domén <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Upravit nastavení DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Hostované zóny <i class="fa fa-angle-right"></i> (Vyberte svou doménu)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Moje servery <i class="fa fa-angle-right"></i> Správa domén <i class="fa fa-angle-right"></i> Správce DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>PRO ROCK: Přihlaste se <i class="fa fa-angle-right"></i> Domény <i class="fa fa-angle-right"></i> (Klikněte na ikonu ▼ vedle správy) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      PRO LEGACY: Přihlaste se <i class="fa fa-angle-right"></i> Domény <i class="fa fa-angle-right"></i> Editor zón <i class="fa fa-angle-right"></i> (Vyberte svou doménu)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Vyberte svou doménu)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> (Vyberte svou doménu)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Spravovat</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Síťování <i class="fa fa-angle-right"></i> Domény <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Více <i class="fa fa-angle-right"></i> Spravovat doménu</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> V zobrazení karet klikněte na správu své domény <i class="fa fa-angle-right"></i> V seznamu klikněte na ikonu ozubeného kola <i class="fa fa-angle-right"></i> DNS a nameservery <i class="fa fa-angle-right"></i> DNS záznamy</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Sledujte</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Spravovat <i class="fa fa-angle-right"></i> (klikněte na ikonu ozubeného kola) <i class="fa fa-angle-right"></i> Klikněte na DNS &amp; Nameservers v levém menu</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domény <i class="fa fa-angle-right"></i> Spravovat domény <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Přehled <i class="fa fa-angle-right"></i> Spravovat <i class="fa fa-angle-right"></i> Jednoduchý editor <i class="fa fa-angle-right"></i> Záznamy</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Správa <i class="fa fa-angle-right"></i> Upravit zónu</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Sledujte</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Spravovat mé domény <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Spravovat DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Sledujte</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Konfigurovat DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Sledujte</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Seznam domén <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Spravovat <i class="fa fa-angle-right"></i> Pokročilý DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Nastavit Netlify DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Správce účtu <i class="fa fa-angle-right"></i> Moje domény <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Spravovat <i class="fa fa-angle-right"></i> Změnit cílovou adresu domény <i class="fa fa-angle-right"></i> Pokročilý DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Sledujte</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Spravované domény <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> Nastavení DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Hlavní menu <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Domény <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i>
+Pokročilá nastavení <i class="fa fa-angle-right"></i> Vlastní záznamy</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>Použijte CLI "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Stránka domén <i class="fa fa-angle-right"></i> (Vyberte svou doménu) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Stránka domén <i class="fa fa-angle-right"></i> (Klikněte na ikonu <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Vyberte Spravovat DNS záznamy</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>Přihlaste se <i class="fa fa-angle-right"></i> Domény <i class="fa fa-angle-right"></i> Moje domény</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>Jiný</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Důležité:</strong> Nevidíte zde svého registrátora? Jednoduše vyhledejte na internetu "jak změnit DNS záznamy u $REGISTRATORA" (nahraďte $REGISTRATORA názvem svého registrátora – např. "jak změnit DNS záznamy u GoDaddy", pokud používáte GoDaddy).</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">Pomocí stránky správy DNS u svého registrátora (tu druhou otevřenou záložku) nastavte následující "MX" záznamy:
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    Upozorňujeme, že nesmí být nastaveny žádné jiné MX záznamy. Oba níže uvedené záznamy MUSÍ existovat. Ujistěte se, že nejsou žádné překlepy; a že máte správně napsané oba mx1 a mx2. Pokud již existovaly nějaké MX záznamy, prosím, úplně je smažte.
+    Hodnota "TTL" nemusí být 3600, může být nižší nebo vyšší, pokud je to nutné.
   </span>
 </div>
 
@@ -1274,14 +1529,14 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1545,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Použijte stránku pro správu DNS u vašeho registrátora (druhý otevřený panel) a nastavte následující <strong class="notranslate">TXT</strong> záznam(y):
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    Pokud máte placený tarif, tento krok úplně přeskočte a pokračujte k pátému kroku! Pokud nemáte placený tarif, vaše přeposílané adresy budou veřejně vyhledatelné – přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> a případně upgradujte svou doménu na placený tarif. Pokud chcete vědět více o placených tarifech, podívejte se na naši stránku <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Ceník</a>. Jinak můžete pokračovat a vybrat jednu nebo více kombinací z možností A až F uvedených níže.
   </span>
 </div>
 
@@ -1307,10 +1562,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    Možnost A:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    Pokud přeposíláte všechny e-maily z vaší domény (např. "all@example.com", "hello@example.com" atd.) na konkrétní adresu "user@gmail.com":
   </span>
 </div>
 
@@ -1325,7 +1580,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1341,7 +1596,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Nezapomeňte nahradit hodnoty výše ve sloupci "Hodnota" svou vlastní e-mailovou adresou. Hodnota "TTL" nemusí být 3600, může být nižší nebo vyšší, pokud je to nutné. Nižší hodnota "TTL" zajistí, že jakékoliv budoucí změny vašich DNS záznamů se rychleji rozšíří po internetu – představte si to jako dobu, po kterou bude hodnota uložena v paměti (v sekundách). Více se o <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL na Wikipedii</a> dozvíte zde.
   </span>
 </div>
 
@@ -1350,25 +1605,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    Možnost B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    Pokud potřebujete přeposlat pouze jednu e-mailovou adresu (např. <code>hello@example.com</code> na <code>user@gmail.com</code>; toto také automaticky přepošle "hello+test@example.com" na "user+test@gmail.com"):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1637,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    Možnost C:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    Pokud přeposíláte více e-mailů, budete je chtít oddělit čárkou:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1670,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    Možnost D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    Můžete mít nastaven nekonečný počet přeposílacích e-mailů – jen se ujistěte, že nepřekročíte 255 znaků v jednom řádku a každý řádek začíná "forward-email=". Níže je uveden příklad:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1696,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1704,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1712,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1720,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1735,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    Možnost E:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    Můžete také zadat doménové jméno ve svém <strong class="notranslate">TXT</strong> záznamu pro globální přeposílání aliasů (např. "user@example.com" bude přeposílán na "user@example.net"):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1768,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    Možnost F:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    Můžete dokonce použít webhooks jako globální nebo individuální alias pro přeposílání e-mailů. Podívejte se na příklad a celou sekci o webhooks nazvanou <a href="#do-you-support-webhooks" class="alert-link">Podporujete webhooks</a> níže.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1800,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    Možnost G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    Můžete dokonce použít regulární výrazy ("regex") pro párování aliasů a pro zpracování náhrad, kam přeposílat e-maily. Viz příklady a celá sekce o regexech s názvem <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Podporujete regulární výrazy nebo regex</a> níže.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>Potřebujete pokročilý regex s náhradou?</strong> Viz příklady a celá sekce o regexech s názvem <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Podporujete regulární výrazy nebo regex</a> níže.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Jednoduchý příklad:</strong> Pokud chci, aby všechny e-maily, které jdou na `linus@example.com` nebo `torvalds@example.com`, byly přeposílány na `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1841,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    Pravidla přeposílání typu catch-all lze také popsat jako "propadnutí".
+    To znamená, že příchozí e-maily, které odpovídají alespoň jednomu konkrétnímu pravidlu přeposílání, budou použity místo catch-all.
+    Konkrétní pravidla zahrnují e-mailové adresy a regulární výrazy.
     <br /><br />
-    For example:
+    Například:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    E-maily zaslané na <code>hello@example.com</code> NEbudou přeposílány na <code>second@gmail.com</code> (catch-all) s touto konfigurací, a místo toho budou doručeny pouze na <code>first@gmail.com</code>.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Pomocí stránky pro správu DNS vašeho registrátora (druhý otevřený panel), navíc nastavte následující <strong class="notranslate">TXT</strong> záznam:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1882,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Pokud používáte Gmail (např. Odesílat jako) nebo G Suite, budete muset přidat <code>include:_spf.google.com</code> k výše uvedené hodnotě, například:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1644,19 +1897,18 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Pokud již máte podobný řádek s "v=spf1", budete muset přidat <code>include:spf.forwardemail.net</code> těsně před jakékoliv existující záznamy "include:host.com" a před "-all" ve stejném řádku, například:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Všimněte si, že je rozdíl mezi "-all" a "~all". "-" znamená, že kontrola SPF by měla selhat, pokud neodpovídá, a "~" znamená, že kontrola SPF by měla být SOFTFAIL. Doporučujeme použít přístup "-all" k prevenci padělání domény.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Možná budete také muset zahrnout SPF záznam pro hostitele, ze kterého odesíláte poštu (např. Outlook).
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">Ověřte své DNS záznamy pomocí našeho nástroje „Ověřit záznamy“, který je k dispozici na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Pošlete testovací e-mail, abyste potvrdili, že vše funguje. Vezměte prosím na vědomí, že může chvíli trvat, než se vaše DNS záznamy rozšíří.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1665,10 +1917,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    Pokud nedostáváte testovací e-maily, nebo obdržíte testovací e-mail s upozorněním „Buďte opatrní s touto zprávou“, podívejte se na odpovědi na <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Proč nedostávám své testovací e-maily</a> a <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Proč jsou mé testovací e-maily zaslané sobě v Gmailu označeny jako „podezřelé“</a>.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Pokud chcete „Odesílat poštu jako“ z Gmailu, budete muset <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">shlédnout toto video</a></strong> nebo postupovat podle kroků v části <a href="#how-to-send-mail-as-using-gmail">Jak odesílat poštu jako pomocí Gmailu</a> níže.
 
 </li></ol>
 
@@ -1676,10 +1928,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulujeme!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Úspěšně jste dokončili všechny kroky.
     </span>
   </div>
 </div>
@@ -1690,90 +1942,89 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    Níže jsou uvedeny volitelné doplňky. Vezměte prosím na vědomí, že tyto doplňky jsou zcela volitelné a nemusí být nutné. Chtěli jsme vám alespoň poskytnout další informace, pokud by byly potřeba.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    Volitelný doplněk:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    Pokud používáte funkci <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Jak odesílat poštu jako pomocí Gmailu</a>, možná budete chtít přidat sebe do seznamu povolených. Podívejte se na <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">tento návod od Gmailu</a> k tomuto tématu.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Mohu používat více MX výměníků a serverů pro pokročilé přeposílání {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+Ano, ale **ve svých DNS záznamech byste měli mít uveden pouze jeden MX výměník**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+Nepokoušejte se používat „Prioritu“ jako způsob konfigurace více MX výměníků.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+Místo toho musíte nakonfigurovat svůj stávající MX výměník tak, aby přeposílal poštu pro všechny neodpovídající aliasy na výměníky naší služby (`mx1.forwardemail.net` a/nebo `mx2.forwardemail.net`).
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Pokud používáte Google Workspace a chcete přeposílat všechny neodpovídající aliasy na naši službu, podívejte se na <https://support.google.com/a/answer/6297084>.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Pokud používáte Microsoft 365 (Outlook) a chcete přeposílat všechny neodpovídající aliasy na naši službu, podívejte se na <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> a <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Jak nastavit automatickou odpověď během dovolené (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy a vytvořte nebo upravte alias, pro který chcete nastavit automatickou odpověď během dovolené.
+Máte možnost nastavit počáteční datum, koncové datum, předmět a zprávu a kdykoli je povolit nebo zakázat:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* Aktuálně jsou podporovány pouze prostý text předmětu a zprávy (interně používáme balíček `striptags` k odstranění jakéhokoli HTML).
+* Předmět je omezen na 100 znaků.
+* Zpráva je omezena na 1000 znaků.
+* Nastavení vyžaduje konfiguraci odchozího SMTP (např. budete muset nastavit DKIM, DMARC a DNS záznamy Return-Path).
+  * Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Konfigurace odchozího SMTP a postupujte podle pokynů k nastavení.
+* Odpověď na dovolenou nelze povolit na globálních vanity doménách (např. [jednorázové adresy](/disposable-addresses) nejsou podporovány).
+* Odpověď na dovolenou nelze povolit pro aliasy s wildcard/catch-all (`*`) ani regulárními výrazy.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+Na rozdíl od poštovních systémů jako `postfix` (např. které používají rozšíření filtru dovolené `sieve`) – Forward Email automaticky přidává váš DKIM podpis, zajišťuje odolnost vůči problémům s připojením při odesílání odpovědí na dovolenou (např. kvůli běžným problémům s SSL/TLS připojením a starším udržovaným serverům) a dokonce podporuje Open WKD a PGP šifrování pro odpovědi na dovolenou.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* Aby se zabránilo zneužití, za každou odeslanou zprávu odpovědi na dovolenou bude odečten jeden kredit odchozího SMTP.
+  * Všechny placené účty mají ve výchozím nastavení 300 kreditů denně. Pokud potřebujete větší množství, kontaktujte nás.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. Odesíláme pouze jednou za 4 dny každému [povolnému](#do-you-have-an-allowlist) odesílateli.
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Naše Redis cache používá otisk prstu `alias_id` a `sender`, kde `alias_id` je MongoDB ID aliasu a `sender` je buď adresa From (pokud je povolená) nebo kořenová doména v adrese From (pokud není povolená). Pro jednoduchost je doba platnosti tohoto otisku v cache nastavena na 4 dny.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * Náš přístup používající kořenovou doménu analyzovanou z adresy From pro nepovolené odesílatele zabraňuje zneužití od relativně neznámých odesílatelů (např. škodlivých aktérů) zaplavujících odpovědi na dovolenou.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. Odesíláme pouze pokud MAIL FROM a/nebo From není prázdný a neobsahuje (bez ohledu na velikost písmen) [uživatelské jméno postmastera](#what-are-postmaster-addresses) (část před @ v e-mailu).
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. Neodesíláme, pokud původní zpráva obsahovala některý z následujících hlaviček (bez ohledu na velikost písmen):
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * Hlavička `auto-submitted` s hodnotou odlišnou od `no`.
+   * Hlavička `x-auto-response-suppress` s hodnotou `dr`, `autoreply`, `auto-reply`, `auto_reply` nebo `all`.
+   * Hlavička `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` nebo `x-auto-respond` (bez ohledu na hodnotu).
+   * Hlavička `precedence` s hodnotou `bulk`, `autoreply`, `auto-reply`, `auto_reply` nebo `list`.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. Neodesíláme, pokud e-mailová adresa MAIL FROM nebo From končí na `+donotreply`, `-donotreply`, `+noreply` nebo `-noreply`.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. Neodesíláme, pokud uživatelská část e-mailové adresy From byla `mdaemon` a obsahovala bez ohledu na velikost písmen hlavičku `X-MDDSN-Message`.
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. Neodesíláme, pokud byla bez ohledu na velikost písmen hlavička `content-type` s hodnotou `multipart/report`.
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Jak nastavit SPF pro Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+Pomocí stránky pro správu DNS u vašeho registrátora nastavte následující <strong class="notranslate">TXT</strong> záznam:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Název/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2035,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Pokud používáte Gmail (např. Odesílat poštu jako) nebo G Suite, budete muset k výše uvedené hodnotě přidat <code>include:_spf.google.com</code>, například:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Pokud používáte Microsoft Outlook nebo Live.com, musíte do svého SPF <strong class="notranslate">TXT</strong> záznamu přidat <code>include:spf.protection.outlook.com</code>, například:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1811,447 +2061,498 @@ Using your registrar's DNS management page, set the following <strong class="not
     Tip:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Pokud již máte podobný řádek s "v=spf1", musíte přidat <code>include:spf.forwardemail.net</code> těsně před jakékoliv existující záznamy "include:host.com" a před "-all" ve stejném řádku, například:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Všimněte si, že je rozdíl mezi "-all" a "~all". "-" znamená, že SPF kontrola by měla selhat, pokud nesouhlasí, a "~" znamená, že SPF kontrola by měla být SOFTFAIL. Doporučujeme použít přístup "-all" k prevenci padělání domény.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Možná budete také muset zahrnout SPF záznam pro hostitele, ze kterého odesíláte poštu (např. Outlook).
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Jak nastavit DKIM pro Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Konfigurace odchozího SMTP a postupujte podle pokynů pro nastavení.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Jak nastavit DMARC pro Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Konfigurace odchozího SMTP a postupujte podle pokynů pro nastavení.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### Jak zobrazit DMARC zprávy {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email poskytuje komplexní přehled DMARC zpráv, který vám umožní sledovat výkon autentizace e-mailů napříč všemi vašimi doménami z jednoho rozhraní.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**Co jsou DMARC zprávy?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+DMARC (Domain-based Message Authentication, Reporting, and Conformance) zprávy jsou XML soubory zasílané přijímajícími mail servery, které vám říkají, jak jsou vaše e-maily autentizovány. Tyto zprávy vám pomáhají pochopit:
+
+* Kolik e-mailů je odesíláno z vaší domény
+* Zda tyto e-maily procházejí SPF a DKIM autentizací
+* Jaké akce přijímající servery provádějí (přijmout, karanténa nebo odmítnout)
+* Které IP adresy odesílají e-maily jménem vaší domény
+
+**Jak získat přístup k DMARC zprávám**
+
+Přejděte na <a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> DMARC zprávy</a> pro zobrazení vašeho přehledu. Můžete také získat přístup ke zprávám specifickým pro doménu z <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> kliknutím na tlačítko "DMARC" vedle libovolné domény.
+
+**Funkce přehledu**
+
+Přehled DMARC zpráv nabízí:
+
+* **Souhrnné metriky**: Celkový počet přijatých zpráv, celkový počet analyzovaných zpráv, míra shody SPF, míra shody DKIM a celková míra úspěšnosti
+* **Graf zpráv v čase**: Vizualizace trendu objemu e-mailů a míry autentizace za posledních 30 dní
+* **Souhrn shody**: Kruhový graf zobrazující rozdělení shody SPF vs DKIM
+* **Disposition zpráv**: Skládaný sloupcový graf ukazující, jak přijímající servery nakládaly s vašimi e-maily (přijaty, v karanténě nebo odmítnuty)
+* **Tabulka posledních zpráv**: Podrobný seznam jednotlivých DMARC zpráv s filtrováním a stránkováním
+* **Filtrování podle domény**: Filtrování zpráv podle konkrétní domény při správě více domén
+**Proč je to důležité**
+
+Pro organizace spravující více domén (jako jsou podniky, neziskové organizace nebo agentury) jsou DMARC reporty nezbytné pro:
+
+* **Identifikaci neoprávněných odesílatelů**: Zjistit, zda někdo nefalšuje vaši doménu
+* **Zlepšení doručitelnosti**: Zajistit, aby vaše legitimní e-maily prošly autentizací
+* **Monitorování e-mailové infrastruktury**: Sledovat, které služby a IP adresy odesílají e-maily vaším jménem
+* **Soulad s předpisy**: Udržovat přehled o autentizaci e-mailů pro bezpečnostní audity
+
+Na rozdíl od jiných služeb, které vyžadují samostatné nástroje pro monitorování DMARC, Forward Email zahrnuje zpracování a vizualizaci DMARC reportů jako součást vašeho účtu bez dalších nákladů.
+
+**Požadavky**
+
+* DMARC reporty jsou dostupné pouze pro placené plány
+* Vaše doména musí mít nakonfigurovaný DMARC (viz [Jak nastavit DMARC pro Forward Email](#how-do-i-set-up-dmarc-for-forward-email))
+* Reporty jsou automaticky sbírány, když příchozí mail servery odesílají reporty na vaši nakonfigurovanou DMARC adresu pro reportování
+
+**Týdenní e-mailové reporty**
+
+Uživatelé placených plánů automaticky dostávají týdenní souhrnné DMARC reporty e-mailem. Tyto e-maily obsahují:
+
+* Souhrnné statistiky pro všechny vaše domény
+* Míru shody SPF a DKIM
+* Rozdělení výsledků zpráv (přijato, karanténa, odmítnuto)
+* Nejčastější reportující organizace (Google, Microsoft, Yahoo, atd.)
+* IP adresy s problémy se shodou, které mohou vyžadovat pozornost
+* Přímé odkazy na váš DMARC Reports dashboard
+
+Týdenní reporty jsou odesílány automaticky a nelze je vypnout samostatně od ostatních e-mailových oznámení.
+
+### Jak připojit a nakonfigurovat své kontakty {#how-do-i-connect-and-configure-my-contacts}
+
+**Pro konfiguraci kontaktů použijte CardDAV URL:** `https://carddav.forwardemail.net` (nebo jednoduše `carddav.forwardemail.net`, pokud to váš klient umožňuje)
+
+### Jak připojit a nakonfigurovat své kalendáře {#how-do-i-connect-and-configure-my-calendars}
+
+**Pro konfiguraci kalendáře použijte CalDAV URL:** `https://caldav.forwardemail.net` (nebo jednoduše `caldav.forwardemail.net`, pokud to váš klient umožňuje)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### Jak přidat další kalendáře a spravovat stávající kalendáře {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+Pokud chcete přidat další kalendáře, stačí přidat novou URL kalendáře: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**nezapomeňte nahradit `calendar-name` požadovaným názvem kalendáře**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+Název a barvu kalendáře můžete změnit po jeho vytvoření – použijte svůj preferovaný kalendářový program (např. Apple Mail nebo [Thunderbird](https://thunderbird.net)).
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### Jak připojit a nakonfigurovat úkoly a připomínky {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**Pro konfiguraci úkolů a připomínek použijte stejnou CalDAV URL jako pro kalendáře:** `https://caldav.forwardemail.net` (nebo jednoduše `caldav.forwardemail.net`, pokud to váš klient umožňuje)
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+Úkoly a připomínky budou automaticky odděleny od událostí kalendáře do samostatné kolekce kalendářů "Reminders" nebo "Tasks".
 
-**Setup instructions by platform:**
+**Instrukce pro nastavení podle platformy:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. Přidejte nový CalDAV účet v Systémových preferencích > Internetové účty (nebo Nastavení > Účty na iOS)
+2. Použijte `caldav.forwardemail.net` jako server
+3. Zadejte svůj Forward Email alias a vygenerované heslo
+4. Po nastavení uvidíte kolekce "Calendar" a "Reminders"
+5. Používejte aplikaci Připomínky pro vytváření a správu úkolů
 
-**Android with Tasks.org:**
+**Android s Tasks.org:**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Nainstalujte Tasks.org z Google Play Store nebo F-Droid
+2. Přejděte do Nastavení > Synchronizace > Přidat účet > CalDAV
+3. Zadejte server: `https://caldav.forwardemail.net`
+4. Zadejte svůj Forward Email alias a vygenerované heslo
+5. Tasks.org automaticky najde vaše kalendáře úkolů
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Nainstalujte doplněk Lightning, pokud již není nainstalován
+2. Vytvořte nový kalendář typu "CalDAV"
+3. Použijte URL: `https://caldav.forwardemail.net`
+4. Zadejte své přihlašovací údaje Forward Email
+5. Události i úkoly budou dostupné v kalendářovém rozhraní
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### Proč nemohu vytvářet úkoly v macOS Připomínkách {#why-cant-i-create-tasks-in-macos-reminders}
+Pokud máte potíže s vytvářením úkolů v macOS Připomínkách, vyzkoušejte tyto kroky pro řešení problémů:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **Zkontrolujte nastavení účtu**: Ujistěte se, že váš CalDAV účet je správně nakonfigurován s `caldav.forwardemail.net`
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **Ověřte samostatné kalendáře**: Ve svém účtu byste měli vidět jak "Kalendář", tak "Připomínky". Pokud vidíte pouze "Kalendář", podpora úkolů nemusí být ještě plně aktivována.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **Obnovte účet**: Zkuste odebrat a znovu přidat svůj CalDAV účet v Systémových předvolbách > Internetové účty
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **Zkontrolujte připojení k serveru**: Ověřte, že můžete v prohlížeči přistoupit na `https://caldav.forwardemail.net`
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **Ověřte přihlašovací údaje**: Ujistěte se, že používáte správný alias e-mailu a vygenerované heslo (nikoli heslo k účtu)
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **Vynucení synchronizace**: V aplikaci Připomínky zkuste vytvořit úkol a poté ručně obnovit synchronizaci
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**Běžné problémy:**
 
-**Common issues:**
+* **"Kalendář Připomínek nenalezen"**: Server může potřebovat chvíli na vytvoření kolekce Připomínek při prvním přístupu
+* **Úkoly se nesynchronizují**: Zkontrolujte, že obě zařízení používají stejné přihlašovací údaje CalDAV účtu
+* **Smíšený obsah**: Ujistěte se, že úkoly jsou vytvářeny v kalendáři "Připomínky", nikoli v obecném "Kalendáři"
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### Jak nastavit Tasks.org na Androidu {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.org je populární open-source správce úkolů, který skvěle funguje s podporou úkolů CalDAV od Forward Email.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**Instalace a nastavení:**
 
-**Installation and Setup:**
+1. **Nainstalujte Tasks.org**:
+   * Z Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * Z F-Droid: [Tasks.org na F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **Nastavte synchronizaci CalDAV**:
+   * Otevřete Tasks.org
+   * Přejděte do ☰ Menu > Nastavení > Synchronizace
+   * Klepněte na "Přidat účet"
+   * Vyberte "CalDAV"
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+3. **Zadejte nastavení Forward Email**:
+   * **URL serveru**: `https://caldav.forwardemail.net`
+   * **Uživatelské jméno**: Váš alias Forward Email (např. `vy@vasedomena.cz`)
+   * **Heslo**: Vaše alias-specifické vygenerované heslo
+   * Klepněte na "Přidat účet"
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+4. **Objevování účtu**:
+   * Tasks.org automaticky najde vaše kalendáře úkolů
+   * Měli byste vidět kolekci "Připomínky"
+   * Klepněte na "Odebírat" pro povolení synchronizace kalendáře úkolů
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+5. **Otestujte synchronizaci**:
+   * Vytvořte testovací úkol v Tasks.org
+   * Zkontrolujte, že se zobrazí v jiných CalDAV klientech (např. macOS Připomínky)
+   * Ověřte, že změny se synchronizují obousměrně
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+**Dostupné funkce:**
 
-**Features available:**
+* ✅ Vytváření a úprava úkolů
+* ✅ Termíny a připomínky
+* ✅ Dokončení úkolů a stav
+* ✅ Úrovně priority
+* ✅ Podúkoly a hierarchie úkolů
+* ✅ Štítky a kategorie
+* ✅ Obousměrná synchronizace s ostatními CalDAV klienty
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+**Řešení problémů:**
 
-**Troubleshooting:**
+* Pokud se nezobrazují žádné kalendáře úkolů, zkuste ručně obnovit v nastavení Tasks.org
+* Ujistěte se, že máte na serveru alespoň jeden vytvořený úkol (můžete ho nejprve vytvořit v macOS Připomínkách)
+* Zkontrolujte síťové připojení k `caldav.forwardemail.net`
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+### Jak nastavit SRS pro Forward Email {#how-do-i-set-up-srs-for-forward-email}
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+Automaticky konfigurujeme [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – nemusíte to dělat sami.
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+### Jak nastavit MTA-STS pro Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+Podrobnější informace naleznete v [naší sekci o MTA-STS](#do-you-support-mta-sts).
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+### Jak přidat profilovou fotku k mé e-mailové adrese {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+Pokud používáte Gmail, postupujte podle těchto kroků:
 
-If you're using Gmail, then follow these steps below:
+1. Přejděte na <https://google.com> a odhlaste se ze všech e-mailových účtů
+2. Klikněte na "Přihlásit se" a v rozbalovacím menu vyberte "jiný účet"
+3. Vyberte "Použít jiný účet"
+4. Vyberte "Vytvořit účet"
+5. Vyberte "Použít místo toho svou aktuální e-mailovou adresu"
+6. Zadejte svou e-mailovou adresu s vlastní doménou
+7. Získejte ověřovací e-mail zaslaný na vaši e-mailovou adresu
+8. Zadejte ověřovací kód z tohoto e-mailu
+9. Dokončete informace o profilu pro svůj nový Google účet
+10. Souhlasíte se všemi zásadami ochrany soukromí a podmínkami použití
+11. Přejděte na <https://google.com>, v pravém horním rohu klikněte na ikonu profilu a poté na tlačítko "změnit"
+12. Nahrajte novou fotografii nebo avatar pro svůj účet
+13. Změny se projeví přibližně za 1-2 hodiny, někdy mohou být velmi rychlé.
+14. Pošlete testovací e-mail a profilová fotka by se měla zobrazit.
+## Pokročilé funkce {#advanced-features}
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+### Podporujete newslettery nebo mailing listy pro marketingové e-maily {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-## Advanced Features {#advanced-features}
+Ano, více si můžete přečíst na <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+Vezměte prosím na vědomí, že pro udržení reputace IP a zajištění doručitelnosti má Forward Email manuální proces schvalování na úrovni jednotlivých domén pro **schválení newsletteru**. Napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) pro schválení. Tento proces obvykle trvá méně než 24 hodin, většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zautomatizovat s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+### Podporujete odesílání e-mailů přes API {#do-you-support-sending-email-with-api}
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+Ano, od května 2023 podporujeme odesílání e-mailů přes API jako doplněk pro všechny placené uživatele.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Ujistěte se, že jste si přečetli naše <a href="/terms" class="alert-link" target="_blank">Podmínky</a>, <a href="/privacy" class="alert-link" target="_blank">Zásady ochrany osobních údajů</a> a <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Limity odchozího SMTP</a> &ndash; vaše používání je považováno za potvrzení a souhlas.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+Podívejte se na naši sekci o [E-mailech](/email-api#outbound-emails) v dokumentaci API pro možnosti, příklady a další informace.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+Pro odesílání odchozích e-mailů přes naše API musíte použít svůj API token dostupný v sekci [Moje bezpečnost](/my-account/security).
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### Podporujete příjem e-mailů přes IMAP {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Ano, od 16. října 2023 podporujeme příjem e-mailů přes IMAP jako doplněk pro všechny placené uživatele.  **Přečtěte si prosím náš podrobný článek** o [tom, jak funguje naše šifrovaná SQLite schránka](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Ujistěte se, že jste si přečetli naše <a href="/terms" class="alert-link" target="_blank">Podmínky</a> a <a href="/privacy" class="alert-link" target="_blank">Zásady ochrany osobních údajů</a> &ndash; vaše používání je považováno za potvrzení a souhlas.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Vytvořte nový alias pro svou doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu. Zkopírujte do schránky a bezpečně uložte zobrazené heslo.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Ve své preferované e-mailové aplikaci přidejte nebo nakonfigurujte účet s nově vytvořeným aliasem (např. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Doporučujeme používat <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> nebo <a href="/blog/open-source" class="alert-link" target="_blank">otevřenou a soukromí zaměřenou alternativu</a>.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. Když budete vyzváni k zadání názvu IMAP serveru, zadejte `imap.forwardemail.net`
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. Když budete vyzváni k zadání portu IMAP serveru, zadejte `993` (SSL/TLS) – v případě potřeby viz [alternativní IMAP porty](/faq#what-are-your-imap-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Pokud používáte Thunderbird, ujistěte se, že "Zabezpečení připojení" je nastaveno na "SSL/TLS" a Metoda ověřování na "Normální heslo".</span>
    </div>
+6. Když budete vyzváni k zadání hesla k IMAP serveru, vložte heslo z <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> v kroku 2 výše
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Uložte svá nastavení** – pokud máte problémy, prosím <a href="/help">kontaktujte nás</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulujeme!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Úspěšně jste dokončili všechny kroky.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### Podporujete POP3 {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Ano, od 4. prosince 2023 podporujeme [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) jako doplněk pro všechny placené uživatele.  **Přečtěte si náš podrobný článek** o [tom, jak funguje naše šifrovaná SQLite schránka](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Ujistěte se, že jste si přečetli naše <a href="/terms" class="alert-link" target="_blank">Podmínky</a> a <a href="/privacy" class="alert-link" target="_blank">Zásady ochrany osobních údajů</a> &ndash; vaše používání je považováno za potvrzení a souhlas.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Vytvořte nový alias pro vaši doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu.  Zkopírujte do schránky a bezpečně uložte zobrazené heslo.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Pomocí preferované e-mailové aplikace přidejte nebo nakonfigurujte účet s vaším nově vytvořeným aliasem (např. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Doporučujeme používat <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> nebo <a href="/blog/open-source" class="alert-link" target="_blank">otevřenou a soukromí zaměřenou alternativu</a>.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. Když budete vyzváni k zadání názvu POP3 serveru, zadejte `pop3.forwardemail.net`
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. Když budete vyzváni k zadání portu POP3 serveru, zadejte `995` (SSL/TLS) – v případě potřeby viz [alternativní POP3 porty](/faq#what-are-your-pop3-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Pokud používáte Thunderbird, ujistěte se, že "Zabezpečení připojení" je nastaveno na "SSL/TLS" a Metoda ověřování na "Normální heslo".</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. Když budete vyzváni k zadání hesla k POP3 serveru, vložte heslo z <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> v kroku 2 výše
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Uložte svá nastavení** – pokud máte problémy, prosím <a href="/help">kontaktujte nás</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulujeme!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Úspěšně jste dokončili všechny kroky.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### Podporujete kalendáře (CalDAV) {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Ano, od 5. února 2024 jsme tuto funkci přidali. Náš server je `caldav.forwardemail.net` a je také monitorován na naší <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stavové stránce</a>.
+Podporuje jak IPv4, tak IPv6 a je dostupný přes port `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+| Přihlášení | Příklad                    | Popis                                                                                                                                                                                    |
+| ---------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uživatelské jméno | `user@example.com`         | Emailová adresa aliasu, který existuje pro doménu na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a>.          |
+| Heslo      | `************************` | Alias-specifické generované heslo.                                                                                                                                                       |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Pro použití podpory kalendáře musí být **uživatel** emailovou adresou aliasu, který existuje pro doménu na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> – a **heslo** musí být alias-specifické generované heslo.
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+### Podporujete úkoly a připomínky (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+Ano, od 14. října 2025 jsme přidali podporu CalDAV VTODO pro úkoly a připomínky. Používá stejný server jako naše podpora kalendáře: `caldav.forwardemail.net`.
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+Náš CalDAV server podporuje jak kalendářové události (VEVENT), tak komponenty úkolů (VTODO) pomocí **sjednocených kalendářů**. To znamená, že každý kalendář může obsahovat jak události, tak úkoly, což poskytuje maximální flexibilitu a kompatibilitu se všemi CalDAV klienty.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+**Jak kalendáře a seznamy fungují:**
 
-**How calendars and lists work:**
+* **Každý kalendář podporuje jak události, tak úkoly** – Můžete přidávat události, úkoly nebo obojí do libovolného kalendáře
+* **Seznamy Apple Připomínek** – Každý seznam, který vytvoříte v Apple Připomínkách, se stane samostatným kalendářem na serveru
+* **Více kalendářů** – Můžete vytvořit tolik kalendářů, kolik potřebujete, každý s vlastním názvem, barvou a organizací
+* **Synchronizace mezi klienty** – Úkoly a události se bez problémů synchronizují mezi všemi kompatibilními klienty
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+**Podporovaní klienti úkolů:**
 
-**Supported task clients:**
+* **macOS Připomínky** – Plná nativní podpora vytváření, úprav, dokončení a synchronizace úkolů
+* **iOS Připomínky** – Plná nativní podpora na všech iOS zařízeních
+* **Tasks.org (Android)** – Oblíbený open-source správce úkolů s CalDAV synchronizací
+* **Thunderbird** – Podpora úkolů a kalendáře v desktopovém emailovém klientu
+* **Jakýkoli CalDAV-kompatibilní správce úkolů** – Standardní podpora komponenty VTODO
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+**Podporované funkce úkolů:**
 
-**Task features supported:**
+* Vytváření, úprava a mazání úkolů
+* Termíny a data zahájení
+* Stav dokončení úkolu (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Úrovně priority úkolů
+* Opakující se úkoly
+* Popisy a poznámky k úkolům
+* Synchronizace na více zařízeních
+* Podúkoly s vlastností RELATED-TO
+* Připomínky úkolů s VALARM
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+Přihlašovací údaje jsou stejné jako pro podporu kalendáře:
 
-The login credentials are the same as for calendar support:
+| Přihlášení | Příklad                    | Popis                                                                                                                                                                                    |
+| ---------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uživatelské jméno | `user@example.com`         | Emailová adresa aliasu, který existuje pro doménu na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a>.          |
+| Heslo      | `************************` | Alias-specifické generované heslo.                                                                                                                                                       |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+**Důležité poznámky:**
 
-**Important notes:**
+* **Každý seznam Připomínek je samostatný kalendář** – Když vytvoříte nový seznam v Apple Připomínkách, vytvoří se nový kalendář na CalDAV serveru
+* **Uživatelé Thunderbirdu** – Budete muset ručně přihlásit každý kalendář/seznam, který chcete synchronizovat, nebo použít URL domovské stránky kalendáře: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Uživatelé Apple** – Objevování kalendářů probíhá automaticky, takže všechny vaše kalendáře a seznamy se zobrazí v Calendar.app a Reminders.app
+* **Sjednocené kalendáře** – Všechny kalendáře podporují jak události, tak úkoly, což vám dává flexibilitu v organizaci vašich dat
+### Podporujete kontakty (CardDAV) {#do-you-support-contacts-carddav}
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+Ano, od 12. června 2025 jsme tuto funkci přidali. Náš server je `carddav.forwardemail.net` a je také monitorován na naší <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stavové stránce</a>.
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+Podporuje jak IPv4, tak IPv6 a je dostupný přes port `443` (HTTPS).
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+| Přihlášení | Příklad                    | Popis                                                                                                                                                                                    |
+| ---------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uživatelské jméno | `user@example.com`         | Emailová adresa aliasu, který existuje pro doménu na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a>.          |
+| Heslo      | `************************` | Alias-specifické generované heslo.                                                                                                                                                       |
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+Pro použití podpory kontaktů musí být **uživatel** emailová adresa aliasu, který existuje pro doménu na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> – a **heslo** musí být alias-specifické generované heslo.
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+### Podporujete odesílání emailů přes SMTP {#do-you-support-sending-email-with-smtp}
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
-
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
-
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+Ano, od května 2023 podporujeme odesílání emailů přes SMTP jako doplněk pro všechny placené uživatele.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Ujistěte se, že jste si přečetli naše <a href="/terms" class="alert-link" target="_blank">Podmínky</a>, <a href="/privacy" class="alert-link" target="_blank">Zásady ochrany osobních údajů</a> a <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Limity odchozího SMTP</a> – vaše používání je považováno za potvrzení a souhlas.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Pokud používáte Gmail, podívejte se na náš <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">návod Odesílat poštu jako s Gmail vlastním doménovým jménem</a>. Pokud jste vývojář, podívejte se na naše <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumenty emailového API</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Konfigurace odchozího SMTP a postupujte podle pokynů pro nastavení
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Vytvořte nový alias pro vaši doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu. Zkopírujte do schránky a bezpečně uložte zobrazené generované heslo.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. Pomocí preferované emailové aplikace přidejte nebo nakonfigurujte účet s vaším nově vytvořeným aliasem (např. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Doporučujeme používat <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> nebo <a href="/blog/open-source" class="alert-link" target="_blank">otevřenou a na soukromí zaměřenou alternativu</a>.</span>
    </div>
+5. Když budete vyzváni k zadání názvu SMTP serveru, zadejte `smtp.forwardemail.net`
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. Když budete vyzváni k zadání portu SMTP serveru, zadejte `465` (SSL/TLS) – v případě potřeby viz [alternativní SMTP porty](/faq#what-are-your-smtp-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Pokud používáte Thunderbird, ujistěte se, že je „Zabezpečení připojení“ nastaveno na „SSL/TLS“ a metoda ověřování na „Normální heslo“.</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. Když budete vyzváni k zadání hesla SMTP serveru, vložte heslo z <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> v kroku 3 výše
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **Uložte svá nastavení a odešlete svůj první testovací e-mail** – pokud máte problémy, prosím <a href="/help">kontaktujte nás</a>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    Vezměte prosím na vědomí, že pro udržení reputace IP a zajištění doručitelnosti máme manuální proces kontroly na základě jednotlivých domén pro schválení odchozího SMTP. Tento proces obvykle trvá méně než 24 hodin, přičemž většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zrychlit na okamžitý s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
   </span>
 </div>
 
@@ -2259,98 +2560,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulujeme!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Úspěšně jste dokončili všechny kroky.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### Podporujete OpenPGP/MIME, end-to-end šifrování („E2EE“) a Web Key Directory („WKD“)? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Ano, podporujeme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end šifrování („E2EE“)](https://en.wikipedia.org/wiki/End-to-end_encryption) a vyhledávání veřejných klíčů pomocí [Web Key Directory („WKD“)](https://wiki.gnupg.org/WKD). OpenPGP můžete nakonfigurovat pomocí [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) nebo [hostovat vlastní klíče](https://wiki.gnupg.org/WKDHosting) (viz [tento gist pro nastavení WKD serveru](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* Vyhledávání WKD je kešováno po dobu 1 hodiny, aby byla zajištěna včasná doručitelnost e-mailů → pokud přidáte, změníte nebo odstraníte svůj WKD klíč, zašlete nám prosím e-mail na `support@forwardemail.net` s vaší e-mailovou adresou, abychom mohli manuálně vymazat keš.
+* Podporujeme PGP šifrování pro zprávy přeposílané přes WKD vyhledávání nebo pomocí nahraného PGP klíče v našem rozhraní.
+* Nahrané klíče mají přednost, pokud je zaškrtnuto políčko PGP.
+* Zprávy odeslané na webhooky momentálně nejsou šifrovány pomocí PGP.
+* Pokud máte více aliasů, které odpovídají dané přeposílací adrese (např. kombinace regex/wildcard/přesná shoda) a pokud více z nich obsahuje nahraný PGP klíč a je zaškrtnuto PGP → zašleme vám chybové upozornění e-mailem a zprávu nezašifrujeme vaším nahraným PGP klíčem. Toto je velmi vzácné a obvykle se týká pokročilých uživatelů s komplexními pravidly aliasů.
+* **PGP šifrování nebude aplikováno na přeposílání e-mailů přes naše MX servery, pokud odesílatel měl DMARC politiku reject. Pokud potřebujete PGP šifrování na *všechny* zprávy, doporučujeme použít naši IMAP službu a nakonfigurovat svůj PGP klíč pro váš alias pro příchozí poštu.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**Svou konfiguraci Web Key Directory můžete ověřit na <https://wkd.chimbosonic.com/> (open-source) nebo <https://www.webkeydirectory.com/> (proprietární).**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    Automatické šifrování:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>Pokud používáte naši <a href="#do-you-support-sending-email-with-smtp" class="alert-link">odchozí SMTP službu</a> a odesíláte nešifrované zprávy, automaticky se pokusíme zprávy na základě příjemce zašifrovat pomocí <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory („WKD“)</a>.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    Musíte dodržet všechny následující kroky, abyste povolili OpenPGP pro vaši vlastní doménu.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. Stáhněte a nainstalujte doporučený plugin pro váš e-mailový klient níže:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | E-mailový klient | Platforma | Doporučený plugin                                                                                                                                                                    | Poznámky                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird     | Desktop  | [Nastavení OpenPGP v Thunderbirdu](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird má vestavěnou podporu pro OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                            |
+   | Gmail           | Prohlížeč | [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download) (proprietární licence)                                                                            | Gmail nepodporuje OpenPGP, ale můžete si stáhnout open-source plugin [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                    |
+   | Apple Mail      | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                          | Apple Mail nepodporuje OpenPGP, ale můžete si stáhnout open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation).                                                                                                                                                                                                                                                       |
+   | Apple Mail      | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) nebo [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietární licence)                           | Apple Mail nepodporuje OpenPGP, ale můžete si stáhnout open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) nebo [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                    |
+   | Outlook         | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                          | Desktopový e-mailový klient Outlook nepodporuje OpenPGP, ale můžete si stáhnout open-source plugin [gpg4win](https://www.gpg4win.de/index.html).                                                                                                                                                                                                                                                                                    |
+   | Outlook         | Prohlížeč | [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download) (proprietární licence)                                                                            | Webový e-mailový klient Outlook nepodporuje OpenPGP, ale můžete si stáhnout open-source plugin [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                          |
+   | Android         | Mobilní  | [OpenKeychain](https://www.openkeychain.org/) nebo [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                       | [Android mail klienti](/blog/open-source/android-email-clients) jako [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) a [FairEmail](https://github.com/M66B/FairEmail) oba podporují open-source plugin [OpenKeychain](https://www.openkeychain.org/). Alternativně můžete použít open-source (proprietární licence) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+   | Google Chrome   | Prohlížeč | [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download) (proprietární licence)                                                                            | Můžete si stáhnout open-source rozšíření prohlížeče [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                 |
+   | Mozilla Firefox | Prohlížeč | [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download) (proprietární licence)                                                                            | Můžete si stáhnout open-source rozšíření prohlížeče [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                 |
+   | Microsoft Edge  | Prohlížeč | [Mailvelope](https://mailvelope.com/)                                                                                                                                                 | Můžete si stáhnout open-source rozšíření prohlížeče [Mailvelope](https://mailvelope.com/).                                                                                                                                                                                                                                                                                                                                                |
+   | Brave           | Prohlížeč | [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download) (proprietární licence)                                                                            | Můžete si stáhnout open-source rozšíření prohlížeče [Mailvelope](https://mailvelope.com/) nebo [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                                 |
+   | Balsa           | Desktop  | [Nastavení OpenPGP v Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                            | Balsa má vestavěnou podporu pro OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | KMail           | Desktop  | [Nastavení OpenPGP v KMail](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                                 | KMail má vestavěnou podporu pro OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | GNOME Evolution | Desktop  | [Nastavení OpenPGP v Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                               | GNOME Evolution má vestavěnou podporu pro OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                        |
+   | Terminál        | Desktop  | [Nastavení gpg v Terminálu](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                           | Můžete použít open-source [gpg příkazový nástroj](https://www.gnupg.org/download/) k vygenerování nového klíče z příkazové řádky.                                                                                                                                                                                                                                                                                                            |
+2. Otevřete plugin, vytvořte svůj veřejný klíč a nakonfigurujte svůj e-mailový klient, aby jej používal.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. Nahrajte svůj veřejný klíč na <https://keys.openpgp.org/upload>.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>Můžete navštívit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> pro správu svého klíče v budoucnu.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       Volitelný doplněk:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       Pokud používáte naši službu <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">šifrovaného úložiště (IMAP/POP3)</a> a chcete, aby <i>všechny</i> e-maily uložené ve vaší (již zašifrované) databázi SQLite byly zašifrovány vaším veřejným klíčem, přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Alias (např. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Upravit <i class="fa fa-angle-right"></i> OpenPGP a nahrajte svůj veřejný klíč.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. Přidejte nový záznam `CNAME` do své domény (např. `example.com`):
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>Název/Hostitel/Alias</th>
          <th class="text-center">TTL</th>
-         <th>Type</th>
-         <th>Answer/Value</th>
+         <th>Typ</th>
+         <th>Odpověď/Hodnota</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,102 +2662,284 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>Pokud váš alias používá naše <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/jednorázové domény</a> (např. <code>hideaddress.net</code>), můžete tento krok přeskočit.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulujeme!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Úspěšně jste dokončili všechny kroky.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### Podporujete šifrování S/MIME {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+Ano, podporujeme šifrování [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) podle definice v [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551). S/MIME poskytuje end-to-end šifrování pomocí X.509 certifikátů, které jsou široce podporovány podnikových e-mailovými klienty.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Podporujeme jak RSA, tak ECC (Elliptic Curve Cryptography) certifikáty:
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **RSA certifikáty**: minimálně 2048 bitů, doporučeno 4096 bitů
+* **ECC certifikáty**: křivky P-256, P-384 a P-521 podle NIST
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+Pro konfiguraci šifrování S/MIME pro váš alias:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. Získejte S/MIME certifikát od důvěryhodné certifikační autority (CA) nebo vygenerujte samopodepsaný certifikát pro testování.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>Bezplatné S/MIME certifikáty jsou k dispozici u poskytovatelů jako <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> nebo <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. Exportujte svůj certifikát ve formátu PEM (pouze veřejný certifikát, nikoli soukromý klíč).
 
-Learn more about passkeys at the following links:
+3. Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Alias (např. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Upravit <i class="fa fa-angle-right"></i> S/MIME a nahrajte svůj veřejný certifikát.
+4. Po konfiguraci budou všechny příchozí e-maily na váš alias šifrovány pomocí vašeho S/MIME certifikátu před uložením nebo přeposláním.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Poznámka:
+     </strong>
+     <span>
+       Šifrování S/MIME se aplikuje na příchozí zprávy, které již nejsou zašifrovány. Pokud je zpráva již zašifrována pomocí OpenPGP nebo S/MIME, nebude znovu zašifrována.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Důležité:
+     </strong>
+     <span>
+       Šifrování S/MIME nebude aplikováno na přeposílání e-mailů přes naše MX servery, pokud odesílatel měl DMARC politiku reject. Pokud potřebujete šifrování S/MIME na <em>všechny</em> zprávy, doporučujeme použít náš IMAP servis a nakonfigurovat svůj S/MIME certifikát pro váš alias pro příchozí poštu.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+Následující e-mailoví klienti mají vestavěnou podporu S/MIME:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| E-mailový klient  | Platforma | Poznámky                                                                                                           |
+| ----------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | Vestavěná podpora S/MIME. Jděte do Mail > Preferences > Accounts > váš účet > Trust pro konfiguraci certifikátů.  |
+| Apple Mail        | iOS      | Vestavěná podpora S/MIME. Jděte do Nastavení > Mail > Účty > váš účet > Pokročilé > S/MIME pro konfiguraci.        |
+| Microsoft Outlook | Windows  | Vestavěná podpora S/MIME. Jděte do Soubor > Možnosti > Centrum zabezpečení > Nastavení centra zabezpečení > E-mailová bezpečnost pro konfiguraci. |
+| Microsoft Outlook | macOS    | Vestavěná podpora S/MIME. Jděte do Nástroje > Účty > Pokročilé > Zabezpečení pro konfiguraci.                      |
+| Thunderbird       | Desktop  | Vestavěná podpora S/MIME. Jděte do Nastavení účtu > End-To-End Encryption > S/MIME pro konfiguraci.               |
+| GNOME Evolution   | Desktop  | Vestavěná podpora S/MIME. Jděte do Upravit > Předvolby > E-mailové účty > váš účet > Zabezpečení pro konfiguraci.  |
+| KMail             | Desktop  | Vestavěná podpora S/MIME. Jděte do Nastavení > Konfigurace KMail > Identity > vaše identita > Kryptografie pro konfiguraci. |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Gratulujeme!
+    </strong>
+    <span>
+      Úspěšně jste nakonfigurovali šifrování S/MIME pro váš alias.
+    </span>
+  </div>
+</div>
+
+### Podporujete filtrování e-mailů Sieve {#do-you-support-sieve-email-filtering}
+
+Ano! Podporujeme filtrování e-mailů pomocí [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) dle definice v [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve je výkonný, standardizovaný skriptovací jazyk pro serverové filtrování e-mailů, který vám umožňuje automaticky organizovat, filtrovat a reagovat na příchozí zprávy.
+
+#### Podporované rozšíření Sieve {#supported-sieve-extensions}
+
+Podporujeme rozsáhlou sadu rozšíření Sieve:
+
+| Rozšíření                   | RFC                                                                                     | Popis                                            |
+| --------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Ukládat zprávy do specifických složek            |
+| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Odmítnout zprávy s chybou                         |
+| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Automatické odpovědi během dovolené / nepřítomnosti |
+| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Jemně nastavit intervaly odpovědí během dovolené  |
+| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Nastavit IMAP příznaky (\Seen, \Flagged, atd.)    |
+| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Testovat odesílatele/příjemce v obálce            |
+| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Testovat obsah těla zprávy                         |
+| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Ukládat a používat proměnné ve skriptech          |
+| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Relační porovnání (větší než, menší než)          |
+| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Číselná porovnání                                  |
+| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Kopírovat zprávy při přesměrování                  |
+| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Přidávat nebo mazat hlavičky zpráv                 |
+| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Testovat datum/časové hodnoty                      |
+| `index`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Přistupovat ke konkrétním výskytům hlaviček        |
+| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Porovnávání pomocí regulárních výrazů              |
+| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Odesílat oznámení (např. mailto:)                  |
+| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Přistupovat k informacím o prostředí                |
+| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Testovat existenci schránky, vytvářet schránky     |
+| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Ukládat do speciálních schránek (\Junk, \Trash)    |
+| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Detekovat duplicitní zprávy                         |
+| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Testovat dostupnost rozšíření                        |
+| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Přistupovat k částem adresy uživatele+detailu      |
+#### Rozšíření nejsou podporována {#extensions-not-supported}
+
+Následující rozšíření momentálně nejsou podporována:
+
+| Rozšíření                                                      | Důvod                                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `include`                                                      | Bezpečnostní riziko (injekce skriptu) a vyžaduje globální úložiště skriptů |
+| `mboxmetadata` / `servermetadata`                              | Vyžaduje podporu rozšíření IMAP METADATA                           |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | Komplexní manipulace s MIME stromem zatím není implementována      |
+
+#### Příklad Sieve skriptů {#example-sieve-scripts}
+
+**Uložení newsletterů do složky:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Automatická odpověď během dovolené:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
+```
+
+**Označení zpráv od důležitých odesílatelů:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**Odmítnutí spamu s konkrétními předměty:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Message rejected due to spam content.";
+}
+```
+
+#### Správa Sieve skriptů {#managing-sieve-scripts}
+
+Své Sieve skripty můžete spravovat několika způsoby:
+
+1. **Webové rozhraní**: Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Sieve skripty pro vytváření a správu skriptů.
+
+2. **Protokol ManageSieve**: Připojte se pomocí libovolného klienta kompatibilního s ManageSieve (například Sieve doplněk pro Thunderbird nebo [sieve-connect](https://github.com/philpennock/sieve-connect)) na `imap.forwardemail.net`. Použijte port `2190` se STARTTLS (doporučeno pro většinu klientů) nebo port `4190` s implicitním TLS.
+
+3. **API**: Použijte naše [REST API](/api#sieve-scripts) pro programovou správu skriptů.
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Poznámka:
+  </strong>
+  <span>
+    Sieve filtrování se aplikuje na příchozí zprávy před jejich uložením do vaší schránky. Skripty se vykonávají podle priority a první odpovídající akce určuje, jak bude zpráva zpracována.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Bezpečnost:
+  </strong>
+  <span>
+    Z bezpečnostních důvodů jsou přesměrovací akce omezeny na 10 na skript a 100 za den. Odpovědi během dovolené jsou omezeny kvůli prevenci zneužití.
+  </span>
+</div>
+
+### Podporujete MTA-STS {#do-you-support-mta-sts}
+
+Ano, od 2. března 2023 podporujeme [MTA-STS](https://www.hardenize.com/blog/mta-sts). Můžete použít [tento šablonový soubor](https://github.com/jpawlowski/mta-sts.template), pokud chcete tuto funkci povolit na své doméně.
+
+Naše konfigurace je veřejně dostupná na GitHubu na <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+
+### Podporujete passkeys a WebAuthn {#do-you-support-passkeys-and-webauthn}
+
+Ano! Od 13. prosince 2023 jsme přidali podporu pro passkeys [kvůli vysoké poptávce](https://github.com/orgs/forwardemail/discussions/182).
+
+Passkeys vám umožňují bezpečně se přihlásit bez nutnosti hesla a dvoufaktorové autentizace.
+
+Svou identitu můžete ověřit pomocí dotyku, rozpoznání obličeje, hesla uloženého v zařízení nebo PINu.
+
+Umožňujeme spravovat až 30 passkeys najednou, takže se můžete snadno přihlašovat ze všech svých zařízení.
+
+Více o passkeys se dozvíte na následujících odkazech:
+
+* [Přihlášení do aplikací a webů pomocí passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Použití passkeys pro přihlášení do aplikací a webů na iPhonu](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Článek na Wikipedii o Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Podporujete nejlepší praktiky e-mailu {#do-you-support-email-best-practices}
+
+Ano. Máme vestavěnou podporu pro SPF, DKIM, DMARC, ARC a SRS ve všech plánech. Také jsme úzce spolupracovali s původními autory těchto specifikací a dalšími odborníky na e-maily, abychom zajistili dokonalost a vysokou doručitelnost.
+
+### Podporujete bounce webhooky {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+    Hledáte dokumentaci k e-mailovým webhookům? Podívejte se na <a href="/faq#do-you-support-webhooks" class="alert-link">Podporujete webhooky?</a> pro více informací.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+Ano, od 14. srpna 2024 jsme tuto funkci přidali. Nyní můžete přejít do Můj účet → Domény → Nastavení → Bounce Webhook URL a nakonfigurovat `http://` nebo `https://` URL, na kterou budeme posílat `POST` požadavek vždy, když dojde k bounce u odchozích SMTP e-mailů.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+To je užitečné pro správu a monitorování vašich odchozích SMTP – a může být použito k udržování odběratelů, odhlášení a detekci, kdy k bounce dojde.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+Payloady bounce webhooku jsou odesílány jako JSON s těmito vlastnostmi:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (String) - ID e-mailu, které odpovídá e-mailu v Můj účet → E-maily (odchozí SMTP)
+* `list_id` (String) - hodnota hlavičky `List-ID` (bez ohledu na velikost písmen), pokud existuje, z původního odchozího e-mailu
+* `list_unsubscribe` (String) - hodnota hlavičky `List-Unsubscribe` (bez ohledu na velikost písmen), pokud existuje, z původního odchozího e-mailu
+* `feedback_id` (String) - hodnota hlavičky `Feedback-ID` (bez ohledu na velikost písmen), pokud existuje, z původního odchozího e-mailu
+* `recipient` (String) - e-mailová adresa příjemce, který bounce nebo chybu způsobil
+* `message` (String) - podrobná chybová zpráva pro bounce
+* `response` (String) - SMTP odpověď
+* `response_code` (Number) - analyzovaný SMTP kód odpovědi
+* `truth_source` (String) - pokud byl kód odpovědi z důvěryhodného zdroje, tato hodnota bude obsahovat kořenovou doménu (např. `google.com` nebo `yahoo.com`)
+* `bounce` (Object) - objekt obsahující následující vlastnosti, které podrobně popisují stav bounce a odmítnutí
+  * `action` (String) - akce bounce (např. `"reject"`)
+  * `message` (String) - důvod bounce (např. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - kategorie bounce (např. `"block"`)
+  * `code` (Number) - stavový kód bounce (např. `554`)
+  * `status` (String) - kód bounce z odpovědi (např. `5.7.1`)
+  * `line` (Number) - analyzované číslo řádku, pokud existuje, [z Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (např. `526`)
+* `headers` (Object) - klíč-hodnota hlaviček pro odchozí e-mail
+* `bounced_at` (String) - datum ve formátu [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601), kdy došlo k chybě bounce
 
-For example:
+Například:
 
 ```json
 {
   "email_id": "66bcce793ef7b2a0928e14ba",
   "recipient": "example@gmail.com",
-  "message": "The email account that you tried to reach is over quota.",
-  "response": "552 5.2.2 The email account that you tried to reach is over quota.",
+  "message": "E-mailový účet, na který jste se pokusili doručit, překročil kvótu.",
+  "response": "552 5.2.2 E-mailový účet, na který jste se pokusili doručit, překročil kvótu.",
   "response_code": 552,
   "truth_source": "google.com",
   "bounce": {
     "action": "reject",
-    "message": "Gmail Mailbox is full",
+    "message": "Gmailová schránka je plná",
     "category": "capacity",
     "code": 552,
     "status": "5.2.2",
@@ -2469,59 +2950,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+Zde je několik dalších poznámek ohledně bounce webhooků:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* Pokud payload webhooku obsahuje hodnotu `list_id`, `list_unsubscribe` nebo `feedback_id`, měli byste podle potřeby přijmout odpovídající opatření k odstranění `recipient` ze seznamu.
+  * Pokud hodnota `bounce.category` byla jedna z `"block"`, `"recipient"`, `"spam"` nebo `"virus"`, pak byste uživatele rozhodně měli ze seznamu odstranit.
+* Pokud potřebujete ověřit payloady webhooku (aby bylo zajištěno, že skutečně pocházejí z našeho serveru), můžete [vyřešit IP adresu vzdáleného klienta na hostname pomocí reverzního vyhledávání](https://nodejs.org/api/dns.html#dnspromisesreverseip) – měla by být `smtp.forwardemail.net`.
+  * Můžete také zkontrolovat IP proti [našim zveřejněným IP adresám](#what-are-your-servers-ip-addresses).
+  * Přejděte do Můj účet → Domény → Nastavení → Webhook Signature Payload Verification Key pro získání vašeho webhook klíče.
+    * Tento klíč můžete kdykoli z bezpečnostních důvodů změnit.
+    * Vypočítejte a porovnejte hodnotu `X-Webhook-Signature` z našeho webhook požadavku s vypočtenou hodnotou těla pomocí tohoto klíče. Příklad, jak to udělat, je k dispozici v [tomto příspěvku na Stack Overflow](https://stackoverflow.com/a/68885281).
+  * Více informací najdete v diskusi na <https://github.com/forwardemail/free-email-forwarding/issues/235>.
+* Budeme čekat až `5` sekund na odpověď vašeho webhook endpointu s kódem stavu `200` a pokusíme se odeslat požadavek znovu až `1` krát.
+* Pokud zjistíme, že vaše bounce webhook URL má chybu při pokusu o odeslání požadavku, pošleme vám zdvořilý e-mail jednou týdně.
+### Podporujete webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    Hledáte dokumentaci k bounce webhookům? Podívejte se na <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Podporujete bounce webhooks?</a> pro více informací.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+Ano, od 15. května 2020 jsme tuto funkci přidali. Můžete jednoduše přidat webhook(y) stejně jako u jakéhokoliv příjemce! Ujistěte se, že máte v URL webhooku předponu "http" nebo "https".
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Rozšířená ochrana soukromí:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Pokud jste na placeném plánu (který obsahuje rozšířenou ochranu soukromí), přejděte prosím do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> a klikněte na "Alias" vedle vaší domény pro konfiguraci webhooků. Pokud chcete vědět více o placených plánech, podívejte se na naši stránku <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Ceník</a>. Jinak můžete pokračovat podle níže uvedených instrukcí.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+Pokud jste na bezplatném plánu, jednoduše přidejte nový DNS <strong class="notranslate">TXT</strong> záznam, jak je uvedeno níže:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+Například, pokud chci, aby všechny e-maily směřující na `alias@example.com` byly přeposílány na nový testovací endpoint [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Název/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3009,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+Nebo chcete, aby všechny e-maily směřující na `example.com` byly přeposílány na tento endpoint:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Název/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3030,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**Zde jsou další poznámky týkající se webhooků:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* Pokud potřebujete ověřit payload webhooku (aby bylo jisté, že skutečně pochází z našeho serveru), můžete [vyřešit IP adresu vzdáleného klienta nebo hostname pomocí reverzního vyhledávání](https://nodejs.org/api/dns.html#dnspromisesreverseip) – měla by být buď `mx1.forwardemail.net` nebo `mx2.forwardemail.net`.
+  * Můžete také zkontrolovat IP adresu proti [našim publikovaným IP adresám](#what-are-your-servers-ip-addresses).
+  * Pokud jste na placeném plánu, přejděte do Můj účet → Domény → Nastavení → Webhook Signature Payload Verification Key pro získání klíče webhooku.
+    * Tento klíč můžete kdykoliv z bezpečnostních důvodů změnit.
+    * Vypočítejte a porovnejte hodnotu `X-Webhook-Signature` z našeho webhook požadavku s vypočtenou hodnotou těla pomocí tohoto klíče. Příklad, jak to udělat, je dostupný na [tomto příspěvku na Stack Overflow](https://stackoverflow.com/a/68885281).
+  * Více informací najdete v diskuzi na <https://github.com/forwardemail/free-email-forwarding/issues/235>.
+* Pokud webhook neodpoví s kódem stavu `200`, uložíme jeho odpověď do [vytvořeného chybového logu](#do-you-store-error-logs) – což je užitečné pro ladění.
+* HTTP požadavky webhooku se budou opakovat až 3x při každém pokusu o SMTP připojení, s maximálním timeoutem 60 sekund na POST požadavek na endpoint. **Poznámka: to neznamená, že se opakuje pouze 3x**, ve skutečnosti se bude opakovat kontinuálně v čase zasíláním SMTP kódu 421 (což odesílateli říká, aby to zkusil později) po 3. neúspěšném HTTP POST pokusu. To znamená, že e-mail se bude opakovaně pokoušet doručit dny, dokud nebude dosaženo kódu 200.
+* Automaticky se opakují požadavky na základě výchozích stavových a chybových kódů používaných v [retry metodě superagent](https://ladjs.github.io/superagent/#retrying-requests) (jsme udržovateli).
+* HTTP požadavky webhooku na stejný endpoint seskupujeme do jednoho požadavku místo více, abychom ušetřili zdroje a zrychlili odezvu. Například pokud pošlete e-mail na <webhook1@example.com>, <webhook2@example.com> a <webhook3@example.com>, a všechny jsou nastaveny na stejnou *přesnou* URL endpointu, bude proveden pouze jeden požadavek. Seskupujeme podle přesné shody endpointu se striktní rovností.
+* Používáme metodu "simpleParser" z knihovny [mailparser](https://nodemailer.com/extras/mailparser/) pro parsování zprávy do JSON přátelského objektu.
+* Hodnota surového e-mailu jako String je dostupná pod vlastností "raw".
+* Výsledky autentizace jsou dostupné pod vlastnostmi "dkim", "spf", "arc", "dmarc" a "bimi".
+* Parsované hlavičky e-mailu jsou dostupné pod vlastností "headers" – ale také můžete použít "headerLines" pro jednodušší iteraci a parsování.
+* Seskupení příjemců pro tento webhook jsou seskupena a dostupná pod vlastností "recipients".
+* Informace o SMTP relaci jsou dostupné pod vlastností "session". Obsahuje informace o odesílateli zprávy, čase příchodu zprávy, HELO a hostname klienta. Hodnota hostname klienta jako `session.clientHostname` je buď FQDN (z reverzního PTR vyhledávání) nebo `session.remoteAddress` zabalená v závorkách (např. `"[127.0.0.1]"`).
+* Pokud potřebujete rychle získat hodnotu `X-Original-To`, můžete použít hodnotu `session.recipient` (viz příklad níže). Hlavička `X-Original-To` je hlavička, kterou přidáváme do zpráv pro ladění s původním příjemcem (před maskovaným přeposíláním) zprávy.
+* Pokud potřebujete odstranit vlastnosti `attachments` a/nebo `raw` z těla payloadu, jednoduše přidejte `?attachments=false`, `?raw=false` nebo `?attachments=false&raw=false` jako querystring parametr do vašeho webhook endpointu (např. `https://example.com/webhook?attachments=false&raw=false`).
+* Pokud jsou přiložené soubory, budou přidány do pole `attachments` jako hodnoty Buffer. Můžete je zpětně parsovat do obsahu pomocí přístupu v JavaScriptu, například:
   ```js
   const data = [
     104,
@@ -2785,48 +3264,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### Podporujete regulární výrazy nebo regex {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+Ano, od 27. září 2021 jsme tuto funkci přidali. Můžete jednoduše psát regulární výrazy ("regex") pro shodu aliasů a provádění náhrad.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+Alias podporující regulární výrazy jsou ty, které začínají `/` a končí `/` a jejich příjemci jsou e-mailové adresy nebo webhooky. Příjemci mohou také zahrnovat podporu náhrad regexem (např. `$1`, `$2`).
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+Podporujeme dva přepínače regulárních výrazů včetně `i` a `g`. Přepínač ignorující velikost písmen `i` je trvalý výchozí a je vždy vynucen. Globální přepínač `g` můžete přidat připojením `/g` na konec výrazu.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+Všimněte si, že také podporujeme naši <a href="#can-i-disable-specific-aliases">funkci zakázaných aliasů</a> pro část příjemce s naší podporou regexu.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+Regulární výrazy nejsou podporovány na <a href="/disposable-addresses" target="_blank">globálních vanity doménách</a> (protože by to mohlo být bezpečnostní riziko).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Zvýšená ochrana soukromí:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    Pokud máte placený tarif (který obsahuje zvýšenou ochranu soukromí), přejděte prosím na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> a klikněte na "Aliasy" vedle vaší domény pro konfiguraci aliasů, včetně těch s regulárními výrazy. Pokud se chcete dozvědět více o placených tarifech, navštivte naši stránku <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Ceník</a>.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### Příklady pro zvýšenou ochranu soukromí {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
+      <th>Název aliasu</th>
+      <th>Efekt</th>
       <th>Test</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-maily na `linus@example.com` nebo `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">zobrazit test na RegExr</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-maily na `24highst@example.com` nebo `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">zobrazit test na RegExr</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2836,32 +3315,32 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    Pro testování na <a href="https://regexr.com" class="alert-link">RegExr</a> napište výraz do horního pole a poté zadejte příklad aliasu do textového pole níže. Pokud výraz sedí, pole zmodrá.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### Příklady pro bezplatný tarif {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+Pokud jste na bezplatném tarifu, jednoduše přidejte nový DNS <strong class="notranslate">TXT</strong> záznam pomocí jednoho nebo více níže uvedených příkladů:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Jednoduchý příklad:</strong> Pokud chci, aby všechny e-maily směřující na `linus@example.com` nebo `torvalds@example.com` byly přeposílány na `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Název/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3350,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>Příklad náhrady jména a příjmení:</strong> Představte si, že všechny e-mailové adresy vaší firmy mají vzor `firstname.lastname@example.com`. Pokud chci, aby všechny e-maily směřující na vzor `firstname.lastname@example.com` byly přeposílány na `firstname.lastname@company.com` s podporou náhrad (<a href="https://regexr.com/66hnu" class="alert-link">zobrazit test na RegExr</a>):
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3373,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>Příklad filtrování substituce se symbolem plus:</strong> Pokud chci, aby všechny e-maily, které jdou na `info@example.com` nebo `support@example.com`, byly přeposílány na `user+info@gmail.com` nebo `user+support@gmail.com` (s podporou substituce) (<a href="https://regexr.com/66ho7" class="alert-link">zobrazit test na RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3397,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>Příklad substituce dotazovacího řetězce webhooku:</strong> Možná chcete, aby všechny e-maily, které jdou na `example.com`, šly na <a href="#do-you-support-webhooks" class="alert-link">webhook</a> a měly dynamický klíč dotazovacího řetězce "to" s hodnotou uživatelské části e-mailové adresy (<a href="https://regexr.com/66ho4" class="alert-link">zobrazit test na RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3421,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>Příklad tichého odmítnutí:</strong> Pokud chcete, aby všechny e-maily odpovídající určitému vzoru byly zakázány a tichounce odmítnuty (odesílateli se zobrazí, jako by zpráva byla úspěšně odeslána, ale ve skutečnosti nikam neputuje) se stavovým kódem `250` (viz <a href="#can-i-disable-specific-aliases" class="alert-link">Mohu zakázat konkrétní aliasy</a>), pak jednoduše použijte stejný přístup s jedním vykřičníkem "!". To odesílateli naznačuje, že zpráva byla úspěšně doručena, ale ve skutečnosti nikam neputovala (např. černá díra nebo `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3445,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>Příklad měkkého odmítnutí:</strong> Pokud chcete, aby všechny e-maily odpovídající určitému vzoru byly zakázány a měkce odmítnuty se stavovým kódem `421` (viz <a href="#can-i-disable-specific-aliases" class="alert-link">Mohu zakázat konkrétní aliasy</a>), pak jednoduše použijte stejný přístup se dvěma vykřičníky "!!". To odesílateli naznačuje, aby svůj e-mail zkusil znovu, a e-maily na tento alias budou znovu zkoušeny přibližně 5 dní a poté trvale odmítnuty.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>Příklad tvrdého odmítnutí:</strong> Pokud chcete, aby všechny e-maily odpovídající určitému vzoru byly zakázány a tvrdě odmítnuty s kódem stavu `550` (viz <a href="#can-i-disable-specific-aliases" class="alert-link">Mohu zakázat konkrétní aliasy</a>), použijte jednoduše stejný přístup s trojitým vykřičníkem "!!!". To odesílateli signalizuje trvalou chybu a e-maily nebudou znovu odesílány, budou pro tento alias odmítnuty.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Název/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3018,572 +3495,612 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    Zajímá vás, jak napsat regulární výraz nebo potřebujete otestovat svou náhradu? Můžete navštívit bezplatný web pro testování regulárních výrazů <a href="https://regexr.com" class="alert-link">RegExr</a> na adrese <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### Jaké jsou vaše limity pro odchozí SMTP {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+Omezujeme uživatele a domény na 300 odchozích SMTP zpráv za 1 den. To v průměru znamená více než 9000 e-mailů za kalendářní měsíc. Pokud potřebujete tento počet překročit nebo máte konzistentně velké e-maily, prosím [kontaktujte nás](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### Potřebuji schválení pro povolení SMTP {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Ano, mějte prosím na paměti, že pro udržení reputace IP a zajištění doručitelnosti má Forward Email manuální proces schvalování odchozího SMTP na základě jednotlivých domén. Napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) pro schválení. Tento proces obvykle trvá méně než 24 hodin, většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zautomatizovat s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### Jaká jsou nastavení vašeho SMTP serveru {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Náš server je `smtp.forwardemail.net` a je také monitorován na naší <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stavové stránce</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+Podporuje jak IPv4, tak IPv6 a je dostupný na portech `465` a `2465` pro SSL/TLS (doporučeno) a `587`, `2587`, `2525` a `25` pro TLS (STARTTLS).
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**Od října 2025** nyní podporujeme **legacy TLS 1.0** připojení na portech `2455` (SSL/TLS) a `2555` (STARTTLS) pro starší zařízení jako tiskárny, skenery, kamery a starší e-mailové klienty, které nemohou podporovat moderní verze TLS. Tyto porty jsou poskytovány jako alternativa k Gmailu, Yahoo, Outlooku a dalším poskytovatelům, kteří přestali podporovat starší TLS protokoly.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **Podpora legacy TLS 1.0 (porty 2455 a 2555)**: Tyto porty používají zastaralý protokol TLS 1.0, který má známé bezpečnostní zranitelnosti (BEAST, POODLE). Používejte tyto porty pouze pokud vaše zařízení absolutně nemůže podporovat TLS 1.2 nebo vyšší. Důrazně doporučujeme aktualizovat firmware zařízení nebo přejít na moderní e-mailové klienty, kdykoli je to možné. Tyto porty jsou určeny výhradně pro kompatibilitu se starším hardwarem (staré tiskárny, skenery, kamery, IoT zařízení).
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+|                                     Protokol                                     | Hostname                |            Porty            |        IPv4        |        IPv6        | Poznámky                               |
 | :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+|                              `SSL/TLS` **Doporučeno**                            | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | Moderní TLS 1.2+ (doporučeno)          |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Podporováno (preferujte SSL/TLS port `465`) |
+|                             `SSL/TLS` **Pouze legacy**                           | `smtp.forwardemail.net` |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 pouze pro stará zařízení |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Pouze legacy** | `smtp.forwardemail.net` |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 pouze pro stará zařízení |
+| Přihlášení | Příklad                    | Popis                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uživatelské jméno | `user@example.com`         | Emailová adresa aliasu, který existuje pro doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a>.          |
+| Heslo     | `************************` | Alias                                                                                                                                                                                    |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+Pro odesílání odchozí pošty přes SMTP musí být **SMTP uživatel** emailová adresa aliasu, který existuje pro doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> – a **SMTP heslo** musí být alias-specifické generované heslo.
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+Podívejte se na [Podporujete odesílání emailů přes SMTP](#do-you-support-sending-email-with-smtp) pro podrobné instrukce krok za krokem.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+### Jaké jsou vaše konfigurační nastavení IMAP serveru {#what-are-your-imap-server-configuration-settings}
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+Náš server je `imap.forwardemail.net` a je také monitorován na naší <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stavové stránce</a>.
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Podporuje jak IPv4, tak IPv6 a je dostupný na portech `993` a `2993` pro SSL/TLS.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
-
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         Protokol         | Hostitel                 |     Porty     |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| `SSL/TLS` **Preferováno** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Přihlášení | Příklad                    | Popis                                                                                                                                                                                    |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uživatelské jméno | `user@example.com`         | Emailová adresa aliasu, který existuje pro doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a>.          |
+| Heslo     | `************************` | Alias-specifické generované heslo.                                                                                                                                                       |
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+Pro připojení přes IMAP musí být **IMAP uživatel** emailová adresa aliasu, který existuje pro doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> – a **IMAP heslo** musí být alias-specifické generované heslo.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+Podívejte se na [Podporujete přijímání emailů přes IMAP](#do-you-support-receiving-email-with-imap) pro podrobné instrukce krok za krokem.
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+### Jaké jsou vaše konfigurační nastavení POP3 serveru {#what-are-your-pop3-server-configuration-settings}
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Náš server je `pop3.forwardemail.net` a je také monitorován na naší <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stavové stránce</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+Podporuje jak IPv4, tak IPv6 a je dostupný na portech `995` a `2995` pro SSL/TLS.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         Protokol         | Hostitel                 |     Porty     |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| `SSL/TLS` **Preferováno** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| Přihlášení | Příklad                   | Popis                                                                                                                                                                                    |
+| --------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uživatelské jméno | `user@example.com`         | Emailová adresa aliasu, který existuje pro doménu na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a>.          |
+| Heslo     | `************************` | Alias-specifické generované heslo.                                                                                                                                                        |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Pro připojení přes POP3 musí být **uživatel POP3** emailová adresa aliasu, který existuje pro doménu na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> – a **heslo IMAP** musí být alias-specifické generované heslo.
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+Podívejte se na [Podporujete POP3](#do-you-support-pop3) pro podrobné instrukce krok za krokem.
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+### Jak nastavit automatické zjišťování emailu pro mou doménu {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-## Security {#security}
+Automatické zjišťování emailu umožňuje emailovým klientům jako jsou **Thunderbird**, **Apple Mail**, **Microsoft Outlook** a mobilním zařízením automaticky detekovat správná nastavení serverů IMAP, SMTP, POP3, CalDAV a CardDAV, když uživatel přidá svůj emailový účet. Toto je definováno v [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (email) a [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) a využívá DNS SRV záznamy.
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+Forward Email publikuje autodiscovery záznamy na `forwardemail.net`. Můžete buď přidat SRV záznamy přímo do své domény, nebo použít jednodušší přístup s CNAME.
+
+#### Možnost A: CNAME záznamy (nejjednodušší) {#option-a-cname-records-simplest}
+
+Přidejte tyto dva CNAME záznamy do DNS vaší domény. Tím delegujete autodiscovery na servery Forward Email:
+
+|  Typ  | Název/Hostitel | Cíl/Hodnota                   |
+| :---: | -------------- | ----------------------------- |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net` |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+Záznam `autoconfig` používá **Thunderbird** a další klienti založení na Mozille. Záznam `autodiscover` používá **Microsoft Outlook**.
+
+#### Možnost B: SRV záznamy (přímé) {#option-b-srv-records-direct}
+
+Pokud dáváte přednost přidání záznamů přímo (nebo váš DNS poskytovatel nepodporuje CNAME na subdoménách), přidejte tyto SRV záznamy do své domény:
+
+| Typ | Název/Hostitel      | Priorita | Váha | Port | Cíl/Hodnota                | Účel                                  |
+| :--: | ------------------ | :------: | :--: | :--: | -------------------------- | ------------------------------------ |
+|  SRV | `_imaps._tcp`      |     0    |  1   |  993 | `imap.forwardemail.net`    | IMAP přes SSL/TLS (doporučeno)       |
+|  SRV | `_imap._tcp`       |     0    |  0   |   0  | `.`                        | Nešifrovaný IMAP zakázán             |
+|  SRV | `_submissions._tcp`|     0    |  1   |  465 | `smtp.forwardemail.net`    | SMTP odesílání (SSL/TLS, doporučeno) |
+|  SRV | `_submission._tcp` |     5    |  1   |  587 | `smtp.forwardemail.net`    | SMTP odesílání (STARTTLS)             |
+|  SRV | `_pop3s._tcp`      |    10    |  1   |  995 | `pop3.forwardemail.net`    | POP3 přes SSL/TLS                    |
+|  SRV | `_pop3._tcp`       |     0    |  0   |   0  | `.`                        | Nešifrovaný POP3 zakázán             |
+|  SRV | `_caldavs._tcp`    |     0    |  1   |  443 | `caldav.forwardemail.net`  | CalDAV přes TLS (kalendáře)           |
+|  SRV | `_caldav._tcp`     |     0    |  0   |   0  | `.`                        | Nešifrovaný CalDAV zakázán           |
+|  SRV | `_carddavs._tcp`   |     0    |  1   |  443 | `carddav.forwardemail.net` | CardDAV přes TLS (kontakty)           |
+|  SRV | `_carddav._tcp`    |     0    |  0   |   0  | `.`                        | Nešifrovaný CardDAV zakázán          |
+> \[!NOTE]
+> IMAP má nižší hodnotu priority (0) než POP3 (10), což říká e-mailovým klientům, aby preferovaly IMAP před POP3, pokud jsou obě dostupné. Záznamy s cílem `.` (jedna tečka) označují, že nešifrované (plaintext) verze těchto protokolů jsou záměrně zakázány podle [RFC 6186 Section 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4). SRV záznamy CalDAV a CardDAV dodržují [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) pro automatické zjišťování kalendářů a kontaktů.
+
+#### Které e-mailové klienty podporují automatické zjišťování? {#which-email-clients-support-autodiscovery}
+
+| Klient             | E-mail                                            | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | `autoconfig` CNAME nebo SRV záznamy              | `autoconfig` XML nebo SRV záznamy (RFC 6764) |
+| Apple Mail (macOS) | SRV záznamy (RFC 6186)                            | SRV záznamy (RFC 6764)                     |
+| Apple Mail (iOS)   | SRV záznamy (RFC 6186)                            | SRV záznamy (RFC 6764)                     |
+| Microsoft Outlook  | `autodiscover` CNAME nebo `_autodiscover._tcp` SRV | Nepodporováno                             |
+| GNOME (Evolution)  | SRV záznamy (RFC 6186)                            | SRV záznamy (RFC 6764)                     |
+| KDE (KMail)        | SRV záznamy (RFC 6186)                            | SRV záznamy (RFC 6764)                     |
+| eM Client          | `autoconfig` nebo `autodiscover`                  | SRV záznamy (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Pro nejlepší kompatibilitu napříč všemi klienty doporučujeme použít **Možnost A** (CNAME záznamy) v kombinaci se SRV záznamy z **Možnosti B**. Pouze přístup s CNAME pokrývá většinu e-mailových klientů. SRV záznamy CalDAV/CardDAV zajistí, že klienti kalendářů a kontaktů také automaticky najdou nastavení vašeho serveru.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## Bezpečnost {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### Pokročilé techniky zpevnění serveru {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
+> \[!TIP]
+> Více o naší bezpečnostní infrastruktuře se dozvíte na [naší stránce Bezpečnost](/security).
+
+Forward Email implementuje řadu technik zpevnění serveru, aby zajistil bezpečnost naší infrastruktury a vašich dat:
+
+1. **Síťová bezpečnost**:
+   * Firewall IP tables s přísnými pravidly
+   * Fail2ban pro ochranu proti hrubé síle
+   * Pravidelné bezpečnostní audity a penetrační testy
+   * Administrativní přístup pouze přes VPN
+
+2. **Zpevnění systému**:
+   * Minimální instalace balíčků
+   * Pravidelné bezpečnostní aktualizace
+   * SELinux v režimu enforcing
+   * Zakázaný root SSH přístup
+   * Autentizace pouze na základě klíčů
+
+3. **Bezpečnost aplikací**:
+   * Hlavičky Content Security Policy (CSP)
    * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+   * Hlavičky pro ochranu proti XSS
+   * Hlavičky pro nastavení rámců a referrer policy
+   * Pravidelné audity závislostí
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+4. **Ochrana dat**:
+   * Kompletní šifrování disku pomocí LUKS
+   * Bezpečná správa klíčů
+   * Pravidelné zálohy s šifrováním
+   * Praktiky minimalizace dat
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+5. **Monitorování a reakce**:
+   * Detekce průniků v reálném čase
+   * Automatizované bezpečnostní skenování
+   * Centralizované logování a analýza
+   * Postupy reakce na incidenty
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Naše bezpečnostní postupy jsou průběžně aktualizovány, aby řešily nové hrozby a zranitelnosti.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Pro maximální bezpečnost doporučujeme používat naši službu s end-to-end šifrováním přes OpenPGP.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### Máte certifikace SOC 2 nebo ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email běží na infrastruktuře poskytované certifikovanými subdodavateli, aby byla zajištěna shoda s průmyslovými standardy.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email přímo nevlastní certifikace SOC 2 Type II nebo ISO 27001. Služba však běží na infrastruktuře poskytované certifikovanými subdodavateli:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: certifikace SOC 2 Type II a SOC 3 Type II (auditováno Schellman & Company LLC), ISO 27001 certifikace na několika datových centrech. Podrobnosti: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: certifikace SOC 2+ (HIPAA), certifikace ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Podrobnosti: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: v souladu se SOC 2 (kontaktujte přímo DataPacket pro získání certifikace), poskytovatel infrastruktury na podnikové úrovni (lokalita Denver). Podrobnosti: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Email dodržuje nejlepší průmyslové postupy pro bezpečnostní audity a pravidelně spolupracuje s nezávislými bezpečnostními výzkumníky. Zdroj: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### Používáte TLS šifrování pro přeposílání e-mailů {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+Ano. Forward Email přísně vyžaduje TLS 1.2+ pro všechna připojení (HTTPS, SMTP, IMAP, POP3) a implementuje MTA-STS pro rozšířenou podporu TLS. Implementace zahrnuje:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* Vynucení TLS 1.2+ pro všechna e-mailová připojení
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) výměnu klíčů pro perfektní forward secrecy
+* Moderní šifrovací sady s pravidelnými bezpečnostními aktualizacemi
+* Podporu HTTP/2 pro lepší výkon a bezpečnost
+* HSTS (HTTP Strict Transport Security) s přednačtením v hlavních prohlížečích
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** pro přísné vynucení TLS
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+Zdroj: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**Implementace MTA-STS**: Forward Email implementuje přísné vynucení MTA-STS v kódu. Když dojde k chybám TLS a MTA-STS je vynucováno, systém vrací stavové kódy SMTP 421, aby zajistil, že e-maily budou později znovu odeslány místo toho, aby byly doručeny nezabezpečeně. Podrobnosti implementace:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* Detekce chyb TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* Vynucení MTA-STS v pomocném skriptu send-email: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+Ověření třetí stranou: <https://www.hardenize.com/report/forwardemail.net/1750312779> ukazuje hodnocení „Good“ pro všechna opatření týkající se TLS a bezpečnosti přenosu.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### Zachováváte hlavičky autentizace e-mailů {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+Ano. Forward Email komplexně implementuje a zachovává hlavičky autentizace e-mailů:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (Sender Policy Framework)**: správně implementováno a zachováno
+* **DKIM (DomainKeys Identified Mail)**: plná podpora s řádnou správou klíčů
+* **DMARC**: vynucování politiky pro e-maily, které neprojdou validací SPF nebo DKIM
+* **ARC**: i když není explicitně uvedeno, perfektní skóre služby naznačuje komplexní zacházení s autentizačními hlavičkami
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+Zdroj: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Ověření: Internet.nl Mail Test ukazuje skóre 100/100 konkrétně za implementaci „SPF, DKIM a DMARC“. Hodnocení Hardenize potvrzuje hodnocení „Good“ pro SPF a DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Zachováváte původní hlavičky e-mailů a zabraňujete spoofingu {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email implementuje sofistikovanou ochranu proti spoofingu, aby zabránil zneužití e-mailů.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email zachovává původní hlavičky e-mailů a zároveň implementuje komplexní ochranu proti spoofingu prostřednictvím MX kódu:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **Zachování hlaviček**: původní autentizační hlavičky jsou zachovány během přeposílání
+* **Ochrana proti spoofingu**: vynucování politiky DMARC zabraňuje spoofingu hlaviček tím, že odmítá e-maily, které neprojdou validací SPF nebo DKIM
+* **Prevence vkládání hlaviček**: validace vstupu a sanitizace pomocí knihovny striptags
+* **Pokročilá ochrana**: sofistikovaná detekce phishingu s detekcí spoofingu, prevencí napodobování a systémem upozornění uživatelů
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**Detaily implementace MX**: Hlavní logika zpracování e-mailů je řešena v kódu MX serveru, konkrétně:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Hlavní MX zpracovatel dat: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Filtrování libovolných e-mailů (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+Pomocný skript `isArbitrary` implementuje sofistikovaná pravidla proti spoofingu včetně detekce napodobování domény, blokovaných frází a různých phishingových vzorců.
+### Jak se chráníte proti spamu a zneužití {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email implementuje komplexní vícevrstvou ochranu:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **Omezení rychlosti**: Aplikováno na pokusy o autentizaci, API endpointy a SMTP připojení
+* **Izolace zdrojů**: Mezi uživateli, aby se zabránilo dopadu uživatelů s vysokým objemem
+* **Ochrana proti DDoS**: Vícevrstvá ochrana prostřednictvím systému Shield od DataPacket a Cloudflare
+* **Automatické škálování**: Dynamické přizpůsobení zdrojů podle poptávky
+* **Prevence zneužití**: Kontroly prevence zneužití specifické pro uživatele a blokování na základě hashů pro škodlivý obsah
+* **Autentizace e-mailů**: Protokoly SPF, DKIM, DMARC s pokročilou detekcí phishingu
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+Zdroje:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (detaily ochrany proti DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### Ukládáte obsah e-mailů na disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email používá architekturu zero-knowledge, která zabraňuje zápisu obsahu e-mailů na disk.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **Architektura zero-knowledge**: Individuálně šifrované SQLite schránky znamenají, že Forward Email nemůže přistupovat k obsahu e-mailů
+* **Zpracování v paměti**: Zpracování e-mailů probíhá zcela v paměti, bez ukládání na disk
+* **Žádné logování obsahu**: „Neukládáme ani nezaznamenáváme obsah e-mailů nebo metadata na disk“
+* **Sandboxované šifrování**: Šifrovací klíče nikdy nejsou uloženy na disku v prostém textu
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**Důkaz z kódu MX**: MX server zpracovává e-maily zcela v paměti bez zápisu obsahu na disk. Hlavní handler pro zpracování e-mailů demonstruje tento přístup v paměti: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sources:
+Zdroje:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstrakt)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Detaily zero-knowledge)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxované šifrování)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+### Může být obsah e-mailu vystaven při haváriích systému {#can-email-content-be-exposed-during-system-crashes}
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+Ne. Forward Email implementuje komplexní opatření proti vystavení dat při haváriích:
 
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
+* **Core dumps zakázány**: Zabraňuje vystavení paměti při haváriích
+* **Swap paměť zakázána**: Kompletně zakázána, aby se zabránilo získání citlivých dat ze swap souborů
+* **Architektura v paměti**: Obsah e-mailu existuje pouze v nestálé paměti během zpracování
+* **Ochrana šifrovacích klíčů**: Klíče nikdy nejsou uloženy na disku v prostém textu
+* **Fyzická bezpečnost**: Disky šifrované LUKS v2 zabraňují fyzickému přístupu k datům
+* **USB úložiště zakázáno**: Zabraňuje neoprávněnému získání dat
 
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+**Zpracování chyb systémových problémů**: Forward Email používá pomocné funkce `isCodeBug` a `isTimeoutError`, aby zajistil, že pokud dojde k problémům s připojením k databázi, DNS síťovým/blokovacím problémům nebo problémům s upstream připojením, systém vrátí SMTP stavový kód 421, aby bylo zajištěno, že e-maily budou později znovu odeslány místo ztráty nebo vystavení.
 
-Implementation details:
+Detaily implementace:
 
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Klasifikace chyb: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Zpracování timeout chyb v MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Zdroj: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+### Kdo má přístup k vaší e-mailové infrastruktuře {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+Forward Email implementuje komplexní přístupová práva pro svůj minimální 2-3 členný inženýrský tým s přísnými požadavky na 2FA:
 
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+* **Řízení přístupu na základě rolí**: Pro týmové účty s oprávněními založenými na zdrojích
+* **Princip nejmenších práv**: Aplikován ve všech systémech
+* **Oddělení povinností**: Mezi operačními rolemi
+* **Správa uživatelů**: Oddělení uživatelů pro nasazení a devops s odlišnými oprávněními
+* **Root login zakázán**: Nutí přístup přes řádně autentizované účty
+* **Přísné 2FA**: Žádné SMS 2FA kvůli riziku MiTM útoků – pouze aplikace nebo hardwarové tokeny
+* **Komplexní auditní logování**: S redakcí citlivých dat
+* **Automatická detekce anomálií**: Pro neobvyklé vzory přístupu
+* **Pravidelné bezpečnostní kontroly**: Přístupových logů
+* **Prevence útoku Evil Maid**: USB úložiště zakázáno a další fyzická bezpečnostní opatření
+Zdroje:
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Řízení autorizace)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Síťová bezpečnost)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Prevence útoku „evil maid“)
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### Jaké poskytovatele infrastruktury používáte {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email používá více subprocesorů infrastruktury s komplexními certifikacemi souladu.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+Kompletní podrobnosti jsou k dispozici na naší stránce souladu s GDPR: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**Hlavní subprocesoři infrastruktury:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Poskytovatel    | Certifikace rámce ochrany osobních údajů | Stránka souladu s GDPR                                                                    |
+| --------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Cloudflare**  | ✅ Ano                                   | <https://www.cloudflare.com/trust-hub/gdpr/>                                             |
+| **DataPacket**  | ❌ Ne                                    | <https://www.datapacket.com/privacy-policy>                                              |
+| **DigitalOcean**| ❌ Ne                                    | <https://www.digitalocean.com/legal/gdpr>                                                |
+| **GitHub**      | ✅ Ano                                   | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>|
+| **Vultr**       | ❌ Ne                                    | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
-**Detailed Certifications:**
+**Podrobné certifikace:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II (auditováno Schellman & Company LLC)
+* ISO 27001 certifikace ve více datových centrech
+* Soulad s PCI-DSS
+* Certifikace CSA STAR Level 1
+* Certifikace APEC CBPR PRP
+* Podrobnosti: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
+* Certifikace SOC 2+ (HIPAA)
+* Soulad s PCI Merchant
+* Certifikace CSA STAR Level 1
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* Podrobnosti: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* Soulad se SOC 2 (kontaktujte přímo DataPacket pro získání certifikace)
+* Infrastruktura podnikové úrovně (lokalita Denver)
+* Ochrana proti DDoS pomocí kybernetického stacku Shield
+* Technická podpora 24/7
+* Globální síť přes 58 datových center
+* Podrobnosti: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* Certifikace rámce ochrany osobních údajů (EU-USA, Švýcarsko-USA a rozšíření UK)
+* Hosting zdrojového kódu, CI/CD a řízení projektů
+* K dispozici GitHub Data Protection Agreement
+* Podrobnosti: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**Zpracovatelé plateb:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Certifikace rámce ochrany osobních údajů - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Není certifikován DPF - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Nabízíte smlouvu o zpracování údajů (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+Ano, Forward Email nabízí komplexní smlouvu o zpracování údajů (DPA), kterou lze podepsat v rámci naší podnikové smlouvy. Kopie naší DPA je k dispozici na: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**Podrobnosti DPA:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* Pokrývá soulad s GDPR a rámce EU-USA/Švýcarsko-USA Privacy Shield
+* Automaticky přijímána při souhlasu s našimi Podmínkami služby
+* Pro standardní DPA není vyžadován samostatný podpis
+* Možnosti vlastních DPA dohod dostupné prostřednictvím Enterprise License
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**Rámec souladu s GDPR:**
+Naše DPA podrobně popisuje soulad s GDPR i mezinárodními požadavky na přenos dat. Kompletní informace jsou k dispozici na: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+Pro podnikové zákazníky vyžadující vlastní podmínky DPA nebo specifické smluvní ujednání lze tyto řešit prostřednictvím našeho programu **Enterprise License (250 USD/měsíc)**.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### Jak řešíte oznámení o narušení bezpečnosti dat {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Architektura Forward Email s nulovými znalostmi výrazně omezuje dopad narušení.
+* **Omezené vystavení dat**: Nelze přistupovat k šifrovanému obsahu e-mailů díky architektuře zero-knowledge
+* **Minimální sběr dat**: Pouze základní informace o odběratelích a omezené IP záznamy pro bezpečnost
+* **Rámce subprocesorů**: DigitalOcean, GitHub a Vultr udržují postupy reakce na incidenty v souladu s GDPR
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**Informace o zástupci GDPR:**
+Forward Email jmenoval zástupce GDPR v souladu s článkem 27:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
+**Zástupce EU:**
 Osano International Compliance Services Limited
 ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**UK Representative:**
+**Zástupce UK:**
 Osano UK Compliance LTD
 ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+Pro podnikové zákazníky vyžadující specifické SLA pro oznámení o porušení by měly být tyto podmínky projednány jako součást **Enterprise License** smlouvy.
 
-Sources:
+Zdroje:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### Nabízíte testovací prostředí {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+Technická dokumentace Forward Email explicitně nepopisuje vyhrazený sandbox režim. Potenciální přístupy k testování však zahrnují:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **Možnost vlastního hostingu**: Komplexní možnosti vlastního hostingu pro vytváření testovacích prostředí
+* **API rozhraní**: Potenciál pro programové testování konfigurací
+* **Open Source**: 100% otevřený zdrojový kód umožňuje zákazníkům prozkoumat logiku přeposílání
+* **Více domén**: Podpora více domén může umožnit vytvoření testovací domény
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+Pro podnikové zákazníky vyžadující formální sandbox funkce by to mělo být projednáno jako součást **Enterprise License** dohody.
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+Zdroj: <https://github.com/forwardemail/forwardemail.net> (Detaily vývojového prostředí)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### Poskytujete nástroje pro monitorování a upozorňování {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+Forward Email poskytuje monitorování v reálném čase s určitými omezeními:
 
-**Available:**
+**Dostupné:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **Monitorování doručení v reálném čase**: Veřejně viditelné výkonnostní metriky pro hlavní poskytovatele e-mailů
+* **Automatické upozornění**: Inženýrský tým je upozorněn, když doba doručení přesáhne 10 sekund
+* **Transparentní monitorování**: 100% open-source monitorovací systémy
+* **Monitorování infrastruktury**: Automatické detekce anomálií a komplexní auditní záznamy
 
-**Limitations:**
+**Omezení:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* Webhooky pro zákazníky nebo notifikace o stavu doručení přes API nejsou explicitně dokumentovány
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+Pro podnikové zákazníky vyžadující podrobné webhooky o stavu doručení nebo vlastní monitorovací integrace mohou být tyto funkce dostupné prostřednictvím **Enterprise License** dohod.
 
-Sources:
+Zdroje:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (Zobrazení monitorování v reálném čase)
+* <https://github.com/forwardemail/forwardemail.net> (Implementace monitorování)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### Jak zajišťujete vysokou dostupnost {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email implementuje komplexní redundanci napříč více poskytovateli infrastruktury.
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **Distribuovaná infrastruktura**: Více poskytovatelů (DigitalOcean, Vultr, DataPacket) napříč geografickými oblastmi
+* **Geografické vyvažování zátěže**: Geo-lokalizované vyvažování zátěže založené na Cloudflare s automatickým přepnutím
+* **Automatické škálování**: Dynamické přizpůsobení zdrojů podle poptávky
+* **Vícevrstvá ochrana proti DDoS**: Prostřednictvím systému Shield od DataPacket a Cloudflare
+* **Redundance serverů**: Více serverů na region s automatickým přepnutím
+* **Replikace databáze**: Synchronizace dat v reálném čase napříč více lokalitami
+* **Monitorování a upozorňování**: 24/7 monitorování s automatickou reakcí na incidenty
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**Závazek dostupnosti**: 99,9 %+ dostupnost služby s transparentním monitorováním na <https://forwardemail.net>
 
-Sources:
+Zdroje:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Jste v souladu s oddílem 889 zákona o národní obraně (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email je plně v souladu s oddílem 889 díky pečlivému výběru partnerů infrastruktury.
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+Ano, Forward Email je **v souladu s oddílem 889**. Oddíl 889 zákona o národní obraně (NDAA) zakazuje vládním agenturám používat nebo uzavírat smlouvy s entitami, které používají telekomunikační a video dohledové zařízení od specifických společností (Huawei, ZTE, Hikvision, Dahua a Hytera).
+**Jak Forward Email dosahuje souladu s částí 889:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+Forward Email spoléhá výhradně na dva klíčové poskytovatele infrastruktury, z nichž žádný nepoužívá zařízení zakázaná podle části 889:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: Náš hlavní partner pro síťové služby a zabezpečení e-mailů
+2. **DataPacket**: Náš hlavní poskytovatel serverové infrastruktury (výhradně používající zařízení Arista Networks a Cisco)
+3. **Záložní poskytovatelé**: Naši záložní poskytovatelé Digital Ocean a Vultr jsou navíc písemně potvrzeni jako splňující požadavky části 889.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**Závazek Cloudflare**: Cloudflare výslovně uvádí ve svém Kodexu chování třetích stran, že nepoužívají telekomunikační zařízení, produkty video dohledu ani služby od žádných subjektů zakázaných podle části 889.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**Případ použití ve vládě**: Náš soulad s částí 889 byl ověřen, když **US Naval Academy** vybrala Forward Email pro své potřeby bezpečného přeposílání e-mailů, vyžadující dokumentaci našich federálních standardů souladu.
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+Pro úplné informace o našem rámci vládního souladu, včetně širších federálních předpisů, si přečtěte naši komplexní případovou studii: [Federální vládní e-mailová služba v souladu s částí 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## Systémové a technické detaily {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### Uchováváte e-maily a jejich obsah {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Ne, neukládáme na disk ani neuchováváme logy – s [výjimkou chyb](#do-you-store-error-logs) a [odchozího SMTP](#do-you-support-sending-email-with-smtp) (viz naše [Zásady ochrany osobních údajů](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Vše probíhá v paměti a [náš zdrojový kód je na GitHubu](https://github.com/forwardemail).
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### Jak funguje váš systém přeposílání e-mailů {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+E-mail využívá [SMTP protokol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Tento protokol se skládá z příkazů zasílaných serveru (nejčastěji běžícímu na portu 25). Nejprve se naváže spojení, pak odesílatel uvede, odkud je pošta ("MAIL FROM"), následně kam směřuje ("RCPT TO") a nakonec hlavičky a samotné tělo e-mailu ("DATA"). Průběh našeho systému přeposílání e-mailů je popsán vzhledem ke každému příkazu SMTP protokolu níže:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Počáteční spojení (bez názvu příkazu, např. `telnet example.com 25`) – Toto je počáteční spojení. Kontrolujeme odesílatele, kteří nejsou na naší [povoleném seznamu](#do-you-have-an-allowlist), vůči našemu [zakázanému seznamu](#do-you-have-a-denylist). Nakonec, pokud odesílatel není na povoleném seznamu, zkontrolujeme, zda nebyl [zařazen do šedého seznamu](#do-you-have-a-greylist).
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` – Tento příkaz slouží jako pozdrav k identifikaci FQDN odesílatele, IP adresy nebo názvu mailového handleru. Tato hodnota může být falšována, proto na ni nespoléháme a místo toho používáme reverzní vyhledávání hostname IP adresy spojení.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` – Tento příkaz označuje adresu odesílatele v obálce e-mailu. Pokud je zadána hodnota, musí být platná e-mailová adresa podle RFC 5322. Prázdné hodnoty jsou povoleny. Zde [kontrolujeme zpětný odraz](#how-do-you-protect-against-backscatter) a také kontrolujeme MAIL FROM vůči našemu [zakázanému seznamu](#do-you-have-a-denylist). Nakonec kontrolujeme odesílatele, kteří nejsou na povoleném seznamu, kvůli omezení rychlosti (viz sekce o [omezení rychlosti](#do-you-have-rate-limiting) a [povoleném seznamu](#do-you-have-an-allowlist) pro více informací).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` – Tento příkaz označuje příjemce e-mailu. Musí to být platné e-mailové adresy podle RFC 5322. Povolujeme maximálně 50 příjemců v obálce na zprávu (to se liší od hlavičky "To" v e-mailu). Také zde kontrolujeme platnou adresu podle [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") k ochraně proti falšování s naší doménou SRS.
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` – Toto je jádro naší služby, které zpracovává e-mail. Pro více informací viz sekce [Jak zpracováváte e-mail pro přeposílání](#how-do-you-process-an-email-for-forwarding) níže.
+### Jak zpracováváte e-mail pro přeposílání {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+Tato sekce popisuje náš proces související s příkazem protokolu SMTP `DATA` v sekci [Jak funguje váš systém přeposílání e-mailů](#how-does-your-email-forwarding-system-work) výše – jak zpracováváme hlavičky e-mailu, tělo, zabezpečení, určujeme, kam má být doručen, a jak řešíme připojení.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. Pokud zpráva překročí maximální velikost 50 MB, je odmítnuta s chybovým kódem 552.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. Pokud zpráva neobsahovala hlavičku "From" nebo pokud některá z hodnot v hlavičce "From" nebyla platná e-mailová adresa podle RFC 5322, je odmítnuta s chybovým kódem 550.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. Pokud zpráva obsahovala více než 25 hlaviček "Received", bylo zjištěno, že uvízla v přesměrovacím cyklu, a je odmítnuta s chybovým kódem 550.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. Pomocí otisku e-mailu (viz sekce o [Fingerprintingu](#how-do-you-determine-an-email-fingerprint)) zkontrolujeme, zda se zpráva nepokusila o opakované doručení déle než 5 dní (což odpovídá [výchozímu chování postfixu](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), a pokud ano, je odmítnuta s chybovým kódem 550.
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. Výsledky skenování e-mailu pomocí [Spam Scanner](https://spamscanner.net) ukládáme v paměti.
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Pokud byly nalezeny jakékoli arbitrážní výsledky ze Spam Scanneru, je zpráva odmítnuta s chybovým kódem 554. Arbitrážní výsledky v době psaní zahrnují pouze test GTUBE. Více informací naleznete na <https://spamassassin.apache.org/gtube/>.
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. Přidáme do zprávy následující hlavičky pro účely ladění a prevence zneužití:
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` – přidáme standardní hlavičku Received s původní IP a hostitelem, typem přenosu, informacemi o TLS připojení, datem/časem a příjemcem.
+   * `X-Original-To` – původní příjemce zprávy:
+     * Toto je užitečné pro určení, kam byl e-mail původně doručen (kromě hlavičky "Received").
+     * Přidává se pro každého příjemce zvlášť v době IMAP a/nebo maskovaného přeposílání (za účelem ochrany soukromí).
+   * `X-Forward-Email-Website` – obsahuje odkaz na naše webové stránky <https://forwardemail.net>
+   * `X-Forward-Email-Version` – aktuální [SemVer](https://semver.org/) verze z `package.json` našeho kódu.
+   * `X-Forward-Email-Session-ID` – hodnota ID relace používaná pro ladění (platí pouze v neprodukčních prostředích).
+   * `X-Forward-Email-Sender` – čárkou oddělený seznam obsahující původní adresu MAIL FROM obálky (pokud nebyla prázdná), reverzní PTR klienta FQDN (pokud existuje) a IP adresu odesílatele.
+   * `X-Forward-Email-ID` – platí pouze pro odchozí SMTP a koreluje s ID e-mailu uloženým v Můj účet → E-maily
+   * `X-Report-Abuse` – s hodnotou `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` – s hodnotou `abuse@forwardemail.net`.
+   * `X-Complaints-To` – s hodnotou `abuse@forwardemail.net`.
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. Následně kontrolujeme zprávu na [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) a [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * Pokud zpráva neprošla DMARC a doména měla politiku odmítnutí (např. `p=reject` [bylo v DMARC politice](https://wikipedia.org/wiki/DMARC)), je odmítnuta s chybovým kódem 550. Obvykle lze DMARC politiku domény najít v `_dmarc` subdoméně <strong class="notranslate">TXT</strong> záznamu (např. `dig _dmarc.example.com txt`).
+   * Pokud zpráva neprošla SPF a doména měla tvrdou politiku selhání (např. `-all` bylo v SPF politice na rozdíl od `~all` nebo žádné politiky), je odmítnuta s chybovým kódem 550. Obvykle lze SPF politiku domény najít v <strong class="notranslate">TXT</strong> záznamu pro kořenovou doménu (např. `dig example.com txt`). Více informací o [odesílání pošty jako v Gmailu](#can-i-send-mail-as-in-gmail-with-this) týkající se SPF naleznete v této sekci.
+9. Nyní zpracováváme příjemce zprávy, jak byli shromážděni z příkazu `RCPT TO` v sekci [Jak funguje váš systém přeposílání e-mailů](#how-does-your-email-forwarding-system-work) výše. Pro každého příjemce provádíme následující operace:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * Vyhledáme <strong class="notranslate">TXT</strong> záznamy doménového jména (část za symbolem `@`, např. `example.com`, pokud byla e-mailová adresa `test@example.com`). Například pokud je doména `example.com`, provedeme DNS dotaz jako `dig example.com txt`.
+   * Analyzujeme všechny <strong class="notranslate">TXT</strong> záznamy, které začínají buď `forward-email=` (bezplatné plány) nebo `forward-email-site-verification=` (placené plány). Všimněte si, že analyzujeme oba, abychom mohli zpracovávat e-maily během upgradu nebo downgradu plánu uživatelem.
+   * Z těchto analyzovaných <strong class="notranslate">TXT</strong> záznamů iterujeme, abychom extrahovali konfiguraci přeposílání (jak je popsáno v sekci [Jak začít a nastavit přeposílání e-mailů](#how-do-i-get-started-and-set-up-email-forwarding) výše). Všimněte si, že podporujeme pouze jednu hodnotu `forward-email-site-verification=`, a pokud je jich více, dojde k chybě 550 a odesílatel obdrží odmítnutí pro tohoto příjemce.
+   * Rekurzivně iterujeme přes extrahovanou konfiguraci přeposílání, abychom určili globální přeposílání, přeposílání založené na regulárních výrazech a všechny ostatní podporované konfigurace přeposílání – které jsou nyní známy jako naše "Přeposílací adresy".
+   * Pro každou Přeposílací adresu podporujeme jedno rekurzivní vyhledávání (které spustí tuto sérii operací znovu pro danou adresu). Pokud je nalezena rekurzivní shoda, rodičovský výsledek bude odstraněn z Přeposílacích adres a děti přidány.
+   * Přeposílací adresy jsou analyzovány na jedinečnost (protože nechceme posílat duplicitní zprávy na jednu adresu nebo vytvářet zbytečné další SMTP klientské připojení).
+   * Pro každou Přeposílací adresu vyhledáme její doménové jméno pomocí našeho API endpointu `/v1/max-forwarded-addresses` (abychom zjistili, kolika adresám může doména přeposílat e-maily na alias, např. výchozích 10 – viz sekce o [maximálním limitu přeposílání na alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Pokud je tento limit překročen, dojde k chybě 550 a odesílatel obdrží odmítnutí pro tohoto příjemce.
+   * Vyhledáme nastavení původního příjemce pomocí našeho API endpointu `/v1/settings`, který podporuje vyhledávání pro placené uživatele (s fallbackem pro bezplatné uživatele). Toto vrací konfigurační objekt pro pokročilá nastavení `port` (Číslo, např. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean) a `has_virus_protection` (Boolean).
+   * Na základě těchto nastavení pak kontrolujeme výsledky Spam Scanneru a pokud dojde k jakýmkoli chybám, zpráva je odmítnuta s chybovým kódem 554 (např. pokud je povolena ochrana proti virům `has_virus_protection`, kontrolujeme výsledky Spam Scanneru na viry). Všimněte si, že všichni uživatelé bezplatného plánu jsou automaticky zapojeni do kontrol proti obsahu pro dospělé, phishingu, spustitelným souborům a virům. Výchozí nastavení pro všechny uživatele placených plánů je také zapojení, ale toto nastavení lze změnit na stránce Nastavení domény v dashboardu Forward Email).
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. Pro každou zpracovanou Přeposílací adresu příjemce pak provádíme následující operace:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * Adresa je zkontrolována proti našemu [denylistu](#do-you-have-a-denylist), a pokud je na seznamu, dojde k chybě 421 (signalizuje odesílateli, aby to zkusil později znovu).
+    * Pokud je adresa webhook, nastavíme Boolean pro budoucí operace (viz níže – seskupujeme podobné webhooky, abychom provedli jeden POST požadavek místo více pro doručení).
+    * Pokud je adresa e-mailová adresa, analyzujeme hostitele pro budoucí operace (viz níže – seskupujeme podobné hostitele, abychom vytvořili jedno připojení místo více jednotlivých připojení pro doručení).
+11. Pokud nejsou žádní příjemci a nejsou žádné odmítnutí (bounces), odpovíme chybou 550 „Neplatní příjemci“.
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. Pokud jsou příjemci, pak je procházíme (seskupené podle stejného hostitele) a doručujeme e-maily. Viz sekce [Jak řešíte problémy s doručováním e-mailů](#how-do-you-handle-email-delivery-issues) níže pro více informací.
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * Pokud během odesílání e-mailů dojde k nějakým chybám, uložíme je do paměti pro pozdější zpracování.
+    * Vezmeme nejnižší chybový kód (pokud nějaký je) z odesílání e-mailů – a použijeme ho jako odpověď na příkaz `DATA`. To znamená, že e-maily, které nebyly doručeny, budou obvykle znovu odeslány původním odesílatelem, zatímco e-maily, které již byly doručeny, nebudou při dalším odeslání zprávy znovu odeslány (protože používáme [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * Pokud nedošlo k žádným chybám, pošleme úspěšný SMTP stavový kód 250.
+    * Bounce je definován jako jakýkoli pokus o doručení, který skončí stavovým kódem >= 500 (trvalé chyby).
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. Pokud nedošlo k žádným bounce (trvalým chybám), vrátíme SMTP stavový kód nejnižšího chybového kódu z netrvalých chyb (nebo 250 úspěšný stavový kód, pokud žádné nebyly).
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. Pokud došlo k bounce, pošleme bounce e-maily na pozadí poté, co vrátíme odesílateli nejnižší ze všech chybových kódů. Pokud je však nejnižší chybový kód >= 500, žádné bounce e-maily neodesíláme. Je to proto, že pokud bychom je poslali, odesílatelé by obdrželi dvojitou bounce zprávu (např. jednu od svého odchozího MTA, jako je Gmail – a také jednu od nás). Viz sekce [Jak se chráníte proti backscatteru](#how-do-you-protect-against-backscatter) níže pro více informací.
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+### Jak řešíte problémy s doručováním e-mailů {#how-do-you-handle-email-delivery-issues}
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+Vezměte na vědomí, že provedeme přepis „Friendly-From“ na e-mailech pouze tehdy, pokud DMARC politika odesílatele neprošla A žádné DKIM podpisy nebyly zarovnány s hlavičkou „From“. To znamená, že upravíme hlavičku „From“ ve zprávě, nastavíme „X-Original-From“ a také nastavíme „Reply-To“, pokud již nebyl nastaven. Po úpravě těchto hlaviček také znovu uzavřeme ARC pečeť na zprávě.
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+Používáme také chytré parsování chybových zpráv na všech úrovních našeho stacku – v našem kódu, DNS požadavcích, interních funkcích Node.js, HTTP požadavcích (např. 408, 413 a 429 jsou mapovány na SMTP odpověď 421, pokud je příjemcem webhook) a odpovědích mail serveru (např. odpovědi s „defer“ nebo „slowdown“ budou znovu zkoušeny jako chyby 421).
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+Naše logika je odolná vůči chybám a také opakuje pokusy při chybách SSL/TLS, problémech s připojením a dalších. Cílem této odolnosti je maximalizovat doručitelnost ke všem příjemcům v konfiguraci přeposílání.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+Pokud je příjemcem webhook, povolíme timeout 60 sekund pro dokončení požadavku s až 3 opakováními (tedy celkem 4 požadavky před selháním). Vezměte na vědomí, že správně parsujeme chybové kódy 408, 413 a 429 a mapujeme je na SMTP odpověď 421.
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+Pokud je příjemcem e-mailová adresa, pokusíme se odeslat e-mail s oportunistickým TLS (pokoušíme se použít STARTTLS, pokud je dostupný na mail serveru příjemce). Pokud během odesílání e-mailu dojde k chybě SSL/TLS, pokusíme se e-mail odeslat bez TLS (bez použití STARTTLS).
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+Pokud dojde k chybám DNS nebo připojení, vrátíme příkazu `DATA` SMTP odpověď 421, jinak pokud jsou chyby na úrovni >= 500, budou odeslány bounce zprávy.
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+Pokud zjistíme, že mail server, kterému se pokoušíme doručit, má zablokovanou jednu nebo více našich IP adres mail exchange (např. technologií, kterou používají k odkládání spammerů), pošleme SMTP odpověď 421, aby odesílatel mohl zprávu později znovu odeslat (a jsme upozorněni na problém, abychom ho mohli doufejme vyřešit před dalším pokusem).
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+### Jak řešíte zablokování vašich IP adres {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+Pravidelně monitorujeme všechny hlavní DNS denylisty a pokud jsou některé z našich IP adres mailových výměn ("MX") uvedeny v hlavním denylistu, pokud je to možné, odstraníme je z příslušného DNS A záznamu round robin, dokud nebude problém vyřešen.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+V době psaní tohoto textu jsme také uvedeni v několika DNS allowlistech a bereme monitorování denylistů vážně. Pokud zaznamenáte nějaké problémy dříve, než je budeme mít možnost vyřešit, prosím, informujte nás písemně na <support@forwardemail.net>.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+Naše IP adresy jsou veřejně dostupné, [viz tuto sekci níže pro více informací](#what-are-your-servers-ip-addresses).
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Co jsou adresy postmaster {#what-are-postmaster-addresses}
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+Abychom zabránili nesprávně směrovaným odrazům a odesílání zpráv o dovolené na nehlídané nebo neexistující poštovní schránky, udržujeme seznam uživatelských jmen podobných mailer-daemon:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4119,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [a jakákoli adresa no-reply](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+Pro více informací o tom, jak jsou takové seznamy používány k vytváření efektivních e-mailových systémů, viz [RFC 5320 Sekce 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6).
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### Co jsou adresy no-reply {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+Uživatelská jména e-mailů odpovídající kterémukoli z následujících (bez ohledu na velikost písmen) jsou považována za adresy no-reply:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4146,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Tento seznam je udržován [jako open-source projekt na GitHubu](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### Jaké jsou IP adresy vašich serverů {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+Naše IP adresy zveřejňujeme na <https://forwardemail.net/ips>.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### Máte allowlist {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+Ano, máme [seznam doménových přípon](#what-domain-name-extensions-are-allowlisted-by-default), které jsou ve výchozím nastavení na allowlistu, a dynamický, cachovaný a rotující allowlist založený na [přísných kritériích](#what-is-your-allowlist-criteria).
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+Všechny domény, e-maily a IP adresy používané platícími zákazníky jsou automaticky kontrolovány proti našemu denylistu každou hodinu – což upozorňuje administrátory, kteří mohou v případě potřeby ručně zasáhnout.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+Navíc, pokud je některá z vašich domén nebo jejích e-mailových adres uvedena na denylistu (např. kvůli odesílání spamu, virů nebo kvůli útokům na napodobování) – budou administrátoři domény (vy) a naši týmoví administrátoři okamžitě upozorněni e-mailem. Důrazně doporučujeme, abyste [nastavili DMARC](#how-do-i-set-up-dmarc-for-forward-email), aby se tomu zabránilo.
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### Jaké doménové přípony jsou ve výchozím nastavení na allowlistu {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+Následující doménové přípony jsou považovány za ve výchozím nastavení na allowlistu (bez ohledu na to, zda jsou na Umbrella Popularity Listu nebo ne):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4373,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+Navíc jsou tyto [značkové a korporátní domény nejvyšší úrovně](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) ve výchozím nastavení na seznamu povolených (např. `apple` pro `applecard.apple` pro výpisy z bankovního účtu Apple Card):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4436,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4798,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+K 18. březnu 2025 jsme také přidali tyto francouzské zámořské území do tohoto seznamu ([podle tohoto požadavku na GitHubu](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4814,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+K 8. červenci 2025 jsme přidali tyto evropské země:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4834,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+V říjnu 2025 jsme také přidali <code class="notranslate">cz</code> (Česká republika) na základě poptávky.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+Specificky jsme nezahrnuli `ru` a `ua` kvůli vysoké aktivitě spamu.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### Jaká jsou vaše kritéria pro allowlist {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+Máme statický seznam [doménových přípon, které jsou ve výchozím nastavení na allowlistu](#what-domain-name-extensions-are-allowlisted-by-default) – a také udržujeme dynamický, cachovaný, průběžný allowlist založený na následujících přísných kritériích:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* Kořenová doména odesílatele musí být z [doménové přípony, která odpovídá seznamu, který nabízíme v našem bezplatném plánu](#what-domain-name-extensions-can-be-used-for-free) (s přidáním `biz` a `info`). Také zahrnujeme částečné shody `edu`, `gov` a `mil`, například `xyz.gov.au` a `xyz.edu.au`.
+* Kořenová doména odesílatele musí být v top 100 000 unikátních kořenových domén podle výsledků z [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Kořenová doména odesílatele musí být v top 50 000 výsledcích unikátních kořenových domén, které se objevily alespoň ve 4 z posledních 7 dnů UPL (~50 %+).
+* Kořenová doména odesílatele nesmí být [kategorizována](https://radar.cloudflare.com/categorization-feedback/) jako obsah pro dospělé nebo malware podle Cloudflare.
+* Kořenová doména odesílatele musí mít nastavené buď A nebo MX záznamy.
+* Kořenová doména odesílatele musí mít buď A záznam(y), MX záznam(y), DMARC záznam s `p=reject` nebo `p=quarantine`, nebo SPF záznam s kvalifikátorem `-all` nebo `~all`.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+Pokud jsou tato kritéria splněna, kořenová doména odesílatele bude cachována po dobu 7 dnů. Upozorňujeme, že náš automatizovaný proces běží denně – jedná se tedy o průběžný allowlist cache, který se denně aktualizuje.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+Náš automatizovaný proces stáhne posledních 7 dnů UPL do paměti, rozbalí je a poté je zpracuje v paměti podle výše uvedených přísných kritérií.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+Populární domény v době psaní tohoto textu, jako Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify a další – jsou samozřejmě zahrnuty.
+Pokud jste odesílatel, který není na našem seznamu povolených, pak při prvním odeslání e-mailu z vaší FQDN kořenové domény nebo IP adresy budete [omezeni rychlostí](#do-you-have-rate-limiting) a [zařazeni na šedý seznam](#do-you-have-a-greylist). Upozorňujeme, že se jedná o standardní postup přijatý jako e-mailový standard. Většina e-mailových serverů se pokusí o opakování odeslání, pokud obdrží chybu omezení rychlosti nebo chybu šedého seznamu (např. stavový kód chyby 421 nebo 4xx).
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**Upozorňujeme, že konkrétní odesílatelé jako `a@gmail.com`, `b@xyz.edu` a `c@gov.au` mohou být stále [zařazeni na seznam blokovaných](#do-you-have-a-denylist)** (např. pokud automaticky detekujeme spam, phishing nebo malware od těchto odesílatelů).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### Jaké doménové přípony lze používat zdarma {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+K 31. březnu 2023 jsme zavedli nové obecné pravidlo proti spamu na ochranu našich uživatelů a služby.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+Toto nové pravidlo umožňuje používat na našem bezplatném plánu pouze následující doménové přípony:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4982,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### Máte šedý seznam {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+Ano, používáme velmi volnou politiku [šedého seznamu e-mailů](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Šedý seznam se vztahuje pouze na odesílatele, kteří nejsou na našem povoleném seznamu, a v naší cache zůstává po dobu 30 dnů.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+Pro každého nového odesílatele uložíme klíč v naší databázi Redis na 30 dní s hodnotou nastavenou na čas prvního příchodu jejich požadavku. Poté jejich e-mail odmítneme s kódem stavu 450 a povolíme jeho průchod až po uplynutí 5 minut.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+Pokud úspěšně počkají 5 minut od tohoto počátečního času příchodu, jejich e-maily budou přijaty a neobdrží tento stavový kód 450.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+Klíč se skládá buď z FQDN kořenové domény, nebo z IP adresy odesílatele. To znamená, že jakákoli subdoména, která projde šedým seznamem, projde také pro kořenovou doménu, a naopak (to je to, co myslíme „velmi volnou“ politikou).
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+Například pokud přijde e-mail z `test.example.com` dříve, než uvidíme e-mail z `example.com`, pak každý e-mail z `test.example.com` a/nebo `example.com` bude muset počkat 5 minut od počátečního času příchodu spojení. Nevyžadujeme, aby `test.example.com` a `example.com` čekaly každá své vlastní 5minutové období (naše politika šedého seznamu se vztahuje na úrovni kořenové domény).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+Vezměte na vědomí, že šedý seznam se nevztahuje na žádného odesílatele na našem [povoleném seznamu](#do-you-have-an-allowlist) (např. Meta, Amazon, Netflix, Google, Microsoft v době psaní tohoto textu).
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### Máte černý seznam {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+Ano, provozujeme vlastní černý seznam, který aktualizujeme automaticky v reálném čase a ručně na základě detekovaného spamu a škodlivé aktivity.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+Také každou hodinu stahujeme všechny IP adresy z UCEPROTECT Level 1 černého seznamu na <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> a přidáváme je do našeho černého seznamu s platností 7 dní.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+Odesílatelé nalezení v černém seznamu obdrží chybový kód 421 (signalizuje odesílateli, aby to zkusil později znovu), pokud [nejsou na povoleném seznamu](#do-you-have-an-allowlist).
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+Použitím stavového kódu 421 místo 554 lze potenciální falešné poplachy zmírnit v reálném čase a zpráva může být úspěšně doručena při dalším pokusu.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**Toto je navrženo odlišně než u jiných poštovních služeb**, kde pokud jste na bloklistu, dojde k tvrdému a trvalému selhání. Často je obtížné požádat odesílatele, aby zprávy znovu odeslali (zejména z velkých organizací), a proto tento přístup dává přibližně 5 dní od prvního pokusu odeslání e-mailu, aby odesílatel, příjemce nebo my mohli zasáhnout a problém vyřešit (například požádat o odstranění z černého seznamu).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+Všechny žádosti o odstranění z černého seznamu jsou sledovány v reálném čase administrátory (např. aby opakující se falešné poplachy mohly být trvale povoleny administrátory).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+Žádosti o odstranění z černého seznamu lze podat na <https://forwardemail.net/denylist>. Placení uživatelé mají své žádosti o odstranění zpracovány okamžitě, zatímco neplacení uživatelé musí čekat na zpracování administrátory.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+Odesílatelé, u kterých je detekováno odesílání spamu nebo virů, budou přidáni do černého seznamu následujícím způsobem:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. [Počáteční otisk zprávy](#how-do-you-determine-an-email-fingerprint) je zařazen do šedého seznamu při detekci spamu nebo bloklistu od „důvěryhodného“ odesílatele (např. `gmail.com`, `microsoft.com`, `apple.com`).
+   * Pokud byl odesílatel na povoleném seznamu, zpráva je zařazena do šedého seznamu na 1 hodinu.
+   * Pokud odesílatel není na povoleném seznamu, zpráva je zařazena do šedého seznamu na 6 hodin.
+2. Parsujeme klíče černého seznamu z informací o odesílateli a zprávě, a pro každý z těchto klíčů vytvoříme (pokud již neexistuje) čítač, zvýšíme ho o 1 a uložíme do cache na 24 hodin.
+   * Pro odesílatele na povoleném seznamu:
+     * Přidáme klíč pro e-mailovou adresu v obálce „MAIL FROM“, pokud prošla SPF nebo neměla SPF, a nebyla [postmaster uživatelské jméno](#what-are-postmaster-addresses) nebo [no-reply uživatelské jméno](#what-are-no-reply-addresses).
+     * Pokud byl hlavičkový údaj „From“ na povoleném seznamu, přidáme klíč pro e-mailovou adresu v hlavičce „From“, pokud prošla SPF nebo prošla a byla zarovnána DKIM.
+     * Pokud hlavičkový údaj „From“ nebyl na povoleném seznamu, přidáme klíč pro e-mailovou adresu v hlavičce „From“ a její kořenovou analyzovanou doménu.
+   * Pro odesílatele mimo povolený seznam:
+     * Přidáme klíč pro e-mailovou adresu v obálce „MAIL FROM“, pokud prošla SPF.
+     * Pokud byl hlavičkový údaj „From“ na povoleném seznamu, přidáme klíč pro e-mailovou adresu v hlavičce „From“, pokud prošla SPF nebo prošla a byla zarovnána DKIM.
+     * Pokud hlavičkový údaj „From“ nebyl na povoleném seznamu, přidáme klíč pro e-mailovou adresu v hlavičce „From“ a její kořenovou analyzovanou doménu.
+     * Přidáme klíč pro vzdálenou IP adresu odesílatele.
+     * Přidáme klíč pro klientské vyřešené hostname reverzním vyhledáním z IP adresy odesílatele (pokud existuje).
+     * Přidáme klíč pro kořenovou doménu klientského vyřešeného hostname (pokud existuje a liší se od klientského vyřešeného hostname).
+3. Pokud čítač dosáhne hodnoty 5 pro odesílatele mimo povolený seznam a klíč, pak klíč zařadíme do černého seznamu na 30 dní a e-mail je odeslán našemu týmu pro zneužití. Tyto hodnoty se mohou měnit a aktualizace budou zde reflektovány, jak budeme sledovat zneužití.
+4. Pokud čítač dosáhne hodnoty 10 pro odesílatele na povoleném seznamu a klíč, pak klíč zařadíme do černého seznamu na 7 dní a e-mail je odeslán našemu týmu pro zneužití. Tyto hodnoty se mohou měnit a aktualizace budou zde reflektovány, jak budeme sledovat zneužití.
+> **POZNÁMKA:** V blízké budoucnosti zavedeme monitorování reputace. Monitorování reputace bude místo jednoduchého čítače, jak je uvedeno výše, počítat, kdy odesílatele zařadit na seznam blokovaných na základě procentuálního prahu.
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### Máte omezení rychlosti {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+Omezení rychlosti odesílatele je buď podle kořenové domény získané z reverzního PTR záznamu na IP adrese odesílatele – nebo pokud to nepřinese výsledek, pak se jednoduše použije IP adresa odesílatele. Níže se na to odkazujeme jako na `Sender`.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+Naše MX servery mají denní limity pro příchozí poštu přijatou pro [šifrované IMAP úložiště](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* Místo omezení rychlosti příchozí pošty na základě jednotlivých aliasů (např. `you@yourdomain.com`) – omezujeme rychlost podle domény aliasu samotné (např. `yourdomain.com`). To zabraňuje tomu, aby `Senders` zaplavovali schránky všech aliasů napříč vaší doménou najednou.
+* Máme obecné limity, které platí pro všechny `Senders` v naší službě bez ohledu na příjemce:
+  * `Senders`, které považujeme za "důvěryhodné" jako zdroj pravdy (např. `gmail.com`, `microsoft.com`, `apple.com`), jsou omezeny na odeslání 100 GB za den.
+  * `Senders`, kteří jsou [na seznamu povolených](#do-you-have-an-allowlist), jsou omezeni na odeslání 10 GB za den.
+  * Všichni ostatní `Senders` jsou omezeni na odeslání 1 GB a/nebo 1000 zpráv za den.
+* Máme specifický limit na `Sender` a `yourdomain.com` ve výši 1 GB a/nebo 1000 zpráv denně.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+MX servery také omezují zprávy přeposílané jednomu nebo více příjemcům pomocí omezení rychlosti – ale to platí pouze pro `Senders`, kteří nejsou na [seznamu povolených](#do-you-have-an-allowlist):
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* Povolujeme maximálně 100 připojení za hodinu na jednoho `Sendera` podle vyřešené kořenové domény FQDN (nebo) IP adresy odesílatele (pokud není k dispozici reverzní PTR), a na příjemce v obálce. Klíč pro omezení rychlosti ukládáme jako kryptografický hash v naší databázi Redis.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* Pokud odesíláte e-maily přes náš systém, ujistěte se, že máte nastavený reverzní PTR pro všechny své IP adresy (jinak bude omezení rychlosti aplikováno na každou unikátní kořenovou doménu FQDN nebo IP adresu, ze které odesíláte).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Všimněte si, že pokud odesíláte přes populární systém jako Amazon SES, nebudete omezeni rychlostí, protože (v době psaní tohoto textu) je Amazon SES uveden na našem seznamu povolených.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* Pokud odesíláte z domény jako `test.abc.123.example.com`, pak bude omezení rychlosti uplatněno na `example.com`. Mnoho spammerů používá stovky subdomén, aby obešli běžné spamové filtry, které omezují rychlost pouze podle unikátních hostnames, nikoli podle unikátních kořenových domén FQDN.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* `Senders`, kteří překročí limit rychlosti, budou odmítnuti s chybou 421.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+Naše IMAP a SMTP servery omezují vaše aliasy na maximálně `60` současných připojení najednou.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+Naše MX servery omezují [nepovolené](#do-you-have-an-allowlist) odesílatele na maximálně 10 současných připojení (s vypršením cache čítače po 3 minutách, což odpovídá našemu timeoutu socketu 3 minuty).
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### Jak chráníte proti backscatteru {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+Chybně směrované odrazy nebo bounce spam (známý jako "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") může způsobit negativní reputaci IP adres odesílatelů.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+Proti backscatteru podnikáme dva kroky, které jsou podrobně popsány v následujících sekcích [Zabraňte odrazům od známých spammerů MAIL FROM](#prevent-bounces-from-known-mail-from-spammers) a [Zabraňte zbytečným odrazům k ochraně proti backscatteru](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### Zabraňte odrazům od známých spammerů MAIL FROM {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+Stahujeme seznam z [Backscatter.org](https://www.backscatterer.org/) (poháněno [UCEPROTECT](https://www.uceprotect.net/)) na <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> každou hodinu a vkládáme ho do naší databáze Redis (také porovnáváme rozdíly předem; pro případ, že by byly odstraněny nějaké IP, které je třeba respektovat).
+Pokud je MAIL FROM prázdný NEBO je roven (bez ohledu na velikost písmen) některé z [postmaster adres](#what-are-postmaster-addresses) (část před @ v e-mailu), pak kontrolujeme, zda IP odesílatele odpovídá některé z této seznamu.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+Pokud je IP odesílatele uvedena (a není v našem [allowlistu](#do-you-have-an-allowlist)), pak pošleme chybu 554 s hlášením `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Budeme upozorněni, pokud je odesílatel jak na seznamu Backscatterer, tak v našem allowlistu, abychom mohli případně problém vyřešit.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+Techniky popsané v této sekci dodržují doporučení "SAFE MODE" na <https://www.backscatterer.org/?target=usage> – kde kontrolujeme IP odesílatele pouze pokud již byly splněny určité podmínky.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### Prevence zbytečných odrazů pro ochranu proti backscatteru {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+Odrazy jsou e-maily, které indikují, že přeposílání e-mailu příjemci zcela selhalo a e-mail nebude znovu odesílán.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+Běžným důvodem zařazení na seznam Backscatterer jsou nesprávně směrované odrazy nebo spam odrazů, proto se musíme chránit několika způsoby:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. Odesíláme pouze při chybách s kódem >= 500 (když e-maily, které se pokoušely přeposlat, selhaly, např. Gmail odpoví chybou na úrovni 500).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. Odesíláme pouze jednou a pouze jednou (používáme vypočítaný klíč otisku odrazu a ukládáme jej do cache, abychom zabránili odesílání duplicit). Otisk odrazu je klíč, který je otiskem zprávy spojeným s hashem odrazové adresy a jejího chybového kódu). Viz sekce o [otiscích](#how-do-you-determine-an-email-fingerprint) pro podrobnější informace o výpočtu otisku zprávy. Úspěšně odeslané otisky odrazů vyprší po 7 dnech v naší Redis cache.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. Odesíláme pouze pokud MAIL FROM a/nebo From není prázdný a neobsahuje (bez ohledu na velikost písmen) [postmaster uživatelské jméno](#what-are-postmaster-addresses) (část před @ v e-mailu).
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. Neodesíláme, pokud původní zpráva obsahovala některý z následujících hlaviček (bez ohledu na velikost písmen):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * Hlavička `auto-submitted` s hodnotou odlišnou od `no`.
+   * Hlavička `x-auto-response-suppress` s hodnotou `dr`, `autoreply`, `auto-reply`, `auto_reply` nebo `all`
+   * Hlavička `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` nebo `x-auto-respond` (bez ohledu na hodnotu).
+   * Hlavička `precedence` s hodnotou `bulk`, `autoreply`, `auto-reply`, `auto_reply` nebo `list`.
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. Neodesíláme, pokud e-mailová adresa MAIL FROM nebo From končí na `+donotreply`, `-donotreply`, `+noreply` nebo `-noreply`.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. Neodesíláme, pokud uživatelská část e-mailové adresy From byla `mdaemon` a obsahovala bez ohledu na velikost písmen hlavičku `X-MDDSN-Message`.
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. Neodesíláme, pokud byla bez ohledu na velikost písmen hlavička `content-type` s hodnotou `multipart/report`.
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### Jak určujete otisk e-mailu {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+Otisk e-mailu se používá k určení jedinečnosti e-mailu a k zabránění doručení duplicitních zpráv a odesílání [duplicitních odrazů](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+Otisk se vypočítává z následujícího seznamu:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* Klientem vyřešený FQDN hostname nebo IP adresa
+* Hodnota hlavičky `Message-ID` (pokud existuje)
+* Hodnota hlavičky `Date` (pokud existuje)
+* Hodnota hlavičky `From` (pokud existuje)
+* Hodnota hlavičky `To` (pokud existuje)
+* Hodnota hlavičky `Cc` (pokud existuje)
+* Hodnota hlavičky `Subject` (pokud existuje)
+* Hodnota těla zprávy (pokud existuje)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### Mohu přeposílat e-maily na porty jiné než 25 (např. pokud můj ISP zablokoval port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+Ano, od 5. května 2020 jsme tuto funkci přidali. V současné době je funkce specifická pro doménu, nikoli pro alias. Pokud potřebujete, aby byla specifická pro alias, kontaktujte nás a sdělte nám své potřeby.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Rozšířená ochrana soukromí:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Pokud jste na placeném plánu (který nabízí rozšířenou ochranu soukromí), přejděte prosím na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a>, klikněte na "Nastavení" vedle vaší domény a poté klikněte na "Nastavení". Pokud se chcete dozvědět více o placených plánech, navštivte naši stránku <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Ceník</a>. Jinak můžete pokračovat podle níže uvedených pokynů.
   </span>
 </div>
+Pokud jste na bezplatném plánu, jednoduše přidejte nový DNS <strong class="notranslate">TXT</strong> záznam, jak je uvedeno níže, ale změňte port z 25 na port dle vašeho výběru.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+Například, pokud chci, aby všechny e-maily směřující na `example.com` byly přeposílány na SMTP port alias příjemců 1337 místo 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4648,7 +5158,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    Nejčastější scénář pro nastavení přesměrování na vlastní port je, když chcete přeposílat všechny e-maily směřující na example.com na jiný port na example.com než standardní SMTP port 25. Pro nastavení jednoduše přidejte následující <strong class="notranslate">TXT</strong> catch-all záznam.
   <span>
   </span>
 </div>
@@ -4656,15 +5166,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Jméno/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5182,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Podporuje to symbol plus + pro Gmail aliasy {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+Ano, rozhodně.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### Podporuje to subdomény {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+Ano, rozhodně. Místo použití "@", ".", nebo prázdného jako jména/hostitele/aliasu jednoduše použijete název subdomény jako hodnotu.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+Pokud chcete, aby `foo.example.com` přeposílal e-maily, zadejte `foo` jako hodnotu jména/hostitele/aliasu ve vašem DNS nastavení (pro oba MX i <strong class="notranslate">TXT</strong> záznamy).
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### Přeposílá to hlavičky mých e-mailů {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+Ano, rozhodně.
 
-### Is this well-tested {#is-this-well-tested}
+### Je to dobře otestované {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+Ano, jsou napsány testy pomocí [ava](https://github.com/avajs/ava) a také je zde pokrytí kódu.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### Předáváte SMTP odpovědní zprávy a kódy {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+Ano, rozhodně. Například pokud posíláte e-mail na `hello@example.com` a je registrován k přeposílání na `user@gmail.com`, SMTP odpověď a kód ze SMTP serveru "gmail.com" bude vrácena místo proxy serveru na "mx1.forwardemail.net" nebo "mx2.forwardemail.net".
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### Jak zabraňujete spammerům a zajišťujete dobrou reputaci přeposílání e-mailů {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+Podívejte se na naše sekce o [Jak funguje váš systém přeposílání e-mailů](#how-does-your-email-forwarding-system-work), [Jak řešíte problémy s doručováním e-mailů](#how-do-you-handle-email-delivery-issues) a [Jak řešíte blokování vašich IP adres](#how-do-you-handle-your-ip-addresses-becoming-blocked) výše.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### Jak provádíte DNS dotazy na doménová jména {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+Vytvořili jsme open-source softwarový projekt :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) a používáme ho pro DNS dotazy. Výchozí DNS servery jsou `1.1.1.1` a `1.0.0.1`, a DNS dotazy probíhají přes [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") na aplikační vrstvě.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) používá ve výchozím nastavení [CloudFlare službu DNS zaměřenou na soukromí uživatelů][cloudflare-dns].
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## Účet a fakturace {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### Nabízíte záruku vrácení peněz u placených plánů {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+Ano! Automatické vrácení peněz probíhá při upgradu, downgradu nebo zrušení účtu do 30 dnů od začátku vašeho plánu. Toto platí pouze pro nové zákazníky.
+### Pokud přepnu plán, provádíte poměrné rozúčtování a vracíte rozdíl {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+Neposkytujeme poměrné rozúčtování ani nevracíme rozdíl při přepnutí plánu. Místo toho převedeme zbývající dobu od data vypršení platnosti vašeho stávajícího plánu na nejbližší odpovídající dobu pro váš nový plán (zaokrouhleno dolů na měsíc).
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+Vezměte na vědomí, že pokud upgradujete nebo downgradujete mezi placenými plány během 30denní lhůty od prvního zahájení placeného plánu, automaticky vám vrátíme plnou částku za váš stávající plán.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Mohu tuto službu přeposílání e-mailů použít jako "fallback" nebo "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+Ne, nedoporučuje se to, protože můžete používat pouze jeden mail exchange server najednou. Fallbacky se obvykle nikdy nepokoušejí znovu kvůli nesprávnému nastavení priority a mail servery často nerešpektují kontrolu priority MX výměny.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### Mohu zakázat konkrétní aliasy {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    Pokud máte placený plán, musíte přejít na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Upravit alias <i class="fa fa-angle-right"></i> Zrušit zaškrtnutí políčka "Aktivní" <i class="fa fa-angle-right"></i> Pokračovat.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+Ano, jednoduše upravte svůj DNS <strong class="notranslate">TXT</strong> záznam a před alias přidejte jednu, dvě nebo tři vykřičníky (viz níže).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+Všimněte si, že *máte* zachovat mapování ":" protože je to vyžadováno, pokud se někdy rozhodnete tuto funkci vypnout (a také se používá při importu, pokud upgradujete na jeden z našich placených plánů).
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**Pro tiché odmítnutí (odesílateli se zobrazí, jako by zpráva byla úspěšně odeslána, ale ve skutečnosti nikam neputuje) (stavový kód `250`):** Pokud před alias přidáte "!" (jediný vykřičník), vrátí se odesílatelům, kteří se pokusí odeslat na tuto adresu, úspěšný stavový kód `250`, ale samotné e-maily nikam nepůjdou (např. černá díra nebo `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**Pro měkké odmítnutí (stavový kód `421`):** Pokud před alias přidáte "!!" (dvojitý vykřičník), vrátí se odesílatelům, kteří se pokusí odeslat na tuto adresu, měkká chybová odpověď s kódem `421` a e-maily budou často opakovaně zkoušeny až po dobu 5 dnů před odmítnutím a vrácením.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**Pro tvrdé odmítnutí (stavový kód `550`):** Pokud před alias přidáte "!!!" (trojitý vykřičník), vrátí se odesílatelům, kteří se pokusí odeslat na tuto adresu, trvalá chybová odpověď s kódem `550` a e-maily budou odmítnuty a vráceny.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+Například pokud chci, aby všechny e-maily směřující na `alias@example.com` přestaly procházet na `user@gmail.com` a byly odmítnuty a vráceny (např. použít tři vykřičníky):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Název/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4769,36 +5279,35 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     Tip:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    Můžete také přepsat adresu přeposílaného příjemce jednoduše na "nobody@forwardemail.net", což ji nasměruje na nikoho, jak je uvedeno v příkladu níže.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Název/Hostitel/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
     Tip:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    Pokud chcete zvýšenou bezpečnost, můžete také odstranit část ":user@gmail.com" (nebo ":nobody@forwardemail.net"), takže zůstane pouze "!!!alias", jak je uvedeno v příkladu níže.
   </span>
 </div>
 
@@ -4813,7 +5322,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,11 +5330,11 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### Mohu přeposílat e-maily na více příjemců {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+Ano, rozhodně. Stačí uvést více příjemců ve vašich <strong class="notranslate">TXT</strong> záznamech.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Například, pokud chci, aby e-mail, který přijde na `hello@example.com`, byl přeposlán na `user+a@gmail.com` a `user+b@gmail.com`, pak by můj <strong class="notranslate">TXT</strong> záznam vypadal takto:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -4838,7 +5347,7 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,7 +5355,7 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Nebo je můžete uvést ve dvou samostatných řádcích, například takto:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -4859,13 +5368,13 @@ Or, you could specify them in two separate lines, such as this:
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,13 +5382,13 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+Je to na vás!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### Mohu mít více globálních příjemců pro zachytávání všech e-mailů {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+Ano, můžete. Stačí uvést více globálních příjemců pro zachytávání všech e-mailů ve vašich <strong class="notranslate">TXT</strong> záznamech.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Například, pokud chci, aby každý e-mail, který přijde na `*@example.com` (hvězdička znamená zástupný znak, tedy zachytávání všech), byl přeposlán na `user+a@gmail.com` a `user+b@gmail.com`, pak by můj <strong class="notranslate">TXT</strong> záznam vypadal takto:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -4892,7 +5401,7 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,7 +5409,7 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Nebo je můžete uvést ve dvou samostatných řádcích, například takto:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -4913,25 +5422,24 @@ Or, you could specify them in two separate lines, such as this:
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", nebo prázdné</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+Je to na vás!
 
-It's up to you!
+### Existuje maximální limit počtu e-mailových adres, na které mohu přeposílat na jeden alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+Ano, výchozí limit je 10. To NEZNAMENÁ, že můžete mít na své doméně pouze 10 aliasů. Můžete mít tolik aliasů, kolik chcete (neomezené množství). Znamená to, že můžete přeposílat jeden alias maximálně na 10 unikátních e-mailových adres. Můžete mít například `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (od 1 do 10) – a všechny e-maily na `hello@example.com` budou přeposílány na `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (od 1 do 10).
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4939,151 +5447,150 @@ Yes, the default limit is 10.  This does NOT mean that you can only have 10 alia
     Tip:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    Potřebujete více než 10 příjemců na jeden alias? Pošlete nám e-mail a rádi vám zvýšíme limit vašeho účtu.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### Mohu e-maily přeposílat rekurzivně {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+Ano, můžete, ale stále musíte dodržovat maximální limit. Pokud máte `hello:linus@example.com` a `linus:user@gmail.com`, pak e-maily na `hello@example.com` budou přeposílány na `linus@example.com` a `user@gmail.com`. Upozorňujeme, že pokud se pokusíte rekurzivně přeposílat e-maily nad maximální limit, bude vyhozena chyba.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Mohou lidé odregistrovat nebo zaregistrovat mé přeposílání e-mailů bez mého svolení {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+Používáme ověřování pomocí MX a <strong class="notranslate">TXT</strong> záznamů, takže pokud přidáte příslušné MX a <strong class="notranslate">TXT</strong> záznamy této služby, jste zaregistrováni. Pokud je odstraníte, jste odregistrováni. Vlastníte svou doménu a správu DNS, takže pokud má někdo přístup k tomu, je to problém.
 
-### How is it free {#how-is-it-free}
+### Jak je to zdarma {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Email nabízí bezplatnou úroveň díky kombinaci open-source vývoje, efektivní infrastruktury a volitelných placených plánů, které službu podporují.
 
-Our free tier is supported by:
+Naše bezplatná úroveň je podporována:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **Open Source vývojem**: Náš kód je open source, což umožňuje příspěvky komunity a transparentní provoz.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **Efektivní infrastrukturou**: Optimalizovali jsme naše systémy pro přeposílání e-mailů s minimálními zdroji.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **Placenými prémiovými plány**: Uživatelé, kteří potřebují další funkce jako SMTP odesílání, IMAP příjem nebo rozšířené možnosti soukromí, si předplácejí naše placené plány.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **Rozumnými limity používání**: Bezplatná úroveň má férové zásady používání, aby se zabránilo zneužití.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Zavazujeme se udržovat základní přeposílání e-mailů zdarma a zároveň nabízet prémiové funkce pro uživatele s pokročilejšími potřebami.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Pokud považujete naši službu za užitečnou, zvažte upgrade na placený plán, abyste podpořili další vývoj a údržbu.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### Jaký je maximální limit velikosti e-mailu {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+Výchozí limit velikosti je 50 MB, což zahrnuje obsah, hlavičky a přílohy. Upozorňujeme, že služby jako Gmail a Outlook umožňují pouze limit 25 MB, a pokud tento limit při odesílání na adresy u těchto poskytovatelů překročíte, obdržíte chybovou zprávu.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+Pokud je překročen limit velikosti souboru, je vrácena chyba s odpovídajícím kódem odpovědi.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### Uchováváte záznamy o e-mailech {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Ne, nezapisujeme na disk ani neukládáme záznamy – s [výjimkou chyb](#do-you-store-error-logs) a [odchozího SMTP](#do-you-support-sending-email-with-smtp) (viz naše [Zásady ochrany osobních údajů](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Vše probíhá v paměti a [náš zdrojový kód je na GitHubu](https://github.com/forwardemail).
 
-### Do you store error logs {#do-you-store-error-logs}
+### Uchováváte záznamy o chybách {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**Ano. K chybovým záznamům máte přístup v [Můj účet → Záznamy](/my-account/logs) nebo [Můj účet → Domény](/my-account/domains).**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+Od února 2023 uchováváme záznamy chyb pro SMTP odpovědi s kódy `4xx` a `5xx` po dobu 7 dnů – které obsahují SMTP chybu, obálku a hlavičky e-mailu (neukládáme tělo e-mailu ani přílohy).
+Chybové záznamy vám umožňují zkontrolovat chybějící důležité e-maily a zmírnit falešně pozitivní označení spamu pro [vaše domény](/my-account/domains). Jsou také skvělým zdrojem pro ladění problémů s [email webhooks](#do-you-support-webhooks) (protože chybové záznamy obsahují odpověď webhook endpointu).
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+Chybové záznamy pro [omezení rychlosti](#do-you-have-rate-limiting) a [greylisting](#do-you-have-a-greylist) nejsou přístupné, protože spojení končí dříve (např. před přenosem příkazů `RCPT TO` a `MAIL FROM`).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+Pro více informací si přečtěte naši [Zásady ochrany osobních údajů](/privacy).
 
-See our [Privacy Policy](/privacy) for more insight.
+### Čtete mé e-maily {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+Ne, rozhodně ne. Viz naše [Zásady ochrany osobních údajů](/privacy).
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+Mnoho jiných služeb pro přeposílání e-mailů ukládá a potenciálně by mohlo číst vaše e-maily. Neexistuje žádný důvod, proč by přeposílané e-maily měly být ukládány na disk – a proto jsme navrhli první open-source řešení, které vše provádí v paměti.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+Věříme, že byste měli mít právo na soukromí a toto právo přísně respektujeme. Kód, který je nasazen na server, je [open-source software na GitHubu](https://github.com/forwardemail) pro transparentnost a budování důvěry.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### Mohu s tímto „odesílat poštu jako“ v Gmailu {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+Ano! Od 2. října 2018 jsme tuto funkci přidali. Viz [Jak odesílat poštu jako pomocí Gmailu](#how-to-send-mail-as-using-gmail) výše!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Také byste měli nastavit SPF záznam pro Gmail ve vaší DNS konfiguraci v <strong class="notranslate">TXT</strong> záznamu.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Pokud používáte Gmail (např. Send Mail As) nebo G Suite, musíte do svého SPF <strong class="notranslate">TXT</strong> záznamu přidat <code>include:_spf.google.com</code>, například:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### Mohu s tímto „odesílat poštu jako“ v Outlooku {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+Ano! Od 2. října 2018 jsme tuto funkci přidali. Jednoduše si prohlédněte tyto dva odkazy od Microsoftu níže:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Také byste měli nastavit SPF záznam pro Outlook ve vaší DNS konfiguraci v <strong class="notranslate">TXT</strong> záznamu.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Důležité:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Pokud používáte Microsoft Outlook nebo Live.com, musíte do svého SPF <strong class="notranslate">TXT</strong> záznamu přidat <code>include:spf.protection.outlook.com</code>, například:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Mohu s tímto „odesílat poštu jako“ v Apple Mail a iCloud Mail {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+Pokud jste předplatitelem iCloud+, můžete použít vlastní doménu. [Naše služba je také kompatibilní s Apple Mail](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+Pro více informací navštivte <https://support.apple.com/en-us/102540>.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### Mohu s tímto přeposílat neomezené množství e-mailů {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+Ano, nicméně „relativně neznámí“ odesílatelé jsou omezeni na 100 připojení za hodinu na hostname nebo IP. Viz sekce o [omezení rychlosti](#do-you-have-rate-limiting) a [greylistingu](#do-you-have-a-greylist) výše.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+„Relativně neznámí“ znamená odesílatele, kteří se neobjevují v [povolovacím seznamu](#do-you-have-an-allowlist).
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+Pokud je tento limit překročen, odesíláme kód odpovědi 421, který říká odesílajícímu mail serveru, aby to zkusil později znovu.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### Nabízíte neomezený počet domén za jednu cenu {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+Ano. Bez ohledu na to, jaký plán máte, zaplatíte pouze jednu měsíční sazbu – která pokrývá všechny vaše domény.
+### Jaké způsoby platby akceptujete {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email přijímá následující jednorázové nebo měsíční/čtvrtletní/roční způsoby platby:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **Kreditní/debetní karty/bankovní převody**: Visa, Mastercard, American Express, Discover, JCB, Diners Club atd.
+2. **PayPal**: Připojte svůj účet PayPal pro snadné platby
+3. **Kryptoměny**: Přijímáme platby prostřednictvím Stripe stablecoin plateb na sítích Ethereum, Polygon a Solana
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Na našich serverech uchováváme omezené platební informace, které zahrnují pouze identifikátory plateb a odkazy na [Stripe](https://stripe.com/global) a [PayPal](https://www.paypal.com) transakce, zákazníky, předplatné a ID plateb.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Pro maximální soukromí zvažte použití plateb kryptoměnami.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+Všechny platby jsou bezpečně zpracovávány prostřednictvím Stripe nebo PayPal. Vaše platební údaje nikdy nejsou uloženy na našich serverech.
 
-## Additional Resources {#additional-resources}
+
+## Další zdroje {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Naše níže uvedené články jsou pravidelně aktualizovány o nové návody, tipy a technické informace. Často se sem vraťte pro nejnovější obsah.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [Případové studie a dokumentace pro vývojáře](/blog/docs)
+* [Zdroje](/resources)
+* [Návody](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

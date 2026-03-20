@@ -3,341 +3,342 @@
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>TL;DR:</strong> Kami membangun REST API lengkap pertama di dunia untuk manajemen email dengan kemampuan pencarian canggih yang tidak ditawarkan layanan lain. Sementara Gmail, Outlook, dan Apple memaksa pengembang menggunakan IMAP atau API dengan batasan kecepatan, Forward Email menghadirkan operasi CRUD yang sangat cepat untuk pesan, folder, kontak, dan kalender melalui antarmuka REST terpadu dengan lebih dari 15 parameter pencarian. Inilah API email yang telah lama ditunggu-tunggu oleh para pengembang.
+  <strong>TL;DR:</strong> Kami membangun REST API lengkap pertama di dunia untuk manajemen email dengan kemampuan pencarian canggih yang tidak ditawarkan layanan lain. Sementara Gmail, Outlook, dan Apple memaksa pengembang ke dalam neraka IMAP atau API dengan batasan kecepatan, Forward Email menghadirkan operasi CRUD yang sangat cepat untuk pesan, folder, kontak, dan kalender melalui antarmuka REST terpadu dengan lebih dari 15 parameter pencarian. Ini adalah API email yang telah lama ditunggu oleh para pengembang.
 </p>
+
 
 ## Daftar Isi {#table-of-contents}
 
 * [Masalah API Email](#the-email-api-problem)
-* [Apa yang Sebenarnya Dikatakan Para Pengembang](#what-developers-are-actually-saying)
+* [Apa yang Sebenarnya Dikatakan Pengembang](#what-developers-are-actually-saying)
 * [Solusi Revolusioner Forward Email](#forward-emails-revolutionary-solution)
-  * [Mengapa Kami Membangun Ini](#why-we-built-this)
+  * [Mengapa Kami Membangunnya](#why-we-built-this)
   * [Autentikasi Sederhana](#simple-authentication)
-* [20 Titik Akhir yang Mengubah Segalanya](#20-endpoints-that-change-everything)
-  * [Pesan (5 titik akhir)](#messages-5-endpoints)
-  * [Folder (5 titik akhir)](#folders-5-endpoints)
-  * [Kontak (5 titik akhir)](#contacts-5-endpoints)
-  * [Kalender (5 titik akhir)](#calendars-5-endpoints)
-* [Pencarian Lanjutan: Tidak Ada Layanan Lain yang Dapat Dibandingkan](#advanced-search-no-other-service-compares)
-  * [Lanskap API Pencarian Rusak](#the-search-api-landscape-is-broken)
+* [20 Endpoint yang Mengubah Segalanya](#20-endpoints-that-change-everything)
+  * [Pesan (5 endpoint)](#messages-5-endpoints)
+  * [Folder (5 endpoint)](#folders-5-endpoints)
+  * [Kontak (5 endpoint)](#contacts-5-endpoints)
+  * [Kalender (5 endpoint)](#calendars-5-endpoints)
+* [Pencarian Lanjutan: Tidak Ada Layanan Lain yang Menyamai](#advanced-search-no-other-service-compares)
+  * [Lanskap API Pencarian yang Rusak](#the-search-api-landscape-is-broken)
   * [API Pencarian Revolusioner Forward Email](#forward-emails-revolutionary-search-api)
   * [Contoh Pencarian Dunia Nyata](#real-world-search-examples)
   * [Keunggulan Performa](#performance-advantages)
-  * [Fitur Pencarian yang Tidak Dimiliki Orang Lain](#search-features-no-one-else-has)
-  * [Mengapa Hal Ini Penting bagi Pengembang](#why-this-matters-for-developers)
+  * [Fitur Pencarian yang Tidak Dimiliki Lainnya](#search-features-no-one-else-has)
+  * [Mengapa Ini Penting bagi Pengembang](#why-this-matters-for-developers)
   * [Implementasi Teknis](#the-technical-implementation)
-* [Arsitektur Performa Super Cepat](#blazing-fast-performance-architecture)
-  * [Tolok Ukur Kinerja](#performance-benchmarks)
-  * [Arsitektur Privasi-Utama](#privacy-first-architecture)
+* [Arsitektur Performa Sangat Cepat](#blazing-fast-performance-architecture)
+  * [Tolok Ukur Performa](#performance-benchmarks)
+  * [Arsitektur Berbasis Privasi](#privacy-first-architecture)
 * [Mengapa Kami Berbeda: Perbandingan Lengkap](#why-were-different-the-complete-comparison)
-  * [Batasan Penyedia Utama](#major-provider-limitations)
-  * [Keuntungan Meneruskan Email](#forward-email-advantages)
-  * [Masalah Transparansi Sumber Terbuka](#the-open-source-transparency-problem)
+  * [Keterbatasan Penyedia Utama](#major-provider-limitations)
+  * [Keunggulan Forward Email](#forward-email-advantages)
+  * [Masalah Transparansi Open-Source](#the-open-source-transparency-problem)
 * [30+ Contoh Integrasi Dunia Nyata](#30-real-world-integration-examples)
   * [1. Peningkatan Formulir Kontak WordPress](#1-wordpress-contact-form-enhancement)
-  * [2. Alternatif Zapier untuk Otomatisasi Email](#2-zapier-alternative-for-email-automation)
+  * [2. Alternatif Zapier untuk Otomasi Email](#2-zapier-alternative-for-email-automation)
   * [3. Sinkronisasi Email CRM](#3-crm-email-synchronization)
   * [4. Pemrosesan Pesanan E-commerce](#4-e-commerce-order-processing)
   * [5. Integrasi Tiket Dukungan](#5-support-ticket-integration)
-  * [6. Sistem Manajemen Buletin](#6-newsletter-management-system)
+  * [6. Sistem Manajemen Newsletter](#6-newsletter-management-system)
   * [7. Manajemen Tugas Berbasis Email](#7-email-based-task-management)
   * [8. Agregasi Email Multi-Akun](#8-multi-account-email-aggregation)
-  * [9. Dasbor Analisis Email Lanjutan](#9-advanced-email-analytics-dashboard)
+  * [9. Dasbor Analitik Email Lanjutan](#9-advanced-email-analytics-dashboard)
   * [10. Pengarsipan Email Cerdas](#10-smart-email-archiving)
   * [11. Integrasi Email ke Kalender](#11-email-to-calendar-integration)
-  * [12. Pencadangan Email dan Kepatuhan](#12-email-backup-and-compliance)
+  * [12. Cadangan Email dan Kepatuhan](#12-email-backup-and-compliance)
   * [13. Manajemen Konten Berbasis Email](#13-email-based-content-management)
   * [14. Manajemen Template Email](#14-email-template-management)
-  * [15. Otomatisasi Alur Kerja Berbasis Email](#15-email-based-workflow-automation)
+  * [15. Otomasi Alur Kerja Berbasis Email](#15-email-based-workflow-automation)
   * [16. Pemantauan Keamanan Email](#16-email-security-monitoring)
   * [17. Pengumpulan Survei Berbasis Email](#17-email-based-survey-collection)
-  * [18. Pemantauan Kinerja Email](#18-email-performance-monitoring)
-  * [19. Kualifikasi Prospek Berbasis Email](#19-email-based-lead-qualification)
+  * [18. Pemantauan Performa Email](#18-email-performance-monitoring)
+  * [19. Kualifikasi Lead Berbasis Email](#19-email-based-lead-qualification)
   * [20. Manajemen Proyek Berbasis Email](#20-email-based-project-management)
   * [21. Manajemen Inventaris Berbasis Email](#21-email-based-inventory-management)
   * [22. Pemrosesan Faktur Berbasis Email](#22-email-based-invoice-processing)
-  * [23. Pendaftaran Acara Berbasis Email](#23-email-based-event-registration)
+  * [23. Registrasi Acara Berbasis Email](#23-email-based-event-registration)
   * [24. Alur Kerja Persetujuan Dokumen Berbasis Email](#24-email-based-document-approval-workflow)
   * [25. Analisis Umpan Balik Pelanggan Berbasis Email](#25-email-based-customer-feedback-analysis)
-  * [26. Jalur Perekrutan Berbasis Email](#26-email-based-recruitment-pipeline)
+  * [26. Pipeline Rekrutmen Berbasis Email](#26-email-based-recruitment-pipeline)
   * [27. Pemrosesan Laporan Pengeluaran Berbasis Email](#27-email-based-expense-report-processing)
-  * [28. Pelaporan Penjaminan Mutu Berbasis Email](#28-email-based-quality-assurance-reporting)
+  * [28. Pelaporan Jaminan Kualitas Berbasis Email](#28-email-based-quality-assurance-reporting)
   * [29. Manajemen Vendor Berbasis Email](#29-email-based-vendor-management)
   * [30. Pemantauan Media Sosial Berbasis Email](#30-email-based-social-media-monitoring)
 * [Memulai](#getting-started)
-  * [1. Buat Akun Email Penerusan Anda](#1-create-your-forward-email-account)
+  * [1. Buat Akun Forward Email Anda](#1-create-your-forward-email-account)
   * [2. Hasilkan Kredensial API](#2-generate-api-credentials)
   * [3. Lakukan Panggilan API Pertama Anda](#3-make-your-first-api-call)
   * [4. Jelajahi Dokumentasi](#4-explore-the-documentation)
 * [Sumber Daya Teknis](#technical-resources)
-
 ## Masalah API Email {#the-email-api-problem}
 
 API email pada dasarnya rusak. Titik.
 
-Setiap penyedia email utama memaksa pengembang untuk membuat salah satu dari dua pilihan buruk:
+Setiap penyedia email besar memaksa pengembang memilih salah satu dari dua pilihan buruk:
 
-1. **IMAP Hell**: Bergulat dengan protokol berusia 30 tahun yang dirancang untuk klien desktop, bukan aplikasi modern
-2. **API yang Lumpuh**: API yang kompleks dengan batasan kecepatan, hanya baca, dan OAuth yang tidak dapat mengelola data email Anda yang sebenarnya
+1. **Neraka IMAP**: Berjuang dengan protokol berusia 30 tahun yang dirancang untuk klien desktop, bukan aplikasi modern
+2. **API Terbatas**: API yang dibatasi kecepatan, hanya baca, dan kompleksitas OAuth yang tidak bisa mengelola data email Anda secara nyata
 
-Hasilnya? Para pengembang akhirnya mengabaikan integrasi email sepenuhnya atau membuang waktu berminggu-minggu untuk membangun pembungkus IMAP yang rapuh dan terus-menerus rusak.
+Hasilnya? Pengembang entah meninggalkan integrasi email sepenuhnya atau membuang waktu berminggu-minggu membangun pembungkus IMAP yang rapuh dan sering rusak.
 
 > \[!WARNING]
-> **Rahasia Rahasia**: Kebanyakan "API email" hanyalah API pengiriman. Anda tidak dapat mengatur folder, menyinkronkan kontak, atau mengelola kalender secara terprogram melalui antarmuka REST yang sederhana. Hingga saat ini.
+> **Rahasia Kotor**: Sebagian besar "API email" hanyalah API pengiriman. Anda tidak bisa secara programatik mengatur folder, menyinkronkan kontak, atau mengelola kalender melalui antarmuka REST sederhana. Sampai sekarang.
+
 
 ## Apa yang Sebenarnya Dikatakan Pengembang {#what-developers-are-actually-saying}
 
 Frustrasi itu nyata dan terdokumentasi di mana-mana:
 
-> "Baru-baru ini saya mencoba mengintegrasikan Gmail ke dalam aplikasi saya, dan saya menghabiskan terlalu banyak waktu untuk itu. Saya memutuskan bahwa tidak ada gunanya mendukung Gmail."
+> "Saya baru-baru ini mencoba mengintegrasikan Gmail di aplikasi saya, dan saya menghabiskan terlalu banyak waktu untuk itu. Saya memutuskan tidak layak untuk mendukung Gmail."
 >
-> *- [Pengembang Hacker News](https://news.ycombinator.com/item?id=42106944), 147 suara positif*
+> *- [Pengembang Hacker News](https://news.ycombinator.com/item?id=42106944), 147 suara suka*
 
-> "Apakah semua API email biasa-biasa saja? Sepertinya terbatas atau membatasi dalam beberapa hal."
+> "Apakah semua API email biasa-biasa saja? Mereka tampak terbatas atau membatasi dalam beberapa hal."
 >
 > *- [Diskusi Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> "Mengapa pengembangan email harus buruk?"
+> "Kenapa pengembangan email harus menyebalkan?"
 >
 > *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 komentar tentang kesulitan pengembang*
 
-> "Apa yang membuat API Gmail lebih efisien daripada IMAP? Alasan lain mengapa API Gmail jauh lebih efisien adalah karena ia hanya perlu mengunduh setiap pesan sekali. Dengan IMAP, setiap pesan harus diunduh dan diindeks..."
+> "Apa yang membuat API Gmail lebih efisien daripada IMAP? Alasan lain API Gmail jauh lebih efisien adalah karena hanya perlu mengunduh setiap pesan sekali saja. Dengan IMAP, setiap pesan harus diunduh dan diindeks..."
 >
-> *- [Pertanyaan Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) dengan 47 upvote*
+> *- [Pertanyaan Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) dengan 47 suara suka*
 
-Buktinya ada dimana-mana:
+Buktinya ada di mana-mana:
 
-* **Masalah SMTP WordPress**: [631 masalah GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) tentang kegagalan pengiriman email
-* **Keterbatasan Zapier**: [Keluhan masyarakat](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) tentang batas 10 email/jam dan kegagalan deteksi IMAP
-* **Proyek API IMAP**: [Banyak](https://github.com/ewildgoose/imap-api) [sumber terbuka](https://emailengine.app/) [proyek](https://www.npmjs.com/package/imapflow) dibuat khusus untuk "mengonversi IMAP ke REST" karena tidak ada penyedia yang menawarkan ini
-* **Kekecewaan API Gmail**: [Tumpukan Luapan](https://stackoverflow.com/questions/tagged/gmail-api) memiliki 4.847 pertanyaan yang ditandai "gmail-api" dengan keluhan umum tentang batas kecepatan dan kompleksitas
+* **Masalah SMTP WordPress**: [631 isu GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) tentang kegagalan pengiriman email
+* **Batasan Zapier**: [Keluhan komunitas](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) tentang batas 10 email/jam dan kegagalan deteksi IMAP
+* **Proyek API IMAP**: [Banyak](https://github.com/ewildgoose/imap-api) [proyek sumber terbuka](https://emailengine.app/) [ada](https://www.npmjs.com/package/imapflow) khusus untuk "mengubah IMAP menjadi REST" karena tidak ada penyedia yang menawarkan ini
+* **Frustrasi API Gmail**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) memiliki 4.847 pertanyaan berlabel "gmail-api" dengan keluhan umum tentang batas kecepatan dan kompleksitas
+
 
 ## Solusi Revolusioner Forward Email {#forward-emails-revolutionary-solution}
 
-**Kami adalah layanan email pertama yang menawarkan operasi CRUD lengkap untuk semua data email melalui REST API terpadu.**
+**Kami adalah layanan email pertama yang menawarkan operasi CRUD lengkap untuk semua data email melalui API REST terpadu.**
 
-Ini bukan sekadar API pengiriman biasa. Ini adalah kendali terprogram penuh atas:
+Ini bukan sekadar API pengiriman. Ini adalah kontrol programatik lengkap atas:
 
-* **Pesan**: Membuat, membaca, memperbarui, menghapus, mencari, memindahkan, menandai
-* **Folder**: Manajemen folder IMAP penuh melalui titik akhir REST
-* **Kontak**: Penyimpanan dan sinkronisasi kontak [KartuDAV](https://tools.ietf.org/html/rfc6352)
-* **Kalender**: Acara dan penjadwalan kalender [CalDAV](https://tools.ietf.org/html/rfc4791)
+* **Pesan**: Buat, baca, perbarui, hapus, cari, pindah, beri tanda
+* **Folder**: Manajemen folder IMAP penuh melalui endpoint REST
+* **Kontak**: Penyimpanan dan sinkronisasi kontak [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **Kalender**: Acara kalender dan penjadwalan [CalDAV](https://tools.ietf.org/html/rfc4791)
 
-### Mengapa Kami Membangun Ini {#why-we-built-this}
+### Mengapa Kami Membuat Ini {#why-we-built-this}
 
-**Masalahnya**: Setiap penyedia email memperlakukan email sebagai kotak hitam. Anda bisa mengirim email, mungkin membacanya dengan OAuth yang rumit, tetapi Anda tidak bisa benar-benar *mengelola* data email Anda secara terprogram.
+**Masalahnya**: Setiap penyedia email memperlakukan email sebagai kotak hitam. Anda bisa mengirim email, mungkin membacanya dengan OAuth yang kompleks, tapi Anda tidak benar-benar bisa *mengelola* data email Anda secara programatik.
 
-**Visi Kami**: Email harus semudah integrasi API modern mana pun. Tanpa pustaka IMAP. Tanpa kerumitan OAuth. Tanpa mimpi buruk batas kecepatan. Hanya titik akhir REST sederhana yang berfungsi.
+**Visi Kami**: Email harus semudah mengintegrasikan API modern mana pun. Tanpa pustaka IMAP. Tanpa kompleksitas OAuth. Tanpa mimpi buruk batas kecepatan. Hanya endpoint REST sederhana yang bekerja.
 
-**Hasilnya**: Layanan email pertama tempat Anda dapat membangun klien email lengkap, integrasi CRM, atau sistem otomasi hanya dengan menggunakan permintaan HTTP.
+**Hasilnya**: Layanan email pertama di mana Anda bisa membangun klien email lengkap, integrasi CRM, atau sistem otomatisasi hanya dengan permintaan HTTP.
 
 ### Autentikasi Sederhana {#simple-authentication}
 
-Tidak ada [Kompleksitas OAuth](https://oauth.net/2/). Tidak ada [kata sandi khusus aplikasi](https://support.google.com/accounts/answer/185833). Hanya kredensial alias Anda:
+Tanpa [kompleksitas OAuth](https://oauth.net/2/). Tanpa [kata sandi khusus aplikasi](https://support.google.com/accounts/answer/185833). Cukup kredensial alias Anda:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
+## 20 Endpoint yang Mengubah Segalanya {#20-endpoints-that-change-everything}
 
-## 20 Titik Akhir yang Mengubah Segalanya {#20-endpoints-that-change-everything}
+### Pesan (5 endpoint) {#messages-5-endpoints}
 
-### Pesan (5 titik akhir) {#messages-5-endpoints}
-
-* `GET /v1/messages` - Daftar pesan dengan pemfilteran (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `GET /v1/messages` - Daftar pesan dengan penyaringan (`?folder=`, `?is_unread=`, `?is_flagged=`)
 * `POST /v1/messages` - Kirim pesan baru langsung ke folder
-* `GET /v1/messages/:id` - Ambil pesan tertentu dengan metadata lengkap
-* `PUT /v1/messages/:id` - Perbarui pesan (tanda, folder, status telah dibaca)
+* `GET /v1/messages/:id` - Ambil pesan spesifik dengan metadata lengkap
+* `PUT /v1/messages/:id` - Perbarui pesan (flag, folder, status baca)
 * `DELETE /v1/messages/:id` - Hapus pesan secara permanen
 
-### Folder (5 titik akhir) {#folders-5-endpoints}
+### Folder (5 endpoint) {#folders-5-endpoints}
 
 * `GET /v1/folders` - Daftar semua folder dengan status langganan
-* `POST /v1/folders` - Buat folder baru dengan properti khusus
+* `POST /v1/folders` - Buat folder baru dengan properti kustom
 * `GET /v1/folders/:id` - Dapatkan detail folder dan jumlah pesan
 * `PUT /v1/folders/:id` - Perbarui properti folder dan langganan
 * `DELETE /v1/folders/:id` - Hapus folder dan tangani relokasi pesan
 
-### Kontak (5 titik akhir) {#contacts-5-endpoints}
+### Kontak (5 endpoint) {#contacts-5-endpoints}
 
 * `GET /v1/contacts` - Daftar kontak dengan pencarian dan paginasi
-* `POST /v1/contacts` - Buat kontak baru dengan dukungan vCard penuh
-* `GET /v1/contacts/:id` - Ambil kontak beserta semua kolom dan metadata
+* `POST /v1/contacts` - Buat kontak baru dengan dukungan vCard lengkap
+* `GET /v1/contacts/:id` - Ambil kontak dengan semua bidang dan metadata
 * `PUT /v1/contacts/:id` - Perbarui informasi kontak dengan validasi ETag
-* `DELETE /v1/contacts/:id` - Hapus kontak dengan penanganan berjenjang
+* `DELETE /v1/contacts/:id` - Hapus kontak dengan penanganan cascade
 
-### Kalender (5 titik akhir) {#calendars-5-endpoints}
+### Kalender (5 endpoint) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - Daftar acara kalender dengan pemfilteran tanggal
+* `GET /v1/calendars` - Daftar acara kalender dengan penyaringan tanggal
 * `POST /v1/calendars` - Buat acara kalender dengan peserta dan pengulangan
 * `GET /v1/calendars/:id` - Dapatkan detail acara dengan penanganan zona waktu
 * `PUT /v1/calendars/:id` - Perbarui acara dengan deteksi konflik
 * `DELETE /v1/calendars/:id` - Hapus acara dengan notifikasi peserta
 
-## Pencarian Lanjutan: Tidak Ada Layanan Lain yang Membandingkan {#advanced-search-no-other-service-compares}
 
-**Forward Email adalah satu-satunya layanan email yang menawarkan pencarian terprogram yang komprehensif di seluruh bidang pesan melalui REST API.**
+## Pencarian Lanjutan: Tidak Ada Layanan Lain yang Menyamai {#advanced-search-no-other-service-compares}
 
-Meskipun penyedia lain hanya menawarkan penyaringan dasar, kami telah membangun API pencarian email tercanggih yang pernah ada. Tidak ada API Gmail, API Outlook, atau layanan lain yang mampu menandingi kemampuan pencarian kami.
+**Forward Email adalah satu-satunya layanan email yang menawarkan pencarian programatik komprehensif di semua bidang pesan melalui REST API.**
 
-### Lanskap API Penelusuran Rusak {#the-search-api-landscape-is-broken}
+Sementara penyedia lain hanya menawarkan penyaringan dasar, kami telah membangun API pencarian email paling canggih yang pernah dibuat. Tidak ada Gmail API, Outlook API, atau layanan lain yang mendekati kemampuan pencarian kami.
 
-**Keterbatasan Pencarian API Gmail:**
+### Lanskap API Pencarian yang Rusak {#the-search-api-landscape-is-broken}
 
-* ✅ Hanya parameter dasar `q`
-* ❌ Tidak ada pencarian khusus bidang
-* ❌ Tidak ada pemfilteran rentang tanggal
-* ❌ Tidak ada pemfilteran berdasarkan ukuran
-* ❌ Tidak ada pemfilteran lampiran
+**Batasan Pencarian Gmail API:**
+
+* ✅ Parameter `q` dasar saja
+* ❌ Tidak ada pencarian spesifik bidang
+* ❌ Tidak ada penyaringan rentang tanggal
+* ❌ Tidak ada penyaringan berdasarkan ukuran
+* ❌ Tidak ada penyaringan lampiran
 * ❌ Terbatas pada sintaks pencarian Gmail
 
-**Keterbatasan Pencarian API Outlook:**
+**Batasan Pencarian Outlook API:**
 
 * ✅ Parameter `$search` dasar
-* ❌ Tidak ada penargetan kolom lanjutan
-* ❌ Tidak ada kombinasi kueri yang kompleks
-* ❌ Pembatasan laju yang agresif
-* ❌ Diperlukan sintaks OData yang kompleks
+* ❌ Tidak ada penargetan bidang lanjutan
+* ❌ Tidak ada kombinasi kueri kompleks
+* ❌ Pembatasan tingkat yang agresif
+* ❌ Sintaks OData yang kompleks diperlukan
 
 **Apple iCloud:**
 
-* ❌ Tanpa API sama sekali
-* ❌ Hanya pencarian IMAP (jika Anda bisa membuatnya berfungsi)
+* ❌ Tidak ada API sama sekali
+* ❌ Hanya pencarian IMAP (jika bisa dijalankan)
 
 **ProtonMail & Tuta:**
 
 * ❌ Tidak ada API publik
-* ❌ Tidak ada kemampuan pencarian terprogram
+* ❌ Tidak ada kemampuan pencarian programatik
 
 ### API Pencarian Revolusioner Forward Email {#forward-emails-revolutionary-search-api}
 
-**Kami menawarkan 15+ parameter pencarian yang tidak disediakan oleh layanan lain:**
+**Kami menawarkan 15+ parameter pencarian yang tidak disediakan layanan lain:**
 
-| Kemampuan Pencarian | Teruskan Email | Gmail API | API Outlook | Yang lain |
-| ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **Pencarian Khusus Bidang** | ✅ Subjek, isi, dari, kepada, cc, tajuk | ❌ | ❌ | ❌ |
-| **Pencarian Umum Multi-Bidang** | ✅ `?search=` di semua bidang | ✅ Dasar `q=` | ✅ Dasar `$search=` | ❌ |
-| **Pemfilteran Rentang Tanggal** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **Penyaringan Berbasis Ukuran** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **Pemfilteran Lampiran** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **Pencarian Header** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **Pencarian ID Pesan** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **Filter Gabungan** | ✅ Beberapa parameter dengan logika AND | ❌ | ❌ | ❌ |
-| **Tidak Peka terhadap Huruf Besar/Kecil** | ✅ Semua pencarian | ✅ | ✅ | ❌ |
-| **Dukungan Paginasi** | ✅ Bekerja dengan semua parameter pencarian | ✅ | ✅ | ❌ |
-
+| Kemampuan Pencarian           | Forward Email                          | Gmail API    | Outlook API        | Lainnya |
+| ---------------------------- | ------------------------------------ | ------------ | ------------------ | ------- |
+| **Pencarian Spesifik Bidang** | ✅ Subjek, isi, dari, ke, cc, header | ❌            | ❌                  | ❌       |
+| **Pencarian Umum Multi-Bidang** | ✅ `?search=` di semua bidang         | ✅ Dasar `q=` | ✅ Dasar `$search=` | ❌       |
+| **Penyaringan Rentang Tanggal** | ✅ `?since=` & `?before=`             | ❌            | ❌                  | ❌       |
+| **Penyaringan Berdasarkan Ukuran** | ✅ `?min_size=` & `?max_size=`        | ❌            | ❌                  | ❌       |
+| **Penyaringan Lampiran**      | ✅ `?has_attachments=true/false`      | ❌            | ❌                  | ❌       |
+| **Pencarian Header**          | ✅ `?headers=X-Priority`              | ❌            | ❌                  | ❌       |
+| **Pencarian ID Pesan**        | ✅ `?message_id=abc123`               | ❌            | ❌                  | ❌       |
+| **Filter Gabungan**           | ✅ Beberapa parameter dengan logika AND | ❌            | ❌                  | ❌       |
+| **Tidak Sensitif Huruf Besar/Kecil** | ✅ Semua pencarian                   | ✅            | ✅                  | ❌       |
+| **Dukungan Paginasi**         | ✅ Berfungsi dengan semua parameter pencarian | ✅            | ✅                  | ❌       |
 ### Contoh Pencarian Dunia Nyata {#real-world-search-examples}
 
 **Temukan Semua Faktur dari Kuartal Terakhir:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - Sederhana dan kuat
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - Tidak mungkin dengan pencarian terbatas mereka
+# Tidak ada penyaringan rentang tanggal yang tersedia
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - Sintaks OData yang kompleks, fungsi terbatas
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
 **Cari Lampiran Besar dari Pengirim Tertentu:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - Penyaringan komprehensif
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - Tidak dapat memfilter berdasarkan ukuran atau lampiran secara programatik
+# Outlook API - Tidak ada penyaringan ukuran yang tersedia
+# Lainnya - Tidak ada API yang tersedia
 ```
 
-**Pencarian Multi-Bidang Kompleks:**
+**Pencarian Multi-Field Kompleks:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - Kemampuan kueri lanjutan
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - Terbatas pada pencarian teks dasar saja
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - Pencarian dasar tanpa penargetan bidang
 GET /me/messages?$search="quarterly"
 ```
 
 ### Keunggulan Performa {#performance-advantages}
 
-**Kinerja Pencarian Email Teruskan:**
+**Performa Pencarian Forward Email:**
 
-* ⚡ **Waktu respons di bawah 100 ms** untuk pencarian kompleks
-* 🔍 **Optimasi Regex** dengan pengindeksan yang tepat
-* 📊 **Eksekusi kueri paralel** untuk hitungan dan data
-* 💾 **Penggunaan memori yang efisien** dengan kueri yang ramping
+* ⚡ **Waktu respons di bawah 100ms** untuk pencarian kompleks
+* 🔍 **Optimasi regex** dengan pengindeksan yang tepat
+* 📊 **Eksekusi kueri paralel** untuk hitung dan data
+* 💾 **Penggunaan memori efisien** dengan kueri ringan
 
-**Masalah Kinerja Pesaing:**
+**Masalah Performa Pesaing:**
 
-* 🐌 **API Gmail**: Batas kuota hingga 250 unit kuota per pengguna per detik
-* 🐌 **API Outlook**: Pembatasan agresif dengan persyaratan penundaan yang kompleks
-* 🐌 **Lainnya**: Tidak ada API yang dapat dibandingkan
+* 🐌 **Gmail API**: Terbatas kuota 250 unit per pengguna per detik
+* 🐌 **Outlook API**: Pembatasan agresif dengan persyaratan backoff kompleks
+* 🐌 **Lainnya**: Tidak ada API untuk dibandingkan
 
 ### Fitur Pencarian yang Tidak Dimiliki Orang Lain {#search-features-no-one-else-has}
 
 #### 1. Pencarian Spesifik Header {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# Temukan pesan dengan header tertentu
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. Kecerdasan Berbasis Ukuran {#2-size-based-intelligence}
+#### 2. Intelijen Berdasarkan Ukuran {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# Temukan email newsletter (biasanya besar)
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# Temukan balasan cepat (biasanya kecil)
 GET /v1/messages?max_size=1000&to=support
 ```
 
 #### 3. Alur Kerja Berbasis Lampiran {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# Temukan semua dokumen yang dikirim ke tim hukum
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# Temukan email tanpa lampiran untuk pembersihan
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
 #### 4. Logika Bisnis Gabungan {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# Temukan pesan penting yang ditandai dari VIP dengan lampiran
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
-### Mengapa Hal Ini Penting bagi Pengembang {#why-this-matters-for-developers}
+### Mengapa Ini Penting untuk Pengembang {#why-this-matters-for-developers}
 
-**Membangun Aplikasi yang Sebelumnya Tidak Mungkin:**
+**Bangun Aplikasi yang Sebelumnya Tidak Mungkin:**
 
-1. **Analisis Email Lanjutan**: Analisis pola email berdasarkan ukuran, pengirim, dan konten
-2. **Manajemen Email Cerdas**: Atur otomatis berdasarkan kriteria yang kompleks
-3. **Kepatuhan dan Penemuan**: Temukan email spesifik untuk persyaratan hukum
-4. **Kecerdasan Bisnis**: Ekstrak wawasan dari pola komunikasi email
-5. **Alur Kerja Otomatis**: Picu tindakan berdasarkan filter email yang canggih
+1. **Analitik Email Lanjutan**: Analisis pola email berdasarkan ukuran, pengirim, konten
+2. **Manajemen Email Cerdas**: Otomatis mengatur berdasarkan kriteria kompleks
+3. **Kepatuhan dan Penemuan**: Temukan email spesifik untuk kebutuhan hukum
+4. **Intelijen Bisnis**: Ekstrak wawasan dari pola komunikasi email
+5. **Alur Kerja Otomatis**: Memicu tindakan berdasarkan filter email yang canggih
 
 ### Implementasi Teknis {#the-technical-implementation}
 
 API pencarian kami menggunakan:
 
-**Optimalisasi Regex** dengan strategi pengindeksan yang tepat
+* **Optimasi regex** dengan strategi pengindeksan yang tepat
 * **Eksekusi paralel** untuk performa
 * **Validasi input** untuk keamanan
 * **Penanganan kesalahan komprehensif** untuk keandalan
 
 ```javascript
-// Example: Complex search implementation
+// Contoh: Implementasi pencarian kompleks
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -355,18 +356,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// Gabungkan dengan logika AND
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **Keunggulan Pengembang**: Dengan API pencarian Forward Email, Anda dapat membangun aplikasi email yang fungsionalitasnya menyaingi klien desktop, sekaligus tetap mempertahankan kesederhanaan REST API.
-
+> **Keuntungan Pengembang**: Dengan API pencarian Forward Email, Anda dapat membangun aplikasi email yang menyaingi klien desktop dalam fungsionalitas sambil mempertahankan kesederhanaan REST API.
 ## Arsitektur Performa Super Cepat {#blazing-fast-performance-architecture}
 
-Tumpukan teknis kami dibuat untuk kecepatan dan keandalan:
+Tumpukan teknis kami dibangun untuk kecepatan dan keandalan:
 
 ```mermaid
 graph LR
@@ -376,105 +376,105 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Tolok Ukur Kinerja {#performance-benchmarks}
+### Tolok Ukur Performa {#performance-benchmarks}
 
 **Mengapa Kami Sangat Cepat:**
 
-| Komponen | Teknologi | Manfaat Kinerja |
+| Komponen    | Teknologi                                                                        | Manfaat Performa                            |
 | ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **Penyimpanan** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | 10x lebih cepat dari SATA tradisional |
-| **Basis Data** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Latensi jaringan nol, serialisasi yang dioptimalkan |
-| **Perangkat keras** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) logam polos | Tidak ada overhead virtualisasi |
-| **Penyimpanan dalam cache** | Dalam memori + persisten | Waktu respons sub-milidetik |
-| **Cadangan** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) terenkripsi | Keandalan tingkat perusahaan |
+| **Penyimpanan**  | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                             | 10x lebih cepat daripada SATA tradisional    |
+| **Database** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr)   | Nol latensi jaringan, serialisasi yang dioptimalkan |
+| **Perangkat Keras** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) bare metal | Tanpa overhead virtualisasi                   |
+| **Caching**  | Dalam memori + persisten                                                            | Waktu respons sub-milidetik                   |
+| **Cadangan**  | [Cloudflare R2](https://www.cloudflare.com/products/r2/) terenkripsi                | Keandalan tingkat perusahaan                   |
 
-**Angka Kinerja Nyata:**
+**Angka Performa Nyata:**
 
-* **Waktu Respons API**: Rata-rata <50 md
-* **Pengambilan Pesan**: <10 md untuk pesan yang di-cache
-* **Operasi Folder**: <5 md untuk operasi metadata
+* **Waktu Respons API**: < 50ms rata-rata
+* **Pengambilan Pesan**: < 10ms untuk pesan yang di-cache
+* **Operasi Folder**: < 5ms untuk operasi metadata
 * **Sinkronisasi Kontak**: 1000+ kontak/detik
-* **Waktu Aktif**: 99,99% SLA dengan infrastruktur redundan
+* **Waktu Aktif**: SLA 99,99% dengan infrastruktur redundan
 
-### Arsitektur Privasi Utama {#privacy-first-architecture}
+### Arsitektur Berorientasi Privasi {#privacy-first-architecture}
 
-**Desain Tanpa Pengetahuan**: Hanya Anda yang memiliki akses dengan kata sandi IMAP Anda - kami tidak dapat membaca email Anda. [arsitektur tanpa pengetahuan](https://forwardemail.net/en/security) kami memastikan privasi penuh sekaligus memberikan kinerja yang luar biasa.
+**Desain Zero-Knowledge**: Hanya Anda yang memiliki akses dengan kata sandi IMAP Anda - kami tidak dapat membaca email Anda. [Arsitektur zero-knowledge](https://forwardemail.net/en/security) kami memastikan privasi lengkap sambil memberikan performa super cepat.
+
 
 ## Mengapa Kami Berbeda: Perbandingan Lengkap {#why-were-different-the-complete-comparison}
 
-### Batasan Penyedia Utama {#major-provider-limitations}
+### Keterbatasan Penyedia Utama {#major-provider-limitations}
 
-| Penyedia | Masalah Inti | Batasan Khusus |
+| Penyedia         | Masalah Utama                             | Keterbatasan Spesifik                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gmail API** | Hanya baca, OAuth Kompleks, API Terpisah | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) untuk kontak/kalender |
-| **API Outlook** | Tidak digunakan lagi, Membingungkan, Berfokus pada Perusahaan | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Grafik, REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **Apple iCloud** | Tidak Ada API Publik | • [No public API whatsoever](https://support.apple.com/en-us/102654)<br>• [IMAP-only with 1000 emails/day limit](https://support.apple.com/en-us/102654)<br>• [App-specific passwords required](https://support.apple.com/en-us/102654)<br>• [500 recipients per message limit](https://support.apple.com/en-us/102654) |
-| **ProtonMail** | Tidak Ada API, Klaim Open-Source Palsu | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge software required](https://proton.me/mail/bridge) untuk akses IMAP<br>• [Claims "open source"](https://proton.me/blog/open-source) tetapi [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **Total** | Tidak Ada API, Transparansi Menyesatkan | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) tetapi [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) mencegah integrasi standar |
-| **Email Zapier** | Batasan Tarif Parah | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
-
+| **Gmail API**    | Hanya baca, OAuth kompleks, API terpisah   | • [Tidak dapat memodifikasi pesan yang ada](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Label ≠ folder](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [Batas kuota 1 miliar unit/hari](https://developers.google.com/gmail/api/reference/quota)<br>• [Memerlukan API terpisah](https://developers.google.com/workspace) untuk kontak/kalender                                                           |
+| **Outlook API**  | Tidak lagi didukung, membingungkan, fokus perusahaan | • [REST endpoint dihentikan Maret 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Banyak API membingungkan](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graph, REST)<br>• [Kompleksitas Microsoft Graph](https://learn.microsoft.com/en-us/graph/overview)<br>• [Pembatasan agresif](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud** | Tidak ada API Publik                             | • [Tidak ada API publik sama sekali](https://support.apple.com/en-us/102654)<br>• [Hanya IMAP dengan batas 1000 email/hari](https://support.apple.com/en-us/102654)<br>• [Diperlukan kata sandi khusus aplikasi](https://support.apple.com/en-us/102654)<br>• [Batas 500 penerima per pesan](https://support.apple.com/en-us/102654)                                                                                                                                              |
+| **ProtonMail**   | Tidak ada API, Klaim Open-Source Palsu          | • [Tidak ada API publik tersedia](https://proton.me/support/protonmail-bridge-clients)<br>• [Perlu perangkat lunak Bridge](https://proton.me/mail/bridge) untuk akses IMAP<br>• [Mengklaim "open source"](https://proton.me/blog/open-source) tetapi [kode server adalah proprietary](https://github.com/ProtonMail)<br>• [Terbatas hanya untuk paket berbayar](https://proton.me/pricing)                                                                                                         |
+| **Tuta**         | Tidak ada API, Transparansi Menyesatkan           | • [Tidak ada REST API untuk manajemen email](https://tuta.com/support#technical)<br>• [Mengklaim "open source"](https://tuta.com/blog/posts/open-source-email) tetapi [backend tertutup](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP tidak didukung](https://tuta.com/support#imap)<br>• [Enkripsi proprietary](https://tuta.com/encryption) mencegah integrasi standar                                                                                               |
+| **Zapier Email** | Batasan Tingkat Parah                        | • [Batas 10 email per jam](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Tidak ada akses folder IMAP](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Kemampuan parsing terbatas](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)                                 |
 ### Keuntungan Meneruskan Email {#forward-email-advantages}
 
-| Fitur | Teruskan Email | Kompetisi |
+| Fitur              | Meneruskan Email                                                                             | Kompetisi                                |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **CRUD Lengkap** | ✅ Buat, baca, perbarui, hapus penuh untuk semua data | ❌ Operasi hanya baca atau terbatas |
-| **API Terpadu** | ✅ Pesan, folder, kontak, kalender dalam satu API | ❌ API terpisah atau fitur yang hilang |
-| **Otorisasi Sederhana** | ✅ Otentikasi dasar dengan kredensial alias | ❌ OAuth kompleks dengan beberapa cakupan |
-| **Tidak Ada Batasan Tarif** | ✅ Batasan yang besar dirancang untuk aplikasi nyata | ❌ Kuota terbatas yang mengganggu alur kerja |
-| **Hosting Mandiri** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Hanya untuk vendor lock-in |
-| **Pribadi** | ✅ Tanpa pengetahuan, terenkripsi, pribadi | ❌ Penambangan data dan masalah privasi |
-| **Pertunjukan** | ✅ Respons di bawah 50 ms, penyimpanan NVMe | ❌ Latensi jaringan, penundaan pelambatan |
+| **CRUD Lengkap**   | ✅ Buat, baca, perbarui, hapus penuh untuk semua data                                        | ❌ Hanya baca atau operasi terbatas        |
+| **API Terpadu**    | ✅ Pesan, folder, kontak, kalender dalam satu API                                            | ❌ API terpisah atau fitur hilang          |
+| **Otentikasi Sederhana** | ✅ Otentikasi dasar dengan kredensial alias                                               | ❌ OAuth kompleks dengan banyak cakupan    |
+| **Tanpa Batasan Kecepatan** | ✅ Batasan dermawan yang dirancang untuk aplikasi nyata                               | ❌ Kuota ketat yang mengganggu alur kerja  |
+| **Self-Hosting**   | ✅ [Opsi self-hosting lengkap](https://forwardemail.net/en/blog/docs/self-hosted-solution)   | ❌ Hanya terkunci pada vendor               |
+| **Privasi**        | ✅ Zero-knowledge, terenkripsi, pribadi                                                      | ❌ Penambangan data dan masalah privasi    |
+| **Performa**       | ✅ Respon sub-50ms, penyimpanan NVMe                                                        | ❌ Latensi jaringan, penundaan throttling  |
 
-### Masalah Transparansi Sumber Terbuka {#the-open-source-transparency-problem}
+### Masalah Transparansi Open-Source {#the-open-source-transparency-problem}
 
-**ProtonMail dan Tuta memasarkan diri mereka sebagai "sumber terbuka" dan "transparan", tetapi ini adalah pemasaran yang menyesatkan dan melanggar prinsip privasi modern.**
+**ProtonMail dan Tuta memasarkan diri mereka sebagai "open source" dan "transparan," tetapi ini adalah pemasaran menyesatkan yang melanggar prinsip privasi modern.**
 
 > \[!WARNING]
-> **Klaim Transparansi Palsu**: Baik ProtonMail maupun Tuta secara terang-terangan mengiklankan kredensial "sumber terbuka" mereka, namun tetap menjaga kode sisi server mereka yang paling penting tetap bersifat privat dan tertutup.
+> **Klaim Transparansi Palsu**: Baik ProtonMail maupun Tuta secara mencolok mengiklankan kredensial "open source" mereka sementara kode server paling kritis tetap bersifat proprietary dan tertutup.
 
 **Penipuan ProtonMail:**
 
-* **Klaim**: ["Kami adalah sumber terbuka"](https://proton.me/blog/open-source) ditampilkan secara mencolok dalam pemasaran
-* **Realitas**: [Kode server sepenuhnya merupakan hak milik](https://github.com/ProtonMail) - hanya aplikasi klien yang bersifat sumber terbuka
+* **Klaim**: ["Kami open source"](https://proton.me/blog/open-source) yang ditampilkan secara mencolok dalam pemasaran
+* **Realita**: [Kode server sepenuhnya proprietary](https://github.com/ProtonMail) - hanya aplikasi klien yang open source
 * **Dampak**: Pengguna tidak dapat memverifikasi enkripsi sisi server, penanganan data, atau klaim privasi
 * **Pelanggaran Transparansi**: Tidak ada cara untuk mengaudit sistem pemrosesan dan penyimpanan email yang sebenarnya
 
-**Pemasaran Tuta yang Menyesatkan:**
+**Pemasaran Menyesatkan Tuta:**
 
-* **Klaim**: ["Email sumber terbuka"](https://tuta.com/blog/posts/open-source-email) sebagai nilai jual utama
-* **Realitas**: [Infrastruktur backend bersifat sumber tertutup](https://github.com/tutao/tutanota) - hanya antarmuka pengguna yang tersedia
-* **Dampak**: Enkripsi kepemilikan mencegah protokol email standar (IMAP/SMTP)
-* **Strategi Penguncian**: Enkripsi khusus memaksa ketergantungan pada vendor
+* **Klaim**: ["Email open source"](https://tuta.com/blog/posts/open-source-email) sebagai poin penjualan utama
+* **Realita**: [Infrastruktur backend tertutup](https://github.com/tutao/tutanota) - hanya frontend yang tersedia
+* **Dampak**: Enkripsi proprietary mencegah protokol email standar (IMAP/SMTP)
+* **Strategi Lock-in**: Enkripsi khusus memaksa ketergantungan pada vendor
 
-**Mengapa Hal Ini Penting untuk Privasi Modern:**
+**Mengapa Ini Penting untuk Privasi Modern:**
 
-Pada tahun 2025, privasi sejati membutuhkan **transparansi penuh**. Ketika penyedia email mengklaim "sumber terbuka" tetapi menyembunyikan kode server mereka:
+Di tahun 2025, privasi sejati membutuhkan **transparansi lengkap**. Ketika penyedia email mengklaim "open source" tetapi menyembunyikan kode server mereka:
 
-1. **Enkripsi yang Tidak Dapat Diverifikasi**: Anda tidak dapat mengaudit bagaimana data Anda sebenarnya dienkripsi
+1. **Enkripsi Tidak Terverifikasi**: Anda tidak dapat mengaudit bagaimana data Anda sebenarnya dienkripsi
 2. **Praktik Data Tersembunyi**: Penanganan data sisi server tetap menjadi kotak hitam
-3. **Keamanan Berbasis Kepercayaan**: Anda harus memercayai klaim mereka tanpa verifikasi
-4. **Penguncian Vendor**: Sistem kepemilikan mencegah portabilitas data
+3. **Keamanan Berbasis Kepercayaan**: Anda harus mempercayai klaim mereka tanpa verifikasi
+4. **Lock-in Vendor**: Sistem proprietary mencegah portabilitas data
 
-**Transparansi Sejati Email Teruskan:**
+**Transparansi Sejati Forward Email:**
 
-* ✅ **[Sumber terbuka lengkap](https://github.com/forwardemail/forwardemail.net)** - kode server dan klien
-* ✅ **[Hosting mandiri tersedia](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - jalankan instans Anda sendiri
+* ✅ **[Open source lengkap](https://github.com/forwardemail/forwardemail.net)** - kode server dan klien
+* ✅ **[Self-hosting tersedia](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - jalankan instance Anda sendiri
 * ✅ **Protokol standar** - kompatibilitas IMAP, SMTP, CardDAV, CalDAV
-* ✅ **Keamanan yang dapat diaudit** - setiap baris kode dapat diperiksa
-* ✅ **Tanpa vendor lock-in** - data Anda, kendali Anda
+* ✅ **Keamanan dapat diaudit** - setiap baris kode dapat diperiksa
+* ✅ **Tanpa lock-in vendor** - data Anda, kontrol Anda
 
 > \[!TIP]
-> **Sumber terbuka sejati berarti Anda dapat memverifikasi setiap klaim.** Dengan Forward Email, Anda dapat mengaudit enkripsi kami, meninjau penanganan data kami, dan bahkan menjalankan instansi Anda sendiri. Itulah transparansi sejati.
+> **Open source sejati berarti Anda dapat memverifikasi setiap klaim.** Dengan Forward Email, Anda dapat mengaudit enkripsi kami, meninjau penanganan data kami, dan bahkan menjalankan instance Anda sendiri. Itulah transparansi sejati.
+
 
 ## 30+ Contoh Integrasi Dunia Nyata {#30-real-world-integration-examples}
 
-### 1. Peningkatan Formulir Kontak WordPress {#1-wordpress-contact-form-enhancement}
-
-**Masalah**: [Kegagalan konfigurasi SMTP WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 masalah GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**Solusi**: Integrasi API langsung mengabaikan [SMTP](https://tools.ietf.org/html/rfc5321) sepenuhnya
+### 1. Peningkatan Form Kontak WordPress {#1-wordpress-contact-form-enhancement}
+**Masalah**: [Kegagalan konfigurasi SMTP WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 isu GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))  
+**Solusi**: Integrasi API langsung melewati [SMTP](https://tools.ietf.org/html/rfc5321) sepenuhnya
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// Form kontak WordPress yang menyimpan ke folder Terkirim
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -483,20 +483,20 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'Form Kontak: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
 });
 ```
 
-### 2. Alternatif Zapier untuk Otomatisasi Email {#2-zapier-alternative-for-email-automation}
+### 2. Alternatif Zapier untuk Otomasi Email {#2-zapier-alternative-for-email-automation}
 
-**Masalah**: [Batas 10 email/jam Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) dan [Kegagalan deteksi IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-**Solusi**: Otomatisasi tanpa batas dengan kontrol email penuh
+**Masalah**: [Batas 10 email/jam Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) dan [kegagalan deteksi IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)  
+**Solusi**: Otomasi tanpa batas dengan kontrol email penuh
 
 ```javascript
-// Auto-organize emails by sender domain
+// Mengatur email secara otomatis berdasarkan domain pengirim
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -509,11 +509,11 @@ for (const message of messages) {
 
 ### 3. Sinkronisasi Email CRM {#3-crm-email-synchronization}
 
-**Masalah**: Manajemen kontak manual antara email dan [Sistem CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**Solusi**: Sinkronisasi dua arah dengan API kontak [KartuDAV](https://tools.ietf.org/html/rfc6352)
+**Masalah**: Manajemen kontak manual antara email dan [sistem CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)  
+**Solusi**: Sinkronisasi dua arah dengan API kontak [CardDAV](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
-// Sync new email contacts to CRM
+// Sinkronisasi kontak email baru ke CRM
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -524,13 +524,13 @@ for (const contact of newContacts) {
 }
 ```
 
-### 4. Pemrosesan Pesanan E-niaga {#4-e-commerce-order-processing}
+### 4. Pemrosesan Pesanan E-commerce {#4-e-commerce-order-processing}
 
-**Masalah**: Pemrosesan email pesanan manual untuk [platform e-commerce](https://en.wikipedia.org/wiki/E-commerce)
-**Solusi**: Alur manajemen pesanan otomatis
+**Masalah**: Pemrosesan email pesanan manual untuk [platform e-commerce](https://en.wikipedia.org/wiki/E-commerce)  
+**Solusi**: Pipeline manajemen pesanan otomatis
 
 ```javascript
-// Process order confirmation emails
+// Memproses email konfirmasi pesanan
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
   msg.subject.includes('Order Confirmation')
@@ -548,11 +548,11 @@ for (const order of orderEmails) {
 
 ### 5. Integrasi Tiket Dukungan {#5-support-ticket-integration}
 
-**Masalah**: Rangkaian email tersebar di [platform meja bantuan](https://en.wikipedia.org/wiki/Help_desk_software)
-**Solusi**: Pelacakan rangkaian email secara menyeluruh
+**Masalah**: Thread email tersebar di berbagai [platform helpdesk](https://en.wikipedia.org/wiki/Help_desk_software)  
+**Solusi**: Pelacakan thread email lengkap
 
 ```javascript
-// Create support ticket from email thread
+// Membuat tiket dukungan dari thread email
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -568,13 +568,13 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. Sistem Manajemen Buletin {#6-newsletter-management-system}
+### 6. Sistem Manajemen Newsletter {#6-newsletter-management-system}
 
-**Masalah**: Integrasi [platform buletin](https://en.wikipedia.org/wiki/Email_marketing) terbatas
-**Solusi**: Manajemen siklus hidup pelanggan yang lengkap
+**Masalah**: Integrasi terbatas dengan [platform newsletter](https://en.wikipedia.org/wiki/Email_marketing)  
+**Solusi**: Manajemen siklus hidup pelanggan lengkap
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// Mengelola langganan newsletter secara otomatis
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
   msg.subject.toLowerCase().includes('unsubscribe')
@@ -591,9 +591,8 @@ for (const msg of unsubscribes) {
 
 ### 7. Manajemen Tugas Berbasis Email {#7-email-based-task-management}
 
-**Masalah**: Kotak masuk penuh dan [pelacakan tugas](https://en.wikipedia.org/wiki/Task_management)
-**Solusi**: Ubah email menjadi tugas yang dapat ditindaklanjuti
-
+**Masalah**: Kotak masuk penuh dan [pelacakan tugas](https://en.wikipedia.org/wiki/Task_management)  
+**Solusi**: Mengubah email menjadi tugas yang dapat ditindaklanjuti
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -607,10 +606,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. Agregasi Email Multi-Akun {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**Masalah**: Mengelola [beberapa akun email](https://en.wikipedia.org/wiki/Email_client) di seluruh penyedia
-**Solusi**: Antarmuka kotak masuk terpadu
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -625,10 +624,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. Dasbor Analisis Email Lanjutan {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**Masalah**: Tidak ada wawasan tentang [pola email](https://en.wikipedia.org/wiki/Email_analytics) dengan pemfilteran canggih
-**Solusi**: Analisis email khusus menggunakan kemampuan pencarian lanjutan
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -675,10 +674,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. Pengarsipan Email Cerdas {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**Masalah**: Manual [organisasi email](https://en.wikipedia.org/wiki/Email_management)
-**Solusi**: Kategorisasi email yang cerdas
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -696,10 +695,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. Integrasi Email ke Kalender {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**Masalah**: Pembuatan [acara kalender](https://tools.ietf.org/html/rfc4791) secara manual dari email
-**Solusi**: Ekstraksi dan pembuatan peristiwa secara otomatis
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -723,10 +722,10 @@ for (const email of meetingEmails) {
 }
 ```
 
-### 12. Pencadangan dan Kepatuhan Email {#12-email-backup-and-compliance}
+### 12. Cadangan Email dan Kepatuhan {#12-email-backup-and-compliance}
 
-**Masalah**: [Retensi email](https://en.wikipedia.org/wiki/Email_retention_policy) dan persyaratan kepatuhan
-**Solusi**: Pencadangan otomatis dengan pelestarian metadata
+**Masalah**: [Retensi email](https://en.wikipedia.org/wiki/Email_retention_policy) dan persyaratan kepatuhan  
+**Solusi**: Cadangan otomatis dengan pelestarian metadata
 
 ```javascript
 // Backup emails with full metadata
@@ -747,7 +746,7 @@ await saveToComplianceStorage(backup);
 
 ### 13. Manajemen Konten Berbasis Email {#13-email-based-content-management}
 
-**Masalah**: Mengelola kiriman konten melalui email untuk [Platform CMS](https://en.wikipedia.org/wiki/Content_management_system)
+**Masalah**: Mengelola pengiriman konten melalui email untuk [platform CMS](https://en.wikipedia.org/wiki/Content_management_system)  
 **Solusi**: Email sebagai sistem manajemen konten
 
 ```javascript
@@ -769,8 +768,8 @@ for (const submission of submissions) {
 
 ### 14. Manajemen Template Email {#14-email-template-management}
 
-**Masalah**: [templat email](https://en.wikipedia.org/wiki/Email_template) tidak konsisten di seluruh tim
-**Solusi**: Sistem templat terpusat dengan API
+**Masalah**: [Template email](https://en.wikipedia.org/wiki/Email_template) yang tidak konsisten di seluruh tim  
+**Solusi**: Sistem template terpusat dengan API
 
 ```javascript
 // Send templated emails with dynamic content
@@ -788,7 +787,7 @@ await fetch('/v1/messages', {
 
 ### 15. Otomatisasi Alur Kerja Berbasis Email {#15-email-based-workflow-automation}
 
-**Masalah**: [proses persetujuan](https://en.wikipedia.org/wiki/Workflow) manual melalui email
+**Masalah**: Proses [persetujuan](https://en.wikipedia.org/wiki/Workflow) manual melalui email  
 **Solusi**: Pemicu alur kerja otomatis
 
 ```javascript
@@ -810,7 +809,7 @@ for (const approval of approvals) {
 
 ### 16. Pemantauan Keamanan Email {#16-email-security-monitoring}
 
-**Masalah**: [deteksi ancaman keamanan](https://en.wikipedia.org/wiki/Email_security) manual
+**Masalah**: Deteksi [ancaman keamanan](https://en.wikipedia.org/wiki/Email_security) manual  
 **Solusi**: Analisis ancaman otomatis
 
 ```javascript
@@ -830,8 +829,8 @@ for (const email of recentEmails) {
 
 ### 17. Pengumpulan Survei Berbasis Email {#17-email-based-survey-collection}
 
-**Masalah**: Pemrosesan [tanggapan survei](https://en.wikipedia.org/wiki/Survey_methodology) manual
-**Solusi**: Agregasi respons otomatis
+**Masalah**: Pemrosesan [respon survei](https://en.wikipedia.org/wiki/Survey_methodology) manual  
+**Solusi**: Agregasi respon otomatis
 
 ```javascript
 // Collect and process survey responses
@@ -850,8 +849,8 @@ await updateSurveyResults(surveyData);
 
 ### 18. Pemantauan Kinerja Email {#18-email-performance-monitoring}
 
-**Masalah**: Tidak ada visibilitas ke [kinerja pengiriman email](https://en.wikipedia.org/wiki/Email_deliverability)
-**Solusi**: Metrik email real-time
+**Masalah**: Tidak ada visibilitas ke dalam [kinerja pengiriman email](https://en.wikipedia.org/wiki/Email_deliverability)  
+**Solusi**: Metrik email waktu nyata
 
 ```javascript
 // Monitor email delivery performance
@@ -863,14 +862,13 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
+### 19. Kualifikasi Lead Berbasis Email {#19-email-based-lead-qualification}
 
-### 19. Kualifikasi Prospek Berbasis Email {#19-email-based-lead-qualification}
-
-**Masalah**: Manual [skor prospek](https://en.wikipedia.org/wiki/Lead_scoring) dari interaksi email
-**Solusi**: Jalur kualifikasi prospek otomatis
+**Masalah**: [Penilaian lead](https://en.wikipedia.org/wiki/Lead_scoring) manual dari interaksi email  
+**Solusi**: Pipeline kualifikasi lead otomatis
 
 ```javascript
-// Score leads based on email engagement
+// Skor lead berdasarkan keterlibatan email
 const prospects = await fetch('/v1/contacts');
 for (const prospect of prospects) {
   const messages = await fetch('/v1/messages');
@@ -884,11 +882,11 @@ for (const prospect of prospects) {
 
 ### 20. Manajemen Proyek Berbasis Email {#20-email-based-project-management}
 
-**Masalah**: [Pembaruan proyek](https://en.wikipedia.org/wiki/Project_management) tersebar di seluruh rangkaian email
+**Masalah**: [Pembaruan proyek](https://en.wikipedia.org/wiki/Project_management) tersebar di berbagai thread email  
 **Solusi**: Pusat komunikasi proyek terpusat
 
 ```javascript
-// Extract project updates from emails
+// Ekstrak pembaruan proyek dari email
 const messages = await fetch('/v1/messages?folder=Projects');
 const projectEmails = messages.filter(msg =>
   msg.subject.includes('Project Update')
@@ -906,11 +904,11 @@ for (const email of projectEmails) {
 
 ### 21. Manajemen Inventaris Berbasis Email {#21-email-based-inventory-management}
 
-**Masalah**: Pembaruan inventaris manual dari email pemasok
+**Masalah**: Pembaruan inventaris manual dari email pemasok  
 **Solusi**: Pelacakan inventaris otomatis dari notifikasi email
 
 ```javascript
-// Process inventory updates from supplier emails
+// Proses pembaruan inventaris dari email pemasok
 const messages = await fetch('/v1/messages?folder=Suppliers');
 const inventoryEmails = messages.filter(msg =>
   msg.subject.includes('Inventory Update') || msg.subject.includes('Stock Alert')
@@ -925,7 +923,7 @@ for (const email of inventoryEmails) {
     timestamp: email.date
   });
 
-  // Move to processed folder
+  // Pindahkan ke folder yang sudah diproses
   await fetch(`/v1/messages/${email.id}`, {
     method: 'PUT',
     body: JSON.stringify({ folder: 'Suppliers/Processed' })
@@ -935,11 +933,11 @@ for (const email of inventoryEmails) {
 
 ### 22. Pemrosesan Faktur Berbasis Email {#22-email-based-invoice-processing}
 
-**Masalah**: Integrasi manual [pemrosesan faktur](https://en.wikipedia.org/wiki/Invoice_processing) dan akuntansi
+**Masalah**: Pemrosesan [faktur](https://en.wikipedia.org/wiki/Invoice_processing) manual dan integrasi akuntansi  
 **Solusi**: Ekstraksi faktur otomatis dan sinkronisasi sistem akuntansi
 
 ```javascript
-// Extract invoice data from email attachments
+// Ekstrak data faktur dari lampiran email
 const messages = await fetch('/v1/messages?folder=Invoices');
 const invoiceEmails = messages.filter(msg =>
   msg.subject.toLowerCase().includes('invoice') && msg.attachments.length > 0
@@ -954,7 +952,7 @@ for (const email of invoiceEmails) {
     items: invoiceData.lineItems
   });
 
-  // Flag as processed
+  // Tandai sebagai sudah diproses
   await fetch(`/v1/messages/${email.id}`, {
     method: 'PUT',
     body: JSON.stringify({ flags: ['\\Seen', '\\Flagged'] })
@@ -964,11 +962,11 @@ for (const email of invoiceEmails) {
 
 ### 23. Pendaftaran Acara Berbasis Email {#23-email-based-event-registration}
 
-**Masalah**: Pemrosesan [pendaftaran acara](https://en.wikipedia.org/wiki/Event_management) manual dari balasan email
-**Solusi**: Manajemen peserta dan integrasi kalender otomatis
+**Masalah**: Pemrosesan [pendaftaran acara](https://en.wikipedia.org/wiki/Event_management) manual dari balasan email  
+**Solusi**: Manajemen peserta otomatis dan integrasi kalender
 
 ```javascript
-// Process event registration emails
+// Proses email pendaftaran acara
 const messages = await fetch('/v1/messages?folder=Events');
 const registrations = messages.filter(msg =>
   msg.subject.includes('Registration') || msg.subject.includes('RSVP')
@@ -977,7 +975,7 @@ const registrations = messages.filter(msg =>
 for (const registration of registrations) {
   const attendeeData = parseRegistration(registration.text);
 
-  // Add to attendee list
+  // Tambahkan ke daftar peserta
   await events.addAttendee({
     event: attendeeData.eventId,
     name: attendeeData.name,
@@ -985,7 +983,7 @@ for (const registration of registrations) {
     dietary: attendeeData.dietaryRestrictions
   });
 
-  // Create calendar event for attendee
+  // Buat acara kalender untuk peserta
   await fetch('/v1/calendars', {
     method: 'POST',
     body: JSON.stringify({
@@ -996,10 +994,9 @@ for (const registration of registrations) {
   });
 }
 ```
-
 ### 24. Alur Kerja Persetujuan Dokumen Berbasis Email {#24-email-based-document-approval-workflow}
 
-**Masalah**: Rantai [persetujuan dokumen](https://en.wikipedia.org/wiki/Document_management_system) yang kompleks melalui email
+**Masalah**: Rantai [persetujuan dokumen](https://en.wikipedia.org/wiki/Document_management_system) yang kompleks melalui email  
 **Solusi**: Pelacakan persetujuan otomatis dan versi dokumen
 
 ```javascript
@@ -1030,8 +1027,8 @@ for (const email of approvalEmails) {
 
 ### 25. Analisis Umpan Balik Pelanggan Berbasis Email {#25-email-based-customer-feedback-analysis}
 
-**Masalah**: Pengumpulan [umpan balik pelanggan](https://en.wikipedia.org/wiki/Customer_feedback) manual dan analisis sentimen
-**Solusi**: Pemrosesan umpan balik dan pelacakan sentimen otomatis
+**Masalah**: Pengumpulan dan analisis sentimen [umpan balik pelanggan](https://en.wikipedia.org/wiki/Customer_feedback) secara manual  
+**Solusi**: Pemrosesan umpan balik otomatis dan pelacakan sentimen
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1060,10 +1057,10 @@ for (const email of feedbackEmails) {
 }
 ```
 
-### 26. Alur Rekrutmen Berbasis Email {#26-email-based-recruitment-pipeline}
+### 26. Pipeline Rekrutmen Berbasis Email {#26-email-based-recruitment-pipeline}
 
-**Masalah**: Pelacakan [perekrutan](https://en.wikipedia.org/wiki/Recruitment) dan kandidat secara manual
-**Solusi**: Manajemen kandidat dan penjadwalan wawancara otomatis
+**Masalah**: Pelacakan [rekrutmen](https://en.wikipedia.org/wiki/Recruitment) dan kandidat secara manual  
+**Solusi**: Manajemen kandidat otomatis dan penjadwalan wawancara
 
 ```javascript
 // Process job application emails
@@ -1096,8 +1093,8 @@ for (const application of applications) {
 
 ### 27. Pemrosesan Laporan Pengeluaran Berbasis Email {#27-email-based-expense-report-processing}
 
-**Masalah**: Pengiriman dan persetujuan [laporan pengeluaran](https://en.wikipedia.org/wiki/Expense_report) secara manual
-**Solusi**: Alur kerja ekstraksi dan persetujuan pengeluaran otomatis
+**Masalah**: Pengajuan dan persetujuan [laporan pengeluaran](https://en.wikipedia.org/wiki/Expense_report) secara manual  
+**Solusi**: Ekstraksi pengeluaran otomatis dan alur kerja persetujuan
 
 ```javascript
 // Process expense report emails
@@ -1128,11 +1125,10 @@ for (const email of expenseEmails) {
   }
 }
 ```
-
 ### 28. Pelaporan Jaminan Kualitas Berbasis Email {#28-email-based-quality-assurance-reporting}
 
-**Masalah**: Pelacakan masalah [jaminan kualitas](https://en.wikipedia.org/wiki/Quality_assurance) manual
-**Solusi**: Manajemen masalah QA otomatis dan pelacakan bug
+**Masalah**: Pelacakan masalah [jaminan kualitas](https://en.wikipedia.org/wiki/Quality_assurance) secara manual  
+**Solusi**: Manajemen masalah QA dan pelacakan bug otomatis
 
 ```javascript
 // Process QA bug reports from email
@@ -1171,7 +1167,7 @@ for (const report of bugReports) {
 
 ### 29. Manajemen Vendor Berbasis Email {#29-email-based-vendor-management}
 
-**Masalah**: Pelacakan [komunikasi vendor](https://en.wikipedia.org/wiki/Vendor_management) dan kontrak manual
+**Masalah**: Komunikasi [vendor](https://en.wikipedia.org/wiki/Vendor_management) dan pelacakan kontrak secara manual  
 **Solusi**: Manajemen hubungan vendor otomatis
 
 ```javascript
@@ -1213,8 +1209,8 @@ for (const email of vendorEmails) {
 
 ### 30. Pemantauan Media Sosial Berbasis Email {#30-email-based-social-media-monitoring}
 
-**Masalah**: Pelacakan dan respons penyebutan [media sosial](https://en.wikipedia.org/wiki/Social_media_monitoring) manual
-**Solusi**: Pemrosesan notifikasi media sosial dan koordinasi respons otomatis
+**Masalah**: Pelacakan dan tanggapan [media sosial](https://en.wikipedia.org/wiki/Social_media_monitoring) secara manual  
+**Solusi**: Pemrosesan peringatan media sosial otomatis dan koordinasi tanggapan
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1256,24 +1252,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
+
 ## Memulai {#getting-started}
 
-### 1. Buat Akun Email Penerusan Anda {#1-create-your-forward-email-account}
+### 1. Buat Akun Email Forward Anda {#1-create-your-forward-email-account}
 
 Daftar di [forwardemail.net](https://forwardemail.net) dan verifikasi domain Anda.
 
 ### 2. Hasilkan Kredensial API {#2-generate-api-credentials}
 
 Email alias dan kata sandi Anda berfungsi sebagai kredensial API - tidak diperlukan pengaturan tambahan.
-
-### 3. Lakukan Panggilan API Pertama Anda {#3-make-your-first-api-call}
+### 3. Buat Panggilan API Pertama Anda {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# Daftar pesan Anda
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# Buat kontak baru
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1285,16 +1281,17 @@ curl -u "your-alias@domain.com:password" \
 
 Kunjungi [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) untuk dokumentasi API lengkap dengan contoh interaktif.
 
+
 ## Sumber Daya Teknis {#technical-resources}
 
 * **[Dokumentasi API Lengkap](https://forwardemail.net/en/email-api)** - Spesifikasi OpenAPI 3.0 interaktif
-* **[Panduan Hosting Mandiri](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Terapkan Forward Email di infrastruktur Anda
-* **[Buku Putih Keamanan](https://forwardemail.net/technical-whitepaper.pdf)** - Detail arsitektur teknis dan keamanan
-* **[Repositori GitHub](https://github.com/forwardemail/forwardemail.net)** - Basis kode sumber terbuka
-* **[Dukungan Pengembang](mailto:api@forwardemail.net)** - Akses langsung ke tim teknisi kami
+* **[Panduan Self-Hosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Deploy Forward Email di infrastruktur Anda
+* **[Whitepaper Keamanan](https://forwardemail.net/technical-whitepaper.pdf)** - Arsitektur teknis dan detail keamanan
+* **[Repositori GitHub](https://github.com/forwardemail/forwardemail.net)** - Kode sumber terbuka
+* **[Dukungan Pengembang](mailto:api@forwardemail.net)** - Akses langsung ke tim engineering kami
 
 ---
 
-**Siap merevolusi integrasi email Anda?** [Mulailah membangun dengan API Forward Email hari ini](https://forwardemail.net/en/email-api) dan rasakan platform manajemen email lengkap pertama yang dirancang untuk pengembang.
+**Siap merevolusi integrasi email Anda?** [Mulai membangun dengan API Forward Email hari ini](https://forwardemail.net/en/email-api) dan rasakan platform manajemen email lengkap pertama yang dirancang untuk pengembang.
 
-*Email Terusan: Layanan email yang akhirnya menggunakan API yang tepat.*
+*Forward Email: Layanan email yang akhirnya memahami API dengan benar.*

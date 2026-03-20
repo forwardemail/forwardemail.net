@@ -1,112 +1,117 @@
-# Visszaélés bejelentése {#report-abuse}
+# Visszaélés jelentése {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Visszaélés és spam jelentése a Forward Emailnek" class="rounded-lg" />
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Jogi nyilatkozat](#disclaimer)
-* [Hogyan küldjünk be visszaélési bejelentést](#how-to-submit-an-abuse-report)
+* [Hogyan nyújtsunk be visszaélésről szóló jelentést](#how-to-submit-an-abuse-report)
 * [A nagyközönség számára](#for-the-general-public)
-* [Rendvédelmi szervek számára](#for-law-enforcement)
+* [A rendőrség számára](#for-law-enforcement)
   * [Milyen információk állnak rendelkezésre](#what-information-is-available)
   * [Milyen információk nem állnak rendelkezésre](#what-information-is-not-available)
-  * [Az Egyesült Államokban működő bűnüldöző szervek](#law-enforcement-based-in-the-united-states)
-  * [Az Egyesült Államokon kívül működő bűnüldöző szervek](#law-enforcement-based-outside-of-the-united-states)
-  * [Rendvédelmi sürgősségi kérelmek](#law-enforcement-emergency-requests)
-  * [A bűnüldöző szervek megkeresései fiókértesítéseket válthatnak ki](#law-enforcement-requests-may-trigger-account-notices)
-  * [A bűnüldöző szervek információmegőrzési kérelmei](#law-enforcement-requests-to-preserve-information)
-  * [Rendvédelmi kézbesítési folyamat](#law-enforcement-serving-process)
+  * [Az Egyesült Államokban működő rendőrség](#law-enforcement-based-in-the-united-states)
+  * [Az Egyesült Államokon kívüli rendőrség](#law-enforcement-based-outside-of-the-united-states)
+  * [Rendőrségi sürgősségi kérelmek](#law-enforcement-emergency-requests)
+  * [A rendőrségi kérelmek fiókértesítéseket válthatnak ki](#law-enforcement-requests-may-trigger-account-notices)
+  * [Rendőrségi kérelmek az információk megőrzésére](#law-enforcement-requests-to-preserve-information)
+  * [Rendőrségi kézbesítési eljárás](#law-enforcement-serving-process)
+
 
 ## Jogi nyilatkozat {#disclaimer}
 
-Kérjük, tekintse át a [Feltételek](/terms) pontunkat, mivel az az egész webhelyre vonatkozik.
+Kérjük, vegye figyelembe a [Felhasználási feltételeinket](/terms), amelyek az egész oldalra érvényesek.
 
-## Visszaélési jelentés beküldése {#how-to-submit-an-abuse-report}
 
-A visszaélési bejelentéseket eseti alapon, e-mailben vizsgáljuk felül, és a [nagyközönség](#for-the-general-public) és [bűnüldözés](#for-law-enforcement) tulajdonosokra vonatkozó információs kéréseket eseti alapon intézzük.
+## Hogyan nyújtsunk be visszaélésről szóló jelentést {#how-to-submit-an-abuse-report}
 
-A felhasználókkal, e-mail címekkel, IP-címekkel és/vagy domainekkel kapcsolatos visszaélési jelentéseket és információigényléseket a továbbiakban együttesen „Fióknak” nevezzük.
+Esetenként e-mailben vizsgáljuk a visszaélésről szóló jelentéseket és szolgáltatjuk az információkéréseket a [nagyközönség](#for-the-general-public) és a [rendőrség](#for-law-enforcement) számára.
 
-A visszaélésekkel kapcsolatos kéréseivel vagy bejelentéseivel kapcsolatban a következő e-mail címünkre lehet válaszolni: `abuse@forwardemail.net`
+A felhasználókra, e-mailekre, IP-címekre és/vagy domainekre vonatkozó visszaélésről szóló jelentéseket és információkéréseket az alábbiakban együttesen „Fiók”-ként említjük.
 
-Olvasd el az alábbi részeket további információkért, amelyek vonatkozhatnak rád.
+Az e-mail címeink, amelyeken keresztül visszaélésre vonatkozó kérelmét vagy jelentését elküldheti: `support@forwardemail.net`, `abuse@forwardemail.net` és `security@forwardemail.net`.
+
+Kérjük, ha lehetséges, küldjön másolatot mindezekre az e-mail címekre, és küldjön emlékeztető e-maileket is, ha 24-48+ órán belül nem kap választ.
+
+Az alábbi szakaszokat olvassa el további, Önre vonatkozó információkért.
+
 
 ## A nagyközönség számára {#for-the-general-public}
 
-<u>**Ha Ön vagy valaki más közvetlen veszélyben van, kérjük, azonnal értesítse a rendőrséget és a mentőszolgálatokat.**</u>
+<u>**Ha Ön vagy valaki más közvetlen veszélyben van, kérjük, azonnal hívja a rendőrséget és a sürgősségi szolgálatokat.**</u>
 
-<u>**Fiókjához elveszett hozzáférés visszaszerzéséhez vagy egy rosszindulatú szereplő megállításához forduljon szakértői jogi tanácsért.**</u>
+<u>**Szakmai jogi tanácsot kell kérnie, hogy visszaszerezze elveszett hozzáférését a Fiókjához, vagy hogy megállítsa egy rosszindulatú szereplőt.**</u>
 
-Ha egy, a szolgáltatásunkat használó fiókból visszaélés áldozata lett, kérjük, küldje el bejelentését e-mailben a fenti címre. Ha fiókját egy rosszindulatú szereplő vette át (pl. a domainje nemrég lejárt, egy harmadik fél újraregisztrálta, majd visszaélésre használta), kérjük, küldjön bejelentést a fenti címre a pontos fiókadataival (pl. a domainneve). A korábbi tulajdonjog érvényesítése után segíthetünk a fiók ideiglenes visszaszerzésében ([árnyéktilalom](https://en.wikipedia.org/wiki/Shadow_banning)). Felhívjuk figyelmét, hogy nincs hatáskörünk segíteni a fiókjához való hozzáférés visszaszerzésében.
+Ha Ön visszaélés áldozata egy olyan Fiók által, amely a szolgáltatásunkat használja, kérjük, küldje el jelentését az előzőekben megadott e-mail címre. Ha a Fiókját rosszindulatú szereplő vette át (pl. a domainje nemrég lejárt, egy harmadik fél újra regisztrálta, majd visszaélésekre használta), kérjük, küldjön nekünk jelentést az előzőekben megadott címre a pontos Fiókadataival (pl. domain neve). Segíthetünk a Fiók [árnyéktiltásában](https://en.wikipedia.org/wiki/Shadow_banning) az Ön korábbi tulajdonjogának érvényesítése után. Felhívjuk a figyelmet, hogy nincs hatáskörünk a Fiókhoz való hozzáférés visszaszerzésében.
 
-Jogi képviselője azt tanácsolhatja, hogy vegye fel a kapcsolatot a bűnüldöző szervekkel, a fiókja tulajdonosával (pl. a domainnév regisztrátorával; azzal a weboldallal, ahol a domainnevet regisztrálta), és/vagy halassza el Önt a [Az ICANN elveszett domainekről szóló oldala](https://www.icann.org/resources/pages/lost-domain-names)-ra.
+Jogi képviselője tanácsolhatja, hogy forduljon a rendőrséghez, a Fiók tulajdonosához (pl. a domain név regisztrátorához; a weboldalhoz, ahol a domain nevet regisztrálta), és/vagy irányítsa Önt az [ICANN elveszett domainekről szóló oldalára](https://www.icann.org/resources/pages/lost-domain-names).
 
-## Rendvédelmi szervek számára {#for-law-enforcement}
 
-A kérelmek többségénél az információk kiadására vonatkozó jogunkat a [Elektronikus hírközlési adatvédelmi törvény](https://bja.ojp.gov/program/it/privacy-civil-liberties/authorities/statutes/1285) ([Wikipédia](https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act)), [18 U.S.C. 2701](https://www.govinfo.gov/link/uscode/18/2701) és az azt követő törvények („ECPA”) szabályozzák. Az ECPA előírja, hogy bizonyos felhasználói adatokat csak bizonyos típusú jogi megkeresésekre, például idézésekre, bírósági végzésekre és házkutatási parancsokra válaszul adjunk ki a bűnüldöző szerveknek.
+## A rendőrség számára {#for-law-enforcement}
 
-Ha Ön a bűnüldöző szervek tagja, és egy fiókkal kapcsolatos információt keres, akkor a kérésében szerepelnie kell a fiók adatainak, valamint a dátum- és időtartománynak. Nem dolgozhatunk fel túlságosan általános és/vagy homályos kéréseket – erre felhasználóink adatainak és bizalmának védelme, és ami a legfontosabb, adataik biztonságának megőrzése érdekében van szükségünk.
+A kérelmek többségénél az információk kiadására vonatkozó képességünket az [Elektronikus Kommunikációs Adatvédelmi Törvény](https://bja.ojp.gov/program/it/privacy-civil-liberties/authorities/statutes/1285) ([Wikipedia](https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act)), az [18 U.S.C. 2701](https://www.govinfo.gov/link/uscode/18/2701) és az azt követő rendelkezések („ECPA”) szabályozzák. Az ECPA előírja, hogy bizonyos felhasználói adatokat csak meghatározott jogi kérelmekre, például idézésekre, bírósági végzésekre és házkutatási parancsokra adhatunk ki a rendőrség számára.
 
-Ha a kérelme a [Feltételek](/terms) irányelvünk megsértését jelzi számunkra, akkor a visszaélések kezelésére vonatkozó, kizárólag belső használatra szánt legjobb gyakorlataink szerint dolgozzuk fel – vegye figyelembe, hogy bizonyos esetekben ez a fiók felfüggesztéséhez és/vagy kitiltásához vezethet.
+Ha Ön a rendőrség tagja, és egy Fiókra vonatkozó információt kér, kérjük, hogy a kérelem tartalmazza a Fiók adatait, valamint a dátum- és időintervallumot. Nem tudunk feldolgozni túl általános és/vagy homályos kérelmeket – ez a felhasználóink adatainak és bizalmának védelme, valamint legfőképpen az adataik biztonságának megőrzése érdekében történik.
+Ha a kérésed a [Felhasználási feltételeink](/terms) megsértésére utal, akkor azt belső, kizárólagos visszaéléskezelési gyakorlatunk szerint dolgozzuk fel – megjegyzendő, hogy bizonyos esetekben ez azzal járhat, hogy a Fiókot felfüggesztjük és/vagy kitiltjuk.
 
-**Mivel nem vagyunk domainnév-regisztrátor**, ha egy domainnévvel kapcsolatos korábbi DNS-rekordinformációkat szeretne keresni, akkor vegye fel a kapcsolatot a domainhez tartozó adott domainnév-regisztrátorral. Az olyan szolgáltatások, mint a [Security Trails]() , biztosíthatnak korábbi rekordok keresését, de a regisztrátor konkrétabb és pontosabb információkat is nyújthat. Annak meghatározásához, hogy kik a domainnév-regisztrátor és/vagy a DNS-névszerverek tulajdonosai egy adott domainhez, a `dig` és a `whois` eszközök hasznosak lehetnek (pl. `whois example.com` vagy `dig example.com ns`). DNS-rekordkereséssel (pl. `dig example.com mx` és `dig example.com txt`) megállapíthatja, hogy egy fiók fizetős vagy ingyenes csomagban van-e a szolgáltatásunkban. Ha az MX rekordok nem adnak vissza olyan értékeket, mint a `mx1.forwardemail.net` és a `mx2.forwardemail.net`, akkor a domain nem használja a szolgáltatásunkat. Ha a TXT rekordok egy sima szöveges e-mail címet adnak vissza (pl. `forward-email=user@example.com`), akkor az egy domain e-mail-átirányítási célcímét jelzi. Ha ehelyett egy `forward-email-site-verification=XXXXXXXXXX`-hez hasonló értéket adnak vissza, akkor az azt jelzi, hogy fizetős csomagban van, és az átirányítási konfiguráció az adatbázisunkban a `whois`0 azonosító alatt van tárolva. Ha további információt szeretne kapni arról, hogyan működik szolgáltatásunk DNS-szinten, kérjük, tekintse meg a `whois`1-et.
+**Mivel nem vagyunk domain név regisztrátor**, ha történeti DNS rekord információt szeretnél egy domain névvel kapcsolatban, akkor a megfelelő domain név regisztrátorhoz kell fordulnod. Olyan szolgáltatások, mint a [Security Trails]() nyújthatnak történeti rekord lekérdezést, de pontosabb és részletesebb információkat a regisztrátor tud adni. Annak megállapításához, hogy ki a domain név regisztrátora és/vagy a DNS névszerver tulajdonosa, hasznosak lehetnek a `dig` és `whois` eszközök (pl. `whois example.com` vagy `dig example.com ns`). Megállapíthatod, hogy egy Fiók fizetős vagy ingyenes csomagon van-e a szolgáltatásunkban DNS rekord lekérdezéssel (pl. `dig example.com mx` és `dig example.com txt`). Ha az MX rekordok nem adnak vissza olyan értékeket, mint `mx1.forwardemail.net` és `mx2.forwardemail.net`, akkor a domain nem használja a szolgáltatásunkat. Ha a TXT rekordok visszaadnak egy egyszerű szöveges email címet (pl. `forward-email=user@example.com`), akkor ez a domain email továbbítási címét jelzi. Ha ehelyett olyan értéket ad vissza, mint `forward-email-site-verification=XXXXXXXXXX`, akkor az azt jelzi, hogy fizetős csomagon van, és a továbbítási beállítások az adatbázisunkban az `XXXXXXXXXX` azonosító alatt vannak tárolva. A szolgáltatásunk DNS szintű működéséről további információért kérjük, tekintsd meg a [GYIK](/faq) szekciót.
 
 ### Milyen információk érhetők el {#what-information-is-available}
 
-Kérjük, tekintse át a [Összegyűjtött információk](/privacy#information-collected) fiókra vonatkozó adatvédelmi irányelveinket. A fiókok az adatmegőrzési és adatvédelmi törvényeknek megfelelően eltávolíthatják adataikat a rendszerünkből; a [Információ eltávolítása](/privacy#information-removal) fiókra vonatkozó adatvédelmi irányelveinket pedig tekintse át. Ez azt jelenti, hogy a kért információk a fiók törlése miatt a kérés időpontjában esetleg nem érhetők el.
+Kérjük, tekintsd meg az Adatvédelmi Szabályzatunk [Gyűjtött információk](/privacy#information-collected) részét. A fiókok jogosultak eltávolítani adataikat rendszerünkből az adatmegőrzési és adatvédelmi törvényeknek megfelelően; erről bővebben az Adatvédelmi Szabályzat [Adatok eltávolítása](/privacy#information-removal) részében olvashatsz. Ez azt jelenti, hogy a kért információ a kérés időpontjában nem biztos, hogy elérhető a fiók törlése miatt.
 
 ### Milyen információk nem érhetők el {#what-information-is-not-available}
 
-Kérjük, tekintse meg az Adatvédelmi irányelveinket a [Nem gyűjtött információk](/privacy#information-not-collected) esetében.
+Kérjük, tekintsd meg az Adatvédelmi Szabályzatunk [Nem gyűjtött információk](/privacy#information-not-collected) részét.
 
-### Az Egyesült Államokban működő bűnüldöző szervek {#law-enforcement-based-in-the-united-states}
+### Az Egyesült Államokban működő jogérvényesítő szervek {#law-enforcement-based-in-the-united-states}
 
-A [vészhelyzetek kivételével](#law-enforcement-emergency-requests) esetében a fiókadatokat csak érvényes idézés, ECPA (amerikai bírósági végzés) és/vagy házkutatási parancs kézhezvétele esetén osztjuk meg.
+[A vészhelyzetek kivételével](#law-enforcement-emergency-requests) csak érvényes idézés, ECPA amerikai bírósági végzés és/vagy házkutatási parancs kézhezvétele esetén osztunk meg fiókinformációkat.
 
-Ezenkívül [értesítsen egy fiókot](#law-enforcement-requests-may-trigger-account-notices) jogosultságot is adhatunk egy bűnüldöző szervekkel kapcsolatos kérésre vonatkozóan, kivéve, ha ezt törvény vagy bírósági végzés tiltja számunkra.
+Továbbá [értesíthetjük a fiókot](#law-enforcement-requests-may-trigger-account-notices) a jogérvényesítő szervek kéréséről, kivéve, ha ezt törvény vagy bírósági végzés tiltja.
 
-Amennyiben érvényes idézést, ECPA szerinti bírósági végzést és/vagy házkutatási parancsot kapunk, akkor a legjobb tudásunk szerint biztosítjuk a releváns és rendelkezésre álló információkat.
+Érvényes idézés, ECPA bírósági végzés és/vagy házkutatási parancs esetén a lehető legteljesebb és elérhető információkat szolgáltatjuk.
 
-### Az Egyesült Államokon kívüli bűnüldöző szervek {#law-enforcement-based-outside-of-the-united-states}
+### Az Egyesült Államokon kívül működő jogérvényesítő szervek {#law-enforcement-based-outside-of-the-united-states}
 
-Előírjuk, hogy az Egyesült Államokon kívüli bűnüldöző szervek számára a kérelmeket az alábbi módok egyikén kell kézbesíteni:
+Követeljük, hogy az Egyesült Államokon kívüli jogérvényesítő szervek kérelmei az alábbi módok egyikén keresztül érkezzenek:
 
-* Az Egyesült Államok bírósága.
-* Végrehajtó szerv a [Az Egyesült Államok kölcsönös jogsegélyszerződése](https://www.justice.gov/criminal-oia/file/1498806/download) ([Wikipédia](https://en.wikipedia.org/wiki/Mutual_legal_assistance_treaty)) („MLAT”) eljárásai szerint.
-* Egy külföldi kormánytól származó végzés, amelyre az Egyesült Államok főügyésze által megállapított és a Kongresszusnak hitelesített végrehajtási megállapodás vonatkozik, megfelel a [18 U.S.C. 2523](https://www.govinfo.gov/link/uscode/18/2523) követelményeinek.
+* Egy Egyesült Államokbeli bíróságon keresztül.
+* Egy végrehajtó hatóság által egy [Egyesült Államok kölcsönös jogsegélyi egyezmény](https://www.justice.gov/criminal-oia/file/1498806/download) ([Wikipedia](https://en.wikipedia.org/wiki/Mutual_legal_assistance_treaty)) ("MLAT") eljárásai szerint.
+* Egy külföldi kormányzati végzés, amely egy végrehajtási megállapodás tárgyát képezi, amelyet az Egyesült Államok főügyésze megállapított és a Kongresszusnak igazolt, hogy megfelel az [18 U.S.C. 2523](https://www.govinfo.gov/link/uscode/18/2523) követelményeinek.
 
-### Rendvédelmi vészhelyzeti kérelmek {#law-enforcement-emergency-requests}
+### Jogérvényesítő szervek vészhelyzeti kérelmei {#law-enforcement-emergency-requests}
 
-Ahogy azt az Egyesült Államok törvényei megengedik (pl. a [18 U.S.C. §2702 (b)(8)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(8\)törvénynek megfelelően, ha a szolgáltató jóhiszeműen úgy véli, hogy egy halálos vagy súlyos testi sérüléssel járó vészhelyzet bármely személytől késedelem nélkül köteles közölni a vészhelyzettel kapcsolatos kommunikációt), és [§2702 (c)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(c\)Kivételek az ügyfélnyilvántartás%20közzétételére vonatkozóan.%20A szolgáltató%20leírt%20az%20alsection%20(a)%20lehet%20közzétenni%20feljegyzést%20vagy%20egyéb%20információt%20közölhet az előfizető%20vagy%20ügyfél%20ilyen%20szolgáltatás%20(ide nem értve a%20alsection%20(a)\(1)%20vagy%20(a)\(2)\)%E2%80%94) által lefedett kommunikációk%20tartalmát), amennyiben jóhiszeműen és a kérelmező független ellenőrzésével – jogosultak vagyunk Fiókadatokat idézés, ECPA bírósági végzés és/vagy házkutatási parancs nélkül nyilvánosságra hozni és megosztani a bűnüldöző szervekkel, ha úgy véljük, hogy erre késedelem nélkül szükség van haláleset vagy súlyos testi sérülés megelőzése érdekében.
+Az Egyesült Államokban a törvény által engedélyezett módon (pl. a [18 U.S.C. §2702 (b)(8)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(8\)to%20a%20governmental%20entity%2C%20if%20the%20provider%2C%20in%20good%20faith%2C%20believes%20that%20an%20emergency%20involving%20danger%20of%20death%20or%20serious%20physical%20injury%20to%20any%20person%20requires%20disclosure%20without%20delay%20of%20communications%20relating%20to%20the%20emergency%3B%20or) és [§2702 (c)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(c\)Exceptions%20for%20Disclosure%20of%20Customer%20Records.%E2%80%94A%20provider%20described%20in%20subsection%20\(a\)%20may%20divulge%20a%20record%20or%20other%20information%20pertaining%20to%20a%20subscriber%20to%20or%20customer%20of%20such%20service%20\(not%20including%20the%20contents%20of%20communications%20covered%20by%20subsection%20\(a\)\(1\)%20or%20\(a\)\(2\)\)%E2%80%94)), jóhiszeműen és a kérelmező független ellenőrzésével – idézés, ECPA bírósági végzés és/vagy házkutatási parancs nélkül is kiadhatunk és megoszthatunk fiókinformációkat a jogérvényesítő szervekkel, ha úgy véljük, hogy a halál vagy súlyos testi sérülés megelőzése érdekében haladéktalanul szükséges a közlés.
+Vészhelyzeti adatkérelmeket ("EDR") kizárólag e-mailben fogadunk el, és kérjük, hogy minden releváns információt tartalmazzanak a gyors és hatékony feldolgozás érdekében.
 
-A gyors és időben történő feldolgozás érdekében kérjük, hogy a sürgősségi adatigényléseket („EDR”) e-mailben küldjék el, és tartalmazzák az összes releváns információt.
+Felhívjuk a figyelmet arra, hogy tisztában vagyunk az e-mailekkel kapcsolatos kifinomult hamisítási, adathalászati és személyazonosság-lopási támadásokkal (pl. lásd [ezt a cikket a The Guardian-től](https://www.theguardian.com/technology/2022/apr/04/us-law-enforcement-agencies-access-your-data-apple-meta#:\~:text=A%20hack%20using%20a%20forged%20legal%20request%20that%20exposed%20consumer%20data%20collected%20by%20Apple%20and%20Meta%20shed%20light%20on%20the%20reach%20of%20the%20law)).
 
-Felhívjuk a figyelmet arra, hogy tisztában vagyunk a kifinomult hamisítási, adathalász és személyes adatokkal való visszaélési támadásokkal e-mailben (pl. lásd: [ez a cikk a The Guardianből](https://www.theguardian.com/technology/2022/apr/04/us-law-enforcement-agencies-access-your-data-apple-meta#:\~:text=A%20hack%20using%20a%20forged%20legal%20request%20that%20exposed%20consumer%20data%20collected%20by%20Apple%20and%20Meta%20shed%20light%20on%20the%20reach%20of%20the%20law)).
+Az EDR-ek feldolgozására vonatkozó irányelveink a következők:
 
-Az EDR-ek feldolgozására vonatkozó szabályzatunk a következő:
+1. Függetlenül megvizsgáljuk az e-mail fejléc metaadatait (pl. DKIM/SPF/DMARC) (vagy azok hiányát) az ellenőrzés érdekében.
 
-1. Függetlenül kutasd fel az e-mail fejléc metaadatait (pl. DKIM/SPF/DMARC) (vagy azok hiányát) ellenőrzés céljából.
+2. Jóhiszeműen a legjobb erőfeszítést tesszük (szükség esetén ismételt próbálkozásokkal) arra, hogy telefonon közvetlenül felvegyük a kapcsolatot a kérelmezővel – a kérés hitelességének megerősítése céljából. Például megvizsgálhatjuk a kérelmező joghatóságához tartozó `.gov` weboldalt, majd a nyilvánosan elérhető hivatalos telefonszámról felhívhatjuk az irodát a kérés ellenőrzése érdekében.
 
-2. Jóhiszeműen (szükség esetén ismételt kísérletekkel) igyekszünk telefonon függetlenül felvenni a kapcsolatot a kérelmezővel – a kérelem hitelességének megerősítése érdekében. Például kutatunk a `.gov` weboldalon, amely a kérelem forrásához kapcsolódik, majd felhívjuk az irodát a nyilvánosan közzétett hivatalos telefonszámukról a kérelem ellenőrzése érdekében.
+### A rendőrségi kérelmek fiókértesítéseket válthatnak ki {#law-enforcement-requests-may-trigger-account-notices}
 
-### A bűnüldöző szervek kérései fiókértesítéseket válthatnak ki. {#law-enforcement-requests-may-trigger-account-notices}
+Értesíthetjük a fiókot, és megoszthatunk velük egy példányt a rájuk vonatkozó rendőrségi kérelemről, kivéve, ha törvény vagy bírósági végzés (pl. [18 U.S.C. 2705(b)](https://www.govinfo.gov/link/uscode/18/2705)) tiltja ezt. Ezekben az esetekben, ha alkalmazható, akkor a titoktartási végzés lejárta után értesíthetjük a fiókot.
 
-Értesíthetjük a Fiókot, és átadhatjuk neki a rá vonatkozó bűnüldözési megkeresés másolatát, kivéve, ha ezt törvény vagy bírósági végzés tiltja (pl. [18 U.S.C. 2705(b)](https://www.govinfo.gov/link/uscode/18/2705)). Ilyen esetekben, adott esetben, értesíthetjük a Fiókot, amikor a titoktartási végzés lejárt.
+Ha a rendőrségi információkérés érvényes, akkor [megőrizzük a szükséges és kért fiókinformációkat](#law-enforcement-requests-to-preserve-information), és ésszerű erőfeszítést teszünk, hogy a regisztrált és ellenőrzött e-mail címen keresztül felvegyük a kapcsolatot a fiók tulajdonosával (pl. 7 naptári napon belül). Ha időben érkezik ellenvetés (pl. 7 naptári napon belül), akkor visszatartjuk a fiókinformációk megosztását, és szükség szerint folytatjuk a jogi eljárást.
 
-Amennyiben a bűnüldöző szervek információkérése jogos, [megőrizni a szükséges és kért fiókadatokat](#law-enforcement-requests-to-preserve-information) módon és ésszerű erőfeszítéseket teszünk annak érdekében, hogy felvegyük a kapcsolatot a Fiók tulajdonosával a regisztrált és ellenőrzött e-mail címén (pl. 7 naptári napon belül). Ha időben (pl. 7 naptári napon belül) kapunk kifogást, akkor visszatartjuk a Fiókadatok megosztását, és szükség szerint folytatjuk a jogi eljárást.
+### Rendőrségi kérelmek az információ megőrzésére {#law-enforcement-requests-to-preserve-information}
 
-### Rendvédelmi szervek kérelme az információk megőrzésére {#law-enforcement-requests-to-preserve-information}
+Érvényes rendőrségi kérelmek esetén tiszteletben tartjuk az információ megőrzésére vonatkozó kéréseket a fiókkal kapcsolatban az [18 U.S.C. 2703(f)](https://www.govinfo.gov/link/uscode/18/2703) alapján. Felhívjuk a figyelmet, hogy az adatok megőrzése kizárólag a kifejezetten kért és jelenleg elérhető adatokra korlátozódik.
 
-A [18 U.S.C. 2703(f)](https://www.govinfo.gov/link/uscode/18/2703) szerint tiszteletben tartjuk a bűnüldöző szervek érvényes kéréseit a Fiókra vonatkozó információk megőrzése érdekében. Felhívjuk a figyelmet, hogy az adatok megőrzése csak a kifejezetten kért és jelenleg elérhető adatokra korlátozódik.
+### Rendőrségi kézbesítés {#law-enforcement-serving-process}
 
-### Rendvédelmi kézbesítési folyamat {#law-enforcement-serving-process}
+Minden érvényes rendőrségi kérelem esetén megköveteljük, hogy érvényes és működő e-mail címet biztosítsanak, amelyen keresztül levelezhetünk és elektronikusan megküldhetjük a kért információkat.
 
-Elvárjuk, hogy minden érvényes bűnüldözési megkeresés esetén érvényes és működő e-mail címet adjon meg nekünk, amellyel levelezhetünk, és amelyre elektronikusan elküldhetjük a kért információkat.
+Minden kérelmet a fentebb megadott [Hogyan nyújtsunk be visszaélésről szóló jelentést](#how-to-submit-an-abuse-report) szakaszban megadott e-mail címre kell küldeni.
 
-Minden kérést a fenti [Hogyan küldjünk be visszaélési bejelentést](#how-to-submit-an-abuse-report) alatt megadott e-mail címre kell küldeni.
+Minden rendőrségi kérelmet ügynökségi vagy osztályfejléccel kell ellátni (pl. PDF-be szkennelt mellékletként), hivatalos és releváns e-mail címről kell küldeni, és alá kell írni.
 
-Minden bűnüldözési megkeresést hivatalos és releváns e-mail címről, aláírással kell ellátni, ügynökségi vagy minisztériumi levélpapíron (pl. PDF szkennelt mellékletként).
+Ha vészhelyzeti kérelemről van szó ([emergency request](#law-enforcement-emergency-requests)), kérjük, írja az e-mail tárgyába: "Vészhelyzeti rendőrségi kérelem".
 
-Ha egy [sürgősségi kérés](#law-enforcement-emergency-requests) e-mailre vonatkozik, akkor kérjük, az e-mail tárgyába írja be: „Sürgősségi bűnüldözési kérelem”.
-
-Kérjük, vegye figyelembe, hogy legalább két hétbe telhet, mire felmérjük és megválaszoljuk a kérelmét.
+Kérjük, vegye figyelembe, hogy a kérelem átvizsgálása és megválaszolása legalább két hétig is eltarthat.

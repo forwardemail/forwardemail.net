@@ -1,97 +1,101 @@
-# Jak přeposílání e-mailů chrání vaše soukromí, doménu a zabezpečení: Podrobný technický přehled {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
+# Jak Forward Email chrání vaše soukromí, doménu a bezpečnost: Technický hluboký ponor {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Nejlepší srovnání služeb přeposílání e-mailů" class="rounded-lg" />
+
 
 ## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
-* [Filozofie ochrany osobních údajů při přeposílání e-mailů](#the-forward-email-privacy-philosophy)
+* [Filozofie soukromí Forward Email](#the-forward-email-privacy-philosophy)
 * [Implementace SQLite: Trvanlivost a přenositelnost vašich dat](#sqlite-implementation-durability-and-portability-for-your-data)
-* [Inteligentní mechanismus fronty a opakování: Zajištění doručení e-mailů](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [Chytrý fronta a mechanismus opakování: Zajištění doručení e-mailu](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
 * [Neomezené zdroje s inteligentním omezením rychlosti](#unlimited-resources-with-intelligent-rate-limiting)
-* [Šifrování v sandboxu pro vyšší zabezpečení](#sandboxed-encryption-for-enhanced-security)
-* [Zpracování e-mailů v paměti: Žádné úložiště na disku pro maximální soukromí](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
-* [End-to-End šifrování s OpenPGP pro naprosté soukromí](#end-to-end-encryption-with-openpgp-for-complete-privacy)
-* [Vícevrstvá ochrana obsahu pro komplexní zabezpečení](#multi-layered-content-protection-for-comprehensive-security)
-* [Jak se lišíme od ostatních e-mailových služeb: Technická výhoda v oblasti soukromí](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
-  * [Transparentnost otevřeného zdrojového kódu pro ověřitelné soukromí](#open-source-transparency-for-verifiable-privacy)
-  * [Žádná vazba na dodavatele pro soukromí bez kompromisů](#no-vendor-lock-in-for-privacy-without-compromise)
+* [Sandboxované šifrování pro zvýšenou bezpečnost](#sandboxed-encryption-for-enhanced-security)
+* [Zpracování e-mailů v paměti: Žádné ukládání na disk pro maximální soukromí](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [End-to-end šifrování s OpenPGP pro úplné soukromí](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [Vícevrstvá ochrana obsahu pro komplexní bezpečnost](#multi-layered-content-protection-for-comprehensive-security)
+* [Jak se lišíme od ostatních e-mailových služeb: Technická výhoda v ochraně soukromí](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+  * [Transparentnost open source pro ověřitelné soukromí](#open-source-transparency-for-verifiable-privacy)
+  * [Žádné uzamčení u dodavatele pro soukromí bez kompromisů](#no-vendor-lock-in-for-privacy-without-compromise)
   * [Sandboxovaná data pro skutečnou izolaci](#sandboxed-data-for-true-isolation)
   * [Přenositelnost a kontrola dat](#data-portability-and-control)
-* [Technické výzvy přeposílání e-mailů s ohledem na soukromí](#the-technical-challenges-of-privacy-first-email-forwarding)
+* [Technické výzvy přeposílání e-mailů s prioritou soukromí](#the-technical-challenges-of-privacy-first-email-forwarding)
   * [Správa paměti pro zpracování e-mailů bez protokolování](#memory-management-for-no-logging-email-processing)
-  * [Detekce spamu bez analýzy obsahu pro filtrování s ohledem na soukromí](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
-  * [Zachování kompatibility s designem zaměřeným na soukromí](#maintaining-compatibility-with-privacy-first-design)
-* [Nejlepší postupy ochrany osobních údajů pro uživatele přeposílaných e-mailů](#privacy-best-practices-for-forward-email-users)
-* [Závěr: Budoucnost přeposílání soukromých e-mailů](#conclusion-the-future-of-private-email-forwarding)
+  * [Detekce spamu bez analýzy obsahu pro filtrování šetřící soukromí](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
+  * [Udržování kompatibility s designem zaměřeným na soukromí](#maintaining-compatibility-with-privacy-first-design)
+* [Nejlepší postupy ochrany soukromí pro uživatele Forward Email](#privacy-best-practices-for-forward-email-users)
+* [Závěr: Budoucnost soukromého přeposílání e-mailů](#conclusion-the-future-of-private-email-forwarding)
+
 
 ## Předmluva {#foreword}
 
-V dnešní digitální krajině je ochrana soukromí v e-mailech důležitější než kdy dříve. Vzhledem k únikům dat, obavám z dohledu a cílené reklamě založené na obsahu e-mailů hledají uživatelé stále častěji řešení, která upřednostňují jejich soukromí. Ve společnosti Forward Email jsme naši službu vybudovali od základů s ochranou soukromí jako základním kamenem naší architektury. Tento blogový příspěvek zkoumá technické implementace, díky nimž je naše služba jedním z nejvíce zaměřených řešení pro přeposílání e-mailů na ochranu soukromí.
+V dnešním digitálním prostředí je ochrana soukromí e-mailů důležitější než kdy dříve. S úniky dat, obavami ze sledování a cílenou reklamou založenou na obsahu e-mailů uživatelé stále více hledají řešení, která upřednostňují jejich soukromí. Ve Forward Email jsme vybudovali naši službu od základu s důrazem na soukromí jako základní kámen naší architektury. Tento blogový příspěvek zkoumá technické implementace, které činí naši službu jedním z nejvíce na soukromí zaměřených řešení pro přeposílání e-mailů dostupných na trhu.
 
-## Filozofie ochrany osobních údajů při přeposílání e-mailů {#the-forward-email-privacy-philosophy}
 
-Než se ponoříme do technických detailů, je důležité pochopit naši základní filozofii ochrany osobních údajů: **vaše e-maily patří vám a pouze vám**. Tato zásada řídí každé naše technické rozhodnutí, od způsobu přeposílání e-mailů až po implementaci šifrování.
+## Filozofie soukromí Forward Email {#the-forward-email-privacy-philosophy}
 
-Na rozdíl od mnoha poskytovatelů e-mailových služeb, kteří skenují vaše zprávy pro reklamní účely nebo je ukládají na dobu neurčitou na svých serverech, Forward Email funguje radikálně odlišným způsobem:
+Než se ponoříme do technických detailů, je důležité pochopit naši základní filozofii soukromí: **vaše e-maily patří vám a pouze vám**. Tento princip řídí každé technické rozhodnutí, které činíme, od způsobu, jakým zpracováváme přeposílání e-mailů, až po implementaci šifrování.
 
-1. **Pouze zpracování v paměti** - Vaše přeposlané e-maily neukládáme na disk.
-2. **Žádné ukládání metadat** - Neuchováváme záznamy o tom, kdo komu e-maily píše.
-3. **100% open-source** - Celá naše kódová základna je transparentní a auditovatelná.
-4. **End-to-end šifrování** - Podporujeme OpenPGP pro skutečně soukromou komunikaci.
+Na rozdíl od mnoha poskytovatelů e-mailů, kteří skenují vaše zprávy pro reklamní účely nebo je trvale ukládají na svých serverech, Forward Email funguje s radikálně odlišným přístupem:
+
+1. **Zpracování pouze v paměti** – nepřechováváme vaše přeposlané e-maily na disku
+2. **Žádné ukládání metadat** – neuchováváme záznamy o tom, kdo komu posílá e-maily
+3. **100% open-source** – celý náš kód je transparentní a auditovatelný
+4. **End-to-end šifrování** – podporujeme OpenPGP pro skutečně soukromou komunikaci
+
 
 ## Implementace SQLite: Trvanlivost a přenositelnost vašich dat {#sqlite-implementation-durability-and-portability-for-your-data}
 
-Jednou z nejvýznamnějších výhod ochrany soukromí při přeposílání e-mailů je naše pečlivě navržená implementace [SQLite](https://en.wikipedia.org/wiki/SQLite). Vyladili jsme SQLite pomocí specifických nastavení PRAGMA a [Protokolování předzápisu (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging), abychom zajistili odolnost i přenositelnost vašich dat a zároveň zachovali nejvyšší standardy ochrany soukromí a zabezpečení.
-
-Zde se podíváme na to, jak jsme implementovali SQLite s [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) jako šifrou pro kvantově odolné šifrování:
+Jednou z nejvýznamnějších výhod ochrany soukromí Forward Email je naše pečlivě navržená implementace [SQLite](https://en.wikipedia.org/wiki/SQLite). Optimalizovali jsme SQLite pomocí specifických nastavení PRAGMA a [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging), abychom zajistili jak trvanlivost, tak přenositelnost vašich dat, přičemž zachováváme nejvyšší standardy ochrany soukromí a bezpečnosti.
+Podívejme se, jak jsme implementovali SQLite s [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) jako šifrou pro kvantově odolné šifrování:
 
 ```javascript
-// Initialize the database with better-sqlite3-multiple-ciphers
+// Inicializace databáze s better-sqlite3-multiple-ciphers
 const Database = require('better-sqlite3-multiple-ciphers');
 
-// Set up encryption with ChaCha20-Poly1305 cipher
+// Nastavení šifrování pomocí šifry ChaCha20-Poly1305
 db.pragma(`key="${decrypt(session.user.password)}"`);
 
-// Enable Write-Ahead Logging for durability and performance
+// Povolení Write-Ahead Logging pro trvanlivost a výkon
 db.pragma('journal_mode=WAL');
 
-// Overwrite deleted content with zeros for privacy
+// Přepis smazaného obsahu nulami pro ochranu soukromí
 db.pragma('secure_delete=ON');
 
-// Enable auto vacuum for efficient storage management
+// Povolení automatického vakuování pro efektivní správu úložiště
 db.pragma('auto_vacuum=FULL');
 
-// Set busy timeout for handling concurrent access
+// Nastavení timeoutu při obsazenosti pro zpracování současného přístupu
 db.pragma(`busy_timeout=${config.busyTimeout}`);
 
-// Optimize synchronization for reliability
+// Optimalizace synchronizace pro spolehlivost
 db.pragma('synchronous=NORMAL');
 
-// Enable foreign key constraints for data integrity
+// Povolení cizích klíčů pro integritu dat
 db.pragma('foreign_keys=ON');
 
-// Set UTF-8 encoding for international character support
+// Nastavení kódování UTF-8 pro podporu mezinárodních znaků
 db.pragma(`encoding='UTF-8'`);
 
-// Optimize database performance
+// Optimalizace výkonu databáze
 db.pragma('optimize=0x10002;');
 
-// Use disk for temporary storage instead of memory
+// Použití disku pro dočasné úložiště místo paměti
 db.pragma('temp_store=1;');
 ```
 
-Tato implementace zajišťuje nejen bezpečnost vašich dat, ale i jejich přenositelnost. Svůj e-mail si můžete kdykoli vzít a nechat ho exportovat ve formátech [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) nebo SQLite. A když chcete svá data smazat, jsou skutečně pryč – soubory jednoduše smažeme z diskového úložiště, místo abychom spouštěli příkazy SQL DELETE ROW, které mohou zanechat stopy v databázi.
+Tato implementace zajišťuje, že vaše data nejsou jen bezpečná, ale také přenosná. Svůj e-mail si můžete kdykoli vzít s sebou exportem ve formátech [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) nebo SQLite. A když chcete svá data smazat, jsou skutečně pryč – jednoduše smažeme soubory z diskového úložiště místo spouštění SQL příkazů DELETE ROW, které mohou v databázi zanechat stopy.
 
-Aspekt kvantového šifrování v naší implementaci používá při inicializaci databáze jako šifru ChaCha20-Poly1305, což poskytuje silnou ochranu před současnými i budoucími hrozbami pro vaše soukromí.
+Kvantově-šifrovací aspekt naší implementace používá ChaCha20-Poly1305 jako šifru při inicializaci databáze, což poskytuje silnou ochranu proti současným i budoucím hrozbám pro vaše soukromí dat.
 
-## Inteligentní mechanismus fronty a opakování: Zajištění doručení e-mailů {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-Místo toho, abychom se zaměřovali pouze na zpracování hlaviček, implementovali jsme sofistikovaný inteligentní mechanismus fronty a opakování s naší metodou `getBounceInfo`. Tento systém zajišťuje, že vaše e-maily mají nejlepší šanci na doručení, a to i v případě dočasných problémů.
+## Chytrý fronta a mechanismus opakování: Zajištění doručení e-mailu {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
+
+Místo zaměření se pouze na zpracování hlaviček jsme implementovali sofistikovaný chytrý fronta a mechanismus opakování s naší metodou `getBounceInfo`. Tento systém zajišťuje, že vaše e-maily mají nejlepší šanci být doručeny, i když nastanou dočasné problémy.
 
 ```javascript
 function getBounceInfo(err) {
-  // Initialize bounce info with default values
+  // Inicializace informací o odrazu s výchozími hodnotami
   const bounceInfo = {
     action: err.responseCode >= 500 ? 'reject' : 'defer',
     category: err.category || 'other',
@@ -99,16 +103,16 @@ function getBounceInfo(err) {
     code: err.responseCode || err.code
   };
 
-  // Analyze error response to determine appropriate action
+  // Analýza odpovědi chyby pro určení vhodné akce
   const response = err.response || err.message || '';
 
-  // Determine if the issue is temporary or permanent
+  // Určení, zda je problém dočasný nebo trvalý
   if (response.includes('temporarily deferred') ||
       response.includes('try again later')) {
     bounceInfo.action = 'defer';
   }
 
-  // Categorize the bounce reason for appropriate handling
+  // Kategorizace důvodu odrazu pro vhodné zpracování
   if (response.includes('mailbox full')) {
     bounceInfo.category = 'full';
     bounceInfo.action = 'defer';
@@ -121,21 +125,21 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> Toto je výňatek z metody `getBounceInfo` a nikoli skutečná rozsáhlá implementace. Úplný kód si můžete prohlédnout na [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+> Toto je úryvek metody `getBounceInfo` a nikoli její úplná rozsáhlá implementace. Kompletní kód si můžete prohlédnout na [GitHubu](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-Pokusy o doručení pošty opakujeme po dobu 5 dnů, podobně jako v oborových standardech (např. [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), což dává dočasným problémům čas na jejich vyřešení. Tento přístup výrazně zlepšuje míru doručování a zároveň zachovává soukromí.
+Opakujeme doručení pošty po dobu 5 dnů, podobně jako průmyslové standardy jako [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), což dává dočasným problémům čas na vyřešení. Tento přístup výrazně zlepšuje míru doručení při zachování soukromí.
 
-Podobně také po úspěšném doručení redigujeme obsah odchozích SMTP e-mailů. Toto je v našem úložném systému nakonfigurováno s výchozí dobou uchovávání 30 dnů, kterou můžete upravit v pokročilém nastavení vaší domény. Po uplynutí této doby je obsah e-mailu automaticky redigován a smazán, přičemž zůstane pouze zástupná zpráva:
+Podobně také po úspěšném doručení redigujeme obsah zprávy odchozích SMTP e-mailů. Toto je nastaveno v našem úložišti s výchozí dobou uchování 30 dní, kterou můžete upravit v pokročilých nastaveních vaší domény. Po uplynutí této doby je obsah e-mailu automaticky redigován a vymazán, přičemž zůstává pouze zástupná zpráva:
 
 ```txt
-This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
+Tato zpráva byla úspěšně odeslána. Pro vaše zabezpečení a soukromí byla redigována a vymazána. Pokud chcete prodloužit dobu uchování zpráv, přejděte prosím na stránku Pokročilá nastavení vaší domény.
 ```
+Tento přístup zajišťuje, že vaše odeslané e-maily nezůstanou uloženy navždy, čímž se snižuje riziko úniku dat nebo neoprávněného přístupu k vašim komunikacím.
 
-Tento přístup zajišťuje, že vaše odeslané e-maily nezůstanou uloženy na dobu neurčitou, což snižuje riziko úniku dat nebo neoprávněného přístupu k vaší komunikaci.
 
 ## Neomezené zdroje s inteligentním omezením rychlosti {#unlimited-resources-with-intelligent-rate-limiting}
 
-Přestože Forward Email nabízí neomezený počet domén a aliasů, implementovali jsme inteligentní omezení rychlosti, abychom chránili náš systém před zneužitím a zajistili spravedlivé používání pro všechny uživatele. Například zákazníci z jiných firem si mohou vytvořit až 50+ aliasů denně, což zabraňuje spamu a zahlcení naší databáze a umožňuje efektivní fungování našich funkcí pro detekci zneužití a ochranu v reálném čase.
+Zatímco Forward Email nabízí neomezené domény a aliasy, zavedli jsme inteligentní omezení rychlosti, abychom ochránili náš systém před zneužitím a zajistili spravedlivé používání pro všechny uživatele. Například zákazníci bez podnikových účtů mohou vytvořit až 50+ aliasů denně, což zabraňuje zahlcení naší databáze spamem a umožňuje efektivní fungování našich funkcí pro ochranu a detekci zneužití v reálném čase.
 
 ```javascript
 // Rate limiter implementation
@@ -155,28 +159,30 @@ if (limit.remaining <= 0) {
 }
 ```
 
-Tento vyvážený přístup vám poskytuje flexibilitu vytvořit si tolik e-mailových adres, kolik potřebujete pro komplexní správu soukromí, a zároveň zachovat integritu a výkon našich služeb pro všechny uživatele.
+Tento vyvážený přístup vám poskytuje flexibilitu vytvořit tolik e-mailových adres, kolik potřebujete pro komplexní správu soukromí, přičemž zároveň zachovává integritu a výkon naší služby pro všechny uživatele.
 
-## Šifrování v sandboxu pro vylepšené zabezpečení {#sandboxed-encryption-for-enhanced-security}
 
-Náš unikátní přístup k sandboxovému šifrování poskytuje klíčovou bezpečnostní výhodu, kterou mnoho uživatelů při výběru e-mailové služby přehlíží. Pojďme se podívat, proč je sandboxování dat, zejména e-mailů, tak důležité.
+## Izolované šifrování pro zvýšenou bezpečnost {#sandboxed-encryption-for-enhanced-security}
 
-Služby jako Gmail a Proton s největší pravděpodobností používají sdílený [relační databáze](https://en.wikipedia.org/wiki/Relational_database), což vytváří zásadní bezpečnostní zranitelnost. V prostředí sdílené databáze, pokud někdo získá přístup k datům jednoho uživatele, potenciálně má cestu k přístupu i k datům ostatních uživatelů. Je to proto, že všechna uživatelská data se nacházejí ve stejných databázových tabulkách, oddělená pouze uživatelskými ID nebo podobnými identifikátory.
+Náš jedinečný přístup s izolovaným šifrováním poskytuje zásadní bezpečnostní výhodu, kterou mnoho uživatelů při výběru e-mailové služby přehlíží. Pojďme se podívat, proč je izolace dat, zejména e-mailů, tak důležitá.
 
-Přeposílání e-mailů využívá zásadně odlišný přístup s naším sandboxovým šifrováním:
+Služby jako Gmail a Proton pravděpodobně používají sdílené [relační databáze](https://en.wikipedia.org/wiki/Relational_database), což vytváří základní bezpečnostní zranitelnost. V prostředí sdílené databáze, pokud někdo získá přístup k datům jednoho uživatele, potenciálně má cestu k přístupu i k datům ostatních uživatelů. Je to proto, že všechna uživatelská data jsou uložena ve stejných tabulkách databáze, oddělená pouze uživatelskými ID nebo podobnými identifikátory.
 
-1. **Úplná izolace**: Data každého uživatele jsou uložena ve vlastním šifrovaném souboru databáze SQLite, zcela izolovaná od ostatních uživatelů.
-2. **Nezávislé šifrovací klíče**: Každá databáze je šifrována vlastním jedinečným klíčem odvozeným z hesla uživatele.
-3. **Žádné sdílené úložiště**: Na rozdíl od relačních databází, kde všechny e-maily uživatelů mohou být v jedné tabulce „e-maily“, náš přístup zajišťuje, že nedochází ke smíchání dat.
-4. **Hloubková ochrana**: I kdyby byla databáze jednoho uživatele nějakým způsobem ohrožena, neposkytla by přístup k datům žádného jiného uživatele.
+Forward Email přistupuje k šifrování zcela odlišně:
 
-Tento přístup sandboxu je podobný tomu, jako byste měli e-maily v samostatném fyzickém trezoru, nikoli ve sdíleném úložišti s vnitřními přepážkami. Jedná se o zásadní architektonický rozdíl, který výrazně zvyšuje vaše soukromí a zabezpečení.
+1. **Úplná izolace**: Data každého uživatele jsou uložena ve vlastním zašifrovaném souboru SQLite databáze, zcela odděleně od ostatních uživatelů
+2. **Nezávislé šifrovací klíče**: Každá databáze je zašifrována vlastním unikátním klíčem odvozeným z uživatelského hesla
+3. **Žádné sdílené úložiště**: Na rozdíl od relačních databází, kde mohou být všechny e-maily uživatelů v jedné tabulce „emails“, náš přístup zajišťuje, že nedochází ke smíchání dat
+4. **Obrana v hloubce**: I kdyby byla databáze jednoho uživatele nějak kompromitována, neposkytne přístup k datům jiných uživatelů
 
-## Zpracování e-mailů v paměti: Žádné úložiště na disku pro maximální soukromí {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+Tento izolovaný přístup je podobný tomu, jako kdybyste měli svůj e-mail v samostatné fyzické trezoru místo ve sdíleném skladovacím zařízení s vnitřními přepážkami. Je to zásadní architektonický rozdíl, který výrazně zvyšuje vaše soukromí a bezpečnost.
 
-V rámci naší služby přeposílání e-mailů zpracováváme e-maily výhradně v paměti RAM a nikdy je nezapisujeme na diskový úložiště ani do databází. Tento přístup poskytuje bezkonkurenční ochranu před sledováním e-mailů a shromažďováním metadat.
 
-Zde je zjednodušený pohled na to, jak funguje naše zpracování e-mailů:
+## Zpracování e-mailů v paměti: Žádné ukládání na disk pro maximální soukromí {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+
+Pro naši službu přeposílání e-mailů zpracováváme e-maily zcela v paměti RAM a nikdy je nezapisujeme na disk ani do databází. Tento přístup poskytuje bezkonkurenční ochranu proti sledování e-mailů a sběru metadat.
+
+Zde je zjednodušený pohled na to, jak naše zpracování e-mailů funguje:
 
 ```javascript
 async function onData(stream, _session, fn) {
@@ -207,14 +213,14 @@ async function onData(stream, _session, fn) {
   }
 }
 ```
+Tento přístup znamená, že i kdyby naše servery byly kompromitovány, útočníci by neměli přístup k žádným historickým datům e-mailů. Vaše e-maily jednoduše procházejí naším systémem a jsou okamžitě přeposílány na své cílové místo, aniž by zanechaly stopu. Tento přístup k přeposílání e-mailů bez logování je zásadní pro ochranu vašich komunikací před sledováním.
 
-Tento přístup znamená, že i kdyby byly naše servery napadeny, útočníci by neměli přístup k žádným historickým datům e-mailů. Vaše e-maily jednoduše projdou naším systémem a jsou okamžitě přeposlány na místo určení bez zanechání stopy. Tento přístup k přeposílání e-mailů bez protokolování je zásadní pro ochranu vaší komunikace před sledováním.
 
-## Šifrování typu end-to-end s OpenPGP pro naprosté soukromí {#end-to-end-encryption-with-openpgp-for-complete-privacy}
+## End-to-End šifrování s OpenPGP pro úplné soukromí {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-Pro uživatele, kteří vyžadují nejvyšší úroveň ochrany soukromí před sledováním e-mailů, podporujeme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) pro end-to-end šifrování. Na rozdíl od mnoha poskytovatelů e-mailových služeb, kteří vyžadují proprietární mosty nebo aplikace, naše implementace funguje se standardními e-mailovými klienty, takže bezpečná komunikace je přístupná všem.
+Pro uživatele, kteří vyžadují nejvyšší úroveň ochrany soukromí před sledováním e-mailů, podporujeme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) pro end-to-end šifrování. Na rozdíl od mnoha poskytovatelů e-mailů, kteří vyžadují proprietární můstky nebo aplikace, naše implementace funguje se standardními e-mailovými klienty, což zpřístupňuje bezpečnou komunikaci všem.
 
-Zde je návod, jak implementujeme šifrování OpenPGP:
+Takto implementujeme OpenPGP šifrování:
 
 ```javascript
 async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
@@ -247,71 +253,75 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-Tato implementace zajišťuje, že vaše e-maily jsou šifrovány předtím, než opustí vaše zařízení, a dešifrovat je může pouze zamýšlený příjemce, čímž se zachovává soukromí vaší komunikace i před námi. To je nezbytné pro ochranu citlivé komunikace před neoprávněným přístupem a sledováním.
+Tato implementace zajišťuje, že vaše e-maily jsou zašifrovány ještě před tím, než opustí vaše zařízení, a mohou je dešifrovat pouze zamýšlený příjemci, čímž zůstává vaše komunikace soukromá i před námi. To je nezbytné pro ochranu citlivých komunikací před neoprávněným přístupem a sledováním.
 
-## Vícevrstvá ochrana obsahu pro komplexní zabezpečení {#multi-layered-content-protection-for-comprehensive-security}
 
-Přeposílání e-mailů nabízí několik vrstev ochrany obsahu, které jsou ve výchozím nastavení povoleny a poskytují komplexní zabezpečení před různými hrozbami:
+## Vícevrstvá ochrana obsahu pro komplexní bezpečnost {#multi-layered-content-protection-for-comprehensive-security}
 
-1. **Ochrana obsahu pro dospělé** – Filtruje nevhodný obsah bez ohrožení soukromí
-2. **Ochrana [Phishing](https://en.wikipedia.org/wiki/Phishing)** – Blokuje pokusy o krádež vašich informací a zároveň zachovává anonymitu
-3. **Ochrana spustitelných souborů** – Zabraňuje potenciálně škodlivým přílohám bez skenování obsahu
-4. **Ochrana [Virus](https://en.wikipedia.org/wiki/Computer_virus)** – Prohledává malware pomocí technik zachování soukromí
+Forward Email nabízí více vrstev ochrany obsahu, které jsou ve výchozím nastavení zapnuté, aby poskytly komplexní zabezpečení proti různým hrozbám:
 
-Na rozdíl od mnoha poskytovatelů, kteří tyto funkce umožňují volbu, my jsme je povolili, abychom zajistili, že všichni uživatelé budou mít z těchto ochranných opatření automaticky prospěch. Tento přístup odráží náš závazek k ochraně soukromí i zabezpečení a poskytuje rovnováhu, které se mnoha e-mailovým službám nedaří dosáhnout.
+1. **Ochrana před nevhodným obsahem** – Filtruje nevhodný obsah bez kompromisů na soukromí
+2. **Ochrana proti [phishingu](https://en.wikipedia.org/wiki/Phishing)** – Blokuje pokusy o krádež vašich informací při zachování anonymity
+3. **Ochrana před spustitelnými soubory** – Zabraňuje potenciálně škodlivým přílohám bez skenování obsahu
+4. **Ochrana proti [virům](https://en.wikipedia.org/wiki/Computer_virus)** – Skenuje malware pomocí technik zachovávajících soukromí
 
-## Jak se lišíme od ostatních e-mailových služeb: Technická výhoda v oblasti soukromí {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
+Na rozdíl od mnoha poskytovatelů, kteří tyto funkce nabízejí jako volitelné, jsme je nastavili jako výchozí, takže všichni uživatelé z těchto ochran automaticky těží. Tento přístup odráží náš závazek k ochraně soukromí i bezpečnosti a poskytuje rovnováhu, kterou mnoho e-mailových služeb nedokáže zajistit.
 
-Při porovnávání služby Forward Email s jinými e-mailovými službami je patrné několik klíčových technických rozdílů, které zdůrazňují náš přístup kladený na ochranu soukromí:
 
-### Transparentnost otevřeného zdrojového kódu pro ověřitelné soukromí {#open-source-transparency-for-verifiable-privacy}
+## Jak se lišíme od ostatních e-mailových služeb: Technická výhoda v ochraně soukromí {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-Přestože mnoho poskytovatelů e-mailů tvrdí, že jsou open source, často nechávají svůj backendový kód uzavřený. Přeposílaní e-mailů je 100% [otevřený zdrojový kód](https://en.wikipedia.org/wiki/Open_source), včetně frontendového i backendového kódu. Tato transparentnost umožňuje nezávislý bezpečnostní audit všech komponent a zajišťuje, že naše tvrzení o ochraně soukromí může kdokoli ověřit.
+Při porovnání Forward Email s ostatními e-mailovými službami několik klíčových technických rozdílů zdůrazňuje náš přístup zaměřený na soukromí:
 
-### Žádná vazba na dodavatele pro ochranu soukromí bez kompromisů {#no-vendor-lock-in-for-privacy-without-compromise}
+### Transparentnost open source pro ověřitelné soukromí {#open-source-transparency-for-verifiable-privacy}
 
-Mnoho poskytovatelů e-mailů zaměřených na soukromí vyžaduje používání jejich proprietárních aplikací nebo mostů. Funkce Forward Email funguje s jakýmkoli standardním e-mailovým klientem prostřednictvím protokolů [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) a [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), což vám dává svobodu vybrat si preferovaný e-mailový software bez kompromisů v oblasti soukromí.
+Zatímco mnoho poskytovatelů e-mailů tvrdí, že jsou open source, často si nechávají backendový kód uzavřený. Forward Email je 100% [open source](https://en.wikipedia.org/wiki/Open_source), včetně kódu frontend i backend. Tato transparentnost umožňuje nezávislý bezpečnostní audit všech komponent, což zajišťuje, že naše tvrzení o ochraně soukromí může ověřit kdokoli.
 
-### Data v sandboxu pro skutečnou izolaci {#sandboxed-data-for-true-isolation}
+### Žádné vázání na dodavatele pro soukromí bez kompromisů {#no-vendor-lock-in-for-privacy-without-compromise}
 
-Na rozdíl od služeb, které používají sdílené databáze, kde jsou data všech uživatelů smíchána, náš přístup s využitím sandboxu zajišťuje, že data každého uživatele jsou zcela izolována. Tento zásadní architektonický rozdíl poskytuje výrazně silnější záruky soukromí než většina e-mailových služeb.
+Mnoho poskytovatelů zaměřených na soukromí vyžaduje použití jejich proprietárních aplikací nebo můstků. Forward Email funguje s jakýmkoli standardním e-mailovým klientem přes protokoly [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) a [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), což vám dává svobodu vybrat si preferovaný e-mailový software bez kompromisů na soukromí.
+### Izolovaná data pro skutečnou izolaci {#sandboxed-data-for-true-isolation}
+
+Na rozdíl od služeb, které používají sdílené databáze, kde jsou data všech uživatelů smíchána dohromady, náš izolovaný přístup zajišťuje, že data každého uživatele jsou zcela oddělena. Tento zásadní architektonický rozdíl poskytuje výrazně silnější záruky soukromí než většina e-mailových služeb.
 
 ### Přenositelnost a kontrola dat {#data-portability-and-control}
 
-Věříme, že vaše data patří vám, a proto vám umožňujeme snadno exportovat vaše e-maily ve standardních formátech (MBOX, EML, SQLite) a skutečně smazat vaše data, kdykoli si to přejete. Tato úroveň kontroly je u poskytovatelů e-mailových služeb vzácná, ale pro skutečné soukromí je nezbytná.
+Věříme, že vaše data patří vám, a proto usnadňujeme export vašich e-mailů ve standardních formátech (MBOX, EML, SQLite) a skutečné smazání vašich dat, kdykoli chcete. Tato úroveň kontroly je mezi poskytovateli e-mailů vzácná, ale nezbytná pro skutečné soukromí.
 
-## Technické výzvy přeposílání e-mailů s důrazem na soukromí {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-Vytvoření e-mailové služby, která klade důraz na soukromí, s sebou nese značné technické výzvy. Zde jsou některé z překážek, které jsme překonali:
+## Technické výzvy e-mailového přeposílání zaměřeného na soukromí {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-### Správa paměti pro zpracování e-mailů bez protokolování {#memory-management-for-no-logging-email-processing}
+Vytvoření e-mailové služby zaměřené na soukromí přináší významné technické výzvy. Zde jsou některé překážky, které jsme překonali:
 
-Zpracování e-mailů v paměti bez nutnosti ukládání na disk vyžaduje pečlivou správu paměti, aby bylo možné efektivně zvládat velké objemy e-mailového provozu. Implementovali jsme pokročilé techniky optimalizace paměti, abychom zajistili spolehlivý výkon bez kompromisů v naší politice neukládání dat, která je klíčovou součástí naší strategie ochrany soukromí.
+### Správa paměti pro zpracování e-mailů bez ukládání záznamů {#memory-management-for-no-logging-email-processing}
 
-### Detekce spamu bez analýzy obsahu pro filtrování s ohledem na zachování soukromí {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
+Zpracování e-mailů v paměti bez ukládání na disk vyžaduje pečlivou správu paměti, aby bylo možné efektivně zvládat vysoký objem e-mailového provozu. Implementovali jsme pokročilé techniky optimalizace paměti, které zajišťují spolehlivý výkon bez kompromisů s naší politikou bez ukládání dat, což je klíčová součást naší strategie ochrany soukromí.
 
-Většina detekčních systémů [spam](https://en.wikipedia.org/wiki/Email_spam) se spoléhá na analýzu obsahu e-mailů, což je v rozporu s našimi zásadami ochrany osobních údajů. Vyvinuli jsme techniky k identifikaci spamových vzorců bez čtení obsahu vašich e-mailů, čímž dosahujeme rovnováhy mezi ochranou soukromí a použitelností a zároveň zachováváme důvěrnost vaší komunikace.
+### Detekce spamu bez analýzy obsahu pro filtrování zachovávající soukromí {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-### Zachování kompatibility s designem zaměřeným na ochranu soukromí {#maintaining-compatibility-with-privacy-first-design}
+Většina systémů pro detekci [spamu](https://en.wikipedia.org/wiki/Email_spam) spoléhá na analýzu obsahu e-mailů, což je v rozporu s našimi zásadami ochrany soukromí. Vyvinuli jsme techniky pro identifikaci vzorců spamu bez čtení obsahu vašich e-mailů, čímž dosahujeme rovnováhy mezi soukromím a použitelností, která zachovává důvěrnost vaší komunikace.
 
-Zajištění kompatibility se všemi e-mailovými klienty a zároveň implementace pokročilých funkcí ochrany osobních údajů vyžadovalo kreativní technická řešení. Náš tým neúnavně pracoval na tom, aby bylo soukromí bezproblémové, takže si při ochraně své e-mailové komunikace nemusíte vybírat mezi pohodlím a zabezpečením.
+### Zachování kompatibility s designem zaměřeným na soukromí {#maintaining-compatibility-with-privacy-first-design}
 
-## Nejlepší postupy ochrany osobních údajů pro uživatele přeposílaných e-mailů {#privacy-best-practices-for-forward-email-users}
+Zajištění kompatibility se všemi e-mailovými klienty při implementaci pokročilých funkcí ochrany soukromí vyžadovalo kreativní inženýrská řešení. Náš tým pracoval neúnavně, aby bylo soukromí bezproblémové, takže nemusíte volit mezi pohodlím a bezpečností při ochraně vaší e-mailové komunikace.
 
-Pro maximalizaci ochrany před sledováním e-mailů a zajištění soukromí při používání funkce Forward Email doporučujeme následující osvědčené postupy:
 
-1. **Používejte jedinečné aliasy pro různé služby** - Vytvořte si pro každou službu, ke které se zaregistrujete, jiný alias e-mailu, abyste zabránili sledování mezi službami.
-2. **Povolte šifrování OpenPGP** - Pro citlivou komunikaci používejte šifrování end-to-end, abyste zajistili úplné soukromí.
-3. **Pravidelně střídejte aliasy e-mailů** - Pravidelně aktualizujte aliasy důležitých služeb, abyste minimalizovali dlouhodobý sběr dat.
-4. **Používejte silná a jedinečná hesla** - Chraňte svůj účet Forward Email silným heslem, abyste zabránili neoprávněnému přístupu.
-5. **Implementujte anonymizaci [IP adresa](https://en.wikipedia.org/wiki/IP_address)** - Zvažte použití [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) ve spojení s Forward Email pro úplnou anonymitu.
+## Nejlepší postupy ochrany soukromí pro uživatele Forward Email {#privacy-best-practices-for-forward-email-users}
 
-## Závěr: Budoucnost přeposílání soukromých e-mailů {#conclusion-the-future-of-private-email-forwarding}
+Pro maximální ochranu před sledováním e-mailů a zvýšení vašeho soukromí při používání Forward Email doporučujeme následující nejlepší postupy:
 
-Ve společnosti Forward Email věříme, že soukromí není jen funkce – je to základní právo. Naše technické implementace toto přesvědčení odrážejí a poskytují vám přeposílání e-mailů, které respektuje vaše soukromí na všech úrovních a chrání vás před sledováním e-mailů a shromažďováním metadat.
+1. **Používejte unikátní aliasy pro různé služby** - Vytvořte si pro každou službu, na kterou se registrujete, jiný e-mailový alias, abyste zabránili sledování napříč službami
+2. **Povolte šifrování OpenPGP** - Pro citlivou komunikaci používejte end-to-end šifrování, které zajistí úplné soukromí
+3. **Pravidelně měňte své e-mailové aliasy** - Pravidelně aktualizujte aliasy pro důležité služby, abyste minimalizovali dlouhodobé shromažďování dat
+4. **Používejte silná a unikátní hesla** - Chraňte svůj účet Forward Email silným heslem, aby se zabránilo neoprávněnému přístupu
+5. **Implementujte [anonymizaci IP adres](https://en.wikipedia.org/wiki/IP_address)** - Zvažte použití [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) společně s Forward Email pro úplnou anonymitu
 
-I když neustále vyvíjíme a vylepšujeme naše služby, náš závazek k ochraně soukromí zůstává neochvějný. Neustále zkoumáme nové metody šifrování, zkoumáme další možnosti ochrany soukromí a zdokonalujeme naši kódovou základnu, abychom vám poskytli co nejbezpečnější e-mailový zážitek.
 
-Volbou možnosti Přeposílání e-mailů si nejen vybíráte e-mailovou službu – podporujete také vizi internetu, kde je soukromí výchozím nastavením, nikoli výjimkou. Přidejte se k nám a budujte soukromější digitální budoucnost, jeden e-mail po druhém.
+## Závěr: Budoucnost soukromého přeposílání e-mailů {#conclusion-the-future-of-private-email-forwarding}
 
-<!-- *Klíčová slova: přeposílání soukromých e-mailů, ochrana soukromí e-mailů, zabezpečená e-mailová služba, e-mail s otevřeným zdrojovým kódem, kvantově bezpečné šifrování, e-mail OpenPGP, zpracování e-mailů v paměti, e-mailová služba bez protokolování, ochrana metadat e-mailů, soukromí v záhlavích e-mailů, e-mail šifrovaný end-to-end, e-mail zaměřený na soukromí, anonymní přeposílání e-mailů, osvědčené postupy zabezpečení e-mailů, ochrana obsahu e-mailů, ochrana před phishingem, antivirová kontrola e-mailů, poskytovatel e-mailů zaměřený na soukromí, bezpečné záhlaví e-mailů, implementace soukromí e-mailů, ochrana před sledováním e-mailů, přeposílání e-mailů bez protokolování, zabránění úniku metadat e-mailů, techniky ochrany soukromí e-mailů, anonymizace IP adres pro e-maily, aliasy soukromých e-mailů, zabezpečení přeposílání e-mailů, soukromí e-mailů před inzerenty, kvantově odolné šifrování e-mailů, soukromí e-mailů bez kompromisů, úložiště e-mailů SQLite, šifrování e-mailů v sandboxu, přenositelnost dat pro e-maily* -->
+Ve Forward Email věříme, že soukromí není jen funkcí – je to základní právo. Naše technické implementace toto přesvědčení odrážejí a poskytují vám přeposílání e-mailů, které respektuje vaše soukromí na každé úrovni a chrání vás před sledováním e-mailů a sběrem metadat.
+
+Jak pokračujeme ve vývoji a zlepšování naší služby, naše závazky k ochraně soukromí zůstávají neochvějné. Neustále zkoumáme nové metody šifrování, zkoumáme další ochrany soukromí a zdokonalujeme náš kód, abychom poskytli co nejbezpečnější e-mailový zážitek.
+
+Volbou Forward Email nevybíráte jen e-mailovou službu – podporujete vizi internetu, kde je soukromí výchozím nastavením, nikoli výjimkou. Připojte se k nám při budování soukromější digitální budoucnosti, jeden e-mail za druhým.
+<!-- *Keywords: private email forwarding, email privacy protection, secure email service, open-source email, quantum-safe encryption, OpenPGP email, in-memory email processing, no-log email service, email metadata protection, email header privacy, end-to-end encrypted email, privacy-first email, anonymous email forwarding, email security best practices, email content protection, phishing protection, email virus scanning, privacy-focused email provider, secure email headers, email privacy implementation, protection from email surveillance, no-logging email forwarding, prevent email metadata leakage, email privacy techniques, IP address anonymization for email, private email aliases, email forwarding security, email privacy from advertisers, quantum-resistant email encryption, email privacy without compromise, SQLite email storage, sandboxed email encryption, data portability for email* -->
+

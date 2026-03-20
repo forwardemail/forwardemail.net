@@ -1,112 +1,117 @@
-# Denunciar abuso {#report-abuse}
+# Denunciar Abuso {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Denunciar abuso e spam para Forward Email" class="rounded-lg" />
+
 
 ## Índice {#table-of-contents}
 
-* [Isenção de responsabilidade](#disclaimer)
-* [Como enviar uma denúncia de abuso](#how-to-submit-an-abuse-report)
+* [Aviso Legal](#disclaimer)
+* [Como enviar um relatório de abuso](#how-to-submit-an-abuse-report)
 * [Para o público em geral](#for-the-general-public)
-* [Para aplicação da lei](#for-law-enforcement)
+* [Para as autoridades policiais](#for-law-enforcement)
   * [Quais informações estão disponíveis](#what-information-is-available)
   * [Quais informações não estão disponíveis](#what-information-is-not-available)
-  * [Autoridades policiais sediadas nos Estados Unidos](#law-enforcement-based-in-the-united-states)
-  * [Autoridades policiais sediadas fora dos Estados Unidos](#law-enforcement-based-outside-of-the-united-states)
-  * [Solicitações de emergência para aplicação da lei](#law-enforcement-emergency-requests)
-  * [Solicitações de aplicação da lei podem gerar notificações de conta](#law-enforcement-requests-may-trigger-account-notices)
-  * [Solicitações de aplicação da lei para preservar informações](#law-enforcement-requests-to-preserve-information)
-  * [Processo de cumprimento da lei](#law-enforcement-serving-process)
+  * [Autoridades policiais baseadas nos Estados Unidos](#law-enforcement-based-in-the-united-states)
+  * [Autoridades policiais baseadas fora dos Estados Unidos](#law-enforcement-based-outside-of-the-united-states)
+  * [Pedidos de emergência das autoridades policiais](#law-enforcement-emergency-requests)
+  * [Pedidos das autoridades policiais podem gerar notificações de conta](#law-enforcement-requests-may-trigger-account-notices)
+  * [Pedidos das autoridades policiais para preservar informações](#law-enforcement-requests-to-preserve-information)
+  * [Cumprimento de mandados pelas autoridades policiais](#law-enforcement-serving-process)
 
-## Isenção de responsabilidade {#disclaimer}
 
-Por favor, consulte nosso [Termos](/terms), pois ele se aplica a todo o site.
+## Aviso Legal {#disclaimer}
 
-## Como enviar uma denúncia de abuso {#how-to-submit-an-abuse-report}
+Por favor, consulte nossos [Termos](/terms) conforme aplicável em todo o site.
 
-Analisamos relatórios de abuso e atendemos solicitações de informações para [público em geral](#for-the-general-public) e [aplicação da lei](#for-law-enforcement) caso a caso por e-mail.
 
-Relatórios de abuso e solicitações de informações relacionadas a usuários, e-mails, endereços IP e/ou domínios são chamados coletivamente de "Conta" abaixo.
+## Como enviar um relatório de abuso {#how-to-submit-an-abuse-report}
 
-Nosso endereço de e-mail para contato com sua solicitação ou denúncia de abuso é: `abuse@forwardemail.net`
+Analisamos relatórios de abuso e atendemos solicitações de informações para o [público em geral](#for-the-general-public) e para as [autoridades policiais](#for-law-enforcement) caso a caso por e-mail.
 
-Leia as seções abaixo para obter mais informações que possam ser pertinentes a você.
+Relatórios de abuso e solicitações de informações referentes a usuários, e-mails, endereços IP e/ou domínios são referidos coletivamente como "Conta" abaixo.
+
+Nossos endereços de e-mail para contato com sua solicitação ou relatório sobre abuso são: `support@forwardemail.net`, `abuse@forwardemail.net` e `security@forwardemail.net`.
+
+Por favor, envie uma cópia para todos esses endereços de e-mail, se possível, e também envie e-mails de lembrete caso não respondamos dentro de 24-48+ horas.
+
+Leia as seções abaixo para mais informações que podem ser relevantes para você.
+
 
 ## Para o público em geral {#for-the-general-public}
 
 <u>**Se você ou outra pessoa estiver em perigo iminente, entre em contato com a polícia e os serviços de emergência imediatamente.**</u>
 
-<u>**Você deve procurar aconselhamento jurídico profissional para recuperar o acesso perdido à sua conta ou para ajudar a deter um agente malicioso.**</u>
+<u>**Você deve buscar aconselhamento jurídico profissional para recuperar o acesso perdido à sua Conta ou para ajudar a impedir um agente malicioso.**</u>
 
-Se você for vítima de abuso em uma conta que utiliza nosso serviço, envie-nos sua denúncia por e-mail para o endereço acima. Se sua conta foi invadida por um agente malicioso (por exemplo, seu domínio expirou recentemente e foi registrado novamente por terceiros e, em seguida, usado para abuso), envie-nos um e-mail com uma denúncia para o endereço acima com as informações exatas da sua conta (por exemplo, seu nome de domínio). Podemos ajudar a [proibição de sombra](https://en.wikipedia.org/wiki/Shadow_banning) a conta após a validação da sua titularidade anterior. Observe que não temos autoridade para ajudá-lo a recuperar o acesso à sua conta.
+Se você for vítima de abuso de uma Conta que está usando nosso serviço, envie seu relatório por e-mail para o endereço acima. Se sua Conta foi tomada por um agente malicioso (por exemplo, seu domínio expirou recentemente e foi re-registrado por um terceiro e então usado para abuso), envie um relatório para o endereço acima com as informações exatas da sua Conta (por exemplo, o nome do seu domínio). Podemos ajudar a [banir em sombra](https://en.wikipedia.org/wiki/Shadow_banning) a Conta após validação da sua propriedade anterior. Note que não temos autoridade para ajudar você a recuperar o acesso à sua Conta.
 
-Seu representante legal pode aconselhá-lo a entrar em contato com as autoridades policiais, com o proprietário da sua conta (por exemplo, o registrador do nome de domínio; o site onde você registrou o nome de domínio) e/ou encaminhá-lo para [Página da ICANN sobre domínios perdidos](https://www.icann.org/resources/pages/lost-domain-names).
+Seu representante legal pode aconselhá-lo a contatar as autoridades policiais, o proprietário da sua Conta (por exemplo, o registrador do nome de domínio; o site onde você registrou o nome de domínio) e/ou encaminhá-lo para a [página da ICANN sobre domínios perdidos](https://www.icann.org/resources/pages/lost-domain-names).
 
-## Para aplicação da lei {#for-law-enforcement}
 
-Para a maioria das solicitações, nossa capacidade de divulgar informações é regida pelo [Lei de Privacidade das Comunicações Eletrônicas](https://bja.ojp.gov/program/it/privacy-civil-liberties/authorities/statutes/1285) ([Wikipédia](https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act)), [18 U.S.C. 2701](https://www.govinfo.gov/link/uscode/18/2701) e seguintes ("ECPA"). O ECPA exige que divulguemos determinadas informações do usuário às autoridades policiais apenas em resposta a tipos específicos de solicitações legais, incluindo intimações, ordens judiciais e mandados de busca.
+## Para as autoridades policiais {#for-law-enforcement}
 
-Se você é membro de uma força policial e busca informações sobre uma Conta, as informações da Conta, bem como a data e o intervalo de tempo, devem ser incluídos em sua solicitação. Não podemos processar solicitações excessivamente amplas e/ou vagas – isso é para proteger os dados e a confiança de nossos usuários e, principalmente, para manter seus dados seguros.
+Para a maioria das solicitações, nossa capacidade de divulgar informações é regida pelo [Electronic Communications Privacy Act](https://bja.ojp.gov/program/it/privacy-civil-liberties/authorities/statutes/1285) ([Wikipedia](https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act)), [18 U.S.C. 2701](https://www.govinfo.gov/link/uscode/18/2701), et seq. ("ECPA"). A ECPA determina que só divulgamos certas informações de usuários às autoridades policiais em resposta a tipos específicos de solicitações legais, incluindo intimações, ordens judiciais e mandados de busca.
 
-Se sua solicitação nos indicar uma violação do nosso [Termos](/terms), nós a processaremos de acordo com nossas melhores práticas internas para lidar com abusos. Observe que, em alguns casos, isso pode resultar na suspensão e/ou banimento da conta.
+Se você é um membro das autoridades policiais e está buscando informações sobre uma Conta, as informações da Conta, bem como o intervalo de data e hora, devem ser incluídas em sua solicitação. Não podemos processar solicitações excessivamente amplas e/ou vagas – isso é para proteger os dados e a confiança dos nossos usuários e, mais importante, para manter seus dados seguros.
+Se sua solicitação indicar para nós uma violação dos nossos [Termos](/terms), então a processaremos de acordo com nossas melhores práticas internas exclusivas para lidar com abusos – observe que, em alguns casos, isso pode resultar na suspensão e/ou banimento da Conta.
 
-**Como não somos um registrador de nomes de domínio**, se você deseja obter informações históricas sobre registros DNS referentes a um nome de domínio, entre em contato com o registrador de nomes de domínio específico correspondente ao domínio. Serviços como [Security Trails]() podem fornecer consultas históricas de registros, mas informações mais específicas e precisas podem ser fornecidas pelo registrador. Para determinar quem é o registrador de nomes de domínio e/ou os proprietários dos servidores de nomes DNS de um domínio, as ferramentas `dig` e `whois` podem ser úteis (por exemplo, `whois example.com` ou `dig example.com ns`). Você pode determinar se uma conta está em um plano pago ou gratuito em nosso serviço realizando uma consulta de registros DNS (por exemplo, `dig example.com mx` e `dig example.com txt`). Se os registros MX não retornarem valores como `mx1.forwardemail.net` e `mx2.forwardemail.net`, o domínio não está usando nosso serviço. Se os registros TXT retornarem um endereço de e-mail em texto simples (por exemplo, `forward-email=user@example.com`), isso indica o endereço de destino do encaminhamento de e-mail para um domínio. Se, em vez disso, retornar um valor como `forward-email-site-verification=XXXXXXXXXX`, isso indica que o domínio está em um plano pago e que a configuração de encaminhamento está armazenada em nosso banco de dados com o ID `whois`0. Para obter mais informações sobre como nosso serviço funciona no nível de DNS, consulte nosso `whois`1.
+**Como não somos um registrador de nomes de domínio**, se desejar buscar informações históricas de registros DNS sobre um nome de domínio, deve contatar o registrador específico do nome de domínio correspondente ao domínio. Serviços como [Security Trails]() podem fornecer consulta de registros históricos, mas informações mais específicas e precisas podem ser fornecidas pelo registrador. Para determinar quem são o registrador do nome de domínio e/ou os proprietários dos servidores de nomes DNS de um domínio, as ferramentas `dig` e `whois` podem ser úteis (por exemplo, `whois example.com` ou `dig example.com ns`). Você pode determinar se uma Conta está em um plano pago ou gratuito em nosso serviço realizando uma consulta de registro DNS (por exemplo, `dig example.com mx` e `dig example.com txt`). Se os registros MX não retornarem valores como `mx1.forwardemail.net` e `mx2.forwardemail.net`, então o domínio não está usando nosso serviço. Se os registros TXT retornarem um endereço de e-mail em texto simples (por exemplo, `forward-email=user@example.com`), isso indica o destino do endereço de encaminhamento de e-mail para um domínio. Se, em vez disso, retornar um valor como `forward-email-site-verification=XXXXXXXXXX`, isso indica que está em um plano pago e a configuração de encaminhamento está armazenada em nosso banco de dados sob o ID `XXXXXXXXXX`. Para mais informações sobre como nosso serviço funciona no nível DNS, consulte nossa [FAQ](/faq).
 
-### Quais informações estão disponíveis {#what-information-is-available}
+### Que informações estão disponíveis {#what-information-is-available}
 
-Consulte nossa seção de Política de Privacidade para [Informações coletadas](/privacy#information-collected). As contas têm permissão para remover suas informações do nosso sistema em conformidade com as leis de privacidade e retenção de dados; consulte nossa seção de Política de Privacidade para [Remoção de informações](/privacy#information-removal). Isso significa que as informações solicitadas podem não estar disponíveis no momento da solicitação devido à exclusão da conta.
+Consulte a seção da nossa Política de Privacidade sobre [Informações Coletadas](/privacy#information-collected). As Contas têm permissão para remover suas informações do nosso sistema em conformidade com as leis de retenção de dados e privacidade; consulte a seção da nossa Política de Privacidade sobre [Remoção de Informações](/privacy#information-removal). Isso significa que as informações solicitadas podem não estar disponíveis no momento da solicitação devido à exclusão da Conta.
 
-### Quais informações não estão disponíveis {#what-information-is-not-available}
+### Que informações não estão disponíveis {#what-information-is-not-available}
 
-Consulte nossa seção Política de Privacidade para [Informações não coletadas](/privacy#information-not-collected).
+Consulte a seção da nossa Política de Privacidade sobre [Informações Não Coletadas](/privacy#information-not-collected).
 
-### Autoridades policiais sediadas nos Estados Unidos {#law-enforcement-based-in-the-united-states}
+### Autoridades policiais baseadas nos Estados Unidos {#law-enforcement-based-in-the-united-states}
 
-Com o [exceção de emergências](#law-enforcement-emergency-requests), compartilhamos informações da conta somente após o recebimento de uma intimação válida, ordem judicial ECPA dos EUA e/ou mandado de busca.
+Com a [exceção de emergências](#law-enforcement-emergency-requests), compartilhamos informações da Conta somente mediante recebimento de intimação válida, ordem judicial ECPA dos EUA e/ou mandado de busca.
 
-Também podemos [notificar uma conta](#law-enforcement-requests-may-trigger-account-notices) sobre uma solicitação de aplicação da lei, a menos que sejamos proibidos de fazê-lo por lei ou ordem judicial.
+Podemos adicionalmente [notificar uma Conta](#law-enforcement-requests-may-trigger-account-notices) sobre uma solicitação das autoridades policiais, a menos que sejamos proibidos por lei ou ordem judicial.
 
-Se recebermos uma intimação válida, uma ordem judicial da ECPA e/ou um mandado de busca, forneceremos informações relevantes e disponíveis da melhor maneira possível.
+Se recebermos uma intimação válida, ordem judicial ECPA e/ou mandado de busca, forneceremos as informações relevantes e disponíveis da melhor forma possível.
 
-### Autoridades policiais sediadas fora dos Estados Unidos {#law-enforcement-based-outside-of-the-united-states}
+### Autoridades policiais baseadas fora dos Estados Unidos {#law-enforcement-based-outside-of-the-united-states}
 
-Exigimos que as solicitações sejam atendidas para autoridades policiais sediadas fora dos Estados Unidos por meio de um dos seguintes meios:
+Exigimos que as solicitações sejam entregues para autoridades policiais baseadas fora dos Estados Unidos por meio de uma das seguintes formas:
 
 * Um tribunal dos Estados Unidos.
-* Uma agência de execução sob os procedimentos de um [Tratado de assistência jurídica mútua dos Estados Unidos](https://www.justice.gov/criminal-oia/file/1498806/download) ([Wikipédia](https://en.wikipedia.org/wiki/Mutual_legal_assistance_treaty)) ("MLAT").
-* Uma ordem de um governo estrangeiro sujeita a um acordo executivo que o Procurador-Geral dos Estados Unidos determinou e certificou ao Congresso satisfaz os requisitos de [18 U.S.C. 2523](https://www.govinfo.gov/link/uscode/18/2523).
+* Uma agência de aplicação da lei sob os procedimentos de um [tratado de assistência jurídica mútua dos Estados Unidos](https://www.justice.gov/criminal-oia/file/1498806/download) ([Wikipedia](https://en.wikipedia.org/wiki/Mutual_legal_assistance_treaty)) ("MLAT").
+* Uma ordem de um governo estrangeiro que esteja sujeita a um acordo executivo que o Procurador-Geral dos Estados Unidos tenha determinado e certificado ao Congresso que satisfaz os requisitos de [18 U.S.C. 2523](https://www.govinfo.gov/link/uscode/18/2523).
 
-### Solicitações de emergência para aplicação da lei {#law-enforcement-emergency-requests}
+### Solicitações de emergência das autoridades policiais {#law-enforcement-emergency-requests}
 
-Conforme permitido por lei nos Estados Unidos (por exemplo, de acordo com [18 USC §2702 (b)(8)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(8\)para%20uma%20entidade%20governamental%2C%20se%20o%20provedor%2C%20de%20boa%20fé%2C%20acreditar%20que%20uma%20emergência%20envolvendo%20perigo%20de%20morte%20ou%20lesão%20física%20grave%20para%20qualquer%20pessoa%20requer%20divulgação%20sem%20atraso%20de%20comunicações%20relacionadas%20à%20emergência%3B%20ou) e [§2702 (c)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(c\)Exceções%20para%20Divulgação%20de%20Registros%20de%20Clientes.%E2%80%94Um%20provedor%20descrito%20na%20subseção%20\(a\)%20pode%20divulgar%20um%20registro%20ou%20outras%20informações%20pertencentes%20a%20um%20assinante%20a%20ou%20cliente%20de%20tal%20serviço%20\(não%20incluindo%20o%20conteúdo%20das%20comunicações%20cobertas%20pela%20subseção%20\(a\)\(1\)%20ou%20\(a\)\(2\)\)%E2%80%94)), quando de boa-fé e com verificação independente do solicitante – podemos divulgar e compartilhar informações da conta com autoridades policiais sem intimação, ordem judicial da ECPA e/ou mandado de busca quando acreditarmos que fazê-lo sem demora é necessário para evitar morte ou ferimentos físicos graves.
+Conforme permitido pela lei nos Estados Unidos (por exemplo, de acordo com [18 U.S.C. §2702 (b)(8)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(8\)to%20a%20governmental%20entity%2C%20if%20the%20provider%2C%20in%20good%20faith%2C%20believes%20that%20an%20emergency%20involving%20danger%20of%20death%20or%20serious%20physical%20injury%20to%20any%20person%20requires%20disclosure%20without%20delay%20of%20communications%20relating%20to%20the%20emergency%3B%20or) e [§2702 (c)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(c\)Exceptions%20for%20Disclosure%20of%20Customer%20Records.%E2%80%94A%20provider%20described%20in%20subsection%20\(a\)%20may%20divulge%20a%20record%20or%20other%20information%20pertaining%20to%20a%20subscriber%20to%20or%20customer%20of%20such%20service%20\(not%20including%20the%20contents%20of%20communications%20covered%20by%20subsection%20\(a\)\(1\)%20or%20\(a\)\(2\)\)%E2%80%94)), quando de boa-fé e com verificação independente do solicitante – podemos divulgar e compartilhar informações da Conta com as autoridades policiais sem intimação, ordem judicial ECPA e/ou mandado de busca quando acreditarmos que fazê-lo sem demora é necessário para prevenir morte ou lesão física grave.
+Exigimos que solicitações de dados de emergência ("EDR") sejam enviadas por e-mail e incluam todas as informações relevantes para fornecer um processo ágil e expedito.
 
-Exigimos que as solicitações de dados de emergência ("EDR") sejam enviadas por e-mail e incluam todas as informações relevantes para fornecer um processo rápido e oportuno.
+Observe que estamos cientes de ataques sofisticados de falsificação, phishing e personificação por e-mail (por exemplo, veja [este artigo do The Guardian](https://www.theguardian.com/technology/2022/apr/04/us-law-enforcement-agencies-access-your-data-apple-meta#:\~:text=A%20hack%20using%20a%20forged%20legal%20request%20that%20exposed%20consumer%20data%20collected%20by%20Apple%20and%20Meta%20shed%20light%20on%20the%20reach%20of%20the%20law)).
 
-Observe que estamos cientes de ataques sofisticados de spoofing, phishing e representação com e-mail (por exemplo, veja [este artigo do The Guardian](https://www.theguardian.com/technology/2022/apr/04/us-law-enforcement-agencies-access-your-data-apple-meta#:\~:text=A%20hack%20using%20a%20forged%20legal%20request%20that%20exposed%20consumer%20data%20collected%20by%20Apple%20and%20Meta%20shed%20light%20on%20the%20reach%20of%20the%20law)).
+Nossa política para o processamento de EDRs é a seguinte:
 
-Nossa política para processamento de EDRs é a seguinte:
+1. Pesquisar independentemente os metadados do cabeçalho do e-mail (por exemplo, DKIM/SPF/DMARC) (ou a ausência deles) para verificação.
 
-1. Pesquise independentemente os metadados do cabeçalho do e-mail (por exemplo, DKIM/SPF/DMARC) (ou a falta deles) para verificação.
+2. Fazer nossa melhor tentativa de boa-fé (com tentativas repetidas, se necessário) para contatar independentemente por telefone o solicitante – a fim de confirmar a autenticidade da solicitação. Por exemplo, podemos pesquisar o site `.gov` relacionado à jurisdição de onde vem a solicitação e então ligar para o escritório pelo número de telefone oficial listado publicamente para verificar a solicitação.
 
-2. Empenhar-nos-emos ao máximo para, de boa-fé (com tentativas repetidas, se necessário), contatar o solicitante por telefone de forma independente – a fim de confirmar a autenticidade da solicitação. Por exemplo, podemos pesquisar o site `.gov` relacionado à jurisdição de origem da solicitação e, em seguida, ligar para o escritório a partir do número de telefone oficial listado publicamente para verificar a solicitação.
+### Solicitações de autoridades podem gerar notificações de conta {#law-enforcement-requests-may-trigger-account-notices}
 
-### Solicitações de autoridades policiais podem gerar notificações de conta {#law-enforcement-requests-may-trigger-account-notices}
+Podemos notificar uma Conta e fornecer a ela uma cópia de uma solicitação de autoridade relacionada, a menos que sejamos proibidos por lei ou ordem judicial de fazê-lo (por exemplo, [18 U.S.C. 2705(b)](https://www.govinfo.gov/link/uscode/18/2705)). Nesses casos, se aplicável, podemos notificar uma Conta quando a ordem de não divulgação expirar.
 
-Podemos notificar uma Conta e fornecer-lhe uma cópia de uma solicitação de cumprimento da lei referente a ela, a menos que sejamos proibidos por lei ou ordem judicial de fazê-lo (por exemplo, [18 USC 2705(b)](https://www.govinfo.gov/link/uscode/18/2705)). Nesses casos, se aplicável, podemos notificar uma Conta quando a ordem de confidencialidade expirar.
+Se uma solicitação de informações por autoridade for válida, então iremos [preservar as informações necessárias e solicitadas da Conta](#law-enforcement-requests-to-preserve-information) e fazer um esforço razoável para contatar o proprietário da Conta pelo seu endereço de e-mail registrado e verificado (por exemplo, dentro de 7 dias corridos). Se recebermos uma objeção em tempo hábil (por exemplo, dentro de 7 dias corridos), então reteremos o compartilhamento das informações da Conta e continuaremos o processo legal conforme necessário.
 
-Se uma solicitação de informações por parte de autoridades policiais for válida, entraremos em contato com o titular da Conta por meio do endereço de e-mail registrado e verificado (por exemplo, em até 7 dias corridos). Se recebermos uma objeção em tempo hábil (por exemplo, em até 7 dias corridos), reteremos o compartilhamento das informações da Conta e daremos continuidade ao processo legal, conforme necessário.
+### Solicitações de autoridades para preservação de informações {#law-enforcement-requests-to-preserve-information}
 
-### Solicitações de autoridades policiais para preservação de informações {#law-enforcement-requests-to-preserve-information}
+Honraremos solicitações válidas de autoridades para preservar informações relativas a uma Conta conforme [18 U.S.C. 2703(f)](https://www.govinfo.gov/link/uscode/18/2703). Note que a preservação dos dados é restrita apenas ao que for especificamente solicitado e atualmente disponível.
 
-Atenderemos a solicitações válidas de autoridades policiais para preservar informações referentes a uma Conta, de acordo com [18 USC 2703(f)](https://www.govinfo.gov/link/uscode/18/2703). Observe que a preservação de dados se restringe apenas ao que for especificamente solicitado e estiver disponível no momento.
+### Cumprimento de mandados por autoridades {#law-enforcement-serving-process}
 
-### Processo de citação policial {#law-enforcement-serving-process}
-
-Exigimos que todas as solicitações válidas de aplicação da lei nos forneçam um endereço de e-mail válido e funcional com o qual possamos corresponder e fornecer as informações solicitadas eletronicamente.
+Exigimos que todas as solicitações válidas de autoridades nos forneçam um endereço de e-mail válido e funcional para que possamos corresponder e fornecer as informações solicitadas eletronicamente.
 
 Todas as solicitações devem ser enviadas para o endereço de e-mail especificado em [Como enviar uma denúncia de abuso](#how-to-submit-an-abuse-report) acima.
 
-Todas as solicitações de autoridades policiais devem ser enviadas em papel timbrado da agência ou departamento (por exemplo, como um anexo em PDF digitalizado), de um endereço de e-mail oficial e relevante, e assinadas.
+Todas as solicitações de autoridades devem ser enviadas em papel timbrado da agência ou departamento (por exemplo, como anexo PDF escaneado), de um endereço de e-mail oficial e relevante, e assinadas.
 
-Se for em relação a um [solicitação de emergência](#law-enforcement-emergency-requests), escreva "Solicitação de emergência policial" no assunto do e-mail.
+Se for referente a uma [solicitação de emergência](#law-enforcement-emergency-requests), por favor escreva "Solicitação de emergência de autoridade" no cabeçalho Assunto do e-mail.
 
-Observe que pode levar pelo menos duas semanas para que possamos analisar e responder à sua solicitação.
+Por favor, note que pode levar pelo menos duas semanas para que possamos revisar e responder à sua solicitação.

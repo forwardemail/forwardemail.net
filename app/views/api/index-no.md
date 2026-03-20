@@ -1,10 +1,14 @@
-# E-post-API {#email-api}
+# E-post API {#email-api}
+
 
 ## Innholdsfortegnelse {#table-of-contents}
 
 * [Biblioteker](#libraries)
-* [Basis-URI](#base-uri)
+* [Base URI](#base-uri)
 * [Autentisering](#authentication)
+  * [API-token autentisering (anbefalt for de fleste endepunkter)](#api-token-authentication-recommended-for-most-endpoints)
+  * [Alias-legitimasjon autentisering (for utgående e-post)](#alias-credentials-authentication-for-outbound-email)
+  * [Kun alias-endepunkter](#alias-only-endpoints)
 * [Feil](#errors)
 * [Lokalisering](#localization)
 * [Paginering](#pagination)
@@ -14,168 +18,200 @@
   * [Opprett konto](#create-account)
   * [Hent konto](#retrieve-account)
   * [Oppdater konto](#update-account)
-* [Aliaskontakter (CardDAV)](#alias-contacts-carddav)
-  * [Liste over kontakter](#list-contacts)
+* [Alias-kontakter (CardDAV)](#alias-contacts-carddav)
+  * [List kontakter](#list-contacts)
   * [Opprett kontakt](#create-contact)
   * [Hent kontakt](#retrieve-contact)
   * [Oppdater kontakt](#update-contact)
   * [Slett kontakt](#delete-contact)
-* [Aliaskalendere (CalDAV)](#alias-calendars-caldav)
-  * [Liste over kalendere](#list-calendars)
+* [Alias-kalendere (CalDAV)](#alias-calendars-caldav)
+  * [List kalendere](#list-calendars)
   * [Opprett kalender](#create-calendar)
   * [Hent kalender](#retrieve-calendar)
-  * [Oppdater kalenderen](#update-calendar)
-  * [Slett kalenderen](#delete-calendar)
-* [Aliasmeldinger (IMAP/POP3)](#alias-messages-imappop3)
-  * [Liste over og søk etter meldinger](#list-and-search-for-messages)
+  * [Oppdater kalender](#update-calendar)
+  * [Slett kalender](#delete-calendar)
+* [Alias-meldinger (IMAP/POP3)](#alias-messages-imappop3)
+  * [List og søk etter meldinger](#list-and-search-for-messages)
   * [Opprett melding](#create-message)
   * [Hent melding](#retrieve-message)
   * [Oppdater melding](#update-message)
   * [Slett melding](#delete-message)
-* [Aliasmapper (IMAP/POP3)](#alias-folders-imappop3)
-  * [Liste over mapper](#list-folders)
+* [Alias-mapper (IMAP/POP3)](#alias-folders-imappop3)
+  * [List mapper](#list-folders)
   * [Opprett mappe](#create-folder)
   * [Hent mappe](#retrieve-folder)
-  * [Oppdater mappen](#update-folder)
+  * [Oppdater mappe](#update-folder)
   * [Slett mappe](#delete-folder)
   * [Kopier mappe](#copy-folder)
 * [Utgående e-poster](#outbound-emails)
-  * [Få grense for utgående SMTP-e-post](#get-outbound-smtp-email-limit)
-  * [Liste over utgående SMTP-e-poster](#list-outbound-smtp-emails)
+  * [Hent grense for utgående SMTP-e-post](#get-outbound-smtp-email-limit)
+  * [List utgående SMTP-e-poster](#list-outbound-smtp-emails)
   * [Opprett utgående SMTP-e-post](#create-outbound-smtp-email)
   * [Hent utgående SMTP-e-post](#retrieve-outbound-smtp-email)
   * [Slett utgående SMTP-e-post](#delete-outbound-smtp-email)
 * [Domener](#domains)
-  * [Liste over domener](#list-domains)
+  * [List domener](#list-domains)
   * [Opprett domene](#create-domain)
   * [Hent domene](#retrieve-domain)
-  * [Bekreft domeneoppføringer](#verify-domain-records)
-  * [Bekreft SMTP-oppføringer for domenet](#verify-domain-smtp-records)
-  * [List opp domeneomfattende samlepassord](#list-domain-wide-catch-all-passwords)
-  * [Opprett et felles passord for hele domenet](#create-domain-wide-catch-all-password)
-  * [Fjern det generelle passordet for hele domenet](#remove-domain-wide-catch-all-password)
+  * [Verifiser domeneposter](#verify-domain-records)
+  * [Verifiser SMTP-poster for domene](#verify-domain-smtp-records)
+  * [List domenebredde catch-all-passord](#list-domain-wide-catch-all-passwords)
+  * [Opprett domenebredde catch-all-passord](#create-domain-wide-catch-all-password)
+  * [Fjern domenebredde catch-all-passord](#remove-domain-wide-catch-all-password)
   * [Oppdater domene](#update-domain)
   * [Slett domene](#delete-domain)
 * [Invitasjoner](#invites)
-  * [Godta domeneinvitasjon](#accept-domain-invite)
-  * [Opprett domeneinvitasjon](#create-domain-invite)
-  * [Fjern domeneinvitasjon](#remove-domain-invite)
+  * [Godta domeninvitasjon](#accept-domain-invite)
+  * [Opprett domeninvitasjon](#create-domain-invite)
+  * [Fjern domeninvitasjon](#remove-domain-invite)
 * [Medlemmer](#members)
   * [Oppdater domenemedlem](#update-domain-member)
   * [Fjern domenemedlem](#remove-domain-member)
-* [Aliaser](#aliases)
-  * [Generer et aliaspassord](#generate-an-alias-password)
-  * [Liste over domenealiaser](#list-domain-aliases)
-  * [Opprett nytt domenealias](#create-new-domain-alias)
-  * [Hent domenealias](#retrieve-domain-alias)
-  * [Oppdater domenealias](#update-domain-alias)
-  * [Slett domenealias](#delete-domain-alias)
+* [Alias](#aliases)
+  * [Generer et alias-passord](#generate-an-alias-password)
+  * [List domenaliaser](#list-domain-aliases)
+  * [Opprett nytt domenalias](#create-new-domain-alias)
+  * [Hent domenalias](#retrieve-domain-alias)
+  * [Oppdater domenalias](#update-domain-alias)
+  * [Slett domenalias](#delete-domain-alias)
 * [Krypter](#encrypt)
-  * [Krypter TXT-oppføring](#encrypt-txt-record)
+  * [Krypter TXT-post](#encrypt-txt-record)
+
 
 ## Biblioteker {#libraries}
 
-Akkurat nå har vi ikke gitt ut noen API-wrappere, men vi planlegger å gjøre det i nær fremtid. Send en e-post til <api@forwardemail.net> hvis du ønsker å bli varslet når et bestemt programmeringsspråks API-wrapper blir utgitt. I mellomtiden kan du bruke disse anbefalte HTTP-forespørselsbibliotekene i applikasjonen din, eller ganske enkelt bruke [krøll](https://stackoverflow.com/a/27442239/3586413) som i eksemplene nedenfor.
+Akkurat nå har vi ikke lansert noen API-wrappere ennå, men vi planlegger å gjøre det i nær fremtid. Send en e-post til <api@forwardemail.net> hvis du ønsker å bli varslet når en API-wrapper for et bestemt programmeringsspråk blir lansert. I mellomtiden kan du bruke disse anbefalte HTTP-forespørselsbibliotekene i applikasjonen din, eller ganske enkelt bruke [curl](https://stackoverflow.com/a/27442239/3586413) som i eksemplene nedenfor.
 
-| Språk | Bibliotek |
+| Språk     | Bibliotek                                                              |
 | ---------- | ---------------------------------------------------------------------- |
-| Rubin | [Faraday](https://github.com/lostisland/faraday) |
-| Python | [requests](https://github.com/psf/requests) |
-| Java | [OkHttp](https://github.com/square/okhttp/) |
-| PHP | [guzzle](https://github.com/guzzle/guzzle) |
+| Ruby       | [Faraday](https://github.com/lostisland/faraday)                       |
+| Python     | [requests](https://github.com/psf/requests)                            |
+| Java       | [OkHttp](https://github.com/square/okhttp/)                            |
+| PHP        | [guzzle](https://github.com/guzzle/guzzle)                             |
 | JavaScript | [superagent](https://github.com/ladjs/superagent) (vi er vedlikeholdere) |
-| Node.js | [superagent](https://github.com/ladjs/superagent) (vi er vedlikeholdere) |
-| Gå | [net/http](https://golang.org/pkg/net/http/) |
-| .NET | [RestSharp](https://github.com/restsharp/RestSharp) |
+| Node.js    | [superagent](https://github.com/ladjs/superagent) (vi er vedlikeholdere) |
+| Go         | [net/http](https://golang.org/pkg/net/http/)                           |
+| .NET       | [RestSharp](https://github.com/restsharp/RestSharp)                    |
+## Base URI {#base-uri}
 
-## Basis-URI {#base-uri}
+Den nåværende HTTP base URI-stien er: `BASE_URI`.
 
-Den nåværende HTTP-basis-URI-banen er: `BASE_URI`.
 
 ## Autentisering {#authentication}
 
-Alle endepunkter krever at [API-nøkkel](https://forwardemail.net/my-account/security) angis som "brukernavn"-verdien i forespørselens [Grunnleggende autorisasjon](https://en.wikipedia.org/wiki/Basic_access_authentication)-header (med unntak av [Aliaskontakter](#alias-contacts), [Aliaskalendere](#alias-calendars) og [Alias-postkasser](#alias-mailboxes) som bruker en [generert alias brukernavn og passord](/faq#do-you-support-receiving-email-with-imap)).
+Alle endepunkter krever autentisering ved bruk av [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication). Vi støtter to autentiseringsmetoder:
 
-Ikke bekymre deg – eksempler er gitt nedenfor hvis du ikke er sikker på hva dette er.
+### API Token Autentisering (Anbefalt for de fleste endepunkter) {#api-token-authentication-recommended-for-most-endpoints}
+
+Sett din [API-nøkkel](https://forwardemail.net/my-account/security) som "brukernavn"-verdi med et tomt passord:
+
+```sh
+curl BASE_URI/v1/account \
+  -u API_TOKEN:
+```
+
+Merk kolon (`:`) etter API-token – dette indikerer et tomt passord i Basic Auth-format.
+
+### Alias-legitimasjon Autentisering (For utgående e-post) {#alias-credentials-authentication-for-outbound-email}
+
+Endepunktet [Opprett utgående SMTP e-post](#create-outbound-smtp-email) støtter også autentisering ved bruk av din alias e-postadresse og et [generert alias-passord](/faq#do-you-support-receiving-email-with-imap):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@yourdomain.com:your_generated_password" \
+  -d "to=recipient@example.com" \
+  -d "subject=Hello" \
+  -d "text=Test email"
+```
+
+Denne metoden er nyttig når du sender e-post fra applikasjoner som allerede bruker SMTP-legitimasjon og gjør migrering fra SMTP til vårt API sømløs.
+
+### Alias-Only Endepunkter {#alias-only-endpoints}
+
+[Alias Kontakter](#alias-contacts-carddav), [Alias Kalendere](#alias-calendars-caldav), [Alias Meldinger](#alias-messages-imappop3), og [Alias Mapper](#alias-folders-imappop3) endepunkter krever alias-legitimasjon og støtter ikke API token autentisering.
+
+Ikke bekymre deg – eksempler er gitt nedenfor for deg hvis du ikke er sikker på hva dette er.
+
 
 ## Feil {#errors}
 
-Hvis det oppstår feil, vil svarinnholdet i API-forespørselen inneholde en detaljert feilmelding.
+Hvis det oppstår noen feil, vil responskroppen til API-forespørselen inneholde en detaljert feilmelding.
 
-| Kode | Navn |
+| Kode | Navn                  |
 | ---- | --------------------- |
-| 200 | OK |
-| 400 | Ugyldig forespørsel |
-| 401 | Uautorisert |
-| 403 | Forbudt |
-| 404 | Ikke funnet |
-| 429 | For mange forespørsler |
-| 500 | Intern serverfeil |
-| 501 | Ikke implementert |
-| 502 | Dårlig gateway |
-| 503 | Tjenesten er ikke tilgjengelig |
-| 504 | Gateway-tidsavbrudd |
+| 200  | OK                    |
+| 400  | Bad Request           |
+| 401  | Unauthorized          |
+| 403  | Forbidden             |
+| 404  | Not Found             |
+| 429  | Too Many Requests     |
+| 500  | Internal Server Error |
+| 501  | Not Implemented       |
+| 502  | Bad Gateway           |
+| 503  | Service Unavailable   |
+| 504  | Gateway Time-out      |
 
 > \[!TIP]
-> Hvis du mottar en 5xx-statuskode (noe som ikke skal skje), kan du kontakte oss på <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>, så hjelper vi deg med å løse problemet umiddelbart.
+> Hvis du mottar en 5xx statuskode (som ikke skal skje), vennligst kontakt oss på <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> så hjelper vi deg med å løse problemet umiddelbart.
+
 
 ## Lokalisering {#localization}
 
-Tjenesten vår er oversatt til over 25 forskjellige språk. Alle API-svarmeldinger oversettes til den siste språkinnstillingen som ble oppdaget for brukeren som sendte API-forespørselen. Du kan overstyre dette ved å sende en tilpasset `Accept-Language`-header. Prøv det gjerne ut ved hjelp av rullegardinmenyen for språk nederst på denne siden.
+Vår tjeneste er oversatt til over 25 forskjellige språk. Alle API-responsmeldinger oversettes til den siste lokaliteten som oppdages for brukeren som gjør API-forespørselen. Du kan overstyre dette ved å sende en egendefinert `Accept-Language` header. Prøv gjerne ut ved å bruke språkvelgeren nederst på denne siden.
+
 
 ## Paginering {#pagination}
 
 > \[!NOTE]
-> Fra 1. november 2024 vil API-endepunktene for [Liste over domener](#list-domains) og [Liste over domenealiaser](#list-domain-aliases) som standard ha maks. `1000` resultater per side. Hvis du ønsker å velge denne oppførselen tidlig, kan du sende `?paginate=true` som en ekstra spørrestrengparameter til URL-en for endepunktspørringen.
+> Fra og med 1. november 2024 vil API-endepunktene for [List domains](#list-domains) og [List domain aliases](#list-domain-aliases) som standard ha `1000` maks resultater per side. Hvis du ønsker å velge denne oppførselen tidlig, kan du sende `?paginate=true` som en ekstra querystring-parameter til URL-en for endepunktets spørring.
 
-Paginering støttes av alle API-endepunkter som viser resultater.
+Paginering støttes av alle API-endepunkter som lister resultater.
 
-Bare oppgi spørrestrengegenskapene `page` (og eventuelt `limit`).
+Oppgi enkelt querystring-egenskapene `page` (og eventuelt `limit`).
 
-Egenskapen `page` skal være et tall større enn eller lik `1`. Hvis du oppgir `limit` (også et tall), er minimumsverdien `10` og maksimumsverdien `50` (med mindre annet er angitt).
+Egenskapen `page` skal være et tall større enn eller lik `1`. Hvis du oppgir `limit` (også et tall), er minimumsverdien `10` og maksimum `50` (med mindre annet er angitt).
 
-| Spørrestrengparametere | Obligatorisk | Type | Beskrivelse |
-| --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `page` | Ingen | Tall | Resultatsiden som skal returneres. Hvis ikke spesifisert, vil `page`-verdien være `1`. Må være et tall større enn eller lik `1`. |
-| `limit` | Ingen | Tall | Antall resultater som skal returneres per side. Standardverdien er `10` hvis ikke spesifisert. Må være et tall større enn eller lik `1`, og mindre enn eller lik `50`. |
+| Querystring Parameter | Påkrevd | Type   | Beskrivelse                                                                                                                                               |
+| --------------------- | ------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `page`                | Nei     | Nummer | Side med resultater som skal returneres. Hvis ikke spesifisert, vil `page`-verdien være `1`. Må være et tall større enn eller lik `1`.                     |
+| `limit`               | Nei     | Nummer | Antall resultater som skal returneres per side. Standard er `10` hvis ikke spesifisert. Må være et tall større enn eller lik `1`, og mindre enn eller lik `50`. |
+For å avgjøre om flere resultater er tilgjengelige eller ikke, gir vi disse HTTP-responsoverskriftene (som du kan analysere for å paginere programmatisk):
 
-For å avgjøre om det finnes flere resultater, tilbyr vi disse HTTP-svarhodene (som du kan analysere for å paginere programmatisk):
-
-| HTTP-svarhode | Eksempel | Beskrivelse |
+| HTTP Response Header | Example                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                                                                                                                        |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `X-Page-Count` | `X-Page-Count: 3` | Det totale tilgjengelige sideantallet. |
-| `X-Page-Current` | `X-Page-Current: 1` | Den gjeldende resultatsiden som returneres (f.eks. basert på `page` spørrestrengparameteren). |
-| `X-Page-Size` | `X-Page-Size: 10` | Det totale antallet resultater på siden som ble returnert (f.eks. basert på `limit` spørrestrengparameteren og faktiske resultater som ble returnert). |
-| `X-Item-Count` | `X-Item-Count: 30` | Det totale antallet elementer som er tilgjengelige på tvers av alle sider. |
-| `Link` | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | Vi tilbyr en `Link` HTTP-svarheader som du kan analysere som vist i eksemplet. Dette er [similar to GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (f.eks. vil ikke alle verdier bli oppgitt hvis de ikke er relevante eller tilgjengelige, f.eks. vil ikke `"next"` bli oppgitt hvis det ikke finnes en annen side). |
-
-> Eksempelforespørsel:
+| `X-Page-Count`       | `X-Page-Count: 3`                                                                                                                                                                                                                                        | Det totale antallet sider som er tilgjengelige.                                                                                                                                                                                                                                                                                                                  |
+| `X-Page-Current`     | `X-Page-Current: 1`                                                                                                                                                                                                                                      | Den nåværende siden med resultater som returneres (f.eks. basert på `page`-spørringsparameteren).                                                                                                                                                                                                                                                                 |
+| `X-Page-Size`        | `X-Page-Size: 10`                                                                                                                                                                                                                                        | Det totale antallet resultater på siden som returneres (f.eks. basert på `limit`-spørringsparameteren og faktiske resultater som returneres).                                                                                                                                                                                                                      |
+| `X-Item-Count`       | `X-Item-Count: 30`                                                                                                                                                                                                                                       | Det totale antallet elementer tilgjengelig på tvers av alle sider.                                                                                                                                                                                                                                                                                               |
+| `Link`               | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | Vi gir en `Link` HTTP-responsoverskrift som du kan analysere som vist i eksemplet. Dette er [likt GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (f.eks. vil ikke alle verdier bli gitt hvis de ikke er relevante eller tilgjengelige, f.eks. vil ikke `"next"` bli gitt hvis det ikke finnes en neste side). |
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
+
 ## Logger {#logs}
 
 ### Hent logger {#retrieve-logs}
 
-API-et vårt lar deg programmatisk laste ned logger for kontoen din. Hvis du sender en forespørsel til dette endepunktet, behandles alle loggene for kontoen din, og de sendes til deg som et vedlegg ([Gzip](https://en.wikipedia.org/wiki/Gzip) komprimert [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) regnearkfil) når det er fullført.
+Vår API lar deg programmessivt laste ned logger for kontoen din. Å sende en forespørsel til dette endepunktet vil behandle alle logger for kontoen din og sende dem til deg som et vedlegg (en [Gzip](https://en.wikipedia.org/wiki/Gzip) komprimert [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) regnearkfil) når det er fullført.
 
-Dette lar deg opprette bakgrunnsjobber med en [Cron-jobb](https://en.wikipedia.org/wiki/Cron) eller bruke vår [Node.js jobbplanleggingsprogramvare Bree](https://github.com/breejs/bree) til å motta logger når du ønsker det. Merk at dette endepunktet er begrenset til `10` forespørsler per dag.
+Dette lar deg opprette bakgrunnsjobber med en [Cron job](https://en.wikipedia.org/wiki/Cron) eller bruke vår [Node.js job scheduling software Bree](https://github.com/breejs/bree) for å motta logger når du ønsker det. Merk at dette endepunktet er begrenset til `10` forespørsler per dag.
 
-Vedlegget er en liten form av `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, og selve e-posten inneholder et kort sammendrag av loggene som er hentet. Du kan også laste ned logger når som helst fra [Min konto → Logger](/my-account/logs).
+Vedlegget har små bokstaver og navnet `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` og e-posten inneholder en kort oppsummering av de hentede loggene. Du kan også laste ned logger når som helst fra [Min konto → Logger](/my-account/logs)
 
 > `GET /v1/logs/download`
 
-| Spørrestrengparametere | Obligatorisk | Type | Beskrivelse |
-| --------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | Ingen | Streng (FQDN) | Filtrer logger etter fullt kvalifisert domene («FQDN»). Hvis du ikke oppgir dette, hentes alle logger på tvers av alle domener. |
-| `q` | Ingen | Streng | Søk etter logger etter e-post, domene, aliasnavn, IP-adresse eller dato (format `M/Y`, `M/D/YY`, `M-D`, `M-D-YY` eller `M.D.YY`). |
-| `bounce_category` | Ingen | Streng | Søk etter logger etter en bestemt avvisningskategori (f.eks. `blocklist`). |
-| `response_code` | Ingen | Tall | Søk etter logger etter en spesifikk feilresponskode (f.eks. `421` eller `550`). |
+| Querystring Parameter | Påkrevd | Type          | Beskrivelse                                                                                                                     |
+| --------------------- | ------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`              | Nei     | String (FQDN) | Filtrer logger etter fullt kvalifisert domene ("FQDN"). Hvis du ikke oppgir dette, hentes alle logger på tvers av alle domener. |
+| `q`                   | Nei     | String        | Søk etter logger etter e-post, domene, aliasnavn, IP-adresse eller dato (`M/Y`, `M/D/YY`, `M-D`, `M-D-YY` eller `M.D.YY` format). |
+| `bounce_category`     | Nei     | String        | Søk etter logger etter en spesifikk bounce-kategori (f.eks. `blocklist`).                                                       |
+| `response_code`       | Nei     | Number        | Søk etter logger etter en spesifikk feilkode (f.eks. `421` eller `550`).                                                        |
 
-> Eksempelforespørsel:
+> Eksempel på forespørsel:
 
 ```sh
 curl BASE_URI/v1/logs/download \
@@ -188,7 +224,7 @@ curl BASE_URI/v1/logs/download \
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-Merk at du kan bruke tjenester som [Crontab.guru](https://crontab.guru/) for å validere syntaksen for cron-jobbens uttrykk.
+Merk at du kan bruke tjenester som [Crontab.guru](https://crontab.guru/) for å validere syntaksen i cron-jobb-uttrykket ditt.
 
 > Eksempel på Cron-jobb (ved midnatt hver dag **og med logger for forrige dag**):
 
@@ -204,18 +240,19 @@ For Linux og Ubuntu:
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date --date "-1 days" -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
+
 ## Konto {#account}
 
 ### Opprett konto {#create-account}
 
 > `POST /v1/account`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| -------------- | -------- | -------------- | ------------- |
-| `email` | Ja | Streng (e-post) | E-postadresse |
-| `password` | Ja | Streng | Passord |
+| Body Parameter | Påkrevd | Type           | Beskrivelse   |
+| -------------- | ------- | -------------- | ------------- |
+| `email`        | Ja      | String (E-post)| E-postadresse |
+| `password`     | Ja      | String         | Passord      |
 
-> Eksempelforespørsel:
+> Eksempel på forespørsel:
 
 ```sh
 curl -X POST BASE_URI/v1/account \
@@ -227,7 +264,7 @@ curl -X POST BASE_URI/v1/account \
 
 > `GET /v1/account`
 
-> Eksempelforespørsel:
+> Eksempel på forespørsel:
 
 ```sh
 curl BASE_URI/v1/account \
@@ -238,14 +275,14 @@ curl BASE_URI/v1/account \
 
 > `PUT /v1/account`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| -------------- | -------- | -------------- | -------------------- |
-| `email` | Ingen | Streng (e-post) | E-postadresse |
-| `given_name` | Ingen | Streng | Fornavn |
-| `family_name` | Ingen | Streng | Etternavn |
-| `avatar_url` | Ingen | Streng (URL) | Lenke til avatarbilde |
+| Body Parameter | Påkrevd | Type           | Beskrivelse          |
+| -------------- | ------- | -------------- | -------------------- |
+| `email`        | Nei     | String (E-post)| E-postadresse        |
+| `given_name`   | Nei     | String         | Fornavn              |
+| `family_name`  | Nei     | String         | Etternavn            |
+| `avatar_url`   | Nei     | String (URL)   | Lenke til avatarbilde |
 
-> Eksempelforespørsel:
+> Eksempel på forespørsel:
 
 ```sh
 curl -X PUT BASE_URI/v1/account \
@@ -253,15 +290,15 @@ curl -X PUT BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-## Aliaskontakter (CardDAV) {#alias-contacts-carddav}
+
+## Alias-kontakter (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> I motsetning til andre API-endepunkter krever disse [Autentisering](#authentication) "brukernavn" lik aliasbrukernavnet og "passord" lik det aliasgenererte passordet som grunnleggende autorisasjonsoverskrifter.
-
+> I motsetning til andre API-endepunkter krever disse [Autentisering](#authentication) med "brukernavn" lik alias-brukernavnet og "passord" lik alias-generert passord som Basic Authorization headers.
 > \[!WARNING]
-> Denne endepunktdelen er under utvikling og vil bli utgitt (forhåpentligvis) i 2024. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen «Apper» i navigasjonen på nettstedet vårt.
+> Denne endepunktseksjonen er under utvikling og vil bli lansert (forhåpentligvis) i 2024. I mellomtiden vennligst bruk en IMAP-klient fra "Apps"-menyen i navigasjonen på vår nettside.
 
-### Liste over kontakter {#list-contacts}
+### Liste kontakter {#list-contacts}
 
 > `GET /v1/contacts`
 
@@ -291,15 +328,16 @@ curl -X PUT BASE_URI/v1/account \
 
 **Kommer snart**
 
-## Aliaskalendere (CalDAV) {#alias-calendars-caldav}
+
+## Alias-kalendere (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> I motsetning til andre API-endepunkter krever disse [Autentisering](#authentication) "brukernavn" lik aliasbrukernavnet og "passord" lik det aliasgenererte passordet som grunnleggende autorisasjonsoverskrifter.
+> I motsetning til andre API-endepunkter krever disse [Autentisering](#authentication) med "brukernavn" lik alias-brukernavnet og "passord" lik alias-generert passord som Basic Authorization headers.
 
 > \[!WARNING]
-> Denne endepunktdelen er under utvikling og vil bli utgitt (forhåpentligvis) i 2024. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen «Apper» i navigasjonen på nettstedet vårt.
+> Denne endepunktseksjonen er under utvikling og vil bli lansert (forhåpentligvis) i 2024. I mellomtiden vennligst bruk en IMAP-klient fra "Apps"-menyen i navigasjonen på vår nettside.
 
-### Liste over kalendere {#list-calendars}
+### Liste kalendere {#list-calendars}
 
 > `GET /v1/calendars`
 
@@ -329,19 +367,20 @@ curl -X PUT BASE_URI/v1/account \
 
 **Kommer snart**
 
-## Aliasmeldinger (IMAP/POP3) {#alias-messages-imappop3}
+
+## Alias-meldinger (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> I motsetning til andre API-endepunkter krever disse [Autentisering](#authentication) "brukernavn" lik aliasbrukernavnet og "passord" lik det aliasgenererte passordet som grunnleggende autorisasjonsoverskrifter.
+> I motsetning til andre API-endepunkter krever disse [Autentisering](#authentication) med "brukernavn" lik alias-brukernavnet og "passord" lik alias-generert passord som Basic Authorization headers.
 
 > \[!WARNING]
-> Denne endepunktdelen er under utvikling og vil bli utgitt (forhåpentligvis) i 2024. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen «Apper» i navigasjonen på nettstedet vårt.
+> Denne endepunktseksjonen er under utvikling og vil bli lansert (forhåpentligvis) i 2024. I mellomtiden vennligst bruk en IMAP-klient fra "Apps"-menyen i navigasjonen på vår nettside.
 
-Sørg for at du har fulgt konfigurasjonsinstruksjonene for domenet ditt.
+Vennligst sørg for at du har fulgt oppsettsinstruksjonene for ditt domene.
 
-Disse instruksjonene finner du i FAQ-seksjonen vår [Støtter dere mottak av e-post med IMAP?](/faq#do-you-support-receiving-email-with-imap).
+Disse instruksjonene finnes i vår FAQ-seksjon [Støtter dere mottak av e-post med IMAP?](/faq#do-you-support-receiving-email-with-imap).
 
-### Vis og søk etter meldinger {#list-and-search-for-messages}
+### Liste og søk etter meldinger {#list-and-search-for-messages}
 
 > `GET /v1/messages`
 
@@ -350,7 +389,7 @@ Disse instruksjonene finner du i FAQ-seksjonen vår [Støtter dere mottak av e-p
 ### Opprett melding {#create-message}
 
 > \[!NOTE]
-> Dette vil **IKKE** sende en e-post – det vil bare legge til meldingen i postkassemappen din (f.eks. ligner dette på IMAP `APPEND`-kommandoen). Hvis du vil sende en e-post, se [Opprett utgående SMTP-e-post](#create-outbound-smtp-email) nedenfor. Etter at du har opprettet den utgående SMTP-e-posten, kan du legge til en kopi av den ved hjelp av dette endepunktet i aliaspostkassen din for lagringsformål.
+> Dette vil **IKKE** sende en e-post – det vil bare legge meldingen til i postkasse-mappen din (f.eks. tilsvarende IMAP-kommandoen `APPEND`). Hvis du ønsker å sende en e-post, se [Opprett utgående SMTP-e-post](#create-outbound-smtp-email) nedenfor. Etter å ha opprettet den utgående SMTP-e-posten, kan du legge til en kopi av den med dette endepunktet i aliasets postkasse for lagringsformål.
 
 > `POST /v1/messages`
 
@@ -374,15 +413,16 @@ Disse instruksjonene finner du i FAQ-seksjonen vår [Støtter dere mottak av e-p
 
 **Kommer snart**
 
-## Aliasmapper (IMAP/POP3) {#alias-folders-imappop3}
+
+## Alias-mapper (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Mappesluttpunkter med en mappesti <code>/v1/folders/:path</code> som endepunkt kan brukes om igjen med en mappe-ID <code>:id</code>. Dette betyr at du kan referere til mappen enten med dens <code>path</code>- eller <code>id</code>-verdi.
+> Mappeendepunkter med en mappes sti <code>/v1/folders/:path</code> som endepunkt kan byttes ut med en mappes ID <code>:id</code>. Dette betyr at du kan referere til mappen enten med <code>path</code> eller <code>id</code>.
 
 > \[!WARNING]
-> Denne endepunktdelen er under utvikling og vil bli utgitt (forhåpentligvis) i 2024. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen «Apper» i navigasjonen på nettstedet vårt.
+> Denne endepunktseksjonen er under utvikling og vil bli lansert (forhåpentligvis) i 2024. I mellomtiden vennligst bruk en IMAP-klient fra "Apps"-menyen i navigasjonen på vår nettside.
 
-### Liste over mapper {#list-folders}
+### Liste mapper {#list-folders}
 
 > `GET /v1/folders`
 
@@ -406,7 +446,7 @@ Disse instruksjonene finner du i FAQ-seksjonen vår [Støtter dere mottak av e-p
 
 **Kommer snart**
 
-### Slett mappen {#delete-folder}
+### Slett mappe {#delete-folder}
 
 > `DELETE /v1/folders/:id`
 
@@ -418,42 +458,42 @@ Disse instruksjonene finner du i FAQ-seksjonen vår [Støtter dere mottak av e-p
 
 **Kommer snart**
 
+
 ## Utgående e-poster {#outbound-emails}
 
-Sørg for at du har fulgt konfigurasjonsinstruksjonene for domenet ditt.
+Vennligst sørg for at du har fulgt oppsettsinstruksjonene for ditt domene.
 
-Disse instruksjonene finner du på [Min konto → Domener → Innstillinger → Utgående SMTP-konfigurasjon](/my-account/domains). Du må sørge for at DKIM, Return-Path og DMARC er satt opp for å sende utgående SMTP med domenet ditt.
-
+Disse instruksjonene finnes under [Min konto → Domener → Innstillinger → Utgående SMTP-konfigurasjon](/my-account/domains). Du må sikre oppsett av DKIM, Return-Path og DMARC for å sende utgående SMTP med ditt domene.
 ### Hent grense for utgående SMTP-e-post {#get-outbound-smtp-email-limit}
 
 Dette er et enkelt endepunkt som returnerer et JSON-objekt som inneholder `count` og `limit` for antall daglige utgående SMTP-meldinger per konto.
 
 > `GET /v1/emails/limit`
 
-> Eksempelforespørsel:
+> Eksempel på forespørsel:
 
 ```sh
 curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### Vis utgående SMTP-e-poster {#list-outbound-smtp-emails}
+### List utgående SMTP-e-poster {#list-outbound-smtp-emails}
 
-Merk at dette endepunktet ikke returnerer egenskapsverdier for `message`, `headers` eller `rejectedErrors` i en e-post.
+Merk at dette endepunktet ikke returnerer egenskapsverdier for en e-posts `message`, `headers` eller `rejectedErrors`.
 
-For å returnere disse egenskapene og verdiene deres, bruk [Hent e-post](#retrieve-email)-endepunktet med en e-post-ID.
+For å returnere disse egenskapene og deres verdier, vennligst bruk [Hent e-post](#retrieve-email) endepunktet med en e-post-ID.
 
 > `GET /v1/emails`
 
-| Spørrestrengparametere | Obligatorisk | Type | Beskrivelse |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | Ingen | Streng (RegExp støttes) | Søk etter e-poster etter metadata |
-| `domain` | Ingen | Streng (RegExp støttes) | Søk etter e-poster etter domenenavn |
-| `sort` | Ingen | Streng | Sorter etter et bestemt felt (bruk prefikset `-` for å sortere i motsatt retning av feltet). Standardverdien er `created_at` hvis ikke angitt. |
-| `page` | Ingen | Tall | Se [Pagination](#pagination) for mer innsikt |
-| `limit` | Ingen | Tall | Se [Pagination](#pagination) for mer innsikt |
+| Querystring Parameter | Påkrevd | Type                      | Beskrivelse                                                                                                                                      |
+| --------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | Nei     | String (RegExp støttes)   | Søk etter e-poster basert på metadata                                                                                                           |
+| `domain`              | Nei     | String (RegExp støttes)   | Søk etter e-poster basert på domenenavn                                                                                                         |
+| `sort`                | Nei     | String                    | Sorter etter et spesifikt felt (prefiks med et enkelt bindestrek `-` for å sortere i motsatt retning av det feltet). Standard er `created_at` hvis ikke satt. |
+| `page`                | Nei     | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
+| `limit`               | Nei     | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
 
-> Eksempelforespørsel:
+> Eksempel på forespørsel:
 
 ```sh
 curl BASE_URI/v1/emails?limit=1 \
@@ -462,45 +502,46 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Opprett utgående SMTP-e-post {#create-outbound-smtp-email}
 
-Vårt API for å opprette e-poster er inspirert av og utnytter Nodemailers konfigurasjon av meldingsalternativer. Vennligst referer til [Konfigurasjon av Nodemailer-meldinger](https://nodemailer.com/message/) for alle brødtekstparametere nedenfor.
+Vårt API for å opprette en e-post er inspirert av og benytter Nodemailers konfigurasjon for meldingsalternativer. Vennligst se [Nodemailer message configuration](https://nodemailer.com/message/) for alle kroppparametere nedenfor.
 
-Merk at med unntak av `envelope` og `dkim` (siden vi angir disse automatisk for deg), støtter vi alle Nodemailer-alternativer. Vi angir automatisk `disableFileAccess`- og `disableUrlAccess`-alternativene til `true` av sikkerhetshensyn.
+Merk at med unntak av `envelope` og `dkim` (siden vi setter disse automatisk for deg), støtter vi alle Nodemailer-alternativer. Vi setter automatisk `disableFileAccess` og `disableUrlAccess` til `true` av sikkerhetsgrunner.
 
-Du bør enten sende det enkle alternativet `raw` med den fullstendige e-posten din, inkludert overskrifter, **eller** sende individuelle alternativer for brødtekstparametere nedenfor.
+Du bør enten sende det enkeltalternativet `raw` med din rå fullstendige e-post inkludert headere **eller** sende individuelle kroppparameter-alternativer nedenfor.
 
-Dette API-endepunktet vil automatisk kode emojier for deg hvis de finnes i overskriftene (f.eks. blir emnelinjen `Subject: 🤓 Hello` automatisk konvertert til `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Målet vårt var å lage et ekstremt utviklervennlig og dummy-sikkert e-post-API.
+Dette API-endepunktet vil automatisk kode emojis for deg hvis de finnes i headerne (f.eks. en emnelinje `Subject: 🤓 Hello` konverteres automatisk til `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Målet vårt var å lage et ekstremt utviklervennlig og idiot-sikkert e-post-API.
+
+**Autentisering:** Dette endepunktet støtter både [API-token autentisering](#api-token-authentication-recommended-for-most-endpoints) og [alias-legitimasjonsautentisering](#alias-credentials-authentication-for-outbound-email). Se [Autentisering](#authentication) seksjonen ovenfor for detaljer.
 
 > `POST /v1/emails`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| ---------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `from` | Ingen | Streng (e-post) | Avsenderens e-postadresse (må finnes som et alias for domenet). |
-| `to` | Ingen | Streng eller matrise | Kommaseparert liste eller en matrise med mottakere for «Til»-overskriften. |
-| `cc` | Ingen | Streng eller matrise | Kommaseparert liste eller en matrise med mottakere for «Cc»-overskriften. |
-| `bcc` | Ingen | Streng eller matrise | Kommaseparert liste eller en matrise med mottakere for «Bcc»-overskriften. |
-| `subject` | Ingen | Streng | Emnet for e-posten. |
-| `text` | Ingen | Streng eller buffer | Klartekstversjonen av meldingen. |
-| `html` | Ingen | Streng eller buffer | HTML-versjonen av meldingen. |
-| `attachments` | Ingen | Matrise | En matrise med vedleggsobjekter (se [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
-| `sender` | Ingen | Streng | E-postadressen for «Avsender»-overskriften (se [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)). |
-| `replyTo` | Ingen | Streng | E-postadressen for «Svar til»-overskriften. |
-| `inReplyTo` | Ingen | Streng | Meldings-ID-en meldingen svarer på. |
-| `references` | Ingen | Streng eller matrise | Mellomromsseparert liste eller en matrise med meldings-ID-er. |
-| `attachDataUrls` | Ingen | Boolsk | Hvis `true`, konverteres `data:` bilder i HTML-innholdet i meldingen til innebygde vedlegg. |
-| `watchHtml` | Ingen | Streng | En Apple Watch-spesifikk HTML-versjon av meldingen ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), de nyeste klokkene krever ikke at dette angis). |
-| `amp` | Ingen | Streng | En AMP4EMAIL-spesifikk HTML-versjon av meldingen (se [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
-| `icalEvent` | Ingen | Gjenstand | En iCalendar-hendelse som skal brukes som alternativt meldingsinnhold (se [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
-| `alternatives` | Ingen | Matrise | En matrise med alternativt meldingsinnhold (se [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
-| `encoding` | Ingen | Streng | Koding for tekst og HTML-strenger (standard er `"utf-8"`, men støtter også kodingsverdiene `"hex"` og `"base64"`). |
-| `raw` | Ingen | Streng eller buffer | En egendefinert generert RFC822-formatert melding som skal brukes (i stedet for en som genereres av Nodemailer – se [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
-| `textEncoding` | Ingen | Streng | Koding som er tvunget til å brukes for tekstverdier (enten `"quoted-printable"` eller `"base64"`). Standardverdien er den nærmeste verdien som oppdages (for ASCII, bruk `"quoted-printable"`). |
-| `priority` | Ingen | Streng | Prioritetsnivå for e-posten (kan enten være `"high"`, `"normal"` (standard) eller `"low"`). Merk at verdien `"normal"` ikke angir en prioritetsoverskrift (dette er standardvirkemåten). Hvis verdien `"high"` eller `"low"` er angitt, vil overskriftene `X-Priority`, `X-MSMail-Priority` og `Importance` være [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
-| `headers` | Ingen | Objekt eller matrise | Et objekt eller en matrise med ekstra headerfelt som skal angis (se [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)). |
-| `messageId` | Ingen | Streng | En valgfri Message-ID-verdi for «Message-ID»-overskriften (en standardverdi opprettes automatisk hvis den ikke er angitt – merk at verdien skal være [adhere to the RFC2822 specification](https://stackoverflow.com/a/4031705)). |
-| `date` | Ingen | Streng eller dato | En valgfri datoverdi som brukes hvis datooverskriften mangler etter parsing. Ellers brukes gjeldende UTC-streng hvis den ikke er angitt. Datooverskriften kan ikke være mer enn 30 dager før gjeldende klokkeslett. |
-| `list` | Ingen | Gjenstand | Et valgfritt objekt med `List-*`-overskrifter (se [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)). |
-
-> Eksempelforespørsel:
+| Kroppsparameter  | Påkrevd | Type             | Beskrivelse                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------------- | ------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `from`           | Nei     | String (E-post)   | E-postadressen til avsenderen (må eksistere som et alias for domenet).                                                                                                                                                                                                                                                                                                                                                                                          |
+| `to`             | Nei     | String eller Array| Komma-separert liste eller en Array av mottakere for "To"-headeren.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `cc`             | Nei     | String eller Array| Komma-separert liste eller en Array av mottakere for "Cc"-headeren.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `bcc`            | Nei     | String eller Array| Komma-separert liste eller en Array av mottakere for "Bcc"-headeren.                                                                                                                                                                                                                                                                                                                                                                                             |
+| `subject`        | Nei     | String           | Emnet for e-posten.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `text`           | Nei     | String eller Buffer | Ren tekstversjon av meldingen.                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `html`           | Nei     | String eller Buffer | HTML-versjon av meldingen.                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `attachments`    | Nei     | Array            | En array av vedleggsobjekter (se [Nodemailers vanlige felt](https://nodemailer.com/message/#common-fields)).                                                                                                                                                                                                                                                                                                                                                      |
+| `sender`         | Nei     | String           | E-postadressen for "Sender"-headeren (se [Nodemailers mer avanserte felt](https://nodemailer.com/message/#more-advanced-fields)).                                                                                                                                                                                                                                                                                                                                 |
+| `replyTo`        | Nei     | String           | E-postadressen for "Reply-To"-headeren.                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `inReplyTo`      | Nei     | String           | Message-ID som meldingen svarer på.                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `references`     | Nei     | String eller Array| Mellomrom-separert liste eller en Array av Message-ID'er.                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `attachDataUrls` | Nei     | Boolean          | Hvis `true` konverteres `data:`-bilder i HTML-innholdet til innebygde vedlegg.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `watchHtml`      | Nei     | String           | En Apple Watch-spesifikk HTML-versjon av meldingen ([ifølge Nodemailer-dokumentasjonen](https://nodemailer.com/message/#content-options]), de nyeste klokkene krever ikke at dette settes).                                                                                                                                                                                                                                                                      |
+| `amp`            | Nei     | String           | En AMP4EMAIL-spesifikk HTML-versjon av meldingen (se [Nodemailers eksempel](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                         |
+| `icalEvent`      | Nei     | Object           | En iCalendar-hendelse som alternativt meldingsinnhold (se [Nodemailers kalenderhendelser](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                                     |
+| `alternatives`   | Nei     | Array            | En Array av alternativt meldingsinnhold (se [Nodemailers alternative content](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                    |
+| `encoding`       | Nei     | String           | Koding for tekst- og HTML-strenger (standard er `"utf-8"`, men støtter også `"hex"` og `"base64"`).                                                                                                                                                                                                                                                                                                                                                               |
+| `raw`            | Nei     | String eller Buffer | En egendefinert generert RFC822-formatert melding som skal brukes (i stedet for en som genereres av Nodemailer – se [Nodemailers custom source](https://nodemailer.com/message/custom-source/)).                                                                                                                                                                                                                                                                   |
+| `textEncoding`   | Nei     | String           | Koding som tvinges brukt for tekstverdier (enten `"quoted-printable"` eller `"base64"`). Standardverdien er den nærmeste oppdagede verdien (for ASCII bruk `"quoted-printable"`).                                                                                                                                                                                                                                                                               |
+| `priority`       | Nei     | String           | Prioritetsnivå for e-posten (kan være `"high"`, `"normal"` (standard), eller `"low"`). Merk at en verdi på `"normal"` ikke setter en prioritetsheader (dette er standard oppførsel). Hvis en verdi på `"high"` eller `"low"` settes, vil `X-Priority`, `X-MSMail-Priority` og `Importance` headerne [settes tilsvarende](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
+| `headers`        | Nei     | Object eller Array| Et objekt eller en array av ekstra headerfelt som skal settes (se [Nodemailers custom headers](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                  |
+| `messageId`      | Nei     | String           | En valgfri Message-ID-verdi for "Message-ID"-headeren (en standardverdi vil automatisk opprettes hvis ikke satt – merk at verdien bør [følge RFC2822-spesifikasjonen](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                                     |
+| `date`           | Nei     | String eller Date| En valgfri dato som brukes hvis Date-header mangler etter parsing, ellers brukes gjeldende UTC-streng hvis ikke satt. Dato-headeren kan ikke være mer enn 30 dager frem i tid fra nåværende tidspunkt.                                                                                                                                                                                                                                                           |
+| `list`           | Nei     | Object           | Et valgfritt objekt med `List-*`-headere (se [Nodemailers list headers](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                            |
+> Eksempel Forespørsel (API-token):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -511,7 +552,18 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=test"
 ```
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel (Alias-legitimasjon):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@DOMAIN_NAME:GENERATED_PASSWORD" \
+  -d "from=alias@DOMAIN_NAME" \
+  -d "to=EMAIL" \
+  -d "subject=test" \
+  -d "text=test"
+```
+
+> Eksempel Forespørsel (Rå e-post):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -523,7 +575,7 @@ curl -X POST BASE_URI/v1/emails \
 
 > `GET /v1/emails/:id`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/emails/:id \
@@ -532,38 +584,39 @@ curl BASE_URI/v1/emails/:id \
 
 ### Slett utgående SMTP-e-post {#delete-outbound-smtp-email}
 
-Sletting av e-post vil sette statusen til `"rejected"` (og deretter ikke behandle den i køen) hvis og bare hvis gjeldende status er en av `"pending"`, `"queued"` eller `"deferred"`. Vi kan slette e-poster automatisk 30 dager etter at de ble opprettet og/eller sendt – derfor bør du beholde en kopi av utgående SMTP-e-poster i klienten, databasen eller applikasjonen din. Du kan referere til e-post-ID-verdien vår i databasen din hvis ønskelig – denne verdien returneres fra både [Opprett e-post](#create-email)- og [Hent e-post](#retrieve-email)-endepunktene.
+Sletting av e-post vil sette status til `"rejected"` (og deretter ikke behandle den i køen) kun hvis gjeldende status er en av `"pending"`, `"queued"`, eller `"deferred"`. Vi kan automatisk slette e-poster etter 30 dager etter at de ble opprettet og/eller sendt – derfor bør du beholde en kopi av utgående SMTP-e-poster i din klient, database eller applikasjon. Du kan referere til vår e-post-ID-verdi i databasen din om ønskelig – denne verdien returneres fra både [Opprett e-post](#create-email) og [Hent e-post](#retrieve-email) endepunktene.
 
 > `DELETE /v1/emails/:id`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X DELETE BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
+
 ## Domener {#domains}
 
 > \[!TIP]
-> Domeneendepunkter med domenenavnet <code>/v1/domains/:domain_name</code> som endepunkt kan brukes om igjen med domene-ID-en <code>:domain_id</code>. Dette betyr at du kan referere til domenet enten med <code>name</code>- eller <code>id</code>-verdien.
+> Domenendepunkter med et domenenavn <code>/v1/domains/:domain_name</code> som endepunkt er utskiftbare med et domene-ID <code>:domain_id</code>. Dette betyr at du kan referere til domenet enten med dets <code>navn</code> eller <code>id</code>-verdi.
 
-### Liste over domener {#list-domains}
+### List domener {#list-domains}
 
 > \[!NOTE]
-> Fra 1. november 2024 vil API-endepunktene for [Liste over domener](#list-domains) og [Liste over domenealiaser](#list-domain-aliases) som standard ha maks. `1000` resultater per side. Hvis du ønsker å velge denne oppførselen tidlig, kan du sende `?paginate=true` som en ekstra spørrestrengparameter til URL-en for endepunktspørringen. Se [Paginering](#pagination) for mer innsikt.
+> Fra og med 1. november 2024 vil API-endepunktene for [List domener](#list-domains) og [List domenaliaser](#list-domain-aliases) som standard ha `1000` maks resultater per side. Hvis du ønsker å velge denne oppførselen tidlig, kan du sende `?paginate=true` som en ekstra spørringsparameter til URL-en for endepunktspørringen. Se [Paginering](#pagination) for mer informasjon.
 
 > `GET /v1/domains`
 
-| Spørrestrengparametere | Obligatorisk | Type | Beskrivelse |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | Ingen | Streng (RegExp støttes) | Søk etter domener etter navn |
-| `name` | Ingen | Streng (RegExp støttes) | Søk etter domener etter navn |
-| `sort` | Ingen | Streng | Sorter etter et bestemt felt (bruk prefikset `-` for å sortere i motsatt retning av feltet). Standardverdien er `created_at` hvis ikke angitt. |
-| `page` | Ingen | Tall | Se [Pagination](#pagination) for mer innsikt |
-| `limit` | Ingen | Tall | Se [Pagination](#pagination) for mer innsikt |
+| Spørringsparameter     | Obligatorisk | Type                      | Beskrivelse                                                                                                                                      |
+| --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | Nei         | String (RegExp støttes)   | Søk etter domener etter navn                                                                                                                    |
+| `name`                | Nei         | String (RegExp støttes)   | Søk etter domener etter navn                                                                                                                    |
+| `sort`                | Nei         | String                    | Sorter etter et spesifikt felt (prefiks med et enkelt bindestrek `-` for å sortere i motsatt retning av det feltet). Standard er `created_at` hvis ikke satt. |
+| `page`                | Nei         | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
+| `limit`               | Nei         | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/domains \
@@ -574,23 +627,22 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | Ja | Streng (FQDN eller IP) | Fullt kvalifisert domenenavn ("FQDN") eller IP-adresse |
-| `team_domain` | Ingen | Streng (domene-ID eller domenenavn; FQDN) | Tildel dette domenet automatisk til samme team fra et annet domene. Dette betyr at alle medlemmer fra dette domenet blir tilordnet som teammedlemmer, og `plan` blir automatisk også satt til `team`. Du kan sette dette til `"none"` om nødvendig for å eksplisitt deaktivere dette, men det er ikke nødvendig. |
-| `plan` | Ingen | Streng (opptellbar) | Plantype (må være `"free"`, `"enhanced_protection"` eller `"team"`, standardverdien er `"free"` eller brukerens nåværende betalte plan hvis vedkommende har en slik) |
-| `catchall` | Ingen | Streng (avgrensede e-postadresser) eller boolsk | Opprett et standard catch-all-alias, standardinnstillingen er `true` (hvis `true` vil det bruke API-brukerens e-postadresse som mottaker, og hvis `false` vil ingen catch-all opprettes). Hvis en streng sendes, er det en avgrenset liste over e-postadresser som skal brukes som mottakere (atskilt med linjeskift, mellomrom og/eller komma). |
-| `has_adult_content_protection` | Ingen | Boolsk | Om Spam Scanner skal aktivere beskyttelse mot voksent innhold på dette domenet |
-| `has_phishing_protection` | Ingen | Boolsk | Om Spam Scanner skal aktivere phishing-beskyttelse på dette domenet |
-| `has_executable_protection` | Ingen | Boolsk | Om beskyttelse mot kjørbar Spam Scanner skal aktiveres på dette domenet |
-| `has_virus_protection` | Ingen | Boolsk | Om virusbeskyttelse fra Spam Scanner skal aktiveres på dette domenet |
-| `has_recipient_verification` | Ingen | Boolsk | Globalt domenestandard for om aliasmottakere skal kreves for at de klikker på en e-postbekreftelseslenke for at e-poster skal sendes gjennom |
-| `ignore_mx_check` | Ingen | Boolsk | Om MX-postkontrollen på domenet for bekreftelse skal ignoreres. Dette er hovedsakelig for brukere som har avanserte MX-utvekslingskonfigurasjonsregler og trenger å beholde sin eksisterende MX-utveksling og videresende den til vår. |
-| `retention_days` | Ingen | Tall | Heltall mellom `0` og `30` som tilsvarer antall oppbevaringsdager for å lagre utgående SMTP-e-poster når de er levert eller har fått permanent feil. Standardinnstillingen er `0`, som betyr at utgående SMTP-e-poster slettes og redigeres umiddelbart av sikkerhetshensyn. |
-| `bounce_webhook` | Ingen | Streng (URL) eller boolsk (usann) | Webhooken-URL-en `http://` eller `https://` du velger for å sende avviste webhooks til. Vi sender en `POST`-forespørsel til denne URL-en med informasjon om utgående SMTP-feil (f.eks. myke eller harde feil – slik at du kan administrere abonnentene dine og programmatisk administrere utgående e-post). |
-| `max_quota_per_alias` | Ingen | Streng | Maksimal lagringskvote for aliaser på dette domenenavnet. Skriv inn en verdi som «1 GB» som skal analyseres av [bytes](https://github.com/visionmedia/bytes.js). |
-
-> Eksempelforespørsel:
+| Kroppsparameter               | Obligatorisk | Type                                          | Beskrivelse                                                                                                                                                                                                                                                                                                          |
+| ---------------------------- | ------------ | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`                     | Ja           | String (FQDN eller IP)                         | Fullt kvalifisert domenenavn ("FQDN") eller IP-adresse                                                                                                                                                                                                                                                               |
+| `team_domain`                | Nei          | String (domene-ID eller domenenavn; FQDN)     | Automatisk tilordne dette domenet til samme team som et annet domene. Dette betyr at alle medlemmer fra dette domenet vil bli tildelt som teammedlemmer, og `plan` vil automatisk settes til `team` også. Du kan sette dette til `"none"` om nødvendig for å eksplisitt deaktivere dette, men det er ikke nødvendig. |
+| `plan`                       | Nei          | String (enumererbar)                           | Plan-type (må være `"free"`, `"enhanced_protection"`, eller `"team"`, standard til `"free"` eller brukerens nåværende betalte plan hvis på en)                                                                                                                                                                       |
+| `catchall`                   | Nei          | String (avgrensede e-postadresser) eller Boolean | Opprett en standard catch-all alias, standard til `true` (hvis `true` vil det bruke API-brukerens e-postadresse som mottaker, og hvis `false` opprettes ingen catch-all). Hvis en streng sendes, er det en avgrenset liste over e-postadresser som skal brukes som mottakere (adskilt med linjeskift, mellomrom, og/eller komma) |
+| `has_adult_content_protection` | Nei        | Boolean                                       | Om det skal aktiveres vokseninnholdsbeskyttelse i Spam Scanner på dette domenet                                                                                                                                                                                                                                       |
+| `has_phishing_protection`    | Nei          | Boolean                                       | Om det skal aktiveres phishing-beskyttelse i Spam Scanner på dette domenet                                                                                                                                                                                                                                            |
+| `has_executable_protection`  | Nei          | Boolean                                       | Om det skal aktiveres kjørbar-fil-beskyttelse i Spam Scanner på dette domenet                                                                                                                                                                                                                                         |
+| `has_virus_protection`       | Nei          | Boolean                                       | Om det skal aktiveres virusbeskyttelse i Spam Scanner på dette domenet                                                                                                                                                                                                                                                |
+| `has_recipient_verification` | Nei          | Boolean                                       | Globalt domenenivå standard for om alias-mottakere må klikke på en e-postverifiseringslenke for at e-poster skal flyte gjennom                                                                                                                                                                                        |
+| `ignore_mx_check`            | Nei          | Boolean                                       | Om MX-postsjekken på domenet for verifisering skal ignoreres. Dette er hovedsakelig for brukere som har avanserte MX-utvekslingskonfigurasjonsregler og trenger å beholde sin eksisterende MX-utveksling og videresende til vår.                                                                                      |
+| `retention_days`             | Nei          | Number                                        | Heltall mellom `0` og `30` som tilsvarer antall dager for lagring av utgående SMTP-e-poster etter vellykket levering eller permanent feil. Standard er `0`, som betyr at utgående SMTP-e-poster slettes og redigeres umiddelbart for din sikkerhet.                                                                |
+| `bounce_webhook`             | Nei          | String (URL) eller Boolean (false)             | Den `http://` eller `https://` webhook-URL-en du ønsker å sende bounce-webhooks til. Vi vil sende en `POST`-forespørsel til denne URL-en med informasjon om utgående SMTP-feil (f.eks. myke eller harde feil – slik at du kan administrere abonnentene dine og programmere håndtering av utgående e-post).           |
+| `max_quota_per_alias`        | Nei          | String                                        | Maksimal lagringskvote for aliaser på dette domenenavnet. Skriv inn en verdi som "1 GB" som vil bli tolket av [bytes](https://github.com/visionmedia/bytes.js).                                                                                                                                                      |
+> Eksempel Forespørsel:
 
 ```sh
 curl -X POST BASE_URI/v1/domains \
@@ -603,115 +655,115 @@ curl -X POST BASE_URI/v1/domains \
 
 > `GET /v1/domains/DOMAIN_NAME`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### Bekreft domeneoppføringer {#verify-domain-records}
+### Verifiser domeneposter {#verify-domain-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-records`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
-### Bekreft domenets SMTP-oppføringer {#verify-domain-smtp-records}
+### Verifiser domenets SMTP-poster {#verify-domain-smtp-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### List opp domeneomfattende samlepassord {#list-domain-wide-catch-all-passwords}
+### List domenebredde catch-all passord {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Opprett et domeneomfattende catch-all-passord {#create-domain-wide-catch-all-password}
+### Opprett domenebredde catch-all passord {#create-domain-wide-catch-all-password}
 
 > `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | Ingen | Streng | Ditt egendefinerte nye passord som skal brukes som det domeneomfattende samlepassordet. Merk at du kan la dette feltet stå tomt eller utelates helt fra API-forespørselsteksten din hvis du ønsker et tilfeldig generert og sterkt passord. |
-| `description` | Ingen | Streng | Beskrivelse kun for organisasjonsformål. |
+| Body Parameter | Obligatorisk | Type   | Beskrivelse                                                                                                                                                                                                               |
+| -------------- | ------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password` | Nei          | String | Ditt egendefinerte nye passord som skal brukes for domenebredde catch-all passordet. Merk at du kan la dette stå tomt eller utelate det helt fra API-forespørselens body hvis du ønsker å få et tilfeldig generert og sterkt passord. |
+| `description`  | Nei          | String | Beskrivelse kun for organisasjonsformål.                                                                                                                                                                                 |
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Fjern domeneomfattende catch-all-passord {#remove-domain-wide-catch-all-password}
+### Fjern domenebredde catch-all passord {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
   -u API_TOKEN:
 ```
 
-### Oppdater domenet {#update-domain}
+### Oppdater domene {#update-domain}
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `smtp_port` | Ingen | Streng eller tall | Tilpasset port for å konfigurere for SMTP-videresending (standard er `"25"`) |
-| `has_adult_content_protection` | Ingen | Boolsk | Om Spam Scanner skal aktivere beskyttelse mot voksent innhold på dette domenet |
-| `has_phishing_protection` | Ingen | Boolsk | Om Spam Scanner skal aktivere phishing-beskyttelse på dette domenet |
-| `has_executable_protection` | Ingen | Boolsk | Om beskyttelse mot kjørbar Spam Scanner skal aktiveres på dette domenet |
-| `has_virus_protection` | Ingen | Boolsk | Om virusbeskyttelse fra Spam Scanner skal aktiveres på dette domenet |
-| `has_recipient_verification` | Ingen | Boolsk | Globalt domenestandard for om aliasmottakere skal kreves for at de klikker på en e-postbekreftelseslenke for at e-poster skal sendes gjennom |
-| `ignore_mx_check` | Ingen | Boolsk | Om MX-postkontrollen på domenet for bekreftelse skal ignoreres. Dette er hovedsakelig for brukere som har avanserte MX-utvekslingskonfigurasjonsregler og trenger å beholde sin eksisterende MX-utveksling og videresende den til vår. |
-| `retention_days` | Ingen | Tall | Heltall mellom `0` og `30` som tilsvarer antall oppbevaringsdager for å lagre utgående SMTP-e-poster når de er levert eller har fått permanent feil. Standardinnstillingen er `0`, som betyr at utgående SMTP-e-poster slettes og redigeres umiddelbart av sikkerhetshensyn. |
-| `bounce_webhook` | Ingen | Streng (URL) eller boolsk (usann) | Webhooken-URL-en `http://` eller `https://` du velger for å sende avviste webhooks til. Vi sender en `POST`-forespørsel til denne URL-en med informasjon om utgående SMTP-feil (f.eks. myke eller harde feil – slik at du kan administrere abonnentene dine og programmatisk administrere utgående e-post). |
-| `max_quota_per_alias` | Ingen | Streng | Maksimal lagringskvote for aliaser på dette domenenavnet. Skriv inn en verdi som «1 GB» som skal analyseres av [bytes](https://github.com/visionmedia/bytes.js). |
-
-> Eksempelforespørsel:
+| Body Parameter                 | Obligatorisk | Type                            | Beskrivelse                                                                                                                                                                                                                                                                                   |
+| ------------------------------ | ------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `smtp_port`                    | Nei          | String eller Nummer             | Egendefinert port for konfigurasjon av SMTP-videresending (standard er `"25"`)                                                                                                                                                                                                               |
+| `has_adult_content_protection` | Nei          | Boolean                        | Om vokseninnholdsbeskyttelse i Spam Scanner skal aktiveres på dette domenet                                                                                                                                                                                                                   |
+| `has_phishing_protection`      | Nei          | Boolean                        | Om phishingbeskyttelse i Spam Scanner skal aktiveres på dette domenet                                                                                                                                                                                                                        |
+| `has_executable_protection`    | Nei          | Boolean                        | Om kjørbar-filbeskyttelse i Spam Scanner skal aktiveres på dette domenet                                                                                                                                                                                                                    |
+| `has_virus_protection`         | Nei          | Boolean                        | Om virusbeskyttelse i Spam Scanner skal aktiveres på dette domenet                                                                                                                                                                                                                           |
+| `has_recipient_verification`   | Nei          | Boolean                        | Globalt domenenivå standard for om alias-mottakere må klikke på en e-postverifiseringslenke for at e-post skal kunne flyte gjennom                                                                                                                                                           |
+| `ignore_mx_check`              | Nei          | Boolean                        | Om MX-postsjekken på domenet skal ignoreres ved verifisering. Dette er hovedsakelig for brukere som har avanserte MX-utvekslingskonfigurasjonsregler og må beholde sin eksisterende MX-utveksling og videresende til vår.                                                                    |
+| `retention_days`               | Nei          | Nummer                         | Heltall mellom `0` og `30` som tilsvarer antall dager for lagring av utgående SMTP-e-poster etter vellykket levering eller permanent feil. Standard er `0`, som betyr at utgående SMTP-e-poster slettes og anonymiseres umiddelbart for din sikkerhet.                                      |
+| `bounce_webhook`               | Nei          | String (URL) eller Boolean (false) | Den `http://` eller `https://` webhook-URL-en du ønsker å sende bounce-webhooks til. Vi vil sende en `POST`-forespørsel til denne URL-en med informasjon om utgående SMTP-feil (f.eks. myke eller harde feil – slik at du kan administrere abonnentene dine og programmere håndtering av utgående e-post). |
+| `max_quota_per_alias`          | Nei          | String                         | Maksimal lagringskvote for aliaser på dette domenenavnet. Skriv inn en verdi som "1 GB" som vil bli tolket av [bytes](https://github.com/visionmedia/bytes.js).                                                                                                                                 |
+> Eksempel Forespørsel:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### Slett domenet {#delete-domain}
+### Slett domene {#delete-domain}
 
 > `DELETE /v1/domains/:domain_name`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
+
 ## Invitasjoner {#invites}
 
-### Godta domeneinvitasjon {#accept-domain-invite}
+### Aksepter domeneinvitasjon {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/invites \
@@ -722,12 +774,12 @@ curl BASE_URI/v1/domains/:domain_name/invites \
 
 > `POST /v1/domains/DOMAIN_NAME/invites`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| -------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
-| `email` | Ja | Streng (e-post) | E-postadresse som skal inviteres til domenemedlemslisten |
-| `group` | Ja | Streng (opptellbar) | Gruppe for å legge brukeren til domenemedlemskapet med (kan være en av `"admin"` eller `"user"`) |
+| Body Parameter | Obligatorisk | Type                | Beskrivelse                                                                               |
+| -------------- | ------------ | ------------------- | ----------------------------------------------------------------------------------------- |
+| `email`        | Ja           | String (E-post)     | E-postadresse for å invitere til listen over domenemedlemmer                             |
+| `group`        | Ja           | String (enumerable) | Gruppe for å legge brukeren til domenemedlemskapet med (kan være en av `"admin"` eller `"user"`) |
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
@@ -737,22 +789,23 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Hvis brukeren som inviteres allerede er et akseptert medlem av andre domener som administratoren som inviterer dem er medlem av, vil invitasjonen automatisk godtas og det sendes ikke en e-post.
+> Hvis brukeren som inviteres allerede er et akseptert medlem av andre domener som administratoren som inviterer dem er medlem av, vil invitasjonen automatisk godtas og det sendes ikke e-post.
 
 ### Fjern domeneinvitasjon {#remove-domain-invite}
 
 > `DELETE /v1/domains/:domain_name/invites`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| -------------- | -------- | -------------- | ------------------------------------------------ |
-| `email` | Ja | Streng (e-post) | E-postadresse som skal fjernes fra listen over domenemedlemmer |
+| Body Parameter | Obligatorisk | Type           | Beskrivelse                                      |
+| -------------- | ------------ | -------------- | ------------------------------------------------ |
+| `email`        | Ja           | String (E-post) | E-postadresse som skal fjernes fra listen over domenemedlemmer |
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
+
 
 ## Medlemmer {#members}
 
@@ -760,11 +813,11 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 
 > `PUT /v1/domains/DOMAIN_NAME/members/MEMBER_ID`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| -------------- | -------- | ------------------- | -------------------------------------------------------------------------------------------- |
-| `group` | Ja | Streng (opptellbar) | Gruppe for å oppdatere brukeren til domenemedlemskapet med (kan være en av `"admin"` eller `"user"`) |
+| Body Parameter | Obligatorisk | Type                | Beskrivelse                                                                                  |
+| -------------- | ------------ | ------------------- | -------------------------------------------------------------------------------------------- |
+| `group`        | Ja           | String (enumerable) | Gruppe for å oppdatere brukeren til domenemedlemskapet med (kan være en av `"admin"` eller `"user"`) |
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
@@ -775,95 +828,94 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
   -u API_TOKEN:
 ```
 
-## Aliaser {#aliases}
 
-### Generer et aliaspassord {#generate-an-alias-password}
+## Alias {#aliases}
 
-Merk at hvis du ikke sender instruksjoner via e-post, vil brukernavnet og passordet være i JSON-svarinnholdet i en vellykket forespørsel i formatet `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
+### Generer et alias-passord {#generate-an-alias-password}
+
+Merk at hvis du ikke sender instruksjoner på e-post, vil brukernavn og passord være i JSON-responsen av en vellykket forespørsel i formatet `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | Ingen | Streng | Ditt egendefinerte nye passord som skal brukes for aliaset. Merk at du kan la dette feltet stå tomt eller utelate det helt fra API-forespørselsteksten din hvis du ønsker et tilfeldig generert og sterkt passord. |
-| `password` | Ingen | Streng | Eksisterende passord for alias for å endre passordet uten å slette den eksisterende IMAP-postbokslagringen (se alternativet `is_override` nedenfor hvis du ikke lenger har det eksisterende passordet). |
-| `is_override` | Ingen | Boolsk | **BRUK MED FORSIKTIGHET**: Dette vil overstyre det eksisterende aliaspassordet og databasen fullstendig, og vil permanent slette den eksisterende IMAP-lagringen og tilbakestille aliasets SQLite-e-postdatabase fullstendig. Ta en sikkerhetskopi hvis mulig hvis du har en eksisterende postboks knyttet til dette aliaset. |
-| `emailed_instructions` | Ingen | Streng | E-postadressen du skal sende aliaset sitt passord og konfigurasjonsinstruksjoner til. |
-
-> Eksempelforespørsel:
+| Body Parameter         | Obligatorisk | Type    | Beskrivelse                                                                                                                                                                                                                                                                                         |
+| ---------------------- | ------------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password`         | Nei          | String  | Ditt egendefinerte nye passord for aliaset. Merk at du kan la dette stå tomt eller utelate det helt fra API-forespørselen hvis du ønsker å få et tilfeldig generert og sterkt passord.                                                                                                            |
+| `password`             | Nei          | String  | Eksisterende passord for aliaset for å endre passordet uten å slette eksisterende IMAP-postkasselagring (se `is_override`-alternativet nedenfor hvis du ikke lenger har det eksisterende passordet).                                                                                                 |
+| `is_override`          | Nei          | Boolean | **BRUK MED FORSIKTIGHET**: Dette vil overskrive det eksisterende alias-passordet og databasen fullstendig, og vil permanent slette eksisterende IMAP-lagring og tilbakestille aliasets SQLite e-postdatabase fullstendig. Vennligst ta sikkerhetskopi hvis mulig hvis du har en eksisterende postkasse knyttet til dette aliaset. |
+| `emailed_instructions` | Nei          | String  | E-postadresse som passord og oppsettsinstruksjoner for aliaset skal sendes til.                                                                                                                                                                                                                   |
+> Eksempel Forespørsel:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password \
   -u API_TOKEN:
 ```
 
-### Liste over domenealiaser {#list-domain-aliases}
+### Liste over domenaliaser {#list-domain-aliases}
 
 > \[!NOTE]
-> Fra 1. november 2024 vil API-endepunktene for [Liste over domener](#list-domains) og [Liste over domenealiaser](#list-domain-aliases) som standard ha maks. `1000` resultater per side. Hvis du ønsker å velge denne oppførselen tidlig, kan du sende `?paginate=true` som en ekstra spørrestrengparameter til URL-en for endepunktspørringen. Se [Paginering](#pagination) for mer innsikt.
+> Fra og med 1. november 2024 vil API-endepunktene for [Liste domener](#list-domains) og [Liste domenaliaser](#list-domain-aliases) som standard ha `1000` maks resultater per side. Hvis du ønsker å velge denne oppførselen tidlig, kan du sende `?paginate=true` som en ekstra spørringsparameter til URL-en for endepunktspørringen. Se [Paginering](#pagination) for mer informasjon.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
-| Spørrestrengparametere | Obligatorisk | Type | Beskrivelse |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | Ingen | Streng (RegExp støttes) | Søk etter aliaser i et domene etter navn, etikett eller mottaker |
-| `name` | Ingen | Streng (RegExp støttes) | Søk etter aliaser i et domene etter navn |
-| `recipient` | Ingen | Streng (RegExp støttes) | Søk etter aliaser i et domene etter mottaker |
-| `sort` | Ingen | Streng | Sorter etter et bestemt felt (bruk prefikset `-` for å sortere i motsatt retning av feltet). Standardverdien er `created_at` hvis ikke angitt. |
-| `page` | Ingen | Tall | Se [Pagination](#pagination) for mer innsikt |
-| `limit` | Ingen | Tall | Se [Pagination](#pagination) for mer innsikt |
+| Spørringsparameter | Obligatorisk | Type                      | Beskrivelse                                                                                                                                      |
+| ------------------ | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                | Nei          | String (RegExp støttes)   | Søk etter aliaser i et domene etter navn, etikett eller mottaker                                                                                 |
+| `name`             | Nei          | String (RegExp støttes)   | Søk etter aliaser i et domene etter navn                                                                                                        |
+| `recipient`        | Nei          | String (RegExp støttes)   | Søk etter aliaser i et domene etter mottaker                                                                                                   |
+| `sort`             | Nei          | String                    | Sorter etter et spesifikt felt (prefiks med et enkelt bindestrek `-` for å sortere i motsatt retning av det feltet). Standard er `created_at` hvis ikke satt. |
+| `page`             | Nei          | Nummer                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
+| `limit`            | Nei          | Nummer                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
   -u API_TOKEN:
 ```
 
-### Opprett nytt domenealias {#create-new-domain-alias}
+### Opprett nytt domenalias {#create-new-domain-alias}
 
 > `POST /v1/domains/DOMAIN_NAME/aliases`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | Ingen | Streng | Aliasnavn (hvis ikke oppgitt eller tomt, genereres et tilfeldig alias) |
-| `recipients` | Ingen | Streng eller matrise | Liste over mottakere (må være linjeskift-/mellomrom-/kommaseparert. En streng eller matrise med gyldige e-postadresser, fullt kvalifiserte domenenavn ("FQDN"), IP-adresser og/eller webhook-URL-er – og hvis den ikke er oppgitt eller er en tom matrise, vil brukerens e-postadresse som foretar API-forespørselen bli angitt som mottaker) |
-| `description` | Ingen | Streng | Aliasbeskrivelse |
-| `labels` | Ingen | Streng eller matrise | Liste over etiketter (må være linjeskift-/mellomrom-/kommaseparert. Streng eller matrise) |
-| `has_recipient_verification` | Ingen | Boolsk | Krev at mottakerne klikker på en e-postbekreftelseslenke for at e-poster skal flyte gjennom (standardinnstillingen er domenets innstilling hvis den ikke er eksplisitt angitt i forespørselsteksten) |
-| `is_enabled` | Ingen | Boolsk | Om dette aliaset skal aktiveres eller deaktiveres (hvis deaktivert, vil e-poster ikke bli rutet noe sted, men returnere vellykkede statuskoder). Hvis en verdi sendes, konverteres den til en boolsk verdi ved hjelp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `error_code_if_disabled` | Ingen | Nummer (enten `250`, `421` eller `550`) | Innkommende e-post til dette aliaset vil bli avvist hvis `is_enabled` er `false` med enten `250` (leveres stille ingen steder, f.eks. svart hull eller `/dev/null`), `421` (myk avvisning; og prøv på nytt i opptil ~5 dager) eller `550` permanent feil og avvisning. Standardinnstillingen er `250`. |
-| `has_imap` | Ingen | Boolsk | Om IMAP-lagring skal aktiveres eller deaktiveres for dette aliaset (hvis deaktivert, lagres ikke innkommende e-poster i [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Hvis en verdi sendes, konverteres den til en boolsk verdi ved hjelp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | Ingen | Boolsk | Om [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) skal aktiveres eller deaktiveres for [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) ved bruk av aliaset `public_key`. |
-| `public_key` | Ingen | Streng | OpenPGP offentlig nøkkel i ASCII Armor-format ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); f.eks. GPG-nøkkel for `support@forwardemail.net`). Dette gjelder bare hvis du har `has_pgp` satt til `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | Ingen | Streng | Maksimal lagringskvote for dette aliaset. La stå tomt for å tilbakestille til domenets nåværende maksimale kvote, eller skriv inn en verdi som «1 GB» som skal analyseres av [bytes](https://github.com/visionmedia/bytes.js). Denne verdien kan bare justeres av domeneadministratorer. |
-| `vacation_responder_is_enabled` | Ingen | Boolsk | Om du skal aktivere eller deaktivere en automatisk feriesvar. |
-| `vacation_responder_start_date` | Ingen | Streng | Startdato for feriesvar (hvis aktivert og ingen startdato er angitt her, antas det at den allerede er startet). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD` og andre datoformater via smart parsing ved bruk av `dayjs`. |
-| `vacation_responder_end_date` | Ingen | Streng | Sluttdato for feriesvar (hvis aktivert og ingen sluttdato angitt her, antas det at det aldri slutter og svarer for alltid). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD` og andre datoformater via smart parsing ved bruk av `dayjs`. |
-| `vacation_responder_subject` | Ingen | Streng | Emne i klartekst for feriesvaret, f.eks. «Fraværende». Vi bruker `striptags` for å fjerne all HTML her. |
-| `vacation_responder_message` | Ingen | Streng | Melding i klartekst for feriesvar, f.eks. «Jeg vil være borte fra kontoret til februar.» Vi bruker `striptags` for å fjerne all HTML her. |
-
-> Eksempelforespørsel:
+| Kroppsparameter                 | Obligatorisk | Type                                   | Beskrivelse                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------ | ------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                         | Nei          | String                                 | Aliasnavn (hvis ikke oppgitt eller tomt, genereres et tilfeldig alias)                                                                                                                                                                                                                                                                                                                      |
+| `recipients`                   | Nei          | String eller Array                     | Liste over mottakere (må være linjeskift/space/komma-separert String eller Array av gyldige e-postadresser, fullt kvalifiserte domenenavn ("FQDN"), IP-adresser og/eller webhook-URL-er – og hvis ikke oppgitt eller er en tom Array, settes brukerens e-post som gjør API-forespørselen som mottaker)                                                                                     |
+| `description`                  | Nei          | String                                 | Aliasbeskrivelse                                                                                                                                                                                                                                                                                                                                                                           |
+| `labels`                      | Nei          | String eller Array                     | Liste over etiketter (må være linjeskift/space/komma-separert String eller Array)                                                                                                                                                                                                                                                                                                           |
+| `has_recipient_verification`   | Nei          | Boolean                                | Krev at mottakere klikker på en e-postverifiseringslenke for at e-poster skal gå gjennom (standard til domenets innstilling hvis ikke eksplisitt satt i forespørselskroppen)                                                                                                                                                                                                              |
+| `is_enabled`                   | Nei          | Boolean                                | Om dette aliaset skal aktiveres eller deaktiveres (hvis deaktivert, vil e-poster ikke rutes noe sted, men returnere suksessstatuskoder). Hvis en verdi sendes, konverteres den til en boolean ved bruk av [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                                                                                           |
+| `error_code_if_disabled`       | Nei          | Nummer (enten `250`, `421` eller `550`) | Inngående e-post til dette aliaset vil avvises hvis `is_enabled` er `false` med enten `250` (stille levere ingen steder, f.eks. svart hull eller `/dev/null`), `421` (myk avvisning; og prøv igjen i opptil ~5 dager) eller `550` permanent feil og avvisning. Standard er `250`.                                                                                                                               |
+| `has_imap`                    | Nei          | Boolean                                | Om IMAP-lagring for dette aliaset skal aktiveres eller deaktiveres (hvis deaktivert, vil innkommende e-poster ikke lagres til [IMAP-lagring](/blog/docs/best-quantum-safe-encrypted-email-service). Hvis en verdi sendes, konverteres den til en boolean ved bruk av [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                  |
+| `has_pgp`                     | Nei          | Boolean                                | Om [OpenPGP-kryptering](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) for [IMAP/POP3/CalDAV/CardDAV kryptert e-postlagring](/blog/docs/best-quantum-safe-encrypted-email-service) ved bruk av aliasets `public_key` skal aktiveres eller deaktiveres.                                                                                                         |
+| `public_key`                  | Nei          | String                                 | OpenPGP offentlig nøkkel i ASCII Armor-format ([klikk her for å se et eksempel](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); f.eks. GPG-nøkkel for `support@forwardemail.net`). Dette gjelder kun hvis du har `has_pgp` satt til `true`. [Lær mer om ende-til-ende-kryptering i vår FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
+| `max_quota`                   | Nei          | String                                 | Maksimal lagringskvote for dette aliaset. La stå tomt for å tilbakestille til domenets nåværende maksimale kvote eller skriv inn en verdi som "1 GB" som vil bli tolket av [bytes](https://github.com/visionmedia/bytes.js). Denne verdien kan kun justeres av domenets administratorer.                                                                                                          |
+| `vacation_responder_is_enabled` | Nei          | Boolean                                | Om en automatisk feriemelding skal aktiveres eller deaktiveres.                                                                                                                                                                                                                                                                                                                             |
+| `vacation_responder_start_date` | Nei          | String                                 | Startdato for feriemelding (hvis aktivert og ingen startdato er satt her, antas det at den allerede har startet). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD` og andre datoformater via smart parsing med `dayjs`.                                                                                                                                                              |
+| `vacation_responder_end_date`   | Nei          | String                                 | Sluttdato for feriemelding (hvis aktivert og ingen sluttdato er satt her, antas det at den aldri slutter og svarer for alltid). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD` og andre datoformater via smart parsing med `dayjs`.                                                                                                                                            |
+| `vacation_responder_subject`    | Nei          | String                                 | Emne i ren tekst for feriemeldingen, f.eks. "Out of Office". Vi bruker `striptags` for å fjerne all HTML her.                                                                                                                                                                                                                                                                               |
+| `vacation_responder_message`    | Nei          | String                                 | Melding i ren tekst for feriemeldingen, f.eks. "I will be out of office until February.". Vi bruker `striptags` for å fjerne all HTML her.                                                                                                                                                                                                                                               |
+> Example Request:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 
-### Hent domenealias {#retrieve-domain-alias}
+### Hent domenenavn alias {#retrieve-domain-alias}
 
-Du kan hente et domenealias enten ved hjelp av verdien `id` eller `name`.
+Du kan hente et domenenavn alias enten ved dets `id` eller dets `name` verdi.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
-> Eksempelforespørsel:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
@@ -872,67 +924,67 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 > `GET /v1/domains/:domain_name/aliases/:alias_name`
 
-> Eksempelforespørsel:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
   -u API_TOKEN:
 ```
 
-### Oppdater domenealias {#update-domain-alias}
+### Oppdater domenenavn alias {#update-domain-alias}
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
+| Body Parameter                  | Påkrevd | Type                                   | Beskrivelse                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | Ingen | Streng | Aliasnavn |
-| `recipients` | Ingen | Streng eller matrise | Liste over mottakere (må være linjeskift/mellomrom/kommaseparert. Streng eller matrise med gyldige e-postadresser, fullt kvalifiserte domenenavn ("FQDN"), IP-adresser og/eller webhook-URL-er) |
-| `description` | Ingen | Streng | Aliasbeskrivelse |
-| `labels` | Ingen | Streng eller matrise | Liste over etiketter (må være linjeskift-/mellomrom-/kommaseparert. Streng eller matrise) |
-| `has_recipient_verification` | Ingen | Boolsk | Krev at mottakerne klikker på en e-postbekreftelseslenke for at e-poster skal flyte gjennom (standardinnstillingen er domenets innstilling hvis den ikke er eksplisitt angitt i forespørselsteksten) |
-| `is_enabled` | Ingen | Boolsk | Om dette aliaset skal aktiveres eller deaktiveres (hvis deaktivert, vil e-poster ikke bli rutet noe sted, men returnere vellykkede statuskoder). Hvis en verdi sendes, konverteres den til en boolsk verdi ved hjelp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `error_code_if_disabled` | Ingen | Nummer (enten `250`, `421` eller `550`) | Innkommende e-post til dette aliaset vil bli avvist hvis `is_enabled` er `false` med enten `250` (leveres stille ingen steder, f.eks. svart hull eller `/dev/null`), `421` (myk avvisning; og prøv på nytt i opptil ~5 dager) eller `550` permanent feil og avvisning. Standardinnstillingen er `250`. |
-| `has_imap` | Ingen | Boolsk | Om IMAP-lagring skal aktiveres eller deaktiveres for dette aliaset (hvis deaktivert, lagres ikke innkommende e-poster i [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Hvis en verdi sendes, konverteres den til en boolsk verdi ved hjelp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | Ingen | Boolsk | Om [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) skal aktiveres eller deaktiveres for [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) ved bruk av aliaset `public_key`. |
-| `public_key` | Ingen | Streng | OpenPGP offentlig nøkkel i ASCII Armor-format ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); f.eks. GPG-nøkkel for `support@forwardemail.net`). Dette gjelder bare hvis du har `has_pgp` satt til `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | Ingen | Streng | Maksimal lagringskvote for dette aliaset. La stå tomt for å tilbakestille til domenets nåværende maksimale kvote, eller skriv inn en verdi som «1 GB» som skal analyseres av [bytes](https://github.com/visionmedia/bytes.js). Denne verdien kan bare justeres av domeneadministratorer. |
-| `vacation_responder_is_enabled` | Ingen | Boolsk | Om du skal aktivere eller deaktivere en automatisk feriesvar. |
-| `vacation_responder_start_date` | Ingen | Streng | Startdato for feriesvar (hvis aktivert og ingen startdato er angitt her, antas det at den allerede er startet). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD` og andre datoformater via smart parsing ved bruk av `dayjs`. |
-| `vacation_responder_end_date` | Ingen | Streng | Sluttdato for feriesvar (hvis aktivert og ingen sluttdato angitt her, antas det at det aldri slutter og svarer for alltid). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD` og andre datoformater via smart parsing ved bruk av `dayjs`. |
-| `vacation_responder_subject` | Ingen | Streng | Emne i klartekst for feriesvaret, f.eks. «Fraværende». Vi bruker `striptags` for å fjerne all HTML her. |
-| `vacation_responder_message` | Ingen | Streng | Melding i klartekst for feriesvar, f.eks. «Jeg vil være borte fra kontoret til februar.» Vi bruker `striptags` for å fjerne all HTML her. |
-
-> Eksempelforespørsel:
+| `name`                          | Nei       | String                                 | Alias navn                                                                                                                                                                                                                                                                                                                                                                                  |
+| `recipients`                    | Nei       | String eller Array                     | Liste over mottakere (må være linjeskift/space/komma separert String eller Array av gyldige e-postadresser, fullstendig kvalifiserte domenenavn ("FQDN"), IP-adresser, og/eller webhook URL'er)                                                                                                                                                                                             |
+| `description`                   | Nei       | String                                 | Alias beskrivelse                                                                                                                                                                                                                                                                                                                                                                           |
+| `labels`                        | Nei       | String eller Array                     | Liste over etiketter (må være linjeskift/space/komma separert String eller Array)                                                                                                                                                                                                                                                                                                           |
+| `has_recipient_verification`    | Nei       | Boolean                                | Krev at mottakere klikker en e-post verifikasjonslink for at e-poster skal flyte gjennom (standard til domenets innstilling hvis ikke eksplisitt satt i forespørselskroppen)                                                                                                                                                                                                                 |
+| `is_enabled`                    | Nei       | Boolean                                | Om dette aliaset skal aktiveres eller deaktiveres (hvis deaktivert, vil e-poster ikke rutes noe sted men returnere suksessstatuskoder). Hvis en verdi sendes, konverteres den til en boolean ved bruk av [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                                                                     |
+| `error_code_if_disabled`        | Nei       | Nummer (enten `250`, `421`, eller `550`) | Inngående e-post til dette aliaset vil avvises hvis `is_enabled` er `false` med enten `250` (stille levere ingen steder, f.eks. svart hull eller `/dev/null`), `421` (myk avvisning; og prøv igjen i opptil ~5 dager) eller `550` permanent feil og avvisning. Standard er `250`.                                                                                                               |
+| `has_imap`                      | Nei       | Boolean                                | Om IMAP lagring skal aktiveres eller deaktiveres for dette aliaset (hvis deaktivert, vil innkommende e-poster ikke lagres til [IMAP lagring](/blog/docs/best-quantum-safe-encrypted-email-service). Hvis en verdi sendes, konverteres den til en boolean ved bruk av [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                |
+| `has_pgp`                       | Nei       | Boolean                                | Om [OpenPGP kryptering](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) skal aktiveres eller deaktiveres for [IMAP/POP3/CalDAV/CardDAV kryptert e-postlagring](/blog/docs/best-quantum-safe-encrypted-email-service) ved bruk av aliasets `public_key`.                                                                                                   |
+| `public_key`                    | Nei       | String                                 | OpenPGP offentlig nøkkel i ASCII Armor format ([klikk her for å se et eksempel](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); f.eks. GPG nøkkel for `support@forwardemail.net`). Dette gjelder kun hvis du har `has_pgp` satt til `true`. [Lær mer om ende-til-ende kryptering i vår FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
+| `max_quota`                     | Nei       | String                                 | Maksimal lagringskvote for dette aliaset. La stå tomt for å tilbakestille til domenets nåværende maksimale kvote eller skriv inn en verdi som "1 GB" som vil bli tolket av [bytes](https://github.com/visionmedia/bytes.js). Denne verdien kan kun justeres av domenets administratorer.                                                                                                      |
+| `vacation_responder_is_enabled` | Nei       | Boolean                                | Om en automatisk feriemelding skal aktiveres eller deaktiveres.                                                                                                                                                                                                                                                                                                                             |
+| `vacation_responder_start_date` | Nei       | String                                 | Startdato for feriemeldingen (hvis aktivert og ingen startdato satt her, antar den at den allerede er startet). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD`, og andre datoformater via smart parsing med `dayjs`.                                                                                                                                                                  |
+| `vacation_responder_end_date`   | Nei       | String                                 | Sluttdato for feriemeldingen (hvis aktivert og ingen sluttdato satt her, antar den at den aldri slutter og svarer for alltid). Vi støtter datoformater som `MM/DD/YYYY`, `YYYY-MM-DD`, og andre datoformater via smart parsing med `dayjs`.                                                                                                                                                    |
+| `vacation_responder_subject`    | Nei       | String                                 | Emne i ren tekst for feriemeldingen, f.eks. "Out of Office". Vi bruker `striptags` for å fjerne all HTML her.                                                                                                                                                                                                                                                                                |
+| `vacation_responder_message`    | Nei       | String                                 | Melding i ren tekst for feriemeldingen, f.eks. "I will be out of office until February.". Vi bruker `striptags` for å fjerne all HTML her.                                                                                                                                                                                                                                                  |
+> Eksempel Forespørsel:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
   -u API_TOKEN:
 ```
 
-### Slett domenealias {#delete-domain-alias}
+### Slett domenenavn-alias {#delete-domain-alias}
 
 > `DELETE /v1/domains/:domain_name/aliases/:alias_id`
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
   -u API_TOKEN:
 ```
 
+
 ## Krypter {#encrypt}
 
-Vi lar deg kryptere poster selv med gratisabonnementet uten kostnad. Personvern bør ikke være en funksjon, det bør være innebygd i alle aspekter av et produkt. Som sterkt etterspurt i en [Diskusjon om personvernveiledninger](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) og på [våre GitHub-problemer](https://github.com/forwardemail/forwardemail.net/issues/254) har vi lagt til dette.
+Vi lar deg kryptere poster selv på gratisplanen uten kostnad. Personvern skal ikke være en funksjon, det skal være innebygd i alle aspekter av et produkt. Som sterkt etterspurt i en [Privacy Guides diskusjon](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) og på [våre GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) har vi lagt til dette.
 
-### Krypter TXT-oppføring {#encrypt-txt-record}
+### Krypter TXT-post {#encrypt-txt-record}
 
 > `POST /v1/encrypt`
 
-| Kroppsparameter | Obligatorisk | Type | Beskrivelse |
-| -------------- | -------- | ------ | -------------------------------------------- |
-| `input` | Ja | Streng | Enhver gyldig TXT-post i klartekst for videresending av e-post |
+| Body Parameter | Påkrevd | Type   | Beskrivelse                                  |
+| -------------- | ------- | ------ | -------------------------------------------- |
+| `input`        | Ja      | String | Enhver gyldig Forward Email ren tekst TXT-post |
 
-> Eksempelforespørsel:
+> Eksempel Forespørsel:
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \

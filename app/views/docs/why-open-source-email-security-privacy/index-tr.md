@@ -1,223 +1,229 @@
-# Açık Kaynaklı E-posta Neden Gelecek: İleri E-posta Avantajı {#why-open-source-email-is-the-future-the-forward-email-advantage}
+# Neden Açık Kaynak E-posta Gelecektir: Forward Email Avantajı {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Open source email security and privacy" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="Açık kaynak e-posta güvenliği ve gizliliği" class="rounded-lg" />
+
 
 ## İçindekiler {#table-of-contents}
 
 * [Önsöz](#foreword)
 * [Açık Kaynak Avantajı: Sadece Pazarlamadan Daha Fazlası](#the-open-source-advantage-more-than-just-marketing)
-  * [Gerçek Açık Kaynak Ne Anlama Gelir?](#what-true-open-source-means)
-  * [Arka Uç Sorunu: Çoğu "Açık Kaynaklı" E-posta Hizmetinin Yetersizliği](#the-backend-problem-where-most-open-source-email-services-fall-short)
-* [E-postayı İlet: %100 Açık Kaynak, Ön Uç VE Arka Uç](#forward-email-100-open-source-frontend-and-backend)
+  * [Gerçek Açık Kaynak Ne Anlama Gelir](#what-true-open-source-means)
+  * [Arka Uç Sorunu: Çoğu "Açık Kaynak" E-posta Hizmetinin Başarısız Olduğu Yer](#the-backend-problem-where-most-open-source-email-services-fall-short)
+* [Forward Email: %100 Açık Kaynak, Ön Uç VE Arka Uç](#forward-email-100-open-source-frontend-and-backend)
   * [Benzersiz Teknik Yaklaşımımız](#our-unique-technical-approach)
-* [Kendi Kendine Barındırma Seçeneği: Seçim Özgürlüğü](#the-self-hosting-option-freedom-of-choice)
-  * [Neden Kendi Kendine Barındırmayı Destekliyoruz?](#why-we-support-self-hosting)
-  * [Kendi Kendine Barındırılan E-postanın Gerçeği](#the-reality-of-self-hosting-email)
-* [Ücretli Hizmetimiz Neden Mantıklı (Açık Kaynaklı Olsak Bile)](#why-our-paid-service-makes-sense-even-though-were-open-source)
+* [Kendi Sunucunu Kullanma Seçeneği: Seçme Özgürlüğü](#the-self-hosting-option-freedom-of-choice)
+  * [Neden Kendi Sunucunu Kullanmayı Destekliyoruz](#why-we-support-self-hosting)
+  * [E-posta Kendi Sunucunu Kullanmanın Gerçekleri](#the-reality-of-self-hosting-email)
+* [Neden Ücretli Hizmetimiz Mantıklı (Açık Kaynak Olmamıza Rağmen)](#why-our-paid-service-makes-sense-even-though-were-open-source)
   * [Maliyet Karşılaştırması](#cost-comparison)
-  * [Her İki Dünyanın En İyisi](#the-best-of-both-worlds)
-* [Kapalı Kaynaklı Aldatmaca: Proton ve Tutanota'nın Size Söylemediği Şeyler](#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you)
+  * [İki Dünyanın En İyisi](#the-best-of-both-worlds)
+* [Kapalı Kaynak Aldatmacası: Proton ve Tutanota'nın Size Söylemedikleri](#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you)
   * [Proton Mail'in Açık Kaynak İddiaları](#proton-mails-open-source-claims)
   * [Tutanota'nın Benzer Yaklaşımı](#tutanotas-similar-approach)
-  * [Gizlilik Kılavuzları Tartışması](#the-privacy-guides-debate)
-* [Gelecek Açık Kaynaklı](#the-future-is-open-source)
-  * [Açık Kaynak Neden Kazanıyor?](#why-open-source-is-winning)
-* [E-postayı İletmeye Geçiş](#making-the-switch-to-forward-email)
-* [Sonuç: Özel Bir Gelecek İçin Açık Kaynaklı E-posta](#conclusion-open-source-email-for-a-private-future)
+  * [Gizlilik Rehberleri Tartışması](#the-privacy-guides-debate)
+* [Gelecek Açık Kaynak](#the-future-is-open-source)
+  * [Neden Açık Kaynak Kazanıyor](#why-open-source-is-winning)
+* [Forward Email'e Geçiş Yapmak](#making-the-switch-to-forward-email)
+* [Sonuç: Özel Bir Gelecek İçin Açık Kaynak E-posta](#conclusion-open-source-email-for-a-private-future)
+
 
 ## Önsöz {#foreword}
 
-Dijital gizlilik endişelerinin her zamankinden daha fazla olduğu bir çağda, seçtiğimiz e-posta hizmetleri her zamankinden daha önemli. Birçok sağlayıcı gizliliğinize öncelik verdiğini iddia etse de, gizlilikten sadece bahsedenler ile gerçekten uygulayanlar arasında temel bir fark var. Forward Email olarak, hizmetimizi yalnızca ön uç uygulamalarımızda değil, tüm altyapımızda açık kaynaklı geliştirme yoluyla tam bir şeffaflık temeli üzerine kurduk.
+Dijital gizlilik endişelerinin her zamankinden daha yüksek olduğu bir çağda, seçtiğimiz e-posta hizmetleri her zamankinden daha önemli. Birçok sağlayıcı gizliliğinizi önceliklendirdiğini iddia ederken, gizlilikten sadece bahsedenlerle gerçekten bunu uygulayanlar arasında temel bir fark vardır. Forward Email olarak, hizmetimizi sadece ön uç uygulamalarımızda değil, tüm altyapımızda açık kaynak geliştirme yoluyla tam şeffaflık temeli üzerine inşa ettik.
 
-Bu blog yazısı, açık kaynaklı e-posta çözümlerinin kapalı kaynaklı alternatiflere göre neden daha üstün olduğunu, yaklaşımımızın Proton Mail ve Tutanota gibi rakiplerden nasıl farklılaştığını ve kendi kendine barındırma seçeneklerine olan bağlılığımıza rağmen ücretli hizmetimizin neden çoğu kullanıcı için en iyi değeri sunduğunu araştırıyor.
+Bu blog yazısı, neden açık kaynak e-posta çözümlerinin kapalı kaynak alternatiflerden üstün olduğunu, yaklaşımımızın Proton Mail ve Tutanota gibi rakiplerden nasıl farklılaştığını ve kendi sunucunu kullanma seçeneklerine bağlı kalmamıza rağmen neden ücretli hizmetimizin çoğu kullanıcı için en iyi değeri sunduğunu inceliyor.
 
-## Açık Kaynak Avantajı: Pazarlamadan Daha Fazlası {#the-open-source-advantage-more-than-just-marketing}
 
-"Açık kaynak" terimi, son yıllarda popüler bir pazarlama terimi haline geldi ve küresel açık kaynaklı hizmetler pazarının 2024 ile 2032 yılları arasında %16'nın üzerinde bir bileşik yıllık büyüme oranıyla (CAGR) büyümesi öngörülüyor. [^1] Peki, gerçekten açık kaynaklı olmak ne anlama geliyor ve e-posta gizliliğiniz için neden önemli?
+## Açık Kaynak Avantajı: Sadece Pazarlamadan Daha Fazlası {#the-open-source-advantage-more-than-just-marketing}
 
-### Gerçek Açık Kaynak Ne Anlama Gelir? {#what-true-open-source-means}
+"Açık kaynak" terimi son yıllarda popüler bir pazarlama sloganı haline geldi ve küresel açık kaynak hizmetleri pazarının 2024 ile 2032 arasında %16'nın üzerinde bir bileşik yıllık büyüme oranıyla büyümesi bekleniyor\[^1]. Peki gerçek anlamda açık kaynak olmak ne demek ve e-posta gizliliğiniz için neden önemlidir?
 
-Açık kaynaklı yazılımlar, kaynak kodunun tamamını herkesin incelemesi, değiştirmesi ve geliştirmesi için ücretsiz olarak sunar. Bu şeffaflık, şu ortamı yaratır:
+### Gerçek Açık Kaynak Ne Anlama Gelir {#what-true-open-source-means}
 
-* Güvenlik açıkları, küresel bir geliştirici topluluğu tarafından tespit edilip giderilebilir.
-* Gizlilik iddiaları, bağımsız kod incelemesiyle doğrulanabilir.
-* Kullanıcılar, tescilli ekosistemlere bağlı kalmaz.
-* Yenilik, iş birliğine dayalı iyileştirme sayesinde daha hızlı gerçekleşir.
+Açık kaynak yazılım, tüm kaynak kodunu herkesin incelemesi, değiştirmesi ve geliştirmesi için ücretsiz olarak erişilebilir kılar. Bu şeffaflık şu ortamı yaratır:
 
-Çevrimiçi kimliğinizin omurgası olan e-posta söz konusu olduğunda, bu şeffaflık yalnızca hoş bir şey değil; aynı zamanda gerçek gizlilik ve güvenlik için de olmazsa olmazdır.
+* Güvenlik açıkları küresel bir geliştirici topluluğu tarafından tespit edilip düzeltilebilir
+* Gizlilik iddiaları bağımsız kod incelemesiyle doğrulanabilir
+* Kullanıcılar kapalı ekosistemlere bağlı kalmaz
+* İşbirlikçi geliştirme sayesinde yenilik daha hızlı gerçekleşir
 
-### Arka Uç Sorunu: Çoğu "Açık Kaynaklı" E-posta Hizmetinin Yetersiz Kaldığı Nokta {#the-backend-problem-where-most-open-source-email-services-fall-short}
+E-posta söz konusu olduğunda—çevrimiçi kimliğinizin temel taşı—bu şeffaflık sadece hoş bir özellik değil; gerçek gizlilik ve güvenlik için gereklidir.
 
-İşte işler burada ilginçleşiyor. Birçok popüler "gizlilik odaklı" e-posta sağlayıcısı kendilerini açık kaynaklı olarak tanıtıyor, ancak fark etmeyeceğinizi umdukları önemli bir ayrım var: **sadece ön uçlarını açık kaynaklı hale getirirken, arka uçlarını kapalı tutuyorlar**.
+### Arka Uç Sorunu: Çoğu "Açık Kaynak" E-posta Hizmetinin Başarısız Olduğu Yer {#the-backend-problem-where-most-open-source-email-services-fall-short}
 
-Bu ne anlama geliyor? Ön uç, gördüğünüz ve etkileşim kurduğunuz şeydir; web arayüzü veya mobil uygulama. Arka uç ise gerçek e-posta işlemenin gerçekleştiği yerdir; mesajlarınızın depolandığı, şifrelendiği ve iletildiği yerdir. Bir sağlayıcı arka ucunu kapalı kaynaklı tuttuğunda:
+İşte işin ilginç kısmı. Birçok popüler "gizlilik odaklı" e-posta sağlayıcısı kendini açık kaynak olarak tanıtır, ancak fark etmenizi istemedikleri kritik bir ayrım vardır: **sadece ön uçlarını açık kaynak yaparken arka uçlarını kapalı tutarlar**.
+Bu ne anlama geliyor? Ön yüz, gördüğünüz ve etkileşimde bulunduğunuz kısımdır—web arayüzü veya mobil uygulama. Arka uç ise gerçek e-posta işlemlerinin gerçekleştiği yerdir—mesajlarınızın depolandığı, şifrelendiği ve iletildiği yer. Bir sağlayıcı arka ucunu kapalı kaynak tuttuğunda:
 
-1. E-postalarınızın nasıl işlendiğini doğrulayamıyorsunuz
-2. Gizlilik iddialarının meşru olup olmadığını doğrulayamıyorsunuz
-3. Doğrulanabilir kod yerine pazarlama iddialarına güveniyorsunuz
-4. Güvenlik açıkları kamunun incelemesinden gizli kalabilir
+1. E-postalarınızın gerçekten nasıl işlendiğini doğrulayamazsınız
+2. Gizlilik iddialarının meşru olup olmadığını teyit edemezsiniz
+3. Doğrulanabilir kod yerine pazarlama iddialarına güvenirsiniz
+4. Güvenlik açıkları kamu denetiminden gizli kalabilir
 
-Gizlilik Kılavuzları forumlarındaki tartışmaların da vurguladığı gibi, hem Proton Mail hem de Tutanota açık kaynaklı olduklarını iddia ediyor, ancak arka uçları kapalı ve tescilli kalıyor. Bu durum önemli bir güven boşluğu yaratıyor; gizlilik vaatlerine inanmanız isteniyor ancak bunları doğrulama olanağınız yok.
+Privacy Guides forumlarındaki tartışmaların da vurguladığı gibi, hem Proton Mail hem de Tutanota açık kaynak olduklarını iddia ediyor, ancak arka uçları kapalı ve tescilli kalmaya devam ediyor\[^2]. Bu, önemli bir güven açığı yaratıyor—gizlilik vaatlerine inanmanız isteniyor ancak bunları doğrulama imkanınız yok.
 
-## E-postayı İlet: %100 Açık Kaynak, Ön Uç VE Arka Uç {#forward-email-100-open-source-frontend-and-backend}
 
-Forward Email'de temelden farklı bir yaklaşım benimsedik. Tüm kod tabanımız (hem ön uç hem de arka uç) açık kaynaklıdır ve herkesin <https://github.com/forwardemail/forwardemail.net>. adresinden incelemesine açıktır.
+## Forward Email: %100 Açık Kaynak, Ön Yüz VE Arka Uç {#forward-email-100-open-source-frontend-and-backend}
+
+Forward Email olarak, temelden farklı bir yaklaşım benimsedik. Tüm kod tabanımız—hem ön yüz hem de arka uç—açık kaynaklıdır ve herkesin incelemesi için <https://github.com/forwardemail/forwardemail.net> adresinde mevcuttur.
 
 Bu şu anlama gelir:
 
-1. **Tam Şeffaflık**: E-postalarınızı işleyen her kod satırı kamunun incelemesine açıktır.
-2. **Doğrulanabilir Gizlilik**: Gizlilik iddialarımız pazarlama söylemi değildir; herkesin kodumuzu inceleyerek doğrulayabileceği doğrulanabilir gerçeklerdir.
-3. **Topluluk Odaklı Güvenlik**: Güvenliğimiz, küresel geliştirici topluluğunun kolektif uzmanlığıyla güçlendirilmiştir.
-4. **Gizli İşlevsellik Yok**: Ne görüyorsanız onu alırsınız; gizli izleme veya gizli arka kapılar yoktur.
+1. **Tam Şeffaflık**: E-postalarınızı işleyen her satır kod kamu denetimine açıktır.
+2. **Doğrulanabilir Gizlilik**: Gizlilik iddialarımız pazarlama söylemi değil—kodumuzu inceleyerek herkesin doğrulayabileceği gerçeklerdir.
+3. **Topluluk Odaklı Güvenlik**: Güvenliğimiz, küresel geliştirici topluluğunun ortak uzmanlığıyla güçlendirilir.
+4. **Gizli İşlevsellik Yok**: Gördüğünüz şey aldığınızdır—gizli takip yok, gizli arka kapılar yok.
 
 ### Benzersiz Teknik Yaklaşımımız {#our-unique-technical-approach}
 
-Gizliliğe olan bağlılığımız yalnızca açık kaynaklı olmaktan ötedir. Bizi farklı kılan birçok teknik yeniliği hayata geçirdik:
+Gizliliğe bağlılığımız sadece açık kaynak olmakla sınırlı değil. Bizi farklı kılan birkaç teknik yenilik uyguladık:
 
 #### Bireysel Şifrelenmiş SQLite Posta Kutuları {#individually-encrypted-sqlite-mailboxes}
 
-Paylaşımlı ilişkisel veritabanları kullanan geleneksel e-posta sağlayıcılarının aksine (tek bir ihlalin tüm kullanıcıların verilerini ifşa edebileceği durumlarda), her posta kutusu için ayrı ayrı şifrelenmiş SQLite dosyaları kullanıyoruz. Bu, şu anlama gelir:
+Tüm kullanıcıların verilerinin tek bir ihlal ile açığa çıkabileceği paylaşılan ilişkisel veritabanları kullanan geleneksel e-posta sağlayıcılarının aksine, her posta kutusu için bireysel olarak şifrelenmiş SQLite dosyaları kullanıyoruz. Bu şu anlama gelir:
 
-* Her posta kutusu ayrı bir şifreli dosyadır
-* Bir kullanıcının verilerine erişim, diğerlerine erişim hakkı vermez
-* Kendi çalışanlarımız bile verilerinize erişemez; bu, temel bir tasarım kararıdır
+* Her posta kutusu ayrı bir şifrelenmiş dosyadır
+* Bir kullanıcının verilerine erişim diğerlerine erişim sağlamaz
+* Kendi çalışanlarımız bile verilerinize erişemez—bu temel bir tasarım kararıdır
 
-Gizlilik Kılavuzları tartışmalarında açıkladığımız gibi:
+Privacy Guides tartışmalarında açıkladığımız gibi:
 
-> "Paylaşımlı ilişkisel veritabanlarının (örneğin MongoDB, SQL Server, PostgreSQL, Oracle, MySQL vb.) tümü, veritabanı bağlantısını kurmak için bir oturum açma (kullanıcı adı/şifre ile) gerektirir. Bu, bu şifreye sahip olan herkesin veritabanında herhangi bir sorgu yapabileceği anlamına gelir. İster kötü niyetli bir çalışan ister kötü niyetli bir hizmetçi saldırısı olsun. Bu aynı zamanda, bir kullanıcının verilerine erişebilmeniz, diğer herkesin verilerine de erişebileceğiniz anlamına gelir. Öte yandan, SQLite paylaşımlı bir veritabanı olarak kabul edilebilir, ancak onu nasıl kullandığımız (her posta kutusu = ayrı bir SQLite dosyası) onu korumalı hale getirir."\[^3]
+> "Paylaşılan ilişkisel veritabanları (örneğin, MongoDB, SQL Server, PostgreSQL, Oracle, MySQL vb.) veritabanı bağlantısını kurmak için bir giriş (kullanıcı/şifre) gerektirir. Bu, bu şifreye sahip herhangi birinin veritabanını istediği gibi sorgulayabileceği anlamına gelir. İster kötü niyetli bir çalışan ister kötü niyetli hizmetçi saldırısı olsun. Bu ayrıca, bir kullanıcının verilerine erişim, diğer herkesin verilerine de erişim anlamına gelir. Öte yandan, SQLite paylaşılan bir veritabanı olarak kabul edilebilir, ancak bizim kullanım şeklimiz (her posta kutusu = bireysel SQLite dosyası) onu izole eder."\[^3]
 
 #### Kuantum Dirençli Şifreleme {#quantum-resistant-encryption}
 
-Diğer sağlayıcılar henüz yetişmeye çalışırken, biz kuantum bilişiminden kaynaklanan yeni tehditlere karşı e-posta gizliliğinizi gelecekte de koruyabilmeniz için kuantum dirençli şifreleme yöntemlerini uygulamaya koyduk.
+Diğer sağlayıcılar henüz yakalamaya çalışırken, biz kuantum bilişimden kaynaklanan yeni tehditlere karşı e-posta gizliliğinizi geleceğe hazırlamak için kuantum dirençli şifreleme yöntemlerini çoktan uyguladık.
 
-#### Üçüncü Taraf Bağımlılığı Yok {#no-third-party-dependencies}
+#### Üçüncü Taraf Bağımlılıkları Yok {#no-third-party-dependencies}
 
-E-posta teslimatı için Amazon SES gibi hizmetlere güvenen rakiplerin aksine, tüm altyapımızı kendi bünyemizde oluşturduk. Bu, üçüncü taraf hizmetler aracılığıyla olası gizlilik sızıntılarını ortadan kaldırıyor ve tüm e-posta hattı üzerinde tam kontrol sağlıyor.
+Amazon SES gibi hizmetlere e-posta teslimatı için bağımlı olan rakiplerin aksine, tüm altyapımızı kendi bünyemizde inşa ettik. Bu, üçüncü taraf hizmetler yoluyla olası gizlilik sızıntılarını ortadan kaldırır ve tüm e-posta hattı üzerinde tam kontrol sağlar.
 
-## Kendi Kendine Barındırma Seçeneği: Seçim Özgürlüğü {#the-self-hosting-option-freedom-of-choice}
 
-Açık kaynaklı yazılımların en güçlü yönlerinden biri sağladığı özgürlüktür. Forward Email ile hiçbir zaman belirli bir yere bağlı kalmazsınız; dilerseniz tüm platformumuzu kendiniz barındırabilirsiniz.
+## Kendi Sunucunu Kullanma Seçeneği: Seçme Özgürlüğü {#the-self-hosting-option-freedom-of-choice}
 
-### Neden Kendinden Barındırmayı Destekliyoruz? {#why-we-support-self-hosting}
+Açık kaynak yazılımın en güçlü yönlerinden biri sağladığı özgürlüktür. Forward Email ile asla kilitlenmezsiniz—isterseniz tüm platformumuzu kendi sunucunuzda barındırabilirsiniz.
 
-Kullanıcıların verileri üzerinde tam kontrol sahibi olmalarına inanıyoruz. Bu nedenle, kapsamlı dokümantasyon ve kurulum kılavuzlarıyla tüm platformumuzu kendi kendine barındırılabilir hale getirdik. Bu yaklaşım:
+### Neden Kendi Sunucunu Kullanmayı Destekliyoruz {#why-we-support-self-hosting}
+
+Kullanıcılara verileri üzerinde tam kontrol vermeye inanıyoruz. Bu yüzden tüm platformumuzu kapsamlı dokümantasyon ve kurulum rehberleriyle kendi sunucunuzda çalıştırılabilir hale getirdik. Bu yaklaşım:
 
 * Teknik bilgiye sahip kullanıcılar için maksimum kontrol sağlar
-* Bir hizmet sağlayıcı olarak bize güvenme ihtiyacını ortadan kaldırır
-* Belirli gereksinimleri karşılamak için özelleştirmeye olanak tanır
-* Şirketimiz hizmete devam edemese bile hizmetin devam etmesini sağlar
+* Hizmet sağlayıcı olarak bize güvenme ihtiyacını ortadan kaldırır
+* Belirli gereksinimlere uyacak şekilde özelleştirmeye olanak tanır
+* Şirketimiz olmasa bile hizmetin devam etmesini garanti eder
+### E-posta Kendinize Ait Sunucuda Barındırmanın Gerçekleri {#the-reality-of-self-hosting-email}
 
-### Kendi Kendine Barındırılan E-postanın Gerçeği {#the-reality-of-self-hosting-email}
-
-Kendi sunucunuzu barındırmak güçlü bir seçenek olsa da, bununla ilgili gerçek maliyetleri anlamak önemlidir:
+Kendinize ait sunucuda barındırma güçlü bir seçenek olsa da, gerçek maliyetleri anlamak önemlidir:
 
 #### Finansal Maliyetler {#financial-costs}
 
-* VPS veya sunucu maliyetleri: Temel kurulum için aylık 5-50 ABD doları\[^4]
-* Alan adı kaydı ve yenileme: Yıllık 10-20 ABD doları
-* SSL sertifikaları (Let's Encrypt ücretsiz seçenekler sunsa da)
-* İzleme hizmetleri ve yedekleme çözümlerinin potansiyel maliyetleri
+* VPS veya sunucu maliyetleri: Temel bir kurulum için ayda 5-50$\[^4]
+* Alan adı kaydı ve yenileme: Yılda 10-20$
+* SSL sertifikaları (Let's Encrypt ücretsiz seçenekler sunar)
+* İzleme hizmetleri ve yedekleme çözümleri için potansiyel maliyetler
 
 #### Zaman Maliyetleri {#time-costs}
 
-* İlk kurulum: Teknik uzmanlığa bağlı olarak birkaç saat ila birkaç gün
+* İlk kurulum: Teknik uzmanlığa bağlı olarak birkaç saatten birkaç güne kadar
 * Sürekli bakım: Güncellemeler, güvenlik yamaları ve sorun giderme için ayda 5-10 saat\[^5]
-* Öğrenme eğrisi: E-posta protokollerini, en iyi güvenlik uygulamalarını ve sunucu yönetimini anlama
+* Öğrenme eğrisi: E-posta protokollerini, güvenlik en iyi uygulamalarını ve sunucu yönetimini anlamak
 
 #### Teknik Zorluklar {#technical-challenges}
 
-* E-posta teslim sorunları (mesajların spam olarak işaretlenmesi)
-* Gelişen güvenlik standartlarını takip etme
-* Yüksek kullanılabilirlik ve güvenilirlik sağlama
-* Spam filtrelemesini etkili bir şekilde yönetme
+* E-posta teslim edilebilirlik sorunları (mesajların spam olarak işaretlenmesi)
+* Gelişen güvenlik standartlarına ayak uydurmak
+* Yüksek erişilebilirlik ve güvenilirlik sağlamak
+* Spam filtrelemeyi etkili şekilde yönetmek
 
-Deneyimli bir kendi kendine barındırma sağlayıcısının dediği gibi: "E-posta bir meta hizmetidir... E-postamı bir sağlayıcıda barındırmak, para ve zaman harcayarak kendi kendime barındırmaktan daha ucuzdur."\[^6]
+Deneyimli bir kendinize ait sunucu yöneticisinin dediği gibi: "E-posta bir emtia hizmetidir... E-postamı \[bir sağlayıcıda] barındırmak, hem para *hem* zaman harcayıp kendim barındırmaktan daha ucuzdur."\[^6]
 
-## Ücretli Hizmetimiz Neden Mantıklı (Açık Kaynaklı Olsak Bile) {#why-our-paid-service-makes-sense-even-though-were-open-source}
 
-Kendi kendine barındırmanın zorlukları göz önüne alındığında, ücretli hizmetimiz her iki dünyanın da en iyisini sunar: açık kaynaklı yazılımın şeffaflığı ve güvenliği ile yönetilen bir hizmetin rahatlığı ve güvenilirliği.
+## Neden Ücretli Hizmetimiz Mantıklı (Açık Kaynak Olmamıza Rağmen) {#why-our-paid-service-makes-sense-even-though-were-open-source}
+
+Kendinize ait sunucuda barındırmanın zorlukları göz önüne alındığında, ücretli hizmetimiz her iki dünyanın en iyisini sunar: açık kaynak şeffaflığı ve güvenliği ile yönetilen hizmetin kolaylığı ve güvenilirliği.
 
 ### Maliyet Karşılaştırması {#cost-comparison}
 
-Hem maliyet hem de zaman maliyetlerini hesaba kattığınızda, ücretli hizmetimiz olağanüstü bir değer sunar:
+Hem finansal hem de zaman maliyetlerini hesaba kattığınızda, ücretli hizmetimiz olağanüstü bir değer sunar:
 
-* **Kendi kendine barındırma toplam maliyeti**: 56-252 ABD Doları/ay (sunucu maliyetleri ve zaman değerlemesi dahil)
-* **Ücretli E-posta Yönlendirme planları**: 3-9 ABD Doları/ay
+* **Kendinize ait sunucuda barındırmanın toplam maliyeti**: Ayda 56-252$ (sunucu maliyetleri ve zaman değeri dahil)
+* **Forward Email ücretli planları**: Ayda 3-9$
 
 Ücretli hizmetimiz şunları sağlar:
 
 * Profesyonel yönetim ve bakım
-* Daha iyi teslimat için köklü IP itibarı
+* Daha iyi teslim edilebilirlik için yerleşik IP itibarı
 * Düzenli güvenlik güncellemeleri ve izleme
 * Sorun çıktığında destek
-* Açık kaynaklı yaklaşımımızın tüm gizlilik avantajları
+* Açık kaynak yaklaşımımızın tüm gizlilik avantajları
 
 ### Her İki Dünyanın En İyisi {#the-best-of-both-worlds}
 
-E-postayı İlet'i seçerek şunları elde edersiniz:
+Forward Email'i seçerek şunları elde edersiniz:
 
-1. **Doğrulanabilir Gizlilik**: Açık kaynaklı kod tabanımız, gizlilik iddialarımıza güvenebileceğiniz anlamına gelir.
-2. **Profesyonel Yönetim**: E-posta sunucusu uzmanı olmanıza gerek yok.
-3. **Maliyet Etkinliği**: Kendi barındırmanızdan daha düşük toplam maliyet.
-4. **Bağlantısız Olma**: Kendi barındırma seçeneği her zaman kullanılabilir.
+1. **Doğrulanabilir Gizlilik**: Açık kaynak kod tabanımız sayesinde gizlilik iddialarımıza güvenebilirsiniz
+2. **Profesyonel Yönetim**: E-posta sunucusu uzmanı olmanıza gerek yok
+3. **Maliyet Etkinliği**: Kendinize ait sunucuda barındırmaktan daha düşük toplam maliyet
+4. **Kilitlenmeden Özgürlük**: Kendinize ait sunucuda barındırma seçeneği her zaman mevcut
 
-## Kapalı Kaynaklı Aldatmaca: Proton ve Tutanota'nın Size Söylemediği Şeyler {#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you}
 
-Yaklaşımımızın popüler "gizlilik odaklı" e-posta sağlayıcılarından nasıl farklılaştığına daha yakından bakalım.
+## Kapalı Kaynak Aldatmacası: Proton ve Tutanota'nın Size Söylemedikleri {#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you}
+
+Popüler "gizlilik odaklı" e-posta sağlayıcılarından farklı olarak yaklaşımımızı daha yakından inceleyelim.
 
 ### Proton Mail'in Açık Kaynak İddiaları {#proton-mails-open-source-claims}
 
-Proton Mail kendini açık kaynaklı olarak tanıtıyor, ancak bu yalnızca ön uç uygulamaları için geçerli. E-postalarınızın işlenip depolandığı arka uç ise kapalı kaynaklı kalıyor\[^7]. Bu da şu anlama geliyor:
+Proton Mail kendini açık kaynak olarak tanıtır, ancak bu yalnızca ön uç uygulamalarına uygulanır. E-postalarınızın gerçekten işlendiği ve saklandığı arka uç kapalı kaynaktır\[^7]. Bu şu anlama gelir:
 
-* E-postalarınızın nasıl işlendiğini doğrulayamıyorsunuz
-* Doğrulama olmadan gizlilik iddialarına güvenmelisiniz
-* Arka uçlarındaki güvenlik açıkları kamu denetiminden gizli kalıyor
-* Kendi barındırma seçenekleriniz olmadan ekosistemlerine kilitleniyorsunuz
+* E-postalarınızın nasıl işlendiğini doğrulayamazsınız
+* Gizlilik iddialarına doğrulama olmadan güvenmek zorundasınız
+* Arka uçtaki güvenlik açıkları kamu denetiminden gizlenir
+* Kendinize ait sunucuda barındırma seçeneği olmadan onların ekosistemine kilitlenirsiniz
 
 ### Tutanota'nın Benzer Yaklaşımı {#tutanotas-similar-approach}
 
-Proton Mail gibi Tutanota da ön yüzünü açık kaynaklı hale getirirken arka yüzünü özel olarak koruyor.[^8] Aynı güven sorunlarıyla karşı karşıyalar:
+Proton Mail gibi, Tutanota da yalnızca ön ucunu açık kaynak yaparken arka ucunu tescilli tutar\[^8]. Aynı güven sorunlarıyla karşı karşıyadırlar:
 
-* Arka uç gizlilik iddialarını doğrulamanın bir yolu yok
+* Arka uç gizlilik iddialarını doğrulamanın yolu yok
 * Gerçek e-posta işleme konusunda sınırlı şeffaflık
-* Potansiyel güvenlik sorunları kamunun görüşünden gizleniyor
-* Kendi kendine barındırma seçeneği olmadan satıcı bağımlılığı
+* Kamuya açık olmayan potansiyel güvenlik sorunları
+* Kendinize ait sunucuda barındırma seçeneği olmadan satıcıya bağımlılık
 
-### Gizlilik Kılavuzları Tartışması {#the-privacy-guides-debate}
+### Gizlilik Rehberleri Tartışması {#the-privacy-guides-debate}
 
-Bu sınırlamalar gizlilik camiasında gözden kaçmadı. Gizlilik Kılavuzları hakkındaki tartışmalarda şu kritik ayrımı vurguladık:
+Bu sınırlamalar gizlilik topluluğunda fark edilmiştir. Privacy Guides tartışmalarında bu kritik ayrımı vurguladık:
 
-> "Hem Protonmail hem de Tuta'nın kapalı kaynaklı olduğu belirtiliyor. Çünkü arka uçları gerçekten de kapalı kaynaklı."\[^9]
+> "Hem Protonmail hem de Tuta'nın kapalı kaynak olduğunu belirtir. Çünkü arka uçları gerçekten kapalı kaynaktır."\[^9]
 
-Ayrıca şunu da belirttik:
+Ayrıca şunu belirttik:
 
-> "Şu anda listelenen herhangi bir PG e-posta servis sağlayıcısının arka uç altyapılarına ilişkin kamuya açık bir denetim yapılmadı veya gelen e-postaları nasıl işlediklerine dair açık kaynak kod parçacıkları paylaşılmadı."\[^10]
+> "Şu anda listelenen hiçbir PG e-posta hizmet sağlayıcısının arka uç altyapıları hakkında kamuya açık denetim paylaşımı ya da gelen e-postaları nasıl işlediklerine dair açık kaynak kod parçacıkları paylaşılmamıştır."\[^10]
+Bu şeffaflık eksikliği temel bir güven sorunu yaratır. Açık kaynaklı arka uçlar olmadan, kullanıcılar gizlilik iddialarını doğrulama yerine inançla kabul etmek zorunda kalırlar.
 
-Bu şeffaflık eksikliği, temel bir güven sorununa yol açıyor. Açık kaynaklı arka uçlar olmadan, kullanıcılar gizlilik iddialarını doğrulamak yerine inançla kabul etmek zorunda kalıyor.
 
-## Gelecek Açık Kaynaklıdır {#the-future-is-open-source}
+## Gelecek Açık Kaynak {#the-future-is-open-source}
 
-Yazılım sektöründe açık kaynaklı çözümlere yönelik eğilim hız kazanıyor. Son araştırmalara göre:
+Yazılım endüstrisinde açık kaynak çözümlere yönelik eğilim hızlanıyor. Son araştırmalara göre:
 
-* Açık kaynaklı yazılım pazarı, 2024'te 41,83 milyar dolardan 2025'te 48,92 milyar dolara yükseliyor\[^11]
-* Şirketlerin %80'i, geçen yıl açık kaynaklı yazılım kullanımının arttığını bildiriyor\[^12]
-* Açık kaynaklı yazılımların benimsenmesinin hızla artmaya devam etmesi öngörülüyor
+* Açık kaynak yazılım pazarı 2024'te 41,83 milyar dolardan 2025'te 48,92 milyar dolara büyüyor\[^11]
+* Şirketlerin %80'i geçen yıl içinde açık kaynak kullanımının arttığını bildiriyor\[^12]
+* Açık kaynak benimsemesinin hızlı genişlemesini sürdürmesi bekleniyor
 
-Bu büyüme, yazılım güvenliği ve gizliliğine bakış açımızda köklü bir değişimi yansıtıyor. Kullanıcılar gizlilik konusunda daha bilinçli hale geldikçe, açık kaynaklı çözümler aracılığıyla doğrulanabilir gizliliğe olan talep de artacaktır.
+Bu büyüme, yazılım güvenliği ve gizliliği konusundaki temel bir değişimi yansıtıyor. Kullanıcılar daha fazla gizlilik bilincine sahip oldukça, açık kaynak çözümlerle doğrulanabilir gizlilik talebi artacaktır.
 
-### Açık Kaynak Neden Kazanıyor? {#why-open-source-is-winning}
+### Neden Açık Kaynak Kazanıyor {#why-open-source-is-winning}
 
-Açık kaynak kodlu yazılımların avantajları giderek daha da belirginleşiyor:
+Açık kaynağın avantajları giderek daha net hale geliyor:
 
-1. **Şeffaflık Yoluyla Güvenlik**: Açık kaynak kodu, yalnızca şirket içi bir ekip tarafından değil, binlerce uzman tarafından incelenebilir.
-2. **Daha Hızlı Yenilik**: İş birliğine dayalı geliştirme, iyileştirmeyi hızlandırır.
-3. **Doğrulama Yoluyla Güven**: İddialar, inançla kabul edilmek yerine doğrulanabilir.
-4. **Satıcı Bağımlılığından Kurtulma**: Kullanıcılar, verileri ve hizmetleri üzerinde kontrolü korur.
-5. **Topluluk Desteği**: Küresel bir topluluk, sorunları belirlemeye ve düzeltmeye yardımcı olur.
+1. **Şeffaflık Yoluyla Güvenlik**: Açık kaynak kod, sadece dahili bir ekip değil, binlerce uzman tarafından incelenebilir
+2. **Daha Hızlı İnovasyon**: İşbirlikçi geliştirme iyileştirmeyi hızlandırır
+3. **Doğrulama Yoluyla Güven**: İddialar inançla değil, doğrulanarak kabul edilir
+4. **Tedarikçi Bağımlılığından Kurtulma**: Kullanıcılar verileri ve hizmetler üzerinde kontrolü elinde tutar
+5. **Topluluk Desteği**: Küresel bir topluluk sorunları tespit edip çözer
 
-## E-postayı İletmeye Geçiş Yapılıyor {#making-the-switch-to-forward-email}
 
-İster Gmail gibi ana akım bir sağlayıcıdan, ister Proton Mail veya Tutanota gibi gizliliğe odaklanan başka bir hizmetten geliyor olun, Forward Email'e geçiş oldukça basittir.
+## Forward Email'e Geçiş {#making-the-switch-to-forward-email}
+
+Forward Email'e geçiş, Gmail gibi yaygın bir sağlayıcıdan veya Proton Mail ya da Tutanota gibi başka bir gizlilik odaklı hizmetten geliyorsanız bile kolaydır.
 
 Hizmetimiz şunları sunar:
 
@@ -225,38 +231,38 @@ Hizmetimiz şunları sunar:
 * Özel köprüler olmadan standart protokol desteği (SMTP, IMAP, POP3)
 * Mevcut e-posta istemcileriyle sorunsuz entegrasyon
 * Kapsamlı dokümantasyonla basit kurulum süreci
-* Aylık sadece 3 dolardan başlayan uygun fiyatlı planlar
+* Sadece ayda 3$'dan başlayan uygun fiyatlı planlar
 
-## Sonuç: Özel Bir Gelecek İçin Açık Kaynaklı E-posta {#conclusion-open-source-email-for-a-private-future}
 
-Dijital gizliliğin giderek daha fazla tehdit altında olduğu bir dünyada, açık kaynaklı çözümlerin şeffaflığı hayati bir güvence sağlıyor. Forward Email olarak, e-posta gizliliğine yönelik tamamen açık kaynaklı yaklaşımımızla öncü olmaktan gurur duyuyoruz.
+## Sonuç: Özel Bir Gelecek İçin Açık Kaynak E-posta {#conclusion-open-source-email-for-a-private-future}
 
-Açık kaynak kodlu çözümleri yalnızca kısmen benimseyen rakiplerimizin aksine, platformumuzu (ön uç ve arka uç) kamuoyunun incelemesine açtık. Şeffaflığa olan bu bağlılığımız, yenilikçi teknik yaklaşımımızla birleştiğinde, kapalı kaynaklı alternatiflerin asla ulaşamayacağı düzeyde doğrulanabilir bir gizlilik sağlıyor.
+Dijital gizliliğin giderek tehdit altında olduğu bir dünyada, açık kaynak çözümlerin şeffaflığı hayati bir koruma sağlar. Forward Email olarak, tamamen açık kaynaklı e-posta gizliliği yaklaşımımızla öncü olmaktan gurur duyuyoruz.
 
-Yönetilen hizmetimizi kullanmayı veya platformumuzu kendiniz barındırmayı seçerseniz, gerçek anlamda açık kaynaklı e-postanın sağladığı güvenlik, gizlilik ve gönül rahatlığından yararlanırsınız.
+Sadece kısmen açık kaynağı benimseyen rakiplerin aksine, tüm platformumuzu—ön uç ve arka uç—kamu incelemesine açtık. Bu şeffaflık taahhüdü ve yenilikçi teknik yaklaşımımız, kapalı kaynak alternatiflerin asla ulaşamayacağı doğrulanabilir bir gizlilik seviyesi sunar.
 
-E-postanın geleceği açık, şeffaf ve gizlilik odaklıdır. Gelecek, E-postayı İletmektir.
+Yönetilen hizmetimizi kullanmayı veya platformumuzu kendi kendinize barındırmayı seçin, gerçekten açık kaynaklı e-postanın getirdiği güvenlik, gizlilik ve huzurdan faydalanırsınız.
 
-\[^1]: SNS Insider. "Açık Kaynak Hizmetleri Pazarı, 2023 yılında 28,6 milyar ABD doları değerindeydi ve 2032 yılına kadar %16,70'lik bir bileşik yıllık büyüme oranıyla 114,8 milyar ABD dolarına ulaşacak." [Açık Kaynak Hizmetleri Pazarı Boyutu ve Analiz Raporu 2032](https://www.snsinsider.com/reports/open-source-services-market-3322)
+E-postanın geleceği açık, şeffaf ve gizlilik odaklıdır. Gelecek Forward Email'dir.
 
-\[^2]: Gizlilik Kılavuzları Topluluğu. "E-postayı İlet (e-posta sağlayıcısı) - Site Geliştirme / Araç Önerileri." [Gizlilik Kılavuzları Tartışması](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
+\[^1]: SNS Insider. "The Open Source Services Market was valued at USD 28.6 billion in 2023 and will reach to USD 114.8 Billion by 2032, growing at a CAGR of 16.70% by 2032." [Open Source Services Market Size & Analysis Report 2032](https://www.snsinsider.com/reports/open-source-services-market-3322)
 
-\[^3]: Gizlilik Kılavuzları Topluluğu. "E-postayı İlet (e-posta sağlayıcısı) - Site Geliştirme / Araç Önerileri." [Gizlilik Kılavuzları Tartışması](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
+\[^2]: Privacy Guides Community. "Forward Email (email provider) - Site Development / Tool Suggestions." [Privacy Guides Discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^4]: RunCloud. "Genellikle, e-posta sunucunuzu çalıştırmak için temel bir sanal özel sunucu (VPS) için aylık 5 ila 50 dolar arasında bir ücret ödemeniz beklenir." [2025'te Kullanılacak En İyi 10 Kendinden Barındırılan E-posta Sunucusu Platformu](https://runcloud.io/blog/best-self-hosted-email-server)
+\[^3]: Privacy Guides Community. "Forward Email (email provider) - Site Development / Tool Suggestions." [Privacy Guides Discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^5]: Mail-in-a-Box Forumu. "Bakım o dönemde bana yaklaşık 16 saat sürdü..." [Kendi kendine barındırılan posta sunucusu hoş karşılanmaz](https://discourse.mailinabox.email/t/self-hosting-mail-server-frowned-upon/4143)
+\[^4]: RunCloud. "Generally, you can expect to spend anywhere from $5 to $50 monthly for a basic virtual private server (VPS) to run your email server." [10 Best Self-Hosted Email Server Platforms to Use in 2025](https://runcloud.io/blog/best-self-hosted-email-server)
 
-\[^6]: Reddit r/selfhosted. "ÖZET: Her şey kendi kendine barındırıldığından, ZAMAN GEREKTİRECEKTİR. Eğer harcayacak zamanınız yoksa, barındırılan bir sitede kalmak her zaman daha iyidir..." [Kendi e-posta sunucunuzu mu barındırıyorsunuz? Neden veya neden değil? Popüler olanlar neler?](https://www.reddit.com/r/selfhosted/comments/1etb8jh/selfhosting_an_email_server_why_or_why_not_whats/)
+\[^5]: Mail-in-a-Box Forum. "Maintenance took me maybe 16 hours in that period..." [Self hosting mail server frowned upon](https://discourse.mailinabox.email/t/self-hosting-mail-server-frowned-upon/4143)
+\[^6]: Reddit r/selfhosted. "Özet: Her şey kendi kendine barındırıldığında, ZAMANINIZI GEREKTİRİR. Buna zaman ayıramıyorsanız, her zaman barındırılan bir hizmeti kullanmak daha iyidir..." [Bir e-posta sunucusunu kendi kendine barındırmak mı? Neden veya neden olmasın? Neler popüler?](https://www.reddit.com/r/selfhosted/comments/1etb8jh/selfhosting_an_email_server_why_or_why_not_whats/)
 
-\[^7]: E-postayı İlet. "Proton Mail açık kaynaklı olduğunu iddia ediyor, ancak arka ucu aslında kapalı kaynaklı." [Tutanota ve Proton Mail Karşılaştırması (2025)](https://forwardemail.net/blog/tutanota-vs-proton-mail-email-service-comparison)
+\[^7]: Forward Email. "Proton Mail açık kaynak olduğunu iddia ediyor, ancak arka ucu aslında kapalı kaynak." [Tutanota vs Proton Mail Karşılaştırması (2025)](https://forwardemail.net/blog/tutanota-vs-proton-mail-email-service-comparison)
 
-\[^8]: E-postayı İlet. "Tutanota açık kaynaklı olduğunu iddia ediyor, ancak arka ucu aslında kapalı kaynaklı." [Proton Mail ve Tutanota Karşılaştırması (2025)](https://forwardemail.net/blog/proton-mail-vs-tutanota-email-service-comparison)
+\[^8]: Forward Email. "Tutanota açık kaynak olduğunu iddia ediyor, ancak arka ucu aslında kapalı kaynak." [Proton Mail vs Tutanota Karşılaştırması (2025)](https://forwardemail.net/blog/proton-mail-vs-tutanota-email-service-comparison)
 
-\[^9]: Gizlilik Kılavuzları Topluluğu. "Hem Protonmail hem de Tuta'nın kapalı kaynaklı olduğunu belirtiyor. Çünkü arka uçları gerçekten kapalı kaynaklı." [E-postayı İlet (e-posta sağlayıcısı) - Site Geliştirme / Araç Önerileri](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
+\[^9]: Privacy Guides Community. "Hem Protonmail hem de Tuta'nın kapalı kaynak olduğu belirtiliyor. Çünkü arka uçları gerçekten kapalı kaynak." [Forward Email (e-posta sağlayıcısı) - Site Geliştirme / Araç Önerileri](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^10]: Gizlilik Kılavuzları Topluluğu. "Şu anda listelenen herhangi bir PG e-posta servis sağlayıcısının arka uç altyapılarının kamuya açık bir şekilde paylaşılan hiçbir denetimi veya gelen e-postaları nasıl işlediklerine dair açık kaynak kod parçacıkları paylaşılmadı." [E-postayı İlet (e-posta sağlayıcısı) - Site Geliştirme / Araç Önerileri](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
+\[^10]: Privacy Guides Community. "Şu anda listelenen hiçbir PG e-posta hizmet sağlayıcısının arka uç altyapıları için kamuya açık denetimler paylaşılmamış ve gelen e-postaları nasıl işlediklerine dair açık kaynak kod parçacıkları paylaşılmamıştır." [Forward Email (e-posta sağlayıcısı) - Site Geliştirme / Araç Önerileri](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^11]: IBM. "Açık kaynaklı yazılım pazarı, 2024'te 41,83 milyar ABD dolarından 2025'te 48,92 milyar ABD dolarına, bileşik..." [Açık Kaynak Yazılım Nedir?](https://www.ibm.com/think/topics/open-source)
+\[^11]: IBM. "Açık kaynak yazılım pazarı, 2024'te 41,83 milyar USD'den 2025'te 48,92 milyar USD'ye bileşik..." [Açık Kaynak Yazılım Nedir?](https://www.ibm.com/think/topics/open-source)
 
-\[^12]: PingCAP. "Şirketlerin %80'inin son bir yılda açık kaynak teknolojilerinin kullanımının arttığını bildirmesiyle, bu..." [Açık Kaynak Topluluklarında Ortaya Çıkan Trendler 2024](https://www.pingcap.com/article/emerging-trends-open-source-communities-2024/)
+\[^12]: PingCAP. "Geçtiğimiz yıl içinde şirketlerin %80'i açık kaynak teknolojilerin kullanımında artış bildirdi, bu da..." [2024 Açık Kaynak Topluluklarında Ortaya Çıkan Trendler](https://www.pingcap.com/article/emerging-trends-open-source-communities-2024/)

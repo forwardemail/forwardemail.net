@@ -1,68 +1,106 @@
-# Dossier de presse et médias {#press--media-kit}
+# Kit de Presse & Médias {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email press and media kit" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email kit de presse et médias" class="rounded-lg" />
 
-## Table des matières {#table-of-contents}
 
-* [À propos de la fonction de transfert d'e-mails](#about-forward-email)
+## Table des Matières {#table-of-contents}
+
+* [À propos de Forward Email](#about-forward-email)
+* [Faits clés & Statistiques](#key-facts--statistics)
+* [Utilisateurs Notables](#notable-users)
+* [Récompenses & Reconnaissance](#awards--recognition)
 * [Polices](#fonts)
 * [Couleurs](#colors)
 * [Logos](#logos)
-* [Graphique](#graphics)
+* [Graphiques](#graphics)
 
-## À propos de Transférer un e-mail {#about-forward-email}
 
-Forward Email est le seul service d'hébergement de messagerie 100 % open source axé sur la sécurité et la confidentialité. Découvrez notre histoire sur [notre page À propos](/about).
+## À propos de Forward Email {#about-forward-email}
 
-Notre service a été fondé en 2017 et alimente les e-mails de plus de 500 000 domaines, y compris des utilisateurs notables tels que [L'Académie navale américaine](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [La Fondation Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [plusieurs universités](/blog/docs/alumni-email-forwarding-university-case-study) et les gouvernements, et plus encore.
+Forward Email est le seul service d’hébergement d’e-mails 100 % open source axé sur la sécurité et la confidentialité. En savoir plus sur notre histoire sur [notre page À propos](/about).
 
-Notre objectif est d’être la plate-forme d’infrastructure de messagerie et de sécurité de niveau entreprise – et nous adhérons à [plusieurs principes](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Notre service a été fondé en 2017 et alimente les e-mails de plus de 500 000 domaines – y compris des utilisateurs notables tels que [l’Académie Navale des États-Unis](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [la Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [plusieurs universités](/blog/docs/alumni-email-forwarding-university-case-study) et gouvernements, et plus encore.
 
-Si vous êtes un membre de la presse, un journaliste ou un représentant des médias et que vous souhaitez nous parler, poser des questions ou en savoir plus, veuillez nous contacter à `press@forwardemail.net`.
+Notre objectif est d’être la plateforme d’infrastructure e-mail et sécurité de niveau entreprise – et nous adhérons à [plusieurs principes](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+
+Si vous êtes membre de la presse, journaliste ou représentant des médias et souhaitez nous parler, poser des questions ou en savoir plus – veuillez nous contacter à `press@forwardemail.net`.
+
+
+## Faits clés & Statistiques {#key-facts--statistics}
+
+| Indicateur              | Valeur                                                                                           |
+| :---------------------- | :----------------------------------------------------------------------------------------------- |
+| **Fondé en**            | 2017                                                                                            |
+| **Domaines alimentés**  | 500 000+                                                                                        |
+| **Open Source**         | 100 % (GitHub : [forwardemail/forwardemail.net](https://github.com/forwardemail/forwardemail.net)) |
+| **Langues supportées**  | 25+                                                                                            |
+| **Chiffrement**         | ChaCha20-Poly1305 quantique-sûr, OpenPGP, WKD, S/MIME                                          |
+| **Protocoles**          | IMAP, POP3, SMTP, CalDAV, CardDAV ([voir notre document complet de conformité RFC](/rfc))       |
+| **Auto-hébergement**    | [Disponible via Docker](/self-hosted)                                                          |
+| **Note Trustpilot**     | 4,9/5 (plus de 140 avis)                                                                        |
+
+
+## Utilisateurs Notables {#notable-users}
+
+Forward Email est utilisé par des organisations leaders dans divers secteurs :
+
+* **Gouvernement :** L’Académie Navale des États-Unis, Gouvernement d’Australie-Méridionale, Gouvernement de la République Dominicaine
+* **Technologie :** Netflix Games, Canonical/Ubuntu, La Linux Foundation, La PHP Foundation, jQuery, LineageOS
+* **Éducation :** Université de Cambridge, Université du Maryland, Université de Washington, Université Tufts, Swarthmore College
+* **Leaders de l’Industrie :** Isaac Z. Schlueter (npm), David Heinemeier Hansson (Ruby on Rails)
+
+
+## Récompenses & Reconnaissance {#awards--recognition}
+
+* Répertorié sur [Awesome Privacy](https://github.com/Lissy93/awesome-privacy) (plus de 8 800 étoiles GitHub)
+* Répertorié sur [Awesome Self-Hosted](https://github.com/awesome-selfhosted/awesome-selfhosted) (plus de 270 000 étoiles GitHub)
+* Présenté dans la [Comparaison GitHub des alias e-mail](https://github.com/fynks/email-aliasing-comparison)
+
 
 ## Polices {#fonts}
 
-* **Logo :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (gras ; épaisseur 700)
-* **Corps :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (standard ; épaisseur 400)
-* **Titres :** [VC Honey](https://verycoolstudio.com/typefaces/honey) (gras ; épaisseur 700)
-* **Icônes :** [Police Awesome 5](https://fontawesome.com/)
-
+* **Logo :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (gras ; poids 700)
+* **Corps :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normal ; poids 400)
+* **Titres :** [VC Honey](https://verycoolstudio.com/typefaces/honey) (gras ; poids 700)
+* **Icônes :** [Font Awesome 5](https://fontawesome.com/)
 ## Couleurs {#colors}
 
-* **Bleu** : `#0066FF` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
-* **Cyan** : `#9DE5F9` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
-* **Vert** : `#269C32` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
+* **Bleu :** `#0066FF` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
+* **Cyan :** `#9DE5F9` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
+* **Vert :** `#269C32` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
+
 
 ## Logos {#logos}
 
-« Transférer le logo de l'e-mail »
+"Logo Forward Email"
 
-![Logo de transfert d'e-mail](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg)
+![Forward Email Logo](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg>
 
+
 ## Graphiques {#graphics}
 
-« Freddy fait signe depuis l'espace »
+"Freddy faisant signe depuis l’espace"
 
-![Freddy fait signe de la main](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
+![Freddy waving](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif>
 
-« Freddy dans une enveloppe »
+"Freddy dans une enveloppe"
 
-![Freddy dans une enveloppe](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif)
+![Freddy in an envelope](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif>
 
 "Freddy avec un parachute"
 
-![Freddy avec un parachute](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif)
+![Freddy with a parachute](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif>
 
-"Freddy agitant la main dans un champ herbeux"
+"Freddy faisant signe dans un champ d’herbe"
 
-![Freddy agitant la main dans un champ herbeux](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
+![Freddy waving in a grassy field](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif>

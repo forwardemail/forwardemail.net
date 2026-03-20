@@ -1,82 +1,84 @@
-# Kendi Kendine Barındırılan {#self-hosted}
+# Kendi Sunucunuzda Barındırma {#self-hosted}
+
 
 ## İçindekiler {#table-of-contents}
 
 * [Başlarken](#getting-started)
 * [Gereksinimler](#requirements)
-  * [Bulut-init / Kullanıcı-verileri](#cloud-init--user-data)
-* [Düzenlemek](#install)
-  * [Hata ayıklama kurulum betiği](#debug-install-script)
+  * [Cloud-init / Kullanıcı verisi](#cloud-init--user-data)
+* [Kurulum](#install)
+  * [Kurulum betiğini hata ayıklama](#debug-install-script)
   * [İstemler](#prompts)
   * [İlk Kurulum (Seçenek 1)](#initial-setup-option-1)
 * [Hizmetler](#services)
   * [Önemli dosya yolları](#important-file-paths)
 * [Yapılandırma](#configuration)
   * [İlk DNS kurulumu](#initial-dns-setup)
-* [Yerleştirme](#onboarding)
-* [Test](#testing)
+* [Kayıt](#onboarding)
+* [Test Etme](#testing)
   * [İlk takma adınızı oluşturma](#creating-your-first-alias)
   * [İlk e-postanızı gönderme / alma](#sending--receiving-your-first-email)
-* [Sorun giderme](#troubleshooting)
-  * [Temel kimlik doğrulama kullanıcı adı ve şifresi nedir?](#what-is-the-basic-auth-username-and-password)
-  * [Neyin çalıştığını nasıl bilebilirim?](#how-do-i-know-what-is-running)
-  * [Çalışması gereken bir şeyin çalışmadığını nasıl anlarım?](#how-do-i-know-if-something-isnt-running-that-should-be)
-  * [Günlükleri nasıl bulabilirim?](#how-do-i-find-logs)
-  * [Giden e-postalarım neden zaman aşımına uğruyor?](#why-are-my-outgoing-emails-timing-out)
+* [Sorun Giderme](#troubleshooting)
+  * [Temel kimlik doğrulama kullanıcı adı ve şifresi nedir](#what-is-the-basic-auth-username-and-password)
+  * [Ne çalışıyor nasıl anlarım](#how-do-i-know-what-is-running)
+  * [Çalışması gereken bir şey çalışmıyorsa nasıl anlarım](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [Günlükleri nasıl bulurum](#how-do-i-find-logs)
+  * [Giden e-postalarım neden zaman aşımına uğruyor](#why-are-my-outgoing-emails-timing-out)
+
 
 ## Başlarken {#getting-started}
 
-Kendi barındırdığımız e-posta çözümümüz, tüm ürünlerimiz gibi, hem ön uç hem de arka uç olarak %100 açık kaynaklıdır. Bu da şu anlama gelir:
+Kendi sunucunuzda barındırılan e-posta çözümümüz, tüm ürünlerimiz gibi, %100 açık kaynaklıdır—hem ön yüz hem de arka uç. Bu şu anlama gelir:
 
-1. **Tam Şeffaflık**: E-postalarınızı işleyen her kod satırı kamunun incelemesine açıktır.
-2. **Topluluk Katkıları**: Herkes iyileştirmeler sunabilir veya sorunları giderebilir.
-3. **Açıklık Yoluyla Güvenlik**: Güvenlik açıkları küresel bir topluluk tarafından tespit edilip giderilebilir.
-4. **Tedarikçiye Bağlılık Yok**: Şirketimizin varlığına asla bağımlı değilsiniz.
+1. **Tam Şeffaflık**: E-postalarınızı işleyen her kod satırı kamuya açıktır
+2. **Topluluk Katkıları**: Herkes iyileştirmeler yapabilir veya sorunları düzeltebilir
+3. **Açıklık Yoluyla Güvenlik**: Güvenlik açıkları küresel bir topluluk tarafından tespit edilip düzeltilebilir
+4. **Tedarikçi Bağımlılığı Yok**: Şirketimizin varlığına asla bağımlı olmazsınız
 
-Tüm kod tabanı GitHub'da <https://github.com/forwardemail/forwardemail.net>, adresinde MIT Lisansı altında lisanslı olarak mevcuttur.
+Tüm kod tabanı GitHub’da <https://github.com/forwardemail/forwardemail.net> adresinde MIT Lisansı altında mevcuttur.
 
-Mimaride şunlar için kapsayıcılar bulunur:
+Mimari şunları içerir:
 
 * Giden e-posta için SMTP sunucusu
-* E-posta alımı için IMAP/POP3 sunucuları
+* E-posta alma için IMAP/POP3 sunucuları
 * Yönetim için web arayüzü
 * Yapılandırma depolama için veritabanı
-* Önbelleğe alma ve performans için Redis
-* Güvenli, şifreli posta kutusu depolaması için SQLite
+* Önbellekleme ve performans için Redis
+* Güvenli, şifrelenmiş posta kutusu depolaması için SQLite
 
 > \[!NOTE]
-> [kendi kendine barındırılan blog](https://forwardemail.net/blog/docs/self-hosted-solution)'imize göz atmayı unutmayın
+> [Kendi sunucunuzda barındırma blogumuzu](https://forwardemail.net/blog/docs/self-hosted-solution) mutlaka inceleyin
 >
-> Daha ayrıntılı, adım adım bir versiyonla ilgilenenler için [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) veya [Debian](https://forwardemail.net/guides/selfhosted-on-debian) tabanlı kılavuzlarımıza göz atın.
+> Ve daha ayrıntılı adım adım bir versiyon için [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) veya [Debian](https://forwardemail.net/guides/selfhosted-on-debian) tabanlı rehberlerimize bakabilirsiniz.
 
-## Gereksinimleri {#requirements}
+
+## Gereksinimler {#requirements}
 
 Kurulum betiğini çalıştırmadan önce aşağıdakilere sahip olduğunuzdan emin olun:
 
-* **İşletim Sistemi**: Linux tabanlı bir sunucu (şu anda Ubuntu 22.04+ sürümünü desteklemektedir).
-* **Kaynaklar**: 1 sanal işlemci ve 2 GB RAM
-* **Kök Erişimi**: Komutları çalıştırmak için yönetici ayrıcalıkları.
-* **Alan Adı**: DNS yapılandırmasına hazır özel bir alan adı.
-* **Temiz IP**: Kara listeleri kontrol ederek sunucunuzun daha önce spam geçmişi olmayan temiz bir IP adresine sahip olduğundan emin olun. Daha fazla bilgi için [Burada](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation) adresini ziyaret edin.
-* 25 numaralı bağlantı noktasını destekleyen genel IP adresi
-* [ters PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) adresini ayarlayabilme
+* **İşletim Sistemi**: Linux tabanlı bir sunucu (şu anda Ubuntu 22.04+ desteklenmektedir).
+* **Kaynaklar**: 1 vCPU ve 2GB RAM
+* **Root Erişimi**: Komutları çalıştırmak için yönetici ayrıcalıkları.
+* **Alan Adı**: DNS yapılandırması için hazır özel bir alan adı.
+* **Temiz IP**: Sunucunuzun daha önce spam geçmişi olmayan temiz bir IP adresine sahip olduğundan emin olun, kara listeleri kontrol ederek. Daha fazla bilgi [burada](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* Port 25 desteği olan genel IP adresi
+* [ters PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) ayarlama yeteneği
 * IPv4 ve IPv6 desteği
 
 > \[!TIP]
-> [harika posta sunucusu sağlayıcıları](https://github.com/forwardemail/awesome-mail-server-providers) listemize bakın
+> [Harika posta sunucusu sağlayıcıları](https://github.com/forwardemail/awesome-mail-server-providers) listemize göz atın
 
-### Bulut başlatma / Kullanıcı verileri {#cloud-init--user-data}
+### Cloud-init / Kullanıcı verisi {#cloud-init--user-data}
 
-Çoğu bulut sağlayıcısı, sanal özel sunucu (VPS) sağlandığında bir bulut başlatma yapılandırmasını destekler. Bu, komut dosyasının ilk kurulum mantığı tarafından kullanılmak üzere bazı dosyaları ve ortam değişkenlerini önceden ayarlamanın harika bir yoludur ve komut dosyası çalışırken ek bilgi isteme ihtiyacını ortadan kaldırır.
+Çoğu bulut sağlayıcısı, sanal özel sunucu (VPS) sağlanırken bir cloud-init yapılandırmasını destekler. Bu, betiğin çalışması sırasında ek bilgi isteme ihtiyacını atlayarak, betiğin ilk kurulum mantığı tarafından kullanılmak üzere bazı dosyaları ve ortam değişkenlerini önceden ayarlamanın harika bir yoludur.
 
 **Seçenekler**
 
-* `EMAIL` - certbot son kullanma tarihi hatırlatmaları için kullanılan e-posta
+* `EMAIL` - certbot süresi dolma hatırlatmaları için kullanılan e-posta
 * `DOMAIN` - kendi barındırma kurulumu için kullanılan özel alan adı (ör. `example.com`)
 * `AUTH_BASIC_USERNAME` - siteyi korumak için ilk kurulumda kullanılan kullanıcı adı
-* `AUTH_BASIC_PASSWORD` - siteyi korumak için ilk kurulumda kullanılan parola
-* `/root/.cloudflare.ini` - (**Yalnızca Cloudflare kullanıcıları**) certbot tarafından DNS yapılandırması için kullanılan Cloudflare yapılandırma dosyası. API belirtecinizi `dns_cloudflare_api_token` aracılığıyla ayarlamanızı gerektirir. [Burada](https://certbot-dns-cloudflare.readthedocs.io/en/stable/) hakkında daha fazla bilgi edinin.
-
+* `AUTH_BASIC_PASSWORD` - siteyi korumak için ilk kurulumda kullanılan şifre
+* `/root/.cloudflare.ini` - (**Sadece Cloudflare kullanıcıları için**) certbot tarafından DNS yapılandırması için kullanılan cloudflare yapılandırma dosyası. API token’ınızı `dns_cloudflare_api_token` ile ayarlamanız gerekir. Daha fazla bilgi için [buraya](https://certbot-dns-cloudflare.readthedocs.io/en/stable/) bakın.
 Örnek:
 
 ```sh
@@ -96,7 +98,8 @@ runcmd:
   - chmod +x /etc/profile.d/env.sh
 ```
 
-## {#install}'i yükleyin
+
+## Kurulum {#install}
 
 Kurulum betiğini indirmek ve çalıştırmak için sunucunuzda aşağıdaki komutu çalıştırın:
 
@@ -104,7 +107,7 @@ Kurulum betiğini indirmek ve çalıştırmak için sunucunuzda aşağıdaki kom
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Hata ayıklama yükleme betiği {#debug-install-script}
+### Kurulum betiğini hata ayıklama {#debug-install-script}
 
 Ayrıntılı çıktı için kurulum betiğinin önüne `DEBUG=true` ekleyin:
 
@@ -112,200 +115,202 @@ Ayrıntılı çıktı için kurulum betiğinin önüne `DEBUG=true` ekleyin:
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### İstemleri {#prompts}
+### İstemler {#prompts}
 
 ```sh
-1. Initial setup
-2. Setup Backups
-3. Setup Auto Upgrades
-4. Renew certificates
-5. Restore from Backup
-6. Help
-7. Exit
+1. İlk kurulum
+2. Yedeklemeleri kur
+3. Otomatik güncellemeleri kur
+4. Sertifikaları yenile
+5. Yedekten geri yükle
+6. Yardım
+7. Çıkış
 ```
 
-* **İlk kurulum**: En son yönlendirme e-posta kodunu indirin, ortamı yapılandırın, özel alan adınızı isteyin ve gerekli tüm sertifikaları, anahtarları ve gizli anahtarları ayarlayın.
-* **Yedekleme Kurulumu**: Güvenli ve uzak depolama için S3 uyumlu bir depolama alanı kullanarak MongoDB ve Redis'i yedeklemek üzere bir cron kurulacaktır. Ayrıca, güvenli ve şifreli yedeklemeler için oturum açıldığında SQLite yedeklenecektir.
-* **Yükseltme Kurulumu**: Altyapı bileşenlerini güvenli bir şekilde yeniden oluşturup yeniden başlatacak gecelik güncellemeleri arayacak bir cron kurulacaktır.
-* **Sertifikaları Yenile**: SSL sertifikaları için Certbot / Lets Encrypt kullanılır ve anahtarların süresi her 3 ayda bir dolar. Bu, alan adınız için sertifikaları yenileyecek ve ilgili bileşenlerin kullanması için gerekli klasöre yerleştirecektir. Bkz. [önemli dosya yolları](#important-file-paths)
-* **Yedekten Geri Yükle**: MongoDB ve Redis'in yedek verilerden geri yükleme yapmasını tetikleyecektir.
+* **İlk kurulum**: En son forward email kodunu indirir, ortamı yapılandırır, özel alan adınızı sorar ve gerekli tüm sertifikalar, anahtarlar ve gizli bilgileri kurar.
+* **Yedeklemeleri kur**: Güvenli, uzak depolama için S3 uyumlu bir depolama kullanarak mongoDB ve redis için bir cron kurar. Ayrı olarak, değişiklik varsa girişte sqlite yedeklenecektir; bu, güvenli, şifrelenmiş yedeklemeler sağlar.
+* **Güncellemeleri kur**: Gece güncellemelerini kontrol eden ve altyapı bileşenlerini güvenli şekilde yeniden inşa edip yeniden başlatan bir cron kurar.
+* **Sertifikaları yenile**: SSL sertifikaları için Certbot / lets encrypt kullanılır ve anahtarlar her 3 ayda bir süresi dolar. Bu, alan adınız için sertifikaları yeniler ve ilgili bileşenlerin kullanması için gerekli klasöre yerleştirir. Bkz. [önemli dosya yolları](#important-file-paths)
+* **Yedekten geri yükle**: mongodb ve redis'in yedek verilerinden geri yükleme yapmasını tetikler.
 
 ### İlk Kurulum (Seçenek 1) {#initial-setup-option-1}
 
-Başlamak için `1. Initial setup` seçeneğini seçin.
+Başlamak için `1. İlk kurulum` seçeneğini seçin.
 
-Tamamlandığında, bir başarı mesajı görmelisiniz. Bileşenlerin nasıl çalıştığını görmek için `docker ps` komutunu bile çalıştırabilirsiniz. Bileşenler hakkında daha fazla bilgi aşağıda.
+Tamamlandığında, bir başarı mesajı görmelisiniz. Hatta `docker ps` komutunu çalıştırarak **başlatılan** bileşenleri görebilirsiniz. Bileşenler hakkında daha fazla bilgi aşağıdadır.
 
-## Hizmetleri {#services}
 
-| Hizmet Adı | Varsayılan Bağlantı Noktası | Tanım |
-| ------------ | :----------: | ------------------------------------------------------ |
-| Web | `443` | Tüm yönetici etkileşimleri için web arayüzü |
-| API | `4000` | Veritabanlarını soyutlamak için API katmanı |
-| Bree | Hiçbiri | Arka plan işi ve görev yürütücüsü |
-| SMTP | `465` (recommended) / `587` | Giden e-posta için SMTP sunucusu |
-| SMTP Bree | Hiçbiri | SMTP arka plan işi |
-| MX | `2525` | Gelen e-posta ve e-posta yönlendirme için posta değişimi |
-| IMAP | `993/2993` | Gelen e-posta ve posta kutusu yönetimi için IMAP sunucusu |
-| POP3 | `995/2995` | Gelen e-posta ve posta kutusu yönetimi için POP3 sunucusu |
-| SQLite | `3456` | SQLite veritabanı(ları) ile etkileşimler için SQLite sunucusu |
-| SQLite Bree | Hiçbiri | SQLite arka plan işi |
-| CalDAV | `5000` | Takvim yönetimi için CalDAV sunucusu |
-| CardDAV | `6000` | Takvim yönetimi için CardDAV sunucusu |
-| MongoDB | `27017` | Çoğu veri yönetimi için MongoDB veritabanı |
-| Redis | `6379` | Önbelleğe alma ve durum yönetimi için Redis |
-| SQLite | Hiçbiri | Şifrelenmiş posta kutuları için SQLite veritabanı(ları) |
+## Servisler {#services}
+
+| Servis Adı  |         Varsayılan Port        | Açıklama                                               |
+| ----------- | :----------------------------: | ------------------------------------------------------ |
+| Web         |            `443`               | Tüm yönetim işlemleri için web arayüzü                 |
+| API         |            `4000`              | Veritabanlarını soyutlayan API katmanı                 |
+| Bree        |             Yok                | Arka plan iş ve görev çalıştırıcı                        |
+| SMTP        | `465` (önerilen) / `587`       | Giden e-posta için SMTP sunucusu                        |
+| SMTP Bree   |             Yok                | SMTP arka plan işi                                      |
+| MX          |            `2525`              | Gelen e-posta ve e-posta yönlendirme için posta değişimi |
+| IMAP        |          `993/2993`            | Gelen e-posta ve posta kutusu yönetimi için IMAP sunucusu |
+| POP3        |          `995/2995`            | Gelen e-posta ve posta kutusu yönetimi için POP3 sunucusu |
+| SQLite      |            `3456`              | sqlite veritabanları ile etkileşim için SQLite sunucusu |
+| SQLite Bree |             Yok                | SQLite arka plan işi                                    |
+| CalDAV      |            `5000`              | Takvim yönetimi için CalDAV sunucusu                    |
+| CardDAV     |            `6000`              | Takvim yönetimi için CardDAV sunucusu                   |
+| MongoDB     |           `27017`              | Çoğu veri yönetimi için MongoDB veritabanı              |
+| Redis       |            `6379`              | Önbellekleme ve durum yönetimi için Redis               |
+| SQLite      |             Yok                | Şifrelenmiş posta kutuları için SQLite veritabanları    |
 
 ### Önemli dosya yolları {#important-file-paths}
 
-Not: Aşağıdaki *Ana bilgisayar yolu* `/root/forwardemail.net/self-hosting/`'a göredir.
+Not: Aşağıdaki *Host yolu* `/root/forwardemail.net/self-hosting/` dizinine göre görecelidir.
 
-| Bileşen | Ana bilgisayar yolu | Konteyner yolu |
-| ---------------------- | :-------------------: | ---------------------------- |
-| MongoDB | `./mongo-backups` | `/backups` |
-| Redis | `./redis-data` | `/data` |
-| Sqlite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| Çevre dosyası | `./.env` | `/app/.env` |
-| SSL sertifikaları/anahtarları | `./ssl` | `/app/ssl/` |
-| Özel anahtar | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| Tam zincir sertifikası | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| Sertifikalı CA'lar | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
-| DKIM özel anahtarı | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
-
+| Bileşen               |       Host yolu        | Konteyner yolu               |
+| --------------------- | :--------------------: | ---------------------------- |
+| MongoDB               |   `./mongo-backups`    | `/backups`                   |
+| Redis                 |     `./redis-data`     | `/data`                      |
+| Sqlite                |    `./sqlite-data`     | `/mnt/{SQLITE_STORAGE_PATH}` |
+| Ortam dosyası         |        `./.env`        | `/app/.env`                  |
+| SSL sertifikaları/anahtarları |        `./ssl`         | `/app/ssl/`                  |
+| Özel anahtar          |  `./ssl/privkey.pem`   | `/app/ssl/privkey.pem`       |
+| Tam zincir sertifikası| `./ssl/fullchain.pem`  | `/app/ssl/fullchain.pem`     |
+| CA sertifikası        |    `./ssl/cert.pem`    | `/app/ssl/cert.pem`          |
+| DKIM özel anahtarı    |    `./ssl/dkim.key`    | `/app/ssl/dkim.key`          |
 > \[!IMPORTANT]
-> `.env` dosyasını güvenli bir şekilde kaydedin. Arıza durumunda kurtarma için kritik öneme sahiptir.
-> Bunu `/root/forwardemail.net/self-hosting/.env` dosyasında bulabilirsiniz.
+> `.env` dosyasını güvenli bir şekilde saklayın. Arıza durumunda kurtarma için kritik öneme sahiptir.
+> Bunu `/root/forwardemail.net/self-hosting/.env` içinde bulabilirsiniz.
 
-## Yapılandırması {#configuration}
+
+## Yapılandırma {#configuration}
 
 ### İlk DNS kurulumu {#initial-dns-setup}
 
-Tercih ettiğiniz DNS sağlayıcınızda uygun DNS kayıtlarını yapılandırın. Parantez içindekilerin (`<>`) dinamik olduğunu ve sizin değerinizle güncellenmesi gerektiğini unutmayın.
+Tercih ettiğiniz DNS sağlayıcısında uygun DNS kayıtlarını yapılandırın. Köşeli parantez içindekilerin (`<>`) dinamik olduğunu ve kendi değerinizle güncellenmesi gerektiğini unutmayın.
 
-| Tip | İsim | İçerik | TTL |
+| Tür   | İsim               | İçerik                       | TTL  |
 | ----- | ------------------ | ----------------------------- | ---- |
-| A | "@", "." veya boş | <ip_adresi> | otomatik |
-| CNAME | API | <alan_adı> | otomatik |
-| CNAME | caldav | <alan_adı> | otomatik |
-| CNAME | kartdav | <alan_adı> | otomatik |
-| CNAME | fe-sıçramaları | <alan_adı> | otomatik |
-| CNAME | imap | <alan_adı> | otomatik |
-| CNAME | mx | <alan_adı> | otomatik |
-| CNAME | pop3 | <alan_adı> | otomatik |
-| CNAME | smtp | <alan_adı> | otomatik |
-| MX | "@", "." veya boş | mx.<alan_adı> (öncelik 0) | otomatik |
-| TXT | "@", "." veya boş | "v=spf1 a -all" | otomatik |
+| A     | "@", ".", veya boş | <ip_address>                  | auto |
+| CNAME | api                | <domain_name>                 | auto |
+| CNAME | caldav             | <domain_name>                 | auto |
+| CNAME | carddav            | <domain_name>                 | auto |
+| CNAME | fe-bounces         | <domain_name>                 | auto |
+| CNAME | imap               | <domain_name>                 | auto |
+| CNAME | mx                 | <domain_name>                 | auto |
+| CNAME | pop3               | <domain_name>                 | auto |
+| CNAME | smtp               | <domain_name>                 | auto |
+| MX    | "@", ".", veya boş | mx.<domain_name> (öncelik 0) | auto |
+| TXT   | "@", ".", veya boş | "v=spf1 a -all"               | auto |
 
 #### Ters DNS / PTR kaydı {#reverse-dns--ptr-record}
 
-Ters DNS (rDNS) veya ters işaretçi kayıtları (PTR kayıtları), e-posta sunucuları için önemlidir çünkü e-postayı gönderen sunucunun meşruiyetini doğrulamaya yardımcı olurlar. Her bulut sağlayıcısı bunu farklı şekilde yapar, bu nedenle ana bilgisayarı ve IP'yi ilgili ana bilgisayar adına eşlemek için "Ters DNS" eklemenin nasıl yapılacağını araştırmanız gerekir. Büyük olasılıkla sağlayıcının ağ bölümünde bulunur.
+Ters DNS (rDNS) veya ters işaretçi kayıtları (PTR kayıtları) e-posta sunucuları için önemlidir çünkü e-postayı gönderen sunucunun meşruiyetini doğrulamaya yardımcı olur. Her bulut sağlayıcısı bunu farklı yapar, bu yüzden "Ters DNS" ekleyerek ana bilgisayar ve IP adresini karşılık gelen ana bilgisayar adına eşlemek için nasıl yapılacağını araştırmanız gerekir. Muhtemelen sağlayıcının ağ (networking) bölümünde bulunur.
 
-#### Port 25 Engellendi {#port-25-blocked}
+#### 25 Numaralı Port Engellendi {#port-25-blocked}
 
-Bazı İSS'ler ve bulut sağlayıcıları, kötü niyetli kişileri engellemek için 25 numaralı portu engeller. SMTP/giden e-posta için 25 numaralı portu açmak üzere bir destek talebi göndermeniz gerekebilir.
+Bazı ISS'ler ve bulut sağlayıcıları kötü niyetli kullanıcıları engellemek için 25 numaralı portu kapatır. SMTP / giden e-posta için 25 numaralı portu açtırmak üzere destek talebi oluşturmanız gerekebilir.
 
-## Katılım {#onboarding}
+
+## Başlangıç {#onboarding}
 
 1. Açılış Sayfasını Açın
-https\://\<alan_adı> adresine gidin ve \<alan_adı> kısmını DNS ayarlarınızda yapılandırdığınız alan adıyla değiştirin. "E-postayı İlet" açılış sayfasını görmelisiniz.
+   DNS ayarlarınızda yapılandırdığınız alan adı ile değiştirerek https\://\<domain_name> adresine gidin. Forward Email açılış sayfasını görmelisiniz.
 
-2. Giriş Yapın ve Alan Adınızı Ekleyin
+2. Giriş Yapın ve Alan Adınızı Kaydedin
 
-* Geçerli bir e-posta ve parola ile giriş yapın.
-* Kurmak istediğiniz alan adını girin (bu, DNS yapılandırmasıyla eşleşmelidir).
-* Doğrulama için gerekli **MX** ve **TXT** kayıtlarını eklemek üzere talimatları izleyin.
+* Geçerli bir e-posta ve şifre ile giriş yapın.
+* Kurmak istediğiniz alan adını girin (bu DNS yapılandırmasıyla eşleşmelidir).
+* Doğrulama için gerekli **MX** ve **TXT** kayıtlarını eklemek için yönergeleri izleyin.
 
 3. Kurulumu Tamamlayın
 
-* Doğrulamanın ardından, ilk takma adınızı oluşturmak için Takma Adlar sayfasına erişin.
-* İsteğe bağlı olarak, **Alan Adı Ayarları**'nda **Giden e-postalar için SMTP**'yi yapılandırın. Bu, ek DNS kayıtları gerektirir.
+* Doğrulandıktan sonra, ilk takma adınızı oluşturmak için Takma Adlar sayfasına erişin.
+* İsterseniz, **Alan Ayarları** bölümünde **giden e-posta için SMTP** yapılandırabilirsiniz. Bu ek DNS kayıtları gerektirir.
 
 > \[!NOTE]
-> Sunucunuzun dışına hiçbir bilgi gönderilmez. Kendi kendine barındırma seçeneği ve ilk hesap, yalnızca yönetici girişi ve alan adlarını, takma adları ve ilgili e-posta yapılandırmalarını yönetmek için web görünümü içindir.
+> Bilgiler sunucunuzun dışına gönderilmez. Self-hosted seçenek ve ilk hesap sadece yönetici girişi ve alan adları, takma adlar ve ilgili e-posta yapılandırmalarını yönetmek için web görünümü içindir.
 
-## {#testing} test ediliyor
 
-### İlk takma adınız {#creating-your-first-alias} oluşturuluyor
+## Test {#testing}
 
-1. Takma Adlar Sayfasına gidin
-Takma ad yönetimi sayfasını açın:
+### İlk takma adınızı oluşturma {#creating-your-first-alias}
+
+1. Takma Adlar Sayfasına Gidin
+   Takma ad yönetim sayfasını açın:
 
 ```sh
 https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 ```
 
-2. Yeni Bir Takma Ad Ekleyin
+2. Yeni Takma Ad Ekleyin
 
-* **Takma Ad Ekle**'ye tıklayın (sağ üst).
-* Takma adı girin ve e-posta ayarlarınızı gerektiği gibi düzenleyin.
-* (İsteğe bağlı) Onay kutusunu seçerek **IMAP/POP3/CalDAV/CardDAV** desteğini etkinleştirin.
-* **Takma Ad Oluştur**'a tıklayın.
+* Sağ üstteki **Takma Ad Ekle** butonuna tıklayın.
+* Takma ad adını girin ve e-posta ayarlarını gerektiği gibi düzenleyin.
+* (İsteğe bağlı) **IMAP/POP3/CalDAV/CardDAV** desteğini etkinleştirmek için kutucuğu işaretleyin.
+* **Takma Ad Oluştur** butonuna tıklayın.
 
-3. Bir Parola Belirleyin
+3. Şifre Belirleyin
 
-* Güvenli bir parola oluşturmak için **Parola Oluştur**'a tıklayın.
-* Bu parola, e-posta istemcinize giriş yapmak için gerekli olacaktır.
+* Güvenli bir şifre oluşturmak için **Şifre Oluştur** butonuna tıklayın.
+* Bu şifre, e-posta istemcinize giriş yapmak için gerekecektir.
 
 4. E-posta İstemcinizi Yapılandırın
 
 * Thunderbird gibi bir e-posta istemcisi kullanın.
-* Takma adınızı ve oluşturulan parolayı girin.
+* Takma ad adını ve oluşturulan şifreyi girin.
 * **IMAP** ve **SMTP** ayarlarını uygun şekilde yapılandırın.
 
 #### E-posta sunucusu ayarları {#email-server-settings}
 
 Kullanıcı adı: `<alias name>`
 
-| Tip | Ana bilgisayar adı | Liman | Bağlantı Güvenliği | Kimlik doğrulama |
-| ---- | ------------------ | ---- | ------------------- | --------------- |
-| SMTP | smtp.<alan_adı> | 465 | SSL / TLS | Normal Şifre |
-| IMAP | imap.<alan_adı> | 993 | SSL / TLS | Normal Şifre |
+| Tür   | Ana Bilgisayar     | Port | Bağlantı Güvenliği  | Kimlik Doğrulama  |
+| ----  | ------------------ | ---- | ------------------- | ----------------- |
+| SMTP  | smtp.<domain_name> | 465  | SSL / TLS           | Normal Şifre      |
+| IMAP  | imap.<domain_name> | 993  | SSL / TLS           | Normal Şifre      |
 
 ### İlk e-postanızı gönderme / alma {#sending--receiving-your-first-email}
 
-Yapılandırıldıktan sonra, yeni oluşturduğunuz ve kendi barındırdığınız e-posta adresinize e-posta gönderebilmeli ve alabilmelisiniz!
-
+Yapılandırıldıktan sonra, yeni oluşturduğunuz ve self-hosted e-posta adresinizle e-posta gönderip alabilmelisiniz!
 ## Sorun Giderme {#troubleshooting}
 
-#### Bu neden Ubuntu ve Debian dışında çalışmıyor? {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
+#### Neden bu Ubuntu ve Debian dışındayken çalışmıyor {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Şu anda macOS'u desteklemeyi düşünüyoruz ve diğer platformlara da yöneleceğiz. Başka platformların da desteklenmesini istiyorsanız lütfen [tartışma](https://github.com/orgs/forwardemail/discussions) sayfasını açın veya katkıda bulunun.
+Şu anda MacOS desteği üzerinde çalışıyoruz ve diğer platformlara da bakacağız. Başka platformların desteklenmesini istiyorsanız lütfen bir [tartışma](https://github.com/orgs/forwardemail/discussions) açın veya katkıda bulunun.
 
-#### Certbot acme challenge'ı neden başarısız oluyor? {#why-is-the-certbot-acme-challenge-failing}
+#### Neden certbot acme challenge başarısız oluyor {#why-is-the-certbot-acme-challenge-failing}
 
-En sık karşılaşılan hata, certbot / letsencrypt'in bazen **2** sorgu talep etmesidir. **HER İKİ** txt kaydını da eklediğinizden emin olmalısınız.
+En yaygın hata, certbot / letsencrypt bazen **2** challenge talep etmesidir. **HER İKİSİNİ DE** txt kayıtlarına eklediğinizden emin olmalısınız.
 
 Örnek:
-Şuna benzer iki meydan okuma görebilirsiniz:
+İki challenge şu şekilde görünebilir:
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-DNS yayılımının tamamlanmamış olması da mümkündür. `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>` gibi araçları kullanabilirsiniz. Bu, TXT kaydınızdaki değişikliklerin yansıtılıp yansıtılmayacağı konusunda size fikir verecektir. Ayrıca, ana bilgisayarınızdaki yerel DNS önbelleğinin hala eski, güncel olmayan bir değer kullanıyor olması veya son değişiklikleri algılamamış olması da mümkündür.
+Ayrıca DNS yayılımının tamamlanmamış olması da mümkündür. Şu araçları kullanabilirsiniz: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Bu, TXT kayıt değişikliklerinizin yansıyıp yansımadığını anlamanıza yardımcı olur. Ayrıca, yerel DNS önbelleğinizin hala eski, geçersiz bir değeri kullanıyor olması veya son değişiklikleri almamış olması da mümkündür.
 
-Diğer bir seçenek ise, ilk VPS kurulumunda cloud-init/user-data'nızdaki API belirteciyle `/root/.cloudflare.ini` dosyasını ayarlayarak otomatik cerbot DNS değişikliklerini kullanmak veya bu dosyayı oluşturup betiği tekrar çalıştırmaktır. Bu, DNS değişikliklerini ve meydan okuma güncellemelerini otomatik olarak yönetecektir.
+Başka bir seçenek, otomatik certbot DNS değişikliklerini kullanmaktır; bunun için VPS ilk kurulumu sırasında cloud-init / user-data içinde api token ile `/root/.cloudflare.ini` dosyasını ayarlayabilir veya bu dosyayı oluşturup scripti tekrar çalıştırabilirsiniz. Bu, DNS değişikliklerini ve challenge güncellemelerini otomatik olarak yönetecektir.
 
-### Temel kimlik doğrulama kullanıcı adı ve şifresi nedir? {#what-is-the-basic-auth-username-and-password}
+### Temel kimlik doğrulama kullanıcı adı ve şifre nedir {#what-is-the-basic-auth-username-and-password}
 
-Kendi barındırma hizmetiniz için, basit bir kullanıcı adı (`admin`) ve parola (ilk kurulumda rastgele oluşturulur) içeren, tarayıcıya özgü ilk kimlik doğrulama açılır penceresi ekliyoruz. Bunu, otomasyon/kazıyıcıların web deneyimine ilk kaydolmanızı bir şekilde engellemesi ihtimaline karşı bir koruma olarak ekliyoruz. Bu parolayı, ilk kurulumdan sonra `.env` dosyanızda `AUTH_BASIC_USERNAME` ve `AUTH_BASIC_PASSWORD` altında bulabilirsiniz.
+Kendi sunucunuzda barındırma için, ilk kez tarayıcıda basit bir kullanıcı adı (`admin`) ve şifre (ilk kurulumda rastgele oluşturulur) ile yerel bir kimlik doğrulama açılır. Bu, otomasyon / kazıyıcıların web deneyiminde ilk kayıt olmanızı engellemesi durumunda bir koruma olarak eklenir. Bu şifreyi ilk kurulumdan sonra `.env` dosyanızda `AUTH_BASIC_USERNAME` ve `AUTH_BASIC_PASSWORD` altında bulabilirsiniz.
 
-### {#how-do-i-know-what-is-running}'in ne çalıştırdığını nasıl bilebilirim?
+### Ne çalışıyor nasıl anlarım {#how-do-i-know-what-is-running}
 
-`docker-compose-self-hosting.yml` dosyasından çalıştırılan tüm çalışan kapsayıcıları görmek için `docker ps` komutunu çalıştırabilirsiniz. Her şeyi (çalışmayan kapsayıcılar dahil) görmek için `docker ps -a` komutunu da çalıştırabilirsiniz.
+`docker ps` komutunu çalıştırarak `docker-compose-self-hosting.yml` dosyasından başlatılan tüm çalışan konteynerleri görebilirsiniz. Ayrıca `docker ps -a` komutunu kullanarak çalışan ve çalışmayan tüm konteynerleri görebilirsiniz.
 
-### {#how-do-i-know-if-something-isnt-running-that-should-be} olması gereken bir şeyin çalışmadığını nasıl anlarım?
+### Çalışması gereken bir şey çalışmıyorsa nasıl anlarım {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-Her şeyi (çalışmayan kapsayıcılar dahil) görmek için `docker ps -a` komutunu çalıştırabilirsiniz. Bir çıkış günlüğü veya notu görebilirsiniz.
+`docker ps -a` komutunu kullanarak çalışan ve çalışmayan tüm konteynerleri görebilirsiniz. Bir çıkış kaydı veya not görebilirsiniz.
 
-### {#how-do-i-find-logs} günlüklerini nasıl bulabilirim?
+### Logları nasıl bulurum {#how-do-i-find-logs}
 
-`docker logs -f <container_name>` aracılığıyla daha fazla günlük alabilirsiniz. Herhangi bir şey çıktıysa, büyük olasılıkla `.env` dosyasının yanlış yapılandırılmasıyla ilgilidir.
+`docker logs -f <container_name>` komutuyla daha fazla log alabilirsiniz. Eğer herhangi bir konteyner çıkış yaptıysa, muhtemelen `.env` dosyasının yanlış yapılandırılmasıyla ilgilidir.
 
-Web kullanıcı arayüzünde, giden e-posta günlükleri ve hata günlükleri için sırasıyla `/admin/emails` ve `/admin/logs` değerlerini görüntüleyebilirsiniz.
+Web arayüzünde, giden e-posta logları için `/admin/emails` ve hata logları için `/admin/logs` sayfalarını görüntüleyebilirsiniz.
 
-### Giden e-postalarım neden zaman aşımına uğruyor? {#why-are-my-outgoing-emails-timing-out}
+### Giden e-postalarım neden zaman aşımına uğruyor {#why-are-my-outgoing-emails-timing-out}
 
-MX sunucusuna bağlanırken bağlantı zaman aşımına uğradı... gibi bir mesaj görüyorsanız, 25 numaralı bağlantı noktasının engellenip engellenmediğini kontrol etmeniz gerekebilir. İSS'lerin veya bulut sağlayıcılarının bunu varsayılan olarak engellemesi yaygındır; bu durumda, bağlantının açılması için destek ekibiyle iletişime geçmeniz veya bir destek talebi oluşturmanız gerekebilir.
+MX sunucusuna bağlanırken Connection timed out gibi bir mesaj görüyorsanız, 25 numaralı portun engellenip engellenmediğini kontrol etmeniz gerekebilir. ISP'ler veya bulut sağlayıcıları genellikle bunu varsayılan olarak engeller; açtırmak için destek ile iletişime geçmeniz veya bir talep oluşturmanız gerekebilir.
 
-#### E-posta yapılandırma en iyi uygulamalarını ve IP itibarını test etmek için hangi araçları kullanmalıyım? {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### E-posta yapılandırması en iyi uygulamalarını ve IP itibarını test etmek için hangi araçları kullanmalıyım {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-[SSS burada](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)'ımıza bir göz atın.
+[SSS sayfamıza](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation) göz atabilirsiniz.

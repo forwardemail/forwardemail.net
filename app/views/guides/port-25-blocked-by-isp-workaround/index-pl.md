@@ -1,25 +1,29 @@
-# Port 25 zablokowany przez dostawcę usług internetowych, obejście {#port-25-blocked-by-isp-workaround}
+# Port 25 zablokowany przez ISP - obejście problemu {#port-25-blocked-by-isp-workaround}
+
 
 ## Spis treści {#table-of-contents}
 
-* [Jak obejść blokadę przychodzącego SMTP na porcie 25 przez dostawcę usług internetowych](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
-* [Jak obejść blokadę wychodzącego SMTP na porcie 25 przez dostawcę usług internetowych](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
-* [Jak mogę sprawdzić, czy mój dostawca usług internetowych blokuje porty?](#how-can-i-check-if-my-isp-blocks-ports)
+* [Jak obejść blokadę ISP na przychodzący SMTP na porcie 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
+* [Jak obejść blokadę ISP na wychodzący SMTP na porcie 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
+* [Jak sprawdzić, czy mój ISP blokuje porty](#how-can-i-check-if-my-isp-blocks-ports)
 
-## Jak obejść blokadę przychodzącego ruchu SMTP na porcie 25 przez dostawcę usług internetowych {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
-Jeżeli na Twoim adresie IP serwera pocztowego nie jest otwarty port 25, to ten poradnik jest dla Ciebie.
+## Jak obejść blokadę ISP na przychodzący SMTP na porcie 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
-Załóżmy na przykład, że posiadasz w domu własny serwer poczty elektronicznej, a Twój dostawca usług internetowych („ISP”) zablokował port wychodzący 25.
+Jeśli port 25 nie jest otwarty na adresie IP Twojego serwera pocztowego, ten przewodnik jest dla Ciebie.
 
-Ponieważ nie możesz mieć ruchu wychodzącego na porcie 25, to najprawdopodobniej nie będziesz miał także ruchu przychodzącego na porcie 25 ze względu na tę blokadę.
+Na przykład, jeśli prowadzisz własny serwer pocztowy w domu, a Twój Dostawca Usług Internetowych ("ISP") zablokował wychodzący port 25.
 
-Zakładając, że korzystasz z naszej usługi do przekazywania wiadomości e-mail, [możesz obejść ten problem korzystając z naszej odpowiedzi na często zadawane pytania tutaj](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
+Ponieważ nie możesz mieć ruchu wychodzącego na porcie 25, najprawdopodobniej nie będziesz też mieć ruchu przychodzącego na porcie 25 z powodu tej blokady.
 
-## Jak obejść blokadę wychodzącego SMTP na porcie 25 przez dostawcę usług internetowych {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
+Zakładając, że korzystasz z naszej usługi do przekazywania e-maili, [możesz obejść ten problem dzięki naszej odpowiedzi w FAQ tutaj](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
 
-Jeśli Twój dostawca usług internetowych blokuje port wychodzący 25, musisz znaleźć alternatywne rozwiązanie lub skontaktować się z nim.
 
-## Jak mogę sprawdzić, czy mój dostawca usług internetowych blokuje porty {#how-can-i-check-if-my-isp-blocks-ports}
+## Jak obejść blokadę ISP na wychodzący SMTP na porcie 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 
-Możesz uruchomić `telnet smtp.forwardemail.net 25` z wiersza poleceń lub terminala, aby sprawdzić, czy połączenie wychodzące na porcie 25 jest zablokowane.
+Jeśli Twój ISP blokuje wychodzący port 25, będziesz musiał znaleźć alternatywne rozwiązanie lub skontaktować się z nimi.
+
+
+## Jak sprawdzić, czy mój ISP blokuje porty {#how-can-i-check-if-my-isp-blocks-ports}
+
+Możesz uruchomić `telnet smtp.forwardemail.net 25` z linii poleceń lub terminala, aby sprawdzić, czy Twoje wychodzące połączenie na port 25 jest zablokowane.

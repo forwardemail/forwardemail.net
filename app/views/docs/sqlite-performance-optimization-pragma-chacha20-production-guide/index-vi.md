@@ -1,55 +1,57 @@
-# SQLite Performance Optimization: Production PRAGMA Settings & ChaCha20 Encryption {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
+# Tối ưu hiệu suất SQLite: Cấu hình PRAGMA sản xuất & Mã hóa ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite performance optimization guide" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/sqlite.webp" alt="Hướng dẫn tối ưu hiệu suất SQLite" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Foreword](#foreword)
-* [Forward Email's Production SQLite Architecture](#forward-emails-production-sqlite-architecture)
-* [Our Actual PRAGMA Configuration](#our-actual-pragma-configuration)
-* [Performance Benchmark Results](#performance-benchmark-results)
-  * [Node.js v20.19.5 Performance Results](#nodejs-v20195-performance-results)
-* [PRAGMA Settings Breakdown](#pragma-settings-breakdown)
-  * [Core Settings We Use](#core-settings-we-use)
-  * [Settings We DON'T Use (But You Might Want)](#settings-we-dont-use-but-you-might-want)
-* [ChaCha20 vs AES256 Encryption](#chacha20-vs-aes256-encryption)
-* [Temporary Storage: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
-  * [/tmp vs /dev/shm Performance](#tmp-vs-devshm-performance)
-* [WAL Mode Optimization](#wal-mode-optimization)
-  * [WAL Configuration Impact](#wal-configuration-impact)
-* [Schema Design for Performance](#schema-design-for-performance)
-* [Connection Management](#connection-management)
-* [Monitoring and Diagnostics](#monitoring-and-diagnostics)
-* [Node.js Version Performance](#nodejs-version-performance)
-  * [Complete Cross-Version Results](#complete-cross-version-results)
-  * [Key Performance Insights](#key-performance-insights)
-  * [Native Module Compatibility](#native-module-compatibility)
-* [Production Deployment Checklist](#production-deployment-checklist)
-* [Troubleshooting Common Issues](#troubleshooting-common-issues)
-  * ["Database is locked" Errors](#database-is-locked-errors)
-  * [High Memory Usage During VACUUM](#high-memory-usage-during-vacuum)
-  * [Slow Query Performance](#slow-query-performance)
-* [Forward Email's Open Source Contributions](#forward-emails-open-source-contributions)
-* [Benchmark Source Code](#benchmark-source-code)
-* [What's Next for SQLite at Forward Email](#whats-next-for-sqlite-at-forward-email)
-* [Getting Help](#getting-help)
+## Mục lục {#table-of-contents}
 
-## Foreword {#foreword}
+* [Lời nói đầu](#foreword)
+* [Kiến trúc SQLite sản xuất của Forward Email](#forward-emails-production-sqlite-architecture)
+* [Cấu hình PRAGMA thực tế của chúng tôi](#our-actual-pragma-configuration)
+* [Kết quả đánh giá hiệu suất](#performance-benchmark-results)
+  * [Kết quả hiệu suất Node.js v20.19.5](#nodejs-v20195-performance-results)
+* [Phân tích cấu hình PRAGMA](#pragma-settings-breakdown)
+  * [Cấu hình cốt lõi chúng tôi sử dụng](#core-settings-we-use)
+  * [Cấu hình chúng tôi KHÔNG sử dụng (nhưng bạn có thể muốn)](#settings-we-dont-use-but-you-might-want)
+* [Mã hóa ChaCha20 vs AES256](#chacha20-vs-aes256-encryption)
+* [Bộ nhớ tạm: /tmp vs /dev/shm](#temporary-storage-tmp-vs-devshm)
+  * [Hiệu suất /tmp vs /dev/shm](#tmp-vs-devshm-performance)
+* [Tối ưu chế độ WAL](#wal-mode-optimization)
+  * [Ảnh hưởng cấu hình WAL](#wal-configuration-impact)
+* [Thiết kế schema cho hiệu suất](#schema-design-for-performance)
+* [Quản lý kết nối](#connection-management)
+* [Giám sát và chẩn đoán](#monitoring-and-diagnostics)
+* [Hiệu suất các phiên bản Node.js](#nodejs-version-performance)
+  * [Kết quả đầy đủ qua các phiên bản](#complete-cross-version-results)
+  * [Những hiểu biết chính về hiệu suất](#key-performance-insights)
+  * [Tương thích module native](#native-module-compatibility)
+* [Danh sách kiểm tra triển khai sản xuất](#production-deployment-checklist)
+* [Khắc phục sự cố phổ biến](#troubleshooting-common-issues)
+  * [Lỗi "Database is locked"](#database-is-locked-errors)
+  * [Sử dụng bộ nhớ cao khi VACUUM](#high-memory-usage-during-vacuum)
+  * [Hiệu suất truy vấn chậm](#slow-query-performance)
+* [Đóng góp mã nguồn mở của Forward Email](#forward-emails-open-source-contributions)
+* [Mã nguồn đánh giá hiệu suất](#benchmark-source-code)
+* [Điều gì tiếp theo cho SQLite tại Forward Email](#whats-next-for-sqlite-at-forward-email)
+* [Nhận trợ giúp](#getting-help)
 
-Setting up SQLite for production email systems isn't just about getting it working—it's about making it fast, secure, and reliable under heavy load. After processing millions of emails at Forward Email, we've learned what actually matters for SQLite performance.
 
-This guide covers our real production configuration, benchmark results across Node.js versions, and the specific optimizations that make a difference when you're handling serious email volume.
+## Lời nói đầu {#foreword}
 
-> \[!WARNING] Node.js Performance Regressions in v22 and v24
-> We discovered a significant performance regression in Node.js versions v22 and v24 that impacts SQLite performance, particularly for `SELECT` statements. Our benchmarks show a \~57% drop in `SELECT` operations per second in Node.js v24 compared to v20. We have reported this issue to the Node.js team in [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
+Thiết lập SQLite cho hệ thống email sản xuất không chỉ là làm cho nó hoạt động — mà còn phải làm cho nó nhanh, an toàn và đáng tin cậy dưới tải nặng. Sau khi xử lý hàng triệu email tại Forward Email, chúng tôi đã học được điều gì thực sự quan trọng đối với hiệu suất SQLite.
 
-Due to this regression, we are taking a cautious approach to our Node.js upgrades. Here is our current plan:
+Hướng dẫn này bao gồm cấu hình sản xuất thực tế của chúng tôi, kết quả đánh giá hiệu suất qua các phiên bản Node.js, và các tối ưu cụ thể tạo ra sự khác biệt khi bạn xử lý khối lượng email lớn.
 
-* **Current Version:** We are currently on Node.js v18, which has reached its end-of-life ("EOL") for Long-Term Support ("LTS"). You can view the official [Node.js LTS schedule here](https://github.com/nodejs/release#release-schedule).
-* **Planned Upgrade:** We will be upgrading to **Node.js v20**, which is the fastest version according to our benchmarks and is not affected by this regression.
-* **Avoiding v22 and v24:** We will not be using Node.js v22 or v24 in production until this performance issue is resolved.
+> \[!WARNING] Suy giảm hiệu suất Node.js trong v22 và v24
+> Chúng tôi phát hiện một suy giảm hiệu suất đáng kể trong các phiên bản Node.js v22 và v24 ảnh hưởng đến hiệu suất SQLite, đặc biệt với các câu lệnh `SELECT`. Các bài đánh giá của chúng tôi cho thấy giảm khoảng 57% số lượng thao tác `SELECT` mỗi giây trên Node.js v24 so với v20. Chúng tôi đã báo cáo vấn đề này với nhóm Node.js tại [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
 
-Here is a timeline illustrating the Node.js LTS schedule and our upgrade path:
+Do suy giảm này, chúng tôi đang áp dụng cách tiếp cận thận trọng trong việc nâng cấp Node.js. Kế hoạch hiện tại của chúng tôi như sau:
+
+* **Phiên bản hiện tại:** Chúng tôi đang dùng Node.js v18, phiên bản đã hết vòng đời ("EOL") cho Hỗ trợ Dài hạn ("LTS"). Bạn có thể xem lịch trình chính thức [Node.js LTS tại đây](https://github.com/nodejs/release#release-schedule).
+* **Nâng cấp dự kiến:** Chúng tôi sẽ nâng cấp lên **Node.js v20**, phiên bản nhanh nhất theo đánh giá của chúng tôi và không bị ảnh hưởng bởi suy giảm này.
+* **Tránh dùng v22 và v24:** Chúng tôi sẽ không sử dụng Node.js v22 hoặc v24 trong môi trường sản xuất cho đến khi vấn đề hiệu suất được giải quyết.
+
+Dưới đây là dòng thời gian minh họa lịch trình Node.js LTS và lộ trình nâng cấp của chúng tôi:
 
 ```mermaid
 gantt
@@ -70,10 +72,9 @@ gantt
     Current (v18) :done, 2022-04-19, 2025-04-30
     Planned Upgrade to v20 :milestone, 2025-12-01, 1d
 ```
+## Kiến trúc SQLite trong Sản xuất của Forward Email {#forward-emails-production-sqlite-architecture}
 
-## Forward Email's Production SQLite Architecture {#forward-emails-production-sqlite-architecture}
-
-Here's how we actually use SQLite in production:
+Dưới đây là cách chúng tôi thực sự sử dụng SQLite trong môi trường sản xuất:
 
 ```mermaid
 graph TB
@@ -99,9 +100,9 @@ graph TB
     style B fill:#e8f5e8
 ```
 
-## Our Actual PRAGMA Configuration {#our-actual-pragma-configuration}
+## Cấu hình PRAGMA Thực tế của Chúng tôi {#our-actual-pragma-configuration}
 
-This is what we actually use in production, straight from our [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
+Đây là những gì chúng tôi thực sự sử dụng trong sản xuất, trực tiếp từ [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
 
 ```javascript
 // Forward Email's actual production PRAGMA settings
@@ -131,65 +132,65 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> We use `temp_store=1` (disk) instead of `temp_store=2` (memory) because large email databases can easily consume 10+ GB of memory during operations like VACUUM.
+> Chúng tôi sử dụng `temp_store=1` (đĩa) thay vì `temp_store=2` (bộ nhớ) vì các cơ sở dữ liệu email lớn có thể dễ dàng tiêu thụ hơn 10 GB bộ nhớ trong các thao tác như VACUUM.
 
-## Performance Benchmark Results {#performance-benchmark-results}
+## Kết quả Đo hiệu năng {#performance-benchmark-results}
 
-We tested our configuration against various alternatives across Node.js versions. Here are the real numbers:
+Chúng tôi đã thử nghiệm cấu hình của mình với nhiều lựa chọn khác nhau trên các phiên bản Node.js. Dưới đây là các con số thực tế:
 
-### Node.js v20.19.5 Performance Results {#nodejs-v20195-performance-results}
+### Kết quả Hiệu năng Node.js v20.19.5 {#nodejs-v20195-performance-results}
 
-| Configuration | Setup (ms) | Insert/sec | Select/sec | Update/sec | DB Size (MB) |
-| ---------------------------- | ---------- | ---------- | ---------- | ---------- | ------------ |
-| **Forward Email Production** | 120.1 | **10,548** | **17,494** | **16,654** | 3.98 |
-| WAL Autocheckpoint 1000 | 89.7 | **11,800** | **18,383** | **22,087** | 3.98 |
-| Cache Size 64MB | 90.3 | 11,451 | 17,895 | 21,522 | 3.98 |
-| Memory Temp Storage | 111.8 | 9,874 | 15,363 | 21,292 | 3.98 |
-| Synchronous OFF (Unsafe) | 94.0 | 10,017 | 13,830 | 18,884 | 3.98 |
-| Synchronous EXTRA (Safe) | 94.1 | **3,241** | 14,438 | **3,405** | 3.98 |
+| Cấu hình                    | Thiết lập (ms) | Chèn/giây | Truy vấn/giây | Cập nhật/giây | Kích thước DB (MB) |
+| ---------------------------- | -------------- | --------- | ------------- | ------------- | ------------------- |
+| **Forward Email Production** | 120.1          | **10,548**| **17,494**    | **16,654**    | 3.98                |
+| WAL Autocheckpoint 1000      | 89.7           | **11,800**| **18,383**    | **22,087**    | 3.98                |
+| Cache Size 64MB              | 90.3           | 11,451    | 17,895        | 21,522        | 3.98                |
+| Memory Temp Storage          | 111.8          | 9,874     | 15,363        | 21,292        | 3.98                |
+| Synchronous OFF (Unsafe)     | 94.0           | 10,017    | 13,830        | 18,884        | 3.98                |
+| Synchronous EXTRA (Safe)     | 94.1           | **3,241** | 14,438        | **3,405**     | 3.98                |
 
 > \[!TIP]
-> The `wal_autocheckpoint=1000` setting shows the best overall performance. We're considering adding this to our production config.
+> Cấu hình `wal_autocheckpoint=1000` cho thấy hiệu năng tổng thể tốt nhất. Chúng tôi đang cân nhắc thêm cấu hình này vào cấu hình sản xuất của mình.
 
-## PRAGMA Settings Breakdown {#pragma-settings-breakdown}
+## Phân tích Cài đặt PRAGMA {#pragma-settings-breakdown}
 
-### Core Settings We Use {#core-settings-we-use}
+### Các Cài đặt Cốt lõi Chúng tôi Sử dụng {#core-settings-we-use}
 
-| PRAGMA | Giá trị | Purpose | Performance Impact |
-| --------------- | ------------ | ------------------------------- | ------------------------------- |
-| `cipher` | `'chacha20'` | Quantum-resistant encryption | Minimal overhead vs AES |
-| `journal_mode` | `WAL` | Write-Ahead Logging | +40% concurrent performance |
-| `secure_delete` | `ON` | Overwrite deleted data | Security vs 5% performance cost |
-| `auto_vacuum` | `FULL` | Automatic space reclamation | Prevents database bloat |
-| `busy_timeout` | `30000` | Wait time for locked database | Reduces connection failures |
-| `synchronous` | `NORMAL` | Balanced durability/performance | 3x faster than FULL |
-| `foreign_keys` | `ON` | Referential integrity | Prevents data corruption |
-| `temp_store` | `1` | Use disk for temp files | Prevents memory exhaustion |
+| PRAGMA          | Giá trị      | Mục đích                      | Tác động Hiệu năng             |
+| --------------- | ------------ | ----------------------------- | ----------------------------- |
+| `cipher`        | `'chacha20'` | Mã hóa chống lượng tử          | Chi phí thấp hơn so với AES    |
+| `journal_mode`  | `WAL`        | Ghi nhật ký trước khi ghi      | Tăng 40% hiệu năng đồng thời   |
+| `secure_delete` | `ON`         | Ghi đè dữ liệu đã xóa          | Bảo mật đổi lấy 5% hiệu năng   |
+| `auto_vacuum`   | `FULL`       | Tự động thu hồi không gian     | Ngăn ngừa phình to cơ sở dữ liệu |
+| `busy_timeout`  | `30000`      | Thời gian chờ khi DB bị khóa  | Giảm lỗi kết nối               |
+| `synchronous`   | `NORMAL`     | Cân bằng độ bền và hiệu năng  | Nhanh gấp 3 lần so với FULL    |
+| `foreign_keys`  | `ON`         | Tính toàn vẹn tham chiếu      | Ngăn ngừa hỏng dữ liệu         |
+| `temp_store`    | `1`          | Sử dụng đĩa cho file tạm      | Ngăn ngừa cạn kiệt bộ nhớ      |
+### Cài Đặt Chúng Tôi KHÔNG Dùng (Nhưng Bạn Có Thể Muốn) {#settings-we-dont-use-but-you-might-want}
 
-### Settings We DON'T Use (But You Might Want) {#settings-we-dont-use-but-you-might-want}
-
-| PRAGMA | Why We Don't Use It | Should You Consider It? |
-| ------------------------- | --------------------- | --------------------------------------------------- |
-| `wal_autocheckpoint=1000` | Not set yet | **Yes** - Our benchmarks show 12% performance gain |
-| `cache_size=-64000` | Default is sufficient | **Maybe** - 8% improvement for read-heavy workloads |
-| `mmap_size=268435456` | Complexity vs benefit | **No** - Minimal gains, platform-specific issues |
-| `analysis_limit=1000` | We use 400 | **No** - Higher values slow down query planning |
+| PRAGMA                    | Tại Sao Chúng Tôi Không Dùng | Bạn Có Nên Xem Xét?                              |
+| ------------------------- | ----------------------------- | ------------------------------------------------ |
+| `wal_autocheckpoint=1000` | Chưa được thiết lập           | **Có** - Các bài kiểm tra của chúng tôi cho thấy tăng hiệu suất 12% |
+| `cache_size=-64000`       | Mặc định là đủ                | **Có Thể** - Cải thiện 8% cho các khối lượng công việc đọc nhiều |
+| `mmap_size=268435456`     | Độ phức tạp so với lợi ích    | **Không** - Lợi ích tối thiểu, vấn đề đặc thù nền tảng |
+| `analysis_limit=1000`     | Chúng tôi dùng 400            | **Không** - Giá trị cao hơn làm chậm quá trình lập kế hoạch truy vấn |
 
 > \[!CAUTION]
-> We specifically avoid `temp_store=MEMORY` because a 10GB SQLite file can consume 10+ GB of RAM during VACUUM operations.
+> Chúng tôi đặc biệt tránh `temp_store=MEMORY` vì một file SQLite 10GB có thể tiêu thụ hơn 10GB RAM trong quá trình VACUUM.
 
-## ChaCha20 vs AES256 Encryption {#chacha20-vs-aes256-encryption}
 
-We prioritize quantum resistance over raw performance:
+## Mã Hóa ChaCha20 vs AES256 {#chacha20-vs-aes256-encryption}
+
+Chúng tôi ưu tiên khả năng chống lượng tử hơn là hiệu suất thuần túy:
 
 ```javascript
-// Our encryption fallback strategy
+// Chiến lược dự phòng mã hóa của chúng tôi
 try {
   db.pragma(`cipher='chacha20'`);
   db.key(Buffer.from(decrypt(session.user.password)));
   db.pragma('journal_mode=WAL');
 } catch (err) {
-  // Fallback for older SQLite versions
+  // Dự phòng cho các phiên bản SQLite cũ hơn
   if (cipher === 'chacha20' && err.code === 'SQLITE_NOTADB') {
     return setupPragma(db, session, 'aes256cbc');
   }
@@ -197,44 +198,46 @@ try {
 }
 ```
 
-**Performance Comparison:**
+**So sánh hiệu suất:**
 
-* ChaCha20: \~10,500 inserts/sec
+* ChaCha20: \~10,500 lần chèn/giây
 
-* AES256CBC: \~11,200 inserts/sec
+* AES256CBC: \~11,200 lần chèn/giây
 
-* Unencrypted: \~12,800 inserts/sec
+* Không mã hóa: \~12,800 lần chèn/giây
 
-The 6% performance cost of ChaCha20 vs AES is worth the quantum resistance for long-term email storage.
+Chi phí hiệu suất 6% của ChaCha20 so với AES là xứng đáng cho khả năng chống lượng tử trong lưu trữ email lâu dài.
 
-## Temporary Storage: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
 
-We explicitly configure temp storage location to avoid disk space issues:
+## Lưu Trữ Tạm Thời: /tmp vs /dev/shm {#temporary-storage-tmp-vs-devshm}
+
+Chúng tôi cấu hình rõ ràng vị trí lưu trữ tạm để tránh các vấn đề về dung lượng đĩa:
 
 ```javascript
-// Forward Email's temp storage configuration
+// Cấu hình lưu trữ tạm thời của Forward Email
 const tempStoreDirectory = path.join(path.dirname(db.name), '/tmp');
 await mkdirp(tempStoreDirectory);
 db.pragma(`temp_store_directory='${tempStoreDirectory}'`);
 
-// Also set environment variable
+// Cũng thiết lập biến môi trường
 process.env.SQLITE_TMPDIR = tempStoreDirectory;
 ```
 
-### /tmp vs /dev/shm Performance {#tmp-vs-devshm-performance}
+### Hiệu Suất /tmp vs /dev/shm {#tmp-vs-devshm-performance}
 
-| Storage Location | VACUUM Time | Memory Usage | Reliability |
-| ---------------- | ----------- | ------------ | ------------------- |
-| `/tmp` (disk) | 2.3s | 50MB | ✅ Reliable |
-| `/dev/shm` (RAM) | 0.8s | 2GB+ | ⚠️ Can crash system |
-| Default | 4.1s | Variable | ❌ Unpredictable |
+| Vị Trí Lưu Trữ  | Thời Gian VACUUM | Sử Dụng Bộ Nhớ | Độ Tin Cậy          |
+| ---------------- | ---------------- | -------------- | ------------------- |
+| `/tmp` (đĩa)     | 2.3s             | 50MB           | ✅ Đáng tin cậy      |
+| `/dev/shm` (RAM) | 0.8s             | 2GB+           | ⚠️ Có thể làm sập hệ thống |
+| Mặc định         | 4.1s             | Thay đổi       | ❌ Không dự đoán được |
 
 > \[!WARNING]
-> Using `/dev/shm` for temp storage can consume all available RAM during large operations. Stick with disk-based temp storage for production.
+> Sử dụng `/dev/shm` cho lưu trữ tạm có thể tiêu thụ toàn bộ RAM có sẵn trong các thao tác lớn. Nên dùng lưu trữ tạm dựa trên đĩa cho môi trường sản xuất.
 
-## WAL Mode Optimization {#wal-mode-optimization}
 
-Write-Ahead Logging is crucial for email systems with concurrent access:
+## Tối Ưu Chế Độ WAL {#wal-mode-optimization}
+
+Ghi nhật ký trước (Write-Ahead Logging) rất quan trọng cho hệ thống email với truy cập đồng thời:
 
 ```mermaid
 sequenceDiagram
@@ -257,29 +260,30 @@ sequenceDiagram
     DB->>M: Merge WAL → Main DB
 ```
 
-### WAL Configuration Impact {#wal-configuration-impact}
+### Tác Động Cấu Hình WAL {#wal-configuration-impact}
 
-Our benchmarks show `wal_autocheckpoint=1000` provides the best performance:
+Các bài kiểm tra của chúng tôi cho thấy `wal_autocheckpoint=1000` mang lại hiệu suất tốt nhất:
 
 ```javascript
-// Potential optimization we're testing
+// Tối ưu tiềm năng đang thử nghiệm
 db.pragma('wal_autocheckpoint=1000');
 ```
 
-**Results:**
+**Kết quả:**
 
-* Default autocheckpoint: 10,548 inserts/sec
+* Tự động checkpoint mặc định: 10,548 lần chèn/giây
 
-* `wal_autocheckpoint=1000`: 11,800 inserts/sec (+12%)
+* `wal_autocheckpoint=1000`: 11,800 lần chèn/giây (+12%)
 
-* `wal_autocheckpoint=0`: 9,200 inserts/sec (WAL grows too large)
+* `wal_autocheckpoint=0`: 9,200 lần chèn/giây (WAL phát triển quá lớn)
 
-## Schema Design for Performance {#schema-design-for-performance}
 
-Our email storage schema follows SQLite best practices:
+## Thiết Kế Schema Cho Hiệu Suất {#schema-design-for-performance}
+
+Schema lưu trữ email của chúng tôi tuân theo các thực hành tốt nhất của SQLite:
 
 ```sql
--- Messages table with optimized column order
+-- Bảng messages với thứ tự cột tối ưu
 CREATE TABLE messages (
   id INTEGER PRIMARY KEY,
   mailbox_id INTEGER NOT NULL,
@@ -290,35 +294,35 @@ CREATE TABLE messages (
   from_addr TEXT,
   to_addr TEXT,
   message_id TEXT,
-  raw BLOB,  -- Large BLOB at end
+  raw BLOB,  -- BLOB lớn ở cuối
   FOREIGN KEY (mailbox_id) REFERENCES mailboxes(id)
 );
 
--- Critical indexes for IMAP performance
+-- Các chỉ mục quan trọng cho hiệu suất IMAP
 CREATE INDEX idx_messages_mailbox_date ON messages(mailbox_id, date DESC);
 CREATE INDEX idx_messages_uid ON messages(mailbox_id, uid);
 CREATE INDEX idx_messages_flags ON messages(mailbox_id, flags) WHERE flags IS NOT NULL;
 ```
-
 > \[!TIP]
-> Always put BLOB columns at the end of your table definition. SQLite stores fixed-size columns first, making row access faster.
+> Luôn đặt các cột BLOB ở cuối định nghĩa bảng của bạn. SQLite lưu trữ các cột kích thước cố định trước, giúp truy cập hàng nhanh hơn.
 
-This optimization comes directly from SQLite's creator, [D. Richard Hipp](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3):
+Tối ưu hóa này đến trực tiếp từ người tạo SQLite, [D. Richard Hipp](https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3):
 
-> "Here's a hint though - make the BLOB columns the last column in your tables. Or even store the BLOBs in a separate table which only has two columns: an integer primary key and the blob itself, and then access the BLOB content using a join if you need to. If you put various small integer fields after the BLOB, then SQLite has to scan through the entire BLOB content (following the linked list of disk pages) to get to the integer fields at the end, and that definitely can slow you down."
+> "Dưới đây là một gợi ý - hãy đặt các cột BLOB là cột cuối cùng trong bảng của bạn. Hoặc thậm chí lưu trữ các BLOB trong một bảng riêng chỉ có hai cột: một khóa chính kiểu số nguyên và chính BLOB, rồi truy cập nội dung BLOB bằng cách sử dụng join nếu bạn cần. Nếu bạn đặt các trường số nguyên nhỏ khác sau BLOB, thì SQLite phải quét toàn bộ nội dung BLOB (theo danh sách liên kết các trang đĩa) để đến các trường số nguyên ở cuối, và điều đó chắc chắn có thể làm chậm bạn."
 >
-> — D. Richard Hipp, SQLite Author
+> — D. Richard Hipp, Tác giả SQLite
 
-We implemented this optimization in our [Attachments schema](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229), moving the `body` BLOB field to the end of the table definition for better performance.
+Chúng tôi đã triển khai tối ưu hóa này trong [schema Đính kèm](https://github.com/forwardemail/forwardemail.net/commit/0e77fbb05dc5b38136652337309067d2b39eb229), di chuyển trường BLOB `body` về cuối định nghĩa bảng để cải thiện hiệu suất.
 
-## Connection Management {#connection-management}
 
-We don't use connection pooling with SQLite—each user gets their own encrypted database. This approach provides perfect isolation between users, similar to sandboxing. Unlike architectures from other services that use MySQL, PostgreSQL, or MongoDB where your email could potentially be accessed by a rogue employee, Forward Email's per-user SQLite databases ensure your data is completely independent and sandboxed.
+## Quản lý Kết nối {#connection-management}
 
-We never store your IMAP password, so we never have access to your data—it's all done in-memory. Learn more about our [quantum-resistant encryption approach](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) that details how our system works.
+Chúng tôi không sử dụng connection pooling với SQLite — mỗi người dùng có cơ sở dữ liệu được mã hóa riêng. Cách tiếp cận này cung cấp sự cô lập hoàn hảo giữa các người dùng, tương tự như sandboxing. Khác với kiến trúc của các dịch vụ khác sử dụng MySQL, PostgreSQL hoặc MongoDB, nơi email của bạn có thể bị truy cập bởi nhân viên không đáng tin cậy, các cơ sở dữ liệu SQLite riêng biệt theo người dùng của Forward Email đảm bảo dữ liệu của bạn hoàn toàn độc lập và được sandbox.
+
+Chúng tôi không bao giờ lưu mật khẩu IMAP của bạn, vì vậy chúng tôi không bao giờ có quyền truy cập vào dữ liệu của bạn — tất cả đều được xử lý trong bộ nhớ. Tìm hiểu thêm về [phương pháp mã hóa chống lượng tử](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) của chúng tôi mô tả cách hệ thống hoạt động.
 
 ```javascript
-// Per-user database approach
+// Cách tiếp cận cơ sở dữ liệu theo người dùng
 async function getDatabase(session) {
   const dbPath = path.join(
     config.databaseDir,
@@ -336,43 +340,44 @@ async function getDatabase(session) {
 }
 ```
 
-This approach provides:
+Cách tiếp cận này cung cấp:
 
-* Perfect isolation between users
+* Cô lập hoàn hảo giữa các người dùng
 
-* No connection pool complexity
+* Không có sự phức tạp của connection pool
 
-* Automatic encryption per user
+* Mã hóa tự động theo từng người dùng
 
-* Simpler backup/restore operations
+* Các thao tác sao lưu/phục hồi đơn giản hơn
 
-With `auto_vacuum=FULL`, we rarely need manual VACUUM operations:
+Với `auto_vacuum=FULL`, chúng tôi hiếm khi cần thao tác VACUUM thủ công:
 
 ```javascript
-// Our cleanup strategy
-db.pragma('optimize=0x10002'); // On connection open
-db.pragma('optimize'); // Periodically (daily)
+// Chiến lược dọn dẹp của chúng tôi
+db.pragma('optimize=0x10002'); // Khi mở kết nối
+db.pragma('optimize'); // Định kỳ (hàng ngày)
 
-// Manual vacuum only for major cleanups
+// VACUUM thủ công chỉ cho các lần dọn dẹp lớn
 if (deletedDataPercentage > 25) {
   db.exec('VACUUM');
 }
 ```
 
-**Auto Vacuum Performance Impact:**
+**Ảnh hưởng hiệu suất của Auto Vacuum:**
 
-* `auto_vacuum=FULL`: Immediate space reclamation, 5% write overhead
+* `auto_vacuum=FULL`: Thu hồi không gian ngay lập tức, chi phí ghi tăng 5%
 
-* `auto_vacuum=INCREMENTAL`: Manual control, requires periodic `PRAGMA incremental_vacuum`
+* `auto_vacuum=INCREMENTAL`: Kiểm soát thủ công, yêu cầu `PRAGMA incremental_vacuum` định kỳ
 
-* `auto_vacuum=NONE`: Fastest writes, requires manual `VACUUM`
+* `auto_vacuum=NONE`: Ghi nhanh nhất, yêu cầu VACUUM thủ công
 
-## Monitoring and Diagnostics {#monitoring-and-diagnostics}
 
-Key metrics we track in production:
+## Giám sát và Chẩn đoán {#monitoring-and-diagnostics}
+
+Các chỉ số chính chúng tôi theo dõi trong môi trường sản xuất:
 
 ```javascript
-// Performance monitoring queries
+// Các truy vấn giám sát hiệu suất
 const stats = {
   page_count: db.pragma('page_count', { simple: true }),
   page_size: db.pragma('page_size', { simple: true }),
@@ -385,181 +390,186 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 ```
 
 > \[!NOTE]
-> We monitor fragmentation percentage and trigger maintenance when it exceeds 15%.
+> Chúng tôi theo dõi tỷ lệ phân mảnh và kích hoạt bảo trì khi vượt quá 15%.
 
-## Node.js Version Performance {#nodejs-version-performance}
 
-Our comprehensive benchmarks across Node.js versions reveal significant performance differences:
+## Hiệu suất Phiên bản Node.js {#nodejs-version-performance}
 
-### Complete Cross-Version Results {#complete-cross-version-results}
+Các benchmark toàn diện của chúng tôi trên các phiên bản Node.js cho thấy sự khác biệt hiệu suất đáng kể:
 
-| Node Version | Forward Email Production | Best Insert/sec | Best Select/sec | Best Update/sec | Notes |
-| ------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ---------------------- |
-| **v18.20.8** | 10,658 / 14,466 / 18,641 | **11,663** (Sync OFF) | **14,868** (Memory Temp) | **20,095** (MMAP) | ⚠️ Engine warning |
-| **v20.19.5** | 10,548 / 17,494 / 16,654 | **11,800** (WAL Auto) | **18,383** (WAL Auto) | **22,087** (WAL Auto) | ✅ Recommended |
-| **v22.21.1** | 9,829 / 15,833 / 18,416 | **11,260** (Sync OFF) | **17,413** (MMAP) | **20,731** (MMAP) | ⚠️ Slower overall |
-| **v24.11.1** | 9,938 / 7,497 / 10,446 | **10,628** (Incr Vacuum) | **16,821** (Incr Vacuum) | **19,934** (Incr Vacuum) | ❌ Significant slowdown |
+### Kết quả Đầy đủ Qua Các Phiên bản {#complete-cross-version-results}
 
-### Key Performance Insights {#key-performance-insights}
+| Phiên bản Node | Forward Email Production | Tốc độ Insert tốt nhất/sec | Tốc độ Select tốt nhất/sec | Tốc độ Update tốt nhất/sec | Ghi chú                |
+| -------------- | ------------------------ | -------------------------- | -------------------------- | -------------------------- | ---------------------- |
+| **v18.20.8**   | 10,658 / 14,466 / 18,641 | **11,663** (Sync OFF)      | **14,868** (Memory Temp)   | **20,095** (MMAP)          | ⚠️ Cảnh báo Engine      |
+| **v20.19.5**   | 10,548 / 17,494 / 16,654 | **11,800** (WAL Auto)      | **18,383** (WAL Auto)      | **22,087** (WAL Auto)      | ✅ Được khuyến nghị     |
+| **v22.21.1**   | 9,829 / 15,833 / 18,416  | **11,260** (Sync OFF)      | **17,413** (MMAP)          | **20,731** (MMAP)          | ⚠️ Chậm hơn tổng thể    |
+| **v24.11.1**   | 9,938 / 7,497 / 10,446   | **10,628** (Incr Vacuum)   | **16,821** (Incr Vacuum)   | **19,934** (Incr Vacuum)   | ❌ Giảm tốc đáng kể     |
+### Những Thông Tin Hiệu Suất Chính {#key-performance-insights}
 
 **Node.js v18 (Legacy LTS):**
 
-* Comparable insert performance to v20 (10,658 vs 10,548 ops/sec)
-* 17% slower selects than v20 (14,466 vs 17,494 ops/sec)
-* Shows npm engine warnings for packages requiring Node ≥20
-* Memory temp storage optimization works better than WAL autocheckpoint
-* Acceptable for legacy applications, but upgrade recommended
+* Hiệu suất chèn tương đương với v20 (10,658 so với 10,548 ops/giây)
+* Chọn dữ liệu chậm hơn 17% so với v20 (14,466 so với 17,494 ops/giây)
+* Hiển thị cảnh báo engine npm cho các gói yêu cầu Node ≥20
+* Tối ưu lưu trữ tạm bộ nhớ hoạt động tốt hơn so với WAL autocheckpoint
+* Chấp nhận được cho các ứng dụng kế thừa, nhưng nên nâng cấp
 
-**Node.js v20 (Recommended):**
+**Node.js v20 (Khuyến nghị):**
 
-* Highest overall performance across all operations
-* WAL autocheckpoint optimization provides consistent 12% boost
-* Best compatibility with native SQLite modules
-* Most stable for production workloads
+* Hiệu suất tổng thể cao nhất trên tất cả các thao tác
+* Tối ưu WAL autocheckpoint cung cấp tăng trưởng ổn định 12%
+* Tương thích tốt nhất với các module SQLite gốc
+* Ổn định nhất cho khối lượng công việc sản xuất
 
-**Node.js v22 (Acceptable):**
+**Node.js v22 (Chấp nhận được):**
 
-* 7% slower inserts, 9% slower selects vs v20
-* MMAP optimization shows better results than WAL autocheckpoint
-* Requires fresh `npm install` for each Node version switch
-* Acceptable for development, not recommended for production
+* Chèn chậm hơn 7%, chọn dữ liệu chậm hơn 9% so với v20
+* Tối ưu MMAP cho kết quả tốt hơn WAL autocheckpoint
+* Yêu cầu cài đặt `npm install` mới cho mỗi lần chuyển đổi phiên bản Node
+* Chấp nhận được cho phát triển, không khuyến nghị cho sản xuất
 
-**Node.js v24 (Not Recommended):**
+**Node.js v24 (Không khuyến nghị):**
 
-* 6% slower inserts, 57% slower selects vs v20
-* Significant performance regression in read operations
-* Incremental vacuum performs better than other optimizations
-* Avoid for production SQLite applications
+* Chèn chậm hơn 6%, chọn dữ liệu chậm hơn 57% so với v20
+* Suy giảm hiệu suất đáng kể trong các thao tác đọc
+* Dọn dẹp incremental vacuum hoạt động tốt hơn các tối ưu khác
+* Tránh sử dụng cho các ứng dụng SQLite sản xuất
 
-### Native Module Compatibility {#native-module-compatibility}
+### Tương Thích Module Gốc {#native-module-compatibility}
 
-The "module compatibility issues" we initially encountered were resolved by:
+Các "vấn đề tương thích module" mà chúng tôi gặp phải ban đầu đã được giải quyết bằng:
 
 ```bash
-# Switch Node version and reinstall native modules
+# Chuyển phiên bản Node và cài đặt lại các module gốc
 nvm use 22
 rm -rf node_modules
 npm install
 ```
 
-**Node.js v18 Considerations:**
+**Lưu ý về Node.js v18:**
 
-* Shows engine warnings: `Unsupported engine { required: { node: '>=20.0.0' } }`
-* Still compiles and runs successfully despite warnings
-* Many modern SQLite packages target Node ≥20 for optimal support
-* Legacy applications can continue using v18 with acceptable performance
+* Hiển thị cảnh báo engine: `Unsupported engine { required: { node: '>=20.0.0' } }`
+* Vẫn biên dịch và chạy thành công mặc dù có cảnh báo
+* Nhiều gói SQLite hiện đại nhắm tới Node ≥20 để hỗ trợ tối ưu
+* Các ứng dụng kế thừa có thể tiếp tục dùng v18 với hiệu suất chấp nhận được
 
 > \[!IMPORTANT]
-> Always reinstall native modules when switching Node.js versions. The `better-sqlite3-multiple-ciphers` module must be compiled for each specific Node version.
+> Luôn cài đặt lại các module gốc khi chuyển đổi phiên bản Node.js. Module `better-sqlite3-multiple-ciphers` phải được biên dịch cho từng phiên bản Node cụ thể.
 
 > \[!TIP]
-> For production deployments, stick with Node.js v20 LTS. The performance benefits and stability outweigh any newer language features in v22/v24. Node v18 is acceptable for legacy systems but shows performance degradation in read operations.
+> Đối với triển khai sản xuất, hãy sử dụng Node.js v20 LTS. Lợi ích về hiệu suất và sự ổn định vượt trội hơn các tính năng ngôn ngữ mới hơn trong v22/v24. Node v18 chấp nhận được cho hệ thống kế thừa nhưng có suy giảm hiệu suất trong các thao tác đọc.
 
-## Production Deployment Checklist {#production-deployment-checklist}
 
-Before deploying, ensure SQLite has these optimizations:
+## Danh Sách Kiểm Tra Triển Khai Sản Xuất {#production-deployment-checklist}
 
-1. Set `SQLITE_TMPDIR` environment variable
-2. Ensure adequate disk space for temp operations (2x database size)
-3. Configure log rotation for WAL files
-4. Set up monitoring for database size and fragmentation
-5. Test backup/restore procedures with encryption
-6. Verify ChaCha20 cipher support in your SQLite build
+Trước khi triển khai, đảm bảo SQLite có các tối ưu sau:
 
-## Troubleshooting Common Issues {#troubleshooting-common-issues}
+1. Thiết lập biến môi trường `SQLITE_TMPDIR`
+2. Đảm bảo đủ dung lượng đĩa cho các thao tác tạm (gấp 2 lần kích thước cơ sở dữ liệu)
+3. Cấu hình xoay vòng nhật ký cho các file WAL
+4. Thiết lập giám sát kích thước cơ sở dữ liệu và phân mảnh
+5. Kiểm tra quy trình sao lưu/phục hồi với mã hóa
+6. Xác minh hỗ trợ mã hóa ChaCha20 trong bản build SQLite của bạn
 
-### "Database is locked" Errors {#database-is-locked-errors}
+
+## Khắc Phục Các Vấn Đề Thường Gặp {#troubleshooting-common-issues}
+
+### Lỗi "Database is locked" {#database-is-locked-errors}
 
 ```javascript
-// Increase busy timeout
-db.pragma('busy_timeout=60000'); // 60 seconds
+// Tăng thời gian chờ busy
+db.pragma('busy_timeout=60000'); // 60 giây
 
-// Check for long-running transactions
+// Kiểm tra các giao dịch chạy lâu
 const info = db.pragma('wal_checkpoint(FULL)');
 if (info.busy > 0) {
-  console.warn('WAL checkpoint blocked by active readers');
+  console.warn('WAL checkpoint bị chặn bởi các trình đọc đang hoạt động');
 }
 ```
 
-### High Memory Usage During VACUUM {#high-memory-usage-during-vacuum}
+### Sử Dụng Bộ Nhớ Cao Trong Quá Trình VACUUM {#high-memory-usage-during-vacuum}
 
 ```javascript
-// Monitor memory before VACUUM
+// Giám sát bộ nhớ trước VACUUM
 const beforeMem = process.memoryUsage();
 db.exec('VACUUM');
 const afterMem = process.memoryUsage();
 
 console.log(
-  `VACUUM memory delta: ${
+  `Chênh lệch bộ nhớ VACUUM: ${
     (afterMem.heapUsed - beforeMem.heapUsed) / 1024 / 1024
   }MB`
 );
 ```
 
-### Slow Query Performance {#slow-query-performance}
+### Hiệu Suất Truy Vấn Chậm {#slow-query-performance}
 
 ```javascript
-// Enable query analysis
-db.pragma('analysis_limit=400'); // Forward Email's setting
+// Bật phân tích truy vấn
+db.pragma('analysis_limit=400'); // Cài đặt của Forward Email
 db.exec('ANALYZE');
 
-// Check query plans
+// Kiểm tra kế hoạch truy vấn
 const plan = db
   .prepare('EXPLAIN QUERY PLAN SELECT * FROM messages WHERE date > ?')
   .all(Date.now() - 86400000);
 console.log(plan);
 ```
 
-## Forward Email's Open Source Contributions {#forward-emails-open-source-contributions}
 
-We've contributed our SQLite optimization knowledge back to the community:
+## Đóng Góp Mã Nguồn Mở Của Forward Email {#forward-emails-open-source-contributions}
 
-* [Litestream documentation improvements](https://github.com/benbjohnson/litestream/issues/516) - Our suggestions for better SQLite performance tips
+Chúng tôi đã đóng góp kiến thức tối ưu SQLite trở lại cộng đồng:
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - ChaCha20 encryption support
+* [Cải tiến tài liệu Litestream](https://github.com/benbjohnson/litestream/issues/516) - Các đề xuất của chúng tôi cho mẹo hiệu suất SQLite tốt hơn
 
-* [SQLite performance tuning research](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Referenced in our implementation
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - Hỗ trợ mã hóa ChaCha20
 
-* [How npm packages with billion downloads shaped JavaScript ecosystem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Our broader contributions to npm and JavaScript development
+* [Nghiên cứu tối ưu hiệu suất SQLite](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Tham khảo trong triển khai của chúng tôi
+* [Cách các gói npm với hàng tỷ lượt tải đã định hình hệ sinh thái JavaScript](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Những đóng góp rộng lớn hơn của chúng tôi cho npm và phát triển JavaScript
 
-## Benchmark Source Code {#benchmark-source-code}
 
-All benchmark code is available in our test suite:
+## Mã nguồn Benchmark {#benchmark-source-code}
+
+Tất cả mã benchmark đều có trong bộ kiểm thử của chúng tôi:
 
 ```bash
-# Run the benchmarks yourself
+# Tự chạy các benchmark
 git clone https://github.com/forwardemail/sqlite-benchmarks
 cd sqlite-benchmarks
 npm install
 npm run benchmark
 ```
 
-The benchmarks test:
+Các benchmark kiểm tra:
 
-* Various PRAGMA combinations
+* Các kết hợp PRAGMA khác nhau
 
-* ChaCha20 vs AES256 performance
+* Hiệu năng ChaCha20 so với AES256
 
-* WAL checkpoint strategies
+* Chiến lược checkpoint WAL
 
-* Temp storage configurations
+* Cấu hình lưu trữ tạm thời
 
-* Node.js version compatibility
+* Tương thích phiên bản Node.js
 
-## What's Next for SQLite at Forward Email {#whats-next-for-sqlite-at-forward-email}
 
-We're actively testing these optimizations:
+## Điều gì tiếp theo cho SQLite tại Forward Email {#whats-next-for-sqlite-at-forward-email}
 
-1. **WAL Autocheckpoint Tuning**: Adding `wal_autocheckpoint=1000` based on benchmark results
+Chúng tôi đang tích cực thử nghiệm các tối ưu hóa sau:
 
-2. **Compression**: Evaluating [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) for attachment storage
+1. **Điều chỉnh WAL Autocheckpoint**: Thêm `wal_autocheckpoint=1000` dựa trên kết quả benchmark
 
-3. **Analysis Limit**: Testing higher values than our current 400
+2. **Nén**: Đánh giá [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) cho lưu trữ tệp đính kèm
 
-4. **Cache Size**: Considering dynamic cache sizing based on available memory
+3. **Giới hạn phân tích**: Thử nghiệm các giá trị cao hơn so với 400 hiện tại
 
-## Getting Help {#getting-help}
+4. **Kích thước bộ nhớ đệm**: Cân nhắc điều chỉnh bộ nhớ đệm động dựa trên bộ nhớ khả dụng
 
-Having SQLite performance issues? For SQLite-specific questions, the [SQLite Forum](https://sqlite.org/forum/forumpost) is an excellent resource, and the [performance tuning guide](https://www.sqlite.org/optoverview.html) covers additional optimizations we haven't needed yet.
 
-Learn more about Forward Email by reading our [FAQ](/faq).
+## Nhận trợ giúp {#getting-help}
+
+Gặp vấn đề về hiệu năng SQLite? Đối với các câu hỏi cụ thể về SQLite, [Diễn đàn SQLite](https://sqlite.org/forum/forumpost) là nguồn tài nguyên tuyệt vời, và [hướng dẫn điều chỉnh hiệu năng](https://www.sqlite.org/optoverview.html) bao gồm các tối ưu hóa bổ sung mà chúng tôi chưa cần dùng đến.
+
+Tìm hiểu thêm về Forward Email bằng cách đọc [Câu hỏi thường gặp](/faq).

@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# Sıkça Sorulan Sorular {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email sıkça sorulan sorular" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## İçindekiler {#table-of-contents}
+
+* [Hızlı Başlangıç](#quick-start)
+* [Giriş](#introduction)
+  * [Forward Email nedir](#what-is-forward-email)
+  * [Forward Email'i kimler kullanır](#who-uses-forward-email)
+  * [Forward Email'in geçmişi nedir](#what-is-forward-emails-history)
+  * [Bu hizmet ne kadar hızlıdır](#how-fast-is-this-service)
+* [E-posta İstemcileri](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [Mobil Cihazlar](#mobile-devices)
+  * [Sendmail SMTP Relay Yapılandırması](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Yapılandırması](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP İstemci Yapılandırması](#msmtp-smtp-client-configuration)
+  * [Komut Satırı E-posta İstemcileri](#command-line-email-clients)
+  * [Windows E-posta Yapılandırması](#windows-email-configuration)
+  * [Postfix SMTP Relay Yapılandırması](#postfix-smtp-relay-configuration)
+  * [Gmail kullanarak Mail Gönderme nasıl yapılır](#how-to-send-mail-as-using-gmail)
+  * [Gmail kullanarak Mail Gönderme için eski ücretsiz rehber nedir](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Gelişmiş Gmail Yönlendirme Yapılandırması](#advanced-gmail-routing-configuration)
+  * [Gelişmiş Outlook Yönlendirme Yapılandırması](#advanced-outlook-routing-configuration)
+* [Sorun Giderme](#troubleshooting)
+  * [Test e-postalarımı neden almıyorum](#why-am-i-not-receiving-my-test-emails)
+  * [E-posta istemcimi Forward Email ile çalışacak şekilde nasıl yapılandırırım](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [E-postalarım neden Spam ve Gereksiz klasörüne düşüyor ve alan adı itibarımı nasıl kontrol ederim](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [Spam e-postalar alırsam ne yapmalıyım](#what-should-i-do-if-i-receive-spam-emails)
+  * [Gmail'de kendime gönderdiğim test e-postaları neden "şüpheli" olarak görünüyor](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Gmail'de via forwardemail dot net ifadesini kaldırabilir miyim](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Veri Yönetimi](#data-management)
+  * [Sunucularınız nerede bulunuyor](#where-are-your-servers-located)
+  * [Posta kutumu nasıl dışa aktarır ve yedeklerim](#how-do-i-export-and-backup-my-mailbox)
+  * [Mevcut posta kutumu nasıl içe aktarır ve taşırım](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Yedekler için kendi S3 uyumlu depolamamı nasıl kullanırım](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [SQLite yedeklerini EML dosyalarına nasıl dönüştürürüm](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [Kendi kendine barındırmayı destekliyor musunuz](#do-you-support-self-hosting)
+* [E-posta Yapılandırması](#email-configuration)
+  * [Başlamak ve e-posta yönlendirmeyi ayarlamak için ne yapmalıyım](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Gelişmiş yönlendirme için birden fazla MX değişimi ve sunucu kullanabilir miyim](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [Tatil yanıtlayıcısı (ofis dışı otomatik yanıtlayıcı) nasıl kurulur](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Forward Email için SPF nasıl ayarlanır](#how-do-i-set-up-spf-for-forward-email)
+  * [Forward Email için DKIM nasıl ayarlanır](#how-do-i-set-up-dkim-for-forward-email)
+  * [Forward Email için DMARC nasıl ayarlanır](#how-do-i-set-up-dmarc-for-forward-email)
+  * [DMARC Raporları nasıl görüntülenir](#how-do-i-view-dmarc-reports)
+  * [Kişilerimi nasıl bağlar ve yapılandırırım](#how-do-i-connect-and-configure-my-contacts)
+  * [Takvimlerimi nasıl bağlar ve yapılandırırım](#how-do-i-connect-and-configure-my-calendars)
+  * [Daha fazla takvim nasıl eklenir ve mevcut takvimler nasıl yönetilir](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [Görevler ve hatırlatıcılar nasıl bağlanır ve yapılandırılır](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [macOS Hatırlatıcılarında neden görev oluşturamıyorum](#why-cant-i-create-tasks-in-macos-reminders)
+  * [Android'de Tasks.org nasıl kurulur](#how-do-i-set-up-tasksorg-on-android)
+  * [Forward Email için SRS nasıl ayarlanır](#how-do-i-set-up-srs-for-forward-email)
+  * [Forward Email için MTA-STS nasıl ayarlanır](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [E-posta adresime profil resmi nasıl eklerim](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Gelişmiş Özellikler](#advanced-features)
+  * [Pazarlama ile ilgili e-posta için bültenler veya posta listelerini destekliyor musunuz](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [API ile e-posta gönderimini destekliyor musunuz](#do-you-support-sending-email-with-api)
+  * [IMAP ile e-posta alımını destekliyor musunuz](#do-you-support-receiving-email-with-imap)
+  * [POP3 destekliyor musunuz](#do-you-support-pop3)
+  * [Takvimleri (CalDAV) destekliyor musunuz](#do-you-support-calendars-caldav)
+  * [Görevler ve hatırlatıcıları (CalDAV VTODO) destekliyor musunuz](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Kişileri (CardDAV) destekliyor musunuz](#do-you-support-contacts-carddav)
+  * [SMTP ile e-posta gönderimini destekliyor musunuz](#do-you-support-sending-email-with-smtp)
+  * [OpenPGP/MIME, uçtan uca şifreleme ("E2EE") ve Web Anahtar Dizini ("WKD") destekliyor musunuz](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [S/MIME şifrelemesini destekliyor musunuz](#do-you-support-smime-encryption)
+  * [Sieve e-posta filtrelemeyi destekliyor musunuz](#do-you-support-sieve-email-filtering)
+  * [MTA-STS destekliyor musunuz](#do-you-support-mta-sts)
+  * [Parola anahtarları ve WebAuthn destekliyor musunuz](#do-you-support-passkeys-and-webauthn)
+  * [E-posta en iyi uygulamalarını destekliyor musunuz](#do-you-support-email-best-practices)
+  * [Bounce webhooks destekliyor musunuz](#do-you-support-bounce-webhooks)
+  * [Webhooks destekliyor musunuz](#do-you-support-webhooks)
+  * [Düzenli ifadeler veya regex destekliyor musunuz](#do-you-support-regular-expressions-or-regex)
+  * [Giden SMTP limitleriniz nelerdir](#what-are-your-outbound-smtp-limits)
+  * [SMTP'yi etkinleştirmek için onay gerekiyor mu](#do-i-need-approval-to-enable-smtp)
+  * [SMTP sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-smtp-server-configuration-settings)
+  * [IMAP sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-imap-server-configuration-settings)
+  * [POP3 sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-pop3-server-configuration-settings)
+  * [Alan adım için e-posta otomatik keşfi nasıl ayarlanır](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [Güvenlik](#security-1)
+  * [Gelişmiş Sunucu Sertleştirme Teknikleri](#advanced-server-hardening-techniques)
+  * [SOC 2 veya ISO 27001 sertifikalarınız var mı](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [E-posta yönlendirme için TLS şifrelemesi kullanıyor musunuz](#do-you-use-tls-encryption-for-email-forwarding)
+  * [E-posta kimlik doğrulama başlıklarını koruyor musunuz](#do-you-preserve-email-authentication-headers)
+  * [Orijinal e-posta başlıklarını koruyor ve sahteciliği önlüyor musunuz](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [Spam ve kötüye kullanımı nasıl önlüyorsunuz](#how-do-you-protect-against-spam-and-abuse)
+  * [E-posta içeriğini diskte saklıyor musunuz](#do-you-store-email-content-on-disk)
+  * [Sistem çökmeleri sırasında e-posta içeriği açığa çıkabilir mi](#can-email-content-be-exposed-during-system-crashes)
+  * [E-posta altyapınıza kimler erişebilir](#who-has-access-to-your-email-infrastructure)
+  * [Hangi altyapı sağlayıcılarını kullanıyorsunuz](#what-infrastructure-providers-do-you-use)
+  * [Bir Veri İşleme Sözleşmesi (DPA) sunuyor musunuz](#do-you-offer-a-data-processing-agreement-dpa)
+  * [Veri ihlali bildirimlerini nasıl yönetiyorsunuz](#how-do-you-handle-data-breach-notifications)
+  * [Bir test ortamı sunuyor musunuz](#do-you-offer-a-test-environment)
+  * [İzleme ve uyarı araçları sağlıyor musunuz](#do-you-provide-monitoring-and-alerting-tools)
+  * [Yüksek kullanılabilirliği nasıl sağlıyorsunuz](#how-do-you-ensure-high-availability)
+  * [Ulusal Savunma Yetkilendirme Yasası (NDAA) Bölüm 889 ile uyumlu musunuz](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [Sistem ve Teknik Detaylar](#system-and-technical-details)
+  * [E-postaları ve içeriklerini saklıyor musunuz](#do-you-store-emails-and-their-contents)
+  * [E-posta yönlendirme sisteminiz nasıl çalışır](#how-does-your-email-forwarding-system-work)
+  * [Bir e-postayı yönlendirmek için nasıl işliyorsunuz](#how-do-you-process-an-email-for-forwarding)
+  * [E-posta teslim sorunlarını nasıl yönetiyorsunuz](#how-do-you-handle-email-delivery-issues)
+  * [IP adreslerinizin engellenmesi durumunda nasıl hareket ediyorsunuz](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [Postmaster adresleri nedir](#what-are-postmaster-addresses)
+  * [No-reply adresleri nedir](#what-are-no-reply-addresses)
+  * [Sunucularınızın IP adresleri nelerdir](#what-are-your-servers-ip-addresses)
+  * [Bir izin listesine (allowlist) sahip misiniz](#do-you-have-an-allowlist)
+  * [Varsayılan olarak hangi alan adı uzantıları izin listesinde](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [İzin listenizin kriterleri nelerdir](#what-is-your-allowlist-criteria)
+  * [Hangi alan adı uzantıları ücretsiz kullanılabilir](#what-domain-name-extensions-can-be-used-for-free)
+  * [Bir gri listeye (greylist) sahip misiniz](#do-you-have-a-greylist)
+  * [Bir kara listeye (denylist) sahip misiniz](#do-you-have-a-denylist)
+  * [Oran sınırlaması (rate limiting) var mı](#do-you-have-rate-limiting)
+  * [Backscatter'a karşı nasıl koruma sağlıyorsunuz](#how-do-you-protect-against-backscatter)
+  * [Bilinen MAIL FROM spam göndericilerinden gelen bounce'ları önleyin](#prevent-bounces-from-known-mail-from-spammers)
+  * [Backscatter'a karşı koruma için gereksiz bounce'ları önleyin](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [Bir e-posta parmak izini nasıl belirliyorsunuz](#how-do-you-determine-an-email-fingerprint)
+  * [E-postaları 25 dışındaki portlara yönlendirebilir miyim (örneğin ISP port 25'i engellediyse)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Gmail takma adları için artı + sembolünü destekliyor mu](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Alt alan adlarını destekliyor mu](#does-it-support-sub-domains)
+  * [Bu e-postamın başlıklarını yönlendiriyor mu](#does-this-forward-my-emails-headers)
+  * [Bu iyi test edildi mi](#is-this-well-tested)
+  * [SMTP yanıt mesajlarını ve kodlarını iletiyor musunuz](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [Spam göndericileri nasıl engelliyor ve iyi bir e-posta yönlendirme itibarı sağlıyorsunuz](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Alan adlarında DNS sorgularını nasıl yapıyorsunuz](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Hesap ve Faturalandırma](#account-and-billing)
+  * [Ücretli planlarda para iade garantisi sunuyor musunuz](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [Plan değiştirirsem farkı orantılı olarak iade ediyor musunuz](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Bu e-posta yönlendirme hizmetini sadece "yedek" veya "fallover" MX sunucusu olarak kullanabilir miyim](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Belirli takma adları devre dışı bırakabilir miyim](#can-i-disable-specific-aliases)
+  * [E-postaları birden fazla alıcıya yönlendirebilir miyim](#can-i-forward-emails-to-multiple-recipients)
+  * [Birden fazla global catch-all alıcısı olabilir miyim](#can-i-have-multiple-global-catch-all-recipients)
+  * [Her takma ad için yönlendirebileceğim e-posta adresi sayısında maksimum sınır var mı](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [E-postaları yinelemeli olarak yönlendirebilir miyim](#can-i-recursively-forward-emails)
+  * [İzinsiz olarak e-posta yönlendirmemi kaydettirebilir veya kaydını sildirebilirler mi](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [Bu hizmet nasıl ücretsiz](#how-is-it-free)
+  * [Maksimum e-posta boyutu sınırı nedir](#what-is-the-max-email-size-limit)
+  * [E-posta günlüklerini saklıyor musunuz](#do-you-store-logs-of-emails)
+  * [Hata günlüklerini saklıyor musunuz](#do-you-store-error-logs)
+  * [E-postalarımı okuyor musunuz](#do-you-read-my-emails)
+  * [Bununla Gmail'de "mail gönderme" yapabilir miyim](#can-i-send-mail-as-in-gmail-with-this)
+  * [Bununla Outlook'ta "mail gönderme" yapabilir miyim](#can-i-send-mail-as-in-outlook-with-this)
+  * [Bununla Apple Mail ve iCloud Mail'de "mail gönderme" yapabilir miyim](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Bununla sınırsız e-posta yönlendirebilir miyim](#can-i-forward-unlimited-emails-with-this)
+  * [Tek fiyatla sınırsız alan adı sunuyor musunuz](#do-you-offer-unlimited-domains-for-one-price)
+  * [Hangi ödeme yöntemlerini kabul ediyorsunuz](#which-payment-methods-do-you-accept)
+* [Ek Kaynaklar](#additional-resources)
+## Hızlı Başlangıç {#quick-start}
 
-## Quick Start {#quick-start}
+Forward Email ile başlamak için:
 
-To get started with Forward Email:
+1. **Bir hesap oluşturun** [forwardemail.net/register](https://forwardemail.net/register) adresinde
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **Alan adınızı ekleyin ve doğrulayın** [Hesabım → Alan Adları](/my-account/domains) altında
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **E-posta takma adları/posta kutuları ekleyin ve yapılandırın** [Hesabım → Alan Adları](/my-account/domains) → Takma Adlar altında
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **Kurulumunuzu test edin** yeni takma adlarınızdan birine e-posta göndererek
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> DNS değişikliklerinin dünya çapında yayılması 24-48 saat sürebilir, ancak genellikle çok daha kısa sürede etkili olur.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Teslimat başarısını artırmak için [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) ve [DMARC](#how-do-i-set-up-dmarc-for-forward-email) kayıtlarını ayarlamanızı öneririz.
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## Giriş {#introduction}
+
+### Forward Email Nedir {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email, profesyonel e-posta adreslerine sahip olmak isteyen bireyler, küçük işletmeler ve geliştiriciler için tam e-posta barındırma çözümünün maliyeti ve bakımı olmadan mükemmeldir.
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+Forward Email, **tam özellikli bir e-posta servis sağlayıcısı** ve **özel alan adları için e-posta barındırma sağlayıcısıdır**.
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+Tek ücretsiz ve açık kaynaklı hizmettir ve kendi e-posta sunucunuzu kurup yönetmenin karmaşıklığı olmadan özel alan adı e-posta adresleri kullanmanıza olanak tanır.
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+Hizmetimiz, özel alan adınıza gönderilen e-postaları mevcut e-posta hesabınıza iletir – hatta bizi özel e-posta barındırma sağlayıcınız olarak kullanabilirsiniz.
 
-Key features of Forward Email:
+Forward Email'in temel özellikleri:
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **Özel Alan Adı E-postası**: Kendi alan adınızla profesyonel e-posta adresleri kullanın
+* **Ücretsiz Katman**: Temel e-posta yönlendirme ücretsiz
+* **Gelişmiş Gizlilik**: E-postalarınızı okumuyoruz veya verilerinizi satmıyoruz
+* **Açık Kaynak**: Tüm kod tabanımız GitHub'da mevcuttur
+* **SMTP, IMAP ve POP3 Desteği**: Tam e-posta gönderme ve alma yetenekleri
+* **Uçtan Uca Şifreleme**: OpenPGP/MIME desteği
+* **Özel Catch-All Takma Adlar**: Sınırsız e-posta takma adı oluşturun
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+Bizi 56+ diğer e-posta servis sağlayıcı ile [E-posta Karşılaştırma sayfamızda](/blog/best-email-service) karşılaştırabilirsiniz.
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Forward Email hakkında daha fazla bilgi edinmek için ücretsiz [Teknik Beyaz Kitabımızı](/technical-whitepaper.pdf) okuyun
 
-### Who uses Forward Email {#who-uses-forward-email}
+### Forward Email'i Kimler Kullanıyor {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+500.000+ alan adına e-posta barındırma ve yönlendirme hizmeti sağlıyoruz ve bu önemli kullanıcılar:
 
-| Customer | Case Study |
+| Müşteri                                 | Vaka Çalışması                                                                                           |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| ABD Deniz Harp Okulu                     | [:page_facing_up: Vaka Çalışması](/blog/docs/federal-government-email-service-section-889-compliant)     |
+| Canonical                                | [:page_facing_up: Vaka Çalışması](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| Netflix Games                            |                                                                                                          |
+| Linux Vakfı                             | [:page_facing_up: Vaka Çalışması](/blog/docs/linux-foundation-email-enterprise-case-study)               |
+| PHP Vakfı                               |                                                                                                          |
+| Fox News Radio                          |                                                                                                          |
+| Disney Reklam Satışları                 |                                                                                                          |
+| jQuery                                  | [:page_facing_up: Vaka Çalışması](/blog/docs/linux-foundation-email-enterprise-case-study)               |
+| LineageOS                              |                                                                                                          |
+| Ubuntu                                 | [:page_facing_up: Vaka Çalışması](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| Kubuntu                                | [:page_facing_up: Vaka Çalışması](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| Lubuntu                                | [:page_facing_up: Vaka Çalışması](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| Cambridge Üniversitesi                 | [:page_facing_up: Vaka Çalışması](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| Maryland Üniversitesi                  | [:page_facing_up: Vaka Çalışması](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| Washington Üniversitesi                | [:page_facing_up: Vaka Çalışması](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| Tufts Üniversitesi                    | [:page_facing_up: Vaka Çalışması](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| Swarthmore Koleji                     | [:page_facing_up: Vaka Çalışması](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| Güney Avustralya Hükümeti             |                                                                                                          |
+| Dominik Cumhuriyeti Hükümeti           |                                                                                                          |
+| Fly<span>.</span>io                    |                                                                                                          |
+| RCD Otelleri                          |                                                                                                          |
+| Isaac Z. Schlueter (npm)               | [:page_facing_up: Vaka Çalışması](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### Forward Email'nin geçmişi nedir {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+Forward Email hakkında daha fazla bilgi edinmek için [Hakkımızda sayfamıza](/about) göz atabilirsiniz.
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### Bu hizmet ne kadar hızlıdır {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Sistemimiz, e-postalarınızın zamanında teslim edilmesini sağlamak için çoklu yedekli sunucularla hız ve güvenilirlik için tasarlanmıştır.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Email, mesajları genellikle alındıktan saniyeler içinde minimum gecikmeyle iletir.
 
-Performance metrics:
+Performans metrikleri:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **Ortalama Teslim Süresi**: Alımdan iletime 5-10 saniyeden az ([TTI "Inbox'a Ulaşma Süresi" izleme sayfamıza bakın](/tti))
+* **Çalışma Süresi**: %99.9+ hizmet kullanılabilirliği
+* **Küresel Altyapı**: Optimum yönlendirme için stratejik olarak konumlandırılmış sunucular
+* **Otomatik Ölçeklendirme**: Sistemimiz yoğun e-posta dönemlerinde ölçeklenir
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+Biz, diğer sağlayıcıların kullandığı gecikmeli kuyrukların aksine gerçek zamanlı çalışıyoruz.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Disk yazmıyor veya günlükleri saklamıyoruz – [hatalar hariç](#do-you-store-error-logs) ve [giden SMTP](#do-you-support-sending-email-with-smtp) (bkz. [Gizlilik Politikamız](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Her şey bellekte yapılır ve [kaynak kodumuz GitHub'da mevcuttur](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## E-posta İstemcileri {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Forward Email kontrol panelinizde yeni bir takma ad oluşturun ve şifre oluşturun
+2. Thunderbird'u açın ve **Düzenle → Hesap Ayarları → Hesap İşlemleri → Posta Hesabı Ekle** yolunu izleyin
+3. Adınızı, Forward Email adresinizi ve şifrenizi girin
+4. **Manuel yapılandır** seçeneğine tıklayın ve şunları girin:
+   * Gelen: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+   * Giden: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (önerilir; port 587 STARTTLS ile de desteklenir)
+5. **Tamamla** butonuna tıklayın
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Forward Email kontrol panelinizde yeni bir takma ad oluşturun ve şifre oluşturun
+2. **Dosya → Hesap Ekle** yolunu izleyin
+3. Forward Email adresinizi girin ve **Bağlan** butonuna tıklayın
+4. **Gelişmiş seçenekler**i seçin ve **Hesabımı manuel olarak ayarlamama izin ver** seçeneğini işaretleyin
+5. **IMAP** seçin ve şunları girin:
+   * Gelen: `imap.forwardemail.net`, port 993, SSL
+   * Giden: `smtp.forwardemail.net`, port 465, SSL/TLS (önerilir; port 587 STARTTLS ile de desteklenir)
+   * Kullanıcı adı: Tam e-posta adresiniz
+   * Şifre: Oluşturduğunuz şifre
+6. **Bağlan** butonuna tıklayın
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Forward Email kontrol panelinizde yeni bir takma ad oluşturun ve şifre oluşturun
+2. **Mail → Tercihler → Hesaplar → +** yolunu izleyin
+3. **Diğer Posta Hesabı**nı seçin
+4. Adınızı, Forward Email adresinizi ve şifrenizi girin
+5. Sunucu ayarları için şunları girin:
+   * Gelen: `imap.forwardemail.net`
+   * Giden: `smtp.forwardemail.net`
+   * Kullanıcı adı: Tam e-posta adresiniz
+   * Şifre: Oluşturduğunuz şifre
+6. **Oturum Aç** butonuna tıklayın
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Forward Email kontrol panelinizde yeni bir takma ad oluşturun ve şifre oluşturun
+2. eM Client'ı açın ve **Menü → Hesaplar → + Hesap Ekle** yolunu izleyin
+3. **Posta**ya tıklayın ve ardından **Diğer**i seçin
+4. Forward Email adresinizi girin ve **İleri**ye tıklayın
+5. Aşağıdaki sunucu ayarlarını girin:
+   * **Gelen sunucu**: `imap.forwardemail.net`
+   * **Giden sunucu**: `smtp.forwardemail.net`
+6. Hem gelen hem giden sunucular için **Kullanıcı adı** olarak tam e-posta adresinizi, **Şifre** olarak oluşturduğunuz şifreyi girin.
+7. eM Client bağlantıyı test edecektir. Başarılı olunca **İleri**ye tıklayın.
+8. Adınızı girin ve bir hesap adı seçin.
+9. **Bitir** butonuna tıklayın.
 
-### Mobile Devices {#mobile-devices}
+### Mobil Cihazlar {#mobile-devices}
 
-For iOS:
+iOS için:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. **Ayarlar → Mail → Hesaplar → Hesap Ekle → Diğer** yolunu izleyin
+2. **Posta Hesabı Ekle**ye dokunun ve bilgilerinizi girin
+3. Sunucu ayarları için yukarıdaki IMAP ve SMTP ayarlarını kullanın
 
-For Android:
+Android için:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. **Ayarlar → Hesaplar → Hesap Ekle → Kişisel (IMAP)** yolunu izleyin
+2. Forward Email adresinizi ve şifrenizi girin
+3. Sunucu ayarları için yukarıdaki IMAP ve SMTP ayarlarını kullanın
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Sendmail SMTP Relay Yapılandırması {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+Sendmail'i, Forward Email'in SMTP sunucuları üzerinden e-posta iletmek için yapılandırabilirsiniz. Bu, Sendmail'e dayanan eski sistemler veya uygulamalar için yaygın bir kurulumdur.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>20 dakikadan az</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Bu, SMTP erişimi etkinleştirilmiş ücretli bir plan gerektirir.
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### Yapılandırma {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. Genellikle `/etc/mail/sendmail.mc` konumunda bulunan `sendmail.mc` dosyanızı düzenleyin:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. Akıllı sunucuyu ve kimlik doğrulamayı tanımlamak için aşağıdaki satırları ekleyin:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. `/etc/mail/authinfo` kimlik doğrulama dosyasını oluşturun:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. Forward Email kimlik bilgilerinizi `authinfo` dosyasına ekleyin:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. Kimlik doğrulama veritabanını oluşturun ve dosyaların izinlerini güvenli hale getirin:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Sendmail yapılandırmasını yeniden oluşturun ve servisi yeniden başlatın:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### Test Etme {#testing}
 
-Send a test email to verify the configuration:
+Yapılandırmayı doğrulamak için test e-postası gönderin:
 
 ```bash
-echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+echo "Sendmail'den test e-postası" | mail -s "Sendmail Testi" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Exim4 SMTP Relay Yapılandırması {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4, Debian tabanlı sistemlerde popüler bir MTA'dır. Forward Email'i akıllı sunucu (smarthost) olarak kullanacak şekilde yapılandırabilirsiniz.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>15 dakikadan az</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Bu, SMTP erişimi etkinleştirilmiş ücretli bir plan gerektirir.
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### Yapılandırma {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Exim4 yapılandırma aracını çalıştırın:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. Aşağıdaki seçenekleri seçin:
+   * **Genel posta yapılandırma türü:** smarthost tarafından gönderilen posta; SMTP veya fetchmail ile alınan
+   * **Sistem posta adı:** your.hostname
+   * **Gelen SMTP bağlantıları için dinlenecek IP adresleri:** 127.0.0.1 ; ::1
+   * **Posta kabul edilen diğer hedefler:** (boş bırakın)
+   * **Posta iletimi yapılacak alan adları:** (boş bırakın)
+   * **Giden smarthost'un IP adresi veya ana bilgisayar adı:** smtp.forwardemail.net::465
+   * **Giden postada yerel posta adını gizle?** Hayır
+   * **DNS sorgularını minimumda tut (Talep Üzerine Arama)?** Hayır
+   * **Yerel posta teslim yöntemi:** /var/mail/ içinde Mbox formatı
+   * **Yapılandırmayı küçük dosyalara böl?** Hayır
 
-3. Edit the `passwd.client` file to add your credentials:
+3. Kimlik bilgilerinizi eklemek için `passwd.client` dosyasını düzenleyin:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. Aşağıdaki satırı ekleyin:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. Yapılandırmayı güncelleyin ve Exim4'ü yeniden başlatın:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### Test Etme {#testing-1}
 
-Send a test email:
+Test e-postası gönderin:
 
 ```bash
-echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+echo "Exim4'ten test" | mail -s "Exim4 Testi" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### msmtp SMTP İstemcisi Yapılandırması {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp, betiklerden veya komut satırı uygulamalarından e-posta göndermek için kullanışlı hafif bir SMTP istemcisidir.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>10 dakikadan az</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Bu, SMTP erişimi etkinleştirilmiş ücretli bir plan gerektirir.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### Yapılandırma {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. `~/.msmtprc` dosyasını oluşturun veya düzenleyin:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. Aşağıdaki yapılandırmayı ekleyin:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. Yapılandırma dosyasına doğru izinleri verin:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### Test Etme {#testing-2}
 
-Send a test email:
+Test amaçlı bir e-posta gönderin:
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### Komut Satırı E-posta İstemcileri {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+[Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) ve [Alpine](https://alpine.x10.mx/alpine/release/) gibi popüler komut satırı e-posta istemcileri, Forward Email'in SMTP sunucularını kullanacak şekilde yapılandırılabilir. Yapılandırma, SMTP sunucu bilgilerini ve kimlik bilgilerinizi ilgili yapılandırma dosyalarına (`.muttrc`, `.neomuttrc` veya `.pinerc`) girmeniz gereken `msmtp` ayarlarına benzer olacaktır.
 
-### Windows Email Configuration {#windows-email-configuration}
+### Windows E-posta Yapılandırması {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+Windows kullanıcıları için, Forward Email hesabınızda sağlanan IMAP ve SMTP ayarlarını kullanarak **Microsoft Outlook** ve **eM Client** gibi popüler e-posta istemcilerini yapılandırabilirsiniz. Komut satırı veya betik kullanımı için PowerShell'in `Send-MailMessage` cmdlet'ini (eskimiş olarak kabul edilir) veya [E-MailRelay](https://github.com/graeme-walker/emailrelay) gibi hafif bir SMTP röle aracı kullanabilirsiniz.
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Postfix SMTP Röle Yapılandırması {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Postfix'i, e-postaları Forward Email'in SMTP sunucuları üzerinden iletecek şekilde yapılandırabilirsiniz. Bu, e-posta göndermesi gereken sunucu uygulamaları için faydalıdır.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>15 dakikadan az</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Bu, SMTP erişimi etkinleştirilmiş ücretli bir plan gerektirir.
   </span>
 </div>
 
-#### Installation {#installation}
+#### Kurulum {#installation}
 
-1. Install Postfix on your server:
+1. Sunucunuza Postfix'i kurun:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. Kurulum sırasında yapılandırma türü sorulduğunda "Internet Site" seçeneğini seçin.
 
-#### Configuration {#configuration-3}
+#### Yapılandırma {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Postfix ana yapılandırma dosyasını düzenleyin:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. Bu ayarları ekleyin veya değiştirin:
 
 ```
-# SMTP relay configuration
+# SMTP röle yapılandırması
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. SASL parola dosyasını oluşturun:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Forward Email kimlik bilgilerinizi ekleyin:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. Parola dosyasını güvenli hale getirin ve hash'leyin:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Postfix'i yeniden başlatın:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### Test Etme {#testing-3}
 
-Test your configuration by sending a test email:
+Yapılandırmanızı test etmek için test e-postası gönderin:
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Gmail Kullanarak Mail Gönderme {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>10 dakikadan az</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Başlarken:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Eğer yukarıdaki <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Başlarken ve e-posta yönlendirmeyi nasıl kurarım</a> başlığı altındaki talimatları takip ettiyseniz, aşağıyı okumaya devam edebilirsiniz.
   </span>
 </div>
 
@@ -631,242 +635,239 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Lütfen <a href="/terms" class="alert-link" target="_blank">Şartlarımızı</a>, <a href="/privacy" class="alert-link" target="_blank">Gizlilik Politikamızı</a> ve <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Giden SMTP Limitlerini</a> okuduğunuzdan emin olun – kullanmanız, kabul ve onayınız olarak değerlendirilir.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Eğer bir geliştiriciyseniz, lütfen <a class="alert-link" href="/email-api#outbound-emails" target="_blank">e-posta API dokümanlarımıza</a> bakınız.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Giden SMTP Yapılandırması sayfasına gidin ve kurulum talimatlarını takip edin
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında alan adınız için yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Yeni oluşturduğunuz takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen oluşturulan şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. [Gmail](https://gmail.com) sitesine gidin ve [Ayarlar <i class="fa fa-angle-right"></i> Hesaplar ve İçe Aktarma <i class="fa fa-angle-right"></i> Farklı adresten posta gönder](https://mail.google.com/mail/u/0/#settings/accounts) bölümünde "Başka bir e-posta adresi ekle" seçeneğine tıklayın
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. "İsim" istendiğinde, e-postanızın "Gönderen" olarak görünmesini istediğiniz ismi girin (örneğin "Linus Torvalds").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. "E-posta adresi" istendiğinde, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında oluşturduğunuz tam takma ad e-posta adresini girin (örneğin <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. "Takma ad olarak işle" seçeneğinin işaretini kaldırın
 
-8. Click "Next Step" to proceed
+8. Devam etmek için "Sonraki Adım" butonuna tıklayın
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. "SMTP Sunucusu" istendiğinde, <code>smtp.forwardemail.net</code> yazın ve portu <code>465</code> olarak değiştirin
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. "Kullanıcı adı" istendiğinde, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında oluşturduğunuz tam takma ad e-posta adresini girin (örneğin <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. "Şifre" istendiğinde, yukarıdaki 3. adımda <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> ile oluşturduğunuz şifreyi yapıştırın
 
-12. Select the radio button for "Secured connection using SSL"
+12. "SSL kullanarak güvenli bağlantı" seçeneğini işaretleyin
 
-13. Click "Add Account" to proceed
+13. Devam etmek için "Hesap Ekle" butonuna tıklayın
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. Yeni bir sekmede [Gmail](https://gmail.com) açın ve doğrulama e-postanızın gelmesini bekleyin (göndermeye çalıştığınız e-posta adresinin sahibi olduğunuzu doğrulayan bir doğrulama kodu alacaksınız)
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. Doğrulama kodu geldiğinde, önceki adımda size sorulan alana kodu kopyalayıp yapıştırın
+16. Bunu yaptıktan sonra, e-postaya geri dönün ve "isteği onayla" bağlantısına tıklayın. E-postanın doğru yapılandırılması için muhtemelen bu adımı ve önceki adımı yapmanız gerekecektir.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Tebrikler!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Tüm adımları başarıyla tamamladınız.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Gmail kullanarak Gönderilen Posta olarak Eski Ücretsiz Rehber Nedir? {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Önemli:</strong> Bu eski ücretsiz rehber Mayıs 2023 itibarıyla kullanımdan kaldırılmıştır çünkü <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">artık giden SMTP desteği sağlıyoruz</a>. Aşağıdaki rehberi kullanırsanız, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">giden e-postalarınız Gmail'de "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" olarak görünecektir.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>10 dakikadan az</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Başlarken:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Eğer yukarıdaki <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Nasıl Başlanır ve E-posta Yönlendirme Kurulur</a> başlığı altındaki talimatları takip ettiyseniz, aşağıdaki okumaya devam edebilirsiniz.
   </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Gmail kullanarak Gönderilen Posta olarak Gönderme" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. Bunun çalışması için [Gmail'in İki Faktörlü Kimlik Doğrulaması][gmail-2fa] etkin olmalıdır. Etkin değilse <https://www.google.com/landing/2step/> adresini ziyaret edin.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. İki Faktörlü Kimlik Doğrulama etkinleştirildikten sonra (veya zaten etkinse), <https://myaccount.google.com/apppasswords> adresine gidin.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. "Uygulama ve cihaz seçin" istendiğinde:
+   * "Uygulama seç" açılır menüsünden "Mail"i seçin
+   * "Cihaz seç" açılır menüsünden "Diğer"i seçin
+   * Metin girişi istendiğinde, yönlendirdiğiniz özel alan adınızın e-posta adresini girin (örneğin <code><hello@example.com></code> - bu, bu hizmeti birden fazla hesap için kullanıyorsanız takip etmenize yardımcı olur)
 
-4. Copy the password to your clipboard that is automatically generated
+4. Otomatik oluşturulan şifreyi panonuza kopyalayın
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       Önemli:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       G Suite kullanıyorsanız, yönetici panelinize gidin <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Uygulamalar <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Gmail Ayarları <i class="fa fa-angle-right"></i> Ayarlar</a> ve "Kullanıcıların harici SMTP sunucusu üzerinden posta göndermesine izin ver" seçeneğini işaretlediğinizden emin olun. Bu değişikliğin etkinleşmesi için biraz gecikme olabilir, lütfen birkaç dakika bekleyin.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. [Gmail](https://gmail.com) adresine gidin ve [Ayarlar <i class="fa fa-angle-right"></i> Hesaplar ve İçe Aktarma <i class="fa fa-angle-right"></i> Gönderilen posta olarak gönder](https://mail.google.com/mail/u/0/#settings/accounts) altında "Başka bir e-posta adresi ekle"ye tıklayın
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. "İsim" istendiğinde, e-postanızın "Kimden" olarak görünmesini istediğiniz ismi girin (örneğin "Linus Torvalds")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. "E-posta adresi" istendiğinde, yukarıda kullandığınız özel alan adınızın e-posta adresini girin (örneğin <code><hello@example.com></code>)
+8. "Takma ad olarak işle" seçeneğinin işaretini kaldırın
 
-8. Uncheck "Treat as an alias"
+9. Devam etmek için "Sonraki Adım" butonuna tıklayın
 
-9. Click "Next Step" to proceed
+10. "SMTP Sunucusu" istendiğinde, <code>smtp.gmail.com</code> yazın ve portu <code>587</code> olarak bırakın
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. "Kullanıcı Adı" istendiğinde, Gmail adresinizin <span>gmail.com</span> kısmı olmadan kalan bölümünü girin (örneğin, e-posta adresim <span><user@gmail.com></span> ise sadece "user")
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        Önemli:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        Eğer "Kullanıcı Adı" kısmı otomatik doldurulursa, <u><strong>bunu Gmail adresinizin kullanıcı adı kısmı ile değiştirmeniz gerekir</strong></u>.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. "Parola" istendiğinde, yukarıdaki 2. adımda oluşturduğunuz parolayı panonuzdan yapıştırın
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. "TLS kullanarak güvenli bağlantı" radyo düğmesinin işaretli kaldığından emin olun
 
-14. Click "Add Account" to proceed
+14. Devam etmek için "Hesap Ekle" butonuna tıklayın
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. Yeni bir sekme açarak [Gmail](https://gmail.com) adresine gidin ve doğrulama e-postanızın gelmesini bekleyin (göndermeye çalıştığınız e-posta adresinin sahibi olduğunuzu doğrulayan bir doğrulama kodu alacaksınız)
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. E-posta geldiğinde, önceki adımda istenen doğrulama kodunu kopyalayıp yapıştırın
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. Bunu yaptıktan sonra, e-postaya geri dönüp "isteği onayla" bağlantısına tıklayın. E-postanın doğru yapılandırılması için muhtemelen bu adımı ve önceki adımı yapmanız gerekecektir.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### Gelişmiş Gmail Yönlendirme Yapılandırması {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>15-30 dakika</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+Gmail'de, posta kutusuyla eşleşmeyen takma adların Forward Email'in posta değişimlerine yönlendirilmesi için gelişmiş yönlendirme ayarlamak istiyorsanız, şu adımları izleyin:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. Google Yönetici konsolunuza [admin.google.com](https://admin.google.com) adresinden giriş yapın
+2. **Uygulamalar → Google Workspace → Gmail → Yönlendirme** bölümüne gidin
+3. **Yönlendirme Ekle** butonuna tıklayın ve aşağıdaki ayarları yapılandırın:
 
-**Single Recipient Settings:**
+**Tek Alıcı Ayarları:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* "Zarf alıcısını değiştir" seçeneğini seçin ve birincil Gmail adresinizi girin
+* "Orijinal alıcı ile X-Gm-Original-To başlığı ekle" seçeneğini işaretleyin
 
-**Envelope Recipient Patterns:**
+**Zarf Alıcı Desenleri:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* Var olmayan tüm posta kutularını eşleyecek bir desen ekleyin (örneğin, `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**E-posta Sunucusu Ayarları:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* "Sunucuya yönlendir" seçeneğini seçin ve birincil sunucu olarak `mx1.forwardemail.net` girin
+* Yedek sunucu olarak `mx2.forwardemail.net` ekleyin
+* Portu 25 olarak ayarlayın
+* Güvenlik için "TLS Gerektir" seçeneğini seçin
 
-4. Click **Save** to create the route
+4. Yönlendirmeyi oluşturmak için **Kaydet** butonuna tıklayın
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    Bu yapılandırma yalnızca özel alan adlarına sahip Google Workspace hesapları için geçerlidir, normal Gmail hesapları için çalışmaz.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### Gelişmiş Outlook Yönlendirme Yapılandırması {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>15-30 dakika</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Microsoft 365 (eski adıyla Office 365) kullanıcıları için, posta kutusuyla eşleşmeyen takma adların Forward Email'in posta değişimlerine yönlendirilmesi için gelişmiş yönlendirme ayarlamak isteyenler:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
-   * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
-   * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
-   * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+1. Microsoft 365 yönetici merkezine [admin.microsoft.com](https://admin.microsoft.com) adresinden giriş yapın
+2. **Exchange → Posta akışı → Kurallar** bölümüne gidin
+3. **Kural ekle** butonuna tıklayın ve **Yeni kural oluştur** seçeneğini seçin
+4. Kuralınıza bir isim verin (örneğin, "Var olmayan posta kutularını Forward Email'e yönlendir")
+5. **Bu kuralı uygula eğer** kısmında:
+   * "Alıcı adresi eşleşiyor..." seçeneğini seçin
+   * Alanınızdaki tüm adresleri eşleyecek bir desen girin (örneğin, `*@yourdomain.com`)
+6. **Şunu yap** kısmında:
+   * "Mesajı yönlendir..." seçeneğini seçin
+   * "Aşağıdaki posta sunucusu"nu seçin
+   * `mx1.forwardemail.net` ve port 25 girin
+   * Yedek sunucu olarak `mx2.forwardemail.net` ekleyin
+7. **Hariç tut** kısmında:
+   * "Alıcı..." seçeneğini seçin
+   * Yönlendirilmemesi gereken tüm mevcut posta kutularınızı ekleyin
+8. Kural önceliğini, diğer posta akışı kurallarından sonra çalışacak şekilde ayarlayın
+9. Kuralı etkinleştirmek için **Kaydet** butonuna tıklayın
+## Sorun Giderme {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### Test e-postalarımı neden almıyorum? {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+Kendinize test e-postası gönderiyorsanız, gelen kutunuzda görünmeyebilir çünkü aynı "Message-ID" başlığına sahiptir.
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+Bu yaygın bilinen bir sorundur ve Gmail gibi hizmetleri de etkiler.  <a href="https://support.google.com/a/answer/1703601">Bu konuda resmi Gmail cevabı burada</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+Sorun yaşamaya devam ediyorsanız, muhtemelen DNS yayılımı ile ilgili bir sorundur. Biraz daha beklemeniz ve tekrar denemeniz (veya <strong class="notranslate">TXT</strong> kayıtlarınızda daha düşük bir TTL değeri ayarlamayı denemeniz) gerekecektir.
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**Hala sorun mu yaşıyorsunuz?**  Lütfen <a href="/help">bizimle iletişime geçin</a>, böylece sorunu araştırıp hızlı bir çözüm bulabiliriz.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### E-posta istemcimi Forward Email ile çalışacak şekilde nasıl yapılandırırım? {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  Hizmetimiz şu popüler e-posta istemcileri ile çalışır:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Masaüstü</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
@@ -875,188 +876,235 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  Kullanıcı adınız takma adınızın e-posta adresidir ve şifreniz <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> ("Normal Şifre") bölümünden alınır.
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Thunderbird kullanıyorsanız, "Bağlantı güvenliği"nin "SSL/TLS" olarak ve Kimlik doğrulama yönteminin "Normal şifre" olarak ayarlandığından emin olun.</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| Tür  |         Sunucu Adı        |         Protokol        |                                            Portlar                                           |
+| :--: | :-----------------------: | :---------------------: | :------------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net`   |  SSL/TLS **Tercih Edilen**  |                                      `993` ve `2993`                                        |
+| SMTP | `smtp.forwardemail.net`   | SSL/TLS **Önerilen**    | SSL/TLS için `465` ve `2465` (önerilen) veya STARTTLS için `587`, `2587`, `2525` ve `25`     |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### E-postalarım neden Spam ve Gereksiz klasörüne düşüyor ve alan adı itibarımı nasıl kontrol edebilirim? {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+Bu bölüm, giden postanızın SMTP sunucularımızı kullanması durumunda (örneğin `smtp.forwardemail.net`) (veya `mx1.forwardemail.net` ya da `mx2.forwardemail.net` üzerinden iletilmesi) ve alıcıların Spam veya Gereksiz posta klasörüne düşmesi halinde size rehberlik eder.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+Biz rutin olarak [IP adreslerimizi](#what-are-your-servers-ip-addresses) [tüm saygın DNS kara listelerine](#how-do-you-handle-your-ip-addresses-becoming-blocked) karşı izliyoruz, **bu nedenle muhtemelen alan adı itibarıyla ilgili spesifik bir sorundur**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+E-postalar çeşitli nedenlerle spam klasörüne düşebilir:
 
-Emails can land in spam folders for several reasons:
+1. **Kimlik Doğrulama Eksikliği**: [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) ve [DMARC](#how-do-i-set-up-dmarc-for-forward-email) kayıtlarını ayarlayın.
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **Alan Adı İtibarı**: Yeni alan adları, gönderim geçmişi oluşturana kadar genellikle nötr bir itibara sahiptir.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **İçerik Tetikleyicileri**: Belirli kelimeler veya ifadeler spam filtrelerini tetikleyebilir.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **Gönderim Desenleri**: E-posta hacmindeki ani artışlar şüpheli görünebilir.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+Alan adınızın itibarını ve kategorilendirmesini kontrol etmek için bir veya daha fazla aracı kullanmayı deneyebilirsiniz:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### İtibar ve Kara Liste Kontrol Araçları {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| Araç Adı                                   | URL                                                          | Tür                     |
+| ------------------------------------------- | ------------------------------------------------------------ | ------------------------ |
+| Cloudflare Alan Adı Kategorilendirme Geri Bildirimi   | <https://radar.cloudflare.com/domains/feedback>              | Kategorilendirme         |
+| Spamhaus IP ve Alan Adı İtibar Kontrolü   | <https://check.spamhaus.org/>                                | DNSBL                    |
+| Cisco Talos IP ve Alan Adı İtibar Merkezi | <https://talosintelligence.com/reputation_center>            | İtibar                   |
+| Barracuda IP ve Alan Adı İtibar Sorgulama   | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                    |
+| MX Toolbox Kara Liste Kontrolü              | <https://mxtoolbox.com/blacklists.aspx>                      | Kara Liste               |
+| Google Postmaster Araçları                  | <https://www.gmail.com/postmaster/>                          | İtibar                   |
+| Yahoo Gönderici Merkezi                     | <https://senders.yahooinc.com/>                              | İtibar                   |
+| MultiRBL.valli.org Kara Liste Kontrolü      | <https://multirbl.valli.org/lookup/>                         | DNSBL                    |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | İtibar                   |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                    |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                    |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                    |
+| UCEPROTECT Seviyeleri 1, 2 ve 3             | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                    |
+| UCEPROTECT backscatterer.org                 | <https://www.backscatterer.org/>                             | Backscatter Koruması     |
+| UCEPROTECT whitelisted.org                   | <https://www.whitelisted.org/> (ücret gerektirir)            | DNSWL                    |
 
+#### Sağlayıcı Bazında IP Kaldırma Talep Formları {#ip-removal-request-forms-by-provider}
+
+IP adresiniz belirli bir e-posta sağlayıcısı tarafından engellendiyse, uygun kaldırma formunu veya iletişim bilgisini kullanın:
+
+| Sağlayıcı                               | Kaldırma Formu / İletişim                                                                                     | Notlar                                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | Toplu gönderici iletişim formu               |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | Office 365 IP kara liste kaldırma portalı    |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | Yahoo Gönderici Merkezi                       |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | Apple, IP itibarı için Proofpoint kullanır   |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | Proofpoint IP kontrol ve kaldırma             |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | Barracuda itibar sorgulama ve kaldırma       |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | Cloudmark CSI sıfırlama talebi                |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | GoDaddy IP engel kaldırma formu               |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | Comcast IP kaldırma talebi                     |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | Kaldırma için Spectrum destek ile iletişime geçin |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | Kaldırma talebi için e-posta                  |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | Kaldırma talebi için e-posta                  |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | Cloudfilter kullanır                           |
+| Windstream                             | `abuse@windstream.net`                                                                                     | Kaldırma talebi için e-posta                  |
+| t-online.de (Almanya)                  | `tobr@rx.t-online.de`                                                                                      | Kaldırma talebi için e-posta                  |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | İletişim formu veya `abuse@orange.fr` e-postası kullanın |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | GMX postmaster iletişim formu                  |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | Mail.ru postmaster portalı                     |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | Yandex postmaster portalı                      |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | QQ Mail beyaz liste başvurusu (Çince)          |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | Netease postmaster portalı                     |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | Alibaba Cloud konsolu üzerinden iletişim       |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | AWS SES konsolu > Kara Liste Kaldırma          |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | SendGrid destek ile iletişim                   |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | Üçüncü taraf RBL kullanır - ilgili RBL ile iletişime geçin |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | Fastmail destek ile iletişim                   |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | Zoho destek ile iletişim                        |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | Proton destek ile iletişim                      |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | Tutanota destek ile iletişim                    |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | Hushmail destek ile iletişim                    |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | Mailbox.org destek ile iletişim                 |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | Posteo destek ile iletişim                      |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | DuckDuckGo destek ile iletişim                  |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | Sonic destek ile iletişim                        |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | Telus destek ile iletişim                        |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | Vodafone destek ile iletişim                     |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | Spark NZ destek ile iletişim                     |
+| UOL/BOL (Brezilya)                    | <https://ajuda.uol.com.br/>                                                                                | UOL destek ile iletişim (Portekizce)            |
+| Libero (İtalya)                       | <https://aiuto.libero.it/>                                                                                 | Libero destek ile iletişim (İtalyanca)          |
+| Telenet (Belçika)                     | <https://www2.telenet.be/en/support/>                                                                      | Telenet destek ile iletişim                      |
+| Facebook/WhatsApp                     | <https://www.facebook.com/business/help>                                                                   | Facebook iş destek ile iletişim                  |
+| LinkedIn                             | <https://www.linkedin.com/help/linkedin>                                                                   | LinkedIn destek ile iletişim                      |
+| Groups.io                            | <https://groups.io/helpcenter>                                                                             | Groups.io destek ile iletişim                     |
+| Earthlink/Vade Secure                | <https://sendertool.vadesecure.com/en/>                                                                    | Vade Secure gönderici aracı                      |
+| Cloudflare Email Security            | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | Cloudflare destek ile iletişim                    |
+| Hornetsecurity/Expurgate             | <https://www.hornetsecurity.com/>                                                                          | Hornetsecurity destek ile iletişim                |
+| SpamExperts/Antispamcloud            | <https://www.spamexperts.com/>                                                                             | Hosting sağlayıcısı üzerinden iletişim           |
+| Mail2World                         | <https://www.mail2world.com/support/>                                                                      | Mail2World destek ile iletişim                    |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Daha büyük hacimlerde göndermeden önce olumlu bir itibar oluşturmak için düşük hacimli yüksek kaliteli e-postalarla başlayın.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Alan adınız kara listede ise, her kara listenin kendi kaldırma süreci vardır. Talimatlar için web sitelerini kontrol edin.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Ek yardıma ihtiyacınız varsa veya belirli bir e-posta hizmet sağlayıcısı tarafından yanlışlıkla spam olarak listelendiğimizi fark ederseniz, lütfen <a href="/help">bizimle iletişime geçin</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### Spam e-postalar alırsam ne yapmalıyım {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+E-posta listesinden (mümkünse) aboneliğinizi iptal etmeli ve göndereni engellemelisiniz.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+Lütfen mesajı spam olarak bildirmeyin, bunun yerine manuel olarak seçilmiş ve gizliliğe odaklı kötüye kullanım önleme sistemimize iletin.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**Spam iletileri ileteceğiniz e-posta adresi:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Gmail'de kendime gönderdiğim test e-postaları neden "şüpheli" olarak görünüyor {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+Kendinize test gönderdiğinizde veya takma adınızla e-posta gönderdiğiniz bir kişi sizden ilk kez bir e-posta aldığında Gmail'de bu hata mesajını görüyorsanız, **lütfen endişelenmeyin** – çünkü bu Gmail'in yerleşik bir güvenlik özelliğidir.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+Basitçe "Güvenli görünüyor" seçeneğine tıklayabilirsiniz. Örneğin, gönder mail olarak özelliğini kullanarak (başkasına) test mesajı gönderirseniz, onlar bu mesajı görmez.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+Ancak bu mesajı görürlerse, bunun nedeni genellikle e-postalarınızı <john@gmail.com> yerine <john@customdomain.com> (sadece bir örnek) adresinden almaya alışkın olmalarıdır. Gmail, her ihtimale karşı kullanıcıları güvende olduklarından emin olmak için uyarır, bunun için bir çözüm yolu yoktur.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Gmail'de via forwardemail dot net ifadesini kaldırabilir miyim {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+Bu konu, [Gmail'de gönderen adının yanında ekstra bilgi görünmesiyle ilgili yaygın bir sorunla](https://support.google.com/mail/answer/1311182) ilgilidir.
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+Mayıs 2023 itibarıyla tüm ücretli kullanıcılar için SMTP ile e-posta gönderimini bir eklenti olarak destekliyoruz – bu da Gmail'de <span class="notranslate">via forwardemail dot net</span> ifadesini kaldırabileceğiniz anlamına gelir.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+Bu SSS konusu, [Gmail kullanarak posta gönderme nasıl yapılır](#how-to-send-mail-as-using-gmail) özelliğini kullananlar için özeldir.
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+Yapılandırma talimatları için lütfen [SMTP ile e-posta göndermeyi destekliyor musunuz](#do-you-support-sending-email-with-smtp) bölümüne bakın.
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## Veri Yönetimi {#data-management}
+
+### Sunucularınız nerede bulunuyor {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Yakında [forwardemail.eu](https://forwardemail.eu) altında barındırılan AB veri merkezi konumumuzu duyurabiliriz. Güncellemeler için <https://github.com/orgs/forwardemail/discussions/336> adresindeki tartışmaya abone olun.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+Sunucularımız öncelikle Denver, Colorado'da bulunmaktadır – IP adreslerimizin tam listesi için <https://forwardemail.net/ips> adresine bakabilirsiniz.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+Alt işlemcilerimiz hakkında bilgi edinmek için [GDPR](/gdpr), [DPA](/dpa) ve [Gizlilik](/privacy) sayfalarımıza göz atabilirsiniz.
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### Posta kutumu nasıl dışa aktarır ve yedeklerim {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+Her zaman posta kutularınızı [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) veya şifrelenmiş [SQLite](https://en.wikipedia.org/wiki/SQLite) formatlarında dışa aktarabilirsiniz.
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Yedeklemeyi İndir bölümüne gidin ve tercih ettiğiniz dışa aktarma formatını seçin.
 
-You will be emailed a link to download the export once it has finished.
+Dışa aktarma tamamlandığında indirmeniz için bir bağlantı e-posta ile gönderilecektir.
 
-Note that this export download link expires after 4 hours for security concerns.
+Güvenlik nedeniyle bu dışa aktarma indirme bağlantısının 4 saat sonra süresi dolar.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+Dışa aktardığınız EML veya Mbox formatlarını incelemeniz gerekirse, bu açık kaynak araçlar faydalı olabilir:
 
-| Name | Format | Platform | GitHub URL |
+| İsim            | Format | Platform      | GitHub URL                                          |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer     |  Mbox  | Windows       | <https://github.com/eneam/mboxviewer>               |
+| mbox-web-viewer |  Mbox  | Tüm platformlar | <https://github.com/PHMRanger/mbox-web-viewer>      |
+| EmlReader       |   EML  | Windows       | <https://github.com/ayamadori/EmlReader>            |
+| Email viewer    |   EML  | VSCode        | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader      |   EML  | Tüm platformlar | <https://github.com/s0ph1e/eml-reader>              |
+Ayrıca, bir Mbox dosyasını EML dosyasına dönüştürmeniz gerekiyorsa, <https://github.com/noelmartinon/mboxzilla> adresini kullanabilirsiniz.
 
-Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
+### Mevcut posta kutumu nasıl içe aktarır ve taşırım {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
-
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+E-postanızı Forward Email'e (örneğin [Thunderbird](https://www.thunderbird.net) kullanarak) aşağıdaki talimatlarla kolayca içe aktarabilirsiniz:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    Mevcut e-postanızı içe aktarmak için aşağıdaki tüm adımları takip etmelisiniz.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. E-postanızı mevcut e-posta sağlayıcınızdan dışa aktarın:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | E-posta Sağlayıcısı | Dışa Aktarma Formatı                           | Dışa Aktarma Talimatları                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | ------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail               | MBOX                                           | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook             | PST                                            | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">İpucu:</strong> <span>Eğer Outlook kullanıyorsanız (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST dışa aktarma formatı</a>), aşağıda "Diğer" başlığı altındaki talimatları takip edebilirsiniz. Ancak, işletim sisteminize göre PST'yi MBOX/EML formatına dönüştürmek için aşağıdaki bağlantıları sağladık:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Windows için Zinkuba</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">Windows cygwin için readpst</a> – (örneğin <code>readpst -u -o $OUT_DIR $IN_DIR</code>, burada <code>$OUT_DIR</code> ve <code>$IN_DIR</code> sırasıyla çıktı ve giriş dizini yollarıyla değiştirilmelidir).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">Ubuntu/Linux için readpst</a> – (örneğin <code>sudo apt-get install readpst</code> ve ardından <code>readpst -u -o $OUT_DIR $IN_DIR</code>, burada <code>$OUT_DIR</code> ve <code>$IN_DIR</code> sırasıyla çıktı ve giriş dizini yollarıyla değiştirilmelidir).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">macOS için readpst (brew ile)</a> – (örneğin <code>brew install libpst</code> ve ardından <code>readpst -u -o $OUT_DIR $IN_DIR</code>, burada <code>$OUT_DIR</code> ve <code>$IN_DIR</code> sırasıyla çıktı ve giriş dizini yollarıyla değiştirilmelidir).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">Windows için PST Converter (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail          | MBOX                                           | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail            | EML                                            | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail         | MBOX/EML                                       | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota            | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi               | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho                | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | Diğer               | [Thunderbird kullanın](https://www.thunderbird.net) | Mevcut e-posta hesabınızı Thunderbird'de kurun ve ardından e-postanızı dışa aktarmak ve içe aktarmak için [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) eklentisini kullanın.  **Ayrıca, e-postaları bir hesaptan diğerine kopyalayıp yapıştırabilir veya sürükleyip bırakabilirsiniz.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. İndirin, kurun ve açın [Thunderbird](https://www.thunderbird.net).
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. Takma adınızın tam e-posta adresini (örneğin <code><you@yourdomain.com></code>) ve oluşturduğunuz şifreyi kullanarak yeni bir hesap oluşturun.  <strong>Henüz oluşturulmuş bir şifreniz yoksa, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">kurulum talimatlarımıza bakın</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird eklentisini indirin ve kurun.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. Thunderbird'de yeni bir yerel klasör oluşturun, ardından sağ tıklayın → `ImportExportTools NG` seçeneğini seçin → `Import mbox file` (MBOX dışa aktarma formatı için) – veya – `Import messages` / `Import all messages from a directory` (EML dışa aktarma formatı için) seçeneklerinden birini seçin.
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. Yerel klasörden, mesajları IMAP depolama alanımıza yüklemek istediğiniz yeni (veya mevcut) bir IMAP klasörüne sürükleyip bırakın.  Bu, mesajların SQLite şifreli depolamamızla çevrimiçi olarak yedeklenmesini sağlar.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Thunderbird'e nasıl içe aktarılacağı konusunda kafanız karışıksa, resmi talimatlara <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> ve <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a> adreslerinden bakabilirsiniz.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    Dışa aktarma ve içe aktarma işlemini tamamladıktan sonra, mevcut e-posta hesabınızda yönlendirmeyi etkinleştirmek ve göndericilere yeni bir e-posta adresiniz olduğunu bildirmek için otomatik yanıtlayıcı kurmak isteyebilirsiniz (örneğin, daha önce Gmail kullanıyorsanız ve şimdi özel alan adınızla bir e-posta kullanıyorsanız).
   </span>
 </div>
 
@@ -1064,224 +1112,431 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Tebrikler!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Tüm adımları başarıyla tamamladınız.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### Yedeklemeler için kendi S3 uyumlu depolamamı nasıl kullanırım {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+Ücretli plan kullanıcıları, IMAP/SQLite yedeklemeleri için alan bazında kendi [S3](https://en.wikipedia.org/wiki/Amazon_S3)-uyumlu depolama sağlayıcılarını yapılandırabilirler.  Bu, şifrelenmiş posta kutusu yedeklerinizin varsayılan depolamamız yerine (veya ek olarak) kendi altyapınızda saklanabileceği anlamına gelir.
 
-## Email Configuration {#email-configuration}
+Desteklenen sağlayıcılar arasında [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces) ve diğer tüm S3 uyumlu servisler bulunmaktadır.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### Kurulum {#setup}
+
+1. S3 uyumlu sağlayıcınızda **özel** bir bucket oluşturun. Bucket genel erişime açık olmamalıdır.
+2. Bucket için okuma/yazma izinlerine sahip erişim kimlik bilgileri (erişim anahtarı kimliği ve gizli erişim anahtarı) oluşturun.
+3. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Gelişmiş Ayarlar <i class="fa fa-angle-right"></i> Özel S3-Uyumlu Depolama sayfasına gidin.
+4. **"Özel S3-uyumlu depolamayı etkinleştir"** seçeneğini işaretleyin ve uç nokta URL'si, erişim anahtarı kimliği, gizli erişim anahtarı, bölge ve bucket adını doldurun.
+5. Kimlik bilgilerinizi, bucket erişimini ve yazma izinlerini doğrulamak için **"Bağlantıyı Test Et"** butonuna tıklayın.
+6. Ayarları uygulamak için **"Kaydet"** butonuna tıklayın.
+
+#### Yedeklemeler Nasıl Çalışır {#how-backups-work}
+
+Yedeklemeler, bağlı her IMAP takma adı için otomatik olarak tetiklenir. IMAP sunucusu, her saat aktif tüm bağlantıları kontrol eder ve bağlı her takma ad için yedekleme başlatır. Redis tabanlı bir kilit, yedeklemelerin birbirinden 30 dakika içinde tekrar çalışmasını engeller ve son 24 saat içinde başarılı bir yedekleme tamamlandıysa (kullanıcı tarafından indirme için açıkça istenmedikçe) yedekleme atlanır.
+Yedeklemeler, kontrol panelindeki herhangi bir takma ad için **"Yedeği İndir"** butonuna tıklanarak manuel olarak da tetiklenebilir. Manuel yedeklemeler, 24 saatlik pencereye bakılmaksızın her zaman çalışır.
+
+Yedekleme süreci şu şekilde işler:
+
+1. SQLite veritabanı, aktif bağlantıları kesintiye uğratmadan tutarlı bir anlık görüntü oluşturan ve veritabanı şifrelemesini koruyan `VACUUM INTO` kullanılarak kopyalanır.
+2. Yedek dosyası, şifrelemenin hala geçerli olduğunu doğrulamak için açılarak kontrol edilir.
+3. Bir SHA-256 karması hesaplanır ve depolamadaki mevcut yedekle karşılaştırılır. Karma eşleşirse, yükleme atlanır (son yedeklemeden beri değişiklik yok).
+4. Yedek, [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage) kütüphanesi aracılığıyla çok parçalı yükleme kullanılarak S3'e yüklenir.
+5. İmzalı bir indirme URL'si (4 saat geçerli) oluşturulur ve kullanıcıya e-posta ile gönderilir.
+
+#### Yedekleme Formatları {#backup-formats}
+
+Üç yedekleme formatı desteklenir:
+
+| Format   | Uzantı   | Açıklama                                                                    |
+| -------- | -------- | --------------------------------------------------------------------------- |
+| `sqlite` | `.sqlite`| Ham şifreli SQLite veritabanı anlık görüntüsü (otomatik IMAP yedekleri için varsayılan) |
+| `mbox`   | `.zip`   | mbox formatında posta kutusunu içeren parola korumalı ZIP                   |
+| `eml`    | `.zip`   | Her mesaj için ayrı `.eml` dosyaları içeren parola korumalı ZIP             |
+
+> **İpucu:** `.sqlite` yedek dosyalarınız varsa ve bunları yerel olarak `.eml` dosyalarına dönüştürmek istiyorsanız, bağımsız CLI aracımız **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**'i kullanabilirsiniz. Windows, Linux ve macOS üzerinde çalışır ve ağ bağlantısı gerektirmez.
+
+#### Dosya Adlandırma ve Anahtar Yapısı {#file-naming-and-key-structure}
+
+**Özel S3 depolama** kullanıldığında, yedek dosyaları her yedeğin ayrı bir nesne olarak saklanmasını sağlamak için [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) zaman damgası öneki ile depolanır. Bu sayede kendi bucket'ınızda tam bir yedek geçmişine sahip olursunuz.
+
+Anahtar formatı:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+Örneğin:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+`alias_id`, takma adın MongoDB ObjectId'sidir. Bunu takma ad ayarları sayfasında veya API üzerinden bulabilirsiniz.
+
+**Varsayılan (sistem) depolama** kullanıldığında, anahtar düz (örneğin `65a31c53c36b75ed685f3fda.sqlite`) olur ve her yedekleme önceki yedeğin üzerine yazar.
+
+> **Not:** Özel S3 depolama tüm yedek sürümlerini sakladığından, depolama kullanımı zamanla artacaktır. Bucket'ınızda eski yedeklerin otomatik olarak süresi dolması için [yaşam döngüsü kuralları](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) yapılandırmanızı öneririz (örneğin 30 veya 90 günden eski nesneleri silmek).
+
+#### Veri Sahipliği ve Silme Politikası {#data-ownership-and-deletion-policy}
+
+Özel S3 bucket'ınız tamamen sizin kontrolünüz altındadır. Takma ad silindiğinde, alan kaldırıldığında veya herhangi bir temizlik işlemi sırasında, özel S3 bucket'ınızdaki dosyaları **asla silmez veya değiştirmeyiz**. Sadece yeni yedek dosyalarını bucket'ınıza yazarız.
+
+Bu şu anlama gelir:
+
+* **Takma ad silme** — Bir takma adı sildiğinizde, yedek sadece varsayılan sistem depolamamızdan kaldırılır. Daha önce özel S3 bucket'ınıza yazılmış yedekler dokunulmadan kalır.
+* **Alan kaldırma** — Bir alanı kaldırmak, özel bucket'ınızdaki dosyaları etkilemez.
+* **Saklama yönetimi** — Kendi bucket'ınızdaki depolamayı yönetmek, eski yedeklerin süresini dolması için yaşam döngüsü kuralları yapılandırmak sizin sorumluluğunuzdadır.
+
+Özel S3 depolamayı devre dışı bırakırsanız veya varsayılan depolamaya geri dönerseniz, bucket'ınızdaki mevcut dosyalar korunur. Gelecekteki yedekler sadece varsayılan depolamaya yazılır.
+
+#### Güvenlik {#security}
+
+* Erişim anahtarı kimliğiniz ve gizli erişim anahtarınız, veritabanımızda saklanmadan önce [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) kullanılarak **dinlenme halinde şifrelenir**. Yedekleme işlemleri sırasında yalnızca çalışma zamanında şifresi çözülür.
+* Bucket'ınızın **herkese açık erişime kapalı** olduğunu otomatik olarak doğrularız. Eğer herkese açık bir bucket tespit edilirse, yapılandırma kaydedilirken reddedilir. Yedekleme sırasında herkese açık erişim algılanırsa, varsayılan depolamaya geri dönülür ve tüm alan yöneticilerine e-posta ile bildirilir.
+* Kimlik bilgileri, bucket'ın varlığını ve kimlik bilgilerinin doğruluğunu sağlamak için kaydetme sırasında bir [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html) çağrısı ile doğrulanır. Doğrulama başarısız olursa, özel S3 depolama otomatik olarak devre dışı bırakılır.
+* Her yedek dosyası, S3 meta verilerinde bir SHA-256 karması içerir; bu, değişmeyen veritabanlarını tespit etmek ve gereksiz yüklemeleri atlamak için kullanılır.
+#### Hata Bildirimleri {#error-notifications}
+
+Özel S3 depolamanızı kullanırken bir yedekleme başarısız olursa (örneğin, süresi dolmuş kimlik bilgileri veya bağlantı sorunu nedeniyle), tüm alan yöneticilerine e-posta ile bildirim gönderilir. Bu bildirimler, yinelenen uyarıları önlemek için her 6 saatte bir sınırlandırılmıştır. Yedekleme sırasında kovanızın herkese açık erişilebilir olduğu tespit edilirse, yöneticilere günde bir kez bildirim gönderilir.
+
+#### API {#api}
+
+Özel S3 depolamanızı API üzerinden de yapılandırabilirsiniz:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+API üzerinden bağlantıyı test etmek için:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### SQLite yedeklerini EML dosyalarına nasıl dönüştürürüm {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+SQLite yedeklerini indirir veya depolarsanız (ister varsayılan depolamamızdan ister kendi [özel S3 kovanızdan](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), bunları bağımsız CLI aracımız **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** ile standart `.eml` dosyalarına dönüştürebilirsiniz. EML dosyaları herhangi bir e-posta istemcisiyle ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) vb.) açılabilir veya diğer posta sunucularına aktarılabilir.
+
+#### Kurulum {#installation-1}
+
+Önceden derlenmiş bir ikili dosya indirebilir (Node.js gerektirmez) veya doğrudan [Node.js](https://github.com/nodejs/node) ile çalıştırabilirsiniz:
+
+**Önceden derlenmiş ikililer** — Platformunuz için en son sürümü [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases) üzerinden indirin:
+
+| Platform | Mimari        | Dosya                                |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **macOS kullanıcıları:** İndirildikten sonra, ikili dosyayı çalıştırmadan önce karantina özniteliğini kaldırmanız gerekebilir:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (İndirilen dosyanın gerçek yolu ile `./convert-sqlite-to-eml-darwin-arm64` değiştirin.)
+
+> **Linux kullanıcıları:** İndirildikten sonra, ikili dosyayı çalıştırılabilir yapmanız gerekebilir:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (İndirilen dosyanın gerçek yolu ile `./convert-sqlite-to-eml-linux-x64` değiştirin.)
+
+**Kaynak koddan** (gerektirir [Node.js](https://github.com/nodejs/node) >= 18):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### Kullanım {#usage}
+
+Araç hem etkileşimli hem de etkileşimsiz modları destekler.
+
+**Etkileşimli mod** — argüman olmadan çalıştırın ve tüm girdiler için sizden bilgi istenir:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - SQLite Yedeğini EML'ye Dönüştür
+  =============================================
+
+  SQLite yedek dosyasının yolu: /path/to/backup.sqlite
+  IMAP/alias şifresi: ********
+  Çıktı ZIP yolu [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**Etkileşimsiz mod** — betikleme ve otomasyon için komut satırı bayraklarıyla argümanları geçin:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| Bayrak               | Açıklama                                                                      |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `--path <path>`      | Şifrelenmiş SQLite yedek dosyasının yolu                                      |
+| `--password <pass>`  | Şifre çözme için IMAP/alias şifresi                                           |
+| `--output <path>`    | ZIP dosyasının çıktı yolu (varsayılan: ISO 8601 zaman damgası ile otomatik oluşturulur) |
+| `--help`             | Yardım mesajını göster                                                        |
+#### Çıktı Formatı {#output-format}
+
+Araç, şifre korumalı bir ZIP arşivi (AES-256 şifreli) üretir ve içinde şunlar bulunur:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+EML dosyaları posta kutusu klasörlerine göre düzenlenmiştir. ZIP şifresi, IMAP/alias şifrenizle aynıdır. Her `.eml` dosyası, SQLite veritabanından yeniden oluşturulmuş tam başlıklar, gövde metni ve eklerle standart bir [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) e-posta mesajıdır.
+
+#### Nasıl Çalışır {#how-it-works}
+
+1. Şifreli SQLite veritabanını IMAP/alias şifrenizle açar ([ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) ve [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) şifrelerini destekler).
+2. Klasör yapısını keşfetmek için Mailboxes tablosunu okur.
+3. Her mesaj için, Messages tablosunda saklanan [Brotli](https://github.com/google/brotli)-sıkıştırılmış JSON formatındaki mimeTree'yi çözer.
+4. MIME ağacını dolaşarak ve eklerin gövdelerini Attachments tablosundan alarak tam EML'yi yeniden oluşturur.
+5. Her şeyi [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted) kullanarak şifre korumalı bir ZIP arşivine paketler.
+
+### Kendin Barındırmayı Destekliyor musunuz? {#do-you-support-self-hosting}
+
+Evet, Mart 2025 itibarıyla kendin barındırma seçeneğini destekliyoruz. Blog yazısını [buradan](https://forwardemail.net/blog/docs/self-hosted-solution) okuyabilirsiniz. Başlamak için [kendin barındırma rehberine](https://forwardemail.net/self-hosted) göz atın. Daha ayrıntılı adım adım versiyon için [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) veya [Debian](https://forwardemail.net/guides/selfhosted-on-debian) tabanlı rehberlerimize bakabilirsiniz.
+
+
+## E-posta Yapılandırması {#email-configuration}
+
+### Nasıl Başlarım ve E-posta Yönlendirmeyi Nasıl Kurarım? {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Tahmini Kurulum Süresi:</strong>
+  <span>10 dakikadan az</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Başlarken:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    Aşağıda listelenen birden sekize kadar olan adımları dikkatlice okuyup takip edin. E-postaların yönlendirileceği adresi (eğer doğru değilse) <code>user@gmail.com</code> adresiyle değiştirin. Benzer şekilde, özel alan adınızı (eğer doğru değilse) <code>example.com</code> ile değiştirin.
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">Alan adınızı zaten bir yerde kaydettiyseniz, bu adımı tamamen atlayıp ikinci adıma geçmelisiniz! Aksi takdirde, <a href="/domain-registration" rel="noopener noreferrer">alan adınızı kaydetmek için buraya tıklayabilirsiniz</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  Alan adınızı nerede kaydettiğinizi hatırlıyor musunuz? Hatırladıktan sonra aşağıdaki talimatları izleyin:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    Yeni bir sekme açıp alan adı kayıt firmanıza giriş yapmalısınız. Bunu otomatik yapmak için aşağıdaki "Registrar" bağlantısına kolayca tıklayabilirsiniz. Bu yeni sekmede, kayıt firmanızın DNS yönetim sayfasına gitmelisiniz – ve "Yapılandırma Adımları" sütununda adım adım gezinme talimatlarını sağladık. Bu sayfaya ulaştıktan sonra bu sekmeye geri dönüp üçüncü adıma devam edebilirsiniz.
+    <strong class="font-weight-bold">Açtığınız sekmeyi henüz kapatmayın; sonraki adımlar için ihtiyacınız olacak!</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>Kayıt Firması</th>
+      <th>Yapılandırma Adımları</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Domain Merkezi <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> DNS Ayarlarını Düzenle</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Alan adınızı seçin)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Sunucularım <i class="fa fa-angle-right"></i> Alan Adı Yönetimi <i class="fa fa-angle-right"></i> DNS Yöneticisi</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>ROCK İÇİN: Giriş yap <i class="fa fa-angle-right"></i> Alan Adları <i class="fa fa-angle-right"></i> (Yönetim yanındaki ▼ simgesine tıklayın) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      ESKİ SÜRÜM İÇİN: Giriş yap <i class="fa fa-angle-right"></i> Alan Adları <i class="fa fa-angle-right"></i> Bölge düzenleyici <i class="fa fa-angle-right"></i> (Alan adınızı seçin)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Alan adınızı seçin)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> (Alan adınızı seçin)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Yönet</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Ağ <i class="fa fa-angle-right"></i> Alan Adları <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> Daha Fazla <i class="fa fa-angle-right"></i> Alan Adını Yönet</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Kart görünümünde, alan adınızda yönet'e tıklayın <i class="fa fa-angle-right"></i> Liste görünümünde, dişli simgesine tıklayın <i class="fa fa-angle-right"></i> DNS ve İsim Sunucuları <i class="fa fa-angle-right"></i> DNS Kayıtları</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> İzle</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> Yönet <i class="fa fa-angle-right"></i> (dişli simgesine tıklayın) <i class="fa fa-angle-right"></i> Sol menüde DNS ve İsim Sunucularına tıklayın</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Alan Adları <i class="fa fa-angle-right"></i> Alan Adlarını Yönet <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Genel Bakış <i class="fa fa-angle-right"></i> Yönet <i class="fa fa-angle-right"></i> Basit Düzenleyici <i class="fa fa-angle-right"></i> Kayıtlar</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> Yönetim <i class="fa fa-angle-right"></i> Bölgeyi düzenle</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> İzle</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Alan Adlarımı Yönet <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> DNS Yönetimi</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> İzle</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> DNS Yapılandır</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> İzle</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Alan Adları Listesi <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> Yönet <i class="fa fa-angle-right"></i> Gelişmiş DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> Netlify DNS Kur</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Hesap Yöneticisi <i class="fa fa-angle-right"></i> Alan Adlarım <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> Yönet <i class="fa fa-angle-right"></i> Alan Adının Yönlendirildiği Yeri Değiştir <i class="fa fa-angle-right"></i> Gelişmiş DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> İzle</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Yönetilen Alan Adları <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> DNS Ayarları</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Ana menü <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Alan Adları <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i>
+Gelişmiş ayarlar <i class="fa fa-angle-right"></i> Özel Kayıtlar</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>"now" CLI kullanarak <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Alan Adları sayfası <i class="fa fa-angle-right"></i> (Alan adınızı seçin) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Alan Adları sayfası <i class="fa fa-angle-right"></i> (<i class="fa fa-ellipsis-h"></i> simgesine tıklayın) <i class="fa fa-angle-right"></i> DNS Kayıtlarını Yönet'i seçin</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>Giriş yap <i class="fa fa-angle-right"></i> Alan Adları <i class="fa fa-angle-right"></i> Alan Adlarım</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>Diğer</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Önemli:</strong> Kayıt firmanızın adı burada listelenmiyor mu? İnternette "$REGISTRAR üzerinde DNS kayıtları nasıl değiştirilir" şeklinde arama yapabilirsiniz (burada $REGISTRAR yerine kayıt firmanızın adını yazın – örneğin GoDaddy kullanıyorsanız "GoDaddy üzerinde DNS kayıtları nasıl değiştirilir").</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">Kayıt firmanızın DNS yönetim sayfasını (açtığınız diğer sekme) kullanarak aşağıdaki "MX" kayıtlarını ayarlayın:
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    Başka MX kaydı olmaması gerektiğini unutmayın. Aşağıda gösterilen her iki kayıt da OLMALIDIR. Yazım hatası olmadığından ve hem mx1 hem de mx2'nin doğru yazıldığından emin olun. Zaten var olan MX kayıtları varsa, lütfen tamamen silin.
+    "TTL" değeri 3600 olmak zorunda değildir, gerekirse daha düşük veya daha yüksek bir değer olabilir.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Priority</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Öncelik</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1545,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Kayıt firmanızın DNS yönetim sayfasını kullanarak (açtığınız diğer sekme), aşağıdaki <strong class="notranslate">TXT</strong> kayd(lar)ını ayarlayın:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    Eğer ücretli bir plandaysanız, bu adımı tamamen atlayıp beşinci adıma geçmelisiniz! Ücretli bir planınız yoksa, yönlendirdiğiniz adresler herkese açık olarak aranabilir olacak – <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> sayfasına gidip alan adınızı isterseniz ücretli plana yükseltebilirsiniz. Ücretli planlar hakkında daha fazla bilgi almak isterseniz <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Fiyatlandırma</a> sayfamıza bakabilirsiniz. Aksi takdirde aşağıda listelenen Seçenek A'dan Seçenek F'ye kadar bir veya daha fazla kombinasyonu seçmeye devam edebilirsiniz.
   </span>
 </div>
 
@@ -1307,25 +1562,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    Seçenek A:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    Eğer alan adınızdaki tüm e-postaları (örneğin "all@example.com", "hello@example.com" vb.) belirli bir adrese "user@gmail.com" yönlendiriyorsanız:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1338,10 +1593,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Yukarıdaki "Değer" sütunundaki değerleri kendi e-posta adresinizle değiştirdiğinizden emin olun. "TTL" değeri 3600 olmak zorunda değildir, gerekirse daha düşük veya daha yüksek bir değer olabilir. Daha düşük bir TTL ("Time to Live") değeri, DNS kayıtlarınızda yapılan gelecekteki değişikliklerin İnternet genelinde daha hızlı yayılmasını sağlar – bunu, bellekte ne kadar süreyle önbelleğe alınacağı (saniye cinsinden) olarak düşünebilirsiniz. <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL hakkında Wikipedia'da daha fazla bilgi edinebilirsiniz</a>.
   </span>
 </div>
 
@@ -1350,25 +1605,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    Seçenek B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    Sadece tek bir e-posta adresini yönlendirmek istiyorsanız (örneğin <code>hello@example.com</code> adresini <code>user@gmail.com</code> adresine; bu aynı zamanda "hello+test@example.com" adresini otomatik olarak "user+test@gmail.com" adresine yönlendirecektir):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1637,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    Seçenek C:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    Birden fazla e-posta yönlendiriyorsanız, bunları virgülle ayırmak isteyeceksiniz:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1670,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    Seçenek D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    Sonsuz sayıda yönlendirme e-postası ayarlayabilirsiniz – sadece tek bir satırda 255 karakteri aşmamaya ve her satırı "forward-email=" ile başlatmaya dikkat edin. Aşağıda bir örnek verilmiştir:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1696,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1704,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1712,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1720,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1735,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    Seçenek E:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    Ayrıca, global takma ad yönlendirmesi için <strong class="notranslate">TXT</strong> kaydınızda bir alan adı belirtebilirsiniz (örneğin "user@example.com" adresi "user@example.net" adresine yönlendirilir):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1768,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    Seçenek F:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    E-postaları yönlendirmek için global veya bireysel takma ad olarak webhooks bile kullanabilirsiniz. Aşağıdaki <a href="#do-you-support-webhooks" class="alert-link">Webhookları destekliyor musunuz</a> başlıklı örneğe ve tam bölüme bakınız.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1800,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    Seçenek G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    Takma adları eşleştirmek ve e-postaları yönlendirmek için yerine koyma işlemlerini yönetmek amacıyla düzenli ifadeler ("regex") bile kullanabilirsiniz. Aşağıdaki <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Düzenli ifadeleri veya regex'i destekliyor musunuz</a> başlıklı bölümde örnekleri ve tam açıklamayı inceleyin.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>Yerine koyma ile gelişmiş regex mi gerekiyor?</strong> Aşağıdaki <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Düzenli ifadeleri veya regex'i destekliyor musunuz</a> başlıklı bölümde örnekleri ve tam açıklamayı inceleyin.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Basit Örnek:</strong> `linus@example.com` veya `torvalds@example.com` adreslerine giden tüm e-postaların `user@gmail.com` adresine yönlendirilmesini istiyorsam:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1841,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    Catch-all (tümünü yakalama) yönlendirme kuralları "düşme" (fall-through) olarak da tanımlanabilir.
+    Bu, en az bir özel yönlendirme kuralıyla eşleşen gelen e-postaların catch-all yerine kullanılacağı anlamına gelir.
+    Özel kurallar e-posta adresleri ve düzenli ifadeleri içerir.
     <br /><br />
-    For example:
+    Örneğin:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    Bu yapılandırmayla <code>hello@example.com</code> adresine gönderilen e-postalar <code>second@gmail.com</code> (catch-all) adresine **yönlendirilmez**, sadece <code>first@gmail.com</code> adresine teslim edilir.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Kayıt kuruluşunuzun DNS yönetim sayfasını (açtığınız diğer sekme) kullanarak, aşağıdaki <strong class="notranslate">TXT</strong> kaydını ayrıca ayarlayın:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1882,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Gmail (örneğin Gönderilen Posta Olarak) veya G Suite kullanıyorsanız, yukarıdaki değere <code>include:_spf.google.com</code> eklemeniz gerekir, örneğin:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1641,34 +1894,33 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Eğer zaten "v=spf1" içeren benzer bir satırınız varsa, mevcut "include:host.com" kayıtlarından ve aynı satırdaki "-all" ifadesinden hemen önce <code>include:spf.forwardemail.net</code> eklemeniz gerekir, örneğin:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    "-all" ile "~all" arasında fark vardır. "-" SPF kontrolünün eşleşmezse BAŞARISIZ olması gerektiğini, "~" ise SPF kontrolünün YUMUŞAK BAŞARISIZ olması gerektiğini belirtir. Alan adı sahteciliğini önlemek için "-all" yaklaşımını kullanmanızı öneririz.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Ayrıca, posta gönderdiğiniz herhangi bir sunucu için SPF kaydını da eklemeniz gerekebilir (örneğin Outlook).
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">DNS kayıtlarınızı <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Kurulum sayfasında bulunan "Kayıtları Doğrula" aracımızı kullanarak doğrulayın.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Çalıştığını doğrulamak için test e-postası gönderin. DNS kayıtlarınızın yayılması biraz zaman alabilir.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    Test e-postaları almıyorsanız veya "Bu mesaja dikkat edin" diyen bir test e-postası alıyorsanız, lütfen sırasıyla <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Neden test e-postalarımı almıyorum</a> ve <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Neden Gmail'de kendime gönderdiğim test e-postaları "şüpheli" olarak görünüyor</a> başlıklarındaki cevaplara bakın.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Gmail'den "Gönderilen Posta" olarak göndermek istiyorsanız, <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">bu videoyu izlemelisiniz</a></strong> veya aşağıdaki <a href="#how-to-send-mail-as-using-gmail">Gmail Kullanarak Gönderilen Posta Nasıl Gönderilir</a> adımlarını takip edin.
 
 </li></ol>
 
@@ -1676,10 +1928,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Tebrikler!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Tüm adımları başarıyla tamamladınız.
     </span>
   </div>
 </div>
@@ -1687,93 +1939,92 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    Aşağıda isteğe bağlı eklentiler listelenmiştir. Bu eklentiler tamamen isteğe bağlıdır ve gerekli olmayabilir. Gerekirse size ek bilgi sağlamak istedik.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    İsteğe Bağlı Eklenti:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    Eğer <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Gmail Kullanarak Gönderilen Posta Nasıl Gönderilir</a> özelliğini kullanıyorsanız, kendinizi bir izin listesine eklemek isteyebilirsiniz. Bu konuda <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">Gmail'in bu talimatlarına</a> bakın.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Gelişmiş yönlendirme için birden fazla MX değişimi ve sunucu kullanabilir miyim? {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+Evet, ancak **DNS kayıtlarınızda yalnızca bir MX değişimi listelenmelidir**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+Birden fazla MX değişimini yapılandırmak için "Öncelik" kullanmaya çalışmayın.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+Bunun yerine, mevcut MX değişiminizi, eşleşmeyen tüm takma adlar için postayı hizmetimizin değişimlerine (`mx1.forwardemail.net` ve/veya `mx2.forwardemail.net`) yönlendirecek şekilde yapılandırmanız gerekir.
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Google Workspace kullanıyorsanız ve eşleşmeyen tüm takma adları hizmetimize yönlendirmek istiyorsanız, <https://support.google.com/a/answer/6297084> adresine bakın.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Microsoft 365 (Outlook) kullanıyorsanız ve eşleşmeyen tüm takma adları hizmetimize yönlendirmek istiyorsanız, <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> ve <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations> adreslerine bakın.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Tatil yanıtlayıcısı (ofis dışı otomatik yanıtlayıcı) nasıl kurulur? {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar sayfasına gidin ve tatil otomatik yanıtlayıcısı yapılandırmak istediğiniz takma adı oluşturun veya düzenleyin.
+Başlangıç tarihi, bitiş tarihi, konu ve mesaj yapılandırma yeteneğiniz vardır ve istediğiniz zaman etkinleştirebilir veya devre dışı bırakabilirsiniz:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* Düz metin konu ve mesaj şu anda desteklenmektedir (içeride herhangi bir HTML'yi kaldırmak için `striptags` paketini kullanıyoruz).
+* Konu 100 karakterle sınırlıdır.
+* Mesaj 1000 karakterle sınırlıdır.
+* Kurulum, Giden SMTP yapılandırması gerektirir (örneğin, DKIM, DMARC ve Return-Path DNS kayıtlarını ayarlamanız gerekecektir).
+  * <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Giden SMTP Yapılandırması sayfasına gidin ve kurulum talimatlarını izleyin.
+* Tatil yanıtlayıcı, genel özel alan adı adlarında etkinleştirilemez (örneğin, [tek kullanımlık adresler](/disposable-addresses) desteklenmez).
+* Tatil yanıtlayıcı, joker karakterli/kapsayıcı (`*`) veya düzenli ifadeli takma adlar için etkinleştirilemez.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+`postfix` gibi posta sistemlerinin aksine (örneğin `sieve` tatil filtresi uzantısını kullananlar) – Forward Email otomatik olarak DKIM imzanızı ekler, tatil yanıtlarını gönderirken bağlantı sorunlarını önler (örneğin yaygın SSL/TLS bağlantı sorunları ve eski sunucular nedeniyle) ve hatta tatil yanıtları için Open WKD ve PGP şifrelemesini destekler.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* Kötüye kullanımı önlemek için, gönderilen her tatil yanıtı mesajı için 1 giden SMTP kredisi düşülür.
+  * Tüm ücretli hesaplar varsayılan olarak günde 300 kredi içerir. Daha fazla krediye ihtiyacınız varsa lütfen bizimle iletişime geçin.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. Her [izin verilen](#do-you-have-an-allowlist) gönderen için yalnızca 4 günde bir kez gönderim yaparız (bu Gmail'in davranışına benzer).
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Redis önbelleğimiz, `alias_id` ve `sender` parmak izi kullanır; burada `alias_id` takma adın MongoDB kimliği, `sender` ise izin verilen ise Gönderen adresi, değilse Gönderen adresindeki kök alan adıdır. Basitlik için bu parmak izinin önbellekte süresi 4 gün olarak ayarlanmıştır.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * İzin verilmeyen gönderenler için Gönderen adresinden ayrıştırılan kök alan adını kullanmamız, nispeten bilinmeyen gönderenlerin (örneğin kötü niyetli aktörlerin) tatil yanıtı mesajlarıyla spam yapmasını önler.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. MAIL FROM ve/veya From boş değilse ve (büyük/küçük harf duyarsız) bir [postmaster kullanıcı adı](#what-are-postmaster-addresses) içermiyorsa (bir e-postadaki @ işaretinden önceki kısım) gönderim yaparız.
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. Orijinal mesajda aşağıdaki başlıklardan herhangi biri varsa (büyük/küçük harf duyarsız) gönderim yapmayız:
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * Değeri `no` olmayan `auto-submitted` başlığı.
+   * Değeri `dr`, `autoreply`, `auto-reply`, `auto_reply` veya `all` olan `x-auto-response-suppress` başlığı.
+   * `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` veya `x-auto-respond` başlıkları (değerine bakılmaksızın).
+   * Değeri `bulk`, `autoreply`, `auto-reply`, `auto_reply` veya `list` olan `precedence` başlığı.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. MAIL FROM veya From e-posta adresi `+donotreply`, `-donotreply`, `+noreply` veya `-noreply` ile bitiyorsa gönderim yapmayız.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. From e-posta adresinin kullanıcı adı kısmı `mdaemon` ise ve büyük/küçük harf duyarsız `X-MDDSN-Message` başlığı varsa gönderim yapmayız.
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. Büyük/küçük harf duyarsız `content-type` başlığı `multipart/report` ise gönderim yapmayız.
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Forward Email için SPF nasıl kurulur {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+Kayıt şirketinizin DNS yönetim sayfasını kullanarak aşağıdaki <strong class="notranslate">TXT</strong> kaydını ayarlayın:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2035,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Gmail (örneğin Mail Gönderirken) veya G Suite kullanıyorsanız, yukarıdaki değere <code>include:_spf.google.com</code> eklemeniz gerekir, örneğin:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Microsoft Outlook veya Live.com kullanıyorsanız, SPF <strong class="notranslate">TXT</strong> kaydınıza <code>include:spf.protection.outlook.com</code> eklemeniz gerekir, örneğin:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1808,450 +2058,501 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Zaten "v=spf1" içeren benzer bir satırınız varsa, <code>include:spf.forwardemail.net</code> ifadesini mevcut "include:host.com" kayıtlarından hemen önce ve aynı satırdaki "-all" ifadesinden önce eklemeniz gerekir, örneğin:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    "-all" ile "~all" arasında fark olduğunu unutmayın. "-" işareti, SPF kontrolünün eşleşmezse BAŞARISIZ olması gerektiğini, "~" işareti ise SPF kontrolünün YUMUŞAK BAŞARISIZ olması gerektiğini belirtir. Alan adı sahteciliğini önlemek için "-all" yaklaşımını kullanmanızı öneririz.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Ayrıca, posta gönderdiğiniz herhangi bir sunucu için SPF kaydını da eklemeniz gerekebilir (örneğin Outlook).
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Forward Email için DKIM nasıl kurulur {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Giden SMTP Yapılandırması bölümüne gidin ve kurulum talimatlarını izleyin.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Forward Email için DMARC nasıl kurulur {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Giden SMTP Yapılandırması bölümüne gidin ve kurulum talimatlarını izleyin.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### DMARC Raporları nasıl görüntülenir {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email, tüm alan adlarınız için e-posta kimlik doğrulama performansınızı tek bir arayüzden izlemenizi sağlayan kapsamlı bir DMARC Raporları paneli sunar.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**DMARC Raporları nedir?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+DMARC (Alan Adı Tabanlı Mesaj Kimlik Doğrulama, Raporlama ve Uyum) raporları, e-postalarınızın nasıl doğrulandığını size bildiren alıcı posta sunucuları tarafından gönderilen XML dosyalarıdır. Bu raporlar size şunları anlamanıza yardımcı olur:
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+* Alan adınızdan kaç e-posta gönderildiği
+* Bu e-postaların SPF ve DKIM doğrulamasından geçip geçmediği
+* Alıcı sunucuların hangi işlemleri yaptığı (kabul, karantina veya reddetme)
+* Alan adınız adına hangi IP adreslerinin e-posta gönderdiği
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+**DMARC Raporlarına Nasıl Erişilir**
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+<a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> DMARC Raporları</a> sayfasına giderek panelinizi görüntüleyebilirsiniz. Ayrıca, <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> sayfasından herhangi bir alan adının yanındaki "DMARC" butonuna tıklayarak alan adına özel raporlara erişebilirsiniz.
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+**Panel Özellikleri**
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+DMARC Raporları paneli şunları sağlar:
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+* **Özet Metrikler**: Alınan toplam rapor sayısı, analiz edilen toplam mesaj sayısı, SPF uyum oranı, DKIM uyum oranı ve genel geçme oranı
+* **Zamana Göre Mesaj Grafiği**: Son 30 gündeki e-posta hacmi ve kimlik doğrulama oranlarının görsel eğilimi
+* **Uyum Özeti**: SPF ve DKIM uyum dağılımını gösteren halka grafik
+* **Mesaj Durumu**: Alıcı sunucuların e-postalarınızı nasıl işlediğini gösteren yığılmış çubuk grafik (kabul edilen, karantinaya alınan veya reddedilen)
+* **Son Raporlar Tablosu**: Bireysel DMARC raporlarının detaylı listesi, filtreleme ve sayfalama özellikleri ile
+* **Alan Adı Filtreleme**: Birden fazla alan adı yönetirken raporları belirli bir alan adına göre filtreleme
+**Neden Bu Önemli**
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+Birden fazla alan adı yöneten kuruluşlar (şirketler, kar amacı gütmeyen kuruluşlar veya ajanslar gibi) için DMARC raporları şunlar açısından hayati öneme sahiptir:
 
-**Setup instructions by platform:**
+* **Yetkisiz gönderenleri tespit etmek**: Alan adınızın taklit edilip edilmediğini belirleyin
+* **Teslimat oranını artırmak**: Meşru e-postalarınızın kimlik doğrulamadan geçmesini sağlayın
+* **E-posta altyapısını izlemek**: Hangi hizmetlerin ve IP adreslerinin sizin adınıza e-posta gönderdiğini takip edin
+* **Uyumluluk**: Güvenlik denetimleri için e-posta kimlik doğrulamasını görünür kılın
+
+Ayrı DMARC izleme araçları gerektiren diğer hizmetlerin aksine, Forward Email DMARC rapor işleme ve görselleştirmeyi hesabınızın bir parçası olarak ek bir ücret talep etmeden sunar.
+
+**Gereksinimler**
+
+* DMARC Raporları yalnızca ücretli planlarda mevcuttur
+* Alan adınızda DMARC yapılandırılmış olmalıdır (bkz. [Forward Email için DMARC nasıl kurulur](#how-do-i-set-up-dmarc-for-forward-email))
+* Raporlar, posta sunucuları yapılandırdığınız DMARC raporlama adresine gönderdiğinde otomatik olarak toplanır
+
+**Haftalık E-posta Raporları**
+
+Ücretli plan kullanıcıları haftalık DMARC rapor özetlerini otomatik olarak e-posta ile alır. Bu e-postalar şunları içerir:
+
+* Tüm alan adlarınız için özet istatistikler
+* SPF ve DKIM uyum oranları
+* Mesaj durumu dağılımı (kabul edilen, karantinaya alınan, reddedilen)
+* En çok raporlayan kuruluşlar (Google, Microsoft, Yahoo vb.)
+* Dikkat gerektirebilecek uyum sorunları olan IP adresleri
+* DMARC Raporları kontrol panelinize doğrudan bağlantılar
+
+Haftalık raporlar otomatik olarak gönderilir ve diğer e-posta bildirimlerinden ayrı olarak devre dışı bırakılamaz.
+
+### Kişilerimi nasıl bağlar ve yapılandırırım {#how-do-i-connect-and-configure-my-contacts}
+
+**Kişilerinizi yapılandırmak için CardDAV URL'sini kullanın:** `https://carddav.forwardemail.net` (veya istemciniz izin veriyorsa sadece `carddav.forwardemail.net`)
+
+### Takvimlerimi nasıl bağlar ve yapılandırırım {#how-do-i-connect-and-configure-my-calendars}
+
+**Takviminizi yapılandırmak için CalDAV URL'sini kullanın:** `https://caldav.forwardemail.net` (veya istemciniz izin veriyorsa sadece `caldav.forwardemail.net`)
+
+<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Takvim CalDAV Thunderbird Örnek Kurulum" />
+
+### Daha fazla takvim nasıl ekler ve mevcut takvimleri nasıl yönetirim {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+
+Ek takvimler eklemek isterseniz, yeni takvim URL'si olarak şunu ekleyin: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**`calendar-name` kısmını istediğiniz takvim adıyla değiştirin**)
+
+Bir takvimin adını ve rengini oluşturduktan sonra değiştirebilirsiniz – tercih ettiğiniz takvim uygulamasını kullanmanız yeterlidir (örneğin Apple Mail veya [Thunderbird](https://thunderbird.net)).
+
+### Görevlerimi ve hatırlatıcılarımı nasıl bağlar ve yapılandırırım {#how-do-i-connect-and-configure-tasks-and-reminders}
+
+**Görevler ve hatırlatıcılar için takvimlerle aynı CalDAV URL'sini kullanın:** `https://caldav.forwardemail.net` (veya istemciniz izin veriyorsa sadece `caldav.forwardemail.net`)
+
+Görevler ve hatırlatıcılar otomatik olarak takvim etkinliklerinden ayrılarak kendi "Hatırlatıcılar" veya "Görevler" takvim koleksiyonlarına yerleştirilir.
+
+**Platforma göre kurulum talimatları:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. Sistem Tercihleri > İnternet Hesapları (veya iOS'ta Ayarlar > Hesaplar) bölümünden yeni bir CalDAV hesabı ekleyin
+2. Sunucu olarak `caldav.forwardemail.net` kullanın
+3. Forward Email takma adınızı ve oluşturulan şifrenizi girin
+4. Kurulumdan sonra hem "Takvim" hem de "Hatırlatıcılar" koleksiyonlarını göreceksiniz
+5. Görevleri oluşturmak ve yönetmek için Hatırlatıcılar uygulamasını kullanın
 
-**Android with Tasks.org:**
+**Android için Tasks.org:**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Google Play Store veya F-Droid'den Tasks.org uygulamasını yükleyin
+2. Ayarlar > Senkronizasyon > Hesap Ekle > CalDAV yolunu izleyin
+3. Sunucu olarak `https://caldav.forwardemail.net` girin
+4. Forward Email takma adınızı ve oluşturulan şifrenizi girin
+5. Tasks.org görev takvimlerinizi otomatik olarak bulacaktır
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Lightning eklentisi yüklü değilse yükleyin
+2. Türü "CalDAV" olan yeni bir takvim oluşturun
+3. URL olarak `https://caldav.forwardemail.net` kullanın
+4. Forward Email kimlik bilgilerinizi girin
+5. Takvim arayüzünde hem etkinlikler hem de görevler kullanılabilir olacaktır
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### macOS Hatırlatıcılar'da neden görev oluşturamıyorum {#why-cant-i-create-tasks-in-macos-reminders}
+macOS Reminders'da görev oluşturmakta sorun yaşıyorsanız, bu sorun giderme adımlarını deneyin:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **Hesap ayarını kontrol edin**: CalDAV hesabınızın `caldav.forwardemail.net` ile doğru yapılandırıldığından emin olun
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **Ayrı takvimleri doğrulayın**: Hesabınızda hem "Calendar" hem de "Reminders" görmelisiniz. Sadece "Calendar" görüyorsanız, görev desteği henüz tam olarak etkinleştirilmemiş olabilir.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **Hesabı yenileyin**: Sistem Tercihleri > İnternet Hesapları bölümünden CalDAV hesabınızı kaldırıp tekrar eklemeyi deneyin
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **Sunucu bağlantısını kontrol edin**: Tarayıcınızda `https://caldav.forwardemail.net` adresine erişebildiğinizi test edin
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **Kimlik bilgilerini doğrulayın**: Doğru takma ad e-posta adresi ve oluşturulan şifreyi (hesap şifreniz değil) kullandığınızdan emin olun
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **Zorla senkronizasyon yapın**: Reminders uygulamasında bir görev oluşturup ardından senkronizasyonu manuel olarak yenilemeyi deneyin
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**Yaygın sorunlar:**
 
-**Common issues:**
+* **"Reminders takvimi bulunamadı"**: Sunucunun ilk erişimde Reminders koleksiyonunu oluşturması için biraz zamana ihtiyacı olabilir
+* **Görevler senkronize olmuyor**: Her iki cihazın da aynı CalDAV hesap kimlik bilgilerini kullandığını kontrol edin
+* **Karışık içerik**: Görevlerin genel "Calendar" değil, "Reminders" takviminde oluşturulduğundan emin olun
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### Android'de Tasks.org nasıl kurulur {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.org, Forward Email'in CalDAV görev desteği ile mükemmel çalışan popüler açık kaynaklı bir görev yöneticisidir.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**Kurulum ve Ayarlar:**
 
-**Installation and Setup:**
+1. **Tasks.org'u yükleyin**:
+   * Google Play Store'dan: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * F-Droid'den: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **CalDAV senkronizasyonunu yapılandırın**:
+   * Tasks.org'u açın
+   * ☰ Menü > Ayarlar > Senkronizasyon'a gidin
+   * "Hesap Ekle"ye dokunun
+   * "CalDAV" seçeneğini seçin
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+3. **Forward Email ayarlarını girin**:
+   * **Sunucu URL'si**: `https://caldav.forwardemail.net`
+   * **Kullanıcı Adı**: Forward Email takma adınız (örneğin, `you@yourdomain.com`)
+   * **Şifre**: Takma adınıza özel oluşturulan şifre
+   * "Hesap Ekle"ye dokunun
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+4. **Hesap keşfi**:
+   * Tasks.org görev takvimlerinizi otomatik olarak bulacaktır
+   * "Reminders" koleksiyonunuz görünmelidir
+   * Görev takvimi senkronizasyonunu etkinleştirmek için "Abone Ol" seçeneğine dokunun
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+5. **Senkronizasyonu test edin**:
+   * Tasks.org'da test amaçlı bir görev oluşturun
+   * Görevin macOS Reminders gibi diğer CalDAV istemcilerinde göründüğünü kontrol edin
+   * Değişikliklerin her iki yönde de senkronize olduğunu doğrulayın
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+**Mevcut özellikler:**
 
-**Features available:**
+* ✅ Görev oluşturma ve düzenleme
+* ✅ Son tarihler ve hatırlatıcılar
+* ✅ Görev tamamlama ve durumu
+* ✅ Öncelik seviyeleri
+* ✅ Alt görevler ve görev hiyerarşisi
+* ✅ Etiketler ve kategoriler
+* ✅ Diğer CalDAV istemcileriyle çift yönlü senkronizasyon
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+**Sorun giderme:**
 
-**Troubleshooting:**
+* Görev takvimleri görünmüyorsa, Tasks.org ayarlarında manuel yenilemeyi deneyin
+* Sunucuda en az bir görev oluşturduğunuzdan emin olun (önce macOS Reminders'da bir görev oluşturabilirsiniz)
+* `caldav.forwardemail.net` bağlantı durumunu kontrol edin
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+### Forward Email için SRS nasıl kurulur {#how-do-i-set-up-srs-for-forward-email}
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+[Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") otomatik olarak yapılandırılır – bunu kendiniz yapmanız gerekmez.
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+### Forward Email için MTA-STS nasıl kurulur {#how-do-i-set-up-mta-sts-for-forward-email}
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+Daha fazla bilgi için [MTA-STS bölümümüze](#do-you-support-mta-sts) bakınız.
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+### E-posta adresime profil fotoğrafı nasıl eklerim {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+Gmail kullanıyorsanız, aşağıdaki adımları izleyin:
 
-If you're using Gmail, then follow these steps below:
+1. <https://google.com> adresine gidin ve tüm e-posta hesaplarından çıkış yapın
+2. "Oturum Aç" butonuna tıklayın ve açılır menüden "başka hesap" seçeneğine tıklayın
+3. "Başka bir hesap kullan" seçeneğini seçin
+4. "Hesap oluştur" seçeneğini seçin
+5. "Bunun yerine mevcut e-posta adresimi kullan" seçeneğini seçin
+6. Özel alan adınıza ait e-posta adresinizi girin
+7. E-posta adresinize gönderilen doğrulama e-postasını alın
+8. Bu e-postadaki doğrulama kodunu girin
+9. Yeni Google hesabınız için profil bilgilerini tamamlayın
+10. Tüm Gizlilik ve Kullanım Şartları politikalarını kabul edin
+11. <https://google.com> adresine gidin, sağ üst köşedeki profil simgenize tıklayın ve "değiştir" butonuna tıklayın
+12. Hesabınız için yeni bir fotoğraf veya avatar yükleyin
+13. Değişikliklerin yayılması yaklaşık 1-2 saat sürecektir, ancak bazen çok hızlı olabilir.
+14. Test amaçlı bir e-posta gönderin ve profil fotoğrafının göründüğünü kontrol edin.
+## Gelişmiş Özellikler {#advanced-features}
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+### Pazarlama ile ilgili e-posta için bültenleri veya posta listelerini destekliyor musunuz? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-## Advanced Features {#advanced-features}
+Evet, daha fazlasını <https://forwardemail.net/guides/newsletter-with-listmonk> adresinde okuyabilirsiniz.
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+Lütfen IP itibarını korumak ve teslim edilebilirliği sağlamak için Forward Email'in **bülten onayı** için alan bazında manuel bir inceleme süreci olduğunu unutmayın. Onay için <support@forwardemail.net> adresine e-posta gönderin veya bir [yardım talebi](https://forwardemail.net/help) açın. Bu genellikle 24 saatten kısa sürer ve çoğu talep 1-2 saat içinde karşılanır. Yakın gelecekte bu süreci ek spam kontrolleri ve uyarılarla anlık hale getirmeyi hedefliyoruz. Bu süreç, e-postalarınızın gelen kutusuna ulaşmasını ve mesajlarınızın spam olarak işaretlenmemesini sağlar.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+### API ile e-posta göndermeyi destekliyor musunuz? {#do-you-support-sending-email-with-api}
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+Evet, Mayıs 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti olarak API ile e-posta göndermeyi destekliyoruz.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Lütfen <a href="/terms" class="alert-link" target="_blank">Hüküm ve Koşullarımızı</a>, <a href="/privacy" class="alert-link" target="_blank">Gizlilik Politikamızı</a> ve <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Giden SMTP Limitlerini</a> okuduğunuzdan emin olun – kullanmanız kabul ve anlaşma olarak değerlendirilir.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+Seçenekler, örnekler ve daha fazla bilgi için API dokümantasyonumuzdaki [E-postalar](/email-api#outbound-emails) bölümüne bakınız.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+API ile giden e-posta gönderebilmek için, [Hesabım Güvenlik](/my-account/security) altında bulunan API tokenınızı kullanmalısınız.
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### IMAP ile e-posta almayı destekliyor musunuz? {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Evet, 16 Ekim 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti olarak IMAP üzerinden e-posta almayı destekliyoruz. **Lütfen [şifrelenmiş SQLite posta kutusu depolama özelliğimizin nasıl çalıştığına dair derinlemesine makalemizi](/blog/docs/best-quantum-safe-encrypted-email-service) okuyun.**
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Lütfen <a href="/terms" class="alert-link" target="_blank">Hüküm ve Koşullarımızı</a> ve <a href="/privacy" class="alert-link" target="_blank">Gizlilik Politikamızı</a> okuduğunuzdan emin olun – kullanmanız kabul ve anlaşma olarak değerlendirilir.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Yeni oluşturulan takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen oluşturulan şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Tercih ettiğiniz e-posta uygulamasını kullanarak yeni oluşturduğunuz takma ad ile bir hesap ekleyin veya yapılandırın (örneğin <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobil</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> veya <a href="/blog/open-source" class="alert-link" target="_blank">açık kaynaklı ve gizliliğe odaklı bir alternatif</a> kullanmanızı öneririz.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. IMAP sunucu adı istendiğinde `imap.forwardemail.net` girin
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. IMAP sunucu portu istendiğinde `993` (SSL/TLS) girin – gerekirse [alternatif IMAP portlarına](/faq#what-are-your-imap-server-configuration-settings) bakınız
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbird kullanıyorsanız, "Bağlantı güvenliği"nin "SSL/TLS" ve Kimlik doğrulama yönteminin "Normal şifre" olarak ayarlandığından emin olun.</span>
    </div>
+6. IMAP sunucu şifresi istendiğinde, yukarıdaki 2. adımda bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> bölümünden şifreyi yapıştırın
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Ayarlarınızı kaydedin** – sorun yaşıyorsanız, lütfen <a href="/help">bizimle iletişime geçin</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Tebrikler!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Tüm adımları başarıyla tamamladınız.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### POP3 destekliyor musunuz? {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Evet, 4 Aralık 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti olarak [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) desteklemekteyiz.  **Lütfen şifrelenmiş SQLite posta kutusu depolama özelliğimizin nasıl çalıştığına dair derinlemesine makalemizi okuyun**: [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Lütfen <a href="/terms" class="alert-link" target="_blank">Hüküm ve Koşullarımızı</a> ve <a href="/privacy" class="alert-link" target="_blank">Gizlilik Politikamızı</a> okuduğunuzdan emin olun – kullanmanız kabul ve onayınız olarak değerlendirilir.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Yeni oluşturulan takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Tercih ettiğiniz e-posta uygulamasını kullanarak, yeni oluşturduğunuz takma ad ile bir hesap ekleyin veya yapılandırın (örneğin <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobil</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> veya <a href="/blog/open-source" class="alert-link" target="_blank">açık kaynaklı ve gizliliğe odaklı bir alternatif</a> kullanmanızı öneririz.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. POP3 sunucu adı istendiğinde, `pop3.forwardemail.net` girin
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. POP3 sunucu portu istendiğinde, `995` (SSL/TLS) girin – gerekirse [alternatif POP3 portlarına](/faq#what-are-your-pop3-server-configuration-settings) bakın
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Eğer Thunderbird kullanıyorsanız, "Bağlantı güvenliği"nin "SSL/TLS" ve Kimlik doğrulama yönteminin "Normal şifre" olarak ayarlandığından emin olun.</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. POP3 sunucu şifresi istendiğinde, yukarıdaki 2. adımda bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> bölümünden şifreyi yapıştırın
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Ayarlarınızı kaydedin** – sorun yaşıyorsanız, lütfen <a href="/help">bizimle iletişime geçin</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Tebrikler!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Tüm adımları başarıyla tamamladınız.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### Takvimleri (CalDAV) destekliyor musunuz? {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Evet, 5 Şubat 2024 itibarıyla bu özelliği ekledik. Sunucumuz `caldav.forwardemail.net` olup, <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">durum sayfamızda</a> da izlenmektedir.
+IPv4 ve IPv6'yı destekler ve `443` (HTTPS) portu üzerinden erişilebilir.
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| Giriş    | Örnek                      | Açıklama                                                                                                                                                                                 |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Kullanıcı Adı | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi. |
+| Şifre    | `************************` | Takma ad için özel olarak oluşturulmuş şifre.                                                                                                                                             |
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+Takvim desteğini kullanmak için, **kullanıcı** <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi olmalı – ve **şifre** takma ad için özel olarak oluşturulmuş bir şifre olmalıdır.
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+### Görevler ve hatırlatıcıları destekliyor musunuz (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+Evet, 14 Ekim 2025 itibarıyla görevler ve hatırlatıcılar için CalDAV VTODO desteği ekledik. Bu, takvim desteğimizde kullandığımız aynı sunucuyu kullanır: `caldav.forwardemail.net`.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+CalDAV sunucumuz, **birleşik takvimler** kullanarak hem takvim etkinlikleri (VEVENT) hem de görevler (VTODO) bileşenlerini destekler. Bu, her takvimin hem etkinlik hem de görev içerebileceği anlamına gelir ve tüm CalDAV istemcileri arasında maksimum esneklik ve uyumluluk sağlar.
 
-**How calendars and lists work:**
+**Takvimler ve listeler nasıl çalışır:**
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+* **Her takvim hem etkinlikleri hem de görevleri destekler** - Herhangi bir takvime etkinlik, görev veya her ikisini ekleyebilirsiniz
+* **Apple Hatırlatıcı listeleri** - Apple Hatırlatıcı’da oluşturduğunuz her liste, sunucuda ayrı bir takvim olur
+* **Birden fazla takvim** - İhtiyacınız kadar takvim oluşturabilirsiniz, her biri kendi adı, rengi ve organizasyonuyla
+* **İstemciler arası senkronizasyon** - Görevler ve etkinlikler tüm uyumlu istemciler arasında sorunsuz senkronize olur
 
-**Supported task clients:**
+**Desteklenen görev istemcileri:**
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+* **macOS Hatırlatıcılar** - Görev oluşturma, düzenleme, tamamlama ve senkronizasyon için tam yerel destek
+* **iOS Hatırlatıcılar** - Tüm iOS cihazlarında tam yerel destek
+* **Tasks.org (Android)** - CalDAV senkronizasyonu olan popüler açık kaynak görev yöneticisi
+* **Thunderbird** - Masaüstü e-posta istemcisinde görev ve takvim desteği
+* **Herhangi bir CalDAV uyumlu görev yöneticisi** - Standart VTODO bileşeni desteği
 
-**Task features supported:**
+**Desteklenen görev özellikleri:**
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+* Görev oluşturma, düzenleme ve silme
+* Bitiş ve başlangıç tarihleri
+* Görev tamamlama durumu (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Görev öncelik seviyeleri
+* Tekrarlayan görevler
+* Görev açıklamaları ve notları
+* Çoklu cihaz senkronizasyonu
+* RELATED-TO özelliği ile alt görevler
+* VALARM ile görev hatırlatıcıları
 
-The login credentials are the same as for calendar support:
+Giriş bilgileri takvim desteği ile aynıdır:
 
-| Login | Example | Description |
+| Giriş    | Örnek                      | Açıklama                                                                                                                                                                                 |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Kullanıcı Adı | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi. |
+| Şifre    | `************************` | Takma ad için özel olarak oluşturulmuş şifre.                                                                                                                                             |
 
-**Important notes:**
+**Önemli notlar:**
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+* **Her Hatırlatıcı listesi ayrı bir takvimdir** - Apple Hatırlatıcı’da yeni bir liste oluşturduğunuzda, CalDAV sunucusunda yeni bir takvim oluşturulur
+* **Thunderbird kullanıcıları** - Senkronize etmek istediğiniz her takvim/listeye manuel olarak abone olmanız gerekir veya takvim ana URL’sini kullanabilirsiniz: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple kullanıcıları** - Takvim keşfi otomatik gerçekleşir, böylece tüm takvimleriniz ve listeleriniz Calendar.app ve Reminders.app’de görünür
+* **Birleşik takvimler** - Tüm takvimler hem etkinlikleri hem de görevleri destekler, böylece verilerinizi nasıl organize edeceğiniz konusunda esneklik sağlar
+### Kişileri destekliyor musunuz (CardDAV) {#do-you-support-contacts-carddav}
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+Evet, 12 Haziran 2025 itibarıyla bu özelliği ekledik. Sunucumuz `carddav.forwardemail.net` olup <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">durum sayfamızda</a> de izlenmektedir.
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Hem IPv4 hem de IPv6'yı destekler ve `443` (HTTPS) portu üzerinden erişilebilir.
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+| Giriş     | Örnek                      | Açıklama                                                                                                                                                                                  |
+| --------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kullanıcı | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan adı için var olan bir takma adın e-posta adresi. |
+| Şifre     | `************************` | Takma ada özel oluşturulmuş şifre.                                                                                                                                                        |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Kişi desteğini kullanmak için, **kullanıcı** <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan adı için var olan bir takma adın e-posta adresi olmalı – ve **şifre** takma ada özel oluşturulmuş bir şifre olmalıdır.
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+### SMTP ile e-posta göndermeyi destekliyor musunuz {#do-you-support-sending-email-with-smtp}
 
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
-
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+Evet, Mayıs 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti olarak SMTP ile e-posta göndermeyi destekliyoruz.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Lütfen <a href="/terms" class="alert-link" target="_blank">Şartlarımızı</a>, <a href="/privacy" class="alert-link" target="_blank">Gizlilik Politikamızı</a> ve <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Giden SMTP Limitlerini</a> okuduğunuzdan emin olun – kullanmanız kabul ve onayınız olarak değerlendirilir.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Gmail kullanıyorsanız, <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Gmail ile Özel Alan Adı Kullanarak E-posta Gönderme rehberimize</a> bakınız. Geliştiriciyseniz, <a class="alert-link" href="/email-api#outbound-emails" target="_blank">e-posta API dokümanlarımıza</a> başvurunuz.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Giden SMTP Yapılandırması sayfasına gidin ve kurulum talimatlarını takip edin
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar bölümünde yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Yeni oluşturduğunuz takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen oluşturulan şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. Tercih ettiğiniz e-posta uygulamasını kullanarak, yeni oluşturduğunuz takma ad ile bir hesap ekleyin veya yapılandırın (örneğin <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobil</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> veya <a href="/blog/open-source" class="alert-link" target="_blank">açık kaynaklı ve gizlilik odaklı bir alternatif</a> kullanmanızı öneririz.</span>
    </div>
+5. SMTP sunucu adı istendiğinde, `smtp.forwardemail.net` girin
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. SMTP sunucu portu istendiğinde, `465` (SSL/TLS) girin – gerekirse [alternatif SMTP portlarına](/faq#what-are-your-smtp-server-configuration-settings) bakın
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbird kullanıyorsanız, "Bağlantı güvenliği"nin "SSL/TLS" ve Kimlik doğrulama yönteminin "Normal parola" olarak ayarlandığından emin olun.</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. SMTP sunucu parolası istendiğinde, yukarıdaki 3. adımda <strong class="text-success"><i class="fa fa-key"></i> Parola Oluştur</strong> bölümünden parolayı yapıştırın
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **Ayarlarınızı kaydedin ve ilk test e-postanızı gönderin** – sorun yaşarsanız, lütfen <a href="/help">bizimle iletişime geçin</a>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    IP itibarını korumak ve teslim edilebilirliği sağlamak için, giden SMTP onayı için alan bazında manuel bir inceleme sürecimiz olduğunu lütfen unutmayın. Bu genellikle 24 saatten kısa sürer ve çoğu talep 1-2 saat içinde onaylanır. Yakın gelecekte, ek spam kontrolleri ve uyarılarla bu süreci anlık hale getirmeyi hedefliyoruz. Bu süreç, e-postalarınızın gelen kutusuna ulaşmasını ve mesajlarınızın spam olarak işaretlenmemesini sağlar.
   </span>
 </div>
 
@@ -2259,98 +2560,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Tebrikler!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Tüm adımları başarıyla tamamladınız.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### OpenPGP/MIME, uçtan uca şifreleme ("E2EE") ve Web Anahtar Dizini ("WKD") destekliyor musunuz? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Evet, [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [uçtan uca şifreleme ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption) ve genel anahtarların keşfi için [Web Anahtar Dizini ("WKD")](https://wiki.gnupg.org/WKD) desteğimiz vardır. OpenPGP'yi [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) üzerinden yapılandırabilir veya [kendi anahtarlarınızı barındırabilirsiniz](https://wiki.gnupg.org/WKDHosting) (WKD sunucu kurulumu için [bu gist'e](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79) bakınız).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* WKD sorguları, zamanında e-posta teslimatı için 1 saat önbelleğe alınır → bu nedenle WKD anahtarınızı ekler, değiştirir veya kaldırırsanız, önbelleği manuel temizlememiz için lütfen e-posta adresinizle birlikte `support@forwardemail.net` adresine e-posta gönderin.
+* WKD sorgusu ile veya arayüzümüzde yüklenen PGP anahtarı kullanılarak iletilen mesajlar için PGP şifrelemesini destekliyoruz.
+* Yüklenen anahtarlar, PGP onay kutusu etkin/işaretli olduğu sürece önceliklidir.
+* Webhook'lara gönderilen mesajlar şu anda PGP ile şifrelenmemektedir.
+* Bir yönlendirme adresi için birden fazla eşleşen takma adınız varsa (örneğin regex/wildcard/tam kombinasyon) ve bunlardan birden fazlası yüklenmiş PGP anahtarı içerip PGP işaretliyse → size bir hata uyarı e-postası göndeririz ve mesajı yüklenmiş PGP anahtarınızla şifrelemeyiz. Bu çok nadirdir ve genellikle karmaşık takma ad kuralları olan ileri düzey kullanıcılar için geçerlidir.
+* **Gönderenin DMARC politikası reject ise, MX sunucularımız üzerinden e-posta yönlendirmede PGP şifrelemesi uygulanmaz. *Tüm* postalar için PGP şifrelemesi gerekiyorsa, IMAP servisimiz kullanmanızı ve takma adınız için gelen postalar için PGP anahtarınızı yapılandırmanızı öneririz.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**Web Anahtar Dizini kurulumunuzu <https://wkd.chimbosonic.com/> (açık kaynak) veya <https://www.webkeydirectory.com/> (proprietary) adreslerinde doğrulayabilirsiniz.**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    Otomatik Şifreleme:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span><a href="#do-you-support-sending-email-with-smtp" class="alert-link">Giden SMTP servisimiz</a> kullanıyorsanız ve şifrelenmemiş mesajlar gönderiyorsanız, alıcı bazında <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Anahtar Dizini ("WKD")</a> kullanarak mesajları otomatik olarak şifrelemeye çalışacağız.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    Özel alan adınız için OpenPGP'yi etkinleştirmek üzere aşağıdaki tüm adımları takip etmelisiniz.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. Aşağıda e-posta istemcinizin önerdiği eklentiyi indirip kurun:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | E-posta İstemcisi | Platform | Önerilen Eklenti                                                                                                                                                                    | Notlar                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | ----------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird       | Masaüstü | [Thunderbird'de OpenPGP'yi Yapılandırma](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird, OpenPGP için yerleşik desteğe sahiptir.                                                                                                                                                                                                                                                                                                                                                                                     |
+   | Gmail             | Tarayıcı | [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) (özel lisans)                                                                                | Gmail OpenPGP'yi desteklemez, ancak açık kaynaklı eklenti [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) indirilebilir.                                                                                                                                                                                                                                                                          |
+   | Apple Mail        | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                        | Apple Mail OpenPGP'yi desteklemez, ancak açık kaynaklı eklenti [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) indirilebilir.                                                                                                                                                                                                                                                               |
+   | Apple Mail        | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) veya [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (özel lisans)                             | Apple Mail OpenPGP'yi desteklemez, ancak açık kaynaklı eklenti [PGPro](https://github.com/opensourceios/PGPro/) veya [FlowCrypt](https://flowcrypt.com/download) indirilebilir.                                                                                                                                                                                                                                                        |
+   | Outlook           | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                        | Outlook masaüstü e-posta istemcisi OpenPGP'yi desteklemez, ancak açık kaynaklı eklenti [gpg4win](https://www.gpg4win.de/index.html) indirilebilir.                                                                                                                                                                                                                                                                                      |
+   | Outlook           | Tarayıcı | [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) (özel lisans)                                                                                | Outlook web tabanlı e-posta istemcisi OpenPGP'yi desteklemez, ancak açık kaynaklı eklenti [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) indirilebilir.                                                                                                                                                                                                                                          |
+   | Android           | Mobil    | [OpenKeychain](https://www.openkeychain.org/) veya [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                 | [Android e-posta istemcileri](/blog/open-source/android-email-clients) arasında [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) ve [FairEmail](https://github.com/M66B/FairEmail) açık kaynaklı eklenti [OpenKeychain](https://www.openkeychain.org/) desteğine sahiptir. Alternatif olarak açık kaynaklı (özel lisanslı) eklenti [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) kullanılabilir. |
+   | Google Chrome     | Tarayıcı | [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) (özel lisans)                                                                                | Açık kaynaklı tarayıcı uzantısı [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) indirilebilir.                                                                                                                                                                                                                                                                                                   |
+   | Mozilla Firefox   | Tarayıcı | [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) (özel lisans)                                                                                | Açık kaynaklı tarayıcı uzantısı [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) indirilebilir.                                                                                                                                                                                                                                                                                                   |
+   | Microsoft Edge    | Tarayıcı | [Mailvelope](https://mailvelope.com/)                                                                                                                                               | Açık kaynaklı tarayıcı uzantısı [Mailvelope](https://mailvelope.com/) indirilebilir.                                                                                                                                                                                                                                                                                                                                                      |
+   | Brave             | Tarayıcı | [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) (özel lisans)                                                                                | Açık kaynaklı tarayıcı uzantısı [Mailvelope](https://mailvelope.com/) veya [FlowCrypt](https://flowcrypt.com/download) indirilebilir.                                                                                                                                                                                                                                                                                                   |
+   | Balsa             | Masaüstü | [Balsa'da OpenPGP'yi Yapılandırma](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                    | Balsa, OpenPGP için yerleşik desteğe sahiptir.                                                                                                                                                                                                                                                                                                                                                                                            |
+   | KMail             | Masaüstü | [KMail'de OpenPGP'yi Yapılandırma](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                         | KMail, OpenPGP için yerleşik desteğe sahiptir.                                                                                                                                                                                                                                                                                                                                                                                            |
+   | GNOME Evolution   | Masaüstü | [Evolution'da OpenPGP'yi Yapılandırma](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                       | GNOME Evolution, OpenPGP için yerleşik desteğe sahiptir.                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Terminal          | Masaüstü | [Terminalde gpg'yi Yapılandırma](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                   | Komut satırından yeni anahtar oluşturmak için açık kaynaklı [gpg komut satırı aracını](https://www.gnupg.org/download/) kullanabilirsiniz.                                                                                                                                                                                                                                                                                                  |
+2. Eklentiyi açın, genel anahtarınızı oluşturun ve e-posta istemcinizi bunu kullanacak şekilde yapılandırın.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. Genel anahtarınızı <https://keys.openpgp.org/upload> adresine yükleyin.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>Gelecekte anahtarınızı yönetmek için <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> adresini ziyaret edebilirsiniz.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       İsteğe Bağlı Eklenti:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       Eğer <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">şifreli depolama (IMAP/POP3)</a> hizmetimizi kullanıyorsanız ve (zaten şifrelenmiş) SQLite veritabanınızda depolanan <i>tüm</i> e-postaların genel anahtarınızla şifrelenmesini istiyorsanız, o zaman <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar (örneğin <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Düzenle <i class="fa fa-angle-right"></i> OpenPGP bölümüne gidip genel anahtarınızı yükleyin.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. Alan adınıza yeni bir `CNAME` kaydı ekleyin (örneğin `example.com`):
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>Ad/Sunucu/Takma Ad</th>
          <th class="text-center">TTL</th>
-         <th>Type</th>
-         <th>Answer/Value</th>
+         <th>Tür</th>
+         <th>Cevap/Değer</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,90 +2662,272 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       İpucu:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>Eğer takma adınız bizim <a class="alert-link" href="/disposable-addresses" target="_blank">geçici/vanity alan adlarımızı</a> (örneğin <code>hideaddress.net</code>) kullanıyorsa, bu adımı atlayabilirsiniz.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Tebrikler!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Tüm adımları başarıyla tamamladınız.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### S/MIME şifrelemesini destekliyor musunuz? {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+Evet, [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) ile tanımlandığı şekilde [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) şifrelemesini destekliyoruz. S/MIME, X.509 sertifikaları kullanarak uçtan uca şifreleme sağlar ve kurumsal e-posta istemcileri tarafından yaygın olarak desteklenir.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Hem RSA hem de ECC (Eliptik Eğri Kriptografisi) sertifikalarını destekliyoruz:
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **RSA sertifikaları**: minimum 2048-bit, önerilen 4096-bit
+* **ECC sertifikaları**: P-256, P-384 ve P-521 NIST eğrileri
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+Takma adınız için S/MIME şifrelemesini yapılandırmak için:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. Güvenilir bir Sertifika Otoritesi'nden (CA) bir S/MIME sertifikası alın veya test amaçlı kendinden imzalı bir sertifika oluşturun.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       İpucu:
+     </strong>
+     <span>Ücretsiz S/MIME sertifikaları <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> veya <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Ücretsiz S/MIME</a> gibi sağlayıcılardan temin edilebilir.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. Sertifikanızı PEM formatında dışa aktarın (yalnızca genel sertifika, özel anahtar değil).
 
-Learn more about passkeys at the following links:
+3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar (örneğin <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Düzenle <i class="fa fa-angle-right"></i> S/MIME bölümüne gidin ve genel sertifikanızı yükleyin.
+4. Yapılandırıldıktan sonra, takma adınıza gelen tüm e-postalar, saklanmadan veya iletilmeden önce S/MIME sertifikanız kullanılarak şifrelenecektir.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Not:
+     </strong>
+     <span>
+       S/MIME şifrelemesi, zaten şifrelenmemiş gelen mesajlara uygulanır. Bir mesaj zaten OpenPGP veya S/MIME ile şifrelenmişse, yeniden şifrelenmez.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Önemli:
+     </strong>
+     <span>
+       Gönderenin DMARC politikası reject ise, S/MIME şifrelemesi MX sunucularımız üzerinden yapılan e-posta iletimine uygulanmayacaktır. <em>Tüm</em> postalar için S/MIME şifrelemesi gerekiyorsa, IMAP servisimiz kullanmanızı ve gelen postalar için takma adınıza S/MIME sertifikanızı yapılandırmanızı öneririz.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+Aşağıdaki e-posta istemcileri yerleşik S/MIME desteğine sahiptir:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| E-posta İstemcisi | Platform | Notlar                                                                                                               |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | Yerleşik S/MIME desteği. Sertifikaları yapılandırmak için Mail > Tercihler > Hesaplar > hesabınız > Güven > gidin.  |
+| Apple Mail        | iOS      | Yerleşik S/MIME desteği. Yapılandırmak için Ayarlar > Mail > Hesaplar > hesabınız > Gelişmiş > S/MIME yolunu izleyin.|
+| Microsoft Outlook | Windows  | Yerleşik S/MIME desteği. Yapılandırmak için Dosya > Seçenekler > Güven Merkezi > Güven Merkezi Ayarları > E-posta Güvenliği yolunu izleyin. |
+| Microsoft Outlook | macOS    | Yerleşik S/MIME desteği. Yapılandırmak için Araçlar > Hesaplar > Gelişmiş > Güvenlik yolunu izleyin.                 |
+| Thunderbird       | Masaüstü | Yerleşik S/MIME desteği. Yapılandırmak için Hesap Ayarları > Uçtan Uca Şifreleme > S/MIME yolunu izleyin.            |
+| GNOME Evolution   | Masaüstü | Yerleşik S/MIME desteği. Yapılandırmak için Düzenle > Tercihler > Posta Hesapları > hesabınız > Güvenlik yolunu izleyin. |
+| KMail             | Masaüstü | Yerleşik S/MIME desteği. Yapılandırmak için Ayarlar > KMail'i Yapılandır > Kimlikler > kimliğiniz > Kriptografi yolunu izleyin. |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Tebrikler!
+    </strong>
+    <span>
+      Takma adınız için S/MIME şifrelemesini başarıyla yapılandırdınız.
+    </span>
+  </div>
+</div>
+
+### Sieve e-posta filtrelemeyi destekliyor musunuz {#do-you-support-sieve-email-filtering}
+
+Evet! [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) ile tanımlandığı şekilde [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) e-posta filtrelemeyi destekliyoruz. Sieve, gelen mesajları otomatik olarak düzenlemenize, filtrelemenize ve yanıtlamanıza olanak tanıyan güçlü, standartlaştırılmış bir sunucu tarafı e-posta filtreleme betik dilidir.
+
+#### Desteklenen Sieve Uzantıları {#supported-sieve-extensions}
+
+Kapsamlı bir Sieve uzantıları setini destekliyoruz:
+
+| Uzantı                      | RFC                                                                                   | Açıklama                                        |
+| --------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                             | Mesajları belirli klasörlere dosyalama          |
+| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                             | Hata ile mesajları reddetme                      |
+| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                             | Otomatik tatil/ofis dışı yanıtları               |
+| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                             | İnce ayarlı tatil yanıt aralıkları               |
+| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                             | IMAP bayraklarını ayarlama (\Seen, \Flagged vb.)|
+| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                             | Zarf gönderen/alıcı testi                         |
+| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                             | Mesaj gövdesi içeriği testi                       |
+| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                             | Betiklerde değişkenleri saklama ve kullanma      |
+| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                             | İlişkisel karşılaştırmalar (büyüktür, küçüktür)  |
+| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                             | Sayısal karşılaştırmalar                          |
+| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                             | Yönlendirirken mesajları kopyalama               |
+| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                             | Mesaj başlıklarını ekleme veya silme              |
+| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                             | Tarih/saat değerlerini test etme                  |
+| `index`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                             | Belirli başlık tekrarlarına erişim                |
+| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)| Düzenli ifade eşleştirme                          |
+| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                             | Bildirim gönderme (örneğin, mailto:)             |
+| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                             | Ortam bilgilerine erişim                           |
+| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                             | Posta kutusu varlığını test etme, posta kutuları oluşturma |
+| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                             | Özel kullanım posta kutularına dosyalama (\Junk, \Trash) |
+| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                             | Çift mesajları tespit etme                        |
+| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                             | Uzantı kullanılabilirliğini test etme             |
+| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                             | kullanıcı+detay adres parçalarına erişim          |
+#### Desteklenmeyen Uzantılar {#extensions-not-supported}
+
+Aşağıdaki uzantılar şu anda desteklenmemektedir:
+
+| Uzantı                                                        | Sebep                                                               |
+| ------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `include`                                                     | Güvenlik riski (script enjeksiyonu) ve global script depolama gerektirir |
+| `mboxmetadata` / `servermetadata`                             | IMAP METADATA uzantısı desteği gerektirir                          |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | Karmaşık MIME ağacı manipülasyonu henüz uygulanmadı               |
+
+#### Örnek Sieve Scriptleri {#example-sieve-scripts}
+
+**Bültenleri bir klasöre dosyalama:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Tatil durumunda otomatik yanıt:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "Şu anda ofis dışında bulunmaktayım ve döndüğümde yanıt vereceğim.";
+```
+
+**Önemli gönderenlerden gelen mesajları işaretleme:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**Belirli konulu spam mesajları reddetme:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Mesaj spam içeriği nedeniyle reddedildi.";
+}
+```
+
+#### Sieve Scriptlerini Yönetme {#managing-sieve-scripts}
+
+Sieve scriptlerinizi birkaç şekilde yönetebilirsiniz:
+
+1. **Web Arayüzü**: Script oluşturmak ve yönetmek için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Sieve Scriptleri bölümüne gidin.
+
+2. **ManageSieve Protokolü**: Thunderbird'ün Sieve eklentisi veya [sieve-connect](https://github.com/philpennock/sieve-connect) gibi ManageSieve uyumlu herhangi bir istemci kullanarak `imap.forwardemail.net` adresine bağlanın. Çoğu istemci için önerilen STARTTLS ile `2190` portunu veya implicit TLS ile `4190` portunu kullanın.
+
+3. **API**: Scriptleri programlı olarak yönetmek için [REST API](/api#sieve-scripts) kullanabilirsiniz.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Not:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+    Sieve filtreleme, gelen mesajlar posta kutunuza kaydedilmeden önce uygulanır. Scriptler öncelik sırasına göre çalıştırılır ve ilk eşleşen işlem mesajın nasıl işleneceğini belirler.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Güvenlik:
+  </strong>
+  <span>
+    Güvenlik nedeniyle, yönlendirme işlemleri script başına 10 ve günlük 100 ile sınırlandırılmıştır. Tatil yanıtları kötüye kullanımı önlemek için oran sınırlamasına tabidir.
+  </span>
+</div>
+
+### MTA-STS Destekliyor musunuz? {#do-you-support-mta-sts}
+
+Evet, 2 Mart 2023 itibarıyla [MTA-STS](https://www.hardenize.com/blog/mta-sts) desteklemekteyiz. Alan adınızda etkinleştirmek isterseniz [bu şablonu](https://github.com/jpawlowski/mta-sts.template) kullanabilirsiniz.
+
+Yapılandırmamız GitHub’da herkese açık olarak <https://github.com/forwardemail/mta-sts.forwardemail.net> adresinde bulunmaktadır.
+
+### Passkey ve WebAuthn Destekliyor musunuz? {#do-you-support-passkeys-and-webauthn}
+
+Evet! 13 Aralık 2023 itibarıyla yüksek talep nedeniyle [passkey desteği](https://github.com/orgs/forwardemail/discussions/182) ekledik.
+
+Passkey’ler, parola ve iki faktörlü kimlik doğrulama gerektirmeden güvenli giriş yapmanızı sağlar.
+
+Kimliğinizi dokunmatik, yüz tanıma, cihaz tabanlı parola veya PIN ile doğrulayabilirsiniz.
+
+Tüm cihazlarınızla kolayca giriş yapabilmeniz için aynı anda 30 passkey yönetmenize izin veriyoruz.
+
+Passkey’ler hakkında daha fazla bilgi için aşağıdaki bağlantılara bakabilirsiniz:
+
+* [Uygulamalarınıza ve web sitelerinize passkey ile giriş yapın](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [iPhone’da uygulamalara ve web sitelerine passkey ile giriş yapma](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Passkey hakkında Vikipedi makalesi](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### E-posta en iyi uygulamalarını destekliyor musunuz {#do-you-support-email-best-practices}
+
+Evet. Tüm planlarda SPF, DKIM, DMARC, ARC ve SRS için yerleşik destek sağlıyoruz. Ayrıca, bu spesifikasyonların orijinal yazarları ve diğer e-posta uzmanları ile kapsamlı çalışmalar yaparak mükemmellik ve yüksek teslim edilebilirlik sağladık.
+
+### Bounce webhook'larını destekliyor musunuz {#do-you-support-bounce-webhooks}
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    İpucu:
+  </strong>
+    E-posta webhook'ları hakkında dokümantasyon mu arıyorsunuz? Daha fazla bilgi için <a href="/faq#do-you-support-webhooks" class="alert-link">Webhook'ları destekliyor musunuz?</a> sayfasına bakın.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+Evet, 14 Ağustos 2024 itibarıyla bu özelliği ekledik. Artık Hesabım → Alan Adları → Ayarlar → Bounce Webhook URL'si bölümüne gidip, gönderilen SMTP e-postaları bounce olduğunda `POST` isteği göndereceğimiz bir `http://` veya `https://` URL'si yapılandırabilirsiniz.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+Bu, gönderdiğiniz SMTP e-postalarını yönetmek ve izlemek için faydalıdır – aboneleri yönetmek, çıkış işlemleri yapmak ve bounce oluştuğunda tespit etmek için kullanılabilir.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+Bounce webhook yükleri şu özelliklere sahip JSON olarak gönderilir:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (String) - Hesabım → E-postalar (giden SMTP) bölümündeki e-postaya karşılık gelen e-posta ID'si
+* `list_id` (String) - orijinal giden e-postadan varsa `List-ID` başlığı (büyük/küçük harf duyarsız) değeri
+* `list_unsubscribe` (String) - orijinal giden e-postadan varsa `List-Unsubscribe` başlığı (büyük/küçük harf duyarsız) değeri
+* `feedback_id` (String) - orijinal giden e-postadan varsa `Feedback-ID` başlığı (büyük/küçük harf duyarsız) değeri
+* `recipient` (String) - bounce olan veya hata veren alıcının e-posta adresi
+* `message` (String) - bounce için detaylı hata mesajı
+* `response` (String) - SMTP yanıt mesajı
+* `response_code` (Number) - ayrıştırılmış SMTP yanıt kodu
+* `truth_source` (String) - yanıt kodu güvenilir bir kaynaktan geldiyse, bu değer kök alan adı ile doldurulur (örneğin `google.com` veya `yahoo.com`)
+* `bounce` (Object) - bounce ve reddetme durumunu detaylandıran aşağıdaki özelliklere sahip nesne
+  * `action` (String) - bounce işlemi (örneğin `"reject"`)
+  * `message` (String) - bounce nedeni (örneğin `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - bounce kategorisi (örneğin `"block"`)
+  * `code` (Number) - bounce durum kodu (örneğin `554`)
+  * `status` (String) - yanıt mesajından bounce kodu (örneğin `5.7.1`)
+  * `line` (Number) - ayrıştırılmış satır numarası, varsa, [Zone-MTA bounce ayrıştırma listesi](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (örneğin `526`)
+* `headers` (Object) - giden e-postanın başlıklarının anahtar-değer çiftleri
+* `bounced_at` (String) - bounce hatasının oluştuğu zaman için [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatında tarih
 
-For example:
+Örnek:
 
 ```json
 {
@@ -2469,59 +2950,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+Bounce webhook'ları ile ilgili birkaç ek not:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* Eğer webhook yükünde `list_id`, `list_unsubscribe` veya `feedback_id` değeri varsa, gerekirse `recipient`'ı listeden çıkarmak için uygun işlemi yapmalısınız.
+  * Eğer `bounce.category` değeri `"block"`, `"recipient"`, `"spam"` veya `"virus"` ise, kullanıcıyı listeden kesinlikle çıkarmalısınız.
+* Webhook yüklerinin doğruluğunu kontrol etmeniz gerekiyorsa (gerçekten sunucumuzdan gelip gelmediğini doğrulamak için), [ters DNS sorgusu yaparak uzak istemci IP adresinin istemci ana bilgisayar adını çözebilirsiniz](https://nodejs.org/api/dns.html#dnspromisesreverseip) – bu `smtp.forwardemail.net` olmalıdır.
+  * Ayrıca IP adresini [yayınladığımız IP adresleri](#what-are-your-servers-ip-addresses) ile karşılaştırabilirsiniz.
+  * Webhook anahtarınızı almak için Hesabım → Alan Adları → Ayarlar → Webhook İmza Yükü Doğrulama Anahtarı bölümüne gidin.
+    * Güvenlik nedeniyle bu anahtarı istediğiniz zaman değiştirebilirsiniz.
+    * Webhook isteğimizden gelen `X-Webhook-Signature` değerini, bu anahtarı kullanarak hesaplanan gövde değeri ile karşılaştırın. Nasıl yapılacağına dair bir örnek [bu Stack Overflow gönderisinde](https://stackoverflow.com/a/68885281) mevcuttur.
+  * Daha fazla bilgi için <https://github.com/forwardemail/free-email-forwarding/issues/235> tartışmasına bakabilirsiniz.
+* Webhook uç noktanızın `200` durum kodu ile yanıt vermesi için `5` saniyeye kadar bekleyeceğiz ve `1` kez yeniden deneyeceğiz.
+* Bounce webhook URL'nizde bir hata tespit edersek, haftada bir kez size nezaket amaçlı bir e-posta göndereceğiz.
+### Webhook'ları destekliyor musunuz {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    Bounce webhook'ları hakkında dokümantasyon mu arıyorsunuz? Daha fazla bilgi için <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Bounce webhook'ları destekliyor musunuz?</a> sayfasına bakın.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+Evet, 15 Mayıs 2020 itibarıyla bu özelliği ekledik. Webhook(lar)ı, herhangi bir alıcıya ekler gibi kolayca ekleyebilirsiniz! Lütfen webhook URL'sinde "http" veya "https" protokolünün ön ek olarak bulunduğundan emin olun.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Gelişmiş Gizlilik Koruması:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Eğer gelişmiş gizlilik koruması içeren ücretli bir plandaysanız, lütfen <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> sayfasına gidin ve webhook'larınızı yapılandırmak için alan adınızın yanındaki "Takma Adlar" seçeneğine tıklayın. Ücretli planlar hakkında daha fazla bilgi almak isterseniz <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Fiyatlandırma</a> sayfamıza göz atabilirsiniz. Aksi takdirde aşağıdaki talimatları takip etmeye devam edebilirsiniz.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+Eğer ücretsiz plandaysanız, aşağıda gösterildiği gibi yeni bir DNS <strong class="notranslate">TXT</strong> kaydı eklemeniz yeterlidir:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+Örneğin, `alias@example.com` adresine giden tüm e-postaların yeni bir [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test uç noktasına yönlendirilmesini istiyorsam:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3009,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+Ya da belki `example.com` adresine giden tüm e-postaların bu uç noktaya yönlendirilmesini istiyorsunuz:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3030,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**Webhook'lar ile ilgili ek notlar şunlardır:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* Webhook yüklerini doğrulamanız gerekiyorsa (yüklerin gerçekten sunucumuzdan geldiğinden emin olmak için), [ters DNS sorgusu kullanarak uzak istemci IP adresi istemci ana bilgisayar adını çözebilirsiniz](https://nodejs.org/api/dns.html#dnspromisesreverseip) – bu değer ya `mx1.forwardemail.net` ya da `mx2.forwardemail.net` olmalıdır.
+  * Ayrıca IP adresini [yayınladığımız IP adresleriyle](#what-are-your-servers-ip-addresses) karşılaştırabilirsiniz.
+  * Ücretli plandaysanız, webhook anahtarınızı almak için Hesabım → Alan Adları → Ayarlar → Webhook İmza Yükü Doğrulama Anahtarı sayfasına gidin.
+    * Güvenlik nedeniyle bu anahtarı istediğiniz zaman değiştirebilirsiniz.
+    * Webhook isteğimizden gelen `X-Webhook-Signature` değerini, bu anahtarı kullanarak hesaplanan gövde değeri ile karşılaştırın. Bunu nasıl yapacağınızla ilgili bir örnek [bu Stack Overflow gönderisinde](https://stackoverflow.com/a/68885281) mevcuttur.
+  * Daha fazla bilgi için <https://github.com/forwardemail/free-email-forwarding/issues/235> tartışmasına bakabilirsiniz.
+* Bir webhook `200` durum kodu ile yanıt vermezse, yanıtı [oluşturulan hata günlüğünde](#do-you-store-error-logs) saklanır – bu hata ayıklama için faydalıdır.
+* Webhook HTTP istekleri, her SMTP bağlantı denemesinde en fazla 3 kez yeniden denenir ve her uç nokta POST isteği için maksimum 60 saniye zaman aşımı vardır. **Bu, sadece 3 kez deneneceği anlamına gelmez**, aslında 3. başarısız HTTP POST isteğinden sonra göndericiye daha sonra tekrar denemesi gerektiğini belirten 421 SMTP kodu göndererek sürekli olarak yeniden denenecektir. Bu, e-postanın 200 durum kodu alınana kadar günlerce sürekli yeniden deneneceği anlamına gelir.
+* Yeniden denemeler, [superagent'ın retry yöntemi](https://ladjs.github.io/superagent/#retrying-requests) tarafından kullanılan varsayılan durum ve hata kodlarına göre otomatik olarak yapılır (biz bu kütüphanenin bakımcılarıyız).
+* Aynı uç noktaya yapılan webhook HTTP isteklerini kaynakları korumak ve yanıt süresini hızlandırmak için tek bir istekte toplarız (birden fazla yerine). Örneğin, <webhook1@example.com>, <webhook2@example.com> ve <webhook3@example.com> adreslerine e-posta gönderirseniz ve bunların hepsi tam olarak aynı uç nokta URL'sine yapılandırılmışsa, sadece bir istek yapılır. Gruplama tam eşleşme ile yapılır.
+* Mesajı JSON dostu bir nesneye ayrıştırmak için [mailparser](https://nodemailer.com/extras/mailparser/) kütüphanesinin "simpleParser" metodunu kullanıyoruz.
+* Ham e-posta değeri String olarak "raw" özelliğiyle verilir.
+* Kimlik doğrulama sonuçları "dkim", "spf", "arc", "dmarc" ve "bimi" özellikleri olarak verilir.
+* Ayrıştırılmış e-posta başlıkları "headers" özelliği olarak verilir – ayrıca daha kolay yineleme ve ayrıştırma için "headerLines" kullanılabilir.
+* Bu webhook için gruplanmış alıcılar "recipients" özelliği olarak verilir.
+* SMTP oturum bilgileri "session" özelliği olarak verilir. Bu, mesajın göndericisi, mesajın varış zamanı, HELO ve istemci ana bilgisayar adı hakkında bilgi içerir. İstemci ana bilgisayar adı değeri `session.clientHostname` ya ters PTR sorgusundan elde edilen FQDN'dir ya da köşeli parantez içinde `session.remoteAddress` (örneğin `"[127.0.0.1]"`) olarak verilir.
+* `X-Original-To` değerini hızlıca almak isterseniz, `session.recipient` değerini kullanabilirsiniz (aşağıdaki örneğe bakınız). `X-Original-To` başlığı, mesaj için orijinal alıcıyı (maskelenmiş yönlendirmeden önce) hata ayıklama amacıyla eklediğimiz bir başlıktır.
+* Yük gövdesinden `attachments` ve/veya `raw` özelliklerini kaldırmak isterseniz, webhook uç noktanıza sorgu parametresi olarak `?attachments=false`, `?raw=false` veya `?attachments=false&raw=false` ekleyin (örneğin `https://example.com/webhook?attachments=false&raw=false`).
+* Eğer ekler varsa, bunlar Buffer değerleri ile `attachments` Dizisine eklenir. İçeriği JavaScript ile şu şekilde tekrar ayrıştırabilirsiniz:
   ```js
   const data = [
     104,
@@ -2785,48 +3264,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### Düzenli ifadeleri veya regex'i destekliyor musunuz {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+Evet, 27 Eylül 2021 itibarıyla bu özelliği ekledik. Takma adları eşleştirmek ve değiştirmeler yapmak için düzenli ifadeler ("regex") yazabilirsiniz.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+Düzenli ifade destekli takma adlar, `/` ile başlayıp `/` ile biten ve alıcıları e-posta adresleri veya webhook olanlardır. Alıcılar ayrıca regex değiştirme desteği de içerebilir (örneğin `$1`, `$2`).
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+`i` ve `g` olmak üzere iki düzenli ifade bayrağını destekliyoruz. `i` bayrağı (büyük/küçük harf duyarsızlığı) kalıcı varsayılan olup her zaman uygulanır. `g` bayrağı ise son `/` işaretinden sonra `/g` ekleyerek sizin tarafınızdan eklenebilir.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+Ayrıca, <a href="#can-i-disable-specific-aliases">devre dışı bırakılmış takma ad özelliğimizi</a> regex desteğimizle alıcı kısmında da desteklediğimizi unutmayın.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+Düzenli ifadeler <a href="/disposable-addresses" target="_blank">küresel sahte alan adlarında</a> desteklenmez (çünkü bu bir güvenlik açığı olabilir).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Gelişmiş Gizlilik Koruması:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    Eğer ücretli bir plandaysanız (gelişmiş gizlilik koruması özellikli), lütfen <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> sayfasına gidin ve alan adınızın yanındaki "Takma Adlar" seçeneğine tıklayarak düzenli ifadeler dahil takma adları yapılandırın. Ücretli planlar hakkında daha fazla bilgi almak isterseniz <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Fiyatlandırma</a> sayfamıza bakabilirsiniz.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### Gelişmiş Gizlilik Koruması için Örnekler {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
+      <th>Takma Ad Adı</th>
+      <th>Etki</th>
       <th>Test</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>`linus@example.com` veya `torvalds@example.com` adreslerine e-postalar</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">RegExr'de testi görüntüle</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>`24highst@example.com` veya `24highstreet@example.com` adreslerine e-postalar</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">RegExr'de testi görüntüle</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2834,34 +3313,34 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    Bunları <a href="https://regexr.com" class="alert-link">RegExr</a> sitesinde test etmek için, ifadeyi üst kutuya yazın ve ardından altındaki metin kutusuna bir örnek takma ad yazın. Eşleşirse, maviye döner.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### Ücretsiz plan için örnekler {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+Ücretsiz plandaysanız, aşağıdaki sağlanan örneklerden bir veya daha fazlasını kullanarak yeni bir DNS <strong class="notranslate">TXT</strong> kaydı ekleyin:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Basit Örnek:</strong> `linus@example.com` veya `torvalds@example.com` adreslerine giden tüm e-postaların `user@gmail.com` adresine iletilmesini istiyorsam:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3350,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>Ad Soyad Değiştirme Örneği:</strong> Tüm şirket e-posta adreslerinizin `firstname.lastname@example.com` formatında olduğunu varsayalım. `firstname.lastname@example.com` desenine uyan tüm e-postaların, değiştirme desteği ile (`<a href="https://regexr.com/66hnu" class="alert-link">RegExr'de testi görüntüle</a>`) `firstname.lastname@company.com` adresine iletilmesini istiyorsam:
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3373,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>Artı Sembolü Filtreleme Yerine Koyma Örneği:</strong> Eğer `info@example.com` veya `support@example.com` adreslerine giden tüm e-postaların sırasıyla `user+info@gmail.com` veya `user+support@gmail.com` adreslerine (yerine koyma desteği ile) yönlendirilmesini istiyorsanız (<a href="https://regexr.com/66ho7" class="alert-link">RegExr üzerinde testi görüntüle</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3397,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>Webhook Sorgu Dizisi Yerine Koyma Örneği:</strong> Belki de `example.com` adresine giden tüm e-postaların bir <a href="#do-you-support-webhooks" class="alert-link">webhook</a> adresine gitmesini ve e-posta adresinin kullanıcı adı kısmı değerine sahip dinamik bir "to" sorgu dizisi anahtarına sahip olmasını istiyorsunuz (<a href="https://regexr.com/66ho4" class="alert-link">RegExr üzerinde testi görüntüle</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3421,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>Sessiz reddetme örneği:</strong> Belirli bir desene uyan tüm e-postaların devre dışı bırakılmasını ve sessizce reddedilmesini istiyorsanız (göndericiye mesajın başarıyla gönderilmiş gibi görünmesi ama aslında hiçbir yere gitmemesi) ve durum kodu `250` ile (bakınız <a href="#can-i-disable-specific-aliases" class="alert-link">Belirli takma adları devre dışı bırakabilir miyim</a>), o zaman aynı yaklaşımı tek ünlem işareti "!" ile kullanmanız yeterlidir. Bu, göndericiye mesajın başarıyla teslim edildiğini bildirir, ancak aslında hiçbir yere gitmemiştir (örneğin kara delik veya `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3445,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>Yumuşak reddetme örneği:</strong> Belirli bir desene uyan tüm e-postaların devre dışı bırakılmasını ve durum kodu `421` ile yumuşak reddedilmesini istiyorsanız (bakınız <a href="#can-i-disable-specific-aliases" class="alert-link">Belirli takma adları devre dışı bırakabilir miyim</a>), o zaman aynı yaklaşımı çift ünlem işareti "!!" ile kullanmanız yeterlidir. Bu, göndericiye e-postasını tekrar denemesi gerektiğini bildirir ve bu takma ad için e-postalar yaklaşık 5 gün boyunca tekrar denenir ve ardından kalıcı olarak reddedilir.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>Sert reddetme örneği:</strong> Belirli bir desene uyan tüm e-postaların devre dışı bırakılmasını ve durum kodu `550` ile sert reddedilmesini istiyorsanız (bkz. <a href="#can-i-disable-specific-aliases" class="alert-link">Belirli takma adları devre dışı bırakabilir miyim</a>), aynı yaklaşımı üç ünlem işareti "!!!" ile kullanabilirsiniz. Bu, göndericiye kalıcı bir hata olduğunu bildirir ve e-postalar yeniden denenmez, bu takma ad için reddedilir.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3016,574 +3493,614 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    Düzenli ifade nasıl yazılır merak ediyor musunuz ya da yer değiştirmeyi test etmeniz mi gerekiyor? Ücretsiz düzenli ifade test sitesi <a href="https://regexr.com" class="alert-link">RegExr</a>'ye <a href="https://regexr.com/" class="alert-link">https://regexr.com</a> adresinden gidebilirsiniz.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### Giden SMTP limitleriniz nelerdir {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+Kullanıcıları ve alan adlarını 1 gün içinde 300 giden SMTP mesajı ile sınırlandırıyoruz. Bu, takvim ayı başına ortalama 9000+ e-posta demektir. Bu miktarı aşmanız gerekiyorsa veya sürekli olarak büyük e-postalarınız varsa, lütfen [bize ulaşın](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### SMTP'yi etkinleştirmek için onay gerekiyor mu {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Evet, IP itibarını korumak ve teslim edilebilirliği sağlamak için Forward Email, giden SMTP onayı için alan adı bazında manuel bir inceleme sürecine sahiptir. Onay için <support@forwardemail.net> adresine e-posta gönderin veya bir [yardım talebi](https://forwardemail.net/help) açın. Bu genellikle 24 saatten kısa sürer ve çoğu talep 1-2 saat içinde karşılanır. Yakın gelecekte bu süreci ek spam kontrolleri ve uyarılarla anlık hale getirmeyi hedefliyoruz. Bu süreç, e-postalarınızın gelen kutusuna ulaşmasını ve mesajlarınızın spam olarak işaretlenmemesini sağlar.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### SMTP sunucu yapılandırma ayarlarınız nelerdir {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Sunucumuz `smtp.forwardemail.net` olup <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">durum sayfamızda</a> de izlenmektedir.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+Hem IPv4 hem de IPv6'yı destekler ve SSL/TLS (önerilen) için `465` ve `2465` portları ile TLS (STARTTLS) için `587`, `2587`, `2525` ve `25` portları üzerinden erişilebilir.
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**Ekim 2025 itibarıyla**, artık eski cihazlar (yazıcılar, tarayıcılar, kameralar ve modern TLS sürümlerini destekleyemeyen eski e-posta istemcileri) için **legacy TLS 1.0** bağlantılarını `2455` (SSL/TLS) ve `2555` (STARTTLS) portlarında destekliyoruz. Bu portlar, Gmail, Yahoo, Outlook ve diğer sağlayıcıların eski TLS protokollerine desteği sonlandırmasına alternatif olarak sunulmaktadır.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **Legacy TLS 1.0 Desteği (Portlar 2455 ve 2555)**: Bu portlar, bilinen güvenlik açıkları (BEAST, POODLE) bulunan kullanımdan kaldırılmış TLS 1.0 protokolünü kullanır. Cihazınız kesinlikle TLS 1.2 veya üzerini destekleyemiyorsa bu portları kullanın. Cihaz yazılımınızı güncellemenizi veya mümkün olduğunda modern e-posta istemcilerine geçmenizi şiddetle tavsiye ederiz. Bu portlar yalnızca eski donanım uyumluluğu (eski yazıcılar, tarayıcılar, kameralar, IoT cihazları) için tasarlanmıştır.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+|                                     Protokol                                     | Sunucu Adı              |            Portlar           |        IPv4        |        IPv6        | Notlar                                 |
 | :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-
-| Login | Example | Description |
+|                              `SSL/TLS` **Tercih Edilen**                         | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Önerilen)             |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Destekleniyor (SSL/TLS portu `465` tercih edilir) |
+|                             `SSL/TLS` **Sadece Legacy**                           | `smtp.forwardemail.net` |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: Eski cihazlar için TLS 1.0   |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Sadece Legacy** | `smtp.forwardemail.net` |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: Eski cihazlar için TLS 1.0   |
+| Giriş    | Örnek                      | Açıklama                                                                                                                                                                                 |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+| Kullanıcı Adı | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi. |
+| Şifre    | `************************` | Takma ad                                                                                                                                                                                 |
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+SMTP ile giden e-posta gönderebilmek için, **SMTP kullanıcısı** <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi olmalıdır – ve **SMTP şifresi** takma ada özel oluşturulmuş bir şifre olmalıdır.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+Adım adım talimatlar için lütfen [SMTP ile e-posta göndermeyi destekliyor musunuz](#do-you-support-sending-email-with-smtp) bölümüne bakınız.
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+### IMAP sunucu yapılandırma ayarlarınız nelerdir {#what-are-your-imap-server-configuration-settings}
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Sunucumuz `imap.forwardemail.net` olup, <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">durum sayfamızda</a> de izlenmektedir.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
+Hem IPv4 hem de IPv6'yı destekler ve SSL/TLS için `993` ve `2993` portları üzerinden erişilebilir.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+|         Protokol         | Sunucu Adı              |     Portlar    |        IPv4        |        IPv6        |
+| :---------------------: | ----------------------- | :------------: | :----------------: | :----------------: |
+| `SSL/TLS` **Tercih Edilen** | `imap.forwardemail.net` | `993`, `2993`  | :white_check_mark: | :white_check_mark: |
 
-| Login | Example | Description |
+| Giriş    | Örnek                      | Açıklama                                                                                                                                                                                 |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Kullanıcı Adı | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi. |
+| Şifre    | `************************` | Takma ada özel oluşturulmuş şifre.                                                                                                                                                        |
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+IMAP ile bağlanabilmek için, **IMAP kullanıcısı** <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi olmalıdır – ve **IMAP şifresi** takma ada özel oluşturulmuş bir şifre olmalıdır.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+Adım adım talimatlar için lütfen [IMAP ile e-posta almayı destekliyor musunuz](#do-you-support-receiving-email-with-imap) bölümüne bakınız.
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+### POP3 sunucu yapılandırma ayarlarınız nelerdir {#what-are-your-pop3-server-configuration-settings}
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Sunucumuz `pop3.forwardemail.net` olup, <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">durum sayfamızda</a> de izlenmektedir.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+Hem IPv4 hem de IPv6'yı destekler ve SSL/TLS için `995` ve `2995` portları üzerinden erişilebilir.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
-
-| Login | Example | Description |
+|         Protokol         | Sunucu Adı              |     Portlar    |        IPv4        |        IPv6        |
+| :---------------------: | ----------------------- | :------------: | :----------------: | :----------------: |
+| `SSL/TLS` **Tercih Edilen** | `pop3.forwardemail.net` | `995`, `2995`  | :white_check_mark: | :white_check_mark: |
+| Giriş    | Örnek                      | Açıklama                                                                                                                                                                                 |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Kullanıcı Adı | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi. |
+| Şifre    | `************************` | Takma ada özgü oluşturulmuş şifre.                                                                                                                                                        |
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+POP3 ile bağlanmak için, **POP3 kullanıcısı** <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> altında alan için var olan bir takma adın e-posta adresi olmalıdır – ve **IMAP şifresi** takma ada özgü oluşturulmuş bir şifre olmalıdır.
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+Adım adım talimatlar için lütfen [POP3 destekliyor musunuz](#do-you-support-pop3) bölümüne bakınız.
 
-## Security {#security}
+### Alan adım için e-posta otomatik keşfi nasıl kurarım {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+E-posta otomatik keşfi, kullanıcı e-posta hesabını eklediğinde **Thunderbird**, **Apple Mail**, **Microsoft Outlook** ve mobil cihazlar gibi e-posta istemcilerinin doğru IMAP, SMTP, POP3, CalDAV ve CardDAV sunucu ayarlarını otomatik olarak algılamasını sağlar. Bu, [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (e-posta) ve [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) tarafından tanımlanır ve DNS SRV kayıtlarını kullanır.
+
+Forward Email, `forwardemail.net` üzerinde otomatik keşif kayıtları yayınlar. Kayıtları doğrudan alan adınıza SRV olarak ekleyebilir veya daha basit bir CNAME yöntemi kullanabilirsiniz.
+
+#### Seçenek A: CNAME kayıtları (en basit) {#option-a-cname-records-simplest}
+
+Alan adınızın DNS'ine bu iki CNAME kaydını ekleyin. Bu, otomatik keşfi Forward Email sunucularına devreder:
+
+|  Tür  | İsim/Host      | Hedef/Değer                    |
+| :---: | -------------- | ------------------------------ |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net`  |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+`autoconfig` kaydı **Thunderbird** ve diğer Mozilla tabanlı istemciler tarafından kullanılır. `autodiscover` kaydı ise **Microsoft Outlook** tarafından kullanılır.
+
+#### Seçenek B: SRV kayıtları (doğrudan) {#option-b-srv-records-direct}
+
+Kayıtları doğrudan eklemeyi tercih ederseniz (veya DNS sağlayıcınız alt alan adlarında CNAME desteklemiyorsa), alan adınıza aşağıdaki SRV kayıtlarını ekleyin:
+
+| Tür  | İsim/Host           | Öncelik | Ağırlık | Port | Hedef/Değer               | Amaç                                  |
+| :--: | ------------------- | :------: | :----: | :--: | -------------------------- | ------------------------------------ |
+|  SRV | `_imaps._tcp`       |     0    |    1   |  993 | `imap.forwardemail.net`    | SSL/TLS üzerinden IMAP (tercih edilen) |
+|  SRV | `_imap._tcp`        |     0    |    0   |   0  | `.`                        | Düz metin IMAP devre dışı            |
+|  SRV | `_submissions._tcp` |     0    |    1   |  465 | `smtp.forwardemail.net`    | SMTP gönderimi (SSL/TLS, önerilen)  |
+|  SRV | `_submission._tcp`  |     5    |    1   |  587 | `smtp.forwardemail.net`    | SMTP gönderimi (STARTTLS)            |
+|  SRV | `_pop3s._tcp`       |    10    |    1   |  995 | `pop3.forwardemail.net`    | SSL/TLS üzerinden POP3               |
+|  SRV | `_pop3._tcp`        |     0    |    0   |   0  | `.`                        | Düz metin POP3 devre dışı            |
+|  SRV | `_caldavs._tcp`     |     0    |    1   |  443 | `caldav.forwardemail.net`  | TLS üzerinden CalDAV (takvimler)     |
+|  SRV | `_caldav._tcp`      |     0    |    0   |   0  | `.`                        | Düz metin CalDAV devre dışı          |
+|  SRV | `_carddavs._tcp`    |     0    |    1   |  443 | `carddav.forwardemail.net` | TLS üzerinden CardDAV (kişiler)      |
+|  SRV | `_carddav._tcp`     |     0    |    0   |   0  | `.`                        | Düz metin CardDAV devre dışı         |
+> \[!NOTE]
+> IMAP, POP3'e (10) göre daha düşük bir öncelik değeri (0) taşır; bu, her ikisi de mevcut olduğunda e-posta istemcilerinin IMAP'i POP3'e tercih etmesini sağlar. Hedefi `.` (tek nokta) olan kayıtlar, bu protokollerin düz metin (şifrelenmemiş) sürümlerinin [RFC 6186 Bölüm 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4) uyarınca kasıtlı olarak devre dışı bırakıldığını gösterir. CalDAV ve CardDAV SRV kayıtları, takvim ve kişi otomatik keşfi için [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) standardını takip eder.
+
+#### Hangi e-posta istemcileri otomatik keşfi destekliyor? {#which-email-clients-support-autodiscovery}
+
+| İstemci            | E-posta                                          | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | `autoconfig` CNAME veya SRV kayıtları            | `autoconfig` XML veya SRV kayıtları (RFC 6764) |
+| Apple Mail (macOS) | SRV kayıtları (RFC 6186)                         | SRV kayıtları (RFC 6764)                   |
+| Apple Mail (iOS)   | SRV kayıtları (RFC 6186)                         | SRV kayıtları (RFC 6764)                   |
+| Microsoft Outlook  | `autodiscover` CNAME veya `_autodiscover._tcp` SRV | Desteklenmiyor                            |
+| GNOME (Evolution)  | SRV kayıtları (RFC 6186)                         | SRV kayıtları (RFC 6764)                   |
+| KDE (KMail)        | SRV kayıtları (RFC 6186)                         | SRV kayıtları (RFC 6764)                   |
+| eM Client          | `autoconfig` veya `autodiscover`                 | SRV kayıtları (RFC 6764)                   |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Tüm istemcilerle en iyi uyumluluk için, **Seçenek A** (CNAME kayıtları) ile **Seçenek B**'den SRV kayıtlarının birlikte kullanılmasını öneriyoruz. Yalnızca CNAME yöntemi çoğu e-posta istemcisini kapsar. CalDAV/CardDAV SRV kayıtları ise takvim ve kişi istemcilerinin sunucu ayarlarınızı otomatik olarak keşfetmesini sağlar.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## Güvenlik {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### Gelişmiş Sunucu Sertleştirme Teknikleri {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
+> \[!TIP]
+> Güvenlik altyapımız hakkında daha fazla bilgi için [Güvenlik sayfamızı](/security) ziyaret edin.
+
+Forward Email, altyapımızın ve verilerinizin güvenliğini sağlamak için birçok sunucu sertleştirme tekniği uygular:
+
+1. **Ağ Güvenliği**:
+   * Katı kurallara sahip IP tabloları güvenlik duvarı
+   * Brute force koruması için Fail2ban
+   * Düzenli güvenlik denetimleri ve penetrasyon testleri
+   * Yalnızca VPN ile yönetici erişimi
+
+2. **Sistem Sertleştirme**:
+   * Minimum paket kurulumu
+   * Düzenli güvenlik güncellemeleri
+   * Zorlayıcı modda SELinux
+   * Root SSH erişiminin devre dışı bırakılması
+   * Sadece anahtara dayalı kimlik doğrulama
+
+3. **Uygulama Güvenliği**:
+   * İçerik Güvenlik Politikası (CSP) başlıkları
    * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+   * XSS koruma başlıkları
+   * Çerçeve seçenekleri ve referans politikası başlıkları
+   * Düzenli bağımlılık denetimleri
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+4. **Veri Koruma**:
+   * LUKS ile tam disk şifreleme
+   * Güvenli anahtar yönetimi
+   * Şifreli düzenli yedeklemeler
+   * Veri minimizasyonu uygulamaları
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+5. **İzleme ve Müdahale**:
+   * Gerçek zamanlı saldırı tespiti
+   * Otomatik güvenlik taramaları
+   * Merkezi günlük kaydı ve analiz
+   * Olay müdahale prosedürleri
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Güvenlik uygulamalarımız, ortaya çıkan tehditler ve zafiyetlere karşı sürekli güncellenmektedir.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Maksimum güvenlik için, hizmetimizi OpenPGP ile uçtan uca şifreleme kullanarak kullanmanızı öneririz.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### SOC 2 veya ISO 27001 sertifikalarınız var mı? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email, sektör standartlarına uyumu sağlamak için sertifikalı alt işlemciler tarafından sağlanan altyapı üzerinde çalışır.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email doğrudan SOC 2 Tip II veya ISO 27001 sertifikalarına sahip değildir. Ancak, hizmet sertifikalı alt işlemciler tarafından sağlanan altyapı üzerinde çalışmaktadır:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: SOC 2 Tip II ve SOC 3 Tip II sertifikalı (Schellman & Company LLC tarafından denetlenmiş), birden fazla veri merkezinde ISO 27001 sertifikalı. Detaylar: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: SOC 2+ (HIPAA) sertifikalı, ISO/IEC sertifikaları: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Detaylar: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: SOC 2 uyumlu (sertifikayı almak için doğrudan DataPacket ile iletişime geçin), kurumsal düzeyde altyapı sağlayıcısı (Denver konumu). Detaylar: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Email, güvenlik denetimleri için sektörün en iyi uygulamalarını takip eder ve düzenli olarak bağımsız güvenlik araştırmacılarıyla çalışır. Kaynak: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### E-posta iletimi için TLS şifrelemesi kullanıyor musunuz? {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+Evet. Forward Email, tüm bağlantılar (HTTPS, SMTP, IMAP, POP3) için TLS 1.2+ kullanımını kesinlikle zorunlu kılar ve geliştirilmiş TLS desteği için MTA-STS uygular. Uygulama şunları içerir:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* Tüm e-posta bağlantıları için TLS 1.2+ zorunluluğu
+* Mükemmel ileri gizlilik için ECDHE (Eliptik Eğri Diffie-Hellman Ephemeral) anahtar değişimi
+* Düzenli güvenlik güncellemeleriyle modern şifreleme paketleri
+* Geliştirilmiş performans ve güvenlik için HTTP/2 desteği
+* Büyük tarayıcılarda ön yüklemeli HSTS (HTTP Strict Transport Security)
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** ile sıkı TLS zorunluluğu
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+Kaynak: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**MTA-STS Uygulaması**: Forward Email, kod tabanında sıkı MTA-STS zorunluluğu uygular. TLS hataları oluştuğunda ve MTA-STS zorunlu olduğunda, sistem e-postaların güvensiz şekilde teslim edilmek yerine daha sonra yeniden denenmesini sağlamak için 421 SMTP durum kodları döner. Uygulama detayları:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* TLS hata tespiti: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* send-email yardımcı programında MTA-STS zorunluluğu: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+Üçüncü taraf doğrulaması: <https://www.hardenize.com/report/forwardemail.net/1750312779> tüm TLS ve taşıma güvenliği önlemleri için "İyi" derecelendirmeleri gösterir.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### E-posta kimlik doğrulama başlıklarını koruyor musunuz? {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+Evet. Forward Email, e-posta kimlik doğrulama başlıklarını kapsamlı şekilde uygular ve korur:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (Sender Policy Framework)**: Doğru şekilde uygulanmış ve korunmuş
+* **DKIM (DomainKeys Identified Mail)**: Doğru anahtar yönetimi ile tam destek
+* **DMARC**: SPF veya DKIM doğrulamasını geçemeyen e-postalar için politika uygulaması
+* **ARC**: Açıkça detaylandırılmamış olsa da, hizmetin mükemmel uyum skorları kapsamlı kimlik doğrulama başlığı yönetimini gösterir
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+Kaynak: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Doğrulama: Internet.nl Mail Test, özellikle "SPF, DKIM ve DMARC" uygulaması için 100/100 puan gösterir. Hardenize değerlendirmesi SPF ve DMARC için "İyi" derecelendirmeleri doğrular: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Orijinal e-posta başlıklarını koruyor ve sahtekarlığı önlüyor musunuz? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email, e-posta kötüye kullanımını önlemek için gelişmiş sahtekarlık önleme koruması uygular.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email, orijinal e-posta başlıklarını korurken MX kod tabanı aracılığıyla kapsamlı sahtekarlık önleme koruması uygular:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **Başlık Koruma**: Orijinal kimlik doğrulama başlıkları iletim sırasında korunur
+* **Sahtekarlık Önleme**: DMARC politika uygulaması, SPF veya DKIM doğrulamasını geçemeyen e-postaları reddederek başlık sahtekarlığını engeller
+* **Başlık Enjeksiyonu Önleme**: striptags kütüphanesi kullanılarak giriş doğrulaması ve temizleme
+* **Gelişmiş Koruma**: Sahtekarlık tespiti, taklit önleme ve kullanıcı bildirim sistemleri ile gelişmiş oltalama tespiti
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**MX Uygulama Detayları**: Temel e-posta işleme mantığı MX sunucu kod tabanı tarafından yönetilir, özellikle:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Ana MX veri işleyici: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Keyfi e-posta filtreleme (sahtekarlık önleme): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+`isArbitrary` yardımcı programı, alan taklidi, engellenmiş ifadeler ve çeşitli oltalama kalıplarının tespiti dahil olmak üzere gelişmiş sahtekarlık önleme kurallarını uygular.
+### Spam ve kötüye kullanıma karşı nasıl korunuyorsunuz {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email kapsamlı çok katmanlı koruma uygular:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **Oran Sınırlaması**: Kimlik doğrulama denemeleri, API uç noktaları ve SMTP bağlantılarına uygulanır
+* **Kaynak İzolasyonu**: Yüksek hacimli kullanıcıların etkisini önlemek için kullanıcılar arasında
+* **DDoS Koruması**: DataPacket'in Shield sistemi ve Cloudflare aracılığıyla çok katmanlı koruma
+* **Otomatik Ölçeklendirme**: Talebe göre dinamik kaynak ayarı
+* **Kötüye Kullanım Önleme**: Kullanıcıya özel kötüye kullanım önleme kontrolleri ve kötü amaçlı içerik için hash tabanlı engelleme
+* **E-posta Kimlik Doğrulama**: Gelişmiş oltalama tespiti ile SPF, DKIM, DMARC protokolleri
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+Kaynaklar:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (DDoS koruma detayları)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### E-posta içeriğini diskte saklıyor musunuz {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email, e-posta içeriğinin diske yazılmasını engelleyen sıfır bilgi mimarisi kullanır.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **Sıfır Bilgi Mimarisi**: Bireysel olarak şifrelenmiş SQLite posta kutuları sayesinde Forward Email e-posta içeriğine erişemez
+* **Bellek İçi İşleme**: E-posta işlemleri tamamen bellekte gerçekleşir, disk depolaması yapılmaz
+* **İçerik Kaydı Yok**: "E-posta içeriği veya meta verileri diske kaydetmiyor veya loglamıyoruz"
+* **Sandbox Şifreleme**: Şifreleme anahtarları asla düz metin olarak diskte saklanmaz
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX Kod Tabanı Kanıtı**: MX sunucusu e-postaları tamamen bellekte işler, içeriği diske yazmaz. Ana e-posta işleme yöneticisi bu bellek içi yaklaşımı gösterir: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sources:
+Kaynaklar:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Özet)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Sıfır bilgi detayları)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandbox şifreleme)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+### Sistem çökmeleri sırasında e-posta içeriği açığa çıkabilir mi {#can-email-content-be-exposed-during-system-crashes}
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+Hayır. Forward Email, çökme kaynaklı veri açığa çıkmasına karşı kapsamlı önlemler uygular:
 
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
+* **Çekirdek Dökümleri Devre Dışı**: Çökme sırasında bellek açığa çıkmasını önler
+* **Swap Belleği Devre Dışı**: Swap dosyalarından hassas veri çıkarılmasını tamamen engeller
+* **Bellek İçi Mimari**: E-posta içeriği işleme sırasında yalnızca geçici bellekte bulunur
+* **Şifreleme Anahtarı Koruması**: Anahtarlar asla düz metin olarak diskte saklanmaz
+* **Fiziksel Güvenlik**: LUKS v2 şifreli diskler fiziksel erişimi engeller
+* **USB Depolama Devre Dışı**: Yetkisiz veri çıkarılmasını önler
 
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+**Sistem Sorunları için Hata Yönetimi**: Forward Email, `isCodeBug` ve `isTimeoutError` yardımcı fonksiyonlarını kullanarak, veritabanı bağlantı sorunları, DNS ağ/blok liste sorunları veya üst akış bağlantı sorunları oluşursa sistemin 421 SMTP durum kodları döndürmesini sağlar; böylece e-postalar kaybolmak veya açığa çıkmak yerine daha sonra tekrar denenir.
 
-Implementation details:
+Uygulama detayları:
 
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Hata sınıflandırması: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* MX işleme sırasında zaman aşımı hatası yönetimi: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Kaynak: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+### E-posta altyapınıza kimler erişebiliyor {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+Forward Email, minimal 2-3 kişilik mühendislik ekibi erişimi için kapsamlı erişim kontrolleri uygular ve sıkı 2FA gereksinimleri vardır:
 
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+* **Rol Tabanlı Erişim Kontrolü**: Kaynak bazlı izinlerle takım hesapları için
+* **En Az Ayrıcalık İlkesi**: Tüm sistemlerde uygulanır
+* **Görev Ayrımı**: Operasyonel roller arasında
+* **Kullanıcı Yönetimi**: Ayrı dağıtım ve devops kullanıcıları, farklı izinlerle
+* **Root Girişi Devre Dışı**: Erişim uygun şekilde kimlik doğrulanmış hesaplar üzerinden zorunlu kılınır
+* **Sıkı 2FA**: MiTM saldırısı riski nedeniyle SMS tabanlı 2FA yok - sadece uygulama tabanlı veya donanım tokenları
+* **Kapsamlı Denetim Kaydı**: Hassas veri gizlemeyle
+* **Otomatik Anomali Tespiti**: Olağandışı erişim kalıpları için
+* **Düzenli Güvenlik İncelemeleri**: Erişim kayıtları üzerinde
+* **Evil Maid Saldırısı Önleme**: USB depolama devre dışı ve diğer fiziksel güvenlik önlemleri
+Kaynaklar:
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Yetkilendirme Kontrolleri)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Ağ Güvenliği)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Kötü Hizmetçi saldırısı önleme)
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### Hangi altyapı sağlayıcılarını kullanıyorsunuz {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email, kapsamlı uyumluluk sertifikalarına sahip birden fazla altyapı alt işlemcisi kullanmaktadır.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+Tam detaylar GDPR uyumluluk sayfamızda mevcuttur: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**Birincil Altyapı Alt İşlemcileri:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Sağlayıcı        | Veri Gizliliği Çerçevesi Sertifikalı mı | GDPR Uyumluluk Sayfası                                                                    |
+| ---------------- | --------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Cloudflare**   | ✅ Evet                                 | <https://www.cloudflare.com/trust-hub/gdpr/>                                             |
+| **DataPacket**   | ❌ Hayır                               | <https://www.datapacket.com/privacy-policy>                                              |
+| **DigitalOcean** | ❌ Hayır                               | <https://www.digitalocean.com/legal/gdpr>                                                |
+| **GitHub**       | ✅ Evet                                 | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**        | ❌ Hayır                               | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
-**Detailed Certifications:**
+**Detaylı Sertifikalar:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Tip II & SOC 3 Tip II (Schellman & Company LLC tarafından denetlenmiştir)
+* Birden fazla veri merkezinde ISO 27001 sertifikalı
+* PCI-DSS uyumlu
+* CSA STAR Seviye 1 sertifikalı
+* APEC CBPR PRP sertifikalı
+* Detaylar: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
+* SOC 2+ (HIPAA) sertifikalı
+* PCI Merchant uyumlu
+* CSA STAR Seviye 1 sertifikalı
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* Detaylar: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* SOC 2 uyumlu (sertifika almak için doğrudan DataPacket ile iletişime geçin)
+* Kurumsal düzeyde altyapı (Denver lokasyonu)
+* Shield siber güvenlik yığını ile DDoS koruması
+* 7/24 teknik destek
+* 58 veri merkezi genelinde küresel ağ
+* Detaylar: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* Veri Gizliliği Çerçevesi sertifikalı (AB-ABD, İsviçre-ABD ve Birleşik Krallık Uzantısı)
+* Kaynak kodu barındırma, CI/CD ve proje yönetimi
+* GitHub Veri Koruma Anlaşması mevcut
+* Detaylar: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**Ödeme İşlemcileri:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Veri Gizliliği Çerçevesi sertifikalı - <https://stripe.com/legal/privacy-center>
+* **PayPal**: DPF sertifikalı değil - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Veri İşleme Sözleşmesi (DPA) sunuyor musunuz {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+Evet, Forward Email, kurumsal sözleşmemizle imzalanabilecek kapsamlı bir Veri İşleme Sözleşmesi (DPA) sunmaktadır. DPA kopyamız şurada mevcuttur: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**DPA Detayları:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* GDPR uyumluluğu ve AB-ABD/İsviçre-ABD Gizlilik Kalkanı çerçevelerini kapsar
+* Hizmet Şartlarımızı kabul ettiğinizde otomatik olarak kabul edilir
+* Standart DPA için ayrı imza gerekmez
+* Kurumsal Lisans aracılığıyla özel DPA düzenlemeleri mevcuttur
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**GDPR Uyumluluk Çerçevesi:**
+DPA’mız GDPR ve uluslararası veri transferi gereksinimlerine uyumu detaylandırır. Tam bilgi şurada mevcuttur: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+Özel DPA şartları veya belirli sözleşme düzenlemeleri isteyen kurumsal müşterilerimiz için bunlar **Kurumsal Lisans ($250/ay)** programımız aracılığıyla ele alınabilir.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### Veri ihlali bildirimlerini nasıl yönetiyorsunuz {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Forward Email’in sıfır bilgi mimarisi, ihlal etkisini önemli ölçüde sınırlar.
+* **Sınırlı Veri Maruziyeti**: Sıfır bilgi mimarisi nedeniyle şifrelenmiş e-posta içeriğine erişim yok
+* **Minimum Veri Toplama**: Yalnızca temel abone bilgileri ve güvenlik için sınırlı IP kayıtları
+* **Alt İşlemci Çerçeveleri**: DigitalOcean, GitHub ve Vultr GDPR uyumlu olay müdahale prosedürlerini sürdürür
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**GDPR Temsilci Bilgileri:**
+Forward Email, Madde 27 uyarınca GDPR temsilcileri atamıştır:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
+**AB Temsilcisi:**
 Osano International Compliance Services Limited
 ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**UK Representative:**
+**İngiltere Temsilcisi:**
 Osano UK Compliance LTD
 ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+Belirli ihlal bildirim SLA'larına ihtiyaç duyan kurumsal müşteriler için, bunlar bir **Kurumsal Lisans** anlaşması kapsamında görüşülmelidir.
 
-Sources:
+Kaynaklar:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### Test ortamı sunuyor musunuz {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+Forward Email'in teknik dokümantasyonu açıkça özel bir sandbox modundan bahsetmemektedir. Ancak, potansiyel test yaklaşımları şunları içerebilir:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **Kendi Kendine Barındırma Seçeneği**: Test ortamları oluşturmak için kapsamlı kendi kendine barındırma yetenekleri
+* **API Arayüzü**: Yapılandırmaların programatik olarak test edilme potansiyeli
+* **Açık Kaynak**: %100 açık kaynak kod, müşterilerin yönlendirme mantığını incelemesine olanak tanır
+* **Çoklu Alan Adları**: Birden fazla alan adı desteği test alanı oluşturmayı mümkün kılabilir
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+Resmi sandbox yeteneklerine ihtiyaç duyan kurumsal müşteriler için, bu bir **Kurumsal Lisans** düzenlemesi kapsamında görüşülmelidir.
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+Kaynak: <https://github.com/forwardemail/forwardemail.net> (Geliştirme ortamı detayları)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### İzleme ve uyarı araçları sağlıyor musunuz {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+Forward Email bazı sınırlamalarla gerçek zamanlı izleme sağlar:
 
-**Available:**
+**Mevcut:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **Gerçek Zamanlı Teslimat İzleme**: Büyük e-posta sağlayıcıları için halka açık performans metrikleri
+* **Otomatik Uyarı**: Teslimat süreleri 10 saniyeyi aştığında mühendislik ekibine bildirim
+* **Şeffaf İzleme**: %100 açık kaynak izleme sistemleri
+* **Altyapı İzleme**: Otomatik anormallik tespiti ve kapsamlı denetim kaydı
 
-**Limitations:**
+**Sınırlamalar:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* Müşteri tarafı webhook'lar veya API tabanlı teslimat durumu bildirimleri açıkça belgelenmemiştir
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+Detaylı teslimat durumu webhook'ları veya özel izleme entegrasyonlarına ihtiyaç duyan kurumsal müşteriler için, bu yetenekler **Kurumsal Lisans** düzenlemeleri kapsamında sunulabilir.
 
-Sources:
+Kaynaklar:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (Gerçek zamanlı izleme ekranı)
+* <https://github.com/forwardemail/forwardemail.net> (İzleme uygulaması)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### Yüksek kullanılabilirliği nasıl sağlıyorsunuz {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email, birden fazla altyapı sağlayıcısı arasında kapsamlı yedeklilik uygular.
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **Dağıtılmış Altyapı**: Coğrafi bölgelerde birden fazla sağlayıcı (DigitalOcean, Vultr, DataPacket)
+* **Coğrafi Yük Dengeleme**: Cloudflare tabanlı coğrafi konumlu yük dengeleme ve otomatik devreye alma
+* **Otomatik Ölçeklendirme**: Talebe göre dinamik kaynak ayarlaması
+* **Çok Katmanlı DDoS Koruması**: DataPacket'in Shield sistemi ve Cloudflare üzerinden
+* **Sunucu Yedekliliği**: Her bölgede birden fazla sunucu ve otomatik devreye alma
+* **Veritabanı Replikasyonu**: Birden fazla konumda gerçek zamanlı veri senkronizasyonu
+* **İzleme ve Uyarı**: 7/24 izleme ve otomatik olay müdahalesi
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**Çalışma Süresi Taahhüdü**: %99,9+ hizmet kullanılabilirliği ve şeffaf izleme <https://forwardemail.net> adresinde mevcuttur
 
-Sources:
+Kaynaklar:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Ulusal Savunma Yetkilendirme Yasası (NDAA) Bölüm 889 ile uyumlu musunuz {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email, altyapı ortaklarının dikkatli seçimiyle Bölüm 889 ile tam uyumludur.
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+Evet, Forward Email **Bölüm 889 uyumludur**. Ulusal Savunma Yetkilendirme Yasası (NDAA) Bölüm 889, hükümet kurumlarının belirli şirketlerin (Huawei, ZTE, Hikvision, Dahua ve Hytera) telekomünikasyon ve video gözetim ekipmanlarını kullanmasını veya bu tür ekipmanları kullanan kuruluşlarla sözleşme yapmasını yasaklar.
+**Forward Email'in Bölüm 889 Uyumluluğunu Nasıl Sağladığı:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+Forward Email, Bölüm 889 tarafından yasaklanan ekipmanları kullanmayan iki ana altyapı sağlayıcısına tamamen dayanır:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: Ağ hizmetleri ve e-posta güvenliği için birincil ortağımız
+2. **DataPacket**: Sunucu altyapısı için birincil sağlayıcımız (yalnızca Arista Networks ve Cisco ekipmanları kullanmaktadır)
+3. **Yedek Sağlayıcılar**: Digital Ocean ve Vultr yedek sağlayıcılarımız ayrıca yazılı olarak Bölüm 889 uyumlu oldukları teyit edilmiştir.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**Cloudflare'ın Taahhüdü**: Cloudflare, Üçüncü Taraf Davranış Kuralları'nda açıkça, Bölüm 889 tarafından yasaklanan herhangi bir telekomünikasyon ekipmanı, video gözetim ürünleri veya hizmetleri kullanmadıklarını belirtmektedir.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**Devlet Kullanım Durumu**: Bölüm 889 uyumluluğumuz, **ABD Deniz Harp Okulu** Forward Email'i güvenli e-posta yönlendirme ihtiyaçları için seçtiğinde doğrulanmış olup, federal uyumluluk standartlarımızın belgelenmesini gerektirmiştir.
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+Daha geniş federal düzenlemeler dahil olmak üzere devlet uyumluluk çerçevemiz hakkında tam detaylar için kapsamlı vaka çalışmamızı okuyun: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## Sistem ve Teknik Detaylar {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### E-postaları ve içeriklerini saklıyor musunuz? {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Hayır, diske yazmıyoruz veya günlükleri saklamıyoruz – [hata kayıtları](#do-you-store-error-logs) ve [giden SMTP](#do-you-support-sending-email-with-smtp) istisnaları hariç (bkz. [Gizlilik Politikamız](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Her şey bellekte yapılır ve [kaynak kodumuz GitHub'da](https://github.com/forwardemail) mevcuttur.
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### E-posta yönlendirme sisteminiz nasıl çalışır? {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+E-posta, [SMTP protokolüne](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) dayanır. Bu protokol, bir sunucuya (çoğunlukla 25 numaralı portta çalışan) gönderilen komutlardan oluşur. İlk bağlantı kurulur, ardından gönderen e-postanın kimden olduğunu belirtir ("MAIL FROM"), sonra nereye gideceğini ("RCPT TO") ve son olarak e-postanın başlıkları ve gövdesi ("DATA") gelir. E-posta yönlendirme sistemimizin akışı, her SMTP protokol komutuna göre aşağıda açıklanmıştır:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* İlk Bağlantı (komut adı yok, örn. `telnet example.com 25`) - Bu ilk bağlantıdır. [İzin listemizde](#do-you-have-an-allowlist) olmayan gönderenleri [yasak listemize](#do-you-have-a-denylist) karşı kontrol ederiz. Son olarak, bir gönderici izin listesinde değilse, [gri listeye](#do-you-have-a-greylist) alınıp alınmadığını kontrol ederiz.
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` - Gönderenin FQDN'sini, IP adresini veya posta işleyici adını tanımlamak için bir selamlamadır. Bu değer sahte olabilir, bu yüzden bu veriye güvenmeyiz ve bunun yerine bağlantının IP adresinin ters ana bilgisayar adı sorgusunu kullanırız.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` - E-postanın zarf üzerindeki gönderen adresini belirtir. Girilen değer geçerli bir RFC 5322 e-posta adresi olmalıdır. Boş değerler kabul edilir. Burada [geri yansıma kontrolü](#how-do-you-protect-against-backscatter) yaparız ve ayrıca MAIL FROM adresini [yasak listemize](#do-you-have-a-denylist) karşı kontrol ederiz. Son olarak, izin listesinde olmayan gönderenler için oran sınırlaması uygularız (daha fazla bilgi için [Oran Sınırlaması](#do-you-have-rate-limiting) ve [izin listesi](#do-you-have-an-allowlist) bölümlerine bakınız).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` - E-postanın alıcılarını belirtir. Bunlar geçerli RFC 5322 e-posta adresleri olmalıdır. Mesaj başına en fazla 50 zarf alıcısına izin veririz (bu, e-postadaki "To" başlığından farklıdır). Ayrıca, sahtekarlığı önlemek için geçerli bir [Gönderen Yeniden Yazma Şeması](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") adresi kontrolü yaparız.
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` - Hizmetimizin temel kısmı olup, bir e-postayı işler. Daha fazla bilgi için aşağıdaki [Bir e-postayı yönlendirmek için nasıl işliyorsunuz?](#how-do-you-process-an-email-for-forwarding) bölümüne bakınız.
+### Bir e-postayı iletmek için nasıl işlersiniz {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+Bu bölüm, yukarıdaki [E-posta iletme sisteminiz nasıl çalışıyor](#how-does-your-email-forwarding-system-work) bölümünde SMTP protokol komutu `DATA` ile ilgili sürecimizi açıklar – bir e-postanın başlıklarını, gövdesini, güvenliğini nasıl işlediğimizi, nereye teslim edilmesi gerektiğini nasıl belirlediğimizi ve bağlantıları nasıl yönettiğimizi anlatır.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. Mesaj maksimum 50mb boyutunu aşarsa, 552 hata kodu ile reddedilir.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. Mesajda bir "From" başlığı yoksa veya "From" başlığındaki herhangi bir değer geçerli RFC 5322 e-posta adresi değilse, 550 hata kodu ile reddedilir.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. Mesajda 25'ten fazla "Received" başlığı varsa, yönlendirme döngüsünde takıldığına karar verilir ve 550 hata kodu ile reddedilir.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. E-postanın parmak izi kullanılarak (bkz. [Parmak İzi Belirleme](#how-do-you-determine-an-email-fingerprint) bölümü), mesajın 5 günden fazla süredir tekrar denenip denenmediği kontrol edilir (bu, [varsayılan postfix davranışı](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime) ile eşleşir) ve eğer öyleyse, 550 hata kodu ile reddedilir.
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. E-postayı [Spam Scanner](https://spamscanner.net) kullanarak tarama sonuçlarını bellekte saklarız.
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Spam Scanner'dan herhangi bir keyfi sonuç varsa, 554 hata kodu ile reddedilir. Keyfi sonuçlar şu anda yalnızca GTUBE testini içerir. Daha fazla bilgi için <https://spamassassin.apache.org/gtube/> adresine bakınız.
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. Mesajın hata ayıklama ve kötüye kullanım önleme amaçları için aşağıdaki başlıkları ekleriz:
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` - orijin IP ve ana bilgisayar, iletim türü, TLS bağlantı bilgisi, tarih/saat ve alıcı ile bu standart Received başlığını ekleriz.
+   * `X-Original-To` - mesajın orijinal alıcısı:
+     * Bu, bir e-postanın orijinal olarak nereye teslim edildiğini belirlemek için faydalıdır ("Received" başlığına ek olarak).
+     * Bu, gizliliği korumak için IMAP ve/veya maskelenmiş iletme sırasında alıcı bazında eklenir.
+   * `X-Forward-Email-Website` - <https://forwardemail.net> web sitemize bağlantı içerir.
+   * `X-Forward-Email-Version` - kod tabanımızın `package.json` dosyasındaki mevcut [SemVer](https://semver.org/) sürümü.
+   * `X-Forward-Email-Session-ID` - hata ayıklama amaçlı kullanılan bir oturum kimliği değeri (yalnızca üretim dışı ortamlarda geçerlidir).
+   * `X-Forward-Email-Sender` - orijinal zarf MAIL FROM adresini (boş değilse), ters PTR istemci FQDN'sini (varsa) ve gönderenin IP adresini içeren virgülle ayrılmış liste.
+   * `X-Forward-Email-ID` - yalnızca giden SMTP için geçerlidir ve Hesabım → E-postalar bölümünde saklanan e-posta kimliği ile ilişkilidir.
+   * `X-Report-Abuse` - değeri `abuse@forwardemail.net` olan başlık.
+   * `X-Report-Abuse-To` - değeri `abuse@forwardemail.net` olan başlık.
+   * `X-Complaints-To` - değeri `abuse@forwardemail.net` olan başlık.
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. Daha sonra mesajı [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) ve [DMARC](https://en.wikipedia.org/wiki/DMARC) için kontrol ederiz.
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * Mesaj DMARC'ta başarısız olduysa ve alan adı reddetme politikası (örneğin `p=reject` [DMARC politikasında](https://wikipedia.org/wiki/DMARC) varsa), 550 hata kodu ile reddedilir. Genellikle bir alan adının DMARC politikası `_dmarc` alt alan adındaki <strong class="notranslate">TXT</strong> kaydında bulunur (örneğin `dig _dmarc.example.com txt`).
+   * Mesaj SPF'te başarısız olduysa ve alan adının sert bir başarısızlık politikası varsa (örneğin SPF politikasında `-all` varsa, `~all` veya hiç politika yoksa değil), 550 hata kodu ile reddedilir. Genellikle bir alan adının SPF politikası kök alan adındaki <strong class="notranslate">TXT</strong> kaydında bulunur (örneğin `dig example.com txt`). SPF hakkında daha fazla bilgi için [Gmail ile mail gönderme](#can-i-send-mail-as-in-gmail-with-this) bölümüne bakınız.
+9. Şimdi, yukarıdaki [E-posta yönlendirme sisteminiz nasıl çalışıyor](#how-does-your-email-forwarding-system-work) bölümünde `RCPT TO` komutundan toplanan mesaj alıcılarını işliyoruz. Her alıcı için aşağıdaki işlemleri gerçekleştiriyoruz:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * Alan adının <strong class="notranslate">TXT</strong> kayıtlarını (örneğin, e-posta adresi `test@example.com` ise `@` sembolünden sonraki kısım olan `example.com`) sorguluyoruz. Örneğin, alan adı `example.com` ise `dig example.com txt` gibi bir DNS sorgusu yapıyoruz.
+   * `forward-email=` (ücretsiz planlar) veya `forward-email-site-verification=` (ücretli planlar) ile başlayan tüm <strong class="notranslate">TXT</strong> kayıtlarını ayrıştırıyoruz. Kullanıcının plan yükseltme veya düşürme işlemi sırasında e-postaları işlemek için her ikisini de ayrıştırdığımızı unutmayın.
+   * Bu ayrıştırılmış <strong class="notranslate">TXT</strong> kayıtlarından, yukarıdaki [E-posta yönlendirmeye nasıl başlarım ve kurarım](#how-do-i-get-started-and-set-up-email-forwarding) bölümünde açıklandığı gibi yönlendirme yapılandırmasını çıkarmak için üzerinde yineleme yapıyoruz. Sadece bir `forward-email-site-verification=` değeri desteklenmektedir; birden fazla sağlanırsa 550 hatası oluşur ve gönderen bu alıcı için bir bounce alır.
+   * Çıkarılan yönlendirme yapılandırması üzerinde özyinelemeli olarak yineleme yaparak global yönlendirme, regex tabanlı yönlendirme ve diğer desteklenen tüm yönlendirme yapılandırmalarını belirliyoruz – bunlar artık "Yönlendirme Adreslerimiz" olarak bilinir.
+   * Her Yönlendirme Adresi için bir özyinelemeli sorgulamayı destekliyoruz (bu, verilen adres üzerinde bu işlem dizisini başlatır). Özyinelemeli eşleşme bulunursa, üst sonuç Yönlendirme Adreslerinden kaldırılır ve alt adresler eklenir.
+   * Yönlendirme Adresleri benzersizlik açısından ayrıştırılır (aynı adrese yinelenen gönderimler yapmak veya gereksiz SMTP istemci bağlantıları oluşturmak istemiyoruz).
+   * Her Yönlendirme Adresi için, alan adını API uç noktamız `/v1/max-forwarded-addresses` ile sorguluyoruz (bir takma ad başına alanın kaç adrese e-posta yönlendirmesine izin verildiğini belirlemek için, örneğin varsayılan 10 – bkz. [takma ad başına yönlendirme sayısı sınırı var mı](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) bölümü). Bu sınır aşılırsa, 550 hatası oluşur ve gönderen bu alıcı için bir bounce alır.
+   * Orijinal alıcının ayarlarını API uç noktamız `/v1/settings` ile sorguluyoruz; bu, ücretli kullanıcılar için sorgulamayı destekler (ücretsiz kullanıcılar için yedekleme ile). Bu, `port` (Sayı, örn. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean) ve `has_virus_protection` (Boolean) için gelişmiş ayarları içeren bir yapılandırma nesnesi döndürür.
+   * Bu ayarlara dayanarak, Spam Tarayıcı sonuçlarını kontrol ediyoruz ve herhangi bir hata oluşursa, mesaj 554 hata kodu ile reddedilir (örneğin, `has_virus_protection` etkinse, Spam Tarayıcı sonuçlarını virüsler için kontrol ederiz). Tüm ücretsiz plan kullanıcıları, yetişkin içeriği, oltalama, yürütülebilir dosyalar ve virüslere karşı kontroller için varsayılan olarak dahil edilir. Ücretli plan kullanıcılarının tamamı da varsayılan olarak dahil edilir, ancak bu yapılandırma Forward Email kontrol panelindeki Alan Ayarları sayfasında değiştirilebilir).
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. İşlenen her alıcının Yönlendirme Adresleri için aşağıdaki işlemleri gerçekleştiriyoruz:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * Adres, [reddetme listemiz](#do-you-have-a-denylist) ile kontrol edilir; listede ise 421 hata kodu oluşur (gönderenin daha sonra tekrar denemesini belirtir).
+    * Adres bir webhook ise, gelecekteki işlemler için bir Boolean ayarlanır (aşağıya bakınız – teslimat için birden fazla POST isteği yerine benzer webhookları gruplayarak tek bir POST isteği yapıyoruz).
+    * Adres bir e-posta adresi ise, gelecekteki işlemler için host ayrıştırılır (aşağıya bakınız – teslimat için birden fazla bireysel bağlantı yerine benzer hostları gruplayarak tek bağlantı yapıyoruz).
+11. Alıcı yoksa ve geri dönen e-posta yoksa, "Invalid recipients" (Geçersiz alıcılar) hatasıyla 550 yanıtı veririz.
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. Alıcılar varsa, bunları aynı sunucuya göre gruplayarak üzerinde iterasyon yapar ve e-postaları teslim ederiz. Daha fazla bilgi için aşağıdaki [E-posta teslimat sorunlarını nasıl ele alıyorsunuz](#how-do-you-handle-email-delivery-issues) bölümüne bakınız.
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * E-postalar gönderilirken herhangi bir hata oluşursa, bunları daha sonra işlemek üzere bellekte saklarız.
+    * E-posta gönderiminden kaynaklanan en düşük hata kodunu (varsa) alır ve `DATA` komutuna yanıt kodu olarak kullanırız. Bu, teslim edilmeyen e-postaların genellikle orijinal gönderici tarafından yeniden denenmesi anlamına gelir, ancak zaten teslim edilen e-postalar mesaj tekrar gönderildiğinde yeniden gönderilmez (çünkü [Parmak İzi](#how-do-you-determine-an-email-fingerprint) kullanıyoruz).
+    * Hata oluşmadıysa, 250 başarılı SMTP yanıt durum kodu göndeririz.
+    * Geri dönen e-posta, durum kodu >= 500 (kalıcı hatalar) olan herhangi bir teslimat denemesi olarak belirlenir.
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. Geri dönen e-posta (kalıcı hatalar) yoksa, kalıcı olmayan hatalardan en düşük hata kodu ile (veya hiç yoksa 250 başarılı durum kodu ile) SMTP yanıt durum kodu döneriz.
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. Geri dönen e-postalar varsa, tüm hata kodlarının en düşüğünü gönderen kişiye döndürdükten sonra arka planda geri dönen e-postaları göndeririz. Ancak, en düşük hata kodu >= 500 ise, geri dönen e-postaları göndermezsiniz. Çünkü bunu yaparsak, gönderenler çift geri dönen e-posta alır (örneğin, kendi çıkış MTA'larından, Gmail gibi – ve ayrıca bizden). Daha fazla bilgi için aşağıdaki [Backscatter'a karşı nasıl koruma sağlıyorsunuz](#how-do-you-protect-against-backscatter) bölümüne bakınız.
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+### E-posta teslimat sorunlarını nasıl ele alıyorsunuz {#how-do-you-handle-email-delivery-issues}
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+Gönderenin DMARC politikası geçmiyorsa VE "From" başlığıyla hizalanmış DKIM imzası yoksa, e-postalarda yalnızca bu durumda "Friendly-From" yeniden yazması yapacağımızı unutmayın. Bu, mesajdaki "From" başlığını değiştireceğimiz, "X-Original-From" ayarlayacağımız ve ayrıca "Reply-To" zaten ayarlanmamışsa onu da ayarlayacağımız anlamına gelir. Bu başlıkları değiştirdikten sonra mesajdaki ARC mührünü de yeniden mühürleriz.
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+Ayrıca, yığınımızın her seviyesinde hata mesajlarını akıllıca ayrıştırıyoruz – kodumuzda, DNS isteklerinde, Node.js iç yapılarında, HTTP isteklerinde (örneğin 408, 413 ve 429, alıcı bir webhook ise SMTP yanıt kodu 421 olarak eşlenir) ve posta sunucusu yanıtlarında (örneğin "defer" veya "slowdown" içeren yanıtlar 421 hatası olarak yeniden denenir).
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+Mantığımız aptal korumalıdır ve SSL/TLS hataları, bağlantı sorunları ve daha fazlası için de yeniden deneme yapar. Aptal koruma ile amaç, bir yönlendirme yapılandırması için tüm alıcılara teslim edilebilirliği en üst düzeye çıkarmaktır.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+Alıcı bir webhook ise, isteğin tamamlanması için 60 saniyelik zaman aşımına ve 3 yeniden denemeye izin veririz (yani başarısızlık öncesi toplam 4 istek). 408, 413 ve 429 hata kodlarını doğru şekilde ayrıştırdığımızı ve bunları SMTP yanıt kodu 421'e eşlediğimizi unutmayın.
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+Alıcı bir e-posta adresi ise, e-postayı fırsatçı TLS ile göndermeye çalışırız (alıcı posta sunucusunda STARTTLS varsa kullanmaya çalışırız). E-posta gönderilirken bir SSL/TLS hatası oluşursa, TLS olmadan (STARTTLS kullanmadan) göndermeyi deneriz.
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+Herhangi bir DNS veya bağlantı hatası oluşursa, `DATA` komutuna SMTP yanıt kodu 421 döneriz, aksi takdirde >= 500 seviyesinde hatalar varsa geri dönen e-postalar gönderilir.
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+Teslim etmeye çalıştığımız bir e-posta sunucusunun posta değişim IP adreslerimizden bir veya daha fazlasını engellediğini tespit edersek (örneğin, spam gönderenleri ertelemek için kullandıkları teknoloji ne olursa olsun), gönderenin mesajını daha sonra yeniden denemesi için SMTP yanıt kodu 421 göndeririz (ve sorunu çözebilmek için uyarılırız).
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+### IP adreslerinizin engellenmesi durumunda nasıl davranıyorsunuz {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+Biz tüm büyük DNS engelleme listelerini rutin olarak izliyoruz ve eğer posta değişim ("MX") IP adreslerimizden herhangi biri büyük bir engelleme listesinde yer alırsa, mümkünse ilgili DNS A kaydı round robin'den çıkarıyoruz, ta ki sorun çözülene kadar.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+Bu yazının yazıldığı sırada, birkaç DNS izin listesinde de yer almaktayız ve engelleme listelerini ciddiyetle takip ediyoruz. Eğer biz çözüm bulmadan önce herhangi bir sorun görürseniz, lütfen yazılı olarak <support@forwardemail.net> adresinden bize bildirin.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+IP adreslerimiz herkese açıktır, [daha fazla bilgi için aşağıdaki bölüme bakınız](#what-are-your-servers-ip-addresses).
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Postmaster adresleri nedir {#what-are-postmaster-addresses}
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+Yanlış yönlendirilmiş geri dönen e-postaları ve tatil yanıtlayıcı mesajlarını izlenmeyen veya var olmayan posta kutularına göndermeyi önlemek için, mailer-daemon benzeri kullanıcı adlarından oluşan bir liste tutuyoruz:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4119,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [ve herhangi bir no-reply adresi](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+Bu tür listelerin verimli e-posta sistemleri oluşturmak için nasıl kullanıldığı hakkında daha fazla bilgi için [RFC 5320 Bölüm 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) adresine bakınız.
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### No-reply adresleri nedir {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+Aşağıdaki e-posta kullanıcı adlarından herhangi biri (büyük/küçük harf duyarsız) no-reply adresi olarak kabul edilir:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4146,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Bu liste [GitHub'da açık kaynak proje olarak](https://github.com/forwardemail/reserved-email-addresses-list) tutulmaktadır.
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### Sunucunuzun IP adresleri nelerdir {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+IP adreslerimizi <https://forwardemail.net/ips> adresinde yayımlıyoruz.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### İzin listeniz var mı {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+Evet, varsayılan olarak izin verilen [alan adı uzantıları listemiz](#what-domain-name-extensions-are-allowlisted-by-default) ve [katı kriterlere](#what-is-your-allowlist-criteria) dayalı dinamik, önbelleğe alınmış ve dönen bir izin listemiz vardır.
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+Ücretli müşteriler tarafından kullanılan tüm alan adları, e-postalar ve IP adresleri saatlik olarak engelleme listemize karşı otomatik olarak kontrol edilir – bu da gerekirse yöneticilerin manuel müdahalesine olanak tanır.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+Ayrıca, alan adlarınızdan veya e-posta adreslerinizden biri engelleme listesine alınırsa (örneğin spam, virüs gönderimi veya taklit saldırıları nedeniyle) – alan adı yöneticileri (siz) ve bizim ekip yöneticilerimiz hemen e-posta ile bilgilendirilir. Bunu önlemek için [DMARC yapılandırmanızı](#how-do-i-set-up-dmarc-for-forward-email) şiddetle tavsiye ederiz.
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### Varsayılan olarak hangi alan adı uzantıları izinlidir {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+Aşağıdaki alan adı uzantıları, Umbrella Popülerlik Listesinde olup olmamalarına bakılmaksızın varsayılan olarak izinli kabul edilir:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4373,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+Ayrıca bu [marka ve kurumsal üst düzey alan adları](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) varsayılan olarak izin verilenler listesine eklenmiştir (örneğin Apple Card banka ekstreleri için `applecard.apple` içindeki `apple`):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4436,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4798,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+18 Mart 2025 itibarıyla, bu listeye şu Fransız denizaşırı topraklarını da ekledik ([bu GitHub talebine göre](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4814,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+8 Temmuz 2025 itibarıyla, şu Avrupa'ya özgü ülkeleri ekledik:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4834,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+Ekim 2025'te talep üzerine <code class="notranslate">cz</code> (Çekya) da eklendi.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+Yüksek spam etkinliği nedeniyle özellikle `ru` ve `ua` dahil edilmedi.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### İzin verilenler listenizin kriterleri nelerdir {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+Statik bir [varsayılan olarak izin verilen alan adı uzantıları listemiz](#what-domain-name-extensions-are-allowlisted-by-default) var – ayrıca aşağıdaki sıkı kriterlere dayalı dinamik, önbelleğe alınmış, sürekli güncellenen bir izin verilenler listesi tutuyoruz:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* Gönderen kök alan adı, [ücretsiz planımızda sunduğumuz alan adı uzantıları listesiyle eşleşen](#what-domain-name-extensions-can-be-used-for-free) bir alan adı uzantısına sahip olmalıdır (ek olarak `biz` ve `info` dahil). Ayrıca `edu`, `gov` ve `mil` kısmi eşleşmelerini de içeriyoruz, örneğin `xyz.gov.au` ve `xyz.edu.au`.
+* Gönderen kök alan adı, [Umbrella Popülerlik Listesi](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL")'den elde edilen en iyi 100.000 benzersiz kök alan adı arasında olmalıdır.
+* Gönderen kök alan adı, UPL'nin son 7 gününde en az 4 gününde görünen benzersiz kök alan adları arasında en iyi 50.000 sonuç içinde olmalıdır (~%50+).
+* Gönderen kök alan adı, Cloudflare tarafından [yetişkin içeriği veya kötü amaçlı yazılım olarak kategorize edilmemiş](https://radar.cloudflare.com/categorization-feedback/) olmalıdır.
+* Gönderen kök alan adı, A veya MX kayıtlarından en az birine sahip olmalıdır.
+* Gönderen kök alan adı, A kaydı(ları), MX kaydı(ları), `p=reject` veya `p=quarantine` içeren bir DMARC kaydı ya da `-all` veya `~all` niteleyicili bir SPF kaydına sahip olmalıdır.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+Bu kriterler karşılanırsa, gönderen kök alan adı 7 gün boyunca önbelleğe alınır. Otomatik işimiz günlük çalıştığı için bu sürekli güncellenen bir izin verilenler önbelleğidir.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+Otomatik işimiz, önceki 7 günün UPL'lerini belleğe indirir, açar ve yukarıdaki sıkı kriterlere göre bellekte ayrıştırır.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+Bu yazının yazıldığı sırada Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify ve daha fazlası gibi popüler alan adları elbette dahil edilmiştir.
+Eğer izin verilen listemizde olmayan bir göndericiyseniz, FQDN kök alan adınız veya IP adresiniz ilk kez bir e-posta gönderdiğinde, [rate limited](#do-you-have-rate-limiting) ve [greylisted](#do-you-have-a-greylist) olacaksınız. Bunun standart bir uygulama olduğunu ve bir e-posta standardı olarak benimsendiğini unutmayın. Çoğu e-posta sunucusu istemcisi, bir rate limit veya greylist hatası (örneğin 421 veya 4xx seviyesinde hata durum kodu) aldığında yeniden denemeye çalışacaktır.
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**`a@gmail.com`, `b@xyz.edu` ve `c@gov.au` gibi belirli göndericilerin hala [denylisted](#do-you-have-a-denylist) olabileceğini unutmayın** (örneğin, bu göndericilerden otomatik olarak spam, kimlik avı veya kötü amaçlı yazılım tespit edilirse).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### Hangi alan adı uzantıları ücretsiz kullanılabilir {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+31 Mart 2023 itibarıyla kullanıcılarımızı ve hizmetimizi korumak için yeni bir genel spam kuralı uygulamaya koyduk.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+Bu yeni kural, ücretsiz planımızda yalnızca aşağıdaki alan adı uzantılarının kullanılmasına izin verir:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4982,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### Bir gri listeye sahip misiniz? {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+Evet, çok gevşek bir [e-posta gri listeleme](https://en.wikipedia.org/wiki/Greylisting_\(email\)) politikamız var. Gri listeleme yalnızca izin verilenler listemizde olmayan göndericiler için geçerlidir ve önbelleğimizde 30 gün boyunca saklanır.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+Yeni bir gönderici için, Redis veritabanımızda ilk isteğin geliş zamanını değer olarak ayarlayarak 30 gün boyunca bir anahtar saklarız. Ardından, e-postalarını 450 yeniden deneme durum kodu ile reddederiz ve yalnızca 5 dakika geçtikten sonra geçmelerine izin veririz.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+Gönderici, bu ilk geliş zamanından itibaren 5 dakika başarıyla beklediyse, e-postaları kabul edilir ve 450 durum kodunu almazlar.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+Anahtar, ya FQDN kök alan adı ya da göndericinin IP adresinden oluşur. Bu, gri listeden geçen herhangi bir alt alan adının kök alan adı için de geçerli olacağı ve bunun tersi anlamına gelir (bu, "çok gevşek" politika dememizin sebebidir).
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+Örneğin, bir e-posta `test.example.com` adresinden gelirse ve biz daha önce `example.com` adresinden bir e-posta görmemişsek, `test.example.com` ve/veya `example.com` adreslerinden gelen herhangi bir e-posta bağlantının ilk geliş zamanından itibaren 5 dakika beklemek zorunda kalır. `test.example.com` ve `example.com` için ayrı ayrı 5 dakikalık bekleme süreleri uygulamayız (gri listeleme politikamız kök alan adı düzeyinde geçerlidir).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+Gri listelemenin, [izin verilenler listemizde](#do-you-have-an-allowlist) bulunan herhangi bir göndericiye uygulanmadığını unutmayın (örneğin, bu yazının yazıldığı tarihte Meta, Amazon, Netflix, Google, Microsoft).
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### Bir engelleme listesine sahip misiniz? {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+Evet, kendi engelleme listemizi işletiyoruz ve bunu spam ve kötü amaçlı etkinlik tespitine dayanarak gerçek zamanlı ve manuel olarak güncelliyoruz.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+Ayrıca, her saat başı <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> adresinden UCEPROTECT Seviye 1 engelleme listesindeki tüm IP adreslerini çekiyor ve bunları 7 günlük süreyle engelleme listemize ekliyoruz.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+Engelleme listesinde bulunan göndericiler, [izin verilenler listesinde değillerse](#do-you-have-an-allowlist) 421 hata kodu alırlar (göndericiye daha sonra tekrar denemesi gerektiğini bildirir).
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+421 durum kodu kullanarak 554 durum kodu yerine, potansiyel yanlış pozitifler gerçek zamanlı olarak hafifletilebilir ve mesaj sonraki denemede başarıyla teslim edilebilir.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**Bu, diğer posta servislerinden farklı olarak tasarlanmıştır**, çünkü engelleme listesine alındığınızda sert ve kalıcı bir hata oluşmaz. Göndericilerden mesajları tekrar denemelerini istemek (özellikle büyük organizasyonlardan) genellikle zordur, bu nedenle bu yaklaşım ilk e-posta denemesinden itibaren yaklaşık 5 gün süre tanır; bu süre içinde gönderici, alıcı veya biz müdahale edip sorunu çözebiliriz (engelleme listesinden kaldırma talebi yaparak).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+Tüm engelleme listesi kaldırma talepleri, yöneticiler tarafından gerçek zamanlı olarak izlenir (örneğin, tekrarlayan yanlış pozitiflerin kalıcı olarak izin verilenler listesine alınması için).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+Engelleme listesi kaldırma talepleri <https://forwardemail.net/denylist> adresinden yapılabilir. Ücretli kullanıcıların kaldırma talepleri anında işlenirken, ücretsiz kullanıcıların talepleri yöneticiler tarafından işlenmek üzere bekletilir.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+Spam veya virüs içeriği gönderen göndericiler aşağıdaki yaklaşımla engelleme listesine eklenir:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. Spam veya "güvenilir" bir göndericiden (örneğin `gmail.com`, `microsoft.com`, `apple.com`) engelleme listesi tespiti yapıldığında, [ilk mesaj parmak izi](#how-do-you-determine-an-email-fingerprint) gri listeye alınır.
+   * Gönderici izin verilenler listesinde ise, mesaj 1 saat boyunca gri listede kalır.
+   * Gönderici izin verilenler listesinde değilse, mesaj 6 saat boyunca gri listede kalır.
+2. Gönderici ve mesajdan alınan bilgilerle engelleme listesi anahtarları ayrıştırılır ve her anahtar için (varsa zaten yoksa oluşturulur) bir sayaç oluşturulur, 1 artırılır ve 24 saat boyunca önbelleğe alınır.
+   * İzin verilen göndericiler için:
+     * SPF geçen veya SPF olmayan ve [postmaster kullanıcı adı](#what-are-postmaster-addresses) veya [no-reply kullanıcı adı](#what-are-no-reply-addresses) olmayan zarf "MAIL FROM" e-posta adresi için bir anahtar eklenir.
+     * "From" başlığı izin verilenler listesinde ise, SPF geçen veya DKIM geçen ve hizalanmış "From" başlığı e-posta adresi için bir anahtar eklenir.
+     * "From" başlığı izin verilenler listesinde değilse, "From" başlığı e-posta adresi ve kök ayrıştırılmış alan adı için bir anahtar eklenir.
+   * İzin verilmeyen göndericiler için:
+     * SPF geçen zarf "MAIL FROM" e-posta adresi için bir anahtar eklenir.
+     * "From" başlığı izin verilenler listesinde ise, SPF geçen veya DKIM geçen ve hizalanmış "From" başlığı e-posta adresi için bir anahtar eklenir.
+     * "From" başlığı izin verilenler listesinde değilse, "From" başlığı e-posta adresi ve kök ayrıştırılmış alan adı için bir anahtar eklenir.
+     * Göndericinin uzak IP adresi için bir anahtar eklenir.
+     * Göndericinin IP adresinden ters DNS sorgusuyla çözümlenen istemci ana bilgisayar adı için bir anahtar eklenir (varsa).
+     * İstemci ana bilgisayar adının kök alan adı için bir anahtar eklenir (varsa ve istemci ana bilgisayar adından farklıysa).
+3. İzin verilmeyen gönderici ve anahtar için sayaç 5'e ulaşırsa, anahtar 30 gün boyunca engelleme listesine alınır ve bir e-posta kötüye kullanım ekibimize gönderilir. Bu sayılar değişebilir ve izledikçe burada güncellenecektir.
+4. İzin verilen gönderici ve anahtar için sayaç 10'a ulaşırsa, anahtar 7 gün boyunca engelleme listesine alınır ve bir e-posta kötüye kullanım ekibimize gönderilir. Bu sayılar değişebilir ve izledikçe burada güncellenecektir.
+> **NOT:** Yakın gelecekte itibar izleme özelliğini tanıtacağız. İtibar izleme, yukarıda belirtilen basit bir sayacın aksine, bir göndereni kara listeye alma zamanını bir yüzde eşiğine göre hesaplayacaktır.
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### Oran sınırlamanız var mı {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+Gönderen oran sınırlaması, gönderenin IP adresi üzerinde ters PTR sorgulamasıyla ayrıştırılan kök alan adına göre yapılır – ya da bu sonuç vermezse, doğrudan gönderenin IP adresi kullanılır. Aşağıda buna `Gönderen` olarak atıfta bulunuyoruz.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+MX sunucularımız, [şifreli IMAP depolama](/blog/docs/best-quantum-safe-encrypted-email-service) için alınan gelen postalar için günlük limitlere sahiptir:
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* Gelen postaları bireysel takma ad bazında (örneğin `you@yourdomain.com`) oran sınırlamak yerine – takma adın alan adı bazında (örneğin `yourdomain.com`) oran sınırlaması yapıyoruz. Bu, `Gönderen`lerin tüm alanınızdaki tüm takma adların gelen kutularını aynı anda doldurmasını engeller.
+* Alıcıdan bağımsız olarak hizmetimizdeki tüm `Gönderen`lere uygulanan genel limitlerimiz vardır:
+  * Gerçek kaynağı olarak "güvenilir" kabul ettiğimiz `Gönderen`ler (örneğin `gmail.com`, `microsoft.com`, `apple.com`) günlük 100 GB gönderimle sınırlıdır.
+  * [İzin verilenler listesinde](#do-you-have-an-allowlist) olan `Gönderen`ler günlük 10 GB gönderimle sınırlıdır.
+  * Diğer tüm `Gönderen`ler günlük 1 GB ve/veya 1000 mesajla sınırlıdır.
+* Her `Gönderen` ve `yourdomain.com` için özel bir limit vardır: günlük 1 GB ve/veya 1000 mesaj.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+MX sunucuları ayrıca, bir veya daha fazla alıcıya iletilen mesajları oran sınırlaması yoluyla sınırlar – ancak bu sadece [izin verilenler listesinde](#do-you-have-an-allowlist) olmayan `Gönderen`lere uygulanır:
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* Saatte en fazla 100 bağlantıya izin veriyoruz, her `Gönderen`in çözümlenen FQDN kök alan adı (veya) `Gönderen`in uzak IP adresi (ters PTR yoksa) ve her zarf alıcısı için. Oran sınırlaması anahtarını Redis veritabanımızda kriptografik bir hash olarak saklıyoruz.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* Sistemimiz üzerinden e-posta gönderiyorsanız, tüm IP adresleriniz için ters PTR ayarladığınızdan emin olun (aksi takdirde gönderdiğiniz her benzersiz FQDN kök alan adı veya IP adresi oran sınırlamasına tabi tutulacaktır).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Amazon SES gibi popüler bir sistem üzerinden gönderim yapıyorsanız, oran sınırlamasına tabi tutulmazsınız çünkü (bu yazının yazıldığı tarihte) Amazon SES izin verilenler listemizde yer almaktadır.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* `test.abc.123.example.com` gibi bir alan adından gönderiyorsanız, oran sınırlaması `example.com` üzerinde uygulanacaktır. Birçok spam gönderici, yalnızca benzersiz FQDN kök alan adlarını değil, benzersiz ana bilgisayar adlarını oran sınırlayan yaygın spam filtrelerini aşmak için yüzlerce alt alan adı kullanır.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* Oran sınırını aşan `Gönderen`ler 421 hatası ile reddedilecektir.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+IMAP ve SMTP sunucularımız, takma adlarınızın aynı anda `60`'tan fazla eşzamanlı bağlantıya sahip olmasını sınırlar.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+MX sunucularımız, [izin verilmeyen](#do-you-have-an-allowlist) gönderenlerin 10'dan fazla eşzamanlı bağlantı kurmasını engeller (sayaç için 3 dakikalık önbellek süresi vardır, bu da 3 dakikalık soket zaman aşımımızla aynıdır).
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### Backscatter'a karşı nasıl koruma sağlıyorsunuz {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+Yanlış yönlendirilmiş geri dönenler veya geri dönen spam (bilinen adıyla "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))"), gönderen IP adreslerinin itibarına zarar verebilir.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+Backscatter'a karşı koruma sağlamak için iki adım atıyoruz; bunlar aşağıdaki bölümlerde detaylandırılmıştır: [Bilinen MAIL FROM spam göndericilerinden geri dönenleri önleyin](#prevent-bounces-from-known-mail-from-spammers) ve [Backscatter'a karşı koruma için gereksiz geri dönenleri önleyin](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### Bilinen MAIL FROM spam göndericilerinden geri dönenleri önleyin {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+Listeyi her saat başı <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> adresinden [Backscatter.org](https://www.backscatterer.org/) (güç kaynağı [UCEPROTECT](https://www.uceprotect.net/)) sitesinden çekiyoruz ve Redis veritabanımıza aktarıyoruz (ayrıca önceden karşılaştırma yapıyoruz; onurlandırılması gereken IP'lerin kaldırılıp kaldırılmadığını kontrol etmek için).
+Eğer MAIL FROM boşsa VEYA (büyük/küçük harf duyarsız) herhangi bir [postmaster adresi](#what-are-postmaster-addresses) (bir e-postadaki @ işaretinden önceki kısım) ile eşitse, gönderici IP adresinin bu listeden biriyle eşleşip eşleşmediğine bakarız.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+Göndericinin IP adresi listede yer alıyorsa (ve bizim [izinli listemizde](#do-you-have-an-allowlist) değilse), `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}` mesajıyla birlikte 554 hatası göndeririz. Göndericinin hem Backscatterer listesinde hem de izinli listemizde olması durumunda uyarılırız, böylece gerekirse sorunu çözebiliriz.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+Bu bölümde açıklanan teknikler, <https://www.backscatterer.org/?target=usage> adresindeki "GÜVENLİ MOD" önerisine uygundur – burada yalnızca belirli koşullar sağlandığında gönderici IP'si kontrol edilir.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### Gereksiz geri dönen e-postaları önleyerek backscatter koruması {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+Geri dönen e-postalar, e-posta iletiminin alıcıya tamamen başarısız olduğunu ve e-postanın tekrar gönderilmeyeceğini gösteren mesajlardır.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+Backscatterer listesine alınmanın yaygın bir nedeni yanlış yönlendirilmiş geri dönüşler veya geri dönüş spamidir, bu yüzden bunu birkaç şekilde korumamız gerekir:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. Yalnızca >= 500 durum kodu hataları oluştuğunda gönderim yaparız (örneğin, iletilmeye çalışılan e-postalar başarısız olduğunda, Gmail 500 seviyesinde hata döner).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. Yalnızca bir kez göndeririz (hesaplanmış bir geri dönüş parmak izi anahtarı kullanır ve çoğaltmaları önlemek için önbellekte saklarız). Geri dönüş parmak izi, mesajın parmak izi ile geri dönüş adresi ve hata kodunun karmasının birleşiminden oluşan bir anahtardır. Mesaj parmak izinin nasıl hesaplandığı hakkında daha fazla bilgi için [Parmak İzleme](#how-do-you-determine-an-email-fingerprint) bölümüne bakınız. Başarıyla gönderilen geri dönüş parmak izleri Redis önbelleğimizde 7 gün sonra süresi dolar.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. Yalnızca MAIL FROM ve/veya From boş değilse ve (büyük/küçük harf duyarsız) bir [postmaster kullanıcı adı](#what-are-postmaster-addresses) (bir e-postadaki @ işaretinden önceki kısım) içermiyorsa göndeririz.
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. Orijinal mesaj aşağıdaki başlıklardan herhangi birine sahipse gönderim yapmayız (büyük/küçük harf duyarsız):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * Değeri `no` olmayan `auto-submitted` başlığı.
+   * Değeri `dr`, `autoreply`, `auto-reply`, `auto_reply` veya `all` olan `x-auto-response-suppress` başlığı.
+   * Değeri ne olursa olsun `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` veya `x-auto-respond` başlıkları.
+   * Değeri `bulk`, `autoreply`, `auto-reply`, `auto_reply` veya `list` olan `precedence` başlığı.
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. MAIL FROM veya From e-posta adresi `+donotreply`, `-donotreply`, `+noreply` veya `-noreply` ile bitiyorsa gönderim yapmayız.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. From e-posta adresinin kullanıcı adı `mdaemon` ise ve büyük/küçük harf duyarsız `X-MDDSN-Message` başlığı varsa gönderim yapmayız.
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. Büyük/küçük harf duyarsız `content-type` başlığı `multipart/report` ise gönderim yapmayız.
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### Bir e-postanın parmak izi nasıl belirlenir {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+Bir e-postanın parmak izi, e-postanın benzersizliğini belirlemek ve [gereksiz geri dönüşlerin](#prevent-unnecessary-bounces-to-protect-against-backscatter) gönderilmesini önlemek için kullanılır.
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+Parmak izi aşağıdaki listeden hesaplanır:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* İstemcinin çözümlenen FQDN ana bilgisayar adı veya IP adresi
+* `Message-ID` başlık değeri (varsa)
+* `Date` başlık değeri (varsa)
+* `From` başlık değeri (varsa)
+* `To` başlık değeri (varsa)
+* `Cc` başlık değeri (varsa)
+* `Subject` başlık değeri (varsa)
+* `Body` değeri (varsa)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### E-postaları 25 dışındaki portlara iletebilir miyim (örneğin ISS'im 25 portunu engellediyse) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+Evet, 5 Mayıs 2020 itibarıyla bu özelliği ekledik. Şu anda bu özellik alan adı bazlıdır, takma ad bazlı değildir. Takma ad bazlı olmasını istiyorsanız, ihtiyaçlarınızı bize bildirmeniz için lütfen bizimle iletişime geçin.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Gelişmiş Gizlilik Koruması:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Eğer ücretli bir plandaysanız (gelişmiş gizlilik koruması özellikli), lütfen <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> sayfasına gidin, alan adınızın yanındaki "Kurulum" seçeneğine tıklayın ve ardından "Ayarlar" seçeneğine tıklayın. Ücretli planlar hakkında daha fazla bilgi almak isterseniz <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Fiyatlandırma</a> sayfamıza bakabilirsiniz. Aksi takdirde aşağıdaki talimatları izlemeye devam edebilirsiniz.
   </span>
 </div>
+Eğer ücretsiz plandaysanız, aşağıda gösterildiği gibi yeni bir DNS <strong class="notranslate">TXT</strong> kaydı ekleyin, ancak portu 25'ten istediğiniz porta değiştirin.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+Örneğin, `example.com` adresine giden tüm e-postaların alias alıcıların SMTP portu 1337'ye yönlendirilmesini istiyorsam:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4646,9 +5156,9 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    Özel port yönlendirme kurulumu için en yaygın senaryo, example.com adresine giden tüm e-postaları SMTP standardı olan 25 numaralı port dışında example.com'daki farklı bir porta yönlendirmek istediğiniz zamandır. Bunu ayarlamak için, aşağıdaki <strong class="notranslate">TXT</strong> catch-all kaydını eklemeniz yeterlidir.
   <span>
   </span>
 </div>
@@ -4656,15 +5166,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5182,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Gmail aliasları için artı + sembolünü destekliyor mu? {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+Evet, kesinlikle.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### Alt alan adlarını destekliyor mu? {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+Evet, kesinlikle. Ad/sunucu/alias olarak "@", ".", veya boş kullanmak yerine, alt alan adı adını değer olarak kullanırsınız.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+Eğer `foo.example.com` adresine giden e-postaları yönlendirmek istiyorsanız, DNS ayarlarınızda (hem MX hem de <strong class="notranslate">TXT</strong> kayıtları için) ad/sunucu/alias değeri olarak `foo` girin.
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### Bu, e-postamın başlıklarını yönlendiriyor mu? {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+Evet, kesinlikle.
 
-### Is this well-tested {#is-this-well-tested}
+### Bu iyi test edildi mi? {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+Evet, [ava](https://github.com/avajs/ava) ile yazılmış testleri var ve ayrıca kod kapsamı mevcut.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### SMTP yanıt mesajlarını ve kodlarını iletiyor musunuz? {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+Evet, kesinlikle. Örneğin, `hello@example.com` adresine bir e-posta gönderiyorsanız ve bu adres `user@gmail.com`'a yönlendirilmişse, "gmail.com" SMTP sunucusundan gelen SMTP yanıt mesajı ve kodu, "mx1.forwardemail.net" veya "mx2.forwardemail.net" proxy sunucusu yerine döndürülür.
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### Spam gönderenleri nasıl engelliyorsunuz ve iyi bir e-posta yönlendirme itibarı nasıl sağlıyorsunuz? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+Yukarıdaki [E-posta yönlendirme sisteminiz nasıl çalışıyor](#how-does-your-email-forwarding-system-work), [E-posta teslim sorunlarını nasıl ele alıyorsunuz](#how-do-you-handle-email-delivery-issues) ve [IP adreslerinizin engellenmesini nasıl yönetiyorsunuz](#how-do-you-handle-your-ip-addresses-becoming-blocked) bölümlerimize bakınız.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### Alan adlarında DNS sorgularını nasıl yapıyorsunuz? {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+Açık kaynaklı bir yazılım projesi olan :tangerine: [Tangerine](https://github.com/forwardemail/tangerine)'ı oluşturduk ve DNS sorguları için kullanıyoruz. Varsayılan DNS sunucuları `1.1.1.1` ve `1.0.0.1`'dir ve DNS sorguları uygulama katmanında [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") üzerinden yapılır.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine), varsayılan olarak [CloudFlare'ın gizlilik odaklı tüketici DNS servisini][cloudflare-dns] kullanır.
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## Hesap ve Faturalandırma {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### Ücretli planlarda para iade garantisi sunuyor musunuz? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+Evet! Planınız ilk başladığı tarihten itibaren 30 gün içinde yükseltme, düşürme veya iptal işlemi yaparsanız otomatik geri ödeme gerçekleşir. Bu sadece ilk kez müşteriler için geçerlidir.
+### Plan değiştirirsem farkı orantılar ve iade eder misiniz {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+Plan değiştirirken farkı orantılamıyor veya iade etmiyoruz. Bunun yerine mevcut planınızın bitiş tarihinden kalan süreyi yeni planınız için en yakın göreceli süreye dönüştürüyoruz (ay bazında aşağı yuvarlanır).
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+Ücretli planlar arasında ilk ücretli planınızı başlattıktan sonraki 30 gün içinde yükseltme veya düşürme yaparsanız, mevcut planınızın tam tutarını otomatik olarak iade edeceğimizi unutmayın.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Bu e-posta yönlendirme hizmetini sadece "yedek" veya "fallover" MX sunucusu olarak kullanabilir miyim {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+Hayır, önerilmez, çünkü aynı anda yalnızca bir posta değişim sunucusu kullanabilirsiniz. Yedekler genellikle öncelik yanlış yapılandırmaları ve posta sunucularının MX değişim öncelik kontrolüne uymaması nedeniyle hiç yeniden denenmez.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### Belirli takma adları devre dışı bırakabilir miyim {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    Ücretli bir plandaysanız, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Takma Adı Düzenle <i class="fa fa-angle-right"></i> "Aktif" onay kutusunun işaretini kaldır <i class="fa fa-angle-right"></i> Devam etmeniz gerekir.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+Evet, DNS <strong class="notranslate">TXT</strong> kaydınızı düzenleyip takma adın önüne bir, iki veya üç ünlem işareti koymanız yeterlidir (aşağıya bakınız).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+":" eşlemesini korumalısınız, çünkü bu, kapatmaya karar verirseniz gereklidir (ve ayrıca ücretli planlarımıza yükseltirseniz içe aktarma için kullanılır).
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**Sessiz reddetme için (göndericiye mesaj başarıyla gönderilmiş gibi görünür, ancak aslında hiçbir yere gitmez) (durum kodu `250`):** Bir takma adın önüne "!" (tek ünlem işareti) koyarsanız, bu adrese göndermeye çalışan göndericilere `250` başarılı durum kodu döner, ancak e-postalar hiçbir yere gitmez (örneğin bir kara delik veya `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**Yumuşak reddetme için (durum kodu `421`):** Bir takma adın önüne "!!" (çift ünlem işareti) koyarsanız, bu adrese göndermeye çalışan göndericilere `421` yumuşak hata durum kodu döner ve e-postalar genellikle reddedilmeden ve geri dönmeden önce 5 güne kadar yeniden denenir.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**Sert reddetme için (durum kodu `550`):** Bir takma adın önüne "!!!" (üçlü ünlem işareti) koyarsanız, bu adrese göndermeye çalışan göndericilere kalıcı hata durum kodu `550` döner ve e-postalar reddedilir ve geri döner.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+Örneğin, `alias@example.com` adresine giden tüm e-postaların `user@gmail.com` adresine yönlendirilmesini durdurmak ve reddedilip geri dönmesini istiyorsam (örneğin üç ünlem işareti kullanarak):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4766,54 +5276,53 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    Yönlendirilen alıcının adresini basitçe "nobody@forwardemail.net" olarak da yeniden yazabilirsiniz, bu da aşağıdaki örnekte olduğu gibi onu kimseye yönlendirir.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Ad/Sunucu/Takma Ad</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    Daha fazla güvenlik istiyorsanız, aşağıdaki örnekte olduğu gibi sadece "!!!alias" bırakarak ":user@gmail.com" (veya ":nobody@forwardemail.net") kısmını da kaldırabilirsiniz.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5330,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### E-postaları birden fazla alıcıya yönlendirebilir miyim? {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+Evet, kesinlikle. <strong class="notranslate">TXT</strong> kayıtlarınızda birden fazla alıcı belirtebilirsiniz.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Örneğin, `hello@example.com` adresine giden bir e-postanın `user+a@gmail.com` ve `user+b@gmail.com` adreslerine yönlendirilmesini istiyorsam, <strong class="notranslate">TXT</strong> kaydım şu şekilde olur:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5355,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Ya da, bunları iki ayrı satırda belirtebilirsiniz, şöyle:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5382,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+Tercih size kalmış!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### Birden fazla global catch-all alıcım olabilir mi? {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+Evet, olabilir. <strong class="notranslate">TXT</strong> kayıtlarınızda birden fazla global catch-all alıcısı belirtebilirsiniz.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Örneğin, `*@example.com` adresine giden her e-postanın (yıldız işareti wildcard yani catch-all anlamına gelir) `user+a@gmail.com` ve `user+b@gmail.com` adreslerine yönlendirilmesini istiyorsam, <strong class="notranslate">TXT</strong> kaydım şu şekilde olur:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,190 +5409,188 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Ya da, bunları iki ayrı satırda belirtebilirsiniz, şöyle:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>İsim/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Tür</th>
+      <th>Cevap/Değer</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", veya boş</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+Karar sizin!
 
-It's up to you!
+### Her takma ad için iletebileceğim e-posta adresi sayısında maksimum bir sınır var mı? {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+Evet, varsayılan sınır 10'dur. Bu, alan adınızda yalnızca 10 takma adınız olabileceği anlamına gelmez. İstediğiniz kadar takma ada sahip olabilirsiniz (sınırsız sayıda). Bu, bir takma adın yalnızca 10 benzersiz e-posta adresine yönlendirilebileceği anlamına gelir. Örneğin `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (1-10 arası) olabilir – ve `hello@example.com` adresine gelen tüm e-postalar `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (1-10 arası) adreslerine iletilir.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    İpucu:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    Her takma ada 10'dan fazla alıcı mı gerekiyor? Bize bir e-posta gönderin, hesabınızın sınırını artırmaktan memnuniyet duyarız.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### E-postaları özyinelemeli olarak iletebilir miyim? {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+Evet, iletebilirsiniz, ancak yine de maksimum sınıra uymanız gerekir. Eğer `hello:linus@example.com` ve `linus:user@gmail.com` varsa, `hello@example.com` adresine gelen e-postalar `linus@example.com` ve `user@gmail.com` adreslerine iletilir. Maksimum sınırı aşan özyinelemeli iletim denemelerinde hata oluşacağını unutmayın.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### İnsanlar iznim olmadan e-posta iletimimi kaydını silebilir veya kaydedebilir mi? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+MX ve <strong class="notranslate">TXT</strong> kayıt doğrulaması kullanıyoruz, bu nedenle bu servisin ilgili MX ve <strong class="notranslate">TXT</strong> kayıtlarını eklerseniz kayıtlı olursunuz. Kayıtları kaldırırsanız kaydınız silinir. Alan adınızın ve DNS yönetiminizin sahibi sizsiniz, dolayısıyla birisi buna erişim sağlıyorsa bu bir sorundur.
 
-### How is it free {#how-is-it-free}
+### Bu nasıl ücretsiz? {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Email, açık kaynak geliştirme, verimli altyapı ve hizmeti destekleyen isteğe bağlı ücretli planların birleşimiyle ücretsiz bir katman sunar.
 
-Our free tier is supported by:
+Ücretsiz katmanımız şu şekilde desteklenir:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **Açık Kaynak Geliştirme**: Kod tabanımız açık kaynaklıdır, topluluk katkılarına ve şeffaf çalışmaya olanak tanır.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **Verimli Altyapı**: E-posta iletimini minimum kaynak kullanımıyla gerçekleştirecek şekilde sistemlerimizi optimize ettik.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **Ücretli Premium Planlar**: SMTP gönderimi, IMAP alımı veya gelişmiş gizlilik seçenekleri gibi ek özelliklere ihtiyaç duyan kullanıcılar ücretli planlara abone olur.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **Mak reasonable Kullanım Sınırları**: Ücretsiz katmanda kötüye kullanımı önlemek için adil kullanım politikaları vardır.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Temel e-posta iletimini ücretsiz tutmaya kararlıyız, ancak daha gelişmiş ihtiyaçları olan kullanıcılar için premium özellikler sunuyoruz.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Hizmetimizi değerli buluyorsanız, devam eden geliştirme ve bakım için destek olmak amacıyla ücretli plana yükseltmeyi düşünebilirsiniz.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### Maksimum e-posta boyutu sınırı nedir? {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+Varsayılan olarak 50MB boyut sınırı uygulanır; bu içerik, başlıklar ve ekleri kapsar. Gmail ve Outlook gibi servislerin yalnızca 25MB boyut sınırı olduğunu unutmayın; bu sağlayıcılara gönderirken sınırı aşarsanız hata mesajı alırsınız.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+Dosya boyutu sınırı aşılırsa uygun yanıt koduyla hata döndürülür.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### E-postaların günlüklerini saklıyor musunuz? {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Hayır, diske yazmıyor veya günlükleri saklamıyoruz – [hatalar](#do-you-store-error-logs) ve [giden SMTP](#do-you-support-sending-email-with-smtp) (bkz. [Gizlilik Politikamız](/privacy)) hariç.
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Her şey bellekte yapılır ve [kaynak kodumuz GitHub'da](https://github.com/forwardemail) mevcuttur.
 
-### Do you store error logs {#do-you-store-error-logs}
+### Hata günlüklerini saklıyor musunuz? {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**Evet. Hata günlüklerine [Hesabım → Günlükler](/my-account/logs) veya [Hesabım → Alan Adları](/my-account/domains) üzerinden erişebilirsiniz.**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+Şubat 2023 itibarıyla, `4xx` ve `5xx` SMTP yanıt kodlarına ait hata günlüklerini 7 gün boyunca saklıyoruz – bunlar SMTP hatası, zarf ve e-posta başlıklarını içerir (e-posta gövdesi ve ekleri **saklanmaz**).
+Hata günlükleri, [alan adlarınız](/my-account/domains) için önemli e-postaların eksik olup olmadığını kontrol etmenize ve spam yanlış pozitiflerini azaltmanıza olanak tanır. Ayrıca, [e-posta webhookları](#do-you-support-webhooks) ile ilgili sorunları gidermek için harika bir kaynaktır (çünkü hata günlükleri webhook uç noktası yanıtını içerir).
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+[Oran sınırlaması](#do-you-have-rate-limiting) ve [gri listeleme](#do-you-have-a-greylist) için hata günlüklerine erişilemez çünkü bağlantı erken sona erer (örneğin `RCPT TO` ve `MAIL FROM` komutları iletilemeden önce).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+Daha fazla bilgi için [Gizlilik Politikamıza](/privacy) bakınız.
 
-See our [Privacy Policy](/privacy) for more insight.
+### E-postalarımı okuyor musunuz {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+Hayır, kesinlikle hayır. [Gizlilik Politikamıza](/privacy) bakınız.
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+Birçok diğer e-posta yönlendirme hizmeti e-postalarınızı depolayabilir ve potansiyel olarak okuyabilir. Yönlendirilen e-postaların disk depolamasına kaydedilmesi için hiçbir neden yoktur – bu yüzden her şeyi bellekte yapan ilk açık kaynak çözümünü tasarladık.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+Gizlilik hakkınızın olması gerektiğine inanıyoruz ve buna sıkı sıkıya saygı duyuyoruz. Sunucuya dağıtılan kod, şeffaflık ve güven oluşturmak için [GitHub'da açık kaynak yazılım](https://github.com/forwardemail) olarak mevcuttur.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### Gmail'de "gibi gönder" yapabilir miyim? {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+Evet! 2 Ekim 2018 itibarıyla bu özelliği ekledik. Yukarıdaki [Gmail kullanarak Nasıl Gibi Gönderilir](#how-to-send-mail-as-using-gmail) bölümüne bakınız!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Ayrıca DNS yapılandırmanızda Gmail için SPF kaydını <strong class="notranslate">TXT</strong> kaydı olarak ayarlamalısınız.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Eğer Gmail (örneğin Gibi Gönder) veya G Suite kullanıyorsanız, SPF <strong class="notranslate">TXT</strong> kaydınıza <code>include:_spf.google.com</code> eklemeniz gerekir, örneğin:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### Outlook'ta "gibi gönder" yapabilir miyim? {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+Evet! 2 Ekim 2018 itibarıyla bu özelliği ekledik. Aşağıdaki Microsoft bağlantılarına bakabilirsiniz:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Ayrıca DNS yapılandırmanızda Outlook için SPF kaydını <strong class="notranslate">TXT</strong> kaydı olarak ayarlamalısınız.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Önemli:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Microsoft Outlook veya Live.com kullanıyorsanız, SPF <strong class="notranslate">TXT</strong> kaydınıza <code>include:spf.protection.outlook.com</code> eklemeniz gerekir, örneğin:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Apple Mail ve iCloud Mail'de "gibi gönder" yapabilir miyim? {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+iCloud+ abonesiyseniz, özel bir alan adı kullanabilirsiniz. [Hizmetimiz Apple Mail ile de uyumludur](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+Daha fazla bilgi için <https://support.apple.com/en-us/102540> adresine bakınız.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### Sınırsız e-posta yönlendirebilir miyim? {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+Evet, ancak "nispeten bilinmeyen" gönderenler için saat başına hostname veya IP başına 100 bağlantı ile oran sınırlaması uygulanır. Yukarıdaki [Oran Sınırlaması](#do-you-have-rate-limiting) ve [Gri Listeleme](#do-you-have-a-greylist) bölümlerine bakınız.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+"Nispeten bilinmeyen" ile [izin verilenler listesinde](#do-you-have-an-allowlist) olmayan gönderenleri kastediyoruz.
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+Bu limit aşılırsa, gönderenin posta sunucusuna daha sonra tekrar denemesi için 421 yanıt kodu gönderilir.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### Tek bir fiyatla sınırsız alan adı sunuyor musunuz? {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+Evet. Hangi planı kullanıyor olursanız olun, tüm alan adlarınızı kapsayan tek bir aylık ücret ödersiniz.
+### Hangi ödeme yöntemlerini kabul ediyorsunuz {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email aşağıdaki tek seferlik veya aylık/üç aylık/yıllık ödeme yöntemlerini kabul eder:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **Kredi/Banka Kartları/Banka Transferleri**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, vb.
+2. **PayPal**: Kolay ödemeler için PayPal hesabınızı bağlayın
+3. **Kripto Para**: Ethereum, Polygon ve Solana ağlarında Stripe'ın stablecoin ödemeleri ile ödeme kabul ediyoruz
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Sunucularımızda yalnızca ödeme tanımlayıcıları ve [Stripe](https://stripe.com/global) ile [PayPal](https://www.paypal.com) işlem, müşteri, abonelik ve ödeme kimliklerine referanslar dahil olmak üzere sınırlı ödeme bilgisi saklıyoruz.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Maksimum gizlilik için kripto para ödemelerini kullanmayı düşünün.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+Tüm ödemeler Stripe veya PayPal üzerinden güvenli bir şekilde işlenir. Ödeme bilgileriniz asla sunucularımızda saklanmaz.
 
-## Additional Resources {#additional-resources}
+
+## Ek Kaynaklar {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Aşağıdaki makalelerimiz düzenli olarak yeni rehberler, ipuçları ve teknik bilgilerle güncellenmektedir. En son içerikler için sık sık kontrol edin.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [Vaka Çalışmaları ve Geliştirici Dokümantasyonu](/blog/docs)
+* [Kaynaklar](/resources)
+* [Rehberler](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

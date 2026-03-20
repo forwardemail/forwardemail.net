@@ -1,71 +1,75 @@
-# דוגמאות לשילוב SMTP {#smtp-integration-examples}
+# דוגמאות אינטגרציה ל-SMTP {#smtp-integration-examples}
 
-## תוכן עניינים
 
-* [הַקדָמָה](#foreword)
-* [כיצד פועל עיבוד ה-SMTP של דוא"ל קדמי](#how-forward-emails-smtp-processing-works)
-  * [מערכת תור וניסיון חוזר של דוא"ל](#email-queue-and-retry-system)
-  * [אטום לאמינות](#dummy-proofed-for-reliability)
+## תוכן העניינים {#table-of-contents}
+
+* [הקדמה](#foreword)
+* [איך מעבד שירות ה-SMTP של Forward Email](#how-forward-emails-smtp-processing-works)
+  * [תור דואר ומערכת ניסיון חוזר](#email-queue-and-retry-system)
+  * [מוגן מפני טעויות לשם אמינות](#dummy-proofed-for-reliability)
 * [אינטגרציה עם Node.js](#nodejs-integration)
   * [שימוש ב-Nodemailer](#using-nodemailer)
   * [שימוש ב-Express.js](#using-expressjs)
-* [אינטגרציה של פייתון](#python-integration)
+* [אינטגרציה עם Python](#python-integration)
   * [שימוש ב-smtplib](#using-smtplib)
-  * [שימוש בדג'נגו](#using-django)
-* [אינטגרציה של PHP](#php-integration)
+  * [שימוש ב-Django](#using-django)
+* [אינטגרציה עם PHP](#php-integration)
   * [שימוש ב-PHPMailer](#using-phpmailer)
-  * [שימוש בלראבל](#using-laravel)
-* [אינטגרציה של רובי](#ruby-integration)
-  * [שימוש באבני דואר רובי](#using-ruby-mail-gem)
-* [אינטגרציה של ג'אווה](#java-integration)
-  * [שימוש ב-API של Java Mail](#using-javamail-api)
-* [תצורת לקוח דוא"ל](#email-client-configuration)
-  * [ת'אנדרברד](#thunderbird)
-  * [אפל מייל](#apple-mail)
-  * [ג'ימייל (שלח דואר כ)](#gmail-send-mail-as)
+  * [שימוש ב-Laravel](#using-laravel)
+* [אינטגרציה עם Ruby](#ruby-integration)
+  * [שימוש ב-Ruby Mail Gem](#using-ruby-mail-gem)
+* [אינטגרציה עם Java](#java-integration)
+  * [שימוש ב-JavaMail API](#using-javamail-api)
+* [הגדרת לקוח דואר אלקטרוני](#email-client-configuration)
+  * [Thunderbird](#thunderbird)
+  * [Apple Mail](#apple-mail)
+  * [Gmail (שלח דואר בשם)](#gmail-send-mail-as)
 * [פתרון בעיות](#troubleshooting)
   * [בעיות נפוצות ופתרונות](#common-issues-and-solutions)
   * [קבלת עזרה](#getting-help)
 * [משאבים נוספים](#additional-resources)
-* [מַסְקָנָה](#conclusion)
+* [סיכום](#conclusion)
+
 
 ## הקדמה {#foreword}
 
-מדריך זה מספק דוגמאות מפורטות כיצד לשלב עם שירות ה-SMTP של Forward Email באמצעות שפות תכנות, מסגרות ולקוחות דוא"ל שונים. שירות ה-SMTP שלנו נועד להיות אמין, מאובטח וקל לשילוב עם היישומים הקיימים שלך.
+מדריך זה מספק דוגמאות מפורטות כיצד להשתלב עם שירות ה-SMTP של Forward Email באמצעות שפות תכנות, מסגרות עבודה ולקוחות דואר שונים. שירות ה-SMTP שלנו מתוכנן להיות אמין, מאובטח וקל לשילוב עם היישומים הקיימים שלך.
 
-## כיצד פועל עיבוד ה-SMTP של העברת דוא"ל {#how-forward-emails-smtp-processing-works}
+
+## איך מעבד שירות ה-SMTP של Forward Email {#how-forward-emails-smtp-processing-works}
 
 לפני שנצלול לדוגמאות האינטגרציה, חשוב להבין כיצד שירות ה-SMTP שלנו מעבד מיילים:
 
-### מערכת תור דוא"ל וניסיון חוזר {#email-queue-and-retry-system}
+### תור דואר ומערכת ניסיון חוזר {#email-queue-and-retry-system}
 
-כאשר אתה שולח דוא"ל באמצעות SMTP לשרתים שלנו:
+כאשר אתה שולח מייל דרך SMTP לשרתים שלנו:
 
-1. **עיבוד ראשוני**: האימייל מאומת, נסרק לאיתור תוכנות זדוניות ונבדק מול מסנני דואר זבל.
-2. **תור חכם**: אימיילים מוצבים במערכת תור מתוחכמת למשלוח.
-3. **מנגנון ניסיון חוזר חכם**: אם המסירה נכשלת באופן זמני, המערכת שלנו:
-* תנתח את תגובת השגיאה באמצעות הפונקציה `getBounceInfo` שלנו.
-* תקבע אם הבעיה זמנית (למשל, "נסה שוב מאוחר יותר", "נדחה זמנית") או קבועה (למשל, "משתמש לא ידוע").
-* עבור בעיות זמניות, סמן את האימייל לניסיון חוזר.
-* עבור בעיות קבועות, צור הודעת החזרה.
-4. **תקופת ניסיון חוזר של 5 ימים**: אנו מנסים לשלוח שוב עד 5 ימים (בדומה לתקני התעשייה כמו Postfix), ונותנים לבעיות זמניות זמן לפתרון.
-5. **הודעות סטטוס מסירה**: שולחים מקבלים התראות על סטטוס האימיילים שלהם (נמסרו, התעכבו או הוחזרו).
+1. **עיבוד ראשוני**: המייל מאומת, נסרק לאיתור תוכנות זדוניות ונבדק מול מסנני ספאם
+2. **תור חכם**: המיילים מונחים במערכת תורים מתוחכמת למשלוח
+3. **מנגנון ניסיון חוזר חכם**: אם המשלוח נכשל זמנית, המערכת שלנו ת:
+   * תנתח את תגובת השגיאה באמצעות הפונקציה `getBounceInfo`
+   * תקבע אם הבעיה זמנית (למשל, "נסה שוב מאוחר יותר", "נדחה זמנית") או קבועה (למשל, "משתמש לא ידוע")
+   * עבור בעיות זמניות, תסמן את המייל לניסיון חוזר
+   * עבור בעיות קבועות, תיצור הודעת החזרה (bounce)
+4. **תקופת ניסיון חוזר של 5 ימים**: אנו מנסים שוב את המשלוח עד 5 ימים (בדומה לסטנדרטים בתעשייה כמו Postfix), כדי לתת זמן לבעיות זמניות להיפתר
+5. **הודעות סטטוס משלוח**: השולחים מקבלים הודעות על מצב המיילים שלהם (נשלח, מתעכב או הוחזר)
 
 > \[!NOTE]
-> לאחר מסירה מוצלחת, תוכן דוא"ל SMTP יוצא מוסר לאחר תקופת שמירה הניתנת להגדרה (ברירת מחדל 30 יום) למטרות אבטחה ופרטיות. נותרת רק הודעת placeholder המציינת מסירה מוצלחת.
+> לאחר משלוח מוצלח, תוכן המייל היוצא דרך SMTP נמחק לאחר תקופת שמירה שניתנת להגדרה (ברירת מחדל 30 יום) לשם אבטחה ופרטיות. נשאר רק הודעת מיקום המציינת משלוח מוצלח.
 
-### הוכחה לאמינות באמצעות דמה {#dummy-proofed-for-reliability}
+### מוגן מפני טעויות לשם אמינות {#dummy-proofed-for-reliability}
 
-המערכת שלנו מתוכננת להתמודד עם מגוון מקרי קצה:
+המערכת שלנו מתוכננת להתמודד עם מקרים שונים:
 
-* אם מזוהה רשימת חסימה, ייעשה ניסיון חוזר אוטומטי של שליחת האימייל
-* אם יתרחשו בעיות רשת, ייעשה ניסיון חוזר למשלוח
+* אם זוהה רשימת חסימה, המייל יישלח שוב אוטומטית
+* אם מתרחשות בעיות רשת, המשלוח ינסה שוב
 * אם תיבת הדואר של הנמען מלאה, המערכת תנסה שוב מאוחר יותר
-* אם שרת המקבל אינו זמין באופן זמני, נמשיך לנסות
+* אם השרת המקבל אינו זמין זמנית, נמשיך לנסות
 
-גישה זו משפרת משמעותית את שיעורי המסירה תוך שמירה על פרטיות ואבטחה.
+גישה זו משפרת משמעותית את שיעורי המשלוח תוך שמירה על פרטיות ואבטחה.
 
-## שילוב Node.js {#nodejs-integration}
+
+## אינטגרציה עם Node.js {#nodejs-integration}
 
 ### שימוש ב-Nodemailer {#using-nodemailer}
 
@@ -104,10 +108,9 @@ async function sendEmail() {
 
 sendEmail();
 ```
-
 ### שימוש ב-Express.js {#using-expressjs}
 
-כך ניתן לשלב Forward Email SMTP עם יישום Express.js:
+הנה איך לשלב את Forward Email SMTP עם אפליקציית Express.js:
 
 ```javascript
 const express = require('express');
@@ -117,7 +120,7 @@ const port = 3000;
 
 app.use(express.json());
 
-// Configure email transporter
+// הגדרת טרנספורטר של דואר אלקטרוני
 const transporter = nodemailer.createTransport({
   host: 'smtp.forwardemail.net',
   port: 465,
@@ -128,7 +131,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// API endpoint for sending emails
+// נקודת קצה API לשליחת מיילים
 app.post('/send-email', async (req, res) => {
   const { to, subject, text, html } = req.body;
 
@@ -159,7 +162,8 @@ app.listen(port, () => {
 });
 ```
 
-## אינטגרציה של פייתון {#python-integration}
+
+## אינטגרציה עם Python {#python-integration}
 
 ### שימוש ב-smtplib {#using-smtplib}
 
@@ -168,30 +172,30 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Email configuration
+# הגדרות דואר אלקטרוני
 sender_email = "your-username@your-domain.com"
 receiver_email = "recipient@example.com"
 password = "your-password"
 
-# Create message
+# יצירת ההודעה
 message = MIMEMultipart("alternative")
 message["Subject"] = "Hello from Forward Email"
 message["From"] = sender_email
 message["To"] = receiver_email
 
-# Create the plain-text and HTML version of your message
+# יצירת גרסאות הטקסט וה-HTML של ההודעה
 text = "Hello world! This is a test email sent using Python and Forward Email SMTP."
 html = "<html><body><b>Hello world!</b> This is a test email sent using Python and Forward Email SMTP.</body></html>"
 
-# Turn these into plain/html MIMEText objects
+# המרת הטקסט וה-HTML לאובייקטים מסוג MIMEText
 part1 = MIMEText(text, "plain")
 part2 = MIMEText(html, "html")
 
-# Add HTML/plain-text parts to MIMEMultipart message
+# הוספת חלקי HTML וטקסט להודעה מסוג MIMEMultipart
 message.attach(part1)
 message.attach(part2)
 
-# Send email
+# שליחת המייל
 try:
     server = smtplib.SMTP_SSL("smtp.forwardemail.net", 465)
     server.login(sender_email, password)
@@ -204,10 +208,10 @@ except Exception as e:
 
 ### שימוש ב-Django {#using-django}
 
-עבור יישומי Django, הוסף את הפרטים הבאים ל-`settings.py` שלך:
+לאפליקציות Django, הוסף את ההגדרות הבאות ל-`settings.py` שלך:
 
 ```python
-# Email settings
+# הגדרות דואר אלקטרוני
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.forwardemail.net'
 EMAIL_PORT = 465
@@ -217,7 +221,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-לאחר מכן שלח מיילים בתצוגות שלך:
+לאחר מכן שלח מיילים ב-views שלך:
 
 ```python
 from django.core.mail import send_mail
@@ -234,7 +238,8 @@ def send_email_view(request):
     return HttpResponse('Email sent!')
 ```
 
-## אינטגרציית PHP {#php-integration}
+
+## אינטגרציה עם PHP {#php-integration}
 
 ### שימוש ב-PHPMailer {#using-phpmailer}
 
@@ -248,7 +253,7 @@ require 'vendor/autoload.php';
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
+    // הגדרות שרת
     $mail->isSMTP();
     $mail->Host       = 'smtp.forwardemail.net';
     $mail->SMTPAuth   = true;
@@ -257,12 +262,12 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
     $mail->Port       = 465;
 
-    // Recipients
+    // נמענים
     $mail->setFrom('your-username@your-domain.com', 'Your Name');
     $mail->addAddress('recipient@example.com', 'Recipient Name');
     $mail->addReplyTo('your-username@your-domain.com', 'Your Name');
 
-    // Content
+    // תוכן
     $mail->isHTML(true);
     $mail->Subject = 'Hello from Forward Email';
     $mail->Body    = '<b>Hello world!</b> This is a test email sent using PHPMailer and Forward Email SMTP.';
@@ -274,10 +279,9 @@ try {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
 ```
-
 ### שימוש ב-Laravel {#using-laravel}
 
-עבור יישומי Laravel, עדכנו את קובץ `.env` שלכם:
+ליישומי Laravel, עדכן את קובץ `.env` שלך:
 
 ```sh
 MAIL_MAILER=smtp
@@ -290,7 +294,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-לאחר מכן, שלחו מיילים באמצעות חזית הדואר של Laravel:
+לאחר מכן שלח מיילים באמצעות הפאצ' של Mail ב-Laravel:
 
 ```php
 <?php
@@ -307,12 +311,13 @@ class EmailController extends Controller
     {
         Mail::to('recipient@example.com')->send(new WelcomeEmail());
 
-        return 'Email sent successfully!';
+        return 'האימייל נשלח בהצלחה!';
     }
 }
 ```
 
-## אינטגרציה של רובי {#ruby-integration}
+
+## אינטגרציה עם Ruby {#ruby-integration}
 
 ### שימוש ב-Ruby Mail Gem {#using-ruby-mail-gem}
 
@@ -335,25 +340,26 @@ end
 mail = Mail.new do
   from     'your-username@your-domain.com'
   to       'recipient@example.com'
-  subject  'Hello from Forward Email'
+  subject  'שלום מ-Forward Email'
 
   text_part do
-    body 'Hello world! This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body 'שלום עולם! זהו מייל בדיקה שנשלח באמצעות Ruby Mail ו-Forward Email SMTP.'
   end
 
   html_part do
     content_type 'text/html; charset=UTF-8'
-    body '<b>Hello world!</b> This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body '<b>שלום עולם!</b> זהו מייל בדיקה שנשלח באמצעות Ruby Mail ו-Forward Email SMTP.'
   end
 end
 
 mail.deliver!
-puts "Email sent successfully!"
+puts "האימייל נשלח בהצלחה!"
 ```
 
-## אינטגרציית ג'אווה {#java-integration}
 
-### שימוש ב-API של JavaMail {#using-javamail-api}
+## אינטגרציה עם Java {#java-integration}
+
+### שימוש ב-JavaMail API {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -362,11 +368,11 @@ import javax.mail.internet.*;
 
 public class SendEmail {
     public static void main(String[] args) {
-        // Sender's email and password
+        // אימייל וסיסמה של השולח
         final String username = "your-username@your-domain.com";
         final String password = "your-password";
 
-        // SMTP server properties
+        // מאפייני שרת SMTP
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -375,7 +381,7 @@ public class SendEmail {
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-        // Create session with authenticator
+        // יצירת סשן עם מאמת
         Session session = Session.getInstance(props,
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -384,34 +390,34 @@ public class SendEmail {
             });
 
         try {
-            // Create message
+            // יצירת ההודעה
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("recipient@example.com"));
-            message.setSubject("Hello from Forward Email");
+            message.setSubject("שלום מ-Forward Email");
 
-            // Create multipart message
+            // יצירת הודעה מרובת חלקים
             Multipart multipart = new MimeMultipart("alternative");
 
-            // Text part
+            // חלק טקסט
             BodyPart textPart = new MimeBodyPart();
-            textPart.setText("Hello world! This is a test email sent using JavaMail and Forward Email SMTP.");
+            textPart.setText("שלום עולם! זהו מייל בדיקה שנשלח באמצעות JavaMail ו-Forward Email SMTP.");
 
-            // HTML part
+            // חלק HTML
             BodyPart htmlPart = new MimeBodyPart();
-            htmlPart.setContent("<b>Hello world!</b> This is a test email sent using JavaMail and Forward Email SMTP.", "text/html");
+            htmlPart.setContent("<b>שלום עולם!</b> זהו מייל בדיקה שנשלח באמצעות JavaMail ו-Forward Email SMTP.", "text/html");
 
-            // Add parts to multipart
+            // הוספת החלקים למולטיפארט
             multipart.addBodyPart(textPart);
             multipart.addBodyPart(htmlPart);
 
-            // Set content
+            // הגדרת התוכן
             message.setContent(multipart);
 
-            // Send message
+            // שליחת ההודעה
             Transport.send(message);
 
-            System.out.println("Email sent successfully!");
+            System.out.println("האימייל נשלח בהצלחה!");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -420,105 +426,105 @@ public class SendEmail {
 }
 ```
 
-## תצורת לקוח דוא"ל {#email-client-configuration}
 
-### ת'אנדרבירד {#thunderbird}
+## הגדרת לקוח דואר אלקטרוני {#email-client-configuration}
+
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
-    B --> C[Account Actions]
-    C --> D[Add Mail Account]
-    D --> E[Enter Name, Email, Password]
-    E --> F[Manual Config]
-    F --> G[Enter Server Details]
+    A[פתח את Thunderbird] --> B[הגדרות חשבון]
+    B --> C[פעולות חשבון]
+    C --> D[הוסף חשבון דואר]
+    D --> E[הזן שם, אימייל, סיסמה]
+    E --> F[הגדרה ידנית]
+    F --> G[הזן פרטי שרת]
     G --> H[SMTP: smtp.forwardemail.net]
-    H --> I[Port: 465]
-    I --> J[Connection: SSL/TLS]
-    J --> K[Authentication: Normal Password]
-    K --> L[Username: full email address]
-    L --> M[Test and Create Account]
+    H --> I[פורט: 465]
+    I --> J[חיבור: SSL/TLS]
+    J --> K[אימות: סיסמה רגילה]
+    K --> L[שם משתמש: כתובת אימייל מלאה]
+    L --> M[בדוק ויצר חשבון]
 ```
+1. פתח את Thunderbird ועבור להגדרות חשבון  
+2. לחץ על "Account Actions" ובחר "Add Mail Account"  
+3. הזן את שמך, כתובת האימייל והסיסמה שלך  
+4. לחץ על "Manual Config" והזן את הפרטים הבאים:  
+   * שרת נכנס:  
+     * IMAP: imap.forwardemail.net, פורט: 993, SSL/TLS  
+     * POP3: pop3.forwardemail.net, פורט: 995, SSL/TLS  
+   * שרת יוצא (SMTP): smtp.forwardemail.net, פורט: 465, SSL/TLS  
+   * אימות: סיסמה רגילה  
+   * שם משתמש: כתובת האימייל המלאה שלך  
+5. לחץ על "Test" ואז על "Done"  
 
-1. פתחו את Thunderbird ועברו להגדרות חשבון
-2. לחצו על "פעולות חשבון" ובחרו "הוספת חשבון דואר"
-3. הזינו את שמכם, כתובת הדוא"ל והסיסמה שלכם
-4. לחצו על "הגדרה ידנית" והזינו את הפרטים הבאים:
-* שרת נכנס:
-* IMAP: imap.forwardemail.net, יציאה: 993, SSL/TLS
-* POP3: pop3.forwardemail.net, יציאה: 995, SSL/TLS
-* שרת יוצא (SMTP): smtp.forwardemail.net, יציאה: 465, SSL/TLS
-* אימות: סיסמה רגילה
-* שם משתמש: כתובת הדוא"ל המלאה שלכם
-5. לחצו על "בדיקה" ולאחר מכן על "סיום"
+### Apple Mail {#apple-mail}
 
-### אפל מייל {#apple-mail}
+1. פתח את Mail ועבור אל Mail > Preferences > Accounts  
+2. לחץ על כפתור "+" להוספת חשבון חדש  
+3. בחר "Other Mail Account" ולחץ על "Continue"  
+4. הזן את שמך, כתובת האימייל והסיסמה שלך, ואז לחץ על "Sign In"  
+5. כאשר ההגדרה האוטומטית נכשלת, הזן את הפרטים הבאים:  
+   * שרת דואר נכנס: imap.forwardemail.net (או pop3.forwardemail.net עבור POP3)  
+   * שרת דואר יוצא: smtp.forwardemail.net  
+   * שם משתמש: כתובת האימייל המלאה שלך  
+   * סיסמה: הסיסמה שלך  
+6. לחץ על "Sign In" להשלמת ההגדרה  
 
-1. פתחו את דואר ועברו אל דואר > העדפות > חשבונות
-2. לחצו על כפתור "+" כדי להוסיף חשבון חדש
-3. בחרו "חשבון דואר אחר" ולחצו על "המשך"
-4. הזינו את שמכם, כתובת הדוא"ל והסיסמה שלכם, ולאחר מכן לחצו על "כניסה"
-5. כאשר ההתקנה האוטומטית נכשלת, הזינו את הפרטים הבאים:
-* שרת דואר נכנס: imap.forwardemail.net (או pop3.forwardemail.net עבור POP3)
-* שרת דואר יוצא: smtp.forwardemail.net
-* שם משתמש: כתובת הדוא"ל המלאה שלכם
-* סיסמה: הסיסמה שלכם
-6. לחצו על "כניסה" כדי להשלים את ההתקנה
+### Gmail (Send Mail As) {#gmail-send-mail-as}
 
-### ג'ימייל (שלח דואר בשם) {#gmail-send-mail-as}
-
-1. פתחו את Gmail ועברו אל הגדרות > חשבונות וייבוא.
-2. תחת "שלח דואר בשם", לחצו על "הוסיפו כתובת דוא"ל נוספת".
-3. הזינו את שמכם וכתובת הדוא"ל שלכם, ולאחר מכן לחצו על "השלב הבא".
-4. הזינו את פרטי שרת ה-SMTP הבאים:
-* שרת SMTP: smtp.forwardemail.net
-* פורט: 465
-* שם משתמש: כתובת הדוא"ל המלאה שלכם.
-* סיסמה: הסיסמה שלכם.
-* בחרו "חיבור מאובטח באמצעות SSL".
-5. לחצו על "הוסיפו חשבון" ואמתו את כתובת הדוא"ל שלכם.
+1. פתח את Gmail ועבור אל Settings > Accounts and Import  
+2. תחת "Send mail as", לחץ על "Add another email address"  
+3. הזן את שמך וכתובת האימייל שלך, ואז לחץ על "Next Step"  
+4. הזן את פרטי שרת ה-SMTP הבאים:  
+   * שרת SMTP: smtp.forwardemail.net  
+   * פורט: 465  
+   * שם משתמש: כתובת האימייל המלאה שלך  
+   * סיסמה: הסיסמה שלך  
+   * בחר "Secured connection using SSL"  
+5. לחץ על "Add Account" ואמת את כתובת האימייל שלך  
 
 ## פתרון בעיות {#troubleshooting}
 
 ### בעיות נפוצות ופתרונות {#common-issues-and-solutions}
 
-1. **האימות נכשל**
-* אמת את שם המשתמש (כתובת הדוא"ל המלאה) והסיסמה שלך
-* ודא שאתה משתמש בפורט הנכון (465 עבור SSL/TLS)
-* בדוק אם גישת SMTP מופעלת בחשבון שלך
+1. **אימות נכשל**  
+   * ודא את שם המשתמש (כתובת האימייל המלאה) והסיסמה שלך  
+   * ודא שאתה משתמש בפורט הנכון (465 עבור SSL/TLS)  
+   * בדוק אם החשבון שלך מאפשר גישה ל-SMTP  
 
-2. **פסק זמן לחיבור**
-* בדוק את חיבור האינטרנט שלך
-* ודא שהגדרות חומת האש אינן חוסמות תעבורת SMTP
-* השתמש בפורט 465 עם SSL/TLS (מומלץ) או בפורט 587 עם STARTTLS
+2. **פסק זמן בחיבור**  
+   * בדוק את חיבור האינטרנט שלך  
+   * ודא שהגדרות חומת האש אינן חוסמות תעבורת SMTP  
+   * נסה להשתמש בפורט 465 עם SSL/TLS (מומלץ) או פורט 587 עם STARTTLS  
 
-3. **הודעה נדחתה**
-* ודא שכתובת ה"מאת" שלך תואמת את כתובת הדוא"ל המאומתת שלך
-* בדוק אם כתובת ה-IP שלך נמצאת ברשימה שחורה
-* ודא שתוכן ההודעה שלך אינו מפעיל מסנני דואר זבל
+3. **הודעה נדחתה**  
+   * ודא שכתובת "From" תואמת את האימייל המאומת שלך  
+   * בדוק אם כתובת ה-IP שלך ברשימה שחורה  
+   * ודא שתוכן ההודעה שלך אינו מפעיל מסנני דואר זבל  
 
-4. **שגיאות TLS/SSL**
-* עדכן את האפליקציה/ספרייה שלך לתמיכה בגרסאות TLS מודרניות
-* ודא שאישורי CA של המערכת שלך מעודכנים
-* נסה TLS מפורש במקום TLS מרומז
+4. **שגיאות TLS/SSL**  
+   * עדכן את האפליקציה/ספרייה שלך לתמיכה בגרסאות TLS מודרניות  
+   * ודא שתעודות ה-CA של המערכת מעודכנות  
+   * נסה TLS מפורש במקום TLS מרומז  
 
 ### קבלת עזרה {#getting-help}
 
-אם נתקלת בבעיות שלא מכוסות כאן, אנא:
+אם נתקלת בבעיות שלא נכללו כאן, אנא:  
 
-1. בדוק את ה-[דף שאלות נפוצות](/faq) שלנו לשאלות נפוצות
-2. עיין ב-[פוסט בבלוג על משלוח דוא"ל](/blog/docs/best-email-forwarding-service) שלנו למידע מפורט
-3. צור קשר עם צוות התמיכה שלנו בכתובת <support@forwardemail.net>
+1. בדוק את [דף השאלות הנפוצות](/faq) שלנו לשאלות נפוצות  
+2. עיין ב-[פוסט הבלוג שלנו על משלוח דואר](/blog/docs/best-email-forwarding-service) למידע מפורט  
+3. פנה לצוות התמיכה שלנו בכתובת <support@forwardemail.net>  
 
 ## משאבים נוספים {#additional-resources}
 
-* [תיעוד העברת דוא"ל](/docs)
-* [מגבלות ותצורה של שרת SMTP](/faq#what-are-your-outbound-smtp-limits)
-* [מדריך שיטות עבודה מומלצות לדוא"ל](/blog/docs/best-email-forwarding-service)
-* [נוהלי אבטחה](/security)
+* [תיעוד Forward Email](/docs)  
+* [מגבלות והגדרות שרת SMTP](/faq#what-are-your-outbound-smtp-limits)  
+* [מדריך לפרקטיקות מיטביות בדואר אלקטרוני](/blog/docs/best-email-forwarding-service)  
+* [פרקטיקות אבטחה](/security)  
 
-## מסקנה {#conclusion}
+## סיכום {#conclusion}
 
-שירות ה-SMTP של Forward Email מספק דרך אמינה, מאובטחת וממוקדת פרטיות לשליחת דוא"ל מהיישומים ולקוחות הדוא"ל שלך. בעזרת מערכת התורים החכמה שלנו, מנגנון ניסיון חוזר תוך 5 ימים והודעות מקיפות על סטטוס המסירה, אתה יכול להיות בטוח שהדוא"ל שלך יגיע ליעדו.
+שירות ה-SMTP של Forward Email מספק דרך אמינה, מאובטחת וממוקדת פרטיות לשליחת מיילים מהאפליקציות ולקוחות הדואר שלך. עם מערכת התורים החכמה שלנו, מנגנון ניסיון חוזר למשך 5 ימים, והתראות סטטוס משלוח מקיפות, תוכל להיות בטוח שהאימיילים שלך יגיעו ליעדם.  
 
-עבור מקרי שימוש מתקדמים יותר או אינטגרציות מותאמות אישית, אנא צרו קשר עם צוות התמיכה שלנו.
+לשימושים מתקדמים יותר או אינטגרציות מותאמות אישית, אנא פנה לצוות התמיכה שלנו.

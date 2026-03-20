@@ -1,423 +1,431 @@
-# Complete Guide to NAS Email Setup with Forward Email {#complete-guide-to-nas-email-setup-with-forward-email}
+# Guida Completa alla Configurazione Email NAS con Forward Email {#complete-guide-to-nas-email-setup-with-forward-email}
 
-Setting up email notifications on your NAS shouldn't be a pain. Whether you've got a Synology, QNAP, or even a Raspberry Pi setup, this guide will get your device talking to Forward Email so you actually know when something goes wrong.
+Configurare le notifiche email sul tuo NAS non dovrebbe essere un problema. Che tu abbia un Synology, QNAP o anche un setup con Raspberry Pi, questa guida farà in modo che il tuo dispositivo comunichi con Forward Email così saprai davvero quando qualcosa va storto.
 
-Most NAS devices can send email alerts for drive failures, temperature warnings, backup completion, and security events. The problem? Many email providers have gotten picky about security, and older devices often can't keep up. That's where Forward Email comes in - we support both modern and legacy devices.
+La maggior parte dei dispositivi NAS può inviare avvisi email per guasti ai dischi, avvisi di temperatura, completamento backup ed eventi di sicurezza. Il problema? Molti provider email sono diventati esigenti sulla sicurezza, e i dispositivi più vecchi spesso non riescono a stare al passo. Qui entra in gioco Forward Email - supportiamo sia dispositivi moderni che legacy.
 
-This guide covers email setup for 75+ NAS providers with step-by-step instructions, compatibility info, and troubleshooting tips. No matter what device you're using, we'll get your notifications working.
+Questa guida copre la configurazione email per oltre 75 provider NAS con istruzioni passo-passo, informazioni sulla compatibilità e suggerimenti per la risoluzione dei problemi. Qualunque dispositivo tu stia usando, faremo funzionare le tue notifiche.
 
-## Table of Contents {#table-of-contents}
 
-* [Why You Need NAS Email Notifications](#why-you-need-nas-email-notifications)
-* [The TLS Problem (And How We Fix It)](#the-tls-problem-and-how-we-fix-it)
-* [Forward Email SMTP Settings](#forward-email-smtp-settings)
-* [Comprehensive NAS Provider Compatibility Matrix](#comprehensive-nas-provider-compatibility-matrix)
-* [Synology NAS Email Configuration](#synology-nas-email-configuration)
-  * [Configuration Steps](#configuration-steps)
-* [QNAP NAS Email Configuration](#qnap-nas-email-configuration)
-  * [Configuration Steps](#configuration-steps-1)
-  * [Common QNAP Troubleshooting Issues](#common-qnap-troubleshooting-issues)
-* [ReadyNAS Legacy Configuration](#readynas-legacy-configuration)
-  * [Legacy Configuration Steps](#legacy-configuration-steps)
-  * [ReadyNAS Troubleshooting](#readynas-troubleshooting)
-* [TerraMaster NAS Configuration](#terramaster-nas-configuration)
-* [ASUSTOR NAS Configuration](#asustor-nas-configuration)
-* [Buffalo TeraStation Configuration](#buffalo-terastation-configuration)
-* [Western Digital My Cloud Configuration](#western-digital-my-cloud-configuration)
-* [TrueNAS Email Configuration](#truenas-email-configuration)
-* [OpenMediaVault Configuration](#openmediavault-configuration)
-* [Raspberry Pi NAS Configuration](#raspberry-pi-nas-configuration)
-  * [Initial Raspberry Pi Setup](#initial-raspberry-pi-setup)
-  * [Samba File Sharing Configuration](#samba-file-sharing-configuration)
-  * [FTP Server Setup](#ftp-server-setup)
-  * [Email Notification Configuration](#email-notification-configuration)
-  * [Advanced Raspberry Pi NAS Features](#advanced-raspberry-pi-nas-features)
-  * [Raspberry Pi Email Troubleshooting](#raspberry-pi-email-troubleshooting)
-  * [Performance Optimization](#performance-optimization)
-  * [Security Considerations](#security-considerations)
+## Indice {#table-of-contents}
 
-## Why You Need NAS Email Notifications {#why-you-need-nas-email-notifications}
+* [Perché Hai Bisogno delle Notifiche Email NAS](#why-you-need-nas-email-notifications)
+* [Il Problema TLS (E Come Lo Risolviamo)](#the-tls-problem-and-how-we-fix-it)
+* [Impostazioni SMTP di Forward Email](#forward-email-smtp-settings)
+* [Matrice Completa di Compatibilità dei Provider NAS](#comprehensive-nas-provider-compatibility-matrix)
+* [Configurazione Email Synology NAS](#synology-nas-email-configuration)
+  * [Passaggi di Configurazione](#configuration-steps)
+* [Configurazione Email QNAP NAS](#qnap-nas-email-configuration)
+  * [Passaggi di Configurazione](#configuration-steps-1)
+  * [Problemi Comuni di Risoluzione QNAP](#common-qnap-troubleshooting-issues)
+* [Configurazione Legacy ReadyNAS](#readynas-legacy-configuration)
+  * [Passaggi di Configurazione Legacy](#legacy-configuration-steps)
+  * [Risoluzione Problemi ReadyNAS](#readynas-troubleshooting)
+* [Configurazione TerraMaster NAS](#terramaster-nas-configuration)
+* [Configurazione ASUSTOR NAS](#asustor-nas-configuration)
+* [Configurazione Buffalo TeraStation](#buffalo-terastation-configuration)
+* [Configurazione Western Digital My Cloud](#western-digital-my-cloud-configuration)
+* [Configurazione Email TrueNAS](#truenas-email-configuration)
+* [Configurazione OpenMediaVault](#openmediavault-configuration)
+* [Configurazione Raspberry Pi NAS](#raspberry-pi-nas-configuration)
+  * [Configurazione Iniziale Raspberry Pi](#initial-raspberry-pi-setup)
+  * [Configurazione Condivisione File Samba](#samba-file-sharing-configuration)
+  * [Configurazione Server FTP](#ftp-server-setup)
+  * [Configurazione Notifiche Email](#email-notification-configuration)
+  * [Funzionalità Avanzate Raspberry Pi NAS](#advanced-raspberry-pi-nas-features)
+  * [Risoluzione Problemi Email Raspberry Pi](#raspberry-pi-email-troubleshooting)
+  * [Ottimizzazione delle Prestazioni](#performance-optimization)
+  * [Considerazioni sulla Sicurezza](#security-considerations)
 
-Your NAS monitors tons of stuff - drive health, temperature, network issues, security events. Without email alerts, problems can go unnoticed for weeks, potentially causing data loss or security breaches.
 
-Email notifications give you immediate alerts when drives start failing, warn about unauthorized access attempts, confirm successful backups, and keep you informed about system health. Forward Email makes sure these critical notifications actually reach you.
+## Perché Hai Bisogno delle Notifiche Email NAS {#why-you-need-nas-email-notifications}
 
-## The TLS Problem (And How We Fix It) {#the-tls-problem-and-how-we-fix-it}
+Il tuo NAS monitora un sacco di cose - salute dei dischi, temperatura, problemi di rete, eventi di sicurezza. Senza avvisi email, i problemi possono passare inosservati per settimane, causando potenzialmente perdita di dati o violazioni della sicurezza.
 
-Here's the deal: if your NAS was made before 2020, it probably only supports TLS 1.0. Gmail, Outlook, and most providers dropped support for that years ago. Your device tries to send email, gets rejected, and you're left in the dark.
+Le notifiche email ti danno avvisi immediati quando i dischi iniziano a guastarsi, ti avvertono di tentativi di accesso non autorizzati, confermano backup riusciti e ti tengono informato sulla salute del sistema. Forward Email assicura che queste notifiche critiche ti raggiungano davvero.
 
-Forward Email fixes this with dual-port support. Modern devices use our standard ports (`465` and `587`), while older devices can use our legacy ports (`2455` and `2555`) that still support TLS 1.0.
+
+## Il Problema TLS (E Come Lo Risolviamo) {#the-tls-problem-and-how-we-fix-it}
+
+Ecco il punto: se il tuo NAS è stato prodotto prima del 2020, probabilmente supporta solo TLS 1.0. Gmail, Outlook e la maggior parte dei provider hanno abbandonato il supporto per questo anni fa. Il tuo dispositivo prova a inviare email, viene rifiutato e rimani al buio.
+
+Forward Email risolve questo con il supporto a doppia porta. I dispositivi moderni usano le nostre porte standard (`465` e `587`), mentre quelli più vecchi possono usare le nostre porte legacy (`2455` e `2555`) che supportano ancora TLS 1.0.
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy NAS devices through our dual-port strategy. Use ports 465/587 for modern devices with TLS 1.2+ support, and ports 2455/2555 for legacy devices that only support TLS 1.0.
+> Forward Email supporta sia dispositivi NAS moderni che legacy tramite la nostra strategia a doppia porta. Usa le porte 465/587 per dispositivi moderni con supporto TLS 1.2+, e le porte 2455/2555 per dispositivi legacy che supportano solo TLS 1.0.
 
-## Forward Email SMTP Settings {#forward-email-smtp-settings}
 
-Here's what you need to know about our SMTP setup:
+## Impostazioni SMTP di Forward Email {#forward-email-smtp-settings}
+Ecco cosa devi sapere sulla nostra configurazione SMTP:
 
-**For modern NAS devices (2020+):** Use `smtp.forwardemail.net` with port `465` (SSL/TLS) or port `587` (STARTTLS). These work with current firmware that supports TLS 1.2+.
+**Per dispositivi NAS moderni (2020+):** Usa `smtp.forwardemail.net` con la porta `465` (SSL/TLS) o la porta `587` (STARTTLS). Queste funzionano con il firmware attuale che supporta TLS 1.2+.
 
-**For older NAS devices:** Use `smtp.forwardemail.net` with port `2455` (SSL/TLS) or port `2555` (STARTTLS). These support TLS 1.0 for legacy devices.
+**Per dispositivi NAS più vecchi:** Usa `smtp.forwardemail.net` con la porta `2455` (SSL/TLS) o la porta `2555` (STARTTLS). Queste supportano TLS 1.0 per dispositivi legacy.
 
-**Authentication:** Use your Forward Email alias as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) (not your account password).
+**Autenticazione:** Usa il tuo alias Forward Email come nome utente e la password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) (non la password del tuo account).
 
 > \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for NAS configuration.
+> Non usare mai la password di accesso al tuo account per l'autenticazione SMTP. Usa sempre la password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) per la configurazione del NAS.
 
 > \[!TIP]
-> Check your NAS device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
+> Controlla la versione del firmware del tuo dispositivo NAS e il supporto TLS prima della configurazione. La maggior parte dei dispositivi prodotti dopo il 2020 supporta protocolli TLS moderni, mentre i dispositivi più vecchi richiedono tipicamente porte di compatibilità legacy.
 
-## Comprehensive NAS Provider Compatibility Matrix {#comprehensive-nas-provider-compatibility-matrix}
 
-The following matrix provides detailed compatibility information for major NAS providers, including TLS support levels, firmware status, and recommended Forward Email configuration settings.
+## Matrice completa di compatibilità dei provider NAS {#comprehensive-nas-provider-compatibility-matrix}
 
-| NAS Provider | Current Models | TLS Support | Firmware Status | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| ---------------- | --------------- | ------------ | --------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Synology | DSM 7.x | TLS 1.2+ | Active | `465`, `587` | [STARTTLS configuration](https://community.synology.com/enu/forum/2/post/124584) | [DSM Email Notification Setup](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/system_notification_email) |
-| QNAP | QTS 5.x | TLS 1.2+ | Active | `465`, `587` | [Notification Center failures](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525) | [QTS Email Server Configuration](https://docs.qnap.com/operating-system/qts/5.1.x/en-us/configuring-an-email-notification-server-EB4E6D7F.html) |
-| Raspberry Pi | Raspberry Pi OS | TLS 1.2+ | Active | `465`, `587` | [DNS resolution issues](https://www.raspberrypi.org/forums/viewtopic.php?t=294014) | [Raspberry Pi Email Setup Guide](#raspberry-pi-nas-configuration) |
-| ASUSTOR | ADM 4.x | TLS 1.2+ | Active | `465`, `587` | [Certificate validation](https://forum.asustor.com/viewtopic.php?f=134&t=12345) | [ASUSTOR Notification Setup](https://www.asustor.com/en/online/online_help?id=8) |
-| TerraMaster | TOS 6.x | TLS 1.2 | Active | `465`, `587` | [SMTP authentication](https://www.terra-master.com/global/forum/) | [TerraMaster Email Configuration](https://www.terra-master.com/global/support/download.php) |
-| TrueNAS | SCALE/CORE | TLS 1.2+ | Active | `465`, `587` | [SSL certificate setup](https://www.truenas.com/community/threads/email-notifications-not-working.95234/) | [TrueNAS Email Setup Guide](https://www.truenas.com/docs/scale/scaletutorials/systemsettings/general/settingupsystememail/) |
-| Buffalo | TeraStation | TLS 1.2 | Limited | `465`, `587` | [Firmware compatibility](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) | [TeraStation Email Setup](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) |
-| Western Digital | My Cloud OS 5 | TLS 1.2 | Limited | `465`, `587` | [Legacy OS compatibility](https://community.wd.com/t/my-cloud-email-notifications-not-working/265432) | [My Cloud Email Configuration](https://support-en.wd.com/app/answers/detailweb/a_id/10222) |
-| OpenMediaVault | OMV 7.x | TLS 1.2+ | Active | `465`, `587` | [Plugin dependencies](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/) | [OMV Notification Setup](https://docs.openmediavault.org/en/latest/administration/general/notifications.html) |
-| Netgear ReadyNAS | OS 6.x | TLS 1.0 only | Discontinued | `2455`, `2555` | [Legacy TLS support](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) | [ReadyNAS Email Alert Setup](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) |
-| Drobo | Dashboard | TLS 1.2 | Discontinued | `465`, `587` | [Limited support](https://myprojects.drobo.com/support/) | [Drobo Email Notifications](https://www.drobo.com/support/) |
+La seguente matrice fornisce informazioni dettagliate sulla compatibilità per i principali provider NAS, inclusi i livelli di supporto TLS, lo stato del firmware e le impostazioni di configurazione Forward Email consigliate.
 
-This matrix demonstrates the clear division between modern, actively maintained NAS systems and legacy devices that require special compatibility considerations. The majority of current NAS devices support modern TLS standards and can use Forward Email's primary SMTP ports without any special configuration.
+| Provider NAS     | Modelli attuali | Supporto TLS | Stato firmware | Porte consigliate | Problemi comuni                                                                                                                                         | Guida alla configurazione/Schermate                                                                                                             |
+| ---------------- | --------------- | ------------ | -------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Synology         | DSM 7.x         | TLS 1.2+     | Attivo         | `465`, `587`      | [Configurazione STARTTLS](https://community.synology.com/enu/forum/2/post/124584)                                                                      | [Configurazione notifiche email DSM](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/system_notification_email)                         |
+| QNAP             | QTS 5.x         | TLS 1.2+     | Attivo         | `465`, `587`      | [Errori Notification Center](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525)  | [Configurazione server email QTS](https://docs.qnap.com/operating-system/qts/5.1.x/en-us/configuring-an-email-notification-server-EB4E6D7F.html) |
+| Raspberry Pi     | Raspberry Pi OS | TLS 1.2+     | Attivo         | `465`, `587`      | [Problemi risoluzione DNS](https://www.raspberrypi.org/forums/viewtopic.php?t=294014)                                                                  | [Guida configurazione email Raspberry Pi](#raspberry-pi-nas-configuration)                                                                     |
+| ASUSTOR          | ADM 4.x         | TLS 1.2+     | Attivo         | `465`, `587`      | [Validazione certificato](https://forum.asustor.com/viewtopic.php?f=134&t=12345)                                                                       | [Configurazione notifiche ASUSTOR](https://www.asustor.com/en/online/online_help?id=8)                                                         |
+| TerraMaster      | TOS 6.x         | TLS 1.2      | Attivo         | `465`, `587`      | [Autenticazione SMTP](https://www.terra-master.com/global/forum/)                                                                                       | [Configurazione email TerraMaster](https://www.terra-master.com/global/support/download.php)                                                    |
+| TrueNAS          | SCALE/CORE      | TLS 1.2+     | Attivo         | `465`, `587`      | [Configurazione certificato SSL](https://www.truenas.com/community/threads/email-notifications-not-working.95234/)                                     | [Guida configurazione email TrueNAS](https://www.truenas.com/docs/scale/scaletutorials/systemsettings/general/settingupsystememail/)            |
+| Buffalo          | TeraStation     | TLS 1.2      | Limitato       | `465`, `587`      | [Compatibilità firmware](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation)           | [Configurazione email TeraStation](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) |
+| Western Digital  | My Cloud OS 5   | TLS 1.2      | Limitato       | `465`, `587`      | [Compatibilità OS legacy](https://community.wd.com/t/my-cloud-email-notifications-not-working/265432)                                                 | [Configurazione email My Cloud](https://support-en.wd.com/app/answers/detailweb/a_id/10222)                                                     |
+| OpenMediaVault   | OMV 7.x         | TLS 1.2+     | Attivo         | `465`, `587`      | [Dipendenze plugin](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/)                                         | [Configurazione notifiche OMV](https://docs.openmediavault.org/en/latest/administration/general/notifications.html)                            |
+| Netgear ReadyNAS | OS 6.x          | Solo TLS 1.0 | Discontinuato  | `2455`, `2555`    | [Supporto TLS legacy](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)                         | [Configurazione avvisi email ReadyNAS](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)  |
+| Drobo            | Dashboard       | TLS 1.2      | Discontinuato  | `465`, `587`      | [Supporto limitato](https://myprojects.drobo.com/support/)                                                                                            | [Notifiche email Drobo](https://www.drobo.com/support/)                                                                                        |
+Questa matrice dimostra la chiara divisione tra sistemi NAS moderni e attivamente mantenuti e dispositivi legacy che richiedono considerazioni speciali di compatibilità. La maggior parte degli attuali dispositivi NAS supporta gli standard TLS moderni e può utilizzare le porte SMTP primarie di Forward Email senza alcuna configurazione speciale.
 
-## Synology NAS Email Configuration {#synology-nas-email-configuration}
 
-Synology devices with DSM are pretty straightforward to set up. They support modern TLS, so you can use our standard ports without any issues.
+## Configurazione Email Synology NAS {#synology-nas-email-configuration}
+
+I dispositivi Synology con DSM sono piuttosto semplici da configurare. Supportano TLS moderno, quindi puoi utilizzare le nostre porte standard senza problemi.
 
 > \[!NOTE]
-> Synology DSM 7.x provides the most comprehensive email notification features. Older DSM versions may have limited configuration options.
+> Synology DSM 7.x offre le funzionalità di notifica email più complete. Le versioni DSM più vecchie potrebbero avere opzioni di configurazione limitate.
 
-### Configuration Steps {#configuration-steps}
+### Passaggi di Configurazione {#configuration-steps}
 
-1. **Access the DSM web interface** by entering your NAS device's IP address or QuickConnect ID in a web browser.
+1. **Accedi all'interfaccia web DSM** inserendo l'indirizzo IP del tuo dispositivo NAS o l'ID QuickConnect in un browser web.
 
-2. **Navigate to Control Panel** and select the "Notification" section, then click on the "Email" tab to access email configuration options.
+2. **Vai al Pannello di Controllo** e seleziona la sezione "Notifiche", quindi clicca sulla scheda "Email" per accedere alle opzioni di configurazione email.
 
-3. **Enable email notifications** by checking the "Enable email notifications" checkbox.
+3. **Abilita le notifiche email** selezionando la casella "Abilita notifiche email".
 
-4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the server address.
+4. **Configura il server SMTP** inserendo `smtp.forwardemail.net` come indirizzo del server.
 
-5. **Set the port configuration** to port 465 for SSL/TLS connections (recommended). Port 587 with STARTTLS is also supported as an alternative.
+5. **Imposta la configurazione della porta** sulla porta 465 per connessioni SSL/TLS (consigliato). La porta 587 con STARTTLS è supportata come alternativa.
 
-6. **Configure authentication** by selecting "SMTP authentication required" and entering your Forward Email alias in the username field.
+6. **Configura l'autenticazione** selezionando "Autenticazione SMTP richiesta" e inserendo il tuo alias Forward Email nel campo username.
 
-7. **Enter your password** using the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **Inserisci la tua password** utilizzando la password generata da [Il Mio Account -> Domini -> Alias](https://forwardemail.net/my-account/domains).
 
-8. **Set up recipient addresses** by entering up to five email addresses that should receive notifications.
+8. **Imposta gli indirizzi dei destinatari** inserendo fino a cinque indirizzi email che dovrebbero ricevere le notifiche.
 
-9. **Configure notification filtering** to control which events trigger email alerts, preventing notification overload while ensuring critical events are reported.
+9. **Configura il filtro delle notifiche** per controllare quali eventi attivano gli avvisi email, evitando un sovraccarico di notifiche e assicurando che gli eventi critici vengano segnalati.
 
-10. **Test the configuration** using DSM's built-in test function to verify that all settings are correct and communication with Forward Email's servers is working properly.
+10. **Testa la configurazione** utilizzando la funzione di test integrata in DSM per verificare che tutte le impostazioni siano corrette e che la comunicazione con i server di Forward Email funzioni correttamente.
 
 > \[!TIP]
-> Synology allows different notification types for different recipients, providing flexibility in how alerts are distributed across your team.
+> Synology consente diversi tipi di notifica per destinatari differenti, offrendo flessibilità su come gli avvisi vengono distribuiti nel tuo team.
 
-## QNAP NAS Email Configuration {#qnap-nas-email-configuration}
 
-QNAP devices with QTS work great with Forward Email. They support modern TLS and have a nice web interface for configuration.
+## Configurazione Email QNAP NAS {#qnap-nas-email-configuration}
+
+I dispositivi QNAP con QTS funzionano molto bene con Forward Email. Supportano TLS moderno e hanno una bella interfaccia web per la configurazione.
 
 > \[!IMPORTANT]
-> QNAP QTS 5.2.4 had a known issue with email notifications that was [fixed in QTS 5.2.5](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525). Ensure your firmware is updated to avoid notification failures.
+> QNAP QTS 5.2.4 aveva un problema noto con le notifiche email che è stato [risolto in QTS 5.2.5](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525). Assicurati che il firmware sia aggiornato per evitare fallimenti nelle notifiche.
 
-### Configuration Steps {#configuration-steps-1}
+### Passaggi di Configurazione {#configuration-steps-1}
 
-1. **Access your QNAP device's web interface** by entering its IP address in a web browser.
+1. **Accedi all'interfaccia web del tuo dispositivo QNAP** inserendo il suo indirizzo IP in un browser web.
 
-2. **Navigate to the Control Panel** and select "Service Account and Device Pairing," then click on the "E-mail" section to begin email configuration.
+2. **Vai al Pannello di Controllo** e seleziona "Account di Servizio e Accoppiamento Dispositivo", quindi clicca sulla sezione "E-mail" per iniziare la configurazione email.
 
-3. **Click "Add SMTP Service"** to create a new email configuration.
+3. **Clicca su "Aggiungi Servizio SMTP"** per creare una nuova configurazione email.
 
-4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the SMTP server address.
+4. **Configura il server SMTP** inserendo `smtp.forwardemail.net` come indirizzo del server SMTP.
 
-5. **Select the appropriate security protocol** - choose "SSL/TLS" with port `465` (recommended). Port `587` with STARTTLS is also supported.
+5. **Seleziona il protocollo di sicurezza appropriato** - scegli "SSL/TLS" con porta `465` (consigliato). La porta `587` con STARTTLS è supportata come alternativa.
 
-6. **Configure the port number** - port `465` with SSL/TLS is recommended. Port `587` with STARTTLS is also available if needed.
+6. **Configura il numero di porta** - la porta `465` con SSL/TLS è consigliata. La porta `587` con STARTTLS è disponibile se necessario.
 
-7. **Enter your authentication credentials** using your Forward Email alias as the username and your generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **Inserisci le credenziali di autenticazione** usando il tuo alias Forward Email come username e la password generata da [Il Mio Account -> Domini -> Alias](https://forwardemail.net/my-account/domains).
 
-8. **Configure sender information** by entering a descriptive name for the "From" field, such as "QNAP NAS System" or your device's hostname.
+8. **Configura le informazioni del mittente** inserendo un nome descrittivo per il campo "Da", come "Sistema NAS QNAP" o il nome host del tuo dispositivo.
 
-9. **Set up recipient addresses** for different notification types. QNAP allows you to configure multiple recipient groups for different alert types.
+9. **Imposta gli indirizzi dei destinatari** per i diversi tipi di notifica. QNAP consente di configurare più gruppi di destinatari per diversi tipi di avviso.
 
-10. **Test the configuration** using QNAP's built-in email test function to verify all settings are working properly.
+10. **Testa la configurazione** utilizzando la funzione di test email integrata di QNAP per verificare che tutte le impostazioni funzionino correttamente.
 
 > \[!TIP]
-> If you encounter [Gmail SMTP configuration issues](https://forum.qnap.com/viewtopic.php?t=152466), the same troubleshooting steps apply to Forward Email. Ensure authentication is properly enabled and credentials are correct.
-
+> Se incontri [problemi di configurazione SMTP con Gmail](https://forum.qnap.com/viewtopic.php?t=152466), gli stessi passaggi di risoluzione si applicano a Forward Email. Assicurati che l'autenticazione sia abilitata correttamente e che le credenziali siano corrette.
 > \[!NOTE]
-> QNAP devices support advanced notification scheduling, allowing you to configure quiet hours when non-critical notifications are suppressed. This is particularly useful in business environments.
+> I dispositivi QNAP supportano una pianificazione avanzata delle notifiche, permettendoti di configurare orari di silenzio durante i quali le notifiche non critiche vengono soppresse. Questo è particolarmente utile negli ambienti aziendali.
 
-### Common QNAP Troubleshooting Issues {#common-qnap-troubleshooting-issues}
+### Problemi comuni di risoluzione dei problemi QNAP {#common-qnap-troubleshooting-issues}
 
-If your QNAP device [fails to send notification emails](https://www.reddit.com/r/qnap/comments/1dc6z03/qnap_nas_will_not_send_notification_emails/), check the following:
+Se il tuo dispositivo QNAP [non riesce a inviare email di notifica](https://www.reddit.com/r/qnap/comments/1dc6z03/qnap_nas_will_not_send_notification_emails/), verifica quanto segue:
 
-* Verify your Forward Email credentials are correct
-* Ensure the SMTP server address is exactly `smtp.forwardemail.net`
-* Confirm the port matches your encryption method (`465` for SSL/TLS is recommended; `587` for STARTTLS is also supported)
-* Check that your [SMTP server configuration](https://www.qnap.com/en/how-to/faq/article/why-does-notification-center-fail-to-send-emails-to-my-smtp-server) allows the connection
+* Verifica che le credenziali di Forward Email siano corrette
+* Assicurati che l'indirizzo del server SMTP sia esattamente `smtp.forwardemail.net`
+* Conferma che la porta corrisponda al tuo metodo di crittografia (`465` per SSL/TLS è consigliato; `587` per STARTTLS è supportato)
+* Controlla che la tua [configurazione del server SMTP](https://www.qnap.com/en/how-to/faq/article/why-does-notification-center-fail-to-send-emails-to-my-smtp-server) consenta la connessione
 
-## ReadyNAS Legacy Configuration {#readynas-legacy-configuration}
 
-Netgear ReadyNAS devices present unique challenges due to their discontinued firmware support and reliance on legacy TLS 1.0 protocols. However, Forward Email's legacy port support ensures these devices can continue to send email notifications reliably.
+## Configurazione Legacy ReadyNAS {#readynas-legacy-configuration}
+
+I dispositivi Netgear ReadyNAS presentano sfide uniche a causa del supporto firmware interrotto e della dipendenza dai protocolli legacy TLS 1.0. Tuttavia, il supporto delle porte legacy di Forward Email garantisce che questi dispositivi possano continuare a inviare notifiche email in modo affidabile.
 
 > \[!CAUTION]
-> ReadyNAS OS 6.x only supports TLS 1.0, which requires Forward Email's legacy compatibility ports `2455` and `2555`. Modern ports `465` and `587` will not work with these devices.
+> ReadyNAS OS 6.x supporta solo TLS 1.0, che richiede le porte di compatibilità legacy di Forward Email `2455` e `2555`. Le porte moderne `465` e `587` non funzioneranno con questi dispositivi.
 
-### Legacy Configuration Steps {#legacy-configuration-steps}
+### Passaggi per la configurazione legacy {#legacy-configuration-steps}
 
-1. **Access the ReadyNAS web interface** by entering the device's IP address in a web browser.
+1. **Accedi all'interfaccia web di ReadyNAS** inserendo l'indirizzo IP del dispositivo in un browser web.
 
-2. **Navigate to System > Settings > Alerts** to access the email configuration section.
+2. **Naviga su Sistema > Impostazioni > Avvisi** per accedere alla sezione di configurazione email.
 
-3. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the server address.
+3. **Configura il server SMTP** inserendo `smtp.forwardemail.net` come indirizzo del server.
 
-4. **Set the port configuration** to either `2455` for SSL/TLS connections or `2555` for STARTTLS connections - these are Forward Email's legacy compatibility ports.
+4. **Imposta la configurazione della porta** su `2455` per connessioni SSL/TLS o `2555` per connessioni STARTTLS - queste sono le porte di compatibilità legacy di Forward Email.
 
-5. **Enable authentication** and enter your Forward Email alias as the username and your generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+5. **Abilita l'autenticazione** e inserisci il tuo alias Forward Email come nome utente e la password generata da [Il mio account -> Domini -> Alias](https://forwardemail.net/my-account/domains).
 
-6. **Configure sender information** with a descriptive "From" address to identify the ReadyNAS device.
+6. **Configura le informazioni del mittente** con un indirizzo "Da" descrittivo per identificare il dispositivo ReadyNAS.
 
-7. **Add recipient email addresses** using the + button in the email contacts section.
+7. **Aggiungi gli indirizzi email dei destinatari** usando il pulsante + nella sezione contatti email.
 
-8. **Test the configuration** to ensure the legacy TLS connection is working properly.
+8. **Testa la configurazione** per assicurarti che la connessione TLS legacy funzioni correttamente.
 
 > \[!IMPORTANT]
-> ReadyNAS devices require the legacy ports because they cannot establish secure connections using modern TLS protocols. This is a [known limitation](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) of the discontinued firmware.
+> I dispositivi ReadyNAS richiedono le porte legacy perché non possono stabilire connessioni sicure usando i protocolli TLS moderni. Questa è una [limitazione nota](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) del firmware interrotto.
 
-### ReadyNAS Troubleshooting {#readynas-troubleshooting}
+### Risoluzione dei problemi ReadyNAS {#readynas-troubleshooting}
 
-Common issues with ReadyNAS email configuration include:
+I problemi comuni con la configurazione email ReadyNAS includono:
 
-* **TLS version mismatch**: Ensure you're using ports `2455` or `2555`, not the modern ports
-* **Authentication failures**: Verify your Forward Email credentials are correct
-* **Network connectivity**: Check that the ReadyNAS can reach `smtp.forwardemail.net`
-* **Firmware limitations**: Some older ReadyNAS models may have additional [HTTPS configuration requirements](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
+* **Incompatibilità della versione TLS**: assicurati di usare le porte `2455` o `2555`, non le porte moderne
+* **Errori di autenticazione**: verifica che le credenziali Forward Email siano corrette
+* **Connettività di rete**: controlla che ReadyNAS possa raggiungere `smtp.forwardemail.net`
+* **Limitazioni del firmware**: alcuni modelli ReadyNAS più vecchi potrebbero avere ulteriori [requisiti di configurazione HTTPS](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
 
-ReadyNAS devices running OS 6.x and earlier versions only support TLS 1.0 connections, which most modern email providers no longer accept. Forward Email's dedicated legacy ports (2455 and 2555) specifically support these older protocols, ensuring continued functionality for ReadyNAS users.
+I dispositivi ReadyNAS con OS 6.x e versioni precedenti supportano solo connessioni TLS 1.0, che la maggior parte dei provider email moderni non accetta più. Le porte legacy dedicate di Forward Email (2455 e 2555) supportano specificamente questi protocolli più vecchi, garantendo la funzionalità continua per gli utenti ReadyNAS.
 
-To configure email on ReadyNAS devices, access the device's web interface through its IP address. Navigate to the System section and select "Notifications" to access email configuration options.
+Per configurare l'email sui dispositivi ReadyNAS, accedi all'interfaccia web del dispositivo tramite il suo indirizzo IP. Naviga nella sezione Sistema e seleziona "Notifiche" per accedere alle opzioni di configurazione email.
 
-In the email configuration section, enable email notifications and enter smtp.forwardemail.net as the SMTP server. This is crucial - use Forward Email's legacy-compatible ports rather than standard SMTP ports.
+Nella sezione di configurazione email, abilita le notifiche email e inserisci smtp.forwardemail.net come server SMTP. Questo è cruciale - usa le porte compatibili legacy di Forward Email invece delle porte SMTP standard.
 
-For SSL/TLS connections, configure port 2455 instead of the standard port 465 (recommended). For STARTTLS connections, use port 2555 instead of port 587. These special ports maintain TLS 1.0 compatibility while providing the best available security for legacy devices.
+Per connessioni SSL/TLS, configura la porta 2455 invece della porta standard 465 (consigliata). Per connessioni STARTTLS, usa la porta 2555 invece della porta 587. Queste porte speciali mantengono la compatibilità TLS 1.0 offrendo la migliore sicurezza disponibile per dispositivi legacy.
+Inserisci il tuo alias Forward Email come nome utente e la password generata per l'autenticazione. I dispositivi ReadyNAS supportano l'autenticazione SMTP, che è richiesta per le connessioni Forward Email.
 
-Enter your Forward Email alias as the username and your generated password for authentication. ReadyNAS devices support SMTP authentication, which is required for Forward Email connections.
+Configura l'indirizzo email del mittente e gli indirizzi dei destinatari in base alle tue esigenze di notifica. ReadyNAS consente più indirizzi destinatari, permettendoti di distribuire gli avvisi a diversi membri del team o account email.
 
-Configure the sender email address and recipient addresses according to your notification requirements. ReadyNAS allows multiple recipient addresses, enabling you to distribute alerts to different team members or email accounts.
+Testa attentamente la configurazione, poiché i dispositivi ReadyNAS potrebbero non fornire messaggi di errore dettagliati in caso di fallimento della configurazione. Se il test standard non funziona, verifica di utilizzare le porte legacy corrette (2455 o 2555) invece delle porte SMTP moderne.
 
-Test the configuration carefully, as ReadyNAS devices may not provide detailed error messages if the configuration fails. If standard testing doesn't work, verify that you're using the correct legacy ports (2455 or 2555) rather than modern SMTP ports.
+Considera le implicazioni di sicurezza nell'uso di protocolli TLS legacy. Sebbene le porte legacy di Forward Email offrano la migliore sicurezza disponibile per dispositivi più vecchi, è consigliato aggiornare a un sistema NAS moderno con supporto TLS attuale quando possibile.
 
-Consider the security implications of using legacy TLS protocols. While Forward Email's legacy ports provide the best available security for older devices, upgrading to a modern NAS system with current TLS support is recommended when possible.
 
-## TerraMaster NAS Configuration {#terramaster-nas-configuration}
+## Configurazione TerraMaster NAS {#terramaster-nas-configuration}
 
-TerraMaster devices running TOS 6.x support modern TLS and work well with Forward Email's standard ports.
+I dispositivi TerraMaster con TOS 6.x supportano TLS moderno e funzionano bene con le porte standard di Forward Email.
 
 > \[!NOTE]
-> TerraMaster TOS 6.x provides comprehensive email notification features. Make sure your firmware is up to date for the best compatibility.
+> TerraMaster TOS 6.x offre funzionalità complete di notifica email. Assicurati che il firmware sia aggiornato per la migliore compatibilità.
 
-1. **Access System Settings**
-   * Log into your TerraMaster web interface
-   * Navigate to **Control Panel** > **Notification**
+1. **Accedi alle Impostazioni di Sistema**
+   * Accedi all'interfaccia web di TerraMaster
+   * Vai su **Pannello di Controllo** > **Notifiche**
 
-2. **Configure SMTP Settings**
+2. **Configura le Impostazioni SMTP**
    * Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Porta: `465` (SSL/TLS, consigliato) o `587` (STARTTLS)
+   * Nome utente: Il tuo alias Forward Email
+   * Password: Password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-3. **Enable Notifications**
-   * Check the notification types you want to receive
-   * Test the configuration with the built-in test function
+3. **Abilita le Notifiche**
+   * Seleziona i tipi di notifica che desideri ricevere
+   * Testa la configurazione con la funzione di test integrata
 
 > \[!TIP]
-> TerraMaster devices work best with port `465` for SSL/TLS connections (recommended). If you experience issues, port `587` with STARTTLS is also supported.
+> I dispositivi TerraMaster funzionano meglio con la porta `465` per connessioni SSL/TLS (consigliato). Se riscontri problemi, è supportata anche la porta `587` con STARTTLS.
 
-## ASUSTOR NAS Configuration {#asustor-nas-configuration}
 
-ASUSTOR devices with ADM 4.x have solid email notification support and work seamlessly with Forward Email.
+## Configurazione ASUSTOR NAS {#asustor-nas-configuration}
+
+I dispositivi ASUSTOR con ADM 4.x hanno un solido supporto per le notifiche email e funzionano perfettamente con Forward Email.
 
 > \[!NOTE]
-> ASUSTOR ADM 4.x includes advanced notification filtering options. You can customize which events trigger email alerts.
+> ASUSTOR ADM 4.x include opzioni avanzate di filtro per le notifiche. Puoi personalizzare quali eventi attivano gli avvisi email.
 
-1. **Open Notification Settings**
-   * Access ADM web interface
-   * Go to **Settings** > **Notification**
+1. **Apri le Impostazioni di Notifica**
+   * Accedi all'interfaccia web ADM
+   * Vai su **Impostazioni** > **Notifiche**
 
-2. **Set Up SMTP Configuration**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Authentication: Enable
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+2. **Configura SMTP**
+   * Server SMTP: `smtp.forwardemail.net`
+   * Porta: `465` (SSL/TLS, consigliato) o `587` (STARTTLS)
+   * Autenticazione: Abilita
+   * Nome utente: Il tuo alias Forward Email
+   * Password: Password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-3. **Configure Alert Types**
-   * Select which system events should trigger emails
-   * Set up recipient addresses
-   * Test the configuration
+3. **Configura i Tipi di Avviso**
+   * Seleziona quali eventi di sistema devono inviare email
+   * Imposta gli indirizzi dei destinatari
+   * Testa la configurazione
 
 > \[!IMPORTANT]
-> ASUSTOR devices require authentication to be explicitly enabled in the SMTP settings. Don't forget to check this option.
+> I dispositivi ASUSTOR richiedono che l'autenticazione sia esplicitamente abilitata nelle impostazioni SMTP. Non dimenticare di selezionare questa opzione.
 
-## Buffalo TeraStation Configuration {#buffalo-terastation-configuration}
 
-Buffalo TeraStation devices have limited but functional email notification capabilities. Setup is straightforward once you know where to look.
+## Configurazione Buffalo TeraStation {#buffalo-terastation-configuration}
+
+I dispositivi Buffalo TeraStation hanno capacità di notifica email limitate ma funzionali. La configurazione è semplice una volta individuate le opzioni corrette.
 
 > \[!CAUTION]
-> Buffalo TeraStation firmware updates are infrequent. Make sure you're using the latest available firmware for your model before configuring email.
+> Gli aggiornamenti firmware per Buffalo TeraStation sono poco frequenti. Assicurati di utilizzare il firmware più recente disponibile per il tuo modello prima di configurare l'email.
 
-1. **Access Web Configuration**
-   * Connect to your TeraStation's web interface
-   * Navigate to **System** > **Notification**
+1. **Accedi alla Configurazione Web**
+   * Connettiti all'interfaccia web della tua TeraStation
+   * Vai su **Sistema** > **Notifiche**
 
-2. **Configure Email Settings**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable SSL/TLS encryption
+2. **Configura le Impostazioni Email**
+   * Server SMTP: `smtp.forwardemail.net`
+   * Porta: `465` (SSL/TLS, consigliato) o `587` (STARTTLS)
+   * Nome utente: Il tuo alias Forward Email
+   * Password: Password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Abilita la crittografia SSL/TLS
 
-3. **Set Notification Preferences**
-   * Choose which events trigger emails (disk errors, temperature alerts, etc.)
-   * Enter recipient email addresses
-   * Save and test the configuration
+3. **Imposta le Preferenze di Notifica**
+   * Scegli quali eventi attivano le email (errori disco, avvisi temperatura, ecc.)
+   * Inserisci gli indirizzi email dei destinatari
+   * Salva e testa la configurazione
 
 > \[!NOTE]
-> Some older TeraStation models may have limited SMTP configuration options. Check your model's documentation for specific capabilities.
+> Alcuni modelli TeraStation più vecchi potrebbero avere opzioni di configurazione SMTP limitate. Consulta la documentazione del tuo modello per le capacità specifiche.
+## Configurazione Western Digital My Cloud {#western-digital-my-cloud-configuration}
 
-## Western Digital My Cloud Configuration {#western-digital-my-cloud-configuration}
-
-Western Digital My Cloud devices running OS 5 support email notifications, though the interface can be a bit buried in the settings.
+I dispositivi Western Digital My Cloud con OS 5 supportano le notifiche email, anche se l'interfaccia può essere un po' nascosta nelle impostazioni.
 
 > \[!WARNING]
-> Western Digital has discontinued support for many My Cloud models. Check if your device still receives firmware updates before relying on email notifications for critical alerts.
+> Western Digital ha interrotto il supporto per molti modelli My Cloud. Verifica se il tuo dispositivo riceve ancora aggiornamenti firmware prima di fare affidamento sulle notifiche email per avvisi critici.
 
-1. **Navigate to Settings**
-   * Open the My Cloud web dashboard
-   * Go to **Settings** > **General** > **Notifications**
+1. **Naviga su Impostazioni**
+   * Apri la dashboard web di My Cloud
+   * Vai su **Impostazioni** > **Generale** > **Notifiche**
 
-2. **Configure SMTP Details**
-   * Mail Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable encryption
+2. **Configura i dettagli SMTP**
+   * Server di posta: `smtp.forwardemail.net`
+   * Porta: `465` (SSL/TLS, consigliata) o `587` (STARTTLS)
+   * Nome utente: Il tuo alias Forward Email
+   * Password: Password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Abilita la crittografia
 
-3. **Set Up Alert Types**
-   * Select notification categories (system alerts, disk health, etc.)
-   * Add recipient email addresses
-   * Test the email configuration
+3. **Configura i tipi di avviso**
+   * Seleziona le categorie di notifica (avvisi di sistema, stato disco, ecc.)
+   * Aggiungi gli indirizzi email dei destinatari
+   * Testa la configurazione email
 
 > \[!TIP]
-> We recommend using port `465` with SSL/TLS. If you experience issues, port `587` with STARTTLS is also supported.
+> Consigliamo di usare la porta `465` con SSL/TLS. Se riscontri problemi, la porta `587` con STARTTLS è anch'essa supportata.
 
-## TrueNAS Email Configuration {#truenas-email-configuration}
 
-TrueNAS (both SCALE and CORE) has excellent email notification support with detailed configuration options.
+## Configurazione Email TrueNAS {#truenas-email-configuration}
+
+TrueNAS (sia SCALE che CORE) offre un eccellente supporto per le notifiche email con opzioni di configurazione dettagliate.
 
 > \[!NOTE]
-> TrueNAS provides some of the most comprehensive email notification features among NAS systems. You can configure detailed alert rules and multiple recipients.
+> TrueNAS fornisce alcune delle funzionalità di notifica email più complete tra i sistemi NAS. Puoi configurare regole di avviso dettagliate e destinatari multipli.
 
-1. **Access System Settings**
-   * Log into the TrueNAS web interface
-   * Navigate to **System** > **Email**
+1. **Accedi alle Impostazioni di Sistema**
+   * Effettua il login nell'interfaccia web di TrueNAS
+   * Naviga su **Sistema** > **Email**
 
-2. **Configure SMTP Settings**
-   * Outgoing Mail Server: `smtp.forwardemail.net`
-   * Mail Server Port: `465` (recommended) or `587`
-   * Security: SSL/TLS (for 465, recommended) or STARTTLS (for 587)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+2. **Configura le impostazioni SMTP**
+   * Server di posta in uscita: `smtp.forwardemail.net`
+   * Porta server di posta: `465` (consigliata) o `587`
+   * Sicurezza: SSL/TLS (per 465, consigliata) o STARTTLS (per 587)
+   * Nome utente: Il tuo alias Forward Email
+   * Password: Password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-3. **Set Up Alerts**
-   * Go to **System** > **Alert Services**
-   * Configure which alerts should be sent via email
-   * Set recipient addresses and alert levels
-   * Test the configuration with the built-in test function
+3. **Configura gli avvisi**
+   * Vai su **Sistema** > **Servizi di Avviso**
+   * Configura quali avvisi devono essere inviati via email
+   * Imposta gli indirizzi destinatari e i livelli di avviso
+   * Testa la configurazione con la funzione di test integrata
 
 > \[!IMPORTANT]
-> TrueNAS allows you to configure different alert levels (INFO, NOTICE, WARNING, ERROR, CRITICAL). Choose appropriate levels to avoid email spam while ensuring critical issues are reported.
+> TrueNAS permette di configurare diversi livelli di avviso (INFO, NOTICE, WARNING, ERROR, CRITICAL). Scegli livelli appropriati per evitare spam email garantendo che vengano segnalati problemi critici.
 
-## OpenMediaVault Configuration {#openmediavault-configuration}
 
-OpenMediaVault provides solid email notification capabilities through its web interface. The setup process is clean and straightforward.
+## Configurazione OpenMediaVault {#openmediavault-configuration}
+
+OpenMediaVault offre solide capacità di notifica email tramite la sua interfaccia web. Il processo di configurazione è semplice e lineare.
 
 > \[!NOTE]
-> OpenMediaVault's notification system is plugin-based. Make sure you have the email notification plugin installed and enabled.
+> Il sistema di notifiche di OpenMediaVault si basa su plugin. Assicurati di avere il plugin per le notifiche email installato e abilitato.
 
-1. **Access Notification Settings**
-   * Open the OpenMediaVault web interface
-   * Go to **System** > **Notification** > **Email**
+1. **Accedi alle Impostazioni di Notifica**
+   * Apri l'interfaccia web di OpenMediaVault
+   * Vai su **Sistema** > **Notifica** > **Email**
 
-2. **Configure SMTP Parameters**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable SSL/TLS
+2. **Configura i parametri SMTP**
+   * Server SMTP: `smtp.forwardemail.net`
+   * Porta: `465` (SSL/TLS, consigliata) o `587` (STARTTLS)
+   * Nome utente: Il tuo alias Forward Email
+   * Password: Password generata da [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Abilita SSL/TLS
 
-3. **Set Up Notification Rules**
-   * Navigate to **System** > **Notification** > **Notifications**
-   * Configure which system events should trigger emails
-   * Set recipient addresses
-   * Test the email functionality
-
-> \[!TIP]
-> OpenMediaVault allows you to configure notification schedules. You can set quiet hours or limit notification frequency to avoid being overwhelmed by alerts.
-
-## Raspberry Pi NAS Configuration {#raspberry-pi-nas-configuration}
-
-The Raspberry Pi represents an excellent entry point into NAS functionality, offering a cost-effective solution for home and small office environments. Setting up a Raspberry Pi as a NAS device involves configuring file sharing protocols, email notifications, and essential network services.
+3. **Configura le regole di notifica**
+   * Naviga su **Sistema** > **Notifica** > **Notifiche**
+   * Configura quali eventi di sistema devono attivare le email
+   * Imposta gli indirizzi destinatari
+   * Testa la funzionalità email
 
 > \[!TIP]
-> For Raspberry Pi enthusiasts, we highly recommend complementing your NAS setup with [PiKVM](https://pikvm.org/) for remote server management and [Pi-hole](https://pi-hole.net/) for network-wide ad blocking and DNS management. These tools create a comprehensive home lab environment.
+> OpenMediaVault permette di configurare orari di notifica. Puoi impostare orari di silenzio o limitare la frequenza delle notifiche per evitare di essere sommerso da avvisi.
 
-### Initial Raspberry Pi Setup {#initial-raspberry-pi-setup}
 
-Before configuring NAS services, ensure your Raspberry Pi is running the latest Raspberry Pi OS and has adequate storage. A high-quality microSD card (Class 10 or better) or USB 3.0 SSD provides better performance and reliability for NAS operations.
+## Configurazione Raspberry Pi NAS {#raspberry-pi-nas-configuration}
 
-1. **Update the system** by running `sudo apt update && sudo apt upgrade -y` to ensure all packages are current.
+Il Raspberry Pi rappresenta un eccellente punto di ingresso nelle funzionalità NAS, offrendo una soluzione economica per ambienti domestici e piccoli uffici. Configurare un Raspberry Pi come dispositivo NAS implica la configurazione di protocolli di condivisione file, notifiche email e servizi di rete essenziali.
 
-2. **Enable SSH access** using `sudo systemctl enable ssh && sudo systemctl start ssh` for remote administration.
+> \[!TIP]
+> Per gli appassionati di Raspberry Pi, consigliamo vivamente di completare la configurazione NAS con [PiKVM](https://pikvm.org/) per la gestione remota del server e [Pi-hole](https://pi-hole.net/) per il blocco degli annunci a livello di rete e la gestione DNS. Questi strumenti creano un ambiente home lab completo.
+### Configurazione Iniziale del Raspberry Pi {#initial-raspberry-pi-setup}
 
-3. **Configure static IP addressing** by editing `/etc/dhcpcd.conf` to ensure consistent network access.
+Prima di configurare i servizi NAS, assicurati che il tuo Raspberry Pi esegua l'ultima versione di Raspberry Pi OS e disponga di spazio di archiviazione adeguato. Una scheda microSD di alta qualità (Classe 10 o superiore) o un SSD USB 3.0 offrono prestazioni e affidabilità migliori per le operazioni NAS.
 
-4. **Set up external storage** by connecting and mounting USB drives or configuring RAID arrays for data redundancy.
+1. **Aggiorna il sistema** eseguendo `sudo apt update && sudo apt upgrade -y` per assicurarti che tutti i pacchetti siano aggiornati.
 
-### Samba File Sharing Configuration {#samba-file-sharing-configuration}
+2. **Abilita l'accesso SSH** usando `sudo systemctl enable ssh && sudo systemctl start ssh` per l'amministrazione remota.
 
-Samba provides Windows-compatible file sharing, making your Raspberry Pi accessible from any device on your network. The configuration process involves installing Samba, creating shares, and setting up user authentication.
+3. **Configura un indirizzo IP statico** modificando `/etc/dhcpcd.conf` per garantire un accesso di rete coerente.
 
-Install Samba using `sudo apt install samba samba-common-bin` and configure the main configuration file at `/etc/samba/smb.conf`. Create shared directories and set appropriate permissions using `sudo mkdir -p /srv/samba/shared && sudo chmod 755 /srv/samba/shared`.
+4. **Configura lo storage esterno** collegando e montando unità USB o configurando array RAID per la ridondanza dei dati.
 
-Configure Samba shares by adding sections to the configuration file for each shared directory. Set up user authentication using `sudo smbpasswd -a username` to create Samba-specific passwords for network access.
+### Configurazione Condivisione File Samba {#samba-file-sharing-configuration}
+
+Samba fornisce la condivisione di file compatibile con Windows, rendendo il tuo Raspberry Pi accessibile da qualsiasi dispositivo sulla tua rete. Il processo di configurazione prevede l'installazione di Samba, la creazione delle condivisioni e la configurazione dell'autenticazione utente.
+
+Installa Samba usando `sudo apt install samba samba-common-bin` e configura il file principale di configurazione in `/etc/samba/smb.conf`. Crea le directory condivise e imposta i permessi appropriati con `sudo mkdir -p /srv/samba/shared && sudo chmod 755 /srv/samba/shared`.
+
+Configura le condivisioni Samba aggiungendo sezioni al file di configurazione per ogni directory condivisa. Imposta l'autenticazione utente usando `sudo smbpasswd -a username` per creare password specifiche Samba per l'accesso in rete.
 
 > \[!IMPORTANT]
-> Always use strong passwords for Samba users and consider enabling guest access only for non-sensitive shared folders. Review the [official Samba documentation](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) for advanced security configurations.
+> Usa sempre password robuste per gli utenti Samba e considera di abilitare l'accesso guest solo per cartelle condivise non sensibili. Consulta la [documentazione ufficiale di Samba](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) per configurazioni di sicurezza avanzate.
 
-### FTP Server Setup {#ftp-server-setup}
+### Configurazione Server FTP {#ftp-server-setup}
 
-FTP provides another method for file access, particularly useful for automated backups and remote file management. Install and configure vsftpd (Very Secure FTP Daemon) for reliable FTP services.
+FTP fornisce un altro metodo per l'accesso ai file, particolarmente utile per backup automatizzati e gestione remota dei file. Installa e configura vsftpd (Very Secure FTP Daemon) per servizi FTP affidabili.
 
-Install vsftpd using `sudo apt install vsftpd` and configure the service by editing `/etc/vsftpd.conf`. Enable local user access, configure passive mode settings, and set up appropriate security restrictions.
+Installa vsftpd usando `sudo apt install vsftpd` e configura il servizio modificando `/etc/vsftpd.conf`. Abilita l'accesso per utenti locali, configura le impostazioni della modalità passiva e imposta le restrizioni di sicurezza appropriate.
 
-Create FTP users and configure directory access permissions. Consider using SFTP (SSH File Transfer Protocol) instead of traditional FTP for enhanced security, as it encrypts all data transmission.
+Crea utenti FTP e configura i permessi di accesso alle directory. Considera l'uso di SFTP (SSH File Transfer Protocol) invece del tradizionale FTP per una maggiore sicurezza, poiché cripta tutte le trasmissioni di dati.
 
 > \[!CAUTION]
-> Traditional FTP transmits passwords in plain text. Always use SFTP or configure FTP with TLS encryption for secure file transfers. Review [vsftpd security best practices](https://security.appspot.com/vsftpd.html) before deployment.
+> Il FTP tradizionale trasmette le password in chiaro. Usa sempre SFTP o configura FTP con crittografia TLS per trasferimenti di file sicuri. Consulta le [best practice di sicurezza di vsftpd](https://security.appspot.com/vsftpd.html) prima della distribuzione.
 
-### Email Notification Configuration {#email-notification-configuration}
+### Configurazione Notifiche Email {#email-notification-configuration}
 
-Configure your Raspberry Pi NAS to send email notifications for system events, storage alerts, and backup completion status. This involves installing and configuring a mail transfer agent and setting up Forward Email integration.
+Configura il tuo Raspberry Pi NAS per inviare notifiche email per eventi di sistema, avvisi di storage e stato di completamento backup. Questo comporta l'installazione e la configurazione di un mail transfer agent e l'integrazione con Forward Email.
 
-Install `msmtp` as a lightweight SMTP client using `sudo apt install msmtp msmtp-mta`. Create the configuration file at `/etc/msmtprc` with the following settings:
+Installa `msmtp` come client SMTP leggero usando `sudo apt install msmtp msmtp-mta`. Crea il file di configurazione in `/etc/msmtprc` con le seguenti impostazioni:
 
 ```
 defaults
@@ -435,49 +443,48 @@ user           your-alias@yourdomain.com
 password       your-generated-password
 ```
 
-Configure system notifications by setting up cron jobs and system monitoring scripts that use `msmtp` to send alerts. Create scripts for disk space monitoring, temperature alerts, and backup completion notifications.
+Configura le notifiche di sistema impostando cron job e script di monitoraggio che utilizzano `msmtp` per inviare avvisi. Crea script per il monitoraggio dello spazio su disco, avvisi di temperatura e notifiche di completamento backup.
 
-### Advanced Raspberry Pi NAS Features {#advanced-raspberry-pi-nas-features}
+### Funzionalità Avanzate NAS Raspberry Pi {#advanced-raspberry-pi-nas-features}
 
-Enhance your Raspberry Pi NAS with additional services and monitoring capabilities. Install and configure network monitoring tools, automated backup solutions, and remote access services.
+Migliora il tuo Raspberry Pi NAS con servizi aggiuntivi e capacità di monitoraggio. Installa e configura strumenti di monitoraggio di rete, soluzioni di backup automatizzate e servizi di accesso remoto.
 
-Set up [Nextcloud](https://nextcloud.com/) for cloud-like functionality with web-based file access, calendar synchronization, and collaborative features. Install using Docker or the official Nextcloud installation guide for Raspberry Pi.
+Configura [Nextcloud](https://nextcloud.com/) per funzionalità simili al cloud con accesso ai file via web, sincronizzazione del calendario e funzionalità collaborative. Installa usando Docker o la guida ufficiale di installazione Nextcloud per Raspberry Pi.
+Configura backup automatici utilizzando `rsync` e `cron` per creare backup programmati dei dati critici. Imposta notifiche email per il completamento del backup e avvisi di errore utilizzando la tua configurazione Forward Email.
 
-Configure automated backups using `rsync` and `cron` to create scheduled backups of critical data. Set up email notifications for backup completion and failure alerts using your Forward Email configuration.
-
-Implement network monitoring using tools like [Nagios](https://www.nagios.org/) or [Zabbix](https://www.zabbix.com/) to monitor system health, network connectivity, and service availability.
+Implementa il monitoraggio della rete utilizzando strumenti come [Nagios](https://www.nagios.org/) o [Zabbix](https://www.zabbix.com/) per monitorare lo stato del sistema, la connettività di rete e la disponibilità dei servizi.
 
 > \[!NOTE]
-> For users managing network infrastructure, consider integrating [Switchbot](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) with your PiKVM setup for remote physical switch control. This [Python integration guide](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) provides detailed instructions for automating physical device management.
+> Per gli utenti che gestiscono infrastrutture di rete, considera l'integrazione di [Switchbot](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) con il tuo setup PiKVM per il controllo remoto degli interruttori fisici. Questa [guida all'integrazione Python](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) fornisce istruzioni dettagliate per automatizzare la gestione dei dispositivi fisici.
 
-### Raspberry Pi Email Troubleshooting {#raspberry-pi-email-troubleshooting}
+### Risoluzione dei problemi email Raspberry Pi {#raspberry-pi-email-troubleshooting}
 
-Common issues with Raspberry Pi email configuration include DNS resolution problems, firewall restrictions, and authentication failures. The lightweight nature of Raspberry Pi systems can sometimes cause timing issues with SMTP connections.
+I problemi comuni con la configurazione email su Raspberry Pi includono problemi di risoluzione DNS, restrizioni del firewall e fallimenti di autenticazione. La natura leggera dei sistemi Raspberry Pi può talvolta causare problemi di temporizzazione con le connessioni SMTP.
 
-If email notifications fail, check the `msmtp` log file at `/var/log/msmtp.log` for detailed error messages. Verify that your Forward Email credentials are correct and that the Raspberry Pi can resolve `smtp.forwardemail.net`.
+Se le notifiche email falliscono, controlla il file di log di `msmtp` in `/var/log/msmtp.log` per messaggi di errore dettagliati. Verifica che le tue credenziali Forward Email siano corrette e che il Raspberry Pi possa risolvere `smtp.forwardemail.net`.
 
-Test email functionality using the command line: `echo "Test message" | msmtp recipient@example.com`. This helps isolate configuration issues from application-specific problems.
+Testa la funzionalità email usando la riga di comando: `echo "Test message" | msmtp recipient@example.com`. Questo aiuta a isolare problemi di configurazione da problemi specifici dell'applicazione.
 
-Configure proper DNS settings in `/etc/resolv.conf` if you encounter DNS resolution issues. Consider using public DNS servers like `8.8.8.8` or `1.1.1.1` if local DNS is unreliable.
+Configura correttamente le impostazioni DNS in `/etc/resolv.conf` se riscontri problemi di risoluzione DNS. Considera l'uso di server DNS pubblici come `8.8.8.8` o `1.1.1.1` se il DNS locale non è affidabile.
 
-### Performance Optimization {#performance-optimization}
+### Ottimizzazione delle prestazioni {#performance-optimization}
 
-Optimize your Raspberry Pi NAS performance through proper configuration of storage, network settings, and system resources. Use high-quality storage devices and configure appropriate file system options for your use case.
+Ottimizza le prestazioni del tuo Raspberry Pi NAS tramite una corretta configurazione dello storage, delle impostazioni di rete e delle risorse di sistema. Usa dispositivi di archiviazione di alta qualità e configura opzioni del file system appropriate per il tuo caso d'uso.
 
-Enable USB 3.0 boot for better storage performance if using external drives. Configure the GPU memory split using `sudo raspi-config` to allocate more RAM to system operations rather than graphics processing.
+Abilita il boot USB 3.0 per migliori prestazioni di storage se usi dischi esterni. Configura la suddivisione della memoria GPU usando `sudo raspi-config` per allocare più RAM alle operazioni di sistema piuttosto che all'elaborazione grafica.
 
-Monitor system performance using tools like `htop`, `iotop`, and `nethogs` to identify bottlenecks and optimize resource usage. Consider upgrading to a Raspberry Pi 4 with 8GB RAM for demanding NAS applications.
+Monitora le prestazioni di sistema con strumenti come `htop`, `iotop` e `nethogs` per identificare colli di bottiglia e ottimizzare l'uso delle risorse. Considera l'aggiornamento a un Raspberry Pi 4 con 8GB di RAM per applicazioni NAS più esigenti.
 
-Implement proper cooling solutions to prevent thermal throttling during intensive operations. Monitor CPU temperature using `/opt/vc/bin/vcgencmd measure_temp` and ensure adequate ventilation.
+Implementa soluzioni di raffreddamento adeguate per prevenire il thermal throttling durante operazioni intensive. Monitora la temperatura della CPU usando `/opt/vc/bin/vcgencmd measure_temp` e assicurati di avere una ventilazione adeguata.
 
-### Security Considerations {#security-considerations}
+### Considerazioni sulla sicurezza {#security-considerations}
 
-Secure your Raspberry Pi NAS by implementing proper access controls, network security measures, and regular security updates. Change default passwords, disable unnecessary services, and configure firewall rules.
+Metti in sicurezza il tuo Raspberry Pi NAS implementando controlli di accesso appropriati, misure di sicurezza di rete e aggiornamenti di sicurezza regolari. Cambia le password di default, disabilita i servizi non necessari e configura regole firewall.
 
-Install and configure `fail2ban` to protect against brute force attacks on SSH and other services. Set up automatic security updates using `unattended-upgrades` to ensure critical security patches are applied promptly.
+Installa e configura `fail2ban` per proteggerti dagli attacchi brute force su SSH e altri servizi. Imposta aggiornamenti di sicurezza automatici usando `unattended-upgrades` per garantire che le patch critiche di sicurezza vengano applicate tempestivamente.
 
-Configure network segmentation to isolate your NAS from other network devices when possible. Use VPN access for remote connections rather than exposing services directly to the internet.
+Configura la segmentazione della rete per isolare il tuo NAS dagli altri dispositivi di rete quando possibile. Usa l'accesso VPN per connessioni remote invece di esporre direttamente i servizi su internet.
 
-Regular backup your Raspberry Pi configuration and data to prevent data loss from hardware failures or security incidents. Test backup restoration procedures to ensure data recovery capabilities.
+Esegui regolarmente il backup della configurazione e dei dati del Raspberry Pi per prevenire la perdita di dati dovuta a guasti hardware o incidenti di sicurezza. Testa le procedure di ripristino del backup per assicurarti la capacità di recupero dati.
 
-The Raspberry Pi NAS configuration provides an excellent foundation for learning network storage concepts while delivering practical functionality for home and small office environments. The combination with Forward Email ensures reliable notification delivery for system monitoring and maintenance alerts.
+La configurazione Raspberry Pi NAS fornisce un'eccellente base per apprendere i concetti di storage di rete offrendo al contempo funzionalità pratiche per ambienti domestici e piccoli uffici. La combinazione con Forward Email garantisce una consegna affidabile delle notifiche per il monitoraggio del sistema e gli avvisi di manutenzione.

@@ -1,98 +1,102 @@
-# Sähköpostin edelleenlähetyksen omaishosting-asennusopas Debianille {#forward-email-self-hosting-installation-guide-for-debian}
+# Forward Email Itseisännöinnin Asennusopas Debianille {#forward-email-self-hosting-installation-guide-for-debian}
+
 
 ## Sisällysluettelo {#table-of-contents}
 
 * [Yleiskatsaus](#overview)
-* [Edellytykset](#prerequisites)
+* [Esivaatimukset](#prerequisites)
 * [Järjestelmävaatimukset](#system-requirements)
-* [Vaiheittainen asennus](#step-by-step-installation)
+* [Asennus vaihe vaiheelta](#step-by-step-installation)
   * [Vaihe 1: Järjestelmän alkuasetukset](#step-1-initial-system-setup)
-  * [Vaihe 2: DNS-selvityspalveluiden määrittäminen](#step-2-configure-dns-resolvers)
-  * [Vaihe 3: Asenna järjestelmäriippuvuudet](#step-3-install-system-dependencies)
-  * [Vaihe 4: Asenna ja määritä Snapd](#step-4-install-and-configure-snapd)
-  * [Vaihe 5: Asenna Snap-paketit](#step-5-install-snap-packages)
-  * [Vaihe 6: Asenna Docker](#step-6-install-docker)
-  * [Vaihe 7: Docker-palvelun määrittäminen](#step-7-configure-docker-service)
-  * [Vaihe 8: Asenna ja määritä UFW-palomuuri](#step-8-install-and-configure-ufw-firewall)
-  * [Vaihe 9: Kloonaa edelleenlähetyssähköpostien arkisto](#step-9-clone-forward-email-repository)
-  * [Vaihe 10: Ympäristön konfiguroinnin määrittäminen](#step-10-set-up-environment-configuration)
-  * [Vaihe 11: Määritä verkkotunnuksesi](#step-11-configure-your-domain)
-  * [Vaihe 12: Luo SSL-varmenteita](#step-12-generate-ssl-certificates)
-  * [Vaihe 13: Luo salausavaimet](#step-13-generate-encryption-keys)
-  * [Vaihe 14: Päivitä SSL-polut määrityksissä](#step-14-update-ssl-paths-in-configuration)
-  * [Vaihe 15: Perustodennuksen määrittäminen](#step-15-set-up-basic-authentication)
-  * [Vaihe 16: Käyttöönotto Docker Composen avulla](#step-16-deploy-with-docker-compose)
-  * [Vaihe 17: Asennuksen tarkistaminen](#step-17-verify-installation)
-* [Asennuksen jälkeinen määritys](#post-installation-configuration)
-  * [DNS-tietueiden asetukset](#dns-records-setup)
+  * [Vaihe 2: DNS-resolverien määrittäminen](#step-2-configure-dns-resolvers)
+  * [Vaihe 3: Järjestelmäriippuvuuksien asennus](#step-3-install-system-dependencies)
+  * [Vaihe 4: Snapd:n asennus ja konfigurointi](#step-4-install-and-configure-snapd)
+  * [Vaihe 5: Snap-pakettien asennus](#step-5-install-snap-packages)
+  * [Vaihe 6: Dockerin asennus](#step-6-install-docker)
+  * [Vaihe 7: Docker-palvelun konfigurointi](#step-7-configure-docker-service)
+  * [Vaihe 8: UFW-palomuuri asennus ja konfigurointi](#step-8-install-and-configure-ufw-firewall)
+  * [Vaihe 9: Forward Email -varaston kloonaus](#step-9-clone-forward-email-repository)
+  * [Vaihe 10: Ympäristökonfiguraation määrittäminen](#step-10-set-up-environment-configuration)
+  * [Vaihe 11: Domainin konfigurointi](#step-11-configure-your-domain)
+  * [Vaihe 12: SSL-sertifikaattien luominen](#step-12-generate-ssl-certificates)
+  * [Vaihe 13: Salausavainten luominen](#step-13-generate-encryption-keys)
+  * [Vaihe 14: SSL-polkujen päivittäminen konfiguraatiossa](#step-14-update-ssl-paths-in-configuration)
+  * [Vaihe 15: Perusautentikoinnin määrittäminen](#step-15-set-up-basic-authentication)
+  * [Vaihe 16: Julkaisu Docker Composella](#step-16-deploy-with-docker-compose)
+  * [Vaihe 17: Asennuksen tarkistus](#step-17-verify-installation)
+* [Asennuksen jälkeinen konfigurointi](#post-installation-configuration)
+  * [DNS-tietueiden määrittäminen](#dns-records-setup)
   * [Ensimmäinen kirjautuminen](#first-login)
-* [Varmuuskopiointiasetukset](#backup-configuration)
-  * [S3-yhteensopivan varmuuskopioinnin määrittäminen](#set-up-s3-compatible-backup)
-  * [Cron-varmuuskopiointitöiden määrittäminen](#set-up-backup-cron-jobs)
-* [Automaattisen päivityksen määritys](#auto-update-configuration)
-* [Debian-kohtaisia huomioitavia asioita](#debian-specific-considerations)
-  * [Pakettienhallinnan erot](#package-management-differences)
-  * [Palvelunhallinta](#service-management)
-  * [Verkkoasetukset](#network-configuration)
-* [Huolto ja valvonta](#maintenance-and-monitoring)
+* [Varmuuskopioinnin konfigurointi](#backup-configuration)
+  * [S3-yhteensopivan varmuuskopion määrittäminen](#set-up-s3-compatible-backup)
+  * [Varmuuskopiointiaikataulujen määrittäminen](#set-up-backup-cron-jobs)
+* [Automaattisen päivityksen konfigurointi](#auto-update-configuration)
+* [Debian-spesifit seikat](#debian-specific-considerations)
+  * [Paketinhallinnan erot](#package-management-differences)
+  * [Palvelun hallinta](#service-management)
+  * [Verkkokonfiguraatio](#network-configuration)
+* [Ylläpito ja valvonta](#maintenance-and-monitoring)
   * [Lokien sijainnit](#log-locations)
-  * [Säännölliset huoltotehtävät](#regular-maintenance-tasks)
-  * [Todistuksen uusiminen](#certificate-renewal)
+  * [Säännölliset ylläpitotehtävät](#regular-maintenance-tasks)
+  * [Sertifikaatin uusiminen](#certificate-renewal)
 * [Vianmääritys](#troubleshooting)
-  * [Debian-kohtaiset ongelmat](#debian-specific-issues)
-  * [Yleisiä ongelmia](#common-issues)
+  * [Debian-spesifit ongelmat](#debian-specific-issues)
+  * [Yleiset ongelmat](#common-issues)
   * [Avun saaminen](#getting-help)
-* [Tietoturvan parhaat käytännöt](#security-best-practices)
-* [Johtopäätös](#conclusion)
+* [Turvallisuuden parhaat käytännöt](#security-best-practices)
+* [Yhteenveto](#conclusion)
+
 
 ## Yleiskatsaus {#overview}
 
-Tämä opas tarjoaa vaiheittaiset ohjeet Forward Emailin itse isännöidyn ratkaisun asentamiseen Debian-järjestelmiin. Tämä opas on räätälöity erityisesti Debian 11:lle (Bullseye) ja Debian 12:lle (Bookworm).
+Tämä opas tarjoaa vaiheittaiset ohjeet Forward Emailin itseisännöidyn ratkaisun asentamiseen Debian-järjestelmiin. Opas on erityisesti suunnattu Debian 11 (Bullseye) ja Debian 12 (Bookworm) -versioille.
 
-## Edellytykset {#prerequisites}
+
+## Esivaatimukset {#prerequisites}
 
 Ennen asennuksen aloittamista varmista, että sinulla on:
 
 * **Debian-palvelin**: Versio 11 (Bullseye) tai 12 (Bookworm)
-* **Pääkäyttäjän oikeudet**: Sinun on voitava suorittaa komentoja pääkäyttäjänä (sudo-oikeudet)
-* **Verkkotunnus**: Verkkotunnus, jota hallitset DNS-hallintaoikeuksilla
-* **Puhdas palvelin**: Suositellaan käyttämään tuoretta Debian-asennusta
-* **Internet-yhteys**: Vaaditaan pakettien ja Docker-kuvien lataamiseen
+* **Root-käyttöoikeus**: Sinun tulee pystyä suorittamaan komentoja root-käyttäjänä (sudo-oikeudet)
+* **Domain-nimi**: Hallitsemasi domain, johon sinulla on DNS-hallintaoikeudet
+* **Puhdas palvelin**: Suositellaan käytettäväksi uutta Debian-asennusta
+* **Internet-yhteys**: Tarvitaan pakettien ja Docker-kuvien lataamiseen
+
 
 ## Järjestelmävaatimukset {#system-requirements}
 
-* **RAM**: Vähintään 2 Gt (tuotantoympäristössä suositellaan 4 Gt)
-* **Tallennustila**: Vähintään 20 Gt käytettävissä olevaa tilaa (tuotantoympäristössä suositellaan yli 50 Gt)
-* **Suoritin**: Vähintään 1 virtuaaliprosessori (tuotantoympäristössä suositellaan yli 2 virtuaaliprosessoria)
-* **Verkko**: Julkinen IP-osoite, jossa seuraavat portit ovat käytettävissä:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **RAM**: Vähintään 2GB (4GB suositeltu tuotantoon)
+* **Tallennustila**: Vähintään 20GB vapaata tilaa (50GB+ suositeltu tuotantoon)
+* **CPU**: Vähintään 1 vCPU (2+ vCPU suositeltu tuotantoon)
+* **Verkko**: Julkinen IP-osoite, johon seuraavat portit ovat avoinna:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
 
-## Vaiheittainen asennus {#step-by-step-installation}
+
+## Asennus vaihe vaiheelta {#step-by-step-installation}
 
 ### Vaihe 1: Järjestelmän alkuasetukset {#step-1-initial-system-setup}
 
-Varmista ensin, että järjestelmäsi on ajan tasalla ja vaihda pääkäyttäjäksi:
+Varmista ensin, että järjestelmäsi on ajan tasalla ja vaihda root-käyttäjäksi:
 
 ```bash
-# Update system packages
+# Päivitä järjestelmäpaketit
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Vaihda root-käyttäjäksi (vaaditaan asennukseen)
 sudo su -
 ```
+### Step 2: Määritä DNS-resolverit {#step-2-configure-dns-resolvers}
 
-### Vaihe 2: Määritä DNS-selvittäjät {#step-2-configure-dns-resolvers}
-
-Määritä järjestelmäsi käyttämään Cloudflaren DNS-palvelimia luotettavaa varmenteiden luontia varten:
+Määritä järjestelmäsi käyttämään Cloudflaren DNS-palvelimia luotettavaa sertifikaattien luontia varten:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# Pysäytä ja poista käytöstä systemd-resolved jos se on käynnissä
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -100,7 +104,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Määritä Cloudflaren DNS-resolverit
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -113,15 +117,15 @@ nameserver 2001:4860:4860::8844
 EOF
 ```
 
-### Vaihe 3: Asenna järjestelmäriippuvuudet {#step-3-install-system-dependencies}
+### Step 3: Asenna järjestelmän riippuvuudet {#step-3-install-system-dependencies}
 
-Asenna Debianin sähköpostin edelleenlähetystä varten tarvittavat paketit:
+Asenna tarvittavat paketit Forward Emailille Debianissa:
 
 ```bash
-# Update package list
+# Päivitä pakettien lista
 apt-get update -y
 
-# Install basic dependencies (Debian-specific package list)
+# Asenna perusriippuvuudet (Debian-spesifinen pakettivalikoima)
 apt-get install -y \
     ca-certificates \
     curl \
@@ -133,187 +137,186 @@ apt-get install -y \
     software-properties-common
 ```
 
-### Vaihe 4: Asenna ja määritä Snapd {#step-4-install-and-configure-snapd}
+### Step 4: Asenna ja määritä Snapd {#step-4-install-and-configure-snapd}
 
-Debian ei sisällä oletuksena snapd:tä, joten meidän on asennettava ja konfiguroitava se:
+Debian ei sisällä snapdia oletuksena, joten meidän täytyy asentaa ja määrittää se:
 
 ```bash
-# Install snapd
+# Asenna snapd
 apt-get install -y snapd
 
-# Enable and start snapd service
+# Ota snapd-palvelu käyttöön ja käynnistä se
 systemctl enable snapd
 systemctl start snapd
 
-# Create symlink for snap to work properly
+# Luo symbolinen linkki, jotta snap toimii oikein
 ln -sf /var/lib/snapd/snap /snap
 
-# Wait for snapd to be ready
+# Odota, että snapd on valmis
 sleep 10
 
-# Verify snapd is working
+# Varmista, että snapd toimii
 snap version
 ```
 
-### Vaihe 5: Asenna Snap-paketit {#step-5-install-snap-packages}
+### Step 5: Asenna Snap-paketit {#step-5-install-snap-packages}
 
-Asenna AWS CLI ja Certbot Snapin kautta:
+Asenna AWS CLI ja Certbot snapin kautta:
 
 ```bash
-# Install AWS CLI
+# Asenna AWS CLI
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Asenna Certbot ja DNS-laajennus
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 
-# Verify installations
+# Varmista asennukset
 aws --version
 certbot --version
 ```
 
-### Vaihe 6: Asenna Docker {#step-6-install-docker}
+### Step 6: Asenna Docker {#step-6-install-docker}
 
-Asenna Docker CE ja Docker Compose Debianiin:
+Asenna Docker CE ja Docker Compose Debianissa:
 
 ```bash
-# Add Docker's official GPG key (Debian-specific)
+# Lisää Dockerin virallinen GPG-avain (Debian-spesifinen)
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository (Debian-specific)
+# Lisää Dockerin arkisto (Debian-spesifinen)
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Päivitä pakettien indeksi ja asenna Docker
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Install standalone docker-compose as fallback (if plugin doesn't work)
+# Asenna itsenäinen docker-compose varalle (jos plugin ei toimi)
 if ! command -v docker-compose &> /dev/null; then
     apt-get install -y docker-compose
 fi
 
-# Verify Docker installation
+# Varmista Dockerin asennus
 docker --version
 docker compose version || docker-compose --version
 ```
 
-### Vaihe 7: Docker-palvelun {#step-7-configure-docker-service}} määrittäminen
+### Step 7: Määritä Docker-palvelu {#step-7-configure-docker-service}
 
 Varmista, että Docker käynnistyy automaattisesti ja on käynnissä:
 
 ```bash
-# Enable and start Docker service
+# Ota Docker-palvelu käyttöön ja käynnistä se
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Varmista, että Docker on käynnissä
 docker info
 ```
 
 Jos Docker ei käynnisty, kokeile käynnistää se manuaalisesti:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Vaihtoehtoinen käynnistystapa, jos systemctl epäonnistuu
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### Vaihe 8: Asenna ja määritä UFW-palomuuri {#step-8-install-and-configure-ufw-firewall}
+### Step 8: Asenna ja määritä UFW-palomuuri {#step-8-install-and-configure-ufw-firewall}
 
-Debianin minimaaliset asennukset eivät välttämättä sisällä UFW:tä, joten asenna se ensin:
+Debianin minimiasennuksissa UFW ei välttämättä ole mukana, joten asenna se ensin:
 
 ```bash
-# Install UFW if not present
+# Asenna UFW jos sitä ei ole
 if ! command -v ufw &> /dev/null; then
     apt-get update -y
     apt-get install -y ufw
 fi
 
-# Set default policies
+# Aseta oletuskäytännöt
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# Salli SSH (tärkeää - älä lukitse itseäsi ulos!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# Salli sähköpostiin liittyvät portit
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (Let's Encryptiä varten)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (vaihtoehtoinen portti)
+ufw allow 2995/tcp  # POP3 (vaihtoehtoinen portti)
+ufw allow 3456/tcp  # Mukautettu palvelinportti
+ufw allow 4000/tcp  # Mukautettu palvelinportti
+ufw allow 5000/tcp  # Mukautettu palvelinportti
 
-# Allow local database connections
+# Salli paikalliset tietokantayhteydet
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Ota palomuuri käyttöön
 echo "y" | ufw enable
 
-# Check firewall status
+# Tarkista palomuurin tila
 ufw status numbered
 ```
+### Vaihe 9: Kloonaa Forward Email -varasto {#step-9-clone-forward-email-repository}
 
-### Vaihe 9: Kloonaa edelleenlähetyssähköpostien tietovarasto {#step-9-clone-forward-email-repository}
-
-Lataa sähköpostin edelleenlähetyksen lähdekoodi:
+Lataa Forward Email -lähdekoodi:
 
 ```bash
-# Set up variables
+# Määritä muuttujat
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# Kloonaa varasto
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# Varmista, että kloonaus onnistui
 ls -la
 ```
 
-### Vaihe 10: Ympäristön konfiguroinnin määrittäminen {#step-10-set-up-environment-configuration}
+### Vaihe 10: Määritä Ympäristökonfiguraatio {#step-10-set-up-environment-configuration}
 
-Valmistele ympäristön kokoonpano:
+Valmistele ympäristökonfiguraatio:
 
 ```bash
-# Set up directory variables
+# Määritä hakemistomuuttujat
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# Kopioi oletusympäristötiedosto
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# Luo SSL-hakemisto
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# Luo tietokantahakemistot
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Vaihe 11: Määritä verkkotunnuksesi {#step-11-configure-your-domain}
+### Vaihe 11: Määritä Verkkotunnuksesi {#step-11-configure-your-domain}
 
 Aseta verkkotunnuksesi nimi ja päivitä ympäristömuuttujat:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# Korvaa 'yourdomain.com' omalla verkkotunnuksellasi
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# Funktio ympäristötiedoston päivittämiseen
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -325,7 +328,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# Päivitä verkkotunnukseen liittyvät ympäristömuuttujat
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -348,12 +351,12 @@ update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
 
-### Vaihe 12: Luo SSL-varmenteet {#step-12-generate-ssl-certificates}
+### Vaihe 12: Luo SSL-sertifikaatit {#step-12-generate-ssl-certificates}
 
-#### Vaihtoehto A: Manuaalinen DNS-haaste (suositellaan useimmille käyttäjille) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Vaihtoehto A: Manuaalinen DNS-haaste (Suositeltu useimmille käyttäjille) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# Luo sertifikaatit manuaalisella DNS-haasteella
 certbot certonly \
   --manual \
   --agree-tos \
@@ -362,23 +365,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Tärkeää**: Kun sinua pyydetään tekemään niin, sinun on luotava TXT-tietueet DNS-palvelimellesi. Saatat nähdä useita haasteita samalle verkkotunnukselle – **luo ne KAIKKI**. Älä poista ensimmäistä TXT-tietuetta, kun lisäät toisen.
+**Tärkeää**: Kun sinua pyydetään, sinun tulee luoda TXT-tietueita DNS:ään. Saatat nähdä useita haasteita samalle verkkotunnukselle – **luo KAIKKI niistä**. Älä poista ensimmäistä TXT-tietuetta lisätessäsi toista.
 
-#### Vaihtoehto B: Cloudflare DNS (jos käytät Cloudflarea) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Vaihtoehto B: Cloudflare DNS (Jos käytät Cloudflarea) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-Jos verkkotunnuksesi käyttää Cloudflarea DNS:ään, voit automatisoida varmenteiden luomisen:
+Jos verkkotunnuksesi käyttää Cloudflarea DNS:ään, voit automatisoida sertifikaattien luomisen:
 
 ```bash
-# Create Cloudflare credentials file
+# Luo Cloudflare-tunnistetiedostot
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# Aseta oikeat käyttöoikeudet
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# Luo sertifikaatit automaattisesti
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -389,55 +392,54 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Kopioi varmenteet {#copy-certificates}
+#### Kopioi Sertifikaatit {#copy-certificates}
 
-Varmenteiden luomisen jälkeen kopioi ne sovellushakemistoon:
+Sertifikaattien luomisen jälkeen kopioi ne sovellushakemistoon:
 
 ```bash
-# Copy certificates to application SSL directory
+# Kopioi sertifikaatit sovelluksen SSL-hakemistoon
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# Varmista, että sertifikaatit kopioitiin
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### Vaihe 13: Luo salausavaimet {#step-13-generate-encryption-keys}
+### Vaihe 13: Luo Salausavaimet {#step-13-generate-encryption-keys}
 
-Luo turvallisen toiminnan edellyttämät erilaiset salausavaimet:
+Luo erilaiset salausavaimet turvallista toimintaa varten:
 
 ```bash
-# Generate helper encryption key
+# Luo apusalausavain
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# Luo SRS-salaisuus sähköpostin edelleenlähetystä varten
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# Luo TXT-salausavain
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# Luo DKIM-yksityisavain sähköpostin allekirjoitusta varten
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# Luo webhook-allekirjoitusavain
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# Aseta SMTP-siirtosalasana
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Kaikki salausavaimet luotu onnistuneesti"
 ```
+### Vaihe 14: Päivitä SSL-polut konfiguraatiossa {#step-14-update-ssl-paths-in-configuration}
 
-### Vaihe 14: Päivitä SSL-polut määrityksissä {#step-14-update-ssl-paths-in-configuration}
-
-Määritä SSL-varmennepolut ympäristötiedostossa:
+Määritä SSL-varmenteiden polut ympäristötiedostossa:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# Päivitä SSL-polut osoittamaan oikeisiin varmennetiedostoihin
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -445,63 +447,63 @@ sed -i -E \
   "$SELF_HOST_DIR/$ENV_FILE"
 ```
 
-### Vaihe 15: Määritä perustunnistus {#step-15-set-up-basic-authentication}
+### Vaihe 15: Perusautentikoinnin määrittäminen {#step-15-set-up-basic-authentication}
 
-Luo väliaikaiset perustunnistustiedot:
+Luo väliaikaiset perusautentikointitunnukset:
 
 ```bash
-# Generate a secure random password
+# Luo turvallinen satunnainen salasana
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Päivitä ympäristötiedosto perusautentikointitiedoilla
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Näytä tunnukset (tallenna nämä!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 TÄRKEÄÄ: Tallenna nämä kirjautumistiedot!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "Käyttäjätunnus: admin"
+echo "Salasana: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Tarvitset näitä päästäksesi web-käyttöliittymään asennuksen jälkeen."
 echo ""
 ```
 
-### Vaihe 16: Käyttöönotto Docker Composen avulla {#step-16-deploy-with-docker-compose}
+### Vaihe 16: Käyttöönotto Docker Composella {#step-16-deploy-with-docker-compose}
 
-Käynnistä kaikki sähköpostin edelleenlähetyspalvelut:
+Käynnistä kaikki Forward Email -palvelut:
 
 ```bash
-# Set Docker Compose file path
+# Määritä Docker Compose -tiedoston polku
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Pysäytä mahdolliset olemassa olevat kontit
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" down
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" down
 fi
 
-# Pull the latest images
+# Vedä uusimmat kuvat
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" pull
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" pull
 fi
 
-# Start all services in detached mode
+# Käynnistä kaikki palvelut irrotetussa tilassa
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 fi
 
-# Wait a moment for services to start
+# Odota hetki, että palvelut käynnistyvät
 sleep 10
 
-# Check service status
+# Tarkista palveluiden tila
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" ps
 else
@@ -509,33 +511,34 @@ else
 fi
 ```
 
-### Vaihe 17: Asennuksen tarkistaminen {#step-17-verify-installation}
+### Vaihe 17: Asennuksen tarkistus {#step-17-verify-installation}
 
-Tarkista, että kaikki palvelut toimivat oikein:
+Varmista, että kaikki palvelut toimivat oikein:
 
 ```bash
-# Check Docker containers
+# Tarkista Docker-kontit
 docker ps
 
-# Check service logs for any errors
+# Tarkista palvelulokit virheiden varalta
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 fi
 
-# Test web interface connectivity
+# Testaa web-käyttöliittymän yhteys
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Tarkista, kuuntelevatko portit
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## Asennuksen jälkeinen määritys {#post-installation-configuration}
 
-### DNS-tietueiden määritys {#dns-records-setup}
+## Asennuksen jälkeinen konfigurointi {#post-installation-configuration}
 
-Sinun on määritettävä seuraavat DNS-tietueet verkkotunnuksellesi:
+### DNS-tietueiden määrittäminen {#dns-records-setup}
+
+Sinun tulee määrittää seuraavat DNS-tietueet domainillesi:
 
 #### MX-tietue {#mx-record}
 
@@ -564,10 +567,10 @@ carddav A YOUR_SERVER_IP
 
 #### DKIM-tietue {#dkim-record}
 
-Hanki DKIM-julkinen avaimesi:
+Hanki DKIM-julkinen avain:
 
 ```bash
-# Extract DKIM public key
+# Ota DKIM-julkinen avain talteen
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
@@ -586,141 +589,144 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 ### Ensimmäinen kirjautuminen {#first-login}
 
 1. Avaa verkkoselaimesi ja siirry osoitteeseen `https://yourdomain.com`
-2. Syötä aiemmin tallentamasi perustunnistustiedot
-3. Suorita alkuasennustoiminto loppuun
+2. Syötä aiemmin tallentamasi perusautentikointitiedot
+3. Täytä alkuasetusten ohjattu toiminto
 4. Luo ensimmäinen sähköpostitilisi
 
-## Varmuuskopiointiasetukset {#backup-configuration}
 
-### Määritä S3-yhteensopiva varmuuskopiointi {#set-up-s3-compatible-backup}
+## Varmuuskopioinnin konfigurointi {#backup-configuration}
 
-Määritä automaattiset varmuuskopiot S3-yhteensopivaan tallennustilaan:
+### S3-yhteensopivan varmuuskopion määrittäminen {#set-up-s3-compatible-backup}
+
+Määritä automatisoidut varmuuskopiot S3-yhteensopivaan tallennustilaan:
 
 ```bash
-# Create AWS credentials directory
+# Luo AWS-tunnistetiedostojen hakemisto
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# Määritä AWS-tunnistetiedot
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# Määritä AWS-asetukset
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Ei-AWS S3:lle (kuten Cloudflare R2) lisää päätepisteen URL
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
-
-### Varmuuskopiointi Cron-töiden määrittäminen {#set-up-backup-cron-jobs}
+### Varmuuskopiointiaikataulujen asettaminen {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Tee varmuuskopiointiskripteistä suoritettavia
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# Lisää MongoDB-varmuuskopiointiaikataulu (suoritetaan päivittäin keskiyöllä)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Lisää Redis-varmuuskopiointiaikataulu (suoritetaan päivittäin keskiyöllä)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Varmista, että aikataulut lisättiin
 crontab -l
 ```
 
+
 ## Automaattisen päivityksen määritys {#auto-update-configuration}
 
-Määritä automaattiset päivitykset sähköpostin edelleenlähetysasennuksellesi:
+Aseta automaattiset päivitykset Forward Email -asennuksellesi:
 
 ```bash
-# Create auto-update command (use appropriate docker compose command)
+# Luo automaattisen päivityksen komento (käytä sopivaa docker compose -komentoa)
 if command -v docker-compose &> /dev/null; then
     DOCKER_UPDATE_CMD="docker-compose -f $DOCKER_COMPOSE_FILE pull && docker-compose -f $DOCKER_COMPOSE_FILE up -d"
 else
     DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 fi
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Lisää automaattisen päivityksen aikataulu (suoritetaan päivittäin klo 1)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Varmista, että aikataulu lisättiin
 crontab -l
 ```
 
-## Debian-kohtaisia huomioita {#debian-specific-considerations}
 
-### Paketinhallinnan erot {#package-management-differences}
+## Debian-spesifiset seikat {#debian-specific-considerations}
 
-* **Snapd**: Ei asenneta oletuksena Debianiin, vaatii manuaalisen asennuksen
-* **Docker**: Käyttää Debian-kohtaisia repositorioita ja GPG-avaimia
-* **UFW**: Ei välttämättä sisälly Debianin minimaalisiin asennuksiin
-* **systemd**: Toiminta voi poiketa hieman Ubuntusta
+### Pakettien hallinnan erot {#package-management-differences}
 
-### Palvelunhallinta {#service-management}
+* **Snapd**: Ei asennettu oletuksena Debianissa, vaatii manuaalisen asennuksen
+* **Docker**: Käyttää Debian-spesifisiä arkistoja ja GPG-avaimia
+* **UFW**: Ei välttämättä sisälly minimiasennuksiin Debianissa
+* **systemd**: Käyttäytyminen voi poiketa hieman Ubuntusta
+
+### Palveluiden hallinta {#service-management}
 
 ```bash
-# Check service status (Debian-specific commands)
+# Tarkista palveluiden tila (Debian-spesifiset komennot)
 systemctl status snapd
 systemctl status docker
 systemctl status ufw
 
-# Restart services if needed
+# Käynnistä palvelut uudelleen tarvittaessa
 systemctl restart snapd
 systemctl restart docker
 ```
 
-### Verkkoasetukset {#network-configuration}
+### Verkkokonfiguraatio {#network-configuration}
 
-Debianilla voi olla erilaisia verkkorajapintojen nimiä tai kokoonpanoja:
+Debianissa verkkoliittymien nimet tai asetukset voivat olla erilaiset:
 
 ```bash
-# Check network interfaces
+# Tarkista verkkoliittymät
 ip addr show
 
-# Check routing
+# Tarkista reititys
 ip route show
 
-# Check DNS resolution
+# Tarkista DNS-resoluutio
 nslookup google.com
 ```
 
+
 ## Ylläpito ja valvonta {#maintenance-and-monitoring}
 
-### Lokisijainnit {#log-locations}
+### Lokien sijainnit {#log-locations}
 
-* **Docker Compose -lokit**: Käytä asennuksen perusteella asianmukaista Docker Compose -komentoa
+* **Docker Compose -lokit**: Käytä asennuksen mukaista docker compose -komentoa
 * **Järjestelmälokit**: `/var/log/syslog`
 * **Varmuuskopiolokit**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Automaattisen päivityksen lokit**: `/var/log/autoupdate.log`
-* **Lisätyt lokit**: `journalctl -u snapd`
+* **Snapd-lokit**: `journalctl -u snapd`
 
 ### Säännölliset ylläpitotehtävät {#regular-maintenance-tasks}
 
-1. **Levytilan valvonta**: `df -h`
-2. **Palvelun tilan tarkistus**: Käytä asianmukaista Dockerin compose-komentoa
-3. **Lokien tarkastelu**: Tarkista sekä sovellus- että järjestelmälokit
-4. **Järjestelmäpakettien päivitys**: `apt update && apt upgrade`
-5. **Snapd-tiedoston valvonta**: `snap list` ja `snap refresh`
+1. **Seuraa levytilaa**: `df -h`
+2. **Tarkista palveluiden tila**: Käytä sopivaa docker compose -komentoa
+3. **Tarkista lokit**: Tarkista sekä sovellus- että järjestelmälokit
+4. **Päivitä järjestelmäpaketit**: `apt update && apt upgrade`
+5. **Valvo snapd:tä**: `snap list` ja `snap refresh`
 
-### Varmenteen uusiminen {#certificate-renewal}
+### Sertifikaattien uusiminen {#certificate-renewal}
 
-Sertifikaattien pitäisi uusiutua automaattisesti, mutta voit uusia ne tarvittaessa manuaalisesti:
+Sertifikaattien pitäisi uusiutua automaattisesti, mutta voit uusia ne manuaalisesti tarvittaessa:
 
 ```bash
-# Manual certificate renewal
+# Manuaalinen sertifikaatin uusiminen
 certbot renew
 
-# Copy renewed certificates
+# Kopioi uusitut sertifikaatit
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Käynnistä palvelut uudelleen käyttämään uusia sertifikaatteja
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" restart
 else
@@ -728,107 +734,111 @@ else
 fi
 ```
 
+
 ## Vianmääritys {#troubleshooting}
 
-### Debian-kohtaiset ongelmat {#debian-specific-issues}
+### Debian-spesifiset ongelmat {#debian-specific-issues}
 
 #### 1. Snapd ei toimi {#1-snapd-not-working}
 
 ```bash
-# Check snapd status
+# Tarkista snapd:n tila
 systemctl status snapd
 
-# Restart snapd
+# Käynnistä snapd uudelleen
 systemctl restart snapd
 
-# Check snap path
+# Tarkista snap-polku
 echo $PATH | grep snap
 
-# Add snap to PATH if missing
+# Lisää snap PATH:iin, jos puuttuu
 echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-#### 2. Dockerin kirjoituskomentoa ei löytynyt {#2-docker-compose-command-not-found}
+#### 2. Docker Compose -komentoa ei löydy {#2-docker-compose-command-not-found}
 
 ```bash
-# Check which docker compose command is available
+# Tarkista, kumpi docker compose -komento on käytettävissä
 command -v docker-compose
 command -v docker
 
-# Use the appropriate command in scripts
+# Käytä sopivaa komentoa skripteissä
 if command -v docker-compose &> /dev/null; then
-    echo "Using docker-compose"
+    echo "Käytetään docker-compose"
 else
-    echo "Using docker compose"
+    echo "Käytetään docker compose"
 fi
 ```
-
-#### 3. Paketin asennusongelmat {#3-package-installation-issues}
+#### 3. Pakettien Asennusongelmat {#3-package-installation-issues}
 
 ```bash
-# Update package cache
+# Päivitä pakettivälimuisti
 apt update
 
-# Fix broken packages
+# Korjaa rikkinäiset paketit
 apt --fix-broken install
 
-# Check for held packages
+# Tarkista pidätetyt paketit
 apt-mark showhold
 ```
 
-### Yleisiä ongelmia {#common-issues}
+### Yleiset Ongelmät {#common-issues}
 
-#### 1. Docker-palvelu ei käynnisty {#1-docker-service-wont-start}
+#### 1. Docker-palvelu Ei Käynnisty {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Tarkista Dockerin tila
 systemctl status docker
 
-# Check Docker logs
+# Tarkista Dockerin lokit
 journalctl -u docker
 
-# Try alternative startup
+# Kokeile vaihtoehtoista käynnistystä
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Varmenteen luonti epäonnistuu {#2-certificate-generation-fails}
+#### 2. Sertifikaatin Luonti Epäonnistuu {#2-certificate-generation-fails}
 
-* Varmista, että portit 80 ja 443 ovat käytettävissä
-* Varmista, että DNS-tietueet osoittavat palvelimellesi
-* Tarkista palomuurin asetukset `ufw status`-komennolla
+* Varmista, että portit 80 ja 443 ovat saavutettavissa
+* Tarkista, että DNS-tietueet osoittavat palvelimellesi
+* Tarkista palomuuriasetukset komennolla `ufw status`
 
-#### 3. Sähköpostin toimitusongelmat {#3-email-delivery-issues}
+#### 3. Sähköpostin Toimitusongelmat {#3-email-delivery-issues}
 
-* Varmista, että MX-tietueet ovat oikein.* Tarkista SPF-, DKIM- ja DMARC-tietueet.* Varmista, ettei hosting-palveluntarjoajasi ole estänyt porttia 25.
+* Varmista, että MX-tietueet ovat oikein
+* Tarkista SPF-, DKIM- ja DMARC-tietueet
+* Varmista, ettei portti 25 ole estetty hosting-palveluntarjoajasi toimesta
 
-### Avun saaminen {#getting-help}
+### Apua Saatavilla {#getting-help}
 
 * **Dokumentaatio**: <https://forwardemail.net/self-hosted>
-* **GitHub-ongelmat**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Debianin dokumentaatio**: <https://www.debian.org/doc/>
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Debian Dokumentaatio**: <https://www.debian.org/doc/>
 
-## Tietoturvan parhaat käytännöt {#security-best-practices}
 
-1. **Pidä järjestelmä ajan tasalla**: Päivitä Debian ja paketit säännöllisesti
-2. **Valvo lokeja**: Määritä lokien valvonta ja hälytykset
-3. **Varmuuskopioi säännöllisesti**: Testaa varmuuskopiointi- ja palautusmenettelyjä
-4. **Käytä vahvoja salasanoja**: Luo vahvat salasanat kaikille tileille
-5. **Ota käyttöön Fail2Ban**: Harkitse Fail2Banin asentamista lisäturvallisuuden takaamiseksi
-6. **Säännölliset tietoturvatarkastukset**: Tarkista kokoonpanosi säännöllisesti
-7. **Valvo Snapdiä**: Pidä Snap-paketit ajan tasalla `snap refresh`:lla
+## Turvallisuuden Parhaat Käytännöt {#security-best-practices}
 
-## Johtopäätös {#conclusion}
+1. **Pidä Järjestelmä Päivitettynä**: Päivitä Debian ja paketit säännöllisesti
+2. **Seuraa Lokitiedostoja**: Ota käyttöön lokien seuranta ja hälytykset
+3. **Varmuuskopioi Säännöllisesti**: Testaa varmuuskopiointi- ja palautusmenettelyt
+4. **Käytä Vahvoja Salasanoja**: Luo vahvat salasanat kaikille tileille
+5. **Ota Fail2Ban Käyttöön**: Harkitse fail2banin asentamista lisäturvaksi
+6. **Säännölliset Turvatarkastukset**: Tarkista kokoonpano aika ajoin
+7. **Seuraa Snapd:tä**: Pidä snap-paketit ajan tasalla komennolla `snap refresh`
 
-Sähköpostinvälityspalvelun asennuksen pitäisi nyt olla valmis ja käynnissä Debianissa. Muista:
+
+## Yhteenveto {#conclusion}
+
+Forward Email -itseisännöity asennuksesi pitäisi nyt olla valmis ja toiminnassa Debianilla. Muista:
 
 1. Määritä DNS-tietueesi oikein
-2. Testaa sähköpostin lähettäminen ja vastaanottaminen
+2. Testaa sähköpostin lähetys ja vastaanotto
 3. Ota käyttöön säännölliset varmuuskopiot
-4. Valvo järjestelmääsi säännöllisesti
+4. Seuraa järjestelmääsi säännöllisesti
 5. Pidä asennuksesi ajan tasalla
-6. Valvo snapd- ja snap-paketteja
+6. Seuraa snapd:tä ja snap-paketteja
 
-Tärkeimmät erot Ubuntuun verrattuna ovat snapd-asennus ja Docker-arkiston konfigurointi. Kun nämä on määritetty oikein, Forward Email -sovellus toimii samalla tavalla molemmissa järjestelmissä.
+Suurimmat erot Ubuntuun verrattuna ovat snapd:n asennus ja Dockerin arkiston konfigurointi. Kun nämä on asetettu oikein, Forward Email -sovellus käyttäytyy molemmissa järjestelmissä identtisesti.
 
-Lisätietoja määritysvaihtoehdoista ja edistyneistä ominaisuuksista on virallisessa sähköpostin edelleenlähetysdokumentaatiossa osoitteessa <https://forwardemail.net/self-hosted#configuration>.
+Lisäasetuksia ja edistyneitä ominaisuuksia varten katso virallinen Forward Email -dokumentaatio osoitteessa <https://forwardemail.net/self-hosted#configuration>.

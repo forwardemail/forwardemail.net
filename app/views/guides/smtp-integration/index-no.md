@@ -1,113 +1,116 @@
-# Eksempler på SMTP-integrasjon {#smtp-integration-examples}
+# SMTP-integrasjonseksempler {#smtp-integration-examples}
+
 
 ## Innholdsfortegnelse {#table-of-contents}
 
 * [Forord](#foreword)
-* [Hvordan SMTP-behandling av videresendt e-post fungerer](#how-forward-emails-smtp-processing-works)
-  * [E-postkø og nytt forsøkssystem](#email-queue-and-retry-system)
-  * [Dummy-proofed for pålitelighet](#dummy-proofed-for-reliability)
+* [Hvordan Forward Emails SMTP-behandling fungerer](#how-forward-emails-smtp-processing-works)
+  * [E-postkø og retry-system](#email-queue-and-retry-system)
+  * [Brukervennlig for pålitelighet](#dummy-proofed-for-reliability)
 * [Node.js-integrasjon](#nodejs-integration)
-  * [Bruk av Nodemailer](#using-nodemailer)
-  * [Bruk av Express.js](#using-expressjs)
+  * [Bruke Nodemailer](#using-nodemailer)
+  * [Bruke Express.js](#using-expressjs)
 * [Python-integrasjon](#python-integration)
-  * [Bruk av smtplib](#using-smtplib)
-  * [Bruk av Django](#using-django)
+  * [Bruke smtplib](#using-smtplib)
+  * [Bruke Django](#using-django)
 * [PHP-integrasjon](#php-integration)
-  * [Bruk av PHPMailer](#using-phpmailer)
-  * [Bruk av Laravel](#using-laravel)
+  * [Bruke PHPMailer](#using-phpmailer)
+  * [Bruke Laravel](#using-laravel)
 * [Ruby-integrasjon](#ruby-integration)
-  * [Bruk av Ruby Mail Gem](#using-ruby-mail-gem)
+  * [Bruke Ruby Mail Gem](#using-ruby-mail-gem)
 * [Java-integrasjon](#java-integration)
-  * [Bruke Java Mail API-et](#using-javamail-api)
-* [Konfigurasjon av e-postklient](#email-client-configuration)
+  * [Bruke JavaMail API](#using-javamail-api)
+* [E-postklientkonfigurasjon](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (Send e-post som)](#gmail-send-mail-as)
+  * [Gmail (Send mail som)](#gmail-send-mail-as)
 * [Feilsøking](#troubleshooting)
   * [Vanlige problemer og løsninger](#common-issues-and-solutions)
   * [Få hjelp](#getting-help)
 * [Ytterligere ressurser](#additional-resources)
 * [Konklusjon](#conclusion)
 
+
 ## Forord {#foreword}
 
-Denne veiledningen gir detaljerte eksempler på hvordan du integrerer med SMTP-tjenesten i Forward Email ved hjelp av ulike programmeringsspråk, rammeverk og e-postklienter. SMTP-tjenesten vår er utviklet for å være pålitelig, sikker og enkel å integrere med eksisterende applikasjoner.
+Denne guiden gir detaljerte eksempler på hvordan du kan integrere med Forward Emails SMTP-tjeneste ved bruk av ulike programmeringsspråk, rammeverk og e-postklienter. Vår SMTP-tjeneste er designet for å være pålitelig, sikker og enkel å integrere med dine eksisterende applikasjoner.
 
-## Slik fungerer SMTP-behandlingen av videresending av e-post {#how-forward-emails-smtp-processing-works}
 
-Før vi dykker ned i integrasjonseksemplene, er det viktig å forstå hvordan SMTP-tjenesten vår behandler e-poster:
+## Hvordan Forward Emails SMTP-behandling fungerer {#how-forward-emails-smtp-processing-works}
 
-### E-postkø og nytt system {#email-queue-and-retry-system}
+Før vi går inn på integrasjonseksemplene, er det viktig å forstå hvordan vår SMTP-tjeneste behandler e-poster:
 
-Når du sender en e-post via SMTP til serverne våre:
+### E-postkø og retry-system {#email-queue-and-retry-system}
 
-1. **Initial behandling**: E-posten valideres, skannes for skadelig programvare og kontrolleres mot spamfiltre
-2. **Smart køstyring**: E-poster plasseres i et sofistikert køsystem for levering
-3. **Intelligent gjentakelsesmekanisme**: Hvis leveringen mislykkes midlertidig, vil systemet vårt:
-* Analysere feilresponsen ved hjelp av `getBounceInfo`-funksjonen vår
-* Avgjøre om problemet er midlertidig (f.eks. "prøv igjen senere", "midlertidig utsatt") eller permanent (f.eks. "bruker ukjent")
-* Ved midlertidige problemer, merk e-posten for nytt forsøk
-* Ved permanente problemer, generer et varsel om avvisning
-4. **5-dagers gjentakelsesperiode**: Vi prøver levering på nytt i opptil 5 dager (ligner på bransjestandarder som Postfix), noe som gir midlertidige problemer tid til å løse
-5. **Varsler om leveringsstatus**: Avsendere mottar varsler om statusen til e-postene sine (levert, forsinket eller avvist)
+Når du sender en e-post via SMTP til våre servere:
+
+1. **Innledende behandling**: E-posten valideres, skannes for skadelig programvare og sjekkes mot spamfiltre
+2. **Smart køsystem**: E-poster plasseres i et avansert køsystem for levering
+3. **Intelligent retry-mekanisme**: Hvis leveringen midlertidig feiler, vil systemet vårt:
+   * Analysere feilmeldingen ved hjelp av vår `getBounceInfo`-funksjon
+   * Bestemme om problemet er midlertidig (f.eks. "prøv igjen senere", "midlertidig utsatt") eller permanent (f.eks. "ukjent bruker")
+   * For midlertidige problemer, merke e-posten for ny forsøk
+   * For permanente problemer, generere en bounce-melding
+4. **5-dagers retry-periode**: Vi prøver å levere i opptil 5 dager (likt bransjestandarder som Postfix), for å gi midlertidige problemer tid til å løse seg
+5. **Leveringsstatusvarsler**: Avsendere mottar varsler om status på e-postene sine (levert, forsinket eller bounced)
 
 > \[!NOTE]
-> Etter vellykket levering redigeres innholdet i utgående SMTP-e-post etter en konfigurerbar oppbevaringsperiode (standard 30 dager) av sikkerhets- og personvernhensyn. Bare en midlertidig melding som indikerer vellykket levering gjenstår.
+> Etter vellykket levering blir innholdet i utgående SMTP-e-post redigert bort etter en konfigurerbar lagringsperiode (standard 30 dager) for sikkerhet og personvern. Kun en plassholdermelding gjenstår som indikerer vellykket levering.
 
-### Dummy-sikker for pålitelighet {#dummy-proofed-for-reliability}
+### Brukervennlig for pålitelighet {#dummy-proofed-for-reliability}
 
-Systemet vårt er utviklet for å håndtere ulike kanttilfeller:
+Systemet vårt er designet for å håndtere ulike kanttilfeller:
 
-* Hvis en blokkeringsliste oppdages, vil e-posten automatisk bli forsøkt levert på nytt.
-* Hvis det oppstår nettverksproblemer, vil leveringsforsøket bli gjort på nytt.
-* Hvis mottakerens postkasse er full, vil systemet prøve på nytt senere.
-* Hvis mottakerserveren midlertidig er utilgjengelig, vil vi fortsette å prøve.
+* Hvis en blokkering oppdages, vil e-posten automatisk bli forsøkt sendt på nytt
+* Hvis nettverksproblemer oppstår, vil leveringen bli forsøkt igjen
+* Hvis mottakerens postboks er full, vil systemet prøve igjen senere
+* Hvis mottakende server midlertidig er utilgjengelig, vil vi fortsette å prøve
 
-Denne tilnærmingen forbedrer leveringsratene betydelig, samtidig som den ivaretar personvern og sikkerhet.
+Denne tilnærmingen forbedrer leveringsraten betydelig samtidig som personvern og sikkerhet opprettholdes.
+
 
 ## Node.js-integrasjon {#nodejs-integration}
 
-### Bruker Nodemailer {#using-nodemailer}
+### Bruke Nodemailer {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) er en populær modul for å sende e-poster fra Node.js-applikasjoner.
+[Nodemailer](https://nodemailer.com/) er en populær modul for å sende e-post fra Node.js-applikasjoner.
 
 ```javascript
 const nodemailer = require('nodemailer');
 
-// Create a transporter object
+// Opprett en transporter-objekt
 const transporter = nodemailer.createTransport({
   host: 'smtp.forwardemail.net',
   port: 465,
-  secure: true, // Use TLS
+  secure: true, // Bruk TLS
   auth: {
     user: 'your-username@your-domain.com',
     pass: 'your-password'
   }
 });
 
-// Send mail with defined transport object
+// Send e-post med definert transportobjekt
 async function sendEmail() {
   try {
     const info = await transporter.sendMail({
-      from: '"Your Name" <your-username@your-domain.com>',
+      from: '"Ditt navn" <your-username@your-domain.com>',
       to: 'recipient@example.com',
-      subject: 'Hello from Forward Email',
-      text: 'Hello world! This is a test email sent using Nodemailer and Forward Email SMTP.',
-      html: '<b>Hello world!</b> This is a test email sent using Nodemailer and Forward Email SMTP.'
+      subject: 'Hei fra Forward Email',
+      text: 'Hei verden! Dette er en test-e-post sendt med Nodemailer og Forward Email SMTP.',
+      html: '<b>Hei verden!</b> Dette er en test-e-post sendt med Nodemailer og Forward Email SMTP.'
     });
 
-    console.log('Message sent: %s', info.messageId);
+    console.log('Melding sendt: %s', info.messageId);
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Feil ved sending av e-post:', error);
   }
 }
 
 sendEmail();
 ```
+### Using Express.js {#using-expressjs}
 
-### Bruker Express.js {#using-expressjs}
-
-Slik integrerer du Videresend e-post SMTP med et Express.js-program:
+Her er hvordan du integrerer Forward Email SMTP med en Express.js-applikasjon:
 
 ```javascript
 const express = require('express');
@@ -159,9 +162,10 @@ app.listen(port, () => {
 });
 ```
 
-## Python-integrasjon {#python-integration}
 
-### Bruker smtplib {#using-smtplib}
+## Python Integration {#python-integration}
+
+### Using smtplib {#using-smtplib}
 
 ```python
 import smtplib
@@ -202,9 +206,9 @@ except Exception as e:
     print(f"Error sending email: {e}")
 ```
 
-### Bruker Django {#using-django}
+### Using Django {#using-django}
 
-For Django-applikasjoner, legg til følgende i `settings.py`:
+For Django-applikasjoner, legg til følgende i din `settings.py`:
 
 ```python
 # Email settings
@@ -217,26 +221,27 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Send deretter e-poster i visningene dine:
+Deretter sender du e-poster i dine views:
 
 ```python
 from django.core.mail import send_mail
 
 def send_email_view(request):
     send_mail(
-        'Subject here',
-        'Here is the message.',
+        'Emne her',
+        'Her er meldingen.',
         'from@your-domain.com',
         ['to@example.com'],
         fail_silently=False,
-        html_message='<b>Here is the HTML message.</b>'
+        html_message='<b>Her er HTML-meldingen.</b>'
     )
-    return HttpResponse('Email sent!')
+    return HttpResponse('E-post sendt!')
 ```
 
-## PHP-integrasjon {#php-integration}
 
-### Bruker PHPMailer {#using-phpmailer}
+## PHP Integration {#php-integration}
+
+### Using PHPMailer {#using-phpmailer}
 
 ```php
 <?php
@@ -258,9 +263,9 @@ try {
     $mail->Port       = 465;
 
     // Recipients
-    $mail->setFrom('your-username@your-domain.com', 'Your Name');
-    $mail->addAddress('recipient@example.com', 'Recipient Name');
-    $mail->addReplyTo('your-username@your-domain.com', 'Your Name');
+    $mail->setFrom('your-username@your-domain.com', 'Ditt navn');
+    $mail->addAddress('recipient@example.com', 'Mottakers navn');
+    $mail->addReplyTo('your-username@your-domain.com', 'Ditt navn');
 
     // Content
     $mail->isHTML(true);
@@ -269,13 +274,12 @@ try {
     $mail->AltBody = 'Hello world! This is a test email sent using PHPMailer and Forward Email SMTP.';
 
     $mail->send();
-    echo 'Message has been sent';
+    echo 'Meldingen har blitt sendt';
 } catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    echo "Meldingen kunne ikke sendes. Mailer Error: {$mail->ErrorInfo}";
 }
 ```
-
-### Bruker Laravel {#using-laravel}
+### Bruke Laravel {#using-laravel}
 
 For Laravel-applikasjoner, oppdater `.env`-filen din:
 
@@ -290,7 +294,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Send deretter e-poster ved hjelp av Laravels Mail-fasade:
+Deretter sender du e-poster ved å bruke Laravels Mail-fasade:
 
 ```php
 <?php
@@ -307,14 +311,15 @@ class EmailController extends Controller
     {
         Mail::to('recipient@example.com')->send(new WelcomeEmail());
 
-        return 'Email sent successfully!';
+        return 'E-post sendt vellykket!';
     }
 }
 ```
 
+
 ## Ruby-integrasjon {#ruby-integration}
 
-### Bruker Ruby Mail Gem {#using-ruby-mail-gem}
+### Bruke Ruby Mail Gem {#using-ruby-mail-gem}
 
 ```ruby
 require 'mail'
@@ -335,25 +340,26 @@ end
 mail = Mail.new do
   from     'your-username@your-domain.com'
   to       'recipient@example.com'
-  subject  'Hello from Forward Email'
+  subject  'Hei fra Forward Email'
 
   text_part do
-    body 'Hello world! This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body 'Hei verden! Dette er en test-epost sendt med Ruby Mail og Forward Email SMTP.'
   end
 
   html_part do
     content_type 'text/html; charset=UTF-8'
-    body '<b>Hello world!</b> This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body '<b>Hei verden!</b> Dette er en test-epost sendt med Ruby Mail og Forward Email SMTP.'
   end
 end
 
 mail.deliver!
-puts "Email sent successfully!"
+puts "E-post sendt vellykket!"
 ```
+
 
 ## Java-integrasjon {#java-integration}
 
-### Bruker JavaMail API {#using-javamail-api}
+### Bruke JavaMail API {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -362,11 +368,11 @@ import javax.mail.internet.*;
 
 public class SendEmail {
     public static void main(String[] args) {
-        // Sender's email and password
+        // Avsenders e-post og passord
         final String username = "your-username@your-domain.com";
         final String password = "your-password";
 
-        // SMTP server properties
+        // SMTP-serveregenskaper
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -375,7 +381,7 @@ public class SendEmail {
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-        // Create session with authenticator
+        // Opprett sesjon med autentisering
         Session session = Session.getInstance(props,
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -384,34 +390,34 @@ public class SendEmail {
             });
 
         try {
-            // Create message
+            // Opprett melding
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("recipient@example.com"));
-            message.setSubject("Hello from Forward Email");
+            message.setSubject("Hei fra Forward Email");
 
-            // Create multipart message
+            // Opprett multipart-melding
             Multipart multipart = new MimeMultipart("alternative");
 
-            // Text part
+            // Tekstdel
             BodyPart textPart = new MimeBodyPart();
-            textPart.setText("Hello world! This is a test email sent using JavaMail and Forward Email SMTP.");
+            textPart.setText("Hei verden! Dette er en test-epost sendt med JavaMail og Forward Email SMTP.");
 
-            // HTML part
+            // HTML-del
             BodyPart htmlPart = new MimeBodyPart();
-            htmlPart.setContent("<b>Hello world!</b> This is a test email sent using JavaMail and Forward Email SMTP.", "text/html");
+            htmlPart.setContent("<b>Hei verden!</b> Dette er en test-epost sendt med JavaMail og Forward Email SMTP.", "text/html");
 
-            // Add parts to multipart
+            // Legg til deler i multipart
             multipart.addBodyPart(textPart);
             multipart.addBodyPart(htmlPart);
 
-            // Set content
+            // Sett innhold
             message.setContent(multipart);
 
-            // Send message
+            // Send melding
             Transport.send(message);
 
-            System.out.println("Email sent successfully!");
+            System.out.println("E-post sendt vellykket!");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -420,105 +426,105 @@ public class SendEmail {
 }
 ```
 
-## Konfigurasjon av e-postklient {#email-client-configuration}
+
+## E-postklientkonfigurasjon {#email-client-configuration}
 
 ### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
-    B --> C[Account Actions]
-    C --> D[Add Mail Account]
-    D --> E[Enter Name, Email, Password]
-    E --> F[Manual Config]
-    F --> G[Enter Server Details]
+    A[Åpne Thunderbird] --> B[Konto-innstillinger]
+    B --> C[Konto-handlinger]
+    C --> D[Legg til e-postkonto]
+    D --> E[Skriv inn navn, e-post, passord]
+    E --> F[Manuell konfigurasjon]
+    F --> G[Skriv inn serverdetaljer]
     G --> H[SMTP: smtp.forwardemail.net]
     H --> I[Port: 465]
-    I --> J[Connection: SSL/TLS]
-    J --> K[Authentication: Normal Password]
-    K --> L[Username: full email address]
-    L --> M[Test and Create Account]
+    I --> J[Tilkobling: SSL/TLS]
+    J --> K[Autentisering: Vanlig passord]
+    K --> L[Brukernavn: full e-postadresse]
+    L --> M[Test og opprett konto]
 ```
-
-1. Åpne Thunderbird og gå til Kontoinnstillinger.
-2. Klikk på «Kontohandlinger» og velg «Legg til e-postkonto».
-3. Skriv inn navn, e-postadresse og passord.
-4. Klikk på «Manuell konfigurasjon» og skriv inn følgende detaljer:
-* Innkommende server:
-* IMAP: imap.forwardemail.net, Port: 993, SSL/TLS
-* POP3: pop3.forwardemail.net, Port: 995, SSL/TLS
-* Utgående server (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS
-* Autentisering: Vanlig passord
-* Brukernavn: din fullstendige e-postadresse.
-5. Klikk på «Test» og deretter på «Ferdig».
+1. Åpne Thunderbird og gå til Kontoinnstillinger  
+2. Klikk på "Kontohandlinger" og velg "Legg til e-postkonto"  
+3. Skriv inn navnet ditt, e-postadressen og passordet ditt  
+4. Klikk på "Manuell konfigurasjon" og skriv inn følgende detaljer:  
+   * Inngående server:  
+     * IMAP: imap.forwardemail.net, Port: 993, SSL/TLS  
+     * POP3: pop3.forwardemail.net, Port: 995, SSL/TLS  
+   * Utgående server (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS  
+   * Autentisering: Vanlig passord  
+   * Brukernavn: din fullstendige e-postadresse  
+5. Klikk på "Test" og deretter "Ferdig"  
 
 ### Apple Mail {#apple-mail}
 
-1. Åpne Mail og gå til Mail > Innstillinger > Kontoer
-2. Klikk på «+»-knappen for å legge til en ny konto
-3. Velg «Annen e-postkonto» og klikk på «Fortsett»
-4. Skriv inn navn, e-postadresse og passord, og klikk deretter på «Logg på»
-5. Når automatisk oppsett mislykkes, skriver du inn følgende detaljer:
-* Innkommende e-postserver: imap.forwardemail.net (eller pop3.forwardemail.net for POP3)
-* Utgående e-postserver: smtp.forwardemail.net
-* Brukernavn: din fullstendige e-postadresse
-* Passord: ditt passord
-6. Klikk på «Logg på» for å fullføre oppsettet
+1. Åpne Mail og gå til Mail > Innstillinger > Kontoer  
+2. Klikk på "+"-knappen for å legge til en ny konto  
+3. Velg "Annen e-postkonto" og klikk "Fortsett"  
+4. Skriv inn navnet ditt, e-postadressen og passordet, og klikk deretter "Logg inn"  
+5. Når automatisk oppsett mislykkes, skriv inn følgende detaljer:  
+   * Inngående e-postserver: imap.forwardemail.net (eller pop3.forwardemail.net for POP3)  
+   * Utgående e-postserver: smtp.forwardemail.net  
+   * Brukernavn: din fullstendige e-postadresse  
+   * Passord: passordet ditt  
+6. Klikk "Logg inn" for å fullføre oppsettet  
 
-### Gmail (Send e-post som) {#gmail-send-mail-as}
+### Gmail (Send Mail As) {#gmail-send-mail-as}
 
-1. Åpne Gmail og gå til Innstillinger > Kontoer og import.
-2. Under «Send e-post som» klikker du på «Legg til en annen e-postadresse».
-3. Skriv inn navn og e-postadresse, og klikk deretter på «Neste trinn».
-4. Skriv inn følgende SMTP-serverdetaljer:
-* SMTP-server: smtp.forwardemail.net
-* Port: 465
-* Brukernavn: din fullstendige e-postadresse
-* Passord: passordet ditt
-* Velg «Sikker tilkobling med SSL».
-5. Klikk på «Legg til konto» og bekreft e-postadressen din.
+1. Åpne Gmail og gå til Innstillinger > Kontoer og import  
+2. Under "Send e-post som", klikk "Legg til en annen e-postadresse"  
+3. Skriv inn navnet ditt og e-postadressen, og klikk deretter "Neste steg"  
+4. Skriv inn følgende SMTP-serverdetaljer:  
+   * SMTP-server: smtp.forwardemail.net  
+   * Port: 465  
+   * Brukernavn: din fullstendige e-postadresse  
+   * Passord: passordet ditt  
+   * Velg "Sikret tilkobling med SSL"  
+5. Klikk "Legg til konto" og bekreft e-postadressen din  
 
 ## Feilsøking {#troubleshooting}
 
 ### Vanlige problemer og løsninger {#common-issues-and-solutions}
 
-1. **Autentisering mislyktes**
-* Bekreft brukernavn (fullstendig e-postadresse) og passord
-* Sørg for at du bruker riktig port (465 for SSL/TLS)
-* Sjekk om kontoen din har SMTP-tilgang aktivert
+1. **Autentisering mislyktes**  
+   * Bekreft brukernavnet ditt (full e-postadresse) og passordet  
+   * Sørg for at du bruker riktig port (465 for SSL/TLS)  
+   * Sjekk om kontoen din har aktivert SMTP-tilgang  
 
-2. **Tidsavbrudd for tilkobling**
-* Sjekk internettforbindelsen din
-* Bekreft at brannmurinnstillingene ikke blokkerer SMTP-trafikk
-* Bruk port 465 med SSL/TLS (anbefalt) eller port 587 med STARTTLS
+2. **Tilkoblingstimeout**  
+   * Sjekk internettforbindelsen din  
+   * Bekreft at brannmurinnstillinger ikke blokkerer SMTP-trafikk  
+   * Prøv å bruke port 465 med SSL/TLS (anbefalt) eller port 587 med STARTTLS  
 
-3. **Melding avvist**
-* Sørg for at «Fra»-adressen din samsvarer med den autentiserte e-postadressen din.
-* Sjekk om IP-adressen din er svartelistet.
-* Bekreft at meldingsinnholdet ikke utløser spamfiltre.
+3. **Melding avvist**  
+   * Sørg for at "Fra"-adressen samsvarer med den autentiserte e-posten  
+   * Sjekk om IP-adressen din er svartelistet  
+   * Bekreft at meldingsinnholdet ikke utløser spamfiltre  
 
-4. **TLS/SSL-feil**
-* Oppdater applikasjonen/biblioteket ditt for å støtte moderne TLS-versjoner
-* Sørg for at systemets CA-sertifikater er oppdaterte
-* Prøv eksplisitt TLS i stedet for implisitt TLS
+4. **TLS/SSL-feil**  
+   * Oppdater applikasjonen/biblioteket ditt for å støtte moderne TLS-versjoner  
+   * Sørg for at systemets CA-sertifikater er oppdaterte  
+   * Prøv eksplisitt TLS i stedet for implisitt TLS  
 
 ### Få hjelp {#getting-help}
 
-Hvis du støter på problemer som ikke er dekket her, vennligst:
+Hvis du støter på problemer som ikke er dekket her, vennligst:  
 
-1. Sjekk vår [FAQ-side](/faq) for vanlige spørsmål
-2. Se vår [blogginnlegg om e-postlevering](/blog/docs/best-email-forwarding-service) for detaljert informasjon
-3. Kontakt supportteamet vårt på <support@forwardemail.net>
+1. Sjekk vår [FAQ-side](/faq) for vanlige spørsmål  
+2. Les vårt [blogginnlegg om e-postlevering](/blog/docs/best-email-forwarding-service) for detaljert informasjon  
+3. Kontakt vårt supportteam på <support@forwardemail.net>  
 
 ## Ytterligere ressurser {#additional-resources}
 
-* [Dokumentasjon for videresending av e-post](/docs)
-* [SMTP-servergrenser og -konfigurasjon](/faq#what-are-your-outbound-smtp-limits)
-* [Veiledning for beste praksis for e-post](/blog/docs/best-email-forwarding-service)
-* [Sikkerhetspraksis](/security)
+* [Forward Email Dokumentasjon](/docs)  
+* [SMTP-servergrenser og konfigurasjon](/faq#what-are-your-outbound-smtp-limits)  
+* [Guide til beste praksis for e-post](/blog/docs/best-email-forwarding-service)  
+* [Sikkerhetsrutiner](/security)  
 
 ## Konklusjon {#conclusion}
 
-SMTP-tjenesten i Forward Email gir en pålitelig, sikker og personvernfokusert måte å sende e-post fra applikasjonene og e-postklientene dine. Med vårt intelligente køsystem, 5-dagers mekanisme for nye forsøk og omfattende varsler om leveringsstatus, kan du være trygg på at e-postene dine kommer frem til destinasjonen.
+Forward Emails SMTP-tjeneste gir en pålitelig, sikker og personvernfokusert måte å sende e-post fra dine applikasjoner og e-postklienter. Med vårt intelligente køsystem, 5-dagers nyforsøk-mekanisme og omfattende leveringsstatusvarsler, kan du være trygg på at e-postene dine når frem til mottakeren.  
 
-For mer avanserte brukstilfeller eller tilpassede integrasjoner, vennligst kontakt vårt supportteam.
+For mer avanserte bruksområder eller tilpassede integrasjoner, vennligst kontakt vårt supportteam.

@@ -1,116 +1,116 @@
-# Email RFC Protocol Support - Complete Standards & Specifications Guide {#email-rfc-protocol-support---complete-standards--specifications-guide}
+# E-mail RFC Protocol Ondersteuning - Complete Standaarden & Specificaties Gids {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
 <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [About This Document](#about-this-document)
-  * [Architecture Overview](#architecture-overview)
-* [Email Service Comparison - Protocol Support & RFC Standards Compliance](#email-service-comparison---protocol-support--rfc-standards-compliance)
-  * [Protocol Support Visualization](#protocol-support-visualization)
-* [Core Email Protocols](#core-email-protocols)
-  * [Email Protocol Flow](#email-protocol-flow)
-* [IMAP4 Email Protocol and Extensions](#imap4-email-protocol-and-extensions)
-  * [IMAP Protocol Differences from RFC Specifications](#imap-protocol-differences-from-rfc-specifications)
-  * [IMAP Extensions NOT Supported](#imap-extensions-not-supported)
-* [POP3 Email Protocol and Extensions](#pop3-email-protocol-and-extensions)
-  * [POP3 Protocol Differences from RFC Specifications](#pop3-protocol-differences-from-rfc-specifications)
-  * [POP3 Extensions NOT Supported](#pop3-extensions-not-supported)
-* [SMTP Email Protocol and Extensions](#smtp-email-protocol-and-extensions)
-  * [Delivery Status Notifications (DSN)](#delivery-status-notifications-dsn)
-  * [REQUIRETLS Support](#requiretls-support)
-  * [SMTP Extensions NOT Supported](#smtp-extensions-not-supported)
-* [JMAP Email Protocol](#jmap-email-protocol)
-* [Email Security](#email-security)
-  * [Email Security Architecture](#email-security-architecture)
-* [Email Message Authentication Protocols](#email-message-authentication-protocols)
-  * [Authentication Protocol Support](#authentication-protocol-support)
+## Inhoudsopgave {#table-of-contents}
+
+* [Over Dit Document](#about-this-document)
+  * [Architectuuroverzicht](#architecture-overview)
+* [Vergelijking van E-maildiensten - Protocolondersteuning & RFC Standaarden Naleving](#email-service-comparison---protocol-support--rfc-standards-compliance)
+  * [Visualisatie van Protocolondersteuning](#protocol-support-visualization)
+* [Kern E-mailprotocollen](#core-email-protocols)
+  * [E-mailprotocol Stroom](#email-protocol-flow)
+* [IMAP4 E-mailprotocol en Extensies](#imap4-email-protocol-and-extensions)
+  * [IMAP Protocol Verschillen met RFC Specificaties](#imap-protocol-differences-from-rfc-specifications)
+  * [IMAP Extensies NIET Ondersteund](#imap-extensions-not-supported)
+* [POP3 E-mailprotocol en Extensies](#pop3-email-protocol-and-extensions)
+  * [POP3 Protocol Verschillen met RFC Specificaties](#pop3-protocol-differences-from-rfc-specifications)
+  * [POP3 Extensies NIET Ondersteund](#pop3-extensions-not-supported)
+* [SMTP E-mailprotocol en Extensies](#smtp-email-protocol-and-extensions)
+  * [Bezorgstatusmeldingen (DSN)](#delivery-status-notifications-dsn)
+  * [REQUIRETLS Ondersteuning](#requiretls-support)
+  * [SMTP Extensies NIET Ondersteund](#smtp-extensions-not-supported)
+* [JMAP E-mailprotocol](#jmap-email-protocol)
+* [E-mailbeveiliging](#email-security)
+  * [Architectuur van E-mailbeveiliging](#email-security-architecture)
+* [E-mailbericht Authenticatieprotocollen](#email-message-authentication-protocols)
+  * [Ondersteuning Authenticatieprotocollen](#authentication-protocol-support)
   * [DKIM (DomainKeys Identified Mail)](#dkim-domainkeys-identified-mail)
   * [SPF (Sender Policy Framework)](#spf-sender-policy-framework)
   * [DMARC (Domain-based Message Authentication, Reporting & Conformance)](#dmarc-domain-based-message-authentication-reporting--conformance)
   * [ARC (Authenticated Received Chain)](#arc-authenticated-received-chain)
-  * [Authentication Flow](#authentication-flow)
-* [Email Transport Security Protocols](#email-transport-security-protocols)
-  * [Transport Security Support](#transport-security-support)
+  * [Authenticatiestroom](#authentication-flow)
+* [E-mail Transportbeveiligingsprotocollen](#email-transport-security-protocols)
+  * [Ondersteuning Transportbeveiliging](#transport-security-support)
   * [TLS (Transport Layer Security)](#tls-transport-layer-security)
   * [MTA-STS (Mail Transfer Agent Strict Transport Security)](#mta-sts-mail-transfer-agent-strict-transport-security)
   * [DANE (DNS-based Authentication of Named Entities)](#dane-dns-based-authentication-of-named-entities)
   * [REQUIRETLS](#requiretls)
-  * [Transport Security Flow](#transport-security-flow)
-* [Email Message Encryption](#email-message-encryption)
-  * [Encryption Support](#encryption-support)
+  * [Transportbeveiligingsstroom](#transport-security-flow)
+* [E-mailberichtversleuteling](#email-message-encryption)
+  * [Ondersteuning Versleuteling](#encryption-support)
   * [OpenPGP (Pretty Good Privacy)](#openpgp-pretty-good-privacy)
   * [S/MIME (Secure/Multipurpose Internet Mail Extensions)](#smime-securemultipurpose-internet-mail-extensions)
-  * [SQLite Mailbox Encryption](#sqlite-mailbox-encryption)
-  * [Encryption Comparison](#encryption-comparison)
-  * [Encryption Flow](#encryption-flow)
-* [Extended Functionality](#extended-functionality)
-* [Email Message Format Standards](#email-message-format-standards)
-  * [Format Standards Support](#format-standards-support)
+  * [SQLite Mailbox Versleuteling](#sqlite-mailbox-encryption)
+  * [Vergelijking Versleuteling](#encryption-comparison)
+  * [Versleutelingsstroom](#encryption-flow)
+* [Uitgebreide Functionaliteit](#extended-functionality)
+* [E-mailberichtformaat Standaarden](#email-message-format-standards)
+  * [Ondersteuning Formaatstandaarden](#format-standards-support)
   * [MIME (Multipurpose Internet Mail Extensions)](#mime-multipurpose-internet-mail-extensions)
-  * [SMTPUTF8 and Email Address Internationalization](#smtputf8-and-email-address-internationalization)
-* [Calendaring and Contacts Protocols](#calendaring-and-contacts-protocols)
-  * [CalDAV and CardDAV Support](#caldav-and-carddav-support)
-  * [CalDAV (Calendar Access)](#caldav-calendar-access)
-  * [CardDAV (Contact Access)](#carddav-contact-access)
-  * [Tasks and Reminders (CalDAV VTODO)](#tasks-and-reminders-caldav-vtodo)
-  * [CalDAV/CardDAV Synchronization Flow](#caldavcarddav-synchronization-flow)
-  * [Calendaring Extensions NOT Supported](#calendaring-extensions-not-supported)
-* [Email Message Filtering](#email-message-filtering)
+  * [SMTPUTF8 en Internationalisering van E-mailadressen](#smtputf8-and-email-address-internationalization)
+* [Agenda- en Contactprotocollen](#calendaring-and-contacts-protocols)
+  * [CalDAV en CardDAV Ondersteuning](#caldav-and-carddav-support)
+  * [CalDAV (Agenda Toegang)](#caldav-calendar-access)
+  * [CardDAV (Contact Toegang)](#carddav-contact-access)
+  * [Taken en Herinneringen (CalDAV VTODO)](#tasks-and-reminders-caldav-vtodo)
+  * [CalDAV/CardDAV Synchronisatiestroom](#caldavcarddav-synchronization-flow)
+  * [Agenda Extensies NIET Ondersteund](#calendaring-extensions-not-supported)
+* [E-mailberichtfiltering](#email-message-filtering)
   * [Sieve (RFC 5228)](#sieve-rfc-5228)
   * [ManageSieve (RFC 5804)](#managesieve-rfc-5804)
-* [Storage Optimization](#storage-optimization)
-  * [Architecture: Dual-Layer Storage Optimization](#architecture-dual-layer-storage-optimization)
-* [Attachment Deduplication](#attachment-deduplication)
-  * [How It Works](#how-it-works)
-  * [Deduplication Flow](#deduplication-flow)
-  * [Magic Number System](#magic-number-system)
-  * [Key Differences: WildDuck vs Forward Email](#key-differences-wildduck-vs-forward-email)
-* [Brotli Compression](#brotli-compression)
-  * [What Gets Compressed](#what-gets-compressed)
-  * [Compression Configuration](#compression-configuration)
+* [Opslagoptimalisatie](#storage-optimization)
+  * [Architectuur: Dual-Layer Opslagoptimalisatie](#architecture-dual-layer-storage-optimization)
+* [Bijlage Deduplicatie](#attachment-deduplication)
+  * [Hoe Het Werkt](#how-it-works)
+  * [Deduplicatiestroom](#deduplication-flow)
+  * [Magic Number Systeem](#magic-number-system)
+  * [Belangrijkste Verschillen: WildDuck vs Forward Email](#key-differences-wildduck-vs-forward-email)
+* [Brotli Compressie](#brotli-compression)
+  * [Wat Wordt Gecomprimeerd](#what-gets-compressed)
+  * [Compressieconfiguratie](#compression-configuration)
   * [Magic Header: "FEBR"](#magic-header-febr)
-  * [Compression Process](#compression-process)
-  * [Decompression Process](#decompression-process)
-  * [Backwards Compatibility](#backwards-compatibility)
-  * [Storage Savings Statistics](#storage-savings-statistics)
-  * [Migration Process](#migration-process)
-  * [Combined Storage Efficiency](#combined-storage-efficiency)
-  * [Technical Implementation Details](#technical-implementation-details)
-  * [Why No Other Provider Does This](#why-no-other-provider-does-this)
-* [Modern Features](#modern-features)
-* [Complete REST API for Email Management](#complete-rest-api-for-email-management)
-  * [API Categories (39 Endpoints)](#api-categories-39-endpoints)
-  * [Technical Details](#technical-details)
-  * [Real-World Use Cases](#real-world-use-cases)
-  * [Key API Features](#key-api-features)
-  * [API Architecture](#api-architecture)
-* [iOS Push Notifications](#ios-push-notifications)
-  * [How It Works](#how-it-works-1)
-  * [Key Features](#key-features)
-  * [What Makes This Special](#what-makes-this-special)
-  * [Implementation Details](#implementation-details)
-  * [Comparison with Other Services](#comparison-with-other-services)
-* [Testing and Verification](#testing-and-verification)
-* [Protocol Capability Tests](#protocol-capability-tests)
-  * [Test Methodology](#test-methodology)
-  * [Test Scripts](#test-scripts)
-  * [Test Results Summary](#test-results-summary)
-  * [Detailed Test Results](#detailed-test-results)
-  * [Notes on Test Results](#notes-on-test-results)
-* [Summary](#summary)
-  * [Key Differentiators](#key-differentiators)
+  * [Compressieproces](#compression-process)
+  * [Decompressieproces](#decompression-process)
+  * [Achterwaartse Compatibiliteit](#backwards-compatibility)
+  * [Statistieken Opslagbesparing](#storage-savings-statistics)
+  * [Migratieproces](#migration-process)
+  * [Gecombineerde Opslagefficiëntie](#combined-storage-efficiency)
+  * [Technische Implementatiedetails](#technical-implementation-details)
+  * [Waarom Geen Andere Provider Dit Doet](#why-no-other-provider-does-this)
+* [Moderne Functies](#modern-features)
+* [Complete REST API voor E-mailbeheer](#complete-rest-api-for-email-management)
+  * [API Categorieën (39 Eindpunten)](#api-categories-39-endpoints)
+  * [Technische Details](#technical-details)
+  * [Praktijkvoorbeelden](#real-world-use-cases)
+  * [Belangrijkste API Kenmerken](#key-api-features)
+  * [API Architectuur](#api-architecture)
+* [iOS Pushmeldingen](#ios-push-notifications)
+  * [Hoe Het Werkt](#how-it-works-1)
+  * [Belangrijkste Kenmerken](#key-features)
+  * [Wat Dit Speciaal Maakt](#what-makes-this-special)
+  * [Implementatiedetails](#implementation-details)
+  * [Vergelijking met Andere Diensten](#comparison-with-other-services)
+* [Testen en Verificatie](#testing-and-verification)
+* [Protocol Capaciteitstests](#protocol-capability-tests)
+  * [Testmethodologie](#test-methodology)
+  * [Testscripts](#test-scripts)
+  * [Samenvatting Testresultaten](#test-results-summary)
+  * [Gedetailleerde Testresultaten](#detailed-test-results)
+  * [Opmerkingen over Testresultaten](#notes-on-test-results)
+* [Samenvatting](#summary)
+  * [Belangrijkste Onderscheidende Kenmerken](#key-differentiators)
+## Over Dit Document {#about-this-document}
 
-## About This Document {#about-this-document}
-
-This document outlines the RFC (Request for Comments) protocol support for Forward Email. Since Forward Email uses [WildDuck](https://github.com/nodemailer/wildduck) under the hood for IMAP/POP3 functionality, the protocol support and limitations documented here reflect WildDuck's implementation.
+Dit document beschrijft de RFC (Request for Comments) protocolondersteuning voor Forward Email. Omdat Forward Email onder de motorkap [WildDuck](https://github.com/nodemailer/wildduck) gebruikt voor IMAP/POP3-functionaliteit, weerspiegelen de hier gedocumenteerde protocolondersteuning en beperkingen de implementatie van WildDuck.
 
 > \[!IMPORTANT]
-> Forward Email uses [SQLite](https://sqlite.org/) for message storage instead of MongoDB (which WildDuck originally used). This affects certain implementation details documented below.
+> Forward Email gebruikt [SQLite](https://sqlite.org/) voor berichtopslag in plaats van MongoDB (dat WildDuck oorspronkelijk gebruikte). Dit beïnvloedt bepaalde implementatiedetails die hieronder zijn gedocumenteerd.
 
-**Source Code:** <https://github.com/forwardemail/forwardemail.net>
+**Broncode:** <https://github.com/forwardemail/forwardemail.net>
 
-### Architecture Overview {#architecture-overview}
+### Architectuuroverzicht {#architecture-overview}
 
 ```mermaid
 graph TB
@@ -142,72 +142,72 @@ graph TB
 
 ---
 
-## Email Service Comparison - Protocol Support & RFC Standards Compliance {#email-service-comparison---protocol-support--rfc-standards-compliance}
+
+## Vergelijking E-maildiensten - Protocolondersteuning & RFC-standaarden naleving {#email-service-comparison---protocol-support--rfc-standards-compliance}
 
 > \[!IMPORTANT]
-> **Sandboxed and Quantum-resistant Encryption:** Forward Email is the only email service that stores individually encrypted SQLite mailboxes using your password (which only you have). Each mailbox is encrypted with [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305), self-contained, sandboxed, and portable. If you forget your password, you lose your mailbox - not even Forward Email can recover it. See [Quantum-Safe Encrypted Email](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) for details.
+> **Sandboxed en Quantum-bestendige Encryptie:** Forward Email is de enige e-maildienst die individueel versleutelde SQLite-mailboxen opslaat met jouw wachtwoord (dat alleen jij hebt). Elke mailbox is versleuteld met [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305), zelfvoorzienend, sandboxed en draagbaar. Als je je wachtwoord vergeet, verlies je je mailbox - zelfs Forward Email kan deze niet herstellen. Zie [Quantum-Safe Encrypted Email](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) voor details.
 
-Compare email protocol support and RFC standards implementation across major email providers:
+Vergelijk e-mailprotocolondersteuning en RFC-standaarden implementatie bij grote e-mailproviders:
 
-| Feature | Forward Email | Postfix/Dovecot | Gmail | iCloud Mail | Outlook.com | Fastmail | Yahoo/AOL (Verizon) | ProtonMail | Tutanota |
+| Functie                       | Forward Email                                                                                  | Postfix/Dovecot                                                                    | Gmail                                                                             | iCloud Mail                                           | Outlook.com                                                                                                                                                          | Fastmail                                                                                 | Yahoo/AOL (Verizon)                                                  | ProtonMail                                                                     | Tutanota                                                          |
 | ----------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| **Custom Domain Price** | [Free](https://forwardemail.net/en/pricing) | [Free](https://www.postfix.org/) | [$7.20/mo](https://workspace.google.com/pricing) | [$0.99/mo](https://support.apple.com/en-us/102622) | [$7.20/mo](https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-basic) | [$5/mo](https://www.fastmail.com/pricing/) | [$3.19/mo](https://www.turbify.com/mail) | [$4.99/mo](https://proton.me/mail/pricing) | [$3.27/mo](https://tuta.com/pricing) |
-| **IMAP4rev1 (RFC 3501)** | ✅ [Supported](#imap4-email-protocol-and-extensions) | ✅ [Supported](https://www.dovecot.org/) | ✅ [Supported](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **IMAP4rev2 (RFC 9051)** | ⚠️ [Partial](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) | ⚠️ [Partial](https://www.dovecot.org/) | ⚠️ [31%](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ⚠️ [92%](https://support.apple.com/en-us/102431) | ⚠️ [46%](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ⚠️ [69%](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ⚠️ [85%](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **POP3 (RFC 1939)** | ✅ [Supported](#pop3-email-protocol-and-extensions) | ✅ [Supported](https://www.dovecot.org/) | ✅ [Supported](https://support.google.com/mail/answer/7104828) | ❌ Not Supported | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN4075.html) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **SMTP (RFC 5321)** | ✅ [Supported](#smtp-email-protocol-and-extensions) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/mail/answer/7126229) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN4075.html) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **JMAP (RFC 8620)** | ❌ [Not Supported](#jmap-email-protocol) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.com/dev/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **DKIM (RFC 6376)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://github.com/trusteddomainproject/OpenDKIM) | ✅ [Supported](https://support.google.com/a/answer/174124) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dkim-configure) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **SPF (RFC 7208)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/33786) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/how-office-365-uses-spf-to-prevent-spoofing) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **DMARC (RFC 7489)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/2466580) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dmarc-to-validate-email) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **ARC (RFC 8617)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://github.com/trusteddomainproject/OpenARC) | ✅ [Supported](https://support.google.com/a/answer/2466580) | ❌ Not Supported | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-arc-configure) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ✅ [Supported](https://proton.me/blog/what-is-authenticated-received-chain-arc) | ❌ Not Supported |
-| **MTA-STS (RFC 8461)** | ✅ [Supported](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/9261504) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/security) |
-| **DANE (RFC 7671)** | ⚠️ [Partial](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dane) |
-| **DSN (RFC 3461)** | ✅ [Supported](#smtp-email-protocol-and-extensions) | ✅ [Supported](https://www.postfix.org/DSN_README.html) | ❌ Not Supported | ✅ [Supported](#protocol-capability-tests) | ✅ [Supported](#protocol-capability-tests) | ⚠️ [Unknown](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **REQUIRETLS (RFC 8689)** | ✅ [Supported](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/TLS_README.html#server_require_tls) | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **ManageSieve (RFC 5804)** | ✅ [Supported](#managesieve-rfc-5804) | ✅ [Supported](https://doc.dovecot.org/admin_manual/pigeonhole_managesieve_server/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **OpenPGP (RFC 9580)** | ✅ [Supported](#email-message-encryption) | ⚠️ [Via Plugins](https://www.gnupg.org/) | ⚠️ [Third-party](https://github.com/google/end-to-end) | ⚠️ [Third-party](https://gpgtools.org/) | ⚠️ [Third-party](https://gpg4win.org/) | ⚠️ [Third-party](https://www.fastmail.help/hc/en-us/articles/360060590573) | ⚠️ [Third-party](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Native](https://proton.me/support/pgp-mime-pgp-inline) | ❌ Not Supported |
-| **S/MIME (RFC 8551)** | ✅ [Supported](#email-message-encryption) | ✅ [Supported](https://www.openssl.org/) | ✅ [Supported](https://support.google.com/mail/answer/81126) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/send-view-and-reply-to-encrypted-messages-in-outlook-for-pc-eaa43495-9bbb-4fca-922a-df90dee51980) | ⚠️ [Partial](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/pgp-mime-pgp-inline) | ❌ Not Supported |
-| **CalDAV (RFC 4791)** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ [Supported](https://www.davical.org/) | ✅ [Supported](https://developers.google.com/calendar/caldav/v2/guide) | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Via Bridge](https://proton.me/support/proton-calendar) | ❌ Not Supported |
-| **CardDAV (RFC 6352)** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ [Supported](https://www.davical.org/) | ✅ [Supported](https://developers.google.com/people/carddav) | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Via Bridge](https://proton.me/support/proton-contacts) | ❌ Not Supported |
-| **Tasks (VTODO)** | ✅ [Supported](#tasks-and-reminders-caldav-vtodo) | ✅ [Supported](https://www.davical.org/) | ❌ Not Supported | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **Sieve (RFC 5228)** | ✅ [Supported](#sieve-rfc-5228) | ✅ [Supported](https://www.dovecot.org/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **Catch-All** | ✅ [Supported](https://forwardemail.net/en/faq#can-i-have-multiple-global-catch-all-recipients) | ✅ Supported | ✅ [Supported](https://support.google.com/a/answer/4524505) | ❌ Not Supported | ❌ [Not Supported](https://learn.microsoft.com/en-us/exchange/recipients-in-exchange-online/manage-mail-users) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://tuta.com/support#catch-all-alias) |
-| **Unlimited Aliases** | ✅ [Supported](https://forwardemail.net/en/faq#advanced-features) | ✅ Supported | ✅ [Supported](https://support.google.com/a/answer/33327) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/addresses-and-aliases) | ✅ [Supported](https://tuta.com/support#aliases) |
-| **Two-Factor Auth** | ✅ [Supported](https://forwardemail.net/en/faq#do-you-support-passkeys-and-webauthn) | ✅ Supported | ✅ [Supported](https://support.google.com/accounts/answer/185839) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/account-billing/how-to-use-two-step-verification-with-your-microsoft-account-c7910146-672f-01e9-50a0-93b4585e7eb4) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN5013.html) | ✅ [Supported](https://proton.me/support/two-factor-authentication-2fa) | ✅ [Supported](https://tuta.com/support#two-factor-authentication) |
-| **Push Notifications** | ✅ [Supported](#ios-push-notifications) | ⚠️ Via Plugins | ✅ [Supported](https://developers.google.com/gmail/api/guides/push) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/notifications) | ✅ [Supported](https://tuta.com/support#push-notifications) |
-| **Calendar/Contacts Desktop** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ Supported | ✅ [Supported](https://support.google.com/calendar) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/calendar-and-contacts-in-outlook-com-d3e8a6e6-5c1f-4e3e-9f1e-7c0f0e0c0c0c) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/proton-calendar) | ❌ Not Supported |
-| **Advanced Search** | ✅ [Supported](https://forwardemail.net/en/email-api) | ✅ Supported | ✅ [Supported](https://support.google.com/mail/answer/7190) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/search-for-email-messages-in-outlook-com-6f5f2e92-9d5e-4c4e-9b0e-0c0c0c0c0c0c) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN3561.html) | ✅ [Supported](https://proton.me/support/search-and-filters) | ✅ [Supported](https://tuta.com/support) |
-| **API/Integrations** | ✅ [39 Endpoints](https://forwardemail.net/en/email-api) | ✅ Supported | ✅ [Supported](https://developers.google.com/gmail/api) | ❌ Not Supported | ✅ [Supported](https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/proton-mail-api) | ❌ Not Supported |
-
-### Protocol Support Visualization {#protocol-support-visualization}
+| **Prijs Aangepast Domein**    | [Gratis](https://forwardemail.net/en/pricing)                                                  | [Gratis](https://www.postfix.org/)                                                 | [$7.20/maand](https://workspace.google.com/pricing)                              | [$0.99/maand](https://support.apple.com/en-us/102622) | [$7.20/maand](https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-basic)                                                                    | [$5/maand](https://www.fastmail.com/pricing/)                                             | [$3.19/maand](https://www.turbify.com/mail)                           | [$4.99/maand](https://proton.me/mail/pricing)                                   | [$3.27/maand](https://tuta.com/pricing)                            |
+| **IMAP4rev1 (RFC 3501)**      | ✅ [Ondersteund](#imap4-email-protocol-and-extensions)                                         | ✅ [Ondersteund](https://www.dovecot.org/)                                        | ✅ [Ondersteund](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                          | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Ondersteund](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup)              | ❌ Niet Ondersteund                                               |
+| **IMAP4rev2 (RFC 9051)**      | ⚠️ [Gedeeltelijk](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) | ⚠️ [Gedeeltelijk](https://www.dovecot.org/)                                       | ⚠️ [31%](https://developers.google.com/workspace/gmail/imap/imap-extensions)      | ⚠️ [92%](https://support.apple.com/en-us/102431)      | ⚠️ [46%](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                               | ⚠️ [69%](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards)      | ⚠️ [85%](https://senders.yahooinc.com/developer/documentation/)      | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup)              | ❌ Niet Ondersteund                                               |
+| **POP3 (RFC 1939)**           | ✅ [Ondersteund](#pop3-email-protocol-and-extensions)                                          | ✅ [Ondersteund](https://www.dovecot.org/)                                        | ✅ [Ondersteund](https://support.google.com/mail/answer/7104828)                   | ❌ Niet Ondersteund                                   | ✅ [Ondersteund](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                          | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Ondersteund](https://help.yahoo.com/kb/SLN4075.html)              | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup)              | ❌ Niet Ondersteund                                               |
+| **SMTP (RFC 5321)**           | ✅ [Ondersteund](#smtp-email-protocol-and-extensions)                                          | ✅ [Ondersteund](https://www.postfix.org/)                                        | ✅ [Ondersteund](https://support.google.com/mail/answer/7126229)                   | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                          | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Ondersteund](https://help.yahoo.com/kb/SLN4075.html)              | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup)              | ❌ Niet Ondersteund                                               |
+| **JMAP (RFC 8620)**           | ❌ [Niet Ondersteund](#jmap-email-protocol)                                                    | ❌ Niet Ondersteund                                                                | ❌ Niet Ondersteund                                                               | ❌ Niet Ondersteund                                   | ❌ Niet Ondersteund                                                                                                                                                  | ✅ [Ondersteund](https://www.fastmail.com/dev/)                                           | ❌ Niet Ondersteund                                                  | ❌ Niet Ondersteund                                                              | ❌ Niet Ondersteund                                               |
+| **DKIM (RFC 6376)**           | ✅ [Ondersteund](#email-message-authentication-protocols)                                     | ✅ [Ondersteund](https://github.com/trusteddomainproject/OpenDKIM)                | ✅ [Ondersteund](https://support.google.com/a/answer/174124)                       | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dkim-configure)                                                           | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ✅ [Ondersteund](https://help.yahoo.com/kb/SLN25426.html)             | ✅ [Ondersteund](https://proton.me/support)                                     | ✅ [Ondersteund](https://tuta.com/support#dkim)                    |
+| **SPF (RFC 7208)**            | ✅ [Ondersteund](#email-message-authentication-protocols)                                     | ✅ [Ondersteund](https://www.postfix.org/)                                        | ✅ [Ondersteund](https://support.google.com/a/answer/33786)                        | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/how-office-365-uses-spf-to-prevent-spoofing)                            | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ✅ [Ondersteund](https://help.yahoo.com/kb/SLN25426.html)             | ✅ [Ondersteund](https://proton.me/support)                                     | ✅ [Ondersteund](https://tuta.com/support#dkim)                    |
+| **DMARC (RFC 7489)**          | ✅ [Ondersteund](#email-message-authentication-protocols)                                     | ✅ [Ondersteund](https://www.postfix.org/)                                        | ✅ [Ondersteund](https://support.google.com/a/answer/2466580)                      | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dmarc-to-validate-email)                                            | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ✅ [Ondersteund](https://help.yahoo.com/kb/SLN25426.html)             | ✅ [Ondersteund](https://proton.me/support)                                     | ✅ [Ondersteund](https://tuta.com/support#dkim)                    |
+| **ARC (RFC 8617)**            | ✅ [Ondersteund](#email-message-authentication-protocols)                                     | ✅ [Ondersteund](https://github.com/trusteddomainproject/OpenARC)                 | ✅ [Ondersteund](https://support.google.com/a/answer/2466580)                      | ❌ Niet Ondersteund                                   | ✅ [Ondersteund](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-arc-configure)                                                            | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ✅ [Ondersteund](https://senders.yahooinc.com/developer/documentation/) | ✅ [Ondersteund](https://proton.me/blog/what-is-authenticated-received-chain-arc) | ❌ Niet Ondersteund                                               |
+| **MTA-STS (RFC 8461)**        | ✅ [Ondersteund](#email-transport-security-protocols)                                         | ✅ [Ondersteund](https://www.postfix.org/)                                        | ✅ [Ondersteund](https://support.google.com/a/answer/9261504)                      | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about)                                                                    | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ✅ [Ondersteund](https://senders.yahooinc.com/developer/documentation/) | ✅ [Ondersteund](https://proton.me/support)                                     | ✅ [Ondersteund](https://tuta.com/security)                        |
+| **DANE (RFC 7671)**           | ✅ [Ondersteund](#email-transport-security-protocols)                                         | ✅ [Ondersteund](https://www.postfix.org/)                                        | ❌ Niet Ondersteund                                                               | ❌ Niet Ondersteund                                   | ❌ Niet Ondersteund                                                                                                                                                  | ❌ Niet Ondersteund                                                                        | ❌ Niet Ondersteund                                                  | ✅ [Ondersteund](https://proton.me/support)                                     | ✅ [Ondersteund](https://tuta.com/support#dane)                    |
+| **DSN (RFC 3461)**            | ✅ [Ondersteund](#smtp-email-protocol-and-extensions)                                        | ✅ [Ondersteund](https://www.postfix.org/DSN_README.html)                         | ❌ Niet Ondersteund                                                               | ✅ [Ondersteund](#protocol-capability-tests)           | ✅ [Ondersteund](#protocol-capability-tests)                                                                                                                          | ⚠️ [Onbekend](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards)  | ❌ Niet Ondersteund                                                  | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup)              | ❌ Niet Ondersteund                                               |
+| **REQUIRETLS (RFC 8689)**     | ✅ [Ondersteund](#email-transport-security-protocols)                                         | ✅ [Ondersteund](https://www.postfix.org/TLS_README.html#server_require_tls)      | ⚠️ Onbekend                                                                      | ⚠️ Onbekend                                          | ⚠️ Onbekend                                                                                                                                                         | ⚠️ Onbekend                                                                             | ⚠️ Onbekend                                                         | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup)              | ❌ Niet Ondersteund                                               |
+| **ManageSieve (RFC 5804)**    | ✅ [Ondersteund](#managesieve-rfc-5804)                                                      | ✅ [Ondersteund](https://doc.dovecot.org/admin_manual/pigeonhole_managesieve_server/) | ❌ Niet Ondersteund                                                               | ❌ Niet Ondersteund                                   | ❌ Niet Ondersteund                                                                                                                                                  | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ❌ Niet Ondersteund                                                  | ❌ Niet Ondersteund                                                              | ❌ Niet Ondersteund                                               |
+| **OpenPGP (RFC 9580)**        | ✅ [Ondersteund](#email-message-encryption)                                                  | ⚠️ [Via Plugins](https://www.gnupg.org/)                                         | ⚠️ [Derde partij](https://github.com/google/end-to-end)                          | ⚠️ [Derde partij](https://gpgtools.org/)             | ⚠️ [Derde partij](https://gpg4win.org/)                                                                                                                             | ⚠️ [Derde partij](https://www.fastmail.help/hc/en-us/articles/360060590573)               | ⚠️ [Derde partij](https://help.yahoo.com/kb/SLN25426.html)            | ✅ [Native](https://proton.me/support/pgp-mime-pgp-inline)                      | ❌ Niet Ondersteund                                               |
+| **S/MIME (RFC 8551)**         | ✅ [Ondersteund](#email-message-encryption)                                                  | ✅ [Ondersteund](https://www.openssl.org/)                                        | ✅ [Ondersteund](https://support.google.com/mail/answer/81126)                   | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://support.microsoft.com/en-us/office/send-view-and-reply-to-encrypted-messages-in-outlook-for-pc-eaa43495-9bbb-4fca-922a-df90dee51980)         | ⚠️ [Gedeeltelijk](https://www.fastmail.help/hc/en-us/articles/360060590573)               | ❌ Niet Ondersteund                                                  | ✅ [Ondersteund](https://proton.me/support/pgp-mime-pgp-inline)                   | ❌ Niet Ondersteund                                               |
+| **CalDAV (RFC 4791)**         | ✅ [Ondersteund](#calendaring-and-contacts-protocols)                                       | ✅ [Ondersteund](https://www.davical.org/)                                        | ✅ [Ondersteund](https://developers.google.com/calendar/caldav/v2/guide)         | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ❌ Niet Ondersteund                                                                                                                                                  | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ❌ Niet Ondersteund                                                  | ✅ [Via Bridge](https://proton.me/support/proton-calendar)                      | ❌ Niet Ondersteund                                               |
+| **CardDAV (RFC 6352)**        | ✅ [Ondersteund](#calendaring-and-contacts-protocols)                                       | ✅ [Ondersteund](https://www.davical.org/)                                        | ✅ [Ondersteund](https://developers.google.com/people/carddav)                   | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ❌ Niet Ondersteund                                                                                                                                                  | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ❌ Niet Ondersteund                                                  | ✅ [Via Bridge](https://proton.me/support/proton-contacts)                      | ❌ Niet Ondersteund                                               |
+| **Taken (VTODO)**             | ✅ [Ondersteund](#tasks-and-reminders-caldav-vtodo)                                         | ✅ [Ondersteund](https://www.davical.org/)                                        | ❌ Niet Ondersteund                                                               | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ❌ Niet Ondersteund                                                                                                                                                  | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ❌ Niet Ondersteund                                                  | ❌ Niet Ondersteund                                                              | ❌ Niet Ondersteund                                               |
+| **Sieve (RFC 5228)**          | ✅ [Ondersteund](#sieve-rfc-5228)                                                           | ✅ [Ondersteund](https://www.dovecot.org/)                                        | ❌ Niet Ondersteund                                                               | ❌ Niet Ondersteund                                   | ❌ Niet Ondersteund                                                                                                                                                  | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/360060590573)                | ❌ Niet Ondersteund                                                  | ❌ Niet Ondersteund                                                              | ❌ Niet Ondersteund                                               |
+| **Catch-All**                 | ✅ [Ondersteund](https://forwardemail.net/en/faq#can-i-have-multiple-global-catch-all-recipients) | ✅ Ondersteund                                                                    | ✅ [Ondersteund](https://support.google.com/a/answer/4524505)                    | ❌ Niet Ondersteund                                   | ❌ [Niet Ondersteund](https://learn.microsoft.com/en-us/exchange/recipients-in-exchange-online/manage-mail-users)                                                    | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Niet Ondersteund                                                  | ❌ Niet Ondersteund                                                              | ✅ [Ondersteund](https://tuta.com/support#catch-all-alias)           |
+| **Onbeperkte Aliassen**      | ✅ [Ondersteund](https://forwardemail.net/en/faq#advanced-features)                         | ✅ Ondersteund                                                                    | ✅ [Ondersteund](https://support.google.com/a/answer/33327)                      | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://support.microsoft.com/en-us/office/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2)                         | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Niet Ondersteund                                                  | ✅ [Ondersteund](https://proton.me/support/addresses-and-aliases)               | ✅ [Ondersteund](https://tuta.com/support#aliases)                 |
+| **Twee-Factor Authenticatie** | ✅ [Ondersteund](https://forwardemail.net/en/faq#do-you-support-passkeys-and-webauthn)      | ✅ Ondersteund                                                                    | ✅ [Ondersteund](https://support.google.com/accounts/answer/185839)              | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://support.microsoft.com/en-us/account-billing/how-to-use-two-step-verification-with-your-microsoft-account-c7910146-672f-01e9-50a0-93b4585e7eb4) | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Ondersteund](https://help.yahoo.com/kb/SLN5013.html)              | ✅ [Ondersteund](https://proton.me/support/two-factor-authentication-2fa)       | ✅ [Ondersteund](https://tuta.com/support#two-factor-authentication) |
+| **Pushmeldingen**            | ✅ [Ondersteund](#ios-push-notifications)                                                   | ⚠️ Via Plugins                                                                   | ✅ [Ondersteund](https://developers.google.com/gmail/api/guides/push)            | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks)                                                                      | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Niet Ondersteund                                                  | ✅ [Ondersteund](https://proton.me/support/notifications)                       | ✅ [Ondersteund](https://tuta.com/support#push-notifications)      |
+| **Agenda/Contacten Desktop** | ✅ [Ondersteund](#calendaring-and-contacts-protocols)                                       | ✅ Ondersteund                                                                    | ✅ [Ondersteund](https://support.google.com/calendar)                            | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://support.microsoft.com/en-us/office/calendar-and-contacts-in-outlook-com-d3e8a6e6-5c1f-4e3e-9f1e-7c0f0e0c0c0c)                                | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Niet Ondersteund                                                  | ✅ [Ondersteund](https://proton.me/support/proton-calendar)                     | ❌ Niet Ondersteund                                               |
+| **Geavanceerd Zoeken**       | ✅ [Ondersteund](https://forwardemail.net/en/email-api)                                     | ✅ Ondersteund                                                                    | ✅ [Ondersteund](https://support.google.com/mail/answer/7190)                    | ✅ [Ondersteund](https://support.apple.com/en-us/102431) | ✅ [Ondersteund](https://support.microsoft.com/en-us/office/search-for-email-messages-in-outlook-com-6f5f2e92-9d5e-4c4e-9b0e-0c0c0c0c0c0c)                            | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Ondersteund](https://help.yahoo.com/kb/SLN3561.html)                | ✅ [Ondersteund](https://proton.me/support/search-and-filters)                  | ✅ [Ondersteund](https://tuta.com/support)                           |
+| **API/Integraties**          | ✅ [39 Endpoints](https://forwardemail.net/en/email-api)                                    | ✅ Ondersteund                                                                    | ✅ [Ondersteund](https://developers.google.com/gmail/api)                        | ❌ Niet Ondersteund                                   | ✅ [Ondersteund](https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview)                                                                             | ✅ [Ondersteund](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Niet Ondersteund                                                  | ✅ [Ondersteund](https://proton.me/support/proton-mail-api)                     | ❌ Niet Ondersteund                                               |
+### Protocolondersteuning Visualisatie {#protocol-support-visualization}
 
 ```mermaid
 graph LR
-    subgraph "Email Protocols"
+    subgraph "E-mailprotocollen"
         IMAP[IMAP4rev1/rev2]
         POP3[POP3]
         SMTP[SMTP]
         JMAP[JMAP]
     end
 
-    subgraph "Security"
+    subgraph "Beveiliging"
         AUTH[DKIM/SPF/DMARC/ARC]
         TLS[MTA-STS/DANE/REQUIRETLS]
         ENC[OpenPGP/S-MIME]
     end
 
-    subgraph "Extended"
+    subgraph "Uitgebreid"
         CAL[CalDAV/CardDAV]
         FILTER[Sieve]
         API[REST API]
     end
 
-    IMAP -.->|Supported| AUTH
-    SMTP -.->|Supported| AUTH
-    SMTP -.->|Supported| TLS
-    IMAP -.->|Supported| ENC
-    SMTP -.->|Supported| ENC
+    IMAP -.->|Ondersteund| AUTH
+    SMTP -.->|Ondersteund| AUTH
+    SMTP -.->|Ondersteund| TLS
+    IMAP -.->|Ondersteund| ENC
+    SMTP -.->|Ondersteund| ENC
 
     style IMAP fill:#9f9,stroke:#333
     style POP3 fill:#9f9,stroke:#333
@@ -223,333 +223,330 @@ graph LR
 
 ---
 
-## Core Email Protocols {#core-email-protocols}
 
-### Email Protocol Flow {#email-protocol-flow}
+## Kern E-mailprotocollen {#core-email-protocols}
+
+### E-mailprotocol Stroom {#email-protocol-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Client as Email Client
-    participant SMTP as SMTP Server
-    participant IMAP as IMAP Server
-    participant Storage as SQLite Storage
+    participant Client as E-mailclient
+    participant SMTP as SMTP-server
+    participant IMAP as IMAP-server
+    participant Storage as SQLite-opslag
 
-    Client->>SMTP: Send Email (SMTP)
-    SMTP->>Storage: Store Message
-    Storage-->>SMTP: Confirm
+    Client->>SMTP: Verstuur e-mail (SMTP)
+    SMTP->>Storage: Bericht opslaan
+    Storage-->>SMTP: Bevestigen
     SMTP-->>Client: 250 OK
 
-    Client->>IMAP: Fetch Messages (IMAP)
-    IMAP->>Storage: Query Messages
-    Storage-->>IMAP: Return Messages
+    Client->>IMAP: Ophalen berichten (IMAP)
+    IMAP->>Storage: Berichten opvragen
+    Storage-->>IMAP: Berichten teruggeven
     IMAP-->>Client: * FETCH Response
 ```
 
-## IMAP4 Email Protocol and Extensions {#imap4-email-protocol-and-extensions}
+
+## IMAP4 E-mailprotocol en Extensies {#imap4-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) features.
+> Forward Email ondersteunt IMAP4rev1 (RFC 3501) met gedeeltelijke ondersteuning voor IMAP4rev2 (RFC 9051) functies.
 
-Forward Email provides robust IMAP4 support through the WildDuck mail server implementation. The server implements IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) extensions.
+Forward Email biedt robuuste IMAP4-ondersteuning via de WildDuck mailserver-implementatie. De server implementeert IMAP4rev1 (RFC 3501) met gedeeltelijke ondersteuning voor IMAP4rev2 (RFC 9051) extensies.
 
-Forward Email's IMAP functionality is provided by the [WildDuck](https://github.com/nodemailer/wildduck) dependency. The following email RFCs are supported:
+De IMAP-functionaliteit van Forward Email wordt geleverd door de [WildDuck](https://github.com/nodemailer/wildduck) afhankelijkheid. De volgende e-mail RFC's worden ondersteund:
 
-| RFC | Title | Implementation Notes |
+| RFC                                                       | Titel                                                             | Implementatienotities                                  |
 | --------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
-| [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) | Internet Message Access Protocol (IMAP) - Version 4rev1 | Full support with intentional differences (see below) |
-| [RFC 2177](https://datatracker.ietf.org/doc/html/rfc2177) | IMAP4 IDLE command | Push-style notifications |
-| [RFC 2342](https://datatracker.ietf.org/doc/html/rfc2342) | IMAP4 Namespace | Mailbox namespace support |
-| [RFC 2087](https://datatracker.ietf.org/doc/html/rfc2087) | IMAP4 QUOTA extension | Storage quota management |
-| [RFC 2971](https://datatracker.ietf.org/doc/html/rfc2971) | IMAP4 ID extension | Client/server identification |
-| [RFC 5161](https://datatracker.ietf.org/doc/html/rfc5161) | IMAP4 ENABLE Extension | Enable IMAP extensions |
-| [RFC 4959](https://datatracker.ietf.org/doc/html/rfc4959) | IMAP Extension for SASL Initial Client Response (SASL-IR) | Initial client response |
-| [RFC 3691](https://datatracker.ietf.org/doc/html/rfc3691) | IMAP4 UNSELECT command | Close mailbox without EXPUNGE |
-| [RFC 4315](https://datatracker.ietf.org/doc/html/rfc4315) | IMAP UIDPLUS extension | Enhanced UID commands |
-| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Extensions: Quick Flag Changes Resynchronization (CONDSTORE) | Conditional STORE |
-| [RFC 6154](https://datatracker.ietf.org/doc/html/rfc6154) | IMAP LIST Extension for Special-Use Mailboxes | Special mailbox attributes |
-| [RFC 6851](https://datatracker.ietf.org/doc/html/rfc6851) | IMAP MOVE Extension | Atomic MOVE command |
-| [RFC 6855](https://datatracker.ietf.org/doc/html/rfc6855) | IMAP Support for UTF-8 | UTF-8 support |
-| [RFC 3348](https://datatracker.ietf.org/doc/html/rfc3348) | IMAP4 Child Mailbox Extension | Child mailbox information |
-| [RFC 7889](https://datatracker.ietf.org/doc/html/rfc7889) | IMAP4 Extension for Advertising Maximum Upload Size (APPENDLIMIT) | Maximum upload size |
+| [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) | Internet Message Access Protocol (IMAP) - Versie 4rev1            | Volledige ondersteuning met opzettelijke verschillen (zie hieronder) |
+| [RFC 2177](https://datatracker.ietf.org/doc/html/rfc2177) | IMAP4 IDLE-commando                                               | Push-stijl notificaties                                |
+| [RFC 2342](https://datatracker.ietf.org/doc/html/rfc2342) | IMAP4 Namespace                                                  | Ondersteuning mailbox-namespace                         |
+| [RFC 2087](https://datatracker.ietf.org/doc/html/rfc2087) | IMAP4 QUOTA-extensie                                             | Beheer opslagquota                                     |
+| [RFC 2971](https://datatracker.ietf.org/doc/html/rfc2971) | IMAP4 ID-extensie                                                | Client/server identificatie                            |
+| [RFC 5161](https://datatracker.ietf.org/doc/html/rfc5161) | IMAP4 ENABLE-extensie                                            | IMAP-extensies inschakelen                             |
+| [RFC 4959](https://datatracker.ietf.org/doc/html/rfc4959) | IMAP-extensie voor SASL Initial Client Response (SASL-IR)         | Initiële clientrespons                                 |
+| [RFC 3691](https://datatracker.ietf.org/doc/html/rfc3691) | IMAP4 UNSELECT-commando                                          | Mailbox sluiten zonder EXPUNGE                         |
+| [RFC 4315](https://datatracker.ietf.org/doc/html/rfc4315) | IMAP UIDPLUS-extensie                                            | Verbeterde UID-commando's                              |
+| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP-extensies: Snelle vlagwijzigingen Resynchronisatie (CONDSTORE) | Conditionele STORE                                     |
+| [RFC 6154](https://datatracker.ietf.org/doc/html/rfc6154) | IMAP LIST-extensie voor Special-Use Mailboxes                    | Speciale mailboxattributen                             |
+| [RFC 6851](https://datatracker.ietf.org/doc/html/rfc6851) | IMAP MOVE-extensie                                               | Atomair MOVE-commando                                  |
+| [RFC 6855](https://datatracker.ietf.org/doc/html/rfc6855) | IMAP-ondersteuning voor UTF-8                                    | UTF-8 ondersteuning                                    |
+| [RFC 3348](https://datatracker.ietf.org/doc/html/rfc3348) | IMAP4 Child Mailbox-extensie                                     | Informatie over child mailbox                          |
+| [RFC 7889](https://datatracker.ietf.org/doc/html/rfc7889) | IMAP4-extensie voor het adverteren van maximale uploadgrootte (APPENDLIMIT) | Maximale uploadgrootte                                 |
+**Ondersteunde IMAP-extensies:**
 
-**Supported IMAP Extensions:**
+| Extensie         | RFC          | Status      | Beschrijving                   |
+| ----------------- | ------------ | ----------- | ----------------------------- |
+| IDLE              | RFC 2177     | ✅ Ondersteund | Push-stijl notificaties        |
+| NAMESPACE         | RFC 2342     | ✅ Ondersteund | Mailbox namespace ondersteuning |
+| QUOTA             | RFC 2087     | ✅ Ondersteund | Opslagquotabeheer              |
+| ID                | RFC 2971     | ✅ Ondersteund | Client/server identificatie    |
+| ENABLE            | RFC 5161     | ✅ Ondersteund | IMAP-extensies inschakelen     |
+| SASL-IR           | RFC 4959     | ✅ Ondersteund | Initiële clientrespons         |
+| UNSELECT          | RFC 3691     | ✅ Ondersteund | Sluit mailbox zonder EXPUNGE  |
+| UIDPLUS           | RFC 4315     | ✅ Ondersteund | Verbeterde UID-commando's      |
+| CONDSTORE         | RFC 7162     | ✅ Ondersteund | Conditionele STORE             |
+| SPECIAL-USE       | RFC 6154     | ✅ Ondersteund | Speciale mailboxattributen     |
+| MOVE              | RFC 6851     | ✅ Ondersteund | Atomair MOVE-commando          |
+| UTF8=ACCEPT       | RFC 6855     | ✅ Ondersteund | UTF-8 ondersteuning            |
+| CHILDREN          | RFC 3348     | ✅ Ondersteund | Informatie over submailboxen  |
+| APPENDLIMIT       | RFC 7889     | ✅ Ondersteund | Maximale uploadgrootte         |
+| XLIST             | Niet-standaard | ✅ Ondersteund | Gmail-compatibele mappenlijst  |
+| XAPPLEPUSHSERVICE | Niet-standaard | ✅ Ondersteund | Apple Push Notification Service |
 
-| Extension | RFC | Status | Description |
-| ----------------- | ------------ | ----------- | ------------------------------- |
-| IDLE | RFC 2177 | ✅ Supported | Push-style notifications |
-| NAMESPACE | RFC 2342 | ✅ Supported | Mailbox namespace support |
-| QUOTA | RFC 2087 | ✅ Supported | Storage quota management |
-| ID | RFC 2971 | ✅ Supported | Client/server identification |
-| ENABLE | RFC 5161 | ✅ Supported | Enable IMAP extensions |
-| SASL-IR | RFC 4959 | ✅ Supported | Initial client response |
-| UNSELECT | RFC 3691 | ✅ Supported | Close mailbox without EXPUNGE |
-| UIDPLUS | RFC 4315 | ✅ Supported | Enhanced UID commands |
-| CONDSTORE | RFC 7162 | ✅ Supported | Conditional STORE |
-| SPECIAL-USE | RFC 6154 | ✅ Supported | Special mailbox attributes |
-| MOVE | RFC 6851 | ✅ Supported | Atomic MOVE command |
-| UTF8=ACCEPT | RFC 6855 | ✅ Supported | UTF-8 support |
-| CHILDREN | RFC 3348 | ✅ Supported | Child mailbox information |
-| APPENDLIMIT | RFC 7889 | ✅ Supported | Maximum upload size |
-| XLIST | Non-standard | ✅ Supported | Gmail-compatible folder listing |
-| XAPPLEPUSHSERVICE | Non-standard | ✅ Supported | Apple Push Notification Service |
-
-### IMAP Protocol Differences from RFC Specifications {#imap-protocol-differences-from-rfc-specifications}
+### IMAP Protocolverschillen ten opzichte van RFC-specificaties {#imap-protocol-differences-from-rfc-specifications}
 
 > \[!WARNING]
-> The following differences from RFC specifications may affect client compatibility.
+> De volgende verschillen ten opzichte van RFC-specificaties kunnen de compatibiliteit met clients beïnvloeden.
 
-Forward Email intentionally deviates from some IMAP RFC specifications. These differences are inherited from WildDuck and are documented below:
+Forward Email wijkt bewust af van sommige IMAP RFC-specificaties. Deze verschillen zijn overgenomen van WildDuck en worden hieronder gedocumenteerd:
 
-* **No \Recent flag:** The `\Recent` flag is not implemented. All messages are returned without this flag.
-* **RENAME doesn't affect subfolders:** When renaming a folder, subfolders are not automatically renamed. The folder hierarchy is flat in the database.
-* **INBOX cannot be renamed:** [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) permits renaming INBOX, but Forward Email explicitly prohibits it. See [WildDuck source code](https://github.com/nodemailer/wildduck/blob/master/imap-core/lib/commands/rename.js#L27).
-* **No unsolicited FLAGS responses:** When flags are changed, no unsolicited FLAGS responses are sent to the client.
-* **STORE returns NO for deleted messages:** Attempting to modify flags on deleted messages returns NO instead of silently ignoring.
-* **CHARSET ignored in SEARCH:** The `CHARSET` argument in SEARCH commands is ignored. All searches use UTF-8.
-* **MODSEQ metadata ignored:** `MODSEQ` metadata in STORE commands is ignored.
-* **SEARCH TEXT and SEARCH BODY:** Forward Email uses [SQLite FTS5](https://www.sqlite.org/fts5.html) (Full-Text Search) instead of MongoDB's `$text` search. This provides:
-  * Support for `NOT` operator (MongoDB doesn't support this)
-  * Ranked search results
-  * Sub-100ms search performance on large mailboxes
-* **Autoexpunge behavior:** Messages marked with `\Deleted` are automatically expunged when the mailbox is closed.
-* **Message fidelity:** Some message modifications may not preserve the exact original message structure.
+* **Geen \Recent vlag:** De `\Recent` vlag is niet geïmplementeerd. Alle berichten worden zonder deze vlag teruggegeven.
+* **RENAME beïnvloedt submappen niet:** Bij het hernoemen van een map worden submappen niet automatisch hernoemd. De maphierarchie is vlak in de database.
+* **INBOX kan niet worden hernoemd:** [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) staat het hernoemen van INBOX toe, maar Forward Email verbiedt dit expliciet. Zie [WildDuck broncode](https://github.com/nodemailer/wildduck/blob/master/imap-core/lib/commands/rename.js#L27).
+* **Geen unsolicited FLAGS-responses:** Wanneer vlaggen worden gewijzigd, worden er geen unsolicited FLAGS-responses naar de client gestuurd.
+* **STORE geeft NO terug voor verwijderde berichten:** Pogingen om vlaggen te wijzigen op verwijderde berichten geven NO terug in plaats van dit stilzwijgend te negeren.
+* **CHARSET wordt genegeerd in SEARCH:** Het `CHARSET` argument in SEARCH-commando's wordt genegeerd. Alle zoekopdrachten gebruiken UTF-8.
+* **MODSEQ metadata wordt genegeerd:** `MODSEQ` metadata in STORE-commando's wordt genegeerd.
+* **SEARCH TEXT en SEARCH BODY:** Forward Email gebruikt [SQLite FTS5](https://www.sqlite.org/fts5.html) (Full-Text Search) in plaats van MongoDB's `$text` zoekfunctie. Dit biedt:
+  * Ondersteuning voor de `NOT` operator (MongoDB ondersteunt dit niet)
+  * Gerangschikte zoekresultaten
+  * Zoekprestaties onder de 100ms op grote mailboxen
+* **Autoexpunge gedrag:** Berichten gemarkeerd met `\Deleted` worden automatisch verwijderd wanneer de mailbox wordt gesloten.
+* **Berichtgetrouwheid:** Sommige berichtwijzigingen behouden mogelijk niet de exacte originele berichtstructuur.
 
-**IMAP4rev2 Partial Support:**
+**IMAP4rev2 Gedeeltelijke Ondersteuning:**
 
-Forward Email implements IMAP4rev1 (RFC 3501) with partial IMAP4rev2 (RFC 9051) support. The following IMAP4rev2 features are **not yet supported**:
+Forward Email implementeert IMAP4rev1 (RFC 3501) met gedeeltelijke IMAP4rev2 (RFC 9051) ondersteuning. De volgende IMAP4rev2-functies worden **nog niet ondersteund**:
 
-* **LIST-STATUS** - Combined LIST and STATUS commands
-* **LITERAL-** - Non-synchronizing literals (minus variant)
-* **OBJECTID** - Unique object identifiers
-* **SAVEDATE** - Save date attribute
-* **REPLACE** - Atomic message replacement
-* **UNAUTHENTICATE** - Close authentication without closing connection
+* **LIST-STATUS** - Gecombineerde LIST en STATUS commando's
+* **LITERAL-** - Niet-synchroniserende literals (minus variant)
+* **OBJECTID** - Unieke objectidentificatoren
+* **SAVEDATE** - Opslagdatum attribuut
+* **REPLACE** - Atomair berichtvervangingscommando
+* **UNAUTHENTICATE** - Authenticatie sluiten zonder verbinding te sluiten
 
-**Relaxed Body Structure Handling:**
+**Ontspannen Body-structuur Afhandeling:**
 
-Forward Email uses "relaxed body" handling for malformed MIME structures, which may differ from strict RFC interpretation. This improves compatibility with real-world emails that don't perfectly conform to standards.
+Forward Email gebruikt "ontspannen body"-afhandeling voor malformed MIME-structuren, wat kan afwijken van strikte RFC-interpretatie. Dit verbetert de compatibiliteit met e-mails uit de praktijk die niet perfect aan de standaarden voldoen.
+**METADATA-extensie (RFC 5464):**
 
-**METADATA Extension (RFC 5464):**
+De IMAP METADATA-extensie wordt **niet ondersteund**. Voor meer informatie over deze extensie, zie [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464). Discussie over het toevoegen van deze functie is te vinden in [WildDuck Issue #937](https://github.com/zone-eu/wildduck/issues/937).
 
-The IMAP METADATA extension is **not supported**. For more information about this extension, see [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464). Discussion about adding this feature can be found in [WildDuck Issue #937](https://github.com/zone-eu/wildduck/issues/937).
+### IMAP-extensies NIET ondersteund {#imap-extensions-not-supported}
 
-### IMAP Extensions NOT Supported {#imap-extensions-not-supported}
+De volgende IMAP-extensies uit het [IANA IMAP Capabilities Registry](https://www.iana.org/assignments/imap-capabilities/imap-capabilities.xhtml) worden NIET ondersteund:
 
-The following IMAP extensions from the [IANA IMAP Capabilities Registry](https://www.iana.org/assignments/imap-capabilities/imap-capabilities.xhtml) are NOT supported:
-
-| RFC | Title | Reason |
+| RFC                                                       | Titel                                                                                                           | Reden                                                                                                                                  |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 2086](https://datatracker.ietf.org/doc/html/rfc2086) | IMAP4 ACL extension | Shared folders not implemented. See [WildDuck Issue #427](https://github.com/zone-eu/wildduck/issues/427) |
-| [RFC 5256](https://datatracker.ietf.org/doc/html/rfc5256) | IMAP SORT and THREAD Extensions | Threading implemented internally but not via RFC 5256 protocol. See [WildDuck Issue #12](https://github.com/zone-eu/wildduck/issues/12) |
-| [RFC 5162](https://datatracker.ietf.org/doc/html/rfc5162) | IMAP4 Extensions for Quick Mailbox Resynchronization (QRESYNC) | Not implemented |
-| [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) | IMAP METADATA Extension | Metadata operations ignored. See [WildDuck documentation](https://datatracker.ietf.org/doc/html/rfc5464) |
-| [RFC 5258](https://datatracker.ietf.org/doc/html/rfc5258) | IMAP4 LIST Command Extensions | Not implemented |
-| [RFC 5267](https://datatracker.ietf.org/doc/html/rfc5267) | Contexts for IMAP4 | Not implemented |
-| [RFC 5465](https://datatracker.ietf.org/doc/html/rfc5465) | IMAP NOTIFY Extension | Not implemented |
-| [RFC 5466](https://datatracker.ietf.org/doc/html/rfc5466) | IMAP4 FILTERS Extension | Not implemented |
-| [RFC 6203](https://datatracker.ietf.org/doc/html/rfc6203) | IMAP4 Extension for Fuzzy Search | Not implemented |
-| [RFC 6785](https://datatracker.ietf.org/doc/html/rfc6785) | IMAP4 Implementation Recommendations | Recommendations not fully followed |
-| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Extensions: Quick Flag Changes Resynchronization (CONDSTORE) and Quick Mailbox Resynchronization (QRESYNC) | Not implemented |
-| [RFC 8437](https://datatracker.ietf.org/doc/html/rfc8437) | IMAP UNAUTHENTICATE Extension for Connection Reuse | Not implemented |
-| [RFC 8438](https://datatracker.ietf.org/doc/html/rfc8438) | IMAP Extension for STATUS=SIZE | Not implemented |
-| [RFC 8457](https://datatracker.ietf.org/doc/html/rfc8457) | IMAP "$Important" Keyword and "\Important" Special-Use Attribute | Not implemented |
-| [RFC 8474](https://datatracker.ietf.org/doc/html/rfc8474) | IMAP Extension for Object Identifiers | Not implemented |
-| [RFC 9051](https://datatracker.ietf.org/doc/html/rfc9051) | Internet Message Access Protocol (IMAP) - Version 4rev2 | Forward Email implements IMAP4rev1 ([RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501)) |
-
----
-
-## POP3 Email Protocol and Extensions {#pop3-email-protocol-and-extensions}
+| [RFC 2086](https://datatracker.ietf.org/doc/html/rfc2086) | IMAP4 ACL-extensie                                                                                              | Gedeelde mappen niet geïmplementeerd. Zie [WildDuck Issue #427](https://github.com/zone-eu/wildduck/issues/427)                         |
+| [RFC 5256](https://datatracker.ietf.org/doc/html/rfc5256) | IMAP SORT- en THREAD-extensies                                                                                  | Threading intern geïmplementeerd maar niet via RFC 5256-protocol. Zie [WildDuck Issue #12](https://github.com/zone-eu/wildduck/issues/12) |
+| [RFC 5162](https://datatracker.ietf.org/doc/html/rfc5162) | IMAP4-extensies voor snelle mailboxresynchronisatie (QRESYNC)                                                  | Niet geïmplementeerd                                                                                                                    |
+| [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) | IMAP METADATA-extensie                                                                                          | Metadata-operaties genegeerd. Zie [WildDuck-documentatie](https://datatracker.ietf.org/doc/html/rfc5464)                                |
+| [RFC 5258](https://datatracker.ietf.org/doc/html/rfc5258) | IMAP4 LIST-commando-extensies                                                                                   | Niet geïmplementeerd                                                                                                                    |
+| [RFC 5267](https://datatracker.ietf.org/doc/html/rfc5267) | Contexten voor IMAP4                                                                                            | Niet geïmplementeerd                                                                                                                    |
+| [RFC 5465](https://datatracker.ietf.org/doc/html/rfc5465) | IMAP NOTIFY-extensie                                                                                            | Niet geïmplementeerd                                                                                                                    |
+| [RFC 5466](https://datatracker.ietf.org/doc/html/rfc5466) | IMAP4 FILTERS-extensie                                                                                          | Niet geïmplementeerd                                                                                                                    |
+| [RFC 6203](https://datatracker.ietf.org/doc/html/rfc6203) | IMAP4-extensie voor fuzzy search                                                                                | Niet geïmplementeerd                                                                                                                    |
+| [RFC 6785](https://datatracker.ietf.org/doc/html/rfc6785) | IMAP4-implementatie-aanbevelingen                                                                               | Aanbevelingen niet volledig gevolgd                                                                                                    |
+| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP-extensies: snelle vlagwijzigingen resynchronisatie (CONDSTORE) en snelle mailboxresynchronisatie (QRESYNC) | Niet geïmplementeerd                                                                                                                    |
+| [RFC 8437](https://datatracker.ietf.org/doc/html/rfc8437) | IMAP UNAUTHENTICATE-extensie voor hergebruik van verbinding                                                     | Niet geïmplementeerd                                                                                                                    |
+| [RFC 8438](https://datatracker.ietf.org/doc/html/rfc8438) | IMAP-extensie voor STATUS=SIZE                                                                                  | Niet geïmplementeerd                                                                                                                    |
+| [RFC 8457](https://datatracker.ietf.org/doc/html/rfc8457) | IMAP "$Important"-trefwoord en "\Important" special-use attribuut                                               | Niet geïmplementeerd                                                                                                                    |
+| [RFC 8474](https://datatracker.ietf.org/doc/html/rfc8474) | IMAP-extensie voor objectidentifiers                                                                            | Niet geïmplementeerd                                                                                                                    |
+| [RFC 9051](https://datatracker.ietf.org/doc/html/rfc9051) | Internet Message Access Protocol (IMAP) - versie 4rev2                                                          | Forward Email implementeert IMAP4rev1 ([RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501))                                        |
+## POP3 E-mailprotocol en Extensies {#pop3-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports POP3 (RFC 1939) with standard extensions for email retrieval.
+> Forward Email ondersteunt POP3 (RFC 1939) met standaard extensies voor e-mailophaling.
 
-Forward Email's POP3 functionality is provided by the [WildDuck](https://github.com/nodemailer/wildduck) dependency. The following email RFCs are supported:
+De POP3-functionaliteit van Forward Email wordt geleverd door de [WildDuck](https://github.com/nodemailer/wildduck) dependency. De volgende e-mail RFC's worden ondersteund:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
-| [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) | Post Office Protocol - Version 3 (POP3) | Full support with intentional differences (see below) |
-| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | Using TLS with IMAP, POP3 and ACAP | STARTTLS support |
-| [RFC 2449](https://datatracker.ietf.org/doc/html/rfc2449) | POP3 Extension Mechanism | CAPA command support |
+| RFC                                                       | Titel                                   | Implementatie-opmerkingen                           |
+| --------------------------------------------------------- | --------------------------------------- | -------------------------------------------------- |
+| [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) | Post Office Protocol - Versie 3 (POP3) | Volledige ondersteuning met opzettelijke verschillen (zie hieronder) |
+| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | Gebruik van TLS met IMAP, POP3 en ACAP  | STARTTLS-ondersteuning                             |
+| [RFC 2449](https://datatracker.ietf.org/doc/html/rfc2449) | POP3 Extensie Mechanisme                 | CAPA-commando ondersteuning                        |
 
-Forward Email provides POP3 support for clients that prefer this simpler protocol over IMAP. POP3 is ideal for users who want to download emails to a single device and remove them from the server.
+Forward Email biedt POP3-ondersteuning voor clients die dit eenvoudigere protocol verkiezen boven IMAP. POP3 is ideaal voor gebruikers die e-mails willen downloaden naar één apparaat en deze van de server willen verwijderen.
 
-**Supported POP3 Extensions:**
+**Ondersteunde POP3 Extensies:**
 
-| Extension | RFC | Status | Description |
-| --------- | -------- | ----------- | -------------------------- |
-| TOP | RFC 1939 | ✅ Supported | Retrieve message headers |
-| USER | RFC 1939 | ✅ Supported | Username authentication |
-| UIDL | RFC 1939 | ✅ Supported | Unique message identifiers |
-| EXPIRE | RFC 2449 | ✅ Supported | Message expiration policy |
+| Extensie  | RFC      | Status       | Beschrijving               |
+| --------- | -------- | ------------ | -------------------------- |
+| TOP       | RFC 1939 | ✅ Ondersteund | Ophalen van berichtkoppen  |
+| USER      | RFC 1939 | ✅ Ondersteund | Gebruikersnaam authenticatie |
+| UIDL      | RFC 1939 | ✅ Ondersteund | Unieke berichtidentificaties |
+| EXPIRE    | RFC 2449 | ✅ Ondersteund | Berichtvervalbeleid         |
 
-### POP3 Protocol Differences from RFC Specifications {#pop3-protocol-differences-from-rfc-specifications}
+### POP3 Protocolverschillen ten opzichte van RFC-specificaties {#pop3-protocol-differences-from-rfc-specifications}
 
 > \[!WARNING]
-> POP3 has inherent limitations compared to IMAP.
+> POP3 heeft inherente beperkingen vergeleken met IMAP.
 
 > \[!IMPORTANT]
-> **Critical Difference: Forward Email vs WildDuck POP3 DELE Behavior**
+> **Kritisch Verschil: Forward Email vs WildDuck POP3 DELE Gedrag**
 >
-> Forward Email implements RFC-compliant permanent deletion for POP3 `DELE` commands, unlike WildDuck which moves messages to Trash.
+> Forward Email implementeert RFC-conforme permanente verwijdering voor POP3 `DELE`-commando's, in tegenstelling tot WildDuck dat berichten naar de Prullenbak verplaatst.
 
-**Forward Email Behavior** ([source code](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js)):
+**Gedrag van Forward Email** ([broncode](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js)):
 
-* `DELE` → `QUIT` permanently deletes messages
-* Follows [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specification exactly
-* Matches behavior of Dovecot (default), Postfix, and other standards-compliant servers
+* `DELE` → `QUIT` verwijdert berichten permanent
+* Volgt exact de [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specificatie
+* Komt overeen met het gedrag van Dovecot (standaard), Postfix en andere RFC-conforme servers
 
-**WildDuck Behavior** ([discussion](https://github.com/zone-eu/wildduck/issues/937)):
+**Gedrag van WildDuck** ([discussie](https://github.com/zone-eu/wildduck/issues/937)):
 
-* `DELE` → `QUIT` moves messages to Trash (Gmail-like)
-* Intentional design decision for user safety
-* Non-RFC-compliant but prevents accidental data loss
+* `DELE` → `QUIT` verplaatst berichten naar Prullenbak (Gmail-achtig)
+* Opzettelijke ontwerpkeuze voor gebruikersveiligheid
+* Niet RFC-conform maar voorkomt per ongeluk dataverlies
 
-**Why Forward Email Differs:**
+**Waarom Forward Email afwijkt:**
 
-* **RFC Compliance:** Adheres to [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specification
-* **User Expectations:** Download-and-delete workflow expects permanent deletion
-* **Storage Management:** Proper disk space reclamation
-* **Interoperability:** Consistent with other RFC-compliant servers
+* **RFC-conformiteit:** Houdt zich aan de [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specificatie
+* **Gebruikersverwachtingen:** Download-en-verwijder workflow verwacht permanente verwijdering
+* **Opslagbeheer:** Correcte vrijgave van schijfruimte
+* **Interoperabiliteit:** Consistent met andere RFC-conforme servers
 
 > \[!NOTE]
-> **POP3 Message Listing:** Forward Email lists ALL messages from INBOX with no limit. This differs from WildDuck which limits to 250 messages by default. See [source code](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js).
+> **POP3 Berichtlijst:** Forward Email toont ALLE berichten uit de INBOX zonder limiet. Dit verschilt van WildDuck dat standaard beperkt tot 250 berichten. Zie [broncode](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js).
 
-**Single-Device Access:**
+**Toegang via één apparaat:**
 
-POP3 is designed for single-device access. Messages are typically downloaded and removed from the server, making it unsuitable for multi-device synchronization.
+POP3 is ontworpen voor toegang via één apparaat. Berichten worden meestal gedownload en van de server verwijderd, waardoor het ongeschikt is voor synchronisatie over meerdere apparaten.
 
-**No Folder Support:**
+**Geen mapondersteuning:**
 
-POP3 only accesses the INBOX folder. Other folders (Sent, Drafts, Trash, etc.) are not accessible via POP3.
+POP3 heeft alleen toegang tot de INBOX-map. Andere mappen (Verzonden, Concepten, Prullenbak, etc.) zijn niet toegankelijk via POP3.
 
-**Limited Message Management:**
+**Beperkt berichtbeheer:**
 
-POP3 provides basic message retrieval and deletion. Advanced features like flagging, moving, or searching messages are not available.
+POP3 biedt basisfunctionaliteit voor het ophalen en verwijderen van berichten. Geavanceerde functies zoals markeren, verplaatsen of zoeken van berichten zijn niet beschikbaar.
 
-### POP3 Extensions NOT Supported {#pop3-extensions-not-supported}
+### POP3 Extensies NIET Ondersteund {#pop3-extensions-not-supported}
 
-The following POP3 extensions from the [IANA POP3 Extension Mechanism Registry](https://www.iana.org/assignments/pop3-extension-mechanism/pop3-extension-mechanism.xhtml) are NOT supported:
-
-| RFC | Title | Reason |
+De volgende POP3-extensies uit het [IANA POP3 Extension Mechanism Register](https://www.iana.org/assignments/pop3-extension-mechanism/pop3-extension-mechanism.xhtml) worden NIET ondersteund:
+| RFC                                                       | Titel                                                   | Reden                                  |
 | --------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------- |
-| [RFC 6856](https://datatracker.ietf.org/doc/html/rfc6856) | Post Office Protocol Version 3 (POP3) Support for UTF-8 | Not implemented in WildDuck POP3 server |
-| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | STLS command | Only STARTTLS supported, not STLS |
-| [RFC 3206](https://datatracker.ietf.org/doc/html/rfc3206) | The SYS and AUTH POP Response Codes | Not implemented |
+| [RFC 6856](https://datatracker.ietf.org/doc/html/rfc6856) | Post Office Protocol Versie 3 (POP3) Ondersteuning voor UTF-8 | Niet geïmplementeerd in WildDuck POP3-server |
+| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | STLS-commando                                           | Alleen STARTTLS ondersteund, niet STLS  |
+| [RFC 3206](https://datatracker.ietf.org/doc/html/rfc3206) | De SYS- en AUTH POP-responscodes                        | Niet geïmplementeerd                     |
 
 ---
 
-## SMTP Email Protocol and Extensions {#smtp-email-protocol-and-extensions}
+
+## SMTP Email Protocol en Extensies {#smtp-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports SMTP (RFC 5321) with modern extensions for secure and reliable email delivery.
+> Forward Email ondersteunt SMTP (RFC 5321) met moderne extensies voor veilige en betrouwbare e-mailbezorging.
 
-Forward Email's SMTP functionality is provided by multiple components: [smtp-server](https://github.com/nodemailer/smtp-server) (nodemailer), [zone-mta](https://github.com/zone-eu/zone-mta), and custom implementations. The following email RFCs are supported:
+De SMTP-functionaliteit van Forward Email wordt geleverd door meerdere componenten: [smtp-server](https://github.com/nodemailer/smtp-server) (nodemailer), [zone-mta](https://github.com/zone-eu/zone-mta), en aangepaste implementaties. De volgende e-mail RFC's worden ondersteund:
 
-| RFC | Title | Implementation Notes |
+| RFC                                                       | Titel                                                                           | Implementatie-opmerkingen           |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------ |
-| [RFC 5321](https://datatracker.ietf.org/doc/html/rfc5321) | Simple Mail Transfer Protocol (SMTP) | Full support |
-| [RFC 3207](https://datatracker.ietf.org/doc/html/rfc3207) | SMTP Service Extension for Secure SMTP over Transport Layer Security (STARTTLS) | TLS/SSL support |
-| [RFC 4954](https://datatracker.ietf.org/doc/html/rfc4954) | SMTP Service Extension for Authentication (AUTH) | PLAIN, LOGIN, CRAM-MD5, XOAUTH2 |
-| [RFC 6531](https://datatracker.ietf.org/doc/html/rfc6531) | SMTP Extension for Internationalized Email (SMTPUTF8) | Native unicode email address support |
-| [RFC 3461](https://datatracker.ietf.org/doc/html/rfc3461) | SMTP Service Extension for Delivery Status Notifications (DSN) | Full DSN support |
-| [RFC 3463](https://datatracker.ietf.org/doc/html/rfc3463) | Enhanced Mail System Status Codes | Enhanced status codes in responses |
-| [RFC 1870](https://datatracker.ietf.org/doc/html/rfc1870) | SMTP Service Extension for Message Size Declaration (SIZE) | Maximum message size advertisement |
-| [RFC 2920](https://datatracker.ietf.org/doc/html/rfc2920) | SMTP Service Extension for Command Pipelining (PIPELINING) | Command pipelining support |
-| [RFC 1652](https://datatracker.ietf.org/doc/html/rfc1652) | SMTP Service Extension for 8bit-MIMEtransport (8BITMIME) | 8-bit MIME support |
-| [RFC 6152](https://datatracker.ietf.org/doc/html/rfc6152) | SMTP Service Extension for 8-bit MIME Transport | 8-bit MIME support |
-| [RFC 2034](https://datatracker.ietf.org/doc/html/rfc2034) | SMTP Service Extension for Returning Enhanced Error Codes (ENHANCEDSTATUSCODES) | Enhanced status codes |
+| [RFC 5321](https://datatracker.ietf.org/doc/html/rfc5321) | Simple Mail Transfer Protocol (SMTP)                                            | Volledige ondersteuning              |
+| [RFC 3207](https://datatracker.ietf.org/doc/html/rfc3207) | SMTP Service Extension for Secure SMTP over Transport Layer Security (STARTTLS) | TLS/SSL-ondersteuning                |
+| [RFC 4954](https://datatracker.ietf.org/doc/html/rfc4954) | SMTP Service Extension for Authentication (AUTH)                                | PLAIN, LOGIN, CRAM-MD5, XOAUTH2      |
+| [RFC 6531](https://datatracker.ietf.org/doc/html/rfc6531) | SMTP Extension for Internationalized Email (SMTPUTF8)                           | Native ondersteuning voor unicode e-mailadressen |
+| [RFC 3461](https://datatracker.ietf.org/doc/html/rfc3461) | SMTP Service Extension for Delivery Status Notifications (DSN)                  | Volledige DSN-ondersteuning          |
+| [RFC 3463](https://datatracker.ietf.org/doc/html/rfc3463) | Enhanced Mail System Status Codes                                               | Verbeterde statuscodes in antwoorden |
+| [RFC 1870](https://datatracker.ietf.org/doc/html/rfc1870) | SMTP Service Extension for Message Size Declaration (SIZE)                      | Advertentie van maximale berichtgrootte |
+| [RFC 2920](https://datatracker.ietf.org/doc/html/rfc2920) | SMTP Service Extension for Command Pipelining (PIPELINING)                      | Ondersteuning voor command pipelining |
+| [RFC 1652](https://datatracker.ietf.org/doc/html/rfc1652) | SMTP Service Extension for 8bit-MIMEtransport (8BITMIME)                        | 8-bit MIME-ondersteuning             |
+| [RFC 6152](https://datatracker.ietf.org/doc/html/rfc6152) | SMTP Service Extension for 8-bit MIME Transport                                 | 8-bit MIME-ondersteuning             |
+| [RFC 2034](https://datatracker.ietf.org/doc/html/rfc2034) | SMTP Service Extension for Returning Enhanced Error Codes (ENHANCEDSTATUSCODES) | Verbeterde statuscodes               |
 
-Forward Email implements a full-featured SMTP server with support for modern extensions that enhance security, reliability, and functionality.
+Forward Email implementeert een volledig uitgeruste SMTP-server met ondersteuning voor moderne extensies die de beveiliging, betrouwbaarheid en functionaliteit verbeteren.
 
-**Supported SMTP Extensions:**
+**Ondersteunde SMTP-extensies:**
 
-| Extension | RFC | Status | Description |
-| ------------------- | -------- | ----------- | ------------------------------------- |
-| PIPELINING | RFC 2920 | ✅ Supported | Command pipelining |
-| SIZE | RFC 1870 | ✅ Supported | Message size declaration (52MB limit) |
-| ETRN | RFC 1985 | ✅ Supported | Remote queue processing |
-| STARTTLS | RFC 3207 | ✅ Supported | Upgrade to TLS |
-| ENHANCEDSTATUSCODES | RFC 2034 | ✅ Supported | Enhanced status codes |
-| 8BITMIME | RFC 6152 | ✅ Supported | 8-bit MIME transport |
-| DSN | RFC 3461 | ✅ Supported | Delivery Status Notifications |
-| CHUNKING | RFC 3030 | ✅ Supported | Chunked message transfer |
-| SMTPUTF8 | RFC 6531 | ⚠️ Partial | UTF-8 email addresses (partial) |
-| REQUIRETLS | RFC 8689 | ✅ Supported | Require TLS for delivery |
-
+| Extensie            | RFC      | Status      | Beschrijving                         |
+| ------------------- | -------- | ----------- | ----------------------------------- |
+| PIPELINING          | RFC 2920 | ✅ Ondersteund | Command pipelining                  |
+| SIZE                | RFC 1870 | ✅ Ondersteund | Declaratie van berichtgrootte (limiet 52MB) |
+| ETRN                | RFC 1985 | ✅ Ondersteund | Verwerking van externe wachtrij    |
+| STARTTLS            | RFC 3207 | ✅ Ondersteund | Upgrade naar TLS                    |
+| ENHANCEDSTATUSCODES | RFC 2034 | ✅ Ondersteund | Verbeterde statuscodes             |
+| 8BITMIME            | RFC 6152 | ✅ Ondersteund | 8-bit MIME transport               |
+| DSN                 | RFC 3461 | ✅ Ondersteund | Delivery Status Notifications      |
+| CHUNKING            | RFC 3030 | ✅ Ondersteund | Overdracht van berichten in stukken |
+| SMTPUTF8            | RFC 6531 | ⚠️ Gedeeltelijk | UTF-8 e-mailadressen (gedeeltelijk) |
+| REQUIRETLS          | RFC 8689 | ✅ Ondersteund | Vereist TLS voor bezorging         |
 ### Delivery Status Notifications (DSN) {#delivery-status-notifications-dsn}
 
 > \[!TIP]
-> DSN provides detailed delivery status information for sent emails.
+> DSN biedt gedetailleerde informatie over de afleverstatus van verzonden e-mails.
 
-Forward Email fully supports **DSN (RFC 3461)**, which allows senders to request delivery status notifications. This feature provides:
+Forward Email ondersteunt volledig **DSN (RFC 3461)**, waarmee afzenders afleveringsstatusmeldingen kunnen opvragen. Deze functie biedt:
 
-* **Success notifications** when messages are delivered
-* **Failure notifications** with detailed error information
-* **Delay notifications** when delivery is temporarily delayed
+* **Succesmeldingen** wanneer berichten zijn afgeleverd
+* **Foutmeldingen** met gedetailleerde foutinformatie
+* **Vertragingmeldingen** wanneer de aflevering tijdelijk is vertraagd
 
-DSN is particularly useful for:
+DSN is vooral nuttig voor:
 
-* Confirming important message delivery
-* Troubleshooting delivery issues
-* Automated email processing systems
-* Compliance and audit requirements
+* Bevestigen van de aflevering van belangrijke berichten
+* Problemen met aflevering oplossen
+* Geautomatiseerde e-mailverwerkende systemen
+* Naleving en auditvereisten
 
 ### REQUIRETLS Support {#requiretls-support}
 
 > \[!IMPORTANT]
-> Forward Email is one of the few providers that explicitly advertises and enforces REQUIRETLS.
+> Forward Email is een van de weinige providers die expliciet REQUIRETLS adverteert en afdwingt.
 
-Forward Email supports **REQUIRETLS (RFC 8689)**, which ensures that email messages are only delivered over TLS-encrypted connections. This provides:
+Forward Email ondersteunt **REQUIRETLS (RFC 8689)**, wat ervoor zorgt dat e-mailberichten alleen via TLS-versleutelde verbindingen worden afgeleverd. Dit biedt:
 
-* **End-to-end encryption** for the entire delivery path
-* **User-facing enforcement** via checkbox in email composer
-* **Rejection of unencrypted delivery** attempts
-* **Enhanced security** for sensitive communications
+* **End-to-end encryptie** voor het gehele afleverpad
+* **Gebruikersgerichte afdwinging** via een selectievakje in de e-mailcomposer
+* **Afwijzing van onbeveiligde afleverpogingen**
+* **Verbeterde beveiliging** voor gevoelige communicatie
 
 ### SMTP Extensions NOT Supported {#smtp-extensions-not-supported}
 
-The following SMTP extensions from the [IANA SMTP Service Extensions Registry](https://www.iana.org/assignments/smtp) are NOT supported:
+De volgende SMTP-extensies uit het [IANA SMTP Service Extensions Registry](https://www.iana.org/assignments/smtp) worden NIET ondersteund:
 
-| RFC | Title | Reason |
+| RFC                                                       | Titel                                                                                             | Reden                 |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------- |
-| [RFC 4865](https://datatracker.ietf.org/doc/html/rfc4865) | SMTP Submission Service Extension for Future Message Release (FUTURERELEASE) | Not implemented |
-| [RFC 6710](https://datatracker.ietf.org/doc/html/rfc6710) | SMTP Extension for Message Transfer Priorities (MT-PRIORITY) | Not implemented |
-| [RFC 7293](https://datatracker.ietf.org/doc/html/rfc7293) | The Require-Recipient-Valid-Since Header Field and SMTP Service Extension | Not implemented |
-| [RFC 7372](https://datatracker.ietf.org/doc/html/rfc7372) | Email Auth Status Codes | Not fully implemented |
-| [RFC 4468](https://datatracker.ietf.org/doc/html/rfc4468) | Message Submission BURL Extension | Not implemented |
-| [RFC 3030](https://datatracker.ietf.org/doc/html/rfc3030) | SMTP Service Extensions for Transmission of Large and Binary MIME Messages (CHUNKING, BINARYMIME) | Not implemented |
-| [RFC 2852](https://datatracker.ietf.org/doc/html/rfc2852) | Deliver By SMTP Service Extension | Not implemented |
+| [RFC 4865](https://datatracker.ietf.org/doc/html/rfc4865) | SMTP Submission Service Extension for Future Message Release (FUTURERELEASE)                      | Niet geïmplementeerd  |
+| [RFC 6710](https://datatracker.ietf.org/doc/html/rfc6710) | SMTP Extension for Message Transfer Priorities (MT-PRIORITY)                                      | Niet geïmplementeerd  |
+| [RFC 7293](https://datatracker.ietf.org/doc/html/rfc7293) | The Require-Recipient-Valid-Since Header Field and SMTP Service Extension                         | Niet geïmplementeerd  |
+| [RFC 7372](https://datatracker.ietf.org/doc/html/rfc7372) | Email Auth Status Codes                                                                           | Niet volledig geïmplementeerd |
+| [RFC 4468](https://datatracker.ietf.org/doc/html/rfc4468) | Message Submission BURL Extension                                                                 | Niet geïmplementeerd  |
+| [RFC 3030](https://datatracker.ietf.org/doc/html/rfc3030) | SMTP Service Extensions for Transmission of Large and Binary MIME Messages (CHUNKING, BINARYMIME) | Niet geïmplementeerd  |
+| [RFC 2852](https://datatracker.ietf.org/doc/html/rfc2852) | Deliver By SMTP Service Extension                                                                 | Niet geïmplementeerd  |
 
 ---
+
 
 ## JMAP Email Protocol {#jmap-email-protocol}
 
 > \[!CAUTION]
-> JMAP is **not currently supported** by Forward Email.
+> JMAP wordt **momenteel niet ondersteund** door Forward Email.
 
-| RFC | Title | Status | Reason |
+| RFC                                                       | Titel                                     | Status          | Reden                                                                 |
 | --------------------------------------------------------- | ----------------------------------------- | --------------- | ---------------------------------------------------------------------- |
-| [RFC 8620](https://datatracker.ietf.org/doc/html/rfc8620) | The JSON Meta Application Protocol (JMAP) | ❌ Not Supported | Forward Email uses IMAP/POP3/SMTP and a comprehensive REST API instead |
+| [RFC 8620](https://datatracker.ietf.org/doc/html/rfc8620) | The JSON Meta Application Protocol (JMAP) | ❌ Niet ondersteund | Forward Email gebruikt in plaats daarvan IMAP/POP3/SMTP en een uitgebreide REST API |
 
-**JMAP (JSON Meta Application Protocol)** is a modern email protocol designed to replace IMAP.
+**JMAP (JSON Meta Application Protocol)** is een modern e-mailprotocol ontworpen ter vervanging van IMAP.
 
-**Why JMAP is Not Supported:**
+**Waarom JMAP niet wordt ondersteund:**
 
-> "JMAP is a beast that should not have been invented. It tries to convert TCP/IMAP (already a bad protocol by todays standards) into HTTP/JSON, just using a different transport while keeping the spirit." — Andris Reinman, [HN Discussion](https://news.ycombinator.com/item?id=18890011)
+> "JMAP is een beest dat nooit had moeten worden uitgevonden. Het probeert TCP/IMAP (dat al een slecht protocol is volgens de huidige maatstaven) om te zetten in HTTP/JSON, gewoon met een ander transport terwijl de geest behouden blijft." — Andris Reinman, [HN Discussion](https://news.ycombinator.com/item?id=18890011)
+> "JMAP is meer dan 10 jaar oud, en er is bijna geen adoptie" – Andris Reinman, [GitHub Discussion](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
 
-> "JMAP is more than 10 years old, and there is almost no adoption at all" – Andris Reinman, [GitHub Discussion](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
+Zie ook aanvullende opmerkingen op <https://hn.algolia.com/?dateRange=all&page=0&prefix=true&query=jmap%20andris&sort=byDate&type=comment>.
 
-Also see additional comments at <https://hn.algolia.com/?dateRange=all&page=0&prefix=true&query=jmap%20andris&sort=byDate&type=comment>.
+Forward Email richt zich momenteel op het bieden van uitstekende IMAP-, POP3- en SMTP-ondersteuning, samen met een uitgebreide REST API voor e-mailbeheer. JMAP-ondersteuning kan in de toekomst worden overwogen op basis van gebruikersvraag en adoptie in het ecosysteem.
 
-Forward Email currently focuses on providing excellent IMAP, POP3, and SMTP support, along with a comprehensive REST API for email management. JMAP support may be considered in the future based on user demand and ecosystem adoption.
-
-**Alternative:** Forward Email offers a [Complete REST API](#complete-rest-api-for-email-management) with 39 endpoints that provides similar functionality to JMAP for programmatic email access.
+**Alternatief:** Forward Email biedt een [Complete REST API](#complete-rest-api-for-email-management) met 39 eindpunten die vergelijkbare functionaliteit biedt als JMAP voor programmatische e-mailtoegang.
 
 ---
 
-## Email Security {#email-security}
 
-### Email Security Architecture {#email-security-architecture}
+## E-mailbeveiliging {#email-security}
+
+### Architectuur van e-mailbeveiliging {#email-security-architecture}
 
 ```mermaid
 graph TB
@@ -591,81 +588,81 @@ graph TB
     style ENCRYPT fill:#f9f,stroke:#333,stroke-width:3px
 ```
 
-## Email Message Authentication Protocols {#email-message-authentication-protocols}
+
+## E-mailbericht Authenticatieprotocollen {#email-message-authentication-protocols}
 
 > \[!NOTE]
-> Forward Email implements all major email authentication protocols to prevent spoofing and ensure message integrity.
+> Forward Email implementeert alle belangrijke e-mailauthenticatieprotocollen om spoofing te voorkomen en de integriteit van berichten te waarborgen.
 
-Forward Email uses the [mailauth](https://github.com/postalsys/mailauth) library for email authentication. The following RFCs are supported:
+Forward Email gebruikt de [mailauth](https://github.com/postalsys/mailauth) bibliotheek voor e-mailauthenticatie. De volgende RFC's worden ondersteund:
 
-| RFC | Title | Implementation Notes |
+| RFC                                                       | Titel                                                                   | Implementatienotities                                         |
 | --------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [RFC 6376](https://datatracker.ietf.org/doc/html/rfc6376) | DomainKeys Identified Mail (DKIM) Signatures | Full DKIM signing and verification |
-| [RFC 8463](https://datatracker.ietf.org/doc/html/rfc8463) | A New Cryptographic Signature Method for DKIM (Ed25519-SHA256) | Supports both RSA-SHA256 and Ed25519-SHA256 signing algorithms |
-| [RFC 7208](https://datatracker.ietf.org/doc/html/rfc7208) | Sender Policy Framework (SPF) | SPF record validation |
-| [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-based Message Authentication, Reporting, and Conformance (DMARC) | DMARC policy enforcement |
-| [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC) | ARC sealing and validation |
+| [RFC 6376](https://datatracker.ietf.org/doc/html/rfc6376) | DomainKeys Identified Mail (DKIM) Handtekeningen                        | Volledige DKIM ondertekening en verificatie                   |
+| [RFC 8463](https://datatracker.ietf.org/doc/html/rfc8463) | Een nieuwe cryptografische handtekeningmethode voor DKIM (Ed25519-SHA256) | Ondersteunt zowel RSA-SHA256 als Ed25519-SHA256 ondertekeningsalgoritmen |
+| [RFC 7208](https://datatracker.ietf.org/doc/html/rfc7208) | Sender Policy Framework (SPF)                                           | Validatie van SPF-records                                      |
+| [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-based Message Authentication, Reporting, and Conformance (DMARC) | Handhaving van DMARC-beleid                                    |
+| [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC)                                      | ARC sealing en validatie                                       |
 
-Email authentication protocols verify that messages are genuinely from the claimed sender and haven't been tampered with during transit.
+E-mailauthenticatieprotocollen verifiëren dat berichten daadwerkelijk van de opgegeven afzender afkomstig zijn en niet zijn gewijzigd tijdens het transport.
 
-### Authentication Protocol Support {#authentication-protocol-support}
+### Ondersteuning van authenticatieprotocollen {#authentication-protocol-support}
 
-| Protocol | RFC | Status | Description |
-| --------- | -------- | ----------- | ---------------------------------------------------------------------- |
-| **DKIM** | RFC 6376 | ✅ Supported | DomainKeys Identified Mail - Cryptographic signatures |
-| **SPF** | RFC 7208 | ✅ Supported | Sender Policy Framework - IP address authorization |
-| **DMARC** | RFC 7489 | ✅ Supported | Domain-based Message Authentication - Policy enforcement |
-| **ARC** | RFC 8617 | ✅ Supported | Authenticated Received Chain - Preserve authentication across forwards |
-
+| Protocol  | RFC      | Status      | Beschrijving                                                          |
+| --------- | -------- | ----------- | -------------------------------------------------------------------- |
+| **DKIM**  | RFC 6376 | ✅ Ondersteund | DomainKeys Identified Mail - Cryptografische handtekeningen          |
+| **SPF**   | RFC 7208 | ✅ Ondersteund | Sender Policy Framework - IP-adres autorisatie                       |
+| **DMARC** | RFC 7489 | ✅ Ondersteund | Domain-based Message Authentication - Handhaving van beleid          |
+| **ARC**   | RFC 8617 | ✅ Ondersteund | Authenticated Received Chain - Behoud van authenticatie over forwards |
 ### DKIM (DomainKeys Identified Mail) {#dkim-domainkeys-identified-mail}
 
-**DKIM** adds a cryptographic signature to email headers, allowing recipients to verify that the message was authorized by the domain owner and hasn't been modified in transit.
+**DKIM** voegt een cryptografische handtekening toe aan e-mailheaders, waardoor ontvangers kunnen verifiëren dat het bericht is geautoriseerd door de domeineigenaar en niet is gewijzigd tijdens het transport.
 
-Forward Email uses [mailauth](https://github.com/postalsys/mailauth) for DKIM signing and verification.
+Forward Email gebruikt [mailauth](https://github.com/postalsys/mailauth) voor DKIM ondertekening en verificatie.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* Automatic DKIM signing for all outbound messages
-* Support for RSA and Ed25519 keys
-* Multiple selector support
-* DKIM verification for inbound messages
+* Automatische DKIM ondertekening voor alle uitgaande berichten
+* Ondersteuning voor RSA- en Ed25519-sleutels
+* Ondersteuning voor meerdere selectors
+* DKIM verificatie voor inkomende berichten
 
 ### SPF (Sender Policy Framework) {#spf-sender-policy-framework}
 
-**SPF** allows domain owners to specify which IP addresses are authorized to send email on behalf of their domain.
+**SPF** stelt domeineigenaren in staat om aan te geven welke IP-adressen gemachtigd zijn om e-mail te verzenden namens hun domein.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* SPF record validation for inbound messages
-* Automatic SPF checking with detailed results
-* Support for include, redirect, and all mechanisms
-* Configurable SPF policies per domain
+* Validatie van SPF-records voor inkomende berichten
+* Automatische SPF-controle met gedetailleerde resultaten
+* Ondersteuning voor include-, redirect- en all-mechanismen
+* Configureerbare SPF-beleid per domein
 
 ### DMARC (Domain-based Message Authentication, Reporting & Conformance) {#dmarc-domain-based-message-authentication-reporting--conformance}
 
-**DMARC** builds on SPF and DKIM to provide policy enforcement and reporting.
+**DMARC** bouwt voort op SPF en DKIM om beleidsafdwinging en rapportage te bieden.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* DMARC policy enforcement (none, quarantine, reject)
-* Alignment checking for SPF and DKIM
-* DMARC aggregate reporting
-* Per-domain DMARC policies
+* DMARC beleidsafdwinging (none, quarantine, reject)
+* Uitlijning controle voor SPF en DKIM
+* DMARC aggregatierapportage
+* Per-domein DMARC-beleid
 
 ### ARC (Authenticated Received Chain) {#arc-authenticated-received-chain}
 
-**ARC** preserves email authentication results across forwarding and mailing list modifications.
+**ARC** behoudt e-mail authenticatieresultaten bij doorsturen en wijzigingen door mailinglijsten.
 
-Forward Email uses the [mailauth](https://github.com/postalsys/mailauth) library for ARC verification and sealing.
+Forward Email gebruikt de [mailauth](https://github.com/postalsys/mailauth) bibliotheek voor ARC verificatie en sealing.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* ARC sealing for forwarded messages
-* ARC validation for inbound messages
-* Chain verification across multiple hops
-* Preserves original authentication results
+* ARC sealing voor doorgestuurde berichten
+* ARC validatie voor inkomende berichten
+* Kettingverificatie over meerdere hops
+* Behoudt originele authenticatieresultaten
 
-### Authentication Flow {#authentication-flow}
+### Authenticatie Stroom {#authentication-flow}
 
 ```mermaid
 sequenceDiagram
@@ -688,93 +685,93 @@ sequenceDiagram
 
 ---
 
-## Email Transport Security Protocols {#email-transport-security-protocols}
+
+## E-mail Transportbeveiligingsprotocollen {#email-transport-security-protocols}
 
 > \[!IMPORTANT]
-> Forward Email implements multiple layers of transport security to protect emails in transit.
+> Forward Email implementeert meerdere lagen transportbeveiliging om e-mails tijdens transport te beschermen.
 
-Forward Email implements modern transport security protocols:
+Forward Email implementeert moderne transportbeveiligingsprotocollen:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461) | SMTP MTA Strict Transport Security (MTA-STS) | ✅ Supported | Extensively used on IMAP, SMTP, and MX servers. See [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) and [get-transporter.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-transporter.js) |
-| [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) | SMTP TLS Reporting | ✅ Supported | Via [mailauth](https://github.com/postalsys/mailauth) library |
-| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | The DNS-Based Authentication of Named Entities (DANE) Protocol: Updates and Operational Guidance | ✅ Supported | Full DANE verification for outbound SMTP connections. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
-| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA | ✅ Supported | Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
-| [RFC 8314](https://datatracker.ietf.org/doc/html/rfc8314) | Cleartext Considered Obsolete: Use of Transport Layer Security (TLS) for Email Submission and Access | ✅ Supported | TLS required for all connections |
-| [RFC 8689](https://datatracker.ietf.org/doc/html/rfc8689) | SMTP Service Extension for Requiring TLS (REQUIRETLS) | ✅ Supported | Full support for REQUIRETLS SMTP extension and "TLS-Required" header |
-
-Transport security protocols ensure that email messages are encrypted and authenticated during transmission between mail servers.
+| RFC                                                       | Titel                                                                                               | Status      | Implementatie Opmerkingen                                                                                                                                                                                                                                                                      |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461) | SMTP MTA Strict Transport Security (MTA-STS)                                                       | ✅ Supported | Uitgebreid gebruikt op IMAP-, SMTP- en MX-servers. Zie [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) en [get-transporter.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-transporter.js) |
+| [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) | SMTP TLS Reporting                                                                                 | ✅ Supported | Via [mailauth](https://github.com/postalsys/mailauth) bibliotheek                                                                                                                                                                                                                              |
+| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | The DNS-Based Authentication of Named Entities (DANE) Protocol: Updates and Operational Guidance   | ✅ Supported | Volledige DANE verificatie voor uitgaande SMTP-verbindingen. Zie [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22)                                                                                                                                                            |
+| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA | ✅ Supported | Volledige RFC 6698 ondersteuning: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE gebruikstypen. Zie [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22)                                                                                                                                     |
+| [RFC 8314](https://datatracker.ietf.org/doc/html/rfc8314) | Cleartext Considered Obsolete: Use of Transport Layer Security (TLS) for Email Submission and Access | ✅ Supported | TLS vereist voor alle verbindingen                                                                                                                                                                                                                                                            |
+| [RFC 8689](https://datatracker.ietf.org/doc/html/rfc8689) | SMTP Service Extension for Requiring TLS (REQUIRETLS)                                              | ✅ Supported | Volledige ondersteuning voor REQUIRETLS SMTP-extensie en "TLS-Required" header                                                                                                                                                                                                                 |
+Transportbeveiligingsprotocollen zorgen ervoor dat e-mailberichten worden versleuteld en geverifieerd tijdens de overdracht tussen mailservers.
 
 ### Transport Security Support {#transport-security-support}
 
-| Protocol | RFC | Status | Description |
+| Protocol       | RFC      | Status      | Beschrijving                                    |
 | -------------- | -------- | ----------- | ------------------------------------------------ |
-| **TLS** | RFC 8314 | ✅ Supported | Transport Layer Security - Encrypted connections |
-| **MTA-STS** | RFC 8461 | ✅ Supported | Mail Transfer Agent Strict Transport Security |
-| **DANE** | RFC 7671 | ✅ Supported | DNS-based Authentication of Named Entities |
-| **REQUIRETLS** | RFC 8689 | ✅ Supported | Require TLS for entire delivery path |
+| **TLS**        | RFC 8314 | ✅ Ondersteund | Transport Layer Security - Versleutelde verbindingen |
+| **MTA-STS**    | RFC 8461 | ✅ Ondersteund | Mail Transfer Agent Strict Transport Security    |
+| **DANE**       | RFC 7671 | ✅ Ondersteund | DNS-based Authentication of Named Entities       |
+| **REQUIRETLS** | RFC 8689 | ✅ Ondersteund | Vereist TLS voor het gehele bezorgtraject        |
 
 ### TLS (Transport Layer Security) {#tls-transport-layer-security}
 
-Forward Email enforces TLS encryption for all email connections (SMTP, IMAP, POP3).
+Forward Email handhaaft TLS-versleuteling voor alle e-mailverbindingen (SMTP, IMAP, POP3).
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* TLS 1.2 and TLS 1.3 support
-* Automatic certificate management
+* Ondersteuning voor TLS 1.2 en TLS 1.3
+* Automatisch certificaatbeheer
 * Perfect Forward Secrecy (PFS)
-* Strong cipher suites only
+* Alleen sterke cipher suites
 
 ### MTA-STS (Mail Transfer Agent Strict Transport Security) {#mta-sts-mail-transfer-agent-strict-transport-security}
 
-**MTA-STS** ensures that email is only delivered over TLS-encrypted connections by publishing a policy via HTTPS.
+**MTA-STS** zorgt ervoor dat e-mail alleen wordt afgeleverd via TLS-versleutelde verbindingen door een beleid te publiceren via HTTPS.
 
-Forward Email implements MTA-STS using [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js).
+Forward Email implementeert MTA-STS met behulp van [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js).
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* Automatic MTA-STS policy publication
-* Policy caching for performance
-* Downgrade attack prevention
-* Certificate validation enforcement
+* Automatische publicatie van MTA-STS beleid
+* Caching van beleid voor betere prestaties
+* Preventie van downgrade-aanvallen
+* Handhaving van certificaatvalidatie
 
 ### DANE (DNS-based Authentication of Named Entities) {#dane-dns-based-authentication-of-named-entities}
 
 > \[!NOTE]
-> Forward Email now provides full DANE support for outbound SMTP connections.
+> Forward Email biedt nu volledige DANE-ondersteuning voor uitgaande SMTP-verbindingen.
 
-**DANE** uses DNSSEC to publish TLS certificate information in DNS, allowing mail servers to verify certificates without relying on certificate authorities.
+**DANE** gebruikt DNSSEC om TLS-certificaatinformatie in DNS te publiceren, waardoor mailservers certificaten kunnen verifiëren zonder afhankelijk te zijn van certificeringsinstanties.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* ✅ Full DANE verification for outbound SMTP connections
-* ✅ Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types
-* ✅ Certificate verification against TLSA records during TLS upgrade
-* ✅ Parallel TLSA resolution for multiple MX hosts
-* ✅ Automatic detection of native `dns.resolveTlsa` (Node.js v22.15.0+, v23.9.0+)
-* ✅ Custom resolver support for older Node.js versions via [Tangerine](https://github.com/forwardemail/tangerine)
-* Requires DNSSEC-signed domains
+* ✅ Volledige DANE-verificatie voor uitgaande SMTP-verbindingen
+* ✅ Volledige RFC 6698-ondersteuning: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE gebruikstypen
+* ✅ Certificaatverificatie tegen TLSA-records tijdens TLS-upgrade
+* ✅ Parallelle TLSA-resolutie voor meerdere MX-hosts
+* ✅ Automatische detectie van native `dns.resolveTlsa` (Node.js v22.15.0+, v23.9.0+)
+* ✅ Ondersteuning voor aangepaste resolver voor oudere Node.js-versies via [Tangerine](https://github.com/forwardemail/tangerine)
+* Vereist DNSSEC-ondertekende domeinen
 
 > \[!TIP]
-> **Implementation Details:** DANE support was added via [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22), which provides comprehensive DANE/TLSA support for outbound SMTP connections.
+> **Implementatiedetails:** DANE-ondersteuning is toegevoegd via [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22), die uitgebreide DANE/TLSA-ondersteuning biedt voor uitgaande SMTP-verbindingen.
 
 ### REQUIRETLS {#requiretls}
 
 > \[!TIP]
-> Forward Email is one of the few providers with user-facing REQUIRETLS support.
+> Forward Email is een van de weinige providers met gebruikersgerichte REQUIRETLS-ondersteuning.
 
-**REQUIRETLS** ensures that email messages are only delivered over TLS-encrypted connections for the entire delivery path.
+**REQUIRETLS** zorgt ervoor dat e-mailberichten alleen worden afgeleverd via TLS-versleutelde verbindingen voor het gehele bezorgtraject.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* User-facing checkbox in email composer
-* Automatic rejection of unencrypted delivery
-* End-to-end TLS enforcement
-* Detailed failure notifications
+* Gebruikersgerichte checkbox in e-mailcomposer
+* Automatische afwijzing van onbeveiligde bezorging
+* End-to-end TLS-handhaving
+* Gedetailleerde foutmeldingen
 
 > \[!TIP]
-> **User-Facing TLS Enforcement:** Forward Email provides a checkbox under **My Account > Domains > Settings** to enforce TLS for all inbound connections. When enabled, this feature rejects any inbound email not sent over a TLS-encrypted connection with a 530 error code, ensuring all incoming mail is encrypted in transit.
+> **Gebruikersgerichte TLS-handhaving:** Forward Email biedt een checkbox onder **Mijn Account > Domeinen > Instellingen** om TLS af te dwingen voor alle inkomende verbindingen. Wanneer ingeschakeld, weigert deze functie elke inkomende e-mail die niet via een TLS-versleutelde verbinding is verzonden met een 530-foutcode, waardoor alle binnenkomende mail versleuteld wordt verzonden.
 
 ### Transport Security Flow {#transport-security-flow}
 
@@ -804,94 +801,89 @@ graph LR
     style DANE fill:#9f9,stroke:#333
     style REQTLS fill:#9f9,stroke:#333
 ```
-
----
-
-
-## Email Message Encryption {#email-message-encryption}
+## E-mailberichtversleuteling {#email-message-encryption}
 
 > \[!NOTE]
-> Forward Email supports both OpenPGP and S/MIME for end-to-end email encryption.
+> Forward Email ondersteunt zowel OpenPGP als S/MIME voor end-to-end e-mailversleuteling.
 
-Forward Email supports OpenPGP and S/MIME encryption:
+Forward Email ondersteunt OpenPGP- en S/MIME-versleuteling:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 9580](https://datatracker.ietf.org/doc/html/rfc9580) | OpenPGP (supersedes RFC 4880) | ✅ Supported | Via [OpenPGP.js v6+](https://github.com/openpgpjs/openpgpjs) integration. See [FAQ](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) |
-| [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) | Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 4.0 Message Specification | ✅ Supported | Both RSA and ECC algorithms supported. See [FAQ](https://forwardemail.net/en/faq#do-you-support-smime-encryption) |
+| RFC                                                       | Titel                                                                                   | Status      | Implementatie-opmerkingen                                                                                                                                                                           |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 9580](https://datatracker.ietf.org/doc/html/rfc9580) | OpenPGP (vervangt RFC 4880)                                                             | ✅ Ondersteund | Via [OpenPGP.js v6+](https://github.com/openpgpjs/openpgpjs) integratie. Zie [FAQ](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) |
+| [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) | Secure/Multipurpose Internet Mail Extensions (S/MIME) Versie 4.0 Berichtspecificatie      | ✅ Ondersteund | Zowel RSA- als ECC-algoritmen ondersteund. Zie [FAQ](https://forwardemail.net/en/faq#do-you-support-smime-encryption)                                                                              |
 
-Message encryption protocols protect email content from being read by anyone except the intended recipient, even if the message is intercepted during transit.
+Berichtversleutelingsprotocollen beschermen de inhoud van e-mails zodat alleen de bedoelde ontvanger deze kan lezen, zelfs als het bericht tijdens het transport wordt onderschept.
 
-### Encryption Support {#encryption-support}
+### Versleutelingsondersteuning {#encryption-support}
 
-| Protocol | RFC | Status | Description |
+| Protocol    | RFC      | Status      | Beschrijving                                |
 | ----------- | -------- | ----------- | -------------------------------------------- |
-| **OpenPGP** | RFC 9580 | ✅ Supported | Pretty Good Privacy - Public key encryption |
-| **S/MIME** | RFC 8551 | ✅ Supported | Secure/Multipurpose Internet Mail Extensions |
-| **WKD** | Draft | ✅ Supported | Web Key Directory - Automatic key discovery |
+| **OpenPGP** | RFC 9580 | ✅ Ondersteund | Pretty Good Privacy - Publieke sleutelversleuteling |
+| **S/MIME**  | RFC 8551 | ✅ Ondersteund | Secure/Multipurpose Internet Mail Extensions |
+| **WKD**     | Draft    | ✅ Ondersteund | Web Key Directory - Automatische sleutelontdekking |
 
 ### OpenPGP (Pretty Good Privacy) {#openpgp-pretty-good-privacy}
 
-**OpenPGP** provides end-to-end encryption using public key cryptography. Forward Email supports OpenPGP through the [Web Key Directory (WKD)](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) protocol.
+**OpenPGP** biedt end-to-end versleuteling met behulp van publieke sleutelcryptografie. Forward Email ondersteunt OpenPGP via het [Web Key Directory (WKD)](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) protocol.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* Automatic key discovery via WKD
-* PGP/MIME support for encrypted attachments
-* Key management through email client
-* Compatible with GPG, Mailvelope, and other OpenPGP tools
+* Automatische sleutelontdekking via WKD
+* PGP/MIME-ondersteuning voor versleutelde bijlagen
+* Sleutelbeheer via e-mailclient
+* Compatibel met GPG, Mailvelope en andere OpenPGP-tools
 
-**How to Use:**
+**Hoe te gebruiken:**
 
-1. Generate a PGP key pair in your email client
-2. Upload your public key to Forward Email's WKD
-3. Your key is automatically discoverable by other users
-4. Send and receive encrypted emails seamlessly
+1. Genereer een PGP-sleutelpaar in je e-mailclient
+2. Upload je publieke sleutel naar Forward Email's WKD
+3. Je sleutel is automatisch vindbaar voor andere gebruikers
+4. Verstuur en ontvang versleutelde e-mails moeiteloos
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 
-**S/MIME** provides email encryption and digital signatures using X.509 certificates.
+**S/MIME** biedt e-mailversleuteling en digitale handtekeningen met behulp van X.509-certificaten.
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* Certificate-based encryption
-* Digital signatures for message authentication
-* Native support in most email clients
-* Enterprise-grade security
+* Certificaat-gebaseerde versleuteling
+* Digitale handtekeningen voor berichtauthenticatie
+* Native ondersteuning in de meeste e-mailclients
+* Beveiliging op ondernemingsniveau
 
-**How to Use:**
+**Hoe te gebruiken:**
 
-1. Obtain an S/MIME certificate from a Certificate Authority
-2. Install the certificate in your email client
-3. Configure your client to encrypt/sign messages
-4. Exchange certificates with recipients
+1. Verkrijg een S/MIME-certificaat van een Certificeringsinstantie
+2. Installeer het certificaat in je e-mailclient
+3. Configureer je client om berichten te versleutelen/ondertekenen
+4. Wissel certificaten uit met ontvangers
 
-### SQLite Mailbox Encryption {#sqlite-mailbox-encryption}
+### SQLite Mailbox Versleuteling {#sqlite-mailbox-encryption}
 
 > \[!IMPORTANT]
-> Forward Email provides an additional layer of security with encrypted SQLite mailboxes.
+> Forward Email biedt een extra beveiligingslaag met versleutelde SQLite-mailboxen.
 
-Beyond message-level encryption, Forward Email encrypts entire mailboxes using [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305).
+Naast berichtniveau-versleuteling versleutelt Forward Email volledige mailboxen met behulp van [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305).
 
-**Key Features:**
+**Belangrijkste kenmerken:**
 
-* **Password-based encryption** - Only you have the password
-* **Quantum-resistant** - ChaCha20-Poly1305 cipher
-* **Zero-knowledge** - Forward Email cannot decrypt your mailbox
-* **Sandboxed** - Each mailbox is isolated and portable
-* **Unrecoverable** - If you forget your password, your mailbox is lost
+* **Wachtwoord-gebaseerde versleuteling** - Alleen jij hebt het wachtwoord
+* **Quantum-bestendig** - ChaCha20-Poly1305-cijfer
+* **Zero-knowledge** - Forward Email kan je mailbox niet ontsleutelen
+* **Sandboxed** - Elke mailbox is geïsoleerd en draagbaar
+* **Onherstelbaar** - Als je je wachtwoord vergeet, is je mailbox verloren
+### Encryptie Vergelijking {#encryption-comparison}
 
-### Encryption Comparison {#encryption-comparison}
-
-| Feature | OpenPGP | S/MIME | SQLite Encryption |
+| Kenmerk               | OpenPGP           | S/MIME             | SQLite Encryptie  |
 | --------------------- | ----------------- | ------------------ | ----------------- |
-| **End-to-End** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Key Management** | Self-managed | CA-issued | Password-based |
-| **Client Support** | Requires plugin | Native | Transparent |
-| **Use Case** | Personal | Enterprise | Storage |
-| **Quantum-Resistant** | ⚠️ Depends on key | ⚠️ Depends on cert | ✅ Yes |
+| **End-to-End**        | ✅ Ja              | ✅ Ja               | ✅ Ja              |
+| **Sleutelbeheer**     | Zelf beheerd      | CA-uitgegeven      | Wachtwoord-gebaseerd |
+| **Client Ondersteuning** | Vereist plugin   | Native             | Transparant       |
+| **Gebruikssituatie**  | Persoonlijk       | Zakelijk           | Opslag            |
+| **Quantum-bestendig** | ⚠️ Afhankelijk van sleutel | ⚠️ Afhankelijk van certificaat | ✅ Ja              |
 
-### Encryption Flow {#encryption-flow}
+### Encryptie Stroom {#encryption-flow}
 
 ```mermaid
 sequenceDiagram
@@ -911,161 +903,162 @@ sequenceDiagram
 
 ---
 
-## Extended Functionality {#extended-functionality}
 
-## Email Message Format Standards {#email-message-format-standards}
+## Uitgebreide Functionaliteit {#extended-functionality}
+
+
+## E-mail Bericht Formaat Standaarden {#email-message-format-standards}
 
 > \[!NOTE]
-> Forward Email supports modern email format standards for rich content and internationalization.
+> Forward Email ondersteunt moderne e-mail formaat standaarden voor rijke inhoud en internationalisering.
 
-Forward Email supports standard email message formats:
+Forward Email ondersteunt standaard e-mail berichtformaten:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------- | -------------------- |
-| [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) | Internet Message Format | Full support |
-| [RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045) | MIME Part One: Format of Internet Message Bodies | Full MIME support |
-| [RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046) | MIME Part Two: Media Types | Full MIME support |
-| [RFC 2047](https://datatracker.ietf.org/doc/html/rfc2047) | MIME Part Three: Message Header Extensions for Non-ASCII Text | Full MIME support |
-| [RFC 2048](https://datatracker.ietf.org/doc/html/rfc2048) | MIME Part Four: Registration Procedures | Full MIME support |
-| [RFC 2049](https://datatracker.ietf.org/doc/html/rfc2049) | MIME Part Five: Conformance Criteria and Examples | Full MIME support |
+| RFC                                                       | Titel                                                         | Implementatie Notities |
+| --------------------------------------------------------- | ------------------------------------------------------------- | --------------------- |
+| [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) | Internet Bericht Formaat                                      | Volledige ondersteuning |
+| [RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045) | MIME Deel Eén: Formaat van Internet Bericht Lichamen          | Volledige MIME ondersteuning |
+| [RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046) | MIME Deel Twee: Media Types                                   | Volledige MIME ondersteuning |
+| [RFC 2047](https://datatracker.ietf.org/doc/html/rfc2047) | MIME Deel Drie: Bericht Header Extensies voor Niet-ASCII Tekst | Volledige MIME ondersteuning |
+| [RFC 2048](https://datatracker.ietf.org/doc/html/rfc2048) | MIME Deel Vier: Registratie Procedures                        | Volledige MIME ondersteuning |
+| [RFC 2049](https://datatracker.ietf.org/doc/html/rfc2049) | MIME Deel Vijf: Conformiteitscriteria en Voorbeelden          | Volledige MIME ondersteuning |
 
-Email format standards define how email messages are structured, encoded, and displayed.
+E-mail formaat standaarden definiëren hoe e-mailberichten zijn gestructureerd, gecodeerd en weergegeven.
 
-### Format Standards Support {#format-standards-support}
+### Ondersteuning Formaat Standaarden {#format-standards-support}
 
-| Standard | RFC | Status | Description |
-| ------------------ | ------------- | ----------- | ------------------------------------- |
-| **MIME** | RFC 2045-2049 | ✅ Supported | Multipurpose Internet Mail Extensions |
-| **SMTPUTF8** | RFC 6531 | ⚠️ Partial | Internationalized email addresses |
-| **EAI** | RFC 6530 | ⚠️ Partial | Email Address Internationalization |
-| **Message Format** | RFC 5322 | ✅ Supported | Internet Message Format |
-| **MIME Security** | RFC 1847 | ✅ Supported | Security Multiparts for MIME |
+| Standaard          | RFC           | Status      | Beschrijving                          |
+| ------------------ | ------------- | ----------- | ----------------------------------- |
+| **MIME**           | RFC 2045-2049 | ✅ Ondersteund | Multipurpose Internet Mail Extensions |
+| **SMTPUTF8**       | RFC 6531      | ⚠️ Gedeeltelijk | Geïntegreerde e-mailadressen         |
+| **EAI**            | RFC 6530      | ⚠️ Gedeeltelijk | E-mail Adres Internationalisering    |
+| **Bericht Formaat**| RFC 5322      | ✅ Ondersteund | Internet Bericht Formaat             |
+| **MIME Beveiliging** | RFC 1847    | ✅ Ondersteund | Beveiligings-Multiparts voor MIME    |
 
 ### MIME (Multipurpose Internet Mail Extensions) {#mime-multipurpose-internet-mail-extensions}
 
-**MIME** allows emails to contain multiple parts with different content types (text, HTML, attachments, etc.).
+**MIME** maakt het mogelijk dat e-mails meerdere delen bevatten met verschillende inhoudstypen (tekst, HTML, bijlagen, enz.).
 
-**Supported MIME Features:**
+**Ondersteunde MIME Kenmerken:**
 
-* Multipart messages (mixed, alternative, related)
+* Meerdelige berichten (mixed, alternative, related)
 * Content-Type headers
 * Content-Transfer-Encoding (7bit, 8bit, quoted-printable, base64)
-* Inline images and attachments
-* Rich HTML content
+* Inline afbeeldingen en bijlagen
+* Rijke HTML-inhoud
 
-### SMTPUTF8 and Email Address Internationalization {#smtputf8-and-email-address-internationalization}
+### SMTPUTF8 en E-mail Adres Internationalisering {#smtputf8-and-email-address-internationalization}
 
 > \[!WARNING]
-> SMTPUTF8 support is partial - not all features are fully implemented.
+> SMTPUTF8 ondersteuning is gedeeltelijk - niet alle functies zijn volledig geïmplementeerd.
+**SMTPUTF8** maakt het mogelijk dat e-mailadressen niet-ASCII tekens bevatten (bijv. `用户@例え.jp`).
 
-**SMTPUTF8** allows email addresses to contain non-ASCII characters (e.g., `用户@例え.jp`).
+**Huidige status:**
 
-**Current Status:**
-
-* ⚠️ Partial support for internationalized email addresses
-* ✅ UTF-8 content in message bodies
-* ⚠️ Limited support for non-ASCII local parts
+* ⚠️ Gedeeltelijke ondersteuning voor geïnternationaliseerde e-mailadressen
+* ✅ UTF-8 inhoud in berichtlichamen
+* ⚠️ Beperkte ondersteuning voor niet-ASCII lokale delen
 
 ---
 
-## Calendaring and Contacts Protocols {#calendaring-and-contacts-protocols}
+
+## Agenda- en Contactprotocollen {#calendaring-and-contacts-protocols}
 
 > \[!NOTE]
-> Forward Email provides full CalDAV and CardDAV support for calendar and contact synchronization.
+> Forward Email biedt volledige CalDAV- en CardDAV-ondersteuning voor agenda- en contactensynchronisatie.
 
-Forward Email supports CalDAV and CardDAV via the [caldav-adapter](https://github.com/forwardemail/caldav-adapter) library:
+Forward Email ondersteunt CalDAV en CardDAV via de [caldav-adapter](https://github.com/forwardemail/caldav-adapter) bibliotheek:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------------------- | ----------- | ------------------------------ |
-| [RFC 4791](https://datatracker.ietf.org/doc/html/rfc4791) | Calendaring Extensions to WebDAV (CalDAV) | ✅ Supported | Calendar access and management |
-| [RFC 6352](https://datatracker.ietf.org/doc/html/rfc6352) | CardDAV: vCard Extensions to WebDAV | ✅ Supported | Contact access and management |
-| [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) | Internet Calendaring and Scheduling Core Object Specification (iCalendar) | ✅ Supported | iCalendar format support |
-| [RFC 6350](https://datatracker.ietf.org/doc/html/rfc6350) | vCard Format Specification | ✅ Supported | vCard 4.0 format support |
-| [RFC 6638](https://datatracker.ietf.org/doc/html/rfc6638) | Scheduling Extensions to CalDAV | ✅ Supported | CalDAV scheduling with iMIP support. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
-| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar Transport-Independent Interoperability Protocol (iTIP) | ✅ Supported | iTIP support for REQUEST, REPLY, CANCEL, and VFREEBUSY methods. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
-| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar Message-Based Interoperability Protocol (iMIP) | ✅ Supported | Email-based calendar invitations with response links. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| RFC                                                       | Titel                                                                    | Status      | Implementatie-opmerkingen                                                                                                                                                              |
+| --------------------------------------------------------- | ------------------------------------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 4791](https://datatracker.ietf.org/doc/html/rfc4791) | Agenda-uitbreidingen voor WebDAV (CalDAV)                               | ✅ Ondersteund | Toegang tot en beheer van agenda's                                                                                                                                                      |
+| [RFC 6352](https://datatracker.ietf.org/doc/html/rfc6352) | CardDAV: vCard-uitbreidingen voor WebDAV                                | ✅ Ondersteund | Toegang tot en beheer van contacten                                                                                                                                                     |
+| [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) | Internet Agenda- en Planning Core Object Specificatie (iCalendar)       | ✅ Ondersteund | Ondersteuning voor iCalendar-formaat                                                                                                                                                    |
+| [RFC 6350](https://datatracker.ietf.org/doc/html/rfc6350) | vCard Formaat Specificatie                                              | ✅ Ondersteund | Ondersteuning voor vCard 4.0 formaat                                                                                                                                                     |
+| [RFC 6638](https://datatracker.ietf.org/doc/html/rfc6638) | Planning-uitbreidingen voor CalDAV                                      | ✅ Ondersteund | CalDAV planning met iMIP ondersteuning. Zie [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80)                            |
+| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar Transport-Onafhankelijk Interoperabiliteitsprotocol (iTIP)   | ✅ Ondersteund | iTIP ondersteuning voor REQUEST, REPLY, CANCEL en VFREEBUSY methoden. Zie [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar Berichtgebaseerd Interoperabiliteitsprotocol (iMIP)          | ✅ Ondersteund | E-mail gebaseerde agenda-uitnodigingen met responslinks. Zie [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80)           |
 
-CalDAV and CardDAV are protocols that allow calendar and contact data to be accessed, shared, and synchronized across devices.
+CalDAV en CardDAV zijn protocollen die het mogelijk maken om agenda- en contactgegevens te openen, te delen en te synchroniseren tussen apparaten.
 
-### CalDAV and CardDAV Support {#caldav-and-carddav-support}
+### CalDAV- en CardDAV-ondersteuning {#caldav-and-carddav-support}
 
-| Protocol | RFC | Status | Description |
-| ------------- | -------- | ----------- | ----------------------------------- |
-| **CalDAV** | RFC 4791 | ✅ Supported | Calendar access and synchronization |
-| **CardDAV** | RFC 6352 | ✅ Supported | Contact access and synchronization |
-| **iCalendar** | RFC 5545 | ✅ Supported | Calendar data format |
-| **vCard** | RFC 6350 | ✅ Supported | Contact data format |
-| **VTODO** | RFC 5545 | ✅ Supported | Task/reminder support |
-| **CalDAV Scheduling** | RFC 6638 | ✅ Supported | Calendar scheduling extensions |
-| **iTIP** | RFC 5546 | ✅ Supported | Transport-independent interoperability |
-| **iMIP** | RFC 6047 | ✅ Supported | Email-based calendar invitations |
+| Protocol              | RFC      | Status      | Beschrijving                          |
+| --------------------- | -------- | ----------- | ----------------------------------- |
+| **CalDAV**            | RFC 4791 | ✅ Ondersteund | Toegang tot en synchronisatie van agenda's |
+| **CardDAV**           | RFC 6352 | ✅ Ondersteund | Toegang tot en synchronisatie van contacten |
+| **iCalendar**         | RFC 5545 | ✅ Ondersteund | Agenda gegevensformaat               |
+| **vCard**             | RFC 6350 | ✅ Ondersteund | Contactgegevensformaat               |
+| **VTODO**             | RFC 5545 | ✅ Ondersteund | Ondersteuning voor taken/herinneringen |
+| **CalDAV Planning**   | RFC 6638 | ✅ Ondersteund | Uitbreidingen voor agenda-planning  |
+| **iTIP**              | RFC 5546 | ✅ Ondersteund | Transport-onafhankelijke interoperabiliteit |
+| **iMIP**              | RFC 6047 | ✅ Ondersteund | E-mail gebaseerde agenda-uitnodigingen |
+### CalDAV (Agenda Toegang) {#caldav-calendar-access}
 
-### CalDAV (Calendar Access) {#caldav-calendar-access}
+**CalDAV** stelt je in staat om agenda's te openen en beheren vanaf elk apparaat of elke applicatie.
 
-**CalDAV** allows you to access and manage calendars from any device or application.
+**Belangrijkste Kenmerken:**
 
-**Key Features:**
+* Synchronisatie op meerdere apparaten
+* Gedeelde agenda's
+* Agenda-abonnementen
+* Evenementuitnodigingen en reacties
+* Terugkerende evenementen
+* Tijdzone-ondersteuning
 
-* Multi-device synchronization
-* Shared calendars
-* Calendar subscriptions
-* Event invitations and responses
-* Recurring events
-* Timezone support
+**Compatibele Clients:**
 
-**Compatible Clients:**
-
-* Apple Calendar (macOS, iOS)
+* Apple Agenda (macOS, iOS)
 * Mozilla Thunderbird
 * Evolution
-* GNOME Calendar
-* Any CalDAV-compatible client
+* GNOME Agenda
+* Elke CalDAV-compatibele client
 
-### CardDAV (Contact Access) {#carddav-contact-access}
+### CardDAV (Contact Toegang) {#carddav-contact-access}
 
-**CardDAV** allows you to access and manage contacts from any device or application.
+**CardDAV** stelt je in staat om contacten te openen en beheren vanaf elk apparaat of elke applicatie.
 
-**Key Features:**
+**Belangrijkste Kenmerken:**
 
-* Multi-device synchronization
-* Shared address books
-* Contact groups
-* Photo support
-* Custom fields
-* vCard 4.0 support
+* Synchronisatie op meerdere apparaten
+* Gedeelde adresboeken
+* Contactgroepen
+* Foto-ondersteuning
+* Aangepaste velden
+* vCard 4.0 ondersteuning
 
-**Compatible Clients:**
+**Compatibele Clients:**
 
-* Apple Contacts (macOS, iOS)
+* Apple Contacten (macOS, iOS)
 * Mozilla Thunderbird
 * Evolution
-* GNOME Contacts
-* Any CardDAV-compatible client
+* GNOME Contacten
+* Elke CardDAV-compatibele client
 
-### Tasks and Reminders (CalDAV VTODO) {#tasks-and-reminders-caldav-vtodo}
+### Taken en Herinneringen (CalDAV VTODO) {#tasks-and-reminders-caldav-vtodo}
 
 > \[!TIP]
-> Forward Email supports tasks and reminders through CalDAV VTODO.
+> Forward Email ondersteunt taken en herinneringen via CalDAV VTODO.
 
-**VTODO** is part of the iCalendar format and allows task management through CalDAV.
+**VTODO** is onderdeel van het iCalendar-formaat en maakt taakbeheer mogelijk via CalDAV.
 
-**Key Features:**
+**Belangrijkste Kenmerken:**
 
-* Task creation and management
-* Due dates and priorities
-* Task completion tracking
-* Recurring tasks
-* Task lists/categories
+* Taak aanmaken en beheren
+* Vervaldatums en prioriteiten
+* Volgen van taakvoltooiing
+* Terugkerende taken
+* Takenlijsten/categorieën
 
-**Compatible Clients:**
+**Compatibele Clients:**
 
-* Apple Reminders (macOS, iOS)
-* Mozilla Thunderbird (with Lightning)
+* Apple Herinneringen (macOS, iOS)
+* Mozilla Thunderbird (met Lightning)
 * Evolution
 * GNOME To Do
-* Any CalDAV client with VTODO support
+* Elke CalDAV-client met VTODO-ondersteuning
 
-### CalDAV/CardDAV Synchronization Flow {#caldavcarddav-synchronization-flow}
+### CalDAV/CardDAV Synchronisatie Stroom {#caldavcarddav-synchronization-flow}
 
 ```mermaid
 sequenceDiagram
@@ -1086,92 +1079,91 @@ sequenceDiagram
     Note over iOS,Android: All devices stay in sync
 ```
 
-### Calendaring Extensions NOT Supported {#calendaring-extensions-not-supported}
+### Niet-ondersteunde Agenda-uitbreidingen {#calendaring-extensions-not-supported}
 
-The following calendaring extensions are NOT supported:
+De volgende agenda-uitbreidingen worden NIET ondersteund:
 
-| RFC | Title | Reason |
-| --------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [RFC 4918](https://datatracker.ietf.org/doc/html/rfc4918) | HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV) | CalDAV uses WebDAV concepts but doesn't implement full RFC 4918 |
-| [RFC 6578](https://datatracker.ietf.org/doc/html/rfc6578) | Collection Synchronization for WebDAV | Not implemented |
-| [RFC 3744](https://datatracker.ietf.org/doc/html/rfc3744) | WebDAV Access Control Protocol | Not implemented |
+| RFC                                                       | Titel                                                                | Reden                                                           |
+| --------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [RFC 4918](https://datatracker.ietf.org/doc/html/rfc4918) | HTTP-uitbreidingen voor Web Distributed Authoring en Versioning (WebDAV) | CalDAV gebruikt WebDAV-concepten maar implementeert niet de volledige RFC 4918 |
+| [RFC 6578](https://datatracker.ietf.org/doc/html/rfc6578) | Collectiesynchronisatie voor WebDAV                                  | Niet geïmplementeerd                                            |
+| [RFC 3744](https://datatracker.ietf.org/doc/html/rfc3744) | WebDAV Access Control Protocol                                       | Niet geïmplementeerd                                            |
 
 ---
 
-## Email Message Filtering {#email-message-filtering}
+
+## E-mailberichtfiltering {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email provides **full Sieve and ManageSieve support** for server-side email filtering. Create powerful rules to automatically sort, filter, forward, and respond to incoming messages.
+> Forward Email biedt **volledige Sieve- en ManageSieve-ondersteuning** voor server-side e-mailfiltering. Maak krachtige regels om binnenkomende berichten automatisch te sorteren, filteren, doorsturen en beantwoorden.
 
 ### Sieve (RFC 5228) {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) is a standardized, powerful scripting language for server-side email filtering. Forward Email implements comprehensive Sieve support with 24 extensions.
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) is een gestandaardiseerde, krachtige scripttaal voor server-side e-mailfiltering. Forward Email implementeert uitgebreide Sieve-ondersteuning met 24 extensies.
 
-**Source Code:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
+**Broncode:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### Core Sieve RFCs Supported {#core-sieve-rfcs-supported}
+#### Ondersteunde Kern-Sieve RFC's {#core-sieve-rfcs-supported}
 
-| RFC | Title | Status |
+| RFC                                                                                    | Titel                                                         | Status         |
 | -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Sieve: An Email Filtering Language | ✅ Full Support |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | Sieve Email Filtering: Reject and Extended Reject Extensions | ✅ Full Support |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | Sieve Email Filtering: Vacation Extension | ✅ Full Support |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | Sieve Vacation Extension: "Seconds" Parameter | ✅ Full Support |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | Sieve Email Filtering: Imap4flags Extension | ✅ Full Support |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | Sieve Email Filtering: Body Extension | ✅ Full Support |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | Sieve Email Filtering: Variables Extension | ✅ Full Support |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | Sieve Email Filtering: Relational Extension | ✅ Full Support |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Internet Application Protocol Collation Registry | ✅ Full Support |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | Sieve Extension: Copying Without Side Effects | ✅ Full Support |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | Sieve Email Filtering: Editheader Extension | ✅ Full Support |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | Sieve Email Filtering: Date and Index Extensions | ✅ Full Support |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | Sieve Email Filtering: Extension for Notifications | ✅ Full Support |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | Sieve Email Filtering: Environment Extension | ✅ Full Support |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Sieve Email Filtering: Extensions for Checking Mailbox Status | ✅ Full Support |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | Sieve Email Filtering: Delivering to Special-Use Mailboxes | ✅ Full Support |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | Sieve Email Filtering: Detecting Duplicate Deliveries | ✅ Full Support |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | Sieve Email Filtering: Ihave Extension | ✅ Full Support |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | Sieve Email Filtering: Subaddress Extension | ✅ Full Support |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve Email Filtering: Regular Expression Extension | ✅ Full Support |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: Een e-mailfiltertaal                                   | ✅ Volledige ondersteuning |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve e-mailfilteren: Reject en Extended Reject extensies    | ✅ Volledige ondersteuning |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve e-mailfilteren: Vakantie-extensie                      | ✅ Volledige ondersteuning |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve vakantie-extensie: "Seconds" parameter                  | ✅ Volledige ondersteuning |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve e-mailfilteren: Imap4flags extensie                     | ✅ Volledige ondersteuning |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve e-mailfilteren: Body extensie                           | ✅ Volledige ondersteuning |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve e-mailfilteren: Variabelen extensie                     | ✅ Volledige ondersteuning |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve e-mailfilteren: Relationele extensie                    | ✅ Volledige ondersteuning |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Internet Application Protocol Collation Registry              | ✅ Volledige ondersteuning |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve extensie: Kopiëren zonder bijwerkingen                  | ✅ Volledige ondersteuning |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve e-mailfilteren: Editheader extensie                     | ✅ Volledige ondersteuning |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve e-mailfilteren: Datum- en indexextensies                | ✅ Volledige ondersteuning |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve e-mailfilteren: Extensie voor notificaties              | ✅ Volledige ondersteuning |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve e-mailfilteren: Omgevings-extensie                      | ✅ Volledige ondersteuning |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve e-mailfilteren: Extensies voor mailboxstatuscontrole    | ✅ Volledige ondersteuning |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve e-mailfilteren: Bezorging aan speciale mailboxen       | ✅ Volledige ondersteuning |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve e-mailfilteren: Detectie van dubbele bezorgingen        | ✅ Volledige ondersteuning |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve e-mailfilteren: Ihave extensie                          | ✅ Volledige ondersteuning |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve e-mailfilteren: Subaddress extensie                     | ✅ Volledige ondersteuning |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve e-mailfilteren: Regular Expression extensie             | ✅ Volledige ondersteuning |
+#### Ondersteunde Sieve-extensies {#supported-sieve-extensions}
 
-#### Supported Sieve Extensions {#supported-sieve-extensions}
-
-| Extension | Description | Integration |
+| Extensie                    | Beschrijving                              | Integratie                                |
 | ---------------------------- | ---------------------------------------- | ------------------------------------------ |
-| `fileinto` | File messages into specific folders | Messages stored in specified IMAP folder |
-| `reject` / `ereject` | Reject messages with an error | SMTP rejection with bounce message |
-| `vacation` | Automatic vacation/out-of-office replies | Queued via Emails.queue with rate limiting |
-| `vacation-seconds` | Fine-grained vacation response intervals | TTL from `:seconds` parameter |
-| `imap4flags` | Set IMAP flags (\Seen, \Flagged, etc.) | Flags applied during message storage |
-| `envelope` | Test envelope sender/recipient | Access to SMTP envelope data |
-| `body` | Test message body content | Full body text matching |
-| `variables` | Store and use variables in scripts | Variable expansion with modifiers |
-| `relational` | Relational comparisons | `:count`, `:value` with gt/lt/eq |
-| `comparator-i;ascii-numeric` | Numeric comparisons | Numeric string comparison |
-| `copy` | Copy messages while redirecting | `:copy` flag on fileinto/redirect |
-| `editheader` | Add or delete message headers | Headers modified before storage |
-| `date` | Test date/time values | `currentdate` and header date tests |
-| `index` | Access specific header occurrences | `:index` for multi-value headers |
-| `regex` | Regular expression matching | Full regex support in tests |
-| `enotify` | Send notifications | `mailto:` notifications via Emails.queue |
-| `environment` | Access environment information | Domain, host, remote-ip from session |
-| `mailbox` | Test mailbox existence | `mailboxexists` test |
-| `special-use` | File into special-use mailboxes | Maps \Junk, \Trash, etc. to folders |
-| `duplicate` | Detect duplicate messages | Redis-based duplicate tracking |
-| `ihave` | Test for extension availability | Runtime capability checking |
-| `subaddress` | Access user+detail address parts | `:user` and `:detail` address parts |
+| `fileinto`                   | Plaats berichten in specifieke mappen      | Berichten opgeslagen in opgegeven IMAP-map   |
+| `reject` / `ereject`         | Weiger berichten met een foutmelding            | SMTP-afwijzing met bouncebericht         |
+| `vacation`                   | Automatische vakantie/afwezigheidsantwoorden | In wachtrij via Emails.queue met snelheidsbeperking |
+| `vacation-seconds`           | Fijnmazige vakantieantwoordintervallen | TTL vanuit `:seconds` parameter              |
+| `imap4flags`                 | Stel IMAP-vlaggen in (\Seen, \Flagged, enz.)   | Vlaggen toegepast tijdens berichtopslag       |
+| `envelope`                   | Test afzender/ontvanger van envelop           | Toegang tot SMTP-envelopgegevens               |
+| `body`                       | Test inhoud van berichttekst                | Volledige tekstmatching                    |
+| `variables`                  | Sla variabelen op en gebruik ze in scripts       | Variabele expansie met modificatoren          |
+| `relational`                 | Relationele vergelijkingen                   | `:count`, `:value` met gt/lt/eq           |
+| `comparator-i;ascii-numeric` | Numerieke vergelijkingen                      | Numerieke tekenreeksvergelijking                  |
+| `copy`                       | Kopieer berichten tijdens doorsturen          | `:copy` vlag bij fileinto/redirect          |
+| `editheader`                 | Voeg headers toe of verwijder ze            | Headers aangepast vóór opslag            |
+| `date`                       | Test datum/tijd waarden                    | `currentdate` en header datum tests        |
+| `index`                      | Toegang tot specifieke header-voorkomens       | `:index` voor headers met meerdere waarden           |
+| `regex`                      | Regular expression matching              | Volledige regex-ondersteuning in tests                |
+| `enotify`                    | Verstuur notificaties                       | `mailto:` notificaties via Emails.queue   |
+| `environment`                | Toegang tot omgevingsinformatie           | Domein, host, remote-ip vanuit sessie       |
+| `mailbox`                    | Test of mailbox bestaat                   | `mailboxexists` test                       |
+| `special-use`                | Plaats in speciale mailboxen          | Koppelt \Junk, \Trash, enz. aan mappen        |
+| `duplicate`                  | Detecteer dubbele berichten                | Redis-gebaseerde duplicaattracking             |
+| `ihave`                      | Test op beschikbaarheid van extensie          | Runtime capaciteitscontrole                |
+| `subaddress`                 | Toegang tot user+detail adresdelen         | `:user` en `:detail` adresdelen        |
 
-#### Sieve Extensions NOT Supported {#sieve-extensions-not-supported}
+#### Niet-ondersteunde Sieve-extensies {#sieve-extensions-not-supported}
 
-| Extension | RFC | Reason |
+| Extensie                               | RFC                                                       | Reden                                                           |
 | --------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Security risk (script injection), requires global script storage |
-| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Requires IMAP METADATA extension |
-| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Requires Sent folder integration |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Parser changes required for ${hex:} syntax |
-| `foreverypart` / `mime` / `extracttext` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Complex MIME tree manipulation |
-
-#### Sieve Processing Flow {#sieve-processing-flow}
+| `include`                               | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Beveiligingsrisico (scriptinjectie), vereist globale scriptopslag |
+| `mboxmetadata` / `servermetadata`       | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Vereist IMAP METADATA-extensie                                 |
+| `fcc`                                   | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Vereist integratie met Verzonden-map                                 |
+| `encoded-character`                     | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Parserwijzigingen vereist voor ${hex:} syntax                       |
+| `foreverypart` / `mime` / `extracttext` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Complexe MIME-boommanipulatie                                   |
+#### Sieve Verwerkingsstroom {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
@@ -1181,41 +1173,41 @@ sequenceDiagram
     participant SQLite as SQLite Storage
     participant Queue as Email Queue
 
-    MX->>Sieve: Incoming message
-    Sieve->>Sieve: Parse active script
-    Sieve->>Sieve: Execute rules
+    MX->>Sieve: Binnenkomend bericht
+    Sieve->>Sieve: Actief script parsen
+    Sieve->>Sieve: Regels uitvoeren
 
-    alt fileinto action
-        Sieve->>SQLite: Store in folder with flags
-    else redirect action
-        Sieve->>Queue: Queue for delivery
-    else vacation action
-        Sieve->>Redis: Check rate limit
-        Redis-->>Sieve: OK to send
-        Sieve->>Queue: Queue vacation reply
-    else reject action
-        Sieve->>MX: Return SMTP rejection
-    else discard action
-        Sieve->>Sieve: Drop message silently
+    alt fileinto actie
+        Sieve->>SQLite: Opslaan in map met vlaggen
+    else redirect actie
+        Sieve->>Queue: In wachtrij voor aflevering
+    else vacation actie
+        Sieve->>Redis: Controleer snelheidslimiet
+        Redis-->>Sieve: OK om te verzenden
+        Sieve->>Queue: Vakantieantwoord in wachtrij
+    else reject actie
+        Sieve->>MX: SMTP-afwijzing terugsturen
+    else discard actie
+        Sieve->>Sieve: Bericht stilletjes weggooien
     end
 
-    Sieve-->>MX: Processing complete
+    Sieve-->>MX: Verwerking voltooid
 ```
 
-#### Security Features {#security-features}
+#### Beveiligingsfuncties {#security-features}
 
-Forward Email's Sieve implementation includes comprehensive security protections:
+De Sieve-implementatie van Forward Email bevat uitgebreide beveiligingsmaatregelen:
 
-* **CVE-2023-26430 Protection**: Prevents redirect loops and mail bombing attacks
-* **Rate Limiting**: Limits on redirects (10/message, 100/day) and vacation replies
-* **Denylist Checking**: Redirect addresses checked against denylist
-* **Protected Headers**: DKIM, ARC, and authentication headers cannot be modified via editheader
-* **Script Size Limits**: Maximum script size enforced
-* **Execution Timeouts**: Scripts terminated if execution exceeds time limit
+* **CVE-2023-26430 Bescherming**: Voorkomt redirect-lussen en mail bombing aanvallen
+* **Snelheidslimieten**: Limieten op redirects (10/bericht, 100/dag) en vakantieantwoorden
+* **Denylist Controle**: Redirect-adressen worden gecontroleerd tegen denylist
+* **Beschermde Headers**: DKIM, ARC en authenticatieheaders kunnen niet worden aangepast via editheader
+* **Scriptgrootte Limieten**: Maximale scriptgrootte wordt afgedwongen
+* **Uitvoeringstijd Limieten**: Scripts worden beëindigd als uitvoeringstijd limiet wordt overschreden
 
-#### Example Sieve Scripts {#example-sieve-scripts}
+#### Voorbeeld Sieve Scripts {#example-sieve-scripts}
 
-**File newsletters into a folder:**
+**Nieuwsbrieven in een map plaatsen:**
 
 ```sieve
 require ["fileinto"];
@@ -1225,16 +1217,16 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Vacation auto-responder with fine-grained timing:**
+**Vakantie automatische beantwoorder met fijnmazige timing:**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
 
 vacation :seconds 3600 :subject "Out of Office"
-    "I'm currently away and will respond within 24 hours.";
+    "Ik ben momenteel afwezig en zal binnen 24 uur reageren.";
 ```
 
-**Spam filtering with flags:**
+**Spamfiltering met vlaggen:**
 
 ```sieve
 require ["fileinto", "imap4flags"];
@@ -1245,7 +1237,7 @@ if header :contains "X-Spam-Status" "Yes" {
 }
 ```
 
-**Complex filtering with variables:**
+**Complexe filtering met variabelen:**
 
 ```sieve
 require ["variables", "fileinto", "regex"];
@@ -1257,51 +1249,52 @@ if header :regex "From" "(.+)@example\\.com" {
 ```
 
 > \[!TIP]
-> For complete documentation, example scripts, and configuration instructions, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
+> Voor volledige documentatie, voorbeeldscripts en configuratie-instructies, zie [FAQ: Ondersteunt u Sieve e-mailfiltering?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 
-Forward Email provides full ManageSieve protocol support for remotely managing Sieve scripts.
+Forward Email biedt volledige ManageSieve protocolondersteuning voor het op afstand beheren van Sieve scripts.
 
-**Source Code:** [`managesieve-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/managesieve-server.js)
+**Broncode:** [`managesieve-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/managesieve-server.js)
 
-| RFC | Title | Status |
+| RFC                                                       | Titel                                          | Status         |
 | --------------------------------------------------------- | ---------------------------------------------- | -------------- |
-| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | A Protocol for Remotely Managing Sieve Scripts | ✅ Full Support |
+| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | Een protocol voor het op afstand beheren van Sieve scripts | ✅ Volledige ondersteuning |
 
-#### ManageSieve Server Configuration {#managesieve-server-configuration}
+#### ManageSieve Server Configuratie {#managesieve-server-configuration}
 
-| Setting | Value |
-| ------------------ | ----------------------- |
-| **Server** | `imap.forwardemail.net` |
-| **Port (STARTTLS)** | `2190` (recommended) |
-| **Port (Implicit TLS)** | `4190` |
-| **Authentication** | PLAIN (over TLS) |
+| Instelling              | Waarde                  |
+| ----------------------- | ----------------------- |
+| **Server**              | `imap.forwardemail.net` |
+| **Poort (STARTTLS)**    | `2190` (aanbevolen)     |
+| **Poort (Implicit TLS)**| `4190`                  |
+| **Authenticatie**       | PLAIN (over TLS)        |
 
-#### Supported ManageSieve Commands {#supported-managesieve-commands}
+> **Opmerking:** Poort 2190 gebruikt STARTTLS (upgrade van plain naar TLS) en is compatibel met de meeste ManageSieve clients, inclusief [sieve-connect](https://github.com/philpennock/sieve-connect). Poort 4190 gebruikt implicit TLS (TLS vanaf het begin van de verbinding) voor clients die dit ondersteunen.
 
-| Command | Description |
-| -------------- | --------------------------------------- |
-| `AUTHENTICATE` | Authenticate using PLAIN mechanism |
-| `CAPABILITY` | List server capabilities and extensions |
-| `HAVESPACE` | Check if script can be stored |
-| `PUTSCRIPT` | Upload a new script |
-| `LISTSCRIPTS` | List all scripts with active status |
-| `SETACTIVE` | Activate a script |
-| `GETSCRIPT` | Download a script |
-| `DELETESCRIPT` | Delete a script |
-| `RENAMESCRIPT` | Rename a script |
-| `CHECKSCRIPT` | Validate script syntax |
-| `NOOP` | Keep connection alive |
-| `LOGOUT` | End session |
+#### Ondersteunde ManageSieve Commando's {#supported-managesieve-commands}
 
-#### Compatible ManageSieve Clients {#compatible-managesieve-clients}
+| Commando       | Beschrijving                           |
+| -------------- | ------------------------------------ |
+| `AUTHENTICATE` | Authenticeren met PLAIN mechanisme    |
+| `CAPABILITY`   | Lijst van servermogelijkheden en extensies |
+| `HAVESPACE`    | Controleren of script kan worden opgeslagen |
+| `PUTSCRIPT`    | Uploaden van een nieuw script         |
+| `LISTSCRIPTS`  | Lijst van alle scripts met actieve status |
+| `SETACTIVE`    | Activeren van een script              |
+| `GETSCRIPT`    | Downloaden van een script             |
+| `DELETESCRIPT` | Verwijderen van een script            |
+| `RENAMESCRIPT` | Hernoemen van een script              |
+| `CHECKSCRIPT`  | Valideren van scriptsyntaxis          |
+| `NOOP`         | Verbinding actief houden              |
+| `LOGOUT`       | Sessie beëindigen                     |
+#### Compatibele ManageSieve Clients {#compatible-managesieve-clients}
 
-* **Thunderbird**: Built-in Sieve support via [Sieve add-on](https://addons.thunderbird.net/addon/sieve/)
+* **Thunderbird**: Ingebouwde Sieve-ondersteuning via de [Sieve add-on](https://addons.thunderbird.net/addon/sieve/)
 * **Roundcube**: [ManageSieve plugin](https://plugins.roundcube.net/packages/johndoh/sieve)
-* **KMail**: Native ManageSieve support
-* **sieve-connect**: Command-line client
-* **Any RFC 5804 compliant client**
+* **KMail**: Native ManageSieve-ondersteuning
+* **sieve-connect**: Commandoregelclient
+* **Elke RFC 5804 conforme client**
 
 #### ManageSieve Protocol Flow {#managesieve-protocol-flow}
 
@@ -1318,7 +1311,7 @@ sequenceDiagram
     Client->>MS: AUTHENTICATE "PLAIN" [credentials]
     MS->>DB: Verify credentials
     DB-->>MS: OK
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: LISTSCRIPTS
     MS->>DB: Query SieveScripts
@@ -1328,39 +1321,40 @@ sequenceDiagram
     Client->>MS: PUTSCRIPT "newfilter" {script}
     MS->>MS: Validate syntax
     MS->>DB: Store script
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: SETACTIVE "newfilter"
     MS->>DB: Update active script
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: LOGOUT
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 ```
 
 #### Web Interface and API {#web-interface-and-api}
 
-In addition to ManageSieve, Forward Email provides:
+Naast ManageSieve biedt Forward Email:
 
-* **Web Dashboard**: Create and manage Sieve scripts through the web interface at My Account → Domains → Aliases → Sieve Scripts
-* **REST API**: Programmatic access to Sieve script management via the [Forward Email API](/api#sieve-scripts)
+* **Web Dashboard**: Maak en beheer Sieve-scripts via de webinterface bij Mijn Account → Domeinen → Aliassen → Sieve Scripts
+* **REST API**: Programmatic toegang tot Sieve-scriptbeheer via de [Forward Email API](/api#sieve-scripts)
 
 > \[!TIP]
-> For detailed setup instructions and client configuration, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
+> Voor gedetailleerde installatie-instructies en clientconfiguratie, zie [FAQ: Ondersteunt u Sieve e-mailfiltering?](/faq#do-you-support-sieve-email-filtering)
 
 ---
 
-## Storage Optimization {#storage-optimization}
+
+## Opslagoptimalisatie {#storage-optimization}
 
 > \[!IMPORTANT]
-> **Industry-First Storage Technology:** Forward Email is the **only email provider in the world** that combines attachment deduplication with Brotli compression on email content. This dual-layer optimization gives you **2-3x more effective storage** compared to traditional email providers.
+> **Eerste in de industrie opslagtechnologie:** Forward Email is de **enige e-mailprovider ter wereld** die bijlage-deduplicatie combineert met Brotli-compressie op e-mailinhoud. Deze dubbele optimalisatie geeft je **2-3x meer effectieve opslag** vergeleken met traditionele e-mailproviders.
 
-Forward Email implements two revolutionary storage optimization techniques that dramatically reduce mailbox size while maintaining full RFC compliance and message fidelity:
+Forward Email implementeert twee revolutionaire opslagoptimalisatietechnieken die de mailboxgrootte drastisch verminderen terwijl volledige RFC-naleving en berichtgetrouwheid behouden blijven:
 
-1. **Attachment Deduplication** - Eliminates duplicate attachments across all emails
-2. **Brotli Compression** - Reduces storage by 46-86% for metadata and 50% for attachments
+1. **Bijlage-deduplicatie** - Elimineert dubbele bijlagen over alle e-mails heen
+2. **Brotli-compressie** - Vermindert opslag met 46-86% voor metadata en 50% voor bijlagen
 
-### Architecture: Dual-Layer Storage Optimization {#architecture-dual-layer-storage-optimization}
+### Architectuur: Dubbele Laag Opslagoptimalisatie {#architecture-dual-layer-storage-optimization}
 
 ```mermaid
 graph TB
@@ -1390,113 +1384,113 @@ graph TB
 
 ---
 
-## Attachment Deduplication {#attachment-deduplication}
 
-Forward Email implements attachment deduplication based on [WildDuck's proven approach](https://docs.wildduck.email/docs/in-depth/attachment-deduplication/), adapted for SQLite storage.
+## Bijlage-deduplicatie {#attachment-deduplication}
+
+Forward Email implementeert bijlage-deduplicatie gebaseerd op de [bewezen aanpak van WildDuck](https://docs.wildduck.email/docs/in-depth/attachment-deduplication/), aangepast voor SQLite-opslag.
 
 > \[!NOTE]
-> **What is Deduplicated:** "Attachment" refers to the **encoded** MIME node contents (base64 or quoted-printable), not the decoded file. This preserves DKIM and GPG signature validity.
+> **Wat wordt gededupliceerd:** "Bijlage" verwijst naar de **gecodeerde** MIME-node-inhoud (base64 of quoted-printable), niet het gedecodeerde bestand. Dit behoudt de geldigheid van DKIM- en GPG-handtekeningen.
 
-### How It Works {#how-it-works}
+### Hoe het werkt {#how-it-works}
 
-**WildDuck's Original Implementation (MongoDB GridFS):**
+**WildDuck's originele implementatie (MongoDB GridFS):**
 
-> Wild Duck IMAP server de-duplicates attachments. "Attachment" in this case means the base64 or quoted-printable encoded mime node contents, not the decoded file. Even though using encoded content means a lot of false negatives (the same file in different emails might be counted as different attachment) it is needed to guarantee the validity of different signature schemes (DKIM, GPG etc.). A message retrieved from Wild Duck looks exactly the same as the message that was stored even though Wild Duck parses the message into a tree-like object and rebuilds the message when retrieving.
+> Wild Duck IMAP-server dedupliceert bijlagen. "Bijlage" betekent in dit geval de base64- of quoted-printable-gecodeerde mime-node-inhoud, niet het gedecodeerde bestand. Hoewel het gebruik van gecodeerde inhoud veel false negatives veroorzaakt (hetzelfde bestand in verschillende e-mails kan als verschillende bijlage worden geteld), is dit nodig om de geldigheid van verschillende handtekeningmethoden (DKIM, GPG, enz.) te garanderen. Een bericht dat van Wild Duck wordt opgehaald, ziet er precies hetzelfde uit als het bericht dat is opgeslagen, ook al parseert Wild Duck het bericht in een boomachtige structuur en bouwt het bericht opnieuw op bij het ophalen.
+**Forward Email's SQLite-implementatie:**
 
-**Forward Email's SQLite Implementation:**
+Forward Email past deze aanpak aan voor versleutelde SQLite-opslag met het volgende proces:
 
-Forward Email adapts this approach for encrypted SQLite storage with the following process:
+1. **Hash-berekening**: Wanneer een bijlage wordt gevonden, wordt een hash berekend met behulp van de [`rev-hash`](https://github.com/sindresorhus/rev-hash) bibliotheek van de bijlage-inhoud
+2. **Opzoeken**: Controleren of een bijlage met een overeenkomende hash bestaat in de tabel `Attachments`
+3. **Referentietelling**:
+   * Als deze bestaat: Verhoog referentieteller met 1 en magische teller met een willekeurig getal
+   * Als nieuw: Maak een nieuwe bijlagevermelding aan met teller = 1
+4. **Veiligheid bij verwijderen**: Gebruikt een dual-teller systeem (referentie + magisch) om valse positieven te voorkomen
+5. **Garbage Collection**: Bijlagen worden onmiddellijk verwijderd wanneer beide tellers nul bereiken
 
-1. **Hash Calculation**: When an attachment is found, a hash is calculated using the [`rev-hash`](https://github.com/sindresorhus/rev-hash) library from the attachment body
-2. **Lookup**: Check if an attachment with matching hash exists in the `Attachments` table
-3. **Reference Counting**:
-   * If exists: Increment reference counter by 1 and magic counter by random number
-   * If new: Create new attachment entry with counter = 1
-4. **Deletion Safety**: Uses dual-counter system (reference + magic) to prevent false positives
-5. **Garbage Collection**: Attachments are deleted immediately when both counters reach zero
+**Broncode:** [`helpers/attachment-storage.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/attachment-storage.js)
 
-**Source Code:** [`helpers/attachment-storage.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/attachment-storage.js)
-
-### Deduplication Flow {#deduplication-flow}
+### Deduplicatieproces {#deduplication-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Email as New Email
+    participant Email as Nieuwe E-mail
     participant Parser as MIME Parser
     participant Hash as Hash Calculator
     participant DB as SQLite Database
     participant Storage as Attachment Storage
 
-    Email->>Parser: Parse MIME tree
-    Parser->>Hash: Extract attachment body
-    Hash->>Hash: Calculate rev-hash
+    Email->>Parser: Parseer MIME-boom
+    Parser->>Hash: Extraheer bijlage-inhoud
+    Hash->>Hash: Bereken rev-hash
     Hash->>DB: Query: SELECT * WHERE hash=?
 
-    alt Attachment Exists
-        DB-->>Storage: Found (increment counters)
-        Storage->>DB: UPDATE counter+1, magic+random
-        DB-->>Email: Reference existing attachment
-    else New Attachment
-        Storage->>DB: INSERT new attachment
-        DB-->>Email: Store new attachment
+    alt Bijlage bestaat
+        DB-->>Storage: Gevonden (verhoog tellers)
+        Storage->>DB: UPDATE teller+1, magisch+random
+        DB-->>Email: Verwijs naar bestaande bijlage
+    else Nieuwe bijlage
+        Storage->>DB: INSERT nieuwe bijlage
+        DB-->>Email: Sla nieuwe bijlage op
     end
 ```
 
-### Magic Number System {#magic-number-system}
+### Magisch Getallensysteem {#magic-number-system}
 
-Forward Email uses WildDuck's "magic number" system (inspired by [Mail.ru](https://github.com/zone-eu/wildduck)) to prevent false positives during deletion:
+Forward Email gebruikt WildDuck's "magisch getal" systeem (geïnspireerd door [Mail.ru](https://github.com/zone-eu/wildduck)) om valse positieven bij verwijderen te voorkomen:
 
-* Every message gets a **random number** assigned
-* Attachment's **magic counter** is incremented by that random number when message is added
-* Magic counter is decremented by the same number when message is deleted
-* Attachment is only deleted when **both counters** (reference + magic) reach zero
+* Elk bericht krijgt een **willekeurig getal** toegewezen
+* De **magische teller** van de bijlage wordt verhoogd met dat willekeurige getal wanneer het bericht wordt toegevoegd
+* De magische teller wordt verlaagd met hetzelfde getal wanneer het bericht wordt verwijderd
+* De bijlage wordt alleen verwijderd wanneer **beide tellers** (referentie + magisch) nul bereiken
 
-This dual-counter system ensures that if something goes wrong during deletion (e.g., crash, network error), the attachment is not deleted prematurely.
+Dit dual-teller systeem zorgt ervoor dat als er iets misgaat tijdens het verwijderen (bijv. crash, netwerkfout), de bijlage niet voortijdig wordt verwijderd.
 
-### Key Differences: WildDuck vs Forward Email {#key-differences-wildduck-vs-forward-email}
+### Belangrijkste verschillen: WildDuck vs Forward Email {#key-differences-wildduck-vs-forward-email}
 
-| Feature | WildDuck (MongoDB) | Forward Email (SQLite) |
+| Kenmerk                | WildDuck (MongoDB)       | Forward Email (SQLite)       |
 | ---------------------- | ------------------------ | ---------------------------- |
-| **Storage Backend** | MongoDB GridFS (chunked) | SQLite BLOB (direct) |
-| **Hash Algorithm** | SHA256 | rev-hash (SHA-256 based) |
-| **Reference Counting** | ✅ Yes | ✅ Yes |
-| **Magic Numbers** | ✅ Yes (Mail.ru inspired) | ✅ Yes (same system) |
-| **Garbage Collection** | Delayed (separate job) | Immediate (on zero counters) |
-| **Compression** | ❌ None | ✅ Brotli (see below) |
-| **Encryption** | ❌ Optional | ✅ Always (ChaCha20-Poly1305) |
+| **Opslag Backend**     | MongoDB GridFS (in stukken) | SQLite BLOB (direct)         |
+| **Hash-algoritme**     | SHA256                   | rev-hash (gebaseerd op SHA-256) |
+| **Referentietelling**  | ✅ Ja                    | ✅ Ja                        |
+| **Magische getallen**  | ✅ Ja (Mail.ru geïnspireerd) | ✅ Ja (zelfde systeem)          |
+| **Garbage Collection** | Uitgesteld (apart proces) | Direct (bij nul tellers)     |
+| **Compressie**         | ❌ Geen                  | ✅ Brotli (zie hieronder)    |
+| **Encryptie**          | ❌ Optioneel             | ✅ Altijd (ChaCha20-Poly1305) |
 
 ---
 
-## Brotli Compression {#brotli-compression}
+
+## Brotli-compressie {#brotli-compression}
 
 > \[!IMPORTANT]
-> **World's First:** Forward Email is the **only email service in the world** that uses Brotli compression on email content. This provides **46-86% storage savings** on top of attachment deduplication.
+> **Wereldprimeur:** Forward Email is de **enige e-maildienst ter wereld** die Brotli-compressie gebruikt op e-mailinhoud. Dit levert **46-86% opslagbesparing** bovenop bijlage-deduplicatie.
 
-Forward Email implements Brotli compression for both attachment bodies and message metadata, providing massive storage savings while maintaining backwards compatibility.
+Forward Email implementeert Brotli-compressie voor zowel bijlage-inhoud als berichtmetadata, wat enorme opslagbesparingen oplevert terwijl de achterwaartse compatibiliteit behouden blijft.
 
-**Implementation:** [`helpers/msgpack-helpers.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/msgpack-helpers.js)
+**Implementatie:** [`helpers/msgpack-helpers.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/msgpack-helpers.js)
 
-### What Gets Compressed {#what-gets-compressed}
+### Wat wordt gecomprimeerd {#what-gets-compressed}
 
-**1. Attachment Bodies** (`encodeAttachmentBody`)
+**1. Bijlage-inhoud** (`encodeAttachmentBody`)
 
-* **Old formats**: Hex-encoded string (2x size) or raw Buffer
-* **New format**: Brotli-compressed Buffer with "FEBR" magic header
-* **Compression decision**: Only compresses if it saves space (accounts for 4-byte header)
-* **Storage savings**: Up to **50%** (hex → native BLOB)
+* **Oude formaten**: Hex-gecodeerde string (2x grootte) of raw Buffer
+* **Nieuw formaat**: Brotli-gecomprimeerde Buffer met "FEBR" magische header
+* **Compressiebeslissing**: Comprimeert alleen als het ruimte bespaart (houdt rekening met 4-byte header)
+* **Opslagbesparing**: Tot **50%** (hex → native BLOB)
+**2. Bericht Metadata** (`encodeMetadata`)
 
-**2. Message Metadata** (`encodeMetadata`)
+Bevat: `mimeTree`, `headers`, `envelope`, `flags`
 
-Includes: `mimeTree`, `headers`, `envelope`, `flags`
+* **Oud formaat**: JSON tekststring
+* **Nieuw formaat**: Brotli-gecomprimeerde Buffer
+* **Opslagbesparing**: **46-86%** afhankelijk van de complexiteit van het bericht
 
-* **Old format**: JSON text string
-* **New format**: Brotli-compressed Buffer
-* **Storage savings**: **46-86%** depending on message complexity
-
-### Compression Configuration {#compression-configuration}
+### Compressie Configuratie {#compression-configuration}
 
 ```javascript
-// Brotli compression options optimized for speed (level 4 is a good balance)
+// Brotli compressie opties geoptimaliseerd voor snelheid (niveau 4 is een goede balans)
 const BROTLI_COMPRESS_OPTIONS = {
   params: {
     [zlib.constants.BROTLI_PARAM_QUALITY]: 4
@@ -1504,44 +1498,44 @@ const BROTLI_COMPRESS_OPTIONS = {
 };
 ```
 
-**Why Level 4?**
+**Waarom Niveau 4?**
 
-* **Fast compression/decompression**: Sub-millisecond processing
-* **Good compression ratio**: 46-86% savings
-* **Balanced performance**: Optimal for real-time email operations
+* **Snelle compressie/decompressie**: Sub-millisecond verwerking
+* **Goede compressieverhouding**: 46-86% besparing
+* **Gebalanceerde prestaties**: Optimaal voor realtime e-mail operaties
 
 ### Magic Header: "FEBR" {#magic-header-febr}
 
-Forward Email uses a 4-byte magic header to identify compressed attachment bodies:
+Forward Email gebruikt een 4-byte magic header om gecomprimeerde bijlage-inhoud te identificeren:
 
 ```
 "FEBR" = Forward Email BRotli
 Hex: 0x46 0x45 0x42 0x52
 ```
 
-**Why a magic header?**
+**Waarom een magic header?**
 
-* **Format detection**: Instantly identify compressed vs uncompressed data
-* **Backwards compatibility**: Old hex strings and raw Buffers still work
-* **Collision avoidance**: "FEBR" is unlikely to appear at the start of legitimate attachment data
+* **Formaatdetectie**: Direct gecomprimeerde vs ongecomprimeerde data identificeren
+* **Achterwaartse compatibiliteit**: Oude hex strings en ruwe Buffers werken nog steeds
+* **Botsingsvermijding**: "FEBR" zal waarschijnlijk niet aan het begin van legitieme bijlagegegevens voorkomen
 
-### Compression Process {#compression-process}
+### Compressie Proces {#compression-process}
 
 ```mermaid
 flowchart TB
-    Input[Attachment Body or Metadata]
-    CheckType{Data Type?}
-    Compress[Brotli Compress<br/>Level 4]
-    CheckSize{Compressed<br/>Smaller?}
-    AddHeader[Add FEBR<br/>Magic Header]
+    Input[Bijlage Inhoud of Metadata]
+    CheckType{Datatype?}
+    Compress[Brotli Comprimeren<br/>Niveau 4]
+    CheckSize{Gecomprimeerd<br/>Kleiner?}
+    AddHeader[Voeg FEBR<br/>Magic Header toe]
     Store[(SQLite BLOB)]
 
     Input --> CheckType
-    CheckType -->|Attachment| Compress
+    CheckType -->|Bijlage| Compress
     CheckType -->|Metadata| Compress
     Compress --> CheckSize
-    CheckSize -->|Yes| AddHeader
-    CheckSize -->|No| StoreRaw[Store Uncompressed]
+    CheckSize -->|Ja| AddHeader
+    CheckSize -->|Nee| StoreRaw[Ongecomprimeerd Opslaan]
     AddHeader --> Store
     StoreRaw --> Store
 
@@ -1549,298 +1543,296 @@ flowchart TB
     style Store fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
-### Decompression Process {#decompression-process}
+### Decompressie Proces {#decompression-process}
 
 ```mermaid
 flowchart TB
-    Read[(Read from SQLite)]
-    CheckFormat{Format?}
-    HasMagic{Has FEBR<br/>Header?}
-    Decompress[Brotli Decompress]
-    ParseJSON[Parse JSON]
-    HexDecode[Hex Decode]
-    Return[Return Data]
+    Read[(Lezen uit SQLite)]
+    CheckFormat{Formaat?}
+    HasMagic{Heeft FEBR<br/>Header?}
+    Decompress[Brotli Decomprimeren]
+    ParseJSON[JSON Parseren]
+    HexDecode[Hex Decoderen]
+    Return[Data Teruggeven]
 
     Read --> CheckFormat
     CheckFormat -->|Buffer| HasMagic
     CheckFormat -->|String| IsJSON{Is JSON?}
-    HasMagic -->|Yes| Decompress
-    HasMagic -->|No| Return
+    HasMagic -->|Ja| Decompress
+    HasMagic -->|Nee| Return
     Decompress --> Return
-    IsJSON -->|Yes| ParseJSON
-    IsJSON -->|No| HexDecode
+    IsJSON -->|Ja| ParseJSON
+    IsJSON -->|Nee| HexDecode
     ParseJSON --> Return
     HexDecode --> Return
 
     style Decompress fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-### Backwards Compatibility {#backwards-compatibility}
+### Achterwaartse Compatibiliteit {#backwards-compatibility}
 
-All decode functions **auto-detect** the storage format:
+Alle decode functies **detecteren automatisch** het opslagformaat:
 
-| Format | Detection Method | Handling |
-| --------------------- | -------------------------------------- | --------------------------------------------- |
-| **Brotli-compressed** | Check for "FEBR" magic header | Decompress with `zlib.brotliDecompressSync()` |
-| **Raw Buffer** | `Buffer.isBuffer()` without magic | Return as-is |
-| **Hex string** | Check for even length + [0-9a-f] chars | Decode with `Buffer.from(value, 'hex')` |
-| **JSON string** | Check for `{` or `[` first character | Parse with `JSON.parse()` |
+| Formaat               | Detectiemethode                      | Afhandeling                                   |
+| --------------------- | ---------------------------------- | --------------------------------------------- |
+| **Brotli-gecomprimeerd** | Controleren op "FEBR" magic header | Decomprimeren met `zlib.brotliDecompressSync()` |
+| **Ruwe Buffer**        | `Buffer.isBuffer()` zonder magic    | Ongewijzigd teruggeven                         |
+| **Hex string**         | Controleren op even lengte + [0-9a-f] tekens | Decoderen met `Buffer.from(value, 'hex')`     |
+| **JSON string**        | Controleren op eerste karakter `{` of `[` | Parseren met `JSON.parse()`                    |
 
-This ensures **zero data loss** during migration from old to new storage formats.
+Dit zorgt voor **nul dataverlies** tijdens migratie van oude naar nieuwe opslagformaten.
 
-### Storage Savings Statistics {#storage-savings-statistics}
+### Opslagbesparingsstatistieken {#storage-savings-statistics}
 
-**Measured savings from production data:**
+**Gemeten besparingen uit productiedata:**
 
-| Data Type | Old Format | New Format | Savings |
-| --------------------- | ----------------------- | ---------------------- | ---------- |
-| **Attachment bodies** | Hex-encoded string (2x) | Brotli-compressed BLOB | **50%** |
-| **Message metadata** | JSON text | Brotli-compressed BLOB | **46-86%** |
-| **Mailbox flags** | JSON text | Brotli-compressed BLOB | **60-80%** |
+| Datatype              | Oud Formaat             | Nieuw Formaat          | Besparing  |
+| --------------------- | ----------------------- | --------------------- | ---------- |
+| **Bijlage-inhoud**    | Hex-gecodeerde string (2x) | Brotli-gecomprimeerde BLOB | **50%**    |
+| **Bericht metadata**  | JSON tekst              | Brotli-gecomprimeerde BLOB | **46-86%** |
+| **Mailbox flags**     | JSON tekst              | Brotli-gecomprimeerde BLOB | **60-80%** |
 
-**Source:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
+**Bron:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
 
-### Migration Process {#migration-process}
+### Migratie Proces {#migration-process}
 
-Forward Email provides automatic, idempotent migration from old to new storage formats:
-
-```javascript
-// Migration statistics tracked:
+Forward Email biedt automatische, idempotente migratie van oude naar nieuwe opslagformaten:
+// Migratiestatistieken bijgehouden:
 {
   attachmentsMigrated: 0,
   messagesMigrated: 0,
   mailboxesMigrated: 0,
-  bytesSaved: 0  // Total bytes saved from compression
+  bytesSaved: 0  // Totaal aantal bytes bespaard door compressie
 }
 ```
 
-**Migration steps:**
+**Migratiestappen:**
 
-1. Attachment bodies: hex encoding → native BLOB (50% savings)
-2. Message metadata: JSON text → brotli-compressed BLOB (46-86% savings)
-3. Mailbox flags: JSON text → brotli-compressed BLOB (60-80% savings)
+1. Bijlage-inhoud: hex-codering → native BLOB (50% besparing)
+2. Berichtmetadata: JSON-tekst → brotli-gecomprimeerde BLOB (46-86% besparing)
+3. Postvakvlaggen: JSON-tekst → brotli-gecomprimeerde BLOB (60-80% besparing)
 
-**Source:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
+**Bron:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
 
 ---
 
-### Combined Storage Efficiency {#combined-storage-efficiency}
+### Gecombineerde opslag efficiëntie {#combined-storage-efficiency}
 
 > \[!TIP]
-> **Real-World Impact:** With attachment deduplication + Brotli compression, Forward Email users get **2-3x more effective storage** compared to traditional email providers.
+> **Reële impact:** Met bijlage-deduplicatie + Brotli-compressie krijgen Forward Email-gebruikers **2-3x effectievere opslag** vergeleken met traditionele e-mailproviders.
 
-**Example Scenario:**
+**Voorbeeldscenario:**
 
-Traditional email provider (1GB mailbox):
+Traditionele e-mailprovider (1GB postvak):
 
-* 1GB disk space = 1GB of emails
-* No deduplication: Same attachment stored 10 times = 10x storage waste
-* No compression: Full JSON metadata stored = 2-3x storage waste
+* 1GB schijfruimte = 1GB aan e-mails
+* Geen deduplicatie: Zelfde bijlage 10 keer opgeslagen = 10x opslagverspilling
+* Geen compressie: Volledige JSON-metadata opgeslagen = 2-3x opslagverspilling
 
-Forward Email (1GB mailbox):
+Forward Email (1GB postvak):
 
-* 1GB disk space ≈ **2-3GB of emails** (effective storage)
-* Deduplication: Same attachment stored once, referenced 10 times
-* Compression: 46-86% savings on metadata, 50% on attachments
-* Encryption: ChaCha20-Poly1305 (no storage overhead)
+* 1GB schijfruimte ≈ **2-3GB aan e-mails** (effectieve opslag)
+* Deduplicatie: Zelfde bijlage één keer opgeslagen, 10 keer gerefereerd
+* Compressie: 46-86% besparing op metadata, 50% op bijlagen
+* Encryptie: ChaCha20-Poly1305 (geen opslagoverhead)
 
-**Comparison Table:**
+**Vergelijkingstabel:**
 
-| Provider | Storage Technology | Effective Storage (1GB mailbox) |
+| Provider          | Opslagtechnologie                           | Effectieve opslag (1GB postvak) |
 | ----------------- | -------------------------------------------- | ------------------------------- |
-| Gmail | None | 1GB |
-| iCloud | None | 1GB |
-| Outlook.com | None | 1GB |
-| Fastmail | None | 1GB |
-| ProtonMail | Encryption only | 1GB |
-| Tutanota | Encryption only | 1GB |
-| **Forward Email** | **Deduplication + Compression + Encryption** | **2-3GB** ✨ |
+| Gmail             | Geen                                         | 1GB                             |
+| iCloud            | Geen                                         | 1GB                             |
+| Outlook.com       | Geen                                         | 1GB                             |
+| Fastmail          | Geen                                         | 1GB                             |
+| ProtonMail        | Alleen encryptie                             | 1GB                             |
+| Tutanota          | Alleen encryptie                             | 1GB                             |
+| **Forward Email** | **Deduplicatie + Compressie + Encryptie**   | **2-3GB** ✨                     |
 
-### Technical Implementation Details {#technical-implementation-details}
+### Technische implementatiedetails {#technical-implementation-details}
 
-**Performance:**
+**Prestaties:**
 
-* Brotli level 4: Sub-millisecond compression/decompression
-* No performance penalty from compression
-* SQLite FTS5: Sub-50ms search with NVMe SSD
+* Brotli niveau 4: Compressie/decompressie in sub-milliseconden
+* Geen prestatieverlies door compressie
+* SQLite FTS5: Zoekopdrachten onder 50ms met NVMe SSD
 
-**Security:**
+**Beveiliging:**
 
-* Compression happens **after** encryption (SQLite database is encrypted)
-* ChaCha20-Poly1305 encryption + Brotli compression
-* Zero-knowledge: Only user has decryption password
+* Compressie gebeurt **na** encryptie (SQLite database is versleuteld)
+* ChaCha20-Poly1305 encryptie + Brotli compressie
+* Zero-knowledge: Alleen gebruiker heeft het decryptiewachtwoord
 
-**RFC Compliance:**
+**RFC-naleving:**
 
-* Messages retrieved look **exactly the same** as stored
-* DKIM signatures remain valid (encoded content preserved)
-* GPG signatures remain valid (no modification to signed content)
+* Opgehaalde berichten zien er **exact hetzelfde** uit als opgeslagen
+* DKIM-handtekeningen blijven geldig (gecodeerde inhoud behouden)
+* GPG-handtekeningen blijven geldig (geen wijziging aan ondertekende inhoud)
 
-### Why No Other Provider Does This {#why-no-other-provider-does-this}
+### Waarom geen andere provider dit doet {#why-no-other-provider-does-this}
 
-**Complexity:**
+**Complexiteit:**
 
-* Requires deep integration with storage layer
-* Backwards compatibility is challenging
-* Migration from old formats is complex
+* Vereist diepe integratie met opslaglaag
+* Achterwaartse compatibiliteit is uitdagend
+* Migratie van oude formaten is complex
 
-**Performance concerns:**
+**Prestatiezorgen:**
 
-* Compression adds CPU overhead (solved with Brotli level 4)
-* Decompression on every read (solved with SQLite caching)
+* Compressie voegt CPU-overhead toe (opgelost met Brotli niveau 4)
+* Decompressie bij elke leesactie (opgelost met SQLite caching)
 
-**Forward Email's Advantage:**
+**Voordeel van Forward Email:**
 
-* Built from the ground up with optimization in mind
-* SQLite allows direct BLOB manipulation
-* Encrypted per-user databases enable safe compression
-
----
+* Vanaf de grond af aan gebouwd met optimalisatie in gedachten
+* SQLite maakt directe BLOB-manipulatie mogelijk
+* Versleutelde per-gebruiker databases maken veilige compressie mogelijk
 
 ---
 
-## Modern Features {#modern-features}
+---
 
-## Complete REST API for Email Management {#complete-rest-api-for-email-management}
+
+## Moderne functies {#modern-features}
+
+
+## Volledige REST API voor e-mailbeheer {#complete-rest-api-for-email-management}
 
 > \[!TIP]
-> Forward Email provides a comprehensive REST API with 39 endpoints for programmatic email management.
+> Forward Email biedt een uitgebreide REST API met 39 eindpunten voor programmatisch e-mailbeheer.
 
 > \[!TIP]
-> **Unique Industry Feature:** Unlike every other email service, Forward Email provides complete programmatic access to your mailbox, calendar, contacts, messages, and folders via a comprehensive REST API. This is direct interaction with your encrypted SQLite database file storing all your data.
+> **Unieke functie in de industrie:** In tegenstelling tot alle andere e-mailservices biedt Forward Email volledige programmatische toegang tot je postvak, agenda, contacten, berichten en mappen via een uitgebreide REST API. Dit is directe interactie met je versleutelde SQLite databasebestand waarin al je data is opgeslagen.
 
-Forward Email offers a complete REST API that provides unprecedented access to your email data. No other email service (including Gmail, iCloud, Outlook, ProtonMail, Tuta, or Fastmail) offers this level of comprehensive, direct database access.
+Forward Email biedt een complete REST API die ongekende toegang geeft tot je e-mailgegevens. Geen enkele andere e-mailservice (inclusief Gmail, iCloud, Outlook, ProtonMail, Tuta of Fastmail) biedt dit niveau van uitgebreide, directe database-toegang.
+**API Documentatie:** <https://forwardemail.net/en/email-api>
 
-**API Documentation:** <https://forwardemail.net/en/email-api>
+### API Categorieën (39 Eindpunten) {#api-categories-39-endpoints}
 
-### API Categories (39 Endpoints) {#api-categories-39-endpoints}
+**1. Berichten API** (5 eindpunten) - Volledige CRUD-bewerkingen op e-mailberichten:
 
-**1. Messages API** (5 endpoints) - Full CRUD operations on email messages:
+* `GET /v1/messages` - Lijst berichten met 15+ geavanceerde zoekparameters (geen andere dienst biedt dit)
+* `POST /v1/messages` - Berichten aanmaken/verzenden
+* `GET /v1/messages/:id` - Bericht ophalen
+* `PUT /v1/messages/:id` - Bericht bijwerken (vlaggen, mappen)
+* `DELETE /v1/messages/:id` - Bericht verwijderen
 
-* `GET /v1/messages` - List messages with 15+ advanced search parameters (no other service offers this)
-* `POST /v1/messages` - Create/send messages
-* `GET /v1/messages/:id` - Retrieve message
-* `PUT /v1/messages/:id` - Update message (flags, folders)
-* `DELETE /v1/messages/:id` - Delete message
-
-*Example: Find all invoices from last quarter with attachments:*
+*Voorbeeld: Vind alle facturen van het afgelopen kwartaal met bijlagen:*
 
 ```bash
 curl -u "alias@domain.com:password" \
   "https://api.forwardemail.net/v1/messages?q=subject:invoice+has:attachment+after:2024-01-01+before:2024-04-01"
 ```
 
-See [Advanced Search Documentation](https://forwardemail.net/en/email-api)
+Zie [Geavanceerde Zoekdocumentatie](https://forwardemail.net/en/email-api)
 
-**2. Folders API** (5 endpoints) - Full IMAP folder management via REST:
+**2. Mappen API** (5 eindpunten) - Volledig IMAP mapbeheer via REST:
 
-* `GET /v1/folders` - List all folders
-* `POST /v1/folders` - Create folder
-* `GET /v1/folders/:id` - Retrieve folder
-* `PUT /v1/folders/:id` - Update folder
-* `DELETE /v1/folders/:id` - Delete folder
+* `GET /v1/folders` - Lijst alle mappen
+* `POST /v1/folders` - Map aanmaken
+* `GET /v1/folders/:id` - Map ophalen
+* `PUT /v1/folders/:id` - Map bijwerken
+* `DELETE /v1/folders/:id` - Map verwijderen
 
-**3. Contacts API** (5 endpoints) - CardDAV contact storage via REST:
+**3. Contacten API** (5 eindpunten) - CardDAV contactopslag via REST:
 
-* `GET /v1/contacts` - List contacts
-* `POST /v1/contacts` - Create contact (vCard format)
-* `GET /v1/contacts/:id` - Retrieve contact
-* `PUT /v1/contacts/:id` - Update contact
-* `DELETE /v1/contacts/:id` - Delete contact
+* `GET /v1/contacts` - Lijst contacten
+* `POST /v1/contacts` - Contact aanmaken (vCard-formaat)
+* `GET /v1/contacts/:id` - Contact ophalen
+* `PUT /v1/contacts/:id` - Contact bijwerken
+* `DELETE /v1/contacts/:id` - Contact verwijderen
 
-**4. Calendars API** (5 endpoints) - Calendar container management:
+**4. Agenda's API** (5 eindpunten) - Beheer van agendacontainers:
 
-* `GET /v1/calendars` - List calendar containers
-* `POST /v1/calendars` - Create calendar (e.g., "Work Calendar", "Personal Calendar")
-* `GET /v1/calendars/:id` - Retrieve calendar
-* `PUT /v1/calendars/:id` - Update calendar
-* `DELETE /v1/calendars/:id` - Delete calendar
+* `GET /v1/calendars` - Lijst agendacontainers
+* `POST /v1/calendars` - Agenda aanmaken (bijv. "Werkagenda", "Persoonlijke agenda")
+* `GET /v1/calendars/:id` - Agenda ophalen
+* `PUT /v1/calendars/:id` - Agenda bijwerken
+* `DELETE /v1/calendars/:id` - Agenda verwijderen
 
-**5. Calendar Events API** (5 endpoints) - Event scheduling within calendars:
+**5. Agenda-evenementen API** (5 eindpunten) - Evenementplanning binnen agenda's:
 
-* `GET /v1/calendar-events` - List events
-* `POST /v1/calendar-events` - Create event with attendees
-* `GET /v1/calendar-events/:id` - Retrieve event
-* `PUT /v1/calendar-events/:id` - Update event
-* `DELETE /v1/calendar-events/:id` - Delete event
+* `GET /v1/calendar-events` - Lijst evenementen
+* `POST /v1/calendar-events` - Evenement aanmaken met deelnemers
+* `GET /v1/calendar-events/:id` - Evenement ophalen
+* `PUT /v1/calendar-events/:id` - Evenement bijwerken
+* `DELETE /v1/calendar-events/:id` - Evenement verwijderen
 
-*Example: Create a calendar event:*
+*Voorbeeld: Maak een agenda-evenement aan:*
 
 ```bash
 curl -u "alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
-  -d '{"title":"Team Meeting","start":"2024-12-20T10:00:00Z","attendees":["team@example.com"],"calendar_id":"calendar123"}' \
+  -d '{"title":"Teamvergadering","start":"2024-12-20T10:00:00Z","attendees":["team@example.com"],"calendar_id":"calendar123"}' \
   https://api.forwardemail.net/v1/calendar-events
 ```
 
-### Technical Details {#technical-details}
+### Technische Details {#technical-details}
 
-* **Authentication:** Simple `alias:password` authentication (no OAuth complexity)
-* **Performance:** Sub-50ms response times with SQLite FTS5 and NVMe SSD storage
-* **Zero Network Latency:** Direct database access, not proxied through external services
+* **Authenticatie:** Eenvoudige `alias:password` authenticatie (geen OAuth-complexiteit)
+* **Prestaties:** Reactietijden onder 50ms met SQLite FTS5 en NVMe SSD opslag
+* **Nul Netwerkvertraging:** Directe database-toegang, niet via externe diensten
 
-### Real-World Use Cases {#real-world-use-cases}
+### Praktische Toepassingen {#real-world-use-cases}
 
-* **Email Analytics:** Build custom dashboards tracking email volume, response times, sender statistics
+* **E-mailanalyse:** Bouw aangepaste dashboards die e-mailvolume, reactietijden, afzenderstatistieken bijhouden
 
-* **Automated Workflows:** Trigger actions based on email content (invoice processing, support tickets)
+* **Geautomatiseerde Workflows:** Acties triggeren op basis van e-mailinhoud (factuurverwerking, supporttickets)
 
-* **CRM Integration:** Sync email conversations with your CRM automatically
+* **CRM Integratie:** Synchroniseer e-mailconversaties automatisch met je CRM
 
-* **Compliance & Discovery:** Search and export emails for legal/compliance requirements
+* **Compliance & Discovery:** Zoek en exporteer e-mails voor juridische/compliance vereisten
 
-* **Custom Email Clients:** Build specialized email interfaces for your workflow
+* **Aangepaste E-mailclients:** Bouw gespecialiseerde e-mailinterfaces voor je workflow
 
-* **Business Intelligence:** Analyze communication patterns, response rates, customer engagement
+* **Business Intelligence:** Analyseer communicatiepatronen, responstijden, klantbetrokkenheid
 
-* **Document Management:** Extract and categorize attachments automatically
+* **Documentbeheer:** Extraheer en categoriseer bijlagen automatisch
 
-* [Complete Documentation](https://forwardemail.net/en/email-api)
+* [Volledige Documentatie](https://forwardemail.net/en/email-api)
 
-* [Complete API Reference](https://forwardemail.net/en/email-api)
+* [Volledige API Referentie](https://forwardemail.net/en/email-api)
 
-* [Advanced Search Guide](https://forwardemail.net/en/email-api)
+* [Geavanceerde Zoekgids](https://forwardemail.net/en/email-api)
 
-* [30+ Integration Examples](https://forwardemail.net/en/email-api)
+* [30+ Integratievoorbeelden](https://forwardemail.net/en/email-api)
 
-* [Technical Architecture](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)
+* [Technische Architectuur](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)
 
-Forward Email offers a modern REST API that provides full control over email accounts, domains, aliases, and messages. This API serves as a powerful alternative to JMAP and provides functionality beyond traditional email protocols.
+Forward Email biedt een moderne REST API die volledige controle geeft over e-mailaccounts, domeinen, aliassen en berichten. Deze API is een krachtig alternatief voor JMAP en biedt functionaliteit die verder gaat dan traditionele e-mailprotocollen.
 
-| Category | Endpoints | Description |
-| ----------------------- | --------- | --------------------------------------- |
-| **Account Management** | 8 | User accounts, authentication, settings |
-| **Domain Management** | 12 | Custom domains, DNS, verification |
-| **Alias Management** | 6 | Email aliases, forwarding, catch-all |
-| **Message Management** | 7 | Send, receive, search, delete messages |
-| **Calendar & Contacts** | 4 | CalDAV/CardDAV access via API |
-| **Logs & Analytics** | 2 | Email logs, delivery reports |
+| Categorie               | Eindpunten | Beschrijving                           |
+| ----------------------- | --------- | ------------------------------------ |
+| **Accountbeheer**       | 8         | Gebruikersaccounts, authenticatie, instellingen |
+| **Domeinbeheer**        | 12        | Aangepaste domeinen, DNS, verificatie |
+| **Aliasbeheer**         | 6         | E-mailaliassen, doorsturen, catch-all |
+| **Berichtenbeheer**     | 7         | Verzenden, ontvangen, zoeken, verwijderen van berichten |
+| **Agenda & Contacten**  | 4         | CalDAV/CardDAV toegang via API        |
+| **Logs & Analyse**      | 2         | E-maillogs, bezorgingsrapporten       |
+### Belangrijkste API-functies {#key-api-features}
 
-### Key API Features {#key-api-features}
+**Geavanceerd zoeken:**
 
-**Advanced Search:**
-
-The API provides powerful search capabilities with query syntax similar to Gmail:
+De API biedt krachtige zoekmogelijkheden met een query-syntaxis vergelijkbaar met Gmail:
 
 ```
 GET /v1/messages?q=subject:invoice+has:attachment+after:2024-01-01+before:2024-04-01
 ```
 
-**Supported Search Operators:**
+**Ondersteunde zoekoperatoren:**
 
-* `from:` - Search by sender
-* `to:` - Search by recipient
-* `subject:` - Search by subject
-* `has:attachment` - Messages with attachments
-* `is:unread` - Unread messages
-* `is:starred` - Starred messages
-* `after:` - Messages after date
-* `before:` - Messages before date
-* `label:` - Messages with label
-* `filename:` - Attachment filename
+* `from:` - Zoeken op afzender
+* `to:` - Zoeken op ontvanger
+* `subject:` - Zoeken op onderwerp
+* `has:attachment` - Berichten met bijlagen
+* `is:unread` - Ongelezen berichten
+* `is:starred` - Gemarkeerde berichten
+* `after:` - Berichten na datum
+* `before:` - Berichten voor datum
+* `label:` - Berichten met label
+* `filename:` - Bestandsnaam van bijlage
 
-**Calendar Event Management:**
+**Beheer van agenda-afspraken:**
 
 ```
 GET /v1/calendar-events
@@ -1849,30 +1841,30 @@ PUT /v1/calendar-events/:id
 DELETE /v1/calendar-events/:id
 ```
 
-**Webhook Integrations:**
+**Webhook-integraties:**
 
-The API supports webhooks for real-time notifications of email events (received, sent, bounced, etc.).
+De API ondersteunt webhooks voor realtime meldingen van e-mailgebeurtenissen (ontvangen, verzonden, gebounced, enz.).
 
-**Authentication:**
+**Authenticatie:**
 
-* API key authentication
-* OAuth 2.0 support
-* Rate limiting: 1000 requests/hour
+* API-sleutel authenticatie
+* OAuth 2.0 ondersteuning
+* Rate limiting: 1000 verzoeken/uur
 
-**Data Format:**
+**Dataformaat:**
 
-* JSON request/response
-* RESTful design
-* Pagination support
+* JSON verzoek/antwoord
+* RESTful ontwerp
+* Ondersteuning voor paginering
 
-**Security:**
+**Beveiliging:**
 
-* HTTPS only
-* API key rotation
-* IP whitelisting (optional)
-* Request signing (optional)
+* Alleen HTTPS
+* Rotatie van API-sleutels
+* IP-whitelisting (optioneel)
+* Ondertekening van verzoeken (optioneel)
 
-### API Architecture {#api-architecture}
+### API-architectuur {#api-architecture}
 
 ```mermaid
 graph LR
@@ -1912,21 +1904,22 @@ graph LR
 
 ---
 
-## iOS Push Notifications {#ios-push-notifications}
+
+## iOS Pushmeldingen {#ios-push-notifications}
 
 > \[!TIP]
-> Forward Email supports native iOS push notifications through XAPPLEPUSHSERVICE for instant email delivery.
+> Forward Email ondersteunt native iOS pushmeldingen via XAPPLEPUSHSERVICE voor directe e-mailbezorging.
 
 > \[!IMPORTANT]
-> **Unique Feature:** Forward Email is one of the few open-source email servers that supports native iOS push notifications for email, contacts, and calendars via the `XAPPLEPUSHSERVICE` IMAP extension. This was reverse-engineered from Apple's protocol and provides instant delivery to iOS devices without battery drain.
+> **Unieke functie:** Forward Email is een van de weinige open-source e-mailservers die native iOS pushmeldingen ondersteunt voor e-mail, contacten en agenda's via de `XAPPLEPUSHSERVICE` IMAP-extensie. Dit is reverse-engineered van het Apple-protocol en zorgt voor directe bezorging op iOS-apparaten zonder batterijverbruik.
 
-Forward Email implements Apple's proprietary XAPPLEPUSHSERVICE extension, providing native push notifications for iOS devices without requiring background polling.
+Forward Email implementeert de propriëtaire XAPPLEPUSHSERVICE-extensie van Apple, die native pushmeldingen voor iOS-apparaten biedt zonder dat achtergrondpolling nodig is.
 
-### How It Works {#how-it-works-1}
+### Hoe het werkt {#how-it-works-1}
 
-**XAPPLEPUSHSERVICE** is a non-standard IMAP extension that allows iOS Mail app to receive instant push notifications when new emails arrive.
+**XAPPLEPUSHSERVICE** is een niet-standaard IMAP-extensie die het iOS Mail-app mogelijk maakt om directe pushmeldingen te ontvangen wanneer nieuwe e-mails binnenkomen.
 
-Forward Email implements the proprietary Apple Push Notification service (APNs) integration for IMAP, allowing iOS Mail app to receive instant push notifications when new emails arrive.
+Forward Email implementeert de propriëtaire Apple Push Notification service (APNs) integratie voor IMAP, waardoor de iOS Mail-app directe pushmeldingen ontvangt bij nieuwe e-mails.
 
 ```mermaid
 sequenceDiagram
@@ -1948,66 +1941,65 @@ sequenceDiagram
     Mail->>Mail: Display notification
 ```
 
-### Key Features {#key-features}
+### Belangrijkste functies {#key-features}
 
-**Instant Delivery:**
+**Directe bezorging:**
 
-* Push notifications arrive within seconds
-* No battery-draining background polling
-* Works even when Mail app is closed
+* Pushmeldingen komen binnen enkele seconden aan
+* Geen batterijslurpende achtergrondpolling
+* Werkt zelfs als de Mail-app gesloten is
 
 <!---->
 
-* **Instant Delivery:** Emails, calendar events, and contacts appear on your iPhone/iPad immediately, not on a polling schedule
-* **Battery Efficient:** Uses Apple's push infrastructure instead of maintaining constant IMAP connections
-* **Topic-Based Push:** Supports push notifications for specific mailboxes, not just INBOX
-* **No Third-Party Apps Required:** Works with the native iOS Mail, Calendar, and Contacts apps
+* **Directe bezorging:** E-mails, agenda-afspraken en contacten verschijnen direct op je iPhone/iPad, niet volgens een polling-schema
+* **Batterijvriendelijk:** Maakt gebruik van Apple's push-infrastructuur in plaats van constante IMAP-verbindingen te onderhouden
+* **Onderwerp-gebaseerde push:** Ondersteunt pushmeldingen voor specifieke mailboxen, niet alleen INBOX
+* **Geen apps van derden nodig:** Werkt met de native iOS Mail-, Agenda- en Contacten-apps
+**Native Integratie:**
 
-**Native Integration:**
+* Ingebouwd in de iOS Mail-app
+* Geen apps van derden nodig
+* Naadloze gebruikerservaring
 
-* Built into iOS Mail app
-* No third-party apps required
-* Seamless user experience
+**Privacygericht:**
 
-**Privacy-Focused:**
+* Apparaattokens zijn versleuteld
+* Geen berichtinhoud via APNS verzonden
+* Alleen "nieuwe mail" melding verzonden
 
-* Device tokens are encrypted
-* No message content sent through APNS
-* Only "new mail" notification sent
+**Batterijzuinig:**
 
-**Battery Efficient:**
+* Geen constante IMAP-polling
+* Apparaat slaapt tot notificatie binnenkomt
+* Minimale batterijimpact
 
-* No constant IMAP polling
-* Device sleeps until notification arrives
-* Minimal battery impact
-
-### What Makes This Special {#what-makes-this-special}
+### Wat Maakt Dit Speciaal {#what-makes-this-special}
 
 > \[!IMPORTANT]
-> Most email providers don't support XAPPLEPUSHSERVICE, forcing iOS devices to poll for new mail every 15 minutes.
+> De meeste e-mailproviders ondersteunen XAPPLEPUSHSERVICE niet, waardoor iOS-apparaten elke 15 minuten moeten polleren op nieuwe mail.
 
-Most open-source email servers (including Dovecot, Postfix, Cyrus IMAP) do NOT support iOS push notifications. Users must either:
+De meeste open-source e-mailservers (inclusief Dovecot, Postfix, Cyrus IMAP) ondersteunen GEEN iOS pushmeldingen. Gebruikers moeten ofwel:
 
-* Use IMAP IDLE (keeps connection open, drains battery)
-* Use polling (checks every 15-30 minutes, delayed notifications)
-* Use proprietary email apps with their own push infrastructure
+* IMAP IDLE gebruiken (houdt verbinding open, verbruikt batterij)
+* Polling gebruiken (controleert elke 15-30 minuten, vertraagde meldingen)
+* Proprietaire e-mailapps gebruiken met eigen pushinfrastructuur
 
-Forward Email provides the same instant push notification experience as commercial services like Gmail, iCloud, and Fastmail.
+Forward Email biedt dezelfde directe pushmeldingservaring als commerciële diensten zoals Gmail, iCloud en Fastmail.
 
-**Comparison with Other Providers:**
+**Vergelijking met Andere Providers:**
 
-| Provider | Push Support | Polling Interval | Battery Impact |
-| ----------------- | -------------- | ---------------- | -------------- |
-| **Forward Email** | ✅ Native Push | Instant | Minimal |
-| Gmail | ✅ Native Push | Instant | Minimal |
-| iCloud | ✅ Native Push | Instant | Minimal |
-| Yahoo | ✅ Native Push | Instant | Minimal |
-| Outlook.com | ❌ Polling | 15 minutes | Moderate |
-| Fastmail | ❌ Polling | 15 minutes | Moderate |
-| ProtonMail | ⚠️ Bridge only | Via Bridge | High |
-| Tutanota | ❌ App only | N/A | N/A |
+| Provider          | Push Ondersteuning | Polling Interval | Batterijimpact |
+| ----------------- | ------------------ | ---------------- | -------------- |
+| **Forward Email** | ✅ Native Push     | Direct           | Minimaal       |
+| Gmail             | ✅ Native Push     | Direct           | Minimaal       |
+| iCloud            | ✅ Native Push     | Direct           | Minimaal       |
+| Yahoo             | ✅ Native Push     | Direct           | Minimaal       |
+| Outlook.com       | ❌ Polling        | 15 minuten       | Gemiddeld      |
+| Fastmail          | ❌ Polling        | 15 minuten       | Gemiddeld      |
+| ProtonMail        | ⚠️ Alleen Bridge   | Via Bridge       | Hoog           |
+| Tutanota          | ❌ Alleen App     | N.v.t.           | N.v.t.         |
 
-### Implementation Details {#implementation-details}
+### Implementatiedetails {#implementation-details}
 
 **IMAP CAPABILITY Response:**
 
@@ -2015,80 +2007,81 @@ Forward Email provides the same instant push notification experience as commerci
 * CAPABILITY IMAP4rev1 ... XAPPLEPUSHSERVICE ...
 ```
 
-**Registration Process:**
+**Registratieproces:**
 
-1. iOS Mail app detects XAPPLEPUSHSERVICE capability
-2. App registers device token with Forward Email
-3. Forward Email stores token and associates with account
-4. When new mail arrives, Forward Email sends push via APNS
-5. iOS wakes up Mail app to fetch new messages
+1. iOS Mail-app detecteert XAPPLEPUSHSERVICE-capaciteit
+2. App registreert apparaattoken bij Forward Email
+3. Forward Email slaat token op en koppelt aan account
+4. Bij nieuwe mail stuurt Forward Email push via APNS
+5. iOS wekt Mail-app om nieuwe berichten op te halen
 
-**Security:**
+**Beveiliging:**
 
-* Device tokens are encrypted at rest
-* Tokens expire and are refreshed automatically
-* No message content exposed to APNS
-* End-to-end encryption maintained
+* Apparaattokens zijn versleuteld in opslag
+* Tokens verlopen en worden automatisch vernieuwd
+* Geen berichtinhoud blootgesteld aan APNS
+* End-to-end encryptie blijft behouden
 
 <!---->
 
-* **IMAP Extension:** `XAPPLEPUSHSERVICE`
-* **Source Code:** [WildDuck Issue #711](https://github.com/zone-eu/wildduck/issues/711)
-* **Setup:** Automatic - no configuration needed, works out of the box with iOS Mail app
+* **IMAP Extensie:** `XAPPLEPUSHSERVICE`
+* **Broncode:** [WildDuck Issue #711](https://github.com/zone-eu/wildduck/issues/711)
+* **Setup:** Automatisch - geen configuratie nodig, werkt direct met iOS Mail-app
 
-### Comparison with Other Services {#comparison-with-other-services}
+### Vergelijking met Andere Diensten {#comparison-with-other-services}
 
-| Service | iOS Push Support | Method |
-| ------------- | ---------------- | ---------------------------------------- |
-| Forward Email | ✅ Yes | `XAPPLEPUSHSERVICE` (reverse-engineered) |
-| Gmail | ✅ Yes | Proprietary Gmail app + Google push |
-| iCloud Mail | ✅ Yes | Native Apple integration |
-| Outlook.com | ✅ Yes | Proprietary Outlook app + Microsoft push |
-| Fastmail | ✅ Yes | `XAPPLEPUSHSERVICE` |
-| Dovecot | ❌ No | IMAP IDLE or polling only |
-| Postfix | ❌ No | IMAP IDLE or polling only |
-| Cyrus IMAP | ❌ No | IMAP IDLE or polling only |
+| Dienst        | iOS Push Ondersteuning | Methode                                   |
+| ------------- | ---------------------- | ---------------------------------------- |
+| Forward Email | ✅ Ja                  | `XAPPLEPUSHSERVICE` (reverse-engineered) |
+| Gmail         | ✅ Ja                  | Proprietaire Gmail-app + Google push      |
+| iCloud Mail   | ✅ Ja                  | Native Apple-integratie                   |
+| Outlook.com   | ✅ Ja                  | Proprietaire Outlook-app + Microsoft push |
+| Fastmail      | ✅ Ja                  | `XAPPLEPUSHSERVICE`                      |
+| Dovecot       | ❌ Nee                 | Alleen IMAP IDLE of polling               |
+| Postfix       | ❌ Nee                 | Alleen IMAP IDLE of polling               |
+| Cyrus IMAP    | ❌ Nee                 | Alleen IMAP IDLE of polling               |
 
 **Gmail Push:**
 
-Gmail uses a proprietary push system that only works with the Gmail app. iOS Mail app must poll Gmail IMAP servers.
+Gmail gebruikt een proprietary push-systeem dat alleen werkt met de Gmail-app. De iOS Mail-app moet Gmail IMAP-servers polleren.
 
 **iCloud Push:**
 
-iCloud has native push support similar to Forward Email, but only for @icloud.com addresses.
+iCloud heeft native push-ondersteuning vergelijkbaar met Forward Email, maar alleen voor @icloud.com-adressen.
 
 **Outlook.com:**
 
-Outlook.com does not support XAPPLEPUSHSERVICE, requiring iOS Mail to poll every 15 minutes.
+Outlook.com ondersteunt XAPPLEPUSHSERVICE niet, waardoor iOS Mail elke 15 minuten moet polleren.
 
 **Fastmail:**
 
-Fastmail does not support XAPPLEPUSHSERVICE. Users must use the Fastmail app for push notifications or accept 15-minute polling delays.
+Fastmail ondersteunt XAPPLEPUSHSERVICE niet. Gebruikers moeten de Fastmail-app gebruiken voor pushmeldingen of accepteren dat polling elke 15 minuten plaatsvindt.
 
 ---
 
-## Testing and Verification {#testing-and-verification}
 
-## Protocol Capability Tests {#protocol-capability-tests}
+## Testen en Verificatie {#testing-and-verification}
 
+
+## Protocol Capaciteitstests {#protocol-capability-tests}
 > \[!NOTE]
-> This section provides the results of our latest protocol capability tests, conducted on January 22, 2026.
+> Deze sectie geeft de resultaten van onze laatste protocolmogelijkhedentests, uitgevoerd op 22 januari 2026.
 
-This section contains the actual CAPABILITY/CAPA/EHLO responses from all tested providers. All tests were run on **January 22, 2026**.
+Deze sectie bevat de daadwerkelijke CAPABILITY/CAPA/EHLO-antwoorden van alle geteste providers. Alle tests zijn uitgevoerd op **22 januari 2026**.
 
-These tests help verify the advertised and actual support for various email protocols and extensions across major providers.
+Deze tests helpen bij het verifiëren van de geadverteerde en daadwerkelijke ondersteuning voor verschillende e-mailprotocollen en extensies bij grote providers.
 
-### Test Methodology {#test-methodology}
+### Testmethodologie {#test-methodology}
 
-**Test Environment:**
+**Testomgeving:**
 
-* **Date:** January 22, 2026 at 02:37 UTC
-* **Location:** AWS EC2 instance
+* **Datum:** 22 januari 2026 om 02:37 UTC
+* **Locatie:** AWS EC2-instance
 * **IPv4:** 54.167.216.197
 * **IPv6:** 2600:4040:46da:9a00:b19e:3ad4:426c:2f48
-* **Tools:** OpenSSL s_client, bash scripts
+* **Tools:** OpenSSL s_client, bash-scripts
 
-**Providers Tested:**
+**Geteste providers:**
 
 * Forward Email
 * Gmail
@@ -2097,9 +2090,9 @@ These tests help verify the advertised and actual support for various email prot
 * Fastmail
 * Yahoo/AOL (Verizon)
 
-### Test Scripts {#test-scripts}
+### Testscripts {#test-scripts}
 
-For full transparency, the exact scripts used for these tests are provided below.
+Voor volledige transparantie worden hieronder de exacte scripts weergegeven die voor deze tests zijn gebruikt.
 
 #### IMAP Capability Test Script {#imap-capability-test-script}
 
@@ -2172,9 +2165,9 @@ echo "--- Outlook.com (outlook.office365.com:995) ---"
 echo -e "CAPA\nQUIT" | timeout 10 openssl s_client -connect outlook.office365.com:995 -crlf -quiet 2>&1 | grep -A 20 "CAPA"
 echo ""
 
-# iCloud (Note: iCloud does not support POP3)
-echo "--- iCloud (No POP3 support) ---"
-echo "iCloud does not support POP3"
+# iCloud (Opmerking: iCloud ondersteunt geen POP3)
+echo "--- iCloud (Geen POP3-ondersteuning) ---"
+echo "iCloud ondersteunt geen POP3"
 echo ""
 
 # Fastmail
@@ -2196,7 +2189,6 @@ echo "========================================="
 echo "Test completed"
 echo "========================================="
 ```
-
 #### SMTP Capability Test Script {#smtp-capability-test-script}
 
 ```bash
@@ -2245,7 +2237,7 @@ echo "Test completed"
 echo "========================================="
 ```
 
-### Test Results Summary {#test-results-summary}
+### Samenvatting van de testresultaten {#test-results-summary}
 
 #### IMAP (CAPABILITY) {#imap-capability}
 
@@ -2406,10 +2398,9 @@ IMPLEMENTATION Cyrus
 250-ENHANCEDSTATUSCODES
 250-STARTTLS
 ```
+### Gedetailleerde Testresultaten {#detailed-test-results}
 
-### Detailed Test Results {#detailed-test-results}
-
-#### IMAP Test Results {#imap-test-results}
+#### IMAP Testresultaten {#imap-test-results}
 
 **Gmail:**
 `* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 XYZZY SASL-IR AUTH=XOAUTH2 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN AUTH=OAUTHBEARER`
@@ -2421,7 +2412,7 @@ IMPLEMENTATION Cyrus
 `* CAPABILITY XAPPLEPUSHSERVICE IMAP4 IMAP4rev1 SASL-IR AUTH=ATOKEN AUTH=PLAIN AUTH=ATOKEN2 AUTH=XOAUTH2`
 
 **Fastmail:**
-Connection timed out. See notes below.
+Verbinding time-out. Zie onderstaande opmerkingen.
 
 **Yahoo:**
 `* CAPABILITY IMAP4rev1 SASL-IR AUTH=PLAIN AUTH=XOAUTH2 AUTH=OAUTHBEARER ID MOVE NAMESPACE XYMHIGHESTMODSEQ UIDPLUS LITERAL+ CHILDREN UNSELECT X-MSG-EXT OBJECTID IDLE ENABLE UIDONLY X-ALL-MAIL X-UIDONLY LIST-EXTENDED LIST-STATUS SPECIAL-USE PARTIAL APPENDLIMIT=41697280`
@@ -2429,27 +2420,27 @@ Connection timed out. See notes below.
 **Forward Email:**
 `* CAPABILITY XAPPLEPUSHSERVICE IMAP4rev1 APPENDLIMIT=52428800 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN CHILDREN CONDSTORE ENABLE ID IDLE MOVE NAMESPACE QUOTA SASL-IR SPECIAL-USE UIDPLUS UNSELECT UTF8=ACCEPT XLIST`
 
-#### POP3 Test Results {#pop3-test-results}
+#### POP3 Testresultaten {#pop3-test-results}
 
 **Gmail:**
-Connection did not return CAPA response without authentication.
+Verbinding gaf geen CAPA-respons zonder authenticatie.
 
 **Outlook.com:**
-Connection did not return CAPA response without authentication.
+Verbinding gaf geen CAPA-respons zonder authenticatie.
 
 **iCloud:**
-Not Supported.
+Niet ondersteund.
 
 **Fastmail:**
-Connection timed out. See notes below.
+Verbinding time-out. Zie onderstaande opmerkingen.
 
 **Yahoo:**
 `+OK CAPA list follows... SASL PLAIN XOAUTH2`
 
 **Forward Email:**
-Connection did not return CAPA response without authentication.
+Verbinding gaf geen CAPA-respons zonder authenticatie.
 
-#### SMTP Test Results {#smtp-test-results}
+#### SMTP Testresultaten {#smtp-test-results}
 
 **Gmail:**
 `250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH`
@@ -2469,67 +2460,67 @@ Connection did not return CAPA response without authentication.
 **Forward Email:**
 `250-DSN`, `250-REQUIRETLS`
 
-### Notes on Test Results {#notes-on-test-results}
+### Opmerkingen over Testresultaten {#notes-on-test-results}
 
 > \[!NOTE]
-> Important observations and limitations from the test results.
+> Belangrijke observaties en beperkingen uit de testresultaten.
 
-1. **Fastmail Timeouts**: Fastmail connections timed out during testing, likely due to rate limiting or firewall restrictions from the test server IP. Fastmail is known to have robust IMAP/POP3/SMTP support based on their documentation.
+1. **Fastmail Time-outs**: Fastmail-verbindingen liepen vast tijdens het testen, waarschijnlijk door rate limiting of firewallbeperkingen van het testserver-IP. Fastmail staat bekend om robuuste IMAP/POP3/SMTP-ondersteuning volgens hun documentatie.
 
-2. **POP3 CAPA Responses**: Several providers (Gmail, Outlook.com, Forward Email) did not return CAPA responses without authentication. This is common security practice for POP3 servers.
+2. **POP3 CAPA-responsen**: Verschillende providers (Gmail, Outlook.com, Forward Email) gaven geen CAPA-respons zonder authenticatie. Dit is een gebruikelijke beveiligingspraktijk voor POP3-servers.
 
-3. **DSN Support**: Only Outlook.com, iCloud, and Forward Email explicitly advertise DSN support in their SMTP EHLO responses. This doesn't necessarily mean other providers don't support DSN, but they don't advertise it.
+3. **DSN-ondersteuning**: Alleen Outlook.com, iCloud en Forward Email adverteren expliciet DSN-ondersteuning in hun SMTP EHLO-responsen. Dit betekent niet noodzakelijk dat andere providers DSN niet ondersteunen, maar zij adverteren het niet.
 
-4. **REQUIRETLS**: Only Forward Email explicitly advertises REQUIRETLS support with user-facing enforcement checkbox. Other providers may support it internally but don't advertise it in EHLO.
+4. **REQUIRETLS**: Alleen Forward Email adverteert expliciet REQUIRETLS-ondersteuning met een gebruikersgerichte handhavingscheckbox. Andere providers ondersteunen het mogelijk intern, maar adverteren het niet in EHLO.
 
-5. **Test Environment**: Tests were conducted from AWS EC2 instance (IP: 54.167.216.197 IPv4, 2600:4040:46da:9a00:b19e:3ad4:426c:2f48 IPv6) on January 22, 2026 at 02:37 UTC.
+5. **Testomgeving**: Tests werden uitgevoerd vanaf een AWS EC2-instance (IP: 54.167.216.197 IPv4, 2600:4040:46da:9a00:b19e:3ad4:426c:2f48 IPv6) op 22 januari 2026 om 02:37 UTC.
 
 ---
 
-## Summary {#summary}
 
-Forward Email provides comprehensive RFC protocol support across all major email standards:
+## Samenvatting {#summary}
 
-* **IMAP4rev1:** 16 supported RFCs with intentional differences documented
-* **POP3:** 4 supported RFCs with RFC-compliant permanent deletion
-* **SMTP:** 11 supported extensions including SMTPUTF8, DSN, and PIPELINING
-* **Authentication:** DKIM, SPF, DMARC, ARC fully supported
-* **Transport Security:** MTA-STS and REQUIRETLS fully supported, DANE partial support
-* **Encryption:** OpenPGP v6 and S/MIME supported
-* **Calendaring:** CalDAV, CardDAV, and VTODO fully supported
-* **API Access:** Complete REST API with 39 endpoints for direct database access
-* **iOS Push:** Native push notifications for email, contacts, and calendars via `XAPPLEPUSHSERVICE`
+Forward Email biedt uitgebreide RFC-protocolondersteuning voor alle belangrijke e-mailstandaarden:
 
-### Key Differentiators {#key-differentiators}
+* **IMAP4rev1:** 16 ondersteunde RFC's met gedocumenteerde opzettelijke verschillen
+* **POP3:** 4 ondersteunde RFC's met RFC-conforme permanente verwijdering
+* **SMTP:** 11 ondersteunde extensies waaronder SMTPUTF8, DSN en PIPELINING
+* **Authenticatie:** DKIM, SPF, DMARC, ARC volledig ondersteund
+* **Transportbeveiliging:** MTA-STS en REQUIRETLS volledig ondersteund, DANE gedeeltelijke ondersteuning
+* **Encryptie:** OpenPGP v6 en S/MIME ondersteund
+* **Agenda:** CalDAV, CardDAV en VTODO volledig ondersteund
+* **API-toegang:** Volledige REST API met 39 endpoints voor directe database-toegang
+* **iOS Push:** Native pushmeldingen voor e-mail, contacten en agenda's via `XAPPLEPUSHSERVICE`
+
+### Belangrijkste Onderscheidende Kenmerken {#key-differentiators}
 
 > \[!TIP]
-> Forward Email stands out with unique features not found in other providers.
+> Forward Email valt op met unieke functies die andere providers niet hebben.
 
-**What Makes Forward Email Unique:**
+**Wat Forward Email Uniek Maakt:**
 
-1. **Quantum-Safe Encryption** - Only provider with ChaCha20-Poly1305 encrypted SQLite mailboxes
-2. **Zero-Knowledge Architecture** - Your password encrypts your mailbox; we can't decrypt it
-3. **Free Custom Domains** - No monthly fees for custom domain email
-4. **REQUIRETLS Support** - User-facing checkbox to enforce TLS for entire delivery path
-5. **Comprehensive API** - 39 REST API endpoints for full programmatic control
-6. **iOS Push Notifications** - Native XAPPLEPUSHSERVICE support for instant delivery
-7. **Open Source** - Full source code available on GitHub
-8. **Privacy-Focused** - No data mining, no ads, no tracking
+1. **Quantum-veilige Encryptie** - Enige provider met ChaCha20-Poly1305 versleutelde SQLite-mailboxen
+2. **Zero-Knowledge Architectuur** - Je wachtwoord versleutelt je mailbox; wij kunnen het niet ontsleutelen
+3. **Gratis Aangepaste Domeinen** - Geen maandelijkse kosten voor e-mail op aangepaste domeinen
+4. **REQUIRETLS Ondersteuning** - Gebruikersgerichte checkbox om TLS voor het hele afleverpad af te dwingen
+5. **Uitgebreide API** - 39 REST API endpoints voor volledige programmatische controle
+6. **iOS Pushmeldingen** - Native XAPPLEPUSHSERVICE-ondersteuning voor directe levering
+7. **Open Source** - Volledige broncode beschikbaar op GitHub
+8. **Privacygericht** - Geen datamining, geen advertenties, geen tracking
+* **Sandboxed Encryptie:** Enige e-mailservice met individueel versleutelde SQLite-mailboxen  
+* **RFC-naleving:** Geeft prioriteit aan standaardconformiteit boven gemak (bijv. POP3 DELE)  
+* **Volledige API:** Directe programmatische toegang tot alle e-mailgegevens  
+* **Open Source:** Volledig transparante implementatie  
 
-* **Sandboxed Encryption:** Only email service with individually encrypted SQLite mailboxes
-* **RFC Compliance:** Prioritizes standards compliance over convenience (e.g., POP3 DELE)
-* **Complete API:** Direct programmatic access to all email data
-* **Open Source:** Fully transparent implementation
+**Samenvatting Protocolondersteuning:**  
 
-**Protocol Support Summary:**
-
-| Category | Support Level | Details |
-| -------------------- | ------------- | --------------------------------------------- |
-| **Core Protocols** | ✅ Excellent | IMAP4rev1, POP3, SMTP fully supported |
-| **Modern Protocols** | ⚠️ Partial | IMAP4rev2 partial support, JMAP not supported |
-| **Security** | ✅ Excellent | DKIM, SPF, DMARC, ARC, MTA-STS, REQUIRETLS |
-| **Encryption** | ✅ Excellent | OpenPGP, S/MIME, SQLite encryption |
-| **CalDAV/CardDAV** | ✅ Excellent | Full calendar and contact sync |
-| **Filtering** | ✅ Excellent | Sieve (24 extensions) and ManageSieve |
-| **API** | ✅ Excellent | 39 REST API endpoints |
-| **Push** | ✅ Excellent | Native iOS push notifications |
+| Categorie            | Ondersteuningsniveau | Details                                       |
+| -------------------- | -------------------- | --------------------------------------------- |
+| **Kernprotocollen**   | ✅ Uitstekend         | IMAP4rev1, POP3, SMTP volledig ondersteund    |
+| **Moderne Protocollen** | ⚠️ Gedeeltelijk     | IMAP4rev2 gedeeltelijke ondersteuning, JMAP niet ondersteund |
+| **Beveiliging**       | ✅ Uitstekend         | DKIM, SPF, DMARC, ARC, MTA-STS, REQUIRETLS    |
+| **Encryptie**         | ✅ Uitstekend         | OpenPGP, S/MIME, SQLite-encryptie              |
+| **CalDAV/CardDAV**    | ✅ Uitstekend         | Volledige agenda- en contactensynchronisatie  |
+| **Filtering**         | ✅ Uitstekend         | Sieve (24 extensies) en ManageSieve            |
+| **API**               | ✅ Uitstekend         | 39 REST API-eindpunten                          |
+| **Push**              | ✅ Uitstekend         | Native iOS pushmeldingen                        |

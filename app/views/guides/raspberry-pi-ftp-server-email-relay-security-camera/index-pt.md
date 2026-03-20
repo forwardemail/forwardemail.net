@@ -1,135 +1,138 @@
-# Turn Your Raspberry Pi into a Secure FTP Server with Email Relay {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
+# Transforme seu Raspberry Pi em um Servidor FTP Seguro com Relay de Email {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide will show you how to turn it into a powerful, automated file server with email relay capabilities. Perfect for security cameras, IoT devices, and more.
+Tem um Raspberry Pi juntando poeira? Seja o mais recente Pi 5, um Pi 4, Pi Zero ou até um modelo mais antigo, este guia mostrará como transformá-lo em um servidor de arquivos poderoso e automatizado com capacidades de relay de email. Perfeito para câmeras de segurança, dispositivos IoT e muito mais.
 
-**Compatible with:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, and Raspberry Pi Zero.
-
-> \[!NOTE]
-> This guide was tested and verified on a Raspberry Pi 3 Model B running Ubuntu Server 22.04 LTS.
-
-## Table of Contents {#table-of-contents}
-
-* [What We're Building](#what-were-building)
-* [Part 1: Getting Ubuntu Server on Your Pi](#part-1-getting-ubuntu-server-on-your-pi)
-  * [What You'll Need](#what-youll-need)
-  * [Flashing the OS](#flashing-the-os)
-  * [Booting Up & Connecting](#booting-up--connecting)
-* [Part 2: Setting Up a Secure FTP Server](#part-2-setting-up-a-secure-ftp-server)
-  * [Installation & Configuration](#installation--configuration)
-  * [Creating an FTP User](#creating-an-ftp-user)
-* [Part 3: Firewall and Brute-Force Protection](#part-3-firewall-and-brute-force-protection)
-  * [Setting Up UFW](#setting-up-ufw)
-  * [Setting Up Fail2ban](#setting-up-fail2ban)
-* [Part 4: Automated File Processing with Email Notifications](#part-4-automated-file-processing-with-email-notifications)
-  * [Option 1: Using Forward Email API (Recommended)](#option-1-using-forward-email-api-recommended)
-  * [Option 2: Using Other Email Providers](#option-2-using-other-email-providers)
-  * [Create a Systemd Service](#create-a-systemd-service)
-* [Part 5: Email Options for Legacy Devices](#part-5-email-options-for-legacy-devices)
-  * [Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
-  * [Option 2: Set Up a Postfix SMTP Relay](#option-2-set-up-a-postfix-smtp-relay)
-* [Troubleshooting](#troubleshooting)
-* [Wrapping Up](#wrapping-up)
-
-## What We're Building {#what-were-building}
-
-This guide will walk you through setting up a complete system that includes:
-
-* **Ubuntu Server 22.04 LTS:** A rock-solid, lightweight OS for the Pi.
-* **A Secure FTP Server (vsftpd):** For dropping off files securely.
-* **A Firewall (UFW) & Fail2ban:** To keep the bad guys out.
-* **An Automated File Processor:** A script that grabs new files, emails them as attachments, and then cleans up after itself.
-* **Email Options for Legacy Devices:** Two approaches for devices that don't support modern TLS:
-  * Use Forward Email's legacy TLS 1.0 ports (easiest)
-  * Set up a Postfix SMTP relay (works with any email provider)
-
-Ready? Let's dive in.
-
-## Part 1: Getting Ubuntu Server on Your Pi {#part-1-getting-ubuntu-server-on-your-pi}
-
-First things first, get Ubuntu Server running on the Raspberry Pi. This is surprisingly easy thanks to the Raspberry Pi Imager.
-
-### What You'll Need {#what-youll-need}
-
-* Any compatible Raspberry Pi (see list above)
-* A microSD card (8GB minimum, 16GB+ recommended)
-* A computer with a microSD card reader
-* Appropriate power supply for your Pi model
-* Internet access (Ethernet or Wi-Fi)
+**Compatível com:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W e Raspberry Pi Zero.
 
 > \[!NOTE]
-> Older models like the Raspberry Pi 2 or Pi Zero may be slower but will work fine for this setup.
+> Este guia foi testado e verificado em um Raspberry Pi 3 Model B rodando Ubuntu Server 22.04 LTS.
 
-### Flashing the OS {#flashing-the-os}
 
-1. **Get the Raspberry Pi Imager:** Download it from the [official website](https://www.raspberrypi.com/software/).
+## Índice {#table-of-contents}
 
-2. **Choose the OS:** In the imager, select "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
-   * For 64-bit models (Pi 3, 4, 5, Zero 2 W), choose **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
-   * For older 32-bit models (Pi 2, Pi Zero, Pi Zero W), choose **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+* [O Que Estamos Construindo](#what-were-building)
+* [Parte 1: Instalando o Ubuntu Server no Seu Pi](#part-1-getting-ubuntu-server-on-your-pi)
+  * [O Que Você Vai Precisar](#what-youll-need)
+  * [Gravando o SO](#flashing-the-os)
+  * [Inicializando e Conectando](#booting-up--connecting)
+* [Parte 2: Configurando um Servidor FTP Seguro](#part-2-setting-up-a-secure-ftp-server)
+  * [Instalação e Configuração](#installation--configuration)
+  * [Criando um Usuário FTP](#creating-an-ftp-user)
+* [Parte 3: Firewall e Proteção contra Força Bruta](#part-3-firewall-and-brute-force-protection)
+  * [Configurando o UFW](#setting-up-ufw)
+  * [Configurando o Fail2ban](#setting-up-fail2ban)
+* [Parte 4: Processamento Automático de Arquivos com Notificações por Email](#part-4-automated-file-processing-with-email-notifications)
+  * [Opção 1: Usando a API do Forward Email (Recomendado)](#option-1-using-forward-email-api-recommended)
+  * [Opção 2: Usando Outros Provedores de Email](#option-2-using-other-email-providers)
+  * [Criar um Serviço Systemd](#create-a-systemd-service)
+* [Parte 5: Opções de Email para Dispositivos Legados](#part-5-email-options-for-legacy-devices)
+  * [Opção 1: Use as portas TLS 1.0 legadas do Forward Email (Recomendado)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
+  * [Opção 2: Configure um Relay SMTP Postfix](#option-2-set-up-a-postfix-smtp-relay)
+* [Resolução de Problemas](#troubleshooting)
+* [Conclusão](#wrapping-up)
 
-3. **Pick Your Storage:** Select your microSD card.
+
+## O Que Estamos Construindo {#what-were-building}
+
+Este guia irá guiá-lo na configuração de um sistema completo que inclui:
+
+* **Ubuntu Server 22.04 LTS:** Um sistema operacional leve e robusto para o Pi.
+* **Um Servidor FTP Seguro (vsftpd):** Para enviar arquivos com segurança.
+* **Um Firewall (UFW) & Fail2ban:** Para manter os invasores afastados.
+* **Um Processador Automático de Arquivos:** Um script que captura novos arquivos, envia-os por email como anexos e depois faz a limpeza.
+* **Opções de Email para Dispositivos Legados:** Duas abordagens para dispositivos que não suportam TLS moderno:
+  * Usar as portas TLS 1.0 legadas do Forward Email (mais fácil)
+  * Configurar um relay SMTP Postfix (funciona com qualquer provedor de email)
+
+Pronto? Vamos começar.
+
+
+## Parte 1: Instalando o Ubuntu Server no Seu Pi {#part-1-getting-ubuntu-server-on-your-pi}
+
+Primeiro de tudo, coloque o Ubuntu Server rodando no Raspberry Pi. Isso é surpreendentemente fácil graças ao Raspberry Pi Imager.
+
+### O Que Você Vai Precisar {#what-youll-need}
+
+* Qualquer Raspberry Pi compatível (veja a lista acima)
+* Um cartão microSD (mínimo 8GB, recomendado 16GB+)
+* Um computador com leitor de cartão microSD
+* Fonte de alimentação adequada para seu modelo de Pi
+* Acesso à internet (Ethernet ou Wi-Fi)
+
+> \[!NOTE]
+> Modelos mais antigos como o Raspberry Pi 2 ou Pi Zero podem ser mais lentos, mas funcionarão bem para esta configuração.
+
+### Gravando o SO {#flashing-the-os}
+
+1. **Obtenha o Raspberry Pi Imager:** Baixe-o do [site oficial](https://www.raspberrypi.com/software/).
+
+2. **Escolha o SO:** No imager, selecione "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
+   * Para modelos 64-bit (Pi 3, 4, 5, Zero 2 W), escolha **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
+   * Para modelos 32-bit mais antigos (Pi 2, Pi Zero, Pi Zero W), escolha **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+
+3. **Escolha seu armazenamento:** Selecione seu cartão microSD.
 
 > \[!WARNING]
-> This will wipe your microSD card clean. Make sure you've backed up anything important.
+> Isso apagará completamente seu cartão microSD. Certifique-se de ter feito backup de tudo que for importante.
 
-4. **Advanced Options are Your Friend:** Click the gear icon (⚙️) to set up the Pi for headless mode (no monitor or keyboard needed).
-   * **Hostname:** Give your Pi a name (e.g., `pi-server`).
-   * **SSH:** Enable it and set a username and password.
-   * **Wi-Fi:** If you're not using Ethernet, enter your Wi-Fi details.
-   * **Locale:** Set your timezone and keyboard layout.
+4. **Opções avançadas são suas amigas:** Clique no ícone de engrenagem (⚙️) para configurar o Pi para modo headless (sem monitor ou teclado).
+   * **Hostname:** Dê um nome ao seu Pi (ex.: `pi-server`).
+   * **SSH:** Ative e defina um nome de usuário e senha.
+   * **Wi-Fi:** Se não estiver usando Ethernet, insira os dados do seu Wi-Fi.
+   * **Locale:** Defina seu fuso horário e layout de teclado.
+5. **Escreva!** Clique no botão "WRITE" e deixe o imager fazer seu trabalho.
 
-5. **Write!** Click the "WRITE" button and let the imager do its thing.
+### Inicializando e Conectando {#booting-up--connecting}
 
-### Booting Up & Connecting {#booting-up--connecting}
-
-Once the imager is done, pop the microSD card into the Pi and plug it in. Give it a few minutes to boot up. It's doing some initial setup in the background. Find its IP address from your router's admin page, then connect via SSH:
+Quando o imager terminar, insira o cartão microSD no Pi e conecte-o. Dê alguns minutos para inicializar. Ele está fazendo uma configuração inicial em segundo plano. Encontre o endereço IP no painel de administração do seu roteador e conecte via SSH:
 
 ```bash
-ssh your_username@your_pi_ip_address
+ssh seu_usuario@endereco_ip_do_pi
 ```
 
-You're in! The Raspberry Pi is now ready for configuration.
+Você está dentro! O Raspberry Pi agora está pronto para configuração.
 
-## Part 2: Setting Up a Secure FTP Server {#part-2-setting-up-a-secure-ftp-server}
 
-Next, set up `vsftpd` (Very Secure FTP Daemon), configured for maximum security.
+## Parte 2: Configurando um Servidor FTP Seguro {#part-2-setting-up-a-secure-ftp-server}
 
-### Installation & Configuration {#installation--configuration}
+Em seguida, configure o `vsftpd` (Very Secure FTP Daemon), configurado para máxima segurança.
 
-1. **Install vsftpd:**
+### Instalação e Configuração {#installation--configuration}
+
+1. **Instale o vsftpd:**
 
    ```bash
    sudo apt update
    sudo apt install vsftpd -y
    ```
 
-2. **Backup the config file:**
+2. **Faça backup do arquivo de configuração:**
 
    ```bash
    sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
    ```
 
-3. **Edit the configuration:**
+3. **Edite a configuração:**
 
    ```bash
    sudo nano /etc/vsftpd.conf
    ```
 
 > \[!TIP]
-> If a line is commented out (starts with a `#`), uncomment it by removing the `#`.
+> Se uma linha estiver comentada (começa com `#`), descomente removendo o `#`.
 
-Make these changes:
+Faça estas alterações:
 
-| Setting | Valor | Purpose |
-| ------------------------ | ----- | --------------------------------------------------------- |
-| `anonymous_enable` | `NO` | Disable anonymous FTP access |
-| `local_enable` | `YES` | Allow local users to log in |
-| `write_enable` | `YES` | Enable file uploads |
-| `local_umask` | `022` | Set file permissions (644 for files, 755 for directories) |
-| `chroot_local_user` | `YES` | Jail users to their home directory |
-| `allow_writeable_chroot` | `YES` | Allow uploads in chroot jail |
+| Configuração             | Valor | Propósito                                                |
+| ------------------------ | ----- | -------------------------------------------------------- |
+| `anonymous_enable`       | `NO`  | Desabilitar acesso FTP anônimo                           |
+| `local_enable`           | `YES` | Permitir login de usuários locais                        |
+| `write_enable`           | `YES` | Habilitar upload de arquivos                             |
+| `local_umask`            | `022` | Definir permissões de arquivos (644 para arquivos, 755 para diretórios) |
+| `chroot_local_user`      | `YES` | Prender usuários ao diretório home                       |
+| `allow_writeable_chroot` | `YES` | Permitir uploads dentro do jail chroot                   |
 
-4. **Add Passive Port Range:** Add these lines to the end of the file. This is needed for the firewall.
+4. **Adicione o intervalo de portas passivas:** Adicione estas linhas ao final do arquivo. Isso é necessário para o firewall.
 
    ```
    pasv_enable=YES
@@ -137,7 +140,7 @@ Make these changes:
    pasv_max_port=50000
    ```
 
-5. **Enable Logging:** Add these lines to enable logging for Fail2ban.
+5. **Habilite o registro de logs:** Adicione estas linhas para ativar o log para o Fail2ban.
 
    ```
    xferlog_enable=YES
@@ -145,34 +148,34 @@ Make these changes:
    log_ftp_protocol=YES
    ```
 
-6. **Save and Restart:** Press `Ctrl+O`, `Enter`, `Ctrl+X`, then restart the service:
+6. **Salve e reinicie:** Pressione `Ctrl+O`, `Enter`, `Ctrl+X`, depois reinicie o serviço:
 
    ```bash
    sudo systemctl restart vsftpd
    ```
 
-### Creating an FTP User {#creating-an-ftp-user}
+### Criando um Usuário FTP {#creating-an-ftp-user}
 
-Create a dedicated, restricted user for FTP access.
+Crie um usuário dedicado e restrito para acesso FTP.
 
-1. **Create the user:**
+1. **Crie o usuário:**
 
    ```bash
    sudo adduser ftpuser
    ```
 
-Follow the prompts to set a password. The other fields (name, phone, etc.) can be left blank.
+   Siga as instruções para definir uma senha. Os outros campos (nome, telefone, etc.) podem ser deixados em branco.
 
-2. **Create the directory structure:**
+2. **Crie a estrutura de diretórios:**
 
    ```bash
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-* `/home/ftpuser/ftp` - Main FTP directory
-   * `/home/ftpuser/ftp/uploads` - Where files will be uploaded
+   * `/home/ftpuser/ftp` - Diretório principal do FTP
+   * `/home/ftpuser/ftp/uploads` - Onde os arquivos serão enviados
 
-3. **Set permissions:**
+3. **Defina as permissões:**
 
    ```bash
    sudo chown -R ftpuser:ftpuser /home/ftpuser/ftp
@@ -180,35 +183,36 @@ Follow the prompts to set a password. The other fields (name, phone, etc.) can b
    sudo chmod 755 /home/ftpuser/ftp/uploads
    ```
 
-## Part 3: Firewall and Brute-Force Protection {#part-3-firewall-and-brute-force-protection}
 
-Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
+## Parte 3: Firewall e Proteção contra Força Bruta {#part-3-firewall-and-brute-force-protection}
 
-### Setting Up UFW {#setting-up-ufw}
+Proteja o Pi com UFW (Uncomplicated Firewall) e Fail2ban.
 
-1. **Install UFW:**
+### Configurando o UFW {#setting-up-ufw}
+
+1. **Instale o UFW:**
 
    ```bash
    sudo apt install ufw -y
    ```
 
-2. **Set default policies:**
+2. **Defina as políticas padrão:**
 
    ```bash
    sudo ufw default deny incoming
    sudo ufw default allow outgoing
    ```
 
-3. **Allow SSH (critical!):**
+3. **Permita SSH (crítico!):**
 
    ```bash
    sudo ufw allow ssh comment 'SSH access'
    ```
 
 > \[!WARNING]
-> Always allow SSH before enabling the firewall, or you'll lock yourself out!
+> Sempre permita SSH antes de ativar o firewall, ou você ficará trancado para fora!
 
-4. **Allow FTP ports:**
+4. **Permita as portas FTP:**
 
    ```bash
    sudo ufw allow 20/tcp comment 'FTP data'
@@ -216,30 +220,29 @@ Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
    sudo ufw allow 40000:50000/tcp comment 'FTP passive mode'
    ```
 
-5. **Enable the firewall:**
+5. **Ative o firewall:**
 
    ```bash
    sudo ufw enable
    ```
 
-### Setting Up Fail2ban {#setting-up-fail2ban}
+### Configurando o Fail2ban {#setting-up-fail2ban}
 
-Fail2ban automatically blocks IP addresses after repeated failed login attempts.
+O Fail2ban bloqueia automaticamente endereços IP após tentativas repetidas de login falhadas.
 
-1. **Install Fail2ban:**
+1. **Instale o Fail2ban:**
 
    ```bash
    sudo apt install fail2ban -y
    ```
 
-2. **Create a local configuration:**
+2. **Crie uma configuração local:**
 
    ```bash
    sudo nano /etc/fail2ban/jail.local
    ```
 
-3. **Add these configurations:**
-
+3. **Adicione estas configurações:**
    ```ini
    [DEFAULT]
    bantime = 3600
@@ -263,6 +266,7 @@ Fail2ban automatically blocks IP addresses after repeated failed login attempts.
    ```bash
    sudo systemctl restart fail2ban
    ```
+
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
@@ -458,19 +462,19 @@ do
 done
 ```
 
-Make it executable:
+Torne-o executável:
 
 ```bash
 sudo chmod +x /usr/local/bin/ftp-monitor.sh
 ```
 
-### Create a Systemd Service {#create-a-systemd-service}
+### Crie um Serviço Systemd {#create-a-systemd-service}
 
 ```bash
 sudo nano /etc/systemd/system/ftp-monitor.service
 ```
 
-Add this content:
+Adicione este conteúdo:
 
 ```ini
 [Unit]
@@ -487,7 +491,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable and start the service:
+Habilite e inicie o serviço:
 
 ```bash
 sudo systemctl daemon-reload
@@ -495,98 +499,98 @@ sudo systemctl enable ftp-monitor.service
 sudo systemctl start ftp-monitor.service
 ```
 
-Check the status:
+Verifique o status:
 
 ```bash
 sudo systemctl status ftp-monitor.service
 ```
 
-## Part 5: Email Options for Legacy Devices {#part-5-email-options-for-legacy-devices}
 
-Devices like FOSSCAM cameras often don't support modern TLS versions. There are two solutions:
+## Parte 5: Opções de Email para Dispositivos Legados {#part-5-email-options-for-legacy-devices}
 
-### Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
+Dispositivos como câmeras FOSSCAM frequentemente não suportam versões modernas do TLS. Existem duas soluções:
 
-If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports specifically for older devices like cameras, printers, scanners, and fax machines.
+### Opção 1: Use as Portas TLS 1.0 Legadas do Forward Email (Recomendado) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-#### Pricing {#pricing}
+Se você está usando o Forward Email, esta é a solução mais fácil. O Forward Email fornece portas dedicadas TLS 1.0 legadas especificamente para dispositivos mais antigos como câmeras, impressoras, scanners e máquinas de fax.
 
-Forward Email offers several plans:
+#### Preços {#pricing}
 
-| Plan | Price | Features |
-| ----------------------- | ------------ | -------------------------------------- |
-| Free | $0/month | Email forwarding only (no sending) |
-| **Enhanced Protection** | **$3/month** | **SMTP access + legacy TLS 1.0 ports** |
-| Team | $9/month | Enhanced + team features |
-| Enterprise | $250/month | Team + unlimited API requests |
+O Forward Email oferece vários planos:
+
+| Plano                   | Preço        | Recursos                              |
+| ----------------------- | ------------ | ----------------------------------- |
+| Gratuito                | $0/mês       | Apenas encaminhamento de email (sem envio) |
+| **Proteção Aprimorada** | **$3/mês**   | **Acesso SMTP + portas TLS 1.0 legadas** |
+| Equipe                  | $9/mês       | Proteção Aprimorada + recursos para equipe |
+| Empresarial             | $250/mês     | Equipe + solicitações ilimitadas de API |
 
 > \[!IMPORTANT]
-> The **Enhanced Protection plan ($3/month)** or higher is required for SMTP access and legacy TLS 1.0 port support.
+> O **plano Proteção Aprimorada ($3/mês)** ou superior é necessário para acesso SMTP e suporte às portas TLS 1.0 legadas.
 
-Learn more at [Forward Email Pricing](https://forwardemail.net/en/pricing).
+Saiba mais em [Forward Email Pricing](https://forwardemail.net/en/pricing).
 
-#### Generate Your Password {#generate-your-password}
+#### Gere Sua Senha {#generate-your-password}
 
-Before configuring your device, generate a password in Forward Email:
+Antes de configurar seu dispositivo, gere uma senha no Forward Email:
 
-1. Log in to [Forward Email](https://forwardemail.net)
-2. Navigate to **My Account → Domains → \[Your Domain] → Aliases**
-3. Create or select an alias (e.g., `camera@yourdomain.com`)
-4. Click **"Generate Password"** next to the alias
-5. Copy the generated password - you'll use this for SMTP authentication
+1. Faça login em [Forward Email](https://forwardemail.net)
+2. Navegue para **Minha Conta → Domínios → \[Seu Domínio] → Aliases**
+3. Crie ou selecione um alias (ex.: `camera@seudominio.com`)
+4. Clique em **"Generate Password"** ao lado do alias
+5. Copie a senha gerada - você usará isso para autenticação SMTP
 
 > \[!TIP]
-> Each alias can have its own password. This is useful for tracking which device sent which email.
+> Cada alias pode ter sua própria senha. Isso é útil para rastrear qual dispositivo enviou qual email.
 
-#### Configure Your Device {#configure-your-device}
+#### Configure Seu Dispositivo {#configure-your-device}
 
-Use these settings in your camera, printer, scanner, or other legacy device:
+Use estas configurações na sua câmera, impressora, scanner ou outro dispositivo legado:
 
-| Setting | Valor |
+| Configuração    | Valor                                            |
 | --------------- | ------------------------------------------------ |
-| SMTP Server | `smtp.forwardemail.net` |
-| Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` (alternative) |
-| Nome de usuário | Your alias email (e.g., `camera@yourdomain.com`) |
-| Password | The password from "Generate Password" |
-| Authentication | Requerido |
-| Encryption | SSL/TLS or STARTTLS |
+| Servidor SMTP   | `smtp.forwardemail.net`                          |
+| Porta (SSL/TLS) | `2455`                                           |
+| Porta (STARTTLS)| `2555` (alternativa)                             |
+| Usuário         | Seu email alias (ex.: `camera@seudominio.com`)  |
+| Senha           | A senha gerada em "Generate Password"            |
+| Autenticação    | Obrigatória                                      |
+| Criptografia    | SSL/TLS (recomendado) ou STARTTLS                |
 
 > \[!WARNING]
-> These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Use only if your device cannot support modern TLS 1.2+.
+> Essas portas usam o protocolo TLS 1.0 obsoleto que possui vulnerabilidades conhecidas (BEAST, POODLE). Use somente se seu dispositivo não suportar TLS moderno 1.2+.
 
-Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
+Basta configurar seu dispositivo com essas configurações e ele enviará emails diretamente pelo Forward Email sem precisar de um servidor relay local.
 
-For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
+Para mais detalhes, veja o [FAQ do Forward Email sobre Suporte a TLS Legado](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
-### Option 2: Set Up a Postfix SMTP Relay {#option-2-set-up-a-postfix-smtp-relay}
+### Opção 2: Configure um Relay SMTP Postfix {#option-2-set-up-a-postfix-smtp-relay}
 
-If you're not using Forward Email, or prefer a local relay solution, set up Postfix on the Raspberry Pi to act as a middleman. This works with any email provider (Gmail, Outlook, Yahoo, AOL, etc.).
+Se você não usa o Forward Email, ou prefere uma solução de relay local, configure o Postfix no Raspberry Pi para atuar como intermediário. Isso funciona com qualquer provedor de email (Gmail, Outlook, Yahoo, AOL, etc.).
 
-#### Install Postfix {#install-postfix}
+#### Instale o Postfix {#install-postfix}
 
 ```bash
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules -y
 ```
+Durante a instalação:
 
-During installation:
+* Selecione **"Internet Site"**
+* Insira o nome do host do seu Pi (por exemplo, `raspberrypi-ftp`) para "System mail name"
 
-* Select **"Internet Site"**
-* Enter your Pi's hostname (e.g., `raspberrypi-ftp`) for "System mail name"
+#### Escolha Seu Provedor de Email {#choose-your-email-provider}
 
-#### Choose Your Email Provider {#choose-your-email-provider}
+| Provedor | Servidor SMTP        | Porta | Senha de App Necessária? |
+| -------- | -------------------- | ----- | ------------------------ |
+| Gmail    | smtp.gmail.com       | 587   | Sim                      |
+| Outlook  | smtp-mail.outlook.com| 587   | Sim                      |
+| Yahoo    | smtp.mail.yahoo.com  | 465   | Sim                      |
+| AOL      | smtp.aol.com         | 587   | Sim                      |
 
-| Fornecedor | SMTP Server | Port | App Password Required? |
-| -------- | --------------------- | ---- | ---------------------- |
-| Gmail | smtp.gmail.com | 587 | Sim |
-| Outlook | smtp-mail.outlook.com | 587 | Sim |
-| Yahoo | smtp.mail.yahoo.com | 465 | Sim |
-| AOL | smtp.aol.com | 587 | Sim |
+#### Obtenha uma Senha Específica para App {#get-an-app-specific-password}
 
-#### Get an App-Specific Password {#get-an-app-specific-password}
-
-Most providers require app passwords for third-party applications. Generate one from your email provider's security settings:
+A maioria dos provedores exige senhas de app para aplicações de terceiros. Gere uma nas configurações de segurança do seu provedor de email:
 
 * **Gmail:** [Google Account Security](https://myaccount.google.com/security)
 * **Outlook:** [Microsoft Account Security](https://account.microsoft.com/security)
@@ -594,11 +598,11 @@ Most providers require app passwords for third-party applications. Generate one 
 * **AOL:** [AOL Account Security](https://login.aol.com/account/security)
 
 > \[!IMPORTANT]
-> Never use your regular email password. Always use an app-specific password.
+> Nunca use sua senha de email normal. Sempre use uma senha específica para app.
 
-#### Configure SASL Authentication {#configure-sasl-authentication}
+#### Configure a Autenticação SASL {#configure-sasl-authentication}
 
-Create the password file for your chosen provider. This example uses Yahoo:
+Crie o arquivo de senha para o provedor escolhido. Este exemplo usa Yahoo:
 
 ```bash
 sudo mkdir -p /etc/postfix/sasl
@@ -606,28 +610,28 @@ sudo chmod 700 /etc/postfix/sasl
 sudo nano /etc/postfix/sasl/sasl_passwd
 ```
 
-Add this line (adjust server and port for your provider):
+Adicione esta linha (ajuste servidor e porta para seu provedor):
 
 ```
-[smtp.mail.yahoo.com]:465 your_email@yahoo.com:your_app_password
+[smtp.mail.yahoo.com]:465 seu_email@yahoo.com:sua_senha_de_app
 ```
 
-For Gmail, use:
+Para Gmail, use:
 
 ```
-[smtp.gmail.com]:587 your_email@gmail.com:your_app_password
+[smtp.gmail.com]:587 seu_email@gmail.com:sua_senha_de_app
 ```
 
-Secure and hash the file:
+Proteja e gere o hash do arquivo:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl/sasl_passwd
 sudo postmap /etc/postfix/sasl/sasl_passwd
 ```
 
-#### Configure Email Address Mapping {#configure-email-address-mapping}
+#### Configure o Mapeamento de Endereços de Email {#configure-email-address-mapping}
 
-Rewrite local email addresses to match your email provider:
+Reescreva endereços de email locais para corresponder ao seu provedor:
 
 ```bash
 sudo mkdir -p /etc/postfix/map
@@ -635,42 +639,42 @@ sudo chmod 700 /etc/postfix/map
 sudo nano /etc/postfix/map/regex_map
 ```
 
-Add this line (replace `HOSTNAME` with your Pi's hostname and use your email):
+Adicione esta linha (substitua `HOSTNAME` pelo nome do host do seu Pi e use seu email):
 
 ```
-/.+@HOSTNAME/    your_email@provider.com
+/.+@HOSTNAME/    seu_email@provedor.com
 ```
 
-Example:
+Exemplo:
 
 ```
-/.+@raspberrypi-ftp/    john@yahoo.com
+/.+@raspberrypi-ftp/    joao@yahoo.com
 ```
 
-Secure the file:
+Proteja o arquivo:
 
 ```bash
 sudo chmod 600 /etc/postfix/map/regex_map
 ```
 
-#### Configure Postfix Main Settings {#configure-postfix-main-settings}
+#### Configure as Configurações Principais do Postfix {#configure-postfix-main-settings}
 
-Edit the main configuration:
+Edite a configuração principal:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-Find and update the relay host (or add at the end):
+Encontre e atualize o relay host (ou adicione no final):
 
 ```
 relayhost = [smtp.mail.yahoo.com]:465
 ```
 
-Add these settings at the end of the file:
+Adicione estas configurações no final do arquivo:
 
 ```
-# SMTP Relay Configuration
+# Configuração do Relay SMTP
 smtp_use_tls = yes
 smtp_sasl_auth_enable = yes
 smtp_sasl_security_options = noanonymous
@@ -680,69 +684,69 @@ smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
 smtp_generic_maps = regexp:/etc/postfix/map/regex_map
 
-# Network settings
+# Configurações de rede
 inet_interfaces = all
 inet_protocols = ipv4
 mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 ```
 
 > \[!TIP]
-> For Gmail (port 587), set `smtp_tls_wrappermode = no` instead of `yes`.
+> Para Gmail (porta 587), defina `smtp_tls_wrappermode = no` em vez de `yes`.
 
 > \[!WARNING]
-> Update `mynetworks` with your actual network range. Only add trusted networks - any device on these networks can relay mail without authentication.
+> Atualize `mynetworks` com o intervalo real da sua rede. Adicione apenas redes confiáveis - qualquer dispositivo nessas redes pode enviar emails sem autenticação.
 
-**Common network ranges:**
+**Intervalos comuns de rede:**
 
-| Network Range | IP Address Range |
-| ---------------- | --------------------------- |
-| `192.168.0.0/24` | 192.168.0.1 - 192.168.0.254 |
-| `192.168.1.0/24` | 192.168.1.1 - 192.168.1.254 |
-| `10.0.0.0/8` | 10.0.0.0 - 10.255.255.255 |
+| Intervalo de Rede | Faixa de Endereços IP          |
+| ----------------- | ------------------------------ |
+| `192.168.0.0/24`  | 192.168.0.1 - 192.168.0.254    |
+| `192.168.1.0/24`  | 192.168.1.1 - 192.168.1.254    |
+| `10.0.0.0/8`      | 10.0.0.0 - 10.255.255.255      |
 
-#### Update Firewall and Restart {#update-firewall-and-restart}
+#### Atualize o Firewall e Reinicie {#update-firewall-and-restart}
 
 ```bash
-sudo ufw allow 25/tcp comment 'SMTP for local devices'
+sudo ufw allow 25/tcp comment 'SMTP para dispositivos locais'
 sudo systemctl restart postfix
 ```
 
-Verify Postfix is running:
+Verifique se o Postfix está rodando:
 
 ```bash
 sudo systemctl status postfix
 ```
 
-#### Test the Relay {#test-the-relay}
+#### Teste o Relay {#test-the-relay}
 
-Send a test email:
+Envie um email de teste:
 
 ```bash
-echo "Test from Postfix" | mail -s "Test" your_email@provider.com
+echo "Teste do Postfix" | mail -s "Teste" seu_email@provedor.com
 ```
 
-Check the logs:
+Verifique os logs:
 
 ```bash
 sudo tail -f /var/log/mail.log
 ```
 
-Look for `status=sent` to confirm success.
+Procure por `status=sent` para confirmar sucesso.
 
-#### Configure Your Device {#configure-your-device-1}
+#### Configure Seu Dispositivo {#configure-your-device-1}
 
-In your camera or device settings:
+Nas configurações da sua câmera ou dispositivo:
+* **Servidor SMTP:** O endereço IP do seu Pi (ex.: `192.168.1.100`)
+* **Porta SMTP:** `25`
+* **Autenticação:** Nenhuma
+* **Criptografia:** Nenhuma (somente rede local)
 
-* **SMTP Server:** Your Pi's IP address (e.g., `192.168.1.100`)
-* **SMTP Port:** `25`
-* **Authentication:** None
-* **Encryption:** None (local network only)
 
-## Troubleshooting {#troubleshooting}
+## Solução de Problemas {#troubleshooting}
 
-If issues arise, check these log files:
+Se surgirem problemas, verifique estes arquivos de log:
 
-**FTP Server:**
+**Servidor FTP:**
 
 ```bash
 sudo tail -f /var/log/vsftpd.log
@@ -755,7 +759,7 @@ sudo fail2ban-client status
 sudo tail -f /var/log/fail2ban.log
 ```
 
-**File Monitor:**
+**Monitor de Arquivos:**
 
 ```bash
 sudo journalctl -u ftp-monitor.service -f
@@ -765,9 +769,10 @@ sudo journalctl -u ftp-monitor.service -f
 
 ```bash
 sudo tail -f /var/log/mail.log
-mailq  # View mail queue
+mailq  # Ver fila de emails
 ```
 
-## Wrapping Up {#wrapping-up}
 
-The Raspberry Pi is now a complete automated system with secure file uploads, automatic email notifications with attachments, and SMTP relay capabilities for legacy devices. Whether using Forward Email's legacy TLS ports or a local Postfix relay, older devices can now send emails reliably through modern email providers.
+## Finalizando {#wrapping-up}
+
+O Raspberry Pi agora é um sistema automatizado completo com uploads de arquivos seguros, notificações automáticas por email com anexos e capacidades de retransmissão SMTP para dispositivos legados. Seja usando as portas TLS legadas do Forward Email ou um relay Postfix local, dispositivos mais antigos agora podem enviar emails de forma confiável através de provedores modernos.

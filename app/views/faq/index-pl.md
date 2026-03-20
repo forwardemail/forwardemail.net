@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# Najczęściej Zadawane Pytania {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email najczęściej zadawane pytania" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## Spis treści {#table-of-contents}
+
+* [Szybki start](#quick-start)
+* [Wprowadzenie](#introduction)
+  * [Czym jest Forward Email](#what-is-forward-email)
+  * [Kto korzysta z Forward Email](#who-uses-forward-email)
+  * [Jaka jest historia Forward Email](#what-is-forward-emails-history)
+  * [Jak szybka jest ta usługa](#how-fast-is-this-service)
+* [Klienci poczty](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [Urządzenia mobilne](#mobile-devices)
+  * [Konfiguracja Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
+  * [Konfiguracja Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
+  * [Konfiguracja klienta msmtp SMTP](#msmtp-smtp-client-configuration)
+  * [Klienci poczty wiersza poleceń](#command-line-email-clients)
+  * [Konfiguracja poczty w Windows](#windows-email-configuration)
+  * [Konfiguracja Postfix SMTP Relay](#postfix-smtp-relay-configuration)
+  * [Jak wysyłać mail jako za pomocą Gmail](#how-to-send-mail-as-using-gmail)
+  * [Jaki jest darmowy przewodnik legacy dla Send Mail As za pomocą Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Zaawansowana konfiguracja routingu Gmail](#advanced-gmail-routing-configuration)
+  * [Zaawansowana konfiguracja routingu Outlook](#advanced-outlook-routing-configuration)
+* [Rozwiązywanie problemów](#troubleshooting)
+  * [Dlaczego nie otrzymuję moich testowych maili](#why-am-i-not-receiving-my-test-emails)
+  * [Jak skonfigurować klienta poczty do pracy z Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Dlaczego moje maile trafiają do Spam i Kosz i jak sprawdzić reputację domeny](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [Co zrobić, jeśli otrzymuję spam](#what-should-i-do-if-i-receive-spam-emails)
+  * [Dlaczego moje testowe maile wysłane do mnie w Gmail pokazują się jako "podejrzane"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Czy mogę usunąć via forwardemail dot net w Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Zarządzanie danymi](#data-management)
+  * [Gdzie znajdują się wasze serwery](#where-are-your-servers-located)
+  * [Jak eksportować i tworzyć kopie zapasowe mojej skrzynki pocztowej](#how-do-i-export-and-backup-my-mailbox)
+  * [Jak importować i migrować moją istniejącą skrzynkę pocztową](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Jak używać własnej pamięci zgodnej z S3 do kopii zapasowych](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [Jak konwertować kopie zapasowe SQLite na pliki EML](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [Czy wspieracie self-hosting](#do-you-support-self-hosting)
+* [Konfiguracja poczty](#email-configuration)
+  * [Jak zacząć i ustawić przekazywanie maili](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Czy mogę używać wielu wymian MX i serwerów do zaawansowanego przekazywania](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [Jak ustawić autoresponder urlopowy (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Jak ustawić SPF dla Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [Jak ustawić DKIM dla Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [Jak ustawić DMARC dla Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [Jak przeglądać raporty DMARC](#how-do-i-view-dmarc-reports)
+  * [Jak połączyć i skonfigurować kontakty](#how-do-i-connect-and-configure-my-contacts)
+  * [Jak połączyć i skonfigurować kalendarze](#how-do-i-connect-and-configure-my-calendars)
+  * [Jak dodać więcej kalendarzy i zarządzać istniejącymi](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [Jak połączyć i skonfigurować zadania i przypomnienia](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Dlaczego nie mogę tworzyć zadań w macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
+  * [Jak ustawić Tasks.org na Androidzie](#how-do-i-set-up-tasksorg-on-android)
+  * [Jak ustawić SRS dla Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [Jak ustawić MTA-STS dla Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [Jak dodać zdjęcie profilowe do mojego adresu email](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Zaawansowane funkcje](#advanced-features)
+  * [Czy wspieracie newslettery lub listy mailingowe do celów marketingowych](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Czy wspieracie wysyłanie maili przez API](#do-you-support-sending-email-with-api)
+  * [Czy wspieracie odbieranie maili przez IMAP](#do-you-support-receiving-email-with-imap)
+  * [Czy wspieracie POP3](#do-you-support-pop3)
+  * [Czy wspieracie kalendarze (CalDAV)](#do-you-support-calendars-caldav)
+  * [Czy wspieracie zadania i przypomnienia (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Czy wspieracie kontakty (CardDAV)](#do-you-support-contacts-carddav)
+  * [Czy wspieracie wysyłanie maili przez SMTP](#do-you-support-sending-email-with-smtp)
+  * [Czy wspieracie OpenPGP/MIME, szyfrowanie end-to-end ("E2EE") i Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Czy wspieracie szyfrowanie S/MIME](#do-you-support-smime-encryption)
+  * [Czy wspieracie filtrowanie maili Sieve](#do-you-support-sieve-email-filtering)
+  * [Czy wspieracie MTA-STS](#do-you-support-mta-sts)
+  * [Czy wspieracie passkeys i WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Czy wspieracie najlepsze praktyki email](#do-you-support-email-best-practices)
+  * [Czy wspieracie webhooki bounce](#do-you-support-bounce-webhooks)
+  * [Czy wspieracie webhooki](#do-you-support-webhooks)
+  * [Czy wspieracie wyrażenia regularne lub regex](#do-you-support-regular-expressions-or-regex)
+  * [Jakie są wasze limity SMTP wychodzącego](#what-are-your-outbound-smtp-limits)
+  * [Czy potrzebuję zgody, aby włączyć SMTP](#do-i-need-approval-to-enable-smtp)
+  * [Jakie są ustawienia konfiguracji serwera SMTP](#what-are-your-smtp-server-configuration-settings)
+  * [Jakie są ustawienia konfiguracji serwera IMAP](#what-are-your-imap-server-configuration-settings)
+  * [Jakie są ustawienia konfiguracji serwera POP3](#what-are-your-pop3-server-configuration-settings)
+  * [Jak ustawić autodiscovery poczty dla mojej domeny](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [Bezpieczeństwo](#security-1)
+  * [Zaawansowane techniki wzmacniania serwera](#advanced-server-hardening-techniques)
+  * [Czy posiadacie certyfikaty SOC 2 lub ISO 27001](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Czy używacie szyfrowania TLS do przekazywania maili](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Czy zachowujecie nagłówki uwierzytelniania maili](#do-you-preserve-email-authentication-headers)
+  * [Czy zachowujecie oryginalne nagłówki maili i zapobiegacie spoofingowi](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [Jak chronicie przed spamem i nadużyciami](#how-do-you-protect-against-spam-and-abuse)
+  * [Czy przechowujecie zawartość maili na dysku](#do-you-store-email-content-on-disk)
+  * [Czy zawartość maili może zostać ujawniona podczas awarii systemu](#can-email-content-be-exposed-during-system-crashes)
+  * [Kto ma dostęp do waszej infrastruktury mailowej](#who-has-access-to-your-email-infrastructure)
+  * [Jakich dostawców infrastruktury używacie](#what-infrastructure-providers-do-you-use)
+  * [Czy oferujecie umowę o przetwarzaniu danych (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [Jak radzicie sobie z powiadomieniami o naruszeniach danych](#how-do-you-handle-data-breach-notifications)
+  * [Czy oferujecie środowisko testowe](#do-you-offer-a-test-environment)
+  * [Czy zapewniacie narzędzia monitoringu i alertów](#do-you-provide-monitoring-and-alerting-tools)
+  * [Jak zapewniacie wysoką dostępność](#how-do-you-ensure-high-availability)
+  * [Czy jesteście zgodni z Sekcją 889 ustawy NDAA (National Defense Authorization Act)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [Szczegóły systemowe i techniczne](#system-and-technical-details)
+  * [Czy przechowujecie maile i ich zawartość](#do-you-store-emails-and-their-contents)
+  * [Jak działa wasz system przekazywania maili](#how-does-your-email-forwarding-system-work)
+  * [Jak przetwarzacie mail do przekazania](#how-do-you-process-an-email-for-forwarding)
+  * [Jak radzicie sobie z problemami dostarczania maili](#how-do-you-handle-email-delivery-issues)
+  * [Jak radzicie sobie z blokowaniem waszych adresów IP](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [Czym są adresy postmaster](#what-are-postmaster-addresses)
+  * [Czym są adresy no-reply](#what-are-no-reply-addresses)
+  * [Jakie są adresy IP waszych serwerów](#what-are-your-servers-ip-addresses)
+  * [Czy macie listę dozwolonych](#do-you-have-an-allowlist)
+  * [Jakie rozszerzenia nazw domen są domyślnie dozwolone](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [Jakie są kryteria waszej listy dozwolonych](#what-is-your-allowlist-criteria)
+  * [Jakie rozszerzenia nazw domen można używać za darmo](#what-domain-name-extensions-can-be-used-for-free)
+  * [Czy macie listę szarą](#do-you-have-a-greylist)
+  * [Czy macie listę odmów](#do-you-have-a-denylist)
+  * [Czy macie ograniczenia szybkości](#do-you-have-rate-limiting)
+  * [Jak chronicie przed backscatter](#how-do-you-protect-against-backscatter)
+  * [Zapobieganie odbiciom od znanych spamerów MAIL FROM](#prevent-bounces-from-known-mail-from-spammers)
+  * [Zapobieganie niepotrzebnym odbiciom w celu ochrony przed backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [Jak określacie odcisk palca maila](#how-do-you-determine-an-email-fingerprint)
+  * [Czy mogę przekazywać maile na porty inne niż 25 (np. jeśli mój ISP zablokował port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Czy obsługuje symbol plus + dla aliasów Gmail](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Czy obsługuje subdomeny](#does-it-support-sub-domains)
+  * [Czy to przekazuje nagłówki moich maili](#does-this-forward-my-emails-headers)
+  * [Czy to jest dobrze przetestowane](#is-this-well-tested)
+  * [Czy przekazujecie wiadomości i kody odpowiedzi SMTP](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [Jak zapobiegacie spammerom i zapewniacie dobrą reputację przekazywania maili](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Jak wykonujecie zapytania DNS na nazwach domen](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Konto i rozliczenia](#account-and-billing)
+  * [Czy oferujecie gwarancję zwrotu pieniędzy na płatnych planach](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [Jeśli zmienię plan, czy proporcjonalnie zwracacie różnicę](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Czy mogę używać tej usługi przekazywania maili jako serwera MX "fallback" lub "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Czy mogę wyłączyć konkretne aliasy](#can-i-disable-specific-aliases)
+  * [Czy mogę przekazywać maile do wielu odbiorców](#can-i-forward-emails-to-multiple-recipients)
+  * [Czy mogę mieć wielu globalnych odbiorców catch-all](#can-i-have-multiple-global-catch-all-recipients)
+  * [Czy istnieje maksymalny limit liczby adresów email, na które mogę przekazywać per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Czy mogę rekurencyjnie przekazywać maile](#can-i-recursively-forward-emails)
+  * [Czy ludzie mogą rejestrować lub wyrejestrowywać moje przekazywanie maili bez mojej zgody](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [Jak to jest darmowe](#how-is-it-free)
+  * [Jaki jest maksymalny rozmiar maila](#what-is-the-max-email-size-limit)
+  * [Czy przechowujecie logi maili](#do-you-store-logs-of-emails)
+  * [Czy przechowujecie logi błędów](#do-you-store-error-logs)
+  * [Czy czytacie moje maile](#do-you-read-my-emails)
+  * [Czy mogę "wysyłać mail jako" w Gmail z tym](#can-i-send-mail-as-in-gmail-with-this)
+  * [Czy mogę "wysyłać mail jako" w Outlook z tym](#can-i-send-mail-as-in-outlook-with-this)
+  * [Czy mogę "wysyłać mail jako" w Apple Mail i iCloud Mail z tym](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Czy mogę przekazywać nieograniczoną liczbę maili z tym](#can-i-forward-unlimited-emails-with-this)
+  * [Czy oferujecie nieograniczoną liczbę domen za jedną cenę](#do-you-offer-unlimited-domains-for-one-price)
+  * [Jakie metody płatności akceptujecie](#which-payment-methods-do-you-accept)
+* [Dodatkowe zasoby](#additional-resources)
+## Szybki start {#quick-start}
 
-## Quick Start {#quick-start}
+Aby rozpocząć korzystanie z Forward Email:
 
-To get started with Forward Email:
+1. **Utwórz konto** na [forwardemail.net/register](https://forwardemail.net/register)
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **Dodaj i zweryfikuj swoją domenę** w [Moje konto → Domeny](/my-account/domains)
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **Dodaj i skonfiguruj aliasy/skrzynki e-mail** w [Moje konto → Domeny](/my-account/domains) → Aliasy
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **Przetestuj konfigurację** wysyłając e-mail na jeden z nowych aliasów
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> Zmiany DNS mogą propagować się globalnie do 24-48 godzin, choć często zaczynają działać znacznie szybciej.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Dla lepszej dostarczalności zalecamy skonfigurowanie rekordów [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) oraz [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## Wprowadzenie {#introduction}
+
+### Czym jest Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email jest idealny dla osób prywatnych, małych firm i programistów, którzy chcą profesjonalnych adresów e-mail bez kosztów i utrzymania pełnego hostingu poczty.
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+Forward Email to **pełnoprawny dostawca usług e-mail** oraz **dostawca hostingu e-mail dla niestandardowych nazw domen**.
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+To jedyna darmowa i otwartoźródłowa usługa, która pozwala korzystać z adresów e-mail na własnej domenie bez skomplikowanej konfiguracji i utrzymania własnego serwera pocztowego.
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+Nasza usługa przekierowuje e-maile wysłane na Twoją niestandardową domenę do Twojego istniejącego konta e-mail – a nawet możesz używać nas jako dedykowanego dostawcy hostingu e-mail.
 
-Key features of Forward Email:
+Kluczowe cechy Forward Email:
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **E-mail na własnej domenie**: Korzystaj z profesjonalnych adresów e-mail z własną nazwą domeny
+* **Darmowy plan**: Podstawowe przekierowywanie e-maili bez opłat
+* **Zwiększona prywatność**: Nie czytamy Twoich e-maili ani nie sprzedajemy Twoich danych
+* **Open Source**: Cały nasz kod jest dostępny na GitHub
+* **Wsparcie SMTP, IMAP i POP3**: Pełne możliwości wysyłania i odbierania e-maili
+* **Szyfrowanie end-to-end**: Obsługa OpenPGP/MIME
+* **Własne aliasy catch-all**: Twórz nieograniczoną liczbę aliasów e-mail
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+Możesz porównać nas z ponad 56 innymi dostawcami usług e-mail na [naszej stronie porównawczej usług e-mail](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Dowiedz się więcej o Forward Email, czytając nasz darmowy [Technical Whitepaper](/technical-whitepaper.pdf)
 
-### Who uses Forward Email {#who-uses-forward-email}
+### Kto korzysta z Forward Email {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+Świadczymy hosting i przekierowywanie e-maili dla ponad 500 000 domen oraz następujących znanych użytkowników:
 
-| Customer | Case Study |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| Klient                                  | Studium przypadku                                                                                         |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| U.S. Naval Academy                      | [:page_facing_up: Studium przypadku](/blog/docs/federal-government-email-service-section-889-compliant)   |
+| Canonical                               | [:page_facing_up: Studium przypadku](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| Netflix Games                           |                                                                                                          |
+| The Linux Foundation                    | [:page_facing_up: Studium przypadku](/blog/docs/linux-foundation-email-enterprise-case-study)             |
+| The PHP Foundation                      |                                                                                                          |
+| Fox News Radio                          |                                                                                                          |
+| Disney Ad Sales                         |                                                                                                          |
+| jQuery                                  | [:page_facing_up: Studium przypadku](/blog/docs/linux-foundation-email-enterprise-case-study)             |
+| LineageOS                               |                                                                                                          |
+| Ubuntu                                  | [:page_facing_up: Studium przypadku](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| Kubuntu                                 | [:page_facing_up: Studium przypadku](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| Lubuntu                                 | [:page_facing_up: Studium przypadku](/blog/docs/canonical-ubuntu-email-enterprise-case-study)             |
+| The University of Cambridge             | [:page_facing_up: Studium przypadku](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| The University of Maryland              | [:page_facing_up: Studium przypadku](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| The University of Washington            | [:page_facing_up: Studium przypadku](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| Tufts University                        | [:page_facing_up: Studium przypadku](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| Swarthmore College                      | [:page_facing_up: Studium przypadku](/blog/docs/alumni-email-forwarding-university-case-study)            |
+| Government of South Australia           |                                                                                                          |
+| Government of Dominican Republic        |                                                                                                          |
+| Fly<span>.</span>io                     |                                                                                                          |
+| RCD Hotels                              |                                                                                                          |
+| Isaac Z. Schlueter (npm)                | [:page_facing_up: Studium przypadku](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### Jaka jest historia Forward Email {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+Więcej o Forward Email możesz dowiedzieć się na [naszej stronie O nas](/about).
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### Jak szybka jest ta usługa {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Nasz system jest zaprojektowany pod kątem szybkości i niezawodności, z wieloma redundantnymi serwerami, aby zapewnić szybkie dostarczanie Twoich wiadomości.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Email dostarcza wiadomości z minimalnym opóźnieniem, zazwyczaj w ciągu kilku sekund od otrzymania.
 
-Performance metrics:
+Metryki wydajności:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **Średni czas dostarczenia**: Mniej niż 5-10 sekund od otrzymania do przekazania ([zobacz naszą stronę monitoringu Time to Inbox "TTI"](/tti))
+* **Dostępność**: Ponad 99,9% czasu działania usługi
+* **Globalna infrastruktura**: Serwery strategicznie rozmieszczone dla optymalnego routingu
+* **Automatyczne skalowanie**: Nasz system skaluję się w okresach wzmożonego ruchu e-mailowego
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+Działamy w czasie rzeczywistym, w przeciwieństwie do innych dostawców, którzy polegają na opóźnionych kolejkach.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nie zapisujemy na dysku ani nie przechowujemy logów – z [wyjątkiem błędów](#do-you-store-error-logs) oraz [wychodzącego SMTP](#do-you-support-sending-email-with-smtp) (zobacz naszą [Politykę prywatności](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Wszystko odbywa się w pamięci operacyjnej, a [nasz kod źródłowy jest na GitHub](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## Klienci poczty {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Utwórz nowy alias i wygeneruj hasło w panelu Forward Email
+2. Otwórz Thunderbird i przejdź do **Edycja → Ustawienia kont → Akcje konta → Dodaj konto pocztowe**
+3. Wprowadź swoje imię, adres Forward Email oraz hasło
+4. Kliknij **Konfiguruj ręcznie** i wpisz:
+   * Przychodzące: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+   * Wychodzące: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (zalecane; port 587 z STARTTLS jest również obsługiwany)
+5. Kliknij **Gotowe**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Utwórz nowy alias i wygeneruj hasło w panelu Forward Email
+2. Przejdź do **Plik → Dodaj konto**
+3. Wprowadź swój adres Forward Email i kliknij **Połącz**
+4. Wybierz **Opcje zaawansowane** i zaznacz **Pozwól mi skonfigurować konto ręcznie**
+5. Wybierz **IMAP** i wpisz:
+   * Przychodzące: `imap.forwardemail.net`, port 993, SSL
+   * Wychodzące: `smtp.forwardemail.net`, port 465, SSL/TLS (zalecane; port 587 z STARTTLS jest również obsługiwany)
+   * Nazwa użytkownika: Twój pełny adres e-mail
+   * Hasło: Twoje wygenerowane hasło
+6. Kliknij **Połącz**
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Utwórz nowy alias i wygeneruj hasło w panelu Forward Email
+2. Przejdź do **Poczta → Preferencje → Konta → +**
+3. Wybierz **Inne konto pocztowe**
+4. Wprowadź swoje imię, adres Forward Email oraz hasło
+5. W ustawieniach serwera wpisz:
+   * Przychodzące: `imap.forwardemail.net`
+   * Wychodzące: `smtp.forwardemail.net`
+   * Nazwa użytkownika: Twój pełny adres e-mail
+   * Hasło: Twoje wygenerowane hasło
+6. Kliknij **Zaloguj się**
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Utwórz nowy alias i wygeneruj hasło w panelu Forward Email
+2. Otwórz eM Client i przejdź do **Menu → Konta → + Dodaj konto**
+3. Kliknij na **Poczta**, a następnie wybierz **Inne**
+4. Wprowadź swój adres Forward Email i kliknij **Dalej**
+5. Wprowadź następujące ustawienia serwera:
+   * **Serwer przychodzący**: `imap.forwardemail.net`
+   * **Serwer wychodzący**: `smtp.forwardemail.net`
+6. Wprowadź swój pełny adres e-mail jako **Nazwa użytkownika** oraz wygenerowane hasło jako **Hasło** dla obu serwerów.
+7. eM Client przetestuje połączenie. Po pomyślnym teście kliknij **Dalej**.
+8. Wprowadź swoje imię i wybierz nazwę konta.
+9. Kliknij **Zakończ**.
 
-### Mobile Devices {#mobile-devices}
+### Urządzenia mobilne {#mobile-devices}
 
-For iOS:
+Dla iOS:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Przejdź do **Ustawienia → Poczta → Konta → Dodaj konto → Inne**
+2. Stuknij **Dodaj konto pocztowe** i wprowadź swoje dane
+3. W ustawieniach serwera użyj tych samych ustawień IMAP i SMTP co powyżej
 
-For Android:
+Dla Androida:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Przejdź do **Ustawienia → Konta → Dodaj konto → Osobiste (IMAP)**
+2. Wprowadź swój adres Forward Email i hasło
+3. W ustawieniach serwera użyj tych samych ustawień IMAP i SMTP co powyżej
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Konfiguracja Sendmail SMTP Relay {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+Możesz skonfigurować Sendmail do przekazywania wiadomości przez serwery SMTP Forward Email. Jest to powszechna konfiguracja dla systemów legacy lub aplikacji korzystających z Sendmail.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>Mniej niż 20 minut</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Wymaga to płatnego planu z włączonym dostępem SMTP.
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### Konfiguracja {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. Edytuj plik `sendmail.mc`, zazwyczaj znajdujący się w `/etc/mail/sendmail.mc`:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. Dodaj następujące linie, aby zdefiniować smart host i uwierzytelnianie:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. Utwórz plik uwierzytelniania `/etc/mail/authinfo`:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. Dodaj swoje dane uwierzytelniające Forward Email do pliku `authinfo`:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. Wygeneruj bazę danych uwierzytelniania i zabezpiecz pliki:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Odbuduj konfigurację Sendmail i zrestartuj usługę:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### Testowanie {#testing}
 
-Send a test email to verify the configuration:
+Wyślij testowy e-mail, aby zweryfikować konfigurację:
 
 ```bash
 echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Konfiguracja Exim4 SMTP Relay {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4 to popularny MTA na systemach opartych na Debianie. Możesz go skonfigurować do używania Forward Email jako smarthosta.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>Mniej niż 15 minut</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Wymaga to płatnego planu z włączonym dostępem SMTP.
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### Konfiguracja {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Uruchom narzędzie konfiguracyjne Exim4:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. Wybierz następujące opcje:
+   * **Ogólny typ konfiguracji poczty:** poczta wysyłana przez smarthost; odbierana przez SMTP lub fetchmail
+   * **Nazwa systemowa poczty:** your.hostname
+   * **Adresy IP do nasłuchiwania na przychodzące połączenia SMTP:** 127.0.0.1 ; ::1
+   * **Inne miejsca docelowe, dla których akceptowana jest poczta:** (pozostaw puste)
+   * **Domeny, dla których ma być przekazywana poczta:** (pozostaw puste)
+   * **Adres IP lub nazwa hosta wychodzącego smarthosta:** smtp.forwardemail.net::465
+   * **Ukryć lokalną nazwę poczty w wychodzącej poczcie?** Nie
+   * **Minimalizować liczbę zapytań DNS (Dial-on-Demand)?** Nie
+   * **Metoda dostarczania lokalnej poczty:** format Mbox w /var/mail/
+   * **Podzielić konfigurację na małe pliki?** Nie
 
-3. Edit the `passwd.client` file to add your credentials:
+3. Edytuj plik `passwd.client`, aby dodać swoje dane uwierzytelniające:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. Dodaj następującą linię:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. Zaktualizuj konfigurację i zrestartuj Exim4:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### Testowanie {#testing-1}
 
-Send a test email:
+Wyślij testowy e-mail:
 
 ```bash
 echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### Konfiguracja klienta SMTP msmtp {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp to lekki klient SMTP, który jest przydatny do wysyłania e-maili ze skryptów lub aplikacji wiersza poleceń.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>Mniej niż 10 minut</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Wymaga to płatnego planu z włączonym dostępem SMTP.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### Konfiguracja {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. Utwórz lub edytuj plik konfiguracyjny msmtp w `~/.msmtprc`:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. Dodaj następującą konfigurację:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. Ustaw odpowiednie uprawnienia dla pliku konfiguracyjnego:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### Testowanie {#testing-2}
 
-Send a test email:
+Wyślij testowy e-mail:
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### Klienci poczty wiersza poleceń {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+Popularnych klientów poczty wiersza poleceń, takich jak [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) i [Alpine](https://alpine.x10.mx/alpine/release/), można skonfigurować do korzystania z serwerów SMTP Forward Email do wysyłania poczty. Konfiguracja będzie podobna do ustawień `msmtp`, gdzie podajesz dane serwera SMTP oraz swoje dane uwierzytelniające w odpowiednich plikach konfiguracyjnych (`.muttrc`, `.neomuttrc` lub `.pinerc`).
 
-### Windows Email Configuration {#windows-email-configuration}
+### Konfiguracja poczty w Windows {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+Dla użytkowników Windows można skonfigurować popularnych klientów poczty, takich jak **Microsoft Outlook** i **eM Client**, używając ustawień IMAP i SMTP podanych w Twoim koncie Forward Email. Do użytku w wierszu poleceń lub skryptach można użyć cmdletu PowerShell `Send-MailMessage` (choć jest on uważany za przestarzały) lub lekkiego narzędzia SMTP relay, takiego jak [E-MailRelay](https://github.com/graeme-walker/emailrelay).
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Konfiguracja relaya SMTP Postfix {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Możesz skonfigurować Postfix do przekazywania wiadomości e-mail przez serwery SMTP Forward Email. Jest to przydatne dla aplikacji serwerowych, które muszą wysyłać e-maile.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>Mniej niż 15 minut</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Wymaga to płatnego planu z włączonym dostępem SMTP.
   </span>
 </div>
 
-#### Installation {#installation}
+#### Instalacja {#installation}
 
-1. Install Postfix on your server:
+1. Zainstaluj Postfix na swoim serwerze:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. Podczas instalacji wybierz "Internet Site" jako typ konfiguracji.
 
-#### Configuration {#configuration-3}
+#### Konfiguracja {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Edytuj główny plik konfiguracyjny Postfix:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. Dodaj lub zmodyfikuj następujące ustawienia:
 
 ```
-# SMTP relay configuration
+# Konfiguracja relaya SMTP
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. Utwórz plik z hasłem SASL:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Dodaj swoje dane uwierzytelniające Forward Email:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. Zabezpiecz i zahashuj plik z hasłem:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Uruchom ponownie Postfix:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### Testowanie {#testing-3}
 
-Test your configuration by sending a test email:
+Przetestuj konfigurację, wysyłając testowy e-mail:
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Jak wysyłać pocztę jako za pomocą Gmail {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>Mniej niż 10 minut</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Rozpoczęcie:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Jeśli postępowałeś zgodnie z instrukcjami powyżej w sekcji <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Jak zacząć i skonfigurować przekazywanie e-maili</a>, możesz kontynuować czytanie poniżej.
   </span>
 </div>
 
@@ -631,86 +635,85 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Upewnij się, że przeczytałeś nasze <a href="/terms" class="alert-link" target="_blank">Warunki</a>, <a href="/privacy" class="alert-link" target="_blank">Politykę prywatności</a> oraz <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Limity SMTP wychodzącego</a> &ndash; korzystanie oznacza akceptację i zgodę.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Jeśli jesteś programistą, zapoznaj się z naszą <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentacją API e-mail</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Konfiguracja SMTP wychodzącego i postępuj zgodnie z instrukcjami konfiguracji
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Utwórz nowy alias dla swojej domeny w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowuj wygenerowane hasło wyświetlone na ekranie.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. Przejdź do [Gmail](https://gmail.com) i w sekcji [Ustawienia <i class="fa fa-angle-right"></i> Konta i import <i class="fa fa-angle-right"></i> Wyślij pocztę jako](https://mail.google.com/mail/u/0/#settings/accounts), kliknij "Dodaj inny adres e-mail"
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. Gdy pojawi się pole "Nazwa", wpisz nazwę, która ma być widoczna jako nadawca (np. "Linus Torvalds").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. Gdy pojawi się pole "Adres e-mail", wpisz pełny adres e-mail aliasu, który utworzyłeś w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. Odznacz opcję "Traktuj jako alias"
 
-8. Click "Next Step" to proceed
+8. Kliknij "Następny krok", aby kontynuować
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. Gdy pojawi się pole "Serwer SMTP", wpisz <code>smtp.forwardemail.net</code> i zmień port na <code>465</code>
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. Gdy pojawi się pole "Nazwa użytkownika", wpisz pełny adres e-mail aliasu, który utworzyłeś w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. Gdy pojawi się pole "Hasło", wklej hasło z <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> z kroku 3 powyżej
 
-12. Select the radio button for "Secured connection using SSL"
+12. Wybierz opcję "Bezpieczne połączenie za pomocą SSL"
 
-13. Click "Add Account" to proceed
+13. Kliknij "Dodaj konto", aby kontynuować
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. Otwórz nową kartę w [Gmail](https://gmail.com) i poczekaj na przyjście wiadomości weryfikacyjnej (otrzymasz kod weryfikacyjny potwierdzający, że jesteś właścicielem adresu e-mail, z którego próbujesz "Wysyłać pocztę jako")
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. Gdy wiadomość przyjdzie, skopiuj i wklej kod weryfikacyjny w polu, które pojawiło się w poprzednim kroku
+16. Gdy to zrobisz, wróć do wiadomości e-mail i kliknij link, aby „potwierdzić żądanie”. Najprawdopodobniej będziesz musiał wykonać ten krok oraz poprzedni, aby e-mail został poprawnie skonfigurowany.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulacje!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Pomyślnie ukończyłeś wszystkie kroki.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Czym jest przewodnik legacy free dla Send Mail As przy użyciu Gmaila {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Ważne:</strong> Ten przewodnik legacy free jest przestarzały od maja 2023, ponieważ <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">obecnie wspieramy wychodzący SMTP</a>. Jeśli użyjesz poniższego przewodnika, to <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">spowoduje, że Twoje wychodzące e-maile</a> będą wyświetlać w Gmailu "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>".</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>Mniej niż 10 minut</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Rozpoczęcie:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Jeśli postępowałeś zgodnie z instrukcjami powyżej w sekcji <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Jak zacząć i skonfigurować przekazywanie e-maili</a>, możesz kontynuować czytanie poniżej.
   </span>
 </div>
 
@@ -718,149 +721,147 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. Musisz mieć włączoną [Dwuskładnikową weryfikację Gmaila][gmail-2fa], aby to działało. Odwiedź <https://www.google.com/landing/2step/>, jeśli nie masz jej włączonej.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. Gdy Dwuskładnikowa weryfikacja jest włączona (lub jeśli już była włączona), odwiedź <https://myaccount.google.com/apppasswords>.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. Gdy zostaniesz poproszony o „Wybierz aplikację i urządzenie, dla którego chcesz wygenerować hasło aplikacji”:
+   * Wybierz „Mail” z rozwijanego menu „Wybierz aplikację”
+   * Wybierz „Inne” z rozwijanego menu „Wybierz urządzenie”
+   * Gdy pojawi się pole tekstowe, wpisz adres e-mail swojej niestandardowej domeny, z której przekierowujesz (np. <code><hello@example.com></code> - pomoże Ci to śledzić, jeśli używasz tej usługi dla wielu kont)
 
-4. Copy the password to your clipboard that is automatically generated
+4. Skopiuj automatycznie wygenerowane hasło do schowka
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       Ważne:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       Jeśli korzystasz z G Suite, odwiedź panel administratora <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Aplikacje <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Ustawienia Gmaila <i class="fa fa-angle-right"></i> Ustawienia</a> i upewnij się, że zaznaczono „Zezwalaj użytkownikom na wysyłanie poczty przez zewnętrzny serwer SMTP...”. Zmiana ta wymaga kilku minut na aktywację, więc prosimy o cierpliwość.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. Przejdź do [Gmail](https://gmail.com) i w sekcji [Ustawienia <i class="fa fa-angle-right"></i> Konta i import <i class="fa fa-angle-right"></i> Wyślij pocztę jako](https://mail.google.com/mail/u/0/#settings/accounts) kliknij „Dodaj inny adres e-mail”
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. Gdy zostaniesz poproszony o „Imię”, wpisz nazwę, która ma być widoczna jako nadawca (np. „Linus Torvalds”)
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. Gdy zostaniesz poproszony o „Adres e-mail”, wpisz adres e-mail z niestandardowej domeny, którego użyłeś powyżej (np. <code><hello@example.com></code>)
+8. Odznacz "Treat as an alias"
 
-8. Uncheck "Treat as an alias"
+9. Kliknij "Next Step", aby kontynuować
 
-9. Click "Next Step" to proceed
+10. Gdy pojawi się prośba o "SMTP Server", wpisz <code>smtp.gmail.com</code> i pozostaw port jako <code>587</code>
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. Gdy pojawi się prośba o "Username", wpisz część swojego adresu Gmail bez części <span>gmail.com</span> (np. tylko "user", jeśli mój e-mail to <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        Ważne:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        Jeśli pole "Username" zostanie wypełnione automatycznie, to <u><strong>będziesz musiał to zmienić</strong></u> na część nazwy użytkownika swojego adresu Gmail.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. Gdy pojawi się prośba o "Password", wklej ze schowka hasło, które wygenerowałeś w kroku 2 powyżej
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. Pozostaw zaznaczone pole wyboru "Secured connection using TLS"
 
-14. Click "Add Account" to proceed
+14. Kliknij "Add Account", aby kontynuować
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. Otwórz nową kartę w [Gmail](https://gmail.com) i poczekaj na przyjście wiadomości weryfikacyjnej (otrzymasz kod weryfikacyjny potwierdzający, że jesteś właścicielem adresu e-mail, z którego próbujesz "Wysyłać jako")
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. Gdy wiadomość przyjdzie, skopiuj i wklej kod weryfikacyjny w oknie, które pojawiło się w poprzednim kroku
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. Po wykonaniu tego wróć do e-maila i kliknij link, aby "potwierdzić żądanie". Najprawdopodobniej będziesz musiał wykonać ten krok oraz poprzedni, aby e-mail został poprawnie skonfigurowany.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### Zaawansowana konfiguracja trasowania Gmail {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>15-30 minut</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+Jeśli chcesz skonfigurować zaawansowane trasowanie w Gmail, tak aby aliasy, które nie odpowiadają skrzynce pocztowej, były przekierowywane do serwerów pocztowych Forward Email, wykonaj następujące kroki:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. Zaloguj się do konsoli administratora Google pod adresem [admin.google.com](https://admin.google.com)
+2. Przejdź do **Apps → Google Workspace → Gmail → Routing**
+3. Kliknij **Add Route** i skonfiguruj następujące ustawienia:
 
-**Single Recipient Settings:**
+**Ustawienia pojedynczego odbiorcy:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* Wybierz "Change envelope recipient" i wpisz swój główny adres Gmail
+* Zaznacz "Add X-Gm-Original-To header with original recipient"
 
-**Envelope Recipient Patterns:**
+**Wzorce odbiorcy koperty:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* Dodaj wzorzec, który pasuje do wszystkich nieistniejących skrzynek pocztowych (np. `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**Ustawienia serwera pocztowego:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* Wybierz "Route to host" i wpisz `mx1.forwardemail.net` jako serwer podstawowy
+* Dodaj `mx2.forwardemail.net` jako serwer zapasowy
+* Ustaw port na 25
+* Wybierz "Require TLS" dla bezpieczeństwa
 
-4. Click **Save** to create the route
+4. Kliknij **Save**, aby utworzyć trasę
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    Ta konfiguracja będzie działać tylko dla kont Google Workspace z własnymi domenami, nie dla zwykłych kont Gmail.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### Zaawansowana konfiguracja trasowania Outlook {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>15-30 minut</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Dla użytkowników Microsoft 365 (dawniej Office 365), którzy chcą skonfigurować zaawansowane trasowanie, tak aby aliasy, które nie odpowiadają skrzynce pocztowej, były przekierowywane do serwerów pocztowych Forward Email:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
+1. Zaloguj się do centrum administracyjnego Microsoft 365 pod adresem [admin.microsoft.com](https://admin.microsoft.com)
+2. Przejdź do **Exchange → Mail flow → Rules**
+3. Kliknij **Add a rule** i wybierz **Create a new rule**
+4. Nazwij swoją regułę (np. "Forward non-existent mailboxes to Forward Email")
+5. W sekcji **Apply this rule if** wybierz:
    * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
+   * Wpisz wzorzec pasujący do wszystkich adresów w Twojej domenie (np. `*@yourdomain.com`)
+6. W sekcji **Do the following** wybierz:
    * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
+   * Wybierz "The following mail server"
+   * Wpisz `mx1.forwardemail.net` i port 25
+   * Dodaj `mx2.forwardemail.net` jako serwer zapasowy
+7. W sekcji **Except if** wybierz:
    * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+   * Dodaj wszystkie istniejące skrzynki pocztowe, które nie powinny być przekierowywane
+8. Ustaw priorytet reguły, aby działała po innych regułach przepływu poczty
+9. Kliknij **Save**, aby aktywować regułę
+## Rozwiązywanie problemów {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### Dlaczego nie otrzymuję moich testowych e-maili {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+Jeśli wysyłasz testowy e-mail do siebie, może on nie pojawić się w Twojej skrzynce odbiorczej, ponieważ ma ten sam nagłówek "Message-ID".
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+Jest to powszechnie znany problem, który dotyczy także usług takich jak Gmail.  <a href="https://support.google.com/a/answer/1703601">Oto oficjalna odpowiedź Gmail dotycząca tego problemu</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+Jeśli nadal masz problemy, najprawdopodobniej jest to kwestia propagacji DNS.  Będziesz musiał poczekać trochę dłużej i spróbować ponownie (lub spróbować ustawić niższą wartość TTL dla swoich rekordów <strong class="notranslate">TXT</strong>).
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**Nadal masz problemy?**  Prosimy <a href="/help">skontaktuj się z nami</a>, abyśmy mogli pomóc w zbadaniu problemu i znalezieniu szybkiego rozwiązania.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Jak skonfigurować klienta poczty e-mail do pracy z Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  Nasza usługa działa z popularnymi klientami poczty e-mail, takimi jak:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
@@ -875,188 +876,235 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  Twoja nazwa użytkownika to adres e-mail Twojego aliasu, a hasło pochodzi z <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Jeśli używasz Thunderbirda, upewnij się, że "Connection security" jest ustawione na "SSL/TLS", a metoda uwierzytelniania na "Normal password".</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| Typ  |         Nazwa hosta         |         Protokół         |                                            Porty                                            |
+| :---: | :-------------------------: | :----------------------: | :-----------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net`      |  SSL/TLS **Preferowane** |                                      `993` i `2993`                                        |
+| SMTP | `smtp.forwardemail.net`      | SSL/TLS **Zalecane**     | `465` i `2465` dla SSL/TLS (zalecane) lub `587`, `2587`, `2525` oraz `25` dla STARTTLS      |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Dlaczego moje e-maile trafiają do folderów Spam i Niechciane oraz jak mogę sprawdzić reputację mojej domeny {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+Ta sekcja przeprowadzi Cię przez sytuację, gdy Twoja poczta wychodząca korzysta z naszych serwerów SMTP (np. `smtp.forwardemail.net`) (lub jest przekazywana przez `mx1.forwardemail.net` lub `mx2.forwardemail.net`) i trafia do folderu Spam lub Niechciane u odbiorców.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+Regularnie monitorujemy nasze [adresy IP](#what-are-your-servers-ip-addresses) względem [wszystkich renomowanych list DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **dlatego najprawdopodobniej jest to problem specyficzny dla reputacji domeny**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+E-maile mogą trafiać do folderów spam z kilku powodów:
 
-Emails can land in spam folders for several reasons:
+1. **Brak uwierzytelnienia**: Skonfiguruj rekordy [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) oraz [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **Reputacja domeny**: Nowe domeny często mają neutralną reputację, dopóki nie zbudują historii wysyłkowej.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **Wyzwalacze treści**: Niektóre słowa lub frazy mogą uruchamiać filtry antyspamowe.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **Wzorce wysyłki**: Nagłe zwiększenie ilości wysyłanych e-maili może wyglądać podejrzanie.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+Możesz spróbować użyć jednego lub więcej z tych narzędzi, aby sprawdzić reputację i kategoryzację swojej domeny:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### Narzędzia do sprawdzania reputacji i list blokujących {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| Nazwa narzędzia                            | URL                                                          | Typ                    |
+| ------------------------------------------ | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare Domain Categorization Feedback  | <https://radar.cloudflare.com/domains/feedback>              | Kategoryzacja          |
+| Spamhaus IP and Domain Reputation Checker  | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP and Domain Reputation Center| <https://talosintelligence.com/reputation_center>            | Reputacja              |
+| Barracuda IP and Domain Reputation Lookup  | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox Blacklist Check                 | <https://mxtoolbox.com/blacklists.aspx>                      | Lista blokująca        |
+| Google Postmaster Tools                    | <https://www.gmail.com/postmaster/>                          | Reputacja              |
+| Yahoo Sender Hub                           | <https://senders.yahooinc.com/>                              | Reputacja              |
+| MultiRBL.valli.org Blacklist Check         | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                               | <https://senderscore.org/act/blocklist-remover/>             | Reputacja              |
+| Invaluement                                | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                      | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                    | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT's Levels 1, 2, and 3            | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT's backscatterer.org             | <https://www.backscatterer.org/>                             | Ochrona przed backscatter |
+| UCEPROTECT's whitelisted.org               | <https://www.whitelisted.org/> (wymaga opłaty)               | DNSWL                  |
 
+#### Formularze zgłoszeń usunięcia IP według dostawcy {#ip-removal-request-forms-by-provider}
+
+Jeśli Twój adres IP został zablokowany przez konkretnego dostawcę poczty, użyj odpowiedniego formularza usunięcia lub kontaktu poniżej:
+
+| Dostawca                              | Formularz usunięcia / Kontakt                                                                                 | Uwagi                                         |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Google/Gmail                         | <https://support.google.com/mail/contact/bulk_send_new>                                                        | Formularz kontaktowy dla nadawców masowych    |
+| Microsoft (Outlook/Office 365/Hotmail)| <https://sender.office.com>                                                                                    | Portal do usuwania IP Office 365               |
+| Yahoo/AOL/Verizon                    | <https://senders.yahooinc.com/>                                                                                | Yahoo Sender Hub                              |
+| Apple/iCloud                       | <https://ipcheck.proofpoint.com/>                                                                              | Apple korzysta z Proofpoint dla reputacji IP  |
+| Proofpoint                         | <https://ipcheck.proofpoint.com/>                                                                              | Sprawdzenie i usuwanie IP w Proofpoint        |
+| Barracuda Networks                 | <https://www.barracudacentral.org/lookups/lookup-reputation>                                                   | Sprawdzenie i usuwanie reputacji Barracuda    |
+| Cloudmark                        | <https://csi.cloudmark.com/en/reset/>                                                                          | Żądanie resetu Cloudmark CSI                   |
+| GoDaddy/SecureServer               | <https://unblock.secureserver.net>                                                                             | Formularz odblokowania IP GoDaddy              |
+| Comcast/Xfinity                  | <https://spa.xfinity.com/report>                                                                               | Żądanie usunięcia IP Comcast                   |
+| Charter/Spectrum                 | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                    | Kontakt z pomocą Spectrum w celu usunięcia     |
+| AT&T                               | `abuse_rbl@abuse-att.net`                                                                                      | E-mail do zgłoszenia usunięcia                 |
+| Cox Communications               | `unblock.request@cox.net`                                                                                      | E-mail do zgłoszenia usunięcia                 |
+| CenturyLink/Lumen                | `abuse@centurylink.com`                                                                                        | Korzysta z Cloudfilter                         |
+| Windstream                       | `abuse@windstream.net`                                                                                         | E-mail do zgłoszenia usunięcia                 |
+| t-online.de (Niemcy)             | `tobr@rx.t-online.de`                                                                                          | E-mail do zgłoszenia usunięcia                 |
+| Orange France                   | <https://postmaster.orange.fr/>                                                                                | Formularz kontaktowy lub e-mail `abuse@orange.fr` |
+| GMX                              | <https://postmaster.gmx.net/en/contact>                                                                        | Formularz kontaktowy GMX                        |
+| Mail.ru                          | <https://postmaster.mail.ru/>                                                                                  | Portal postmaster Mail.ru                       |
+| Yandex                           | <https://postmaster.yandex.ru/>                                                                                | Portal postmaster Yandex                        |
+| QQ Mail (Tencent)                | <https://open.mail.qq.com/>                                                                                    | Wniosek o whitelistę QQ Mail (chiński)         |
+| Netease (163.com)                | <https://mail.163.com/postmaster/>                                                                             | Portal postmaster Netease                       |
+| Alibaba/Aliyun/HiChina           | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                           | Kontakt przez konsolę Alibaba Cloud             |
+| Amazon SES                      | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                                   | Konsola AWS SES > Usuwanie z list blokujących  |
+| SendGrid                       | <https://support.sendgrid.com/>                                                                                | Kontakt z pomocą SendGrid                       |
+| Mimecast                       | <https://community.mimecast.com/>                                                                              | Korzysta z zewnętrznych RBL - kontaktuj się z konkretnym RBL |
+| Fastmail                       | <https://www.fastmail.com/support/>                                                                            | Kontakt z pomocą Fastmail                       |
+| Zoho                           | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address>     | Kontakt z pomocą Zoho                           |
+| ProtonMail                     | <https://proton.me/support/contact>                                                                            | Kontakt z pomocą Proton                         |
+| Tutanota                       | <https://tutanota.com/support>                                                                                 | Kontakt z pomocą Tutanota                       |
+| Hushmail                      | <https://www.hushmail.com/support/>                                                                            | Kontakt z pomocą Hushmail                       |
+| Mailbox.org                   | <https://mailbox.org/en/support>                                                                               | Kontakt z pomocą Mailbox.org                     |
+| Posteo                        | <https://posteo.de/en/site/contact>                                                                            | Kontakt z pomocą Posteo                         |
+| DuckDuckGo Email              | <https://duckduckgo.com/email/support>                                                                         | Kontakt z pomocą DuckDuckGo                     |
+| Sonic.net                    | <https://www.sonic.com/support>                                                                                | Kontakt z pomocą Sonic                          |
+| Telus                        | <https://www.telus.com/en/support>                                                                             | Kontakt z pomocą Telus                          |
+| Vodafone Germany             | <https://www.vodafone.de/hilfe/>                                                                               | Kontakt z pomocą Vodafone                       |
+| Xtra (Spark NZ)              | <https://www.spark.co.nz/help/>                                                                                 | Kontakt z pomocą Spark NZ                       |
+| UOL/BOL (Brazylia)           | <https://ajuda.uol.com.br/>                                                                                    | Kontakt z pomocą UOL (portugalski)              |
+| Libero (Włochy)              | <https://aiuto.libero.it/>                                                                                     | Kontakt z pomocą Libero (włoski)                |
+| Telenet (Belgia)             | <https://www2.telenet.be/en/support/>                                                                          | Kontakt z pomocą Telenet                        |
+| Facebook/WhatsApp            | <https://www.facebook.com/business/help>                                                                       | Kontakt z pomocą biznesowym Facebooka          |
+| LinkedIn                    | <https://www.linkedin.com/help/linkedin>                                                                       | Kontakt z pomocą LinkedIn                       |
+| Groups.io                   | <https://groups.io/helpcenter>                                                                                 | Kontakt z pomocą Groups.io                      |
+| Earthlink/Vade Secure       | <https://sendertool.vadesecure.com/en/>                                                                        | Narzędzie nadawcy Vade Secure                   |
+| Cloudflare Email Security   | <https://www.cloudflare.com/products/zero-trust/email-security/>                                               | Kontakt z pomocą Cloudflare                     |
+| Hornetsecurity/Expurgate    | <https://www.hornetsecurity.com/>                                                                              | Kontakt z pomocą Hornetsecurity                 |
+| SpamExperts/Antispamcloud   | <https://www.spamexperts.com/>                                                                                 | Kontakt przez dostawcę hostingu                 |
+| Mail2World                 | <https://www.mail2world.com/support/>                                                                          | Kontakt z pomocą Mail2World                      |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Zacznij od niskiej liczby wysokiej jakości e-maili, aby zbudować pozytywną reputację przed wysyłką większych ilości.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Jeśli Twoja domena znajduje się na czarnej liście, każda lista ma własny proces usuwania. Sprawdź ich strony internetowe, aby uzyskać instrukcje.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Jeśli potrzebujesz dodatkowej pomocy lub zauważysz, że jesteśmy błędnie oznaczeni jako spam przez konkretnego dostawcę usług e-mail, prosimy <a href="/help">skontaktuj się z nami</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### Co powinienem zrobić, jeśli otrzymuję spam {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+Powinieneś wypisać się z listy mailingowej (jeśli to możliwe) i zablokować nadawcę.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+Prosimy nie zgłaszać wiadomości jako spam, lecz przekazać ją do naszego ręcznie moderowanego i skoncentrowanego na prywatności systemu zapobiegania nadużyciom.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**Adres e-mail, na który należy przesyłać spam, to:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Dlaczego moje testowe e-maile wysłane do mnie w Gmailu są oznaczane jako "podejrzane" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+Jeśli widzisz ten komunikat o błędzie w Gmailu, gdy wysyłasz test do siebie lub gdy osoba, z którą korespondujesz za pomocą aliasu, widzi od Ciebie e-mail po raz pierwszy, to **proszę się nie martwić** – jest to wbudowana funkcja bezpieczeństwa Gmaila.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+Możesz po prostu kliknąć "Wygląda na bezpieczne". Na przykład, jeśli wyślesz wiadomość testową korzystając z funkcji wysyłania jako (do kogoś innego), ta osoba nie zobaczy tego komunikatu.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+Jeśli jednak zobaczy, to dlatego, że zwykle widziała Twoje e-maile pochodzące z <john@gmail.com> zamiast <john@customdomain.com> (to tylko przykład). Gmail ostrzega użytkowników, aby upewnić się, że wszystko jest bezpieczne, nie ma obejścia tego.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Czy mogę usunąć via forwardemail dot net w Gmailu {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+Ten temat dotyczy [powszechnie znanego problemu w Gmailu, gdzie obok nazwy nadawcy pojawiają się dodatkowe informacje](https://support.google.com/mail/answer/1311182).
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+Od maja 2023 roku wspieramy wysyłanie e-maili przez SMTP jako dodatek dla wszystkich płatnych użytkowników – co oznacza, że możesz usunąć <span class="notranslate">via forwardemail dot net</span> w Gmailu.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+Zwróć uwagę, że ten temat FAQ jest specyficzny dla osób korzystających z funkcji [Jak wysyłać pocztę jako w Gmailu](#how-to-send-mail-as-using-gmail).
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+Proszę zobacz sekcję [Czy wspieracie wysyłanie e-maili przez SMTP](#do-you-support-sending-email-with-smtp) dla instrukcji konfiguracji.
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## Zarządzanie danymi {#data-management}
+
+### Gdzie znajdują się Wasze serwery {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Wkrótce możemy ogłosić lokalizację naszego centrum danych w UE, hostowanego pod adresem [forwardemail.eu](https://forwardemail.eu). Subskrybuj dyskusję na <https://github.com/orgs/forwardemail/discussions/336>, aby otrzymywać aktualizacje.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+Nasze serwery znajdują się głównie w Denver, Kolorado – zobacz <https://forwardemail.net/ips> dla pełnej listy adresów IP.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+Możesz dowiedzieć się o naszych podwykonawcach na stronach [RODO](/gdpr), [DPA](/dpa) oraz [Prywatność](/privacy).
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### Jak wyeksportować i wykonać kopię zapasową mojej skrzynki pocztowej {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+W każdej chwili możesz wyeksportować swoje skrzynki pocztowe w formatach [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) lub zaszyfrowanym formacie [SQLite](https://en.wikipedia.org/wiki/SQLite).
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Pobierz kopię zapasową i wybierz preferowany format eksportu.
 
-You will be emailed a link to download the export once it has finished.
+Po zakończeniu otrzymasz link do pobrania eksportu na swój e-mail.
 
-Note that this export download link expires after 4 hours for security concerns.
+Zwróć uwagę, że link do pobrania eksportu wygasa po 4 godzinach ze względów bezpieczeństwa.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+Jeśli potrzebujesz przejrzeć wyeksportowane formaty EML lub Mbox, te narzędzia open-source mogą być przydatne:
 
-| Name | Format | Platform | GitHub URL |
-| --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
-
+| Nazwa           | Format | Platforma    | GitHub URL                                          |
+| --------------- | :----: | ----------- | --------------------------------------------------- |
+| MBox Viewer     |  Mbox  | Windows     | <https://github.com/eneam/mboxviewer>               |
+| mbox-web-viewer |  Mbox  | Wszystkie   | <https://github.com/PHMRanger/mbox-web-viewer>      |
+| EmlReader       |   EML  | Windows     | <https://github.com/ayamadori/EmlReader>            |
+| Email viewer    |   EML  | VSCode      | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader      |   EML  | Wszystkie   | <https://github.com/s0ph1e/eml-reader>              |
 Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
+### Jak zaimportować i przenieść moją istniejącą skrzynkę pocztową {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+Możesz łatwo zaimportować swoją pocztę do Forward Email (np. używając [Thunderbird](https://www.thunderbird.net)) korzystając z poniższych instrukcji:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    Musisz wykonać wszystkie poniższe kroki, aby zaimportować swoją istniejącą pocztę.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. Eksportuj swoją pocztę od obecnego dostawcy:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | Dostawca poczty | Format eksportu                               | Instrukcje eksportu                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail          | MBOX                                           | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook        | PST                                            | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Wskazówka:</strong> <span>Jeśli używasz Outlooka (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">format eksportu PST</a>), możesz po prostu postępować zgodnie z instrukcjami w sekcji "Inne" poniżej. Jednakże podaliśmy poniżej linki do konwersji PST na format MBOX/EML w zależności od systemu operacyjnego:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba dla Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst dla Windows cygwin</a> – (np. <code>readpst -u -o $OUT_DIR $IN_DIR</code> zamieniając <code>$OUT_DIR</code> i <code>$IN_DIR</code> na ścieżki katalogu wyjściowego i wejściowego odpowiednio).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst dla Ubuntu/Linux</a> – (np. <code>sudo apt-get install readpst</code> a następnie <code>readpst -u -o $OUT_DIR $IN_DIR</code>, zamieniając <code>$OUT_DIR</code> i <code>$IN_DIR</code> na ścieżki katalogu wyjściowego i wejściowego odpowiednio).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst dla macOS (przez brew)</a> – (np. <code>brew install libpst</code> a następnie <code>readpst -u -o $OUT_DIR $IN_DIR</code>, zamieniając <code>$OUT_DIR</code> i <code>$IN_DIR</code> na ścieżki katalogu wyjściowego i wejściowego odpowiednio).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter dla Windows (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail     | MBOX                                           | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail       | EML                                            | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail    | MBOX/EML                                       | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota       | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi          | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho           | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | Inne           | [Użyj Thunderbird](https://www.thunderbird.net) | Skonfiguruj swoje istniejące konto e-mail w Thunderbird, a następnie użyj wtyczki [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/), aby eksportować i importować swoją pocztę.  **Możesz także po prostu kopiować/wklejać lub przeciągać upuszczać wiadomości między kontami.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. Pobierz, zainstaluj i otwórz [Thunderbird](https://www.thunderbird.net).
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. Utwórz nowe konto, używając pełnego adresu e-mail swojego aliasu (np. <code><you@yourdomain.com></code>) oraz wygenerowanego hasła.  <strong>Jeśli nie masz jeszcze wygenerowanego hasła, to <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">zapoznaj się z naszymi instrukcjami konfiguracji</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. Pobierz i zainstaluj wtyczkę [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) do Thunderbirda.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. Utwórz nowy lokalny folder w Thunderbirdzie, a następnie kliknij go prawym przyciskiem myszy → wybierz opcję `ImportExportTools NG` → wybierz `Import mbox file` (dla formatu eksportu MBOX) – lub – `Import messages` / `Import all messages from a directory` (dla formatu eksportu EML).
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. Przeciągnij i upuść wiadomości z lokalnego folderu do nowego (lub istniejącego) folderu IMAP w Thunderbirdzie, do którego chcesz przesłać wiadomości w pamięci IMAP w naszej usłudze.  Zapewni to ich kopię zapasową online w naszym zaszyfrowanym magazynie SQLite.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Jeśli masz wątpliwości, jak importować do Thunderbirda, możesz zapoznać się z oficjalnymi instrukcjami na <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> oraz <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    Po zakończeniu procesu eksportu i importu możesz również chcieć włączyć przekazywanie na swoim istniejącym koncie e-mail oraz ustawić autoresponder, który powiadomi nadawców o nowym adresie e-mail (np. jeśli wcześniej korzystałeś z Gmaila, a teraz używasz e-maila z własną domeną).
   </span>
 </div>
 
@@ -1064,224 +1112,430 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulacje!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Pomyślnie ukończyłeś wszystkie kroki.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### Jak korzystać z własnej pamięci zgodnej z S3 do kopii zapasowych {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+Użytkownicy planów płatnych mogą skonfigurować własnego dostawcę pamięci zgodnej z [S3](https://en.wikipedia.org/wiki/Amazon_S3) na poziomie domeny dla kopii zapasowych IMAP/SQLite.  Oznacza to, że zaszyfrowane kopie zapasowe skrzynki pocztowej mogą być przechowywane na Twojej własnej infrastrukturze zamiast (lub oprócz) naszej domyślnej pamięci.
 
-## Email Configuration {#email-configuration}
+Obsługiwani dostawcy to m.in. [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces) oraz każda inna usługa zgodna z S3.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### Konfiguracja {#setup}
+
+1. Utwórz **prywatny** bucket u swojego dostawcy zgodnego z S3.  Bucket nie może być publicznie dostępny.
+2. Utwórz dane dostępowe (access key ID oraz secret access key) z uprawnieniami do odczytu i zapisu w bucketcie.
+3. Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Zaawansowane ustawienia <i class="fa fa-angle-right"></i> Własna pamięć zgodna z S3.
+4. Zaznacz **"Włącz własną pamięć zgodną z S3"** i wypełnij adres endpoint, access key ID, secret access key, region oraz nazwę bucketu.
+5. Kliknij **"Testuj połączenie"**, aby zweryfikować dane dostępowe, dostęp do bucketu oraz uprawnienia do zapisu.
+6. Kliknij **"Zapisz"**, aby zastosować ustawienia.
+
+#### Jak działają kopie zapasowe {#how-backups-work}
+
+Kopie zapasowe są uruchamiane automatycznie dla każdego podłączonego aliasu IMAP.  Serwer IMAP sprawdza wszystkie aktywne połączenia co godzinę i uruchamia kopię zapasową dla każdego podłączonego aliasu.  Mechanizm blokady oparty na Redis zapobiega uruchamianiu duplikatów kopii zapasowych w odstępie krótszym niż 30 minut, a faktyczna kopia zapasowa jest pomijana, jeśli pomyślna kopia została już wykonana w ciągu ostatnich 24 godzin (chyba że kopia została wyraźnie zażądana przez użytkownika do pobrania).
+Kopie zapasowe można również wywołać ręcznie, klikając **"Download Backup"** dla dowolnego aliasu na pulpicie nawigacyjnym. Ręczne kopie zapasowe zawsze są wykonywane niezależnie od 24-godzinnego okna czasowego.
+
+Proces tworzenia kopii zapasowej przebiega następująco:
+
+1. Baza danych SQLite jest kopiowana za pomocą `VACUUM INTO`, co tworzy spójny zrzut bez przerywania aktywnych połączeń i zachowuje szyfrowanie bazy danych.
+2. Plik kopii zapasowej jest weryfikowany poprzez jego otwarcie, aby potwierdzić, że szyfrowanie jest nadal ważne.
+3. Obliczany jest skrót SHA-256 i porównywany z istniejącą kopią zapasową w magazynie. Jeśli skróty się zgadzają, przesyłanie jest pomijane (brak zmian od ostatniej kopii zapasowej).
+4. Kopia zapasowa jest przesyłana do S3 za pomocą przesyłania wieloczęściowego przez bibliotekę [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage).
+5. Generowany jest podpisany URL do pobrania (ważny przez 4 godziny), który jest wysyłany e-mailem do użytkownika.
+
+#### Formaty kopii zapasowych {#backup-formats}
+
+Obsługiwane są trzy formaty kopii zapasowych:
+
+| Format   | Rozszerzenie | Opis                                                                       |
+| -------- | ------------ | -------------------------------------------------------------------------- |
+| `sqlite` | `.sqlite`    | Surowy zaszyfrowany zrzut bazy danych SQLite (domyślny dla automatycznych kopii IMAP) |
+| `mbox`   | `.zip`       | Chroniony hasłem ZIP zawierający skrzynkę pocztową w formacie mbox          |
+| `eml`    | `.zip`       | Chroniony hasłem ZIP zawierający pojedyncze pliki `.eml` dla każdej wiadomości |
+
+> **Wskazówka:** Jeśli masz pliki kopii zapasowej `.sqlite` i chcesz przekonwertować je lokalnie na pliki `.eml`, użyj naszego samodzielnego narzędzia CLI **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Działa na Windows, Linux i macOS i nie wymaga połączenia z siecią.
+
+#### Nazewnictwo plików i struktura kluczy {#file-naming-and-key-structure}
+
+Podczas korzystania z **niestandardowego magazynu S3**, pliki kopii zapasowych są przechowywane z prefiksem znacznika czasu w formacie [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601), dzięki czemu każda kopia jest zachowywana jako osobny obiekt. Daje to pełną historię kopii zapasowych w Twoim własnym koszu.
+
+Format klucza to:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+Na przykład:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+`alias_id` to MongoDB ObjectId aliasu. Możesz go znaleźć na stronie ustawień aliasu lub przez API.
+
+Podczas korzystania z **domyślnego (systemowego) magazynu**, klucz jest płaski (np. `65a31c53c36b75ed685f3fda.sqlite`) i każda kopia nadpisuje poprzednią.
+
+> **Uwaga:** Ponieważ niestandardowy magazyn S3 zachowuje wszystkie wersje kopii zapasowych, zużycie przestrzeni będzie rosło z czasem. Zalecamy skonfigurowanie [zasad cyklu życia](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) w Twoim koszu, aby automatycznie usuwać stare kopie zapasowe (np. usuwać obiekty starsze niż 30 lub 90 dni).
+
+#### Własność danych i polityka usuwania {#data-ownership-and-deletion-policy}
+
+Twój niestandardowy kosz S3 jest całkowicie pod Twoją kontrolą. My **nigdy nie usuwamy ani nie modyfikujemy** plików w Twoim niestandardowym koszu S3 — ani gdy alias zostanie usunięty, ani gdy domena zostanie usunięta, ani podczas jakichkolwiek operacji porządkowych. Zapisujemy tylko nowe pliki kopii zapasowych do Twojego kosza.
+
+Oznacza to:
+
+* **Usunięcie aliasu** — Gdy usuwasz alias, usuwamy kopię zapasową tylko z naszego domyślnego systemowego magazynu. Wszelkie kopie wcześniej zapisane w Twoim niestandardowym koszu S3 pozostają nienaruszone.
+* **Usunięcie domeny** — Usunięcie domeny nie wpływa na pliki w Twoim niestandardowym koszu.
+* **Zarządzanie retencją** — Jesteś odpowiedzialny za zarządzanie przestrzenią w swoim koszu, w tym za konfigurowanie zasad cyklu życia do usuwania starych kopii zapasowych.
+
+Jeśli wyłączysz niestandardowy magazyn S3 lub przełączysz się z powrotem na nasz domyślny magazyn, istniejące pliki w Twoim koszu zostaną zachowane. Przyszłe kopie zapasowe będą po prostu zapisywane w naszym domyślnym magazynie.
+
+#### Bezpieczeństwo {#security}
+
+* Twój identyfikator klucza dostępu i tajny klucz dostępu są **szyfrowane w spoczynku** za pomocą [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) przed zapisaniem w naszej bazie danych. Są odszyfrowywane tylko podczas działania, gdy wykonywane są operacje tworzenia kopii zapasowej.
+* Automatycznie weryfikujemy, że Twój kosz **nie jest publicznie dostępny**. Jeśli wykryjemy publiczny kosz, konfiguracja zostanie odrzucona podczas zapisu. Jeśli podczas tworzenia kopii zapasowej wykryjemy publiczny dostęp, wracamy do naszego domyślnego magazynu i powiadamiamy wszystkich administratorów domeny e-mailem.
+* Poświadczenia są weryfikowane podczas zapisu za pomocą wywołania [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html), aby upewnić się, że kosz istnieje i poświadczenia są poprawne. Jeśli weryfikacja się nie powiedzie, niestandardowy magazyn S3 jest automatycznie wyłączany.
+* Każdy plik kopii zapasowej zawiera skrót SHA-256 w metadanych S3, który jest używany do wykrywania niezmienionych baz danych i pomijania zbędnych przesłań.
+#### Powiadomienia o błędach {#error-notifications}
+
+Jeśli kopia zapasowa nie powiedzie się podczas korzystania z niestandardowego magazynu S3 (np. z powodu wygasłych poświadczeń lub problemu z łącznością), wszyscy administratorzy domeny zostaną powiadomieni e-mailem. Powiadomienia te są ograniczone do jednej wiadomości na 6 godzin, aby zapobiec duplikatom alertów. Jeśli podczas tworzenia kopii zapasowej wykryto, że Twój bucket jest publicznie dostępny, administratorzy zostaną powiadomieni raz dziennie.
+
+#### API {#api}
+
+Możesz również skonfigurować niestandardowy magazyn S3 za pomocą API:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+Aby przetestować połączenie za pomocą API:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### Jak przekonwertować kopie zapasowe SQLite na pliki EML {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+Jeśli pobierasz lub przechowujesz kopie zapasowe SQLite (zarówno z naszego domyślnego magazynu, jak i z własnego [niestandardowego bucketu S3](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), możesz przekonwertować je na standardowe pliki `.eml` za pomocą naszego samodzielnego narzędzia CLI **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Pliki EML można otworzyć w dowolnym kliencie poczty ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) itd.) lub zaimportować do innych serwerów pocztowych.
+
+#### Instalacja {#installation-1}
+
+Możesz pobrać gotowy plik binarny (nie wymaga [Node.js](https://github.com/nodejs/node)) lub uruchomić go bezpośrednio za pomocą [Node.js](https://github.com/nodejs/node):
+
+**Gotowe pliki binarne** — Pobierz najnowsze wydanie dla swojej platformy z [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+
+| Platforma | Architektura  | Plik                                 |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **Użytkownicy macOS:** Po pobraniu może być konieczne usunięcie atrybutu kwarantanny przed uruchomieniem pliku binarnego:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (Zamień `./convert-sqlite-to-eml-darwin-arm64` na rzeczywistą ścieżkę do pobranego pliku.)
+
+> **Użytkownicy Linux:** Po pobraniu może być konieczne nadanie plikowi binarnemu uprawnień do wykonywania:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (Zamień `./convert-sqlite-to-eml-linux-x64` na rzeczywistą ścieżkę do pobranego pliku.)
+
+**Ze źródła** (wymaga [Node.js](https://github.com/nodejs/node) >= 18):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### Użycie {#usage}
+
+Narzędzie obsługuje tryb interaktywny i nieinteraktywny.
+
+**Tryb interaktywny** — uruchom bez argumentów, a zostaniesz poproszony o podanie wszystkich danych:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - Konwersja kopii zapasowej SQLite na EML
+  =============================================
+
+  Ścieżka do pliku kopii zapasowej SQLite: /path/to/backup.sqlite
+  Hasło IMAP/aliasu: ********
+  Ścieżka wyjściowa ZIP [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**Tryb nieinteraktywny** — przekaż argumenty za pomocą flag wiersza poleceń do skryptów i automatyzacji:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| Flaga                | Opis                                                                          |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `--path <path>`     | Ścieżka do zaszyfrowanego pliku kopii zapasowej SQLite                         |
+| `--password <pass>` | Hasło IMAP/aliasu do odszyfrowania                                            |
+| `--output <path>`   | Ścieżka wyjściowa dla pliku ZIP (domyślnie: automatycznie generowana z timestampem ISO 8601) |
+| `--help`            | Pokaż komunikat pomocy                                                        |
+#### Format wyjściowy {#output-format}
+
+Narzędzie generuje archiwum ZIP chronione hasłem (szyfrowane AES-256), zawierające:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+Pliki EML są zorganizowane według folderów skrzynki pocztowej. Hasło do ZIP jest takie samo jak Twoje hasło IMAP/aliasu. Każdy plik `.eml` to standardowa wiadomość e-mail zgodna z [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) z pełnymi nagłówkami, treścią i załącznikami odtworzonymi z bazy danych SQLite.
+
+#### Jak to działa {#how-it-works}
+
+1. Otwiera zaszyfrowaną bazę danych SQLite za pomocą Twojego hasła IMAP/aliasu (obsługuje szyfry [ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) oraz [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)).
+2. Odczytuje tabelę Mailboxes, aby poznać strukturę folderów.
+3. Dla każdej wiadomości dekoduje mimeTree (przechowywane jako skompresowany JSON za pomocą [Brotli](https://github.com/google/brotli)) z tabeli Messages.
+4. Odtwarza pełny plik EML, przechodząc po drzewie MIME i pobierając treści załączników z tabeli Attachments.
+5. Pakuje wszystko do archiwum ZIP chronionego hasłem, używając [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted).
+
+### Czy wspieracie samodzielne hostowanie {#do-you-support-self-hosting}
+
+Tak, od marca 2025 roku wspieramy opcję samodzielnego hostowania. Przeczytaj wpis na blogu [tutaj](https://forwardemail.net/blog/docs/self-hosted-solution). Zapoznaj się z [przewodnikiem dla samodzielnego hostowania](https://forwardemail.net/self-hosted), aby zacząć. Dla zainteresowanych bardziej szczegółową wersją krok po kroku mamy nasze przewodniki oparte na [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) lub [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
+## Konfiguracja e-mail {#email-configuration}
+
+### Jak zacząć i skonfigurować przekazywanie e-maili {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Szacowany czas konfiguracji:</strong>
+  <span>Mniej niż 10 minut</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Rozpoczęcie:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    Uważnie przeczytaj i wykonaj kroki od pierwszego do ósmego podane poniżej. Upewnij się, że zastąpiłeś adres e-mail <code>user@gmail.com</code> adresem, na który chcesz przekazywać wiadomości (jeśli nie jest już poprawny). Podobnie upewnij się, że zastąpiłeś <code>example.com</code> swoją własną nazwą domeny (jeśli nie jest już poprawna).
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">Jeśli już zarejestrowałeś swoją nazwę domeny gdzieś indziej, musisz całkowicie pominąć ten krok i przejść do kroku drugiego! W przeciwnym razie możesz <a href="/domain-registration" rel="noopener noreferrer">kliknąć tutaj, aby zarejestrować swoją domenę</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  Czy pamiętasz, gdzie zarejestrowałeś swoją domenę? Gdy już to sobie przypomnisz, postępuj zgodnie z poniższymi instrukcjami:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    Musisz otworzyć nową kartę i zalogować się do swojego rejestratora domen. Możesz łatwo kliknąć na swój "Rejestrator" poniżej, aby to zrobić automatycznie. W tej nowej karcie musisz przejść do strony zarządzania DNS u swojego rejestratora – poniżej w kolumnie "Kroki konfiguracji" podaliśmy krok po kroku, jak to zrobić. Gdy już znajdziesz się na tej stronie w nowej karcie, możesz wrócić do tej karty i przejść do kroku trzeciego poniżej.
+    <strong class="font-weight-bold">Nie zamykaj jeszcze otwartej karty; będzie Ci potrzebna w kolejnych krokach!</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>Rejestrator</th>
+      <th>Kroki konfiguracji</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Centrum domen <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Edytuj ustawienia DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Wybierz swoją domenę)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Moje serwery <i class="fa fa-angle-right"></i> Zarządzanie domeną <i class="fa fa-angle-right"></i> Menedżer DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>DLA ROCK: Zaloguj się <i class="fa fa-angle-right"></i> Domeny <i class="fa fa-angle-right"></i> (Kliknij ikonę ▼ obok zarządzania) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      DLA LEGACY: Zaloguj się <i class="fa fa-angle-right"></i> Domeny <i class="fa fa-angle-right"></i> Edytor strefy <i class="fa fa-angle-right"></i> (Wybierz swoją domenę)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Wybierz swoją domenę)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> (Wybierz swoją domenę)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Zarządzaj</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domeny <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Więcej <i class="fa fa-angle-right"></i> Zarządzaj domeną</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> W widoku kart kliknij zarządzaj przy swojej domenie <i class="fa fa-angle-right"></i> W widoku listy kliknij ikonę koła zębatego <i class="fa fa-angle-right"></i> DNS i serwery nazw <i class="fa fa-angle-right"></i> Rekordy DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Oglądaj</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Zarządzaj <i class="fa fa-angle-right"></i> (kliknij ikonę koła zębatego) <i class="fa fa-angle-right"></i> Kliknij na DNS i serwery nazw w menu po lewej</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domeny <i class="fa fa-angle-right"></i> Zarządzaj domenami <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Przegląd <i class="fa fa-angle-right"></i> Zarządzaj <i class="fa fa-angle-right"></i> Prosty edytor <i class="fa fa-angle-right"></i> Rekordy</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Zarządzanie <i class="fa fa-angle-right"></i> Edytuj strefę</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Oglądaj</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Zarządzaj moimi domenami <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Zarządzaj DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Oglądaj</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Konfiguruj DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Oglądaj</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Lista domen <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Zarządzaj <i class="fa fa-angle-right"></i> Zaawansowany DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Skonfiguruj Netlify DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Menedżer konta <i class="fa fa-angle-right"></i> Moje nazwy domen <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Zarządzaj <i class="fa fa-angle-right"></i> Zmień miejsce wskazywania domeny <i class="fa fa-angle-right"></i> Zaawansowany DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Oglądaj</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Zarządzane domeny <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> Ustawienia DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Menu główne <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Domeny <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i>
+Zaawansowane ustawienia <i class="fa fa-angle-right"></i> Rekordy niestandardowe</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>Używając CLI "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Strona domen <i class="fa fa-angle-right"></i> (Wybierz swoją domenę) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Strona domen <i class="fa fa-angle-right"></i> (Kliknij ikonę <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Wybierz Zarządzaj rekordami DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>Zaloguj się <i class="fa fa-angle-right"></i> Domeny <i class="fa fa-angle-right"></i> Moje domeny</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>Inne</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Ważne:</strong> Nie widzisz tutaj nazwy swojego rejestratora? Po prostu wyszukaj w Internecie "jak zmienić rekordy DNS na $REGISTRAR" (zastępując $REGISTRAR nazwą swojego rejestratora – np. "jak zmienić rekordy DNS na GoDaddy", jeśli używasz GoDaddy).</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">Korzystając ze strony zarządzania DNS swojego rejestratora (tej drugiej otwartej karty), ustaw następujące rekordy "MX":</li>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    Zwróć uwagę, że NIE powinno być ustawionych innych rekordów MX. Oba poniższe rekordy MUSZĄ istnieć. Upewnij się, że nie ma literówek; oraz że masz poprawnie zapisane zarówno mx1, jak i mx2. Jeśli istniały już rekordy MX, usuń je całkowicie.
+    Wartość "TTL" nie musi wynosić 3600, może być niższa lub wyższa, jeśli to konieczne.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Priority</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Priorytet</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1544,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Korzystając ze strony zarządzania DNS u swojego rejestratora (druga otwarta karta), ustaw następujące rekord(y) <strong class="notranslate">TXT</strong>:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    Jeśli korzystasz z płatnego planu, musisz całkowicie pominąć ten krok i przejść do kroku piątego! Jeśli nie masz płatnego planu, Twoje przekierowane adresy będą publicznie wyszukiwalne – przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> i jeśli chcesz, uaktualnij swoją domenę do płatnego planu. Jeśli chcesz dowiedzieć się więcej o płatnych planach, zobacz naszą stronę <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Cennik</a>. W przeciwnym razie możesz kontynuować, wybierając jedną lub więcej kombinacji z opcji od A do F wymienionych poniżej.
   </span>
 </div>
 
@@ -1307,25 +1561,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    Opcja A:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    Jeśli przekierowujesz wszystkie e-maile ze swojej domeny (np. "all@example.com", "hello@example.com" itd.) na konkretny adres "user@gmail.com":
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1338,10 +1592,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Upewnij się, że zastąpiłeś powyższe wartości w kolumnie "Wartość" swoim własnym adresem e-mail. Wartość "TTL" nie musi wynosić 3600, może być niższa lub wyższa, jeśli to konieczne. Niższa wartość czasu życia ("TTL") zapewni szybsze propagowanie przyszłych zmian w rekordach DNS w Internecie – pomyśl o tym jak o czasie, przez jaki będzie przechowywana w pamięci podręcznej (w sekundach). Możesz dowiedzieć się więcej o <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL na Wikipedii</a>.
   </span>
 </div>
 
@@ -1350,25 +1604,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    Opcja B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    Jeśli chcesz przekierować tylko pojedynczy adres e-mail (np. <code>hello@example.com</code> na <code>user@gmail.com</code>; spowoduje to również automatyczne przekierowanie "hello+test@example.com" na "user+test@gmail.com"):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1636,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    Opcja C:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    Jeśli przekierowujesz wiele adresów e-mail, powinieneś je oddzielić przecinkiem:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1669,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    Opcja D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    Możesz ustawić nieskończoną liczbę przekierowań e-mail – upewnij się tylko, że pojedyncza linia nie przekracza 255 znaków i każda linia zaczyna się od "forward-email=". Poniżej znajduje się przykład:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1695,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1703,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1711,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1719,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1734,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    Opcja E:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    Możesz również określić nazwę domeny w swoim rekordzie <strong class="notranslate">TXT</strong>, aby mieć globalne przekierowanie aliasów (np. "user@example.com" zostanie przekierowany na "user@example.net"):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1767,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    Opcja F:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    Możesz nawet używać webhooków jako globalnego lub indywidualnego aliasu do przekierowywania e-maili. Zobacz przykład i pełną sekcję o webhookach zatytułowaną <a href="#do-you-support-webhooks" class="alert-link">Czy wspieracie webhooki</a> poniżej.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1799,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    Opcja G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    Możesz nawet używać wyrażeń regularnych ("regex") do dopasowywania aliasów i obsługi podstawień do których mają być przekazywane e-maile. Zobacz przykłady i pełną sekcję o regex zatytułowaną <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Czy obsługujecie wyrażenia regularne lub regex</a> poniżej.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>Potrzebujesz zaawansowanego regex z podstawieniami?</strong> Zobacz przykłady i pełną sekcję o regex zatytułowaną <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Czy obsługujecie wyrażenia regularne lub regex</a> poniżej.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Prosty przykład:</strong> Jeśli chcę, aby wszystkie e-maile wysyłane na `linus@example.com` lub `torvalds@example.com` były przekazywane na `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1840,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    Reguły przekazywania catch-all można również opisać jako "fall-through" (przechodzenie dalej).
+    Oznacza to, że przychodzące e-maile, które pasują do co najmniej jednej konkretnej reguły przekazywania, będą używane zamiast catch-all.
+    Konkretne reguły obejmują adresy e-mail i wyrażenia regularne.
     <br /><br />
-    For example:
+    Na przykład:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    E-maile wysłane na <code>hello@example.com</code> **nie** będą przekazywane na <code>second@gmail.com</code> (catch-all) z tą konfiguracją, a zamiast tego zostaną dostarczone tylko do <code>first@gmail.com</code>.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Korzystając ze strony zarządzania DNS u swojego rejestratora (drugiej otwartej zakładki), dodatkowo ustaw następujący rekord <strong class="notranslate">TXT</strong>:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1881,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Jeśli używasz Gmaila (np. Wyślij jako) lub G Suite, musisz dodać <code>include:_spf.google.com</code> do powyższej wartości, na przykład:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1641,34 +1893,33 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Jeśli masz już podobną linię z "v=spf1", musisz dodać <code>include:spf.forwardemail.net</code> tuż przed istniejącymi rekordami "include:host.com" i przed "-all" w tej samej linii, na przykład:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Zwróć uwagę, że istnieje różnica między "-all" a "~all". "-" oznacza, że sprawdzenie SPF powinno NIE POWIEŚĆ SIĘ, jeśli nie pasuje, a "~" oznacza, że sprawdzenie SPF powinno mieć SOFTFAIL. Zalecamy używanie podejścia "-all", aby zapobiec fałszowaniu domeny.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Możesz również potrzebować dołączyć rekord SPF dla hosta, z którego wysyłasz pocztę (np. Outlook).
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">Zweryfikuj swoje rekordy DNS za pomocą naszego narzędzia "Verify Records" dostępnego w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Konfiguracja.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Wyślij testowy e-mail, aby potwierdzić, że działa.  Zauważ, że propagacja rekordów DNS może zająć trochę czasu.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    Jeśli nie otrzymujesz testowych e-maili lub otrzymujesz testowy e-mail z komunikatem "Uważaj na tę wiadomość", zobacz odpowiedzi na <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Dlaczego nie otrzymuję moich testowych e-maili</a> oraz <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Dlaczego moje testowe e-maile wysłane do mnie w Gmailu są oznaczane jako "podejrzane"</a>.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Jeśli chcesz "Wysyłać pocztę jako" z Gmaila, musisz <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">obejrzeć ten film</a></strong> lub postępować zgodnie z krokami w sekcji <a href="#how-to-send-mail-as-using-gmail">Jak wysyłać pocztę jako za pomocą Gmaila</a> poniżej.
 
 </li></ol>
 
@@ -1676,10 +1927,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulacje!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Pomyślnie ukończyłeś wszystkie kroki.
     </span>
   </div>
 </div>
@@ -1687,93 +1938,92 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    Poniżej znajdują się opcjonalne dodatki. Zwróć uwagę, że te dodatki są całkowicie opcjonalne i mogą nie być konieczne. Chcieliśmy przynajmniej dostarczyć Ci dodatkowych informacji, jeśli zajdzie taka potrzeba.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    Opcjonalny dodatek:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    Jeśli korzystasz z funkcji <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Jak wysyłać pocztę jako za pomocą Gmaila</a>, możesz chcieć dodać siebie do listy dozwolonych. Zobacz <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">te instrukcje Gmaila</a> na ten temat.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Czy mogę używać wielu wymian MX i serwerów do zaawansowanego przekazywania {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+Tak, ale **w rekordach DNS powinien być wymieniony tylko jeden serwer MX**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+Nie próbuj używać "Priorytetu" jako sposobu konfiguracji wielu serwerów MX.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+Zamiast tego musisz skonfigurować istniejący serwer MX tak, aby przekazywał pocztę dla wszystkich aliasów niepasujących do naszych serwerów (`mx1.forwardemail.net` i/lub `mx2.forwardemail.net`).
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Jeśli korzystasz z Google Workspace i chcesz przekazywać wszystkie aliasy niepasujące do naszej usługi, zobacz <https://support.google.com/a/answer/6297084>.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Jeśli korzystasz z Microsoft 365 (Outlook) i chcesz przekazywać wszystkie aliasy niepasujące do naszej usługi, zobacz <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> oraz <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Jak ustawić autoresponder urlopowy (automatyczną odpowiedź poza biurem) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy i utwórz lub edytuj alias, dla którego chcesz skonfigurować autoresponder urlopowy.
+Masz możliwość skonfigurowania daty rozpoczęcia, daty zakończenia, tematu i wiadomości oraz włączania lub wyłączania tego w dowolnym momencie:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* Obecnie obsługiwane są tematy i wiadomości w formacie tekstowym (używamy wewnętrznie pakietu `striptags` do usuwania wszelkiego HTML).
+* Temat jest ograniczony do 100 znaków.
+* Wiadomość jest ograniczona do 1000 znaków.
+* Konfiguracja wymaga ustawienia Outbound SMTP (np. konieczne będzie skonfigurowanie rekordów DNS DKIM, DMARC i Return-Path).
+  * Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Konfiguracja Outbound SMTP i postępuj zgodnie z instrukcjami konfiguracji.
+* Odpowiedź wakacyjna nie może być włączona na globalnych domenach vanity (np. [adresy jednorazowe](/disposable-addresses) nie są obsługiwane).
+* Odpowiedź wakacyjna nie może być włączona dla aliasów z symbolem wieloznacznym/catch-all (`*`) ani wyrażeń regularnych.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+W przeciwieństwie do systemów pocztowych takich jak `postfix` (np. używających rozszerzenia filtra vacation `sieve`) – Forward Email automatycznie dodaje Twój podpis DKIM, zabezpiecza przed problemami z połączeniem podczas wysyłania odpowiedzi wakacyjnych (np. z powodu powszechnych problemów z połączeniem SSL/TLS i starszych serwerów), a nawet obsługuje Open WKD i szyfrowanie PGP dla odpowiedzi wakacyjnych.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* Aby zapobiec nadużyciom, za każdą wysłaną wiadomość odpowiedzi wakacyjnej zostanie odjęty 1 kredyt SMTP wychodzącego.
+  * Wszystkie płatne konta domyślnie zawierają 300 kredytów dziennie. Jeśli potrzebujesz większej ilości, skontaktuj się z nami.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. Wysyłamy tylko raz na 4 dni do każdego [dozwolonego](#do-you-have-an-allowlist) nadawcy.
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Nasza pamięć podręczna Redis używa odcisku palca `alias_id` i `sender`, gdzie `alias_id` to identyfikator aliasu w MongoDB, a `sender` to adres From (jeśli jest dozwolony) lub domena główna w adresie From (jeśli nie jest dozwolony). Dla uproszczenia czas wygaśnięcia tego odcisku w pamięci podręcznej ustawiono na 4 dni.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * Nasze podejście polegające na użyciu domeny głównej wyodrębnionej z adresu From dla nadawców niedozwolonych zapobiega nadużyciom ze strony stosunkowo nieznanych nadawców (np. złośliwych aktorów) zalewających wiadomościami odpowiedzi wakacyjnych.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. Wysyłamy tylko wtedy, gdy MAIL FROM i/lub From nie jest puste i nie zawiera (bez rozróżniania wielkości liter) [nazwy użytkownika postmastera](#what-are-postmaster-addresses) (część przed @ w adresie e-mail).
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. Nie wysyłamy, jeśli oryginalna wiadomość zawierała którykolwiek z następujących nagłówków (bez rozróżniania wielkości liter):
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * Nagłówek `auto-submitted` z wartością różną od `no`.
+   * Nagłówek `x-auto-response-suppress` z wartością `dr`, `autoreply`, `auto-reply`, `auto_reply` lub `all`.
+   * Nagłówek `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` lub `x-auto-respond` (bez względu na wartość).
+   * Nagłówek `precedence` z wartością `bulk`, `autoreply`, `auto-reply`, `auto_reply` lub `list`.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. Nie wysyłamy, jeśli adres MAIL FROM lub From kończy się na `+donotreply`, `-donotreply`, `+noreply` lub `-noreply`.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. Nie wysyłamy, jeśli część nazwy użytkownika adresu From to `mdaemon` i zawierał nagłówek `X-MDDSN-Message` (bez rozróżniania wielkości liter).
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. Nie wysyłamy, jeśli istniał nagłówek `content-type` o wartości `multipart/report` (bez rozróżniania wielkości liter).
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Jak skonfigurować SPF dla Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+Korzystając ze strony zarządzania DNS u swojego rejestratora, ustaw następujący rekord <strong class="notranslate">TXT</strong>:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2034,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Jeśli używasz Gmaila (np. funkcji Wyślij jako) lub G Suite, musisz dodać <code>include:_spf.google.com</code> do powyższej wartości, na przykład:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Jeśli korzystasz z Microsoft Outlook lub Live.com, musisz dodać <code>include:spf.protection.outlook.com</code> do swojego rekordu SPF <strong class="notranslate">TXT</strong>, na przykład:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1808,450 +2057,501 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Jeśli masz już podobną linię z "v=spf1", musisz dodać <code>include:spf.forwardemail.net</code> tuż przed istniejącymi rekordami "include:host.com" i przed "-all" w tej samej linii, na przykład:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Zwróć uwagę, że istnieje różnica między "-all" a "~all". "-" oznacza, że sprawdzenie SPF powinno NIE POWIEŚĆ SIĘ, jeśli nie pasuje, a "~" oznacza, że sprawdzenie SPF powinno mieć SOFTFAIL. Zalecamy użycie podejścia "-all", aby zapobiec fałszowaniu domeny.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Może być również konieczne uwzględnienie rekordu SPF dla hosta, z którego wysyłasz pocztę (np. Outlook).
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Jak skonfigurować DKIM dla Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Konfiguracja SMTP wychodzącego i postępuj zgodnie z instrukcjami konfiguracji.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Jak skonfigurować DMARC dla Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Konfiguracja SMTP wychodzącego i postępuj zgodnie z instrukcjami konfiguracji.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### Jak przeglądać raporty DMARC {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email oferuje kompleksowy panel raportów DMARC, który pozwala monitorować wydajność uwierzytelniania poczty dla wszystkich Twoich domen z jednego miejsca.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**Czym są raporty DMARC?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+Raporty DMARC (Domain-based Message Authentication, Reporting, and Conformance) to pliki XML wysyłane przez serwery odbierające pocztę, które informują, jak Twoje e-maile są uwierzytelniane. Raporty te pomagają zrozumieć:
+
+* Ile wiadomości jest wysyłanych z Twojej domeny
+* Czy te wiadomości przechodzą uwierzytelnianie SPF i DKIM
+* Jakie działania podejmują serwery odbierające (akceptują, kwarantanna lub odrzucają)
+* Które adresy IP wysyłają pocztę w imieniu Twojej domeny
+
+**Jak uzyskać dostęp do raportów DMARC**
+
+Przejdź do <a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Raporty DMARC</a>, aby zobaczyć swój panel. Możesz także uzyskać dostęp do raportów dla konkretnej domeny z <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a>, klikając przycisk "DMARC" obok wybranej domeny.
+
+**Funkcje panelu**
+
+Panel raportów DMARC oferuje:
+
+* **Podsumowanie metryk**: Łączna liczba otrzymanych raportów, liczba analizowanych wiadomości, wskaźnik zgodności SPF, wskaźnik zgodności DKIM oraz ogólny wskaźnik powodzenia
+* **Wykres wiadomości w czasie**: Wizualny trend wolumenu poczty i wskaźników uwierzytelniania w ciągu ostatnich 30 dni
+* **Podsumowanie zgodności**: Wykres pierścieniowy pokazujący rozkład zgodności SPF vs DKIM
+* **Rozporządzenie wiadomości**: Wykres słupkowy pokazujący, jak serwery odbierające traktowały Twoje wiadomości (zaakceptowane, poddane kwarantannie lub odrzucone)
+* **Tabela ostatnich raportów**: Szczegółowa lista pojedynczych raportów DMARC z możliwością filtrowania i paginacji
+* **Filtrowanie domen**: Filtrowanie raportów według konkretnej domeny podczas zarządzania wieloma domenami
+**Dlaczego to jest ważne**
+
+Dla organizacji zarządzających wieloma domenami (takimi jak przedsiębiorstwa, organizacje non-profit czy agencje), raporty DMARC są niezbędne do:
+
+* **Identyfikacji nieautoryzowanych nadawców**: Wykrywanie, czy ktoś podszywa się pod Twoją domenę
+* **Poprawy dostarczalności**: Zapewnienie, że Twoje legalne e-maile przechodzą uwierzytelnianie
+* **Monitorowania infrastruktury e-mailowej**: Śledzenie, które usługi i adresy IP wysyłają wiadomości w Twoim imieniu
+* **Zgodności**: Utrzymanie widoczności uwierzytelniania e-maili na potrzeby audytów bezpieczeństwa
+
+W przeciwieństwie do innych usług, które wymagają oddzielnych narzędzi do monitorowania DMARC, Forward Email zawiera przetwarzanie i wizualizację raportów DMARC jako część Twojego konta bez dodatkowych kosztów.
+
+**Wymagania**
+
+* Raporty DMARC są dostępne tylko dla planów płatnych
+* Twoja domena musi mieć skonfigurowany DMARC (zobacz [Jak skonfigurować DMARC dla Forward Email](#how-do-i-set-up-dmarc-for-forward-email))
+* Raporty są automatycznie zbierane, gdy serwery odbierające pocztę wysyłają je na skonfigurowany adres raportowania DMARC
+
+**Cotygodniowe raporty e-mail**
+
+Użytkownicy planów płatnych automatycznie otrzymują cotygodniowe podsumowania raportów DMARC drogą mailową. Te e-maile zawierają:
+
+* Statystyki podsumowujące dla wszystkich Twoich domen
+* Wskaźniki zgodności SPF i DKIM
+* Podział statusów wiadomości (zaakceptowane, poddane kwarantannie, odrzucone)
+* Najważniejsze organizacje raportujące (Google, Microsoft, Yahoo itd.)
+* Adresy IP z problemami zgodności, które mogą wymagać uwagi
+* Bezpośrednie linki do panelu raportów DMARC
+
+Cotygodniowe raporty są wysyłane automatycznie i nie można ich wyłączyć oddzielnie od innych powiadomień e-mail.
+
+### Jak połączyć i skonfigurować kontakty {#how-do-i-connect-and-configure-my-contacts}
+
+**Aby skonfigurować kontakty, użyj adresu CardDAV:** `https://carddav.forwardemail.net` (lub po prostu `carddav.forwardemail.net`, jeśli Twój klient na to pozwala)
+
+### Jak połączyć i skonfigurować kalendarze {#how-do-i-connect-and-configure-my-calendars}
+
+**Aby skonfigurować kalendarz, użyj adresu CalDAV:** `https://caldav.forwardemail.net` (lub po prostu `caldav.forwardemail.net`, jeśli Twój klient na to pozwala)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### Jak dodać więcej kalendarzy i zarządzać istniejącymi kalendarzami {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+Jeśli chcesz dodać dodatkowe kalendarze, po prostu dodaj nowy adres kalendarza: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**pamiętaj, aby zastąpić `calendar-name` nazwą wybranego kalendarza**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+Możesz zmienić nazwę i kolor kalendarza po jego utworzeniu – wystarczy użyć preferowanej aplikacji kalendarza (np. Apple Mail lub [Thunderbird](https://thunderbird.net)).
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### Jak połączyć i skonfigurować zadania i przypomnienia {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**Aby skonfigurować zadania i przypomnienia, użyj tego samego adresu CalDAV co dla kalendarzy:** `https://caldav.forwardemail.net` (lub po prostu `caldav.forwardemail.net`, jeśli Twój klient na to pozwala)
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+Zadania i przypomnienia będą automatycznie oddzielone od wydarzeń kalendarza do własnej kolekcji kalendarzy "Przypomnienia" lub "Zadania".
 
-**Setup instructions by platform:**
+**Instrukcje konfiguracji według platformy:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. Dodaj nowe konto CalDAV w Preferencjach systemowych > Konta internetowe (lub Ustawienia > Konta na iOS)
+2. Użyj `caldav.forwardemail.net` jako serwera
+3. Wprowadź swój alias Forward Email i wygenerowane hasło
+4. Po konfiguracji zobaczysz kolekcje "Kalendarz" i "Przypomnienia"
+5. Używaj aplikacji Przypomnienia do tworzenia i zarządzania zadaniami
 
-**Android with Tasks.org:**
+**Android z Tasks.org:**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Zainstaluj Tasks.org ze sklepu Google Play lub F-Droid
+2. Przejdź do Ustawienia > Synchronizacja > Dodaj konto > CalDAV
+3. Wprowadź serwer: `https://caldav.forwardemail.net`
+4. Wprowadź swój alias Forward Email i wygenerowane hasło
+5. Tasks.org automatycznie wykryje Twoje kalendarze z zadaniami
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Zainstaluj dodatek Lightning, jeśli jeszcze nie jest zainstalowany
+2. Utwórz nowy kalendarz typu "CalDAV"
+3. Użyj adresu URL: `https://caldav.forwardemail.net`
+4. Wprowadź swoje dane uwierzytelniające Forward Email
+5. Zarówno wydarzenia, jak i zadania będą dostępne w interfejsie kalendarza
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### Dlaczego nie mogę tworzyć zadań w macOS Przypomnienia {#why-cant-i-create-tasks-in-macos-reminders}
+Jeśli masz problemy z tworzeniem zadań w macOS Reminders, wypróbuj następujące kroki rozwiązywania problemów:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **Sprawdź konfigurację konta**: Upewnij się, że Twoje konto CalDAV jest poprawnie skonfigurowane z `caldav.forwardemail.net`
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **Zweryfikuj oddzielne kalendarze**: Powinieneś widzieć zarówno "Calendar", jak i "Reminders" na swoim koncie. Jeśli widzisz tylko "Calendar", wsparcie dla zadań może nie być jeszcze w pełni aktywowane.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **Odśwież konto**: Spróbuj usunąć i ponownie dodać swoje konto CalDAV w Preferencjach systemowych > Konta internetowe
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **Sprawdź łączność z serwerem**: Przetestuj, czy możesz uzyskać dostęp do `https://caldav.forwardemail.net` w przeglądarce
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **Zweryfikuj dane logowania**: Upewnij się, że używasz poprawnego aliasu e-mail i wygenerowanego hasła (nie hasła do konta)
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **Wymuś synchronizację**: W aplikacji Reminders spróbuj utworzyć zadanie, a następnie ręcznie odświeżyć synchronizację
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**Typowe problemy:**
 
-**Common issues:**
+* **"Reminders calendar not found"**: Serwer może potrzebować chwili, aby utworzyć kolekcję Reminders przy pierwszym dostępie
+* **Zadania się nie synchronizują**: Sprawdź, czy oba urządzenia używają tych samych danych logowania do konta CalDAV
+* **Mieszane treści**: Upewnij się, że zadania są tworzone w kalendarzu "Reminders", a nie w ogólnym "Calendar"
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### Jak skonfigurować Tasks.org na Androidzie {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.org to popularny otwartoźródłowy menedżer zadań, który doskonale współpracuje z obsługą zadań CalDAV Forward Email.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**Instalacja i konfiguracja:**
 
-**Installation and Setup:**
+1. **Zainstaluj Tasks.org**:
+   * Z Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * Z F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **Skonfiguruj synchronizację CalDAV**:
+   * Otwórz Tasks.org
+   * Przejdź do ☰ Menu > Ustawienia > Synchronizacja
+   * Stuknij "Dodaj konto"
+   * Wybierz "CalDAV"
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+3. **Wprowadź ustawienia Forward Email**:
+   * **URL serwera**: `https://caldav.forwardemail.net`
+   * **Nazwa użytkownika**: Twój alias Forward Email (np. `you@yourdomain.com`)
+   * **Hasło**: Wygenerowane hasło specyficzne dla aliasu
+   * Stuknij "Dodaj konto"
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+4. **Odkrywanie konta**:
+   * Tasks.org automatycznie wykryje Twoje kalendarze zadań
+   * Powinieneś zobaczyć kolekcję "Reminders"
+   * Stuknij "Subskrybuj", aby włączyć synchronizację kalendarza zadań
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+5. **Test synchronizacji**:
+   * Utwórz testowe zadanie w Tasks.org
+   * Sprawdź, czy pojawi się w innych klientach CalDAV (np. macOS Reminders)
+   * Zweryfikuj, czy zmiany synchronizują się w obie strony
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+**Dostępne funkcje:**
 
-**Features available:**
+* ✅ Tworzenie i edycja zadań
+* ✅ Terminy i przypomnienia
+* ✅ Zakończenie zadania i status
+* ✅ Poziomy priorytetów
+* ✅ Podzadania i hierarchia zadań
+* ✅ Tagi i kategorie
+* ✅ Synchronizacja dwukierunkowa z innymi klientami CalDAV
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+**Rozwiązywanie problemów:**
 
-**Troubleshooting:**
+* Jeśli nie pojawiają się kalendarze zadań, spróbuj ręcznie odświeżyć w ustawieniach Tasks.org
+* Upewnij się, że masz przynajmniej jedno zadanie utworzone na serwerze (możesz najpierw utworzyć je w macOS Reminders)
+* Sprawdź łączność sieciową z `caldav.forwardemail.net`
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+### Jak skonfigurować SRS dla Forward Email {#how-do-i-set-up-srs-for-forward-email}
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+Automatycznie konfigurujemy [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – nie musisz robić tego samodzielnie.
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+### Jak skonfigurować MTA-STS dla Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+Prosimy o zapoznanie się z [naszą sekcją o MTA-STS](#do-you-support-mta-sts) w celu uzyskania dodatkowych informacji.
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+### Jak dodać zdjęcie profilowe do mojego adresu e-mail {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+Jeśli korzystasz z Gmaila, wykonaj poniższe kroki:
 
-If you're using Gmail, then follow these steps below:
+1. Przejdź na <https://google.com> i wyloguj się ze wszystkich kont e-mail
+2. Kliknij "Zaloguj się", a w rozwijanym menu wybierz "inne konto"
+3. Wybierz "Użyj innego konta"
+4. Wybierz "Utwórz konto"
+5. Wybierz "Użyj zamiast tego mojego obecnego adresu e-mail"
+6. Wprowadź swój adres e-mail z własnej domeny
+7. Odbierz wiadomość weryfikacyjną wysłaną na Twój adres e-mail
+8. Wprowadź kod weryfikacyjny z tej wiadomości
+9. Uzupełnij informacje profilowe dla nowego konta Google
+10. Zaakceptuj wszystkie polityki prywatności i warunki użytkowania
+11. Przejdź na <https://google.com>, kliknij ikonę profilu w prawym górnym rogu i kliknij przycisk "zmień"
+12. Prześlij nowe zdjęcie lub awatar dla swojego konta
+13. Zmiany zostaną wprowadzone w ciągu około 1-2 godzin, choć czasem mogą nastąpić bardzo szybko.
+14. Wyślij testowego e-maila, a zdjęcie profilowe powinno się pojawić.
+## Zaawansowane funkcje {#advanced-features}
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+### Czy obsługujecie newslettery lub listy mailingowe do celów marketingowych {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-## Advanced Features {#advanced-features}
+Tak, więcej informacji znajdziesz na <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+Należy pamiętać, że aby utrzymać reputację IP i zapewnić dostarczalność, Forward Email posiada ręczny proces weryfikacji na poziomie domeny dla **zatwierdzania newsletterów**. Napisz na <support@forwardemail.net> lub otwórz [zgłoszenie pomocy](https://forwardemail.net/help) w celu zatwierdzenia. Zazwyczaj zajmuje to mniej niż 24 godziny, a większość zgłoszeń jest rozpatrywana w ciągu 1-2 godzin. W niedalekiej przyszłości planujemy uczynić ten proces natychmiastowym dzięki dodatkowym kontrolom antyspamowym i powiadomieniom. Proces ten zapewnia, że Twoje e-maile trafiają do skrzynki odbiorczej i nie są oznaczane jako spam.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+### Czy obsługujecie wysyłanie e-maili przez API {#do-you-support-sending-email-with-api}
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+Tak, od maja 2023 roku obsługujemy wysyłanie e-maili przez API jako dodatek dla wszystkich płatnych użytkowników.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Prosimy o zapoznanie się z naszymi <a href="/terms" class="alert-link" target="_blank">Warunkami</a>, <a href="/privacy" class="alert-link" target="_blank">Polityką prywatności</a> oraz <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Limitami SMTP wychodzącymi</a> – korzystanie oznacza akceptację i zgodę.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+Zapoznaj się z sekcją dotyczącą [E-maili](/email-api#outbound-emails) w naszej dokumentacji API, aby poznać opcje, przykłady i więcej informacji.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+Aby wysyłać e-maile wychodzące za pomocą naszego API, musisz użyć swojego tokena API dostępnego w [Moje bezpieczeństwo](/my-account/security).
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### Czy obsługujecie odbieranie e-maili przez IMAP {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Tak, od 16 października 2023 roku obsługujemy odbieranie e-maili przez IMAP jako dodatek dla wszystkich płatnych użytkowników.  **Prosimy o przeczytanie naszego szczegółowego artykułu** na temat [jak działa nasza funkcja szyfrowanego przechowywania skrzynki pocztowej SQLite](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Prosimy o zapoznanie się z naszymi <a href="/terms" class="alert-link" target="_blank">Warunkami</a> oraz <a href="/privacy" class="alert-link" target="_blank">Polityką prywatności</a> – korzystanie oznacza akceptację i zgodę.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowaj wygenerowane hasło wyświetlone na ekranie.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Używając preferowanej aplikacji e-mail, dodaj lub skonfiguruj konto z nowo utworzonym aliasem (np. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Zalecamy używanie <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> lub <a href="/blog/open-source" class="alert-link" target="_blank">alternatywy open-source i skoncentrowanej na prywatności</a>.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. Gdy zostaniesz poproszony o nazwę serwera IMAP, wpisz `imap.forwardemail.net`
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. Gdy zostaniesz poproszony o port serwera IMAP, wpisz `993` (SSL/TLS) – w razie potrzeby zobacz [alternatywne porty IMAP](/faq#what-are-your-imap-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Jeśli używasz Thunderbirda, upewnij się, że "Bezpieczeństwo połączenia" jest ustawione na "SSL/TLS", a metoda uwierzytelniania na "Normalne hasło".</span>
    </div>
-
 6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Zapisz swoje ustawienia** – jeśli masz problemy, prosimy <a href="/help">skontaktuj się z nami</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulacje!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Pomyślnie ukończyłeś wszystkie kroki.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### Czy obsługujecie POP3 {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Tak, od 4 grudnia 2023 obsługujemy [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) jako dodatek dla wszystkich płatnych użytkowników.  **Prosimy przeczytać nasz szczegółowy artykuł** o [tym, jak działa nasza funkcja szyfrowanego przechowywania skrzynki pocztowej SQLite](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Prosimy upewnić się, że przeczytałeś nasze <a href="/terms" class="alert-link" target="_blank">Warunki</a> oraz <a href="/privacy" class="alert-link" target="_blank">Politykę prywatności</a> &ndash; korzystanie oznacza akceptację i zgodę.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowuj wygenerowane hasło wyświetlone na ekranie.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Korzystając z preferowanej aplikacji pocztowej, dodaj lub skonfiguruj konto z nowo utworzonym aliasem (np. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Zalecamy używanie <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> lub <a href="/blog/open-source" class="alert-link" target="_blank">alternatywy open-source i skupionej na prywatności</a>.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. Gdy zostaniesz poproszony o nazwę serwera POP3, wpisz `pop3.forwardemail.net`
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. Gdy zostaniesz poproszony o port serwera POP3, wpisz `995` (SSL/TLS) – w razie potrzeby zobacz [alternatywne porty POP3](/faq#what-are-your-pop3-server-configuration-settings)
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Jeśli używasz Thunderbirda, upewnij się, że "Bezpieczeństwo połączenia" jest ustawione na "SSL/TLS", a metoda uwierzytelniania na "Normalne hasło".</span>
    </div>
 
 6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Zapisz swoje ustawienia** – jeśli masz problemy, prosimy <a href="/help">skontaktuj się z nami</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulacje!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Pomyślnie ukończyłeś wszystkie kroki.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### Czy obsługujecie kalendarze (CalDAV) {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Tak, od 5 lutego 2024 dodaliśmy tę funkcję. Nasz serwer to `caldav.forwardemail.net` i jest również monitorowany na naszej <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stronie statusu</a>.
+Obsługuje zarówno IPv4, jak i IPv6 i jest dostępny przez port `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| Login    | Przykład                   | Opis                                                                                                                                                                                     |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Nazwa użytkownika | `user@example.com`         | Adres e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a>.           |
+| Hasło    | `************************` | Wygenerowane hasło specyficzne dla aliasu.                                                                                                                                               |
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+Aby korzystać z obsługi kalendarza, **użytkownik** musi być adresem e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> – a **hasło** musi być wygenerowanym hasłem specyficznym dla aliasu.
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+### Czy obsługujecie zadania i przypomnienia (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+Tak, od 14 października 2025 dodaliśmy obsługę CalDAV VTODO dla zadań i przypomnień. Używa to tego samego serwera co nasza obsługa kalendarza: `caldav.forwardemail.net`.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+Nasz serwer CalDAV obsługuje zarówno wydarzenia kalendarza (VEVENT), jak i komponenty zadań (VTODO) korzystając z **zunifikowanych kalendarzy**. Oznacza to, że każdy kalendarz może zawierać zarówno wydarzenia, jak i zadania, zapewniając maksymalną elastyczność i kompatybilność ze wszystkimi klientami CalDAV.
 
-**How calendars and lists work:**
+**Jak działają kalendarze i listy:**
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+* **Każdy kalendarz obsługuje zarówno wydarzenia, jak i zadania** – Możesz dodawać wydarzenia, zadania lub oba do dowolnego kalendarza
+* **Listy Apple Reminders** – Każda lista utworzona w Apple Reminders staje się osobnym kalendarzem na serwerze
+* **Wiele kalendarzy** – Możesz tworzyć dowolną liczbę kalendarzy, każdy z własną nazwą, kolorem i organizacją
+* **Synchronizacja między klientami** – Zadania i wydarzenia synchronizują się bezproblemowo między wszystkimi kompatybilnymi klientami
 
-**Supported task clients:**
+**Obsługiwane klienty zadań:**
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+* **macOS Reminders** – Pełna natywna obsługa tworzenia, edycji, ukończenia i synchronizacji zadań
+* **iOS Reminders** – Pełna natywna obsługa na wszystkich urządzeniach iOS
+* **Tasks.org (Android)** – Popularny otwartoźródłowy menedżer zadań z synchronizacją CalDAV
+* **Thunderbird** – Obsługa zadań i kalendarza w desktopowym kliencie poczty
+* **Każdy menedżer zadań kompatybilny z CalDAV** – Standardowa obsługa komponentu VTODO
 
-**Task features supported:**
+**Obsługiwane funkcje zadań:**
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+* Tworzenie, edycja i usuwanie zadań
+* Terminy i daty rozpoczęcia
+* Status ukończenia zadania (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Poziomy priorytetu zadań
+* Zadania cykliczne
+* Opisy i notatki do zadań
+* Synchronizacja na wielu urządzeniach
+* Podzadania z właściwością RELATED-TO
+* Przypomnienia zadań z VALARM
 
-The login credentials are the same as for calendar support:
+Dane logowania są takie same jak dla obsługi kalendarza:
 
-| Login | Example | Description |
+| Login    | Przykład                   | Opis                                                                                                                                                                                     |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Nazwa użytkownika | `user@example.com`         | Adres e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a>.           |
+| Hasło    | `************************` | Wygenerowane hasło specyficzne dla aliasu.                                                                                                                                               |
 
-**Important notes:**
+**Ważne uwagi:**
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+* **Każda lista w Reminders to osobny kalendarz** – Gdy tworzysz nową listę w Apple Reminders, tworzy się nowy kalendarz na serwerze CalDAV
+* **Użytkownicy Thunderbirda** – Musisz ręcznie subskrybować każdy kalendarz/listę, którą chcesz synchronizować, lub użyć adresu URL katalogu kalendarza: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Użytkownicy Apple** – Odkrywanie kalendarzy odbywa się automatycznie, więc wszystkie Twoje kalendarze i listy pojawią się w Calendar.app i Reminders.app
+* **Zunifikowane kalendarze** – Wszystkie kalendarze obsługują zarówno wydarzenia, jak i zadania, dając Ci elastyczność w organizacji danych
+### Czy obsługujecie kontakty (CardDAV) {#do-you-support-contacts-carddav}
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+Tak, od 12 czerwca 2025 dodaliśmy tę funkcję. Nasz serwer to `carddav.forwardemail.net` i jest również monitorowany na naszej <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stronie statusu</a>.
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Obsługuje zarówno IPv4, jak i IPv6 i jest dostępny na porcie `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+| Login    | Przykład                  | Opis                                                                                                                                                                                     |
+| -------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nazwa użytkownika | `user@example.com`         | Adres e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a>.          |
+| Hasło    | `************************` | Wygenerowane hasło specyficzne dla aliasu.                                                                                                                                               |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Aby korzystać z obsługi kontaktów, **użytkownik** musi być adresem e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> – a **hasło** musi być wygenerowanym hasłem specyficznym dla aliasu.
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+### Czy obsługujecie wysyłanie e-maili przez SMTP {#do-you-support-sending-email-with-smtp}
 
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
-
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+Tak, od maja 2023 wspieramy wysyłanie e-maili przez SMTP jako dodatek dla wszystkich płatnych użytkowników.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Prosimy upewnić się, że przeczytali Państwo nasze <a href="/terms" class="alert-link" target="_blank">Warunki</a>, <a href="/privacy" class="alert-link" target="_blank">Politykę prywatności</a> oraz <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Limity SMTP wychodzącego</a> – korzystanie oznacza akceptację i zgodę.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Jeśli korzystasz z Gmaila, zapoznaj się z naszym <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">przewodnikiem Wysyłaj jako z Gmail</a>. Jeśli jesteś programistą, zapoznaj się z naszymi <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentami API e-mail</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Konfiguracja SMTP wychodzącego i postępuj zgodnie z instrukcjami konfiguracji
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowuj wygenerowane hasło wyświetlone na ekranie.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. Korzystając z preferowanej aplikacji e-mail, dodaj lub skonfiguruj konto z nowo utworzonym aliasem (np. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>Zalecamy korzystanie z <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> lub <a href="/blog/open-source" class="alert-link" target="_blank">alternatywy open-source i skoncentrowanej na prywatności</a>.</span>
    </div>
+5. Gdy zostaniesz poproszony o nazwę serwera SMTP, wpisz `smtp.forwardemail.net`
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. Gdy zostaniesz poproszony o port serwera SMTP, wpisz `465` (SSL/TLS) – zobacz [alternatywne porty SMTP](/faq#what-are-your-smtp-server-configuration-settings) w razie potrzeby
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Jeśli używasz Thunderbirda, upewnij się, że "Bezpieczeństwo połączenia" jest ustawione na "SSL/TLS", a metoda uwierzytelniania na "Normalne hasło".</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. Gdy zostaniesz poproszony o hasło do serwera SMTP, wklej hasło z <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> w kroku 3 powyżej
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **Zapisz swoje ustawienia i wyślij pierwszy testowy e-mail** – jeśli masz problemy, prosimy <a href="/help">skontaktuj się z nami</a>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    Prosimy pamiętać, że aby utrzymać reputację IP i zapewnić dostarczalność, mamy ręczny proces weryfikacji na poziomie domeny dla zatwierdzania wychodzącego SMTP. Zazwyczaj trwa to mniej niż 24 godziny, a większość zgłoszeń jest rozpatrywana w ciągu 1-2 godzin. W niedalekiej przyszłości planujemy uczynić ten proces natychmiastowym, z dodatkowymi kontrolami antyspamowymi i powiadomieniami. Proces ten zapewnia, że Twoje e-maile trafiają do skrzynki odbiorczej, a Twoje wiadomości nie są oznaczane jako spam.
   </span>
 </div>
 
@@ -2259,98 +2559,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulacje!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Pomyślnie ukończyłeś wszystkie kroki.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### Czy obsługujecie OpenPGP/MIME, szyfrowanie end-to-end ("E2EE") oraz Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Tak, obsługujemy [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [szyfrowanie end-to-end ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption) oraz wyszukiwanie kluczy publicznych za pomocą [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD). Możesz skonfigurować OpenPGP korzystając z [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) lub [samodzielnie hostować własne klucze](https://wiki.gnupg.org/WKDHosting) (odwołaj się do [tego gista dotyczącego konfiguracji serwera WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* Wyszukiwania WKD są buforowane przez 1 godzinę, aby zapewnić terminową dostawę e-maili → dlatego jeśli dodasz, zmienisz lub usuniesz swój klucz WKD, prosimy o wysłanie do nas e-maila na `support@forwardemail.net` z Twoim adresem e-mail, abyśmy mogli ręcznie wyczyścić pamięć podręczną.
+* Obsługujemy szyfrowanie PGP dla wiadomości przekazywanych za pomocą wyszukiwania WKD lub przy użyciu przesłanego klucza PGP w naszym interfejsie.
+* Przesłane klucze mają pierwszeństwo, o ile pole wyboru PGP jest włączone/zaznaczone.
+* Wiadomości wysyłane do webhooków nie są obecnie szyfrowane za pomocą PGP.
+* Jeśli masz wiele aliasów pasujących do danego adresu przekazywania (np. kombinacja regex/wildcard/dokładne dopasowanie) i jeśli więcej niż jeden z nich zawiera przesłany klucz PGP i ma zaznaczone PGP → wtedy wyślemy Ci e-mail z alertem o błędzie i nie zaszyfrujemy wiadomości Twoim przesłanym kluczem PGP. Jest to bardzo rzadkie i zwykle dotyczy zaawansowanych użytkowników z złożonymi regułami aliasów.
+* **Szyfrowanie PGP nie będzie stosowane do przekazywania e-maili przez nasze serwery MX, jeśli nadawca miał politykę DMARC ustawioną na reject. Jeśli potrzebujesz szyfrowania PGP na *wszystkie* wiadomości, sugerujemy korzystanie z naszej usługi IMAP i skonfigurowanie klucza PGP dla swojego aliasu dla poczty przychodzącej.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**Możesz zweryfikować swoją konfigurację Web Key Directory na <https://wkd.chimbosonic.com/> (open-source) lub <https://www.webkeydirectory.com/> (własnościowe).**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    Automatyczne szyfrowanie:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>Jeśli korzystasz z naszej <a href="#do-you-support-sending-email-with-smtp" class="alert-link">usługi SMTP wychodzącego</a> i wysyłasz nieszyfrowane wiadomości, automatycznie podejmiemy próbę zaszyfrowania wiadomości na podstawie odbiorcy, korzystając z <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    Musisz wykonać wszystkie poniższe kroki, aby włączyć OpenPGP dla własnej nazwy domeny.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. Pobierz i zainstaluj zalecany wtyczkę klienta poczty e-mail poniżej:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | Klient poczty  | Platforma | Zalecana wtyczka                                                                                                                                                                      | Uwagi                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird    | Desktop  | [Skonfiguruj OpenPGP w Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird ma wbudowane wsparcie dla OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Gmail          | Przeglądarka | [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download) (licencja własnościowa)                                                                        | Gmail nie obsługuje OpenPGP, jednak możesz pobrać otwartoźródłową wtyczkę [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                          |
+   | Apple Mail     | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                        | Apple Mail nie obsługuje OpenPGP, jednak możesz pobrać otwartoźródłową wtyczkę [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation).                                                                                                                                                                                                                                                               |
+   | Apple Mail     | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) lub [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (licencja własnościowa)                     | Apple Mail nie obsługuje OpenPGP, jednak możesz pobrać otwartoźródłową wtyczkę [PGPro](https://github.com/opensourceios/PGPro/) lub [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                          |
+   | Outlook        | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                        | Klient poczty Outlook na komputerze nie obsługuje OpenPGP, jednak możesz pobrać otwartoźródłową wtyczkę [gpg4win](https://www.gpg4win.de/index.html).                                                                                                                                                                                                                                                                                      |
+   | Outlook        | Przeglądarka | [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download) (licencja własnościowa)                                                                        | Klient poczty Outlook w przeglądarce nie obsługuje OpenPGP, jednak możesz pobrać otwartoźródłową wtyczkę [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                            |
+   | Android        | Mobile   | [OpenKeychain](https://www.openkeychain.org/) lub [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                   | [Klienci poczty na Androida](/blog/open-source/android-email-clients) tacy jak [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) i [FairEmail](https://github.com/M66B/FairEmail) obsługują otwartoźródłową wtyczkę [OpenKeychain](https://www.openkeychain.org/). Alternatywnie możesz użyć otwartoźródłowej (licencja własnościowa) wtyczki [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+   | Google Chrome  | Przeglądarka | [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download) (licencja własnościowa)                                                                        | Możesz pobrać otwartoźródłowe rozszerzenie przeglądarki [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                             |
+   | Mozilla Firefox| Przeglądarka | [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download) (licencja własnościowa)                                                                        | Możesz pobrać otwartoźródłowe rozszerzenie przeglądarki [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                             |
+   | Microsoft Edge | Przeglądarka | [Mailvelope](https://mailvelope.com/)                                                                                                                                               | Możesz pobrać otwartoźródłowe rozszerzenie przeglądarki [Mailvelope](https://mailvelope.com/).                                                                                                                                                                                                                                                                                                                                            |
+   | Brave          | Przeglądarka | [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download) (licencja własnościowa)                                                                        | Możesz pobrać otwartoźródłowe rozszerzenie przeglądarki [Mailvelope](https://mailvelope.com/) lub [FlowCrypt](https://flowcrypt.com/download).                                                                                                                                                                                                                                                                                             |
+   | Balsa          | Desktop  | [Skonfiguruj OpenPGP w Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                          | Balsa ma wbudowane wsparcie dla OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | KMail          | Desktop  | [Skonfiguruj OpenPGP w KMail](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                               | KMail ma wbudowane wsparcie dla OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | GNOME Evolution| Desktop  | [Skonfiguruj OpenPGP w Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                             | GNOME Evolution ma wbudowane wsparcie dla OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                       |
+   | Terminal       | Desktop  | [Skonfiguruj gpg w Terminalu](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                       | Możesz użyć otwartoźródłowego [narzędzia gpg w wierszu poleceń](https://www.gnupg.org/download/), aby wygenerować nowy klucz z poziomu terminala.                                                                                                                                                                                                                                                                                         |
+2. Otwórz wtyczkę, utwórz swój klucz publiczny i skonfiguruj klienta poczty, aby go używał.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. Prześlij swój klucz publiczny na <https://keys.openpgp.org/upload>.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>Możesz odwiedzić <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a>, aby zarządzać swoim kluczem w przyszłości.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       Opcjonalny dodatek:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       Jeśli korzystasz z naszej usługi <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">zaszyfrowanego magazynu (IMAP/POP3)</a> i chcesz, aby <i>cała</i> poczta przechowywana w twojej (już zaszyfrowanej) bazie danych SQLite była szyfrowana twoim kluczem publicznym, przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasów (np. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edytuj <i class="fa fa-angle-right"></i> OpenPGP i prześlij swój klucz publiczny.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. Dodaj nowy rekord `CNAME` do swojej domeny (np. `example.com`):
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>Nazwa/Host/Alias</th>
          <th class="text-center">TTL</th>
-         <th>Type</th>
-         <th>Answer/Value</th>
+         <th>Typ</th>
+         <th>Odpowiedź/Wartość</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,102 +2661,284 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       Wskazówka:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>Jeśli twój alias korzysta z naszych <a class="alert-link" href="/disposable-addresses" target="_blank">domen vanity/jednorazowych</a> (np. <code>hideaddress.net</code>), możesz pominąć ten krok.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gratulacje!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Pomyślnie ukończyłeś wszystkie kroki.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### Czy wspieracie szyfrowanie S/MIME {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+Tak, wspieramy szyfrowanie [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) zgodnie z definicją w [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551). S/MIME zapewnia szyfrowanie end-to-end przy użyciu certyfikatów X.509, które są szeroko wspierane przez korporacyjne klienty poczty.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Obsługujemy zarówno certyfikaty RSA, jak i ECC (kryptografia krzywych eliptycznych):
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **Certyfikaty RSA**: minimum 2048 bitów, zalecane 4096 bitów
+* **Certyfikaty ECC**: krzywe NIST P-256, P-384 i P-521
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+Aby skonfigurować szyfrowanie S/MIME dla swojego aliasu:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. Uzyskaj certyfikat S/MIME od zaufanego Urzędu Certyfikacji (CA) lub wygeneruj certyfikat samopodpisany do testów.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Wskazówka:
+     </strong>
+     <span>Darmowe certyfikaty S/MIME są dostępne u dostawców takich jak <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> lub <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. Eksportuj swój certyfikat w formacie PEM (tylko certyfikat publiczny, nie klucz prywatny).
 
-Learn more about passkeys at the following links:
+3. Przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasów (np. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edytuj <i class="fa fa-angle-right"></i> S/MIME i prześlij swój certyfikat publiczny.
+4. Po skonfigurowaniu wszystkie przychodzące e-maile na Twój alias będą szyfrowane za pomocą certyfikatu S/MIME przed ich przechowywaniem lub przekazywaniem dalej.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Uwaga:
+     </strong>
+     <span>
+       Szyfrowanie S/MIME jest stosowane do przychodzących wiadomości, które nie są już zaszyfrowane. Jeśli wiadomość jest już zaszyfrowana za pomocą OpenPGP lub S/MIME, nie będzie ponownie szyfrowana.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Ważne:
+     </strong>
+     <span>
+       Szyfrowanie S/MIME nie będzie stosowane do przekazywania e-maili przez nasze serwery MX, jeśli nadawca miał politykę DMARC ustawioną na reject. Jeśli potrzebujesz szyfrowania S/MIME dla <em>wszystkich</em> wiadomości, sugerujemy korzystanie z naszego serwisu IMAP i skonfigurowanie certyfikatu S/MIME dla Twojego aliasu dla poczty przychodzącej.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+Następujące klienty poczty mają wbudowane wsparcie dla S/MIME:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| Klient poczty     | Platforma | Uwagi                                                                                                               |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | Wbudowane wsparcie S/MIME. Przejdź do Mail > Preferences > Accounts > Twoje konto > Trust, aby skonfigurować certyfikaty.      |
+| Apple Mail        | iOS      | Wbudowane wsparcie S/MIME. Przejdź do Settings > Mail > Accounts > Twoje konto > Advanced > S/MIME, aby skonfigurować.          |
+| Microsoft Outlook | Windows  | Wbudowane wsparcie S/MIME. Przejdź do File > Options > Trust Center > Trust Center Settings > Email Security, aby skonfigurować. |
+| Microsoft Outlook | macOS    | Wbudowane wsparcie S/MIME. Przejdź do Tools > Accounts > Advanced > Security, aby skonfigurować.                                 |
+| Thunderbird       | Desktop  | Wbudowane wsparcie S/MIME. Przejdź do Account Settings > End-To-End Encryption > S/MIME, aby skonfigurować.                      |
+| GNOME Evolution   | Desktop  | Wbudowane wsparcie S/MIME. Przejdź do Edit > Preferences > Mail Accounts > Twoje konto > Security, aby skonfigurować.           |
+| KMail             | Desktop  | Wbudowane wsparcie S/MIME. Przejdź do Settings > Configure KMail > Identities > Twoja tożsamość > Cryptography, aby skonfigurować. |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Gratulacje!
+    </strong>
+    <span>
+      Pomyślnie skonfigurowałeś szyfrowanie S/MIME dla swojego aliasu.
+    </span>
+  </div>
+</div>
+
+### Czy obsługujecie filtrowanie e-maili Sieve {#do-you-support-sieve-email-filtering}
+
+Tak! Obsługujemy filtrowanie e-maili za pomocą [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) zgodnie z definicją w [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve to potężny, ustandaryzowany język skryptowy do filtrowania poczty po stronie serwera, który pozwala automatycznie organizować, filtrować i odpowiadać na przychodzące wiadomości.
+
+#### Obsługiwane rozszerzenia Sieve {#supported-sieve-extensions}
+
+Obsługujemy szeroki zestaw rozszerzeń Sieve:
+
+| Rozszerzenie                | RFC                                                                                     | Opis                                            |
+| --------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Przenoszenie wiadomości do określonych folderów |
+| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Odrzucanie wiadomości z komunikatem o błędzie   |
+| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Automatyczne odpowiedzi urlopowe/poza biurem    |
+| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Precyzyjne interwały odpowiedzi urlopowej       |
+| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Ustawianie flag IMAP (\Seen, \Flagged itd.)     |
+| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Testowanie nadawcy/odbiorcy koperty             |
+| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Testowanie zawartości treści wiadomości          |
+| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Przechowywanie i używanie zmiennych w skryptach |
+| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Porównania relacyjne (większy niż, mniejszy niż) |
+| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Porównania numeryczne                            |
+| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Kopiowanie wiadomości podczas przekierowywania  |
+| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Dodawanie lub usuwanie nagłówków wiadomości     |
+| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Testowanie wartości daty/czasu                   |
+| `index`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Dostęp do konkretnych wystąpień nagłówków       |
+| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Dopasowywanie wyrażeń regularnych                |
+| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Wysyłanie powiadomień (np. mailto:)              |
+| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Dostęp do informacji o środowisku                 |
+| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Testowanie istnienia skrzynek, tworzenie skrzynek|
+| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Przenoszenie do specjalnych skrzynek (\Junk, \Trash) |
+| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Wykrywanie duplikatów wiadomości                 |
+| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Testowanie dostępności rozszerzenia               |
+| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Dostęp do części adresu user+detail               |
+#### Rozszerzenia Nieobsługiwane {#extensions-not-supported}
+
+Następujące rozszerzenia nie są obecnie obsługiwane:
+
+| Rozszerzenie                                                   | Powód                                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `include`                                                      | Ryzyko bezpieczeństwa (wstrzyknięcie skryptu) i wymaga globalnego magazynu skryptów |
+| `mboxmetadata` / `servermetadata`                              | Wymaga wsparcia rozszerzenia IMAP METADATA                         |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | Złożona manipulacja drzewem MIME nie została jeszcze zaimplementowana |
+
+#### Przykładowe Skrypty Sieve {#example-sieve-scripts}
+
+**Przenoszenie newsletterów do folderu:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Automatyczna odpowiedź podczas urlopu:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "Obecnie jestem poza biurem i odpowiem po powrocie.";
+```
+
+**Oznaczanie wiadomości od ważnych nadawców:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**Odrzucanie spamu z określonymi tematami:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Wiadomość odrzucona z powodu zawartości spamu.";
+}
+```
+
+#### Zarządzanie Skryptami Sieve {#managing-sieve-scripts}
+
+Możesz zarządzać swoimi skryptami Sieve na kilka sposobów:
+
+1. **Interfejs WWW**: Przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje Konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasów <i class="fa fa-angle-right"></i> Skrypty Sieve, aby tworzyć i zarządzać skryptami.
+
+2. **Protokół ManageSieve**: Połącz się za pomocą dowolnego klienta kompatybilnego z ManageSieve (np. dodatku Sieve do Thunderbirda lub [sieve-connect](https://github.com/philpennock/sieve-connect)) do `imap.forwardemail.net`. Użyj portu `2190` z STARTTLS (zalecane dla większości klientów) lub portu `4190` z implicit TLS.
+
+3. **API**: Użyj naszego [REST API](/api#sieve-scripts), aby programowo zarządzać skryptami.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Uwaga:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+    Filtrowanie Sieve jest stosowane do przychodzących wiadomości przed ich zapisaniem w skrzynce pocztowej. Skrypty są wykonywane według priorytetu, a pierwsza pasująca akcja decyduje o sposobie obsługi wiadomości.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Bezpieczeństwo:
+  </strong>
+  <span>
+    Ze względów bezpieczeństwa akcje przekierowania są ograniczone do 10 na skrypt i 100 dziennie. Odpowiedzi urlopowe są ograniczone, aby zapobiec nadużyciom.
+  </span>
+</div>
+
+### Czy obsługujecie MTA-STS {#do-you-support-mta-sts}
+
+Tak, od 2 marca 2023 obsługujemy [MTA-STS](https://www.hardenize.com/blog/mta-sts). Możesz użyć [tego szablonu](https://github.com/jpawlowski/mta-sts.template), jeśli chcesz włączyć go na swojej domenie.
+
+Nasza konfiguracja jest publicznie dostępna na GitHub pod adresem <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+
+### Czy obsługujecie passkeys i WebAuthn {#do-you-support-passkeys-and-webauthn}
+
+Tak! Od 13 grudnia 2023 dodaliśmy wsparcie dla passkeys [ze względu na duże zapotrzebowanie](https://github.com/orgs/forwardemail/discussions/182).
+
+Passkeys pozwalają na bezpieczne logowanie bez konieczności używania hasła i uwierzytelniania dwuskładnikowego.
+
+Możesz potwierdzić swoją tożsamość za pomocą dotyku, rozpoznawania twarzy, hasła urządzenia lub PIN-u.
+
+Pozwalamy zarządzać do 30 passkeys jednocześnie, dzięki czemu możesz łatwo logować się ze wszystkich swoich urządzeń.
+
+Dowiedz się więcej o passkeys pod następującymi linkami:
+
+* [Logowanie do aplikacji i stron internetowych za pomocą passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Używanie passkeys do logowania się do aplikacji i stron internetowych na iPhonie](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Artykuł Wikipedii o Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Czy wspieracie najlepsze praktyki emailowe {#do-you-support-email-best-practices}
+
+Tak. Mamy wbudowane wsparcie dla SPF, DKIM, DMARC, ARC i SRS we wszystkich planach. Współpracowaliśmy również intensywnie z oryginalnymi autorami tych specyfikacji oraz innymi ekspertami od emaili, aby zapewnić perfekcję i wysoką dostarczalność.
+
+### Czy wspieracie webhooki odbić (bounce) {#do-you-support-bounce-webhooks}
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Wskazówka:
+  </strong>
+    Szukasz dokumentacji dotyczącej webhooków emailowych? Zobacz <a href="/faq#do-you-support-webhooks" class="alert-link">Czy wspieracie webhooki?</a> aby uzyskać więcej informacji.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+Tak, od 14 sierpnia 2024 dodaliśmy tę funkcję. Możesz teraz przejść do Moje Konto → Domeny → Ustawienia → URL webhooka odbić i skonfigurować adres `http://` lub `https://`, na który będziemy wysyłać żądanie `POST` za każdym razem, gdy wychodzące emaile SMTP zostaną odrzucone.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+Jest to przydatne do zarządzania i monitorowania wychodzących emaili SMTP – i może być używane do utrzymania subskrybentów, rezygnacji oraz wykrywania wystąpienia odbić.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+Dane webhooka odbicia są wysyłane jako JSON z następującymi właściwościami:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (String) - ID emaila odpowiadające emailowi w Moje Konto → Emaile (wychodzące SMTP)
+* `list_id` (String) - wartość nagłówka `List-ID` (niezależna od wielkości liter), jeśli istnieje, z oryginalnego wychodzącego emaila
+* `list_unsubscribe` (String) - wartość nagłówka `List-Unsubscribe` (niezależna od wielkości liter), jeśli istnieje, z oryginalnego wychodzącego emaila
+* `feedback_id` (String) - wartość nagłówka `Feedback-ID` (niezależna od wielkości liter), jeśli istnieje, z oryginalnego wychodzącego emaila
+* `recipient` (String) - adres email odbiorcy, który został odrzucony lub wystąpił błąd
+* `message` (String) - szczegółowa wiadomość o błędzie odbicia
+* `response` (String) - wiadomość odpowiedzi SMTP
+* `response_code` (Number) - sparsowany kod odpowiedzi SMTP
+* `truth_source` (String) - jeśli kod odpowiedzi pochodził z zaufanego źródła, ta wartość będzie zawierać nazwę domeny głównej (np. `google.com` lub `yahoo.com`)
+* `bounce` (Object) - obiekt zawierający następujące właściwości opisujące odbicie i status odrzucenia
+  * `action` (String) - akcja odbicia (np. `"reject"`)
+  * `message` (String) - powód odbicia (np. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - kategoria odbicia (np. `"block"`)
+  * `code` (Number) - kod statusu odbicia (np. `554`)
+  * `status` (String) - kod odbicia z wiadomości odpowiedzi (np. `5.7.1`)
+  * `line` (Number) - sparsowany numer linii, jeśli istnieje, [z listy parsowania odbić Zone-MTA](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (np. `526`)
+* `headers` (Object) - pary klucz-wartość nagłówków dla wychodzącego emaila
+* `bounced_at` (String) - data w formacie [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601), kiedy wystąpił błąd odbicia
 
-For example:
+Na przykład:
 
 ```json
 {
   "email_id": "66bcce793ef7b2a0928e14ba",
   "recipient": "example@gmail.com",
-  "message": "The email account that you tried to reach is over quota.",
-  "response": "552 5.2.2 The email account that you tried to reach is over quota.",
+  "message": "Konto email, do którego próbowałeś dotrzeć, przekroczyło limit.",
+  "response": "552 5.2.2 Konto email, do którego próbowałeś dotrzeć, przekroczyło limit.",
   "response_code": 552,
   "truth_source": "google.com",
   "bounce": {
     "action": "reject",
-    "message": "Gmail Mailbox is full",
+    "message": "Skrzynka Gmail jest pełna",
     "category": "capacity",
     "code": 552,
     "status": "5.2.2",
@@ -2469,59 +2949,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+Oto kilka dodatkowych uwag dotyczących webhooków odbić:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* Jeśli ładunek webhooka zawiera wartość `list_id`, `list_unsubscribe` lub `feedback_id`, powinieneś podjąć odpowiednie działania, aby w razie potrzeby usunąć `recipient` z listy.
+  * Jeśli wartość `bounce.category` była jedną z `"block"`, `"recipient"`, `"spam"` lub `"virus"`, zdecydowanie powinieneś usunąć użytkownika z listy.
+* Jeśli potrzebujesz zweryfikować ładunki webhooków (aby upewnić się, że faktycznie pochodzą z naszego serwera), możesz [rozwiązać adres IP klienta zdalnego na nazwę hosta za pomocą odwrotnego wyszukiwania](https://nodejs.org/api/dns.html#dnspromisesreverseip) – powinno to być `smtp.forwardemail.net`.
+  * Możesz również sprawdzić IP względem [naszych opublikowanych adresów IP](#what-are-your-servers-ip-addresses).
+  * Przejdź do Moje Konto → Domeny → Ustawienia → Klucz weryfikacji podpisu ładunku webhooka, aby uzyskać swój klucz webhooka.
+    * Możesz w każdej chwili obrócić ten klucz ze względów bezpieczeństwa.
+    * Oblicz i porównaj wartość `X-Webhook-Signature` z naszego żądania webhooka z obliczoną wartością ciała przy użyciu tego klucza. Przykład, jak to zrobić, jest dostępny w [tym poście na Stack Overflow](https://stackoverflow.com/a/68885281).
+  * Zobacz dyskusję na <https://github.com/forwardemail/free-email-forwarding/issues/235> dla dodatkowych informacji.
+* Będziemy czekać do `5` sekund na odpowiedź Twojego endpointu webhooka ze statusem `200`, a następnie podejmiemy do `1` próby ponownego wysłania.
+* Jeśli wykryjemy, że Twój URL webhooka odbić ma błąd podczas próby wysłania do niego żądania, wyślemy Ci uprzejmy email raz w tygodniu.
+### Czy obsługujecie webhooki {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    Szukasz dokumentacji dotyczącej webhooków odbić? Zobacz <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Czy obsługujecie webhooki odbić?</a> aby uzyskać więcej informacji.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+Tak, od 15 maja 2020 dodaliśmy tę funkcję. Możesz po prostu dodać webhook(i) dokładnie tak, jak dodajesz dowolnego odbiorcę! Upewnij się, że w adresie URL webhooka jest prefiks protokołu "http" lub "https".
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Zwiększona ochrona prywatności:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Jeśli korzystasz z płatnego planu (który oferuje zwiększoną ochronę prywatności), przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> i kliknij "Alias" obok swojej domeny, aby skonfigurować webhooki. Jeśli chcesz dowiedzieć się więcej o płatnych planach, zobacz naszą stronę <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Cennik</a>. W przeciwnym razie możesz kontynuować zgodnie z poniższymi instrukcjami.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+Jeśli korzystasz z darmowego planu, po prostu dodaj nowy rekord DNS <strong class="notranslate">TXT</strong> jak pokazano poniżej:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+Na przykład, jeśli chcę, aby wszystkie e-maile wysyłane na `alias@example.com` były przekazywane do nowego testowego punktu końcowego [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3008,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+Lub może chcesz, aby wszystkie e-maile wysyłane na `example.com` były przekazywane do tego punktu końcowego:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3029,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**Oto dodatkowe uwagi dotyczące webhooków:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* Jeśli musisz zweryfikować ładunek webhooka (aby upewnić się, że faktycznie pochodzi z naszego serwera), możesz [rozwiązać zdalny adres IP klienta na nazwę hosta klienta za pomocą odwrotnego wyszukiwania](https://nodejs.org/api/dns.html#dnspromisesreverseip) – powinien to być `mx1.forwardemail.net` lub `mx2.forwardemail.net`.
+  * Możesz także sprawdzić IP względem [naszych opublikowanych adresów IP](#what-are-your-servers-ip-addresses).
+  * Jeśli korzystasz z płatnego planu, przejdź do Moje konto → Domeny → Ustawienia → Klucz weryfikacji podpisu ładunku webhooka, aby uzyskać swój klucz webhooka.
+    * Możesz w dowolnym momencie zmienić ten klucz ze względów bezpieczeństwa.
+    * Oblicz i porównaj wartość `X-Webhook-Signature` z naszego żądania webhooka z obliczoną wartością ciała przy użyciu tego klucza. Przykład, jak to zrobić, jest dostępny w [tym poście na Stack Overflow](https://stackoverflow.com/a/68885281).
+  * Zobacz dyskusję na <https://github.com/forwardemail/free-email-forwarding/issues/235> dla dodatkowych informacji.
+* Jeśli webhook nie odpowie kodem statusu `200`, przechowamy jego odpowiedź w [utworzonym dzienniku błędów](#do-you-store-error-logs) – co jest przydatne do debugowania.
+* Żądania HTTP webhooka będą ponawiane do 3 razy przy każdej próbie połączenia SMTP, z maksymalnym czasem oczekiwania 60 sekund na każde żądanie POST do punktu końcowego. **Uwaga, to nie oznacza, że ponawia tylko 3 razy**, faktycznie będzie ponawiać ciągle w czasie, wysyłając kod SMTP 421 (co oznacza dla nadawcy "spróbuj ponownie później") po 3 nieudanych próbach żądania HTTP POST. Oznacza to, że e-mail będzie ponawiany przez wiele dni, aż zostanie osiągnięty kod statusu 200.
+* Będziemy automatycznie ponawiać na podstawie domyślnych kodów statusu i błędów używanych w [metodzie retry biblioteki superagent](https://ladjs.github.io/superagent/#retrying-requests) (jesteśmy jej opiekunami).
+* Grupujemy żądania HTTP webhooków do tego samego punktu końcowego w jedno żądanie zamiast wielu, aby oszczędzać zasoby i przyspieszyć czas odpowiedzi. Na przykład, jeśli wyślesz e-mail na <webhook1@example.com>, <webhook2@example.com> i <webhook3@example.com>, a wszystkie są skonfigurowane do trafienia do tego samego *dokładnego* adresu URL punktu końcowego, zostanie wykonane tylko jedno żądanie. Grupujemy według dokładnego dopasowania punktu końcowego z użyciem ścisłej równości.
+* Zauważ, że używamy metody "simpleParser" z biblioteki [mailparser](https://nodemailer.com/extras/mailparser/) do parsowania wiadomości na obiekt przyjazny JSON.
+* Surowa wartość e-maila jako String jest dostępna pod właściwością "raw".
+* Wyniki uwierzytelniania są dostępne jako właściwości "dkim", "spf", "arc", "dmarc" i "bimi".
+* Parsowane nagłówki e-maila są dostępne pod właściwością "headers" – ale możesz też użyć "headerLines" dla łatwiejszej iteracji i parsowania.
+* Grupowani odbiorcy dla tego webhooka są zgrupowani razem i dostępni pod właściwością "recipients".
+* Informacje o sesji SMTP są dostępne pod właściwością "session". Zawiera to informacje o nadawcy wiadomości, czasie przybycia wiadomości, HELO i nazwie hosta klienta. Wartość nazwy hosta klienta jako `session.clientHostname` to albo FQDN (z odwrotnego wyszukiwania PTR) albo `session.remoteAddress` opakowany w nawiasy (np. `"[127.0.0.1]"`).
+* Jeśli potrzebujesz szybkiego sposobu na uzyskanie wartości `X-Original-To`, możesz użyć wartości `session.recipient` (zobacz przykład poniżej). Nagłówek `X-Original-To` to nagłówek, który dodajemy do wiadomości do debugowania z oryginalnym odbiorcą (przed maskowanym przekierowaniem) wiadomości.
+* Jeśli chcesz usunąć właściwości `attachments` i/lub `raw` z ciała ładunku, po prostu dodaj `?attachments=false`, `?raw=false` lub `?attachments=false&raw=false` do adresu URL punktu końcowego webhooka jako parametr zapytania (np. `https://example.com/webhook?attachments=false&raw=false`).
+* Jeśli są załączniki, zostaną dołączone do tablicy `attachments` jako wartości Buffer. Możesz je ponownie sparsować do zawartości za pomocą podejścia w JavaScript, na przykład:
   ```js
   const data = [
     104,
@@ -2785,48 +3263,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### Czy obsługujecie wyrażenia regularne lub regex {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+Tak, od 27 września 2021 dodaliśmy tę funkcję. Możesz po prostu pisać wyrażenia regularne („regex”) do dopasowywania aliasów i wykonywania podstawień.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+Aliasami obsługującymi wyrażenia regularne są te, które zaczynają się od `/` i kończą na `/`, a ich odbiorcami są adresy e-mail lub webhooki. Odbiorcy mogą również zawierać wsparcie dla podstawień regex (np. `$1`, `$2`).
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+Obsługujemy dwa flagi wyrażeń regularnych, w tym `i` i `g`. Flaga ignorująca wielkość liter `i` jest domyślnie włączona na stałe i zawsze wymuszona. Flaga globalna `g` może być dodana przez Ciebie poprzez dołączenie `/g` na końcu wyrażenia.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+Zauważ, że wspieramy również naszą <a href="#can-i-disable-specific-aliases">funkcję wyłączania aliasów</a> dla części odbiorcy w ramach wsparcia regex.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+Wyrażenia regularne nie są obsługiwane na <a href="/disposable-addresses" target="_blank">globalnych domenach vanity</a> (ponieważ mogłoby to stanowić lukę bezpieczeństwa).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Zwiększona ochrona prywatności:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    Jeśli korzystasz z płatnego planu (który oferuje zwiększoną ochronę prywatności), przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> i kliknij „Aliasy” obok swojej domeny, aby skonfigurować aliasy, w tym te z wyrażeniami regularnymi. Jeśli chcesz dowiedzieć się więcej o płatnych planach, zobacz naszą stronę <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Cennik</a>.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### Przykłady dla zwiększonej ochrony prywatności {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
+      <th>Nazwa aliasu</th>
+      <th>Efekt</th>
       <th>Test</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-maile do `linus@example.com` lub `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">zobacz test na RegExr</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-maile do `24highst@example.com` lub `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">zobacz test na RegExr</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2834,34 +3312,34 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    Aby przetestować je na <a href="https://regexr.com" class="alert-link">RegExr</a>, wpisz wyrażenie w górnym polu, a następnie wpisz przykładowy alias w polu tekstowym poniżej. Jeśli pasuje, pole zmieni kolor na niebieski.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### Przykłady dla darmowego planu {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+Jeśli korzystasz z darmowego planu, po prostu dodaj nowy rekord DNS <strong class="notranslate">TXT</strong> używając jednego lub więcej z poniższych przykładów:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Prosty przykład:</strong> Jeśli chcę, aby wszystkie e-maile wysyłane do `linus@example.com` lub `torvalds@example.com` były przekazywane na `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3349,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>Przykład podstawienia imienia i nazwiska:</strong> Załóżmy, że wszystkie adresy e-mail w Twojej firmie mają wzór `firstname.lastname@example.com`. Jeśli chcę, aby wszystkie e-maile wysyłane do wzoru `firstname.lastname@example.com` były przekazywane na `firstname.lastname@company.com` z obsługą podstawień (<a href="https://regexr.com/66hnu" class="alert-link">zobacz test na RegExr</a>):
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3372,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>Przykład filtrowania z symbolem plusa:</strong> Jeśli chcę, aby wszystkie e-maile wysyłane na `info@example.com` lub `support@example.com` były przekierowywane odpowiednio na `user+info@gmail.com` lub `user+support@gmail.com` (z obsługą podstawienia) (<a href="https://regexr.com/66ho7" class="alert-link">zobacz test na RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3396,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>Przykład podstawienia ciągu zapytania webhook:</strong> Być może chcesz, aby wszystkie e-maile wysyłane na `example.com` trafiały do <a href="#do-you-support-webhooks" class="alert-link">webhooka</a> i miały dynamiczny klucz ciągu zapytania "to" z wartością będącą częścią nazwy użytkownika adresu e-mail (<a href="https://regexr.com/66ho4" class="alert-link">zobacz test na RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3420,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>Przykład cichego odrzucenia:</strong> Jeśli chcesz, aby wszystkie e-maile pasujące do określonego wzoru były wyłączone i cicho odrzucane (dla nadawcy wygląda to, jakby wiadomość została wysłana pomyślnie, ale faktycznie nigdzie nie trafia) ze statusem `250` (zobacz <a href="#can-i-disable-specific-aliases" class="alert-link">Czy mogę wyłączyć konkretne aliasy</a>), po prostu użyj tego samego podejścia z pojedynczym wykrzyknikiem "!". Oznacza to dla nadawcy, że wiadomość została pomyślnie dostarczona, ale faktycznie nigdzie nie trafiła (np. czarna dziura lub `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3444,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>Przykład miękkiego odrzucenia:</strong> Jeśli chcesz, aby wszystkie e-maile pasujące do określonego wzoru były wyłączone i miękko odrzucane ze statusem `421` (zobacz <a href="#can-i-disable-specific-aliases" class="alert-link">Czy mogę wyłączyć konkretne aliasy</a>), po prostu użyj tego samego podejścia z podwójnym wykrzyknikiem "!!". Oznacza to dla nadawcy, aby spróbował ponownie wysłać e-mail, a wiadomości do tego aliasu będą ponawiane przez około 5 dni, a następnie odrzucone na stałe.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>Przykład twardego odrzucenia:</strong> Jeśli chcesz, aby wszystkie e-maile pasujące do określonego wzoru były wyłączone i twardo odrzucone ze statusem `550` (zobacz <a href="#can-i-disable-specific-aliases" class="alert-link">Czy mogę wyłączyć konkretne aliasy</a>), po prostu użyj tego samego podejścia z potrójnym wykrzyknikiem "!!!". Oznacza to dla nadawcy błąd trwały i e-maile nie będą ponawiane, zostaną odrzucone dla tego aliasu.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3016,574 +3492,614 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    Zastanawiasz się, jak napisać wyrażenie regularne lub potrzebujesz przetestować swoją zamianę? Możesz skorzystać z darmowej strony do testowania wyrażeń regularnych <a href="https://regexr.com" class="alert-link">RegExr</a> pod adresem <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### Jakie są Twoje limity wychodzącej poczty SMTP {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+Ograniczamy użytkowników i domeny do 300 wychodzących wiadomości SMTP na 1 dzień. To średnio ponad 9000 e-maili w miesiącu kalendarzowym. Jeśli potrzebujesz przekroczyć tę ilość lub masz stale duże wiadomości, prosimy o [kontakt z nami](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### Czy potrzebuję zgody, aby włączyć SMTP {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Tak, prosimy pamiętać, że aby utrzymać reputację IP i zapewnić dostarczalność, Forward Email ma ręczny proces weryfikacji na poziomie domeny dla zatwierdzenia wychodzącego SMTP. Napisz na <support@forwardemail.net> lub otwórz [zgłoszenie pomocy](https://forwardemail.net/help) w celu uzyskania zgody. Zazwyczaj zajmuje to mniej niż 24 godziny, a większość zgłoszeń jest rozpatrywana w ciągu 1-2 godzin. W niedalekiej przyszłości planujemy uczynić ten proces natychmiastowym z dodatkowymi kontrolami antyspamowymi i alertami. Proces ten zapewnia, że Twoje e-maile trafiają do skrzynki odbiorczej i nie są oznaczane jako spam.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### Jakie są ustawienia konfiguracyjne Twojego serwera SMTP {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Nasz serwer to `smtp.forwardemail.net` i jest również monitorowany na naszej <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stronie statusu</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+Obsługuje zarówno IPv4, jak i IPv6 i jest dostępny na portach `465` i `2465` dla SSL/TLS (zalecane) oraz `587`, `2587`, `2525` i `25` dla TLS (STARTTLS).
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**Od października 2025** obsługujemy teraz **starsze połączenia TLS 1.0** na portach `2455` (SSL/TLS) i `2555` (STARTTLS) dla starszych urządzeń takich jak drukarki, skanery, kamery i starsze klienty poczty, które nie obsługują nowoczesnych wersji TLS. Te porty są alternatywą dla Gmaila, Yahoo, Outlooka i innych dostawców, którzy zaprzestali wsparcia dla starszych protokołów TLS.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **Wsparcie dla starszego TLS 1.0 (porty 2455 i 2555)**: Te porty używają przestarzałego protokołu TLS 1.0, który ma znane luki bezpieczeństwa (BEAST, POODLE). Używaj tych portów tylko, jeśli Twoje urządzenie absolutnie nie może obsłużyć TLS 1.2 lub wyższego. Zalecamy zdecydowanie aktualizację oprogramowania urządzenia lub przejście na nowoczesne klienty poczty, gdy to możliwe. Te porty są przeznaczone wyłącznie do kompatybilności ze starszym sprzętem (stare drukarki, skanery, kamery, urządzenia IoT).
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+|                                     Protokół                                     | Nazwa hosta             |            Porty            |        IPv4        |        IPv6        | Uwagi                                  |
 | :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+|                              `SSL/TLS` **Preferowany**                           | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | Nowoczesny TLS 1.2+ (zalecany)         |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Obsługiwany (preferuj port SSL/TLS `465`) |
+|                             `SSL/TLS` **Tylko starszy**                          | `smtp.forwardemail.net` |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 tylko dla starych urządzeń |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Tylko starszy** | `smtp.forwardemail.net` |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 tylko dla starych urządzeń |
+| Login    | Przykład                  | Opis                                                                                                                                                                                     |
+| -------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`        | Adres e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a>.           |
+| Password | `************************` | Alias                                                                                                                                                                                    |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+Aby wysyłać wiadomości e-mail za pomocą SMTP, **użytkownik SMTP** musi być adresem e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> – a **hasło SMTP** musi być hasłem wygenerowanym specyficznie dla aliasu.
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+Proszę zapoznać się z [Czy obsługujecie wysyłanie e-maili przez SMTP](#do-you-support-sending-email-with-smtp) aby uzyskać instrukcje krok po kroku.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+### Jakie są ustawienia konfiguracyjne serwera IMAP {#what-are-your-imap-server-configuration-settings}
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+Nasz serwer to `imap.forwardemail.net` i jest również monitorowany na naszej <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stronie statusu</a>.
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Obsługuje zarówno IPv4, jak i IPv6 i jest dostępny na portach `993` oraz `2993` dla SSL/TLS.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
-
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         Protokół         | Nazwa hosta             |     Porty     |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| `SSL/TLS` **Preferowany** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Login    | Przykład                  | Opis                                                                                                                                                                                     |
+| -------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`        | Adres e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a>.           |
+| Password | `************************` | Hasło wygenerowane specyficznie dla aliasu.                                                                                                                                               |
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+Aby połączyć się przez IMAP, **użytkownik IMAP** musi być adresem e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> – a **hasło IMAP** musi być hasłem wygenerowanym specyficznie dla aliasu.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+Proszę zapoznać się z [Czy obsługujecie odbieranie e-maili przez IMAP](#do-you-support-receiving-email-with-imap) aby uzyskać instrukcje krok po kroku.
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+### Jakie są ustawienia konfiguracyjne serwera POP3 {#what-are-your-pop3-server-configuration-settings}
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Nasz serwer to `pop3.forwardemail.net` i jest również monitorowany na naszej <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stronie statusu</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+Obsługuje zarówno IPv4, jak i IPv6 i jest dostępny na portach `995` oraz `2995` dla SSL/TLS.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         Protokół         | Nazwa hosta             |     Porty     |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| `SSL/TLS` **Preferowany** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| Login    | Przykład                  | Opis                                                                                                                                                                                     |
+| -------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`        | Adres e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje Konto <i class="fa fa-angle-right"></i> Domeny</a>.           |
+| Password | `************************`| Wygenerowane hasło specyficzne dla aliasu.                                                                                                                                               |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Aby połączyć się przez POP3, **użytkownik POP3** musi być adresem e-mail aliasu, który istnieje dla domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje Konto <i class="fa fa-angle-right"></i> Domeny</a> – a **hasło IMAP** musi być wygenerowanym hasłem specyficznym dla aliasu.
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+Proszę zapoznać się z [Czy obsługujecie POP3](#do-you-support-pop3) aby uzyskać instrukcje krok po kroku.
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+### Jak skonfigurować autodiscovery poczty dla mojej domeny {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-## Security {#security}
+Autodiscovery poczty pozwala klientom pocztowym takim jak **Thunderbird**, **Apple Mail**, **Microsoft Outlook** oraz urządzeniom mobilnym automatycznie wykrywać poprawne ustawienia serwerów IMAP, SMTP, POP3, CalDAV i CardDAV, gdy użytkownik dodaje swoje konto e-mail. Jest to zdefiniowane przez [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (poczta) oraz [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) i wykorzystuje rekordy DNS SRV.
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+Forward Email publikuje rekordy autodiscovery na `forwardemail.net`. Możesz dodać rekordy SRV bezpośrednio do swojej domeny lub użyć prostszego podejścia z CNAME.
+
+#### Opcja A: rekordy CNAME (najprostsze) {#option-a-cname-records-simplest}
+
+Dodaj te dwa rekordy CNAME do DNS swojej domeny. To deleguje autodiscovery na serwery Forward Email:
+
+|  Typ  | Nazwa/Host    | Cel/Wartość                   |
+| :---: | ------------- | ----------------------------- |
+| CNAME | `autoconfig`  | `autoconfig.forwardemail.net` |
+| CNAME | `autodiscover`| `autodiscover.forwardemail.net` |
+
+Rekord `autoconfig` jest używany przez **Thunderbird** i innych klientów opartych na Mozilli. Rekord `autodiscover` jest używany przez **Microsoft Outlook**.
+
+#### Opcja B: rekordy SRV (bezpośrednie) {#option-b-srv-records-direct}
+
+Jeśli wolisz dodać rekordy bezpośrednio (lub twój dostawca DNS nie obsługuje CNAME na subdomenach), dodaj te rekordy SRV do swojej domeny:
+
+| Typ | Nazwa/Host           | Priorytet | Waga | Port | Cel/Wartość               | Przeznaczenie                             |
+| :--:| -------------------- | :-------: | :---:| :--: | ------------------------- | ----------------------------------------- |
+| SRV | `_imaps._tcp`        |     0     |  1   |  993 | `imap.forwardemail.net`   | IMAP przez SSL/TLS (preferowane)          |
+| SRV | `_imap._tcp`         |     0     |  0   |  0   | `.`                       | IMAP w postaci zwykłego tekstu wyłączony  |
+| SRV | `_submissions._tcp`  |     0     |  1   |  465 | `smtp.forwardemail.net`   | Wysyłanie SMTP (SSL/TLS, zalecane)         |
+| SRV | `_submission._tcp`   |     5     |  1   |  587 | `smtp.forwardemail.net`   | Wysyłanie SMTP (STARTTLS)                  |
+| SRV | `_pop3s._tcp`        |    10     |  1   |  995 | `pop3.forwardemail.net`   | POP3 przez SSL/TLS                         |
+| SRV | `_pop3._tcp`         |     0     |  0   |  0   | `.`                       | POP3 w postaci zwykłego tekstu wyłączony  |
+| SRV | `_caldavs._tcp`      |     0     |  1   |  443 | `caldav.forwardemail.net` | CalDAV przez TLS (kalendarze)              |
+| SRV | `_caldav._tcp`       |     0     |  0   |  0   | `.`                       | CalDAV w postaci zwykłego tekstu wyłączony|
+| SRV | `_carddavs._tcp`     |     0     |  1   |  443 | `carddav.forwardemail.net`| CardDAV przez TLS (kontakty)                |
+| SRV | `_carddav._tcp`      |     0     |  0   |  0   | `.`                       | CardDAV w postaci zwykłego tekstu wyłączony|
+> \[!NOTE]
+> IMAP ma niższą wartość priorytetu (0) niż POP3 (10), co wskazuje klientom poczty, aby preferowali IMAP zamiast POP3, gdy oba są dostępne. Rekordy z celem `.` (pojedyncza kropka) oznaczają, że wersje tekstowe (niezaszyfrowane) tych protokołów są celowo wyłączone zgodnie z [RFC 6186 Sekcja 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4). Rekordy SRV CalDAV i CardDAV są zgodne z [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) dla automatycznego wykrywania kalendarza i kontaktów.
+
+#### Które klienty poczty obsługują automatyczne wykrywanie? {#which-email-clients-support-autodiscovery}
+
+| Klient             | Poczta                                           | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | rekordy `autoconfig` CNAME lub SRV                | rekordy `autoconfig` XML lub SRV (RFC 6764) |
+| Apple Mail (macOS) | rekordy SRV (RFC 6186)                           | rekordy SRV (RFC 6764)                     |
+| Apple Mail (iOS)   | rekordy SRV (RFC 6186)                           | rekordy SRV (RFC 6764)                     |
+| Microsoft Outlook  | rekordy `autodiscover` CNAME lub `_autodiscover._tcp` SRV | Nieobsługiwane                            |
+| GNOME (Evolution)  | rekordy SRV (RFC 6186)                           | rekordy SRV (RFC 6764)                     |
+| KDE (KMail)        | rekordy SRV (RFC 6186)                           | rekordy SRV (RFC 6764)                     |
+| eM Client          | `autoconfig` lub `autodiscover`                   | rekordy SRV (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Dla najlepszej kompatybilności ze wszystkimi klientami zalecamy użycie **Opcji A** (rekordy CNAME) w połączeniu z rekordami SRV z **Opcji B**. Podejście CNAME samo w sobie obejmuje większość klientów poczty. Rekordy SRV CalDAV/CardDAV zapewniają, że klienci kalendarza i kontaktów również mogą automatycznie wykrywać ustawienia serwera.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## Bezpieczeństwo {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### Zaawansowane techniki wzmacniania serwera {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
+> \[!TIP]
+> Dowiedz się więcej o naszej infrastrukturze bezpieczeństwa na [naszej stronie Bezpieczeństwo](/security).
+
+Forward Email wdraża liczne techniki wzmacniania serwera, aby zapewnić bezpieczeństwo naszej infrastruktury i Twoich danych:
+
+1. **Bezpieczeństwo sieci**:
+   * zapora IP tables z rygorystycznymi regułami
+   * Fail2ban do ochrony przed atakami brute force
+   * regularne audyty bezpieczeństwa i testy penetracyjne
+   * dostęp administracyjny tylko przez VPN
+
+2. **Wzmacnianie systemu**:
+   * minimalna instalacja pakietów
+   * regularne aktualizacje bezpieczeństwa
+   * SELinux w trybie wymuszającym
+   * wyłączony dostęp root przez SSH
+   * tylko uwierzytelnianie kluczem
+
+3. **Bezpieczeństwo aplikacji**:
+   * nagłówki Content Security Policy (CSP)
    * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+   * nagłówki ochrony przed XSS
+   * nagłówki opcji ramki i polityki referera
+   * regularne audyty zależności
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+4. **Ochrona danych**:
+   * pełne szyfrowanie dysku za pomocą LUKS
+   * bezpieczne zarządzanie kluczami
+   * regularne kopie zapasowe z szyfrowaniem
+   * praktyki minimalizacji danych
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+5. **Monitorowanie i reagowanie**:
+   * wykrywanie włamań w czasie rzeczywistym
+   * automatyczne skanowanie bezpieczeństwa
+   * scentralizowane logowanie i analiza
+   * procedury reagowania na incydenty
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Nasze praktyki bezpieczeństwa są stale aktualizowane, aby przeciwdziałać nowym zagrożeniom i podatnościom.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Dla maksymalnego bezpieczeństwa zalecamy korzystanie z naszej usługi z szyfrowaniem end-to-end za pomocą OpenPGP.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### Czy posiadacie certyfikaty SOC 2 lub ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email działa na infrastrukturze dostarczanej przez certyfikowanych podwykonawców, aby zapewnić zgodność ze standardami branżowymi.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email nie posiada bezpośrednio certyfikatów SOC 2 Type II ani ISO 27001. Jednak usługa działa na infrastrukturze dostarczanej przez certyfikowanych podwykonawców:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: certyfikaty SOC 2 Type II i SOC 3 Type II (audytowane przez Schellman & Company LLC), certyfikat ISO 27001 w wielu centrach danych. Szczegóły: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: certyfikaty SOC 2+ (HIPAA), ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Szczegóły: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: zgodność z SOC 2 (skontaktuj się bezpośrednio z DataPacket, aby uzyskać certyfikat), dostawca infrastruktury klasy korporacyjnej (lokalizacja Denver). Szczegóły: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Email stosuje najlepsze praktyki branżowe dotyczące audytów bezpieczeństwa i regularnie współpracuje z niezależnymi badaczami bezpieczeństwa. Źródło: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### Czy używacie szyfrowania TLS do przekazywania e-maili {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+Tak. Forward Email rygorystycznie wymusza TLS 1.2+ dla wszystkich połączeń (HTTPS, SMTP, IMAP, POP3) oraz implementuje MTA-STS dla wzmocnionego wsparcia TLS. Implementacja obejmuje:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* Wymuszanie TLS 1.2+ dla wszystkich połączeń e-mail
+* Wymianę kluczy ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) dla idealnej tajności przekazu
+* Nowoczesne zestawy szyfrów z regularnymi aktualizacjami bezpieczeństwa
+* Wsparcie HTTP/2 dla lepszej wydajności i bezpieczeństwa
+* HSTS (HTTP Strict Transport Security) z preładowaniem w głównych przeglądarkach
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** dla ścisłego wymuszania TLS
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+Źródło: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**Implementacja MTA-STS**: Forward Email wdraża ścisłe wymuszanie MTA-STS w kodzie. Gdy występują błędy TLS i MTA-STS jest wymuszane, system zwraca kody statusu SMTP 421, aby zapewnić ponowne próby wysłania wiadomości później, zamiast dostarczać je w sposób niebezpieczny. Szczegóły implementacji:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* Wykrywanie błędów TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* Wymuszanie MTA-STS w helperze send-email: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+Weryfikacja zewnętrzna: <https://www.hardenize.com/report/forwardemail.net/1750312779> pokazuje oceny "Good" dla wszystkich środków bezpieczeństwa TLS i transportu.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### Czy zachowujecie nagłówki uwierzytelniania e-maili {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+Tak. Forward Email kompleksowo implementuje i zachowuje nagłówki uwierzytelniania e-maili:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (Sender Policy Framework)**: poprawnie zaimplementowany i zachowany
+* **DKIM (DomainKeys Identified Mail)**: pełne wsparcie z właściwym zarządzaniem kluczami
+* **DMARC**: egzekwowanie polityki dla wiadomości, które nie przejdą walidacji SPF lub DKIM
+* **ARC**: choć nie jest to szczegółowo opisane, doskonałe wyniki zgodności usługi sugerują kompleksowe zarządzanie nagłówkami uwierzytelniania
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+Źródło: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Weryfikacja: test Internet.nl Mail Test pokazuje wynik 100/100 specjalnie dla implementacji "SPF, DKIM i DMARC". Ocena Hardenize potwierdza oceny "Good" dla SPF i DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Czy zachowujecie oryginalne nagłówki e-maili i zapobiegacie podszywaniu się {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email wdraża zaawansowaną ochronę anty-podszywczą, aby zapobiegać nadużyciom e-mailowym.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email zachowuje oryginalne nagłówki e-maili, jednocześnie implementując kompleksową ochronę anty-podszywczą poprzez kod bazowy MX:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **Zachowanie nagłówków**: oryginalne nagłówki uwierzytelniania są utrzymywane podczas przekazywania
+* **Ochrona anty-podszywcza**: egzekwowanie polityki DMARC zapobiega podszywaniu się pod nagłówki przez odrzucanie wiadomości, które nie przejdą walidacji SPF lub DKIM
+* **Zapobieganie wstrzykiwaniu nagłówków**: walidacja i oczyszczanie danych wejściowych za pomocą biblioteki striptags
+* **Zaawansowana ochrona**: zaawansowane wykrywanie phishingu z detekcją podszywania się, zapobieganiem podszywaniu i systemami powiadamiania użytkownika
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**Szczegóły implementacji MX**: Główna logika przetwarzania e-maili jest obsługiwana przez kod serwera MX, konkretnie:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Główny handler danych MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Filtrowanie dowolnych e-maili (anty-podszywanie): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+Helper `isArbitrary` implementuje zaawansowane reguły anty-podszywcze, w tym wykrywanie podszywania się pod domenę, blokowane frazy oraz różne wzorce phishingowe.
+### Jak chronicie się przed spamem i nadużyciami {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email wdraża kompleksową wielowarstwową ochronę:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **Ograniczanie szybkości**: Stosowane do prób uwierzytelniania, punktów końcowych API oraz połączeń SMTP
+* **Izolacja zasobów**: Między użytkownikami, aby zapobiec wpływowi użytkowników o dużym wolumenie
+* **Ochrona przed DDoS**: Wielowarstwowa ochrona dzięki systemowi Shield firmy DataPacket oraz Cloudflare
+* **Automatyczne skalowanie**: Dynamiczne dostosowanie zasobów w zależności od zapotrzebowania
+* **Zapobieganie nadużyciom**: Sprawdzanie nadużyć specyficzne dla użytkownika oraz blokowanie oparte na hashach dla złośliwych treści
+* **Uwierzytelnianie e-maili**: Protokoły SPF, DKIM, DMARC z zaawansowanym wykrywaniem phishingu
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+Źródła:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (szczegóły ochrony DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### Czy przechowujecie zawartość e-maili na dysku {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email używa architektury zero-knowledge, która zapobiega zapisywaniu zawartości e-maili na dysku.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **Architektura zero-knowledge**: Indywidualnie szyfrowane skrzynki SQLite oznaczają, że Forward Email nie ma dostępu do zawartości e-maili
+* **Przetwarzanie w pamięci**: Przetwarzanie e-maili odbywa się całkowicie w pamięci, bez zapisu na dysku
+* **Brak logowania zawartości**: „Nie logujemy ani nie przechowujemy zawartości e-maili ani metadanych na dysku”
+* **Szyfrowanie w piaskownicy**: Klucze szyfrowania nigdy nie są przechowywane na dysku w postaci jawnej
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**Dowód w kodzie MX**: Serwer MX przetwarza e-maile całkowicie w pamięci, bez zapisu zawartości na dysku. Główny handler przetwarzania e-maili demonstruje to podejście w pamięci: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sources:
+Źródła:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Streszczenie)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Szczegóły zero-knowledge)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Szyfrowanie w piaskownicy)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+### Czy zawartość e-maili może zostać ujawniona podczas awarii systemu {#can-email-content-be-exposed-during-system-crashes}
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+Nie. Forward Email wdraża kompleksowe zabezpieczenia przed ujawnieniem danych w wyniku awarii:
 
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
+* **Wyłączone core dumpy**: Zapobiega ujawnieniu pamięci podczas awarii
+* **Wyłączona pamięć swap**: Całkowicie wyłączona, aby zapobiec wydobyciu wrażliwych danych z plików swap
+* **Architektura w pamięci**: Zawartość e-maili istnieje tylko w pamięci ulotnej podczas przetwarzania
+* **Ochrona kluczy szyfrowania**: Klucze nigdy nie są przechowywane na dysku w postaci jawnej
+* **Bezpieczeństwo fizyczne**: Dyski szyfrowane LUKS v2 zapobiegają fizycznemu dostępowi do danych
+* **Wyłączone USB**: Zapobiega nieautoryzowanemu wydobyciu danych
 
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+**Obsługa błędów systemowych**: Forward Email używa funkcji pomocniczych `isCodeBug` i `isTimeoutError`, aby zapewnić, że w przypadku problemów z łącznością z bazą danych, problemów z DNS, siecią/blokadą lub problemów z łącznością upstream system zwraca kody statusu SMTP 421, co gwarantuje, że e-maile zostaną ponownie wysłane później, zamiast zostać utracone lub ujawnione.
 
-Implementation details:
+Szczegóły implementacji:
 
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Klasyfikacja błędów: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Obsługa błędów timeout w przetwarzaniu MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Źródło: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+### Kto ma dostęp do waszej infrastruktury e-mailowej {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+Forward Email wdraża kompleksowe kontrole dostępu dla minimalnego 2-3 osobowego zespołu inżynierów z rygorystycznymi wymaganiami 2FA:
 
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+* **Kontrola dostępu oparta na rolach**: Dla kont zespołu z uprawnieniami opartymi na zasobach
+* **Zasada najmniejszych uprawnień**: Stosowana we wszystkich systemach
+* **Segregacja obowiązków**: Między rolami operacyjnymi
+* **Zarządzanie użytkownikami**: Oddzielni użytkownicy deploy i devops z odrębnymi uprawnieniami
+* **Wyłączone logowanie root**: Wymusza dostęp przez odpowiednio uwierzytelnione konta
+* **Rygorystyczne 2FA**: Brak 2FA opartego na SMS z powodu ryzyka ataków MiTM – tylko aplikacje lub tokeny sprzętowe
+* **Kompleksowe logowanie audytu**: Z redakcją danych wrażliwych
+* **Automatyczne wykrywanie anomalii**: Dla nietypowych wzorców dostępu
+* **Regularne przeglądy bezpieczeństwa**: Logów dostępu
+* **Zapobieganie atakom typu Evil Maid**: Wyłączone USB i inne środki bezpieczeństwa fizycznego
+Źródła:
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Kontrole autoryzacji)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Bezpieczeństwo sieci)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Zapobieganie atakom typu evil maid)
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### Jakich dostawców infrastruktury używacie {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email korzysta z wielu podwykonawców infrastruktury posiadających kompleksowe certyfikaty zgodności.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+Pełne szczegóły dostępne są na naszej stronie zgodności z RODO: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**Główni podwykonawcy infrastruktury:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Dostawca        | Certyfikat ram prywatności danych | Strona zgodności z RODO                                                                |
+| --------------- | --------------------------------- | -------------------------------------------------------------------------------------- |
+| **Cloudflare**  | ✅ Tak                            | <https://www.cloudflare.com/trust-hub/gdpr/>                                           |
+| **DataPacket**  | ❌ Nie                            | <https://www.datapacket.com/privacy-policy>                                            |
+| **DigitalOcean**| ❌ Nie                            | <https://www.digitalocean.com/legal/gdpr>                                              |
+| **GitHub**      | ✅ Tak                            | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**       | ❌ Nie                            | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                        |
 
-**Detailed Certifications:**
+**Szczegółowe certyfikaty:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II (audytowane przez Schellman & Company LLC)
+* Certyfikat ISO 27001 w wielu centrach danych
+* Zgodność z PCI-DSS
+* Certyfikat CSA STAR Poziom 1
+* Certyfikat APEC CBPR PRP
+* Szczegóły: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
+* Certyfikat SOC 2+ (HIPAA)
+* Zgodność z PCI Merchant
+* Certyfikat CSA STAR Poziom 1
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* Szczegóły: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* Zgodność z SOC 2 (kontakt bezpośredni z DataPacket w celu uzyskania certyfikatu)
+* Infrastruktura klasy enterprise (lokalizacja Denver)
+* Ochrona DDoS przez stos cyberbezpieczeństwa Shield
+* Całodobowe wsparcie techniczne
+* Globalna sieć obejmująca 58 centrów danych
+* Szczegóły: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* Certyfikat Data Privacy Framework (EU-U.S., Swiss-U.S. oraz rozszerzenie UK)
+* Hosting kodu źródłowego, CI/CD oraz zarządzanie projektami
+* Dostępna Umowa o Ochronie Danych GitHub
+* Szczegóły: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**Procesory płatności:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Certyfikat Data Privacy Framework - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Brak certyfikatu DPF - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Czy oferujecie Umowę o Przetwarzaniu Danych (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+Tak, Forward Email oferuje kompleksową Umowę o Przetwarzaniu Danych (DPA), którą można podpisać wraz z naszą umową korporacyjną. Kopia naszej DPA jest dostępna pod adresem: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**Szczegóły DPA:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* Obejmuje zgodność z RODO oraz ramy EU-US/Swiss-US Privacy Shield
+* Automatycznie akceptowana przy akceptacji naszych Warunków Usługi
+* Nie wymaga osobnego podpisu dla standardowej DPA
+* Możliwość indywidualnych ustaleń DPA w ramach Licencji Enterprise
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**Ramowy system zgodności z RODO:**
+Nasza DPA szczegółowo opisuje zgodność z RODO oraz międzynarodowe wymagania dotyczące transferu danych. Pełne informacje dostępne są pod adresem: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+Dla klientów korporacyjnych wymagających indywidualnych warunków DPA lub specyficznych ustaleń umownych, można to załatwić w ramach naszego programu **Enterprise License (250 USD/miesiąc)**.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### Jak radzicie sobie z powiadomieniami o naruszeniach danych {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Architektura zero-knowledge Forward Email znacząco ogranicza skutki naruszeń.
+* **Ograniczona ekspozycja danych**: Brak dostępu do zaszyfrowanej zawartości e-maili dzięki architekturze zero-knowledge
+* **Minimalne zbieranie danych**: Tylko podstawowe informacje o subskrybentach oraz ograniczone logi IP dla bezpieczeństwa
+* **Ramowe umowy z podwykonawcami**: DigitalOcean, GitHub i Vultr utrzymują procedury reagowania na incydenty zgodne z RODO
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**Informacje o przedstawicielu RODO:**
+Forward Email wyznaczył przedstawicieli RODO zgodnie z artykułem 27:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
+**Przedstawiciel UE:**
 Osano International Compliance Services Limited
 ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**UK Representative:**
+**Przedstawiciel Wielkiej Brytanii:**
 Osano UK Compliance LTD
 ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+Dla klientów korporacyjnych wymagających określonych SLA dotyczących powiadomień o naruszeniach, kwestie te powinny być omówione w ramach umowy o **Licencję Enterprise**.
 
-Sources:
+Źródła:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### Czy oferujecie środowisko testowe {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+Dokumentacja techniczna Forward Email nie opisuje wyraźnie dedykowanego trybu sandbox. Potencjalne podejścia do testowania obejmują:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **Opcja samodzielnego hostingu**: Kompleksowe możliwości samodzielnego hostingu do tworzenia środowisk testowych
+* **Interfejs API**: Możliwość programowego testowania konfiguracji
+* **Open Source**: 100% otwarty kod pozwala klientom na analizę logiki przekierowań
+* **Wiele domen**: Obsługa wielu domen może umożliwić tworzenie domen testowych
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+Dla klientów korporacyjnych wymagających formalnych możliwości sandbox, kwestie te powinny być omówione w ramach umowy o **Licencję Enterprise**.
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+Źródło: <https://github.com/forwardemail/forwardemail.net> (Szczegóły środowiska deweloperskiego)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### Czy zapewniacie narzędzia do monitoringu i alertów {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+Forward Email oferuje monitoring w czasie rzeczywistym z pewnymi ograniczeniami:
 
-**Available:**
+**Dostępne:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **Monitoring dostarczania w czasie rzeczywistym**: Publicznie widoczne metryki wydajności dla głównych dostawców e-maili
+* **Automatyczne alerty**: Zespół inżynierów powiadamiany, gdy czas dostarczenia przekracza 10 sekund
+* **Przejrzysty monitoring**: 100% otwarte systemy monitoringu
+* **Monitoring infrastruktury**: Automatyczne wykrywanie anomalii i kompleksowe logowanie audytowe
 
-**Limitations:**
+**Ograniczenia:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* Brak wyraźnej dokumentacji dotyczącej webhooków dla klientów lub powiadomień o statusie dostarczenia przez API
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+Dla klientów korporacyjnych wymagających szczegółowych webhooków statusu dostarczenia lub niestandardowych integracji monitoringu, te możliwości mogą być dostępne w ramach umów o **Licencję Enterprise**.
 
-Sources:
+Źródła:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (Wyświetlanie monitoringu w czasie rzeczywistym)
+* <https://github.com/forwardemail/forwardemail.net> (Implementacja monitoringu)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### Jak zapewniacie wysoką dostępność {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email wdraża kompleksową redundancję w wielu dostawcach infrastruktury.
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **Rozproszona infrastruktura**: Wielu dostawców (DigitalOcean, Vultr, DataPacket) w różnych regionach geograficznych
+* **Geograficzne równoważenie obciążenia**: Równoważenie obciążenia oparte na lokalizacji geograficznej Cloudflare z automatycznym przełączaniem awaryjnym
+* **Automatyczne skalowanie**: Dynamiczne dostosowanie zasobów w zależności od zapotrzebowania
+* **Wielowarstwowa ochrona DDoS**: Poprzez system Shield DataPacket oraz Cloudflare
+* **Redundancja serwerów**: Wiele serwerów na region z automatycznym przełączaniem awaryjnym
+* **Replikacja baz danych**: Synchronizacja danych w czasie rzeczywistym w wielu lokalizacjach
+* **Monitoring i alerty**: Całodobowy monitoring z automatycznym reagowaniem na incydenty
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**Zobowiązanie do dostępności**: Ponad 99,9% dostępności usługi z przejrzystym monitoringiem dostępnym na <https://forwardemail.net>
 
-Sources:
+Źródła:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Czy jesteście zgodni z Sekcją 889 ustawy National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email jest w pełni zgodny z Sekcją 889 dzięki starannemu doborowi partnerów infrastrukturalnych.
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+Tak, Forward Email jest **zgodny z Sekcją 889**. Sekcja 889 ustawy National Defense Authorization Act (NDAA) zabrania agencjom rządowym korzystania lub zawierania umów z podmiotami używającymi sprzętu telekomunikacyjnego i do nadzoru wideo od określonych firm (Huawei, ZTE, Hikvision, Dahua i Hytera).
+**Jak Forward Email spełnia wymogi Sekcji 889:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+Forward Email opiera się wyłącznie na dwóch kluczowych dostawcach infrastruktury, z których żaden nie używa sprzętu zabronionego przez Sekcję 889:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: Nasz główny partner w zakresie usług sieciowych i bezpieczeństwa poczty elektronicznej
+2. **DataPacket**: Nasz główny dostawca infrastruktury serwerowej (wyłącznie z użyciem sprzętu Arista Networks i Cisco)
+3. **Dostawcy zapasowi**: Nasi dostawcy zapasowi Digital Ocean i Vultr dodatkowo potwierdzili na piśmie zgodność z Sekcją 889.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**Zobowiązanie Cloudflare**: Cloudflare wyraźnie stwierdza w swoim Kodeksie Postępowania dla Stron Trzecich, że nie używa sprzętu telekomunikacyjnego, produktów do nadzoru wideo ani usług od żadnych podmiotów zabronionych przez Sekcję 889.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**Przypadek użycia rządowego**: Nasza zgodność z Sekcją 889 została potwierdzona, gdy **US Naval Academy** wybrała Forward Email do swoich potrzeb w zakresie bezpiecznego przekazywania poczty elektronicznej, wymagając dokumentacji naszych federalnych standardów zgodności.
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+Aby poznać pełne szczegóły dotyczące naszego rządowego systemu zgodności, w tym szerszych przepisów federalnych, przeczytaj nasze obszerne studium przypadku: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## Szczegóły systemowe i techniczne {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### Czy przechowujecie e-maile i ich zawartość {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nie, nie zapisujemy na dysku ani nie przechowujemy logów – z [wyjątkiem błędów](#do-you-store-error-logs) oraz [wychodzącego SMTP](#do-you-support-sending-email-with-smtp) (zobacz naszą [Politykę Prywatności](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Wszystko odbywa się w pamięci operacyjnej, a [nasz kod źródłowy jest dostępny na GitHub](https://github.com/forwardemail).
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### Jak działa wasz system przekazywania e-maili {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+Poczta elektroniczna opiera się na [protokole SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Ten protokół składa się z poleceń wysyłanych do serwera (najczęściej działającego na porcie 25). Najpierw następuje połączenie, następnie nadawca wskazuje, od kogo jest wiadomość ("MAIL FROM"), potem dokąd jest wysyłana ("RCPT TO"), a na końcu nagłówki i treść samego e-maila ("DATA"). Przebieg naszego systemu przekazywania e-maili opisano poniżej względem każdego polecenia protokołu SMTP:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Połączenie początkowe (bez nazwy polecenia, np. `telnet example.com 25`) – To jest połączenie początkowe. Sprawdzamy nadawców, którzy nie znajdują się na naszej [liście dozwolonych](#do-you-have-an-allowlist) względem naszej [listy zablokowanych](#do-you-have-a-denylist). Na koniec, jeśli nadawca nie jest na liście dozwolonych, sprawdzamy, czy nie został [szarylistowany](#do-you-have-a-greylist).
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` – To polecenie służy do powitania i identyfikacji FQDN nadawcy, adresu IP lub nazwy obsługi poczty. Ta wartość może być sfałszowana, więc nie polegamy na tych danych, zamiast tego używamy odwrotnego wyszukiwania nazwy hosta dla adresu IP połączenia.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` – To polecenie wskazuje adres nadawcy koperty e-maila. Jeśli podana jest wartość, musi to być poprawny adres e-mail zgodny z RFC 5322. Puste wartości są dozwolone. Tutaj [sprawdzamy backscatter](#how-do-you-protect-against-backscatter) oraz porównujemy MAIL FROM z naszą [listą zablokowanych](#do-you-have-a-denylist). Na koniec sprawdzamy nadawców spoza listy dozwolonych pod kątem limitów szybkości (zobacz sekcję o [limitowaniu szybkości](#do-you-have-rate-limiting) i [liście dozwolonych](#do-you-have-an-allowlist) dla więcej informacji).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` – To polecenie wskazuje odbiorcę(-ów) e-maila. Muszą to być poprawne adresy e-mail zgodne z RFC 5322. Zezwalamy na maksymalnie 50 odbiorców koperty na wiadomość (co różni się od nagłówka "Do" w e-mailu). Sprawdzamy również poprawność adresu zgodnego z [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") w celu ochrony przed podszywaniem się przy użyciu naszej domeny SRS.
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` – To jest kluczowa część naszej usługi, która przetwarza e-mail. Zobacz sekcję [Jak przetwarzacie e-mail do przekazywania](#how-do-you-process-an-email-for-forwarding) poniżej, aby uzyskać więcej informacji.
+### Jak przetwarzasz e-mail do przekazania dalej {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+Ta sekcja opisuje nasz proces związany z poleceniem protokołu SMTP `DATA` w sekcji [Jak działa Twój system przekazywania e-maili](#how-does-your-email-forwarding-system-work) powyżej – to sposób, w jaki przetwarzamy nagłówki e-maila, treść, zabezpieczenia, ustalamy, gdzie musi zostać dostarczony, oraz jak obsługujemy połączenia.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. Jeśli wiadomość przekracza maksymalny rozmiar 50 MB, zostaje odrzucona z kodem błędu 552.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. Jeśli wiadomość nie zawierała nagłówka "From" lub jeśli jakakolwiek z wartości w nagłówku "From" nie była prawidłowym adresem e-mail zgodnym z RFC 5322, zostaje odrzucona z kodem błędu 550.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. Jeśli wiadomość miała więcej niż 25 nagłówków "Received", uznano, że utknęła w pętli przekierowań i zostaje odrzucona z kodem błędu 550.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. Korzystając z odcisku palca e-maila (zobacz sekcję o [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), sprawdzimy, czy próbowano ponowić wysłanie wiadomości przez ponad 5 dni (co odpowiada [domyślnemu zachowaniu postfixa](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), i jeśli tak, zostanie odrzucona z kodem błędu 550.
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. Przechowujemy w pamięci wyniki skanowania e-maila za pomocą [Spam Scanner](https://spamscanner.net).
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Jeśli pojawiły się jakiekolwiek arbitralne wyniki ze Spam Scanner, wiadomość zostaje odrzucona z kodem błędu 554. Arbitralne wyniki obejmują w chwili pisania test GTUBE. Zobacz <https://spamassassin.apache.org/gtube/> dla większej ilości informacji.
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. Dodajemy do wiadomości następujące nagłówki w celach debugowania i zapobiegania nadużyciom:
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` – dodajemy ten standardowy nagłówek Received z adresem IP i hostem źródłowym, typem transmisji, informacjami o połączeniu TLS, datą/czasem oraz odbiorcą.
+   * `X-Original-To` – oryginalny odbiorca wiadomości:
+     * Przydatne do ustalenia, gdzie e-mail został pierwotnie dostarczony (oprócz nagłówka "Received").
+     * Dodawane indywidualnie dla każdego odbiorcy w czasie IMAP i/lub maskowanego przekazywania (w celu ochrony prywatności).
+   * `X-Forward-Email-Website` – zawiera link do naszej strony <https://forwardemail.net>
+   * `X-Forward-Email-Version` – aktualna wersja [SemVer](https://semver.org/) z `package.json` naszej bazy kodu.
+   * `X-Forward-Email-Session-ID` – wartość ID sesji używana do celów debugowania (dotyczy tylko środowisk nieprodukcyjnych).
+   * `X-Forward-Email-Sender` – lista oddzielona przecinkami zawierająca oryginalny adres MAIL FROM koperty (jeśli nie był pusty), odwrócony PTR klienta FQDN (jeśli istnieje) oraz adres IP nadawcy.
+   * `X-Forward-Email-ID` – dotyczy tylko wychodzącego SMTP i koreluje z ID e-maila przechowywanym w Moje Konto → E-maile
+   * `X-Report-Abuse` – z wartością `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` – z wartością `abuse@forwardemail.net`.
+   * `X-Complaints-To` – z wartością `abuse@forwardemail.net`.
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. Następnie sprawdzamy wiadomość pod kątem [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) oraz [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * Jeśli wiadomość nie przeszła DMARC, a domena miała politykę odrzucenia (np. `p=reject` [było w polityce DMARC](https://wikipedia.org/wiki/DMARC)), zostaje odrzucona z kodem błędu 550. Zazwyczaj politykę DMARC dla domeny można znaleźć w rekordzie <strong class="notranslate">TXT</strong> subdomeny `_dmarc` (np. `dig _dmarc.example.com txt`).
+   * Jeśli wiadomość nie przeszła SPF, a domena miała politykę twardego odrzucenia (np. `-all` było w polityce SPF zamiast `~all` lub braku polityki), zostaje odrzucona z kodem błędu 550. Zazwyczaj politykę SPF dla domeny można znaleźć w rekordzie <strong class="notranslate">TXT</strong> domeny głównej (np. `dig example.com txt`). Zobacz tę sekcję, aby uzyskać więcej informacji o [wysyłaniu maili jako w Gmailu](#can-i-send-mail-as-in-gmail-with-this) dotyczących SPF.
+9. Teraz przetwarzamy odbiorców wiadomości zebranych z polecenia `RCPT TO` w sekcji [Jak działa Twój system przekazywania e-maili](#how-does-your-email-forwarding-system-work) powyżej. Dla każdego odbiorcy wykonujemy następujące operacje:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * Wyszukujemy rekordy <strong class="notranslate">TXT</strong> nazwy domeny (część po symbolu `@`, np. `example.com` jeśli adres e-mail to `test@example.com`). Na przykład, jeśli domena to `example.com`, wykonujemy zapytanie DNS takie jak `dig example.com txt`.
+   * Parsujemy wszystkie rekordy <strong class="notranslate">TXT</strong>, które zaczynają się od `forward-email=` (plany darmowe) lub `forward-email-site-verification=` (plany płatne). Zauważ, że parsujemy oba, aby obsłużyć e-maile podczas gdy użytkownik zmienia plan na wyższy lub niższy.
+   * Z tych sparsowanych rekordów <strong class="notranslate">TXT</strong> iterujemy, aby wyodrębnić konfigurację przekazywania (jak opisano w sekcji [Jak zacząć i skonfigurować przekazywanie e-maili](#how-do-i-get-started-and-set-up-email-forwarding) powyżej). Zauważ, że obsługujemy tylko jedną wartość `forward-email-site-verification=`, a jeśli podano więcej niż jedną, wystąpi błąd 550, a nadawca otrzyma zwrotkę dla tego odbiorcy.
+   * Rekurencyjnie iterujemy po wyodrębnionej konfiguracji przekazywania, aby określić globalne przekazywanie, przekazywanie oparte na wyrażeniach regularnych oraz wszystkie inne obsługiwane konfiguracje przekazywania – które są teraz znane jako nasze "Adresy Przekazywania".
+   * Dla każdego Adresu Przekazywania obsługujemy jedno rekurencyjne wyszukiwanie (które rozpocznie tę serię operacji na podanym adresie). Jeśli znaleziono dopasowanie rekurencyjne, wynik nadrzędny zostanie usunięty z Adresów Przekazywania, a dzieci dodane.
+   * Adresy Przekazywania są analizowane pod kątem unikalności (ponieważ nie chcemy wysyłać duplikatów na jeden adres ani generować dodatkowych niepotrzebnych połączeń klienta SMTP).
+   * Dla każdego Adresu Przekazywania sprawdzamy jego nazwę domeny za pomocą naszego punktu końcowego API `/v1/max-forwarded-addresses` (aby określić, do ilu adresów domena może przekazywać e-maile na alias, np. domyślnie 10 – zobacz sekcję o [maksymalnym limicie przekazywania na alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Jeśli limit zostanie przekroczony, wystąpi błąd 550, a nadawca otrzyma zwrotkę dla tego odbiorcy.
+   * Sprawdzamy ustawienia oryginalnego odbiorcy za pomocą naszego punktu końcowego API `/v1/settings`, który obsługuje wyszukiwanie dla użytkowników płatnych (z fallbackiem dla użytkowników darmowych). Zwraca to obiekt konfiguracji dla zaawansowanych ustawień `port` (Liczba, np. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean) oraz `has_virus_protection` (Boolean).
+   * Na podstawie tych ustawień sprawdzamy wyniki skanera spamu i jeśli wystąpią jakiekolwiek błędy, wiadomość zostaje odrzucona z kodem błędu 554 (np. jeśli `has_virus_protection` jest włączone, sprawdzamy wyniki skanera spamu pod kątem wirusów). Zauważ, że wszyscy użytkownicy planu darmowego są domyślnie objęci kontrolami treści dla dorosłych, phishingu, plików wykonywalnych i wirusów. Domyślnie wszyscy użytkownicy planów płatnych również są objęci tymi kontrolami, ale konfigurację tę można zmienić na stronie Ustawienia domeny w panelu Forward Email).
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. Dla każdego przetworzonego Adresu Przekazywania odbiorcy wykonujemy następujące operacje:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * Adres jest sprawdzany względem naszej [listy blokowanych](#do-you-have-a-denylist), a jeśli jest na niej wymieniony, wystąpi błąd 421 (wskazuje nadawcy, aby spróbował ponownie później).
+    * Jeśli adres jest webhookiem, ustawiamy wartość Boolean dla przyszłych operacji (patrz poniżej – grupujemy podobne webhooki, aby wykonać jedno żądanie POST zamiast wielu dla dostarczenia).
+    * Jeśli adres jest adresem e-mail, parsujemy hosta dla przyszłych operacji (patrz poniżej – grupujemy podobne hosty, aby nawiązać jedno połączenie zamiast wielu indywidualnych połączeń dla dostarczenia).
+11. Jeśli nie ma odbiorców i nie ma zwrotów, odpowiadamy błędem 550 „Nieprawidłowi odbiorcy”.
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. Jeśli są odbiorcy, to iterujemy po nich (pogrupowanych według tego samego hosta) i dostarczamy e-maile.  Zobacz sekcję [Jak radzicie sobie z problemami z dostarczaniem e-maili](#how-do-you-handle-email-delivery-issues) poniżej, aby uzyskać więcej informacji.
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * Jeśli podczas wysyłania e-maili wystąpią jakiekolwiek błędy, to przechowujemy je w pamięci do późniejszego przetworzenia.
+    * Weźmiemy najniższy kod błędu (jeśli wystąpił) z wysyłania e-maili – i użyjemy go jako kodu odpowiedzi na polecenie `DATA`.  Oznacza to, że e-maile niedostarczone będą zazwyczaj ponawiane przez oryginalnego nadawcę, natomiast e-maile, które zostały już dostarczone, nie będą ponownie wysyłane przy następnym wysłaniu wiadomości (ponieważ używamy [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * Jeśli nie wystąpiły żadne błędy, to wyślemy kod statusu SMTP 250 oznaczający powodzenie.
+    * Zwrot (bounce) jest definiowany jako każda próba dostarczenia, która skutkuje kodem statusu >= 500 (błędy trwałe).
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. Jeśli nie wystąpiły zwroty (błędy trwałe), to zwrócimy kod statusu SMTP najniższego błędu z błędów nietrwałych (lub kod 250 oznaczający powodzenie, jeśli takich nie było).
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. Jeśli wystąpiły zwroty, to wyślemy e-maile zwrotne w tle po zwróceniu nadawcy najniższego ze wszystkich kodów błędów.  Jednak jeśli najniższy kod błędu jest >= 500, to nie wysyłamy żadnych e-maili zwrotnych.  Dzieje się tak, ponieważ w przeciwnym razie nadawcy otrzymaliby podwójny e-mail zwrotny (np. jeden od ich wychodzącego MTA, takiego jak Gmail – oraz jeden od nas).  Zobacz sekcję [Jak chronicie się przed backscatter](#how-do-you-protect-against-backscatter) poniżej, aby uzyskać więcej informacji.
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+### Jak radzicie sobie z problemami z dostarczaniem e-maili {#how-do-you-handle-email-delivery-issues}
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+Zauważ, że dokonujemy „Friendly-From” rewrite na e-mailach tylko wtedy, gdy polityka DMARC nadawcy nie była spełniona ORAZ żadne podpisy DKIM nie były zgodne z nagłówkiem „From”.  Oznacza to, że zmienimy nagłówek „From” w wiadomości, ustawimy „X-Original-From” oraz ustawimy „Reply-To”, jeśli nie było go wcześniej.  Ponadto ponownie zapieczętujemy pieczęć ARC na wiadomości po zmianie tych nagłówków.
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+Używamy również inteligentnego parsowania komunikatów o błędach na każdym poziomie naszego stosu – w naszym kodzie, zapytaniach DNS, wewnętrznych mechanizmach Node.js, zapytaniach HTTP (np. 408, 413 i 429 są mapowane na kod odpowiedzi SMTP 421, jeśli odbiorcą jest webhook) oraz odpowiedziach serwera pocztowego (np. odpowiedzi zawierające „defer” lub „slowdown” będą ponawiane jako błędy 421).
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+Nasza logika jest odporna na błędy i będzie również ponawiać próby w przypadku błędów SSL/TLS, problemów z połączeniem i innych.  Celem odporności na błędy jest maksymalizacja dostarczalności do wszystkich odbiorców w konfiguracji przekazywania.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+Jeśli odbiorcą jest webhook, to zezwalamy na 60 sekundowy timeout na zakończenie żądania z maksymalnie 3 ponownymi próbami (czyli łącznie 4 żądania przed uznaniem za niepowodzenie).  Zauważ, że poprawnie parsujemy kody błędów 408, 413 i 429 i mapujemy je na kod odpowiedzi SMTP 421.
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+W przeciwnym razie, jeśli odbiorcą jest adres e-mail, to spróbujemy wysłać e-mail z TLS oportunistycznym (próbujemy użyć STARTTLS, jeśli jest dostępny na serwerze pocztowym odbiorcy).  Jeśli podczas próby wysłania e-maila wystąpi błąd SSL/TLS, to spróbujemy wysłać e-mail bez TLS (bez użycia STARTTLS).
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+Jeśli wystąpią jakiekolwiek błędy DNS lub połączenia, to zwrócimy na polecenie `DATA` kod odpowiedzi SMTP 421, w przeciwnym razie jeśli wystąpią błędy na poziomie >= 500, to zostaną wysłane zwroty.
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+Jeśli wykryjemy, że serwer pocztowy, do którego próbujemy dostarczyć, zablokował jeden lub więcej naszych adresów IP wymiany poczty (np. przez dowolną technologię, której używają do opóźniania spamerów), to wyślemy kod odpowiedzi SMTP 421, aby nadawca mógł ponowić wysłanie wiadomości później (i zostaniemy o tym powiadomieni, abyśmy mogli spróbować rozwiązać problem przed następną próbą).
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+### Jak radzicie sobie z blokowaniem waszych adresów IP {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+Rutynowo monitorujemy wszystkie główne listy odmów DNS i jeśli którykolwiek z naszych adresów IP wymiany poczty ("MX") zostanie umieszczony na głównej liście odmów, wycofamy go z odpowiedniego rekordu DNS A round robin, jeśli to możliwe, aż do rozwiązania problemu.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+W chwili pisania tego tekstu jesteśmy również umieszczeni na kilku listach dozwolonych DNS i traktujemy monitorowanie list odmów bardzo poważnie. Jeśli zauważysz jakiekolwiek problemy zanim będziemy mieli szansę je rozwiązać, prosimy o powiadomienie nas na piśmie pod adresem <support@forwardemail.net>.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+Nasze adresy IP są publicznie dostępne, [zobacz tę sekcję poniżej, aby uzyskać więcej informacji](#what-are-your-servers-ip-addresses).
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Co to są adresy postmaster {#what-are-postmaster-addresses}
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+Aby zapobiec błędnie skierowanym odbiciom i wysyłaniu wiadomości automatycznych o nieobecności do nieobsługiwanych lub nieistniejących skrzynek pocztowych, utrzymujemy listę nazw użytkowników podobnych do mailer-daemon:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4118,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [oraz każdy adres no-reply](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+Zobacz [RFC 5320 Sekcja 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) aby uzyskać więcej informacji o tym, jak listy takie jak te są używane do tworzenia efektywnych systemów e-mail.
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### Co to są adresy no-reply {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+Nazwy użytkowników e-mail równe któremukolwiek z poniższych (niezależnie od wielkości liter) są uważane za adresy no-reply:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4145,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Ta lista jest utrzymywana [jako projekt open-source na GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### Jakie są adresy IP Twojego serwera {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+Publikujemy nasze adresy IP pod adresem <https://forwardemail.net/ips>.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### Czy macie listę dozwolonych {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+Tak, mamy [listę rozszerzeń nazw domen](#what-domain-name-extensions-are-allowlisted-by-default), które są domyślnie dozwolone oraz dynamiczną, buforowaną i rotacyjną listę dozwolonych opartą na [ścisłych kryteriach](#what-is-your-allowlist-criteria).
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+Wszystkie domeny, e-maile i adresy IP używane przez płacących klientów są automatycznie sprawdzane co godzinę względem naszej listy odmów – co powiadamia administratorów, którzy mogą ręcznie interweniować w razie potrzeby.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+Dodatkowo, jeśli któraś z Twoich domen lub jej adresów e-mail zostanie umieszczona na liście odmów (np. za wysyłanie spamu, wirusów lub z powodu ataków podszywania się) – wtedy administratorzy domen (Ty) oraz nasi administratorzy zespołu zostaną natychmiast powiadomieni e-mailem. Zdecydowanie zalecamy, abyś [skonfigurował DMARC](#how-do-i-set-up-dmarc-for-forward-email), aby temu zapobiec.
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### Jakie rozszerzenia nazw domen są domyślnie dozwolone {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+Następujące rozszerzenia nazw domen są uważane za domyślnie dozwolone (bez względu na to, czy znajdują się na liście popularności Umbrella, czy nie):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4372,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+Dodatkowo te [markowe i korporacyjne domeny najwyższego poziomu](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) są domyślnie na liście dozwolonych (np. `apple` dla `applecard.apple` dla wyciągów bankowych Apple Card):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4435,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4797,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+Od 18 marca 2025 roku dodaliśmy również te francuskie terytoria zamorskie do tej listy ([zgodnie z tym zgłoszeniem na GitHub](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4813,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+Od 8 lipca 2025 roku dodaliśmy te kraje specyficzne dla Europy:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4833,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+W październiku 2025 roku dodaliśmy również <code class="notranslate">cz</code> (Czechy) ze względu na zapotrzebowanie.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+Specjalnie nie uwzględniliśmy `ru` i `ua` z powodu wysokiej aktywności spamu.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### Jakie są kryteria Twojej listy dozwolonych {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+Posiadamy statyczną listę [domen najwyższego poziomu domyślnie dozwolonych](#what-domain-name-extensions-are-allowlisted-by-default) – a także utrzymujemy dynamiczną, buforowaną, ciągłą listę dozwolonych domen opartą na następujących surowych kryteriach:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* Główna domena nadawcy musi być z [domeny najwyższego poziomu, która jest dostępna w naszej darmowej ofercie](#what-domain-name-extensions-can-be-used-for-free) (z dodatkiem `biz` i `info`). Uwzględniamy także częściowe dopasowania `edu`, `gov` i `mil`, takie jak `xyz.gov.au` i `xyz.edu.au`.
+* Główna domena nadawcy musi znajdować się wśród 100 000 unikalnych domen głównych według wyników z [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Główna domena nadawcy musi znajdować się wśród 50 000 najlepszych wyników unikalnych domen głównych pojawiających się w co najmniej 4 z ostatnich 7 dni UPL (~50%+).
+* Główna domena nadawcy nie może być [skategoryzowana](https://radar.cloudflare.com/categorization-feedback/) jako zawierająca treści dla dorosłych lub malware przez Cloudflare.
+* Główna domena nadawcy musi mieć ustawione rekordy A lub MX.
+* Główna domena nadawcy musi mieć rekord(y) A, rekord(y) MX, rekord DMARC z `p=reject` lub `p=quarantine`, albo rekord SPF z kwalifikatorem `-all` lub `~all`.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+Jeśli kryteria te są spełnione, główna domena nadawcy będzie buforowana przez 7 dni. Należy zauważyć, że nasz automatyczny proces działa codziennie – dlatego jest to ciągła, codziennie aktualizowana lista dozwolonych domen.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+Nasz automatyczny proces pobiera poprzednie 7 dni UPL do pamięci, rozpakowuje je, a następnie analizuje w pamięci zgodnie z powyższymi surowymi kryteriami.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+Popularne domeny w chwili pisania tego tekstu, takie jak Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify i inne – oczywiście są uwzględnione.
+Jeśli jesteś nadawcą, który nie znajduje się na naszej liście dozwolonych, to za pierwszym razem, gdy Twoja domena główna FQDN lub adres IP wyśle e-mail, zostaniesz [ograniczony pod względem szybkości](#do-you-have-rate-limiting) i [umieszczony na szarej liście](#do-you-have-a-greylist). Należy zauważyć, że jest to standardowa praktyka przyjęta jako standard e-mailowy. Większość klientów serwerów pocztowych spróbuje ponowić wysyłkę, jeśli otrzyma błąd ograniczenia szybkości lub szarej listy (np. kod statusu błędu 421 lub poziomu 4xx).
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**Należy zauważyć, że konkretni nadawcy, tacy jak `a@gmail.com`, `b@xyz.edu` i `c@gov.au`, mogą nadal być [umieszczani na liście blokowanych](#do-you-have-a-denylist)** (np. jeśli automatycznie wykryjemy spam, phishing lub złośliwe oprogramowanie od tych nadawców).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### Jakie rozszerzenia nazw domen można używać za darmo {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+Od 31 marca 2023 roku wprowadziliśmy nową ogólną zasadę antyspamową, aby chronić naszych użytkowników i usługę.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+Ta nowa zasada pozwala na używanie tylko następujących rozszerzeń nazw domen w naszym darmowym planie:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4981,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### Czy masz szarą listę {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+Tak, stosujemy bardzo łagodną politykę [szarego listowania e-maili](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Szare listowanie dotyczy tylko nadawców, którzy nie znajdują się na naszej liście dozwolonych i jest przechowywane w naszej pamięci podręcznej przez 30 dni.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+Dla każdego nowego nadawcy przechowujemy klucz w naszej bazie Redis przez 30 dni z wartością ustawioną na czas pierwszego przyjścia ich żądania. Następnie odrzucamy ich e-mail z kodem statusu ponownej próby 450 i pozwalamy na jego przejście dopiero po upływie 5 minut.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+Jeśli nadawca pomyślnie odczeka 5 minut od tego początkowego czasu przyjścia, jego e-maile zostaną zaakceptowane i nie otrzyma on kodu statusu 450.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+Klucz składa się z pełnej nazwy domeny (FQDN) lub adresu IP nadawcy. Oznacza to, że każda subdomena, która przejdzie przez szarą listę, również przejdzie dla domeny głównej i odwrotnie (to właśnie mamy na myśli mówiąc o „bardzo łagodnej” polityce).
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+Na przykład, jeśli e-mail pochodzi z `test.example.com` zanim zobaczymy e-mail z `example.com`, to każdy e-mail z `test.example.com` i/lub `example.com` będzie musiał odczekać 5 minut od początkowego czasu przyjścia połączenia. Nie wymagamy, aby zarówno `test.example.com`, jak i `example.com` czekały osobno swoje 5 minut (nasza polityka szarego listowania stosuje się na poziomie domeny głównej).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+Należy zauważyć, że szare listowanie nie dotyczy żadnego nadawcy z naszej [listy dozwolonych](#do-you-have-an-allowlist) (np. Meta, Amazon, Netflix, Google, Microsoft na moment pisania tego tekstu).
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### Czy masz czarną listę {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+Tak, prowadzimy własną czarną listę i aktualizujemy ją automatycznie w czasie rzeczywistym oraz ręcznie na podstawie wykrytej aktywności spamowej i złośliwej.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+Pobieramy również wszystkie adresy IP z czarnej listy UCEPROTECT Level 1 pod adresem <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> co godzinę i dodajemy je do naszej czarnej listy z okresem ważności 7 dni.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+Nadawcy znajdujący się na czarnej liście otrzymają kod błędu 421 (wskazuje nadawcy, aby spróbował ponownie później), jeśli [nie znajdują się na liście dozwolonych](#do-you-have-an-allowlist).
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+Używając kodu statusu 421 zamiast 554, potencjalne fałszywe alarmy mogą być łagodzone w czasie rzeczywistym, a następnie wiadomość może zostać pomyślnie dostarczona przy kolejnej próbie.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**To jest zaprojektowane inaczej niż w innych usługach pocztowych**, gdzie jeśli zostaniesz umieszczony na liście blokującej, następuje twarda i trwała odmowa. Często trudno jest poprosić nadawców o ponowne wysłanie wiadomości (zwłaszcza z dużych organizacji), dlatego takie podejście daje około 5 dni od pierwszej próby wysłania e-maila, aby nadawca, odbiorca lub my mogli zareagować i rozwiązać problem (poprzez żądanie usunięcia z czarnej listy).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+Wszystkie prośby o usunięcie z czarnej listy są monitorowane w czasie rzeczywistym przez administratorów (np. aby powtarzające się fałszywe alarmy mogły być trwale dodane do listy dozwolonych przez administratorów).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+Prośby o usunięcie z czarnej listy można składać pod adresem <https://forwardemail.net/denylist>. Użytkownicy płatni mają swoje prośby o usunięcie przetwarzane natychmiast, podczas gdy użytkownicy niepłatni muszą czekać na przetworzenie przez administratorów.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+Nadawcy wykryci jako wysyłający spam lub zawartość wirusową będą dodawani do czarnej listy według następującego schematu:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. [Początkowy odcisk wiadomości](#how-do-you-determine-an-email-fingerprint) jest szary listowany po wykryciu spamu lub umieszczeniu na liście blokującej od „zaufanego” nadawcy (np. `gmail.com`, `microsoft.com`, `apple.com`).
+   * Jeśli nadawca był na liście dozwolonych, wiadomość jest szaro listowana przez 1 godzinę.
+   * Jeśli nadawca nie jest na liście dozwolonych, wiadomość jest szaro listowana przez 6 godzin.
+2. Parsujemy klucze czarnej listy z informacji o nadawcy i wiadomości, i dla każdego z tych kluczy tworzymy (jeśli jeszcze nie istnieje) licznik, zwiększamy go o 1 i przechowujemy w pamięci podręcznej przez 24 godziny.
+   * Dla nadawców z listy dozwolonych:
+     * Dodajemy klucz dla adresu e-mail „MAIL FROM” z koperty, jeśli przeszedł SPF lub nie miał SPF, i nie był [adresatem postmaster](#what-are-postmaster-addresses) ani [adresatem no-reply](#what-are-no-reply-addresses).
+     * Jeśli nagłówek „From” był na liście dozwolonych, dodajemy klucz dla adresu e-mail z nagłówka „From”, jeśli przeszedł SPF lub przeszedł i był zgodny z DKIM.
+     * Jeśli nagłówek „From” nie był na liście dozwolonych, dodajemy klucz dla adresu e-mail z nagłówka „From” oraz jego głównej nazwy domeny.
+   * Dla nadawców niebędących na liście dozwolonych:
+     * Dodajemy klucz dla adresu e-mail „MAIL FROM” z koperty, jeśli przeszedł SPF.
+     * Jeśli nagłówek „From” był na liście dozwolonych, dodajemy klucz dla adresu e-mail z nagłówka „From”, jeśli przeszedł SPF lub przeszedł i był zgodny z DKIM.
+     * Jeśli nagłówek „From” nie był na liście dozwolonych, dodajemy klucz dla adresu e-mail z nagłówka „From” oraz jego głównej nazwy domeny.
+     * Dodajemy klucz dla zdalnego adresu IP nadawcy.
+     * Dodajemy klucz dla nazwy hosta klienta uzyskanej przez odwrotne wyszukiwanie z adresu IP nadawcy (jeśli istnieje).
+     * Dodajemy klucz dla domeny głównej nazwy hosta klienta (jeśli istnieje i różni się od nazwy hosta klienta).
+3. Jeśli licznik osiągnie 5 dla nadawcy i klucza niebędącego na liście dozwolonych, to blokujemy ten klucz na 30 dni i wysyłamy e-mail do naszego zespołu ds. nadużyć. Te wartości mogą się zmieniać, a aktualizacje będą tutaj odzwierciedlane podczas monitorowania nadużyć.
+4. Jeśli licznik osiągnie 10 dla nadawcy i klucza z listy dozwolonych, to blokujemy ten klucz na 7 dni i wysyłamy e-mail do naszego zespołu ds. nadużyć. Te wartości mogą się zmieniać, a aktualizacje będą tutaj odzwierciedlane podczas monitorowania nadużyć.
+> **UWAGA:** W niedalekiej przyszłości wprowadzimy monitorowanie reputacji. Monitorowanie reputacji będzie obliczać, kiedy zablokować nadawcę na podstawie progu procentowego (zamiast prostego licznika, jak opisano powyżej).
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### Czy masz ograniczenia szybkości {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+Ograniczenia szybkości nadawcy dotyczą albo domeny głównej wyciągniętej z odwrotnego wyszukiwania PTR na adresie IP nadawcy – albo jeśli to nie daje wyniku, to po prostu używa adresu IP nadawcy.  Zwróć uwagę, że poniżej odnosimy się do tego jako `Nadawca`.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+Nasze serwery MX mają dzienne limity na przychodzącą pocztę otrzymywaną dla [zaszyfrowanego przechowywania IMAP](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* Zamiast ograniczać szybkość przychodzącej poczty na poziomie pojedynczego aliasu (np. `you@yourdomain.com`) – ograniczamy szybkość według samej domeny aliasu (np. `yourdomain.com`). Zapobiega to zalewaniu skrzynek wszystkich aliasów w Twojej domenie przez `Nadawców` naraz.
+* Mamy ogólne limity, które dotyczą wszystkich `Nadawców` w naszej usłudze niezależnie od odbiorcy:
+  * `Nadawcy`, których uważamy za "zaufane" źródło prawdy (np. `gmail.com`, `microsoft.com`, `apple.com`) mają limit wysyłki 100 GB dziennie.
+  * `Nadawcy`, którzy są [na liście dozwolonych](#do-you-have-an-allowlist) mają limit wysyłki 10 GB dziennie.
+  * Wszyscy inni `Nadawcy` mają limit wysyłki 1 GB i/lub 1000 wiadomości dziennie.
+* Mamy specyficzny limit na `Nadawcę` i `yourdomain.com` wynoszący 1 GB i/lub 1000 wiadomości dziennie.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+Serwery MX ograniczają także wiadomości przekazywane do jednego lub więcej odbiorców poprzez ograniczenia szybkości – ale dotyczy to tylko `Nadawców` nie znajdujących się na [liście dozwolonych](#do-you-have-an-allowlist):
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* Zezwalamy na maksymalnie 100 połączeń na godzinę, na `Nadawcę` rozpoznaną po FQDN domeny głównej (lub) adres IP `Nadawcy` (jeśli brak odwrotnego PTR), oraz na odbiorcę koperty. Klucz do ograniczenia szybkości przechowujemy jako skrót kryptograficzny w naszej bazie Redis.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* Jeśli wysyłasz e-maile przez nasz system, upewnij się, że masz ustawiony odwrotny PTR dla wszystkich swoich adresów IP (w przeciwnym razie każdy unikalny FQDN domeny głównej lub adres IP, z którego wysyłasz, będzie ograniczany).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Zwróć uwagę, że jeśli wysyłasz przez popularny system taki jak Amazon SES, nie będziesz ograniczany, ponieważ (w chwili pisania tego tekstu) Amazon SES jest na naszej liście dozwolonych.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* Jeśli wysyłasz z domeny takiej jak `test.abc.123.example.com`, limit szybkości będzie nałożony na `example.com`. Wielu spamerów używa setek subdomen, aby obejść powszechne filtry antyspamowe, które ograniczają szybkość tylko dla unikalnych nazw hostów, a nie unikalnych domen głównych FQDN.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* `Nadawcy`, którzy przekroczą limit szybkości, zostaną odrzuceni z błędem 421.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+Nasze serwery IMAP i SMTP ograniczają Twoje aliasy do maksymalnie `60` jednoczesnych połączeń.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+Nasze serwery MX ograniczają [nie-dozwolonych](#do-you-have-an-allowlist) nadawców do nawiązywania nie więcej niż 10 jednoczesnych połączeń (z 3-minutowym wygaśnięciem pamięci podręcznej licznika, co odpowiada naszemu limitowi czasu socketu 3 minuty).
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### Jak chronicie się przed backscatter {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+Nieprawidłowo skierowane odbicia lub spam odbiciowy (znany jako "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") mogą powodować negatywną reputację adresów IP nadawców.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+Podejmujemy dwa kroki, aby chronić przed backscatter, które są szczegółowo opisane w poniższych sekcjach [Zapobieganie odbiciom od znanych spamerów MAIL FROM](#prevent-bounces-from-known-mail-from-spammers) oraz [Zapobieganie niepotrzebnym odbiciom w celu ochrony przed backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### Zapobieganie odbiciom od znanych spamerów MAIL FROM {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+Pobieramy listę z [Backscatter.org](https://www.backscatterer.org/) (zasilaną przez [UCEPROTECT](https://www.uceprotect.net/)) pod adresem <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> co godzinę i wprowadzamy ją do naszej bazy Redis (porównujemy też różnice z wyprzedzeniem; na wypadek usunięcia jakichkolwiek IP, które należy uwzględnić).
+Jeśli MAIL FROM jest pusty LUB jest równy (niezależnie od wielkości liter) któremukolwiek z [adresów postmaster](#what-are-postmaster-addresses) (część przed @ w adresie e-mail), wtedy sprawdzamy, czy adres IP nadawcy pasuje do któregoś z tej listy.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+Jeśli adres IP nadawcy jest na liście (i nie znajduje się na naszej [liście dozwolonych](#do-you-have-an-allowlist)), wysyłamy błąd 554 z komunikatem `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Zostaniemy powiadomieni, jeśli nadawca znajduje się zarówno na liście Backscatterer, jak i na naszej liście dozwolonych, abyśmy mogli rozwiązać problem, jeśli zajdzie taka potrzeba.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+Techniki opisane w tej sekcji są zgodne z zaleceniem "TRYB BEZPIECZNY" na <https://www.backscatterer.org/?target=usage> – gdzie sprawdzamy adres IP nadawcy tylko wtedy, gdy spełnione zostały określone warunki.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### Zapobieganie niepotrzebnym odbiciom w celu ochrony przed backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+Odbicia to e-maile, które wskazują, że przekierowanie e-maila całkowicie nie powiodło się u odbiorcy i e-mail nie będzie ponawiany.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+Częstą przyczyną znalezienia się na liście Backscatterer są błędnie skierowane odbicia lub spam odbiciowy, dlatego musimy chronić się przed tym na kilka sposobów:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. Wysyłamy tylko wtedy, gdy wystąpią błędy o kodzie >= 500 (gdy próby przekierowania e-maili zakończyły się niepowodzeniem, np. Gmail odpowiada błędem na poziomie 500).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. Wysyłamy tylko raz i tylko raz (używamy obliczanego klucza odcisku odbicia i przechowujemy go w pamięci podręcznej, aby zapobiec wysyłaniu duplikatów). Odcisk odbicia to klucz będący odciskiem wiadomości połączonym z haszem adresu odbicia i jego kodu błędu). Zobacz sekcję o [odciskach palców](#how-do-you-determine-an-email-fingerprint) dla lepszego zrozumienia, jak obliczany jest odcisk wiadomości. Pomyślnie wysłane odciski odbić wygasają po 7 dniach w naszej pamięci Redis.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. Wysyłamy tylko wtedy, gdy MAIL FROM i/lub From nie jest pusty i nie zawiera (niezależnie od wielkości liter) [nazwy użytkownika postmaster](#what-are-postmaster-addresses) (część przed @ w adresie e-mail).
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. Nie wysyłamy, jeśli oryginalna wiadomość miała którykolwiek z następujących nagłówków (niezależnie od wielkości liter):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * Nagłówek `auto-submitted` z wartością różną od `no`.
+   * Nagłówek `x-auto-response-suppress` z wartością `dr`, `autoreply`, `auto-reply`, `auto_reply` lub `all`
+   * Nagłówek `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` lub `x-auto-respond` (bez względu na wartość).
+   * Nagłówek `precedence` z wartością `bulk`, `autoreply`, `auto-reply`, `auto_reply` lub `list`.
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. Nie wysyłamy, jeśli adres e-mail MAIL FROM lub From kończy się na `+donotreply`, `-donotreply`, `+noreply` lub `-noreply`.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. Nie wysyłamy, jeśli część nazwy użytkownika adresu From to `mdaemon` i posiadał nagłówek `X-MDDSN-Message` (niezależnie od wielkości liter).
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. Nie wysyłamy, jeśli istniał nagłówek `content-type` o wartości `multipart/report` (niezależnie od wielkości liter).
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### Jak określasz odcisk palca e-maila {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+Odcisk palca e-maila służy do określenia unikalności wiadomości i zapobiegania dostarczaniu duplikatów oraz wysyłaniu [duplikatów odbić](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+Odcisk palca jest obliczany na podstawie następującej listy:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* Rozwiązana nazwa FQDN klienta lub adres IP
+* Wartość nagłówka `Message-ID` (jeśli istnieje)
+* Wartość nagłówka `Date` (jeśli istnieje)
+* Wartość nagłówka `From` (jeśli istnieje)
+* Wartość nagłówka `To` (jeśli istnieje)
+* Wartość nagłówka `Cc` (jeśli istnieje)
+* Wartość nagłówka `Subject` (jeśli istnieje)
+* Wartość `Body` (jeśli istnieje)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### Czy mogę przekierowywać e-maile na porty inne niż 25 (np. jeśli mój ISP zablokował port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+Tak, od 5 maja 2020 dodaliśmy tę funkcję. Obecnie funkcja jest specyficzna dla domeny, a nie dla aliasu. Jeśli potrzebujesz, aby była specyficzna dla aliasu, skontaktuj się z nami, aby poinformować nas o swoich potrzebach.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Zwiększona ochrona prywatności:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Jeśli korzystasz z płatnego planu (który oferuje zwiększoną ochronę prywatności), przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a>, kliknij "Konfiguruj" obok swojej domeny, a następnie kliknij "Ustawienia". Jeśli chcesz dowiedzieć się więcej o płatnych planach, zobacz naszą stronę <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Cennik</a>. W przeciwnym razie możesz kontynuować zgodnie z poniższymi instrukcjami.
   </span>
 </div>
+Jeśli korzystasz z darmowego planu, po prostu dodaj nowy rekord DNS <strong class="notranslate">TXT</strong> jak pokazano poniżej, ale zmień port z 25 na wybrany przez siebie port.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+Na przykład, jeśli chcę, aby wszystkie e-maile trafiające do `example.com` były przekazywane do portu SMTP aliasów odbiorców 1337 zamiast 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4646,9 +5155,9 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    Najczęstszym scenariuszem konfiguracji przekierowania na niestandardowy port jest sytuacja, gdy chcesz przekierować wszystkie e-maile trafiające do example.com na inny port w example.com, niż standardowy port SMTP 25. Aby to ustawić, po prostu dodaj następujący rekord <strong class="notranslate">TXT</strong> catch-all.
   <span>
   </span>
 </div>
@@ -4656,15 +5165,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5181,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Czy obsługuje symbol plus + dla aliasów Gmaila {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+Tak, absolutnie.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### Czy obsługuje subdomeny {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+Tak, absolutnie. Zamiast używać "@", ".", lub pustego pola jako nazwy/hosta/aliasa, po prostu użyj nazwy subdomeny jako wartości.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+Jeśli chcesz, aby `foo.example.com` przekazywało e-maile, wpisz `foo` jako wartość nazwy/hosta/aliasa w ustawieniach DNS (zarówno dla rekordów MX, jak i <strong class="notranslate">TXT</strong>).
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### Czy przekazuje nagłówki moich e-maili {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+Tak, absolutnie.
 
-### Is this well-tested {#is-this-well-tested}
+### Czy jest to dobrze przetestowane {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+Tak, posiada testy napisane za pomocą [ava](https://github.com/avajs/ava) oraz ma pokrycie kodu.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### Czy przekazujecie wiadomości i kody odpowiedzi SMTP {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+Tak, absolutnie. Na przykład, jeśli wysyłasz e-mail do `hello@example.com` i jest on zarejestrowany do przekierowania na `user@gmail.com`, to wiadomość i kod odpowiedzi SMTP z serwera SMTP "gmail.com" zostaną zwrócone zamiast z serwera proxy na "mx1.forwardemail.net" lub "mx2.forwardemail.net".
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### Jak zapobiegacie spamowi i zapewniacie dobrą reputację przekazywania e-maili {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+Zobacz nasze sekcje dotyczące [Jak działa wasz system przekazywania e-maili](#how-does-your-email-forwarding-system-work), [Jak radzicie sobie z problemami z dostarczaniem e-maili](#how-do-you-handle-email-delivery-issues) oraz [Jak radzicie sobie z blokowaniem waszych adresów IP](#how-do-you-handle-your-ip-addresses-becoming-blocked) powyżej.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### Jak wykonujecie zapytania DNS dla nazw domen {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+Stworzyliśmy projekt oprogramowania open-source :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) i używamy go do zapytań DNS. Domyślne serwery DNS to `1.1.1.1` i `1.0.0.1`, a zapytania DNS są wykonywane przez [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") na warstwie aplikacji.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) domyślnie korzysta z [usługi DNS dla konsumentów z priorytetem prywatności CloudFlare][cloudflare-dns].
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## Konto i rozliczenia {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### Czy oferujecie gwarancję zwrotu pieniędzy na płatnych planach {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+Tak! Automatyczne zwroty następują, gdy uaktualnisz, obniżysz plan lub anulujesz konto w ciągu 30 dni od rozpoczęcia planu. Dotyczy to tylko klientów korzystających z usługi po raz pierwszy.
+### Jeśli zmienię plan, czy naliczacie proporcjonalnie i zwracacie różnicę {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+Nie naliczamy proporcjonalnie ani nie zwracamy różnicy przy zmianie planu. Zamiast tego przeliczamy pozostały czas od daty wygaśnięcia Twojego obecnego planu na najbliższy odpowiadający czas trwania nowego planu (zaokrąglany w dół do miesiąca).
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+Zauważ, że jeśli przejdziesz na wyższy lub niższy płatny plan w ciągu 30 dni od rozpoczęcia pierwszego płatnego planu, automatycznie zwrócimy pełną kwotę za Twój obecny plan.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Czy mogę używać tej usługi przekazywania e-maili jako serwera MX "awaryjnego" lub "zapasowego" {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+Nie, nie jest to zalecane, ponieważ można używać tylko jednego serwera wymiany poczty na raz. Serwery zapasowe zwykle nigdy nie są ponownie próbowane z powodu błędnych konfiguracji priorytetów oraz serwerów pocztowych, które nie respektują sprawdzania priorytetu wymiany MX.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### Czy mogę wyłączyć konkretne aliasy {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    Jeśli korzystasz z płatnego planu, musisz przejść do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Edytuj alias <i class="fa fa-angle-right"></i> Odznacz pole "Aktywny" <i class="fa fa-angle-right"></i> Kontynuuj.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+Tak, wystarczy edytować swój rekord DNS <strong class="notranslate">TXT</strong> i poprzedzić alias jednym, dwoma lub trzema wykrzyknikami (patrz poniżej).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+Zauważ, że *powinieneś* zachować mapowanie ":", ponieważ jest to wymagane, jeśli kiedykolwiek zdecydujesz się to wyłączyć (jest też używane podczas importu, jeśli przejdziesz na jeden z naszych płatnych planów).
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**Dla cichego odrzucenia (dla nadawcy wygląda, jakby wiadomość została wysłana pomyślnie, ale faktycznie nigdzie nie trafia) (kod statusu `250`):** Jeśli poprzedzisz alias pojedynczym wykrzyknikiem "!", zwróci on nadawcom próbującym wysłać na ten adres kod statusu `250` oznaczający sukces, ale same e-maile nie zostaną dostarczone (np. czarna dziura lub `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**Dla miękkiego odrzucenia (kod statusu `421`):** Jeśli poprzedzisz alias podwójnym wykrzyknikiem "!!", zwróci on nadawcom próbującym wysłać na ten adres kod błędu `421`, a e-maile będą często ponawiane przez okres do 5 dni przed odrzuceniem i zwrotem.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**Dla twardego odrzucenia (kod statusu `550`):** Jeśli poprzedzisz alias potrójnym wykrzyknikiem "!!!", zwróci on nadawcom próbującym wysłać na ten adres trwały błąd `550`, a e-maile zostaną odrzucone i zwrócone.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+Na przykład, jeśli chcę, aby wszystkie e-maile wysyłane na `alias@example.com` przestały być przekazywane do `user@gmail.com` i zostały odrzucone oraz zwrócone (np. użyj trzech wykrzykników):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4766,54 +5275,53 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    Możesz też przepisać adres odbiorcy przekazywanego na po prostu "nobody@forwardemail.net", co spowoduje skierowanie go do nikogo, jak w poniższym przykładzie.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    Jeśli chcesz zwiększyć bezpieczeństwo, możesz również usunąć część ":user@gmail.com" (lub ":nobody@forwardemail.net"), pozostawiając tylko "!!!alias", jak w poniższym przykładzie.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5329,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### Czy mogę przekazywać e-maile do wielu odbiorców {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+Tak, oczywiście. Wystarczy określić wielu odbiorców w swoich rekordach <strong class="notranslate">TXT</strong>.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Na przykład, jeśli chcę, aby e-mail wysłany na `hello@example.com` był przekazywany do `user+a@gmail.com` oraz `user+b@gmail.com`, mój rekord <strong class="notranslate">TXT</strong> wyglądałby tak:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5354,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Lub możesz określić je w dwóch oddzielnych liniach, na przykład tak:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5381,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+Decyzja należy do Ciebie!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### Czy mogę mieć wielu globalnych odbiorców catch-all {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+Tak, możesz. Wystarczy określić wielu globalnych odbiorców catch-all w swoich rekordach <strong class="notranslate">TXT</strong>.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Na przykład, jeśli chcę, aby każdy e-mail wysłany na `*@example.com` (gwiazdka oznacza wildcard, czyli catch-all) był przekazywany do `user+a@gmail.com` oraz `user+b@gmail.com`, mój rekord <strong class="notranslate">TXT</strong> wyglądałby tak:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,190 +5408,188 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Lub możesz określić je w dwóch oddzielnych liniach, na przykład tak:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Nazwa/Host/Alias</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", lub puste</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+To zależy od Ciebie!
 
-It's up to you!
+### Czy istnieje maksymalny limit liczby adresów e-mail, na które mogę przekierować alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+Tak, domyślny limit to 10. To NIE oznacza, że możesz mieć tylko 10 aliasów na swojej domenie. Możesz mieć dowolną liczbę aliasów (nieograniczoną ilość). Oznacza to, że możesz przekierować jeden alias na 10 unikalnych adresów e-mail. Możesz mieć `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (od 1 do 10) – i wszystkie e-maile wysłane na `hello@example.com` będą przekierowywane na `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (od 1 do 10).
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    Wskazówka:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    Potrzebujesz więcej niż 10 odbiorców na alias? Napisz do nas e-mail, a chętnie zwiększymy limit Twojego konta.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### Czy mogę rekurencyjnie przekierowywać e-maile {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+Tak, możesz, jednak musisz nadal przestrzegać maksymalnego limitu. Jeśli masz `hello:linus@example.com` oraz `linus:user@gmail.com`, to e-maile wysłane na `hello@example.com` będą przekierowywane na `linus@example.com` oraz `user@gmail.com`. Zwróć uwagę, że zostanie zgłoszony błąd, jeśli spróbujesz rekurencyjnie przekierować e-maile poza maksymalny limit.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Czy ludzie mogą wyrejestrować lub zarejestrować moje przekierowanie e-mail bez mojej zgody {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+Używamy weryfikacji rekordów MX i <strong class="notranslate">TXT</strong>, więc jeśli dodasz odpowiednie rekordy MX i <strong class="notranslate">TXT</strong> tej usługi, to jesteś zarejestrowany. Jeśli je usuniesz, to jesteś wyrejestrowany. Posiadasz własność swojej domeny i zarządzanie DNS, więc jeśli ktoś ma do tego dostęp, to jest to problem.
 
-### How is it free {#how-is-it-free}
+### Jak to jest darmowe {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Email oferuje darmowy plan dzięki połączeniu rozwoju open source, efektywnej infrastruktury oraz opcjonalnych płatnych planów wspierających usługę.
 
-Our free tier is supported by:
+Nasz darmowy plan jest wspierany przez:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **Rozwój Open Source**: Nasz kod jest otwarty, co pozwala na wkład społeczności i transparentne działanie.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **Efektywną Infrastrukturę**: Optymalizujemy nasze systemy, aby obsługiwać przekierowywanie e-maili przy minimalnym zużyciu zasobów.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **Płatne Plany Premium**: Użytkownicy potrzebujący dodatkowych funkcji, takich jak wysyłanie SMTP, odbieranie IMAP czy zaawansowane opcje prywatności, subskrybują nasze płatne plany.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **Rozsądne Limity Użytkowania**: Darmowy plan ma uczciwe zasady użytkowania, aby zapobiegać nadużyciom.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Zobowiązujemy się do utrzymania podstawowego przekierowywania e-maili za darmo, oferując jednocześnie funkcje premium dla użytkowników o bardziej zaawansowanych potrzebach.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Jeśli uważasz naszą usługę za wartościową, rozważ przejście na płatny plan, aby wspierać dalszy rozwój i utrzymanie.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### Jaki jest maksymalny rozmiar e-maila {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+Domyślnie limit rozmiaru to 50MB, co obejmuje treść, nagłówki i załączniki. Zwróć uwagę, że usługi takie jak Gmail i Outlook dopuszczają tylko limit 25MB, a jeśli przekroczysz ten limit wysyłając do adresów u tych dostawców, otrzymasz komunikat o błędzie.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+Zwracany jest błąd z odpowiednim kodem odpowiedzi, jeśli przekroczysz limit rozmiaru pliku.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### Czy przechowujecie logi e-maili {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nie, nie zapisujemy na dysku ani nie przechowujemy logów – z [wyjątkiem błędów](#do-you-store-error-logs) oraz [wychodzącego SMTP](#do-you-support-sending-email-with-smtp) (zobacz naszą [Politykę Prywatności](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Wszystko odbywa się w pamięci, a [nasz kod źródłowy jest na GitHub](https://github.com/forwardemail).
 
-### Do you store error logs {#do-you-store-error-logs}
+### Czy przechowujecie logi błędów {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**Tak. Możesz uzyskać dostęp do logów błędów w [Moje Konto → Logi](/my-account/logs) lub [Moje Konto → Domeny](/my-account/domains).**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+Od lutego 2023 przechowujemy logi błędów dla kodów odpowiedzi SMTP `4xx` i `5xx` przez okres 7 dni – zawierają one błąd SMTP, kopertę i nagłówki e-mail (nie przechowujemy treści e-maila ani załączników).
+Dzienniki błędów pozwalają sprawdzić brakujące ważne e-maile i ograniczyć fałszywe pozytywy spamu dla [Twoich domen](/my-account/domains). Są również świetnym źródłem do debugowania problemów z [webhookami e-mail](#do-you-support-webhooks) (ponieważ dzienniki błędów zawierają odpowiedź punktu końcowego webhooka).
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+Dzienniki błędów dla [ograniczeń szybkości](#do-you-have-rate-limiting) i [szarej listy](#do-you-have-a-greylist) nie są dostępne, ponieważ połączenie kończy się wcześniej (np. przed przesłaniem poleceń `RCPT TO` i `MAIL FROM`).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+Zobacz naszą [Politykę prywatności](/privacy) po więcej informacji.
 
-See our [Privacy Policy](/privacy) for more insight.
+### Czy czytacie moje e-maile {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+Nie, absolutnie nie. Zobacz naszą [Politykę prywatności](/privacy).
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+Wiele innych usług przekazywania e-maili przechowuje i potencjalnie może czytać Twoje e-maile. Nie ma powodu, aby przekazywane e-maile były zapisywane na dysku – dlatego zaprojektowaliśmy pierwsze rozwiązanie open-source, które wszystko robi w pamięci.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+Wierzymy, że powinieneś mieć prawo do prywatności i ściśle je szanujemy. Kod wdrożony na serwerze to [oprogramowanie open-source na GitHub](https://github.com/forwardemail) dla przejrzystości i budowania zaufania.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### Czy mogę "wysyłać e-maile jako" w Gmailu z tym {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+Tak! Od 2 października 2018 dodaliśmy tę funkcję. Zobacz [Jak wysyłać e-maile jako za pomocą Gmaila](#how-to-send-mail-as-using-gmail) powyżej!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Powinieneś również ustawić rekord SPF dla Gmaila w konfiguracji DNS w rekordzie <strong class="notranslate">TXT</strong>.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Jeśli używasz Gmaila (np. Wyślij e-mail jako) lub G Suite, musisz dodać <code>include:_spf.google.com</code> do swojego rekordu SPF <strong class="notranslate">TXT</strong>, na przykład:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### Czy mogę "wysyłać e-maile jako" w Outlooku z tym {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+Tak! Od 2 października 2018 dodaliśmy tę funkcję. Po prostu zapoznaj się z tymi dwoma linkami od Microsoft poniżej:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Powinieneś również ustawić rekord SPF dla Outlooka w konfiguracji DNS w rekordzie <strong class="notranslate">TXT</strong>.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Ważne:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Jeśli używasz Microsoft Outlook lub Live.com, musisz dodać <code>include:spf.protection.outlook.com</code> do swojego rekordu SPF <strong class="notranslate">TXT</strong>, na przykład:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Czy mogę "wysyłać e-maile jako" w Apple Mail i iCloud Mail z tym {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+Jeśli jesteś subskrybentem iCloud+, możesz używać własnej domeny. [Nasza usługa jest również kompatybilna z Apple Mail](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+Proszę zobaczyć <https://support.apple.com/en-us/102540> po więcej informacji.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### Czy mogę przekazywać nieograniczoną liczbę e-maili z tym {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+Tak, jednak "stosunkowo nieznani" nadawcy są ograniczeni do 100 połączeń na godzinę na nazwę hosta lub IP. Zobacz sekcję o [ograniczeniach szybkości](#do-you-have-rate-limiting) i [szarej liście](#do-you-have-a-greylist) powyżej.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+Przez "stosunkowo nieznanych" rozumiemy nadawców, którzy nie znajdują się na [liście dozwolonych](#do-you-have-an-allowlist).
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+Jeśli limit zostanie przekroczony, wysyłamy kod odpowiedzi 421, który mówi serwerowi nadawcy, aby spróbował ponownie później.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### Czy oferujecie nieograniczoną liczbę domen za jedną cenę {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+Tak. Niezależnie od wybranego planu, zapłacisz tylko jedną miesięczną stawkę – która obejmuje wszystkie Twoje domeny.
+### Jakie metody płatności akceptujecie {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email akceptuje następujące jednorazowe lub miesięczne/kwartalne/roczne metody płatności:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **Karty kredytowe/debetowe/przelewy bankowe**: Visa, Mastercard, American Express, Discover, JCB, Diners Club itp.
+2. **PayPal**: Połącz swoje konto PayPal, aby ułatwić płatności
+3. **Kryptowaluty**: Akceptujemy płatności za pośrednictwem stablecoinów Stripe na sieciach Ethereum, Polygon i Solana
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Przechowujemy ograniczone informacje o płatnościach na naszych serwerach, które obejmują jedynie identyfikatory płatności oraz odniesienia do [Stripe](https://stripe.com/global) i [PayPal](https://www.paypal.com) transakcji, klientów, subskrypcji i ID płatności.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Dla maksymalnej prywatności rozważ użycie płatności kryptowalutami.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+Wszystkie płatności są przetwarzane bezpiecznie przez Stripe lub PayPal. Twoje dane płatnicze nigdy nie są przechowywane na naszych serwerach.
 
-## Additional Resources {#additional-resources}
+
+## Dodatkowe zasoby {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Nasze poniższe artykuły są regularnie aktualizowane o nowe przewodniki, wskazówki i informacje techniczne. Sprawdzaj je często, aby być na bieżąco.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [Studia przypadków i dokumentacja dla programistów](/blog/docs)
+* [Zasoby](/resources)
+* [Przewodniki](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

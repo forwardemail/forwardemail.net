@@ -1,118 +1,121 @@
-# Nejlepší společnosti pro bezpečnostní audit {#best-security-audit-companies}
+# Nejlepší společnosti pro bezpečnostní audity {#best-security-audit-companies}
 
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+
 
 ## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
-* [Náš proces hodnocení](#our-evaluation-process)
+* [Náš hodnotící proces](#our-evaluation-process)
 * [Doporučené společnosti pro bezpečnostní audity](#recommended-security-audit-companies)
   * [Cure53](#cure53)
-  * [Radikálně otevřená bezpečnost](#radically-open-security)
-  * [Zajištěná AB](#assured-ab)
-  * [Stezka bitů](#trail-of-bits)
+  * [Radically Open Security](#radically-open-security)
+  * [Assured AB](#assured-ab)
+  * [Trail of Bits](#trail-of-bits)
 * [Porovnání společností](#company-comparison)
 * [Kritéria výběru](#selection-criteria)
 
+
 ## Přehled {#overview}
 
-Společnost Forward Email aktivně vyhodnocuje výzkumné společnosti v oblasti kybernetické bezpečnosti, aby mohla provádět komplexní audity naší open-source kódové základny na platformě [GitHub](https://github.com/forwardemail) a serverové infrastruktuře. Po rozsáhlém výzkumu a hodnocení v posledních několika letech jsme identifikovali několik výjimečných firem zabývajících se bezpečnostním auditem, které trvale prokazují vysoce kvalitní práci, technické znalosti a soulad s našimi hodnotami zaměřenými na ochranu soukromí.
+Forward Email aktivně hodnotí společnosti zabývající se výzkumem kybernetické bezpečnosti, které provádějí komplexní audity našeho open-source kódu na [GitHub](https://github.com/forwardemail) a serverové infrastruktury. Po rozsáhlém výzkumu a hodnocení v posledních letech jsme identifikovali několik výjimečných firem pro bezpečnostní audity, které konzistentně prokazují vysokou kvalitu práce, technickou odbornost a soulad s našimi hodnotami zaměřenými na ochranu soukromí.
 
-Tento dokument představuje naše zjištění a doporučení pro organizace, které hledají profesionální služby bezpečnostního auditu. Všechny zde uvedené společnosti prokázaly výjimečné schopnosti v oblasti penetračního testování, kontroly kódu, hodnocení infrastruktury a bezpečnostního výzkumu.
+Tento dokument představuje naše zjištění a doporučení pro organizace hledající profesionální služby bezpečnostních auditů. Společnosti uvedené zde všechny prokázaly výjimečné schopnosti v penetračním testování, revizi kódu, hodnocení infrastruktury a bezpečnostním výzkumu.
 
-## Náš proces hodnocení {#our-evaluation-process}
 
-Náš proces hodnocení se zaměřil na několik klíčových faktorů, které jsou zásadní pro organizace vyžadující důkladné bezpečnostní posouzení. Zkoumali jsme historii každé společnosti, její technické znalosti, transparentnost v reportingu a závazek k principům open source. Všechny společnosti uvedené v této příručce prokázaly během našeho několikaletého hodnotícího období konzistentní excelenci.
+## Náš hodnotící proces {#our-evaluation-process}
 
-Je důležité poznamenat, že níže uvedené společnosti nejsou seřazeny v žádném konkrétním pořadí. Každá organizace přináší do oblasti kybernetické bezpečnosti jedinečné silné stránky a specializace a nejlepší volba závisí na konkrétních požadavcích projektu, rozpočtových možnostech a potřebách organizace.
+Náš hodnotící proces se zaměřil na několik klíčových faktorů, které jsou zásadní pro organizace vyžadující důkladná bezpečnostní hodnocení. Zkoumali jsme zázemí každé společnosti, technickou odbornost, transparentnost v reportování a závazek k principům open-source. Společnosti uvedené v této příručce během našeho víceletého hodnotícího období prokázaly konzistentní excelenci.
 
-## Doporučené společnosti pro bezpečnostní audit {#recommended-security-audit-companies}
+Je důležité poznamenat, že níže uvedené společnosti nejsou seřazeny v žádném konkrétním pořadí. Každá organizace přináší jedinečné silné stránky a specializace v oblasti kybernetické bezpečnosti a nejlepší volba závisí na konkrétních požadavcích projektu, rozpočtových omezeních a potřebách organizace.
+
+
+## Doporučené společnosti pro bezpečnostní audity {#recommended-security-audit-companies}
 
 ### Cure53 {#cure53}
 
-**Místo**: Berlín, Německo
-**Web**: <https://cure53.de/>
-**Specializace**: "Jemné penetrační testy pro kvalitní webové stránky"
+**Lokalita**: Berlín, Německo  
+**Web**: <https://cure53.de/>  
+**Specializace**: „Precizní penetrační testy pro precizní weby“
 
-Cure53 je německá firma zabývající se kybernetickou bezpečností, která je známá svým pečlivým přístupem k testování bezpečnosti webových aplikací a penetračnímu testování. Se sídlem v Berlíně se etablovala jako lídr v oboru díky svým komplexním testovacím metodikám a podrobným postupům reportování.
+Cure53 je německá společnost zabývající se kybernetickou bezpečností, známá svým pečlivým přístupem k testování bezpečnosti webových aplikací a penetračním testům. Se sídlem v Berlíně se etablovala jako lídr v oboru díky svým komplexním testovacím metodikám a podrobným reportovacím praktikám.
 
-Společnost si vybudovala působivé portfolio bezpečnostních hodnocení pro významné klienty a open-source projekty. Jejich práce prokazuje hluboké porozumění moderním webovým technologiím, kryptografickým implementacím a zabezpečení infrastruktury. Zprávy Cure53 jsou obzvláště pozoruhodné svou technickou hloubkou a praktickými doporučeními.
-
-**Významné publikace a zprávy**:
-
-* [Bezpečnostní hodnocení serverů Mullvad 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Komplexní vyhodnocení zabezpečení infrastruktury
-* [Hodnocení bezpečnosti aplikací/API Mullvad 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Analýza zabezpečení aplikací a API
-* [Bezpečnostní hodnocení serverů Mullvad 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Následné vyhodnocení infrastruktury
-
-### Radikálně otevřené zabezpečení {#radically-open-security}
-
-**Místo**: Amsterdam, Nizozemsko
-**Webové stránky**: <https://www.radicallyopensecurity.com/>
-**Specializace**: „Poradenství v oblasti počítačové bezpečnosti pro neziskové organizace“
-
-Společnost Radically Open Security (ROS) funguje jako unikátní nezisková konzultační společnost v oblasti počítačové bezpečnosti, která dokonale splňuje principy open source a hodnoty transparentnosti. ROS se sídlem v Amsterdamu je průkopníkem inovativního přístupu k bezpečnostnímu poradenství tím, že své metodiky a zjištění zveřejňuje, kdykoli je to možné.
-
-Jejich neziskový model jim umožňuje zaměřit se čistě na bezpečnostní výsledky, nikoli na maximalizaci zisku, což často vede k důkladnějším posouzením a skutečným doporučením. ROS má zvláštní odborné znalosti v oblasti technologií zaměřených na soukromí, služeb VPN a aplikací, které zpracovávají citlivá uživatelská data.
+Společnost si vybudovala působivé portfolio bezpečnostních hodnocení pro významné klienty a open-source projekty. Jejich práce ukazuje hluboké porozumění moderním webovým technologiím, kryptografickým implementacím a bezpečnosti infrastruktury. Zprávy Cure53 jsou zvláště pozoruhodné svou technickou hloubkou a praktickými doporučeními.
 
 **Významné publikace a zprávy**:
 
-* [Bezpečnostní posouzení Droid2Tracking](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Analýza mobilního sledování
-* [Bezpečnostní hodnocení programu Tauri 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Vyhodnocení platformy pro aplikace napříč platformami
-* [Hodnocení bezpečnosti VPN Mullvad 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Analýza zabezpečení služby VPN
+* [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) – Komplexní hodnocení bezpečnosti infrastruktury  
+* [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) – Analýza bezpečnosti aplikací a API  
+* [Mullvad Servers Security Assessment 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) – Následné hodnocení infrastruktury
 
-### Zajištěno AB {#assured-ab}
+### Radically Open Security {#radically-open-security}
 
-**Místo**: Göteborg, Švédsko
-**Webové stránky**: <https://www.assured.se/>
-**Specializace**: „Experti na technickou kybernetickou bezpečnost“
+**Lokalita**: Amsterdam, Nizozemsko  
+**Web**: <https://www.radicallyopensecurity.com/>  
+**Specializace**: „Neziskové poradenství v oblasti počítačové bezpečnosti“
 
-Assured AB je švédská konzultační společnost v oblasti kybernetické bezpečnosti, která se etablovala jako lídr v oblasti technického hodnocení kybernetické bezpečnosti. Sídlí v Göteborgu a nabízí hluboké technické znalosti pro řešení komplexních bezpečnostních problémů, zejména v oblastech zahrnujících e-mailovou infrastrukturu, zabezpečení DNS a hodnocení API.
+Radically Open Security (ROS) funguje jako jedinečné neziskové poradenské centrum v oblasti počítačové bezpečnosti, které dokonale ladí s principy open-source a hodnotami transparentnosti. Se sídlem v Amsterdamu ROS zavedla inovativní přístup k bezpečnostnímu poradenství tím, že své metodiky a zjištění zveřejňuje vždy, když je to možné.
 
-Přístup společnosti klade důraz na důkladnou technickou analýzu v kombinaci s praktickými a implementovatelnými doporučeními. Její zprávy prokazují mimořádnou pozornost k detailům a komplexní pochopení moderních bezpečnostních hrozeb a strategií jejich zmírňování.
+Jejich neziskový model jim umožňuje soustředit se čistě na bezpečnostní výsledky místo maximalizace zisku, což často vede k důkladnějším hodnocením a skutečným doporučením. ROS má zvláštní odbornost v technologiích zaměřených na ochranu soukromí, VPN službách a aplikacích, které zpracovávají citlivá uživatelská data.
+**Významné publikace a zprávy**:
+
+* [Droid2Tracking Security Assessment](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Analýza mobilního sledování
+* [Tauri Programme Security Assessment 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Hodnocení multiplatformního aplikačního rámce
+* [Mullvad VPN Security Assessment 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Analýza bezpečnosti VPN služby
+
+### Assured AB {#assured-ab}
+
+**Lokalita**: Göteborg, Švédsko  
+**Web**: <https://www.assured.se/>  
+**Specializace**: „Odborníci na technickou kybernetickou bezpečnost“
+
+Assured AB je švédská konzultační společnost v oblasti kybernetické bezpečnosti, která se etablovala jako lídr v technických bezpečnostních hodnoceních. Se sídlem v Göteborgu přináší hluboké technické znalosti do složitých bezpečnostních výzev, zejména v oblastech týkajících se infrastruktury e-mailů, bezpečnosti DNS a hodnocení API.
+
+Přístup společnosti klade důraz na důkladnou technickou analýzu kombinovanou s praktickými, realizovatelnými doporučeními. Jejich zprávy vykazují výjimečnou pozornost k detailům a komplexní porozumění moderním bezpečnostním hrozbám a strategiím jejich zmírnění.
 
 **Významné publikace a zprávy**:
 
-* [Bezpečnostní audit e-mailových serverů Mullvad 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Posouzení zabezpečení e-mailové infrastruktury
-* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Posouzení zabezpečení API
-* [Audit zabezpečení DNS serveru Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Posouzení infrastruktury DNS
+* [Mullvad Email Servers Security Audit 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit_2024.pdf) - Hodnocení bezpečnosti e-mailové infrastruktury
+* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report_2022.pdf) - Hodnocení bezpečnosti API
+* [Mullvad DNS Server Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report_2022.pdf) - Hodnocení infrastruktury DNS
 
-### Stopa bitů {#trail-of-bits}
+### Trail of Bits {#trail-of-bits}
 
-**Místo**: New York, New York, Spojené státy americké
-**Web**: <https://www.trailofbits.com/>
+**Lokalita**: New York, New York, Spojené státy  
+**Web**: <https://www.trailofbits.com/>  
 **Specializace**: „Neopravujeme jen chyby, opravujeme software.“
 
-Trail of Bits je prominentní americká firma zabývající se kybernetickou bezpečností, která si vysloužila uznání za svůj inovativní přístup k softwarové bezpečnosti. Sídlí v New Yorku a vyvinula špičkové nástroje a metodiky, které posunuly celý obor kybernetické bezpečnosti vpřed. Jejich motto „Neopravujeme jen chyby, opravujeme software“ odráží jejich závazek řešit systémové bezpečnostní problémy, nikoli pouze povrchní zranitelnosti.
+Trail of Bits je významná americká firma v oblasti kybernetické bezpečnosti, která si získala uznání díky svému inovativnímu přístupu k bezpečnosti softwaru. Se sídlem v New Yorku vyvinula špičkové nástroje a metodologie, které posunuly celý obor kybernetické bezpečnosti. Jejich motto „Neopravujeme jen chyby, opravujeme software“ odráží jejich závazek řešit systémové bezpečnostní problémy, nikoli pouze povrchové zranitelnosti.
 
-Společnost má zvláštní odborné znalosti v oblasti zabezpečení blockchainu, kryptografických implementací a komplexních softwarových systémů. Trail of Bits je také známá svými příspěvky k open-source bezpečnostním nástrojům a svým myšlenkovým vůdčím postavení v nově vznikajících bezpečnostních oblastech.
+Společnost má zvláštní odbornost v oblasti bezpečnosti blockchainu, kryptografických implementací a složitých softwarových systémů. Trail of Bits je také známá svými příspěvky k open-source bezpečnostním nástrojům a svým myšlenkovým vedením v nově vznikajících oblastech bezpečnosti.
 
 **Významné publikace a zprávy**:
 
-* [Recenze zabezpečení Homebrew 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Posouzení zabezpečení správce balíčků
-* [Recenze zabezpečení Hej](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Posouzení zabezpečení e-mailové služby
-* [Bezpečnostní přehled cURL 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Analýza zabezpečení síťové knihovny
+* [Homebrew Security Review 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Hodnocení bezpečnosti správce balíčků
+* [Hey Security Review](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Hodnocení bezpečnosti e-mailové služby
+* [cURL Security Review 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Analýza bezpečnosti síťové knihovny
+
 
 ## Porovnání společností {#company-comparison}
 
-| Společnost | Umístění | Oblast zaměření | Významné silné stránky | Veřejné zprávy |
-| --------------------------- | ---------------------- | ------------------------ | ----------------------------------------------------- | -------------------------- |
-| **Cure53** | Berlín, Německo | Zabezpečení webových aplikací | Podrobné penetrační testování, komplexní reporting | 3+ hodnocení Mullvadu |
-| **Radikálně otevřená bezpečnost** | Amsterdam, Nizozemsko | Soukromí a otevřený zdrojový kód | Neziskový model, transparentnost, odborné znalosti VPN | Veřejné sdílení metodiky |
-| **Zaručená AB** | Göteborg, Švédsko | Technická infrastruktura | Zabezpečení e-mailu/DNS, hodnocení API | Specializované audity serverů |
-| **Stopa kousků** | New York, USA | Zabezpečení softwaru | Blockchain, kryptografie, bezpečnostní nástroje | Příspěvky s otevřeným zdrojovým kódem |
-
+| Společnost                  | Lokalita               | Oblast zaměření         | Významné silné stránky                               | Veřejné zprávy            |
+| --------------------------- | ---------------------- | ----------------------- | ---------------------------------------------------- | ------------------------- |
+| **Cure53**                  | Berlín, Německo        | Bezpečnost webových aplikací | Detailní penetrační testování, komplexní reporty     | 3+ hodnocení Mullvad      |
+| **Radically Open Security** | Amsterdam, Nizozemsko  | Soukromí & Open Source  | Neziskový model, transparentnost, expertíza v VPN    | Sdílení veřejné metodologie |
+| **Assured AB**              | Göteborg, Švédsko      | Technická infrastruktura | Bezpečnost e-mailů/DNS, hodnocení API                 | Specializované audity serverů |
+| **Trail of Bits**           | New York, USA          | Bezpečnost softwaru     | Blockchain, kryptografie, nástroje pro bezpečnost     | Příspěvky do open-source  |
 ## Kritéria výběru {#selection-criteria}
 
-Při hodnocení těchto společností provádějících bezpečnostní audit jsme zvážili několik kritických faktorů, které by organizace měly posoudit při výběru bezpečnostního partnera:
+Při hodnocení těchto společností provádějících bezpečnostní audity jsme zvažovali několik klíčových faktorů, které by organizace měly posoudit při výběru bezpečnostního partnera:
 
-**Technické znalosti**: Všechny doporučené společnosti prokazují hluboké technické znalosti v různých oblastech, včetně zabezpečení webových aplikací, hodnocení infrastruktury, kryptografických implementací a nových technologií.
+**Technická odbornost**: Všechny doporučené společnosti prokazují hluboké technické znalosti v několika oblastech, včetně bezpečnosti webových aplikací, hodnocení infrastruktury, kryptografických implementací a nových technologií.
 
-**Transparentnost a reporting**: Každá firma poskytuje komplexní a praktické zprávy, které jasně sdělují zjištění, posouzení rizik a strategie nápravy. Mnohé také přispívají k širší bezpečnostní komunitě prostřednictvím veřejného výzkumu a nástrojů s otevřeným zdrojovým kódem.
+**Transparentnost a reportování**: Každá firma poskytuje komplexní, akční zprávy, které jasně komunikují zjištění, hodnocení rizik a strategie nápravy. Mnohé také přispívají širší bezpečnostní komunitě prostřednictvím veřejného výzkumu a open-source nástrojů.
 
-**Historie výsledků**: Uvedené společnosti mají za sebou prokazatelné výsledky u významných klientů a při řešení složitých bezpečnostních problémů. Jejich veřejné zprávy prokazují konzistentní kvalitu a důkladnost.
+**Reference**: Uvedené společnosti mají osvědčené výsledky s významnými klienty a složitými bezpečnostními výzvami. Jejich veřejné zprávy ukazují konzistentní kvalitu a důkladnost.
 
-**Soulad s hodnotami**: Organizace, které upřednostňují soukromí, principy open source a transparentnost, prokázaly závazek k těmto hodnotám prostřednictvím své práce a obchodních praktik.
+**Soulad s hodnotami**: Pro organizace, které upřednostňují soukromí, principy open-source a transparentnost, tyto společnosti prokázaly závazek k těmto hodnotám prostřednictvím své práce a obchodních praktik.
 
-**Neustálé zlepšování**: Všechny doporučené firmy se neustále seznamují s vyvíjejícími se hrozbami a novými technologiemi a zajišťují tak, aby jejich hodnocení zůstala relevantní a komplexní.
+**Nepřetržité zlepšování**: Všechny doporučené firmy sledují aktuální vývoj hrozeb a nové technologie, což zajišťuje, že jejich hodnocení zůstávají relevantní a komplexní.
 
-Prostředí bezpečnostních auditů se neustále vyvíjí a doporučujeme organizacím, aby si provedly vlastní hodnocení na základě specifických potřeb, rozpočtových omezení a požadavků projektu. Kterákoli z těchto společností by však poskytla výjimečné služby v oblasti bezpečnostního posouzení organizacím, které to s ochranou své infrastruktury a uživatelských dat myslí vážně.
+Oblast bezpečnostních auditů se neustále vyvíjí a doporučujeme organizacím provést vlastní hodnocení na základě specifických potřeb, rozpočtových omezení a požadavků projektu. Nicméně jakákoli z těchto společností by poskytla vynikající služby bezpečnostního hodnocení pro organizace, které to s ochranou své infrastruktury a uživatelských dat myslí vážně.

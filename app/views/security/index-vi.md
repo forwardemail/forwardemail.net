@@ -1,158 +1,166 @@
-# Thực hành bảo mật {#security-practices}
+# Thực hành Bảo mật {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="Thực hành bảo mật Forward Email" class="rounded-lg" />
+
 
 ## Mục lục {#table-of-contents}
 
 * [Lời nói đầu](#foreword)
-* [An ninh cơ sở hạ tầng](#infrastructure-security)
-  * [Trung tâm dữ liệu an toàn](#secure-data-centers)
-  * [Bảo mật mạng](#network-security)
-* [Bảo mật email](#email-security)
+* [Bảo mật Hạ tầng](#infrastructure-security)
+  * [Trung tâm Dữ liệu An toàn](#secure-data-centers)
+  * [Bảo mật Mạng](#network-security)
+* [Bảo mật Email](#email-security)
   * [Mã hóa](#encryption)
   * [Xác thực và Ủy quyền](#authentication-and-authorization)
-  * [Các biện pháp chống lạm dụng](#anti-abuse-measures)
-* [Bảo vệ dữ liệu](#data-protection)
-  * [Giảm thiểu dữ liệu](#data-minimization)
+  * [Biện pháp Chống Lạm dụng](#anti-abuse-measures)
+* [Bảo vệ Dữ liệu](#data-protection)
+  * [Giảm thiểu Dữ liệu](#data-minimization)
   * [Sao lưu và Phục hồi](#backup-and-recovery)
-* [Nhà cung cấp dịch vụ](#service-providers)
+* [Nhà cung cấp Dịch vụ](#service-providers)
 * [Tuân thủ và Kiểm toán](#compliance-and-auditing)
-  * [Đánh giá an ninh thường xuyên](#regular-security-assessments)
-  * [Sự tuân thủ](#compliance)
-* [Phản ứng sự cố](#incident-response)
-* [Vòng đời phát triển bảo mật](#security-development-lifecycle)
-* [Làm cứng máy chủ](#server-hardening)
-* [Thỏa thuận mức dịch vụ](#service-level-agreement)
-* [Bảo mật nguồn mở](#open-source-security)
-* [An ninh nhân viên](#employee-security)
-* [Cải tiến liên tục](#continuous-improvement)
-* [Tài nguyên bổ sung](#additional-resources)
+  * [Đánh giá Bảo mật Định kỳ](#regular-security-assessments)
+  * [Tuân thủ](#compliance)
+* [Phản ứng Sự cố](#incident-response)
+* [Vòng đời Phát triển Bảo mật](#security-development-lifecycle)
+* [Tăng cường Máy chủ](#server-hardening)
+* [Thỏa thuận Mức dịch vụ](#service-level-agreement)
+* [Bảo mật Mã nguồn Mở](#open-source-security)
+* [Bảo mật Nhân viên](#employee-security)
+* [Cải tiến Liên tục](#continuous-improvement)
+* [Tài nguyên Bổ sung](#additional-resources)
+
 
 ## Lời nói đầu {#foreword}
 
-Tại Forward Email, bảo mật là ưu tiên hàng đầu của chúng tôi. Chúng tôi đã triển khai các biện pháp bảo mật toàn diện để bảo vệ thông tin liên lạc qua email và dữ liệu cá nhân của bạn. Tài liệu này nêu rõ các biện pháp bảo mật và các bước chúng tôi thực hiện để đảm bảo tính bảo mật, toàn vẹn và khả dụng của email của bạn.
+Tại Forward Email, bảo mật là ưu tiên hàng đầu của chúng tôi. Chúng tôi đã triển khai các biện pháp bảo mật toàn diện để bảo vệ giao tiếp email và dữ liệu cá nhân của bạn. Tài liệu này trình bày các thực hành bảo mật của chúng tôi và các bước chúng tôi thực hiện để đảm bảo tính bảo mật, toàn vẹn và khả dụng của email của bạn.
 
-## Bảo mật cơ sở hạ tầng {#infrastructure-security}
 
-### Trung tâm dữ liệu an toàn {#secure-data-centers}
+## Bảo mật Hạ tầng {#infrastructure-security}
 
-Cơ sở hạ tầng của chúng tôi được lưu trữ tại các trung tâm dữ liệu tuân thủ SOC 2 với:
+### Trung tâm Dữ liệu An toàn {#secure-data-centers}
 
-* An ninh và giám sát vật lý 24/7
-* Kiểm soát ra vào bằng sinh trắc học
+Hạ tầng của chúng tôi được lưu trữ tại các trung tâm dữ liệu tuân thủ SOC 2 với:
+
+* An ninh vật lý và giám sát 24/7
+* Kiểm soát truy cập bằng sinh trắc học
 * Hệ thống điện dự phòng
-* Phát hiện và chữa cháy tiên tiến
+* Phát hiện và dập cháy tiên tiến
 * Giám sát môi trường
 
-### Bảo mật mạng {#network-security}
+### Bảo mật Mạng {#network-security}
 
 Chúng tôi triển khai nhiều lớp bảo mật mạng:
 
 * Tường lửa cấp doanh nghiệp với danh sách kiểm soát truy cập nghiêm ngặt
 * Bảo vệ và giảm thiểu DDoS
-* Quét lỗ hổng mạng thường xuyên
+* Quét lỗ hổng mạng định kỳ
 * Hệ thống phát hiện và ngăn chặn xâm nhập
-* Mã hóa lưu lượng giữa tất cả các điểm cuối dịch vụ
-* Bảo vệ quét cổng với tính năng tự động chặn hoạt động đáng ngờ
+* Mã hóa lưu lượng giữa tất cả các điểm dịch vụ
+* Bảo vệ quét cổng với chặn tự động các hoạt động đáng ngờ
 
 > \[!IMPORTANT]
-> Mọi dữ liệu đang truyền đi đều được mã hóa bằng TLS 1.2+ với bộ mã hóa hiện đại.
+> Tất cả dữ liệu truyền tải đều được mã hóa sử dụng TLS 1.2+ với bộ mã hóa hiện đại.
+
 
 ## Bảo mật Email {#email-security}
 
 ### Mã hóa {#encryption}
 
-* **Bảo mật lớp truyền tải (TLS)**: Toàn bộ lưu lượng email được mã hóa khi truyền tải bằng TLS 1.2 trở lên
-* **Mã hóa đầu cuối**: Hỗ trợ các tiêu chuẩn OpenPGP/MIME và S/MIME
-* **Mã hóa lưu trữ**: Tất cả email được lưu trữ đều được mã hóa khi lưu trữ bằng mã hóa ChaCha20-Poly1305 trong các tệp SQLite
-* **Mã hóa toàn bộ ổ đĩa**: Mã hóa LUKS v2 cho toàn bộ ổ đĩa
-* **Bảo vệ toàn diện**: Chúng tôi triển khai mã hóa khi lưu trữ, mã hóa trong bộ nhớ và mã hóa khi truyền tải
+* **Transport Layer Security (TLS)**: Tất cả lưu lượng email được mã hóa khi truyền tải sử dụng TLS 1.2 trở lên
+* **Mã hóa Đầu-cuối**: Hỗ trợ các chuẩn OpenPGP/MIME và S/MIME
+* **Mã hóa Lưu trữ**: Tất cả email lưu trữ được mã hóa khi nghỉ sử dụng mã hóa ChaCha20-Poly1305 trong các file SQLite
+* **Mã hóa Toàn bộ Ổ đĩa**: Mã hóa LUKS v2 cho toàn bộ ổ đĩa
+* **Bảo vệ Toàn diện**: Chúng tôi triển khai mã hóa khi lưu trữ, mã hóa trong bộ nhớ và mã hóa khi truyền tải
 
 > \[!NOTE]
-> Chúng tôi là dịch vụ email đầu tiên và duy nhất trên thế giới sử dụng **[hộp thư SQLite chống lượng tử và được mã hóa riêng lẻ](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Chúng tôi là dịch vụ email đầu tiên và duy nhất trên thế giới sử dụng **[hộp thư SQLite được mã hóa cá nhân và chống lượng tử](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Xác thực và Ủy quyền {#authentication-and-authorization}
 
 * **Ký DKIM**: Tất cả email gửi đi đều được ký bằng DKIM
-* **SPF và DMARC**: Hỗ trợ đầy đủ SPF và DMARC để ngăn chặn email giả mạo
-* **MTA-STS**: Hỗ trợ MTA-STS để thực thi mã hóa TLS
-* **Xác thực đa yếu tố**: Có sẵn cho tất cả quyền truy cập tài khoản
+* **SPF và DMARC**: Hỗ trợ đầy đủ SPF và DMARC để ngăn chặn giả mạo email
+* **MTA-STS**: Hỗ trợ MTA-STS để bắt buộc mã hóa TLS
+* **Xác thực Đa yếu tố**: Có sẵn cho tất cả truy cập tài khoản
 
-### Biện pháp chống lạm dụng {#anti-abuse-measures}
+### Biện pháp Chống Lạm dụng {#anti-abuse-measures}
 
-* **Lọc thư rác**: Phát hiện thư rác nhiều lớp với công nghệ học máy
-* **Quét vi-rút**: Quét tất cả tệp đính kèm theo thời gian thực
-* **Giới hạn tốc độ**: Bảo vệ chống lại các cuộc tấn công brute force và enumeration
-* **Danh tiếng IP**: Theo dõi danh tiếng IP gửi
-* **Lọc nội dung**: Phát hiện URL độc hại và các nỗ lực lừa đảo
+* **Lọc Spam**: Phát hiện spam đa lớp với học máy
+* **Quét Virus**: Quét thời gian thực tất cả tệp đính kèm
+* **Giới hạn Tốc độ**: Bảo vệ chống tấn công brute force và dò tìm
+* **Đánh giá Uy tín IP**: Giám sát uy tín IP gửi đi
+* **Lọc Nội dung**: Phát hiện URL độc hại và các cố gắng lừa đảo
 
-## Bảo vệ dữ liệu {#data-protection}
 
-### Giảm thiểu dữ liệu {#data-minimization}
+## Bảo vệ Dữ liệu {#data-protection}
+
+### Giảm thiểu Dữ liệu {#data-minimization}
 
 Chúng tôi tuân theo nguyên tắc giảm thiểu dữ liệu:
 
 * Chúng tôi chỉ thu thập dữ liệu cần thiết để cung cấp dịch vụ
-* Nội dung email được xử lý trong bộ nhớ và không được lưu trữ liên tục trừ khi cần thiết cho việc phân phối IMAP/POP3
-* Nhật ký được ẩn danh và chỉ được lưu giữ trong thời gian cần thiết
-
+* Nội dung email được xử lý trong bộ nhớ và không lưu trữ lâu dài trừ khi cần thiết cho việc giao nhận IMAP/POP3
+* Nhật ký được ẩn danh và chỉ lưu giữ trong thời gian cần thiết
 ### Sao lưu và Phục hồi {#backup-and-recovery}
 
 * Sao lưu tự động hàng ngày với mã hóa
 * Lưu trữ sao lưu phân tán theo địa lý
-* Kiểm tra khôi phục sao lưu thường xuyên
-* Quy trình phục hồi sau thảm họa với RPO và RTO được xác định
+* Kiểm tra phục hồi sao lưu định kỳ
+* Quy trình phục hồi thảm họa với RPO và RTO được xác định
+
 
 ## Nhà cung cấp dịch vụ {#service-providers}
 
-Chúng tôi lựa chọn kỹ lưỡng các nhà cung cấp dịch vụ để đảm bảo họ đáp ứng các tiêu chuẩn bảo mật cao của chúng tôi. Dưới đây là danh sách các nhà cung cấp chúng tôi sử dụng để truyền dữ liệu quốc tế và tình trạng tuân thủ GDPR của họ:
+Chúng tôi lựa chọn kỹ lưỡng các nhà cung cấp dịch vụ để đảm bảo họ đáp ứng các tiêu chuẩn bảo mật cao của chúng tôi. Dưới đây là các nhà cung cấp mà chúng tôi sử dụng cho việc chuyển dữ liệu quốc tế và trạng thái tuân thủ GDPR của họ:
 
-| Nhà cung cấp | Mục đích | Được chứng nhận DPF | Trang tuân thủ GDPR |
-| --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
-| [Cloudflare](https://www.cloudflare.com) | CDN, bảo vệ DDoS, DNS | ✅ Có | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
-| [DataPacket](https://www.datapacket.com) | Cơ sở hạ tầng máy chủ | ❌ Không | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
-| [Digital Ocean](https://www.digitalocean.com) | Cơ sở hạ tầng đám mây | ❌ Không | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
-| [GitHub](https://github.com) | Lưu trữ mã nguồn, CI/CD | ✅ Có | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
-| [Vultr](https://www.vultr.com) | Cơ sở hạ tầng đám mây | ❌ Không | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
-| [Stripe](https://stripe.com) | Xử lý thanh toán | ✅ Có | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
-| [PayPal](https://www.paypal.com) | Xử lý thanh toán | ❌ Không | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| Nhà cung cấp                                  | Mục đích                   | Được chứng nhận DPF | Trang tuân thủ GDPR                                                                                     |
+| --------------------------------------------- | -------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------- |
+| [Cloudflare](https://www.cloudflare.com)      | CDN, bảo vệ DDoS, DNS      | ✅ Có              | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/)                                           |
+| [DataPacket](https://www.datapacket.com)      | Hạ tầng máy chủ            | ❌ Không           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
+| [Digital Ocean](https://www.digitalocean.com) | Hạ tầng đám mây            | ❌ Không           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
+| [GitHub](https://github.com)                  | Lưu trữ mã nguồn, CI/CD    | ✅ Có              | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Vultr](https://www.vultr.com)                | Hạ tầng đám mây            | ❌ Không           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
+| [Stripe](https://stripe.com)                  | Xử lý thanh toán           | ✅ Có              | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
+| [PayPal](https://www.paypal.com)              | Xử lý thanh toán           | ❌ Không           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |
 
-Chúng tôi sử dụng các nhà cung cấp này để đảm bảo cung cấp dịch vụ đáng tin cậy và an toàn, đồng thời tuân thủ các quy định bảo vệ dữ liệu quốc tế. Mọi hoạt động truyền dữ liệu đều được thực hiện với các biện pháp bảo vệ phù hợp để bảo vệ thông tin cá nhân của bạn.
+Chúng tôi sử dụng các nhà cung cấp này để đảm bảo cung cấp dịch vụ đáng tin cậy, an toàn đồng thời duy trì tuân thủ các quy định bảo vệ dữ liệu quốc tế. Tất cả các chuyển dữ liệu đều được thực hiện với các biện pháp bảo vệ thích hợp nhằm bảo vệ thông tin cá nhân của bạn.
+
 
 ## Tuân thủ và Kiểm toán {#compliance-and-auditing}
 
-### Đánh giá bảo mật thường xuyên {#regular-security-assessments}
+### Đánh giá An ninh Định kỳ {#regular-security-assessments}
 
-Đội ngũ của chúng tôi thường xuyên giám sát, xem xét và đánh giá cơ sở mã, máy chủ, cơ sở hạ tầng và các hoạt động thực tiễn. Chúng tôi triển khai một chương trình bảo mật toàn diện bao gồm:
+Đội ngũ của chúng tôi thường xuyên giám sát, xem xét và đánh giá mã nguồn, máy chủ, hạ tầng và các thực hành. Chúng tôi triển khai một chương trình bảo mật toàn diện bao gồm:
 
-* Thay đổi khóa SSH thường xuyên
-* Liên tục theo dõi nhật ký truy cập
+* Thay đổi định kỳ khóa SSH
+* Giám sát liên tục các nhật ký truy cập
 * Quét bảo mật tự động
 * Quản lý lỗ hổng chủ động
-* Đào tạo bảo mật thường xuyên cho tất cả thành viên trong nhóm
+* Đào tạo bảo mật định kỳ cho tất cả thành viên trong nhóm
 
 ### Tuân thủ {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr) thực hành xử lý dữ liệu tuân thủ
-* [Thỏa thuận xử lý dữ liệu (DPA)](https://forwardemail.net/dpa) dành cho khách hàng doanh nghiệp
-* Các biện pháp kiểm soát quyền riêng tư tuân thủ CCPA
+* Thực hành xử lý dữ liệu tuân thủ [GDPR](https://forwardemail.net/gdpr)
+* Có sẵn [Thỏa thuận Xử lý Dữ liệu (DPA)](https://forwardemail.net/dpa) cho khách hàng doanh nghiệp
+* Kiểm soát quyền riêng tư tuân thủ CCPA
 * Quy trình được kiểm toán SOC 2 Loại II
 
-## Phản hồi sự cố {#incident-response}
 
-Kế hoạch ứng phó sự cố bảo mật của chúng tôi bao gồm:
+## Phản ứng Sự cố {#incident-response}
+
+Kế hoạch phản ứng sự cố bảo mật của chúng tôi bao gồm:
 
 1. **Phát hiện**: Hệ thống giám sát và cảnh báo tự động
-2. **Kiềm chế**: Cô lập ngay lập tức các hệ thống bị ảnh hưởng
-3. **Xóa bỏ**: Loại bỏ mối đe dọa và phân tích nguyên nhân gốc rễ
+2. **Kiểm soát**: Cách ly ngay lập tức các hệ thống bị ảnh hưởng
+3. **Loại bỏ**: Loại bỏ mối đe dọa và phân tích nguyên nhân gốc rễ
 4. **Phục hồi**: Khôi phục dịch vụ an toàn
-5. **Thông báo**: Liên lạc kịp thời với người dùng bị ảnh hưởng
-6. **Phân tích sau sự cố**: Đánh giá và cải thiện toàn diện
+5. **Thông báo**: Thông tin kịp thời đến người dùng bị ảnh hưởng
+6. **Phân tích sau sự cố**: Đánh giá toàn diện và cải tiến
 
 > \[!WARNING]
-> Nếu bạn phát hiện lỗ hổng bảo mật, vui lòng báo cáo ngay cho <security@forwardemail.net>.
+> Nếu bạn phát hiện lỗ hổng bảo mật, vui lòng báo cáo ngay lập tức tới <security@forwardemail.net>.
 
-## Vòng đời phát triển bảo mật {#security-development-lifecycle}
+
+## Vòng đời Phát triển Bảo mật {#security-development-lifecycle}
 
 ```mermaid
 flowchart LR
@@ -168,8 +176,7 @@ flowchart LR
     E -.-> J[Final Security Review]
     F -.-> K[Vulnerability Management]
 ```
-
-Tất cả mã đều trải qua:
+Tất cả mã nguồn trải qua:
 
 * Thu thập yêu cầu bảo mật
 * Mô hình hóa mối đe dọa trong quá trình thiết kế
@@ -178,61 +185,67 @@ Tất cả mã đều trải qua:
 * Đánh giá mã với trọng tâm bảo mật
 * Quét lỗ hổng phụ thuộc
 
-## Bảo mật máy chủ {#server-hardening}
 
-[Cấu hình Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) của chúng tôi triển khai nhiều biện pháp tăng cường bảo mật máy chủ:
+## Tăng cường bảo mật máy chủ {#server-hardening}
 
-* **Tắt Truy cập USB**: Các cổng vật lý bị vô hiệu hóa bằng cách đưa mô-đun hạt nhân lưu trữ USB vào danh sách đen
-* **Quy tắc Tường lửa**: Các quy tắc iptables nghiêm ngặt chỉ cho phép các kết nối cần thiết
-* **Bảo mật SSH**: Chỉ xác thực bằng khóa, không đăng nhập bằng mật khẩu, vô hiệu hóa đăng nhập root
-* **Cô lập Dịch vụ**: Mỗi dịch vụ chạy với các đặc quyền tối thiểu cần thiết
-* **Cập nhật Tự động**: Các bản vá bảo mật được tự động áp dụng
-* **Khởi động An toàn**: Quy trình khởi động được xác minh để ngăn chặn giả mạo
-* **Bảo mật Hạt nhân**: Bảo mật các tham số hạt nhân và cấu hình sysctl
-* **Hạn chế Hệ thống Tệp**: Các tùy chọn gắn kết noexec, nosuid và nodev khi thích hợp
-* **Tắt Core Dumps**: Hệ thống được cấu hình để ngăn chặn core dumps vì lý do bảo mật
-* **Tắt Swap**: Tắt bộ nhớ Swap để ngăn chặn rò rỉ dữ liệu
-* **Bảo vệ Quét Cổng**: Tự động phát hiện và chặn các nỗ lực quét cổng
-* **Tắt Trang Khổng lồ Trong suốt**: Tắt THP để cải thiện hiệu suất và bảo mật
-* **Bảo mật Dịch vụ Hệ thống**: Các dịch vụ không cần thiết như Apport đã bị vô hiệu hóa
-* **Quản lý người dùng**: Nguyên tắc đặc quyền tối thiểu với người dùng triển khai và devops riêng biệt
-* **Giới hạn mô tả tệp**: Tăng giới hạn để cải thiện hiệu suất và bảo mật
+[Cấu hình Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) của chúng tôi thực hiện nhiều biện pháp tăng cường bảo mật máy chủ:
 
-## Thỏa thuận mức dịch vụ {#service-level-agreement}
+* **Tắt truy cập USB**: Các cổng vật lý bị vô hiệu hóa bằng cách đưa module kernel usb-storage vào danh sách đen
+* **Quy tắc tường lửa**: Quy tắc iptables nghiêm ngặt chỉ cho phép các kết nối cần thiết
+* **Tăng cường SSH**: Chỉ xác thực bằng khóa, không đăng nhập bằng mật khẩu, vô hiệu hóa đăng nhập root
+* **Cách ly dịch vụ**: Mỗi dịch vụ chạy với quyền tối thiểu cần thiết
+* **Cập nhật tự động**: Các bản vá bảo mật được áp dụng tự động
+* **Khởi động an toàn**: Quá trình khởi động được xác minh để ngăn chặn can thiệp
+* **Tăng cường kernel**: Tham số kernel và cấu hình sysctl an toàn
+* **Hạn chế hệ thống tập tin**: các tùy chọn mount noexec, nosuid, và nodev khi thích hợp
+* **Tắt core dumps**: Hệ thống được cấu hình để ngăn chặn core dumps vì lý do bảo mật
+* **Tắt swap**: Bộ nhớ swap bị vô hiệu hóa để ngăn rò rỉ dữ liệu
+* **Bảo vệ quét cổng**: Phát hiện và chặn tự động các cố gắng quét cổng
+* **Tắt Transparent Huge Pages**: THP bị vô hiệu hóa để cải thiện hiệu suất và bảo mật
+* **Tăng cường dịch vụ hệ thống**: Vô hiệu hóa các dịch vụ không cần thiết như Apport
+* **Quản lý người dùng**: Nguyên tắc quyền tối thiểu với người dùng deploy và devops riêng biệt
+* **Giới hạn mô tả tập tin**: Tăng giới hạn để cải thiện hiệu suất và bảo mật
 
-Chúng tôi duy trì mức độ sẵn sàng và độ tin cậy dịch vụ cao. Cơ sở hạ tầng của chúng tôi được thiết kế để dự phòng và chịu lỗi, đảm bảo dịch vụ email của bạn luôn hoạt động. Mặc dù chúng tôi không công bố tài liệu SLA chính thức, chúng tôi cam kết:
 
-* Thời gian hoạt động 99,9%+ cho tất cả các dịch vụ
-* Phản hồi nhanh chóng khi có sự cố dịch vụ
-* Giao tiếp minh bạch trong quá trình xảy ra sự cố
-* Bảo trì thường xuyên trong thời gian lưu lượng truy cập thấp
+## Thỏa thuận cấp độ dịch vụ {#service-level-agreement}
 
-## Bảo mật nguồn mở {#open-source-security}
+Chúng tôi duy trì mức độ sẵn sàng và độ tin cậy dịch vụ cao. Hạ tầng của chúng tôi được thiết kế để có tính dự phòng và chịu lỗi nhằm đảm bảo dịch vụ email của bạn luôn hoạt động. Mặc dù chúng tôi không công bố tài liệu SLA chính thức, chúng tôi cam kết:
 
-Với tư cách là [dịch vụ nguồn mở](https://github.com/forwardemail/forwardemail.net), quyền bảo mật của chúng tôi được hưởng lợi từ:
+* Thời gian hoạt động 99,9%+ cho tất cả dịch vụ
+* Phản hồi nhanh chóng khi có gián đoạn dịch vụ
+* Giao tiếp minh bạch trong các sự cố
+* Bảo trì định kỳ vào các thời điểm ít lưu lượng
 
-* Mã minh bạch, có thể được kiểm tra bởi bất kỳ ai
+
+## Bảo mật mã nguồn mở {#open-source-security}
+
+Là một [dịch vụ mã nguồn mở](https://github.com/forwardemail/forwardemail.net), bảo mật của chúng tôi được hưởng lợi từ:
+
+* Mã nguồn minh bạch có thể được bất kỳ ai kiểm tra
 * Cải tiến bảo mật do cộng đồng thúc đẩy
-* Xác định và vá lỗ hổng nhanh chóng
-* Không có bảo mật thông qua sự mơ hồ
+* Phát hiện và vá lỗi nhanh chóng
+* Không bảo mật dựa trên sự mờ mịt
+
 
 ## Bảo mật nhân viên {#employee-security}
 
-* Kiểm tra lý lịch của tất cả nhân viên
-* Đào tạo nhận thức an ninh
-* Nguyên tắc tiếp cận đặc quyền tối thiểu
-* Đào tạo an ninh thường xuyên
+* Kiểm tra lý lịch cho tất cả nhân viên
+* Đào tạo nhận thức về bảo mật
+* Nguyên tắc truy cập quyền tối thiểu
+* Giáo dục bảo mật định kỳ
+
 
 ## Cải tiến liên tục {#continuous-improvement}
 
-Chúng tôi liên tục cải thiện khả năng bảo mật của mình thông qua:
+Chúng tôi liên tục cải thiện vị thế bảo mật thông qua:
 
-* Theo dõi các xu hướng bảo mật và các mối đe dọa mới nổi
-* Thường xuyên rà soát và cập nhật các chính sách bảo mật
+* Giám sát xu hướng bảo mật và các mối đe dọa mới nổi
+* Đánh giá và cập nhật chính sách bảo mật định kỳ
 * Phản hồi từ các nhà nghiên cứu bảo mật và người dùng
-* Tham gia vào cộng đồng bảo mật
+* Tham gia cộng đồng bảo mật
 
-Để biết thêm thông tin về các hoạt động bảo mật của chúng tôi hoặc để báo cáo các vấn đề bảo mật, vui lòng liên hệ <security@forwardemail.net>.
+Để biết thêm thông tin về các thực hành bảo mật của chúng tôi hoặc để báo cáo các mối quan ngại về bảo mật, vui lòng liên hệ <security@forwardemail.net>.
+
 
 ## Tài nguyên bổ sung {#additional-resources}
 
@@ -244,4 +257,4 @@ Chúng tôi liên tục cải thiện khả năng bảo mật của mình thông
 * [Chính sách bảo mật](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
 * [Kho lưu trữ GitHub](https://github.com/forwardemail/forwardemail.net)
-* [FAQ](https://forwardemail.net/en/faq)
+* [Câu hỏi thường gặp](https://forwardemail.net/en/faq)

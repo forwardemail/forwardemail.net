@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# よくある質問 {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email よくある質問" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## 目次 {#table-of-contents}
+
+* [クイックスタート](#quick-start)
+* [はじめに](#introduction)
+  * [Forward Emailとは何ですか](#what-is-forward-email)
+  * [誰がForward Emailを使っていますか](#who-uses-forward-email)
+  * [Forward Emailの歴史は何ですか](#what-is-forward-emails-history)
+  * [このサービスの速度はどのくらいですか](#how-fast-is-this-service)
+* [メールクライアント](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [モバイルデバイス](#mobile-devices)
+  * [Sendmail SMTPリレー設定](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTPリレー設定](#exim4-smtp-relay-configuration)
+  * [msmtp SMTPクライアント設定](#msmtp-smtp-client-configuration)
+  * [コマンドラインメールクライアント](#command-line-email-clients)
+  * [Windowsメール設定](#windows-email-configuration)
+  * [Postfix SMTPリレー設定](#postfix-smtp-relay-configuration)
+  * [Gmailでの送信メール設定方法](#how-to-send-mail-as-using-gmail)
+  * [Gmailでの送信メール設定の旧無料ガイドとは](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [高度なGmailルーティング設定](#advanced-gmail-routing-configuration)
+  * [高度なOutlookルーティング設定](#advanced-outlook-routing-configuration)
+* [トラブルシューティング](#troubleshooting)
+  * [テストメールが届かないのはなぜですか](#why-am-i-not-receiving-my-test-emails)
+  * [Forward Emailでメールクライアントを設定するには](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [メールが迷惑メールやジャンクに入る理由とドメイン評価の確認方法](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [スパムメールを受け取った場合の対処法](#what-should-i-do-if-i-receive-spam-emails)
+  * [Gmailで自分宛のテストメールが「疑わしい」と表示される理由](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Gmailでvia forwardemail dot netを削除できますか](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [データ管理](#data-management)
+  * [サーバーの所在地はどこですか](#where-are-your-servers-located)
+  * [メールボックスのエクスポートとバックアップ方法](#how-do-i-export-and-backup-my-mailbox)
+  * [既存のメールボックスのインポートと移行方法](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [バックアップに自分のS3互換ストレージを使うには](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [SQLiteバックアップをEMLファイルに変換する方法](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [セルフホスティングはサポートしていますか](#do-you-support-self-hosting)
+* [メール設定](#email-configuration)
+  * [メール転送の開始と設定方法](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [複数のMX交換機とサーバーを使った高度な転送は可能ですか](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [休暇応答（不在自動応答）の設定方法](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Forward EmailのSPF設定方法](#how-do-i-set-up-spf-for-forward-email)
+  * [Forward EmailのDKIM設定方法](#how-do-i-set-up-dkim-for-forward-email)
+  * [Forward EmailのDMARC設定方法](#how-do-i-set-up-dmarc-for-forward-email)
+  * [DMARCレポートの閲覧方法](#how-do-i-view-dmarc-reports)
+  * [連絡先の接続と設定方法](#how-do-i-connect-and-configure-my-contacts)
+  * [カレンダーの接続と設定方法](#how-do-i-connect-and-configure-my-calendars)
+  * [カレンダーの追加と既存カレンダーの管理方法](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [タスクとリマインダーの接続と設定方法](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [macOSリマインダーでタスクが作成できない理由](#why-cant-i-create-tasks-in-macos-reminders)
+  * [AndroidでTasks.orgを設定する方法](#how-do-i-set-up-tasksorg-on-android)
+  * [Forward EmailのSRS設定方法](#how-do-i-set-up-srs-for-forward-email)
+  * [Forward EmailのMTA-STS設定方法](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [メールアドレスにプロフィール画像を追加する方法](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [高度な機能](#advanced-features)
+  * [マーケティング関連のニュースレターやメーリングリストはサポートしていますか](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [APIでのメール送信はサポートしていますか](#do-you-support-sending-email-with-api)
+  * [IMAPでのメール受信はサポートしていますか](#do-you-support-receiving-email-with-imap)
+  * [POP3はサポートしていますか](#do-you-support-pop3)
+  * [カレンダー（CalDAV）はサポートしていますか](#do-you-support-calendars-caldav)
+  * [タスクとリマインダー（CalDAV VTODO）はサポートしていますか](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [連絡先（CardDAV）はサポートしていますか](#do-you-support-contacts-carddav)
+  * [SMTPでのメール送信はサポートしていますか](#do-you-support-sending-email-with-smtp)
+  * [OpenPGP/MIME、エンドツーエンド暗号化（"E2EE"）、Web Key Directory（"WKD"）はサポートしていますか](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [S/MIME暗号化はサポートしていますか](#do-you-support-smime-encryption)
+  * [Sieveメールフィルタリングはサポートしていますか](#do-you-support-sieve-email-filtering)
+  * [MTA-STSはサポートしていますか](#do-you-support-mta-sts)
+  * [パスキーとWebAuthnはサポートしていますか](#do-you-support-passkeys-and-webauthn)
+  * [メールのベストプラクティスはサポートしていますか](#do-you-support-email-best-practices)
+  * [バウンスWebhookはサポートしていますか](#do-you-support-bounce-webhooks)
+  * [Webhookはサポートしていますか](#do-you-support-webhooks)
+  * [正規表現（regex）はサポートしていますか](#do-you-support-regular-expressions-or-regex)
+  * [送信SMTPの制限はどのくらいですか](#what-are-your-outbound-smtp-limits)
+  * [SMTPを有効にするには承認が必要ですか](#do-i-need-approval-to-enable-smtp)
+  * [SMTPサーバーの設定はどのようになっていますか](#what-are-your-smtp-server-configuration-settings)
+  * [IMAPサーバーの設定はどのようになっていますか](#what-are-your-imap-server-configuration-settings)
+  * [POP3サーバーの設定はどのようになっていますか](#what-are-your-pop3-server-configuration-settings)
+  * [ドメインのメール自動検出設定方法](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [セキュリティ](#security-1)
+  * [高度なサーバーハードニング技術](#advanced-server-hardening-techniques)
+  * [SOC 2またはISO 27001認証はありますか](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [メール転送にTLS暗号化を使用していますか](#do-you-use-tls-encryption-for-email-forwarding)
+  * [メール認証ヘッダーは保持していますか](#do-you-preserve-email-authentication-headers)
+  * [元のメールヘッダーを保持し、なりすましを防止していますか](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [スパムや悪用からどのように保護していますか](#how-do-you-protect-against-spam-and-abuse)
+  * [メール内容をディスクに保存していますか](#do-you-store-email-content-on-disk)
+  * [システムクラッシュ時にメール内容が露出する可能性はありますか](#can-email-content-be-exposed-during-system-crashes)
+  * [誰がメールインフラにアクセスできますか](#who-has-access-to-your-email-infrastructure)
+  * [どのインフラプロバイダーを使用していますか](#what-infrastructure-providers-do-you-use)
+  * [データ処理契約（DPA）を提供していますか](#do-you-offer-a-data-processing-agreement-dpa)
+  * [データ漏洩通知はどのように対応していますか](#how-do-you-handle-data-breach-notifications)
+  * [テスト環境は提供していますか](#do-you-offer-a-test-environment)
+  * [監視およびアラートツールは提供していますか](#do-you-provide-monitoring-and-alerting-tools)
+  * [高可用性をどのように確保していますか](#how-do-you-ensure-high-availability)
+  * [国防権限法（NDAA）第889条に準拠していますか](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [システムおよび技術的詳細](#system-and-technical-details)
+  * [メールとその内容を保存していますか](#do-you-store-emails-and-their-contents)
+  * [メール転送システムはどのように動作しますか](#how-does-your-email-forwarding-system-work)
+  * [メールを転送用に処理する方法](#how-do-you-process-an-email-for-forwarding)
+  * [メール配信の問題をどのように処理しますか](#how-do-you-handle-email-delivery-issues)
+  * [IPアドレスがブロックされた場合の対応方法](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [ポストマスターアドレスとは何ですか](#what-are-postmaster-addresses)
+  * [no-replyアドレスとは何ですか](#what-are-no-reply-addresses)
+  * [サーバーのIPアドレスは何ですか](#what-are-your-servers-ip-addresses)
+  * [許可リストはありますか](#do-you-have-an-allowlist)
+  * [デフォルトで許可されているドメイン名の拡張子は何ですか](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [許可リストの基準は何ですか](#what-is-your-allowlist-criteria)
+  * [無料で使えるドメイン名の拡張子は何ですか](#what-domain-name-extensions-can-be-used-for-free)
+  * [グレーリストはありますか](#do-you-have-a-greylist)
+  * [拒否リストはありますか](#do-you-have-a-denylist)
+  * [レート制限はありますか](#do-you-have-rate-limiting)
+  * [バックキャッターからどのように保護していますか](#how-do-you-protect-against-backscatter)
+  * [既知のMAIL FROMスパマーからのバウンスを防止](#prevent-bounces-from-known-mail-from-spammers)
+  * [不要なバウンスを防止してバックキャッターを防ぐ](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [メールのフィンガープリントはどのように判定しますか](#how-do-you-determine-an-email-fingerprint)
+  * [ポート25以外（例：ISPがポート25をブロックしている場合）にメール転送は可能ですか](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Gmailエイリアスのプラス記号+はサポートしていますか](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [サブドメインはサポートしていますか](#does-it-support-sub-domains)
+  * [メールのヘッダーは転送されますか](#does-this-forward-my-emails-headers)
+  * [十分にテストされていますか](#is-this-well-tested)
+  * [SMTPの応答メッセージとコードを転送しますか](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [スパマーを防止し、良好なメール転送の評判を維持する方法](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [ドメイン名のDNSルックアップはどのように行いますか](#how-do-you-perform-dns-lookups-on-domain-names)
+* [アカウントと請求](#account-and-billing)
+  * [有料プランに返金保証はありますか](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [プラン変更時に日割り計算や差額返金はありますか](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [このメール転送サービスを「フォールバック」や「フォールオーバー」MXサーバーとして使えますか](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [特定のエイリアスを無効にできますか](#can-i-disable-specific-aliases)
+  * [複数の受信者にメール転送できますか](#can-i-forward-emails-to-multiple-recipients)
+  * [複数のグローバルキャッチオール受信者を持てますか](#can-i-have-multiple-global-catch-all-recipients)
+  * [エイリアスごとの転送先メールアドレス数に上限はありますか](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [メールを再帰的に転送できますか](#can-i-recursively-forward-emails)
+  * [許可なくメール転送の登録や解除ができますか](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [なぜ無料で使えるのですか](#how-is-it-free)
+  * [最大メールサイズの制限は何ですか](#what-is-the-max-email-size-limit)
+  * [メールのログは保存していますか](#do-you-store-logs-of-emails)
+  * [エラーログは保存していますか](#do-you-store-error-logs)
+  * [メールを読んでいますか](#do-you-read-my-emails)
+  * [Gmailで「送信者として送信」はできますか](#can-i-send-mail-as-in-gmail-with-this)
+  * [Outlookで「送信者として送信」はできますか](#can-i-send-mail-as-in-outlook-with-this)
+  * [Apple MailやiCloud Mailで「送信者として送信」はできますか](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [無制限にメール転送できますか](#can-i-forward-unlimited-emails-with-this)
+  * [1つの料金で無制限のドメインを提供していますか](#do-you-offer-unlimited-domains-for-one-price)
+  * [どの支払い方法を受け付けていますか](#which-payment-methods-do-you-accept)
+* [追加リソース](#additional-resources)
+## クイックスタート {#quick-start}
 
-## Quick Start {#quick-start}
+Forward Email を始めるには：
 
-To get started with Forward Email:
+1. **アカウントを作成** する [forwardemail.net/register](https://forwardemail.net/register)
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **ドメインを追加して確認** する [マイアカウント → ドメイン](/my-account/domains)
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **メールエイリアス／メールボックスを追加・設定** する [マイアカウント → ドメイン](/my-account/domains) → エイリアス
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **セットアップをテスト** するために、新しいエイリアスのいずれかにメールを送信します
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> DNSの変更は世界中に伝播するまでに24〜48時間かかることがありますが、多くの場合はもっと早く反映されます。
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> 配信率を向上させるために、[SPF](#how-do-i-set-up-spf-for-forward-email)、[DKIM](#how-do-i-set-up-dkim-for-forward-email)、および[DMARC](#how-do-i-set-up-dmarc-for-forward-email)レコードの設定を推奨します。
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## はじめに {#introduction}
+
+### Forward Emailとは {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email は、フルのメールホスティングソリューションのコストやメンテナンスなしで、プロフェッショナルなメールアドレスを持ちたい個人、小規模事業者、開発者に最適です。
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+Forward Email は、**フル機能のメールサービスプロバイダー**であり、**カスタムドメイン名向けのメールホスティングプロバイダー**です。
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+唯一の無料かつオープンソースのサービスであり、独自のメールサーバーを設定・維持する複雑さなしにカスタムドメインのメールアドレスを使えます。
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+当サービスは、カスタムドメイン宛のメールを既存のメールアカウントに転送します — さらに専用のメールホスティングプロバイダーとしても利用可能です。
 
-Key features of Forward Email:
+Forward Email の主な特徴：
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **カスタムドメインメール**：独自ドメイン名でプロフェッショナルなメールアドレスを使用可能
+* **無料プラン**：基本的なメール転送を無料で提供
+* **強化されたプライバシー**：メールを読み取らず、データを販売しません
+* **オープンソース**：コードベースはすべてGitHubで公開
+* **SMTP、IMAP、POP3対応**：メールの送受信機能を完全サポート
+* **エンドツーエンド暗号化**：OpenPGP/MIME対応
+* **カスタムキャッチオールエイリアス**：無制限のメールエイリアス作成可能
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+[当社のメール比較ページ](/blog/best-email-service)で56以上の他のメールサービスプロバイダーと比較できます。
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> 無料の[技術ホワイトペーパー](/technical-whitepaper.pdf)を読んでForward Emailについてさらに学びましょう。
 
-### Who uses Forward Email {#who-uses-forward-email}
+### Forward Emailの利用者 {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+当社は50万以上のドメインにメールホスティングおよびメール転送サービスを提供しており、以下の著名なユーザーがいます：
 
-| Customer | Case Study |
+| 顧客                                     | ケーススタディ                                                                                           |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| 米国海軍士官学校                         | [:page_facing_up: ケーススタディ](/blog/docs/federal-government-email-service-section-889-compliant)     |
+| Canonical                                | [:page_facing_up: ケーススタディ](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| Netflix Games                            |                                                                                                          |
+| Linux Foundation                        | [:page_facing_up: ケーススタディ](/blog/docs/linux-foundation-email-enterprise-case-study)               |
+| PHP Foundation                          |                                                                                                          |
+| Fox News Radio                         |                                                                                                          |
+| Disney Ad Sales                        |                                                                                                          |
+| jQuery                                  | [:page_facing_up: ケーススタディ](/blog/docs/linux-foundation-email-enterprise-case-study)               |
+| LineageOS                              |                                                                                                          |
+| Ubuntu                                 | [:page_facing_up: ケーススタディ](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| Kubuntu                                | [:page_facing_up: ケーススタディ](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| Lubuntu                                | [:page_facing_up: ケーススタディ](/blog/docs/canonical-ubuntu-email-enterprise-case-study)               |
+| ケンブリッジ大学                       | [:page_facing_up: ケーススタディ](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| メリーランド大学                       | [:page_facing_up: ケーススタディ](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| ワシントン大学                         | [:page_facing_up: ケーススタディ](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| タフツ大学                             | [:page_facing_up: ケーススタディ](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| スワースモア大学                       | [:page_facing_up: ケーススタディ](/blog/docs/alumni-email-forwarding-university-case-study)              |
+| 南オーストラリア州政府                 |                                                                                                          |
+| ドミニカ共和国政府                     |                                                                                                          |
+| Fly<span>.</span>io                    |                                                                                                          |
+| RCD Hotels                             |                                                                                                          |
+| Isaac Z. Schlueter (npm)               | [:page_facing_up: ケーススタディ](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### Forward Emailの歴史とは {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+Forward Emailについて詳しくは[私たちのAboutページ](/about)をご覧ください。
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### このサービスの速度はどのくらいか {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> 当システムは速度と信頼性を重視して設計されており、複数の冗長サーバーによりメールが迅速に配信されることを保証しています。
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Emailは受信後数秒以内にメッセージをほぼ遅延なく配信します。
 
-Performance metrics:
+パフォーマンス指標：
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **平均配信時間**：受信から転送まで5〜10秒未満（[Time to Inbox "TTI"監視ページ](/tti)をご覧ください）
+* **稼働率**：99.9%以上のサービス可用性
+* **グローバルインフラ**：最適なルーティングのために戦略的に配置されたサーバー
+* **自動スケーリング**：ピーク時のメール量に応じてシステムがスケール
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+当社はリアルタイムで動作しており、遅延キューに依存する他のプロバイダーとは異なります。
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+ディスクへの書き込みやログの保存は行いません — [エラーの例外](#do-you-store-error-logs)および[送信SMTP](#do-you-support-sending-email-with-smtp)（[プライバシーポリシー](/privacy)参照）を除きます。
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+すべてはメモリ内で処理され、[ソースコードはGitHubに公開されています](https://github.com/forwardemail)。
 
-## Email Clients {#email-clients}
+
+## メールクライアント {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Forward Emailダッシュボードで新しいエイリアスを作成し、パスワードを生成します
+2. Thunderbirdを開き、**編集 → アカウント設定 → アカウント操作 → メールアカウントを追加**に進みます
+3. 名前、Forward Emailアドレス、パスワードを入力します
+4. **手動で設定**をクリックし、以下を入力します：
+   * 受信：IMAP、`imap.forwardemail.net`、ポート993、SSL/TLS
+   * 送信：SMTP、`smtp.forwardemail.net`、ポート465、SSL/TLS（推奨；ポート587のSTARTTLSもサポート）
+5. **完了**をクリックします
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Forward Emailダッシュボードで新しいエイリアスを作成し、パスワードを生成します
+2. **ファイル → アカウントの追加**に進みます
+3. Forward Emailアドレスを入力し、**接続**をクリックします
+4. **詳細オプション**を選択し、**手動でアカウントを設定する**を選びます
+5. **IMAP**を選択し、以下を入力します：
+   * 受信：`imap.forwardemail.net`、ポート993、SSL
+   * 送信：`smtp.forwardemail.net`、ポート465、SSL/TLS（推奨；ポート587のSTARTTLSもサポート）
+   * ユーザー名：フルメールアドレス
+   * パスワード：生成したパスワード
+6. **接続**をクリックします
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Forward Emailダッシュボードで新しいエイリアスを作成し、パスワードを生成します
+2. **メール → 環境設定 → アカウント → +**に進みます
+3. **その他のメールアカウント**を選択します
+4. 名前、Forward Emailアドレス、パスワードを入力します
+5. サーバー設定には以下を入力します：
+   * 受信：`imap.forwardemail.net`
+   * 送信：`smtp.forwardemail.net`
+   * ユーザー名：フルメールアドレス
+   * パスワード：生成したパスワード
+6. **サインイン**をクリックします
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Forward Emailダッシュボードで新しいエイリアスを作成し、パスワードを生成します
+2. eM Clientを開き、**メニュー → アカウント → + アカウントを追加**に進みます
+3. **メール**をクリックし、**その他**を選択します
+4. Forward Emailアドレスを入力し、**次へ**をクリックします
+5. 以下のサーバー設定を入力します：
+   * **受信サーバー**：`imap.forwardemail.net`
+   * **送信サーバー**：`smtp.forwardemail.net`
+6. 受信・送信サーバー両方に対して、ユーザー名にフルメールアドレス、パスワードに生成したパスワードを入力します
+7. eM Clientが接続テストを行います。成功したら**次へ**をクリックします
+8. 名前を入力し、アカウント名を選択します
+9. **完了**をクリックします
 
-### Mobile Devices {#mobile-devices}
+### モバイルデバイス {#mobile-devices}
 
-For iOS:
+iOSの場合：
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. **設定 → メール → アカウント → アカウントを追加 → その他**に進みます
+2. **メールアカウントを追加**をタップし、詳細を入力します
+3. サーバー設定には上記と同じIMAPおよびSMTP設定を使用します
 
-For Android:
+Androidの場合：
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. **設定 → アカウント → アカウントを追加 → 個人（IMAP）**に進みます
+2. Forward Emailアドレスとパスワードを入力します
+3. サーバー設定には上記と同じIMAPおよびSMTP設定を使用します
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Sendmail SMTPリレー設定 {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+SendmailをForward EmailのSMTPサーバー経由でメールをリレーするよう設定できます。これはレガシーシステムやSendmailに依存するアプリケーションで一般的な設定です。
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">推定セットアップ時間:</strong>
+  <span>20分未満</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    これはSMTPアクセスが有効な有料プランが必要です。
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### 設定 {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. 通常 `/etc/mail/sendmail.mc` にある `sendmail.mc` ファイルを編集します:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. スマートホストと認証を定義するために以下の行を追加します:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. 認証ファイル `/etc/mail/authinfo` を作成します:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. `authinfo` ファイルに Forward Email の認証情報を追加します:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. 認証データベースを生成し、ファイルの権限を設定します:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Sendmail の設定を再構築し、サービスを再起動します:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### テスト {#testing}
 
-Send a test email to verify the configuration:
+設定を確認するためにテストメールを送信します:
 
 ```bash
 echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Exim4 SMTP リレー設定 {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4 は Debian 系システムで人気のあるMTAです。Forward Email をスマートホストとして使用するように設定できます。
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">推定セットアップ時間:</strong>
+  <span>15分未満</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    これはSMTPアクセスが有効な有料プランが必要です。
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### 設定 {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Exim4 の設定ツールを実行します:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. 以下のオプションを選択します:
+   * **メール設定の一般タイプ:** スマートホスト経由で送信; SMTP または fetchmail 経由で受信
+   * **システムメール名:** your.hostname
+   * **受信SMTP接続を待ち受けるIPアドレス:** 127.0.0.1 ; ::1
+   * **メールを受け入れるその他の宛先:** （空白のまま）
+   * **メールを中継するドメイン:** （空白のまま）
+   * **送信スマートホストのIPアドレスまたはホスト名:** smtp.forwardemail.net::465
+   * **送信メールでローカルメール名を隠すか？** いいえ
+   * **DNSクエリ数を最小限にする（ダイヤルオンデマンド）？** いいえ
+   * **ローカルメールの配信方法:** /var/mail/ の Mbox 形式
+   * **設定を小さなファイルに分割する？** いいえ
 
-3. Edit the `passwd.client` file to add your credentials:
+3. 認証情報を追加するために `passwd.client` ファイルを編集します:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. 以下の行を追加します:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. 設定を更新し、Exim4 を再起動します:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### テスト {#testing-1}
 
-Send a test email:
+テストメールを送信します:
 
 ```bash
 echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### msmtp SMTP クライアント設定 {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp はスクリプトやコマンドラインアプリケーションからメールを送信するのに便利な軽量SMTPクライアントです。
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">推定セットアップ時間:</strong>
+  <span>10分未満</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    これはSMTPアクセスが有効な有料プランが必要です。
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### 設定 {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. `~/.msmtprc` に msmtp の設定ファイルを作成または編集します：
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. 以下の設定を追加します：
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. 設定ファイルの権限を正しく設定します：
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### テスト {#testing-2}
 
-Send a test email:
+テストメールを送信します：
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### コマンドラインメールクライアント {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+[Mutt](https://gitlab.com/muttmua/mutt)、[NeoMutt](https://neomutt.org)、[Alpine](https://alpine.x10.mx/alpine/release/) のような人気のコマンドラインメールクライアントは、Forward Email のSMTPサーバーを使ってメール送信を設定できます。設定は `msmtp` のセットアップに似ており、それぞれの設定ファイル（`.muttrc`、`.neomuttrc`、または `.pinerc`）にSMTPサーバーの詳細と認証情報を記述します。
 
-### Windows Email Configuration {#windows-email-configuration}
+### Windowsメール設定 {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+Windowsユーザーは、Forward Emailアカウントで提供されるIMAPおよびSMTP設定を使って、**Microsoft Outlook** や **eM Client** のような人気のメールクライアントを設定できます。コマンドラインやスクリプトで使う場合は、PowerShellの `Send-MailMessage` コマンドレット（ただし非推奨）や、[E-MailRelay](https://github.com/graeme-walker/emailrelay) のような軽量SMTPリレーツールを利用できます。
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Postfix SMTPリレー設定 {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Postfixを設定してForward EmailのSMTPサーバー経由でメールをリレーできます。これはメール送信が必要なサーバーアプリケーションに便利です。
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">推定セットアップ時間:</strong>
+  <span>15分未満</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    これはSMTPアクセスが有効な有料プランが必要です。
   </span>
 </div>
 
-#### Installation {#installation}
+#### インストール {#installation}
 
-1. Install Postfix on your server:
+1. サーバーにPostfixをインストールします：
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. インストール中に設定タイプの選択を求められたら「Internet Site」を選択します。
 
-#### Configuration {#configuration-3}
+#### 設定 {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Postfixのメイン設定ファイルを編集します：
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. 以下の設定を追加または変更します：
 
 ```
-# SMTP relay configuration
+# SMTPリレー設定
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. SASLパスワードファイルを作成します：
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Forward Emailの認証情報を追加します：
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. パスワードファイルの権限を保護し、ハッシュ化します：
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Postfixを再起動します：
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### テスト {#testing-3}
 
-Test your configuration by sending a test email:
+テストメールを送信して設定を確認します：
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Gmailを使った送信元メールアドレス設定方法 {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">推定セットアップ時間：</strong>
+  <span>10分未満</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    はじめに：
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    もし上記の<a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">メール転送の開始方法と設定</a>の指示に従っている場合は、以下を読み進めてください。
   </span>
 </div>
 
@@ -631,86 +635,85 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要：
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    当社の<a href="/terms" class="alert-link" target="_blank">利用規約</a>、<a href="/privacy" class="alert-link" target="_blank">プライバシーポリシー</a>、および<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">送信SMTP制限</a>を必ずお読みください。ご利用はこれらの内容の承認および同意とみなされます。
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要：
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    開発者の方は、当社の<a class="alert-link" href="/email-api#outbound-emails" target="_blank">メールAPIドキュメント</a>をご参照ください。
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> 送信SMTP設定に移動し、セットアップ手順に従ってください
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスでドメイン用の新しいエイリアスを作成します（例：<code><hello@example.com></code>）
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. 新しく作成したエイリアスの横にある<strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong>をクリックします。画面に表示された生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. [Gmail](https://gmail.com)にアクセスし、[設定 <i class="fa fa-angle-right"></i> アカウントとインポート <i class="fa fa-angle-right"></i> メールを送信するアドレス](https://mail.google.com/mail/u/0/#settings/accounts)で「別のメールアドレスを追加」をクリックします
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. 「名前」の入力を求められたら、メールの送信元として表示したい名前を入力します（例：「Linus Torvalds」）
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. 「メールアドレス」の入力を求められたら、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスで作成したエイリアスの完全なメールアドレスを入力します（例：<code><hello@example.com></code>）
 
-7. Uncheck "Treat as an alias"
+7. 「エイリアスとして扱う」のチェックを外します
 
-8. Click "Next Step" to proceed
+8. 「次のステップ」をクリックして進みます
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. 「SMTPサーバー」の入力を求められたら、<code>smtp.forwardemail.net</code>を入力し、ポートを<code>465</code>に変更します
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. 「ユーザー名」の入力を求められたら、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスで作成したエイリアスの完全なメールアドレスを入力します（例：<code><hello@example.com></code>）
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. 「パスワード」の入力を求められたら、ステップ3で<strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong>した際にコピーしたパスワードを貼り付けます
 
-12. Select the radio button for "Secured connection using SSL"
+12. 「SSLを使用した安全な接続」のラジオボタンを選択します
 
-13. Click "Add Account" to proceed
+13. 「アカウントを追加」をクリックして進みます
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. 新しいタブで[Gmail](https://gmail.com)を開き、確認メールが届くのを待ちます（送信元として設定しようとしているメールアドレスの所有者であることを確認するための認証コードが届きます）
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. メールが届いたら、前のステップで求められた認証コードをコピーして貼り付けます
+16. それが完了したら、メールに戻り、「リクエストを確認する」リンクをクリックしてください。メールが正しく設定されるためには、このステップと前のステップの両方を行う必要がある可能性が高いです。
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      おめでとうございます！
     </strong>
     <span>
-      You've successfully completed all steps.
+      すべてのステップを正常に完了しました。
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Gmailを使ったSend Mail Asのレガシーフリーガイドとは何ですか {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">重要：</strong> このレガシーフリーガイドは2023年5月をもって廃止されました。<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">現在はアウトバウンドSMTPをサポートしているため</a>です。以下のガイドを使用すると、<a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">Gmailで送信メールに「<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>」と表示される原因になります</a>。</div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">推定セットアップ時間：</strong>
+  <span>10分未満</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    はじめに：
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">メール転送の設定方法と開始方法</a>の手順に従った場合は、以下を読み進めてください。
   </span>
 </div>
 
@@ -718,345 +721,390 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. これを機能させるには、[Gmailの二段階認証][gmail-2fa]を有効にしている必要があります。有効にしていない場合は、<https://www.google.com/landing/2step/> をご覧ください。
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. 二段階認証が有効になったら（すでに有効の場合も）、<https://myaccount.google.com/apppasswords> にアクセスしてください。
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. 「アプリとデバイスを選択してアプリパスワードを生成してください」と表示されたら：
+   * 「アプリを選択」ドロップダウンから「メール」を選択
+   * 「デバイスを選択」ドロップダウンから「その他」を選択
+   * テキスト入力を求められたら、転送元のカスタムドメインのメールアドレスを入力してください（例：<code><hello@example.com></code> - 複数アカウントでこのサービスを使う場合に管理しやすくなります）
 
-4. Copy the password to your clipboard that is automatically generated
+4. 自動生成されたパスワードをクリップボードにコピーしてください
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       重要：
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       G Suiteをご利用の場合は、管理パネルの<a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">アプリ <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Gmailの設定 <i class="fa fa-angle-right"></i> 設定</a>にアクセスし、「ユーザーが外部SMTPサーバーを通じてメールを送信できるようにする...」にチェックを入れてください。この変更が反映されるまで数分かかる場合がありますので、しばらくお待ちください。
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. [Gmail](https://gmail.com)にアクセスし、[設定 <i class="fa fa-angle-right"></i> アカウントとインポート <i class="fa fa-angle-right"></i> メールを送信するアドレス](https://mail.google.com/mail/u/0/#settings/accounts)の下で、「別のメールアドレスを追加」をクリックしてください。
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. 「名前」の入力を求められたら、メールの送信者名として表示したい名前を入力してください（例：「Linus Torvalds」）
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. 「メールアドレス」の入力を求められたら、上記で使用したカスタムドメインのメールアドレスを入力してください（例：<code><hello@example.com></code>）
+8. 「エイリアスとして扱う」のチェックを外す
 
-8. Uncheck "Treat as an alias"
+9. 「次のステップ」をクリックして進む
 
-9. Click "Next Step" to proceed
+10. 「SMTPサーバー」の入力を求められたら、<code>smtp.gmail.com</code> と入力し、ポートは <code>587</code> のままにする
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. 「ユーザー名」の入力を求められたら、Gmailアドレスの <span>gmail.com</span> 部分を除いた部分を入力する（例：メールアドレスが <span><user@gmail.com></span> の場合は「user」のみ）
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        重要:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        「ユーザー名」部分が自動入力されている場合は、<u><strong>必ずこれをGmailアドレスのユーザー名部分に変更してください</strong></u>。
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. 「パスワード」の入力を求められたら、上記ステップ2で生成したパスワードをクリップボードから貼り付ける
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. 「TLSを使用した安全な接続」のラジオボタンはチェックしたままにする
 
-14. Click "Add Account" to proceed
+14. 「アカウントを追加」をクリックして進む
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. 新しいタブで [Gmail](https://gmail.com) を開き、確認メールが届くのを待つ（「送信者として送信」しようとしているメールアドレスの所有者であることを確認するための認証コードが届きます）
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. メールが届いたら、認証コードをコピーして前のステップで求められた場所に貼り付ける
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. 認証コードを入力したら、メールに戻り「リクエストを確認する」リンクをクリックする必要があります。このステップと前のステップの両方を行うことで、メールが正しく設定されます。
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### 高度なGmailルーティング設定 {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">推定設定時間:</strong>
+  <span>15〜30分</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+Gmailで、存在しないメールボックスに一致しないエイリアスをForward Emailのメール交換先に転送する高度なルーティングを設定したい場合は、以下の手順に従ってください：
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. [admin.google.com](https://admin.google.com) でGoogle管理コンソールにログインする
+2. **アプリ → Google Workspace → Gmail → ルーティング** に移動する
+3. **ルートを追加** をクリックし、以下の設定を行う：
 
-**Single Recipient Settings:**
+**単一受信者設定:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* 「エンベロープ受信者を変更」を選択し、プライマリGmailアドレスを入力する
+* 「元の受信者を含むX-Gm-Original-Toヘッダーを追加」にチェックを入れる
 
-**Envelope Recipient Patterns:**
+**エンベロープ受信者パターン:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* 存在しないすべてのメールボックスに一致するパターンを追加する（例：`.*@yourdomain.com`）
 
-**Email Server Settings:**
+**メールサーバー設定:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* 「ホストにルーティング」を選択し、プライマリサーバーに `mx1.forwardemail.net` を入力する
+* バックアップサーバーに `mx2.forwardemail.net` を追加する
+* ポートを25に設定する
+* セキュリティのため「TLSを必須にする」を選択する
 
-4. Click **Save** to create the route
+4. **保存** をクリックしてルートを作成する
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    この設定はカスタムドメインを持つGoogle Workspaceアカウントでのみ機能し、通常のGmailアカウントでは動作しません。
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### 高度なOutlookルーティング設定 {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">推定設定時間:</strong>
+  <span>15〜30分</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Microsoft 365（旧Office 365）ユーザーで、存在しないメールボックスに一致しないエイリアスをForward Emailのメール交換先に転送する高度なルーティングを設定したい場合：
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
-   * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
-   * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
-   * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+1. [admin.microsoft.com](https://admin.microsoft.com) でMicrosoft 365管理センターにログインする
+2. **Exchange → メールフロー → ルール** に移動する
+3. **ルールの追加** をクリックし、**新しいルールの作成** を選択する
+4. ルール名を付ける（例：「存在しないメールボックスをForward Emailに転送」）
+5. **このルールを適用する場合** で以下を選択：
+   * 「受信者アドレスが次に一致する場合...」
+   * ドメイン内のすべてのアドレスに一致するパターンを入力（例：`*@yourdomain.com`）
+6. **次の操作を行う** で以下を選択：
+   * 「メッセージをリダイレクトする先...」
+   * 「次のメールサーバー」を選択
+   * `mx1.forwardemail.net` とポート25を入力
+   * バックアップサーバーとして `mx2.forwardemail.net` を追加
+7. **除外条件** で以下を選択：
+   * 「受信者が次の場合...」
+   * 転送しない既存のすべてのメールボックスを追加
+8. ルールの優先順位を設定し、他のメールフロールールの後に実行されるようにする
+9. **保存** をクリックしてルールを有効化する
+## トラブルシューティング {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### なぜテストメールが届かないのですか {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+自分宛にテストメールを送信している場合、同じ「Message-ID」ヘッダーを持っているため、受信トレイに表示されないことがあります。
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+これは広く知られている問題で、Gmailなどのサービスにも影響します。  <a href="https://support.google.com/a/answer/1703601">この問題に関する公式のGmailの回答はこちらです</a>。
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+問題が続く場合は、DNSの伝播に問題がある可能性が高いです。 もう少し待ってから再度試すか、<strong class="notranslate">TXT</strong>レコードのTTL値を低く設定してみてください。
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**まだ問題がありますか？** ぜひ<a href="/help">お問い合わせ</a>ください。問題の調査と迅速な解決をお手伝いします。
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Forward Emailでメールクライアントを設定するにはどうすればよいですか {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  当サービスは以下のような人気のメールクライアントに対応しています：
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> デスクトップ</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
-    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> ターミナル</a></li>
   </ul>
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  ユーザー名はエイリアスのメールアドレスで、パスワードは<strong class="text-success"><i class="fa fa-key"></i> パスワード生成</strong>（「通常のパスワード」）から取得します。
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント：
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Thunderbirdを使用している場合は、「接続のセキュリティ」が「SSL/TLS」に設定されており、認証方法が「通常のパスワード」になっていることを確認してください。</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| 種類 |         ホスト名         |         プロトコル         |                                            ポート                                            |
+| :--: | :---------------------: | :-----------------------: | :------------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net`  |  SSL/TLS **推奨**          |                                      `993` と `2993`                                       |
+| SMTP | `smtp.forwardemail.net`  | SSL/TLS **推奨**           | SSL/TLSの場合は `465` と `2465`（推奨）、STARTTLSの場合は `587`、`2587`、`2525`、および `25` |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### なぜメールが迷惑メールやジャンクに振り分けられるのか、ドメインの評判を確認する方法 {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+このセクションでは、送信メールが当社のSMTPサーバー（例：`smtp.forwardemail.net`）を使用している場合（または`mx1.forwardemail.net`や`mx2.forwardemail.net`経由で転送されている場合）に、受信者の迷惑メールまたはジャンクフォルダに配信されてしまう場合の対処方法を案内します。
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+当社は定期的に[IPアドレス](#what-are-your-servers-ip-addresses)を[すべての信頼できるDNS拒否リスト](#how-do-you-handle-your-ip-addresses-becoming-blocked)と照合して監視しています。**したがって、ほとんどの場合はドメインの評判に関する問題である可能性が高いです**。
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+メールが迷惑メールフォルダに振り分けられる理由はいくつかあります：
 
-Emails can land in spam folders for several reasons:
+1. **認証の欠如**：[SPF](#how-do-i-set-up-spf-for-forward-email)、[DKIM](#how-do-i-set-up-dkim-for-forward-email)、および[DMARC](#how-do-i-set-up-dmarc-for-forward-email)レコードを設定してください。
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **ドメインの評判**：新しいドメインは送信履歴が確立されるまで中立的な評判を持つことが多いです。
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **コンテンツのトリガー**：特定の単語やフレーズがスパムフィルターを作動させることがあります。
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **送信パターン**：メール送信量の急激な増加は疑わしく見えることがあります。
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+以下のツールの1つ以上を使用して、ドメインの評判や分類を確認してみてください：
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### 評判およびブロックリスト確認ツール {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| ツール名                                   | URL                                                          | 種類                   |
+| ------------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare Domain Categorization Feedback   | <https://radar.cloudflare.com/domains/feedback>              | 分類                   |
+| Spamhaus IP and Domain Reputation Checker   | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center>            | 評判                   |
+| Barracuda IP and Domain Reputation Lookup   | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox Blacklist Check                  | <https://mxtoolbox.com/blacklists.aspx>                      | ブラックリスト         |
+| Google Postmaster Tools                     | <https://www.gmail.com/postmaster/>                          | 評判                   |
+| Yahoo Sender Hub                            | <https://senders.yahooinc.com/>                              | 評判                   |
+| MultiRBL.valli.org Blacklist Check          | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | 評判                   |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT's Levels 1, 2, and 3             | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT's backscatterer.org              | <https://www.backscatterer.org/>                             | バックスキャッター保護  |
+| UCEPROTECT's whitelisted.org                | <https://www.whitelisted.org/> (有料)                        | DNSWL                  |
 
+#### プロバイダー別IP解除申請フォーム {#ip-removal-request-forms-by-provider}
+
+特定のメールプロバイダーによってIPアドレスがブロックされている場合は、以下の適切な解除フォームまたは連絡先を使用してください：
+
+| プロバイダー                           | 解除フォーム / 連絡先                                                                                     | 備考                                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | 大量送信者連絡フォーム                       |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | Office 365 IP解除ポータル                     |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | Yahoo Sender Hub                             |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | AppleはProofpointをIP評判に使用              |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | Proofpoint IPチェックおよび解除               |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | Barracuda評判確認および解除                   |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | Cloudmark CSIリセットリクエスト               |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | GoDaddy IP解除申請フォーム                    |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | Comcast IP解除申請                           |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | Spectrumサポートに解除依頼                    |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | 解除依頼用メール                             |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | 解除依頼用メール                             |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | Cloudfilter使用                              |
+| Windstream                             | `abuse@windstream.net`                                                                                     | 解除依頼用メール                             |
+| t-online.de (ドイツ)                   | `tobr@rx.t-online.de`                                                                                      | 解除依頼用メール                             |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | 連絡フォームまたはメール `abuse@orange.fr` を使用 |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | GMXポストマスター連絡フォーム                 |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | Mail.ruポストマスターポータル                 |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | Yandexポストマスターポータル                  |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | QQ Mailホワイトリスト申請（中国語）           |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | Neteaseポストマスターポータル                 |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | Alibaba Cloudコンソール経由で連絡             |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | AWS SESコンソール > ブラックリスト解除       |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | SendGridサポートに連絡                        |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | サードパーティRBL使用 - 特定RBLに連絡         |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | Fastmailサポートに連絡                        |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | Zohoサポートに連絡                            |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | Protonサポートに連絡                          |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | Tutanotaサポートに連絡                        |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | Hushmailサポートに連絡                        |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | Mailbox.orgサポートに連絡                     |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | Posteoサポートに連絡                          |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | DuckDuckGoサポートに連絡                      |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | Sonicサポートに連絡                           |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | Telusサポートに連絡                           |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | Vodafoneサポートに連絡                         |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | Spark NZサポートに連絡                         |
+| UOL/BOL (ブラジル)                     | <https://ajuda.uol.com.br/>                                                                                | UOLサポートに連絡（ポルトガル語）             |
+| Libero (イタリア)                      | <https://aiuto.libero.it/>                                                                                 | Liberoサポートに連絡（イタリア語）             |
+| Telenet (ベルギー)                    | <https://www2.telenet.be/en/support/>                                                                      | Telenetサポートに連絡                         |
+| Facebook/WhatsApp                      | <https://www.facebook.com/business/help>                                                                   | Facebookビジネスサポートに連絡                |
+| LinkedIn                               | <https://www.linkedin.com/help/linkedin>                                                                   | LinkedInサポートに連絡                        |
+| Groups.io                              | <https://groups.io/helpcenter>                                                                             | Groups.ioサポートに連絡                       |
+| Earthlink/Vade Secure                  | <https://sendertool.vadesecure.com/en/>                                                                    | Vade Secure送信者ツール                       |
+| Cloudflare Email Security              | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | Cloudflareサポートに連絡                      |
+| Hornetsecurity/Expurgate               | <https://www.hornetsecurity.com/>                                                                          | Hornetsecurityサポートに連絡                   |
+| SpamExperts/Antispamcloud              | <https://www.spamexperts.com/>                                                                             | ホスティングプロバイダー経由で連絡            |
+| Mail2World                             | <https://www.mail2world.com/support/>                                                                      | Mail2Worldサポートに連絡                      |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> 大量に送信する前に、まずは少量の高品質なメールで良好な評価を築きましょう。
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> ドメインがブラックリストに載っている場合、各ブラックリストには独自の削除手続きがあります。指示はそれぞれのウェブサイトでご確認ください。
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> 追加のサポートが必要な場合や、特定のメールサービスプロバイダーに誤ってスパムとしてリストされている場合は、ぜひ <a href="/help">お問い合わせ</a> ください。
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### スパムメールを受け取ったらどうすればいいですか {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+可能であればメーリングリストの購読を解除し、送信者をブロックしてください。
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+メッセージをスパムとして報告するのではなく、手動で管理されプライバシーに配慮した弊社の不正利用防止システムに転送してください。
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**スパム転送先のメールアドレスは:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Gmailで自分宛に送ったテストメールが「疑わしい」と表示されるのはなぜですか {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+Gmailで自分宛にテストメールを送った際や、エイリアスを使ってメールを送った相手が初めてあなたからのメールを受け取った時にこのエラーが表示される場合がありますが、**ご安心ください**。これはGmailの組み込みの安全機能です。
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+「安全に見える」をクリックするだけで問題ありません。例えば、送信メールとして「送信者として送信」機能を使ってテストメッセージを他の人に送った場合、その人にはこのメッセージは表示されません。
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+もし表示される場合は、通常は <john@gmail.com> からのメールを見慣れていて、<john@customdomain.com>（例です）からのメールが初めてだからです。Gmailは安全を確認するためにユーザーに警告を出しています。回避策はありません。
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Gmailで「via forwardemail dot net」を削除できますか {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+このトピックは、[Gmailで送信者名の横に追加情報が表示される広く知られた問題](https://support.google.com/mail/answer/1311182)に関連しています。
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+2023年5月現在、すべての有料ユーザー向けにSMTP送信をアドオンとしてサポートしているため、Gmailでの <span class="notranslate">via forwardemail dot net</span> 表示を削除できます。
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+このFAQは、[Gmailで送信者としてメールを送る方法](#how-to-send-mail-as-using-gmail)機能を利用している方向けの内容です。
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+設定方法については、[SMTP送信をサポートしていますか](#do-you-support-sending-email-with-smtp)のセクションをご覧ください。
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## データ管理 {#data-management}
+
+### サーバーはどこにありますか {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> 近々、[forwardemail.eu](https://forwardemail.eu)でホストされるEUデータセンターの場所を発表予定です。最新情報は <https://github.com/orgs/forwardemail/discussions/336> のディスカッションを購読してください。
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+弊社のサーバーは主にコロラド州デンバーにあります。IPアドレスの完全なリストは <https://forwardemail.net/ips> をご覧ください。
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+サブプロセッサーについては、[GDPR](/gdpr)、[DPA](/dpa)、[プライバシー](/privacy)のページでご確認いただけます。
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### メールボックスのエクスポートとバックアップはどうすればいいですか {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+いつでもメールボックスを [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)、[Mbox](https://en.wikipedia.org/wiki/Mbox)、または暗号化された [SQLite](https://en.wikipedia.org/wiki/SQLite) 形式でエクスポートできます。
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> バックアップをダウンロード から希望のエクスポート形式を選択してください。
 
-You will be emailed a link to download the export once it has finished.
+エクスポートが完了すると、ダウンロード用リンクがメールで送信されます。
 
-Note that this export download link expires after 4 hours for security concerns.
+セキュリティ上の理由から、このダウンロードリンクは4時間で期限切れになります。
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+エクスポートしたEMLやMbox形式を確認する必要がある場合、以下のオープンソースツールが役立つかもしれません：
 
-| Name | Format | Platform | GitHub URL |
+| 名前             | 形式   | プラットフォーム | GitHub URL                                          |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer     |  Mbox  | Windows       | <https://github.com/eneam/mboxviewer>               |
+| mbox-web-viewer |  Mbox  | 全プラットフォーム | <https://github.com/PHMRanger/mbox-web-viewer>      |
+| EmlReader       |   EML  | Windows       | <https://github.com/ayamadori/EmlReader>            |
+| Email viewer    |   EML  | VSCode        | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader      |   EML  | 全プラットフォーム | <https://github.com/s0ph1e/eml-reader>              |
+さらに、MboxファイルをEMLファイルに変換する必要がある場合は、<https://github.com/noelmartinon/mboxzilla> を使用できます。
 
-Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
+### 既存のメールボックスをインポートおよび移行する方法 {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
-
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+以下の手順で簡単にForward Emailにメールをインポートできます（例：[Thunderbird](https://www.thunderbird.net)を使用）：
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    既存のメールをインポートするには、以下のすべての手順を必ず実行してください。
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. 既存のメールプロバイダーからメールをエクスポートします：
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | メールプロバイダー | エクスポート形式                              | エクスポート手順                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | ------------------ | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail              | MBOX                                         | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook            | PST                                          | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">ヒント:</strong> <span>Outlookを使用している場合（<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PSTエクスポート形式</a>）、以下の「その他」の手順に従うこともできます。ただし、OSに応じてPSTをMBOX/EML形式に変換するためのリンクも以下に示しています：<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Windows用Zinkuba</a>（<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>）</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">Windows cygwin用readpst</a> – （例：<code>readpst -u -o $OUT_DIR $IN_DIR</code>、<code>$OUT_DIR</code>と<code>$IN_DIR</code>はそれぞれ出力ディレクトリと入力ディレクトリのパスに置き換えます）。</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">Ubuntu/Linux用readpst</a> – （例：<code>sudo apt-get install readpst</code>の後に<code>readpst -u -o $OUT_DIR $IN_DIR</code>、<code>$OUT_DIR</code>と<code>$IN_DIR</code>はそれぞれ出力ディレクトリと入力ディレクトリのパスに置き換えます）。</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">macOS用readpst（brew経由）</a> – （例：<code>brew install libpst</code>の後に<code>readpst -u -o $OUT_DIR $IN_DIR</code>、<code>$OUT_DIR</code>と<code>$IN_DIR</code>はそれぞれ出力ディレクトリと入力ディレクトリのパスに置き換えます）。</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">Windows用PSTコンバーター（GitHub）</a></li></ul><br /></span></div> |
+   | Apple Mail         | MBOX                                         | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail           | EML                                          | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail        | MBOX/EML                                     | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota           | EML                                          | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi              | EML                                          | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho               | EML                                          | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | その他             | [Thunderbirdを使用](https://www.thunderbird.net) | 既存のメールアカウントをThunderbirdに設定し、[ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/)プラグインを使用してメールをエクスポートおよびインポートします。**または、アカウント間でメールをコピー＆ペーストまたはドラッグ＆ドロップで移動できる場合もあります。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. [Thunderbird](https://www.thunderbird.net) をダウンロード、インストールして起動します。
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. エイリアスの完全なメールアドレス（例: <code><you@yourdomain.com></code>）と生成されたパスワードを使って新しいアカウントを作成します。  <strong>まだ生成されたパスワードをお持ちでない場合は、<a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">セットアップ手順をご参照ください</a></strong>。
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbirdプラグインをダウンロードしてインストールします。
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. Thunderbirdで新しいローカルフォルダーを作成し、そのフォルダーを右クリック → `ImportExportTools NG` オプションを選択 → `Import mbox file`（MBOXエクスポート形式の場合）または `Import messages` / `Import all messages from a directory`（EMLエクスポート形式の場合）を選びます。
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. ローカルフォルダーから、IMAPストレージにメッセージをアップロードしたい新規または既存のIMAPフォルダーへドラッグ＆ドロップします。 これにより、SQLite暗号化ストレージでオンラインバックアップが確実に行われます。
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Thunderbirdへのインポート方法がわからない場合は、公式の説明書 <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> および <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a> をご参照ください。
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    エクスポートとインポートのプロセスが完了したら、既存のメールアカウントで転送を有効にし、新しいメールアドレスを送信者に通知する自動応答を設定することも検討してください（例：以前Gmailを使用していて、現在はカスタムドメインのメールを使用している場合など）。
   </span>
 </div>
 
@@ -1064,201 +1112,408 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      おめでとうございます！
     </strong>
     <span>
-      You've successfully completed all steps.
+      すべての手順を正常に完了しました。
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### バックアップに自分のS3互換ストレージを使うには {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+有料プランのユーザーは、ドメインごとに独自の[S3](https://en.wikipedia.org/wiki/Amazon_S3)互換ストレージプロバイダーをIMAP/SQLiteバックアップ用に設定できます。 これにより、暗号化されたメールボックスのバックアップを当社のデフォルトストレージの代わりに（または追加で）ご自身のインフラに保存できます。
 
-## Email Configuration {#email-configuration}
+対応プロバイダーには、[Amazon S3](https://aws.amazon.com/s3/)、[Cloudflare R2](https://developers.cloudflare.com/r2/)、[MinIO](https://github.com/minio/minio)、[Backblaze B2](https://www.backblaze.com/cloud-storage)、[DigitalOcean Spaces](https://www.digitalocean.com/products/spaces)、およびその他のS3互換サービスが含まれます。
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### セットアップ {#setup}
+
+1. S3互換プロバイダーで**プライベート**バケットを作成します。バケットは公開アクセス不可でなければなりません。
+2. バケットに対する読み書き権限を持つアクセス認証情報（アクセスキーIDとシークレットアクセスキー）を作成します。
+3. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 詳細設定 <i class="fa fa-angle-right"></i> カスタムS3互換ストレージ に移動します。
+4. **「カスタムS3互換ストレージを有効にする」** をチェックし、エンドポイントURL、アクセスキーID、シークレットアクセスキー、リージョン、バケット名を入力します。
+5. **「接続テスト」** をクリックして認証情報、バケットアクセス、書き込み権限を確認します。
+6. **「保存」** をクリックして設定を適用します。
+
+#### バックアップの仕組み {#how-backups-work}
+
+バックアップは接続されたすべてのIMAPエイリアスごとに自動的にトリガーされます。IMAPサーバーは1時間に1回すべてのアクティブ接続をチェックし、接続された各エイリアスのバックアップを実行します。Redisベースのロックにより30分以内の重複バックアップは防止され、過去24時間以内に成功したバックアップがある場合は実際のバックアップはスキップされます（ユーザーがダウンロードのために明示的にバックアップを要求した場合を除く）。
+バックアップは、ダッシュボードの任意のエイリアスで**「Download Backup」**をクリックすることで手動でもトリガーできます。手動バックアップは24時間のウィンドウに関係なく常に実行されます。
+
+バックアッププロセスは以下のように動作します：
+
+1. SQLiteデータベースは`VACUUM INTO`を使ってコピーされます。これにより、アクティブな接続を中断せずに一貫したスナップショットが作成され、データベースの暗号化が保持されます。
+2. バックアップファイルは開いて暗号化が有効であることを確認し、検証されます。
+3. SHA-256ハッシュが計算され、ストレージ内の既存バックアップと比較されます。ハッシュが一致する場合はアップロードがスキップされます（前回のバックアップ以降変更なし）。
+4. バックアップは[@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage)ライブラリを使ったマルチパートアップロードでS3にアップロードされます。
+5. 署名付きダウンロードURL（4時間有効）が生成され、ユーザーにメール送信されます。
+
+#### バックアップ形式 {#backup-formats}
+
+3つのバックアップ形式がサポートされています：
+
+| 形式     | 拡張子    | 説明                                                                 |
+| -------- | --------- | ------------------------------------------------------------------- |
+| `sqlite` | `.sqlite` | 生の暗号化されたSQLiteデータベーススナップショット（自動IMAPバックアップのデフォルト） |
+| `mbox`   | `.zip`    | mbox形式のメールボックスを含むパスワード保護ZIP                      |
+| `eml`    | `.zip`    | メッセージごとの個別の`.eml`ファイルを含むパスワード保護ZIP          |
+
+> **ヒント：** `.sqlite`バックアップファイルを持っていてローカルで`.eml`ファイルに変換したい場合は、スタンドアロンCLIツール**[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**を使用してください。Windows、Linux、macOSで動作し、ネットワーク接続は不要です。
+
+#### ファイル命名とキー構造 {#file-naming-and-key-structure}
+
+**カスタムS3ストレージ**を使用する場合、バックアップファイルは[ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601)タイムスタンプのプレフィックス付きで保存され、各バックアップが別々のオブジェクトとして保持されます。これにより、ご自身のバケットで完全なバックアップ履歴が得られます。
+
+キーの形式は以下の通りです：
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+例：
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+`alias_id`はエイリアスのMongoDB ObjectIdです。エイリアス設定ページまたはAPIで確認できます。
+
+**デフォルト（システム）ストレージ**を使用する場合、キーはフラット（例：`65a31c53c36b75ed685f3fda.sqlite`）で、各バックアップは前のものを上書きします。
+
+> **注意：** カスタムS3ストレージはすべてのバックアップバージョンを保持するため、ストレージ使用量は時間とともに増加します。バケットに対して[lifecycleルール](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html)を設定し、古いバックアップを自動的に期限切れ（例：30日または90日以上のオブジェクトを削除）にすることを推奨します。
+
+#### データ所有権と削除ポリシー {#data-ownership-and-deletion-policy}
+
+カスタムS3バケットは完全にお客様の管理下にあります。エイリアス削除時、ドメイン削除時、またはクリーンアップ操作時にも、カスタムS3バケット内のファイルを**削除または変更することは一切ありません**。新しいバックアップファイルを書き込むだけです。
+
+つまり：
+
+* **エイリアス削除** — エイリアスを削除すると、デフォルトのシステムストレージからのみバックアップが削除されます。カスタムS3バケットに以前書き込まれたバックアップはそのまま残ります。
+* **ドメイン削除** — ドメインを削除してもカスタムバケット内のファイルには影響しません。
+* **保持管理** — 古いバックアップを期限切れにするためのライフサイクルルール設定など、バケット内のストレージ管理はお客様の責任です。
+
+カスタムS3ストレージを無効にするかデフォルトストレージに戻した場合でも、バケット内の既存ファイルは保持されます。今後のバックアップは単にデフォルトストレージに書き込まれます。
+
+#### セキュリティ {#security}
+
+* アクセスキーIDとシークレットアクセスキーは、データベースに保存される前に[AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode)で**静止時に暗号化**されます。バックアップ操作時にのみ実行時に復号されます。
+* バケットが**公開アクセス不可**であることを自動的に検証します。公開バケットが検出された場合、保存時に設定は拒否されます。バックアップ時に公開アクセスが検出された場合はデフォルトストレージにフォールバックし、すべてのドメイン管理者にメールで通知します。
+* バケットの存在と認証情報の正確性は、保存時に[HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html)コールで検証されます。検証に失敗するとカスタムS3ストレージは自動的に無効化されます。
+* 各バックアップファイルにはS3メタデータにSHA-256ハッシュが含まれており、変更のないデータベースを検出して冗長なアップロードをスキップするために使用されます。
+#### エラー通知 {#error-notifications}
+
+カスタムS3ストレージを使用してバックアップが失敗した場合（例：資格情報の期限切れや接続問題など）、すべてのドメイン管理者にメールで通知されます。これらの通知は重複アラートを防ぐために6時間に1回のレート制限がかけられています。バックアップ時にバケットが公開アクセス可能と検出された場合、管理者には1日1回通知されます。
+
+#### API {#api}
+
+API経由でもカスタムS3ストレージを設定できます：
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+API経由で接続をテストするには：
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### SQLiteバックアップをEMLファイルに変換する方法 {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+SQLiteバックアップをダウンロードまたは保存した場合（デフォルトストレージまたはご自身の[カスタムS3バケット](#how-do-i-use-my-own-s3-compatible-storage-for-backups)から）、スタンドアロンCLIツール **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** を使って標準の `.eml` ファイルに変換できます。EMLファイルは任意のメールクライアント（[Thunderbird](https://www.thunderbird.net/)、[Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook)、[Apple Mail](https://support.apple.com/mail)など）で開くことができ、他のメールサーバーにインポートすることも可能です。
+
+#### インストール {#installation-1}
+
+事前ビルド済みバイナリ（[Node.js](https://github.com/nodejs/node)不要）をダウンロードするか、[Node.js](https://github.com/nodejs/node)で直接実行できます：
+
+**事前ビルド済みバイナリ** — ご利用のプラットフォーム向け最新リリースを[GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases)からダウンロードしてください：
+
+| プラットフォーム | アーキテクチャ | ファイル                                  |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **macOSユーザーへ:** ダウンロード後、バイナリを実行する前に検疫属性を削除する必要がある場合があります：
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> （`./convert-sqlite-to-eml-darwin-arm64`はダウンロードしたファイルの実際のパスに置き換えてください。）
+
+> **Linuxユーザーへ:** ダウンロード後、バイナリに実行権限を付与する必要がある場合があります：
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> （`./convert-sqlite-to-eml-linux-x64`はダウンロードしたファイルの実際のパスに置き換えてください。）
+
+**ソースから**（[Node.js](https://github.com/nodejs/node) >= 18が必要）：
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### 使い方 {#usage}
+
+このツールは対話モードと非対話モードの両方をサポートしています。
+
+**対話モード** — 引数なしで実行すると、すべての入力を対話形式で求められます：
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - Convert SQLite Backup to EML
+  =============================================
+
+  Path to SQLite backup file: /path/to/backup.sqlite
+  IMAP/alias password: ********
+  Output ZIP path [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**非対話モード** — スクリプトや自動化のためにコマンドラインフラグで引数を渡します：
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| フラグ                | 説明                                                                    |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `--path <path>`     | 暗号化されたSQLiteバックアップファイルのパス                                       |
+| `--password <pass>` | 復号用のIMAP/エイリアスパスワード                                             |
+| `--output <path>`   | ZIPファイルの出力パス（デフォルト：ISO 8601タイムスタンプ付きで自動生成） |
+| `--help`            | ヘルプメッセージを表示                                                              |
+#### 出力形式 {#output-format}
+
+このツールは、パスワード保護されたZIPアーカイブ（AES-256暗号化）を生成します。内容は以下の通りです：
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+EMLファイルはメールボックスのフォルダごとに整理されています。ZIPのパスワードはIMAP/エイリアスのパスワードと同じです。各 `.eml` ファイルは、SQLiteデータベースから再構築された完全なヘッダー、本文テキスト、添付ファイルを含む標準の[RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322)メールメッセージです。
+
+#### 仕組み {#how-it-works}
+
+1. IMAP/エイリアスのパスワードを使って暗号化されたSQLiteデータベースを開きます（[ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305)および[AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)暗号に対応）。
+2. Mailboxesテーブルを読み込み、フォルダ構造を検出します。
+3. 各メッセージについて、Messagesテーブルに保存された[Brotli](https://github.com/google/brotli)圧縮JSON形式のmimeTreeをデコードします。
+4. MIMEツリーを辿り、Attachmentsテーブルから添付ファイルの本文を取得して完全なEMLを再構築します。
+5. すべてを[archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted)を使ってパスワード保護ZIPアーカイブにまとめます。
+
+### セルフホスティングは対応していますか {#do-you-support-self-hosting}
+
+はい、2025年3月現在、セルフホスティングオプションをサポートしています。ブログは[こちら](https://forwardemail.net/blog/docs/self-hosted-solution)をご覧ください。開始するには[セルフホストガイド](https://forwardemail.net/self-hosted)を参照してください。より詳細なステップバイステップ版を希望される方は、[Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)または[Debian](https://forwardemail.net/guides/selfhosted-on-debian)ベースのガイドをご覧ください。
+
+
+## メール設定 {#email-configuration}
+
+### メール転送の開始方法と設定方法 {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">推定設定時間：</strong>
+  <span>10分未満</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    はじめに：
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    以下の1から8までの手順を注意深く読み、順に従ってください。<code>user@gmail.com</code> のメールアドレスは、転送先のメールアドレスに正しく置き換えてください（すでに正しい場合はそのままで構いません）。同様に、<code>example.com</code> はカスタムドメイン名に置き換えてください（すでに正しい場合はそのままで構いません）。
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">すでにどこかでドメイン名を登録済みの場合は、このステップは完全にスキップしてステップ2に進んでください！ そうでなければ、<a href="/domain-registration" rel="noopener noreferrer">こちらをクリックしてドメイン名を登録</a>してください。</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  ドメインをどこで登録したか覚えていますか？ 思い出したら、以下の指示に従ってください：
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要：
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    新しいタブを開いてドメインレジストラにサインインしてください。下記の「Registrar」をクリックすると自動的に開けます。この新しいタブでレジストラのDNS管理ページに移動してください。移動手順は「Steps to Configure」列にステップバイステップで記載しています。新しいタブで該当ページに移動したら、このタブに戻り、次のステップ3に進んでください。
+    <strong class="font-weight-bold">開いたタブは閉じないでください。今後の手順で必要になります！</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>レジストラ</th>
+      <th>設定手順</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ドメインセンター <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> DNS設定編集</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ホステッドゾーン <i class="fa fa-angle-right"></i> （ドメイン選択）</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> マイサーバー <i class="fa fa-angle-right"></i> ドメイン管理 <i class="fa fa-angle-right"></i> DNSマネージャー</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>ROCK版：ログイン <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> （管理の▼アイコンをクリック） <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      レガシー版：ログイン <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> ゾーンエディター <i class="fa fa-angle-right"></i> （ドメイン選択）</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> （ドメイン選択）</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> 管理</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ネットワーキング <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> その他 <i class="fa fa-angle-right"></i> ドメイン管理</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> カードビューでドメインの管理をクリック <i class="fa fa-angle-right"></i> リストビューで歯車アイコンをクリック <i class="fa fa-angle-right"></i> DNS &amp; ネームサーバー <i class="fa fa-angle-right"></i> DNSレコード</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> 視聴</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> （歯車アイコンをクリック） <i class="fa fa-angle-right"></i> 左メニューのDNS &amp; ネームサーバーをクリック</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> パネル <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> ドメイン管理 <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> 概要 <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> シンプルエディター <i class="fa fa-angle-right"></i> レコード</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> ゾーン編集</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> 視聴</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> マイドメイン管理 <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> DNS管理</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> 視聴</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> DNS設定</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> 視聴</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ドメインリスト <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> 高度なDNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> Netlify DNS設定</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> アカウントマネージャー <i class="fa fa-angle-right"></i> マイドメイン名 <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> ドメインのポイント先変更 <i class="fa fa-angle-right"></i> 高度なDNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> 視聴</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> 管理ドメイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> DNS設定</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ホームメニュー <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i>
+高度な設定 <i class="fa fa-angle-right"></i> カスタムレコード</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>"now" CLIを使用 <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ドメインページ <i class="fa fa-angle-right"></i> （ドメイン選択） <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ドメインページ <i class="fa fa-angle-right"></i> （<i class="fa fa-ellipsis-h"></i> アイコンをクリック） <i class="fa fa-angle-right"></i> DNSレコード管理を選択</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>ログイン <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> マイドメイン</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>その他</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">重要：</strong> レジストラ名がリストにない場合は、インターネットで「$REGISTRARでDNSレコードを変更する方法」（$REGISTRARはご利用のレジストラ名に置き換えてください。例：「GoDaddyでDNSレコードを変更する方法」）を検索してください。</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">レジストラのDNS管理ページ（開いている別タブ）を使い、以下の「MX」レコードを設定してください：
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    他のMXレコードが設定されていないことを確認してください。以下に示す両方のレコードが必ず存在する必要があります。タイプミスがないか、mx1とmx2のスペルが正しいかを必ず確認してください。既にMXレコードが存在している場合は、完全に削除してください。
+    「TTL」の値は3600である必要はなく、必要に応じて低い値や高い値でも構いません。
   </span>
 </div>
 
@@ -1274,14 +1529,14 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1545,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">レジストラのDNS管理ページ（開いている別のタブ）を使用して、以下の<strong class="notranslate">TXT</strong>レコードを設定してください:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    有料プランをご利用の場合は、このステップを完全にスキップしてステップ5に進んでください！有料プランでない場合、転送先のアドレスは公開検索可能になります – <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> にアクセスし、必要に応じてドメインを有料プランにアップグレードしてください。有料プランについて詳しく知りたい場合は、当社の<a rel="noopener noreferrer" href="/private-business-email" class="alert-link">料金ページ</a>をご覧ください。そうでなければ、以下に記載のオプションAからオプションFのいずれか、または複数の組み合わせを選択して続行できます。
   </span>
 </div>
 
@@ -1307,10 +1562,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    オプションA:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    ドメインからのすべてのメール（例: "all@example.com", "hello@example.com" など）を特定のアドレス "user@gmail.com" に転送する場合:
   </span>
 </div>
 
@@ -1325,7 +1580,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1338,10 +1593,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    上記の「値」欄の値は、ご自身のメールアドレスに置き換えてください。「TTL」の値は3600である必要はなく、必要に応じて低い値や高い値でも構いません。TTL（Time to Live）値を低く設定すると、DNSレコードの将来の変更がインターネット全体により速く伝播されます。これはキャッシュされる時間（秒単位）と考えてください。<a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">WikipediaのTTLに関するページ</a>で詳細を学べます。
   </span>
 </div>
 
@@ -1350,25 +1605,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    オプションB:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    単一のメールアドレスのみを転送する場合（例: <code>hello@example.com</code> を <code>user@gmail.com</code> に転送する場合；これにより "hello+test@example.com" も自動的に "user+test@gmail.com" に転送されます）:
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1637,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    オプション C:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    複数のメールを転送する場合は、カンマで区切ってください:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1670,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    オプション D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    転送メールは無限に設定可能です。ただし、1行あたり255文字を超えないようにし、各行は必ず "forward-email=" で始めてください。以下に例を示します:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1696,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1704,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1712,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1720,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1735,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    オプション E:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    <strong class="notranslate">TXT</strong> レコードにドメイン名を指定して、グローバルエイリアス転送を設定することもできます（例："user@example.com" は "user@example.net" に転送されます）:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1768,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    オプション F:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    グローバルまたは個別のエイリアスとしてウェブフックを使用し、メールを転送することも可能です。以下の例とウェブフックに関する完全なセクションは<a href="#do-you-support-webhooks" class="alert-link">ウェブフックはサポートしていますか</a>をご覧ください。
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1800,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    オプション G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    エイリアスのマッチングや転送先の置換処理に正規表現（"regex"）を使用することもできます。以下の例と正規表現に関する完全なセクション<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">正規表現やregexはサポートしていますか</a>をご覧ください。
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>置換を伴う高度な正規表現が必要ですか？</strong> 以下の例と正規表現に関する完全なセクション<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">正規表現やregexはサポートしていますか</a>をご覧ください。
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>簡単な例:</strong> `linus@example.com` または `torvalds@example.com` に届くすべてのメールを `user@gmail.com` に転送したい場合:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1841,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    キャッチオール転送ルールは「フォールスルー」とも表現できます。
+    これは、少なくとも1つの特定の転送ルールにマッチする受信メールはキャッチオールの代わりにそのルールが使用されることを意味します。
+    特定のルールにはメールアドレスや正規表現が含まれます。
     <br /><br />
-    For example:
+    例えば:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    この設定では <code>hello@example.com</code> に送られたメールは <code>second@gmail.com</code>（キャッチオール）には**転送されず**、代わりに <code>first@gmail.com</code> にのみ配信されます。
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">レジストラのDNS管理ページ（別タブで開いているもの）を使用して、以下の<strong class="notranslate">TXT</strong>レコードを追加で設定してください:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1882,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Gmail（例: Send Mail As）やG Suiteを使用している場合は、上記の値に <code>include:_spf.google.com</code> を追加する必要があります。例えば:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1641,34 +1894,33 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    すでに "v=spf1" を含む類似の行がある場合は、既存の "include:host.com" レコードの直前かつ同じ行の "-all" の前に <code>include:spf.forwardemail.net</code> を追加してください。例えば:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    "-all" と "~all" には違いがあります。"-" はマッチしなければSPFチェックが失敗（FAIL）することを示し、"~" はソフトフェイル（SOFTFAIL）を示します。ドメインのなりすまし防止のために "-all" の使用を推奨します。
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    また、メール送信に使用するホスト（例: Outlook）のSPFレコードを含める必要がある場合もあります。
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">「レコードの確認」ツールを使ってDNSレコードを確認してください。ツールは<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定にあります。
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">テストメールを送信して動作を確認してください。DNSレコードの反映には時間がかかる場合があります。
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    テストメールが届かない場合や、「このメッセージに注意してください」という内容のテストメールが届く場合は、<a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">なぜテストメールが届かないのか</a>と<a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">なぜGmailで自分宛のテストメールが「疑わしい」と表示されるのか</a>の回答をご覧ください。
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Gmailから「送信者として送信」したい場合は、<strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">この動画を視聴する</a></strong>か、以下の<a href="#how-to-send-mail-as-using-gmail">Gmailを使った送信者としての送信方法</a>の手順に従ってください。
 
 </li></ol>
 
@@ -1676,10 +1928,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      おめでとうございます！
     </strong>
     <span>
-      You've successfully completed all steps.
+      すべての手順を正常に完了しました。
     </span>
   </div>
 </div>
@@ -1687,93 +1939,92 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    以下にオプションのアドオンを記載しています。これらのアドオンは完全に任意であり、必ずしも必要ではありません。必要に応じて追加情報としてご提供しています。
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    オプションのアドオン:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Gmailを使った送信者としての送信方法</a>機能を利用している場合は、ご自身を許可リストに追加することを検討してください。この件に関しては<a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">Gmailのこちらの説明</a>をご覧ください。
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### 高度な転送のために複数のMX交換機やサーバーを使えますか {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+はい、可能ですが、**DNSレコードにはMX交換機を1つだけ記載するべきです**。
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+複数のMX交換機を設定するために「優先度」を使おうとしないでください。
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+代わりに、既存のMX交換機を設定して、マッチしないエイリアスのメールをすべて当サービスの交換機（`mx1.forwardemail.net` および/または `mx2.forwardemail.net`）に転送する必要があります。
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Google Workspaceを使用していて、マッチしないエイリアスのメールをすべて当サービスに転送したい場合は、<https://support.google.com/a/answer/6297084>をご覧ください。
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Microsoft 365（Outlook）を使用していて、マッチしないエイリアスのメールをすべて当サービスに転送したい場合は、<https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> および <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>をご覧ください。
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### 休暇応答（不在自動応答）を設定するにはどうすればよいですか {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスに移動し、休暇自動応答を設定したいエイリアスを作成または編集してください。
+開始日、終了日、件名、メッセージを設定し、いつでも有効化または無効化することができます：
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* 現在はプレーンテキストの件名とメッセージがサポートされています（内部的に `striptags` パッケージを使用してHTMLを除去しています）。
+* 件名は100文字以内に制限されています。
+* メッセージは1000文字以内に制限されています。
+* 設定にはアウトバウンドSMTPの構成が必要です（例：DKIM、DMARC、およびReturn-PathのDNSレコードを設定する必要があります）。
+  * <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> アウトバウンドSMTP構成 に移動し、設定手順に従ってください。
+* バケーションレスポンダーはグローバルなバニティドメイン名では有効にできません（例：[使い捨てアドレス](/disposable-addresses)はサポートされていません）。
+* バケーションレスポンダーはワイルドカード/キャッチオール（`*`）や正規表現を含むエイリアスでは有効にできません。
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+`postfix` のようなメールシステム（例：`sieve` のバケーションフィルター拡張を使用するもの）とは異なり、Forward Emailは自動的にDKIM署名を追加し、バケーションレスポンス送信時の接続問題（例：一般的なSSL/TLS接続問題やレガシーサーバーの問題）をダミーで防止し、さらにバケーションレスポンスに対してOpen WKDおよびPGP暗号化もサポートしています。
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* 悪用防止のため、送信されるバケーションレスポンダーメッセージごとに1つのアウトバウンドSMTPクレジットが差し引かれます。
+  * すべての有料アカウントにはデフォルトで1日あたり300クレジットが含まれています。より多く必要な場合はお問い合わせください。
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. [許可リスト](#do-you-have-an-allowlist)にある送信者には4日ごとに1回のみ送信します（これはGmailの動作に似ています）。
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Redisキャッシュは `alias_id` と `sender` のフィンガープリントを使用します。`alias_id` はエイリアスのMongoDB IDで、`sender` は許可リストにある場合はFromアドレス、許可リストにない場合はFromアドレスのルートドメインです。簡単のため、このフィンガープリントのキャッシュ有効期限は4日に設定されています。
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * 許可リストにない送信者に対してFromアドレスのルートドメインを使用する方法は、比較的知られていない送信者（例：悪意のある行為者）によるバケーションレスポンダーメッセージの大量送信を防止します。
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. MAIL FROMおよび/またはFromが空白でないこと、かつ（大文字・小文字を区別せず）[ポストマスターのユーザー名](#what-are-postmaster-addresses)（メールアドレスの@の前の部分）を含まない場合にのみ送信します。
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. 元のメッセージに以下のヘッダーが含まれている場合は送信しません（大文字・小文字を区別しません）：
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * `auto-submitted` ヘッダーで値が `no` でないもの。
+   * `x-auto-response-suppress` ヘッダーで値が `dr`、`autoreply`、`auto-reply`、`auto_reply`、または `all` のもの。
+   * `list-id`、`list-subscribe`、`list-unsubscribe`、`list-help`、`list-post`、`list-owner`、`list-archive`、`x-autoreply`、`x-autorespond`、または `x-auto-respond` ヘッダー（値に関係なく）。
+   * `precedence` ヘッダーで値が `bulk`、`autoreply`、`auto-reply`、`auto_reply`、または `list` のもの。
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. MAIL FROMまたはFromのメールアドレスが `+donotreply`、`-donotreply`、`+noreply`、または `-noreply` で終わる場合は送信しません。
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. Fromのメールアドレスのユーザー名部分が `mdaemon` で、かつ大文字・小文字を区別しない `X-MDDSN-Message` ヘッダーがある場合は送信しません。
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. 大文字・小文字を区別しない `content-type` ヘッダーが `multipart/report` の場合は送信しません。
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Forward EmailのSPF設定方法 {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+レジストラのDNS管理ページを使用して、以下の <strong class="notranslate">TXT</strong> レコードを設定してください：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2035,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要：
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Gmail（例：Send Mail As）やG Suiteを使用している場合は、上記の値に <code>include:_spf.google.com</code> を追加する必要があります。例えば：
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Microsoft Outlook または Live.com を使用している場合は、SPF の <strong class="notranslate">TXT</strong> レコードに <code>include:spf.protection.outlook.com</code> を追加する必要があります。例：
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1808,450 +2058,501 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    すでに "v=spf1" を含む類似の行がある場合は、既存の "include:host.com" レコードの直前かつ同じ行の "-all" の前に <code>include:spf.forwardemail.net</code> を追加する必要があります。例：
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    "-all" と "~all" には違いがあります。"-" は SPF チェックが一致しない場合に失敗（FAIL）を示し、"~" はソフトフェイル（SOFTFAIL）を示します。ドメインのなりすまし防止のために "-all" の使用を推奨します。
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    また、メールを送信するホスト（例：Outlook）の SPF レコードを含める必要がある場合もあります。
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Forward Email の DKIM 設定方法 {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> アウトバウンド SMTP 設定 に移動し、セットアップ手順に従ってください。
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Forward Email の DMARC 設定方法 {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> アウトバウンド SMTP 設定 に移動し、セットアップ手順に従ってください。
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### DMARC レポートの確認方法 {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email は包括的な DMARC レポートダッシュボードを提供しており、すべてのドメインのメール認証パフォーマンスを単一のインターフェースで監視できます。
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**DMARC レポートとは？**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+DMARC（Domain-based Message Authentication, Reporting, and Conformance）レポートは、受信メールサーバーから送信される XML ファイルで、メールの認証状況を教えてくれます。これらのレポートは以下の理解に役立ちます：
+
+* ドメインから送信されているメールの数
+* それらのメールが SPF および DKIM 認証に合格しているかどうか
+* 受信サーバーが取っている処理（受け入れ、隔離、拒否）
+* ドメインを代表してメールを送信している IP アドレス
+
+**DMARC レポートへのアクセス方法**
+
+<a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> DMARC レポート</a> にアクセスしてダッシュボードを確認してください。また、<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> から各ドメインの横にある「DMARC」ボタンをクリックしてドメイン別レポートにもアクセスできます。
+
+**ダッシュボードの機能**
+
+DMARC レポートダッシュボードには以下が含まれます：
+
+* **概要指標**：受信したレポート総数、解析したメッセージ総数、SPF 整合率、DKIM 整合率、全体の合格率
+* **時間経過によるメッセージ数チャート**：過去30日間のメール量と認証率の視覚的傾向
+* **整合性概要**：SPF と DKIM の整合分布を示すドーナツチャート
+* **メッセージ処理状況**：受信サーバーがメールをどのように処理したか（受け入れ、隔離、拒否）を示す積み上げ棒グラフ
+* **最近のレポート一覧**：個別の DMARC レポートの詳細リスト（フィルタリングとページネーション対応）
+* **ドメインフィルタリング**：複数ドメインを管理している場合に特定ドメインのレポートを絞り込み可能
+**なぜこれが重要なのか**
+
+複数のドメインを管理する組織（企業、非営利団体、代理店など）にとって、DMARCレポートは以下のために不可欠です：
+
+* **不正な送信者の特定**：誰かがあなたのドメインをなりすましているか検出する
+* **配信成功率の向上**：正当なメールが認証を通過することを保証する
+* **メールインフラの監視**：どのサービスやIPがあなたの代理で送信しているかを追跡する
+* **コンプライアンス**：セキュリティ監査のためにメール認証の可視性を維持する
+
+他のサービスのように別途DMARC監視ツールが必要な場合と異なり、Forward Emailは追加費用なしでアカウントの一部としてDMARCレポートの処理と可視化を含んでいます。
+
+**要件**
+
+* DMARCレポートは有料プランのみ利用可能
+* ドメインにDMARCが設定されている必要があります（[Forward EmailでのDMARC設定方法](#how-do-i-set-up-dmarc-for-forward-email)を参照）
+* レポートは受信メールサーバーが設定されたDMARC報告用アドレスに送信すると自動的に収集されます
+
+**週次メールレポート**
+
+有料プランのユーザーは自動的に週次のDMARCレポート概要をメールで受け取ります。これらのメールには以下が含まれます：
+
+* すべてのドメインの概要統計
+* SPFおよびDKIMの整合率
+* メッセージの処理状況の内訳（受信、隔離、拒否）
+* 主な報告組織（Google、Microsoft、Yahooなど）
+* 注意が必要な整合性問題のあるIPアドレス
+* DMARCレポートダッシュボードへの直接リンク
+
+週次レポートは自動的に送信され、他のメール通知とは別に無効にすることはできません。
+
+### 連絡先の接続と設定方法 {#how-do-i-connect-and-configure-my-contacts}
+
+**連絡先を設定するには、以下のCardDAV URLを使用してください：** `https://carddav.forwardemail.net`（クライアントが許可する場合は単に `carddav.forwardemail.net` でも可）
+
+### カレンダーの接続と設定方法 {#how-do-i-connect-and-configure-my-calendars}
+
+**カレンダーを設定するには、以下のCalDAV URLを使用してください：** `https://caldav.forwardemail.net`（クライアントが許可する場合は単に `caldav.forwardemail.net` でも可）
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### 追加のカレンダーの追加と既存カレンダーの管理方法 {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+追加のカレンダーを追加したい場合は、新しいカレンダーURLとして以下を追加してください：`https://caldav.forwardemail.net/dav/principals/calendar-name`（**`calendar-name` は希望のカレンダー名に置き換えてください**）
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+カレンダーの名前や色は作成後に変更可能です。お好みのカレンダーアプリ（例：Apple Mailや[Thunderbird](https://thunderbird.net)）を使用してください。
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### タスクとリマインダーの接続と設定方法 {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**タスクとリマインダーを設定するには、カレンダーと同じCalDAV URLを使用してください：** `https://caldav.forwardemail.net`（クライアントが許可する場合は単に `caldav.forwardemail.net` でも可）
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+タスクとリマインダーはカレンダーイベントから自動的に分離され、「リマインダー」または「タスク」カレンダーコレクションとして管理されます。
 
-**Setup instructions by platform:**
+**プラットフォーム別セットアップ手順：**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. システム環境設定 > インターネットアカウント（iOSでは設定 > アカウント）で新しいCalDAVアカウントを追加
+2. サーバーに `caldav.forwardemail.net` を使用
+3. Forward Emailのエイリアスと生成されたパスワードを入力
+4. 設定後、「カレンダー」と「リマインダー」の両方のコレクションが表示される
+5. リマインダーアプリでタスクの作成と管理が可能
 
-**Android with Tasks.org:**
+**Android（Tasks.org使用時）：**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Google PlayストアまたはF-DroidからTasks.orgをインストール
+2. 設定 > 同期 > アカウント追加 > CalDAVへ進む
+3. サーバーに `https://caldav.forwardemail.net` を入力
+4. Forward Emailのエイリアスと生成されたパスワードを入力
+5. Tasks.orgが自動的にタスクカレンダーを検出
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Lightningアドオンが未インストールの場合はインストール
+2. 「CalDAV」タイプの新しいカレンダーを作成
+3. URLに `https://caldav.forwardemail.net` を使用
+4. Forward Emailの認証情報を入力
+5. イベントとタスクの両方がカレンダーインターフェースで利用可能
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### macOSリマインダーでタスクを作成できない理由 {#why-cant-i-create-tasks-in-macos-reminders}
+macOSのリマインダーでタスク作成に問題がある場合は、以下のトラブルシューティング手順を試してください：
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **アカウント設定を確認**：CalDAVアカウントが `caldav.forwardemail.net` で正しく設定されていることを確認してください
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **カレンダーの分離を確認**：アカウントに「カレンダー」と「リマインダー」の両方が表示されているはずです。「カレンダー」だけの場合、タスクサポートがまだ完全に有効になっていない可能性があります
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **アカウントを更新**：システム環境設定 > インターネットアカウントでCalDAVアカウントを一度削除してから再追加してみてください
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **サーバー接続を確認**：ブラウザで `https://caldav.forwardemail.net` にアクセスできるかテストしてください
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **認証情報を確認**：正しいエイリアスメールアドレスと生成されたパスワード（アカウントパスワードではない）を使用していることを確認してください
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **強制同期**：リマインダーアプリでタスクを作成し、手動で同期を更新してみてください
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**よくある問題：**
 
-**Common issues:**
+* **「リマインダーのカレンダーが見つかりません」**：初回アクセス時にサーバーがリマインダーコレクションを作成するのに少し時間がかかる場合があります
+* **タスクが同期されない**：両方のデバイスで同じCalDAVアカウントの認証情報を使っているか確認してください
+* **混在したコンテンツ**：タスクは一般の「カレンダー」ではなく「リマインダー」カレンダーに作成されていることを確認してください
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### AndroidでTasks.orgを設定する方法 {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.orgはForward EmailのCalDAVタスクサポートと非常に相性の良い人気のオープンソースタスクマネージャーです。
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**インストールと設定：**
 
-**Installation and Setup:**
+1. **Tasks.orgをインストール**：
+   * Google Playストアから：[Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * F-Droidから：[Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **CalDAV同期を設定**：
+   * Tasks.orgを開く
+   * ☰ メニュー > 設定 > 同期 に進む
+   * 「アカウントを追加」をタップ
+   * 「CalDAV」を選択
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+3. **Forward Emailの設定を入力**：
+   * **サーバーURL**：`https://caldav.forwardemail.net`
+   * **ユーザー名**：Forward Emailのエイリアス（例：`you@yourdomain.com`）
+   * **パスワード**：エイリアス専用の生成パスワード
+   * 「アカウントを追加」をタップ
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+4. **アカウント検出**：
+   * Tasks.orgが自動的にタスクカレンダーを検出します
+   * 「リマインダー」コレクションが表示されるはずです
+   * 同期を有効にするため「購読」をタップ
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+5. **同期テスト**：
+   * Tasks.orgでテストタスクを作成
+   * 他のCalDAVクライアント（macOSリマインダーなど）に表示されるか確認
+   * 双方向で変更が同期されることを確認
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+**利用可能な機能：**
 
-**Features available:**
+* ✅ タスクの作成と編集
+* ✅ 期限日とリマインダー
+* ✅ タスクの完了とステータス
+* ✅ 優先度レベル
+* ✅ サブタスクとタスク階層
+* ✅ タグとカテゴリ
+* ✅ 他のCalDAVクライアントとの双方向同期
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+**トラブルシューティング：**
 
-**Troubleshooting:**
+* タスクカレンダーが表示されない場合は、Tasks.orgの設定で手動更新を試してください
+* サーバーに少なくとも1つタスクが作成されていることを確認してください（macOSリマインダーで先に作成可能）
+* `caldav.forwardemail.net` へのネットワーク接続を確認してください
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+### Forward EmailでSRSを設定する方法 {#how-do-i-set-up-srs-for-forward-email}
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+[Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（「SRS」）は自動的に設定されますので、ご自身で設定する必要はありません。
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+### Forward EmailでMTA-STSを設定する方法 {#how-do-i-set-up-mta-sts-for-forward-email}
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+詳細は[当社のMTA-STSに関するセクション](#do-you-support-mta-sts)をご参照ください。
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+### メールアドレスにプロフィール画像を追加する方法 {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+Gmailを使用している場合は、以下の手順に従ってください：
 
-If you're using Gmail, then follow these steps below:
+1. <https://google.com> にアクセスし、すべてのメールアカウントからサインアウトする
+2. 「サインイン」をクリックし、ドロップダウンから「別のアカウント」をクリック
+3. 「別のアカウントを使用」を選択
+4. 「アカウントを作成」を選択
+5. 「代わりに現在のメールアドレスを使用」を選択
+6. カスタムドメインのメールアドレスを入力
+7. メールアドレスに送信された確認メールを受け取る
+8. そのメールに記載された確認コードを入力
+9. 新しいGoogleアカウントのプロフィール情報を入力
+10. プライバシーと利用規約にすべて同意
+11. <https://google.com> にアクセスし、右上のプロフィールアイコンをクリックして「変更」ボタンをクリック
+12. 新しい写真またはアバターをアップロード
+13. 変更は約1〜2時間で反映されますが、場合によっては非常に速いこともあります
+14. テストメールを送信するとプロフィール写真が表示されるはずです。
+## 高度な機能 {#advanced-features}
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+### マーケティング関連のメールのためのニュースレターやメーリングリストをサポートしていますか {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-## Advanced Features {#advanced-features}
+はい、詳細は <https://forwardemail.net/guides/newsletter-with-listmonk> をご覧ください。
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+IPの評判を維持し、配信可能性を確保するために、Forward Emailでは**ニュースレター承認**のためにドメインごとに手動レビューのプロセスがあります。承認を希望される場合は <support@forwardemail.net> までメールを送るか、[ヘルプリクエスト](https://forwardemail.net/help)を開いてください。通常24時間以内に対応し、多くのリクエストは1〜2時間以内に承認されます。近い将来、追加のスパム制御とアラート機能によりこのプロセスを即時化する予定です。このプロセスにより、メールが受信トレイに届き、メッセージがスパムとしてマークされることを防ぎます。
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+### APIでのメール送信をサポートしていますか {#do-you-support-sending-email-with-api}
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+はい、2023年5月より、すべての有料ユーザー向けにAPIでのメール送信をアドオンとしてサポートしています。
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    <a href="/terms" class="alert-link" target="_blank">利用規約</a>、<a href="/privacy" class="alert-link" target="_blank">プライバシーポリシー</a>、および<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">送信SMTP制限</a>を必ずお読みください。ご利用はこれらの内容の承認および同意とみなされます。
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+APIドキュメントの[Emails](/email-api#outbound-emails)セクションでオプション、例、および詳細をご覧ください。
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+APIで送信メールを送るには、[マイセキュリティ](/my-account/security)で利用可能なAPIトークンを使用する必要があります。
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### IMAPでのメール受信をサポートしていますか {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+はい、2023年10月16日より、すべての有料ユーザー向けにIMAP経由でのメール受信をアドオンとしてサポートしています。**当社の暗号化されたSQLiteメールボックスストレージ機能の仕組みについては** [詳細記事](/blog/docs/best-quantum-safe-encrypted-email-service) をお読みください。
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    <a href="/terms" class="alert-link" target="_blank">利用規約</a>および<a href="/privacy" class="alert-link" target="_blank">プライバシーポリシー</a>を必ずお読みください。ご利用はこれらの内容の承認および同意とみなされます。
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスでドメインの新しいエイリアスを作成します（例: <code><hello@example.com></code>）
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. 新しく作成したエイリアスの横にある<strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong>をクリックします。画面に表示される生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. お好みのメールアプリケーションで、新しく作成したエイリアス（例: <code><hello@example.com></code>）のアカウントを追加または設定します。
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替アプリ</a>の使用を推奨します。</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. IMAPサーバー名の入力を求められたら、`imap.forwardemail.net` と入力してください。
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. IMAPサーバーポートの入力を求められたら、`993`（SSL/TLS）と入力してください。必要に応じて[代替IMAPポート](/faq#what-are-your-imap-server-configuration-settings)もご参照ください。
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbirdを使用する場合は、「接続のセキュリティ」が「SSL/TLS」に設定されており、認証方法が「通常のパスワード」になっていることを確認してください。</span>
    </div>
+6. IMAPサーバーパスワードの入力を求められたら、上記ステップ2の<strong class="text-success"><i class="fa fa-key"></i> パスワード生成</strong>からパスワードを貼り付けてください
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **設定を保存してください** – 問題がある場合は、<a href="/help">お問い合わせ</a>ください
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      おめでとうございます！
     </strong>
     <span>
-      You've successfully completed all steps.
+      すべての手順を正常に完了しました。
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### カレンダー（CalDAV）をサポートしていますか {#do-you-support-calendars-caldav}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+はい、2024年2月5日よりこの機能を追加しました。サーバーは `caldav.forwardemail.net` で、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
+
+### POP3をサポートしていますか {#do-you-support-pop3}
+
+はい、2023年12月4日より、すべての有料ユーザー向けに[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)をアドオンとしてサポートしています。**当社の暗号化されたSQLiteメールボックスストレージ機能の仕組みについては、詳細記事**をご覧ください。(/blog/docs/best-quantum-safe-encrypted-email-service)
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要：
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    <a href="/terms" class="alert-link" target="_blank">利用規約</a>と<a href="/privacy" class="alert-link" target="_blank">プライバシーポリシー</a>を必ずお読みください。ご利用はこれらの内容の承認および同意とみなされます。
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスで、ドメインの新しいエイリアスを作成します（例：<code><hello@example.com></code>）
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. 新しく作成したエイリアスの横にある<strong class="text-success"><i class="fa fa-key"></i> パスワード生成</strong>をクリックします。画面に表示された生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. お好みのメールアプリケーションで、新しく作成したエイリアス（例：<code><hello@example.com></code>）のアカウントを追加または設定します
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント：
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替アプリ</a>の使用を推奨します。</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. POP3サーバー名の入力を求められたら、`pop3.forwardemail.net` と入力してください
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. POP3サーバーポートの入力を求められたら、`995`（SSL/TLS）を入力してください。必要に応じて[代替POP3ポート](/faq#what-are-your-pop3-server-configuration-settings)もご参照ください
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント：
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbirdを使用している場合は、「接続のセキュリティ」を「SSL/TLS」に、「認証方式」を「通常のパスワード」に設定してください。</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. POP3サーバーパスワードの入力を求められたら、上記ステップ2の<strong class="text-success"><i class="fa fa-key"></i> パスワード生成</strong>からパスワードを貼り付けてください
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **設定を保存してください** – 問題がある場合は、<a href="/help">お問い合わせ</a>ください
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      おめでとうございます！
     </strong>
     <span>
-      You've successfully completed all steps.
+      すべての手順を正常に完了しました。
     </span>
   </div>
 </div>
 
 </div>
+IPv4とIPv6の両方をサポートしており、ポート`443`（HTTPS）で利用可能です。
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
-
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
-
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| ログイン    | 例                         | 説明                                                                                                                                                                                      |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| ユーザー名 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>で存在するエイリアスのメールアドレス。                                                                 |
+| パスワード | `************************` | エイリアス固有の生成されたパスワード。                                                                                                                                                    |
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+カレンダーサポートを利用するには、**ユーザー**は<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>で存在するエイリアスのメールアドレスでなければならず、**パスワード**はエイリアス固有の生成されたパスワードである必要があります。
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+### タスクとリマインダー（CalDAV VTODO）をサポートしていますか？ {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+はい、2025年10月14日よりタスクとリマインダーのためのCalDAV VTODOサポートを追加しました。これはカレンダーサポートと同じサーバーを使用します：`caldav.forwardemail.net`。
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+当社のCalDAVサーバーは、**統合カレンダー**を使用してカレンダーイベント（VEVENT）とタスク（VTODO）の両方のコンポーネントをサポートしています。つまり、各カレンダーはイベントとタスクの両方を含むことができ、すべてのCalDAVクライアント間で最大の柔軟性と互換性を提供します。
 
-**How calendars and lists work:**
+**カレンダーとリストの仕組み：**
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+* **各カレンダーはイベントとタスクの両方をサポート** - 任意のカレンダーにイベント、タスク、またはその両方を追加できます
+* **Appleリマインダーのリスト** - Appleリマインダーで作成した各リストはサーバー上の別々のカレンダーになります
+* **複数のカレンダー** - 必要なだけカレンダーを作成でき、それぞれに名前、色、組織を設定できます
+* **クライアント間同期** - タスクとイベントはすべての対応クライアント間でシームレスに同期されます
 
-**Supported task clients:**
+**対応タスククライアント：**
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+* **macOSリマインダー** - タスクの作成、編集、完了、同期を完全にネイティブサポート
+* **iOSリマインダー** - すべてのiOSデバイスで完全にネイティブサポート
+* **Tasks.org（Android）** - CalDAV同期対応の人気オープンソースタスクマネージャー
+* **Thunderbird** - デスクトップメールクライアントでのタスクとカレンダーサポート
+* **任意のCalDAV対応タスクマネージャー** - 標準のVTODOコンポーネントをサポート
 
-**Task features supported:**
+**サポートされるタスク機能：**
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+* タスクの作成、編集、削除
+* 期限日と開始日
+* タスク完了ステータス（NEEDS-ACTION、IN-PROCESS、COMPLETED、CANCELLED）
+* タスクの優先度レベル
+* 繰り返しタスク
+* タスクの説明とメモ
+* 複数デバイス間の同期
+* RELATED-TOプロパティを使ったサブタスク
+* VALARMによるタスクリマインダー
 
-The login credentials are the same as for calendar support:
+ログイン資格情報はカレンダーサポートと同じです：
 
-| Login | Example | Description |
+| ログイン    | 例                         | 説明                                                                                                                                                                                      |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| ユーザー名 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>で存在するエイリアスのメールアドレス。                                                                 |
+| パスワード | `************************` | エイリアス固有の生成されたパスワード。                                                                                                                                                    |
 
-**Important notes:**
+**重要な注意点：**
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+* **各リマインダーリストは別々のカレンダーです** - Appleリマインダーで新しいリストを作成すると、CalDAVサーバー上に新しいカレンダーが作成されます
+* **Thunderbirdユーザー** - 同期したい各カレンダー／リストに手動で購読する必要があります。またはカレンダーホームURLを使用してください：`https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Appleユーザー** - カレンダーの検出は自動で行われるため、すべてのカレンダーとリストがCalendar.appとReminders.appに表示されます
+* **統合カレンダー** - すべてのカレンダーはイベントとタスクの両方をサポートし、データの整理に柔軟性を提供します
+### 連絡先（CardDAV）をサポートしていますか {#do-you-support-contacts-carddav}
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+はい、2025年6月12日よりこの機能を追加しました。弊社のサーバーは `carddav.forwardemail.net` で、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+IPv4およびIPv6の両方に対応しており、ポート `443`（HTTPS）で利用可能です。
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| ログイン    | 例                         | 説明                                                                                                                                                                                      |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| ユーザー名 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> に存在するドメインのエイリアスのメールアドレスです。 |
+| パスワード | `************************` | エイリアス専用に生成されたパスワードです。                                                                                                                                                 |
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+連絡先サポートを利用するには、**ユーザー**は<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>に存在するドメインのエイリアスのメールアドレスである必要があり、**パスワード**はエイリアス専用に生成されたパスワードでなければなりません。
 
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
+### SMTPでのメール送信をサポートしていますか {#do-you-support-sending-email-with-smtp}
 
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+はい、2023年5月よりすべての有料ユーザー向けのアドオンとしてSMTPによるメール送信をサポートしています。
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    <a href="/terms" class="alert-link" target="_blank">利用規約</a>、<a href="/privacy" class="alert-link" target="_blank">プライバシーポリシー</a>、および <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">送信SMTP制限</a> を必ずお読みください。ご利用はこれらの内容の承認および同意とみなされます。
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Gmailをご利用の場合は、<a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Gmailでの送信メール設定ガイド</a>をご参照ください。開発者の方は<a class="alert-link" href="/email-api#outbound-emails" target="_blank">メールAPIドキュメント</a>をご覧ください。
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> 送信SMTP設定 に移動し、セットアップ手順に従ってください
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス でドメイン用の新しいエイリアスを作成します（例: <code><hello@example.com></code>）
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. 新しく作成したエイリアスの横にある <strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong> をクリックします。画面に表示される生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. お好みのメールアプリケーションで、新しく作成したエイリアス（例: <code><hello@example.com></code>）のアカウントを追加または設定します
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>弊社では<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替アプリ</a>の使用を推奨しています。</span>
    </div>
+5. SMTPサーバー名の入力を求められたら、`smtp.forwardemail.net` と入力してください
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. SMTPサーバーポートの入力を求められたら、`465`（SSL/TLS）と入力してください – 必要に応じて[代替SMTPポート](/faq#what-are-your-smtp-server-configuration-settings)を参照してください
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbirdを使用している場合は、「接続のセキュリティ」が「SSL/TLS」に設定されており、認証方法が「通常のパスワード」に設定されていることを確認してください。</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. SMTPサーバーパスワードの入力を求められたら、上記ステップ3の<strong class="text-success"><i class="fa fa-key"></i> パスワード生成</strong>からパスワードを貼り付けてください
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **設定を保存して最初のテストメールを送信してください** – 問題がある場合は、<a href="/help">お問い合わせ</a>ください
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    IPの評判を維持し、配信可能性を確保するために、送信SMTPの承認はドメインごとに手動レビューのプロセスがあります。通常24時間以内に完了し、多くのリクエストは1～2時間以内に承認されます。近い将来、追加のスパム制御とアラート機能によりこのプロセスを即時化する予定です。このプロセスにより、メールが受信トレイに届き、メッセージがスパムとしてマークされることを防ぎます。
   </span>
 </div>
 
@@ -2259,92 +2560,90 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      おめでとうございます！
     </strong>
     <span>
-      You've successfully completed all steps.
+      すべてのステップを正常に完了しました。
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### OpenPGP/MIME、エンドツーエンド暗号化（「E2EE」）、およびWeb Key Directory（「WKD」）をサポートしていますか？ {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+はい、[OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP)、[エンドツーエンド暗号化（「E2EE」）](https://en.wikipedia.org/wiki/End-to-end_encryption)、および[Web Key Directory（「WKD」）](https://wiki.gnupg.org/WKD)を使用した公開鍵の検出をサポートしています。OpenPGPは[ keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service)で設定するか、[独自にホストすることも可能です](https://wiki.gnupg.org/WKDHosting)（[WKDサーバー設定のgistはこちら](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)を参照）。
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* WKDの検索結果は1時間キャッシュされ、迅速なメール配信を保証します → そのため、WKDキーを追加、変更、または削除した場合は、メールアドレスを記載の上 `support@forwardemail.net` までご連絡いただき、手動でキャッシュをクリアします。
+* WKD検索またはアップロードされたPGPキーを使用して転送されるメッセージのPGP暗号化をサポートしています。
+* アップロードされたキーは、PGPチェックボックスが有効/チェックされている限り優先されます。
+* Webhookに送信されるメッセージは現在PGPで暗号化されていません。
+* 複数のエイリアスが転送先アドレスにマッチし（例：正規表現/ワイルドカード/完全一致の組み合わせ）、かつ複数のエイリアスにアップロードされたPGPキーがありPGPがチェックされている場合 → エラーアラートメールを送信し、アップロードされたPGPキーでの暗号化は行いません。これは非常に稀で、通常は複雑なエイリアスルールを持つ上級ユーザーにのみ該当します。
+* **送信者がDMARCポリシーでrejectを設定している場合、当社のMXサーバー経由のメール転送にはPGP暗号化は適用されません。すべてのメールでPGP暗号化が必要な場合は、IMAPサービスを使用し、受信メール用にエイリアスのPGPキーを設定することをお勧めします。**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**Web Key Directoryの設定は <https://wkd.chimbosonic.com/>（オープンソース）または <https://www.webkeydirectory.com/>（プロプライエタリ）で検証できます。**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    自動暗号化:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>当社の<a href="#do-you-support-sending-email-with-smtp" class="alert-link">送信SMTPサービス</a>を使用して暗号化されていないメッセージを送信する場合、受信者ごとに<a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory（「WKD」）</a>を使用して自動的に暗号化を試みます。</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    カスタムドメイン名でOpenPGPを有効にするには、以下のすべての手順を必ず実行してください。
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. 以下からメールクライアント推奨のプラグインをダウンロードしてインストールしてください:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | メールクライアント    | プラットフォーム | 推奨プラグイン                                                                                                                                                                    | 備考                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird     | デスクトップ  | [ThunderbirdでOpenPGPを設定する](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | ThunderbirdはOpenPGPを標準サポートしています。                                                                                                                                                                                                                                                                                                                                                                                            |
+   | Gmail           | ブラウザ  | [Mailvelope](https://mailvelope.com/) または [FlowCrypt](https://flowcrypt.com/download)（プロプライエタリライセンス）                                                                            | GmailはOpenPGPをサポートしていませんが、オープンソースのプラグイン[Mailvelope](https://mailvelope.com/)または[FlowCrypt](https://flowcrypt.com/download)をダウンロードできます。                                                                                                                                                                                                                                                                    |
+   | Apple Mail      | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                          | Apple MailはOpenPGPをサポートしていませんが、オープンソースのプラグイン[Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)をダウンロードできます。                                                                                                                                                                                                                                                       |
+   | Apple Mail      | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) または [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995)（プロプライエタリライセンス）                           | Apple MailはOpenPGPをサポートしていませんが、オープンソースのプラグイン[PGPro](https://github.com/opensourceios/PGPro/)または[FlowCrypt](https://flowcrypt.com/download)をダウンロードできます。                                                                                                                                                                                                                                                    |
+   | Outlook         | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                          | OutlookのデスクトップメールクライアントはOpenPGPをサポートしていませんが、オープンソースのプラグイン[gpg4win](https://www.gpg4win.de/index.html)をダウンロードできます。                                                                                                                                                                                                                                                                                    |
+   | Outlook         | ブラウザ  | [Mailvelope](https://mailvelope.com/) または [FlowCrypt](https://flowcrypt.com/download)（プロプライエタリライセンス）                                                                            | OutlookのウェブベースメールクライアントはOpenPGPをサポートしていませんが、オープンソースのプラグイン[Mailvelope](https://mailvelope.com/)または[FlowCrypt](https://flowcrypt.com/download)をダウンロードできます。                                                                                                                                                                                                                                          |
+   | Android         | モバイル   | [OpenKeychain](https://www.openkeychain.org/) または [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                       | [Androidメールクライアント](/blog/open-source/android-email-clients)の[Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/)や[FairEmail](https://github.com/M66B/FairEmail)はオープンソースプラグイン[OpenKeychain](https://www.openkeychain.org/)をサポートしています。代わりにオープンソース（プロプライエタリライセンス）プラグイン[FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)を使用することもできます。 |
+   | Google Chrome   | ブラウザ  | [Mailvelope](https://mailvelope.com/) または [FlowCrypt](https://flowcrypt.com/download)（プロプライエタリライセンス）                                                                            | オープンソースのブラウザ拡張機能[Mailvelope](https://mailvelope.com/)または[FlowCrypt](https://flowcrypt.com/download)をダウンロードできます。                                                                                                                                                                                                                                                                                                 |
+   | Mozilla Firefox | ブラウザ  | [Mailvelope](https://mailvelope.com/) または [FlowCrypt](https://flowcrypt.com/download)（プロプライエタリライセンス）                                                                            | オープンソースのブラウザ拡張機能[Mailvelope](https://mailvelope.com/)または[FlowCrypt](https://flowcrypt.com/download)をダウンロードできます。                                                                                                                                                                                                                                                                                                 |
+   | Microsoft Edge  | ブラウザ  | [Mailvelope](https://mailvelope.com/)                                                                                                                                                 | オープンソースのブラウザ拡張機能[Mailvelope](https://mailvelope.com/)をダウンロードできます。                                                                                                                                                                                                                                                                                                                                                |
+   | Brave           | ブラウザ  | [Mailvelope](https://mailvelope.com/) または [FlowCrypt](https://flowcrypt.com/download)（プロプライエタリライセンス）                                                                            | オープンソースのブラウザ拡張機能[Mailvelope](https://mailvelope.com/)または[FlowCrypt](https://flowcrypt.com/download)をダウンロードできます。                                                                                                                                                                                                                                                                                                 |
+   | Balsa           | デスクトップ  | [BalsaでOpenPGPを設定する](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                            | BalsaはOpenPGPを標準サポートしています。                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | KMail           | デスクトップ  | [KMailでOpenPGPを設定する](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                                 | KMailはOpenPGPを標準サポートしています。                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | GNOME Evolution | デスクトップ  | [EvolutionでOpenPGPを設定する](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                               | GNOME EvolutionはOpenPGPを標準サポートしています。                                                                                                                                                                                                                                                                                                                                                                                        |
+   | Terminal        | デスクトップ  | [Terminalでgpgを設定する](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                           | オープンソースの[gpgコマンドラインツール](https://www.gnupg.org/download/)を使ってコマンドラインから新しい鍵を生成できます。                                                                                                                                                                                                                                                                                                            |
+2. プラグインを開き、公開鍵を作成し、メールクライアントで使用するように設定します。
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. 公開鍵を <https://keys.openpgp.org/upload> にアップロードします。
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>将来的にキーを管理するには、<a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> をご利用ください。</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       オプション追加機能:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       当社の<a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">暗号化ストレージ（IMAP/POP3）</a>サービスをご利用で、（すでに暗号化されている）SQLiteデータベースに保存されている<i>すべての</i>メールを公開鍵で暗号化したい場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス（例: <code>hello@example.com</code>） <i class="fa fa-angle-right"></i> 編集 <i class="fa fa-angle-right"></i> OpenPGP に移動し、公開鍵をアップロードしてください。
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. ドメイン名（例: `example.com`）に新しい `CNAME` レコードを追加します：
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
          <th>Name/Host/Alias</th>
@@ -2363,90 +2662,272 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       ヒント:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>エイリアスが当社の<a class="alert-link" href="/disposable-addresses" target="_blank">バニティ／使い捨てドメイン</a>（例: <code>hideaddress.net</code>）を使用している場合は、このステップを省略できます。</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      おめでとうございます！
     </strong>
     <span>
-      You've successfully completed all steps.
+      すべてのステップを正常に完了しました。
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### S/MIME暗号化はサポートしていますか {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+はい、[RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551)で定義されている[S/MIME（Secure/Multipurpose Internet Mail Extensions）](https://en.wikipedia.org/wiki/S/MIME)暗号化をサポートしています。S/MIMEはX.509証明書を使用したエンドツーエンドの暗号化を提供し、企業向けメールクライアントで広くサポートされています。
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+RSA証明書とECC（楕円曲線暗号）証明書の両方をサポートしています：
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **RSA証明書**：最低2048ビット、推奨4096ビット
+* **ECC証明書**：P-256、P-384、P-521のNIST曲線
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+エイリアスのS/MIME暗号化を設定するには：
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. 信頼できる認証局（CA）からS/MIME証明書を取得するか、テスト用に自己署名証明書を生成します。
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       ヒント:
+     </strong>
+     <span>無料のS/MIME証明書は、<a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a>や<a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>などのプロバイダーから入手可能です。</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. 証明書をPEM形式（公開証明書のみ、秘密鍵は含まない）でエクスポートします。
 
-Learn more about passkeys at the following links:
+3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス（例: <code><hello@example.com></code>） <i class="fa fa-angle-right"></i> 編集 <i class="fa fa-angle-right"></i> S/MIME に移動し、公開証明書をアップロードします。
+4. 一度設定すると、エイリアス宛てのすべての受信メールは、保存または転送される前にあなたのS/MIME証明書を使って暗号化されます。
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       注意:
+     </strong>
+     <span>
+       S/MIME暗号化は、すでに暗号化されていない受信メッセージに適用されます。メッセージがすでにOpenPGPまたはS/MIMEで暗号化されている場合は、再暗号化されません。
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       重要:
+     </strong>
+     <span>
+       送信者にDMARCポリシーでrejectが設定されている場合、当社のMXサーバーを経由したメール転送にはS/MIME暗号化は適用されません。すべてのメールに対してS/MIME暗号化が必要な場合は、当社のIMAPサービスを利用し、受信メール用にエイリアスのS/MIME証明書を設定することをお勧めします。
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+以下のメールクライアントは、S/MIMEの組み込みサポートがあります：
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| メールクライアント | プラットフォーム | 備考                                                                                                               |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | 組み込みのS/MIMEサポート。Mail > 環境設定 > アカウント > あなたのアカウント > 信頼 から証明書を設定してください。      |
+| Apple Mail        | iOS      | 組み込みのS/MIMEサポート。設定 > メール > アカウント > あなたのアカウント > 詳細 > S/MIME から設定してください。          |
+| Microsoft Outlook | Windows  | 組み込みのS/MIMEサポート。ファイル > オプション > トラストセンター > トラストセンターの設定 > 電子メールセキュリティ から設定してください。 |
+| Microsoft Outlook | macOS    | 組み込みのS/MIMEサポート。ツール > アカウント > 詳細 > セキュリティ から設定してください。                                 |
+| Thunderbird       | デスクトップ  | 組み込みのS/MIMEサポート。アカウント設定 > エンドツーエンド暗号化 > S/MIME から設定してください。                      |
+| GNOME Evolution   | デスクトップ  | 組み込みのS/MIMEサポート。編集 > 設定 > メールアカウント > あなたのアカウント > セキュリティ から設定してください。           |
+| KMail             | デスクトップ  | 組み込みのS/MIMEサポート。設定 > KMailの設定 > アイデンティティ > あなたのアイデンティティ > 暗号化 から設定してください。 |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      おめでとうございます！
+    </strong>
+    <span>
+      エイリアスのS/MIME暗号化の設定に成功しました。
+    </span>
+  </div>
+</div>
+
+### Sieveメールフィルタリングはサポートしていますか？ {#do-you-support-sieve-email-filtering}
+
+はい！当社は[RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)で定義された[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\))メールフィルタリングをサポートしています。Sieveは、サーバー側のメールフィルタリングのための強力で標準化されたスクリプト言語で、受信メッセージを自動的に整理、フィルタリング、応答することができます。
+
+#### サポートされているSieve拡張機能 {#supported-sieve-extensions}
+
+当社は包括的なSieve拡張機能セットをサポートしています：
+
+| 拡張機能                    | RFC                                                                                    | 説明                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | メッセージを特定のフォルダに振り分ける              |
+| `reject` / `ereject`         | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | エラーでメッセージを拒否する                    |
+| `vacation`                   | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | 自動応答の休暇/不在返信                         |
+| `vacation-seconds`           | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | 細かい休暇応答間隔の設定                         |
+| `imap4flags`                 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | IMAPフラグ（\Seen、\Flaggedなど）を設定           |
+| `envelope`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | エンベロープの送信者/受信者をテスト                   |
+| `body`                       | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | メッセージ本文の内容をテスト                        |
+| `variables`                  | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | スクリプト内で変数を保存・使用                       |
+| `relational`                 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | 関係演算子による比較（より大きい、より小さい）         |
+| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | 数値比較                                      |
+| `copy`                       | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | リダイレクトしながらメッセージをコピー                  |
+| `editheader`                 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | メッセージヘッダーの追加または削除                    |
+| `date`                       | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | 日付/時刻の値をテスト                            |
+| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | 特定のヘッダー出現箇所にアクセス                       |
+| `regex`                      | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | 正規表現マッチング                              |
+| `enotify`                    | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | 通知の送信（例：mailto:）                           |
+| `environment`                | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | 環境情報へのアクセス                             |
+| `mailbox`                    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | メールボックスの存在確認、メールボックスの作成         |
+| `special-use`                | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | 特殊用途メールボックスへの振り分け（\Junk、\Trash）  |
+| `duplicate`                  | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | 重複メッセージの検出                            |
+| `ihave`                      | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | 拡張機能の利用可能性をテスト                        |
+| `subaddress`                 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | user+detail形式のアドレス部分にアクセス                 |
+#### Extensions Not Supported {#extensions-not-supported}
+
+以下の拡張機能は現在サポートされていません：
+
+| Extension                                                       | Reason                                                              |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `include`                                                       | セキュリティリスク（スクリプトインジェクション）およびグローバルスクリプトストレージが必要 |
+| `mboxmetadata` / `servermetadata`                               | IMAP METADATA拡張機能のサポートが必要                              |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | 複雑なMIMEツリー操作はまだ実装されていません                        |
+
+#### Example Sieve Scripts {#example-sieve-scripts}
+
+**ニュースレターをフォルダに振り分ける:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**休暇中の自動返信:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
+```
+
+**重要な送信者からのメッセージにマークを付ける:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**特定の件名のスパムを拒否する:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Message rejected due to spam content.";
+}
+```
+
+#### Managing Sieve Scripts {#managing-sieve-scripts}
+
+Sieveスクリプトは以下の方法で管理できます：
+
+1. **Webインターフェース**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> Sieveスクリプト からスクリプトの作成・管理が可能です。
+
+2. **ManageSieveプロトコル**: ThunderbirdのSieveアドオンや[sieve-connect](https://github.com/philpennock/sieve-connect)などのManageSieve対応クライアントを使って `imap.forwardemail.net` に接続します。ポートは `2190`（STARTTLS推奨）または `4190`（暗黙のTLS）を使用します。
+
+3. **API**: [REST API](/api#sieve-scripts) を使ってプログラム的にスクリプトを管理できます。
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    注意:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+    Sieveフィルタリングは受信メッセージがメールボックスに保存される前に適用されます。スクリプトは優先順に実行され、最初に一致したアクションがメッセージの処理方法を決定します。
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    セキュリティ:
+  </strong>
+  <span>
+    セキュリティ上の理由から、リダイレクトアクションはスクリプトごとに10回、1日あたり100回に制限されています。休暇応答も乱用防止のためレート制限されています。
+  </span>
+</div>
+
+### Do you support MTA-STS {#do-you-support-mta-sts}
+
+はい、2023年3月2日より[MTA-STS](https://www.hardenize.com/blog/mta-sts)をサポートしています。ドメインで有効にしたい場合は[こちらのテンプレート](https://github.com/jpawlowski/mta-sts.template)をご利用ください。
+
+設定はGitHubの <https://github.com/forwardemail/mta-sts.forwardemail.net> で公開されています。
+
+### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+
+はい！2023年12月13日より、需要の高まりに応じてパスキーのサポートを追加しました（[詳細](https://github.com/orgs/forwardemail/discussions/182)）。
+
+パスキーを使うと、パスワードや二要素認証なしで安全にログインできます。
+
+タッチ認証、顔認証、デバイスベースのパスワードやPINで本人確認が可能です。
+
+最大30個のパスキーを同時に管理できるため、複数のデバイスから簡単にログインできます。
+
+パスキーについて詳しくは以下のリンクをご覧ください：
+
+* [パスキーでアプリやウェブサイトにサインインする](https://support.google.com/android/answer/14124480?hl=en)（Google）
+* [iPhoneでパスキーを使ってアプリやウェブサイトにサインインする](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios)（Apple）
+* [パスキーに関するWikipedia記事](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### メールのベストプラクティスをサポートしていますか {#do-you-support-email-best-practices}
+
+はい。すべてのプランでSPF、DKIM、DMARC、ARC、SRSのサポートを組み込んでいます。また、これらの仕様の元の著者や他のメール専門家と広範に協力し、完璧さと高い配信率を確保しています。
+
+### バウンスWebhookをサポートしていますか {#do-you-support-bounce-webhooks}
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    ヒント:
+  </strong>
+    メールWebhookのドキュメントをお探しですか？ 詳しくは<a href="/faq#do-you-support-webhooks" class="alert-link">Webhookをサポートしていますか？</a>をご覧ください。
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+はい、2024年8月14日よりこの機能を追加しました。現在、マイアカウント → ドメイン → 設定 → バウンスWebhook URLに移動し、送信SMTPメールがバウンスした際に`POST`リクエストを送信する`http://`または`https://`のURLを設定できます。
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+これは送信SMTPの管理と監視に役立ち、購読者の管理、オプトアウト、バウンス発生時の検出に利用できます。
 
-Bounce webhook payloads are sent as a JSON with these properties:
+バウンスWebhookのペイロードは以下のプロパティを持つJSON形式で送信されます：
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (String) - マイアカウント → メール（送信SMTP）に対応するメールID
+* `list_id` (String) - 元の送信メールの`List-ID`ヘッダー（大文字小文字を区別しない）の値（あれば）
+* `list_unsubscribe` (String) - 元の送信メールの`List-Unsubscribe`ヘッダー（大文字小文字を区別しない）の値（あれば）
+* `feedback_id` (String) - 元の送信メールの`Feedback-ID`ヘッダー（大文字小文字を区別しない）の値（あれば）
+* `recipient` (String) - バウンスまたはエラーが発生した受信者のメールアドレス
+* `message` (String) - バウンスの詳細なエラーメッセージ
+* `response` (String) - SMTPの応答メッセージ
+* `response_code` (Number) - 解析されたSMTP応答コード
+* `truth_source` (String) - 応答コードが信頼できるソースからの場合、そのルートドメイン名（例：`google.com`や`yahoo.com`）が入る
+* `bounce` (Object) - バウンスおよび拒否状態の詳細を含むオブジェクト
+  * `action` (String) - バウンスアクション（例：`"reject"`）
+  * `message` (String) - バウンス理由（例：`"Message Sender Blocked By Receiving Server"`）
+  * `category` (String) - バウンスカテゴリ（例：`"block"`）
+  * `code` (Number) - バウンスステータスコード（例：`554`）
+  * `status` (String) - 応答メッセージからのバウンスコード（例：`5.7.1`）
+  * `line` (Number) - 解析された行番号（あれば）、[Zone-MTAバウンス解析リスト](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt)から（例：`526`）
+* `headers` (Object) - 送信メールのヘッダーのキーと値のペア
+* `bounced_at` (String) - バウンスエラーが発生した日時の[ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601)形式
 
-For example:
+例：
 
 ```json
 {
@@ -2469,46 +2950,45 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+バウンスWebhookに関する追加の注意点：
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* Webhookペイロードに`list_id`、`list_unsubscribe`、または`feedback_id`の値が含まれている場合、必要に応じて`recipient`をリストから削除する適切な処置を行ってください。
+  * `bounce.category`の値が`"block"`、`"recipient"`、`"spam"`、または`"virus"`のいずれかの場合は、必ずリストからユーザーを削除してください。
+* Webhookペイロードの検証（実際に当社サーバーからのものであることの確認）が必要な場合は、[リモートクライアントIPアドレスのクライアントホスト名を逆引き](https://nodejs.org/api/dns.html#dnspromisesreverseip)してください。`smtp.forwardemail.net`であるはずです。
+  * また、[公開されているIPアドレス](#what-are-your-servers-ip-addresses)と照合することもできます。
+  * マイアカウント → ドメイン → 設定 → Webhook署名ペイロード検証キーからWebhookキーを取得してください。
+    * セキュリティ上の理由でいつでもこのキーをローテーションできます。
+    * このキーを使ってWebhookリクエストの`X-Webhook-Signature`値と計算した本文の値を比較してください。方法の例は[こちらのStack Overflow投稿](https://stackoverflow.com/a/68885281)にあります。
+  * 詳細は<https://github.com/forwardemail/free-email-forwarding/issues/235>の議論も参照してください。
+* Webhookエンドポイントが`200`ステータスコードで応答するまで最大`5`秒待ち、最大`1`回リトライします。
+* バウンスWebhook URLにエラーが検出された場合、週に1回の頻度で礼儀的なメールを送信します。
+### Webhookはサポートしていますか {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    バウンスWebhookのドキュメントをお探しですか？ 詳しくは<a href="/faq#do-you-support-bounce-webhooks" class="alert-link">バウンスWebhookはサポートしていますか？</a>をご覧ください。
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+はい、2020年5月15日よりこの機能を追加しました。Webhookは受信者と同じように簡単に追加できます！WebhookのURLには必ず「http」または「https」プロトコルが付いていることを確認してください。
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    強化されたプライバシー保護:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    有料プラン（強化されたプライバシー保護機能付き）をご利用の場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>にアクセスし、ドメインの横にある「エイリアス」をクリックしてWebhookを設定してください。有料プランの詳細は<a class="alert-link" rel="noopener noreferrer" href="/private-business-email">料金ページ</a>をご覧ください。無料プランの場合は以下の手順に従ってください。
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+無料プランの場合は、以下のように新しいDNSの<strong class="notranslate">TXT</strong>レコードを追加してください：
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+例えば、`alias@example.com` に届くすべてのメールを新しい[request bin](https://requestbin.com/r/en8pfhdgcculn?inspect)のテストエンドポイントに転送したい場合：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -2521,7 +3001,7 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空欄</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,7 +3009,7 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+または、`example.com` に届くすべてのメールをこのエンドポイントに転送したい場合：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -2542,7 +3022,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空欄</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3030,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**Webhookに関する追加の注意点は以下の通りです：**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* Webhookのペイロードを検証する必要がある場合（実際に当社のサーバーから送信されていることを確認するため）、[リモートクライアントIPアドレスのクライアントホスト名を逆引きで解決](https://nodejs.org/api/dns.html#dnspromisesreverseip)できます。`mx1.forwardemail.net` または `mx2.forwardemail.net` のいずれかであるべきです。
+  * また、IPを[公開されているIPアドレス](#what-are-your-servers-ip-addresses)と照合することも可能です。
+  * 有料プランの場合は、マイアカウント → ドメイン → 設定 → Webhook署名ペイロード検証キーからWebhookキーを取得してください。
+    * セキュリティ上の理由から、このキーはいつでもローテーション可能です。
+    * 当社のWebhookリクエストの `X-Webhook-Signature` 値と、このキーを使って計算した本文の値を比較してください。方法の例は[こちらのStack Overflow投稿](https://stackoverflow.com/a/68885281)にあります。
+  * 詳細は <https://github.com/forwardemail/free-email-forwarding/issues/235> の議論をご覧ください。
+* Webhookが `200` ステータスコードで応答しない場合、そのレスポンスは[エラーログに保存されます](#do-you-store-error-logs) — デバッグに役立ちます。
+* WebhookのHTTPリクエストはSMTP接続試行ごとに最大3回リトライされ、エンドポイントPOSTリクエストごとに最大60秒のタイムアウトがあります。**これは3回だけリトライするという意味ではなく**、3回目のHTTP POSTリクエスト失敗後にSMTPコード421（後で再試行してください）を送信し、実際には何日も継続してリトライされます。つまり、200ステータスコードが返るまでメールは継続的に再試行されます。
+* リトライは[superagentのretryメソッド](https://ladjs.github.io/superagent/#retrying-requests)で使用されるデフォルトのステータスおよびエラーコードに基づいて自動的に行われます（当社はメンテナです）。
+* 同じエンドポイントへのWebhook HTTPリクエストは複数回ではなく1回にまとめて送信され、リソース節約と応答速度向上を図っています。例えば、<webhook1@example.com>、<webhook2@example.com>、<webhook3@example.com> にメールを送信し、すべて同じ*正確な*エンドポイントURLに設定されている場合、リクエストは1回だけ送信されます。完全一致でグループ化されます。
+* メッセージの解析には[mailparser](https://nodemailer.com/extras/mailparser/)ライブラリの "simpleParser" メソッドを使用し、JSONに適したオブジェクトに変換しています。
+* 生のメール値は文字列として "raw" プロパティに格納されます。
+* 認証結果は "dkim"、"spf"、"arc"、"dmarc"、"bimi" の各プロパティに格納されます。
+* 解析済みのメールヘッダーは "headers" プロパティに格納されますが、繰り返しや解析を簡単にするために "headerLines" も使用可能です。
+* このWebhookにグループ化された受信者は "recipients" プロパティにまとめられています。
+* SMTPセッション情報は "session" プロパティに格納されます。ここにはメッセージ送信者、到着時間、HELO、クライアントホスト名の情報が含まれます。`session.clientHostname` はFQDN（逆PTRルックアップによる）か、`session.remoteAddress` を角括弧で囲んだもの（例：`"[127.0.0.1]"`）です。
+* `X-Original-To` の値を素早く取得したい場合は、`session.recipient` の値を使用できます（以下の例を参照）。`X-Original-To` はマスク転送前の元の受信者をデバッグ用にメッセージに追加するヘッダーです。
+* ペイロードの本文から `attachments` や `raw` プロパティを除外したい場合は、Webhookエンドポイントのクエリ文字列に `?attachments=false`、`?raw=false`、または `?attachments=false&raw=false` を追加してください（例：`https://example.com/webhook?attachments=false&raw=false`）。
+* 添付ファイルがある場合は、Buffer値を持つ `attachments` 配列に追加されます。JavaScriptで内容に戻すには以下のような方法を使えます：
   ```js
   const data = [
     104,
@@ -2785,48 +3264,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### 正規表現またはregexをサポートしていますか {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+はい、2021年9月27日よりこの機能を追加しました。エイリアスのマッチングや置換を行うために、正規表現（「regex」）を簡単に記述できます。
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+正規表現対応のエイリアスは、`/`で始まり`/`で終わるもので、受信者はメールアドレスまたはWebhookです。受信者には正規表現の置換サポート（例：`$1`、`$2`）も含めることができます。
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+サポートしている正規表現フラグは`i`と`g`の2つです。大文字・小文字を区別しないフラグ`i`は常にデフォルトで有効です。グローバルフラグ`g`は、末尾の`/`に`/g`を付けることで追加できます。
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+また、正規表現サポートにおいても<a href="#can-i-disable-specific-aliases">無効化されたエイリアス機能</a>を受信者部分で利用可能です。
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+正規表現は<a href="/disposable-addresses" target="_blank">グローバルバニティドメイン</a>ではサポートされていません（セキュリティ上の脆弱性となる可能性があるため）。
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    強化されたプライバシー保護：
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    有料プラン（強化されたプライバシー保護機能付き）をご利用の場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>にアクセスし、ドメイン横の「エイリアス」をクリックして、正規表現を含むエイリアスを設定してください。有料プランの詳細については<a class="alert-link" rel="noopener noreferrer" href="/private-business-email">料金ページ</a>をご覧ください。
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### 強化されたプライバシー保護の例 {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
-      <th>Test</th>
+      <th>エイリアス名</th>
+      <th>効果</th>
+      <th>テスト</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>`linus@example.com` または `torvalds@example.com` へのメール</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">RegExrでテストを見る</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>`24highst@example.com` または `24highstreet@example.com` へのメール</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">RegExrでテストを見る</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2834,34 +3313,34 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント：
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    <a href="https://regexr.com" class="alert-link">RegExr</a>でこれらをテストするには、上部のボックスに正規表現を記述し、下のテキストボックスに例のエイリアスを入力してください。マッチすると青色に変わります。
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### 無料プランの例 {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+無料プランをご利用の場合は、以下の例のいずれかを使用して新しいDNSの<strong class="notranslate">TXT</strong>レコードを追加してください。
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>簡単な例：</strong> `linus@example.com` または `torvalds@example.com` に届くすべてのメールを `user@gmail.com` に転送したい場合：
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空欄</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3350,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>名前・姓の置換例：</strong> 会社のメールアドレスがすべて `firstname.lastname@example.com` のパターンであるとします。`firstname.lastname@example.com` に届くすべてのメールを置換サポート付きで `firstname.lastname@company.com` に転送したい場合（<a href="https://regexr.com/66hnu" class="alert-link">RegExrでテストを見る</a>）：
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3373,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>プラス記号フィルタリング置換の例:</strong> `info@example.com` または `support@example.com` に送られるすべてのメールを、それぞれ `user+info@gmail.com` または `user+support@gmail.com` に転送したい場合（置換サポート付き）（<a href="https://regexr.com/66ho7" class="alert-link">RegExrでテストを見る</a>）:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3397,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>Webhook クエリ文字列置換の例:</strong> 例えば、`example.com` に送られるすべてのメールを<a href="#do-you-support-webhooks" class="alert-link">Webhook</a>に送り、メールアドレスのユーザー名部分を値とする動的なクエリ文字列キー "to" を持たせたい場合（<a href="https://regexr.com/66ho4" class="alert-link">RegExrでテストを見る</a>）:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3421,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>静かな拒否の例:</strong> 特定のパターンにマッチするすべてのメールを無効にし、静かに拒否したい場合（送信者にはメッセージが正常に送信されたように見えますが、実際にはどこにも届かない）ステータスコード `250` で（<a href="#can-i-disable-specific-aliases" class="alert-link">特定のエイリアスを無効にできますか</a>を参照）、単に感嘆符「!」を使った同じ方法を使用します。これは送信者にメッセージが正常に配信されたことを示しますが、実際にはどこにも届きません（例：ブラックホールや `/dev/null`）。
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3445,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>ソフト拒否の例:</strong> 特定のパターンにマッチするすべてのメールを無効にし、ステータスコード `421` でソフト拒否したい場合（<a href="#can-i-disable-specific-aliases" class="alert-link">特定のエイリアスを無効にできますか</a>を参照）、単に感嘆符を2つ「!!」使った同じ方法を使用します。これは送信者にメールの再試行を促し、このエイリアスへのメールは約5日間再試行され、その後永久に拒否されます。
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>ハードリジェクトの例:</strong> 特定のパターンに一致するすべてのメールを無効にし、ステータスコード `550` でハードリジェクトしたい場合（詳細は <a href="#can-i-disable-specific-aliases" class="alert-link">特定のエイリアスを無効にできますか</a> を参照）、単に三重の感嘆符「!!!」を使った同じ方法を使用してください。これは送信者に恒久的なエラーを示し、メールは再試行されず、このエイリアスに対して拒否されます。
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3016,574 +3493,614 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    正規表現の書き方に興味がある、または置換をテストしたい場合は、無料の正規表現テストサイト <a href="https://regexr.com" class="alert-link">RegExr</a> にアクセスしてください。URLは <a href="https://regexr.com/" class="alert-link">https://regexr.com</a> です。
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### アウトバウンドSMTPの制限は何ですか {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+ユーザーおよびドメインごとに1日あたり300通のアウトバウンドSMTPメッセージにレート制限を設けています。これはカレンダー月で平均9000通以上のメールに相当します。この量を超える必要がある場合や、常に大容量のメールを送信する場合は、[お問い合わせ](https://forwardemail.net/help)ください。
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### SMTPを有効にするには承認が必要ですか {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+はい、IPの評判を維持し配信可能性を確保するために、Forward EmailではアウトバウンドSMTPの承認に対してドメインごとの手動審査プロセスがあります。承認を希望する場合は、<support@forwardemail.net> にメールを送るか、[ヘルプリクエスト](https://forwardemail.net/help)を開いてください。通常24時間以内に対応し、多くのリクエストは1〜2時間以内に承認されます。近い将来、追加のスパム制御とアラート機能を備え、このプロセスを即時化する予定です。このプロセスにより、メールが受信トレイに届き、メッセージがスパムとしてマークされるのを防ぎます。
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### SMTPサーバーの設定は何ですか {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+当社のサーバーは `smtp.forwardemail.net` で、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+IPv4およびIPv6の両方に対応し、SSL/TLS（推奨）用にポート `465` と `2465`、TLS（STARTTLS）用にポート `587`、`2587`、`2525`、および `25` が利用可能です。
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**2025年10月現在**、プリンター、スキャナー、カメラ、古いメールクライアントなどの古いデバイス向けに、ポート `2455`（SSL/TLS）および `2555`（STARTTLS）で**レガシーTLS 1.0**接続もサポートしています。これらのポートは、Gmail、Yahoo、Outlookなどのプロバイダーが古いTLSプロトコルのサポートを終了したための代替手段として提供されています。
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **レガシーTLS 1.0サポート（ポート2455および2555）**: これらのポートは既知のセキュリティ脆弱性（BEAST、POODLE）がある廃止されたTLS 1.0プロトコルを使用しています。TLS 1.2以上を絶対にサポートできないデバイスのみで使用してください。可能な限りデバイスのファームウェアをアップグレードするか、最新のメールクライアントに切り替えることを強く推奨します。これらのポートはレガシーハードウェア（古いプリンター、スキャナー、カメラ、IoTデバイス）との互換性のためだけに意図されています。
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+|                                     プロトコル                                     | ホスト名                  |            ポート            |        IPv4        |        IPv6        | 備考                                  |
 | :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-
-| Login | Example | Description |
+|                              `SSL/TLS` **推奨**                             | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | 最新のTLS 1.2以上（推奨）          |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | サポート（SSL/TLSポート `465` 推奨）  |
+|                             `SSL/TLS` **レガシーのみ**                            | `smtp.forwardemail.net` |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: 古いデバイス向けTLS 1.0のみ |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **レガシーのみ** | `smtp.forwardemail.net` |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: 古いデバイス向けTLS 1.0のみ |
+| ログイン    | 例                         | 説明                                                                                                                                                                                      |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+| ユーザー名 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> に存在するドメインのエイリアスのメールアドレスです。 |
+| パスワード | `************************` | エイリアス                                                                                                                                                                                |
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+SMTPで送信メールを送信するには、**SMTPユーザー**は<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>に存在するドメインのエイリアスのメールアドレスでなければならず、**SMTPパスワード**はエイリアス専用に生成されたパスワードでなければなりません。
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+手順については、[SMTPでのメール送信をサポートしていますか](#do-you-support-sending-email-with-smtp)をご参照ください。
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+### IMAPサーバーの設定は何ですか {#what-are-your-imap-server-configuration-settings}
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+当社のサーバーは `imap.forwardemail.net` で、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
+IPv4とIPv6の両方をサポートし、SSL/TLS用にポート `993` と `2993` で利用可能です。
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         プロトコル        | ホスト名                  |     ポート     |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| `SSL/TLS` **推奨**       | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Login | Example | Description |
+| ログイン    | 例                         | 説明                                                                                                                                                                                      |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| ユーザー名 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> に存在するドメインのエイリアスのメールアドレスです。 |
+| パスワード | `************************` | エイリアス専用に生成されたパスワードです。                                                                                                                                                 |
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+IMAPに接続するには、**IMAPユーザー**は<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>に存在するドメインのエイリアスのメールアドレスでなければならず、**IMAPパスワード**はエイリアス専用に生成されたパスワードでなければなりません。
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+手順については、[IMAPでのメール受信をサポートしていますか](#do-you-support-receiving-email-with-imap)をご参照ください。
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+### POP3サーバーの設定は何ですか {#what-are-your-pop3-server-configuration-settings}
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+当社のサーバーは `pop3.forwardemail.net` で、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+IPv4とIPv6の両方をサポートし、SSL/TLS用にポート `995` と `2995` で利用可能です。
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         プロトコル        | ホスト名                  |     ポート     |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
-
-| Login | Example | Description |
+| `SSL/TLS` **推奨**       | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Username | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> に存在するドメインのエイリアスのメールアドレス。 |
+| Password | `************************` | エイリアス固有の生成されたパスワード。                                                                                                                                                    |
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+POP3に接続するには、**POP3ユーザー**は<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>に存在するドメインのエイリアスのメールアドレスでなければならず、**IMAPパスワード**はエイリアス固有の生成されたパスワードでなければなりません。
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+手順については、[POP3をサポートしていますか](#do-you-support-pop3)をご参照ください。
 
-## Security {#security}
+### ドメインのメール自動検出を設定するには {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+メール自動検出により、**Thunderbird**、**Apple Mail**、**Microsoft Outlook**、およびモバイルデバイスなどのメールクライアントが、ユーザーがメールアカウントを追加するときに正しいIMAP、SMTP、POP3、CalDAV、およびCardDAVサーバー設定を自動的に検出できます。これは[RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html)（メール）および[RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html)（CalDAV/CardDAV）で定義されており、DNSのSRVレコードを使用します。
+
+Forward Emailは`forwardemail.net`上に自動検出レコードを公開しています。ドメインにSRVレコードを直接追加するか、より簡単なCNAME方式を使用できます。
+
+#### オプションA: CNAMEレコード（最も簡単） {#option-a-cname-records-simplest}
+
+これらの2つのCNAMEレコードをドメインのDNSに追加してください。これにより、自動検出がForward Emailのサーバーに委任されます：
+
+|  Type | Name/Host      | Target/Value                    |
+| :---: | -------------- | ------------------------------- |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net`   |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+`autoconfig`レコードは**Thunderbird**やその他のMozillaベースのクライアントで使用されます。`autodiscover`レコードは**Microsoft Outlook**で使用されます。
+
+#### オプションB: SRVレコード（直接追加） {#option-b-srv-records-direct}
+
+レコードを直接追加したい場合（またはDNSプロバイダーがサブドメインでのCNAMEをサポートしていない場合）は、これらのSRVレコードをドメインに追加してください：
+
+| Type | Name/Host           | Priority | Weight | Port | Target/Value               | Purpose                                |
+| :--: | ------------------- | :------: | :----: | :--: | -------------------------- | -------------------------------------- |
+|  SRV | `_imaps._tcp`       |     0    |    1   |  993 | `imap.forwardemail.net`    | SSL/TLSによるIMAP（推奨）              |
+|  SRV | `_imap._tcp`        |     0    |    0   |   0  | `.`                        | 平文IMAPは無効                         |
+|  SRV | `_submissions._tcp` |     0    |    1   |  465 | `smtp.forwardemail.net`    | SMTP送信（SSL/TLS推奨）                |
+|  SRV | `_submission._tcp`  |     5    |    1   |  587 | `smtp.forwardemail.net`    | SMTP送信（STARTTLS）                   |
+|  SRV | `_pop3s._tcp`       |    10    |    1   |  995 | `pop3.forwardemail.net`    | SSL/TLSによるPOP3                      |
+|  SRV | `_pop3._tcp`        |     0    |    0   |   0  | `.`                        | 平文POP3は無効                         |
+|  SRV | `_caldavs._tcp`     |     0    |    1   |  443 | `caldav.forwardemail.net`  | TLSによるCalDAV（カレンダー）          |
+|  SRV | `_caldav._tcp`      |     0    |    0   |   0  | `.`                        | 平文CalDAVは無効                       |
+|  SRV | `_carddavs._tcp`    |     0    |    1   |  443 | `carddav.forwardemail.net` | TLSによるCardDAV（連絡先）             |
+|  SRV | `_carddav._tcp`     |     0    |    0   |   0  | `.`                        | 平文CardDAVは無効                      |
+> \[!NOTE]
+> IMAP は POP3 (10) よりも低い優先度値 (0) を持っており、両方が利用可能な場合にメールクライアントが IMAP を優先することを示しています。ターゲットが `.`（単一のドット）であるレコードは、[RFC 6186 セクション 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4) に従い、これらのプロトコルのプレーンテキスト（非暗号化）バージョンが意図的に無効化されていることを示しています。CalDAV および CardDAV の SRV レコードは、カレンダーおよび連絡先の自動検出のために [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) に従っています。
+
+#### どのメールクライアントが自動検出をサポートしていますか？ {#which-email-clients-support-autodiscovery}
+
+| クライアント         | メール                                            | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | `autoconfig` CNAME または SRV レコード           | `autoconfig` XML または SRV レコード (RFC 6764) |
+| Apple Mail (macOS) | SRV レコード (RFC 6186)                           | SRV レコード (RFC 6764)                     |
+| Apple Mail (iOS)   | SRV レコード (RFC 6186)                           | SRV レコード (RFC 6764)                     |
+| Microsoft Outlook  | `autodiscover` CNAME または `_autodiscover._tcp` SRV | サポートされていません                      |
+| GNOME (Evolution)  | SRV レコード (RFC 6186)                           | SRV レコード (RFC 6764)                     |
+| KDE (KMail)        | SRV レコード (RFC 6186)                           | SRV レコード (RFC 6764)                     |
+| eM Client          | `autoconfig` または `autodiscover`                | SRV レコード (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> すべてのクライアントで最高の互換性を得るために、**オプション A**（CNAME レコード）と **オプション B** の SRV レコードの組み合わせを推奨します。CNAME アプローチだけでも大多数のメールクライアントをカバーします。CalDAV/CardDAV の SRV レコードは、カレンダーおよび連絡先クライアントがサーバー設定を自動的に検出できるようにします。
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## セキュリティ {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### 高度なサーバーハードニング技術 {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
-   * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+> \[!TIP]
+> 当社のセキュリティインフラストラクチャの詳細は、[セキュリティページ](/security)をご覧ください。
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+Forward Email は、インフラストラクチャとお客様のデータのセキュリティを確保するために多数のサーバーハードニング技術を実装しています：
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+1. **ネットワークセキュリティ**:
+   * 厳格なルールを持つ IP テーブルファイアウォール
+   * ブルートフォース攻撃防止のための Fail2ban
+   * 定期的なセキュリティ監査およびペネトレーションテスト
+   * VPN 限定の管理アクセス
+
+2. **システムハードニング**:
+   * 最小限のパッケージインストール
+   * 定期的なセキュリティアップデート
+   * 強制モードの SELinux
+   * root の SSH アクセス無効化
+   * キーベース認証のみ
+
+3. **アプリケーションセキュリティ**:
+   * コンテンツセキュリティポリシー (CSP) ヘッダー
+   * HTTPS 厳格トランスポートセキュリティ (HSTS)
+   * XSS 保護ヘッダー
+   * フレームオプションおよびリファラーポリシーヘッダー
+   * 定期的な依存関係監査
+
+4. **データ保護**:
+   * LUKS によるフルディスク暗号化
+   * 安全なキー管理
+   * 暗号化された定期バックアップ
+   * データ最小化の実践
+
+5. **監視と対応**:
+   * リアルタイム侵入検知
+   * 自動化されたセキュリティスキャン
+   * 集中ログ管理および分析
+   * インシデント対応手順
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> 当社のセキュリティ対策は、新たな脅威や脆弱性に対応するために継続的に更新されています。
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> 最大のセキュリティを確保するために、OpenPGP を用いたエンドツーエンド暗号化でのご利用を推奨します。
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### SOC 2 または ISO 27001 の認証はありますか {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email は、業界標準のコンプライアンスを確保するために認定サブプロセッサーが提供するインフラストラクチャ上で運用されています。
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email 自体は SOC 2 タイプ II または ISO 27001 の認証を直接保有していません。しかし、サービスは認定サブプロセッサーが提供するインフラストラクチャ上で運用されています：
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**：SOC 2 タイプ II および SOC 3 タイプ II 認証（Schellman & Company LLC による監査）、複数のデータセンターで ISO 27001 認証。詳細：<https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: SOC 2+（HIPAA）認証取得、ISO/IEC認証：20000-1:2018、27001:2022、27017:2015、27018:2019。詳細: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: SOC 2準拠（認証取得にはDataPacketへ直接お問い合わせください）、エンタープライズグレードのインフラプロバイダー（デンバー拠点）。詳細: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Emailは業界のベストプラクティスに従い、セキュリティ監査を定期的に実施し、独立したセキュリティ研究者と連携しています。出典: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### メール転送にTLS暗号化を使用していますか {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+はい。Forward Emailはすべての接続（HTTPS、SMTP、IMAP、POP3）に対してTLS 1.2以上を厳格に適用し、強化されたTLSサポートのためにMTA-STSを実装しています。実装内容は以下の通りです：
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* すべてのメール接続に対するTLS 1.2以上の強制適用
+* 完全前方秘匿性を実現するECDHE（楕円曲線ディフィー・ヘルマン一時鍵）鍵交換
+* 定期的なセキュリティ更新を行う最新の暗号スイート
+* パフォーマンスとセキュリティ向上のためのHTTP/2サポート
+* 主要ブラウザでのプリロード対応HSTS（HTTP Strict Transport Security）
+* 厳格なTLS適用のための**MTA-STS（Mail Transfer Agent Strict Transport Security）**
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+出典: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**MTA-STSの実装**: Forward Emailはコードベースで厳格なMTA-STS適用を行っています。TLSエラーが発生しMTA-STSが適用されている場合、システムは421 SMTPステータスコードを返し、メールが安全でない状態で配信されるのを防ぎ、後で再試行されるようにします。実装の詳細：
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* TLSエラー検出: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* send-emailヘルパーでのMTA-STS適用: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+第三者検証: <https://www.hardenize.com/report/forwardemail.net/1750312779> はすべてのTLSおよびトランスポートセキュリティ対策に「Good」評価を示しています。
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### メール認証ヘッダーを保持していますか {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+はい。Forward Emailはメール認証ヘッダーを包括的に実装し保持しています：
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF（Sender Policy Framework）**：適切に実装および保持
+* **DKIM（DomainKeys Identified Mail）**：適切な鍵管理を伴う完全サポート
+* **DMARC**：SPFまたはDKIM検証に失敗したメールに対するポリシー適用
+* **ARC**：明示的な記述はありませんが、完璧な準拠スコアから包括的な認証ヘッダー処理が推測されます
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+出典: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+検証: Internet.nlのメールテストでは「SPF、DKIM、DMARC」の実装で100/100点を獲得。Hardenizeの評価でもSPFとDMARCに「Good」評価が確認されています: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### 元のメールヘッダーを保持し、なりすましを防止していますか {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Emailはメールの悪用を防ぐ高度ななりすまし防止機能を実装しています。
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Emailは元のメール認証ヘッダーを保持しつつ、MXコードベースを通じて包括的ななりすまし防止を実施しています：
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **ヘッダー保持**：転送時に元の認証ヘッダーを維持
+* **なりすまし防止**：DMARCポリシー適用により、SPFまたはDKIM検証に失敗したメールを拒否しヘッダーのなりすましを防止
+* **ヘッダーインジェクション防止**：striptagsライブラリを用いた入力検証とサニタイズ
+* **高度な保護**：なりすまし検出、なりすまし防止、ユーザー通知システムを備えた高度なフィッシング検出
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**MX実装の詳細**：コアのメール処理ロジックはMXサーバーのコードベースで処理されており、具体的には：
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* メインMXデータハンドラー: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* 任意メールフィルタリング（なりすまし防止）: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+`isArbitrary`ヘルパーは、ドメインなりすまし検出、禁止フレーズ、各種フィッシングパターンを含む高度ななりすまし防止ルールを実装しています。
+### スパムや悪用からどのように保護していますか {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email は包括的な多層防御を実装しています：
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **レート制限**：認証試行、API エンドポイント、SMTP 接続に適用
+* **リソース分離**：ユーザー間で高トラフィックユーザーの影響を防止
+* **DDoS 保護**：DataPacket の Shield システムと Cloudflare による多層防御
+* **自動スケーリング**：需要に応じた動的リソース調整
+* **悪用防止**：ユーザー固有の悪用防止チェックと悪意あるコンテンツのハッシュベースブロック
+* **メール認証**：SPF、DKIM、DMARC プロトコルと高度なフィッシング検出
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+ソース：
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (DDoS 保護の詳細)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### メール内容をディスクに保存しますか {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email はメール内容がディスクに書き込まれることを防ぐゼロ知識アーキテクチャを採用しています。
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **ゼロ知識アーキテクチャ**：個別に暗号化された SQLite メールボックスにより Forward Email はメール内容にアクセスできません
+* **インメモリ処理**：メール処理は完全にメモリ内で行われ、ディスク保存を回避
+* **内容ログなし**：「メール内容やメタデータをディスクにログまたは保存しません」
+* **サンドボックス化された暗号化**：暗号化キーは平文でディスクに保存されません
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX コードベースの証拠**：MX サーバーはメールを完全にメモリ内で処理し、内容をディスクに書き込みません。主要なメール処理ハンドラーはこのインメモリ方式を示しています：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
+ソース：
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (概要)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (ゼロ知識の詳細)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (サンドボックス化された暗号化)
+
+### システムクラッシュ時にメール内容が露出することはありますか {#can-email-content-be-exposed-during-system-crashes}
+
+いいえ。Forward Email はクラッシュによるデータ露出を防ぐ包括的な安全策を実装しています：
+
+* **コアダンプ無効化**：クラッシュ時のメモリ露出を防止
+* **スワップメモリ無効化**：スワップファイルからの機密データ抽出を防ぐため完全無効化
+* **インメモリアーキテクチャ**：メール内容は処理中のみ揮発性メモリに存在
+* **暗号化キー保護**：キーは平文でディスクに保存されません
+* **物理的セキュリティ**：LUKS v2 暗号化ディスクにより物理アクセスを防止
+* **USB ストレージ無効化**：不正なデータ抽出を防止
+
+**システム問題のエラーハンドリング**：Forward Email は `isCodeBug` と `isTimeoutError` ヘルパー関数を使用し、データベース接続問題、DNS ネットワーク／ブロックリスト問題、上流接続問題が発生した場合に 421 SMTP ステータスコードを返し、メールが失われたり露出したりせず後で再試行されるようにしています。
+
+実装詳細：
+
+* エラー分類：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* MX 処理のタイムアウトエラー処理：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+
+ソース：<https://forwardemail.net/technical-whitepaper.pdf#page=15>
+
+### 誰があなたのメールインフラにアクセスできますか {#who-has-access-to-your-email-infrastructure}
+
+Forward Email は最小限の 2～3 人のエンジニアリングチームのアクセスに対し、厳格な 2FA 要件を伴う包括的なアクセス制御を実装しています：
+
+* **ロールベースアクセス制御**：リソースベースの権限を持つチームアカウント向け
+* **最小権限の原則**：全システムに適用
+* **職務分離**：運用役割間での分離
+* **ユーザー管理**：異なる権限を持つデプロイユーザーとデブオプスユーザーを分離
+* **ルートログイン無効化**：適切に認証されたアカウント経由のアクセスを強制
+* **厳格な 2FA**：MiTM 攻撃リスクのため SMS ベースの 2FA は使用せず、アプリベースまたはハードウェアトークンのみ
+* **包括的な監査ログ**：機密データはマスキング
+* **自動異常検知**：異常なアクセスパターンを検出
+* **定期的なセキュリティレビュー**：アクセスログの確認
+* **イービルメイド攻撃防止**：USB ストレージ無効化などの物理的セキュリティ対策
 Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30>（認証管理）
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30>（ネットワークセキュリティ）
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15>（イービルメイド攻撃防止）
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
-
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
-
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
-
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
-
-Implementation details:
-
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
-
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
-
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
-
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
-
-Sources:
-
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### どのインフラプロバイダーを使用していますか {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Emailは、包括的なコンプライアンス認証を持つ複数のインフラインフラサブプロセッサーを使用しています。
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+詳細は当社のGDPR準拠ページでご覧いただけます：<https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**主要なインフラインフラサブプロセッサー：**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| プロバイダー       | データプライバシーフレームワーク認証済み | GDPR準拠ページ                                                                             |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Cloudflare**     | ✅ はい                                  | <https://www.cloudflare.com/trust-hub/gdpr/>                                               |
+| **DataPacket**     | ❌ いいえ                                | <https://www.datapacket.com/privacy-policy>                                                |
+| **DigitalOcean**   | ❌ いいえ                                | <https://www.digitalocean.com/legal/gdpr>                                                  |
+| **GitHub**         | ✅ はい                                  | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**          | ❌ いいえ                                | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                            |
 
-**Detailed Certifications:**
+**詳細な認証情報：**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II（Schellman & Company LLCによる監査）
+* 複数のデータセンターでISO 27001認証取得
+* PCI-DSS準拠
+* CSA STAR レベル1認証
+* APEC CBPR PRP認証
+* 詳細：<https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
-* ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* SOC 2+（HIPAA）認証取得
+* PCIマーチャント準拠
+* CSA STAR レベル1認証
+* ISO/IEC 20000-1:2018、27001:2022、27017:2015、27018:2019
+* 詳細：<https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* SOC 2準拠（認証取得にはDataPacketへ直接お問い合わせください）
+* エンタープライズグレードのインフラ（デンバー拠点）
+* ShieldサイバーセキュリティスタックによるDDoS保護
+* 24時間365日の技術サポート
+* 58のデータセンターにまたがるグローバルネットワーク
+* 詳細：<https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* データプライバシーフレームワーク認証済み（EU-US、スイス-US、英国拡張）
+* ソースコードホスティング、CI/CD、プロジェクト管理
+* GitHubデータ保護契約書あり
+* 詳細：<https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**決済プロセッサー：**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**：データプライバシーフレームワーク認証済み - <https://stripe.com/legal/privacy-center>
+* **PayPal**：DPF認証なし - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### データ処理契約（DPA）を提供していますか {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+はい、Forward Emailは包括的なデータ処理契約（DPA）を提供しており、エンタープライズ契約とともに署名可能です。DPAのコピーは以下でご覧いただけます：<https://forwardemail.net/dpa>
 
-**DPA Details:**
+**DPAの詳細：**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* GDPR準拠およびEU-US/スイス-USプライバシーシールドフレームワークをカバー
+* 利用規約に同意すると自動的に承認されます
+* 標準DPAには別途署名は不要
+* エンタープライズライセンスを通じてカスタムDPAの対応可能
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**GDPR準拠フレームワーク：**
+当社のDPAはGDPRおよび国際的なデータ転送要件の準拠を詳細に規定しています。詳細は以下をご覧ください：<https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+カスタムDPA条項や特定の契約条件が必要なエンタープライズ顧客には、**エンタープライズライセンス（月額250ドル）**プログラムを通じて対応いたします。
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### データ侵害通知はどのように対応していますか {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Forward Emailのゼロナレッジアーキテクチャにより、侵害の影響は大幅に制限されています。
+* **限定的なデータ露出**: ゼロ知識アーキテクチャにより暗号化されたメール内容にはアクセスできません
+* **最小限のデータ収集**: セキュリティのために基本的な購読者情報と限定的なIPログのみを収集
+* **サブプロセッサーフレームワーク**: DigitalOcean、GitHub、VultrはGDPR準拠のインシデント対応手順を維持
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**GDPR代表者情報:**
+Forward Emailは第27条に基づきGDPR代表者を任命しています:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
-Osano International Compliance Services Limited
-ATTN: LFHC
-3 Dublin Landings, North Wall Quay
+**EU代表者:**
+Osano International Compliance Services Limited  
+ATTN: LFHC  
+3 Dublin Landings, North Wall Quay  
 Dublin 1, D01C4E0
 
-**UK Representative:**
-Osano UK Compliance LTD
-ATTN: LFHC
-42-46 Fountain Street, Belfast
+**英国代表者:**
+Osano UK Compliance LTD  
+ATTN: LFHC  
+42-46 Fountain Street, Belfast  
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+特定の違反通知SLAを必要とするエンタープライズ顧客は、**エンタープライズライセンス**契約の一環としてこれらを協議する必要があります。
 
-Sources:
+出典:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### テスト環境は提供していますか {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+Forward Emailの技術文書には専用のサンドボックスモードについて明示的な記述はありません。ただし、考えられるテストアプローチは以下の通りです:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **セルフホスティングオプション**: テスト環境作成のための包括的なセルフホスティング機能
+* **APIインターフェース**: 設定のプログラム的テストの可能性
+* **オープンソース**: 100%オープンソースコードにより転送ロジックの検証が可能
+* **複数ドメイン**: 複数ドメイン対応によりテスト用ドメインの作成が可能
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+正式なサンドボックス機能を必要とするエンタープライズ顧客は、**エンタープライズライセンス**契約の一環として協議する必要があります。
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+出典: <https://github.com/forwardemail/forwardemail.net> (開発環境の詳細)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### 監視およびアラートツールは提供していますか {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+Forward Emailは一部制限付きでリアルタイム監視を提供しています:
 
-**Available:**
+**利用可能な機能:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **リアルタイム配信監視**: 主要メールプロバイダーのパフォーマンス指標を公開
+* **自動アラート**: 配信時間が10秒を超えた場合にエンジニアリングチームに通知
+* **透明性の高い監視**: 100%オープンソースの監視システム
+* **インフラ監視**: 自動異常検知と包括的な監査ログ
 
-**Limitations:**
+**制限事項:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* 顧客向けのWebhookやAPIベースの配信状況通知は明示的に文書化されていません
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+詳細な配信状況Webhookやカスタム監視統合を必要とするエンタープライズ顧客には、これらの機能が**エンタープライズライセンス**契約を通じて提供される可能性があります。
 
-Sources:
+出典:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (リアルタイム監視表示)
+* <https://github.com/forwardemail/forwardemail.net> (監視実装)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### 高可用性はどのように確保していますか {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Emailは複数のインフラプロバイダーにわたる包括的な冗長性を実装しています。
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **分散インフラ**: 地理的に分散した複数プロバイダー（DigitalOcean、Vultr、DataPacket）
+* **地理的ロードバランシング**: Cloudflareベースの地理位置ロードバランシングと自動フェイルオーバー
+* **自動スケーリング**: 需要に応じた動的リソース調整
+* **多層DDoS防御**: DataPacketのShieldシステムおよびCloudflareによる防御
+* **サーバ冗長化**: 地域ごとに複数サーバを配置し自動フェイルオーバー
+* **データベースレプリケーション**: 複数拠点間のリアルタイムデータ同期
+* **監視およびアラート**: 24時間365日の監視と自動インシデント対応
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**稼働率保証**: 99.9%以上のサービス可用性を提供し、<https://forwardemail.net>で透明性のある監視を公開
 
-Sources:
+出典:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### 国防権限法（NDAA）第889条に準拠していますか {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Emailはインフラパートナーの慎重な選定により、第889条に完全準拠しています。
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+はい、Forward Emailは**第889条準拠**です。国防権限法（NDAA）第889条は、政府機関が特定企業（Huawei、ZTE、Hikvision、Dahua、Hytera）の通信および映像監視機器を使用または契約することを禁止しています。
+**Forward Emailがセクション889準拠を達成する方法:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+Forward Emailは、セクション889で禁止されている機器を使用しない2つの主要なインフラプロバイダーのみに依存しています:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: ネットワークサービスおよびメールセキュリティの主要パートナー
+2. **DataPacket**: サーバーインフラストラクチャの主要プロバイダー（Arista NetworksおよびCisco機器のみを使用）
+3. **バックアッププロバイダー**: Digital OceanおよびVultrのバックアッププロバイダーも、セクション889準拠であることが書面で確認されています。
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**Cloudflareのコミットメント**: Cloudflareは、第三者行動規範において、セクション889で禁止されている通信機器、ビデオ監視製品、サービスを使用していないことを明確に述べています。
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**政府の利用事例**: Forward Emailのセクション889準拠は、**米国海軍士官学校**が安全なメール転送ニーズのためにForward Emailを選択し、連邦準拠基準の文書化を求めた際に検証されました。
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+政府の準拠フレームワークやより広範な連邦規制の詳細については、包括的なケーススタディをご覧ください: [連邦政府メールサービス セクション889準拠](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## システムおよび技術的詳細 {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### メールおよびその内容を保存しますか {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+いいえ、ディスクへの書き込みやログの保存は行いません – [エラー](#do-you-store-error-logs)および[送信SMTP](#do-you-support-sending-email-with-smtp)（詳細は[プライバシーポリシー](/privacy)参照）を除きます。
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+すべてはメモリ上で処理され、[ソースコードはGitHubにあります](https://github.com/forwardemail)。
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### メール転送システムはどのように動作しますか {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+メールは[SMTPプロトコル](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)に依存しています。このプロトコルは、サーバー（通常ポート25で動作）に送信されるコマンドで構成されます。最初に接続が確立され、送信者がメールの送信元を示す（"MAIL FROM"）、次に宛先を示す（"RCPT TO"）、最後にメールのヘッダーと本文（"DATA"）が送られます。以下に、各SMTPコマンドに対する当社のメール転送システムの流れを説明します:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* 初期接続（コマンド名なし、例: `telnet example.com 25`） - これは初期接続です。[許可リスト](#do-you-have-an-allowlist)にない送信者を[拒否リスト](#do-you-have-a-denylist)と照合します。最後に、許可リストにない送信者については[グレイリスト](#do-you-have-a-greylist)に登録されているか確認します。
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` - 送信者のFQDN、IPアドレス、またはメールハンドラ名を識別する挨拶を示します。この値は偽装可能なため、このデータには依存せず、接続元IPアドレスの逆引きホスト名を使用します。
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` - メールのエンベロープ送信元アドレスを示します。値が入力されている場合、有効なRFC 5322メールアドレスでなければなりません。空の値も許可されます。ここで[バックキャッター](#how-do-you-protect-against-backscatter)をチェックし、また[拒否リスト](#do-you-have-a-denylist)と照合します。最後に、許可リストにない送信者についてはレート制限を行います（詳細は[レート制限](#do-you-have-rate-limiting)および[許可リスト](#do-you-have-an-allowlist)のセクションを参照）。
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` - メールの受信者を示します。これらは有効なRFC 5322メールアドレスでなければなりません。1メッセージあたり最大50のエンベロープ受信者のみ許可します（これはメールの「To」ヘッダーとは異なります）。また、なりすまし防止のために有効な[Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（"SRS"）アドレスをここでチェックします。
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` - メールを処理するサービスの中核部分です。詳細は以下のセクション[メールを転送用にどのように処理しますか](#how-do-you-process-an-email-for-forwarding)をご覧ください。
+### メールを転送するための処理方法 {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+このセクションでは、上記の[メール転送システムの仕組み](#how-does-your-email-forwarding-system-work)のセクションにあるSMTPプロトコルコマンド `DATA` に関連する処理について説明します。これは、メールのヘッダー、本文、セキュリティの処理、配信先の判定、および接続の取り扱い方法に関するものです。
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. メッセージが最大サイズの50MBを超える場合、552エラーコードで拒否されます。
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. メッセージに「From」ヘッダーが含まれていない場合、または「From」ヘッダー内の値のいずれかが有効なRFC 5322メールアドレスでない場合、550エラーコードで拒否されます。
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. メッセージに25個を超える「Received」ヘッダーがある場合、リダイレクトループに陥っていると判断され、550エラーコードで拒否されます。
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. メールのフィンガープリント（[フィンガープリントの決定方法](#how-do-you-determine-an-email-fingerprint)のセクション参照）を使用して、メッセージが5日以上再試行されているかどうかを確認します（これは[Postfixのデフォルト動作](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)に一致します）。該当する場合は550エラーコードで拒否されます。
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. メールを[Spam Scanner](https://spamscanner.net)でスキャンした結果をメモリ内に保存します。
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Spam Scannerから任意の結果があった場合、554エラーコードで拒否されます。任意の結果には、執筆時点ではGTUBEテストのみが含まれます。詳細は<https://spamassassin.apache.org/gtube/>をご覧ください。
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. デバッグおよび不正利用防止のため、以下のヘッダーをメッセージに追加します：
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` - 発信元IPとホスト、送信タイプ、TLS接続情報、日時、受信者を含む標準のReceivedヘッダーを追加します。
+   * `X-Original-To` - メッセージの元の受信者：
+     * これはメールが元々どこに配信されたかを判別するのに役立ちます（「Received」ヘッダーに加えて）。
+     * IMAPおよび/またはマスク転送時に受信者ごとに追加されます（プライバシー保護のため）。
+   * `X-Forward-Email-Website` - <https://forwardemail.net> のウェブサイトへのリンクを含みます。
+   * `X-Forward-Email-Version` - コードベースの `package.json` からの現在の[SemVer](https://semver.org/)バージョン。
+   * `X-Forward-Email-Session-ID` - デバッグ目的で使用されるセッションID（非本番環境のみ適用）。
+   * `X-Forward-Email-Sender` - 元のエンベロープMAIL FROMアドレス（空でない場合）、リバースPTRクライアントFQDN（存在する場合）、送信者のIPアドレスをカンマ区切りで含むリスト。
+   * `X-Forward-Email-ID` - これは送信SMTPにのみ適用され、マイアカウント → メールに保存されているメールIDと関連付けられます。
+   * `X-Report-Abuse` - 値は `abuse@forwardemail.net`。
+   * `X-Report-Abuse-To` - 値は `abuse@forwardemail.net`。
+   * `X-Complaints-To` - 値は `abuse@forwardemail.net`。
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. 次に、メッセージの[DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail)、[SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework)、[ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain)、および[DMARC](https://en.wikipedia.org/wiki/DMARC)をチェックします。
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * メッセージがDMARCに失敗し、ドメインに拒否ポリシー（例：DMARCポリシーに `p=reject` が含まれている場合）がある場合、550エラーコードで拒否されます。通常、ドメインのDMARCポリシーは `_dmarc` サブドメインの <strong class="notranslate">TXT</strong> レコードにあります（例：`dig _dmarc.example.com txt`）。
+   * メッセージがSPFに失敗し、ドメインにハードフェイルポリシー（例：SPFポリシーに `-all` が含まれている場合）がある場合、550エラーコードで拒否されます。通常、ドメインのSPFポリシーはルートドメインの <strong class="notranslate">TXT</strong> レコードにあります（例：`dig example.com txt`）。SPFに関しては、[Gmailでの送信メール設定](#can-i-send-mail-as-in-gmail-with-this)のセクションも参照してください。
+9. メッセージの受信者は、上記のセクション [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) の `RCPT TO` コマンドから収集されたものとして処理します。各受信者に対して、以下の操作を行います:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * ドメイン名（`@` 記号の後の部分、例えばメールアドレスが `test@example.com` の場合は `example.com`）の <strong class="notranslate">TXT</strong> レコードを検索します。例えば、ドメインが `example.com` の場合は `dig example.com txt` のようなDNS検索を行います。
+   * `forward-email=`（無料プラン用）または `forward-email-site-verification=`（有料プラン用）で始まるすべての <strong class="notranslate">TXT</strong> レコードを解析します。ユーザーがプランをアップグレードまたはダウングレードしている間もメールを処理できるように、両方を解析することに注意してください。
+   * これらの解析された <strong class="notranslate">TXT</strong> レコードから、上記のセクション [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) に記載されている転送設定を抽出するために反復処理を行います。`forward-email-site-verification=` の値は1つのみサポートしており、複数指定されている場合は550エラーが発生し、この受信者に対して送信者にバウンスが返されます。
+   * 抽出された転送設定を再帰的に反復処理し、グローバル転送、正規表現ベースの転送、およびその他すべてのサポートされている転送設定（現在は「Forwarding Addresses」と呼ばれています）を判別します。
+   * 各 Forwarding Address に対して、1回の再帰的な検索をサポートします（これにより、指定されたアドレスでこの一連の操作が再開されます）。再帰的な一致が見つかった場合、親の結果は Forwarding Addresses から削除され、子が追加されます。
+   * Forwarding Addresses は一意性のために解析されます（同じアドレスに重複して送信したり、不要なSMTPクライアント接続を増やしたくないため）。
+   * 各 Forwarding Address に対して、そのドメイン名をAPIエンドポイント `/v1/max-forwarded-addresses` に照会し、ドメインがエイリアスごとに転送可能なアドレス数（デフォルトは10、詳細は [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) セクション参照）を確認します。この制限を超えた場合は550エラーが発生し、送信者にバウンスが返されます。
+   * 元の受信者の設定をAPIエンドポイント `/v1/settings` に照会します。これは有料ユーザー向けの検索をサポートし（無料ユーザー向けのフォールバックあり）、`port`（数値、例: `25`）、`has_adult_content_protection`（ブール値）、`has_phishing_protection`（ブール値）、`has_executable_protection`（ブール値）、`has_virus_protection`（ブール値）といった高度な設定の構成オブジェクトを返します。
+   * これらの設定に基づき、スパムスキャナーの結果をチェックし、エラーがあれば554エラーコードでメッセージを拒否します（例：`has_virus_protection` が有効な場合はウイルスのスキャン結果をチェックします）。無料プランのすべてのユーザーは成人向けコンテンツ、フィッシング、実行可能ファイル、ウイルスのチェックに自動的に参加します。デフォルトでは有料プランのすべてのユーザーも参加していますが、この設定はForward Emailダッシュボードのドメインの設定ページで変更可能です。
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. 処理された各受信者の Forwarding Addresses に対して、以下の操作を行います:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * アドレスが当社の [denylist](#do-you-have-a-denylist) に登録されているか確認し、登録されていた場合は421エラーコードが発生します（送信者に後で再試行するよう指示します）。
+    * アドレスがWebhookの場合は、今後の操作のためにブール値を設定します（以下参照 – 配信のために複数のPOSTリクエストではなく、類似のWebhookをまとめて1回のPOSTリクエストにします）。
+    * アドレスがメールアドレスの場合は、今後の操作のためにホストを解析します（以下参照 – 配信のために複数の個別接続ではなく、類似のホストをまとめて1つの接続にします）。
+11. 受信者がいなく、バウンスもない場合は、「Invalid recipients」という550エラーで応答します。
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. 受信者がいる場合は、それらを同じホストごとにグループ化して繰り返し処理し、メールを配信します。詳細は以下のセクション[How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)をご覧ください。
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * メール送信中にエラーが発生した場合、それらを後で処理するためにメモリ内に保存します。
+    * メール送信時の最低のエラーコード（ある場合）を取得し、それを`DATA`コマンドへの応答コードとして使用します。これは、配信されなかったメールは通常送信元によって再試行されますが、すでに配信されたメールは次回メッセージが送信される際に再送されないことを意味します（[Fingerprinting](#how-do-you-determine-an-email-fingerprint)を使用しているため）。
+    * エラーが発生しなかった場合は、250の成功SMTP応答ステータスコードを送信します。
+    * バウンスは、配信試行がステータスコード500以上（恒久的な失敗）である場合と定義されます。
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. バウンス（恒久的な失敗）が発生しなかった場合は、恒久的でない失敗の中で最低のエラーコードのSMTP応答ステータスコードを返します（失敗がなければ250の成功ステータスコード）。
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
-
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
-
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
-
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+14. バウンスが発生した場合は、すべてのエラーコードの中で最低のものを送信者に返した後、バックグラウンドでバウンスメールを送信します。ただし、最低のエラーコードが500以上の場合はバウンスメールを送信しません。これは、送信者が二重バウンスメール（例：Gmailなどの送信元MTAからのものと当方からのもの）を受け取るのを防ぐためです。詳細は以下のセクション[How do you protect against backscatter](#how-do-you-protect-against-backscatter)をご覧ください。
 
 ### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+送信者のDMARCポリシーが通過しておらず、かつ「From」ヘッダーに整合したDKIM署名がない場合に限り、メールの「Friendly-From」書き換えを行います。これは、メッセージの「From」ヘッダーを変更し、「X-Original-From」を設定し、まだ設定されていなければ「Reply-To」も設定することを意味します。これらのヘッダーを変更した後、メッセージのARCシールも再封印します。
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+また、スタックのあらゆるレベルでエラーメッセージのスマートパースを行っています。コード、DNSリクエスト、Node.js内部、HTTPリクエスト（例：408、413、429は受信者がWebhookの場合にSMTP応答コード421にマッピング）、メールサーバーの応答（例：「defer」や「slowdown」を含む応答は421エラーとして再試行）などです。
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+ロジックは非常に堅牢で、SSL/TLSエラー、接続問題なども再試行します。堅牢化の目的は、転送設定におけるすべての受信者への配信成功率を最大化することです。
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+受信者がWebhookの場合、リクエスト完了まで60秒のタイムアウトを許可し、最大3回の再試行を行います（合計4回のリクエストで失敗とみなします）。408、413、429のエラーコードは正しく解析され、SMTP応答コード421にマッピングされます。
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+受信者がメールアドレスの場合は、機会的TLSでメール送信を試みます（受信者メールサーバーでSTARTTLSが利用可能な場合に使用）。送信中にSSL/TLSエラーが発生した場合は、TLSなし（STARTTLSなし）での送信を試みます。
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+DNSまたは接続エラーが発生した場合は、`DATA`コマンドにSMTP応答コード421を返します。500以上のエラーがある場合はバウンスメールが送信されます。
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+配信先のメールサーバーが当方のメール交換IPアドレスの1つ以上をブロックしていると検出した場合（スパマーを遅延させる技術などによる）、送信者にメッセージを後で再試行させるためにSMTP応答コード421を返します（問題を検知し、次回試行前に解決できるようにアラートを受け取ります）。
 
 ### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+私たちは定期的に主要なDNS拒否リストを監視しており、もし当社のメール交換（「MX」）IPアドレスが主要な拒否リストに掲載されている場合、問題が解決するまで可能な限り関連するDNS Aレコードのラウンドロビンから除外します。
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
+この記事執筆時点では、当社は複数のDNS許可リストにも掲載されており、拒否リストの監視を真剣に行っています。問題が解決する前に何か問題を発見された場合は、<support@forwardemail.net> 宛に書面でご連絡ください。
 
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
+当社のIPアドレスは公開されており、[以下のセクションをご覧ください](#what-are-your-servers-ip-addresses) 。
 
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
+### ポストマスターアドレスとは何ですか {#what-are-postmaster-addresses}
 
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+誤送信されたバウンスや、監視されていないまたは存在しないメールボックスへのバケーションレスポンダーメッセージの送信を防ぐために、以下のようなmailer-daemonに似たユーザー名のリストを管理しています：
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4119,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [および任意のno-replyアドレス](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+これらのリストが効率的なメールシステムを作成するためにどのように使用されるかについては、[RFC 5320 セクション4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) を参照してください。
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### no-replyアドレスとは何ですか {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+以下のいずれかと等しい（大文字・小文字を区別しない）メールユーザー名は、no-replyアドレスと見なされます：
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4146,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+このリストは[GitHub上のオープンソースプロジェクト](https://github.com/forwardemail/reserved-email-addresses-list)として管理されています。
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### あなたのサーバーのIPアドレスは何ですか {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+当社のIPアドレスは <https://forwardemail.net/ips> にて公開しています。
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### 許可リストはありますか {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+はい、デフォルトで許可リストに登録されている[ドメイン名の拡張子のリスト](#what-domain-name-extensions-are-allowlisted-by-default)と、[厳格な基準](#what-is-your-allowlist-criteria)に基づく動的でキャッシュされたロールイング許可リストがあります。
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+有料顧客が使用するすべてのドメイン、メール、IPアドレスは毎時自動的に拒否リストと照合され、必要に応じて管理者が手動で介入できるようにアラートが送信されます。
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+さらに、あなたのドメインまたはそのメールアドレスが拒否リストに載った場合（例：スパム送信、ウイルス、なりすまし攻撃など）、ドメイン管理者（あなた）と当社の管理者に即座にメールで通知されます。これを防ぐために、[DMARCの設定](#how-do-i-set-up-dmarc-for-forward-email)を強く推奨します。
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### デフォルトで許可リストに登録されているドメイン名の拡張子は何ですか {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+以下のドメイン名の拡張子は、Umbrella Popularity Listに掲載されているかどうかに関わらず、デフォルトで許可リストに登録されています：
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4373,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+さらに、これらの[ブランドおよび企業のトップレベルドメイン](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains)はデフォルトで許可リストに登録されています（例：Apple Cardの銀行取引明細書用の`applecard.apple`の`apple`）：
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4436,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4798,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+2025年3月18日現在、以下のフランス海外領土もこのリストに追加しました（[このGitHubリクエスト](https://github.com/forwardemail/forwardemail.net/issues/327)による）：
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4814,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+2025年7月8日現在、以下のヨーロッパ特有の国々を追加しました：
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4834,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+2025年10月には需要により<code class="notranslate">cz</code>（チェコ共和国）も追加しました。
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+スパム活動が多いため、`ru` と `ua` は特に含めていません。
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### あなたの許可リスト基準とは {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+私たちは静的な[デフォルトで許可されているドメイン名拡張子のリスト](#what-domain-name-extensions-are-allowlisted-by-default)を持っており、さらに以下の厳格な基準に基づく動的でキャッシュされたローリング許可リストも維持しています：
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* 送信者のルートドメインは、[無料プランで利用可能なドメイン名拡張子のリスト](#what-domain-name-extensions-can-be-used-for-free)に一致するもの（`biz` と `info` を追加）でなければなりません。`edu`、`gov`、`mil` の部分一致も含みます（例：`xyz.gov.au` や `xyz.edu.au`）。
+* 送信者のルートドメインは、[Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List")（「UPL」）のトップ100,000のユニークルートドメイン解析結果に含まれている必要があります。
+* 送信者のルートドメインは、過去7日間のUPLのうち少なくとも4日間（約50%以上）に出現するユニークルートドメインのトップ50,000に含まれている必要があります。
+* 送信者のルートドメインは、Cloudflareによってアダルトコンテンツまたはマルウェアとして[分類](https://radar.cloudflare.com/categorization-feedback/)されていないこと。
+* 送信者のルートドメインは、AレコードまたはMXレコードのいずれかが設定されている必要があります。
+* 送信者のルートドメインは、Aレコード、MXレコード、`p=reject` または `p=quarantine` のDMARCレコード、または `-all` または `~all` 修飾子付きのSPFレコードのいずれかを持っている必要があります。
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+この基準を満たす場合、送信者のルートドメインは7日間キャッシュされます。自動ジョブは毎日実行されるため、これは毎日更新されるローリング許可リストキャッシュです。
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+自動ジョブは過去7日間のUPLをメモリにダウンロードし、解凍して、上記の厳格な基準に従ってメモリ内で解析します。
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+この記事執筆時点でのGoogle、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotifyなどの人気ドメインはもちろん含まれています。
+送信者が許可リストにない場合、FQDNルートドメインまたはIPアドレスが初めてメールを送信すると、[レート制限](#do-you-have-rate-limiting)および[グレイリスト](#do-you-have-a-greylist)が適用されます。これはメール標準として採用されている一般的な慣行であることに注意してください。ほとんどのメールサーバークライアントは、レート制限やグレイリストエラー（例：421または4xxレベルのエラーステータスコード）を受け取ると再試行を試みます。
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**`a@gmail.com`、`b@xyz.edu`、`c@gov.au`などの特定の送信者は、依然として[拒否リスト](#do-you-have-a-denylist)に登録される可能性があります**（例：これらの送信者からスパム、フィッシング、マルウェアを自動検出した場合）。
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### 無料で使用できるドメイン名の拡張子 {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+2023年3月31日現在、ユーザーとサービスを保護するために新しい包括的なスパムルールを施行しました。
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+この新ルールにより、無料プランで使用できるドメイン名の拡張子は以下のみとなります：
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,161 +4982,157 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### グレイリストはありますか {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+はい、非常に緩い[メールのグレイリスティング](https://en.wikipedia.org/wiki/Greylisting_\(email\))ポリシーを採用しています。グレイリスティングは許可リストにない送信者にのみ適用され、キャッシュには30日間保持されます。
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+新しい送信者の場合、最初のリクエストの到着時間を値として、30日間Redisデータベースにキーを保存します。その後、450の再試行ステータスコードでメールを拒否し、5分経過後にのみ通過を許可します。
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+この初回到着時間から5分間待機に成功した場合、その送信者のメールは受け入れられ、450ステータスコードは返されません。
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+キーはFQDNのルートドメインまたは送信者のIPアドレスで構成されます。つまり、サブドメインがグレイリストを通過すればルートドメインも通過し、その逆も同様です（これが「非常に緩い」ポリシーの意味です）。
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+例えば、`test.example.com`からのメールが`example.com`からのメールより先に来た場合、`test.example.com`および`example.com`からのメールは接続の初回到着時間から5分間待つ必要があります。`test.example.com`と`example.com`それぞれに5分間の待機期間を設けることはありません（グレイリスティングはルートドメインレベルで適用されます）。
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+なお、グレイリスティングは当社の[許可リスト](#do-you-have-an-allowlist)にある送信者（例：Meta、Amazon、Netflix、Google、Microsoft）には適用されません（執筆時点）。
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### デナイリストはありますか {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+はい、独自のデナイリストを運用しており、スパムや悪意のある活動を検出した場合にリアルタイムで自動更新および手動更新を行っています。
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+また、UCEPROTECT Level 1のデナイリストを<http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz>から毎時取得し、7日間の有効期限付きで当社のデナイリストに取り込んでいます。
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+デナイリストに登録されている送信者は、[許可リストにない場合](#do-you-have-an-allowlist)は421エラーコード（後で再試行するよう送信者に示す）を受け取ります。
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+554ステータスコードではなく421ステータスコードを使用することで、潜在的な誤検知をリアルタイムで緩和し、次回の試行でメッセージが正常に配信される可能性を高めています。
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**これは他のメールサービスとは異なる設計です**。ブロックリストに載るとハードで永久的な失敗となる場合が多いですが、送信者（特に大規模組織）に再試行を依頼するのは困難なため、この方法では初回メール試行から約5日間の猶予を設け、送信者、受信者、または当社が介入して問題を解決（デナイリスト解除依頼）できるようにしています。
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+すべてのデナイリスト解除依頼は管理者がリアルタイムで監視しており（繰り返される誤検知は管理者により恒久的に許可リスト入りされます）。
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+デナイリスト解除依頼は<https://forwardemail.net/denylist>で受け付けています。有料ユーザーは即時処理され、非有料ユーザーは管理者の処理を待つ必要があります。
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+スパムやウイルスコンテンツを送信していると検出された送信者は、以下の方法でデナイリストに追加されます：
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. スパム検出または「信頼された」送信者（例：`gmail.com`、`microsoft.com`、`apple.com`）からのブロックリスト検出時に、[初期メッセージのフィンガープリント](#how-do-you-determine-an-email-fingerprint)がグレイリストされます。
+   * 送信者が許可リストにある場合、メッセージは1時間グレイリストされます。
+   * 許可リストにない場合、6時間グレイリストされます。
+2. 送信者およびメッセージ情報からデナイリストキーを解析し、各キーについて（存在しない場合は新規作成し）カウンターを1増やし、24時間キャッシュします。
+   * 許可リスト送信者の場合：
+     * SPF合格またはSPFなしで、[ポストマスターのユーザー名](#what-are-postmaster-addresses)や[ノーリプライのユーザー名](#what-are-no-reply-addresses)でない場合、エンベロープの「MAIL FROM」メールアドレスのキーを追加。
+     * 「From」ヘッダーが許可リストの場合、SPF合格またはDKIM合格かつ整合している場合に「From」ヘッダーのメールアドレスのキーを追加。
+     * 「From」ヘッダーが許可リストでない場合、「From」ヘッダーのメールアドレスとそのルート解析ドメイン名のキーを追加。
+   * 許可リスト外送信者の場合：
+     * SPF合格のエンベロープ「MAIL FROM」メールアドレスのキーを追加。
+     * 「From」ヘッダーが許可リストの場合、SPF合格またはDKIM合格かつ整合している場合に「From」ヘッダーのメールアドレスのキーを追加。
+     * 「From」ヘッダーが許可リストでない場合、「From」ヘッダーのメールアドレスとそのルート解析ドメイン名のキーを追加。
+     * 送信者のリモートIPアドレスのキーを追加。
+     * 送信者のIPアドレスからの逆引きによるクライアント解決ホスト名のキーを追加（存在する場合）。
+     * クライアント解決ホスト名のルートドメインのキーを追加（存在し、かつクライアント解決ホスト名と異なる場合）。
+3. 許可リスト外送信者のキーのカウンターが5に達した場合、そのキーを30日間デナイリストに登録し、当社のアビューチームにメールを送信します。これらの数値は変更される可能性があり、監視に応じてここに反映されます。
+4. 許可リスト送信者のキーのカウンターが10に達した場合、そのキーを7日間デナイリストに登録し、当社のアビューチームにメールを送信します。これらの数値は変更される可能性があり、監視に応じてここに反映されます。
+> **注意:** 近い将来、レピュテーションモニタリングを導入予定です。レピュテーションモニタリングでは、上記の単純なカウンターではなく、パーセンテージの閾値に基づいて送信者を拒否リストに登録するタイミングを計算します。
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### レート制限はありますか {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+送信者のレート制限は、送信者のIPアドレスに対する逆PTRルックアップから解析されたルートドメイン単位、またはそれが得られない場合は単純に送信者のIPアドレス単位で行われます。以下ではこれを `Sender` と呼びます。
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+当社のMXサーバーは、[暗号化IMAPストレージ](/blog/docs/best-quantum-safe-encrypted-email-service)向けに受信メールの1日あたりの制限を設けています：
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* 個々のエイリアス単位（例：`you@yourdomain.com`）で受信メールをレート制限する代わりに、エイリアスのドメイン名自体（例：`yourdomain.com`）でレート制限を行います。これにより、`Sender` がドメイン内のすべてのエイリアスの受信箱を一度に氾濫させるのを防ぎます。
+* 受信者に関係なく、サービス全体のすべての `Sender` に適用される一般的な制限があります：
+  * 真実の情報源として「信頼されている」と見なす `Sender`（例：`gmail.com`、`microsoft.com`、`apple.com`）は1日あたり100 GBの送信が許可されます。
+  * [許可リスト](#do-you-have-an-allowlist)に登録されている `Sender` は1日あたり10 GBの送信が許可されます。
+  * その他すべての `Sender` は1日あたり1 GBおよび/または1000通のメッセージ送信に制限されます。
+* `Sender` と `yourdomain.com` ごとに1日あたり1 GBおよび/または1000通のメッセージの特定の制限があります。
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+MXサーバーは、1つ以上の受信者への転送メッセージもレート制限により制限しますが、これは[許可リスト](#do-you-have-an-allowlist)にない `Sender` のみが対象です：
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* 1時間あたり、`Sender` の解決されたFQDNルートドメイン（または逆PTRがない場合は `Sender` のリモートIPアドレス）ごと、かつエンベロープ受信者ごとに最大100接続まで許可します。レート制限のキーはRedisデータベース内で暗号学的ハッシュとして保存されます。
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* 当社のシステムを通じてメールを送信する場合は、すべてのIPアドレスに逆PTRが設定されていることを確認してください（そうでないと、送信元の各ユニークなFQDNルートドメインまたはIPアドレスごとにレート制限がかかります）。
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Amazon SESのような人気のあるシステムを通じて送信する場合は、（執筆時点で）Amazon SESが許可リストに登録されているため、レート制限はかかりません。
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* `test.abc.123.example.com` のようなドメインから送信する場合、レート制限は `example.com` に対して課されます。多くのスパマーは、ユニークなFQDNルートドメインではなくユニークなホスト名のみをレート制限する一般的なスパムフィルターを回避するために、数百のサブドメインを使用します。
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* レート制限を超えた `Sender` は421エラーで拒否されます。
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+当社のIMAPおよびSMTPサーバーは、エイリアスが同時に `60` を超える接続を持つことを制限しています。
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+当社のMXサーバーは、[非許可リスト](#do-you-have-an-allowlist)の送信者が10を超える同時接続を確立することを制限しています（カウンターのキャッシュ有効期限は3分で、ソケットタイムアウト3分に対応しています）。
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### バックスキャッターからどのように保護していますか {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+誤送信されたバウンスやバウンススパム（「[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))」として知られる）は、送信者IPアドレスのレピュテーションに悪影響を及ぼす可能性があります。
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+当社はバックスキャッターから保護するために2つの対策を講じており、以下のセクション [既知のMAIL FROMスパマーからのバウンスを防ぐ](#prevent-bounces-from-known-mail-from-spammers) と [バックスキャッターから保護するために不要なバウンスを防ぐ](#prevent-unnecessary-bounces-to-protect-against-backscatter) に詳細を記載しています。
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### 既知のMAIL FROMスパマーからのバウンスを防ぐ {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+当社は [Backscatter.org](https://www.backscatterer.org/)（[UCEPROTECT](https://www.uceprotect.net/)提供）からリストを取得し、<http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> から毎時ダウンロードしてRedisデータベースに取り込んでいます（また、事前に差分を比較し、尊重すべきIPが削除されていないかも確認しています）。
+MAIL FROMが空白であるか、または（大文字・小文字を区別せずに）[postmasterアドレス](#what-are-postmaster-addresses)（メールアドレスの@の前の部分）のいずれかと等しい場合、送信者のIPがこのリストのいずれかと一致するかどうかを確認します。
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+送信者のIPがリストにあり（かつ当社の[許可リスト](#do-you-have-an-allowlist)に含まれていない）場合、`The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`というメッセージとともに554エラーを送信します。送信者がBackscattererリストと当社の許可リストの両方に存在する場合は、問題を解決できるように通知されます。
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+このセクションで説明する手法は、<https://www.backscatterer.org/?target=usage> の「SAFE MODE」推奨に準拠しており、特定の条件が既に満たされている場合にのみ送信者IPをチェックします。
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### バックスキャッターからの不要なバウンスを防止する {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+バウンスとは、メール転送が完全に失敗し、再試行されないことを示すメールです。
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+Backscattererリストに登録される一般的な理由は、誤送信されたバウンスやバウンススパムであるため、以下の方法でこれを防止する必要があります：
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. 500以上のステータスコードエラーが発生した場合のみ送信します（転送しようとしたメールが失敗した場合、例：Gmailが500レベルのエラーで応答した場合）。
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. 送信は一度だけ行います（計算されたバウンスフィンガープリントキーを使用し、重複送信を防ぐためにキャッシュに保存します）。バウンスフィンガープリントは、メッセージのフィンガープリントとバウンスアドレスおよびそのエラーコードのハッシュを組み合わせたキーです）。メッセージフィンガープリントの計算方法については、[Fingerprinting](#how-do-you-determine-an-email-fingerprint)のセクションを参照してください。正常に送信されたバウンスフィンガープリントは、Redisキャッシュで7日後に期限切れになります。
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. MAIL FROMおよび/またはFromが空白でなく、（大文字・小文字を区別せずに）[postmasterユーザー名](#what-are-postmaster-addresses)（メールアドレスの@の前の部分）を含まない場合のみ送信します。
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. 元のメッセージに以下のヘッダーが含まれている場合は送信しません（大文字・小文字を区別しません）：
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * 値が`no`でない`auto-submitted`ヘッダー。
+   * 値が`dr`、`autoreply`、`auto-reply`、`auto_reply`、または`all`の`x-auto-response-suppress`ヘッダー。
+   * 値に関係なく、`list-id`、`list-subscribe`、`list-unsubscribe`、`list-help`、`list-post`、`list-owner`、`list-archive`、`x-autoreply`、`x-autorespond`、または`x-auto-respond`ヘッダー。
+   * 値が`bulk`、`autoreply`、`auto-reply`、`auto_reply`、または`list`の`precedence`ヘッダー。
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. MAIL FROMまたはFromのメールアドレスが`+donotreply`、`-donotreply`、`+noreply`、または`-noreply`で終わる場合は送信しません。
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. Fromのメールアドレスのユーザー名部分が`mdaemon`で、かつ大文字・小文字を区別せずに`X-MDDSN-Message`ヘッダーがある場合は送信しません。
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. 大文字・小文字を区別せずに`content-type`ヘッダーが`multipart/report`の場合は送信しません。
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### メールのフィンガープリントはどのように決定しますか {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+メールのフィンガープリントは、メールの一意性を判断し、重複したメッセージの配信や[重複バウンス](#prevent-unnecessary-bounces-to-protect-against-backscatter)の送信を防ぐために使用されます。
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+フィンガープリントは以下のリストから計算されます：
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* クライアントが解決したFQDNホスト名またはIPアドレス
+* `Message-ID`ヘッダーの値（ある場合）
+* `Date`ヘッダーの値（ある場合）
+* `From`ヘッダーの値（ある場合）
+* `To`ヘッダーの値（ある場合）
+* `Cc`ヘッダーの値（ある場合）
+* `Subject`ヘッダーの値（ある場合）
+* `Body`の値（ある場合）
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### 25番ポート以外のポートにメールを転送できますか（例：ISPが25番ポートをブロックしている場合） {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+はい、2020年5月5日よりこの機能を追加しました。現在、この機能はエイリアス単位ではなくドメイン単位での対応となっています。エイリアス単位での対応が必要な場合は、ご要望をお知らせください。
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    強化されたプライバシー保護：
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    強化されたプライバシー保護を特徴とする有料プランをご利用の場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a>にアクセスし、ドメインの「セットアップ」をクリックしてから「設定」をクリックしてください。有料プランの詳細については<a class="alert-link" rel="noopener noreferrer" href="/private-business-email">料金ページ</a>をご覧ください。そうでない場合は、以下の指示に従ってください。
   </span>
 </div>
+無料プランをご利用の場合は、以下のように新しいDNS <strong class="notranslate">TXT</strong>レコードを追加するだけですが、ポートは25からお好きなポートに変更してください。
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+例えば、`example.com` に届くすべてのメールを、ポート25ではなくエイリアス受信者のSMTPポート1337に転送したい場合：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -4635,7 +5145,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4646,9 +5156,9 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    カスタムポート転送設定の最も一般的なシナリオは、example.com に届くすべてのメールをSMTP標準のポート25以外のexample.comの別のポートに転送したい場合です。これを設定するには、以下の<strong class="notranslate">TXT</strong>キャッチオールレコードを追加してください。
   <span>
   </span>
 </div>
@@ -4664,7 +5174,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5182,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Gmailのエイリアスでプラス + 記号はサポートしていますか {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+はい、もちろんです。
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### サブドメインはサポートしていますか {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+はい、もちろんです。名前/ホスト/エイリアスとして "@", ".", または空白の代わりに、サブドメイン名を値として使用します。
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+例えば、`foo.example.com` に届くメールを転送したい場合は、DNS設定の名前/ホスト/エイリアス値に `foo` を入力してください（MXレコードと<strong class="notranslate">TXT</strong>レコードの両方で）。
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### メールのヘッダーも転送されますか {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+はい、もちろんです。
 
-### Is this well-tested {#is-this-well-tested}
+### 十分にテストされていますか {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+はい、[ava](https://github.com/avajs/ava)でテストが書かれており、コードカバレッジもあります。
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### SMTPの応答メッセージやコードはそのまま渡されますか {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+はい、もちろんです。例えば、`hello@example.com` にメールを送信し、それが `user@gmail.com` に転送登録されている場合、"gmail.com" のSMTPサーバーからの応答メッセージとコードが、"mx1.forwardemail.net" や "mx2.forwardemail.net" のプロキシサーバーではなく返されます。
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### スパマーを防止し、良好なメール転送の評判を確保するにはどうしていますか {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+上記の [メール転送システムの仕組み](#how-does-your-email-forwarding-system-work)、[メール配信問題の対処方法](#how-do-you-handle-email-delivery-issues)、および [IPアドレスのブロック対処方法](#how-do-you-handle-your-ip-addresses-becoming-blocked) のセクションをご覧ください。
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### ドメイン名のDNSルックアップはどのように行っていますか {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+オープンソースソフトウェアプロジェクト :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) を作成し、DNSルックアップに使用しています。デフォルトのDNSサーバーは `1.1.1.1` と `1.0.0.1` で、DNSクエリはアプリケーション層の [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") を通じて行われます。
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) はデフォルトで [CloudFlareのプライバシー重視の一般消費者向けDNSサービス][cloudflare-dns] を使用しています。
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## アカウントと請求 {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### 有料プランに返金保証はありますか {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+はい！プラン開始から30日以内にアップグレード、ダウングレード、またはキャンセルした場合、自動的に返金されます。これは初回のお客様のみ対象です。
+### プランを切り替えた場合、差額を日割り計算して返金してもらえますか？ {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+プランを切り替えた際に差額の日割り計算や返金は行いません。代わりに、既存プランの有効期限から残りの期間を新しいプランの最も近い期間（1か月単位で切り捨て）に変換します。
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+なお、有料プランを開始してから30日以内に有料プラン間でアップグレードまたはダウングレードした場合は、既存プランの全額を自動的に返金します。
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### このメール転送サービスを「フォールバック」または「フォールオーバー」MXサーバーとして使えますか？ {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+いいえ、お勧めできません。メール交換サーバーは同時に1つしか使用できません。フォールバックは優先順位の誤設定やメールサーバーがMX交換の優先順位チェックを尊重しないため、通常は再試行されません。
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### 特定のエイリアスを無効にできますか？ {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    有料プランをご利用の場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> エイリアス編集 <i class="fa fa-angle-right"></i> 「アクティブ」チェックボックスのチェックを外す <i class="fa fa-angle-right"></i> 続行してください。
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+はい、DNSの<strong class="notranslate">TXT</strong>レコードを編集し、エイリアスの前に1つ、2つ、または3つの感嘆符を付けるだけです（以下参照）。
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+「:」のマッピングは必ず保持してください。これは無効化を切り替える場合に必要であり、有料プランにアップグレードした際のインポートにも使用されます。
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**静かな拒否（送信者にはメッセージが正常に送信されたように見えますが、実際にはどこにも届かない）（ステータスコード `250`）：** エイリアスの前に「!」（感嘆符1つ）を付けると、このアドレス宛の送信者に対して成功ステータスコード `250` を返しますが、メール自体はどこにも届きません（例：ブラックホールや `/dev/null`）。
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**ソフト拒否（ステータスコード `421`）：** エイリアスの前に「!!」（感嘆符2つ）を付けると、このアドレス宛の送信者に対してソフトエラーステータスコード `421` を返し、メールは最大5日間再試行された後に拒否されバウンスします。
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**ハード拒否（ステータスコード `550`）：** エイリアスの前に「!!!」（感嘆符3つ）を付けると、このアドレス宛の送信者に対して恒久的エラーステータスコード `550` を返し、メールは拒否されバウンスします。
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+例えば、`alias@example.com` 宛のすべてのメールを `user@gmail.com` に転送せず拒否・バウンスさせたい場合（感嘆符3つを使用）：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4766,54 +5276,53 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    転送先の受信者アドレスを単に "nobody@forwardemail.net" に書き換えることもでき、以下の例のように nobody にルーティングされます。
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    セキュリティを強化したい場合は、":user@gmail.com"（または":nobody@forwardemail.net"）の部分を削除し、下記の例のように "!!!alias" のみを残すこともできます。
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5330,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### 複数の受信者にメールを転送できますか {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+はい、もちろんです。<strong class="notranslate">TXT</strong>レコードに複数の受信者を指定するだけです。
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+例えば、`hello@example.com` に届くメールを `user+a@gmail.com` と `user+b@gmail.com` に転送したい場合、<strong class="notranslate">TXT</strong>レコードは以下のようになります。
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5355,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+または、以下のように2行に分けて指定することもできます。
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5382,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+お好みでどうぞ！
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### 複数のグローバルキャッチオール受信者を設定できますか {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+はい、可能です。<strong class="notranslate">TXT</strong>レコードに複数のグローバルキャッチオール受信者を指定してください。
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+例えば、`*@example.com`（アスタリスクはワイルドカード、つまりキャッチオールを意味します）に届くすべてのメールを `user+a@gmail.com` と `user+b@gmail.com` に転送したい場合、<strong class="notranslate">TXT</strong>レコードは以下のようになります。
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,190 +5409,188 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+または、以下のように2行に分けて指定することもできます。
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>名前/ホスト/エイリアス</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>タイプ</th>
+      <th>回答/値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", または空白</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+あなた次第です！
 
-It's up to you!
+### エイリアスごとに転送できるメールアドレスの最大数はありますか？ {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+はい、デフォルトの制限は10です。これは、ドメイン名にエイリアスを10個しか持てないという意味ではありません。エイリアスは無制限に作成可能です。つまり、1つのエイリアスから転送できるユニークなメールアドレスは10個までということです。例えば、`hello:user+1@gmail.com`、`hello:user+2@gmail.com`、`hello:user+3@gmail.com`、…（1から10まで）と設定し、`hello@example.com`宛のメールは`user+1@gmail.com`、`user+2@gmail.com`、`user+3@gmail.com`、…（1から10まで）に転送されます。
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    ヒント:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    エイリアスごとに10人以上の受信者が必要ですか？メールをお送りいただければ、アカウントの制限を増やすことも可能です。
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### メールを再帰的に転送できますか？ {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+はい、可能ですが最大制限は守る必要があります。例えば、`hello:linus@example.com` と `linus:user@gmail.com` がある場合、`hello@example.com` 宛のメールは `linus@example.com` と `user@gmail.com` に転送されます。最大制限を超えて再帰的に転送しようとするとエラーが発生しますのでご注意ください。
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### 許可なく私のメール転送を登録または解除されることはありますか？ {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+当サービスはMXおよび<strong class="notranslate">TXT</strong>レコードの検証を使用しています。したがって、このサービスのMXおよび<strong class="notranslate">TXT</strong>レコードを追加すれば登録され、削除すれば登録解除となります。ドメインとDNS管理の所有権はあなたにあるため、誰かがそれにアクセスできる場合は問題となります。
 
-### How is it free {#how-is-it-free}
+### どうして無料なのですか？ {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Emailは、オープンソース開発、効率的なインフラストラクチャ、そしてサービスを支えるオプションの有料プランの組み合わせにより無料プランを提供しています。
 
-Our free tier is supported by:
+無料プランは以下に支えられています：
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **オープンソース開発**：コードベースはオープンソースで、コミュニティの貢献と透明な運営を可能にしています。
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **効率的なインフラ**：最小限のリソースでメール転送を処理できるようシステムを最適化しています。
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **有料プレミアムプラン**：SMTP送信、IMAP受信、強化されたプライバシーオプションなどの追加機能を必要とするユーザーは有料プランに加入します。
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **適切な使用制限**：無料プランには乱用を防ぐための公正な使用ポリシーがあります。
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> 基本的なメール転送は無料で提供しつつ、高度なニーズを持つユーザー向けにプレミアム機能を提供することにコミットしています。
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> 当サービスを価値あると感じたら、継続的な開発とメンテナンスを支援するために有料プランへのアップグレードをご検討ください。
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### 最大メールサイズの制限は？ {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+デフォルトで50MBのサイズ制限があります。これはコンテンツ、ヘッダー、添付ファイルを含みます。GmailやOutlookなどのサービスは25MBの制限があり、それを超えて送信しようとするとエラーメッセージが返されます。
 
-An error with the proper response code is returned if the file size limit is exceeded.
+ファイルサイズ制限を超えた場合は、適切な応答コード付きのエラーが返されます。
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### メールのログを保存していますか？ {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+いいえ、ディスクへの書き込みやログの保存は行っていません。ただし、[エラーのログ](#do-you-store-error-logs)および[送信SMTP](#do-you-support-sending-email-with-smtp)に関しては例外です（詳細は[プライバシーポリシー](/privacy)をご覧ください）。
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+すべてはメモリ内で処理されており、[ソースコードはGitHubで公開されています](https://github.com/forwardemail)。
 
-### Do you store error logs {#do-you-store-error-logs}
+### エラーログは保存していますか？ {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**はい。[マイアカウント → ログ](/my-account/logs) または [マイアカウント → ドメイン](/my-account/domains) からエラーログにアクセスできます。**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+2023年2月現在、`4xx` および `5xx` のSMTP応答コードに関するエラーログを7日間保存しています。これにはSMTPエラー、エンベロープ、メールヘッダーが含まれます（メール本文や添付ファイルは**保存しません**）。
+エラーログを使用すると、[あなたのドメイン](/my-account/domains)に届かない重要なメールを確認したり、スパムの誤検知を軽減したりできます。また、[メールウェブフック](#do-you-support-webhooks)の問題をデバッグする際にも非常に役立ちます（エラーログにはウェブフックのエンドポイント応答が含まれているため）。
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+[レート制限](#do-you-have-rate-limiting)および[グレイリスト](#do-you-have-a-greylist)のエラーログは、接続が早期に終了するため（例：`RCPT TO`や`MAIL FROM`コマンドが送信される前に）アクセスできません。
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+詳細は当社の[プライバシーポリシー](/privacy)をご覧ください。
 
-See our [Privacy Policy](/privacy) for more insight.
+### メールを読んでいますか {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+いいえ、絶対に読みません。 当社の[プライバシーポリシー](/privacy)をご覧ください。
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+多くの他のメール転送サービスはメールを保存し、潜在的にメールを読むことがあります。 転送されたメールをディスクストレージに保存する必要は全くありません。そのため、当社はすべてをメモリ内で処理する最初のオープンソースソリューションを設計しました。
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+プライバシーの権利を尊重し、厳格に守っています。 サーバーにデプロイされるコードは透明性と信頼構築のために[GitHubのオープンソースソフトウェア](https://github.com/forwardemail)です。
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### これでGmailの「送信者として送信」はできますか {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+はい！2018年10月2日よりこの機能を追加しました。 上記の[How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)をご覧ください！
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+また、DNS設定のSPFレコードにGmail用の<strong class="notranslate">TXT</strong>レコードを設定してください。
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Gmail（例：送信者として送信）やG Suiteを使用している場合は、SPFの<strong class="notranslate">TXT</strong>レコードに<code>include:_spf.google.com</code>を追加する必要があります。例：
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### これでOutlookの「送信者として送信」はできますか {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+はい！2018年10月2日よりこの機能を追加しました。 以下のMicrosoftのリンクをご覧ください：
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+また、DNS設定のSPFレコードにOutlook用の<strong class="notranslate">TXT</strong>レコードを設定してください。
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    重要:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Microsoft OutlookやLive.comを使用している場合は、SPFの<strong class="notranslate">TXT</strong>レコードに<code>include:spf.protection.outlook.com</code>を追加する必要があります。例：
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### これでApple MailやiCloud Mailの「送信者として送信」はできますか {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+iCloud+のサブスクライバーであれば、カスタムドメインを使用できます。 [当サービスはApple Mailにも対応しています](#apple-mail)。
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+詳細は<https://support.apple.com/en-us/102540>をご覧ください。
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### これで無制限にメールを転送できますか {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+はい。ただし、「比較的知られていない」送信者はホスト名またはIPごとに1時間あたり100接続にレート制限されます。 上記の[レート制限](#do-you-have-rate-limiting)および[グレイリスト](#do-you-have-a-greylist)のセクションをご覧ください。
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+「比較的知られていない」とは、[許可リスト](#do-you-have-an-allowlist)に存在しない送信者を指します。
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+この制限を超えると、送信者のメールサーバーに後で再試行するよう指示する421応答コードを送信します。
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### 1つの料金で無制限のドメインを提供していますか {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+はい。どのプランにいても、すべてのドメインをカバーする1つの月額料金のみをお支払いいただきます。
+### どの支払い方法を受け付けていますか {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email は以下の一回払いまたは月額・四半期・年額の支払い方法を受け付けています：
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **クレジット/デビットカード/銀行振込**：Visa、Mastercard、American Express、Discover、JCB、Diners Club など
+2. **PayPal**：簡単に支払いができるように PayPal アカウントを接続
+3. **暗号通貨**：Ethereum、Polygon、Solana ネットワーク上の Stripe のステーブルコイン支払いを通じて支払いを受け付けています
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> 当社のサーバーには限定的な支払い情報のみを保存しており、これには [Stripe](https://stripe.com/global) および [PayPal](https://www.paypal.com) の取引、顧客、サブスクリプション、支払い ID の識別子と参照が含まれます。
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> 最大限のプライバシーを確保するには、暗号通貨での支払いを検討してください。
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+すべての支払いは Stripe または PayPal を通じて安全に処理されます。お客様の支払い情報が当社のサーバーに保存されることはありません。
 
-## Additional Resources {#additional-resources}
+
+## 追加リソース {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> 以下の記事は新しいガイド、ヒント、技術情報で定期的に更新されています。最新の内容を確認するために頻繁にご覧ください。
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [ケーススタディ & 開発者向けドキュメント](/blog/docs)
+* [リソース](/resources)
+* [ガイド](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

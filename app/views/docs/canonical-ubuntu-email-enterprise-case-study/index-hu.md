@@ -1,75 +1,80 @@
-# Esettanulmány: Hogyan működik a Canonical Ubuntu e-mail-kezeléssel a Forward Email nyílt forráskódú vállalati megoldásával {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
+# Esettanulmány: Hogyan támogatja a Canonical az Ubuntu e-mail-kezelését a Forward Email nyílt forráskódú vállalati megoldásával {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="rounded-lg" />
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [A kihívás: Egy komplex e-mail ökoszisztéma kezelése](#the-challenge-managing-a-complex-email-ecosystem)
+* [A kihívás: Egy összetett e-mail ökoszisztéma kezelése](#the-challenge-managing-a-complex-email-ecosystem)
 * [Főbb tanulságok](#key-takeaways)
-* [Miért továbbítsa az e-mailt?](#why-forward-email)
+* [Miért a Forward Email](#why-forward-email)
 * [A megvalósítás: Zökkenőmentes SSO integráció](#the-implementation-seamless-sso-integration)
   * [Hitelesítési folyamat vizualizációja](#authentication-flow-visualization)
-  * [Műszaki megvalósítási részletek](#technical-implementation-details)
-* [DNS-konfiguráció és e-mail-útválasztás](#dns-configuration-and-email-routing)
+  * [Technikai megvalósítás részletei](#technical-implementation-details)
+* [DNS konfiguráció és e-mail irányítás](#dns-configuration-and-email-routing)
 * [Eredmények: Egyszerűsített e-mail-kezelés és fokozott biztonság](#results-streamlined-email-management-and-enhanced-security)
   * [Működési hatékonyság](#operational-efficiency)
   * [Fokozott biztonság és adatvédelem](#enhanced-security-and-privacy)
   * [Költségmegtakarítás](#cost-savings)
-  * [Továbbfejlesztett közreműködői élmény](#improved-contributor-experience)
-* [Előretekintés: Folyamatos együttműködés](#looking-forward-continued-collaboration)
-* [Konklúzió: Tökéletes nyílt forráskódú partnerség](#conclusion-a-perfect-open-source-partnership)
+  * [Javított közreműködői élmény](#improved-contributor-experience)
+* [Előre tekintve: Folyamatos együttműködés](#looking-forward-continued-collaboration)
+* [Összegzés: Egy tökéletes nyílt forráskódú partnerség](#conclusion-a-perfect-open-source-partnership)
 * [Vállalati ügyfelek támogatása](#supporting-enterprise-clients)
-  * [Kapcsolatfelvétel](#get-in-touch)
-  * [Az e-mail továbbításáról](#about-forward-email)
+  * [Lépjen kapcsolatba velünk](#get-in-touch)
+  * [A Forward Emailről](#about-forward-email)
+
 
 ## Előszó {#foreword}
 
-A nyílt forráskódú szoftverek világában kevés névnek van akkora súllyal bíró ereje, mint a [Kánoni](https://en.wikipedia.org/wiki/Canonical_\(company\)-nak, a [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu) mögött álló vállalatnak, amely a világ egyik legnépszerűbb Linux disztribúciója. A hatalmas ökoszisztémájával, amely számos disztribúciót felölel, beleértve az Ubuntut, a [Ingyenes](https://en.wikipedia.org/wiki/Kubuntu)-t, a [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu)-at, a [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu)-et és másokat, a Canonical egyedi kihívásokkal nézett szembe az e-mail címek kezelése során számos domainjén. Ez az esettanulmány azt vizsgálja, hogyan működött együtt a Canonical a Forward Email-lel, hogy egy zökkenőmentes, biztonságos és adatvédelmet figyelembe vevő vállalati e-mail-kezelési megoldást hozzon létre, amely tökéletesen illeszkedik a nyílt forráskódú értékeikhez.
+A nyílt forráskódú szoftverek világában kevés névnek van akkora súlya, mint a [Canonical](https://en.wikipedia.org/wiki/Canonical_\(company\)) cégnek, amely az egyik legnépszerűbb Linux-disztribúció, az [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu) mögött áll. Egy hatalmas ökoszisztémával, amely több disztribúciót foglal magában, beleértve az Ubuntut, a [Kubuntut](https://en.wikipedia.org/wiki/Kubuntu), a [Lubuntut](https://en.wikipedia.org/wiki/Lubuntu), az [Edubuntut](https://en.wikipedia.org/wiki/Edubuntu) és másokat, a Canonical egyedi kihívásokkal nézett szembe az e-mail címek kezelésében számos domainjükön keresztül. Ez az esettanulmány bemutatja, hogyan működött együtt a Canonical a Forward Email-lel egy zökkenőmentes, biztonságos és adatvédelmi szempontból kiemelt vállalati e-mail-kezelő megoldás létrehozásában, amely tökéletesen illeszkedik nyílt forráskódú értékeikhez.
 
-## A kihívás: Komplex e-mail ökoszisztéma kezelése {#the-challenge-managing-a-complex-email-ecosystem}
 
-A Canonical ökoszisztémája sokszínű és kiterjedt. Világszerte több millió felhasználóval és több ezer közreműködővel rendelkezik különféle projektekben, így az e-mail címek kezelése több domainen keresztül jelentős kihívást jelentett. A fő közreműködőknek hivatalos e-mail címekre (@ubuntu.com, @kubuntu.org stb.) volt szükségük, amelyek tükrözték a projektben való részvételüket, miközben megőrizték a biztonságot és a könnyű használhatóságot egy robusztus Ubuntu domainkezelő rendszeren keresztül.
+## A kihívás: Egy összetett e-mail ökoszisztéma kezelése {#the-challenge-managing-a-complex-email-ecosystem}
 
-A Forward Email bevezetése előtt a Canonical a következőkkel küzdött:
+A Canonical ökoszisztémája sokszínű és kiterjedt. Világszerte millió felhasználóval és több ezer közreműködővel különböző projektekben, az e-mail címek kezelése több domainen keresztül jelentős kihívásokat jelentett. Az alapvető közreműködőknek hivatalos e-mail címekre volt szükségük (@ubuntu.com, @kubuntu.org stb.), amelyek tükrözték részvételüket a projektben, miközben meg kellett őrizni a biztonságot és a könnyű használatot egy robusztus Ubuntu domain-kezelő rendszer segítségével.
 
-* E-mail címek kezelése több domainen (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org és @ubuntu.net)
-* Egységes e-mail élmény biztosítása a fő közreműködők számára
-* E-mail szolgáltatások integrálása a meglévő [Ubuntu Egy](https://en.wikipedia.org/wiki/Ubuntu_One) egyszeri bejelentkezési (SSO) rendszerükkel
-* Olyan megoldás keresése, amely összhangban van az adatvédelem, a biztonság és a nyílt forráskódú e-mail biztonság iránti elkötelezettségükkel
+A Forward Email bevezetése előtt a Canonical nehézségekkel küzdött:
+
+* E-mail címek kezelése több domainen keresztül (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org és @ubuntu.net)
+* Egységes e-mail élmény biztosítása az alapvető közreműködők számára
+* Az e-mail szolgáltatások integrálása a meglévő [Ubuntu One](https://en.wikipedia.org/wiki/Ubuntu_One) Single Sign-On (SSO) rendszerrel
+* Olyan megoldás megtalálása, amely összhangban áll az adatvédelem, a biztonság és a nyílt forráskódú e-mail biztonság iránti elkötelezettségükkel
 * Biztonságos e-mail infrastruktúrájuk költséghatékony skálázása
 
-## Főbb tudnivalók {#key-takeaways}
 
-* A Canonical sikeresen bevezetett egy egységes e-mail-kezelési megoldást több Ubuntu domainen
+## Főbb tanulságok {#key-takeaways}
+
+* A Canonical sikeresen valósított meg egységes e-mail-kezelő megoldást több Ubuntu domainen keresztül
 * A Forward Email 100%-ban nyílt forráskódú megközelítése tökéletesen illeszkedett a Canonical értékeihez
-* Az Ubuntu One-nal való SSO-integráció zökkenőmentes hitelesítést biztosít a közreműködők számára
-* A kvantumrezisztens titkosítás hosszú távú biztonságot garantál minden e-mail-kommunikációhoz
-* A megoldás költséghatékonyan skálázható, hogy támogassa a Canonical növekvő közreműködői bázisát
+* Az Ubuntu One SSO integráció zökkenőmentes hitelesítést biztosít a közreműködők számára
+* A kvantumrezisztens titkosítás hosszú távú biztonságot garantál minden e-mail kommunikáció számára
+* A megoldás költséghatékonyan skálázható a Canonical növekvő közreműködői bázisának támogatására
 
-## Miért továbbítsuk az e-mailt? {#why-forward-email}
 
-Mivel a Forward Email az egyetlen 100%-ban nyílt forráskódú e-mail szolgáltató, amely az adatvédelemre és a biztonságra összpontosít, természetes választásnak bizonyult a Canonical vállalati e-mail-továbbítási igényeinek kielégítésére. Értékeink tökéletesen illeszkedtek a Canonical nyílt forráskódú szoftverek és az adatvédelem iránti elkötelezettségéhez.
+## Miért a Forward Email {#why-forward-email}
+Mivel az egyetlen 100%-ban nyílt forráskódú e-mail szolgáltató vagyunk, amely a magánélet és a biztonság fókuszában áll, a Forward Email természetes választás volt a Canonical vállalati e-mail továbbítási igényeihez. Értékeink tökéletesen összhangban álltak a Canonical nyílt forráskódú szoftverekhez és adatvédelemhez való elkötelezettségével.
 
-A Forward Email ideális választássá tételének főbb tényezői a következők voltak:
+A Forward Email ideális választásának kulcsfontosságú tényezői a következők voltak:
 
-1. **Teljes nyílt forráskódú kódbázis**: Teljes platformunk nyílt forráskódú és elérhető a [GitHub](https://en.wikipedia.org/wiki/GitHub) oldalon, lehetővé téve az átláthatóságot és a közösségi hozzájárulásokat. Sok „adatvédelemre összpontosító” e-mail szolgáltatóval ellentétben, akik csak a frontendjeiket teszik nyílt forráskódúvá, miközben a backendjeik zárva maradnak, mi a teljes kódbázisunkat – mind a frontendet, mind a backendet – bárki számára megtekinthetővé tettük a [GitHub](https://github.com/forwardemail/forwardemail.net) oldalon.
+1. **Teljes nyílt forráskódú kódbázis**: Az egész platformunk nyílt forráskódú és elérhető a [GitHub](https://en.wikipedia.org/wiki/GitHub) oldalon, lehetővé téve az átláthatóságot és a közösségi hozzájárulásokat. Ellentétben sok „adatvédelem-központú” e-mail szolgáltatóval, akik csak a frontendjeiket teszik nyílt forráskódúvá, miközben a backendjük zárt marad, mi az egész kódbázisunkat – frontend és backend egyaránt – bárki számára elérhetővé tettük ellenőrzésre a [GitHub](https://github.com/forwardemail/forwardemail.net) oldalon.
 
-2. **Adatvédelemre összpontosító megközelítés**: Más szolgáltatókkal ellentétben mi nem tárolunk e-maileket megosztott adatbázisokban, és robusztus TLS titkosítást használunk. Alapvető adatvédelmi filozófiánk egyszerű: **az e-mailek csak Önhöz tartoznak**. Ez az elv vezérli minden technikai döntésünket, az e-mail-továbbítás kezelésétől kezdve a titkosítás megvalósításáig.
+2. **Adatvédelem-központú megközelítés**: Más szolgáltatókkal ellentétben nem tárolunk e-maileket megosztott adatbázisokban, és erős titkosítást alkalmazunk TLS-sel. Alapvető adatvédelmi filozófiánk egyszerű: **az e-mailjeid csak a tiéd és senki másé**. Ez az elv vezérli minden technikai döntésünket, az e-mail továbbítás kezelésétől a titkosítás megvalósításáig.
 
-3. **Nincs szükség harmadik felekre**: Nem használunk Amazon SES-t vagy más harmadik féltől származó szolgáltatásokat, így teljes ellenőrzést gyakorolhatunk az e-mail infrastruktúra felett, és kiküszöböljük a harmadik féltől származó szolgáltatásokon keresztüli esetleges adatvédelmi szivárgásokat.
+3. **Harmadik felektől való függetlenség**: Nem használunk Amazon SES-t vagy más harmadik fél szolgáltatásait, így teljes kontrollt tartunk az e-mail infrastruktúra felett, és kizárjuk a harmadik felek által okozható adatvédelmi szivárgásokat.
 
-4. **Költséghatékony skálázás**: Árképzési modellünk lehetővé teszi a szervezetek számára a skálázást felhasználónkénti fizetés nélkül, így ideális a Canonical széles közreműködői bázisa számára.
+4. **Költséghatékony skálázás**: Árazási modellünk lehetővé teszi a szervezetek számára a skálázást felhasználónkénti díjfizetés nélkül, ami ideálissá teszi a Canonical nagy hozzájárólói bázisához.
 
-5. **Kvantumálló titkosítás**: Egyenként titkosított SQLite postaládákat használunk, amelyekben a [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) a [kvantum-rezisztens titkosítás](/blog/docs/best-quantum-safe-encrypted-email-service) titkosítási azonosítója. Minden postaláda egy külön titkosított fájl, ami azt jelenti, hogy az egyik felhasználó adataihoz való hozzáférés nem biztosít hozzáférést másoknak.
+5. **Kvantumrezisztens titkosítás**: Egyénileg titkosított SQLite postaládákat használunk [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) titkosítóval a [kvantumrezisztens titkosításhoz](/blog/docs/best-quantum-safe-encrypted-email-service). Minden postaláda külön titkosított fájl, ami azt jelenti, hogy egy felhasználó adatainak elérése nem biztosít hozzáférést mások adataihoz.
 
-## Megvalósítás: Zökkenőmentes SSO-integráció {#the-implementation-seamless-sso-integration}
 
-A megvalósítás egyik legfontosabb aspektusa a Canonical meglévő Ubuntu One SSO rendszerével való integráció volt. Ez az integráció lehetővé tenné a fő közreműködők számára, hogy a meglévő Ubuntu One hitelesítő adataikkal kezeljék az @ubuntu.com e-mail címeiket.
+## A megvalósítás: Zökkenőmentes SSO integráció {#the-implementation-seamless-sso-integration}
+
+A megvalósítás egyik legkritikusabb aspektusa a Canonical meglévő Ubuntu One SSO rendszerével való integráció volt. Ez az integráció lehetővé tette, hogy a fő hozzájárulók a meglévő Ubuntu One hitelesítő adataikkal kezeljék @ubuntu.com e-mail címeiket.
 
 ### Hitelesítési folyamat vizualizációja {#authentication-flow-visualization}
 
-A következő ábra a teljes hitelesítési és e-mail-kiépítési folyamatot szemlélteti:
+Az alábbi diagram a teljes hitelesítési és e-mail szolgáltatási folyamatot szemlélteti:
 
 ```mermaid
 flowchart TD
@@ -111,20 +116,19 @@ flowchart TD
     end
 ```
 
-### Műszaki megvalósítási részletek {#technical-implementation-details}
+### Műszaki megvalósítás részletei {#technical-implementation-details}
 
-A Forward Email és az Ubuntu One SSO közötti integrációt a passport-ubuntu hitelesítési stratégia egyéni megvalósításával valósították meg. Ez zökkenőmentes hitelesítési folyamatot tett lehetővé az Ubuntu One és a Forward Email rendszerei között.
+A Forward Email és az Ubuntu One SSO közötti integrációt a passport-ubuntu hitelesítési stratégia egyedi megvalósításával valósítottuk meg. Ez lehetővé tette a zökkenőmentes hitelesítési folyamatot az Ubuntu One és a Forward Email rendszerei között.
+#### Az autentikációs folyamat {#the-authentication-flow}
 
-#### A hitelesítési folyamat {#the-authentication-flow}
+Az autentikációs folyamat a következőképpen működik:
 
-A hitelesítési folyamat a következőképpen működik:
+1. A felhasználók meglátogatják a dedikált Ubuntu e-mail kezelő oldalt a [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu) címen
+2. Rákattintanak a „Bejelentkezés Ubuntu One-nal” gombra, és átirányítják őket az Ubuntu SSO szolgáltatáshoz
+3. Az Ubuntu One hitelesítő adataikkal történő bejelentkezés után visszairányítják őket a Forward Emailhez a hitelesített profiljukkal
+4. A Forward Email ellenőrzi a hozzájárulói státuszukat, és ennek megfelelően biztosítja vagy kezeli az e-mail címüket
 
-1. A felhasználók felkeresik az Ubuntu e-mail-kezelési oldalát a [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu) címen.
-2. A „Bejelentkezés Ubuntu One-nal” gombra kattintanak, és átirányítják őket az Ubuntu SSO szolgáltatásra.
-3. Miután hitelesítették magukat Ubuntu One hitelesítő adataikkal, visszairányítják őket a Forward Email oldalra a hitelesített profiljukkal.
-4. A Forward Email ellenőrzi a közreműködői státuszukat, és ennek megfelelően biztosítja vagy kezeli az e-mail címüket.
-
-A technikai megvalósítás a [`passport-ubuntu`](https://www.npmjs.com/package/passport-ubuntu) csomagot használta, amely egy [Útlevél](https://www.npmjs.com/package/passport) stratégia az Ubuntuban történő hitelesítéshez a [OpenID](https://en.wikipedia.org/wiki/OpenID) használatával. A konfiguráció a következőket tartalmazta:
+A technikai megvalósítás a [`passport-ubuntu`](https://www.npmjs.com/package/passport-ubuntu) csomagot használta, amely egy [Passport](https://www.npmjs.com/package/passport) stratégia az Ubuntu-val történő hitelesítéshez [OpenID](https://en.wikipedia.org/wiki/OpenID) használatával. A konfiguráció a következő volt:
 
 ```javascript
 passport.use(new UbuntuStrategy({
@@ -132,59 +136,59 @@ passport.use(new UbuntuStrategy({
   realm: process.env.UBUNTU_REALM,
   stateless: true
 }, function(identifier, profile, done) {
-  // User verification and email provisioning logic
+  // Felhasználó ellenőrzési és e-mail biztosítási logika
 }));
 ```
 
-#### Launchpad API integráció és validáció {#launchpad-api-integration-and-validation}
+#### Launchpad API integráció és érvényesítés {#launchpad-api-integration-and-validation}
 
-Implementációnk egyik kritikus eleme a [Indítópad](https://en.wikipedia.org/wiki/Launchpad_\(website\)) API-jával való integráció az Ubuntu felhasználók és csapattagságaik validálásához. Újrafelhasználható segítőfüggvényeket hoztunk létre az integráció hatékony és megbízható kezeléséhez.
+Megvalósításunk egyik kritikus eleme a [Launchpad](https://en.wikipedia.org/wiki/Launchpad_\(website\)) API-jával való integráció az Ubuntu felhasználók és csapattagságaik érvényesítésére. Újrahasználható segédfunkciókat hoztunk létre ennek az integrációnak a hatékony és megbízható kezelésére.
 
-A `sync-ubuntu-user.js` segédfüggvény felelős a felhasználók Launchpad API-n keresztüli ellenőrzéséért és e-mail címeik kezeléséért. Íme egy egyszerűsített változata a működésének:
+A `sync-ubuntu-user.js` segédfunkció felelős a felhasználók Launchpad API-n keresztüli érvényesítéséért és e-mail címeik kezeléséért. Íme egy egyszerűsített verzió arról, hogyan működik:
 
 ```javascript
 async function syncUbuntuUser(user, map) {
   try {
-    // Validate user object
+    // Felhasználói objektum érvényesítése
     if (!_.isObject(user) ||
         !isSANB(user[fields.ubuntuUsername]) ||
         !isSANB(user[fields.ubuntuProfileID]) ||
         !isEmail(user.email))
-      throw new TypeError('Invalid user object');
+      throw new TypeError('Érvénytelen felhasználói objektum');
 
-    // Get Ubuntu members map if not provided
+    // Ubuntu tagok térképének lekérése, ha nincs megadva
     if (!(map instanceof Map))
       map = await getUbuntuMembersMap(resolver);
 
-    // Check if user is banned
+    // Ellenőrizze, hogy a felhasználó tiltott-e
     if (user[config.userFields.isBanned]) {
-      throw new InvalidUbuntuUserError('User was banned', { ignoreHook: true });
+      throw new InvalidUbuntuUserError('A felhasználót kitiltották', { ignoreHook: true });
     }
 
-    // Query Launchpad API to validate user
+    // Launchpad API lekérdezése a felhasználó érvényesítéséhez
     const url = `https://api.launchpad.net/1.0/~${user[fields.ubuntuUsername]}`;
     const response = await retryRequest(url, { resolver });
     const json = await response.body.json();
 
-    // Validate required boolean properties
+    // Kötelező logikai tulajdonságok érvényesítése
     if (!json.is_valid)
-      throw new InvalidUbuntuUserError('Property "is_valid" was false');
+      throw new InvalidUbuntuUserError('Az "is_valid" tulajdonság hamis volt');
 
     if (!json.is_ubuntu_coc_signer)
-      throw new InvalidUbuntuUserError('Property "is_ubuntu_coc_signer" was false');
+      throw new InvalidUbuntuUserError('Az "is_ubuntu_coc_signer" tulajdonság hamis volt');
 
-    // Process each domain for the user
+    // Minden domain feldolgozása a felhasználó számára
     await pMap([...map.keys()], async (name) => {
-      // Find domain in database
+      // Domain keresése az adatbázisban
       const domain = await Domains.findOne({
         name,
         plan: 'team',
         has_txt_record: true
       }).populate('members.user');
 
-      // Process user's email alias for this domain
+      // A felhasználó e-mail aliasának kezelése ehhez a domainhez
       if (map.get(name).has(user[fields.ubuntuUsername])) {
-        // User is a member of this team, create or update alias
+        // A felhasználó tagja ennek a csapatnak, alias létrehozása vagy frissítése
         let alias = await Aliases.findOne({
           user: user._id,
           domain: domain._id,
@@ -192,7 +196,7 @@ async function syncUbuntuUser(user, map) {
         });
 
         if (!alias) {
-          // Create new alias with appropriate error handling
+          // Új alias létrehozása megfelelő hibakezeléssel
           alias = await Aliases.create({
             user: user._id,
             domain: domain._id,
@@ -202,15 +206,15 @@ async function syncUbuntuUser(user, map) {
             is_enabled: true
           });
 
-          // Notify admins about new alias creation
+          // Értesítés az adminoknak az új alias létrehozásáról
           await emailHelper({
             template: 'alert',
             message: {
               to: adminEmailsForDomain,
-              subject: `New @${domain.name} email address created`
+              subject: `Új @${domain.name} e-mail cím jött létre`
             },
             locals: {
-              message: `A new email address ${user[fields.ubuntuUsername].toLowerCase()}@${domain.name} was created for ${user.email}`
+              message: `Egy új e-mail cím ${user[fields.ubuntuUsername].toLowerCase()}@${domain.name} jött létre a(z) ${user.email} számára`
             }
           });
         }
@@ -219,14 +223,13 @@ async function syncUbuntuUser(user, map) {
 
     return true;
   } catch (err) {
-    // Handle and log errors
+    // Hibák kezelése és naplózása
     await logErrorWithUser(err, user);
     throw err;
   }
 }
 ```
-
-A különböző Ubuntu domainek közötti csapattagságok kezelésének egyszerűsítése érdekében létrehoztunk egy egyszerű leképezést a domainnevek és a hozzájuk tartozó Launchpad csapatok között:
+A csapattagságok kezelésének egyszerűsítése érdekében a különböző Ubuntu domainek között egy egyszerű leképezést hoztunk létre a domain nevek és a hozzájuk tartozó Launchpad csapatok között:
 
 ```javascript
 ubuntuTeamMapping: {
@@ -239,100 +242,108 @@ ubuntuTeamMapping: {
 },
 ```
 
-Ez az egyszerű leképezés lehetővé teszi számunkra, hogy automatizáljuk a csapattagságok ellenőrzésének és az e-mail címek kiosztásának folyamatát, így a rendszer könnyen karbantartható és bővíthető új domainek hozzáadásával.
+Ez az egyszerű leképezés lehetővé teszi a csapattagságok ellenőrzésének és az e-mail címek kiadásának automatizálását, így a rendszer könnyen karbantartható és bővíthető új domainek hozzáadásakor.
 
 #### Hibakezelés és értesítések {#error-handling-and-notifications}
 
-Egy robusztus hibakezelő rendszert vezettünk be, amely:
+Egy robusztus hibakezelő rendszert valósítottunk meg, amely:
 
-1. Naplózza az összes hibát részletes felhasználói információkkal.
-2. E-mailben értesíti az Ubuntu csapatot, ha problémákat észlel.
-3. Értesíti az adminisztrátorokat, amikor új közreműködők regisztrálnak és e-mail címeket hoznak létre.
-4. Kezeli a szélsőséges eseteket, például azokat a felhasználókat, akik nem írták alá az Ubuntu magatartási kódexét.
+1. Részletes felhasználói információkkal naplózza az összes hibát
+2. E-mailt küld az Ubuntu csapatnak, ha problémákat észlel
+3. Értesíti a rendszergazdákat, amikor új közreműködők regisztrálnak és e-mail címeket hoznak létre
+4. Kezeli az olyan szélsőséges eseteket, mint például a felhasználók, akik még nem írták alá az Ubuntu Magatartási Kódexet
 
-Ez biztosítja, hogy bármilyen problémát gyorsan azonosítsanak és kezeljenek, megőrizve az e-mail rendszer integritását.
+Ez biztosítja, hogy a problémákat gyorsan felismerjék és kezeljék, megőrizve az e-mail rendszer integritását.
 
-## DNS-konfiguráció és e-mail-útválasztás {#dns-configuration-and-email-routing}
 
-Minden egyes, a Forward Email szolgáltatáson keresztül kezelt domainhez a Canonical egy egyszerű DNS TXT rekordot adott hozzá az érvényesítéshez:
+## DNS konfiguráció és e-mail továbbítás {#dns-configuration-and-email-routing}
+
+Minden Forward Email által kezelt domain esetében a Canonical egy egyszerű DNS TXT rekordot adott hozzá az érvényesítéshez:
 
 ```sh
 ❯ dig ubuntu.com txt
 ubuntu.com.             600     IN      TXT     "forward-email-site-verification=6IsURgl2t7"
 ```
 
-Ez az ellenőrző rekord megerősíti a domain tulajdonjogát, és lehetővé teszi rendszerünk számára, hogy biztonságosan kezelje ezekhez a domainekhez tartozó e-maileket. A Canonical a Postfixen keresztül irányítja át a leveleket a szolgáltatásunkon, amely megbízható és biztonságos e-mail kézbesítési infrastruktúrát biztosít.
+Ez az ellenőrző rekord megerősíti a domain tulajdonjogát, és lehetővé teszi rendszerünk számára, hogy biztonságosan kezelje az e-maileket ezekhez a domainekhez. A Canonical a Postfix szolgáltatáson keresztül irányítja a leveleket, amely megbízható és biztonságos e-mail kézbesítési infrastruktúrát biztosít.
 
-## Eredmények: Egyszerűsített e-mail-kezelés és fokozott biztonság {#results-streamlined-email-management-and-enhanced-security}
 
-A Forward Email vállalati megoldásának bevezetése jelentős előnyökkel járt a Canonical e-mail-kezelése szempontjából minden domainjükön:
+## Eredmények: Egyszerűsített e-mail kezelés és fokozott biztonság {#results-streamlined-email-management-and-enhanced-security}
+
+A Forward Email vállalati megoldásának bevezetése jelentős előnyöket hozott a Canonical e-mail kezelése számára minden domainjükön:
 
 ### Működési hatékonyság {#operational-efficiency}
 
-* **Központosított kezelés**: Minden Ubuntuhoz kapcsolódó domain mostantól egyetlen felületen keresztül kezelhető.
-* **Csökkentett adminisztratív terhek**: Automatizált kiépítés és önkiszolgáló kezelés a közreműködők számára.
-* **Egyszerűsített bevezetési folyamat**: Az új közreműködők gyorsan megkaphatják hivatalos e-mail címüket.
+* **Központosított kezelés**: Minden Ubuntu-hoz kapcsolódó domain most egyetlen felületen keresztül kezelhető
+* **Csökkentett adminisztratív terhek**: Automatizált kiadás és önkiszolgáló kezelés a közreműködők számára
+* **Egyszerűsített beléptetés**: Az új közreműködők gyorsan megkaphatják hivatalos e-mail címeiket
 
 ### Fokozott biztonság és adatvédelem {#enhanced-security-and-privacy}
 
-* **Végponttól végpontig terjedő titkosítás**: Minden e-mailt fejlett szabványok szerint titkosítunk.* **Nincsenek megosztott adatbázisok**: Minden felhasználó e-mailjeit külön titkosított SQLite adatbázisokban tároljuk, ami egy sandboxos titkosítási megközelítést biztosít, amely alapvetően biztonságosabb, mint a hagyományos megosztott relációs adatbázisok.* **Nyílt forráskódú biztonság**: Az átlátható kódbázis lehetővé teszi a közösségi biztonsági felülvizsgálatokat.* **Memóriában történő feldolgozás**: A továbbított e-maileket nem tároljuk lemezen, ami fokozza az adatvédelmet.* **Nincs metaadat-tárolás**: Sok e-mail szolgáltatóval ellentétben nem nyilvántartjuk, hogy ki kinek küld e-mailt.
+* **Végpontok közötti titkosítás**: Minden e-mail fejlett szabványok szerint titkosított
+* **Nincs megosztott adatbázis**: Minden felhasználó e-mailjei egyéni, titkosított SQLite adatbázisokban tárolódnak, ami egy elszigetelt titkosítási megközelítést jelent, amely alapvetően biztonságosabb, mint a hagyományos megosztott relációs adatbázisok
+* **Nyílt forráskódú biztonság**: Az átlátható kódbázis lehetővé teszi a közösségi biztonsági ellenőrzéseket
+* **Memóriában történő feldolgozás**: Nem tároljuk a továbbított e-maileket lemezen, így növelve az adatvédelmet
+* **Nincs metaadat tárolás**: Nem vezetünk nyilvántartást arról, hogy ki kinek küld e-mailt, ellentétben sok e-mail szolgáltatóval
 
 ### Költségmegtakarítás {#cost-savings}
 
-* **Skálázható árképzési modell**: Nincsenek felhasználónkénti díjak, így a Canonical költségek növelése nélkül adhat hozzá közreműködőket.
-* **Kevesebb infrastrukturális igény**: Nincs szükség külön e-mail szerverek fenntartására a különböző domainekhez.
-* **Alacsonyabb támogatási követelmények**: Az önkiszolgáló kezelés csökkenti az informatikai támogatási kérelmek számát.
+* **Skálázható ármodell**: Nincs felhasználónkénti díj, így a Canonical közreműködőket adhat hozzá anélkül, hogy növekednének a költségek
+* **Csökkentett infrastruktúra igény**: Nem szükséges külön e-mail szervereket fenntartani a különböző domainekhez
+* **Alacsonyabb támogatási igény**: Az önkiszolgáló kezelés csökkenti az IT támogatási jegyek számát
 
-### Továbbfejlesztett közreműködői élmény {#improved-contributor-experience}
+### Javított közreműködői élmény {#improved-contributor-experience}
 
 * **Zökkenőmentes hitelesítés**: Egyszeri bejelentkezés a meglévő Ubuntu One hitelesítő adatokkal
-* **Konzisztens márkaépítés**: Egységes élmény az összes Ubuntuhoz kapcsolódó szolgáltatásban
-* **Megbízható e-mail kézbesítés**: A kiváló minőségű IP-cím biztosítja, hogy az e-mailek eljussanak a célállomásukhoz
+* **Egységes arculat**: Egységes élmény minden Ubuntu-hoz kapcsolódó szolgáltatásban
+* **Megbízható e-mail kézbesítés**: Magas minőségű IP hírnév biztosítja, hogy az e-mailek célba érjenek
 
-A Forward Email integrációja jelentősen leegyszerűsítette a Canonical e-mail-kezelési folyamatát. A közreműködők mostantól zökkenőmentesen kezelhetik @ubuntu.com e-mail-címeiket, csökkentett adminisztratív terhekkel és fokozott biztonsággal.
+A Forward Email integrációja jelentősen leegyszerűsítette a Canonical e-mail kezelési folyamatát. A közreműködők most zökkenőmentesen kezelhetik @ubuntu.com e-mail címeiket, csökkentett adminisztratív terhekkel és fokozott biztonsággal.
 
-## Előretekintés: Folytatólagos együttműködés {#looking-forward-continued-collaboration}
 
-A Canonical és a Forward Email közötti partnerség folyamatosan fejlődik. Több kezdeményezésen is együttműködünk:
+## Előre tekintve: Folyamatos együttműködés {#looking-forward-continued-collaboration}
 
-* E-mail szolgáltatások kiterjesztése további Ubuntu-hoz kapcsolódó domainekre
+A Canonical és a Forward Email közötti partnerség tovább fejlődik. Több kezdeményezésen dolgozunk együtt:
+* E-mail szolgáltatások bővítése további, Ubuntu-hoz kapcsolódó domaineken
 * A felhasználói felület fejlesztése a közreműködők visszajelzései alapján
 * További biztonsági funkciók bevezetése
-* Új módszerek feltárása a nyílt forráskódú együttműködésünk kihasználására
+* Új lehetőségek feltárása nyílt forráskódú együttműködésünk kihasználására
 
-## Konklúzió: Tökéletes nyílt forráskódú partnerség {#conclusion-a-perfect-open-source-partnership}
 
-A Canonical és a Forward Email együttműködése jól mutatja a közös értékekre épülő partnerségek erejét. A Forward Email kiválasztásával e-mail szolgáltatóként a Canonical olyan megoldást talált, amely nemcsak technikai követelményeiknek felelt meg, hanem tökéletesen illeszkedett a nyílt forráskódú szoftverek, az adatvédelem és a biztonság iránti elkötelezettségükhöz is.
+## Következtetés: Egy tökéletes nyílt forráskódú partnerség {#conclusion-a-perfect-open-source-partnership}
 
-A több domaint kezelő és a meglévő rendszerekkel zökkenőmentes hitelesítést igénylő szervezetek számára a Forward Email rugalmas, biztonságos és adatvédelmet figyelembe vevő megoldást kínál. A [nyílt forráskódú megközelítés](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) biztosítja az átláthatóságot és lehetővé teszi a közösségi hozzájárulásokat, így ideális választás azoknak a szervezeteknek, amelyek értékelik ezeket az elveket.
+A Canonical és a Forward Email közötti együttműködés jól példázza az olyan partnerségek erejét, amelyek közös értékeken alapulnak. A Forward Email e-mail szolgáltatóként való választásával a Canonical olyan megoldást talált, amely nemcsak technikai követelményeinek felelt meg, hanem tökéletesen illeszkedett elkötelezettségükhöz a nyílt forráskódú szoftverek, az adatvédelem és a biztonság iránt.
 
-Miközben mind a Canonical, mind a Forward Email folyamatosan újít a saját területén, ez a partnerség bizonyítja a nyílt forráskódú együttműködés és a közös értékek erejét a hatékony megoldások létrehozásában.
+Azoknak a szervezeteknek, amelyek több domaint kezelnek és zökkenőmentes hitelesítést igényelnek meglévő rendszereikkel, a Forward Email rugalmas, biztonságos és adatvédelmi szempontból fókuszált megoldást kínál. Nyílt forráskódú megközelítésünk ([open-source approach](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)) átláthatóságot biztosít és lehetővé teszi a közösségi hozzájárulásokat, így ideális választás azoknak a szervezeteknek, amelyek értékelik ezeket az elveket.
 
-A [valós idejű szolgáltatási állapot](https://status.forwardemail.net) oldalon megtekintheti aktuális e-mail kézbesítési teljesítményünket, amelyet folyamatosan figyelünk az IP-címek hírnevének és az e-mail kézbesíthetőségének biztosítása érdekében.
+Miközben a Canonical és a Forward Email is folyamatosan újít saját területén, ez a partnerség bizonyítéka a nyílt forráskódú együttműködés és a közös értékek erejének a hatékony megoldások létrehozásában.
+
+Ellenőrizheti [valós idejű szolgáltatás állapotunkat](https://status.forwardemail.net), hogy lássa aktuális e-mail kézbesítési teljesítményünket, amelyet folyamatosan figyelünk a magas színvonalú IP-hírnév és e-mail kézbesíthetőség biztosítása érdekében.
+
 
 ## Vállalati ügyfelek támogatása {#supporting-enterprise-clients}
 
-Bár ez az esettanulmány a Canonical-lal való partnerségünkre összpontosít, a Forward Email büszkén támogatja számos vállalati ügyfelünket különböző iparágakban, akik értékelik az adatvédelem, a biztonság és a nyílt forráskódú elvek iránti elkötelezettségünket.
+Bár ez az esettanulmány a Canonical-lal való partnerségünkre fókuszál, a Forward Email büszkén támogat számos vállalati ügyfelet különböző iparágakban, akik értékelik elkötelezettségünket az adatvédelem, a biztonság és a nyílt forráskódú elvek iránt.
 
-Vállalati megoldásainkat minden méretű szervezet egyedi igényeihez igazítjuk, és a következőket kínáljuk:
+Vállalati megoldásaink az összes méretű szervezet specifikus igényeihez igazodnak, és a következőket kínálják:
 
-* Egyéni [e-mail-kezelés](/) domain több domainen keresztül
-* Zökkenőmentes integráció a meglévő hitelesítési rendszerekkel
+* Egyedi domain [e-mail kezelése](/) több domainen keresztül
+* Zökkenőmentes integráció meglévő hitelesítési rendszerekkel
 * Dedikált Matrix chat támogatási csatorna
-* Továbbfejlesztett biztonsági funkciók, beleértve a [kvantum-rezisztens titkosítás](/blog/docs/best-quantum-safe-encrypted-email-service)-et
-* Teljes adathordozhatóság és tulajdonjog
-* 100%-ban nyílt forráskódú infrastruktúra az átláthatóság és a bizalom érdekében
+* Fejlett biztonsági funkciók, beleértve a [kvantumrezisztens titkosítást](/blog/docs/best-quantum-safe-encrypted-email-service)
+* Teljes adatátviteli és tulajdonjog biztosítása
+* 100%-ban nyílt forráskódú infrastruktúra az átláthatóság és bizalom érdekében
 
-### Kapcsolatfelvétel {#get-in-touch}
+### Lépjen kapcsolatba velünk {#get-in-touch}
 
-Ha szervezetének vállalati e-mail-igényei vannak, vagy szeretne többet megtudni arról, hogyan segíthet a Forward Email az e-mail-kezelés egyszerűsítésében, miközben fokozza az adatvédelmet és a biztonságot, kérjük, vegye fel velünk a kapcsolatot:
+Ha szervezetének vállalati e-mail igényei vannak, vagy szeretne többet megtudni arról, hogyan segíthet a Forward Email az e-mail kezelése egyszerűsítésében, miközben növeli az adatvédelmet és a biztonságot, örömmel hallunk Önről:
 
-* Írjon nekünk közvetlenül a `support@forwardemail.net` címre
-* Küldjön segítségkérést a [súgóoldal](https://forwardemail.net/help) címre
-* Vállalati csomagokért tekintse meg a [árképzési oldal](https://forwardemail.net/pricing) oldalt
+* Küldjön nekünk közvetlen e-mailt a `support@forwardemail.net` címre
+* Küldjön segítségkérést a [segítség oldalunkon](https://forwardemail.net/help)
+* Tekintse meg vállalati csomagjainkat a [árlistánkon](https://forwardemail.net/pricing)
 
-Csapatunk készen áll arra, hogy megbeszélje az Ön egyedi igényeit, és olyan testreszabott megoldást dolgozzon ki, amely összhangban van szervezete értékeivel és technikai igényeivel.
+Csapatunk készen áll arra, hogy megvitassa az Ön egyedi igényeit, és kidolgozzon egy testreszabott megoldást, amely összhangban áll szervezete értékeivel és technikai követelményeivel.
 
-### Az e-mail továbbításával kapcsolatos {#about-forward-email}}
+### A Forward Email-ről {#about-forward-email}
 
-A Forward Email egy 100%-ban nyílt forráskódú és adatvédelemre összpontosító e-mail szolgáltatás. Egyedi domain e-mail továbbítást, SMTP, IMAP és POP3 szolgáltatásokat kínálunk, a biztonságra, az adatvédelemre és az átláthatóságra összpontosítva. Teljes kódbázisunk elérhető a [GitHub](https://github.com/forwardemail/forwardemail.net) címen, és elkötelezettek vagyunk a felhasználók adatainak védelmét és biztonságát tiszteletben tartó e-mail szolgáltatások nyújtása iránt. Tudjon meg többet a [Miért a nyílt forráskódú e-mail a jövő?](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hogyan működik az e-mail-továbbításunk](https://forwardemail.net/blog/docs/best-email-forwarding-service) és [az e-mail adatvédelemmel kapcsolatos megközelítésünk](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) szolgáltatásokról.
+A Forward Email 100%-ban nyílt forráskódú és adatvédelmi szempontból fókuszált e-mail szolgáltatás. Egyedi domain e-mail továbbítást, SMTP, IMAP és POP3 szolgáltatásokat nyújtunk, kiemelt figyelemmel a biztonságra, adatvédelemre és átláthatóságra. Teljes kódalapunk elérhető a [GitHubon](https://github.com/forwardemail/forwardemail.net), és elkötelezettek vagyunk olyan e-mail szolgáltatások biztosítása mellett, amelyek tiszteletben tartják a felhasználók adatvédelmét és biztonságát. Tudjon meg többet arról, [miért a nyílt forráskódú e-mail a jövő](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hogyan működik az e-mail továbbításunk](https://forwardemail.net/blog/docs/best-email-forwarding-service), és [hogyan védjük az e-mail adatvédelmet technikailag](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).

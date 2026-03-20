@@ -1,75 +1,80 @@
-# Caso di studio: come Canonical potenzia la gestione della posta elettronica di Ubuntu con la soluzione aziendale open source di Forward Email {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
+# Caso di Studio: Come Canonical Potenzia la Gestione delle Email di Ubuntu con la Soluzione Enterprise Open-Source di Forward Email {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/canonical.webp" alt="Caso di studio aziendale email Canonical Ubuntu" class="rounded-lg" />
+
 
 ## Indice {#table-of-contents}
 
 * [Prefazione](#foreword)
-* [La sfida: gestire un ecosistema di posta elettronica complesso](#the-challenge-managing-a-complex-email-ecosystem)
-* [Punti chiave](#key-takeaways)
-* [Perché inoltrare le e-mail](#why-forward-email)
-* [L'implementazione: integrazione SSO senza soluzione di continuità](#the-implementation-seamless-sso-integration)
-  * [Visualizzazione del flusso di autenticazione](#authentication-flow-visualization)
-  * [Dettagli di implementazione tecnica](#technical-implementation-details)
-* [Configurazione DNS e routing della posta elettronica](#dns-configuration-and-email-routing)
-* [Risultati: gestione semplificata della posta elettronica e sicurezza migliorata](#results-streamlined-email-management-and-enhanced-security)
-  * [Efficienza operativa](#operational-efficiency)
-  * [Sicurezza e privacy migliorate](#enhanced-security-and-privacy)
-  * [Risparmio sui costi](#cost-savings)
-  * [Esperienza di collaborazione migliorata](#improved-contributor-experience)
-* [Guardando al futuro: collaborazione continua](#looking-forward-continued-collaboration)
-* [Conclusione: una partnership open source perfetta](#conclusion-a-perfect-open-source-partnership)
-* [Supporto ai clienti aziendali](#supporting-enterprise-clients)
+* [La Sfida: Gestire un Ecosistema Email Complesso](#the-challenge-managing-a-complex-email-ecosystem)
+* [Punti Chiave](#key-takeaways)
+* [Perché Forward Email](#why-forward-email)
+* [L'Implementazione: Integrazione SSO Senza Soluzione di Continuità](#the-implementation-seamless-sso-integration)
+  * [Visualizzazione del Flusso di Autenticazione](#authentication-flow-visualization)
+  * [Dettagli Tecnici dell'Implementazione](#technical-implementation-details)
+* [Configurazione DNS e Instradamento Email](#dns-configuration-and-email-routing)
+* [Risultati: Gestione Email Semplificata e Sicurezza Migliorata](#results-streamlined-email-management-and-enhanced-security)
+  * [Efficienza Operativa](#operational-efficiency)
+  * [Sicurezza e Privacy Potenziate](#enhanced-security-and-privacy)
+  * [Risparmio sui Costi](#cost-savings)
+  * [Esperienza Migliorata per i Collaboratori](#improved-contributor-experience)
+* [Prospettive Future: Collaborazione Continua](#looking-forward-continued-collaboration)
+* [Conclusione: Una Partnership Open-Source Perfetta](#conclusion-a-perfect-open-source-partnership)
+* [Supporto ai Clienti Enterprise](#supporting-enterprise-clients)
   * [Contattaci](#get-in-touch)
-  * [Informazioni su Inoltra e-mail](#about-forward-email)
+  * [Informazioni su Forward Email](#about-forward-email)
+
 
 ## Prefazione {#foreword}
 
-Nel mondo del software open source, pochi nomi hanno lo stesso peso di [Canonico](https://en.wikipedia.org/wiki/Canonical_\(company\), l'azienda dietro [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), una delle distribuzioni Linux più diffuse al mondo. Con un vasto ecosistema che abbraccia diverse distribuzioni, tra cui Ubuntu, [Gratuito](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) e altre, Canonical ha dovuto affrontare sfide uniche nella gestione degli indirizzi email sui suoi numerosi domini. Questo case study esplora la collaborazione tra Canonical e Forward Email per creare una soluzione di gestione della posta elettronica aziendale fluida, sicura e incentrata sulla privacy, in perfetta sintonia con i valori dell'azienda in ambito open source.
+Nel mondo del software open-source, pochi nomi hanno un peso pari a quello di [Canonical](https://en.wikipedia.org/wiki/Canonical_\(company\)), l’azienda dietro a [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), una delle distribuzioni Linux più popolari a livello globale. Con un vasto ecosistema che comprende molteplici distribuzioni tra cui Ubuntu, [Kubuntu](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) e altre, Canonical ha affrontato sfide uniche nella gestione degli indirizzi email attraverso i loro numerosi domini. Questo caso di studio esplora come Canonical abbia collaborato con Forward Email per creare una soluzione di gestione email aziendale fluida, sicura e focalizzata sulla privacy, perfettamente in linea con i loro valori open-source.
 
-## La sfida: gestire un ecosistema di posta elettronica complesso {#the-challenge-managing-a-complex-email-ecosystem}
 
-L'ecosistema di Canonical è diversificato e in continua espansione. Con milioni di utenti in tutto il mondo e migliaia di collaboratori impegnati in vari progetti, la gestione di indirizzi email su più domini ha presentato sfide significative. I collaboratori principali necessitavano di indirizzi email ufficiali (@ubuntu.com, @kubuntu.org, ecc.) che riflettessero il loro coinvolgimento nel progetto, mantenendo al contempo la sicurezza e la facilità d'uso attraverso un solido sistema di gestione dei domini Ubuntu.
+## La Sfida: Gestire un Ecosistema Email Complesso {#the-challenge-managing-a-complex-email-ecosystem}
 
-Prima di implementare Forward Email, Canonical aveva difficoltà con:
+L’ecosistema di Canonical è diversificato ed esteso. Con milioni di utenti in tutto il mondo e migliaia di collaboratori su vari progetti, gestire gli indirizzi email su molteplici domini ha rappresentato una sfida significativa. I collaboratori principali necessitavano di indirizzi email ufficiali (@ubuntu.com, @kubuntu.org, ecc.) che riflettessero il loro coinvolgimento nel progetto, mantenendo al contempo sicurezza e facilità d’uso tramite un sistema robusto di gestione dei domini Ubuntu.
 
-* Gestire indirizzi email su più domini (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org e @ubuntu.net)
-* Offrire un'esperienza email coerente ai collaboratori principali
+Prima di implementare Forward Email, Canonical ha avuto difficoltà con:
+
+* Gestire indirizzi email su molteplici domini (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org e @ubuntu.net)
+* Fornire un’esperienza email coerente per i collaboratori principali
 * Integrare i servizi email con il loro sistema Single Sign-On (SSO) [Ubuntu One](https://en.wikipedia.org/wiki/Ubuntu_One) esistente
-* Trovare una soluzione in linea con il loro impegno per la privacy, la sicurezza e la sicurezza email open source
-* Scalare la loro infrastruttura email sicura in modo economicamente vantaggioso
+* Trovare una soluzione in linea con il loro impegno per la privacy, la sicurezza e la sicurezza email open-source
+* Scalare la loro infrastruttura email sicura in modo economicamente sostenibile
 
-## Punti chiave {#key-takeaways}
 
-* Canonical ha implementato con successo una soluzione di gestione email unificata su più domini Ubuntu
-* L'approccio open source al 100% di Forward Email è perfettamente in linea con i valori di Canonical
-* L'integrazione SSO con Ubuntu One offre un'autenticazione fluida per i collaboratori
-* La crittografia a prova di quantum garantisce la sicurezza a lungo termine di tutte le comunicazioni email
-* La soluzione è scalabile in modo economicamente vantaggioso per supportare la crescente base di collaboratori di Canonical
+## Punti Chiave {#key-takeaways}
 
-## Perché inoltrare l'email {#why-forward-email}
+* Canonical ha implementato con successo una soluzione unificata di gestione email su molteplici domini Ubuntu
+* L’approccio 100% open-source di Forward Email si è allineato perfettamente con i valori di Canonical
+* L’integrazione SSO con Ubuntu One offre un’autenticazione fluida per i collaboratori
+* La crittografia resistente ai computer quantistici garantisce sicurezza a lungo termine per tutte le comunicazioni email
+* La soluzione scala in modo economicamente sostenibile per supportare la crescente base di collaboratori di Canonical
 
-Essendo l'unico fornitore di servizi di posta elettronica open source al 100% con particolare attenzione alla privacy e alla sicurezza, Forward Email si è rivelata la soluzione ideale per le esigenze di inoltro delle email aziendali di Canonical. I nostri valori si allineavano perfettamente con l'impegno di Canonical per il software open source e la privacy.
 
-I fattori chiave che hanno reso Forward Email la scelta ideale sono stati:
+## Perché Forward Email {#why-forward-email}
+Come unico provider di servizi email 100% open-source con un focus su privacy e sicurezza, Forward Email è stata una scelta naturale per le esigenze di inoltro email aziendale di Canonical. I nostri valori si allineano perfettamente con l'impegno di Canonical verso il software open-source e la privacy.
 
-1. **Codice sorgente open source completo**: l'intera piattaforma è open source e disponibile su [GitHub](https://en.wikipedia.org/wiki/GitHub), garantendo trasparenza e contributi alla community. A differenza di molti provider di posta elettronica "incentrati sulla privacy" che rendono open source solo i loro frontend mantenendo chiusi i backend, abbiamo reso disponibile l'intera base di codice, sia frontend che backend, a chiunque voglia consultarla su [GitHub](https://github.com/forwardemail/forwardemail.net).
+I fattori chiave che hanno reso Forward Email la scelta ideale includevano:
 
-2. **Approccio incentrato sulla privacy**: a differenza di altri provider, non memorizziamo le email in database condivisi e utilizziamo una crittografia avanzata con TLS. La nostra filosofia fondamentale sulla privacy è semplice: **le tue email appartengono a te e solo a te**. Questo principio guida ogni decisione tecnica che prendiamo, dalla gestione dell'inoltro delle email all'implementazione della crittografia.
+1. **Codice completamente open-source**: L'intera nostra piattaforma è open-source e disponibile su [GitHub](https://en.wikipedia.org/wiki/GitHub), permettendo trasparenza e contributi dalla community. A differenza di molti provider email "focalizzati sulla privacy" che rendono open-source solo i loro frontend mantenendo chiusi i backend, abbiamo reso disponibile l'intero codice—sia frontend che backend—per chiunque voglia ispezionarlo su [GitHub](https://github.com/forwardemail/forwardemail.net).
 
-3. **Nessun affidamento a terze parti**: non utilizziamo Amazon SES o altri servizi di terze parti, il che ci consente di avere il controllo completo sull'infrastruttura di posta elettronica ed eliminare potenziali perdite di privacy tramite servizi di terze parti.
+2. **Approccio incentrato sulla privacy**: A differenza di altri provider, non memorizziamo le email in database condivisi e utilizziamo una crittografia robusta con TLS. La nostra filosofia fondamentale sulla privacy è semplice: **le tue email ti appartengono e solo a te**. Questo principio guida ogni decisione tecnica che prendiamo, da come gestiamo l'inoltro delle email a come implementiamo la crittografia.
 
-4. **Scalabilità conveniente**: il nostro modello di prezzi consente alle organizzazioni di scalare senza pagare per utente, rendendolo ideale per l'ampia base di collaboratori di Canonical.
+3. **Nessuna dipendenza da terze parti**: Non utilizziamo Amazon SES o altri servizi di terze parti, garantendoci il completo controllo sull'infrastruttura email ed eliminando potenziali fughe di privacy tramite servizi esterni.
 
-5. **Crittografia resistente ai quantum**: Utilizziamo caselle di posta SQLite crittografate individualmente con [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) come cifrario per [crittografia resistente ai quanti](/blog/docs/best-quantum-safe-encrypted-email-service). Ogni casella di posta è un file crittografato separato, il che significa che l'accesso ai dati di un utente non garantisce l'accesso ad altri.
+4. **Scalabilità economica**: Il nostro modello di pricing permette alle organizzazioni di scalare senza pagare per utente, rendendolo ideale per la vasta base di contributori di Canonical.
 
-## Implementazione: integrazione SSO senza interruzioni {#the-implementation-seamless-sso-integration}
+5. **Crittografia resistente ai quantum**: Utilizziamo caselle di posta SQLite criptate singolarmente con [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) come cifrario per la [crittografia resistente ai quantum](/blog/docs/best-quantum-safe-encrypted-email-service). Ogni casella è un file criptato separato, il che significa che l'accesso ai dati di un utente non concede accesso a quelli degli altri.
 
-Uno degli aspetti più critici dell'implementazione è stata l'integrazione con il sistema Single Sign-On Ubuntu One di Canonical. Questa integrazione avrebbe consentito ai collaboratori principali di gestire i propri indirizzi email @ubuntu.com utilizzando le credenziali Ubuntu One esistenti.
 
-### Visualizzazione del flusso di autenticazione {#authentication-flow-visualization}
+## L'Implementazione: Integrazione SSO senza soluzione di continuità {#the-implementation-seamless-sso-integration}
 
-Il diagramma seguente illustra il flusso completo di autenticazione e provisioning della posta elettronica:
+Uno degli aspetti più critici dell'implementazione è stata l'integrazione con il sistema SSO Ubuntu One esistente di Canonical. Questa integrazione avrebbe permesso ai contributori principali di gestire i loro indirizzi email @ubuntu.com utilizzando le credenziali Ubuntu One già esistenti.
+
+### Visualizzazione del Flusso di Autenticazione {#authentication-flow-visualization}
+
+Il diagramma seguente illustra il flusso completo di autenticazione e provisioning email:
 
 ```mermaid
 flowchart TD
@@ -111,20 +116,19 @@ flowchart TD
     end
 ```
 
-### Dettagli di implementazione tecnica {#technical-implementation-details}
+### Dettagli Tecnici dell'Implementazione {#technical-implementation-details}
 
-L'integrazione tra Forward Email e Ubuntu One SSO è stata realizzata tramite un'implementazione personalizzata della strategia di autenticazione Passport-Ubuntu. Ciò ha consentito un flusso di autenticazione fluido tra i sistemi di Ubuntu One e Forward Email.
-
-#### Il flusso di autenticazione {#the-authentication-flow}
+L'integrazione tra Forward Email e Ubuntu One SSO è stata realizzata tramite un'implementazione personalizzata della strategia di autenticazione passport-ubuntu. Questo ha permesso un flusso di autenticazione fluido tra Ubuntu One e i sistemi di Forward Email.
+#### Il Flusso di Autenticazione {#the-authentication-flow}
 
 Il processo di autenticazione funziona come segue:
 
-1. Gli utenti visitano la pagina dedicata alla gestione delle email di Ubuntu all'indirizzo [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu)
-2. Cliccano su "Accedi con Ubuntu One" e vengono reindirizzati al servizio Ubuntu SSO
-3. Dopo l'autenticazione con le credenziali di Ubuntu One, vengono reindirizzati a Inoltra Email con il loro profilo autenticato
-4. Inoltra Email verifica lo stato di collaboratore e gestisce o gestisce il loro indirizzo email di conseguenza
+1. Gli utenti visitano la pagina dedicata alla gestione delle email Ubuntu su [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu)
+2. Cliccano su "Accedi con Ubuntu One" e vengono reindirizzati al servizio SSO di Ubuntu
+3. Dopo essersi autenticati con le credenziali Ubuntu One, vengono reindirizzati a Forward Email con il loro profilo autenticato
+4. Forward Email verifica il loro stato di contributore e provvede a fornire o gestire il loro indirizzo email di conseguenza
 
-L'implementazione tecnica ha sfruttato il pacchetto [`passport-ubuntu`](https://www.npmjs.com/package/passport-ubuntu), che è una strategia [Passaporto](https://www.npmjs.com/package/passport) per l'autenticazione con Ubuntu tramite [OpenID](https://en.wikipedia.org/wiki/OpenID). La configurazione includeva:
+L'implementazione tecnica ha utilizzato il pacchetto [`passport-ubuntu`](https://www.npmjs.com/package/passport-ubuntu), che è una strategia [Passport](https://www.npmjs.com/package/passport) per autenticarsi con Ubuntu usando [OpenID](https://en.wikipedia.org/wiki/OpenID). La configurazione includeva:
 
 ```javascript
 passport.use(new UbuntuStrategy({
@@ -132,59 +136,59 @@ passport.use(new UbuntuStrategy({
   realm: process.env.UBUNTU_REALM,
   stateless: true
 }, function(identifier, profile, done) {
-  // User verification and email provisioning logic
+  // Logica di verifica utente e provisioning email
 }));
 ```
 
-#### Integrazione e convalida dell'API Launchpad {#launchpad-api-integration-and-validation}
+#### Integrazione e Validazione API Launchpad {#launchpad-api-integration-and-validation}
 
-Un componente fondamentale della nostra implementazione è l'integrazione con l'API di [rampa di lancio](https://en.wikipedia.org/wiki/Launchpad_\(website\)) per convalidare gli utenti Ubuntu e le loro appartenenze ai team. Abbiamo creato funzioni di supporto riutilizzabili per gestire questa integrazione in modo efficiente e affidabile.
+Un componente critico della nostra implementazione è l'integrazione con l'API di [Launchpad](https://en.wikipedia.org/wiki/Launchpad_\(website\)) per validare gli utenti Ubuntu e le loro appartenenze ai team. Abbiamo creato funzioni helper riutilizzabili per gestire questa integrazione in modo efficiente e affidabile.
 
-La funzione helper `sync-ubuntu-user.js` è responsabile della convalida degli utenti tramite l'API Launchpad e della gestione dei loro indirizzi email. Ecco una versione semplificata del suo funzionamento:
+La funzione helper `sync-ubuntu-user.js` è responsabile della validazione degli utenti tramite l'API Launchpad e della gestione dei loro indirizzi email. Ecco una versione semplificata di come funziona:
 
 ```javascript
 async function syncUbuntuUser(user, map) {
   try {
-    // Validate user object
+    // Validare l'oggetto utente
     if (!_.isObject(user) ||
         !isSANB(user[fields.ubuntuUsername]) ||
         !isSANB(user[fields.ubuntuProfileID]) ||
         !isEmail(user.email))
-      throw new TypeError('Invalid user object');
+      throw new TypeError('Oggetto utente non valido');
 
-    // Get Ubuntu members map if not provided
+    // Ottenere la mappa dei membri Ubuntu se non fornita
     if (!(map instanceof Map))
       map = await getUbuntuMembersMap(resolver);
 
-    // Check if user is banned
+    // Verificare se l'utente è bannato
     if (user[config.userFields.isBanned]) {
-      throw new InvalidUbuntuUserError('User was banned', { ignoreHook: true });
+      throw new InvalidUbuntuUserError('Utente bannato', { ignoreHook: true });
     }
 
-    // Query Launchpad API to validate user
+    // Interrogare l'API Launchpad per validare l'utente
     const url = `https://api.launchpad.net/1.0/~${user[fields.ubuntuUsername]}`;
     const response = await retryRequest(url, { resolver });
     const json = await response.body.json();
 
-    // Validate required boolean properties
+    // Validare le proprietà boolean richieste
     if (!json.is_valid)
-      throw new InvalidUbuntuUserError('Property "is_valid" was false');
+      throw new InvalidUbuntuUserError('La proprietà "is_valid" era falsa');
 
     if (!json.is_ubuntu_coc_signer)
-      throw new InvalidUbuntuUserError('Property "is_ubuntu_coc_signer" was false');
+      throw new InvalidUbuntuUserError('La proprietà "is_ubuntu_coc_signer" era falsa');
 
-    // Process each domain for the user
+    // Processare ogni dominio per l'utente
     await pMap([...map.keys()], async (name) => {
-      // Find domain in database
+      // Trovare il dominio nel database
       const domain = await Domains.findOne({
         name,
         plan: 'team',
         has_txt_record: true
       }).populate('members.user');
 
-      // Process user's email alias for this domain
+      // Processare l'alias email dell'utente per questo dominio
       if (map.get(name).has(user[fields.ubuntuUsername])) {
-        // User is a member of this team, create or update alias
+        // L'utente è membro di questo team, creare o aggiornare alias
         let alias = await Aliases.findOne({
           user: user._id,
           domain: domain._id,
@@ -192,7 +196,7 @@ async function syncUbuntuUser(user, map) {
         });
 
         if (!alias) {
-          // Create new alias with appropriate error handling
+          // Creare un nuovo alias con gestione appropriata degli errori
           alias = await Aliases.create({
             user: user._id,
             domain: domain._id,
@@ -202,15 +206,15 @@ async function syncUbuntuUser(user, map) {
             is_enabled: true
           });
 
-          // Notify admins about new alias creation
+          // Notificare gli amministratori della creazione del nuovo alias
           await emailHelper({
             template: 'alert',
             message: {
               to: adminEmailsForDomain,
-              subject: `New @${domain.name} email address created`
+              subject: `Nuovo indirizzo email @${domain.name} creato`
             },
             locals: {
-              message: `A new email address ${user[fields.ubuntuUsername].toLowerCase()}@${domain.name} was created for ${user.email}`
+              message: `Un nuovo indirizzo email ${user[fields.ubuntuUsername].toLowerCase()}@${domain.name} è stato creato per ${user.email}`
             }
           });
         }
@@ -219,14 +223,13 @@ async function syncUbuntuUser(user, map) {
 
     return true;
   } catch (err) {
-    // Handle and log errors
+    // Gestire e registrare gli errori
     await logErrorWithUser(err, user);
     throw err;
   }
 }
 ```
-
-Per semplificare la gestione delle appartenenze ai team nei diversi domini Ubuntu, abbiamo creato una mappatura semplice tra i nomi di dominio e i corrispondenti team di Launchpad:
+Per semplificare la gestione delle appartenenze ai team tra i diversi domini Ubuntu, abbiamo creato una mappatura semplice tra i nomi dei domini e i rispettivi team Launchpad:
 
 ```javascript
 ubuntuTeamMapping: {
@@ -239,104 +242,108 @@ ubuntuTeamMapping: {
 },
 ```
 
-Questa semplice mappatura ci consente di automatizzare il processo di verifica delle appartenenze ai team e di provisioning degli indirizzi e-mail, semplificando la manutenzione e l'estensione del sistema con l'aggiunta di nuovi domini.
+Questa mappatura semplice ci permette di automatizzare il processo di verifica delle appartenenze ai team e la creazione degli indirizzi email, rendendo il sistema facile da mantenere ed estendere man mano che vengono aggiunti nuovi domini.
 
-#### Gestione degli errori e notifiche {#error-handling-and-notifications}
+#### Gestione degli Errori e Notifiche {#error-handling-and-notifications}
 
-Abbiamo implementato un solido sistema di gestione degli errori che:
+Abbiamo implementato un sistema robusto di gestione degli errori che:
 
-1. Registra tutti gli errori con informazioni dettagliate sull'utente
-2. Invia email al team di Ubuntu quando vengono rilevati problemi
-3. Notifica agli amministratori quando nuovi collaboratori si iscrivono e creano indirizzi email
-4. Gestisce casi limite, come quelli degli utenti che non hanno firmato il Codice di Condotta di Ubuntu
+1. Registra tutti gli errori con informazioni dettagliate sull’utente
+2. Invia email al team Ubuntu quando vengono rilevati problemi
+3. Notifica gli amministratori quando nuovi contributori si registrano e viene creato un indirizzo email
+4. Gestisce casi limite come utenti che non hanno firmato il Codice di Condotta di Ubuntu
 
-In questo modo si garantisce che eventuali problemi vengano rapidamente identificati e risolti, preservando l'integrità del sistema di posta elettronica.
+Questo garantisce che eventuali problemi vengano rapidamente identificati e risolti, mantenendo l’integrità del sistema email.
 
-## Configurazione DNS e routing e-mail {#dns-configuration-and-email-routing}
 
-Per ogni dominio gestito tramite Forward Email, Canonical ha aggiunto un semplice record DNS TXT per la convalida:
+## Configurazione DNS e Instradamento Email {#dns-configuration-and-email-routing}
+
+Per ogni dominio gestito tramite Forward Email, Canonical ha aggiunto un semplice record DNS TXT per la validazione:
 
 ```sh
 ❯ dig ubuntu.com txt
 ubuntu.com.             600     IN      TXT     "forward-email-site-verification=6IsURgl2t7"
 ```
 
-Questo record di verifica conferma la proprietà del dominio e consente al nostro sistema di gestire in modo sicuro le email per questi domini. Canonical instrada la posta attraverso il nostro servizio tramite Postfix, che fornisce un'infrastruttura di recapito email affidabile e sicura.
+Questo record di verifica conferma la proprietà del dominio e permette al nostro sistema di gestire in modo sicuro le email per questi domini. Canonical instrada la posta attraverso il nostro servizio tramite Postfix, che fornisce un’infrastruttura affidabile e sicura per la consegna delle email.
 
-## Risultati: gestione semplificata della posta elettronica e sicurezza migliorata {#results-streamlined-email-management-and-enhanced-security}
 
-L'implementazione della soluzione aziendale Forward Email ha apportato notevoli vantaggi alla gestione della posta elettronica di Canonical in tutti i suoi domini:
+## Risultati: Gestione Email Semplificata e Sicurezza Migliorata {#results-streamlined-email-management-and-enhanced-security}
 
-### Efficienza operativa {#operational-efficiency}
+L’implementazione della soluzione enterprise di Forward Email ha portato benefici significativi nella gestione delle email di Canonical su tutti i loro domini:
 
-* **Gestione centralizzata**: tutti i domini relativi a Ubuntu sono ora gestiti tramite un'unica interfaccia
-* **Riduzione dei costi amministrativi**: provisioning automatizzato e gestione self-service per i collaboratori
-* **Onboarding semplificato**: i nuovi collaboratori possono ottenere rapidamente i loro indirizzi email ufficiali
+### Efficienza Operativa {#operational-efficiency}
 
-### Sicurezza e privacy migliorate {#enhanced-security-and-privacy}
+* **Gestione centralizzata**: Tutti i domini legati a Ubuntu sono ora gestiti tramite un’unica interfaccia
+* **Riduzione del carico amministrativo**: Provisioning automatizzato e gestione self-service per i contributori
+* **Onboarding semplificato**: I nuovi contributori possono ottenere rapidamente i loro indirizzi email ufficiali
 
-* **Crittografia end-to-end**: tutte le email sono crittografate utilizzando standard avanzati
-* **Nessun database condiviso**: le email di ogni utente vengono archiviate in database SQLite crittografati individuali, offrendo un approccio di crittografia sandbox fondamentalmente più sicuro dei tradizionali database relazionali condivisi
-* **Sicurezza open source**: la base di codice trasparente consente revisioni di sicurezza da parte della community
-* **Elaborazione in memoria**: non memorizziamo le email inoltrate su disco, migliorando la protezione della privacy
-* **Nessuna archiviazione di metadati**: non conserviamo i dati di chi invia email a chi, a differenza di molti provider di posta elettronica
+### Sicurezza e Privacy Migliorate {#enhanced-security-and-privacy}
 
-### Risparmio sui costi {#cost-savings}
+* **Crittografia end-to-end**: Tutte le email sono criptate utilizzando standard avanzati
+* **Nessun database condiviso**: Le email di ogni utente sono archiviate in database SQLite criptati individuali, offrendo un approccio sandboxed alla crittografia che è fondamentalmente più sicuro rispetto ai tradizionali database relazionali condivisi
+* **Sicurezza open-source**: Il codice trasparente permette revisioni di sicurezza da parte della comunità
+* **Elaborazione in memoria**: Non memorizziamo le email inoltrate su disco, migliorando la protezione della privacy
+* **Nessuna memorizzazione di metadata**: Non conserviamo registri di chi invia email a chi, a differenza di molti provider email
 
-* **Modello di prezzo scalabile**: Nessun costo per utente, consentendo a Canonical di aggiungere collaboratori senza aumentare i costi
-* **Riduzione delle esigenze infrastrutturali**: Nessuna necessità di gestire server di posta elettronica separati per domini diversi
-* **Riduzione dei requisiti di supporto**: La gestione self-service riduce i ticket di supporto IT
+### Risparmio sui Costi {#cost-savings}
 
-### Esperienza di collaborazione migliorata {#improved-contributor-experience}
+* **Modello di prezzo scalabile**: Nessun costo per utente, permettendo a Canonical di aggiungere contributori senza aumentare i costi
+* **Riduzione delle necessità infrastrutturali**: Non è necessario mantenere server email separati per i diversi domini
+* **Minori esigenze di supporto**: La gestione self-service riduce i ticket di supporto IT
 
-* **Autenticazione senza interruzioni**: Single Sign-On con le credenziali Ubuntu One esistenti
-* **Branding coerente**: Esperienza unificata su tutti i servizi correlati a Ubuntu
-* **Invio email affidabile**: La reputazione IP di alta qualità garantisce che le email raggiungano la destinazione
+### Miglioramento dell’Esperienza del Contributore {#improved-contributor-experience}
 
-L'integrazione con Forward Email ha notevolmente semplificato il processo di gestione delle email di Canonical. I collaboratori ora possono gestire i propri indirizzi email @ubuntu.com in modo fluido, con una riduzione del carico amministrativo e una maggiore sicurezza.
+* **Autenticazione senza interruzioni**: Single sign-on con le credenziali Ubuntu One esistenti
+* **Branding coerente**: Esperienza unificata su tutti i servizi legati a Ubuntu
+* **Consegna email affidabile**: Reputazione IP di alta qualità che garantisce la ricezione delle email
 
-## Guardando al futuro: collaborazione continua {#looking-forward-continued-collaboration}
+L’integrazione con Forward Email ha notevolmente semplificato il processo di gestione delle email di Canonical. I contributori ora hanno un’esperienza fluida nella gestione dei loro indirizzi email @ubuntu.com, con un carico amministrativo ridotto e una sicurezza migliorata.
 
-La partnership tra Canonical e Forward Email continua a evolversi. Stiamo collaborando a diverse iniziative:
 
-* Espansione dei servizi di posta elettronica ad altri domini correlati a Ubuntu
-* Miglioramento dell'interfaccia utente in base al feedback dei collaboratori
+## Prospettive Future: Collaborazione Continua {#looking-forward-continued-collaboration}
+
+La partnership tra Canonical e Forward Email continua a evolversi. Stiamo lavorando insieme su diverse iniziative:
+* Espansione dei servizi email a ulteriori domini correlati a Ubuntu
+* Miglioramento dell'interfaccia utente basato sul feedback dei contributori
 * Implementazione di funzionalità di sicurezza aggiuntive
-* Esplorazione di nuovi modi per sfruttare la nostra collaborazione open source
+* Esplorazione di nuovi modi per sfruttare la nostra collaborazione open-source
 
-## Conclusione: una partnership open source perfetta {#conclusion-a-perfect-open-source-partnership}
 
-La collaborazione tra Canonical e Forward Email dimostra la forza delle partnership basate su valori condivisi. Scegliendo Forward Email come fornitore di servizi di posta elettronica, Canonical ha trovato una soluzione che non solo soddisfaceva i propri requisiti tecnici, ma era anche perfettamente in linea con il proprio impegno verso software open source, privacy e sicurezza.
+## Conclusione: Una partnership open-source perfetta {#conclusion-a-perfect-open-source-partnership}
 
-Per le organizzazioni che gestiscono più domini e richiedono un'autenticazione fluida con i sistemi esistenti, Forward Email offre una soluzione flessibile, sicura e incentrata sulla privacy. Il nostro [approccio open source](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) garantisce trasparenza e consente il contributo della community, rendendolo la scelta ideale per le organizzazioni che apprezzano questi principi.
+La collaborazione tra Canonical e Forward Email dimostra la potenza delle partnership basate su valori condivisi. Scegliendo Forward Email come loro fornitore di servizi email, Canonical ha trovato una soluzione che non solo soddisfaceva i loro requisiti tecnici, ma si allineava perfettamente anche al loro impegno verso il software open-source, la privacy e la sicurezza.
 
-Mentre Canonical e Forward Email continuano a innovare nei rispettivi campi, questa partnership è una testimonianza della potenza della collaborazione open source e dei valori condivisi nella creazione di soluzioni efficaci.
+Per le organizzazioni che gestiscono più domini e richiedono un'autenticazione senza soluzione di continuità con i sistemi esistenti, Forward Email offre una soluzione flessibile, sicura e focalizzata sulla privacy. Il nostro [approccio open-source](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) garantisce trasparenza e consente contributi dalla comunità, rendendolo una scelta ideale per le organizzazioni che apprezzano questi principi.
 
-Puoi controllare il nostro [stato del servizio in tempo reale](https://status.forwardemail.net) per vedere le nostre attuali prestazioni di recapito delle email, che monitoriamo costantemente per garantire un'elevata reputazione IP e la recapitabilità delle email.
+Mentre sia Canonical che Forward Email continuano a innovare nei rispettivi campi, questa partnership rappresenta una testimonianza della forza della collaborazione open-source e dei valori condivisi nella creazione di soluzioni efficaci.
 
-## Supporto ai clienti aziendali {#supporting-enterprise-clients}
+Puoi controllare il nostro [stato del servizio in tempo reale](https://status.forwardemail.net) per vedere le nostre prestazioni attuali nella consegna delle email, che monitoriamo continuamente per garantire un'elevata reputazione IP e la deliverability delle email.
 
-Sebbene questo case study si concentri sulla nostra partnership con Canonical, Forward Email è orgogliosa di supportare numerosi clienti aziendali in vari settori che apprezzano il nostro impegno nei confronti della privacy, della sicurezza e dei principi open source.
 
-Le nostre soluzioni aziendali sono studiate su misura per soddisfare le esigenze specifiche di organizzazioni di tutte le dimensioni, offrendo:
+## Supporto ai clienti enterprise {#supporting-enterprise-clients}
 
-* Dominio personalizzato [gestione della posta elettronica](/) su più domini
-* Integrazione perfetta con i sistemi di autenticazione esistenti
-* Canale di supporto chat Matrix dedicato
-* Funzionalità di sicurezza avanzate, tra cui [crittografia resistente ai quanti](/blog/docs/best-quantum-safe-encrypted-email-service)
-* Portabilità e proprietà complete dei dati
-* Infrastruttura open source al 100% per trasparenza e fiducia
+Sebbene questo case study si concentri sulla nostra partnership con Canonical, Forward Email supporta con orgoglio numerosi clienti enterprise in vari settori che apprezzano il nostro impegno per la privacy, la sicurezza e i principi open-source.
+
+Le nostre soluzioni enterprise sono personalizzate per soddisfare le esigenze specifiche di organizzazioni di tutte le dimensioni, offrendo:
+
+* Gestione email con dominio personalizzato [email management](/) su più domini
+* Integrazione senza soluzione di continuità con i sistemi di autenticazione esistenti
+* Canale di supporto dedicato su Matrix chat
+* Funzionalità di sicurezza avanzate inclusa la [crittografia resistente al quantum](/blog/docs/best-quantum-safe-encrypted-email-service)
+* Completa portabilità e proprietà dei dati
+* Infrastruttura 100% open-source per trasparenza e fiducia
 
 ### Contattaci {#get-in-touch}
 
-Se la tua organizzazione ha esigenze di posta elettronica aziendale o sei interessato a saperne di più su come Forward Email può aiutarti a semplificare la gestione della posta elettronica migliorando al contempo la privacy e la sicurezza, saremo lieti di ricevere il tuo feedback:
+Se la tua organizzazione ha esigenze enterprise per le email o sei interessato a scoprire come Forward Email può aiutarti a semplificare la gestione delle email migliorando privacy e sicurezza, ci piacerebbe sentirti:
 
-* Inviaci un'email direttamente a `support@forwardemail.net`
-* Invia una richiesta di assistenza a [pagina di aiuto](https://forwardemail.net/help)
-* Consulta [pagina dei prezzi](https://forwardemail.net/pricing) per i piani aziendali
+* Scrivici direttamente a `support@forwardemail.net`
+* Invia una richiesta di assistenza sulla nostra [pagina di aiuto](https://forwardemail.net/help)
+* Consulta la nostra [pagina dei prezzi](https://forwardemail.net/pricing) per i piani enterprise
 
-Il nostro team è pronto a discutere le tue esigenze specifiche e a sviluppare una soluzione personalizzata in linea con i valori e le esigenze tecniche della tua organizzazione.
+Il nostro team è pronto a discutere le tue esigenze specifiche e sviluppare una soluzione personalizzata che si allinei ai valori e alle necessità tecniche della tua organizzazione.
 
-### Informazioni su Inoltra email {#about-forward-email}
+### Informazioni su Forward Email {#about-forward-email}
 
-Forward Email è il servizio di posta elettronica open source al 100% e incentrato sulla privacy. Offriamo servizi di inoltro email personalizzati, SMTP, IMAP e POP3, con particolare attenzione a sicurezza, privacy e trasparenza. L'intero codice sorgente è disponibile su [GitHub](https://github.com/forwardemail/forwardemail.net) e ci impegniamo a fornire servizi di posta elettronica che rispettino la privacy e la sicurezza degli utenti. Scopri di più su [perché la posta elettronica open source è il futuro](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [come funziona il nostro inoltro e-mail](https://forwardemail.net/blog/docs/best-email-forwarding-service) e [il nostro approccio alla protezione della privacy della posta elettronica](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).
+Forward Email è il servizio email 100% open-source e focalizzato sulla privacy. Forniamo inoltro email con dominio personalizzato, servizi SMTP, IMAP e POP3 con un focus su sicurezza, privacy e trasparenza. L'intero nostro codice è disponibile su [GitHub](https://github.com/forwardemail/forwardemail.net), e siamo impegnati a fornire servizi email che rispettano la privacy e la sicurezza degli utenti. Scopri di più su [perché l'email open-source è il futuro](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [come funziona il nostro inoltro email](https://forwardemail.net/blog/docs/best-email-forwarding-service) e [il nostro approccio alla protezione della privacy nelle email](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).

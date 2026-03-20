@@ -1,128 +1,129 @@
-# Jak optimalizovat produkční infrastrukturu Node.js: Nejlepší postupy {#how-to-optimize-nodejs-production-infrastructure-best-practices}
+# Jak optimalizovat produkční infrastrukturu Node.js: nejlepší postupy {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performance optimization guide" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Průvodce optimalizací výkonu Node.js" class="rounded-lg" />
+
 
 ## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
-* [Naše revoluce v optimalizaci výkonu jednoho jádra s 573% výkonem](#our-573-single-core-performance-optimization-revolution)
-  * [Proč je optimalizace výkonu jednoho jádra důležitá pro Node.js](#why-single-core-performance-optimization-matters-for-nodejs)
+* [Naše revoluce v optimalizaci výkonu na jedno jádro o 573 %](#our-573-single-core-performance-optimization-revolution)
+  * [Proč je optimalizace výkonu na jedno jádro důležitá pro Node.js](#why-single-core-performance-optimization-matters-for-nodejs)
   * [Související obsah](#related-content)
-* [Nastavení produkčního prostředí Node.js: Náš technologický stack](#nodejs-production-environment-setup-our-technology-stack)
-  * [Správce balíčků: pnpm pro efektivitu produkce](#package-manager-pnpm-for-production-efficiency)
+* [Nastavení produkčního prostředí Node.js: náš technologický stack](#nodejs-production-environment-setup-our-technology-stack)
+  * [Správce balíčků: pnpm pro produkční efektivitu](#package-manager-pnpm-for-production-efficiency)
   * [Webový framework: Koa pro moderní produkci Node.js](#web-framework-koa-for-modern-nodejs-production)
-  * [Zpracování úloh na pozadí: Bree pro spolehlivost produkce](#background-job-processing-bree-for-production-reliability)
-  * [Ošetření chyb: @hapi/boom pro spolehlivost produkce](#error-handling-hapiboom-for-production-reliability)
-* [Jak monitorovat aplikace Node.js v produkčním prostředí](#how-to-monitor-nodejs-applications-in-production)
-  * [Monitorování produkce Node.js na úrovni systému](#system-level-nodejs-production-monitoring)
-  * [Monitorování na úrovni aplikací pro produkční prostředí Node.js](#application-level-monitoring-for-nodejs-production)
-  * [Monitorování specifické pro aplikaci](#application-specific-monitoring)
-* [Monitorování produkce Node.js pomocí kontrol stavu PM2](#nodejs-production-monitoring-with-pm2-health-checks)
-  * [Náš systém kontroly stavu PM2](#our-pm2-health-check-system)
-  * [Naše konfigurace výroby PM2](#our-pm2-production-configuration)
+  * [Zpracování pozadí úloh: Bree pro produkční spolehlivost](#background-job-processing-bree-for-production-reliability)
+  * [Zpracování chyb: @hapi/boom pro produkční spolehlivost](#error-handling-hapiboom-for-production-reliability)
+* [Jak monitorovat aplikace Node.js v produkci](#how-to-monitor-nodejs-applications-in-production)
+  * [Systémové monitorování produkce Node.js](#system-level-nodejs-production-monitoring)
+  * [Monitorování na úrovni aplikace pro produkci Node.js](#application-level-monitoring-for-nodejs-production)
+  * [Specifické monitorování aplikací](#application-specific-monitoring)
+* [Monitorování produkce Node.js pomocí PM2 Health Checks](#nodejs-production-monitoring-with-pm2-health-checks)
+  * [Náš systém PM2 Health Check](#our-pm2-health-check-system)
+  * [Naše produkční konfigurace PM2](#our-pm2-production-configuration)
   * [Automatizované nasazení PM2](#automated-pm2-deployment)
-* [Systém pro zpracování a klasifikaci výrobních chyb](#production-error-handling-and-classification-system)
-  * [Naše implementace isCodeBug pro produkční prostředí](#our-iscodebug-implementation-for-production)
-  * [Integrace s naším systémem logování produkce](#integration-with-our-production-logging)
+* [Systém zpracování a klasifikace chyb v produkci](#production-error-handling-and-classification-system)
+  * [Naše implementace isCodeBug pro produkci](#our-iscodebug-implementation-for-production)
+  * [Integrace s naším produkčním logováním](#integration-with-our-production-logging)
   * [Související obsah](#related-content-1)
 * [Pokročilé ladění výkonu s v8-profiler-next a cpupro](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
-  * [Náš přístup k profilování pro produkční prostředí Node.js](#our-profiling-approach-for-nodejs-production)
-  * [Jak implementujeme analýzu snímků haldy](#how-we-implement-heap-snapshot-analysis)
+  * [Náš přístup k profilování pro produkci Node.js](#our-profiling-approach-for-nodejs-production)
+  * [Jak implementujeme analýzu heap snapshotů](#how-we-implement-heap-snapshot-analysis)
   * [Pracovní postup ladění výkonu](#performance-debugging-workflow)
   * [Doporučená implementace pro vaši aplikaci Node.js](#recommended-implementation-for-your-nodejs-application)
-  * [Integrace s naším monitorováním výroby](#integration-with-our-production-monitoring)
-* [Zabezpečení produkční infrastruktury Node.js](#nodejs-production-infrastructure-security)
-  * [Zabezpečení na úrovni systému pro produkční prostředí Node.js](#system-level-security-for-nodejs-production)
-  * [Zabezpečení aplikací pro Node.js](#application-security-for-nodejs-applications)
-  * [Automatizace zabezpečení infrastruktury](#infrastructure-security-automation)
+  * [Integrace s naším produkčním monitorováním](#integration-with-our-production-monitoring)
+* [Bezpečnost produkční infrastruktury Node.js](#nodejs-production-infrastructure-security)
+  * [Systémová bezpečnost pro produkci Node.js](#system-level-security-for-nodejs-production)
+  * [Bezpečnost aplikací pro Node.js](#application-security-for-nodejs-applications)
+  * [Automatizace bezpečnosti infrastruktury](#infrastructure-security-automation)
   * [Náš bezpečnostní obsah](#our-security-content)
-* [Architektura databáze pro aplikace Node.js](#database-architecture-for-nodejs-applications)
-  * [Implementace SQLite pro produkční prostředí Node.js](#sqlite-implementation-for-nodejs-production)
-  * [Implementace MongoDB pro produkční prostředí Node.js](#mongodb-implementation-for-nodejs-production)
-* [Zpracování úloh na pozadí produkčního prostředí Node.js](#nodejs-production-background-job-processing)
-  * [Naše nastavení serveru Bree pro produkční účely](#our-bree-server-setup-for-production)
-  * [Příklady produkčních prací](#production-job-examples)
-  * [Naše vzory plánování úloh pro produkční prostředí Node.js](#our-job-scheduling-patterns-for-nodejs-production)
+* [Databázová architektura pro aplikace Node.js](#database-architecture-for-nodejs-applications)
+  * [Implementace SQLite pro produkci Node.js](#sqlite-implementation-for-nodejs-production)
+  * [Implementace MongoDB pro produkci Node.js](#mongodb-implementation-for-nodejs-production)
+* [Zpracování pozadí úloh v produkci Node.js](#nodejs-production-background-job-processing)
+  * [Naše nastavení serveru Bree pro produkci](#our-bree-server-setup-for-production)
+  * [Příklady produkčních úloh](#production-job-examples)
+  * [Naše vzory plánování úloh pro produkci Node.js](#our-job-scheduling-patterns-for-nodejs-production)
 * [Automatizovaná údržba produkčních aplikací Node.js](#automated-maintenance-for-production-nodejs-applications)
-  * [Naše implementace úklidu](#our-cleanup-implementation)
-  * [Správa diskového prostoru pro produkční prostředí Node.js](#disk-space-management-for-nodejs-production)
+  * [Naše implementace čištění](#our-cleanup-implementation)
+  * [Správa místa na disku pro produkci Node.js](#disk-space-management-for-nodejs-production)
   * [Automatizace údržby infrastruktury](#infrastructure-maintenance-automation)
-* [Průvodce implementací produkčního nasazení Node.js](#nodejs-production-deployment-implementation-guide)
-  * [Prostudujte si náš skutečný kód pro osvědčené postupy v produkčním prostředí](#study-our-actual-code-for-production-best-practices)
-  * [Učte se z našich blogových příspěvků](#learn-from-our-blog-posts)
-  * [Automatizace infrastruktury pro produkční prostředí Node.js](#infrastructure-automation-for-nodejs-production)
+* [Průvodce implementací nasazení produkce Node.js](#nodejs-production-deployment-implementation-guide)
+  * [Studujte náš skutečný kód pro nejlepší produkční postupy](#study-our-actual-code-for-production-best-practices)
+  * [Poučte se z našich blogových příspěvků](#learn-from-our-blog-posts)
+  * [Automatizace infrastruktury pro produkci Node.js](#infrastructure-automation-for-nodejs-production)
   * [Naše případové studie](#our-case-studies)
-* [Závěr: Nejlepší postupy pro nasazení Node.js v produkčním prostředí](#conclusion-nodejs-production-deployment-best-practices)
-* [Kompletní seznam zdrojů pro produkční prostředí Node.js](#complete-resource-list-for-nodejs-production)
-  * [Naše základní implementační soubory](#our-core-implementation-files)
-  * [Naše implementace serverů](#our-server-implementations)
-  * [Automatizace naší infrastruktury](#our-infrastructure-automation)
-  * [Naše technické příspěvky na blogu](#our-technical-blog-posts)
-  * [Případové studie našich podniků](#our-enterprise-case-studies)
-
+* [Závěr: nejlepší postupy nasazení produkce Node.js](#conclusion-nodejs-production-deployment-best-practices)
+* [Kompletní seznam zdrojů pro produkci Node.js](#complete-resource-list-for-nodejs-production)
+  * [Naše hlavní implementační soubory](#our-core-implementation-files)
+  * [Naše serverové implementace](#our-server-implementations)
+  * [Naše automatizace infrastruktury](#our-infrastructure-automation)
+  * [Naše technické blogové příspěvky](#our-technical-blog-posts)
+  * [Naše podnikové případové studie](#our-enterprise-case-studies)
 ## Předmluva {#foreword}
 
-Ve Forward Email jsme strávili roky zdokonalováním našeho produkčního prostředí Node.js. Tato komplexní příručka sdílí naše osvědčené postupy pro nasazení produkčního prostředí Node.js se zaměřením na optimalizaci výkonu, monitorování a poznatky, které jsme získali při škálování aplikací Node.js pro zpracování milionů transakcí denně.
+Ve Forward Email jsme strávili roky zdokonalováním našeho produkčního prostředí Node.js. Tento komplexní průvodce sdílí naše osvědčené nejlepší postupy nasazení Node.js do produkce, zaměřené na optimalizaci výkonu, monitorování a lekce, které jsme se naučili při škálování aplikací Node.js pro zpracování milionů denních transakcí.
 
-## Naše revoluce v optimalizaci výkonu jednoho jádra s 573% úspěšností {#our-573-single-core-performance-optimization-revolution}
 
-Když jsme migrovali z procesorů Intel na procesory AMD Ryzen, dosáhli jsme **573% zlepšení výkonu** v našich aplikacích Node.js. Nešlo jen o drobnou optimalizaci – zásadně to změnilo způsob, jakým naše aplikace Node.js fungují v produkčním prostředí, a demonstruje to důležitost optimalizace výkonu jednoho jádra pro jakoukoli aplikaci Node.js.
+## Naše revoluce v optimalizaci výkonu na jedno jádro o 573 % {#our-573-single-core-performance-optimization-revolution}
+
+Když jsme přešli z procesorů Intel na AMD Ryzen, dosáhli jsme **573% zlepšení výkonu** v našich aplikacích Node.js. Nebyla to jen drobná optimalizace – zásadně to změnilo, jak naše aplikace Node.js fungují v produkci, a ukazuje to důležitost optimalizace výkonu na jedno jádro pro jakoukoli aplikaci Node.js.
 
 > \[!TIP]
-> Pro osvědčené postupy nasazení Node.js v produkčním prostředí je výběr hardwaru klíčový. Zvolili jsme hosting DataPacket konkrétně kvůli dostupnosti procesorů AMD Ryzen, protože výkon jednoho jádra je pro aplikace Node.js klíčový, jelikož spouštění JavaScriptu je jednovláknové.
+> Pro nejlepší postupy nasazení Node.js do produkce je kritická volba hardwaru. Konkrétně jsme zvolili hosting DataPacket kvůli dostupnosti AMD Ryzen, protože výkon na jedno jádro je pro aplikace Node.js klíčový, jelikož vykonávání JavaScriptu je jednovláknové.
 
-### Proč je optimalizace výkonu jednoho jádra důležitá pro Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
+### Proč je optimalizace výkonu na jedno jádro důležitá pro Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
-Naše migrace z Intelu na AMD Ryzen přinesla:
+Naše migrace z Intel na AMD Ryzen přinesla:
 
-* **573% zlepšení výkonu** při zpracování požadavků (dokumentováno v [Problém na GitHubu na naší stránce se stavem #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **Eliminováno zpoždění zpracování** na téměř okamžité odpovědi (zmíněno v [Problém na GitHubu #298](https://github.com/forwardemail/forwardemail.net/issues/298))
-* **Lepší poměr ceny a výkonu** pro produkční prostředí Node.js
-* **Zlepšené doby odezvy** napříč všemi koncovými body našich aplikací
+* **573% zlepšení výkonu** při zpracování požadavků (zdokumentováno v [naší status stránce GitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **Eliminaci zpoždění zpracování** na téměř okamžité odpovědi (zmíněno v [GitHub Issue #298](https://github.com/forwardemail/forwardemail.net/issues/298))
+* **Lepší poměr cena/výkon** pro produkční prostředí Node.js
+* **Zlepšené doby odezvy** na všech našich aplikačních koncových bodech
 
-Zvýšení výkonu bylo tak významné, že nyní považujeme procesory AMD Ryzen za nezbytné pro jakékoli seriózní produkční nasazení Node.js, ať už provozujete webové aplikace, API, mikroslužby nebo jakoukoli jinou pracovní zátěž Node.js.
+Zvýšení výkonu bylo natolik významné, že nyní považujeme procesory AMD Ryzen za nezbytné pro jakékoli seriózní produkční nasazení Node.js, ať už provozujete webové aplikace, API, mikroslužby nebo jakoukoli jinou zátěž Node.js.
 
 ### Související obsah {#related-content}
 
-Další podrobnosti o našich možnostech infrastruktury naleznete zde:
+Pro více informací o našich infrastrukturních volbách si prohlédněte:
 
-* [Nejlepší služba pro přeposílání e-mailů](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Porovnání výkonu
-* [Řešení s vlastním hostováním](https://forwardemail.net/blog/docs/self-hosted-solution) - Doporučení ohledně hardwaru
+* [Nejlepší služba pro přeposílání e-mailů](https://forwardemail.net/blog/docs/best-email-forwarding-service) – srovnání výkonu
+* [Řešení pro vlastní hosting](https://forwardemail.net/blog/docs/self-hosted-solution) – doporučení hardwaru
+
 
 ## Nastavení produkčního prostředí Node.js: Náš technologický stack {#nodejs-production-environment-setup-our-technology-stack}
 
-Naše osvědčené postupy pro nasazení Node.js v produkčním prostředí zahrnují promyšlenou volbu technologií založenou na dlouholetých zkušenostech s produkčním prostředím. Zde je seznam toho, co používáme a proč se tyto volby vztahují na jakoukoli aplikaci Node.js:
+Naše nejlepší postupy nasazení Node.js do produkce zahrnují promyšlené technologické volby založené na letech produkčních zkušeností. Toto používáme a proč jsou tyto volby vhodné pro jakoukoli aplikaci Node.js:
 
-### Správce balíčků: pnpm pro efektivitu produkce {#package-manager-pnpm-for-production-efficiency}
+### Správce balíčků: pnpm pro produkční efektivitu {#package-manager-pnpm-for-production-efficiency}
 
-**Co používáme:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (připnutá verze)
+**Co používáme:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (přesná verze)
 
-Pro naše produkční prostředí Node.js jsme zvolili pnpm před npm a yarn, protože:
+Zvolili jsme pnpm místo npm a yarn pro naše produkční prostředí Node.js, protože:
 
-* **Rychlejší doba instalace** v CI/CD pipelines
-* **Efektivita využití místa na disku** díky hard linkingu
-* **Přísné rozlišení závislostí**, které zabraňuje fiktivním závislostem
-* **Lepší výkon** v produkčních nasazeních
+* **Rychlejší doby instalace** v CI/CD pipelinech
+* **Efektivita využití místa na disku** díky hard linkům
+* **Přísné řešení závislostí**, které zabraňuje neviditelným závislostem
+* **Lepší výkon** při produkčním nasazení
 
 > \[!NOTE]
-> V rámci našich osvědčených postupů pro nasazení Node.js v produkčním prostředí používáme přesné verze klíčových nástrojů, jako je pnpm, abychom zajistili konzistentní chování ve všech prostředích a na všech počítačích členů týmu.
+> Jako součást našich nejlepších postupů nasazení Node.js do produkce připínáme přesné verze kritických nástrojů jako pnpm, abychom zajistili konzistentní chování ve všech prostředích a na strojích členů týmu.
 
-**Podrobnosti implementace:**
+**Detaily implementace:**
 
 * [Naše konfigurace package.json](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [Náš blogový příspěvek o ekosystému NPM](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 
-### Webový framework: Koa pro moderní produkční prostředí Node.js {#web-framework-koa-for-modern-nodejs-production}
+### Webový framework: Koa pro moderní produkci Node.js {#web-framework-koa-for-modern-nodejs-production}
 
 **Co používáme:**
 
 * [`@koa/router`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@koa/multer`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/koa-simple-ratelimit`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+Vybrali jsme Koa místo Express pro naši produkční infrastrukturu Node.js kvůli jeho moderní podpoře async/await a čistší kompozici middleware. Náš zakladatel Nick Baugh přispěl jak do Express, tak do Koa, což nám poskytlo hluboký vhled do obou frameworků pro produkční použití.
 
-Pro naši produkční infrastrukturu Node.js jsme zvolili Koa před Expressem kvůli jeho moderní podpoře async/await a čistšímu složení middlewaru. Náš zakladatel Nick Baugh přispěl k Expressu i Koa a poskytl nám hluboký vhled do obou frameworků pro produkční použití.
-
-Tyto vzory platí pro všechny typy aplikací, ať už vytváříte REST API, servery GraphQL, webové aplikace nebo mikroslužby.
+Tyto vzory platí bez ohledu na to, zda vytváříte REST API, GraphQL servery, webové aplikace nebo mikroslužby.
 
 **Naše příklady implementace:**
 
@@ -130,65 +131,65 @@ Tyto vzory platí pro všechny typy aplikací, ať už vytváříte REST API, se
 * [Konfigurace API serveru](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
 * [Průvodce implementací kontaktních formulářů](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 
-### Zpracování úlohy na pozadí: Bree pro spolehlivost produkce {#background-job-processing-bree-for-production-reliability}
+### Zpracování úloh na pozadí: Bree pro produkční spolehlivost {#background-job-processing-bree-for-production-reliability}
 
-**Co používáme:** Plánovač [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**Co používáme:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) plánovač
 
-Vytvořili jsme a udržujeme Bree, protože stávající plánovače úloh nesplňovaly naše potřeby na podporu pracovních vláken a moderní funkce JavaScriptu v produkčním prostředí Node.js. To platí pro všechny aplikace Node.js, které potřebují zpracování na pozadí, plánované úlohy nebo pracovní vlákna.
+Vytvořili jsme a udržujeme Bree, protože stávající plánovače úloh nesplňovaly naše požadavky na podporu worker threadů a moderní funkce JavaScriptu v produkčních prostředích Node.js. Toto platí pro jakoukoli aplikaci Node.js, která potřebuje zpracování na pozadí, plánované úlohy nebo worker threaddy.
 
 **Naše příklady implementace:**
 
-* [Nastavení serveru Bree](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
-* [Všechny naše definice pracovních pozic](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
-* [Úloha kontroly stavu PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+* [Nastavení Bree serveru](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+* [Všechny naše definice úloh](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+* [Úloha kontroly zdraví PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 * [Implementace úklidové úlohy](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### Zpracování chyb: @hapi/boom pro spolehlivost produkce {#error-handling-hapiboom-for-production-reliability}
+### Zpracování chyb: @hapi/boom pro produkční spolehlivost {#error-handling-hapiboom-for-production-reliability}
 
 **Co používáme:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Pro strukturované odpovědi na chyby v našich produkčních aplikacích Node.js používáme @hapi/boom. Tento vzor funguje pro jakoukoli aplikaci Node.js, která vyžaduje konzistentní zpracování chyb.
+Používáme @hapi/boom pro strukturované chybové odpovědi v našich produkčních aplikacích Node.js. Tento vzor funguje pro jakoukoli aplikaci Node.js, která potřebuje konzistentní zpracování chyb.
 
 **Naše příklady implementace:**
 
 * [Pomocník pro klasifikaci chyb](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 * [Implementace loggeru](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-## Jak monitorovat aplikace Node.js v produkčním prostředí {#how-to-monitor-nodejs-applications-in-production}
 
-Náš přístup k monitorování Node.js aplikací v produkčním prostředí se vyvíjel v průběhu let provozování aplikací ve velkém měřítku. Monitorování implementujeme na více vrstvách, abychom zajistili spolehlivost a výkon pro jakýkoli typ Node.js aplikace.
+## Jak monitorovat aplikace Node.js v produkci {#how-to-monitor-nodejs-applications-in-production}
 
-### Monitorování produkce Node.js na úrovni systému {#system-level-nodejs-production-monitoring}
+Náš přístup k monitorování aplikací Node.js v produkci se vyvíjel během let provozu aplikací ve velkém měřítku. Implementujeme monitorování na několika úrovních, abychom zajistili spolehlivost a výkon pro jakýkoli typ aplikace Node.js.
+
+### Monitorování produkce Node.js na systémové úrovni {#system-level-nodejs-production-monitoring}
 
 **Naše základní implementace:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
 **Co používáme:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Naše prahové hodnoty pro monitorování produkce (z našeho skutečného produkčního kódu):
+Naše prahové hodnoty pro produkční monitorování (z našeho skutečného produkčního kódu):
 
-* **Limit velikosti haldy 2 GB** s automatickými upozorněními
-* **25% využití paměti** prahová hodnota upozornění
-* **80% využití CPU** prahová hodnota upozornění
-* **75% využití disku** prahová hodnota upozornění
+* **Limit velikosti heapu 2GB** s automatickými upozorněními
+* **Varovný práh využití paměti 25%**
+* **Upozornění při využití CPU 80%**
+* **Varovný práh využití disku 75%**
 
 > \[!WARNING]
-> Tyto prahové hodnoty fungují pro naši specifickou hardwarovou konfiguraci. Při implementaci monitorování produkce Node.js si projděte naši implementaci monitor-server.js, abyste pochopili přesnou logiku a upravili hodnoty pro vaše nastavení.
+> Tyto prahové hodnoty fungují pro naši konkrétní hardwarovou konfiguraci. Při implementaci produkčního monitorování Node.js si prostudujte naši implementaci monitor-server.js, abyste pochopili přesnou logiku a přizpůsobili hodnoty pro vaše prostředí.
 
-### Monitorování na úrovni aplikací pro produkční prostředí Node.js {#application-level-monitoring-for-nodejs-production}
+### Monitorování na úrovni aplikace pro produkci Node.js {#application-level-monitoring-for-nodejs-production}
 
-**Naše klasifikace chyby:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+**Naše klasifikace chyb:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
 Tento pomocník rozlišuje mezi:
 
-* **Skutečné chyby v kódu**, které vyžadují okamžitou pozornost
-* **Uživatelské chyby**, které představují očekávané chování
-* **Selhání externích služeb**, která nemůžeme ovlivnit
+* **Skutečnými chybami v kódu**, které vyžadují okamžitou pozornost
+* **Chybami uživatele**, které jsou očekávaným chováním
+* **Selháními externích služeb**, která nemůžeme ovlivnit
 
 Tento vzor platí pro jakoukoli aplikaci Node.js – webové aplikace, API, mikroslužby nebo služby na pozadí.
+**Naše implementace logování:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Naše implementace protokolování: [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-
-Implementujeme komplexní redakci polí, abychom chránili citlivé informace a zároveň zachovali užitečné ladicí funkce v našem produkčním prostředí Node.js.
+Implementujeme komplexní redakci polí pro ochranu citlivých informací při zachování užitečných možností ladění v našem produkčním prostředí Node.js.
 
 ### Monitorování specifické pro aplikaci {#application-specific-monitoring}
 
@@ -198,169 +199,171 @@ Implementujeme komplexní redakci polí, abychom chránili citlivé informace a 
 * [IMAP server](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [POP3 server](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-**Monitorování front:** Implementujeme limity front 5 GB a 180sekundové časové limity pro zpracování požadavků, abychom zabránili vyčerpání zdrojů. Tyto vzorce platí pro všechny aplikace Node.js s frontami nebo zpracováním na pozadí.
+**Monitorování front:** Zavádíme limity fronty 5GB a časové limity 180 sekund pro zpracování požadavků, abychom zabránili vyčerpání zdrojů. Tyto vzory platí pro jakoukoli aplikaci Node.js s frontami nebo zpracováním na pozadí.
 
-## Monitorování produkce Node.js s kontrolami stavu PM2 {#nodejs-production-monitoring-with-pm2-health-checks}
 
-Během let zkušeností s produkčním prostředím Node.js jsme vylepšili nastavení našeho produkčního prostředí Node.js pomocí PM2. Naše kontroly stavu PM2 jsou nezbytné pro udržení spolehlivosti v jakékoli aplikaci Node.js.
+## Produkční monitorování Node.js s PM2 health checks {#nodejs-production-monitoring-with-pm2-health-checks}
 
-### Náš systém kontroly stavu PM2 {#our-pm2-health-check-system}
+Naše nastavení produkčního prostředí Node.js s PM2 jsme vylepšili během let produkčních zkušeností. Naše PM2 health checks jsou nezbytné pro udržení spolehlivosti v jakékoli aplikaci Node.js.
+
+### Náš systém PM2 health checks {#our-pm2-health-check-system}
 
 **Naše základní implementace:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-Naše monitorování produkce Node.js s kontrolami stavu PM2 zahrnuje:
+Naše produkční monitorování Node.js s PM2 health checks zahrnuje:
 
-* **Spouštění každých 20 minut** pomocí plánování cron
-* **Vyžaduje minimálně 15 minut provozuschopnosti** předtím, než je proces považován za zdravý
+* **Spouští se každých 20 minut** pomocí cron plánování
+* **Vyžaduje minimálně 15 minut provozu** před tím, než je proces považován za zdravý
 * **Ověřuje stav procesu a využití paměti**
-* **Automaticky restartuje neúspěšné procesy**
-* **Zabraňuje smyčkám restartu** pomocí inteligentní kontroly stavu
+* **Automaticky restartuje selhané procesy**
+* **Zabraňuje restartovacím smyčkám** pomocí inteligentního kontrolování stavu
 
 > \[!CAUTION]
-> V rámci osvědčených postupů pro nasazení Node.js v produkčním prostředí požadujeme alespoň 15 minut provozuschopnosti, než proces považujeme za v pořádku, abychom se vyhnuli smyčkám restartování. Tím se zabrání kaskádovým selháním, když procesy mají potíže s pamětí nebo jiné problémy.
+> Pro nejlepší postupy nasazení produkce Node.js vyžadujeme 15+ minut provozu před tím, než je proces považován za zdravý, aby se zabránilo restartovacím smyčkám. To zabraňuje kaskádovým selháním, když procesy bojují s pamětí nebo jinými problémy.
 
 ### Naše produkční konfigurace PM2 {#our-pm2-production-configuration}
 
-**Nastavení našeho ekosystému:** Prostudujte si spouštěcí soubory našeho serveru pro nastavení produkčního prostředí Node.js:
+**Naše nastavení ekosystému:** Prostudujte si naše soubory pro spuštění serveru pro nastavení produkčního prostředí Node.js:
 
 * [Webový server](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API server](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
 * [Plánovač Bree](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 * [SMTP server](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
 
-Tyto vzory platí bez ohledu na to, zda používáte aplikace Express, servery Koa, rozhraní GraphQL API nebo jakoukoli jinou aplikaci Node.js.
+Tyto vzory platí, ať už provozujete aplikace Express, servery Koa, GraphQL API nebo jakoukoli jinou aplikaci Node.js.
 
 ### Automatizované nasazení PM2 {#automated-pm2-deployment}
 
 **Nasazení PM2:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
-Celé nastavení PM2 automatizujeme prostřednictvím Ansible, abychom zajistili konzistentní nasazení Node.js v produkčním prostředí na všech našich serverech.
+Automatizujeme celé naše nastavení PM2 pomocí Ansible, abychom zajistili konzistentní produkční nasazení Node.js na všech našich serverech.
 
-## Systém pro zpracování a klasifikaci produkčních chyb {#production-error-handling-and-classification-system}
 
-Jedním z našich nejcennějších osvědčených postupů pro nasazení Node.js v produkčním prostředí je inteligentní klasifikace chyb, která se vztahuje na jakoukoli aplikaci Node.js:
+## Produkční systém zpracování a klasifikace chyb {#production-error-handling-and-classification-system}
 
-### Naše implementace isCodeBug pro produkční prostředí {#our-iscodebug-implementation-for-production}
+Jedním z našich nejcennějších osvědčených postupů nasazení produkce Node.js je inteligentní klasifikace chyb, která platí pro jakoukoli aplikaci Node.js:
+
+### Naše implementace isCodeBug pro produkci {#our-iscodebug-implementation-for-production}
 
 **Zdroj:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-Tento pomocník poskytuje inteligentní klasifikaci chyb pro aplikace Node.js v produkčním prostředí pro:
+Tento pomocník poskytuje inteligentní klasifikaci chyb pro aplikace Node.js v produkci, aby:
 
-* **Upřednostnit skutečné chyby** před uživatelskými chybami
-* **Zlepšit naši reakci na incidenty** zaměřením se na skutečné problémy
-* **Snížit únavu z upozornění** na očekávané uživatelské chyby
-* **Lepší pochopení** problémů s aplikacemi vs. problémů generovaných uživateli
+* **Upřednostnil skutečné chyby** před uživatelskými chybami
+* **Zlepšil naši reakci na incidenty** zaměřením na reálné problémy
+* **Snížil únavu z upozornění** způsobenou očekávanými uživatelskými chybami
+* **Lépe porozuměl** problémům aplikace vs. uživatelem generovaným problémům
 
-Tento vzor funguje pro jakoukoli aplikaci Node.js – ať už vytváříte e-commerce weby, SaaS platformy, API nebo mikroslužby.
+Tento vzor funguje pro jakoukoli aplikaci Node.js – ať už vytváříte e-commerce stránky, SaaS platformy, API nebo mikroslužby.
 
-### Integrace s naším produkčním protokolováním {#integration-with-our-production-logging}
+### Integrace s naším produkčním logováním {#integration-with-our-production-logging}
 
-**Integrace našeho loggeru:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-
-Náš logger používá `isCodeBug` k určení úrovní upozornění a redakce polí, čímž zajišťuje, že dostáváme upozornění na skutečné problémy a zároveň filtrujeme šum v našem produkčním prostředí Node.js.
+**Naše integrace loggeru:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+Náš logger používá `isCodeBug` k určení úrovní upozornění a redakce polí, což zajišťuje, že dostáváme oznámení o skutečných problémech, zatímco filtruje šum v našem produkčním prostředí Node.js.
 
 ### Související obsah {#related-content-1}
 
-Zjistěte více o našich vzorcích pro zpracování chyb:
+Zjistěte více o našich vzorcích zpracování chyb:
 
-* [Budování spolehlivého platebního systému](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Vzory pro zpracování chyb
-* [Ochrana soukromí e-mailů](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Zpracování chyb zabezpečení
+* [Budování spolehlivého platebního systému](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Vzory zpracování chyb
+* [Ochrana soukromí e-mailů](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Zpracování bezpečnostních chyb
+
 
 ## Pokročilé ladění výkonu s v8-profiler-next a cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
-V našem produkčním prostředí používáme pokročilé nástroje pro profilování k analýze snapshotů haldy a ladění problémů s OOM (Out of Memory), úzkých míst s výkonem a problémů s pamětí Node.js. Tyto nástroje jsou nezbytné pro jakoukoli aplikaci Node.js, která má problémy s úniky paměti nebo výkonem.
+Používáme pokročilé nástroje pro profilování k analýze snapshotů haldy a ladění problémů OOM (Out of Memory), úzkých míst výkonu a problémů s pamětí Node.js v našem produkčním prostředí. Tyto nástroje jsou nezbytné pro jakoukoli aplikaci Node.js, která zažívá úniky paměti nebo problémy s výkonem.
 
-### Náš přístup k profilování pro produkční prostředí Node.js {#our-profiling-approach-for-nodejs-production}
+### Náš přístup k profilování pro produkci Node.js {#our-profiling-approach-for-nodejs-production}
 
-**Nářadí, které doporučujeme:**
+**Nástroje, které doporučujeme:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) – Pro generování snímků paměti a profilů CPU
-* [`cpupro`](https://github.com/discoveryjs/cpupro) – Pro analýzu profilů CPU a snímků paměti
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Pro generování snapshotů haldy a CPU profilů
+* [`cpupro`](https://github.com/discoveryjs/cpupro) - Pro analýzu CPU profilů a snapshotů haldy
 
 > \[!TIP]
-> Pro vytvoření kompletního pracovního postupu pro ladění výkonu našich Node.js aplikací používáme v8-profiler-next a cpupro. Tato kombinace nám pomáhá identifikovat úniky paměti, úzká místa ve výkonu a optimalizovat náš produkční kód.
+> Používáme v8-profiler-next a cpupro společně k vytvoření kompletního workflow ladění výkonu pro naše aplikace Node.js. Tato kombinace nám pomáhá identifikovat úniky paměti, úzká místa výkonu a optimalizovat náš produkční kód.
 
-### Jak implementujeme analýzu snímků haldy {#how-we-implement-heap-snapshot-analysis}
+### Jak implementujeme analýzu snapshotů haldy {#how-we-implement-heap-snapshot-analysis}
 
-**Naše implementace monitorování:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**Naše implementace monitoringu:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-Náš produkční monitoring zahrnuje automatické generování snapshotů haldy při překročení prahových hodnot paměti. To nám pomáhá ladit problémy s OOM dříve, než způsobí pády aplikace.
+Náš produkční monitoring zahrnuje automatické generování snapshotů haldy při překročení prahových hodnot paměti. To nám pomáhá ladit problémy OOM dříve, než způsobí pád aplikace.
 
-**Klíčové implementační vzorce:**
+**Klíčové implementační vzory:**
 
-* **Automatické snímky**, když velikost haldy překročí prahovou hodnotu 2 GB
-* **Profilování na základě signálů** pro analýzu na vyžádání v produkčním prostředí
-* **Zásady uchovávání** pro správu úložiště snímků
-* **Integrace s našimi úlohami čištění** pro automatizovanou údržbu
+* **Automatické snapshoty** při překročení velikosti haldy 2GB
+* **Profilování na základě signálů** pro analýzu na vyžádání v produkci
+* **Politiky uchovávání** pro správu úložiště snapshotů
+* **Integrace s našimi úklidovými úlohami** pro automatickou údržbu
 
-### Pracovní postup ladění výkonu {#performance-debugging-workflow}
+### Workflow ladění výkonu {#performance-debugging-workflow}
 
-**Prostudujte si naši skutečnou implementaci:**
+**Prostudujte si naši aktuální implementaci:**
 
-* [Monitorování implementace serveru](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Monitorování haldy a generování snímků
-* [Úklidová práce](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Uchovávání a čištění snímků
-* [Integrace loggeru](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Záznam výkonu
+* [Implementace monitor serveru](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Monitoring haldy a generování snapshotů
+* [Úklidová úloha](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Uchovávání a úklid snapshotů
+* [Integrace loggeru](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Logování výkonu
 
 ### Doporučená implementace pro vaši aplikaci Node.js {#recommended-implementation-for-your-nodejs-application}
 
-**Pro analýzu snímků haldy:**
+**Pro analýzu snapshotů haldy:**
 
 1. **Nainstalujte v8-profiler-next** pro generování snapshotů
 2. **Použijte cpupro** pro analýzu vygenerovaných snapshotů
-3. **Implementujte monitorovací prahy** podobně jako v našem monitor-server.js
-4. **Nastavte automatické čištění** pro správu úložiště snapshotů
-5. **Vytvořte obslužné rutiny signálů** pro profilování na vyžádání v produkčním prostředí
+3. **Implementujte prahové hodnoty monitoringu** podobně jako v monitor-server.js
+4. **Nastavte automatický úklid** pro správu úložiště snapshotů
+5. **Vytvořte handlery signálů** pro profilování na vyžádání v produkci
 
-**Pro profilování CPU:**
+**Pro CPU profilování:**
 
-1. **Generování profilů CPU** během období vysokého zatížení
-2. **Analýza pomocí cpupro** pro identifikaci úzkých míst
-3. **Zaměření na aktivní cesty** a optimalizační příležitosti
-4. **Monitorování výkonu před/po**
+1. **Generujte CPU profily** během období vysoké zátěže
+2. **Analyzujte pomocí cpupro** k identifikaci úzkých míst
+3. **Zaměřte se na horké cesty** a možnosti optimalizace
+4. **Monitorujte výkon před a po** zlepšeních
 
 > \[!WARNING]
-> Generování snímků paměti haldy a profilů CPU může ovlivnit výkon. Doporučujeme implementovat omezení a profilování povolit pouze při zkoumání konkrétních problémů nebo během intervalů údržby.
+> Generování snapshotů haldy a CPU profilů může ovlivnit výkon. Doporučujeme implementovat omezení a povolovat profilování pouze při vyšetřování konkrétních problémů nebo během údržbových oken.
 
-### Integrace s naším monitorováním produkce {#integration-with-our-production-monitoring}
+### Integrace s naším produkčním monitoringem {#integration-with-our-production-monitoring}
 
-Naše nástroje pro profilování se integrují s naší širší strategií monitorování:
+Naše nástroje pro profilování se integrují s naší širší strategií monitoringu:
 
 * **Automatické spouštění** na základě prahových hodnot paměti/CPU
-* **Integrace upozornění** při zjištění problémů s výkonem
+* **Integrace upozornění** při detekci problémů s výkonem
 * **Historická analýza** pro sledování trendů výkonu v čase
 * **Korelace s metrikami aplikace** pro komplexní ladění
+Tento přístup nám pomohl identifikovat a vyřešit úniky paměti, optimalizovat kritické části kódu a udržet stabilní výkon v našem produkčním prostředí Node.js.
 
-Tento přístup nám pomohl identifikovat a vyřešit úniky paměti, optimalizovat cesty k aktivnímu kódu a udržovat stabilní výkon v našem produkčním prostředí Node.js.
 
-## Zabezpečení produkční infrastruktury Node.js {#nodejs-production-infrastructure-security}
+## Bezpečnost produkční infrastruktury Node.js {#nodejs-production-infrastructure-security}
 
-Pro naši produkční infrastrukturu Node.js implementujeme komplexní zabezpečení prostřednictvím automatizace Ansible. Tyto postupy platí pro všechny aplikace Node.js:
+Implementujeme komplexní zabezpečení naší produkční infrastruktury Node.js pomocí automatizace Ansible. Tyto postupy platí pro jakoukoli aplikaci Node.js:
 
-### Zabezpečení na úrovni systému pro produkční prostředí Node.js {#system-level-security-for-nodejs-production}
+### Bezpečnost na úrovni systému pro produkci Node.js {#system-level-security-for-nodejs-production}
 
-Naše implementace v Ansible: [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+**Naše implementace Ansible:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 
 Naše klíčová bezpečnostní opatření pro produkční prostředí Node.js:
 
-* **Swap zakázán**, aby se zabránilo zápisu citlivých dat na disk
-* **Výpisy jádra zakázány**, aby se zabránilo výpisům paměti obsahujícím citlivé informace
-* **USB úložiště zablokováno**, aby se zabránilo neoprávněnému přístupu k datům
-* **Ladění parametrů jádra** pro zabezpečení i výkon
+* **Swap zakázán** aby se zabránilo zápisu citlivých dat na disk
+* **Core dumpy zakázány** aby se zabránilo výpisům paměti obsahujícím citlivé informace
+* **USB úložiště zablokováno** aby se zabránil neoprávněný přístup k datům
+* **Ladění parametrů jádra** pro bezpečnost i výkon
 
 > \[!WARNING]
-> Při implementaci osvědčených postupů pro nasazení Node.js v produkčním prostředí může zakázání swapu způsobit ukončení z důvodu nedostatku paměti, pokud vaše aplikace překročí dostupnou paměť RAM. Využití paměti pečlivě monitorujeme a naše servery dimenzujeme odpovídajícím způsobem.
+> Při zavádění osvědčených postupů nasazení produkce Node.js může zakázání swapu způsobit ukončení procesu kvůli nedostatku paměti, pokud vaše aplikace překročí dostupnou RAM. Pečlivě sledujeme využití paměti a správně dimenzujeme naše servery.
 
-### Zabezpečení aplikací pro Node.js {#application-security-for-nodejs-applications}
+### Bezpečnost aplikací pro Node.js {#application-security-for-nodejs-applications}
 
-**Redakce pole protokolu:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+**Naše redakce polí v logu:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Z protokolů odstraňujeme citlivá pole, včetně hesel, tokenů, klíčů API a osobních údajů. To chrání soukromí uživatelů a zároveň zachovává možnosti ladění v jakémkoli produkčním prostředí Node.js.
+Redigujeme citlivá pole v logech včetně hesel, tokenů, API klíčů a osobních údajů. To chrání soukromí uživatelů a zároveň zachovává možnosti ladění v jakémkoli produkčním prostředí Node.js.
 
-### Automatizace zabezpečení infrastruktury {#infrastructure-security-automation}
+### Automatizace bezpečnosti infrastruktury {#infrastructure-security-automation}
 
-Naše kompletní nastavení Ansible pro produkční prostředí Node.js:
+**Naše kompletní nastavení Ansible pro produkci Node.js:**
 
-* [Bezpečnostní příručka](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Bezpečnostní playbook](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [Správa SSH klíčů](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/ssh-keys.yml)
 * [Správa certifikátů](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/certificates.yml)
 * [Nastavení DKIM](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/dkim.yml)
@@ -370,44 +373,44 @@ Naše kompletní nastavení Ansible pro produkční prostředí Node.js:
 Zjistěte více o našem bezpečnostním přístupu:
 
 * [Nejlepší společnosti pro bezpečnostní audity](https://forwardemail.net/blog/docs/best-security-audit-companies)
-* [Quantum Safe šifrovaný e-mail](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
-* [Proč zabezpečení e-mailů s otevřeným zdrojovým kódem](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
+* [Kvantově bezpečný šifrovaný e-mail](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
+* [Proč otevřený zdroj pro bezpečnost e-mailu](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
+
 
 ## Architektura databáze pro aplikace Node.js {#database-architecture-for-nodejs-applications}
 
-Používáme hybridní databázový přístup optimalizovaný pro naše Node.js aplikace. Tyto vzory lze přizpůsobit pro jakoukoli Node.js aplikaci:
+Používáme hybridní databázový přístup optimalizovaný pro naše aplikace Node.js. Tyto vzory lze přizpůsobit pro jakoukoli aplikaci Node.js:
 
-### Implementace SQLite pro produkční prostředí Node.js {#sqlite-implementation-for-nodejs-production}
+### Implementace SQLite pro produkci Node.js {#sqlite-implementation-for-nodejs-production}
 
 **Co používáme:**
 
 * [`better-sqlite3`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`better-sqlite3-multiple-ciphers`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Naše konfigurace: [`ansible/playbooks/sqlite.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
+**Naše konfigurace:** [`ansible/playbooks/sqlite.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
-V našich Node.js aplikacích používáme SQLite pro uživatelsky specifická data, protože poskytuje:
+Používáme SQLite pro uživatelská data v našich aplikacích Node.js, protože poskytuje:
 
-* **Izolace dat** na uživatele/nájemce
+* **Izolaci dat** pro každého uživatele/nájemce
 * **Lepší výkon** pro dotazy jednoho uživatele
-* **Zjednodušené zálohování** a migrace
-* **Snížení složitosti** ve srovnání se sdílenými databázemi
+* **Zjednodušenou zálohu** a migraci
+* **Sníženou složitost** ve srovnání se sdílenými databázemi
 
-Tento vzor funguje dobře pro SaaS aplikace, multi-tenant systémy nebo jakoukoli aplikaci Node.js, která vyžaduje izolaci dat.
+Tento vzor dobře funguje pro SaaS aplikace, multi-tenant systémy nebo jakoukoli aplikaci Node.js, která potřebuje izolaci dat.
 
-### Implementace MongoDB pro produkční prostředí Node.js {#mongodb-implementation-for-nodejs-production}
+### Implementace MongoDB pro produkci Node.js {#mongodb-implementation-for-nodejs-production}
 
 **Co používáme:**
 
 * [`@ladjs/mongoose`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/mongoose-error-messages`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@zainundin/mongoose-factory`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
-
 **Naše implementace nastavení:** [`helpers/setup-mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-mongoose.js)
 
-Naše konfigurace: [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
+**Naše konfigurace:** [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
 
-V našem produkčním prostředí Node.js používáme MongoDB pro aplikační data, protože poskytuje:
+Používáme MongoDB pro data aplikace v našem produkčním prostředí Node.js, protože poskytuje:
 
 * **Flexibilní schéma** pro vyvíjející se datové struktury
 * **Lepší výkon** pro složité dotazy
@@ -415,139 +418,142 @@ V našem produkčním prostředí Node.js používáme MongoDB pro aplikační d
 * **Bohatý dotazovací jazyk**
 
 > \[!NOTE]
-> Náš hybridní přístup optimalizuje náš specifický případ použití. Prostudujte si skutečné vzorce využití databáze v kódové základně, abyste zjistili, zda tento přístup vyhovuje potřebám vaší aplikace Node.js.
+> Náš hybridní přístup je optimalizován pro náš konkrétní případ použití. Prostudujte si skutečné vzory využití databáze v kódu, abyste pochopili, zda tento přístup vyhovuje potřebám vaší aplikace Node.js.
 
-## Zpracování úlohy na pozadí produkčního prostředí Node.js {#nodejs-production-background-job-processing}
 
-Naši architekturu úloh na pozadí jsme postavili kolem Bree pro spolehlivé nasazení Node.js v produkčním prostředí. To platí pro jakoukoli aplikaci Node.js, která vyžaduje zpracování na pozadí:
+## Zpracování pozadí úloh v produkci Node.js {#nodejs-production-background-job-processing}
 
-### Nastavení našeho serveru Bree pro produkční prostředí {#our-bree-server-setup-for-production}
+Naši architekturu pozadí úloh jsme postavili kolem Bree pro spolehlivé nasazení produkce Node.js. Toto platí pro jakoukoli aplikaci Node.js, která potřebuje zpracování na pozadí:
+
+### Naše nastavení Bree serveru pro produkci {#our-bree-server-setup-for-production}
 
 **Naše hlavní implementace:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
-Naše nasazení Ansible: [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
+**Naše nasazení Ansible:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
 ### Příklady produkčních úloh {#production-job-examples}
 
 **Monitorování stavu:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-**Automatizace čištění:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+**Automatizace úklidu:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-**Všechny naše pracovní nabídky:** [Prohlédněte si náš kompletní adresář pracovních nabídek](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+**Všechny naše úlohy:** [Prohlédněte si náš kompletní adresář úloh](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
 
 Tyto vzory platí pro jakoukoli aplikaci Node.js, která potřebuje:
 
-* Plánované úlohy (zpracování dat, reporty, čištění)
-* Zpracování na pozadí (změna velikosti obrázků, odesílání e-mailů, import dat)
-* Monitorování a údržba stavu systému
-* Využití pracovních vláken pro úlohy náročné na CPU
+* Plánované úkoly (zpracování dat, reporty, úklid)
+* Zpracování na pozadí (změna velikosti obrázků, odesílání e-mailů, importy dat)
+* Monitorování stavu a údržbu
+* Využití pracovních vláken pro CPU náročné úkoly
 
-### Naše vzory plánování úloh pro produkční prostředí Node.js {#our-job-scheduling-patterns-for-nodejs-production}
+### Naše vzory plánování úloh pro produkci Node.js {#our-job-scheduling-patterns-for-nodejs-production}
 
-Prostudujte si naše skutečné vzorce plánování úloh v našem adresáři pracovních nabídek, abyste pochopili:
+Prostudujte si skutečné vzory plánování úloh v našem adresáři úloh, abyste pochopili:
 
-* Jak implementujeme plánování podobné cronu v produkčním prostředí Node.js
-* Naše logika pro zpracování chyb a opakování
-* Jak používáme pracovní vlákna pro úlohy náročné na CPU
+* Jak implementujeme plánování podobné cron v produkci Node.js
+* Naše zpracování chyb a logiku opakování
+* Jak používáme pracovní vlákna pro CPU náročné úkoly
 
-## Automatizovaná údržba produkčních aplikací Node.js {#automated-maintenance-for-production-nodejs-applications}
 
-Pro prevenci běžných problémů s produkčním prostředím Node.js implementujeme proaktivní údržbu. Tyto postupy platí pro jakoukoli aplikaci Node.js:
+## Automatizovaná údržba pro produkční aplikace Node.js {#automated-maintenance-for-production-nodejs-applications}
 
-### Naše implementace čištění {#our-cleanup-implementation}
+Implementujeme proaktivní údržbu, abychom předešli běžným problémům produkce Node.js. Tyto vzory platí pro jakoukoli aplikaci Node.js:
+
+### Naše implementace úklidu {#our-cleanup-implementation}
 
 **Zdroj:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-Naše automatizovaná údržba produkčních aplikací Node.js se zaměřuje na:
+Naše automatizovaná údržba pro produkční aplikace Node.js cílí na:
 
 * **Dočasné soubory** starší než 24 hodin
-* **Soubory protokolů** překračující limity uchování
-* **Soubory mezipaměti** a dočasná data
+* **Log soubory** přesahující limity uchovávání
+* **Cache soubory** a dočasná data
 * **Nahrané soubory**, které již nejsou potřeba
-* **Snímky paměti** z ladění výkonu
+* **Heap snapshoty** z ladění výkonu
 
-Tyto vzory platí pro jakoukoli aplikaci Node.js, která generuje dočasné soubory, protokoly nebo data v mezipaměti.
+Tyto vzory platí pro jakoukoli aplikaci Node.js, která generuje dočasné soubory, logy nebo cache data.
 
-### Správa místa na disku pro produkční prostředí Node.js {#disk-space-management-for-nodejs-production}
+### Správa místa na disku pro produkci Node.js {#disk-space-management-for-nodejs-production}
 
-**Naše monitorovací prahy:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**Naše prahové hodnoty monitorování:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-* **Limity front** pro zpracování na pozadí
-* **75% využití disku** varovný práh
-* **Automatické čištění** při překročení prahových hodnot
+* **Limity fronty** pro zpracování na pozadí
+* **Varování při 75 % využití disku**
+* **Automatický úklid** při překročení prahových hodnot
 
 ### Automatizace údržby infrastruktury {#infrastructure-maintenance-automation}
 
-Naše automatizace Ansible pro produkci Node.js:
+**Naše Ansible automatizace pro produkci Node.js:**
 
 * [Nasazení prostředí](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/env.yml)
-* [Správa nasadovacích klíčů](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
+* [Správa klíčů nasazení](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
+
 
 ## Průvodce implementací produkčního nasazení Node.js {#nodejs-production-deployment-implementation-guide}
+### Studujte náš skutečný kód pro nejlepší postupy v produkci {#study-our-actual-code-for-production-best-practices}
 
-### Prostudujte si náš skutečný kód pro osvědčené postupy v produkčním prostředí {#study-our-actual-code-for-production-best-practices}
-
-Začněte s těmito klíčovými soubory pro nastavení produkčního prostředí Node.js:
+**Začněte s těmito klíčovými soubory pro nastavení produkčního prostředí Node.js:**
 
 1. **Konfigurace:** [`config/index.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
 2. **Monitorování:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
-3. **Ošetření chyb:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-4. **Protokolování:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-5. **Stav procesu:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+3. **Zpracování chyb:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+4. **Logování:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+5. **Zdraví procesu:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-### Učte se z našich příspěvků na blogu {#learn-from-our-blog-posts}
+### Naučte se z našich blogových příspěvků {#learn-from-our-blog-posts}
 
-Naše technické implementační příručky pro produkční prostředí Node.js:
+**Naše technické průvodce implementací pro produkci Node.js:**
 
 * [Ekosystém balíčků NPM](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 * [Budování platebních systémů](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [Implementace ochrany osobních údajů v e-mailu](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
-* [Kontaktní formuláře v JavaScriptu](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
-* [Integrace e-mailů s React](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
+* [Implementace ochrany soukromí e-mailů](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [JavaScript kontaktní formuláře](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
+* [Integrace e-mailů v Reactu](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
-### Automatizace infrastruktury pro produkční prostředí Node.js {#infrastructure-automation-for-nodejs-production}
+### Automatizace infrastruktury pro produkci Node.js {#infrastructure-automation-for-nodejs-production}
 
-Naše playbooky Ansible k nastudování pro produkční nasazení Node.js:
+**Naše Ansible playbooky ke studiu pro nasazení produkce Node.js:**
 
-* [Kompletní adresář herních knih](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
-* [Zpevnění zabezpečení](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Kompletní adresář playbooků](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
+* [Zpevnění bezpečnosti](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [Nastavení Node.js](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
 ### Naše případové studie {#our-case-studies}
 
-Naše podnikové implementace:
+**Naše podnikové implementace:**
 
 * [Případová studie Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Případová studie kanonického Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
-* [Přeposílání e-mailů absolventům](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
+* [Případová studie Canonical Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Přeposílání e-mailů absolventů](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 
-## Závěr: Nejlepší postupy pro nasazení Node.js v produkčním prostředí {#conclusion-nodejs-production-deployment-best-practices}
 
-Naše produkční infrastruktura Node.js ukazuje, že aplikace Node.js mohou dosáhnout spolehlivosti podnikové úrovně prostřednictvím:
+## Závěr: Nejlepší postupy nasazení produkce Node.js {#conclusion-nodejs-production-deployment-best-practices}
 
-* **Osvědčené hardwarové možnosti** (AMD Ryzen pro 573% optimalizaci výkonu jednoho jádra)
-* **Ověřené monitorování produkce Node.js** se specifickými prahovými hodnotami a automatizovanými reakcemi
-* **Inteligentní klasifikace chyb** pro zlepšení reakce na incidenty v produkčním prostředí
-* **Pokročilé ladění výkonu** s v8-profiler-next a cpupro pro prevenci OOM
-* **Komplexní posílení zabezpečení** prostřednictvím automatizace Ansible
-* **Hybridní databázová architektura** optimalizovaná pro potřeby aplikací
-* **Automatizovaná údržba** pro prevenci běžných produkčních problémů Node.js
+Naše produkční infrastruktura Node.js ukazuje, že aplikace Node.js mohou dosáhnout podnikové spolehlivosti díky:
 
-**Klíčové shrnutí:** Prostudujte si naše implementační soubory a příspěvky na blogu, místo abyste se řídili obecnými osvědčenými postupy. Naše kódová základna poskytuje reálné vzory pro produkční nasazení Node.js, které lze přizpůsobit pro jakoukoli aplikaci Node.js – webové aplikace, API, mikroslužby nebo služby na pozadí.
+* **Ověřeným hardwarovým volbám** (AMD Ryzen pro optimalizaci výkonu jednoho jádra o 573 %)
+* **Ověřenému monitorování produkce Node.js** s konkrétními prahy a automatizovanými reakcemi
+* **Chytré klasifikaci chyb** pro zlepšení reakce na incidenty v produkčním prostředí
+* **Pokročilému ladění výkonu** s v8-profiler-next a cpupro pro prevenci OOM
+* **Komplexnímu zpevnění bezpečnosti** pomocí Ansible automatizace
+* **Hybridní databázové architektuře** optimalizované pro potřeby aplikace
+* **Automatizované údržbě** k prevenci běžných problémů produkce Node.js
 
-## Kompletní seznam zdrojů pro produkční verzi Node.js {#complete-resource-list-for-nodejs-production}
+**Hlavní závěr:** Studujte naše skutečné implementační soubory a blogové příspěvky místo sledování obecných nejlepších postupů. Naše kódová základna poskytuje reálné vzory pro nasazení produkce Node.js, které lze přizpůsobit jakékoli aplikaci Node.js – webovým aplikacím, API, mikroslužbám nebo pozadním službám.
 
-### Naše základní implementační soubory {#our-core-implementation-files}
+
+## Kompletní seznam zdrojů pro produkci Node.js {#complete-resource-list-for-nodejs-production}
+
+### Naše hlavní implementační soubory {#our-core-implementation-files}
 
 * [Hlavní konfigurace](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
 * [Závislosti balíčků](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [Monitorování serveru](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 * [Klasifikace chyb](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-* [Systém protokolování](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-* [Kontroly stavu PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
-* [Automatizované čištění](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
-
-### Naše implementace serveru {#our-server-implementations}
+* [Systém logování](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+* [Kontroly zdraví PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+* [Automatické čištění](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+### Naše implementace serverů {#our-server-implementations}
 
 * [Webový server](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API server](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
@@ -558,23 +564,23 @@ Naše produkční infrastruktura Node.js ukazuje, že aplikace Node.js mohou dos
 
 ### Naše automatizace infrastruktury {#our-infrastructure-automation}
 
-* [Všechny naše herní příručky Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
-* [Zpevnění zabezpečení](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Všechny naše Ansible playbooky](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
+* [Zpevnění bezpečnosti](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [Nastavení Node.js](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 * [Konfigurace databáze](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
-### Naše technické příspěvky na blogu {#our-technical-blog-posts}
+### Naše technické blogové příspěvky {#our-technical-blog-posts}
 
 * [Analýza ekosystému NPM](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 * [Implementace platebního systému](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [Technická příručka k ochraně osobních údajů v e-mailu](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
-* [Kontaktní formuláře v JavaScriptu](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
-* [Integrace e-mailů s React](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
-* [Průvodce řešením s vlastním hostováním](https://forwardemail.net/blog/docs/self-hosted-solution)
+* [Technická příručka ochrany soukromí e-mailů](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [JavaScript kontaktní formuláře](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
+* [Integrace e-mailů v Reactu](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
+* [Průvodce vlastní hostovaným řešením](https://forwardemail.net/blog/docs/self-hosted-solution)
 
 ### Naše podnikové případové studie {#our-enterprise-case-studies}
 
 * [Implementace Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Případová studie kanonického Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
-* [Soulad federální vlády s předpisy](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
-* [E-mailové systémy pro absolventy](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
+* [Případová studie Canonical Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Soulad s federální vládou](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+* [E-mailové systémy absolventů](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)

@@ -1,423 +1,431 @@
-# Complete Guide to NAS Email Setup with Forward Email {#complete-guide-to-nas-email-setup-with-forward-email}
+# Panduan Lengkap Pengaturan Email NAS dengan Forward Email {#complete-guide-to-nas-email-setup-with-forward-email}
 
-Setting up email notifications on your NAS shouldn't be a pain. Whether you've got a Synology, QNAP, or even a Raspberry Pi setup, this guide will get your device talking to Forward Email so you actually know when something goes wrong.
+Mengatur notifikasi email di NAS Anda seharusnya tidak menyulitkan. Baik Anda menggunakan Synology, QNAP, atau bahkan setup Raspberry Pi, panduan ini akan membuat perangkat Anda terhubung dengan Forward Email sehingga Anda benar-benar tahu kapan ada masalah.
 
-Most NAS devices can send email alerts for drive failures, temperature warnings, backup completion, and security events. The problem? Many email providers have gotten picky about security, and older devices often can't keep up. That's where Forward Email comes in - we support both modern and legacy devices.
+Sebagian besar perangkat NAS dapat mengirim peringatan email untuk kegagalan drive, peringatan suhu, penyelesaian backup, dan kejadian keamanan. Masalahnya? Banyak penyedia email yang semakin ketat soal keamanan, dan perangkat lama seringkali tidak bisa mengikutinya. Di sinilah Forward Email berperan - kami mendukung perangkat modern maupun legacy.
 
-This guide covers email setup for 75+ NAS providers with step-by-step instructions, compatibility info, and troubleshooting tips. No matter what device you're using, we'll get your notifications working.
+Panduan ini mencakup pengaturan email untuk lebih dari 75 penyedia NAS dengan instruksi langkah demi langkah, info kompatibilitas, dan tips pemecahan masalah. Tidak peduli perangkat apa yang Anda gunakan, kami akan membuat notifikasi Anda berfungsi.
 
-## Table of Contents {#table-of-contents}
 
-* [Why You Need NAS Email Notifications](#why-you-need-nas-email-notifications)
-* [The TLS Problem (And How We Fix It)](#the-tls-problem-and-how-we-fix-it)
-* [Forward Email SMTP Settings](#forward-email-smtp-settings)
-* [Comprehensive NAS Provider Compatibility Matrix](#comprehensive-nas-provider-compatibility-matrix)
-* [Synology NAS Email Configuration](#synology-nas-email-configuration)
-  * [Configuration Steps](#configuration-steps)
-* [QNAP NAS Email Configuration](#qnap-nas-email-configuration)
-  * [Configuration Steps](#configuration-steps-1)
-  * [Common QNAP Troubleshooting Issues](#common-qnap-troubleshooting-issues)
-* [ReadyNAS Legacy Configuration](#readynas-legacy-configuration)
-  * [Legacy Configuration Steps](#legacy-configuration-steps)
-  * [ReadyNAS Troubleshooting](#readynas-troubleshooting)
-* [TerraMaster NAS Configuration](#terramaster-nas-configuration)
-* [ASUSTOR NAS Configuration](#asustor-nas-configuration)
-* [Buffalo TeraStation Configuration](#buffalo-terastation-configuration)
-* [Western Digital My Cloud Configuration](#western-digital-my-cloud-configuration)
-* [TrueNAS Email Configuration](#truenas-email-configuration)
-* [OpenMediaVault Configuration](#openmediavault-configuration)
-* [Raspberry Pi NAS Configuration](#raspberry-pi-nas-configuration)
-  * [Initial Raspberry Pi Setup](#initial-raspberry-pi-setup)
-  * [Samba File Sharing Configuration](#samba-file-sharing-configuration)
-  * [FTP Server Setup](#ftp-server-setup)
-  * [Email Notification Configuration](#email-notification-configuration)
-  * [Advanced Raspberry Pi NAS Features](#advanced-raspberry-pi-nas-features)
-  * [Raspberry Pi Email Troubleshooting](#raspberry-pi-email-troubleshooting)
-  * [Performance Optimization](#performance-optimization)
-  * [Security Considerations](#security-considerations)
+## Daftar Isi {#table-of-contents}
 
-## Why You Need NAS Email Notifications {#why-you-need-nas-email-notifications}
+* [Mengapa Anda Membutuhkan Notifikasi Email NAS](#why-you-need-nas-email-notifications)
+* [Masalah TLS (Dan Cara Kami Memperbaikinya)](#the-tls-problem-and-how-we-fix-it)
+* [Pengaturan SMTP Forward Email](#forward-email-smtp-settings)
+* [Matriks Kompatibilitas Penyedia NAS Lengkap](#comprehensive-nas-provider-compatibility-matrix)
+* [Konfigurasi Email Synology NAS](#synology-nas-email-configuration)
+  * [Langkah-langkah Konfigurasi](#configuration-steps)
+* [Konfigurasi Email QNAP NAS](#qnap-nas-email-configuration)
+  * [Langkah-langkah Konfigurasi](#configuration-steps-1)
+  * [Masalah Umum Pemecahan Masalah QNAP](#common-qnap-troubleshooting-issues)
+* [Konfigurasi Legacy ReadyNAS](#readynas-legacy-configuration)
+  * [Langkah-langkah Konfigurasi Legacy](#legacy-configuration-steps)
+  * [Pemecahan Masalah ReadyNAS](#readynas-troubleshooting)
+* [Konfigurasi TerraMaster NAS](#terramaster-nas-configuration)
+* [Konfigurasi ASUSTOR NAS](#asustor-nas-configuration)
+* [Konfigurasi Buffalo TeraStation](#buffalo-terastation-configuration)
+* [Konfigurasi Western Digital My Cloud](#western-digital-my-cloud-configuration)
+* [Konfigurasi Email TrueNAS](#truenas-email-configuration)
+* [Konfigurasi OpenMediaVault](#openmediavault-configuration)
+* [Konfigurasi Raspberry Pi NAS](#raspberry-pi-nas-configuration)
+  * [Setup Awal Raspberry Pi](#initial-raspberry-pi-setup)
+  * [Konfigurasi Samba File Sharing](#samba-file-sharing-configuration)
+  * [Setup Server FTP](#ftp-server-setup)
+  * [Konfigurasi Notifikasi Email](#email-notification-configuration)
+  * [Fitur Lanjutan Raspberry Pi NAS](#advanced-raspberry-pi-nas-features)
+  * [Pemecahan Masalah Email Raspberry Pi](#raspberry-pi-email-troubleshooting)
+  * [Optimasi Performa](#performance-optimization)
+  * [Pertimbangan Keamanan](#security-considerations)
 
-Your NAS monitors tons of stuff - drive health, temperature, network issues, security events. Without email alerts, problems can go unnoticed for weeks, potentially causing data loss or security breaches.
 
-Email notifications give you immediate alerts when drives start failing, warn about unauthorized access attempts, confirm successful backups, and keep you informed about system health. Forward Email makes sure these critical notifications actually reach you.
+## Mengapa Anda Membutuhkan Notifikasi Email NAS {#why-you-need-nas-email-notifications}
 
-## The TLS Problem (And How We Fix It) {#the-tls-problem-and-how-we-fix-it}
+NAS Anda memantau banyak hal - kesehatan drive, suhu, masalah jaringan, kejadian keamanan. Tanpa peringatan email, masalah bisa tidak terdeteksi selama berminggu-minggu, yang berpotensi menyebabkan kehilangan data atau pelanggaran keamanan.
 
-Here's the deal: if your NAS was made before 2020, it probably only supports TLS 1.0. Gmail, Outlook, and most providers dropped support for that years ago. Your device tries to send email, gets rejected, and you're left in the dark.
+Notifikasi email memberi Anda peringatan segera saat drive mulai gagal, memperingatkan tentang upaya akses tidak sah, mengonfirmasi backup berhasil, dan menjaga Anda tetap mendapat informasi tentang kesehatan sistem. Forward Email memastikan notifikasi penting ini benar-benar sampai kepada Anda.
 
-Forward Email fixes this with dual-port support. Modern devices use our standard ports (`465` and `587`), while older devices can use our legacy ports (`2455` and `2555`) that still support TLS 1.0.
+
+## Masalah TLS (Dan Cara Kami Memperbaikinya) {#the-tls-problem-and-how-we-fix-it}
+
+Begini masalahnya: jika NAS Anda dibuat sebelum 2020, kemungkinan hanya mendukung TLS 1.0. Gmail, Outlook, dan sebagian besar penyedia sudah menghentikan dukungan untuk itu bertahun-tahun lalu. Perangkat Anda mencoba mengirim email, ditolak, dan Anda tidak tahu apa-apa.
+
+Forward Email memperbaikinya dengan dukungan dual-port. Perangkat modern menggunakan port standar kami (`465` dan `587`), sementara perangkat lama bisa menggunakan port legacy kami (`2455` dan `2555`) yang masih mendukung TLS 1.0.
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy NAS devices through our dual-port strategy. Use ports 465/587 for modern devices with TLS 1.2+ support, and ports 2455/2555 for legacy devices that only support TLS 1.0.
+> Forward Email mendukung perangkat NAS modern dan legacy melalui strategi dual-port kami. Gunakan port 465/587 untuk perangkat modern dengan dukungan TLS 1.2+, dan port 2455/2555 untuk perangkat legacy yang hanya mendukung TLS 1.0.
 
-## Forward Email SMTP Settings {#forward-email-smtp-settings}
 
-Here's what you need to know about our SMTP setup:
+## Pengaturan SMTP Forward Email {#forward-email-smtp-settings}
+Berikut yang perlu Anda ketahui tentang pengaturan SMTP kami:
 
-**For modern NAS devices (2020+):** Use `smtp.forwardemail.net` with port `465` (SSL/TLS) or port `587` (STARTTLS). These work with current firmware that supports TLS 1.2+.
+**Untuk perangkat NAS modern (2020+):** Gunakan `smtp.forwardemail.net` dengan port `465` (SSL/TLS) atau port `587` (STARTTLS). Ini bekerja dengan firmware saat ini yang mendukung TLS 1.2+.
 
-**For older NAS devices:** Use `smtp.forwardemail.net` with port `2455` (SSL/TLS) or port `2555` (STARTTLS). These support TLS 1.0 for legacy devices.
+**Untuk perangkat NAS lama:** Gunakan `smtp.forwardemail.net` dengan port `2455` (SSL/TLS) atau port `2555` (STARTTLS). Ini mendukung TLS 1.0 untuk perangkat warisan.
 
-**Authentication:** Use your Forward Email alias as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) (not your account password).
+**Otentikasi:** Gunakan alias Forward Email Anda sebagai nama pengguna dan kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) (bukan kata sandi akun Anda).
 
 > \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for NAS configuration.
+> Jangan pernah menggunakan kata sandi login akun Anda untuk otentikasi SMTP. Selalu gunakan kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) untuk konfigurasi NAS.
 
 > \[!TIP]
-> Check your NAS device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
+> Periksa versi firmware perangkat NAS Anda dan dukungan TLS sebelum konfigurasi. Sebagian besar perangkat yang dibuat setelah 2020 mendukung protokol TLS modern, sementara perangkat lama biasanya memerlukan port kompatibilitas warisan.
 
-## Comprehensive NAS Provider Compatibility Matrix {#comprehensive-nas-provider-compatibility-matrix}
 
-The following matrix provides detailed compatibility information for major NAS providers, including TLS support levels, firmware status, and recommended Forward Email configuration settings.
+## Matriks Kompatibilitas Penyedia NAS Komprehensif {#comprehensive-nas-provider-compatibility-matrix}
 
-| NAS Provider | Current Models | TLS Support | Firmware Status | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| ---------------- | --------------- | ------------ | --------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Synology | DSM 7.x | TLS 1.2+ | Active | `465`, `587` | [STARTTLS configuration](https://community.synology.com/enu/forum/2/post/124584) | [DSM Email Notification Setup](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/system_notification_email) |
-| QNAP | QTS 5.x | TLS 1.2+ | Active | `465`, `587` | [Notification Center failures](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525) | [QTS Email Server Configuration](https://docs.qnap.com/operating-system/qts/5.1.x/en-us/configuring-an-email-notification-server-EB4E6D7F.html) |
-| Raspberry Pi | Raspberry Pi OS | TLS 1.2+ | Active | `465`, `587` | [DNS resolution issues](https://www.raspberrypi.org/forums/viewtopic.php?t=294014) | [Raspberry Pi Email Setup Guide](#raspberry-pi-nas-configuration) |
-| ASUSTOR | ADM 4.x | TLS 1.2+ | Active | `465`, `587` | [Certificate validation](https://forum.asustor.com/viewtopic.php?f=134&t=12345) | [ASUSTOR Notification Setup](https://www.asustor.com/en/online/online_help?id=8) |
-| TerraMaster | TOS 6.x | TLS 1.2 | Active | `465`, `587` | [SMTP authentication](https://www.terra-master.com/global/forum/) | [TerraMaster Email Configuration](https://www.terra-master.com/global/support/download.php) |
-| TrueNAS | SCALE/CORE | TLS 1.2+ | Active | `465`, `587` | [SSL certificate setup](https://www.truenas.com/community/threads/email-notifications-not-working.95234/) | [TrueNAS Email Setup Guide](https://www.truenas.com/docs/scale/scaletutorials/systemsettings/general/settingupsystememail/) |
-| Buffalo | TeraStation | TLS 1.2 | Limited | `465`, `587` | [Firmware compatibility](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) | [TeraStation Email Setup](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) |
-| Western Digital | My Cloud OS 5 | TLS 1.2 | Limited | `465`, `587` | [Legacy OS compatibility](https://community.wd.com/t/my-cloud-email-notifications-not-working/265432) | [My Cloud Email Configuration](https://support-en.wd.com/app/answers/detailweb/a_id/10222) |
-| OpenMediaVault | OMV 7.x | TLS 1.2+ | Active | `465`, `587` | [Plugin dependencies](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/) | [OMV Notification Setup](https://docs.openmediavault.org/en/latest/administration/general/notifications.html) |
-| Netgear ReadyNAS | OS 6.x | TLS 1.0 only | Discontinued | `2455`, `2555` | [Legacy TLS support](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) | [ReadyNAS Email Alert Setup](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) |
-| Drobo | Dashboard | TLS 1.2 | Discontinued | `465`, `587` | [Limited support](https://myprojects.drobo.com/support/) | [Drobo Email Notifications](https://www.drobo.com/support/) |
+Matriks berikut memberikan informasi kompatibilitas terperinci untuk penyedia NAS utama, termasuk tingkat dukungan TLS, status firmware, dan pengaturan konfigurasi Forward Email yang direkomendasikan.
 
-This matrix demonstrates the clear division between modern, actively maintained NAS systems and legacy devices that require special compatibility considerations. The majority of current NAS devices support modern TLS standards and can use Forward Email's primary SMTP ports without any special configuration.
+| Penyedia NAS     | Model Saat Ini  | Dukungan TLS | Status Firmware | Port yang Direkomendasikan | Masalah Umum                                                                                                                                          | Panduan Pengaturan/Tangkapan Layar                                                                                                               |
+| ---------------- | --------------- | ------------ | --------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Synology         | DSM 7.x         | TLS 1.2+     | Aktif           | `465`, `587`               | [Konfigurasi STARTTLS](https://community.synology.com/enu/forum/2/post/124584)                                                                       | [Pengaturan Notifikasi Email DSM](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/system_notification_email)                             |
+| QNAP             | QTS 5.x         | TLS 1.2+     | Aktif           | `465`, `587`               | [Kegagalan Notification Center](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525) | [Konfigurasi Server Email QTS](https://docs.qnap.com/operating-system/qts/5.1.x/en-us/configuring-an-email-notification-server-EB4E6D7F.html)    |
+| Raspberry Pi     | Raspberry Pi OS | TLS 1.2+     | Aktif           | `465`, `587`               | [Masalah resolusi DNS](https://www.raspberrypi.org/forums/viewtopic.php?t=294014)                                                                   | [Panduan Pengaturan Email Raspberry Pi](#raspberry-pi-nas-configuration)                                                                         |
+| ASUSTOR          | ADM 4.x         | TLS 1.2+     | Aktif           | `465`, `587`               | [Validasi sertifikat](https://forum.asustor.com/viewtopic.php?f=134&t=12345)                                                                        | [Pengaturan Notifikasi ASUSTOR](https://www.asustor.com/en/online/online_help?id=8)                                                             |
+| TerraMaster      | TOS 6.x         | TLS 1.2      | Aktif           | `465`, `587`               | [Otentikasi SMTP](https://www.terra-master.com/global/forum/)                                                                                       | [Konfigurasi Email TerraMaster](https://www.terra-master.com/global/support/download.php)                                                        |
+| TrueNAS          | SCALE/CORE      | TLS 1.2+     | Aktif           | `465`, `587`               | [Pengaturan sertifikat SSL](https://www.truenas.com/community/threads/email-notifications-not-working.95234/)                                        | [Panduan Pengaturan Email TrueNAS](https://www.truenas.com/docs/scale/scaletutorials/systemsettings/general/settingupsystememail/)                |
+| Buffalo          | TeraStation     | TLS 1.2      | Terbatas        | `465`, `587`               | [Kompatibilitas firmware](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation)       | [Pengaturan Email TeraStation](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) |
+| Western Digital  | My Cloud OS 5   | TLS 1.2      | Terbatas        | `465`, `587`               | [Kompatibilitas OS warisan](https://community.wd.com/t/my-cloud-email-notifications-not-working/265432)                                            | [Konfigurasi Email My Cloud](https://support-en.wd.com/app/answers/detailweb/a_id/10222)                                                       |
+| OpenMediaVault   | OMV 7.x         | TLS 1.2+     | Aktif           | `465`, `587`               | [Ketergantungan plugin](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/)                                  | [Pengaturan Notifikasi OMV](https://docs.openmediavault.org/en/latest/administration/general/notifications.html)                                |
+| Netgear ReadyNAS | OS 6.x          | TLS 1.0 saja | Dihentikan      | `2455`, `2555`             | [Dukungan TLS warisan](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)                      | [Pengaturan Peringatan Email ReadyNAS](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)  |
+| Drobo            | Dashboard       | TLS 1.2      | Dihentikan      | `465`, `587`               | [Dukungan terbatas](https://myprojects.drobo.com/support/)                                                                                           | [Notifikasi Email Drobo](https://www.drobo.com/support/)                                                                                        |
+Matriks ini menunjukkan pembagian yang jelas antara sistem NAS modern yang aktif dipelihara dan perangkat warisan yang memerlukan pertimbangan kompatibilitas khusus. Mayoritas perangkat NAS saat ini mendukung standar TLS modern dan dapat menggunakan port SMTP utama Forward Email tanpa konfigurasi khusus.
 
-## Synology NAS Email Configuration {#synology-nas-email-configuration}
 
-Synology devices with DSM are pretty straightforward to set up. They support modern TLS, so you can use our standard ports without any issues.
+## Konfigurasi Email Synology NAS {#synology-nas-email-configuration}
+
+Perangkat Synology dengan DSM cukup mudah untuk disiapkan. Mereka mendukung TLS modern, jadi Anda dapat menggunakan port standar kami tanpa masalah.
 
 > \[!NOTE]
-> Synology DSM 7.x provides the most comprehensive email notification features. Older DSM versions may have limited configuration options.
+> Synology DSM 7.x menyediakan fitur notifikasi email yang paling lengkap. Versi DSM yang lebih lama mungkin memiliki opsi konfigurasi yang terbatas.
 
-### Configuration Steps {#configuration-steps}
+### Langkah-Langkah Konfigurasi {#configuration-steps}
 
-1. **Access the DSM web interface** by entering your NAS device's IP address or QuickConnect ID in a web browser.
+1. **Akses antarmuka web DSM** dengan memasukkan alamat IP perangkat NAS Anda atau QuickConnect ID di browser web.
 
-2. **Navigate to Control Panel** and select the "Notification" section, then click on the "Email" tab to access email configuration options.
+2. **Navigasi ke Control Panel** dan pilih bagian "Notification", lalu klik tab "Email" untuk mengakses opsi konfigurasi email.
 
-3. **Enable email notifications** by checking the "Enable email notifications" checkbox.
+3. **Aktifkan notifikasi email** dengan mencentang kotak "Enable email notifications".
 
-4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the server address.
+4. **Konfigurasikan server SMTP** dengan memasukkan `smtp.forwardemail.net` sebagai alamat server.
 
-5. **Set the port configuration** to port 465 for SSL/TLS connections (recommended). Port 587 with STARTTLS is also supported as an alternative.
+5. **Atur konfigurasi port** ke port 465 untuk koneksi SSL/TLS (direkomendasikan). Port 587 dengan STARTTLS juga didukung sebagai alternatif.
 
-6. **Configure authentication** by selecting "SMTP authentication required" and entering your Forward Email alias in the username field.
+6. **Konfigurasikan autentikasi** dengan memilih "SMTP authentication required" dan masukkan alias Forward Email Anda di kolom username.
 
-7. **Enter your password** using the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **Masukkan kata sandi Anda** menggunakan kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-8. **Set up recipient addresses** by entering up to five email addresses that should receive notifications.
+8. **Atur alamat penerima** dengan memasukkan hingga lima alamat email yang harus menerima notifikasi.
 
-9. **Configure notification filtering** to control which events trigger email alerts, preventing notification overload while ensuring critical events are reported.
+9. **Konfigurasikan penyaringan notifikasi** untuk mengontrol event mana yang memicu peringatan email, mencegah kelebihan notifikasi sekaligus memastikan event penting dilaporkan.
 
-10. **Test the configuration** using DSM's built-in test function to verify that all settings are correct and communication with Forward Email's servers is working properly.
+10. **Uji konfigurasi** menggunakan fungsi tes bawaan DSM untuk memverifikasi bahwa semua pengaturan benar dan komunikasi dengan server Forward Email berjalan dengan baik.
 
 > \[!TIP]
-> Synology allows different notification types for different recipients, providing flexibility in how alerts are distributed across your team.
+> Synology memungkinkan tipe notifikasi berbeda untuk penerima yang berbeda, memberikan fleksibilitas dalam distribusi peringatan di tim Anda.
 
-## QNAP NAS Email Configuration {#qnap-nas-email-configuration}
 
-QNAP devices with QTS work great with Forward Email. They support modern TLS and have a nice web interface for configuration.
+## Konfigurasi Email QNAP NAS {#qnap-nas-email-configuration}
+
+Perangkat QNAP dengan QTS bekerja dengan baik bersama Forward Email. Mereka mendukung TLS modern dan memiliki antarmuka web yang bagus untuk konfigurasi.
 
 > \[!IMPORTANT]
-> QNAP QTS 5.2.4 had a known issue with email notifications that was [fixed in QTS 5.2.5](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525). Ensure your firmware is updated to avoid notification failures.
+> QNAP QTS 5.2.4 memiliki masalah yang diketahui dengan notifikasi email yang telah [diperbaiki di QTS 5.2.5](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525). Pastikan firmware Anda diperbarui untuk menghindari kegagalan notifikasi.
 
-### Configuration Steps {#configuration-steps-1}
+### Langkah-Langkah Konfigurasi {#configuration-steps-1}
 
-1. **Access your QNAP device's web interface** by entering its IP address in a web browser.
+1. **Akses antarmuka web perangkat QNAP Anda** dengan memasukkan alamat IP-nya di browser web.
 
-2. **Navigate to the Control Panel** and select "Service Account and Device Pairing," then click on the "E-mail" section to begin email configuration.
+2. **Navigasi ke Control Panel** dan pilih "Service Account and Device Pairing," lalu klik bagian "E-mail" untuk memulai konfigurasi email.
 
-3. **Click "Add SMTP Service"** to create a new email configuration.
+3. **Klik "Add SMTP Service"** untuk membuat konfigurasi email baru.
 
-4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the SMTP server address.
+4. **Konfigurasikan server SMTP** dengan memasukkan `smtp.forwardemail.net` sebagai alamat server SMTP.
 
-5. **Select the appropriate security protocol** - choose "SSL/TLS" with port `465` (recommended). Port `587` with STARTTLS is also supported.
+5. **Pilih protokol keamanan yang sesuai** - pilih "SSL/TLS" dengan port `465` (direkomendasikan). Port `587` dengan STARTTLS juga didukung.
 
-6. **Configure the port number** - port `465` with SSL/TLS is recommended. Port `587` with STARTTLS is also available if needed.
+6. **Konfigurasikan nomor port** - port `465` dengan SSL/TLS direkomendasikan. Port `587` dengan STARTTLS juga tersedia jika diperlukan.
 
-7. **Enter your authentication credentials** using your Forward Email alias as the username and your generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **Masukkan kredensial autentikasi Anda** menggunakan alias Forward Email Anda sebagai username dan kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-8. **Configure sender information** by entering a descriptive name for the "From" field, such as "QNAP NAS System" or your device's hostname.
+8. **Konfigurasikan informasi pengirim** dengan memasukkan nama deskriptif untuk kolom "From", seperti "QNAP NAS System" atau hostname perangkat Anda.
 
-9. **Set up recipient addresses** for different notification types. QNAP allows you to configure multiple recipient groups for different alert types.
+9. **Atur alamat penerima** untuk berbagai tipe notifikasi. QNAP memungkinkan Anda mengonfigurasi beberapa grup penerima untuk tipe peringatan yang berbeda.
 
-10. **Test the configuration** using QNAP's built-in email test function to verify all settings are working properly.
+10. **Uji konfigurasi** menggunakan fungsi tes email bawaan QNAP untuk memverifikasi semua pengaturan berfungsi dengan baik.
 
 > \[!TIP]
-> If you encounter [Gmail SMTP configuration issues](https://forum.qnap.com/viewtopic.php?t=152466), the same troubleshooting steps apply to Forward Email. Ensure authentication is properly enabled and credentials are correct.
-
+> Jika Anda mengalami [masalah konfigurasi SMTP Gmail](https://forum.qnap.com/viewtopic.php?t=152466), langkah pemecahan masalah yang sama berlaku untuk Forward Email. Pastikan autentikasi diaktifkan dengan benar dan kredensial sudah tepat.
 > \[!NOTE]
-> QNAP devices support advanced notification scheduling, allowing you to configure quiet hours when non-critical notifications are suppressed. This is particularly useful in business environments.
+> Perangkat QNAP mendukung penjadwalan notifikasi lanjutan, memungkinkan Anda mengonfigurasi jam tenang ketika notifikasi non-kritis ditekan. Ini sangat berguna terutama di lingkungan bisnis.
 
-### Common QNAP Troubleshooting Issues {#common-qnap-troubleshooting-issues}
+### Masalah Umum Pemecahan Masalah QNAP {#common-qnap-troubleshooting-issues}
 
-If your QNAP device [fails to send notification emails](https://www.reddit.com/r/qnap/comments/1dc6z03/qnap_nas_will_not_send_notification_emails/), check the following:
+Jika perangkat QNAP Anda [gagal mengirim email notifikasi](https://www.reddit.com/r/qnap/comments/1dc6z03/qnap_nas_will_not_send_notification_emails/), periksa hal berikut:
 
-* Verify your Forward Email credentials are correct
-* Ensure the SMTP server address is exactly `smtp.forwardemail.net`
-* Confirm the port matches your encryption method (`465` for SSL/TLS is recommended; `587` for STARTTLS is also supported)
-* Check that your [SMTP server configuration](https://www.qnap.com/en/how-to/faq/article/why-does-notification-center-fail-to-send-emails-to-my-smtp-server) allows the connection
+* Verifikasi kredensial Forward Email Anda sudah benar
+* Pastikan alamat server SMTP tepat `smtp.forwardemail.net`
+* Konfirmasi port sesuai dengan metode enkripsi Anda (`465` untuk SSL/TLS direkomendasikan; `587` untuk STARTTLS juga didukung)
+* Periksa bahwa [konfigurasi server SMTP](https://www.qnap.com/en/how-to/faq/article/why-does-notification-center-fail-to-send-emails-to-my-smtp-server) mengizinkan koneksi
 
-## ReadyNAS Legacy Configuration {#readynas-legacy-configuration}
 
-Netgear ReadyNAS devices present unique challenges due to their discontinued firmware support and reliance on legacy TLS 1.0 protocols. However, Forward Email's legacy port support ensures these devices can continue to send email notifications reliably.
+## Konfigurasi Legacy ReadyNAS {#readynas-legacy-configuration}
+
+Perangkat Netgear ReadyNAS menghadirkan tantangan unik karena dukungan firmware yang dihentikan dan ketergantungan pada protokol TLS 1.0 legacy. Namun, dukungan port legacy Forward Email memastikan perangkat ini dapat terus mengirim notifikasi email dengan andal.
 
 > \[!CAUTION]
-> ReadyNAS OS 6.x only supports TLS 1.0, which requires Forward Email's legacy compatibility ports `2455` and `2555`. Modern ports `465` and `587` will not work with these devices.
+> ReadyNAS OS 6.x hanya mendukung TLS 1.0, yang memerlukan port kompatibilitas legacy Forward Email `2455` dan `2555`. Port modern `465` dan `587` tidak akan berfungsi dengan perangkat ini.
 
-### Legacy Configuration Steps {#legacy-configuration-steps}
+### Langkah Konfigurasi Legacy {#legacy-configuration-steps}
 
-1. **Access the ReadyNAS web interface** by entering the device's IP address in a web browser.
+1. **Akses antarmuka web ReadyNAS** dengan memasukkan alamat IP perangkat di browser web.
 
-2. **Navigate to System > Settings > Alerts** to access the email configuration section.
+2. **Navigasi ke System > Settings > Alerts** untuk mengakses bagian konfigurasi email.
 
-3. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the server address.
+3. **Konfigurasikan server SMTP** dengan memasukkan `smtp.forwardemail.net` sebagai alamat server.
 
-4. **Set the port configuration** to either `2455` for SSL/TLS connections or `2555` for STARTTLS connections - these are Forward Email's legacy compatibility ports.
+4. **Atur konfigurasi port** ke `2455` untuk koneksi SSL/TLS atau `2555` untuk koneksi STARTTLS - ini adalah port kompatibilitas legacy Forward Email.
 
-5. **Enable authentication** and enter your Forward Email alias as the username and your generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+5. **Aktifkan autentikasi** dan masukkan alias Forward Email Anda sebagai nama pengguna serta kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-6. **Configure sender information** with a descriptive "From" address to identify the ReadyNAS device.
+6. **Konfigurasikan informasi pengirim** dengan alamat "From" yang deskriptif untuk mengidentifikasi perangkat ReadyNAS.
 
-7. **Add recipient email addresses** using the + button in the email contacts section.
+7. **Tambahkan alamat email penerima** menggunakan tombol + di bagian kontak email.
 
-8. **Test the configuration** to ensure the legacy TLS connection is working properly.
+8. **Uji konfigurasi** untuk memastikan koneksi TLS legacy berfungsi dengan baik.
 
 > \[!IMPORTANT]
-> ReadyNAS devices require the legacy ports because they cannot establish secure connections using modern TLS protocols. This is a [known limitation](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) of the discontinued firmware.
+> Perangkat ReadyNAS memerlukan port legacy karena tidak dapat membangun koneksi aman menggunakan protokol TLS modern. Ini adalah [batasan yang diketahui](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) dari firmware yang dihentikan.
 
-### ReadyNAS Troubleshooting {#readynas-troubleshooting}
+### Pemecahan Masalah ReadyNAS {#readynas-troubleshooting}
 
-Common issues with ReadyNAS email configuration include:
+Masalah umum dengan konfigurasi email ReadyNAS meliputi:
 
-* **TLS version mismatch**: Ensure you're using ports `2455` or `2555`, not the modern ports
-* **Authentication failures**: Verify your Forward Email credentials are correct
-* **Network connectivity**: Check that the ReadyNAS can reach `smtp.forwardemail.net`
-* **Firmware limitations**: Some older ReadyNAS models may have additional [HTTPS configuration requirements](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
+* **Ketidakcocokan versi TLS**: Pastikan Anda menggunakan port `2455` atau `2555`, bukan port modern
+* **Kegagalan autentikasi**: Verifikasi kredensial Forward Email Anda sudah benar
+* **Konektivitas jaringan**: Periksa bahwa ReadyNAS dapat mengakses `smtp.forwardemail.net`
+* **Batasan firmware**: Beberapa model ReadyNAS lama mungkin memiliki [persyaratan konfigurasi HTTPS tambahan](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
 
-ReadyNAS devices running OS 6.x and earlier versions only support TLS 1.0 connections, which most modern email providers no longer accept. Forward Email's dedicated legacy ports (2455 and 2555) specifically support these older protocols, ensuring continued functionality for ReadyNAS users.
+Perangkat ReadyNAS yang menjalankan OS 6.x dan versi sebelumnya hanya mendukung koneksi TLS 1.0, yang sebagian besar penyedia email modern tidak lagi terima. Port legacy khusus Forward Email (2455 dan 2555) secara khusus mendukung protokol lama ini, memastikan fungsi berkelanjutan bagi pengguna ReadyNAS.
 
-To configure email on ReadyNAS devices, access the device's web interface through its IP address. Navigate to the System section and select "Notifications" to access email configuration options.
+Untuk mengonfigurasi email pada perangkat ReadyNAS, akses antarmuka web perangkat melalui alamat IP-nya. Navigasi ke bagian System dan pilih "Notifications" untuk mengakses opsi konfigurasi email.
 
-In the email configuration section, enable email notifications and enter smtp.forwardemail.net as the SMTP server. This is crucial - use Forward Email's legacy-compatible ports rather than standard SMTP ports.
+Di bagian konfigurasi email, aktifkan notifikasi email dan masukkan smtp.forwardemail.net sebagai server SMTP. Ini penting - gunakan port kompatibel legacy Forward Email daripada port SMTP standar.
 
-For SSL/TLS connections, configure port 2455 instead of the standard port 465 (recommended). For STARTTLS connections, use port 2555 instead of port 587. These special ports maintain TLS 1.0 compatibility while providing the best available security for legacy devices.
+Untuk koneksi SSL/TLS, konfigurasikan port 2455 menggantikan port standar 465 (direkomendasikan). Untuk koneksi STARTTLS, gunakan port 2555 menggantikan port 587. Port khusus ini mempertahankan kompatibilitas TLS 1.0 sambil memberikan keamanan terbaik yang tersedia untuk perangkat legacy.
+Masukkan alias Forward Email Anda sebagai nama pengguna dan kata sandi yang dihasilkan untuk otentikasi. Perangkat ReadyNAS mendukung otentikasi SMTP, yang diperlukan untuk koneksi Forward Email.
 
-Enter your Forward Email alias as the username and your generated password for authentication. ReadyNAS devices support SMTP authentication, which is required for Forward Email connections.
+Konfigurasikan alamat email pengirim dan alamat penerima sesuai dengan kebutuhan notifikasi Anda. ReadyNAS memungkinkan beberapa alamat penerima, sehingga Anda dapat mendistribusikan peringatan ke anggota tim atau akun email yang berbeda.
 
-Configure the sender email address and recipient addresses according to your notification requirements. ReadyNAS allows multiple recipient addresses, enabling you to distribute alerts to different team members or email accounts.
+Uji konfigurasi dengan cermat, karena perangkat ReadyNAS mungkin tidak memberikan pesan kesalahan yang rinci jika konfigurasi gagal. Jika pengujian standar tidak berhasil, pastikan Anda menggunakan port legacy yang benar (2455 atau 2555) daripada port SMTP modern.
 
-Test the configuration carefully, as ReadyNAS devices may not provide detailed error messages if the configuration fails. If standard testing doesn't work, verify that you're using the correct legacy ports (2455 or 2555) rather than modern SMTP ports.
+Pertimbangkan implikasi keamanan dari penggunaan protokol TLS legacy. Meskipun port legacy Forward Email memberikan keamanan terbaik yang tersedia untuk perangkat lama, disarankan untuk meningkatkan ke sistem NAS modern dengan dukungan TLS terkini jika memungkinkan.
 
-Consider the security implications of using legacy TLS protocols. While Forward Email's legacy ports provide the best available security for older devices, upgrading to a modern NAS system with current TLS support is recommended when possible.
 
-## TerraMaster NAS Configuration {#terramaster-nas-configuration}
+## Konfigurasi TerraMaster NAS {#terramaster-nas-configuration}
 
-TerraMaster devices running TOS 6.x support modern TLS and work well with Forward Email's standard ports.
+Perangkat TerraMaster yang menjalankan TOS 6.x mendukung TLS modern dan bekerja dengan baik dengan port standar Forward Email.
 
 > \[!NOTE]
-> TerraMaster TOS 6.x provides comprehensive email notification features. Make sure your firmware is up to date for the best compatibility.
+> TerraMaster TOS 6.x menyediakan fitur notifikasi email yang komprehensif. Pastikan firmware Anda diperbarui untuk kompatibilitas terbaik.
 
-1. **Access System Settings**
-   * Log into your TerraMaster web interface
-   * Navigate to **Control Panel** > **Notification**
+1. **Akses Pengaturan Sistem**
+   * Masuk ke antarmuka web TerraMaster Anda
+   * Navigasi ke **Control Panel** > **Notification**
 
-2. **Configure SMTP Settings**
+2. **Konfigurasikan Pengaturan SMTP**
    * Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Port: `465` (SSL/TLS, direkomendasikan) atau `587` (STARTTLS)
+   * Nama pengguna: Alias Forward Email Anda
+   * Kata sandi: Kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-3. **Enable Notifications**
-   * Check the notification types you want to receive
-   * Test the configuration with the built-in test function
+3. **Aktifkan Notifikasi**
+   * Centang jenis notifikasi yang ingin Anda terima
+   * Uji konfigurasi dengan fungsi uji bawaan
 
 > \[!TIP]
-> TerraMaster devices work best with port `465` for SSL/TLS connections (recommended). If you experience issues, port `587` with STARTTLS is also supported.
+> Perangkat TerraMaster bekerja paling baik dengan port `465` untuk koneksi SSL/TLS (direkomendasikan). Jika mengalami masalah, port `587` dengan STARTTLS juga didukung.
 
-## ASUSTOR NAS Configuration {#asustor-nas-configuration}
 
-ASUSTOR devices with ADM 4.x have solid email notification support and work seamlessly with Forward Email.
+## Konfigurasi ASUSTOR NAS {#asustor-nas-configuration}
+
+Perangkat ASUSTOR dengan ADM 4.x memiliki dukungan notifikasi email yang solid dan bekerja mulus dengan Forward Email.
 
 > \[!NOTE]
-> ASUSTOR ADM 4.x includes advanced notification filtering options. You can customize which events trigger email alerts.
+> ASUSTOR ADM 4.x menyertakan opsi penyaringan notifikasi lanjutan. Anda dapat menyesuaikan event mana yang memicu peringatan email.
 
-1. **Open Notification Settings**
-   * Access ADM web interface
-   * Go to **Settings** > **Notification**
+1. **Buka Pengaturan Notifikasi**
+   * Akses antarmuka web ADM
+   * Pergi ke **Settings** > **Notification**
 
-2. **Set Up SMTP Configuration**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Authentication: Enable
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+2. **Atur Konfigurasi SMTP**
+   * Server SMTP: `smtp.forwardemail.net`
+   * Port: `465` (SSL/TLS, direkomendasikan) atau `587` (STARTTLS)
+   * Otentikasi: Aktifkan
+   * Nama pengguna: Alias Forward Email Anda
+   * Kata sandi: Kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-3. **Configure Alert Types**
-   * Select which system events should trigger emails
-   * Set up recipient addresses
-   * Test the configuration
+3. **Konfigurasikan Jenis Peringatan**
+   * Pilih event sistem mana yang harus memicu email
+   * Atur alamat penerima
+   * Uji konfigurasi
 
 > \[!IMPORTANT]
-> ASUSTOR devices require authentication to be explicitly enabled in the SMTP settings. Don't forget to check this option.
+> Perangkat ASUSTOR mengharuskan otentikasi diaktifkan secara eksplisit dalam pengaturan SMTP. Jangan lupa untuk mencentang opsi ini.
 
-## Buffalo TeraStation Configuration {#buffalo-terastation-configuration}
 
-Buffalo TeraStation devices have limited but functional email notification capabilities. Setup is straightforward once you know where to look.
+## Konfigurasi Buffalo TeraStation {#buffalo-terastation-configuration}
+
+Perangkat Buffalo TeraStation memiliki kemampuan notifikasi email yang terbatas namun fungsional. Pengaturan cukup sederhana setelah Anda tahu di mana mencarinya.
 
 > \[!CAUTION]
-> Buffalo TeraStation firmware updates are infrequent. Make sure you're using the latest available firmware for your model before configuring email.
+> Pembaruan firmware Buffalo TeraStation jarang dilakukan. Pastikan Anda menggunakan firmware terbaru yang tersedia untuk model Anda sebelum mengonfigurasi email.
 
-1. **Access Web Configuration**
-   * Connect to your TeraStation's web interface
-   * Navigate to **System** > **Notification**
+1. **Akses Konfigurasi Web**
+   * Sambungkan ke antarmuka web TeraStation Anda
+   * Navigasi ke **System** > **Notification**
 
-2. **Configure Email Settings**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable SSL/TLS encryption
+2. **Konfigurasikan Pengaturan Email**
+   * Server SMTP: `smtp.forwardemail.net`
+   * Port: `465` (SSL/TLS, direkomendasikan) atau `587` (STARTTLS)
+   * Nama pengguna: Alias Forward Email Anda
+   * Kata sandi: Kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Aktifkan enkripsi SSL/TLS
 
-3. **Set Notification Preferences**
-   * Choose which events trigger emails (disk errors, temperature alerts, etc.)
-   * Enter recipient email addresses
-   * Save and test the configuration
+3. **Atur Preferensi Notifikasi**
+   * Pilih event mana yang memicu email (kesalahan disk, peringatan suhu, dll.)
+   * Masukkan alamat email penerima
+   * Simpan dan uji konfigurasi
 
 > \[!NOTE]
-> Some older TeraStation models may have limited SMTP configuration options. Check your model's documentation for specific capabilities.
+> Beberapa model TeraStation lama mungkin memiliki opsi konfigurasi SMTP yang terbatas. Periksa dokumentasi model Anda untuk kemampuan spesifik.
+## Konfigurasi Western Digital My Cloud {#western-digital-my-cloud-configuration}
 
-## Western Digital My Cloud Configuration {#western-digital-my-cloud-configuration}
-
-Western Digital My Cloud devices running OS 5 support email notifications, though the interface can be a bit buried in the settings.
+Perangkat Western Digital My Cloud yang menjalankan OS 5 mendukung notifikasi email, meskipun antarmukanya bisa agak tersembunyi di pengaturan.
 
 > \[!WARNING]
-> Western Digital has discontinued support for many My Cloud models. Check if your device still receives firmware updates before relying on email notifications for critical alerts.
+> Western Digital telah menghentikan dukungan untuk banyak model My Cloud. Periksa apakah perangkat Anda masih menerima pembaruan firmware sebelum mengandalkan notifikasi email untuk peringatan penting.
 
-1. **Navigate to Settings**
-   * Open the My Cloud web dashboard
-   * Go to **Settings** > **General** > **Notifications**
+1. **Navigasi ke Pengaturan**
+   * Buka dashboard web My Cloud
+   * Pergi ke **Settings** > **General** > **Notifications**
 
-2. **Configure SMTP Details**
+2. **Konfigurasikan Detail SMTP**
    * Mail Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable encryption
+   * Port: `465` (SSL/TLS, direkomendasikan) atau `587` (STARTTLS)
+   * Username: Alias Forward Email Anda
+   * Password: Kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Aktifkan enkripsi
 
-3. **Set Up Alert Types**
-   * Select notification categories (system alerts, disk health, etc.)
-   * Add recipient email addresses
-   * Test the email configuration
+3. **Atur Jenis Peringatan**
+   * Pilih kategori notifikasi (peringatan sistem, kesehatan disk, dll.)
+   * Tambahkan alamat email penerima
+   * Uji konfigurasi email
 
 > \[!TIP]
-> We recommend using port `465` with SSL/TLS. If you experience issues, port `587` with STARTTLS is also supported.
+> Kami menyarankan menggunakan port `465` dengan SSL/TLS. Jika mengalami masalah, port `587` dengan STARTTLS juga didukung.
 
-## TrueNAS Email Configuration {#truenas-email-configuration}
 
-TrueNAS (both SCALE and CORE) has excellent email notification support with detailed configuration options.
+## Konfigurasi Email TrueNAS {#truenas-email-configuration}
+
+TrueNAS (baik SCALE maupun CORE) memiliki dukungan notifikasi email yang sangat baik dengan opsi konfigurasi yang rinci.
 
 > \[!NOTE]
-> TrueNAS provides some of the most comprehensive email notification features among NAS systems. You can configure detailed alert rules and multiple recipients.
+> TrueNAS menyediakan beberapa fitur notifikasi email paling komprehensif di antara sistem NAS. Anda dapat mengonfigurasi aturan peringatan yang detail dan beberapa penerima.
 
-1. **Access System Settings**
-   * Log into the TrueNAS web interface
-   * Navigate to **System** > **Email**
+1. **Akses Pengaturan Sistem**
+   * Masuk ke antarmuka web TrueNAS
+   * Navigasi ke **System** > **Email**
 
-2. **Configure SMTP Settings**
+2. **Konfigurasikan Pengaturan SMTP**
    * Outgoing Mail Server: `smtp.forwardemail.net`
-   * Mail Server Port: `465` (recommended) or `587`
-   * Security: SSL/TLS (for 465, recommended) or STARTTLS (for 587)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Mail Server Port: `465` (direkomendasikan) atau `587`
+   * Keamanan: SSL/TLS (untuk 465, direkomendasikan) atau STARTTLS (untuk 587)
+   * Username: Alias Forward Email Anda
+   * Password: Kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-3. **Set Up Alerts**
-   * Go to **System** > **Alert Services**
-   * Configure which alerts should be sent via email
-   * Set recipient addresses and alert levels
-   * Test the configuration with the built-in test function
+3. **Atur Peringatan**
+   * Pergi ke **System** > **Alert Services**
+   * Konfigurasikan peringatan mana yang harus dikirim via email
+   * Atur alamat penerima dan tingkat peringatan
+   * Uji konfigurasi dengan fungsi uji bawaan
 
 > \[!IMPORTANT]
-> TrueNAS allows you to configure different alert levels (INFO, NOTICE, WARNING, ERROR, CRITICAL). Choose appropriate levels to avoid email spam while ensuring critical issues are reported.
+> TrueNAS memungkinkan Anda mengonfigurasi tingkat peringatan yang berbeda (INFO, NOTICE, WARNING, ERROR, CRITICAL). Pilih tingkat yang sesuai untuk menghindari spam email sekaligus memastikan masalah kritis dilaporkan.
 
-## OpenMediaVault Configuration {#openmediavault-configuration}
 
-OpenMediaVault provides solid email notification capabilities through its web interface. The setup process is clean and straightforward.
+## Konfigurasi OpenMediaVault {#openmediavault-configuration}
+
+OpenMediaVault menyediakan kemampuan notifikasi email yang solid melalui antarmuka webnya. Proses pengaturannya bersih dan sederhana.
 
 > \[!NOTE]
-> OpenMediaVault's notification system is plugin-based. Make sure you have the email notification plugin installed and enabled.
+> Sistem notifikasi OpenMediaVault berbasis plugin. Pastikan Anda telah menginstal dan mengaktifkan plugin notifikasi email.
 
-1. **Access Notification Settings**
-   * Open the OpenMediaVault web interface
-   * Go to **System** > **Notification** > **Email**
+1. **Akses Pengaturan Notifikasi**
+   * Buka antarmuka web OpenMediaVault
+   * Pergi ke **System** > **Notification** > **Email**
 
-2. **Configure SMTP Parameters**
+2. **Konfigurasikan Parameter SMTP**
    * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable SSL/TLS
+   * Port: `465` (SSL/TLS, direkomendasikan) atau `587` (STARTTLS)
+   * Username: Alias Forward Email Anda
+   * Password: Kata sandi yang dihasilkan dari [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Aktifkan SSL/TLS
 
-3. **Set Up Notification Rules**
-   * Navigate to **System** > **Notification** > **Notifications**
-   * Configure which system events should trigger emails
-   * Set recipient addresses
-   * Test the email functionality
-
-> \[!TIP]
-> OpenMediaVault allows you to configure notification schedules. You can set quiet hours or limit notification frequency to avoid being overwhelmed by alerts.
-
-## Raspberry Pi NAS Configuration {#raspberry-pi-nas-configuration}
-
-The Raspberry Pi represents an excellent entry point into NAS functionality, offering a cost-effective solution for home and small office environments. Setting up a Raspberry Pi as a NAS device involves configuring file sharing protocols, email notifications, and essential network services.
+3. **Atur Aturan Notifikasi**
+   * Navigasi ke **System** > **Notification** > **Notifications**
+   * Konfigurasikan event sistem mana yang harus memicu email
+   * Atur alamat penerima
+   * Uji fungsi email
 
 > \[!TIP]
-> For Raspberry Pi enthusiasts, we highly recommend complementing your NAS setup with [PiKVM](https://pikvm.org/) for remote server management and [Pi-hole](https://pi-hole.net/) for network-wide ad blocking and DNS management. These tools create a comprehensive home lab environment.
+> OpenMediaVault memungkinkan Anda mengonfigurasi jadwal notifikasi. Anda dapat mengatur jam tenang atau membatasi frekuensi notifikasi untuk menghindari terlalu banyak peringatan.
 
-### Initial Raspberry Pi Setup {#initial-raspberry-pi-setup}
 
-Before configuring NAS services, ensure your Raspberry Pi is running the latest Raspberry Pi OS and has adequate storage. A high-quality microSD card (Class 10 or better) or USB 3.0 SSD provides better performance and reliability for NAS operations.
+## Konfigurasi Raspberry Pi NAS {#raspberry-pi-nas-configuration}
 
-1. **Update the system** by running `sudo apt update && sudo apt upgrade -y` to ensure all packages are current.
+Raspberry Pi merupakan titik masuk yang sangat baik ke fungsi NAS, menawarkan solusi hemat biaya untuk lingkungan rumah dan kantor kecil. Menyiapkan Raspberry Pi sebagai perangkat NAS melibatkan konfigurasi protokol berbagi file, notifikasi email, dan layanan jaringan penting.
 
-2. **Enable SSH access** using `sudo systemctl enable ssh && sudo systemctl start ssh` for remote administration.
+> \[!TIP]
+> Untuk penggemar Raspberry Pi, kami sangat menyarankan melengkapi pengaturan NAS Anda dengan [PiKVM](https://pikvm.org/) untuk manajemen server jarak jauh dan [Pi-hole](https://pi-hole.net/) untuk pemblokiran iklan dan manajemen DNS di seluruh jaringan. Alat-alat ini menciptakan lingkungan lab rumah yang komprehensif.
+### Pengaturan Awal Raspberry Pi {#initial-raspberry-pi-setup}
 
-3. **Configure static IP addressing** by editing `/etc/dhcpcd.conf` to ensure consistent network access.
+Sebelum mengonfigurasi layanan NAS, pastikan Raspberry Pi Anda menjalankan Raspberry Pi OS terbaru dan memiliki penyimpanan yang memadai. Kartu microSD berkualitas tinggi (Kelas 10 atau lebih baik) atau SSD USB 3.0 memberikan kinerja dan keandalan yang lebih baik untuk operasi NAS.
 
-4. **Set up external storage** by connecting and mounting USB drives or configuring RAID arrays for data redundancy.
+1. **Perbarui sistem** dengan menjalankan `sudo apt update && sudo apt upgrade -y` untuk memastikan semua paket terbaru.
 
-### Samba File Sharing Configuration {#samba-file-sharing-configuration}
+2. **Aktifkan akses SSH** menggunakan `sudo systemctl enable ssh && sudo systemctl start ssh` untuk administrasi jarak jauh.
 
-Samba provides Windows-compatible file sharing, making your Raspberry Pi accessible from any device on your network. The configuration process involves installing Samba, creating shares, and setting up user authentication.
+3. **Konfigurasikan alamat IP statis** dengan mengedit `/etc/dhcpcd.conf` untuk memastikan akses jaringan yang konsisten.
 
-Install Samba using `sudo apt install samba samba-common-bin` and configure the main configuration file at `/etc/samba/smb.conf`. Create shared directories and set appropriate permissions using `sudo mkdir -p /srv/samba/shared && sudo chmod 755 /srv/samba/shared`.
+4. **Siapkan penyimpanan eksternal** dengan menghubungkan dan memasang drive USB atau mengonfigurasi array RAID untuk redundansi data.
 
-Configure Samba shares by adding sections to the configuration file for each shared directory. Set up user authentication using `sudo smbpasswd -a username` to create Samba-specific passwords for network access.
+### Konfigurasi Berbagi File Samba {#samba-file-sharing-configuration}
+
+Samba menyediakan berbagi file yang kompatibel dengan Windows, membuat Raspberry Pi Anda dapat diakses dari perangkat apa pun di jaringan Anda. Proses konfigurasi meliputi pemasangan Samba, membuat share, dan mengatur autentikasi pengguna.
+
+Pasang Samba menggunakan `sudo apt install samba samba-common-bin` dan konfigurasikan file utama di `/etc/samba/smb.conf`. Buat direktori bersama dan atur izin yang sesuai menggunakan `sudo mkdir -p /srv/samba/shared && sudo chmod 755 /srv/samba/shared`.
+
+Konfigurasikan share Samba dengan menambahkan bagian pada file konfigurasi untuk setiap direktori yang dibagikan. Atur autentikasi pengguna menggunakan `sudo smbpasswd -a username` untuk membuat kata sandi khusus Samba untuk akses jaringan.
 
 > \[!IMPORTANT]
-> Always use strong passwords for Samba users and consider enabling guest access only for non-sensitive shared folders. Review the [official Samba documentation](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) for advanced security configurations.
+> Selalu gunakan kata sandi yang kuat untuk pengguna Samba dan pertimbangkan mengaktifkan akses tamu hanya untuk folder bersama yang tidak sensitif. Tinjau [dokumentasi resmi Samba](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) untuk konfigurasi keamanan lanjutan.
 
-### FTP Server Setup {#ftp-server-setup}
+### Pengaturan Server FTP {#ftp-server-setup}
 
-FTP provides another method for file access, particularly useful for automated backups and remote file management. Install and configure vsftpd (Very Secure FTP Daemon) for reliable FTP services.
+FTP menyediakan metode lain untuk akses file, sangat berguna untuk pencadangan otomatis dan manajemen file jarak jauh. Pasang dan konfigurasikan vsftpd (Very Secure FTP Daemon) untuk layanan FTP yang andal.
 
-Install vsftpd using `sudo apt install vsftpd` and configure the service by editing `/etc/vsftpd.conf`. Enable local user access, configure passive mode settings, and set up appropriate security restrictions.
+Pasang vsftpd menggunakan `sudo apt install vsftpd` dan konfigurasikan layanan dengan mengedit `/etc/vsftpd.conf`. Aktifkan akses pengguna lokal, konfigurasikan pengaturan mode pasif, dan atur pembatasan keamanan yang sesuai.
 
-Create FTP users and configure directory access permissions. Consider using SFTP (SSH File Transfer Protocol) instead of traditional FTP for enhanced security, as it encrypts all data transmission.
+Buat pengguna FTP dan konfigurasikan izin akses direktori. Pertimbangkan menggunakan SFTP (SSH File Transfer Protocol) daripada FTP tradisional untuk keamanan yang lebih baik, karena mengenkripsi semua transmisi data.
 
 > \[!CAUTION]
-> Traditional FTP transmits passwords in plain text. Always use SFTP or configure FTP with TLS encryption for secure file transfers. Review [vsftpd security best practices](https://security.appspot.com/vsftpd.html) before deployment.
+> FTP tradisional mengirimkan kata sandi dalam teks biasa. Selalu gunakan SFTP atau konfigurasikan FTP dengan enkripsi TLS untuk transfer file yang aman. Tinjau [praktik keamanan terbaik vsftpd](https://security.appspot.com/vsftpd.html) sebelum penerapan.
 
-### Email Notification Configuration {#email-notification-configuration}
+### Konfigurasi Notifikasi Email {#email-notification-configuration}
 
-Configure your Raspberry Pi NAS to send email notifications for system events, storage alerts, and backup completion status. This involves installing and configuring a mail transfer agent and setting up Forward Email integration.
+Konfigurasikan NAS Raspberry Pi Anda untuk mengirim notifikasi email untuk kejadian sistem, peringatan penyimpanan, dan status penyelesaian cadangan. Ini melibatkan pemasangan dan konfigurasi agen transfer mail serta pengaturan integrasi Forward Email.
 
-Install `msmtp` as a lightweight SMTP client using `sudo apt install msmtp msmtp-mta`. Create the configuration file at `/etc/msmtprc` with the following settings:
+Pasang `msmtp` sebagai klien SMTP ringan menggunakan `sudo apt install msmtp msmtp-mta`. Buat file konfigurasi di `/etc/msmtprc` dengan pengaturan berikut:
 
 ```
 defaults
@@ -435,49 +443,48 @@ user           your-alias@yourdomain.com
 password       your-generated-password
 ```
 
-Configure system notifications by setting up cron jobs and system monitoring scripts that use `msmtp` to send alerts. Create scripts for disk space monitoring, temperature alerts, and backup completion notifications.
+Konfigurasikan notifikasi sistem dengan mengatur cron job dan skrip pemantauan sistem yang menggunakan `msmtp` untuk mengirim peringatan. Buat skrip untuk pemantauan ruang disk, peringatan suhu, dan notifikasi penyelesaian cadangan.
 
-### Advanced Raspberry Pi NAS Features {#advanced-raspberry-pi-nas-features}
+### Fitur Lanjutan NAS Raspberry Pi {#advanced-raspberry-pi-nas-features}
 
-Enhance your Raspberry Pi NAS with additional services and monitoring capabilities. Install and configure network monitoring tools, automated backup solutions, and remote access services.
+Tingkatkan NAS Raspberry Pi Anda dengan layanan tambahan dan kemampuan pemantauan. Pasang dan konfigurasikan alat pemantauan jaringan, solusi cadangan otomatis, dan layanan akses jarak jauh.
 
-Set up [Nextcloud](https://nextcloud.com/) for cloud-like functionality with web-based file access, calendar synchronization, and collaborative features. Install using Docker or the official Nextcloud installation guide for Raspberry Pi.
+Siapkan [Nextcloud](https://nextcloud.com/) untuk fungsi seperti cloud dengan akses file berbasis web, sinkronisasi kalender, dan fitur kolaborasi. Pasang menggunakan Docker atau panduan instalasi resmi Nextcloud untuk Raspberry Pi.
+Konfigurasikan cadangan otomatis menggunakan `rsync` dan `cron` untuk membuat cadangan terjadwal dari data penting. Atur notifikasi email untuk penyelesaian cadangan dan peringatan kegagalan menggunakan konfigurasi Forward Email Anda.
 
-Configure automated backups using `rsync` and `cron` to create scheduled backups of critical data. Set up email notifications for backup completion and failure alerts using your Forward Email configuration.
-
-Implement network monitoring using tools like [Nagios](https://www.nagios.org/) or [Zabbix](https://www.zabbix.com/) to monitor system health, network connectivity, and service availability.
+Implementasikan pemantauan jaringan menggunakan alat seperti [Nagios](https://www.nagios.org/) atau [Zabbix](https://www.zabbix.com/) untuk memantau kesehatan sistem, konektivitas jaringan, dan ketersediaan layanan.
 
 > \[!NOTE]
-> For users managing network infrastructure, consider integrating [Switchbot](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) with your PiKVM setup for remote physical switch control. This [Python integration guide](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) provides detailed instructions for automating physical device management.
+> Untuk pengguna yang mengelola infrastruktur jaringan, pertimbangkan mengintegrasikan [Switchbot](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) dengan pengaturan PiKVM Anda untuk kontrol saklar fisik jarak jauh. Panduan integrasi [Python ini](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) menyediakan instruksi rinci untuk mengotomatisasi pengelolaan perangkat fisik.
 
-### Raspberry Pi Email Troubleshooting {#raspberry-pi-email-troubleshooting}
+### Pemecahan Masalah Email Raspberry Pi {#raspberry-pi-email-troubleshooting}
 
-Common issues with Raspberry Pi email configuration include DNS resolution problems, firewall restrictions, and authentication failures. The lightweight nature of Raspberry Pi systems can sometimes cause timing issues with SMTP connections.
+Masalah umum dengan konfigurasi email Raspberry Pi meliputi masalah resolusi DNS, pembatasan firewall, dan kegagalan otentikasi. Sifat ringan dari sistem Raspberry Pi terkadang dapat menyebabkan masalah waktu dengan koneksi SMTP.
 
-If email notifications fail, check the `msmtp` log file at `/var/log/msmtp.log` for detailed error messages. Verify that your Forward Email credentials are correct and that the Raspberry Pi can resolve `smtp.forwardemail.net`.
+Jika notifikasi email gagal, periksa file log `msmtp` di `/var/log/msmtp.log` untuk pesan kesalahan yang lebih rinci. Verifikasi bahwa kredensial Forward Email Anda benar dan Raspberry Pi dapat menyelesaikan `smtp.forwardemail.net`.
 
-Test email functionality using the command line: `echo "Test message" | msmtp recipient@example.com`. This helps isolate configuration issues from application-specific problems.
+Uji fungsi email menggunakan baris perintah: `echo "Test message" | msmtp recipient@example.com`. Ini membantu memisahkan masalah konfigurasi dari masalah spesifik aplikasi.
 
-Configure proper DNS settings in `/etc/resolv.conf` if you encounter DNS resolution issues. Consider using public DNS servers like `8.8.8.8` or `1.1.1.1` if local DNS is unreliable.
+Konfigurasikan pengaturan DNS yang tepat di `/etc/resolv.conf` jika Anda mengalami masalah resolusi DNS. Pertimbangkan menggunakan server DNS publik seperti `8.8.8.8` atau `1.1.1.1` jika DNS lokal tidak dapat diandalkan.
 
-### Performance Optimization {#performance-optimization}
+### Optimasi Performa {#performance-optimization}
 
-Optimize your Raspberry Pi NAS performance through proper configuration of storage, network settings, and system resources. Use high-quality storage devices and configure appropriate file system options for your use case.
+Optimalkan performa NAS Raspberry Pi Anda melalui konfigurasi yang tepat pada penyimpanan, pengaturan jaringan, dan sumber daya sistem. Gunakan perangkat penyimpanan berkualitas tinggi dan konfigurasikan opsi sistem file yang sesuai untuk kebutuhan Anda.
 
-Enable USB 3.0 boot for better storage performance if using external drives. Configure the GPU memory split using `sudo raspi-config` to allocate more RAM to system operations rather than graphics processing.
+Aktifkan boot USB 3.0 untuk performa penyimpanan yang lebih baik jika menggunakan drive eksternal. Konfigurasikan pembagian memori GPU menggunakan `sudo raspi-config` untuk mengalokasikan lebih banyak RAM ke operasi sistem daripada pemrosesan grafis.
 
-Monitor system performance using tools like `htop`, `iotop`, and `nethogs` to identify bottlenecks and optimize resource usage. Consider upgrading to a Raspberry Pi 4 with 8GB RAM for demanding NAS applications.
+Pantau performa sistem menggunakan alat seperti `htop`, `iotop`, dan `nethogs` untuk mengidentifikasi hambatan dan mengoptimalkan penggunaan sumber daya. Pertimbangkan upgrade ke Raspberry Pi 4 dengan RAM 8GB untuk aplikasi NAS yang menuntut.
 
-Implement proper cooling solutions to prevent thermal throttling during intensive operations. Monitor CPU temperature using `/opt/vc/bin/vcgencmd measure_temp` and ensure adequate ventilation.
+Terapkan solusi pendinginan yang tepat untuk mencegah throttling termal selama operasi intensif. Pantau suhu CPU menggunakan `/opt/vc/bin/vcgencmd measure_temp` dan pastikan ventilasi yang memadai.
 
-### Security Considerations {#security-considerations}
+### Pertimbangan Keamanan {#security-considerations}
 
-Secure your Raspberry Pi NAS by implementing proper access controls, network security measures, and regular security updates. Change default passwords, disable unnecessary services, and configure firewall rules.
+Amankan NAS Raspberry Pi Anda dengan menerapkan kontrol akses yang tepat, langkah keamanan jaringan, dan pembaruan keamanan secara rutin. Ganti kata sandi default, nonaktifkan layanan yang tidak perlu, dan konfigurasikan aturan firewall.
 
-Install and configure `fail2ban` to protect against brute force attacks on SSH and other services. Set up automatic security updates using `unattended-upgrades` to ensure critical security patches are applied promptly.
+Pasang dan konfigurasikan `fail2ban` untuk melindungi dari serangan brute force pada SSH dan layanan lainnya. Atur pembaruan keamanan otomatis menggunakan `unattended-upgrades` untuk memastikan patch keamanan penting diterapkan dengan cepat.
 
-Configure network segmentation to isolate your NAS from other network devices when possible. Use VPN access for remote connections rather than exposing services directly to the internet.
+Konfigurasikan segmentasi jaringan untuk mengisolasi NAS Anda dari perangkat jaringan lain jika memungkinkan. Gunakan akses VPN untuk koneksi jarak jauh daripada mengekspos layanan langsung ke internet.
 
-Regular backup your Raspberry Pi configuration and data to prevent data loss from hardware failures or security incidents. Test backup restoration procedures to ensure data recovery capabilities.
+Cadangkan secara rutin konfigurasi dan data Raspberry Pi Anda untuk mencegah kehilangan data akibat kegagalan perangkat keras atau insiden keamanan. Uji prosedur pemulihan cadangan untuk memastikan kemampuan pemulihan data.
 
-The Raspberry Pi NAS configuration provides an excellent foundation for learning network storage concepts while delivering practical functionality for home and small office environments. The combination with Forward Email ensures reliable notification delivery for system monitoring and maintenance alerts.
+Konfigurasi NAS Raspberry Pi menyediakan fondasi yang sangat baik untuk mempelajari konsep penyimpanan jaringan sekaligus memberikan fungsi praktis untuk lingkungan rumah dan kantor kecil. Kombinasi dengan Forward Email memastikan pengiriman notifikasi yang andal untuk pemantauan sistem dan peringatan pemeliharaan.

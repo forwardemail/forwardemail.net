@@ -1,135 +1,138 @@
-# Turn Your Raspberry Pi into a Secure FTP Server with Email Relay {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
+# Muuta Raspberry Pi turvalliseksi FTP-palvelimeksi sähköpostin välityksellä {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide will show you how to turn it into a powerful, automated file server with email relay capabilities. Perfect for security cameras, IoT devices, and more.
+Onko sinulla Raspberry Pi pölyttymässä? Olipa kyseessä uusin Pi 5, Pi 4, Pi Zero tai jopa vanhempi malli, tämä opas näyttää, miten siitä tehdään tehokas, automatisoitu tiedostopalvelin sähköpostin välitysominaisuuksilla. Täydellinen valvontakameroille, IoT-laitteille ja muille.
 
-**Compatible with:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, and Raspberry Pi Zero.
-
-> \[!NOTE]
-> This guide was tested and verified on a Raspberry Pi 3 Model B running Ubuntu Server 22.04 LTS.
-
-## Table of Contents {#table-of-contents}
-
-* [What We're Building](#what-were-building)
-* [Part 1: Getting Ubuntu Server on Your Pi](#part-1-getting-ubuntu-server-on-your-pi)
-  * [What You'll Need](#what-youll-need)
-  * [Flashing the OS](#flashing-the-os)
-  * [Booting Up & Connecting](#booting-up--connecting)
-* [Part 2: Setting Up a Secure FTP Server](#part-2-setting-up-a-secure-ftp-server)
-  * [Installation & Configuration](#installation--configuration)
-  * [Creating an FTP User](#creating-an-ftp-user)
-* [Part 3: Firewall and Brute-Force Protection](#part-3-firewall-and-brute-force-protection)
-  * [Setting Up UFW](#setting-up-ufw)
-  * [Setting Up Fail2ban](#setting-up-fail2ban)
-* [Part 4: Automated File Processing with Email Notifications](#part-4-automated-file-processing-with-email-notifications)
-  * [Option 1: Using Forward Email API (Recommended)](#option-1-using-forward-email-api-recommended)
-  * [Option 2: Using Other Email Providers](#option-2-using-other-email-providers)
-  * [Create a Systemd Service](#create-a-systemd-service)
-* [Part 5: Email Options for Legacy Devices](#part-5-email-options-for-legacy-devices)
-  * [Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
-  * [Option 2: Set Up a Postfix SMTP Relay](#option-2-set-up-a-postfix-smtp-relay)
-* [Troubleshooting](#troubleshooting)
-* [Wrapping Up](#wrapping-up)
-
-## What We're Building {#what-were-building}
-
-This guide will walk you through setting up a complete system that includes:
-
-* **Ubuntu Server 22.04 LTS:** A rock-solid, lightweight OS for the Pi.
-* **A Secure FTP Server (vsftpd):** For dropping off files securely.
-* **A Firewall (UFW) & Fail2ban:** To keep the bad guys out.
-* **An Automated File Processor:** A script that grabs new files, emails them as attachments, and then cleans up after itself.
-* **Email Options for Legacy Devices:** Two approaches for devices that don't support modern TLS:
-  * Use Forward Email's legacy TLS 1.0 ports (easiest)
-  * Set up a Postfix SMTP relay (works with any email provider)
-
-Ready? Let's dive in.
-
-## Part 1: Getting Ubuntu Server on Your Pi {#part-1-getting-ubuntu-server-on-your-pi}
-
-First things first, get Ubuntu Server running on the Raspberry Pi. This is surprisingly easy thanks to the Raspberry Pi Imager.
-
-### What You'll Need {#what-youll-need}
-
-* Any compatible Raspberry Pi (see list above)
-* A microSD card (8GB minimum, 16GB+ recommended)
-* A computer with a microSD card reader
-* Appropriate power supply for your Pi model
-* Internet access (Ethernet or Wi-Fi)
+**Yhteensopiva:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W ja Raspberry Pi Zero.
 
 > \[!NOTE]
-> Older models like the Raspberry Pi 2 or Pi Zero may be slower but will work fine for this setup.
+> Tämä opas testattiin ja varmistettiin Raspberry Pi 3 Model B:llä, jossa on Ubuntu Server 22.04 LTS.
 
-### Flashing the OS {#flashing-the-os}
 
-1. **Get the Raspberry Pi Imager:** Download it from the [official website](https://www.raspberrypi.com/software/).
+## Sisällysluettelo {#table-of-contents}
 
-2. **Choose the OS:** In the imager, select "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
-   * For 64-bit models (Pi 3, 4, 5, Zero 2 W), choose **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
-   * For older 32-bit models (Pi 2, Pi Zero, Pi Zero W), choose **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+* [Mitä rakennamme](#what-were-building)
+* [Osa 1: Ubuntu Serverin asentaminen Pi:lle](#part-1-getting-ubuntu-server-on-your-pi)
+  * [Mitä tarvitset](#what-youll-need)
+  * [Käyttöjärjestelmän kirjoittaminen](#flashing-the-os)
+  * [Käynnistys ja yhteyden muodostus](#booting-up--connecting)
+* [Osa 2: Turvallisen FTP-palvelimen asentaminen](#part-2-setting-up-a-secure-ftp-server)
+  * [Asennus ja konfigurointi](#installation--configuration)
+  * [FTP-käyttäjän luominen](#creating-an-ftp-user)
+* [Osa 3: Palomuuri ja brute-force-suojaus](#part-3-firewall-and-brute-force-protection)
+  * [UFW:n asennus](#setting-up-ufw)
+  * [Fail2banin asennus](#setting-up-fail2ban)
+* [Osa 4: Automaattinen tiedostojen käsittely sähköpostihälytyksillä](#part-4-automated-file-processing-with-email-notifications)
+  * [Vaihtoehto 1: Forward Email API:n käyttö (suositeltu)](#option-1-using-forward-email-api-recommended)
+  * [Vaihtoehto 2: Muiden sähköpostipalveluntarjoajien käyttö](#option-2-using-other-email-providers)
+  * [Systemd-palvelun luominen](#create-a-systemd-service)
+* [Osa 5: Sähköpostivaihtoehdot vanhemmille laitteille](#part-5-email-options-for-legacy-devices)
+  * [Vaihtoehto 1: Forward Emailin vanhat TLS 1.0 -portit (suositeltu)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
+  * [Vaihtoehto 2: Postfix SMTP -välityspalvelimen asennus](#option-2-set-up-a-postfix-smtp-relay)
+* [Vianetsintä](#troubleshooting)
+* [Yhteenveto](#wrapping-up)
 
-3. **Pick Your Storage:** Select your microSD card.
+
+## Mitä rakennamme {#what-were-building}
+
+Tämä opas ohjaa sinut läpi täydellisen järjestelmän asennuksen, joka sisältää:
+
+* **Ubuntu Server 22.04 LTS:** Vakaa, kevyt käyttöjärjestelmä Pi:lle.
+* **Turvallinen FTP-palvelin (vsftpd):** Tiedostojen turvalliseen siirtoon.
+* **Palomuuri (UFW) & Fail2ban:** Pidä pahikset ulkona.
+* **Automaattinen tiedostojen käsittelijä:** Skripti, joka noutaa uudet tiedostot, lähettää ne sähköpostin liitteinä ja siivoaa peräänsä.
+* **Sähköpostivaihtoehdot vanhemmille laitteille:** Kaksi tapaa laitteille, jotka eivät tue nykyaikaista TLS:ää:
+  * Käytä Forward Emailin vanhoja TLS 1.0 -portteja (helpoin)
+  * Asenna Postfix SMTP -välityspalvelin (toimii minkä tahansa sähköpostipalveluntarjoajan kanssa)
+
+Valmiina? Aloitetaan.
+
+
+## Osa 1: Ubuntu Serverin asentaminen Pi:lle {#part-1-getting-ubuntu-server-on-your-pi}
+
+Ensimmäiseksi asenna Ubuntu Server Raspberry Pi:lle. Tämä on yllättävän helppoa Raspberry Pi Imagerin ansiosta.
+
+### Mitä tarvitset {#what-youll-need}
+
+* Mikä tahansa yhteensopiva Raspberry Pi (katso yllä oleva lista)
+* microSD-kortti (vähintään 8GB, suositus 16GB+)
+* Tietokone, jossa on microSD-kortinlukija
+* Sopiva virtalähde Pi-mallillesi
+* Internet-yhteys (Ethernet tai Wi-Fi)
+
+> \[!NOTE]
+> Vanhemmat mallit kuten Raspberry Pi 2 tai Pi Zero voivat olla hitaampia, mutta toimivat hyvin tässä asennuksessa.
+
+### Käyttöjärjestelmän kirjoittaminen {#flashing-the-os}
+
+1. **Hanki Raspberry Pi Imager:** Lataa se [viralliselta sivustolta](https://www.raspberrypi.com/software/).
+
+2. **Valitse käyttöjärjestelmä:** Imagerissa valitse "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
+   * 64-bittisille malleille (Pi 3, 4, 5, Zero 2 W) valitse **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
+   * Vanhemmille 32-bittisille malleille (Pi 2, Pi Zero, Pi Zero W) valitse **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+
+3. **Valitse tallennusväline:** Valitse microSD-korttisi.
 
 > \[!WARNING]
-> This will wipe your microSD card clean. Make sure you've backed up anything important.
+> Tämä tyhjentää microSD-korttisi. Varmista, että olet varmuuskopioinut tärkeät tiedot.
 
-4. **Advanced Options are Your Friend:** Click the gear icon (⚙️) to set up the Pi for headless mode (no monitor or keyboard needed).
-   * **Hostname:** Give your Pi a name (e.g., `pi-server`).
-   * **SSH:** Enable it and set a username and password.
-   * **Wi-Fi:** If you're not using Ethernet, enter your Wi-Fi details.
-   * **Locale:** Set your timezone and keyboard layout.
+4. **Lisäasetukset ovat ystäväsi:** Klikkaa rataskuvaketta (⚙️) asettaaksesi Pi:n headless-tilaan (näyttöä tai näppäimistöä ei tarvita).
+   * **Isäntänimi:** Anna Pi:lle nimi (esim. `pi-server`).
+   * **SSH:** Ota käyttöön ja aseta käyttäjänimi ja salasana.
+   * **Wi-Fi:** Jos et käytä Ethernetiä, syötä Wi-Fi-tiedot.
+   * **Alueasetukset:** Aseta aikavyöhyke ja näppäimistöasettelu.
+5. **Kirjoita!** Klikkaa "WRITE"-painiketta ja anna imagerin hoitaa hommansa.
 
-5. **Write!** Click the "WRITE" button and let the imager do its thing.
+### Käynnistys ja yhdistäminen {#booting-up--connecting}
 
-### Booting Up & Connecting {#booting-up--connecting}
-
-Once the imager is done, pop the microSD card into the Pi and plug it in. Give it a few minutes to boot up. It's doing some initial setup in the background. Find its IP address from your router's admin page, then connect via SSH:
+Kun imager on valmis, laita microSD-kortti Pi:hin ja kytke se päälle. Anna sen käynnistyä muutama minuutti. Se tekee taustalla alkuasetuksia. Etsi sen IP-osoite reitittimesi hallintasivulta ja yhdistä sitten SSH:lla:
 
 ```bash
 ssh your_username@your_pi_ip_address
 ```
 
-You're in! The Raspberry Pi is now ready for configuration.
+Olet sisällä! Raspberry Pi on nyt valmis konfiguroitavaksi.
 
-## Part 2: Setting Up a Secure FTP Server {#part-2-setting-up-a-secure-ftp-server}
 
-Next, set up `vsftpd` (Very Secure FTP Daemon), configured for maximum security.
+## Osa 2: Turvallisen FTP-palvelimen asentaminen {#part-2-setting-up-a-secure-ftp-server}
 
-### Installation & Configuration {#installation--configuration}
+Seuraavaksi asenna `vsftpd` (Very Secure FTP Daemon), konfiguroituna maksimaalista turvallisuutta varten.
 
-1. **Install vsftpd:**
+### Asennus ja konfigurointi {#installation--configuration}
+
+1. **Asenna vsftpd:**
 
    ```bash
    sudo apt update
    sudo apt install vsftpd -y
    ```
 
-2. **Backup the config file:**
+2. **Varmuuskopioi konfiguraatiotiedosto:**
 
    ```bash
    sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
    ```
 
-3. **Edit the configuration:**
+3. **Muokkaa konfiguraatiota:**
 
    ```bash
    sudo nano /etc/vsftpd.conf
    ```
 
 > \[!TIP]
-> If a line is commented out (starts with a `#`), uncomment it by removing the `#`.
+> Jos rivi on kommentoitu (alkaa `#`-merkillä), poista `#` ottaaksesi sen käyttöön.
 
-Make these changes:
+Tee nämä muutokset:
 
-| Setting | Arvo | Purpose |
-| ------------------------ | ----- | --------------------------------------------------------- |
-| `anonymous_enable` | `NO` | Disable anonymous FTP access |
-| `local_enable` | `YES` | Allow local users to log in |
-| `write_enable` | `YES` | Enable file uploads |
-| `local_umask` | `022` | Set file permissions (644 for files, 755 for directories) |
-| `chroot_local_user` | `YES` | Jail users to their home directory |
-| `allow_writeable_chroot` | `YES` | Allow uploads in chroot jail |
+| Asetus                   | Arvo  | Tarkoitus                                                |
+| ------------------------ | ----- | -------------------------------------------------------- |
+| `anonymous_enable`       | `NO`  | Poista anonyymi FTP-käyttö käytöstä                      |
+| `local_enable`           | `YES` | Salli paikallisten käyttäjien kirjautuminen              |
+| `write_enable`           | `YES` | Salli tiedostojen lataaminen                              |
+| `local_umask`            | `022` | Aseta tiedostojen oikeudet (644 tiedostoille, 755 kansioille) |
+| `chroot_local_user`      | `YES` | Rajoita käyttäjät kotihakemistoonsa                       |
+| `allow_writeable_chroot` | `YES` | Salli lataukset chroot-ympäristössä                       |
 
-4. **Add Passive Port Range:** Add these lines to the end of the file. This is needed for the firewall.
+4. **Lisää passiivinen porttialue:** Lisää nämä rivit tiedoston loppuun. Tämä tarvitaan palomuuria varten.
 
    ```
    pasv_enable=YES
@@ -137,7 +140,7 @@ Make these changes:
    pasv_max_port=50000
    ```
 
-5. **Enable Logging:** Add these lines to enable logging for Fail2ban.
+5. **Ota lokitus käyttöön:** Lisää nämä rivit Fail2ban-lokitusta varten.
 
    ```
    xferlog_enable=YES
@@ -145,34 +148,34 @@ Make these changes:
    log_ftp_protocol=YES
    ```
 
-6. **Save and Restart:** Press `Ctrl+O`, `Enter`, `Ctrl+X`, then restart the service:
+6. **Tallenna ja käynnistä uudelleen:** Paina `Ctrl+O`, `Enter`, `Ctrl+X`, ja käynnistä palvelu uudelleen:
 
    ```bash
    sudo systemctl restart vsftpd
    ```
 
-### Creating an FTP User {#creating-an-ftp-user}
+### FTP-käyttäjän luominen {#creating-an-ftp-user}
 
-Create a dedicated, restricted user for FTP access.
+Luo oma rajoitettu käyttäjä FTP-käyttöä varten.
 
-1. **Create the user:**
+1. **Luo käyttäjä:**
 
    ```bash
    sudo adduser ftpuser
    ```
 
-Follow the prompts to set a password. The other fields (name, phone, etc.) can be left blank.
+   Seuraa ohjeita ja aseta salasana. Muut kentät (nimi, puhelin jne.) voi jättää tyhjiksi.
 
-2. **Create the directory structure:**
+2. **Luo hakemistorakenne:**
 
    ```bash
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-* `/home/ftpuser/ftp` - Main FTP directory
-   * `/home/ftpuser/ftp/uploads` - Where files will be uploaded
+   * `/home/ftpuser/ftp` - Pää-FTP-hakemisto
+   * `/home/ftpuser/ftp/uploads` - Hakemisto tiedostojen lataamista varten
 
-3. **Set permissions:**
+3. **Aseta oikeudet:**
 
    ```bash
    sudo chown -R ftpuser:ftpuser /home/ftpuser/ftp
@@ -180,35 +183,36 @@ Follow the prompts to set a password. The other fields (name, phone, etc.) can b
    sudo chmod 755 /home/ftpuser/ftp/uploads
    ```
 
-## Part 3: Firewall and Brute-Force Protection {#part-3-firewall-and-brute-force-protection}
 
-Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
+## Osa 3: Palomuuri ja brute-force-suojaus {#part-3-firewall-and-brute-force-protection}
 
-### Setting Up UFW {#setting-up-ufw}
+Suojaa Pi UFW:llä (Uncomplicated Firewall) ja Fail2banilla.
 
-1. **Install UFW:**
+### UFW:n asentaminen {#setting-up-ufw}
+
+1. **Asenna UFW:**
 
    ```bash
    sudo apt install ufw -y
    ```
 
-2. **Set default policies:**
+2. **Aseta oletuskäytännöt:**
 
    ```bash
    sudo ufw default deny incoming
    sudo ufw default allow outgoing
    ```
 
-3. **Allow SSH (critical!):**
+3. **Salli SSH (välttämätön!):**
 
    ```bash
    sudo ufw allow ssh comment 'SSH access'
    ```
 
 > \[!WARNING]
-> Always allow SSH before enabling the firewall, or you'll lock yourself out!
+> Salli aina SSH ennen palomuurin käyttöönottoa, muuten lukitset itsesi ulos!
 
-4. **Allow FTP ports:**
+4. **Salli FTP-portit:**
 
    ```bash
    sudo ufw allow 20/tcp comment 'FTP data'
@@ -216,30 +220,29 @@ Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
    sudo ufw allow 40000:50000/tcp comment 'FTP passive mode'
    ```
 
-5. **Enable the firewall:**
+5. **Ota palomuuri käyttöön:**
 
    ```bash
    sudo ufw enable
    ```
 
-### Setting Up Fail2ban {#setting-up-fail2ban}
+### Fail2banin asentaminen {#setting-up-fail2ban}
 
-Fail2ban automatically blocks IP addresses after repeated failed login attempts.
+Fail2ban estää automaattisesti IP-osoitteita toistuvien epäonnistuneiden kirjautumisyritysten jälkeen.
 
-1. **Install Fail2ban:**
+1. **Asenna Fail2ban:**
 
    ```bash
    sudo apt install fail2ban -y
    ```
 
-2. **Create a local configuration:**
+2. **Luo paikallinen konfiguraatio:**
 
    ```bash
    sudo nano /etc/fail2ban/jail.local
    ```
 
-3. **Add these configurations:**
-
+3. **Lisää nämä asetukset:**
    ```ini
    [DEFAULT]
    bantime = 3600
@@ -263,6 +266,7 @@ Fail2ban automatically blocks IP addresses after repeated failed login attempts.
    ```bash
    sudo systemctl restart fail2ban
    ```
+
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
@@ -458,19 +462,19 @@ do
 done
 ```
 
-Make it executable:
+Tee se suoritettavaksi:
 
 ```bash
 sudo chmod +x /usr/local/bin/ftp-monitor.sh
 ```
 
-### Create a Systemd Service {#create-a-systemd-service}
+### Luo Systemd-palvelu {#create-a-systemd-service}
 
 ```bash
 sudo nano /etc/systemd/system/ftp-monitor.service
 ```
 
-Add this content:
+Lisää tämä sisältö:
 
 ```ini
 [Unit]
@@ -487,7 +491,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable and start the service:
+Ota palvelu käyttöön ja käynnistä se:
 
 ```bash
 sudo systemctl daemon-reload
@@ -495,98 +499,98 @@ sudo systemctl enable ftp-monitor.service
 sudo systemctl start ftp-monitor.service
 ```
 
-Check the status:
+Tarkista tila:
 
 ```bash
 sudo systemctl status ftp-monitor.service
 ```
 
-## Part 5: Email Options for Legacy Devices {#part-5-email-options-for-legacy-devices}
 
-Devices like FOSSCAM cameras often don't support modern TLS versions. There are two solutions:
+## Osa 5: Sähköpostivaihtoehdot vanhoille laitteille {#part-5-email-options-for-legacy-devices}
 
-### Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
+Laitteet kuten FOSSCAM-kamerat eivät usein tue moderneja TLS-versioita. On kaksi ratkaisua:
 
-If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports specifically for older devices like cameras, printers, scanners, and fax machines.
+### Vaihtoehto 1: Käytä Forward Emailin Legacy TLS 1.0 -portteja (Suositeltu) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-#### Pricing {#pricing}
+Jos käytät Forward Emailia, tämä on helpoin ratkaisu. Forward Email tarjoaa omistetut legacy TLS 1.0 -portit erityisesti vanhemmille laitteille kuten kameroille, tulostimille, skannereille ja fakseille.
 
-Forward Email offers several plans:
+#### Hinnoittelu {#pricing}
 
-| Plan | Price | Features |
-| ----------------------- | ------------ | -------------------------------------- |
-| Free | $0/month | Email forwarding only (no sending) |
-| **Enhanced Protection** | **$3/month** | **SMTP access + legacy TLS 1.0 ports** |
-| Team | $9/month | Enhanced + team features |
-| Enterprise | $250/month | Team + unlimited API requests |
+Forward Email tarjoaa useita suunnitelmia:
+
+| Suunnitelma             | Hinta        | Ominaisuudet                          |
+| ----------------------- | ------------ | ------------------------------------ |
+| Ilmainen                | 0 $/kuukausi | Vain sähköpostin edelleenlähetys (ei lähettämistä) |
+| **Parannettu suojaus**  | **3 $/kuukausi** | **SMTP-yhteys + legacy TLS 1.0 -portit** |
+| Tiimi                   | 9 $/kuukausi | Parannettu + tiimitoiminnot          |
+| Yritys                  | 250 $/kuukausi | Tiimi + rajattomat API-kutsut        |
 
 > \[!IMPORTANT]
-> The **Enhanced Protection plan ($3/month)** or higher is required for SMTP access and legacy TLS 1.0 port support.
+> **Parannettu suojaus -suunnitelma (3 $/kuukausi)** tai sitä korkeampi vaaditaan SMTP-yhteyteen ja legacy TLS 1.0 -porttien tukeen.
 
-Learn more at [Forward Email Pricing](https://forwardemail.net/en/pricing).
+Lisätietoja osoitteessa [Forward Email Pricing](https://forwardemail.net/en/pricing).
 
-#### Generate Your Password {#generate-your-password}
+#### Luo salasana {#generate-your-password}
 
-Before configuring your device, generate a password in Forward Email:
+Ennen laitteen konfigurointia, luo salasana Forward Emailissa:
 
-1. Log in to [Forward Email](https://forwardemail.net)
-2. Navigate to **My Account → Domains → \[Your Domain] → Aliases**
-3. Create or select an alias (e.g., `camera@yourdomain.com`)
-4. Click **"Generate Password"** next to the alias
-5. Copy the generated password - you'll use this for SMTP authentication
+1. Kirjaudu sisään osoitteessa [Forward Email](https://forwardemail.net)
+2. Siirry kohtaan **Oma tili → Domainit → \[Sinun domainisi] → Aliakset**
+3. Luo tai valitse alias (esim. `camera@yourdomain.com`)
+4. Klikkaa **"Generate Password"** aliaksen vieressä
+5. Kopioi luotu salasana – tätä käytät SMTP-todennukseen
 
 > \[!TIP]
-> Each alias can have its own password. This is useful for tracking which device sent which email.
+> Jokaisella aliaksella voi olla oma salasana. Tämä on hyödyllistä, kun haluat seurata, mikä laite lähetti minkäkin sähköpostin.
 
-#### Configure Your Device {#configure-your-device}
+#### Konfiguroi laitteesi {#configure-your-device}
 
-Use these settings in your camera, printer, scanner, or other legacy device:
+Käytä näitä asetuksia kamerassasi, tulostimessasi, skannerissasi tai muussa vanhassa laitteessa:
 
-| Setting | Arvo |
+| Asetus          | Arvo                                             |
 | --------------- | ------------------------------------------------ |
-| SMTP Server | `smtp.forwardemail.net` |
-| Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` (alternative) |
-| Käyttäjänimi | Your alias email (e.g., `camera@yourdomain.com`) |
-| Password | The password from "Generate Password" |
-| Authentication | Vaadetaan |
-| Encryption | SSL/TLS or STARTTLS |
+| SMTP-palvelin   | `smtp.forwardemail.net`                          |
+| Portti (SSL/TLS)| `2455`                                           |
+| Portti (STARTTLS)| `2555` (vaihtoehtoinen)                         |
+| Käyttäjätunnus  | Aliaksesi sähköpostiosoite (esim. `camera@yourdomain.com`) |
+| Salasana        | "Generate Password" -kohdassa luotu salasana    |
+| Todennus        | Pakollinen                                       |
+| Salaus          | SSL/TLS (suositeltu) tai STARTTLS                |
 
 > \[!WARNING]
-> These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Use only if your device cannot support modern TLS 1.2+.
+> Nämä portit käyttävät vanhentunutta TLS 1.0 -protokollaa, jolla on tunnettuja tietoturva-aukkoja (BEAST, POODLE). Käytä vain, jos laitteesi ei tue moderneja TLS 1.2+ -versioita.
 
-Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
+Konfiguroi laitteesi näillä asetuksilla, niin se lähettää sähköpostit suoraan Forward Emailin kautta ilman paikallista välipalvelinta.
 
-For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
+Lisätietoja löytyy [Forward Emailin UKK:sta Legacy TLS -tuesta](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
-### Option 2: Set Up a Postfix SMTP Relay {#option-2-set-up-a-postfix-smtp-relay}
+### Vaihtoehto 2: Perusta Postfix SMTP -välipalvelin {#option-2-set-up-a-postfix-smtp-relay}
 
-If you're not using Forward Email, or prefer a local relay solution, set up Postfix on the Raspberry Pi to act as a middleman. This works with any email provider (Gmail, Outlook, Yahoo, AOL, etc.).
+Jos et käytä Forward Emailia tai haluat paikallisen välipalveluratkaisun, asenna Postfix Raspberry Pi:hin toimimaan välittäjänä. Tämä toimii minkä tahansa sähköpostipalveluntarjoajan kanssa (Gmail, Outlook, Yahoo, AOL jne.).
 
-#### Install Postfix {#install-postfix}
+#### Asenna Postfix {#install-postfix}
 
 ```bash
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules -y
 ```
+Asennuksen aikana:
 
-During installation:
+* Valitse **"Internet Site"**
+* Syötä Pi:n isäntänimi (esim. `raspberrypi-ftp`) kohtaan "System mail name"
 
-* Select **"Internet Site"**
-* Enter your Pi's hostname (e.g., `raspberrypi-ftp`) for "System mail name"
+#### Valitse Sähköpostipalveluntarjoajasi {#choose-your-email-provider}
 
-#### Choose Your Email Provider {#choose-your-email-provider}
+| Palveluntarjoaja | SMTP-palvelin          | Portti | Sovellussalasana vaaditaan? |
+| ---------------- | ---------------------- | ------ | --------------------------- |
+| Gmail            | smtp.gmail.com         | 587    | Kyllä                      |
+| Outlook          | smtp-mail.outlook.com  | 587    | Kyllä                      |
+| Yahoo            | smtp.mail.yahoo.com    | 465    | Kyllä                      |
+| AOL              | smtp.aol.com           | 587    | Kyllä                      |
 
-| Palvelija | SMTP Server | Port | App Password Required? |
-| -------- | --------------------- | ---- | ---------------------- |
-| Gmail | smtp.gmail.com | 587 | Kyllä |
-| Outlook | smtp-mail.outlook.com | 587 | Kyllä |
-| Yahoo | smtp.mail.yahoo.com | 465 | Kyllä |
-| AOL | smtp.aol.com | 587 | Kyllä |
+#### Hanki Sovellussalasana {#get-an-app-specific-password}
 
-#### Get an App-Specific Password {#get-an-app-specific-password}
-
-Most providers require app passwords for third-party applications. Generate one from your email provider's security settings:
+Useimmat palveluntarjoajat vaativat sovellussalasanoja kolmannen osapuolen sovelluksille. Luo sellainen sähköpostipalveluntarjoajasi suojausasetuksista:
 
 * **Gmail:** [Google Account Security](https://myaccount.google.com/security)
 * **Outlook:** [Microsoft Account Security](https://account.microsoft.com/security)
@@ -594,11 +598,11 @@ Most providers require app passwords for third-party applications. Generate one 
 * **AOL:** [AOL Account Security](https://login.aol.com/account/security)
 
 > \[!IMPORTANT]
-> Never use your regular email password. Always use an app-specific password.
+> Älä koskaan käytä tavallista sähköpostisalasanasi. Käytä aina sovellussalasanaa.
 
-#### Configure SASL Authentication {#configure-sasl-authentication}
+#### Määritä SASL-todennus {#configure-sasl-authentication}
 
-Create the password file for your chosen provider. This example uses Yahoo:
+Luo salasana tiedosto valitsemallesi palveluntarjoajalle. Tässä esimerkissä käytetään Yahoo:
 
 ```bash
 sudo mkdir -p /etc/postfix/sasl
@@ -606,28 +610,28 @@ sudo chmod 700 /etc/postfix/sasl
 sudo nano /etc/postfix/sasl/sasl_passwd
 ```
 
-Add this line (adjust server and port for your provider):
+Lisää tämä rivi (säädä palvelin ja portti palveluntarjoajasi mukaan):
 
 ```
 [smtp.mail.yahoo.com]:465 your_email@yahoo.com:your_app_password
 ```
 
-For Gmail, use:
+Gmailille käytä:
 
 ```
 [smtp.gmail.com]:587 your_email@gmail.com:your_app_password
 ```
 
-Secure and hash the file:
+Suojaa ja hajauta tiedosto:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl/sasl_passwd
 sudo postmap /etc/postfix/sasl/sasl_passwd
 ```
 
-#### Configure Email Address Mapping {#configure-email-address-mapping}
+#### Määritä Sähköpostiosoitteiden Uudelleenkirjoitus {#configure-email-address-mapping}
 
-Rewrite local email addresses to match your email provider:
+Uudelleenkirjoita paikalliset sähköpostiosoitteet vastaamaan sähköpostipalveluntarjoajaasi:
 
 ```bash
 sudo mkdir -p /etc/postfix/map
@@ -635,39 +639,39 @@ sudo chmod 700 /etc/postfix/map
 sudo nano /etc/postfix/map/regex_map
 ```
 
-Add this line (replace `HOSTNAME` with your Pi's hostname and use your email):
+Lisää tämä rivi (korvaa `HOSTNAME` Pi:n isäntänimelläsi ja käytä omaa sähköpostiasi):
 
 ```
 /.+@HOSTNAME/    your_email@provider.com
 ```
 
-Example:
+Esimerkki:
 
 ```
 /.+@raspberrypi-ftp/    john@yahoo.com
 ```
 
-Secure the file:
+Suojaa tiedosto:
 
 ```bash
 sudo chmod 600 /etc/postfix/map/regex_map
 ```
 
-#### Configure Postfix Main Settings {#configure-postfix-main-settings}
+#### Määritä Postfixin Pääasetukset {#configure-postfix-main-settings}
 
-Edit the main configuration:
+Muokkaa pääkonfiguraatiota:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-Find and update the relay host (or add at the end):
+Etsi ja päivitä relay host (tai lisää tiedoston loppuun):
 
 ```
 relayhost = [smtp.mail.yahoo.com]:465
 ```
 
-Add these settings at the end of the file:
+Lisää nämä asetukset tiedoston loppuun:
 
 ```
 # SMTP Relay Configuration
@@ -687,62 +691,62 @@ mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 ```
 
 > \[!TIP]
-> For Gmail (port 587), set `smtp_tls_wrappermode = no` instead of `yes`.
+> Gmailille (portti 587) aseta `smtp_tls_wrappermode = no` `yes` sijaan.
 
 > \[!WARNING]
-> Update `mynetworks` with your actual network range. Only add trusted networks - any device on these networks can relay mail without authentication.
+> Päivitä `mynetworks` todellisella verkkoalueellasi. Lisää vain luotetut verkot – kaikki näissä verkoissa olevat laitteet voivat välittää sähköpostia ilman todennusta.
 
-**Common network ranges:**
+**Yleisiä verkkoalueita:**
 
-| Network Range | IP Address Range |
-| ---------------- | --------------------------- |
+| Verkkoväli       | IP-osoitealue              |
+| ---------------- | -------------------------- |
 | `192.168.0.0/24` | 192.168.0.1 - 192.168.0.254 |
 | `192.168.1.0/24` | 192.168.1.1 - 192.168.1.254 |
-| `10.0.0.0/8` | 10.0.0.0 - 10.255.255.255 |
+| `10.0.0.0/8`     | 10.0.0.0 - 10.255.255.255   |
 
-#### Update Firewall and Restart {#update-firewall-and-restart}
+#### Päivitä Palomuuri ja Käynnistä Uudelleen {#update-firewall-and-restart}
 
 ```bash
 sudo ufw allow 25/tcp comment 'SMTP for local devices'
 sudo systemctl restart postfix
 ```
 
-Verify Postfix is running:
+Varmista, että Postfix on käynnissä:
 
 ```bash
 sudo systemctl status postfix
 ```
 
-#### Test the Relay {#test-the-relay}
+#### Testaa Välitys {#test-the-relay}
 
-Send a test email:
+Lähetä testisähköposti:
 
 ```bash
 echo "Test from Postfix" | mail -s "Test" your_email@provider.com
 ```
 
-Check the logs:
+Tarkista lokit:
 
 ```bash
 sudo tail -f /var/log/mail.log
 ```
 
-Look for `status=sent` to confirm success.
+Etsi `status=sent` vahvistukseksi onnistumisesta.
 
-#### Configure Your Device {#configure-your-device-1}
+#### Määritä Laitteesi {#configure-your-device-1}
 
-In your camera or device settings:
+Kamerasi tai laitteen asetuksissa:
+* **SMTP-palvelin:** Pi:n IP-osoite (esim. `192.168.1.100`)
+* **SMTP-portti:** `25`
+* **Todennus:** Ei
+* **Salaus:** Ei (vain paikallisverkossa)
 
-* **SMTP Server:** Your Pi's IP address (e.g., `192.168.1.100`)
-* **SMTP Port:** `25`
-* **Authentication:** None
-* **Encryption:** None (local network only)
 
-## Troubleshooting {#troubleshooting}
+## Vianmääritys {#troubleshooting}
 
-If issues arise, check these log files:
+Jos ongelmia ilmenee, tarkista nämä lokitiedostot:
 
-**FTP Server:**
+**FTP-palvelin:**
 
 ```bash
 sudo tail -f /var/log/vsftpd.log
@@ -755,19 +759,20 @@ sudo fail2ban-client status
 sudo tail -f /var/log/fail2ban.log
 ```
 
-**File Monitor:**
+**Tiedostovalvonta:**
 
 ```bash
 sudo journalctl -u ftp-monitor.service -f
 ```
 
-**Postfix Mail:**
+**Postfix-sähköposti:**
 
 ```bash
 sudo tail -f /var/log/mail.log
-mailq  # View mail queue
+mailq  # Näytä postijono
 ```
 
-## Wrapping Up {#wrapping-up}
 
-The Raspberry Pi is now a complete automated system with secure file uploads, automatic email notifications with attachments, and SMTP relay capabilities for legacy devices. Whether using Forward Email's legacy TLS ports or a local Postfix relay, older devices can now send emails reliably through modern email providers.
+## Yhteenveto {#wrapping-up}
+
+Raspberry Pi on nyt täydellinen automatisoitu järjestelmä, jossa on turvalliset tiedostojen lataukset, automaattiset sähköposti-ilmoitukset liitteineen sekä SMTP-välitysominaisuudet vanhemmille laitteille. Käytitpä sitten Forward Emailin vanhoja TLS-portteja tai paikallista Postfix-välitystä, vanhemmat laitteet voivat nyt lähettää sähköposteja luotettavasti nykyaikaisten sähköpostipalveluntarjoajien kautta.

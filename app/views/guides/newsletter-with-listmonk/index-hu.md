@@ -1,89 +1,93 @@
-# Listmonk e-mail továbbítással a biztonságos hírlevélküldéshez {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+# Listmonk a Forward Email-vel a Biztonságos Hírlevélküldéshez {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Áttekintés](#overview)
-* [Miért Listmonk és Email Forward](#why-listmonk-and-forward-email)
+* [Miért Listmonk és Forward Email](#why-listmonk-and-forward-email)
 * [Előfeltételek](#prerequisites)
 * [Telepítés](#installation)
   * [1. Frissítse a szerverét](#1-update-your-server)
-  * [2. Függőségek telepítése](#2-install-dependencies)
-  * [3. Töltse le a Listmonk konfigurációját](#3-download-listmonk-configuration)
-  * [4. Tűzfal (UFW) konfigurálása](#4-configure-firewall-ufw)
-  * [5. HTTPS hozzáférés konfigurálása](#5-configure-https-access)
-  * [6. Indítsa el a Listmonkot](#6-start-listmonk)
-  * [7. Konfigurálja az e-mail továbbításának SMTP-jét a Listmonkban](#7-configure-forward-email-smtp-in-listmonk)
-  * [8. A visszapattanás-feldolgozás konfigurálása](#8-configure-bounce-processing)
+  * [2. Telepítse a függőségeket](#2-install-dependencies)
+  * [3. Töltse le a Listmonk konfigurációt](#3-download-listmonk-configuration)
+  * [4. Tűzfal konfigurálása (UFW)](#4-configure-firewall-ufw)
+  * [5. HTTPS hozzáférés beállítása](#5-configure-https-access)
+  * [6. Listmonk indítása](#6-start-listmonk)
+  * [7. Forward Email SMTP konfigurálása Listmonk-ban](#7-configure-forward-email-smtp-in-listmonk)
+  * [8. Bounce feldolgozás konfigurálása](#8-configure-bounce-processing)
 * [Tesztelés](#testing)
-  * [Levelezőlista létrehozása](#create-a-mailing-list)
+  * [Hírlevél lista létrehozása](#create-a-mailing-list)
   * [Feliratkozók hozzáadása](#add-subscribers)
-  * [Kampány létrehozása és elküldése](#create-and-send-a-campaign)
+  * [Kampány létrehozása és küldése](#create-and-send-a-campaign)
 * [Ellenőrzés](#verification)
 * [Fejlesztői megjegyzések](#developer-notes)
-* [Következtetés](#conclusion)
+* [Összegzés](#conclusion)
+
 
 ## Áttekintés {#overview}
 
-Ez az útmutató lépésről lépésre bemutatja a fejlesztőknek, hogyan állítsák be a [Listmonk](https://listmonk.app/)-t, egy hatékony, nyílt forráskódú hírlevél- és levelezőlista-kezelőt, hogy a [E-mail továbbítása](https://forwardemail.net/)-et használja SMTP-szolgáltatóként. Ez a kombináció lehetővé teszi kampányaik hatékony kezelését, miközben biztosítja a biztonságos, privát és megbízható e-mail-kézbesítést.
+Ez az útmutató lépésről lépésre segíti a fejlesztőket a [Listmonk](https://listmonk.app/) – egy erőteljes, nyílt forráskódú hírlevél- és levelezőlista-kezelő – beállításában, hogy a [Forward Email](https://forwardemail.net/) SMTP szolgáltatóját használja. Ez a kombináció lehetővé teszi a kampányok hatékony kezelését, miközben biztosítja a biztonságos, privát és megbízható e-mail kézbesítést.
 
-* **Listmonk**: Feliratkozók kezelését, listák szervezését, kampányok létrehozását és teljesítménykövetést kezel.
-* **E-mail továbbítása**: Biztonságos SMTP-kiszolgálóként működik, beépített biztonsági funkciókkal, például SPF, DKIM, DMARC és TLS titkosítással kezeli az e-mailek tényleges küldését.
+* **Listmonk**: Kezeli a feliratkozókat, a listák szervezését, kampányok létrehozását és teljesítményük nyomon követését.
+* **Forward Email**: Biztonságos SMTP szerverként működik, kezeli az e-mailek tényleges küldését beépített biztonsági funkciókkal, mint az SPF, DKIM, DMARC és TLS titkosítás.
 
-E kettő integrálásával teljes mértékben kézben tarthatod az adataid és az infrastruktúrád, miközben kihasználod a Forward Email robusztus kézbesítési rendszerét.
+Ezek integrálásával teljes kontrollt tarthat az adatai és infrastruktúrája felett, miközben kihasználja a Forward Email robusztus kézbesítési rendszerét.
 
-## Miért Listmonk és továbbítsa az e-maileket {#why-listmonk-and-forward-email}
 
-* **Nyílt forráskódú**: Mind a Listmonk, mind a Forward Email mögött álló alapelvek hangsúlyozzák az átláthatóságot és az ellenőrzést. A Listmonkot te magad üzemelteted, az adataid tulajdonosa vagy.
-* **Adatvédelem-központú**: A Forward Email az adatvédelemre összpontosít, minimalizálja az adatmegőrzést és a biztonságos átvitelre összpontosít.
-* **Költséghatékony**: A Listmonk ingyenes, a Forward Email pedig nagylelkű ingyenes szinteket és megfizethető fizetős csomagokat kínál, így ez egy költségvetésbarát megoldás.
-* **Skálázhatóság**: A Listmonk nagy teljesítményű, a Forward Email infrastruktúrája pedig a megbízható, nagy léptékű kézbesítésre lett tervezve.
-* **Fejlesztőbarát**: A Listmonk robusztus API-t kínál, a Forward Email pedig egyszerű SMTP-integrációt és webhookokat biztosít.
+## Miért Listmonk és Forward Email {#why-listmonk-and-forward-email}
+
+* **Nyílt forráskódú**: Mind a Listmonk, mind a Forward Email mögötti elvek átláthatóságot és kontrollt hangsúlyoznak. Ön üzemelteti a Listmonk-ot, így az adatai az Önéi.
+* **Adatvédelem-központú**: A Forward Email a magánélet védelmét helyezi előtérbe, minimalizálva az adatmegőrzést és a biztonságos továbbítást.
+* **Költséghatékony**: A Listmonk ingyenes, a Forward Email pedig bőkezű ingyenes csomagokat és megfizethető fizetős terveket kínál, így költséghatékony megoldás.
+* **Skálázhatóság**: A Listmonk nagy teljesítményű, a Forward Email infrastruktúrája pedig megbízható kézbesítést biztosít nagy volumenben is.
+* **Fejlesztőbarát**: A Listmonk erős API-t kínál, a Forward Email pedig egyszerű SMTP integrációt és webhookokat biztosít.
+
 
 ## Előfeltételek {#prerequisites}
 
-Mielőtt elkezdené, győződjön meg arról, hogy a következőkkel rendelkezik:
+Mielőtt elkezdené, győződjön meg a következőkről:
 
-* Egy virtuális magánszerver (VPS), amely egy újabb Linux disztribúciót futtat (Ubuntu 20.04+ ajánlott), legalább 1 CPU-val és 1 GB RAM-mal (2 GB ajánlott).
-* Szüksége van egy szolgáltatóra? Nézze meg a [ajánlott VPS lista](https://github.com/forwardemail/awesome-mail-server-providers) azonosítót.
-* Egy Ön által felügyelt domainnév (DNS hozzáférés szükséges).
-* Egy aktív fiók [E-mail továbbítása](https://forwardemail.net/) azonosítóval.
+* Egy virtuális privát szerver (VPS), amely egy friss Linux disztribúciót futtat (ajánlott Ubuntu 20.04+), legalább 1 CPU-val és 1GB RAM-mal (ajánlott 2GB).
+  * Kell szolgáltató? Tekintse meg a [ajánlott VPS listát](https://github.com/forwardemail/awesome-mail-server-providers).
+* Egy domain név, amelyet Ön irányít (DNS hozzáféréssel).
+* Aktív fiók a [Forward Email](https://forwardemail.net/) szolgáltatásnál.
 * Root vagy `sudo` hozzáférés a VPS-hez.
-* Alapfokú jártasság a Linux parancssori műveletekben.
+* Alapvető ismeretek a Linux parancssoros műveletekről.
+
 
 ## Telepítés {#installation}
 
-Ezek a lépések végigvezetnek a Listmonk Docker és Docker Compose használatával történő telepítésén a VPS-eden.
+Ezek a lépések végigvezetik a Listmonk telepítését Docker és Docker Compose használatával a VPS-en.
 
 ### 1. Frissítse a szerverét {#1-update-your-server}
 
-Győződjön meg róla, hogy a rendszer csomaglistája és a telepített csomagok naprakészek.
+Győződjön meg róla, hogy a rendszer csomaglistája és telepített csomagjai naprakészek.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2. Függőségek telepítése {#2-install-dependencies}
+### 2. Telepítse a függőségeket {#2-install-dependencies}
 
-Telepítse a Dockert, a Docker Compose-t és az UFW-t (Uncomplicated Firewall).
+Telepítse a Dockert, Docker Compose-t és az UFW-t (Egyszerűsített tűzfal).
 
 ```bash
 sudo apt install -y docker.io docker-compose ufw
 ```
 
-### 3. Listmonk konfiguráció letöltése {#3-download-listmonk-configuration}
+### 3. Töltse le a Listmonk konfigurációt {#3-download-listmonk-configuration}
 
-Hozz létre egy könyvtárat a Listmonk számára, és töltsd le a hivatalos `docker-compose.yml` fájlt.
+Hozzon létre egy könyvtárat a Listmonk számára, és töltse le a hivatalos `docker-compose.yml` fájlt.
 
 ```bash
 mkdir listmonk && cd listmonk
 curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/master/docker-compose.yml
 ```
 
-Ez a fájl definiálja a Listmonk alkalmazáskonténert és a hozzá szükséges PostgreSQL adatbáziskonténert.
+Ez a fájl definiálja a Listmonk alkalmazás konténert és a szükséges PostgreSQL adatbázis konténert.
+### 4. Tűzfal konfigurálása (UFW) {#4-configure-firewall-ufw}
 
-### 4. Tűzfal (UFW) konfigurálása {#4-configure-firewall-ufw}
-
-Engedélyezd a létfontosságú forgalmat (SSH, HTTP, HTTPS) a tűzfalon keresztül. Ha az SSH-d nem szabványos porton fut, ennek megfelelően módosítsd.
+Engedélyezze az alapvető forgalmat (SSH, HTTP, HTTPS) a tűzfalon keresztül. Ha az SSH nem szabványos porton fut, állítsa be ennek megfelelően.
 
 ```bash
 sudo ufw allow ssh
@@ -92,164 +96,145 @@ sudo ufw allow https
 sudo ufw enable
 ```
 
-Amikor a rendszer kéri, erősítse meg a tűzfal engedélyezését.
+Erősítse meg a tűzfal engedélyezését, amikor a rendszer kéri.
 
 ### 5. HTTPS hozzáférés konfigurálása {#5-configure-https-access}
 
-A Listmonk HTTPS-en keresztüli futtatása kulcsfontosságú a biztonság szempontjából. Két fő lehetőséged van:
+A Listmonk HTTPS-en keresztüli futtatása elengedhetetlen a biztonság érdekében. Két fő lehetőség közül választhat:
 
-#### A lehetőség: Cloudflare Proxy használata (ajánlott az Egyszerűség érdekében) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### A lehetőség: Cloudflare proxy használata (Egyszerűség miatt ajánlott) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-Ha a domain DNS-ét a Cloudflare kezeli, kihasználhatja a proxy funkciójukat az egyszerű HTTPS-hez.
+Ha a domain DNS kezelését a Cloudflare végzi, kihasználhatja a proxy szolgáltatásukat az egyszerű HTTPS-hez.
 
-1. **Point DNS**: Hozz létre egy `A` rekordot a Cloudflare-ben a Listmonk aldomainedhez (pl. `listmonk.yourdomain.com`), amely a VPS IP-címedre mutat. Győződj meg róla, hogy a **Proxy állapota** **Proxied** (narancssárga felhő) értékre van állítva.
-
-2. **Docker Compose módosítása**: Szerkeszd a letöltött `docker-compose.yml` fájlt:
-
-```bash
+1. **DNS beállítása**: Hozzon létre egy `A` rekordot a Cloudflare-ben a Listmonk aldomainjéhez (pl. `listmonk.yourdomain.com`), amely a VPS IP-címére mutat. Győződjön meg róla, hogy a **Proxy állapot** **Proxied** (narancssárga felhő) értékre van állítva.
+2. **Docker Compose módosítása**: Szerkessze a letöltött `docker-compose.yml` fájlt:
+   ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-Ezáltal a Listmonk belsőleg elérhetővé válik a 80-as porton, amelyet a Cloudflare ezután HTTPS-sel tud proxyzni és biztonságossá tenni.
+   Ez lehetővé teszi, hogy a Listmonk belsőleg a 80-as porton legyen elérhető, amelyet a Cloudflare proxyzhat és HTTPS-sel biztosíthat.
 
-#### B. lehetőség: Fordított proxy használata (Nginx, Caddy stb.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
+#### B lehetőség: Reverse proxy használata (Nginx, Caddy, stb.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
-Alternatív megoldásként beállíthat egy fordított proxyt, például az Nginx-et vagy a Caddy-t a VPS-én, hogy kezelje a HTTPS megszakítását és a Listmonk felé irányuló proxy kéréseket (alapértelmezés szerint a 9000-es porton fut).
+Alternatívaként beállíthat egy reverse proxy-t, például Nginx-et vagy Caddy-t a VPS-én, amely kezeli a HTTPS lezárást és továbbítja a kéréseket a Listmonk felé (alapértelmezettként a 9000-es porton fut).
 
-* Tartsa meg az alapértelmezett `ports: - "127.0.0.1:9000:9000"` értéket a `docker-compose.yml`-ben, hogy a Listmonk csak helyben legyen elérhető.
-* Konfigurálja a kiválasztott fordított proxyt úgy, hogy a 80-as és 443-as portokon figyeljen, kezelje az SSL-tanúsítványok beszerzését (pl. Let's Encrypt-en keresztül), és továbbítsa a forgalmat a `http://127.0.0.1:9000`-re.
-* A részletes fordított proxy beállítás meghaladja ennek az útmutatónak a kereteit, de számos oktatóanyag elérhető online.
+* Tartsa meg az alapértelmezett `ports: - "127.0.0.1:9000:9000"` beállítást a `docker-compose.yml`-ben, hogy a Listmonk csak helyileg legyen elérhető.
+* Konfigurálja a választott reverse proxy-t, hogy figyeljen a 80-as és 443-as portokon, kezelje az SSL tanúsítvány beszerzését (pl. Let's Encrypt segítségével), és továbbítsa a forgalmat a `http://127.0.0.1:9000` címre.
+* A reverse proxy részletes beállítása ezen útmutató hatókörén kívül esik, de számos oktatóanyag elérhető az interneten.
 
-### 6. Indítsa el a Listmonkot {#6-start-listmonk}
+### 6. Listmonk indítása {#6-start-listmonk}
 
-Navigáljon vissza a `listmonk` könyvtárba (ha még nem ott van), és indítsa el a konténereket leválasztott módban.
+Lépjen vissza a `listmonk` könyvtárba (ha még nem ott van), és indítsa el a konténereket leválasztott módban.
 
 ```bash
-cd ~/listmonk # Or the directory where you saved docker-compose.yml
+cd ~/listmonk # Vagy ahová a docker-compose.yml fájlt mentette
 docker compose up -d
 ```
 
-A Docker letölti a szükséges képeket, és elindítja a Listmonk alkalmazást és az adatbázis-tárolókat. Ez elsőre eltarthat egy-két percig.
+A Docker letölti a szükséges képeket, és elindítja a Listmonk alkalmazás és adatbázis konténereket. Ez az első alkalommal egy-két percet is igénybe vehet.
 
-✅ **Listmonk elérése**: Most már hozzáférhetsz a Listmonk webes felületéhez a konfigurált domainen keresztül (pl. `https://listmonk.yourdomain.com`).
+✅ **Listmonk elérése**: Most már el kell tudnia érni a Listmonk webes felületét a beállított domainen keresztül (pl. `https://listmonk.yourdomain.com`).
 
-### 7. Konfigurálja az e-mail továbbításának SMTP-jét a Listmonkban {#7-configure-forward-email-smtp-in-listmonk}
+### 7. Forward Email SMTP konfigurálása Listmonkban {#7-configure-forward-email-smtp-in-listmonk}
 
-Ezután konfigurálja a Listmonkot, hogy e-maileket küldjön a Forward Email fiókjával.
+Ezután állítsa be a Listmonkot, hogy a Forward Email fiókján keresztül küldjön e-maileket.
 
-1. **SMTP engedélyezése az e-mail továbbításában**: Győződjön meg róla, hogy létrehozta az SMTP hitelesítő adatokat az e-mail továbbítási fiók irányítópultján. Kövesse a [E-mail továbbítási útmutató egyéni domainnel történő e-mail küldéséhez SMTP-n keresztül](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) utasításokat, ha még nem tette meg.
+1. **SMTP engedélyezése a Forward Email-ben**: Győződjön meg róla, hogy létrehozott SMTP hitelesítő adatokat a Forward Email fiókja irányítópultján. Ha még nem tette meg, kövesse a [Forward Email útmutatót az egyedi domainnel SMTP-n keresztüli e-mail küldéshez](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp).
+2. **Listmonk konfigurálása**: Jelentkezzen be a Listmonk admin panelbe.
+   * Navigáljon a **Beállítások -> SMTP** menüponthoz.
 
-2. **A Listmonk konfigurálása**: Jelentkezzen be a Listmonk adminisztrációs felületére.
-* Navigáljon a **Beállítások -> SMTP** menüpontra.
+   * A Listmonk beépített támogatást nyújt a Forward Emailhez. Válassza ki a szolgáltatók listájából a **ForwardEmail** opciót, vagy adja meg kézzel az alábbi adatokat:
 
-* A Listmonk beépített támogatással rendelkezik az e-mail továbbításához. Válassza a **ForwardEmail** lehetőséget a szolgáltatók listájából, vagy adja meg manuálisan a következő adatokat:
+     | Beállítás         | Érték                                                                                                              |
+     | :---------------- | :----------------------------------------------------------------------------------------------------------------- |
+     | **Host**          | `smtp.forwardemail.net`                                                                                            |
+     | **Port**          | `465`                                                                                                              |
+     | **Hitelesítési protokoll** | `LOGIN`                                                                                                      |
+     | **Felhasználónév** | Az Ön Forward Email **SMTP felhasználóneve**                                                                       |
+     | **Jelszó**        | Az Ön Forward Email **SMTP jelszava**                                                                              |
+     | **TLS**           | `SSL/TLS`                                                                                                          |
+     | **Feladó e-mail** | Az Ön kívánt `Feladó` címe (pl. `newsletter@yourdomain.com`). Győződjön meg róla, hogy ez a domain be van állítva a Forward Emailben. |
+* **Fontos**: Mindig használd a `465`-ös portot `SSL/TLS`-sel a Forward Email biztonságos kapcsolataihoz (ajánlott). A `587`-es port STARTTLS-sel is támogatott, de az SSL/TLS az előnyben részesített.
 
-| Beállítás | Érték |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------ |
-| **Házigazda** | `smtp.forwardemail.net` |
-| **Kikötő** | `465` |
-| **Hitelesítési protokoll** | `LOGIN` |
-| **Felhasználónév** | Továbbított e-mail címed **SMTP felhasználónév** |
-| **Jelszó** | Továbbított e-mail címed **SMTP jelszó** |
-| **TLS** | `SSL/TLS` |
-| **E-mailből** | A kívánt `From` cím (pl. `newsletter@yourdomain.com`). Győződjön meg arról, hogy ez a domain konfigurálva van az E-mail továbbítása funkcióban. |
+   * Kattints a **Mentés** gombra.
+3. **Teszt e-mail küldése**: Használd az SMTP beállítások oldalán található "Teszt e-mail küldése" gombot. Adj meg egy olyan címzett címet, amelyhez hozzáférsz, majd kattints a **Küldés** gombra. Ellenőrizd, hogy az e-mail megérkezik-e a címzett postaládájába.
 
-* **Fontos**: A biztonságos e-mail-kapcsolatokhoz mindig a `465` és a `SSL/TLS` portokat használja. Ne használja a STARTTLS-t (587-es port).
+### 8. Visszapattanások feldolgozásának beállítása {#8-configure-bounce-processing}
 
-* Kattintson a **Mentés** gombra.
+A visszapattanások feldolgozása lehetővé teszi, hogy a Listmonk automatikusan kezelje azokat az e-maileket, amelyeket nem sikerült kézbesíteni (pl. érvénytelen címek miatt). A Forward Email webhookot biztosít, hogy értesítse a Listmonkot a visszapattanásokról.
 
-3. **Teszt e-mail küldése**: Használja a „Teszt e-mail küldése” gombot az SMTP beállítások oldalon. Adjon meg egy olyan címzett címét, amelyhez hozzáfér, majd kattintson a **Küldés** gombra. Ellenőrizze, hogy az e-mail megérkezett-e a címzett postaládájába.
+#### Forward Email beállítása {#forward-email-setup}
 
-### 8. A visszapattanás feldolgozásának konfigurálása {#8-configure-bounce-processing}
-
-A visszapattanó levelek feldolgozása lehetővé teszi a Listmonk számára, hogy automatikusan kezelje a kézbesíthetetlen e-maileket (pl. érvénytelen címek miatt). A Forward Email egy webhookot biztosít, amely értesíti a Listmonkot a visszapattanásokról.
-
-#### E-mail továbbítási beállítása {#forward-email-setup}
-
-1. Jelentkezzen be a [E-mail továbbítási irányítópult](https://forwardemail.net/) fiókjába.
-
-2. Navigáljon a **Domainek** menüpontra, válassza ki a küldéshez használt domaint, és lépjen a **Beállítások** oldalára.
-
-3. Görgessen le a **Visszapattanó webhook URL** részhez.
-
-4. Írja be a következő URL-t, a `<your_listmonk_domain>` helyére pedig írja be azt a tényleges domaint vagy aldomaint, ahol a Listmonk példány elérhető:
-
-```sh
+1. Jelentkezz be a [Forward Email irányítópultodra](https://forwardemail.net/).
+2. Navigálj a **Domainok** menüponthoz, válaszd ki a küldéshez használt domaint, majd lépj a **Beállítások** oldalára.
+3. Görgess le a **Bounce Webhook URL** szekcióhoz.
+4. Írd be a következő URL-t, helyettesítve a `<your_listmonk_domain>` részt azzal a tényleges domainnel vagy aldomainnel, ahol a Listmonk példányod elérhető:
+   ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
-*Példa*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-5. Görgessen tovább lejjebb a **Webhook aláírás-adathordozó-ellenőrző kulcs** részhez.
+   *Példa*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
+5. Görgess tovább a **Webhook Signature Payload Verification Key** szekcióhoz.
+6. **Másold ki** a generált ellenőrző kulcsot. Erre szükséged lesz a Listmonkban.
+7. Mentsd el a változtatásokat a Forward Email domain beállításaiban.
 
-6. **Másolja** a létrehozott ellenőrző kulcsot. Erre szüksége lesz a Listmonkban.
+#### Listmonk beállítása {#listmonk-setup}
 
-7. Mentse el a módosításokat az e-mail továbbítási domainbeállításaiban.
-
-#### Listmonk beállítás {#listmonk-setup}
-
-1. A Listmonk adminisztrációs felületén lépjen a **Beállítások -> Visszapattanások** menüpontra.
-
-2. Engedélyezze a **Visszapattanás-feldolgozás engedélyezése** lehetőséget.
-
-3. Engedélyezze a **Visszapattanás-webhookok engedélyezése** lehetőséget.
-
-4. Görgessen le a **Webhook-szolgáltatók** részhez.
-
-5. Engedélyezze a **E-mail továbbítása** lehetőséget.
-
-6. Illessze be a **Webhook aláírás-adatcsomag-ellenőrző kulcsot**, amelyet az E-mail továbbítása irányítópultról másolt ki, a **E-mail továbbítási kulcs** mezőbe.
-
-7. Kattintson a **Mentés** gombra az oldal alján.
-
-8. A visszapattanás-feldolgozás most már konfigurálva van! Amikor az E-mail továbbítása visszapattanást észlel a Listmonk által küldött e-mailben, értesíti a Listmonk példányt a webhookon keresztül, és a Listmonk ennek megfelelően megjelöli a feliratkozót.
-
-9. Végezze el az alábbi lépéseket a [Tesztelés](#testing) részben, hogy megbizonyosodjon arról, hogy minden működik.
+1. A Listmonk admin paneljében navigálj a **Beállítások -> Visszapattanások** menüponthoz.
+2. Engedélyezd az **Visszapattanások feldolgozásának engedélyezése** opciót.
+3. Engedélyezd a **Visszapattanás webhookok engedélyezése** opciót.
+4. Görgess le a **Webhook szolgáltatók** szekcióhoz.
+5. Engedélyezd a **Forward Email** opciót.
+6. Illeszd be a Forward Email irányítópultjáról kimásolt **Webhook Signature Payload Verification Key**-t a **Forward Email kulcs** mezőbe.
+7. Kattints az oldal alján a **Mentés** gombra.
+8. A visszapattanások feldolgozása most be van állítva! Amikor a Forward Email visszapattanást észlel egy Listmonk által küldött e-mail esetén, webhookon keresztül értesíti a Listmonk példányodat, amely ennek megfelelően jelöli a feliratkozót.
+9. A működés ellenőrzéséhez végezd el az alábbi lépéseket a [Tesztelés](#testing) szakaszban.
 
 ## Tesztelés {#testing}
 
-Íme egy gyors áttekintés a Listmonk alapvető függvényeiről:
+Íme egy gyors áttekintés a Listmonk alapvető funkcióiról:
 
-### Levelezőlista létrehozása {#create-a-mailing-list}
+### Hírlevél lista létrehozása {#create-a-mailing-list}
 
-* Lépj a **Listák** menüpontra az oldalsávon.
+* Menj a bal oldali menüben a **Listák** pontra.
 * Kattints az **Új lista** gombra.
-* Add meg az adatokat (Név, Típus: Nyilvános/Privát, Leírás, Címkék) és mentsd el.
+* Töltsd ki az adatokat (Név, Típus: Nyilvános/Privát, Leírás, Címkék), majd **Mentés**.
 
 ### Feliratkozók hozzáadása {#add-subscribers}
 
-* Navigálj a **Feliratkozók** részhez.
-* Feliratkozókat adhatsz hozzá:
-* **Manuálisan**: Kattints az **Új feliratkozó** gombra.
-* **Importálás**: Kattints az **Feliratkozók importálása** gombra egy CSV fájl feltöltéséhez.
-* **API**: Használd a Listmonk API-t programozott hozzáadáshoz.
-* Rendelj feliratkozókat egy vagy több listához a létrehozás vagy importálás során.
-* **Bevált gyakorlat**: Használj dupla feliratkozási folyamatot. Konfiguráld ezt a **Beállítások -> Feliratkozás és feliratkozások** alatt.
+* Navigálj a **Feliratkozók** szekcióhoz.
+* Feliratkozókat hozzáadhatsz:
+  * **Kézzel**: Kattints az **Új feliratkozó** gombra.
+  * **Importálás**: Kattints a **Feliratkozók importálása** gombra, és tölts fel egy CSV fájlt.
+  * **API**: Használd a Listmonk API-t programozott hozzáadáshoz.
+* A feliratkozókat hozzárendelheted egy vagy több listához létrehozás vagy importálás közben.
+* **Legjobb gyakorlat**: Használj dupla megerősítést (double opt-in). Ezt a **Beállítások -> Opt-in & Feliratkozások** alatt konfigurálhatod.
 
 ### Kampány létrehozása és küldése {#create-and-send-a-campaign}
 
-* Lépjen a **Kampányok** -> **Új kampány** menüpontra.
-* Töltse ki a kampány adatait (Név, Tárgy, Feladó e-mail címe, Címzett lista(k)).
-* Válassza ki a tartalom típusát (Rich Text/HTML, Sima szöveg, Nyers HTML).
-* Írja meg az e-mail tartalmát. Használhat sablonváltozókat, például a `{{ .Subscriber.Email }}` vagy a `{{ .Subscriber.FirstName }}`.
-* **Mindig küldjön először egy teszt e-mailt!** A „Teszt küldése” opcióval megtekintheti az e-mailt a beérkező levelek mappájában.
-* Ha elégedett, kattintson a **Kampány indítása** gombra az azonnali küldéshez, vagy ütemezze későbbre.
+* Menj a **Kampányok** -> **Új kampány** menüpontra.
+* Töltsd ki a kampány adatait (Név, Tárgy, Feladó e-mail, Küldendő lista(ka)t).
+* Válaszd ki a tartalom típusát (Formázott szöveg/HTML, Egyszerű szöveg, Nyers HTML).
+* Írd meg az e-mail tartalmát. Használhatsz sablon változókat, például `{{ .Subscriber.Email }}` vagy `{{ .Subscriber.FirstName }}`.
+* **Mindig küldj először teszt e-mailt!** Használd a "Teszt küldése" opciót, hogy előnézetben megkapd az e-mailt a postaládádban.
+* Ha elégedett vagy, kattints a **Kampány indítása** gombra az azonnali küldéshez, vagy ütemezd későbbre.
 
 ## Ellenőrzés {#verification}
 
-* **SMTP kézbesítés**: Rendszeresen küldjön teszt e-maileket a Listmonk SMTP beállítási oldalán keresztül, és tesztelje a kampányokat, hogy biztosítsa az e-mailek megfelelő kézbesítését.
-* **Pattanás kezelése**: Küldjön tesztkampányt egy ismert érvénytelen e-mail címre (pl. `bounce-test@yourdomain.com`, ha nincs kéznél valódi cím, bár az eredmények eltérőek lehetnek). Rövid idő elteltével ellenőrizze a kampány statisztikáit a Listmonkban, hogy regisztrálva van-e a pattanás.
-* **E-mail fejlécek**: Használjon olyan eszközöket, mint a [Levéltesztelő](https://www.mail-tester.com/), vagy ellenőrizze manuálisan az e-mail fejléceket, hogy ellenőrizze az SPF, DKIM és DMARC áthaladását, jelezve a megfelelő beállításokat az e-mail továbbítása révén.
-* **Továbbított e-mail naplók**: Ellenőrizze az e-mail továbbításának irányítópultjának naplóit, ha az SMTP-kiszolgálóról eredő kézbesítési problémákat gyanít.
-
+* **SMTP kézbesítés**: Rendszeresen küldj teszt e-maileket a Listmonk SMTP beállítások oldalán keresztül, valamint teszt kampányokat, hogy megbizonyosodj az e-mailek helyes kézbesítéséről.
+* **Visszapattanások kezelése**: Küldj teszt kampányt egy ismert érvénytelen e-mail címre (pl. `bounce-test@yourdomain.com`, ha nincs kéznél valódi, bár az eredmények változhatnak). Rövid idő múlva ellenőrizd a kampány statisztikáit a Listmonkban, hogy regisztrálta-e a visszapattanást.
+* **E-mail fejléc ellenőrzése**: Használj olyan eszközöket, mint a [Mail-Tester](https://www.mail-tester.com/), vagy vizsgáld meg manuálisan az e-mail fejléceket, hogy ellenőrizd az SPF, DKIM és DMARC sikeres átmenetét, ami a Forward Email helyes beállítását jelzi.
+* **Forward Email naplók**: Ha kézbesítési problémákra gyanakszol az SMTP szerver felől, ellenőrizd a Forward Email irányítópultjának naplóit.
 ## Fejlesztői megjegyzések {#developer-notes}
 
-* **Sablonozás**: A Listmonk a Go sablonmotorját használja. A speciális személyre szabáshoz tekintse meg a dokumentációját: `{{ .Subscriber.Attribs.your_custom_field }}`.
-* **API**: A Listmonk átfogó REST API-t biztosít listák, feliratkozók, kampányok, sablonok és egyebek kezeléséhez. Az API dokumentációs linkjét a Listmonk példány láblécében találja.
-* **Egyéni mezők**: A **Beállítások -> Feliratkozó mezők** alatt definiálhat egyéni feliratkozói mezőket további adatok tárolásához.
-* **Webhookok**: A visszapattanásokon kívül a Listmonk más eseményekhez (pl. feliratkozásokhoz) is küldhet webhookokat, lehetővé téve az integrációt más rendszerekkel.
+* **Sablonozás**: A Listmonk a Go sablonmotorját használja. Fedezd fel a dokumentációját a fejlett személyre szabásért: `{{ .Subscriber.Attribs.your_custom_field }}`.
+* **API**: A Listmonk átfogó REST API-t biztosít listák, feliratkozók, kampányok, sablonok és egyéb kezelése céljából. Az API dokumentáció linkjét a Listmonk példányod láblécében találod.
+* **Egyedi mezők**: Egyedi feliratkozói mezőket definiálhatsz a **Beállítások -> Feliratkozói mezők** alatt további adatok tárolásához.
+* **Webhookok**: A visszapattanások mellett a Listmonk más eseményekhez is tud webhookokat küldeni (pl. feliratkozások), lehetővé téve az integrációt más rendszerekkel.
 
-## Következtetés {#conclusion}
 
-A Listmonk saját tárhelyen futó erejének és a Forward Email biztonságos, adatvédelmet tiszteletben tartó kézbesítésének integrálásával egy robusztus és etikus e-mail marketing platformot hozhat létre. A közönségadatok feletti teljes tulajdonjogot fenntartja, miközben a magas kézbesítési hatékonyság és az automatizált biztonsági funkciók előnyeit élvezi.
+## Összefoglalás {#conclusion}
 
-Ez a beállítás egy skálázható, költséghatékony és fejlesztőbarát alternatívát kínál a zárt e-mail szolgáltatásokkal szemben, tökéletesen illeszkedve a nyílt forráskódú szoftverek és a felhasználói adatvédelem szellemiségéhez.
+A Listmonk önállóan üzemeltetett erejének integrálásával a Forward Email biztonságos, adatvédelmet tiszteletben tartó kézbesítésével egy robusztus és etikus e-mail marketing platformot hozol létre. Teljes tulajdonjogodat megőrzöd a közönséged adatai felett, miközben élvezheted a magas kézbesíthetőséget és az automatizált biztonsági funkciókat.
 
-Jó küldést! 🚀
+Ez a beállítás skálázható, költséghatékony és fejlesztőbarát alternatívát kínál a zárt forráskódú e-mail szolgáltatásokkal szemben, tökéletesen illeszkedve a nyílt forráskódú szoftverek és a felhasználói adatvédelem szellemiségéhez.
+
+Jó küldözgetést! 🚀

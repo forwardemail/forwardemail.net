@@ -1,135 +1,138 @@
-# Turn Your Raspberry Pi into a Secure FTP Server with Email Relay {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
+# Перетворіть свій Raspberry Pi на безпечний FTP-сервер з пересиланням електронної пошти {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide will show you how to turn it into a powerful, automated file server with email relay capabilities. Perfect for security cameras, IoT devices, and more.
+У вас є Raspberry Pi, який припадає пилом? Незалежно від того, чи це останній Pi 5, Pi 4, Pi Zero або навіть старіша модель, цей посібник покаже вам, як перетворити його на потужний автоматизований файловий сервер з можливістю пересилання електронної пошти. Ідеально підходить для камер спостереження, IoT-пристроїв та іншого.
 
-**Compatible with:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, and Raspberry Pi Zero.
-
-> \[!NOTE]
-> This guide was tested and verified on a Raspberry Pi 3 Model B running Ubuntu Server 22.04 LTS.
-
-## Table of Contents {#table-of-contents}
-
-* [What We're Building](#what-were-building)
-* [Part 1: Getting Ubuntu Server on Your Pi](#part-1-getting-ubuntu-server-on-your-pi)
-  * [What You'll Need](#what-youll-need)
-  * [Flashing the OS](#flashing-the-os)
-  * [Booting Up & Connecting](#booting-up--connecting)
-* [Part 2: Setting Up a Secure FTP Server](#part-2-setting-up-a-secure-ftp-server)
-  * [Installation & Configuration](#installation--configuration)
-  * [Creating an FTP User](#creating-an-ftp-user)
-* [Part 3: Firewall and Brute-Force Protection](#part-3-firewall-and-brute-force-protection)
-  * [Setting Up UFW](#setting-up-ufw)
-  * [Setting Up Fail2ban](#setting-up-fail2ban)
-* [Part 4: Automated File Processing with Email Notifications](#part-4-automated-file-processing-with-email-notifications)
-  * [Option 1: Using Forward Email API (Recommended)](#option-1-using-forward-email-api-recommended)
-  * [Option 2: Using Other Email Providers](#option-2-using-other-email-providers)
-  * [Create a Systemd Service](#create-a-systemd-service)
-* [Part 5: Email Options for Legacy Devices](#part-5-email-options-for-legacy-devices)
-  * [Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
-  * [Option 2: Set Up a Postfix SMTP Relay](#option-2-set-up-a-postfix-smtp-relay)
-* [Troubleshooting](#troubleshooting)
-* [Wrapping Up](#wrapping-up)
-
-## What We're Building {#what-were-building}
-
-This guide will walk you through setting up a complete system that includes:
-
-* **Ubuntu Server 22.04 LTS:** A rock-solid, lightweight OS for the Pi.
-* **A Secure FTP Server (vsftpd):** For dropping off files securely.
-* **A Firewall (UFW) & Fail2ban:** To keep the bad guys out.
-* **An Automated File Processor:** A script that grabs new files, emails them as attachments, and then cleans up after itself.
-* **Email Options for Legacy Devices:** Two approaches for devices that don't support modern TLS:
-  * Use Forward Email's legacy TLS 1.0 ports (easiest)
-  * Set up a Postfix SMTP relay (works with any email provider)
-
-Ready? Let's dive in.
-
-## Part 1: Getting Ubuntu Server on Your Pi {#part-1-getting-ubuntu-server-on-your-pi}
-
-First things first, get Ubuntu Server running on the Raspberry Pi. This is surprisingly easy thanks to the Raspberry Pi Imager.
-
-### What You'll Need {#what-youll-need}
-
-* Any compatible Raspberry Pi (see list above)
-* A microSD card (8GB minimum, 16GB+ recommended)
-* A computer with a microSD card reader
-* Appropriate power supply for your Pi model
-* Internet access (Ethernet or Wi-Fi)
+**Сумісно з:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W та Raspberry Pi Zero.
 
 > \[!NOTE]
-> Older models like the Raspberry Pi 2 or Pi Zero may be slower but will work fine for this setup.
+> Цей посібник був протестований і перевірений на Raspberry Pi 3 Model B з Ubuntu Server 22.04 LTS.
 
-### Flashing the OS {#flashing-the-os}
 
-1. **Get the Raspberry Pi Imager:** Download it from the [official website](https://www.raspberrypi.com/software/).
+## Зміст {#table-of-contents}
 
-2. **Choose the OS:** In the imager, select "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
-   * For 64-bit models (Pi 3, 4, 5, Zero 2 W), choose **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
-   * For older 32-bit models (Pi 2, Pi Zero, Pi Zero W), choose **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+* [Що ми створюємо](#what-were-building)
+* [Частина 1: Встановлення Ubuntu Server на ваш Pi](#part-1-getting-ubuntu-server-on-your-pi)
+  * [Що вам знадобиться](#what-youll-need)
+  * [Запис ОС](#flashing-the-os)
+  * [Запуск і підключення](#booting-up--connecting)
+* [Частина 2: Налаштування безпечного FTP-сервера](#part-2-setting-up-a-secure-ftp-server)
+  * [Встановлення та конфігурація](#installation--configuration)
+  * [Створення FTP-користувача](#creating-an-ftp-user)
+* [Частина 3: Брандмауер і захист від брутфорсу](#part-3-firewall-and-brute-force-protection)
+  * [Налаштування UFW](#setting-up-ufw)
+  * [Налаштування Fail2ban](#setting-up-fail2ban)
+* [Частина 4: Автоматизована обробка файлів з повідомленнями електронною поштою](#part-4-automated-file-processing-with-email-notifications)
+  * [Варіант 1: Використання Forward Email API (рекомендовано)](#option-1-using-forward-email-api-recommended)
+  * [Варіант 2: Використання інших поштових провайдерів](#option-2-using-other-email-providers)
+  * [Створення служби systemd](#create-a-systemd-service)
+* [Частина 5: Поштові опції для застарілих пристроїв](#part-5-email-options-for-legacy-devices)
+  * [Варіант 1: Використання застарілих портів TLS 1.0 Forward Email (рекомендовано)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
+  * [Варіант 2: Налаштування Postfix SMTP Relay](#option-2-set-up-a-postfix-smtp-relay)
+* [Вирішення проблем](#troubleshooting)
+* [Підсумки](#wrapping-up)
 
-3. **Pick Your Storage:** Select your microSD card.
+
+## Що ми створюємо {#what-were-building}
+
+Цей посібник проведе вас через налаштування повної системи, яка включає:
+
+* **Ubuntu Server 22.04 LTS:** Надійна, легка ОС для Pi.
+* **Безпечний FTP-сервер (vsftpd):** Для безпечного завантаження файлів.
+* **Брандмауер (UFW) та Fail2ban:** Щоб тримати зловмисників поза доступом.
+* **Автоматизований обробник файлів:** Скрипт, який забирає нові файли, надсилає їх як вкладення електронною поштою, а потім очищує після себе.
+* **Поштові опції для застарілих пристроїв:** Два підходи для пристроїв, які не підтримують сучасний TLS:
+  * Використання застарілих портів TLS 1.0 Forward Email (найпростіший)
+  * Налаштування Postfix SMTP Relay (працює з будь-яким поштовим провайдером)
+
+Готові? Почнемо.
+
+
+## Частина 1: Встановлення Ubuntu Server на ваш Pi {#part-1-getting-ubuntu-server-on-your-pi}
+
+Перш за все, встановіть Ubuntu Server на Raspberry Pi. Це дивовижно просто завдяки Raspberry Pi Imager.
+
+### Що вам знадобиться {#what-youll-need}
+
+* Будь-який сумісний Raspberry Pi (див. список вище)
+* microSD карта (мінімум 8 ГБ, рекомендовано 16 ГБ і більше)
+* Комп’ютер з кард-рідером для microSD
+* Відповідний блок живлення для вашої моделі Pi
+* Доступ до Інтернету (Ethernet або Wi-Fi)
+
+> \[!NOTE]
+> Старіші моделі, як Raspberry Pi 2 або Pi Zero, можуть працювати повільніше, але підходять для цього налаштування.
+
+### Запис ОС {#flashing-the-os}
+
+1. **Отримайте Raspberry Pi Imager:** Завантажте його з [офіційного сайту](https://www.raspberrypi.com/software/).
+
+2. **Виберіть ОС:** У програмі виберіть "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
+   * Для 64-бітних моделей (Pi 3, 4, 5, Zero 2 W) виберіть **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
+   * Для старіших 32-бітних моделей (Pi 2, Pi Zero, Pi Zero W) виберіть **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+
+3. **Виберіть накопичувач:** Оберіть вашу microSD карту.
 
 > \[!WARNING]
-> This will wipe your microSD card clean. Make sure you've backed up anything important.
+> Це видалить всі дані з вашої microSD карти. Переконайтеся, що ви зробили резервні копії важливих файлів.
 
-4. **Advanced Options are Your Friend:** Click the gear icon (⚙️) to set up the Pi for headless mode (no monitor or keyboard needed).
-   * **Hostname:** Give your Pi a name (e.g., `pi-server`).
-   * **SSH:** Enable it and set a username and password.
-   * **Wi-Fi:** If you're not using Ethernet, enter your Wi-Fi details.
-   * **Locale:** Set your timezone and keyboard layout.
+4. **Розширені опції вам на допомогу:** Натисніть на іконку шестерні (⚙️), щоб налаштувати Pi для безголового режиму (без монітора та клавіатури).
+   * **Ім’я хоста:** Дайте вашому Pi ім’я (наприклад, `pi-server`).
+   * **SSH:** Увімкніть і встановіть ім’я користувача та пароль.
+   * **Wi-Fi:** Якщо не використовуєте Ethernet, введіть дані Wi-Fi.
+   * **Локалізація:** Встановіть часовий пояс і розкладку клавіатури.
+5. **Пишіть!** Натисніть кнопку "WRITE" і дайте програмі для запису образу виконати свою роботу.
 
-5. **Write!** Click the "WRITE" button and let the imager do its thing.
+### Завантаження та підключення {#booting-up--connecting}
 
-### Booting Up & Connecting {#booting-up--connecting}
-
-Once the imager is done, pop the microSD card into the Pi and plug it in. Give it a few minutes to boot up. It's doing some initial setup in the background. Find its IP address from your router's admin page, then connect via SSH:
+Коли запис образу завершиться, вставте microSD карту в Pi і підключіть його до живлення. Дайте кілька хвилин на завантаження. У фоновому режимі відбувається початкове налаштування. Знайдіть його IP-адресу на сторінці адміністратора вашого роутера, потім підключіться через SSH:
 
 ```bash
 ssh your_username@your_pi_ip_address
 ```
 
-You're in! The Raspberry Pi is now ready for configuration.
+Ви в системі! Raspberry Pi тепер готовий до налаштування.
 
-## Part 2: Setting Up a Secure FTP Server {#part-2-setting-up-a-secure-ftp-server}
 
-Next, set up `vsftpd` (Very Secure FTP Daemon), configured for maximum security.
+## Частина 2: Налаштування безпечного FTP-сервера {#part-2-setting-up-a-secure-ftp-server}
 
-### Installation & Configuration {#installation--configuration}
+Далі налаштуйте `vsftpd` (Very Secure FTP Daemon), сконфігурований для максимальної безпеки.
 
-1. **Install vsftpd:**
+### Встановлення та конфігурація {#installation--configuration}
+
+1. **Встановіть vsftpd:**
 
    ```bash
    sudo apt update
    sudo apt install vsftpd -y
    ```
 
-2. **Backup the config file:**
+2. **Створіть резервну копію конфігураційного файлу:**
 
    ```bash
    sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
    ```
 
-3. **Edit the configuration:**
+3. **Відредагуйте конфігурацію:**
 
    ```bash
    sudo nano /etc/vsftpd.conf
    ```
 
 > \[!TIP]
-> If a line is commented out (starts with a `#`), uncomment it by removing the `#`.
+> Якщо рядок закоментований (починається з `#`), розкоментуйте його, видаливши `#`.
 
-Make these changes:
+Зробіть такі зміни:
 
-| Setting | Цінність | Purpose |
-| ------------------------ | ----- | --------------------------------------------------------- |
-| `anonymous_enable` | `NO` | Disable anonymous FTP access |
-| `local_enable` | `YES` | Allow local users to log in |
-| `write_enable` | `YES` | Enable file uploads |
-| `local_umask` | `022` | Set file permissions (644 for files, 755 for directories) |
-| `chroot_local_user` | `YES` | Jail users to their home directory |
-| `allow_writeable_chroot` | `YES` | Allow uploads in chroot jail |
+| Налаштування             | Значення | Призначення                                               |
+| ------------------------ | -------- | --------------------------------------------------------- |
+| `anonymous_enable`       | `NO`     | Вимкнути анонімний доступ до FTP                          |
+| `local_enable`           | `YES`    | Дозволити локальним користувачам входити в систему       |
+| `write_enable`           | `YES`    | Дозволити завантаження файлів                             |
+| `local_umask`            | `022`    | Встановити права доступу до файлів (644 для файлів, 755 для директорій) |
+| `chroot_local_user`      | `YES`    | Обмежити користувачів їх домашньою директорією           |
+| `allow_writeable_chroot` | `YES`    | Дозволити завантаження у chroot-обмеженні                |
 
-4. **Add Passive Port Range:** Add these lines to the end of the file. This is needed for the firewall.
+4. **Додайте діапазон пасивних портів:** Додайте ці рядки в кінець файлу. Це потрібно для файрвола.
 
    ```
    pasv_enable=YES
@@ -137,7 +140,7 @@ Make these changes:
    pasv_max_port=50000
    ```
 
-5. **Enable Logging:** Add these lines to enable logging for Fail2ban.
+5. **Увімкніть логування:** Додайте ці рядки для увімкнення логування для Fail2ban.
 
    ```
    xferlog_enable=YES
@@ -145,34 +148,34 @@ Make these changes:
    log_ftp_protocol=YES
    ```
 
-6. **Save and Restart:** Press `Ctrl+O`, `Enter`, `Ctrl+X`, then restart the service:
+6. **Збережіть і перезапустіть:** Натисніть `Ctrl+O`, `Enter`, `Ctrl+X`, потім перезапустіть сервіс:
 
    ```bash
    sudo systemctl restart vsftpd
    ```
 
-### Creating an FTP User {#creating-an-ftp-user}
+### Створення FTP-користувача {#creating-an-ftp-user}
 
-Create a dedicated, restricted user for FTP access.
+Створіть спеціального обмеженого користувача для доступу до FTP.
 
-1. **Create the user:**
+1. **Створіть користувача:**
 
    ```bash
    sudo adduser ftpuser
    ```
 
-Follow the prompts to set a password. The other fields (name, phone, etc.) can be left blank.
+   Виконайте підказки для встановлення пароля. Інші поля (ім'я, телефон тощо) можна залишити порожніми.
 
-2. **Create the directory structure:**
+2. **Створіть структуру директорій:**
 
    ```bash
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-* `/home/ftpuser/ftp` - Main FTP directory
-   * `/home/ftpuser/ftp/uploads` - Where files will be uploaded
+   * `/home/ftpuser/ftp` - основна FTP директорія
+   * `/home/ftpuser/ftp/uploads` - місце для завантаження файлів
 
-3. **Set permissions:**
+3. **Встановіть права доступу:**
 
    ```bash
    sudo chown -R ftpuser:ftpuser /home/ftpuser/ftp
@@ -180,35 +183,36 @@ Follow the prompts to set a password. The other fields (name, phone, etc.) can b
    sudo chmod 755 /home/ftpuser/ftp/uploads
    ```
 
-## Part 3: Firewall and Brute-Force Protection {#part-3-firewall-and-brute-force-protection}
 
-Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
+## Частина 3: Фаєрвол і захист від брутфорсу {#part-3-firewall-and-brute-force-protection}
 
-### Setting Up UFW {#setting-up-ufw}
+Захистіть Pi за допомогою UFW (Uncomplicated Firewall) та Fail2ban.
 
-1. **Install UFW:**
+### Налаштування UFW {#setting-up-ufw}
+
+1. **Встановіть UFW:**
 
    ```bash
    sudo apt install ufw -y
    ```
 
-2. **Set default policies:**
+2. **Встановіть політики за замовчуванням:**
 
    ```bash
    sudo ufw default deny incoming
    sudo ufw default allow outgoing
    ```
 
-3. **Allow SSH (critical!):**
+3. **Дозвольте SSH (критично!):**
 
    ```bash
    sudo ufw allow ssh comment 'SSH access'
    ```
 
 > \[!WARNING]
-> Always allow SSH before enabling the firewall, or you'll lock yourself out!
+> Завжди дозволяйте SSH перед увімкненням файрвола, інакше ви заблокуєте собі доступ!
 
-4. **Allow FTP ports:**
+4. **Дозвольте порти FTP:**
 
    ```bash
    sudo ufw allow 20/tcp comment 'FTP data'
@@ -216,30 +220,29 @@ Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
    sudo ufw allow 40000:50000/tcp comment 'FTP passive mode'
    ```
 
-5. **Enable the firewall:**
+5. **Увімкніть файрвол:**
 
    ```bash
    sudo ufw enable
    ```
 
-### Setting Up Fail2ban {#setting-up-fail2ban}
+### Налаштування Fail2ban {#setting-up-fail2ban}
 
-Fail2ban automatically blocks IP addresses after repeated failed login attempts.
+Fail2ban автоматично блокує IP-адреси після повторних невдалих спроб входу.
 
-1. **Install Fail2ban:**
+1. **Встановіть Fail2ban:**
 
    ```bash
    sudo apt install fail2ban -y
    ```
 
-2. **Create a local configuration:**
+2. **Створіть локальну конфігурацію:**
 
    ```bash
    sudo nano /etc/fail2ban/jail.local
    ```
 
-3. **Add these configurations:**
-
+3. **Додайте ці налаштування:**
    ```ini
    [DEFAULT]
    bantime = 3600
@@ -263,6 +266,7 @@ Fail2ban automatically blocks IP addresses after repeated failed login attempts.
    ```bash
    sudo systemctl restart fail2ban
    ```
+
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
@@ -458,19 +462,19 @@ do
 done
 ```
 
-Make it executable:
+Зробіть файл виконуваним:
 
 ```bash
 sudo chmod +x /usr/local/bin/ftp-monitor.sh
 ```
 
-### Create a Systemd Service {#create-a-systemd-service}
+### Створіть службу Systemd {#create-a-systemd-service}
 
 ```bash
 sudo nano /etc/systemd/system/ftp-monitor.service
 ```
 
-Add this content:
+Додайте цей вміст:
 
 ```ini
 [Unit]
@@ -487,7 +491,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable and start the service:
+Увімкніть і запустіть службу:
 
 ```bash
 sudo systemctl daemon-reload
@@ -495,98 +499,98 @@ sudo systemctl enable ftp-monitor.service
 sudo systemctl start ftp-monitor.service
 ```
 
-Check the status:
+Перевірте статус:
 
 ```bash
 sudo systemctl status ftp-monitor.service
 ```
 
-## Part 5: Email Options for Legacy Devices {#part-5-email-options-for-legacy-devices}
 
-Devices like FOSSCAM cameras often don't support modern TLS versions. There are two solutions:
+## Частина 5: Параметри електронної пошти для застарілих пристроїв {#part-5-email-options-for-legacy-devices}
 
-### Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
+Пристрої, такі як камери FOSSCAM, часто не підтримують сучасні версії TLS. Існує два рішення:
 
-If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports specifically for older devices like cameras, printers, scanners, and fax machines.
+### Варіант 1: Використання застарілих портів TLS 1.0 Forward Email (Рекомендовано) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-#### Pricing {#pricing}
+Якщо ви користуєтесь Forward Email, це найпростіше рішення. Forward Email надає спеціальні застарілі порти TLS 1.0 саме для старих пристроїв, таких як камери, принтери, сканери та факси.
 
-Forward Email offers several plans:
+#### Ціни {#pricing}
 
-| Plan | Price | Features |
-| ----------------------- | ------------ | -------------------------------------- |
-| Free | $0/month | Email forwarding only (no sending) |
-| **Enhanced Protection** | **$3/month** | **SMTP access + legacy TLS 1.0 ports** |
-| Team | $9/month | Enhanced + team features |
-| Enterprise | $250/month | Team + unlimited API requests |
+Forward Email пропонує кілька планів:
+
+| План                    | Ціна         | Функції                                |
+| ----------------------- | ------------ | ------------------------------------- |
+| Безкоштовний            | $0/місяць    | Лише пересилання пошти (без відправки) |
+| **Розширений захист**   | **$3/місяць**| **Доступ до SMTP + застарілі порти TLS 1.0** |
+| Команда                 | $9/місяць    | Розширені функції + командні можливості |
+| Підприємство            | $250/місяць  | Команда + необмежені API-запити       |
 
 > \[!IMPORTANT]
-> The **Enhanced Protection plan ($3/month)** or higher is required for SMTP access and legacy TLS 1.0 port support.
+> Для доступу до SMTP та підтримки застарілих портів TLS 1.0 потрібен **план Розширений захист ($3/місяць)** або вищий.
 
-Learn more at [Forward Email Pricing](https://forwardemail.net/en/pricing).
+Дізнайтеся більше на [Forward Email Pricing](https://forwardemail.net/en/pricing).
 
-#### Generate Your Password {#generate-your-password}
+#### Створіть свій пароль {#generate-your-password}
 
-Before configuring your device, generate a password in Forward Email:
+Перед налаштуванням пристрою створіть пароль у Forward Email:
 
-1. Log in to [Forward Email](https://forwardemail.net)
-2. Navigate to **My Account → Domains → \[Your Domain] → Aliases**
-3. Create or select an alias (e.g., `camera@yourdomain.com`)
-4. Click **"Generate Password"** next to the alias
-5. Copy the generated password - you'll use this for SMTP authentication
+1. Увійдіть на [Forward Email](https://forwardemail.net)
+2. Перейдіть у **Мій акаунт → Домени → \[Ваш домен] → Псевдоніми**
+3. Створіть або виберіть псевдонім (наприклад, `camera@yourdomain.com`)
+4. Натисніть **"Generate Password"** поруч із псевдонімом
+5. Скопіюйте згенерований пароль — він знадобиться для SMTP-автентифікації
 
 > \[!TIP]
-> Each alias can have its own password. This is useful for tracking which device sent which email.
+> Кожен псевдонім може мати власний пароль. Це корисно для відстеження, який пристрій надіслав який лист.
 
-#### Configure Your Device {#configure-your-device}
+#### Налаштуйте свій пристрій {#configure-your-device}
 
-Use these settings in your camera, printer, scanner, or other legacy device:
+Використовуйте ці налаштування у вашій камері, принтері, сканері або іншому застарілому пристрої:
 
-| Setting | Цінність |
+| Налаштування    | Значення                                         |
 | --------------- | ------------------------------------------------ |
-| SMTP Server | `smtp.forwardemail.net` |
-| Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` (alternative) |
-| Ім'я користувача | Your alias email (e.g., `camera@yourdomain.com`) |
-| Пароль | The password from "Generate Password" |
-| Authentication | Необхідно |
-| Encryption | SSL/TLS or STARTTLS |
+| SMTP-сервер     | `smtp.forwardemail.net`                          |
+| Порт (SSL/TLS)  | `2455`                                           |
+| Порт (STARTTLS) | `2555` (альтернативний)                          |
+| Ім’я користувача| Ваша електронна адреса псевдоніма (наприклад, `camera@yourdomain.com`) |
+| Пароль          | Пароль зі "Створити пароль"                      |
+| Аутентифікація  | Обов’язкова                                     |
+| Шифрування      | SSL/TLS (рекомендовано) або STARTTLS             |
 
 > \[!WARNING]
-> These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Use only if your device cannot support modern TLS 1.2+.
+> Ці порти використовують застарілий протокол TLS 1.0, який має відомі вразливості безпеки (BEAST, POODLE). Використовуйте лише якщо ваш пристрій не підтримує сучасний TLS 1.2+.
 
-Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
+Просто налаштуйте пристрій із цими параметрами, і він надсилатиме листи безпосередньо через Forward Email без потреби в локальному релейному сервері.
 
-For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
+Для детальнішої інформації дивіться [Forward Email FAQ про підтримку застарілого TLS](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
-### Option 2: Set Up a Postfix SMTP Relay {#option-2-set-up-a-postfix-smtp-relay}
+### Варіант 2: Налаштування SMTP-реле Postfix {#option-2-set-up-a-postfix-smtp-relay}
 
-If you're not using Forward Email, or prefer a local relay solution, set up Postfix on the Raspberry Pi to act as a middleman. This works with any email provider (Gmail, Outlook, Yahoo, AOL, etc.).
+Якщо ви не користуєтесь Forward Email або віддаєте перевагу локальному релейному рішенню, налаштуйте Postfix на Raspberry Pi як посередника. Це працює з будь-яким поштовим провайдером (Gmail, Outlook, Yahoo, AOL тощо).
 
-#### Install Postfix {#install-postfix}
+#### Встановлення Postfix {#install-postfix}
 
 ```bash
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules -y
 ```
+Під час встановлення:
 
-During installation:
+* Виберіть **"Internet Site"**
+* Введіть ім'я хоста вашого Pi (наприклад, `raspberrypi-ftp`) для "System mail name"
 
-* Select **"Internet Site"**
-* Enter your Pi's hostname (e.g., `raspberrypi-ftp`) for "System mail name"
+#### Виберіть свого поштового провайдера {#choose-your-email-provider}
 
-#### Choose Your Email Provider {#choose-your-email-provider}
+| Провайдер | SMTP сервер           | Порт | Потрібен пароль додатку? |
+| --------- | --------------------- | ---- | ------------------------ |
+| Gmail     | smtp.gmail.com        | 587  | Так                      |
+| Outlook   | smtp-mail.outlook.com | 587  | Так                      |
+| Yahoo     | smtp.mail.yahoo.com   | 465  | Так                      |
+| AOL       | smtp.aol.com          | 587  | Так                      |
 
-| Провайдер | SMTP Server | Port | App Password Required? |
-| -------- | --------------------- | ---- | ---------------------- |
-| Gmail | smtp.gmail.com | 587 | Yes |
-| Перспектива | smtp-mail.outlook.com | 587 | Yes |
-| Yahoo | smtp.mail.yahoo.com | 465 | Yes |
-| AOL | smtp.aol.com | 587 | Yes |
+#### Отримайте пароль додатку {#get-an-app-specific-password}
 
-#### Get an App-Specific Password {#get-an-app-specific-password}
-
-Most providers require app passwords for third-party applications. Generate one from your email provider's security settings:
+Більшість провайдерів вимагають паролі додатків для сторонніх програм. Згенеруйте його у налаштуваннях безпеки вашого поштового провайдера:
 
 * **Gmail:** [Google Account Security](https://myaccount.google.com/security)
 * **Outlook:** [Microsoft Account Security](https://account.microsoft.com/security)
@@ -594,11 +598,11 @@ Most providers require app passwords for third-party applications. Generate one 
 * **AOL:** [AOL Account Security](https://login.aol.com/account/security)
 
 > \[!IMPORTANT]
-> Never use your regular email password. Always use an app-specific password.
+> Ніколи не використовуйте свій звичайний пароль від електронної пошти. Завжди використовуйте пароль додатку.
 
-#### Configure SASL Authentication {#configure-sasl-authentication}
+#### Налаштуйте автентифікацію SASL {#configure-sasl-authentication}
 
-Create the password file for your chosen provider. This example uses Yahoo:
+Створіть файл паролів для обраного провайдера. У цьому прикладі використовується Yahoo:
 
 ```bash
 sudo mkdir -p /etc/postfix/sasl
@@ -606,28 +610,28 @@ sudo chmod 700 /etc/postfix/sasl
 sudo nano /etc/postfix/sasl/sasl_passwd
 ```
 
-Add this line (adjust server and port for your provider):
+Додайте цей рядок (підкоригуйте сервер і порт для вашого провайдера):
 
 ```
 [smtp.mail.yahoo.com]:465 your_email@yahoo.com:your_app_password
 ```
 
-For Gmail, use:
+Для Gmail використовуйте:
 
 ```
 [smtp.gmail.com]:587 your_email@gmail.com:your_app_password
 ```
 
-Secure and hash the file:
+Захистіть і створіть хеш файлу:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl/sasl_passwd
 sudo postmap /etc/postfix/sasl/sasl_passwd
 ```
 
-#### Configure Email Address Mapping {#configure-email-address-mapping}
+#### Налаштуйте відображення електронних адрес {#configure-email-address-mapping}
 
-Rewrite local email addresses to match your email provider:
+Перепишіть локальні електронні адреси, щоб вони відповідали вашому поштовому провайдеру:
 
 ```bash
 sudo mkdir -p /etc/postfix/map
@@ -635,39 +639,39 @@ sudo chmod 700 /etc/postfix/map
 sudo nano /etc/postfix/map/regex_map
 ```
 
-Add this line (replace `HOSTNAME` with your Pi's hostname and use your email):
+Додайте цей рядок (замініть `HOSTNAME` на ім'я хоста вашого Pi і використайте вашу електронну адресу):
 
 ```
 /.+@HOSTNAME/    your_email@provider.com
 ```
 
-Example:
+Приклад:
 
 ```
 /.+@raspberrypi-ftp/    john@yahoo.com
 ```
 
-Secure the file:
+Захистіть файл:
 
 ```bash
 sudo chmod 600 /etc/postfix/map/regex_map
 ```
 
-#### Configure Postfix Main Settings {#configure-postfix-main-settings}
+#### Налаштуйте основні параметри Postfix {#configure-postfix-main-settings}
 
-Edit the main configuration:
+Відредагуйте основний конфігураційний файл:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-Find and update the relay host (or add at the end):
+Знайдіть і оновіть relay host (або додайте в кінець):
 
 ```
 relayhost = [smtp.mail.yahoo.com]:465
 ```
 
-Add these settings at the end of the file:
+Додайте ці налаштування в кінець файлу:
 
 ```
 # SMTP Relay Configuration
@@ -687,62 +691,62 @@ mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 ```
 
 > \[!TIP]
-> For Gmail (port 587), set `smtp_tls_wrappermode = no` instead of `yes`.
+> Для Gmail (порт 587) встановіть `smtp_tls_wrappermode = no` замість `yes`.
 
 > \[!WARNING]
-> Update `mynetworks` with your actual network range. Only add trusted networks - any device on these networks can relay mail without authentication.
+> Оновіть `mynetworks` відповідно до вашого фактичного діапазону мережі. Додавайте лише довірені мережі — будь-який пристрій у цих мережах може надсилати пошту без автентифікації.
 
-**Common network ranges:**
+**Поширені діапазони мереж:**
 
-| Network Range | IP Address Range |
-| ---------------- | --------------------------- |
-| `192.168.0.0/24` | 192.168.0.1 - 192.168.0.254 |
-| `192.168.1.0/24` | 192.168.1.1 - 192.168.1.254 |
-| `10.0.0.0/8` | 10.0.0.0 - 10.255.255.255 |
+| Діапазон мережі    | Діапазон IP-адрес           |
+| ------------------ | --------------------------- |
+| `192.168.0.0/24`   | 192.168.0.1 - 192.168.0.254 |
+| `192.168.1.0/24`   | 192.168.1.1 - 192.168.1.254 |
+| `10.0.0.0/8`       | 10.0.0.0 - 10.255.255.255   |
 
-#### Update Firewall and Restart {#update-firewall-and-restart}
+#### Оновіть брандмауер і перезапустіть {#update-firewall-and-restart}
 
 ```bash
 sudo ufw allow 25/tcp comment 'SMTP for local devices'
 sudo systemctl restart postfix
 ```
 
-Verify Postfix is running:
+Перевірте, чи працює Postfix:
 
 ```bash
 sudo systemctl status postfix
 ```
 
-#### Test the Relay {#test-the-relay}
+#### Перевірте ретрансляцію {#test-the-relay}
 
-Send a test email:
+Надішліть тестовий лист:
 
 ```bash
 echo "Test from Postfix" | mail -s "Test" your_email@provider.com
 ```
 
-Check the logs:
+Перегляньте логи:
 
 ```bash
 sudo tail -f /var/log/mail.log
 ```
 
-Look for `status=sent` to confirm success.
+Шукайте `status=sent` для підтвердження успіху.
 
-#### Configure Your Device {#configure-your-device-1}
+#### Налаштуйте ваш пристрій {#configure-your-device-1}
 
-In your camera or device settings:
+У налаштуваннях вашої камери або пристрою:
+* **SMTP сервер:** IP-адреса вашого Pi (наприклад, `192.168.1.100`)
+* **SMTP порт:** `25`
+* **Аутентифікація:** Відсутня
+* **Шифрування:** Відсутнє (тільки локальна мережа)
 
-* **SMTP Server:** Your Pi's IP address (e.g., `192.168.1.100`)
-* **SMTP Port:** `25`
-* **Authentication:** None
-* **Encryption:** None (local network only)
 
-## Troubleshooting {#troubleshooting}
+## Усунення несправностей {#troubleshooting}
 
-If issues arise, check these log files:
+Якщо виникають проблеми, перевірте ці журнали:
 
-**FTP Server:**
+**FTP сервер:**
 
 ```bash
 sudo tail -f /var/log/vsftpd.log
@@ -755,19 +759,20 @@ sudo fail2ban-client status
 sudo tail -f /var/log/fail2ban.log
 ```
 
-**File Monitor:**
+**Монітор файлів:**
 
 ```bash
 sudo journalctl -u ftp-monitor.service -f
 ```
 
-**Postfix Mail:**
+**Пошта Postfix:**
 
 ```bash
 sudo tail -f /var/log/mail.log
-mailq  # View mail queue
+mailq  # Переглянути чергу пошти
 ```
 
-## Wrapping Up {#wrapping-up}
 
-The Raspberry Pi is now a complete automated system with secure file uploads, automatic email notifications with attachments, and SMTP relay capabilities for legacy devices. Whether using Forward Email's legacy TLS ports or a local Postfix relay, older devices can now send emails reliably through modern email providers.
+## Завершення {#wrapping-up}
+
+Raspberry Pi тепер є повністю автоматизованою системою з безпечним завантаженням файлів, автоматичними email-повідомленнями з вкладеннями та можливостями SMTP ретрансляції для застарілих пристроїв. Незалежно від того, чи використовуєте ви застарілі TLS порти Forward Email або локальний ретранслятор Postfix, старі пристрої тепер можуть надійно надсилати електронні листи через сучасних поштових провайдерів.

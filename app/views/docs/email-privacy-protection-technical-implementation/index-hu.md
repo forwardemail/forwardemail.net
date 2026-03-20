@@ -1,245 +1,254 @@
-# Hogyan működik az e-mail-továbbítás az e-mailek továbbításával: A teljes útmutató {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
+# Hogyan működik az e-mail továbbítás a Forward Email-lel: Az ultimát útmutató {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="E-mail adatvédelem technikai megvalósítása" class="rounded-lg" />
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [Mi az e-mail továbbítás?](#what-is-email-forwarding)
-* [Hogyan működik az e-mail-továbbítás: a technikai magyarázat](#how-email-forwarding-works-the-technical-explanation)
-  * [Az e-mail továbbítási folyamat](#the-email-forwarding-process)
-  * [Az SRS (küldő átírási séma) szerepe](#the-role-of-srs-sender-rewriting-scheme)
-* [Hogyan működik az e-mail-továbbítás: Az egyszerű magyarázat](#how-email-forwarding-works-the-simple-explanation)
-* [E-mail továbbításának beállítása az E-mail továbbítása funkcióval](#setting-up-email-forwarding-with-forward-email)
+* [Mi az az e-mail továbbítás](#what-is-email-forwarding)
+* [Hogyan működik az e-mail továbbítás: A technikai magyarázat](#how-email-forwarding-works-the-technical-explanation)
+  * [Az e-mail továbbítás folyamata](#the-email-forwarding-process)
+  * [Az SRS (Sender Rewriting Scheme) szerepe](#the-role-of-srs-sender-rewriting-scheme)
+* [Hogyan működik az e-mail továbbítás: Az egyszerű magyarázat](#how-email-forwarding-works-the-simple-explanation)
+* [E-mail továbbítás beállítása a Forward Email-lel](#setting-up-email-forwarding-with-forward-email)
   * [1. Fiók létrehozása](#1-sign-up-for-an-account)
-  * [2. Add hozzá a domainedet](#2-add-your-domain)
-  * [3. DNS-rekordok konfigurálása](#3-configure-dns-records)
-  * [4. Hozz létre e-mail továbbításokat](#4-create-email-forwards)
-  * [5. Kezdje el használni az új e-mail címeit](#5-start-using-your-new-email-addresses)
-* [Az e-mail továbbításának speciális funkciói](#advanced-features-of-forward-email)
-  * [Eldobható címek](#disposable-addresses)
+  * [2. Domain hozzáadása](#2-add-your-domain)
+  * [3. DNS rekordok konfigurálása](#3-configure-dns-records)
+  * [4. E-mail továbbítások létrehozása](#4-create-email-forwards)
+  * [5. Új e-mail címek használatának megkezdése](#5-start-using-your-new-email-addresses)
+* [A Forward Email fejlett funkciói](#advanced-features-of-forward-email)
+  * [Egyszer használatos címek](#disposable-addresses)
   * [Több címzett és helyettesítő karakterek](#multiple-recipients-and-wildcards)
-  * [„E-mail küldése másként” integráció](#send-mail-as-integration)
-  * [Kvantumálló biztonság](#quantum-resistant-security)
-  * [Egyedileg titkosított SQLite postaládák](#individually-encrypted-sqlite-mailboxes)
-* [Miért válassza az e-mail továbbítását a versenytársak helyett?](#why-choose-forward-email-over-competitors)
-  * [1. 100%-ban nyílt forráskódú](#1-100-open-source)
+  * [„Küldés mint” integráció](#send-mail-as-integration)
+  * [Kvantumrezisztens biztonság](#quantum-resistant-security)
+  * [Egyedileg titkosított SQLite postafiókok](#individually-encrypted-sqlite-mailboxes)
+* [Miért válassza a Forward Email-t a versenytársak helyett](#why-choose-forward-email-over-competitors)
+  * [1. 100% nyílt forráskódú](#1-100-open-source)
   * [2. Adatvédelem-központú](#2-privacy-focused)
-  * [3. Nincs harmadik féltől való függés](#3-no-third-party-reliance)
+  * [3. Harmadik fél nélküli működés](#3-no-third-party-reliance)
   * [4. Költséghatékony árképzés](#4-cost-effective-pricing)
   * [5. Korlátlan erőforrások](#5-unlimited-resources)
-  * [6. A nagyobb szervezetek megbíznak benne](#6-trusted-by-major-organizations)
-* [Az e-mail-továbbítás gyakori felhasználási esetei](#common-use-cases-for-email-forwarding)
-  * [Vállalkozásoknak](#for-businesses)
-  * [Fejlesztőknek](#for-developers)
-  * [Adatvédelem-tudatos egyének számára](#for-privacy-conscious-individuals)
-* [Az e-mail-továbbítás bevált gyakorlatai](#best-practices-for-email-forwarding)
+  * [6. Nagy szervezetek által megbízható](#6-trusted-by-major-organizations)
+* [Gyakori felhasználási esetek az e-mail továbbításhoz](#common-use-cases-for-email-forwarding)
+  * [Vállalkozások számára](#for-businesses)
+  * [Fejlesztők számára](#for-developers)
+  * [Adatvédelemre érzékeny egyének számára](#for-privacy-conscious-individuals)
+* [Legjobb gyakorlatok az e-mail továbbításhoz](#best-practices-for-email-forwarding)
   * [1. Használjon leíró címeket](#1-use-descriptive-addresses)
-  * [2. Megfelelő hitelesítés megvalósítása](#2-implement-proper-authentication)
-  * [3. Rendszeresen tekintse át az előre küldött üzeneteket](#3-regularly-review-your-forwards)
-  * [4. Állítsa be a „Küldés másként” funkciót a zökkenőmentes válaszok érdekében](#4-set-up-send-mail-as-for-seamless-replies)
-  * [5. Óvatosan használja a gyűjtőcímeket](#5-use-catch-all-addresses-cautiously)
-* [Következtetés](#conclusion)
+  * [2. Alkalmazzon megfelelő hitelesítést](#2-implement-proper-authentication)
+  * [3. Rendszeresen ellenőrizze továbbításait](#3-regularly-review-your-forwards)
+  * [4. Állítsa be a „Küldés mint” funkciót a zökkenőmentes válaszokhoz](#4-set-up-send-mail-as-for-seamless-replies)
+  * [5. Óvatosan használja az összes fogadó címeket](#5-use-catch-all-addresses-cautiously)
+* [Összegzés](#conclusion)
+
 
 ## Előszó {#foreword}
 
-Az e-mail-átirányítás egy hatékony eszköz, amely átalakíthatja az online kommunikáció kezelését. Akár vállalkozó vagy, aki professzionális e-mail-címeket szeretne létrehozni egyéni domainnel, akár adatvédelemre törekvő személy, aki szeretné megvédeni elsődleges e-mail címét, akár fejlesztő, akinek rugalmas e-mail-kezelésre van szüksége, az e-mail-átirányítás megértése elengedhetetlen a mai digitális környezetben.
+Az e-mail továbbítás egy hatékony eszköz, amely átalakíthatja az online kommunikáció kezelését. Legyen Ön vállalkozó, aki professzionális e-mail címeket szeretne létrehozni egyedi domainjével, adatvédelemre érzékeny egyén, aki védeni kívánja elsődleges e-mail címét, vagy fejlesztő, aki rugalmas e-mail kezelést igényel, az e-mail továbbítás megértése elengedhetetlen a mai digitális világban.
 
-A Forward Emailnél a világ legbiztonságosabb, legprivátabb és legrugalmasabb e-mail-továbbító szolgáltatását építettük meg. Ebben az átfogó útmutatóban elmagyarázzuk, hogyan működik az e-mail-továbbítás (technikai és gyakorlati szempontból egyaránt), végigvezetünk az egyszerű beállítási folyamaton, és kiemeljük, hogy miért emelkedik ki szolgáltatásunk a versenytársak közül.
+A Forward Email-nél a világ legbiztonságosabb, legprivátabb és legflexibilisebb e-mail továbbító szolgáltatását építettük fel. Ebben az átfogó útmutatóban elmagyarázzuk, hogyan működik az e-mail továbbítás (mind technikai, mind gyakorlati szempontból), végigvezetjük egyszerű beállítási folyamatunkon, és kiemeljük, miért emelkedik ki szolgáltatásunk a versenytársak közül.
 
-## Mi az az e-mail-továbbítás? {#what-is-email-forwarding}
 
-Az e-mail-átirányítás egy olyan folyamat, amely automatikusan átirányítja az egyik e-mail-címre küldött e-maileket egy másik célcímre. Például, amikor valaki e-mailt küld a <contact@yourdomain.com> címre, az üzenet automatikusan továbbítható a személyes Gmail, Outlook vagy bármely más e-mail fiókjába.
+## Mi az az e-mail továbbítás {#what-is-email-forwarding}
 
-Ez a látszólag egyszerű képesség hatalmas előnyöket kínál:
+Az e-mail továbbítás egy olyan folyamat, amely automatikusan átirányítja az egyik e-mail címre küldött üzeneteket egy másik célcímre. Például, amikor valaki e-mailt küld a <contact@yourdomain.com> címre, az az üzenet automatikusan továbbítható a személyes Gmail, Outlook vagy bármely más e-mail fiókjába.
 
-* **Professzionális arculattervezés**: Használjon e-mail címeket egyéni domainnel (<ön@sajátdomain.com>), miközben mindent kezelhet meglévő személyes postaládájából.
-* **Adatvédelem**: Hozzon létre eldobható vagy célspecifikus címeket, amelyek védik az elsődleges e-mail fiókját.
-* **Egyszerűsített kezelés**: Több e-mail cím összevonása egyetlen postaládába.
-* **Rugalmasság**: Korlátlan számú címet hozhat létre különböző célokra anélkül, hogy több fiókot kellene kezelnie.
+Ez a látszólag egyszerű funkció erőteljes előnyöket kínál:
 
-## Az e-mail-továbbítás működése: A technikai magyarázat {#how-email-forwarding-works-the-technical-explanation}
+* **Professzionális márkaépítés**: Használjon egyedi domainnel rendelkező e-mail címeket (<you@yourdomain.com>), miközben mindent a meglévő személyes postaládájából kezel
+* **Adatvédelem védelme**: Hozzon létre egyszer használatos vagy célzott címeket, amelyek megvédik elsődleges e-mail címét
+* **Egyszerűsített kezelés**: Több e-mail címet egyetlen postaládába egyesít
+* **Rugalmasság**: Korlátlan számú címet hozhat létre különböző célokra anélkül, hogy több fiókot kellene kezelnie
+## Hogyan működik az e-mail továbbítás: A technikai magyarázat {#how-email-forwarding-works-the-technical-explanation}
 
-Azok számára, akiket érdekelnek a technikai részletek, nézzük meg, mi történik a színfalak mögött, amikor egy e-mailt továbbítanak.
+Azok számára, akiket a technikai részletek érdekelnek, nézzük meg, mi történik a háttérben, amikor egy e-mailt továbbítanak.
 
-### Az e-mail továbbítási folyamat {#the-email-forwarding-process}
+### Az e-mail továbbítás folyamata {#the-email-forwarding-process}
 
-1. **DNS-konfiguráció**: A folyamat a domain DNS-rekordjaival kezdődik. Az e-mail-továbbítás beállításakor MX (Mail Exchange) rekordokat kell konfigurálni, amelyek jelzik az internetnek, hogy hová kell kézbesíteni a domainhez tartozó e-maileket. Ezek a rekordok az e-mail-szervereinkre mutatnak.
+1. **DNS konfiguráció**: A folyamat a domain DNS rekordjaival kezdődik. Amikor beállítod az e-mail továbbítást, MX (Mail Exchange) rekordokat konfigurálsz, amelyek megmondják az internetnek, hogy a domain-edhez tartozó e-maileket hová kell kézbesíteni. Ezek a rekordok az e-mail szervereinkre mutatnak.
 
-2. **E-mail fogadása**: Amikor valaki e-mailt küld az egyéni domain címedre (pl. <ön@sajátdomain.com>), az e-mail szerverük kikeresi a domain MX rekordjait, és kézbesíti az üzenetet a szervereinknek.
+2. **E-mail fogadása**: Amikor valaki e-mailt küld a saját domain-edhez tartozó címre (pl. <you@yourdomain.com>), az ő e-mail szervere lekéri a domain MX rekordjait, és a levelet a mi szervereinkre kézbesíti.
 
-3. **Feldolgozás és hitelesítés**: Szervereink fogadják az e-mailt, és számos kritikus funkciót látnak el:
-* A feladó hitelességének ellenőrzése olyan protokollok használatával, mint az SPF, DKIM és DMARC
-* Rosszindulatú tartalom keresése
-* A címzett ellenőrzése a továbbítási szabályok alapján
+3. **Feldolgozás és hitelesítés**: A szervereink megkapják az e-mailt, és több kritikus funkciót végeznek el:
+   * Ellenőrzik a feladó hitelességét olyan protokollok segítségével, mint az SPF, DKIM és DMARC
+   * Átvizsgálják rosszindulatú tartalom után
+   * Ellenőrzik a címzettet a továbbítási szabályaid alapján
 
-4. **Feladó átírása**: Itt történik a varázslat. A Sender Rewriting Scheme (SRS) funkciót alkalmazzuk az e-mail válaszútjának módosítására. Ez azért kulcsfontosságú, mert sok e-mail szolgáltató elutasítja a továbbított e-maileket megfelelő SRS-megvalósítás nélkül, mivel azok hamisítottnak tűnhetnek.
+4. **Feladó átírása**: Itt történik a varázslat. Megvalósítjuk a Sender Rewriting Scheme (SRS) protokollt, hogy módosítsuk az e-mail visszajáró útját. Ez kulcsfontosságú, mert sok e-mail szolgáltató elutasítja a továbbított e-maileket megfelelő SRS megvalósítás nélkül, mivel azok hamisítottnak tűnhetnek.
 
-5. **Továbbítás**: Az e-mail ezután az eredeti tartalommal sértetlenül elküldésre kerül a célcímedre.
+5. **Továbbítás**: Az e-mailt ezután elküldjük a célcímre az eredeti tartalom változatlanul hagyásával.
 
-6. **Kézbesítés**: Az e-mail megérkezik a postaládájába, és úgy jelenik meg, mintha a továbbítási címére küldték volna, megőrizve az egyéni domain professzionális megjelenését.
+6. **Kézbesítés**: Az e-mail megérkezik a postaládádba, úgy tűnik, mintha a továbbítási címre küldték volna, megőrizve a professzionális megjelenést a saját domain-ed számára.
 
-### Az SRS (küldő átírási séma) szerepe {#the-role-of-srs-sender-rewriting-scheme}
+### Az SRS (Sender Rewriting Scheme) szerepe {#the-role-of-srs-sender-rewriting-scheme}
 
-Az SRS külön figyelmet érdemel, mivel elengedhetetlen a megbízható e-mail-továbbításhoz. Amikor egy e-mailt továbbítanak, a feladó címét át kell írni, hogy az e-mail biztosan átmenjen az SPF-ellenőrzéseken a végső célállomáson.
+Az SRS külön figyelmet érdemel, mert elengedhetetlen a megbízható e-mail továbbításhoz. Amikor egy e-mailt továbbítanak, a feladó címét át kell írni, hogy az e-mail átmenjen az SPF ellenőrzésen a végső célállomáson.
 
-SRS nélkül a továbbított e-mailek gyakran nem felelnek meg az SPF-ellenőrzésnek, és spamként lesznek megjelölve, vagy teljesen elutasítva. Az SRS implementációja biztosítja, hogy a továbbított e-mailek megbízhatóan kézbesüljenek, miközben az eredeti feladó adatai átlátható módon megmaradnak az Ön számára.
+SRS nélkül a továbbított e-mailek gyakran megbuknak az SPF ellenőrzésen, és spamként jelölik meg vagy teljesen elutasítják őket. Az SRS megvalósításunk biztosítja, hogy a továbbított e-mailek megbízhatóan kézbesítésre kerüljenek, miközben az eredeti feladó információi átlátható módon megmaradnak számodra.
 
-## Hogyan működik az e-mail-továbbítás: Az egyszerű magyarázat {#how-email-forwarding-works-the-simple-explanation}
 
-Ha a technikai részletek túl soknak tűnnek, íme egy egyszerűbb módja az e-mail-továbbítás megértésének:
+## Hogyan működik az e-mail továbbítás: Az egyszerű magyarázat {#how-email-forwarding-works-the-simple-explanation}
 
-Gondoljon az e-mail-továbbításra úgy, mint a fizikai levelek továbbítására. Amikor új otthonba költözik, kérheti a postai szolgáltatást, hogy a régi címéről az összes levelet továbbítsa az új címére. Az e-mail-továbbítás hasonlóan működik, de digitális üzenetek esetében.
+Ha a technikai részletek túl bonyolultnak tűnnek, itt egy egyszerűbb módja az e-mail továbbítás megértésének:
 
-E-mail továbbításával:
+Gondolj az e-mail továbbításra úgy, mint a postai levél továbbításra. Amikor új otthonba költözöl, kérheted a postát, hogy az összes levelet a régi címedről az újra továbbítsa. Az e-mail továbbítás hasonlóan működik, csak digitális üzenetek esetén.
 
-1. Ön megadja nekünk, hogy a domainjén mely e-mail címeket szeretné beállítani (például <ertekesites@yourdomain.com> vagy <contact@yourdomain.com>).
+A Forward Email segítségével:
 
-2. Ön megadja nekünk, hogy hová szeretné kézbesíteni ezeket az e-maileket (például a Gmail- vagy Outlook-fiókjába).
-3. Mi kezeljük az összes technikai részletet, hogy az egyéni címeire küldött e-mailek biztonságban megérkezzenek a megadott postaládájába.
+1. Megmondod nekünk, mely e-mail címeket szeretnéd beállítani a domain-ed alatt (például <sales@yourdomain.com> vagy <contact@yourdomain.com>)
+2. Megadod, hová szeretnéd kézbesíteni ezeket az e-maileket (például a Gmail vagy Outlook fiókodba)
+3. Mi intézzük az összes technikai részletet, hogy a saját címeidre küldött e-mailek biztonságosan megérkezzenek a megadott postaládába
 
-Ilyen egyszerű! Professzionális e-mail címeket használhatsz anélkül, hogy módosítanád a meglévő e-mail munkafolyamatodat.
+Ennyire egyszerű! Professzionális e-mail címeket használhatsz anélkül, hogy megváltoztatnád a meglévő e-mail munkafolyamatodat.
 
-## E-mail továbbításának beállítása az E-mail továbbítása funkcióval {#setting-up-email-forwarding-with-forward-email}
 
-Az e-mail továbbításának egyik legnagyobb előnye az egyszerű beállítása. Íme egy lépésről lépésre útmutató:
+## E-mail továbbítás beállítása a Forward Email-lel {#setting-up-email-forwarding-with-forward-email}
 
-### 1. Fiók regisztrálása {#1-sign-up-for-an-account}
+A Forward Email egyik legnagyobb előnye, hogy milyen könnyű beállítani. Íme egy lépésről lépésre útmutató:
 
-Látogasson el a [forwardemail.net](https://forwardemail.net) oldalra, és hozzon létre egy ingyenes fiókot. A regisztrációs folyamat kevesebb mint egy percet vesz igénybe.
+### 1. Regisztrálj egy fiókot {#1-sign-up-for-an-account}
 
-### 2. Domain hozzáadása {#2-add-your-domain}
+Látogass el a [forwardemail.net](https://forwardemail.net) oldalra, és hozz létre egy ingyenes fiókot. A regisztrációs folyamat kevesebb, mint egy percet vesz igénybe.
 
-Miután bejelentkezett, adja hozzá azt a domaint, amelyet az e-mail-továbbításhoz használni szeretne. Ha még nem rendelkezik domainnel, először vásároljon egyet egy domainregisztrátortól.
+### 2. Add hozzá a domain-edet {#2-add-your-domain}
 
-### 3. DNS-rekordok konfigurálása {#3-configure-dns-records}
+Bejelentkezés után add hozzá azt a domaint, amelyet az e-mail továbbításhoz szeretnél használni. Ha még nincs saját domained, először egy domain regisztrátornál kell vásárolnod egyet.
 
-Biztosítjuk Önnek a domainjéhez hozzáadandó pontos DNS-rekordokat. Ez jellemzően a következőket foglalja magában:
+### 3. DNS rekordok konfigurálása {#3-configure-dns-records}
 
-* MX rekordok hozzáadása, amelyek az e-mail szervereinkre mutatnak
-* TXT rekordok hozzáadása az ellenőrzés és a biztonság érdekében
+Megadjuk neked a pontos DNS rekordokat, amelyeket hozzá kell adnod a domain-edhez. Ez általában a következőket jelenti:
 
-A legtöbb domainregisztrátor egyszerű felülettel rendelkezik ezeknek a rekordoknak a hozzáadásához. Részletes útmutatókat biztosítunk minden nagyobb domainregisztrátor számára, hogy ez a folyamat a lehető leggördülékenyebb legyen.
+* MX rekordok hozzáadása, amelyek a mi e-mail szervereinkre mutatnak
+* TXT rekordok hozzáadása az ellenőrzéshez és biztonsághoz
 
+A legtöbb domain regisztrátornak egyszerű felülete van ezeknek a rekordoknak a hozzáadásához. Részletes útmutatókat biztosítunk minden nagyobb domain regisztrátorhoz, hogy ez a folyamat a lehető legzökkenőmentesebb legyen.
 ### 4. E-mail továbbítások létrehozása {#4-create-email-forwards}
 
-Miután ellenőriztük a DNS-rekordjaidat (ami általában csak néhány percet vesz igénybe), létrehozhatsz e-mail-továbbításokat. Egyszerűen add meg:
+Miután a DNS rekordjaid ellenőrzése megtörtént (ami általában csak néhány percet vesz igénybe), létrehozhatsz e-mail továbbításokat. Egyszerűen add meg:
 
-* A domainhez tartozó e-mail cím (pl. <contact@yourdomain.com>)
-* A célhely, ahová az e-maileket küldeni szeretné (pl. a személyes Gmail-címe)
+* Az e-mail címet a domaineden (pl. <contact@yourdomain.com>)
+* A célt, ahová az e-maileket szeretnéd továbbítani (pl. a személyes Gmail címed)
 
-### 5. Kezdje el használni az új e-mail címeit {#5-start-using-your-new-email-addresses}
+### 5. Kezdd el használni az új e-mail címeidet {#5-start-using-your-new-email-addresses}
 
-Ennyi! Az egyéni domaincímeidre küldött e-mailek mostantól továbbításra kerülnek a megadott célhelyre. Annyi továbbítást hozhatsz létre, amennyire szükséged van, beleértve a gyűjtőcímeket is, amelyek a domaineden lévő bármely címre küldött összes e-mailt továbbítják.
+Ennyi az egész! A saját domain címeidre küldött e-mailek mostantól a megadott célra lesznek továbbítva. Annyi továbbítást hozhatsz létre, amennyire szükséged van, beleértve az összes címre érkező leveleket továbbító catch-all címeket is.
 
-## Az e-mail továbbításának speciális funkciói {#advanced-features-of-forward-email}
 
-Míg az alapvető e-mail-továbbítás önmagában is hatékony, az E-mail továbbítása számos olyan fejlett funkciót kínál, amelyek megkülönböztetnek minket a többitől:
+## A Forward Email fejlett funkciói {#advanced-features-of-forward-email}
 
-### Eldobható címek {#disposable-addresses}
+Míg az alapvető e-mail továbbítás önmagában is hatékony, a Forward Email számos fejlett funkciót kínál, amelyek megkülönböztetnek minket:
 
-Hozz létre meghatározott vagy névtelen e-mail címeket, amelyek a fő fiókodba irányítanak át. Ezeket a címeket bármikor címkékkel láthatod el, és engedélyezheted vagy letilthatod őket, hogy rendszerezetten tartsd a beérkező leveleidet. A tényleges e-mail címed soha nem kerül nyilvánosságra.
+### Egyszer használatos címek {#disposable-addresses}
+
+Hozz létre konkrét vagy névtelen e-mail címeket, amelyek a fő fiókodba továbbítanak. Ezekhez címkéket rendelhetsz, és bármikor engedélyezheted vagy letilthatod őket, hogy rendezetten tartsd a beérkező leveleidet. A valódi e-mail címed soha nem kerül nyilvánosságra.
 
 ### Több címzett és helyettesítő karakterek {#multiple-recipients-and-wildcards}
 
-Egyetlen cím továbbítása több címzettnek, megkönnyítve az információk megosztását egy csapattal. Helyettesítő címeket is használhat (gyűjtő átirányítás), hogy e-maileket fogadjon a domainjén található bármely címre.
+Egyetlen címet több címzettnek is továbbíthatsz, így könnyen megoszthatod az információkat egy csapattal. Használhatsz helyettesítő karaktereket is (catch-all továbbítás), hogy megkapd a domaineden bármely címre küldött leveleket.
 
-### „E-mail küldése másként” integráció {#send-mail-as-integration}
+### „Küldés mint” integráció {#send-mail-as-integration}
 
-Soha többé nem kell elhagynod a postaládádat, ha egyéni domainedről szeretnél e-maileket küldeni. Küldj és válaszolj az üzenetekre úgy, mintha a <you@yourdomain.com> címről érkeznének, közvetlenül a Gmail- vagy Outlook-fiókodból.
+Soha nem kell elhagynod a postaládádat, hogy a saját domainedről küldj e-maileket. Küldj és válaszolj üzenetekre úgy, mintha azok <you@yourdomain.com> címről érkeznének, közvetlenül a Gmail vagy Outlook fiókodból.
 
 ### Kvantumálló biztonság {#quantum-resistant-security}
 
-Mi vagyunk a világ első és egyetlen e-mail szolgáltatója, amely kvantumrezisztens titkosítást használ, így még a legfejlettebb jövőbeli fenyegetésekkel szemben is védi kommunikációját.
+Mi vagyunk a világ első és egyetlen e-mail szolgáltatója, amely kvantumálló titkosítást használ, így kommunikációd még a legfejlettebb jövőbeli fenyegetésekkel szemben is védett.
 
 ### Egyedileg titkosított SQLite postaládák {#individually-encrypted-sqlite-mailboxes}
 
-Más szolgáltatókkal ellentétben, amelyek minden felhasználói e-mailt megosztott adatbázisokban tárolnak, mi egyedileg titkosított SQLite postafiókokat használunk a páratlan adatvédelem és biztonság érdekében.
+Ellentétben más szolgáltatókkal, akik az összes felhasználói e-mailt megosztott adatbázisokban tárolják, mi egyedileg titkosított SQLite postaládákat használunk a páratlan adatvédelem és biztonság érdekében.
 
-## Miért érdemes az e-mail továbbítását választani a versenytársakkal szemben {#why-choose-forward-email-over-competitors}
 
-Az e-mail-továbbítási piacon számos szereplő van, de a Forward Email több fontos szempontból is kiemelkedik:
+## Miért válaszd a Forward Emailt a versenytársak helyett {#why-choose-forward-email-over-competitors}
 
-### 1. 100%-ban nyílt forráskódú {#1-100-open-source}
+Az e-mail továbbítás piacán több szereplő is jelen van, de a Forward Email több fontos szempontból is kiemelkedik:
 
-Mi vagyunk az egyetlen e-mail továbbító szolgáltatás, amely teljesen nyílt forráskódú, beleértve a backend kódunkat is. Ez az átláthatóság bizalmat épít és lehetővé teszi a független biztonsági auditokat. Más szolgáltatások azt állíthatják, hogy nyílt forráskódúak, de nem hozzák nyilvánosságra a backend kódjukat.
+### 1. 100% nyílt forráskódú {#1-100-open-source}
 
-### 2. Adatvédelemre összpontosító {#2-privacy-focused}
+Mi vagyunk az egyetlen teljesen nyílt forráskódú e-mail továbbító szolgáltatás, beleértve a háttérkódunkat is. Ez az átláthatóság bizalmat épít és lehetővé teszi a független biztonsági auditokat. Más szolgáltatók állíthatják, hogy nyílt forráskódúak, de nem adják ki a háttérkódjukat.
 
-Ezt a szolgáltatást azért hoztuk létre, mert jogod van a magánélethez. Robusztus TLS titkosítást használunk, nem tárolunk SMTP naplókat (kivéve a hibákat és a kimenő SMTP-t), és nem írjuk az e-maileket lemezre.
+### 2. Adatvédelem-központú {#2-privacy-focused}
 
-### 3. Nincs harmadik féltől való függés {#3-no-third-party-reliance}
+Ezt a szolgáltatást azért hoztuk létre, mert jogod van a magánélethez. Erős TLS titkosítást használunk, nem tárolunk SMTP naplókat (kivéve hibák és kimenő SMTP esetén), és nem írjuk az e-mailjeidet lemezre.
 
-A versenytársainkkal ellentétben, akik az Amazon SES-re vagy más harmadik féltől származó szolgáltatásokra támaszkodnak, mi teljes mértékben kézben tartjuk az infrastruktúránkat, ezáltal növelve mind a megbízhatóságot, mind az adatvédelmet.
+### 3. Harmadik fél nélküli működés {#3-no-third-party-reliance}
+
+Ellentétben a versenytársakkal, akik az Amazon SES-re vagy más harmadik fél szolgáltatásaira támaszkodnak, mi teljes mértékben ellenőrizzük az infrastruktúránkat, növelve ezzel a megbízhatóságot és az adatvédelmet.
 
 ### 4. Költséghatékony árképzés {#4-cost-effective-pricing}
 
-Árképzési modellünk lehetővé teszi a költséghatékony skálázást. Nem számítunk fel felhasználónkénti díjat, és a tárhelyért a használat szerinti fizetést is elvégezheti. Havi 3 dollárért több funkciót kínálunk alacsonyabb áron, mint a versenytársaink, például a Gandi (havi 3,99 dollár).
+Árképzési modellünk lehetővé teszi a költséghatékony skálázást. Nem számolunk fel díjat felhasználónként, és a tárhelyért csak használat alapján fizetsz. 3$/hónapért több funkciót kínálunk alacsonyabb áron, mint a versenytársak, például a Gandi (3,99$/hónap).
 
 ### 5. Korlátlan erőforrások {#5-unlimited-resources}
 
-Nem szabunk mesterséges korlátozásokat a domainekre, aliasokra vagy e-mail címekre, mint sok versenytársunk teszi.
+Nem szabunk mesterséges korlátokat domainekre, aliasokra vagy e-mail címekre, mint sok versenytárs.
 
-### 6. Főbb szervezetek bíznak benne {#6-trusted-by-major-organizations}
+### 6. Nagy szervezetek által megbízható {#6-trusted-by-major-organizations}
 
-Szolgáltatásunkat több mint 500 000 domain használja, beleértve olyan neves szervezeteket, mint a [Az Egyesült Államok Haditengerészeti Akadémiája](/blog/docs/federal-government-email-service-section-889-compliant), a Netflix, a [A Linux Alapítvány](/blog/docs/linux-foundation-email-enterprise-case-study), a [Kanonikus/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), a Disney Ad Sales és sok más.
+Szolgáltatásunkat több mint 500 000 domain használja, köztük olyan ismert szervezetek, mint a [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales és még sokan mások.
 
-## Az e-mail-továbbítás gyakori felhasználási esetei {#common-use-cases-for-email-forwarding}
 
-Az e-mail-továbbítás számos kihívást old meg a különböző típusú felhasználók számára:
+## Gyakori felhasználási esetek e-mail továbbításhoz {#common-use-cases-for-email-forwarding}
+Az e-mail továbbítás számos kihívást old meg különböző felhasználótípusok számára:
 
 ### Vállalkozásoknak {#for-businesses}
 
-* Professzionális e-mail címek létrehozása a különböző részlegek számára (sales@, support@, info@)
-* A csapat e-mail kommunikációjának egyszerű kezelése
-* A márka egységességének fenntartása minden kommunikációban
-* Az e-mail kezelés egyszerűsítése a személyzetváltások során
+* Professzionális e-mail címek létrehozása különböző osztályok számára (sales@, support@, info@)
+* Csapat e-mail kommunikációjának egyszerű kezelése
+* Márka konzisztencia fenntartása minden kommunikációban
+* Az e-mailek kezelése egyszerűsítése személyzeti változások esetén
 
 ### Fejlesztőknek {#for-developers}
 
-* Automatizált értesítési rendszerek beállítása
-* Célspecifikus címek létrehozása a különböző projektekhez
-* Webhookokkal való integráció a fejlett automatizálás érdekében
-* API-nk használata egyedi megvalósításokhoz
+* Automatikus értesítési rendszerek beállítása
+* Célzott címek létrehozása különböző projektekhez
+* Webhook-okkal való integráció fejlett automatizáláshoz
+* API-nk kihasználása egyedi megvalósításokhoz
 
-### Adatvédelmet tiszteletben tartó személyek számára {#for-privacy-conscious-individuals}
+### Adatvédelmi tudatos egyéneknek {#for-privacy-conscious-individuals}
 
-* Hozz létre külön e-mail címeket a különböző szolgáltatásokhoz, hogy nyomon tudd követni, ki osztja meg az adataidat.* Használj eldobható címeket az egyszeri regisztrációkhoz.* Őrizd meg az adatvédelmedet az elsődleges e-mail címed védelmével.* Könnyen letilthatod azokat a címeket, amelyek elkezdenek spameket kapni.
+* Külön e-mail címek létrehozása különböző szolgáltatásokhoz, hogy nyomon követhesse, ki osztja meg az adatait
+* Egyszer használatos címek használata egyszeri regisztrációkhoz
+* Adatvédelem fenntartása az elsődleges e-mail cím elrejtésével
+* Könnyen letilthatja azokat a címeket, amelyek spamet kezdenek kapni
 
-## Az e-mail-továbbítás bevált gyakorlatai {#best-practices-for-email-forwarding}
 
-Az e-mail-továbbítás maximális kihasználása érdekében vegye figyelembe az alábbi bevált gyakorlatokat:
+## Legjobb gyakorlatok az e-mail továbbításhoz {#best-practices-for-email-forwarding}
 
-### 1. Leíró címek használata {#1-use-descriptive-addresses}
+Ahhoz, hogy a legtöbbet hozza ki az e-mail továbbításból, vegye figyelembe ezeket a legjobb gyakorlatokat:
 
-Olyan e-mail címeket hozz létre, amelyek egyértelműen jelzik a céljukat (pl. <hírlevél@domain.com>, <vásárlás@domain.com>), hogy könnyebben rendszerezhesd a bejövő leveleidet.
+### 1. Használjon leíró címeket {#1-use-descriptive-addresses}
 
-### 2. Megfelelő hitelesítés megvalósítása {#2-implement-proper-authentication}
+Hozzon létre olyan e-mail címeket, amelyek egyértelműen jelzik a céljukat (pl. <newsletter@yourdomain.com>, <shopping@yourdomain.com>), hogy segítsék a bejövő levelek rendszerezését.
 
-Győződjön meg arról, hogy a domainje megfelelő SPF, DKIM és DMARC rekordokkal rendelkezik a kézbesítés maximalizálása érdekében. Az e-mail továbbítása ezt megkönnyíti az irányított beállításunkkal.
+### 2. Alkalmazzon megfelelő hitelesítést {#2-implement-proper-authentication}
 
-### 3. Rendszeresen tekintse át továbbított adatait {#3-regularly-review-your-forwards}
+Biztosítsa, hogy domainje rendelkezzen megfelelő SPF, DKIM és DMARC rekordokkal a maximális kézbesíthetőség érdekében. A Forward Email ezt egyszerűvé teszi irányított beállításunkkal.
 
-Rendszeresen ellenőrizd az e-mail-továbbításaidat, hogy letilthasd azokat, amelyekre már nincs szükség, vagy amelyek túl sok spamet kapnak.
+### 3. Rendszeresen ellenőrizze továbbításait {#3-regularly-review-your-forwards}
 
-### 4. Állítsa be a „Küldés másként” funkciót a zökkenőmentes válaszokhoz {#4-set-up-send-mail-as-for-seamless-replies}
+Időszakosan auditálja e-mail továbbításait, hogy letilthassa azokat, amelyekre már nincs szükség vagy túl sok spamet kapnak.
 
-Konfigurálja fő levelezőprogramját úgy, hogy az egyéni domaincímekről küldje el a leveleket, így biztosítva az átirányított e-mailekre adott egységes válaszadási élményt.
+### 4. Állítsa be a "Send Mail As" funkciót a zökkenőmentes válaszokhoz {#4-set-up-send-mail-as-for-seamless-replies}
 
-### 5. Óvatosan használja a gyűjtőcímeket {#5-use-catch-all-addresses-cautiously}
+Konfigurálja fő e-mail kliensét, hogy az egyedi domain címeiről küldjön leveleket, így következetes élményt nyújtva a továbbított e-mailekre adott válaszoknál.
 
-Bár a gyűjtőcímek kényelmesek, potenciálisan több spam érkezhet rájuk. Érdemes lehet külön továbbításokat létrehozni a fontos kommunikációhoz.
+### 5. Óvatosan használja a Catch-All címeket {#5-use-catch-all-addresses-cautiously}
 
-## Következtetés {#conclusion}
+Bár a catch-all címek kényelmesek, potenciálisan több spamet kaphatnak. Fontolja meg, hogy fontos kommunikációkhoz specifikus továbbításokat hozzon létre.
 
-Az e-mail-továbbítás egy hatékony eszköz, amely professzionalizmust, adatvédelmet és egyszerűséget visz az e-mailes kommunikációba. A Forward Email segítségével a lehető legbiztonságosabb, legprivát és legrugalmasabb e-mail-továbbítási szolgáltatást kapja.
 
-Az egyetlen 100%-ban nyílt forráskódú szolgáltatóként, amely kvantumrezisztens titkosítást és az adatvédelmet helyezi előtérbe, olyan szolgáltatást építettünk, amely tiszteletben tartja az Ön jogait, miközben kivételes funkcionalitást biztosít.
+## Összegzés {#conclusion}
 
-Akár professzionális e-mail címeket szeretne létrehozni vállalkozása számára, akár eldobható címekkel szeretné megvédeni adatait, akár egyszerűsíteni több e-mail fiók kezelését, a Forward Email tökéletes megoldást kínál.
+Az e-mail továbbítás egy erőteljes eszköz, amely professzionalizmust, adatvédelmet és egyszerűséget hoz e-mail kommunikációjába. A Forward Email segítségével a legbiztonságosabb, legprivátabb és legflexibilisebb e-mail továbbítási szolgáltatást kapja.
 
-Készen állsz átalakítani az e-mail-élményedet? [Regisztrálj ingyenesen](https://forwardemail.net) még ma, és csatlakozz több mint 500 000 domainhez, amelyek már most is élvezik szolgáltatásunk előnyeit.
+Mint az egyetlen 100%-ban nyílt forráskódú szolgáltató kvantumrezisztens titkosítással és adatvédelemre fókuszálva, olyan szolgáltatást építettünk, amely tiszteletben tartja jogait, miközben kivételes funkcionalitást nyújt.
+
+Akár professzionális e-mail címeket szeretne létrehozni vállalkozásának, akár adatvédelme érdekében egyszer használatos címeket használna, vagy több e-mail fiók kezelését egyszerűsítené, a Forward Email a tökéletes megoldás.
+
+Készen áll arra, hogy átalakítsa e-mail élményét? [Regisztráljon ingyen](https://forwardemail.net) még ma, és csatlakozzon a már több mint 500 000 domainhez, amely már élvezi szolgáltatásunk előnyeit.
 
 ---
 
-*Ezt a blogbejegyzést a Forward Email csapata írta, akik a világ legbiztonságosabb, legprivátabb és legrugalmasabb e-mail-továbbító szolgáltatásának alkotói. Látogasson el a [forwardemail.net](https://forwardemail.net) oldalra, ha többet szeretne megtudni szolgáltatásunkról, és magabiztosan szeretné továbbítani az e-maileket.*
+*Ezt a blogbejegyzést a Forward Email csapata írta, a világ legbiztonságosabb, legprivátabb és legflexibilisebb e-mail továbbítási szolgáltatásának alkotói. Látogasson el a [forwardemail.net](https://forwardemail.net) oldalra, hogy többet megtudjon szolgáltatásunkról, és kezdje el magabiztosan továbbítani e-mailjeit.*

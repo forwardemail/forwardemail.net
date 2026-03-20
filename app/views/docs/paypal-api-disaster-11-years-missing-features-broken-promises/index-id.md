@@ -1,32 +1,40 @@
-# Bencana API PayPal Selama 11 Tahun: Bagaimana Kami Membangun Solusi Sementara Mereka Mengabaikan Pengembang {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
+# Bencana API PayPal Selama 11 Tahun: Bagaimana Kami Membangun Solusi Sementara Sementara Mereka Mengabaikan Pengembang {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+> \[!NOTE]
+> **Sukses! PayPal akhirnya menambahkan endpoint `GET /v1/billing/subscriptions`.**
+>
+> Setelah kami menerbitkan postingan ini dan mengirim email ke pimpinan eksekutif PayPal, tim mereka mengimplementasikan endpoint yang sangat dibutuhkan untuk daftar langganan. Perubahan ini muncul antara [25 Juni 2025](https://web.archive.org/web/20250625121019/https://developer.paypal.com/docs/api/subscriptions/v1/) dan [9 Juli 2025](https://web.archive.org/web/20250709102200/https://developer.paypal.com/docs/api/subscriptions/v1/).
+>
+> Namun, seperti kebiasaan PayPal, mereka tidak pernah memberi tahu kami. Kami hanya menemukan pembaruan ini sendiri pada Desember 2025, berbulan-bulan setelah fitur tersebut dirilis secara diam-diam.
 
-<p class="lead mt-3">Di Forward Email, kami telah menangani API PayPal yang rusak selama lebih dari satu dekade. Apa yang awalnya hanya frustrasi kecil telah berubah menjadi bencana total yang memaksa kami untuk membangun solusi sendiri, memblokir templat phishing mereka, dan akhirnya menghentikan semua pembayaran PayPal selama migrasi akun yang kritis.</p>
-<p class="lead mt-3">Ini adalah kisah 11 tahun PayPal mengabaikan kebutuhan dasar pengembang sementara kami mencoba segala cara untuk membuat platform mereka berfungsi.</p>
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="Ilustrasi bencana API PayPal" class="rounded-lg" />
+
+<p class="lead mt-3">Di Forward Email, kami telah menghadapi API PayPal yang rusak selama lebih dari satu dekade. Apa yang dimulai sebagai frustrasi kecil berubah menjadi bencana total yang memaksa kami membangun solusi sendiri, memblokir template phishing mereka, dan akhirnya menghentikan semua pembayaran PayPal selama migrasi akun yang kritis.</p>
+<p class="lead mt-3">Ini adalah kisah 11 tahun PayPal mengabaikan kebutuhan dasar pengembang sementara kami mencoba segala cara agar platform mereka berfungsi.</p>
+
 
 ## Daftar Isi {#table-of-contents}
 
-* [Bagian yang Hilang: Tidak Ada Cara untuk Mencantumkan Langganan](#the-missing-piece-no-way-to-list-subscriptions)
+* [Bagian yang Hilang: Tidak Ada Cara untuk Melihat Daftar Langganan](#the-missing-piece-no-way-to-list-subscriptions)
 * [2014-2017: Masalah Muncul](#2014-2017-the-problem-emerges)
-* [2020: Kami Memberi Mereka Umpan Balik yang Luas](#2020-we-give-them-extensive-feedback)
-  * [Daftar Umpan Balik 27 Item](#the-27-item-feedback-list)
-  * [Tim Terlibat, Janji Diucapkan](#teams-got-involved-promises-were-made)
-  * [Hasilnya? Tidak ada.](#the-result-nothing)
+* [2020: Kami Memberikan Masukan Mendalam](#2020-we-give-them-extensive-feedback)
+  * [Daftar Masukan 27 Item](#the-27-item-feedback-list)
+  * [Tim Terlibat, Janji Diberikan](#teams-got-involved-promises-were-made)
+  * [Hasilnya? Tidak Ada.](#the-result-nothing)
 * [Eksodus Eksekutif: Bagaimana PayPal Kehilangan Semua Memori Institusional](#the-executive-exodus-how-paypal-lost-all-institutional-memory)
-* [2025: Kepemimpinan Baru, Masalah Tetap Sama](#2025-new-leadership-same-problems)
+* [2025: Kepemimpinan Baru, Masalah Sama](#2025-new-leadership-same-problems)
   * [CEO Baru Terlibat](#the-new-ceo-gets-involved)
-  * [Tanggapan Michelle Gill](#michelle-gills-response)
-  * [Tanggapan Kami: Tidak Ada Lagi Pertemuan](#our-response-no-more-meetings)
-  * [Respon Marty Brodbeck terhadap Rekayasa Berlebihan](#marty-brodbecks-overengineering-response)
+  * [Respon Michelle Gill](#michelle-gills-response)
+  * [Respon Kami: Tidak Ada Lagi Pertemuan](#our-response-no-more-meetings)
+  * [Respon Marty Brodbeck yang Berlebihan](#marty-brodbecks-overengineering-response)
   * [Kontradiksi "CRUD Sederhana"](#the-simple-crud-contradiction)
-  * [Kesenjangan Menjadi Jelas](#the-disconnect-becomes-clear)
-* [Laporan Bug Bertahun-tahun yang Mereka Abaikan](#years-of-bug-reports-they-ignored)
+  * [Ketidaksesuaian Menjadi Jelas](#the-disconnect-becomes-clear)
+* [Bertahun-tahun Laporan Bug yang Diabaikan](#years-of-bug-reports-they-ignored)
   * [2016: Keluhan Awal UI/UX](#2016-early-uiux-complaints)
   * [2021: Laporan Bug Email Bisnis](#2021-business-email-bug-report)
-  * [2021: Saran Peningkatan UI](#2021-ui-improvement-suggestions)
+  * [2021: Saran Perbaikan UI](#2021-ui-improvement-suggestions)
   * [2021: Kegagalan Lingkungan Sandbox](#2021-sandbox-environment-failures)
-  * [2021: Sistem Pelaporan Benar-Benar Rusak](#2021-reports-system-completely-broken)
+  * [2021: Sistem Laporan Sepenuhnya Rusak](#2021-reports-system-completely-broken)
   * [2022: Fitur API Inti Hilang (Lagi)](#2022-core-api-feature-missing-again)
 * [Mimpi Buruk Pengalaman Pengembang](#the-developer-experience-nightmare)
   * [Antarmuka Pengguna Rusak](#broken-user-interface)
@@ -34,10 +42,10 @@
   * [Pelanggaran Kebijakan Keamanan Konten](#content-security-policy-violations)
   * [Kekacauan Dokumentasi](#documentation-chaos)
   * [Kerentanan Keamanan](#security-vulnerabilities)
-  * [Manajemen Sesi Bencana](#session-management-disaster)
-* [Juli 2025: Titik Tetes Terakhir](#july-2025-the-final-straw)
-* [Mengapa Kita Tidak Bisa Begitu Saja Menghentikan PayPal](#why-we-cant-just-drop-paypal)
-* [Solusi Sementara Komunitas](#the-community-workaround)
+  * [Bencana Manajemen Sesi](#session-management-disaster)
+* [Juli 2025: Titik Balik Terakhir](#july-2025-the-final-straw)
+* [Mengapa Kami Tidak Bisa Hanya Meninggalkan PayPal](#why-we-cant-just-drop-paypal)
+* [Solusi Komunitas](#the-community-workaround)
 * [Memblokir Template PayPal Karena Phishing](#blocking-paypal-templates-due-to-phishing)
   * [Masalah Sebenarnya: Template PayPal Terlihat Seperti Penipuan](#the-real-problem-paypals-templates-look-like-scams)
   * [Implementasi Kami](#our-implementation)
@@ -45,165 +53,167 @@
   * [Skala Masalah](#the-scale-of-the-problem)
   * [Ironi](#the-irony)
   * [Dampak Dunia Nyata: Penipuan PayPal Baru](#real-world-impact-novel-paypal-scams)
-* [Proses KYC PayPal yang Mundur](#paypals-backwards-kyc-process)
-  * [Bagaimana Cara Kerjanya](#how-it-should-work)
-  * [Cara Kerja PayPal Sebenarnya](#how-paypal-actually-works)
+* [Proses KYC PayPal yang Terbalik](#paypals-backwards-kyc-process)
+  * [Bagaimana Seharusnya Bekerja](#how-it-should-work)
+  * [Bagaimana PayPal Sebenarnya Bekerja](#how-paypal-actually-works)
   * [Dampak Dunia Nyata](#the-real-world-impact)
   * [Bencana Migrasi Akun Juli 2025](#the-july-2025-account-migration-disaster)
-  * [Mengapa Hal Ini Penting](#why-this-matters)
-* [Bagaimana Setiap Pemroses Pembayaran Lain Melakukannya dengan Benar](#how-every-other-payment-processor-does-it-right)
-  * [Garis](#stripe)
-  * [Mendayung](#paddle)
+  * [Mengapa Ini Penting](#why-this-matters)
+* [Bagaimana Semua Prosesor Pembayaran Lain Melakukannya dengan Benar](#how-every-other-payment-processor-does-it-right)
+  * [Stripe](#stripe)
+  * [Paddle](#paddle)
   * [Coinbase Commerce](#coinbase-commerce)
-  * [Persegi](#square)
+  * [Square](#square)
   * [Standar Industri](#the-industry-standard)
-  * [Apa Saja yang Disediakan Prosesor Lain vs PayPal](#what-other-processors-provide-vs-paypal)
+  * [Apa yang Disediakan Prosesor Lain vs PayPal](#what-other-processors-provide-vs-paypal)
 * [Penutupan Sistematis PayPal: Membungkam 6 Juta Suara](#paypals-systematic-cover-up-silencing-6-million-voices)
   * [Penghapusan Besar](#the-great-erasure)
   * [Penyelamatan Pihak Ketiga](#the-third-party-rescue)
-* [Bencana Bug Penangkapan 11 Tahun: $1.899 dan Terus Berlanjut](#the-11-year-capture-bug-disaster-1899-and-counting)
-  * [Kerugian Forward Email Sebesar $1.899](#forward-emails-1899-loss)
-  * [Laporan Asli 2013: 11+ Tahun Kelalaian](#the-2013-original-report-11-years-of-negligence)
+* [Bencana Bug Capture 11 Tahun: $1,899 dan Terus Bertambah](#the-11-year-capture-bug-disaster-1899-and-counting)
+  * [Kerugian Forward Email $1,899](#forward-emails-1899-loss)
+  * [Laporan Asli 2013: Kelalaian Lebih dari 11 Tahun](#the-2013-original-report-11-years-of-negligence)
   * [Pengakuan 2016: PayPal Merusak SDK Mereka Sendiri](#the-2016-admission-paypal-breaks-their-own-sdk)
-  * [Eskalasi 2024: Masih Rusak](#the-2024-escalation-still-broken)
+  * [Eskalasai 2024: Masih Rusak](#the-2024-escalation-still-broken)
   * [Bencana Keandalan Webhook](#the-webhook-reliability-disaster)
   * [Pola Kelalaian Sistematis](#the-pattern-of-systematic-negligence)
-  * [Persyaratan Tidak Berdokumen](#the-undocumented-requirement)
-* [Pola Penipuan PayPal yang Lebih Luas](#paypals-broader-pattern-of-deception)
+  * [Persyaratan yang Tidak Didokumentasikan](#the-undocumented-requirement)
+* [Pola Penipuan Lebih Luas PayPal](#paypals-broader-pattern-of-deception)
   * [Tindakan Departemen Layanan Keuangan New York](#the-new-york-department-of-financial-services-action)
-  * [Gugatan Hukum Honey: Menulis Ulang Tautan Afiliasi](#the-honey-lawsuit-rewriting-affiliate-links)
+  * [Gugatan Honey: Menulis Ulang Tautan Afiliasi](#the-honey-lawsuit-rewriting-affiliate-links)
   * [Biaya Kelalaian PayPal](#the-cost-of-paypals-negligence)
   * [Kebohongan Dokumentasi](#the-documentation-lie)
-* [Apa Artinya Hal Ini bagi Pengembang](#what-this-means-for-developers)
+* [Apa Artinya Ini untuk Pengembang](#what-this-means-for-developers)
+## Potongan yang Hilang: Tidak Ada Cara untuk Melihat Daftar Langganan {#the-missing-piece-no-way-to-list-subscriptions}
 
-## Bagian yang Hilang: Tidak Ada Cara untuk Mencantumkan Langganan {#the-missing-piece-no-way-to-list-subscriptions}
+Ini hal yang membuat kami tercengang: PayPal sudah memiliki penagihan langganan sejak 2014, tapi mereka tidak pernah menyediakan cara bagi pedagang untuk melihat daftar langganan mereka sendiri.
 
-Inilah hal yang membuat kami tercengang: PayPal telah menyediakan penagihan berlangganan sejak 2014, tetapi mereka tidak pernah menyediakan cara bagi pedagang untuk mencantumkan langganan mereka sendiri.
+Pikirkan itu sejenak. Anda bisa membuat langganan, Anda bisa membatalkannya jika Anda memiliki ID-nya, tapi Anda tidak bisa mendapatkan daftar semua langganan aktif untuk akun Anda. Ini seperti memiliki database tanpa pernyataan SELECT.
 
-Coba pikirkan sejenak. Anda bisa membuat langganan, Anda bisa membatalkannya jika Anda memiliki ID, tetapi Anda tidak bisa mendapatkan daftar semua langganan aktif untuk akun Anda. Ini seperti memiliki database tanpa pernyataan SELECT.
-
-Kami memerlukan ini untuk operasi bisnis dasar:
+Kami membutuhkan ini untuk operasi bisnis dasar:
 
 * Dukungan pelanggan (ketika seseorang mengirim email menanyakan tentang langganan mereka)
-* Pelaporan dan rekonsiliasi keuangan
+* Pelaporan keuangan dan rekonsiliasi
 * Manajemen penagihan otomatis
 * Kepatuhan dan audit
 
-Tapi PayPal? Mereka... tidak pernah membuatnya.
+Tapi PayPal? Mereka hanya... tidak pernah membangunnya.
+
 
 ## 2014-2017: Masalah Muncul {#2014-2017-the-problem-emerges}
 
-Masalah daftar langganan pertama kali muncul di forum komunitas PayPal pada tahun 2017. Para pengembang mengajukan pertanyaan yang jelas: "Bagaimana cara mendapatkan daftar semua langganan saya?"
+Masalah daftar langganan pertama kali muncul di forum komunitas PayPal pada 2017. Para pengembang menanyakan pertanyaan yang jelas: "Bagaimana saya mendapatkan daftar semua langganan saya?"
 
-Tanggapan PayPal? Tidak ada.
+Respon PayPal? Sunyi senyap.
 
-Anggota masyarakat mulai merasa frustrasi:
+Anggota komunitas mulai merasa frustrasi:
 
-> "Kelalaian yang sangat aneh jika pedagang tidak dapat mencantumkan semua Perjanjian yang aktif. Jika ID Perjanjian hilang, ini berarti hanya pengguna yang dapat membatalkan atau menangguhkan perjanjian." - leafspider
+> "Penghilangan yang sangat aneh jika pedagang tidak bisa melihat semua Perjanjian aktif. Jika ID Perjanjian hilang ini berarti hanya pengguna yang bisa membatalkan atau menangguhkan perjanjian." - leafspider
 
-> "+1. Sudah hampir 3 tahun." - laudukang (artinya masalahnya sudah ada sejak \~2014)
+> "+1. Sudah hampir 3 tahun." - laudukang (berarti masalah ini sudah ada sejak sekitar 2014)
 
-File [postingan komunitas asli](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) dari tahun 2017 menunjukkan para pengembang sangat membutuhkan fungsi dasar ini. Respons PayPal adalah mengarsipkan repositori tempat orang-orang melaporkan masalah tersebut.
+[Posting komunitas asli](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) dari 2017 menunjukkan para pengembang memohon untuk fungsi dasar ini. Respon PayPal adalah mengarsipkan repositori tempat orang melaporkan masalah tersebut.
 
-## 2020: Kami Memberi Mereka Umpan Balik yang Luas {#2020-we-give-them-extensive-feedback}
 
-Pada bulan Oktober 2020, PayPal menghubungi kami untuk sesi umpan balik formal. Ini bukan obrolan biasa - mereka menyelenggarakan panggilan Microsoft Teams selama 45 menit dengan 8 eksekutif PayPal, termasuk Sri Shivananda (CTO), Edwin Aoki, Jim Magats, John Kunze, dan lainnya.
+## 2020: Kami Memberikan Masukan Mendalam {#2020-we-give-them-extensive-feedback}
 
-### Daftar Umpan Balik 27 Item {#the-27-item-feedback-list}
+Pada Oktober 2020, PayPal menghubungi kami untuk sesi masukan formal. Ini bukan obrolan santai - mereka mengatur panggilan Microsoft Teams selama 45 menit dengan 8 eksekutif PayPal termasuk Sri Shivananda (CTO), Edwin Aoki, Jim Magats, John Kunze, dan lainnya.
 
-Kami datang dengan persiapan yang matang. Setelah 6 jam mencoba berintegrasi dengan API mereka, kami berhasil menemukan 27 masalah spesifik. Mark Stuart dari tim PayPal Checkout mengatakan:
+### Daftar Masukan 27 Item {#the-27-item-feedback-list}
 
-> Hai Nick, terima kasih sudah berbagi dengan semua orang hari ini! Saya rasa ini akan menjadi katalis untuk mendapatkan lebih banyak dukungan dan investasi bagi tim kami untuk memperbaiki masalah ini. Sulit untuk mendapatkan umpan balik yang kaya seperti yang Anda berikan kepada kami sejauh ini.
+Kami datang dengan persiapan. Setelah 6 jam mencoba mengintegrasikan dengan API mereka, kami telah menyusun 27 masalah spesifik. Mark Stuart dari tim PayPal Checkout berkata:
 
-Umpan baliknya bukan bersifat teoritis - melainkan berasal dari upaya integrasi nyata:
+> Hai Nick, terima kasih sudah berbagi dengan semua orang hari ini! Saya pikir ini akan menjadi katalis untuk mendapatkan lebih banyak dukungan dan investasi bagi tim kami untuk memperbaiki hal-hal ini. Sulit mendapatkan masukan mendalam seperti yang sudah kamu berikan sejauh ini.
 
-1. **Pembuatan token akses tidak berfungsi**:
+Masukan ini bukan teori - ini berasal dari upaya integrasi nyata:
 
-> Pembuatan token akses tidak berfungsi. Selain itu, seharusnya ada lebih dari sekadar contoh cURL.
+1. **Generasi token akses tidak berfungsi**:
+
+> Generasi token akses tidak berfungsi. Juga, seharusnya ada lebih dari sekadar contoh cURL.
 
 2. **Tidak ada UI web untuk pembuatan langganan**:
 
-> Bagaimana caranya membuat langganan tanpa harus menggunakan cURL? Sepertinya tidak ada UI web untuk melakukan ini (seperti yang dimiliki Stripe).
+> Bagaimana bisa membuat langganan tanpa harus menggunakan cURL? Sepertinya tidak ada UI web untuk ini (seperti yang dimiliki Stripe)
 
-Mark Stuart menganggap masalah token akses sangat mengkhawatirkan:
+Mark Stuart merasa masalah token akses sangat mengkhawatirkan:
 
-> Kami biasanya tidak mendengar masalah seputar pembuatan token akses.
+> Kami biasanya tidak mendengar masalah terkait generasi token akses.
 
-### Tim Terlibat, Janji Diucapkan {#teams-got-involved-promises-were-made}
+### Tim Terlibat, Janji Diberikan {#teams-got-involved-promises-were-made}
 
-Seiring kami menemukan lebih banyak masalah, PayPal terus menambahkan tim ke dalam percakapan. Darshan Raju dari tim UI manajemen Langganan bergabung dan berkata:
+Saat kami menemukan lebih banyak masalah, PayPal terus menambahkan lebih banyak tim ke dalam percakapan. Darshan Raju dari tim UI manajemen Langganan bergabung dan berkata:
 
-> Akui kekurangannya. Kami akan melacak dan mengatasinya. Terima kasih sekali lagi atas masukan Anda!
+> Mengakui kekurangan ini. Kami akan melacak dan menanganinya. Terima kasih lagi atas masukan Anda!
 
-Sidang ini digambarkan sebagai upaya untuk:
+Sesi ini digambarkan sebagai mencari:
 
-> ceritakan pengalaman Anda secara jujur
+> penjelasan jujur tentang pengalaman Anda
 
-ke:
+untuk:
 
-> jadikan PayPal seperti yang seharusnya bagi para pengembang.
+> membuat PayPal menjadi seperti yang seharusnya bagi para pengembang.
 
-### Hasilnya? Tidak ada. {#the-result-nothing}
+### Hasilnya? Tidak Ada. {#the-result-nothing}
 
-Meskipun adanya sesi umpan balik formal, daftar 27 item yang luas, keterlibatan banyak tim, dan janji untuk:
+Meskipun ada sesi masukan formal, daftar 27 item yang luas, keterlibatan banyak tim, dan janji untuk:
 
-> lacak dan alamat
+> melacak dan menanganinya
 
-masalah, sama sekali tidak ada yang diperbaiki.
+masalah, tidak ada yang diperbaiki sama sekali.
 
-## Eksodus Eksekutif: Bagaimana PayPal Kehilangan Semua Memori Institusional {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
-Di sinilah semuanya menjadi sangat menarik. Setiap orang yang menerima umpan balik kami di tahun 2020 telah meninggalkan PayPal:
+## Exodus Eksekutif: Bagaimana PayPal Kehilangan Semua Memori Institusional {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
+
+Di sinilah menjadi sangat menarik. Setiap orang yang menerima masukan kami pada 2020 telah meninggalkan PayPal:
 
 **Perubahan Kepemimpinan:**
 
 * [Dan Schulman (CEO selama 9 tahun) → Alex Chriss](https://www.fastcompany.com/90938418/paypal-ceo-alex-chriss-dan-schulman-what-to-know/) (September 2023)
-* [Sri Shivananda (CTO yang mengorganisir umpan balik) → JPMorgan Chase](https://www.pymnts.com/personnel/2024/jpmorgan-names-paypal-vet-shivananda-as-new-tech-chief/) (Januari 2024)
-
+* [Sri Shivananda (CTO yang mengorganisir masukan) → JPMorgan Chase](https://www.pymnts.com/personnel/2024/jpmorgan-names-paypal-vet-shivananda-as-new-tech-chief/) (Januari 2024)
 **Pemimpin Teknis yang Membuat Janji, Lalu Pergi:**
 
-* **Mark Stuart** (umpan balik yang dijanjikan akan menjadi "katalis") → [Sekarang di Ripple](https://www.linkedin.com/in/markstuartsf)
+* **Mark Stuart** (berjanji umpan balik akan menjadi "katalis") → [Sekarang di Ripple](https://www.linkedin.com/in/markstuartsf)
 * **Jim Magats** (veteran PayPal selama 18 tahun) → [CEO MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
 * **John Kunze** (VP Produk Konsumen Global) → [Pensiun](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
-* **Edwin Aoki** (salah satu yang tersisa) → [Baru saja berangkat ke Nasdaq](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (Januari 2025)
+* **Edwin Aoki** (salah satu yang terakhir tersisa) → [Baru saja pergi ke Nasdaq](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (Januari 2025)
 
-PayPal telah menjadi pintu putar tempat para eksekutif mengumpulkan masukan pengembang, membuat janji, lalu pindah ke perusahaan yang lebih baik seperti JPMorgan, Ripple, dan firma fintech lainnya.
+PayPal telah menjadi pintu putar di mana eksekutif mengumpulkan umpan balik pengembang, membuat janji, lalu pergi ke perusahaan yang lebih baik seperti JPMorgan, Ripple, dan perusahaan fintech lainnya.
 
-Ini menjelaskan mengapa respons masalah GitHub tahun 2025 tampak sama sekali tidak berhubungan dengan umpan balik kami tahun 2020 - secara harfiah semua orang yang menerima umpan balik itu telah meninggalkan PayPal.
+Ini menjelaskan mengapa respons isu GitHub 2025 tampak benar-benar terputus dari umpan balik kami tahun 2020 - secara harfiah semua orang yang menerima umpan balik itu telah meninggalkan PayPal.
 
-## 2025: Kepemimpinan Baru, Masalah Tetap Sama {#2025-new-leadership-same-problems}
 
-Maju cepat ke tahun 2025, pola yang sama persis muncul. Setelah bertahun-tahun tanpa kemajuan, pimpinan baru PayPal kembali menghubungi.
+## 2025: Kepemimpinan Baru, Masalah yang Sama {#2025-new-leadership-same-problems}
+
+Maju cepat ke tahun 2025, dan pola yang sama persis muncul. Setelah bertahun-tahun tanpa kemajuan, kepemimpinan baru PayPal menghubungi lagi.
 
 ### CEO Baru Terlibat {#the-new-ceo-gets-involved}
 
-Pada 30 Juni 2025, kami langsung menghubungi CEO baru PayPal, Alex Chriss. Tanggapannya singkat:
+Pada 30 Juni 2025, kami langsung mengeskalasi ke CEO baru PayPal, Alex Chriss. Responsnya singkat:
 
-> Hai Nick – Terima kasih telah menghubungi dan memberikan masukan. Michelle (cc) sudah siap bersama timnya untuk berdiskusi dan menyelesaikan masalah ini bersama Anda. Terima kasih -A
+> Hai Nick – Terima kasih telah menghubungi dan atas umpan baliknya. Michelle (cc'd) bertanggung jawab dengan timnya untuk terlibat dan menyelesaikan ini dengan Anda. Terima kasih -A
 
-### Tanggapan Michelle Gill {#michelle-gills-response}
+### Respons Michelle Gill {#michelle-gills-response}
 
-Michelle Gill, EVP dan Manajer Umum Usaha Kecil dan Layanan Keuangan, menanggapi:
+Michelle Gill, EVP dan General Manager Small Business and Financial Services, merespons:
 
-> Terima kasih banyak, Nick, Alex sudah dipindahkan ke bcc. Kami sudah menyelidiki masalah ini sejak postinganmu sebelumnya. Kami akan menghubungimu sebelum minggu ini berakhir. Bisakah kamu mengirimkan informasi kontakmu agar salah satu kolegaku bisa menghubungimu? Michelle
+> Terima kasih banyak Nick, memindahkan Alex ke bcc. Kami telah meneliti ini sejak postingan Anda sebelumnya. Kami akan menghubungi Anda sebelum minggu ini berakhir. Bisakah Anda mengirimkan info kontak Anda agar salah satu rekan saya dapat menghubungi. Michelle
 
-### Tanggapan Kami: Tidak Ada Lagi Rapat {#our-response-no-more-meetings}
+### Respons Kami: Tidak Ada Lagi Pertemuan {#our-response-no-more-meetings}
 
-Kami menolak pertemuan lainnya, dengan alasan rasa frustrasi kami:
+Kami menolak pertemuan lain, menjelaskan frustrasi kami:
 
-> Terima kasih. Tapi saya rasa menelepon saja tidak akan berpengaruh apa-apa. Begini alasannya... Dulu saya pernah menelepon dan hasilnya nihil. Saya membuang waktu lebih dari 2 jam untuk berbicara dengan seluruh tim dan pimpinan, tapi tidak ada yang ditindaklanjuti... Banyak email bolak-balik. Sama sekali tidak ada hasil. Umpan balik tidak ada gunanya. Saya sudah mencoba bertahun-tahun, didengarkan, tapi hasilnya nihil.
+> Terima kasih. Namun saya merasa ikut panggilan tidak akan menghasilkan apa-apa. Ini alasannya... Saya pernah ikut panggilan sebelumnya dan itu benar-benar tidak membuahkan hasil. Saya membuang waktu lebih dari 2 jam berbicara dengan seluruh tim dan pimpinan dan tidak ada yang selesai... Banyak email bolak-balik. Sama sekali tidak ada yang selesai. Umpan balik tidak kemana-mana. Saya sudah mencoba bertahun-tahun, didengarkan, lalu tidak ada hasil.
 
-### Respons Marty Brodbeck terhadap Rekayasa Berlebihan {#marty-brodbecks-overengineering-response}
+### Respons Overengineering Marty Brodbeck {#marty-brodbecks-overengineering-response}
 
-Kemudian Marty Brodbeck, yang mengepalai teknik konsumen di PayPal, menghubungi:
+Kemudian Marty Brodbeck, yang memimpin rekayasa konsumen di PayPal, menghubungi:
 
-> Hai Nick, ini Marty Brodbeck. Saya mengepalai semua rekayasa konsumen di PayPal dan telah memimpin pengembangan API untuk perusahaan ini. Bisakah Anda dan saya berbagi masalah yang Anda hadapi dan bagaimana kami dapat membantu?
+> Hai Nick, ini Marty Brodbeck. Saya memimpin semua rekayasa konsumen di PayPal dan telah menggerakkan pengembangan API untuk perusahaan. Bisakah Anda dan saya terhubung mengenai masalah yang Anda hadapi dan bagaimana kami dapat membantu di sini.
 
-Ketika kami menjelaskan kebutuhan sederhana untuk titik akhir daftar langganan, tanggapannya mengungkapkan masalah yang sebenarnya:
+Ketika kami menjelaskan kebutuhan sederhana untuk endpoint daftar langganan, responsnya mengungkapkan masalah yang sebenarnya:
 
-> Terima kasih Nick, kami sedang dalam proses menciptakan API langganan tunggal dengan SDK lengkap (mendukung penanganan kesalahan penuh, pelacakan langganan berbasis peristiwa, waktu aktif yang kuat) di mana penagihan juga dipisah sebagai API terpisah agar pedagang dapat mengaksesnya daripada harus mengaturnya di beberapa titik akhir untuk memperoleh respons tunggal.
+> Terima kasih Nick, kami sedang dalam proses membuat satu API langganan tunggal dengan SDK lengkap (mendukung penanganan kesalahan penuh, pelacakan langganan berbasis event, uptime yang kuat) di mana penagihan juga dipisahkan sebagai API terpisah untuk pedagang agar tidak perlu mengatur di beberapa endpoint untuk mendapatkan satu respons.
 
-Ini pendekatan yang salah. Kita tidak butuh arsitektur yang rumit selama berbulan-bulan. Kita hanya butuh satu titik akhir REST sederhana yang mencantumkan langganan—sesuatu yang seharusnya sudah ada sejak 2014.
+Ini adalah pendekatan yang salah. Kami tidak butuh berbulan-bulan arsitektur kompleks. Kami butuh satu endpoint REST sederhana yang mencantumkan langganan - sesuatu yang seharusnya sudah ada sejak 2014.
 
 ```http
 GET /v1/billing/subscriptions
@@ -212,266 +222,268 @@ Authorization: Bearer {access_token}
 
 ### Kontradiksi "CRUD Sederhana" {#the-simple-crud-contradiction}
 
-Ketika kami menunjukkan bahwa ini adalah fungsi CRUD dasar yang seharusnya sudah ada sejak 2014, tanggapan Marty cukup menjelaskan:
+Ketika kami menunjukkan ini adalah fungsi CRUD dasar yang seharusnya sudah ada sejak 2014, respons Marty sangat berbicara:
 
-> Operasi Crud sederhana adalah bagian dari inti API teman saya, jadi tidak akan memakan waktu berbulan-bulan untuk pengembangan
+> Operasi CRUD sederhana adalah bagian dari API inti sobat, jadi tidak akan memakan waktu berbulan-bulan pengembangan
 
-PayPal TypeScript SDK, yang saat ini hanya mendukung tiga titik akhir setelah berbulan-bulan pengembangan, bersama dengan garis waktu historisnya, dengan jelas menunjukkan bahwa proyek semacam itu memerlukan waktu lebih dari beberapa bulan untuk diselesaikan.
+SDK TypeScript PayPal, yang saat ini hanya mendukung tiga endpoint setelah berbulan-bulan pengembangan, bersama dengan garis waktu historisnya, jelas menunjukkan bahwa proyek semacam itu membutuhkan waktu lebih dari beberapa bulan untuk diselesaikan.
+Respons ini menunjukkan dia tidak memahami API-nya sendiri. Jika "operasi CRUD sederhana adalah bagian dari API inti," lalu di mana endpoint daftar langganan? Kami menanggapi:
 
-Respons ini menunjukkan bahwa ia tidak memahami API-nya sendiri. Jika "operasi CRUD sederhana merupakan bagian dari API inti", lalu di mana titik akhir daftar langganan? Kami menjawab:
+> Jika 'operasi CRUD sederhana adalah bagian dari API inti' lalu di mana endpoint daftar langganan? Para pengembang telah meminta 'operasi CRUD sederhana' ini sejak 2014. Sudah 11 tahun. Setiap penyedia pembayaran lain sudah memiliki fungsi dasar ini sejak hari pertama.
 
-> Jika 'operasi CRUD sederhana merupakan bagian dari API inti', lalu di mana titik akhir daftar langganan? Para pengembang telah meminta 'operasi CRUD sederhana' ini sejak 2014. Sudah 11 tahun berlalu. Setiap pemroses pembayaran lainnya telah memiliki fungsi dasar ini sejak awal.
-
-### Kesenjangan Menjadi Jelas {#the-disconnect-becomes-clear}
+### Ketidaksesuaian Menjadi Jelas {#the-disconnect-becomes-clear}
 
 Pertukaran tahun 2025 dengan Alex Chriss, Michelle Gill, dan Marty Brodbeck menunjukkan disfungsi organisasi yang sama:
 
-1. **Pimpinan baru tidak mengetahui sesi umpan balik sebelumnya**
-2. **Mereka mengusulkan solusi yang sama dan terlalu rumit**
+1. **Kepemimpinan baru tidak mengetahui sesi umpan balik sebelumnya**
+2. **Mereka mengusulkan solusi yang sama yang terlalu rumit**
 3. **Mereka tidak memahami keterbatasan API mereka sendiri**
-4. **Mereka menginginkan lebih banyak rapat, alih-alih hanya menyelesaikan masalah**
+4. **Mereka menginginkan lebih banyak pertemuan daripada sekadar memperbaiki masalah**
 
-Pola ini menjelaskan mengapa tim PayPal pada tahun 2025 tampak sama sekali tidak terhubung dengan umpan balik ekstensif yang diberikan pada tahun 2020 - orang-orang yang menerima umpan balik tersebut sudah tiada, dan pimpinan baru mengulangi kesalahan yang sama.
+Polanya menjelaskan mengapa tim PayPal di tahun 2025 tampak benar-benar terputus dari umpan balik luas yang diberikan pada 2020 - orang-orang yang menerima umpan balik itu sudah tidak ada, dan kepemimpinan baru mengulangi kesalahan yang sama.
 
-## Tahun Laporan Bug yang Mereka Abaikan {#years-of-bug-reports-they-ignored}
 
-Kami tidak hanya mengeluh tentang fitur yang hilang. Kami secara aktif melaporkan bug dan berusaha membantu mereka memperbaikinya. Berikut kronologi lengkap masalah yang kami dokumentasikan:
+## Bertahun-tahun Laporan Bug yang Mereka Abaikan {#years-of-bug-reports-they-ignored}
+
+Kami tidak hanya mengeluh tentang fitur yang hilang. Kami secara aktif melaporkan bug dan mencoba membantu mereka memperbaiki. Berikut adalah garis waktu komprehensif dari masalah yang kami dokumentasikan:
 
 ### 2016: Keluhan Awal UI/UX {#2016-early-uiux-complaints}
 
-Bahkan di tahun 2016, kami secara terbuka menghubungi pimpinan PayPal, termasuk Dan Schulman, mengenai masalah antarmuka dan kegunaan. Ini terjadi 9 tahun yang lalu, dan masalah UI/UX yang sama masih terjadi hingga saat ini.
+Bahkan sejak 2016, kami secara terbuka menghubungi kepemimpinan PayPal termasuk Dan Schulman tentang masalah antarmuka dan kegunaan. Ini sudah 9 tahun yang lalu, dan masalah UI/UX yang sama masih ada sampai sekarang.
 
 ### 2021: Laporan Bug Email Bisnis {#2021-business-email-bug-report}
 
-Pada bulan Maret 2021, kami melaporkan bahwa sistem email bisnis PayPal mengirimkan notifikasi pembatalan yang salah. Variabel pada templat email ditampilkan secara tidak benar, sehingga menampilkan pesan yang membingungkan pelanggan.
+Pada Maret 2021, kami melaporkan bahwa sistem email bisnis PayPal mengirimkan notifikasi pembatalan yang salah. Template email memiliki variabel yang dirender secara salah, menampilkan pesan membingungkan kepada pelanggan.
 
 Mark Stuart mengakui masalah tersebut:
 
-> Terima kasih, Nick! Pindah ke BCC. @Prasy, apakah tim Anda bertanggung jawab atas email ini atau tahu siapa yang bertanggung jawab? Kalimat "Niftylettuce, LLC, kami tidak akan menagih Anda lagi" membuat saya yakin ada kesalahan alamat dan isi email.
+> Terima kasih Nick! Beralih ke BCC. @Prasy, apakah timmu bertanggung jawab atas email ini atau tahu siapa yang bertanggung jawab? "Niftylettuce, LLC, kami tidak akan menagih Anda lagi" membuat saya percaya ada kekeliruan pada siapa email ini ditujukan dan isi emailnya.
 
-**Hasil**: Mereka benar-benar memperbaikinya! Mark Stuart mengonfirmasi:
+**Hasil**: Mereka benar-benar memperbaiki ini! Mark Stuart mengonfirmasi:
 
-> Baru saja mendapat kabar dari tim notifikasi bahwa templat email telah diperbaiki dan diluncurkan. Terima kasih telah menghubungi kami untuk melaporkannya. Terima kasih!
+> Baru saja dengar dari tim notifikasi bahwa template email sudah diperbaiki dan diterapkan. Terima kasih sudah menghubungi untuk melaporkannya. Terima kasih!
 
-Ini menunjukkan mereka BISA memperbaiki hal-hal ketika mereka menginginkannya - mereka hanya memilih untuk tidak melakukannya pada sebagian besar masalah.
+Ini menunjukkan mereka BISA memperbaiki hal-hal ketika mereka mau - mereka hanya memilih untuk tidak melakukannya pada sebagian besar masalah.
 
-### 2021: Saran Peningkatan UI {#2021-ui-improvement-suggestions}
+### 2021: Saran Perbaikan UI {#2021-ui-improvement-suggestions}
 
-Pada bulan Februari 2021, kami memberikan umpan balik terperinci mengenai UI dasbor mereka, khususnya bagian "Aktivitas Terbaru PayPal":
+Pada Februari 2021, kami memberikan umpan balik rinci tentang UI dashboard mereka, khususnya bagian "Aktivitas Terbaru PayPal":
 
-> Saya rasa dasbor di paypal.com, khususnya "Aktivitas Terbaru PayPal", perlu ditingkatkan. Sebaiknya Anda tidak menampilkan baris status "Dibuat" untuk pembayaran berulang $0 - itu hanya menambah banyak baris tambahan dan Anda tidak bisa melihat dengan mudah berapa banyak pendapatan yang dihasilkan untuk hari ini/beberapa hari terakhir.
+> Saya pikir dashboard di paypal.com, khususnya "Aktivitas Terbaru PayPal" perlu diperbaiki. Saya rasa Anda tidak perlu menampilkan baris status "Dibuat" untuk pembayaran berulang $0 - ini hanya menambah banyak baris ekstra dan Anda tidak bisa dengan mudah melihat sekilas berapa banyak pendapatan yang dihasilkan untuk hari ini/beberapa hari terakhir.
 
 Mark Stuart meneruskannya ke tim produk konsumen:
 
-> Terima kasih! Saya tidak yakin tim mana yang bertanggung jawab atas Aktivitas, tetapi saya telah meneruskannya ke kepala produk konsumen untuk menemukan tim yang tepat. Pembayaran berulang sebesar $0,00 sepertinya bermasalah. Mungkin sebaiknya difilter.
+> Terima kasih! Saya tidak yakin tim mana yang bertanggung jawab atas Aktivitas, tapi saya teruskan ke kepala produk konsumen untuk menemukan tim yang tepat. Pembayaran berulang $0,00 sepertinya bug. Seharusnya disaring keluar.
 
-**Hasil**: Tidak pernah diperbaiki. Antarmuka pengguna (UI) masih menampilkan entri $0 yang tidak berguna ini.
+**Hasil**: Tidak pernah diperbaiki. UI masih menampilkan entri $0 yang tidak berguna ini.
 
 ### 2021: Kegagalan Lingkungan Sandbox {#2021-sandbox-environment-failures}
 
-Pada bulan November 2021, kami melaporkan masalah kritis dengan lingkungan sandbox PayPal:
+Pada November 2021, kami melaporkan masalah kritis dengan lingkungan sandbox PayPal:
 
-* Kunci API rahasia Sandbox diubah dan dinonaktifkan secara acak
-* Semua akun uji Sandbox dihapus tanpa pemberitahuan
-* Pesan kesalahan saat mencoba melihat detail akun Sandbox
-* Kegagalan pemuatan berkala
+* Kunci API rahasia sandbox diubah dan dinonaktifkan secara acak
+* Semua akun uji sandbox dihapus tanpa pemberitahuan
+* Pesan kesalahan saat mencoba melihat detail akun sandbox
+* Kegagalan pemuatan yang tidak konsisten
 
-> Entah kenapa, kunci API rahasia Sandbox saya diubah dan dinonaktifkan. Semua akun uji Sandbox lama saya juga dihapus.
+> Entah kenapa kunci API rahasia sandbox saya diubah dan dinonaktifkan. Juga semua akun uji Sandbox lama saya dihapus.
 
-> Terkadang mereka memuat, terkadang tidak. Ini sangat menyebalkan.
+> Kadang mereka bisa dimuat dan kadang tidak juga. Ini sangat membuat frustrasi.
 
-**Hasil**: Tidak ada respons, tidak ada perbaikan. Pengembang masih menghadapi masalah keandalan sandbox.
+**Hasil**: Tidak ada tanggapan, tidak ada perbaikan. Pengembang masih menghadapi masalah keandalan sandbox.
 
-### 2021: Sistem Laporan Rusak Sepenuhnya {#2021-reports-system-completely-broken}
+### 2021: Sistem Laporan Sepenuhnya Rusak {#2021-reports-system-completely-broken}
+Pada Mei 2021, kami melaporkan bahwa sistem unduhan PayPal untuk laporan transaksi benar-benar rusak:
 
-Pada bulan Mei 2021, kami melaporkan bahwa sistem unduhan PayPal untuk laporan transaksi rusak total:
-
-> Sepertinya pelaporan unduhan tidak berfungsi saat ini dan belum berfungsi seharian. Seharusnya juga ada notifikasi email jika gagal.
+> Sepertinya unduhan laporan tidak berfungsi saat ini dan sudah tidak berfungsi sepanjang hari. Juga seharusnya mungkin mendapatkan notifikasi email jika gagal.
 
 Kami juga menunjukkan bencana manajemen sesi:
 
-> Kalau kamu tidak aktif saat masuk ke PayPal selama 5 menit, kamu akan keluar. Jadi, ketika kamu menyegarkan tombol di sebelah laporan yang ingin kamu periksa statusnya (setelah menunggu lama), rasanya malas untuk masuk lagi.
+> Juga jika Anda tidak aktif saat masuk ke PayPal selama sekitar 5 menit, Anda akan keluar. Jadi ketika Anda menyegarkan tombol lagi di samping laporan yang ingin Anda periksa statusnya (setelah menunggu sangat lama), sangat merepotkan harus masuk kembali.
 
-Mark Stuart mengakui masalah batas waktu sesi:
+Mark Stuart mengakui masalah waktu habis sesi:
 
-> Saya ingat Anda pernah melaporkan hal itu di masa lalu dengan sesi Anda yang sering berakhir dan mengganggu alur pengembangan Anda saat Anda beralih antara IDE dan developer.paypal.com atau dasbor pedagang Anda, lalu Anda kembali dan keluar lagi.
+> Saya ingat Anda pernah melaporkan itu sebelumnya dengan sesi Anda yang sering kedaluwarsa dan mengganggu alur pengembangan Anda saat Anda beralih antara IDE Anda dan developer.paypal.com atau dasbor pedagang Anda, lalu Anda kembali dan keluar lagi.
 
-**Hasil**: Batas waktu sesi masih 60 detik. Sistem pelaporan masih sering gagal.
+**Hasil**: Waktu habis sesi masih 60 detik. Sistem laporan masih sering gagal.
 
 ### 2022: Fitur API Inti Hilang (Lagi) {#2022-core-api-feature-missing-again}
 
-Pada bulan Januari 2022, kami kembali meningkatkan masalah daftar langganan, kali ini dengan detail yang lebih lengkap tentang kesalahan dokumentasinya:
+Pada Januari 2022, kami kembali mengeskalasi masalah daftar langganan, kali ini dengan detail lebih banyak tentang bagaimana dokumentasi mereka salah:
 
 > Tidak ada GET yang mencantumkan semua langganan (sebelumnya disebut perjanjian penagihan)
 
-Kami menemukan dokumentasi resmi mereka sepenuhnya tidak akurat:
+Kami menemukan dokumentasi resmi mereka benar-benar tidak akurat:
 
-> Dokumen API-nya juga sama sekali tidak akurat. Kami pikir kami bisa mencari solusi dengan mengunduh daftar ID langganan yang di-hardcode. Tapi itu malah tidak berhasil!
+> Dokumen API juga benar-benar tidak akurat. Kami pikir kami bisa melakukan solusi dengan mengunduh daftar ID langganan yang dikodekan secara keras. Tapi itu bahkan tidak berhasil!
 
-> Dari dokumen resmi di sini... Dikatakan Anda bisa melakukan ini... Inilah masalahnya - tidak ada kolom "ID Langganan" yang bisa dicentang sama sekali.
+> Dari dokumen resmi di sini... Dikatakan Anda bisa melakukan ini... Ini yang mengejutkan - tidak ada bidang "ID Langganan" sama sekali yang bisa ditemukan untuk dicentang.
 
-Christina Monti dari PayPal menanggapi:
+Christina Monti dari PayPal merespons:
 
-> Mohon maaf atas rasa frustrasi yang disebabkan oleh langkah-langkah yang salah ini, kami akan memperbaikinya minggu ini.
+> Mohon maaf atas frustrasi yang disebabkan oleh langkah-langkah yang salah ini, kami akan memperbaikinya minggu ini.
 
-Sri Shivananda (CTO) mengucapkan terima kasih kepada kami:
+Sri Shivananda (CTO) berterima kasih kepada kami:
 
-> Terima kasih atas bantuan Anda yang berkelanjutan dalam menjadikan kami lebih baik. Sangat kami hargai.
+> Terima kasih atas bantuan Anda yang terus menerus dalam membuat kami lebih baik. Sangat dihargai.
 
-**Hasil**: Dokumentasi tidak pernah diperbaiki. Titik akhir daftar langganan tidak pernah dibuat.
+**Hasil**: Dokumentasi tidak pernah diperbaiki. Endpoint daftar langganan tidak pernah dibuat.
+
 
 ## Mimpi Buruk Pengalaman Pengembang {#the-developer-experience-nightmare}
 
-Bekerja dengan API PayPal seperti kembali ke masa 10 tahun yang lalu. Berikut masalah teknis yang telah kami dokumentasikan:
+Bekerja dengan API PayPal seperti mundur 10 tahun ke belakang. Berikut adalah masalah teknis yang telah kami dokumentasikan:
 
 ### Antarmuka Pengguna Rusak {#broken-user-interface}
 
-Dasbor pengembang PayPal sungguh berantakan. Berikut yang kami hadapi setiap hari:
+Dasbor pengembang PayPal adalah bencana. Berikut yang kami hadapi setiap hari:
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-UI PayPal sangat rusak sehingga Anda bahkan tidak bisa menutup notifikasi.
-</div></figcaption>
-<video class="lazyframe-bordered" loading="lazy" controls>
-<source src="/img/articles/pypl-notifications.mp4" type="video/mp4">
-Peramban Anda tidak mendukung tag video.
-</video>
+  <figcaption><div class="alert alert-danger small text-center">
+  UI PayPal sangat rusak sehingga Anda bahkan tidak bisa menutup notifikasi
+  </div></figcaption>
+  <video class="lazyframe-bordered" loading="lazy" controls>
+    <source src="/img/articles/pypl-notifications.mp4" type="video/mp4">
+    Browser Anda tidak mendukung tag video.
+  </video>
 </figure>
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Dasbor pengembang secara harfiah mengharuskan Anda menyeret slider lalu keluar setelah 60 detik
-</div></figcaption>
-<video class="lazyframe-bordered" loading="lazy" controls>
-<source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
-Peramban Anda tidak mendukung tag video.
-</video>
+  <figcaption><div class="alert alert-danger small text-center">
+  Dasbor pengembang benar-benar membuat Anda menggeser slider lalu keluar setelah 60 detik
+  </div></figcaption>
+  <video class="lazyframe-bordered" loading="lazy" controls>
+    <source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
+    Browser Anda tidak mendukung tag video.
+  </video>
 </figure>
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Lebih banyak bencana UI di antarmuka pengembang PayPal yang menunjukkan alur kerja yang rusak
-</div></figcaption>
-<video class="lazyframe-bordered" loading="lazy" controls>
-<source src="/img/articles/pypl-kapture-2.mp4" type="video/mp4">
-Peramban Anda tidak mendukung tag video.
-</video>
+  <figcaption><div class="alert alert-danger small text-center">
+  Lebih banyak bencana UI di antarmuka pengembang PayPal yang menunjukkan alur kerja yang rusak
+  </div></figcaption>
+  <video class="lazyframe-bordered" loading="lazy" controls>
+    <source src="/img/articles/pypl-kapture-2.mp4" type="video/mp4">
+    Browser Anda tidak mendukung tag video.
+  </video>
 </figure>
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Antarmuka manajemen langganan - antarmukanya sangat buruk sehingga kami harus bergantung pada kode untuk menghasilkan produk dan paket langganan
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Antarmuka manajemen langganan - antarmukanya sangat buruk sehingga kami harus mengandalkan kode untuk membuat produk dan rencana langganan
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="Tangkapan layar langganan PayPal" class="rounded-lg" />
 </figure>
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Tampilan antarmuka langganan yang rusak dengan fungsi yang hilang (Anda tidak dapat dengan mudah membuat produk/paket/langganan – dan sepertinya tidak ada cara untuk menghapus produk maupun paket setelah dibuat di UI)
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Tampilan antarmuka langganan yang rusak dengan fungsi yang hilang (Anda tidak bisa dengan mudah membuat produk/rencana/langganan – dan tampaknya tidak ada cara sama sekali untuk menghapus produk maupun rencana setelah dibuat di UI)
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="Tangkapan layar langganan PayPal 2" class="rounded-lg" />
 </figure>
-
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Pesan kesalahan PayPal yang umum - samar dan tidak membantu
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Pesan kesalahan PayPal yang khas - membingungkan dan tidak membantu
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
 </figure>
 
 ### Masalah SDK {#sdk-problems}
 
-* Tidak dapat menangani pembayaran sekali pakai dan langganan tanpa solusi rumit yang melibatkan pertukaran dan rendering ulang tombol saat memuat ulang SDK dengan tag skrip.
-* SDK JavaScript melanggar konvensi dasar (nama kelas menggunakan huruf kecil, tidak ada pemeriksaan instans).
-* Pesan kesalahan tidak menunjukkan kolom mana yang hilang.
-* Tipe data tidak konsisten (memerlukan jumlah string, bukan angka).
+* Tidak bisa menangani pembayaran sekali saja dan langganan tanpa solusi rumit yang melibatkan pertukaran dan render ulang tombol sambil memuat ulang SDK dengan tag skrip
+* SDK JavaScript melanggar konvensi dasar (nama kelas huruf kecil, tidak ada pengecekan instance)
+* Pesan kesalahan tidak menunjukkan bidang mana yang hilang
+* Tipe data tidak konsisten (memerlukan jumlah dalam bentuk string bukan angka)
 
 ### Pelanggaran Kebijakan Keamanan Konten {#content-security-policy-violations}
 
-SDK mereka memerlukan unsafe-inline dan unsafe-eval di CSP Anda, **memaksa Anda mengorbankan keamanan situs Anda**.
+SDK mereka memerlukan unsafe-inline dan unsafe-eval dalam CSP Anda, **memaksa Anda mengorbankan keamanan situs Anda**.
 
-### Dokumentasi Kekacauan {#documentation-chaos}
+### Kekacauan Dokumentasi {#documentation-chaos}
 
 Mark Stuart sendiri mengakui:
 
-> Setuju bahwa ada begitu banyak API lama dan baru. Sangat sulit menemukan apa yang harus dicari (bahkan bagi kami yang bekerja di sini).
+> Setuju bahwa ada jumlah API lama dan baru yang absurd. Sangat sulit menemukan apa yang dicari (bahkan bagi kami yang bekerja di sini).
 
 ### Kerentanan Keamanan {#security-vulnerabilities}
 
-**Implementasi 2FA PayPal terbalik**. Bahkan dengan aplikasi TOTP yang diaktifkan, mereka memaksakan verifikasi SMS - membuat akun rentan terhadap serangan pertukaran SIM. Jika Anda mengaktifkan TOTP, PayPal seharusnya hanya menggunakan itu. Email sebagai alternatif, bukan SMS.
+**Implementasi 2FA PayPal terbalik**. Bahkan dengan aplikasi TOTP diaktifkan, mereka memaksa verifikasi SMS - membuat akun rentan terhadap serangan SIM swap. Jika Anda mengaktifkan TOTP, seharusnya itu digunakan secara eksklusif. Cadangan harusnya email, bukan SMS.
 
-### Manajemen Sesi Bencana {#session-management-disaster}
+### Bencana Manajemen Sesi {#session-management-disaster}
 
-**Dasbor pengembang mereka akan mengeluarkan Anda setelah 60 detik tidak aktif**. Coba lakukan hal-hal produktif, dan Anda malah terus-menerus mengalami: masuk → captcha → 2FA → keluar → ulangi. Pakai VPN? Semoga berhasil.
+**Dashboard pengembang mereka mengeluarkan Anda setelah 60 detik tidak aktif**. Cobalah melakukan sesuatu yang produktif dan Anda terus-menerus melalui: login → captcha → 2FA → logout → ulangi. Menggunakan VPN? Semoga beruntung.
 
-## Juli 2025: Kesabaran Terakhir {#july-2025-the-final-straw}
 
-Setelah 11 tahun mengalami masalah yang sama, titik kritisnya muncul saat migrasi akun rutin. Kami perlu beralih ke akun PayPal baru yang sesuai dengan nama perusahaan kami, "Forward Email LLC", demi akuntansi yang lebih bersih.
+## Juli 2025: Titik Balik Terakhir {#july-2025-the-final-straw}
 
-Apa yang seharusnya sederhana berubah menjadi bencana total:
+Setelah 11 tahun masalah yang sama, titik puncak terjadi selama migrasi akun rutin. Kami perlu beralih ke akun PayPal baru untuk menyesuaikan dengan nama perusahaan kami "Forward Email LLC" agar pembukuan lebih rapi.
 
-* Pengujian awal menunjukkan semuanya berfungsi dengan benar
+Yang seharusnya sederhana berubah menjadi bencana total:
+
+* Pengujian awal menunjukkan semuanya berjalan dengan benar
 * Beberapa jam kemudian, PayPal tiba-tiba memblokir semua pembayaran langganan tanpa pemberitahuan
-* Pelanggan tidak dapat membayar, sehingga menimbulkan kebingungan dan beban dukungan
-* Dukungan PayPal memberikan respons yang kontradiktif dengan mengklaim akun telah diverifikasi
+* Pelanggan tidak bisa membayar, menyebabkan kebingungan dan beban dukungan
+* Dukungan PayPal memberikan jawaban yang bertentangan mengklaim akun sudah diverifikasi
 * Kami terpaksa menghentikan pembayaran PayPal sepenuhnya
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Kesalahan yang dilihat pelanggan saat mencoba membayar - tidak ada penjelasan, tidak ada catatan, tidak ada apa-apa
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Kesalahan yang dilihat pelanggan saat mencoba membayar - tanpa penjelasan, tanpa log, tanpa apa pun
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
 </figure>
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Dukungan PayPal mengklaim semuanya baik-baik saja, sementara pembayaran benar-benar rusak. Pesan terakhir menunjukkan mereka mengatakan telah "mengembalikan beberapa fitur" tetapi masih meminta informasi lebih lanjut yang tidak disebutkan - seperti adegan dukungan PayPal klasik.
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Dukungan PayPal mengklaim semuanya baik-baik saja sementara pembayaran benar-benar rusak. Pesan terakhir menunjukkan mereka mengatakan mereka "memulihkan beberapa fitur" tapi masih meminta informasi lebih lanjut yang tidak ditentukan - teater dukungan PayPal klasik
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
 </figure>
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Proses verifikasi identitas yang konon tidak "memperbaiki" apa pun
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Proses verifikasi identitas yang katanya "memperbaiki" tidak ada apa-apanya
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
+  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
 </figure>
-
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Pesan samar dan masih belum ada penyelesaian. Tidak ada informasi, pemberitahuan, atau informasi tambahan apa pun yang diperlukan. Dukungan pelanggan tidak merespons.
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Pesan yang tidak jelas dan masih belum ada penyelesaian. Nol informasi, pemberitahuan, atau apapun mengenai informasi tambahan apa yang diperlukan. Dukungan pelanggan menjadi diam.
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
 </figure>
 
-## Mengapa Kita Tidak Bisa Begitu Saja Menghentikan PayPal {#why-we-cant-just-drop-paypal}
 
-Terlepas dari semua masalah ini, kami tidak dapat sepenuhnya meninggalkan PayPal karena beberapa pelanggan hanya menggunakan PayPal sebagai opsi pembayaran. Seperti yang dikatakan salah satu pelanggan di [halaman status](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515) kami:
+## Mengapa Kami Tidak Bisa Hanya Meninggalkan PayPal {#why-we-cant-just-drop-paypal}
 
-> PayPal adalah satu-satunya pilihan pembayaran saya
+Meskipun semua masalah ini, kami tidak bisa sepenuhnya meninggalkan PayPal karena beberapa pelanggan hanya memiliki PayPal sebagai opsi pembayaran. Seperti yang dikatakan salah satu pelanggan di [halaman status kami](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515):
+
+> PayPal adalah satu-satunya opsi pembayaran saya
 
 **Kami terjebak mendukung platform yang rusak karena PayPal telah menciptakan monopoli pembayaran untuk pengguna tertentu.**
 
+
 ## Solusi Komunitas {#the-community-workaround}
 
-Karena PayPal tidak menyediakan fungsi dasar untuk mendaftarkan langganan, komunitas pengembang telah membuat solusi. Kami telah membuat skrip yang membantu mengelola langganan PayPal: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
+Karena PayPal tidak menyediakan fungsi dasar untuk daftar langganan, komunitas pengembang telah membuat solusi alternatif. Kami membuat skrip yang membantu mengelola langganan PayPal: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Skrip ini merujuk ke [inti komunitas](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) tempat para pengembang berbagi solusi. Pengguna sebenarnya adalah [mengucapkan terima kasih kepada kami](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) karena menyediakan apa yang seharusnya sudah dibangun PayPal bertahun-tahun lalu.
+Skrip ini merujuk pada sebuah [gist komunitas](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) di mana para pengembang berbagi solusi. Pengguna bahkan [mengucapkan terima kasih kepada kami](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) karena menyediakan apa yang seharusnya PayPal buat bertahun-tahun lalu.
+
 
 ## Memblokir Template PayPal Karena Phishing {#blocking-paypal-templates-due-to-phishing}
 
-Masalahnya bukan hanya sebatas API. Template email PayPal dirancang sangat buruk sehingga kami harus menerapkan pemfilteran khusus di layanan email kami karena tidak dapat dibedakan dari upaya phishing.
+Masalahnya melampaui API. Template email PayPal dirancang sangat buruk sehingga kami harus menerapkan penyaringan khusus di layanan email kami karena mereka tidak bisa dibedakan dari upaya phishing.
 
 ### Masalah Sebenarnya: Template PayPal Terlihat Seperti Penipuan {#the-real-problem-paypals-templates-look-like-scams}
 
@@ -479,11 +491,11 @@ Kami secara rutin menerima laporan email PayPal yang terlihat persis seperti upa
 
 **Subjek:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-Email ini diteruskan ke `abuse@microsoft.com` karena tampaknya merupakan upaya phishing. Masalahnya? Email ini sebenarnya berasal dari lingkungan sandbox PayPal, tetapi desain templatnya sangat buruk sehingga memicu sistem deteksi phishing.
+Email ini diteruskan ke `abuse@microsoft.com` karena tampak seperti upaya phishing. Masalahnya? Sebenarnya email ini berasal dari lingkungan sandbox PayPal, tetapi desain template mereka sangat buruk sehingga memicu sistem deteksi phishing.
 
 ### Implementasi Kami {#our-implementation}
 
-Anda dapat melihat penerapan penyaringan khusus PayPal kami di [kode penyaringan email](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172):
+Anda dapat melihat penyaringan khusus PayPal yang kami terapkan di [kode penyaringan email kami](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172):
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -512,7 +524,7 @@ if (
 
 ### Mengapa Kami Harus Memblokir PayPal {#why-we-had-to-block-paypal}
 
-Kami menerapkan ini karena PayPal menolak memperbaiki masalah spam/phishing/penipuan besar-besaran meskipun kami telah berulang kali melaporkannya kepada tim penyalahgunaan mereka. Jenis email spesifik yang kami blokir meliputi:
+Kami menerapkan ini karena PayPal menolak memperbaiki masalah spam/phishing/penipuan besar meskipun kami telah berulang kali melaporkannya ke tim penyalahgunaan mereka. Jenis email spesifik yang kami blokir meliputi:
 
 * **RT000238** - Notifikasi faktur mencurigakan
 * **PPC001017** - Konfirmasi pembayaran bermasalah
@@ -520,128 +532,128 @@ Kami menerapkan ini karena PayPal menolak memperbaiki masalah spam/phishing/peni
 
 ### Skala Masalah {#the-scale-of-the-problem}
 
-Log penyaringan spam kami menunjukkan banyaknya spam faktur PayPal yang kami proses setiap hari. Contoh subjek yang diblokir antara lain:
+Log penyaringan spam kami menunjukkan volume besar spam faktur PayPal yang kami proses setiap hari. Contoh subjek yang diblokir meliputi:
 
-* "Faktur dari Tim Penagihan PayPal:- Biaya ini akan didebit otomatis dari akun Anda. Silakan hubungi kami segera di \[TELEPON]"
-* "Faktur dari \[NAMA PERUSAHAAN] (\[ID PESANAN])"
-* Beberapa variasi dengan nomor telepon berbeda dan ID pesanan palsu
+* "Invoice from PayPal Billing Team:- This charge will be auto-debited from your account. Please contact us immediately at \[PHONE]"
+* "Invoice from \[COMPANY NAME] (\[ORDER-ID])"
+* Berbagai variasi dengan nomor telepon berbeda dan ID pesanan palsu
+Email ini sering berasal dari host `outlook.com` tetapi tampak berasal dari sistem sah PayPal, membuatnya sangat berbahaya. Email tersebut lolos autentikasi SPF, DKIM, dan DMARC karena dikirim melalui infrastruktur PayPal yang sebenarnya.
 
-Email-email ini sering kali berasal dari host `outlook.com` tetapi tampaknya berasal dari sistem PayPal yang sah, sehingga sangat berbahaya. Email-email ini lolos autentikasi SPF, DKIM, dan DMARC karena dikirim melalui infrastruktur PayPal yang sebenarnya.
-
-Log teknis kami menunjukkan email spam ini berisi header PayPal yang sah:
+Log teknis kami menunjukkan email spam ini mengandung header PayPal yang sah:
 
 * `X-Email-Type-Id: RT000238` (ID yang sama yang kami blokir)
 * `From: "service@paypal.com" <service@paypal.com>`
-* Tanda tangan DKIM yang valid dari `paypal.com`
-* Data SPF yang sesuai yang menunjukkan server email PayPal
+* Tanda tangan DKIM valid dari `paypal.com`
+* Catatan SPF yang tepat menunjukkan server mail PayPal
 
 Ini menciptakan situasi yang mustahil: email PayPal yang sah dan spam keduanya memiliki karakteristik teknis yang identik.
 
 ### Ironi {#the-irony}
 
-PayPal, perusahaan yang seharusnya memimpin perang melawan penipuan keuangan, memiliki templat email yang dirancang sangat buruk sehingga memicu sistem anti-phishing. Kami terpaksa memblokir email PayPal yang sah karena tidak dapat dibedakan dari penipuan.
+PayPal, sebuah perusahaan yang seharusnya memimpin dalam memerangi penipuan keuangan, memiliki template email yang dirancang sangat buruk sehingga memicu sistem anti-phishing. Kami terpaksa memblokir email PayPal yang sah karena tidak dapat dibedakan dari penipuan.
 
-Hal ini didokumentasikan dalam penelitian keamanan: [Waspadai penipuan alamat baru PayPal](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - menunjukkan bagaimana sistem PayPal sendiri dieksploitasi untuk penipuan.
+Hal ini didokumentasikan dalam riset keamanan: [Waspadai penipuan alamat baru PayPal](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - yang menunjukkan bagaimana sistem PayPal sendiri dieksploitasi untuk penipuan.
 
 ### Dampak Dunia Nyata: Penipuan PayPal Baru {#real-world-impact-novel-paypal-scams}
 
-Masalahnya bukan hanya desain templat yang buruk. Sistem faktur PayPal sangat mudah dieksploitasi sehingga penipu kerap menyalahgunakannya untuk mengirimkan faktur palsu yang tampak sah. Peneliti keamanan Gavin Anderegg mendokumentasikan [Penipuan PayPal Baru](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), di mana penipu mengirimkan faktur PayPal asli yang lolos semua pemeriksaan autentikasi:
+Masalah ini melampaui hanya desain template yang buruk. Sistem faktur PayPal sangat mudah dieksploitasi sehingga penipu secara rutin menyalahgunakannya untuk mengirim faktur palsu yang tampak sah. Peneliti keamanan Gavin Anderegg mendokumentasikan [Penipuan PayPal Baru](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) di mana penipu mengirim faktur PayPal asli yang lolos semua pemeriksaan autentikasi:
 
-> "Setelah memeriksa sumbernya, email tersebut tampak seperti berasal dari PayPal (SPF, DKIM, dan DMARC semuanya lolos). Tombolnya juga terhubung ke URL PayPal yang tampak sah... Saya hanya perlu beberapa detik untuk menyadari bahwa itu email yang sah. Saya baru saja dikirimi 'faktur' acak dari seorang penipu."
+> "Memeriksa sumbernya, email tersebut tampak benar-benar berasal dari PayPal (SPF, DKIM, dan DMARC semua lolos). Tombolnya juga terhubung ke URL PayPal yang tampak sah... Butuh waktu sebentar untuk menyadari bahwa itu adalah email asli. Saya baru saja menerima 'faktur' acak dari seorang penipu."
 
 <figure>
-<figcaption><div class="alert alert-danger small text-center">
-Tangkapan layar yang menunjukkan beberapa faktur PayPal palsu membanjiri kotak masuk, semuanya tampak sah karena sebenarnya berasal dari sistem PayPal.
-</div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
+  <figcaption><div class="alert alert-danger small text-center">
+  Tangkapan layar yang menunjukkan banyak faktur PayPal palsu membanjiri kotak masuk, semuanya tampak sah karena memang berasal dari sistem PayPal
+  </div></figcaption>
+  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Tangkapan layar peringatan penipuan PayPal" class="rounded-lg" />
 </figure>
 
 Peneliti mencatat:
 
-> "Ini juga sepertinya fitur praktis yang sebaiknya diblokir oleh PayPal. Saya langsung berasumsi ini semacam penipuan dan hanya tertarik pada detail teknisnya. Sepertinya terlalu mudah ditipu, dan saya khawatir orang lain mungkin tertipu."
+> "Ini juga tampak seperti fitur kenyamanan yang seharusnya dipertimbangkan PayPal untuk dikunci. Saya langsung menganggap ini adalah bentuk penipuan dan hanya tertarik pada detail teknisnya. Ini tampak terlalu mudah dilakukan, dan saya khawatir orang lain mungkin tertipu."
 
-Ini menggambarkan masalahnya dengan sempurna: Sistem PayPal yang sah dirancang sangat buruk sehingga memungkinkan terjadinya penipuan sekaligus membuat komunikasi yang sah terlihat mencurigakan.
+Ini menggambarkan masalah dengan sempurna: sistem sah PayPal sendiri dirancang sangat buruk sehingga memungkinkan penipuan sekaligus membuat komunikasi sah terlihat mencurigakan.
 
-Lebih parahnya lagi, hal ini mempengaruhi kemampuan pengiriman kami ke Yahoo yang mengakibatkan keluhan pelanggan dan berjam-jam pengujian cermat serta pengecekan pola.
+Untuk memperburuk keadaan, ini memengaruhi deliverability kami dengan Yahoo yang mengakibatkan keluhan pelanggan dan berjam-jam pengujian serta pengecekan pola yang teliti.
 
-## Proses KYC PayPal yang Mundur {#paypals-backwards-kyc-process}
 
-Salah satu aspek platform PayPal yang paling membuat frustrasi adalah pendekatan mereka yang kurang tepat dalam hal kepatuhan dan prosedur Mengenal Pelanggan Anda (KYC). Tidak seperti pemroses pembayaran lainnya, PayPal memungkinkan pengembang untuk mengintegrasikan API mereka dan mulai menerima pembayaran dalam tahap produksi sebelum menyelesaikan verifikasi yang tepat.
+## Proses KYC Terbalik PayPal {#paypals-backwards-kyc-process}
 
-### Cara Kerjanya {#how-it-should-work}
+Salah satu aspek paling membuat frustrasi dari platform PayPal adalah pendekatan terbalik mereka terhadap kepatuhan dan prosedur Know Your Customer (KYC). Berbeda dengan semua penyedia pembayaran lain, PayPal memungkinkan pengembang mengintegrasikan API mereka dan mulai mengumpulkan pembayaran di produksi sebelum menyelesaikan verifikasi yang tepat.
 
-Setiap pemroses pembayaran yang sah mengikuti urutan logis ini:
+### Cara Seharusnya Bekerja {#how-it-should-work}
+
+Setiap penyedia pembayaran yang sah mengikuti urutan logis ini:
 
 1. **Selesaikan verifikasi KYC terlebih dahulu**
 2. **Setujui akun pedagang**
 3. **Berikan akses API produksi**
-4. **Izinkan penagihan pembayaran**
+4. **Izinkan pengumpulan pembayaran**
 
-Ini melindungi pemroses pembayaran dan pedagang dengan memastikan kepatuhan sebelum uang berpindah tangan.
+Ini melindungi baik penyedia pembayaran maupun pedagang dengan memastikan kepatuhan sebelum uang berpindah tangan.
 
-### Cara Kerja PayPal Sebenarnya {#how-paypal-actually-works}
+### Cara PayPal Sebenarnya Bekerja {#how-paypal-actually-works}
 
-Proses PayPal sepenuhnya terbalik:
+Proses PayPal benar-benar terbalik:
 
-1. **Segera berikan akses API produksi**
-2. **Izinkan penagihan pembayaran selama berjam-jam atau berhari-hari**
-3. **Blokir pembayaran secara tiba-tiba tanpa pemberitahuan**
-4. **Tuntut dokumentasi KYC setelah pelanggan terdampak**
-5. **Jangan berikan notifikasi kepada penjual**
-6. **Biarkan pelanggan menemukan masalahnya dan melaporkannya**
-
+1. **Berikan akses API produksi segera**
+2. **Izinkan pengumpulan pembayaran selama berjam-jam atau berhari-hari**
+3. **Tiba-tiba blokir pembayaran tanpa pemberitahuan**
+4. **Minta dokumen KYC setelah pelanggan sudah terdampak**
+5. **Tidak memberikan pemberitahuan kepada pedagang**
+6. **Biarkan pelanggan menemukan masalah dan melaporkannya**
 ### Dampak Dunia Nyata {#the-real-world-impact}
 
 Proses mundur ini menciptakan bencana bagi bisnis:
 
-* **Pelanggan tidak dapat menyelesaikan pembelian** selama periode penjualan puncak
+* **Pelanggan tidak bisa menyelesaikan pembelian** selama periode penjualan puncak
 * **Tidak ada peringatan sebelumnya** bahwa verifikasi diperlukan
-* **Tidak ada notifikasi email** ketika pembayaran diblokir
-* **Pedagang belajar tentang masalah dari pelanggan yang bingung**
-* **Kerugian pendapatan** selama periode bisnis kritis
-* **Kepercayaan pelanggan rusak** ketika pembayaran tiba-tiba gagal
+* **Tidak ada notifikasi email** saat pembayaran diblokir
+* **Pedagang mengetahui masalah dari pelanggan yang bingung**
+* **Kehilangan pendapatan** selama periode bisnis yang kritis
+* **Kerusakan kepercayaan pelanggan** saat pembayaran gagal secara misterius
 
 ### Bencana Migrasi Akun Juli 2025 {#the-july-2025-account-migration-disaster}
 
-Skenario persis seperti ini terjadi selama migrasi akun rutin kami pada Juli 2025. PayPal awalnya mengizinkan pembayaran, lalu tiba-tiba memblokirnya tanpa pemberitahuan apa pun. Kami baru menemukan masalah ini ketika pelanggan mulai melaporkan bahwa mereka tidak dapat membayar.
+Skenario persis ini terjadi selama migrasi akun rutin kami pada Juli 2025. PayPal awalnya mengizinkan pembayaran berjalan, lalu tiba-tiba memblokirnya tanpa pemberitahuan apapun. Kami baru mengetahui masalah ini ketika pelanggan mulai melaporkan mereka tidak bisa membayar.
 
-Ketika kami menghubungi dukungan, kami menerima tanggapan yang kontradiktif tentang dokumentasi apa yang dibutuhkan, tanpa jadwal penyelesaian yang jelas. Hal ini memaksa kami untuk menghentikan pembayaran PayPal sepenuhnya, membingungkan pelanggan yang tidak memiliki pilihan pembayaran lain.
+Ketika kami menghubungi dukungan, kami menerima tanggapan yang bertentangan tentang dokumen apa yang diperlukan, tanpa jadwal penyelesaian yang jelas. Ini memaksa kami untuk sepenuhnya menghentikan pembayaran PayPal, membingungkan pelanggan yang tidak memiliki opsi pembayaran lain.
 
 ### Mengapa Ini Penting {#why-this-matters}
 
-Pendekatan PayPal terhadap kepatuhan menunjukkan kesalahpahaman mendasar tentang cara bisnis beroperasi. KYC yang tepat seharusnya dilakukan **sebelum** integrasi produksi, bukan setelah pelanggan sudah mencoba membayar. Kurangnya komunikasi proaktif ketika masalah muncul menunjukkan ketidaksesuaian PayPal dengan kebutuhan pedagang.
+Pendekatan PayPal terhadap kepatuhan menunjukkan ketidakpahaman mendasar tentang bagaimana bisnis beroperasi. KYC yang tepat harus dilakukan **sebelum** integrasi produksi, bukan setelah pelanggan sudah mencoba membayar. Kurangnya komunikasi proaktif saat masalah muncul menunjukkan keterputusan PayPal dari kebutuhan pedagang.
 
-Proses mundur ini merupakan gejala masalah organisasi PayPal yang lebih luas: mereka mengutamakan proses internal mereka dibandingkan pengalaman pedagang dan pelanggan, yang mengarah pada bencana operasional yang mendorong bisnis menjauh dari platform mereka.
+Proses mundur ini adalah gejala dari masalah organisasi PayPal yang lebih luas: mereka memprioritaskan proses internal mereka daripada pengalaman pedagang dan pelanggan, yang menyebabkan bencana operasional yang membuat bisnis menjauh dari platform mereka.
 
-## Bagaimana Setiap Pemroses Pembayaran Melakukannya dengan Benar {#how-every-other-payment-processor-does-it-right}
 
-Fungsionalitas daftar langganan yang ditolak PayPal untuk diterapkan telah menjadi standar di industri ini selama lebih dari satu dekade. Berikut cara pemroses pembayaran lain menangani persyaratan dasar ini:
+## Bagaimana Semua Prosesor Pembayaran Lain Melakukannya dengan Benar {#how-every-other-payment-processor-does-it-right}
 
-### Garis {#stripe}
+Fungsi daftar langganan yang PayPal tolak untuk diterapkan sudah menjadi standar di industri selama lebih dari satu dekade. Berikut cara prosesor pembayaran lain menangani kebutuhan dasar ini:
 
-Stripe telah memiliki daftar langganan sejak API mereka diluncurkan. Dokumentasi mereka dengan jelas menunjukkan cara mengambil semua langganan untuk akun pelanggan atau pedagang. Ini dianggap sebagai fungsi CRUD dasar.
+### Stripe {#stripe}
 
-### Dayung {#paddle}
+Stripe sudah memiliki daftar langganan sejak API mereka diluncurkan. Dokumentasi mereka dengan jelas menunjukkan cara mengambil semua langganan untuk pelanggan atau akun pedagang. Ini dianggap sebagai fungsi CRUD dasar.
 
-Paddle menyediakan API manajemen langganan yang komprehensif, termasuk pencatatan, pemfilteran, dan paginasi. Mereka memahami bahwa penjual perlu melihat aliran pendapatan berulang mereka.
+### Paddle {#paddle}
+
+Paddle menyediakan API manajemen langganan yang komprehensif termasuk daftar, penyaringan, dan paginasi. Mereka memahami bahwa pedagang perlu melihat aliran pendapatan berulang mereka.
 
 ### Coinbase Commerce {#coinbase-commerce}
 
-Bahkan pemroses pembayaran mata uang kripto seperti Coinbase Commerce menyediakan manajemen langganan yang lebih baik daripada PayPal.
+Bahkan prosesor pembayaran cryptocurrency seperti Coinbase Commerce menyediakan manajemen langganan yang lebih baik daripada PayPal.
 
-### Persegi {#square}
+### Square {#square}
 
-API Square memasukkan daftar langganan sebagai fitur fundamental, bukan renungan belaka.
+API Square mencakup daftar langganan sebagai fitur fundamental, bukan pemikiran tambahan.
 
 ### Standar Industri {#the-industry-standard}
 
-Setiap pemroses pembayaran modern menyediakan:
+Setiap prosesor pembayaran modern menyediakan:
 
 * Daftar semua langganan
 * Filter berdasarkan status, tanggal, pelanggan
-* Paginasi untuk kumpulan data besar
+* Paginasi untuk dataset besar
 * Notifikasi webhook untuk perubahan langganan
-* Dokumentasi lengkap dengan contoh kerja
+* Dokumentasi komprehensif dengan contoh yang berfungsi
 
 ### Apa yang Disediakan Prosesor Lain vs PayPal {#what-other-processors-provide-vs-paypal}
 
@@ -686,79 +698,80 @@ GET https://api.stripe.com/v1/subscriptions?status=active
 GET https://api.paypal.com/v1/billing/subscriptions/{id}
 Authorization: Bearer access_token
 
-# You can ONLY get ONE subscription if you already know the ID
-# There is NO endpoint to list all subscriptions
-# There is NO way to search or filter
-# You must track all subscription IDs yourself
+# Anda HANYA bisa mendapatkan SATU langganan jika Anda sudah mengetahui ID-nya
+# Tidak ada endpoint untuk daftar semua langganan
+# Tidak ada cara untuk mencari atau memfilter
+# Anda harus melacak semua ID langganan sendiri
 ```
 
-**Titik Akhir PayPal yang Tersedia:**
+**Endpoint yang Tersedia di PayPal:**
 
-* `POST /v1/billing/subscriptions` - Buat langganan
-* `GET /v1/billing/subscriptions/{id}` - Dapatkan SATU langganan (jika Anda tahu ID-nya)
-* `PATCH /v1/billing/subscriptions/{id}` - Perbarui langganan
-* `POST /v1/billing/subscriptions/{id}/cancel` - Batalkan langganan
-* `POST /v1/billing/subscriptions/{id}/suspend` - Tangguhkan langganan
-
+* `POST /v1/billing/subscriptions` - Membuat langganan
+* `GET /v1/billing/subscriptions/{id}` - Mendapatkan SATU langganan (jika Anda tahu ID-nya)
+* `PATCH /v1/billing/subscriptions/{id}` - Memperbarui langganan
+* `POST /v1/billing/subscriptions/{id}/cancel` - Membatalkan langganan
+* `POST /v1/billing/subscriptions/{id}/suspend` - Menangguhkan langganan
 **Apa yang Hilang dari PayPal:**
 
 * ❌ Tidak ada `GET /v1/billing/subscriptions` (daftar semua)
 * ❌ Tidak ada fungsi pencarian
-* ❌ Tidak ada pemfilteran berdasarkan status, pelanggan, tanggal
-* ❌ Tidak ada dukungan pagination
+* ❌ Tidak ada penyaringan berdasarkan status, pelanggan, tanggal
+* ❌ Tidak ada dukungan paginasi
 
-PayPal adalah satu-satunya pemroses pembayaran utama yang memaksa pengembang untuk melacak ID langganan secara manual di basis data mereka sendiri.
+PayPal adalah satu-satunya pemroses pembayaran besar yang memaksa pengembang untuk melacak ID langganan secara manual di database mereka sendiri.
+
 
 ## Penutupan Sistematis PayPal: Membungkam 6 Juta Suara {#paypals-systematic-cover-up-silencing-6-million-voices}
 
-Dalam sebuah langkah yang dengan sempurna merangkum pendekatan PayPal dalam menangani kritik, mereka baru-baru ini menonaktifkan seluruh forum komunitasnya, yang secara efektif membungkam lebih dari 6 juta anggota dan menghapus ratusan ribu posting yang mendokumentasikan kegagalan mereka.
+Dalam langkah yang dengan sempurna menggambarkan pendekatan PayPal dalam menangani kritik, mereka baru-baru ini menutup seluruh forum komunitas mereka, secara efektif membungkam lebih dari 6 juta anggota dan menghapus ratusan ribu posting yang mendokumentasikan kegagalan mereka.
 
-### Penghapusan Besar {#the-great-erasure}
+### Penghapusan Besar-Besaran {#the-great-erasure}
 
-Komunitas PayPal asli di `paypal-community.com` menampung **6.003.558 anggota** dan berisi ratusan ribu postingan, laporan bug, keluhan, dan diskusi tentang kegagalan API PayPal. Hal ini merupakan bukti terdokumentasi lebih dari satu dekade mengenai masalah sistematis PayPal.
+Komunitas PayPal asli di `paypal-community.com` memiliki **6.003.558 anggota** dan berisi ratusan ribu posting, laporan bug, keluhan, dan diskusi tentang kegagalan API PayPal. Ini mewakili lebih dari satu dekade bukti terdokumentasi tentang masalah sistematis PayPal.
 
-Pada 30 Juni 2025, PayPal diam-diam menonaktifkan seluruh forum. Semua tautan `paypal-community.com` kini menampilkan kesalahan 404. Ini bukan migrasi atau peningkatan.
+Pada 30 Juni 2025, PayPal diam-diam menutup seluruh forum tersebut. Semua tautan `paypal-community.com` sekarang mengembalikan error 404. Ini bukan migrasi atau pembaruan.
 
 ### Penyelamatan Pihak Ketiga {#the-third-party-rescue}
 
-Untungnya, layanan pihak ketiga di [ppl.lithium.com](https://ppl.lithium.com/) telah menyimpan sebagian konten, memungkinkan kami mengakses diskusi yang coba disembunyikan PayPal. Namun, penyimpanan pihak ketiga ini belum lengkap dan dapat hilang kapan saja.
+Untungnya, layanan pihak ketiga di [ppl.lithium.com](https://ppl.lithium.com/) telah menyimpan sebagian konten tersebut, memungkinkan kami mengakses diskusi yang coba disembunyikan PayPal. Namun, penyimpanan pihak ketiga ini tidak lengkap dan bisa hilang kapan saja.
 
-Pola penyembunyian bukti ini bukanlah hal baru bagi PayPal. Mereka memiliki sejarah yang terdokumentasi tentang:
+Polanya menyembunyikan bukti ini bukan hal baru bagi PayPal. Mereka memiliki riwayat terdokumentasi:
 
-* Menghapus laporan bug kritis dari publik
-* Menghentikan penggunaan alat pengembang tanpa pemberitahuan
+* Menghapus laporan bug kritis dari pandangan publik
+* Menghentikan alat pengembang tanpa pemberitahuan
 * Mengubah API tanpa dokumentasi yang tepat
 * Membungkam diskusi komunitas tentang kegagalan mereka
 
-Penutupan forum tersebut merupakan upaya paling berani untuk menyembunyikan kegagalan sistematis mereka dari pengawasan publik.
+Penutupan forum ini merupakan upaya paling berani sejauh ini untuk menyembunyikan kegagalan sistematis mereka dari pengawasan publik.
 
-## Bencana Bug Penangkapan 11 Tahun: $1.899 dan Terus Berlanjut {#the-11-year-capture-bug-disaster-1899-and-counting}
 
-Sementara PayPal sibuk menyelenggarakan sesi umpan balik dan memberikan janji, sistem pemrosesan pembayaran inti mereka telah rusak secara fundamental selama lebih dari 11 tahun. Buktinya sangat menghancurkan.
+## Bencana Bug Capture 11 Tahun: $1.899 dan Terus Bertambah {#the-11-year-capture-bug-disaster-1899-and-counting}
 
-### Kerugian Email Penerusan Sebesar $1.899 {#forward-emails-1899-loss}
+Sementara PayPal sibuk mengatur sesi umpan balik dan membuat janji, sistem pemrosesan pembayaran inti mereka telah rusak secara fundamental selama lebih dari 11 tahun. Buktinya sangat menghancurkan.
 
-Dalam sistem produksi kami, kami menemukan 108 pembayaran PayPal dengan total **$1.899** yang hilang karena kegagalan PayPal dalam proses penarikan. Pembayaran-pembayaran ini menunjukkan pola yang konsisten:
+### Kerugian Forward Email sebesar $1.899 {#forward-emails-1899-loss}
 
-* Webhook `CHECKOUT.ORDER.APPROVED` diterima
-* API penangkapan PayPal menghasilkan kesalahan 404
+Dalam sistem produksi kami, kami menemukan 108 pembayaran PayPal dengan total **$1.899** yang hilang akibat kegagalan capture PayPal. Pembayaran ini menunjukkan pola yang konsisten:
+
+* webhook `CHECKOUT.ORDER.APPROVED` diterima
+* API capture PayPal mengembalikan error 404
 * Pesanan menjadi tidak dapat diakses melalui API PayPal
 
-Mustahil untuk menentukan apakah pelanggan dikenai biaya karena PayPal sepenuhnya menyembunyikan log debug setelah 14 hari dan menghapus semua data dari dasbor untuk ID pesanan yang tidak tercatat.
+Tidak mungkin menentukan apakah pelanggan telah dikenakan biaya karena PayPal sepenuhnya menyembunyikan log debug setelah 14 hari dan menghapus semua data dari dashboard untuk ID pesanan yang tidak berhasil dicapture.
 
-Ini hanya mewakili satu bisnis. **Kerugian kolektif ribuan pedagang selama 11+ tahun kemungkinan mencapai jutaan dolar.**
+Ini hanya mewakili satu bisnis. **Kerugian kolektif di ribuan pedagang selama lebih dari 11 tahun kemungkinan mencapai jutaan dolar.**
 
-**Kami akan menyatakannya lagi: kerugian kolektif di antara ribuan pedagang selama 11+ tahun kemungkinan berjumlah jutaan dolar.**
+**Kami akan menyatakannya lagi: kerugian kolektif di ribuan pedagang selama lebih dari 11 tahun kemungkinan mencapai jutaan dolar.**
 
-Satu-satunya alasan kami menemukan ini adalah karena kami sangat teliti dan didorong oleh data.
+Satu-satunya alasan kami menemukan ini adalah karena kami sangat teliti dan berbasis data.
 
 ### Laporan Asli 2013: 11+ Tahun Kelalaian {#the-2013-original-report-11-years-of-negligence}
 
-Laporan terdokumentasi paling awal mengenai masalah ini muncul pada [Stack Overflow pada bulan November 2013](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([diarsipkan](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)):
+Laporan terdokumentasi paling awal tentang masalah ini muncul di [Stack Overflow pada November 2013](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([arsip](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)):
 
-> "Terus menerima Error 404 dengan Rest API saat melakukan pengambilan gambar"
+> "Terus menerima Error 404 dengan Rest API saat melakukan capture"
 
-Kesalahan yang dilaporkan pada tahun 2013 **identik** dengan apa yang dialami Forward Email pada tahun 2024:
+Error yang dilaporkan pada 2013 **identik** dengan yang dialami Forward Email pada 2024:
 
 ```json
 {
@@ -769,154 +782,153 @@ Kesalahan yang dilaporkan pada tahun 2013 **identik** dengan apa yang dialami Fo
 }
 ```
 
-Tanggapan masyarakat pada tahun 2013 cukup jelas:
+Respon komunitas pada 2013 sangat menggambarkan:
 
-> "Saat ini ada masalah yang dilaporkan dengan REST API. PayPal sedang mengatasinya."
+> "Saat ini ada masalah yang dilaporkan dengan REST API. PayPal sedang mengerjakannya."
+**11+ tahun kemudian, mereka masih "sedang mengerjakannya."**
 
-**11+ tahun kemudian, mereka masih "mengerjakannya."**
+### Pengakuan 2016: PayPal Merusak SDK Mereka Sendiri {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-### Pengakuan 2016: PayPal Meretas SDK Mereka Sendiri {#the-2016-admission-paypal-breaks-their-own-sdk}
+Pada tahun 2016, repositori GitHub PayPal sendiri mendokumentasikan [gagal tangkap besar-besaran](https://github.com/paypal/PayPal-PHP-SDK/issues/660) yang memengaruhi SDK PHP resmi mereka. Skala masalahnya sangat besar:
 
-Pada tahun 2016, repositori GitHub milik PayPal mendokumentasikan [kegagalan penangkapan besar-besaran](https://github.com/paypal/PayPal-PHP-SDK/issues/660) yang memengaruhi SDK PHP resmi mereka. Skalanya sangat mengejutkan:
-
-> "Sejak 20/9/2016, semua upaya penangkapan PayPal gagal dengan kode 'INVALID_RESOURCE_ID - ID sumber daya yang diminta tidak ditemukan.'. Tidak ada perubahan yang dilakukan antara 19/9 dan 20/9 pada integrasi API. **100% upaya penangkapan sejak 20/9 telah menghasilkan kesalahan ini.**"
+> "Sejak 20/9/2016, semua upaya tangkap PayPal gagal dengan pesan 'INVALID_RESOURCE_ID - Requested resource ID was not found.'. Tidak ada perubahan antara 19/9 dan 20/9 pada integrasi API. **100% dari upaya tangkap sejak 20/9 mengembalikan kesalahan ini.**"
 
 Seorang pedagang melaporkan:
 
-> "Saya telah **mengalami lebih dari 1.400 upaya penangkapan yang gagal dalam 24 jam terakhir**, semuanya dengan respons kesalahan INVALID_RESOURCE_ID."
+> "Saya telah mengalami **lebih dari 1.400 upaya tangkap gagal dalam 24 jam terakhir**, semuanya dengan respons kesalahan INVALID_RESOURCE_ID."
 
-Respons awal PayPal adalah menyalahkan pedagang dan merujuk mereka ke dukungan teknis. Baru setelah tekanan besar, mereka mengakui kesalahannya:
+Respons awal PayPal adalah menyalahkan pedagang dan merujuk mereka ke dukungan teknis. Baru setelah tekanan besar mereka mengakui kesalahan:
 
-> "Saya mendapat kabar terbaru dari Pengembang Produk kami. Mereka memperhatikan bahwa di header yang dikirimkan, ID Permintaan PayPal dikirimkan dengan 42 karakter, tetapi **tampaknya ada perubahan baru-baru ini yang membatasi ID ini menjadi hanya 38 karakter.**"
+> "Saya memiliki pembaruan dari Pengembang Produk kami. Mereka memperhatikan di header yang dikirim bahwa PayPal-Request-ID dikirim dengan 42 karakter, tetapi **tampaknya ada perubahan baru-baru ini yang membatasi ID ini hanya 38 karakter.**"
 
 Pengakuan ini mengungkap kelalaian sistematis PayPal:
 
-1. **Mereka melakukan perubahan yang tidak terdokumentasi**
+1. **Mereka membuat perubahan yang merusak tanpa dokumentasi**
 2. **Mereka merusak SDK resmi mereka sendiri**
 3. **Mereka menyalahkan pedagang terlebih dahulu**
 4. **Mereka hanya mengakui kesalahan di bawah tekanan**
 
-Bahkan setelah "memperbaiki" masalahnya, pedagang melaporkan:
+Bahkan setelah "memperbaiki" masalah, pedagang melaporkan:
 
-> "SDK telah ditingkatkan ke v1.7.4 dan **masalahnya masih terjadi.**"
+> "Memperbarui SDK ke v1.7.4 dan **masalah masih terjadi.**"
 
 ### Eskalasi 2024: Masih Rusak {#the-2024-escalation-still-broken}
 
-Laporan terbaru dari Komunitas PayPal yang terlindungi menunjukkan masalah ini justru semakin parah. [Diskusi September 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([diarsipkan](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) mendokumentasikan masalah yang sama persis:
+Laporan terbaru dari komunitas PayPal yang disimpan menunjukkan masalah sebenarnya semakin parah. Sebuah [diskusi September 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([arsip](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) mendokumentasikan masalah yang sama persis:
 
-> "Masalah ini baru muncul sekitar 2 minggu yang lalu dan tidak memengaruhi semua pesanan. **Yang paling umum adalah pesan kesalahan 404 saat pengambilan data.**"
+> "Masalah ini baru mulai muncul sekitar 2 minggu yang lalu dan tidak memengaruhi semua pesanan. **Yang jauh lebih umum tampaknya adalah 404 pada saat tangkap.**"
 
-Pedagang tersebut menjelaskan pola yang sama yang dialami Email Teruskan:
+Pedagang menggambarkan pola yang sama seperti yang dialami Forward Email:
 
-> "Setelah mencoba menangkap pesanan, PayPal menampilkan pesan kesalahan 404. Saat mengambil Detail Pesanan: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **Ini tanpa jejak keberhasilan penangkapan di pihak kami.**"
+> "Setelah mencoba menangkap pesanan, PayPal mengembalikan 404. Saat mengambil Detail Pesanan: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **Ini tanpa jejak tangkapan yang berhasil di pihak kami.**"
 
 ### Bencana Keandalan Webhook {#the-webhook-reliability-disaster}
 
-[diskusi komunitas yang dilestarikan](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) lainnya mengungkapkan sistem webhook PayPal pada dasarnya tidak dapat diandalkan:
+Diskusi komunitas lain yang [disimpan](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) mengungkap sistem webhook PayPal yang secara fundamental tidak dapat diandalkan:
 
-> "Secara teori, seharusnya ada dua peristiwa (CHECKOUT.ORDER.APPROVED dan PAYMENT.CAPTURE.COMPLETED) dari peristiwa Webhook. Kenyataannya, **kedua peristiwa tersebut jarang diterima secara langsung, PAYMENT.CAPTURE.COMPLETED tidak dapat diterima hampir sepanjang waktu atau akan diterima dalam beberapa jam.**"
+> "Secara teori, harus ada dua event (CHECKOUT.ORDER.APPROVED dan PAYMENT.CAPTURE.COMPLETED) dari event Webhook. Sebenarnya, **kedua event tersebut jarang diterima segera, PAYMENT.CAPTURE.COMPLETED sering tidak diterima atau baru diterima beberapa jam kemudian.**"
 
-Untuk pembayaran berlangganan:
+Untuk pembayaran langganan:
 
-> "**'PEMBAYARAN.PENJUALAN.SELESAI' terkadang tidak diterima atau hingga beberapa jam kemudian.**"
+> "**'PAYMENT.SALE.COMPLETED' kadang tidak diterima atau baru diterima beberapa jam kemudian.**"
 
-Pertanyaan pedagang mengungkap besarnya masalah keandalan PayPal:
+Pertanyaan pedagang mengungkap kedalaman masalah keandalan PayPal:
 
-1. **"Mengapa ini terjadi?"** - Sistem webhook PayPal pada dasarnya rusak.
-2. **"Jika status pesanan 'SELESAI', bolehkah saya menganggap uangnya sudah diterima?"** - Pedagang tidak dapat mempercayai respons API PayPal.
-3. **"Mengapa 'Log Peristiwa->Peristiwa Webhook' tidak dapat menemukan log apa pun?"** - Bahkan sistem pencatatan PayPal sendiri tidak berfungsi.
+1. **"Mengapa ini terjadi?"** - Sistem webhook PayPal secara fundamental rusak
+2. **"Jika status pesanan 'COMPLETED', bolehkah saya anggap uang sudah diterima?"** - Pedagang tidak bisa mempercayai respons API PayPal
+3. **"Mengapa 'Event Logs->Webhook Events' tidak menemukan log apapun?"** - Bahkan sistem pencatatan PayPal sendiri tidak berfungsi
 
 ### Pola Kelalaian Sistematis {#the-pattern-of-systematic-negligence}
 
-Buktinya mencakup 11+ tahun dan menunjukkan pola yang jelas:
+Bukti ini tersebar selama lebih dari 11 tahun dan menunjukkan pola yang jelas:
 
 * **2013**: "PayPal sedang mengerjakannya"
-* **2016**: PayPal mengakui adanya perubahan yang merusak, memberikan perbaikan yang rusak
+* **2016**: PayPal mengakui perubahan yang merusak, memberikan perbaikan yang rusak
 * **2024**: Kesalahan yang sama persis masih terjadi, memengaruhi Forward Email dan banyak lainnya
 
-Ini bukan bug - **ini adalah kelalaian sistematis.** PayPal telah mengetahui tentang kegagalan pemrosesan pembayaran kritis ini selama lebih dari satu dekade dan secara konsisten:
-
+Ini bukan bug - **ini adalah kelalaian sistematis.** PayPal telah mengetahui kegagalan kritis dalam pemrosesan pembayaran ini selama lebih dari satu dekade dan secara konsisten:
 1. **Menyalahkan pedagang atas bug PayPal**
-2. **Melakukan perubahan yang tidak terdokumentasi**
+2. **Membuat perubahan yang merusak tanpa dokumentasi**
 3. **Memberikan perbaikan yang tidak memadai dan tidak berhasil**
-4. **Mengabaikan dampak finansial terhadap bisnis**
+4. **Mengabaikan dampak finansial pada bisnis**
 5. **Menyembunyikan bukti dengan menutup forum komunitas**
 
-### Persyaratan yang Tidak Terdokumentasi {#the-undocumented-requirement}
+### Persyaratan yang Tidak Didokumentasikan {#the-undocumented-requirement}
 
-Tidak ada satu pun dokumentasi resmi PayPal yang menyebutkan bahwa pedagang harus menerapkan logika percobaan ulang untuk operasi penangkapan. Dokumentasi mereka menyatakan pedagang harus "menangkap segera setelah persetujuan," tetapi tidak menyebutkan bahwa API mereka secara acak menghasilkan kesalahan 404 yang memerlukan mekanisme percobaan ulang yang rumit.
+Di mana pun dalam dokumentasi resmi PayPal tidak disebutkan bahwa pedagang harus menerapkan logika retry untuk operasi capture. Dokumentasi mereka menyatakan pedagang harus "capture segera setelah persetujuan," tetapi gagal menyebutkan bahwa API mereka secara acak mengembalikan error 404 yang memerlukan mekanisme retry yang kompleks.
 
-Hal ini memaksa setiap pedagang untuk:
+Ini memaksa setiap pedagang untuk:
 
-* Menerapkan logika percobaan ulang backoff eksponensial
+* Menerapkan logika retry dengan exponential backoff
 * Menangani pengiriman webhook yang tidak konsisten
 * Membangun sistem manajemen status yang kompleks
-* Memantau tangkapan yang gagal secara manual
+* Memantau kegagalan capture secara manual
 
-**Setiap pemroses pembayaran lainnya menyediakan API penangkapan yang andal dan berfungsi sejak awal.**
+**Setiap penyedia pembayaran lain menyediakan API capture yang andal dan berhasil pada percobaan pertama.**
 
-## Pola Penipuan PayPal yang Lebih Luas {#paypals-broader-pattern-of-deception}
 
-Bencana bug penangkapan hanyalah satu contoh pendekatan sistematis PayPal dalam menipu pelanggan dan menyembunyikan kegagalan mereka.
+## Pola Penipuan Lebih Luas dari PayPal {#paypals-broader-pattern-of-deception}
 
-### Departemen Layanan Keuangan New York {#the-new-york-department-of-financial-services-action}
+Bencana bug capture hanyalah satu contoh dari pendekatan sistematis PayPal untuk menipu pelanggan dan menyembunyikan kegagalan mereka.
 
-Pada bulan Januari 2025, Departemen Layanan Keuangan New York mengeluarkan [tindakan penegakan hukum terhadap PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) untuk praktik penipuan, yang menunjukkan bahwa pola penipuan PayPal jauh melampaui API mereka.
+### Tindakan Departemen Layanan Keuangan New York {#the-new-york-department-of-financial-services-action}
 
-Tindakan regulasi ini menunjukkan kesediaan PayPal untuk terlibat dalam praktik penipuan di seluruh bisnis mereka, bukan hanya alat pengembang mereka.
+Pada Januari 2025, Departemen Layanan Keuangan New York mengeluarkan [tindakan penegakan hukum terhadap PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) atas praktik menipu, menunjukkan bahwa pola penipuan PayPal melampaui API mereka.
 
-Gugatan Hukum Honey: Menulis Ulang Tautan Afiliasi {#the-honey-lawsuit-rewriting-affiliate-links}
+Tindakan regulasi ini menunjukkan kesediaan PayPal untuk terlibat dalam praktik menipu di seluruh bisnis mereka, bukan hanya alat pengembang mereka.
 
-Akuisisi Honey oleh PayPal telah mengakibatkan [gugatan hukum yang menuduh Honey menulis ulang tautan afiliasi](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), yang mencuri komisi dari kreator konten dan influencer. Ini merupakan bentuk penipuan sistematis lainnya di mana PayPal mengambil keuntungan dengan mengalihkan pendapatan yang seharusnya diberikan kepada pihak lain.
+### Gugatan Honey: Menulis Ulang Tautan Afiliasi {#the-honey-lawsuit-rewriting-affiliate-links}
+
+Akuisisi PayPal atas Honey telah menghasilkan [gugatan yang menuduh Honey menulis ulang tautan afiliasi](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), mencuri komisi dari pembuat konten dan influencer. Ini merupakan bentuk lain dari penipuan sistematis di mana PayPal mendapatkan keuntungan dengan mengalihkan pendapatan yang seharusnya diterima oleh pihak lain.
 
 Polanya jelas:
 
-1. **Kegagalan API**: Menyembunyikan fungsionalitas yang rusak, menyalahkan pedagang
-2. **Pembungkaman komunitas**: Menghilangkan bukti adanya masalah
-3. **Pelanggaran peraturan**: Terlibat dalam praktik penipuan
+1. **Kegagalan API**: Menyembunyikan fungsi yang rusak, menyalahkan pedagang
+2. **Membungkam komunitas**: Menghapus bukti masalah
+3. **Pelanggaran regulasi**: Terlibat dalam praktik menipu
 4. **Pencurian afiliasi**: Mencuri komisi melalui manipulasi teknis
 
 ### Biaya Kelalaian PayPal {#the-cost-of-paypals-negligence}
 
 Kerugian Forward Email sebesar $1.899 hanyalah puncak gunung es. Pertimbangkan dampak yang lebih luas:
 
-* **Pedagang perorangan**: Ribuan orang kehilangan ratusan hingga ribuan dolar per transaksi
-* **Pelanggan perusahaan**: Potensi kehilangan pendapatan jutaan dolar
-* **Waktu pengembang**: Berjam-jam membangun solusi untuk API PayPal yang rusak
-* **Kepercayaan pelanggan**: Banyak bisnis kehilangan pelanggan karena kegagalan pembayaran PayPal
+* **Pedagang individu**: Ribuan kehilangan ratusan hingga ribuan dolar masing-masing
+* **Pelanggan perusahaan**: Potensi kehilangan jutaan pendapatan
+* **Waktu pengembang**: Tak terhitung jam membangun solusi untuk API PayPal yang rusak
+* **Kepercayaan pelanggan**: Bisnis kehilangan pelanggan akibat kegagalan pembayaran PayPal
 
-Jika satu layanan email kecil kehilangan hampir $2.000, dan masalah ini telah ada selama 11+ tahun yang memengaruhi ribuan pedagang, kerugian finansial kolektif kemungkinan berjumlah **ratusan juta dolar**.
+Jika satu layanan email kecil kehilangan hampir $2.000, dan masalah ini telah ada selama lebih dari 11 tahun yang mempengaruhi ribuan pedagang, kerusakan finansial kolektif kemungkinan mencapai **ratusan juta dolar**.
 
 ### Kebohongan Dokumentasi {#the-documentation-lie}
 
-Dokumentasi resmi PayPal secara konsisten gagal menyebutkan batasan dan bug kritis yang mungkin dihadapi pedagang. Misalnya:
+Dokumentasi resmi PayPal secara konsisten gagal menyebutkan batasan dan bug kritis yang akan ditemui pedagang. Contohnya:
 
-* **Capture API**: Tidak disebutkan bahwa kesalahan 404 umum terjadi dan memerlukan logika percobaan ulang
-* **Keandalan webhook**: Tidak disebutkan bahwa webhook sering tertunda selama berjam-jam
-* **Daftar langganan**: Dokumentasi menyiratkan bahwa pencantuman dimungkinkan ketika tidak ada titik akhir
-* **Waktu habis sesi**: Tidak disebutkan waktu habis 60 detik yang agresif
+* **API Capture**: Tidak disebutkan bahwa error 404 sering terjadi dan memerlukan logika retry
+* **Keandalan webhook**: Tidak disebutkan bahwa webhook sering tertunda berjam-jam
+* **Daftar langganan**: Dokumentasi menyiratkan daftar dapat dilakukan padahal tidak ada endpoint
+* **Timeout sesi**: Tidak disebutkan timeout agresif selama 60 detik
 
-Kelalaian sistematis terhadap informasi penting ini memaksa pedagang untuk menemukan keterbatasan PayPal melalui coba-coba dalam sistem produksi, yang sering kali mengakibatkan kerugian finansial.
+Penghilangan informasi kritis secara sistematis ini memaksa pedagang untuk menemukan keterbatasan PayPal melalui coba-coba di sistem produksi, yang sering berujung pada kerugian finansial.
 
-## Apa Artinya bagi Pengembang {#what-this-means-for-developers}
 
-Kegagalan sistematis PayPal dalam memenuhi kebutuhan dasar pengembang sambil mengumpulkan umpan balik yang ekstensif menunjukkan masalah organisasi yang mendasar. Mereka memperlakukan pengumpulan umpan balik sebagai pengganti perbaikan masalah yang sebenarnya.
+## Apa Artinya Ini bagi Pengembang {#what-this-means-for-developers}
 
+Kegagalan sistematis PayPal untuk memenuhi kebutuhan dasar pengembang sambil mengumpulkan banyak masukan menunjukkan masalah organisasi yang mendasar. Mereka memperlakukan pengumpulan masukan sebagai pengganti perbaikan masalah secara nyata.
 Polanya jelas:
 
 1. Pengembang melaporkan masalah
-2. PayPal menyelenggarakan sesi umpan balik dengan para eksekutif
-3. Umpan balik yang ekstensif diberikan
-4. Tim mengakui adanya kesenjangan dan berjanji untuk "melacak dan mengatasinya"
+2. PayPal mengatur sesi umpan balik dengan eksekutif
+3. Umpan balik yang luas diberikan
+4. Tim mengakui kekurangan dan berjanji untuk "melacak dan menangani"
 5. Tidak ada yang diimplementasikan
-6. Para eksekutif pindah ke perusahaan yang lebih baik
+6. Eksekutif meninggalkan perusahaan untuk perusahaan yang lebih baik
 7. Tim baru meminta umpan balik yang sama
 8. Siklus berulang
 
-Sementara itu, pengembang terpaksa membuat solusi, mengorbankan keamanan, dan berurusan dengan UI yang rusak hanya untuk menerima pembayaran.
+Sementara itu, pengembang dipaksa untuk membuat solusi sementara, mengorbankan keamanan, dan menghadapi UI yang rusak hanya untuk menerima pembayaran.
 
-Jika Anda sedang membangun sistem pembayaran, pelajari pengalaman kami: bangun [pendekatan trifecta](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) Anda dengan beberapa prosesor, tetapi jangan berharap PayPal akan menyediakan fungsionalitas dasar yang Anda butuhkan. Rencanakan untuk membangun solusi alternatif sejak awal.
+Jika Anda membangun sistem pembayaran, pelajari dari pengalaman kami: bangun [pendekatan trifecta](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) Anda dengan beberapa prosesor, tetapi jangan berharap PayPal menyediakan fungsi dasar yang Anda butuhkan. Rencanakan untuk membuat solusi sementara sejak hari pertama.
 
-> Postingan ini mendokumentasikan pengalaman 11 tahun kami dengan API PayPal di Forward Email. Semua contoh kode dan tautan berasal dari sistem produksi kami yang sebenarnya. Kami terus mendukung pembayaran PayPal meskipun ada masalah ini karena beberapa pelanggan tidak punya pilihan lain.
+> Tulisan ini mendokumentasikan pengalaman kami selama 11 tahun dengan API PayPal di Forward Email. Semua contoh kode dan tautan berasal dari sistem produksi kami yang sebenarnya. Kami terus mendukung pembayaran PayPal meskipun ada masalah ini karena beberapa pelanggan tidak memiliki pilihan lain
 
 <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />

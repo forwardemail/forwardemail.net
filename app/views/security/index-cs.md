@@ -1,90 +1,95 @@
 # Bezpečnostní postupy {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email bezpečnostní postupy" class="rounded-lg" />
+
 
 ## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
-* [Zabezpečení infrastruktury](#infrastructure-security)
-  * [Bezpečná datová centra](#secure-data-centers)
-  * [Zabezpečení sítě](#network-security)
-* [Zabezpečení e-mailu](#email-security)
+* [Bezpečnost infrastruktury](#infrastructure-security)
+  * [Bezpečné datové centrum](#secure-data-centers)
+  * [Síťová bezpečnost](#network-security)
+* [Bezpečnost e-mailu](#email-security)
   * [Šifrování](#encryption)
   * [Autentizace a autorizace](#authentication-and-authorization)
-  * [Opatření proti zneužívání](#anti-abuse-measures)
-* [Ochrana osobních údajů](#data-protection)
+  * [Proti zneužití](#anti-abuse-measures)
+* [Ochrana dat](#data-protection)
   * [Minimalizace dat](#data-minimization)
   * [Zálohování a obnova](#backup-and-recovery)
 * [Poskytovatelé služeb](#service-providers)
-* [Dodržování předpisů a audit](#compliance-and-auditing)
-  * [Pravidelná bezpečnostní hodnocení](#regular-security-assessments)
-  * [Dodržování](#compliance)
+* [Soulad a auditování](#compliance-and-auditing)
+  * [Pravidelné bezpečnostní hodnocení](#regular-security-assessments)
+  * [Soulad](#compliance)
 * [Reakce na incidenty](#incident-response)
-* [Životní cyklus vývoje zabezpečení](#security-development-lifecycle)
-* [Zajištění serveru](#server-hardening)
-* [Dohoda o úrovni služeb](#service-level-agreement)
-* [Zabezpečení s otevřeným zdrojovým kódem](#open-source-security)
+* [Životní cyklus bezpečnostního vývoje](#security-development-lifecycle)
+* [Zpevnění serveru](#server-hardening)
+* [Smlouva o úrovni služby](#service-level-agreement)
+* [Bezpečnost open source](#open-source-security)
 * [Bezpečnost zaměstnanců](#employee-security)
-* [Neustálé zlepšování](#continuous-improvement)
+* [Kontinuální zlepšování](#continuous-improvement)
 * [Další zdroje](#additional-resources)
+
 
 ## Předmluva {#foreword}
 
-Ve společnosti Forward Email je bezpečnost naší nejvyšší prioritou. Zavedli jsme komplexní bezpečnostní opatření na ochranu vaší e-mailové komunikace a osobních údajů. Tento dokument popisuje naše bezpečnostní postupy a kroky, které podnikáme k zajištění důvěrnosti, integrity a dostupnosti vašich e-mailů.
+Ve Forward Email je bezpečnost naší nejvyšší prioritou. Implementovali jsme komplexní bezpečnostní opatření k ochraně vašich e-mailových komunikací a osobních údajů. Tento dokument popisuje naše bezpečnostní postupy a kroky, které podnikáme, abychom zajistili důvěrnost, integritu a dostupnost vašich e-mailů.
 
-## Zabezpečení infrastruktury {#infrastructure-security}
 
-### Zabezpečená datová centra {#secure-data-centers}
+## Bezpečnost infrastruktury {#infrastructure-security}
 
-Naše infrastruktura je hostována v datových centrech splňujících normu SOC 2 s:
+### Bezpečné datové centrum {#secure-data-centers}
 
-* Fyzická ostraha a dohled 24 hodin denně, 7 dní v týdnu
-* Biometrické kontroly přístupu
-* Redundantní napájecí systémy
-* Pokročilá detekce a potlačení požáru
-* Monitorování prostředí
+Naše infrastruktura je hostována v datových centrech splňujících SOC 2 s:
 
-### Zabezpečení sítě {#network-security}
+* 24/7 fyzickou ochranou a dohledem
+* Biometrickou kontrolou přístupu
+* Redundantními napájecími systémy
+* Pokročilým detekčním a hasicím systémem požáru
+* Monitorováním prostředí
 
-Implementujeme několik vrstev síťové bezpečnosti:
+### Síťová bezpečnost {#network-security}
 
-* Firewally podnikové úrovně s přísnými seznamy kontroly přístupu
-* Ochrana a zmírňování DDoS útoků
+Implementujeme více vrstev síťové bezpečnosti:
+
+* Firewally podnikové úrovně s přísnými přístupovými seznamy
+* Ochrana a zmírnění DDoS útoků
 * Pravidelné skenování zranitelností sítě
-* Systémy pro detekci a prevenci narušení
+* Systémy detekce a prevence průniků
 * Šifrování provozu mezi všemi koncovými body služby
-* Ochrana skenováním portů s automatickým blokováním podezřelé aktivity
+* Ochrana proti skenování portů s automatickým blokováním podezřelé aktivity
 
 > \[!IMPORTANT]
-> Všechna přenášená data jsou šifrována pomocí TLS 1.2+ s moderními šifrovacími sadami.
+> Veškerá data v přenosu jsou šifrována pomocí TLS 1.2+ s moderními šifrovacími sadami.
 
-## Zabezpečení e-mailu {#email-security}
+
+## Bezpečnost e-mailu {#email-security}
 
 ### Šifrování {#encryption}
 
-* **Transport Layer Security (TLS)**: Veškerý e-mailový provoz je šifrován během přenosu pomocí TLS 1.2 nebo vyššího
-* **End-to-End Encryption**: Podpora standardů OpenPGP/MIME a S/MIME
-* **Storage Encryption**: Všechny uložené e-maily jsou v klidovém stavu šifrovány pomocí šifrování ChaCha20-Poly1305 v souborech SQLite
-* **Full Disk Encryption**: Šifrování LUKS v2 pro celý disk
-* **Komplexní ochrana**: Implementujeme šifrování v klidovém stavu, šifrování v paměti a šifrování během přenosu
+* **Transport Layer Security (TLS)**: Veškerý e-mailový provoz je šifrován při přenosu pomocí TLS 1.2 nebo vyšší verze
+* **End-to-End šifrování**: Podpora standardů OpenPGP/MIME a S/MIME
+* **Šifrování uložených dat**: Všechny uložené e-maily jsou šifrovány v klidu pomocí ChaCha20-Poly1305 v SQLite souborech
+* **Šifrování celého disku**: Šifrování LUKS v2 pro celý disk
+* **Komplexní ochrana**: Implementujeme šifrování v klidu, v paměti i při přenosu
 
 > \[!NOTE]
-> Jsme první a jediná e-mailová služba na světě, která používá **[kvantově odolné a individuálně šifrované poštovní schránky SQLite](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Jsme první a jediná e-mailová služba na světě, která používá **[kvantově odolné a individuálně šifrované SQLite poštovní schránky](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
-### Ověřování a autorizace {#authentication-and-authorization}
+### Autentizace a autorizace {#authentication-and-authorization}
 
-* **Podepisování DKIM**: Všechny odchozí e-maily jsou podepsány pomocí DKIM
-* **SPF a DMARC**: Plná podpora SPF a DMARC pro prevenci falšování e-mailů
-* **MTA-STS**: Podpora MTA-STS pro vynucení šifrování TLS
-* **Multi-Factor Authentication**: Dostupné pro všechny přístupy k účtům
+* **DKIM podepisování**: Veškeré odchozí e-maily jsou podepsány pomocí DKIM
+* **SPF a DMARC**: Plná podpora SPF a DMARC k zabránění padělání e-mailů
+* **MTA-STS**: Podpora MTA-STS pro vynucení TLS šifrování
+* **Vícefaktorová autentizace**: K dispozici pro veškerý přístup k účtu
 
-### Opatření proti zneužívání {#anti-abuse-measures}
+### Proti zneužití {#anti-abuse-measures}
 
-* **Filtrování spamu**: Vícevrstvá detekce spamu pomocí strojového učení
-* **Skenování virů**: Skenování všech příloh v reálném čase
-* **Omezení rychlosti**: Ochrana před útoky hrubou silou a enumerací
-* **Reputace IP adres**: Monitorování reputace odesílající IP adresy
-* **Filtrování obsahu**: Detekce škodlivých URL adres a phishingových pokusů
+* **Filtrování spamu**: Vícevrstvá detekce spamu s využitím strojového učení
+* **Kontrola virů**: Skenování všech příloh v reálném čase
+* **Omezení rychlosti**: Ochrana proti útokům hrubou silou a enumeraci
+* **Reputace IP**: Monitorování reputace odesílajících IP adres
+* **Filtrování obsahu**: Detekce škodlivých URL a phishingových pokusů
+
 
 ## Ochrana dat {#data-protection}
 
@@ -92,156 +97,164 @@ Implementujeme několik vrstev síťové bezpečnosti:
 
 Řídíme se principem minimalizace dat:
 
-* Shromažďujeme pouze data nezbytná k poskytování našich služeb.
-* Obsah e-mailů je zpracováván v paměti a není trvale ukládán, pokud není vyžadován pro doručování přes IMAP/POP3.
-* Protokoly jsou anonymizovány a uchovávány pouze po nezbytně nutnou dobu.
-
+* Sbíráme pouze data nezbytná pro poskytování naší služby
+* Obsah e-mailů je zpracováván v paměti a není trvale ukládán, pokud to není nutné pro doručení IMAP/POP3
+* Logy jsou anonymizovány a uchovávány pouze po nezbytně nutnou dobu
 ### Zálohování a obnova {#backup-and-recovery}
 
-* Automatizované denní zálohy se šifrováním
-* Geograficky distribuované úložiště záloh
+* Automatizované denní zálohy s šifrováním
+* Geograficky rozložené úložiště záloh
 * Pravidelné testování obnovy záloh
 * Postupy obnovy po havárii s definovanými RPO a RTO
 
+
 ## Poskytovatelé služeb {#service-providers}
 
-Poskytovatele našich služeb pečlivě vybíráme, abychom zajistili, že splňují naše vysoké bezpečnostní standardy. Níže uvádíme poskytovatele, které využíváme pro mezinárodní přenos dat, a jejich status souladu s GDPR:
+Pečlivě vybíráme naše poskytovatele služeb, aby splňovali naše vysoké bezpečnostní standardy. Níže jsou uvedeni poskytovatelé, které používáme pro mezinárodní přenos dat, a jejich stav souladu s GDPR:
 
-| Poskytovatel | Účel | Certifikace DPF | Stránka s informacemi o souladu s GDPR |
-| --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
-| [Cloudflare](https://www.cloudflare.com) | CDN, ochrana proti DDoS, DNS | ✅ Ano | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
-| [DataPacket](https://www.datapacket.com) | Serverová infrastruktura | ❌ Ne | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
-| [Digital Ocean](https://www.digitalocean.com) | Cloudová infrastruktura | ❌ Ne | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
-| [GitHub](https://github.com) | Hosting zdrojového kódu, CI/CD | ✅ Ano | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
-| [Vultr](https://www.vultr.com) | Cloudová infrastruktura | ❌ Ne | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
-| [Stripe](https://stripe.com) | Zpracování plateb | ✅ Ano | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
-| [PayPal](https://www.paypal.com) | Zpracování plateb | ❌ Ne | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| Poskytovatel                                  | Účel                      | Certifikace DPF | Stránka o souladu s GDPR                                                                              |
+| --------------------------------------------- | ------------------------- | -------------- | ----------------------------------------------------------------------------------------------------- |
+| [Cloudflare](https://www.cloudflare.com)      | CDN, ochrana proti DDoS, DNS | ✅ Ano          | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/)                                         |
+| [DataPacket](https://www.datapacket.com)      | Serverová infrastruktura   | ❌ Ne           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                       |
+| [Digital Ocean](https://www.digitalocean.com) | Cloudová infrastruktura    | ❌ Ne           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                          |
+| [GitHub](https://github.com)                  | Hosting zdrojového kódu, CI/CD | ✅ Ano          | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Vultr](https://www.vultr.com)                | Cloudová infrastruktura    | ❌ Ne           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                           |
+| [Stripe](https://stripe.com)                  | Zpracování plateb          | ✅ Ano          | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                      |
+| [PayPal](https://www.paypal.com)              | Zpracování plateb          | ❌ Ne           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                     |
 
-Tyto poskytovatele využíváme k zajištění spolehlivého a bezpečného poskytování služeb a zároveň k dodržování mezinárodních předpisů o ochraně osobních údajů. Veškeré přenosy dat probíhají s odpovídajícími ochrannými opatřeními na ochranu vašich osobních údajů.
+Tyto poskytovatele používáme k zajištění spolehlivého a bezpečného poskytování služeb při zachování souladu s mezinárodními předpisy o ochraně dat. Veškeré přenosy dat jsou prováděny s odpovídajícími bezpečnostními opatřeními na ochranu vašich osobních údajů.
 
-## Dodržování předpisů a audit {#compliance-and-auditing}
 
-### Pravidelná bezpečnostní hodnocení {#regular-security-assessments}
+## Soulad a audit {#compliance-and-auditing}
 
-Náš tým pravidelně monitoruje, kontroluje a vyhodnocuje kódovou základnu, servery, infrastrukturu a postupy. Implementujeme komplexní bezpečnostní program, který zahrnuje:
+### Pravidelné bezpečnostní hodnocení {#regular-security-assessments}
 
-* Pravidelná rotace SSH klíčů
-* Průběžné sledování přístupových protokolů
+Náš tým pravidelně monitoruje, přezkoumává a hodnotí kódovou základnu, servery, infrastrukturu a postupy. Implementujeme komplexní bezpečnostní program, který zahrnuje:
+
+* Pravidelnou rotaci SSH klíčů
+* Nepřetržité sledování přístupových logů
 * Automatizované bezpečnostní skenování
-* Proaktivní správa zranitelností
-* Pravidelné bezpečnostní školení pro všechny členy týmu
+* Proaktivní řízení zranitelností
+* Pravidelné bezpečnostní školení všech členů týmu
 
-### Soulad s předpisy {#compliance}
+### Soulad {#compliance}
 
-* Postupy pro nakládání s daty v souladu s [GDPR](https://forwardemail.net/gdpr)
-* [Smlouva o zpracování osobních údajů (DPA)](https://forwardemail.net/dpa) k dispozici pro firemní zákazníky
-* Kontroly ochrany osobních údajů v souladu s CCPA
-* Auditované procesy SOC 2 typu II
+* Praktiky zpracování dat v souladu s [GDPR](https://forwardemail.net/gdpr)
+* [Smlouva o zpracování dat (DPA)](https://forwardemail.net/dpa) dostupná pro firemní zákazníky
+* Ovládací prvky ochrany soukromí v souladu s CCPA
+* Procesy auditované podle SOC 2 Type II
 
-## Reakce na incident {#incident-response}
+
+## Reakce na incidenty {#incident-response}
 
 Náš plán reakce na bezpečnostní incidenty zahrnuje:
 
-1. **Detekce**: Automatizované monitorovací a varovné systémy
+1. **Detekce**: Automatizované monitorování a systém upozornění
 2. **Zadržení**: Okamžitá izolace postižených systémů
-3. **Eradikace**: Odstranění hrozby a analýza hlavní příčiny
-4. **Obnova**: Bezpečné obnovení služeb
+3. **Odstranění**: Odstranění hrozby a analýza příčiny
+4. **Obnova**: Bezpečná obnova služeb
 5. **Oznámení**: Včasná komunikace s postiženými uživateli
-6. **Analýza po incidentu**: Komplexní kontrola a vylepšení
+6. **Analýza po incidentu**: Komplexní přezkum a zlepšení
 
 > \[!WARNING]
-> Pokud objevíte bezpečnostní zranitelnost, okamžitě ji prosím nahlaste na adresu <security@forwardemail.net>.
+> Pokud objevíte bezpečnostní zranitelnost, prosím, ihned ji nahlaste na <security@forwardemail.net>.
 
-## Životní cyklus vývoje zabezpečení {#security-development-lifecycle}
+
+## Životní cyklus vývoje bezpečnosti {#security-development-lifecycle}
 
 ```mermaid
 flowchart LR
-    A[Requirements] --> B[Design]
-    B --> C[Implementation]
-    C --> D[Verification]
-    D --> E[Release]
-    E --> F[Maintenance]
+    A[Požadavky] --> B[Návrh]
+    B --> C[Implementace]
+    C --> D[Ověření]
+    D --> E[Vydání]
+    E --> F[Údržba]
     F --> A
-    B -.-> G[Threat Modeling]
-    C -.-> H[Static Analysis]
-    D -.-> I[Security Testing]
-    E -.-> J[Final Security Review]
-    F -.-> K[Vulnerability Management]
+    B -.-> G[Modelování hrozeb]
+    C -.-> H[Statická analýza]
+    D -.-> I[Testování bezpečnosti]
+    E -.-> J[Konečná bezpečnostní kontrola]
+    F -.-> K[Řízení zranitelností]
 ```
-
 Veškerý kód prochází:
 
-* Shromažďování bezpečnostních požadavků
-* Modelování hrozeb během návrhu
-* Bezpečné postupy kódování
-* Statické a dynamické testování bezpečnosti aplikací
-* Kontrola kódu se zaměřením na bezpečnost
-* Skenování zranitelností závislostí
+* Shromažďováním bezpečnostních požadavků
+* Modelováním hrozeb během návrhu
+* Bezpečnými programovacími postupy
+* Statickým a dynamickým testováním bezpečnosti aplikací
+* Kontrolou kódu se zaměřením na bezpečnost
+* Skenováním zranitelností závislostí
 
-## Zajištění serveru {#server-hardening}
 
-Náš [Konfigurace Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementuje řadu opatření pro posílení zabezpečení serveru:
+## Zpevnění serveru {#server-hardening}
 
-* **Přístup k USB zakázán**: Fyzické porty jsou zakázány zařazením modulu jádra usb-storage na černou listinu
+Naše [Ansible konfigurace](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementuje řadu opatření pro zpevnění serveru:
+
+* **Zakázán přístup přes USB**: Fyzické porty jsou zakázány pomocí blacklistování kernel modulu usb-storage
 * **Pravidla firewallu**: Přísná pravidla iptables povolující pouze nezbytná připojení
-* **SSH Hardening**: Pouze ověřování založené na klíči, bez přihlášení heslem, přihlášení root zakázáno
-* **Izolace služeb**: Každá služba běží s minimálními požadovanými oprávněními
+* **Zpevnění SSH**: Pouze autentizace na základě klíčů, žádné přihlášení heslem, zakázáno přihlášení root
+* **Izolace služeb**: Každá služba běží s minimálními potřebnými oprávněními
 * **Automatické aktualizace**: Bezpečnostní záplaty jsou aplikovány automaticky
-* **Bezpečné spouštění**: Ověřený proces spouštění, aby se zabránilo neoprávněné manipulaci
-* **Kernel Hardening**: Zabezpečené parametry jádra a konfigurace sysctl
-* **Omezení souborového systému**: možnosti připojení noexec, nosuid a nodev, kde je to vhodné
-* **Výpisy jádra zakázány**: Systém nakonfigurován tak, aby z bezpečnostních důvodů zabránil výpisům jádra
-* **Swap zakázán**: Výměna paměti zakázána, aby se zabránilo úniku dat
-* **Ochrana skenování portů**: Automatická detekce a blokování pokusů o skenování portů
-* **Transparent Huge Pages zakázáno**: THP zakázáno pro lepší výkon a zabezpečení
-* **System Service Hardening**: Nepodstatné služby, jako je Apport, zakázány
-* **Správa uživatelů**: Princip nejnižších oprávnění s oddělenými uživateli pro nasazení a devops
-* **Limity deskriptorů souborů**: Zvýšené limity pro lepší výkon a zabezpečení
+* **Secure Boot**: Ověřený proces spouštění pro zabránění manipulaci
+* **Zpevnění jádra**: Bezpečné parametry jádra a konfigurace sysctl
+* **Omezení souborového systému**: možnosti mount noexec, nosuid a nodev tam, kde je to vhodné
+* **Zakázány core dumpy**: Systém nakonfigurován tak, aby zabránil core dumpům z bezpečnostních důvodů
+* **Zakázán swap**: Swap paměť zakázána, aby se zabránilo úniku dat
+* **Ochrana proti skenování portů**: Automatická detekce a blokování pokusů o skenování portů
+* **Zakázány Transparent Huge Pages**: THP zakázány pro lepší výkon a bezpečnost
+* **Zpevnění systémových služeb**: Nepotřebné služby jako Apport jsou zakázány
+* **Správa uživatelů**: Princip nejmenších oprávnění s oddělenými uživateli pro deploy a devops
+* **Limity souborových deskriptorů**: Zvýšené limity pro lepší výkon a bezpečnost
 
-## Dohoda o úrovni služeb {#service-level-agreement}
 
-Udržujeme vysokou úroveň dostupnosti a spolehlivosti služeb. Naše infrastruktura je navržena s ohledem na redundanci a odolnost proti chybám, aby byla zajištěna funkčnost vaší e-mailové služby. I když nezveřejňujeme formální dokument SLA, zavazujeme se k:
+## Smlouva o úrovni služeb {#service-level-agreement}
 
-* 99,9%+ dostupnost všech služeb
-* Rychlá reakce na výpadky služeb
-* Transparentní komunikace během incidentů
-* Pravidelná údržba během období s nízkým provozem
+Udržujeme vysokou úroveň dostupnosti a spolehlivosti služeb. Naše infrastruktura je navržena pro redundanci a odolnost vůči chybám, aby vaše e-mailová služba zůstala v provozu. I když nezveřejňujeme formální dokument SLA, zavazujeme se k:
 
-## Zabezpečení s otevřeným zdrojovým kódem {#open-source-security}
+* 99,9 %+ dostupnosti všech služeb
+* Rychlé reakci na výpadky služeb
+* Transparentní komunikaci během incidentů
+* Pravidelné údržbě v době nízké zátěže
 
-Jako DOČASNÝ_ZAMĚSTNANEC_0 ([open-source služba](https://github.com/forwardemail/forwardemail.net)) máme výhodu v oblasti zabezpečení:
 
-* Transparentní kód, který může auditovat kdokoli
-* Vylepšení zabezpečení řízená komunitou
-* Rychlá identifikace a oprava zranitelností
-* Žádné zabezpečení kvůli neznámu
+## Bezpečnost open source {#open-source-security}
 
-## Zabezpečení zaměstnanců {#employee-security}
+Jako [open-source služba](https://github.com/forwardemail/forwardemail.net) těžíme z bezpečnosti díky:
+
+* Transparentnímu kódu, který může kdokoli auditovat
+* Bezpečnostním vylepšením řízeným komunitou
+* Rychlé identifikaci a záplatování zranitelností
+* Žádné bezpečnosti skrze utajení
+
+
+## Bezpečnost zaměstnanců {#employee-security}
 
 * Prověrky všech zaměstnanců
-* Bezpečnostní školení
-* Princip nejnižších oprávnění přístupu
-* Pravidelné bezpečnostní vzdělávání
+* Školení o bezpečnostním povědomí
+* Přístup podle principu nejmenších oprávnění
+* Pravidelné vzdělávání v oblasti bezpečnosti
+
 
 ## Neustálé zlepšování {#continuous-improvement}
 
-Neustále zlepšujeme naši bezpečnostní pozici prostřednictvím:
+Nepřetržitě zlepšujeme naši bezpečnostní pozici prostřednictvím:
 
-* Monitorování bezpečnostních trendů a nově vznikajících hrozeb
-* Pravidelná kontrola a aktualizace bezpečnostních zásad
-* Zpětná vazba od bezpečnostních výzkumníků a uživatelů
-* Účast v bezpečnostní komunitě
+* Monitorování bezpečnostních trendů a nových hrozeb
+* Pravidelného přezkumu a aktualizací bezpečnostních politik
+* Zpětné vazby od bezpečnostních výzkumníků a uživatelů
+* Účasti v bezpečnostní komunitě
 
-Pro více informací o našich bezpečnostních postupech nebo pro nahlášení bezpečnostních problémů kontaktujte prosím <security@forwardemail.net>.
+Pro více informací o našich bezpečnostních postupech nebo pro nahlášení bezpečnostních problémů nás prosím kontaktujte na <security@forwardemail.net>.
+
 
 ## Další zdroje {#additional-resources}
 
 * [Zásady ochrany osobních údajů](https://forwardemail.net/en/privacy)
 * [Podmínky služby](https://forwardemail.net/en/terms)
 * [Soulad s GDPR](https://forwardemail.net/gdpr)
-* [Smlouva o zpracování osobních údajů (DPA)](https://forwardemail.net/dpa)
+* [Smlouva o zpracování dat (DPA)](https://forwardemail.net/dpa)
 * [Nahlásit zneužití](https://forwardemail.net/en/report-abuse)
-* [Bezpečnostní zásady](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
+* [Bezpečnostní politika](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [Repozitář GitHubu](https://github.com/forwardemail/forwardemail.net)
-* [FAQ](https://forwardemail.net/en/faq)
+* [GitHub repozitář](https://github.com/forwardemail/forwardemail.net)
+* [Často kladené otázky](https://forwardemail.net/en/faq)

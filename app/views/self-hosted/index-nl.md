@@ -1,82 +1,84 @@
-# Zelf gehost {#self-hosted}
+# Zelf Gehost {#self-hosted}
+
 
 ## Inhoudsopgave {#table-of-contents}
 
 * [Aan de slag](#getting-started)
 * [Vereisten](#requirements)
-  * [Cloud-init / Gebruikersgegevens](#cloud-init--user-data)
-* [Installeren](#install)
-  * [Debug-installatiescript](#debug-install-script)
-  * [Aanwijzingen](#prompts)
-  * [Eerste installatie (optie 1)](#initial-setup-option-1)
+  * [Cloud-init / User-data](#cloud-init--user-data)
+* [Installatie](#install)
+  * [Installatiescript debuggen](#debug-install-script)
+  * [Prompts](#prompts)
+  * [Initiële Setup (Optie 1)](#initial-setup-option-1)
 * [Diensten](#services)
-  * [Belangrijke bestandspaden](#important-file-paths)
+  * [Belangrijke bestandslocaties](#important-file-paths)
 * [Configuratie](#configuration)
-  * [Initiële DNS-instelling](#initial-dns-setup)
+  * [Initiële DNS-configuratie](#initial-dns-setup)
 * [Onboarding](#onboarding)
 * [Testen](#testing)
-  * [Uw eerste alias aanmaken](#creating-your-first-alias)
-  * [Uw eerste e-mail verzenden/ontvangen](#sending--receiving-your-first-email)
+  * [Je eerste alias aanmaken](#creating-your-first-alias)
+  * [Je eerste e-mail verzenden / ontvangen](#sending--receiving-your-first-email)
 * [Probleemoplossing](#troubleshooting)
-  * [Wat is de basis-auth gebruikersnaam en wachtwoord?](#what-is-the-basic-auth-username-and-password)
-  * [Hoe weet ik wat er draait?](#how-do-i-know-what-is-running)
-  * [Hoe weet ik of iets niet werkt terwijl dat wel zou moeten?](#how-do-i-know-if-something-isnt-running-that-should-be)
-  * [Hoe vind ik logs?](#how-do-i-find-logs)
-  * [Waarom verlopen mijn uitgaande e-mails?](#why-are-my-outgoing-emails-timing-out)
+  * [Wat is de gebruikersnaam en het wachtwoord voor basic auth](#what-is-the-basic-auth-username-and-password)
+  * [Hoe weet ik wat er draait](#how-do-i-know-what-is-running)
+  * [Hoe weet ik of iets niet draait terwijl het wel zou moeten](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [Hoe vind ik logs](#how-do-i-find-logs)
+  * [Waarom verlopen mijn uitgaande e-mails](#why-are-my-outgoing-emails-timing-out)
+
 
 ## Aan de slag {#getting-started}
 
-Onze zelfgehoste e-mailoplossing is, net als al onze producten, 100% open source – zowel frontend als backend. Dit betekent:
+Onze zelfgehoste e-mailoplossing, net als al onze producten, is 100% open-source—zowel frontend als backend. Dit betekent:
 
-1. **Volledige transparantie**: Elke regel code die uw e-mails verwerkt, is beschikbaar voor openbare controle.
-2. **Bijdragen van de community**: Iedereen kan verbeteringen bijdragen of problemen oplossen.
-3. **Beveiliging door openheid**: Kwetsbaarheden kunnen worden geïdentificeerd en opgelost door een wereldwijde community.
-4. **Geen vendor lock-in**: U bent nooit afhankelijk van het bestaan van ons bedrijf.
+1. **Volledige Transparantie**: Elke regel code die je e-mails verwerkt is beschikbaar voor publieke controle
+2. **Community Bijdragen**: Iedereen kan verbeteringen aanbrengen of problemen oplossen
+3. **Beveiliging door Openheid**: Kwetsbaarheden kunnen worden geïdentificeerd en opgelost door een wereldwijde community
+4. **Geen Vendor Lock-in**: Je bent nooit afhankelijk van het voortbestaan van ons bedrijf
 
-De volledige codebase is beschikbaar op GitHub op <https://github.com/forwardemail/forwardemail.net>, en valt onder de MIT-licentie.
+De volledige codebase is beschikbaar op GitHub via <https://github.com/forwardemail/forwardemail.net>, gelicenseerd onder de MIT License.
 
 De architectuur omvat containers voor:
 
 * SMTP-server voor uitgaande e-mail
-* IMAP/POP3-servers voor het ophalen van e-mail
-* Webinterface voor beheer
+* IMAP/POP3-servers voor e-mail ophalen
+* Webinterface voor administratie
 * Database voor configuratieopslag
 * Redis voor caching en prestaties
 * SQLite voor veilige, versleutelde mailboxopslag
 
 > \[!NOTE]
-> Bekijk zeker onze [zelf-gehoste blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+> Bekijk zeker onze [zelfgehoste blog](https://forwardemail.net/blog/docs/self-hosted-solution)
 >
-> En voor degenen die geïnteresseerd zijn in een meer gedetailleerde stapsgewijze versie, zie onze handleidingen gebaseerd op [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) of [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+> En voor wie geïnteresseerd is in een meer stapsgewijze versie, zie onze [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) of [Debian](https://forwardemail.net/guides/selfhosted-on-debian) gebaseerde handleidingen.
+
 
 ## Vereisten {#requirements}
 
-Voordat u het installatiescript uitvoert, moet u ervoor zorgen dat u over het volgende beschikt:
+Voordat je het installatiescript uitvoert, zorg dat je het volgende hebt:
 
-* **Besturingssysteem**: Een Linux-server (momenteel met ondersteuning voor Ubuntu 22.04+).
-* **Resources**: 1 vCPU en 2 GB RAM
-* **Root-toegang**: Beheerdersrechten om opdrachten uit te voeren.
-* **Domeinnaam**: Een aangepast domein, klaar voor DNS-configuratie.
-* **Schoon IP-adres**: Zorg ervoor dat uw server een schoon IP-adres heeft zonder eerdere spamreputatie door zwarte lijsten te controleren. Meer informatie: [hier](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
-* Openbaar IP-adres met ondersteuning voor poort 25
-* Mogelijkheid om [omgekeerde PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) in te stellen
-* Ondersteuning voor IPv4 en IPv6
+* **Besturingssysteem**: Een Linux-gebaseerde server (momenteel ondersteund: Ubuntu 22.04+).
+* **Resources**: 1 vCPU en 2GB RAM
+* **Root Toegang**: Administratieve rechten om commando’s uit te voeren.
+* **Domeinnaam**: Een eigen domein klaar voor DNS-configuratie.
+* **Schone IP**: Zorg dat je server een schone IP-adres heeft zonder eerdere spamreputatie door blacklists te controleren. Meer info [hier](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* Publiek IP-adres met poort 25 ondersteuning
+* Mogelijkheid om [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) in te stellen
+* IPv4 en IPv6 ondersteuning
 
 > \[!TIP]
-> Bekijk onze lijst met [geweldige mailserverproviders](https://github.com/forwardemail/awesome-mail-server-providers)
+> Bekijk onze lijst met [geweldige mailserver providers](https://github.com/forwardemail/awesome-mail-server-providers)
 
-### Cloud-init / Gebruikersgegevens {#cloud-init--user-data}
+### Cloud-init / User-data {#cloud-init--user-data}
 
-De meeste cloudleveranciers ondersteunen een cloud-initconfiguratie voor wanneer de Virtual Private Server (VPS) wordt ingericht. Dit is een geweldige manier om vooraf een aantal bestanden en omgevingsvariabelen in te stellen voor gebruik door de initiële installatielogica van het script. Zo hoeft er tijdens de uitvoering van het script niet om aanvullende informatie te worden gevraagd.
+De meeste cloudproviders ondersteunen een cloud-init configuratie voor wanneer de virtuele private server (VPS) wordt ingericht. Dit is een geweldige manier om vooraf enkele bestanden en omgevingsvariabelen in te stellen die gebruikt worden door de initiële setup-logica van de scripts, waardoor het niet nodig is om tijdens het draaien van het script om extra informatie te vragen.
 
 **Opties**
 
-* `EMAIL` - e-mailadres voor Certbot-vervaldatumherinneringen
-* `DOMAIN` - aangepast domein (bijv. `example.com`) voor de installatie van zelfhosting
-* `AUTH_BASIC_USERNAME` - gebruikersnaam gebruikt bij de eerste installatie om de site te beveiligen
-* `AUTH_BASIC_PASSWORD` - wachtwoord gebruikt bij de eerste installatie om de site te beveiligen
-* `/root/.cloudflare.ini` - (**Alleen voor Cloudflare-gebruikers**) Cloudflare-configuratiebestand gebruikt door Certbot voor DNS-configuratie. Hiervoor moet u uw API-token instellen via `dns_cloudflare_api_token`. Lees meer over [hier](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
-
+* `EMAIL` - e-mail gebruikt voor certbot vervaldatum herinneringen
+* `DOMAIN` - eigen domein (bijv. `example.com`) gebruikt voor zelfhosting setup
+* `AUTH_BASIC_USERNAME` - gebruikersnaam gebruikt bij eerste setup om de site te beschermen
+* `AUTH_BASIC_PASSWORD` - wachtwoord gebruikt bij eerste setup om de site te beschermen
+* `/root/.cloudflare.ini` - (**alleen Cloudflare gebruikers**) Cloudflare configuratiebestand gebruikt door certbot voor DNS-configuratie. Vereist dat je je API-token instelt via `dns_cloudflare_api_token`. Lees meer [hier](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 Voorbeeld:
 
 ```sh
@@ -96,23 +98,24 @@ runcmd:
   - chmod +x /etc/profile.d/env.sh
 ```
 
-## Installeer {#install}
 
-Voer de volgende opdracht uit op uw server om het installatiescript te downloaden en uit te voeren:
+## Installeren {#install}
+
+Voer het volgende commando uit op uw server om het installatiescript te downloaden en uit te voeren:
 
 ```sh
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Debug-installatiescript {#debug-install-script}
+### Debug installatiescript {#debug-install-script}
 
-Voeg `DEBUG=true` toe voor het installatiescript voor uitgebreide uitvoer:
+Voeg `DEBUG=true` toe vóór het installatiescript voor gedetailleerde uitvoer:
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Vraagt {#prompts}
+### Prompts {#prompts}
 
 ```sh
 1. Initial setup
@@ -124,111 +127,114 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 7. Exit
 ```
 
-* **Eerste installatie**: Download de nieuwste doorstuurcode, configureer de omgeving, vraag om uw aangepaste domein en stel alle benodigde certificaten, sleutels en geheimen in.
-* **Back-up instellen**: Stelt een cron in om mongoDB en redis te back-uppen met behulp van een S3-compatibele opslag voor veilige, externe opslag. Daarnaast wordt sqlite bij het inloggen apart geback-upt als er wijzigingen zijn voor veilige, versleutelde back-ups.
-* **Upgrade instellen**: Stelt een cron in om te zoeken naar nachtelijke updates die infrastructuurcomponenten veilig herbouwen en herstarten.
-* **Certificaten vernieuwen**: Certbot / lets encrypt wordt gebruikt voor SSL-certificaten en sleutels verlopen elke 3 maanden. Hiermee worden de certificaten voor uw domein vernieuwd en in de benodigde map geplaatst zodat gerelateerde componenten deze kunnen gebruiken. Zie [belangrijke bestandspaden](#important-file-paths)
-* **Herstellen van back-up**: Activeert mongoDB en redis om te herstellen van back-upgegevens.
+* **Initial setup**: Download de nieuwste forward email code, configureer de omgeving, vraag om uw aangepaste domein en stel alle benodigde certificaten, sleutels en geheimen in.
+* **Setup Backup**: Stelt een cron in om mongoDB en redis te back-uppen met een S3-compatibele opslag voor veilige, externe opslag. Daarnaast wordt sqlite bij inloggen geback-upt als er wijzigingen zijn voor veilige, versleutelde back-ups.
+* **Setup Upgrade**: Stelt een cron in om te zoeken naar nachtelijke updates die infrastructuurcomponenten veilig zullen herbouwen en herstarten.
+* **Renew certificates**: Certbot / lets encrypt wordt gebruikt voor SSL-certificaten en sleutels die elke 3 maanden verlopen. Dit vernieuwt de certificaten voor uw domein en plaatst ze in de benodigde map zodat gerelateerde componenten ze kunnen gebruiken. Zie [belangrijke bestandslocaties](#important-file-paths)
+* **Restore from backup**: Zal mongodb en redis activeren om te herstellen vanaf back-upgegevens.
 
-### Eerste installatie (optie 1) {#initial-setup-option-1}
+### Eerste installatie (Optie 1) {#initial-setup-option-1}
 
 Kies optie `1. Initial setup` om te beginnen.
 
-Zodra de installatie is voltooid, ziet u een bericht dat de installatie is voltooid. U kunt zelfs `docker ps` uitvoeren om te zien of **de** componenten zijn opgestart. Meer informatie over componenten vindt u hieronder.
+Na voltooiing zou u een succesbericht moeten zien. U kunt zelfs `docker ps` uitvoeren om **de** opgestarte componenten te zien. Meer informatie over componenten hieronder.
+
 
 ## Diensten {#services}
 
-| Servicenaam | Standaardpoort | Beschrijving |
-| ------------ | :----------: | ------------------------------------------------------ |
-| Web | `443` | Webinterface voor alle beheerdersinteracties |
-| API | `4000` | API-laag voor het abstraheren van databases |
-| Bree | Geen | Achtergrondtaak en taakrunner |
-| SMTP | `465` (recommended) / `587` | SMTP-server voor uitgaande e-mail |
-| SMTP Bree | Geen | SMTP-achtergrondtaak |
-| MX | `2525` | Mailuitwisseling voor inkomende e-mail en e-maildoorsturing |
-| IMAP | `993/2993` | IMAP-server voor inkomende e-mail en mailboxbeheer |
-| POP3 | `995/2995` | POP3-server voor inkomende e-mail en mailboxbeheer |
-| SQLite | `3456` | SQLite-server voor interacties met SQLite-database(s) |
-| SQLite Bree | Geen | SQLite achtergrondtaak |
-| CalDAV | `5000` | CalDAV-server voor agendabeheer |
-| KaartDAV | `6000` | CardDAV-server voor agendabeheer |
-| MongoDB | `27017` | MongoDB-database voor de meeste gegevensbeheer |
-| Redis | `6379` | Redis voor caching en statusbeheer |
-| SQLite | Geen | SQLite-database(s) voor versleutelde mailboxen |
+| Service Naam |         Standaard Poort        | Beschrijving                                            |
+| ------------ | :-----------------------------: | ------------------------------------------------------ |
+| Web          |            `443`                | Webinterface voor alle admin interacties               |
+| API          |            `4000`               | API-laag om databases te abstraheren                    |
+| Bree         |             Geen                | Achtergrondtaak en taakuitvoerder                        |
+| SMTP         | `465` (aanbevolen) / `587`     | SMTP-server voor uitgaande e-mail                       |
+| SMTP Bree    |             Geen                | SMTP achtergrondtaak                                    |
+| MX           |            `2525`               | Mail exchange voor inkomende e-mail en e-mail forwarding |
+| IMAP         |          `993/2993`             | IMAP-server voor inkomende e-mail en mailboxbeheer     |
+| POP3         |          `995/2995`             | POP3-server voor inkomende e-mail en mailboxbeheer     |
+| SQLite       |            `3456`               | SQLite-server voor interacties met sqlite database(s)  |
+| SQLite Bree  |             Geen                | SQLite achtergrondtaak                                  |
+| CalDAV       |            `5000`               | CalDAV-server voor kalenderbeheer                       |
+| CardDAV      |            `6000`               | CardDAV-server voor kalenderbeheer                      |
+| MongoDB      |           `27017`               | MongoDB database voor het meeste databeheer            |
+| Redis        |            `6379`               | Redis voor caching en statusbeheer                      |
+| SQLite       |             Geen                | SQLite database(s) voor versleutelde mailboxen         |
 
-### Belangrijke bestandspaden {#important-file-paths}
+### Belangrijke bestandslocaties {#important-file-paths}
 
-Let op: *Hostpad* hieronder is relatief ten opzichte van `/root/forwardemail.net/self-hosting/`.
+Opmerking: *Host path* hieronder is relatief ten opzichte van `/root/forwardemail.net/self-hosting/`.
 
-| Onderdeel | Hostpad | Containerpad |
+| Component              |       Host path       | Container path               |
 | ---------------------- | :-------------------: | ---------------------------- |
-| MongoDB | `./mongo-backups` | `/backups` |
-| Redis | `./redis-data` | `/data` |
-| Sqlite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| Env-bestand | `./.env` | `/app/.env` |
-| SSL-certificaten/sleutels | `./ssl` | `/app/ssl/` |
-| Privésleutel | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| Volledig ketencertificaat | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| Gecertificeerde CA's | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
-| DKIM-privésleutel | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
-
+| MongoDB                |   `./mongo-backups`   | `/backups`                   |
+| Redis                  |     `./redis-data`    | `/data`                      |
+| Sqlite                 |    `./sqlite-data`    | `/mnt/{SQLITE_STORAGE_PATH}` |
+| Env bestand            |        `./.env`       | `/app/.env`                  |
+| SSL certificaten/sleutels |        `./ssl`        | `/app/ssl/`                  |
+| Privésleutel           |  `./ssl/privkey.pem`  | `/app/ssl/privkey.pem`       |
+| Volledige keten certificaat | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem`     |
+| CA certificaat         |    `./ssl/cert.pem`   | `/app/ssl/cert.pem`          |
+| DKIM privésleutel      |    `./ssl/dkim.key`   | `/app/ssl/dkim.key`          |
 > \[!IMPORTANT]
-> Sla het bestand `.env` veilig op. Dit is essentieel voor herstel in geval van een storing.
-> U vindt dit bestand in `/root/forwardemail.net/self-hosting/.env`.
+> Bewaar het `.env` bestand veilig. Het is cruciaal voor herstel in geval van storing.
+> Je kunt dit vinden in `/root/forwardemail.net/self-hosting/.env`.
+
 
 ## Configuratie {#configuration}
 
-### Initiële DNS-instelling {#initial-dns-setup}
+### Initiële DNS-configuratie {#initial-dns-setup}
 
-Configureer de juiste DNS-records bij de DNS-provider van uw keuze. Let op: alles tussen haakjes (`<>`) is dynamisch en moet worden bijgewerkt met uw waarde.
+Configureer bij je DNS-provider naar keuze de juiste DNS-records. Let op dat alles tussen haakjes (`<>`) dynamisch is en bijgewerkt moet worden met jouw waarde.
 
-| Type | Naam | Inhoud | TTL |
+| Type  | Naam               | Inhoud                       | TTL  |
 | ----- | ------------------ | ----------------------------- | ---- |
-| A | "@", ".", of leeg | <ip_adres> | auto |
-| CNAME | api | <domeinnaam> | auto |
-| CNAME | caldav | <domeinnaam> | auto |
-| CNAME | kaartdatum | <domeinnaam> | auto |
-| CNAME | fe-stuitert | <domeinnaam> | auto |
-| CNAME | imap | <domeinnaam> | auto |
-| CNAME | mx | <domeinnaam> | auto |
-| CNAME | pop3 | <domeinnaam> | auto |
-| CNAME | smtp | <domeinnaam> | auto |
-| MX | "@", ".", of leeg | mx.<domeinnaam> (prioriteit 0) | auto |
-| TXT | "@", ".", of leeg | "v=spf1 a -all" | auto |
+| A     | "@", ".", of leeg  | <ip_address>                  | auto |
+| CNAME | api                | <domain_name>                 | auto |
+| CNAME | caldav             | <domain_name>                 | auto |
+| CNAME | carddav            | <domain_name>                 | auto |
+| CNAME | fe-bounces         | <domain_name>                 | auto |
+| CNAME | imap               | <domain_name>                 | auto |
+| CNAME | mx                 | <domain_name>                 | auto |
+| CNAME | pop3               | <domain_name>                 | auto |
+| CNAME | smtp               | <domain_name>                 | auto |
+| MX    | "@", ".", of leeg  | mx.<domain_name> (prioriteit 0) | auto |
+| TXT   | "@", ".", of leeg  | "v=spf1 a -all"               | auto |
 
-#### Omgekeerde DNS/PTR-record {#reverse-dns--ptr-record}
+#### Reverse DNS / PTR-record {#reverse-dns--ptr-record}
 
-Omgekeerde DNS (rDNS) of omgekeerde pointer records (PTR-records) zijn essentieel voor e-mailservers, omdat ze de legitimiteit van de server die de e-mail verzendt, helpen verifiëren. Elke cloudprovider doet dit anders, dus u moet opzoeken hoe u "Omgekeerde DNS" kunt toevoegen om de host en het IP-adres aan de bijbehorende hostnaam te koppelen. Dit vindt u waarschijnlijk in de netwerksectie van de provider.
+Reverse DNS (rDNS) of reverse pointer records (PTR-records) zijn essentieel voor mailservers omdat ze helpen de legitimiteit van de server die de e-mail verzendt te verifiëren. Elke cloudprovider doet dit anders, dus je zult moeten opzoeken hoe je "Reverse DNS" toevoegt om de host en IP te koppelen aan de bijbehorende hostnaam. Meestal te vinden in het netwerkgedeelte van de provider.
 
 #### Poort 25 geblokkeerd {#port-25-blocked}
 
-Sommige internetproviders en cloudproviders blokkeren poort 25 om kwaadwillenden te weren. Mogelijk moet u een supportticket indienen om poort 25 te openen voor SMTP/uitgaande e-mail.
+Sommige ISP's en cloudproviders blokkeren poort 25 om misbruik te voorkomen. Mogelijk moet je een supportticket indienen om poort 25 te openen voor SMTP / uitgaande e-mail.
+
 
 ## Onboarding {#onboarding}
 
-1. Open de landingspagina
-Navigeer naar https\://\<domeinnaam> en vervang \<domeinnaam> door het domein dat is geconfigureerd in je DNS-instellingen. Je zou de landingspagina voor het doorsturen van e-mail moeten zien.
+1. Open de Landingspagina
+   Navigeer naar https\://\<domain_name>, waarbij je \<domain_name> vervangt door de domeinnaam die je in je DNS-instellingen hebt geconfigureerd. Je zou de Forward Email landingspagina moeten zien.
 
-2. Log in en registreer uw domein
+2. Log in en onboard je domein
 
-* Meld u aan met een geldig e-mailadres en wachtwoord.
-* Voer de domeinnaam in die u wilt instellen (deze moet overeenkomen met de DNS-configuratie).
-* Volg de instructies om de vereiste **MX**- en **TXT**-records toe te voegen ter verificatie.
+* Log in met een geldig e-mailadres en wachtwoord.
+* Voer de domeinnaam in die je wilt instellen (dit moet overeenkomen met de DNS-configuratie).
+* Volg de aanwijzingen om de vereiste **MX** en **TXT** records toe te voegen voor verificatie.
 
-3. Volledige installatie
+3. Voltooi de installatie
 
-* Na verificatie gaat u naar de pagina Aliassen om uw eerste alias aan te maken.
-* Optioneel kunt u **SMTP voor uitgaande e-mail** configureren in de **Domeininstellingen**. Hiervoor zijn extra DNS-records vereist.
+* Zodra geverifieerd, ga naar de Aliassen-pagina om je eerste alias aan te maken.
+* Optioneel: configureer **SMTP voor uitgaande e-mail** in de **Domeininstellingen**. Dit vereist extra DNS-records.
 
 > \[!NOTE]
-> Er wordt geen informatie buiten uw server verzonden. De zelfgehoste optie en het initiële account zijn alleen bedoeld voor de beheerder en webweergave om domeinen, aliassen en bijbehorende e-mailconfiguraties te beheren.
+> Er wordt geen informatie buiten je server verzonden. De zelf gehoste optie en het initiële account zijn alleen voor de admin-login en webweergave om domeinen, aliassen en gerelateerde e-mailconfiguraties te beheren.
 
-## Testen van {#testing}
 
-### Uw eerste alias {#creating-your-first-alias} maken
+## Testen {#testing}
 
-1. Navigeer naar de pagina Aliassen
-Open de pagina voor aliasbeheer:
+### Je eerste alias aanmaken {#creating-your-first-alias}
+
+1. Navigeer naar de Aliassen-pagina
+   Open de aliasbeheerpagina:
 
 ```sh
 https://<domain_name>/en/my-account/domains/<domain_name>/aliases
@@ -237,75 +243,74 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 2. Voeg een nieuwe alias toe
 
 * Klik op **Alias toevoegen** (rechtsboven).
-* Voer de aliasnaam in en pas de e-mailinstellingen naar wens aan.
-* (Optioneel) Schakel **IMAP/POP3/CalDAV/CardDAV**-ondersteuning in door het selectievakje aan te vinken.
+* Voer de aliasnaam in en pas de e-mailinstellingen aan indien nodig.
+* (Optioneel) Schakel **IMAP/POP3/CalDAV/CardDAV** ondersteuning in door het selectievakje aan te vinken.
 * Klik op **Alias aanmaken.**
 
 3. Stel een wachtwoord in
 
 * Klik op **Wachtwoord genereren** om een veilig wachtwoord aan te maken.
-* Dit wachtwoord is vereist om in te loggen op uw e-mailclient.
+* Dit wachtwoord is nodig om in te loggen in je e-mailclient.
 
-4. Configureer uw e-mailclient
+4. Configureer je e-mailclient
 
 * Gebruik een e-mailclient zoals Thunderbird.
 * Voer de aliasnaam en het gegenereerde wachtwoord in.
-* Configureer de **IMAP**- en **SMTP**-instellingen dienovereenkomstig.
+* Configureer de **IMAP** en **SMTP** instellingen overeenkomstig.
 
-#### E-mailserverinstellingen {#email-server-settings}
+#### E-mailserver instellingen {#email-server-settings}
 
 Gebruikersnaam: `<alias name>`
 
-| Type | Hostnaam | Haven | Verbindingsbeveiliging | Authenticatie |
-| ---- | ------------------ | ---- | ------------------- | --------------- |
-| SMTP | smtp.<domeinnaam> | 465 | SSL / TLS | Normaal wachtwoord |
-| IMAP | imap.<domeinnaam> | 993 | SSL / TLS | Normaal wachtwoord |
+| Type | Hostnaam           | Poort | Verbindingsbeveiliging | Authenticatie  |
+| ---- | ------------------ | ----- | ---------------------- | ------------- |
+| SMTP | smtp.<domain_name> | 465   | SSL / TLS              | Normaal wachtwoord |
+| IMAP | imap.<domain_name> | 993   | SSL / TLS              | Normaal wachtwoord |
 
-### Uw eerste e-mail verzenden/ontvangen {#sending--receiving-your-first-email}
+### Je eerste e-mail verzenden / ontvangen {#sending--receiving-your-first-email}
 
-Nadat u het hebt geconfigureerd, kunt u e-mails versturen en ontvangen naar het nieuwe, zelf gehoste e-mailadres!
-
-## Problemen oplossen met {#troubleshooting}
+Zodra alles is geconfigureerd, zou je e-mail moeten kunnen verzenden en ontvangen naar je nieuw aangemaakte en zelf gehoste e-mailadres!
+## Problemen oplossen {#troubleshooting}
 
 #### Waarom werkt dit niet buiten Ubuntu en Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-We zijn momenteel bezig met het ondersteunen van macOS en zullen ook naar anderen kijken. Open een [discussie](https://github.com/orgs/forwardemail/discussions) of draag bij als je wilt dat anderen ondersteund worden.
+We zijn momenteel bezig met ondersteuning voor MacOS en zullen naar anderen kijken. Open alstublieft een [discussie](https://github.com/orgs/forwardemail/discussions) of draag bij als u ondersteuning voor anderen wilt zien.
 
-#### Waarom mislukt de certbot acme-uitdaging {#why-is-the-certbot-acme-challenge-failing}
+#### Waarom faalt de certbot acme challenge {#why-is-the-certbot-acme-challenge-failing}
 
-De meest voorkomende valkuil is dat certbot/letsencrypt soms **2** challenges aanvraagt. Zorg ervoor dat je **BEIDE** txt-records toevoegt.
+De meest voorkomende valkuil is dat certbot / letsencrypt soms **2** challenges opvraagt. U moet er zeker van zijn dat u **BEIDE** txt-records toevoegt.
 
 Voorbeeld:
-Je ziet mogelijk twee uitdagingen zoals deze:
+U kunt twee challenges zien zoals deze:
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-Het is ook mogelijk dat de DNS-propagatie nog niet is voltooid. U kunt tools zoals `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>` gebruiken. Dit geeft u een idee of de wijzigingen in uw TXT-record moeten worden doorgevoerd. Het is ook mogelijk dat de lokale DNS-cache op uw host nog steeds een oude, verouderde waarde gebruikt of de recente wijzigingen niet heeft herkend.
+Het is ook mogelijk dat de DNS-propagatie nog niet is voltooid. U kunt tools gebruiken zoals: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Dit geeft u een idee of uw TXT-recordwijzigingen al zichtbaar zouden moeten zijn. Het is ook mogelijk dat de lokale DNS-cache op uw host nog een oude, verouderde waarde gebruikt of de recente wijzigingen nog niet heeft opgepikt.
 
-Een andere optie is om de geautomatiseerde DNS-wijzigingen van Cerbot te gebruiken door het bestand `/root/.cloudflare.ini` in te stellen met de API-token in je cloud-init/user-data tijdens de eerste VPS-installatie, of dit bestand aan te maken en het script opnieuw uit te voeren. Dit beheert de DNS-wijzigingen en challenge-updates automatisch.
+Een andere optie is om de geautomatiseerde certbot DNS-wijzigingen te gebruiken door het bestand `/root/.cloudflare.ini` met de api-token in te stellen in uw cloud-init / user-data bij de eerste VPS-installatie of dit bestand aan te maken en het script opnieuw uit te voeren. Dit beheert de DNS-wijzigingen en challenge-updates automatisch.
 
-### Wat is de basisauth-gebruikersnaam en het wachtwoord {#what-is-the-basic-auth-username-and-password}
+### Wat is de basic auth gebruikersnaam en wachtwoord {#what-is-the-basic-auth-username-and-password}
 
-Voor self-hosting voegen we een pop-up toe voor native authenticatie in de browser met een eenvoudige gebruikersnaam (`admin`) en wachtwoord (willekeurig gegenereerd bij de eerste installatie). We voegen dit alleen toe als bescherming voor het geval automatisering/scrapers u voor zijn bij uw eerste aanmelding op de website. U vindt dit wachtwoord na de eerste installatie in uw bestand `.env` onder `AUTH_BASIC_USERNAME` en `AUTH_BASIC_PASSWORD`.
+Voor zelfhosting voegen we een eerste keer een native browser authenticatie pop-up toe met een eenvoudige gebruikersnaam (`admin`) en wachtwoord (willekeurig gegenereerd bij de eerste installatie). Dit voegen we toe als bescherming voor het geval automatisering / scrapers u op de webervaring voor zijn met aanmelden. U kunt dit wachtwoord na de eerste installatie vinden in uw `.env` bestand onder `AUTH_BASIC_USERNAME` en `AUTH_BASIC_PASSWORD`.
 
-### Hoe weet ik wat er {#how-do-i-know-what-is-running} draait?
+### Hoe weet ik wat er draait {#how-do-i-know-what-is-running}
 
-Je kunt `docker ps` uitvoeren om alle actieve containers te zien die vanuit het bestand `docker-compose-self-hosting.yml` worden opgestart. Je kunt ook `docker ps -a` uitvoeren om alles te zien (inclusief containers die niet actief zijn).
+U kunt `docker ps` uitvoeren om alle draaiende containers te zien die worden opgestart vanuit het `docker-compose-self-hosting.yml` bestand. U kunt ook `docker ps -a` uitvoeren om alles te zien (inclusief containers die niet draaien).
 
-### Hoe weet ik of er iets niet draait dat {#how-do-i-know-if-something-isnt-running-that-should-be} zou moeten zijn?
+### Hoe weet ik of iets niet draait dat wel zou moeten {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-U kunt `docker ps -a` uitvoeren om alles te zien (inclusief containers die niet actief zijn). Mogelijk ziet u een exit-log of notitie.
+U kunt `docker ps -a` uitvoeren om alles te zien (inclusief containers die niet draaien). U kunt een exit-log of melding zien.
 
 ### Hoe vind ik logs {#how-do-i-find-logs}
 
-Je kunt meer logs ophalen via `docker logs -f <container_name>`. Als er iets niet klopt, is de oorzaak waarschijnlijk een onjuiste configuratie van het bestand `.env`.
+U kunt meer logs krijgen via `docker logs -f <container_name>`. Als iets is gestopt, heeft dat waarschijnlijk te maken met een verkeerd geconfigureerd `.env` bestand.
 
-Binnen de webinterface kunt u respectievelijk `/admin/emails` en `/admin/logs` bekijken voor uitgaande e-maillogs en foutlogs.
+Binnen de web UI kunt u `/admin/emails` en `/admin/logs` bekijken voor respectievelijk uitgaande e-mail logs en foutlogs.
 
-### Waarom verlopen mijn uitgaande e-mails? {#why-are-my-outgoing-emails-timing-out}
+### Waarom verlopen mijn uitgaande e-mails door time-outs {#why-are-my-outgoing-emails-timing-out}
 
-Als u een bericht ziet zoals 'Verbinding is verlopen bij verbinding met MX-server...', moet u mogelijk controleren of poort 25 geblokkeerd is. Het komt vaak voor dat internetproviders of cloudproviders dit standaard blokkeren. In dat geval moet u mogelijk contact opnemen met de support of een ticket indienen om dit te laten openen.
+Als u een bericht ziet zoals Connection timed out when connecting to MX server... dan moet u mogelijk controleren of poort 25 geblokkeerd is. Het is gebruikelijk dat ISP's of cloudproviders dit standaard blokkeren, waarbij u contact moet opnemen met de support / een ticket moet indienen om dit te laten openen.
 
-#### Welke tools moet ik gebruiken om best practices voor e-mailconfiguratie en IP-reputatie te testen? {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### Welke tools moet ik gebruiken om e-mailconfiguratie best practices en IP-reputatie te testen {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-Kijk eens naar onze [Veelgestelde vragen hier](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).
+Bekijk onze [FAQ hier](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).

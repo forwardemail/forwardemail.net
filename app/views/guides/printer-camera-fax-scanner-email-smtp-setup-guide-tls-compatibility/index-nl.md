@@ -1,556 +1,557 @@
-# Complete Guide to Printer, Camera, Fax & Scanner Email Setup {#complete-guide-to-printer-camera-fax--scanner-email-setup}
+# Complete Gids voor Printer-, Camera-, Fax- & Scanner E-mailinstellingen {#complete-guide-to-printer-camera-fax--scanner-email-setup}
 
-Your office equipment needs to send emails - printers alert about toner levels, IP cameras notify about motion detection, fax machines report transmission status, and scanners confirm document processing. The problem? Most email providers dropped support for older devices, leaving your equipment unable to send notifications.
+Uw kantoorapparatuur moet e-mails kunnen versturen - printers waarschuwen over tonerlevels, IP-camera's melden bewegingsdetectie, faxapparaten rapporteren de transmissiestatus en scanners bevestigen de verwerking van documenten. Het probleem? De meeste e-mailproviders hebben de ondersteuning voor oudere apparaten stopgezet, waardoor uw apparatuur geen meldingen meer kan versturen.
 
-[Microsoft Office 365 discontinued TLS 1.0 and TLS 1.1 support in January 2022](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), breaking email for thousands of devices. Many printers, cameras, and fax machines made before 2020 only support these legacy protocols and can't be updated.
+[Microsoft Office 365 stopte in januari 2022 met de ondersteuning voor TLS 1.0 en TLS 1.1](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), wat e-mailverkeer voor duizenden apparaten brak. Veel printers, camera's en faxapparaten van vóór 2020 ondersteunen alleen deze verouderde protocollen en kunnen niet worden bijgewerkt.
 
-Forward Email fixes this by supporting both modern and legacy devices. We have dedicated ports for current equipment and special legacy ports for older devices that can't be upgraded.
+Forward Email lost dit op door zowel moderne als legacy apparaten te ondersteunen. We hebben speciale poorten voor huidige apparatuur en aparte legacy-poorten voor oudere apparaten die niet kunnen worden geüpgraded.
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy devices through our dual-port strategy. Use port `465` (SSL/TLS, recommended) or `587` (STARTTLS) for modern devices with TLS 1.2+ support, and ports `2455`/`2555` for legacy devices that only support TLS 1.0.
+> Forward Email ondersteunt zowel moderne als legacy apparaten via onze dual-port strategie. Gebruik poort `465` (SSL/TLS, aanbevolen) of `587` (STARTTLS) voor moderne apparaten met TLS 1.2+ ondersteuning, en poorten `2455`/`2555` voor legacy apparaten die alleen TLS 1.0 ondersteunen.
 
-## Table of Contents {#table-of-contents}
 
-* [The TLS Problem Explained](#the-tls-problem-explained)
-* [Forward Email SMTP Configuration Overview](#forward-email-smtp-configuration-overview)
-* [Comprehensive Device Compatibility Matrix](#comprehensive-device-compatibility-matrix)
-* [HP Printer Email Configuration](#hp-printer-email-configuration)
-  * [Modern HP Printers (2020 and Later)](#modern-hp-printers-2020-and-later)
-  * [Legacy HP Printers (Pre-2020 Models)](#legacy-hp-printers-pre-2020-models)
-* [Canon Printer Email Configuration](#canon-printer-email-configuration)
-  * [Current Canon Printers](#current-canon-printers)
-  * [Legacy Canon Printers](#legacy-canon-printers)
-* [Brother Printer Email Configuration](#brother-printer-email-configuration)
-  * [Brother MFC Series Configuration](#brother-mfc-series-configuration)
-  * [Troubleshooting Brother Email Issues](#troubleshooting-brother-email-issues)
-* [Foscam IP Camera Email Configuration](#foscam-ip-camera-email-configuration)
-  * [Understanding Foscam Email Limitations](#understanding-foscam-email-limitations)
-  * [Foscam Email Configuration Steps](#foscam-email-configuration-steps)
-  * [Advanced Foscam Configuration](#advanced-foscam-configuration)
-* [Hikvision Security Camera Email Configuration](#hikvision-security-camera-email-configuration)
-  * [Modern Hikvision Camera Configuration](#modern-hikvision-camera-configuration)
-  * [Legacy Hikvision Camera Configuration](#legacy-hikvision-camera-configuration)
-* [Dahua Security Camera Email Configuration](#dahua-security-camera-email-configuration)
-  * [Dahua Camera Email Setup](#dahua-camera-email-setup)
-  * [Dahua NVR Email Configuration](#dahua-nvr-email-configuration)
-* [Xerox Multifunction Device Email Configuration](#xerox-multifunction-device-email-configuration)
-  * [Xerox MFD Email Setup](#xerox-mfd-email-setup)
-* [Ricoh Multifunction Device Email Configuration](#ricoh-multifunction-device-email-configuration)
-  * [Modern Ricoh MFD Configuration](#modern-ricoh-mfd-configuration)
-  * [Legacy Ricoh Device Configuration](#legacy-ricoh-device-configuration)
-* [Troubleshooting Common Configuration Issues](#troubleshooting-common-configuration-issues)
-  * [Authentication and Credential Issues](#authentication-and-credential-issues)
-  * [TLS and Encryption Problems](#tls-and-encryption-problems)
-  * [Network Connectivity Issues](#network-connectivity-issues)
-  * [Device-Specific Configuration Challenges](#device-specific-configuration-challenges)
-* [Security Considerations and Best Practices](#security-considerations-and-best-practices)
-  * [Credential Management](#credential-management)
-  * [Network Security](#network-security)
-  * [Information Disclosure](#information-disclosure)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Conclusion](#conclusion)
+## Inhoudsopgave {#table-of-contents}
 
-## The TLS Problem Explained {#the-tls-problem-explained}
+* [Het TLS-probleem uitgelegd](#the-tls-problem-explained)
+* [Overzicht Forward Email SMTP-configuratie](#forward-email-smtp-configuration-overview)
+* [Uitgebreide compatibiliteitsmatrix voor apparaten](#comprehensive-device-compatibility-matrix)
+* [HP Printer E-mailconfiguratie](#hp-printer-email-configuration)
+  * [Moderne HP-printers (2020 en later)](#modern-hp-printers-2020-and-later)
+  * [Legacy HP-printers (modellen van vóór 2020)](#legacy-hp-printers-pre-2020-models)
+* [Canon Printer E-mailconfiguratie](#canon-printer-email-configuration)
+  * [Huidige Canon-printers](#current-canon-printers)
+  * [Legacy Canon-printers](#legacy-canon-printers)
+* [Brother Printer E-mailconfiguratie](#brother-printer-email-configuration)
+  * [Brother MFC-serie configuratie](#brother-mfc-series-configuration)
+  * [Probleemoplossing Brother e-mailproblemen](#troubleshooting-brother-email-issues)
+* [Foscam IP Camera E-mailconfiguratie](#foscam-ip-camera-email-configuration)
+  * [Begrip van Foscam e-mailbeperkingen](#understanding-foscam-email-limitations)
+  * [Foscam e-mailconfiguratiestappen](#foscam-email-configuration-steps)
+  * [Geavanceerde Foscam-configuratie](#advanced-foscam-configuration)
+* [Hikvision Beveiligingscamera E-mailconfiguratie](#hikvision-security-camera-email-configuration)
+  * [Moderne Hikvision-camera configuratie](#modern-hikvision-camera-configuration)
+  * [Legacy Hikvision-camera configuratie](#legacy-hikvision-camera-configuration)
+* [Dahua Beveiligingscamera E-mailconfiguratie](#dahua-security-camera-email-configuration)
+  * [Dahua camera e-mailinstellingen](#dahua-camera-email-setup)
+  * [Dahua NVR e-mailconfiguratie](#dahua-nvr-email-configuration)
+* [Xerox Multifunctioneel apparaat E-mailconfiguratie](#xerox-multifunction-device-email-configuration)
+  * [Xerox MFD e-mailinstellingen](#xerox-mfd-email-setup)
+* [Ricoh Multifunctioneel apparaat E-mailconfiguratie](#ricoh-multifunction-device-email-configuration)
+  * [Moderne Ricoh MFD-configuratie](#modern-ricoh-mfd-configuration)
+  * [Legacy Ricoh-apparaat configuratie](#legacy-ricoh-device-configuration)
+* [Probleemoplossing veelvoorkomende configuratieproblemen](#troubleshooting-common-configuration-issues)
+  * [Authenticatie- en inloggegevensproblemen](#authentication-and-credential-issues)
+  * [TLS- en encryptieproblemen](#tls-and-encryption-problems)
+  * [Netwerkconnectiviteitsproblemen](#network-connectivity-issues)
+  * [Apparaatspecifieke configuratie-uitdagingen](#device-specific-configuration-challenges)
+* [Beveiligingsoverwegingen en best practices](#security-considerations-and-best-practices)
+  * [Beheer van inloggegevens](#credential-management)
+  * [Netwerkbeveiliging](#network-security)
+  * [Informatieonthulling](#information-disclosure)
+  * [Monitoring en onderhoud](#monitoring-and-maintenance)
+* [Conclusie](#conclusion)
+## Het TLS-probleem uitgelegd {#the-tls-problem-explained}
 
-Here's what happened: email security got stricter, but your devices didn't get the memo. Modern equipment supports TLS 1.2+, but older devices are stuck with TLS 1.0. Most email providers dropped support for TLS 1.0, so your devices can't connect.
+Dit is wat er gebeurde: e-mailbeveiliging werd strenger, maar je apparaten kregen het bericht niet. Moderne apparatuur ondersteunt TLS 1.2+, maar oudere apparaten zitten vast aan TLS 1.0. De meeste e-mailproviders hebben de ondersteuning voor TLS 1.0 stopgezet, dus je apparaten kunnen geen verbinding maken.
 
-This affects real operations - security cameras can't send alerts during incidents, printers can't warn about maintenance issues, and fax confirmations get lost. Forward Email's [SMTP server configuration](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) provides multiple ports to keep everything working.
-
-> \[!TIP]
-> Check your device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
-
-## Forward Email SMTP Configuration Overview {#forward-email-smtp-configuration-overview}
-
-Forward Email provides a comprehensive SMTP service designed specifically to address the unique challenges of device email configuration. Our infrastructure supports multiple connection types and security levels, ensuring compatibility with both cutting-edge equipment and legacy devices that remain in active use.
-
-For modern devices with TLS 1.2+ support, use our primary SMTP server at smtp.forwardemail.net with port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections. These ports provide enterprise-grade security and are compatible with all current device firmware versions.
-
-Legacy devices that only support TLS 1.0 can use our specialized compatibility ports. Port 2455 provides SSL/TLS connections with TLS 1.0 support, while port 2555 offers STARTTLS with legacy protocol compatibility. These ports maintain the highest possible security while ensuring continued functionality for older equipment.
-
-Authentication is required for all connections using your Forward Email alias as the username and a generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). This approach provides robust security while maintaining broad compatibility across different device authentication systems.
-
-> \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for device configuration.
-
-## Comprehensive Device Compatibility Matrix {#comprehensive-device-compatibility-matrix}
-
-Understanding which devices require legacy support versus modern configuration helps streamline the setup process and ensures reliable email delivery across your entire device ecosystem.
-
-| Device Category | Modern TLS Support | Legacy TLS Required | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| -------------------------- | ------------------ | ------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| HP Printers (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Certificate validation](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [HP LaserJet Pro MFP Setup Guide](https://support.hp.com/us-en/document/ish_6185297-6063300-16) |
-| HP Printers (Pre-2020) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Firmware limitations](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/) | [Scan to Email Feature Guide](https://support.hp.com/us-en/document/ish_6518575-6518545-16) |
-| Canon Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Authentication setup](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358) | [Canon SMTP Authentication Guide](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html) |
-| Canon Printers (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate issues](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443) | [Advanced E-mail Settings Guide](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html) |
-| Brother Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Port configuration](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/) | [Brother SMTP Setup Guide](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512) |
-| Epson Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Web interface access | [Epson Email Notification Setup](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm) |
-| Foscam IP Cameras | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate validation](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/) | [Foscam Email Setup FAQ](https://www.foscam.com/faqs/view.html?id=63) |
-| Hikvision (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL requirements | [Hikvision Email Setup Guide](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Hikvision (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | Firmware updates | [Legacy Hikvision Configuration](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Dahua Cameras (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Authentication | [Dahua Email Setup Wiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) |
-| Xerox MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [TLS configuration](https://www.support.xerox.com/en-us/article/KB0032169) | [Xerox TLS Configuration Guide](https://www.support.xerox.com/en-us/article/KB0032169) |
-| Ricoh MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL setup | [Ricoh Email Configuration](https://www.ricoh.com/info/2025/0526_1) |
-| Ricoh MFDs (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Basic auth issues](https://www.ricoh.com/info/2025/0526_1) | [Legacy Ricoh Setup](https://www.ricoh.com/info/2025/0526_1) |
-
-This matrix provides a quick reference for determining the appropriate configuration approach for your specific devices. When in doubt, start with modern ports and fall back to legacy ports if connection issues occur.
-
-> \[!NOTE]
-> Device age is not always a reliable indicator of TLS support. Some manufacturers backported TLS 1.2 support to older models through firmware updates, while others discontinued support for legacy products.
-
-## HP Printer Email Configuration {#hp-printer-email-configuration}
-
-HP printers represent one of the largest installed bases of network-connected printing devices, with models ranging from current LaserJet Pro series with full TLS 1.3 support to legacy models that only support TLS 1.0. The configuration process varies significantly between modern and legacy devices, requiring different approaches for optimal compatibility.
-
-### Modern HP Printers (2020 and Later) {#modern-hp-printers-2020-and-later}
-
-Modern HP printers include the LaserJet Pro MFP M404 series, Color LaserJet Pro MFP M479 series, and newer models that support current TLS standards. These devices provide comprehensive email notification capabilities through HP's Embedded Web Server (EWS) interface.
-
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. You can find the IP address by printing a network configuration page from the printer's control panel.
-
-2. **Navigate to the Network tab** and select "Email Server" or "SMTP Settings" depending on your printer model. Some HP printers organize these settings under "System" > "Email Alerts."
-
-3. **Configure the SMTP server settings** by entering `smtp.forwardemail.net` as the server address. Select "SSL/TLS" as the encryption method and enter `465` as the port number for the most reliable connection.
-
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains), not your account login password.
-
-5. **Configure sender information** by entering your Forward Email alias as the "From" address and a descriptive name like "HP Printer - Office" to help identify the source of notifications.
-
-6. **Set up recipient addresses** by adding up to five email addresses that should receive printer notifications. HP printers allow different notification types to be sent to different recipients.
-
-7. **Test the configuration** using HP's built-in email test function. The printer will send a test message to verify that all settings are correct and communication with Forward Email's servers is working properly.
+Dit beïnvloedt echte operaties - beveiligingscamera's kunnen tijdens incidenten geen waarschuwingen versturen, printers kunnen niet waarschuwen voor onderhoudsproblemen en faxbevestigingen raken verloren. De [SMTP-serverconfiguratie](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) van Forward Email biedt meerdere poorten om alles werkend te houden.
 
 > \[!TIP]
-> HP printers often cache DNS lookups. If you encounter connection issues, restart the printer after configuration to clear any cached DNS entries.
+> Controleer de firmwareversie en TLS-ondersteuning van je apparaat vóór de configuratie. De meeste apparaten die na 2020 zijn vervaardigd ondersteunen moderne TLS-protocollen, terwijl oudere apparaten meestal legacy-compatibiliteitspoorten nodig hebben.
 
-### Legacy HP Printers (Pre-2020 Models) {#legacy-hp-printers-pre-2020-models}
 
-Older HP printers, including the LaserJet Pro MFP M277 and similar models, often only support TLS 1.0 and require special configuration to work with modern email providers. These devices frequently display "TLS certificate verification failed" errors when attempting to connect to standard SMTP ports.
+## Overzicht Forward Email SMTP-configuratie {#forward-email-smtp-configuration-overview}
 
-1. **Access the printer's Embedded Web Server** by entering the printer's IP address in a web browser. Legacy HP printers may require Internet Explorer or compatibility mode for full functionality.
+Forward Email biedt een uitgebreide SMTP-service die specifiek is ontworpen om de unieke uitdagingen van apparaat-e-mailconfiguratie aan te pakken. Onze infrastructuur ondersteunt meerdere verbindingssoorten en beveiligingsniveaus, waardoor compatibiliteit wordt gegarandeerd met zowel geavanceerde apparatuur als legacy-apparaten die nog in gebruik zijn.
 
-2. **Navigate to the Network or System settings** and locate the "Email" or "SMTP" configuration section. The exact location varies by model and firmware version.
+Voor moderne apparaten met TLS 1.2+ ondersteuning, gebruik onze primaire SMTP-server op smtp.forwardemail.net met poort 465 voor SSL/TLS-verbindingen (aanbevolen) of poort 587 voor STARTTLS-verbindingen. Deze poorten bieden beveiliging op bedrijfsniveau en zijn compatibel met alle huidige firmwareversies van apparaten.
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address. This is crucial - use port 2455 for SSL/TLS connections or port 2555 for STARTTLS connections instead of standard ports.
+Legacy-apparaten die alleen TLS 1.0 ondersteunen kunnen onze gespecialiseerde compatibiliteitspoorten gebruiken. Poort 2455 biedt SSL/TLS-verbindingen met TLS 1.0-ondersteuning, terwijl poort 2555 STARTTLS met legacy-protocolcompatibiliteit biedt. Deze poorten behouden de hoogst mogelijke beveiliging terwijl ze de functionaliteit voor oudere apparatuur waarborgen.
 
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use your generated Forward Email password for authentication.
-
-5. **Configure encryption settings** carefully. Select "SSL/TLS" if using port 2455, or "STARTTLS" if using port 2555. Some legacy HP printers may label these options differently.
-
-6. **Set sender and recipient information** using your Forward Email alias as the sender address and configuring appropriate recipient addresses for notifications.
-
-7. **Test the configuration** using the printer's test function. If the test fails with certificate errors, verify that you're using the correct legacy ports (2455 or 2555) rather than standard SMTP ports.
+Authenticatie is vereist voor alle verbindingen met je Forward Email-alias als gebruikersnaam en een gegenereerd wachtwoord van [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains). Deze aanpak biedt robuuste beveiliging en behoudt brede compatibiliteit met verschillende apparaat-authenticatiesystemen.
 
 > \[!CAUTION]
-> Legacy HP printers may not receive firmware updates that address TLS compatibility issues. If configuration continues to fail, consider using a local SMTP relay server as an intermediate solution.
+> Gebruik nooit je accountwachtwoord voor SMTP-authenticatie. Gebruik altijd het gegenereerde wachtwoord van [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains) voor apparaatconfiguratie.
 
-## Canon Printer Email Configuration {#canon-printer-email-configuration}
 
-Canon printers offer robust email notification capabilities across their imageRUNNER, PIXMA, and MAXIFY product lines. Modern Canon devices support comprehensive TLS configurations, while legacy models may require specific compatibility settings to function with current email providers.
+## Uitgebreide compatibiliteitsmatrix voor apparaten {#comprehensive-device-compatibility-matrix}
 
-### Current Canon Printers {#current-canon-printers}
+Begrijpen welke apparaten legacy-ondersteuning nodig hebben versus moderne configuratie helpt het installatieproces te stroomlijnen en zorgt voor betrouwbare e-mailbezorging in je gehele apparaat-ecosysteem.
 
-Modern Canon printers provide extensive email notification features through the Remote UI web interface, supporting everything from basic status alerts to detailed device management notifications.
-
-1. **Access the Remote UI** by entering the printer's IP address in a web browser. Canon printers typically use a web-based interface for all network configuration tasks.
-
-2. **Navigate to Settings/Registration** and select "Device Management" from the menu. Look for "E-Mail Notification Settings" or similar options depending on your printer model.
-
-3. **Configure the SMTP server** by clicking "Add Destination" and entering smtp.forwardemail.net as the server address. Select "SSL" or "TLS" as the encryption method.
-
-4. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Canon printers clearly distinguish between these encryption methods in their interface.
-
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
-
-6. **Set up sender information** by entering your Forward Email alias as the sender address and configuring a descriptive display name for easy identification of notifications.
-
-7. **Configure notification types** by selecting which events should trigger email alerts. Canon printers support granular control over notification types, including error conditions, maintenance alerts, and security events.
-
-8. **Test the email configuration** using Canon's built-in test function. The printer will send a test notification to verify proper configuration and connectivity.
+| Apparaatcategorie          | Moderne TLS-ondersteuning | Legacy TLS vereist  | Aanbevolen poorten | Veelvoorkomende problemen                                                                                                                           | Installatiehandleiding/Screenshots                                                                                                               |
+| -------------------------- | ------------------------- | ------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| HP Printers (2020+)        | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | [Certificaatvalidatie](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [HP LaserJet Pro MFP Installatiehandleiding](https://support.hp.com/us-en/document/ish_6185297-6063300-16)                                        |
+| HP Printers (Pre-2020)     | ❌                         | ✅ Alleen TLS 1.0   | `2455`, `2555`     | [Firmwarebeperkingen](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/)                                         | [Scan to Email Functiehandleiding](https://support.hp.com/us-en/document/ish_6518575-6518545-16)                                                  |
+| Canon Printers (Huidig)    | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | [Authenticatie-instelling](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358)   | [Canon SMTP Authenticatiehandleiding](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html)                                 |
+| Canon Printers (Legacy)    | ❌                         | ✅ Alleen TLS 1.0   | `2455`, `2555`     | [Certificaatproblemen](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443)        | [Geavanceerde e-mailinstellingen handleiding](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html)                              |
+| Brother Printers (Huidig)  | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | [Poortconfiguratie](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/)                        | [Brother SMTP Installatiehandleiding](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512)          |
+| Epson Printers (Huidig)    | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | Toegang tot webinterface                                                                                                                            | [Epson E-mailmeldingsinstelling](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm)          |
+| Foscam IP-camera's         | ❌                         | ✅ Alleen TLS 1.0   | `2455`, `2555`     | [Certificaatvalidatie](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/)                          | [Foscam E-mailinstellingen FAQ](https://www.foscam.com/faqs/view.html?id=63)                                                                    |
+| Hikvision (2020+)          | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | SSL-vereisten                                                                                                                                       | [Hikvision E-mailinstellingshandleiding](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
+| Hikvision (Legacy)         | ❌                         | ✅ Alleen TLS 1.0   | `2455`, `2555`     | Firmware-updates                                                                                                                                    | [Legacy Hikvision Configuratie](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf)   |
+| Dahua Camera's (Huidig)    | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | Authenticatie                                                                                                                                       | [Dahua E-mailinstellingswiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail)                                                      |
+| Xerox MFD's (Huidig)       | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | [TLS-configuratie](https://www.support.xerox.com/en-us/article/KB0032169)                                                                          | [Xerox TLS-configuratiehandleiding](https://www.support.xerox.com/en-us/article/KB0032169)                                                       |
+| Ricoh MFD's (Huidig)       | ✅ TLS 1.2+                | ❌                  | `465`, `587`       | SSL-instelling                                                                                                                                      | [Ricoh E-mailconfiguratie](https://www.ricoh.com/info/2025/0526_1)                                                                              |
+| Ricoh MFD's (Legacy)       | ❌                         | ✅ Alleen TLS 1.0   | `2455`, `2555`     | [Problemen met basisauthenticatie](https://www.ricoh.com/info/2025/0526_1)                                                                         | [Legacy Ricoh Installatie](https://www.ricoh.com/info/2025/0526_1)                                                                               |
+Deze matrix biedt een snelle referentie om de juiste configuratie-aanpak voor uw specifieke apparaten te bepalen. Bij twijfel begint u met moderne poorten en schakelt u terug naar legacy-poorten als er verbindingsproblemen optreden.
 
 > \[!NOTE]
-> Canon printers often provide detailed error messages that can help troubleshoot configuration issues. Pay attention to specific error codes for faster problem resolution.
+> De leeftijd van het apparaat is niet altijd een betrouwbare indicator voor TLS-ondersteuning. Sommige fabrikanten hebben TLS 1.2-ondersteuning teruggeporteerd naar oudere modellen via firmware-updates, terwijl anderen de ondersteuning voor legacy-producten hebben stopgezet.
 
-### Legacy Canon Printers {#legacy-canon-printers}
 
-Older Canon printers may have limited TLS support and require careful configuration to work with modern email providers. These devices often need legacy-compatible SMTP settings to maintain email notification functionality.
+## HP Printer E-mailconfiguratie {#hp-printer-email-configuration}
 
-1. **Access the printer's web interface** using the device's IP address. Legacy Canon printers may require specific browser compatibility settings for full functionality.
+HP-printers vormen een van de grootste geïnstalleerde bases van netwerkverbonden afdrukapparaten, met modellen variërend van de huidige LaserJet Pro-serie met volledige TLS 1.3-ondersteuning tot legacy-modellen die alleen TLS 1.0 ondersteunen. Het configuratieproces verschilt aanzienlijk tussen moderne en legacy-apparaten, wat verschillende benaderingen vereist voor optimale compatibiliteit.
 
-2. **Navigate to the email configuration section** through the device management or network settings menu. The exact path varies by model and firmware version.
+### Moderne HP-printers (2020 en later) {#modern-hp-printers-2020-and-later}
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections or port 2555 for STARTTLS connections.
+Moderne HP-printers omvatten de LaserJet Pro MFP M404-serie, Color LaserJet Pro MFP M479-serie en nieuwere modellen die de huidige TLS-standaarden ondersteunen. Deze apparaten bieden uitgebreide e-mailmeldingsmogelijkheden via de Embedded Web Server (EWS)-interface van HP.
 
-4. **Set up authentication carefully** by enabling SMTP authentication and using your Forward Email alias and generated password. Legacy Canon printers may have specific authentication requirements.
+1. **Toegang tot de webinterface van de printer** door het IP-adres van de printer in een webbrowser in te voeren. U kunt het IP-adres vinden door een netwerkconfiguratiepagina af te drukken vanaf het bedieningspaneel van de printer.
 
-5. **Configure encryption settings** by selecting the appropriate TLS option for your chosen port. Ensure the encryption method matches the port configuration (SSL for 2455, STARTTLS for 2555).
+2. **Navigeer naar het tabblad Netwerk** en selecteer "E-mailserver" of "SMTP-instellingen", afhankelijk van uw printermodel. Sommige HP-printers organiseren deze instellingen onder "Systeem" > "E-mailmeldingen."
 
-6. **Test the configuration** and monitor for certificate validation errors. If issues persist, verify that you're using Forward Email's legacy-compatible ports rather than standard SMTP ports.
+3. **Configureer de SMTP-serverinstellingen** door `smtp.forwardemail.net` in te voeren als serveradres. Selecteer "SSL/TLS" als versleutelingsmethode en voer `465` in als poortnummer voor de meest betrouwbare verbinding.
+
+4. **Stel authenticatie in** door SMTP-authenticatie in te schakelen en uw Forward Email-alias in te voeren als gebruikersnaam. Gebruik het wachtwoord dat is gegenereerd via [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains), niet uw account-inlogwachtwoord.
+
+5. **Configureer afzenderinformatie** door uw Forward Email-alias in te voeren als het "Van"-adres en een beschrijvende naam zoals "HP Printer - Kantoor" om de bron van meldingen te helpen identificeren.
+
+6. **Stel ontvangeradressen in** door maximaal vijf e-mailadressen toe te voegen die printermeldingen moeten ontvangen. HP-printers staan toe dat verschillende meldingssoorten naar verschillende ontvangers worden gestuurd.
+
+7. **Test de configuratie** met de ingebouwde e-mailtestfunctie van HP. De printer stuurt een testbericht om te verifiëren dat alle instellingen correct zijn en de communicatie met de servers van Forward Email goed werkt.
+
+> \[!TIP]
+> HP-printers cachen vaak DNS-opzoekingen. Als u verbindingsproblemen ondervindt, start dan de printer opnieuw op na de configuratie om eventuele gecachte DNS-vermeldingen te wissen.
+
+### Legacy HP-printers (modellen vóór 2020) {#legacy-hp-printers-pre-2020-models}
+
+Oudere HP-printers, waaronder de LaserJet Pro MFP M277 en vergelijkbare modellen, ondersteunen vaak alleen TLS 1.0 en vereisen speciale configuratie om te werken met moderne e-mailproviders. Deze apparaten tonen vaak "TLS-certificaatverificatie mislukt" fouten bij pogingen om verbinding te maken met standaard SMTP-poorten.
+
+1. **Toegang tot de Embedded Web Server van de printer** door het IP-adres van de printer in een webbrowser in te voeren. Legacy HP-printers kunnen Internet Explorer of compatibiliteitsmodus vereisen voor volledige functionaliteit.
+
+2. **Navigeer naar de Netwerk- of Systeeminstellingen** en zoek de sectie "E-mail" of "SMTP"-configuratie. De exacte locatie varieert per model en firmwareversie.
+
+3. **Configureer de legacy SMTP-instellingen van Forward Email** door smtp.forwardemail.net in te voeren als serveradres. Dit is cruciaal - gebruik poort 2455 voor SSL/TLS-verbindingen of poort 2555 voor STARTTLS-verbindingen in plaats van standaardpoorten.
+
+4. **Stel authenticatie in** door SMTP-authenticatie in te schakelen en uw Forward Email-alias in te voeren als gebruikersnaam. Gebruik uw gegenereerde Forward Email-wachtwoord voor authenticatie.
+
+5. **Configureer de versleutelingsinstellingen** zorgvuldig. Selecteer "SSL/TLS" als u poort 2455 gebruikt, of "STARTTLS" als u poort 2555 gebruikt. Sommige legacy HP-printers kunnen deze opties anders benoemen.
+6. **Stel afzender- en ontvangerinformatie in** met je Forward Email-alias als afzenderadres en configureer de juiste ontvangeradressen voor meldingen.
+
+7. **Test de configuratie** met de testfunctie van de printer. Als de test mislukt met certificaatfouten, controleer dan of je de juiste legacy-poorten (2455 of 2555) gebruikt in plaats van de standaard SMTP-poorten.
+
+> \[!CAUTION]
+> Legacy HP-printers ontvangen mogelijk geen firmware-updates die TLS-compatibiliteitsproblemen oplossen. Als de configuratie blijft mislukken, overweeg dan het gebruik van een lokale SMTP-relayserver als tussentijdse oplossing.
+
+
+## Canon Printer Email Configuratie {#canon-printer-email-configuration}
+
+Canon-printers bieden robuuste e-mailmeldingsmogelijkheden binnen hun imageRUNNER-, PIXMA- en MAXIFY-productlijnen. Moderne Canon-apparaten ondersteunen uitgebreide TLS-configuraties, terwijl legacy-modellen mogelijk specifieke compatibiliteitsinstellingen nodig hebben om te functioneren met huidige e-mailproviders.
+
+### Huidige Canon-printers {#current-canon-printers}
+
+Moderne Canon-printers bieden uitgebreide e-mailmeldingsfuncties via de Remote UI-webinterface, die alles ondersteunt van basisstatusmeldingen tot gedetailleerde apparaatbeheerwaarschuwingen.
+
+1. **Open de Remote UI** door het IP-adres van de printer in een webbrowser in te voeren. Canon-printers gebruiken doorgaans een webgebaseerde interface voor alle netwerkconfiguratietaken.
+
+2. **Ga naar Instellingen/Registratie** en selecteer "Apparaatbeheer" in het menu. Zoek naar "E-mailmeldingsinstellingen" of vergelijkbare opties, afhankelijk van je printermodel.
+
+3. **Configureer de SMTP-server** door op "Bestemming toevoegen" te klikken en smtp.forwardemail.net in te voeren als serveradres. Selecteer "SSL" of "TLS" als versleutelingsmethode.
+
+4. **Stel het poortnummer in** op 465 voor SSL/TLS-verbindingen (aanbevolen) of 587 voor STARTTLS-verbindingen. Canon-printers maken duidelijk onderscheid tussen deze versleutelingsmethoden in hun interface.
+
+5. **Configureer authenticatie** door SMTP-authenticatie in te schakelen en je Forward Email-alias als gebruikersnaam in te voeren. Gebruik het wachtwoord dat is gegenereerd via [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains).
+
+6. **Stel afzenderinformatie in** door je Forward Email-alias als afzenderadres in te voeren en een beschrijvende weergavenaam te configureren voor eenvoudige herkenning van meldingen.
+
+7. **Configureer meldingssoorten** door te selecteren welke gebeurtenissen e-mailwaarschuwingen moeten activeren. Canon-printers bieden gedetailleerde controle over meldingssoorten, inclusief foutcondities, onderhoudswaarschuwingen en beveiligingsgebeurtenissen.
+
+8. **Test de e-mailconfiguratie** met de ingebouwde testfunctie van Canon. De printer stuurt een testmelding om de juiste configuratie en connectiviteit te verifiëren.
+
+> \[!NOTE]
+> Canon-printers geven vaak gedetailleerde foutmeldingen die kunnen helpen bij het oplossen van configuratieproblemen. Let op specifieke foutcodes voor snellere probleemoplossing.
+
+### Legacy Canon-printers {#legacy-canon-printers}
+
+Oudere Canon-printers hebben mogelijk beperkte TLS-ondersteuning en vereisen zorgvuldige configuratie om te werken met moderne e-mailproviders. Deze apparaten hebben vaak legacy-compatibele SMTP-instellingen nodig om e-mailmeldingsfunctionaliteit te behouden.
+
+1. **Open de webinterface van de printer** via het IP-adres van het apparaat. Legacy Canon-printers kunnen specifieke browsercompatibiliteitsinstellingen vereisen voor volledige functionaliteit.
+
+2. **Ga naar het gedeelte e-mailconfiguratie** via het menu apparaatbeheer of netwerkinstellingen. Het exacte pad varieert per model en firmwareversie.
+
+3. **Configureer de legacy SMTP-instellingen van Forward Email** door smtp.forwardemail.net in te voeren als serveradres en poort 2455 te gebruiken voor SSL-verbindingen of poort 2555 voor STARTTLS-verbindingen.
+
+4. **Stel authenticatie zorgvuldig in** door SMTP-authenticatie in te schakelen en je Forward Email-alias en gegenereerd wachtwoord te gebruiken. Legacy Canon-printers kunnen specifieke authenticatievereisten hebben.
+
+5. **Configureer de versleutelingsinstellingen** door de juiste TLS-optie te selecteren voor de gekozen poort. Zorg ervoor dat de versleutelingsmethode overeenkomt met de poortconfiguratie (SSL voor 2455, STARTTLS voor 2555).
+6. **Test de configuratie** en monitor op certificaatvalidatiefouten. Als problemen aanhouden, controleer dan of je de legacy-compatibele poorten van Forward Email gebruikt in plaats van de standaard SMTP-poorten.
 
 > \[!WARNING]
-> Some legacy Canon printers may not support server certificate validation. While this reduces security, it may be necessary for continued email functionality on older devices.
+> Sommige legacy Canon-printers ondersteunen mogelijk geen servercertificaatvalidatie. Hoewel dit de beveiliging vermindert, kan het noodzakelijk zijn voor de voortzetting van e-mailfunctionaliteit op oudere apparaten.
 
-## Brother Printer Email Configuration {#brother-printer-email-configuration}
 
-Brother printers, particularly the MFC and DCP series, provide comprehensive scan-to-email and notification capabilities. However, many users report configuration challenges when setting up email functionality, especially with Office 365 and other modern email providers that have deprecated legacy authentication methods.
+## Brother Printer E-mailconfiguratie {#brother-printer-email-configuration}
 
-### Brother MFC Series Configuration {#brother-mfc-series-configuration}
+Brother-printers, met name de MFC- en DCP-serie, bieden uitgebreide scan-naar-e-mail en notificatiefuncties. Veel gebruikers melden echter configuratieproblemen bij het instellen van e-mailfunctionaliteit, vooral met Office 365 en andere moderne e-mailproviders die legacy-authenticatiemethoden hebben afgeschaft.
 
-Brother multifunction printers offer extensive email capabilities, but configuration can be complex due to the variety of authentication and encryption options available.
+### Brother MFC Serie Configuratie {#brother-mfc-series-configuration}
 
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. Brother printers provide a comprehensive web-based configuration system.
+Brother multifunctionele printers bieden uitgebreide e-mailmogelijkheden, maar de configuratie kan complex zijn vanwege de verscheidenheid aan beschikbare authenticatie- en encryptieopties.
 
-2. **Navigate to the Network settings** and select "Email/IFAX" or "Scan to Email" depending on your printer model. Some Brother printers organize these settings under "Administrator Settings."
+1. **Toegang tot de webinterface van de printer** door het IP-adres van de printer in een webbrowser in te voeren. Brother-printers bieden een uitgebreide webgebaseerde configuratiesysteem.
 
-3. **Configure the SMTP server settings** by entering smtp.forwardemail.net as the server address. Brother printers support both SSL/TLS and STARTTLS encryption methods.
+2. **Navigeer naar de Netwerkinstellingen** en selecteer "Email/IFAX" of "Scan to Email" afhankelijk van je printermodel. Sommige Brother-printers organiseren deze instellingen onder "Administrator Settings."
 
-4. **Set the appropriate port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption. Brother printers clearly label these options in their interface.
+3. **Configureer de SMTP-serverinstellingen** door smtp.forwardemail.net in te voeren als serveradres. Brother-printers ondersteunen zowel SSL/TLS als STARTTLS encryptiemethoden.
 
-5. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+4. **Stel de juiste poort en encryptie in** door poort 465 met SSL/TLS-encryptie (aanbevolen) of poort 587 met STARTTLS-encryptie te selecteren. Brother-printers labelen deze opties duidelijk in hun interface.
 
-6. **Set up sender information** by configuring your Forward Email alias as the sender address and adding a descriptive name to identify the printer in email notifications.
+5. **Configureer SMTP-authenticatie** door authenticatie in te schakelen en je Forward Email-alias als gebruikersnaam in te voeren. Gebruik het wachtwoord dat is gegenereerd via [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-7. **Configure scan-to-email settings** by setting up address book entries and default scan settings. Brother printers allow extensive customization of scan parameters and recipient management.
+6. **Stel afzenderinformatie in** door je Forward Email-alias als afzenderadres te configureren en een beschrijvende naam toe te voegen om de printer te identificeren in e-mailmeldingen.
 
-8. **Test both email notifications and scan-to-email functionality** to ensure complete configuration. Brother printers provide separate test functions for different email features.
+7. **Configureer scan-naar-e-mail instellingen** door adresboekvermeldingen en standaard scaninstellingen in te stellen. Brother-printers bieden uitgebreide aanpassingsmogelijkheden voor scanparameters en ontvangerbeheer.
+
+8. **Test zowel e-mailmeldingen als scan-naar-e-mail functionaliteit** om volledige configuratie te garanderen. Brother-printers bieden aparte testfuncties voor verschillende e-mailfeatures.
 
 > \[!TIP]
-> Brother printers often require firmware updates to resolve email configuration issues. Check for available updates before troubleshooting connection problems.
+> Brother-printers vereisen vaak firmware-updates om e-mailconfiguratieproblemen op te lossen. Controleer op beschikbare updates voordat je verbindingsproblemen gaat oplossen.
 
-### Troubleshooting Brother Email Issues {#troubleshooting-brother-email-issues}
+### Problemen met Brother E-mail oplossen {#troubleshooting-brother-email-issues}
 
-Brother printers frequently encounter specific configuration challenges that can be resolved with targeted troubleshooting approaches.
+Brother-printers ondervinden vaak specifieke configuratieproblemen die met gerichte troubleshooting kunnen worden opgelost.
 
-If your Brother printer displays "Authentication Failed" errors when testing email configuration, verify that you're using your Forward Email alias (not your account email) as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Brother printers are particularly sensitive to authentication credential formatting.
+Als je Brother-printer "Authentication Failed" fouten toont bij het testen van de e-mailconfiguratie, controleer dan of je je Forward Email-alias (niet je account-e-mail) als gebruikersnaam gebruikt en het gegenereerde wachtwoord van [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Brother-printers zijn bijzonder gevoelig voor de opmaak van authenticatiegegevens.
 
-For printers that won't accept scan-to-email configuration settings, try configuring the settings through the web interface rather than the printer's control panel. The web interface often provides more detailed error messages and configuration options.
+Voor printers die scan-naar-e-mail configuratie-instellingen niet accepteren, probeer de instellingen via de webinterface te configureren in plaats van via het bedieningspaneel van de printer. De webinterface geeft vaak meer gedetailleerde foutmeldingen en configuratieopties.
 
-When encountering SSL/TLS connection errors, verify that you're using the correct port and encryption combination. Brother printers require exact matches between port numbers and encryption methods - port 465 must use SSL/TLS (recommended), while port 587 must use STARTTLS.
+Bij SSL/TLS-verbindingfouten, controleer of je de juiste combinatie van poort en encryptie gebruikt. Brother-printers vereisen exacte overeenkomsten tussen poortnummers en encryptiemethoden - poort 465 moet SSL/TLS gebruiken (aanbevolen), terwijl poort 587 STARTTLS moet gebruiken.
 
 > \[!CAUTION]
-> Some Brother printer models have known issues with specific SMTP server configurations. If standard configuration fails, consult Brother's support documentation for model-specific workarounds.
+> Sommige Brother-printermodellen hebben bekende problemen met specifieke SMTP-serverconfiguraties. Als standaardconfiguratie faalt, raadpleeg dan de ondersteuningsdocumentatie van Brother voor model-specifieke oplossingen.
+## Foscam IP Camera E-mailconfiguratie {#foscam-ip-camera-email-configuration}
 
-## Foscam IP Camera Email Configuration {#foscam-ip-camera-email-configuration}
+Foscam IP-camera's vormen een van de meest uitdagende apparaatcategorieën voor e-mailconfiguratie vanwege hun veelvuldige gebruik van verouderde TLS-protocollen en beperkte beschikbaarheid van firmware-updates. De meeste Foscam-camera's, inclusief populaire modellen zoals de R2-serie, ondersteunen alleen TLS 1.0 en kunnen niet worden bijgewerkt om moderne encryptiestandaarden te ondersteunen.
 
-Foscam IP cameras represent one of the most challenging device categories for email configuration due to their widespread use of legacy TLS protocols and limited firmware update availability. Most Foscam cameras, including popular models like the R2 series, only support TLS 1.0 and cannot be updated to support modern encryption standards.
+### Begrip van Foscam E-mailbeperkingen {#understanding-foscam-email-limitations}
 
-### Understanding Foscam Email Limitations {#understanding-foscam-email-limitations}
+Foscam-camera's brengen unieke uitdagingen met zich mee die specifieke configuratiebenaderingen vereisen. De meest voorkomende foutmelding is "TLS certificate verification failed: unable to get local issuer certificate," wat aangeeft dat de camera moderne SSL-certificaten die door de meeste e-mailproviders worden gebruikt niet kan valideren.
 
-Foscam cameras present unique challenges that require specific configuration approaches. The most common error message encountered is "TLS certificate verification failed: unable to get local issuer certificate," which indicates that the camera cannot validate modern SSL certificates used by most email providers.
+Dit probleem is het gevolg van verschillende factoren: verouderde certificaatopslag die niet kan worden bijgewerkt, beperkte TLS-protocolondersteuning die maximaal TLS 1.0 toestaat, en firmwarebeperkingen die upgrades van beveiligingsprotocollen verhinderen. Bovendien hebben veel Foscam-modellen het einde van hun levensduur bereikt en ontvangen ze geen firmware-updates meer die deze compatibiliteitsproblemen zouden kunnen oplossen.
 
-This issue stems from several factors: outdated certificate stores that cannot be updated, limited TLS protocol support that maxes out at TLS 1.0, and firmware limitations that prevent security protocol upgrades. Additionally, many Foscam models have reached end-of-life status and no longer receive firmware updates that could address these compatibility issues.
+De legacy SMTP-poorten van Forward Email pakken deze beperkingen specifiek aan door TLS 1.0-compatibiliteit te behouden en tegelijkertijd de hoogst mogelijke beveiliging te bieden voor deze oudere apparaten.
 
-Forward Email's legacy SMTP ports specifically address these limitations by maintaining TLS 1.0 compatibility while providing the highest possible security for these older devices.
+### Stappen voor Foscam E-mailconfiguratie {#foscam-email-configuration-steps}
 
-### Foscam Email Configuration Steps {#foscam-email-configuration-steps}
+Het configureren van e-mailmeldingen op Foscam-camera's vereist zorgvuldige aandacht voor poortselectie en encryptie-instellingen om de TLS-beperkingen van de apparaten te omzeilen.
 
-Configuring email notifications on Foscam cameras requires careful attention to port selection and encryption settings to work around the devices' TLS limitations.
+1. **Toegang tot de webinterface van de camera** door het IP-adres van de camera in een webbrowser in te voeren. Foscam-camera's gebruiken doorgaans poort 88 voor webtoegang (bijv. <http://192.168.1.100:88>).
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Foscam cameras typically use port 88 for web access (e.g., <http://192.168.1.100:88>).
+2. **Navigeer naar het menu Instellingen** en selecteer "Mail Service" of "E-mailinstellingen" afhankelijk van je cameramodel. Sommige Foscam-camera's organiseren deze instellingen onder "Alarm" > "Mail Service."
 
-2. **Navigate to the Settings menu** and select "Mail Service" or "Email Settings" depending on your camera model. Some Foscam cameras organize these settings under "Alarm" > "Mail Service."
+3. **Configureer de SMTP-server** door smtp.forwardemail.net als serveradres in te voeren. Dit is cruciaal - gebruik geen standaard SMTP-servers van e-mailproviders omdat deze TLS 1.0 niet meer ondersteunen.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. This is critical - do not use standard email provider SMTP servers as they no longer support TLS 1.0.
+4. **Stel de poort en encryptie in** door poort 2455 te selecteren voor SSL-encryptie of poort 2555 voor STARTTLS-encryptie. Dit zijn de legacy-compatibele poorten van Forward Email die speciaal zijn ontworpen voor apparaten zoals Foscam-camera's.
 
-4. **Set the port and encryption** by selecting port 2455 for SSL encryption or port 2555 for STARTTLS encryption. These are Forward Email's legacy-compatible ports specifically designed for devices like Foscam cameras.
+5. **Configureer authenticatie** door SMTP-authenticatie in te schakelen en je Forward Email-alias als gebruikersnaam in te voeren. Gebruik het wachtwoord dat is gegenereerd via [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains).
 
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Stel afzender- en ontvangerinformatie in** door je Forward Email-alias als afzenderadres te configureren en ontvangeradressen toe te voegen voor bewegingsdetectie en systeemwaarschuwingen.
 
-6. **Set up sender and recipient information** by configuring your Forward Email alias as the sender address and adding recipient addresses for motion detection and system alerts.
+7. **Configureer notificatietriggers** door de gevoeligheid van bewegingsdetectie, opnameplanningen en andere gebeurtenissen in te stellen die e-mailmeldingen moeten activeren.
 
-7. **Configure notification triggers** by setting up motion detection sensitivity, recording schedules, and other events that should trigger email notifications.
-
-8. **Test the email configuration** using Foscam's built-in test function. If the test succeeds, you should receive a test email confirming proper configuration.
+8. **Test de e-mailconfiguratie** met de ingebouwde testfunctie van Foscam. Als de test slaagt, ontvang je een testmail die bevestigt dat de configuratie correct is.
 
 > \[!IMPORTANT]
-> Foscam cameras require Forward Email's legacy ports (2455 or 2555) due to TLS 1.0 limitations. Standard SMTP ports will not work with these devices.
+> Foscam-camera's vereisen de legacy-poorten van Forward Email (2455 of 2555) vanwege TLS 1.0-beperkingen. Standaard SMTP-poorten werken niet met deze apparaten.
 
-### Advanced Foscam Configuration {#advanced-foscam-configuration}
+### Geavanceerde Foscam-configuratie {#advanced-foscam-configuration}
 
-For users requiring more sophisticated notification setups, Foscam cameras offer additional configuration options that can enhance security monitoring capabilities.
+Voor gebruikers die meer geavanceerde meldingsinstellingen nodig hebben, bieden Foscam-camera's extra configuratieopties die de beveiligingsmonitoring kunnen verbeteren.
 
-Configure motion detection zones to reduce false alarms by defining specific areas of the camera's field of view that should trigger notifications. This prevents unnecessary emails from environmental factors like moving trees or passing vehicles.
+Configureer bewegingsdetectiezones om valse alarmen te verminderen door specifieke gebieden van het gezichtsveld van de camera te definiëren die meldingen moeten activeren. Dit voorkomt onnodige e-mails door omgevingsfactoren zoals bewegende bomen of passerende voertuigen.
 
-Set up recording schedules that align with your monitoring needs, ensuring that email notifications are sent during appropriate time periods. Foscam cameras can suppress notifications during specified hours to prevent overnight alerts for non-critical events.
-
-Configure multiple recipient addresses for different types of alerts, allowing you to route motion detection alerts to security personnel while sending system maintenance alerts to IT staff.
+Stel opnameplanningen in die aansluiten bij je monitoringsbehoeften, zodat e-mailmeldingen alleen tijdens geschikte tijdsperioden worden verzonden. Foscam-camera's kunnen meldingen onderdrukken tijdens opgegeven uren om nachtelijke waarschuwingen voor niet-kritieke gebeurtenissen te voorkomen.
+Configureer meerdere ontvangersadressen voor verschillende soorten meldingen, zodat u bewegingsdetectiemeldingen naar beveiligingspersoneel kunt sturen terwijl systeemonderhoudsmeldingen naar IT-medewerkers worden verzonden.
 
 > \[!TIP]
-> Foscam cameras can generate significant email volume if motion detection is too sensitive. Start with conservative settings and adjust based on your environment's characteristics.
+> Foscam-camera's kunnen een aanzienlijk e-mailvolume genereren als bewegingsdetectie te gevoelig is ingesteld. Begin met conservatieve instellingen en pas deze aan op basis van de kenmerken van uw omgeving.
 
-## Hikvision Security Camera Email Configuration {#hikvision-security-camera-email-configuration}
 
-Hikvision cameras represent a significant portion of the global security camera market, with models ranging from basic IP cameras to advanced AI-powered surveillance systems. The email configuration process varies considerably between newer models with modern TLS support and legacy devices that require compatibility workarounds.
+## Hikvision Beveiligingscamera E-mailconfiguratie {#hikvision-security-camera-email-configuration}
 
-### Modern Hikvision Camera Configuration {#modern-hikvision-camera-configuration}
+Hikvision-camera's vertegenwoordigen een aanzienlijk deel van de wereldwijde beveiligingscameramarkt, met modellen variërend van basis IP-camera's tot geavanceerde AI-gestuurde bewakingssystemen. Het e-mailconfiguratieproces varieert aanzienlijk tussen nieuwere modellen met moderne TLS-ondersteuning en legacy-apparaten die compatibiliteitsoplossingen vereisen.
 
-Current Hikvision cameras running recent firmware versions support TLS 1.2+ and provide comprehensive email notification capabilities through their web-based interface.
+### Moderne Hikvision Camera Configuratie {#modern-hikvision-camera-configuration}
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Hikvision cameras typically use standard HTTP/HTTPS ports for web access.
+Huidige Hikvision-camera's met recente firmwareversies ondersteunen TLS 1.2+ en bieden uitgebreide e-mailmeldingsmogelijkheden via hun webinterface.
 
-2. **Navigate to Configuration** and select "Network" > "Advanced Settings" > "Email" from the menu structure. The exact path may vary depending on your camera model and firmware version.
+1. **Toegang tot de webinterface van de camera** door het IP-adres van de camera in een webbrowser in te voeren. Hikvision-camera's gebruiken doorgaans standaard HTTP/HTTPS-poorten voor webtoegang.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Hikvision cameras require specific SSL configuration for proper email functionality.
+2. **Navigeer naar Configuratie** en selecteer "Netwerk" > "Geavanceerde instellingen" > "E-mail" in het menu. Het exacte pad kan variëren afhankelijk van uw cameramodel en firmwareversie.
 
-4. **Set encryption to SSL** and configure port 465. Hikvision cameras do not support STARTTLS, so SSL encryption on port 465 is the recommended configuration for Forward Email compatibility.
+3. **Configureer de SMTP-server** door smtp.forwardemail.net in te voeren als serveradres. Hikvision-camera's vereisen specifieke SSL-configuratie voor correcte e-mailfunctionaliteit.
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for authentication.
+4. **Stel de encryptie in op SSL** en configureer poort 465. Hikvision-camera's ondersteunen geen STARTTLS, dus SSL-encryptie op poort 465 is de aanbevolen configuratie voor Forward Email-compatibiliteit.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera in email notifications.
+5. **Schakel SMTP-authenticatie in** en voer uw Forward Email-alias in als gebruikersnaam. Gebruik het wachtwoord dat is gegenereerd via [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains) voor authenticatie.
 
-7. **Set up recipient addresses** by adding email addresses that should receive security alerts, motion detection notifications, and system status updates.
+6. **Configureer afzenderinformatie** door uw Forward Email-alias in te stellen als afzenderadres en een beschrijvende naam toe te voegen om de camera te identificeren in e-mailmeldingen.
 
-8. **Configure event triggers** by setting up motion detection, line crossing detection, intrusion detection, and other events that should generate email notifications.
+7. **Stel ontvangersadressen in** door e-mailadressen toe te voegen die beveiligingsmeldingen, bewegingsdetectiemeldingen en systeemstatusupdates moeten ontvangen.
 
-9. **Test the email configuration** using Hikvision's built-in test function to verify proper connectivity and authentication with Forward Email's servers.
+8. **Configureer gebeurtenistriggers** door bewegingsdetectie, lijnoverschrijdingsdetectie, inbraakdetectie en andere gebeurtenissen in te stellen die e-mailmeldingen moeten genereren.
+
+9. **Test de e-mailconfiguratie** met de ingebouwde testfunctie van Hikvision om de juiste connectiviteit en authenticatie met de servers van Forward Email te verifiëren.
 
 > \[!NOTE]
-> Hikvision cameras require the most updated firmware versions to support SSL and TLS encryption properly. Check for firmware updates before configuring email settings.
+> Hikvision-camera's vereisen de meest recente firmwareversies om SSL- en TLS-encryptie correct te ondersteunen. Controleer op firmware-updates voordat u e-mailinstellingen configureert.
 
-### Legacy Hikvision Camera Configuration {#legacy-hikvision-camera-configuration}
+### Legacy Hikvision Camera Configuratie {#legacy-hikvision-camera-configuration}
 
-Older Hikvision cameras may have limited TLS support and require Forward Email's legacy-compatible SMTP ports for continued email functionality.
+Oudere Hikvision-camera's hebben mogelijk beperkte TLS-ondersteuning en vereisen de legacy-compatibele SMTP-poorten van Forward Email voor blijvende e-mailfunctionaliteit.
 
-1. **Access the camera's web interface** and navigate to the email configuration section. Legacy Hikvision cameras may have different menu structures than current models.
+1. **Toegang tot de webinterface van de camera** en navigeer naar de e-mailconfiguratiesectie. Legacy Hikvision-camera's kunnen een andere menustructuur hebben dan huidige modellen.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+2. **Configureer de legacy SMTP-instellingen van Forward Email** door smtp.forwardemail.net in te voeren als serveradres en poort 2455 te gebruiken voor SSL-verbindingen.
 
-3. **Set up authentication** using your Forward Email alias and generated password. Legacy Hikvision cameras may have specific authentication requirements or limitations.
+3. **Stel authenticatie in** met uw Forward Email-alias en het gegenereerde wachtwoord. Legacy Hikvision-camera's kunnen specifieke authenticatievereisten of beperkingen hebben.
 
-4. **Configure encryption settings** by selecting SSL encryption to match the legacy port configuration. Ensure the encryption method aligns with port 2455 requirements.
+4. **Configureer encryptie-instellingen** door SSL-encryptie te selecteren die overeenkomt met de legacy poortconfiguratie. Zorg ervoor dat de encryptiemethode aansluit bij de vereisten van poort 2455.
 
-5. **Test the configuration** and monitor for connection errors. Legacy Hikvision cameras may provide limited error reporting, making troubleshooting more challenging.
+5. **Test de configuratie** en controleer op verbindingsfouten. Legacy Hikvision-camera's bieden mogelijk beperkte foutmeldingen, wat het oplossen van problemen bemoeilijkt.
 
 > \[!WARNING]
-> Legacy Hikvision cameras may have known security vulnerabilities. Ensure these devices are properly isolated on your network and consider upgrading to current models when possible.
+> Legacy Hikvision-camera's kunnen bekende beveiligingskwetsbaarheden hebben. Zorg ervoor dat deze apparaten goed geïsoleerd zijn op uw netwerk en overweeg waar mogelijk te upgraden naar huidige modellen.
+## Dahua Beveiligingscamera E-mailconfiguratie {#dahua-security-camera-email-configuration}
 
-## Dahua Security Camera Email Configuration {#dahua-security-camera-email-configuration}
+Dahua-camera's bieden robuuste e-mailmeldingsmogelijkheden in hun uitgebreide productlijn, van eenvoudige IP-camera's tot geavanceerde AI-gestuurde bewakingssystemen. Het configuratieproces is over het algemeen eenvoudig voor moderne apparaten, met uitgebreide ondersteuning voor de huidige TLS-standaarden.
 
-Dahua cameras provide robust email notification capabilities across their extensive product line, from basic IP cameras to advanced AI-powered surveillance systems. The configuration process is generally straightforward for modern devices, with comprehensive support for current TLS standards.
+### Dahua Camera E-mailinstelling {#dahua-camera-email-setup}
 
-### Dahua Camera Email Setup {#dahua-camera-email-setup}
+Dahua-camera's bieden gebruiksvriendelijke e-mailconfiguratie via hun webinterface, met goede compatibiliteit voor moderne SMTP-standaarden.
 
-Dahua cameras offer user-friendly email configuration through their web interface, with good compatibility for modern SMTP standards.
+1. **Toegang tot de webinterface van de camera** door het IP-adres van de camera in een webbrowser in te voeren. Dahua-camera's bieden doorgaans intuïtieve webgebaseerde configuratiesystemen.
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Dahua cameras typically provide intuitive web-based configuration systems.
+2. **Navigeer naar Setup** en selecteer "Network" > "Email" in het configuratiemenu. Dahua-camera's organiseren e-mailinstellingen in een speciale sectie voor gemakkelijke toegang.
 
-2. **Navigate to Setup** and select "Network" > "Email" from the configuration menu. Dahua cameras organize email settings in a dedicated section for easy access.
+3. **Configureer de SMTP-server** door smtp.forwardemail.net in te voeren als serveradres. Dahua-camera's ondersteunen zowel SSL- als STARTTLS-encryptiemethoden.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Dahua cameras support both SSL and STARTTLS encryption methods.
+4. **Stel de poort en encryptie in** door poort 465 te selecteren met SSL/TLS-encryptie (aanbevolen) of poort 587 met STARTTLS-encryptie.
 
-4. **Set the port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption.
+5. **Schakel SMTP-authenticatie in** en voer je Forward Email-alias in als gebruikersnaam. Gebruik het wachtwoord dat is gegenereerd via [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Configureer afzenderinformatie** door je Forward Email-alias in te stellen als afzenderadres en een beschrijvende naam toe te voegen om de camerabron te identificeren.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera source.
+7. **Stel ontvangeradressen in** door e-mailadressen toe te voegen voor verschillende soorten meldingen. Dahua-camera's ondersteunen meerdere ontvangers voor diverse waarschuwingstypen.
 
-7. **Set up recipient addresses** by adding email addresses for different types of notifications. Dahua cameras support multiple recipients for various alert types.
+8. **Configureer gebeurtenistriggers** door bewegingsdetectie, sabotagewaarschuwingen en andere beveiligingsgebeurtenissen in te stellen die e-mailmeldingen moeten genereren.
 
-8. **Configure event triggers** by setting up motion detection, tampering alerts, and other security events that should generate email notifications.
-
-9. **Test the email functionality** using Dahua's built-in test feature to verify proper configuration and connectivity.
+9. **Test de e-mailfunctionaliteit** met de ingebouwde testfunctie van Dahua om de juiste configuratie en connectiviteit te verifiëren.
 
 > \[!TIP]
-> Dahua cameras often provide detailed configuration guides through their wiki documentation. Consult [Dahua's email setup guide](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) for model-specific instructions.
+> Dahua-camera's bieden vaak gedetailleerde configuratiehandleidingen via hun wiki-documentatie. Raadpleeg [Dahua's e-mailinstellingsgids](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) voor model-specifieke instructies.
 
-### Dahua NVR Email Configuration {#dahua-nvr-email-configuration}
+### Dahua NVR E-mailconfiguratie {#dahua-nvr-email-configuration}
 
-Dahua Network Video Recorders (NVRs) provide centralized email notification management for multiple cameras, offering efficient administration of large surveillance systems.
+Dahua Network Video Recorders (NVR's) bieden gecentraliseerd beheer van e-mailmeldingen voor meerdere camera's, wat efficiënte administratie van grote bewakingssystemen mogelijk maakt.
 
-1. **Access the NVR's web interface** by entering the NVR's IP address in a web browser. Dahua NVRs provide comprehensive management interfaces for system-wide configuration.
+1. **Toegang tot de webinterface van de NVR** door het IP-adres van de NVR in een webbrowser in te voeren. Dahua NVR's bieden uitgebreide beheersinterfaces voor systeemwijde configuratie.
 
-2. **Navigate to the Email configuration** by selecting "Setup" > "Network" > "Email" from the main menu. NVRs typically organize email settings at the system level.
+2. **Navigeer naar de e-mailconfiguratie** door "Setup" > "Network" > "Email" te selecteren in het hoofdmenu. NVR's organiseren e-mailinstellingen doorgaans op systeemniveau.
 
-3. **Configure SMTP server settings** by entering smtp.forwardemail.net as the server address and selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS.
+3. **Configureer SMTP-serverinstellingen** door smtp.forwardemail.net in te voeren als serveradres en poort 465 met SSL/TLS-encryptie (aanbevolen) of poort 587 met STARTTLS te selecteren.
 
-4. **Set up authentication** using your Forward Email alias and generated password. NVRs support standard SMTP authentication methods.
+4. **Stel authenticatie in** met je Forward Email-alias en het gegenereerde wachtwoord. NVR's ondersteunen standaard SMTP-authenticatiemethoden.
 
-5. **Configure notification schedules** by setting up time periods when email notifications should be active. This helps manage notification volume during off-hours.
+5. **Configureer notificatieschema's** door tijdsperioden in te stellen waarin e-mailmeldingen actief moeten zijn. Dit helpt het aantal meldingen buiten kantooruren te beheren.
 
-6. **Set up event-based notifications** by configuring which camera events should trigger email alerts. NVRs allow granular control over notification triggers across multiple cameras.
+6. **Stel gebeurtenisgebaseerde meldingen in** door te configureren welke camera-gebeurtenissen e-mailwaarschuwingen moeten activeren. NVR's bieden gedetailleerde controle over meldings-triggers voor meerdere camera's.
 
-7. **Test the system-wide email configuration** to ensure proper functionality across all connected cameras and monitoring systems.
+7. **Test de systeemwijde e-mailconfiguratie** om de juiste werking te garanderen voor alle aangesloten camera's en bewakingssystemen.
 
-## Xerox Multifunction Device Email Configuration {#xerox-multifunction-device-email-configuration}
 
-Xerox multifunction devices provide enterprise-grade email notification capabilities with comprehensive TLS support and advanced configuration options. Modern Xerox devices support current security standards while maintaining compatibility with various network environments.
+## Xerox Multifunctioneel Apparaat E-mailconfiguratie {#xerox-multifunction-device-email-configuration}
 
-### Xerox MFD Email Setup {#xerox-mfd-email-setup}
+Xerox multifunctionele apparaten bieden e-mailmeldingsmogelijkheden van bedrijfsniveau met uitgebreide TLS-ondersteuning en geavanceerde configuratieopties. Moderne Xerox-apparaten ondersteunen de huidige beveiligingsstandaarden en behouden compatibiliteit met diverse netwerkomgevingen.
 
-Xerox multifunction devices offer sophisticated email configuration through their web-based administrative interface, supporting both basic notifications and advanced workflow integration.
+### Xerox MFD E-mailinstelling {#xerox-mfd-email-setup}
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Xerox devices typically provide comprehensive web-based administration tools.
+Xerox multifunctionele apparaten bieden geavanceerde e-mailconfiguratie via hun webgebaseerde beheerdersinterface, met ondersteuning voor zowel basiswaarschuwingen als geavanceerde workflowintegratie.
+1. **Toegang tot de webinterface van het apparaat** door het IP-adres van het apparaat in een webbrowser in te voeren. Xerox-apparaten bieden doorgaans uitgebreide webgebaseerde beheertools.
 
-2. **Navigate to Properties** and select "Connectivity" > "Protocols" > "SMTP" from the configuration menu. Xerox devices organize email settings within their protocol configuration section.
+2. **Navigeer naar Eigenschappen** en selecteer "Connectiviteit" > "Protocollen" > "SMTP" in het configuratiemenu. Xerox-apparaten organiseren e-mailinstellingen binnen hun protocolconfiguratiesectie.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Xerox devices support configurable TLS versions and encryption methods.
+3. **Configureer de SMTP-server** door smtp.forwardemail.net in te voeren als serveradres. Xerox-apparaten ondersteunen configureerbare TLS-versies en versleutelingsmethoden.
 
-4. **Set TLS configuration** by selecting TLS 1.2 or higher as the minimum supported version. Xerox devices allow administrators to configure specific TLS requirements for enhanced security.
+4. **Stel de TLS-configuratie in** door TLS 1.2 of hoger te selecteren als de minimaal ondersteunde versie. Xerox-apparaten stellen beheerders in staat specifieke TLS-vereisten te configureren voor verbeterde beveiliging.
 
-5. **Configure port and encryption** by setting port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections.
+5. **Configureer poort en versleuteling** door poort 465 in te stellen voor SSL/TLS-verbindingen (aanbevolen) of poort 587 voor STARTTLS-verbindingen.
 
-6. **Set up SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Stel SMTP-authenticatie in** door authenticatie in te schakelen en je Forward Email-alias als gebruikersnaam in te voeren. Gebruik het wachtwoord dat is gegenereerd via [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains).
 
-7. **Configure sender information** by setting your Forward Email alias as the sender address and configuring appropriate reply-to addresses for notification management.
+7. **Configureer afzenderinformatie** door je Forward Email-alias als afzenderadres in te stellen en geschikte reply-to-adressen te configureren voor notificatiebeheer.
 
-8. **Set up notification types** by configuring which device events should trigger email alerts, including maintenance notifications, error conditions, and security events.
+8. **Stel notificatietypen in** door te configureren welke apparaatgebeurtenissen e-mailmeldingen moeten activeren, inclusief onderhoudsnotificaties, foutcondities en beveiligingsgebeurtenissen.
 
-9. **Test the email configuration** using Xerox's comprehensive test system to verify proper connectivity and authentication.
+9. **Test de e-mailconfiguratie** met het uitgebreide testsysteem van Xerox om correcte connectiviteit en authenticatie te verifiëren.
 
 > \[!NOTE]
-> Xerox devices provide detailed TLS configuration options that allow fine-tuning of security settings. Consult [Xerox's TLS configuration guide](https://www.support.xerox.com/en-us/article/KB0032169) for advanced security requirements.
+> Xerox-apparaten bieden gedetailleerde TLS-configuratieopties waarmee beveiligingsinstellingen fijn kunnen worden afgestemd. Raadpleeg [Xerox's TLS-configuratiehandleiding](https://www.support.xerox.com/en-us/article/KB0032169) voor geavanceerde beveiligingseisen.
 
-## Ricoh Multifunction Device Email Configuration {#ricoh-multifunction-device-email-configuration}
 
-Ricoh multifunction devices offer robust email capabilities across their extensive product line, from basic office printers to advanced production systems. However, [Ricoh has announced significant changes](https://www.ricoh.com/info/2025/0526\_1) related to Microsoft's basic authentication discontinuation that affects email functionality.
+## Ricoh Multifunctioneel Apparaat E-mailconfiguratie {#ricoh-multifunction-device-email-configuration}
 
-### Modern Ricoh MFD Configuration {#modern-ricoh-mfd-configuration}
+Ricoh multifunctionele apparaten bieden robuuste e-mailmogelijkheden binnen hun uitgebreide productlijn, van eenvoudige kantoormachines tot geavanceerde productiesystemen. Echter, [Ricoh heeft belangrijke wijzigingen aangekondigd](https://www.ricoh.com/info/2025/0526\_1) met betrekking tot het stopzetten van basisverificatie door Microsoft die de e-mailfunctionaliteit beïnvloeden.
 
-Current Ricoh devices support modern TLS standards and provide comprehensive email notification capabilities through their web-based interface.
+### Moderne Ricoh MFD-configuratie {#modern-ricoh-mfd-configuration}
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Ricoh devices provide intuitive web-based configuration systems.
+Huidige Ricoh-apparaten ondersteunen moderne TLS-standaarden en bieden uitgebreide e-mailnotificatiemogelijkheden via hun webinterface.
 
-2. **Navigate to the Email configuration** by selecting "System Settings" > "Administrator Tools" > "Network" > "Email" from the menu structure.
+1. **Toegang tot de webinterface van het apparaat** door het IP-adres van het apparaat in een webbrowser in te voeren. Ricoh-apparaten bieden intuïtieve webgebaseerde configuratiesystemen.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Ricoh devices support both SSL and STARTTLS encryption methods.
+2. **Navigeer naar de e-mailconfiguratie** door "Systeeminstellingen" > "Beheerdershulpmiddelen" > "Netwerk" > "E-mail" te selecteren in de menustructuur.
 
-4. **Enable SSL on the SMTP server page** to activate TLS encryption. Ricoh's interface may be cryptic, but SSL enablement is required for secure email functionality.
+3. **Configureer de SMTP-server** door smtp.forwardemail.net in te voeren als serveradres. Ricoh-apparaten ondersteunen zowel SSL- als STARTTLS-versleutelingsmethoden.
 
-5. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Ensure the encryption method matches the selected port.
+4. **Schakel SSL in op de SMTP-serverpagina** om TLS-versleuteling te activeren. De interface van Ricoh kan cryptisch zijn, maar het inschakelen van SSL is vereist voor veilige e-mailfunctionaliteit.
 
-6. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+5. **Stel het poortnummer in** op 465 voor SSL/TLS-verbindingen (aanbevolen) of 587 voor STARTTLS-verbindingen. Zorg ervoor dat de versleutelingsmethode overeenkomt met de geselecteerde poort.
 
-7. **Set up sender information** by configuring your Forward Email alias as the sender address and adding appropriate identification information.
+6. **Configureer SMTP-authenticatie** door authenticatie in te schakelen en je Forward Email-alias als gebruikersnaam in te voeren. Gebruik het wachtwoord dat is gegenereerd via [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains).
 
-8. **Configure notification types** by setting up scan-to-email, device alerts, and maintenance notifications according to your operational requirements.
+7. **Stel afzenderinformatie in** door je Forward Email-alias als afzenderadres te configureren en passende identificatiegegevens toe te voegen.
 
-9. **Test the email functionality** using Ricoh's built-in test system to verify proper configuration and connectivity.
+8. **Configureer notificatietypen** door scan-to-email, apparaatmeldingen en onderhoudsnotificaties in te stellen volgens je operationele vereisten.
+
+9. **Test de e-mailfunctionaliteit** met het ingebouwde testsysteem van Ricoh om correcte configuratie en connectiviteit te verifiëren.
 
 > \[!IMPORTANT]
-> Ricoh devices affected by Microsoft's basic authentication changes require updated authentication methods. Ensure your device firmware supports modern authentication or use Forward Email's compatibility features.
+> Ricoh-apparaten die worden beïnvloed door de wijzigingen in basisverificatie van Microsoft vereisen bijgewerkte authenticatiemethoden. Zorg ervoor dat de firmware van je apparaat moderne authenticatie ondersteunt of gebruik de compatibiliteitsfuncties van Forward Email.
+### Legacy Ricoh Device Configuratie {#legacy-ricoh-device-configuration}
 
-### Legacy Ricoh Device Configuration {#legacy-ricoh-device-configuration}
+Oudere Ricoh-apparaten kunnen de legacy-compatibele SMTP-poorten van Forward Email vereisen vanwege beperkte TLS-ondersteuning en beperkingen in authenticatiemethoden.
 
-Older Ricoh devices may require Forward Email's legacy-compatible SMTP ports due to limited TLS support and authentication method restrictions.
+1. **Toegang tot de webinterface van het apparaat** en navigeer naar de e-mailconfiguratie. Legacy Ricoh-apparaten kunnen andere menustructuren hebben dan huidige modellen.
 
-1. **Access the device's web interface** and navigate to the email configuration section. Legacy Ricoh devices may have different menu structures than current models.
+2. **Configureer de legacy SMTP-instellingen van Forward Email** door smtp.forwardemail.net in te voeren als serveradres en poort 2455 te gebruiken voor SSL-verbindingen.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+3. **Schakel SSL-encryptie in** om overeen te komen met de legacy poortconfiguratie. Zorg ervoor dat de encryptie-instellingen voldoen aan de vereisten van poort 2455.
 
-3. **Enable SSL encryption** to match the legacy port configuration. Ensure the encryption settings align with port 2455 requirements.
+4. **Stel authenticatie in** met je Forward Email-alias en gegenereerd wachtwoord. Legacy Ricoh-apparaten kunnen specifieke beperkingen hebben voor authenticatie.
 
-4. **Set up authentication** using your Forward Email alias and generated password. Legacy Ricoh devices may have specific authentication limitations.
+5. **Test de configuratie** en controleer op authenticatie- of verbindingsfouten. Legacy-apparaten bieden mogelijk beperkte foutmeldingen voor probleemoplossing.
 
-5. **Test the configuration** and monitor for authentication or connection errors. Legacy devices may provide limited error reporting for troubleshooting.
 
-## Troubleshooting Common Configuration Issues {#troubleshooting-common-configuration-issues}
+## Problemen met Configuratie Oplossen {#troubleshooting-common-configuration-issues}
 
-Device email configuration can encounter various issues due to network settings, authentication problems, or protocol compatibility challenges. Understanding common problems and their solutions helps ensure reliable notification delivery across your device ecosystem.
+E-mailconfiguratie van apparaten kan verschillende problemen ondervinden door netwerkinstellingen, authenticatieproblemen of compatibiliteitsproblemen met protocollen. Het begrijpen van veelvoorkomende problemen en hun oplossingen helpt betrouwbare notificatielevering binnen je apparaat-ecosysteem te waarborgen.
 
-### Authentication and Credential Issues {#authentication-and-credential-issues}
+### Authenticatie- en Inloggegevensproblemen {#authentication-and-credential-issues}
 
-Authentication failures represent the most common email configuration problem across all device types. These issues typically stem from incorrect credential usage, authentication method mismatches, or account configuration problems.
+Authenticatiefouten zijn het meest voorkomende probleem bij e-mailconfiguratie voor alle apparaattype. Deze problemen ontstaan meestal door onjuiste inloggegevens, mismatches in authenticatiemethoden of accountconfiguratieproblemen.
 
-Verify that you're using your Forward Email alias as the username, not your account email address or login credentials. Many devices are sensitive to username formatting and require exact matches with your configured alias.
+Controleer of je je Forward Email-alias gebruikt als gebruikersnaam, niet je account-e-mailadres of inloggegevens. Veel apparaten zijn gevoelig voor de opmaak van de gebruikersnaam en vereisen een exacte match met je geconfigureerde alias.
 
-Ensure you're using the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) rather than your account login password. SMTP authentication requires the specific generated password for security reasons, and using incorrect credentials will result in authentication failures.
+Zorg dat je het gegenereerde wachtwoord gebruikt van [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains) in plaats van je account-inlogwachtwoord. SMTP-authenticatie vereist om veiligheidsredenen het specifieke gegenereerde wachtwoord, en het gebruik van onjuiste inloggegevens leidt tot authenticatiefouten.
 
-Check that your Forward Email account has proper SMTP access enabled and that any two-factor authentication requirements are properly configured. Some account configurations may restrict SMTP access until properly activated.
+Controleer of je Forward Email-account de juiste SMTP-toegang heeft ingeschakeld en dat eventuele vereisten voor tweefactorauthenticatie correct zijn geconfigureerd. Sommige accountconfiguraties beperken SMTP-toegang totdat deze correct is geactiveerd.
 
 > \[!TIP]
-> If authentication continues to fail, regenerate your SMTP password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) and update your device configuration with the new credentials.
+> Als authenticatie blijft falen, genereer dan je SMTP-wachtwoord opnieuw via [Mijn Account -> Domeinen -> Aliassen](https://forwardemail.net/my-account/domains) en werk je apparaatconfiguratie bij met de nieuwe inloggegevens.
 
-### TLS and Encryption Problems {#tls-and-encryption-problems}
+### TLS- en Encryptieproblemen {#tls-and-encryption-problems}
 
-TLS-related issues often occur when devices attempt to use unsupported encryption protocols or when there's a mismatch between port configuration and encryption settings.
+TLS-gerelateerde problemen treden vaak op wanneer apparaten proberen ongebruikte encryptieprotocollen te gebruiken of wanneer er een mismatch is tussen poortconfiguratie en encryptie-instellingen.
 
-For modern devices experiencing TLS errors, verify that you're using the correct port and encryption combination: port 465 with SSL/TLS (recommended) or port 587 with STARTTLS. These settings must match exactly for successful connections.
+Voor moderne apparaten met TLS-fouten, controleer of je de juiste combinatie van poort en encryptie gebruikt: poort 465 met SSL/TLS (aanbevolen) of poort 587 met STARTTLS. Deze instellingen moeten exact overeenkomen voor succesvolle verbindingen.
 
-Legacy devices displaying certificate validation errors should use Forward Email's compatibility ports (2455 or 2555) rather than standard SMTP ports. These ports maintain TLS 1.0 compatibility while providing appropriate security for older devices.
+Legacy-apparaten die certificaatvalidatiefouten tonen, moeten de compatibiliteitspoorten van Forward Email (2455 of 2555) gebruiken in plaats van standaard SMTP-poorten. Deze poorten behouden TLS 1.0-compatibiliteit en bieden passende beveiliging voor oudere apparaten.
 
-If certificate validation continues to fail on legacy devices, check if the device allows certificate validation to be disabled. While this reduces security, it may be necessary for continued functionality on devices that cannot be updated.
+Als certificaatvalidatie blijft falen op legacy-apparaten, controleer dan of het apparaat toestaat dat certificaatvalidatie wordt uitgeschakeld. Hoewel dit de beveiliging vermindert, kan het noodzakelijk zijn voor de functionaliteit op apparaten die niet kunnen worden bijgewerkt.
 
 > \[!CAUTION]
-> Disabling certificate validation reduces security and should only be used as a last resort for legacy devices that cannot be updated or replaced.
+> Het uitschakelen van certificaatvalidatie vermindert de beveiliging en mag alleen als laatste redmiddel worden gebruikt voor legacy-apparaten die niet kunnen worden bijgewerkt of vervangen.
 
-### Network Connectivity Issues {#network-connectivity-issues}
+### Netwerkconnectiviteitsproblemen {#network-connectivity-issues}
 
-Network-related problems can prevent devices from reaching Forward Email's SMTP servers even when configuration settings are correct.
+Netwerkgerelateerde problemen kunnen voorkomen dat apparaten de SMTP-servers van Forward Email bereiken, zelfs als de configuratie-instellingen correct zijn.
 
-Verify that your network allows outbound connections on the configured SMTP ports. Corporate firewalls or restrictive network policies may block certain ports, requiring firewall rule adjustments or alternative port configurations.
+Controleer of je netwerk uitgaande verbindingen op de geconfigureerde SMTP-poorten toestaat. Bedrijfsfirewalls of restrictieve netwerkbeleid kunnen bepaalde poorten blokkeren, wat aanpassingen in firewallregels of alternatieve poortconfiguraties vereist.
+Controleer DNS-resolutie door ervoor te zorgen dat uw apparaten smtp.forwardemail.net kunnen resolven naar de juiste IP-adressen. DNS-problemen kunnen verbindingsfouten veroorzaken, zelfs wanneer netwerkconnectiviteit verder functioneel is.
 
-Check DNS resolution by ensuring that your devices can resolve smtp.forwardemail.net to the correct IP addresses. DNS issues can cause connection failures even when network connectivity is otherwise functional.
+Test netwerkconnectiviteit met de netwerkdiagnosetools van het apparaat indien beschikbaar. Veel moderne apparaten bieden ingebouwde netwerktestmogelijkheden die kunnen helpen bij het identificeren van verbindingsproblemen.
 
-Test network connectivity from the device's network diagnostic tools if available. Many modern devices provide built-in network testing capabilities that can help identify connectivity issues.
+Houd rekening met netwerkvertraging en time-outinstellingen als apparaten zich op trage of hoge-latentie netwerkverbindingen bevinden. Sommige apparaten kunnen time-outaanpassingen vereisen voor betrouwbare e-mailbezorging.
 
-Consider network latency and timeout settings if devices are located on slow or high-latency network connections. Some devices may require timeout adjustments for reliable email delivery.
+### Apparaatspecifieke configuratie-uitdagingen {#device-specific-configuration-challenges}
 
-### Device-Specific Configuration Challenges {#device-specific-configuration-challenges}
+Verschillende apparaatfabrikanten implementeren e-mailfunctionaliteit op diverse manieren, wat leidt tot fabrikantspecifieke configuratie-uitdagingen die gerichte oplossingen vereisen.
 
-Different device manufacturers implement email functionality in various ways, leading to manufacturer-specific configuration challenges that require targeted solutions.
+HP-printers kunnen DNS-lookup cachen en vereisen herstarts na configuratiewijzigingen. Als verbindingsproblemen aanhouden na configuratie, start de printer opnieuw op om gecachte netwerkinformatie te wissen.
 
-HP printers may cache DNS lookups and require restarts after configuration changes. If connection issues persist after configuration, restart the printer to clear cached network information.
+Brother-printers zijn bijzonder gevoelig voor de opmaak van authenticatiegegevens en kunnen configuratie via de webinterface vereisen in plaats van via het bedieningspaneel van het apparaat voor een betrouwbare setup.
 
-Brother printers are particularly sensitive to authentication credential formatting and may require configuration through the web interface rather than the device control panel for reliable setup.
+Foscam-camera's vereisen specifieke poortconfiguraties vanwege TLS-beperkingen en geven mogelijk geen gedetailleerde foutmeldingen voor probleemoplossing. Zorg ervoor dat u de legacy-poorten van Forward Email (2455 of 2555) gebruikt voor deze apparaten.
 
-Foscam cameras require specific port configurations due to TLS limitations and may not provide detailed error messages for troubleshooting. Ensure you're using Forward Email's legacy ports (2455 or 2555) for these devices.
-
-Hikvision cameras require SSL encryption and do not support STARTTLS, limiting configuration options to port 465 with SSL/TLS encryption.
+Hikvision-camera's vereisen SSL-encryptie en ondersteunen geen STARTTLS, waardoor configuratieopties beperkt zijn tot poort 465 met SSL/TLS-encryptie.
 
 > \[!NOTE]
-> When troubleshooting device-specific issues, consult the manufacturer's documentation for known limitations or configuration requirements that may affect email functionality.
+> Raadpleeg bij het oplossen van apparaatspecifieke problemen de documentatie van de fabrikant voor bekende beperkingen of configuratievereisten die de e-mailfunctionaliteit kunnen beïnvloeden.
 
-## Security Considerations and Best Practices {#security-considerations-and-best-practices}
 
-Configuring email notifications on network devices involves several security considerations that help protect your systems while maintaining reliable notification delivery. Following security best practices prevents unauthorized access and ensures appropriate information disclosure in notifications.
+## Beveiligingsoverwegingen en beste praktijken {#security-considerations-and-best-practices}
 
-### Credential Management {#credential-management}
+Het configureren van e-mailmeldingen op netwerkapparaten omvat verschillende beveiligingsoverwegingen die helpen uw systemen te beschermen terwijl betrouwbare meldingbezorging wordt gehandhaafd. Het volgen van beveiligingsbest practices voorkomt ongeautoriseerde toegang en zorgt voor passende informatieverstrekking in meldingen.
 
-Use strong, unique passwords for your Forward Email account and enable two-factor authentication when available. The generated SMTP password should be treated as a sensitive credential and stored securely in device configurations.
+### Beheer van inloggegevens {#credential-management}
 
-Regularly review and rotate SMTP passwords, especially after personnel changes or security incidents. Forward Email allows password regeneration without affecting other account functions.
+Gebruik sterke, unieke wachtwoorden voor uw Forward Email-account en schakel tweefactorauthenticatie in wanneer beschikbaar. Het gegenereerde SMTP-wachtwoord moet worden behandeld als een gevoelige inloggegeven en veilig worden opgeslagen in apparaatconfiguraties.
 
-Avoid using shared credentials across multiple devices when possible. While Forward Email supports multiple device connections with the same credentials, individual device credentials provide better security isolation and audit capabilities.
+Beoordeel en roteer SMTP-wachtwoorden regelmatig, vooral na personeelswisselingen of beveiligingsincidenten. Forward Email maakt het mogelijk wachtwoorden opnieuw te genereren zonder andere accountfuncties te beïnvloeden.
 
-Document device credentials securely and include them in your organization's credential management system. Proper documentation ensures that email configurations can be maintained and updated as needed.
+Vermijd het gebruik van gedeelde inloggegevens over meerdere apparaten indien mogelijk. Hoewel Forward Email meerdere apparaatverbindingen met dezelfde inloggegevens ondersteunt, bieden individuele apparaat-inloggegevens betere beveiligingsisolatie en auditmogelijkheden.
 
-### Network Security {#network-security}
+Documenteer apparaat-inloggegevens veilig en neem ze op in het inloggegevensbeheer van uw organisatie. Goede documentatie zorgt ervoor dat e-mailconfiguraties kunnen worden onderhouden en bijgewerkt indien nodig.
 
-Implement appropriate network segmentation to isolate devices from other network resources while maintaining necessary connectivity for email notifications and legitimate access.
+### Netwerkbeveiliging {#network-security}
 
-Configure firewall rules to allow necessary SMTP traffic while blocking unnecessary network access. Devices typically only need outbound access to Forward Email's SMTP servers for notification functionality.
+Implementeer passende netwerksegmentatie om apparaten te isoleren van andere netwerkbronnen terwijl noodzakelijke connectiviteit voor e-mailmeldingen en legitieme toegang behouden blijft.
 
-Monitor network traffic from devices to identify unusual patterns or unauthorized communication attempts. Unexpected network activity may indicate security issues that require investigation.
+Configureer firewallregels om noodzakelijke SMTP-verkeer toe te staan en onnodige netwerktoegang te blokkeren. Apparaten hebben doorgaans alleen uitgaande toegang tot de SMTP-servers van Forward Email nodig voor meldingsfunctionaliteit.
 
-Consider using VLANs or dedicated network segments for device management traffic, including email notifications, to provide additional security isolation.
+Monitor netwerkverkeer van apparaten om ongebruikelijke patronen of ongeautoriseerde communicatiepogingen te identificeren. Onverwachte netwerkactiviteit kan wijzen op beveiligingsproblemen die onderzoek vereisen.
 
-### Information Disclosure {#information-disclosure}
+Overweeg het gebruik van VLAN's of speciale netwerksegmenten voor apparaatbeheerverkeer, inclusief e-mailmeldingen, om extra beveiligingsisolatie te bieden.
 
-Review the content of email notifications to ensure they don't contain sensitive information that could be useful to attackers. Some devices include detailed system information, network configurations, or file paths in notification emails.
+### Informatievoorziening {#information-disclosure}
 
-Configure notification filtering to limit the types of information included in email alerts. Many devices allow customization of notification content to balance useful information with security requirements.
+Beoordeel de inhoud van e-mailmeldingen om te zorgen dat ze geen gevoelige informatie bevatten die nuttig kan zijn voor aanvallers. Sommige apparaten bevatten gedetailleerde systeeminformatie, netwerkconfiguraties of bestandslocaties in meldings-e-mails.
+Configureer meldingsfiltering om het type informatie dat in e-mailwaarschuwingen wordt opgenomen te beperken. Veel apparaten bieden de mogelijkheid om de inhoud van meldingen aan te passen om een balans te vinden tussen nuttige informatie en beveiligingseisen.
 
-Implement appropriate email retention and handling policies for device notifications. Security-related notifications may need to be retained for compliance or forensic purposes.
+Implementeer passende bewaarbeleid en afhandelingsprocedures voor e-mailmeldingen van apparaten. Beveiligingsgerelateerde meldingen moeten mogelijk worden bewaard voor naleving of forensische doeleinden.
 
-Consider the sensitivity of recipient email addresses and ensure that notifications are only sent to authorized personnel who need access to the information.
+Houd rekening met de gevoeligheid van e-mailadressen van ontvangers en zorg ervoor dat meldingen alleen worden verzonden naar geautoriseerd personeel dat toegang tot de informatie nodig heeft.
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
+### Monitoring en Onderhoud {#monitoring-and-maintenance}
 
-Regularly test email notification configurations to ensure continued functionality. Periodic testing helps identify configuration drift, network changes, or service issues before they impact critical alert delivery.
+Test regelmatig de configuraties van e-mailmeldingen om de voortdurende functionaliteit te waarborgen. Periodiek testen helpt om configuratieafwijkingen, netwerkveranderingen of serviceproblemen te identificeren voordat ze de levering van kritieke waarschuwingen beïnvloeden.
 
-Monitor email notification patterns for signs of suspicious activity or unauthorized access attempts. Unusual notification volumes or unexpected system events may indicate security issues.
+Houd e-mailmeldingspatronen in de gaten op tekenen van verdachte activiteiten of ongeautoriseerde toegangs pogingen. Ongebruikelijke meldingsvolumes of onverwachte systeemgebeurtenissen kunnen wijzen op beveiligingsproblemen.
 
-Keep device firmware updated when possible to maintain current security standards and protocol support. While some devices have reached end-of-life status, applying available security updates helps protect against known vulnerabilities.
+Houd de firmware van apparaten indien mogelijk up-to-date om te voldoen aan actuele beveiligingsnormen en protocolondersteuning. Hoewel sommige apparaten het einde van hun levensduur hebben bereikt, helpt het toepassen van beschikbare beveiligingsupdates om te beschermen tegen bekende kwetsbaarheden.
 
-Implement backup notification methods for critical alerts when possible. While email notifications are reliable, having alternative alerting mechanisms provides redundancy for the most important system events.
+Implementeer waar mogelijk back-up meldingsmethoden voor kritieke waarschuwingen. Hoewel e-mailmeldingen betrouwbaar zijn, biedt het hebben van alternatieve waarschuwingsmechanismen redundantie voor de belangrijkste systeemgebeurtenissen.
 
-## Conclusion {#conclusion}
 
-Configuring reliable email notifications across diverse device ecosystems requires understanding the complex landscape of TLS compatibility, authentication methods, and manufacturer-specific requirements. Forward Email's comprehensive SMTP service addresses these challenges by providing both modern security standards for current devices and legacy compatibility for older equipment that cannot be updated.
+## Conclusie {#conclusion}
 
-The configuration processes outlined in this guide provide detailed, step-by-step instructions for major device categories, ensuring that administrators can establish reliable email notifications regardless of their specific equipment mix. Forward Email's dual-port strategy specifically addresses the TLS compatibility crisis affecting millions of deployed devices, providing a practical solution that maintains security while ensuring continued functionality.
+Het configureren van betrouwbare e-mailmeldingen binnen diverse apparaat-ecosystemen vereist inzicht in het complexe landschap van TLS-compatibiliteit, authenticatiemethoden en fabrikant-specifieke vereisten. De uitgebreide SMTP-service van Forward Email pakt deze uitdagingen aan door zowel moderne beveiligingsstandaarden voor huidige apparaten als legacy-compatibiliteit voor oudere apparatuur die niet kan worden bijgewerkt te bieden.
 
-Regular testing and maintenance of email notification configurations ensures continued reliability and helps identify potential issues before they impact critical alert delivery. Following the security best practices and troubleshooting guidance in this guide helps maintain secure, reliable notification systems that keep administrators informed about device status and security events.
+De in deze gids beschreven configuratieprocessen bieden gedetailleerde, stapsgewijze instructies voor belangrijke apparaatcategorieën, zodat beheerders betrouwbare e-mailmeldingen kunnen instellen ongeacht hun specifieke apparatuurmix. De dual-port strategie van Forward Email pakt specifiek de TLS-compatibiliteitscrisis aan die miljoenen geïmplementeerde apparaten treft, en biedt een praktische oplossing die de beveiliging behoudt en tegelijkertijd de functionaliteit waarborgt.
 
-Whether managing a small office with mixed printer and camera brands or overseeing an enterprise environment with hundreds of devices, Forward Email provides the infrastructure and compatibility needed for reliable email notifications. Our service's focus on device compatibility, combined with comprehensive documentation and support, ensures that critical system alerts reach you when you need them most.
+Regelmatig testen en onderhouden van e-mailmeldingsconfiguraties zorgt voor blijvende betrouwbaarheid en helpt potentiële problemen te identificeren voordat ze de levering van kritieke waarschuwingen beïnvloeden. Het volgen van de beveiligingsbest practices en probleemoplossingsrichtlijnen in deze gids helpt bij het onderhouden van veilige, betrouwbare meldingssystemen die beheerders informeren over apparaatstatus en beveiligingsgebeurtenissen.
 
-For additional support with device email configuration or questions about Forward Email's compatibility with specific equipment, visit our [SMTP server configuration FAQ](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) or contact our support team. We're committed to helping you maintain reliable email notifications across all your network-connected devices, regardless of age or manufacturer limitations.
+Of u nu een klein kantoor beheert met gemengde printer- en cameramerken of een bedrijfsomgeving met honderden apparaten overziet, Forward Email biedt de infrastructuur en compatibiliteit die nodig zijn voor betrouwbare e-mailmeldingen. De focus van onze service op apparaatcompatibiliteit, gecombineerd met uitgebreide documentatie en ondersteuning, zorgt ervoor dat kritieke systeemwaarschuwingen u bereiken wanneer u ze het meest nodig heeft.
+
+Voor extra ondersteuning bij apparaat-e-mailconfiguratie of vragen over de compatibiliteit van Forward Email met specifieke apparatuur, bezoekt u onze [SMTP server configuratie FAQ](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) of neemt u contact op met ons ondersteuningsteam. Wij zetten ons in om u te helpen betrouwbare e-mailmeldingen te behouden voor al uw netwerkverbonden apparaten, ongeacht leeftijd of fabrikantbeperkingen.

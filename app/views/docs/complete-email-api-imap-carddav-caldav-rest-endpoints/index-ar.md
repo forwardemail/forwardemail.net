@@ -1,48 +1,49 @@
-# أول واجهة برمجة تطبيقات بريد إلكتروني كاملة: كيف أحدثت خدمة Forward Email ثورة في إدارة البريد الإلكتروني {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# أول واجهة برمجة تطبيقات بريد إلكتروني كاملة: كيف أحدث Forward Email ثورة في إدارة البريد الإلكتروني {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="واجهة برمجة تطبيقات بريد إلكتروني كاملة مع IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>ملخص:</strong> لقد أنشأنا أول واجهة برمجة تطبيقات REST متكاملة في العالم لإدارة البريد الإلكتروني، مع إمكانيات بحث متقدمة لا تقدمها أي خدمة أخرى. في حين أن Gmail وOutlook وApple تُجبر المطورين على استخدام بروتوكول IMAP أو واجهات برمجة تطبيقات محدودة السرعة، فإن Forward Email تُقدم عمليات CRUD فائقة السرعة للرسائل والمجلدات وجهات الاتصال والتقويمات من خلال واجهة REST موحدة مع أكثر من 15 مُعامل بحث. هذه هي واجهة برمجة تطبيقات البريد الإلكتروني التي كان ينتظرها مطورو البرامج.
+  <strong>ملخص:</strong> قمنا ببناء أول واجهة برمجة تطبيقات REST كاملة في العالم لإدارة البريد الإلكتروني مع قدرات بحث متقدمة لا تقدمها أي خدمة أخرى. بينما تجبر Gmail و Outlook و Apple المطورين على التعامل مع جحيم IMAP أو واجهات برمجة التطبيقات المحدودة بالسرعة، يقدم Forward Email عمليات CRUD فائقة السرعة للرسائل والمجلدات وجهات الاتصال والتقاويم من خلال واجهة REST موحدة مع أكثر من 15 معلمة بحث. هذه هي واجهة برمجة التطبيقات للبريد الإلكتروني التي كان المطورون ينتظرونها.
 </p>
+
 
 ## جدول المحتويات {#table-of-contents}
 
 * [مشكلة واجهة برمجة تطبيقات البريد الإلكتروني](#the-email-api-problem)
 * [ما يقوله المطورون فعليًا](#what-developers-are-actually-saying)
-* [الحل الثوري من Forward Email](#forward-emails-revolutionary-solution)
+* [الحل الثوري لـ Forward Email](#forward-emails-revolutionary-solution)
   * [لماذا بنينا هذا](#why-we-built-this)
-  * [المصادقة البسيطة](#simple-authentication)
+  * [مصادقة بسيطة](#simple-authentication)
 * [20 نقطة نهاية تغير كل شيء](#20-endpoints-that-change-everything)
   * [الرسائل (5 نقاط نهاية)](#messages-5-endpoints)
   * [المجلدات (5 نقاط نهاية)](#folders-5-endpoints)
   * [جهات الاتصال (5 نقاط نهاية)](#contacts-5-endpoints)
-  * [التقويمات (5 نقاط نهاية)](#calendars-5-endpoints)
-* [البحث المتقدم: لا توجد خدمة أخرى مماثلة](#advanced-search-no-other-service-compares)
-  * [مشهد واجهة برمجة التطبيقات للبحث معطل](#the-search-api-landscape-is-broken)
+  * [التقاويم (5 نقاط نهاية)](#calendars-5-endpoints)
+* [بحث متقدم: لا تقارن أي خدمة أخرى](#advanced-search-no-other-service-compares)
+  * [مشهد واجهة برمجة تطبيقات البحث معطل](#the-search-api-landscape-is-broken)
   * [واجهة برمجة تطبيقات البحث الثورية لـ Forward Email](#forward-emails-revolutionary-search-api)
-  * [أمثلة بحث واقعية](#real-world-search-examples)
+  * [أمثلة بحث من العالم الحقيقي](#real-world-search-examples)
   * [مزايا الأداء](#performance-advantages)
-  * [ميزات البحث التي لا يمتلكها أي شخص آخر](#search-features-no-one-else-has)
+  * [ميزات البحث التي لا يمتلكها أحد](#search-features-no-one-else-has)
   * [لماذا هذا مهم للمطورين](#why-this-matters-for-developers)
   * [التنفيذ الفني](#the-technical-implementation)
-* [هندسة الأداء السريع للغاية](#blazing-fast-performance-architecture)
+* [هيكلية أداء فائقة السرعة](#blazing-fast-performance-architecture)
   * [معايير الأداء](#performance-benchmarks)
-  * [هندسة الخصوصية أولاً](#privacy-first-architecture)
+  * [هيكلية الخصوصية أولاً](#privacy-first-architecture)
 * [لماذا نحن مختلفون: المقارنة الكاملة](#why-were-different-the-complete-comparison)
-  * [القيود الرئيسية للمزود](#major-provider-limitations)
-  * [مزايا إعادة توجيه البريد الإلكتروني](#forward-email-advantages)
-  * [مشكلة شفافية المصادر المفتوحة](#the-open-source-transparency-problem)
-* [أكثر من 30 مثالًا واقعيًا للتكامل](#30-real-world-integration-examples)
+  * [قيود المزودين الرئيسيين](#major-provider-limitations)
+  * [مزايا Forward Email](#forward-email-advantages)
+  * [مشكلة الشفافية في المصادر المفتوحة](#the-open-source-transparency-problem)
+* [أكثر من 30 مثالًا على التكامل في العالم الحقيقي](#30-real-world-integration-examples)
   * [1. تحسين نموذج الاتصال في ووردبريس](#1-wordpress-contact-form-enhancement)
   * [2. بديل Zapier لأتمتة البريد الإلكتروني](#2-zapier-alternative-for-email-automation)
-  * [3. مزامنة البريد الإلكتروني لإدارة علاقات العملاء](#3-crm-email-synchronization)
+  * [3. مزامنة البريد الإلكتروني لنظام إدارة علاقات العملاء](#3-crm-email-synchronization)
   * [4. معالجة طلبات التجارة الإلكترونية](#4-e-commerce-order-processing)
-  * [5. دمج تذكرة الدعم](#5-support-ticket-integration)
-  * [6. نظام إدارة النشرة الإخبارية](#6-newsletter-management-system)
+  * [5. تكامل تذاكر الدعم](#5-support-ticket-integration)
+  * [6. نظام إدارة النشرات الإخبارية](#6-newsletter-management-system)
   * [7. إدارة المهام عبر البريد الإلكتروني](#7-email-based-task-management)
-  * [8. تجميع البريد الإلكتروني متعدد الحسابات](#8-multi-account-email-aggregation)
-  * [9. لوحة معلومات تحليلات البريد الإلكتروني المتقدمة](#9-advanced-email-analytics-dashboard)
+  * [8. تجميع البريد الإلكتروني من حسابات متعددة](#8-multi-account-email-aggregation)
+  * [9. لوحة تحكم تحليلات البريد الإلكتروني المتقدمة](#9-advanced-email-analytics-dashboard)
   * [10. أرشفة البريد الإلكتروني الذكية](#10-smart-email-archiving)
   * [11. تكامل البريد الإلكتروني مع التقويم](#11-email-to-calendar-integration)
   * [12. النسخ الاحتياطي للبريد الإلكتروني والامتثال](#12-email-backup-and-compliance)
@@ -50,7 +51,7 @@
   * [14. إدارة قوالب البريد الإلكتروني](#14-email-template-management)
   * [15. أتمتة سير العمل عبر البريد الإلكتروني](#15-email-based-workflow-automation)
   * [16. مراقبة أمان البريد الإلكتروني](#16-email-security-monitoring)
-  * [17. جمع الاستبيانات عبر البريد الإلكتروني](#17-email-based-survey-collection)
+  * [17. جمع الاستطلاعات عبر البريد الإلكتروني](#17-email-based-survey-collection)
   * [18. مراقبة أداء البريد الإلكتروني](#18-email-performance-monitoring)
   * [19. تأهيل العملاء المحتملين عبر البريد الإلكتروني](#19-email-based-lead-qualification)
   * [20. إدارة المشاريع عبر البريد الإلكتروني](#20-email-based-project-management)
@@ -58,288 +59,286 @@
   * [22. معالجة الفواتير عبر البريد الإلكتروني](#22-email-based-invoice-processing)
   * [23. تسجيل الأحداث عبر البريد الإلكتروني](#23-email-based-event-registration)
   * [24. سير عمل الموافقة على المستندات عبر البريد الإلكتروني](#24-email-based-document-approval-workflow)
-  * [25. تحليل تعليقات العملاء عبر البريد الإلكتروني](#25-email-based-customer-feedback-analysis)
-  * [26. خط أنابيب التوظيف عبر البريد الإلكتروني](#26-email-based-recruitment-pipeline)
-  * [27. معالجة تقارير النفقات عبر البريد الإلكتروني](#27-email-based-expense-report-processing)
+  * [25. تحليل ملاحظات العملاء عبر البريد الإلكتروني](#25-email-based-customer-feedback-analysis)
+  * [26. خط تجنيد عبر البريد الإلكتروني](#26-email-based-recruitment-pipeline)
+  * [27. معالجة تقارير المصاريف عبر البريد الإلكتروني](#27-email-based-expense-report-processing)
   * [28. تقارير ضمان الجودة عبر البريد الإلكتروني](#28-email-based-quality-assurance-reporting)
-  * [29. إدارة البائعين عبر البريد الإلكتروني](#29-email-based-vendor-management)
+  * [29. إدارة الموردين عبر البريد الإلكتروني](#29-email-based-vendor-management)
   * [30. مراقبة وسائل التواصل الاجتماعي عبر البريد الإلكتروني](#30-email-based-social-media-monitoring)
-* [ابدء](#getting-started)
-  * [1. أنشئ حساب بريدك الإلكتروني الأمامي](#1-create-your-forward-email-account)
-  * [2. إنشاء بيانات اعتماد واجهة برمجة التطبيقات (API)](#2-generate-api-credentials)
-  * [3. قم بإجراء أول مكالمة API الخاصة بك](#3-make-your-first-api-call)
+* [البدء](#getting-started)
+  * [1. أنشئ حساب Forward Email الخاص بك](#1-create-your-forward-email-account)
+  * [2. توليد بيانات اعتماد API](#2-generate-api-credentials)
+  * [3. قم بأول استدعاء API لك](#3-make-your-first-api-call)
   * [4. استكشف الوثائق](#4-explore-the-documentation)
 * [الموارد التقنية](#technical-resources)
-
 ## مشكلة واجهة برمجة تطبيقات البريد الإلكتروني {#the-email-api-problem}
 
-واجهات برمجة تطبيقات البريد الإلكتروني معطلة تمامًا. نقطة.
+واجهات برمجة تطبيقات البريد الإلكتروني معطلة بشكل جذري. نقطة.
 
-يجبر كل مزود خدمة البريد الإلكتروني الرئيسي المطورين على اتخاذ أحد خيارين سيئين:
+كل مزود بريد إلكتروني رئيسي يجبر المطورين على اختيار واحد من خيارين سيئين:
 
-١. **جحيم IMAP**: التعامل مع بروتوكول عمره ٣٠ عامًا مصمم لأجهزة سطح المكتب، وليس للتطبيقات الحديثة.
-٢. **واجهات برمجة التطبيقات المعطوبة**: واجهات برمجة تطبيقات محدودة السرعة، للقراءة فقط، ومعقدة في استخدام OAuth، ولا يمكنها إدارة بيانات بريدك الإلكتروني الفعلية.
+1. **جحيم IMAP**: التعامل مع بروتوكول عمره 30 عامًا مصمم لعملاء سطح المكتب، وليس للتطبيقات الحديثة
+2. **واجهات برمجة تطبيقات معاقة**: واجهات برمجة تطبيقات محدودة المعدل، للقراءة فقط، ومعقدة باستخدام OAuth لا يمكنها إدارة بيانات بريدك الإلكتروني الفعلية
 
-النتيجة؟ إما أن يتخلى المطورون عن تكامل البريد الإلكتروني تمامًا أو يضيعون أسابيع في بناء أغلفة IMAP هشة تتعطل باستمرار.
+النتيجة؟ إما أن يتخلى المطورون عن دمج البريد الإلكتروني تمامًا أو يضيعون أسابيع في بناء أغلفة IMAP هشة تتعطل باستمرار.
 
 > \[!WARNING]
-> **السر الخطير**: معظم "واجهات برمجة تطبيقات البريد الإلكتروني" هي مجرد واجهات إرسال. لا يمكنك تنظيم المجلدات برمجيًا، أو مزامنة جهات الاتصال، أو إدارة التقويمات من خلال واجهة REST البسيطة. حتى الآن.
+> **السر القذر**: معظم "واجهات برمجة تطبيقات البريد الإلكتروني" هي مجرد واجهات لإرسال البريد فقط. لا يمكنك تنظيم المجلدات برمجيًا، أو مزامنة جهات الاتصال، أو إدارة التقويمات من خلال واجهة REST بسيطة. حتى الآن.
+
 
 ## ما يقوله المطورون فعليًا {#what-developers-are-actually-saying}
 
 الإحباط حقيقي وموثق في كل مكان:
 
-حاولتُ مؤخرًا دمج Gmail في تطبيقي، لكني استغرقتُ وقتًا طويلًا في ذلك. قررتُ أنه لا جدوى من دعم Gmail.
-
-
-*- [مطور أخبار القراصنة](https://news.ycombinator.com/item?id=42106944)، ١٤٧ تصويتًا إيجابيًا*
-
-هل جميع واجهات برمجة تطبيقات البريد الإلكتروني متوسطة؟ تبدو محدودة أو مُقيّدة بطريقة ما.
-
-
-> *- [مناقشة Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
-
-> "لماذا يُعتبر تطوير البريد الإلكتروني أمرًا صعبًا؟"
-
-> *- [ريديت r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/)، 89 تعليقًا حول معاناة المطورين*
-
-ما الذي يجعل واجهة برمجة تطبيقات Gmail أكثر كفاءة من IMAP؟ سبب آخر يجعلها أكثر كفاءة هو أنها لا تحتاج سوى إلى تنزيل كل رسالة مرة واحدة. مع IMAP، يجب تنزيل كل رسالة وفهرستها...
+> "حاولت مؤخرًا دمج Gmail في تطبيقي، وأمضيت وقتًا طويلاً عليه. قررت أنه لا يستحق دعم Gmail."
 >
-> *- [سؤال Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) مع ٤٧ تصويتًا إيجابيًا*
+> *- [مطور على Hacker News](https://news.ycombinator.com/item?id=42106944)، 147 تصويت إيجابي*
 
-الأدلة موجودة في كل مكان:
+> "هل كل واجهات برمجة تطبيقات البريد الإلكتروني متوسطة؟ تبدو محدودة أو مقيدة بطريقة ما."
+>
+> *- [نقاش على Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-* **مشاكل SMTP في ووردبريس**: [631 مشكلة في GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) حول فشل تسليم البريد الإلكتروني
-* **قيود Zapier**: [شكاوى المجتمع](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) حوالي 10 رسائل بريد إلكتروني/ساعة وفشل في اكتشاف IMAP
-* **مشاريع واجهة برمجة تطبيقات IMAP**: [عديد](https://github.com/ewildgoose/imap-api) [مفتوح المصدر](https://emailengine.app/) [المشاريع](https://www.npmjs.com/package/imapflow) مصممة خصيصًا "لتحويل IMAP إلى REST" نظرًا لعدم وجود مزود خدمة يقدم هذه الخدمة.
-* **إحباطات واجهة برمجة تطبيقات Gmail**: لدى [ستاك أوفر فلو](https://stackoverflow.com/questions/tagged/gmail-api) 4847 سؤالًا مُصنفًا تحت "gmail-api" تتضمن شكاوى شائعة حول حدود السرعة والتعقيد.
+> "لماذا يجب أن يكون تطوير البريد الإلكتروني سيئًا هكذا؟"
+>
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/)، 89 تعليقًا عن معاناة المطورين*
 
-## الحل الثوري لإعادة توجيه البريد الإلكتروني {#forward-emails-revolutionary-solution}
+> "ما الذي يجعل واجهة Gmail API أكثر كفاءة من IMAP؟ سبب آخر يجعل Gmail API أكثر كفاءة هو أنه يحتاج فقط لتنزيل كل رسالة مرة واحدة. مع IMAP، يجب تنزيل كل رسالة وفهرستها..."
+>
+> *- [سؤال على Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) مع 47 تصويت إيجابي*
 
-**نحن أول خدمة بريد إلكتروني تقدم عمليات CRUD كاملة لجميع بيانات البريد الإلكتروني من خلال واجهة برمجة تطبيقات REST موحدة.**
+الدليل موجود في كل مكان:
 
-هذه ليست مجرد واجهة برمجة تطبيقات إرسال، بل تحكم برمجي كامل في:
+* **مشاكل SMTP في ووردبريس**: [631 مشكلة على GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) حول فشل تسليم البريد الإلكتروني
+* **قيود Zapier**: [شكاوى المجتمع](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) حول حدود 10 رسائل في الساعة وفشل اكتشاف IMAP
+* **مشاريع واجهة IMAP API**: [عدة](https://github.com/ewildgoose/imap-api) [مشاريع مفتوحة المصدر](https://emailengine.app/) [موجودة](https://www.npmjs.com/package/imapflow) خصيصًا لـ "تحويل IMAP إلى REST" لأن لا مزود يقدم هذا
+* **إحباطات Gmail API**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) يحتوي على 4,847 سؤالًا معنونة بـ "gmail-api" مع شكاوى شائعة حول حدود المعدل والتعقيد
 
-* **الرسائل**: إنشاء، قراءة، تحديث، حذف، بحث، نقل، وضع علامة.
-* **المجلدات**: إدارة كاملة لمجلدات IMAP عبر نقاط نهاية REST.
-* **جهات الاتصال**: تخزين ومزامنة جهات الاتصال [بطاقة داف](https://tools.ietf.org/html/rfc6352).
-* **التقويمات**: أحداث التقويم [كالداف](https://tools.ietf.org/html/rfc4791) وجدولة المواعيد.
 
-### لماذا بنينا هذا؟ {#why-we-built-this}
+## الحل الثوري لـ Forward Email {#forward-emails-revolutionary-solution}
 
-**المشكلة**: جميع مزودي خدمات البريد الإلكتروني يتعاملون مع البريد الإلكتروني كصندوق أسود. يمكنك إرسال رسائل البريد الإلكتروني، وربما قراءتها باستخدام بروتوكول OAuth معقد، ولكنك لا تستطيع إدارة بيانات بريدك الإلكتروني برمجيًا.
+**نحن أول خدمة بريد إلكتروني تقدم عمليات CRUD كاملة لجميع بيانات البريد الإلكتروني من خلال واجهة REST موحدة.**
 
-**رؤيتنا**: يجب أن يكون دمج البريد الإلكتروني سهلاً كأي واجهة برمجة تطبيقات حديثة. بدون مكتبات IMAP، وبدون تعقيدات OAuth، وبدون قيود السرعة. فقط نقاط نهاية REST بسيطة وفعالة.
+هذا ليس مجرد واجهة لإرسال البريد. هذه هي السيطرة البرمجية الكاملة على:
 
-**النتيجة**: أول خدمة بريد إلكتروني يمكنك من خلالها إنشاء عميل بريد إلكتروني كامل أو تكامل CRM أو نظام أتمتة باستخدام طلبات HTTP فقط.
+* **الرسائل**: إنشاء، قراءة، تحديث، حذف، بحث، نقل، تعليم
+* **المجلدات**: إدارة كاملة لمجلدات IMAP عبر نقاط نهاية REST
+* **جهات الاتصال**: تخزين ومزامنة جهات الاتصال باستخدام [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **التقويمات**: أحداث وجدولة التقويم باستخدام [CalDAV](https://tools.ietf.org/html/rfc4791)
+
+### لماذا بنينا هذا {#why-we-built-this}
+
+**المشكلة**: كل مزود بريد إلكتروني يعامل البريد كبوكس أسود. يمكنك إرسال الرسائل، وربما قراءتها باستخدام OAuth المعقد، لكن لا يمكنك حقًا *إدارة* بيانات بريدك الإلكتروني برمجيًا.
+
+**رؤيتنا**: يجب أن يكون البريد الإلكتروني سهل الدمج مثل أي واجهة برمجة تطبيقات حديثة. لا مكتبات IMAP. لا تعقيد OAuth. لا كوابيس حدود المعدل. فقط نقاط نهاية REST بسيطة تعمل.
+
+**النتيجة**: أول خدمة بريد إلكتروني يمكنك من خلالها بناء عميل بريد إلكتروني كامل، أو دمج CRM، أو نظام أتمتة باستخدام طلبات HTTP فقط.
 
 ### مصادقة بسيطة {#simple-authentication}
 
-لا يوجد [تعقيد OAuth](https://oauth.net/2/). لا يوجد [كلمات مرور خاصة بالتطبيق](https://support.google.com/accounts/answer/185833). بيانات اعتماد اسمك المستعار فقط:
+لا [تعقيد OAuth](https://oauth.net/2/). لا [كلمات مرور خاصة بالتطبيق](https://support.google.com/accounts/answer/185833). فقط بيانات اعتماد الاسم المستعار الخاص بك:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
-
-## 20 نقطة نهاية تغير كل شيء {#20-endpoints-that-change-everything}
+## 20 نقاط نهاية تغير كل شيء {#20-endpoints-that-change-everything}
 
 ### الرسائل (5 نقاط نهاية) {#messages-5-endpoints}
 
-* `GET /v1/messages` - عرض الرسائل مع إمكانية التصفية (`?folder=`، `?is_unread=`، `?is_flagged=`)
-* `POST /v1/messages` - إرسال الرسائل الجديدة مباشرةً إلى المجلدات
-* `GET /v1/messages/:id` - استرداد رسالة محددة مع كامل بياناتها الوصفية
+* `GET /v1/messages` - سرد الرسائل مع التصفية (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `POST /v1/messages` - إرسال رسائل جديدة مباشرة إلى المجلدات
+* `GET /v1/messages/:id` - استرجاع رسالة محددة مع كافة البيانات الوصفية
 * `PUT /v1/messages/:id` - تحديث الرسالة (العلامات، المجلد، حالة القراءة)
 * `DELETE /v1/messages/:id` - حذف الرسالة نهائيًا
 
 ### المجلدات (5 نقاط نهاية) {#folders-5-endpoints}
 
-* `GET /v1/folders` - عرض جميع المجلدات مع حالة الاشتراك
+* `GET /v1/folders` - سرد جميع المجلدات مع حالة الاشتراك
 * `POST /v1/folders` - إنشاء مجلد جديد بخصائص مخصصة
 * `GET /v1/folders/:id` - الحصول على تفاصيل المجلد وعدد الرسائل
 * `PUT /v1/folders/:id` - تحديث خصائص المجلد والاشتراك
-* `DELETE /v1/folders/:id` - حذف المجلد ومعالجة نقل الرسائل
+* `DELETE /v1/folders/:id` - حذف المجلد والتعامل مع إعادة توطين الرسائل
 
-### جهات اتصال (5 نقاط نهاية) {#contacts-5-endpoints}
+### جهات الاتصال (5 نقاط نهاية) {#contacts-5-endpoints}
 
-* `GET /v1/contacts` - عرض جهات الاتصال مع البحث والترقيم
-* `POST /v1/contacts` - إنشاء جهة اتصال جديدة مع دعم كامل لبطاقات vCard
-* `GET /v1/contacts/:id` - استرداد جهة الاتصال مع جميع الحقول والبيانات الوصفية
-* `PUT /v1/contacts/:id` - تحديث معلومات جهة الاتصال باستخدام التحقق من صحة ETag
-* `DELETE /v1/contacts/:id` - حذف جهة اتصال مع المعالجة المتتالية
+* `GET /v1/contacts` - سرد جهات الاتصال مع البحث والتقسيم إلى صفحات
+* `POST /v1/contacts` - إنشاء جهة اتصال جديدة بدعم كامل لبطاقة vCard
+* `GET /v1/contacts/:id` - استرجاع جهة الاتصال مع جميع الحقول والبيانات الوصفية
+* `PUT /v1/contacts/:id` - تحديث معلومات جهة الاتصال مع التحقق من ETag
+* `DELETE /v1/contacts/:id` - حذف جهة الاتصال مع التعامل المتسلسل
 
 ### التقويمات (5 نقاط نهاية) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - عرض أحداث التقويم مع فلترة التاريخ
-* `POST /v1/calendars` - إنشاء حدث تقويم مع الحضور وتكراره
-* `GET /v1/calendars/:id` - الحصول على تفاصيل الحدث مع معالجة المنطقة الزمنية
-* `PUT /v1/calendars/:id` - تحديث الحدث مع كشف التعارض
+* `GET /v1/calendars` - سرد أحداث التقويم مع تصفية بالتاريخ
+* `POST /v1/calendars` - إنشاء حدث تقويم مع الحضور والتكرار
+* `GET /v1/calendars/:id` - الحصول على تفاصيل الحدث مع التعامل مع المنطقة الزمنية
+* `PUT /v1/calendars/:id` - تحديث الحدث مع اكتشاف التعارضات
 * `DELETE /v1/calendars/:id` - حذف الحدث مع إشعارات الحضور
 
-## بحث متقدم: لا توجد خدمة أخرى مماثلة {#advanced-search-no-other-service-compares}
 
-**إعادة توجيه البريد الإلكتروني هي خدمة البريد الإلكتروني الوحيدة التي توفر بحثًا برمجيًا شاملاً عبر جميع حقول الرسائل من خلال واجهة برمجة التطبيقات REST.**
+## البحث المتقدم: لا تقارن أي خدمة أخرى {#advanced-search-no-other-service-compares}
 
-بينما يُقدّم مُزوّدو خدمات آخرون تصفيةً أساسيةً في أحسن الأحوال، فقد طوّرنا واجهة برمجة تطبيقات بحث البريد الإلكتروني الأكثر تطورًا على الإطلاق. لا تُضاهي أي واجهة برمجة تطبيقات لـ Gmail أو Outlook أو أي خدمة أخرى قدرات البحث التي نُقدّمها.
+**Forward Email هي الخدمة الوحيدة للبريد الإلكتروني التي تقدم بحثًا برمجيًا شاملاً عبر جميع حقول الرسائل من خلال REST API.**
 
-### تم كسر مشهد واجهة برمجة التطبيقات للبحث {#the-search-api-landscape-is-broken}
+بينما يقدم المزودون الآخرون تصفية أساسية في أفضل الأحوال، قمنا ببناء أكثر واجهة برمجة تطبيقات بحث بريد إلكتروني تقدمًا على الإطلاق. لا تقارن أي واجهة برمجة تطبيقات Gmail أو Outlook أو أي خدمة أخرى بقدرات البحث لدينا.
 
-**قيود بحث API في Gmail:**
+### مشهد واجهات برمجة تطبيقات البحث معطل {#the-search-api-landscape-is-broken}
+
+**قيود بحث واجهة برمجة تطبيقات Gmail:**
 
 * ✅ معلمة `q` الأساسية فقط
-* ❌ لا يوجد بحث خاص بالحقول
-* ❌ لا يوجد تصفية لنطاق التاريخ
-* ❌ لا يوجد تصفية حسب الحجم
-* ❌ لا يوجد تصفية للمرفقات
-* ❌ يقتصر على صيغة بحث Gmail
+* ❌ لا بحث محدد الحقل
+* ❌ لا تصفية بنطاق التاريخ
+* ❌ لا تصفية حسب الحجم
+* ❌ لا تصفية المرفقات
+* ❌ مقتصر على صياغة بحث Gmail
 
-**قيود البحث في واجهة برمجة تطبيقات Outlook:**
+**قيود بحث واجهة برمجة تطبيقات Outlook:**
 
 * ✅ معلمة `$search` الأساسية
-* ❌ لا يوجد استهداف متقدم للحقول
-* ❌ لا توجد تركيبات استعلامات معقدة
+* ❌ لا استهداف متقدم للحقل
+* ❌ لا تركيبات استعلام معقدة
 * ❌ تحديد معدل صارم
-* ❌ يتطلب بناء جملة OData معقدًا
+* ❌ يتطلب صياغة OData معقدة
 
-**آي كلاود من آبل:**
+**Apple iCloud:**
 
-* ❌ لا يوجد واجهة برمجة تطبيقات على الإطلاق
+* ❌ لا توجد واجهة برمجة تطبيقات على الإطلاق
 * ❌ بحث IMAP فقط (إذا تمكنت من تشغيله)
 
-**بروتون ميل وتوتا:**
+**ProtonMail & Tuta:**
 
 * ❌ لا توجد واجهات برمجة تطبيقات عامة
-* ❌ لا توجد إمكانيات بحث برمجي
+* ❌ لا قدرات بحث برمجية
 
-### واجهة برمجة تطبيقات البحث الثورية لإعادة توجيه البريد الإلكتروني {#forward-emails-revolutionary-search-api}
+### واجهة برمجة تطبيقات البحث الثورية من Forward Email {#forward-emails-revolutionary-search-api}
 
-**نحن نقدم أكثر من 15 معلمة بحث لا تقدمها أي خدمة أخرى:**
+**نقدم أكثر من 15 معلمة بحث لا توفرها أي خدمة أخرى:**
 
-| إمكانية البحث | إعادة توجيه البريد الإلكتروني | واجهة برمجة تطبيقات Gmail | واجهة برمجة تطبيقات Outlook | آحرون |
+| قدرة البحث                    | Forward Email                          | Gmail API    | Outlook API        | أخرى   |
 | ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **البحث الخاص بالمجال** | ✅ الموضوع، النص، من، إلى، نسخة كربونية، العناوين | ❌ | ❌ | ❌ |
-| **البحث العام متعدد المجالات** | ✅ `?search=` في جميع الحقول | ✅ `q=` الأساسي | ✅ `$search=` الأساسي | ❌ |
-| **تصفية نطاق التاريخ** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **التصفية حسب الحجم** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **تصفية المرفقات** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **بحث الرأس** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **البحث عن معرف الرسالة** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **الفلاتر المجمعة** | ✅ معلمات متعددة مع منطق AND | ❌ | ❌ | ❌ |
-| **غير حساس لحالة الأحرف** | ✅ جميع عمليات البحث | ✅ | ✅ | ❌ |
-| **دعم الترقيم** | ✅ يعمل مع جميع معلمات البحث | ✅ | ✅ | ❌ |
+| **بحث محدد الحقل**             | ✅ الموضوع، النص، من، إلى، نسخة، رؤوس الرسائل | ❌            | ❌                  | ❌      |
+| **بحث عام متعدد الحقول**       | ✅ `?search=` عبر جميع الحقول           | ✅ أساسي `q=` | ✅ أساسي `$search=` | ❌      |
+| **تصفية بنطاق التاريخ**        | ✅ `?since=` و `?before=`               | ❌            | ❌                  | ❌      |
+| **تصفية حسب الحجم**            | ✅ `?min_size=` و `?max_size=`          | ❌            | ❌                  | ❌      |
+| **تصفية المرفقات**             | ✅ `?has_attachments=true/false`        | ❌            | ❌                  | ❌      |
+| **بحث في الرؤوس**              | ✅ `?headers=X-Priority`                | ❌            | ❌                  | ❌      |
+| **بحث بمعرف الرسالة**          | ✅ `?message_id=abc123`                 | ❌            | ❌                  | ❌      |
+| **تصفية مركبة**               | ✅ معلمات متعددة مع منطق AND            | ❌            | ❌                  | ❌      |
+| **غير حساس لحالة الأحرف**      | ✅ جميع عمليات البحث                    | ✅            | ✅                  | ❌      |
+| **دعم التقسيم إلى صفحات**     | ✅ يعمل مع جميع معلمات البحث            | ✅            | ✅                  | ❌      |
+### أمثلة بحث من العالم الحقيقي {#real-world-search-examples}
 
-### أمثلة بحث واقعية عن {#real-world-search-examples}
-
-**البحث عن جميع الفواتير من الربع الأخير:**
+**ابحث عن جميع الفواتير من الربع الأخير:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - بسيط وقوي
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - مستحيل مع بحثهم المحدود
+# لا يوجد تصفية حسب نطاق التاريخ
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - صيغة OData معقدة، وظائف محدودة
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
-**البحث عن المرفقات الكبيرة من مرسل محدد:**
+**ابحث عن مرفقات كبيرة من مرسل معين:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - تصفية شاملة
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - لا يمكن التصفية حسب الحجم أو المرفقات برمجياً
+# Outlook API - لا توجد تصفية حسب الحجم متاحة
+# أخرى - لا توجد واجهات برمجة تطبيقات متاحة
 ```
 
-**البحث المعقد متعدد الحقول:**
+**بحث متعدد الحقول معقد:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - قدرات استعلام متقدمة
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - محدود بالبحث النصي الأساسي فقط
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - بحث أساسي بدون استهداف الحقول
 GET /me/messages?$search="quarterly"
 ```
 
 ### مزايا الأداء {#performance-advantages}
 
-**أداء البحث عن رسائل البريد الإلكتروني المعاد توجيهها:**
+**أداء بحث Forward Email:**
 
-* ⚡ **أوقات استجابة أقل من ١٠٠ مللي ثانية** لعمليات البحث المعقدة
-* 🔍 **تحسين التعبيرات العادية** مع الفهرسة المناسبة
-* 📊 **تنفيذ الاستعلامات المتوازية** للعدد والبيانات
-* 💾 **استخدام فعال للذاكرة** مع استعلامات مُحسّنة
+* ⚡ **أوقات استجابة أقل من 100 مللي ثانية** للبحث المعقد
+* 🔍 **تحسين التعبيرات النمطية (Regex)** مع فهرسة مناسبة
+* 📊 **تنفيذ استعلامات متوازية** للعد والبيانات
+* 💾 **استخدام ذاكرة فعال** مع استعلامات خفيفة
 
 **مشاكل أداء المنافسين:**
 
-* 🐌 **واجهة برمجة تطبيقات Gmail**: معدل محدود بـ ٢٥٠ وحدة حصة لكل مستخدم في الثانية
-* 🐌 **واجهة برمجة تطبيقات Outlook**: تقييد صارم مع متطلبات تأخير معقدة
-* 🐌 **أخرى**: لا توجد واجهات برمجة تطبيقات للمقارنة بها
+* 🐌 **Gmail API**: محدودية المعدل إلى 250 وحدة حصة لكل مستخدم في الثانية
+* 🐌 **Outlook API**: تقييد صارم مع متطلبات تأخير معقدة
+* 🐌 **أخرى**: لا توجد واجهات برمجة تطبيقات للمقارنة
 
-ميزات البحث ### التي لا يمتلكها أي شخص آخر {#search-features-no-one-else-has}
+### ميزات البحث التي لا يمتلكها أحد غيرنا {#search-features-no-one-else-has}
 
-#### 1. بحث خاص بالرأس {#1-header-specific-search}
+#### 1. بحث مخصص للرؤوس {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# ابحث عن الرسائل التي تحتوي على رؤوس محددة
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. الذكاء القائم على الحجم {#2-size-based-intelligence}
+#### 2. ذكاء قائم على الحجم {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# ابحث عن رسائل النشرة الإخبارية (عادة كبيرة الحجم)
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# ابحث عن الردود السريعة (عادة صغيرة الحجم)
 GET /v1/messages?max_size=1000&to=support
 ```
 
-#### 3. سير العمل القائمة على المرفقات {#3-attachment-based-workflows}
+#### 3. سير عمل قائم على المرفقات {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# ابحث عن جميع المستندات المرسلة إلى الفريق القانوني
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# ابحث عن الرسائل بدون مرفقات للتنظيف
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
-#### 4. منطق الأعمال المجمع {#4-combined-business-logic}
+#### 4. منطق أعمال مركب {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# ابحث عن الرسائل المعلمة كعاجلة من كبار الشخصيات مع مرفقات
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
 ### لماذا هذا مهم للمطورين {#why-this-matters-for-developers}
 
-**إنشاء التطبيقات التي كانت مستحيلة في السابق:**
+**ابنِ تطبيقات كانت مستحيلة سابقاً:**
 
-١. **تحليلات البريد الإلكتروني المتقدمة**: تحليل أنماط البريد الإلكتروني حسب الحجم والمُرسِل والمحتوى.
-٢. **إدارة البريد الإلكتروني الذكية**: تنظيم تلقائي بناءً على معايير مُعقّدة.
-٣. **الامتثال والاكتشاف**: البحث عن رسائل بريد إلكتروني مُحدّدة للمتطلبات القانونية.
-٤. **ذكاء الأعمال**: استخلاص رؤى من أنماط التواصل عبر البريد الإلكتروني.
-٥. **سير العمل الآلي**: تفعيل الإجراءات بناءً على مُرشّحات بريد إلكتروني مُتطوّرة.
+1. **تحليلات بريد إلكتروني متقدمة**: تحليل أنماط البريد حسب الحجم والمرسل والمحتوى
+2. **إدارة بريد ذكية**: تنظيم تلقائي بناءً على معايير معقدة
+3. **الامتثال والاكتشاف**: العثور على رسائل محددة للمتطلبات القانونية
+4. **ذكاء الأعمال**: استخراج رؤى من أنماط التواصل عبر البريد الإلكتروني
+5. **سير عمل آلي**: تفعيل إجراءات بناءً على فلاتر بريد متقدمة
 
 ### التنفيذ الفني {#the-technical-implementation}
 
-تستخدم واجهة برمجة التطبيقات البحثية الخاصة بنا:
+تستخدم واجهة برمجة تطبيقات البحث لدينا:
 
-* **تحسين التعبيرات العادية** مع استراتيجيات فهرسة مناسبة
-* **التنفيذ المتوازي** لتحسين الأداء
-* **التحقق من صحة الإدخال** لضمان الأمان
-* **معالجة شاملة للأخطاء** لضمان الموثوقية
+* **تحسين التعبيرات النمطية (Regex)** مع استراتيجيات فهرسة مناسبة
+* **تنفيذ متوازي** للأداء
+* **التحقق من صحة المدخلات** للأمان
+* **معالجة شاملة للأخطاء** للموثوقية
 
 ```javascript
-// Example: Complex search implementation
+// مثال: تنفيذ بحث معقد
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -357,18 +356,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// الجمع باستخدام منطق AND
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **مزايا المطور**: باستخدام واجهة برمجة تطبيقات البحث في Forward Email، يمكنك إنشاء تطبيقات بريد إلكتروني تنافس تطبيقات سطح المكتب من حيث الوظائف مع الحفاظ على بساطة واجهات برمجة تطبيقات REST.
+> **ميزة للمطورين**: مع واجهة برمجة تطبيقات البحث في Forward Email، يمكنك بناء تطبيقات بريد إلكتروني تنافس عملاء سطح المكتب في الوظائف مع الحفاظ على بساطة واجهات REST.
+## بنية أداء فائقة السرعة {#blazing-fast-performance-architecture}
 
-## هندسة أداء فائقة السرعة {#blazing-fast-performance-architecture}
-
-تم تصميم مجموعتنا الفنية لتحقيق السرعة والموثوقية:
+تم بناء مجموعتنا التقنية للسرعة والموثوقية:
 
 ```mermaid
 graph LR
@@ -382,101 +380,101 @@ graph LR
 
 **لماذا نحن سريعون كالبرق:**
 
-| عنصر | تكنولوجيا | فائدة الأداء |
-| ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **تخزين** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | أسرع بعشر مرات من SATA التقليدي |
-| **قاعدة البيانات** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | عدم وجود زمن انتقال للشبكة، وتسلسل مُحسَّن |
-| **الأجهزة** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) المعدن العاري | لا توجد تكاليف إضافية للمحاكاة الافتراضية |
-| **التخزين المؤقت** | في الذاكرة + مستمرة | أوقات الاستجابة أقل من ميلي ثانية |
-| **النسخ الاحتياطية** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) مشفر | موثوقية على مستوى المؤسسة |
+| المكون       | التكنولوجيا                                                                       | فائدة الأداء                                |
+| ------------ | --------------------------------------------------------------------------------- | ------------------------------------------- |
+| **التخزين**  | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                            | أسرع 10 مرات من SATA التقليدي               |
+| **قاعدة البيانات** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | صفر تأخير في الشبكة، تسلسل محسّن             |
+| **الأجهزة**  | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) بدون طبقة افتراضية | لا يوجد حمل إضافي للتمثيل الافتراضي          |
+| **التخزين المؤقت** | في الذاكرة + دائم                                                              | أوقات استجابة أقل من المللي ثانية            |
+| **النسخ الاحتياطية** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) مشفرة                 | موثوقية بمستوى المؤسسات                      |
 
 **أرقام الأداء الحقيقية:**
 
-* **زمن استجابة واجهة برمجة التطبيقات**: أقل من ٥٠ مللي ثانية في المتوسط
-* **استرجاع الرسائل**: أقل من ١٠ مللي ثانية للرسائل المخزنة مؤقتًا
-* **عمليات المجلد**: أقل من ٥ مللي ثانية لعمليات البيانات الوصفية
-* **مزامنة جهات الاتصال**: أكثر من ١٠٠٠ جهة اتصال في الثانية
-* **مدة التشغيل**: ٩٩.٩٩٪ باتفاقية مستوى الخدمة مع بنية تحتية احتياطية
+* **زمن استجابة API**: أقل من 50 مللي ثانية في المتوسط
+* **استرجاع الرسائل**: أقل من 10 مللي ثانية للرسائل المخزنة مؤقتًا
+* **عمليات المجلدات**: أقل من 5 مللي ثانية لعمليات بيانات التعريف
+* **مزامنة جهات الاتصال**: أكثر من 1000 جهة اتصال في الثانية
+* **مدة التشغيل**: 99.99% اتفاقية مستوى الخدمة مع بنية تحتية زائدة
 
-### هندسة الخصوصية أولاً {#privacy-first-architecture}
+### بنية الخصوصية أولاً {#privacy-first-architecture}
 
-**تصميم بدون معرفة**: أنت وحدك من يملك حق الوصول باستخدام كلمة مرور IMAP الخاصة بك - لا يمكننا قراءة رسائل بريدك الإلكتروني. يضمن حامل [هندسة المعرفة الصفرية](https://forwardemail.net/en/security) خصوصية تامة مع أداء فائق.
+**تصميم المعرفة الصفرية**: فقط أنت من يملك الوصول باستخدام كلمة مرور IMAP الخاصة بك - لا يمكننا قراءة رسائلك الإلكترونية. تضمن [بنيتنا المعرفية الصفرية](https://forwardemail.net/en/security) الخصوصية الكاملة مع تقديم أداء فائق السرعة.
+
 
 ## لماذا نحن مختلفون: المقارنة الكاملة {#why-were-different-the-complete-comparison}
 
-### القيود الرئيسية للمزود {#major-provider-limitations}
+### قيود المزودين الرئيسيين {#major-provider-limitations}
 
-| مزود | المشاكل الأساسية | القيود المحددة |
-| ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **واجهة برمجة تطبيقات Gmail** | للقراءة فقط، OAuth معقد، واجهات برمجة تطبيقات منفصلة | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) لجهات الاتصال/التقويم |
-| **واجهة برمجة تطبيقات Outlook** | مُهمَل، مُربك، مُركّز على المؤسسات | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS، الرسم البياني، REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **آي كلاود من آبل** | لا يوجد واجهة برمجة تطبيقات عامة | • __رابط_الخلية_0__<br>• __رابط_الخلية_1__<br>• __رابط_الخلية_2__<br>• __رابط_الخلية_3__ |
-| **بروتون ميل** | لا يوجد واجهة برمجة تطبيقات، ادعاءات مفتوحة المصدر كاذبة | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge software required](https://proton.me/mail/bridge) للوصول إلى IMAP<br>• [Claims "open source"](https://proton.me/blog/open-source) ولكن [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **المجموع** | لا يوجد واجهة برمجة تطبيقات، شفافية مضللة | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) ولكن [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) يمنع التكاملات القياسية |
-| **بريد زابير الإلكتروني** | حدود المعدلات الشديدة | • __رابط_الخلية_0__<br>• __رابط_الخلية_1__<br>• __رابط_الخلية_2__ |
-
+| المزود           | المشاكل الأساسية                          | القيود المحددة                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Gmail API**    | قراءة فقط، OAuth معقد، APIs منفصلة          | • [لا يمكن تعديل الرسائل الموجودة](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [التسميات ≠ المجلدات](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [حد 1 مليار وحدة حصة يوميًا](https://developers.google.com/gmail/api/reference/quota)<br>• [يتطلب APIs منفصلة](https://developers.google.com/workspace) لجهات الاتصال/التقويم                                                           |
+| **Outlook API**  | مهجور، مربك، موجه للمؤسسات                 | • [نقاط نهاية REST مهجورة مارس 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [عدة APIs مربكة](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graph, REST)<br>• [تعقيد Microsoft Graph](https://learn.microsoft.com/en-us/graph/overview)<br>• [تقييد صارم](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud** | لا يوجد API عام                           | • [لا يوجد API عام على الإطلاق](https://support.apple.com/en-us/102654)<br>• [IMAP فقط مع حد 1000 رسالة يوميًا](https://support.apple.com/en-us/102654)<br>• [كلمات مرور خاصة بالتطبيق مطلوبة](https://support.apple.com/en-us/102654)<br>• [حد 500 مستلم لكل رسالة](https://support.apple.com/en-us/102654)                                                                                                                                              |
+| **ProtonMail**   | لا API، ادعاءات مفتوحة المصدر كاذبة         | • [لا يوجد API عام متاح](https://proton.me/support/protonmail-bridge-clients)<br>• [برنامج Bridge مطلوب](https://proton.me/mail/bridge) للوصول عبر IMAP<br>• [يدعي "مفتوح المصدر"](https://proton.me/blog/open-source) لكن [كود الخادم ملكي](https://github.com/ProtonMail)<br>• [مقتصر على الخطط المدفوعة فقط](https://proton.me/pricing)                                                                                                         |
+| **Tuta**         | لا API، شفافية مضللة                        | • [لا يوجد REST API لإدارة البريد الإلكتروني](https://tuta.com/support#technical)<br>• [يدعي "مفتوح المصدر"](https://tuta.com/blog/posts/open-source-email) لكن [الخلفية مغلقة](https://github.com/tutao/tutanota)<br>• [لا يدعم IMAP/SMTP](https://tuta.com/support#imap)<br>• [تشفير ملكي](https://tuta.com/encryption) يمنع التكاملات القياسية                                                                                               |
+| **Zapier Email** | قيود شديدة على المعدل                      | • [حد 10 رسائل في الساعة](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [لا يوجد وصول لمجلدات IMAP](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [قدرات تحليل محدودة](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)                                 |
 ### مزايا إعادة توجيه البريد الإلكتروني {#forward-email-advantages}
 
-| ميزة | إعادة توجيه البريد الإلكتروني | مسابقة |
+| الميزة             | إعادة توجيه البريد الإلكتروني                                                                 | المنافسة                                  |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **CRUD الكامل** | ✅ إنشاء كامل وقراءة وتحديث وحذف لجميع البيانات | ❌ عمليات للقراءة فقط أو محدودة |
-| **واجهة برمجة التطبيقات الموحدة** | ✅ الرسائل والمجلدات وجهات الاتصال والتقويمات في واجهة برمجة تطبيقات واحدة | ❌ واجهات برمجة التطبيقات المنفصلة أو الميزات المفقودة |
-| **المصادقة البسيطة** | ✅ المصادقة الأساسية باستخدام بيانات اعتماد الاسم المستعار | ❌ OAuth معقد مع نطاقات متعددة |
-| **لا توجد حدود للسعر** | ✅ حدود سخية مصممة للتطبيقات الحقيقية | ❌ الحصص المقيدة التي تعيق سير العمل |
-| **استضافة ذاتية** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ قفل البائع فقط |
-| **خصوصية** | ✅ معرفة صفرية، مشفرة، خاصة | ❌ استخراج البيانات ومخاوف الخصوصية |
-| **أداء** | ✅ استجابات أقل من 50 مللي ثانية، تخزين NVMe | ❌ زمن وصول الشبكة، وتأخيرات الخنق |
+| **CRUD كاملة**     | ✅ إنشاء، قراءة، تحديث، حذف كاملة لجميع البيانات                                              | ❌ قراءة فقط أو عمليات محدودة               |
+| **واجهة برمجة تطبيقات موحدة** | ✅ الرسائل، المجلدات، جهات الاتصال، التقويمات في واجهة برمجة تطبيقات واحدة                  | ❌ واجهات برمجة تطبيقات منفصلة أو ميزات مفقودة |
+| **مصادقة بسيطة**   | ✅ مصادقة أساسية باستخدام بيانات اعتماد الاسم المستعار                                        | ❌ OAuth معقد مع صلاحيات متعددة             |
+| **بدون حدود معدل** | ✅ حدود سخية مصممة للتطبيقات الحقيقية                                                        | ❌ حصص مقيدة تكسر سير العمل                 |
+| **الاستضافة الذاتية** | ✅ [خيار الاستضافة الذاتية الكامل](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ قفل البائع فقط                           |
+| **الخصوصية**       | ✅ معرفة صفرية، مشفرة، خاصة                                                                  | ❌ تنقيب عن البيانات ومخاوف الخصوصية        |
+| **الأداء**         | ✅ استجابات أقل من 50 مللي ثانية، تخزين NVMe                                                | ❌ تأخير الشبكة، تأخيرات التقييد            |
 
-### مشكلة شفافية المصدر المفتوح {#the-open-source-transparency-problem}
+### مشكلة الشفافية في المصادر المفتوحة {#the-open-source-transparency-problem}
 
-**تروج ProtonMail وTuta لنفسيهما على أنهما "مفتوحا المصدر" و"شفافان"، ولكن هذا تسويق مضلل ينتهك مبادئ الخصوصية الحديثة.**
+**تسوق ProtonMail و Tuta نفسيهما على أنهما "مفتوحا المصدر" و"شفافان"، لكن هذا تسويق مضلل ينتهك مبادئ الخصوصية الحديثة.**
 
 > \[!WARNING]
-> **ادعاءات الشفافية الزائفة**: يُعلن كلٌّ من ProtonMail وTuta بشكل واضح عن اعتمادهما "مفتوح المصدر" مع الحفاظ على خصوصية أكواد الخادم الأكثر أهميةً ومغلقة.
+> **ادعاءات شفافية كاذبة**: يعلن كل من ProtonMail و Tuta بشكل بارز عن "مصداقيتهما كمصدر مفتوح" بينما يحتفظان بأهم كود الخادم الخاص بهما مغلقا وسريا.
 
-**خداع بروتون ميل:**
+**خداع ProtonMail:**
 
-* **الادعاءات**: ["نحن مفتوح المصدر"](https://proton.me/blog/open-source) ظهر بشكل بارز في التسويق.
-* **الواقع**: [كود الخادم هو ملكية خاصة تمامًا](https://github.com/ProtonMail) - تطبيقات العميل فقط هي مفتوحة المصدر.
-* **التأثير**: لا يمكن للمستخدمين التحقق من تشفير الخادم، أو معالجة البيانات، أو ادعاءات الخصوصية.
-* **انتهاك الشفافية**: لا توجد طريقة لتدقيق أنظمة معالجة وتخزين البريد الإلكتروني الفعلية.
+* **الادعاءات**: ["نحن مفتوحو المصدر"](https://proton.me/blog/open-source) تظهر بشكل بارز في التسويق
+* **الواقع**: [كود الخادم ملكي بالكامل](https://github.com/ProtonMail) - فقط تطبيقات العميل مفتوحة المصدر
+* **التأثير**: لا يمكن للمستخدمين التحقق من التشفير على جانب الخادم، أو معالجة البيانات، أو ادعاءات الخصوصية
+* **انتهاك الشفافية**: لا توجد طريقة لتدقيق أنظمة معالجة وتخزين البريد الإلكتروني الفعلية
 
-**تسويق توتا المضلل:**
+**تسويق Tuta المضلل:**
 
-* **الادعاءات**: ["البريد الإلكتروني مفتوح المصدر"](https://tuta.com/blog/posts/open-source-email) كنقطة بيع أساسية
-* **الواقع**: [البنية التحتية الخلفية مغلقة المصدر](https://github.com/tutao/tutanota) - الواجهة الأمامية فقط متاحة
-* **التأثير**: يمنع التشفير الخاص بروتوكولات البريد الإلكتروني القياسية (IMAP/SMTP)
-* **استراتيجية القفل**: التشفير المخصص يفرض الاعتماد على الموردين
+* **الادعاءات**: ["بريد إلكتروني مفتوح المصدر"](https://tuta.com/blog/posts/open-source-email) كنقطة بيع أساسية
+* **الواقع**: [البنية التحتية الخلفية مغلقة المصدر](https://github.com/tutao/tutanota) - فقط الواجهة الأمامية متاحة
+* **التأثير**: التشفير الملكي يمنع بروتوكولات البريد الإلكتروني القياسية (IMAP/SMTP)
+* **استراتيجية القفل**: التشفير المخصص يجبر الاعتماد على البائع
 
-**لماذا هذا مهم للخصوصية في العصر الحديث:**
+**لماذا هذا مهم للخصوصية الحديثة:**
 
-في عام ٢٠٢٥، تتطلب الخصوصية الحقيقية **شفافية تامة**. عندما يدّعي مزودو خدمات البريد الإلكتروني أنهم "مفتوحو المصدر" لكنهم يُخفون شيفرة خادمهم:
+في عام 2025، تتطلب الخصوصية الحقيقية **شفافية كاملة**. عندما يدعي مزودو البريد الإلكتروني "مفتوح المصدر" لكنهم يخفيون كود الخادم:
 
-١. **تشفير غير قابل للتحقق**: لا يمكنك التحقق من كيفية تشفير بياناتك فعليًا.
-٢. **ممارسات البيانات الخفية**: تظل معالجة البيانات من جانب الخادم سرية.
-٣. **الأمان القائم على الثقة**: يجب أن تثق بادعاءاتهم دون تحقق.
-٤. **احتكار الموردين**: تمنع الأنظمة الاحتكارية نقل البيانات.
+1. **تشفير غير قابل للتحقق**: لا يمكنك تدقيق كيفية تشفير بياناتك فعليا
+2. **ممارسات بيانات مخفية**: تبقى معالجة البيانات على جانب الخادم صندوقا أسود
+3. **أمان قائم على الثقة**: يجب أن تثق في ادعاءاتهم دون تحقق
+4. **قفل البائع**: تمنع الأنظمة الملكية نقل البيانات
 
 **الشفافية الحقيقية لإعادة توجيه البريد الإلكتروني:**
 
 * ✅ **[مفتوح المصدر بالكامل](https://github.com/forwardemail/forwardemail.net)** - كود الخادم والعميل
-* ✅ **[الاستضافة الذاتية متاحة](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - شغّل نسختك الخاصة
-* ✅ **البروتوكولات القياسية** - التوافق مع IMAP وSMTP وCardDAV وCalDAV
+* ✅ **[الاستضافة الذاتية متاحة](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - تشغيل نسختك الخاصة
+* ✅ **بروتوكولات قياسية** - توافق IMAP، SMTP، CardDAV، CalDAV
 * ✅ **أمان قابل للتدقيق** - يمكن فحص كل سطر من الكود
-* ✅ **لا يوجد تقييد للبائع** - بياناتك، تحكمك
+* ✅ **لا قفل للبائع** - بياناتك، تحكمك
 
 > \[!TIP]
-> **المصدر المفتوح الحقيقي يعني أنه يمكنك التحقق من كل ادعاء.** مع Forward Email، يمكنك تدقيق تشفيرنا، ومراجعة تعاملنا مع البيانات، وحتى تشغيل نسختك الخاصة. هذه هي الشفافية الحقيقية.
+> **المصدر المفتوح الحقيقي يعني أنه يمكنك التحقق من كل ادعاء.** مع إعادة توجيه البريد الإلكتروني، يمكنك تدقيق تشفيرنا، مراجعة معالجة بياناتنا، وحتى تشغيل نسختك الخاصة. هذه هي الشفافية الحقيقية.
 
-## أكثر من 30 مثالًا للتكامل في العالم الحقيقي {#30-real-world-integration-examples}
 
-### 1. تحسين نموذج اتصال WordPress {#1-wordpress-contact-form-enhancement}
+## أكثر من 30 مثال تكامل من العالم الحقيقي {#30-real-world-integration-examples}
 
-**المشكلة**: [فشل تكوين SMTP الخاص بـ WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 مشكلة في GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**الحل**: تكامل واجهة برمجة التطبيقات المباشر يتجاوز [SMTP](https://tools.ietf.org/html/rfc5321) تمامًا
+### 1. تحسين نموذج الاتصال في ووردبريس {#1-wordpress-contact-form-enhancement}
+**المشكلة**: [فشل تكوين SMTP في ووردبريس](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 مشكلة على GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))  
+**الحل**: التكامل المباشر عبر API يتجاوز [SMTP](https://tools.ietf.org/html/rfc5321) بالكامل
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// نموذج اتصال ووردبريس يحفظ في مجلد المرسلة
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -485,7 +483,7 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'نموذج الاتصال: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
@@ -494,11 +492,11 @@ await fetch('https://api.forwardemail.net/v1/messages', {
 
 ### 2. بديل Zapier لأتمتة البريد الإلكتروني {#2-zapier-alternative-for-email-automation}
 
-**المشكلة**: [الحد الأقصى لـ 10 رسائل بريد إلكتروني في الساعة في Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) و[فشل اكتشاف IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
+**المشكلة**: [حد 10 رسائل بريد إلكتروني في الساعة من Zapier](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) و[فشل اكتشاف IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)  
 **الحل**: أتمتة غير محدودة مع تحكم كامل في البريد الإلكتروني
 
 ```javascript
-// Auto-organize emails by sender domain
+// تنظيم الرسائل تلقائيًا حسب نطاق المرسل
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -509,13 +507,13 @@ for (const message of messages) {
 }
 ```
 
-### 3. مزامنة البريد الإلكتروني لإدارة علاقات العملاء {#3-crm-email-synchronization}
+### 3. مزامنة البريد الإلكتروني لنظام إدارة علاقات العملاء {#3-crm-email-synchronization}
 
-**المشكلة**: إدارة جهات الاتصال يدويًا بين البريد الإلكتروني و[أنظمة إدارة علاقات العملاء](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**الحل**: مزامنة ثنائية الاتجاه مع واجهة برمجة تطبيقات جهات الاتصال [بطاقة داف](https://tools.ietf.org/html/rfc6352)
+**المشكلة**: إدارة جهات الاتصال يدويًا بين البريد الإلكتروني و[أنظمة إدارة علاقات العملاء](https://en.wikipedia.org/wiki/Customer_relationship_management)  
+**الحل**: مزامنة ثنائية الاتجاه مع API جهات الاتصال [CardDAV](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
-// Sync new email contacts to CRM
+// مزامنة جهات الاتصال الجديدة من البريد الإلكتروني إلى نظام إدارة علاقات العملاء
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -528,11 +526,11 @@ for (const contact of newContacts) {
 
 ### 4. معالجة طلبات التجارة الإلكترونية {#4-e-commerce-order-processing}
 
-**المشكلة**: معالجة يدوية لطلبات البريد الإلكتروني لحامل [منصات التجارة الإلكترونية](https://en.wikipedia.org/wiki/E-commerce)
-**الحل**: مسار إدارة الطلبات الآلي
+**المشكلة**: معالجة طلبات البريد الإلكتروني يدويًا لمنصات [التجارة الإلكترونية](https://en.wikipedia.org/wiki/E-commerce)  
+**الحل**: خط أنابيب إدارة الطلبات الآلي
 
 ```javascript
-// Process order confirmation emails
+// معالجة رسائل تأكيد الطلبات
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
   msg.subject.includes('Order Confirmation')
@@ -548,13 +546,13 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. تكامل تذكرة الدعم {#5-support-ticket-integration}
+### 5. تكامل تذاكر الدعم الفني {#5-support-ticket-integration}
 
-**المشكلة**: سلاسل رسائل البريد الإلكتروني متناثرة في [منصات خدمة المساعدة](https://en.wikipedia.org/wiki/Help_desk_software)
-**الحل**: إكمال تتبع سلاسل رسائل البريد الإلكتروني
+**المشكلة**: تشتت سلاسل البريد الإلكتروني عبر منصات [مكاتب الدعم](https://en.wikipedia.org/wiki/Help_desk_software)  
+**الحل**: تتبع كامل لسلاسل البريد الإلكتروني
 
 ```javascript
-// Create support ticket from email thread
+// إنشاء تذكرة دعم من سلسلة البريد الإلكتروني
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -570,13 +568,13 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. نظام إدارة النشرة الإخبارية {#6-newsletter-management-system}
+### 6. نظام إدارة النشرات الإخبارية {#6-newsletter-management-system}
 
-**المشكلة**: تكاملات محدودة لـ [منصة النشرة الإخبارية](https://en.wikipedia.org/wiki/Email_marketing)
-**الحل**: إدارة دورة حياة المشترك بالكامل
+**المشكلة**: تكاملات محدودة مع منصات [النشرات الإخبارية](https://en.wikipedia.org/wiki/Email_marketing)  
+**الحل**: إدارة كاملة لدورة حياة المشتركين
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// إدارة الاشتراكات في النشرة الإخبارية تلقائيًا
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
   msg.subject.toLowerCase().includes('unsubscribe')
@@ -593,9 +591,8 @@ for (const msg of unsubscribes) {
 
 ### 7. إدارة المهام عبر البريد الإلكتروني {#7-email-based-task-management}
 
-**المشكلة**: ازدحام البريد الوارد و[تتبع المهام](https://en.wikipedia.org/wiki/Task_management)
+**المشكلة**: ازدحام صندوق الوارد و[تتبع المهام](https://en.wikipedia.org/wiki/Task_management)  
 **الحل**: تحويل رسائل البريد الإلكتروني إلى مهام قابلة للتنفيذ
-
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -609,10 +606,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. تجميع البريد الإلكتروني متعدد الحسابات {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**المشكلة**: إدارة [حسابات بريد إلكتروني متعددة](https://en.wikipedia.org/wiki/Email_client) عبر مقدمي الخدمة
-**الحل**: واجهة بريد وارد موحدة
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -627,10 +624,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. لوحة معلومات تحليلات البريد الإلكتروني المتقدمة {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**المشكلة**: لا توجد معلومات عن [أنماط البريد الإلكتروني](https://en.wikipedia.org/wiki/Email_analytics) باستخدام التصفية المتطورة.
-**الحل**: تحليلات بريد إلكتروني مخصصة باستخدام إمكانيات بحث متقدمة.
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -677,10 +674,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. أرشفة البريد الإلكتروني الذكية {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**المشكلة**: [تنظيم البريد الإلكتروني](https://en.wikipedia.org/wiki/Email_management) يدوي
-**الحل**: تصنيف ذكي للبريد الإلكتروني
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -698,10 +695,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. تكامل البريد الإلكتروني مع التقويم {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**المشكلة**: إنشاء [حدث التقويم](https://tools.ietf.org/html/rfc4791) يدويًا من رسائل البريد الإلكتروني
-**الحل**: استخراج الأحداث وإنشاؤها تلقائيًا
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -727,8 +724,8 @@ for (const email of meetingEmails) {
 
 ### 12. النسخ الاحتياطي للبريد الإلكتروني والامتثال {#12-email-backup-and-compliance}
 
-**المشكلة**: [الاحتفاظ بالبريد الإلكتروني](https://en.wikipedia.org/wiki/Email_retention_policy) ومتطلبات الامتثال
-**الحل**: نسخ احتياطي تلقائي مع حفظ البيانات الوصفية
+**المشكلة**: [الاحتفاظ بالبريد الإلكتروني](https://en.wikipedia.org/wiki/Email_retention_policy) ومتطلبات الامتثال  
+**الحل**: النسخ الاحتياطي الآلي مع الحفاظ على البيانات الوصفية
 
 ```javascript
 // Backup emails with full metadata
@@ -749,8 +746,8 @@ await saveToComplianceStorage(backup);
 
 ### 13. إدارة المحتوى عبر البريد الإلكتروني {#13-email-based-content-management}
 
-**المشكلة**: إدارة إرسال المحتوى عبر البريد الإلكتروني لـ [منصات إدارة المحتوى](https://en.wikipedia.org/wiki/Content_management_system)
-**الحل**: البريد الإلكتروني كنظام إدارة محتوى
+**المشكلة**: إدارة تقديمات المحتوى عبر البريد الإلكتروني لمنصات [نظام إدارة المحتوى](https://en.wikipedia.org/wiki/Content_management_system)  
+**الحل**: استخدام البريد الإلكتروني كنظام إدارة محتوى
 
 ```javascript
 // Process content submissions from email
@@ -769,10 +766,10 @@ for (const submission of submissions) {
 }
 ```
 
-### 14. إدارة قالب البريد الإلكتروني {#14-email-template-management}
+### 14. إدارة قوالب البريد الإلكتروني {#14-email-template-management}
 
-**المشكلة**: عدم تناسق [قوالب البريد الإلكتروني](https://en.wikipedia.org/wiki/Email_template) في جميع أعضاء الفريق
-**الحل**: نظام قوالب مركزي مع واجهة برمجة تطبيقات
+**المشكلة**: عدم اتساق [قوالب البريد الإلكتروني](https://en.wikipedia.org/wiki/Email_template) عبر الفريق  
+**الحل**: نظام قوالب مركزي مع واجهة برمجة التطبيقات
 
 ```javascript
 // Send templated emails with dynamic content
@@ -788,10 +785,10 @@ await fetch('/v1/messages', {
 });
 ```
 
-### 15. أتمتة سير العمل القائمة على البريد الإلكتروني {#15-email-based-workflow-automation}
+### 15. أتمتة سير العمل عبر البريد الإلكتروني {#15-email-based-workflow-automation}
 
-**المشكلة**: [عمليات الموافقة](https://en.wikipedia.org/wiki/Workflow) يدويًا عبر البريد الإلكتروني
-**الحل**: مُشغِّلات سير العمل الآلية
+**المشكلة**: عمليات [الموافقة اليدوية](https://en.wikipedia.org/wiki/Workflow) عبر البريد الإلكتروني  
+**الحل**: مشغلات سير العمل الآلية
 
 ```javascript
 // Process approval emails
@@ -812,8 +809,8 @@ for (const approval of approvals) {
 
 ### 16. مراقبة أمان البريد الإلكتروني {#16-email-security-monitoring}
 
-**المشكلة**: يدوي [اكتشاف التهديدات الأمنية](https://en.wikipedia.org/wiki/Email_security)
-**الحل**: تحليل التهديدات تلقائيًا
+**المشكلة**: الكشف اليدوي عن [تهديدات الأمان](https://en.wikipedia.org/wiki/Email_security)  
+**الحل**: تحليل التهديدات الآلي
 
 ```javascript
 // Monitor for suspicious emails
@@ -832,8 +829,8 @@ for (const email of recentEmails) {
 
 ### 17. جمع الاستبيانات عبر البريد الإلكتروني {#17-email-based-survey-collection}
 
-**المشكلة**: معالجة يدوية لـ [استجابة الاستطلاع](https://en.wikipedia.org/wiki/Survey_methodology)
-**الحل**: تجميع الردود تلقائيًا
+**المشكلة**: معالجة [ردود الاستبيان](https://en.wikipedia.org/wiki/Survey_methodology) يدوياً  
+**الحل**: تجميع الردود الآلي
 
 ```javascript
 // Collect and process survey responses
@@ -852,8 +849,8 @@ await updateSurveyResults(surveyData);
 
 ### 18. مراقبة أداء البريد الإلكتروني {#18-email-performance-monitoring}
 
-**المشكلة**: لا يمكن رؤية [أداء تسليم البريد الإلكتروني](https://en.wikipedia.org/wiki/Email_deliverability)
-**الحل**: مقاييس البريد الإلكتروني في الوقت الفعلي
+**المشكلة**: عدم وجود رؤية لأداء [تسليم البريد الإلكتروني](https://en.wikipedia.org/wiki/Email_deliverability)  
+**الحل**: مقاييس البريد الإلكتروني في الوقت الحقيقي
 
 ```javascript
 // Monitor email delivery performance
@@ -865,11 +862,10 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
-
 ### 19. تأهيل العملاء المحتملين عبر البريد الإلكتروني {#19-email-based-lead-qualification}
 
-**المشكلة**: استخدام [تسجيل النقاط](https://en.wikipedia.org/wiki/Lead_scoring) يدويًا من خلال تفاعلات البريد الإلكتروني
-**الحل**: مسار تأهيل العملاء المحتملين تلقائيًا
+**المشكلة**: التقييم اليدوي للعملاء المحتملين من خلال التفاعلات البريدية  
+**الحل**: خط أنابيب تأهيل العملاء المحتملين الآلي
 
 ```javascript
 // Score leads based on email engagement
@@ -886,8 +882,8 @@ for (const prospect of prospects) {
 
 ### 20. إدارة المشاريع عبر البريد الإلكتروني {#20-email-based-project-management}
 
-**المشكلة**: [تحديثات المشروع](https://en.wikipedia.org/wiki/Project_management) منتشر في سلاسل رسائل البريد الإلكتروني.
-**الحل**: مركز اتصالات مركزي للمشروع.
+**المشكلة**: تحديثات المشاريع متفرقة عبر سلاسل البريد الإلكتروني  
+**الحل**: مركز اتصال مركزي لتواصل المشروع
 
 ```javascript
 // Extract project updates from emails
@@ -908,8 +904,8 @@ for (const email of projectEmails) {
 
 ### 21. إدارة المخزون عبر البريد الإلكتروني {#21-email-based-inventory-management}
 
-**المشكلة**: تحديثات المخزون يدويًا من خلال رسائل البريد الإلكتروني للموردين
-**الحل**: تتبع المخزون تلقائيًا من خلال إشعارات البريد الإلكتروني
+**المشكلة**: تحديثات المخزون اليدوية من رسائل الموردين  
+**الحل**: تتبع المخزون الآلي من إشعارات البريد الإلكتروني
 
 ```javascript
 // Process inventory updates from supplier emails
@@ -937,8 +933,8 @@ for (const email of inventoryEmails) {
 
 ### 22. معالجة الفواتير عبر البريد الإلكتروني {#22-email-based-invoice-processing}
 
-**المشكلة**: دمج [معالجة الفواتير](https://en.wikipedia.org/wiki/Invoice_processing) يدويًا مع نظام المحاسبة.
-**الحل**: استخراج الفواتير تلقائيًا ومزامنة نظام المحاسبة.
+**المشكلة**: المعالجة اليدوية للفواتير ودمج المحاسبة  
+**الحل**: استخراج الفواتير الآلي ومزامنة نظام المحاسبة
 
 ```javascript
 // Extract invoice data from email attachments
@@ -964,10 +960,10 @@ for (const email of invoiceEmails) {
 }
 ```
 
-### 23. تسجيل الحدث عبر البريد الإلكتروني {#23-email-based-event-registration}
+### 23. تسجيل الفعاليات عبر البريد الإلكتروني {#23-email-based-event-registration}
 
-**المشكلة**: معالجة يدوية لـ [تسجيل الحدث](https://en.wikipedia.org/wiki/Event_management) من ردود البريد الإلكتروني.
-**الحل**: إدارة الحضور وتكامل التقويم تلقائيًا.
+**المشكلة**: المعالجة اليدوية لتسجيل الفعاليات من ردود البريد الإلكتروني  
+**الحل**: إدارة الحضور الآلية وتكامل التقويم
 
 ```javascript
 // Process event registration emails
@@ -998,11 +994,10 @@ for (const registration of registrations) {
   });
 }
 ```
-
 ### 24. سير عمل الموافقة على المستندات عبر البريد الإلكتروني {#24-email-based-document-approval-workflow}
 
-**المشكلة**: سلاسل معقدة من [الموافقة على الوثيقة](https://en.wikipedia.org/wiki/Document_management_system) عبر البريد الإلكتروني
-**الحل**: تتبع الموافقة التلقائي وإصدارات المستندات
+**المشكلة**: سلاسل [الموافقة على المستندات](https://en.wikipedia.org/wiki/Document_management_system) المعقدة عبر البريد الإلكتروني  
+**الحل**: تتبع الموافقات الآلي وإصدار نسخ المستندات
 
 ```javascript
 // Track document approval workflow
@@ -1030,10 +1025,10 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. تحليل تعليقات العملاء عبر البريد الإلكتروني {#25-email-based-customer-feedback-analysis}
+### 25. تحليل ملاحظات العملاء عبر البريد الإلكتروني {#25-email-based-customer-feedback-analysis}
 
-**المشكلة**: جمع [تعليقات العملاء](https://en.wikipedia.org/wiki/Customer_feedback) يدويًا وتحليل المشاعر
-**الحل**: معالجة التعليقات وتتبع المشاعر تلقائيًا
+**المشكلة**: جمع وتحليل [ملاحظات العملاء](https://en.wikipedia.org/wiki/Customer_feedback) يدويًا  
+**الحل**: معالجة الملاحظات وتتبع المشاعر بشكل آلي
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1064,8 +1059,8 @@ for (const email of feedbackEmails) {
 
 ### 26. خط أنابيب التوظيف عبر البريد الإلكتروني {#26-email-based-recruitment-pipeline}
 
-**المشكلة**: استخدام [توظيف](https://en.wikipedia.org/wiki/Recruitment) يدويًا وتتبع المرشحين
-**الحل**: إدارة المرشحين وجدولة المقابلات تلقائيًا
+**المشكلة**: التوظيف وتتبع المرشحين يدويًا  
+**الحل**: إدارة المرشحين وجدولة المقابلات بشكل آلي
 
 ```javascript
 // Process job application emails
@@ -1096,10 +1091,10 @@ for (const application of applications) {
 }
 ```
 
-### 27. معالجة تقارير النفقات عبر البريد الإلكتروني {#27-email-based-expense-report-processing}
+### 27. معالجة تقارير المصاريف عبر البريد الإلكتروني {#27-email-based-expense-report-processing}
 
-**المشكلة**: إرسال واعتماد [تقرير المصروفات](https://en.wikipedia.org/wiki/Expense_report) يدويًا
-**الحل**: سير عمل استخراج المصروفات واعتمادها تلقائيًا
+**المشكلة**: تقديم واعتماد [تقارير المصاريف](https://en.wikipedia.org/wiki/Expense_report) يدويًا  
+**الحل**: استخراج المصاريف وسير عمل الموافقة بشكل آلي
 
 ```javascript
 // Process expense report emails
@@ -1130,11 +1125,10 @@ for (const email of expenseEmails) {
   }
 }
 ```
+### 28. تقارير ضمان الجودة المعتمدة على البريد الإلكتروني {#28-email-based-quality-assurance-reporting}
 
-### 28. تقارير ضمان الجودة عبر البريد الإلكتروني {#28-email-based-quality-assurance-reporting}
-
-**المشكلة**: تتبع يدوي لمشكلة [ضمان الجودة](https://en.wikipedia.org/wiki/Quality_assurance)
-**الحل**: إدارة آلية لمشاكل ضمان الجودة وتتبع الأخطاء
+**المشكلة**: تتبع مشاكل [ضمان الجودة](https://en.wikipedia.org/wiki/Quality_assurance) يدويًا  
+**الحل**: إدارة مشاكل ضمان الجودة وتتبع الأخطاء تلقائيًا
 
 ```javascript
 // Process QA bug reports from email
@@ -1171,9 +1165,9 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. إدارة البائعين عبر البريد الإلكتروني {#29-email-based-vendor-management}
+### 29. إدارة الموردين المعتمدة على البريد الإلكتروني {#29-email-based-vendor-management}
 
-**المشكلة**: استخدام [التواصل مع البائعين](https://en.wikipedia.org/wiki/Vendor_management) يدويًا وتتبع العقود
+**المشكلة**: التواصل مع الموردين وتتبع العقود يدويًا [vendor communication](https://en.wikipedia.org/wiki/Vendor_management)  
 **الحل**: إدارة علاقات الموردين تلقائيًا
 
 ```javascript
@@ -1213,10 +1207,10 @@ for (const email of vendorEmails) {
 }
 ```
 
-### 30. مراقبة وسائل التواصل الاجتماعي عبر البريد الإلكتروني {#30-email-based-social-media-monitoring}
+### 30. مراقبة وسائل التواصل الاجتماعي المعتمدة على البريد الإلكتروني {#30-email-based-social-media-monitoring}
 
-**المشكلة**: تتبع الإشارات والاستجابة لها يدويًا باستخدام [وسائل التواصل الاجتماعي](https://en.wikipedia.org/wiki/Social_media_monitoring)
-**الحل**: معالجة تنبيهات وسائل التواصل الاجتماعي وتنسيق الاستجابة لها تلقائيًا
+**المشكلة**: تتبع الإشارات على [وسائل التواصل الاجتماعي](https://en.wikipedia.org/wiki/Social_media_monitoring) والرد عليها يدويًا  
+**الحل**: معالجة التنبيهات الاجتماعية تلقائيًا وتنسيق الردود
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1258,24 +1252,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
+
 ## البدء {#getting-started}
 
-### 1. أنشئ حساب البريد الإلكتروني الأمامي الخاص بك {#1-create-your-forward-email-account}
+### 1. أنشئ حساب بريدك الإلكتروني لإعادة التوجيه {#1-create-your-forward-email-account}
 
-قم بالتسجيل في [forwardemail.net](https://forwardemail.net) وتحقق من المجال الخاص بك.
+سجّل في [forwardemail.net](https://forwardemail.net) وقم بالتحقق من نطاقك.
 
-### 2. إنشاء بيانات اعتماد واجهة برمجة التطبيقات {#2-generate-api-credentials}
+### 2. إنشاء بيانات اعتماد API {#2-generate-api-credentials}
 
-يعتبر عنوان البريد الإلكتروني وكلمة المرور الخاصين بك بمثابة بيانات اعتماد API - ولا يتطلب الأمر أي إعداد إضافي.
-
-### 3. قم بإجراء أول مكالمة API الخاصة بك {#3-make-your-first-api-call}
+يعمل بريدك الإلكتروني المستعار وكلمة المرور كبيانات اعتماد API - لا حاجة لإعداد إضافي.
+### 3. قم بأول مكالمة API لك {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# عرض رسائلك
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# إنشاء جهة اتصال جديدة
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1285,18 +1279,19 @@ curl -u "your-alias@domain.com:password" \
 
 ### 4. استكشف الوثائق {#4-explore-the-documentation}
 
-قم بزيارة [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) للحصول على وثائق API الكاملة مع أمثلة تفاعلية.
+قم بزيارة [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) للحصول على الوثائق الكاملة للـ API مع أمثلة تفاعلية.
 
-## الموارد الفنية {#technical-resources}
 
-* **[وثائق API الكاملة](https://forwardemail.net/en/email-api)** - مواصفات OpenAPI 3.0 التفاعلية
-* **[دليل الاستضافة الذاتية](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - نشر إعادة توجيه البريد الإلكتروني على بنيتك التحتية
-* **[ورقة بيضاء حول الأمن](https://forwardemail.net/technical-whitepaper.pdf)** - البنية التقنية وتفاصيل الأمان
-* **[مستودع GitHub](https://github.com/forwardemail/forwardemail.net)** - قاعدة بيانات مفتوحة المصدر
-* **[دعم المطورين](mailto:api@forwardemail.net)** - وصول مباشر إلى فريقنا الهندسي
+## الموارد التقنية {#technical-resources}
+
+* **[الوثائق الكاملة للـ API](https://forwardemail.net/en/email-api)** - مواصفة OpenAPI 3.0 تفاعلية
+* **[دليل الاستضافة الذاتية](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - نشر Forward Email على بنيتك التحتية
+* **[الورقة البيضاء الأمنية](https://forwardemail.net/technical-whitepaper.pdf)** - التفاصيل التقنية والمعمارية الأمنية
+* **[مستودع GitHub](https://github.com/forwardemail/forwardemail.net)** - قاعدة الشيفرة مفتوحة المصدر
+* **[دعم المطورين](mailto:api@forwardemail.net)** - وصول مباشر إلى فريق الهندسة لدينا
 
 ---
 
-**هل أنت مستعد لإحداث ثورة في تكامل البريد الإلكتروني الخاص بك؟** [ابدأ البناء باستخدام واجهة برمجة التطبيقات الخاصة بـ Forward Email اليوم](https://forwardemail.net/en/email-api) واستمتع بتجربة أول منصة إدارة بريد إلكتروني كاملة مصممة للمطورين.
+**هل أنت مستعد لإحداث ثورة في تكامل البريد الإلكتروني الخاص بك؟** [ابدأ البناء باستخدام API الخاص بـ Forward Email اليوم](https://forwardemail.net/en/email-api) وجرب أول منصة إدارة بريد إلكتروني كاملة مصممة للمطورين.
 
-*إعادة توجيه البريد الإلكتروني: خدمة البريد الإلكتروني التي تحصل أخيرًا على واجهات برمجة التطبيقات بشكل صحيح.*
+*Forward Email: خدمة البريد الإلكتروني التي تفهم أخيرًا APIs بشكل صحيح.*

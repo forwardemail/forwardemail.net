@@ -1,103 +1,107 @@
-# Stripe と PayPal を使った堅牢な決済システムの構築方法: トリフェクタアプローチ {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# StripeとPayPalで堅牢な決済システムを構築した方法：トリフェクタアプローチ {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="StripeとPayPalによる決済システム" class="rounded-lg" />
+
 
 ## 目次 {#table-of-contents}
 
 * [序文](#foreword)
-* [課題：複数の決済処理業者、唯一の真実の情報源](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [トリフェクタアプローチ：信頼性の3層](#the-trifecta-approach-three-layers-of-reliability)
-* [レイヤー1: チェックアウト後のリダイレクト](#layer-1-post-checkout-redirects)
+* [課題：複数の決済プロセッサー、唯一の真実の情報源](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [トリフェクタアプローチ：信頼性の3層構造](#the-trifecta-approach-three-layers-of-reliability)
+* [レイヤー1：チェックアウト後のリダイレクト](#layer-1-post-checkout-redirects)
   * [Stripeチェックアウトの実装](#stripe-checkout-implementation)
-  * [PayPalの支払いフロー](#paypal-payment-flow)
-* [レイヤー2: 署名検証を備えたWebhookハンドラー](#layer-2-webhook-handlers-with-signature-verification)
-  * [Stripe Webhook の実装](#stripe-webhook-implementation)
+  * [PayPal決済フロー](#paypal-payment-flow)
+* [レイヤー2：署名検証付きWebhookハンドラー](#layer-2-webhook-handlers-with-signature-verification)
+  * [Stripe Webhookの実装](#stripe-webhook-implementation)
   * [PayPal Webhookの実装](#paypal-webhook-implementation)
-* [レイヤー3: Breeによるジョブの自動化](#layer-3-automated-jobs-with-bree)
+* [レイヤー3：Breeによる自動ジョブ](#layer-3-automated-jobs-with-bree)
   * [サブスクリプション精度チェッカー](#subscription-accuracy-checker)
-  * [PayPalサブスクリプションの同期](#paypal-subscription-synchronization)
+  * [PayPalサブスクリプション同期](#paypal-subscription-synchronization)
 * [エッジケースの処理](#handling-edge-cases)
-  * [不正行為の検出と防止](#fraud-detection-and-prevention)
+  * [不正検知と防止](#fraud-detection-and-prevention)
   * [紛争処理](#dispute-handling)
-* [コードの再利用: KISSとDRY原則](#code-reuse-kiss-and-dry-principles)
+* [コード再利用：KISSとDRYの原則](#code-reuse-kiss-and-dry-principles)
 * [VISAサブスクリプション要件の実装](#visa-subscription-requirements-implementation)
-  * [自動更新前メール通知](#automated-pre-renewal-email-notifications)
+  * [自動化された更新前メール通知](#automated-pre-renewal-email-notifications)
   * [エッジケースの処理](#handling-edge-cases-1)
-  * [試用期間とサブスクリプション条件](#trial-periods-and-subscription-terms)
-* [結論：Trifectaアプローチの利点](#conclusion-the-benefits-of-our-trifecta-approach)
+  * [トライアル期間とサブスクリプション条件](#trial-periods-and-subscription-terms)
+* [結論：トリフェクタアプローチの利点](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## 序文 {#foreword}
 
-Forward Emailでは、信頼性、正確性、そしてユーザーフレンドリーなシステムの構築を常に最優先に考えてきました。決済処理システムの導入にあたり、複数の決済処理業者に対応しながらも、完璧なデータの一貫性を維持できるソリューションが必要であることを認識していました。このブログ記事では、開発チームがStripeとPayPalを三位一体のアプローチで統合し、システム全体で1:1のリアルタイム精度を確保した方法について詳しく説明します。
+Forward Emailでは、常に信頼性が高く、正確で、ユーザーフレンドリーなシステムの構築を最優先してきました。決済処理システムの実装にあたっては、複数の決済プロセッサーを扱いながらも完璧なデータ整合性を維持できるソリューションが必要だと認識していました。本記事では、当社の開発チームがStripeとPayPalの両方を統合し、システム全体で1:1のリアルタイム精度を保証するトリフェクタアプローチをどのように実装したかを詳述します。
 
-## 課題: 複数の決済処理業者、唯一の信頼できる情報源 {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-プライバシー重視のメールサービスとして、ユーザーに支払い方法の選択肢を提供したいと考えました。Stripeを介したクレジットカード決済のシンプルさを好むユーザーもいれば、PayPalが提供する分離レイヤーを重視するユーザーもいます。しかし、複数の決済処理業者をサポートすると、大きな複雑さが生じます。
+## 課題：複数の決済プロセッサー、唯一の真実の情報源 {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-1. 異なる決済システム間でデータの一貫性を確保するにはどうすればよいでしょうか？
-2. 紛争、返金、支払い失敗といったエッジケースにはどのように対処すればよいでしょうか？
-3. データベース内で信頼できる唯一の情報源を維持するにはどうすればよいでしょうか？
+プライバシー重視のメールサービスとして、ユーザーに複数の決済オプションを提供したいと考えました。Stripeによるクレジットカード決済のシンプルさを好む方もいれば、PayPalが提供する追加の分離レイヤーを評価する方もいます。しかし、複数の決済プロセッサーをサポートすることは大きな複雑さを伴います：
 
-私たちの解決策は、いわゆる「トリフェクタ アプローチ」を実装することでした。これは、何が起こっても冗長性を提供し、データの一貫性を保証する 3 層システムです。
+1. 異なる決済システム間でデータの一貫性をどう確保するか？
+2. 紛争、返金、支払い失敗などのエッジケースをどう処理するか？
+3. データベース内で唯一の真実の情報源をどう維持するか？
 
-## トリフェクタアプローチ：信頼性の3層 {#the-trifecta-approach-three-layers-of-reliability}
+私たちの解決策は「トリフェクタアプローチ」と呼ぶ、冗長性を持ち、何が起きてもデータ整合性を保証する3層構造のシステムを実装することでした。
 
-当社の支払いシステムは、完全なデータ同期を確保するために連携して機能する 3 つの重要なコンポーネントで構成されています。
 
-1. **チェックアウト後のリダイレクト** - チェックアウト直後に支払い情報を取得します
-2. **Webhookハンドラー** - 決済処理業者からのリアルタイムイベントを処理します
-3. **自動化ジョブ** - 支払いデータを定期的に検証および照合します
+## トリフェクタアプローチ：信頼性の3層構造 {#the-trifecta-approach-three-layers-of-reliability}
 
-各コンポーネントを詳しく見て、それらがどのように連携するかを見てみましょう。
+当社の決済システムは、完璧なデータ同期を保証するために連携する3つの重要なコンポーネントで構成されています：
+
+1. **チェックアウト後のリダイレクト** - チェックアウト直後に決済情報を取得
+2. **Webhookハンドラー** - 決済プロセッサーからのリアルタイムイベントを処理
+3. **自動ジョブ** - 定期的に決済データを検証・照合
+
+それぞれのコンポーネントがどのように連携しているか見ていきましょう。
 
 ```mermaid
 flowchart TD
-    User([User]) --> |Selects plan| Checkout[Checkout Page]
+    User([User]) --> |プランを選択| Checkout[チェックアウトページ]
 
     %% Layer 1: Post-checkout redirects
-    subgraph "Layer 1: Post-checkout Redirects"
-        Checkout --> |Credit Card| Stripe[Stripe Checkout]
-        Checkout --> |PayPal| PayPal[PayPal Payment]
+    subgraph "レイヤー1：チェックアウト後のリダイレクト"
+        Checkout --> |クレジットカード| Stripe[Stripeチェックアウト]
+        Checkout --> |PayPal| PayPal[PayPal決済]
 
-        Stripe --> |Success URL with session_id| SuccessPage[Success Page]
-        PayPal --> |Return URL| SuccessPage
+        Stripe --> |session_id付き成功URL| SuccessPage[成功ページ]
+        PayPal --> |リターンURL| SuccessPage
 
-        SuccessPage --> |Verify payment| Database[(Database Update)]
+        SuccessPage --> |決済確認| Database[(データベース更新)]
     end
 
     %% Layer 2: Webhooks
-    subgraph "Layer 2: Webhook Handlers"
-        StripeEvents[Stripe Events] --> |Real-time notifications| StripeWebhook[Stripe Webhook Handler]
-        PayPalEvents[PayPal Events] --> |Real-time notifications| PayPalWebhook[PayPal Webhook Handler]
+    subgraph "レイヤー2：Webhookハンドラー"
+        StripeEvents[Stripeイベント] --> |リアルタイム通知| StripeWebhook[Stripe Webhookハンドラー]
+        PayPalEvents[PayPalイベント] --> |リアルタイム通知| PayPalWebhook[PayPal Webhookハンドラー]
 
-        StripeWebhook --> |Verify signature| ProcessStripeEvent[Process Stripe Event]
-        PayPalWebhook --> |Verify signature| ProcessPayPalEvent[Process PayPal Event]
+        StripeWebhook --> |署名検証| ProcessStripeEvent[Stripeイベント処理]
+        PayPalWebhook --> |署名検証| ProcessPayPalEvent[PayPalイベント処理]
 
         ProcessStripeEvent --> Database
         ProcessPayPalEvent --> Database
     end
 
     %% Layer 3: Automated jobs
-    subgraph "Layer 3: Bree Automated Jobs"
-        BreeScheduler[Bree Scheduler] --> StripeSync[Stripe Sync Job]
-        BreeScheduler --> PayPalSync[PayPal Sync Job]
-        BreeScheduler --> AccuracyCheck[Subscription Accuracy Check]
+    subgraph "レイヤー3：Bree自動ジョブ"
+        BreeScheduler[Breeスケジューラー] --> StripeSync[Stripe同期ジョブ]
+        BreeScheduler --> PayPalSync[PayPal同期ジョブ]
+        BreeScheduler --> AccuracyCheck[サブスクリプション精度チェック]
 
-        StripeSync --> |Verify & reconcile| Database
-        PayPalSync --> |Verify & reconcile| Database
-        AccuracyCheck --> |Ensure consistency| Database
+        StripeSync --> |検証＆照合| Database
+        PayPalSync --> |検証＆照合| Database
+        AccuracyCheck --> |整合性保証| Database
     end
 
     %% Edge cases
-    subgraph "Edge Case Handling"
-        ProcessStripeEvent --> |Fraud detection| FraudCheck[Fraud Check]
-        ProcessPayPalEvent --> |Dispute created| DisputeHandler[Dispute Handler]
+    subgraph "エッジケース処理"
+        ProcessStripeEvent --> |不正検知| FraudCheck[不正チェック]
+        ProcessPayPalEvent --> |紛争発生| DisputeHandler[紛争ハンドラー]
 
-        FraudCheck --> |Ban user if fraudulent| Database
-        DisputeHandler --> |Accept claim & refund| Database
+        FraudCheck --> |不正ユーザーを禁止| Database
+        DisputeHandler --> |請求受理＆返金| Database
 
-        FraudCheck --> |Send alert| AdminNotification[Admin Notification]
-        DisputeHandler --> |Send alert| AdminNotification
+        FraudCheck --> |アラート送信| AdminNotification[管理者通知]
+        DisputeHandler --> |アラート送信| AdminNotification
     end
 
     %% Style definitions
@@ -109,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
-
 ## レイヤー1: チェックアウト後のリダイレクト {#layer-1-post-checkout-redirects}
 
-当社の三要素アプローチの第一段階は、ユーザーが支払いを完了した直後に実行されます。StripeとPayPalはどちらも、取引情報とともにユーザーを当社のサイトにリダイレクトするメカニズムを提供しています。
+私たちの三段構えアプローチの最初のレイヤーは、ユーザーが支払いを完了した直後に発生します。Stripe と PayPal の両方が、取引情報を含めてユーザーを当サイトにリダイレクトする仕組みを提供しています。
 
-### ストライプチェックアウトの実装 {#stripe-checkout-implementation}
+### Stripe チェックアウトの実装 {#stripe-checkout-implementation}
 
-Stripeでは、シームレスな決済体験を実現するためにCheckout Sessions APIを使用しています。ユーザーがプランを選択し、クレジットカードでの支払いを選択すると、成功URLとキャンセルURLを含むCheckout Sessionが作成されます。
+Stripe では、Checkout Sessions API を使用してシームレスな支払い体験を作成しています。ユーザーがプランを選択しクレジットカードで支払う場合、特定の成功およびキャンセル URL を指定して Checkout Session を作成します：
 
 ```javascript
 const options = {
@@ -143,7 +146,7 @@ const options = {
   allow_promotion_codes: true
 };
 
-// Create the checkout session and redirect
+// チェックアウトセッションを作成しリダイレクト
 const session = await stripe.checkout.sessions.create(options);
 const redirectTo = session.url;
 if (ctx.accepts('html')) {
@@ -154,11 +157,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-ここで重要なのは`success_url`パラメータです。このパラメータには`session_id`がクエリパラメータとして含まれています。Stripeが支払い処理の成功後にユーザーをサイトにリダイレクトする際に、このセッションIDを使用してトランザクションを検証し、データベースを更新することができます。
+ここで重要なのは、`success_url` パラメータで、クエリパラメータとして `session_id` を含めている点です。Stripe が支払い成功後にユーザーを当サイトにリダイレクトするとき、このセッション ID を使って取引を検証し、データベースを更新できます。
 
-### PayPal支払いフロー {#paypal-payment-flow}
+### PayPal 支払いフロー {#paypal-payment-flow}
 
-PayPal の場合、Orders API で同様のアプローチを使用します。
+PayPal では、Orders API を使って同様のアプローチを取っています：
 
 ```javascript
 const requestBody = {
@@ -210,7 +213,7 @@ const requestBody = {
 };
 ```
 
-Stripeと同様に、支払い後のリダイレクトを処理するために`return_url`と`cancel_url`パラメータを指定します。PayPalがユーザーをサイトにリダイレクトする際に、支払い情報を取得し、データベースを更新できます。
+Stripe と同様に、支払い後のリダイレクトを処理するために `return_url` と `cancel_url` パラメータを指定しています。PayPal がユーザーを当サイトにリダイレクトするときに支払い詳細を取得し、データベースを更新できます。
 
 ```mermaid
 sequenceDiagram
@@ -221,80 +224,79 @@ sequenceDiagram
     participant DB as Database
     participant Bree as Bree Job Scheduler
 
-    %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    %% 初期チェックアウトフロー
+    User->>FE: プランと支払い方法を選択
 
-    alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
-    else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+    alt クレジットカード支払い
+        FE->>Stripe: チェックアウトセッションを作成
+        Stripe-->>FE: セッションURLを返す
+        FE->>User: Stripe チェックアウトへリダイレクト
+        User->>Stripe: 支払いを完了
+        Stripe->>User: session_id付きの成功URLへリダイレクト
+        User->>FE: 成功ページに戻る
+        FE->>Stripe: session_idでセッションを検証
+        Stripe-->>FE: セッション詳細を返す
+        FE->>DB: ユーザープランと支払い状況を更新
+    else PayPal 支払い
+        FE->>PayPal: 注文を作成
+        PayPal-->>FE: 承認URLを返す
+        FE->>User: PayPalへリダイレクト
+        User->>PayPal: 支払いを承認
+        PayPal->>User: return_urlへリダイレクト
+        User->>FE: 成功ページに戻る
+        FE->>PayPal: 支払いをキャプチャ
+        PayPal-->>FE: 支払い詳細を返す
+        FE->>DB: ユーザープランと支払い状況を更新
     end
 
-    %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    %% Webhook フロー（非同期）
+    Note over Stripe,PayPal: 支払いイベント発生（非同期）
 
     alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
+        Stripe->>FE: イベント通知を送信
+        FE->>FE: Webhook署名を検証
+        FE->>DB: イベントを処理しデータを更新
+        FE-->>Stripe: 受領確認（200 OK）
     else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+        PayPal->>FE: イベント通知を送信
+        FE->>FE: Webhook署名を検証
+        FE->>DB: イベントを処理しデータを更新
+        FE-->>PayPal: 受領確認（200 OK）
     end
 
-    %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    %% Bree 自動ジョブ
+    Note over Bree: 定期的にスケジュールされたジョブが実行される
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: すべての顧客とサブスクリプションを取得
+    Stripe-->>Bree: 顧客データを返す
+    Bree->>DB: データを比較・照合
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: すべてのサブスクリプションと取引を取得
+    PayPal-->>Bree: サブスクリプションデータを返す
+    Bree->>DB: データを比較・照合
 
-    %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    %% エッジケース: 異議申し立て処理
+    Note over User,PayPal: ユーザーがチャージに異議を申し立てる
 
     PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    FE->>PayPal: クレームを自動承認
+    FE->>DB: ユーザーステータスを更新
+    FE->>User: 通知メールを送信
 ```
+## Layer 2: 署名検証付きWebhookハンドラー {#layer-2-webhook-handlers-with-signature-verification}
 
-## レイヤー2: 署名検証付きWebhookハンドラー {#layer-2-webhook-handlers-with-signature-verification}
+ポストチェックアウトのリダイレクトはほとんどのシナリオでうまく機能しますが、完全ではありません。ユーザーがリダイレクト前にブラウザを閉じたり、ネットワークの問題でリダイレクトが完了しないことがあります。そこでWebhookが役立ちます。
 
-チェックアウト後のリダイレクトはほとんどのシナリオでうまく機能しますが、万能ではありません。ユーザーがリダイレクトされる前にブラウザを閉じてしまったり、ネットワークの問題でリダイレクトが完了しなかったりする可能性があります。そこでWebhookが役立ちます。
-
-StripeとPayPalはどちらも、決済イベントに関するリアルタイム通知を送信するWebhookシステムを提供しています。私たちは、これらの通知の信頼性を検証し、それに応じて処理する堅牢なWebhookハンドラーを実装しました。
+StripeとPayPalの両方が、支払いイベントに関するリアルタイム通知を送信するWebhookシステムを提供しています。私たちはこれらの通知の真正性を検証し、適切に処理する堅牢なWebhookハンドラーを実装しています。
 
 ### Stripe Webhook 実装 {#stripe-webhook-implementation}
 
-当社の Stripe Webhook ハンドラーは、受信した Webhook イベントの署名を検証し、それが正当であることを確認します。
+私たちのStripe webhookハンドラーは、受信したWebhookイベントの署名を検証して正当性を確認します：
 
 ```javascript
 async function webhook(ctx) {
   const sig = ctx.request.get('stripe-signature');
-  // throw an error if something was wrong
+  // 問題があればエラーを投げる
   if (!isSANB(sig))
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   const event = stripe.webhooks.constructEvent(
@@ -302,18 +304,18 @@ async function webhook(ctx) {
     sig,
     env.STRIPE_ENDPOINT_SECRET
   );
-  // throw an error if something was wrong
+  // 問題があればエラーを投げる
   if (!event)
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   ctx.logger.info('stripe webhook', { event });
-  // return a response to acknowledge receipt of the event
+  // イベント受領を認識するレスポンスを返す
   ctx.body = { received: true };
-  // run in background
+  // バックグラウンドで実行
   processEvent(ctx, event)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err, { event });
-      // email admin errors
+      // 管理者にエラーをメール送信
       emailHelper({
         template: 'alert',
         message: {
@@ -334,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-`stripe.webhooks.constructEvent` 関数は、エンドポイントシークレットを使用して署名を検証します。署名が有効な場合、Webhook レスポンスのブロックを回避するため、イベントを非同期的に処理します。
+`stripe.webhooks.constructEvent` 関数は、エンドポイントシークレットを使って署名を検証します。署名が有効な場合、Webhookレスポンスのブロックを避けるためにイベントを非同期で処理します。
 
-### PayPal Webhook実装 {#paypal-webhook-implementation}
+### PayPal Webhook 実装 {#paypal-webhook-implementation}
 
-同様に、PayPal Webhook ハンドラーは、受信通知の信頼性を検証します。
+同様に、私たちのPayPal webhookハンドラーは受信通知の真正性を検証します：
 
 ```javascript
 async function webhook(ctx) {
@@ -346,17 +348,17 @@ async function webhook(ctx) {
     paypal.notification.webhookEvent.verify,
     paypal.notification.webhookEvent
   )(ctx.request.headers, ctx.request.body, env.PAYPAL_WEBHOOK_ID);
-  // throw an error if something was wrong
+  // 問題があればエラーを投げる
   if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
     throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
-  // return a response to acknowledge receipt of the event
+  // イベント受領を認識するレスポンスを返す
   ctx.body = { received: true };
-  // run in background
+  // バックグラウンドで実行
   processEvent(ctx)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err);
-      // email admin errors
+      // 管理者にエラーをメール送信
       emailHelper({
         template: 'alert',
         message: {
@@ -377,16 +379,16 @@ async function webhook(ctx) {
 }
 ```
 
-どちらのWebhookハンドラも同じパターンに従います。署名の検証、受信確認、そしてイベントの非同期処理です。これにより、チェックアウト後のリダイレクトが失敗した場合でも、決済イベントを見逃すことはありません。
+両方のWebhookハンドラーは同じパターンに従っています：署名を検証し、受領を認識し、イベントを非同期で処理します。これにより、ポストチェックアウトのリダイレクトが失敗しても支払いイベントを見逃すことがありません。
 
-## レイヤー3: Breeによる自動化ジョブ {#layer-3-automated-jobs-with-bree}
 
-トリフェクタアプローチの最終層は、支払いデータを定期的に検証・調整する一連の自動化ジョブです。これらのジョブは、Node.jsのジョブスケジューラであるBreeを使用して定期的に実行されます。
+## Layer 3: Breeによる自動ジョブ {#layer-3-automated-jobs-with-bree}
+
+私たちの三段階アプローチの最終層は、定期的に支払いデータを検証・照合する自動ジョブのセットです。Node.js用のジョブスケジューラーであるBreeを使って、これらのジョブを定期的に実行しています。
 
 ### サブスクリプション精度チェッカー {#subscription-accuracy-checker}
 
-私たちの主な仕事の 1 つは、サブスクリプションの精度チェッカーです。これは、データベースが Stripe のサブスクリプション ステータスを正確に反映していることを確認するものです。
-
+私たちの主要なジョブの一つはサブスクリプション精度チェッカーで、データベースがStripeのサブスクリプション状況を正確に反映していることを保証します：
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -452,11 +454,11 @@ async function mapper(customer) {
 }
 ```
 
-このジョブは、メールアドレスの不一致や複数のアクティブなサブスクリプションなど、データベースとStripe間の不一致をチェックします。問題が見つかった場合はログに記録し、管理チームにアラートを送信します。
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### PayPalサブスクリプション同期 {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-PayPal サブスクリプションでも同様のジョブがあります。
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +489,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-これらの自動化されたジョブは最終的な安全網として機能し、データベースが常に Stripe と PayPal の両方でサブスクリプションと支払いの実際の状態を反映することを保証します。
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## エッジケースの処理 {#handling-edge-cases}
 
-堅牢な決済システムは、エッジケースを適切に処理する必要があります。よくあるシナリオにどのように対処するかを見てみましょう。
+## Handling Edge Cases {#handling-edge-cases}
 
-### 不正行為の検出と防止 {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-当社では、疑わしい支払い行為を自動的に識別して処理する高度な不正検出メカニズムを実装しています。
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -540,11 +543,11 @@ case 'charge.failed': {
 }
 ```
 
-このコードは、不正行為の強い指標となる、複数回の請求失敗と検証済みドメインのないユーザーを自動的に禁止します。
+このコードは、複数回の決済失敗があり、かつ検証済みドメインがないユーザーを自動的に禁止します。これは不正行為の強い指標です。
 
-### 紛争処理 {#dispute-handling}
+### Dispute Handling {#dispute-handling}
 
-ユーザーが請求に異議を申し立てた場合、当社は自動的にその申し立てを承認し、適切な措置を講じます。
+ユーザーがチャージに異議を唱えた場合、私たちは自動的に請求を受け入れ、適切な対応を行います：
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
@@ -579,19 +582,20 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 }
 ```
 
-このアプローチにより、紛争がビジネスに与える影響を最小限に抑えながら、優れた顧客体験を確保できます。
+この方法により、異議申し立てがビジネスに与える影響を最小限に抑えつつ、良好な顧客体験を確保しています。
 
-## コードの再利用: KISS と DRY の原則 {#code-reuse-kiss-and-dry-principles}
 
-当社の決済システム全体を通して、KISS（Keep It Simple, Stupid）とDRY（Don't Repeat Yourself）の原則を遵守しています。以下にいくつか例を挙げます。
+## Code Reuse: KISS and DRY Principles {#code-reuse-kiss-and-dry-principles}
 
-1. **共有ヘルパー関数**: 支払いの同期やメールの送信などの一般的なタスク用に再利用可能なヘルパー関数を作成しました。
+私たちの決済システム全体で、KISS（Keep It Simple, Stupid）およびDRY（Don't Repeat Yourself）の原則を遵守しています。以下はいくつかの例です：
 
-2. **一貫したエラー処理**: Stripe と PayPal の両方の Webhook ハンドラーは、エラー処理と管理者通知に同じパターンを使用します。
+1. **共有ヘルパー関数**：決済同期やメール送信などの共通タスクのために再利用可能なヘルパー関数を作成しています。
 
-3. **統合データベース スキーマ**: 当社のデータベース スキーマは、支払いステータス、金額、プラン情報の共通フィールドを備え、Stripe と PayPal の両方のデータに対応するように設計されています。
+2. **一貫したエラーハンドリング**：StripeとPayPalの両方のWebhookハンドラーは、同じパターンでエラーハンドリングと管理者通知を行います。
 
-4. **集中構成**: 支払い関連の構成が 1 つのファイルに一元化されているため、価格や製品情報を簡単に更新できます。
+3. **統一されたデータベーススキーマ**：決済ステータス、金額、プラン情報などの共通フィールドを持つ、StripeとPayPal両方のデータに対応したスキーマ設計です。
+
+4. **集中管理された設定**：決済関連の設定は単一ファイルに集中管理されており、価格や製品情報の更新が容易です。
 
 ```mermaid
 graph TD
@@ -668,16 +672,14 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
     subgraph "DRY Principle"
-        V[Shared Logic] --> W[Payment Processing Functions]
-        V --> X[Email Templates]
-        V --> Y[Validation Logic]
+        V[共有ロジック] --> W[支払い処理関数]
+        V --> X[メールテンプレート]
+        V --> Y[検証ロジック]
 
-        Z[Common Database Operations] --> AA[User Updates]
-        Z --> AB[Payment Recording]
+        Z[共通データベース操作] --> AA[ユーザー更新]
+        Z --> AB[支払い記録]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -687,25 +689,26 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
+
 ## VISAサブスクリプション要件の実装 {#visa-subscription-requirements-implementation}
 
-3つの柱となるアプローチに加え、VISAのサブスクリプション要件を遵守しながらユーザーエクスペリエンスを向上させるための特別な機能を実装しました。VISAの重要な要件の一つは、特にトライアルから有料サブスクリプションに移行する際、サブスクリプション料金が請求される前にユーザーに通知する必要があることです。
+私たちのトリフェクタアプローチに加え、VISAのサブスクリプション要件に準拠しつつユーザー体験を向上させるための特定の機能を実装しました。VISAからの重要な要件の一つは、特にトライアルから有料サブスクリプションに移行する際に、ユーザーが課金される前に通知を受け取る必要があるということです。
 
-### 更新前自動メール通知 {#automated-pre-renewal-email-notifications}
+### 自動化された事前更新メール通知 {#automated-pre-renewal-email-notifications}
 
-有効なトライアルサブスクリプションをお持ちのユーザーを特定し、初回請求が発生する前に通知メールを送信する自動システムを構築しました。これにより、VISAの要件を遵守できるだけでなく、チャージバックを削減し、顧客満足度を向上させることができます。
+アクティブなトライアルサブスクリプションを持つユーザーを特定し、最初の課金が行われる前に通知メールを送信する自動システムを構築しました。これにより、VISAの要件を満たすだけでなく、チャージバックの減少や顧客満足度の向上にもつながっています。
 
-この機能を実装する方法は次のとおりです。
+この機能の実装方法は以下の通りです：
 
 ```javascript
-// Find users with trial subscriptions who haven't received a notification yet
+// 通知をまだ受け取っていないトライアルサブスクリプションのユーザーを検索
 const users = await Users.find({
   $or: [
     {
       $and: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
         { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // すでに支払いが発生しているサブスクリプションは除外
         ...(paidStripeSubscriptionIds.length > 0
           ? [
               {
@@ -721,7 +724,7 @@ const users = await Users.find({
       $and: [
         { [config.userFields.paypalSubscriptionID]: { $exists: true } },
         { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // すでに支払いが発生しているサブスクリプションは除外
         ...(paidPayPalSubscriptionIds.length > 0
           ? [
               {
@@ -736,22 +739,22 @@ const users = await Users.find({
   ]
 });
 
-// Process each user and send notification
+// 各ユーザーを処理し通知を送信
 for (const user of users) {
-  // Get subscription details from payment processor
+  // 支払いプロセッサーからサブスクリプション詳細を取得
   const subscription = await getSubscriptionDetails(user);
 
-  // Calculate subscription duration and frequency
+  // サブスクリプションの期間と頻度を計算
   const duration = getDurationFromPlanId(subscription.plan_id);
   const frequency = getHumanReadableFrequency(duration, user.locale);
   const amount = getPlanAmount(user.plan, duration);
 
-  // Get user's domains for personalized email
+  // パーソナライズされたメールのためにユーザーのドメインを取得
   const domains = await Domains.find({
     'members.user': user._id
   }).sort('name').lean().exec();
 
-  // Send VISA-compliant notification email
+  // VISA準拠の通知メールを送信
   await emailHelper({
     template: 'visa-trial-subscription-requirement',
     message: {
@@ -767,7 +770,7 @@ for (const user of users) {
     }
   });
 
-  // Record that notification was sent
+  // 通知送信済みを記録
   await Users.findByIdAndUpdate(user._id, {
     $set: {
       [config.userFields.paypalTrialSentAt]: new Date()
@@ -776,18 +779,17 @@ for (const user of users) {
 }
 ```
 
-この実装により、ユーザーは今後の請求について常に通知され、以下の点について明確な詳細が得られます。
+この実装により、ユーザーは常に以下の明確な詳細とともに今後の課金について通知されます：
 
-1. 初回請求日
-2. 今後の請求頻度（月払い、年払いなど）
-3. 請求金額（具体的には）
-4. サブスクリプションの対象となるドメイン
+1. 最初の課金がいつ行われるか
+2. 今後の課金頻度（月次、年次など）
+3. 課金される正確な金額
+4. サブスクリプションでカバーされるドメイン
 
-このプロセスを自動化することで、VISA の要件 (請求の少なくとも 7 日前に通知することを義務付けている) に完全に準拠しながら、サポートの問い合わせを減らし、全体的なユーザー エクスペリエンスを向上させることができます。
-
+このプロセスを自動化することで、VISAの要件（課金の少なくとも7日前に通知すること）を完全に遵守しつつ、サポートへの問い合わせを減らし、全体的なユーザー体験を向上させています。
 ### エッジケースの処理 {#handling-edge-cases-1}
 
-当社の実装には堅牢なエラー処理も含まれています。通知プロセス中に問題が発生した場合、システムが自動的にチームに警告を発します。
+当社の実装には堅牢なエラーハンドリングも含まれています。通知プロセス中に何か問題が発生した場合、システムは自動的にチームにアラートを送信します：
 
 ```javascript
 try {
@@ -795,12 +797,12 @@ try {
 } catch (err) {
   logger.error(err);
 
-  // Send alert to administrators
+  // 管理者へのアラート送信
   await emailHelper({
     template: 'alert',
     message: {
       to: config.email.message.from,
-      subject: 'VISA Trial Subscription Requirement Error'
+      subject: 'VISAトライアルサブスクリプション要件エラー'
     },
     locals: {
       message: `<pre><code>${safeStringify(
@@ -813,13 +815,13 @@ try {
 }
 ```
 
-これにより、通知システムに問題が発生した場合でも、当社のチームが迅速に対応し、VISA の要件への準拠を維持することができます。
+これにより、通知システムに問題があっても、チームが迅速に対応しVISAの要件を遵守し続けることができます。
 
-VISA サブスクリプション通知システムは、コンプライアンスとユーザー エクスペリエンスの両方を考慮して支払いインフラストラクチャを構築した当社のもう 1 つの例であり、信頼性が高く透明性の高い支払い処理を保証するための 3 つのアプローチを補完するものです。
+VISAサブスクリプション通知システムは、当社がコンプライアンスとユーザー体験の両方を考慮して支払いインフラを構築したもう一つの例であり、信頼性が高く透明性のある支払い処理を実現するための三位一体アプローチを補完しています。
 
-### 試用期間とサブスクリプション条件 {#trial-periods-and-subscription-terms}
+### トライアル期間とサブスクリプション条件 {#trial-periods-and-subscription-terms}
 
-既存のプランで自動更新を有効にしているユーザーの場合、現在のプランの有効期限が切れるまで料金が発生しないように適切な試用期間を計算します。
+既存プランで自動更新を有効にするユーザーに対しては、現在のプランが終了するまで課金されないよう適切なトライアル期間を計算します：
 
 ```javascript
 if (
@@ -832,26 +834,27 @@ if (
     ctx.state.user[config.userFields.planExpiresAt]
   ).diff(dayjs(), 'hours');
 
-  // Handle trial period calculation
+  // トライアル期間の計算処理
 }
 ```
 
-また、請求頻度やキャンセルポリシーなどのサブスクリプション条件に関する明確な情報を提供し、適切な追跡と管理を確実にするために各サブスクリプションに詳細なメタデータを含めます。
+また、請求頻度やキャンセルポリシーなどのサブスクリプション条件を明確に提供し、各サブスクリプションに詳細なメタデータを含めることで適切な追跡と管理を保証しています。
 
-## 結論: 当社のトリフェクタアプローチの利点 {#conclusion-the-benefits-of-our-trifecta-approach}
 
-弊社の支払い処理に対する 3 つのアプローチにより、次のような重要なメリットがもたらされました。
+## 結論：三位一体アプローチの利点 {#conclusion-the-benefits-of-our-trifecta-approach}
 
-1. **信頼性**: 3 層の決済検証を実施することで、支払い漏れや誤った処理が行われないようにします。
+当社の支払い処理における三位一体アプローチは、以下の主要な利点をもたらしています：
 
-2. **正確性**: 当社のデータベースは、Stripe と PayPal の両方におけるサブスクリプションと支払いの実際の状態を常に反映しています。
+1. **信頼性**：3層の支払い検証を実装することで、支払いの見落としや誤処理を防止しています。
 
-3. **柔軟性**: ユーザーは、システムの信頼性を損なうことなく、好みの支払い方法を選択できます。
+2. **正確性**：データベースは常にStripeとPayPalの両方のサブスクリプションおよび支払いの正確な状態を反映しています。
 
-4. **堅牢性**: 当社のシステムは、ネットワーク障害から不正行為まで、エッジケースを適切に処理します。
+3. **柔軟性**：ユーザーはシステムの信頼性を損なうことなく、好みの支払い方法を選択できます。
 
-複数のプロセッサをサポートする決済システムを実装する場合は、この3つのアプローチを強くお勧めします。初期開発にはより多くの労力が必要ですが、信頼性と精度という点で得られる長期的なメリットは十分に価値があります。
+4. **堅牢性**：ネットワーク障害から不正行為まで、エッジケースを適切に処理します。
 
-Forward Email およびプライバシーを重視したメール サービスの詳細については、[Webサイト](https://forwardemail.net) をご覧ください。
+複数の決済プロセッサをサポートする支払いシステムを実装する場合、この三位一体アプローチを強く推奨します。初期の開発コストはかかりますが、信頼性と正確性の面で長期的なメリットは非常に大きいです。
 
-<!-- *キーワード: 支払い処理、Stripe 統合、PayPal 統合、Webhook 処理、支払い同期、サブスクリプション管理、不正防止、紛争処理、Node.js 支払いシステム、マルチプロセッサ支払いシステム、支払いゲートウェイ統合、リアルタイム支払い検証、支払いデータの一貫性、サブスクリプション請求、支払いセキュリティ、支払い自動化、支払い Webhook、支払い調整、支払いエッジケース、支払いエラー処理、VISA サブスクリプション要件、更新前通知、サブスクリプションコンプライアンス* -->
+Forward Emailおよびプライバシー重視のメールサービスの詳細については、当社の[ウェブサイト](https://forwardemail.net)をご覧ください。
+
+<!-- *Keywords: payment processing, Stripe integration, PayPal integration, webhook handling, payment synchronization, subscription management, fraud prevention, dispute handling, Node.js payment system, multi-processor payment system, payment gateway integration, real-time payment verification, payment data consistency, subscription billing, payment security, payment automation, payment webhooks, payment reconciliation, payment edge cases, payment error handling, VISA subscription requirements, pre-renewal notifications, subscription compliance* -->

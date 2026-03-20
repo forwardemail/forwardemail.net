@@ -1,21 +1,24 @@
-# Enviar correos electrónicos con el ejemplo de aplicación web Node de React.js {#send-emails-with-reactjs-node-web-app-example}
+# Enviar correos electrónicos con ejemplo de aplicación web React.js Node {#send-emails-with-reactjs-node-web-app-example}
 
-## Tabla de contenido {#table-of-contents}
 
-* [Instalación y requisitos](#install-and-requirements)
-* [Código fuente y ejemplo](#source-code-and-example)
+## Tabla de Contenidos {#table-of-contents}
 
-## Instalación y requisitos {#install-and-requirements}
+* [Instalación y Requisitos](#install-and-requirements)
+* [Código Fuente y Ejemplo](#source-code-and-example)
 
-Necesitará instalar las dependencias npm `@react-email/render` y `nodemailer`:
+
+## Instalación y Requisitos {#install-and-requirements}
+
+Necesitarás instalar las dependencias npm `@react-email/render` y `nodemailer`:
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
-## Código fuente y ejemplo {#source-code-and-example}
 
-Cree su plantilla de correo electrónico con un archivo `.jsx` o `.js`:
+## Código Fuente y Ejemplo {#source-code-and-example}
+
+Crea tu plantilla de correo con un archivo `.jsx` o `.js`:
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>Visita nuestro sitio web</Button>
     </Html>
   );
 }
 ```
 
-En este ejemplo, utilizamos la biblioteca **[Nodemailer](https://github.com/nodemailer/nodemailer)** y su patrocinador oficial **[Reenviar correo electrónico](https://forwardemail.net)** para enviar y obtener una vista previa del correo saliente.
+En este ejemplo, usamos la biblioteca **[Nodemailer](https://github.com/nodemailer/nodemailer)** y su patrocinador oficial **[Forward Email](https://forwardemail.net)** para enviar y previsualizar correos salientes.
 
-Necesitará <strong class="text-success"><i class="fa fa-key"></i>Generar contraseña</strong> para enviar correo saliente. Siga nuestro **[Guía para enviar correos electrónicos con dominio personalizado SMTP](/guides/send-email-with-custom-domain-smtp)**.
+Necesitarás <strong class="text-success"><i class="fa fa-key"></i> Generar Contraseña</strong> para enviar correos salientes – por favor sigue nuestra **[Guía para Enviar Correo con SMTP de Dominio Personalizado](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: reemplaza los valores `user` y `pass` de:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -63,19 +66,19 @@ const html = render(Email({ url: "https://example.com" }));
 const options = {
   from: 'you@example.com',
   to: 'user@gmail.com',
-  subject: 'hello world',
+  subject: 'hola mundo',
   html
 };
 
 transporter.sendMail(options);
 ```
 
-Ejecute la aplicación para enviar el correo electrónico:
+Ejecuta la aplicación para enviar el correo:
 
 ```sh
 node app
 ```
 
-Ahora puede ir a **[Mi cuenta → Correos electrónicos](/my-account/emails)** para ver el estado de entrega de su correo electrónico en tiempo real, los registros de capacidad de entrega de correo electrónico y las vistas previas de HTML/texto simple/archivos adjuntos.
+Ahora puedes ir a **[Mi Cuenta → Correos](/my-account/emails)** para ver el estado de entrega de tus correos en tiempo real, registros de entregabilidad y vistas previas en HTML/texto plano/adjuntos.
 
-> P.D. :tada: También puedes usar **[Vista previa de correos electrónicos en navegadores y el simulador de iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** y **[crear plantillas de correo electrónico con Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.D. :tada: También puedes **[previsualizar correos en navegadores y el simulador de iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** y **[crear plantillas de correo con Node.js](/docs/send-emails-with-node-js-javascript)**.

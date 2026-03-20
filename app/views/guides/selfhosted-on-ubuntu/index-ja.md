@@ -1,92 +1,97 @@
-# メール転送 Ubuntu 向けセルフホスティングインストールガイド {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# Forward Email セルフホスティング インストールガイド for Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+
 
 ## 目次 {#table-of-contents}
 
 * [概要](#overview)
 * [前提条件](#prerequisites)
 * [システム要件](#system-requirements)
-* [ステップバイステップのインストール](#step-by-step-installation)
-  * [ステップ1: 初期システムセットアップ](#step-1-initial-system-setup)
-  * [ステップ2: DNSリゾルバーを構成する](#step-2-configure-dns-resolvers)
-  * [ステップ3: システム依存関係をインストールする](#step-3-install-system-dependencies)
-  * [ステップ4: Snapパッケージをインストールする](#step-4-install-snap-packages)
-  * [ステップ5: Dockerをインストールする](#step-5-install-docker)
-  * [ステップ6: Dockerサービスを構成する](#step-6-configure-docker-service)
-  * [ステップ7: ファイアウォールを構成する](#step-7-configure-firewall)
-  * [ステップ8: 転送メールリポジトリのクローンを作成する](#step-8-clone-forward-email-repository)
-  * [ステップ9: 環境設定のセットアップ](#step-9-set-up-environment-configuration)
-  * [ステップ10: ドメインを設定する](#step-10-configure-your-domain)
-  * [ステップ11: SSL証明書を生成する](#step-11-generate-ssl-certificates)
-  * [ステップ12: 暗号化キーを生成する](#step-12-generate-encryption-keys)
-  * [ステップ13: 構成内のSSLパスを更新する](#step-13-update-ssl-paths-in-configuration)
-  * [ステップ14: 基本認証を設定する](#step-14-set-up-basic-authentication)
-  * [ステップ15: Docker Composeでデプロイする](#step-15-deploy-with-docker-compose)
-  * [ステップ16: インストールの確認](#step-16-verify-installation)
+* [ステップバイステップインストール](#step-by-step-installation)
+  * [ステップ 1: 初期システムセットアップ](#step-1-initial-system-setup)
+  * [ステップ 2: DNSリゾルバの設定](#step-2-configure-dns-resolvers)
+  * [ステップ 3: システム依存関係のインストール](#step-3-install-system-dependencies)
+  * [ステップ 4: Snapパッケージのインストール](#step-4-install-snap-packages)
+  * [ステップ 5: Dockerのインストール](#step-5-install-docker)
+  * [ステップ 6: Dockerサービスの設定](#step-6-configure-docker-service)
+  * [ステップ 7: ファイアウォールの設定](#step-7-configure-firewall)
+  * [ステップ 8: Forward Emailリポジトリのクローン](#step-8-clone-forward-email-repository)
+  * [ステップ 9: 環境設定のセットアップ](#step-9-set-up-environment-configuration)
+  * [ステップ 10: ドメインの設定](#step-10-configure-your-domain)
+  * [ステップ 11: SSL証明書の生成](#step-11-generate-ssl-certificates)
+  * [ステップ 12: 暗号化キーの生成](#step-12-generate-encryption-keys)
+  * [ステップ 13: 設定内のSSLパスの更新](#step-13-update-ssl-paths-in-configuration)
+  * [ステップ 14: ベーシック認証の設定](#step-14-set-up-basic-authentication)
+  * [ステップ 15: Docker Composeでのデプロイ](#step-15-deploy-with-docker-compose)
+  * [ステップ 16: インストールの検証](#step-16-verify-installation)
 * [インストール後の設定](#post-installation-configuration)
   * [DNSレコードの設定](#dns-records-setup)
   * [初回ログイン](#first-login)
-* [バックアップ構成](#backup-configuration)
-  * [S3互換バックアップの設定](#set-up-s3-compatible-backup)
-  * [バックアップ Cron ジョブの設定](#set-up-backup-cron-jobs)
+* [バックアップ設定](#backup-configuration)
+  * [S3互換バックアップのセットアップ](#set-up-s3-compatible-backup)
+  * [バックアップ用Cronジョブの設定](#set-up-backup-cron-jobs)
 * [自動更新設定](#auto-update-configuration)
 * [メンテナンスと監視](#maintenance-and-monitoring)
   * [ログの場所](#log-locations)
-  * [定期的なメンテナンスタスク](#regular-maintenance-tasks)
+  * [定期メンテナンス作業](#regular-maintenance-tasks)
   * [証明書の更新](#certificate-renewal)
 * [トラブルシューティング](#troubleshooting)
   * [よくある問題](#common-issues)
-  * [ヘルプの取得](#getting-help)
-* [セキュリティのベストプラクティス](#security-best-practices)
-* [結論](#conclusion)
+  * [サポートの受け方](#getting-help)
+* [セキュリティベストプラクティス](#security-best-practices)
+* [まとめ](#conclusion)
+
 
 ## 概要 {#overview}
 
-このガイドでは、Forward Emailのセルフホスト型ソリューションをUbuntuシステムにインストールするための手順を段階的に説明します。このガイドは、Ubuntu 20.04、22.04、および24.04 LTSバージョン向けに特別にカスタマイズされています。
+本ガイドは、Ubuntuシステム上でForward Emailのセルフホストソリューションをインストールするためのステップバイステップの手順を提供します。本ガイドは特にUbuntu 20.04、22.04、および24.04 LTSバージョン向けに調整されています。
+
 
 ## 前提条件 {#prerequisites}
 
-インストールを開始する前に、次のものを用意してください。
+インストールを開始する前に、以下を確認してください：
 
-* **Ubuntu Server**: 20.04、22.04、または24.04 LTS
-* **ルートアクセス**: ルートとしてコマンドを実行できる必要があります (sudo アクセス)
-* **ドメイン名**: DNS 管理アクセスで管理しているドメイン
-* **クリーンサーバー**: Ubuntu の新規インストールを推奨
-* **インターネット接続**: パッケージと Docker イメージのダウンロードに必要
+* **Ubuntuサーバー**: 20.04、22.04、または24.04 LTS
+* **rootアクセス**: root（sudo）権限でコマンドを実行できること
+* **ドメイン名**: DNS管理アクセス権のある管理ドメイン
+* **クリーンサーバー**: 新規のUbuntuインストールを推奨
+* **インターネット接続**: パッケージやDockerイメージのダウンロードに必要
+
 
 ## システム要件 {#system-requirements}
 
-* **RAM**: 最低 2GB (本番環境では 4GB を推奨)
-* **ストレージ**: 最低 20GB の空き容量 (本番環境では 50GB 以上を推奨)
-* **CPU**: 最低 1 個の vCPU (本番環境では 2 個以上の vCPU を推奨)
-* **ネットワーク**: 以下のポートにアクセスできるパブリック IP アドレス:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **RAM**: 最低2GB（本番環境では4GB推奨）
+* **ストレージ**: 最低20GBの空き容量（本番環境では50GB以上推奨）
+* **CPU**: 最低1 vCPU（本番環境では2以上推奨）
+* **ネットワーク**: 以下のポートがアクセス可能なパブリックIPアドレス
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
 
-## ステップバイステップのインストール {#step-by-step-installation}
 
-### ステップ1: 初期システムセットアップ {#step-1-initial-system-setup}
+## ステップバイステップインストール {#step-by-step-installation}
 
-まず、システムが最新であることを確認し、ルート ユーザーに切り替えます。
+### ステップ 1: 初期システムセットアップ {#step-1-initial-system-setup}
+
+まず、システムを最新にし、rootユーザーに切り替えます：
 
 ```bash
-# Update system packages
+# システムパッケージの更新
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# rootユーザーに切り替え（インストールに必要）
 sudo su -
 ```
 
-### ステップ2: DNSリゾルバーを構成する {#step-2-configure-dns-resolvers}
+### ステップ 2: DNSリゾルバの設定 {#step-2-configure-dns-resolvers}
 
-信頼性の高い証明書生成のために、Cloudflare の DNS サーバーを使用するようにシステムを設定します。
+信頼性の高い証明書生成のために、CloudflareのDNSサーバーを使用するようシステムを設定します：
 
 ```bash
-# Stop and disable systemd-resolved if running
+# systemd-resolvedが動作している場合は停止・無効化
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -94,7 +99,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Cloudflare DNSリゾルバの設定
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -106,16 +111,15 @@ nameserver 8.8.4.4
 nameserver 2001:4860:4860::8844
 EOF
 ```
+### Step 3: システム依存関係のインストール {#step-3-install-system-dependencies}
 
-### ステップ3: システム依存関係をインストールする {#step-3-install-system-dependencies}
-
-メール転送に必要なパッケージをインストールします。
+Forward Email に必要なパッケージをインストールします:
 
 ```bash
-# Update package list
+# パッケージリストを更新
 apt-get update -y
 
-# Install basic dependencies
+# 基本的な依存関係をインストール
 apt-get install -y \
     ca-certificates \
     curl \
@@ -126,150 +130,150 @@ apt-get install -y \
     snapd
 ```
 
-### ステップ4: Snapパッケージをインストールする {#step-4-install-snap-packages}
+### Step 4: Snap パッケージのインストール {#step-4-install-snap-packages}
 
-スナップ経由で AWS CLI と Certbot をインストールします。
+snap を使って AWS CLI と Certbot をインストールします:
 
 ```bash
-# Install AWS CLI
+# AWS CLI をインストール
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Certbot と DNS プラグインをインストール
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 ```
 
-### ステップ5: Dockerをインストールする {#step-5-install-docker}
+### Step 5: Docker のインストール {#step-5-install-docker}
 
-Docker CE と Docker Compose をインストールします。
+Docker CE と Docker Compose をインストールします:
 
 ```bash
-# Add Docker's official GPG key
+# Docker の公式 GPG キーを追加
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository
+# Docker リポジトリを追加
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# パッケージインデックスを更新し Docker をインストール
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Verify Docker installation
+# Docker のインストールを確認
 docker --version
 docker compose version
 ```
 
-### ステップ6: Dockerサービスを構成する {#step-6-configure-docker-service}
+### Step 6: Docker サービスの設定 {#step-6-configure-docker-service}
 
-Docker が自動的に起動し、実行されていることを確認します。
+Docker が自動起動し、実行中であることを確認します:
 
 ```bash
-# Enable and start Docker service
+# Docker サービスを有効化して起動
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Docker が実行中か確認
 docker info
 ```
 
-Docker の起動に失敗した場合は、手動で起動してみてください。
+Docker が起動しない場合は手動で起動を試みてください:
 
 ```bash
-# Alternative startup method if systemctl fails
+# systemctl が失敗した場合の代替起動方法
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### ステップ7: ファイアウォールを構成する {#step-7-configure-firewall}
+### Step 7: ファイアウォールの設定 {#step-7-configure-firewall}
 
-サーバーを保護するために UFW ファイアウォールを設定します。
+UFW ファイアウォールを設定してサーバーを保護します:
 
 ```bash
-# Set default policies
+# デフォルトポリシーを設定
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# SSH を許可（重要 - 自分自身をロックアウトしないように！）
 ufw allow 22/tcp
 
-# Allow email-related ports
+# メール関連ポートを許可
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (Let's Encrypt 用)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (代替ポート)
+ufw allow 2995/tcp  # POP3 (代替ポート)
+ufw allow 3456/tcp  # カスタムサービスポート
+ufw allow 4000/tcp  # カスタムサービスポート
+ufw allow 5000/tcp  # カスタムサービスポート
 
-# Allow local database connections
+# ローカルデータベース接続を許可
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# ファイアウォールを有効化
 echo "y" | ufw enable
 
-# Check firewall status
+# ファイアウォールの状態を確認
 ufw status numbered
 ```
 
-### ステップ8: 転送メールリポジトリのクローン作成 {#step-8-clone-forward-email-repository}
+### Step 8: Forward Email リポジトリのクローン {#step-8-clone-forward-email-repository}
 
-転送メールのソースコードをダウンロードしてください:
+Forward Email のソースコードをダウンロードします:
 
 ```bash
-# Set up variables
+# 変数を設定
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# リポジトリをクローン
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# クローンが成功したか確認
 ls -la
 ```
 
-### ステップ9: 環境設定のセットアップ {#step-9-set-up-environment-configuration}
+### Step 9: 環境設定の準備 {#step-9-set-up-environment-configuration}
 
-環境設定を準備します。
+環境設定を準備します:
 
 ```bash
-# Set up directory variables
+# ディレクトリ変数を設定
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# デフォルト環境ファイルをコピー
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# SSL ディレクトリを作成
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# データベース用ディレクトリを作成
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### ステップ10: ドメインを構成する {#step-10-configure-your-domain}
+### Step 10: ドメインの設定 {#step-10-configure-your-domain}
 
-ドメイン名を設定し、環境変数を更新します。
+ドメイン名を設定し、環境変数を更新します:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# 'yourdomain.com' を実際のドメインに置き換えてください
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# 環境ファイルを更新する関数
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -281,7 +285,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# ドメイン関連の環境変数を更新
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -303,13 +307,12 @@ update_env_file "SELF_HOSTED" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
+### Step 11: SSL証明書の生成 {#step-11-generate-ssl-certificates}
 
-### ステップ11: SSL証明書を生成する {#step-11-generate-ssl-certificates}
-
-#### オプションA: 手動DNSチャレンジ（ほとんどのユーザーに推奨）{#option-a-manual-dns-challenge-recommended-for-most-users}
+#### オプションA: 手動DNSチャレンジ（ほとんどのユーザーに推奨） {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# 手動DNSチャレンジを使用して証明書を生成
 certbot certonly \
   --manual \
   --agree-tos \
@@ -318,23 +321,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**重要**: プロンプトが表示されたら、DNSにTXTレコードを作成する必要があります。同じドメインに対して複数のチャレンジが表示される場合がありますが、**すべて作成してください**。2つ目のTXTレコードを追加する際は、最初のTXTレコードを削除しないでください。
+**重要**: プロンプトが表示されたら、DNSにTXTレコードを作成する必要があります。同じドメインに対して複数のチャレンジが表示される場合がありますが、**すべて作成してください**。2つ目のTXTレコードを追加するときに最初のTXTレコードを削除しないでください。
 
-#### オプションB: Cloudflare DNS (Cloudflare を使用している場合) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### オプションB: Cloudflare DNS（Cloudflareを使用している場合） {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-ドメインが DNS に Cloudflare を使用している場合は、証明書の生成を自動化できます。
+ドメインがCloudflareのDNSを使用している場合、証明書の生成を自動化できます：
 
 ```bash
-# Create Cloudflare credentials file
+# Cloudflare認証情報ファイルを作成
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# 適切な権限を設定
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# 証明書を自動生成
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -347,53 +350,53 @@ certbot certonly \
 
 #### 証明書のコピー {#copy-certificates}
 
-証明書が生成されたら、それをアプリケーション ディレクトリにコピーします。
+証明書生成後、アプリケーションディレクトリにコピーします：
 
 ```bash
-# Copy certificates to application SSL directory
+# 証明書をアプリケーションのSSLディレクトリにコピー
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# 証明書がコピーされたことを確認
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### ステップ12: 暗号化キーの生成 {#step-12-generate-encryption-keys}
+### Step 12: 暗号化キーの生成 {#step-12-generate-encryption-keys}
 
-安全な操作に必要なさまざまな暗号化キーを作成します。
+安全な運用に必要な各種暗号化キーを作成します：
 
 ```bash
-# Generate helper encryption key
+# ヘルパー暗号化キーを生成
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# メール転送用のSRSシークレットを生成
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# TXT暗号化キーを生成
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# メール署名用のDKIM秘密鍵を生成
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# Webhook署名キーを生成
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# SMTPトランスポートパスワードを設定
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ すべての暗号化キーが正常に生成されました"
 ```
 
-### ステップ13: 構成内のSSLパスを更新する {#step-13-update-ssl-paths-in-configuration}
+### Step 13: 設定ファイル内のSSLパスを更新 {#step-13-update-ssl-paths-in-configuration}
 
-環境ファイルで SSL 証明書のパスを設定します。
+環境ファイル内のSSL証明書パスを設定します：
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# SSLパスを正しい証明書ファイルに更新
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -401,77 +404,77 @@ sed -i -E \
   "$SELF_HOST_DIR/$ENV_FILE"
 ```
 
-### ステップ14: 基本認証を設定する {#step-14-set-up-basic-authentication}
+### Step 14: ベーシック認証の設定 {#step-14-set-up-basic-authentication}
 
-一時的な基本認証資格情報を作成します。
+一時的なベーシック認証の認証情報を作成します：
 
 ```bash
-# Generate a secure random password
+# 安全なランダムパスワードを生成
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# 環境ファイルにベーシック認証情報を更新
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# 認証情報を表示（必ず保存してください！）
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 重要: これらのログイン認証情報を保存してください！"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "ユーザー名: admin"
+echo "パスワード: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "インストール後、ウェブインターフェースにアクセスする際に必要です。"
 echo ""
 ```
 
-### ステップ15: Docker Composeでデプロイする {#step-15-deploy-with-docker-compose}
+### Step 15: Docker Composeでデプロイ {#step-15-deploy-with-docker-compose}
 
-すべてのメール転送サービスを開始します。
+Forward Emailのすべてのサービスを起動します：
 
 ```bash
-# Set Docker Compose file path
+# Docker Composeファイルのパスを設定
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# 既存のコンテナを停止
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
-# Pull the latest images
+# 最新イメージをプル
 docker compose -f "$DOCKER_COMPOSE_FILE" pull
 
-# Start all services in detached mode
+# すべてのサービスをデタッチモードで起動
 docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Wait a moment for services to start
+# サービス起動のため少し待機
 sleep 10
 
-# Check service status
+# サービスの状態を確認
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
+### Step 16: インストールの確認 {#step-16-verify-installation}
 
-### ステップ16: インストールの確認 {#step-16-verify-installation}
-
-すべてのサービスが正しく実行されていることを確認します。
+すべてのサービスが正しく動作しているか確認してください：
 
 ```bash
-# Check Docker containers
+# Dockerコンテナの確認
 docker ps
 
-# Check service logs for any errors
+# サービスログにエラーがないか確認
 docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 
-# Test web interface connectivity
+# Webインターフェースの接続テスト
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# ポートがリッスンしているか確認
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## インストール後の構成 {#post-installation-configuration}
+
+## インストール後の設定 {#post-installation-configuration}
 
 ### DNSレコードの設定 {#dns-records-setup}
 
-ドメインに対して次の DNS レコードを構成する必要があります。
+ドメインに対して以下のDNSレコードを設定する必要があります：
 
 #### MXレコード {#mx-record}
 
@@ -500,14 +503,14 @@ carddav A YOUR_SERVER_IP
 
 #### DKIMレコード {#dkim-record}
 
-DKIM公開鍵を取得します:
+DKIM公開鍵を取得します：
 
 ```bash
-# Extract DKIM public key
+# DKIM公開鍵の抽出
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-DKIM DNSレコードを作成します:
+DKIMのDNSレコードを作成します：
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
@@ -521,103 +524,105 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### 初回ログイン {#first-login}
 
-1. Webブラウザを開き、`https://yourdomain.com`に移動します。
-2. 先ほど保存した基本認証情報を入力します。
-3. 初期設定ウィザードを完了します。
-4. 最初のメールアカウントを作成します。
+1. Webブラウザを開き、`https://yourdomain.com` にアクセスします
+2. 事前に保存したベーシック認証の資格情報を入力します
+3. 初期セットアップウィザードを完了します
+4. 最初のメールアカウントを作成します
 
-## バックアップ構成 {#backup-configuration}
+
+## バックアップ設定 {#backup-configuration}
 
 ### S3互換バックアップの設定 {#set-up-s3-compatible-backup}
 
-S3 互換ストレージへの自動バックアップを構成します。
+S3互換ストレージへの自動バックアップを設定します：
 
 ```bash
-# Create AWS credentials directory
+# AWS認証情報ディレクトリの作成
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# AWS認証情報の設定
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# AWS設定の作成
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# AWS以外のS3（Cloudflare R2など）の場合はエンドポイントURLを追加
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### バックアップ Cron ジョブの設定 {#set-up-backup-cron-jobs}
+### バックアップ用Cronジョブの設定 {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# バックアップスクリプトを実行可能にする
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# MongoDBバックアップのcronジョブを追加（毎日深夜実行）
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Redisバックアップのcronジョブを追加（毎日深夜実行）
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# cronジョブが追加されたか確認
 crontab -l
 ```
 
-## 自動更新構成 {#auto-update-configuration}
 
-Forward Email インストールの自動更新を設定します。
+## 自動更新設定 {#auto-update-configuration}
+
+Forward Emailのインストールを自動更新する設定を行います：
 
 ```bash
-# Create auto-update command
+# 自動更新コマンドの作成
 DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 
-# Add auto-update cron job (runs daily at 1 AM)
+# 自動更新のcronジョブを追加（毎日午前1時実行）
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# cronジョブが追加されたか確認
 crontab -l
 ```
+
 
 ## メンテナンスと監視 {#maintenance-and-monitoring}
 
 ### ログの場所 {#log-locations}
 
-* **Docker Compose ログ**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
+* **Docker Composeログ**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
 * **システムログ**: `/var/log/syslog`
-* **バックアップログ**: `/var/log/mongo-backup.log`、`/var/log/redis-backup.log`
+* **バックアップログ**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **自動更新ログ**: `/var/log/autoupdate.log`
 
-### 定期メンテナンスタスク {#regular-maintenance-tasks}
+### 定期メンテナンス作業 {#regular-maintenance-tasks}
 
-1. **ディスク容量を監視**: `df -h`
-2. **サービスステータスを確認**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
-3. **ログを確認**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
-4. **システムパッケージを更新**: `apt update && apt upgrade`
-5. **証明書を更新**: 証明書は自動更新されますが、有効期限を監視します
+1. **ディスク容量の監視**: `df -h`
+2. **サービスの状態確認**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
+3. **ログの確認**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
+4. **システムパッケージの更新**: `apt update && apt upgrade`
+5. **証明書の更新**: 証明書は自動更新されますが、有効期限を監視してください
 
 ### 証明書の更新 {#certificate-renewal}
 
-証明書は自動更新されますが、必要に応じて手動で更新することもできます。
+証明書は自動更新されますが、必要に応じて手動で更新できます：
 
 ```bash
-# Manual certificate renewal
+# 手動で証明書を更新
 certbot renew
 
-# Copy renewed certificates
+# 更新された証明書をコピー
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# 新しい証明書を使用するためにサービスを再起動
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
-
 ## トラブルシューティング {#troubleshooting}
 
 ### よくある問題 {#common-issues}
@@ -625,54 +630,56 @@ docker compose -f "$DOCKER_COMPOSE_FILE" restart
 #### 1. Dockerサービスが起動しない {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Dockerの状態を確認
 systemctl status docker
 
-# Try alternative startup
+# 代替起動を試す
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. 証明書の生成に失敗しました {#2-certificate-generation-fails}
+#### 2. 証明書の生成に失敗する {#2-certificate-generation-fails}
 
-* ポート80と443にアクセスできることを確認してください
+* ポート80と443がアクセス可能であることを確認してください
 * DNSレコードがサーバーを指していることを確認してください
 * ファイアウォールの設定を確認してください
 
 #### 3. メール配信の問題 {#3-email-delivery-issues}
 
-* MXレコードが正しいことを確認する
-* SPF、DKIM、DMARCレコードを確認する
-* ホスティングプロバイダによってポート25がブロックされていないことを確認する
+* MXレコードが正しいことを確認してください
+* SPF、DKIM、DMARCレコードを確認してください
+* ホスティングプロバイダーによってポート25がブロックされていないことを確認してください
 
-#### 4. Webインターフェースにアクセスできません {#4-web-interface-not-accessible}
+#### 4. Webインターフェースにアクセスできない {#4-web-interface-not-accessible}
 
-* ファイアウォール設定を確認してください: `ufw status`
-* SSL証明書を確認してください: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* 基本認証の認証情報を確認してください
+* ファイアウォールの設定を確認：`ufw status`
+* SSL証明書を確認：`openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
+* ベーシック認証の資格情報を確認してください
 
-### ヘルプの取得 {#getting-help}
+### ヘルプを得る {#getting-help}
 
 * **ドキュメント**: <https://forwardemail.net/self-hosted>
 * **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **コミュニティサポート**: プロジェクトのGitHubディスカッションをご確認ください
+* **コミュニティサポート**: プロジェクトのGitHubディスカッションを確認してください
+
 
 ## セキュリティのベストプラクティス {#security-best-practices}
 
-1. **システムを最新の状態に保つ**: Ubuntuとパッケージを定期的に更新する
-2. **ログを監視する**: ログ監視とアラートを設定する
-3. **定期的にバックアップする**: バックアップと復元手順をテストする
+1. **システムを最新に保つ**: Ubuntuとパッケージを定期的に更新する
+2. **ログを監視する**: ログ監視とアラート設定を行う
+3. **定期的にバックアップを取る**: バックアップと復元手順をテストする
 4. **強力なパスワードを使用する**: すべてのアカウントに強力なパスワードを生成する
-5. **Fail2Banを有効にする**: セキュリティ強化のため、Fail2Banのインストールを検討する
-6. **定期的なセキュリティ監査**: 設定を定期的に確認する
+5. **Fail2Banを有効にする**: 追加のセキュリティのためにfail2banのインストールを検討する
+6. **定期的なセキュリティ監査**: 設定を定期的に見直す
+
 
 ## 結論 {#conclusion}
 
-Forward Emailのセルフホストインストールが完了し、Ubuntuで実行されるはずです。以下の点にご注意ください。
+Forward EmailのセルフホストインストールはUbuntu上で完了し、稼働しているはずです。以下を忘れずに行ってください：
 
-1. DNSレコードを適切に設定する
+1. DNSレコードを正しく設定する
 2. メールの送受信をテストする
 3. 定期的なバックアップを設定する
 4. システムを定期的に監視する
 5. インストールを最新の状態に保つ
 
-追加の設定オプションと高度な機能については、<https://forwardemail.net/self-hosted#configuration>.> にあるメール転送の公式ドキュメントを参照してください。
+追加の設定オプションや高度な機能については、公式のForward Emailドキュメント <https://forwardemail.net/self-hosted#configuration> を参照してください。

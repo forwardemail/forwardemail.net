@@ -1,21 +1,24 @@
-# E-mails verzenden met React.js Node Web App-voorbeeld {#send-emails-with-reactjs-node-web-app-example}
+# E-mails Verzenden met React.js Node Web App Voorbeeld {#send-emails-with-reactjs-node-web-app-example}
+
 
 ## Inhoudsopgave {#table-of-contents}
 
-* [Installatie en vereisten](#install-and-requirements)
-* [Broncode en voorbeeld](#source-code-and-example)
+* [Installatie en Vereisten](#install-and-requirements)
+* [Broncode en Voorbeeld](#source-code-and-example)
 
-## Installatie en vereisten {#install-and-requirements}
 
-U moet de npm-afhankelijkheden `@react-email/render` en `nodemailer` installeren:
+## Installatie en Vereisten {#install-and-requirements}
+
+Je moet de npm-afhankelijkheden `@react-email/render` en `nodemailer` installeren:
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
-## Broncode en voorbeeld {#source-code-and-example}
 
-Maak uw e-mailsjabloon met een bestand van het type `.jsx` of `.js`:
+## Broncode en Voorbeeld {#source-code-and-example}
+
+Maak je e-mailsjabloon met een `.jsx` of `.js` bestand:
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>Bezoek onze website</Button>
     </Html>
   );
 }
 ```
 
-In dit voorbeeld gebruiken we de bibliotheek **[Nodemailer](https://github.com/nodemailer/nodemailer)** en de officiële sponsor **[E-mail doorsturen](https://forwardemail.net)** om uitgaande e-mail te verzenden en vooraf te bekijken.
+In dit voorbeeld gebruiken we de **[Nodemailer](https://github.com/nodemailer/nodemailer)** bibliotheek en zijn officiële sponsor **[Forward Email](https://forwardemail.net)** om uitgaande e-mail te verzenden en te bekijken.
 
-U moet een <strong class="text-success"><i class="fa fa-key"></i>wachtwoord genereren</strong> om uitgaande e-mail te kunnen versturen. Volg hiervoor onze **[E-mail verzenden met aangepaste domein SMTP-handleiding](/guides/send-email-with-custom-domain-smtp)**.
+Je moet <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord Genereren</strong> om uitgaande e-mail te verzenden – volg hiervoor onze **[Handleiding E-mail Verzenden met Custom Domain SMTP](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: vervang `user` en `pass` waarden via:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -76,6 +79,6 @@ Start de app om de e-mail te verzenden:
 node app
 ```
 
-U kunt nu naar **[Mijn account → E-mails](/my-account/emails)** gaan om de realtimestatus van uw e-mailbezorging, logboeken over de bezorging van e-mails en voorbeelden van HTML/platte tekst/bijlagen te bekijken.
+Ga nu naar **[Mijn Account → E-mails](/my-account/emails)** om je realtime e-mailbezorgstatus, e-mailbezorglogboeken en HTML/tekst/attachment previews te bekijken.
 
-> P.S. :tada: Je kunt ook **[e-mails bekijken in browsers en de iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** en **[e-mailsjablonen maken met Node.js](/docs/send-emails-with-node-js-javascript)** gebruiken.
+> P.S. :tada: Je kunt ook **[e-mails bekijken in browsers en de iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** en **[e-mailsjablonen maken met Node.js](/docs/send-emails-with-node-js-javascript)**.

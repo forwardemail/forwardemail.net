@@ -1,112 +1,117 @@
-# Kötüye Kullanımı Bildir {#report-abuse}
+# İhlal Bildirimi {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Forward Email'e kötüye kullanım ve spam bildir" class="rounded-lg" />
+
 
 ## İçindekiler {#table-of-contents}
 
-* [Sorumluluk Reddi](#disclaimer)
-* [Kötüye kullanım raporu nasıl gönderilir?](#how-to-submit-an-abuse-report)
+* [Feragatname](#disclaimer)
+* [İhlal bildirimi nasıl gönderilir](#how-to-submit-an-abuse-report)
 * [Genel halk için](#for-the-general-public)
-* [Kolluk kuvvetleri için](#for-law-enforcement)
-  * [Hangi bilgiler mevcut?](#what-information-is-available)
-  * [Hangi bilgiler mevcut değil?](#what-information-is-not-available)
-  * [Amerika Birleşik Devletleri merkezli kolluk kuvvetleri](#law-enforcement-based-in-the-united-states)
-  * [Amerika Birleşik Devletleri dışında bulunan kolluk kuvvetleri](#law-enforcement-based-outside-of-the-united-states)
-  * [Kolluk kuvvetlerinin acil durum talepleri](#law-enforcement-emergency-requests)
-  * [Kolluk kuvvetlerinin talepleri hesap bildirimlerini tetikleyebilir](#law-enforcement-requests-may-trigger-account-notices)
-  * [Kolluk kuvvetlerinin bilgileri koruma talepleri](#law-enforcement-requests-to-preserve-information)
-  * [Kolluk kuvvetlerine hizmet süreci](#law-enforcement-serving-process)
+* [Emniyet güçleri için](#for-law-enforcement)
+  * [Hangi bilgiler mevcut](#what-information-is-available)
+  * [Hangi bilgiler mevcut değil](#what-information-is-not-available)
+  * [ABD merkezli emniyet güçleri](#law-enforcement-based-in-the-united-states)
+  * [ABD dışı emniyet güçleri](#law-enforcement-based-outside-of-the-united-states)
+  * [Emniyet güçleri acil talepleri](#law-enforcement-emergency-requests)
+  * [Emniyet güçleri talepleri hesap bildirimlerini tetikleyebilir](#law-enforcement-requests-may-trigger-account-notices)
+  * [Emniyet güçleri bilgi koruma talepleri](#law-enforcement-requests-to-preserve-information)
+  * [Emniyet güçleri tebligat süreci](#law-enforcement-serving-process)
 
-## Yasal Uyarı {#disclaimer}
 
-Lütfen tüm site için geçerli olan [Şartlar](/terms)'ımıza uyun.
+## Feragatname {#disclaimer}
 
-## Kötüye kullanım raporu nasıl gönderilir? {#how-to-submit-an-abuse-report}
+Lütfen site genelinde geçerli olan [Şartlarımıza](/terms) bakınız.
 
-[genel halk](#for-the-general-public) ve [kolluk kuvvetleri](#for-law-enforcement) için kötüye kullanım bildirimlerini inceliyor ve bilgi taleplerini vaka bazında e-posta yoluyla iletiyoruz.
 
-Kullanıcılar, e-postalar, IP adresleri ve/veya alan adlarıyla ilgili kötüye kullanım bildirimleri ve bilgi talepleri toplu olarak aşağıda "Hesap" olarak anılacaktır.
+## İhlal bildirimi nasıl gönderilir {#how-to-submit-an-abuse-report}
 
-Talebiniz veya kötüye kullanımla ilgili raporunuz için iletişime geçebileceğiniz e-posta adresimiz: `abuse@forwardemail.net`
+İhlal bildirimlerini inceliyor ve [genel halk](#for-the-general-public) ile [emniyet güçleri](#for-law-enforcement) için bilgi taleplerini vaka bazında e-posta yoluyla karşılıyoruz.
 
-Sizi ilgilendirebilecek daha fazla bilgi için aşağıdaki bölümleri okuyun.
+Kullanıcılar, e-postalar, IP adresleri ve/veya alan adlarıyla ilgili ihlal bildirimleri ve bilgi talepleri aşağıda topluca "Hesap" olarak anılmaktadır.
+
+Kötüye kullanım ile ilgili talep veya bildiriminiz için iletişim e-posta adreslerimiz: `support@forwardemail.net`, `abuse@forwardemail.net` ve `security@forwardemail.net`.
+
+Mümkünse bu e-posta adreslerinin hepsine birer kopya gönderiniz ve 24-48+ saat içinde dönüş yapmazsak hatırlatma e-postaları gönderiniz.
+
+Size uygun olabilecek daha fazla bilgi için aşağıdaki bölümleri okuyunuz.
+
 
 ## Genel halk için {#for-the-general-public}
 
-<u>**Siz veya başka biri yakın bir tehlike altındaysa lütfen derhal polise ve acil servislere başvurun.**</u>
+<u>**Eğer siz veya bir başkası acil tehlike altındaysa, lütfen hemen polis ve acil servislerle iletişime geçin.**</u>
 
-<u>**Hesabınıza kaybettiğiniz erişimi yeniden kazanmak veya kötü niyetli bir kişiyi durdurmaya yardımcı olmak için profesyonel hukuki tavsiye almalısınız.**</u>
+<u>**Hesabınıza erişimi geri kazanmak veya kötü niyetli bir aktörü durdurmak için profesyonel hukuki danışmanlık almanız önerilir.**</u>
 
-Hizmetimizi kullanan bir Hesaptan kötüye kullanım mağduruysanız, lütfen raporunuzu yukarıdaki adrese e-posta ile gönderin. Hesabınız kötü niyetli bir kişi tarafından ele geçirildiyse (örneğin, alan adınız yakın zamanda sona erdiyse ve üçüncü bir tarafça yeniden kaydedildiyse ve ardından kötüye kullanım amacıyla kullanıldıysa), lütfen yukarıdaki adrese tam Hesap bilgilerinizle (örneğin alan adınız) birlikte bir rapor gönderin. Önceki sahipliğinizin doğrulanmasının ardından Hesabın [gölge yasağı](https://en.wikipedia.org/wiki/Shadow_banning) işlemine yardımcı olabiliriz. Hesabınıza yeniden erişim sağlamanıza yardımcı olma yetkimiz olmadığını unutmayın.
+Hizmetimizi kullanan bir Hesaptan kötüye kullanım mağduruysanız, lütfen yukarıdaki adrese e-posta ile bildiriminizi gönderin. Hesabınız kötü niyetli bir aktör tarafından ele geçirildiyse (örneğin, alan adınız yakın zamanda süresi doldu ve üçüncü bir taraf tarafından yeniden kaydedilip kötüye kullanım için kullanıldıysa), lütfen tam Hesap bilgilerinizi (örneğin alan adınız) içeren bir raporu yukarıdaki adrese e-posta ile gönderin. Önceki sahipliğiniz doğrulandıktan sonra Hesabı [gölge yasaklama](https://en.wikipedia.org/wiki/Shadow_banning) yoluyla engellemenize yardımcı olabiliriz. Hesabınıza erişimi geri kazanmanız konusunda yetkimiz olmadığını lütfen unutmayın.
 
-Yasal temsilciniz, kolluk kuvvetleriyle, Hesap sahibinizle (örneğin alan adının kayıt kuruluşu; alan adını kaydettiğiniz web sitesi) iletişime geçmenizi ve/veya sizi [ICANN'in kayıp alan adları sayfası](https://www.icann.org/resources/pages/lost-domain-names)'a yönlendirmenizi önerebilir.
+Hukuki temsilciniz, sizi emniyet güçleri, Hesap sahibi (örneğin alan adının kayıt kuruluşu; alan adını kaydettiğiniz web sitesi) ile iletişime geçmeye veya sizi [ICANN'in kayıp alan adları sayfasına](https://www.icann.org/resources/pages/lost-domain-names) yönlendirebilir.
 
-## Kolluk kuvvetleri için {#for-law-enforcement}
 
-Taleplerin çoğunda, bilgileri ifşa etme yetkimiz [Elektronik İletişim Gizliliği Yasası](https://bja.ojp.gov/program/it/privacy-civil-liberties/authorities/statutes/1285) ([Vikipedi](https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act)), [18 U.S.C. 2701](https://www.govinfo.gov/link/uscode/18/2701) vb. ("ECPA") tarafından yönetilmektedir. ECPA, belirli kullanıcı bilgilerini yalnızca celpler, mahkeme emirleri ve arama emirleri dahil olmak üzere belirli türdeki yasal taleplere yanıt olarak kolluk kuvvetlerine ifşa etmemizi zorunlu kılar.
+## Emniyet güçleri için {#for-law-enforcement}
 
-Kolluk kuvvetleri mensubuysanız ve bir Hesap hakkında bilgi arıyorsanız, talebinize Hesap bilgileri ve tarih ve saat aralığını da eklemelisiniz. Aşırı geniş ve/veya belirsiz talepleri işleme koyamayız; bu, kullanıcılarımızın verilerini ve güvenini korumak ve en önemlisi verilerini güvende tutmak içindir.
+Çoğu talep için, bilgi açıklama yetkimiz [Elektronik İletişim Gizliliği Yasası](https://bja.ojp.gov/program/it/privacy-civil-liberties/authorities/statutes/1285) ([Wikipedia](https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act)), [18 U.S.C. 2701](https://www.govinfo.gov/link/uscode/18/2701) ve devamı ("ECPA") ile düzenlenmektedir. ECPA, belirli türdeki yasal talepler (mahkeme celbi, mahkeme emri ve arama emri gibi) karşılığında emniyet güçlerine belirli kullanıcı bilgilerini açıklamamızı zorunlu kılar.
 
-Talebiniz [Şartlar](/terms) kuralımızın ihlal edildiğini gösteriyorsa, bunu kötüye kullanımı ele alma konusunda yalnızca dahili en iyi uygulamalarımıza göre işleme koyacağız. Bazı durumlarda bunun Hesabın askıya alınması ve/veya yasaklanmasıyla sonuçlanabileceğini unutmayın.
+Eğer bir emniyet gücü mensubuysanız ve bir Hesap hakkında bilgi talep ediyorsanız, talebinizde Hesap bilgileri ile tarih ve zaman aralığı belirtilmelidir. Çok geniş ve/veya belirsiz talepleri işleyemeyiz – bu, kullanıcılarımızın verilerini ve güvenini korumak ve en önemlisi verilerini güvende tutmak içindir.
+Talebiniz bize [Hükümlerimiz](/terms) ihlalini işaret ediyorsa, bunu kötüye kullanımı ele almak için yalnızca dahili en iyi uygulamalarımıza göre işleyeceğiz – bazı durumlarda bunun Hesabın askıya alınması ve/veya yasaklanmasıyla sonuçlanabileceğini unutmayın.
 
-**Bir alan adı kayıt kuruluşu olmadığımız için**, bir alan adıyla ilgili geçmiş DNS kayıt bilgilerini almak istiyorsanız, alan adına karşılık gelen belirli alan adı kayıt kuruluşuyla iletişime geçmelisiniz. [Security Trails]() gibi hizmetler geçmiş kayıt araması sağlayabilir, ancak daha spesifik ve doğru bilgiler kayıt kuruluşundan sağlanabilir. Bir alan adı kayıt kuruluşunun ve/veya DNS ad sunucularının sahiplerinin kim olduğunu belirlemek için `dig` ve `whois` araçları faydalı olabilir (örneğin `whois example.com` veya `dig example.com ns`). Bir Hesabın hizmetimizde ücretli mi yoksa ücretsiz mi bir planda olduğunu, bir DNS kayıt araması yaparak (örneğin `dig example.com mx` ve `dig example.com txt`) belirleyebilirsiniz. MX kayıtları `mx1.forwardemail.net` ve `mx2.forwardemail.net` gibi değerler döndürmüyorsa, alan adı hizmetimizi kullanmıyor demektir. TXT kayıtları düz metin e-posta adresi döndürüyorsa (örneğin `forward-email=user@example.com`), bu, alan adı için e-posta yönlendirme adresinin hedefini gösterir. Bunun yerine `forward-email-site-verification=XXXXXXXXXX` gibi bir değer döndürüyorsa, bu, alanın ücretli bir planda olduğunu ve yönlendirme yapılandırmasının veritabanımızda `whois`0 kimliği altında saklandığını gösterir. Hizmetimizin DNS düzeyinde nasıl çalıştığı hakkında daha fazla bilgi için lütfen `whois`1'imize bakın.
+**Biz bir alan adı kayıt kuruluşu olmadığımız için**, bir alan adıyla ilgili tarihsel DNS kayıt bilgisi arıyorsanız, ilgili alan adına karşılık gelen belirli alan adı kayıt kuruluşuyla iletişime geçmelisiniz. [Security Trails]() gibi hizmetler tarihsel kayıt sorgulaması sağlayabilir, ancak daha spesifik ve doğru bilgiler kayıt kuruluşundan temin edilebilir. Bir alan adı için alan adı kayıt kuruluşu ve/veya DNS ad sunucusu sahiplerini belirlemek için `dig` ve `whois` araçları faydalı olabilir (örneğin `whois example.com` veya `dig example.com ns`). Bir Hesabın hizmetimizde ücretli plan mı yoksa ücretsiz plan mı kullandığını DNS kayıt sorgulaması yaparak belirleyebilirsiniz (örneğin `dig example.com mx` ve `dig example.com txt`). MX kayıtları `mx1.forwardemail.net` ve `mx2.forwardemail.net` gibi değerler döndürmüyorsa, alan adı hizmetimizi kullanmıyor demektir. TXT kayıtları düz metin e-posta adresi döndürüyorsa (örneğin `forward-email=user@example.com`), bu alan adı için e-posta yönlendirme adresi hedefini gösterir. Eğer bunun yerine `forward-email-site-verification=XXXXXXXXXX` gibi bir değer dönerse, bu alan adının ücretli planda olduğunu ve yönlendirme yapılandırmasının `XXXXXXXXXX` kimliği altında veritabanımızda saklandığını gösterir. Hizmetimizin DNS düzeyinde nasıl çalıştığı hakkında daha fazla bilgi için lütfen [SSS](/faq) bölümüne bakınız.
 
-### Hangi bilgiler mevcuttur? {#what-information-is-available}
+### Hangi bilgiler mevcuttur {#what-information-is-available}
 
-Lütfen [Toplanan Bilgiler](/privacy#information-collected) için Gizlilik Politikası bölümümüze bakın. Hesapların, veri saklama ve gizlilik yasalarına uygun olarak bilgilerini sistemimizden kaldırmalarına izin verilir; [Bilgi Kaldırma](/privacy#information-removal) için Gizlilik Politikası bölümümüze bakın. Bu, Hesap silinmesi nedeniyle talep edilen bilgilerin talep anında mevcut olmayabileceği anlamına gelir.
+Lütfen [Toplanan Bilgiler](/privacy#information-collected) için Gizlilik Politikası bölümümüze bakınız. Hesapların, veri saklama ve gizlilik yasalarına uygun olarak sistemimizden bilgilerini kaldırmalarına izin verilir; [Bilgi Kaldırma](/privacy#information-removal) için Gizlilik Politikası bölümüne bakınız. Bu, talep edilen bilgilerin Hesap silinmesi nedeniyle talep anında mevcut olmayabileceği anlamına gelir.
 
-### Hangi bilgiler mevcut değil? {#what-information-is-not-available}
+### Hangi bilgiler mevcut değildir {#what-information-is-not-available}
 
-Lütfen [Toplanmayan Bilgiler](/privacy#information-not-collected) için Gizlilik Politikası bölümümüze bakın.
+Lütfen [Toplanmayan Bilgiler](/privacy#information-not-collected) için Gizlilik Politikası bölümümüze bakınız.
 
-### Amerika Birleşik Devletleri'nde bulunan kolluk kuvvetleri {#law-enforcement-based-in-the-united-states}
+### Amerika Birleşik Devletleri merkezli kolluk kuvvetleri {#law-enforcement-based-in-the-united-states}
 
-[acil durumlar hariç](#law-enforcement-emergency-requests) ile Hesap bilgilerini yalnızca geçerli bir celp, ECPA ABD mahkeme emri ve/veya arama emri alındığında paylaşırız.
+[Acil durumlar hariç](#law-enforcement-emergency-requests), Hesap bilgilerini yalnızca geçerli bir celp, ECPA ABD mahkeme emri ve/veya arama emri alındığında paylaşırız.
 
-Yasa veya mahkeme emriyle yasaklanmadığımız sürece, kolluk kuvvetlerinin talebi hakkında ayrıca [Bir Hesabı bilgilendir](#law-enforcement-requests-may-trigger-account-notices) kullanabiliriz.
+Ayrıca, kanun veya mahkeme emriyle yasaklanmadıkça, bir kolluk kuvveti talebi hakkında [bir Hesabı bilgilendirebiliriz](#law-enforcement-requests-may-trigger-account-notices).
 
-Geçerli bir celp, ECPA mahkeme emri ve/veya arama emri alırsak, o zaman elimizden gelenin en iyisini yaparak ilgili ve mevcut bilgileri sağlayacağız.
+Geçerli bir celp, ECPA mahkeme emri ve/veya arama emri alırsak, ilgili ve mevcut bilgileri elimizden geldiğince sağlarız.
 
-### Amerika Birleşik Devletleri dışında bulunan kolluk kuvvetleri {#law-enforcement-based-outside-of-the-united-states}
+### Amerika Birleşik Devletleri dışındaki kolluk kuvvetleri {#law-enforcement-based-outside-of-the-united-states}
 
-ABD dışında bulunan kolluk kuvvetlerine yönelik taleplerin aşağıdakilerden biri aracılığıyla iletilmesini talep ediyoruz:
+ABD dışındaki kolluk kuvvetleri için taleplerin aşağıdakilerden biri aracılığıyla iletilmesini şart koşarız:
 
-* Bir Amerika Birleşik Devletleri mahkemesi.
-* [Amerika Birleşik Devletleri karşılıklı hukuki yardım anlaşması](https://www.justice.gov/criminal-oia/file/1498806/download) ([Vikipedi](https://en.wikipedia.org/wiki/Mutual_legal_assistance_treaty)) ("MLAT") prosedürleri kapsamında bir uygulama kurumu.
-* Amerika Birleşik Devletleri Başsavcısının Kongre'ye [18 U.S.C. 2523](https://www.govinfo.gov/link/uscode/18/2523) gerekliliklerini karşıladığını tespit edip onayladığı bir yürütme anlaşmasına tabi olan yabancı bir hükümetten gelen bir emir.
+* Birleşik Devletler mahkemesi.
+* [Birleşik Devletler karşılıklı adli yardım anlaşması](https://www.justice.gov/criminal-oia/file/1498806/download) ([Wikipedia](https://en.wikipedia.org/wiki/Mutual_legal_assistance_treaty)) ("MLAT") prosedürleri kapsamında bir yaptırım kurumu.
+* ABD Başsavcısının, Kongreye sunduğu ve [18 U.S.C. 2523](https://www.govinfo.gov/link/uscode/18/2523) gerekliliklerini karşıladığını belirleyip onayladığı yürütme anlaşmasına tabi yabancı hükümetten bir emir.
 
-### Kolluk kuvvetlerinin acil durum talepleri {#law-enforcement-emergency-requests}
+### Kolluk kuvvetleri acil durum talepleri {#law-enforcement-emergency-requests}
 
-Amerika Birleşik Devletleri'ndeki yasanın izin verdiği şekilde (örneğin, [18 ABD Kanunu §2702 (b)(8)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(8\)bir%20hükümet%20kuruluşuna%2C%20uygun%20olarak%20sağlayıcı%2C%20iyi%2C%20inan%2C%20için%20ölüm%20veya%20ciddi%20fiziksel%20yaralanma%20tehlikesi%20içeren%20acil%20bir%20durumun%20her%20bir%20kişiye%20gecikme%20olmaksızın%20iletişim%20ifşa%20edilmesini%20gerektirdiğine%2C%20inan%20ederse%2C%20) ve [§2702 (c)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(c\)Müşteri Kayıtlarının Açıklanması İçin İstisnalar. İyi niyetle ve aşağıdakilerle birlikte, bir alt bölümde açıklanan bir sağlayıcı, bir kaydı veya söz konusu hizmetin bir abonesi, bir müşterisi veya bir müşterisi ile ilgili diğer bilgileri ifşa edebilir. Talep edenin bağımsız doğrulaması – Ölüm veya ciddi fiziksel yaralanmayı önlemek için gecikmeden yapılması gerektiğine inandığımızda, Hesap bilgilerini mahkeme celbi, ECPA mahkeme emri ve/veya arama emri olmaksızın kolluk kuvvetlerine ifşa edebilir ve paylaşabiliriz.
+ABD yasalarının izin verdiği ölçüde (örneğin [18 U.S.C. §2702 (b)(8)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(8\)to%20a%20governmental%20entity%2C%20if%20the%20provider%2C%20in%20good%20faith%2C%20believes%20that%20an%20emergency%20involving%20danger%20of%20death%20or%20serious%20physical%20injury%20to%20any%20person%20requires%20disclosure%20without%20delay%20of%20communications%20relating%20to%20the%20emergency%3B%20or) ve [§2702 (c)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(c\)Exceptions%20for%20Disclosure%20of%20Customer%20Records.%E2%80%94A%20provider%20described%20in%20subsection%20\(a\)%20may%20divulge%20a%20record%20or%20other%20information%20pertaining%20to%20a%20subscriber%20to%20or%20customer%20of%20such%20service%20\(not%20including%20the%20contents%20of%20communications%20covered%20by%20subsection%20\(a\)\(1\)%20or%20\(a\)\(2\)\)%E2%80%94)), talep edenin iyi niyetle ve bağımsız doğrulamasıyla – ölüm veya ciddi fiziksel yaralanmayı önlemek için gecikmeden yapılması gerektiğine inandığımız durumlarda, celp, ECPA mahkeme emri ve/veya arama emri olmadan Hesap bilgilerini kolluk kuvvetleriyle açıklayabilir ve paylaşabiliriz.
+Acil veri taleplerinin ("EDR") e-posta yoluyla gönderilmesini ve zamanında ve hızlandırılmış bir süreç sağlamak için tüm ilgili bilgilerin dahil edilmesini talep ediyoruz.
 
-Acil veri taleplerinin ("EDR") zamanında ve hızlandırılmış bir süreç sağlamak amacıyla e-posta yoluyla gönderilmesini ve tüm ilgili bilgileri içermesini istiyoruz.
+E-postayla yapılan gelişmiş sahtecilik, oltalama ve taklit saldırılarının farkında olduğumuzu unutmayın (örneğin, [The Guardian'dan bu makaleye bakınız](https://www.theguardian.com/technology/2022/apr/04/us-law-enforcement-agencies-access-your-data-apple-meta#:\~:text=A%20hack%20using%20a%20forged%20legal%20request%20that%20exposed%20consumer%20data%20collected%20by%20Apple%20and%20Meta%20shed%20light%20on%20the%20reach%20of%20the%20law)).
 
-E-postayla ilgili karmaşık kimlik avı, kimlik avı ve kimliğe bürünme saldırılarının farkında olduğumuzu unutmayın (örneğin [bu makale The Guardian'dan](https://www.theguardian.com/technology/2022/apr/04/us-law-enforcement-agencies-access-your-data-apple-meta#:\~:text=A%20hack%20using%20a%20forged%20legal%20request%20that%20exposed%20consumer%20data%20collected%20by%20Apple%20and%20Meta%20shed%20light%20on%20the%20reach%20of%20the%20law)'a bakın).
+EDR işlemlerimizle ilgili politikamız aşağıdaki gibidir:
 
-EDR'leri işleme politikamız aşağıdaki gibidir:
+1. Doğrulama için e-posta başlık meta verilerini (örneğin DKIM/SPF/DMARC) (veya yokluğunu) bağımsız olarak araştırmak.
 
-1. Doğrulama için e-posta başlığı meta verilerini (örneğin DKIM/SPF/DMARC) (veya bunların eksikliğini) bağımsız olarak araştırın.
+2. Talebin doğruluğunu teyit etmek amacıyla talepte bulunan kişiyle telefonla bağımsız olarak iletişim kurmak için iyi niyetle en iyi çabayı göstermek (gerekirse tekrar eden denemelerle). Örneğin, talebin geldiği yargı alanıyla ilgili `.gov` web sitesini araştırabilir ve ardından talebi doğrulamak için kamuya açık resmi telefon numarasından ofisi arayabiliriz.
 
-2. Talebin doğruluğunu teyit etmek için talep sahibiyle telefonla bağımsız olarak iletişime geçmek için elimizden gelenin en iyisini yapacağız (gerekirse tekrar tekrar deneyeceğiz). Örneğin, talebin geldiği yargı bölgesiyle ilgili `.gov` web sitesini araştırabilir ve ardından talebi doğrulamak için kamuya açık resmi telefon numaralarından ofisi arayabiliriz.
+### Kolluk kuvveti talepleri hesap bildirimlerini tetikleyebilir {#law-enforcement-requests-may-trigger-account-notices}
 
-### Kolluk kuvvetlerinin talepleri hesap bildirimlerini tetikleyebilir {#law-enforcement-requests-may-trigger-account-notices}
+Hukuken veya mahkeme emriyle yasaklanmadığımız sürece (örneğin [18 U.S.C. 2705(b)](https://www.govinfo.gov/link/uscode/18/2705)) bir Hesabı bilgilendirebilir ve onlara kendileriyle ilgili bir kolluk kuvveti talebinin bir kopyasını sağlayabiliriz. Bu durumlarda, geçerliyse, gizlilik emri sona erdiğinde Hesabı bilgilendirebiliriz.
 
-Yasa veya mahkeme kararıyla bunu yapmamız yasaklanmadığı sürece (örneğin [18 ABD Kanunu 2705(b)](https://www.govinfo.gov/link/uscode/18/2705)), bir Hesabı bilgilendirebilir ve kendisine ait bir kolluk kuvveti talebinin bir kopyasını sağlayabiliriz. Bu durumlarda, geçerliyse, gizlilik emrinin süresi dolduğunda bir Hesabı bilgilendirebiliriz.
+Kolluk kuvvetleri tarafından yapılan bilgi talebi geçerliyse, [gerekli ve talep edilen Hesap bilgilerini koruyacağız](#law-enforcement-requests-to-preserve-information) ve Hesap sahibine kayıtlı ve doğrulanmış e-posta adresi üzerinden makul bir çabayla (örneğin 7 takvim günü içinde) ulaşmaya çalışacağız. Zamanında itiraz (örneğin 7 takvim günü içinde) alırsak, Hesap bilgilerini paylaşmayı erteleyip yasal süreci gerektiği şekilde sürdüreceğiz.
 
-Kolluk kuvvetlerinin bilgi talebi geçerliyse, [gerekli ve talep edilen Hesap bilgilerini saklayın](#law-enforcement-requests-to-preserve-information)'ı kullanırız ve Hesap sahibine kayıtlı ve doğrulanmış e-posta adresi üzerinden (örneğin 7 takvim günü içinde) ulaşmak için makul bir çaba gösteririz. Zamanında bir itiraz alırsak (örneğin 7 takvim günü içinde), Hesap bilgilerini paylaşmayı reddeder ve gerektiği şekilde yasal süreci sürdürürüz.
+### Bilgi koruma talepleri {#law-enforcement-requests-to-preserve-information}
 
-### Kolluk kuvvetlerinin bilgileri koruma talepleri {#law-enforcement-requests-to-preserve-information}
+[18 U.S.C. 2703(f)](https://www.govinfo.gov/link/uscode/18/2703) uyarınca, kolluk kuvvetlerinden gelen geçerli bilgi koruma taleplerini yerine getireceğiz. Veri korumasının yalnızca özel olarak talep edilen ve mevcut olan bilgilerle sınırlı olduğunu unutmayın.
 
-[18 ABD Kanunu 2703(f)](https://www.govinfo.gov/link/uscode/18/2703) uyarınca, kolluk kuvvetlerinin bir Hesapla ilgili bilgileri saklama yönündeki geçerli taleplerini yerine getireceğiz. Verilerin korunmasının yalnızca özel olarak talep edilen ve şu anda mevcut olanlarla sınırlı olduğunu unutmayın.
+### Kolluk kuvveti tebligatı {#law-enforcement-serving-process}
 
-### Kolluk kuvvetlerinin hizmet süreci {#law-enforcement-serving-process}
+Tüm geçerli kolluk kuvveti taleplerinin, bizimle yazışabileceğimiz ve talep edilen bilgileri elektronik olarak sağlayabileceğimiz geçerli ve işlevsel bir e-posta adresi içermesini talep ediyoruz.
 
-Tüm geçerli kolluk kuvvetleri taleplerinin bize, yazışabileceğimiz ve talep edilen bilgileri elektronik olarak sağlayabileceğimiz geçerli ve işlevsel bir e-posta adresi sağlamasını talep ediyoruz.
+Tüm talepler yukarıda belirtilen [Kötüye kullanım raporu nasıl gönderilir](#how-to-submit-an-abuse-report) bölümündeki e-posta adresine gönderilmelidir.
 
-Tüm talepler yukarıda [Kötüye kullanım raporu nasıl gönderilir?](#how-to-submit-an-abuse-report) altında belirtilen e-posta adresine gönderilmelidir.
+Tüm kolluk kuvveti talepleri, ajans veya departman antetli kağıdında (örneğin PDF taranmış ek olarak), resmi ve ilgili bir e-posta adresinden ve imzalı olarak gönderilmelidir.
 
-Tüm kolluk kuvvetleri talepleri kurum veya departmanın antetli kağıdına yazılarak (örneğin taranmış PDF eki olarak), resmi ve ilgili bir e-posta adresinden gönderilmeli ve imzalanmalıdır.
+Eğer bu bir [acil talep](#law-enforcement-emergency-requests) ise, lütfen e-postanın Konu başlığına "Acil kolluk kuvveti talebi" yazınız.
 
-Eğer [acil durum talebi](#law-enforcement-emergency-requests) ile ilgiliyse lütfen e-postanın Konu başlığına "Acil kolluk kuvvetleri talebi" yazın.
-
-Talebinizi inceleyip yanıtlamamızın en az iki hafta sürebileceğini lütfen unutmayın.
+Lütfen talebinizi inceleyip yanıtlamamızın en az iki hafta sürebileceğini unutmayınız.

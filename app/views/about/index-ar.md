@@ -1,12 +1,13 @@
-# حول إعادة توجيه البريد الإلكتروني {#about-forward-email}
+# عن فورورد إيميل {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="فريق وقصة شركة فورورد إيميل" class="rounded-lg" />
 
-# حول إعادة توجيه البريد الإلكتروني {#about-forward-email-1}
+# عن فورورد إيميل {#about-forward-email-1}
+
 
 ## جدول المحتويات {#table-of-contents}
 
-* [ملخص](#overview)
+* [نظرة عامة](#overview)
 * [المؤسس والرسالة](#founder-and-mission)
 * [الجدول الزمني](#timeline)
   * [2017 - التأسيس والإطلاق](#2017---founding-and-launch)
@@ -16,131 +17,148 @@
   * [2021 - تحديث المنصة](#2021---platform-modernization)
   * [2023 - توسيع البنية التحتية والميزات](#2023---infrastructure-and-feature-expansion)
   * [2024 - تحسين الخدمة والميزات المتقدمة](#2024---service-optimization-and-advanced-features)
-  * [2025 - تحسينات الخصوصية ودعم البروتوكول](#2025---privacy-enhancements-and-protocol-support)
-  * [2026 - الامتثال لـ RFC والتصفية المتقدمة](#2026---rfc-compliance-and-advanced-filtering)
+  * [2025 - تحسينات الخصوصية ودعم البروتوكولات {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
+  * [2026 - الامتثال لمواصفات RFC والتصفية المتقدمة {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
 * [المبادئ الأساسية](#core-principles)
 * [الحالة الحالية](#current-status)
 
-## نظرة عامة على {#overview}
+
+## نظرة عامة {#overview}
 
 > \[!TIP]
-> للحصول على تفاصيل تقنية حول بنيتنا، وتطبيقاتنا الأمنية، وخارطة الطريق، راجع [الورقة البيضاء الفنية](https://forwardemail.net/technical-whitepaper.pdf).
+> للتفاصيل التقنية حول هيكلنا، وتنفيذات الأمان، وخارطة الطريق، راجع [الورقة التقنية](https://forwardemail.net/technical-whitepaper.pdf).
 
-إعادة توجيه البريد الإلكتروني هي خدمة [مجاني ومفتوح المصدر](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [إعادة توجيه البريد الإلكتروني](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") تُركز على [الحق في الخصوصية](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy") الخاص بالمستخدم. ما بدأ كحل بسيط لإعادة توجيه البريد الإلكتروني في عام ٢٠١٧، تطور إلى منصة بريد إلكتروني شاملة تُقدم عددًا غير محدود من أسماء النطاقات المخصصة، وعناوين البريد الإلكتروني والأسماء المستعارة، وعناوين البريد الإلكتروني المؤقتة، وحماية من البريد العشوائي والتصيد الاحتيالي، وتخزينًا مشفرًا لصناديق البريد، والعديد من الميزات المتقدمة.
+فورورد إيميل هي خدمة [مجانية ومفتوحة المصدر](https://en.wikipedia.org/wiki/Free_and_open-source "مجانية ومفتوحة المصدر") لإعادة توجيه البريد الإلكتروني [email forwarding](https://en.wikipedia.org/wiki/Email_forwarding "إعادة توجيه البريد الإلكتروني") تركز على [حق المستخدم في الخصوصية](https://en.wikipedia.org/wiki/Right_to_privacy "حق الخصوصية"). ما بدأ كحل بسيط لإعادة توجيه البريد الإلكتروني في 2017 تطور إلى منصة بريد إلكتروني شاملة تقدم أسماء نطاقات مخصصة غير محدودة، وعناوين بريد إلكتروني وأسماء مستعارة غير محدودة، وعناوين بريد إلكتروني مؤقتة غير محدودة، وحماية من الرسائل المزعجة والتصيد الاحتيالي، وتخزين مشفر لصناديق البريد، والعديد من الميزات المتقدمة.
 
-يتولى فريق المصممين والمطورين المؤسسين الأصليين صيانة هذه الخدمة وامتلاكها. صُممت باستخدام برمجيات مفتوحة المصدر 100% باستخدام [جافا سكريبت](https://en.wikipedia.org/wiki/JavaScript "JavaScript")، و[Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js")، و[DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System")، و[HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS")، و[TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS")، و[SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP").
+الخدمة مملوكة ومدارة من قبل فريق المؤسسين الأصلي من المصممين والمطورين. تم بناؤها باستخدام برمجيات مفتوحة المصدر 100% باستخدام [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript")، و[Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js")، و[DNS](https://en.wikipedia.org/wiki/Domain_Name_System "نظام أسماء النطاقات")، و[HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS")، و[TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS")، و[SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP").
 
-## المؤسس والمهمة {#founder-and-mission}
 
-أسس نيكولاس باوغ شركة Forward Email عام ٢٠١٧. ووفقًا لـ [ورقة بيضاء فنية حول إعادة توجيه البريد الإلكتروني](https://forwardemail.net/technical-whitepaper.pdf)، كان باوغ يبحث في البداية عن حل بسيط واقتصادي لتمكين البريد الإلكتروني على أسماء النطاقات لمشاريعه الجانبية. وبعد بحثه عن الخيارات المتاحة، بدأ في برمجة حله الخاص واشترى النطاق `forwardemail.net` في ٢ أكتوبر ٢٠١٧.
+## المؤسس والرسالة {#founder-and-mission}
 
-تتجاوز مهمة شركة Forward Email تقديم خدمات البريد الإلكتروني، بل تهدف إلى تغيير طريقة تعامل القطاع مع خصوصية البريد الإلكتروني وأمانه. تشمل قيم الشركة الأساسية الشفافية، وتحكم المستخدم، وحماية الخصوصية من خلال التنفيذ التقني، وليس مجرد وعود بالسياسات.
+تأسست فورورد إيميل على يد **نيكولاس باو** في 2017. وفقًا لـ [الورقة التقنية لفورورد إيميل](https://forwardemail.net/technical-whitepaper.pdf)، كان باو يبحث في البداية عن حل بسيط وفعال من حيث التكلفة لتمكين البريد الإلكتروني على أسماء النطاقات لمشاريعه الجانبية. بعد البحث في الخيارات المتاحة، بدأ في برمجة حله الخاص وشراء النطاق `forwardemail.net` في 2 أكتوبر 2017.
+
+تتجاوز رسالة فورورد إيميل تقديم خدمات البريد الإلكتروني فقط—فهي تهدف إلى تغيير كيفية تعامل الصناعة مع خصوصية وأمان البريد الإلكتروني. تشمل القيم الأساسية للشركة الشفافية، وتحكم المستخدم، وحماية الخصوصية من خلال التنفيذ التقني وليس مجرد وعود سياسية.
+
 
 ## الجدول الزمني {#timeline}
 
 ### 2017 - التأسيس والإطلاق {#2017---founding-and-launch}
 
-**2 أكتوبر 2017**: اشترى نيكولاس باوغ المجال `forwardemail.net` بعد البحث عن حلول بريد إلكتروني فعالة من حيث التكلفة لمشاريعه الجانبية.
+**2 أكتوبر 2017**: اشترى نيكولاس باو النطاق `forwardemail.net` بعد بحثه عن حلول بريد إلكتروني فعالة من حيث التكلفة لمشاريعه الجانبية.
 
-**٥ نوفمبر ٢٠١٧**: أنشأ باوغ ملف جافا سكريبت مكون من ٦٣٤ سطرًا باستخدام [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") لإعادة توجيه رسائل البريد الإلكتروني لأي اسم نطاق مخصص. نُشر هذا التنفيذ الأولي كمصدر مفتوح لـ [جيثب](https://github.com/forwardemail)، وتم إطلاق الخدمة باستخدام صفحات GitHub.
+**5 نوفمبر 2017**: أنشأ باو ملف جافاسكريبت مكون من 634 سطرًا باستخدام [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") لإعادة توجيه البريد الإلكتروني لأي اسم نطاق مخصص. تم نشر هذا التنفيذ الأولي كمصدر مفتوح على [GitHub](https://github.com/forwardemail) وتم إطلاق الخدمة باستخدام صفحات GitHub.
+**نوفمبر 2017**: تم إطلاق Forward Email رسميًا بعد إصدار أولي. كانت النسخة المبكرة تعتمد بالكامل على DNS بدون تسجيل حساب أو عملية اشتراك—مجرد ملف README مكتوب بلغة Markdown يحتوي على تعليمات. كان بإمكان المستخدمين إعداد إعادة توجيه البريد الإلكتروني عن طريق تكوين سجلات MX للإشارة إلى `mx1.forwardemail.net` و `mx2.forwardemail.net`، وإضافة سجل TXT يحتوي على `forward-email=user@gmail.com`.
 
-**نوفمبر 2017**: أُطلقت خدمة إعادة توجيه البريد الإلكتروني رسميًا بعد إصدار أولي. كانت النسخة الأولية تعتمد كليًا على نظام أسماء النطاقات (DNS) دون الحاجة إلى تسجيل حساب أو عملية تسجيل - مجرد ملف README مكتوب بلغة Markdown مع التعليمات. يمكن للمستخدمين إعداد إعادة توجيه البريد الإلكتروني عن طريق تكوين سجلات MX للإشارة إلى `mx1.forwardemail.net` و`mx2.forwardemail.net`، وإضافة سجل TXT مع `forward-email=user@gmail.com`.
-
-لقد جذبت بساطة وفعالية هذا الحل انتباه المطورين البارزين، بما في ذلك [ديفيد هاينماير هانسون](https://dhh.dk) (منشئ Ruby on Rails)، الذي يستمر في استخدام Forward Email على نطاقه `dhh.dk` حتى يومنا هذا.
+جذبت بساطة وفعالية هذا الحل انتباه مطورين بارزين، بما في ذلك [ديفيد هاينماير هانسون](https://dhh.dk) (مبتكر Ruby on Rails)، الذي لا يزال يستخدم Forward Email على نطاقه `dhh.dk` حتى اليوم.
 
 ### 2018 - البنية التحتية والتكامل {#2018---infrastructure-and-integration}
 
-**أبريل 2018**: عندما أطلق [كلاود فلير](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") [خدمة DNS للمستهلكين التي تضع الخصوصية في المقام الأول](https://blog.cloudflare.com/announcing-1111/)، تحول Forward Email من استخدام [أوبن دي إن إس](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") إلى [كلاود فلير](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") للتعامل مع عمليات البحث [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System")، مما يوضح التزام الشركة باختيارات البنية الأساسية التي تركز على الخصوصية.
+**أبريل 2018**: عندما أطلقت [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") خدمتها [DNS للمستهلكين مع التركيز على الخصوصية](https://blog.cloudflare.com/announcing-1111/)، انتقلت Forward Email من استخدام [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") إلى [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") لمعالجة عمليات البحث في [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System")، مما يعكس التزام الشركة بخيارات بنية تحتية تركز على الخصوصية.
 
-**أكتوبر 2018**: سمح إعادة توجيه البريد الإلكتروني للمستخدمين بـ "إرسال البريد باسم" مع [جيميل](https://en.wikipedia.org/wiki/Gmail "Gmail") و[التوقعات](https://en.wikipedia.org/wiki/Outlook "Outlook")، مما أدى إلى توسيع قدرات التكامل مع موفري البريد الإلكتروني المشهورين.
+**أكتوبر 2018**: سمحت Forward Email للمستخدمين بـ "إرسال البريد كـ" مع [Gmail](https://en.wikipedia.org/wiki/Gmail "Gmail") و [Outlook](https://en.wikipedia.org/wiki/Outlook "Outlook")، موسعة قدرات التكامل مع مزودي البريد الإلكتروني الشائعين.
 
 ### 2019 - ثورة الأداء {#2019---performance-revolution}
 
-مايو ٢٠١٩: صدر الإصدار الثاني من Forward Email، والذي مثّل إعادة صياغة شاملة للإصدارات الأصلية. ركّز هذا التحديث على تحسينات [أداء](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing") من خلال استخدام [الجداول](https://en.wikipedia.org/wiki/Streams "Streams") الخاص بـ [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js")، مما أرسى أسس قابلية توسّع المنصة.
+**مايو 2019**: أصدرت Forward Email النسخة 2، والتي مثلت إعادة كتابة كبيرة عن الإصدارات الأولية. ركز هذا التحديث على تحسينات [الأداء](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing") من خلال استخدام [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") و [streams](https://en.wikipedia.org/wiki/Streams "Streams")، مما أسس لقاعدة توسعية للمنصة.
 
 ### 2020 - التركيز على الخصوصية والأمان {#2020---privacy-and-security-focus}
 
-**فبراير 2020**: أطلقت شركة Forward Email خطة حماية الخصوصية المُحسّنة، التي تُتيح للمستخدمين إيقاف إعداد إدخالات سجلات DNS العامة باستخدام أسماء البريد الإلكتروني المستعارة المُعدّة لإعادة توجيه البريد الإلكتروني. من خلال هذه الخطة، تُخفى معلومات اسم البريد الإلكتروني المستعار للمستخدم عن إمكانية البحث العام عبر الإنترنت. كما أطلقت الشركة ميزة لتمكين أو تعطيل أسماء بريد إلكتروني مُحددة مع السماح لها بالظهور كعناوين بريد إلكتروني صالحة وإرجاع [رموز حالة SMTP](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes") بنجاح، مع حذف رسائل البريد الإلكتروني فورًا (على غرار توجيه الإخراج إلى [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")).
+**فبراير 2020**: أطلقت Forward Email خطة حماية الخصوصية المعززة، التي تسمح للمستخدمين بإيقاف إعداد إدخالات سجلات DNS العامة مع ألقاب إعادة توجيه البريد الإلكتروني الخاصة بهم. من خلال هذه الخطة، يتم إخفاء معلومات لقب البريد الإلكتروني للمستخدم من أن تكون قابلة للبحث علنًا عبر الإنترنت. كما أطلقت الشركة ميزة تمكّن من تفعيل أو تعطيل ألقاب محددة مع السماح لها بالظهور كعناوين بريد إلكتروني صالحة وإرجاع رموز حالة [SMTP](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes") ناجحة، مع تجاهل الرسائل فورًا (مماثل لتوجيه الإخراج إلى [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")).
 
-**أبريل 2020**: بعد مواجهة العديد من العقبات مع حلول كشف البريد العشوائي الحالية التي لم تلتزم بسياسة خصوصية Forward Email، أصدرت الشركة النسخة التجريبية الأولية من Spam Scanner. يستخدم هذا الحل المجاني والمفتوح المصدر [تصفية البريد العشوائي](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") نهج [مرشح البريد العشوائي Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") مع حماية [مكافحة التصيد الاحتيالي](https://en.wikipedia.org/wiki/Phishing "Phishing") و[هجوم متجانس IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). كما أصدرت Forward Email حل [المصادقة الثنائية](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (المصادقة الثنائية) باستخدام [كلمات مرور لمرة واحدة](https://en.wikipedia.org/wiki/One-time_password "One-time password") (كلمة مرور لمرة واحدة) لتعزيز أمان الحساب.
+**أبريل 2020**: بعد مواجهة العديد من العقبات مع حلول الكشف عن البريد المزعج الموجودة التي لم تحترم سياسة الخصوصية الخاصة بـ Forward Email، أطلقت الشركة النسخة الأولية التجريبية من ماسح البريد المزعج. يستخدم هذا الحل المجاني والمفتوح المصدر بالكامل لتصفية البريد المزعج [تقنية تصفية البريد المزعج بايز الساذج](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") مع حماية من [التصيد الاحتيالي](https://en.wikipedia.org/wiki/Phishing "Phishing") وهجمات [التشابه الحرفي في أسماء النطاقات](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). كما أطلقت Forward Email ميزة [المصادقة الثنائية](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) باستخدام [كلمات المرور لمرة واحدة](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) لتعزيز أمان الحساب.
 
-**مايو ٢٠٢٠**: أتاحت ميزة إعادة توجيه البريد الإلكتروني خاصية [إعادة توجيه المنفذ](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") المخصصة كحل بديل لتمكين المستخدمين من تجاوز حظر المنفذ بواسطة [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). كما أصدرت الشركة خاصية [إعادة توجيه البريد الإلكتروني مجانًا باستخدام واجهة برمجة التطبيقات RESTful](email-api) مع توثيق كامل وأمثلة فورية للطلبات والردود، بالإضافة إلى دعم خطافات الويب.
+**مايو 2020**: سمحت Forward Email بإعادة توجيه [المنافذ المخصصة](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") كحل بديل للمستخدمين لتجاوز حظر المنافذ من قبل [مزود خدمة الإنترنت](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). كما أطلقت الشركة [واجهة برمجة التطبيقات RESTful لإعادة توجيه البريد الإلكتروني المجاني](email-api) مع توثيق كامل وأمثلة على الطلبات والاستجابات في الوقت الحقيقي، بالإضافة إلى دعم الويب هوكس.
+**أغسطس 2020**: أضاف Forward Email دعمًا لنظام مصادقة البريد الإلكتروني [Authenticated Received Chain](arc) ("ARC")، مما عزز أمان البريد الإلكتروني وقابلية التسليم بشكل أكبر.
 
-**أغسطس 2020**: أضافت خدمة Forward Email الدعم لنظام مصادقة البريد الإلكتروني [سلسلة الاستلام المعتمدة](arc) ("ARC")، مما يعزز أمان البريد الإلكتروني وإمكانية تسليمه بشكل أكبر.
-
-**23 نوفمبر 2020**: تم إطلاق Forward Email علنًا من برنامجها التجريبي، مما يمثل إنجازًا مهمًا في تطوير المنصة.
+**23 نوفمبر 2020**: أطلق Forward Email نسخته العامة بعد انتهاء برنامج البيتا، مما يمثل خطوة مهمة في تطوير المنصة.
 
 ### 2021 - تحديث المنصة {#2021---platform-modernization}
 
-**فبراير ٢٠٢١**: أعادت شركة Forward Email تصميم قاعدة برمجيتها لإزالة جميع تبعيات [بايثون](https://en.wikipedia.org/wiki/Python_\(programming_language\) "Python (لغة برمجة)"، مما سمح لمكدسها بأن يصبح [جافا سكريبت](https://en.wikipedia.org/wiki/JavaScript "JavaScript") و[Node.js](https://en.wikipedia.org/wiki/Node.js) بنسبة ١٠٠٪. ويتماشى هذا القرار المعماري مع التزام الشركة بالحفاظ على حزمة برمجية متسقة ومفتوحة المصدر.
+**فبراير 2021**: أعاد Forward Email هيكلة قاعدة الشيفرة الخاصة بهم لإزالة جميع الاعتمادات على [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\) "Python (programming language)"), مما سمح لأن تصبح تقنيتهم 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") و [Node.js](https://en.wikipedia.org/wiki/Node.js). جاء هذا القرار المعماري تماشيًا مع التزام الشركة بالحفاظ على تكديس تقني مفتوح المصدر ومتسق.
 
-**27 سبتمبر 2021**: إعادة توجيه البريد الإلكتروني [تمت إضافة الدعم](email-forwarding-regex-pattern-filter) لمطابقة أسماء إعادة توجيه البريد الإلكتروني مع [التعبيرات العادية](https://en.wikipedia.org/wiki/Regular_expression "Regular expression")، مما يوفر للمستخدمين إمكانيات توجيه بريد إلكتروني أكثر تطورًا.
+**27 سبتمبر 2021**: أضاف Forward Email [دعمًا](email-forwarding-regex-pattern-filter) لأسماء البريد الإلكتروني المعاد توجيهها لتتطابق مع [التعبيرات النمطية](https://en.wikipedia.org/wiki/Regular_expression "Regular expression")، مما يوفر للمستخدمين قدرات توجيه بريد إلكتروني أكثر تطورًا.
 
 ### 2023 - توسيع البنية التحتية والميزات {#2023---infrastructure-and-feature-expansion}
 
-**يناير 2023**: أطلقت شركة Forward Email موقعًا إلكترونيًا تم إعادة تصميمه وتحسين سرعة الصفحات فيه، مما أدى إلى تحسين تجربة المستخدم والأداء.
+**يناير 2023**: أطلق Forward Email موقعًا معاد تصميمه ومحسّنًا لسرعة الصفحات، مما حسن تجربة المستخدم والأداء.
 
-**فبراير 2023**: أضافت الشركة دعمًا لـ [سجلات الأخطاء](/faq#do-you-store-error-logs) ونفذت مخطط ألوان موقع الويب [الوضع المظلم](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme)، استجابةً لتفضيلات المستخدم واحتياجات إمكانية الوصول.
+**فبراير 2023**: أضافت الشركة دعمًا لـ [سجلات الأخطاء](/faq#do-you-store-error-logs) وطبقت نظام ألوان موقع [الوضع الداكن](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme)، استجابةً لتفضيلات المستخدمين واحتياجات الوصول.
 
-مارس ٢٠٢٣: أصدرت شركة Forward Email [اليوسفي](https://github.com/forwardemail/tangerine#readme) ودمجته في بنيتها التحتية، مما أتاح استخدام [DNS عبر HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") على مستوى التطبيقات. كما أضافت الشركة دعمًا لـ [MTA-STS](/faq#do-you-support-mta-sts) وانتقلت من [إتش كابتشا](/) إلى [بوابة كلاود فلير الدوارة](https://developers.cloudflare.com/turnstile).
+**مارس 2023**: أطلق Forward Email [Tangerine](https://github.com/forwardemail/tangerine#readme) ودمجه في بنيتهم التحتية، مما مكن من استخدام [DNS عبر HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") على طبقة التطبيق. كما أضافت الشركة دعمًا لـ [MTA-STS](/faq#do-you-support-mta-sts) وانتقلت من [hCaptcha](/) إلى [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile).
 
-**أبريل ٢٠٢٣**: قامت شركة Forward Email بتنفيذ بنية تحتية جديدة بالكامل وأتمتتها. بدأت الخدمة بالكامل تعمل على نظام أسماء نطاقات (DNS) متوازن الحمل عالميًا وقائم على القرب، مع فحوصات سلامة وتجاوز الأعطال باستخدام [كلاود فلير](https://cloudflare.com)، ليحل محل نهج DNS الدوري السابق. انتقلت الشركة إلى **خوادم مكشوفة** عبر العديد من المزودين، بما في ذلك [فولتر](https://www.vultr.com/?ref=429848) و[المحيط الرقمي](https://m.do.co/c/a7cecd27e071)، وكلاهما متوافق مع معيار SOC 2 من النوع الأول. نُقلت قواعد بيانات MongoDB وRedis إلى تكوينات مجمعة مع عقد رئيسية واحتياطية لضمان توافر عالٍ، وتشفير SSL شامل، وتشفير في حالة السكون، واستعادة البيانات من نقطة زمنية محددة (PITR).
+**أبريل 2023**: نفذ Forward Email بنية تحتية جديدة مؤتمتة بالكامل. بدأ تشغيل الخدمة بأكملها على DNS موزع عالميًا ومتوازن حسب القرب مع فحوصات صحة وتبديل تلقائي باستخدام [Cloudflare](https://cloudflare.com)، مستبدلين نهج DNS الدائري السابق. انتقلت الشركة إلى **خوادم معدنية صافية** عبر مزودين متعددين، بما في ذلك [Vultr](https://www.vultr.com/?ref=429848) و [Digital Ocean](https://m.do.co/c/a7cecd27e071)، وكلاهما مزودان متوافقان مع SOC 2 Type 1. تم نقل قواعد بيانات MongoDB و Redis إلى تكوينات عنقودية مع عقد رئيسية واحتياطية لتوفير توافر عالي، وتشفير SSL شامل، وتشفير أثناء التخزين، واستعادة نقطة زمنية (PITR).
 
-مايو ٢٠٢٣: أطلقت شركة Forward Email ميزة **SMTP الصادر** لطلبات [إرسال البريد الإلكتروني باستخدام SMTP](/faq#do-you-support-sending-email-with-smtp) و[إرسال البريد الإلكتروني باستخدام واجهة برمجة التطبيقات](/faq#do-you-support-sending-email-with-api). تتضمن هذه الميزة إجراءات حماية مدمجة لضمان قابلية توصيل عالية، ونظامًا حديثًا وقويًا لقوائم الانتظار وإعادة المحاولة، و[يدعم سجلات الأخطاء في الوقت الفعلي](/faq#do-you-store-error-logs).
+**مايو 2023**: أطلق Forward Email ميزة **SMTP الصادرة** الخاصة بهم لـ [إرسال البريد الإلكتروني عبر SMTP](/faq#do-you-support-sending-email-with-smtp) و [إرسال البريد الإلكتروني عبر API](/faq#do-you-support-sending-email-with-api). تتضمن هذه الميزة ضوابط مدمجة لضمان قابلية تسليم عالية، ونظام قوائم انتظار وإعادة محاولة حديث وقوي، و [دعم سجلات الأخطاء في الوقت الحقيقي](/faq#do-you-store-error-logs).
 
-**نوفمبر 2023**: أطلقت شركة Forward Email ميزة [**تخزين صندوق البريد المشفر**](/blog/docs/best-quantum-safe-encrypted-email-service) لـ [دعم IMAP](/faq#do-you-support-receiving-email-with-imap)، وهو ما يمثل تقدمًا كبيرًا في خصوصية البريد الإلكتروني وأمانه.
+**نوفمبر 2023**: أطلق Forward Email ميزة [**تخزين صندوق البريد المشفر**](/blog/docs/best-quantum-safe-encrypted-email-service) الخاصة بهم لـ [دعم IMAP](/faq#do-you-support-receiving-email-with-imap)، مما يمثل تقدمًا كبيرًا في خصوصية وأمان البريد الإلكتروني.
 
-**ديسمبر 2023**: الشركة [تمت إضافة الدعم](/faq#do-you-support-pop3) لمراقبة [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) و[مفاتيح المرور وWebAuthn](/faq#do-you-support-passkeys-and-webauthn) و[الوقت للبريد الوارد](/faq#i) و[OpenPGP لتخزين IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**ديسمبر 2023**: أضافت الشركة [دعمًا](/faq#do-you-support-pop3) لـ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)، و [المفاتيح المارة و WebAuthn](/faq#do-you-support-passkeys-and-webauthn)، و [مراقبة وقت الوصول إلى البريد](/faq#i)، و [OpenPGP لتخزين IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - تحسين الخدمة والميزات المتقدمة {#2024---service-optimization-and-advanced-features}
 
-**فبراير 2024**: إعادة توجيه البريد الإلكتروني [تمت إضافة دعم التقويم (CalDAV)](/faq#do-you-support-calendars-caldav)، مما يؤدي إلى توسيع قدرات المنصة إلى ما هو أبعد من البريد الإلكتروني لتشمل مزامنة التقويم.
+**فبراير 2024**: أضاف Forward Email [دعم التقويم (CalDAV)](/faq#do-you-support-calendars-caldav)، موسعًا قدرات المنصة لتشمل مزامنة التقويم إلى جانب البريد الإلكتروني.
+**مارس إلى يوليو 2024**: أطلقت Forward Email تحسينات وتحسينات كبيرة على خدمات IMAP وPOP3 وCalDAV الخاصة بها، بهدف جعل خدمتها سريعة مثل، إن لم تكن أسرع من، البدائل.
 
-**من مارس إلى يوليو 2024**: أصدرت شركة Forward Email تحسينات وتحسينات رئيسية لخدمات IMAP وPOP3 وCalDAV، بهدف جعل خدمتها سريعة مثل البدائل، إن لم تكن أسرع منها.
+**يوليو 2024**: أضافت الشركة [دعم الدفع على iOS](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) لمعالجة نقص دعم أمر IMAP `IDLE` في Apple Mail على iOS، مما مكن من الإشعارات في الوقت الحقيقي لأجهزة Apple iOS. كما أضافت Forward Email مراقبة الوقت حتى الوصول إلى البريد الوارد ("TTI") لخدمتها الخاصة وYahoo/AOL، وبدأت بالسماح للمستخدمين بتشفير سجل DNS TXT بالكامل حتى في الخطة المجانية. بناءً على الطلبات في [مناقشات Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) و[مشاكل GitHub](https://github.com/forwardemail/forwardemail.net/issues/254)، أضافت الشركة إمكانية أن ترفض الأسماء المستعارة إما بهدوء `250`، أو رفضًا ناعمًا `421`، أو رفضًا قاسيًا `550` عند تعطيلها.
 
-يوليو ٢٠٢٤: عالجت الشركة مشكلة عدم دعم تطبيق Apple Mail لأوامر IMAP `IDLE` على نظام iOS، مما يتيح إرسال إشعارات فورية لأجهزة Apple iOS. كما أضافت خدمة "إعادة توجيه البريد الإلكتروني" وقتًا لمراقبة البريد الوارد ("TTI") لخدمتها الخاصة وYahoo/AOL، وبدأت في السماح للمستخدمين بتشفير سجل DNS TXT الخاص بهم بالكامل حتى في الباقة المجانية. وكما هو مطلوب في [مناقشات أدلة الخصوصية](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) و[مشاكل GitHub](https://github.com/forwardemail/forwardemail.net/issues/254)، أضافت الشركة إمكانية رفض الأسماء المستعارة لـ `250` بهدوء، أو رفض `421` بشكل مؤقت، أو رفض `550` رفضًا قاطعًا عند تعطيلها.
+**أغسطس 2024**: أضافت Forward Email دعمًا لتصدير صناديق البريد بصيغ [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) و[Mbox](https://en.wikipedia.org/wiki/Mbox) (بالإضافة إلى صيغة التصدير الحالية [SQLite](https://en.wikipedia.org/wiki/SQLite)). [تمت إضافة دعم توقيع Webhook](https://forwardemail.net/faq#do-you-support-bounce-webhooks)، وبدأت الشركة بالسماح للمستخدمين بإرسال النشرات الإخبارية والإعلانات والتسويق عبر البريد الإلكتروني من خلال خدمة SMTP الصادرة الخاصة بهم. كما تم تنفيذ حصص تخزين على مستوى النطاق والأسماء المستعارة لـ IMAP/POP3/CalDAV.
 
-**أغسطس ٢٠٢٤**: أضافت خدمة إعادة توجيه البريد الإلكتروني دعمًا لتصدير صناديق البريد بتنسيقي [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) و[إم بوكس](https://en.wikipedia.org/wiki/Mbox) (بالإضافة إلى تنسيق التصدير الحالي [SQLite](https://en.wikipedia.org/wiki/SQLite)). [تمت إضافة دعم توقيع Webhook](https://forwardemail.net/faq#do-you-support-bounce-webhooks)، وبدأت الشركة في السماح للمستخدمين بإرسال النشرات الإخبارية والإعلانات والتسويق عبر البريد الإلكتروني من خلال خدمة SMTP الصادرة. كما تم تطبيق حصص تخزين على مستوى النطاق واسم مستعار لبروتوكولات IMAP/POP3/CalDAV.
+### 2025 - تحسينات الخصوصية ودعم البروتوكولات {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
 
-### 2025 - تحسينات الخصوصية ودعم البروتوكول {#2025---privacy-enhancements-and-protocol-support}
+**سبتمبر 2024 إلى يناير 2025**: أضافت Forward Email [ميزة الرد الآلي على الإجازات المطلوبة بشدة وتشفير OpenPGP/WKD لإعادة توجيه البريد الإلكتروني](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254)، بناءً على قدراتها السابقة في تخزين صناديق البريد المشفرة.
 
-**من سبتمبر 2024 إلى يناير 2025**: إعادة توجيه البريد الإلكتروني [تمت إضافة ميزة الرد التلقائي المطلوبة بشدة وتشفير OpenPGP/WKD لإعادة توجيه البريد الإلكتروني](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254)، بناءً على إمكانيات تخزين صندوق البريد المشفر التي تم تنفيذها بالفعل.
+**21 يناير 2025**: توفي صديق المؤسس المفضل "جاك"، رفيقه الكلب الوفي، بسلام عن عمر يقارب 11 عامًا. سيُذكر جاك [دائمًا](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) لرفاقته الثابتة التي دعمت إنشاء Forward Email. تم إهداء [الورقة التقنية لـ Forward Email](https://forwardemail.net/technical-whitepaper.pdf) إلى جاك، معترفين بدوره في تطوير الخدمة.
 
-**٢١ يناير ٢٠٢٥**: رحل عن عالمنا بسلام "جاك"، صديق المؤسس المقرب، رفيقه الكلب الوفي، عن عمر يناهز الحادية عشرة. يُكرّم جاك بـ [سوف نتذكره دائما](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) لرفيقته الدائمة التي دعمت إنشاء خدمة "إعادة توجيه البريد الإلكتروني". أما [ورقة بيضاء فنية حول إعادة توجيه البريد الإلكتروني](https://forwardemail.net/technical-whitepaper.pdf)، فهو مُهدى لجاك، تقديرًا لدوره في تطوير الخدمة.
+**فبراير 2025**: انتقلت Forward Email إلى [DataPacket](https://www.datapacket.com) كمزود مركز البيانات الأساسي الجديد، مع تنفيذ أجهزة مخصصة موجهة للأداء على عتاد معدني صلب لتعزيز موثوقية الخدمة وسرعتها.
 
-**فبراير 2025**: تحولت شركة Forward Email إلى [حزمة البيانات](https://www.datapacket.com) كمزود مركز البيانات الأساسي الجديد الخاص بها، وتنفيذ أجهزة مخصصة تركز على الأداء، وأجهزة عارية لتعزيز موثوقية الخدمة وسرعتها بشكل أكبر.
+**مارس 2025**: تم إصدار النسخة 1.0 من Forward Email رسميًا.
 
-**يونيو 2025**: أطلقت Forward Email الدعم لـ [بروتوكول CardDAV](/faq#do-you-support-contacts-carddav)، مما أدى إلى توسيع قدرات المنصة لتشمل مزامنة جهات الاتصال جنبًا إلى جنب مع خدمات البريد الإلكتروني والتقويم الحالية.
+**أبريل 2025**: نُشرت النسخة الأولى من [الورقة التقنية لـ Forward Email](https://forwardemail.net/technical-whitepaper.pdf)، وبدأت الشركة في قبول مدفوعات العملات المشفرة.
 
-### 2026 - الامتثال لـ RFC والتصفية المتقدمة {#2026---rfc-compliance-and-advanced-filtering}
+**مايو 2025**: أطلقت الخدمة توثيق API جديد باستخدام [Scalar](https://github.com/scalar/scalar).
 
-**يناير 2026**: أصدر Forward Email وثيقة شاملة [للامتثال لبروتوكول RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) توضح الدعم الكامل للمعايير عبر SMTP وIMAP وPOP3 وCalDAV. أضافت المنصة أيضًا [دعم REQUIRETLS (RFC 8689)](/faq#requiretls-support) لتشفير TLS الإلزامي على نقل البريد الإلكتروني، [تشفير S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) لتوقيع الرسائل الآمنة والتشفير، و[تصفية البريد الإلكتروني Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) مع [بروتوكول ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) لدعم تصفية البريد الإلكتروني من جانب الخادم. بالإضافة إلى ذلك، تم توسيع [REST API](/email-api) إلى 39 نقطة نهاية تغطي الرسائل والمجلدات وجهات الاتصال والتقويمات وأحداث التقويم.
+**يونيو 2025**: أطلقت Forward Email دعمًا لبروتوكول [CardDAV](/faq#do-you-support-contacts-carddav)، موسعة قدرات المنصة لتشمل مزامنة جهات الاتصال إلى جانب خدمات البريد الإلكتروني والتقويم الحالية.
+
+**أغسطس 2025**: أضافت المنصة دعم [CalDAV VTODO/المهام](https://en.wikipedia.org/wiki/ICalendar#To-do_\(VTODO\))، مما مكن إدارة المهام إلى جانب أحداث التقويم.
+
+**نوفمبر 2025**: تم تعزيز أمان المنصة من خلال الترحيل من PBKDF2 إلى [Argon2id](https://en.wikipedia.org/wiki/Argon2) لتجزئة كلمات المرور، وتم ترحيل البنية التحتية من Redis إلى [Valkey](https://github.com/valkey-io/valkey).
+
+**ديسمبر 2025**: تم إصدار النسخة 2.0، مع تقديم دعم [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) لتشفير TLS الإجباري على نقل البريد الإلكتروني وترقية إلى [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) الإصدار 6.
+### 2026 - الامتثال لمواصفات RFC والتصفية المتقدمة {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+
+**يناير 2026**: أصدرت Forward Email وثيقة شاملة حول [الامتثال لبروتوكولات RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) وأضافت دعمًا لـ [تشفير S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) و [تصفية البريد الإلكتروني الشاملة باستخدام Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) مع دعم [بروتوكول ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). كما تم توسيع واجهة برمجة التطبيقات REST لتشمل 39 نقطة نهاية.
+
+**فبراير 2026**: تم إطلاق عميل البريد الإلكتروني الرسمي مفتوح المصدر على الويب في [mail.forwardemail.net](https://mail.forwardemail.net) ([الكود المصدري على GitHub](https://github.com/forwardemail/mail.forwardemail.net)). كما أضافت المنصة دعمًا لـ [امتدادات جدولة CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638)، و [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities)، و [Domain Connect](https://domainconnect.org) لإعداد DNS بنقرة واحدة. تم إطلاق إشعارات الدفع في الوقت الحقيقي لـ IMAP و CalDAV و CardDAV باستخدام WebSockets.
+
+**مارس 2026**: تمت إضافة دعم لتخزين مخصص متوافق مع S3 لكل نطاق، إلى جانب أداة سطر أوامر للإدارة. بدأ العمل على تطبيقات سطح المكتب والهواتف المحمولة متعددة المنصات لأنظمة macOS و Windows و Linux و iOS و Android باستخدام نفس قاعدة كود البريد الإلكتروني مفتوح المصدر، والمبنية باستخدام [Tauri](https://tauri.app).
+
 
 ## المبادئ الأساسية {#core-principles}
 
-منذ إنشائها، حافظت شركة Forward Email على التزامها الراسخ بمبادئ الخصوصية والأمان:
+منذ تأسيسها، حافظت Forward Email على التزام راسخ بمبادئ الخصوصية والأمان:
 
-**فلسفة مفتوحة المصدر بنسبة 100%**: على عكس المنافسين الذين يجعلون واجهاتهم الأمامية مفتوحة المصدر فقط مع إبقاء الواجهات الخلفية مغلقة، فإن Forward Email جعلت قاعدة الكود الخاصة بها بالكامل - كل من الواجهة الأمامية والخلفية - متاحة للتدقيق العام على [جيثب](https://github.com/forwardemail).
+**فلسفة مفتوحة المصدر 100%**: على عكس المنافسين الذين يفتحون فقط الواجهات الأمامية بينما يحتفظون بالواجهات الخلفية مغلقة، جعلت Forward Email كامل قاعدة الكود الخاصة بها—الواجهة الأمامية والخلفية—متاحة للفحص العام على [GitHub](https://github.com/forwardemail).
 
-**تصميم يركز على الخصوصية أولاً**: منذ اليوم الأول، نفذت Forward Email نهجًا فريدًا للمعالجة في الذاكرة يتجنب كتابة رسائل البريد الإلكتروني على القرص، مما يميزها عن خدمات البريد الإلكتروني التقليدية التي تخزن الرسائل في قواعد البيانات أو أنظمة الملفات.
+**تصميم يركز على الخصوصية**: من اليوم الأول، نفذت Forward Email نهج معالجة فريد في الذاكرة يتجنب كتابة الرسائل إلى القرص، مما يميزها عن خدمات البريد التقليدية التي تخزن الرسائل في قواعد بيانات أو أنظمة ملفات.
 
-**الابتكار المستمر**: تطورت الخدمة من حل بسيط لإعادة توجيه البريد الإلكتروني إلى منصة بريد إلكتروني شاملة مع ميزات مثل صناديق البريد المشفرة، والتشفير المقاوم للكم، ودعم البروتوكولات القياسية بما في ذلك SMTP وIMAP وPOP3 وCalDAV.
+**الابتكار المستمر**: تطورت الخدمة من حل بسيط لإعادة توجيه البريد الإلكتروني إلى منصة بريد إلكتروني شاملة بميزات مثل صناديق بريد مشفرة، تشفير مقاوم للحوسبة الكمومية، ودعم للبروتوكولات القياسية بما في ذلك SMTP و IMAP و POP3 و CalDAV.
 
-**الشفافية**: جعل جميع التعليمات البرمجية مفتوحة المصدر ومتاحة للتفتيش، مما يضمن قدرة المستخدمين على التحقق من ادعاءات الخصوصية بدلاً من الاعتماد فقط على بيانات التسويق.
+**الشفافية**: جعل كل الكود مفتوح المصدر ومتاحة للفحص، مما يضمن أن المستخدمين يمكنهم التحقق من ادعاءات الخصوصية بدلاً من مجرد الثقة في بيانات التسويق.
 
-**التحكم بالمستخدم**: تمكين المستخدمين من الخيارات، بما في ذلك القدرة على استضافة المنصة بأكملها ذاتيًا إذا رغبوا في ذلك.
+**تحكم المستخدم**: تمكين المستخدمين من الخيارات، بما في ذلك القدرة على استضافة المنصة بالكامل بأنفسهم إذا رغبوا.
+
 
 ## الحالة الحالية {#current-status}
 
-اعتبارًا من عام 2025، تخدم Forward Email أكثر من 500000 نطاق حول العالم، بما في ذلك المنظمات البارزة وقادة الصناعة مثل:
+حتى مارس 2026، تخدم Forward Email أكثر من 500,000 نطاق حول العالم، بما في ذلك منظمات بارزة وقادة صناعيين مثل:
 
-* **شركات التكنولوجيا**: كانونيكال (أوبونتو)، ألعاب نتفليكس، مؤسسة لينكس، مؤسسة بي إتش بي، جي كويري، لاينيج أو إس
-* **المؤسسات الإعلامية**: إذاعة فوكس نيوز، مبيعات إعلانات ديزني
-* **المؤسسات التعليمية**: جامعة كامبريدج، جامعة ماريلاند، جامعة واشنطن، جامعة تافتس، كلية سوارثمور
-* **الهيئات الحكومية**: حكومة جنوب أستراليا، حكومة جمهورية الدومينيكان
-* **مؤسسات أخرى**: فنادق آر سي دي، فلاي<span>.</span>io
-* **المطورون البارزون**: إسحاق ز. شلويتر (مبتكر npm)، ديفيد هاينماير هانسون (مبتكر روبي أون ريلز)
+* **شركات التكنولوجيا**: Canonical (Ubuntu)، Netflix Games، مؤسسة Linux، مؤسسة PHP، jQuery، LineageOS
+* **المنظمات الإعلامية**: Fox News Radio، Disney Ad Sales
+* **المؤسسات التعليمية**: جامعة كامبريدج، جامعة ميريلاند، جامعة واشنطن، جامعة تافتس، كلية Swarthmore
+* **الجهات الحكومية**: حكومة جنوب أستراليا، حكومة جمهورية الدومينيكان
+* **منظمات أخرى**: RCD Hotels، Fly<span>.</span>io
+* **مطورون بارزون**: Isaac Z. Schlueter (مُنشئ npm)، David Heinemeier Hansson (مُنشئ Ruby on Rails)
 
-تستمر المنصة في التطور مع إصدارات منتظمة للميزات وتحسينات البنية التحتية، مما يحافظ على مكانتها باعتبارها خدمة البريد الإلكتروني الوحيدة مفتوحة المصدر بنسبة 100% والمشفرة والموجهة نحو الخصوصية والشفافة والمقاومة للكم المتاحة اليوم.
+تستمر المنصة في التطور مع إصدارات ميزات منتظمة وتحسينات في البنية التحتية، محافظة على مكانتها كخدمة البريد الإلكتروني الوحيدة 100% مفتوحة المصدر، مشفرة، تركز على الخصوصية، شفافة، ومقاومة للحوسبة الكمومية المتاحة اليوم.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

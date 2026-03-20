@@ -1,116 +1,116 @@
-# Email RFC Protocol Support - Complete Standards & Specifications Guide {#email-rfc-protocol-support---complete-standards--specifications-guide}
+# E-mail RFC Protokoll Támogatás - Teljes Szabványok és Specifikációk Útmutató {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
 <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [About This Document](#about-this-document)
-  * [Architecture Overview](#architecture-overview)
-* [Email Service Comparison - Protocol Support & RFC Standards Compliance](#email-service-comparison---protocol-support--rfc-standards-compliance)
-  * [Protocol Support Visualization](#protocol-support-visualization)
-* [Core Email Protocols](#core-email-protocols)
-  * [Email Protocol Flow](#email-protocol-flow)
-* [IMAP4 Email Protocol and Extensions](#imap4-email-protocol-and-extensions)
-  * [IMAP Protocol Differences from RFC Specifications](#imap-protocol-differences-from-rfc-specifications)
-  * [IMAP Extensions NOT Supported](#imap-extensions-not-supported)
-* [POP3 Email Protocol and Extensions](#pop3-email-protocol-and-extensions)
-  * [POP3 Protocol Differences from RFC Specifications](#pop3-protocol-differences-from-rfc-specifications)
-  * [POP3 Extensions NOT Supported](#pop3-extensions-not-supported)
-* [SMTP Email Protocol and Extensions](#smtp-email-protocol-and-extensions)
-  * [Delivery Status Notifications (DSN)](#delivery-status-notifications-dsn)
-  * [REQUIRETLS Support](#requiretls-support)
-  * [SMTP Extensions NOT Supported](#smtp-extensions-not-supported)
-* [JMAP Email Protocol](#jmap-email-protocol)
-* [Email Security](#email-security)
-  * [Email Security Architecture](#email-security-architecture)
-* [Email Message Authentication Protocols](#email-message-authentication-protocols)
-  * [Authentication Protocol Support](#authentication-protocol-support)
+## Tartalomjegyzék {#table-of-contents}
+
+* [A dokumentumról](#about-this-document)
+  * [Architektúra áttekintés](#architecture-overview)
+* [E-mail szolgáltatás összehasonlítás - Protokoll támogatás és RFC szabványoknak való megfelelés](#email-service-comparison---protocol-support--rfc-standards-compliance)
+  * [Protokoll támogatás vizualizáció](#protocol-support-visualization)
+* [Alapvető e-mail protokollok](#core-email-protocols)
+  * [E-mail protokoll folyamat](#email-protocol-flow)
+* [IMAP4 e-mail protokoll és kiterjesztések](#imap4-email-protocol-and-extensions)
+  * [IMAP protokoll eltérései az RFC specifikációktól](#imap-protocol-differences-from-rfc-specifications)
+  * [Nem támogatott IMAP kiterjesztések](#imap-extensions-not-supported)
+* [POP3 e-mail protokoll és kiterjesztések](#pop3-email-protocol-and-extensions)
+  * [POP3 protokoll eltérései az RFC specifikációktól](#pop3-protocol-differences-from-rfc-specifications)
+  * [Nem támogatott POP3 kiterjesztések](#pop3-extensions-not-supported)
+* [SMTP e-mail protokoll és kiterjesztések](#smtp-email-protocol-and-extensions)
+  * [Kézbesítési állapot értesítések (DSN)](#delivery-status-notifications-dsn)
+  * [REQUIRETLS támogatás](#requiretls-support)
+  * [Nem támogatott SMTP kiterjesztések](#smtp-extensions-not-supported)
+* [JMAP e-mail protokoll](#jmap-email-protocol)
+* [E-mail biztonság](#email-security)
+  * [E-mail biztonsági architektúra](#email-security-architecture)
+* [E-mail üzenet hitelesítési protokollok](#email-message-authentication-protocols)
+  * [Hitelesítési protokoll támogatás](#authentication-protocol-support)
   * [DKIM (DomainKeys Identified Mail)](#dkim-domainkeys-identified-mail)
   * [SPF (Sender Policy Framework)](#spf-sender-policy-framework)
-  * [DMARC (Domain-based Message Authentication, Reporting & Conformance)](#dmarc-domain-based-message-authentication-reporting--conformance)
-  * [ARC (Authenticated Received Chain)](#arc-authenticated-received-chain)
-  * [Authentication Flow](#authentication-flow)
-* [Email Transport Security Protocols](#email-transport-security-protocols)
-  * [Transport Security Support](#transport-security-support)
+  * [DMARC (Domain-alapú üzenethitelesítés, jelentés és megfelelés)](#dmarc-domain-based-message-authentication-reporting--conformance)
+  * [ARC (Hitelesített fogadási lánc)](#arc-authenticated-received-chain)
+  * [Hitelesítési folyamat](#authentication-flow)
+* [E-mail szállítási biztonsági protokollok](#email-transport-security-protocols)
+  * [Szállítási biztonság támogatás](#transport-security-support)
   * [TLS (Transport Layer Security)](#tls-transport-layer-security)
   * [MTA-STS (Mail Transfer Agent Strict Transport Security)](#mta-sts-mail-transfer-agent-strict-transport-security)
-  * [DANE (DNS-based Authentication of Named Entities)](#dane-dns-based-authentication-of-named-entities)
+  * [DANE (DNS-alapú névazonosító hitelesítés)](#dane-dns-based-authentication-of-named-entities)
   * [REQUIRETLS](#requiretls)
-  * [Transport Security Flow](#transport-security-flow)
-* [Email Message Encryption](#email-message-encryption)
-  * [Encryption Support](#encryption-support)
+  * [Szállítási biztonsági folyamat](#transport-security-flow)
+* [E-mail üzenet titkosítás](#email-message-encryption)
+  * [Titkosítás támogatás](#encryption-support)
   * [OpenPGP (Pretty Good Privacy)](#openpgp-pretty-good-privacy)
   * [S/MIME (Secure/Multipurpose Internet Mail Extensions)](#smime-securemultipurpose-internet-mail-extensions)
-  * [SQLite Mailbox Encryption](#sqlite-mailbox-encryption)
-  * [Encryption Comparison](#encryption-comparison)
-  * [Encryption Flow](#encryption-flow)
-* [Extended Functionality](#extended-functionality)
-* [Email Message Format Standards](#email-message-format-standards)
-  * [Format Standards Support](#format-standards-support)
+  * [SQLite postaláda titkosítás](#sqlite-mailbox-encryption)
+  * [Titkosítás összehasonlítás](#encryption-comparison)
+  * [Titkosítási folyamat](#encryption-flow)
+* [Kiterjesztett funkcionalitás](#extended-functionality)
+* [E-mail üzenet formátum szabványok](#email-message-format-standards)
+  * [Formátum szabvány támogatás](#format-standards-support)
   * [MIME (Multipurpose Internet Mail Extensions)](#mime-multipurpose-internet-mail-extensions)
-  * [SMTPUTF8 and Email Address Internationalization](#smtputf8-and-email-address-internationalization)
-* [Calendaring and Contacts Protocols](#calendaring-and-contacts-protocols)
-  * [CalDAV and CardDAV Support](#caldav-and-carddav-support)
-  * [CalDAV (Calendar Access)](#caldav-calendar-access)
-  * [CardDAV (Contact Access)](#carddav-contact-access)
-  * [Tasks and Reminders (CalDAV VTODO)](#tasks-and-reminders-caldav-vtodo)
-  * [CalDAV/CardDAV Synchronization Flow](#caldavcarddav-synchronization-flow)
-  * [Calendaring Extensions NOT Supported](#calendaring-extensions-not-supported)
-* [Email Message Filtering](#email-message-filtering)
+  * [SMTPUTF8 és e-mail címek internacionalizációja](#smtputf8-and-email-address-internationalization)
+* [Naptár és névjegy protokollok](#calendaring-and-contacts-protocols)
+  * [CalDAV és CardDAV támogatás](#caldav-and-carddav-support)
+  * [CalDAV (Naptár hozzáférés)](#caldav-calendar-access)
+  * [CardDAV (Névjegy hozzáférés)](#carddav-contact-access)
+  * [Feladatok és emlékeztetők (CalDAV VTODO)](#tasks-and-reminders-caldav-vtodo)
+  * [CalDAV/CardDAV szinkronizációs folyamat](#caldavcarddav-synchronization-flow)
+  * [Nem támogatott naptár kiterjesztések](#calendaring-extensions-not-supported)
+* [E-mail üzenet szűrés](#email-message-filtering)
   * [Sieve (RFC 5228)](#sieve-rfc-5228)
   * [ManageSieve (RFC 5804)](#managesieve-rfc-5804)
-* [Storage Optimization](#storage-optimization)
-  * [Architecture: Dual-Layer Storage Optimization](#architecture-dual-layer-storage-optimization)
-* [Attachment Deduplication](#attachment-deduplication)
-  * [How It Works](#how-it-works)
-  * [Deduplication Flow](#deduplication-flow)
-  * [Magic Number System](#magic-number-system)
-  * [Key Differences: WildDuck vs Forward Email](#key-differences-wildduck-vs-forward-email)
-* [Brotli Compression](#brotli-compression)
-  * [What Gets Compressed](#what-gets-compressed)
-  * [Compression Configuration](#compression-configuration)
-  * [Magic Header: "FEBR"](#magic-header-febr)
-  * [Compression Process](#compression-process)
-  * [Decompression Process](#decompression-process)
-  * [Backwards Compatibility](#backwards-compatibility)
-  * [Storage Savings Statistics](#storage-savings-statistics)
-  * [Migration Process](#migration-process)
-  * [Combined Storage Efficiency](#combined-storage-efficiency)
-  * [Technical Implementation Details](#technical-implementation-details)
-  * [Why No Other Provider Does This](#why-no-other-provider-does-this)
-* [Modern Features](#modern-features)
-* [Complete REST API for Email Management](#complete-rest-api-for-email-management)
-  * [API Categories (39 Endpoints)](#api-categories-39-endpoints)
-  * [Technical Details](#technical-details)
-  * [Real-World Use Cases](#real-world-use-cases)
-  * [Key API Features](#key-api-features)
-  * [API Architecture](#api-architecture)
-* [iOS Push Notifications](#ios-push-notifications)
-  * [How It Works](#how-it-works-1)
-  * [Key Features](#key-features)
-  * [What Makes This Special](#what-makes-this-special)
-  * [Implementation Details](#implementation-details)
-  * [Comparison with Other Services](#comparison-with-other-services)
-* [Testing and Verification](#testing-and-verification)
-* [Protocol Capability Tests](#protocol-capability-tests)
-  * [Test Methodology](#test-methodology)
-  * [Test Scripts](#test-scripts)
-  * [Test Results Summary](#test-results-summary)
-  * [Detailed Test Results](#detailed-test-results)
-  * [Notes on Test Results](#notes-on-test-results)
-* [Summary](#summary)
-  * [Key Differentiators](#key-differentiators)
+* [Tárolás optimalizálás](#storage-optimization)
+  * [Architektúra: Kettős rétegű tárolás optimalizálás](#architecture-dual-layer-storage-optimization)
+* [Csatolmány duplikáció eltávolítás](#attachment-deduplication)
+  * [Hogyan működik](#how-it-works)
+  * [Duplikáció eltávolítási folyamat](#deduplication-flow)
+  * [Magic Number rendszer](#magic-number-system)
+  * [Főbb különbségek: WildDuck vs Forward Email](#key-differences-wildduck-vs-forward-email)
+* [Brotli tömörítés](#brotli-compression)
+  * [Mi kerül tömörítésre](#what-gets-compressed)
+  * [Tömörítési beállítások](#compression-configuration)
+  * [Magic fejléc: "FEBR"](#magic-header-febr)
+  * [Tömörítési folyamat](#compression-process)
+  * [Kicsomagolási folyamat](#decompression-process)
+  * [Visszafelé kompatibilitás](#backwards-compatibility)
+  * [Tárolási megtakarítás statisztikák](#storage-savings-statistics)
+  * [Migrációs folyamat](#migration-process)
+  * [Kombinált tárolási hatékonyság](#combined-storage-efficiency)
+  * [Technikai megvalósítás részletei](#technical-implementation-details)
+  * [Miért nem csinálja ezt más szolgáltató](#why-no-other-provider-does-this)
+* [Modern funkciók](#modern-features)
+* [Teljes REST API az e-mail kezeléshez](#complete-rest-api-for-email-management)
+  * [API kategóriák (39 végpont)](#api-categories-39-endpoints)
+  * [Technikai részletek](#technical-details)
+  * [Valós használati esetek](#real-world-use-cases)
+  * [Fő API jellemzők](#key-api-features)
+  * [API architektúra](#api-architecture)
+* [iOS push értesítések](#ios-push-notifications)
+  * [Hogyan működik](#how-it-works-1)
+  * [Főbb jellemzők](#key-features)
+  * [Mi teszi különlegessé](#what-makes-this-special)
+  * [Megvalósítás részletei](#implementation-details)
+  * [Összehasonlítás más szolgáltatásokkal](#comparison-with-other-services)
+* [Tesztelés és ellenőrzés](#testing-and-verification)
+* [Protokoll képesség tesztek](#protocol-capability-tests)
+  * [Teszt módszertan](#test-methodology)
+  * [Teszt szkriptek](#test-scripts)
+  * [Teszt eredmények összefoglalója](#test-results-summary)
+  * [Részletes teszt eredmények](#detailed-test-results)
+  * [Megjegyzések a teszt eredményekhez](#notes-on-test-results)
+* [Összefoglaló](#summary)
+  * [Főbb megkülönböztető jegyek](#key-differentiators)
+## A dokumentumról {#about-this-document}
 
-## About This Document {#about-this-document}
-
-This document outlines the RFC (Request for Comments) protocol support for Forward Email. Since Forward Email uses [WildDuck](https://github.com/nodemailer/wildduck) under the hood for IMAP/POP3 functionality, the protocol support and limitations documented here reflect WildDuck's implementation.
+Ez a dokumentum a Forward Email RFC (Request for Comments) protokoll támogatását ismerteti. Mivel a Forward Email az IMAP/POP3 funkciókhoz a [WildDuck](https://github.com/nodemailer/wildduck) megoldást használja, a protokoll támogatás és a korlátozások, amelyeket itt dokumentálunk, a WildDuck megvalósítását tükrözik.
 
 > \[!IMPORTANT]
-> Forward Email uses [SQLite](https://sqlite.org/) for message storage instead of MongoDB (which WildDuck originally used). This affects certain implementation details documented below.
+> A Forward Email az üzenettároláshoz a MongoDB helyett a [SQLite](https://sqlite.org/) adatbázist használja (amelyet eredetileg a WildDuck alkalmazott). Ez bizonyos megvalósítási részleteket érint, amelyeket alább dokumentáltunk.
 
-**Source Code:** <https://github.com/forwardemail/forwardemail.net>
+**Forráskód:** <https://github.com/forwardemail/forwardemail.net>
 
-### Architecture Overview {#architecture-overview}
+### Architektúra áttekintése {#architecture-overview}
 
 ```mermaid
 graph TB
@@ -142,45 +142,45 @@ graph TB
 
 ---
 
-## Email Service Comparison - Protocol Support & RFC Standards Compliance {#email-service-comparison---protocol-support--rfc-standards-compliance}
+
+## E-mail szolgáltatások összehasonlítása – Protokoll támogatás és RFC szabványoknak való megfelelés {#email-service-comparison---protocol-support--rfc-standards-compliance}
 
 > \[!IMPORTANT]
-> **Sandboxed and Quantum-resistant Encryption:** Forward Email is the only email service that stores individually encrypted SQLite mailboxes using your password (which only you have). Each mailbox is encrypted with [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305), self-contained, sandboxed, and portable. If you forget your password, you lose your mailbox - not even Forward Email can recover it. See [Quantum-Safe Encrypted Email](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) for details.
+> **Sandboxolt és kvantumbiztos titkosítás:** A Forward Email az egyetlen olyan e-mail szolgáltatás, amely egyénileg titkosított SQLite postaládákat tárol a jelszavad segítségével (amit csak te ismersz). Minden postaláda a [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305) által titkosított, önálló, sandboxolt és hordozható. Ha elfelejted a jelszavad, elveszíted a postaládádat – még a Forward Email sem tudja visszaállítani azt. Részletekért lásd a [Quantum-Safe Encrypted Email](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) oldalt.
 
-Compare email protocol support and RFC standards implementation across major email providers:
+Hasonlítsd össze a főbb e-mail szolgáltatók protokoll támogatását és az RFC szabványok megvalósítását:
 
-| Feature | Forward Email | Postfix/Dovecot | Gmail | iCloud Mail | Outlook.com | Fastmail | Yahoo/AOL (Verizon) | ProtonMail | Tutanota |
+| Funkció                       | Forward Email                                                                                  | Postfix/Dovecot                                                                    | Gmail                                                                             | iCloud Mail                                           | Outlook.com                                                                                                                                                          | Fastmail                                                                                 | Yahoo/AOL (Verizon)                                                  | ProtonMail                                                                     | Tutanota                                                          |
 | ----------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| **Custom Domain Price** | [Free](https://forwardemail.net/en/pricing) | [Free](https://www.postfix.org/) | [$7.20/mo](https://workspace.google.com/pricing) | [$0.99/mo](https://support.apple.com/en-us/102622) | [$7.20/mo](https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-basic) | [$5/mo](https://www.fastmail.com/pricing/) | [$3.19/mo](https://www.turbify.com/mail) | [$4.99/mo](https://proton.me/mail/pricing) | [$3.27/mo](https://tuta.com/pricing) |
-| **IMAP4rev1 (RFC 3501)** | ✅ [Supported](#imap4-email-protocol-and-extensions) | ✅ [Supported](https://www.dovecot.org/) | ✅ [Supported](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **IMAP4rev2 (RFC 9051)** | ⚠️ [Partial](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) | ⚠️ [Partial](https://www.dovecot.org/) | ⚠️ [31%](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ⚠️ [92%](https://support.apple.com/en-us/102431) | ⚠️ [46%](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ⚠️ [69%](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ⚠️ [85%](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **POP3 (RFC 1939)** | ✅ [Supported](#pop3-email-protocol-and-extensions) | ✅ [Supported](https://www.dovecot.org/) | ✅ [Supported](https://support.google.com/mail/answer/7104828) | ❌ Not Supported | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN4075.html) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **SMTP (RFC 5321)** | ✅ [Supported](#smtp-email-protocol-and-extensions) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/mail/answer/7126229) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN4075.html) | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **JMAP (RFC 8620)** | ❌ [Not Supported](#jmap-email-protocol) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.com/dev/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **DKIM (RFC 6376)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://github.com/trusteddomainproject/OpenDKIM) | ✅ [Supported](https://support.google.com/a/answer/174124) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dkim-configure) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **SPF (RFC 7208)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/33786) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/how-office-365-uses-spf-to-prevent-spoofing) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **DMARC (RFC 7489)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/2466580) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dmarc-to-validate-email) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dkim) |
-| **ARC (RFC 8617)** | ✅ [Supported](#email-message-authentication-protocols) | ✅ [Supported](https://github.com/trusteddomainproject/OpenARC) | ✅ [Supported](https://support.google.com/a/answer/2466580) | ❌ Not Supported | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-arc-configure) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ✅ [Supported](https://proton.me/blog/what-is-authenticated-received-chain-arc) | ❌ Not Supported |
-| **MTA-STS (RFC 8461)** | ✅ [Supported](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/) | ✅ [Supported](https://support.google.com/a/answer/9261504) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ✅ [Supported](https://senders.yahooinc.com/developer/documentation/) | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/security) |
-| **DANE (RFC 7671)** | ⚠️ [Partial](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://proton.me/support) | ✅ [Supported](https://tuta.com/support#dane) |
-| **DSN (RFC 3461)** | ✅ [Supported](#smtp-email-protocol-and-extensions) | ✅ [Supported](https://www.postfix.org/DSN_README.html) | ❌ Not Supported | ✅ [Supported](#protocol-capability-tests) | ✅ [Supported](#protocol-capability-tests) | ⚠️ [Unknown](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **REQUIRETLS (RFC 8689)** | ✅ [Supported](#email-transport-security-protocols) | ✅ [Supported](https://www.postfix.org/TLS_README.html#server_require_tls) | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ [Via Bridge](https://proton.me/support/imap-smtp-and-pop3-setup) | ❌ Not Supported |
-| **ManageSieve (RFC 5804)** | ✅ [Supported](#managesieve-rfc-5804) | ✅ [Supported](https://doc.dovecot.org/admin_manual/pigeonhole_managesieve_server/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **OpenPGP (RFC 9580)** | ✅ [Supported](#email-message-encryption) | ⚠️ [Via Plugins](https://www.gnupg.org/) | ⚠️ [Third-party](https://github.com/google/end-to-end) | ⚠️ [Third-party](https://gpgtools.org/) | ⚠️ [Third-party](https://gpg4win.org/) | ⚠️ [Third-party](https://www.fastmail.help/hc/en-us/articles/360060590573) | ⚠️ [Third-party](https://help.yahoo.com/kb/SLN25426.html) | ✅ [Native](https://proton.me/support/pgp-mime-pgp-inline) | ❌ Not Supported |
-| **S/MIME (RFC 8551)** | ✅ [Supported](#email-message-encryption) | ✅ [Supported](https://www.openssl.org/) | ✅ [Supported](https://support.google.com/mail/answer/81126) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/send-view-and-reply-to-encrypted-messages-in-outlook-for-pc-eaa43495-9bbb-4fca-922a-df90dee51980) | ⚠️ [Partial](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/pgp-mime-pgp-inline) | ❌ Not Supported |
-| **CalDAV (RFC 4791)** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ [Supported](https://www.davical.org/) | ✅ [Supported](https://developers.google.com/calendar/caldav/v2/guide) | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Via Bridge](https://proton.me/support/proton-calendar) | ❌ Not Supported |
-| **CardDAV (RFC 6352)** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ [Supported](https://www.davical.org/) | ✅ [Supported](https://developers.google.com/people/carddav) | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ✅ [Via Bridge](https://proton.me/support/proton-contacts) | ❌ Not Supported |
-| **Tasks (VTODO)** | ✅ [Supported](#tasks-and-reminders-caldav-vtodo) | ✅ [Supported](https://www.davical.org/) | ❌ Not Supported | ✅ [Supported](https://support.apple.com/en-us/102431) | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **Sieve (RFC 5228)** | ✅ [Supported](#sieve-rfc-5228) | ✅ [Supported](https://www.dovecot.org/) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/360060590573) | ❌ Not Supported | ❌ Not Supported | ❌ Not Supported |
-| **Catch-All** | ✅ [Supported](https://forwardemail.net/en/faq#can-i-have-multiple-global-catch-all-recipients) | ✅ Supported | ✅ [Supported](https://support.google.com/a/answer/4524505) | ❌ Not Supported | ❌ [Not Supported](https://learn.microsoft.com/en-us/exchange/recipients-in-exchange-online/manage-mail-users) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ❌ Not Supported | ✅ [Supported](https://tuta.com/support#catch-all-alias) |
-| **Unlimited Aliases** | ✅ [Supported](https://forwardemail.net/en/faq#advanced-features) | ✅ Supported | ✅ [Supported](https://support.google.com/a/answer/33327) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/addresses-and-aliases) | ✅ [Supported](https://tuta.com/support#aliases) |
-| **Two-Factor Auth** | ✅ [Supported](https://forwardemail.net/en/faq#do-you-support-passkeys-and-webauthn) | ✅ Supported | ✅ [Supported](https://support.google.com/accounts/answer/185839) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/account-billing/how-to-use-two-step-verification-with-your-microsoft-account-c7910146-672f-01e9-50a0-93b4585e7eb4) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN5013.html) | ✅ [Supported](https://proton.me/support/two-factor-authentication-2fa) | ✅ [Supported](https://tuta.com/support#two-factor-authentication) |
-| **Push Notifications** | ✅ [Supported](#ios-push-notifications) | ⚠️ Via Plugins | ✅ [Supported](https://developers.google.com/gmail/api/guides/push) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/notifications) | ✅ [Supported](https://tuta.com/support#push-notifications) |
-| **Calendar/Contacts Desktop** | ✅ [Supported](#calendaring-and-contacts-protocols) | ✅ Supported | ✅ [Supported](https://support.google.com/calendar) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/calendar-and-contacts-in-outlook-com-d3e8a6e6-5c1f-4e3e-9f1e-7c0f0e0c0c0c) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/proton-calendar) | ❌ Not Supported |
-| **Advanced Search** | ✅ [Supported](https://forwardemail.net/en/email-api) | ✅ Supported | ✅ [Supported](https://support.google.com/mail/answer/7190) | ✅ [Supported](https://support.apple.com/en-us/102431) | ✅ [Supported](https://support.microsoft.com/en-us/office/search-for-email-messages-in-outlook-com-6f5f2e92-9d5e-4c4e-9b0e-0c0c0c0c0c0c) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Supported](https://help.yahoo.com/kb/SLN3561.html) | ✅ [Supported](https://proton.me/support/search-and-filters) | ✅ [Supported](https://tuta.com/support) |
-| **API/Integrations** | ✅ [39 Endpoints](https://forwardemail.net/en/email-api) | ✅ Supported | ✅ [Supported](https://developers.google.com/gmail/api) | ❌ Not Supported | ✅ [Supported](https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview) | ✅ [Supported](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Not Supported | ✅ [Supported](https://proton.me/support/proton-mail-api) | ❌ Not Supported |
-
-### Protocol Support Visualization {#protocol-support-visualization}
+| **Egyedi domain ára**          | [Ingyenes](https://forwardemail.net/en/pricing)                                               | [Ingyenes](https://www.postfix.org/)                                              | [$7.20/hó](https://workspace.google.com/pricing)                                 | [$0.99/hó](https://support.apple.com/en-us/102622)    | [$7.20/hó](https://www.microsoft.com/en-us/microsoft-365/business/microsoft-365-business-basic)                                                                      | [$5/hó](https://www.fastmail.com/pricing/)                                               | [$3.19/hó](https://www.turbify.com/mail)                             | [$4.99/hó](https://proton.me/mail/pricing)                                     | [$3.27/hó](https://tuta.com/pricing)                              |
+| **IMAP4rev1 (RFC 3501)**      | ✅ [Támogatott](#imap4-email-protocol-and-extensions)                                         | ✅ [Támogatott](https://www.dovecot.org/)                                         | ✅ [Támogatott](https://developers.google.com/workspace/gmail/imap/imap-extensions) | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                            | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Támogatott](https://senders.yahooinc.com/developer/documentation/) | ⚠️ [Hídon keresztül](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Nem támogatott                                                |
+| **IMAP4rev2 (RFC 9051)**      | ⚠️ [Részleges](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) | ⚠️ [Részleges](https://www.dovecot.org/)                                          | ⚠️ [31%](https://developers.google.com/workspace/gmail/imap/imap-extensions)      | ⚠️ [92%](https://support.apple.com/en-us/102431)      | ⚠️ [46%](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                                 | ⚠️ [69%](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards)      | ⚠️ [85%](https://senders.yahooinc.com/developer/documentation/)      | ⚠️ [Hídon keresztül](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Nem támogatott                                                |
+| **POP3 (RFC 1939)**           | ✅ [Támogatott](#pop3-email-protocol-and-extensions)                                          | ✅ [Támogatott](https://www.dovecot.org/)                                         | ✅ [Támogatott](https://support.google.com/mail/answer/7104828)                   | ❌ Nem támogatott                                     | ✅ [Támogatott](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                            | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Támogatott](https://help.yahoo.com/kb/SLN4075.html)                | ⚠️ [Hídon keresztül](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Nem támogatott                                                |
+| **SMTP (RFC 5321)**           | ✅ [Támogatott](#smtp-email-protocol-and-extensions)                                          | ✅ [Támogatott](https://www.postfix.org/)                                         | ✅ [Támogatott](https://support.google.com/mail/answer/7126229)                   | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040)                            | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Támogatott](https://help.yahoo.com/kb/SLN4075.html)                | ⚠️ [Hídon keresztül](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Nem támogatott                                                |
+| **JMAP (RFC 8620)**           | ❌ [Nem támogatott](#jmap-email-protocol)                                                    | ❌ Nem támogatott                                                                  | ❌ Nem támogatott                                                                 | ❌ Nem támogatott                                     | ❌ Nem támogatott                                                                                                                                                      | ✅ [Támogatott](https://www.fastmail.com/dev/)                                             | ❌ Nem támogatott                                                    | ❌ Nem támogatott                                                                | ❌ Nem támogatott                                                |
+| **DKIM (RFC 6376)**           | ✅ [Támogatott](#email-message-authentication-protocols)                                     | ✅ [Támogatott](https://github.com/trusteddomainproject/OpenDKIM)                 | ✅ [Támogatott](https://support.google.com/a/answer/174124)                       | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dkim-configure)                                                             | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Támogatott](https://help.yahoo.com/kb/SLN25426.html)               | ✅ [Támogatott](https://proton.me/support)                                       | ✅ [Támogatott](https://tuta.com/support#dkim)                      |
+| **SPF (RFC 7208)**            | ✅ [Támogatott](#email-message-authentication-protocols)                                     | ✅ [Támogatott](https://www.postfix.org/)                                         | ✅ [Támogatott](https://support.google.com/a/answer/33786)                        | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/how-office-365-uses-spf-to-prevent-spoofing)                              | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Támogatott](https://help.yahoo.com/kb/SLN25426.html)               | ✅ [Támogatott](https://proton.me/support)                                       | ✅ [Támogatott](https://tuta.com/support#dkim)                      |
+| **DMARC (RFC 7489)**          | ✅ [Támogatott](#email-message-authentication-protocols)                                     | ✅ [Támogatott](https://www.postfix.org/)                                         | ✅ [Támogatott](https://support.google.com/a/answer/2466580)                      | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dmarc-to-validate-email)                                              | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Támogatott](https://help.yahoo.com/kb/SLN25426.html)               | ✅ [Támogatott](https://proton.me/support)                                       | ✅ [Támogatott](https://tuta.com/support#dkim)                      |
+| **ARC (RFC 8617)**            | ✅ [Támogatott](#email-message-authentication-protocols)                                     | ✅ [Támogatott](https://github.com/trusteddomainproject/OpenARC)                  | ✅ [Támogatott](https://support.google.com/a/answer/2466580)                      | ❌ Nem támogatott                                     | ✅ [Támogatott](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-arc-configure)                                                              | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Támogatott](https://senders.yahooinc.com/developer/documentation/) | ✅ [Támogatott](https://proton.me/blog/what-is-authenticated-received-chain-arc) | ❌ Nem támogatott                                                |
+| **MTA-STS (RFC 8461)**        | ✅ [Támogatott](#email-transport-security-protocols)                                         | ✅ [Támogatott](https://www.postfix.org/)                                         | ✅ [Támogatott](https://support.google.com/a/answer/9261504)                      | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about)                                                                      | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ✅ [Támogatott](https://senders.yahooinc.com/developer/documentation/) | ✅ [Támogatott](https://proton.me/support)                                       | ✅ [Támogatott](https://tuta.com/security)                          |
+| **DANE (RFC 7671)**           | ✅ [Támogatott](#email-transport-security-protocols)                                         | ✅ [Támogatott](https://www.postfix.org/)                                         | ❌ Nem támogatott                                                                 | ❌ Nem támogatott                                     | ❌ Nem támogatott                                                                                                                                                      | ❌ Nem támogatott                                                                          | ❌ Nem támogatott                                                    | ✅ [Támogatott](https://proton.me/support)                                       | ✅ [Támogatott](https://tuta.com/support#dane)                      |
+| **DSN (RFC 3461)**            | ✅ [Támogatott](#smtp-email-protocol-and-extensions)                                         | ✅ [Támogatott](https://www.postfix.org/DSN_README.html)                          | ❌ Nem támogatott                                                                 | ✅ [Támogatott](#protocol-capability-tests)             | ✅ [Támogatott](#protocol-capability-tests)                                                                                                                            | ⚠️ [Ismeretlen](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards)  | ❌ Nem támogatott                                                    | ⚠️ [Hídon keresztül](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Nem támogatott                                                |
+| **REQUIRETLS (RFC 8689)**     | ✅ [Támogatott](#email-transport-security-protocols)                                         | ✅ [Támogatott](https://www.postfix.org/TLS_README.html#server_require_tls)       | ⚠️ Ismeretlen                                                                    | ⚠️ Ismeretlen                                        | ⚠️ Ismeretlen                                                                                                                                                         | ⚠️ Ismeretlen                                                                           | ⚠️ Ismeretlen                                                       | ⚠️ [Hídon keresztül](https://proton.me/support/imap-smtp-and-pop3-setup)            | ❌ Nem támogatott                                                |
+| **ManageSieve (RFC 5804)**    | ✅ [Támogatott](#managesieve-rfc-5804)                                                       | ✅ [Támogatott](https://doc.dovecot.org/admin_manual/pigeonhole_managesieve_server/) | ❌ Nem támogatott                                                                 | ❌ Nem támogatott                                     | ❌ Nem támogatott                                                                                                                                                      | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Nem támogatott                                                    | ❌ Nem támogatott                                                                | ❌ Nem támogatott                                                |
+| **OpenPGP (RFC 9580)**        | ✅ [Támogatott](#email-message-encryption)                                                   | ⚠️ [Bővítményeken keresztül](https://www.gnupg.org/)                             | ⚠️ [Harmadik fél](https://github.com/google/end-to-end)                          | ⚠️ [Harmadik fél](https://gpgtools.org/)               | ⚠️ [Harmadik fél](https://gpg4win.org/)                                                                                                                               | ⚠️ [Harmadik fél](https://www.fastmail.help/hc/en-us/articles/360060590573)               | ⚠️ [Harmadik fél](https://help.yahoo.com/kb/SLN25426.html)            | ✅ [Natív](https://proton.me/support/pgp-mime-pgp-inline)                      | ❌ Nem támogatott                                                |
+| **S/MIME (RFC 8551)**         | ✅ [Támogatott](#email-message-encryption)                                                   | ✅ [Támogatott](https://www.openssl.org/)                                        | ✅ [Támogatott](https://support.google.com/mail/answer/81126)                     | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://support.microsoft.com/en-us/office/send-view-and-reply-to-encrypted-messages-in-outlook-for-pc-eaa43495-9bbb-4fca-922a-df90dee51980)           | ⚠️ [Részleges](https://www.fastmail.help/hc/en-us/articles/360060590573)                   | ❌ Nem támogatott                                                    | ✅ [Támogatott](https://proton.me/support/pgp-mime-pgp-inline)                   | ❌ Nem támogatott                                                |
+| **CalDAV (RFC 4791)**         | ✅ [Támogatott](#calendaring-and-contacts-protocols)                                         | ✅ [Támogatott](https://www.davical.org/)                                         | ✅ [Támogatott](https://developers.google.com/calendar/caldav/v2/guide)           | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ❌ Nem támogatott                                                                                                                                                      | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Nem támogatott                                                    | ✅ [Hídon keresztül](https://proton.me/support/proton-calendar)                      | ❌ Nem támogatott                                                |
+| **CardDAV (RFC 6352)**        | ✅ [Támogatott](#calendaring-and-contacts-protocols)                                         | ✅ [Támogatott](https://www.davical.org/)                                         | ✅ [Támogatott](https://developers.google.com/people/carddav)                     | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ❌ Nem támogatott                                                                                                                                                      | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Nem támogatott                                                    | ✅ [Hídon keresztül](https://proton.me/support/proton-contacts)                      | ❌ Nem támogatott                                                |
+| **Feladatok (VTODO)**         | ✅ [Támogatott](#tasks-and-reminders-caldav-vtodo)                                           | ✅ [Támogatott](https://www.davical.org/)                                         | ❌ Nem támogatott                                                                 | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ❌ Nem támogatott                                                                                                                                                      | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Nem támogatott                                                    | ❌ Nem támogatott                                                                | ❌ Nem támogatott                                                |
+| **Sieve (RFC 5228)**          | ✅ [Támogatott](#sieve-rfc-5228)                                                             | ✅ [Támogatott](https://www.dovecot.org/)                                         | ❌ Nem támogatott                                                                 | ❌ Nem támogatott                                     | ❌ Nem támogatott                                                                                                                                                      | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/360060590573)                  | ❌ Nem támogatott                                                    | ❌ Nem támogatott                                                                | ❌ Nem támogatott                                                |
+| **Catch-All**                 | ✅ [Támogatott](https://forwardemail.net/en/faq#can-i-have-multiple-global-catch-all-recipients) | ✅ Támogatott                                                                      | ✅ [Támogatott](https://support.google.com/a/answer/4524505)                      | ❌ Nem támogatott                                     | ❌ [Nem támogatott](https://learn.microsoft.com/en-us/exchange/recipients-in-exchange-online/manage-mail-users)                                                        | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Nem támogatott                                                    | ❌ Nem támogatott                                                                | ✅ [Támogatott](https://tuta.com/support#catch-all-alias)           |
+| **Korlátlan aliasok**         | ✅ [Támogatott](https://forwardemail.net/en/faq#advanced-features)                           | ✅ Támogatott                                                                      | ✅ [Támogatott](https://support.google.com/a/answer/33327)                        | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://support.microsoft.com/en-us/office/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2)                           | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Nem támogatott                                                    | ✅ [Támogatott](https://proton.me/support/addresses-and-aliases)                 | ✅ [Támogatott](https://tuta.com/support#aliases)                   |
+| **Kétfaktoros hitelesítés**   | ✅ [Támogatott](https://forwardemail.net/en/faq#do-you-support-passkeys-and-webauthn)          | ✅ Támogatott                                                                      | ✅ [Támogatott](https://support.google.com/accounts/answer/185839)                | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://support.microsoft.com/en-us/account-billing/how-to-use-two-step-verification-with-your-microsoft-account-c7910146-672f-01e9-50a0-93b4585e7eb4) | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Támogatott](https://help.yahoo.com/kb/SLN5013.html)                | ✅ [Támogatott](https://proton.me/support/two-factor-authentication-2fa)         | ✅ [Támogatott](https://tuta.com/support#two-factor-authentication) |
+| **Push értesítések**          | ✅ [Támogatott](#ios-push-notifications)                                                     | ⚠️ Bővítményeken keresztül                                                        | ✅ [Támogatott](https://developers.google.com/gmail/api/guides/push)              | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks)                                                                        | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Nem támogatott                                                    | ✅ [Támogatott](https://proton.me/support/notifications)                         | ✅ [Támogatott](https://tuta.com/support#push-notifications)        |
+| **Naptár/névjegyek asztali**  | ✅ [Támogatott](#calendaring-and-contacts-protocols)                                         | ✅ Támogatott                                                                      | ✅ [Támogatott](https://support.google.com/calendar)                              | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://support.microsoft.com/en-us/office/calendar-and-contacts-in-outlook-com-d3e8a6e6-5c1f-4e3e-9f1e-7c0f0e0c0c0c)                                  | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Nem támogatott                                                    | ✅ [Támogatott](https://proton.me/support/proton-calendar)                       | ❌ Nem támogatott                                                |
+| **Fejlett keresés**           | ✅ [Támogatott](https://forwardemail.net/en/email-api)                                       | ✅ Támogatott                                                                      | ✅ [Támogatott](https://support.google.com/mail/answer/7190)                      | ✅ [Támogatott](https://support.apple.com/en-us/102431) | ✅ [Támogatott](https://support.microsoft.com/en-us/office/search-for-email-messages-in-outlook-com-6f5f2e92-9d5e-4c4e-9b0e-0c0c0c0c0c0c)                              | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ✅ [Támogatott](https://help.yahoo.com/kb/SLN3561.html)                | ✅ [Támogatott](https://proton.me/support/search-and-filters)                    | ✅ [Támogatott](https://tuta.com/support)                           |
+| **API/Integrációk**           | ✅ [39 végpont](https://forwardemail.net/en/email-api)                                       | ✅ Támogatott                                                                      | ✅ [Támogatott](https://developers.google.com/gmail/api)                          | ❌ Nem támogatott                                     | ✅ [Támogatott](https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview)                                                                               | ✅ [Támogatott](https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards) | ❌ Nem támogatott                                                    | ✅ [Támogatott](https://proton.me/support/proton-mail-api)                       | ❌ Nem támogatott                                                |
+### Protokoll támogatás vizualizáció {#protocol-support-visualization}
 
 ```mermaid
 graph LR
@@ -223,357 +223,354 @@ graph LR
 
 ---
 
-## Core Email Protocols {#core-email-protocols}
 
-### Email Protocol Flow {#email-protocol-flow}
+## Alapvető e-mail protokollok {#core-email-protocols}
+
+### E-mail protokoll folyamat {#email-protocol-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Client as Email Client
-    participant SMTP as SMTP Server
-    participant IMAP as IMAP Server
-    participant Storage as SQLite Storage
+    participant Client as Email kliens
+    participant SMTP as SMTP szerver
+    participant IMAP as IMAP szerver
+    participant Storage as SQLite tároló
 
-    Client->>SMTP: Send Email (SMTP)
-    SMTP->>Storage: Store Message
-    Storage-->>SMTP: Confirm
+    Client->>SMTP: E-mail küldése (SMTP)
+    SMTP->>Storage: Üzenet tárolása
+    Storage-->>SMTP: Visszaigazolás
     SMTP-->>Client: 250 OK
 
-    Client->>IMAP: Fetch Messages (IMAP)
-    IMAP->>Storage: Query Messages
-    Storage-->>IMAP: Return Messages
-    IMAP-->>Client: * FETCH Response
+    Client->>IMAP: Üzenetek lekérése (IMAP)
+    IMAP->>Storage: Üzenetek lekérdezése
+    Storage-->>IMAP: Üzenetek visszaadása
+    IMAP-->>Client: * FETCH válasz
 ```
 
-## IMAP4 Email Protocol and Extensions {#imap4-email-protocol-and-extensions}
+
+## IMAP4 e-mail protokoll és kiterjesztések {#imap4-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) features.
+> A Forward Email támogatja az IMAP4rev1-et (RFC 3501) részleges támogatással az IMAP4rev2 (RFC 9051) funkciókhoz.
 
-Forward Email provides robust IMAP4 support through the WildDuck mail server implementation. The server implements IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) extensions.
+A Forward Email megbízható IMAP4 támogatást nyújt a WildDuck levelezőszerver implementáción keresztül. A szerver megvalósítja az IMAP4rev1-et (RFC 3501) részleges támogatással az IMAP4rev2 (RFC 9051) kiterjesztésekhez.
 
-Forward Email's IMAP functionality is provided by the [WildDuck](https://github.com/nodemailer/wildduck) dependency. The following email RFCs are supported:
+A Forward Email IMAP funkcióját a [WildDuck](https://github.com/nodemailer/wildduck) függőség biztosítja. Az alábbi e-mail RFC-k támogatottak:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
-| [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) | Internet Message Access Protocol (IMAP) - Version 4rev1 | Full support with intentional differences (see below) |
-| [RFC 2177](https://datatracker.ietf.org/doc/html/rfc2177) | IMAP4 IDLE command | Push-style notifications |
-| [RFC 2342](https://datatracker.ietf.org/doc/html/rfc2342) | IMAP4 Namespace | Mailbox namespace support |
-| [RFC 2087](https://datatracker.ietf.org/doc/html/rfc2087) | IMAP4 QUOTA extension | Storage quota management |
-| [RFC 2971](https://datatracker.ietf.org/doc/html/rfc2971) | IMAP4 ID extension | Client/server identification |
-| [RFC 5161](https://datatracker.ietf.org/doc/html/rfc5161) | IMAP4 ENABLE Extension | Enable IMAP extensions |
-| [RFC 4959](https://datatracker.ietf.org/doc/html/rfc4959) | IMAP Extension for SASL Initial Client Response (SASL-IR) | Initial client response |
-| [RFC 3691](https://datatracker.ietf.org/doc/html/rfc3691) | IMAP4 UNSELECT command | Close mailbox without EXPUNGE |
-| [RFC 4315](https://datatracker.ietf.org/doc/html/rfc4315) | IMAP UIDPLUS extension | Enhanced UID commands |
-| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Extensions: Quick Flag Changes Resynchronization (CONDSTORE) | Conditional STORE |
-| [RFC 6154](https://datatracker.ietf.org/doc/html/rfc6154) | IMAP LIST Extension for Special-Use Mailboxes | Special mailbox attributes |
-| [RFC 6851](https://datatracker.ietf.org/doc/html/rfc6851) | IMAP MOVE Extension | Atomic MOVE command |
-| [RFC 6855](https://datatracker.ietf.org/doc/html/rfc6855) | IMAP Support for UTF-8 | UTF-8 support |
-| [RFC 3348](https://datatracker.ietf.org/doc/html/rfc3348) | IMAP4 Child Mailbox Extension | Child mailbox information |
-| [RFC 7889](https://datatracker.ietf.org/doc/html/rfc7889) | IMAP4 Extension for Advertising Maximum Upload Size (APPENDLIMIT) | Maximum upload size |
+| RFC                                                       | Cím                                                             | Megvalósítási megjegyzések                                  |
+| --------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------- |
+| [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) | Internet Message Access Protocol (IMAP) - 4rev1 verzió           | Teljes támogatás szándékos eltérésekkel (lásd alább)         |
+| [RFC 2177](https://datatracker.ietf.org/doc/html/rfc2177) | IMAP4 IDLE parancs                                               | Push-stílusú értesítések                                    |
+| [RFC 2342](https://datatracker.ietf.org/doc/html/rfc2342) | IMAP4 névtér                                                  | Postafiók névtér támogatás                                  |
+| [RFC 2087](https://datatracker.ietf.org/doc/html/rfc2087) | IMAP4 QUOTA kiterjesztés                                        | Tárolási kvóta kezelése                                     |
+| [RFC 2971](https://datatracker.ietf.org/doc/html/rfc2971) | IMAP4 ID kiterjesztés                                          | Kliens/szerver azonosítás                                   |
+| [RFC 5161](https://datatracker.ietf.org/doc/html/rfc5161) | IMAP4 ENABLE kiterjesztés                                      | IMAP kiterjesztések engedélyezése                           |
+| [RFC 4959](https://datatracker.ietf.org/doc/html/rfc4959) | IMAP kiterjesztés SASL kezdeti kliens válaszhoz (SASL-IR)       | Kezdeti kliens válasz                                       |
+| [RFC 3691](https://datatracker.ietf.org/doc/html/rfc3691) | IMAP4 UNSELECT parancs                                         | Postafiók bezárása EXPUNGE nélkül                            |
+| [RFC 4315](https://datatracker.ietf.org/doc/html/rfc4315) | IMAP UIDPLUS kiterjesztés                                      | Kiterjesztett UID parancsok                                 |
+| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP kiterjesztések: Gyors zászló változások újraszinkronizálása (CONDSTORE) | Feltételes STORE                                            |
+| [RFC 6154](https://datatracker.ietf.org/doc/html/rfc6154) | IMAP LIST kiterjesztés speciális használatú postafiókokhoz       | Speciális postafiók attribútumok                            |
+| [RFC 6851](https://datatracker.ietf.org/doc/html/rfc6851) | IMAP MOVE kiterjesztés                                         | Atomikus MOVE parancs                                       |
+| [RFC 6855](https://datatracker.ietf.org/doc/html/rfc6855) | IMAP UTF-8 támogatás                                          | UTF-8 támogatás                                            |
+| [RFC 3348](https://datatracker.ietf.org/doc/html/rfc3348) | IMAP4 gyermek postafiók kiterjesztés                           | Gyermek postafiók információ                                |
+| [RFC 7889](https://datatracker.ietf.org/doc/html/rfc7889) | IMAP4 kiterjesztés a maximális feltöltési méret hirdetésére (APPENDLIMIT) | Maximális feltöltési méret                                  |
+**Támogatott IMAP kiterjesztések:**
 
-**Supported IMAP Extensions:**
+| Kiterjesztés      | RFC          | Állapot     | Leírás                         |
+| ----------------- | ------------ | ----------- | ------------------------------ |
+| IDLE              | RFC 2177     | ✅ Támogatott | Push-stílusú értesítések       |
+| NAMESPACE         | RFC 2342     | ✅ Támogatott | Postafiók névtér támogatás     |
+| QUOTA             | RFC 2087     | ✅ Támogatott | Tárolási kvóta kezelése        |
+| ID                | RFC 2971     | ✅ Támogatott | Kliens/szerver azonosítás      |
+| ENABLE            | RFC 5161     | ✅ Támogatott | IMAP kiterjesztések engedélyezése |
+| SASL-IR           | RFC 4959     | ✅ Támogatott | Kezdeti kliens válasz          |
+| UNSELECT          | RFC 3691     | ✅ Támogatott | Postafiók bezárása EXPUNGE nélkül |
+| UIDPLUS           | RFC 4315     | ✅ Támogatott | Fejlettebb UID parancsok       |
+| CONDSTORE         | RFC 7162     | ✅ Támogatott | Feltételes STORE               |
+| SPECIAL-USE       | RFC 6154     | ✅ Támogatott | Speciális postafiók attribútumok |
+| MOVE              | RFC 6851     | ✅ Támogatott | Atomikus MOVE parancs          |
+| UTF8=ACCEPT       | RFC 6855     | ✅ Támogatott | UTF-8 támogatás                |
+| CHILDREN          | RFC 3348     | ✅ Támogatott | Gyermek postafiók információ   |
+| APPENDLIMIT       | RFC 7889     | ✅ Támogatott | Maximális feltöltési méret     |
+| XLIST             | Nem szabvány | ✅ Támogatott | Gmail-kompatibilis mappalistázás |
+| XAPPLEPUSHSERVICE | Nem szabvány | ✅ Támogatott | Apple Push Notification Service |
 
-| Extension | RFC | Status | Description |
-| ----------------- | ------------ | ----------- | ------------------------------- |
-| IDLE | RFC 2177 | ✅ Supported | Push-style notifications |
-| NAMESPACE | RFC 2342 | ✅ Supported | Mailbox namespace support |
-| QUOTA | RFC 2087 | ✅ Supported | Storage quota management |
-| ID | RFC 2971 | ✅ Supported | Client/server identification |
-| ENABLE | RFC 5161 | ✅ Supported | Enable IMAP extensions |
-| SASL-IR | RFC 4959 | ✅ Supported | Initial client response |
-| UNSELECT | RFC 3691 | ✅ Supported | Close mailbox without EXPUNGE |
-| UIDPLUS | RFC 4315 | ✅ Supported | Enhanced UID commands |
-| CONDSTORE | RFC 7162 | ✅ Supported | Conditional STORE |
-| SPECIAL-USE | RFC 6154 | ✅ Supported | Special mailbox attributes |
-| MOVE | RFC 6851 | ✅ Supported | Atomic MOVE command |
-| UTF8=ACCEPT | RFC 6855 | ✅ Supported | UTF-8 support |
-| CHILDREN | RFC 3348 | ✅ Supported | Child mailbox information |
-| APPENDLIMIT | RFC 7889 | ✅ Supported | Maximum upload size |
-| XLIST | Non-standard | ✅ Supported | Gmail-compatible folder listing |
-| XAPPLEPUSHSERVICE | Non-standard | ✅ Supported | Apple Push Notification Service |
-
-### IMAP Protocol Differences from RFC Specifications {#imap-protocol-differences-from-rfc-specifications}
+### IMAP protokoll eltérések az RFC specifikációktól {#imap-protocol-differences-from-rfc-specifications}
 
 > \[!WARNING]
-> The following differences from RFC specifications may affect client compatibility.
+> Az alábbi eltérések az RFC specifikációktól befolyásolhatják a kliens kompatibilitást.
 
-Forward Email intentionally deviates from some IMAP RFC specifications. These differences are inherited from WildDuck and are documented below:
+A Forward Email szándékosan eltér néhány IMAP RFC specifikációtól. Ezek az eltérések a WildDuck-ból származnak és az alábbiakban dokumentáltak:
 
-* **No \Recent flag:** The `\Recent` flag is not implemented. All messages are returned without this flag.
-* **RENAME doesn't affect subfolders:** When renaming a folder, subfolders are not automatically renamed. The folder hierarchy is flat in the database.
-* **INBOX cannot be renamed:** [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) permits renaming INBOX, but Forward Email explicitly prohibits it. See [WildDuck source code](https://github.com/nodemailer/wildduck/blob/master/imap-core/lib/commands/rename.js#L27).
-* **No unsolicited FLAGS responses:** When flags are changed, no unsolicited FLAGS responses are sent to the client.
-* **STORE returns NO for deleted messages:** Attempting to modify flags on deleted messages returns NO instead of silently ignoring.
-* **CHARSET ignored in SEARCH:** The `CHARSET` argument in SEARCH commands is ignored. All searches use UTF-8.
-* **MODSEQ metadata ignored:** `MODSEQ` metadata in STORE commands is ignored.
-* **SEARCH TEXT and SEARCH BODY:** Forward Email uses [SQLite FTS5](https://www.sqlite.org/fts5.html) (Full-Text Search) instead of MongoDB's `$text` search. This provides:
-  * Support for `NOT` operator (MongoDB doesn't support this)
-  * Ranked search results
-  * Sub-100ms search performance on large mailboxes
-* **Autoexpunge behavior:** Messages marked with `\Deleted` are automatically expunged when the mailbox is closed.
-* **Message fidelity:** Some message modifications may not preserve the exact original message structure.
+* **Nincs \Recent jelző:** A `\Recent` jelző nincs megvalósítva. Minden üzenet visszaadásra kerül enélkül a jelző nélkül.
+* **A RENAME nem érinti az almappákat:** Mappa átnevezésekor az almappák nem kerülnek automatikusan átnevezésre. Az adatbázisban a mappastruktúra lapos.
+* **INBOX nem nevezhető át:** Az [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501) engedélyezi az INBOX átnevezését, de a Forward Email ezt kifejezetten tiltja. Lásd a [WildDuck forráskódját](https://github.com/nodemailer/wildduck/blob/master/imap-core/lib/commands/rename.js#L27).
+* **Nincs önkéntes FLAGS válasz:** A jelzők változtatásakor nem küldünk önkéntes FLAGS válaszokat a kliensnek.
+* **STORE NO választ ad törölt üzeneteknél:** A törölt üzenetek jelzőinek módosítására tett kísérlet NO választ ad, ahelyett, hogy csendben figyelmen kívül hagyná.
+* **SEARCH-ben a CHARSET figyelmen kívül hagyva:** A SEARCH parancsok `CHARSET` argumentuma figyelmen kívül van hagyva. Minden keresés UTF-8-at használ.
+* **MODSEQ metaadat figyelmen kívül hagyva:** A STORE parancsokban a `MODSEQ` metaadat figyelmen kívül van hagyva.
+* **SEARCH TEXT és SEARCH BODY:** A Forward Email a [SQLite FTS5](https://www.sqlite.org/fts5.html) (teljes szöveges keresés) megoldást használja a MongoDB `$text` keresés helyett. Ez a következőket biztosítja:
+  * `NOT` operátor támogatása (MongoDB nem támogatja)
+  * Rangsorolt keresési eredmények
+  * 100 ms alatti keresési teljesítmény nagy postafiókokon
+* **Autoexpunge viselkedés:** A `\Deleted` jelzővel ellátott üzenetek automatikusan törlődnek, amikor a postafiók bezárul.
+* **Üzenet hűség:** Egyes üzenet módosítások nem őrzik meg az eredeti üzenet pontos szerkezetét.
 
-**IMAP4rev2 Partial Support:**
+**IMAP4rev2 részleges támogatás:**
 
-Forward Email implements IMAP4rev1 (RFC 3501) with partial IMAP4rev2 (RFC 9051) support. The following IMAP4rev2 features are **not yet supported**:
+A Forward Email megvalósítja az IMAP4rev1-et (RFC 3501) részleges IMAP4rev2 (RFC 9051) támogatással. Az alábbi IMAP4rev2 funkciók **még nem támogatottak**:
 
-* **LIST-STATUS** - Combined LIST and STATUS commands
-* **LITERAL-** - Non-synchronizing literals (minus variant)
-* **OBJECTID** - Unique object identifiers
-* **SAVEDATE** - Save date attribute
-* **REPLACE** - Atomic message replacement
-* **UNAUTHENTICATE** - Close authentication without closing connection
+* **LIST-STATUS** - Egyesített LIST és STATUS parancsok
+* **LITERAL-** - Nem szinkronizáló literálok (mínusz változat)
+* **OBJECTID** - Egyedi objektumazonosítók
+* **SAVEDATE** - Mentési dátum attribútum
+* **REPLACE** - Atomikus üzenetcsere
+* **UNAUTHENTICATE** - Hitelesítés lezárása kapcsolat bontása nélkül
 
-**Relaxed Body Structure Handling:**
+**Lazább test szerkezet kezelés:**
 
-Forward Email uses "relaxed body" handling for malformed MIME structures, which may differ from strict RFC interpretation. This improves compatibility with real-world emails that don't perfectly conform to standards.
+A Forward Email "lazább test" kezelést alkalmaz hibás MIME szerkezetek esetén, ami eltérhet a szigorú RFC értelmezéstől. Ez javítja a kompatibilitást a valós e-mailekkel, amelyek nem tökéletesen felelnek meg a szabványoknak.
+**METADATA kiterjesztés (RFC 5464):**
 
-**METADATA Extension (RFC 5464):**
+Az IMAP METADATA kiterjesztés **nem támogatott**. További információkért erről a kiterjesztésről lásd a [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) dokumentumot. A funkció hozzáadásáról szóló vitát megtalálja a [WildDuck Issue #937](https://github.com/zone-eu/wildduck/issues/937) oldalon.
 
-The IMAP METADATA extension is **not supported**. For more information about this extension, see [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464). Discussion about adding this feature can be found in [WildDuck Issue #937](https://github.com/zone-eu/wildduck/issues/937).
+### Nem támogatott IMAP kiterjesztések {#imap-extensions-not-supported}
 
-### IMAP Extensions NOT Supported {#imap-extensions-not-supported}
+A következő IMAP kiterjesztések az [IANA IMAP Capabilities Registry](https://www.iana.org/assignments/imap-capabilities/imap-capabilities.xhtml) listájából NEM támogatottak:
 
-The following IMAP extensions from the [IANA IMAP Capabilities Registry](https://www.iana.org/assignments/imap-capabilities/imap-capabilities.xhtml) are NOT supported:
-
-| RFC | Title | Reason |
+| RFC                                                       | Cím                                                                                                             | Indok                                                                                                                                  |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 2086](https://datatracker.ietf.org/doc/html/rfc2086) | IMAP4 ACL extension | Shared folders not implemented. See [WildDuck Issue #427](https://github.com/zone-eu/wildduck/issues/427) |
-| [RFC 5256](https://datatracker.ietf.org/doc/html/rfc5256) | IMAP SORT and THREAD Extensions | Threading implemented internally but not via RFC 5256 protocol. See [WildDuck Issue #12](https://github.com/zone-eu/wildduck/issues/12) |
-| [RFC 5162](https://datatracker.ietf.org/doc/html/rfc5162) | IMAP4 Extensions for Quick Mailbox Resynchronization (QRESYNC) | Not implemented |
-| [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) | IMAP METADATA Extension | Metadata operations ignored. See [WildDuck documentation](https://datatracker.ietf.org/doc/html/rfc5464) |
-| [RFC 5258](https://datatracker.ietf.org/doc/html/rfc5258) | IMAP4 LIST Command Extensions | Not implemented |
-| [RFC 5267](https://datatracker.ietf.org/doc/html/rfc5267) | Contexts for IMAP4 | Not implemented |
-| [RFC 5465](https://datatracker.ietf.org/doc/html/rfc5465) | IMAP NOTIFY Extension | Not implemented |
-| [RFC 5466](https://datatracker.ietf.org/doc/html/rfc5466) | IMAP4 FILTERS Extension | Not implemented |
-| [RFC 6203](https://datatracker.ietf.org/doc/html/rfc6203) | IMAP4 Extension for Fuzzy Search | Not implemented |
-| [RFC 6785](https://datatracker.ietf.org/doc/html/rfc6785) | IMAP4 Implementation Recommendations | Recommendations not fully followed |
-| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP Extensions: Quick Flag Changes Resynchronization (CONDSTORE) and Quick Mailbox Resynchronization (QRESYNC) | Not implemented |
-| [RFC 8437](https://datatracker.ietf.org/doc/html/rfc8437) | IMAP UNAUTHENTICATE Extension for Connection Reuse | Not implemented |
-| [RFC 8438](https://datatracker.ietf.org/doc/html/rfc8438) | IMAP Extension for STATUS=SIZE | Not implemented |
-| [RFC 8457](https://datatracker.ietf.org/doc/html/rfc8457) | IMAP "$Important" Keyword and "\Important" Special-Use Attribute | Not implemented |
-| [RFC 8474](https://datatracker.ietf.org/doc/html/rfc8474) | IMAP Extension for Object Identifiers | Not implemented |
-| [RFC 9051](https://datatracker.ietf.org/doc/html/rfc9051) | Internet Message Access Protocol (IMAP) - Version 4rev2 | Forward Email implements IMAP4rev1 ([RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501)) |
-
----
-
-## POP3 Email Protocol and Extensions {#pop3-email-protocol-and-extensions}
+| [RFC 2086](https://datatracker.ietf.org/doc/html/rfc2086) | IMAP4 ACL kiterjesztés                                                                                          | Megosztott mappák nincsenek megvalósítva. Lásd [WildDuck Issue #427](https://github.com/zone-eu/wildduck/issues/427)                   |
+| [RFC 5256](https://datatracker.ietf.org/doc/html/rfc5256) | IMAP SORT és THREAD kiterjesztések                                                                               | A szálazás belsőleg megvalósított, de nem az RFC 5256 protokoll szerint. Lásd [WildDuck Issue #12](https://github.com/zone-eu/wildduck/issues/12) |
+| [RFC 5162](https://datatracker.ietf.org/doc/html/rfc5162) | IMAP4 kiterjesztések a gyors postafiók szinkronizációhoz (QRESYNC)                                              | Nincs megvalósítva                                                                                                                     |
+| [RFC 5464](https://datatracker.ietf.org/doc/html/rfc5464) | IMAP METADATA kiterjesztés                                                                                       | A metaadat műveletek figyelmen kívül vannak hagyva. Lásd a [WildDuck dokumentációt](https://datatracker.ietf.org/doc/html/rfc5464)      |
+| [RFC 5258](https://datatracker.ietf.org/doc/html/rfc5258) | IMAP4 LIST parancs kiterjesztések                                                                                 | Nincs megvalósítva                                                                                                                     |
+| [RFC 5267](https://datatracker.ietf.org/doc/html/rfc5267) | Kontextusok az IMAP4-hez                                                                                         | Nincs megvalósítva                                                                                                                     |
+| [RFC 5465](https://datatracker.ietf.org/doc/html/rfc5465) | IMAP NOTIFY kiterjesztés                                                                                         | Nincs megvalósítva                                                                                                                     |
+| [RFC 5466](https://datatracker.ietf.org/doc/html/rfc5466) | IMAP4 SZŰRŐK kiterjesztés                                                                                        | Nincs megvalósítva                                                                                                                     |
+| [RFC 6203](https://datatracker.ietf.org/doc/html/rfc6203) | IMAP4 kiterjesztés homályos kereséshez                                                                          | Nincs megvalósítva                                                                                                                     |
+| [RFC 6785](https://datatracker.ietf.org/doc/html/rfc6785) | IMAP4 megvalósítási ajánlások                                                                                    | Az ajánlások nincsenek teljesen követve                                                                                                |
+| [RFC 7162](https://datatracker.ietf.org/doc/html/rfc7162) | IMAP kiterjesztések: Gyors zászló változások szinkronizációja (CONDSTORE) és gyors postafiók szinkronizáció (QRESYNC) | Nincs megvalósítva                                                                                                                     |
+| [RFC 8437](https://datatracker.ietf.org/doc/html/rfc8437) | IMAP UNAUTHENTICATE kiterjesztés kapcsolat újrahasználathoz                                                     | Nincs megvalósítva                                                                                                                     |
+| [RFC 8438](https://datatracker.ietf.org/doc/html/rfc8438) | IMAP kiterjesztés STATUS=SIZE-hez                                                                                | Nincs megvalósítva                                                                                                                     |
+| [RFC 8457](https://datatracker.ietf.org/doc/html/rfc8457) | IMAP "$Important" kulcsszó és "\Important" speciális használati attribútum                                       | Nincs megvalósítva                                                                                                                     |
+| [RFC 8474](https://datatracker.ietf.org/doc/html/rfc8474) | IMAP kiterjesztés objektumazonosítókhoz                                                                         | Nincs megvalósítva                                                                                                                     |
+| [RFC 9051](https://datatracker.ietf.org/doc/html/rfc9051) | Internet Message Access Protocol (IMAP) - 4rev2 verzió                                                           | A Forward Email az IMAP4rev1-et valósítja meg ([RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501))                              |
+## POP3 Email Protokoll és Kiterjesztések {#pop3-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports POP3 (RFC 1939) with standard extensions for email retrieval.
+> A Forward Email támogatja a POP3-at (RFC 1939) a szabványos kiterjesztésekkel az e-mailek lekéréséhez.
 
-Forward Email's POP3 functionality is provided by the [WildDuck](https://github.com/nodemailer/wildduck) dependency. The following email RFCs are supported:
+A Forward Email POP3 funkcióját a [WildDuck](https://github.com/nodemailer/wildduck) függőség biztosítja. A következő e-mail RFC-k támogatottak:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
-| [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) | Post Office Protocol - Version 3 (POP3) | Full support with intentional differences (see below) |
-| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | Using TLS with IMAP, POP3 and ACAP | STARTTLS support |
-| [RFC 2449](https://datatracker.ietf.org/doc/html/rfc2449) | POP3 Extension Mechanism | CAPA command support |
+| RFC                                                       | Cím                                    | Megvalósítási megjegyzések                          |
+| --------------------------------------------------------- | ------------------------------------- | -------------------------------------------------- |
+| [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) | Post Office Protocol - Version 3 (POP3) | Teljes támogatás szándékos eltérésekkel (lásd alább) |
+| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | TLS használata IMAP, POP3 és ACAP esetén | STARTTLS támogatás                                 |
+| [RFC 2449](https://datatracker.ietf.org/doc/html/rfc2449) | POP3 Kiterjesztési Mechanizmus        | CAPA parancs támogatás                             |
 
-Forward Email provides POP3 support for clients that prefer this simpler protocol over IMAP. POP3 is ideal for users who want to download emails to a single device and remove them from the server.
+A Forward Email POP3 támogatást nyújt azoknak az ügyfeleknek, akik ezt az egyszerűbb protokollt részesítik előnyben az IMAP helyett. A POP3 ideális azoknak a felhasználóknak, akik egyetlen eszközre szeretnék letölteni az e-maileket és eltávolítani azokat a szerverről.
 
-**Supported POP3 Extensions:**
+**Támogatott POP3 Kiterjesztések:**
 
-| Extension | RFC | Status | Description |
-| --------- | -------- | ----------- | -------------------------- |
-| TOP | RFC 1939 | ✅ Supported | Retrieve message headers |
-| USER | RFC 1939 | ✅ Supported | Username authentication |
-| UIDL | RFC 1939 | ✅ Supported | Unique message identifiers |
-| EXPIRE | RFC 2449 | ✅ Supported | Message expiration policy |
+| Kiterjesztés | RFC      | Állapot     | Leírás                    |
+| ------------ | -------- | ----------- | ------------------------- |
+| TOP          | RFC 1939 | ✅ Támogatott | Üzenetfejlécek lekérése   |
+| USER         | RFC 1939 | ✅ Támogatott | Felhasználónév hitelesítés |
+| UIDL         | RFC 1939 | ✅ Támogatott | Egyedi üzenetazonosítók   |
+| EXPIRE       | RFC 2449 | ✅ Támogatott | Üzenet lejárati szabályzat |
 
-### POP3 Protocol Differences from RFC Specifications {#pop3-protocol-differences-from-rfc-specifications}
+### POP3 Protokoll Különbségek az RFC Előírásoktól {#pop3-protocol-differences-from-rfc-specifications}
 
 > \[!WARNING]
-> POP3 has inherent limitations compared to IMAP.
+> A POP3 inherens korlátokkal rendelkezik az IMAP-hoz képest.
 
 > \[!IMPORTANT]
-> **Critical Difference: Forward Email vs WildDuck POP3 DELE Behavior**
+> **Kritikus Különbség: Forward Email vs WildDuck POP3 DELE Viselkedés**
 >
-> Forward Email implements RFC-compliant permanent deletion for POP3 `DELE` commands, unlike WildDuck which moves messages to Trash.
+> A Forward Email RFC-kompatibilis, végleges törlést valósít meg a POP3 `DELE` parancsok esetén, ellentétben a WildDuck-kal, amely az üzeneteket a Kukába helyezi.
 
-**Forward Email Behavior** ([source code](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js)):
+**Forward Email Viselkedés** ([forráskód](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js)):
 
-* `DELE` → `QUIT` permanently deletes messages
-* Follows [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specification exactly
-* Matches behavior of Dovecot (default), Postfix, and other standards-compliant servers
+* `DELE` → `QUIT` véglegesen törli az üzeneteket
+* Pontosan követi az [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) előírásait
+* Megfelel a Dovecot (alapértelmezett), Postfix és más szabványkövető szerverek viselkedésének
 
-**WildDuck Behavior** ([discussion](https://github.com/zone-eu/wildduck/issues/937)):
+**WildDuck Viselkedés** ([vita](https://github.com/zone-eu/wildduck/issues/937)):
 
-* `DELE` → `QUIT` moves messages to Trash (Gmail-like)
-* Intentional design decision for user safety
-* Non-RFC-compliant but prevents accidental data loss
+* `DELE` → `QUIT` az üzeneteket a Kukába helyezi (Gmail-szerű)
+* Szándékos tervezési döntés a felhasználói biztonság érdekében
+* Nem RFC-kompatibilis, de megakadályozza a véletlen adatvesztést
 
-**Why Forward Email Differs:**
+**Miért különbözik a Forward Email:**
 
-* **RFC Compliance:** Adheres to [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) specification
-* **User Expectations:** Download-and-delete workflow expects permanent deletion
-* **Storage Management:** Proper disk space reclamation
-* **Interoperability:** Consistent with other RFC-compliant servers
+* **RFC-kompatibilitás:** Követi az [RFC 1939](https://datatracker.ietf.org/doc/html/rfc1939) előírásait
+* **Felhasználói elvárások:** A letöltés és törlés munkafolyamat végleges törlést vár el
+* **Tároláskezelés:** Megfelelő lemezterület felszabadítás
+* **Interoperabilitás:** Összhangban más RFC-kompatibilis szerverekkel
 
 > \[!NOTE]
-> **POP3 Message Listing:** Forward Email lists ALL messages from INBOX with no limit. This differs from WildDuck which limits to 250 messages by default. See [source code](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js).
+> **POP3 Üzenetlista:** A Forward Email az INBOX összes üzenetét listázza korlátozás nélkül. Ez eltér a WildDuck-tól, amely alapértelmezés szerint 250 üzenetre korlátoz. Lásd a [forráskódot](https://github.com/forwardemail/forwardemail.net/blob/master/pop3-server.js).
 
-**Single-Device Access:**
+**Egyes Eszközös Hozzáférés:**
 
-POP3 is designed for single-device access. Messages are typically downloaded and removed from the server, making it unsuitable for multi-device synchronization.
+A POP3 egy eszközös hozzáférésre lett tervezve. Az üzenetek általában letöltődnek és törlődnek a szerverről, ezért nem alkalmas több eszköz közötti szinkronizációra.
 
-**No Folder Support:**
+**Nincs Mappatámogatás:**
 
-POP3 only accesses the INBOX folder. Other folders (Sent, Drafts, Trash, etc.) are not accessible via POP3.
+A POP3 csak az INBOX mappához fér hozzá. Más mappák (Elküldött, Piszkozatok, Kukák stb.) nem érhetők el POP3-on keresztül.
 
-**Limited Message Management:**
+**Korlátozott Üzenetkezelés:**
 
-POP3 provides basic message retrieval and deletion. Advanced features like flagging, moving, or searching messages are not available.
+A POP3 alapvető üzenetlekérést és törlést biztosít. Fejlettebb funkciók, mint a jelölés, áthelyezés vagy keresés nem elérhetők.
 
-### POP3 Extensions NOT Supported {#pop3-extensions-not-supported}
+### Nem Támogatott POP3 Kiterjesztések {#pop3-extensions-not-supported}
 
-The following POP3 extensions from the [IANA POP3 Extension Mechanism Registry](https://www.iana.org/assignments/pop3-extension-mechanism/pop3-extension-mechanism.xhtml) are NOT supported:
-
-| RFC | Title | Reason |
-| --------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------- |
-| [RFC 6856](https://datatracker.ietf.org/doc/html/rfc6856) | Post Office Protocol Version 3 (POP3) Support for UTF-8 | Not implemented in WildDuck POP3 server |
-| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | STLS command | Only STARTTLS supported, not STLS |
-| [RFC 3206](https://datatracker.ietf.org/doc/html/rfc3206) | The SYS and AUTH POP Response Codes | Not implemented |
+A következő POP3 kiterjesztések a [IANA POP3 Kiterjesztési Mechanizmus Regiszterből](https://www.iana.org/assignments/pop3-extension-mechanism/pop3-extension-mechanism.xhtml) NEM támogatottak:
+| RFC                                                       | Cím                                                   | Indok                                  |
+| --------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------- |
+| [RFC 6856](https://datatracker.ietf.org/doc/html/rfc6856) | Post Office Protocol Version 3 (POP3) támogatás UTF-8-hoz | Nem implementált a WildDuck POP3 szerverben |
+| [RFC 2595](https://datatracker.ietf.org/doc/html/rfc2595) | STLS parancs                                          | Csak STARTTLS támogatott, nem STLS    |
+| [RFC 3206](https://datatracker.ietf.org/doc/html/rfc3206) | A SYS és AUTH POP válaszkódok                          | Nem implementált                      |
 
 ---
+
 
 ## SMTP Email Protocol and Extensions {#smtp-email-protocol-and-extensions}
 
 > \[!NOTE]
-> Forward Email supports SMTP (RFC 5321) with modern extensions for secure and reliable email delivery.
+> A Forward Email támogatja az SMTP-t (RFC 5321) modern kiterjesztésekkel a biztonságos és megbízható e-mail kézbesítés érdekében.
 
-Forward Email's SMTP functionality is provided by multiple components: [smtp-server](https://github.com/nodemailer/smtp-server) (nodemailer), [zone-mta](https://github.com/zone-eu/zone-mta), and custom implementations. The following email RFCs are supported:
+A Forward Email SMTP funkcióját több komponens biztosítja: [smtp-server](https://github.com/nodemailer/smtp-server) (nodemailer), [zone-mta](https://github.com/zone-eu/zone-mta) és egyedi megvalósítások. A következő e-mail RFC-k támogatottak:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------ |
-| [RFC 5321](https://datatracker.ietf.org/doc/html/rfc5321) | Simple Mail Transfer Protocol (SMTP) | Full support |
-| [RFC 3207](https://datatracker.ietf.org/doc/html/rfc3207) | SMTP Service Extension for Secure SMTP over Transport Layer Security (STARTTLS) | TLS/SSL support |
-| [RFC 4954](https://datatracker.ietf.org/doc/html/rfc4954) | SMTP Service Extension for Authentication (AUTH) | PLAIN, LOGIN, CRAM-MD5, XOAUTH2 |
-| [RFC 6531](https://datatracker.ietf.org/doc/html/rfc6531) | SMTP Extension for Internationalized Email (SMTPUTF8) | Native unicode email address support |
-| [RFC 3461](https://datatracker.ietf.org/doc/html/rfc3461) | SMTP Service Extension for Delivery Status Notifications (DSN) | Full DSN support |
-| [RFC 3463](https://datatracker.ietf.org/doc/html/rfc3463) | Enhanced Mail System Status Codes | Enhanced status codes in responses |
-| [RFC 1870](https://datatracker.ietf.org/doc/html/rfc1870) | SMTP Service Extension for Message Size Declaration (SIZE) | Maximum message size advertisement |
-| [RFC 2920](https://datatracker.ietf.org/doc/html/rfc2920) | SMTP Service Extension for Command Pipelining (PIPELINING) | Command pipelining support |
-| [RFC 1652](https://datatracker.ietf.org/doc/html/rfc1652) | SMTP Service Extension for 8bit-MIMEtransport (8BITMIME) | 8-bit MIME support |
-| [RFC 6152](https://datatracker.ietf.org/doc/html/rfc6152) | SMTP Service Extension for 8-bit MIME Transport | 8-bit MIME support |
-| [RFC 2034](https://datatracker.ietf.org/doc/html/rfc2034) | SMTP Service Extension for Returning Enhanced Error Codes (ENHANCEDSTATUSCODES) | Enhanced status codes |
+| RFC                                                       | Cím                                                                             | Megvalósítási megjegyzések          |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------- |
+| [RFC 5321](https://datatracker.ietf.org/doc/html/rfc5321) | Egyszerű levelező protokoll (SMTP)                                              | Teljes támogatás                   |
+| [RFC 3207](https://datatracker.ietf.org/doc/html/rfc3207) | SMTP szolgáltatás kiterjesztés biztonságos SMTP-hez Transport Layer Security (STARTTLS) használatával | TLS/SSL támogatás                  |
+| [RFC 4954](https://datatracker.ietf.org/doc/html/rfc4954) | SMTP szolgáltatás kiterjesztés hitelesítéshez (AUTH)                            | PLAIN, LOGIN, CRAM-MD5, XOAUTH2    |
+| [RFC 6531](https://datatracker.ietf.org/doc/html/rfc6531) | SMTP kiterjesztés nemzetköziesített e-mailekhez (SMTPUTF8)                      | Natív unicode e-mail cím támogatás |
+| [RFC 3461](https://datatracker.ietf.org/doc/html/rfc3461) | SMTP szolgáltatás kiterjesztés kézbesítési állapot értesítésekhez (DSN)         | Teljes DSN támogatás               |
+| [RFC 3463](https://datatracker.ietf.org/doc/html/rfc3463) | Kiterjesztett levelezőrendszer állapotkódok                                    | Kiterjesztett állapotkódok a válaszokban |
+| [RFC 1870](https://datatracker.ietf.org/doc/html/rfc1870) | SMTP szolgáltatás kiterjesztés üzenetméret deklarációhoz (SIZE)                 | Maximális üzenetméret hirdetése    |
+| [RFC 2920](https://datatracker.ietf.org/doc/html/rfc2920) | SMTP szolgáltatás kiterjesztés parancsok párhuzamosításához (PIPELINING)        | Parancs párhuzamosítás támogatása  |
+| [RFC 1652](https://datatracker.ietf.org/doc/html/rfc1652) | SMTP szolgáltatás kiterjesztés 8bit-MIME szállításhoz (8BITMIME)                 | 8 bites MIME támogatás             |
+| [RFC 6152](https://datatracker.ietf.org/doc/html/rfc6152) | SMTP szolgáltatás kiterjesztés 8 bites MIME szállításhoz                        | 8 bites MIME támogatás             |
+| [RFC 2034](https://datatracker.ietf.org/doc/html/rfc2034) | SMTP szolgáltatás kiterjesztés kiterjesztett hibakódok visszaadásához (ENHANCEDSTATUSCODES) | Kiterjesztett állapotkódok         |
 
-Forward Email implements a full-featured SMTP server with support for modern extensions that enhance security, reliability, and functionality.
+A Forward Email teljes funkcionalitású SMTP szervert valósít meg modern kiterjesztésekkel, amelyek növelik a biztonságot, megbízhatóságot és funkcionalitást.
 
-**Supported SMTP Extensions:**
+**Támogatott SMTP kiterjesztések:**
 
-| Extension | RFC | Status | Description |
-| ------------------- | -------- | ----------- | ------------------------------------- |
-| PIPELINING | RFC 2920 | ✅ Supported | Command pipelining |
-| SIZE | RFC 1870 | ✅ Supported | Message size declaration (52MB limit) |
-| ETRN | RFC 1985 | ✅ Supported | Remote queue processing |
-| STARTTLS | RFC 3207 | ✅ Supported | Upgrade to TLS |
-| ENHANCEDSTATUSCODES | RFC 2034 | ✅ Supported | Enhanced status codes |
-| 8BITMIME | RFC 6152 | ✅ Supported | 8-bit MIME transport |
-| DSN | RFC 3461 | ✅ Supported | Delivery Status Notifications |
-| CHUNKING | RFC 3030 | ✅ Supported | Chunked message transfer |
-| SMTPUTF8 | RFC 6531 | ⚠️ Partial | UTF-8 email addresses (partial) |
-| REQUIRETLS | RFC 8689 | ✅ Supported | Require TLS for delivery |
-
-### Delivery Status Notifications (DSN) {#delivery-status-notifications-dsn}
+| Kiterjesztés       | RFC      | Állapot     | Leírás                              |
+| ------------------- | -------- | ----------- | ---------------------------------- |
+| PIPELINING          | RFC 2920 | ✅ Támogatott | Parancs párhuzamosítás             |
+| SIZE                | RFC 1870 | ✅ Támogatott | Üzenetméret deklaráció (52MB limit) |
+| ETRN                | RFC 1985 | ✅ Támogatott | Távoli sor feldolgozás             |
+| STARTTLS            | RFC 3207 | ✅ Támogatott | TLS-re való frissítés              |
+| ENHANCEDSTATUSCODES | RFC 2034 | ✅ Támogatott | Kiterjesztett állapotkódok         |
+| 8BITMIME            | RFC 6152 | ✅ Támogatott | 8 bites MIME szállítás             |
+| DSN                 | RFC 3461 | ✅ Támogatott | Kézbesítési állapot értesítések    |
+| CHUNKING            | RFC 3030 | ✅ Támogatott | Darabolt üzenet átvitel            |
+| SMTPUTF8            | RFC 6531 | ⚠️ Részleges | UTF-8 e-mail címek (részleges)      |
+| REQUIRETLS          | RFC 8689 | ✅ Támogatott | TLS követelése kézbesítéshez       |
+### Kézbesítési állapot értesítések (DSN) {#delivery-status-notifications-dsn}
 
 > \[!TIP]
-> DSN provides detailed delivery status information for sent emails.
+> A DSN részletes kézbesítési állapot információkat nyújt a küldött e-mailekről.
 
-Forward Email fully supports **DSN (RFC 3461)**, which allows senders to request delivery status notifications. This feature provides:
+A Forward Email teljes mértékben támogatja a **DSN (RFC 3461)** funkciót, amely lehetővé teszi a feladók számára a kézbesítési állapot értesítések kérését. Ez a funkció biztosítja:
 
-* **Success notifications** when messages are delivered
-* **Failure notifications** with detailed error information
-* **Delay notifications** when delivery is temporarily delayed
+* **Sikeres kézbesítés értesítéseit**, amikor az üzenetek kézbesítésre kerülnek
+* **Sikertelen kézbesítés értesítéseit** részletes hibainformációkkal
+* **Késleltetési értesítéseket**, amikor a kézbesítés ideiglenesen késik
 
-DSN is particularly useful for:
+A DSN különösen hasznos:
 
-* Confirming important message delivery
-* Troubleshooting delivery issues
-* Automated email processing systems
-* Compliance and audit requirements
+* Fontos üzenetek kézbesítésének megerősítésére
+* Kézbesítési problémák elhárítására
+* Automatikus e-mail feldolgozó rendszerekhez
+* Megfelelőségi és audit követelményekhez
 
-### REQUIRETLS Support {#requiretls-support}
+### REQUIRETLS támogatás {#requiretls-support}
 
 > \[!IMPORTANT]
-> Forward Email is one of the few providers that explicitly advertises and enforces REQUIRETLS.
+> A Forward Email az egyik kevés szolgáltató, amely kifejezetten hirdeti és érvényesíti a REQUIRETLS-t.
 
-Forward Email supports **REQUIRETLS (RFC 8689)**, which ensures that email messages are only delivered over TLS-encrypted connections. This provides:
+A Forward Email támogatja a **REQUIRETLS (RFC 8689)** protokollt, amely biztosítja, hogy az e-mail üzenetek csak TLS titkosított kapcsolaton keresztül kerüljenek kézbesítésre. Ez a következőket nyújtja:
 
-* **End-to-end encryption** for the entire delivery path
-* **User-facing enforcement** via checkbox in email composer
-* **Rejection of unencrypted delivery** attempts
-* **Enhanced security** for sensitive communications
+* **Végpontok közötti titkosítást** az egész kézbesítési útvonalon
+* **Felhasználói szintű érvényesítést** az e-mail szerkesztőben található jelölőnégyzet segítségével
+* **Nem titkosított kézbesítési kísérletek elutasítását**
+* **Fokozott biztonságot** érzékeny kommunikációk esetén
 
-### SMTP Extensions NOT Supported {#smtp-extensions-not-supported}
+### Nem támogatott SMTP kiterjesztések {#smtp-extensions-not-supported}
 
-The following SMTP extensions from the [IANA SMTP Service Extensions Registry](https://www.iana.org/assignments/smtp) are NOT supported:
+A következő SMTP kiterjesztések a [IANA SMTP Service Extensions Registry](https://www.iana.org/assignments/smtp) listájából NEM támogatottak:
 
-| RFC | Title | Reason |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------- |
-| [RFC 4865](https://datatracker.ietf.org/doc/html/rfc4865) | SMTP Submission Service Extension for Future Message Release (FUTURERELEASE) | Not implemented |
-| [RFC 6710](https://datatracker.ietf.org/doc/html/rfc6710) | SMTP Extension for Message Transfer Priorities (MT-PRIORITY) | Not implemented |
-| [RFC 7293](https://datatracker.ietf.org/doc/html/rfc7293) | The Require-Recipient-Valid-Since Header Field and SMTP Service Extension | Not implemented |
-| [RFC 7372](https://datatracker.ietf.org/doc/html/rfc7372) | Email Auth Status Codes | Not fully implemented |
-| [RFC 4468](https://datatracker.ietf.org/doc/html/rfc4468) | Message Submission BURL Extension | Not implemented |
-| [RFC 3030](https://datatracker.ietf.org/doc/html/rfc3030) | SMTP Service Extensions for Transmission of Large and Binary MIME Messages (CHUNKING, BINARYMIME) | Not implemented |
-| [RFC 2852](https://datatracker.ietf.org/doc/html/rfc2852) | Deliver By SMTP Service Extension | Not implemented |
+| RFC                                                       | Cím                                                                                              | Indoklás             |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------- |
+| [RFC 4865](https://datatracker.ietf.org/doc/html/rfc4865) | SMTP Submission Service Extension for Future Message Release (FUTURERELEASE)                      | Nincs megvalósítva   |
+| [RFC 6710](https://datatracker.ietf.org/doc/html/rfc6710) | SMTP Extension for Message Transfer Priorities (MT-PRIORITY)                                      | Nincs megvalósítva   |
+| [RFC 7293](https://datatracker.ietf.org/doc/html/rfc7293) | The Require-Recipient-Valid-Since Header Field and SMTP Service Extension                         | Nincs megvalósítva   |
+| [RFC 7372](https://datatracker.ietf.org/doc/html/rfc7372) | Email Auth Status Codes                                                                           | Nem teljesen megvalósított |
+| [RFC 4468](https://datatracker.ietf.org/doc/html/rfc4468) | Message Submission BURL Extension                                                                 | Nincs megvalósítva   |
+| [RFC 3030](https://datatracker.ietf.org/doc/html/rfc3030) | SMTP Service Extensions for Transmission of Large and Binary MIME Messages (CHUNKING, BINARYMIME) | Nincs megvalósítva   |
+| [RFC 2852](https://datatracker.ietf.org/doc/html/rfc2852) | Deliver By SMTP Service Extension                                                                 | Nincs megvalósítva   |
 
 ---
 
-## JMAP Email Protocol {#jmap-email-protocol}
+
+## JMAP e-mail protokoll {#jmap-email-protocol}
 
 > \[!CAUTION]
-> JMAP is **not currently supported** by Forward Email.
+> A JMAP **jelenleg nem támogatott** a Forward Email által.
 
-| RFC | Title | Status | Reason |
-| --------------------------------------------------------- | ----------------------------------------- | --------------- | ---------------------------------------------------------------------- |
-| [RFC 8620](https://datatracker.ietf.org/doc/html/rfc8620) | The JSON Meta Application Protocol (JMAP) | ❌ Not Supported | Forward Email uses IMAP/POP3/SMTP and a comprehensive REST API instead |
+| RFC                                                       | Cím                                      | Állapot         | Indoklás                                                              |
+| --------------------------------------------------------- | ---------------------------------------- | --------------- | --------------------------------------------------------------------- |
+| [RFC 8620](https://datatracker.ietf.org/doc/html/rfc8620) | The JSON Meta Application Protocol (JMAP) | ❌ Nem támogatott | A Forward Email IMAP/POP3/SMTP protokollokat és egy átfogó REST API-t használ |
 
-**JMAP (JSON Meta Application Protocol)** is a modern email protocol designed to replace IMAP.
+**A JMAP (JSON Meta Application Protocol)** egy modern e-mail protokoll, amely az IMAP helyettesítésére készült.
 
-**Why JMAP is Not Supported:**
+**Miért nem támogatott a JMAP:**
 
-> "JMAP is a beast that should not have been invented. It tries to convert TCP/IMAP (already a bad protocol by todays standards) into HTTP/JSON, just using a different transport while keeping the spirit." — Andris Reinman, [HN Discussion](https://news.ycombinator.com/item?id=18890011)
+> "A JMAP egy szörnyeteg, amit nem kellett volna feltalálni. Megpróbálja a TCP/IMAP-et (ami ma már rossz protokollnak számít) HTTP/JSON-ná alakítani, csak más szállítást használva, miközben megtartja a szellemiséget." — Andris Reinman, [HN Discussion](https://news.ycombinator.com/item?id=18890011)
+> "A JMAP több mint 10 éves, és szinte egyáltalán nincs elfogadottsága" – Andris Reinman, [GitHub Discussion](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
 
-> "JMAP is more than 10 years old, and there is almost no adoption at all" – Andris Reinman, [GitHub Discussion](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
+További megjegyzésekért lásd még: <https://hn.algolia.com/?dateRange=all&page=0&prefix=true&query=jmap%20andris&sort=byDate&type=comment>.
 
-Also see additional comments at <https://hn.algolia.com/?dateRange=all&page=0&prefix=true&query=jmap%20andris&sort=byDate&type=comment>.
+A Forward Email jelenleg az IMAP, POP3 és SMTP kiváló támogatására, valamint egy átfogó REST API-ra fókuszál az e-mail kezeléshez. A JMAP támogatás a jövőben felhasználói igény és az ökoszisztéma elfogadottsága alapján mérlegelhető.
 
-Forward Email currently focuses on providing excellent IMAP, POP3, and SMTP support, along with a comprehensive REST API for email management. JMAP support may be considered in the future based on user demand and ecosystem adoption.
-
-**Alternative:** Forward Email offers a [Complete REST API](#complete-rest-api-for-email-management) with 39 endpoints that provides similar functionality to JMAP for programmatic email access.
+**Alternatíva:** A Forward Email egy [Teljes REST API-t](#complete-rest-api-for-email-management) kínál 39 végponttal, amely hasonló funkcionalitást biztosít, mint a JMAP a programozott e-mail hozzáféréshez.
 
 ---
 
-## Email Security {#email-security}
 
-### Email Security Architecture {#email-security-architecture}
+## E-mail biztonság {#email-security}
+
+### E-mail biztonsági architektúra {#email-security-architecture}
 
 ```mermaid
 graph TB
-    subgraph "Outbound Security"
-        DKIM[DKIM Signing]
-        SPF[SPF Records]
-        DMARC[DMARC Policy]
-        ARC[ARC Sealing]
+    subgraph "Kimenő biztonság"
+        DKIM[DKIM aláírás]
+        SPF[SPF rekordok]
+        DMARC[DMARC szabályzat]
+        ARC[ARC pecsételés]
     end
 
-    subgraph "Transport Security"
-        TLS[TLS Encryption]
+    subgraph "Átvitel biztonsága"
+        TLS[TLS titkosítás]
         MTASTS[MTA-STS]
         DANE[DANE TLSA]
         REQTLS[REQUIRETLS]
     end
 
-    subgraph "Message Security"
+    subgraph "Üzenetbiztonság"
         PGP[OpenPGP]
         SMIME[S/MIME]
-        ENCRYPT[SQLite Encryption]
+        ENCRYPT[SQLite titkosítás]
     end
 
-    Email[Outgoing Email] --> DKIM
+    Email[Kimenő e-mail] --> DKIM
     DKIM --> SPF
     SPF --> DMARC
     DMARC --> ARC
@@ -584,219 +581,219 @@ graph TB
     REQTLS --> PGP
     PGP --> SMIME
     SMIME --> ENCRYPT
-    ENCRYPT --> Delivered[Delivered Securely]
+    ENCRYPT --> Delivered[Biztonságosan kézbesítve]
 
     style Email fill:#9cf,stroke:#333
     style Delivered fill:#9f9,stroke:#333
     style ENCRYPT fill:#f9f,stroke:#333,stroke-width:3px
 ```
 
-## Email Message Authentication Protocols {#email-message-authentication-protocols}
+
+## E-mail üzenet hitelesítési protokollok {#email-message-authentication-protocols}
 
 > \[!NOTE]
-> Forward Email implements all major email authentication protocols to prevent spoofing and ensure message integrity.
+> A Forward Email megvalósítja az összes főbb e-mail hitelesítési protokollt a hamisítás megelőzése és az üzenet integritásának biztosítása érdekében.
 
-Forward Email uses the [mailauth](https://github.com/postalsys/mailauth) library for email authentication. The following RFCs are supported:
+A Forward Email a [mailauth](https://github.com/postalsys/mailauth) könyvtárat használja az e-mail hitelesítéshez. Az alábbi RFC-k támogatottak:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [RFC 6376](https://datatracker.ietf.org/doc/html/rfc6376) | DomainKeys Identified Mail (DKIM) Signatures | Full DKIM signing and verification |
-| [RFC 8463](https://datatracker.ietf.org/doc/html/rfc8463) | A New Cryptographic Signature Method for DKIM (Ed25519-SHA256) | Supports both RSA-SHA256 and Ed25519-SHA256 signing algorithms |
-| [RFC 7208](https://datatracker.ietf.org/doc/html/rfc7208) | Sender Policy Framework (SPF) | SPF record validation |
-| [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-based Message Authentication, Reporting, and Conformance (DMARC) | DMARC policy enforcement |
-| [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC) | ARC sealing and validation |
+| RFC                                                       | Cím                                                                    | Megvalósítási megjegyzések                                     |
+| --------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [RFC 6376](https://datatracker.ietf.org/doc/html/rfc6376) | DomainKeys Identified Mail (DKIM) aláírások                           | Teljes DKIM aláírás és ellenőrzés                              |
+| [RFC 8463](https://datatracker.ietf.org/doc/html/rfc8463) | Új kriptográfiai aláírási módszer DKIM-hez (Ed25519-SHA256)           | Támogatja az RSA-SHA256 és Ed25519-SHA256 aláírási algoritmusokat |
+| [RFC 7208](https://datatracker.ietf.org/doc/html/rfc7208) | Sender Policy Framework (SPF)                                          | SPF rekord ellenőrzés                                           |
+| [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-alapú üzenethitelesítés, jelentés és megfelelés (DMARC)         | DMARC szabályzat érvényesítés                                  |
+| [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Hitelesített fogadási lánc (ARC)                                       | ARC pecsételés és ellenőrzés                                   |
 
-Email authentication protocols verify that messages are genuinely from the claimed sender and haven't been tampered with during transit.
+Az e-mail hitelesítési protokollok ellenőrzik, hogy az üzenetek valóban a megadott feladótól származnak-e, és nem módosították őket az átvitel során.
 
-### Authentication Protocol Support {#authentication-protocol-support}
+### Hitelesítési protokoll támogatás {#authentication-protocol-support}
 
-| Protocol | RFC | Status | Description |
-| --------- | -------- | ----------- | ---------------------------------------------------------------------- |
-| **DKIM** | RFC 6376 | ✅ Supported | DomainKeys Identified Mail - Cryptographic signatures |
-| **SPF** | RFC 7208 | ✅ Supported | Sender Policy Framework - IP address authorization |
-| **DMARC** | RFC 7489 | ✅ Supported | Domain-based Message Authentication - Policy enforcement |
-| **ARC** | RFC 8617 | ✅ Supported | Authenticated Received Chain - Preserve authentication across forwards |
-
+| Protokoll | RFC      | Állapot      | Leírás                                                               |
+| --------- | -------- | ------------ | ------------------------------------------------------------------- |
+| **DKIM**  | RFC 6376 | ✅ Támogatott | DomainKeys Identified Mail - Kriptográfiai aláírások                |
+| **SPF**   | RFC 7208 | ✅ Támogatott | Sender Policy Framework - IP cím engedélyezés                       |
+| **DMARC** | RFC 7489 | ✅ Támogatott | Domain-alapú üzenethitelesítés - Szabályzat érvényesítés            |
+| **ARC**   | RFC 8617 | ✅ Támogatott | Hitelesített fogadási lánc - Hitelesítés megőrzése továbbítások során |
 ### DKIM (DomainKeys Identified Mail) {#dkim-domainkeys-identified-mail}
 
-**DKIM** adds a cryptographic signature to email headers, allowing recipients to verify that the message was authorized by the domain owner and hasn't been modified in transit.
+**A DKIM** kriptográfiai aláírást ad az e-mail fejlécéhez, lehetővé téve a címzettek számára annak ellenőrzését, hogy az üzenetet a domain tulajdonosa engedélyezte-e, és hogy az nem módosult-e az átvitel során.
 
-Forward Email uses [mailauth](https://github.com/postalsys/mailauth) for DKIM signing and verification.
+A Forward Email a [mailauth](https://github.com/postalsys/mailauth) könyvtárat használja a DKIM aláíráshoz és ellenőrzéshez.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* Automatic DKIM signing for all outbound messages
-* Support for RSA and Ed25519 keys
-* Multiple selector support
-* DKIM verification for inbound messages
+* Automatikus DKIM aláírás minden kimenő üzenethez
+* RSA és Ed25519 kulcsok támogatása
+* Több szelektor támogatása
+* DKIM ellenőrzés bejövő üzenetekhez
 
 ### SPF (Sender Policy Framework) {#spf-sender-policy-framework}
 
-**SPF** allows domain owners to specify which IP addresses are authorized to send email on behalf of their domain.
+**Az SPF** lehetővé teszi a domain tulajdonosok számára, hogy meghatározzák, mely IP-címek jogosultak e-mailt küldeni a domain nevükben.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* SPF record validation for inbound messages
-* Automatic SPF checking with detailed results
-* Support for include, redirect, and all mechanisms
-* Configurable SPF policies per domain
+* SPF rekord érvényesítés bejövő üzenetekhez
+* Automatikus SPF ellenőrzés részletes eredményekkel
+* Include, redirect és all mechanizmusok támogatása
+* Konfigurálható SPF szabályok domainenként
 
 ### DMARC (Domain-based Message Authentication, Reporting & Conformance) {#dmarc-domain-based-message-authentication-reporting--conformance}
 
-**DMARC** builds on SPF and DKIM to provide policy enforcement and reporting.
+**A DMARC** az SPF és DKIM alapjaira építve biztosítja a szabályzat végrehajtását és jelentéstételt.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* DMARC policy enforcement (none, quarantine, reject)
-* Alignment checking for SPF and DKIM
-* DMARC aggregate reporting
-* Per-domain DMARC policies
+* DMARC szabályzat végrehajtás (none, quarantine, reject)
+* SPF és DKIM igazítás ellenőrzése
+* DMARC összesítő jelentések
+* Domainenkénti DMARC szabályzatok
 
 ### ARC (Authenticated Received Chain) {#arc-authenticated-received-chain}
 
-**ARC** preserves email authentication results across forwarding and mailing list modifications.
+**Az ARC** megőrzi az e-mail hitelesítési eredményeket a továbbítás és levelezőlista módosítások során.
 
-Forward Email uses the [mailauth](https://github.com/postalsys/mailauth) library for ARC verification and sealing.
+A Forward Email a [mailauth](https://github.com/postalsys/mailauth) könyvtárat használja az ARC ellenőrzésére és lezárására.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* ARC sealing for forwarded messages
-* ARC validation for inbound messages
-* Chain verification across multiple hops
-* Preserves original authentication results
+* ARC lezárás továbbított üzenetekhez
+* ARC érvényesítés bejövő üzenetekhez
+* Lánc ellenőrzés több ugráson keresztül
+* Az eredeti hitelesítési eredmények megőrzése
 
-### Authentication Flow {#authentication-flow}
+### Hitelesítési folyamat {#authentication-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Sender as Sender Domain
+    participant Sender as Küldő Domain
     participant FE as Forward Email
-    participant Recipient as Recipient Server
+    participant Recipient as Címzett Szerver
 
-    Sender->>FE: Send Email
-    FE->>FE: Sign with DKIM
-    FE->>FE: Check SPF
-    FE->>FE: Apply DMARC Policy
-    FE->>FE: Add ARC Seal
-    FE->>Recipient: Deliver Email
-    Recipient->>Recipient: Verify DKIM
-    Recipient->>Recipient: Check SPF
-    Recipient->>Recipient: Validate DMARC
-    Recipient->>Recipient: Verify ARC Chain
-    Recipient->>Recipient: Accept Message
+    Sender->>FE: E-mail küldése
+    FE->>FE: DKIM aláírás
+    FE->>FE: SPF ellenőrzés
+    FE->>FE: DMARC szabályzat alkalmazása
+    FE->>FE: ARC pecsét hozzáadása
+    FE->>Recipient: E-mail kézbesítése
+    Recipient->>Recipient: DKIM ellenőrzése
+    Recipient->>Recipient: SPF ellenőrzése
+    Recipient->>Recipient: DMARC érvényesítése
+    Recipient->>Recipient: ARC lánc ellenőrzése
+    Recipient->>Recipient: Üzenet elfogadása
 ```
 
 ---
 
-## Email Transport Security Protocols {#email-transport-security-protocols}
+
+## E-mail átvitel biztonsági protokollok {#email-transport-security-protocols}
 
 > \[!IMPORTANT]
-> Forward Email implements multiple layers of transport security to protect emails in transit.
+> A Forward Email több rétegű átvitelbiztonsági megoldásokat alkalmaz az e-mailek átvitel közbeni védelmére.
 
-Forward Email implements modern transport security protocols:
+A Forward Email korszerű átvitelbiztonsági protokollokat valósít meg:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461) | SMTP MTA Strict Transport Security (MTA-STS) | ✅ Supported | Extensively used on IMAP, SMTP, and MX servers. See [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) and [get-transporter.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-transporter.js) |
-| [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) | SMTP TLS Reporting | ✅ Supported | Via [mailauth](https://github.com/postalsys/mailauth) library |
-| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | The DNS-Based Authentication of Named Entities (DANE) Protocol: Updates and Operational Guidance | ✅ Supported | Full DANE verification for outbound SMTP connections. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
-| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA | ✅ Supported | Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
-| [RFC 8314](https://datatracker.ietf.org/doc/html/rfc8314) | Cleartext Considered Obsolete: Use of Transport Layer Security (TLS) for Email Submission and Access | ✅ Supported | TLS required for all connections |
-| [RFC 8689](https://datatracker.ietf.org/doc/html/rfc8689) | SMTP Service Extension for Requiring TLS (REQUIRETLS) | ✅ Supported | Full support for REQUIRETLS SMTP extension and "TLS-Required" header |
+| RFC                                                       | Cím                                                                                                 | Állapot     | Megvalósítási megjegyzések                                                                                                                                                                                                                                                                     |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461) | SMTP MTA Strict Transport Security (MTA-STS)                                                       | ✅ Támogatott | Széles körben használják IMAP, SMTP és MX szervereken. Lásd [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) és [get-transporter.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-transporter.js) |
+| [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) | SMTP TLS jelentés                                                                                   | ✅ Támogatott | A [mailauth](https://github.com/postalsys/mailauth) könyvtáron keresztül                                                                                                                                                                                                                       |
+| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | A DNS-alapú hitelesítés névvel ellátott entitásokhoz (DANE) protokoll: frissítések és működési útmutató | ✅ Támogatott | Teljes DANE ellenőrzés kimenő SMTP kapcsolatokhoz. Lásd [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22)                                                                                                                                                                   |
+| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | A DNS-alapú hitelesítés névvel ellátott entitásokhoz (DANE) Transport Layer Security (TLS) protokoll: TLSA | ✅ Támogatott | Teljes RFC 6698 támogatás: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE használati típusok. Lásd [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22)                                                                                                                                      |
+| [RFC 8314](https://datatracker.ietf.org/doc/html/rfc8314) | A tiszta szöveg elavultnak tekintése: Transport Layer Security (TLS) használata e-mail küldéshez és hozzáféréshez | ✅ Támogatott | TLS kötelező minden kapcsolathoz                                                                                                                                                                                                                                                              |
+| [RFC 8689](https://datatracker.ietf.org/doc/html/rfc8689) | SMTP szolgáltatás kiterjesztése TLS követelményhez (REQUIRETLS)                                     | ✅ Támogatott | Teljes támogatás a REQUIRETLS SMTP kiterjesztéshez és a "TLS-Required" fejléchez                                                                                                                                                                                                              |
+A szállítási biztonsági protokollok biztosítják, hogy az e-mail üzenetek titkosítva és hitelesítve legyenek az átvitel során a levelezőszerverek között.
 
-Transport security protocols ensure that email messages are encrypted and authenticated during transmission between mail servers.
+### Szállítási biztonsági támogatás {#transport-security-support}
 
-### Transport Security Support {#transport-security-support}
-
-| Protocol | RFC | Status | Description |
+| Protokoll     | RFC      | Állapot     | Leírás                                           |
 | -------------- | -------- | ----------- | ------------------------------------------------ |
-| **TLS** | RFC 8314 | ✅ Supported | Transport Layer Security - Encrypted connections |
-| **MTA-STS** | RFC 8461 | ✅ Supported | Mail Transfer Agent Strict Transport Security |
-| **DANE** | RFC 7671 | ✅ Supported | DNS-based Authentication of Named Entities |
-| **REQUIRETLS** | RFC 8689 | ✅ Supported | Require TLS for entire delivery path |
+| **TLS**        | RFC 8314 | ✅ Támogatott | Transport Layer Security - Titkosított kapcsolatok |
+| **MTA-STS**    | RFC 8461 | ✅ Támogatott | Mail Transfer Agent Strict Transport Security    |
+| **DANE**       | RFC 7671 | ✅ Támogatott | DNS-alapú Hitelesítés Nevezett Entitásokhoz      |
+| **REQUIRETLS** | RFC 8689 | ✅ Támogatott | TLS követelése az egész kézbesítési útvonalon    |
 
 ### TLS (Transport Layer Security) {#tls-transport-layer-security}
 
-Forward Email enforces TLS encryption for all email connections (SMTP, IMAP, POP3).
+A Forward Email minden e-mail kapcsolatra (SMTP, IMAP, POP3) érvényesíti a TLS titkosítást.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* TLS 1.2 and TLS 1.3 support
-* Automatic certificate management
+* TLS 1.2 és TLS 1.3 támogatás
+* Automatikus tanúsítványkezelés
 * Perfect Forward Secrecy (PFS)
-* Strong cipher suites only
+* Csak erős titkosító készletek
 
 ### MTA-STS (Mail Transfer Agent Strict Transport Security) {#mta-sts-mail-transfer-agent-strict-transport-security}
 
-**MTA-STS** ensures that email is only delivered over TLS-encrypted connections by publishing a policy via HTTPS.
+Az **MTA-STS** biztosítja, hogy az e-mailek csak TLS-sel titkosított kapcsolaton keresztül kerüljenek kézbesítésre, egy HTTPS-en keresztül közzétett szabályzat segítségével.
 
-Forward Email implements MTA-STS using [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js).
+A Forward Email az MTA-STS-t a [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) használatával valósítja meg.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* Automatic MTA-STS policy publication
-* Policy caching for performance
-* Downgrade attack prevention
-* Certificate validation enforcement
+* Automatikus MTA-STS szabályzat közzététel
+* Szabályzat gyorsítótárazás a teljesítmény érdekében
+* Lefokozás elleni védelem
+* Tanúsítvány érvényesítésének kikényszerítése
 
-### DANE (DNS-based Authentication of Named Entities) {#dane-dns-based-authentication-of-named-entities}
+### DANE (DNS-alapú Hitelesítés Nevezett Entitásokhoz) {#dane-dns-based-authentication-of-named-entities}
 
 > \[!NOTE]
-> Forward Email now provides full DANE support for outbound SMTP connections.
+> A Forward Email mostantól teljes DANE támogatást nyújt a kimenő SMTP kapcsolatokhoz.
 
-**DANE** uses DNSSEC to publish TLS certificate information in DNS, allowing mail servers to verify certificates without relying on certificate authorities.
+A **DANE** DNSSEC-et használ a TLS tanúsítvány információk DNS-ben történő közzétételére, lehetővé téve a levelezőszerverek számára a tanúsítványok ellenőrzését anélkül, hogy tanúsítványhatóságokra támaszkodnának.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* ✅ Full DANE verification for outbound SMTP connections
-* ✅ Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types
-* ✅ Certificate verification against TLSA records during TLS upgrade
-* ✅ Parallel TLSA resolution for multiple MX hosts
-* ✅ Automatic detection of native `dns.resolveTlsa` (Node.js v22.15.0+, v23.9.0+)
-* ✅ Custom resolver support for older Node.js versions via [Tangerine](https://github.com/forwardemail/tangerine)
-* Requires DNSSEC-signed domains
+* ✅ Teljes DANE ellenőrzés kimenő SMTP kapcsolatokhoz
+* ✅ Teljes RFC 6698 támogatás: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE használati típusok
+* ✅ Tanúsítvány ellenőrzés TLSA rekordok alapján TLS frissítés során
+* ✅ Párhuzamos TLSA feloldás több MX hoszthoz
+* ✅ Natív `dns.resolveTlsa` automatikus felismerése (Node.js v22.15.0+, v23.9.0+)
+* ✅ Egyedi feloldó támogatás régebbi Node.js verziókhoz a [Tangerine](https://github.com/forwardemail/tangerine) segítségével
+* DNSSEC-sel aláírt domainek szükségesek
 
 > \[!TIP]
-> **Implementation Details:** DANE support was added via [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22), which provides comprehensive DANE/TLSA support for outbound SMTP connections.
+> **Megvalósítás részletei:** A DANE támogatás a [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) révén került bevezetésre, amely átfogó DANE/TLSA támogatást nyújt a kimenő SMTP kapcsolatokhoz.
 
 ### REQUIRETLS {#requiretls}
 
 > \[!TIP]
-> Forward Email is one of the few providers with user-facing REQUIRETLS support.
+> A Forward Email az egyik kevés szolgáltató, amely felhasználói szintű REQUIRETLS támogatást kínál.
 
-**REQUIRETLS** ensures that email messages are only delivered over TLS-encrypted connections for the entire delivery path.
+A **REQUIRETLS** biztosítja, hogy az e-mail üzenetek csak TLS-sel titkosított kapcsolaton keresztül kerüljenek kézbesítésre az egész kézbesítési útvonalon.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* User-facing checkbox in email composer
-* Automatic rejection of unencrypted delivery
-* End-to-end TLS enforcement
-* Detailed failure notifications
+* Felhasználói szintű jelölőnégyzet az e-mail szerkesztőben
+* Automatikus elutasítás titkosítatlan kézbesítés esetén
+* Végpontok közötti TLS kikényszerítése
+* Részletes hibajelentések
 
 > \[!TIP]
-> **User-Facing TLS Enforcement:** Forward Email provides a checkbox under **My Account > Domains > Settings** to enforce TLS for all inbound connections. When enabled, this feature rejects any inbound email not sent over a TLS-encrypted connection with a 530 error code, ensuring all incoming mail is encrypted in transit.
+> **Felhasználói TLS kikényszerítés:** A Forward Email a **Fiókom > Domain-ek > Beállítások** alatt egy jelölőnégyzetet biztosít a TLS minden bejövő kapcsolatra történő kikényszerítéséhez. Ha engedélyezve van, ez a funkció elutasít minden olyan bejövő e-mailt, amely nem TLS-sel titkosított kapcsolaton érkezik, 530-as hibakóddal, biztosítva, hogy az összes bejövő levél titkosítva legyen átvitel közben.
 
-### Transport Security Flow {#transport-security-flow}
+### Szállítási biztonsági folyamat {#transport-security-flow}
 
 ```mermaid
 graph LR
-    subgraph "Connection Security"
+    subgraph "Kapcsolat biztonság"
         TLS[TLS 1.2/1.3]
-        CERT[Certificate Validation]
+        CERT[Tanúsítvány ellenőrzés]
     end
 
-    subgraph "Policy Enforcement"
-        MTASTS[MTA-STS Policy]
-        DANE[DANE TLSA Records]
-        REQTLS[REQUIRETLS Flag]
+    subgraph "Szabályzat érvényesítés"
+        MTASTS[MTA-STS szabályzat]
+        DANE[DANE TLSA rekordok]
+        REQTLS[REQUIRETLS jelző]
     end
 
-    Client[Email Client] -->|Encrypted| TLS
+    Client[E-mail kliens] -->|Titkosított| TLS
     TLS --> CERT
     CERT --> MTASTS
     MTASTS --> DANE
     DANE --> REQTLS
-    REQTLS -->|Secure Delivery| Server[Recipient Server]
+    REQTLS -->|Biztonságos kézbesítés| Server[Címzett szerver]
 
     style TLS fill:#9f9,stroke:#333
     style CERT fill:#9f9,stroke:#333
@@ -804,94 +801,89 @@ graph LR
     style DANE fill:#9f9,stroke:#333
     style REQTLS fill:#9f9,stroke:#333
 ```
-
----
-
-
-## Email Message Encryption {#email-message-encryption}
+## E-mail Üzenet Titkosítása {#email-message-encryption}
 
 > \[!NOTE]
-> Forward Email supports both OpenPGP and S/MIME for end-to-end email encryption.
+> A Forward Email támogatja az OpenPGP és az S/MIME használatát az e-mailek végpontok közötti titkosításához.
 
-Forward Email supports OpenPGP and S/MIME encryption:
+A Forward Email támogatja az OpenPGP és az S/MIME titkosítást:
 
-| RFC | Title | Status | Implementation Notes |
+| RFC                                                       | Cím                                                                                     | Állapot     | Megvalósítási megjegyzések                                                                                                                                                                           |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 9580](https://datatracker.ietf.org/doc/html/rfc9580) | OpenPGP (supersedes RFC 4880) | ✅ Supported | Via [OpenPGP.js v6+](https://github.com/openpgpjs/openpgpjs) integration. See [FAQ](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) |
-| [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) | Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 4.0 Message Specification | ✅ Supported | Both RSA and ECC algorithms supported. See [FAQ](https://forwardemail.net/en/faq#do-you-support-smime-encryption) |
+| [RFC 9580](https://datatracker.ietf.org/doc/html/rfc9580) | OpenPGP (felváltja az RFC 4880-at)                                                      | ✅ Támogatott | A [OpenPGP.js v6+](https://github.com/openpgpjs/openpgpjs) integráción keresztül. Lásd [GYIK](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) |
+| [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551) | Secure/Multipurpose Internet Mail Extensions (S/MIME) 4.0 verzió Üzenet specifikáció    | ✅ Támogatott | Mind RSA, mind ECC algoritmusok támogatottak. Lásd [GYIK](https://forwardemail.net/en/faq#do-you-support-smime-encryption)                                                                              |
 
-Message encryption protocols protect email content from being read by anyone except the intended recipient, even if the message is intercepted during transit.
+Az üzenettitkosítási protokollok megvédik az e-mail tartalmát attól, hogy bárki más olvassa el, csak a címzett férhessen hozzá, még akkor is, ha az üzenet átvitel közben elfogásra kerül.
 
-### Encryption Support {#encryption-support}
+### Titkosítási támogatás {#encryption-support}
 
-| Protocol | RFC | Status | Description |
+| Protokoll   | RFC      | Állapot     | Leírás                                      |
 | ----------- | -------- | ----------- | -------------------------------------------- |
-| **OpenPGP** | RFC 9580 | ✅ Supported | Pretty Good Privacy - Public key encryption |
-| **S/MIME** | RFC 8551 | ✅ Supported | Secure/Multipurpose Internet Mail Extensions |
-| **WKD** | Draft | ✅ Supported | Web Key Directory - Automatic key discovery |
+| **OpenPGP** | RFC 9580 | ✅ Támogatott | Pretty Good Privacy - Nyilvános kulcsú titkosítás |
+| **S/MIME**  | RFC 8551 | ✅ Támogatott | Secure/Multipurpose Internet Mail Extensions |
+| **WKD**     | Draft    | ✅ Támogatott | Web Key Directory - Automatikus kulcsfelfedezés |
 
 ### OpenPGP (Pretty Good Privacy) {#openpgp-pretty-good-privacy}
 
-**OpenPGP** provides end-to-end encryption using public key cryptography. Forward Email supports OpenPGP through the [Web Key Directory (WKD)](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) protocol.
+Az **OpenPGP** végpontok közötti titkosítást biztosít nyilvános kulcsú kriptográfia segítségével. A Forward Email támogatja az OpenPGP-t a [Web Key Directory (WKD)](https://forwardemail.net/en/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) protokollon keresztül.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* Automatic key discovery via WKD
-* PGP/MIME support for encrypted attachments
-* Key management through email client
-* Compatible with GPG, Mailvelope, and other OpenPGP tools
+* Automatikus kulcsfelfedezés WKD-n keresztül
+* PGP/MIME támogatás titkosított csatolmányokhoz
+* Kulcskezelés az e-mail kliensen keresztül
+* Kompatibilis a GPG-vel, Mailvelope-val és más OpenPGP eszközökkel
 
-**How to Use:**
+**Használati útmutató:**
 
-1. Generate a PGP key pair in your email client
-2. Upload your public key to Forward Email's WKD
-3. Your key is automatically discoverable by other users
-4. Send and receive encrypted emails seamlessly
+1. Generálj egy PGP kulcspárt az e-mail kliensedben
+2. Töltsd fel a nyilvános kulcsodat a Forward Email WKD-jára
+3. A kulcsod automatikusan felfedezhető más felhasználók által
+4. Küldj és fogadj titkosított e-maileket zökkenőmentesen
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 
-**S/MIME** provides email encryption and digital signatures using X.509 certificates.
+Az **S/MIME** e-mail titkosítást és digitális aláírást biztosít X.509 tanúsítványok segítségével.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* Certificate-based encryption
-* Digital signatures for message authentication
-* Native support in most email clients
-* Enterprise-grade security
+* Tanúsítvány alapú titkosítás
+* Digitális aláírások az üzenetek hitelesítéséhez
+* Natív támogatás a legtöbb e-mail kliensben
+* Vállalati szintű biztonság
 
-**How to Use:**
+**Használati útmutató:**
 
-1. Obtain an S/MIME certificate from a Certificate Authority
-2. Install the certificate in your email client
-3. Configure your client to encrypt/sign messages
-4. Exchange certificates with recipients
+1. Szerezz be egy S/MIME tanúsítványt egy Tanúsítvány Kibocsátótól
+2. Telepítsd a tanúsítványt az e-mail kliensedbe
+3. Állítsd be a klienst az üzenetek titkosítására/aláírására
+4. Cserélj tanúsítványokat a címzettekkel
 
-### SQLite Mailbox Encryption {#sqlite-mailbox-encryption}
+### SQLite Postafiók Titkosítás {#sqlite-mailbox-encryption}
 
 > \[!IMPORTANT]
-> Forward Email provides an additional layer of security with encrypted SQLite mailboxes.
+> A Forward Email további biztonsági réteget nyújt titkosított SQLite postafiókokkal.
 
-Beyond message-level encryption, Forward Email encrypts entire mailboxes using [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305).
+Az üzenetszintű titkosításon túl a Forward Email az egész postafiókokat titkosítja a [sqleet](https://github.com/resilar/sqleet) (ChaCha20-Poly1305) segítségével.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* **Password-based encryption** - Only you have the password
-* **Quantum-resistant** - ChaCha20-Poly1305 cipher
-* **Zero-knowledge** - Forward Email cannot decrypt your mailbox
-* **Sandboxed** - Each mailbox is isolated and portable
-* **Unrecoverable** - If you forget your password, your mailbox is lost
+* **Jelszó alapú titkosítás** – Csak neked van meg a jelszó
+* **Kvantumrezisztens** – ChaCha20-Poly1305 titkosító algoritmus
+* **Zero-knowledge** – A Forward Email nem tudja visszafejteni a postafiókodat
+* **Sandboxolt** – Minden postafiók izolált és hordozható
+* **Visszaállíthatatlan** – Ha elfelejted a jelszavad, a postafiókod elveszik
+### Titkosítási összehasonlítás {#encryption-comparison}
 
-### Encryption Comparison {#encryption-comparison}
-
-| Feature | OpenPGP | S/MIME | SQLite Encryption |
+| Jellemző              | OpenPGP           | S/MIME             | SQLite titkosítás  |
 | --------------------- | ----------------- | ------------------ | ----------------- |
-| **End-to-End** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Key Management** | Self-managed | CA-issued | Password-based |
-| **Client Support** | Requires plugin | Native | Transparent |
-| **Use Case** | Personal | Enterprise | Storage |
-| **Quantum-Resistant** | ⚠️ Depends on key | ⚠️ Depends on cert | ✅ Yes |
+| **Végpontok közötti** | ✅ Igen            | ✅ Igen             | ✅ Igen            |
+| **Kulcskezelés**      | Önműködő          | CA által kiadott    | Jelszó alapú       |
+| **Kliens támogatás**  | Bővítményt igényel| Natív              | Átlátszó           |
+| **Használati eset**   | Személyes         | Vállalati          | Tárolás            |
+| **Kvantumrezisztens** | ⚠️ Kulcstól függ  | ⚠️ Tanúsítványtól függ | ✅ Igen            |
 
-### Encryption Flow {#encryption-flow}
+### Titkosítási folyamat {#encryption-flow}
 
 ```mermaid
 sequenceDiagram
@@ -911,311 +903,311 @@ sequenceDiagram
 
 ---
 
-## Extended Functionality {#extended-functionality}
 
-## Email Message Format Standards {#email-message-format-standards}
+## Kiterjesztett funkciók {#extended-functionality}
+
+
+## E-mail üzenetformátum szabványok {#email-message-format-standards}
 
 > \[!NOTE]
-> Forward Email supports modern email format standards for rich content and internationalization.
+> A Forward Email támogatja a modern e-mail formátum szabványokat a gazdag tartalom és a nemzetköziesítés érdekében.
 
-Forward Email supports standard email message formats:
+A Forward Email támogatja a szabványos e-mail üzenetformátumokat:
 
-| RFC | Title | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------- | -------------------- |
-| [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) | Internet Message Format | Full support |
-| [RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045) | MIME Part One: Format of Internet Message Bodies | Full MIME support |
-| [RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046) | MIME Part Two: Media Types | Full MIME support |
-| [RFC 2047](https://datatracker.ietf.org/doc/html/rfc2047) | MIME Part Three: Message Header Extensions for Non-ASCII Text | Full MIME support |
-| [RFC 2048](https://datatracker.ietf.org/doc/html/rfc2048) | MIME Part Four: Registration Procedures | Full MIME support |
-| [RFC 2049](https://datatracker.ietf.org/doc/html/rfc2049) | MIME Part Five: Conformance Criteria and Examples | Full MIME support |
+| RFC                                                       | Cím                                                           | Megvalósítási megjegyzések |
+| --------------------------------------------------------- | ------------------------------------------------------------- | --------------------------- |
+| [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) | Internet üzenetformátum                                       | Teljes támogatás            |
+| [RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045) | MIME Első rész: Internet üzenettörzsek formátuma              | Teljes MIME támogatás       |
+| [RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046) | MIME Második rész: Média típusok                              | Teljes MIME támogatás       |
+| [RFC 2047](https://datatracker.ietf.org/doc/html/rfc2047) | MIME Harmadik rész: Üzenet fejléc kiterjesztések nem ASCII szöveghez | Teljes MIME támogatás       |
+| [RFC 2048](https://datatracker.ietf.org/doc/html/rfc2048) | MIME Negyedik rész: Regisztrációs eljárások                   | Teljes MIME támogatás       |
+| [RFC 2049](https://datatracker.ietf.org/doc/html/rfc2049) | MIME Ötödik rész: Megfelelőségi kritériumok és példák         | Teljes MIME támogatás       |
 
-Email format standards define how email messages are structured, encoded, and displayed.
+Az e-mail formátum szabványok meghatározzák, hogyan épülnek fel, kódolódnak és jelennek meg az e-mail üzenetek.
 
-### Format Standards Support {#format-standards-support}
+### Formátum szabvány támogatás {#format-standards-support}
 
-| Standard | RFC | Status | Description |
-| ------------------ | ------------- | ----------- | ------------------------------------- |
-| **MIME** | RFC 2045-2049 | ✅ Supported | Multipurpose Internet Mail Extensions |
-| **SMTPUTF8** | RFC 6531 | ⚠️ Partial | Internationalized email addresses |
-| **EAI** | RFC 6530 | ⚠️ Partial | Email Address Internationalization |
-| **Message Format** | RFC 5322 | ✅ Supported | Internet Message Format |
-| **MIME Security** | RFC 1847 | ✅ Supported | Security Multiparts for MIME |
+| Szabvány            | RFC           | Állapot     | Leírás                              |
+| ------------------- | ------------- | ----------- | ---------------------------------- |
+| **MIME**            | RFC 2045-2049 | ✅ Támogatott | Többcélú internetes levelezési kiterjesztések |
+| **SMTPUTF8**        | RFC 6531      | ⚠️ Részleges | Nemzetköziesített e-mail címek     |
+| **EAI**             | RFC 6530      | ⚠️ Részleges | E-mail cím nemzetköziesítése       |
+| **Üzenetformátum**  | RFC 5322      | ✅ Támogatott | Internet üzenetformátum            |
+| **MIME biztonság**  | RFC 1847      | ✅ Támogatott | Biztonsági multipart MIME-hez      |
 
-### MIME (Multipurpose Internet Mail Extensions) {#mime-multipurpose-internet-mail-extensions}
+### MIME (Többcélú internetes levelezési kiterjesztések) {#mime-multipurpose-internet-mail-extensions}
 
-**MIME** allows emails to contain multiple parts with different content types (text, HTML, attachments, etc.).
+**A MIME** lehetővé teszi, hogy az e-mailek több részből álljanak, különböző tartalomtípusokkal (szöveg, HTML, csatolmányok stb.).
 
-**Supported MIME Features:**
+**Támogatott MIME funkciók:**
 
-* Multipart messages (mixed, alternative, related)
-* Content-Type headers
+* Többrészes üzenetek (mixed, alternative, related)
+* Content-Type fejléc
 * Content-Transfer-Encoding (7bit, 8bit, quoted-printable, base64)
-* Inline images and attachments
-* Rich HTML content
+* Beágyazott képek és csatolmányok
+* Gazdag HTML tartalom
 
-### SMTPUTF8 and Email Address Internationalization {#smtputf8-and-email-address-internationalization}
+### SMTPUTF8 és az e-mail címek nemzetköziesítése {#smtputf8-and-email-address-internationalization}
 
 > \[!WARNING]
-> SMTPUTF8 support is partial - not all features are fully implemented.
+> Az SMTPUTF8 támogatás részleges – nem minden funkció teljesen megvalósított.
+**SMTPUTF8** lehetővé teszi, hogy az email címek nem ASCII karaktereket tartalmazzanak (pl. `用户@例え.jp`).
 
-**SMTPUTF8** allows email addresses to contain non-ASCII characters (e.g., `用户@例え.jp`).
+**Jelenlegi állapot:**
 
-**Current Status:**
-
-* ⚠️ Partial support for internationalized email addresses
-* ✅ UTF-8 content in message bodies
-* ⚠️ Limited support for non-ASCII local parts
+* ⚠️ Részleges támogatás a nemzetközileg szabványosított email címekhez
+* ✅ UTF-8 tartalom az üzenet törzsében
+* ⚠️ Korlátozott támogatás a nem ASCII helyi részekhez
 
 ---
 
-## Calendaring and Contacts Protocols {#calendaring-and-contacts-protocols}
+
+## Naptár- és névjegyprotokollok {#calendaring-and-contacts-protocols}
 
 > \[!NOTE]
-> Forward Email provides full CalDAV and CardDAV support for calendar and contact synchronization.
+> A Forward Email teljes CalDAV és CardDAV támogatást nyújt a naptár- és névjegyszinkronizációhoz.
 
-Forward Email supports CalDAV and CardDAV via the [caldav-adapter](https://github.com/forwardemail/caldav-adapter) library:
+A Forward Email támogatja a CalDAV és CardDAV protokollokat a [caldav-adapter](https://github.com/forwardemail/caldav-adapter) könyvtáron keresztül:
 
-| RFC | Title | Status | Implementation Notes |
-| --------------------------------------------------------- | ------------------------------------------------------------------------- | ----------- | ------------------------------ |
-| [RFC 4791](https://datatracker.ietf.org/doc/html/rfc4791) | Calendaring Extensions to WebDAV (CalDAV) | ✅ Supported | Calendar access and management |
-| [RFC 6352](https://datatracker.ietf.org/doc/html/rfc6352) | CardDAV: vCard Extensions to WebDAV | ✅ Supported | Contact access and management |
-| [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) | Internet Calendaring and Scheduling Core Object Specification (iCalendar) | ✅ Supported | iCalendar format support |
-| [RFC 6350](https://datatracker.ietf.org/doc/html/rfc6350) | vCard Format Specification | ✅ Supported | vCard 4.0 format support |
-| [RFC 6638](https://datatracker.ietf.org/doc/html/rfc6638) | Scheduling Extensions to CalDAV | ✅ Supported | CalDAV scheduling with iMIP support. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
-| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar Transport-Independent Interoperability Protocol (iTIP) | ✅ Supported | iTIP support for REQUEST, REPLY, CANCEL, and VFREEBUSY methods. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
-| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar Message-Based Interoperability Protocol (iMIP) | ✅ Supported | Email-based calendar invitations with response links. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| RFC                                                       | Cím                                                                      | Állapot     | Megvalósítási megjegyzések                                                                                                                                                            |
+| --------------------------------------------------------- | ------------------------------------------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC 4791](https://datatracker.ietf.org/doc/html/rfc4791) | Naptárbővítmények a WebDAV-hoz (CalDAV)                                 | ✅ Támogatott | Naptár elérés és kezelése                                                                                                                                                              |
+| [RFC 6352](https://datatracker.ietf.org/doc/html/rfc6352) | CardDAV: vCard bővítmények a WebDAV-hoz                                 | ✅ Támogatott | Névjegy elérés és kezelése                                                                                                                                                             |
+| [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) | Internetes naptár és ütemezés alapobjektum specifikáció (iCalendar)     | ✅ Támogatott | iCalendar formátum támogatás                                                                                                                                                           |
+| [RFC 6350](https://datatracker.ietf.org/doc/html/rfc6350) | vCard formátum specifikáció                                             | ✅ Támogatott | vCard 4.0 formátum támogatás                                                                                                                                                           |
+| [RFC 6638](https://datatracker.ietf.org/doc/html/rfc6638) | Ütemezési bővítmények a CalDAV-hoz                                      | ✅ Támogatott | CalDAV ütemezés iMIP támogatással. Lásd [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80)                            |
+| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar szállításfüggetlen interoperabilitási protokoll (iTIP)        | ✅ Támogatott | iTIP támogatás REQUEST, REPLY, CANCEL és VFREEBUSY metódusokhoz. Lásd [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar üzenetalapú interoperabilitási protokoll (iMIP)               | ✅ Támogatott | Email alapú naptári meghívók válaszlinkekkel. Lásd [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80)                   |
 
-CalDAV and CardDAV are protocols that allow calendar and contact data to be accessed, shared, and synchronized across devices.
+A CalDAV és CardDAV protokollok lehetővé teszik a naptár- és névjegyadatok elérését, megosztását és szinkronizálását eszközök között.
 
-### CalDAV and CardDAV Support {#caldav-and-carddav-support}
+### CalDAV és CardDAV támogatás {#caldav-and-carddav-support}
 
-| Protocol | RFC | Status | Description |
-| ------------- | -------- | ----------- | ----------------------------------- |
-| **CalDAV** | RFC 4791 | ✅ Supported | Calendar access and synchronization |
-| **CardDAV** | RFC 6352 | ✅ Supported | Contact access and synchronization |
-| **iCalendar** | RFC 5545 | ✅ Supported | Calendar data format |
-| **vCard** | RFC 6350 | ✅ Supported | Contact data format |
-| **VTODO** | RFC 5545 | ✅ Supported | Task/reminder support |
-| **CalDAV Scheduling** | RFC 6638 | ✅ Supported | Calendar scheduling extensions |
-| **iTIP** | RFC 5546 | ✅ Supported | Transport-independent interoperability |
-| **iMIP** | RFC 6047 | ✅ Supported | Email-based calendar invitations |
+| Protokoll             | RFC      | Állapot     | Leírás                               |
+| --------------------- | -------- | ----------- | ----------------------------------- |
+| **CalDAV**            | RFC 4791 | ✅ Támogatott | Naptár elérés és szinkronizáció     |
+| **CardDAV**           | RFC 6352 | ✅ Támogatott | Névjegy elérés és szinkronizáció    |
+| **iCalendar**         | RFC 5545 | ✅ Támogatott | Naptáradat formátum                  |
+| **vCard**             | RFC 6350 | ✅ Támogatott | Névjegyadat formátum                 |
+| **VTODO**             | RFC 5545 | ✅ Támogatott | Feladat/értesítés támogatás          |
+| **CalDAV Scheduling** | RFC 6638 | ✅ Támogatott | Naptár ütemezési bővítmények         |
+| **iTIP**              | RFC 5546 | ✅ Támogatott | Szállításfüggetlen interoperabilitás |
+| **iMIP**              | RFC 6047 | ✅ Támogatott | Email alapú naptári meghívók         |
+### CalDAV (Naptárhozzáférés) {#caldav-calendar-access}
 
-### CalDAV (Calendar Access) {#caldav-calendar-access}
+**A CalDAV** lehetővé teszi, hogy bármilyen eszközről vagy alkalmazásból hozzáférj és kezeld a naptárakat.
 
-**CalDAV** allows you to access and manage calendars from any device or application.
+**Főbb jellemzők:**
 
-**Key Features:**
+* Több eszköz közötti szinkronizáció
+* Megosztott naptárak
+* Naptár előfizetések
+* Esemény meghívók és válaszok
+* Ismétlődő események
+* Időzóna támogatás
 
-* Multi-device synchronization
-* Shared calendars
-* Calendar subscriptions
-* Event invitations and responses
-* Recurring events
-* Timezone support
+**Kompatibilis kliensek:**
 
-**Compatible Clients:**
-
-* Apple Calendar (macOS, iOS)
+* Apple Naptár (macOS, iOS)
 * Mozilla Thunderbird
 * Evolution
-* GNOME Calendar
-* Any CalDAV-compatible client
+* GNOME Naptár
+* Bármely CalDAV-kompatibilis kliens
 
-### CardDAV (Contact Access) {#carddav-contact-access}
+### CardDAV (Névjegyhozzáférés) {#carddav-contact-access}
 
-**CardDAV** allows you to access and manage contacts from any device or application.
+**A CardDAV** lehetővé teszi, hogy bármilyen eszközről vagy alkalmazásból hozzáférj és kezeld a névjegyeket.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* Multi-device synchronization
-* Shared address books
-* Contact groups
-* Photo support
-* Custom fields
-* vCard 4.0 support
+* Több eszköz közötti szinkronizáció
+* Megosztott címjegyzékek
+* Névjegycsoportok
+* Fénykép támogatás
+* Egyedi mezők
+* vCard 4.0 támogatás
 
-**Compatible Clients:**
+**Kompatibilis kliensek:**
 
-* Apple Contacts (macOS, iOS)
+* Apple Névjegyek (macOS, iOS)
 * Mozilla Thunderbird
 * Evolution
-* GNOME Contacts
-* Any CardDAV-compatible client
+* GNOME Névjegyek
+* Bármely CardDAV-kompatibilis kliens
 
-### Tasks and Reminders (CalDAV VTODO) {#tasks-and-reminders-caldav-vtodo}
+### Feladatok és Emlékeztetők (CalDAV VTODO) {#tasks-and-reminders-caldav-vtodo}
 
 > \[!TIP]
-> Forward Email supports tasks and reminders through CalDAV VTODO.
+> A Forward Email támogatja a feladatokat és emlékeztetőket a CalDAV VTODO-n keresztül.
 
-**VTODO** is part of the iCalendar format and allows task management through CalDAV.
+**A VTODO** az iCalendar formátum része, és lehetővé teszi a feladatkezelést CalDAV segítségével.
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* Task creation and management
-* Due dates and priorities
-* Task completion tracking
-* Recurring tasks
-* Task lists/categories
+* Feladat létrehozása és kezelése
+* Határidők és prioritások
+* Feladat teljesítésének nyomon követése
+* Ismétlődő feladatok
+* Feladatlisták/kategóriák
 
-**Compatible Clients:**
+**Kompatibilis kliensek:**
 
-* Apple Reminders (macOS, iOS)
-* Mozilla Thunderbird (with Lightning)
+* Apple Emlékeztetők (macOS, iOS)
+* Mozilla Thunderbird (Lightning bővítménnyel)
 * Evolution
 * GNOME To Do
-* Any CalDAV client with VTODO support
+* Bármely CalDAV kliens VTODO támogatással
 
-### CalDAV/CardDAV Synchronization Flow {#caldavcarddav-synchronization-flow}
+### CalDAV/CardDAV szinkronizációs folyamat {#caldavcarddav-synchronization-flow}
 
 ```mermaid
 sequenceDiagram
-    participant iOS as iOS Device
-    participant Mac as macOS Device
-    participant FE as Forward Email<br/>CalDAV/CardDAV Server
-    participant Android as Android Device
+    participant iOS as iOS Eszköz
+    participant Mac as macOS Eszköz
+    participant FE as Forward Email<br/>CalDAV/CardDAV Szerver
+    participant Android as Android Eszköz
 
-    iOS->>FE: Create Event/Contact
-    FE->>FE: Store in Database
-    FE-->>Mac: Push Notification
-    Mac->>FE: Sync Request
-    FE-->>Mac: Updated Data
-    FE-->>Android: Push Notification
-    Android->>FE: Sync Request
-    FE-->>Android: Updated Data
+    iOS->>FE: Esemény/Névjegy létrehozása
+    FE->>FE: Tárolás az adatbázisban
+    FE-->>Mac: Push értesítés
+    Mac->>FE: Szinkronizációs kérés
+    FE-->>Mac: Frissített adatok
+    FE-->>Android: Push értesítés
+    Android->>FE: Szinkronizációs kérés
+    FE-->>Android: Frissített adatok
 
-    Note over iOS,Android: All devices stay in sync
+    Note over iOS,Android: Minden eszköz szinkronban marad
 ```
 
-### Calendaring Extensions NOT Supported {#calendaring-extensions-not-supported}
+### Nem támogatott naptárbővítmények {#calendaring-extensions-not-supported}
 
-The following calendaring extensions are NOT supported:
+A következő naptárbővítmények NEM támogatottak:
 
-| RFC | Title | Reason |
-| --------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [RFC 4918](https://datatracker.ietf.org/doc/html/rfc4918) | HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV) | CalDAV uses WebDAV concepts but doesn't implement full RFC 4918 |
-| [RFC 6578](https://datatracker.ietf.org/doc/html/rfc6578) | Collection Synchronization for WebDAV | Not implemented |
-| [RFC 3744](https://datatracker.ietf.org/doc/html/rfc3744) | WebDAV Access Control Protocol | Not implemented |
+| RFC                                                       | Cím                                                                 | Indoklás                                                        |
+| --------------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- |
+| [RFC 4918](https://datatracker.ietf.org/doc/html/rfc4918) | HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV) | A CalDAV használ WebDAV koncepciókat, de nem valósítja meg teljesen az RFC 4918-at |
+| [RFC 6578](https://datatracker.ietf.org/doc/html/rfc6578) | Collection Synchronization for WebDAV                              | Nem implementált                                                 |
+| [RFC 3744](https://datatracker.ietf.org/doc/html/rfc3744) | WebDAV Access Control Protocol                                     | Nem implementált                                                 |
 
 ---
 
-## Email Message Filtering {#email-message-filtering}
+
+## E-mail üzenet szűrés {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email provides **full Sieve and ManageSieve support** for server-side email filtering. Create powerful rules to automatically sort, filter, forward, and respond to incoming messages.
+> A Forward Email teljes körű **Sieve és ManageSieve támogatást** nyújt szerveroldali e-mail szűréshez. Hozz létre hatékony szabályokat a bejövő üzenetek automatikus rendezéséhez, szűréséhez, továbbításához és válaszadásához.
 
 ### Sieve (RFC 5228) {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) is a standardized, powerful scripting language for server-side email filtering. Forward Email implements comprehensive Sieve support with 24 extensions.
+A [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) egy szabványosított, erőteljes szkriptnyelv szerveroldali e-mail szűréshez. A Forward Email átfogó Sieve támogatást valósít meg 24 kiterjesztéssel.
 
-**Source Code:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
+**Forráskód:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### Core Sieve RFCs Supported {#core-sieve-rfcs-supported}
+#### Támogatott alapvető Sieve RFC-k {#core-sieve-rfcs-supported}
 
-| RFC | Title | Status |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Sieve: An Email Filtering Language | ✅ Full Support |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | Sieve Email Filtering: Reject and Extended Reject Extensions | ✅ Full Support |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | Sieve Email Filtering: Vacation Extension | ✅ Full Support |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | Sieve Vacation Extension: "Seconds" Parameter | ✅ Full Support |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | Sieve Email Filtering: Imap4flags Extension | ✅ Full Support |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | Sieve Email Filtering: Body Extension | ✅ Full Support |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | Sieve Email Filtering: Variables Extension | ✅ Full Support |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | Sieve Email Filtering: Relational Extension | ✅ Full Support |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Internet Application Protocol Collation Registry | ✅ Full Support |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | Sieve Extension: Copying Without Side Effects | ✅ Full Support |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | Sieve Email Filtering: Editheader Extension | ✅ Full Support |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | Sieve Email Filtering: Date and Index Extensions | ✅ Full Support |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | Sieve Email Filtering: Extension for Notifications | ✅ Full Support |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | Sieve Email Filtering: Environment Extension | ✅ Full Support |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Sieve Email Filtering: Extensions for Checking Mailbox Status | ✅ Full Support |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | Sieve Email Filtering: Delivering to Special-Use Mailboxes | ✅ Full Support |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | Sieve Email Filtering: Detecting Duplicate Deliveries | ✅ Full Support |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | Sieve Email Filtering: Ihave Extension | ✅ Full Support |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | Sieve Email Filtering: Subaddress Extension | ✅ Full Support |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve Email Filtering: Regular Expression Extension | ✅ Full Support |
+| RFC                                                                                    | Cím                                                         | Állapot         |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------------- |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: Egy e-mail szűrő nyelv                              | ✅ Teljes támogatás |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve e-mail szűrés: Elutasítás és kiterjesztett elutasítás | ✅ Teljes támogatás |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve e-mail szűrés: Nyári szabadság kiterjesztés          | ✅ Teljes támogatás |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve nyári szabadság kiterjesztés: "Seconds" paraméter     | ✅ Teljes támogatás |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve e-mail szűrés: Imap4flags kiterjesztés                | ✅ Teljes támogatás |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve e-mail szűrés: Törzs kiterjesztés                      | ✅ Teljes támogatás |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve e-mail szűrés: Változók kiterjesztés                   | ✅ Teljes támogatás |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve e-mail szűrés: Relációs kiterjesztés                   | ✅ Teljes támogatás |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Internet Alkalmazás Protokoll Kollációs Regiszter            | ✅ Teljes támogatás |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve kiterjesztés: Másolás mellékhatások nélkül             | ✅ Teljes támogatás |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve e-mail szűrés: Editheader kiterjesztés                 | ✅ Teljes támogatás |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve e-mail szűrés: Dátum és index kiterjesztések           | ✅ Teljes támogatás |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve e-mail szűrés: Értesítések kiterjesztése               | ✅ Teljes támogatás |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve e-mail szűrés: Környezet kiterjesztés                  | ✅ Teljes támogatás |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve e-mail szűrés: Postafiók állapot ellenőrző kiterjesztések | ✅ Teljes támogatás |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve e-mail szűrés: Speciális használatú postafiókok kézbesítése | ✅ Teljes támogatás |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve e-mail szűrés: Ismétlődő kézbesítések észlelése        | ✅ Teljes támogatás |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve e-mail szűrés: Ihave kiterjesztés                      | ✅ Teljes támogatás |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve e-mail szűrés: Alcím kiterjesztés                      | ✅ Teljes támogatás |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve e-mail szűrés: Reguláris kifejezés kiterjesztés        | ✅ Teljes támogatás |
+#### Támogatott Sieve kiterjesztések {#supported-sieve-extensions}
 
-#### Supported Sieve Extensions {#supported-sieve-extensions}
+| Kiterjesztés                 | Leírás                                  | Integráció                                  |
+| ---------------------------- | ---------------------------------------- | -------------------------------------------- |
+| `fileinto`                   | Üzenetek fájlba helyezése adott mappákba | Üzenetek tárolása megadott IMAP mappában     |
+| `reject` / `ereject`         | Üzenetek elutasítása hibával             | SMTP elutasítás visszapattanó üzenettel      |
+| `vacation`                   | Automatikus szabadság/külső válaszok     | Sorba állítva az Emails.queue-n keresztül, sebességkorlátozással |
+| `vacation-seconds`           | Finomhangolt szabadság válaszidőközök    | TTL a `:seconds` paraméterből                 |
+| `imap4flags`                 | IMAP jelzők beállítása (\Seen, \Flagged, stb.) | Jelzők alkalmazása az üzenettárolás során     |
+| `envelope`                   | Boríték feladó/címzett tesztelése        | Hozzáférés az SMTP boríték adatokhoz          |
+| `body`                       | Üzenet törzstartalom tesztelése           | Teljes törzsszöveg egyezés                     |
+| `variables`                  | Változók tárolása és használata szkriptekben | Változó kiterjesztés módosítókkal              |
+| `relational`                 | Relációs összehasonlítások                | `:count`, `:value` gt/lt/eq operátorokkal     |
+| `comparator-i;ascii-numeric` | Numerikus összehasonlítások                | Numerikus karakterlánc összehasonlítás        |
+| `copy`                       | Üzenetek másolása átirányítás közben      | `:copy` jelző fileinto/redirect esetén        |
+| `editheader`                 | Üzenet fejléc hozzáadása vagy törlése     | Fejlécek módosítása tárolás előtt              |
+| `date`                       | Dátum/idő értékek tesztelése               | `currentdate` és fejléc dátum tesztek          |
+| `index`                      | Meghatározott fejléc előfordulások elérése | `:index` többértékű fejlécekhez                |
+| `regex`                      | Reguláris kifejezés egyezés                | Teljes regex támogatás tesztekben               |
+| `enotify`                    | Értesítések küldése                        | `mailto:` értesítések az Emails.queue-n keresztül |
+| `environment`                | Környezeti információk elérése             | Domain, host, remote-ip a munkamenetből         |
+| `mailbox`                    | Postafiók létezésének tesztelése           | `mailboxexists` teszt                            |
+| `special-use`                | Speciális használatú postafiókokba fájlba helyezés | \Junk, \Trash stb. mappák leképezése            |
+| `duplicate`                  | Duplikált üzenetek felismerése             | Redis alapú duplikált követés                    |
+| `ihave`                      | Kiterjesztés elérhetőségének tesztelése    | Futásidejű képesség ellenőrzés                   |
+| `subaddress`                 | Felhasználó+részlet címrészek elérése      | `:user` és `:detail` címrészek                   |
 
-| Extension | Description | Integration |
-| ---------------------------- | ---------------------------------------- | ------------------------------------------ |
-| `fileinto` | File messages into specific folders | Messages stored in specified IMAP folder |
-| `reject` / `ereject` | Reject messages with an error | SMTP rejection with bounce message |
-| `vacation` | Automatic vacation/out-of-office replies | Queued via Emails.queue with rate limiting |
-| `vacation-seconds` | Fine-grained vacation response intervals | TTL from `:seconds` parameter |
-| `imap4flags` | Set IMAP flags (\Seen, \Flagged, etc.) | Flags applied during message storage |
-| `envelope` | Test envelope sender/recipient | Access to SMTP envelope data |
-| `body` | Test message body content | Full body text matching |
-| `variables` | Store and use variables in scripts | Variable expansion with modifiers |
-| `relational` | Relational comparisons | `:count`, `:value` with gt/lt/eq |
-| `comparator-i;ascii-numeric` | Numeric comparisons | Numeric string comparison |
-| `copy` | Copy messages while redirecting | `:copy` flag on fileinto/redirect |
-| `editheader` | Add or delete message headers | Headers modified before storage |
-| `date` | Test date/time values | `currentdate` and header date tests |
-| `index` | Access specific header occurrences | `:index` for multi-value headers |
-| `regex` | Regular expression matching | Full regex support in tests |
-| `enotify` | Send notifications | `mailto:` notifications via Emails.queue |
-| `environment` | Access environment information | Domain, host, remote-ip from session |
-| `mailbox` | Test mailbox existence | `mailboxexists` test |
-| `special-use` | File into special-use mailboxes | Maps \Junk, \Trash, etc. to folders |
-| `duplicate` | Detect duplicate messages | Redis-based duplicate tracking |
-| `ihave` | Test for extension availability | Runtime capability checking |
-| `subaddress` | Access user+detail address parts | `:user` and `:detail` address parts |
+#### Nem támogatott Sieve kiterjesztések {#sieve-extensions-not-supported}
 
-#### Sieve Extensions NOT Supported {#sieve-extensions-not-supported}
-
-| Extension | RFC | Reason |
-| --------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Security risk (script injection), requires global script storage |
-| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Requires IMAP METADATA extension |
-| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Requires Sent folder integration |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Parser changes required for ${hex:} syntax |
-| `foreverypart` / `mime` / `extracttext` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Complex MIME tree manipulation |
-
-#### Sieve Processing Flow {#sieve-processing-flow}
+| Kiterjesztés                         | RFC                                                       | Indok                                                           |
+| ----------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| `include`                           | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Biztonsági kockázat (szkript befecskendezés), globális szkript tárolást igényel |
+| `mboxmetadata` / `servermetadata`   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA kiterjesztést igényel                             |
+| `fcc`                               | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Elküldött mappa integrációt igényel                             |
+| `encoded-character`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Parser módosítás szükséges a ${hex:} szintaxis miatt             |
+| `foreverypart` / `mime` / `extracttext` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Komplex MIME fa kezelés                                          |
+#### Sieve feldolgozási folyamat {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
-    participant MX as MX Server
-    participant Sieve as Sieve Engine
-    participant Redis as Redis Cache
-    participant SQLite as SQLite Storage
-    participant Queue as Email Queue
+    participant MX as MX szerver
+    participant Sieve as Sieve motor
+    participant Redis as Redis gyorsítótár
+    participant SQLite as SQLite tároló
+    participant Queue as E-mail sor
 
-    MX->>Sieve: Incoming message
-    Sieve->>Sieve: Parse active script
-    Sieve->>Sieve: Execute rules
+    MX->>Sieve: Bejövő üzenet
+    Sieve->>Sieve: Aktív szkript elemzése
+    Sieve->>Sieve: Szabályok végrehajtása
 
-    alt fileinto action
-        Sieve->>SQLite: Store in folder with flags
-    else redirect action
-        Sieve->>Queue: Queue for delivery
-    else vacation action
-        Sieve->>Redis: Check rate limit
-        Redis-->>Sieve: OK to send
-        Sieve->>Queue: Queue vacation reply
-    else reject action
-        Sieve->>MX: Return SMTP rejection
-    else discard action
-        Sieve->>Sieve: Drop message silently
+    alt fileinto művelet
+        Sieve->>SQLite: Mappa tárolása jelzőkkel
+    else átirányítás művelet
+        Sieve->>Queue: Sorba állítás kézbesítéshez
+    else szabadság művelet
+        Sieve->>Redis: Korlátozás ellenőrzése
+        Redis-->>Sieve: Küldhető
+        Sieve->>Queue: Szabadság válasz sorba állítása
+    else elutasítás művelet
+        Sieve->>MX: SMTP elutasítás visszaküldése
+    else eldobás művelet
+        Sieve->>Sieve: Üzenet csendes eldobása
     end
 
-    Sieve-->>MX: Processing complete
+    Sieve-->>MX: Feldolgozás befejezve
 ```
 
-#### Security Features {#security-features}
+#### Biztonsági funkciók {#security-features}
 
-Forward Email's Sieve implementation includes comprehensive security protections:
+A Forward Email Sieve megvalósítása átfogó biztonsági védelmeket tartalmaz:
 
-* **CVE-2023-26430 Protection**: Prevents redirect loops and mail bombing attacks
-* **Rate Limiting**: Limits on redirects (10/message, 100/day) and vacation replies
-* **Denylist Checking**: Redirect addresses checked against denylist
-* **Protected Headers**: DKIM, ARC, and authentication headers cannot be modified via editheader
-* **Script Size Limits**: Maximum script size enforced
-* **Execution Timeouts**: Scripts terminated if execution exceeds time limit
+* **CVE-2023-26430 védelem**: Megakadályozza az átirányítási hurkokat és a levélbombázási támadásokat
+* **Korlátozások**: Átirányítások (10/üzenet, 100/nap) és szabadság válaszok korlátozása
+* **Tiltólista ellenőrzés**: Az átirányítási címek tiltólistával való egyeztetése
+* **Védett fejlécmezők**: DKIM, ARC és hitelesítési fejlécmezők nem módosíthatók az editheader segítségével
+* **Szkriptméret korlátok**: Maximális szkriptméret betartása
+* **Végrehajtási időkorlátok**: A szkriptek megszakítása, ha a végrehajtás túllépi az időkorlátot
 
-#### Example Sieve Scripts {#example-sieve-scripts}
+#### Példa Sieve szkriptek {#example-sieve-scripts}
 
-**File newsletters into a folder:**
+**Hírlevelek mappába helyezése:**
 
 ```sieve
 require ["fileinto"];
@@ -1225,16 +1217,16 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Vacation auto-responder with fine-grained timing:**
+**Szabadság automatikus válasz finomhangolt időzítéssel:**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
 
-vacation :seconds 3600 :subject "Out of Office"
-    "I'm currently away and will respond within 24 hours.";
+vacation :seconds 3600 :subject "Nem vagyok elérhető"
+    "Jelenleg távol vagyok, 24 órán belül válaszolok.";
 ```
 
-**Spam filtering with flags:**
+**Spam szűrés jelzőkkel:**
 
 ```sieve
 require ["fileinto", "imap4flags"];
@@ -1245,7 +1237,7 @@ if header :contains "X-Spam-Status" "Yes" {
 }
 ```
 
-**Complex filtering with variables:**
+**Összetett szűrés változókkal:**
 
 ```sieve
 require ["variables", "fileinto", "regex"];
@@ -1257,53 +1249,54 @@ if header :regex "From" "(.+)@example\\.com" {
 ```
 
 > \[!TIP]
-> For complete documentation, example scripts, and configuration instructions, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
+> A teljes dokumentációért, példa szkriptekért és konfigurációs útmutatókért lásd a [GYIK: Támogatjátok a Sieve e-mail szűrést?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 
-Forward Email provides full ManageSieve protocol support for remotely managing Sieve scripts.
+A Forward Email teljes ManageSieve protokoll támogatást nyújt a Sieve szkriptek távoli kezeléséhez.
 
-**Source Code:** [`managesieve-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/managesieve-server.js)
+**Forráskód:** [`managesieve-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/managesieve-server.js)
 
-| RFC | Title | Status |
+| RFC                                                       | Cím                                            | Állapot        |
 | --------------------------------------------------------- | ---------------------------------------------- | -------------- |
-| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | A Protocol for Remotely Managing Sieve Scripts | ✅ Full Support |
+| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | Protokoll a Sieve szkriptek távoli kezeléséhez | ✅ Teljes támogatás |
 
-#### ManageSieve Server Configuration {#managesieve-server-configuration}
+#### ManageSieve szerver konfiguráció {#managesieve-server-configuration}
 
-| Setting | Value |
-| ------------------ | ----------------------- |
-| **Server** | `imap.forwardemail.net` |
-| **Port (STARTTLS)** | `2190` (recommended) |
-| **Port (Implicit TLS)** | `4190` |
-| **Authentication** | PLAIN (over TLS) |
+| Beállítás               | Érték                   |
+| ----------------------- | ----------------------- |
+| **Szerver**             | `imap.forwardemail.net` |
+| **Port (STARTTLS)**     | `2190` (ajánlott)       |
+| **Port (Implicit TLS)** | `4190`                  |
+| **Hitelesítés**         | PLAIN (TLS-en keresztül) |
 
-#### Supported ManageSieve Commands {#supported-managesieve-commands}
+> **Megjegyzés:** A 2190-es port STARTTLS-t használ (a sima kapcsolat TLS-re frissítése), és kompatibilis a legtöbb ManageSieve klienssel, beleértve a [sieve-connect](https://github.com/philpennock/sieve-connect) klienst is. A 4190-es port implicit TLS-t használ (TLS a kapcsolat kezdetétől), azoknak a klienseknek, amelyek támogatják.
 
-| Command | Description |
+#### Támogatott ManageSieve parancsok {#supported-managesieve-commands}
+
+| Parancs        | Leírás                                  |
 | -------------- | --------------------------------------- |
-| `AUTHENTICATE` | Authenticate using PLAIN mechanism |
-| `CAPABILITY` | List server capabilities and extensions |
-| `HAVESPACE` | Check if script can be stored |
-| `PUTSCRIPT` | Upload a new script |
-| `LISTSCRIPTS` | List all scripts with active status |
-| `SETACTIVE` | Activate a script |
-| `GETSCRIPT` | Download a script |
-| `DELETESCRIPT` | Delete a script |
-| `RENAMESCRIPT` | Rename a script |
-| `CHECKSCRIPT` | Validate script syntax |
-| `NOOP` | Keep connection alive |
-| `LOGOUT` | End session |
+| `AUTHENTICATE` | Hitelesítés PLAIN mechanizmussal        |
+| `CAPABILITY`   | Szerver képességek és kiterjesztések listázása |
+| `HAVESPACE`    | Ellenőrzés, hogy a szkript tárolható-e  |
+| `PUTSCRIPT`    | Új szkript feltöltése                    |
+| `LISTSCRIPTS`  | Az összes szkript listázása aktív státusszal |
+| `SETACTIVE`    | Szkript aktiválása                       |
+| `GETSCRIPT`    | Szkript letöltése                        |
+| `DELETESCRIPT` | Szkript törlése                         |
+| `RENAMESCRIPT` | Szkript átnevezése                      |
+| `CHECKSCRIPT`  | Szkript szintaxis ellenőrzése           |
+| `NOOP`         | Kapcsolat életben tartása                |
+| `LOGOUT`       | Munkamenet befejezése                    |
+#### Kompatibilis ManageSieve kliensek {#compatible-managesieve-clients}
 
-#### Compatible ManageSieve Clients {#compatible-managesieve-clients}
-
-* **Thunderbird**: Built-in Sieve support via [Sieve add-on](https://addons.thunderbird.net/addon/sieve/)
+* **Thunderbird**: Beépített Sieve támogatás a [Sieve bővítményen keresztül](https://addons.thunderbird.net/addon/sieve/)
 * **Roundcube**: [ManageSieve plugin](https://plugins.roundcube.net/packages/johndoh/sieve)
-* **KMail**: Native ManageSieve support
-* **sieve-connect**: Command-line client
-* **Any RFC 5804 compliant client**
+* **KMail**: Natív ManageSieve támogatás
+* **sieve-connect**: Parancssori kliens
+* **Bármely RFC 5804 kompatibilis kliens**
 
-#### ManageSieve Protocol Flow {#managesieve-protocol-flow}
+#### ManageSieve protokoll folyamata {#managesieve-protocol-flow}
 
 ```mermaid
 sequenceDiagram
@@ -1318,7 +1311,7 @@ sequenceDiagram
     Client->>MS: AUTHENTICATE "PLAIN" [credentials]
     MS->>DB: Verify credentials
     DB-->>MS: OK
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: LISTSCRIPTS
     MS->>DB: Query SieveScripts
@@ -1328,39 +1321,40 @@ sequenceDiagram
     Client->>MS: PUTSCRIPT "newfilter" {script}
     MS->>MS: Validate syntax
     MS->>DB: Store script
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: SETACTIVE "newfilter"
     MS->>DB: Update active script
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 
     Client->>MS: LOGOUT
-    MS-->>Client: OK (TLS negotiation)
+    MS-->>Client: OK
 ```
 
-#### Web Interface and API {#web-interface-and-api}
+#### Webes felület és API {#web-interface-and-api}
 
-In addition to ManageSieve, Forward Email provides:
+A ManageSieve mellett a Forward Email a következőket kínálja:
 
-* **Web Dashboard**: Create and manage Sieve scripts through the web interface at My Account → Domains → Aliases → Sieve Scripts
-* **REST API**: Programmatic access to Sieve script management via the [Forward Email API](/api#sieve-scripts)
+* **Webes irányítópult**: Sieve szkriptek létrehozása és kezelése a webes felületen a Saját fiók → Domain-ek → Átirányítások → Sieve szkriptek menüpont alatt
+* **REST API**: Programozott hozzáférés a Sieve szkriptek kezeléséhez a [Forward Email API](/api#sieve-scripts) segítségével
 
 > \[!TIP]
-> For detailed setup instructions and client configuration, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
+> Részletes beállítási útmutatóért és kliens konfigurációért lásd a [GYIK: Támogatjátok a Sieve e-mail szűrést?](/faq#do-you-support-sieve-email-filtering) részt
 
 ---
 
-## Storage Optimization {#storage-optimization}
+
+## Tárolás optimalizálása {#storage-optimization}
 
 > \[!IMPORTANT]
-> **Industry-First Storage Technology:** Forward Email is the **only email provider in the world** that combines attachment deduplication with Brotli compression on email content. This dual-layer optimization gives you **2-3x more effective storage** compared to traditional email providers.
+> **Iparági első tárolási technológia:** A Forward Email az **egyetlen e-mail szolgáltató a világon**, amely az e-mail tartalom Brotli tömörítését azonosító duplikációval kombinálja. Ez a kétlépcsős optimalizáció **2-3-szor hatékonyabb tárhelyet** biztosít a hagyományos e-mail szolgáltatókhoz képest.
 
-Forward Email implements two revolutionary storage optimization techniques that dramatically reduce mailbox size while maintaining full RFC compliance and message fidelity:
+A Forward Email két forradalmi tárolás optimalizálási technikát alkalmaz, amelyek drasztikusan csökkentik a postaláda méretét, miközben teljes RFC kompatibilitást és üzenethűséget biztosítanak:
 
-1. **Attachment Deduplication** - Eliminates duplicate attachments across all emails
-2. **Brotli Compression** - Reduces storage by 46-86% for metadata and 50% for attachments
+1. **Melléklet duplikáció eltávolítása** - Megszünteti a duplikált mellékleteket az összes e-mail között
+2. **Brotli tömörítés** - 46-86%-kal csökkenti a metaadatok, és 50%-kal a mellékletek tárolási igényét
 
-### Architecture: Dual-Layer Storage Optimization {#architecture-dual-layer-storage-optimization}
+### Architektúra: Kétlépcsős tárolás optimalizálás {#architecture-dual-layer-storage-optimization}
 
 ```mermaid
 graph TB
@@ -1390,113 +1384,113 @@ graph TB
 
 ---
 
-## Attachment Deduplication {#attachment-deduplication}
 
-Forward Email implements attachment deduplication based on [WildDuck's proven approach](https://docs.wildduck.email/docs/in-depth/attachment-deduplication/), adapted for SQLite storage.
+## Melléklet duplikáció eltávolítása {#attachment-deduplication}
+
+A Forward Email a melléklet duplikáció eltávolítását a [WildDuck bevált megközelítése](https://docs.wildduck.email/docs/in-depth/attachment-deduplication/) alapján valósítja meg, SQLite tároláshoz igazítva.
 
 > \[!NOTE]
-> **What is Deduplicated:** "Attachment" refers to the **encoded** MIME node contents (base64 or quoted-printable), not the decoded file. This preserves DKIM and GPG signature validity.
+> **Mi kerül duplikáció-mentesítésre:** A "melléklet" az **kódolt** MIME csomópont tartalmat jelenti (base64 vagy quoted-printable), nem a dekódolt fájlt. Ez megőrzi a DKIM és GPG aláírások érvényességét.
 
-### How It Works {#how-it-works}
+### Működési elv {#how-it-works}
 
-**WildDuck's Original Implementation (MongoDB GridFS):**
+**WildDuck eredeti megvalósítása (MongoDB GridFS):**
 
-> Wild Duck IMAP server de-duplicates attachments. "Attachment" in this case means the base64 or quoted-printable encoded mime node contents, not the decoded file. Even though using encoded content means a lot of false negatives (the same file in different emails might be counted as different attachment) it is needed to guarantee the validity of different signature schemes (DKIM, GPG etc.). A message retrieved from Wild Duck looks exactly the same as the message that was stored even though Wild Duck parses the message into a tree-like object and rebuilds the message when retrieving.
+> A Wild Duck IMAP szerver eltávolítja a mellékletek duplikációját. A "melléklet" ebben az esetben a base64 vagy quoted-printable kódolt mime csomópont tartalmat jelenti, nem a dekódolt fájlt. Bár a kódolt tartalom használata sok hamis negatív eredményt okoz (ugyanaz a fájl különböző e-mailekben eltérő mellékletként számolódhat), ez szükséges a különböző aláírási sémák (DKIM, GPG stb.) érvényességének garantálásához. A Wild Duckból lekért üzenet pontosan ugyanúgy néz ki, mint az eltárolt üzenet, még akkor is, ha a Wild Duck az üzenetet fa-szerű objektummá bontja és újraépíti lekéréskor.
+**Forward Email SQLite megvalósítása:**
 
-**Forward Email's SQLite Implementation:**
+A Forward Email ezt a megközelítést alkalmazza titkosított SQLite tároláshoz a következő folyamat szerint:
 
-Forward Email adapts this approach for encrypted SQLite storage with the following process:
+1. **Hash számítás**: Amikor egy csatolmányt talál, a csatolmány törzséből a [`rev-hash`](https://github.com/sindresorhus/rev-hash) könyvtár segítségével hash-t számol
+2. **Lekérdezés**: Ellenőrzi, hogy létezik-e a `Attachments` táblában olyan csatolmány, amelynek egyezik a hash-e
+3. **Hivatkozásszámlálás**:
+   * Ha létezik: Növeli a hivatkozás számlálót 1-gyel és a varázsszámlálót véletlenszerű számmal
+   * Ha új: Új csatolmány bejegyzést hoz létre számláló = 1 értékkel
+4. **Törlés biztonság**: Kettős számláló rendszert használ (hivatkozás + varázs), hogy megakadályozza a téves törléseket
+5. **Szemétgyűjtés**: A csatolmányokat azonnal törli, amikor mindkét számláló nulla lesz
 
-1. **Hash Calculation**: When an attachment is found, a hash is calculated using the [`rev-hash`](https://github.com/sindresorhus/rev-hash) library from the attachment body
-2. **Lookup**: Check if an attachment with matching hash exists in the `Attachments` table
-3. **Reference Counting**:
-   * If exists: Increment reference counter by 1 and magic counter by random number
-   * If new: Create new attachment entry with counter = 1
-4. **Deletion Safety**: Uses dual-counter system (reference + magic) to prevent false positives
-5. **Garbage Collection**: Attachments are deleted immediately when both counters reach zero
-
-**Source Code:** [`helpers/attachment-storage.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/attachment-storage.js)
+**Forráskód:** [`helpers/attachment-storage.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/attachment-storage.js)
 
 ### Deduplication Flow {#deduplication-flow}
 
 ```mermaid
 sequenceDiagram
-    participant Email as New Email
-    participant Parser as MIME Parser
-    participant Hash as Hash Calculator
-    participant DB as SQLite Database
-    participant Storage as Attachment Storage
+    participant Email as Új Email
+    participant Parser as MIME Elemző
+    participant Hash as Hash Számoló
+    participant DB as SQLite Adatbázis
+    participant Storage as Csatolmány Tároló
 
-    Email->>Parser: Parse MIME tree
-    Parser->>Hash: Extract attachment body
-    Hash->>Hash: Calculate rev-hash
-    Hash->>DB: Query: SELECT * WHERE hash=?
+    Email->>Parser: MIME fa elemzése
+    Parser->>Hash: Csatolmány törzs kinyerése
+    Hash->>Hash: rev-hash számítása
+    Hash->>DB: Lekérdezés: SELECT * WHERE hash=?
 
-    alt Attachment Exists
-        DB-->>Storage: Found (increment counters)
+    alt Csatolmány létezik
+        DB-->>Storage: Megtalálva (számlálók növelése)
         Storage->>DB: UPDATE counter+1, magic+random
-        DB-->>Email: Reference existing attachment
-    else New Attachment
-        Storage->>DB: INSERT new attachment
-        DB-->>Email: Store new attachment
+        DB-->>Email: Meglévő csatolmány hivatkozása
+    else Új csatolmány
+        Storage->>DB: Új csatolmány beszúrása
+        DB-->>Email: Új csatolmány tárolása
     end
 ```
 
-### Magic Number System {#magic-number-system}
+### Varázsszám rendszer {#magic-number-system}
 
-Forward Email uses WildDuck's "magic number" system (inspired by [Mail.ru](https://github.com/zone-eu/wildduck)) to prevent false positives during deletion:
+A Forward Email a WildDuck "varázsszám" rendszerét használja (a [Mail.ru](https://github.com/zone-eu/wildduck) ihlette) a téves törlések elkerülésére:
 
-* Every message gets a **random number** assigned
-* Attachment's **magic counter** is incremented by that random number when message is added
-* Magic counter is decremented by the same number when message is deleted
-* Attachment is only deleted when **both counters** (reference + magic) reach zero
+* Minden üzenethez **véletlenszám** van rendelve
+* A csatolmány **varázsszámlálója** az üzenet hozzáadásakor a véletlenszámmal növekszik
+* A varázsszámláló ugyanazzal a számmal csökken, amikor az üzenetet törlik
+* A csatolmány csak akkor törlődik, ha **mindkét számláló** (hivatkozás + varázs) nulla lesz
 
-This dual-counter system ensures that if something goes wrong during deletion (e.g., crash, network error), the attachment is not deleted prematurely.
+Ez a kettős számláló rendszer biztosítja, hogy ha valami hiba történik törlés közben (pl. összeomlás, hálózati hiba), a csatolmány ne törlődjön idő előtt.
 
-### Key Differences: WildDuck vs Forward Email {#key-differences-wildduck-vs-forward-email}
+### Fő különbségek: WildDuck vs Forward Email {#key-differences-wildduck-vs-forward-email}
 
-| Feature | WildDuck (MongoDB) | Forward Email (SQLite) |
-| ---------------------- | ------------------------ | ---------------------------- |
-| **Storage Backend** | MongoDB GridFS (chunked) | SQLite BLOB (direct) |
-| **Hash Algorithm** | SHA256 | rev-hash (SHA-256 based) |
-| **Reference Counting** | ✅ Yes | ✅ Yes |
-| **Magic Numbers** | ✅ Yes (Mail.ru inspired) | ✅ Yes (same system) |
-| **Garbage Collection** | Delayed (separate job) | Immediate (on zero counters) |
-| **Compression** | ❌ None | ✅ Brotli (see below) |
-| **Encryption** | ❌ Optional | ✅ Always (ChaCha20-Poly1305) |
+| Jellemző               | WildDuck (MongoDB)        | Forward Email (SQLite)       |
+| ---------------------- | ------------------------- | ---------------------------- |
+| **Tároló háttér**      | MongoDB GridFS (darabolt) | SQLite BLOB (közvetlen)      |
+| **Hash algoritmus**    | SHA256                    | rev-hash (SHA-256 alapú)     |
+| **Hivatkozásszámlálás**| ✅ Igen                   | ✅ Igen                      |
+| **Varázsszámok**       | ✅ Igen (Mail.ru ihlette) | ✅ Igen (ugyanaz a rendszer) |
+| **Szemétgyűjtés**      | Késleltetett (külön feladat) | Azonnali (nulla számlálóknál) |
+| **Tömörítés**          | ❌ Nincs                  | ✅ Brotli (lásd lent)         |
+| **Titkosítás**         | ❌ Opcionális             | ✅ Mindig (ChaCha20-Poly1305) |
 
 ---
 
-## Brotli Compression {#brotli-compression}
+
+## Brotli tömörítés {#brotli-compression}
 
 > \[!IMPORTANT]
-> **World's First:** Forward Email is the **only email service in the world** that uses Brotli compression on email content. This provides **46-86% storage savings** on top of attachment deduplication.
+> **Világelső:** A Forward Email az **egyedüli e-mail szolgáltatás a világon**, amely Brotli tömörítést használ az e-mail tartalmakon. Ez további **46-86%-os tárhelymegtakarítást** biztosít a csatolmány deduplikáció mellett.
 
-Forward Email implements Brotli compression for both attachment bodies and message metadata, providing massive storage savings while maintaining backwards compatibility.
+A Forward Email a Brotli tömörítést alkalmazza mind a csatolmány törzsek, mind az üzenet metaadatok esetén, hatalmas tárhelymegtakarítást nyújtva, miközben megőrzi a visszafelé kompatibilitást.
 
-**Implementation:** [`helpers/msgpack-helpers.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/msgpack-helpers.js)
+**Megvalósítás:** [`helpers/msgpack-helpers.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/msgpack-helpers.js)
 
-### What Gets Compressed {#what-gets-compressed}
+### Mi tömörül {#what-gets-compressed}
 
-**1. Attachment Bodies** (`encodeAttachmentBody`)
+**1. Csatolmány törzsek** (`encodeAttachmentBody`)
 
-* **Old formats**: Hex-encoded string (2x size) or raw Buffer
-* **New format**: Brotli-compressed Buffer with "FEBR" magic header
-* **Compression decision**: Only compresses if it saves space (accounts for 4-byte header)
-* **Storage savings**: Up to **50%** (hex → native BLOB)
+* **Régi formátumok**: Hex-kódolt string (2x méret) vagy nyers Buffer
+* **Új formátum**: Brotli-val tömörített Buffer "FEBR" varázs fejlécjel
+* **Tömörítési döntés**: Csak akkor tömörít, ha helyet spórol (figyelembe veszi a 4 bájtos fejlécet)
+* **Tárhelymegtakarítás**: Akár **50%** (hex → natív BLOB)
+**2. Üzenet metaadatok** (`encodeMetadata`)
 
-**2. Message Metadata** (`encodeMetadata`)
+Tartalmazza: `mimeTree`, `headers`, `envelope`, `flags`
 
-Includes: `mimeTree`, `headers`, `envelope`, `flags`
+* **Régi formátum**: JSON szöveges karakterlánc
+* **Új formátum**: Brotli-val tömörített Buffer
+* **Tárolási megtakarítás**: **46-86%** az üzenet összetettségétől függően
 
-* **Old format**: JSON text string
-* **New format**: Brotli-compressed Buffer
-* **Storage savings**: **46-86%** depending on message complexity
-
-### Compression Configuration {#compression-configuration}
+### Tömörítési beállítások {#compression-configuration}
 
 ```javascript
-// Brotli compression options optimized for speed (level 4 is a good balance)
+// Brotli tömörítési opciók, sebességre optimalizálva (a 4-es szint jó egyensúly)
 const BROTLI_COMPRESS_OPTIONS = {
   params: {
     [zlib.constants.BROTLI_PARAM_QUALITY]: 4
@@ -1504,44 +1498,44 @@ const BROTLI_COMPRESS_OPTIONS = {
 };
 ```
 
-**Why Level 4?**
+**Miért a 4-es szint?**
 
-* **Fast compression/decompression**: Sub-millisecond processing
-* **Good compression ratio**: 46-86% savings
-* **Balanced performance**: Optimal for real-time email operations
+* **Gyors tömörítés/kicsomagolás**: Alatti milliszekundumos feldolgozás
+* **Jó tömörítési arány**: 46-86% megtakarítás
+* **Kiegyensúlyozott teljesítmény**: Optimális valós idejű e-mail műveletekhez
 
-### Magic Header: "FEBR" {#magic-header-febr}
+### Varázscímke: "FEBR" {#magic-header-febr}
 
-Forward Email uses a 4-byte magic header to identify compressed attachment bodies:
+A Forward Email egy 4 bájtos varázscímkét használ a tömörített csatolmánytartalmak azonosítására:
 
 ```
 "FEBR" = Forward Email BRotli
 Hex: 0x46 0x45 0x42 0x52
 ```
 
-**Why a magic header?**
+**Miért varázscímke?**
 
-* **Format detection**: Instantly identify compressed vs uncompressed data
-* **Backwards compatibility**: Old hex strings and raw Buffers still work
-* **Collision avoidance**: "FEBR" is unlikely to appear at the start of legitimate attachment data
+* **Formátum felismerés**: Azonnal azonosítja a tömörített és nem tömörített adatokat
+* **Visszafelé kompatibilitás**: A régi hex karakterláncok és nyers Bufferek továbbra is működnek
+* **Ütközés elkerülése**: A "FEBR" valószínűtlen, hogy egy jogos csatolmány adat elején megjelenik
 
-### Compression Process {#compression-process}
+### Tömörítési folyamat {#compression-process}
 
 ```mermaid
 flowchart TB
-    Input[Attachment Body or Metadata]
-    CheckType{Data Type?}
-    Compress[Brotli Compress<br/>Level 4]
-    CheckSize{Compressed<br/>Smaller?}
-    AddHeader[Add FEBR<br/>Magic Header]
+    Input[Csatolmány tartalom vagy metaadat]
+    CheckType{Adattípus?}
+    Compress[Brotli tömörítés<br/>4-es szint]
+    CheckSize{Tömörített<br/>kisebb?}
+    AddHeader[Hozzáad FEBR<br/>varázscímkét]
     Store[(SQLite BLOB)]
 
     Input --> CheckType
-    CheckType -->|Attachment| Compress
-    CheckType -->|Metadata| Compress
+    CheckType -->|Csatolmány| Compress
+    CheckType -->|Metaadat| Compress
     Compress --> CheckSize
-    CheckSize -->|Yes| AddHeader
-    CheckSize -->|No| StoreRaw[Store Uncompressed]
+    CheckSize -->|Igen| AddHeader
+    CheckSize -->|Nem| StoreRaw[Tárolás tömörítés nélkül]
     AddHeader --> Store
     StoreRaw --> Store
 
@@ -1549,298 +1543,296 @@ flowchart TB
     style Store fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
-### Decompression Process {#decompression-process}
+### Kicsomagolási folyamat {#decompression-process}
 
 ```mermaid
 flowchart TB
-    Read[(Read from SQLite)]
-    CheckFormat{Format?}
-    HasMagic{Has FEBR<br/>Header?}
-    Decompress[Brotli Decompress]
-    ParseJSON[Parse JSON]
-    HexDecode[Hex Decode]
-    Return[Return Data]
+    Read[(Beolvasás SQLite-ból)]
+    CheckFormat{Formátum?}
+    HasMagic{Van FEBR<br/>címke?}
+    Decompress[Brotli kicsomagolás]
+    ParseJSON[JSON elemzés]
+    HexDecode[Hex dekódolás]
+    Return[Adat visszaadása]
 
     Read --> CheckFormat
     CheckFormat -->|Buffer| HasMagic
-    CheckFormat -->|String| IsJSON{Is JSON?}
-    HasMagic -->|Yes| Decompress
-    HasMagic -->|No| Return
+    CheckFormat -->|Karakterlánc| IsJSON{JSON-e?}
+    HasMagic -->|Igen| Decompress
+    HasMagic -->|Nem| Return
     Decompress --> Return
-    IsJSON -->|Yes| ParseJSON
-    IsJSON -->|No| HexDecode
+    IsJSON -->|Igen| ParseJSON
+    IsJSON -->|Nem| HexDecode
     ParseJSON --> Return
     HexDecode --> Return
 
     style Decompress fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-### Backwards Compatibility {#backwards-compatibility}
+### Visszafelé kompatibilitás {#backwards-compatibility}
 
-All decode functions **auto-detect** the storage format:
+Minden dekódoló függvény **automatikusan felismeri** a tárolási formátumot:
 
-| Format | Detection Method | Handling |
-| --------------------- | -------------------------------------- | --------------------------------------------- |
-| **Brotli-compressed** | Check for "FEBR" magic header | Decompress with `zlib.brotliDecompressSync()` |
-| **Raw Buffer** | `Buffer.isBuffer()` without magic | Return as-is |
-| **Hex string** | Check for even length + [0-9a-f] chars | Decode with `Buffer.from(value, 'hex')` |
-| **JSON string** | Check for `{` or `[` first character | Parse with `JSON.parse()` |
+| Formátum              | Felismerési mód                        | Kezelés                                      |
+| --------------------- | ------------------------------------ | -------------------------------------------- |
+| **Brotli tömörített** | "FEBR" varázscímke ellenőrzése       | Kicsomagolás `zlib.brotliDecompressSync()`-vel |
+| **Nyers Buffer**      | `Buffer.isBuffer()` varázscímke nélkül | Változtatás nélkül visszaadva                 |
+| **Hex karakterlánc**  | Páros hossz + [0-9a-f] karakterek ellenőrzése | Dekódolás `Buffer.from(value, 'hex')` segítségével |
+| **JSON karakterlánc** | Első karakter `{` vagy `[`           | Elemzés `JSON.parse()` segítségével          |
 
-This ensures **zero data loss** during migration from old to new storage formats.
+Ez biztosítja a **nulla adatvesztést** a régi és új tárolási formátumok közötti migráció során.
 
-### Storage Savings Statistics {#storage-savings-statistics}
+### Tárolási megtakarítás statisztikák {#storage-savings-statistics}
 
-**Measured savings from production data:**
+**Mért megtakarítások éles adatok alapján:**
 
-| Data Type | Old Format | New Format | Savings |
-| --------------------- | ----------------------- | ---------------------- | ---------- |
-| **Attachment bodies** | Hex-encoded string (2x) | Brotli-compressed BLOB | **50%** |
-| **Message metadata** | JSON text | Brotli-compressed BLOB | **46-86%** |
-| **Mailbox flags** | JSON text | Brotli-compressed BLOB | **60-80%** |
+| Adattípus             | Régi formátum           | Új formátum            | Megtakarítás |
+| --------------------- | ----------------------- | ---------------------- | ------------ |
+| **Csatolmány tartalom** | Hex-kódolt karakterlánc (2x) | Brotli tömörített BLOB | **50%**      |
+| **Üzenet metaadatok**  | JSON szöveg             | Brotli tömörített BLOB  | **46-86%**   |
+| **Postafiók jelölők**  | JSON szöveg             | Brotli tömörített BLOB  | **60-80%**   |
 
-**Source:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
+**Forrás:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
 
-### Migration Process {#migration-process}
+### Migrációs folyamat {#migration-process}
 
-Forward Email provides automatic, idempotent migration from old to new storage formats:
-
-```javascript
-// Migration statistics tracked:
+A Forward Email automatikus, idempotens migrációt biztosít a régi és új tárolási formátumok között:
+// Követett migrációs statisztikák:
 {
   attachmentsMigrated: 0,
   messagesMigrated: 0,
   mailboxesMigrated: 0,
-  bytesSaved: 0  // Total bytes saved from compression
+  bytesSaved: 0  // Összes tömörítéssel megtakarított bájt
 }
 ```
 
-**Migration steps:**
+**Migrációs lépések:**
 
-1. Attachment bodies: hex encoding → native BLOB (50% savings)
-2. Message metadata: JSON text → brotli-compressed BLOB (46-86% savings)
-3. Mailbox flags: JSON text → brotli-compressed BLOB (60-80% savings)
+1. Melléklet törzsek: hex kódolás → natív BLOB (50% megtakarítás)
+2. Üzenet metaadatok: JSON szöveg → brotli-tömörített BLOB (46-86% megtakarítás)
+3. Postafiók jelzők: JSON szöveg → brotli-tömörített BLOB (60-80% megtakarítás)
 
-**Source:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
-
----
-
-### Combined Storage Efficiency {#combined-storage-efficiency}
-
-> \[!TIP]
-> **Real-World Impact:** With attachment deduplication + Brotli compression, Forward Email users get **2-3x more effective storage** compared to traditional email providers.
-
-**Example Scenario:**
-
-Traditional email provider (1GB mailbox):
-
-* 1GB disk space = 1GB of emails
-* No deduplication: Same attachment stored 10 times = 10x storage waste
-* No compression: Full JSON metadata stored = 2-3x storage waste
-
-Forward Email (1GB mailbox):
-
-* 1GB disk space ≈ **2-3GB of emails** (effective storage)
-* Deduplication: Same attachment stored once, referenced 10 times
-* Compression: 46-86% savings on metadata, 50% on attachments
-* Encryption: ChaCha20-Poly1305 (no storage overhead)
-
-**Comparison Table:**
-
-| Provider | Storage Technology | Effective Storage (1GB mailbox) |
-| ----------------- | -------------------------------------------- | ------------------------------- |
-| Gmail | None | 1GB |
-| iCloud | None | 1GB |
-| Outlook.com | None | 1GB |
-| Fastmail | None | 1GB |
-| ProtonMail | Encryption only | 1GB |
-| Tutanota | Encryption only | 1GB |
-| **Forward Email** | **Deduplication + Compression + Encryption** | **2-3GB** ✨ |
-
-### Technical Implementation Details {#technical-implementation-details}
-
-**Performance:**
-
-* Brotli level 4: Sub-millisecond compression/decompression
-* No performance penalty from compression
-* SQLite FTS5: Sub-50ms search with NVMe SSD
-
-**Security:**
-
-* Compression happens **after** encryption (SQLite database is encrypted)
-* ChaCha20-Poly1305 encryption + Brotli compression
-* Zero-knowledge: Only user has decryption password
-
-**RFC Compliance:**
-
-* Messages retrieved look **exactly the same** as stored
-* DKIM signatures remain valid (encoded content preserved)
-* GPG signatures remain valid (no modification to signed content)
-
-### Why No Other Provider Does This {#why-no-other-provider-does-this}
-
-**Complexity:**
-
-* Requires deep integration with storage layer
-* Backwards compatibility is challenging
-* Migration from old formats is complex
-
-**Performance concerns:**
-
-* Compression adds CPU overhead (solved with Brotli level 4)
-* Decompression on every read (solved with SQLite caching)
-
-**Forward Email's Advantage:**
-
-* Built from the ground up with optimization in mind
-* SQLite allows direct BLOB manipulation
-* Encrypted per-user databases enable safe compression
+**Forrás:** [`helpers/migrate-storage-format.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/migrate-storage-format.js)
 
 ---
 
+### Kombinált tárolási hatékonyság {#combined-storage-efficiency}
+
+> \[!TIP]
+> **Valós hatás:** Melléklet duplikáció + Brotli tömörítés mellett a Forward Email felhasználók **2-3x hatékonyabb tárolást** kapnak a hagyományos e-mail szolgáltatókhoz képest.
+
+**Példa forgatókönyv:**
+
+Hagyományos e-mail szolgáltató (1GB postafiók):
+
+* 1GB lemezterület = 1GB e-mailek
+* Nincs duplikáció: Ugyanaz a melléklet 10-szer tárolva = 10x tárolási pazarlás
+* Nincs tömörítés: Teljes JSON metaadat tárolva = 2-3x tárolási pazarlás
+
+Forward Email (1GB postafiók):
+
+* 1GB lemezterület ≈ **2-3GB e-mail** (hatékony tárolás)
+* Duplikáció: Ugyanaz a melléklet egyszer tárolva, 10-szer hivatkozva
+* Tömörítés: 46-86% megtakarítás metaadaton, 50% mellékleteken
+* Titkosítás: ChaCha20-Poly1305 (nincs tárolási többletterhelés)
+
+**Összehasonlító táblázat:**
+
+| Szolgáltató       | Tárolási technológia                         | Hatékony tárolás (1GB postafiók) |
+| ----------------- | -------------------------------------------- | -------------------------------- |
+| Gmail             | Nincs                                        | 1GB                             |
+| iCloud            | Nincs                                        | 1GB                             |
+| Outlook.com       | Nincs                                        | 1GB                             |
+| Fastmail          | Nincs                                        | 1GB                             |
+| ProtonMail        | Csak titkosítás                              | 1GB                             |
+| Tutanota          | Csak titkosítás                              | 1GB                             |
+| **Forward Email** | **Duplikáció + Tömörítés + Titkosítás**      | **2-3GB** ✨                     |
+
+### Műszaki megvalósítás részletei {#technical-implementation-details}
+
+**Teljesítmény:**
+
+* Brotli 4-es szint: Másodperc töredéke alatti tömörítés/kibontás
+* Nincs teljesítménycsökkenés a tömörítés miatt
+* SQLite FTS5: 50ms alatti keresés NVMe SSD-n
+
+**Biztonság:**
+
+* Tömörítés **titkosítás után** történik (az SQLite adatbázis titkosított)
+* ChaCha20-Poly1305 titkosítás + Brotli tömörítés
+* Zero-knowledge: Csak a felhasználónak van dekódoló jelszava
+
+**RFC megfelelőség:**
+
+* Az üzenetek lekérése **pontosan olyan**, mint a tárolt állapot
+* DKIM aláírások érvényesek maradnak (kódolt tartalom megőrizve)
+* GPG aláírások érvényesek maradnak (aláírt tartalom nem módosul)
+
+### Miért nem csinálja ezt más szolgáltató {#why-no-other-provider-does-this}
+
+**Bonyolultság:**
+
+* Mély integrációt igényel a tárolási réteggel
+* Visszafelé kompatibilitás nehézségei
+* Régi formátumokról migráció összetett
+
+**Teljesítmény aggályok:**
+
+* Tömörítés CPU terhelést ad (megoldva Brotli 4-es szinttel)
+* Kibontás minden olvasáskor (megoldva SQLite gyorsítótárazással)
+
+**Forward Email előnye:**
+
+* Alapoktól optimalizálva
+* SQLite lehetővé teszi közvetlen BLOB kezelést
+* Felhasználónként titkosított adatbázisok biztonságos tömörítést tesznek lehetővé
+
 ---
 
-## Modern Features {#modern-features}
+---
 
-## Complete REST API for Email Management {#complete-rest-api-for-email-management}
+
+## Modern funkciók {#modern-features}
+
+
+## Teljes REST API e-mail kezeléshez {#complete-rest-api-for-email-management}
 
 > \[!TIP]
-> Forward Email provides a comprehensive REST API with 39 endpoints for programmatic email management.
+> A Forward Email átfogó REST API-t kínál 39 végponttal a programozott e-mail kezeléshez.
 
 > \[!TIP]
-> **Unique Industry Feature:** Unlike every other email service, Forward Email provides complete programmatic access to your mailbox, calendar, contacts, messages, and folders via a comprehensive REST API. This is direct interaction with your encrypted SQLite database file storing all your data.
+> **Egyedi iparági funkció:** Minden más e-mail szolgáltatóval ellentétben a Forward Email teljes programozott hozzáférést biztosít postafiókodhoz, naptáradhoz, névjegyeidhez, üzeneteidhez és mappáidhoz egy átfogó REST API-n keresztül. Ez közvetlen interakció a titkosított SQLite adatbázis fájloddal, amely az összes adatodat tárolja.
 
-Forward Email offers a complete REST API that provides unprecedented access to your email data. No other email service (including Gmail, iCloud, Outlook, ProtonMail, Tuta, or Fastmail) offers this level of comprehensive, direct database access.
+A Forward Email teljes REST API-t kínál, amely páratlan hozzáférést biztosít e-mail adataidhoz. Egyetlen más e-mail szolgáltató (beleértve a Gmailt, iCloudot, Outlookot, ProtonMailt, Tutát vagy Fastmailt) sem kínál ilyen szintű átfogó, közvetlen adatbázis hozzáférést.
+**API Dokumentáció:** <https://forwardemail.net/en/email-api>
 
-**API Documentation:** <https://forwardemail.net/en/email-api>
+### API Kategóriák (39 végpont) {#api-categories-39-endpoints}
 
-### API Categories (39 Endpoints) {#api-categories-39-endpoints}
+**1. Üzenetek API** (5 végpont) - Teljes CRUD műveletek e-mail üzenetekre:
 
-**1. Messages API** (5 endpoints) - Full CRUD operations on email messages:
+* `GET /v1/messages` - Üzenetek listázása 15+ fejlett keresési paraméterrel (más szolgáltatás nem kínál ilyet)
+* `POST /v1/messages` - Üzenetek létrehozása/küldése
+* `GET /v1/messages/:id` - Üzenet lekérése
+* `PUT /v1/messages/:id` - Üzenet frissítése (jelölők, mappák)
+* `DELETE /v1/messages/:id` - Üzenet törlése
 
-* `GET /v1/messages` - List messages with 15+ advanced search parameters (no other service offers this)
-* `POST /v1/messages` - Create/send messages
-* `GET /v1/messages/:id` - Retrieve message
-* `PUT /v1/messages/:id` - Update message (flags, folders)
-* `DELETE /v1/messages/:id` - Delete message
-
-*Example: Find all invoices from last quarter with attachments:*
+*Példa: Találd meg az összes mellékletet tartalmazó számlát az elmúlt negyedévből:*
 
 ```bash
 curl -u "alias@domain.com:password" \
   "https://api.forwardemail.net/v1/messages?q=subject:invoice+has:attachment+after:2024-01-01+before:2024-04-01"
 ```
 
-See [Advanced Search Documentation](https://forwardemail.net/en/email-api)
+Lásd [Fejlett Keresés Dokumentáció](https://forwardemail.net/en/email-api)
 
-**2. Folders API** (5 endpoints) - Full IMAP folder management via REST:
+**2. Mappák API** (5 végpont) - Teljes IMAP mappa kezelés REST-en keresztül:
 
-* `GET /v1/folders` - List all folders
-* `POST /v1/folders` - Create folder
-* `GET /v1/folders/:id` - Retrieve folder
-* `PUT /v1/folders/:id` - Update folder
-* `DELETE /v1/folders/:id` - Delete folder
+* `GET /v1/folders` - Mappák listázása
+* `POST /v1/folders` - Mappa létrehozása
+* `GET /v1/folders/:id` - Mappa lekérése
+* `PUT /v1/folders/:id` - Mappa frissítése
+* `DELETE /v1/folders/:id` - Mappa törlése
 
-**3. Contacts API** (5 endpoints) - CardDAV contact storage via REST:
+**3. Kapcsolatok API** (5 végpont) - CardDAV névjegyek tárolása REST-en keresztül:
 
-* `GET /v1/contacts` - List contacts
-* `POST /v1/contacts` - Create contact (vCard format)
-* `GET /v1/contacts/:id` - Retrieve contact
-* `PUT /v1/contacts/:id` - Update contact
-* `DELETE /v1/contacts/:id` - Delete contact
+* `GET /v1/contacts` - Kapcsolatok listázása
+* `POST /v1/contacts` - Kapcsolat létrehozása (vCard formátumban)
+* `GET /v1/contacts/:id` - Kapcsolat lekérése
+* `PUT /v1/contacts/:id` - Kapcsolat frissítése
+* `DELETE /v1/contacts/:id` - Kapcsolat törlése
 
-**4. Calendars API** (5 endpoints) - Calendar container management:
+**4. Naptárak API** (5 végpont) - Naptár konténerek kezelése:
 
-* `GET /v1/calendars` - List calendar containers
-* `POST /v1/calendars` - Create calendar (e.g., "Work Calendar", "Personal Calendar")
-* `GET /v1/calendars/:id` - Retrieve calendar
-* `PUT /v1/calendars/:id` - Update calendar
-* `DELETE /v1/calendars/:id` - Delete calendar
+* `GET /v1/calendars` - Naptár konténerek listázása
+* `POST /v1/calendars` - Naptár létrehozása (pl. „Munka Naptár”, „Személyes Naptár”)
+* `GET /v1/calendars/:id` - Naptár lekérése
+* `PUT /v1/calendars/:id` - Naptár frissítése
+* `DELETE /v1/calendars/:id` - Naptár törlése
 
-**5. Calendar Events API** (5 endpoints) - Event scheduling within calendars:
+**5. Naptári Események API** (5 végpont) - Események ütemezése naptárakon belül:
 
-* `GET /v1/calendar-events` - List events
-* `POST /v1/calendar-events` - Create event with attendees
-* `GET /v1/calendar-events/:id` - Retrieve event
-* `PUT /v1/calendar-events/:id` - Update event
-* `DELETE /v1/calendar-events/:id` - Delete event
+* `GET /v1/calendar-events` - Események listázása
+* `POST /v1/calendar-events` - Esemény létrehozása résztvevőkkel
+* `GET /v1/calendar-events/:id` - Esemény lekérése
+* `PUT /v1/calendar-events/:id` - Esemény frissítése
+* `DELETE /v1/calendar-events/:id` - Esemény törlése
 
-*Example: Create a calendar event:*
+*Példa: Naptári esemény létrehozása:*
 
 ```bash
 curl -u "alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
-  -d '{"title":"Team Meeting","start":"2024-12-20T10:00:00Z","attendees":["team@example.com"],"calendar_id":"calendar123"}' \
+  -d '{"title":"Csapatmegbeszélés","start":"2024-12-20T10:00:00Z","attendees":["team@example.com"],"calendar_id":"calendar123"}' \
   https://api.forwardemail.net/v1/calendar-events
 ```
 
-### Technical Details {#technical-details}
+### Műszaki Részletek {#technical-details}
 
-* **Authentication:** Simple `alias:password` authentication (no OAuth complexity)
-* **Performance:** Sub-50ms response times with SQLite FTS5 and NVMe SSD storage
-* **Zero Network Latency:** Direct database access, not proxied through external services
+* **Hitelesítés:** Egyszerű `alias:jelszó` hitelesítés (nincs OAuth bonyolultság)
+* **Teljesítmény:** 50 ms alatti válaszidők SQLite FTS5 és NVMe SSD tárolással
+* **Zéró hálózati késleltetés:** Közvetlen adatbázis-hozzáférés, nem külső szolgáltatáson keresztül
 
-### Real-World Use Cases {#real-world-use-cases}
+### Valós Használati Esetek {#real-world-use-cases}
 
-* **Email Analytics:** Build custom dashboards tracking email volume, response times, sender statistics
+* **E-mail elemzés:** Egyedi irányítópultok készítése az e-mail forgalom, válaszidők, feladó statisztikák nyomon követésére
 
-* **Automated Workflows:** Trigger actions based on email content (invoice processing, support tickets)
+* **Automatizált munkafolyamatok:** Műveletek indítása e-mail tartalom alapján (számlakezelés, ügyfélszolgálati jegyek)
 
-* **CRM Integration:** Sync email conversations with your CRM automatically
+* **CRM integráció:** E-mail beszélgetések automatikus szinkronizálása CRM rendszerrel
 
-* **Compliance & Discovery:** Search and export emails for legal/compliance requirements
+* **Megfelelőség & Keresés:** E-mailek keresése és exportálása jogi/megfelelőségi követelményekhez
 
-* **Custom Email Clients:** Build specialized email interfaces for your workflow
+* **Egyedi e-mail kliensek:** Speciális e-mail felületek építése munkafolyamataidhoz
 
-* **Business Intelligence:** Analyze communication patterns, response rates, customer engagement
+* **Üzleti intelligencia:** Kommunikációs minták, válaszadási arányok, ügyfél-elköteleződés elemzése
 
-* **Document Management:** Extract and categorize attachments automatically
+* **Dokumentumkezelés:** Mellékletek automatikus kinyerése és kategorizálása
 
-* [Complete Documentation](https://forwardemail.net/en/email-api)
+* [Teljes Dokumentáció](https://forwardemail.net/en/email-api)
 
-* [Complete API Reference](https://forwardemail.net/en/email-api)
+* [Teljes API Referencia](https://forwardemail.net/en/email-api)
 
-* [Advanced Search Guide](https://forwardemail.net/en/email-api)
+* [Fejlett Keresési Útmutató](https://forwardemail.net/en/email-api)
 
-* [30+ Integration Examples](https://forwardemail.net/en/email-api)
+* [30+ Integrációs Példa](https://forwardemail.net/en/email-api)
 
-* [Technical Architecture](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)
+* [Műszaki Architektúra](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)
 
-Forward Email offers a modern REST API that provides full control over email accounts, domains, aliases, and messages. This API serves as a powerful alternative to JMAP and provides functionality beyond traditional email protocols.
+A Forward Email modern REST API-t kínál, amely teljes irányítást biztosít e-mail fiókok, domainek, aliasok és üzenetek felett. Ez az API erőteljes alternatívája a JMAP-nak, és a hagyományos e-mail protokollokon túlmutató funkcionalitást nyújt.
 
-| Category | Endpoints | Description |
-| ----------------------- | --------- | --------------------------------------- |
-| **Account Management** | 8 | User accounts, authentication, settings |
-| **Domain Management** | 12 | Custom domains, DNS, verification |
-| **Alias Management** | 6 | Email aliases, forwarding, catch-all |
-| **Message Management** | 7 | Send, receive, search, delete messages |
-| **Calendar & Contacts** | 4 | CalDAV/CardDAV access via API |
-| **Logs & Analytics** | 2 | Email logs, delivery reports |
+| Kategória               | Végpontok | Leírás                                |
+| ----------------------- | --------- | ------------------------------------ |
+| **Fiókkezelés**         | 8         | Felhasználói fiókok, hitelesítés, beállítások |
+| **Domain Kezelés**      | 12        | Egyedi domainek, DNS, ellenőrzés     |
+| **Alias Kezelés**       | 6         | E-mail aliasok, továbbítás, catch-all |
+| **Üzenetkezelés**       | 7         | Üzenetek küldése, fogadása, keresése, törlése |
+| **Naptár & Kapcsolatok**| 4         | CalDAV/CardDAV hozzáférés API-n keresztül |
+| **Naplók & Elemzések**  | 2         | E-mail naplók, kézbesítési jelentések |
+### Fő API Jellemzők {#key-api-features}
 
-### Key API Features {#key-api-features}
+**Fejlett Keresés:**
 
-**Advanced Search:**
-
-The API provides powerful search capabilities with query syntax similar to Gmail:
+Az API erőteljes keresési lehetőségeket kínál, a lekérdezési szintaxis hasonló a Gmailhez:
 
 ```
 GET /v1/messages?q=subject:invoice+has:attachment+after:2024-01-01+before:2024-04-01
 ```
 
-**Supported Search Operators:**
+**Támogatott Keresési Operátorok:**
 
-* `from:` - Search by sender
-* `to:` - Search by recipient
-* `subject:` - Search by subject
-* `has:attachment` - Messages with attachments
-* `is:unread` - Unread messages
-* `is:starred` - Starred messages
-* `after:` - Messages after date
-* `before:` - Messages before date
-* `label:` - Messages with label
-* `filename:` - Attachment filename
+* `from:` - Küldő szerinti keresés
+* `to:` - Címzett szerinti keresés
+* `subject:` - Tárgy szerinti keresés
+* `has:attachment` - Mellékletet tartalmazó üzenetek
+* `is:unread` - Olvasatlan üzenetek
+* `is:starred` - Csillagozott üzenetek
+* `after:` - Dátum utáni üzenetek
+* `before:` - Dátum előtti üzenetek
+* `label:` - Címkével ellátott üzenetek
+* `filename:` - Melléklet fájlneve
 
-**Calendar Event Management:**
+**Naptári Eseménykezelés:**
 
 ```
 GET /v1/calendar-events
@@ -1849,50 +1841,50 @@ PUT /v1/calendar-events/:id
 DELETE /v1/calendar-events/:id
 ```
 
-**Webhook Integrations:**
+**Webhook Integrációk:**
 
-The API supports webhooks for real-time notifications of email events (received, sent, bounced, etc.).
+Az API támogatja a webhookokat az e-mail események (fogadott, küldött, visszapattant stb.) valós idejű értesítéséhez.
 
-**Authentication:**
+**Hitelesítés:**
 
-* API key authentication
-* OAuth 2.0 support
-* Rate limiting: 1000 requests/hour
+* API kulcs alapú hitelesítés
+* OAuth 2.0 támogatás
+* Kéréskorlátozás: 1000 kérés/óra
 
-**Data Format:**
+**Adatformátum:**
 
-* JSON request/response
-* RESTful design
-* Pagination support
+* JSON kérés/válasz
+* RESTful felépítés
+* Lapozás támogatás
 
-**Security:**
+**Biztonság:**
 
-* HTTPS only
-* API key rotation
-* IP whitelisting (optional)
-* Request signing (optional)
+* Csak HTTPS
+* API kulcs forgatás
+* IP fehérlista (opcionális)
+* Kérés aláírása (opcionális)
 
-### API Architecture {#api-architecture}
+### API Architektúra {#api-architecture}
 
 ```mermaid
 graph LR
-    subgraph "Client Applications"
+    subgraph "Kliens Alkalmazások"
         Web[Web App]
-        Mobile[Mobile App]
-        Script[Automation Script]
+        Mobile[Mobil App]
+        Script[Automatizációs Script]
     end
 
     subgraph "Forward Email API"
-        Auth[Authentication]
-        Routes[API Routes]
-        Logic[Business Logic]
+        Auth[Hitelesítés]
+        Routes[API Útvonalak]
+        Logic[Üzleti Logika]
     end
 
-    subgraph "Backend Services"
-        IMAP[IMAP Server]
-        SMTP[SMTP Server]
-        CalDAV[CalDAV Server]
-        DB[(SQLite Database)]
+    subgraph "Backend Szolgáltatások"
+        IMAP[IMAP Szerver]
+        SMTP[SMTP Szerver]
+        CalDAV[CalDAV Szerver]
+        DB[(SQLite Adatbázis)]
     end
 
     Web --> Auth
@@ -1912,183 +1904,184 @@ graph LR
 
 ---
 
-## iOS Push Notifications {#ios-push-notifications}
+
+## iOS Push Értesítések {#ios-push-notifications}
 
 > \[!TIP]
-> Forward Email supports native iOS push notifications through XAPPLEPUSHSERVICE for instant email delivery.
+> A Forward Email támogatja az iOS natív push értesítéseket az XAPPLEPUSHSERVICE-en keresztül az azonnali e-mail kézbesítéshez.
 
 > \[!IMPORTANT]
-> **Unique Feature:** Forward Email is one of the few open-source email servers that supports native iOS push notifications for email, contacts, and calendars via the `XAPPLEPUSHSERVICE` IMAP extension. This was reverse-engineered from Apple's protocol and provides instant delivery to iOS devices without battery drain.
+> **Egyedi Jellemző:** A Forward Email az egyik kevés nyílt forráskódú e-mail szerver, amely támogatja az iOS natív push értesítéseket e-mailek, névjegyek és naptárak esetén az `XAPPLEPUSHSERVICE` IMAP kiterjesztés segítségével. Ezt az Apple protokolljának visszafejtésével valósították meg, és az iOS eszközök számára azonnali kézbesítést biztosít akkumulátor lemerülése nélkül.
 
-Forward Email implements Apple's proprietary XAPPLEPUSHSERVICE extension, providing native push notifications for iOS devices without requiring background polling.
+A Forward Email megvalósítja az Apple saját XAPPLEPUSHSERVICE kiterjesztését, amely natív push értesítéseket biztosít iOS eszközök számára anélkül, hogy háttérben történő lekérdezést igényelne.
 
-### How It Works {#how-it-works-1}
+### Hogyan Működik {#how-it-works-1}
 
-**XAPPLEPUSHSERVICE** is a non-standard IMAP extension that allows iOS Mail app to receive instant push notifications when new emails arrive.
+**XAPPLEPUSHSERVICE** egy nem szabványos IMAP kiterjesztés, amely lehetővé teszi az iOS Mail alkalmazás számára, hogy az új e-mailek érkezésekor azonnali push értesítéseket kapjon.
 
-Forward Email implements the proprietary Apple Push Notification service (APNs) integration for IMAP, allowing iOS Mail app to receive instant push notifications when new emails arrive.
+A Forward Email megvalósítja az Apple Push Notification service (APNs) integrációját IMAP-hez, lehetővé téve az iOS Mail alkalmazás számára az azonnali push értesítések fogadását új e-mailek érkezésekor.
 
 ```mermaid
 sequenceDiagram
     participant Server as Forward Email
     participant APNS as Apple Push<br/>Notification Service
-    participant iOS as iOS Device
+    participant iOS as iOS Eszköz
     participant Mail as Mail App
 
-    iOS->>Server: Register for Push (XAPPLEPUSHSERVICE)
-    Server->>Server: Store device token
+    iOS->>Server: Regisztráció Push-ra (XAPPLEPUSHSERVICE)
+    Server->>Server: Eszköz token tárolása
 
-    Note over Server: New email arrives
+    Note over Server: Új e-mail érkezik
 
-    Server->>APNS: Send push notification
-    APNS->>iOS: Deliver notification
-    iOS->>Mail: Wake up Mail app
-    Mail->>Server: Fetch new messages (IMAP)
-    Server-->>Mail: Return new messages
-    Mail->>Mail: Display notification
+    Server->>APNS: Push értesítés küldése
+    APNS->>iOS: Értesítés kézbesítése
+    iOS->>Mail: Mail app felébresztése
+    Mail->>Server: Új üzenetek lekérése (IMAP)
+    Server-->>Mail: Új üzenetek visszaadása
+    Mail->>Mail: Értesítés megjelenítése
 ```
 
-### Key Features {#key-features}
+### Fő Jellemzők {#key-features}
 
-**Instant Delivery:**
+**Azonnali Kézbesítés:**
 
-* Push notifications arrive within seconds
-* No battery-draining background polling
-* Works even when Mail app is closed
+* A push értesítések másodpercek alatt megérkeznek
+* Nincs akkumulátort merítő háttér lekérdezés
+* Működik akkor is, ha a Mail app zárva van
 
 <!---->
 
-* **Instant Delivery:** Emails, calendar events, and contacts appear on your iPhone/iPad immediately, not on a polling schedule
-* **Battery Efficient:** Uses Apple's push infrastructure instead of maintaining constant IMAP connections
-* **Topic-Based Push:** Supports push notifications for specific mailboxes, not just INBOX
-* **No Third-Party Apps Required:** Works with the native iOS Mail, Calendar, and Contacts apps
+* **Azonnali Kézbesítés:** E-mailek, naptári események és névjegyek azonnal megjelennek iPhone/iPad készülékén, nem lekérdezési ütemezés szerint
+* **Akkumulátor Kímélő:** Az Apple push infrastruktúráját használja a folyamatos IMAP kapcsolat fenntartása helyett
+* **Témakör Alapú Push:** Támogatja a push értesítéseket konkrét postafiókokhoz, nem csak az INBOX-hoz
+* **Nincs Szükség Harmadik Fél Alkalmazásra:** Működik az iOS natív Mail, Naptár és Névjegyek alkalmazásaival
+**Natív integráció:**
 
-**Native Integration:**
+* Beépítve az iOS Mail alkalmazásba
+* Nincs szükség harmadik féltől származó alkalmazásokra
+* Zökkenőmentes felhasználói élmény
 
-* Built into iOS Mail app
-* No third-party apps required
-* Seamless user experience
+**Adatvédelem-központú:**
 
-**Privacy-Focused:**
+* Az eszköz tokenek titkosítva vannak
+* Nincs üzenettartalom elküldve az APNS-en keresztül
+* Csak "új levél" értesítés küldése
 
-* Device tokens are encrypted
-* No message content sent through APNS
-* Only "new mail" notification sent
+**Akkumulátor-kímélő:**
 
-**Battery Efficient:**
+* Nincs folyamatos IMAP lekérdezés
+* Az eszköz alszik, amíg értesítés nem érkezik
+* Minimális akkumulátorhatás
 
-* No constant IMAP polling
-* Device sleeps until notification arrives
-* Minimal battery impact
-
-### What Makes This Special {#what-makes-this-special}
+### Mi teszi ezt különlegessé {#what-makes-this-special}
 
 > \[!IMPORTANT]
-> Most email providers don't support XAPPLEPUSHSERVICE, forcing iOS devices to poll for new mail every 15 minutes.
+> A legtöbb e-mail szolgáltató nem támogatja az XAPPLEPUSHSERVICE-t, ezért az iOS eszközöknek 15 percenként kell lekérdezniük az új leveleket.
 
-Most open-source email servers (including Dovecot, Postfix, Cyrus IMAP) do NOT support iOS push notifications. Users must either:
+A legtöbb nyílt forráskódú e-mail szerver (beleértve a Dovecot, Postfix, Cyrus IMAP) NEM támogatja az iOS push értesítéseket. A felhasználóknak vagy:
 
-* Use IMAP IDLE (keeps connection open, drains battery)
-* Use polling (checks every 15-30 minutes, delayed notifications)
-* Use proprietary email apps with their own push infrastructure
+* IMAP IDLE-t kell használniuk (kapcsolat nyitva tartása, akkumulátor merül)
+* Lekérdezést kell használniuk (15-30 percenként ellenőriz, késleltetett értesítések)
+* Saját push infrastruktúrával rendelkező, saját e-mail alkalmazásokat kell használniuk
 
-Forward Email provides the same instant push notification experience as commercial services like Gmail, iCloud, and Fastmail.
+A Forward Email ugyanazt az azonnali push értesítési élményt nyújtja, mint a kereskedelmi szolgáltatások, például a Gmail, iCloud és Fastmail.
 
-**Comparison with Other Providers:**
+**Összehasonlítás más szolgáltatókkal:**
 
-| Provider | Push Support | Polling Interval | Battery Impact |
-| ----------------- | -------------- | ---------------- | -------------- |
-| **Forward Email** | ✅ Native Push | Instant | Minimal |
-| Gmail | ✅ Native Push | Instant | Minimal |
-| iCloud | ✅ Native Push | Instant | Minimal |
-| Yahoo | ✅ Native Push | Instant | Minimal |
-| Outlook.com | ❌ Polling | 15 minutes | Moderate |
-| Fastmail | ❌ Polling | 15 minutes | Moderate |
-| ProtonMail | ⚠️ Bridge only | Via Bridge | High |
-| Tutanota | ❌ App only | N/A | N/A |
+| Szolgáltató      | Push támogatás | Lekérdezési időköz | Akkumulátorhatás |
+| ---------------- | -------------- | ------------------ | ---------------- |
+| **Forward Email**| ✅ Natív push  | Azonnali           | Minimális        |
+| Gmail            | ✅ Natív push  | Azonnali           | Minimális        |
+| iCloud           | ✅ Natív push  | Azonnali           | Minimális        |
+| Yahoo            | ✅ Natív push  | Azonnali           | Minimális        |
+| Outlook.com      | ❌ Lekérdezés  | 15 perc            | Közepes          |
+| Fastmail         | ❌ Lekérdezés  | 15 perc            | Közepes          |
+| ProtonMail       | ⚠️ Csak bridge | Bridge-en keresztül| Magas            |
+| Tutanota         | ❌ Csak app    | N/A                | N/A              |
 
-### Implementation Details {#implementation-details}
+### Megvalósítás részletei {#implementation-details}
 
-**IMAP CAPABILITY Response:**
+**IMAP CAPABILITY válasz:**
 
 ```
 * CAPABILITY IMAP4rev1 ... XAPPLEPUSHSERVICE ...
 ```
 
-**Registration Process:**
+**Regisztrációs folyamat:**
 
-1. iOS Mail app detects XAPPLEPUSHSERVICE capability
-2. App registers device token with Forward Email
-3. Forward Email stores token and associates with account
-4. When new mail arrives, Forward Email sends push via APNS
-5. iOS wakes up Mail app to fetch new messages
+1. Az iOS Mail alkalmazás észleli az XAPPLEPUSHSERVICE képességet
+2. Az alkalmazás regisztrálja az eszköz tokent a Forward Email-nél
+3. A Forward Email tárolja a tokent és társítja a fiókkal
+4. Amikor új levél érkezik, a Forward Email push értesítést küld az APNS-en keresztül
+5. Az iOS felébreszti a Mail alkalmazást az új üzenetek lekéréséhez
 
-**Security:**
+**Biztonság:**
 
-* Device tokens are encrypted at rest
-* Tokens expire and are refreshed automatically
-* No message content exposed to APNS
-* End-to-end encryption maintained
+* Az eszköz tokenek titkosítva vannak tárolás közben
+* A tokenek lejárnak és automatikusan frissülnek
+* Nincs üzenettartalom kitéve az APNS-nek
+* Végpontok közötti titkosítás fenntartva
 
 <!---->
 
-* **IMAP Extension:** `XAPPLEPUSHSERVICE`
-* **Source Code:** [WildDuck Issue #711](https://github.com/zone-eu/wildduck/issues/711)
-* **Setup:** Automatic - no configuration needed, works out of the box with iOS Mail app
+* **IMAP kiterjesztés:** `XAPPLEPUSHSERVICE`
+* **Forráskód:** [WildDuck Issue #711](https://github.com/zone-eu/wildduck/issues/711)
+* **Beállítás:** Automatikus - nincs szükség konfigurációra, az iOS Mail alkalmazással azonnal működik
 
-### Comparison with Other Services {#comparison-with-other-services}
+### Összehasonlítás más szolgáltatásokkal {#comparison-with-other-services}
 
-| Service | iOS Push Support | Method |
-| ------------- | ---------------- | ---------------------------------------- |
-| Forward Email | ✅ Yes | `XAPPLEPUSHSERVICE` (reverse-engineered) |
-| Gmail | ✅ Yes | Proprietary Gmail app + Google push |
-| iCloud Mail | ✅ Yes | Native Apple integration |
-| Outlook.com | ✅ Yes | Proprietary Outlook app + Microsoft push |
-| Fastmail | ✅ Yes | `XAPPLEPUSHSERVICE` |
-| Dovecot | ❌ No | IMAP IDLE or polling only |
-| Postfix | ❌ No | IMAP IDLE or polling only |
-| Cyrus IMAP | ❌ No | IMAP IDLE or polling only |
+| Szolgáltatás   | iOS Push támogatás | Módszer                                   |
+| ------------- | ------------------ | ----------------------------------------- |
+| Forward Email | ✅ Igen            | `XAPPLEPUSHSERVICE` (visszafejtett)      |
+| Gmail         | ✅ Igen            | Saját Gmail alkalmazás + Google push      |
+| iCloud Mail   | ✅ Igen            | Natív Apple integráció                     |
+| Outlook.com   | ✅ Igen            | Saját Outlook alkalmazás + Microsoft push |
+| Fastmail      | ✅ Igen            | `XAPPLEPUSHSERVICE`                        |
+| Dovecot       | ❌ Nem             | Csak IMAP IDLE vagy lekérdezés             |
+| Postfix       | ❌ Nem             | Csak IMAP IDLE vagy lekérdezés             |
+| Cyrus IMAP    | ❌ Nem             | Csak IMAP IDLE vagy lekérdezés             |
 
 **Gmail Push:**
 
-Gmail uses a proprietary push system that only works with the Gmail app. iOS Mail app must poll Gmail IMAP servers.
+A Gmail egy saját push rendszert használ, amely csak a Gmail alkalmazással működik. Az iOS Mail alkalmazásnak le kell kérdeznie a Gmail IMAP szervereit.
 
 **iCloud Push:**
 
-iCloud has native push support similar to Forward Email, but only for @icloud.com addresses.
+Az iCloud natív push támogatással rendelkezik, hasonlóan a Forward Email-hez, de csak @icloud.com címekhez.
 
 **Outlook.com:**
 
-Outlook.com does not support XAPPLEPUSHSERVICE, requiring iOS Mail to poll every 15 minutes.
+Az Outlook.com nem támogatja az XAPPLEPUSHSERVICE-t, ezért az iOS Mailnek 15 percenként kell lekérdeznie.
 
 **Fastmail:**
 
-Fastmail does not support XAPPLEPUSHSERVICE. Users must use the Fastmail app for push notifications or accept 15-minute polling delays.
+A Fastmail nem támogatja az XAPPLEPUSHSERVICE-t. A felhasználóknak a Fastmail alkalmazást kell használniuk push értesítésekhez, vagy el kell fogadniuk a 15 perces lekérdezési késéseket.
 
 ---
 
-## Testing and Verification {#testing-and-verification}
 
-## Protocol Capability Tests {#protocol-capability-tests}
+## Tesztelés és ellenőrzés {#testing-and-verification}
 
+
+## Protokoll képesség tesztek {#protocol-capability-tests}
 > \[!NOTE]
-> This section provides the results of our latest protocol capability tests, conducted on January 22, 2026.
+> Ez a szakasz a legfrissebb protokoll képességtesztjeink eredményeit tartalmazza, amelyeket 2026. január 22-én végeztünk.
 
-This section contains the actual CAPABILITY/CAPA/EHLO responses from all tested providers. All tests were run on **January 22, 2026**.
+Ez a szakasz tartalmazza az összes tesztelt szolgáltató tényleges CAPABILITY/CAPA/EHLO válaszait. Minden teszt **2026. január 22-én** futott.
 
-These tests help verify the advertised and actual support for various email protocols and extensions across major providers.
+Ezek a tesztek segítenek ellenőrizni a különböző e-mail protokollok és kiterjesztések hirdetett és tényleges támogatását a főbb szolgáltatók között.
 
 ### Test Methodology {#test-methodology}
 
-**Test Environment:**
+**Tesztkörnyezet:**
 
-* **Date:** January 22, 2026 at 02:37 UTC
-* **Location:** AWS EC2 instance
+* **Dátum:** 2026. január 22. 02:37 UTC
+* **Helyszín:** AWS EC2 példány
 * **IPv4:** 54.167.216.197
 * **IPv6:** 2600:4040:46da:9a00:b19e:3ad4:426c:2f48
-* **Tools:** OpenSSL s_client, bash scripts
+* **Eszközök:** OpenSSL s_client, bash szkriptek
 
-**Providers Tested:**
+**Tesztelt szolgáltatók:**
 
 * Forward Email
 * Gmail
@@ -2099,7 +2092,7 @@ These tests help verify the advertised and actual support for various email prot
 
 ### Test Scripts {#test-scripts}
 
-For full transparency, the exact scripts used for these tests are provided below.
+Teljes átláthatóság érdekében az alábbiakban megtalálhatók a tesztekhez használt pontos szkriptek.
 
 #### IMAP Capability Test Script {#imap-capability-test-script}
 
@@ -2174,7 +2167,7 @@ echo ""
 
 # iCloud (Note: iCloud does not support POP3)
 echo "--- iCloud (No POP3 support) ---"
-echo "iCloud does not support POP3"
+echo "Az iCloud nem támogatja a POP3-at"
 echo ""
 
 # Fastmail
@@ -2196,8 +2189,7 @@ echo "========================================="
 echo "Test completed"
 echo "========================================="
 ```
-
-#### SMTP Capability Test Script {#smtp-capability-test-script}
+#### SMTP képesség teszt szkript {#smtp-capability-test-script}
 
 ```bash
 #!/bin/bash
@@ -2205,8 +2197,8 @@ echo "========================================="
 # Tests SMTP EHLO for various email providers
 
 echo "========================================="
-echo "SMTP CAPABILITY TEST"
-echo "Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+echo "SMTP KÉPESSÉG TESZT"
+echo "Dátum: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
 echo "========================================="
 echo ""
 
@@ -2241,13 +2233,13 @@ echo -e "EHLO test.com\nQUIT" | timeout 10 openssl s_client -connect smtp.forwar
 echo ""
 
 echo "========================================="
-echo "Test completed"
+echo "Teszt befejezve"
 echo "========================================="
 ```
 
-### Test Results Summary {#test-results-summary}
+### Teszteredmények összefoglalója {#test-results-summary}
 
-#### IMAP (CAPABILITY) {#imap-capability}
+#### IMAP (KÉPESSÉG) {#imap-capability}
 
 **Forward Email**
 
@@ -2406,10 +2398,9 @@ IMPLEMENTATION Cyrus
 250-ENHANCEDSTATUSCODES
 250-STARTTLS
 ```
+### Részletes Teszteredmények {#detailed-test-results}
 
-### Detailed Test Results {#detailed-test-results}
-
-#### IMAP Test Results {#imap-test-results}
+#### IMAP Teszteredmények {#imap-test-results}
 
 **Gmail:**
 `* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 XYZZY SASL-IR AUTH=XOAUTH2 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN AUTH=OAUTHBEARER`
@@ -2421,7 +2412,7 @@ IMPLEMENTATION Cyrus
 `* CAPABILITY XAPPLEPUSHSERVICE IMAP4 IMAP4rev1 SASL-IR AUTH=ATOKEN AUTH=PLAIN AUTH=ATOKEN2 AUTH=XOAUTH2`
 
 **Fastmail:**
-Connection timed out. See notes below.
+Kapcsolat időtúllépés miatt megszakadt. Lásd az alábbi megjegyzéseket.
 
 **Yahoo:**
 `* CAPABILITY IMAP4rev1 SASL-IR AUTH=PLAIN AUTH=XOAUTH2 AUTH=OAUTHBEARER ID MOVE NAMESPACE XYMHIGHESTMODSEQ UIDPLUS LITERAL+ CHILDREN UNSELECT X-MSG-EXT OBJECTID IDLE ENABLE UIDONLY X-ALL-MAIL X-UIDONLY LIST-EXTENDED LIST-STATUS SPECIAL-USE PARTIAL APPENDLIMIT=41697280`
@@ -2429,27 +2420,27 @@ Connection timed out. See notes below.
 **Forward Email:**
 `* CAPABILITY XAPPLEPUSHSERVICE IMAP4rev1 APPENDLIMIT=52428800 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN CHILDREN CONDSTORE ENABLE ID IDLE MOVE NAMESPACE QUOTA SASL-IR SPECIAL-USE UIDPLUS UNSELECT UTF8=ACCEPT XLIST`
 
-#### POP3 Test Results {#pop3-test-results}
+#### POP3 Teszteredmények {#pop3-test-results}
 
 **Gmail:**
-Connection did not return CAPA response without authentication.
+A kapcsolat nem adott vissza CAPA választ hitelesítés nélkül.
 
 **Outlook.com:**
-Connection did not return CAPA response without authentication.
+A kapcsolat nem adott vissza CAPA választ hitelesítés nélkül.
 
 **iCloud:**
-Not Supported.
+Nem támogatott.
 
 **Fastmail:**
-Connection timed out. See notes below.
+Kapcsolat időtúllépés miatt megszakadt. Lásd az alábbi megjegyzéseket.
 
 **Yahoo:**
 `+OK CAPA list follows... SASL PLAIN XOAUTH2`
 
 **Forward Email:**
-Connection did not return CAPA response without authentication.
+A kapcsolat nem adott vissza CAPA választ hitelesítés nélkül.
 
-#### SMTP Test Results {#smtp-test-results}
+#### SMTP Teszteredmények {#smtp-test-results}
 
 **Gmail:**
 `250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH`
@@ -2469,67 +2460,67 @@ Connection did not return CAPA response without authentication.
 **Forward Email:**
 `250-DSN`, `250-REQUIRETLS`
 
-### Notes on Test Results {#notes-on-test-results}
+### Megjegyzések a Teszteredményekhez {#notes-on-test-results}
 
 > \[!NOTE]
-> Important observations and limitations from the test results.
+> Fontos megfigyelések és korlátozások a teszteredményekből.
 
-1. **Fastmail Timeouts**: Fastmail connections timed out during testing, likely due to rate limiting or firewall restrictions from the test server IP. Fastmail is known to have robust IMAP/POP3/SMTP support based on their documentation.
+1. **Fastmail időtúllépések**: A Fastmail kapcsolatok tesztelés közben időtúllépést szenvedtek, valószínűleg a tesztszerver IP-címének korlátozásai vagy tűzfal miatt. A Fastmail dokumentációja alapján ismert, hogy erős IMAP/POP3/SMTP támogatással rendelkezik.
 
-2. **POP3 CAPA Responses**: Several providers (Gmail, Outlook.com, Forward Email) did not return CAPA responses without authentication. This is common security practice for POP3 servers.
+2. **POP3 CAPA válaszok**: Több szolgáltató (Gmail, Outlook.com, Forward Email) nem adott vissza CAPA választ hitelesítés nélkül. Ez általános biztonsági gyakorlat a POP3 szervereknél.
 
-3. **DSN Support**: Only Outlook.com, iCloud, and Forward Email explicitly advertise DSN support in their SMTP EHLO responses. This doesn't necessarily mean other providers don't support DSN, but they don't advertise it.
+3. **DSN támogatás**: Csak az Outlook.com, iCloud és Forward Email hirdeti kifejezetten a DSN támogatást az SMTP EHLO válaszaiban. Ez nem feltétlenül jelenti azt, hogy más szolgáltatók nem támogatják a DSN-t, csak nem hirdetik.
 
-4. **REQUIRETLS**: Only Forward Email explicitly advertises REQUIRETLS support with user-facing enforcement checkbox. Other providers may support it internally but don't advertise it in EHLO.
+4. **REQUIRETLS**: Csak a Forward Email hirdeti kifejezetten a REQUIRETLS támogatást felhasználói szintű kikapcsolható jelölőnégyzettel. Más szolgáltatók belsőleg támogathatják, de nem hirdetik az EHLO-ban.
 
-5. **Test Environment**: Tests were conducted from AWS EC2 instance (IP: 54.167.216.197 IPv4, 2600:4040:46da:9a00:b19e:3ad4:426c:2f48 IPv6) on January 22, 2026 at 02:37 UTC.
+5. **Tesztkörnyezet**: A teszteket egy AWS EC2 példányról végezték (IP: 54.167.216.197 IPv4, 2600:4040:46da:9a00:b19e:3ad4:426c:2f48 IPv6) 2026. január 22-én 02:37 UTC időpontban.
 
 ---
 
-## Summary {#summary}
 
-Forward Email provides comprehensive RFC protocol support across all major email standards:
+## Összefoglaló {#summary}
 
-* **IMAP4rev1:** 16 supported RFCs with intentional differences documented
-* **POP3:** 4 supported RFCs with RFC-compliant permanent deletion
-* **SMTP:** 11 supported extensions including SMTPUTF8, DSN, and PIPELINING
-* **Authentication:** DKIM, SPF, DMARC, ARC fully supported
-* **Transport Security:** MTA-STS and REQUIRETLS fully supported, DANE partial support
-* **Encryption:** OpenPGP v6 and S/MIME supported
-* **Calendaring:** CalDAV, CardDAV, and VTODO fully supported
-* **API Access:** Complete REST API with 39 endpoints for direct database access
-* **iOS Push:** Native push notifications for email, contacts, and calendars via `XAPPLEPUSHSERVICE`
+A Forward Email átfogó RFC protokoll támogatást nyújt minden jelentős e-mail szabványban:
 
-### Key Differentiators {#key-differentiators}
+* **IMAP4rev1:** 16 támogatott RFC szándékos eltérésekkel dokumentálva
+* **POP3:** 4 támogatott RFC RFC-kompatibilis végleges törléssel
+* **SMTP:** 11 támogatott kiterjesztés, beleértve az SMTPUTF8, DSN és PIPELINING funkciókat
+* **Hitelesítés:** DKIM, SPF, DMARC, ARC teljes körű támogatás
+* **Szállítási biztonság:** MTA-STS és REQUIRETLS teljes támogatás, DANE részleges támogatás
+* **Titkosítás:** OpenPGP v6 és S/MIME támogatás
+* **Naptár:** CalDAV, CardDAV és VTODO teljes támogatás
+* **API hozzáférés:** Teljes REST API 39 végponttal közvetlen adatbázis eléréshez
+* **iOS Push:** Natív push értesítések e-mailekhez, névjegyekhez és naptárakhoz az `XAPPLEPUSHSERVICE` segítségével
+
+### Főbb Megkülönböztető Jegyek {#key-differentiators}
 
 > \[!TIP]
-> Forward Email stands out with unique features not found in other providers.
+> A Forward Email egyedi funkcióival tűnik ki, melyek más szolgáltatóknál nem találhatók meg.
 
-**What Makes Forward Email Unique:**
+**Mi teszi egyedivé a Forward Email-t:**
 
-1. **Quantum-Safe Encryption** - Only provider with ChaCha20-Poly1305 encrypted SQLite mailboxes
-2. **Zero-Knowledge Architecture** - Your password encrypts your mailbox; we can't decrypt it
-3. **Free Custom Domains** - No monthly fees for custom domain email
-4. **REQUIRETLS Support** - User-facing checkbox to enforce TLS for entire delivery path
-5. **Comprehensive API** - 39 REST API endpoints for full programmatic control
-6. **iOS Push Notifications** - Native XAPPLEPUSHSERVICE support for instant delivery
-7. **Open Source** - Full source code available on GitHub
-8. **Privacy-Focused** - No data mining, no ads, no tracking
+1. **Kvantumbiztos titkosítás** – Az egyetlen szolgáltató, amely ChaCha20-Poly1305 titkosított SQLite levelezőládákat használ
+2. **Zero-Knowledge architektúra** – A jelszavad titkosítja a postaládádat; mi nem tudjuk visszafejteni
+3. **Ingyenes egyedi domainek** – Nincs havi díj az egyedi domaines e-mailekért
+4. **REQUIRETLS támogatás** – Felhasználói szintű jelölőnégyzet a TLS kikényszerítéséhez az egész kézbesítési úton
+5. **Átfogó API** – 39 REST API végpont a teljes programozható vezérléshez
+6. **iOS Push értesítések** – Natív XAPPLEPUSHSERVICE támogatás az azonnali kézbesítéshez
+7. **Nyílt forráskód** – Teljes forráskód elérhető a GitHubon
+8. **Adatvédelem-központú** – Nincs adatbányászat, nincs reklám, nincs követés
+* **Sandboxolt titkosítás:** Az egyetlen e-mail szolgáltatás, amely egyénileg titkosított SQLite postaládákat használ
+* **RFC kompatibilitás:** A szabványoknak való megfelelést részesíti előnyben a kényelemmel szemben (pl. POP3 DELE)
+* **Teljes API:** Közvetlen programozott hozzáférés az összes e-mail adathoz
+* **Nyílt forráskód:** Teljesen átlátható megvalósítás
 
-* **Sandboxed Encryption:** Only email service with individually encrypted SQLite mailboxes
-* **RFC Compliance:** Prioritizes standards compliance over convenience (e.g., POP3 DELE)
-* **Complete API:** Direct programmatic access to all email data
-* **Open Source:** Fully transparent implementation
+**Protokoll támogatás összefoglaló:**
 
-**Protocol Support Summary:**
-
-| Category | Support Level | Details |
-| -------------------- | ------------- | --------------------------------------------- |
-| **Core Protocols** | ✅ Excellent | IMAP4rev1, POP3, SMTP fully supported |
-| **Modern Protocols** | ⚠️ Partial | IMAP4rev2 partial support, JMAP not supported |
-| **Security** | ✅ Excellent | DKIM, SPF, DMARC, ARC, MTA-STS, REQUIRETLS |
-| **Encryption** | ✅ Excellent | OpenPGP, S/MIME, SQLite encryption |
-| **CalDAV/CardDAV** | ✅ Excellent | Full calendar and contact sync |
-| **Filtering** | ✅ Excellent | Sieve (24 extensions) and ManageSieve |
-| **API** | ✅ Excellent | 39 REST API endpoints |
-| **Push** | ✅ Excellent | Native iOS push notifications |
+| Kategória            | Támogatási szint | Részletek                                      |
+| -------------------- | --------------- | --------------------------------------------- |
+| **Alapprotokollok**  | ✅ Kiváló       | IMAP4rev1, POP3, SMTP teljes körű támogatás  |
+| **Modern protokollok** | ⚠️ Részleges   | IMAP4rev2 részleges támogatás, JMAP nem támogatott |
+| **Biztonság**        | ✅ Kiváló       | DKIM, SPF, DMARC, ARC, MTA-STS, REQUIRETLS    |
+| **Titkosítás**       | ✅ Kiváló       | OpenPGP, S/MIME, SQLite titkosítás             |
+| **CalDAV/CardDAV**   | ✅ Kiváló       | Teljes naptár- és névjegy szinkronizáció      |
+| **Szűrés**           | ✅ Kiváló       | Sieve (24 kiterjesztés) és ManageSieve        |
+| **API**              | ✅ Kiváló       | 39 REST API végpont                            |
+| **Push**             | ✅ Kiváló       | Natív iOS push értesítések                      |

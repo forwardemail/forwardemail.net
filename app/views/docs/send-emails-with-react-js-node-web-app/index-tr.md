@@ -1,9 +1,11 @@
-# React.js Node Web Uygulaması Örneğiyle E-posta Gönderme {#send-emails-with-reactjs-node-web-app-example}
+# React.js Node Web Uygulaması Örneği ile E-posta Gönderme {#send-emails-with-reactjs-node-web-app-example}
+
 
 ## İçindekiler {#table-of-contents}
 
 * [Kurulum ve Gereksinimler](#install-and-requirements)
-* [Kaynak Kodu ve Örnek](#source-code-and-example)
+* [Kaynak Kod ve Örnek](#source-code-and-example)
+
 
 ## Kurulum ve Gereksinimler {#install-and-requirements}
 
@@ -13,9 +15,10 @@
 npm install @react-email/render nodemailer
 ```
 
-## Kaynak Kodu ve Örnek {#source-code-and-example}
 
-E-posta şablonunuzu `.jsx` veya `.js` dosyasıyla oluşturun:
+## Kaynak Kod ve Örnek {#source-code-and-example}
+
+E-posta şablonunuzu `.jsx` veya `.js` dosyası ile oluşturun:
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>Web sitemizi ziyaret edin</Button>
     </Html>
   );
 }
 ```
 
-Bu örnekte, giden postaları göndermek ve önizlemek için **[Nodemailer](https://github.com/nodemailer/nodemailer)** kütüphanesini ve onun resmi sponsoru **[E-postayı İlet](https://forwardemail.net)**'i kullanıyoruz.
+Bu örnekte, giden postaları göndermek ve önizlemek için **[Nodemailer](https://github.com/nodemailer/nodemailer)** kütüphanesini ve resmi sponsoru **[Forward Email](https://forwardemail.net)** kullanıyoruz.
 
-Giden e-posta göndermek için <strong class="text-success"><i class="fa fa-key"></i>Şifre Oluştur</strong>'a ihtiyacınız olacak - lütfen **[Özel Alan Adıyla E-posta Gönderme SMTP Kılavuzu](/guides/send-email-with-custom-domain-smtp)** adımlarını izleyin.
+Giden posta göndermek için <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluşturmanız</strong> gerekecek – lütfen **[Özel Alan Adı SMTP ile E-posta Gönderme Rehberi](/guides/send-email-with-custom-domain-smtp)**'mizi takip edin.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: `user` ve `pass` değerlerini şuradan değiştirin:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -63,7 +66,7 @@ const html = render(Email({ url: "https://example.com" }));
 const options = {
   from: 'you@example.com',
   to: 'user@gmail.com',
-  subject: 'hello world',
+  subject: 'merhaba dünya',
   html
 };
 
@@ -76,6 +79,6 @@ E-postayı göndermek için uygulamayı çalıştırın:
 node app
 ```
 
-Artık gerçek zamanlı e-posta teslim durumunuzu, e-posta teslim edilebilirlik günlüklerinizi ve HTML/düz metin/ek önizlemelerinizi görmek için **[Hesabım → E-postalar](/my-account/emails)** adresine gidebilirsiniz.
+Artık gerçek zamanlı e-posta teslim durumu, e-posta teslim edilebilirlik kayıtları ve HTML/düz metin/ek önizlemelerini görmek için **[Hesabım → E-postalar](/my-account/emails)** sayfasına gidebilirsiniz.
 
-> Not: :tada: Ayrıca **[tarayıcılarda ve iOS Simülatöründe e-postaları önizleme](/docs/test-preview-email-rendering-browsers-ios-simulator)** ve **[Node.js ile e-posta şablonları oluşturun](/docs/send-emails-with-node-js-javascript)** de yapabilirsiniz.
+> Not: :tada: Ayrıca **[tarayıcılarda ve iOS Simülatöründe e-postaları önizleyebilirsiniz](/docs/test-preview-email-rendering-browsers-ios-simulator)** ve **[Node.js ile e-posta şablonları oluşturabilirsiniz](/docs/send-emails-with-node-js-javascript)**.

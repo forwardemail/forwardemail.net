@@ -1,199 +1,201 @@
-# Det första kompletta e-post-API:et: Hur vidarebefordran av e-post revolutionerade e-posthanteringen {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# Den Första Kompletta E-post-API:n: Hur Forward Email Revolutionerade E-posthantering {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>TL;DR:</strong> Vi byggde världens första kompletta REST API för e-posthantering med avancerade sökfunktioner som ingen annan tjänst erbjuder. Medan Gmail, Outlook och Apple tvingar utvecklare in i IMAP-helvetet eller hastighetsbegränsade API:er, levererar Forward Email blixtsnabba CRUD-åtgärder för meddelanden, mappar, kontakter och kalendrar genom ett enhetligt REST-gränssnitt med 15+ sökparametrar. Detta är e-post-API-utvecklare har väntat på.
+  <strong>TL;DR:</strong> Vi byggde världens första kompletta REST API för e-posthantering med avancerade sökfunktioner som ingen annan tjänst erbjuder. Medan Gmail, Outlook och Apple tvingar utvecklare in i IMAP-helvetet eller API:er med begränsad hastighet, levererar Forward Email blixtsnabba CRUD-operationer för meddelanden, mappar, kontakter och kalendrar genom ett enhetligt REST-gränssnitt med över 15 sökparametrar. Detta är det e-post-API som utvecklare har väntat på.
 </p>
+
 
 ## Innehållsförteckning {#table-of-contents}
 
-* [Problemet med e-post-API:et](#the-email-api-problem)
-* [Vad utvecklarna faktiskt säger](#what-developers-are-actually-saying)
-* [Vidarebefordra e-postens revolutionerande lösning](#forward-emails-revolutionary-solution)
-  * [Varför vi byggde detta](#why-we-built-this)
-  * [Enkel autentisering](#simple-authentication)
-* [20 slutpunkter som förändrar allt](#20-endpoints-that-change-everything)
-  * [Meddelanden (5 slutpunkter)](#messages-5-endpoints)
-  * [Mappar (5 slutpunkter)](#folders-5-endpoints)
-  * [Kontakter (5 slutpunkter)](#contacts-5-endpoints)
-  * [Kalendrar (5 slutpunkter)](#calendars-5-endpoints)
-* [Avancerad sökning: Ingen annan tjänst jämförs](#advanced-search-no-other-service-compares)
-  * [Sök-API-landskapet är trasigt](#the-search-api-landscape-is-broken)
-  * [Vidarebefordra e-postens revolutionerande sök-API](#forward-emails-revolutionary-search-api)
-  * [Exempel på verkliga sökresultat](#real-world-search-examples)
+* [Problemet med E-post-API:n](#the-email-api-problem)
+* [Vad Utvecklare Egentligen Säger](#what-developers-are-actually-saying)
+* [Forward Emails Revolutionerande Lösning](#forward-emails-revolutionary-solution)
+  * [Varför Vi Byggde Detta](#why-we-built-this)
+  * [Enkel Autentisering](#simple-authentication)
+* [20 Endpoints som Förändrar Allt](#20-endpoints-that-change-everything)
+  * [Meddelanden (5 endpoints)](#messages-5-endpoints)
+  * [Mappar (5 endpoints)](#folders-5-endpoints)
+  * [Kontakter (5 endpoints)](#contacts-5-endpoints)
+  * [Kalendrar (5 endpoints)](#calendars-5-endpoints)
+* [Avancerad Sökning: Ingen Annan Tjänst Kan Mäta Sig](#advanced-search-no-other-service-compares)
+  * [Sök-API-landskapet är Trasigt](#the-search-api-landscape-is-broken)
+  * [Forward Emails Revolutionerande Sök-API](#forward-emails-revolutionary-search-api)
+  * [Sökexempel från Verkligheten](#real-world-search-examples)
   * [Prestandafördelar](#performance-advantages)
-  * [Sökfunktioner som ingen annan har](#search-features-no-one-else-has)
-  * [Varför detta är viktigt för utvecklare](#why-this-matters-for-developers)
-  * [Den tekniska implementeringen](#the-technical-implementation)
-* [Blixtsnabb prestandaarkitektur](#blazing-fast-performance-architecture)
+  * [Sökfunktioner Ingen Annan Har](#search-features-no-one-else-has)
+  * [Varför Detta Är Viktigt för Utvecklare](#why-this-matters-for-developers)
+  * [Den Tekniska Implementeringen](#the-technical-implementation)
+* [Blixtsnabb Prestandaarkitektur](#blazing-fast-performance-architecture)
   * [Prestandamått](#performance-benchmarks)
-  * [Integritetsfokuserad arkitektur](#privacy-first-architecture)
-* [Varför vi är annorlunda: Den kompletta jämförelsen](#why-were-different-the-complete-comparison)
-  * [Viktiga leverantörsbegränsningar](#major-provider-limitations)
-  * [Fördelar med vidarebefordran av e-post](#forward-email-advantages)
-  * [Problemet med öppen källkods transparens](#the-open-source-transparency-problem)
-* [30+ exempel på verkliga integrationer](#30-real-world-integration-examples)
-  * [1. Förbättring av WordPress kontaktformulär](#1-wordpress-contact-form-enhancement)
-  * [2. Zapier-alternativ för e-postautomation](#2-zapier-alternative-for-email-automation)
-  * [3. CRM-e-postsynkronisering](#3-crm-email-synchronization)
-  * [4. Orderhantering för e-handel](#4-e-commerce-order-processing)
-  * [5. Stöd för ärendeintegration](#5-support-ticket-integration)
-  * [6. System för hantering av nyhetsbrev](#6-newsletter-management-system)
-  * [7. E-postbaserad uppgiftshantering](#7-email-based-task-management)
-  * [8. E-postaggregering för flera konton](#8-multi-account-email-aggregation)
-  * [9. Avancerad instrumentpanel för e-postanalys](#9-advanced-email-analytics-dashboard)
-  * [10. Smart e-postarkivering](#10-smart-email-archiving)
-  * [11. Integrering av e-post till kalender](#11-email-to-calendar-integration)
-  * [12. Säkerhetskopiering och efterlevnad av e-post](#12-email-backup-and-compliance)
-  * [13. E-postbaserad innehållshantering](#13-email-based-content-management)
-  * [14. Hantering av e-postmallar](#14-email-template-management)
-  * [15. E-postbaserad arbetsflödesautomation](#15-email-based-workflow-automation)
-  * [16. Övervakning av e-postsäkerhet](#16-email-security-monitoring)
-  * [17. E-postbaserad enkätinsamling](#17-email-based-survey-collection)
-  * [18. Övervakning av e-postprestanda](#18-email-performance-monitoring)
-  * [19. E-postbaserad leadkvalificering](#19-email-based-lead-qualification)
-  * [20. E-postbaserad projektledning](#20-email-based-project-management)
-  * [21. E-postbaserad lagerhantering](#21-email-based-inventory-management)
-  * [22. E-postbaserad fakturahantering](#22-email-based-invoice-processing)
-  * [23. E-postbaserad evenemangsregistrering](#23-email-based-event-registration)
-  * [24. E-postbaserat arbetsflöde för dokumentgodkännande](#24-email-based-document-approval-workflow)
-  * [25. Analys av kundfeedback via e-post](#25-email-based-customer-feedback-analysis)
-  * [26. E-postbaserad rekryteringsprocess](#26-email-based-recruitment-pipeline)
-  * [27. E-postbaserad hantering av utgiftsrapporter](#27-email-based-expense-report-processing)
-  * [28. E-postbaserad kvalitetssäkringsrapportering](#28-email-based-quality-assurance-reporting)
-  * [29. E-postbaserad leverantörshantering](#29-email-based-vendor-management)
-  * [30. E-postbaserad övervakning av sociala medier](#30-email-based-social-media-monitoring)
-* [Komma igång](#getting-started)
-  * [1. Skapa ditt konto för vidarebefordran av e-post](#1-create-your-forward-email-account)
-  * [2. Generera API-autentiseringsuppgifter](#2-generate-api-credentials)
-  * [3. Gör ditt första API-anrop](#3-make-your-first-api-call)
-  * [4. Utforska dokumentationen](#4-explore-the-documentation)
-* [Tekniska resurser](#technical-resources)
+  * [Integritetsfokuserad Arkitektur](#privacy-first-architecture)
+* [Varför Vi Är Annorlunda: Den Kompletta Jämförelsen](#why-were-different-the-complete-comparison)
+  * [Stora Begränsningar hos Leverantörer](#major-provider-limitations)
+  * [Forward Emails Fördelar](#forward-email-advantages)
+  * [Problemet med Öppen Källkod och Transparens](#the-open-source-transparency-problem)
+* [30+ Integrationsexempel från Verkligheten](#30-real-world-integration-examples)
+  * [1. Förbättring av WordPress Kontaktformulär](#1-wordpress-contact-form-enhancement)
+  * [2. Zapier-alternativ för E-postautomation](#2-zapier-alternative-for-email-automation)
+  * [3. CRM E-postsynkronisering](#3-crm-email-synchronization)
+  * [4. E-handelsorderhantering](#4-e-commerce-order-processing)
+  * [5. Supportärendeintegration](#5-support-ticket-integration)
+  * [6. Nyhetsbrevsystem](#6-newsletter-management-system)
+  * [7. E-postbaserad Uppgiftshantering](#7-email-based-task-management)
+  * [8. E-postaggregering för Flera Konton](#8-multi-account-email-aggregation)
+  * [9. Avancerad E-postanalysdashboard](#9-advanced-email-analytics-dashboard)
+  * [10. Smart E-postarkivering](#10-smart-email-archiving)
+  * [11. E-post-till-Kalender Integration](#11-email-to-calendar-integration)
+  * [12. E-postbackup och Efterlevnad](#12-email-backup-and-compliance)
+  * [13. E-postbaserad Innehållshantering](#13-email-based-content-management)
+  * [14. Hantering av E-postmallar](#14-email-template-management)
+  * [15. E-postbaserad Arbetsflödesautomation](#15-email-based-workflow-automation)
+  * [16. Övervakning av E-postsäkerhet](#16-email-security-monitoring)
+  * [17. Insamling av Enkäter via E-post](#17-email-based-survey-collection)
+  * [18. Övervakning av E-postprestanda](#18-email-performance-monitoring)
+  * [19. Kvalificering av Leads via E-post](#19-email-based-lead-qualification)
+  * [20. Projektledning via E-post](#20-email-based-project-management)
+  * [21. Lagerhantering via E-post](#21-email-based-inventory-management)
+  * [22. Fakturahantering via E-post](#22-email-based-invoice-processing)
+  * [23. Evenemangsregistrering via E-post](#23-email-based-event-registration)
+  * [24. Arbetsflöde för Dokumentgodkännande via E-post](#24-email-based-document-approval-workflow)
+  * [25. Analys av Kundfeedback via E-post](#25-email-based-customer-feedback-analysis)
+  * [26. Rekryteringspipeline via E-post](#26-email-based-recruitment-pipeline)
+  * [27. Hantering av Utgiftsrapporter via E-post](#27-email-based-expense-report-processing)
+  * [28. Rapportering av Kvalitetssäkring via E-post](#28-email-based-quality-assurance-reporting)
+  * [29. Leverantörshantering via E-post](#29-email-based-vendor-management)
+  * [30. Övervakning av Sociala Medier via E-post](#30-email-based-social-media-monitoring)
+* [Komma Igång](#getting-started)
+  * [1. Skapa Ditt Forward Email-konto](#1-create-your-forward-email-account)
+  * [2. Generera API-uppgifter](#2-generate-api-credentials)
+  * [3. Gör Ditt Första API-anrop](#3-make-your-first-api-call)
+  * [4. Utforska Dokumentationen](#4-explore-the-documentation)
+* [Tekniska Resurser](#technical-resources)
+## Problemet med Email-API:er {#the-email-api-problem}
 
-## Problemet med e-post-API:et {#the-email-api-problem}
+Email-API:er är fundamentalt trasiga. Punkt.
 
-E-post-API:er är fundamentalt trasiga. Punkt slut.
+Varje stor email-leverantör tvingar utvecklare till ett av två hemska val:
 
-Varje större e-postleverantör tvingar utvecklare till ett av två hemska val:
+1. **IMAP-helvetet**: Att kämpa med ett 30 år gammalt protokoll designat för skrivbordsklienter, inte moderna applikationer
+2. **Handikappade API:er**: Hastighetsbegränsade, skrivskyddade, OAuth-komplexa API:er som inte kan hantera din faktiska email-data
 
-1. **IMAP-helvetet**: Brottas med ett 30 år gammalt protokoll designat för skrivbordsklienter, inte moderna applikationer
-2. **Förlamade API:er**: Hastighetsbegränsade, skrivskyddade, OAuth-komplexa API:er som inte kan hantera dina faktiska e-postdata
-
-Resultatet? Utvecklare överger antingen e-postintegrationen helt eller slösar veckor på att bygga ömtåliga IMAP-omslag som ständigt går sönder.
+Resultatet? Utvecklare överger antingen email-integration helt eller slösar veckor på att bygga sköra IMAP-wrapper som ständigt går sönder.
 
 > \[!WARNING]
-> **Den smutsiga hemligheten**: De flesta "e-post-API:er" är bara sändande API:er. Du kan inte programmatiskt organisera mappar, synkronisera kontakter eller hantera kalendrar via ett enkelt REST-gränssnitt. Fram tills nu.
+> **Den smutsiga hemligheten**: De flesta "email-API:er" är bara sändar-API:er. Du kan inte programmatisk organisera mappar, synka kontakter eller hantera kalendrar genom ett enkelt REST-gränssnitt. Fram tills nu.
 
-## Vad utvecklarna faktiskt säger {#what-developers-are-actually-saying}
+
+## Vad Utvecklare Egentligen Säger {#what-developers-are-actually-saying}
 
 Frustrationen är verklig och dokumenterad överallt:
 
-> "Jag försökte nyligen integrera Gmail i min app, och jag lade ner för mycket tid på det. Jag bestämde mig för att det inte är värt att stödja Gmail."
+> "Jag försökte nyligen integrera Gmail i min app, och jag lade för mycket tid på det. Jag bestämde mig för att det inte är värt att stödja Gmail."
 >
 > *- [Hacker News-utvecklare](https://news.ycombinator.com/item?id=42106944), 147 uppröster*
 
-> "Är alla e-post-API:er mediokra? De verkar begränsade eller restriktiva på något sätt."
+> "Är alla email-API:er mediokra? De verkar begränsade eller restriktiva på något sätt."
 >
 > *- [Reddit r/SaaS-diskussion](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> "Varför måste e-postutveckling vara dålig?"
+> "Varför måste email-utveckling vara så dålig?"
 >
-> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 kommentarer om utvecklarsmärta*
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 kommentarer om utvecklar-smärta*
 
-> "Vad gör Gmail API effektivare än IMAP? En annan anledning till att Gmail API är mycket effektivare är att det bara behöver ladda ner varje meddelande en gång. Med IMAP måste varje meddelande laddas ner och indexeras..."
+> "Vad gör Gmail API mer effektivt än IMAP? En annan anledning till att Gmail API är mycket mer effektivt är att det bara behöver ladda ner varje meddelande en gång. Med IMAP måste varje meddelande laddas ner och indexeras..."
 >
 > *- [Stack Overflow-fråga](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) med 47 uppröster*
 
 Bevisen finns överallt:
 
-* **Problem med WordPress SMTP**: [631 GitHub-problem](https://github.com/awesomemotive/WP-Mail-SMTP/issues) om leveransfel av e-post
-* **Begränsningar med Zapier**: [Klagomål från samhället](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om gränser för 10 e-postmeddelanden/timme och fel med IMAP-detektering
-* **IMAP API-projekt**: [Multipel](https://github.com/ewildgoose/imap-api) [öppen källkod](https://emailengine.app/) [projekt](https://www.npmjs.com/package/imapflow) finns specifikt för att "konvertera IMAP till REST" eftersom ingen leverantör erbjuder detta
-* **Frustrationer med Gmail API**: [Stacköverflöde](https://stackoverflow.com/questions/tagged/gmail-api) har 4 847 frågor taggade med "gmail-api" med vanliga klagomål om hastighetsgränser och komplexitet
+* **WordPress SMTP-problem**: [631 GitHub-ärenden](https://github.com/awesomemotive/WP-Mail-SMTP/issues) om leveransfel för email
+* **Zapier-begränsningar**: [Community-klagomål](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om 10 email/timme-gränser och IMAP-detekteringsfel
+* **IMAP API-projekt**: [Flera](https://github.com/ewildgoose/imap-api) [öppen-källkod](https://emailengine.app/) [projekt](https://www.npmjs.com/package/imapflow) finns specifikt för att "konvertera IMAP till REST" eftersom ingen leverantör erbjuder detta
+* **Gmail API-frustrationer**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) har 4 847 frågor taggade "gmail-api" med vanliga klagomål om hastighetsbegränsningar och komplexitet
 
-## Vidarebefordra e-postens revolutionerande lösning {#forward-emails-revolutionary-solution}
 
-Vi är den första e-posttjänsten som erbjuder kompletta CRUD-operationer för all e-postdata via ett enhetligt REST API.
+## Forward Emails Revolutionerande Lösning {#forward-emails-revolutionary-solution}
 
-Detta är inte bara ytterligare ett sändande API. Detta är fullständig programmatisk kontroll över:
+**Vi är den första email-tjänsten som erbjuder fullständiga CRUD-operationer för all email-data genom ett enhetligt REST API.**
 
-* **Meddelanden**: Skapa, läsa, uppdatera, ta bort, sök, flytta, flagga
-* **Mappar**: Fullständig IMAP-mapphantering via REST-slutpunkter
+Det här är inte bara ett annat sändar-API. Detta är fullständig programmatisk kontroll över:
+
+* **Meddelanden**: Skapa, läs, uppdatera, ta bort, sök, flytta, flagga
+* **Mappar**: Full IMAP-mapphantering via REST-endpoints
 * **Kontakter**: [CardDAV](https://tools.ietf.org/html/rfc6352) kontaktlagring och synkronisering
 * **Kalendrar**: [CalDAV](https://tools.ietf.org/html/rfc4791) kalenderhändelser och schemaläggning
 
-### Varför vi byggde detta {#why-we-built-this}
+### Varför Vi Byggde Detta {#why-we-built-this}
 
-**Problemet**: Alla e-postleverantörer behandlar e-post som en svart låda. Du kan skicka e-postmeddelanden, kanske läsa dem med komplex OAuth, men du kan inte riktigt *hantera* dina e-postdata programmatiskt.
+**Problemet**: Varje email-leverantör behandlar email som en svart låda. Du kan skicka email, kanske läsa dem med komplex OAuth, men du kan inte verkligen *hantera* din email-data programmatisk.
 
-**Vår vision**: E-post ska vara lika enkel att integrera som vilket modernt API som helst. Inga IMAP-bibliotek. Ingen OAuth-komplexitet. Inga mardrömmar om hastighetsgränser. Bara enkla REST-slutpunkter som fungerar.
+**Vår Vision**: Email ska vara lika enkelt att integrera som vilket modernt API som helst. Inga IMAP-bibliotek. Ingen OAuth-komplexitet. Inga mardrömmar med hastighetsbegränsningar. Bara enkla REST-endpoints som fungerar.
 
-**Resultatet**: Den första e-posttjänsten där du kan bygga en komplett e-postklient, CRM-integration eller automatiseringssystem med hjälp av endast HTTP-förfrågningar.
+**Resultatet**: Den första email-tjänsten där du kan bygga en komplett email-klient, CRM-integration eller automationssystem med enbart HTTP-förfrågningar.
 
-### Enkel autentisering {#simple-authentication}
+### Enkel Autentisering {#simple-authentication}
 
-Ingen [OAuth-komplexitet](https://oauth.net/2/). Ingen [appspecifika lösenord](https://support.google.com/accounts/answer/185833). Bara dina aliasuppgifter:
+Ingen [OAuth-komplexitet](https://oauth.net/2/). Inga [app-specifika lösenord](https://support.google.com/accounts/answer/185833). Bara dina alias-uppgifter:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
+## 20 Endpoints som förändrar allt {#20-endpoints-that-change-everything}
 
-## 20 slutpunkter som förändrar allt {#20-endpoints-that-change-everything}
-
-### Meddelanden (5 slutpunkter) {#messages-5-endpoints}
+### Meddelanden (5 endpoints) {#messages-5-endpoints}
 
 * `GET /v1/messages` - Lista meddelanden med filtrering (`?folder=`, `?is_unread=`, `?is_flagged=`)
 * `POST /v1/messages` - Skicka nya meddelanden direkt till mappar
-* `GET /v1/messages/:id` - Hämta specifikt meddelande med fullständiga metadata
-* `PUT /v1/messages/:id` - Uppdatera meddelande (flaggor, mapp, lässtatus)
+* `GET /v1/messages/:id` - Hämta specifikt meddelande med full metadata
+* `PUT /v1/messages/:id` - Uppdatera meddelande (flaggor, mapp, läst status)
 * `DELETE /v1/messages/:id` - Ta bort meddelande permanent
 
-### Mappar (5 slutpunkter) {#folders-5-endpoints}
+### Mappar (5 endpoints) {#folders-5-endpoints}
 
 * `GET /v1/folders` - Lista alla mappar med prenumerationsstatus
 * `POST /v1/folders` - Skapa ny mapp med anpassade egenskaper
-* `GET /v1/folders/:id` - Hämta mappinformation och meddelandeantal
+* `GET /v1/folders/:id` - Hämta mappdetaljer och meddelanderäkning
 * `PUT /v1/folders/:id` - Uppdatera mappegenskaper och prenumeration
-* `DELETE /v1/folders/:id` - Ta bort mapp och hantera meddelandeflyttning
+* `DELETE /v1/folders/:id` - Ta bort mapp och hantera meddelandeomflyttning
 
-### Kontakter (5 slutpunkter) {#contacts-5-endpoints}
+### Kontakter (5 endpoints) {#contacts-5-endpoints}
 
 * `GET /v1/contacts` - Lista kontakter med sökning och paginering
-* `POST /v1/contacts` - Skapa ny kontakt med fullt vCard-stöd
+* `POST /v1/contacts` - Skapa ny kontakt med full vCard-support
 * `GET /v1/contacts/:id` - Hämta kontakt med alla fält och metadata
 * `PUT /v1/contacts/:id` - Uppdatera kontaktinformation med ETag-validering
 * `DELETE /v1/contacts/:id` - Ta bort kontakt med kaskadhantering
 
-### Kalendrar (5 slutpunkter) {#calendars-5-endpoints}
+### Kalendrar (5 endpoints) {#calendars-5-endpoints}
 
 * `GET /v1/calendars` - Lista kalenderhändelser med datumfiltrering
-* `POST /v1/calendars` - Skapa kalenderhändelse med deltagare och återkommande händelser
-* `GET /v1/calendars/:id` - Hämta händelseinformation med tidszonshantering
-* `PUT /v1/calendars/:id` - Uppdatera händelse med konfliktdetektering
-* `DELETE /v1/calendars/:id` - Ta bort händelse med deltagaraviseringar
+* `POST /v1/calendars` - Skapa kalenderhändelse med deltagare och återkommande
+* `GET /v1/calendars/:id` - Hämta händelsedetaljer med tidszonsstöd
+* `PUT /v1/calendars/:id` - Uppdatera händelse med konfliktupptäckt
+* `DELETE /v1/calendars/:id` - Ta bort händelse med deltagarnotifikationer
 
-## Avancerad sökning: Ingen annan tjänst kan jämföras {#advanced-search-no-other-service-compares}
 
-**Vidarebefordra e-post är den enda e-posttjänsten som erbjuder omfattande, programmatisk sökning i alla meddelandefält via ett REST API.**
+## Avancerad sökning: Ingen annan tjänst kan mäta sig {#advanced-search-no-other-service-compares}
 
-Medan andra leverantörer i bästa fall erbjuder grundläggande filtrering, har vi byggt det mest avancerade e-postsöknings-API:et som någonsin skapats. Inget Gmail-API, Outlook-API eller någon annan tjänst kommer i närheten av våra sökmöjligheter.
+**Forward Email är den enda e-posttjänsten som erbjuder omfattande, programmatisk sökning över alla meddelandefält via ett REST API.**
 
-### Sök-API-landskapet är trasigt {#the-search-api-landscape-is-broken}
+Medan andra leverantörer erbjuder högst grundläggande filtrering, har vi byggt det mest avancerade e-postsöknings-API som någonsin skapats. Ingen Gmail API, Outlook API eller någon annan tjänst kommer i närheten av våra sökmöjligheter.
 
-**Begränsningar för sökning i Gmail API:**
+### Landskapet för sök-API:er är trasigt {#the-search-api-landscape-is-broken}
 
-* ✅ Endast grundläggande parameter `q`
+**Begränsningar i Gmail API:s sökfunktion:**
+
+* ✅ Endast grundläggande `q`-parameter
 * ❌ Ingen fältspecifik sökning
-* ❌ Ingen filtrering av datumintervall
+* ❌ Ingen datumintervallsfiltrering
 * ❌ Ingen storleksbaserad filtrering
-* ❌ Ingen filtrering av bilagor
-* ❌ Begränsad till Gmails söksyntax
+* ❌ Ingen bilaga-filtrering
+* ❌ Begränsad till Gmail:s söksyntax
 
-**Begränsningar för sökning i Outlook API:**
+**Begränsningar i Outlook API:s sökfunktion:**
 
-* ✅ Grundläggande parameter `$search`
+* ✅ Grundläggande `$search`-parameter
 * ❌ Ingen avancerad fältinriktning
 * ❌ Inga komplexa frågekombinationer
 * ❌ Aggressiv hastighetsbegränsning
@@ -202,142 +204,141 @@ Medan andra leverantörer i bästa fall erbjuder grundläggande filtrering, har 
 **Apple iCloud:**
 
 * ❌ Inget API alls
-* ❌ Endast IMAP-sökning (om du kan få det att fungera)
+* ❌ Endast IMAP-sökning (om du får det att fungera)
 
-**ProtonMail och Tuta:**
+**ProtonMail & Tuta:**
 
-* ❌ Inga offentliga API:er
-* ❌ Inga programmatiska sökfunktioner
+* ❌ Inga publika API:er
+* ❌ Inga programmatriska sökmöjligheter
 
-### Vidarebefordra e-postens revolutionerande sök-API {#forward-emails-revolutionary-search-api}
+### Forward Emails revolutionerande sök-API {#forward-emails-revolutionary-search-api}
 
-**Vi erbjuder 15+ sökparametrar som ingen annan tjänst erbjuder:**
+**Vi erbjuder 15+ sökparametrar som ingen annan tjänst tillhandahåller:**
 
-| Sökfunktion | Vidarebefordra e-post | Gmail API | Outlook API | Andra |
-| ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **Fältspecifik sökning** | ✅ Ämne, brödtext, från, till, kopia, rubriker | ❌ | ❌ | ❌ |
-| **Allmän sökning i flera fält** | ✅ `?search=` i alla fält | ✅ Grundläggande `q=` | ✅ Grundläggande `$search=` | ❌ |
-| **Filtrering av datumintervall** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **Storleksbaserad filtrering** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **Filtrering av bilagor** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **Sökning av rubriker** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **Sökning av meddelande-ID** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **Kombinerade filter** | ✅ Flera parametrar med OCH-logik | ❌ | ❌ | ❌ |
-| **Okänsligt för versaler** | ✅ Alla sökningar | ✅ | ✅ | ❌ |
-| **Stöd för paginering** | ✅ Fungerar med alla sökparametrar | ✅ | ✅ | ❌ |
-
-### Sökexempel från verkligheten {#real-world-search-examples}
+| Sökfunktion                   | Forward Email                        | Gmail API    | Outlook API        | Andra  |
+| ----------------------------- | ---------------------------------- | ------------ | ------------------ | ------ |
+| **Fältspecifik sökning**      | ✅ Ämne, innehåll, från, till, cc, headers | ❌            | ❌                  | ❌      |
+| **Generell sökning i flera fält** | ✅ `?search=` över alla fält         | ✅ Grundläggande `q=` | ✅ Grundläggande `$search=` | ❌      |
+| **Datumintervallsfiltrering** | ✅ `?since=` & `?before=`           | ❌            | ❌                  | ❌      |
+| **Storleksbaserad filtrering** | ✅ `?min_size=` & `?max_size=`      | ❌            | ❌                  | ❌      |
+| **Bilaga-filtrering**         | ✅ `?has_attachments=true/false`    | ❌            | ❌                  | ❌      |
+| **Header-sökning**            | ✅ `?headers=X-Priority`            | ❌            | ❌                  | ❌      |
+| **Meddelande-ID-sökning**     | ✅ `?message_id=abc123`             | ❌            | ❌                  | ❌      |
+| **Kombinerade filter**        | ✅ Flera parametrar med OCH-logik   | ❌            | ❌                  | ❌      |
+| **Skiftlägesokänslig**        | ✅ Alla sökningar                   | ✅            | ✅                  | ❌      |
+| **Paginering stöd**           | ✅ Fungerar med alla sökparametrar  | ✅            | ✅                  | ❌      |
+### Real-World Search Examples {#real-world-search-examples}
 
 **Hitta alla fakturor från förra kvartalet:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - Enkel och kraftfull
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - Omöjligt med deras begränsade sökning
+# Ingen filtrering på datumintervall tillgänglig
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - Komplex OData-syntax, begränsad funktionalitet
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
 **Sök efter stora bilagor från specifik avsändare:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - Omfattande filtrering
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - Kan inte filtrera efter storlek eller bilagor programmässigt
+# Outlook API - Ingen storleksfiltrering tillgänglig
+# Andra - Inga API:er tillgängliga
 ```
 
-**Komplex sökning i flera fält:**
+**Komplex sökning med flera fält:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - Avancerade frågemöjligheter
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - Begränsad till grundläggande textsökning
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - Grundläggande sökning utan fältinriktning
 GET /me/messages?$search="quarterly"
 ```
 
-### Prestandafördelar {#performance-advantages}
+### Performance Advantages {#performance-advantages}
 
-**Prestanda för sökning efter vidarebefordran av e-post:**
+**Forward Email sökprestanda:**
 
 * ⚡ **Svarstider under 100 ms** för komplexa sökningar
-* 🔍 **Regex-optimering** med korrekt indexering
-* 📊 **Parallell frågekörning** för antal och data
-* 💾 **Effektiv minnesanvändning** med smidiga frågor
+* 🔍 **Regexoptimering** med korrekt indexering
+* 📊 **Parallell frågekörning** för räkning och data
+* 💾 **Effektiv minnesanvändning** med slanka frågor
 
-**Problem med konkurrenternas prestation:**
+**Konkurrenters prestandaproblem:**
 
-* 🐌 **Gmail API**: Hastigheten är begränsad till 250 kvotenheter per användare per sekund
-* 🐌 **Outlook API**: Aggressiv strypning med komplexa backoff-krav
-* 🐌 **Övriga**: Inga API:er att jämföra mot
+* 🐌 **Gmail API**: Begränsad till 250 kvotenheter per användare per sekund
+* 🐌 **Outlook API**: Aggressiv begränsning med komplexa backoff-krav
+* 🐌 **Andra**: Inga API:er att jämföra med
 
-### Sökfunktioner som ingen annan har {#search-features-no-one-else-has}
+### Search Features No One Else Has {#search-features-no-one-else-has}
 
-#### 1. Rubrikspecifik sökning {#1-header-specific-search}
+#### 1. Header-Specific Search {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# Hitta meddelanden med specifika headers
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. Storleksbaserad intelligens {#2-size-based-intelligence}
+#### 2. Size-Based Intelligence {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# Hitta nyhetsbrev (vanligtvis stora)
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# Hitta snabba svar (vanligtvis små)
 GET /v1/messages?max_size=1000&to=support
 ```
 
-#### 3. Arbetsflöden baserade på bilagor {#3-attachment-based-workflows}
+#### 3. Attachment-Based Workflows {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# Hitta alla dokument skickade till juridiska avdelningen
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# Hitta e-post utan bilagor för rensning
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
-#### 4. Kombinerad affärslogik {#4-combined-business-logic}
+#### 4. Combined Business Logic {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# Hitta brådskande flaggade meddelanden från VIP med bilagor
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
-### Varför detta är viktigt för utvecklare {#why-this-matters-for-developers}
+### Why This Matters for Developers {#why-this-matters-for-developers}
 
-**Skapa applikationer som tidigare var omöjliga:**
+**Bygg applikationer som tidigare var omöjliga:**
 
-1. **Avancerad e-postanalys**: Analysera e-postmönster efter storlek, avsändare och innehåll
-2. **Intelligent e-posthantering**: Organisera automatiskt baserat på komplexa kriterier
-3. **Efterlevnad och identifiering**: Hitta specifika e-postmeddelanden för juridiska krav
+1. **Avancerad e-postanalys**: Analysera e-postmönster efter storlek, avsändare, innehåll
+2. **Intelligent e-posthantering**: Auto-organisera baserat på komplexa kriterier
+3. **Efterlevnad och upptäckt**: Hitta specifika e-postmeddelanden för juridiska krav
 4. **Business Intelligence**: Extrahera insikter från e-postkommunikationsmönster
-5. **Automatiserade arbetsflöden**: Utlös åtgärder baserat på sofistikerade e-postfilter
+5. **Automatiserade arbetsflöden**: Trigga åtgärder baserat på sofistikerade e-postfilter
 
-### Den tekniska implementeringen {#the-technical-implementation}
+### The Technical Implementation {#the-technical-implementation}
 
 Vårt sök-API använder:
 
-* **Regex-optimering** med korrekta indexeringsstrategier
-* **Parallell exekvering** för prestanda
-* **Indatavalidering** för säkerhet
+* **Regexoptimering** med korrekta indexeringsstrategier
+* **Parallell körning** för prestanda
+* **Inmatningsvalidering** för säkerhet
 * **Omfattande felhantering** för tillförlitlighet
 
 ```javascript
-// Example: Complex search implementation
+// Exempel: Implementering av komplex sökning
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -355,18 +356,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// Kombinera med OCH-logik
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **Fördelar för utvecklare**: Med Forward Emails sök-API kan du bygga e-postprogram som konkurrerar med skrivbordsklienter i funktionalitet samtidigt som du bibehåller enkelheten hos REST API:er.
+> **Utvecklarfördel**: Med Forward Emails sök-API kan du bygga e-postapplikationer som kan mäta sig med desktopklienter i funktionalitet samtidigt som du behåller enkelheten i REST-API:er.
+## Blazing Fast Performance Architecture {#blazing-fast-performance-architecture}
 
-## Blixtsnabb prestandaarkitektur {#blazing-fast-performance-architecture}
-
-Vår tekniska stack är byggd för snabbhet och tillförlitlighet:
+Vår tekniska stack är byggd för hastighet och tillförlitlighet:
 
 ```mermaid
 graph LR
@@ -376,105 +376,105 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Prestandamått {#performance-benchmarks}
+### Performance Benchmarks {#performance-benchmarks}
 
 **Varför vi är blixtsnabba:**
 
-| Komponent | Teknologi | Prestandafördel |
-| ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **Lagring** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | 10 gånger snabbare än traditionell SATA |
-| **Databas** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Noll nätverkslatens, optimerad serialisering |
-| **Hårdvara** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) bar metall | Ingen virtualiseringsoverhead |
-| **Cachning** | In-memory + persistent | Svarstider på under en millisekund |
-| **Säkerhetskopior** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) krypterad | Tillförlitlighet i företagsklass |
+| Komponent   | Teknik                                                                            | Prestandafördel                              |
+| ----------- | -------------------------------------------------------------------------------- | -------------------------------------------- |
+| **Lagring** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                           | 10x snabbare än traditionell SATA            |
+| **Databas** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Noll nätverksfördröjning, optimerad serialisering |
+| **Hårdvara**| [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) bare metal | Ingen virtualiseringsöverhead                 |
+| **Caching** | I minnet + persistent                                                            | Svarstider under millisekunden                |
+| **Backups** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) krypterad              | Företagsklassad tillförlitlighet              |
 
 **Verkliga prestandasiffror:**
 
 * **API-svarstid**: < 50 ms i genomsnitt
 * **Meddelandehämtning**: < 10 ms för cachade meddelanden
-* **Mappåtgärder**: < 5 ms för metadataåtgärder
-* **Kontaktsynkronisering**: 1000+ kontakter/sekund
+* **Mappoperationer**: < 5 ms för metadataoperationer
+* **Kontaktsynk**: 1000+ kontakter/sekund
 * **Drifttid**: 99,99 % SLA med redundant infrastruktur
 
-### Arkitektur med sekretess i första hand {#privacy-first-architecture}
+### Privacy-First Architecture {#privacy-first-architecture}
 
-**Nollkunskapsdesign**: Endast du har åtkomst med ditt IMAP-lösenord – vi kan inte läsa dina e-postmeddelanden. Vår [nollkunskapsarkitektur](https://forwardemail.net/en/security) garanterar fullständig integritet samtidigt som den levererar blixtsnabb prestanda.
+**Zero-Knowledge Design**: Endast du har tillgång med ditt IMAP-lösenord – vi kan inte läsa dina e-postmeddelanden. Vår [zero-knowledge-arkitektur](https://forwardemail.net/en/security) säkerställer fullständig integritet samtidigt som den levererar blixtsnabb prestanda.
 
-## Varför vi är annorlunda: Den kompletta jämförelsen {#why-were-different-the-complete-comparison}
 
-### Viktiga leverantörsbegränsningar {#major-provider-limitations}
+## Why We're Different: The Complete Comparison {#why-were-different-the-complete-comparison}
 
-| Leverantör | Kärnproblem | Specifika begränsningar |
-| ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gmail API** | Skrivskyddad, komplex OAuth, separata API:er | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) för kontakter/kalender |
-| **Outlook API** | Föråldrad, Förvirrande, Företagsfokuserad | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, graf, REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **Apple iCloud** | Inget offentligt API | • [No public API whatsoever](https://support.apple.com/en-us/102654)<br>• [IMAP-only with 1000 emails/day limit](https://support.apple.com/en-us/102654)<br>• [App-specific passwords required](https://support.apple.com/en-us/102654)<br>• [500 recipients per message limit](https://support.apple.com/en-us/102654) |
-| **ProtonMail** | Inget API, falska påståenden om öppen källkod | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge software required](https://proton.me/mail/bridge) för IMAP-åtkomst<br>• [Claims "open source"](https://proton.me/blog/open-source) men [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **Total** | Inget API, vilseledande transparens | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) men [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) förhindrar standardintegrationer |
-| **Zapier-e-post** | Svåra hastighetsgränser | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
+### Major Provider Limitations {#major-provider-limitations}
 
-### Fördelar med vidarebefordran av e-post {#forward-email-advantages}
+| Leverantör      | Kärnproblem                              | Specifika begränsningar                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| --------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gmail API**   | Endast läsning, Komplex OAuth, Separata API:er | • [Kan inte ändra befintliga meddelanden](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Etiketter ≠ mappar](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 miljard kvotenheter/dag gräns](https://developers.google.com/gmail/api/reference/quota)<br>• [Kräver separata API:er](https://developers.google.com/workspace) för kontakter/kalender                                                           |
+| **Outlook API** | Föråldrad, Förvirrande, Företagsfokuserad | • [REST-endpoints föråldrade mars 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Flera förvirrande API:er](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graph, REST)<br>• [Microsoft Graph-komplexitet](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressiv begränsning](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud**| Ingen offentlig API                      | • [Ingen offentlig API alls](https://support.apple.com/en-us/102654)<br>• [Endast IMAP med 1000 e-postmeddelanden/dag gräns](https://support.apple.com/en-us/102654)<br>• [App-specifika lösenord krävs](https://support.apple.com/en-us/102654)<br>• [500 mottagare per meddelande gräns](https://support.apple.com/en-us/102654)                                                                                                                                              |
+| **ProtonMail**  | Ingen API, Falska öppen källkod-påståenden | • [Ingen offentlig API tillgänglig](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge-programvara krävs](https://proton.me/mail/bridge) för IMAP-åtkomst<br>• [Påstår sig vara "öppen källkod"](https://proton.me/blog/open-source) men [serverkoden är proprietär](https://github.com/ProtonMail)<br>• [Begränsad till betalplaner](https://proton.me/pricing)                                                                                                         |
+| **Tuta**        | Ingen API, Vilseledande transparens      | • [Ingen REST API för e-posthantering](https://tuta.com/support#technical)<br>• [Påstår sig vara "öppen källkod"](https://tuta.com/blog/posts/open-source-email) men [backend är stängd](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP stöds inte](https://tuta.com/support#imap)<br>• [Proprietär kryptering](https://tuta.com/encryption) förhindrar standardintegrationer                                                                                               |
+| **Zapier Email**| Strikta hastighetsbegränsningar          | • [10 e-postmeddelanden per timme gräns](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Ingen IMAP-mappåtkomst](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Begränsade parsningsegenskaper](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)                                 |
+### Fördelar med Forward Email {#forward-email-advantages}
 
-| Särdrag | Vidarebefordra e-post | Konkurrens |
+| Funktion           | Forward Email                                                                                | Konkurrenter                             |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **Helt okej** | ✅ Fullständig skapande, läsning, uppdatering och radering av all data | ❌ Skrivskyddad eller begränsad användning |
-| **Enhetligt API** | ✅ Meddelanden, mappar, kontakter, kalendrar i ett API | ❌ Separata API:er eller saknade funktioner |
-| **Enkel autentisering** | ✅ Grundläggande autentisering med aliasuppgifter | ❌ Komplex OAuth med flera omfång |
-| **Inga gränser** | ✅ Generösa gränser utformade för verkliga tillämpningar | ❌ Restriktiva kvoter som stör arbetsflöden |
-| **Självhosting** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Endast leverantörslåsning |
-| **Privatliv** | ✅ Nollkunskap, krypterad, privat | ❌ Datautvinning och integritetsfrågor |
-| **Prestanda** | ✅ Svarstid under 50 ms, NVMe-lagring | ❌ Nätverkslatens, strypningsfördröjningar |
+| **Fullständigt CRUD** | ✅ Fullständig skapa, läsa, uppdatera, ta bort för all data                                  | ❌ Endast läsning eller begränsade operationer |
+| **Enhetligt API**  | ✅ Meddelanden, mappar, kontakter, kalendrar i ett API                                       | ❌ Separata API:er eller saknade funktioner |
+| **Enkel autentisering** | ✅ Grundläggande autentisering med aliasuppgifter                                         | ❌ Komplex OAuth med flera behörigheter   |
+| **Inga hastighetsbegränsningar** | ✅ Generösa gränser utformade för riktiga applikationer                            | ❌ Restriktiva kvoter som bryter arbetsflöden |
+| **Självhosting**   | ✅ [Fullständig självhostningslösning](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Endast leverantörslåsning               |
+| **Integritet**     | ✅ Nollkunskap, krypterad, privat                                                            | ❌ Datainsamling och integritetsproblem   |
+| **Prestanda**      | ✅ Svarstider under 50 ms, NVMe-lagring                                                      | ❌ Nätverksfördröjning, strypningsförseningar |
 
-### Problemet med öppen källkods transparens {#the-open-source-transparency-problem}
+### Problemet med öppen källkod och transparens {#the-open-source-transparency-problem}
 
-**ProtonMail och Tuta marknadsför sig själva som "öppen källkod" och "transparenta", men detta är vilseledande marknadsföring som bryter mot moderna integritetsprinciper.**
+**ProtonMail och Tuta marknadsför sig som "öppen källkod" och "transparenta", men detta är vilseledande marknadsföring som bryter mot moderna integritetsprinciper.**
 
 > \[!WARNING]
-> **Falska påståenden om transparens**: Både ProtonMail och Tuta marknadsför tydligt sina "öppna källkod"-inloggningsuppgifter samtidigt som de håller sin viktigaste serverkod proprietär och stängd.
+> **Falska transparenspåståenden**: Både ProtonMail och Tuta framhäver sina "öppen källkod"-meriter samtidigt som deras mest kritiska serverkod är proprietär och stängd.
 
-**ProtonMails bedrägeri:**
+**ProtonMails vilseledning:**
 
 * **Påståenden**: ["Vi är öppen källkod"](https://proton.me/blog/open-source) framträdande i marknadsföring
-* **Verklighet**: [Serverkoden är helt proprietär](https://github.com/ProtonMail) - endast klientappar är öppen källkod
-* **Konsekvens**: Användare kan inte verifiera serversidans kryptering, datahantering eller sekretesskrav
-* **Transparensöverträdelse**: Inget sätt att granska de faktiska e-postbehandlings- och lagringssystemen
+* **Verklighet**: [Serverkoden är helt proprietär](https://github.com/ProtonMail) – endast klientappar är öppen källkod
+* **Konsekvens**: Användare kan inte verifiera serverkryptering, datahantering eller integritetspåståenden
+* **Transparensbrott**: Ingen möjlighet att granska den faktiska e-posthanteringen och lagringssystemen
 
 **Tutas vilseledande marknadsföring:**
 
-* **Påståenden**: ["Öppen källkods-e-post"](https://tuta.com/blog/posts/open-source-email) som en central försäljningsargument
-* **Verklighet**: [Backend-infrastruktur är sluten källkod](https://github.com/tutao/tutanota) - endast frontend är tillgängligt
-* **Påverkan**: Egenutvecklad kryptering förhindrar standard e-postprotokoll (IMAP/SMTP)
-* **Låsningsstrategi**: Anpassad kryptering tvingar fram leverantörsberoende
+* **Påståenden**: ["Öppen källkod e-post"](https://tuta.com/blog/posts/open-source-email) som en kärnförsäljningspunkt
+* **Verklighet**: [Backend-infrastrukturen är stängd källkod](https://github.com/tutao/tutanota) – endast frontend är tillgänglig
+* **Konsekvens**: Proprietär kryptering hindrar standardprotokoll för e-post (IMAP/SMTP)
+* **Lås-in-strategi**: Anpassad kryptering tvingar leverantörsberoende
 
 **Varför detta är viktigt för modern integritet:**
 
-År 2025 kräver sann integritet **fullständig transparens**. När e-postleverantörer hävdar att de är "öppen källkod" men döljer sin serverkod:
+År 2025 kräver verklig integritet **fullständig transparens**. När e-postleverantörer påstår sig vara "öppen källkod" men döljer sin serverkod:
 
-1. **Overifierbar kryptering**: Du kan inte granska hur dina data faktiskt är krypterade
-2. **Dolda datametoder**: Datahantering på serversidan förblir en svart låda
-3. **Förtroendebaserad säkerhet**: Du måste lita på deras påståenden utan verifiering
-4. **Leverantörsinlåsning**: Proprietära system förhindrar dataportabilitet
+1. **Okontrollerbar kryptering**: Du kan inte granska hur dina data faktiskt krypteras
+2. **Dolda datapraxis**: Serverns datahantering förblir en svart låda
+3. **Säkerhet baserad på förtroende**: Du måste lita på deras påståenden utan verifiering
+4. **Leverantörslåsning**: Proprietära system hindrar dataportabilitet
 
-**Vidarebefordra e-postens sanna transparens:**
+**Forward Emails verkliga transparens:**
 
-* ✅ **[Komplett öppen källkod](https://github.com/forwardemail/forwardemail.net)** - server- och klientkod
-* ✅ **[Självhosting tillgängligt](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - kör din egen instans
-* ✅ **Standardprotokoll** - IMAP-, SMTP-, CardDAV- och CalDAV-kompatibilitet
-* ✅ **Granskningsbar säkerhet** - varje kodrad kan inspekteras
-* ✅ **Ingen leverantörslåsning** - dina data, din kontroll
+* ✅ **[Fullständig öppen källkod](https://github.com/forwardemail/forwardemail.net)** – server- och klientkod
+* ✅ **[Självhosting tillgängligt](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – kör din egen instans
+* ✅ **Standardprotokoll** – IMAP, SMTP, CardDAV, CalDAV-kompatibilitet
+* ✅ **Granskbar säkerhet** – varje kodrad kan inspekteras
+* ✅ **Ingen leverantörslåsning** – dina data, din kontroll
 
 > \[!TIP]
-> **Riktig öppen källkod innebär att du kan verifiera alla påståenden.** Med Vidarebefordra e-post kan du granska vår kryptering, granska vår datahantering och till och med köra din egen instans. Det är sann transparens.
+> **Verklig öppen källkod betyder att du kan verifiera varje påstående.** Med Forward Email kan du granska vår kryptering, se över vår datahantering och till och med köra din egen instans. Det är sann transparens.
 
-## 30+ exempel på verkliga integrationer {#30-real-world-integration-examples}
+
+## 30+ Exempel på verkliga integrationer {#30-real-world-integration-examples}
 
 ### 1. Förbättring av WordPress kontaktformulär {#1-wordpress-contact-form-enhancement}
-
-**Problem**: [WordPress SMTP-konfigurationsfel](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 GitHub-problem](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
+**Problem**: [WordPress SMTP-konfigurationsfel](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 GitHub-ärenden](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
 **Lösning**: Direkt API-integration kringgår [SMTP](https://tools.ietf.org/html/rfc5321) helt
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// WordPress kontaktformulär som sparar till Skickat-mappen
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -483,7 +483,7 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'Kontaktformulär: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
@@ -493,10 +493,10 @@ await fetch('https://api.forwardemail.net/v1/messages', {
 ### 2. Zapier-alternativ för e-postautomation {#2-zapier-alternative-for-email-automation}
 
 **Problem**: [Zapiers gräns på 10 e-postmeddelanden/timme](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) och [IMAP-detekteringsfel](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-**Lösning**: Obegränsad automatisering med fullständig e-postkontroll
+**Lösning**: Obegränsad automation med full kontroll över e-post
 
 ```javascript
-// Auto-organize emails by sender domain
+// Auto-organisera e-post efter avsändardomän
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -509,11 +509,11 @@ for (const message of messages) {
 
 ### 3. CRM-e-postsynkronisering {#3-crm-email-synchronization}
 
-**Problem**: Manuell kontakthantering mellan e-post och [CRM-system](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**Lösning**: Tvåvägssynkronisering med [CardDAV](https://tools.ietf.org/html/rfc6352) kontakt-API
+**Problem**: Manuell kontaktadministration mellan e-post och [CRM-system](https://en.wikipedia.org/wiki/Customer_relationship_management)
+**Lösning**: Tvåvägssynk med [CardDAV](https://tools.ietf.org/html/rfc6352) kontakt-API
 
 ```javascript
-// Sync new email contacts to CRM
+// Synkronisera nya e-postkontakter till CRM
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -524,13 +524,13 @@ for (const contact of newContacts) {
 }
 ```
 
-### 4. Bearbetning av e-handelsorder {#4-e-commerce-order-processing}
+### 4. E-handelsorderhantering {#4-e-commerce-order-processing}
 
-**Problem**: Manuell e-postbehandling av order för [e-handelsplattformar](https://en.wikipedia.org/wiki/E-commerce)
+**Problem**: Manuell orderhantering via e-post för [e-handelsplattformar](https://en.wikipedia.org/wiki/E-commerce)
 **Lösning**: Automatiserad orderhanteringspipeline
 
 ```javascript
-// Process order confirmation emails
+// Hantera orderbekräftelsemail
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
   msg.subject.includes('Order Confirmation')
@@ -546,13 +546,13 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. Stöd för ärendeintegration {#5-support-ticket-integration}
+### 5. Supportärendeintegration {#5-support-ticket-integration}
 
-**Problem**: E-posttrådar utspridda över [helpdesk-plattformar](https://en.wikipedia.org/wiki/Help_desk_software)
-**Lösning**: Fullständig spårning av e-posttrådar
+**Problem**: E-posttrådar spridda över [helpdesk-plattformar](https://en.wikipedia.org/wiki/Help_desk_software)
+**Lösning**: Komplett spårning av e-posttrådar
 
 ```javascript
-// Create support ticket from email thread
+// Skapa supportärende från e-posttråd
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -568,13 +568,13 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. System för hantering av nyhetsbrev {#6-newsletter-management-system}
+### 6. Nyhetsbrevsystem {#6-newsletter-management-system}
 
-**Problem**: Begränsade [nyhetsbrevsplattform](https://en.wikipedia.org/wiki/Email_marketing)-integrationer
-**Lösning**: Fullständig hantering av prenumeranternas livscykel
+**Problem**: Begränsade [nyhetsbrevsplattformar](https://en.wikipedia.org/wiki/Email_marketing) integrationer
+**Lösning**: Komplett hantering av prenumerantlivscykeln
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// Automatisk hantering av nyhetsbrevsprenumerationer
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
   msg.subject.toLowerCase().includes('unsubscribe')
@@ -591,9 +591,8 @@ for (const msg of unsubscribes) {
 
 ### 7. E-postbaserad uppgiftshantering {#7-email-based-task-management}
 
-**Problem**: Överbelastning i inkorgen och [uppgiftsspårning](https://en.wikipedia.org/wiki/Task_management)
-**Lösning**: Konvertera e-postmeddelanden till handlingsbara uppgifter
-
+**Problem**: Överbelastad inkorg och [uppgiftsspårning](https://en.wikipedia.org/wiki/Task_management)
+**Lösning**: Konvertera e-post till handlingsbara uppgifter
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -607,10 +606,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. E-postaggregering för flera konton {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**Problem**: Hantera [flera e-postkonton](https://en.wikipedia.org/wiki/Email_client) mellan leverantörer
-**Lösning**: Enhetligt inkorgsgränssnitt
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -625,10 +624,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. Avancerad instrumentpanel för e-postanalys {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**Problem**: Ingen insikt i [e-postmönster](https://en.wikipedia.org/wiki/Email_analytics) med sofistikerad filtrering
-**Lösning**: Anpassad e-postanalys med avancerade sökfunktioner
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -675,10 +674,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. Smart e-postarkivering {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**Problem**: Manuell [e-postorganisation](https://en.wikipedia.org/wiki/Email_management)
-**Lösning**: Intelligent e-postkategorisering
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -696,10 +695,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. Integrering av e-post till kalender {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**Problem**: Manuell skapande av [kalenderhändelse](https://tools.ietf.org/html/rfc4791) från e-postmeddelanden
-**Lösning**: Automatisk extrahering och skapande av händelser
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -723,13 +722,13 @@ for (const email of meetingEmails) {
 }
 ```
 
-### 12. Säkerhetskopiering och efterlevnad av e-post {#12-email-backup-and-compliance}
+### 12. E-postbackup och efterlevnad {#12-email-backup-and-compliance}
 
-**Problem**: [E-postlagring](https://en.wikipedia.org/wiki/Email_retention_policy) och efterlevnadskrav
-**Lösning**: Automatiserad säkerhetskopiering med bevarande av metadata
+**Problem**: [E-postlagring](https://en.wikipedia.org/wiki/Email_retention_policy) och efterlevnadskrav  
+**Lösning**: Automatisk backup med bevarande av metadata
 
 ```javascript
-// Backup emails with full metadata
+// Säkerhetskopiera e-post med full metadata
 const allMessages = await fetch('/v1/messages');
 const backup = {
   timestamp: new Date(),
@@ -747,11 +746,11 @@ await saveToComplianceStorage(backup);
 
 ### 13. E-postbaserad innehållshantering {#13-email-based-content-management}
 
-**Problem**: Hantera innehållsinskick via e-post för [CMS-plattformar](https://en.wikipedia.org/wiki/Content_management_system)
+**Problem**: Hantering av innehållsinskick via e-post för [CMS-plattformar](https://en.wikipedia.org/wiki/Content_management_system)  
 **Lösning**: E-post som innehållshanteringssystem
 
 ```javascript
-// Process content submissions from email
+// Bearbeta innehållsinskick från e-post
 const messages = await fetch('/v1/messages?folder=Submissions');
 const submissions = messages.filter(msg =>
   msg.to.some(addr => addr.includes('submit@'))
@@ -769,11 +768,11 @@ for (const submission of submissions) {
 
 ### 14. Hantering av e-postmallar {#14-email-template-management}
 
-**Problem**: Inkonsekvent [e-postmallar](https://en.wikipedia.org/wiki/Email_template) i hela teamet
-**Lösning**: Centraliserat mallsystem med API
+**Problem**: Inkonsekventa [e-postmallar](https://en.wikipedia.org/wiki/Email_template) inom teamet  
+**Lösning**: Centraliserat mall-system med API
 
 ```javascript
-// Send templated emails with dynamic content
+// Skicka mallade e-postmeddelanden med dynamiskt innehåll
 const template = await getEmailTemplate('welcome');
 await fetch('/v1/messages', {
   method: 'POST',
@@ -786,13 +785,13 @@ await fetch('/v1/messages', {
 });
 ```
 
-### 15. E-postbaserad arbetsflödesautomation {#15-email-based-workflow-automation}
+### 15. E-postbaserad arbetsflödesautomatisering {#15-email-based-workflow-automation}
 
-**Problem**: Manuell [godkännandeprocesser](https://en.wikipedia.org/wiki/Workflow) via e-post
-**Lösning**: Automatiserade arbetsflödesutlösare
+**Problem**: Manuella [godkännandeprocesser](https://en.wikipedia.org/wiki/Workflow) via e-post  
+**Lösning**: Automatiska arbetsflödesutlösare
 
 ```javascript
-// Process approval emails
+// Bearbeta godkännandemail
 const messages = await fetch('/v1/messages?folder=Approvals');
 const approvals = messages.filter(msg =>
   msg.subject.includes('APPROVAL')
@@ -810,11 +809,11 @@ for (const approval of approvals) {
 
 ### 16. Övervakning av e-postsäkerhet {#16-email-security-monitoring}
 
-**Problem**: Manuell [upptäckt av säkerhetshot](https://en.wikipedia.org/wiki/Email_security)
-**Lösning**: Automatiserad hotanalys
+**Problem**: Manuell [säkerhetshotdetektion](https://en.wikipedia.org/wiki/Email_security)  
+**Lösning**: Automatisk hotanalys
 
 ```javascript
-// Monitor for suspicious emails
+// Övervaka misstänkta e-postmeddelanden
 const recentEmails = await fetch('/v1/messages');
 for (const email of recentEmails) {
   const threatScore = analyzeThreat(email);
@@ -828,13 +827,13 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. E-postbaserad enkätinsamling {#17-email-based-survey-collection}
+### 17. E-postbaserad insamling av undersökningar {#17-email-based-survey-collection}
 
-**Problem**: Manuell [enkätsvar](https://en.wikipedia.org/wiki/Survey_methodology)-bearbetning
-**Lösning**: Automatiserad svarsaggregering
+**Problem**: Manuell bearbetning av [undersökningssvar](https://en.wikipedia.org/wiki/Survey_methodology)  
+**Lösning**: Automatisk aggregering av svar
 
 ```javascript
-// Collect and process survey responses
+// Samla in och bearbeta undersökningssvar
 const messages = await fetch('/v1/messages?folder=Surveys');
 const responses = messages.filter(msg =>
   msg.subject.includes('Survey Response')
@@ -850,11 +849,11 @@ await updateSurveyResults(surveyData);
 
 ### 18. Övervakning av e-postprestanda {#18-email-performance-monitoring}
 
-**Problem**: Ingen insyn i [e-postleveransprestanda](https://en.wikipedia.org/wiki/Email_deliverability)
-**Lösning**: E-poststatistik i realtid
+**Problem**: Ingen insyn i [e-postleveransprestanda](https://en.wikipedia.org/wiki/Email_deliverability)  
+**Lösning**: Realtidsmått för e-post
 
 ```javascript
-// Monitor email delivery performance
+// Övervaka e-postleveransprestanda
 const sentEmails = await fetch('/v1/messages?folder=Sent');
 const deliveryStats = {
   sent: sentEmails.length,
@@ -863,11 +862,10 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
+### 19. E-postbaserad lead-kvalificering {#19-email-based-lead-qualification}
 
-### 19. E-postbaserad leadkvalificering {#19-email-based-lead-qualification}
-
-**Problem**: Manuell [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) från e-postinteraktioner
-**Lösning**: Automatiserad pipeline för leadkvalificering
+**Problem**: Manuell [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) från e-postinteraktioner  
+**Lösning**: Automatiserad pipeline för lead-kvalificering
 
 ```javascript
 // Score leads based on email engagement
@@ -882,10 +880,10 @@ for (const prospect of prospects) {
 }
 ```
 
-### 20. E-postbaserad projekthantering {#20-email-based-project-management}
+### 20. E-postbaserad projektledning {#20-email-based-project-management}
 
-**Problem**: [Projektuppdateringar](https://en.wikipedia.org/wiki/Project_management) utspritt i e-posttrådar
-**Lösning**: Centraliserad projektkommunikationsnav
+**Problem**: [Projektuppdateringar](https://en.wikipedia.org/wiki/Project_management) spridda över e-posttrådar  
+**Lösning**: Centraliserad kommunikationshub för projekt
 
 ```javascript
 // Extract project updates from emails
@@ -906,8 +904,8 @@ for (const email of projectEmails) {
 
 ### 21. E-postbaserad lagerhantering {#21-email-based-inventory-management}
 
-**Problem**: Manuella lageruppdateringar från leverantörers e-postmeddelanden
-**Lösning**: Automatiserad lagerspårning från e-postmeddelanden
+**Problem**: Manuella lageruppdateringar från leverantörers e-post  
+**Lösning**: Automatiserad lageruppföljning från e-postaviseringar
 
 ```javascript
 // Process inventory updates from supplier emails
@@ -935,8 +933,8 @@ for (const email of inventoryEmails) {
 
 ### 22. E-postbaserad fakturahantering {#22-email-based-invoice-processing}
 
-**Problem**: Manuell [fakturahantering](https://en.wikipedia.org/wiki/Invoice_processing) och redovisningsintegration
-**Lösning**: Automatiserad fakturautvinning och synkronisering av redovisningssystem
+**Problem**: Manuell [fakturahantering](https://en.wikipedia.org/wiki/Invoice_processing) och integration med bokföring  
+**Lösning**: Automatiserad fakturautvinning och synkronisering med bokföringssystem
 
 ```javascript
 // Extract invoice data from email attachments
@@ -964,8 +962,8 @@ for (const email of invoiceEmails) {
 
 ### 23. E-postbaserad evenemangsregistrering {#23-email-based-event-registration}
 
-**Problem**: Manuell [evenemangsregistrering](https://en.wikipedia.org/wiki/Event_management)-bearbetning från e-postsvar
-**Lösning**: Automatiserad deltagarhantering och kalenderintegration
+**Problem**: Manuell [evenemangsregistrering](https://en.wikipedia.org/wiki/Event_management) från e-postsvar  
+**Lösning**: Automatiserad hantering av deltagare och kalenderintegration
 
 ```javascript
 // Process event registration emails
@@ -996,10 +994,9 @@ for (const registration of registrations) {
   });
 }
 ```
+### 24. E-postbaserat dokumentgodkännandeflöde {#24-email-based-document-approval-workflow}
 
-### 24. E-postbaserat arbetsflöde för dokumentgodkännande {#24-email-based-document-approval-workflow}
-
-**Problem**: Komplexa [dokumentgodkännande](https://en.wikipedia.org/wiki/Document_management_system)-kedjor via e-post
+**Problem**: Komplexa [dokumentgodkännanden](https://en.wikipedia.org/wiki/Document_management_system) via e-post
 **Lösning**: Automatiserad spårning av godkännanden och versionshantering av dokument
 
 ```javascript
@@ -1030,8 +1027,8 @@ for (const email of approvalEmails) {
 
 ### 25. E-postbaserad kundfeedbackanalys {#25-email-based-customer-feedback-analysis}
 
-**Problem**: Manuell [kundfeedback](https://en.wikipedia.org/wiki/Customer_feedback)-insamling och sentimentanalys
-**Lösning**: Automatiserad feedbackbearbetning och sentimentspårning
+**Problem**: Manuell insamling av [kundfeedback](https://en.wikipedia.org/wiki/Customer_feedback) och sentimentanalys
+**Lösning**: Automatiserad bearbetning av feedback och spårning av sentiment
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1063,7 +1060,7 @@ for (const email of feedbackEmails) {
 ### 26. E-postbaserad rekryteringspipeline {#26-email-based-recruitment-pipeline}
 
 **Problem**: Manuell [rekrytering](https://en.wikipedia.org/wiki/Recruitment) och kandidatspårning
-**Lösning**: Automatiserad kandidathantering och intervjuschemaläggning
+**Lösning**: Automatiserad kandidatadministration och schemaläggning av intervjuer
 
 ```javascript
 // Process job application emails
@@ -1094,10 +1091,10 @@ for (const application of applications) {
 }
 ```
 
-### 27. E-postbaserad bearbetning av utgiftsrapporter {#27-email-based-expense-report-processing}
+### 27. E-postbaserad hantering av utgiftsrapporter {#27-email-based-expense-report-processing}
 
-**Problem**: Manuell inlämning och godkännande av [utgiftsrapport](https://en.wikipedia.org/wiki/Expense_report)
-**Lösning**: Automatiserat arbetsflöde för utvinning och godkännande av utgifter
+**Problem**: Manuell inlämning och godkännande av [utgiftsrapporter](https://en.wikipedia.org/wiki/Expense_report)
+**Lösning**: Automatiserad utgiftsutvinning och godkännandeflöde
 
 ```javascript
 // Process expense report emails
@@ -1128,11 +1125,10 @@ for (const email of expenseEmails) {
   }
 }
 ```
+### 28. E-postbaserad kvalitetskontrollrapportering {#28-email-based-quality-assurance-reporting}
 
-### 28. E-postbaserad kvalitetssäkringsrapportering {#28-email-based-quality-assurance-reporting}
-
-**Problem**: Manuell [kvalitetssäkring](https://en.wikipedia.org/wiki/Quality_assurance)-problemspårning
-**Lösning**: Automatiserad QA-problemhantering och felspårning
+**Problem**: Manuell [kvalitetssäkring](https://en.wikipedia.org/wiki/Quality_assurance) och felspårning  
+**Lösning**: Automatiserad hantering av QA-problem och felrapportering
 
 ```javascript
 // Process QA bug reports from email
@@ -1171,7 +1167,7 @@ for (const report of bugReports) {
 
 ### 29. E-postbaserad leverantörshantering {#29-email-based-vendor-management}
 
-**Problem**: Manuell [leverantörskommunikation](https://en.wikipedia.org/wiki/Vendor_management) och kontraktsspårning
+**Problem**: Manuell [leverantörskommunikation](https://en.wikipedia.org/wiki/Vendor_management) och kontraktsspårning  
 **Lösning**: Automatiserad hantering av leverantörsrelationer
 
 ```javascript
@@ -1203,7 +1199,7 @@ for (const email of vendorEmails) {
 
     // Create task for procurement team
     await tasks.create({
-      title: `Review contract communication from ${vendor.name}`,
+      title: `Granska kontraktskommunikation från ${vendor.name}`,
       assignee: 'procurement@company.com',
       dueDate: addDays(new Date(), 2)
     });
@@ -1213,8 +1209,8 @@ for (const email of vendorEmails) {
 
 ### 30. E-postbaserad övervakning av sociala medier {#30-email-based-social-media-monitoring}
 
-**Problem**: Manuell spårning och svar för [sociala medier](https://en.wikipedia.org/wiki/Social_media_monitoring)-omnämnanden
-**Lösning**: Automatiserad bearbetning av sociala medier-aviseringar och samordning av svar
+**Problem**: Manuell [övervakning av sociala medier](https://en.wikipedia.org/wiki/Social_media_monitoring) och svarshantering  
+**Lösning**: Automatiserad bearbetning av sociala medievarningar och samordning av svar
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1247,7 +1243,7 @@ for (const alert of socialAlerts) {
     await fetch('/v1/calendars', {
       method: 'POST',
       body: JSON.stringify({
-        title: `Urgent: Respond to negative social mention`,
+        title: `Brådskande: Svara på negativt omnämnande i sociala medier`,
         start: addMinutes(new Date(), 30),
         attendees: ['social-media-manager@company.com']
       })
@@ -1256,24 +1252,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
-## Komma igång {#getting-started}
 
-### 1. Skapa ditt konto för vidarebefordran av e-post {#1-create-your-forward-email-account}
+## Kom igång {#getting-started}
+
+### 1. Skapa ditt vidarebefordringskonto för e-post {#1-create-your-forward-email-account}
 
 Registrera dig på [forwardemail.net](https://forwardemail.net) och verifiera din domän.
 
-### 2. Generera API-autentiseringsuppgifter {#2-generate-api-credentials}
+### 2. Generera API-referenser {#2-generate-api-credentials}
 
-Din alias-e-postadress och ditt lösenord fungerar som API-inloggningsuppgifter – ingen ytterligare konfiguration krävs.
-
+Din alias-e-post och lösenord fungerar som API-referenser – ingen ytterligare konfiguration krävs.
 ### 3. Gör ditt första API-anrop {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# Lista dina meddelanden
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# Skapa en ny kontakt
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1283,18 +1279,19 @@ curl -u "your-alias@domain.com:password" \
 
 ### 4. Utforska dokumentationen {#4-explore-the-documentation}
 
-Besök [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) för fullständig API-dokumentation med interaktiva exempel.
+Besök [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) för komplett API-dokumentation med interaktiva exempel.
+
 
 ## Tekniska resurser {#technical-resources}
 
 * **[Komplett API-dokumentation](https://forwardemail.net/en/email-api)** - Interaktiv OpenAPI 3.0-specifikation
-* **[Guide för egenhosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Distribuera vidarebefordran av e-post i din infrastruktur
+* **[Guide för egen hosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Distribuera Forward Email på din infrastruktur
 * **[Säkerhetsvitbok](https://forwardemail.net/technical-whitepaper.pdf)** - Teknisk arkitektur och säkerhetsdetaljer
-* **[GitHub-arkivet](https://github.com/forwardemail/forwardemail.net)** - Kodbas med öppen källkod
-* **[Utvecklarsupport](mailto:api@forwardemail.net)** - Direktåtkomst till vårt teknikteam
+* **[GitHub-repository](https://github.com/forwardemail/forwardemail.net)** - Öppen källkod
+* **[Utvecklarstöd](mailto:api@forwardemail.net)** - Direktkontakt med vårt ingenjörsteam
 
 ---
 
 **Redo att revolutionera din e-postintegration?** [Börja bygga med Forward Emails API idag](https://forwardemail.net/en/email-api) och upplev den första kompletta e-posthanteringsplattformen designad för utvecklare.
 
-*Vidarebefordra e-post: E-posttjänsten som äntligen får API:erna rätt.*
+*Forward Email: E-posttjänsten som äntligen får API:er rätt.*

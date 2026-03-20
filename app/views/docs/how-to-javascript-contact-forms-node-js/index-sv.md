@@ -1,23 +1,26 @@
-# JavaScript-kontaktformulär Node.js-kodexempel {#javascript-contact-forms-nodejs-code-example}
+# JavaScript Kontaktformulär Node.js Kodexempel {#javascript-contact-forms-nodejs-code-example}
+
 
 ## Innehållsförteckning {#table-of-contents}
 
-* [Installation och krav](#install-and-requirements)
-* [Källkod och exempel](#source-code-and-example)
+* [Installation och Krav](#install-and-requirements)
+* [Källkod och Exempel](#source-code-and-example)
 
-## Installation och krav {#install-and-requirements}
 
-Du måste installera `nodemailer` npm-beroendet:
+## Installation och Krav {#install-and-requirements}
+
+Du behöver installera npm-paketet `nodemailer`:
 
 ```sh
 npm install nodemailer
 ```
 
-## Källkod och exempel {#source-code-and-example}
 
-Det här exemplet använder biblioteket **[Nodemailer](https://github.com/nodemailer/nodemailer)** och dess officiella sponsor **[Vidarebefordra e-post](https://forwardemail.net)** för att skicka och förhandsgranska utgående e-post.
+## Källkod och Exempel {#source-code-and-example}
 
-Du måste <strong class="text-success"><i class="fa fa-key"></i>Generera lösenord</strong> för att skicka utgående e-post – följ våra **[Skicka e-post med SMTP-guide för anpassad domän](/guides/send-email-with-custom-domain-smtp)**.
+Detta exempel använder **[Nodemailer](https://github.com/nodemailer/nodemailer)**-biblioteket och dess officiella sponsor **[Forward Email](https://forwardemail.net)** för att skicka och förhandsgranska utgående mail.
+
+Du behöver <strong class="text-success"><i class="fa fa-key"></i> Generera Lösenord</strong> för att skicka utgående mail – följ gärna vår **[Skicka E-post med Egen Domän SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: ersätt `user` och `pass` värden från:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -45,12 +48,12 @@ await transporter.sendMail({
 });
 ```
 
-Kör appen för att skicka e-postmeddelandet:
+Kör appen för att skicka e-post:
 
 ```sh
 node app
 ```
 
-Nu kan du gå till **[Mitt konto → E-postmeddelanden](/my-account/emails)** för att se din e-postleveransstatus i realtid, loggar för e-postleverans och förhandsgranskningar av HTML/klartext/bilagor.
+Nu kan du gå till **[Mitt Konto → E-post](/my-account/emails)** för att se din realtidsstatus för e-postleverans, loggar för e-postleveransbarhet och förhandsvisningar av HTML/plaintext/bilagor.
 
-> P.S. :tada: Du kan också **[förhandsgranska e-postmeddelanden i webbläsare och iOS-simulatorn](/docs/test-preview-email-rendering-browsers-ios-simulator)** och **[skapa e-postmallar med Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Du kan också **[förhandsgranska e-post i webbläsare och iOS-simulatorn](/docs/test-preview-email-rendering-browsers-ios-simulator)** och **[skapa e-postmallar med Node.js](/docs/send-emails-with-node-js-javascript)**.

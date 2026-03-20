@@ -1,131 +1,142 @@
 # Termini {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email terms of service" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="Termini di servizio di Forward Email" class="rounded-lg" />
+
 
 ## Indice {#table-of-contents}
 
 * [Disclaimer](#disclaimer)
-* [Utilizzo illimitato](#unlimited-usage)
+* [Utilizzo Illimitato](#unlimited-usage)
 * [Limitazioni](#limitations)
 * [Rimborsi](#refunds)
 * [Controversie](#disputes)
-* [Contratto di servizio ("SLA")](#service-level-agreement-sla)
+* [Accordo sul Livello di Servizio ("SLA")](#service-level-agreement-sla)
   * [Termini](#terms-1)
   * [Accordo](#agreement)
   * [Crediti](#credits)
   * [Idoneità](#eligibility)
-* [Revisioni ed errata corrige](#revisions-and-errata)
-* [Collegamenti](#links)
+* [Revisioni ed Errata](#revisions-and-errata)
+* [Link](#links)
 * [Modifiche ai Termini di Utilizzo del Sito](#site-terms-of-use-modifications)
-* [Legge applicabile](#governing-law)
-* [Ulteriori divulgazioni](#additional-disclosures)
+* [Legge Applicabile](#governing-law)
+* [Ulteriori Divulgazioni](#additional-disclosures)
 
-## Dichiarazione di non responsabilità {#disclaimer}
 
-Accedendo a questo sito web, accetti di essere vincolato dai presenti Termini e Condizioni d'Uso, da tutte le leggi e i regolamenti applicabili e accetti di essere responsabile del rispetto di tutte le leggi locali applicabili.
+## Disclaimer {#disclaimer}
 
-Devi avere almeno diciotto (18) anni, oppure un'età compresa tra tredici (13) e diciassette (17) anni e utilizzare il Servizio con il consenso e la supervisione dei genitori o del tutore legale.
+Accedendo a questo sito web, accetti di essere vincolato da questi Termini e Condizioni d'Uso, da tutte le leggi e regolamenti applicabili, e accetti di essere responsabile del rispetto di eventuali leggi locali applicabili.
 
-<u>**Se non sei d'accordo con uno qualsiasi di questi termini o con uno qualsiasi dei termini di seguito riportati, ti è vietato utilizzare o accedere a questo sito.**</u>
+Devi avere almeno diciotto (18) anni, oppure essere tra i tredici (13) e diciassette (17) anni e utilizzare il Servizio con il consenso e la supervisione di un genitore o tutore legale.
 
-I materiali presenti sul sito web di Forward Email e i servizi correlati ("Servizio") vengono forniti "così come sono".
+<u>**Se non sei d'accordo con uno qualsiasi di questi termini o con uno qualsiasi dei termini di seguito, ti è vietato utilizzare o accedere a questo sito.**</u>
 
-Forward Email non offre alcuna garanzia, espressa o implicita, e con la presente declina e nega tutte le altre garanzie, comprese, senza limitazioni, le garanzie o condizioni implicite di commerciabilità, idoneità per uno scopo particolare o non violazione della proprietà intellettuale o altra violazione dei diritti.
+I materiali sul sito web di Forward Email e i servizi correlati ("Servizio") sono forniti "così come sono".
 
-Inoltre, Forward Email non garantisce né fa alcuna dichiarazione in merito all'accuratezza, ai probabili risultati o all'affidabilità dell'uso dei materiali sul suo Servizio o altrimenti relativi a tali materiali o su qualsiasi sito collegato a questo sito.
+Forward Email non fornisce garanzie, espresse o implicite, e con la presente declina e nega tutte le altre garanzie, incluse senza limitazione, garanzie implicite o condizioni di commerciabilità, idoneità per uno scopo particolare, o non violazione di proprietà intellettuale o altra violazione di diritti.
 
-<u>**Accetti espressamente di non utilizzare il Servizio per attività commerciali o materiali correlati sia a [Le attività vietate di Stripe](https://stripe.com/legal/restricted-businesses) che a [Attività proibite di PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
+Inoltre, Forward Email non garantisce né fa alcuna dichiarazione riguardo all'accuratezza, ai risultati probabili o all'affidabilità dell'uso dei materiali sul suo Servizio o altrimenti relativi a tali materiali o su qualsiasi sito collegato a questo sito.
 
-<u>**Accetti espressamente che utilizzando il Servizio Forward Email non sarà responsabile per, non sarà ritenuta responsabile per, e non creerà, leggerà, modificherà o trasmetterà nulla di quanto segue con il Servizio:**</u>
+<u>**Accetti specificamente che non utilizzerai il Servizio per alcuna attività commerciale o materiali correlati sia alle [Attività Proibite di Stripe](https://stripe.com/legal/restricted-businesses) sia alle [Attività Proibite di PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
 
-* **Non utilizzerai il nostro servizio per gestire un servizio che consenta a terzi (diversi dai tuoi dipendenti e collaboratori) di accedere, utilizzare o beneficiare del nostro servizio. Se desideri che facciamo un'eccezione a questo riguardo, ti preghiamo di contattarci per discutere un accordo aziendale. Consulta il nostro [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) per ulteriori informazioni.**
-* Se utilizzi il nostro servizio [SMTP in uscita](/faq#do-you-support-sending-email-with-smtp), accetti quanto segue:
-* Puoi utilizzarlo per [e-mail transazionale](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) e [marketing via e-mail](https://en.wikipedia.org/wiki/Email_marketing).
-* Se invii materiale di email marketing, devi includere un'intestazione `List-Unsubscribe` e i tuoi iscritti devono aver aderito volontariamente.
-* Ti consigliamo di utilizzare un gestore di newsletter open source come [ListMonk](https://github.com/knadh/listmonk) all'indirizzo <https://github.com/knadh/listmonk>.
-* Tieni presente che in futuro prevediamo di rilasciare un nostro gestore di newsletter. * Il materiale di email marketing include email promozionali, in blocco o commerciali a un elenco di contatti con contenuti, oggetto e corpo del messaggio simili (ad esempio, newsletter e annunci).
-* È necessario rispettare il [Legge CAN-SPAM del 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
-* È necessario rimuovere gli utenti che hanno scelto di non ricevere più newsletter, annullato l'iscrizione o contrassegnato la tua email come spam immediatamente o entro 24 ore.
-* La prima volta che il tuo nome di dominio tenta di inviare una newsletter, un amministratore esaminerà e approverà il tuo dominio per l'invio di newsletter (di solito entro 2-4 ore, ma a volte potrebbe richiedere più tempo).
-* Qualsiasi cosa che interferisca con l'interruzione del Servizio, delle sue operazioni e/o dei suoi clienti.
-* Materiali offensivi, diffamatori, falsi, molesti, indecenti, calunniosi, fuorvianti, discutibili, osceni, offensivi, blasfemi, minacciosi, illegali e/o volgari. * Materiali non autorizzati protetti da copyright o riservati e/o che violano i diritti di proprietà intellettuale, i segreti commerciali e/o la privacy altrui.
-* Qualsiasi cosa che incoraggi comportamenti criminali, possa potenzialmente comportare responsabilità civile e/o violi le leggi o i regolamenti di qualsiasi giurisdizione.
-* Materiali che causino danni o possano potenzialmente arrecare danni a minori, che impersonino un'altra persona o entità e/o che travisino un'affiliazione con una persona o entità.
-* Materiali che contengano spam, virus, malware, materiale NSFW (contenuto indecente, provocatorio o blasfemo), file corrotti e/o qualsiasi altro software o programma che possa danneggiare o possa potenzialmente arrecare danni a una persona, entità, computer, rete, governo, servizio e/o qualsiasi altra questione.
+<u>**Accetti specificamente che utilizzando il Servizio Forward Email non sarà responsabile, non sarà ritenuta responsabile, e tu non creerai, leggerai, modificherai o trasmetterai alcuno dei seguenti con il Servizio:**</u>
 
-I materiali contenuti in questo sito web sono protetti dalle leggi vigenti in materia di copyright e marchi.
+* **Non utilizzerai il nostro servizio per gestire un servizio che consenta a terzi (diversi dai tuoi dipendenti e collaboratori) di accedere, utilizzare o beneficiare del nostro servizio. Se hai bisogno che facciamo un'eccezione per te riguardo a questo, contattaci per discutere un accordo aziendale. Consulta la nostra [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) per maggiori informazioni.**
+* Se stai utilizzando il nostro servizio [SMTP in uscita](/faq#do-you-support-sending-email-with-smtp), accetti quanto segue:
+  * Sei autorizzato a usarlo per [email transazionali](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) e [email marketing](https://en.wikipedia.org/wiki/Email_marketing).
+  * Se invii materiale di email marketing, devi includere un'intestazione `List-Unsubscribe` e i tuoi iscritti devono essere opt-in.
+    * Raccomandiamo di usare un gestore di newsletter open-source come [ListMonk](https://github.com/knadh/listmonk) su <https://github.com/knadh/listmonk>.
+      * Nota che prevediamo di rilasciare un nostro gestore di newsletter in futuro.
+    * Il materiale di email marketing include email promozionali, di massa o commerciali a una lista di contatti con contenuti, oggetto e corpo simili (es. newsletter e annunci).
+    * Devi rispettare il [CAN-SPAM Act del 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
+    * Devi rimuovere gli utenti che hanno scelto di non ricevere più comunicazioni, si sono disiscritti o hanno segnalato la tua email come spam immediatamente o entro 24 ore.
+    * La prima volta che il tuo nome di dominio tenta di inviare una newsletter, un amministratore esaminerà e approverà il tuo dominio per l'invio di newsletter (di solito entro 2-4 ore, ma a volte può richiedere più tempo).
+* Qualsiasi cosa che causi interferenze o interruzioni del Servizio, delle sue operazioni e/o dei suoi clienti.
+* Materiali che siano abusivi, diffamatori, falsi, molesti, indecenti, diffamatori, fuorvianti, discutibili, osceni, offensivi, profani, minacciosi, illegali e/o volgari.
+* Materiali protetti da copyright o riservati non autorizzati e/o materiali che violano diritti di proprietà intellettuale, segreti commerciali e/o privacy di altri.
+* Qualsiasi cosa che incoraggi condotte criminali, abbia il potenziale di causare responsabilità civile e/o violi leggi o regolamenti di qualsiasi giurisdizione.
+* Materiali che causano danni o potenziali danni a minori, impersonano un'altra persona o entità e/o rappresentano falsamente un'affiliazione con una persona o entità.
+* Materiali che contengono spam, virus, malware, materiali NSFW (contenuti indecenti, provocatori o profani), file corrotti e/o qualsiasi altro software o programma che possa danneggiare o potenzialmente causare danni a una persona, entità, computer, rete, governo, servizio e/o qualsiasi altra cosa.
+I materiali contenuti in questo sito web sono protetti dalla normativa vigente in materia di copyright e marchi.
 
-L'accesso al nostro sito web e l'utilizzo del nostro servizio indicano che hai accettato i nostri [politica sulla riservatezza](/privacy) e [Contratto di elaborazione dei dati](/dpa) (ad esempio per la conformità al GDPR).
+Il tuo accesso al nostro sito web e l'utilizzo del nostro servizio indicano che hai accettato la nostra [Informativa sulla Privacy](/privacy) e il [Contratto di Elaborazione dei Dati](/dpa) (ad esempio per la conformità al GDPR).
 
-## Utilizzo illimitato {#unlimited-usage}
 
-Per quanto riguarda l'utilizzo "illimitato" del nostro servizio, applichiamo automaticamente un limite e potremmo limitare o rallentare temporaneamente l'utilizzo quando necessario per mantenere la qualità del servizio per tutti i clienti.
+## Utilizzo Illimitato {#unlimited-usage}
 
-Se determiniamo che il tuo utilizzo dei servizi differisce dal normale comportamento dell'utente, è considerato spam o attività dannosa dal nostro team o per qualsiasi altro motivo a nostra esclusiva discrezione, potremmo limitarne o rallentarne l'utilizzo.
+Per quanto riguarda l'utilizzo "illimitato" nel nostro servizio, applichiamo automaticamente limiti di velocità e potremmo temporaneamente limitare o rallentare l'uso quando necessario per mantenere la qualità del servizio per tutti i clienti.
 
-Potremmo informarti o meno in anticipo sulle restrizioni già imposte o che verranno imposte al tuo account e al servizio in generale.
+Se determiniamo che il tuo utilizzo dei servizi differisce dal comportamento normale degli utenti, è ritenuto spam o attività dannosa dal nostro team, o per qualsiasi altro motivo a nostra esclusiva discrezione – potremmo limitare o rallentare l'uso.
+
+Potremmo o meno avvisarti in anticipo delle restrizioni già imposte o che saranno imposte sul tuo account e sul servizio in generale.
+
 
 ## Limitazioni {#limitations}
 
-In nessun caso Forward Email o i suoi fornitori saranno ritenuti responsabili per eventuali danni (inclusi, a titolo esemplificativo ma non esaustivo, danni per perdita di dati o profitti, o dovuti a interruzione di attività) derivanti dall'utilizzo o dall'impossibilità di utilizzare i materiali presenti sul sito Internet di Forward Email, anche qualora Forward Email o un rappresentante autorizzato di Forward Email sia stato informato oralmente o per iscritto della possibilità di tale danno. Poiché alcune giurisdizioni non consentono limitazioni alle garanzie implicite o limitazioni di responsabilità per danni consequenziali o incidentali, tali limitazioni potrebbero non essere applicabili.
+In nessun caso Forward Email o i suoi fornitori saranno responsabili per danni (inclusi, senza limitazioni, danni per perdita di dati o profitti, o dovuti a interruzione dell'attività) derivanti dall'uso o dall'impossibilità di usare i materiali sul sito Internet di Forward Email, anche se Forward Email o un rappresentante autorizzato di Forward Email è stato avvisato oralmente o per iscritto della possibilità di tali danni. Poiché alcune giurisdizioni non consentono limitazioni sulle garanzie implicite, o limitazioni di responsabilità per danni consequenziali o incidentali, tali limitazioni potrebbero non applicarsi a te.
+
 
 ## Rimborsi {#refunds}
 
-I rimborsi automatici vengono effettuati in caso di upgrade, downgrade o cancellazione dell'account entro 30 giorni dall'attivazione del piano. Questo vale solo per i nuovi clienti.
+I rimborsi automatici avvengono quando effettui un upgrade, downgrade o cancelli il tuo account entro 30 giorni dall'inizio del tuo piano. Questo vale solo per i clienti alla prima sottoscrizione.
 
-Non effettuiamo rimborsi né ripartiamo la differenza quando cambi piano. Convertiamo invece la durata rimanente dalla data di scadenza del tuo piano attuale nella durata più prossima del tuo nuovo piano (arrotondata per difetto al mese).
+Non applichiamo rimborsi proporzionali né rimborsiamo la differenza quando cambi piano. Invece convertiamo la durata residua dalla data di scadenza del tuo piano esistente nella durata relativa più vicina per il tuo nuovo piano (arrotondata per difetto al mese).
 
-Tieni presente che se effettui un upgrade o un downgrade tra piani a pagamento entro 30 giorni dall'avvio di un piano a pagamento, ti rimborseremo automaticamente l'intero importo dal tuo piano esistente.
+Nota che se effettui un upgrade o downgrade tra piani a pagamento entro una finestra di 30 giorni dall'inizio del piano a pagamento, ti rimborseremo automaticamente l'intero importo del piano esistente.
+
 
 ## Controversie {#disputes}
 
-Contattaci se desideri contestare una transazione o un addebito sul nostro servizio. Non contattare il tuo fornitore di carta di credito, la tua banca o PayPal.
+Ti preghiamo di contattarci se desideri contestare una transazione o un addebito relativo al nostro servizio. Non contattare il tuo fornitore di carta di credito, banca o PayPal.
 
-Se apri una controversia con il fornitore della tua carta di credito, con la banca o con PayPal, il tuo account verrà automaticamente e permanentemente bannato.
+Il tuo account sarà automaticamente e permanentemente bannato se apri una controversia con il tuo fornitore di carta di credito, banca o PayPal.
 
-## Contratto di servizio ("SLA") {#service-level-agreement-sla}
+
+## Accordo sul Livello di Servizio ("SLA") {#service-level-agreement-sla}
 
 ### Termini {#terms-1}
 
-* "Downtime" si riferisce a un fattore superiore al 5% di tasso di errore utente, determinato da un tasso di errore lato server.
-* "Percentuale di uptime mensile" si riferisce al totale dei minuti in un mese solare meno il numero di minuti di downtime subiti nel mese solare, diviso per il totale dei minuti nel mese solare.
+* "Tempo di inattività" si riferisce a un tasso di errore utente superiore al 5%, determinato da un tasso di errore lato server.
+* "Percentuale di disponibilità mensile" si riferisce al totale dei minuti in un mese solare meno il numero di minuti di Tempo di inattività subiti nel mese solare, diviso per il totale dei minuti nel mese solare.
 
 ### Accordo {#agreement}
 
-Forward Email si impegna a compiere ogni ragionevole sforzo commerciale (non inferiore agli standard di settore accettabili e ragionevoli) per garantire che il servizio Forward Email sia disponibile per i clienti paganti per il 99,99% del tempo in qualsiasi mese solare. In caso contrario, potresti avere diritto a ricevere il [Crediti](#credits) descritto di seguito, in conformità con il [Idoneità](#eligibility).
+Forward Email farà tutti i ragionevoli sforzi commerciali (non inferiori agli standard accettabili e ragionevoli del settore) per garantire che il servizio Forward Email sia disponibile ai clienti paganti il 99,99% del tempo in ogni mese solare. Se ciò non avviene, potresti avere diritto a ricevere i [Crediti](#credits) descritti di seguito in conformità con l'[Idoneità](#eligibility).
 
 ### Crediti {#credits}
 
-| Percentuale di uptime mensile | Giorni di servizio* |
-| ------------------------- | ---------------- |
-| < 99.99% – >= 99.90% | 3 |
-| < 99.90% – >= 95.00% | 7 |
-| < 95.50% | 15 |
+| Percentuale di disponibilità mensile | Giorni di servizio* |
+| ----------------------------------- | ------------------- |
+| < 99.99% – >= 99.90%                | 3                   |
+| < 99.90% – >= 95.00%                | 7                   |
+| < 95.50%                           | 15                  |
 
-\* Invece di ricevere i Giorni di Servizio aggiunti al tuo account, puoi anche scegliere di ricevere un rimborso proporzionale.
+\* Invece di ricevere Giorni di servizio aggiunti al tuo account, puoi anche scegliere di ricevere un rimborso proporzionale.
 
 ### Idoneità {#eligibility}
 
-L'importo minimo del credito deve essere di almeno $ 1,00 per essere idoneo. Il credito massimo è limitato ai 30 giorni o all'importo totale che il cliente sta pagando per il mese solare più recente in relazione al Tempo di Inattività (a seconda di quale sia maggiore). I clienti paganti interessati da qualsiasi Tempo di Inattività devono richiedere i Crediti inviando un [Richiesta di aiuto](/help) entro 30 giorni dalla data del Tempo di Inattività. I Crediti si applicano solo per i fattori di Tempo di Inattività che sono sotto il controllo primario di Inoltra Email.
+L'importo minimo del credito deve essere almeno $1,00 per essere idoneo. Il credito massimo è limitato a 30 giorni o all'importo totale che il cliente paga per il mese solare più recente in relazione al Tempo di inattività (quanto maggiore). I clienti paganti interessati da qualsiasi Tempo di inattività devono richiedere i Crediti presentando una [Richiesta di assistenza](/help) entro 30 giorni dalla data del Tempo di inattività. I Crediti si applicano solo per fattori di Tempo di inattività che sono sotto il controllo primario di Forward Email.
+## Revisioni ed Errata {#revisions-and-errata}
 
-## Revisioni ed errori {#revisions-and-errata}
+I materiali presenti sul sito web di Forward Email potrebbero includere errori tecnici, tipografici o fotografici. Forward Email non garantisce che nessuno dei materiali sul suo sito web sia accurato, completo o aggiornato. Forward Email può apportare modifiche ai materiali contenuti nel suo sito web in qualsiasi momento senza preavviso. Tuttavia, Forward Email non si impegna ad aggiornare i materiali.
 
-I materiali presenti sul sito web di Forward Email potrebbero contenere errori tecnici, tipografici o fotografici. Forward Email non garantisce l'accuratezza, la completezza o l'aggiornamento dei materiali presenti sul suo sito web. Forward Email può apportare modifiche ai materiali presenti sul suo sito web in qualsiasi momento e senza preavviso. Tuttavia, Forward Email non si impegna ad aggiornare i materiali.
 
-## Collegamenti {#links}
+## Link {#links}
 
-Forward Email non ha esaminato tutti i siti collegati al suo Servizio e non è responsabile del contenuto di tali siti collegati. L'inclusione di qualsiasi link non implica l'approvazione del sito da parte di Forward Email. L'utilizzo di tali siti web collegati è a rischio e pericolo dell'utente.
+Forward Email non ha esaminato tutti i siti collegati al suo Servizio e non è responsabile per i contenuti di tali siti collegati. L'inclusione di qualsiasi link non implica l'approvazione da parte di Forward Email del sito. L'uso di qualsiasi sito web collegato è a rischio dell'utente.
 
-## Modifiche ai Termini di utilizzo del sito {#site-terms-of-use-modifications}
 
-Forward Email può modificare i presenti Termini e Condizioni d'Uso per il proprio sito web in qualsiasi momento e senza preavviso. Utilizzando questo sito web, l'utente accetta di essere vincolato dalla versione corrente dei presenti Termini e Condizioni d'Uso.
+## Modifiche ai Termini di Utilizzo del Sito {#site-terms-of-use-modifications}
 
-## Legge applicabile {#governing-law}
+Forward Email può rivedere questi termini di utilizzo per il suo sito web in qualsiasi momento senza preavviso. Utilizzando questo sito web accetti di essere vincolato dalla versione corrente di questi Termini e Condizioni di Utilizzo.
 
-Ogni reclamo relativo al sito web di Forward Email sarà regolato dalle leggi dello Stato del Delaware, senza riguardo alle disposizioni sui conflitti di legge.
 
-Termini e condizioni generali applicabili all'utilizzo di un sito web.
+## Legge Applicabile {#governing-law}
 
-## Ulteriori divulgazioni {#additional-disclosures}
+Qualsiasi reclamo relativo al sito web di Forward Email sarà regolato dalle leggi dello Stato del Delaware senza riguardo alle sue disposizioni sui conflitti di legge.
 
-Questo sito è protetto da Cloudflare e si applicano i seguenti vincoli: [politica sulla riservatezza](https://www.cloudflare.com/privacypolicy/) e [Termini di servizio](https://www.cloudflare.com/website-terms/).
+Termini e Condizioni Generali applicabili all'Uso di un Sito Web.
+
+
+## Ulteriori Informazioni {#additional-disclosures}
+
+Questo sito è protetto da Cloudflare e si applicano la sua [Privacy Policy](https://www.cloudflare.com/privacypolicy/) e i suoi [Terms of Service](https://www.cloudflare.com/website-terms/).

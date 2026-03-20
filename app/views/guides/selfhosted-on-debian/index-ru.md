@@ -1,12 +1,13 @@
-# Руководство по установке собственного хостинга для пересылки электронной почты для Debian {#forward-email-self-hosting-installation-guide-for-debian}
+# Руководство по установке Forward Email для самостоятельного хостинга на Debian {#forward-email-self-hosting-installation-guide-for-debian}
+
 
 ## Содержание {#table-of-contents}
 
 * [Обзор](#overview)
-* [Предпосылки](#prerequisites)
+* [Требования](#prerequisites)
 * [Системные требования](#system-requirements)
 * [Пошаговая установка](#step-by-step-installation)
-  * [Шаг 1: Первоначальная настройка системы](#step-1-initial-system-setup)
+  * [Шаг 1: Начальная настройка системы](#step-1-initial-system-setup)
   * [Шаг 2: Настройка DNS-резолверов](#step-2-configure-dns-resolvers)
   * [Шаг 3: Установка системных зависимостей](#step-3-install-system-dependencies)
   * [Шаг 4: Установка и настройка Snapd](#step-4-install-and-configure-snapd)
@@ -14,64 +15,68 @@
   * [Шаг 6: Установка Docker](#step-6-install-docker)
   * [Шаг 7: Настройка службы Docker](#step-7-configure-docker-service)
   * [Шаг 8: Установка и настройка брандмауэра UFW](#step-8-install-and-configure-ufw-firewall)
-  * [Шаг 9: Клонирование репозитория пересылаемой электронной почты](#step-9-clone-forward-email-repository)
-  * [Шаг 10: Настройка конфигурации среды](#step-10-set-up-environment-configuration)
-  * [Шаг 11: Настройте свой домен](#step-11-configure-your-domain)
-  * [Шаг 12: Создание SSL-сертификатов](#step-12-generate-ssl-certificates)
+  * [Шаг 9: Клонирование репозитория Forward Email](#step-9-clone-forward-email-repository)
+  * [Шаг 10: Настройка конфигурации окружения](#step-10-set-up-environment-configuration)
+  * [Шаг 11: Настройка вашего домена](#step-11-configure-your-domain)
+  * [Шаг 12: Генерация SSL-сертификатов](#step-12-generate-ssl-certificates)
   * [Шаг 13: Генерация ключей шифрования](#step-13-generate-encryption-keys)
-  * [Шаг 14: Обновите пути SSL в конфигурации](#step-14-update-ssl-paths-in-configuration)
-  * [Шаг 15: Настройте базовую аутентификацию](#step-15-set-up-basic-authentication)
+  * [Шаг 14: Обновление путей SSL в конфигурации](#step-14-update-ssl-paths-in-configuration)
+  * [Шаг 15: Настройка базовой аутентификации](#step-15-set-up-basic-authentication)
   * [Шаг 16: Развертывание с помощью Docker Compose](#step-16-deploy-with-docker-compose)
   * [Шаг 17: Проверка установки](#step-17-verify-installation)
 * [Конфигурация после установки](#post-installation-configuration)
-  * [Настройка записей DNS](#dns-records-setup)
-  * [Первый вход в систему](#first-login)
-* [Резервная конфигурация](#backup-configuration)
-  * [Настройте резервное копирование, совместимое с S3](#set-up-s3-compatible-backup)
-  * [Настройка заданий Cron для резервного копирования](#set-up-backup-cron-jobs)
-* [Конфигурация автоматического обновления](#auto-update-configuration)
+  * [Настройка DNS-записей](#dns-records-setup)
+  * [Первый вход](#first-login)
+* [Резервное копирование](#backup-configuration)
+  * [Настройка резервного копирования, совместимого с S3](#set-up-s3-compatible-backup)
+  * [Настройка cron-задач для резервного копирования](#set-up-backup-cron-jobs)
+* [Настройка автообновления](#auto-update-configuration)
 * [Особенности Debian](#debian-specific-considerations)
-  * [Различия в управлении пакетами](#package-management-differences)
-  * [Управление услугами](#service-management)
-  * [Конфигурация сети](#network-configuration)
-* [Техническое обслуживание и мониторинг](#maintenance-and-monitoring)
-  * [Расположение журналов](#log-locations)
-  * [Регулярные задачи по техническому обслуживанию](#regular-maintenance-tasks)
-  * [Продление сертификата](#certificate-renewal)
-* [Поиск неисправностей](#troubleshooting)
+  * [Отличия в управлении пакетами](#package-management-differences)
+  * [Управление службами](#service-management)
+  * [Настройка сети](#network-configuration)
+* [Обслуживание и мониторинг](#maintenance-and-monitoring)
+  * [Расположение логов](#log-locations)
+  * [Регулярные задачи обслуживания](#regular-maintenance-tasks)
+  * [Обновление сертификатов](#certificate-renewal)
+* [Устранение неполадок](#troubleshooting)
   * [Проблемы, специфичные для Debian](#debian-specific-issues)
-  * [Распространенные проблемы](#common-issues)
+  * [Распространённые проблемы](#common-issues)
   * [Получение помощи](#getting-help)
-* [Лучшие практики обеспечения безопасности](#security-best-practices)
+* [Рекомендации по безопасности](#security-best-practices)
 * [Заключение](#conclusion)
+
 
 ## Обзор {#overview}
 
-Это руководство содержит пошаговые инструкции по установке решения Forward Email на системах Debian. Оно специально разработано для Debian 11 (Bullseye) и Debian 12 (Bookworm).
+Это руководство содержит пошаговые инструкции по установке решения Forward Email для самостоятельного хостинга на системах Debian. Руководство специально адаптировано для Debian 11 (Bullseye) и Debian 12 (Bookworm).
 
-## Предпосылки {#prerequisites}
+
+## Требования {#prerequisites}
 
 Перед началом установки убедитесь, что у вас есть:
 
-* **Сервер Debian**: версии 11 (Bullseye) или 12 (Bookworm)
-* **Доступ с правами root**: необходимо иметь возможность выполнять команды от имени root (доступ sudo).
-* **Имя домена**: домен, которым вы управляете с помощью доступа к управлению DNS.
-* **Чистый сервер**: рекомендуется использовать новую установку Debian.
-* **Подключение к Интернету**: требуется для загрузки пакетов и образов Docker.
+* **Сервер Debian**: версия 11 (Bullseye) или 12 (Bookworm)
+* **Доступ root**: возможность выполнять команды от имени root (доступ через sudo)
+* **Доменное имя**: домен, которым вы управляете с доступом к настройкам DNS
+* **Чистый сервер**: рекомендуется использовать свежую установку Debian
+* **Подключение к интернету**: необходимо для загрузки пакетов и образов Docker
+
 
 ## Системные требования {#system-requirements}
 
 * **ОЗУ**: минимум 2 ГБ (рекомендуется 4 ГБ для продакшена)
-* **Хранилище**: минимум 20 ГБ свободного места (рекомендуется более 50 ГБ для продакшена)
-* **ЦП**: минимум 1 виртуальный ЦП (рекомендуется более 2 виртуальных ЦП для продакшена)
-* **Сеть**: публичный IP-адрес со следующими доступными портами:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **Хранилище**: минимум 20 ГБ свободного места (рекомендуется 50 ГБ и более для продакшена)
+* **ЦПУ**: минимум 1 виртуальное ядро (рекомендуется 2 и более для продакшена)
+* **Сеть**: публичный IP-адрес с доступными следующими портами:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## Пошаговая установка {#step-by-step-installation}
 
@@ -80,19 +85,18 @@
 Сначала убедитесь, что ваша система обновлена, и переключитесь на пользователя root:
 
 ```bash
-# Update system packages
+# Обновление системных пакетов
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Переключение на пользователя root (требуется для установки)
 sudo su -
 ```
-
 ### Шаг 2: Настройка DNS-резолверов {#step-2-configure-dns-resolvers}
 
-Настройте свою систему на использование DNS-серверов Cloudflare для надежной генерации сертификатов:
+Настройте вашу систему на использование DNS-серверов Cloudflare для надежной генерации сертификатов:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# Остановить и отключить systemd-resolved, если он запущен
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -100,7 +104,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Настроить DNS-резолверы Cloudflare
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -115,13 +119,13 @@ EOF
 
 ### Шаг 3: Установка системных зависимостей {#step-3-install-system-dependencies}
 
-Установите необходимые пакеты для пересылки электронной почты в Debian:
+Установите необходимые пакеты для Forward Email на Debian:
 
 ```bash
-# Update package list
+# Обновить список пакетов
 apt-get update -y
 
-# Install basic dependencies (Debian-specific package list)
+# Установить базовые зависимости (список пакетов для Debian)
 apt-get install -y \
     ca-certificates \
     curl \
@@ -135,67 +139,67 @@ apt-get install -y \
 
 ### Шаг 4: Установка и настройка Snapd {#step-4-install-and-configure-snapd}
 
-В Debian snapd по умолчанию не включен, поэтому нам необходимо установить и настроить его:
+В Debian snapd не установлен по умолчанию, поэтому его нужно установить и настроить:
 
 ```bash
-# Install snapd
+# Установить snapd
 apt-get install -y snapd
 
-# Enable and start snapd service
+# Включить и запустить службу snapd
 systemctl enable snapd
 systemctl start snapd
 
-# Create symlink for snap to work properly
+# Создать символическую ссылку для корректной работы snap
 ln -sf /var/lib/snapd/snap /snap
 
-# Wait for snapd to be ready
+# Подождать, пока snapd будет готов
 sleep 10
 
-# Verify snapd is working
+# Проверить работу snapd
 snap version
 ```
 
 ### Шаг 5: Установка пакетов Snap {#step-5-install-snap-packages}
 
-Установите AWS CLI и Certbot с помощью snap:
+Установите AWS CLI и Certbot через snap:
 
 ```bash
-# Install AWS CLI
+# Установить AWS CLI
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Установить Certbot и плагин DNS
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 
-# Verify installations
+# Проверить установки
 aws --version
 certbot --version
 ```
 
 ### Шаг 6: Установка Docker {#step-6-install-docker}
 
-Установка Docker CE и Docker Compose в Debian:
+Установите Docker CE и Docker Compose на Debian:
 
 ```bash
-# Add Docker's official GPG key (Debian-specific)
+# Добавить официальный GPG-ключ Docker (для Debian)
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository (Debian-specific)
+# Добавить репозиторий Docker (для Debian)
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Обновить индекс пакетов и установить Docker
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Install standalone docker-compose as fallback (if plugin doesn't work)
+# Установить standalone docker-compose на случай, если плагин не работает
 if ! command -v docker-compose &> /dev/null; then
     apt-get install -y docker-compose
 fi
 
-# Verify Docker installation
+# Проверить установку Docker
 docker --version
 docker compose version || docker-compose --version
 ```
@@ -205,19 +209,19 @@ docker compose version || docker-compose --version
 Убедитесь, что Docker запускается автоматически и работает:
 
 ```bash
-# Enable and start Docker service
+# Включить и запустить службу Docker
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Проверить, что Docker работает
 docker info
 ```
 
 Если Docker не запускается, попробуйте запустить его вручную:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Альтернативный способ запуска, если systemctl не работает
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
@@ -228,46 +232,45 @@ docker info
 Минимальные установки Debian могут не включать UFW, поэтому сначала установите его:
 
 ```bash
-# Install UFW if not present
+# Установить UFW, если он отсутствует
 if ! command -v ufw &> /dev/null; then
     apt-get update -y
     apt-get install -y ufw
 fi
 
-# Set default policies
+# Установить политики по умолчанию
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# Разрешить SSH (важно — не заблокируйте себя!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# Разрешить порты, связанные с электронной почтой
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (для Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (альтернативный порт)
+ufw allow 2995/tcp  # POP3 (альтернативный порт)
+ufw allow 3456/tcp  # Пользовательский порт сервиса
+ufw allow 4000/tcp  # Пользовательский порт сервиса
+ufw allow 5000/tcp  # Пользовательский порт сервиса
 
-# Allow local database connections
+# Разрешить локальные подключения к базе данных
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Включить брандмауэр
 echo "y" | ufw enable
 
-# Check firewall status
+# Проверить статус брандмауэра
 ufw status numbered
 ```
+### Шаг 9: Клонирование репозитория Forward Email {#step-9-clone-forward-email-repository}
 
-### Шаг 9: Клонирование репозитория пересылки электронной почты {#step-9-clone-forward-email-repository}
-
-Загрузите исходный код пересылки электронной почты:
+Скачайте исходный код Forward Email:
 
 ```bash
 # Set up variables
@@ -283,9 +286,9 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### Шаг 10: Настройка конфигурации среды {#step-10-set-up-environment-configuration}
+### Шаг 10: Настройка конфигурации окружения {#step-10-set-up-environment-configuration}
 
-Подготовьте конфигурацию среды:
+Подготовьте конфигурацию окружения:
 
 ```bash
 # Set up directory variables
@@ -305,9 +308,9 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Шаг 11: Настройте свой домен {#step-11-configure-your-domain}
+### Шаг 11: Настройте ваш домен {#step-11-configure-your-domain}
 
-Задайте имя домена и обновите переменные среды:
+Установите имя вашего домена и обновите переменные окружения:
 
 ```bash
 # Replace 'yourdomain.com' with your actual domain
@@ -348,9 +351,9 @@ update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
 
-### Шаг 12: Создание SSL-сертификатов {#step-12-generate-ssl-certificates}
+### Шаг 12: Генерация SSL сертификатов {#step-12-generate-ssl-certificates}
 
-#### Вариант A: Ручной вызов DNS (рекомендуется для большинства пользователей) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Вариант A: Ручной DNS-челлендж (Рекомендуется для большинства пользователей) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -362,9 +365,9 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Важно**: При появлении запроса вам потребуется создать TXT-записи в DNS. Для одного и того же домена может появиться несколько запросов — **создайте их ВСЕ**. Не удаляйте первую TXT-запись при добавлении второй.
+**Важно**: При запросе вам нужно будет создать TXT-записи в вашем DNS. Вы можете увидеть несколько челленджей для одного и того же домена — **создайте ВСЕ из них**. Не удаляйте первую TXT-запись при добавлении второй.
 
-#### Вариант B: Cloudflare DNS (если вы используете Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Вариант B: Cloudflare DNS (Если вы используете Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
 Если ваш домен использует Cloudflare для DNS, вы можете автоматизировать генерацию сертификатов:
 
@@ -389,9 +392,9 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Копировать сертификаты {#copy-certificates}
+#### Копирование сертификатов {#copy-certificates}
 
-После генерации сертификатов скопируйте их в каталог приложения:
+После генерации сертификатов скопируйте их в директорию приложения:
 
 ```bash
 # Copy certificates to application SSL directory
@@ -429,15 +432,14 @@ update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 # Set SMTP transport password
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Все ключи шифрования успешно сгенерированы"
 ```
+### Шаг 14: Обновление путей SSL в конфигурации {#step-14-update-ssl-paths-in-configuration}
 
-### Шаг 14: Обновите пути SSL в конфигурации {#step-14-update-ssl-paths-in-configuration}
-
-Настройте пути SSL-сертификатов в файле среды:
+Настройте пути к SSL-сертификатам в файле окружения:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# Обновите пути SSL, чтобы они указывали на правильные файлы сертификатов
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -447,61 +449,61 @@ sed -i -E \
 
 ### Шаг 15: Настройка базовой аутентификации {#step-15-set-up-basic-authentication}
 
-Создайте временные базовые учетные данные аутентификации:
+Создайте временные учетные данные для базовой аутентификации:
 
 ```bash
-# Generate a secure random password
+# Сгенерировать надежный случайный пароль
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Обновить файл окружения с учетными данными базовой аутентификации
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Показать учетные данные (сохраните их!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 ВАЖНО: Сохраните эти данные для входа!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "Имя пользователя: admin"
+echo "Пароль: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Эти данные понадобятся для доступа к веб-интерфейсу после установки."
 echo ""
 ```
 
 ### Шаг 16: Развертывание с помощью Docker Compose {#step-16-deploy-with-docker-compose}
 
-Запустите все службы пересылки электронной почты:
+Запустите все сервисы Forward Email:
 
 ```bash
-# Set Docker Compose file path
+# Установить путь к файлу Docker Compose
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Остановить все существующие контейнеры
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" down
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" down
 fi
 
-# Pull the latest images
+# Загрузить последние образы
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" pull
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" pull
 fi
 
-# Start all services in detached mode
+# Запустить все сервисы в фоновом режиме
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 fi
 
-# Wait a moment for services to start
+# Подождать немного, чтобы сервисы запустились
 sleep 10
 
-# Check service status
+# Проверить статус сервисов
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" ps
 else
@@ -511,31 +513,32 @@ fi
 
 ### Шаг 17: Проверка установки {#step-17-verify-installation}
 
-Проверьте, что все службы работают правильно:
+Проверьте, что все сервисы работают корректно:
 
 ```bash
-# Check Docker containers
+# Проверить контейнеры Docker
 docker ps
 
-# Check service logs for any errors
+# Проверить логи сервисов на наличие ошибок
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 fi
 
-# Test web interface connectivity
+# Проверить доступность веб-интерфейса
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Проверить, слушают ли порты
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## Конфигурация после установки {#post-installation-configuration}
 
-### Настройка записей DNS {#dns-records-setup}
+## Постустановочная конфигурация {#post-installation-configuration}
 
-Вам необходимо настроить следующие записи DNS для вашего домена:
+### Настройка DNS-записей {#dns-records-setup}
+
+Вам нужно настроить следующие DNS-записи для вашего домена:
 
 #### MX-запись {#mx-record}
 
@@ -543,7 +546,7 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Записи {#a-records}
+#### A-записи {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -556,28 +559,28 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-#### Запись SPF {#spf-record}
+#### SPF-запись {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
-#### Запись DKIM {#dkim-record}
+#### DKIM-запись {#dkim-record}
 
-Получите ваш открытый ключ DKIM:
+Получите ваш публичный ключ DKIM:
 
 ```bash
-# Extract DKIM public key
+# Извлечь публичный ключ DKIM
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-Создайте DNS-запись DKIM:
+Создайте DKIM DNS-запись:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-#### Запись DMARC {#dmarc-record}
+#### DMARC-запись {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -585,148 +588,152 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Первый вход {#first-login}
 
-1. Откройте веб-браузер и перейдите в папку `https://yourdomain.com`.
-2. Введите ранее сохраненные базовые учетные данные для аутентификации.
-3. Завершите работу мастера первоначальной настройки.
-4. Создайте свою первую учетную запись электронной почты.
+1. Откройте ваш веб-браузер и перейдите по адресу `https://yourdomain.com`
+2. Введите учетные данные базовой аутентификации, которые вы сохранили ранее
+3. Завершите мастер первоначальной настройки
+4. Создайте вашу первую учетную запись электронной почты
+
 
 ## Конфигурация резервного копирования {#backup-configuration}
 
 ### Настройка резервного копирования, совместимого с S3 {#set-up-s3-compatible-backup}
 
-Настройте автоматическое резервное копирование на S3-совместимое хранилище:
+Настройте автоматическое резервное копирование в хранилище, совместимое с S3:
 
 ```bash
-# Create AWS credentials directory
+# Создать каталог для учетных данных AWS
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# Настроить учетные данные AWS
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# Настроить параметры AWS
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Для S3, не относящегося к AWS (например, Cloudflare R2), добавьте URL конечной точки
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
-
-### Настройка заданий Cron для резервного копирования {#set-up-backup-cron-jobs}
+### Настройка резервных заданий Cron {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Сделать скрипты резервного копирования исполняемыми
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# Добавить задание cron для резервного копирования MongoDB (ежедневно в полночь)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Добавить задание cron для резервного копирования Redis (ежедневно в полночь)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Проверить, что задания cron добавлены
 crontab -l
 ```
 
-## Конфигурация автоматического обновления {#auto-update-configuration}
 
-Настройте автоматические обновления для вашей установки пересылки электронной почты:
+## Конфигурация автообновления {#auto-update-configuration}
+
+Настройте автоматическое обновление вашей установки Forward Email:
 
 ```bash
-# Create auto-update command (use appropriate docker compose command)
+# Создать команду автообновления (используйте соответствующую команду docker compose)
 if command -v docker-compose &> /dev/null; then
     DOCKER_UPDATE_CMD="docker-compose -f $DOCKER_COMPOSE_FILE pull && docker-compose -f $DOCKER_COMPOSE_FILE up -d"
 else
     DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 fi
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Добавить задание cron для автообновления (ежедневно в 1 час ночи)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Проверить, что задание cron добавлено
 crontab -l
 ```
 
+
 ## Особенности Debian {#debian-specific-considerations}
 
-### Различия в управлении пакетами {#package-management-differences}
+### Отличия в управлении пакетами {#package-management-differences}
 
-* **Snapd**: Не устанавливается по умолчанию в Debian, требуется ручная установка.
-* **Docker**: Использует специфичные для Debian репозитории и ключи GPG.
-* **UFW**: Может не входить в минимальную установку Debian.
-* **systemd**: Поведение может немного отличаться от Ubuntu.
+* **Snapd**: не установлен по умолчанию в Debian, требует ручной установки
+* **Docker**: использует репозитории и GPG-ключи, специфичные для Debian
+* **UFW**: может отсутствовать в минимальных установках Debian
+* **systemd**: поведение может немного отличаться от Ubuntu
 
-### Управление службами {#service-management}
+### Управление сервисами {#service-management}
 
 ```bash
-# Check service status (Debian-specific commands)
+# Проверить статус сервисов (команды для Debian)
 systemctl status snapd
 systemctl status docker
 systemctl status ufw
 
-# Restart services if needed
+# Перезапустить сервисы при необходимости
 systemctl restart snapd
 systemctl restart docker
 ```
 
-### Конфигурация сети {#network-configuration}
+### Настройка сети {#network-configuration}
 
-В Debian могут быть разные имена или конфигурации сетевых интерфейсов:
+В Debian могут использоваться другие имена сетевых интерфейсов или конфигурации:
 
 ```bash
-# Check network interfaces
+# Проверить сетевые интерфейсы
 ip addr show
 
-# Check routing
+# Проверить маршрутизацию
 ip route show
 
-# Check DNS resolution
+# Проверить разрешение DNS
 nslookup google.com
 ```
 
-## Техническое обслуживание и мониторинг {#maintenance-and-monitoring}
 
-### Расположение журналов {#log-locations}
+## Обслуживание и мониторинг {#maintenance-and-monitoring}
 
-* **Логи Docker Compose**: используйте соответствующую команду Docker Compose в зависимости от установки.
-* **Системные журналы**: `/var/log/syslog`
-* **Журналы резервного копирования**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Журналы автообновления**: `/var/log/autoupdate.log`
-* **Журналы Snapd**: `journalctl -u snapd`
+### Местоположение логов {#log-locations}
 
-### Регулярные задачи по обслуживанию {#regular-maintenance-tasks}
+* **Логи Docker Compose**: используйте соответствующую команду docker compose в зависимости от установки
+* **Системные логи**: `/var/log/syslog`
+* **Логи резервного копирования**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Логи автообновления**: `/var/log/autoupdate.log`
+* **Логи snapd**: `journalctl -u snapd`
 
-1. **Мониторинг дискового пространства**: `df -h`
-2. **Проверка состояния службы**: Используйте соответствующую команду docker compose
-3. **Просмотр журналов**: Проверьте журналы приложений и системные журналы
+### Регулярные задачи обслуживания {#regular-maintenance-tasks}
+
+1. **Мониторинг свободного места на диске**: `df -h`
+2. **Проверка статуса сервисов**: используйте соответствующую команду docker compose
+3. **Просмотр логов**: проверяйте как логи приложений, так и системные логи
 4. **Обновление системных пакетов**: `apt update && apt upgrade`
 5. **Мониторинг snapd**: `snap list` и `snap refresh`
 
-### Продление сертификата {#certificate-renewal}
+### Обновление сертификатов {#certificate-renewal}
 
-Сертификаты должны обновляться автоматически, но при необходимости вы можете обновить их вручную:
+Сертификаты должны обновляться автоматически, но вы можете обновить их вручную при необходимости:
 
 ```bash
-# Manual certificate renewal
+# Ручное обновление сертификатов
 certbot renew
 
-# Copy renewed certificates
+# Копирование обновленных сертификатов
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Перезапуск сервисов для использования новых сертификатов
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" restart
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" restart
 fi
 ```
+
 
 ## Устранение неполадок {#troubleshooting}
 
@@ -735,16 +742,16 @@ fi
 #### 1. Snapd не работает {#1-snapd-not-working}
 
 ```bash
-# Check snapd status
+# Проверить статус snapd
 systemctl status snapd
 
-# Restart snapd
+# Перезапустить snapd
 systemctl restart snapd
 
-# Check snap path
+# Проверить путь snap
 echo $PATH | grep snap
 
-# Add snap to PATH if missing
+# Добавить snap в PATH, если отсутствует
 echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -752,85 +759,86 @@ source ~/.bashrc
 #### 2. Команда Docker Compose не найдена {#2-docker-compose-command-not-found}
 
 ```bash
-# Check which docker compose command is available
+# Проверить, какая команда docker compose доступна
 command -v docker-compose
 command -v docker
 
-# Use the appropriate command in scripts
+# Использовать соответствующую команду в скриптах
 if command -v docker-compose &> /dev/null; then
-    echo "Using docker-compose"
+    echo "Используется docker-compose"
 else
-    echo "Using docker compose"
+    echo "Используется docker compose"
 fi
 ```
-
-#### 3. Проблемы с установкой пакета {#3-package-installation-issues}
+#### 3. Проблемы с установкой пакетов {#3-package-installation-issues}
 
 ```bash
-# Update package cache
+# Обновить кэш пакетов
 apt update
 
-# Fix broken packages
+# Исправить сломанные пакеты
 apt --fix-broken install
 
-# Check for held packages
+# Проверить удерживаемые пакеты
 apt-mark showhold
 ```
 
-### Распространенные проблемы {#common-issues}
+### Распространённые проблемы {#common-issues}
 
 #### 1. Служба Docker не запускается {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Проверить статус Docker
 systemctl status docker
 
-# Check Docker logs
+# Проверить логи Docker
 journalctl -u docker
 
-# Try alternative startup
+# Попробовать альтернативный запуск
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Сбой генерации сертификата {#2-certificate-generation-fails}
+#### 2. Ошибка генерации сертификата {#2-certificate-generation-fails}
 
-* Убедитесь, что порты 80 и 443 доступны.
-* Убедитесь, что записи DNS указывают на ваш сервер.
-* Проверьте настройки брандмауэра с помощью `ufw status`.
+* Убедитесь, что порты 80 и 443 доступны
+* Проверьте, что DNS-записи указывают на ваш сервер
+* Проверьте настройки брандмауэра с помощью `ufw status`
 
 #### 3. Проблемы с доставкой электронной почты {#3-email-delivery-issues}
 
-* Проверьте правильность записей MX
+* Проверьте правильность MX-записей
 * Проверьте записи SPF, DKIM и DMARC
 * Убедитесь, что порт 25 не заблокирован вашим хостинг-провайдером
 
 ### Получение помощи {#getting-help}
 
 * **Документация**: <https://forwardemail.net/self-hosted>
-* **Проблемы GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Документация Debian**: <https://www.debian.org/doc/>
 
-## Рекомендации по безопасности {#security-best-practices}
 
-1. **Обновляйте систему**: Регулярно обновляйте Debian и пакеты.
-2. **Мониторинг журналов**: Настройте мониторинг журналов и оповещения.
-3. **Регулярное резервное копирование**: Тестируйте процедуры резервного копирования и восстановления.
-4. **Используйте надёжные пароли**: Создавайте надёжные пароли для всех учётных записей.
-5. **Включите Fail2Ban**: Рассмотрите возможность установки fail2ban для дополнительной безопасности.
-6. **Регулярные аудиты безопасности**: Периодически проверяйте свою конфигурацию.
-7. **Мониторинг Snapd**: Обновляйте пакеты Snap с помощью `snap refresh`.
+## Лучшие практики безопасности {#security-best-practices}
+
+1. **Держите систему в актуальном состоянии**: Регулярно обновляйте Debian и пакеты
+2. **Мониторинг логов**: Настройте мониторинг логов и оповещения
+3. **Регулярное резервное копирование**: Тестируйте процедуры резервного копирования и восстановления
+4. **Используйте надёжные пароли**: Генерируйте сильные пароли для всех аккаунтов
+5. **Включите Fail2Ban**: Рассмотрите установку fail2ban для дополнительной безопасности
+6. **Регулярные аудиты безопасности**: Периодически проверяйте вашу конфигурацию
+7. **Мониторинг Snapd**: Держите snap-пакеты обновлёнными с помощью `snap refresh`
+
 
 ## Заключение {#conclusion}
 
-Ваша собственная установка Forward Email теперь должна быть завершена и работать на Debian. Не забудьте:
+Ваша самостоятельная установка Forward Email теперь должна быть завершена и работать на Debian. Не забудьте:
 
-1. Правильно настройте записи DNS.
-2. Проверьте отправку и получение электронной почты.
-3. Настройте регулярное резервное копирование.
-4. Регулярно проверяйте систему.
-5. Регулярно обновляйте установленную систему.
-6. Контролируйте пакеты snapd и snap.
+1. Правильно настроить DNS-записи
+2. Протестировать отправку и получение электронной почты
+3. Настроить регулярное резервное копирование
+4. Регулярно мониторить систему
+5. Держать установку в актуальном состоянии
+6. Следить за snapd и snap-пакетами
 
-Основные отличия от Ubuntu заключаются в установке snapd и настройке репозитория Docker. После их правильной настройки приложение Forward Email работает одинаково в обеих системах.
+Основные отличия от Ubuntu — это установка snapd и настройка репозитория Docker. После правильной настройки этих компонентов приложение Forward Email работает одинаково на обеих системах.
 
-Дополнительные параметры конфигурации и расширенные функции см. в официальной документации по пересылке электронной почты по адресу <https://forwardemail.net/self-hosted#configuration>.
+Для дополнительных параметров конфигурации и расширенных функций обратитесь к официальной документации Forward Email по адресу <https://forwardemail.net/self-hosted#configuration>.

@@ -1,128 +1,131 @@
-# Email tự lưu trữ: Cam kết về nguồn mở {#self-hosted-email-commitment-to-open-source}
+# Email Tự Lưu Trữ: Cam Kết Với Mã Nguồn Mở {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Minh họa giải pháp email tự lưu trữ" class="rounded-lg" />
 
-## Mục lục {#table-of-contents}
 
-* [Lời nói đầu](#foreword)
-* [Tại sao Email tự lưu trữ lại quan trọng](#why-self-hosted-email-matters)
-  * [Vấn đề với các dịch vụ email truyền thống](#the-problem-with-traditional-email-services)
-  * [Giải pháp thay thế tự lưu trữ](#the-self-hosted-alternative)
-* [Triển khai tự lưu trữ của chúng tôi: Tổng quan kỹ thuật](#our-self-hosted-implementation-technical-overview)
-  * [Kiến trúc dựa trên Docker cho tính đơn giản và khả năng di động](#docker-based-architecture-for-simplicity-and-portability)
-  * [Cài đặt Bash Script: Khả năng truy cập đáp ứng bảo mật](#bash-script-installation-accessibility-meets-security)
-  * [Mã hóa lượng tử an toàn cho quyền riêng tư trong tương lai](#quantum-safe-encryption-for-future-proof-privacy)
-  * [Bảo trì và cập nhật tự động](#automated-maintenance-and-updates)
-* [Cam kết nguồn mở](#the-open-source-commitment)
-* [Tự lưu trữ so với được quản lý: Lựa chọn đúng đắn](#self-hosted-vs-managed-making-the-right-choice)
-  * [Thực tế của việc tự lưu trữ email](#the-reality-of-self-hosting-email)
-  * [Khi nào nên chọn dịch vụ được quản lý của chúng tôi](#when-to-choose-our-managed-service)
-* [Bắt đầu với Email chuyển tiếp tự lưu trữ](#getting-started-with-self-hosted-forward-email)
-  * [Yêu cầu hệ thống](#system-requirements)
-  * [Các bước cài đặt](#installation-steps)
-* [Tương lai của Email tự lưu trữ](#the-future-of-self-hosted-email)
-* [Kết luận: Tự do email cho mọi người](#conclusion-email-freedom-for-everyone)
-* [Tài liệu tham khảo](#references)
+## Mục Lục {#table-of-contents}
 
-## Lời nói đầu {#foreword}
+* [Lời Nói Đầu](#foreword)
+* [Tại Sao Email Tự Lưu Trữ Lại Quan Trọng](#why-self-hosted-email-matters)
+  * [Vấn Đề Với Dịch Vụ Email Truyền Thống](#the-problem-with-traditional-email-services)
+  * [Giải Pháp Tự Lưu Trữ](#the-self-hosted-alternative)
+* [Triển Khai Email Tự Lưu Trữ Của Chúng Tôi: Tổng Quan Kỹ Thuật](#our-self-hosted-implementation-technical-overview)
+  * [Kiến Trúc Dựa Trên Docker Cho Sự Đơn Giản Và Di Động](#docker-based-architecture-for-simplicity-and-portability)
+  * [Cài Đặt Bằng Bash Script: Tiếp Cận Dễ Dàng Kết Hợp An Toàn](#bash-script-installation-accessibility-meets-security)
+  * [Mã Hóa An Toàn Trước Lượng Tử Cho Quyền Riêng Tư Bền Vững](#quantum-safe-encryption-for-future-proof-privacy)
+  * [Bảo Trì Và Cập Nhật Tự Động](#automated-maintenance-and-updates)
+* [Cam Kết Mã Nguồn Mở](#the-open-source-commitment)
+* [Tự Lưu Trữ So Với Dịch Vụ Quản Lý: Lựa Chọn Đúng Đắn](#self-hosted-vs-managed-making-the-right-choice)
+  * [Thực Tế Của Việc Tự Lưu Trữ Email](#the-reality-of-self-hosting-email)
+  * [Khi Nào Nên Chọn Dịch Vụ Quản Lý Của Chúng Tôi](#when-to-choose-our-managed-service)
+* [Bắt Đầu Với Forward Email Tự Lưu Trữ](#getting-started-with-self-hosted-forward-email)
+  * [Yêu Cầu Hệ Thống](#system-requirements)
+  * [Các Bước Cài Đặt](#installation-steps)
+* [Tương Lai Của Email Tự Lưu Trữ](#the-future-of-self-hosted-email)
+* [Kết Luận: Tự Do Email Cho Mọi Người](#conclusion-email-freedom-for-everyone)
+* [Tài Liệu Tham Khảo](#references)
 
-Trong bối cảnh kỹ thuật số ngày nay, email vẫn là xương sống của danh tính và giao tiếp trực tuyến. Tuy nhiên, khi những lo ngại về quyền riêng tư ngày càng gia tăng, nhiều người dùng phải đối mặt với một lựa chọn khó khăn: đánh đổi sự tiện lợi bằng quyền riêng tư, hay đánh đổi sự riêng tư bằng sự tiện lợi. Tại Forward Email, chúng tôi luôn tin rằng bạn không nên phải lựa chọn giữa hai điều này.
 
-Hôm nay, chúng tôi vui mừng thông báo một cột mốc quan trọng trong hành trình của mình: ra mắt giải pháp email tự lưu trữ. Tính năng này thể hiện cam kết sâu sắc nhất của chúng tôi đối với các nguyên tắc nguồn mở, thiết kế tập trung vào quyền riêng tư và trao quyền cho người dùng. Với tùy chọn tự lưu trữ, chúng tôi trao toàn bộ sức mạnh và quyền kiểm soát hoạt động giao tiếp email của bạn trực tiếp vào tay bạn.
+## Lời Nói Đầu {#foreword}
 
-Bài đăng trên blog này khám phá triết lý đằng sau giải pháp tự lưu trữ của chúng tôi, cách triển khai kỹ thuật và lý do tại sao giải pháp này lại quan trọng đối với những người dùng coi trọng quyền riêng tư và quyền sở hữu trong hoạt động truyền thông kỹ thuật số của họ.
+Trong bối cảnh kỹ thuật số ngày nay, email vẫn là xương sống của danh tính và giao tiếp trực tuyến của chúng ta. Tuy nhiên, khi các mối quan tâm về quyền riêng tư ngày càng tăng, nhiều người dùng phải đối mặt với một lựa chọn khó khăn: sự tiện lợi đánh đổi bằng quyền riêng tư, hoặc quyền riêng tư đánh đổi bằng sự tiện lợi. Tại Forward Email, chúng tôi luôn tin rằng bạn không nên phải chọn giữa hai điều đó.
 
-## Tại sao Email tự lưu trữ lại quan trọng {#why-self-hosted-email-matters}
+Hôm nay, chúng tôi rất vui mừng thông báo một cột mốc quan trọng trong hành trình của mình: ra mắt giải pháp email tự lưu trữ. Tính năng này thể hiện cam kết sâu sắc nhất của chúng tôi với các nguyên tắc mã nguồn mở, thiết kế tập trung vào quyền riêng tư và trao quyền cho người dùng. Với tùy chọn tự lưu trữ, chúng tôi trao toàn bộ quyền lực và kiểm soát giao tiếp email trực tiếp vào tay bạn.
 
-Giải pháp email tự lưu trữ của chúng tôi là minh chứng rõ ràng nhất cho niềm tin của chúng tôi rằng quyền riêng tư thực sự đồng nghĩa với quyền kiểm soát, và quyền kiểm soát bắt đầu từ mã nguồn mở. Đối với những người dùng yêu cầu quyền sở hữu hoàn toàn đối với các thông tin liên lạc kỹ thuật số của mình, việc tự lưu trữ không còn là một ý tưởng xa vời nữa — đó là một quyền thiết yếu. Chúng tôi tự hào bảo vệ niềm tin đó bằng một nền tảng hoàn toàn mở, có thể xác minh mà bạn có thể vận hành theo cách riêng của mình.
+Bài viết này khám phá triết lý đằng sau giải pháp tự lưu trữ của chúng tôi, cách triển khai kỹ thuật, và lý do tại sao nó quan trọng đối với người dùng ưu tiên cả quyền riêng tư lẫn quyền sở hữu trong giao tiếp kỹ thuật số của họ.
 
-### Vấn đề với các dịch vụ email truyền thống {#the-problem-with-traditional-email-services}
 
-Các dịch vụ email truyền thống đặt ra một số thách thức cơ bản đối với người dùng quan tâm đến quyền riêng tư:
+## Tại Sao Email Tự Lưu Trữ Lại Quan Trọng {#why-self-hosted-email-matters}
 
-1. **Yêu cầu về độ tin cậy**: Bạn phải tin tưởng nhà cung cấp sẽ không truy cập, phân tích hoặc chia sẻ dữ liệu của bạn.
-2. **Kiểm soát tập trung**: Quyền truy cập của bạn có thể bị thu hồi bất cứ lúc nào vì bất kỳ lý do gì.
-3. **Lỗ hổng giám sát**: Các dịch vụ tập trung là mục tiêu chính của giám sát.
-4. **Tính minh bạch hạn chế**: Hầu hết các dịch vụ đều sử dụng phần mềm độc quyền, mã nguồn đóng.
-5. **Khóa chặt nhà cung cấp**: Việc di chuyển khỏi các dịch vụ này có thể khó khăn hoặc không thể thực hiện được.
+Giải pháp email tự lưu trữ của chúng tôi là biểu hiện rõ ràng nhất của niềm tin rằng quyền riêng tư thực sự nghĩa là kiểm soát, và kiểm soát bắt đầu từ mã nguồn mở. Đối với những người dùng đòi hỏi quyền sở hữu hoàn toàn đối với giao tiếp kỹ thuật số của mình, tự lưu trữ không còn là ý tưởng ngoại vi — đó là một quyền thiết yếu. Chúng tôi tự hào đứng sau niềm tin đó với một nền tảng hoàn toàn mở, có thể xác minh mà bạn có thể vận hành theo điều kiện của riêng mình.
 
-Ngay cả các nhà cung cấp dịch vụ email "tập trung vào quyền riêng tư" cũng thường thiếu sót khi chỉ cung cấp mã nguồn mở cho các ứng dụng frontend trong khi vẫn giữ hệ thống backend độc quyền và khép kín. Điều này tạo ra một khoảng cách đáng kể về lòng tin - bạn bị yêu cầu tin vào những cam kết về quyền riêng tư của họ mà không có khả năng xác minh chúng.
+### Vấn Đề Với Dịch Vụ Email Truyền Thống {#the-problem-with-traditional-email-services}
 
-### Giải pháp thay thế tự lưu trữ {#the-self-hosted-alternative}
+Các dịch vụ email truyền thống đặt ra nhiều thách thức cơ bản cho người dùng quan tâm đến quyền riêng tư:
 
-Tự lưu trữ email của bạn cung cấp một cách tiếp cận cơ bản khác:
+1. **Yêu Cầu Tin Cậy**: Bạn phải tin tưởng nhà cung cấp không truy cập, phân tích hoặc chia sẻ dữ liệu của bạn
+2. **Kiểm Soát Tập Trung**: Quyền truy cập của bạn có thể bị thu hồi bất cứ lúc nào vì bất kỳ lý do gì
+3. **Dễ Bị Giám Sát**: Các dịch vụ tập trung là mục tiêu hàng đầu cho giám sát
+4. **Thiếu Minh Bạch**: Hầu hết dịch vụ sử dụng phần mềm độc quyền, đóng nguồn
+5. **Khó Chuyển Đổi Nhà Cung Cấp**: Việc di chuyển khỏi các dịch vụ này có thể khó hoặc không thể thực hiện
 
-1. **Kiểm soát hoàn toàn**: Bạn sở hữu và kiểm soát toàn bộ cơ sở hạ tầng email
-2. **Quyền riêng tư có thể xác minh**: Toàn bộ hệ thống minh bạch và có thể kiểm tra
-3. **Không cần ủy thác**: Bạn không cần ủy thác bên thứ ba cho hoạt động truyền thông của mình
-4. **Tự do tùy chỉnh**: Điều chỉnh hệ thống theo nhu cầu cụ thể của bạn
-5. **Khả năng phục hồi**: Dịch vụ của bạn vẫn tiếp tục bất kể quyết định của công ty
+Ngay cả các nhà cung cấp email "tập trung vào quyền riêng tư" cũng thường không đáp ứng đầy đủ khi chỉ mở mã nguồn ứng dụng giao diện trong khi giữ hệ thống backend độc quyền và đóng. Điều này tạo ra một khoảng cách tin tưởng lớn — bạn được yêu cầu tin vào lời hứa về quyền riêng tư của họ mà không có khả năng xác minh.
 
-Như một người dùng đã nói: "Tự lưu trữ email của tôi cũng giống như việc tự trồng thực phẩm vậy—nó tốn nhiều công sức hơn, nhưng tôi biết chính xác những gì có trong đó."
+### Giải Pháp Tự Lưu Trữ {#the-self-hosted-alternative}
+Tự lưu trữ email của bạn cung cấp một cách tiếp cận hoàn toàn khác biệt:
 
-## Triển khai tự lưu trữ của chúng tôi: Tổng quan kỹ thuật {#our-self-hosted-implementation-technical-overview}
+1. **Kiểm soát Toàn diện**: Bạn sở hữu và kiểm soát toàn bộ hạ tầng email
+2. **Quyền riêng tư Có thể Xác minh**: Toàn bộ hệ thống minh bạch và có thể kiểm tra
+3. **Không Cần Tin tưởng**: Bạn không cần phải tin tưởng bên thứ ba với các liên lạc của mình
+4. **Tự do Tùy chỉnh**: Điều chỉnh hệ thống theo nhu cầu cụ thể của bạn
+5. **Độ bền cao**: Dịch vụ của bạn tiếp tục hoạt động bất kể quyết định của bất kỳ công ty nào
 
-Giải pháp email tự lưu trữ của chúng tôi được xây dựng dựa trên cùng nguyên tắc đặt quyền riêng tư lên hàng đầu, nguyên tắc đã được áp dụng cho tất cả các sản phẩm của chúng tôi. Hãy cùng khám phá cách triển khai kỹ thuật giúp điều này trở nên khả thi.
+Như một người dùng đã nói: "Tự lưu trữ email của tôi giống như việc tự trồng thực phẩm — mất nhiều công sức hơn, nhưng tôi biết chính xác những gì có trong đó."
 
-### Kiến trúc dựa trên Docker cho tính đơn giản và khả năng di động {#docker-based-architecture-for-simplicity-and-portability}
 
-Chúng tôi đã đóng gói toàn bộ cơ sở hạ tầng email của mình bằng Docker, giúp việc triển khai dễ dàng trên hầu hết mọi hệ thống chạy Linux. Phương pháp container hóa này mang lại một số lợi ích chính:
+## Our Self-Hosted Implementation: Technical Overview {#our-self-hosted-implementation-technical-overview}
 
-1. **Triển khai đơn giản**: Chỉ cần một lệnh để thiết lập toàn bộ cơ sở hạ tầng
-2. **Môi trường nhất quán**: Loại bỏ vấn đề "hoạt động trên máy của tôi"
-3. **Thành phần biệt lập**: Mỗi dịch vụ chạy trong vùng chứa riêng để bảo mật
-4. **Cập nhật dễ dàng**: Các lệnh đơn giản để cập nhật toàn bộ ngăn xếp
-5. **Phụ thuộc tối thiểu**: Chỉ yêu cầu Docker và Docker Compose
+Giải pháp email tự lưu trữ của chúng tôi được xây dựng dựa trên các nguyên tắc ưu tiên quyền riêng tư giống như tất cả các sản phẩm của chúng tôi. Hãy cùng khám phá cách triển khai kỹ thuật giúp điều này trở thành hiện thực.
 
-Kiến trúc bao gồm các thùng chứa cho:
+### Docker-Based Architecture for Simplicity and Portability {#docker-based-architecture-for-simplicity-and-portability}
+
+Chúng tôi đã đóng gói toàn bộ hạ tầng email bằng Docker, giúp dễ dàng triển khai trên hầu hết các hệ thống dựa trên Linux. Cách tiếp cận container hóa này mang lại một số lợi ích chính:
+
+1. **Triển khai Đơn giản**: Một lệnh duy nhất thiết lập toàn bộ hạ tầng
+2. **Môi trường Đồng nhất**: Loại bỏ các vấn đề "chỉ chạy trên máy tôi"
+3. **Các Thành phần Tách biệt**: Mỗi dịch vụ chạy trong container riêng để đảm bảo an ninh
+4. **Cập nhật Dễ dàng**: Các lệnh đơn giản để cập nhật toàn bộ hệ thống
+5. **Phụ thuộc Tối thiểu**: Chỉ yêu cầu Docker và Docker Compose
+
+Kiến trúc bao gồm các container cho:
 
 * Giao diện web để quản trị
 * Máy chủ SMTP cho email gửi đi
-* Máy chủ IMAP/POP3 để truy xuất email
+* Máy chủ IMAP/POP3 để lấy email
 * Máy chủ CalDAV cho lịch
 * Máy chủ CardDAV cho danh bạ
-* Cơ sở dữ liệu để lưu trữ cấu hình
-* Redis để lưu trữ bộ nhớ đệm và tăng hiệu suất
-* SQLite để lưu trữ hộp thư an toàn, được mã hóa
+* Cơ sở dữ liệu để lưu cấu hình
+* Redis để cache và tăng hiệu suất
+* SQLite để lưu trữ hộp thư mã hóa an toàn
 
 > \[!NOTE]
-> Đừng quên xem [hướng dẫn dành cho nhà phát triển tự lưu trữ](https://forwardemail.net/self-hosted) của chúng tôi
+> Hãy chắc chắn xem qua [hướng dẫn dành cho nhà phát triển tự lưu trữ của chúng tôi](https://forwardemail.net/self-hosted)
 
-### Cài đặt tập lệnh Bash: Khả năng truy cập đáp ứng bảo mật {#bash-script-installation-accessibility-meets-security}
+### Bash Script Installation: Accessibility Meets Security {#bash-script-installation-accessibility-meets-security}
 
-Chúng tôi đã thiết kế quy trình cài đặt sao cho đơn giản nhất có thể nhưng vẫn đảm bảo các biện pháp bảo mật tốt nhất:
+Chúng tôi thiết kế quy trình cài đặt đơn giản nhất có thể trong khi vẫn duy trì các thực hành bảo mật tốt nhất:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-Lệnh đơn này:
+Lệnh duy nhất này:
 
-1. Xác minh các yêu cầu hệ thống
-2. Hướng dẫn bạn cấu hình
-3. Thiết lập bản ghi DNS
+1. Kiểm tra yêu cầu hệ thống
+2. Hướng dẫn bạn qua cấu hình
+3. Thiết lập các bản ghi DNS
 4. Cấu hình chứng chỉ TLS
 5. Triển khai các container Docker
-6. Thực hiện tăng cường bảo mật ban đầu
+6. Thực hiện các bước tăng cường bảo mật ban đầu
 
-Đối với những ai lo lắng về việc chuyển đổi tập lệnh sang bash (điều mà bạn nên làm!), chúng tôi khuyến khích bạn xem lại tập lệnh trước khi thực thi. Nó hoàn toàn mã nguồn mở và có thể được kiểm tra.
+Đối với những ai lo ngại về việc pipe script vào bash (điều bạn nên cẩn thận!), chúng tôi khuyến khích bạn xem xét script trước khi thực thi. Nó hoàn toàn mã nguồn mở và có thể kiểm tra được.
 
-### Mã hóa lượng tử an toàn cho quyền riêng tư bền vững trong tương lai {#quantum-safe-encryption-for-future-proof-privacy}
+### Quantum-Safe Encryption for Future-Proof Privacy {#quantum-safe-encryption-for-future-proof-privacy}
 
-Giống như dịch vụ lưu trữ của chúng tôi, giải pháp tự lưu trữ của chúng tôi triển khai mã hóa chống lượng tử bằng cách sử dụng ChaCha20-Poly1305 làm mật mã cho cơ sở dữ liệu SQLite. Phương pháp này bảo vệ dữ liệu email của bạn không chỉ khỏi các mối đe dọa hiện tại mà còn khỏi các cuộc tấn công điện toán lượng tử trong tương lai.
+Giống như dịch vụ được lưu trữ của chúng tôi, giải pháp tự lưu trữ cũng áp dụng mã hóa chống lượng tử sử dụng ChaCha20-Poly1305 làm thuật toán mã hóa cho cơ sở dữ liệu SQLite. Cách tiếp cận này bảo vệ dữ liệu email của bạn không chỉ chống lại các mối đe dọa hiện tại mà còn chống lại các cuộc tấn công máy tính lượng tử trong tương lai.
 
-Mỗi hộp thư được lưu trữ trong tệp cơ sở dữ liệu SQLite được mã hóa riêng, mang lại sự cô lập hoàn toàn giữa những người dùng—một lợi thế bảo mật đáng kể so với các phương pháp cơ sở dữ liệu dùng chung truyền thống.
+Mỗi hộp thư được lưu trữ trong một file cơ sở dữ liệu SQLite mã hóa riêng biệt, cung cấp sự cô lập hoàn toàn giữa các người dùng — một lợi thế bảo mật đáng kể so với cách tiếp cận cơ sở dữ liệu chia sẻ truyền thống.
 
-### Bảo trì và cập nhật tự động {#automated-maintenance-and-updates}
+### Automated Maintenance and Updates {#automated-maintenance-and-updates}
 
-Chúng tôi đã xây dựng các tiện ích bảo trì toàn diện trực tiếp vào giải pháp tự lưu trữ:
+Chúng tôi đã xây dựng các tiện ích bảo trì toàn diện trực tiếp trong giải pháp tự lưu trữ:
 
-1. **Sao lưu tự động**: Sao lưu theo lịch trình tất cả dữ liệu quan trọng
-2. **Gia hạn chứng chỉ**: Quản lý chứng chỉ Let's Encrypt tự động
-3. **Cập nhật hệ thống**: Lệnh đơn giản để cập nhật lên phiên bản mới nhất
-4. **Giám sát tình trạng**: Các kiểm tra tích hợp để đảm bảo tính toàn vẹn của hệ thống
+1. **Sao lưu Tự động**: Sao lưu định kỳ tất cả dữ liệu quan trọng
+2. **Gia hạn Chứng chỉ**: Quản lý chứng chỉ Let's Encrypt tự động
+3. **Cập nhật Hệ thống**: Lệnh đơn giản để cập nhật lên phiên bản mới nhất
+4. **Giám sát Sức khỏe**: Kiểm tra tích hợp để đảm bảo tính toàn vẹn hệ thống
 
-Có thể truy cập các tiện ích này thông qua menu tương tác đơn giản:
+Các tiện ích này có thể truy cập qua menu tương tác đơn giản:
 
 ```bash
 # script prompt
@@ -136,117 +139,120 @@ Có thể truy cập các tiện ích này thông qua menu tương tác đơn gi
 7. Exit
 ```
 
-## Cam kết nguồn mở {#the-open-source-commitment}
 
-Giải pháp email tự lưu trữ của chúng tôi, giống như tất cả các sản phẩm khác, đều là mã nguồn mở 100%—cả giao diện người dùng và giao diện quản trị. Điều này có nghĩa là:
+## The Open-Source Commitment {#the-open-source-commitment}
 
-1. **Minh bạch hoàn toàn**: Mọi dòng mã xử lý email của bạn đều được công khai để công chúng giám sát.
-2. **Đóng góp của cộng đồng**: Bất kỳ ai cũng có thể đóng góp cải tiến hoặc khắc phục sự cố.
-3. **Bảo mật thông qua tính minh bạch**: Các lỗ hổng có thể được xác định và khắc phục bởi cộng đồng toàn cầu.
-4. **Không bị ràng buộc bởi nhà cung cấp**: Bạn không bao giờ phụ thuộc vào sự tồn tại của công ty chúng tôi
+Giải pháp email tự lưu trữ của chúng tôi, giống như tất cả các sản phẩm khác, hoàn toàn mã nguồn mở — cả frontend và backend. Điều này có nghĩa là:
+1. **Minh Bạch Tuyệt Đối**: Mọi dòng mã xử lý email của bạn đều có sẵn để công chúng kiểm tra  
+2. **Đóng Góp Cộng Đồng**: Bất kỳ ai cũng có thể đóng góp cải tiến hoặc sửa lỗi  
+3. **Bảo Mật Qua Sự Mở Rộng**: Các lỗ hổng có thể được phát hiện và sửa chữa bởi cộng đồng toàn cầu  
+4. **Không Bị Ràng Buộc Nhà Cung Cấp**: Bạn không bao giờ phụ thuộc vào sự tồn tại của công ty chúng tôi  
 
-Toàn bộ cơ sở mã có sẵn trên GitHub tại <https://github.com/forwardemail/forwardemail.net>.
+Toàn bộ mã nguồn có sẵn trên GitHub tại <https://github.com/forwardemail/forwardemail.net>.
 
-## Tự lưu trữ so với Được quản lý: Lựa chọn đúng đắn {#self-hosted-vs-managed-making-the-right-choice}
 
-Mặc dù chúng tôi tự hào cung cấp tùy chọn tự lưu trữ, nhưng chúng tôi hiểu rằng đây không phải là lựa chọn phù hợp cho tất cả mọi người. Email tự lưu trữ đi kèm với những trách nhiệm và thách thức thực sự:
+## Tự Lưu Trữ vs. Quản Lý: Lựa Chọn Đúng Đắn {#self-hosted-vs-managed-making-the-right-choice}
 
-### Thực tế của việc tự lưu trữ email {#the-reality-of-self-hosting-email}
+Mặc dù chúng tôi tự hào cung cấp tùy chọn tự lưu trữ, chúng tôi nhận ra rằng không phải ai cũng phù hợp với lựa chọn này. Tự lưu trữ email đi kèm với những trách nhiệm và thách thức thực sự:
 
-#### Cân nhắc kỹ thuật {#technical-considerations}
+### Thực Tế Của Việc Tự Lưu Trữ Email {#the-reality-of-self-hosting-email}
 
-* **Quản lý Máy chủ**: Bạn cần duy trì VPS hoặc máy chủ chuyên dụng
-* **Cấu hình DNS**: Thiết lập DNS đúng cách rất quan trọng để đảm bảo khả năng phân phối
-* **Cập nhật Bảo mật**: Việc cập nhật các bản vá bảo mật là điều cần thiết
-* **Quản lý Thư rác**: Bạn cần xử lý việc lọc thư rác
-* **Chiến lược Sao lưu**: Việc triển khai các bản sao lưu đáng tin cậy là trách nhiệm của bạn
+#### Các Cân Nhắc Kỹ Thuật {#technical-considerations}
 
-#### Đầu tư thời gian {#time-investment}
+* **Quản Lý Máy Chủ**: Bạn sẽ cần duy trì một VPS hoặc máy chủ chuyên dụng  
+* **Cấu Hình DNS**: Thiết lập DNS đúng cách rất quan trọng cho khả năng gửi thư thành công  
+* **Cập Nhật Bảo Mật**: Luôn cập nhật các bản vá bảo mật là điều thiết yếu  
+* **Quản Lý Spam**: Bạn sẽ phải xử lý việc lọc thư rác  
+* **Chiến Lược Sao Lưu**: Thực hiện sao lưu đáng tin cậy là trách nhiệm của bạn  
 
-* **Thiết lập ban đầu**: Thời gian thiết lập, xác minh và đọc tài liệu.
-* **Bảo trì liên tục**: Cập nhật và giám sát định kỳ.
-* **Khắc phục sự cố**: Thời gian giải quyết sự cố định kỳ
+#### Đầu Tư Thời Gian {#time-investment}
 
-#### Cân nhắc về tài chính {#financial-considerations}
+* **Thiết Lập Ban Đầu**: Thời gian để thiết lập, xác minh và đọc tài liệu  
+* **Bảo Trì Liên Tục**: Cập nhật và giám sát định kỳ  
+* **Khắc Phục Sự Cố**: Thỉnh thoảng dành thời gian để giải quyết các vấn đề  
 
-* **Chi phí máy chủ**: 5-20 đô la/tháng cho VPS cơ bản
-* **Đăng ký tên miền**: 10-20 đô la/năm
-* **Giá trị thời gian**: Khoản đầu tư thời gian của bạn có giá trị thực
+#### Cân Nhắc Tài Chính {#financial-considerations}
 
-### Khi nào nên chọn dịch vụ được quản lý của chúng tôi {#when-to-choose-our-managed-service}
+* **Chi Phí Máy Chủ**: 5-20 USD/tháng cho một VPS cơ bản  
+* **Đăng Ký Tên Miền**: 10-20 USD/năm  
+* **Giá Trị Thời Gian**: Thời gian bạn đầu tư có giá trị thực tế  
 
-Đối với nhiều người dùng, dịch vụ được quản lý của chúng tôi vẫn là lựa chọn tốt nhất:
+### Khi Nào Nên Chọn Dịch Vụ Quản Lý Của Chúng Tôi {#when-to-choose-our-managed-service}
 
-1. **Tiện lợi**: Chúng tôi xử lý mọi công việc bảo trì, cập nhật và giám sát
-2. **Độ tin cậy**: Tận hưởng lợi ích từ cơ sở hạ tầng và chuyên môn vững chắc của chúng tôi
-3. **Hỗ trợ**: Nhận hỗ trợ khi phát sinh sự cố
-4. **Khả năng phân phối**: Tận dụng uy tín IP đã được khẳng định của chúng tôi
-5. **Hiệu quả về chi phí**: Khi tính đến chi phí thời gian, dịch vụ của chúng tôi thường tiết kiệm hơn
+Đối với nhiều người dùng, dịch vụ quản lý của chúng tôi vẫn là lựa chọn tốt nhất:
 
-Cả hai lựa chọn đều mang lại lợi ích về quyền riêng tư và tính minh bạch nguồn mở như nhau—sự khác biệt chỉ nằm ở người quản lý cơ sở hạ tầng.
+1. **Tiện Lợi**: Chúng tôi xử lý tất cả bảo trì, cập nhật và giám sát  
+2. **Đáng Tin Cậy**: Hưởng lợi từ hạ tầng và chuyên môn đã được thiết lập  
+3. **Hỗ Trợ**: Nhận trợ giúp khi có sự cố xảy ra  
+4. **Khả Năng Gửi Thư**: Tận dụng uy tín IP đã được thiết lập  
+5. **Hiệu Quả Chi Phí**: Khi tính đến chi phí thời gian, dịch vụ của chúng tôi thường kinh tế hơn  
 
-## Bắt đầu với Email Chuyển tiếp Tự lưu trữ {#getting-started-with-self-hosted-forward-email}
+Cả hai lựa chọn đều cung cấp lợi ích về quyền riêng tư và minh bạch mã nguồn mở — sự khác biệt chỉ là ai quản lý hạ tầng.
 
-Bạn đã sẵn sàng kiểm soát cơ sở hạ tầng email của mình chưa? Dưới đây là cách bắt đầu:
 
-### Yêu cầu hệ thống {#system-requirements}
+## Bắt Đầu Với Forward Email Tự Lưu Trữ {#getting-started-with-self-hosted-forward-email}
 
-* Ubuntu 20.04 LTS hoặc mới hơn (khuyến nghị)
-* RAM tối thiểu 1GB (khuyến nghị 2GB trở lên)
-* Dung lượng lưu trữ khuyến nghị 20GB
-* Tên miền do bạn kiểm soát
-* Địa chỉ IP công cộng hỗ trợ cổng 25
-* Khả năng thiết lập [PTR đảo ngược](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
-* Hỗ trợ IPv4 và IPv6
+Sẵn sàng kiểm soát hạ tầng email của bạn? Đây là cách bắt đầu:
 
-> \[!TIP]
-> Chúng tôi đề xuất một số nhà cung cấp máy chủ thư tại <https://forwardemail.net/blog/docs/best-mail-server-providers> (nguồn tại <https://github.com/forwardemail/awesome-mail-server-providers>)
+### Yêu Cầu Hệ Thống {#system-requirements}
 
-### Các bước cài đặt {#installation-steps}
+* Ubuntu 20.04 LTS hoặc mới hơn (khuyến nghị)  
+* Tối thiểu 1GB RAM (khuyến nghị 2GB trở lên)  
+* Khuyến nghị 20GB dung lượng lưu trữ  
+* Một tên miền bạn kiểm soát  
+* Địa chỉ IP công khai hỗ trợ cổng 25  
+* Khả năng thiết lập [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)  
+* Hỗ trợ IPv4 và IPv6  
 
-1. **Chạy tập lệnh cài đặt**:
-```bash
+> \[!TIP]  
+> Chúng tôi khuyến nghị một số nhà cung cấp máy chủ mail tại <https://forwardemail.net/blog/docs/best-mail-server-providers> (nguồn tại <https://github.com/forwardemail/awesome-mail-server-providers>)  
+
+### Các Bước Cài Đặt {#installation-steps}
+
+1. **Chạy Script Cài Đặt**:  
+   ```bash
    bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
    ```
 
-2. **Làm theo lời nhắc tương tác**:
-* Nhập tên miền của bạn
-* Cấu hình thông tin đăng nhập quản trị viên
-* Thiết lập bản ghi DNS theo hướng dẫn
-* Chọn tùy chọn cấu hình bạn muốn
+2. **Theo Các Hướng Dẫn Tương Tác**:  
+   * Nhập tên miền của bạn  
+   * Cấu hình thông tin quản trị viên  
+   * Thiết lập các bản ghi DNS theo hướng dẫn  
+   * Chọn các tùy chọn cấu hình bạn ưu tiên  
 
-3. **Xác minh cài đặt**:
-Sau khi cài đặt hoàn tất, bạn có thể xác minh mọi thứ đang hoạt động bằng cách:
-* Kiểm tra trạng thái container: `docker ps`
-* Gửi email kiểm tra
-* Đăng nhập vào giao diện web
+3. **Xác Minh Cài Đặt**:  
+   Khi cài đặt hoàn tất, bạn có thể kiểm tra mọi thứ hoạt động bằng cách:  
+   * Kiểm tra trạng thái container: `docker ps`  
+   * Gửi một email thử nghiệm  
+   * Đăng nhập vào giao diện web  
 
-## Tương lai của Email tự lưu trữ {#the-future-of-self-hosted-email}
 
-Giải pháp tự lưu trữ của chúng tôi chỉ là bước khởi đầu. Chúng tôi cam kết liên tục cải thiện dịch vụ này với:
+## Tương Lai Của Email Tự Lưu Trữ {#the-future-of-self-hosted-email}
 
-1. **Công cụ Quản trị Nâng cao**: Quản lý dựa trên web mạnh mẽ hơn
-2. **Tùy chọn Xác thực Bổ sung**: Bao gồm hỗ trợ khóa bảo mật phần cứng
-3. **Giám sát Nâng cao**: Thông tin chi tiết hơn về tình trạng và hiệu suất hệ thống
-4. **Triển khai Nhiều Máy chủ**: Các tùy chọn cho cấu hình có tính khả dụng cao
-5. **Cải tiến Do Cộng đồng Thúc đẩy**: Kết hợp các đóng góp từ người dùng
+Giải pháp tự lưu trữ của chúng tôi chỉ mới là khởi đầu. Chúng tôi cam kết liên tục cải tiến sản phẩm này với:
 
-## Kết luận: Tự do email cho mọi người {#conclusion-email-freedom-for-everyone}
+1. **Công Cụ Quản Trị Nâng Cao**: Quản lý web mạnh mẽ hơn  
+2. **Tùy Chọn Xác Thực Bổ Sung**: Bao gồm hỗ trợ khóa bảo mật phần cứng  
+3. **Giám Sát Tiên Tiến**: Cung cấp cái nhìn sâu sắc hơn về sức khỏe và hiệu suất hệ thống  
+4. **Triển Khai Đa Máy Chủ**: Tùy chọn cấu hình độ sẵn sàng cao  
+5. **Cải Tiến Dựa Trên Cộng Đồng**: Kết hợp các đóng góp từ người dùng
+## Kết luận: Tự do Email cho Mọi Người {#conclusion-email-freedom-for-everyone}
 
-Việc ra mắt giải pháp email tự lưu trữ của chúng tôi đánh dấu một cột mốc quan trọng trong sứ mệnh cung cấp các dịch vụ email minh bạch, tập trung vào quyền riêng tư. Dù bạn chọn dịch vụ được quản lý hay tùy chọn tự lưu trữ, bạn đều được hưởng lợi từ cam kết vững chắc của chúng tôi đối với các nguyên tắc nguồn mở và thiết kế đặt quyền riêng tư lên hàng đầu.
+Việc ra mắt giải pháp email tự lưu trữ của chúng tôi đánh dấu một cột mốc quan trọng trong sứ mệnh cung cấp dịch vụ email tập trung vào quyền riêng tư và minh bạch. Dù bạn chọn dịch vụ quản lý của chúng tôi hay tùy chọn tự lưu trữ, bạn đều được hưởng lợi từ cam kết kiên định của chúng tôi đối với các nguyên tắc mã nguồn mở và thiết kế ưu tiên quyền riêng tư.
 
-Email quá quan trọng để bị kiểm soát bởi các hệ thống khép kín, độc quyền, ưu tiên thu thập dữ liệu hơn quyền riêng tư của người dùng. Với giải pháp tự lưu trữ của Forward Email, chúng tôi tự hào cung cấp một giải pháp thay thế thực sự - một giải pháp cho phép bạn hoàn toàn kiểm soát các hoạt động truyền thông kỹ thuật số của mình.
+Email quá quan trọng để bị kiểm soát bởi các hệ thống đóng, độc quyền ưu tiên thu thập dữ liệu hơn là quyền riêng tư của người dùng. Với giải pháp tự lưu trữ của Forward Email, chúng tôi tự hào cung cấp một lựa chọn thực sự—một lựa chọn đặt bạn vào quyền kiểm soát hoàn toàn các giao tiếp kỹ thuật số của mình.
 
-Chúng tôi tin rằng quyền riêng tư không chỉ là một tính năng; đó là một quyền cơ bản. Và với tùy chọn email tự lưu trữ, chúng tôi đang giúp quyền đó dễ tiếp cận hơn bao giờ hết.
+Chúng tôi tin rằng quyền riêng tư không chỉ là một tính năng; đó là một quyền cơ bản. Và với tùy chọn email tự lưu trữ của chúng tôi, chúng tôi đang làm cho quyền đó trở nên dễ tiếp cận hơn bao giờ hết.
 
-Bạn đã sẵn sàng kiểm soát email của mình chưa? [Bắt đầu ngay hôm nay](https://forwardemail.net/self-hosted) hoặc khám phá [Kho lưu trữ GitHub](https://github.com/forwardemail/forwardemail.net) của chúng tôi để tìm hiểu thêm.
+Sẵn sàng kiểm soát email của bạn? [Bắt đầu ngay hôm nay](https://forwardemail.net/self-hosted) hoặc khám phá [kho GitHub của chúng tôi](https://github.com/forwardemail/forwardemail.net) để tìm hiểu thêm.
 
-## Tham chiếu {#references}
 
-\[1] Chuyển tiếp Email Kho lưu trữ GitHub: <https://github.com/forwardemail/forwardemail.net>
+## Tài liệu tham khảo {#references}
 
-\[2] Tài liệu tự lưu trữ: <https://forwardemail.net/en/self-hosted>
+\[1] Kho GitHub Forward Email: <https://github.com/forwardemail/forwardemail.net>
 
-\[3] Triển khai kỹ thuật bảo mật email: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
+\[2] Tài liệu Tự Lưu Trữ: <https://forwardemail.net/en/self-hosted>
 
-\[4] Tại sao Email nguồn mở lại quan trọng: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>
+\[3] Triển khai Kỹ thuật Bảo vệ Quyền riêng tư Email: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
+
+\[4] Tại sao Email Mã Nguồn Mở Quan Trọng: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>

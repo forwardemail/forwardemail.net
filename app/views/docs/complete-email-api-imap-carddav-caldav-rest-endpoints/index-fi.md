@@ -1,158 +1,159 @@
-# Ensimmäinen täydellinen sähköposti-API: Kuinka Forward Email mullisti sähköpostien hallinnan {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# Ensimmäinen Täydellinen Sähköpostin API: Kuinka Forward Email Mullisti Sähköpostinhallinnan {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>TL;DR:</strong> Rakensimme maailman ensimmäisen täydellisen REST-rajapinnan sähköpostinhallintaan, jossa on edistyneet hakuominaisuudet, joita mikään muu palvelu ei tarjoa. Vaikka Gmail, Outlook ja Apple pakottavat kehittäjät käyttämään IMAP-helvettiä tai nopeusrajoitettuja rajapintoja, Forward Email tarjoaa salamannopeita CRUD-operaatioita viesteille, kansioille, yhteystiedoille ja kalentereille yhtenäisen REST-rajapinnan kautta, jossa on yli 15 hakuparametria. Tätä sähköpostirajapinnan kehittäjät ovat odottaneet.
+  <strong>Yhteenveto:</strong> Rakensimme maailman ensimmäisen täydellisen REST API:n sähköpostinhallintaan, jossa on edistyneet hakutoiminnot, joita mikään muu palvelu ei tarjoa. Kun Gmail, Outlook ja Apple pakottavat kehittäjät IMAP-paholaisuuteen tai rajoitettuihin API-rajapintoihin, Forward Email tarjoaa salamannopeat CRUD-toiminnot viesteille, kansioille, kontakteille ja kalentereille yhtenäisen REST-rajapinnan kautta, jossa on yli 15 hakuehtoa. Tämä on se sähköpostin API, jota kehittäjät ovat odottaneet.
 </p>
+
 
 ## Sisällysluettelo {#table-of-contents}
 
-* [Sähköposti-API-ongelma](#the-email-api-problem)
+* [Sähköpostin API-ongelma](#the-email-api-problem)
 * [Mitä kehittäjät oikeasti sanovat](#what-developers-are-actually-saying)
-* [Sähköpostin välittämisen mullistava ratkaisu](#forward-emails-revolutionary-solution)
+* [Forward Emailin mullistava ratkaisu](#forward-emails-revolutionary-solution)
   * [Miksi rakensimme tämän](#why-we-built-this)
   * [Yksinkertainen todennus](#simple-authentication)
 * [20 päätepistettä, jotka muuttavat kaiken](#20-endpoints-that-change-everything)
   * [Viestit (5 päätepistettä)](#messages-5-endpoints)
   * [Kansiot (5 päätepistettä)](#folders-5-endpoints)
-  * [Yhteystiedot (5 päätepistettä)](#contacts-5-endpoints)
+  * [Kontaktit (5 päätepistettä)](#contacts-5-endpoints)
   * [Kalenterit (5 päätepistettä)](#calendars-5-endpoints)
-* [Laajennettu haku: Ei muita palveluita vertailukelpoisia](#advanced-search-no-other-service-compares)
-  * [Haku-API-ympäristö on rikki](#the-search-api-landscape-is-broken)
-  * [Forward Emailin mullistava haku-API](#forward-emails-revolutionary-search-api)
-  * [Todellisen maailman hakuesimerkkejä](#real-world-search-examples)
-  * [Suorituskyvyn edut](#performance-advantages)
-  * [Hakuominaisuudet, joita kenelläkään muulla ei ole](#search-features-no-one-else-has)
+* [Edistynyt haku: Mikään muu palvelu ei vedä vertoja](#advanced-search-no-other-service-compares)
+  * [Hakujen API-tilanne on rikki](#the-search-api-landscape-is-broken)
+  * [Forward Emailin mullistava hakujen API](#forward-emails-revolutionary-search-api)
+  * [Todelliset hakuesimerkit](#real-world-search-examples)
+  * [Suorituskykyedut](#performance-advantages)
+  * [Hakutoiminnot, joita muilla ei ole](#search-features-no-one-else-has)
   * [Miksi tämä on tärkeää kehittäjille](#why-this-matters-for-developers)
   * [Tekninen toteutus](#the-technical-implementation)
-* [Salamannopean suorituskyvyn arkkitehtuuri](#blazing-fast-performance-architecture)
-  * [Suorituskyvyn vertailuarvot](#performance-benchmarks)
-  * [Tietosuoja ensin -arkkitehtuuri](#privacy-first-architecture)
+* [Salamannopea suorituskykyarkkitehtuuri](#blazing-fast-performance-architecture)
+  * [Suorituskykymittaukset](#performance-benchmarks)
+  * [Yksityisyys ensin -arkkitehtuuri](#privacy-first-architecture)
 * [Miksi olemme erilaisia: Täydellinen vertailu](#why-were-different-the-complete-comparison)
-  * [Tärkeimmät palveluntarjoajan rajoitukset](#major-provider-limitations)
-  * [Sähköpostin edelleenlähetyksen edut](#forward-email-advantages)
+  * [Suurten tarjoajien rajoitukset](#major-provider-limitations)
+  * [Forward Emailin edut](#forward-email-advantages)
   * [Avoimen lähdekoodin läpinäkyvyysongelma](#the-open-source-transparency-problem)
-* [Yli 30 esimerkkiä reaalimaailman integraatioista](#30-real-world-integration-examples)
+* [Yli 30 todellista integraatioesimerkkiä](#30-real-world-integration-examples)
   * [1. WordPress-yhteydenottolomakkeen parannus](#1-wordpress-contact-form-enhancement)
-  * [2. Zapierin vaihtoehto sähköpostien automatisointiin](#2-zapier-alternative-for-email-automation)
-  * [3. CRM-sähköpostin synkronointi](#3-crm-email-synchronization)
+  * [2. Zapier-vaihtoehto sähköpostiautomaatiolle](#2-zapier-alternative-for-email-automation)
+  * [3. CRM-sähköpostisynkronointi](#3-crm-email-synchronization)
   * [4. Verkkokaupan tilausten käsittely](#4-e-commerce-order-processing)
   * [5. Tukipyyntöjen integrointi](#5-support-ticket-integration)
   * [6. Uutiskirjeiden hallintajärjestelmä](#6-newsletter-management-system)
-  * [7. Sähköpostipohjainen tehtävienhallinta](#7-email-based-task-management)
-  * [8. Usean tilin sähköpostien yhdistäminen](#8-multi-account-email-aggregation)
+  * [7. Sähköpostipohjainen tehtävien hallinta](#7-email-based-task-management)
+  * [8. Monitilin sähköpostien yhdistäminen](#8-multi-account-email-aggregation)
   * [9. Edistynyt sähköpostianalytiikan hallintapaneeli](#9-advanced-email-analytics-dashboard)
   * [10. Älykäs sähköpostien arkistointi](#10-smart-email-archiving)
   * [11. Sähköpostin ja kalenterin integrointi](#11-email-to-calendar-integration)
-  * [12. Sähköpostin varmuuskopiointi ja vaatimustenmukaisuus](#12-email-backup-and-compliance)
+  * [12. Sähköpostien varmuuskopiointi ja vaatimustenmukaisuus](#12-email-backup-and-compliance)
   * [13. Sähköpostipohjainen sisällönhallinta](#13-email-based-content-management)
   * [14. Sähköpostimallien hallinta](#14-email-template-management)
-  * [15. Sähköpostipohjainen työnkulun automatisointi](#15-email-based-workflow-automation)
-  * [16. Sähköpostin tietoturvan valvonta](#16-email-security-monitoring)
-  * [17. Sähköpostipohjainen kyselytutkimus](#17-email-based-survey-collection)
-  * [18. Sähköpostin suorituskyvyn seuranta](#18-email-performance-monitoring)
-  * [19. Sähköpostipohjainen liidien kelpoisuus](#19-email-based-lead-qualification)
+  * [15. Sähköpostipohjainen työnkulun automaatio](#15-email-based-workflow-automation)
+  * [16. Sähköpostin turvallisuuden valvonta](#16-email-security-monitoring)
+  * [17. Sähköpostipohjainen kyselyiden keruu](#17-email-based-survey-collection)
+  * [18. Sähköpostin suorituskyvyn valvonta](#18-email-performance-monitoring)
+  * [19. Sähköpostipohjainen liidien kvalifiointi](#19-email-based-lead-qualification)
   * [20. Sähköpostipohjainen projektinhallinta](#20-email-based-project-management)
   * [21. Sähköpostipohjainen varastonhallinta](#21-email-based-inventory-management)
   * [22. Sähköpostipohjainen laskujen käsittely](#22-email-based-invoice-processing)
   * [23. Sähköpostipohjainen tapahtumailmoittautuminen](#23-email-based-event-registration)
-  * [24. Sähköpostipohjainen asiakirjojen hyväksyntäprosessi](#24-email-based-document-approval-workflow)
+  * [24. Sähköpostipohjainen asiakirjojen hyväksymisen työnkulku](#24-email-based-document-approval-workflow)
   * [25. Sähköpostipohjainen asiakaspalautteen analyysi](#25-email-based-customer-feedback-analysis)
   * [26. Sähköpostipohjainen rekrytointiputki](#26-email-based-recruitment-pipeline)
-  * [27. Sähköpostipohjaisten kuluraporttien käsittely](#27-email-based-expense-report-processing)
+  * [27. Sähköpostipohjainen kuluraporttien käsittely](#27-email-based-expense-report-processing)
   * [28. Sähköpostipohjainen laadunvarmistusraportointi](#28-email-based-quality-assurance-reporting)
-  * [29. Sähköpostipohjainen toimittajien hallinta](#29-email-based-vendor-management)
-  * [30. Sähköpostipohjainen sosiaalisen median seuranta](#30-email-based-social-media-monitoring)
+  * [29. Sähköpostipohjainen toimittajahallinta](#29-email-based-vendor-management)
+  * [30. Sähköpostipohjainen sosiaalisen median valvonta](#30-email-based-social-media-monitoring)
 * [Aloittaminen](#getting-started)
-  * [1. Luo sähköpostin edelleenlähetystili](#1-create-your-forward-email-account)
-  * [2. Luo API-tunnistetiedot](#2-generate-api-credentials)
+  * [1. Luo Forward Email -tilisi](#1-create-your-forward-email-account)
+  * [2. Luo API-tunnukset](#2-generate-api-credentials)
   * [3. Tee ensimmäinen API-kutsu](#3-make-your-first-api-call)
   * [4. Tutustu dokumentaatioon](#4-explore-the-documentation)
 * [Tekniset resurssit](#technical-resources)
+## Sähköpostin API-ongelma {#the-email-api-problem}
 
-## Sähköposti-API-ongelma {#the-email-api-problem}
+Sähköpostin API:t ovat pohjimmiltaan rikki. Piste.
 
-Sähköpostin API-rajapinnat ovat perustavanlaatuisesti rikki. Piste.
+Jokainen merkittävä sähköpostipalveluntarjoaja pakottaa kehittäjät valitsemaan kahdesta kauheasta vaihtoehdosta:
 
-Jokainen merkittävä sähköpostipalveluntarjoaja pakottaa kehittäjät kahden kamalan vaihtoehdon eteen:
+1. **IMAP-helvetti**: Kamppailu 30 vuotta vanhan protokollan kanssa, joka on suunniteltu työpöytäsovelluksille, ei moderneille sovelluksille
+2. **Kahlitut API:t**: Nopeusrajoitetut, vain luku -tilassa olevat, OAuth-monimutkaiset API:t, jotka eivät pysty hallitsemaan varsinaista sähköpostidataa
 
-1. **IMAP-helvetti**: Painimista 30 vuotta vanhan protokollan kanssa, joka on suunniteltu työpöytäsovelluksille, ei nykyaikaisille sovelluksille
-2. **Rajoitetut API:t**: Nopeudeltaan rajoitetut, vain luku -tilassa olevat, OAuth-kompleksit API:t, jotka eivät pysty hallitsemaan varsinaista sähköpostidataa
-
-Tulos? Kehittäjät joko hylkäävät sähköposti-integraation kokonaan tai tuhlaavat viikkoja hauraiden IMAP-kääreiden rakentamiseen, jotka rikkoutuvat jatkuvasti.
+Tulos? Kehittäjät joko luopuvat kokonaan sähköpostin integroinnista tai tuhlaavat viikkoja rakentamalla hauraita IMAP-kääreitä, jotka rikkoutuvat jatkuvasti.
 
 > \[!WARNING]
-> **Likainen salaisuus**: Useimmat "sähköposti-APIt" ovat vain lähetys-APIt. Et voi ohjelmallisesti järjestää kansioita, synkronoida yhteystietoja tai hallita kalentereita yksinkertaisen REST-käyttöliittymän kautta. Tähän asti.
+> **Likainen salaisuus**: Useimmat "sähköpostin API:t" ovat pelkästään lähetys-API:ita. Et voi ohjelmallisesti järjestää kansioita, synkronoida yhteystietoja tai hallita kalentereita yksinkertaisen REST-rajapinnan kautta. Ainakaan vielä.
 
-## Mitä kehittäjät oikeastaan sanovat {#what-developers-are-actually-saying}
 
-Turhautuminen on todellista ja sitä on dokumentoitu kaikkialla:
+## Mitä kehittäjät oikeasti sanovat {#what-developers-are-actually-saying}
+
+Turhautuminen on todellista ja dokumentoitua kaikkialla:
 
 > "Yritin äskettäin integroida Gmailin sovellukseeni, ja käytin siihen liikaa aikaa. Päätin, ettei Gmailin tukeminen ole sen arvoista."
-
-> *- [Hakkereiden uutisten kehittäjä](https://news.ycombinator.com/item?id=42106944), 147 plusääntä*
-
-> "Ovatko kaikki sähköposti-API:t keskinkertaisia? Ne tuntuvat jollain tavalla rajoitetuilta tai rajoittavilta."
-
-> > *- [Redditin r/SaaS-keskustelu](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
-
-> "Miksi sähköpostin kehittämisen täytyy olla surkeaa?"
-
-> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 kommenttia kehittäjän tuskasta*
-
-> "Mikä tekee Gmail API:sta tehokkaamman kuin IMAP? Toinen syy Gmail API:n tehokkuuteen on se, että sen tarvitsee ladata jokainen viesti vain kerran. IMAPin kanssa jokainen viesti on ladattava ja indeksoitava..."
 >
-> *- [Stack Overflow -kysymys](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap), 47 plus-ääntä*
+> *- [Hacker News -kehittäjä](https://news.ycombinator.com/item?id=42106944), 147 tykkäystä*
 
-Todisteet ovat kaikkialla:
+> "Ovatko kaikki sähköpostin API:t keskinkertaisia? Ne vaikuttavat jotenkin rajoitetuilta tai rajoittavilta."
+>
+> *- [Reddit r/SaaS -keskustelu](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-* **WordPressin SMTP-ongelmat**: [631 GitHub-ongelmaa](https://github.com/awesomemotive/WP-Mail-SMTP/issues) sähköpostin toimitusongelmista
-* **Zapierin rajoitukset**: [Yhteisön valitukset](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) noin 10 sähköpostin tuntirajoitus ja IMAP-tunnistuksen epäonnistumiset
-* **IMAP API -projektit**: [Useita](https://github.com/ewildgoose/imap-api) [avoimen lähdekoodin](https://emailengine.app/) [projektit](https://www.npmjs.com/package/imapflow) on olemassa erityisesti "IMAPin muuntamista REST-muotoon", koska mikään tarjoaja ei tarjoa tätä
-* **Gmail API -ongelmat**: [Pinon ylivuoto](https://stackoverflow.com/questions/tagged/gmail-api):llä on 4 847 kysymystä tagilla "gmail-api", joissa on yleisiä valituksia nopeusrajoituksista ja monimutkaisuudesta
+> "Miksi sähköpostikehitys on pakko olla niin hankalaa?"
+>
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 kommenttia kehittäjien tuskasta*
 
-## Sähköpostin edelleenlähetyksen mullistava ratkaisu {#forward-emails-revolutionary-solution}
+> "Mikä tekee Gmail API:sta tehokkaamman kuin IMAP? Toinen syy siihen, että Gmail API on paljon tehokkaampi, on se, että sen tarvitsee ladata jokainen viesti vain kerran. IMAP:ssa jokainen viesti täytyy ladata ja indeksoida..."
+>
+> *- [Stack Overflow -kysymys](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) 47 tykkäyksellä*
 
-**Olemme ensimmäinen sähköpostipalvelu, joka tarjoaa täydelliset CRUD-toiminnot kaikille sähköpostitiedoille yhtenäisen REST-rajapinnan kautta.**
+Todisteita on kaikkialla:
 
-Tämä ei ole vain yksi lähetys-API lisää. Tämä on täydellinen ohjelmallinen hallinta seuraaviin:
+* **WordPressin SMTP-ongelmat**: [631 GitHub-ongelmaa](https://github.com/awesomemotive/WP-Mail-SMTP/issues) sähköpostin toimitusvirheistä
+* **Zapierin rajoitukset**: [Yhteisön valituksia](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) 10 sähköpostin/tunnissa rajoituksista ja IMAP-tunnistuksen epäonnistumisista
+* **IMAP API -projektit**: [Useita](https://github.com/ewildgoose/imap-api) [avoimen lähdekoodin](https://emailengine.app/) [projekteja](https://www.npmjs.com/package/imapflow) on olemassa nimenomaan "IMAP:n muuttamiseksi RESTiksi", koska mikään palveluntarjoaja ei tätä tarjoa
+* **Gmail API:n turhautumiset**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) sisältää 4 847 kysymystä, joissa on tunniste "gmail-api" ja yleisiä valituksia nopeusrajoituksista ja monimutkaisuudesta
+
+
+## Forward Emailin mullistava ratkaisu {#forward-emails-revolutionary-solution}
+
+**Olemme ensimmäinen sähköpostipalvelu, joka tarjoaa täydelliset CRUD-toiminnot kaikelle sähköpostidatalle yhtenäisen REST API:n kautta.**
+
+Tämä ei ole pelkkä lähetys-API. Tämä on täydellinen ohjelmallinen hallinta:
 
 * **Viestit**: Luo, lue, päivitä, poista, hae, siirrä, merkitse
-* **Kansiot**: Täydellinen IMAP-kansioiden hallinta REST-päätepisteiden kautta
-* **Yhteystiedot**: [CardDAV](https://tools.ietf.org/html/rfc6352) yhteystietojen tallennus ja synkronointi
-* **Kalenterit**: [CalDAV](https://tools.ietf.org/html/rfc4791) kalenteritapahtumat ja aikataulutus
+* **Kansiot**: Täysi IMAP-kansioiden hallinta REST-päätepisteiden kautta
+* **Yhteystiedot**: [CardDAV](https://tools.ietf.org/html/rfc6352) -yhteystietojen tallennus ja synkronointi
+* **Kalenterit**: [CalDAV](https://tools.ietf.org/html/rfc4791) -kalenteritapahtumat ja aikataulutus
 
 ### Miksi rakensimme tämän {#why-we-built-this}
 
-**Ongelma**: Jokainen sähköpostipalveluntarjoaja käsittelee sähköpostia mustana laatikkona. Voit lähettää sähköposteja, ehkä lukea niitä monimutkaisella OAuth-todennuksella, mutta et voi todella *hallita* sähköpostitietojasi ohjelmallisesti.
+**Ongelma**: Jokainen sähköpostipalveluntarjoaja käsittelee sähköpostia mustana laatikkona. Voit lähettää sähköposteja, ehkä lukea niitä monimutkaisella OAuthilla, mutta et voi oikeasti *hallita* sähköpostidataa ohjelmallisesti.
 
-**Visiomme**: Sähköpostin integroinnin tulisi olla yhtä helppoa kuin minkä tahansa modernin API:n. Ei IMAP-kirjastoja. Ei monimutkaista OAuth-todennusta. Ei nopeusrajoituksia. Vain yksinkertaisia, toimivia REST-päätepisteitä.
+**Visiomme**: Sähköpostin pitäisi olla yhtä helppoa integroida kuin mikä tahansa moderni API. Ei IMAP-kirjastoja. Ei OAuth-monimutkaisuutta. Ei nopeusrajoituspainajaisia. Vain yksinkertaiset REST-päätepisteet, jotka toimivat.
 
-**Tulos**: Ensimmäinen sähköpostipalvelu, jossa voit rakentaa täydellisen sähköpostiohjelman, CRM-integraation tai automaatiojärjestelmän käyttämällä vain HTTP-pyyntöjä.
+**Tulos**: Ensimmäinen sähköpostipalvelu, jossa voit rakentaa täydellisen sähköpostiohjelman, CRM-integraation tai automaatiojärjestelmän pelkillä HTTP-pyynnöillä.
 
 ### Yksinkertainen todennus {#simple-authentication}
 
-Ei [OAuth-monimutkaisuus](https://oauth.net/2/). Ei [sovelluskohtaiset salasanat](https://support.google.com/accounts/answer/185833). Vain alias-tunnuksesi:
+Ei [OAuth-monimutkaisuutta](https://oauth.net/2/). Ei [sovelluskohtaisia salasanoja](https://support.google.com/accounts/answer/185833). Vain alias-tunnuksesi:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
-
-## 20 päätepistettä, jotka muuttavat kaiken {#20-endpoints-that-change-everything}
+## 20 Päätepistettä, Jotka Muuttavat Kaiken {#20-endpoints-that-change-everything}
 
 ### Viestit (5 päätepistettä) {#messages-5-endpoints}
 
 * `GET /v1/messages` - Listaa viestit suodatuksella (`?folder=`, `?is_unread=`, `?is_flagged=`)
-* `POST /v1/messages` - Lähetä uudet viestit suoraan kansioihin
-* `GET /v1/messages/:id` - Hae tietty viesti täydellisine metatietoineen
-* `PUT /v1/messages/:id` - Päivitä viesti (merkinnät, kansio, lukutila)
+* `POST /v1/messages` - Lähetä uusia viestejä suoraan kansioihin
+* `GET /v1/messages/:id` - Hae tietty viesti täydellisellä metatiedolla
+* `PUT /v1/messages/:id` - Päivitä viesti (liput, kansio, lukemisen tila)
 * `DELETE /v1/messages/:id` - Poista viesti pysyvästi
 
 ### Kansiot (5 päätepistettä) {#folders-5-endpoints}
 
-* `GET /v1/folders` - Listaa kaikki kansiot, joilla on tilaustila
+* `GET /v1/folders` - Listaa kaikki kansiot tilausstatuksineen
 * `POST /v1/folders` - Luo uusi kansio mukautetuilla ominaisuuksilla
 * `GET /v1/folders/:id` - Hae kansion tiedot ja viestimäärät
 * `PUT /v1/folders/:id` - Päivitä kansion ominaisuudet ja tilaus
@@ -160,132 +161,132 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Yhteystiedot (5 päätepistettä) {#contacts-5-endpoints}
 
-* `GET /v1/contacts` - Listaa yhteystiedot haulla ja sivutuksella
-* `POST /v1/contacts` - Luo uusi yhteystieto täydellä vCard-tuella
-* `GET /v1/contacts/:id` - Hae yhteystieto kaikkine kenttineen ja metatietoineen
-* `PUT /v1/contacts/:id` - Päivitä yhteystiedot ETag-vahvistuksella
-* `DELETE /v1/contacts/:id` - Poista yhteystieto kaskadikäsittelyllä
+* `GET /v1/contacts` - Listaa yhteystiedot haun ja sivutuksen kanssa
+* `POST /v1/contacts` - Luo uusi yhteystieto täydellä vCard-tuesta
+* `GET /v1/contacts/:id` - Hae yhteystieto kaikilla kentillä ja metatiedoilla
+* `PUT /v1/contacts/:id` - Päivitä yhteystiedon tiedot ETag-validoinnilla
+* `DELETE /v1/contacts/:id` - Poista yhteystieto ketjutuksella
 
 ### Kalenterit (5 päätepistettä) {#calendars-5-endpoints}
 
 * `GET /v1/calendars` - Listaa kalenteritapahtumat päivämääräsuodatuksella
-* `POST /v1/calendars` - Luo kalenteritapahtuma osallistujilla ja toistumisilla
+* `POST /v1/calendars` - Luo kalenteritapahtuma osallistujilla ja toistolla
 * `GET /v1/calendars/:id` - Hae tapahtuman tiedot aikavyöhykkeen käsittelyllä
 * `PUT /v1/calendars/:id` - Päivitä tapahtuma ristiriitojen tunnistuksella
 * `DELETE /v1/calendars/:id` - Poista tapahtuma osallistujailmoituksilla
 
-## Laajennettu haku: Ei muita vastaavia palveluita {#advanced-search-no-other-service-compares}
 
-**Forward Email on ainoa sähköpostipalvelu, joka tarjoaa kattavan, ohjelmallisen haun kaikissa viestikentissä REST-rajapinnan kautta.**
+## Edistynyt Haku: Mikään Muu Palvelu Ei Vertaudu {#advanced-search-no-other-service-compares}
 
-Vaikka muut palveluntarjoajat tarjoavat parhaimmillaankin perussuodatuksen, me olemme rakentaneet edistyneimmän koskaan luodun sähköpostihaku-API:n. Yksikään Gmail-API, Outlook-API tai mikään muu palvelu ei vedä vertoja hakuominaisuuksillemme.
+**Forward Email on ainoa sähköpostipalvelu, joka tarjoaa kattavan, ohjelmallisen haun kaikista viestikentistä REST-rajapinnan kautta.**
 
-### Haku-API-ympäristö on rikki {#the-search-api-landscape-is-broken}
+Kun muut tarjoajat tarjoavat parhaimmillaan perussuodatusta, olemme rakentaneet edistyneimmän koskaan luodun sähköpostihakurajapinnan. Mikään Gmail API, Outlook API tai muu palvelu ei yllä meidän hakutoimintoihimme.
 
-**Gmail API -haun rajoitukset:**
+### Hakurajapintojen Tilanne On Rikkinäinen {#the-search-api-landscape-is-broken}
 
-* ✅ Vain perus `q`-parametri
+**Gmail API:n hakurajoitukset:**
+
+* ✅ Perus `q`-parametri vain
 * ❌ Ei kenttäkohtaista hakua
-* ❌ Ei päivämäärävälisuodatusta
+* ❌ Ei päivämäärävälin suodatusta
 * ❌ Ei kokoon perustuvaa suodatusta
-* ❌ Ei liitteiden suodatusta
-* ❌ Rajoitettu Gmailin hakusyntaksiin
+* ❌ Ei liitetiedostojen suodatusta
+* ❌ Rajoittuu Gmailin hakusyntaksiin
 
-**Outlook API -haun rajoitukset:**
+**Outlook API:n hakurajoitukset:**
 
 * ✅ Perus `$search`-parametri
-* ❌ Ei edistynyttä kenttien kohdentamista
+* ❌ Ei edistynyttä kenttäosoitusta
 * ❌ Ei monimutkaisia kyselyyhdistelmiä
-* ❌ Aggressiivinen nopeuden rajoitus
-* ❌ Vaaditaan monimutkainen OData-syntaksi
+* ❌ Tiukka nopeusrajoitus
+* ❌ Vaatii monimutkaista OData-syntaksia
 
 **Apple iCloud:**
 
-* ❌ Ei minkäänlaista API:a
+* ❌ Ei lainkaan API:a
 * ❌ Vain IMAP-haku (jos saat sen toimimaan)
 
-**ProtonMail ja Tuta:**
+**ProtonMail & Tuta:**
 
 * ❌ Ei julkisia API-rajapintoja
-* ❌ Ei ohjelmallisia hakuominaisuuksia
+* ❌ Ei ohjelmallisia hakumahdollisuuksia
 
-### Sähköpostin välityksen mullistava haku-API {#forward-emails-revolutionary-search-api}
+### Forward Emailin Vallankumouksellinen Hakurajapinta {#forward-emails-revolutionary-search-api}
 
 **Tarjoamme yli 15 hakuparametria, joita mikään muu palvelu ei tarjoa:**
 
-| Hakutoiminto | Lähetä sähköpostia eteenpäin | Gmail-sovellusliittymä | Outlook-sovellusliittymä | Muut |
-| ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **Kenttäkohtainen haku** | ✅ Aihe, teksti, lähettäjä, vastaanottaja, kopio, otsikot | ❌ | ❌ | ❌ |
-| **Monikenttäinen yleinen haku** | ✅ `?search=` kaikissa kentissä | ✅ Perus `q=` | ✅ Perus `$search=` | ❌ |
-| **Ajanjakson suodatus** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **Kokoon perustuva suodatus** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **Liitteiden suodatus** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **Ylätunnisteen haku** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **Viesti-ID-haku** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **Yhdistetyt suodattimet** | ✅ Useita parametreja JA-logiikalla | ❌ | ❌ | ❌ |
-| **Kirjainkokoa ei erotella** | ✅ Kaikki haut | ✅ | ✅ | ❌ |
-| **Sivutuksen tuki** | ✅ Toimii kaikkien hakuehtojen kanssa | ✅ | ✅ | ❌ |
+| Hakutoiminto                  | Forward Email                        | Gmail API    | Outlook API        | Muut   |
+| ------------------------------ | ---------------------------------- | ------------ | ------------------ | ------ |
+| **Kenttäkohtainen haku**       | ✅ Aihe, sisältö, lähettäjä, vastaanottaja, kopio, otsikot | ❌            | ❌                  | ❌      |
+| **Monikenttäinen yleishaku**  | ✅ `?search=` kaikissa kentissä     | ✅ Perus `q=` | ✅ Perus `$search=` | ❌      |
+| **Päivämäärävälin suodatus**  | ✅ `?since=` & `?before=`           | ❌            | ❌                  | ❌      |
+| **Kokoon perustuva suodatus** | ✅ `?min_size=` & `?max_size=`      | ❌            | ❌                  | ❌      |
+| **Liitetiedostojen suodatus** | ✅ `?has_attachments=true/false`    | ❌            | ❌                  | ❌      |
+| **Otsikkohaku**               | ✅ `?headers=X-Priority`            | ❌            | ❌                  | ❌      |
+| **Viestin ID -haku**          | ✅ `?message_id=abc123`             | ❌            | ❌                  | ❌      |
+| **Yhdistetyt suodattimet**    | ✅ Useita parametreja AND-logiikalla | ❌            | ❌                  | ❌      |
+| **Kirjainkoon huomioimaton**  | ✅ Kaikki haut                      | ✅            | ✅                  | ❌      |
+| **Sivutus**                   | ✅ Toimii kaikkien hakuparametrien kanssa | ✅            | ✅                  | ❌      |
+### Todelliset Hakuesimerkit {#real-world-search-examples}
 
-### Todellisen maailman hakuesimerkkejä {#real-world-search-examples}
-
-**Etsi kaikki laskut viimeiseltä neljännekseltä:**
+**Etsi kaikki viimeisen neljänneksen laskut:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - Yksinkertainen ja tehokas
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - Mahdotonta heidän rajoitetulla haullaan
+# Ei päivämääräalueen suodatusta saatavilla
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - Monimutkainen OData-syntaksi, rajallinen toiminnallisuus
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
-**Etsi suuria liitteitä tietyltä lähettäjältä:**
+**Etsi suuret liitetiedostot tietystä lähettäjästä:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - Kattava suodatus
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - Ei voi suodattaa kokoa tai liitteitä ohjelmallisesti
+# Outlook API - Ei kokosuodatusta saatavilla
+# Muut - Ei API-rajapintoja saatavilla
 ```
 
 **Monimutkainen monikenttähaku:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - Edistyneet hakumahdollisuudet
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - Rajoittuu pelkkään perustekstihakuun
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - Perushaku ilman kenttäkohtaisuutta
 GET /me/messages?$search="quarterly"
 ```
 
-### Suorituskyvyn edut {#performance-advantages}
+### Suorituskykyedut {#performance-advantages}
 
-**Sähköpostin edelleenlähetyshaun tehokkuus:**
+**Forward Email -haun suorituskyky:**
 
-* ⚡ **Alle 100 ms:n vasteajat** monimutkaisille hauille
-* 🔍 **Regulaarilausekkeiden optimointi** asianmukaisella indeksoinnilla
-* 📊 **Rinnakkainen kyselyiden suoritus** määrälle ja datalle
-* 💾 **Tehokas muistin käyttö** kevyillä kyselyillä
+* ⚡ **Alle 100 ms vasteajat** monimutkaisissa hauissa
+* 🔍 **Regex-optimointi** asianmukaisella indeksoinnilla
+* 📊 **Rinnakkainen kyselyjen suoritus** laskentaan ja dataan
+* 💾 **Tehokas muistin käyttö** kevyillä hauilla
 
 **Kilpailijoiden suorituskykyongelmat:**
 
-* 🐌 **Gmail API**: Nopeus rajoitettu 250 kiintiöyksikköön käyttäjää kohden sekunnissa
-* 🐌 **Outlook API**: Aggressiivinen rajoitus monimutkaisilla varausvaatimuksilla
-* 🐌 **Muut**: Ei API-rajapintoja, joihin voisi verrata
+* 🐌 **Gmail API**: Käyttörajoitus 250 yksikköä käyttäjää kohden sekunnissa
+* 🐌 **Outlook API**: Aggressiivinen rajoitus ja monimutkaiset takaisinkytkentävaatimukset
+* 🐌 **Muut**: Ei vertailukelpoisia API-rajapintoja
 
-### Hakuominaisuudet, joita ei ole kenelläkään muulla {#search-features-no-one-else-has}
+### Hakutoiminnot, joita muilla ei ole {#search-features-no-one-else-has}
 
 #### 1. Otsikkokohtainen haku {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# Etsi viestit, joissa on tietyt otsikot
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
@@ -293,27 +294,27 @@ GET /v1/messages?headers=X-Spam-Score
 #### 2. Kokoon perustuva älykkyys {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# Etsi uutiskirjeet (yleensä suuria)
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# Etsi pikavastaukset (yleensä pieniä)
 GET /v1/messages?max_size=1000&to=support
 ```
 
-#### 3. Liitteisiin perustuvat työnkulut {#3-attachment-based-workflows}
+#### 3. Liitetiedostopohjaiset työnkulut {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# Etsi kaikki oikeustiimille lähetetyt asiakirjat
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# Etsi liitteettömät sähköpostit siivousta varten
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
 #### 4. Yhdistetty liiketoimintalogiikka {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# Etsi kiireelliset liputetut viestit VIP-lähettäjiltä, joissa on liitteitä
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
@@ -321,23 +322,23 @@ GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 
 **Rakenna sovelluksia, jotka olivat aiemmin mahdottomia:**
 
-1. **Edistynyt sähköpostianalytiikka**: Analysoi sähköpostimalleja koon, lähettäjän ja sisällön mukaan
-2. **Älykäs sähköpostien hallinta**: Järjestä automaattisesti monimutkaisten kriteerien perusteella
-3. **Vaatimustenmukaisuus ja löytäminen**: Etsi tiettyjä sähköposteja lakisääteisten vaatimusten mukaisesti
-4. **Liiketoimintatiedustelu**: Poimi tietoja sähköpostiviestintämalleista
-5. **Automatisoidut työnkulut**: Käynnistä toimintoja kehittyneiden sähköpostisuodattimien perusteella
+1. **Edistynyt sähköpostianalytiikka**: Analysoi sähköpostimallit koon, lähettäjän ja sisällön mukaan
+2. **Älykäs sähköpostinhallinta**: Automaattinen järjestely monimutkaisten kriteerien perusteella
+3. **Säädösten noudattaminen ja tiedonhaku**: Löydä tietyt sähköpostit lakisääteisiin vaatimuksiin
+4. **Liiketoimintatiedon hyödyntäminen**: Poimi oivalluksia sähköpostiviestinnästä
+5. **Automaattiset työnkulut**: Käynnistä toimenpiteitä monimutkaisten suodattimien perusteella
 
 ### Tekninen toteutus {#the-technical-implementation}
 
-Haku-API:mme käyttää:
+Hakumme API käyttää:
 
-* **Regulaarilausekkeiden optimointi** asianmukaisilla indeksointistrategioilla
-* **Rinnakkaissuoritus** suorituskyvyn parantamiseksi
-* **Syötteen validointi** turvallisuuden parantamiseksi
-* **Kattava virheenkäsittely** luotettavuuden parantamiseksi
+* **Regex-optimointia** asianmukaisilla indeksointistrategioilla
+* **Rinnakkaista suoritusta** suorituskyvyn parantamiseksi
+* **Syötteen validointia** turvallisuuden takaamiseksi
+* **Kattavaa virheenkäsittelyä** luotettavuuden varmistamiseksi
 
 ```javascript
-// Example: Complex search implementation
+// Esimerkki: Monimutkainen hakutoteutus
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -355,18 +356,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// Yhdistä JA-logiikalla
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **Kehittäjän etu**: Forward Emailin haku-API:n avulla voit rakentaa sähköpostisovelluksia, jotka kilpailevat toiminnallisuudeltaan työpöytäsovellusten kanssa säilyttäen samalla REST-API:en yksinkertaisuuden.
+> **Kehittäjän etu**: Forward Emailin hakupalvelun avulla voit rakentaa sähköpostisovelluksia, jotka kilpailevat työpöytäsovellusten kanssa toiminnallisuudessa, säilyttäen samalla REST-rajapintojen yksinkertaisuuden.
+## Salamannopea Suorituskykyarkkitehtuuri {#blazing-fast-performance-architecture}
 
-## Huippunopea suorituskykyarkkitehtuuri {#blazing-fast-performance-architecture}
-
-Tekninen pinomme on rakennettu nopeutta ja luotettavuutta silmällä pitäen:
+Tekninen pino on rakennettu nopeutta ja luotettavuutta varten:
 
 ```mermaid
 graph LR
@@ -376,105 +376,105 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Suorituskykyvertailuarvot {#performance-benchmarks}
+### Suorituskykyvertailut {#performance-benchmarks}
 
-**Miksi olemme salamannopeita:**
+**Miksi Olemme Salamannopeita:**
 
-| Komponentti | Teknologia | Suorituskykyetu |
-| ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **Säilytys** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | 10 kertaa nopeampi kuin perinteinen SATA |
-| **Tietokanta** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Nolla verkkoviivettä, optimoitu sarjoittaminen |
-| **Laitteisto** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) paljas metalli | Ei virtualisointikustannuksia |
-| **Välimuisti** | Muistissa + pysyvä | Alle millisekunnin vasteajat |
-| **Varmuuskopiot** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) salattu | Yritystason luotettavuus |
+| Komponentti  | Teknologia                                                                       | Suorituskykyetu                              |
+| ------------ | -------------------------------------------------------------------------------- | -------------------------------------------- |
+| **Tallennus**| [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                           | 10x nopeampi kuin perinteinen SATA           |
+| **Tietokanta**| [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Nolla verkkoviive, optimoitu sarjallistaminen |
+| **Laitteisto**| [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) bare metal| Ei virtualisointikuormaa                      |
+| **Välimuisti**| Muistissa + pysyvä                                                              | Alle millisekunnin vasteajat                  |
+| **Varakopiot**| [Cloudflare R2](https://www.cloudflare.com/products/r2/) salattu                | Yritystason luotettavuus                       |
 
-**Todelliset suorituskykyluvut:**
+**Todelliset Suorituskykyluvut:**
 
-* **API-vasteaika**: keskimäärin < 50 ms
+* **API-vastausaika**: < 50 ms keskiarvo
 * **Viestin haku**: < 10 ms välimuistissa oleville viesteille
-* **Kansiotoiminnot**: < 5 ms metatietotoiminnoille
-* **Yhteystietojen synkronointi**: yli 1000 yhteystietoa sekunnissa
-* **Käyttöaika**: 99,99 % palvelutasotakuu redundanttisella infrastruktuurilla
+* **Kansion toiminnot**: < 5 ms metatietotoiminnoille
+* **Yhteystietojen synkronointi**: 1000+ yhteystietoa/sekunti
+* **Käyttöaika**: 99,99 % SLA redundantilla infrastruktuurilla
 
-### Tietosuoja ensin -arkkitehtuuri {#privacy-first-architecture}
+### Yksityisyys Edellä -arkkitehtuuri {#privacy-first-architecture}
 
-**Tietoa vaativa suunnittelu**: Vain sinulla on pääsy IMAP-salasanallasi – emme voi lukea sähköpostejasi. [nollatietoarkkitehtuuri](https://forwardemail.net/en/security)-salasanamme takaa täydellisen yksityisyyden ja tarjoaa samalla huippuluokan suorituskyvyn.
+**Nollatietomalli**: Vain sinulla on pääsy IMAP-salasanallasi – emme voi lukea sähköpostejasi. Meidän [nollatietomallimme arkkitehtuuri](https://forwardemail.net/en/security) takaa täydellisen yksityisyyden samalla kun tarjoaa salamannopean suorituskyvyn.
 
-## Miksi olemme erilaisia: Täydellinen vertailu {#why-were-different-the-complete-comparison}
 
-### Tärkeimmät palveluntarjoajan rajoitukset {#major-provider-limitations}
+## Miksi Olemme Eri: Täydellinen Vertailu {#why-were-different-the-complete-comparison}
 
-| Palveluntarjoaja | Ydinongelmat | Erityiset rajoitukset |
-| ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gmail-sovellusliittymä** | Vain luku, monimutkainen OAuth, erilliset API:t | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) yhteystiedoille/kalenterille |
-| **Outlook-sovellusliittymä** | Vanhentunut, hämmentävä, yrityskeskeinen | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graafi, REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **Apple iCloud** | Ei julkista API:a | • [No public API whatsoever](https://support.apple.com/en-us/102654)<br>• [IMAP-only with 1000 emails/day limit](https://support.apple.com/en-us/102654)<br>• [App-specific passwords required](https://support.apple.com/en-us/102654)<br>• [500 recipients per message limit](https://support.apple.com/en-us/102654) |
-| **ProtonMail** | Ei API:a, vääriä avoimen lähdekoodin väitteitä | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge software required](https://proton.me/mail/bridge) IMAP-yhteyttä varten<br>• [Claims "open source"](https://proton.me/blog/open-source) mutta [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **Kokonais** | Ei API:a, harhaanjohtava läpinäkyvyys | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) mutta [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) estää vakiointegraatiot |
-| **Zapier-sähköposti** | Ankarat nopeusrajoitukset | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
+### Suurten Palveluntarjoajien Rajoitukset {#major-provider-limitations}
 
+| Palveluntarjoaja | Keskeiset Ongelmat                      | Tarkemmat Rajoitukset                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Gmail API**    | Vain luku, Monimutkainen OAuth, Eri API:t | • [Ei voi muokata olemassa olevia viestejä](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Tunnisteet ≠ kansiot](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 miljardin käyttöyksikön päivärajoitus](https://developers.google.com/gmail/api/reference/quota)<br>• [Vaatii erilliset API:t](https://developers.google.com/workspace) yhteystiedoille/kalenterille                                                           |
+| **Outlook API**  | Vanhentunut, Sekava, Yrityskeskeinen   | • [REST-päätepisteet vanhentuvat maaliskuussa 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Useita sekavia API:ita](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS, Graph, REST)<br>• [Microsoft Graphin monimutkaisuus](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressiivinen rajoitus](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud** | Ei julkista API:a                      | • [Ei lainkaan julkista API:a](https://support.apple.com/en-us/102654)<br>• [Vain IMAP, 1000 sähköpostin päivärajoitus](https://support.apple.com/en-us/102654)<br>• [Sovelluskohtaiset salasanat vaaditaan](https://support.apple.com/en-us/102654)<br>• [500 vastaanottajan rajoitus viestissä](https://support.apple.com/en-us/102654)                                                                                                                                              |
+| **ProtonMail**   | Ei API:a, Väärät avoimen lähdekoodin väitteet | • [Ei julkista API:a saatavilla](https://proton.me/support/protonmail-bridge-clients)<br>• [Bridge-ohjelmisto vaaditaan](https://proton.me/mail/bridge) IMAP-yhteyteen<br>• [Väittää olevansa "avoin lähdekoodi"](https://proton.me/blog/open-source) mutta [palvelinkoodi on suljettu](https://github.com/ProtonMail)<br>• [Rajoitettu vain maksullisiin suunnitelmiin](https://proton.me/pricing)                                                                                                         |
+| **Tuta**         | Ei API:a, Harhaanjohtava läpinäkyvyys  | • [Ei REST API:a sähköpostinhallintaan](https://tuta.com/support#technical)<br>• [Väittää olevansa "avoin lähdekoodi"](https://tuta.com/blog/posts/open-source-email) mutta [taustajärjestelmä on suljettu](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP ei tuettu](https://tuta.com/support#imap)<br>• [Oma salaus](https://tuta.com/encryption) estää standardoidut integraatiot                                                                                               |
+| **Zapier Email** | Tiukat Käyttörajoitukset               | • [10 sähköpostia tunnissa -rajoitus](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Ei IMAP-kansiopääsyä](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Rajoitetut jäsentämismahdollisuudet](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)                                 |
 ### Sähköpostin edelleenlähetyksen edut {#forward-email-advantages}
 
-| Ominaisuus | Lähetä sähköpostia eteenpäin | Kilpailu |
+| Ominaisuus         | Sähköpostin edelleenlähetys                                                                 | Kilpailu                                  |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **Täydellistä roskaa** | ✅ Kaikkien tietojen täysi luonti, luku, päivitys ja poisto | ❌ Vain luku - tai rajoitetut toiminnot |
-| **Yhtenäinen API** | ✅ Viestit, kansiot, yhteystiedot, kalenterit yhdessä API:ssa | ❌ Erilliset API:t tai puuttuvat ominaisuudet |
-| **Yksinkertainen todennus** | ✅ Perustunnistus alias-tunnuksilla | ❌ Monimutkainen OAuth useilla laajuusalueilla |
-| **Ei hintarajoituksia** | ✅ Todellisiin sovelluksiin suunnitellut anteliaat rajoitukset | ❌ Rajoittavat kiintiöt, jotka rikkovat työnkulkuja |
-| **Itsepalvelu** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Vain myyjän lukitus |
-| **Tietosuoja** | ✅ Tiedonvapaa, salattu, yksityinen | ❌ Tiedonlouhinta ja yksityisyyden suojaan liittyvät huolenaiheet |
-| **Suorituskyky** | ✅ Alle 50 ms:n vasteajat, NVMe-tallennustila | ❌ Verkkoviive, rajoitusviiveet |
+| **Täysi CRUD**     | ✅ Täysi luonti, luku, päivitys, poisto kaikille tiedoille                                   | ❌ Vain luku tai rajoitetut toiminnot      |
+| **Yhtenäinen API** | ✅ Viestit, kansiot, yhteystiedot, kalenterit yhdessä API:ssa                                | ❌ Erilliset API:t tai puuttuvat ominaisuudet |
+| **Yksinkertainen tunnistus** | ✅ Perustason tunnistus alias-tunnuksilla                                               | ❌ Monimutkainen OAuth useilla oikeuksilla |
+| **Ei käyttörajoituksia** | ✅ Anteliaat rajat suunniteltu oikeisiin sovelluksiin                                    | ❌ Rajoittavat kiintiöt, jotka katkaisevat työnkulut |
+| **Itseisännöinti** | ✅ [Täydellinen itseisännöintivaihtoehto](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Vain toimittajalukko                    |
+| **Yksityisyys**    | ✅ Nollatietoinen, salattu, yksityinen                                                      | ❌ Tiedonlouhinta ja yksityisyysongelmat   |
+| **Suorituskyky**   | ✅ Alle 50 ms vasteajat, NVMe-tallennus                                                     | ❌ Verkon viive, rajoitukset hidastavat    |
 
 ### Avoimen lähdekoodin läpinäkyvyysongelma {#the-open-source-transparency-problem}
 
-**ProtonMail ja Tuta markkinoivat itseään "avoimen lähdekoodin" ja "läpinäkyvänä" palveluntarjoajana, mutta tämä on harhaanjohtavaa markkinointia, joka rikkoo nykyaikaisia yksityisyyden suojaa koskevia periaatteita.**
+**ProtonMail ja Tuta markkinoivat itseään "avoin lähdekoodi" ja "läpinäkyvänä", mutta tämä on harhaanjohtavaa markkinointia, joka rikkoo nykyaikaisia yksityisyysperiaatteita.**
 
 > \[!WARNING]
-> **Vääriä läpinäkyvyysväitteitä**: Sekä ProtonMail että Tuta mainostavat näkyvästi "avoimen lähdekoodin" tunnistetietojaan pitäen samalla tärkeimmän palvelinpuolen koodinsa omana ja suljettuna.
+> **Väärät läpinäkyvyysväitteet**: Sekä ProtonMail että Tuta mainostavat näkyvästi "avoin lähdekoodi" -tunnuksiaan, mutta pitävät kriittisimmän palvelinpuolen koodinsa suljettuna ja omistusoikeudellisena.
 
-**ProtonMailin petos:**
+**ProtonMailin harhautus:**
 
-* **Väitteet**: ["Olemme avoimen lähdekoodin"](https://proton.me/blog/open-source) näkyvästi esillä markkinoinnissa
-* **Todellisuus**: [Palvelinkoodi on täysin omaa omistusoikeutta](https://github.com/ProtonMail) - vain asiakassovellukset ovat avoimen lähdekoodin
-* **Vaikutus**: Käyttäjät eivät voi vahvistaa palvelinpuolen salausta, tietojenkäsittelyä tai yksityisyysväitteitä
-* **Läpinäkyvyysrikkomus**: Ei keinoa auditoida varsinaisia sähköpostin käsittely- ja tallennusjärjestelmiä
+* **Väitteet**: ["Olemme avoimen lähdekoodin"](https://proton.me/blog/open-source) näkyvästi markkinoinnissa
+* **Todellisuus**: [Palvelinkoodi on täysin omistusoikeudellinen](https://github.com/ProtonMail) – vain asiakasohjelmat ovat avoimen lähdekoodin
+* **Vaikutus**: Käyttäjät eivät voi varmistaa palvelimen salauksen, tietojen käsittelyn tai yksityisyysväitteiden paikkansapitävyyttä
+* **Läpinäkyvyyden rikkomus**: Ei mahdollisuutta tarkastaa varsinaista sähköpostin käsittely- ja tallennusjärjestelmää
 
 **Tutan harhaanjohtava markkinointi:**
 
 * **Väitteet**: ["Avoimen lähdekoodin sähköposti"](https://tuta.com/blog/posts/open-source-email) keskeisenä myyntivalttina
-* **Todellisuus**: [Taustajärjestelmäinfrastruktuuri on suljetun lähdekoodin](https://github.com/tutao/tutanota) - vain käyttöliittymä on saatavilla
-* **Vaikutus**: Oma salaus estää standardien sähköpostiprotokollien (IMAP/SMTP) käytön
-* **Lukitusstrategia**: Mukautettu salaus pakottaa toimittajariippuvuuteen
+* **Todellisuus**: [Taustajärjestelmä on suljettu lähdekoodi](https://github.com/tutao/tutanota) – vain käyttöliittymä on saatavilla
+* **Vaikutus**: Omistusoikeudellinen salaus estää standardit sähköpostiprotokollat (IMAP/SMTP)
+* **Toimittajalukko**: Räätälöity salaus pakottaa toimittajariippuvuuteen
 
-**Miksi tämä on tärkeää nykyaikaisen yksityisyyden kannalta:**
+**Miksi tämä on tärkeää nykyaikaiselle yksityisyydelle:**
 
-Vuonna 2025 todellinen yksityisyys vaatii **täydellistä läpinäkyvyyttä**. Kun sähköpostipalveluntarjoajat väittävät olevansa "avoimen lähdekoodin" tarjoajia, mutta piilottavat palvelinkoodinsa:
+Vuonna 2025 aito yksityisyys vaatii **täyttä läpinäkyvyyttä**. Kun sähköpostipalveluntarjoajat väittävät "avoin lähdekoodi" mutta piilottavat palvelinkoodinsa:
 
-1. **Todentamaton salaus**: Et voi auditoida, miten tietosi todellisuudessa salataan.
-2. **Piilotetun datan käytännöt**: Palvelinpuolen tiedonkäsittely on edelleen musta laatikko.
-3. **Luottamukseen perustuva turvallisuus**: Sinun on luotettava heidän väitteisiinsä ilman vahvistusta.
-4. **Toimittajan lukitseminen**: Omistetut järjestelmät estävät tiedon siirrettävyyden.
+1. **Tarkastamaton salaus**: Et voi tarkastaa, miten tietosi todella salataan
+2. **Piilotetut tietokäytännöt**: Palvelimen tietojenkäsittely on musta laatikko
+3. **Luottamukseen perustuva turvallisuus**: Sinun on luotettava väitteisiin ilman varmennusta
+4. **Toimittajalukko**: Omistusoikeudelliset järjestelmät estävät tietojen siirrettävyyden
 
-**Sähköpostin edelleenlähetyksen todellinen läpinäkyvyys:**
+**Forward Emailin aito läpinäkyvyys:**
 
-* ✅ **[Täysin avoimen lähdekoodin](https://github.com/forwardemail/forwardemail.net)** - palvelin- ja asiakaskoodi
-* ✅ **[Oma hosting saatavilla](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - oman instanssin ajaminen
-* ✅ **Vakioprotokollat** - IMAP-, SMTP-, CardDAV- ja CalDAV-yhteensopivuus
-* ✅ **Auditoitava suojaus** - jokainen koodirivi voidaan tarkastaa
-* ✅ **Ei toimittajasidonnaisuutta** - sinun tietosi, sinun hallintasi
+* ✅ **[Täysi avoin lähdekoodi](https://github.com/forwardemail/forwardemail.net)** – palvelin- ja asiakaskoodi
+* ✅ **[Itseisännöinti saatavilla](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – aja oma instanssi
+* ✅ **Standardiprotokollat** – IMAP, SMTP, CardDAV, CalDAV -yhteensopivuus
+* ✅ **Tarkastettava turvallisuus** – jokainen koodirivi on tarkastettavissa
+* ✅ **Ei toimittajalukkoa** – sinun datasi, sinun hallintasi
 
 > \[!TIP]
-> **Aito avoimen lähdekoodin ansiosta voit varmistaa jokaisen väitteen.** Forward Emailin avulla voit auditoida salauksemme, tarkastella tietojenkäsittelyämme ja jopa suorittaa oman instanssin. Se on todellista läpinäkyvyyttä.
+> **Aito avoin lähdekoodi tarkoittaa, että voit varmistaa jokaisen väitteen.** Forward Emailin kanssa voit tarkastaa salauksemme, arvioida tietojenkäsittelymme ja jopa ajaa oman instanssisi. Se on todellista läpinäkyvyyttä.
 
-## Yli 30 esimerkkiä reaalimaailman integraatiosta {#30-real-world-integration-examples}
+
+## 30+ todellista integraatioesimerkkiä {#30-real-world-integration-examples}
 
 ### 1. WordPress-yhteydenottolomakkeen parannus {#1-wordpress-contact-form-enhancement}
-
-**Ongelma**: [WordPress SMTP -määritysvirheet](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 GitHub-ongelmaa](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**Ratkaisu**: Suora API-integraatio ohittaa [SMTP](https://tools.ietf.org/html/rfc5321):n kokonaan
+**Ongelma**: [WordPressin SMTP-konfiguraation virheet](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 GitHub-ongelmaa](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
+**Ratkaisu**: Suora API-integraatio ohittaa [SMTP:n](https://tools.ietf.org/html/rfc5321) kokonaan
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// WordPressin yhteydenottolomake, joka tallentaa Lähetetyt-kansioon
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -483,20 +483,20 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'Yhteydenottolomake: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
 });
 ```
 
-### 2. Zapierin vaihtoehto sähköpostien automatisointiin {#2-zapier-alternative-for-email-automation}
+### 2. Zapier-vaihtoehto sähköpostiautomaatiolle {#2-zapier-alternative-for-email-automation}
 
-**Ongelma**: [Zapierin 10 sähköpostin tuntirajoitus](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) ja [IMAP-tunnistuksen epäonnistumiset](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-**Ratkaisu**: Rajoittamaton automaatio ja täysi sähköpostin hallinta
+**Ongelma**: [Zapierin 10 sähköpostin/tunti -rajoitus](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) ja [IMAP-tunnistuksen virheet](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
+**Ratkaisu**: Rajoittamaton automaatio täydellisellä sähköpostin hallinnalla
 
 ```javascript
-// Auto-organize emails by sender domain
+// Sähköpostien automaattinen järjestely lähettäjän verkkotunnuksen mukaan
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -507,13 +507,13 @@ for (const message of messages) {
 }
 ```
 
-### 3. CRM-sähköpostin synkronointi {#3-crm-email-synchronization}
+### 3. CRM-sähköpostien synkronointi {#3-crm-email-synchronization}
 
-**Ongelma**: Manuaalinen yhteystietojen hallinta sähköpostin ja [CRM-järjestelmät](https://en.wikipedia.org/wiki/Customer_relationship_management):n välillä
-**Ratkaisu**: Kaksisuuntainen synkronointi [CardDAV](https://tools.ietf.org/html/rfc6352)-yhteystieto-API:n kanssa
+**Ongelma**: Manuaalinen yhteystietojen hallinta sähköpostin ja [CRM-järjestelmien](https://en.wikipedia.org/wiki/Customer_relationship_management) välillä
+**Ratkaisu**: Kaksisuuntainen synkronointi [CardDAV](https://tools.ietf.org/html/rfc6352) -yhteystieto-API:n avulla
 
 ```javascript
-// Sync new email contacts to CRM
+// Synkronoi uudet sähköpostiyhteystiedot CRM:ään
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -524,13 +524,13 @@ for (const contact of newContacts) {
 }
 ```
 
-### 4. Verkkokauppatilausten käsittely {#4-e-commerce-order-processing}
+### 4. Verkkokaupan tilausten käsittely {#4-e-commerce-order-processing}
 
-**Ongelma**: Tilaussähköpostin manuaalinen käsittely käyttäjälle [verkkokauppa-alustat](https://en.wikipedia.org/wiki/E-commerce)
-**Ratkaisu**: Automaattinen tilaustenhallintaprosessi
+**Ongelma**: Manuaalinen tilaussähköpostien käsittely [verkkokauppa-alustoilla](https://en.wikipedia.org/wiki/E-commerce)
+**Ratkaisu**: Automaattinen tilausten hallintaputki
 
 ```javascript
-// Process order confirmation emails
+// Käsittele tilausvahvistussähköpostit
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
   msg.subject.includes('Order Confirmation')
@@ -548,11 +548,11 @@ for (const order of orderEmails) {
 
 ### 5. Tukipyyntöjen integrointi {#5-support-ticket-integration}
 
-**Ongelma**: Sähköpostiketjut hajallaan [tukipalvelualustat](https://en.wikipedia.org/wiki/Help_desk_software)-kohteessa
+**Ongelma**: Sähköpostiketjut hajallaan eri [tukipalvelualustoilla](https://en.wikipedia.org/wiki/Help_desk_software)
 **Ratkaisu**: Täydellinen sähköpostiketjujen seuranta
 
 ```javascript
-// Create support ticket from email thread
+// Luo tukipyyntö sähköpostiketjusta
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -570,11 +570,11 @@ for (const email of supportEmails) {
 
 ### 6. Uutiskirjeiden hallintajärjestelmä {#6-newsletter-management-system}
 
-**Ongelma**: Rajoitetut [uutiskirjealusta](https://en.wikipedia.org/wiki/Email_marketing)-integraatiot
-**Ratkaisu**: Täydellinen tilaajan elinkaaren hallinta
+**Ongelma**: Rajalliset [uutiskirjealustan](https://en.wikipedia.org/wiki/Email_marketing) integraatiot
+**Ratkaisu**: Täydellinen tilaajien elinkaaren hallinta
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// Hallitse uutiskirjeiden tilauksia automaattisesti
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
   msg.subject.toLowerCase().includes('unsubscribe')
@@ -589,11 +589,10 @@ for (const msg of unsubscribes) {
 }
 ```
 
-### 7. Sähköpostipohjainen tehtävienhallinta {#7-email-based-task-management}
+### 7. Sähköpostipohjainen tehtävien hallinta {#7-email-based-task-management}
 
-**Ongelma**: Saapuneet-kansion ylikuormitus ja [tehtävien seuranta](https://en.wikipedia.org/wiki/Task_management)
-**Ratkaisu**: Muunna sähköpostit toimintakehotuksiksi
-
+**Ongelma**: Saapuneiden postilaatikon ylikuormitus ja [tehtävien seuranta](https://en.wikipedia.org/wiki/Task_management)
+**Ratkaisu**: Muunna sähköpostit toimeenpantaviksi tehtäviksi
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -607,10 +606,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. Usean tilin sähköpostien yhdistäminen {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**Ongelma**: [useita sähköpostitilejä](https://en.wikipedia.org/wiki/Email_client):n hallinta eri palveluntarjoajien välillä
-**Ratkaisu**: Yhtenäinen postilaatikon käyttöliittymä
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -625,10 +624,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. Edistynyt sähköpostianalytiikan hallintapaneeli {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**Ongelma**: Ei tietoa [sähköpostimallit](https://en.wikipedia.org/wiki/Email_analytics):sta kehittyneellä suodatuksella
-**Ratkaisu**: Mukautettu sähköpostianalytiikka edistyneiden hakutoimintojen avulla
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -675,10 +674,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. Älykäs sähköpostien arkistointi {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**Ongelma**: Manuaalinen [sähköpostin organisointi](https://en.wikipedia.org/wiki/Email_management)
-**Ratkaisu**: Älykäs sähköpostin luokittelu
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -696,10 +695,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. Sähköpostin ja kalenterin integrointi {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**Ongelma**: Manuaalinen [kalenteritapahtuma](https://tools.ietf.org/html/rfc4791)-objektin luonti sähköposteista
-**Ratkaisu**: Automaattinen tapahtumien poiminta ja luonti
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -725,11 +724,11 @@ for (const email of meetingEmails) {
 
 ### 12. Sähköpostin varmuuskopiointi ja vaatimustenmukaisuus {#12-email-backup-and-compliance}
 
-**Ongelma**: [Sähköpostin säilytys](https://en.wikipedia.org/wiki/Email_retention_policy) ja vaatimustenmukaisuusvaatimukset
-**Ratkaisu**: Automaattinen varmuuskopiointi metatietojen säilytyksellä
+**Ongelma**: [Sähköpostin säilytys](https://en.wikipedia.org/wiki/Email_retention_policy) ja vaatimustenmukaisuus
+**Ratkaisu**: Automaattinen varmuuskopiointi metatietojen säilyttämisellä
 
 ```javascript
-// Backup emails with full metadata
+// Varmuuskopioi sähköpostit täydellisine metatietoineen
 const allMessages = await fetch('/v1/messages');
 const backup = {
   timestamp: new Date(),
@@ -747,11 +746,11 @@ await saveToComplianceStorage(backup);
 
 ### 13. Sähköpostipohjainen sisällönhallinta {#13-email-based-content-management}
 
-**Ongelma**: Sähköpostitse lähetettyjen sisältöjen hallinta [CMS-alustat](https://en.wikipedia.org/wiki/Content_management_system):lle
+**Ongelma**: Sisällön lähettämisen hallinta sähköpostitse [CMS-alustoilla](https://en.wikipedia.org/wiki/Content_management_system)
 **Ratkaisu**: Sähköposti sisällönhallintajärjestelmänä
 
 ```javascript
-// Process content submissions from email
+// Käsittele sisällön lähetykset sähköpostista
 const messages = await fetch('/v1/messages?folder=Submissions');
 const submissions = messages.filter(msg =>
   msg.to.some(addr => addr.includes('submit@'))
@@ -767,13 +766,13 @@ for (const submission of submissions) {
 }
 ```
 
-### 14. Sähköpostimallien hallinta {#14-email-template-management}
+### 14. Sähköpostipohjien hallinta {#14-email-template-management}
 
-**Ongelma**: Epäjohdonmukainen [sähköpostipohjat](https://en.wikipedia.org/wiki/Email_template) tiimissä
-**Ratkaisu**: Keskitetty mallipohjajärjestelmä API:lla
+**Ongelma**: Epäyhtenäiset [sähköpostipohjat](https://en.wikipedia.org/wiki/Email_template) tiimin kesken
+**Ratkaisu**: Keskitetty pohjajärjestelmä API:lla
 
 ```javascript
-// Send templated emails with dynamic content
+// Lähetä pohjallisia sähköposteja dynaamisella sisällöllä
 const template = await getEmailTemplate('welcome');
 await fetch('/v1/messages', {
   method: 'POST',
@@ -786,13 +785,13 @@ await fetch('/v1/messages', {
 });
 ```
 
-### 15. Sähköpostipohjainen työnkulun automatisointi {#15-email-based-workflow-automation}
+### 15. Sähköpostipohjainen työnkulun automaatio {#15-email-based-workflow-automation}
 
-**Ongelma**: Manuaalinen [hyväksymisprosessit](https://en.wikipedia.org/wiki/Workflow) sähköpostitse
-**Ratkaisu**: Automatisoidut työnkulun käynnistimet
+**Ongelma**: Manuaaliset [hyväksyntäprosessit](https://en.wikipedia.org/wiki/Workflow) sähköpostitse
+**Ratkaisu**: Automaattiset työnkulun laukaisimet
 
 ```javascript
-// Process approval emails
+// Käsittele hyväksyntäsähköposteja
 const messages = await fetch('/v1/messages?folder=Approvals');
 const approvals = messages.filter(msg =>
   msg.subject.includes('APPROVAL')
@@ -808,13 +807,13 @@ for (const approval of approvals) {
 }
 ```
 
-### 16. Sähköpostin tietoturvan valvonta {#16-email-security-monitoring}
+### 16. Sähköpostin turvallisuuden valvonta {#16-email-security-monitoring}
 
-**Ongelma**: Manuaalinen [tietoturvauhkien havaitseminen](https://en.wikipedia.org/wiki/Email_security)
+**Ongelma**: Manuaalinen [turvauhkausten tunnistus](https://en.wikipedia.org/wiki/Email_security)
 **Ratkaisu**: Automaattinen uhka-analyysi
 
 ```javascript
-// Monitor for suspicious emails
+// Valvo epäilyttäviä sähköposteja
 const recentEmails = await fetch('/v1/messages');
 for (const email of recentEmails) {
   const threatScore = analyzeThreat(email);
@@ -828,13 +827,13 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. Sähköpostipohjainen kyselytutkimus {#17-email-based-survey-collection}
+### 17. Sähköpostipohjainen kyselyiden keruu {#17-email-based-survey-collection}
 
-**Ongelma**: Manuaalinen [kyselyvastaus](https://en.wikipedia.org/wiki/Survey_methodology)-käsittely
-**Ratkaisu**: Automaattinen vastausten yhdistäminen
+**Ongelma**: Manuaalinen [kyselyvastausten](https://en.wikipedia.org/wiki/Survey_methodology) käsittely
+**Ratkaisu**: Automaattinen vastausten kokoaminen
 
 ```javascript
-// Collect and process survey responses
+// Kerää ja käsittele kyselyvastauksia
 const messages = await fetch('/v1/messages?folder=Surveys');
 const responses = messages.filter(msg =>
   msg.subject.includes('Survey Response')
@@ -850,11 +849,11 @@ await updateSurveyResults(surveyData);
 
 ### 18. Sähköpostin suorituskyvyn seuranta {#18-email-performance-monitoring}
 
-**Ongelma**: Ei näkyvyyttä kohteeseen [sähköpostin toimitustehokkuus](https://en.wikipedia.org/wiki/Email_deliverability)
-**Ratkaisu**: Reaaliaikaiset sähköpostitiedot
+**Ongelma**: Ei näkyvyyttä [sähköpostin toimituskykyyn](https://en.wikipedia.org/wiki/Email_deliverability)
+**Ratkaisu**: Reaaliaikaiset sähköpostimittarit
 
 ```javascript
-// Monitor email delivery performance
+// Seuraa sähköpostin toimituskykyä
 const sentEmails = await fetch('/v1/messages?folder=Sent');
 const deliveryStats = {
   sent: sentEmails.length,
@@ -863,11 +862,10 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
+### 19. Sähköpostipohjainen liidien kvalifiointi {#19-email-based-lead-qualification}
 
-### 19. Sähköpostiin perustuva liidien kelpoisuus {#19-email-based-lead-qualification}
-
-**Ongelma**: Manuaalinen [liidien pisteytys](https://en.wikipedia.org/wiki/Lead_scoring) sähköpostiviestien perusteella
-**Ratkaisu**: Automaattinen liidien kelpuutusprosessi
+**Ongelma**: Manuaalinen [liidipisteytys](https://en.wikipedia.org/wiki/Lead_scoring) sähköpostiviestinnästä  
+**Ratkaisu**: Automaattinen liidien kvalifiointiputki
 
 ```javascript
 // Score leads based on email engagement
@@ -884,8 +882,8 @@ for (const prospect of prospects) {
 
 ### 20. Sähköpostipohjainen projektinhallinta {#20-email-based-project-management}
 
-**Ongelma**: [Projektin päivitykset](https://en.wikipedia.org/wiki/Project_management) hajallaan sähköpostiketjuissa
-**Ratkaisu**: Keskitetty projektin viestintäkeskus
+**Ongelma**: [Projektipäivitykset](https://en.wikipedia.org/wiki/Project_management) hajallaan sähköpostiketjuissa  
+**Ratkaisu**: Keskitetty projektiviestintäalusta
 
 ```javascript
 // Extract project updates from emails
@@ -906,8 +904,8 @@ for (const email of projectEmails) {
 
 ### 21. Sähköpostipohjainen varastonhallinta {#21-email-based-inventory-management}
 
-**Ongelma**: Manuaaliset varastopäivitykset toimittajien sähköposteista
-**Ratkaisu**: Automaattinen varastoseuranta sähköposti-ilmoituksista
+**Ongelma**: Manuaaliset varastopäivitykset toimittajien sähköposteista  
+**Ratkaisu**: Automaattinen varaston seuranta sähköpostihälytyksistä
 
 ```javascript
 // Process inventory updates from supplier emails
@@ -935,8 +933,8 @@ for (const email of inventoryEmails) {
 
 ### 22. Sähköpostipohjainen laskujen käsittely {#22-email-based-invoice-processing}
 
-**Ongelma**: Manuaalinen [laskujen käsittely](https://en.wikipedia.org/wiki/Invoice_processing):n ja kirjanpidon integrointi
-**Ratkaisu**: Automaattinen laskujen poiminta ja kirjanpitojärjestelmän synkronointi
+**Ongelma**: Manuaalinen [laskujen käsittely](https://en.wikipedia.org/wiki/Invoice_processing) ja kirjanpidon integrointi  
+**Ratkaisu**: Automaattinen laskutietojen poiminta ja kirjanpitojärjestelmän synkronointi
 
 ```javascript
 // Extract invoice data from email attachments
@@ -962,10 +960,10 @@ for (const email of invoiceEmails) {
 }
 ```
 
-### 23. Sähköpostipohjainen tapahtumarekisteröinti {#23-email-based-event-registration}
+### 23. Sähköpostipohjainen tapahtumailmoittautuminen {#23-email-based-event-registration}
 
-**Ongelma**: Sähköpostivastausten manuaalinen [tapahtuman rekisteröinti](https://en.wikipedia.org/wiki/Event_management)-käsittely
-**Ratkaisu**: Automaattinen osallistujien hallinta ja kalenterin integrointi
+**Ongelma**: Manuaalinen [tapahtumailmoittautumisten](https://en.wikipedia.org/wiki/Event_management) käsittely sähköpostivastauksista  
+**Ratkaisu**: Automaattinen osallistujien hallinta ja kalenteriin integrointi
 
 ```javascript
 // Process event registration emails
@@ -996,11 +994,10 @@ for (const registration of registrations) {
   });
 }
 ```
+### 24. Sähköpostipohjainen asiakirjan hyväksymisprosessi {#24-email-based-document-approval-workflow}
 
-### 24. Sähköpostipohjainen asiakirjojen hyväksyntäprosessi {#24-email-based-document-approval-workflow}
-
-**Ongelma**: Monimutkaiset [asiakirjan hyväksyntä](https://en.wikipedia.org/wiki/Document_management_system)-ketjut sähköpostin kautta
-**Ratkaisu**: Automaattinen hyväksynnän seuranta ja dokumenttien versiointi
+**Ongelma**: Monimutkaiset [asiakirjan hyväksymis](https://en.wikipedia.org/wiki/Document_management_system)ketjut sähköpostitse  
+**Ratkaisu**: Automaattinen hyväksymisen seuranta ja asiakirjan versiointi
 
 ```javascript
 // Track document approval workflow
@@ -1028,10 +1025,10 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. Sähköpostipohjainen asiakaspalautteen analyysi {#25-email-based-customer-feedback-analysis}
+### 25. Sähköpostipohjainen asiakaspalautteen analysointi {#25-email-based-customer-feedback-analysis}
 
-**Ongelma**: Manuaalinen [asiakaspalaute](https://en.wikipedia.org/wiki/Customer_feedback)-keruu ja mielipideanalyysi
-**Ratkaisu**: Automaattinen palautteen käsittely ja mielipiteiden seuranta
+**Ongelma**: Manuaalinen [asiakaspalautteen](https://en.wikipedia.org/wiki/Customer_feedback) keruu ja sentimenttianalyysi  
+**Ratkaisu**: Automaattinen palautteen käsittely ja sentimentin seuranta
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1060,10 +1057,10 @@ for (const email of feedbackEmails) {
 }
 ```
 
-### 26. Sähköpostipohjainen rekrytointiprosessi {#26-email-based-recruitment-pipeline}
+### 26. Sähköpostipohjainen rekrytointiputki {#26-email-based-recruitment-pipeline}
 
-**Ongelma**: Manuaalinen [rekrytointi](https://en.wikipedia.org/wiki/Recruitment) ja ehdokkaiden seuranta
-**Ratkaisu**: Automaattinen ehdokkaiden hallinta ja haastattelujen aikataulutus
+**Ongelma**: Manuaalinen [rekrytointi](https://en.wikipedia.org/wiki/Recruitment) ja ehdokkaiden seuranta  
+**Ratkaisu**: Automaattinen ehdokashallinta ja haastattelujen aikataulutus
 
 ```javascript
 // Process job application emails
@@ -1094,10 +1091,10 @@ for (const application of applications) {
 }
 ```
 
-### 27. Sähköpostipohjaisten kuluraporttien käsittely {#27-email-based-expense-report-processing}
+### 27. Sähköpostipohjainen kuluraporttien käsittely {#27-email-based-expense-report-processing}
 
-**Ongelma**: Manuaalinen [kuluraportti](https://en.wikipedia.org/wiki/Expense_report)-lähetys ja hyväksyntä
-**Ratkaisu**: Automatisoitu kulujen poiminta ja hyväksyntäprosessi
+**Ongelma**: Manuaalinen [kuluraporttien](https://en.wikipedia.org/wiki/Expense_report) lähetys ja hyväksyntä  
+**Ratkaisu**: Automaattinen kulujen poiminta ja hyväksymisprosessi
 
 ```javascript
 // Process expense report emails
@@ -1128,11 +1125,10 @@ for (const email of expenseEmails) {
   }
 }
 ```
-
 ### 28. Sähköpostipohjainen laadunvarmistusraportointi {#28-email-based-quality-assurance-reporting}
 
-**Ongelma**: Manuaalinen [laadunvarmistus](https://en.wikipedia.org/wiki/Quality_assurance)-ongelmien seuranta
-**Ratkaisu**: Automaattinen laadunvarmistuksen ongelmien hallinta ja virheiden seuranta
+**Ongelma**: Manuaalinen [laadunvarmistuksen](https://en.wikipedia.org/wiki/Quality_assurance) ongelmien seuranta  
+**Ratkaisu**: Automaattinen laadunvarmistusongelmien hallinta ja virheraportointi
 
 ```javascript
 // Process QA bug reports from email
@@ -1169,9 +1165,9 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. Sähköpostipohjainen toimittajien hallinta {#29-email-based-vendor-management}
+### 29. Sähköpostipohjainen toimittajahallinta {#29-email-based-vendor-management}
 
-**Ongelma**: Manuaalinen [toimittajaviestintä](https://en.wikipedia.org/wiki/Vendor_management) ja sopimusten seuranta
+**Ongelma**: Manuaalinen [toimittajaviestintä](https://en.wikipedia.org/wiki/Vendor_management) ja sopimusten seuranta  
 **Ratkaisu**: Automaattinen toimittajasuhteiden hallinta
 
 ```javascript
@@ -1213,8 +1209,8 @@ for (const email of vendorEmails) {
 
 ### 30. Sähköpostipohjainen sosiaalisen median seuranta {#30-email-based-social-media-monitoring}
 
-**Ongelma**: Manuaalinen [sosiaalinen media](https://en.wikipedia.org/wiki/Social_media_monitoring)-mainintojen seuranta ja niihin vastaaminen
-**Ratkaisu**: Automaattinen sosiaalisen median hälytysten käsittely ja niihin vastaamisen koordinointi
+**Ongelma**: Manuaalinen [sosiaalisen median](https://en.wikipedia.org/wiki/Social_media_monitoring) mainintojen seuranta ja reagointi  
+**Ratkaisu**: Automaattinen sosiaalisen median hälytysten käsittely ja vastausten koordinointi
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1256,24 +1252,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
+
 ## Aloittaminen {#getting-started}
 
-### 1. Luo sähköpostin edelleenlähetystili {#1-create-your-forward-email-account}
+### 1. Luo edelleenlähetyssähköpostitilisi {#1-create-your-forward-email-account}
 
-Rekisteröidy osoitteessa [forwardemail.net](https://forwardemail.net) ja vahvista verkkotunnuksesi.
+Rekisteröidy osoitteessa [forwardemail.net](https://forwardemail.net) ja vahvista domainisi.
 
-### 2. Luo API-tunnistetiedot {#2-generate-api-credentials}
+### 2. Luo API-tunnukset {#2-generate-api-credentials}
 
 Alias-sähköpostiosoitteesi ja salasanasi toimivat API-tunnuksina – lisäasetuksia ei tarvita.
-
-### 3. Tee ensimmäinen API-kutsu {#3-make-your-first-api-call}
+### 3. Tee Ensimmäinen API-kutsusi {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# Listaa viestisi
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# Luo uusi kontakti
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1281,20 +1277,21 @@ curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/contacts
 ```
 
-### 4. Tutustu dokumentaatioon {#4-explore-the-documentation}
+### 4. Tutustu Dokumentaatioon {#4-explore-the-documentation}
 
-Täydellinen API-dokumentaatio interaktiivisten esimerkkien kera on osoitteessa [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api).
+Vieraile osoitteessa [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) saadaksesi täydellisen API-dokumentaation interaktiivisilla esimerkeillä.
 
-## Tekniset resurssit {#technical-resources}
 
-* **[Täydellinen API-dokumentaatio](https://forwardemail.net/en/email-api)** - Vuorovaikutteinen OpenAPI 3.0 -spesifikaatio
-* **[Opas itsepalvelumajoitukseen](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Sähköpostin edelleenlähetyksen käyttöönotto infrastruktuurissasi
-* **[Tietoturvaraportti](https://forwardemail.net/technical-whitepaper.pdf)** - Tekninen arkkitehtuuri ja tietoturvatiedot
-* **[GitHub-arkisto](https://github.com/forwardemail/forwardemail.net)** - Avoimen lähdekoodin koodikanta
-* **[Kehittäjätuki](mailto:api@forwardemail.net)** - Suora pääsy suunnittelutiimiimme
+## Teknisiä Resursseja {#technical-resources}
+
+* **[Täydellinen API-dokumentaatio](https://forwardemail.net/en/email-api)** - Interaktiivinen OpenAPI 3.0 -määrittely
+* **[Itseisännöintiohje](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Ota Forward Email käyttöön omassa infrastruktuurissasi
+* **[Turvallisuusraportti](https://forwardemail.net/technical-whitepaper.pdf)** - Tekninen arkkitehtuuri ja turvallisuustiedot
+* **[GitHub-repositorio](https://github.com/forwardemail/forwardemail.net)** - Avoimen lähdekoodin koodi
+* **[Kehittäjätuki](mailto:api@forwardemail.net)** - Suora yhteys insinööriryhmäämme
 
 ---
 
-**Oletko valmis mullistamaan sähköpostiintegraatiosi?** [Aloita rakentaminen Forward Emailin API:n avulla jo tänään](https://forwardemail.net/en/email-api) ja koe ensimmäinen kehittäjille suunniteltu täydellinen sähköpostinhallinta-alusta.
+**Valmiina mullistamaan sähköpostin integrointisi?** [Aloita rakentaminen Forward Emailin API:lla jo tänään](https://forwardemail.net/en/email-api) ja koe ensimmäinen täydellinen sähköpostinhallinta-alusta, joka on suunniteltu kehittäjille.
 
-*Sähköpostin edelleenlähetys: Sähköpostipalvelu, joka saa vihdoin API:t kuntoon.*
+*Forward Email: Sähköpostipalvelu, joka viimein hoitaa API:t oikein.*

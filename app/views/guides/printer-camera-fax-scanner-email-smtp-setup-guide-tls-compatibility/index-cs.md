@@ -1,556 +1,557 @@
-# Complete Guide to Printer, Camera, Fax & Scanner Email Setup {#complete-guide-to-printer-camera-fax--scanner-email-setup}
+# Kompletní průvodce nastavením e-mailu pro tiskárny, kamery, faxy a skenery {#complete-guide-to-printer-camera-fax--scanner-email-setup}
 
-Your office equipment needs to send emails - printers alert about toner levels, IP cameras notify about motion detection, fax machines report transmission status, and scanners confirm document processing. The problem? Most email providers dropped support for older devices, leaving your equipment unable to send notifications.
+Vaše kancelářské zařízení potřebuje odesílat e-maily – tiskárny upozorňují na stav toneru, IP kamery informují o detekci pohybu, faxové přístroje hlásí stav přenosu a skenery potvrzují zpracování dokumentů. Problém? Většina poskytovatelů e-mailů přestala podporovat starší zařízení, což znamená, že vaše zařízení nemohou odesílat oznámení.
 
-[Microsoft Office 365 discontinued TLS 1.0 and TLS 1.1 support in January 2022](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), breaking email for thousands of devices. Many printers, cameras, and fax machines made before 2020 only support these legacy protocols and can't be updated.
+[Microsoft Office 365 ukončil podporu TLS 1.0 a TLS 1.1 v lednu 2022](https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off), což způsobilo přerušení e-mailové komunikace u tisíců zařízení. Mnoho tiskáren, kamer a faxů vyrobených před rokem 2020 podporuje pouze tyto starší protokoly a nelze je aktualizovat.
 
-Forward Email fixes this by supporting both modern and legacy devices. We have dedicated ports for current equipment and special legacy ports for older devices that can't be upgraded.
+Forward Email toto řeší podporou jak moderních, tak i starších zařízení. Máme vyhrazené porty pro současné zařízení a speciální porty pro starší zařízení, která nelze upgradovat.
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy devices through our dual-port strategy. Use port `465` (SSL/TLS, recommended) or `587` (STARTTLS) for modern devices with TLS 1.2+ support, and ports `2455`/`2555` for legacy devices that only support TLS 1.0.
+> Forward Email podporuje jak moderní, tak i starší zařízení díky naší strategii s dvojím portem. Použijte port `465` (SSL/TLS, doporučeno) nebo `587` (STARTTLS) pro moderní zařízení s podporou TLS 1.2+, a porty `2455`/`2555` pro starší zařízení, která podporují pouze TLS 1.0.
 
-## Table of Contents {#table-of-contents}
 
-* [The TLS Problem Explained](#the-tls-problem-explained)
-* [Forward Email SMTP Configuration Overview](#forward-email-smtp-configuration-overview)
-* [Comprehensive Device Compatibility Matrix](#comprehensive-device-compatibility-matrix)
-* [HP Printer Email Configuration](#hp-printer-email-configuration)
-  * [Modern HP Printers (2020 and Later)](#modern-hp-printers-2020-and-later)
-  * [Legacy HP Printers (Pre-2020 Models)](#legacy-hp-printers-pre-2020-models)
-* [Canon Printer Email Configuration](#canon-printer-email-configuration)
-  * [Current Canon Printers](#current-canon-printers)
-  * [Legacy Canon Printers](#legacy-canon-printers)
-* [Brother Printer Email Configuration](#brother-printer-email-configuration)
-  * [Brother MFC Series Configuration](#brother-mfc-series-configuration)
-  * [Troubleshooting Brother Email Issues](#troubleshooting-brother-email-issues)
-* [Foscam IP Camera Email Configuration](#foscam-ip-camera-email-configuration)
-  * [Understanding Foscam Email Limitations](#understanding-foscam-email-limitations)
-  * [Foscam Email Configuration Steps](#foscam-email-configuration-steps)
-  * [Advanced Foscam Configuration](#advanced-foscam-configuration)
-* [Hikvision Security Camera Email Configuration](#hikvision-security-camera-email-configuration)
-  * [Modern Hikvision Camera Configuration](#modern-hikvision-camera-configuration)
-  * [Legacy Hikvision Camera Configuration](#legacy-hikvision-camera-configuration)
-* [Dahua Security Camera Email Configuration](#dahua-security-camera-email-configuration)
-  * [Dahua Camera Email Setup](#dahua-camera-email-setup)
-  * [Dahua NVR Email Configuration](#dahua-nvr-email-configuration)
-* [Xerox Multifunction Device Email Configuration](#xerox-multifunction-device-email-configuration)
-  * [Xerox MFD Email Setup](#xerox-mfd-email-setup)
-* [Ricoh Multifunction Device Email Configuration](#ricoh-multifunction-device-email-configuration)
-  * [Modern Ricoh MFD Configuration](#modern-ricoh-mfd-configuration)
-  * [Legacy Ricoh Device Configuration](#legacy-ricoh-device-configuration)
-* [Troubleshooting Common Configuration Issues](#troubleshooting-common-configuration-issues)
-  * [Authentication and Credential Issues](#authentication-and-credential-issues)
-  * [TLS and Encryption Problems](#tls-and-encryption-problems)
-  * [Network Connectivity Issues](#network-connectivity-issues)
-  * [Device-Specific Configuration Challenges](#device-specific-configuration-challenges)
-* [Security Considerations and Best Practices](#security-considerations-and-best-practices)
-  * [Credential Management](#credential-management)
-  * [Network Security](#network-security)
-  * [Information Disclosure](#information-disclosure)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Conclusion](#conclusion)
+## Obsah {#table-of-contents}
 
-## The TLS Problem Explained {#the-tls-problem-explained}
+* [Vysvětlení problému s TLS](#the-tls-problem-explained)
+* [Přehled konfigurace SMTP ve Forward Email](#forward-email-smtp-configuration-overview)
+* [Komplexní matice kompatibility zařízení](#comprehensive-device-compatibility-matrix)
+* [Konfigurace e-mailu pro tiskárny HP](#hp-printer-email-configuration)
+  * [Moderní tiskárny HP (2020 a novější)](#modern-hp-printers-2020-and-later)
+  * [Starší tiskárny HP (modely před rokem 2020)](#legacy-hp-printers-pre-2020-models)
+* [Konfigurace e-mailu pro tiskárny Canon](#canon-printer-email-configuration)
+  * [Současné tiskárny Canon](#current-canon-printers)
+  * [Starší tiskárny Canon](#legacy-canon-printers)
+* [Konfigurace e-mailu pro tiskárny Brother](#brother-printer-email-configuration)
+  * [Konfigurace série Brother MFC](#brother-mfc-series-configuration)
+  * [Řešení problémů s e-mailem Brother](#troubleshooting-brother-email-issues)
+* [Konfigurace e-mailu pro IP kamery Foscam](#foscam-ip-camera-email-configuration)
+  * [Pochopení omezení e-mailu Foscam](#understanding-foscam-email-limitations)
+  * [Kroky konfigurace e-mailu Foscam](#foscam-email-configuration-steps)
+  * [Pokročilá konfigurace Foscam](#advanced-foscam-configuration)
+* [Konfigurace e-mailu pro bezpečnostní kamery Hikvision](#hikvision-security-camera-email-configuration)
+  * [Konfigurace moderních kamer Hikvision](#modern-hikvision-camera-configuration)
+  * [Konfigurace starších kamer Hikvision](#legacy-hikvision-camera-configuration)
+* [Konfigurace e-mailu pro bezpečnostní kamery Dahua](#dahua-security-camera-email-configuration)
+  * [Nastavení e-mailu pro kamery Dahua](#dahua-camera-email-setup)
+  * [Konfigurace e-mailu pro NVR Dahua](#dahua-nvr-email-configuration)
+* [Konfigurace e-mailu pro multifunkční zařízení Xerox](#xerox-multifunction-device-email-configuration)
+  * [Nastavení e-mailu pro Xerox MFD](#xerox-mfd-email-setup)
+* [Konfigurace e-mailu pro multifunkční zařízení Ricoh](#ricoh-multifunction-device-email-configuration)
+  * [Konfigurace moderních Ricoh MFD](#modern-ricoh-mfd-configuration)
+  * [Konfigurace starších zařízení Ricoh](#legacy-ricoh-device-configuration)
+* [Řešení běžných problémů s konfigurací](#troubleshooting-common-configuration-issues)
+  * [Problémy s autentizací a přihlašovacími údaji](#authentication-and-credential-issues)
+  * [Problémy s TLS a šifrováním](#tls-and-encryption-problems)
+  * [Problémy s připojením k síti](#network-connectivity-issues)
+  * [Výzvy specifické pro konfiguraci zařízení](#device-specific-configuration-challenges)
+* [Bezpečnostní aspekty a osvědčené postupy](#security-considerations-and-best-practices)
+  * [Správa přihlašovacích údajů](#credential-management)
+  * [Síťová bezpečnost](#network-security)
+  * [Zveřejňování informací](#information-disclosure)
+  * [Monitorování a údržba](#monitoring-and-maintenance)
+* [Závěr](#conclusion)
+## Vysvětlení problému s TLS {#the-tls-problem-explained}
 
-Here's what happened: email security got stricter, but your devices didn't get the memo. Modern equipment supports TLS 1.2+, but older devices are stuck with TLS 1.0. Most email providers dropped support for TLS 1.0, so your devices can't connect.
+Stalo se toto: bezpečnost e-mailů se zpřísnila, ale vaše zařízení o tom nedostala zprávu. Moderní vybavení podporuje TLS 1.2 a vyšší, ale starší zařízení jsou uvězněna u TLS 1.0. Většina poskytovatelů e-mailu přestala podporovat TLS 1.0, takže se vaše zařízení nemohou připojit.
 
-This affects real operations - security cameras can't send alerts during incidents, printers can't warn about maintenance issues, and fax confirmations get lost. Forward Email's [SMTP server configuration](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) provides multiple ports to keep everything working.
-
-> \[!TIP]
-> Check your device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
-
-## Forward Email SMTP Configuration Overview {#forward-email-smtp-configuration-overview}
-
-Forward Email provides a comprehensive SMTP service designed specifically to address the unique challenges of device email configuration. Our infrastructure supports multiple connection types and security levels, ensuring compatibility with both cutting-edge equipment and legacy devices that remain in active use.
-
-For modern devices with TLS 1.2+ support, use our primary SMTP server at smtp.forwardemail.net with port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections. These ports provide enterprise-grade security and are compatible with all current device firmware versions.
-
-Legacy devices that only support TLS 1.0 can use our specialized compatibility ports. Port 2455 provides SSL/TLS connections with TLS 1.0 support, while port 2555 offers STARTTLS with legacy protocol compatibility. These ports maintain the highest possible security while ensuring continued functionality for older equipment.
-
-Authentication is required for all connections using your Forward Email alias as the username and a generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). This approach provides robust security while maintaining broad compatibility across different device authentication systems.
-
-> \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for device configuration.
-
-## Comprehensive Device Compatibility Matrix {#comprehensive-device-compatibility-matrix}
-
-Understanding which devices require legacy support versus modern configuration helps streamline the setup process and ensures reliable email delivery across your entire device ecosystem.
-
-| Device Category | Modern TLS Support | Legacy TLS Required | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| -------------------------- | ------------------ | ------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| HP Printers (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Certificate validation](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [HP LaserJet Pro MFP Setup Guide](https://support.hp.com/us-en/document/ish_6185297-6063300-16) |
-| HP Printers (Pre-2020) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Firmware limitations](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/) | [Scan to Email Feature Guide](https://support.hp.com/us-en/document/ish_6518575-6518545-16) |
-| Canon Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Authentication setup](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358) | [Canon SMTP Authentication Guide](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html) |
-| Canon Printers (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate issues](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443) | [Advanced E-mail Settings Guide](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html) |
-| Brother Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [Port configuration](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/) | [Brother SMTP Setup Guide](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512) |
-| Epson Printers (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Web interface access | [Epson Email Notification Setup](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm) |
-| Foscam IP Cameras | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Certificate validation](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/) | [Foscam Email Setup FAQ](https://www.foscam.com/faqs/view.html?id=63) |
-| Hikvision (2020+) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL requirements | [Hikvision Email Setup Guide](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Hikvision (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | Firmware updates | [Legacy Hikvision Configuration](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
-| Dahua Cameras (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | Authentication | [Dahua Email Setup Wiki](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) |
-| Xerox MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | [TLS configuration](https://www.support.xerox.com/en-us/article/KB0032169) | [Xerox TLS Configuration Guide](https://www.support.xerox.com/en-us/article/KB0032169) |
-| Ricoh MFDs (Current) | ✅ TLS 1.2+ | ❌ | `465`, `587` | SSL setup | [Ricoh Email Configuration](https://www.ricoh.com/info/2025/0526_1) |
-| Ricoh MFDs (Legacy) | ❌ | ✅ TLS 1.0 only | `2455`, `2555` | [Basic auth issues](https://www.ricoh.com/info/2025/0526_1) | [Legacy Ricoh Setup](https://www.ricoh.com/info/2025/0526_1) |
-
-This matrix provides a quick reference for determining the appropriate configuration approach for your specific devices. When in doubt, start with modern ports and fall back to legacy ports if connection issues occur.
-
-> \[!NOTE]
-> Device age is not always a reliable indicator of TLS support. Some manufacturers backported TLS 1.2 support to older models through firmware updates, while others discontinued support for legacy products.
-
-## HP Printer Email Configuration {#hp-printer-email-configuration}
-
-HP printers represent one of the largest installed bases of network-connected printing devices, with models ranging from current LaserJet Pro series with full TLS 1.3 support to legacy models that only support TLS 1.0. The configuration process varies significantly between modern and legacy devices, requiring different approaches for optimal compatibility.
-
-### Modern HP Printers (2020 and Later) {#modern-hp-printers-2020-and-later}
-
-Modern HP printers include the LaserJet Pro MFP M404 series, Color LaserJet Pro MFP M479 series, and newer models that support current TLS standards. These devices provide comprehensive email notification capabilities through HP's Embedded Web Server (EWS) interface.
-
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. You can find the IP address by printing a network configuration page from the printer's control panel.
-
-2. **Navigate to the Network tab** and select "Email Server" or "SMTP Settings" depending on your printer model. Some HP printers organize these settings under "System" > "Email Alerts."
-
-3. **Configure the SMTP server settings** by entering `smtp.forwardemail.net` as the server address. Select "SSL/TLS" as the encryption method and enter `465` as the port number for the most reliable connection.
-
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains), not your account login password.
-
-5. **Configure sender information** by entering your Forward Email alias as the "From" address and a descriptive name like "HP Printer - Office" to help identify the source of notifications.
-
-6. **Set up recipient addresses** by adding up to five email addresses that should receive printer notifications. HP printers allow different notification types to be sent to different recipients.
-
-7. **Test the configuration** using HP's built-in email test function. The printer will send a test message to verify that all settings are correct and communication with Forward Email's servers is working properly.
+To ovlivňuje reálný provoz – bezpečnostní kamery nemohou během incidentů posílat upozornění, tiskárny nemohou varovat před údržbou a potvrzení faxů se ztrácejí. Konfigurace [SMTP serveru Forward Email](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) nabízí více portů, aby vše fungovalo.
 
 > \[!TIP]
-> HP printers often cache DNS lookups. If you encounter connection issues, restart the printer after configuration to clear any cached DNS entries.
+> Před konfigurací zkontrolujte verzi firmwaru a podporu TLS vašeho zařízení. Většina zařízení vyrobených po roce 2020 podporuje moderní protokoly TLS, zatímco starší zařízení obvykle vyžadují porty pro kompatibilitu s legacy protokoly.
 
-### Legacy HP Printers (Pre-2020 Models) {#legacy-hp-printers-pre-2020-models}
 
-Older HP printers, including the LaserJet Pro MFP M277 and similar models, often only support TLS 1.0 and require special configuration to work with modern email providers. These devices frequently display "TLS certificate verification failed" errors when attempting to connect to standard SMTP ports.
+## Přehled konfigurace SMTP Forward Email {#forward-email-smtp-configuration-overview}
 
-1. **Access the printer's Embedded Web Server** by entering the printer's IP address in a web browser. Legacy HP printers may require Internet Explorer or compatibility mode for full functionality.
+Forward Email poskytuje komplexní SMTP službu navrženou speciálně k řešení jedinečných výzev konfigurace e-mailů na zařízeních. Naše infrastruktura podporuje více typů připojení a úrovní zabezpečení, což zajišťuje kompatibilitu jak s nejmodernějším vybavením, tak se staršími zařízeními, která jsou stále v aktivním provozu.
 
-2. **Navigate to the Network or System settings** and locate the "Email" or "SMTP" configuration section. The exact location varies by model and firmware version.
+Pro moderní zařízení s podporou TLS 1.2 a vyšší používejte náš primární SMTP server na smtp.forwardemail.net s portem 465 pro SSL/TLS připojení (doporučeno) nebo portem 587 pro STARTTLS připojení. Tyto porty poskytují bezpečnost na úrovni podniků a jsou kompatibilní se všemi aktuálními verzemi firmwaru zařízení.
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address. This is crucial - use port 2455 for SSL/TLS connections or port 2555 for STARTTLS connections instead of standard ports.
+Starší zařízení, která podporují pouze TLS 1.0, mohou využít naše specializované kompatibilní porty. Port 2455 poskytuje SSL/TLS připojení s podporou TLS 1.0, zatímco port 2555 nabízí STARTTLS s kompatibilitou legacy protokolů. Tyto porty udržují co nejvyšší možnou bezpečnost a zároveň zajišťují pokračující funkčnost staršího vybavení.
 
-4. **Set up authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use your generated Forward Email password for authentication.
-
-5. **Configure encryption settings** carefully. Select "SSL/TLS" if using port 2455, or "STARTTLS" if using port 2555. Some legacy HP printers may label these options differently.
-
-6. **Set sender and recipient information** using your Forward Email alias as the sender address and configuring appropriate recipient addresses for notifications.
-
-7. **Test the configuration** using the printer's test function. If the test fails with certificate errors, verify that you're using the correct legacy ports (2455 or 2555) rather than standard SMTP ports.
+Pro všechna připojení je vyžadována autentizace pomocí vašeho aliasu Forward Email jako uživatelského jména a vygenerovaného hesla z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains). Tento přístup poskytuje robustní zabezpečení a zároveň širokou kompatibilitu s různými autentizačními systémy zařízení.
 
 > \[!CAUTION]
-> Legacy HP printers may not receive firmware updates that address TLS compatibility issues. If configuration continues to fail, consider using a local SMTP relay server as an intermediate solution.
+> Nikdy nepoužívejte heslo svého účtu pro SMTP autentizaci. Vždy používejte vygenerované heslo z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains) pro konfiguraci zařízení.
 
-## Canon Printer Email Configuration {#canon-printer-email-configuration}
 
-Canon printers offer robust email notification capabilities across their imageRUNNER, PIXMA, and MAXIFY product lines. Modern Canon devices support comprehensive TLS configurations, while legacy models may require specific compatibility settings to function with current email providers.
+## Komplexní matice kompatibility zařízení {#comprehensive-device-compatibility-matrix}
 
-### Current Canon Printers {#current-canon-printers}
+Pochopení, která zařízení vyžadují podporu legacy protokolů a která moderní konfiguraci, pomáhá zjednodušit proces nastavení a zajišťuje spolehlivé doručování e-mailů v celém ekosystému vašich zařízení.
 
-Modern Canon printers provide extensive email notification features through the Remote UI web interface, supporting everything from basic status alerts to detailed device management notifications.
-
-1. **Access the Remote UI** by entering the printer's IP address in a web browser. Canon printers typically use a web-based interface for all network configuration tasks.
-
-2. **Navigate to Settings/Registration** and select "Device Management" from the menu. Look for "E-Mail Notification Settings" or similar options depending on your printer model.
-
-3. **Configure the SMTP server** by clicking "Add Destination" and entering smtp.forwardemail.net as the server address. Select "SSL" or "TLS" as the encryption method.
-
-4. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Canon printers clearly distinguish between these encryption methods in their interface.
-
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
-
-6. **Set up sender information** by entering your Forward Email alias as the sender address and configuring a descriptive display name for easy identification of notifications.
-
-7. **Configure notification types** by selecting which events should trigger email alerts. Canon printers support granular control over notification types, including error conditions, maintenance alerts, and security events.
-
-8. **Test the email configuration** using Canon's built-in test function. The printer will send a test notification to verify proper configuration and connectivity.
+| Kategorie zařízení        | Podpora moderního TLS | Vyžaduje legacy TLS | Doporučené porty | Běžné problémy                                                                                                                                      | Průvodce nastavením / screenshoty                                                                                                                |
+| ------------------------ | --------------------- | ------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| HP tiskárny (2020+)      | ✅ TLS 1.2+            | ❌                  | `465`, `587`     | [Ověření certifikátu](https://h30434.www3.hp.com/t5/Scanning-Faxing-Copying/Scan-to-E-Mail-newer-MFP-Pro-printers-SMTP-Certificate/td-p/9194707) | [Průvodce nastavením HP LaserJet Pro MFP](https://support.hp.com/us-en/document/ish_6185297-6063300-16)                                           |
+| HP tiskárny (před 2020)  | ❌                     | ✅ pouze TLS 1.0    | `2455`, `2555`   | [Omezení firmwaru](https://www.reddit.com/r/sysadmin/comments/1gnpac4/printers_dont_have_tls_settings/)                                            | [Průvodce funkcí Scan to Email](https://support.hp.com/us-en/document/ish_6518575-6518545-16)                                                     |
+| Canon tiskárny (současné)| ✅ TLS 1.2+            | ❌                  | `465`, `587`     | [Nastavení autentizace](https://community.usa.canon.com/t5/Office-Printers/MF733CDW-Cannot-Scan-to-Email-with-SMTP-Auth-Error-806/td-p/265358)    | [Průvodce autentizací SMTP Canon](https://oip.manual.canon/USRMA-0320-zz-CS-enUV/contents/1T0003111775.html)                                      |
+| Canon tiskárny (legacy)  | ❌                     | ✅ pouze TLS 1.0    | `2455`, `2555`   | [Problémy s certifikátem](https://community.usa.canon.com/t5/Office-Printers/MF735cx-quot-Register-quot-Certificate-produces-error/td-p/245443)   | [Pokročilý průvodce nastavením e-mailu](https://oip.manual.canon/USRMA-0163-zz-CS-enGB/contents/08025025.html)                                   |
+| Brother tiskárny (současné)| ✅ TLS 1.2+          | ❌                  | `465`, `587`     | [Konfigurace portu](https://www.reddit.com/r/techsupport/comments/1548u4o/brother_printer_not_taking_scan_to_email_config/)                       | [Průvodce nastavením SMTP Brother](https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=mfcl2690dw_us&faqid=faq00100234_512)           |
+| Epson tiskárny (současné)| ✅ TLS 1.2+            | ❌                  | `465`, `587`     | Přístup k webovému rozhraní                                                                                                                        | [Nastavení e-mailových upozornění Epson](https://download4.epson.biz/sec_pubs/l6580_series/useg/en/GUID-5FED5794-3E76-4DE9-8B9D-EBD8F60F231C.htm) |
+| Foscam IP kamery         | ❌                     | ✅ pouze TLS 1.0    | `2455`, `2555`   | [Ověření certifikátu](https://ipcamtalk.com/threads/foscam-ip-cameras-stopped-sending-email-in-motion-detection.80152/)                           | [FAQ nastavení e-mailu Foscam](https://www.foscam.com/faqs/view.html?id=63)                                                                     |
+| Hikvision (2020+)        | ✅ TLS 1.2+            | ❌                  | `465`, `587`     | Požadavky na SSL                                                                                                                                   | [Průvodce nastavením e-mailu Hikvision](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf) |
+| Hikvision (legacy)       | ❌                     | ✅ pouze TLS 1.0    | `2455`, `2555`   | Aktualizace firmwaru                                                                                                                                | [Konfigurace legacy Hikvision](https://www.hikvision.com/content/dam/hikvision/ca/how-to-document/How-to-setup-email-on-Hikvision-nvr-dvr.pdf)  |
+| Dahua kamery (současné) | ✅ TLS 1.2+            | ❌                  | `465`, `587`     | Autentizace                                                                                                                                         | [Wiki nastavení e-mailu Dahua](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail)                                                     |
+| Xerox MFD (současné)     | ✅ TLS 1.2+            | ❌                  | `465`, `587`     | [Konfigurace TLS](https://www.support.xerox.com/en-us/article/KB0032169)                                                                           | [Průvodce konfigurací TLS Xerox](https://www.support.xerox.com/en-us/article/KB0032169)                                                          |
+| Ricoh MFD (současné)     | ✅ TLS 1.2+            | ❌                  | `465`, `587`     | Nastavení SSL                                                                                                                                       | [Konfigurace e-mailu Ricoh](https://www.ricoh.com/info/2025/0526_1)                                                                             |
+| Ricoh MFD (legacy)       | ❌                     | ✅ pouze TLS 1.0    | `2455`, `2555`   | [Problémy se základní autentizací](https://www.ricoh.com/info/2025/0526_1)                                                                         | [Legacy nastavení Ricoh](https://www.ricoh.com/info/2025/0526_1)                                                                                |
+Tato matice poskytuje rychlý přehled pro určení vhodného konfiguračního přístupu pro vaše konkrétní zařízení. V případě pochybností začněte s moderními porty a v případě problémů s připojením přejděte na starší porty.
 
 > \[!NOTE]
-> Canon printers often provide detailed error messages that can help troubleshoot configuration issues. Pay attention to specific error codes for faster problem resolution.
+> Věk zařízení není vždy spolehlivým ukazatelem podpory TLS. Někteří výrobci zpětně implementovali podporu TLS 1.2 do starších modelů prostřednictvím aktualizací firmwaru, zatímco jiní přestali podporovat starší produkty.
 
-### Legacy Canon Printers {#legacy-canon-printers}
 
-Older Canon printers may have limited TLS support and require careful configuration to work with modern email providers. These devices often need legacy-compatible SMTP settings to maintain email notification functionality.
+## Konfigurace e-mailu tiskáren HP {#hp-printer-email-configuration}
 
-1. **Access the printer's web interface** using the device's IP address. Legacy Canon printers may require specific browser compatibility settings for full functionality.
+Tiskárny HP představují jednu z největších instalovaných základen síťově připojených tiskových zařízení, s modely od současné řady LaserJet Pro s plnou podporou TLS 1.3 až po starší modely, které podporují pouze TLS 1.0. Proces konfigurace se výrazně liší mezi moderními a staršími zařízeními, což vyžaduje různé přístupy pro optimální kompatibilitu.
 
-2. **Navigate to the email configuration section** through the device management or network settings menu. The exact path varies by model and firmware version.
+### Moderní tiskárny HP (2020 a novější) {#modern-hp-printers-2020-and-later}
 
-3. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections or port 2555 for STARTTLS connections.
+Moderní tiskárny HP zahrnují řadu LaserJet Pro MFP M404, Color LaserJet Pro MFP M479 a novější modely, které podporují aktuální standardy TLS. Tato zařízení poskytují komplexní možnosti e-mailových oznámení prostřednictvím rozhraní HP Embedded Web Server (EWS).
 
-4. **Set up authentication carefully** by enabling SMTP authentication and using your Forward Email alias and generated password. Legacy Canon printers may have specific authentication requirements.
+1. **Přístup k webovému rozhraní tiskárny** zadáním IP adresy tiskárny do webového prohlížeče. IP adresu najdete vytištěním stránky s konfigurací sítě z ovládacího panelu tiskárny.
 
-5. **Configure encryption settings** by selecting the appropriate TLS option for your chosen port. Ensure the encryption method matches the port configuration (SSL for 2455, STARTTLS for 2555).
+2. **Přejděte na záložku Síť (Network)** a vyberte „E-mailový server“ nebo „Nastavení SMTP“ podle modelu tiskárny. Některé tiskárny HP tyto nastavení organizují pod „Systém“ > „E-mailová upozornění“.
 
-6. **Test the configuration** and monitor for certificate validation errors. If issues persist, verify that you're using Forward Email's legacy-compatible ports rather than standard SMTP ports.
+3. **Nakonfigurujte nastavení SMTP serveru** zadáním `smtp.forwardemail.net` jako adresy serveru. Vyberte „SSL/TLS“ jako metodu šifrování a zadejte číslo portu `465` pro nejspolehlivější připojení.
+
+4. **Nastavte ověřování** povolením SMTP autentizace a zadáním vašeho aliasu Forward Email jako uživatelského jména. Použijte heslo vygenerované z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains), nikoli heslo k vašemu účtu.
+
+5. **Nakonfigurujte informace o odesílateli** zadáním vašeho aliasu Forward Email jako adresy „Od“ a popisného jména, například „HP Printer - Office“, které pomůže identifikovat zdroj oznámení.
+
+6. **Nastavte adresy příjemců** přidáním až pěti e-mailových adres, které mají přijímat oznámení z tiskárny. Tiskárny HP umožňují odesílat různé typy oznámení různým příjemcům.
+
+7. **Otestujte konfiguraci** pomocí vestavěné funkce testu e-mailu tiskárny. Tiskárna odešle testovací zprávu, aby ověřila správnost nastavení a funkčnost komunikace se servery Forward Email.
+
+> \[!TIP]
+> Tiskárny HP často ukládají do mezipaměti DNS dotazy. Pokud narazíte na problémy s připojením, restartujte tiskárnu po konfiguraci, aby se vymazaly uložené DNS záznamy.
+
+### Starší tiskárny HP (modely před rokem 2020) {#legacy-hp-printers-pre-2020-models}
+
+Starší tiskárny HP, včetně LaserJet Pro MFP M277 a podobných modelů, často podporují pouze TLS 1.0 a vyžadují speciální konfiguraci pro práci s moderními poskytovateli e-mailů. Tato zařízení často zobrazují chyby „TLS certificate verification failed“ při pokusu o připojení na standardní SMTP porty.
+
+1. **Přístup k Embedded Web Serveru tiskárny** zadáním IP adresy tiskárny do webového prohlížeče. Starší tiskárny HP mohou vyžadovat Internet Explorer nebo režim kompatibility pro plnou funkčnost.
+
+2. **Přejděte do nastavení sítě nebo systému** a najděte sekci konfigurace „E-mail“ nebo „SMTP“. Přesné umístění se liší podle modelu a verze firmwaru.
+
+3. **Nakonfigurujte starší SMTP nastavení Forward Email** zadáním smtp.forwardemail.net jako adresy serveru. Toto je zásadní – použijte port 2455 pro SSL/TLS připojení nebo port 2555 pro STARTTLS připojení místo standardních portů.
+
+4. **Nastavte ověřování** povolením SMTP autentizace a zadáním vašeho aliasu Forward Email jako uživatelského jména. Pro autentizaci použijte vygenerované heslo Forward Email.
+
+5. **Pečlivě nakonfigurujte nastavení šifrování**. Vyberte „SSL/TLS“, pokud používáte port 2455, nebo „STARTTLS“, pokud používáte port 2555. Některé starší tiskárny HP mohou tyto možnosti označovat jinak.
+6. **Nastavte informace o odesílateli a příjemci** pomocí vašeho aliasu Forward Email jako adresy odesílatele a nakonfigurujte odpovídající adresy příjemců pro oznámení.
+
+7. **Otestujte konfiguraci** pomocí testovací funkce tiskárny. Pokud test selže s chybami certifikátu, ověřte, že používáte správné legacy porty (2455 nebo 2555) místo standardních SMTP portů.
+
+> \[!CAUTION]
+> Legacy tiskárny HP nemusí dostávat aktualizace firmwaru, které řeší problémy s kompatibilitou TLS. Pokud konfigurace stále selhává, zvažte použití lokálního SMTP relay serveru jako mezikroku.
+
+
+## Konfigurace e-mailu pro tiskárny Canon {#canon-printer-email-configuration}
+
+Tiskárny Canon nabízejí robustní možnosti e-mailových oznámení napříč jejich produktovými řadami imageRUNNER, PIXMA a MAXIFY. Moderní zařízení Canon podporují komplexní konfigurace TLS, zatímco starší modely mohou vyžadovat specifická nastavení kompatibility pro fungování s aktuálními poskytovateli e-mailů.
+
+### Současné tiskárny Canon {#current-canon-printers}
+
+Moderní tiskárny Canon poskytují rozsáhlé funkce e-mailových oznámení prostřednictvím webového rozhraní Remote UI, podporující vše od základních upozornění o stavu až po podrobné notifikace správy zařízení.
+
+1. **Přístup k Remote UI** zadáním IP adresy tiskárny do webového prohlížeče. Tiskárny Canon obvykle používají webové rozhraní pro všechny síťové konfigurační úlohy.
+
+2. **Přejděte do Nastavení/Registrace** a vyberte „Správa zařízení“ z menu. Hledejte „Nastavení e-mailových oznámení“ nebo podobné možnosti v závislosti na modelu tiskárny.
+
+3. **Nakonfigurujte SMTP server** kliknutím na „Přidat cíl“ a zadáním smtp.forwardemail.net jako adresy serveru. Vyberte „SSL“ nebo „TLS“ jako metodu šifrování.
+
+4. **Nastavte číslo portu** na 465 pro SSL/TLS připojení (doporučeno) nebo 587 pro STARTTLS připojení. Tiskárny Canon jasně rozlišují tyto metody šifrování ve svém rozhraní.
+
+5. **Nakonfigurujte autentizaci** povolením SMTP autentizace a zadáním vašeho aliasu Forward Email jako uživatelského jména. Použijte heslo vygenerované z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains).
+
+6. **Nastavte informace o odesílateli** zadáním vašeho aliasu Forward Email jako adresy odesílatele a nakonfigurujte popisné zobrazované jméno pro snadnou identifikaci oznámení.
+
+7. **Nakonfigurujte typy oznámení** výběrem událostí, které mají spouštět e-mailová upozornění. Tiskárny Canon podporují detailní kontrolu nad typy oznámení, včetně chybových stavů, upozornění na údržbu a bezpečnostních událostí.
+
+8. **Otestujte konfiguraci e-mailu** pomocí vestavěné testovací funkce Canon. Tiskárna odešle testovací oznámení pro ověření správné konfigurace a konektivity.
+
+> \[!NOTE]
+> Tiskárny Canon často poskytují podrobné chybové zprávy, které mohou pomoci při řešení problémů s konfigurací. Věnujte pozornost specifickým chybovým kódům pro rychlejší vyřešení problému.
+
+### Legacy tiskárny Canon {#legacy-canon-printers}
+
+Starší tiskárny Canon mohou mít omezenou podporu TLS a vyžadují pečlivou konfiguraci pro fungování s moderními poskytovateli e-mailů. Tato zařízení často potřebují legacy kompatibilní SMTP nastavení pro zachování funkčnosti e-mailových oznámení.
+
+1. **Přístup k webovému rozhraní tiskárny** pomocí IP adresy zařízení. Legacy tiskárny Canon mohou vyžadovat specifická nastavení kompatibility prohlížeče pro plnou funkčnost.
+
+2. **Přejděte do sekce konfigurace e-mailu** přes menu správy zařízení nebo nastavení sítě. Přesná cesta se liší podle modelu a verze firmwaru.
+
+3. **Nakonfigurujte legacy SMTP nastavení Forward Email** zadáním smtp.forwardemail.net jako adresy serveru a použitím portu 2455 pro SSL připojení nebo portu 2555 pro STARTTLS připojení.
+
+4. **Pečlivě nastavte autentizaci** povolením SMTP autentizace a použitím vašeho aliasu Forward Email a vygenerovaného hesla. Legacy tiskárny Canon mohou mít specifické požadavky na autentizaci.
+
+5. **Nakonfigurujte šifrování** výběrem odpovídající TLS možnosti pro zvolený port. Ujistěte se, že metoda šifrování odpovídá konfiguraci portu (SSL pro 2455, STARTTLS pro 2555).
+6. **Otestujte konfiguraci** a sledujte chyby ověřování certifikátu. Pokud problémy přetrvávají, ověřte, že používáte porty kompatibilní se staršími verzemi Forward Email místo standardních SMTP portů.
 
 > \[!WARNING]
-> Some legacy Canon printers may not support server certificate validation. While this reduces security, it may be necessary for continued email functionality on older devices.
+> Některé starší tiskárny Canon nemusí podporovat ověřování certifikátu serveru. Ačkoli to snižuje bezpečnost, může to být nezbytné pro pokračující funkčnost e-mailů na starších zařízeních.
 
-## Brother Printer Email Configuration {#brother-printer-email-configuration}
 
-Brother printers, particularly the MFC and DCP series, provide comprehensive scan-to-email and notification capabilities. However, many users report configuration challenges when setting up email functionality, especially with Office 365 and other modern email providers that have deprecated legacy authentication methods.
+## Konfigurace e-mailu tiskáren Brother {#brother-printer-email-configuration}
 
-### Brother MFC Series Configuration {#brother-mfc-series-configuration}
+Tiskárny Brother, zejména série MFC a DCP, poskytují rozsáhlé možnosti skenování do e-mailu a notifikací. Mnoho uživatelů však hlásí potíže s konfigurací e-mailové funkce, zejména u Office 365 a dalších moderních poskytovatelů e-mailů, kteří zrušili podporu starších metod autentizace.
 
-Brother multifunction printers offer extensive email capabilities, but configuration can be complex due to the variety of authentication and encryption options available.
+### Konfigurace série Brother MFC {#brother-mfc-series-configuration}
 
-1. **Access the printer's web interface** by entering the printer's IP address in a web browser. Brother printers provide a comprehensive web-based configuration system.
+Multifunkční tiskárny Brother nabízejí rozsáhlé e-mailové funkce, ale konfigurace může být složitá kvůli různým možnostem autentizace a šifrování.
 
-2. **Navigate to the Network settings** and select "Email/IFAX" or "Scan to Email" depending on your printer model. Some Brother printers organize these settings under "Administrator Settings."
+1. **Přístup k webovému rozhraní tiskárny** zadáním IP adresy tiskárny do webového prohlížeče. Tiskárny Brother poskytují komplexní webový konfigurační systém.
 
-3. **Configure the SMTP server settings** by entering smtp.forwardemail.net as the server address. Brother printers support both SSL/TLS and STARTTLS encryption methods.
+2. **Přejděte do nastavení sítě** a vyberte „Email/IFAX“ nebo „Scan to Email“ podle modelu tiskárny. Některé tiskárny Brother tyto nastavení řadí pod „Nastavení správce“.
 
-4. **Set the appropriate port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption. Brother printers clearly label these options in their interface.
+3. **Nakonfigurujte nastavení SMTP serveru** zadáním smtp.forwardemail.net jako adresy serveru. Tiskárny Brother podporují šifrování SSL/TLS i STARTTLS.
 
-5. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+4. **Nastavte správný port a šifrování** výběrem portu 465 se šifrováním SSL/TLS (doporučeno) nebo portu 587 se šifrováním STARTTLS. Tiskárny Brother tyto možnosti jasně označují ve svém rozhraní.
 
-6. **Set up sender information** by configuring your Forward Email alias as the sender address and adding a descriptive name to identify the printer in email notifications.
+5. **Nakonfigurujte SMTP autentizaci** povolením autentizace a zadáním vašeho aliasu Forward Email jako uživatelského jména. Použijte heslo vygenerované v [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains).
 
-7. **Configure scan-to-email settings** by setting up address book entries and default scan settings. Brother printers allow extensive customization of scan parameters and recipient management.
+6. **Nastavte informace o odesílateli** konfigurací vašeho aliasu Forward Email jako adresy odesílatele a přidejte popisné jméno pro identifikaci tiskárny v e-mailových notifikacích.
 
-8. **Test both email notifications and scan-to-email functionality** to ensure complete configuration. Brother printers provide separate test functions for different email features.
+7. **Nakonfigurujte nastavení skenování do e-mailu** vytvořením položek v adresáři a výchozích nastavení skenování. Tiskárny Brother umožňují rozsáhlé přizpůsobení parametrů skenování a správy příjemců.
+
+8. **Otestujte jak e-mailové notifikace, tak funkci skenování do e-mailu**, abyste zajistili kompletní konfiguraci. Tiskárny Brother poskytují samostatné testovací funkce pro různé e-mailové funkce.
 
 > \[!TIP]
-> Brother printers often require firmware updates to resolve email configuration issues. Check for available updates before troubleshooting connection problems.
+> Tiskárny Brother často vyžadují aktualizace firmwaru k vyřešení problémů s konfigurací e-mailu. Před řešením problémů s připojením zkontrolujte dostupnost aktualizací.
 
-### Troubleshooting Brother Email Issues {#troubleshooting-brother-email-issues}
+### Řešení problémů s e-mailem Brother {#troubleshooting-brother-email-issues}
 
-Brother printers frequently encounter specific configuration challenges that can be resolved with targeted troubleshooting approaches.
+Tiskárny Brother často čelí specifickým problémům s konfigurací, které lze vyřešit cílenými postupy řešení problémů.
 
-If your Brother printer displays "Authentication Failed" errors when testing email configuration, verify that you're using your Forward Email alias (not your account email) as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Brother printers are particularly sensitive to authentication credential formatting.
+Pokud vaše tiskárna Brother při testování konfigurace e-mailu zobrazuje chyby „Authentication Failed“, ověřte, že používáte svůj alias Forward Email (nikoli e-mail účtu) jako uživatelské jméno a heslo vygenerované v [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains). Tiskárny Brother jsou zvláště citlivé na formátování autentizačních údajů.
 
-For printers that won't accept scan-to-email configuration settings, try configuring the settings through the web interface rather than the printer's control panel. The web interface often provides more detailed error messages and configuration options.
+U tiskáren, které nepřijímají nastavení skenování do e-mailu, zkuste konfiguraci provést přes webové rozhraní místo ovládacího panelu tiskárny. Webové rozhraní často poskytuje podrobnější chybové zprávy a možnosti konfigurace.
 
-When encountering SSL/TLS connection errors, verify that you're using the correct port and encryption combination. Brother printers require exact matches between port numbers and encryption methods - port 465 must use SSL/TLS (recommended), while port 587 must use STARTTLS.
+Při chybách připojení SSL/TLS ověřte, že používáte správnou kombinaci portu a šifrování. Tiskárny Brother vyžadují přesnou shodu mezi číslem portu a metodou šifrování – port 465 musí používat SSL/TLS (doporučeno), zatímco port 587 musí používat STARTTLS.
 
 > \[!CAUTION]
-> Some Brother printer models have known issues with specific SMTP server configurations. If standard configuration fails, consult Brother's support documentation for model-specific workarounds.
+> Některé modely tiskáren Brother mají známé problémy s konkrétními konfiguracemi SMTP serveru. Pokud standardní konfigurace selže, konzultujte dokumentaci podpory Brother pro modelově specifická řešení.
+## Konfigurace e-mailu pro Foscam IP kameru {#foscam-ip-camera-email-configuration}
 
-## Foscam IP Camera Email Configuration {#foscam-ip-camera-email-configuration}
+Foscam IP kamery představují jednu z nejnáročnějších kategorií zařízení pro konfiguraci e-mailu kvůli jejich širokému používání zastaralých TLS protokolů a omezené dostupnosti aktualizací firmwaru. Většina Foscam kamer, včetně populárních modelů jako řada R2, podporuje pouze TLS 1.0 a nelze je aktualizovat na podporu moderních šifrovacích standardů.
 
-Foscam IP cameras represent one of the most challenging device categories for email configuration due to their widespread use of legacy TLS protocols and limited firmware update availability. Most Foscam cameras, including popular models like the R2 series, only support TLS 1.0 and cannot be updated to support modern encryption standards.
+### Pochopení omezení e-mailu u Foscam {#understanding-foscam-email-limitations}
 
-### Understanding Foscam Email Limitations {#understanding-foscam-email-limitations}
+Foscam kamery představují jedinečné výzvy, které vyžadují specifické konfigurační přístupy. Nejčastější chybovou zprávou je „TLS certificate verification failed: unable to get local issuer certificate“, což znamená, že kamera nemůže ověřit moderní SSL certifikáty používané většinou poskytovatelů e-mailu.
 
-Foscam cameras present unique challenges that require specific configuration approaches. The most common error message encountered is "TLS certificate verification failed: unable to get local issuer certificate," which indicates that the camera cannot validate modern SSL certificates used by most email providers.
+Tento problém vyplývá z několika faktorů: zastaralé úložiště certifikátů, které nelze aktualizovat, omezená podpora TLS protokolů, která končí na TLS 1.0, a omezení firmwaru, která brání upgradu bezpečnostních protokolů. Navíc mnoho modelů Foscam dosáhlo konce životnosti a již nedostává aktualizace firmwaru, které by mohly tyto problémy kompatibility řešit.
 
-This issue stems from several factors: outdated certificate stores that cannot be updated, limited TLS protocol support that maxes out at TLS 1.0, and firmware limitations that prevent security protocol upgrades. Additionally, many Foscam models have reached end-of-life status and no longer receive firmware updates that could address these compatibility issues.
+Legacy SMTP porty Forward Email tyto omezení řeší tím, že zachovávají kompatibilitu s TLS 1.0 a zároveň poskytují co nejvyšší možnou bezpečnost pro tato starší zařízení.
 
-Forward Email's legacy SMTP ports specifically address these limitations by maintaining TLS 1.0 compatibility while providing the highest possible security for these older devices.
+### Kroky konfigurace e-mailu pro Foscam {#foscam-email-configuration-steps}
 
-### Foscam Email Configuration Steps {#foscam-email-configuration-steps}
+Konfigurace e-mailových oznámení na Foscam kamerách vyžaduje pečlivou pozornost při výběru portu a nastavení šifrování, aby bylo možné obejít omezení TLS zařízení.
 
-Configuring email notifications on Foscam cameras requires careful attention to port selection and encryption settings to work around the devices' TLS limitations.
+1. **Přístup do webového rozhraní kamery** zadáním IP adresy kamery do webového prohlížeče. Foscam kamery obvykle používají port 88 pro webový přístup (např. <http://192.168.1.100:88>).
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Foscam cameras typically use port 88 for web access (e.g., <http://192.168.1.100:88>).
+2. **Přejděte do nabídky Nastavení** a vyberte „Mail Service“ nebo „Email Settings“ podle modelu vaší kamery. Některé Foscam kamery tyto nastavení řadí pod „Alarm“ > „Mail Service“.
 
-2. **Navigate to the Settings menu** and select "Mail Service" or "Email Settings" depending on your camera model. Some Foscam cameras organize these settings under "Alarm" > "Mail Service."
+3. **Nakonfigurujte SMTP server** zadáním smtp.forwardemail.net jako adresy serveru. Toto je zásadní – nepoužívejte SMTP servery běžných poskytovatelů e-mailu, protože již nepodporují TLS 1.0.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. This is critical - do not use standard email provider SMTP servers as they no longer support TLS 1.0.
+4. **Nastavte port a šifrování** výběrem portu 2455 pro SSL šifrování nebo portu 2555 pro STARTTLS šifrování. Toto jsou legacy kompatibilní porty Forward Email speciálně navržené pro zařízení jako Foscam kamery.
 
-4. **Set the port and encryption** by selecting port 2455 for SSL encryption or port 2555 for STARTTLS encryption. These are Forward Email's legacy-compatible ports specifically designed for devices like Foscam cameras.
+5. **Nakonfigurujte autentizaci** povolením SMTP autentizace a zadáním vašeho aliasu Forward Email jako uživatelského jména. Použijte heslo vygenerované v [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains).
 
-5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Nastavte informace o odesílateli a příjemci** konfigurací vašeho aliasu Forward Email jako adresy odesílatele a přidáním adres příjemců pro detekci pohybu a systémová upozornění.
 
-6. **Set up sender and recipient information** by configuring your Forward Email alias as the sender address and adding recipient addresses for motion detection and system alerts.
+7. **Nakonfigurujte spouštěče oznámení** nastavením citlivosti detekce pohybu, plánů nahrávání a dalších událostí, které by měly spustit e-mailová oznámení.
 
-7. **Configure notification triggers** by setting up motion detection sensitivity, recording schedules, and other events that should trigger email notifications.
-
-8. **Test the email configuration** using Foscam's built-in test function. If the test succeeds, you should receive a test email confirming proper configuration.
+8. **Otestujte konfiguraci e-mailu** pomocí vestavěné testovací funkce Foscam. Pokud test uspěje, měli byste obdržet testovací e-mail potvrzující správnou konfiguraci.
 
 > \[!IMPORTANT]
-> Foscam cameras require Forward Email's legacy ports (2455 or 2555) due to TLS 1.0 limitations. Standard SMTP ports will not work with these devices.
+> Foscam kamery vyžadují legacy porty Forward Email (2455 nebo 2555) kvůli omezením TLS 1.0. Standardní SMTP porty s těmito zařízeními nefungují.
 
-### Advanced Foscam Configuration {#advanced-foscam-configuration}
+### Pokročilá konfigurace Foscam {#advanced-foscam-configuration}
 
-For users requiring more sophisticated notification setups, Foscam cameras offer additional configuration options that can enhance security monitoring capabilities.
+Pro uživatele vyžadující sofistikovanější nastavení oznámení nabízejí Foscam kamery další možnosti konfigurace, které mohou zlepšit schopnosti bezpečnostního monitoringu.
 
-Configure motion detection zones to reduce false alarms by defining specific areas of the camera's field of view that should trigger notifications. This prevents unnecessary emails from environmental factors like moving trees or passing vehicles.
+Nakonfigurujte zóny detekce pohybu ke snížení falešných poplachů definováním konkrétních oblastí zorného pole kamery, které by měly spouštět oznámení. To zabraňuje zbytečným e-mailům způsobeným environmentálními faktory, jako jsou pohybující se stromy nebo projíždějící vozidla.
 
-Set up recording schedules that align with your monitoring needs, ensuring that email notifications are sent during appropriate time periods. Foscam cameras can suppress notifications during specified hours to prevent overnight alerts for non-critical events.
-
-Configure multiple recipient addresses for different types of alerts, allowing you to route motion detection alerts to security personnel while sending system maintenance alerts to IT staff.
+Nastavte plány nahrávání, které odpovídají vašim monitorovacím potřebám, aby byla e-mailová oznámení odesílána během vhodných časových období. Foscam kamery mohou během specifikovaných hodin potlačit oznámení, aby se předešlo nočním upozorněním na méně důležité události.
+Nakonfigurujte více příjemců pro různé typy upozornění, což vám umožní směrovat upozornění na detekci pohybu bezpečnostnímu personálu a zároveň zasílat upozornění na údržbu systému IT pracovníkům.
 
 > \[!TIP]
-> Foscam cameras can generate significant email volume if motion detection is too sensitive. Start with conservative settings and adjust based on your environment's characteristics.
+> Kamery Foscam mohou generovat značné množství e-mailů, pokud je detekce pohybu příliš citlivá. Začněte s konzervativními nastaveními a upravujte je podle charakteristik vašeho prostředí.
 
-## Hikvision Security Camera Email Configuration {#hikvision-security-camera-email-configuration}
 
-Hikvision cameras represent a significant portion of the global security camera market, with models ranging from basic IP cameras to advanced AI-powered surveillance systems. The email configuration process varies considerably between newer models with modern TLS support and legacy devices that require compatibility workarounds.
+## Konfigurace e-mailu bezpečnostních kamer Hikvision {#hikvision-security-camera-email-configuration}
 
-### Modern Hikvision Camera Configuration {#modern-hikvision-camera-configuration}
+Kamery Hikvision představují významnou část globálního trhu bezpečnostních kamer, s modely od základních IP kamer až po pokročilé systémy dohledu s umělou inteligencí. Proces konfigurace e-mailu se výrazně liší mezi novějšími modely s moderní podporou TLS a staršími zařízeními, která vyžadují kompatibilní řešení.
 
-Current Hikvision cameras running recent firmware versions support TLS 1.2+ and provide comprehensive email notification capabilities through their web-based interface.
+### Moderní konfigurace kamer Hikvision {#modern-hikvision-camera-configuration}
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Hikvision cameras typically use standard HTTP/HTTPS ports for web access.
+Současné kamery Hikvision s nejnovějšími verzemi firmwaru podporují TLS 1.2+ a poskytují komplexní možnosti e-mailových oznámení prostřednictvím svého webového rozhraní.
 
-2. **Navigate to Configuration** and select "Network" > "Advanced Settings" > "Email" from the menu structure. The exact path may vary depending on your camera model and firmware version.
+1. **Přístup do webového rozhraní kamery** zadáním IP adresy kamery do webového prohlížeče. Kamery Hikvision obvykle používají standardní HTTP/HTTPS porty pro webový přístup.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Hikvision cameras require specific SSL configuration for proper email functionality.
+2. **Přejděte do Konfigurace** a vyberte „Síť“ > „Pokročilá nastavení“ > „E-mail“ v menu. Přesná cesta se může lišit v závislosti na modelu kamery a verzi firmwaru.
 
-4. **Set encryption to SSL** and configure port 465. Hikvision cameras do not support STARTTLS, so SSL encryption on port 465 is the recommended configuration for Forward Email compatibility.
+3. **Nakonfigurujte SMTP server** zadáním smtp.forwardemail.net jako adresy serveru. Kamery Hikvision vyžadují specifické nastavení SSL pro správnou funkci e-mailu.
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for authentication.
+4. **Nastavte šifrování na SSL** a port 465. Kamery Hikvision nepodporují STARTTLS, proto je doporučené nastavení SSL šifrování na portu 465 pro kompatibilitu s Forward Email.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera in email notifications.
+5. **Povolte SMTP autentizaci** a zadejte svůj Forward Email alias jako uživatelské jméno. Pro autentizaci použijte heslo vygenerované v [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains).
 
-7. **Set up recipient addresses** by adding email addresses that should receive security alerts, motion detection notifications, and system status updates.
+6. **Nakonfigurujte informace o odesílateli** nastavením vašeho Forward Email aliasu jako adresy odesílatele a přidejte popisné jméno pro identifikaci kamery v e-mailových oznámeních.
 
-8. **Configure event triggers** by setting up motion detection, line crossing detection, intrusion detection, and other events that should generate email notifications.
+7. **Nastavte adresy příjemců** přidáním e-mailových adres, které mají dostávat bezpečnostní upozornění, oznámení o detekci pohybu a aktualizace stavu systému.
 
-9. **Test the email configuration** using Hikvision's built-in test function to verify proper connectivity and authentication with Forward Email's servers.
+8. **Nakonfigurujte spouštěče událostí** nastavením detekce pohybu, detekce překročení čáry, detekce vniknutí a dalších událostí, které mají generovat e-mailová oznámení.
+
+9. **Otestujte konfiguraci e-mailu** pomocí vestavěné testovací funkce Hikvision pro ověření správné konektivity a autentizace se servery Forward Email.
 
 > \[!NOTE]
-> Hikvision cameras require the most updated firmware versions to support SSL and TLS encryption properly. Check for firmware updates before configuring email settings.
+> Kamery Hikvision vyžadují nejnovější verze firmwaru pro správnou podporu SSL a TLS šifrování. Před konfigurací e-mailu zkontrolujte aktualizace firmwaru.
 
-### Legacy Hikvision Camera Configuration {#legacy-hikvision-camera-configuration}
+### Konfigurace starších kamer Hikvision {#legacy-hikvision-camera-configuration}
 
-Older Hikvision cameras may have limited TLS support and require Forward Email's legacy-compatible SMTP ports for continued email functionality.
+Starší kamery Hikvision mohou mít omezenou podporu TLS a vyžadují legacy kompatibilní SMTP porty Forward Email pro zachování funkčnosti e-mailu.
 
-1. **Access the camera's web interface** and navigate to the email configuration section. Legacy Hikvision cameras may have different menu structures than current models.
+1. **Přístup do webového rozhraní kamery** a přejděte do sekce konfigurace e-mailu. Starší kamery Hikvision mohou mít odlišnou strukturu menu než současné modely.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+2. **Nakonfigurujte legacy SMTP nastavení Forward Email** zadáním smtp.forwardemail.net jako adresy serveru a použitím portu 2455 pro SSL připojení.
 
-3. **Set up authentication** using your Forward Email alias and generated password. Legacy Hikvision cameras may have specific authentication requirements or limitations.
+3. **Nastavte autentizaci** pomocí vašeho Forward Email aliasu a vygenerovaného hesla. Starší kamery Hikvision mohou mít specifické požadavky nebo omezení na autentizaci.
 
-4. **Configure encryption settings** by selecting SSL encryption to match the legacy port configuration. Ensure the encryption method aligns with port 2455 requirements.
+4. **Nakonfigurujte nastavení šifrování** výběrem SSL šifrování odpovídající legacy portu. Ujistěte se, že metoda šifrování odpovídá požadavkům portu 2455.
 
-5. **Test the configuration** and monitor for connection errors. Legacy Hikvision cameras may provide limited error reporting, making troubleshooting more challenging.
+5. **Otestujte konfiguraci** a sledujte případné chyby připojení. Starší kamery Hikvision mohou poskytovat omezené hlášení chyb, což ztěžuje řešení problémů.
 
 > \[!WARNING]
-> Legacy Hikvision cameras may have known security vulnerabilities. Ensure these devices are properly isolated on your network and consider upgrading to current models when possible.
+> Starší kamery Hikvision mohou mít známé bezpečnostní zranitelnosti. Zajistěte, aby byla tato zařízení správně izolována v síti a pokud možno zvažte upgrade na aktuální modely.
+## Konfigurace e-mailu bezpečnostních kamer Dahua {#dahua-security-camera-email-configuration}
 
-## Dahua Security Camera Email Configuration {#dahua-security-camera-email-configuration}
+Kamery Dahua poskytují robustní možnosti e-mailových oznámení napříč jejich rozsáhlou produktovou řadou, od základních IP kamer až po pokročilé systémy dohledu s umělou inteligencí. Proces konfigurace je obecně přímočarý u moderních zařízení s komplexní podporou aktuálních standardů TLS.
 
-Dahua cameras provide robust email notification capabilities across their extensive product line, from basic IP cameras to advanced AI-powered surveillance systems. The configuration process is generally straightforward for modern devices, with comprehensive support for current TLS standards.
+### Nastavení e-mailu kamer Dahua {#dahua-camera-email-setup}
 
-### Dahua Camera Email Setup {#dahua-camera-email-setup}
+Kamery Dahua nabízejí uživatelsky přívětivou konfiguraci e-mailu prostřednictvím svého webového rozhraní s dobrou kompatibilitou pro moderní SMTP standardy.
 
-Dahua cameras offer user-friendly email configuration through their web interface, with good compatibility for modern SMTP standards.
+1. **Přístup k webovému rozhraní kamery** zadáním IP adresy kamery do webového prohlížeče. Kamery Dahua obvykle poskytují intuitivní webové konfigurační systémy.
 
-1. **Access the camera's web interface** by entering the camera's IP address in a web browser. Dahua cameras typically provide intuitive web-based configuration systems.
+2. **Přejděte do Nastavení** a vyberte „Síť“ > „E-mail“ v konfiguračním menu. Kamery Dahua organizují nastavení e-mailu v samostatné sekci pro snadný přístup.
 
-2. **Navigate to Setup** and select "Network" > "Email" from the configuration menu. Dahua cameras organize email settings in a dedicated section for easy access.
+3. **Nakonfigurujte SMTP server** zadáním smtp.forwardemail.net jako adresy serveru. Kamery Dahua podporují šifrovací metody SSL i STARTTLS.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Dahua cameras support both SSL and STARTTLS encryption methods.
+4. **Nastavte port a šifrování** výběrem portu 465 s šifrováním SSL/TLS (doporučeno) nebo portu 587 se šifrováním STARTTLS.
 
-4. **Set the port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption.
+5. **Povolte SMTP autentizaci** a zadejte svůj Forward Email alias jako uživatelské jméno. Použijte heslo vygenerované v [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains).
 
-5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Nakonfigurujte informace o odesílateli** nastavením svého Forward Email aliasu jako adresy odesílatele a přidáním popisného jména pro identifikaci zdroje kamery.
 
-6. **Configure sender information** by setting your Forward Email alias as the sender address and adding a descriptive name to identify the camera source.
+7. **Nastavte adresy příjemců** přidáním e-mailových adres pro různé typy oznámení. Kamery Dahua podporují více příjemců pro různé typy upozornění.
 
-7. **Set up recipient addresses** by adding email addresses for different types of notifications. Dahua cameras support multiple recipients for various alert types.
+8. **Nakonfigurujte spouštěče událostí** nastavením detekce pohybu, upozornění na manipulaci a dalších bezpečnostních událostí, které by měly generovat e-mailová oznámení.
 
-8. **Configure event triggers** by setting up motion detection, tampering alerts, and other security events that should generate email notifications.
-
-9. **Test the email functionality** using Dahua's built-in test feature to verify proper configuration and connectivity.
+9. **Otestujte funkčnost e-mailu** pomocí vestavěné testovací funkce Dahua pro ověření správné konfigurace a konektivity.
 
 > \[!TIP]
-> Dahua cameras often provide detailed configuration guides through their wiki documentation. Consult [Dahua's email setup guide](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) for model-specific instructions.
+> Kamery Dahua často poskytují podrobné konfigurační návody prostřednictvím své wiki dokumentace. Konzultujte [návod na nastavení e-mailu Dahua](https://dahuawiki.com/Email/Email_Notifications_Setup_GMail) pro instrukce specifické pro model.
 
-### Dahua NVR Email Configuration {#dahua-nvr-email-configuration}
+### Konfigurace e-mailu Dahua NVR {#dahua-nvr-email-configuration}
 
-Dahua Network Video Recorders (NVRs) provide centralized email notification management for multiple cameras, offering efficient administration of large surveillance systems.
+Síťové videorekordéry Dahua (NVR) poskytují centralizovanou správu e-mailových oznámení pro více kamer, což umožňuje efektivní administraci rozsáhlých dohledových systémů.
 
-1. **Access the NVR's web interface** by entering the NVR's IP address in a web browser. Dahua NVRs provide comprehensive management interfaces for system-wide configuration.
+1. **Přístup k webovému rozhraní NVR** zadáním IP adresy NVR do webového prohlížeče. Dahua NVR poskytují komplexní rozhraní pro správu systémové konfigurace.
 
-2. **Navigate to the Email configuration** by selecting "Setup" > "Network" > "Email" from the main menu. NVRs typically organize email settings at the system level.
+2. **Přejděte do konfigurace e-mailu** výběrem „Nastavení“ > „Síť“ > „E-mail“ v hlavním menu. NVR obvykle organizují nastavení e-mailu na systémové úrovni.
 
-3. **Configure SMTP server settings** by entering smtp.forwardemail.net as the server address and selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS.
+3. **Nakonfigurujte nastavení SMTP serveru** zadáním smtp.forwardemail.net jako adresy serveru a výběrem portu 465 s šifrováním SSL/TLS (doporučeno) nebo portu 587 se STARTTLS.
 
-4. **Set up authentication** using your Forward Email alias and generated password. NVRs support standard SMTP authentication methods.
+4. **Nastavte autentizaci** pomocí svého Forward Email aliasu a vygenerovaného hesla. NVR podporují standardní metody SMTP autentizace.
 
-5. **Configure notification schedules** by setting up time periods when email notifications should be active. This helps manage notification volume during off-hours.
+5. **Nakonfigurujte plány oznámení** nastavením časových období, kdy by měla být e-mailová oznámení aktivní. To pomáhá řídit objem oznámení mimo pracovní dobu.
 
-6. **Set up event-based notifications** by configuring which camera events should trigger email alerts. NVRs allow granular control over notification triggers across multiple cameras.
+6. **Nastavte oznámení založená na událostech** konfigurací, které události kamer by měly spouštět e-mailová upozornění. NVR umožňují detailní kontrolu nad spouštěči oznámení napříč více kamerami.
 
-7. **Test the system-wide email configuration** to ensure proper functionality across all connected cameras and monitoring systems.
+7. **Otestujte systémovou konfiguraci e-mailu** pro zajištění správné funkčnosti u všech připojených kamer a monitorovacích systémů.
 
-## Xerox Multifunction Device Email Configuration {#xerox-multifunction-device-email-configuration}
 
-Xerox multifunction devices provide enterprise-grade email notification capabilities with comprehensive TLS support and advanced configuration options. Modern Xerox devices support current security standards while maintaining compatibility with various network environments.
+## Konfigurace e-mailu multifunkčních zařízení Xerox {#xerox-multifunction-device-email-configuration}
 
-### Xerox MFD Email Setup {#xerox-mfd-email-setup}
+Multifunkční zařízení Xerox poskytují podnikové možnosti e-mailových oznámení s komplexní podporou TLS a pokročilými konfiguračními možnostmi. Moderní zařízení Xerox podporují aktuální bezpečnostní standardy a zároveň zachovávají kompatibilitu s různými síťovými prostředími.
 
-Xerox multifunction devices offer sophisticated email configuration through their web-based administrative interface, supporting both basic notifications and advanced workflow integration.
+### Nastavení e-mailu Xerox MFD {#xerox-mfd-email-setup}
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Xerox devices typically provide comprehensive web-based administration tools.
+Multifunkční zařízení Xerox nabízejí sofistikovanou konfiguraci e-mailu prostřednictvím svého webového administrativního rozhraní, podporující jak základní oznámení, tak pokročilou integraci pracovních postupů.
+1. **Přístup k webovému rozhraní zařízení** zadáním IP adresy zařízení do webového prohlížeče. Zařízení Xerox obvykle poskytují komplexní webové administrační nástroje.
 
-2. **Navigate to Properties** and select "Connectivity" > "Protocols" > "SMTP" from the configuration menu. Xerox devices organize email settings within their protocol configuration section.
+2. **Přejděte do Vlastností** a vyberte „Připojení“ > „Protokoly“ > „SMTP“ v konfiguračním menu. Zařízení Xerox organizují nastavení e-mailu v sekci konfigurace protokolů.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Xerox devices support configurable TLS versions and encryption methods.
+3. **Nakonfigurujte SMTP server** zadáním smtp.forwardemail.net jako adresy serveru. Zařízení Xerox podporují konfigurovatelné verze TLS a metody šifrování.
 
-4. **Set TLS configuration** by selecting TLS 1.2 or higher as the minimum supported version. Xerox devices allow administrators to configure specific TLS requirements for enhanced security.
+4. **Nastavte konfiguraci TLS** výběrem TLS 1.2 nebo vyšší jako minimálně podporované verze. Zařízení Xerox umožňují správcům nastavit specifické požadavky na TLS pro zvýšenou bezpečnost.
 
-5. **Configure port and encryption** by setting port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections.
+5. **Nakonfigurujte port a šifrování** nastavením portu 465 pro SSL/TLS připojení (doporučeno) nebo portu 587 pro STARTTLS připojení.
 
-6. **Set up SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+6. **Nastavte SMTP autentizaci** povolením autentizace a zadáním vašeho aliasu Forward Email jako uživatelského jména. Použijte heslo vygenerované z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains).
 
-7. **Configure sender information** by setting your Forward Email alias as the sender address and configuring appropriate reply-to addresses for notification management.
+7. **Nakonfigurujte informace o odesílateli** nastavením vašeho aliasu Forward Email jako adresy odesílatele a konfigurací vhodných adres pro odpověď pro správu oznámení.
 
-8. **Set up notification types** by configuring which device events should trigger email alerts, including maintenance notifications, error conditions, and security events.
+8. **Nastavte typy oznámení** konfigurací, které události zařízení by měly spouštět e-mailová upozornění, včetně oznámení o údržbě, chybových stavů a bezpečnostních událostí.
 
-9. **Test the email configuration** using Xerox's comprehensive test system to verify proper connectivity and authentication.
+9. **Otestujte konfiguraci e-mailu** pomocí komplexního testovacího systému Xerox pro ověření správné konektivity a autentizace.
 
 > \[!NOTE]
-> Xerox devices provide detailed TLS configuration options that allow fine-tuning of security settings. Consult [Xerox's TLS configuration guide](https://www.support.xerox.com/en-us/article/KB0032169) for advanced security requirements.
+> Zařízení Xerox poskytují podrobné možnosti konfigurace TLS, které umožňují jemné doladění bezpečnostních nastavení. Konzultujte [Xeroxův průvodce konfigurací TLS](https://www.support.xerox.com/en-us/article/KB0032169) pro pokročilé bezpečnostní požadavky.
 
-## Ricoh Multifunction Device Email Configuration {#ricoh-multifunction-device-email-configuration}
 
-Ricoh multifunction devices offer robust email capabilities across their extensive product line, from basic office printers to advanced production systems. However, [Ricoh has announced significant changes](https://www.ricoh.com/info/2025/0526\_1) related to Microsoft's basic authentication discontinuation that affects email functionality.
+## Konfigurace e-mailu multifunkčního zařízení Ricoh {#ricoh-multifunction-device-email-configuration}
 
-### Modern Ricoh MFD Configuration {#modern-ricoh-mfd-configuration}
+Multifunkční zařízení Ricoh nabízejí robustní e-mailové funkce napříč širokou produktovou řadou, od základních kancelářských tiskáren po pokročilé produkční systémy. Nicméně, [Ricoh oznámil významné změny](https://www.ricoh.com/info/2025/0526_1) související s ukončením základní autentizace Microsoftu, které ovlivňují funkčnost e-mailu.
 
-Current Ricoh devices support modern TLS standards and provide comprehensive email notification capabilities through their web-based interface.
+### Moderní konfigurace Ricoh MFD {#modern-ricoh-mfd-configuration}
 
-1. **Access the device's web interface** by entering the device's IP address in a web browser. Ricoh devices provide intuitive web-based configuration systems.
+Současná zařízení Ricoh podporují moderní standardy TLS a poskytují komplexní možnosti e-mailových oznámení prostřednictvím svého webového rozhraní.
 
-2. **Navigate to the Email configuration** by selecting "System Settings" > "Administrator Tools" > "Network" > "Email" from the menu structure.
+1. **Přístup k webovému rozhraní zařízení** zadáním IP adresy zařízení do webového prohlížeče. Zařízení Ricoh poskytují intuitivní webové konfigurační systémy.
 
-3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Ricoh devices support both SSL and STARTTLS encryption methods.
+2. **Přejděte do konfigurace e-mailu** výběrem „Systémová nastavení“ > „Nástroje správce“ > „Síť“ > „E-mail“ v menu.
 
-4. **Enable SSL on the SMTP server page** to activate TLS encryption. Ricoh's interface may be cryptic, but SSL enablement is required for secure email functionality.
+3. **Nakonfigurujte SMTP server** zadáním smtp.forwardemail.net jako adresy serveru. Zařízení Ricoh podporují jak SSL, tak STARTTLS metody šifrování.
 
-5. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Ensure the encryption method matches the selected port.
+4. **Povolte SSL na stránce SMTP serveru** pro aktivaci TLS šifrování. Rozhraní Ricoh může být nejasné, ale povolení SSL je vyžadováno pro zabezpečenou e-mailovou funkčnost.
 
-6. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+5. **Nastavte číslo portu** na 465 pro SSL/TLS připojení (doporučeno) nebo 587 pro STARTTLS připojení. Ujistěte se, že metoda šifrování odpovídá vybranému portu.
 
-7. **Set up sender information** by configuring your Forward Email alias as the sender address and adding appropriate identification information.
+6. **Nakonfigurujte SMTP autentizaci** povolením autentizace a zadáním vašeho aliasu Forward Email jako uživatelského jména. Použijte heslo vygenerované z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains).
 
-8. **Configure notification types** by setting up scan-to-email, device alerts, and maintenance notifications according to your operational requirements.
+7. **Nastavte informace o odesílateli** konfigurací vašeho aliasu Forward Email jako adresy odesílatele a přidáním vhodných identifikačních údajů.
 
-9. **Test the email functionality** using Ricoh's built-in test system to verify proper configuration and connectivity.
+8. **Nakonfigurujte typy oznámení** nastavením scan-to-email, upozornění zařízení a oznámení o údržbě podle vašich provozních požadavků.
+
+9. **Otestujte funkčnost e-mailu** pomocí vestavěného testovacího systému Ricoh pro ověření správné konfigurace a konektivity.
 
 > \[!IMPORTANT]
-> Ricoh devices affected by Microsoft's basic authentication changes require updated authentication methods. Ensure your device firmware supports modern authentication or use Forward Email's compatibility features.
+> Zařízení Ricoh ovlivněná změnami základní autentizace Microsoftu vyžadují aktualizované metody autentizace. Ujistěte se, že firmware vašeho zařízení podporuje moderní autentizaci, nebo použijte kompatibilní funkce Forward Email.
+### Konfigurace starších zařízení Ricoh {#legacy-ricoh-device-configuration}
 
-### Legacy Ricoh Device Configuration {#legacy-ricoh-device-configuration}
+Starší zařízení Ricoh mohou vyžadovat legacy-kompatibilní SMTP porty Forward Email kvůli omezené podpoře TLS a omezením metod autentizace.
 
-Older Ricoh devices may require Forward Email's legacy-compatible SMTP ports due to limited TLS support and authentication method restrictions.
+1. **Přístup do webového rozhraní zařízení** a přejděte do sekce konfigurace e-mailu. Starší zařízení Ricoh mohou mít odlišnou strukturu menu než současné modely.
 
-1. **Access the device's web interface** and navigate to the email configuration section. Legacy Ricoh devices may have different menu structures than current models.
+2. **Nakonfigurujte legacy SMTP nastavení Forward Email** zadáním smtp.forwardemail.net jako adresy serveru a použitím portu 2455 pro SSL připojení.
 
-2. **Configure Forward Email's legacy SMTP settings** by entering smtp.forwardemail.net as the server address and using port 2455 for SSL connections.
+3. **Povolte SSL šifrování** tak, aby odpovídalo konfiguraci legacy portu. Ujistěte se, že nastavení šifrování odpovídá požadavkům portu 2455.
 
-3. **Enable SSL encryption** to match the legacy port configuration. Ensure the encryption settings align with port 2455 requirements.
+4. **Nastavte autentizaci** pomocí vašeho aliasu Forward Email a vygenerovaného hesla. Starší zařízení Ricoh mohou mít specifická omezení autentizace.
 
-4. **Set up authentication** using your Forward Email alias and generated password. Legacy Ricoh devices may have specific authentication limitations.
+5. **Otestujte konfiguraci** a sledujte chyby autentizace nebo připojení. Starší zařízení mohou poskytovat omezené chybové hlášení pro řešení problémů.
 
-5. **Test the configuration** and monitor for authentication or connection errors. Legacy devices may provide limited error reporting for troubleshooting.
 
-## Troubleshooting Common Configuration Issues {#troubleshooting-common-configuration-issues}
+## Řešení běžných problémů s konfigurací {#troubleshooting-common-configuration-issues}
 
-Device email configuration can encounter various issues due to network settings, authentication problems, or protocol compatibility challenges. Understanding common problems and their solutions helps ensure reliable notification delivery across your device ecosystem.
+Konfigurace e-mailu na zařízení může narazit na různé problémy kvůli síťovým nastavením, problémům s autentizací nebo nekompatibilitě protokolů. Pochopení běžných problémů a jejich řešení pomáhá zajistit spolehlivé doručování oznámení napříč vaším ekosystémem zařízení.
 
-### Authentication and Credential Issues {#authentication-and-credential-issues}
+### Problémy s autentizací a přihlašovacími údaji {#authentication-and-credential-issues}
 
-Authentication failures represent the most common email configuration problem across all device types. These issues typically stem from incorrect credential usage, authentication method mismatches, or account configuration problems.
+Selhání autentizace představuje nejčastější problém konfigurace e-mailu u všech typů zařízení. Tyto problémy obvykle vyplývají z nesprávného použití přihlašovacích údajů, nesouladu metod autentizace nebo problémů s konfigurací účtu.
 
-Verify that you're using your Forward Email alias as the username, not your account email address or login credentials. Many devices are sensitive to username formatting and require exact matches with your configured alias.
+Ověřte, že používáte svůj alias Forward Email jako uživatelské jméno, nikoli e-mailovou adresu účtu nebo přihlašovací údaje. Mnoho zařízení je citlivých na formát uživatelského jména a vyžaduje přesnou shodu s vaším nakonfigurovaným aliasem.
 
-Ensure you're using the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) rather than your account login password. SMTP authentication requires the specific generated password for security reasons, and using incorrect credentials will result in authentication failures.
+Ujistěte se, že používáte vygenerované heslo z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains) místo přihlašovacího hesla k účtu. SMTP autentizace vyžaduje specifické vygenerované heslo z bezpečnostních důvodů a použití nesprávných údajů povede k selhání autentizace.
 
-Check that your Forward Email account has proper SMTP access enabled and that any two-factor authentication requirements are properly configured. Some account configurations may restrict SMTP access until properly activated.
+Zkontrolujte, zda má váš účet Forward Email povolený správný přístup k SMTP a zda jsou správně nastaveny požadavky na dvoufaktorovou autentizaci. Některé konfigurace účtu mohou omezovat přístup k SMTP, dokud není správně aktivován.
 
 > \[!TIP]
-> If authentication continues to fail, regenerate your SMTP password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) and update your device configuration with the new credentials.
+> Pokud autentizace stále selhává, vygenerujte nové SMTP heslo z [Můj účet -> Domény -> Aliasy](https://forwardemail.net/my-account/domains) a aktualizujte konfiguraci zařízení s novými údaji.
 
-### TLS and Encryption Problems {#tls-and-encryption-problems}
+### Problémy s TLS a šifrováním {#tls-and-encryption-problems}
 
-TLS-related issues often occur when devices attempt to use unsupported encryption protocols or when there's a mismatch between port configuration and encryption settings.
+Problémy související s TLS často nastávají, když zařízení používají nepodporované šifrovací protokoly nebo když je nesoulad mezi konfigurací portu a nastavením šifrování.
 
-For modern devices experiencing TLS errors, verify that you're using the correct port and encryption combination: port 465 with SSL/TLS (recommended) or port 587 with STARTTLS. These settings must match exactly for successful connections.
+U moderních zařízení, která mají chyby TLS, ověřte, že používáte správnou kombinaci portu a šifrování: port 465 s SSL/TLS (doporučeno) nebo port 587 s STARTTLS. Tato nastavení musí přesně odpovídat pro úspěšné připojení.
 
-Legacy devices displaying certificate validation errors should use Forward Email's compatibility ports (2455 or 2555) rather than standard SMTP ports. These ports maintain TLS 1.0 compatibility while providing appropriate security for older devices.
+Starší zařízení, která zobrazují chyby ověřování certifikátu, by měla používat kompatibilní porty Forward Email (2455 nebo 2555) místo standardních SMTP portů. Tyto porty zachovávají kompatibilitu s TLS 1.0 a zároveň poskytují odpovídající zabezpečení pro starší zařízení.
 
-If certificate validation continues to fail on legacy devices, check if the device allows certificate validation to be disabled. While this reduces security, it may be necessary for continued functionality on devices that cannot be updated.
+Pokud ověřování certifikátu na starších zařízeních stále selhává, zkontrolujte, zda zařízení umožňuje vypnutí ověřování certifikátu. I když to snižuje bezpečnost, může to být nezbytné pro pokračující funkčnost na zařízeních, která nelze aktualizovat.
 
 > \[!CAUTION]
-> Disabling certificate validation reduces security and should only be used as a last resort for legacy devices that cannot be updated or replaced.
+> Vypnutí ověřování certifikátu snižuje bezpečnost a mělo by být použito pouze jako poslední možnost u starších zařízení, která nelze aktualizovat nebo nahradit.
 
-### Network Connectivity Issues {#network-connectivity-issues}
+### Problémy s připojením k síti {#network-connectivity-issues}
 
-Network-related problems can prevent devices from reaching Forward Email's SMTP servers even when configuration settings are correct.
+Problémy související se sítí mohou zabránit zařízením v dosažení SMTP serverů Forward Email i při správné konfiguraci.
 
-Verify that your network allows outbound connections on the configured SMTP ports. Corporate firewalls or restrictive network policies may block certain ports, requiring firewall rule adjustments or alternative port configurations.
+Ověřte, že vaše síť umožňuje odchozí připojení na nakonfigurované SMTP porty. Firewally ve firmě nebo restriktivní síťové politiky mohou blokovat určité porty, což vyžaduje úpravu pravidel firewallu nebo alternativní konfiguraci portů.
+Zkontrolujte rozlišení DNS tím, že zajistíte, aby vaše zařízení mohla rozlišit smtp.forwardemail.net na správné IP adresy. Problémy s DNS mohou způsobit selhání připojení i při jinak funkční síťové konektivitě.
 
-Check DNS resolution by ensuring that your devices can resolve smtp.forwardemail.net to the correct IP addresses. DNS issues can cause connection failures even when network connectivity is otherwise functional.
+Otestujte síťovou konektivitu pomocí nástrojů pro diagnostiku sítě na zařízení, pokud jsou k dispozici. Mnoho moderních zařízení poskytuje vestavěné možnosti testování sítě, které mohou pomoci identifikovat problémy s připojením.
 
-Test network connectivity from the device's network diagnostic tools if available. Many modern devices provide built-in network testing capabilities that can help identify connectivity issues.
+Zvažte latenci sítě a nastavení časových limitů, pokud jsou zařízení umístěna na pomalých nebo sítích s vysokou latencí. Některá zařízení mohou vyžadovat úpravy časových limitů pro spolehlivé doručení e-mailů.
 
-Consider network latency and timeout settings if devices are located on slow or high-latency network connections. Some devices may require timeout adjustments for reliable email delivery.
+### Výzvy specifické pro konfiguraci zařízení {#device-specific-configuration-challenges}
 
-### Device-Specific Configuration Challenges {#device-specific-configuration-challenges}
+Různí výrobci zařízení implementují funkce e-mailu různými způsoby, což vede k výzvám specifickým pro výrobce, které vyžadují cílená řešení.
 
-Different device manufacturers implement email functionality in various ways, leading to manufacturer-specific configuration challenges that require targeted solutions.
+Tiskárny HP mohou ukládat do mezipaměti DNS dotazy a po změnách konfigurace vyžadují restart. Pokud problémy s připojením přetrvávají po konfiguraci, restartujte tiskárnu, aby se vymazaly uložené síťové informace.
 
-HP printers may cache DNS lookups and require restarts after configuration changes. If connection issues persist after configuration, restart the printer to clear cached network information.
+Tiskárny Brother jsou zvláště citlivé na formátování autentizačních údajů a pro spolehlivou konfiguraci může být nutné nastavení přes webové rozhraní místo ovládacího panelu zařízení.
 
-Brother printers are particularly sensitive to authentication credential formatting and may require configuration through the web interface rather than the device control panel for reliable setup.
+Kamery Foscam vyžadují specifické nastavení portů kvůli omezením TLS a nemusí poskytovat podrobné chybové zprávy pro řešení problémů. Ujistěte se, že pro tato zařízení používáte legacy porty Forward Email (2455 nebo 2555).
 
-Foscam cameras require specific port configurations due to TLS limitations and may not provide detailed error messages for troubleshooting. Ensure you're using Forward Email's legacy ports (2455 or 2555) for these devices.
-
-Hikvision cameras require SSL encryption and do not support STARTTLS, limiting configuration options to port 465 with SSL/TLS encryption.
+Kamery Hikvision vyžadují SSL šifrování a nepodporují STARTTLS, což omezuje možnosti konfigurace na port 465 s SSL/TLS šifrováním.
 
 > \[!NOTE]
-> When troubleshooting device-specific issues, consult the manufacturer's documentation for known limitations or configuration requirements that may affect email functionality.
+> Při řešení problémů specifických pro zařízení konzultujte dokumentaci výrobce ohledně známých omezení nebo požadavků na konfiguraci, které mohou ovlivnit funkčnost e-mailu.
 
-## Security Considerations and Best Practices {#security-considerations-and-best-practices}
 
-Configuring email notifications on network devices involves several security considerations that help protect your systems while maintaining reliable notification delivery. Following security best practices prevents unauthorized access and ensures appropriate information disclosure in notifications.
+## Bezpečnostní úvahy a osvědčené postupy {#security-considerations-and-best-practices}
 
-### Credential Management {#credential-management}
+Konfigurace e-mailových oznámení na síťových zařízeních zahrnuje několik bezpečnostních aspektů, které pomáhají chránit vaše systémy a zároveň udržovat spolehlivé doručování oznámení. Dodržování bezpečnostních osvědčených postupů zabraňuje neoprávněnému přístupu a zajišťuje vhodné zveřejnění informací v oznámeních.
 
-Use strong, unique passwords for your Forward Email account and enable two-factor authentication when available. The generated SMTP password should be treated as a sensitive credential and stored securely in device configurations.
+### Správa přihlašovacích údajů {#credential-management}
 
-Regularly review and rotate SMTP passwords, especially after personnel changes or security incidents. Forward Email allows password regeneration without affecting other account functions.
+Používejte silná, jedinečná hesla pro svůj účet Forward Email a pokud je to možné, povolte dvoufaktorové ověřování. Vygenerované SMTP heslo by mělo být považováno za citlivý údaj a bezpečně uloženo v konfiguracích zařízení.
 
-Avoid using shared credentials across multiple devices when possible. While Forward Email supports multiple device connections with the same credentials, individual device credentials provide better security isolation and audit capabilities.
+Pravidelně kontrolujte a měňte SMTP hesla, zejména po personálních změnách nebo bezpečnostních incidentech. Forward Email umožňuje regeneraci hesla bez ovlivnění ostatních funkcí účtu.
 
-Document device credentials securely and include them in your organization's credential management system. Proper documentation ensures that email configurations can be maintained and updated as needed.
+Pokud je to možné, vyhněte se používání sdílených přihlašovacích údajů napříč více zařízeními. I když Forward Email podporuje připojení více zařízení se stejnými údaji, individuální přihlašovací údaje pro zařízení poskytují lepší bezpečnostní izolaci a možnosti auditu.
 
-### Network Security {#network-security}
+Bezpečně dokumentujte přihlašovací údaje zařízení a zahrňte je do systému správy přihlašovacích údajů vaší organizace. Správná dokumentace zajistí, že konfigurace e-mailu lze udržovat a aktualizovat podle potřeby.
 
-Implement appropriate network segmentation to isolate devices from other network resources while maintaining necessary connectivity for email notifications and legitimate access.
+### Síťová bezpečnost {#network-security}
 
-Configure firewall rules to allow necessary SMTP traffic while blocking unnecessary network access. Devices typically only need outbound access to Forward Email's SMTP servers for notification functionality.
+Implementujte vhodné segmentování sítě, aby byla zařízení izolována od ostatních síťových zdrojů, přičemž zachovejte nezbytnou konektivitu pro e-mailová oznámení a legitimní přístup.
 
-Monitor network traffic from devices to identify unusual patterns or unauthorized communication attempts. Unexpected network activity may indicate security issues that require investigation.
+Nakonfigurujte pravidla firewallu tak, aby povolovala potřebný SMTP provoz a blokovala zbytečný přístup do sítě. Zařízení obvykle potřebují pouze odchozí přístup na SMTP servery Forward Email pro funkčnost oznámení.
 
-Consider using VLANs or dedicated network segments for device management traffic, including email notifications, to provide additional security isolation.
+Monitorujte síťový provoz ze zařízení, abyste identifikovali neobvyklé vzory nebo neoprávněné pokusy o komunikaci. Neočekávaná síťová aktivita může naznačovat bezpečnostní problémy vyžadující vyšetřování.
 
-### Information Disclosure {#information-disclosure}
+Zvažte použití VLAN nebo vyhrazených síťových segmentů pro správu zařízení včetně e-mailových oznámení, aby byla zajištěna další bezpečnostní izolace.
 
-Review the content of email notifications to ensure they don't contain sensitive information that could be useful to attackers. Some devices include detailed system information, network configurations, or file paths in notification emails.
+### Zveřejňování informací {#information-disclosure}
 
-Configure notification filtering to limit the types of information included in email alerts. Many devices allow customization of notification content to balance useful information with security requirements.
+Zkontrolujte obsah e-mailových oznámení, aby neobsahovala citlivé informace, které by mohly být užitečné pro útočníky. Některá zařízení zahrnují podrobné systémové informace, síťové konfigurace nebo cesty k souborům v e-mailových oznámeních.
+Nakonfigurujte filtrování oznámení tak, aby omezovalo typy informací zahrnutých v e-mailových upozorněních. Mnoho zařízení umožňuje přizpůsobení obsahu oznámení tak, aby bylo dosaženo rovnováhy mezi užitečnými informacemi a bezpečnostními požadavky.
 
-Implement appropriate email retention and handling policies for device notifications. Security-related notifications may need to be retained for compliance or forensic purposes.
+Implementujte vhodné zásady uchovávání a zpracování e-mailů pro oznámení zařízení. Bezpečnostní oznámení může být nutné uchovávat pro účely souladu s předpisy nebo forenzní analýzy.
 
-Consider the sensitivity of recipient email addresses and ensure that notifications are only sent to authorized personnel who need access to the information.
+Zvažte citlivost e-mailových adres příjemců a zajistěte, aby byla oznámení zasílána pouze oprávněným osobám, které potřebují přístup k informacím.
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
+### Monitoring a údržba {#monitoring-and-maintenance}
 
-Regularly test email notification configurations to ensure continued functionality. Periodic testing helps identify configuration drift, network changes, or service issues before they impact critical alert delivery.
+Pravidelně testujte konfigurace e-mailových oznámení, aby byla zajištěna jejich trvalá funkčnost. Periodické testování pomáhá odhalit odchylky v konfiguraci, změny v síti nebo problémy se službou dříve, než ovlivní doručení kritických upozornění.
 
-Monitor email notification patterns for signs of suspicious activity or unauthorized access attempts. Unusual notification volumes or unexpected system events may indicate security issues.
+Sledujte vzory e-mailových oznámení pro známky podezřelé aktivity nebo pokusy o neoprávněný přístup. Neobvyklé objemy oznámení nebo neočekávané systémové události mohou naznačovat bezpečnostní problémy.
 
-Keep device firmware updated when possible to maintain current security standards and protocol support. While some devices have reached end-of-life status, applying available security updates helps protect against known vulnerabilities.
+Udržujte firmware zařízení aktuální, pokud je to možné, aby byly zachovány současné bezpečnostní standardy a podpora protokolů. I když některá zařízení dosáhla konce životnosti, aplikace dostupných bezpečnostních aktualizací pomáhá chránit před známými zranitelnostmi.
 
-Implement backup notification methods for critical alerts when possible. While email notifications are reliable, having alternative alerting mechanisms provides redundancy for the most important system events.
+Implementujte záložní metody oznámení pro kritická upozornění, pokud je to možné. I když jsou e-mailová oznámení spolehlivá, mít alternativní mechanismy upozornění poskytuje redundanci pro nejdůležitější systémové události.
 
-## Conclusion {#conclusion}
 
-Configuring reliable email notifications across diverse device ecosystems requires understanding the complex landscape of TLS compatibility, authentication methods, and manufacturer-specific requirements. Forward Email's comprehensive SMTP service addresses these challenges by providing both modern security standards for current devices and legacy compatibility for older equipment that cannot be updated.
+## Závěr {#conclusion}
 
-The configuration processes outlined in this guide provide detailed, step-by-step instructions for major device categories, ensuring that administrators can establish reliable email notifications regardless of their specific equipment mix. Forward Email's dual-port strategy specifically addresses the TLS compatibility crisis affecting millions of deployed devices, providing a practical solution that maintains security while ensuring continued functionality.
+Konfigurace spolehlivých e-mailových oznámení napříč různorodými ekosystémy zařízení vyžaduje pochopení složitého prostředí kompatibility TLS, metod autentizace a požadavků specifických pro výrobce. Komplexní SMTP služba Forward Email řeší tyto výzvy tím, že poskytuje jak moderní bezpečnostní standardy pro současná zařízení, tak i zpětnou kompatibilitu pro starší vybavení, které nelze aktualizovat.
 
-Regular testing and maintenance of email notification configurations ensures continued reliability and helps identify potential issues before they impact critical alert delivery. Following the security best practices and troubleshooting guidance in this guide helps maintain secure, reliable notification systems that keep administrators informed about device status and security events.
+Postupy konfigurace uvedené v této příručce poskytují podrobné, krok za krokem instrukce pro hlavní kategorie zařízení, což zajišťuje, že správci mohou nastavit spolehlivá e-mailová oznámení bez ohledu na konkrétní kombinaci zařízení. Dvojportová strategie Forward Email konkrétně řeší krizi kompatibility TLS, která postihuje miliony nasazených zařízení, a poskytuje praktické řešení, které zachovává bezpečnost a zároveň zajišťuje pokračující funkčnost.
 
-Whether managing a small office with mixed printer and camera brands or overseeing an enterprise environment with hundreds of devices, Forward Email provides the infrastructure and compatibility needed for reliable email notifications. Our service's focus on device compatibility, combined with comprehensive documentation and support, ensures that critical system alerts reach you when you need them most.
+Pravidelné testování a údržba konfigurací e-mailových oznámení zajišťuje trvalou spolehlivost a pomáhá odhalit potenciální problémy dříve, než ovlivní doručení kritických upozornění. Dodržování bezpečnostních osvědčených postupů a pokynů pro řešení problémů v této příručce pomáhá udržovat bezpečné a spolehlivé systémy oznámení, které informují správce o stavu zařízení a bezpečnostních událostech.
 
-For additional support with device email configuration or questions about Forward Email's compatibility with specific equipment, visit our [SMTP server configuration FAQ](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) or contact our support team. We're committed to helping you maintain reliable email notifications across all your network-connected devices, regardless of age or manufacturer limitations.
+Ať už spravujete malou kancelář s různými značkami tiskáren a kamer, nebo dohlížíte na podnikové prostředí se stovkami zařízení, Forward Email poskytuje infrastrukturu a kompatibilitu potřebnou pro spolehlivá e-mailová oznámení. Zaměření na kompatibilitu zařízení spolu s komplexní dokumentací a podporou zajišťuje, že kritická systémová upozornění k vám dorazí právě tehdy, když je nejvíce potřebujete.
+
+Pro další podporu při konfiguraci e-mailů zařízení nebo dotazy ohledně kompatibility Forward Email s konkrétním vybavením navštivte náš [FAQ o konfiguraci SMTP serveru](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) nebo kontaktujte náš tým podpory. Jsme odhodláni pomoci vám udržet spolehlivá e-mailová oznámení napříč všemi zařízeními připojenými k síti, bez ohledu na jejich stáří nebo omezení výrobce.

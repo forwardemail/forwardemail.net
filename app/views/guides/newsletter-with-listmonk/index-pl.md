@@ -1,4 +1,5 @@
-# Listmonk z funkcją przekazywania wiadomości e-mail w celu bezpiecznego dostarczania newsletterów {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+# Listmonk z Forward Email dla bezpiecznej dostawy newsletterów {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+
 
 ## Spis treści {#table-of-contents}
 
@@ -6,71 +7,75 @@
 * [Dlaczego Listmonk i Forward Email](#why-listmonk-and-forward-email)
 * [Wymagania wstępne](#prerequisites)
 * [Instalacja](#installation)
-  * [1. Zaktualizuj swój serwer](#1-update-your-server)
-  * [2. Zainstaluj zależności](#2-install-dependencies)
-  * [3. Pobierz konfigurację Listmonk](#3-download-listmonk-configuration)
-  * [4. Skonfiguruj zaporę sieciową (UFW)](#4-configure-firewall-ufw)
-  * [5. Skonfiguruj dostęp HTTPS](#5-configure-https-access)
-  * [6. Uruchom Listmonka](#6-start-listmonk)
-  * [7. Skonfiguruj przekierowanie poczty e-mail SMTP w Listmonk](#7-configure-forward-email-smtp-in-listmonk)
-  * [8. Skonfiguruj przetwarzanie zwrotów](#8-configure-bounce-processing)
+  * [1. Aktualizacja serwera](#1-update-your-server)
+  * [2. Instalacja zależności](#2-install-dependencies)
+  * [3. Pobranie konfiguracji Listmonk](#3-download-listmonk-configuration)
+  * [4. Konfiguracja zapory (UFW)](#4-configure-firewall-ufw)
+  * [5. Konfiguracja dostępu HTTPS](#5-configure-https-access)
+  * [6. Uruchomienie Listmonk](#6-start-listmonk)
+  * [7. Konfiguracja SMTP Forward Email w Listmonk](#7-configure-forward-email-smtp-in-listmonk)
+  * [8. Konfiguracja przetwarzania odbić](#8-configure-bounce-processing)
 * [Testowanie](#testing)
   * [Utwórz listę mailingową](#create-a-mailing-list)
   * [Dodaj subskrybentów](#add-subscribers)
   * [Utwórz i wyślij kampanię](#create-and-send-a-campaign)
 * [Weryfikacja](#verification)
-* [Notatki dla programistów](#developer-notes)
-* [Wniosek](#conclusion)
+* [Notatki dla deweloperów](#developer-notes)
+* [Podsumowanie](#conclusion)
+
 
 ## Przegląd {#overview}
 
-Ten przewodnik zawiera instrukcje krok po kroku dla programistów dotyczące konfiguracji [Listmonk](https://listmonk.app/), potężnego menedżera newsletterów i list mailingowych typu open source, do korzystania z [Przekaż dalej e-mail](https://forwardemail.net/) jako dostawcy SMTP. Ta kombinacja pozwala efektywnie zarządzać kampaniami, zapewniając jednocześnie bezpieczne, prywatne i niezawodne dostarczanie wiadomości e-mail.
+Ten przewodnik dostarcza deweloperom krok po kroku instrukcje dotyczące konfiguracji [Listmonk](https://listmonk.app/), potężnego, otwartoźródłowego menedżera newsletterów i list mailingowych, aby używać [Forward Email](https://forwardemail.net/) jako dostawcy SMTP. To połączenie pozwala skutecznie zarządzać kampaniami, zapewniając jednocześnie bezpieczną, prywatną i niezawodną dostawę e-maili.
 
-* **Listmonk**: Zarządza subskrybentami, organizuje listy, tworzy kampanie i śledzi wyniki.
-* **Forward Email**: Działa jako bezpieczny serwer SMTP, obsługując wysyłanie wiadomości e-mail z wbudowanymi funkcjami bezpieczeństwa, takimi jak SPF, DKIM, DMARC i szyfrowanie TLS.
+* **Listmonk**: Zarządza subskrybentami, organizacją list, tworzeniem kampanii i śledzeniem wyników.
+* **Forward Email**: Działa jako bezpieczny serwer SMTP, obsługując faktyczne wysyłanie e-maili z wbudowanymi funkcjami bezpieczeństwa takimi jak SPF, DKIM, DMARC i szyfrowanie TLS.
 
-Integrując te dwa rozwiązania, zachowujesz pełną kontrolę nad swoimi danymi i infrastrukturą, jednocześnie wykorzystując niezawodny system dostarczania wiadomości e-mail Forward Email.
+Integrując te dwa rozwiązania, zachowujesz pełną kontrolę nad swoimi danymi i infrastrukturą, korzystając jednocześnie z solidnego systemu dostarczania Forward Email.
 
-## Dlaczego Listmonk i przekazywanie wiadomości e-mail {#why-listmonk-and-forward-email}
 
-* **Open Source**: Zarówno Listmonk, jak i zasady stojące za Forward Email kładą nacisk na przejrzystość i kontrolę. Sam hostujesz Listmonk, będąc właścicielem swoich danych.
-* **Skupiony na prywatności**: Forward Email został stworzony z myślą o prywatności, minimalizując retencję danych i koncentrując się na bezpiecznej transmisji.
-* **Ekonomiczny**: Listmonk jest darmowy, a Forward Email oferuje hojne pakiety bezpłatne i przystępne plany płatne, co czyni go rozwiązaniem przyjaznym dla budżetu.
-* **Skalowalność**: Listmonk jest wysoce wydajny, a infrastruktura Forward Email została zaprojektowana z myślą o niezawodnym dostarczaniu w dużej skali.
-* **Przyjazny dla programistów**: Listmonk oferuje solidne API, a Forward Email zapewnia prostą integrację SMTP i webhooki.
+## Dlaczego Listmonk i Forward Email {#why-listmonk-and-forward-email}
+
+* **Open Source**: Zarówno Listmonk, jak i zasady stojące za Forward Email podkreślają przejrzystość i kontrolę. Hostujesz Listmonk samodzielnie, posiadając swoje dane.
+* **Skupienie na prywatności**: Forward Email został stworzony z myślą o prywatności, minimalizując przechowywanie danych i koncentrując się na bezpiecznej transmisji.
+* **Ekonomiczne rozwiązanie**: Listmonk jest darmowy, a Forward Email oferuje hojne darmowe plany oraz przystępne cenowo plany płatne, co czyni to rozwiązanie przyjaznym dla budżetu.
+* **Skalowalność**: Listmonk jest bardzo wydajny, a infrastruktura Forward Email zaprojektowana jest do niezawodnej dostawy na dużą skalę.
+* **Przyjazne dla deweloperów**: Listmonk oferuje solidne API, a Forward Email zapewnia prostą integrację SMTP i webhooki.
+
 
 ## Wymagania wstępne {#prerequisites}
 
-Zanim zaczniesz, upewnij się, że masz następujące rzeczy:
+Przed rozpoczęciem upewnij się, że masz:
 
-* Wirtualny serwer prywatny (VPS) z najnowszą dystrybucją Linuksa (zalecany Ubuntu 20.04+) z co najmniej 1 procesorem i 1 GB pamięci RAM (zalecane 2 GB).
-* Potrzebujesz dostawcy? Sprawdź [zalecana lista VPS](https://github.com/forwardemail/awesome-mail-server-providers).
-* Nazwa domeny, którą kontrolujesz (wymagany dostęp DNS).
-* Aktywne konto z [Przekaż dalej e-mail](https://forwardemail.net/).
-* Dostęp root lub `sudo` do Twojego VPS.
-* Podstawowa znajomość operacji wiersza poleceń Linuksa.
+* Wirtualny serwer prywatny (VPS) z aktualną dystrybucją Linuksa (zalecany Ubuntu 20.04+) z co najmniej 1 CPU i 1GB RAM (zalecane 2GB).
+  * Potrzebujesz dostawcy? Sprawdź [polecaną listę VPS](https://github.com/forwardemail/awesome-mail-server-providers).
+* Nazwę domeny, którą kontrolujesz (wymagany dostęp do DNS).
+* Aktywne konto w [Forward Email](https://forwardemail.net/).
+* Dostęp root lub `sudo` do VPS.
+* Podstawową znajomość operacji w linii poleceń Linuksa.
+
 
 ## Instalacja {#installation}
 
-Poniższe kroki przeprowadzą Cię przez proces instalacji Listmonk za pomocą Dockera i Docker Compose na Twoim VPS.
+Te kroki przeprowadzą Cię przez instalację Listmonk za pomocą Dockera i Docker Compose na Twoim VPS.
 
-### 1. Zaktualizuj swój serwer {#1-update-your-server}
+### 1. Aktualizacja serwera {#1-update-your-server}
 
-Upewnij się, że lista pakietów systemu i zainstalowane pakiety są aktualne.
+Upewnij się, że lista pakietów systemowych i zainstalowane pakiety są aktualne.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2. Zainstaluj zależności {#2-install-dependencies}
+### 2. Instalacja zależności {#2-install-dependencies}
 
-Zainstaluj Docker, Docker Compose i UFW (Uncomplicated Firewall).
+Zainstaluj Docker, Docker Compose oraz UFW (Uncomplicated Firewall).
 
 ```bash
 sudo apt install -y docker.io docker-compose ufw
 ```
 
-### 3. Pobierz konfigurację Listmonk {#3-download-listmonk-configuration}
+### 3. Pobranie konfiguracji Listmonk {#3-download-listmonk-configuration}
 
 Utwórz katalog dla Listmonk i pobierz oficjalny plik `docker-compose.yml`.
 
@@ -79,11 +84,10 @@ mkdir listmonk && cd listmonk
 curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/master/docker-compose.yml
 ```
 
-Ten plik definiuje kontener aplikacji Listmonk i wymagany kontener bazy danych PostgreSQL.
+Ten plik definiuje kontener aplikacji Listmonk oraz wymagany kontener bazy danych PostgreSQL.
+### 4. Konfiguracja zapory sieciowej (UFW) {#4-configure-firewall-ufw}
 
-### 4. Skonfiguruj zaporę sieciową (UFW) {#4-configure-firewall-ufw}
-
-Zezwól na niezbędny ruch (SSH, HTTP, HTTPS) przez zaporę sieciową. Jeśli Twój SSH działa na niestandardowym porcie, dostosuj go odpowiednio.
+Zezwól na niezbędny ruch (SSH, HTTP, HTTPS) przez zaporę sieciową. Jeśli Twój SSH działa na niestandardowym porcie, dostosuj to odpowiednio.
 
 ```bash
 sudo ufw allow ssh
@@ -94,144 +98,145 @@ sudo ufw enable
 
 Potwierdź włączenie zapory, gdy zostaniesz o to poproszony.
 
-### 5. Konfigurowanie dostępu HTTPS {#5-configure-https-access}
+### 5. Konfiguracja dostępu HTTPS {#5-configure-https-access}
 
-Uruchamianie Listmonka przez HTTPS jest kluczowe dla bezpieczeństwa. Masz dwie podstawowe opcje:
+Uruchomienie Listmonk przez HTTPS jest kluczowe dla bezpieczeństwa. Masz dwie główne opcje:
 
-#### Opcja A: Korzystanie z serwera proxy Cloudflare (zalecane ze względu na prostotę) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### Opcja A: Użycie proxy Cloudflare (zalecane dla prostoty) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-Jeśli serwerem DNS Twojej domeny zarządza Cloudflare, możesz wykorzystać funkcję serwera proxy tej firmy, aby łatwo nawiązać połączenie HTTPS.
+Jeśli DNS Twojej domeny jest zarządzany przez Cloudflare, możesz skorzystać z ich funkcji proxy, aby łatwo uzyskać HTTPS.
 
-1. **Wskaż DNS**: Utwórz rekord `A` w Cloudflare dla swojej subdomeny Listmonk (np. `listmonk.yourdomain.com`) wskazujący na adres IP Twojego VPS. Upewnij się, że **Status proxy** jest ustawiony na **Zalogowany przez proxy** (pomarańczowa chmurka).
-2. **Modyfikuj Docker Compose**: Edytuj pobrany plik `docker-compose.yml`:
-```bash
+1. **Wskaż DNS**: Utwórz rekord `A` w Cloudflare dla subdomeny Listmonk (np. `listmonk.twojadomena.com`) wskazujący na adres IP Twojego VPS. Upewnij się, że **Status proxy** jest ustawiony na **Proxied** (pomarańczowa chmura).
+2. **Zmodyfikuj Docker Compose**: Edytuj plik `docker-compose.yml`, który pobrałeś:
+   ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-Dzięki temu Listmonk będzie dostępny wewnętrznie na porcie 80, który Cloudflare może następnie przekierować i zabezpieczyć za pomocą protokołu HTTPS.
+   Dzięki temu Listmonk będzie dostępny wewnętrznie na porcie 80, który Cloudflare może następnie proxyfikować i zabezpieczyć przez HTTPS.
 
-#### Opcja B: Korzystanie z odwrotnego serwera proxy (Nginx, Caddy itp.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
+#### Opcja B: Użycie reverse proxy (Nginx, Caddy itp.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
-Alternatywnie możesz skonfigurować odwrotny serwer proxy, taki jak Nginx lub Caddy na swoim VPS, który będzie obsługiwał zakończenie protokołu HTTPS i żądania proxy kierowane do Listmonk (domyślnie działającego na porcie 9000).
+Alternatywnie możesz skonfigurować reverse proxy, takie jak Nginx lub Caddy, na swoim VPS, aby obsługiwało zakończenie HTTPS i przekazywało żądania do Listmonk (domyślnie działającego na porcie 9000).
 
-* Zachowaj domyślną wartość `ports: - "127.0.0.1:9000:9000"` w `docker-compose.yml`, aby zapewnić dostęp do Listmonka tylko lokalnie.
-* Skonfiguruj wybrany serwer proxy odwrotnego, aby nasłuchiwał na portach 80 i 443, obsługiwał pozyskiwanie certyfikatów SSL (np. za pośrednictwem Let's Encrypt) i przekierowywał ruch do `http://127.0.0.1:9000`.
-* Szczegółowa konfiguracja serwera proxy odwrotnego wykracza poza zakres tego przewodnika, ale wiele samouczków jest dostępnych online.
+* Zachowaj domyślne `ports: - "127.0.0.1:9000:9000"` w `docker-compose.yml`, aby Listmonk był dostępny tylko lokalnie.
+* Skonfiguruj wybrane reverse proxy, aby nasłuchiwało na portach 80 i 443, obsługiwało pozyskiwanie certyfikatów SSL (np. przez Let's Encrypt) i przekazywało ruch do `http://127.0.0.1:9000`.
+* Szczegółowa konfiguracja reverse proxy wykracza poza zakres tego przewodnika, ale w internecie dostępnych jest wiele tutoriali.
 
-### 6. Uruchom Listmonk {#6-start-listmonk}
+### 6. Uruchomienie Listmonk {#6-start-listmonk}
 
 Wróć do katalogu `listmonk` (jeśli jeszcze tam nie jesteś) i uruchom kontenery w trybie odłączonym.
 
 ```bash
-cd ~/listmonk # Or the directory where you saved docker-compose.yml
+cd ~/listmonk # Lub katalog, w którym zapisałeś docker-compose.yml
 docker compose up -d
 ```
 
-Docker pobierze niezbędne obrazy i uruchomi aplikację Listmonk oraz kontenery bazy danych. Za pierwszym razem może to potrwać minutę lub dwie.
+Docker pobierze niezbędne obrazy i uruchomi kontenery aplikacji Listmonk oraz bazy danych. Może to potrwać minutę lub dwie przy pierwszym uruchomieniu.
 
-✅ **Dostęp do Listmonk**: Teraz powinieneś mieć możliwość uzyskania dostępu do interfejsu internetowego Listmonk za pośrednictwem skonfigurowanej domeny (np. `https://listmonk.yourdomain.com`).
+✅ **Dostęp do Listmonk**: Teraz powinieneś mieć dostęp do interfejsu webowego Listmonk pod skonfigurowaną domeną (np. `https://listmonk.twojadomena.com`).
 
-### 7. Skonfiguruj przekazywanie wiadomości e-mail SMTP w Listmonk {#7-configure-forward-email-smtp-in-listmonk}
+### 7. Konfiguracja SMTP Forward Email w Listmonk {#7-configure-forward-email-smtp-in-listmonk}
 
-Następnie skonfiguruj Listmonk tak, aby wysyłał wiadomości e-mail za pomocą konta Forward Email.
+Następnie skonfiguruj Listmonk do wysyłania e-maili za pomocą konta Forward Email.
 
-1. **Włącz SMTP w przekierowaniu poczty**: Upewnij się, że wygenerowałeś dane uwierzytelniające SMTP w panelu konta przekierowania poczty. Postępuj zgodnie z [Przewodnik po przesyłaniu wiadomości e-mail z niestandardową domeną przez SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp), jeśli jeszcze tego nie zrobiłeś.
-2. **Skonfiguruj Listmonk**: Zaloguj się do panelu administracyjnego Listmonk.
-* Przejdź do **Ustawienia -> SMTP**.
+1. **Włącz SMTP w Forward Email**: Upewnij się, że wygenerowałeś dane uwierzytelniające SMTP w panelu swojego konta Forward Email. Jeśli jeszcze tego nie zrobiłeś, postępuj zgodnie z [przewodnikiem Forward Email dotyczącym wysyłania e-maili z własną domeną przez SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp).
+2. **Konfiguracja Listmonk**: Zaloguj się do panelu administracyjnego Listmonk.
+   * Przejdź do **Ustawienia -> SMTP**.
 
-* Listmonk ma wbudowaną obsługę przekazywania wiadomości e-mail. Wybierz **Przekaż dalej wiadomość e-mail** z listy dostawców lub ręcznie wprowadź następujące dane:
+   * Listmonk ma wbudowane wsparcie dla Forward Email. Wybierz **ForwardEmail** z listy dostawców lub ręcznie wpisz następujące dane:
 
-| Ustawienie | Wartość |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------ |
-| **Gospodarz** | `smtp.forwardemail.net` |
-| **Port** | `465` |
-| **Protokół uwierzytelniania** | `LOGIN` |
-| **Nazwa użytkownika** | Twoja wiadomość e-mail **Nazwa użytkownika SMTP** |
-| **Hasło** | Twoje hasło do poczty elektronicznej **Hasło SMTP** |
-| **TLS** | `SSL/TLS` |
-| **Z e-maila** | Twój pożądany adres `From` (np. `newsletter@yourdomain.com`). Upewnij się, że ta domena jest skonfigurowana w funkcji przekazywania wiadomości e-mail. |
+     | Ustawienie       | Wartość                                                                                                             |
+     | :---------------- | :------------------------------------------------------------------------------------------------------------------ |
+     | **Host**          | `smtp.forwardemail.net`                                                                                             |
+     | **Port**          | `465`                                                                                                               |
+     | **Protokół uwierzytelniania** | `LOGIN`                                                                                                             |
+     | **Nazwa użytkownika**      | Twój **nazwa użytkownika SMTP** z Forward Email                                                                   |
+     | **Hasło**         | Twoje **hasło SMTP** z Forward Email                                                                                |
+     | **TLS**           | `SSL/TLS`                                                                                                           |
+     | **Adres nadawcy** | Twój pożądany adres `From` (np. `newsletter@twojadomena.com`). Upewnij się, że ta domena jest skonfigurowana w Forward Email. |
+* **Ważne**: Zawsze używaj portu `465` z `SSL/TLS` dla bezpiecznych połączeń z Forward Email (zalecane). Port `587` z STARTTLS jest również obsługiwany, ale preferowany jest SSL/TLS.
 
-* **Ważne**: Zawsze używaj portu `465` z `SSL/TLS` do bezpiecznych połączeń z funkcją Forward Email. Nie używaj protokołu STARTTLS (port 587).
+   * Kliknij **Zapisz**.
+3. **Wyślij testowy e-mail**: Użyj przycisku "Wyślij testowy e-mail" na stronie ustawień SMTP. Wprowadź adres odbiorcy, do którego masz dostęp, i kliknij **Wyślij**. Sprawdź, czy e-mail dotarł do skrzynki odbiorczej odbiorcy.
 
-* Kliknij **Zapisz**.
-3. **Wyślij testowy e-mail**: Użyj przycisku „Wyślij testowy e-mail” na stronie ustawień SMTP. Wprowadź adres odbiorcy, do którego masz dostęp, i kliknij **Wyślij**. Sprawdź, czy e-mail dotarł do skrzynki odbiorczej odbiorcy.
+### 8. Konfiguracja przetwarzania odbić {#8-configure-bounce-processing}
 
-### 8. Konfigurowanie przetwarzania zwrotów {#8-configure-bounce-processing}
+Przetwarzanie odbić pozwala Listmonk automatycznie obsługiwać e-maile, które nie mogły zostać dostarczone (np. z powodu nieprawidłowych adresów). Forward Email udostępnia webhook do powiadamiania Listmonk o odbiciach.
 
-Przetwarzanie zwrotów pozwala Listmonkowi automatycznie obsługiwać wiadomości e-mail, które nie mogły zostać dostarczone (np. z powodu nieprawidłowego adresu). Funkcja Forward Email udostępnia webhook do powiadamiania Listmonka o zwrotach.
+#### Konfiguracja Forward Email {#forward-email-setup}
 
-#### Konfiguracja przekazywania wiadomości e-mail {#forward-email-setup}
-
-1. Zaloguj się do [Panel przekazywania wiadomości e-mail](https://forwardemail.net/).
-2. Przejdź do sekcji **Domeny**, wybierz domenę, której używasz do wysyłania wiadomości i przejdź do jej strony **Ustawienia**.
-3. Przewiń w dół do sekcji **Adres URL webhooka Bounce**.
-4. Wprowadź poniższy adres URL, zastępując `<your_listmonk_domain>` rzeczywistą domeną lub subdomeną, w której dostępna jest Twoja instancja Listmonk:
-```sh
+1. Zaloguj się do swojego [Panelu Forward Email](https://forwardemail.net/).
+2. Przejdź do **Domains**, wybierz domenę, której używasz do wysyłki, i przejdź do jej strony **Settings**.
+3. Przewiń do sekcji **Bounce Webhook URL**.
+4. Wprowadź następujący URL, zastępując `<your_listmonk_domain>` faktyczną domeną lub subdomeną, pod którą dostępna jest Twoja instancja Listmonk:
+   ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
-*Przykład*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-5. Przewiń w dół do sekcji **Klucz weryfikacji podpisu ładunku webhooka**.
-6. **Skopiuj** wygenerowany klucz weryfikacyjny. Będzie potrzebny w Listmonk.
+   *Przykład*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
+5. Przewiń dalej do sekcji **Webhook Signature Payload Verification Key**.
+6. **Skopiuj** wygenerowany klucz weryfikacyjny. Będziesz go potrzebować w Listmonk.
 7. Zapisz zmiany w ustawieniach domeny Forward Email.
 
-#### Konfiguracja Listmonka {#listmonk-setup}
+#### Konfiguracja Listmonk {#listmonk-setup}
 
-1. W panelu administracyjnym Listmonk przejdź do **Ustawienia -> Odsyłanie**.
-2. Włącz opcję **Włącz przetwarzanie odsyłania**.
-3. Włącz opcję **Włącz webhooki odsyłania**.
-4. Przewiń w dół do sekcji **Dostawcy webhooków**.
-5. Włącz opcję **Przekazuj e-maile**.
-6. Wklej **Klucz weryfikacji podpisu webhooka** skopiowany z pulpitu nawigacyjnego Przekazuj e-maile w pole **Klucz przekazu e-mail**.
-7. Kliknij **Zapisz** na dole strony.
-8. Przetwarzanie odsyłania jest teraz skonfigurowane! Gdy funkcja Przekazuj e-maile wykryje odsyłanie dla wiadomości e-mail wysłanej przez Listmonk, powiadomi ona Twoją instancję Listmonk za pośrednictwem webhooka, a Listmonk odpowiednio oznaczy subskrybenta.
-9. Wykonaj poniższe kroki w [Testowanie](#testing), aby upewnić się, że wszystko działa poprawnie.
+1. W panelu administracyjnym Listmonk przejdź do **Settings -> Bounces**.
+2. Włącz **Enable bounce processing**.
+3. Włącz **Enable bounce webhooks**.
+4. Przewiń do sekcji **Webhook Providers**.
+5. Włącz **Forward Email**.
+6. Wklej **Webhook Signature Payload Verification Key**, który skopiowałeś z panelu Forward Email, w pole **Forward Email Key**.
+7. Kliknij **Save** na dole strony.
+8. Przetwarzanie odbić jest teraz skonfigurowane! Gdy Forward Email wykryje odbicie dla e-maila wysłanego przez Listmonk, powiadomi Twoją instancję Listmonk za pomocą webhooka, a Listmonk odpowiednio oznaczy subskrybenta.
+9. Wykonaj poniższe kroki w sekcji [Testowanie](#testing), aby upewnić się, że wszystko działa poprawnie.
+
 
 ## Testowanie {#testing}
 
-Oto krótki przegląd podstawowych funkcji Listmonka:
+Oto szybki przegląd podstawowych funkcji Listmonk:
 
 ### Utwórz listę mailingową {#create-a-mailing-list}
 
-* Przejdź do zakładki **Listy** na pasku bocznym.
-* Kliknij **Nowa lista**.
-* Uzupełnij szczegóły (nazwa, typ: publiczna/prywatna, opis, tagi) i **Zapisz**.
+* Przejdź do **Lists** w pasku bocznym.
+* Kliknij **New List**.
+* Wypełnij szczegóły (Nazwa, Typ: Publiczna/ Prywatna, Opis, Tag'i) i **Zapisz**.
 
 ### Dodaj subskrybentów {#add-subscribers}
 
-* Przejdź do sekcji **Subskrybenci**.
+* Przejdź do sekcji **Subscribers**.
 * Możesz dodać subskrybentów:
-* **Ręcznie**: Kliknij **Nowy subskrybent**.
-* **Import**: Kliknij **Importuj subskrybentów**, aby przesłać plik CSV.
-* **API**: Użyj API Listmonk do programowego dodawania.
-* Przypisz subskrybentów do jednej lub kilku list podczas tworzenia lub importowania.
-* **Najlepsza praktyka**: Użyj procesu podwójnej zgody. Skonfiguruj to w **Ustawienia -> Zgoda i subskrypcje**.
+  * **Ręcznie**: Kliknij **New Subscriber**.
+  * **Import**: Kliknij **Import Subscribers**, aby przesłać plik CSV.
+  * **API**: Użyj API Listmonk do programowego dodawania.
+* Przypisz subskrybentów do jednej lub więcej list podczas tworzenia lub importu.
+* **Dobra praktyka**: Używaj procesu podwójnego potwierdzenia (double opt-in). Skonfiguruj to w **Settings -> Opt-in & Subscriptions**.
 
 ### Utwórz i wyślij kampanię {#create-and-send-a-campaign}
 
-* Przejdź do **Kampanie** -> **Nowa kampania**.
-* Uzupełnij szczegóły kampanii (nazwa, temat, adres e-mail od odbiorcy, lista(y) do wysłania).
-* Wybierz typ treści (Rich Text/HTML, zwykły tekst, Raw HTML).
-* Utwórz treść e-maila. Możesz użyć zmiennych szablonu, takich jak `{{ .Subscriber.Email }}` lub `{{ .Subscriber.FirstName }}`.
-* **Zawsze najpierw wysyłaj e-mail testowy!** Użyj opcji „Wyślij test”, aby wyświetlić podgląd wiadomości w skrzynce odbiorczej.
-* Po zakończeniu kliknij **Rozpocznij kampanię**, aby wysłać ją natychmiast lub zaplanować na później.
+* Przejdź do **Campaigns** -> **New Campaign**.
+* Wypełnij szczegóły kampanii (Nazwa, Temat, E-mail nadawcy, Lista(y) do wysyłki).
+* Wybierz typ zawartości (Rich Text/HTML, Plain Text, Raw HTML).
+* Stwórz treść e-maila. Możesz używać zmiennych szablonów, takich jak `{{ .Subscriber.Email }}` lub `{{ .Subscriber.FirstName }}`.
+* **Zawsze najpierw wyślij testowy e-mail!** Użyj opcji "Wyślij test" aby zobaczyć podgląd e-maila w swojej skrzynce.
+* Gdy będziesz zadowolony, kliknij **Start Campaign**, aby wysłać od razu lub zaplanuj na później.
+
 
 ## Weryfikacja {#verification}
 
-* **Dostarczanie SMTP**: Regularnie wysyłaj testowe e-maile za pośrednictwem strony ustawień SMTP w Listmonk i testuj kampanie, aby upewnić się, że e-maile są dostarczane poprawnie.
-* **Obsługa zwrotów**: Wyślij testową kampanię na znany, nieprawidłowy adres e-mail (np. `bounce-test@yourdomain.com`, jeśli nie masz pod ręką prawdziwego, choć wyniki mogą się różnić). Po chwili sprawdź statystyki kampanii w Listmonk, aby upewnić się, że zwrot został zarejestrowany.
-* **Nagłówki e-maili**: Użyj narzędzi takich jak [Tester poczty](https://www.mail-tester.com/) lub ręcznie sprawdź nagłówki e-maili, aby upewnić się, że SPF, DKIM i DMARC są poprawne, co wskazuje na poprawną konfigurację funkcji przekazywania wiadomości e-mail.
-* **Dzienniki przekazywania wiadomości e-mail**: Sprawdź dzienniki panelu przekazywania wiadomości e-mail, jeśli podejrzewasz problemy z dostarczaniem pochodzące z serwera SMTP.
+* **Dostarczenie SMTP**: Regularnie wysyłaj testowe e-maile przez stronę ustawień SMTP Listmonk oraz testowe kampanie, aby upewnić się, że e-maile są poprawnie dostarczane.
+* **Obsługa odbić**: Wyślij testową kampanię na znany nieprawidłowy adres e-mail (np. `bounce-test@yourdomain.com`, jeśli nie masz prawdziwego, choć wyniki mogą się różnić). Po krótkim czasie sprawdź statystyki kampanii w Listmonk, czy odbicie zostało zarejestrowane.
+* **Nagłówki e-maili**: Użyj narzędzi takich jak [Mail-Tester](https://www.mail-tester.com/) lub ręcznie sprawdź nagłówki e-maili, aby zweryfikować, czy SPF, DKIM i DMARC przechodzą, co wskazuje na poprawną konfigurację przez Forward Email.
+* **Logi Forward Email**: Sprawdź logi w panelu Forward Email, jeśli podejrzewasz problemy z dostarczaniem pochodzące z serwera SMTP.
+## Notatki dla programistów {#developer-notes}
 
-## Notatki programisty {#developer-notes}
+* **Szablony**: Listmonk korzysta z silnika szablonów Go. Zapoznaj się z jego dokumentacją, aby uzyskać zaawansowane możliwości personalizacji: `{{ .Subscriber.Attribs.your_custom_field }}`.
+* **API**: Listmonk oferuje kompleksowe REST API do zarządzania listami, subskrybentami, kampaniami, szablonami i innymi funkcjami. Link do dokumentacji API znajdziesz w stopce swojej instancji Listmonk.
+* **Pola niestandardowe**: Zdefiniuj niestandardowe pola subskrybenta w **Ustawienia -> Pola subskrybenta**, aby przechowywać dodatkowe dane.
+* **Webhooki**: Oprócz informacji o odbiciach, Listmonk może wysyłać webhooki dla innych zdarzeń (np. subskrypcji), co umożliwia integrację z innymi systemami.
 
-* **Szablony**: Listmonk korzysta z silnika szablonów Go. Zapoznaj się z dokumentacją, aby uzyskać informacje o zaawansowanej personalizacji: `{{ .Subscriber.Attribs.your_custom_field }}`.
-* **API**: Listmonk oferuje kompleksowe API REST do zarządzania listami, subskrybentami, kampaniami, szablonami i nie tylko. Link do dokumentacji API znajdziesz w stopce swojej instancji Listmonk.
-* **Pola niestandardowe**: Zdefiniuj pola niestandardowe subskrybentów w **Ustawienia -> Pola subskrybentów**, aby przechowywać dodatkowe dane.
-* **Webhooki**: Oprócz odrzuceń, Listmonk może wysyłać webhooki dla innych zdarzeń (np. subskrypcji), umożliwiając integrację z innymi systemami.
 
-## Wniosek {#conclusion}
+## Podsumowanie {#conclusion}
 
-Łącząc możliwości samodzielnego hostingu Listmonk z bezpieczną i chroniącą prywatność funkcją Forward Email, tworzysz solidną i etyczną platformę do marketingu e-mailowego. Zachowujesz pełną kontrolę nad danymi swoich odbiorców, jednocześnie korzystając z wysokiej skuteczności dostarczania wiadomości i zautomatyzowanych funkcji bezpieczeństwa.
+Integrując samodzielnie hostowaną moc Listmonk z bezpieczną, respektującą prywatność dostawą Forward Email, tworzysz solidną i etyczną platformę do email marketingu. Zachowujesz pełną kontrolę nad danymi swojej publiczności, jednocześnie korzystając z wysokiej dostarczalności i zautomatyzowanych funkcji bezpieczeństwa.
 
-Taka konfiguracja zapewnia skalowalną, ekonomiczną i przyjazną dla deweloperów alternatywę dla zastrzeżonych usług poczty e-mail, idealnie wpisując się w ideę otwartego oprogramowania i prywatności użytkowników.
+To rozwiązanie zapewnia skalowalną, opłacalną i przyjazną dla programistów alternatywę dla zamkniętych usług email, idealnie wpisując się w etos oprogramowania open-source i prywatności użytkowników.
 
 Szczęśliwego wysyłania! 🚀

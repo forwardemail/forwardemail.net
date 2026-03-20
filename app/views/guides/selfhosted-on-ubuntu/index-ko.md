@@ -1,92 +1,97 @@
-# Ubuntu용 이메일 셀프 호스팅 설치 가이드 {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# Forward Email 셀프 호스팅 설치 가이드 for Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
+
 
 ## 목차 {#table-of-contents}
 
 * [개요](#overview)
-* [필수 조건](#prerequisites)
+* [사전 준비 사항](#prerequisites)
 * [시스템 요구 사항](#system-requirements)
 * [단계별 설치](#step-by-step-installation)
   * [1단계: 초기 시스템 설정](#step-1-initial-system-setup)
-  * [2단계: DNS 확인자 구성](#step-2-configure-dns-resolvers)
+  * [2단계: DNS 리졸버 구성](#step-2-configure-dns-resolvers)
   * [3단계: 시스템 종속성 설치](#step-3-install-system-dependencies)
   * [4단계: Snap 패키지 설치](#step-4-install-snap-packages)
   * [5단계: Docker 설치](#step-5-install-docker)
   * [6단계: Docker 서비스 구성](#step-6-configure-docker-service)
   * [7단계: 방화벽 구성](#step-7-configure-firewall)
-  * [8단계: 전달 이메일 저장소 복제](#step-8-clone-forward-email-repository)
+  * [8단계: Forward Email 저장소 클론](#step-8-clone-forward-email-repository)
   * [9단계: 환경 구성 설정](#step-9-set-up-environment-configuration)
   * [10단계: 도메인 구성](#step-10-configure-your-domain)
   * [11단계: SSL 인증서 생성](#step-11-generate-ssl-certificates)
   * [12단계: 암호화 키 생성](#step-12-generate-encryption-keys)
   * [13단계: 구성에서 SSL 경로 업데이트](#step-13-update-ssl-paths-in-configuration)
   * [14단계: 기본 인증 설정](#step-14-set-up-basic-authentication)
-  * [15단계: Docker Compose를 사용하여 배포](#step-15-deploy-with-docker-compose)
+  * [15단계: Docker Compose로 배포](#step-15-deploy-with-docker-compose)
   * [16단계: 설치 확인](#step-16-verify-installation)
 * [설치 후 구성](#post-installation-configuration)
   * [DNS 레코드 설정](#dns-records-setup)
-  * [첫 번째 로그인](#first-login)
+  * [첫 로그인](#first-login)
 * [백업 구성](#backup-configuration)
   * [S3 호환 백업 설정](#set-up-s3-compatible-backup)
-  * [백업 Cron 작업 설정](#set-up-backup-cron-jobs)
+  * [백업 크론 작업 설정](#set-up-backup-cron-jobs)
 * [자동 업데이트 구성](#auto-update-configuration)
-* [유지 관리 및 모니터링](#maintenance-and-monitoring)
+* [유지보수 및 모니터링](#maintenance-and-monitoring)
   * [로그 위치](#log-locations)
-  * [정기 유지 관리 작업](#regular-maintenance-tasks)
+  * [정기 유지보수 작업](#regular-maintenance-tasks)
   * [인증서 갱신](#certificate-renewal)
 * [문제 해결](#troubleshooting)
-  * [일반적인 문제](#common-issues)
+  * [일반 문제](#common-issues)
   * [도움 받기](#getting-help)
 * [보안 모범 사례](#security-best-practices)
 * [결론](#conclusion)
 
+
 ## 개요 {#overview}
 
-이 가이드는 Ubuntu 시스템에 Forward Email의 셀프 호스팅 솔루션을 설치하는 단계별 지침을 제공합니다. 이 가이드는 Ubuntu 20.04, 22.04 및 24.04 LTS 버전에 맞춰 특별히 제작되었습니다.
+이 가이드는 Ubuntu 시스템에서 Forward Email의 셀프 호스팅 솔루션을 설치하는 단계별 지침을 제공합니다. 이 가이드는 특히 Ubuntu 20.04, 22.04, 24.04 LTS 버전에 맞춰져 있습니다.
 
-## 필수 조건 {#prerequisites}
 
-설치를 시작하기 전에 다음 사항을 확인하세요.
+## 사전 준비 사항 {#prerequisites}
+
+설치를 시작하기 전에 다음을 확인하세요:
 
 * **Ubuntu 서버**: 20.04, 22.04 또는 24.04 LTS
-* **루트 액세스**: 루트 권한으로 명령을 실행할 수 있어야 합니다(sudo 액세스).
-* **도메인 이름**: DNS 관리 액세스 권한이 있는 도메인
-* **클린 서버**: 새로 설치된 Ubuntu 사용을 권장합니다.
-* **인터넷 연결**: 패키지 및 Docker 이미지 다운로드에 필요합니다.
+* **루트 권한**: 루트 권한으로 명령을 실행할 수 있어야 합니다 (sudo 권한)
+* **도메인 이름**: DNS 관리 권한이 있는 도메인
+* **깨끗한 서버**: 새 Ubuntu 설치를 사용하는 것이 권장됩니다
+* **인터넷 연결**: 패키지 및 Docker 이미지를 다운로드하는 데 필요
+
 
 ## 시스템 요구 사항 {#system-requirements}
 
-* **RAM**: 최소 2GB (운영 환경에서는 4GB 권장)
-* **저장 공간**: 최소 20GB의 사용 가능 공간 (운영 환경에서는 50GB 이상 권장)
-* **CPU**: 최소 1개의 vCPU (운영 환경에서는 2개 이상의 vCPU 권장)
-* **네트워크**: 다음 포트에 접근 가능한 공용 IP 주소:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **RAM**: 최소 2GB (프로덕션 환경에서는 4GB 권장)
+* **저장 공간**: 최소 20GB 사용 가능 공간 (프로덕션 환경에서는 50GB 이상 권장)
+* **CPU**: 최소 1 vCPU (프로덕션 환경에서는 2개 이상 vCPU 권장)
+* **네트워크**: 다음 포트가 열려 있는 공인 IP 주소:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## 단계별 설치 {#step-by-step-installation}
 
 ### 1단계: 초기 시스템 설정 {#step-1-initial-system-setup}
 
-먼저, 시스템이 최신 상태인지 확인하고 루트 사용자로 전환하세요.
+먼저 시스템이 최신 상태인지 확인하고 루트 사용자로 전환하세요:
 
 ```bash
-# Update system packages
+# 시스템 패키지 업데이트
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# 루트 사용자로 전환 (설치에 필요)
 sudo su -
 ```
 
-### 2단계: DNS 확인자 구성 {#step-2-configure-dns-resolvers}
+### 2단계: DNS 리졸버 구성 {#step-2-configure-dns-resolvers}
 
-안정적인 인증서 생성을 위해 Cloudflare의 DNS 서버를 사용하도록 시스템을 구성하세요.
+신뢰할 수 있는 인증서 생성을 위해 시스템이 Cloudflare DNS 서버를 사용하도록 구성하세요:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# systemd-resolved가 실행 중이면 중지 및 비활성화
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -94,7 +99,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Cloudflare DNS 리졸버 구성
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -106,16 +111,15 @@ nameserver 8.8.4.4
 nameserver 2001:4860:4860::8844
 EOF
 ```
+### Step 3: 시스템 종속성 설치 {#step-3-install-system-dependencies}
 
-### 3단계: 시스템 종속성 설치 {#step-3-install-system-dependencies}
-
-이메일 전달에 필요한 패키지를 설치하세요.
+Forward Email에 필요한 패키지를 설치합니다:
 
 ```bash
-# Update package list
+# 패키지 목록 업데이트
 apt-get update -y
 
-# Install basic dependencies
+# 기본 종속성 설치
 apt-get install -y \
     ca-certificates \
     curl \
@@ -126,150 +130,150 @@ apt-get install -y \
     snapd
 ```
 
-### 4단계: Snap 패키지 설치 {#step-4-install-snap-packages}
+### Step 4: Snap 패키지 설치 {#step-4-install-snap-packages}
 
-스냅을 통해 AWS CLI와 Certbot을 설치하세요:
+snap을 통해 AWS CLI와 Certbot을 설치합니다:
 
 ```bash
-# Install AWS CLI
+# AWS CLI 설치
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Certbot 및 DNS 플러그인 설치
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 ```
 
-### 5단계: Docker 설치 {#step-5-install-docker}
+### Step 5: Docker 설치 {#step-5-install-docker}
 
-Docker CE 및 Docker Compose 설치:
+Docker CE와 Docker Compose를 설치합니다:
 
 ```bash
-# Add Docker's official GPG key
+# Docker 공식 GPG 키 추가
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository
+# Docker 저장소 추가
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# 패키지 인덱스 업데이트 및 Docker 설치
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Verify Docker installation
+# Docker 설치 확인
 docker --version
 docker compose version
 ```
 
-### 6단계: Docker 서비스 구성 {#step-6-configure-docker-service}
+### Step 6: Docker 서비스 구성 {#step-6-configure-docker-service}
 
-Docker가 자동으로 시작되고 실행 중인지 확인하세요.
+Docker가 자동으로 시작되고 실행 중인지 확인합니다:
 
 ```bash
-# Enable and start Docker service
+# Docker 서비스 활성화 및 시작
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Docker 실행 상태 확인
 docker info
 ```
 
-Docker가 시작되지 않으면 수동으로 시작해 보세요.
+Docker가 시작하지 않으면 수동으로 시작해보세요:
 
 ```bash
-# Alternative startup method if systemctl fails
+# systemctl 실패 시 대체 시작 방법
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### 7단계: 방화벽 구성 {#step-7-configure-firewall}
+### Step 7: 방화벽 구성 {#step-7-configure-firewall}
 
-서버를 보호하려면 UFW 방화벽을 설정하세요.
+서버 보안을 위해 UFW 방화벽을 설정합니다:
 
 ```bash
-# Set default policies
+# 기본 정책 설정
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# SSH 허용 (중요 - 접속 차단 방지!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# 이메일 관련 포트 허용
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (Let's Encrypt용)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (대체 포트)
+ufw allow 2995/tcp  # POP3 (대체 포트)
+ufw allow 3456/tcp  # 사용자 지정 서비스 포트
+ufw allow 4000/tcp  # 사용자 지정 서비스 포트
+ufw allow 5000/tcp  # 사용자 지정 서비스 포트
 
-# Allow local database connections
+# 로컬 데이터베이스 연결 허용
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# 방화벽 활성화
 echo "y" | ufw enable
 
-# Check firewall status
+# 방화벽 상태 확인
 ufw status numbered
 ```
 
-### 8단계: 전달 이메일 저장소 복제 {#step-8-clone-forward-email-repository}
+### Step 8: Forward Email 저장소 클론 {#step-8-clone-forward-email-repository}
 
-Forward Email 소스 코드를 다운로드하세요:
+Forward Email 소스 코드를 다운로드합니다:
 
 ```bash
-# Set up variables
+# 변수 설정
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# 저장소 클론
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# 클론 성공 여부 확인
 ls -la
 ```
 
-### 9단계: 환경 구성 설정 {#step-9-set-up-environment-configuration}
+### Step 9: 환경 구성 설정 {#step-9-set-up-environment-configuration}
 
-환경 구성을 준비하세요:
+환경 구성을 준비합니다:
 
 ```bash
-# Set up directory variables
+# 디렉터리 변수 설정
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# 기본 환경 파일 복사
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# SSL 디렉터리 생성
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# 데이터베이스 디렉터리 생성
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### 10단계: 도메인 구성 {#step-10-configure-your-domain}
+### Step 10: 도메인 구성 {#step-10-configure-your-domain}
 
-도메인 이름을 설정하고 환경 변수를 업데이트하세요.
+도메인 이름을 설정하고 환경 변수를 업데이트합니다:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# 'yourdomain.com'을 실제 도메인으로 교체하세요
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# 환경 파일 업데이트 함수
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -281,7 +285,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# 도메인 관련 환경 변수 업데이트
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -303,13 +307,12 @@ update_env_file "SELF_HOSTED" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
+### Step 11: SSL 인증서 생성 {#step-11-generate-ssl-certificates}
 
-### 11단계: SSL 인증서 생성 {#step-11-generate-ssl-certificates}
-
-#### 옵션 A: 수동 DNS 챌린지(대부분 사용자에게 권장) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### 옵션 A: 수동 DNS 챌린지 (대부분 사용자에게 권장) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# 수동 DNS 챌린지를 사용하여 인증서 생성
 certbot certonly \
   --manual \
   --agree-tos \
@@ -318,23 +321,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**중요**: 메시지가 표시되면 DNS에 TXT 레코드를 생성해야 합니다. 동일한 도메인에 대해 여러 개의 챌린지가 표시될 수 있습니다. **모두 생성하세요**. 두 번째 TXT 레코드를 추가할 때 첫 번째 TXT 레코드를 삭제하지 마세요.
+**중요**: 요청 시 DNS에 TXT 레코드를 생성해야 합니다. 동일 도메인에 대해 여러 챌린지가 표시될 수 있으니 - **모두 생성하세요**. 두 번째 TXT 레코드를 추가할 때 첫 번째 TXT 레코드를 제거하지 마세요.
 
-#### 옵션 B: Cloudflare DNS(Cloudflare를 사용하는 경우) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### 옵션 B: Cloudflare DNS (Cloudflare를 사용하는 경우) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-도메인이 DNS에 Cloudflare를 사용하는 경우 인증서 생성을 자동화할 수 있습니다.
+도메인이 Cloudflare DNS를 사용하는 경우 인증서 생성을 자동화할 수 있습니다:
 
 ```bash
-# Create Cloudflare credentials file
+# Cloudflare 자격 증명 파일 생성
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# 적절한 권한 설정
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# 인증서 자동 생성
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -347,53 +350,53 @@ certbot certonly \
 
 #### 인증서 복사 {#copy-certificates}
 
-인증서 생성 후 이를 애플리케이션 디렉토리에 복사합니다.
+인증서 생성 후 애플리케이션 디렉터리로 복사하세요:
 
 ```bash
-# Copy certificates to application SSL directory
+# 인증서를 애플리케이션 SSL 디렉터리로 복사
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# 인증서가 복사되었는지 확인
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### 12단계: 암호화 키 생성 {#step-12-generate-encryption-keys}
+### Step 12: 암호화 키 생성 {#step-12-generate-encryption-keys}
 
-안전한 운영에 필요한 다양한 암호화 키를 생성합니다.
+안전한 운영을 위해 필요한 다양한 암호화 키를 생성하세요:
 
 ```bash
-# Generate helper encryption key
+# 헬퍼 암호화 키 생성
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# 이메일 전달용 SRS 비밀키 생성
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# TXT 암호화 키 생성
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# 이메일 서명을 위한 DKIM 개인 키 생성
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# 웹훅 서명 키 생성
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# SMTP 전송 비밀번호 설정
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ 모든 암호화 키가 성공적으로 생성되었습니다"
 ```
 
-### 13단계: 구성에서 SSL 경로 업데이트 {#step-13-update-ssl-paths-in-configuration}
+### Step 13: 구성에서 SSL 경로 업데이트 {#step-13-update-ssl-paths-in-configuration}
 
-환경 파일에서 SSL 인증서 경로를 구성합니다.
+환경 파일에서 SSL 인증서 경로를 구성하세요:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# 올바른 인증서 파일을 가리키도록 SSL 경로 업데이트
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -401,77 +404,77 @@ sed -i -E \
   "$SELF_HOST_DIR/$ENV_FILE"
 ```
 
-### 14단계: 기본 인증 설정 {#step-14-set-up-basic-authentication}
+### Step 14: 기본 인증 설정 {#step-14-set-up-basic-authentication}
 
-임시 기본 인증 자격 증명을 만듭니다.
+임시 기본 인증 자격 증명을 생성하세요:
 
 ```bash
-# Generate a secure random password
+# 안전한 임의 비밀번호 생성
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# 환경 파일에 기본 인증 자격 증명 업데이트
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# 자격 증명 표시 (반드시 저장하세요!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 중요: 이 로그인 자격 증명을 저장하세요!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "사용자 이름: admin"
+echo "비밀번호: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "설치 후 웹 인터페이스에 접근할 때 필요합니다."
 echo ""
 ```
 
-### 15단계: Docker Compose로 배포 {#step-15-deploy-with-docker-compose}
+### Step 15: Docker Compose로 배포 {#step-15-deploy-with-docker-compose}
 
-모든 이메일 전달 서비스를 시작합니다.
+모든 Forward Email 서비스를 시작하세요:
 
 ```bash
-# Set Docker Compose file path
+# Docker Compose 파일 경로 설정
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# 기존 컨테이너 중지
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
-# Pull the latest images
+# 최신 이미지 가져오기
 docker compose -f "$DOCKER_COMPOSE_FILE" pull
 
-# Start all services in detached mode
+# 모든 서비스를 분리 모드로 시작
 docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Wait a moment for services to start
+# 서비스 시작 대기
 sleep 10
 
-# Check service status
+# 서비스 상태 확인
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
+### Step 16: 설치 확인 {#step-16-verify-installation}
 
-### 16단계: 설치 확인 {#step-16-verify-installation}
-
-모든 서비스가 올바르게 실행되고 있는지 확인하세요.
+모든 서비스가 정상적으로 실행 중인지 확인하세요:
 
 ```bash
-# Check Docker containers
+# Docker 컨테이너 확인
 docker ps
 
-# Check service logs for any errors
+# 서비스 로그에서 오류 확인
 docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 
-# Test web interface connectivity
+# 웹 인터페이스 연결 테스트
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# 포트가 리스닝 중인지 확인
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
+
 
 ## 설치 후 구성 {#post-installation-configuration}
 
 ### DNS 레코드 설정 {#dns-records-setup}
 
-도메인에 대해 다음 DNS 레코드를 구성해야 합니다.
+도메인에 다음 DNS 레코드를 구성해야 합니다:
 
 #### MX 레코드 {#mx-record}
 
@@ -500,10 +503,10 @@ carddav A YOUR_SERVER_IP
 
 #### DKIM 레코드 {#dkim-record}
 
-DKIM 공개 키를 받으세요:
+DKIM 공개 키를 가져옵니다:
 
 ```bash
-# Extract DKIM public key
+# DKIM 공개 키 추출
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
@@ -521,70 +524,73 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### 첫 로그인 {#first-login}
 
-1. 웹 브라우저를 열고 `https://yourdomain.com`으로 이동합니다.
-2. 앞서 저장한 기본 인증 정보를 입력합니다.
-3. 초기 설정 마법사를 완료합니다.
-4. 첫 번째 이메일 계정을 생성합니다.
+1. 웹 브라우저를 열고 `https://yourdomain.com` 으로 이동하세요
+2. 이전에 저장한 기본 인증 자격 증명을 입력하세요
+3. 초기 설정 마법사를 완료하세요
+4. 첫 이메일 계정을 생성하세요
+
 
 ## 백업 구성 {#backup-configuration}
 
 ### S3 호환 백업 설정 {#set-up-s3-compatible-backup}
 
-S3 호환 스토리지에 대한 자동 백업을 구성합니다.
+S3 호환 스토리지로 자동 백업을 구성하세요:
 
 ```bash
-# Create AWS credentials directory
+# AWS 자격 증명 디렉터리 생성
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# AWS 자격 증명 구성
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# AWS 설정 구성
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# AWS가 아닌 S3 (예: Cloudflare R2)용 엔드포인트 URL 추가
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### 백업 Cron 작업 설정 {#set-up-backup-cron-jobs}
+### 백업 크론 작업 설정 {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# 백업 스크립트 실행 권한 부여
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# MongoDB 백업 크론 작업 추가 (매일 자정 실행)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Redis 백업 크론 작업 추가 (매일 자정 실행)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# 크론 작업이 추가되었는지 확인
 crontab -l
 ```
+
 
 ## 자동 업데이트 구성 {#auto-update-configuration}
 
-Forward Email 설치에 대한 자동 업데이트를 설정하세요.
+Forward Email 설치의 자동 업데이트를 설정하세요:
 
 ```bash
-# Create auto-update command
+# 자동 업데이트 명령 생성
 DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 
-# Add auto-update cron job (runs daily at 1 AM)
+# 자동 업데이트 크론 작업 추가 (매일 오전 1시 실행)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# 크론 작업이 추가되었는지 확인
 crontab -l
 ```
+
 
 ## 유지 관리 및 모니터링 {#maintenance-and-monitoring}
 
@@ -601,78 +607,79 @@ crontab -l
 2. **서비스 상태 확인**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **로그 검토**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **시스템 패키지 업데이트**: `apt update && apt upgrade`
-5. **인증서 갱신**: 인증서는 자동으로 갱신되지만 만료일은 모니터링됩니다.
+5. **인증서 갱신**: 인증서는 자동 갱신되지만 만료를 모니터링하세요
 
 ### 인증서 갱신 {#certificate-renewal}
 
-인증서는 자동으로 갱신되지만 필요한 경우 수동으로 갱신할 수 있습니다.
+인증서는 자동으로 갱신되지만 필요 시 수동으로 갱신할 수 있습니다:
 
 ```bash
-# Manual certificate renewal
+# 수동 인증서 갱신
 certbot renew
 
-# Copy renewed certificates
+# 갱신된 인증서 복사
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# 새 인증서를 사용하도록 서비스 재시작
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
-
 ## 문제 해결 {#troubleshooting}
 
 ### 일반적인 문제 {#common-issues}
 
-#### 1. Docker 서비스가 시작되지 않습니다. {#1-docker-service-wont-start}
+#### 1. Docker 서비스가 시작되지 않음 {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Docker 상태 확인
 systemctl status docker
 
-# Try alternative startup
+# 대체 시작 시도
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
 #### 2. 인증서 생성 실패 {#2-certificate-generation-fails}
 
-* 80번과 443번 포트에 접속 가능한지 확인하세요.
-* DNS 레코드가 서버를 가리키는지 확인하세요.
-* 방화벽 설정을 확인하세요.
+* 포트 80과 443이 접근 가능한지 확인하세요
+* DNS 레코드가 서버를 가리키는지 확인하세요
+* 방화벽 설정을 점검하세요
 
-#### 3. 이메일 전송 문제 {#3-email-delivery-issues}
+#### 3. 이메일 전달 문제 {#3-email-delivery-issues}
 
-* MX 레코드가 올바른지 확인하세요.
-* SPF, DKIM, DMARC 레코드를 확인하세요.
-* 호스팅 제공업체가 포트 25를 차단하지 않았는지 확인하세요.
+* MX 레코드가 올바른지 확인하세요
+* SPF, DKIM, DMARC 레코드를 점검하세요
+* 호스팅 제공업체가 포트 25를 차단하지 않는지 확인하세요
 
-#### 4. 웹 인터페이스에 접근할 수 없음 {#4-web-interface-not-accessible}
+#### 4. 웹 인터페이스에 접근 불가 {#4-web-interface-not-accessible}
 
 * 방화벽 설정 확인: `ufw status`
 * SSL 인증서 확인: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
 * 기본 인증 자격 증명 확인
 
-### 도움말 받기 {#getting-help}
+### 도움 받기 {#getting-help}
 
 * **문서**: <https://forwardemail.net/self-hosted>
 * **GitHub 이슈**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **커뮤니티 지원**: 프로젝트의 GitHub 토론을 확인하세요
+* **커뮤니티 지원**: 프로젝트의 GitHub 토론 확인
+
 
 ## 보안 모범 사례 {#security-best-practices}
 
-1. **시스템 업데이트 유지**: Ubuntu 및 패키지를 정기적으로 업데이트하세요.
-2. **로그 모니터링**: 로그 모니터링 및 알림을 설정하세요.
-3. **정기적으로 백업하세요.**: 백업 및 복원 절차를 테스트하세요.
-4. **강력한 비밀번호 사용**: 모든 계정에 강력한 비밀번호를 생성하세요.
-5. **Fail2Ban 활성화**: 보안 강화를 위해 fail2ban 설치를 고려하세요.
-6. **정기적인 보안 감사**: 구성을 주기적으로 검토하세요.
+1. **시스템 업데이트 유지**: Ubuntu 및 패키지를 정기적으로 업데이트하세요
+2. **로그 모니터링**: 로그 모니터링 및 알림 설정
+3. **정기 백업**: 백업 및 복원 절차 테스트
+4. **강력한 비밀번호 사용**: 모든 계정에 강력한 비밀번호 생성
+5. **Fail2Ban 활성화**: 추가 보안을 위해 fail2ban 설치 고려
+6. **정기 보안 감사**: 주기적으로 구성 검토
+
 
 ## 결론 {#conclusion}
 
-이제 Ubuntu에서 Forward Email 셀프호스팅 설치가 완료되어 실행 중일 것입니다. 다음 사항을 기억하세요.
+Forward Email 셀프 호스팅 설치가 이제 완료되어 Ubuntu에서 실행 중이어야 합니다. 다음을 기억하세요:
 
-1. DNS 레코드를 올바르게 구성하세요.
-2. 이메일 송수신을 테스트하세요.
-3. 정기적인 백업을 설정하세요.
-4. 시스템을 정기적으로 모니터링하세요.
-5. 설치를 최신 상태로 유지하세요.
+1. DNS 레코드를 올바르게 구성하세요
+2. 이메일 송수신 테스트를 하세요
+3. 정기 백업을 설정하세요
+4. 시스템을 정기적으로 모니터링하세요
+5. 설치를 최신 상태로 유지하세요
 
-추가 구성 옵션 및 고급 기능에 대해서는 <https://forwardemail.net/self-hosted#configuration>.>의 공식 Forward Email 문서를 참조하세요.
+추가 구성 옵션 및 고급 기능은 공식 Forward Email 문서 <https://forwardemail.net/self-hosted#configuration>를 참조하세요.

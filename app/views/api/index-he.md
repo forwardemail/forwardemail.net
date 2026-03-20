@@ -1,221 +1,258 @@
-# ממשק API של דוא"ל {#email-api}
+# API דואר אלקטרוני {#email-api}
 
-## תוכן עניינים
+
+## תוכן העניינים {#table-of-contents}
 
 * [ספריות](#libraries)
-* [כתובת URL בסיסית](#base-uri)
+* [כתובת בסיסית](#base-uri)
 * [אימות](#authentication)
+  * [אימות באמצעות אסימון API (מומלץ לרוב נקודות הקצה)](#api-token-authentication-recommended-for-most-endpoints)
+  * [אימות באמצעות אישורי כינוי (לדואר יוצא)](#alias-credentials-authentication-for-outbound-email)
+  * [נקודות קצה של כינוי בלבד](#alias-only-endpoints)
 * [שגיאות](#errors)
 * [לוקליזציה](#localization)
-* [דִפּוּף](#pagination)
-* [יומני רישום](#logs)
-  * [אחזור יומני רישום](#retrieve-logs)
-* [חֶשְׁבּוֹן](#account)
-  * [צור חשבון](#create-account)
-  * [אחזור חשבון](#retrieve-account)
+* [דפדוף](#pagination)
+* [יומנים](#logs)
+  * [שליפת יומנים](#retrieve-logs)
+* [חשבון](#account)
+  * [יצירת חשבון](#create-account)
+  * [שליפת חשבון](#retrieve-account)
   * [עדכון חשבון](#update-account)
-* [אנשי קשר חלופי (CardDAV)](#alias-contacts-carddav)
+* [אנשי קשר של כינוי (CardDAV)](#alias-contacts-carddav)
   * [רשימת אנשי קשר](#list-contacts)
-  * [צור איש קשר](#create-contact)
-  * [אחזור איש קשר](#retrieve-contact)
+  * [יצירת איש קשר](#create-contact)
+  * [שליפת איש קשר](#retrieve-contact)
   * [עדכון איש קשר](#update-contact)
   * [מחיקת איש קשר](#delete-contact)
-* [לוחות שנה חלומיים (CalDAV)](#alias-calendars-caldav)
+* [לוחות שנה של כינוי (CalDAV)](#alias-calendars-caldav)
   * [רשימת לוחות שנה](#list-calendars)
-  * [צור לוח שנה](#create-calendar)
-  * [אחזור לוח שנה](#retrieve-calendar)
+  * [יצירת לוח שנה](#create-calendar)
+  * [שליפת לוח שנה](#retrieve-calendar)
   * [עדכון לוח שנה](#update-calendar)
   * [מחיקת לוח שנה](#delete-calendar)
-* [הודעות כינוי (IMAP/POP3)](#alias-messages-imappop3)
-  * [רשימת הודעות וחיפושן](#list-and-search-for-messages)
-  * [צור הודעה](#create-message)
-  * [אחזור הודעה](#retrieve-message)
+* [הודעות של כינוי (IMAP/POP3)](#alias-messages-imappop3)
+  * [רשימה וחיפוש הודעות](#list-and-search-for-messages)
+  * [יצירת הודעה](#create-message)
+  * [שליפת הודעה](#retrieve-message)
   * [עדכון הודעה](#update-message)
   * [מחיקת הודעה](#delete-message)
-* [תיקיות כינויים (IMAP/POP3)](#alias-folders-imappop3)
+* [תיקיות של כינוי (IMAP/POP3)](#alias-folders-imappop3)
   * [רשימת תיקיות](#list-folders)
-  * [צור תיקייה](#create-folder)
-  * [אחזור תיקייה](#retrieve-folder)
-  * [עדכון תיקייה](#update-folder)
-  * [מחיקת תיקייה](#delete-folder)
-  * [העתקת תיקייה](#copy-folder)
-* [מיילים יוצאים](#outbound-emails)
-  * [קבל מגבלת דוא"ל SMTP יוצאת](#get-outbound-smtp-email-limit)
-  * [רשימת הודעות דוא"ל SMTP יוצאות](#list-outbound-smtp-emails)
-  * [צור דוא"ל SMTP יוצא](#create-outbound-smtp-email)
-  * [אחזור דוא"ל SMTP יוצא](#retrieve-outbound-smtp-email)
-  * [מחיקת דוא"ל SMTP יוצא](#delete-outbound-smtp-email)
+  * [יצירת תיקיה](#create-folder)
+  * [שליפת תיקיה](#retrieve-folder)
+  * [עדכון תיקיה](#update-folder)
+  * [מחיקת תיקיה](#delete-folder)
+  * [העתקת תיקיה](#copy-folder)
+* [דואר יוצא](#outbound-emails)
+  * [קבלת מגבלת דואר SMTP יוצא](#get-outbound-smtp-email-limit)
+  * [רשימת דואר SMTP יוצא](#list-outbound-smtp-emails)
+  * [יצירת דואר SMTP יוצא](#create-outbound-smtp-email)
+  * [שליפת דואר SMTP יוצא](#retrieve-outbound-smtp-email)
+  * [מחיקת דואר SMTP יוצא](#delete-outbound-smtp-email)
 * [דומיינים](#domains)
   * [רשימת דומיינים](#list-domains)
-  * [צור דומיין](#create-domain)
-  * [אחזור דומיין](#retrieve-domain)
+  * [יצירת דומיין](#create-domain)
+  * [שליפת דומיין](#retrieve-domain)
   * [אימות רשומות דומיין](#verify-domain-records)
-  * [אימות רשומות SMTP של הדומיין](#verify-domain-smtp-records)
-  * [רשימת סיסמאות כלליות לכל הדומיין](#list-domain-wide-catch-all-passwords)
-  * [צור סיסמה כוללת לכל הדומיין](#create-domain-wide-catch-all-password)
-  * [הסר סיסמה כוללת לכל הדומיין](#remove-domain-wide-catch-all-password)
+  * [אימות רשומות SMTP של דומיין](#verify-domain-smtp-records)
+  * [רשימת סיסמאות catch-all כלל-דומיין](#list-domain-wide-catch-all-passwords)
+  * [יצירת סיסמת catch-all כלל-דומיין](#create-domain-wide-catch-all-password)
+  * [הסרת סיסמת catch-all כלל-דומיין](#remove-domain-wide-catch-all-password)
   * [עדכון דומיין](#update-domain)
   * [מחיקת דומיין](#delete-domain)
 * [הזמנות](#invites)
-  * [קבל את הזמנת הדומיין](#accept-domain-invite)
-  * [צור הזמנה לדומיין](#create-domain-invite)
-  * [הסר הזמנה לדומיין](#remove-domain-invite)
+  * [קבלת הזמנת דומיין](#accept-domain-invite)
+  * [יצירת הזמנת דומיין](#create-domain-invite)
+  * [הסרת הזמנת דומיין](#remove-domain-invite)
 * [חברים](#members)
   * [עדכון חבר דומיין](#update-domain-member)
-  * [הסר חבר דומיין](#remove-domain-member)
+  * [הסרת חבר דומיין](#remove-domain-member)
 * [כינויים](#aliases)
-  * [צור סיסמת כינוי](#generate-an-alias-password)
-  * [רשימת כינויי דומיין](#list-domain-aliases)
-  * [צור כינוי דומיין חדש](#create-new-domain-alias)
-  * [אחזור כינוי דומיין](#retrieve-domain-alias)
+  * [יצירת סיסמת כינוי](#generate-an-alias-password)
+  * [רשימת כינויים בדומיין](#list-domain-aliases)
+  * [יצירת כינוי דומיין חדש](#create-new-domain-alias)
+  * [שליפת כינוי דומיין](#retrieve-domain-alias)
   * [עדכון כינוי דומיין](#update-domain-alias)
   * [מחיקת כינוי דומיין](#delete-domain-alias)
 * [הצפנה](#encrypt)
   * [הצפנת רשומת TXT](#encrypt-txt-record)
 
+
 ## ספריות {#libraries}
 
-כרגע עדיין לא פרסמנו מעטפות API, אך אנו מתכננים לעשות זאת בעתיד הקרוב. שלחו אימייל לכתובת <api@forwardemail.net> אם תרצו לקבל הודעה כאשר מעטפת ה-API של שפת תכנות מסוימת יוצאת. בינתיים, תוכלו להשתמש בספריות בקשות HTTP המומלצות באפליקציה שלכם, או פשוט להשתמש ב-[סִלְסוּל](https://stackoverflow.com/a/27442239/3586413) כמו בדוגמאות שלהלן.
+כרגע עדיין לא פרסמנו עטיפות API, אבל אנו מתכננים לעשות זאת בעתיד הקרוב. שלח דואר אלקטרוני ל-<api@forwardemail.net> אם ברצונך לקבל הודעה כאשר עטיפת API בשפת תכנות מסוימת תפורסם. בינתיים, תוכל להשתמש בספריות בקשות HTTP המומלצות האלה באפליקציה שלך, או פשוט להשתמש ב-[curl](https://stackoverflow.com/a/27442239/3586413) כפי שמודגם בדוגמאות למטה.
 
-| שָׂפָה | סִפְרִיָה |
+| שפה       | ספריה                                                                 |
 | ---------- | ---------------------------------------------------------------------- |
-| אוֹדֶם | [Faraday](https://github.com/lostisland/faraday) |
-| פִּיתוֹן | [requests](https://github.com/psf/requests) |
-| ג'אווה | [OkHttp](https://github.com/square/okhttp/) |
-| PHP | [guzzle](https://github.com/guzzle/guzzle) |
-| ג'אווהסקריפט | [superagent](https://github.com/ladjs/superagent) (אנחנו מתחזקים) |
-| Node.js | [superagent](https://github.com/ladjs/superagent) (אנחנו מתחזקים) |
-| לָלֶכֶת | [net/http](https://golang.org/pkg/net/http/) |
-| .NET | [RestSharp](https://github.com/restsharp/RestSharp) |
+| Ruby       | [Faraday](https://github.com/lostisland/faraday)                       |
+| Python     | [requests](https://github.com/psf/requests)                            |
+| Java       | [OkHttp](https://github.com/square/okhttp/)                            |
+| PHP        | [guzzle](https://github.com/guzzle/guzzle)                             |
+| JavaScript | [superagent](https://github.com/ladjs/superagent) (אנחנו המתחזקים)    |
+| Node.js    | [superagent](https://github.com/ladjs/superagent) (אנחנו המתחזקים)    |
+| Go         | [net/http](https://golang.org/pkg/net/http/)                           |
+| .NET       | [RestSharp](https://github.com/restsharp/RestSharp)                    |
+## Base URI {#base-uri}
 
-## כתובת URL בסיסית {#base-uri}
+נתיב ה-HTTP הבסיסי הנוכחי הוא: `BASE_URI`.
 
-נתיב ה-URI הבסיסי הנוכחי של HTTP הוא: `BASE_URI`.
 
-## אימות {#authentication}
+## Authentication {#authentication}
 
-כל נקודות הקצה דורשות ש-[מפתח API](https://forwardemail.net/my-account/security) יוגדר כערך "שם משתמש" של כותרת [הרשאה בסיסית](https://en.wikipedia.org/wiki/Basic_access_authentication) של הבקשה (למעט [אנשי קשר חלופיים](#alias-contacts), [לוחות שנה חלופיים](#alias-calendars) ו-[תיבות דואר חלופיות](#alias-mailboxes) המשתמשים ב-[שם משתמש וסיסמה כינויים שנוצרו](/faq#do-you-support-receiving-email-with-imap)).
+כל נקודות הקצה דורשות אימות באמצעות [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication). אנו תומכים בשתי שיטות אימות:
 
-אל דאגה - דוגמאות ניתנות למטה עבורך אם אינך בטוח מה זה.
+### API Token Authentication (מומלץ לרוב נקודות הקצה) {#api-token-authentication-recommended-for-most-endpoints}
 
-## שגיאות {#errors}
+הגדר את [מפתח ה-API שלך](https://forwardemail.net/my-account/security) כערך "username" עם סיסמה ריקה:
 
-אם מתרחשות שגיאות כלשהן, גוף התגובה של בקשת ה-API יכיל הודעת שגיאה מפורטת.
+```sh
+curl BASE_URI/v1/account \
+  -u API_TOKEN:
+```
 
-| קוד | שֵׁם |
+שים לב לנקודתיים (`:`) אחרי אסימון ה-API – זה מציין סיסמה ריקה בפורמט Basic Auth.
+
+### Alias Credentials Authentication (לדואר יוצא) {#alias-credentials-authentication-for-outbound-email}
+
+נקודת הקצה [Create outbound SMTP email](#create-outbound-smtp-email) תומכת גם באימות באמצעות כתובת הדואר האלקטרוני של הכינוי שלך וסיסמת כינוי [שנוצרה](/faq#do-you-support-receiving-email-with-imap):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@yourdomain.com:your_generated_password" \
+  -d "to=recipient@example.com" \
+  -d "subject=Hello" \
+  -d "text=Test email"
+```
+
+שיטה זו שימושית כאשר שולחים מיילים מיישומים שכבר משתמשים באישורי SMTP ומאפשרת מעבר חלק מ-SMTP ל-API שלנו.
+
+### Alias-Only Endpoints {#alias-only-endpoints}
+
+נקודות הקצה [Alias Contacts](#alias-contacts-carddav), [Alias Calendars](#alias-calendars-caldav), [Alias Messages](#alias-messages-imappop3), ו-[Alias Folders](#alias-folders-imappop3) דורשות אישורי כינוי ואינן תומכות באימות באמצעות אסימון API.
+
+אל תדאג – דוגמאות מסופקות למטה אם אינך בטוח מה זה.
+
+
+## Errors {#errors}
+
+אם מתרחשות שגיאות, גוף התגובה של בקשת ה-API יכיל הודעת שגיאה מפורטת.
+
+| Code | Name                  |
 | ---- | --------------------- |
-| 200 | OK |
-| 400 | בקשה שגויה |
-| 401 | לא מורשה |
-| 403 | אָסוּר |
-| 404 | לא נמצא |
-| 429 | יותר מדי בקשות |
-| 500 | שגיאת שרת פנימית |
-| 501 | לא יושם |
-| 502 | שער רע |
-| 503 | השירות אינו זמין |
-| 504 | פסק זמן של שער הגישה |
+| 200  | OK                    |
+| 400  | בקשה שגויה           |
+| 401  | לא מאומת             |
+| 403  | אסור                 |
+| 404  | לא נמצא              |
+| 429  | יותר מדי בקשות       |
+| 500  | שגיאת שרת פנימית     |
+| 501  | לא מיושם             |
+| 502  | שער שגוי             |
+| 503  | שירות לא זמין        |
+| 504  | פקיעת זמן שער        |
 
 > \[!TIP]
-> אם קיבלתם קוד סטטוס 5xx (מה שלא אמור לקרות), אנא צרו איתנו קשר בכתובת <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> ונעזור לכם לפתור את הבעיה באופן מיידי.
+> אם אתה מקבל קוד סטטוס 5xx (שלא אמור לקרות), אנא פנה אלינו בכתובת <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> ונעזור לך לפתור את הבעיה מיד.
 
-## לוקליזציה {#localization}
 
-השירות שלנו מתורגם ליותר מ-25 שפות שונות. כל הודעות התגובה של ה-API מתורגמות למיקום האחרון שזוהה של המשתמש שביצע את בקשת ה-API. ניתן לעקוף זאת על ידי העברת כותרת `Accept-Language` מותאמת אישית. אל תהסס לנסות זאת באמצעות תפריט השפות הנפתח בתחתית דף זה.
+## Localization {#localization}
 
-## דפדוף {#pagination}
+השירות שלנו מתורגם ליותר מ-25 שפות שונות. כל הודעות התגובה של ה-API מתורגמות לשפת הממשק האחרונה שזוהתה של המשתמש המבצע את בקשת ה-API. ניתן לעקוף זאת על ידי העברת כותרת מותאמת אישית `Accept-Language`. אל תהסס לנסות זאת באמצעות תפריט השפות בתחתית הדף.
+
+
+## Pagination {#pagination}
 
 > \[!NOTE]
-> החל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור [רשימת דומיינים](#list-domains) ו-[רשימת כינויי דומיין](#list-domain-aliases) יעמדו כברירת מחדל על מספר תוצאות מקסימלי של `1000` לעמוד. אם ברצונך להצטרף להתנהגות זו מוקדם, תוכל להעביר את `?paginate=true` כפרמטר שאילתה נוסף לכתובת האתר עבור שאילתת נקודת הקצה.
+> החל מ-1 בנובמבר 2024 נקודות הקצה של [List domains](#list-domains) ו-[List domain aliases](#list-domain-aliases) יוגדרו כברירת מחדל ל-`1000` תוצאות מקסימום לעמוד. אם ברצונך להפעיל התנהגות זו מוקדם יותר, תוכל להעביר `?paginate=true` כפרמטר נוסף ב-querystring לכתובת ה-URL של נקודת הקצה.
 
-חלוקת עימודים נתמכת על ידי כל נקודות הקצה של ה-API המציגות תוצאות.
+דפדוף (Pagination) נתמך בכל נקודות הקצה שמציגות רשימות תוצאות.
 
-פשוט ספקו את מאפייני מחרוזת השאילתה `page` (ואופציונלי `limit`).
+פשוט ספק את מאפייני ה-querystring `page` (ואופציונלית `limit`).
 
-המאפיין `page` צריך להיות מספר גדול או שווה ל-`1`. אם תספק `limit` (גם הוא מספר), אז הערך המינימלי הוא `10` והמקסימום הוא `50` (אלא אם כן צוין אחרת).
+המאפיין `page` צריך להיות מספר גדול או שווה ל-`1`. אם תספק `limit` (גם מספר), הערך המינימלי הוא `10` והמקסימלי הוא `50` (אלא אם צוין אחרת).
 
-| פרמטרים של מחרוזת שאילתה | דָרוּשׁ | סוּג | תֵאוּר |
+| Querystring Parameter | Required | Type   | Description                                                                                                                                               |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `page` | לֹא | מִספָּר | דף התוצאות להחזרה. אם לא צוין, הערך `page` יהיה `1`. חייב להיות מספר גדול או שווה ל-`1`. |
-| `limit` | לֹא | מִספָּר | מספר התוצאות להחזרה בכל עמוד. ברירת המחדל היא `10` אם לא צוין. חייב להיות מספר גדול או שווה ל-`1`, וקטן או שווה ל-`50`. |
+| `page`                | No       | Number | עמוד התוצאות להחזרה. אם לא צויין, ערך `page` יהיה `1`. חייב להיות מספר גדול או שווה ל-`1`.                                                             |
+| `limit`               | No       | Number | מספר התוצאות להחזרה בכל עמוד. ברירת המחדל היא `10` אם לא צויין. חייב להיות מספר גדול או שווה ל-`1`, ופחות או שווה ל-`50`.                            |
+כדי לקבוע האם ישנם תוצאות נוספות זמינות, אנו מספקים את כותרות התגובה HTTP הבאות (שאתה יכול לנתח כדי לבצע דפדוף תוצאות באופן תכנותי):
 
-על מנת לקבוע האם קיימות תוצאות נוספות, אנו מספקים את כותרות תגובת ה-HTTP הבאות (אותן ניתן לנתח על מנת למיין אותן באופן תכנותי):
-
-| כותרת תגובת HTTP | דוּגמָה | תֵאוּר |
+| HTTP Response Header | Example                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                                                                                                                        |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `X-Page-Count` | `X-Page-Count: 3` | מספר העמודים הכולל הזמין. |
-| `X-Page-Current` | `X-Page-Current: 1` | דף התוצאות הנוכחי שהוחזר (לדוגמה, בהתבסס על פרמטר מחרוזת השאילתה `page`). |
-| `X-Page-Size` | `X-Page-Size: 10` | המספר הכולל של תוצאות שהוחזרו בדף (לדוגמה, בהתבסס על פרמטר מחרוזת השאילתה `limit` והתוצאות בפועל שהוחזרו). |
-| `X-Item-Count` | `X-Item-Count: 30` | המספר הכולל של פריטים הזמינים בכל הדפים. |
-| `Link` | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | אנו מספקים כותרת תגובת HTTP `Link` שניתן לנתח כפי שמוצג בדוגמה. זהו [similar to GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (לדוגמה, לא כל הערכים יסופקו אם הם אינם רלוונטיים או זמינים, לדוגמה, `"next"` לא יסופק אם אין דף נוסף). |
-
-> בקשה לדוגמה:
+| `X-Page-Count`       | `X-Page-Count: 3`                                                                                                                                                                                                                                        | סך כל מספר הדפים הזמינים.                                                                                                                                                                                                                                                                                                                                       |
+| `X-Page-Current`     | `X-Page-Current: 1`                                                                                                                                                                                                                                      | הדף הנוכחי של התוצאות שהוחזרו (למשל בהתבסס על פרמטר השאילתה `page`).                                                                                                                                                                                                                                                                                           |
+| `X-Page-Size`        | `X-Page-Size: 10`                                                                                                                                                                                                                                        | סך כל מספר התוצאות בדף שהוחזר (למשל בהתבסס על פרמטר השאילתה `limit` והתוצאות בפועל שהוחזרו).                                                                                                                                                                                                                                                                    |
+| `X-Item-Count`       | `X-Item-Count: 30`                                                                                                                                                                                                                                       | סך כל מספר הפריטים הזמינים בכל הדפים.                                                                                                                                                                                                                                                                                                                          |
+| `Link`               | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | אנו מספקים כותרת תגובת HTTP בשם `Link` שניתן לנתח כפי שמוצג בדוגמה. זה [דומה ל-GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (למשל לא כל הערכים יסופקו אם אינם רלוונטיים או זמינים, לדוגמה `"next"` לא יסופק אם אין דף נוסף).                                         |
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
-## יומני {#logs}
 
-### אחזור יומני רישום {#retrieve-logs}
+## יומנים {#logs}
 
-ה-API שלנו מאפשר לך להוריד יומני רישום עבור חשבונך באופן תכנותי. הגשת בקשה לנקודת קצה זו תעבד את כל היומנים עבור חשבונך ותשלח אותם אליך בדוא"ל כקובץ מצורף (קובץ גיליון אלקטרוני [ג'י-זיפס](https://en.wikipedia.org/wiki/Gzip) דחוס) לאחר השלמתה.
+### שליפת יומנים {#retrieve-logs}
 
-זה מאפשר לך ליצור משימות רקע עם [עבודת קרון](https://en.wikipedia.org/wiki/Cron) או להשתמש ב-[תוכנת תזמון משימות Node.js ב-Bree](https://github.com/breejs/bree) שלנו כדי לקבל יומני רישום בכל עת שתרצה. שים לב שנקודת קצה זו מוגבלת ל-`10` בקשות ביום.
+ה-API שלנו מאפשר לך להוריד יומנים עבור החשבון שלך באופן תכנותי. שליחת בקשה לנקודת הקצה הזו תעבד את כל היומנים עבור החשבון שלך ותשלח אותם אליך במייל כקובץ מצורף (קובץ [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) דחוס ב-[Gzip](https://en.wikipedia.org/wiki/Gzip)) לאחר סיום התהליך.
 
-הקובץ המצורף הוא באותיות קטנות של `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` והאימייל עצמו מכיל סיכום קצר של היומנים שאוחזרו. ניתן גם להוריד יומנים בכל עת מ-[החשבון שלי → יומנים](/my-account/logs).
+זה מאפשר לך ליצור עבודות רקע עם [Cron job](https://en.wikipedia.org/wiki/Cron) או באמצעות תוכנת תזמון עבודות שלנו [Bree ל-Node.js](https://github.com/breejs/bree) כדי לקבל יומנים מתי שתרצה. שים לב שנקודת קצה זו מוגבלת ל-`10` בקשות ביום.
+
+הקובץ המצורף הוא בצורה קטנה של `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` והמייל עצמו מכיל סיכום קצר של היומנים שנשלפו. ניתן גם להוריד יומנים בכל עת מ-[החשבון שלי → יומנים](/my-account/logs)
 
 > `GET /v1/logs/download`
 
-| פרמטרים של מחרוזת שאילתה | דָרוּשׁ | סוּג | תֵאוּר |
-| --------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | לֹא | מחרוזת (FQDN) | סנן יומנים לפי דומיין מלא ("FQDN"). אם לא תספק קוד זה, כל היומנים בכל הדומיינים יאוחזרו. |
-| `q` | לֹא | חוּט | חפש יומנים לפי דוא"ל, דומיין, שם כינוי, כתובת IP או תאריך (בפורמט `M/Y`, `M/D/YY`, `M-D`, `M-D-YY` או `M.D.YY`). |
-| `bounce_category` | לֹא | חוּט | חפש יומנים לפי קטגוריית יציאה ספציפית (למשל `blocklist`). |
-| `response_code` | לֹא | מִספָּר | חפש יומנים לפי קוד תגובת שגיאה ספציפי (למשל `421` או `550`). |
+| פרמטר מחרוזת השאילתה | חובה | סוג           | תיאור                                                                                                                         |
+| --------------------- | ---- | ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `domain`              | לא   | מחרוזת (FQDN) | סינון יומנים לפי דומיין מלא ("FQDN"). אם לא תספק זאת, יישלפו כל היומנים מכל הדומיינים.                                      |
+| `q`                   | לא   | מחרוזת        | חיפוש יומנים לפי אימייל, דומיין, שם כינוי, כתובת IP, או תאריך (בפורמט `M/Y`, `M/D/YY`, `M-D`, `M-D-YY`, או `M.D.YY`).       |
+| `bounce_category`     | לא   | מחרוזת        | חיפוש יומנים לפי קטגוריית החזרה ספציפית (למשל `blocklist`).                                                                   |
+| `response_code`       | לא   | מספר          | חיפוש יומנים לפי קוד תגובת שגיאה ספציפי (למשל `421` או `550`).                                                               |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/logs/download \
   -u API_TOKEN:
 ```
 
-> דוגמה לעבודת קרון (בחצות כל יום):
+> דוגמת Cron job (בחצות כל יום):
 
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-שים לב שניתן להשתמש בשירותים כגון [Crontab.guru](https://crontab.guru/) כדי לאמת את תחביר הביטוי של עבודת ה-cron שלך.
+שים לב שניתן להשתמש בשירותים כמו [Crontab.guru](https://crontab.guru/) כדי לאמת את תחביר הביטוי של עבודת ה-cron שלך.
 
-> דוגמה לעבודת קרון (בחצות כל יום **ועם יומני רישום ליום הקודם**):
+> דוגמת Cron job (בחצות כל יום **ועם יומנים של היום הקודם**):
 
-עבור MacOS:
+ל-MacOS:
 
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date -v-1d -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
-עבור לינוקס ואובונטו:
+ל-Linux ואובונטו:
 
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date --date "-1 days" -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
+
 ## חשבון {#account}
 
-### צור חשבון {#create-account}
+### יצירת חשבון {#create-account}
 
 > `POST /v1/account`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| -------------- | -------- | -------------- | ------------- |
-| `email` | כֵּן | מחרוזת (דוא"ל) | כתובת דוא"ל |
-| `password` | כֵּן | חוּט | סִיסמָה |
+| פרמטר גוף | חובה | סוג            | תיאור          |
+| ---------- | ---- | -------------- | -------------- |
+| `email`    | כן   | מחרוזת (אימייל) | כתובת אימייל   |
+| `password` | כן   | מחרוזת         | סיסמה          |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X POST BASE_URI/v1/account \
@@ -223,11 +260,11 @@ curl -X POST BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-### אחזר חשבון {#retrieve-account}
+### שליפת חשבון {#retrieve-account}
 
 > `GET /v1/account`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/account \
@@ -238,14 +275,14 @@ curl BASE_URI/v1/account \
 
 > `PUT /v1/account`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| -------------- | -------- | -------------- | -------------------- |
-| `email` | לֹא | מחרוזת (דוא"ל) | כתובת דוא"ל |
-| `given_name` | לֹא | חוּט | שֵׁם פְּרַטִי |
-| `family_name` | לֹא | חוּט | שֵׁם מִשׁפָּחָה |
-| `avatar_url` | לֹא | מחרוזת (כתובת URL) | קישור לתמונת אווטאר |
+| פרמטר גוף    | חובה | סוג            | תיאור               |
+| ------------ | ---- | -------------- | ------------------- |
+| `email`      | לא   | מחרוזת (אימייל) | כתובת אימייל        |
+| `given_name` | לא   | מחרוזת         | שם פרטי             |
+| `family_name`| לא   | מחרוזת         | שם משפחה            |
+| `avatar_url` | לא   | מחרוזת (URL)   | קישור לתמונת אווטאר |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X PUT BASE_URI/v1/account \
@@ -253,13 +290,13 @@ curl -X PUT BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-## אנשי קשר חלופי (CardDAV) {#alias-contacts-carddav}
+
+## אנשי קשר כינוי (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> בניגוד לנקודות קצה אחרות של API, אלה דורשות [אימות](#authentication) "שם משתמש" שווה לשם המשתמש הכינוי ו-"סיסמה" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.
-
+> בניגוד לנקודות קצה אחרות ב-API, אלו דורשים [אימות](#authentication) עם "שם משתמש" השווה לשם המשתמש של הכינוי ו"סיסמה" השווה לסיסמה שנוצרה לכינוי, ככותרות הרשאה בסיסית (Basic Authorization).
 > \[!WARNING]
-> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
+> קטע נקודת הקצה הזה נמצא בעבודה ויושק (ככל הנראה) בשנת 2024. בינתיים אנא השתמש בלקוח IMAP מתוך תפריט "Apps" בניווט באתר שלנו.
 
 ### רשימת אנשי קשר {#list-contacts}
 
@@ -267,13 +304,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### צור איש קשר {#create-contact}
+### יצירת איש קשר {#create-contact}
 
 > `POST /v1/contacts`
 
 **בקרוב**
 
-### אחזר איש קשר {#retrieve-contact}
+### שליפת איש קשר {#retrieve-contact}
 
 > `GET /v1/contacts/:id`
 
@@ -285,19 +322,20 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### מחק את איש הקשר {#delete-contact}
+### מחיקת איש קשר {#delete-contact}
 
 > `DELETE /v1/contacts/:id`
 
 **בקרוב**
 
-## לוחות שנה חלוניים (CalDAV) {#alias-calendars-caldav}
+
+## יומנים של כינויים (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> בניגוד לנקודות קצה אחרות של API, אלה דורשות [אימות](#authentication) "שם משתמש" שווה לשם המשתמש הכינוי ו-"סיסמה" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.
+> בניגוד לנקודות קצה אחרות ב-API, אלו דורשים [אימות](#authentication) עם "שם משתמש" השווה לשם המשתמש של הכינוי ו"סיסמה" השווה לסיסמה שנוצרה עבור הכינוי בכותרות הרשאה בסיסית.
 
 > \[!WARNING]
-> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
+> קטע נקודת הקצה הזה נמצא בעבודה ויושק (ככל הנראה) בשנת 2024. בינתיים אנא השתמש בלקוח IMAP מתוך תפריט "Apps" בניווט באתר שלנו.
 
 ### רשימת יומנים {#list-calendars}
 
@@ -305,58 +343,59 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### צור לוח שנה {#create-calendar}
+### יצירת יומן {#create-calendar}
 
 > `POST /v1/calendars`
 
 **בקרוב**
 
-### אחזר לוח שנה {#retrieve-calendar}
+### שליפת יומן {#retrieve-calendar}
 
 > `GET /v1/calendars/:id`
 
 **בקרוב**
 
-### עדכון לוח שנה {#update-calendar}
+### עדכון יומן {#update-calendar}
 
 > `PUT /v1/calendars/:id`
 
 **בקרוב**
 
-### מחיקת לוח שנה {#delete-calendar}
+### מחיקת יומן {#delete-calendar}
 
 > `DELETE /v1/calendars/:id`
 
 **בקרוב**
 
-## הודעות כינוי (IMAP/POP3) {#alias-messages-imappop3}
+
+## הודעות כינויים (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> בניגוד לנקודות קצה אחרות של API, אלה דורשות [אימות](#authentication) "שם משתמש" שווה לשם המשתמש הכינוי ו-"סיסמה" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.
+> בניגוד לנקודות קצה אחרות ב-API, אלו דורשים [אימות](#authentication) עם "שם משתמש" השווה לשם המשתמש של הכינוי ו"סיסמה" השווה לסיסמה שנוצרה עבור הכינוי בכותרות הרשאה בסיסית.
 
 > \[!WARNING]
-> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
+> קטע נקודת הקצה הזה נמצא בעבודה ויושק (ככל הנראה) בשנת 2024. בינתיים אנא השתמש בלקוח IMAP מתוך תפריט "Apps" בניווט באתר שלנו.
 
-אנא ודא שפעלת לפי הוראות ההתקנה עבור הדומיין שלך.
+אנא ודא שעברת את הוראות ההגדרה עבור הדומיין שלך.
 
-ניתן למצוא הוראות אלה בקטע השאלות הנפוצות שלנו [האם אתם תומכים בקבלת דוא"ל באמצעות IMAP?](/faq#do-you-support-receiving-email-with-imap).
+הוראות אלו נמצאות בקטע השאלות הנפוצות שלנו [האם אתם תומכים בקבלת דואר אלקטרוני עם IMAP?](/faq#do-you-support-receiving-email-with-imap).
 
-### הצג וחפש הודעות {#list-and-search-for-messages}
+### רשימה וחיפוש הודעות {#list-and-search-for-messages}
 
 > `GET /v1/messages`
 
 **בקרוב**
 
-### צור הודעה {#create-message}
+### יצירת הודעה {#create-message}
 
 > \[!NOTE]
-> פעולה זו **לא** תשלח אימייל – היא פשוט תוסיף את ההודעה לתיקיית תיבת הדואר שלך (לדוגמה, זה דומה לפקודה IMAP `APPEND`). אם ברצונך לשלוח אימייל, עיין ב-[צור דוא"ל SMTP יוצא](#create-outbound-smtp-email) להלן. לאחר יצירת אימייל ה-SMTP היוצא, תוכל לצרף עותק שלו באמצעות נקודת קצה זו לתיבת הדואר של הכינוי שלך למטרות אחסון.
+> פעולה זו **לא** תשלח דואר אלקטרוני – היא רק תוסיף את ההודעה לתיקיית תיבת הדואר שלך (לדוגמה, זה דומה לפקודת IMAP `APPEND`). אם ברצונך לשלוח דואר אלקטרוני, ראה [יצירת דואר SMTP יוצא](#create-outbound-smtp-email) למטה. לאחר יצירת דואר SMTP יוצא, תוכל להוסיף עותק שלו באמצעות נקודת קצה זו לתיבת הדואר של הכינוי שלך לצרכי אחסון.
 
 > `POST /v1/messages`
 
 **בקרוב**
 
-### אחזר הודעה {#retrieve-message}
+### שליפת הודעה {#retrieve-message}
 
 > `GET /v1/messages/:id`
 
@@ -368,19 +407,20 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### מחק הודעה {#delete-message}
+### מחיקת הודעה {#delete-message}
 
 > `DELETE /v1/messages:id`
 
 **בקרוב**
 
-## תיקיות חלופיות (IMAP/POP3) {#alias-folders-imappop3}
+
+## תיקיות כינויים (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> נקודות קצה של תיקיות עם נתיב <code>/v1/folders/:path</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה של תיקייה <code>:id</code>. משמעות הדבר היא שניתן להתייחס לתיקייה לפי ערך <code>path</code> או <code>id</code> שלה.
+> נקודות קצה של תיקיות עם נתיב תיקייה <code>/v1/folders/:path</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה תיקייה <code>:id</code>. משמעות הדבר היא שניתן להתייחס לתיקייה לפי <code>path</code> או לפי <code>id</code> שלה.
 
 > \[!WARNING]
-> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
+> קטע נקודת הקצה הזה נמצא בעבודה ויושק (ככל הנראה) בשנת 2024. בינתיים אנא השתמש בלקוח IMAP מתוך תפריט "Apps" בניווט באתר שלנו.
 
 ### רשימת תיקיות {#list-folders}
 
@@ -388,13 +428,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### צור תיקייה {#create-folder}
+### יצירת תיקייה {#create-folder}
 
 > `POST /v1/folders`
 
 **בקרוב**
 
-### אחזר תיקייה {#retrieve-folder}
+### שליפת תיקייה {#retrieve-folder}
 
 > `GET /v1/folders/:id`
 
@@ -412,95 +452,96 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### העתק תיקייה {#copy-folder}
+### העתקת תיקייה {#copy-folder}
 
 > `POST /v1/folders/:id/copy`
 
 **בקרוב**
 
-## הודעות דוא"ל יוצאות {#outbound-emails}
 
-אנא ודא שפעלת לפי הוראות ההתקנה עבור הדומיין שלך.
+## דואר יוצא {#outbound-emails}
 
-ניתן למצוא הוראות אלה בכתובת [החשבון שלי ← דומיינים ← הגדרות ← תצורת SMTP יוצא](/my-account/domains). עליך לוודא הגדרת DKIM, Return-Path ו-DMARC לשליחת SMTP יוצא עם הדומיין שלך.
+אנא ודא שעברת את הוראות ההגדרה עבור הדומיין שלך.
 
-### קבל מגבלת דוא"ל SMTP יוצאת {#get-outbound-smtp-email-limit}
+הוראות אלו נמצאות ב-[החשבון שלי → דומיינים → הגדרות → הגדרת SMTP יוצא](/my-account/domains). עליך לוודא הגדרה של DKIM, Return-Path ו-DMARC לשליחת SMTP יוצא עם הדומיין שלך.
+### קבלת מגבלת דוא"ל SMTP יוצא {#get-outbound-smtp-email-limit}
 
-זוהי נקודת קצה פשוטה שמחזירה אובייקט JSON המכיל את `count` ו-`limit` עבור מספר הודעות ה-SMTP היומיות היומיות על בסיס כל חשבון.
+זהו נקודת קצה פשוטה שמחזירה אובייקט JSON המכיל את ה-`count` וה-`limit` למספר ההודעות היומיות של SMTP יוצא על בסיס חשבון.
 
 > `GET /v1/emails/limit`
 
-> בקשה לדוגמה:
+> דוגמת בקשה:
 
 ```sh
 curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### רשימת הודעות דוא"ל SMTP יוצאות {#list-outbound-smtp-emails}
+### רשימת דואלי SMTP יוצאים {#list-outbound-smtp-emails}
 
-שים לב שנקודת קצה זו אינה מחזירה ערכי מאפיינים עבור `message`, `headers` וגם לא `rejectedErrors` של אימייל.
+שימו לב שנקודת קצה זו אינה מחזירה ערכי נכסים עבור `message`, `headers`, או `rejectedErrors` של דוא"ל.
 
-כדי להחזיר מאפיינים אלה ואת הערכים שלהם, אנא השתמש בנקודת הקצה [אחזור דוא"ל](#retrieve-email) עם מזהה דוא"ל.
+כדי להחזיר את אותם נכסים וערכיהם, אנא השתמשו בנקודת הקצה [Retrieve email](#retrieve-email) עם מזהה הדוא"ל.
 
 > `GET /v1/emails`
 
-| פרמטרים של מחרוזת שאילתה | דָרוּשׁ | סוּג | תֵאוּר |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | לֹא | מחרוזת (נתמכת ב-RegExp) | חיפוש הודעות דוא"ל לפי מטא-נתונים |
-| `domain` | לֹא | מחרוזת (נתמכת ב-RegExp) | חיפוש כתובות דוא"ל לפי שם דומיין |
-| `sort` | לֹא | חוּט | מיין לפי שדה ספציפי (יש להוסיף קידומת של מקף יחיד `-` כדי למיין בכיוון ההפוך של שדה זה). ברירת המחדל היא `created_at` אם לא מוגדר. |
-| `page` | לֹא | מִספָּר | ראה [Pagination](#pagination) לקבלת תובנות נוספות |
-| `limit` | לֹא | מִספָּר | ראה [Pagination](#pagination) לקבלת תובנות נוספות |
+| פרמטר מחרוזת השאילתה | חובה | סוג                      | תיאור                                                                                                                                               |
+| --------------------- | -------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `q`                   | לא       | מחרוזת (תמיכה ב-RegExp)   | חיפוש דואלים לפי מטא-דאטה                                                                                                                         |
+| `domain`              | לא       | מחרוזת (תמיכה ב-RegExp)   | חיפוש דואלים לפי שם דומיין                                                                                                                         |
+| `sort`                | לא       | מחרוזת                    | מיון לפי שדה מסוים (הוסף מקף יחיד `-` כדי למיין בכיוון ההפוך של אותו שדה). ברירת המחדל היא `created_at` אם לא מוגדר.                              |
+| `page`                | לא       | מספר                     | ראה [Pagination](#pagination) לפרטים נוספים                                                                                                       |
+| `limit`               | לא       | מספר                     | ראה [Pagination](#pagination) לפרטים נוספים                                                                                                       |
 
-> בקשה לדוגמה:
+> דוגמת בקשה:
 
 ```sh
 curl BASE_URI/v1/emails?limit=1 \
   -u API_TOKEN:
 ```
 
-### צור דוא"ל SMTP יוצא {#create-outbound-smtp-email}
+### יצירת דוא"ל SMTP יוצא {#create-outbound-smtp-email}
 
-ה-API שלנו ליצירת אימייל מושפע וממנף את תצורת אפשרות ההודעה של Nodemailer. אנא התייחסו ל-[תצורת הודעת Nodemailer](https://nodemailer.com/message/) עבור כל פרמטרי הגוף שלהלן.
+ממשק ה-API שלנו ליצירת דוא"ל מושפע ומשתמש באפשרויות ההגדרה של הודעות Nodemailer. אנא עיינו ב-[הגדרת הודעות Nodemailer](https://nodemailer.com/message/) עבור כל פרמטרי הגוף למטה.
 
-שים לב שלמעט `envelope` ו-`dkim` (מכיוון שאנו מגדירים אותם באופן אוטומטי עבורך), אנו תומכים בכל אפשרויות Nodemailer. אנו מגדירים באופן אוטומטי את האפשרויות `disableFileAccess` ו-`disableUrlAccess` ל-`true` לצורכי אבטחה.
+שימו לב כי למעט `envelope` ו-`dkim` (שאנחנו מגדירים אוטומטית עבורכם), אנו תומכים בכל אפשרויות Nodemailer. אנו מגדירים אוטומטית את האפשרויות `disableFileAccess` ו-`disableUrlAccess` ל-`true` למטרות אבטחה.
 
-עליך להעביר את האפשרות היחידה `raw` עם כתובת האימייל הגולמית המלאה שלך, כולל כותרות, **או** להעביר אפשרויות פרמטר גוף בודדות למטה.
+עליכם להעביר או את האפשרות היחידה `raw` עם הדוא"ל המלא הגולמי כולל הכותרות **או** להעביר פרמטרים נפרדים של גוף ההודעה למטה.
 
-נקודת קצה זו של ה-API תקודד אוטומטית אימוג'ים עבורך אם הם נמצאים בכותרות (לדוגמה, שורת נושא של `Subject: 🤓 Hello` מומרת ל-`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` באופן אוטומטי). המטרה שלנו הייתה ליצור API דוא"ל ידידותי במיוחד למפתחים ועמיד בפני ניסויים.
+נקודת קצה זו תקודד אוטומטית אימוג'ים עבורכם אם הם נמצאים בכותרות (למשל שורת נושא של `Subject: 🤓 Hello` תומר אוטומטית ל-`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). המטרה שלנו הייתה ליצור API דוא"ל ידידותי מאוד למפתחים ועמיד לטעויות.
+
+**אימות:** נקודת קצה זו תומכת גם ב-[אימות באמצעות אסימון API](#api-token-authentication-recommended-for-most-endpoints) וגם ב-[אימות באמצעות אישורי כינוי](#alias-credentials-authentication-for-outbound-email). ראו את הסעיף [Authentication](#authentication) למעלה לפרטים.
 
 > `POST /v1/emails`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| ---------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `from` | לֹא | מחרוזת (דוא"ל) | כתובת הדוא"ל של השולח (חייבת להתקיים ככינוי של הדומיין). |
-| `to` | לֹא | מחרוזת או מערך | רשימה מופרדת בפסיקים או מערך של נמענים עבור כותרת "אל". |
-| `cc` | לֹא | מחרוזת או מערך | רשימה מופרדת בפסיקים או מערך של נמענים עבור כותרת "Cc". |
-| `bcc` | לֹא | מחרוזת או מערך | רשימה מופרדת בפסיקים או מערך של נמענים עבור כותרת "עותק מוסתר". |
-| `subject` | לֹא | חוּט | נושא האימייל. |
-| `text` | לֹא | מחרוזת או מאגר | גרסת הטקסט הרגיל של ההודעה. |
-| `html` | לֹא | מחרוזת או מאגר | גרסת ה-HTML של ההודעה. |
-| `attachments` | לֹא | מַעֲרָך | מערך של אובייקטים מצורפים (ראה [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
-| `sender` | לֹא | חוּט | כתובת הדוא"ל עבור כותרת "שולח" (ראה [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)). |
-| `replyTo` | לֹא | חוּט | כתובת הדוא"ל עבור כותרת "השב אל". |
-| `inReplyTo` | לֹא | חוּט | מזהה ההודעה שאליו ההודעה היא בתגובה. |
-| `references` | לֹא | מחרוזת או מערך | רשימה מופרדת ברווחים או מערך של מזהי הודעות. |
-| `attachDataUrls` | לֹא | בוליאני | אם `true` אז `data:` ממיר תמונות בתוכן ה-HTML של ההודעה לקבצים מצורפים מוטמעים. |
-| `watchHtml` | לֹא | חוּט | גרסת HTML ספציפית לשעון אפל של ההודעה ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), השעונים החדשים ביותר אינם דורשים הגדרה זו). |
-| `amp` | לֹא | חוּט | גרסת HTML ספציפית ל-AMP4EMAIL של ההודעה (ראה [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
-| `icalEvent` | לֹא | לְהִתְנַגֵד | אירוע iCalendar לשימוש כתוכן חלופי להודעה (ראה [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
-| `alternatives` | לֹא | מַעֲרָך | מערך של תוכן הודעה חלופי (ראה [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
-| `encoding` | לֹא | חוּט | קידוד עבור טקסט ומחרוזות HTML (ברירת המחדל היא `"utf-8"`, אך תומך גם בערכי קידוד `"hex"` ו-`"base64"`). |
-| `raw` | לֹא | מחרוזת או מאגר | הודעה בפורמט RFC822 שנוצרה בהתאמה אישית לשימוש (במקום הודעה שנוצרת על ידי Nodemailer – ראה [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
-| `textEncoding` | לֹא | חוּט | קידוד שנאלץ לשמש עבור ערכי טקסט (`"quoted-printable"` או `"base64"`). ערך ברירת המחדל הוא הערך הקרוב ביותר שזוהה (עבור ASCII יש להשתמש ב-`"quoted-printable"`). |
-| `priority` | לֹא | חוּט | רמת עדיפות עבור האימייל (יכולה להיות `"high"`, `"normal"` (ברירת מחדל), או `"low"`). שים לב שערך של `"normal"` אינו מגדיר כותרת עדיפות (זוהי התנהגות ברירת המחדל). אם מוגדר ערך של `"high"` או `"low"`, אז הכותרות `X-Priority`, `X-MSMail-Priority` ו-`Importance` הן [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
-| `headers` | לֹא | אובייקט או מערך | אובייקט או מערך של שדות כותרת נוספים להגדרה (ראה [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)). |
-| `messageId` | לֹא | חוּט | ערך אופציונלי של מזהה הודעה עבור כותרת "מזהה הודעה" (ערך ברירת מחדל ייווצר אוטומטית אם לא יוגדר – שים לב שהערך צריך להיות [adhere to the RFC2822 specification](https://stackoverflow.com/a/4031705)). |
-| `date` | לֹא | מחרוזת או תאריך | ערך תאריך אופציונלי שישמש אם כותרת התאריך חסרה לאחר הניתוח, אחרת מחרוזת UTC הנוכחית תיעשה בשימוש אם לא תוגדר. כותרת התאריך לא יכולה להיות יותר מ-30 יום לפני השעה הנוכחית. |
-| `list` | לֹא | לְהִתְנַגֵד | אובייקט אופציונלי של כותרות `List-*` (ראה [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)). |
-
-> בקשה לדוגמה:
+| פרמטר גוף       | חובה | סוג              | תיאור                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `from`           | לא       | מחרוזת (דוא"ל)   | כתובת הדוא"ל של השולח (חייבת להתקיים ככינוי של הדומיין).                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `to`             | לא       | מחרוזת או מערך   | רשימה מופרדת בפסיקים או מערך של נמענים לכותרת "To".                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `cc`             | לא       | מחרוזת או מערך   | רשימה מופרדת בפסיקים או מערך של נמענים לכותרת "Cc".                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `bcc`            | לא       | מחרוזת או מערך   | רשימה מופרדת בפסיקים או מערך של נמענים לכותרת "Bcc".                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `subject`        | לא       | מחרוזת           | נושא הדוא"ל.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `text`           | לא       | מחרוזת או Buffer | הגרסה הטקסטואלית הפשוטה של ההודעה.                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `html`           | לא       | מחרוזת או Buffer | הגרסה ב-HTML של ההודעה.                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `attachments`    | לא       | מערך             | מערך של אובייקטים מצורפים (ראה [שדות נפוצים של Nodemailer](https://nodemailer.com/message/#common-fields)).                                                                                                                                                                                                                                                                                                                                                   |
+| `sender`         | לא       | מחרוזת           | כתובת הדוא"ל לכותרת "Sender" (ראה [שדות מתקדמים יותר של Nodemailer](https://nodemailer.com/message/#more-advanced-fields)).                                                                                                                                                                                                                                                                                                                                  |
+| `replyTo`        | לא       | מחרוזת           | כתובת הדוא"ל לכותרת "Reply-To".                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `inReplyTo`      | לא       | מחרוזת           | מזהה ההודעה (Message-ID) שההודעה היא תגובה אליו.                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `references`     | לא       | מחרוזת או מערך   | רשימה מופרדת ברווחים או מערך של מזהי הודעות (Message-ID's).                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `attachDataUrls` | לא       | בוליאני          | אם `true` אז ממיר תמונות מסוג `data:` בתוכן ה-HTML של ההודעה לקבצים מצורפים מוטמעים.                                                                                                                                                                                                                                                                                                                                                                            |
+| `watchHtml`      | לא       | מחרוזת           | גרסת HTML ספציפית ל-Apple Watch של ההודעה ([לפי מסמכי Nodemailer](https://nodemailer.com/message/#content-options]), השעונים החדשים ביותר אינם דורשים הגדרה זו).                                                                                                                                                                                                                                                                                             |
+| `amp`            | לא       | מחרוזת           | גרסת HTML ספציפית ל-AMP4EMAIL של ההודעה (ראה [דוגמת Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                                  |
+| `icalEvent`      | לא       | אובייקט          | אירוע iCalendar לשימוש כתוכן חלופי של ההודעה (ראה [אירועי לוח שנה של Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                                            |
+| `alternatives`   | לא       | מערך             | מערך של תוכן חלופי להודעה (ראה [תוכן חלופי של Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                                       |
+| `encoding`       | לא       | מחרוזת           | קידוד למחרוזות הטקסט וה-HTML (ברירת מחדל היא `"utf-8"`, אך תומך גם בקידודים `"hex"` ו-`"base64"`).                                                                                                                                                                                                                                                                                                                                                              |
+| `raw`            | לא       | מחרוזת או Buffer | הודעה בפורמט RFC822 שנוצרה בהתאמה אישית לשימוש (במקום הודעה שנוצרה על ידי Nodemailer – ראה [מקור מותאם אישית של Nodemailer](https://nodemailer.com/message/custom-source/)).                                                                                                                                                                                                                                                                               |
+| `textEncoding`   | לא       | מחרוזת           | קידוד שמוחלט לשימוש עבור ערכי טקסט (או `"quoted-printable"` או `"base64"`). הערך ברירת המחדל הוא הערך הקרוב ביותר שזוהה (ל-ASCII השתמשו ב-`"quoted-printable"`).                                                                                                                                                                                                                                                                                          |
+| `priority`       | לא       | מחרוזת           | רמת עדיפות לדוא"ל (יכולה להיות `"high"`, `"normal"` (ברירת מחדל), או `"low"`). שימו לב שערך `"normal"` אינו מגדיר כותרת עדיפות (זו ההתנהגות ברירת המחדל). אם מוגדר ערך `"high"` או `"low"`, אז כותרות `X-Priority`, `X-MSMail-Priority`, ו-`Importance` [יוגדרו בהתאם](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
+| `headers`        | לא       | אובייקט או מערך | אובייקט או מערך של שדות כותרת נוספים להגדרה (ראה [כותרות מותאמות אישית של Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                     |
+| `messageId`      | לא       | מחרוזת           | ערך אופציונלי של Message-ID לכותרת "Message-ID" (ערך ברירת מחדל יווצר אוטומטית אם לא מוגדר – שימו לב שהערך צריך [לעמוד במפרט RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                                                               |
+| `date`           | לא       | מחרוזת או תאריך | ערך תאריך אופציונלי שישמש אם כותרת התאריך חסרה לאחר הפירוש, אחרת ישמש מחרוזת UTC נוכחית אם לא מוגדר. כותרת התאריך לא יכולה להיות יותר מ-30 יום קדימה מהזמן הנוכחי.                                                                                                                                                                                                                                                                                       |
+| `list`           | לא       | אובייקט          | אובייקט אופציונלי של כותרות `List-*` (ראה [כותרות רשימה של Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                         |
+> בקשת דוגמה (אסימון API):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -511,7 +552,18 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=test"
 ```
 
-> בקשה לדוגמה:
+> בקשת דוגמה (פרטי זיהוי של כינוי):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@DOMAIN_NAME:GENERATED_PASSWORD" \
+  -d "from=alias@DOMAIN_NAME" \
+  -d "to=EMAIL" \
+  -d "subject=test" \
+  -d "text=test"
+```
+
+> בקשת דוגמה (אימייל גולמי):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -519,51 +571,52 @@ curl -X POST BASE_URI/v1/emails \
   -d "raw=`cat file.eml`"
 ```
 
-### אחזור דוא"ל SMTP יוצא {#retrieve-outbound-smtp-email}
+### שלוף אימייל SMTP יוצא {#retrieve-outbound-smtp-email}
 
 > `GET /v1/emails/:id`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### מחק דוא"ל SMTP יוצא {#delete-outbound-smtp-email}
+### מחק אימייל SMTP יוצא {#delete-outbound-smtp-email}
 
-מחיקת דוא"ל תגדיר את הסטטוס ל-`"rejected"` (ולא תעבד אותו בתור) אם ורק אם הסטטוס הנוכחי הוא אחד מ-`"pending"`, `"queued"` או `"deferred"`. אנו עשויים למחוק דוא"לים באופן אוטומטי 30 יום לאחר שנוצרו ו/או נשלחו - לכן עליך לשמור עותק של דוא"ל SMTP יוצא בלקוח, במסד הנתונים או באפליקציה שלך. באפשרותך להתייחס לערך מזהה הדוא"ל שלנו במסד הנתונים שלך אם תרצה בכך - ערך זה מוחזר הן מנקודות הקצה [צור אימייל](#create-email) והן מנקודות הקצה [אחזור דוא"ל](#retrieve-email).
+מחיקת אימייל תגדיר את הסטטוס ל- `"rejected"` (ולא תעבד אותו בתור) אם ורק אם הסטטוס הנוכחי הוא אחד מ- `"pending"`, `"queued"`, או `"deferred"`. ייתכן שנמחק אימיילים אוטומטית לאחר 30 יום מאז שנוצרו ו/או נשלחו – לכן מומלץ לשמור עותק של אימיילי SMTP יוצאים בלקוח, במסד הנתונים או באפליקציה שלך. ניתן להתייחס לערך מזהה האימייל שלנו במסד הנתונים שלך אם תרצה – ערך זה מוחזר משני נקודות הקצה [Create email](#create-email) ו-[Retrieve email](#retrieve-email).
 
 > `DELETE /v1/emails/:id`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X DELETE BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
+
 ## דומיינים {#domains}
 
 > \[!TIP]
-> נקודות קצה של דומיין עם שם הדומיין <code>/v1/domains/:domain_name</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה הדומיין <code>:domain_id</code>. משמעות הדבר היא שניתן להתייחס לדומיין לפי ערך <code>name</code> או <code>id</code> שלו.
+> נקודות הקצה של דומיין עם שם הדומיין <code>/v1/domains/:domain_name</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה הדומיין <code>:domain_id</code>. משמעות הדבר היא שניתן להתייחס לדומיין לפי <code>name</code> או לפי <code>id</code> שלו.
 
 ### רשימת דומיינים {#list-domains}
 
 > \[!NOTE]
-> החל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור [רשימת דומיינים](#list-domains) ו-[רשימת כינויי דומיין](#list-domain-aliases) יקבלו כברירת מחדל `1000` תוצאות לכל עמוד. אם ברצונך להצטרף להתנהגות זו מוקדם, תוכל להעביר את `?paginate=true` כפרמטר שאילתה נוסף לכתובת האתר עבור שאילתת נקודת הקצה. ראה [דִפּוּף](#pagination) לקבלת תובנות נוספות.
+> החל מ-1 בנובמבר 2024 נקודות הקצה של ה-API עבור [List domains](#list-domains) ו-[List domain aliases](#list-domain-aliases) יוגדרו כברירת מחדל ל- `1000` תוצאות מקסימום לעמוד. אם ברצונך להפעיל התנהגות זו מוקדם יותר, ניתן להעביר `?paginate=true` כפרמטר מחרוזת שאילתה נוסף לכתובת ה-URL של השאילתה. ראה [Pagination](#pagination) למידע נוסף.
 
 > `GET /v1/domains`
 
-| פרמטרים של מחרוזת שאילתה | דָרוּשׁ | סוּג | תֵאוּר |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | לֹא | מחרוזת (נתמכת ב-RegExp) | חיפוש דומיינים לפי שם |
-| `name` | לֹא | מחרוזת (נתמכת ב-RegExp) | חיפוש דומיינים לפי שם |
-| `sort` | לֹא | חוּט | מיין לפי שדה ספציפי (יש להוסיף קידומת של מקף יחיד `-` כדי למיין בכיוון ההפוך של שדה זה). ברירת המחדל היא `created_at` אם לא מוגדר. |
-| `page` | לֹא | מִספָּר | ראה [Pagination](#pagination) לקבלת תובנות נוספות |
-| `limit` | לֹא | מִספָּר | ראה [Pagination](#pagination) לקבלת תובנות נוספות |
+| פרמטר מחרוזת שאילתה | חובה | סוג                      | תיאור                                                                                                                                               |
+| --------------------- | -------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `q`                   | לא       | מחרוזת (תמיכה ב-RegExp)   | חיפוש דומיינים לפי שם                                                                                                                              |
+| `name`                | לא       | מחרוזת (תמיכה ב-RegExp)   | חיפוש דומיינים לפי שם                                                                                                                              |
+| `sort`                | לא       | מחרוזת                    | מיון לפי שדה מסוים (הוסף מקף יחיד `-` כדי למיין בכיוון ההפוך של אותו שדה). ברירת מחדל היא `created_at` אם לא מוגדר.                              |
+| `page`                | לא       | מספר                     | ראה [Pagination](#pagination) למידע נוסף                                                                                                          |
+| `limit`               | לא       | מספר                     | ראה [Pagination](#pagination) למידע נוסף                                                                                                          |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains \
@@ -574,23 +627,22 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | כֵּן | מחרוזת (FQDN או IP) | שם מתחם מלא ("FQDN") או כתובת IP |
-| `team_domain` | לֹא | מחרוזת (מזהה דומיין או שם דומיין; FQDN) | הקצה אוטומטית דומיין זה לאותו צוות מדומיין אחר. משמעות הדבר היא שכל החברים מדומיין זה יוקצו כחברי צוות, וגם ה-`plan` יוגדר אוטומטית ל-`team`. ניתן להגדיר זאת ל-`"none"` במידת הצורך כדי להשבית זאת במפורש, אך אין זה הכרחי. |
-| `plan` | לֹא | מחרוזת (ניתנת לספירה) | סוג תוכנית (חייב להיות `"free"`, `"enhanced_protection"`, או `"team"`, ברירת המחדל היא `"free"` או התוכנית בתשלום הנוכחית של המשתמש אם יש כזו) |
-| `catchall` | לֹא | מחרוזת (כתובות דוא"ל מופרדות) או מחרוזת בוליאנית | צור כינוי ברירת מחדל של "alias catch-all", ברירת המחדל היא `true` (אם `true` הוא ישתמש בכתובת הדוא"ל של משתמש ה-API כנמען, ואם `false` לא ייווצר כינוי "alias catch-all"). אם מועברת מחרוזת, זוהי רשימה מופרדת של כתובות דוא"ל לשימוש כנמענים (מופרדות באמצעות מעבר שורה, רווח ו/או פסיק). |
-| `has_adult_content_protection` | לֹא | בוליאני | האם להפעיל הגנה על תוכן למבוגרים באמצעות סורק ספאם בדומיין זה |
-| `has_phishing_protection` | לֹא | בוליאני | האם להפעיל הגנה מפני פישינג באמצעות סורק ספאם בדומיין זה |
-| `has_executable_protection` | לֹא | בוליאני | האם להפעיל הגנה על קובץ ההפעלה של סורק ספאם בדומיין זה |
-| `has_virus_protection` | לֹא | בוליאני | האם להפעיל את הגנה מפני וירוסים של Spam Scanner בדומיין זה |
-| `has_recipient_verification` | לֹא | בוליאני | ברירת מחדל של דומיין גלובלי לשאלה האם לדרוש מנמעני כינוי ללחוץ על קישור אימות דוא"ל כדי שאימיילים יעברו דרכם |
-| `ignore_mx_check` | לֹא | בוליאני | האם להתעלם מבדיקת רשומת ה-MX בדומיין לצורך אימות. זה מיועד בעיקר למשתמשים שיש להם כללי תצורה מתקדמים של בורסת MX וצריכים לשמור את בורסת ה-MX הקיימת שלהם ולהעביר אותה לבורסת שלנו. |
-| `retention_days` | לֹא | מִספָּר | מספר שלם בין `0` ל-`30` התואם למספר ימי השמירה לאחסון הודעות דוא"ל SMTP יוצאות לאחר שנמסרו בהצלחה או שגיאותיהן קבועות. ברירת המחדל היא `0`, מה שאומר שהודעות דוא"ל SMTP יוצאות נמחקות ונמחקות באופן מיידי למען אבטחתך. |
-| `bounce_webhook` | לֹא | מחרוזת (URL) או ערך בוליאני (false) | כתובת האתר `http://` או `https://` לבחירתך לשליחת webhooks חוזרים. נשלח בקשת `POST` לכתובת האתר הזו עם מידע על כשלים יוצאים ב-SMTP (למשל, כשלים רכים או קשים - כך שתוכל לנהל את המנויים שלך ולנהל באופן תכנותי את הדוא"ל היוצא שלך). |
-| `max_quota_per_alias` | לֹא | חוּט | מכסת אחסון מקסימלית עבור כינויים בשם דומיין זה. הזן ערך כגון "1 ג'יגה-בייט" שנותח על ידי [bytes](https://github.com/visionmedia/bytes.js). |
-
-> בקשה לדוגמה:
+| פרמטר גוף                   | חובה | סוג                                          | תיאור                                                                                                                                                                                                                                                                                                               |
+| --------------------------- | -------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`                    | כן       | מחרוזת (FQDN או IP)                          | שם דומיין מלא מוסמך ("FQDN") או כתובת IP                                                                                                                                                                                                                                                                            |
+| `team_domain`               | לא       | מחרוזת (מזהה דומיין או שם דומיין; FQDN)     | הקצה אוטומטית דומיין זה לאותה קבוצה כמו דומיין אחר. משמעות הדבר שכל החברים מדומיין זה יוקצו כחברי קבוצה, ותוכנית ה-`plan` תוגדר אוטומטית ל-`team`. ניתן להגדיר זאת ל- `"none"` אם יש צורך לבטל זאת במפורש, אך זה לא הכרחי.                                                                                   |
+| `plan`                      | לא       | מחרוזת (enumerable)                           | סוג התוכנית (חייב להיות `"free"`, `"enhanced_protection"`, או `"team"`, ברירת מחדל היא `"free"` או תוכנית בתשלום נוכחית של המשתמש אם יש כזו)                                                                                                                                                                      |
+| `catchall`                  | לא       | מחרוזת (כתובות אימייל מופרדות) או בוליאני    | צור כינוי ברירת מחדל catch-all, ברירת מחדל היא `true` (אם `true` ישתמש בכתובת האימייל של משתמש ה-API כמקבל, ואם `false` לא יווצר catch-all). אם מועברת מחרוזת, זוהי רשימה מופרדת של כתובות אימייל לשימוש כמקבלים (מופרדות על ידי שבר שורה, רווח, ו/או פסיק)                                         |
+| `has_adult_content_protection` | לא       | בוליאני                                       | האם להפעיל הגנת תוכן למבוגרים של סורק הספאם בדומיין זה                                                                                                                                                                                                                                                             |
+| `has_phishing_protection`   | לא       | בוליאני                                       | האם להפעיל הגנת פישינג של סורק הספאם בדומיין זה                                                                                                                                                                                                                                                                     |
+| `has_executable_protection` | לא       | בוליאני                                       | האם להפעיל הגנת קבצים ניתנים להרצה של סורק הספאם בדומיין זה                                                                                                                                                                                                                                                        |
+| `has_virus_protection`      | לא       | בוליאני                                       | האם להפעיל הגנת וירוסים של סורק הספאם בדומיין זה                                                                                                                                                                                                                                                                   |
+| `has_recipient_verification`| לא       | בוליאני                                       | ברירת מחדל גלובלית לדומיין האם לדרוש מהמקבלי כינוי ללחוץ על קישור אימות אימייל כדי שהאימיילים יעברו                                                                                                                                                                                                                 |
+| `ignore_mx_check`           | לא       | בוליאני                                       | האם להתעלם מבדיקת רשומת MX בדומיין לצורך אימות. זה בעיקר עבור משתמשים שיש להם כללי תצורת החלפת MX מתקדמים וצריכים לשמור על החלפת MX קיימת ולהעביר אלינו.                                                                                                                                                        |
+| `retention_days`            | לא       | מספר                                          | מספר שלם בין `0` ל-`30` שמתאים למספר ימי השמירה לאחסון אימיילי SMTP יוצאים לאחר שנמסרו בהצלחה או נתקלו בשגיאה קבועה. ברירת מחדל היא `0`, שמשמעותה שאימיילי SMTP יוצאים ימחקו ויוסתרו מידית למען אבטחתך.                                                                                                         |
+| `bounce_webhook`            | לא       | מחרוזת (URL) או בוליאני (false)               | כתובת ה-URL של webhook מסוג `http://` או `https://` לבחירתך לשליחת webhook על החזרות (bounce). נשלח בקשת `POST` לכתובת זו עם מידע על כשלונות SMTP יוצאים (למשל כשלונות רכים או קשים – כדי שתוכל לנהל את המנויים שלך ולנהל את האימייל היוצא באופן תכנותי).                                                        |
+| `max_quota_per_alias`       | לא       | מחרוזת                                        | מכסת אחסון מקסימלית לכינויים בדומיין זה. הזן ערך כמו "1 GB" שיפורש על ידי [bytes](https://github.com/visionmedia/bytes.js).                                                                                                                                                                                         |
+> בקשת דוגמה:
 
 ```sh
 curl -X POST BASE_URI/v1/domains \
@@ -599,135 +651,135 @@ curl -X POST BASE_URI/v1/domains \
   -d plan=free
 ```
 
-### אחזר דומיין {#retrieve-domain}
+### שלוף דומיין {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### אימות רשומות דומיין {#verify-domain-records}
+### אמת רשומות דומיין {#verify-domain-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-records`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
-### אימות רשומות SMTP של הדומיין {#verify-domain-smtp-records}
+### אמת רשומות SMTP של הדומיין {#verify-domain-smtp-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### רשימת סיסמאות כלל-קבוצתיות {#list-domain-wide-catch-all-passwords}
+### רשום סיסמאות catch-all כלליות לדומיין {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### צור סיסמה כוללת לכל הדומיין {#create-domain-wide-catch-all-password}
+### צור סיסמת catch-all כללית לדומיין {#create-domain-wide-catch-all-password}
 
 > `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | לֹא | חוּט | סיסמה חדשה מותאמת אישית לשימוש עבור סיסמת הכלל לכל הדומיין. שים לב שתוכל להשאיר שדה זה ריק או חסר לחלוטין מגוף בקשת ה-API שלך אם ברצונך לקבל סיסמה חזקה שנוצרה באופן אקראי. |
-| `description` | לֹא | חוּט | תיאור למטרות ארגון בלבד. |
+| פרמטר גוף    | חובה | סוג    | תיאור                                                                                                                                                                                                                     |
+| ------------- | ---- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password` | לא   | מחרוזת | הסיסמה החדשה המותאמת אישית שלך לשימוש כסיסמת catch-all כללית לדומיין. שים לב שניתן להשאיר שדה זה ריק או חסר לחלוטין בבקשת ה-API שלך אם ברצונך לקבל סיסמה חזקה שנוצרה אקראית.                                         |
+| `description`  | לא   | מחרוזת | תיאור למטרות ארגוניות בלבד.                                                                                                                                                                                             |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### הסר את הסיסמה הכוללת של הדומיין {#remove-domain-wide-catch-all-password}
+### הסר סיסמת catch-all כללית לדומיין {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
   -u API_TOKEN:
 ```
 
-### עדכון דומיין {#update-domain}
+### עדכן דומיין {#update-domain}
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `smtp_port` | לֹא | מחרוזת או מספר | פורט מותאם אישית להגדרה עבור העברת SMTP (ברירת המחדל היא `"25"`) |
-| `has_adult_content_protection` | לֹא | בוליאני | האם להפעיל הגנה על תוכן למבוגרים באמצעות סורק ספאם בדומיין זה |
-| `has_phishing_protection` | לֹא | בוליאני | האם להפעיל הגנה מפני פישינג באמצעות סורק ספאם בדומיין זה |
-| `has_executable_protection` | לֹא | בוליאני | האם להפעיל הגנה על קובץ ההפעלה של סורק ספאם בדומיין זה |
-| `has_virus_protection` | לֹא | בוליאני | האם להפעיל את הגנה מפני וירוסים של Spam Scanner בדומיין זה |
-| `has_recipient_verification` | לֹא | בוליאני | ברירת מחדל של דומיין גלובלי לשאלה האם לדרוש מנמעני כינוי ללחוץ על קישור אימות דוא"ל כדי שאימיילים יעברו דרכם |
-| `ignore_mx_check` | לֹא | בוליאני | האם להתעלם מבדיקת רשומת ה-MX בדומיין לצורך אימות. זה מיועד בעיקר למשתמשים שיש להם כללי תצורה מתקדמים של בורסת MX וצריכים לשמור את בורסת ה-MX הקיימת שלהם ולהעביר אותה לבורסת שלנו. |
-| `retention_days` | לֹא | מִספָּר | מספר שלם בין `0` ל-`30` התואם למספר ימי השמירה לאחסון הודעות דוא"ל SMTP יוצאות לאחר שנמסרו בהצלחה או שגיאותיהן קבועות. ברירת המחדל היא `0`, מה שאומר שהודעות דוא"ל SMTP יוצאות נמחקות ונמחקות באופן מיידי למען אבטחתך. |
-| `bounce_webhook` | לֹא | מחרוזת (URL) או ערך בוליאני (false) | כתובת האתר `http://` או `https://` לבחירתך לשליחת webhooks חוזרים. נשלח בקשת `POST` לכתובת האתר הזו עם מידע על כשלים יוצאים ב-SMTP (למשל, כשלים רכים או קשים - כך שתוכל לנהל את המנויים שלך ולנהל באופן תכנותי את הדוא"ל היוצא שלך). |
-| `max_quota_per_alias` | לֹא | חוּט | מכסת אחסון מקסימלית עבור כינויים בשם דומיין זה. הזן ערך כגון "1 ג'יגה-בייט" שנותח על ידי [bytes](https://github.com/visionmedia/bytes.js). |
-
-> בקשה לדוגמה:
+| פרמטר גוף                   | חובה | סוג                            | תיאור                                                                                                                                                                                                                                                                                     |
+| ---------------------------- | ---- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `smtp_port`                  | לא   | מחרוזת או מספר                 | פורט מותאם אישית להגדרה עבור העברת SMTP (ברירת מחדל היא `"25"`)                                                                                                                                                                                                                          |
+| `has_adult_content_protection` | לא   | בוליאני                       | האם להפעיל הגנת תוכן למבוגרים של סורק הספאם בדומיין זה                                                                                                                                                                                                                                   |
+| `has_phishing_protection`    | לא   | בוליאני                       | האם להפעיל הגנת פישינג של סורק הספאם בדומיין זה                                                                                                                                                                                                                                         |
+| `has_executable_protection`  | לא   | בוליאני                       | האם להפעיל הגנת קבצים ניתנים להרצה של סורק הספאם בדומיין זה                                                                                                                                                                                                                             |
+| `has_virus_protection`       | לא   | בוליאני                       | האם להפעיל הגנת וירוסים של סורק הספאם בדומיין זה                                                                                                                                                                                                                                       |
+| `has_recipient_verification` | לא   | בוליאני                       | ברירת מחדל גלובלית לדומיין האם לדרוש מהנמענים של כינויים ללחוץ על קישור אימות אימייל כדי שהאימיילים יעברו                                                                                                                                                                               |
+| `ignore_mx_check`            | לא   | בוליאני                       | האם להתעלם מבדיקת רשומת MX בדומיין לצורך אימות. זה מיועד בעיקר למשתמשים שיש להם כללי תצורת החלפת MX מתקדמים וצריכים לשמור על החלפת MX קיימת ולהעביר אלינו.                                                                                                                         |
+| `retention_days`             | לא   | מספר                         | מספר שלם בין `0` ל-`30` שמתאים למספר ימי השמירה לאחסון אימיילי SMTP יוצאים לאחר שנמסרו בהצלחה או נתקלו בשגיאה קבועה. ברירת המחדל היא `0`, שמשמעותה שאימיילי SMTP יוצאים נמחקים ומוצפנים מידית למען אבטחתך.                                                                         |
+| `bounce_webhook`             | לא   | מחרוזת (URL) או בוליאני (false) | כתובת ה-Webhook `http://` או `https://` לבחירתך לשליחת Webhook על החזרות. נשלח בקשת `POST` לכתובת זו עם מידע על כשלונות SMTP יוצאים (למשל כשלונות רכים או קשים – כדי שתוכל לנהל את המנויים שלך ולנהל תוכניתית את האימייל היוצא שלך).                                               |
+| `max_quota_per_alias`        | לא   | מחרוזת                       | מכסת אחסון מקסימלית לכינויים בדומיין זה. הזן ערך כמו "1 GB" שיופיע וינותח על ידי [bytes](https://github.com/visionmedia/bytes.js).                                                                                                                                                     |
+> בקשת דוגמה:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### מחיקת הדומיין {#delete-domain}
+### מחיקת דומיין {#delete-domain}
 
 > `DELETE /v1/domains/:domain_name`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
+
 ## הזמנות {#invites}
 
-### קבל את הזמנת הדומיין {#accept-domain-invite}
+### קבלת הזמנה לדומיין {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
-### צור הזמנה לדומיין {#create-domain-invite}
+### יצירת הזמנה לדומיין {#create-domain-invite}
 
 > `POST /v1/domains/DOMAIN_NAME/invites`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
+| פרמטר גוף    | חובה     | סוג                 | תיאור                                                                                      |
 | -------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
-| `email` | כֵּן | מחרוזת (דוא"ל) | כתובת דוא"ל להזמנה לרשימת חברי הדומיין |
-| `group` | כֵּן | מחרוזת (ניתנת לספירה) | קבוצה להוספת המשתמש לחברות הדומיין (יכולה להיות אחת מ-`"admin"` או `"user"`) |
+| `email`        | כן       | מחרוזת (אימייל)     | כתובת אימייל להזמנה לרשימת חברי הדומיין                                                  |
+| `group`        | כן       | מחרוזת (ברירה)     | קבוצה להוספת המשתמש אליה כחבר בדומיין (יכולה להיות אחת מ- `"admin"` או `"user"`)          |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
@@ -737,133 +789,133 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> אם המשתמש המוזמן כבר חבר מקובל בדומיינים אחרים שהמנהל המזמין אותו חבר בהם, הוא יקבל את ההזמנה באופן אוטומטי ולא ישלח אימייל.
+> אם המשתמש שמוזמן כבר חבר מאושר בכל דומיין אחר שהמנהל המזמין הוא חבר בו, ההזמנה תתקבל אוטומטית ולא יישלח אימייל.
 
-### הסר הזמנה לדומיין {#remove-domain-invite}
+### הסרת הזמנה לדומיין {#remove-domain-invite}
 
 > `DELETE /v1/domains/:domain_name/invites`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| -------------- | -------- | -------------- | ------------------------------------------------ |
-| `email` | כֵּן | מחרוזת (דוא"ל) | כתובת דוא"ל להסרה מרשימת חברי הדומיין |
+| פרמטר גוף    | חובה     | סוג               | תיאור                                              |
+| -------------- | -------- | ------------------ | -------------------------------------------------- |
+| `email`        | כן       | מחרוזת (אימייל)   | כתובת אימייל להסרה מרשימת חברי הדומיין            |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
+
 ## חברים {#members}
 
-### עדכון חבר דומיין {#update-domain-member}
+### עדכון חבר בדומיין {#update-domain-member}
 
 > `PUT /v1/domains/DOMAIN_NAME/members/MEMBER_ID`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| -------------- | -------- | ------------------- | -------------------------------------------------------------------------------------------- |
-| `group` | כֵּן | מחרוזת (ניתנת לספירה) | קבוצה לעדכון המשתמש לחברות הדומיין (יכולה להיות אחת מ-`"admin"` או `"user"`) |
+| פרמטר גוף    | חובה     | סוג                 | תיאור                                                                                      |
+| -------------- | -------- | ------------------- | ------------------------------------------------------------------------------------------ |
+| `group`        | כן       | מחרוזת (ברירה)     | קבוצה לעדכון המשתמש אליה כחבר בדומיין (יכולה להיות אחת מ- `"admin"` או `"user"`)          |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
   -u API_TOKEN:
 ```
 
-### הסר את חבר הדומיין {#remove-domain-member}
+### הסרת חבר בדומיין {#remove-domain-member}
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
   -u API_TOKEN:
 ```
 
+
 ## כינויים {#aliases}
 
-### צור סיסמת כינוי {#generate-an-alias-password}
+### יצירת סיסמת כינוי {#generate-an-alias-password}
 
-שים לב שאם לא תשלח הוראות בדוא"ל, שם המשתמש והסיסמה יופיעו בגוף תגובת ה-JSON של בקשה מוצלחת בפורמט `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
+שים לב שאם אינך שולח הוראות באימייל, שם המשתמש והסיסמה יופיעו בגוף התגובה בפורמט JSON של בקשה מוצלחת כך: `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
-| ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | לֹא | חוּט | סיסמה חדשה מותאמת אישית לשימוש עבור הכינוי. שים לב שתוכל להשאיר שדה זה ריק או חסר לחלוטין מגוף בקשת ה-API שלך אם ברצונך לקבל סיסמה חזקה שנוצרה באופן אקראי. |
-| `password` | לֹא | חוּט | סיסמה קיימת עבור כינוי כדי לשנות את הסיסמה מבלי למחוק את אחסון תיבת הדואר הקיימת של IMAP (ראה אפשרות `is_override` להלן אם הסיסמה הקיימת כבר אינה ברשותך). |
-| `is_override` | לֹא | בוליאני | **יש להשתמש בזהירות**: פעולה זו תעקוף לחלוטין את סיסמת הכינוי ואת מסד הנתונים הקיימים, ותמחק לצמיתות את אחסון ה-IMAP הקיים ותאפס לחלוטין את מסד הנתונים של הדוא"ל של הכינוי. אנא בצע גיבוי במידת האפשר אם יש לך תיבת דואר קיימת המצורפת לכינוי זה. |
-| `emailed_instructions` | לֹא | חוּט | כתובת דוא"ל לשליחת סיסמת הכינוי והוראות הגדרה אליה. |
-
-> בקשה לדוגמה:
+| פרמטר גוף            | חובה     | סוג      | תיאור                                                                                                                                                                                                                                                                                             |
+| ---------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password`         | לא       | מחרוזת   | הסיסמה החדשה המותאמת אישית שלך לשימוש בכינוי. שים לב שניתן להשאיר שדה זה ריק או לא לכלול אותו כלל בבקשת ה-API אם ברצונך לקבל סיסמה חזקה ומיוצרת אקראית.                                                                                                                                    |
+| `password`             | לא       | מחרוזת   | סיסמה קיימת של הכינוי לשם שינוי הסיסמה מבלי למחוק את אחסון תיבת הדואר IMAP הקיים (ראה את אפשרות `is_override` למטה אם אין לך עוד את הסיסמה הקיימת).                                                                                                                                          |
+| `is_override`          | לא       | בוליאני | **יש להשתמש בזהירות**: פעולה זו תחליף את סיסמת הכינוי הקיימת ואת מסד הנתונים לחלוטין, ותמחק לצמיתות את אחסון ה-IMAP הקיים ותאפס את מסד הנתונים של האימייל SQLite של הכינוי לחלוטין. אנא בצע גיבוי אם אפשרי אם יש לך תיבת דואר קיימת שמחוברת לכינוי זה. |
+| `emailed_instructions` | לא       | מחרוזת   | כתובת אימייל לשליחת סיסמת הכינוי והוראות ההגדרה אליה.                                                                                                                                                                                                                                          |
+> בקשת דוגמה:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password \
   -u API_TOKEN:
 ```
 
-### רשימת כינויי דומיין {#list-domain-aliases}
+### רשימת כינויים לדומיין {#list-domain-aliases}
 
 > \[!NOTE]
-> החל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור [רשימת דומיינים](#list-domains) ו-[רשימת כינויי דומיין](#list-domain-aliases) יקבלו כברירת מחדל `1000` תוצאות לכל עמוד. אם ברצונך להצטרף להתנהגות זו מוקדם, תוכל להעביר את `?paginate=true` כפרמטר שאילתה נוסף לכתובת האתר עבור שאילתת נקודת הקצה. ראה [דִפּוּף](#pagination) לקבלת תובנות נוספות.
+> החל מ-1 בנובמבר 2024 נקודות הקצה של ה-API עבור [רשימת דומיינים](#list-domains) ו-[רשימת כינויים לדומיין](#list-domain-aliases) יוגדרו כברירת מחדל ל-`1000` תוצאות מקסימום לעמוד. אם ברצונך להצטרף להתנהגות זו מוקדם יותר, תוכל להעביר `?paginate=true` כפרמטר מחרוזת שאילתה נוסף לכתובת ה-URL של השאילתה בנקודת הקצה. ראה [דפדוף בעמודים](#pagination) למידע נוסף.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
-| פרמטרים של מחרוזת שאילתה | דָרוּשׁ | סוּג | תֵאוּר |
+| פרמטר מחרוזת שאילתה | חובה | סוג                      | תיאור                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | לֹא | מחרוזת (נתמכת ב-RegExp) | חיפוש כינויים בדומיין לפי שם, תווית או נמען |
-| `name` | לֹא | מחרוזת (נתמכת ב-RegExp) | חיפוש כינויים בדומיין לפי שם |
-| `recipient` | לֹא | מחרוזת (נתמכת ב-RegExp) | חיפוש כינויים בדומיין לפי נמען |
-| `sort` | לֹא | חוּט | מיין לפי שדה ספציפי (יש להוסיף קידומת של מקף יחיד `-` כדי למיין בכיוון ההפוך של שדה זה). ברירת המחדל היא `created_at` אם לא מוגדר. |
-| `page` | לֹא | מִספָּר | ראה [Pagination](#pagination) לקבלת תובנות נוספות |
-| `limit` | לֹא | מִספָּר | ראה [Pagination](#pagination) לקבלת תובנות נוספות |
+| `q`                   | לא       | מחרוזת (תמיכה ב-RegExp) | חיפוש כינויים בדומיין לפי שם, תווית, או נמענים                                                                                      |
+| `name`                | לא       | מחרוזת (תמיכה ב-RegExp) | חיפוש כינויים בדומיין לפי שם                                                                                                           |
+| `recipient`           | לא       | מחרוזת (תמיכה ב-RegExp) | חיפוש כינויים בדומיין לפי נמענים                                                                                                      |
+| `sort`                | לא       | מחרוזת                    | מיון לפי שדה מסוים (הוסף מקף יחיד `-` כדי למיין בכיוון הפוך של אותו שדה). ברירת מחדל היא `created_at` אם לא מוגדר. |
+| `page`                | לא       | מספר                    | ראה [דפדוף בעמודים](#pagination) למידע נוסף                                                                                                   |
+| `limit`               | לא       | מספר                    | ראה [דפדוף בעמודים](#pagination) למידע נוסף                                                                                                   |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
   -u API_TOKEN:
 ```
 
-### צור כינוי דומיין חדש {#create-new-domain-alias}
+### יצירת כינוי חדש לדומיין {#create-new-domain-alias}
 
 > `POST /v1/domains/DOMAIN_NAME/aliases`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
+| פרמטר גוף                      | חובה | סוג                                   | תיאור                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | לֹא | חוּט | שם כינוי (אם לא סופק או אם ריק, נוצר כינוי אקראי) |
-| `recipients` | לֹא | מחרוזת או מערך | רשימת נמענים (חייבת להיות מופרדת באמצעות מעבר שורה/רווח/פסיק. מחרוזת או מערך של כתובות דוא"ל חוקיות, שמות מתחם מלאים ("FQDN"), כתובות IP ו/או כתובות URL של webhook – ואם לא סופקו או שמדובר במערך ריק, כתובת הדוא"ל של המשתמש שמבצע את בקשת ה-API תוגדר כנמען) |
-| `description` | לֹא | חוּט | תיאור כינוי |
-| `labels` | לֹא | מחרוזת או מערך | רשימת תוויות (חייבת להיות מופרדת באמצעות מעבר שורה/רווח/פסיק, מחרוזת או מערך) |
-| `has_recipient_verification` | לֹא | בוליאני | דרוש מהנמענים ללחוץ על קישור אימות דוא"ל כדי שאימיילים יעברו דרכם (ברירת המחדל היא הגדרת הדומיין אם לא מוגדרת במפורש בגוף הבקשה) |
-| `is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית כינוי זה (אם הוא מושבת, הודעות דוא"ל לא ינותבו לשום מקום אלא יחזירו קודי סטטוס מוצלחים). אם ערך מועבר, הוא מומר לערך בוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `error_code_if_disabled` | לֹא | מספר (`250`, `421`, או `550`) | אימייל נכנס לכתובת הכינוי הזו יידחה אם `is_enabled` הוא `false` עם `250` (לשלוח בשקט לשום מקום, למשל חור שחור או `/dev/null`), `421` (דחייה רכה; וניסיון חוזר עד כ-5 ימים) או `550` כישלון ודחייה קבועים. ברירת המחדל היא `250`. |
-| `has_imap` | לֹא | בוליאני | האם להפעיל או להשבית אחסון IMAP עבור כינוי זה (אם מושבת, הודעות דוא"ל נכנסות שהתקבלו לא יאוחסנו ב-[IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). אם מועבר ערך, הוא מומר לערך בוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | לֹא | בוליאני | האם להפעיל או להשבית את [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) עבור [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) באמצעות הכינוי `public_key`. |
-| `public_key` | לֹא | חוּט | מפתח ציבורי של OpenPGP בפורמט ASCII Armor ‏([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); לדוגמה, מפתח GPG עבור `support@forwardemail.net`). זה חל רק אם `has_pgp` מוגדר כ-`true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | לֹא | חוּט | מכסת אחסון מקסימלית עבור כינוי זה. השאר ריק כדי לאפס למכסת הדומיין המקסימלית הנוכחית או הזן ערך כגון "1 ג'יגה-בייט" שנותח על ידי [bytes](https://github.com/visionmedia/bytes.js). ערך זה ניתן להתאמה רק על ידי מנהלי דומיין. |
-| `vacation_responder_is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית הודעת חופשה אוטומטית. |
-| `vacation_responder_start_date` | לֹא | חוּט | תאריך התחלה עבור משיב חופשה (אם מופעל ולא הוגדר כאן תאריך התחלה, ההנחה היא שהוא כבר התחיל). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
-| `vacation_responder_end_date` | לֹא | חוּט | תאריך סיום עבור משיב חופשה (אם מופעל ולא מוגדר כאן תאריך סיום, התוצאה היא שהיא לעולם לא מסתיימת ומגיבה לנצח). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
-| `vacation_responder_subject` | לֹא | חוּט | נושא בטקסט רגיל עבור משיב החופשה, לדוגמה "מחוץ למשרד". אנו משתמשים ב-`striptags` כדי להסיר את כל ה-HTML כאן. |
-| `vacation_responder_message` | לֹא | חוּט | הודעה בטקסט רגיל עבור משיב החופשה, לדוגמה "אהיה מחוץ למשרד עד פברואר". אנו משתמשים ב-`striptags` כדי להסיר את כל ה-HTML כאן. |
-
-> בקשה לדוגמה:
+| `name`                          | לא       | מחרוזת                                 | שם הכינוי (אם לא סופק או ריק, ייווצר כינוי אקראי)                                                                                                                                                                                                                                                                                                                  |
+| `recipients`                    | לא       | מחרוזת או מערך                        | רשימת נמענים (חייב להיות מחרוזת מופרדת בשורות/רווחים/פסיקים או מערך של כתובות אימייל תקינות, שמות דומיין מלאים ("FQDN"), כתובות IP, ו/או כתובות URL של webhook – ואם לא סופק או מערך ריק, כתובת האימייל של המשתמש המבצע את בקשת ה-API תוגדר כנמען)                                                                                     |
+| `description`                   | לא       | מחרוזת                                 | תיאור הכינוי                                                                                                                                                                                                                                                                                                                                                                           |
+| `labels`                        | לא       | מחרוזת או מערך                        | רשימת תוויות (חייב להיות מחרוזת מופרדת בשורות/רווחים/פסיקים או מערך)                                                                                                                                                                                                                                                                                                                   |
+| `has_recipient_verification`    | לא       | בוליאני                                | דרוש מהנמענים ללחוץ על קישור אימות אימייל כדי שהאימיילים יעברו (ברירת מחדל היא הגדרת הדומיין אם לא מוגדר במפורש בגוף הבקשה)                                                                                                                                                                                                                              |
+| `is_enabled`                    | לא       | בוליאני                                | האם להפעיל או להשבית את הכינוי הזה (אם מושבת, האימיילים ינותבו לשום מקום אך יחזירו קודי סטטוס מוצלחים). אם מועבר ערך, הוא יומר לבוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                                                                                           |
+| `error_code_if_disabled`        | לא       | מספר (אחד מ-`250`, `421`, או `550`) | אימייל נכנס לכינוי זה יידחה אם `is_enabled` הוא `false` עם אחד מהקודים `250` (מסירה שקטה לשום מקום, לדוגמה חור שחור או `/dev/null`), `421` (דחייה רכה; ונסיון חוזר עד כ-5 ימים) או `550` כשלון קבוע ודחייה. ברירת מחדל היא `250`.                                                                                                                               |
+| `has_imap`                      | לא       | בוליאני                                | האם להפעיל או להשבית אחסון IMAP עבור כינוי זה (אם מושבת, אימיילים נכנסים לא יאוחסנו ב-[אחסון IMAP](/blog/docs/best-quantum-safe-encrypted-email-service). אם מועבר ערך, הוא יומר לבוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                  |
+| `has_pgp`                       | לא       | בוליאני                                | האם להפעיל או להשבית [הצפנת OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) עבור [אחסון אימייל מוצפן IMAP/POP3/CalDAV/CardDAV](/blog/docs/best-quantum-safe-encrypted-email-service) באמצעות `public_key` של הכינוי.                                                                                                         |
+| `public_key`                    | לא       | מחרוזת                                 | מפתח ציבורי OpenPGP בפורמט ASCII Armor ([לחץ כאן לצפייה בדוגמה](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); לדוגמה מפתח GPG עבור `support@forwardemail.net`). זה חל רק אם `has_pgp` מוגדר ל-`true`. [למידע נוסף על הצפנה מקצה לקצה ב-FAQ שלנו](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
+| `max_quota`                     | לא       | מחרוזת                                 | מכסת אחסון מקסימלית לכינוי זה. השאר ריק כדי לאפס למכסה המקסימלית הנוכחית של הדומיין או הזן ערך כמו "1 GB" שיפורש על ידי [bytes](https://github.com/visionmedia/bytes.js). ערך זה ניתן לשינוי רק על ידי מנהלי הדומיין.                                                                                                                                      |
+| `vacation_responder_is_enabled` | לא       | בוליאני                                | האם להפעיל או להשבית מענה אוטומטי לחופשה.                                                                                                                                                                                                                                                                                                                               |
+| `vacation_responder_start_date` | לא       | מחרוזת                                 | תאריך התחלה למענה חופשה (אם מופעל ואין תאריך התחלה מוגדר כאן, מניחים שכבר התחיל). אנו תומכים בפורמטי תאריך כמו `MM/DD/YYYY`, `YYYY-MM-DD`, ופורמטים נוספים באמצעות ניתוח חכם עם `dayjs`.                                                                                                                                                      |
+| `vacation_responder_end_date`   | לא       | מחרוזת                                 | תאריך סיום למענה חופשה (אם מופעל ואין תאריך סיום מוגדר כאן, מניחים שהוא לעולם לא מסתיים ומגיב לנצח). אנו תומכים בפורמטי תאריך כמו `MM/DD/YYYY`, `YYYY-MM-DD`, ופורמטים נוספים באמצעות ניתוח חכם עם `dayjs`.                                                                                                                                            |
+| `vacation_responder_subject`    | לא       | מחרוזת                                 | נושא בטקסט פשוט למענה חופשה, לדוגמה "מחוץ למשרד". אנו משתמשים ב-`striptags` להסרת כל HTML כאן.                                                                                                                                                                                                                                                                         |
+| `vacation_responder_message`    | לא       | מחרוזת                                 | הודעה בטקסט פשוט למענה חופשה, לדוגמה "אהיה מחוץ למשרד עד פברואר.". אנו משתמשים ב-`striptags` להסרת כל HTML כאן.                                                                                                                                                                                                                                               |
+> Example Request:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 
-### אחזר כינוי דומיין {#retrieve-domain-alias}
+### שליפת כינוי דומיין {#retrieve-domain-alias}
 
-ניתן לאחזר כינוי דומיין לפי הערך `id` שלו או לפי הערך `name` שלו.
+ניתן לשלוף כינוי דומיין באמצעות `id` או באמצעות ערך ה-`name` שלו.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
-> בקשה לדוגמה:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
@@ -872,7 +924,7 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 > `GET /v1/domains/:domain_name/aliases/:alias_name`
 
-> בקשה לדוגמה:
+> Example Request:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
@@ -883,26 +935,25 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
+| Body Parameter                  | Required | Type                                   | Description                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | לֹא | חוּט | שם בדוי |
-| `recipients` | לֹא | מחרוזת או מערך | רשימת נמענים (חייבת להיות מופרדת באמצעות מעבר שורה/רווח/פסיק) מחרוזת או מערך של כתובות דוא"ל חוקיות, שמות דומיין מלאים ("FQDN"), כתובות IP ו/או כתובות URL של webhook) |
-| `description` | לֹא | חוּט | תיאור כינוי |
-| `labels` | לֹא | מחרוזת או מערך | רשימת תוויות (חייבת להיות מופרדת באמצעות מעבר שורה/רווח/פסיק, מחרוזת או מערך) |
-| `has_recipient_verification` | לֹא | בוליאני | דרוש מהנמענים ללחוץ על קישור אימות דוא"ל כדי שאימיילים יעברו דרכם (ברירת המחדל היא הגדרת הדומיין אם לא מוגדרת במפורש בגוף הבקשה) |
-| `is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית כינוי זה (אם הוא מושבת, הודעות דוא"ל לא ינותבו לשום מקום אלא יחזירו קודי סטטוס מוצלחים). אם ערך מועבר, הוא מומר לערך בוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `error_code_if_disabled` | לֹא | מספר (`250`, `421`, או `550`) | אימייל נכנס לכתובת הכינוי הזו יידחה אם `is_enabled` הוא `false` עם `250` (לשלוח בשקט לשום מקום, למשל חור שחור או `/dev/null`), `421` (דחייה רכה; וניסיון חוזר עד כ-5 ימים) או `550` כישלון ודחייה קבועים. ברירת המחדל היא `250`. |
-| `has_imap` | לֹא | בוליאני | האם להפעיל או להשבית אחסון IMAP עבור כינוי זה (אם מושבת, הודעות דוא"ל נכנסות שהתקבלו לא יאוחסנו ב-[IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). אם מועבר ערך, הוא מומר לערך בוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | לֹא | בוליאני | האם להפעיל או להשבית את [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) עבור [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) באמצעות הכינוי `public_key`. |
-| `public_key` | לֹא | חוּט | מפתח ציבורי של OpenPGP בפורמט ASCII Armor ‏([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); לדוגמה, מפתח GPG עבור `support@forwardemail.net`). זה חל רק אם `has_pgp` מוגדר כ-`true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | לֹא | חוּט | מכסת אחסון מקסימלית עבור כינוי זה. השאר ריק כדי לאפס למכסת הדומיין המקסימלית הנוכחית או הזן ערך כגון "1 ג'יגה-בייט" שנותח על ידי [bytes](https://github.com/visionmedia/bytes.js). ערך זה ניתן להתאמה רק על ידי מנהלי דומיין. |
-| `vacation_responder_is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית הודעת חופשה אוטומטית. |
-| `vacation_responder_start_date` | לֹא | חוּט | תאריך התחלה עבור משיב חופשה (אם מופעל ולא הוגדר כאן תאריך התחלה, ההנחה היא שהוא כבר התחיל). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
-| `vacation_responder_end_date` | לֹא | חוּט | תאריך סיום עבור משיב חופשה (אם מופעל ולא מוגדר כאן תאריך סיום, התוצאה היא שהיא לעולם לא מסתיימת ומגיבה לנצח). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
-| `vacation_responder_subject` | לֹא | חוּט | נושא בטקסט רגיל עבור משיב החופשה, לדוגמה "מחוץ למשרד". אנו משתמשים ב-`striptags` כדי להסיר את כל ה-HTML כאן. |
-| `vacation_responder_message` | לֹא | חוּט | הודעה בטקסט רגיל עבור משיב החופשה, לדוגמה "אהיה מחוץ למשרד עד פברואר". אנו משתמשים ב-`striptags` כדי להסיר את כל ה-HTML כאן. |
-
-> בקשה לדוגמה:
+| `name`                          | No       | String                                 | שם הכינוי                                                                                                                                                                                                                                                                                                                                                                                  |
+| `recipients`                    | No       | String or Array                        | רשימת נמענים (חייב להיות מחרוזת מופרדת בפסיקים/רווחים/שורות או מערך של כתובות אימייל תקינות, שמות דומיין מלאים ("FQDN"), כתובות IP, ו/או כתובות URL של webhook)                                                                                                                                                                                                                         |
+| `description`                   | No       | String                                 | תיאור הכינוי                                                                                                                                                                                                                                                                                                                                                                               |
+| `labels`                        | No       | String or Array                        | רשימת תוויות (חייב להיות מחרוזת מופרדת בפסיקים/רווחים/שורות או מערך)                                                                                                                                                                                                                                                                                                                     |
+| `has_recipient_verification`    | No       | Boolean                                | דרוש מהנמענים ללחוץ על קישור אימות אימייל כדי שהאימיילים יעברו (ברירת המחדל היא הגדרת הדומיין אם לא מוגדר במפורש בגוף הבקשה)                                                                                                                                                                                                                                                             |
+| `is_enabled`                    | No       | Boolean                                | האם להפעיל או להשבית את הכינוי הזה (אם מושבת, האימיילים ינותבו לשום מקום אך יחזירו קודי סטטוס מוצלחים). אם מועבר ערך, הוא יומר לבוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                                                                                                                   |
+| `error_code_if_disabled`        | No       | Number (either `250`, `421`, or `550`) | אימייל נכנס לכינוי זה יידחה אם `is_enabled` הוא `false` עם אחד מהקודים `250` (מסירה שקטה לשום מקום, לדוגמה blackhole או `/dev/null`), `421` (דחייה רכה; ונסיון חוזר עד כ-5 ימים) או `550` כשלון קבוע ודחייה. ברירת המחדל היא `250`.                                                                                                                                                   |
+| `has_imap`                      | No       | Boolean                                | האם להפעיל או להשבית אחסון IMAP עבור כינוי זה (אם מושבת, אימיילים נכנסים לא יאוחסנו ב-[IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). אם מועבר ערך, הוא יומר לבוליאני באמצעות [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                                                                      |
+| `has_pgp`                       | No       | Boolean                                | האם להפעיל או להשבית [הצפנת OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) עבור [אחסון אימייל מוצפן IMAP/POP3/CalDAV/CardDAV](/blog/docs/best-quantum-safe-encrypted-email-service) באמצעות `public_key` של הכינוי.                                                                                                                         |
+| `public_key`                    | No       | String                                 | מפתח ציבורי OpenPGP בפורמט ASCII Armor ([לחץ כאן לצפייה בדוגמה](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); לדוגמה מפתח GPG עבור `support@forwardemail.net`). זה חל רק אם `has_pgp` מוגדר ל-`true`. [למידע נוסף על הצפנה מקצה לקצה ב-FAQ שלנו](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
+| `max_quota`                     | No       | String                                 | מכסת אחסון מקסימלית לכינוי זה. השאר ריק כדי לאפס למכסה המקסימלית הנוכחית של הדומיין או הזן ערך כמו "1 GB" שיפורש על ידי [bytes](https://github.com/visionmedia/bytes.js). ערך זה ניתן לשינוי רק על ידי מנהלי הדומיין.                                                                                                                                                              |
+| `vacation_responder_is_enabled` | No       | Boolean                                | האם להפעיל או להשבית מענה אוטומטי לחופשה.                                                                                                                                                                                                                                                                                                                                                 |
+| `vacation_responder_start_date` | No       | String                                 | תאריך התחלה למענה החופשה (אם מופעל ואין תאריך התחלה מוגדר כאן, מניחים שכבר התחיל). אנו תומכים בפורמטים כמו `MM/DD/YYYY`, `YYYY-MM-DD`, ופורמטים נוספים באמצעות ניתוח חכם עם `dayjs`.                                                                                                                                                                                                |
+| `vacation_responder_end_date`   | No       | String                                 | תאריך סיום למענה החופשה (אם מופעל ואין תאריך סיום מוגדר כאן, מניחים שהוא לעולם לא מסתיים ומגיב לנצח). אנו תומכים בפורמטים כמו `MM/DD/YYYY`, `YYYY-MM-DD`, ופורמטים נוספים באמצעות ניתוח חכם עם `dayjs`.                                                                                                                                                                                |
+| `vacation_responder_subject`    | No       | String                                 | נושא בהיר למענה החופשה, לדוגמה "מחוץ למשרד". אנו משתמשים ב-`striptags` להסרת כל תגי ה-HTML כאן.                                                                                                                                                                                                                                                                                         |
+| `vacation_responder_message`    | No       | String                                 | הודעה בהירה למענה החופשה, לדוגמה "אהיה מחוץ למשרד עד פברואר.". אנו משתמשים ב-`striptags` להסרת כל תגי ה-HTML כאן.                                                                                                                                                                                                                                                                       |
+> בקשת דוגמה:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
@@ -913,26 +964,27 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
 
 > `DELETE /v1/domains/:domain_name/aliases/:alias_id`
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
   -u API_TOKEN:
 ```
 
+
 ## הצפנה {#encrypt}
 
-אנו מאפשרים לך להצפין רשומות אפילו בתוכנית החינמית ללא עלות. פרטיות לא צריכה להיות תכונה, היא צריכה להיות מובנית באופן אינהרנטי בכל היבטי המוצר. כפי שביקשנו מאוד ב-[דיון על מדריכי פרטיות](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) וב-[בעיות הגיטהאב שלנו](https://github.com/forwardemail/forwardemail.net/issues/254), הוספנו זאת.
+אנו מאפשרים לך להצפין רשומות אפילו בתוכנית החינמית ללא עלות. פרטיות לא צריכה להיות תכונה, היא צריכה להיות מובנית באופן מהותי בכל היבטי המוצר. כפי שנדרש רבות ב-[דיון Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) וב-[נושאים שלנו ב-GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) הוספנו זאת.
 
 ### הצפנת רשומת TXT {#encrypt-txt-record}
 
 > `POST /v1/encrypt`
 
-| פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
+| פרמטר גוף    | חובה     | סוג    | תיאור                                       |
 | -------------- | -------- | ------ | -------------------------------------------- |
-| `input` | כֵּן | חוּט | כל רשומת טקסט טקסט רגיל תקפה להעברת דוא"ל |
+| `input`        | כן       | מחרוזת | כל רשומת TXT טקסט רגילה חוקית של Forward Email |
 
-> בקשה לדוגמה:
+> בקשת דוגמה:
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \

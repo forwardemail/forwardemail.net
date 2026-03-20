@@ -1,219 +1,219 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# Egy adatvédelmi szemléletű AI ügyfélszolgálati ügynök építése LanceDB-vel, Ollamával és Node.js-sel {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
 <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
+> Ez a dokumentum az önállóan üzemeltetett AI ügyfélszolgálati ügynök építésének történetét mutatja be. Hasonló kihívásokról írtunk a [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blogbejegyzésünkben. Őszintén gondolkodtunk egy folytatáson „AI Startup Graveyard” címmel, de lehet, hogy még egy évet várnunk kell, amíg az AI buborék esetleg kipukkan(?). Egyelőre ez az agyeldobásunk arról, mi működött, mi nem, és miért így csináltuk.
 
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
+Így építettük meg saját AI ügyfélszolgálati ügynökünket. Nehéz úton: önállóan üzemeltetve, adatvédelmi szemlélettel és teljesen a mi irányításunk alatt. Miért? Mert nem bízunk harmadik fél szolgáltatásaiban ügyfeleink adataival kapcsolatban. Ez GDPR és DPA követelmény, és helyes dolog.
 
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
+Ez nem egy szórakoztató hétvégi projekt volt. Egy hónapos út volt, amely során törött függőségeken, félrevezető dokumentáción és az open-source AI ökoszisztéma 2025-ös általános káoszán navigáltunk. Ez a dokumentum feljegyzés arról, mit építettünk, miért építettük, és milyen akadályokba ütköztünk útközben.
 
-## Table of Contents {#table-of-contents}
 
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
+## Tartalomjegyzék {#table-of-contents}
 
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
+* [Ügyfél előnyök: AI-vel kiegészített emberi támogatás](#customer-benefits-ai-augmented-human-support)
+  * [Gyorsabb, pontosabb válaszok](#faster-more-accurate-responses)
+  * [Következetesség kiégés nélkül](#consistency-without-burnout)
+  * [Mit kapsz](#what-you-get)
+* [Személyes visszatekintés: Két évtizedes küzdelem](#a-personal-reflection-the-two-decade-grind)
+* [Miért fontos az adatvédelem](#why-privacy-matters)
+* [Költségelemzés: Felhő AI vs önálló üzemeltetés](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [Felhő AI szolgáltatás összehasonlítás](#cloud-ai-service-comparison)
+  * [Költség bontás: 5GB tudásbázis](#cost-breakdown-5gb-knowledge-base)
+  * [Önálló üzemeltetésű hardverköltségek](#self-hosted-hardware-costs)
+* [Saját API használata (dogfooding)](#dogfooding-our-own-api)
+  * [Miért fontos a dogfooding](#why-dogfooding-matters)
+  * [API használati példák](#api-usage-examples)
+  * [Teljesítmény előnyök](#performance-benefits)
+* [Titkosítási architektúra](#encryption-architecture)
+  * [1. réteg: postaláda titkosítás (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [2. réteg: üzenetszintű PGP titkosítás](#layer-2-message-level-pgp-encryption)
+  * [Miért fontos ez a képzéshez](#why-this-matters-for-training)
+  * [Tárolási biztonság](#storage-security)
+  * [Helyi tárolás az alapgyakorlat](#local-storage-is-standard-practice)
+* [Az architektúra](#the-architecture)
+  * [Magas szintű folyamat](#high-level-flow)
+  * [Részletes scraper folyamat](#detailed-scraper-flow)
+* [Hogyan működik](#how-it-works)
+  * [A tudásbázis építése](#building-the-knowledge-base)
+  * [Képzés történelmi emailekből](#training-from-historical-emails)
+  * [Bejövő emailek feldolgozása](#processing-incoming-emails)
+  * [Vektor adatbázis kezelése](#vector-store-management)
+* [A vektor adatbázis temetője](#the-vector-database-graveyard)
+* [Rendszerkövetelmények](#system-requirements)
+* [Cron feladat konfiguráció](#cron-job-configuration)
+  * [Környezeti változók](#environment-variables)
+  * [Cron feladatok több postaládához](#cron-jobs-for-multiple-inboxes)
+  * [Cron ütemezés bontás](#cron-schedule-breakdown)
+  * [Dinamikus dátumszámítás](#dynamic-date-calculation)
+  * [Kezdeti beállítás: URL lista kinyerése sitemapből](#initial-setup-extract-url-list-from-sitemap)
+  * [Cron feladatok kézi tesztelése](#testing-cron-jobs-manually)
+  * [Naplók figyelése](#monitoring-logs)
+* [Kód példák](#code-examples)
+  * [Scraping és feldolgozás](#scraping-and-processing)
+  * [Képzés történelmi emailekből](#training-from-historical-emails-1)
+  * [Lekérdezés kontextusért](#querying-for-context)
+* [A jövő: spam szűrő kutatás-fejlesztés](#the-future-spam-scanner-rd)
+* [Hibaelhárítás](#troubleshooting)
+  * [Vektor dimenzió eltérés hiba](#vector-dimension-mismatch-error)
+  * [Üres tudásbázis kontextus](#empty-knowledge-base-context)
+  * [PGP dekódolási hibák](#pgp-decryption-failures)
+* [Használati tippek](#usage-tips)
+  * [Inbox Zero elérése](#achieving-inbox-zero)
+  * [skip-ai címke használata](#using-the-skip-ai-label)
+  * [Email szálazás és válasz mindenkinek](#email-threading-and-reply-all)
+  * [Figyelés és karbantartás](#monitoring-and-maintenance)
+* [Tesztelés](#testing)
+  * [Tesztek futtatása](#running-tests)
+  * [Teszt lefedettség](#test-coverage)
+  * [Teszt környezet](#test-environment)
+* [Fő tanulságok](#key-takeaways)
+## Ügyfél-előnyök: AI-val Kiegészített Emberi Támogatás {#customer-benefits-ai-augmented-human-support}
 
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
+Az AI rendszerünk nem helyettesíti a támogatói csapatunkat – jobbá teszi őket. Ez azt jelenti számodra:
 
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
+### Gyorsabb, Pontosabb Válaszok {#faster-more-accurate-responses}
 
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
+**Ember a Körforgásban**: Minden AI által generált vázlatot a támogatói csapatunk emberi tagjai átnéznek, szerkesztenek és gondosan kiválasztanak, mielőtt elküldenék neked. Az AI végzi az első kutatást és vázlatkészítést, így csapatunk a minőségellenőrzésre és személyre szabásra koncentrálhat.
 
-**Trained on Human Expertise**: The AI learns from:
+**Emberi Szakértelemre Képezve**: Az AI tanul a következőkből:
 
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
+* Kézzel írt tudásbázisunkból és dokumentációinkból
+* Ember által írt blogbejegyzésekből és oktatóanyagokból
+* Átfogó GYIK-ünkből (amelyeket emberek írtak)
+* Korábbi ügyfélbeszélgetésekből (mind valódi emberek által kezelt)
 
-You're getting responses informed by years of human expertise, just delivered faster.
+Olyan válaszokat kapsz, amelyek évek emberi szakértelmére épülnek, csak gyorsabban szállítva.
 
-### Consistency Without Burnout {#consistency-without-burnout}
+### Következetesség Kiégés Nélkül {#consistency-without-burnout}
 
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
+Kis csapatunk naponta több száz támogatási kérést kezel, amelyek mindegyike más-más technikai tudást és mentális kontextusváltást igényel:
 
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
+* Számlázási kérdések pénzügyi rendszerismeretet igényelnek
+* DNS problémák hálózati szakértelmet követelnek
+* API integráció programozási tudást igényel
+* Biztonsági jelentések sérülékenységértékelést követelnek
 
-Without AI assistance, this constant context-switching leads to:
+AI segítség nélkül ez az állandó kontextusváltás a következőkhöz vezet:
 
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
+* Lassabb válaszidők
+* Emberi hibák a fáradtság miatt
+* Válaszok minőségének következetlensége
+* Csapat kiégése
 
-**With AI augmentation**, our team:
+**AI kiegészítéssel** a csapatunk:
 
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
+* Gyorsabban válaszol (az AI másodpercek alatt vázlatot készít)
+* Kevesebb hibát követ el (az AI észreveszi a gyakori hibákat)
+* Fenntartja a következetes minőséget (az AI mindig ugyanazt a tudásbázist használja)
+* Friss és fókuszált marad (kevesebb időt tölt kutatással, több időt segítéssel)
 
-### What You Get {#what-you-get}
+### Amit Kapsz {#what-you-get}
 
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
+✅ **Gyorsaság**: Az AI másodpercek alatt vázlatot készít, az emberek perceken belül átnézik és elküldik
 
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
+✅ **Pontosság**: Válaszok a tényleges dokumentációnkra és korábbi megoldásokra alapozva
 
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
+✅ **Következetesség**: Ugyanaz a magas színvonalú válasz, akár reggel 9-kor, akár este 9-kor
 
-✅ **Human touch**: Every response reviewed and personalized by our team
+✅ **Emberi érintés**: Minden választ a csapatunk átnéz és személyre szab
 
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+✅ **Nincsenek téveszmék**: Az AI csak a hitelesített tudásbázisunkat használja, nem általános internetes adatokat
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> **Mindig emberekkel beszélsz**. Az AI egy kutatási asszisztens, amely segít csapatunknak gyorsabban megtalálni a helyes választ. Gondolj rá úgy, mint egy könyvtárosra, aki azonnal megtalálja a releváns könyvet – de egy ember olvassa el és magyarázza el neked.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+## Egy Személyes Elmélkedés: A Két Évtizedes Küzdelem {#a-personal-reflection-the-two-decade-grind}
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
+Mielőtt belemennénk a technikai részletekbe, egy személyes megjegyzés. Közel két évtizede csinálom ezt. A végtelen órák a billentyűzet előtt, a megoldás kitartó keresése, a mély, fókuszált munka – ez a valóság, amikor valami értelmeset építünk. Ez egy olyan valóság, amit gyakran átsiklanak az új technológiák hype ciklusai.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+Az AI robbanásszerű fejlődése különösen frusztráló volt. Eladnak nekünk egy álmot az automatizálásról, az AI asszisztensekről, amelyek megírják a kódunkat és megoldják a problémáinkat. A valóság? A kimenet gyakran szemétkód, amit több idő kijavítani, mint újraírni. Az ígéret, hogy megkönnyíti az életünket, hamis. Ez eltereli a figyelmet a kemény, szükséges építőmunkáról.
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+És ott van az open-source hozzájárulás ördögi köre. Már így is kimerült vagy, a küzdelem miatt. Használsz egy AI-t, hogy segítsen részletes, jól strukturált hibajelentést írni, remélve, hogy megkönnyíted a karbantartók dolgát a probléma megértésében és javításában. És mi történik? Megszidnak. A hozzájárulásodat "off-topic"-nak vagy kevés erőfeszítésűnek minősítik, ahogy azt egy nemrégiben történt [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321) esetében láttuk. Ez egy pofon a tapasztalt fejlesztőknek, akik csak segíteni próbálnak.
 
-## Why Privacy Matters {#why-privacy-matters}
+Ez a valóság, amelyben dolgozunk. Nem csak a hibás eszközökről van szó; egy olyan kultúráról, amely gyakran nem tiszteli meg a hozzájárulók idejét és [erőfeszítéseit](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Ez a bejegyzés ennek a valóságnak a krónikája. Ez egy történet az eszközökről, igen, de ugyanakkor az emberi költségről is, amely egy hibás ökoszisztémában való építés során merül fel, amely minden ígéret ellenére alapvetően hibás.
+## Miért fontos a magánélet {#why-privacy-matters}
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+A [technikai fehér könyvünk](https://forwardemail.net/technical-whitepaper.pdf) mélyrehatóan tárgyalja a magánélethez való hozzáállásunkat. Röviden: nem küldünk ügyféladatokat harmadik feleknek. Soha. Ez azt jelenti, hogy nincs OpenAI, nincs Anthropic, nincs felhőalapú vektoralapú adatbázis. Minden a saját infrastruktúránkon fut helyben. Ez nem alku tárgya a GDPR megfelelés és az adatfeldolgozási megállapodásaink szempontjából.
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+## Költségelemzés: Felhő AI vs Saját hosztolás {#cost-analysis-cloud-ai-vs-self-hosted}
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+Mielőtt belevágnánk a technikai megvalósításba, beszéljünk arról, hogy miért fontos a saját hosztolás költség szempontjából. A felhő AI szolgáltatások árazási modelljei megfizethetetlenné teszik őket nagy volumenű felhasználási esetekben, mint például az ügyfélszolgálat.
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
-| --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+### Felhő AI szolgáltatás összehasonlítás {#cloud-ai-service-comparison}
+
+| Szolgáltatás    | Szolgáltató         | Beágyazási költség                                              | LLM költség (bemenet)                                                    | LLM költség (kimenet)   | Adatvédelmi szabályzat                              | GDPR/DPA        | Hosztolás         | Adatmegosztás     |
+| --------------- | ------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
+| **OpenAI**      | OpenAI (US)         | [$0.02-0.13/1M token](https://openai.com/api/pricing/)           | $0.15-20/1M token                                                        | $0.60-80/1M token       | [Link](https://openai.com/policies/privacy-policy/) | Korlátozott DPA | Azure (US)        | Igen (tréning)    |
+| **Claude**      | Anthropic (US)      | N/A                                                              | [$3-20/1M token](https://docs.claude.com/en/docs/about-claude/pricing)   | $15-80/1M token         | [Link](https://www.anthropic.com/legal/privacy)     | Korlátozott DPA | AWS/GCP (US)      | Nem (állítás szerint) |
+| **Gemini**      | Google (US)         | [$0.15/1M token](https://ai.google.dev/gemini-api/docs/pricing)  | $0.30-1.00/1M token                                                     | $2.50/1M token          | [Link](https://policies.google.com/privacy)         | Korlátozott DPA | GCP (US)          | Igen (fejlesztés) |
+| **DeepSeek**    | DeepSeek (Kína)     | N/A                                                              | [$0.028-0.28/1M token](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M token          | [Link](https://www.deepseek.com/en)                 | Ismeretlen      | Kína              | Ismeretlen        |
+| **Mistral**     | Mistral AI (Franciaország) | [$0.10/1M token](https://mistral.ai/pricing)                    | $0.40/1M token                                                          | $2.00/1M token          | [Link](https://mistral.ai/terms/)                   | EU GDPR         | EU                | Ismeretlen        |
+| **Saját hosztolás** | Te                  | $0 (meglévő hardver)                                             | $0 (meglévő hardver)                                                    | $0 (meglévő hardver)    | Saját szabályzat                                    | Teljes megfelelés | MacBook M5 + cron | Soha              |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Adat szuverenitási aggályok**: Az amerikai szolgáltatók (OpenAI, Claude, Gemini) a CLOUD Act hatálya alá tartoznak, amely lehetővé teszi az amerikai kormány számára az adatokhoz való hozzáférést. A DeepSeek (Kína) kínai adatvédelmi törvények szerint működik. Míg a Mistral (Franciaország) EU hosztolást és GDPR megfelelést kínál, a saját hosztolás marad az egyetlen lehetőség a teljes adat szuverenitás és kontroll érdekében.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Költség bontás: 5GB tudásbázis {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Számoljuk ki egy 5GB-os tudásbázis feldolgozásának költségét (tipikus egy közepes méretű cég dokumentumaival, e-mailjeivel és támogatási előzményeivel).
 
-**Assumptions:**
+**Feltételezések:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB szöveg ≈ 1,25 milliárd token (feltételezve kb. 4 karakter/token)
+* Kezdeti beágyazás generálás
+* Havi újratanítás (teljes újra-beágyazás)
+* Havi 10 000 támogatási lekérdezés
+* Átlagos lekérdezés: 500 token bemenet, 300 token kimenet
+**Részletes Költségbontás:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
+| Összetevő                             | OpenAI           | Claude          | Gemini               | Saját Üzemeltetés   |
 | -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **Kezdeti Beágyazás** (1,25Mrd token) | 25 000 USD       | N/A             | 187 500 USD          | 0 USD              |
+| **Havi Lekérdezések** (10K × 800 token) | 1 200-16 000 USD | 2 400-16 000 USD| 2 400-3 200 USD      | 0 USD              |
+| **Havi Újraképzés** (1,25Mrd token)    | 25 000 USD       | N/A             | 187 500 USD          | 0 USD              |
+| **Első Év Összesen**                   | 325 200-217 000 USD | 28 800-192 000 USD | 2 278 800-2 226 000 USD | ~60 USD (áram)     |
+| **Adatvédelmi Megfelelés**             | ❌ Korlátozott    | ❌ Korlátozott  | ❌ Korlátozott       | ✅ Teljes           |
+| **Adat Szuverenitás**                   | ❌ Nem           | ❌ Nem          | ❌ Nem               | ✅ Igen             |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **A Gemini beágyazási költségei katasztrofálisak**: 0,15 USD/1M token. Egyetlen 5GB tudásbázis beágyazás 187 500 USD-be kerülne. Ez 37-szer drágább, mint az OpenAI, és teljesen használhatatlanná teszi éles környezetben.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Saját Üzemeltetésű Hardverköltségek {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+A rendszerünk meglévő hardveren fut, amit már birtoklunk:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Hardver**: MacBook M5 (fejlesztéshez már megvan)
+* **További költség**: 0 USD (meglévő hardvert használ)
+* **Áram**: ~5 USD/hónap (becsült)
+* **Első év összesen**: ~60 USD
+* **Folyamatos költség**: 60 USD/év
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**Megtérülés**: A saját üzemeltetésnek gyakorlatilag nulla a marginális költsége, mivel meglévő fejlesztői hardvert használunk. A rendszer cron feladatokkal fut csúcsidőn kívül.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
+## Saját API Használatunk {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+Az egyik legfontosabb architekturális döntésünk az volt, hogy minden AI feladat közvetlenül a [Forward Email API](https://forwardemail.net/email-api) használatával működjön. Ez nem csak jó gyakorlat – hanem kényszerítő tényező a teljesítmény optimalizálására.
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+### Miért Fontos a Saját Használat? {#why-dogfooding-matters}
 
-When our AI jobs use the same API endpoints as our customers:
+Amikor AI feladataink ugyanazokat az API végpontokat használják, mint az ügyfeleink:
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+1. **A teljesítmény szűk keresztmetszetei minket érintenek először** – Mi érezzük először a problémát, nem az ügyfelek
+2. **Az optimalizáció mindenki javára válik** – A fejlesztéseink automatikusan javítják az ügyfélélményt is
+3. **Valós környezetben történő tesztelés** – Feladataink több ezer e-mailt dolgoznak fel, folyamatos terheléses tesztelést biztosítva
+4. **Kód újrafelhasználás** – Ugyanaz az autentikáció, sebességkorlátozás, hibakezelés és gyorsítótárazás logika
 
-### API Usage Examples {#api-usage-examples}
+### API Használati Példák {#api-usage-examples}
 
-**Listing Messages (train-from-history.js):**
+**Üzenetek listázása (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// GET /v1/messages?folder=INBOX használata BasicAuth-kal
+// Kizárja az eml, raw, nodemailer mezőket a válasz méretének csökkentésére (csak az azonosítók kellenek)
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +232,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Visszatér: [{ id, subject, date, ... }, ...]
+// A teljes üzenet tartalmat később GET /v1/messages/:id hívással kérjük le
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Teljes üzenetek lekérése (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// GET /v1/messages/:id használata a teljes üzenet raw tartalmával
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +251,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Visszatér: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Válasz tervezetek létrehozása (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// POST /v1/messages használata válasz tervezetek létrehozásához
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +275,56 @@ const response = await axios.post(
   }
 );
 ```
+### Teljesítményelőnyök {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Mivel az AI feladataink ugyanazon az API infrastruktúrán futnak:
 
-Because our AI jobs run on the same API infrastructure:
+* **Gyorsítótárazási optimalizációk** mind a feladatoknak, mind az ügyfeleknek előnyt jelentenek
+* **Korlátozások tesztelése** valós terhelés alatt történik
+* **Hibakezelés** harcedzett
+* **API válaszidők** folyamatosan monitorozva vannak
+* **Adatbázis-lekérdezések** mindkét esethez optimalizáltak
+* **Sávszélesség-optimalizáció** – Az `eml`, `raw`, `nodemailer` kizárása a listázásból kb. 90%-kal csökkenti a válasz méretét
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+Amikor a `train-from-history.js` 1 000 e-mailt dolgoz fel, több mint 1 000 API hívást hajt végre. Az API bármilyen hatékonysági hiánya azonnal nyilvánvalóvá válik. Ez arra kényszerít minket, hogy optimalizáljuk az IMAP hozzáférést, az adatbázis-lekérdezéseket és a válasz szerializálását – ezek a fejlesztések közvetlenül az ügyfeleink javát szolgálják.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Példa optimalizációra**: 100 üzenet teljes tartalommal történő listázása = kb. 10 MB válasz. Listázás `eml: false, raw: false, nodemailer: false` beállítással = kb. 100 KB válasz (100-szor kisebb).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Titkosítási architektúra {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+Az e-mail tárolásunk több rétegű titkosítást használ, amelyet az AI feladatok valós időben kell, hogy visszafejtsenek a tanításhoz.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### 1. réteg: Postafiók titkosítás (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Minden IMAP postafiók SQLite adatbázisként van tárolva, amely **chacha20-poly1305** algoritmussal van titkosítva, ami egy kvantumbiztos titkosítási eljárás. Erről részletesen olvashatsz a [kvantumbiztos titkosított e-mail szolgáltatás blogbejegyzésünkben](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**Fő jellemzők:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Algoritmus**: ChaCha20-Poly1305 (AEAD titkosító)
+* **Kvantumbiztos**: Ellenáll a kvantumszámítógépes támadásoknak
+* **Tárolás**: SQLite adatbázis fájlok a lemezen
+* **Hozzáférés**: Memóriában visszafejtve, amikor IMAP/API-n keresztül elérik
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### 2. réteg: Üzenetszintű PGP titkosítás {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Sok támogatási e-mail további PGP (OpenPGP szabvány) titkosítással rendelkezik. Az AI feladatoknak ezeket is vissza kell fejteniük, hogy kinyerjék a tartalmat a tanításhoz.
 
-**Decryption Flow:**
+**Visszafejtési folyamat:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. Az API visszaadja az üzenetet titkosított nyers tartalommal
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Ellenőrizze, hogy a nyers tartalom PGP titkosított-e
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Visszafejtés a privát kulcsunkkal
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Visszafejtett MIME üzenet elemzése
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Nodemailer feltöltése visszafejtett tartalommal
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +336,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**PGP konfiguráció:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Privát kulcs a visszafejtéshez (ASCII-armored kulcsfájl elérési útja)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Jelszó a privát kulcshoz (ha titkosított)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+A `pgp-decrypt.js` segédprogram:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Egyszer olvassa be a privát kulcsot a lemezről (memóriában cache-elve)
+2. Visszafejti a kulcsot a jelszóval
+3. A visszafejtett kulcsot használja minden üzenet visszafejtéséhez
+4. Támogatja a rekurzív visszafejtést beágyazott titkosított üzenetek esetén
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Miért fontos ez a tanításhoz? {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Megfelelő visszafejtés nélkül az AI titkosított zagyvaságon tanulna:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +365,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+Visszafejtéssel az AI a tényleges tartalmon tanul:
 
 ```
 Subject: Re: Bug Report
@@ -376,128 +376,128 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Tárolási biztonság {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+A visszafejtés a feladat futása közben memóriában történik, és a visszafejtett tartalmat beágyazásokká alakítjuk, amelyeket aztán a LanceDB vektoralapú adatbázisban tárolunk a lemezen.
 
-**Where the data lives:**
+**Hol tárolódnak az adatok:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Vektoralapú adatbázis**: Titkosított MacBook M5 munkaállomásokon tárolva
+* **Fizikai biztonság**: A munkaállomások mindig nálunk maradnak (nem adatközpontban)
+* **Lemeztitkosítás**: Teljes lemeztitkosítás minden munkaállomáson
+* **Hálózati biztonság**: Tűzfallal védett és elkülönített a nyilvános hálózatoktól
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Jövőbeli adatközponti telepítés:**
+Ha valaha adatközpontba költözünk, a szerverek rendelkezni fognak:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* LUKS teljes lemeztitkosítással
+* USB hozzáférés letiltva
+* Fizikai biztonsági intézkedésekkel
+* Hálózati elkülönítéssel
+A biztonsági gyakorlataink teljes részleteiért lásd a [Biztonsági oldalunkat](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> A vektorbázis adatbázis beágyazásokat (matematikai reprezentációkat) tartalmaz, nem az eredeti egyszerű szöveget. Azonban a beágyazások visszafejthetők lehetnek, ezért titkosított, fizikailag védett munkaállomásokon tároljuk őket.
 
-### High-Level Flow {#high-level-flow}
+### A helyi tárolás alapértelmezett gyakorlat {#local-storage-is-standard-practice}
+
+A beágyazások tárolása a csapatunk munkaállomásain nem különbözik attól, ahogyan már most kezeljük az e-maileket:
+
+* **Thunderbird**: Letölti és helyben tárolja az e-mail teljes tartalmát mbox/maildir fájlokban
+* **Webmail kliensek**: Gyorsítótárazzák az e-mail adatokat a böngésző tárolójában és helyi adatbázisokban
+* **IMAP kliensek**: Helyi másolatokat tartanak az üzenetekről offline hozzáféréshez
+* **AI rendszerünk**: Matematikai beágyazásokat tárol (nem egyszerű szöveget) LanceDB-ben
+
+A kulcsfontosságú különbség: a beágyazások **biztonságosabbak**, mint az egyszerű szöveges e-mailek, mert:
+
+1. Matematikai reprezentációk, nem olvasható szöveg
+2. Nehezebb visszafejteni, mint az egyszerű szöveget
+3. Ugyanazon fizikai biztonság alá esnek, mint az e-mail klienseink
+
+Ha elfogadható, hogy a csapatunk Thunderbirdöt vagy webmailt használ titkosított munkaállomásokon, akkor ugyanolyan elfogadható (sőt, érvelhetően biztonságosabb) a beágyazások tárolása ugyanígy.
+
+
+## Az architektúra {#the-architecture}
+
+Íme az alapfolyamat. Egyszerűnek tűnik. Nem volt az.
+
+> \[!NOTE]
+> Minden feladat közvetlenül a Forward Email API-t használja, biztosítva, hogy a teljesítményoptimalizálások mind az AI rendszerünknek, mind az ügyfeleinknek előnyt jelentsenek.
+
+### Magas szintű folyamat {#high-level-flow}
 
 ```mermaid
 graph TD
-    subgraph "Data Ingestion (Nightly Job)"
-        A[Data Sources] --> B{Scraper}
-        B --> C{Processor<br/>Chunks text}
-        C --> D{Ollama Client<br/>Generates embeddings}
-        D --> E[LanceDB<br/>Vector Store]
+    subgraph "Adatfeldolgozás (éjszakai feladat)"
+        A[Adatforrások] --> B{Scraper}
+        B --> C{Feldolgozó<br/>Szöveg darabolása}
+        C --> D{Ollama kliens<br/>Beágyazások generálása}
+        D --> E[LanceDB<br/>Vektortár]
     end
 
-    subgraph "Historical Email Training"
-        F[Email API] --> G{Email Scanner<br/>Decrypt PGP}
-        G --> H{Parse with mailparser}
-        H --> I{Processor<br/>Chunks text}
+    subgraph "Történelmi e-mail tanítás"
+        F[E-mail API] --> G{E-mail szkenner<br/>PGP dekódolás}
+        G --> H{Elemzés mailparser-rel}
+        H --> I{Feldolgozó<br/>Szöveg darabolása}
         I --> D
     end
 
-    subgraph "Live Email Processing"
-        J[New Email] --> K{Email Scanner<br/>Analyze content}
-        K --> L{Response Generator}
-        L -- Query --> E
-        E -- Context --> L
-        L -- Generates --> M[Email Response]
+    subgraph "Élő e-mail feldolgozás"
+        J[Új e-mail] --> K{E-mail szkenner<br/>Tartalom elemzése}
+        K --> L{Válaszgenerátor}
+        L -- Lekérdezés --> E
+        E -- Kontextus --> L
+        L -- Generál --> M[E-mail válasz]
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Részletes scraper folyamat {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+A `scraper.js` az adatfeldolgozás szíve. Különböző adatformátumokhoz tartalmaz elemzőket.
 
 ```mermaid
 graph TD
-    subgraph "Scraper Components"
-        A[scraper.js] --> B[Local Markdown Parser<br/>docs/*.md]
-        A --> C[PDF Parser<br/>technical-whitepaper.pdf]
-        A --> D[GitHub Issue Parser<br/>@octokit/rest API]
-        A --> E[GitHub Discussion Parser<br/>@octokit/rest API]
-        A --> F[GitHub PR Parser<br/>@octokit/rest API]
-        A --> G[JSON Parser<br/>api-spec.json]
+    subgraph "Scraper komponensek"
+        A[scraper.js] --> B[Helyi Markdown elemző<br/>docs/*.md]
+        A --> C[PDF elemző<br/>technical-whitepaper.pdf]
+        A --> D[GitHub Issue elemző<br/>@octokit/rest API]
+        A --> E[GitHub Discussion elemző<br/>@octokit/rest API]
+        A --> F[GitHub PR elemző<br/>@octokit/rest API]
+        A --> G[JSON elemző<br/>api-spec.json]
     end
-    B --> I{Processor<br/>Chunks text}
+    B --> I{Feldolgozó<br/>Szöveg darabolása}
     C --> I
     D --> I
     E --> I
     F --> I
     G --> I
-    I --> J{Ollama Client<br/>mxbai-embed-large embeddings}
+    I --> J{Ollama kliens<br/>mxbai-embed-large beágyazások}
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## Hogyan működik {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+A folyamat három fő részre oszlik: a tudásbázis építése, történelmi e-mailekből való tanítás, és új e-mailek feldolgozása.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### Tudásbázis építése {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: Ez a fő feladat. Éjszakánként fut, törli a régi vektortárat, és újraépíti azt az alapoktól. A `scraper.js`-t használja az összes forrás tartalmának lekérésére, a `processor.js`-t a darabolásra, és az `ollama-client.js`-t a beágyazások generálására. Végül a `vector-store.js` tárol mindent LanceDB-ben.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+**Adatforrások:**
 
-### Training from Historical Emails {#training-from-historical-emails}
+* Helyi Markdown fájlok (`docs/*.md`)
+* Műszaki fehér könyv PDF (`assets/technical-whitepaper.pdf`)
+* API specifikáció JSON (`assets/api-spec.json`)
+* GitHub issue-k (Octokit segítségével)
+* GitHub beszélgetések (Octokit segítségével)
+* GitHub pull requestek (Octokit segítségével)
+* Sitemap URL lista (`$LANCEDB_PATH/valid-urls.json`)
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
+### Történelmi e-mailekből való tanítás {#training-from-historical-emails}
 
-**Email Processing Flow:**
+**`train-from-history.js`**: Ez a feladat beolvassa az összes mappából a történelmi e-maileket, dekódolja a PGP-vel titkosított üzeneteket, és hozzáadja őket egy külön vektortárhoz (`customer_support_history`). Ez kontextust biztosít a korábbi ügyféltámogatási interakciókból.
+**Email feldolgozási folyamat:**
 
 ```mermaid
 sequenceDiagram
@@ -535,25 +535,25 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**Főbb jellemzők:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **PGP dekódolás**: A `pgp-decrypt.js` segédprogramot használja a `GPG_SECURITY_KEY` környezeti változóval
+* **Szálak csoportosítása**: Kapcsolódó e-maileket beszélgetési szálakba rendezi
+* **Metaadatok megőrzése**: Tárolja a mappát, tárgyat, dátumot, titkosítási állapotot
+* **Válasz kontextus**: Összekapcsolja az üzeneteket a válaszaikkal a jobb kontextus érdekében
 
-**Configuration:**
+**Konfiguráció:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# Környezeti változók a train-from-history számára
+HISTORY_SCAN_LIMIT=1000              # Maximális feldolgozandó üzenetek száma
+HISTORY_SCAN_SINCE="2024-01-01"      # Csak az ezen dátum utáni üzenetek feldolgozása
+HISTORY_DECRYPT_PGP=true             # PGP dekódolás megkísérlése
+GPG_SECURITY_KEY="/path/to/key.asc"  # PGP privát kulcs elérési útja
+GPG_SECURITY_PASSPHRASE="passphrase" # Kulcs jelszava (opcionális)
 ```
 
-**What Gets Stored:**
+**Amit tárolunk:**
 
 ```javascript
 {
@@ -575,39 +575,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Futtassa a `train-from-history` parancsot az első beállítás után, hogy feltöltse a történelmi kontextust. Ez drámaian javítja a válaszok minőségét a korábbi támogatási interakciók tanulásával.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Bejövő e-mailek feldolgozása {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Ez a feladat a `support@forwardemail.net`, `abuse@forwardemail.net` és `security@forwardemail.net` postafiókokban lévő e-maileken fut (konkrétan az `INBOX` IMAP mappa útvonalon). Használja az API-nkat a <https://forwardemail.net/email-api> címen (pl. `GET /v1/messages?folder=INBOX` BasicAuth hozzáféréssel az egyes postafiókok IMAP hitelesítő adataival). Elemzi az e-mail tartalmát, lekérdezi mind a tudásbázist (`forward_email_knowledge_base`), mind a történelmi e-mail vektor tárolót (`customer_support_history`), majd az egyesített kontextust átadja a `response-generator.js`-nek. A generátor az Ollama-n keresztül a `mxbai-embed-large` modellt használja a válasz megalkotásához.
 
-**Automated Workflow Features:**
+**Automatizált munkafolyamat jellemzők:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Inbox Zero automatizálás**: A sikeres vázlat létrehozása után az eredeti üzenet automatikusan az Archiv mappába kerül. Ez tisztán tartja a beérkező leveleket, és segít elérni az inbox zero állapotot manuális beavatkozás nélkül.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **AI feldolgozás kihagyása**: Egyszerűen adjon hozzá egy `skip-ai` címkét (kis- és nagybetűtől függetlenül) bármely üzenethez az AI feldolgozás megakadályozásához. Az üzenet érintetlenül marad a beérkezett levelek között, így manuálisan kezelheti. Ez hasznos érzékeny üzenetek vagy összetett esetek esetén, amelyek emberi ítéletet igényelnek.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Megfelelő e-mail szálazás**: Minden vázlatválasz tartalmazza az eredeti üzenetet idézve alul (a szabványos ` >  ` előtaggal), követve az e-mail válasz konvenciókat az "On \[date], \[sender] wrote:" formátumban. Ez biztosítja a megfelelő beszélgetési kontextust és szálazást az e-mail kliensekben.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Válasz-minden viselkedés**: A rendszer automatikusan kezeli a Reply-To fejlécet és a CC címzetteket:
+   * Ha létezik Reply-To fejléc, az lesz a Címzett (To) cím, és az eredeti Feladó (From) hozzáadódik a CC-hez
+   * Az összes eredeti Címzett (To) és CC címzett szerepel a válasz CC-jében (kivéve a saját címét)
+   * Követi a szabványos e-mail válasz-minden konvenciókat csoportos beszélgetések esetén
+**Forrás rangsorolás**: A rendszer **súlyozott rangsorolást** használ a források priorizálására:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
+* GYIK: 100% (legmagasabb prioritás)
+* Műszaki fehér könyv: 95%
+* API specifikáció: 90%
+* Hivatalos dokumentációk: 85%
+* GitHub hibajegyek: 70%
+* Történelmi e-mailek: 50%
 
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
-* GitHub issues: 70%
-* Historical emails: 50%
+### Vektor tároló kezelése {#vector-store-management}
 
-### Vector Store Management {#vector-store-management}
+A `VectorStore` osztály a `helpers/customer-support-ai/vector-store.js` fájlban az interfészünk a LanceDB-hez.
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
-
-**Adding Documents:**
+**Dokumentumok hozzáadása:**
 
 ```javascript
 // vector-store.js
@@ -621,126 +620,125 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Tároló törlése:**
 
 ```javascript
-// Option 1: Use the clear() method
+// 1. lehetőség: clear() metódus használata
 await vectorStore.clear();
 
-// Option 2: Delete the local database directory
+// 2. lehetőség: a helyi adatbázis könyvtár törlése
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+A `LANCEDB_PATH` környezeti változó a helyi beágyazott adatbázis könyvtárára mutat. A LanceDB szerver nélküli és beágyazott, így nincs külön folyamat, amit kezelni kell.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## A vektor adatbázis temetője {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
-| ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+Ez volt az első nagy akadály. Több vektor adatbázist is kipróbáltunk, mielőtt a LanceDB mellett döntöttünk. Íme, mi ment rosszul mindegyiknél.
+
+| Adatbázis   | GitHub                                                      | Mi ment rosszul                                                                                                                                                                                                     | Konkrét problémák                                                                                                                                                                                                                                                                                                                                                         | Biztonsági aggályok                                                                                                                                                                                              |
+| ------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | A `pip3 install chromadb` egy őskori verziót ad `PydanticImportError` hibával. A működő verzió csak forrásból fordítva érhető el. Nem fejlesztőbarát.                                                               | Python függőségi káosz. Több felhasználó is hibás pip telepítésekről számolt be ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). A dokumentáció azt mondja, hogy "csak Docker-t használj", ami helyi fejlesztéshez nem válasz. Windows alatt >99 rekordnál összeomlik ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Tetszőleges kód futtatás a ChromaDB integráción keresztül MindsDB-ben. Kritikus OS sebezhetőségek a Docker képen ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                      |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | A Homebrew tap (`qdrant/qdrant/qdrant`), amit a régi dokumentációjuk említ, eltűnt. Nincs magyarázat. A hivatalos dokumentáció most csak annyit mond, hogy "használj Dockert".                                      | Hiányzó Homebrew tap. Nincs natív macOS bináris. Csak Docker használata akadály a gyors helyi teszteléshez.                                                                                                                                                                                                                                                               | **CVE-2024-2221**: Tetszőleges fájlfeltöltési sebezhetőség, amely távoli kód futtatást tesz lehetővé (javítva a v1.9.0-ban). Gyenge biztonsági érettségi pontszám az [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/) szerint. |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | A Homebrew verzió kritikus klaszterezési hibával rendelkezett (`leader not found`). A dokumentált flag-ek a javításhoz (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) nem működtek. Alapvetően hibás egycsomópontos konfigurációkhoz. | Klaszterezési hibák még egycsomópontos módban is. Túlbonyolított egyszerű használati esetekhez.                                                                                                                                                                                                                                                                           | Nincsenek jelentős CVE-k, de a komplexitás növeli a támadási felületet.                                                                                                                                           |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Ez működött. Beágyazott és szerver nélküli. Nincs külön folyamat. Az egyetlen bosszantó dolog a zavaró csomagnevek (`vectordb` elavult, használjuk a `@lancedb/lancedb`-t) és a szórványos dokumentáció. Ezzel együtt élünk. | Csomagnevek zavaróak (`vectordb` vs `@lancedb/lancedb`), de egyébként stabil. A beágyazott architektúra kizárja a teljes osztályú biztonsági problémákat.                                                                                                                                                                                                                   | Nincsenek ismert CVE-k. A beágyazott kialakítás miatt nincs hálózati támadási felület.                                                                                                                                 |
+> \[!WARNING]
+> **A ChromaDB kritikus biztonsági sérülékenységekkel rendelkezik.** A [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) lehetővé teszi tetszőleges kód futtatását. A pip telepítés alapvetően hibás a Pydantic függőségi problémák miatt. Kerülje a termelési környezetben való használatát.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **A Qdrant fájlfeltöltéses RCE sérülékenységgel rendelkezett** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)), amelyet csak a v1.9.0 verzióban javítottak. Ha Qdrantot kell használnia, győződjön meg róla, hogy a legfrissebb verziót használja.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Az open-source vektor adatbázis ökoszisztéma még kezdetleges. Ne bízzon a dokumentációban. Tegye fel, hogy minden hibás, amíg az ellenkezője be nem bizonyosodik. Teszteljen helyben, mielőtt egy stack mellett dönt.
 
-## System Requirements {#system-requirements}
+## Rendszerkövetelmények {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** Legfrissebb ([GitHub](https://github.com/ollama/ollama))
+* **Modell:** `mxbai-embed-large` az Ollama-n keresztül
+* **Vektor adatbázis:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **GitHub hozzáférés:** `@octokit/rest` az issue-k lekéréséhez ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Elsődleges adatbázishoz (a `mongoose-to-sqlite` segítségével)
 
-## Cron Job Configuration {#cron-job-configuration}
+## Cron feladat beállítása {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+Minden AI feladat cron-on fut egy MacBook M5-ön. Így állíthatja be a cron feladatokat, hogy éjfélkor fussanak több postafiók esetén.
 
-### Environment Variables {#environment-variables}
+### Környezeti változók {#environment-variables}
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+A feladatokhoz ezek a környezeti változók szükségesek. A legtöbb beállítható `.env` fájlban (betöltve `@ladjs/env` segítségével), de a `HISTORY_SCAN_SINCE`-t dinamikusan kell kiszámítani a crontab-ban.
 
-**In `.env` file:**
+**A `.env` fájlban:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Forward Email API hitelesítő adatok (postafiókonként változik)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
 FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
 
-# PGP decryption (shared across all inboxes)
+# PGP dekódolás (minden postafiók között megosztott)
 GPG_SECURITY_KEY=/path/to/private-key.asc
 GPG_SECURITY_PASSPHRASE=your-passphrase
 
-# Historical scan configuration
+# Történeti keresés konfigurációja
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# LanceDB elérési út
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**A crontab-ban (dinamikusan számítva):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# A HISTORY_SCAN_SINCE-t inline kell beállítani a crontab-ban shell dátum számítással
+# Nem lehet .env fájlban, mert az @ladjs/env nem értékeli a shell parancsokat
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Cron feladatok több postafiókhoz {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Szerkessze a crontab-ját `crontab -e` paranccsal, és adja hozzá:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Tudásbázis frissítése (egyszer fut, megosztott minden postafiók között)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Tanítás a történelemből - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Tanítás a történelemből - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Tanítás a történelemből - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Postafiók feldolgozása - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Postafiók feldolgozása - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Postafiók feldolgozása - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Cron ütemezés bontása {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
+| Feladat                  | Ütemezés    | Leírás                                                                            |
+| ------------------------ | ----------- | --------------------------------------------------------------------------------- |
+| `train-from-sitemap.js`  | `0 0 * * 0` | Heti (vasárnap éjfélkor) - Lekéri az összes URL-t a sitemapből és betanítja a tudásbázist |
+| `train-from-history.js`  | `0 0 * * *` | Napi éjfélkor - Átvizsgálja az előző napi e-maileket postafiókonként              |
+| `process-inbox.js`       | `*/5 * * * *` | Ötpercenként - Feldolgozza az új e-maileket és vázlatokat generál                 |
 
-| Job | Schedule | Description |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+### Dinamikus dátum számítás {#dynamic-date-calculation}
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+A `HISTORY_SCAN_SINCE` változót **kötelező inline módon kiszámítani a crontab-ban**, mert:
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+1. A `.env` fájlokat az `@ladjs/env` szó szerint olvassa be
+2. A shell parancs helyettesítés `$(...)` nem működik `.env` fájlokban
+3. A dátumot minden cron futáskor frissen kell kiszámítani
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
-
-**Correct approach (in crontab):**
+**Helyes megközelítés (crontab-ban):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +748,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Helytelen megközelítés (nem működik .env-ben):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Ezt szó szerint olvassa be: "$(date -v-1d +%Y-%m-%d)"
+# Nem értékeli ki shell parancsként
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Ez biztosítja, hogy minden éjszakai futás dinamikusan számolja ki az előző napi dátumot, elkerülve a fölösleges munkát.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### Kezdeti beállítás: URL lista kinyerése a sitemapből {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+Mielőtt először futtatnád a process-inbox feladatot, **kötelező** kinyerni az URL listát a sitemapből. Ez létrehoz egy érvényes URL-ek szótárát, amelyre az LLM hivatkozhat, és megakadályozza az URL hallucinációt.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# Első alkalommal: URL lista kinyerése a sitemapből
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Mit csinál ez:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. Lekéri az összes URL-t a <https://forwardemail.net/sitemap.xml> oldalról
+2. Csak a nem lokalizált vagy /en/ URL-eket szűri (elkerüli a duplikált tartalmat)
+3. Eltávolítja a locale előtagokat (/en/faq → /faq)
+4. Egyszerű JSON fájlba menti az URL listát a `$LANCEDB_PATH/valid-urls.json` helyre
+5. Nem végez crawlingot, nem gyűjt metaadatokat – csak egy lapos lista az érvényes URL-ekről
 
-**Why this matters:**
+**Miért fontos ez:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* Megakadályozza, hogy az LLM hamis URL-eket hallucináljon, mint például `/dashboard` vagy `/login`
+* Biztosít egy fehérlistát az érvényes URL-ekről, amelyre a válaszgenerátor hivatkozhat
+* Egyszerű, gyors, és nem igényel vektoralapú adatbázist
+* A válaszgenerátor induláskor betölti ezt a listát és beépíti a promptba
 
-**Add to crontab for weekly updates:**
+**Heti frissítéshez add hozzá a crontabhoz:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# URL lista kinyerése a sitemapből - heti rendszerességgel vasárnap éjfélkor
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Cron feladatok kézi tesztelése {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+Egy feladat teszteléséhez mielőtt hozzáadnád a cronhoz:
 
 ```bash
-# Test sitemap training
+# Sitemap betanítás tesztelése
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Support postafiók betanítás tesztelése
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +812,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Naplózás figyelése {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Minden feladat külön fájlba naplóz a könnyebb hibakeresés érdekében:
 
 ```bash
-# Watch support inbox processing in real-time
+# Support postafiók feldolgozásának valós idejű figyelése
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Tegnapi betanítási futás ellenőrzése
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Minden hiba megtekintése a feladatok között
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Használj külön naplófájlokat postafiókonként a problémák elkülönítéséhez. Ha egy postafióknál hitelesítési gond van, az nem szennyezi a többi postafiók naplóit.
+## Kódpéldák {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Adatgyűjtés és feldolgozás {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +840,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Régi adatok törlése
 await vectorStore.clear();
 
-// Scrape all sources
+// Minden forrás lekérése
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`Lekért dokumentumok száma: ${documents.length}`);
 
-// Process into chunks
+// Feldolgozás darabokra
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`Generált darabok száma: ${allChunks.length}`);
 
-// Generate embeddings and store
+// Beágyazások generálása és tárolása
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +867,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Képzés történelmi e-mailekből {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +881,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Minden mappa beolvasása (BEÉRKEZETT, Elküldött, stb.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Üzenetfolyamok csoportosítása
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Minden szál feldolgozása
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Kihagyjuk a titkosított, de fel nem oldott üzeneteket
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Nodemailer által már feldolgozott tartalom használata
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // Darabolás és tárolás
+    const chunks = processor.chunkText(`Tárgy: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +926,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Kontextus lekérdezése {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +935,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Mindkét tároló lekérdezése
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Súlyozott rangsorolás és duplikáció eltávolítása itt történik
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Válasz generálása
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## A jövő: Spam szűrő K+F {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Ez az egész projekt nem csak az ügyféltámogatásról szólt. Ez K+F volt. Most már mindent, amit a helyi beágyazásokról, vektortárolókról és kontextuslekérésről tanultunk, alkalmazhatjuk a következő nagy projektünkhöz: a [Spam Scanner](https://spamscanner.net) LLM rétegéhez. A magánélet, az önálló üzemeltetés és a szemantikus megértés ugyanolyan kulcsfontosságú lesz.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Hibakeresés {#troubleshooting}
+
+### Vektor dimenzió eltérés hiba {#vector-dimension-mismatch-error}
+
+**Hiba:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Ok:** Ez a hiba akkor fordul elő, ha beágyazási modellt váltasz (pl. `mistral-small`-ról `mxbai-embed-large`-ra), de a meglévő LanceDB adatbázis más vektordimenzióval lett létrehozva.
+**Megoldás:** Újra kell képezni a tudásbázist az új beágyazási modellel:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Állítsd le az összes futó ügyfélszolgálati AI munkát
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Töröld a meglévő LanceDB adatbázist
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Ellenőrizd, hogy a beágyazási modell helyesen van-e beállítva a .env fájlban
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Ennek ezt kell mutatnia: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Töltsd le a beágyazási modellt az Ollama segítségével
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Képezd újra a tudásbázist
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Indítsd újra a process-inbox munkát Bree-n keresztül
+# A munka automatikusan futni fog 5 percenként
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Miért történik ez:** Különböző beágyazási modellek különböző dimenziójú vektorokat állítanak elő:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 dimenzió
+* `mxbai-embed-large`: 1024 dimenzió
+* `nomic-embed-text`: 768 dimenzió
+* `all-minilm`: 384 dimenzió
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+A LanceDB a vektor dimenzióját a táblázat sémájában tárolja. Ha más dimenzióval kérdezel rá, az hibát eredményez. Az egyetlen megoldás az adatbázis újra létrehozása az új modellel.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Üres Tudásbázis Kontextus {#empty-knowledge-base-context}
 
-**Symptom:**
+**Tünet:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,220 +1008,222 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Ok:** A tudásbázist még nem képezték ki, vagy a LanceDB tábla nem létezik.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Megoldás:** Futtasd a képzési munkát a tudásbázis feltöltéséhez:
 
 ```bash
-# Train from historical emails
+# Képzés történelmi emailekből
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Vagy képzés weboldal/dokumentáció alapján (ha van scrapered)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### PGP Dekódolási Hibák {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Tünet:** Az üzenetek titkosítottnak jelennek meg, de a tartalom üres.
 
-**Solution:**
+**Megoldás:**
 
-1. Verify GPG key path is set correctly:
+1. Ellenőrizd, hogy a GPG kulcs elérési útja helyesen van-e beállítva:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Ennek a privát kulcs fájlodra kell mutatnia
 ```
 
-2. Test decryption manually:
+2. Teszteld a dekódolást manuálisan:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Ellenőrizd a kulcs jogosultságait:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# A futtató felhasználónak olvashatónak kell lennie
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Használati Tippek {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Inbox Zero elérése {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+A rendszer úgy van kialakítva, hogy automatikusan segítsen elérni az inbox zero állapotot:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Automatikus archiválás**: Amikor egy vázlat sikeresen létrejön, az eredeti üzenet automatikusan az Archivált mappába kerül. Ez tisztán tartja az inboxodat manuális beavatkozás nélkül.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Vázlatok átnézése**: Rendszeresen ellenőrizd a Vázlatok mappát az AI által generált válaszok átnézéséhez. Szükség szerint szerkeszd őket küldés előtt.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Kézi felülbírálat**: Azoknál az üzeneteknél, amelyek külön figyelmet igényelnek, egyszerűen add hozzá a `skip-ai` címkét, mielőtt a munka lefutna.
 
-To prevent AI processing for specific messages:
+### A skip-ai címke használata {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+Az AI feldolgozásának megakadályozásához bizonyos üzeneteknél:
 
-**When to use skip-ai:**
+1. **Add hozzá a címkét**: Az email kliensedben adj hozzá egy `skip-ai` címkét/tag-et bármely üzenethez (kis- és nagybetű nem számít)
+2. **Az üzenet az inboxban marad**: Az üzenetet nem dolgozza fel és nem archiválja a rendszer
+3. **Kézi kezelés**: Te magad válaszolhatsz rá AI beavatkozás nélkül
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**Mikor használd a skip-ai-t:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Érzékeny vagy bizalmas üzenetek
+* Összetett esetek, amelyek emberi ítéletet igényelnek
+* VIP ügyfelektől érkező üzenetek
+* Jogi vagy megfelelőségi kérdések
+* Azonnali emberi figyelmet igénylő üzenetek
 
-The system follows standard email conventions:
+### Email szálazás és válasz mindenkinek {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+A rendszer követi a szabványos email konvenciókat:
+
+**Idézett eredeti üzenetek:**
 
 ```
-Hi there,
+Szia,
 
-[AI-generated response]
+[AI által generált válasz]
 
 --
-Thank you,
+Köszönjük,
 Forward Email
 https://forwardemail.net
 
-On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
-> This is the original message
-> with each line quoted
-> using the standard "> " prefix
+2024. jan. 15., hétfő, 15:45 John Doe <john@example.com> írta:
+> Ez az eredeti üzenet
+> minden sor idézve
+> a szabványos "> " előtaggal
 ```
 
-**Reply-To Handling:**
+**Reply-To kezelés:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Ha az eredeti üzenet tartalmaz Reply-To fejlécet, a vázlat arra az címre válaszol
+* Az eredeti From cím CC-be kerül
+* Minden más eredeti To és CC címzett megmarad
 
-**Example:**
+**Példa:**
 
 ```
-Original message:
-  From: john@company.com
+Eredeti üzenet:
+  Feladó: john@company.com
   Reply-To: support@company.com
-  To: support@forwardemail.net
+  Címzett: support@forwardemail.net
   CC: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
+Vázlat válasz:
+  Címzett: support@company.com (a Reply-To címre)
   CC: john@company.com, manager@company.com
 ```
+### Monitoring és karbantartás {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Rendszeresen ellenőrizze a vázlatok minőségét:**
 
 ```bash
-# View recent drafts
+# Legutóbbi vázlatok megtekintése
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Archiválás figyelése:**
 
 ```bash
-# Check for archiving errors
+# Archiválási hibák ellenőrzése
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Átugrott üzenetek áttekintése:**
 
 ```bash
-# See which messages were skipped
+# Mely üzeneteket hagyták ki
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Tesztelés {#testing}
 
-### Running Tests {#running-tests}
+Az ügyféltámogatási AI rendszer átfogó tesztlefedettséggel rendelkezik, 23 Ava teszttel.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Tesztek futtatása {#running-tests}
+
+Az `npm` csomag felülírási konfliktusai miatt a `better-sqlite3`-vel használja a mellékelt teszt szkriptet:
 
 ```bash
-# Run all customer support AI tests
+# Az összes ügyféltámogatási AI teszt futtatása
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Verbózus kimenettel futtatás
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Egy adott tesztfájl futtatása
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Alternatívaként közvetlenül is futtathatja a teszteket:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Tesztlefedettség {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Sitemap Fetcher (6 teszt):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* Helyi minta regex egyezés
+* URL útvonal kinyerése és helyi azonosító eltávolítása
+* URL szűrési logika helyi azonosítókhoz
+* XML elemzési logika
+* Duplikáció eltávolítási logika
+* Kombinált szűrés, eltávolítás és duplikáció
 
-**Message Utils (9 tests):**
+**Message Utils (9 teszt):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Feladó szövegének kinyerése névvel és e-maillel
+* Csak e-mail kezelése, ha a név egyezik az előtaggal
+* `from.text` használata, ha elérhető
+* `Reply-To` használata, ha van
+* `From` használata, ha nincs `Reply-To`
+* Eredeti CC címzettek bevonása
+* Saját cím kizárása a CC-ből
+* `Reply-To` kezelése `From`-mal a CC-ben
+* CC címek duplikációjának eltávolítása
 
-**Response Generator (8 tests):**
+**Response Generator (8 teszt):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* URL csoportosítási logika a promptban
+* Feladó név felismerési logika
+* A prompt szerkezete tartalmazza az összes szükséges részt
+* URL lista formázása szögletes zárójelek nélkül
+* Üres URL lista kezelése
+* Tiltott URL-ek listája a promptban
+* Történelmi kontextus bevonása
+* Helyes URL-ek fiókkal kapcsolatos témákhoz
 
-### Test Environment {#test-environment}
+### Tesztkörnyezet {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+A tesztek a `.env.test` konfigurációt használják. A tesztkörnyezet tartalmazza:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Mock PayPal és Stripe hitelesítő adatokat
+* Teszt titkosítási kulcsokat
+* Letiltott hitelesítési szolgáltatókat
+* Biztonságos tesztadat útvonalakat
 
-All tests are designed to run without external dependencies or network calls.
+Minden teszt úgy van tervezve, hogy külső függőségek vagy hálózati hívások nélkül fusson.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Fő tanulságok {#key-takeaways}
+
+1. **Adatvédelem az első:** Az önálló üzemeltetés elengedhetetlen a GDPR/DPA megfeleléshez.
+2. **Költség számít:** A felhő alapú AI szolgáltatások 50-1000-szer drágábbak, mint az önálló üzemeltetés éles környezetben.
+3. **Az ökoszisztéma hibás:** A legtöbb vektor adatbázis nem fejlesztőbarát. Mindent helyben teszteljen.
+4. **Biztonsági sebezhetőségek valósak:** A ChromaDB és Qdrant kritikus RCE sebezhetőségekkel rendelkezett.
+5. **A LanceDB működik:** Beágyazott, szerver nélküli, nem igényel külön folyamatot.
+6. **Az Ollama stabil:** A helyi LLM inferencia a `mxbai-embed-large`-lal jól működik az esettanulmányunkhoz.
+7. **Típuseltérések végzetesek:** `text` vs. `content`, ObjectID vs. string. Ezek a hibák néma és kegyetlenek.
+8. **Súlyozott rangsorolás számít:** Nem minden kontextus egyenlő. GYIK > GitHub issue-k > Történelmi e-mailek.
+9. **A történelmi kontextus aranyat ér:** A múltbeli támogatási e-mailekből való tanítás drámaian javítja a válaszok minőségét.
+10. **PGP dekódolás elengedhetetlen:** Sok támogatási e-mail titkosított; a megfelelő dekódolás kritikus a tanításhoz.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Tudjon meg többet a Forward Email-ről és adatvédelmi szemléletünkről az e-mailben a [forwardemail.net](https://forwardemail.net) oldalon.

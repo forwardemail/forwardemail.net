@@ -1,551 +1,551 @@
-# Vuosikymmenen vaikutus: Kuinka npm-pakettimme saavuttivat miljardin latauksen rajan ja muokkasivat JavaScriptiä {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
+# Kymmenen Vuoden Vaikutus: Kuinka npm-pakettimme Saavuttivat 1 Miljardia Latausta ja Muokkasivat JavaScriptiä {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
 <img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
+
 
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
-* [Pioneerit, jotka luottavat meihin: Isaac Z. Schlueter ja Forward Email](#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email)
-  * [npm:n luomisesta Node.js:n johtajuuteen](#from-npms-creation-to-nodejs-leadership)
-* [Koodin takana oleva arkkitehti: Nick Baughin matka](#the-architect-behind-the-code-nick-baughs-journey)
-  * [Express-tekninen komitea ja keskeiset panokset](#express-technical-committee-and-core-contributions)
-  * [Koa-kehyksen panokset](#koa-framework-contributions)
-  * [Yksittäisestä avustajasta organisaation johtajaksi](#from-individual-contributor-to-organization-leader)
-* [GitHub-organisaatiomme: Innovaatioekosysteemit](#our-github-organizations-ecosystems-of-innovation)
-  * [Mökki: Rakenteinen puunkorjuu nykyaikaisiin sovelluksiin](#cabin-structured-logging-for-modern-applications)
-  * [Roskapostiskanneri: Sähköpostin väärinkäytön torjunta](#spam-scanner-fighting-email-abuse)
-  * [Bree: Nykyaikainen työaikataulutus työntekijäsäikeillä](#bree-modern-job-scheduling-with-worker-threads)
-  * [Sähköpostin välitys: Avoimen lähdekoodin sähköpostiinfrastruktuuri](#forward-email-open-source-email-infrastructure)
-  * [Lad: Olennaiset Koa-apuohjelmat ja -työkalut](#lad-essential-koa-utilities-and-tools)
-  * [Käyttöaika: Avoimen lähdekoodin käyttöajan seuranta](#upptime-open-source-uptime-monitoring)
-* [Panoksemme sähköpostin välitysekosysteemiin](#our-contributions-to-the-forward-email-ecosystem)
-  * [Paketeista tuotantoon](#from-packages-to-production)
-  * [Palautesilmukka](#the-feedback-loop)
-* [Sähköpostin välitysperiaatteet: Erinomaisuuden perusta](#forward-emails-core-principles-a-foundation-for-excellence)
-  * [Aina kehittäjäystävällinen, tietoturvakeskeinen ja läpinäkyvä](#always-developer-friendly-security-focused-and-transparent)
-  * [Aikaansaattujen ohjelmistokehitysperiaatteiden noudattaminen](#adherence-to-time-tested-software-development-principles)
-  * [Kohdentaminen Scrappy-, Bootstrapped-kehittäjään](#targeting-the-scrappy-bootstrapped-developer)
-  * [Käytännön periaatteet: Sähköpostin edelleenlähetyskoodisto](#principles-in-practice-the-forward-email-codebase)
-  * [Sisäänrakennettu tietosuoja](#privacy-by-design)
-  * [Kestävä avoin lähdekoodi](#sustainable-open-source)
-* [Numerot eivät valehtele: Hämmästyttävät npm-lataustilastomme](#the-numbers-dont-lie-our-staggering-npm-download-statistics)
-  * [Lintuperspektiivistä vaikutukseemme](#a-birds-eye-view-of-our-impact)
-  * [Päivittäinen vaikutus skaalautuvasti](#daily-impact-at-scale)
-  * [Raakojen numeroiden tuolla puolen](#beyond-the-raw-numbers)
-* [Ekosysteemin tukeminen: Avoimen lähdekoodin sponsorointimme](#supporting-the-ecosystem-our-open-source-sponsorships)
-  * [Andris Reinman: Sähköpostiinfrastruktuurin edelläkävijä](#andris-reinman-email-infrastructure-pioneer)
-  * [Sindre Sorhus: Utility Package Mastermind](#sindre-sorhus-utility-package-mastermind)
-* [JavaScript-ekosysteemin tietoturvahaavoittuvuuksien paljastaminen](#uncovering-security-vulnerabilities-in-the-javascript-ecosystem)
-  * [Koa-reitittimen pelastus](#the-koa-router-rescue)
-  * [ReDoS-haavoittuvuuksien korjaaminen](#addressing-redos-vulnerabilities)
-  * [Node.js:n ja Chromiumin tietoturvan puolustaminen](#advocating-for-nodejs-and-chromium-security)
-  * [NPM-infrastruktuurin suojaaminen](#securing-npm-infrastructure)
-* [Panoksemme sähköpostin välitysekosysteemiin](#our-contributions-to-the-forward-email-ecosystem-1)
-  * [Nodemailerin ydintoimintojen parantaminen](#enhancing-nodemailers-core-functionality)
-  * [Sähköpostin todennuksen edistäminen Mailauthin avulla](#advancing-email-authentication-with-mailauth)
-  * [Tärkeimmät käyttöajan parannukset](#key-upptime-enhancements)
-* [Kaiken koossa pitävä liima: räätälöity koodi skaalautuvasti](#the-glue-that-holds-it-all-together-custom-code-at-scale)
-  * [Massiivinen kehitysponnistus](#a-massive-development-effort)
-  * [Ydinriippuvuuksien integrointi](#core-dependencies-integration)
-  * [DNS-infrastruktuuri Tangerine- ja mx-connect-palveluiden avulla](#dns-infrastructure-with-tangerine-and-mx-connect)
-* [Yritysvaikutus: Avoimesta lähdekoodista kriittisiin ratkaisuihin](#enterprise-impact-from-open-source-to-mission-critical-solutions)
-  * [Case-tutkimukset kriittisestä sähköposti-infrastruktuurista](#case-studies-in-mission-critical-email-infrastructure)
-* [Avoimen lähdekoodin vuosikymmen: Katse tulevaisuuteen](#a-decade-of-open-source-looking-forward)
-
+* [Edelläkävijät, jotka Luottavat Meihin: Isaac Z. Schlueter ja Forward Email](#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email)
+  * [npm:n Luomisesta Node.js:n Johtajuuteen](#from-npms-creation-to-nodejs-leadership)
+* [Koodin Arkkitehti: Nick Baugh'n Matka](#the-architect-behind-the-code-nick-baughs-journey)
+  * [Expressin Tekninen Komitea ja Ydinpanokset](#express-technical-committee-and-core-contributions)
+  * [Koa-kehyksen Panokset](#koa-framework-contributions)
+  * [Yksittäisestä Panostajasta Organisaation Johtajaksi](#from-individual-contributor-to-organization-leader)
+* [GitHub-organisaatiomme: Innovaation Ekosysteemit](#our-github-organizations-ecosystems-of-innovation)
+  * [Cabin: Rakenteellinen Lokitus Moderneille Sovelluksille](#cabin-structured-logging-for-modern-applications)
+  * [Spam Scanner: Sähköpostin Väärinkäytön Torjunta](#spam-scanner-fighting-email-abuse)
+  * [Bree: Moderni Työaikataulutus Worker Threadseillä](#bree-modern-job-scheduling-with-worker-threads)
+  * [Forward Email: Avoimen Lähdekoodin Sähköpostin Infrastruktuuri](#forward-email-open-source-email-infrastructure)
+  * [Lad: Keskeiset Koa-apuvälineet ja Työkalut](#lad-essential-koa-utilities-and-tools)
+  * [Upptime: Avoimen Lähdekoodin Käytettävyysvalvonta](#upptime-open-source-uptime-monitoring)
+* [Panoksemme Forward Email -ekosysteemiin](#our-contributions-to-the-forward-email-ecosystem)
+  * [Paketeista Tuotantoon](#from-packages-to-production)
+  * [Palautejärjestelmä](#the-feedback-loop)
+* [Forward Emailin Ydinarvot: Perusta Erinomaiseen](#forward-emails-core-principles-a-foundation-for-excellence)
+  * [Aina Kehittäjäystävällinen, Turvallisuuskeskeinen ja Läpinäkyvä](#always-developer-friendly-security-focused-and-transparent)
+  * [Ajan Koeteltujen Ohjelmistokehityksen Periaatteiden Noudattaminen](#adherence-to-time-tested-software-development-principles)
+  * [Kohdistettu Sitkeälle, Itse Rahoitetulle Kehittäjälle](#targeting-the-scrappy-bootstrapped-developer)
+  * [Periaatteet Käytännössä: Forward Emailin Koodikanta](#principles-in-practice-the-forward-email-codebase)
+  * [Tietosuoja Suunnittelusta Alkaen](#privacy-by-design)
+  * [Kestävä Avoin Lähdekoodi](#sustainable-open-source)
+* [Numerot Eivät Valehtele: Hämmästyttävät npm-lataustilastomme](#the-numbers-dont-lie-our-staggering-npm-download-statistics)
+  * [Yleiskatsaus Vaikutukseemme](#a-birds-eye-view-of-our-impact)
+  * [Päivittäinen Vaikutus Suurissa Mittakaavoissa](#daily-impact-at-scale)
+  * [Pelkkien Lukujen Tuolla Puolen](#beyond-the-raw-numbers)
+* [Ekosysteemin Tukeminen: Avoimen Lähdekoodin Sponsorointimme](#supporting-the-ecosystem-our-open-source-sponsorships)
+  * [Andris Reinman: Sähköpostin Infrastruktuurin Edelläkävijä](#andris-reinman-email-infrastructure-pioneer)
+  * [Sindre Sorhus: Apupakettien Mestarimieli](#sindre-sorhus-utility-package-mastermind)
+* [Turvallisuusaukkojen Paljastaminen JavaScript-ekosysteemissä](#uncovering-security-vulnerabilities-in-the-javascript-ecosystem)
+  * [Koa-Routerin Pelastus](#the-koa-router-rescue)
+  * [ReDoS-haavoittuvuuksien Käsittely](#addressing-redos-vulnerabilities)
+  * [Node.js:n ja Chromiumin Turvallisuuden Puolustaminen](#advocating-for-nodejs-and-chromium-security)
+  * [npm-infrastruktuurin Turvaaminen](#securing-npm-infrastructure)
+* [Panoksemme Forward Email -ekosysteemiin](#our-contributions-to-the-forward-email-ecosystem-1)
+  * [Nodemailerin Ydintoiminnallisuuden Parantaminen](#enhancing-nodemailers-core-functionality)
+  * [Sähköpostin Todentamisen Edistäminen Mailauthilla](#advancing-email-authentication-with-mailauth)
+  * [Keskeiset Upptimen Parannukset](#key-upptime-enhancements)
+* [Liima, Joka Pitää Kaiken Koossa: Räätälöity Koodi Suurissa Mittakaavoissa](#the-glue-that-holds-it-all-together-custom-code-at-scale)
+  * [Massiivinen Kehitystyö](#a-massive-development-effort)
+  * [Ydiriippuvuuksien Integrointi](#core-dependencies-integration)
+  * [DNS-infrastruktuuri Tangerinen ja mx-connectin Kanssa](#dns-infrastructure-with-tangerine-and-mx-connect)
+* [Yritysvaikutus: Avoimesta Lähdekoodista Liiketoimintakriittisiin Ratkaisuihin](#enterprise-impact-from-open-source-to-mission-critical-solutions)
+  * [Tapaustutkimuksia Liiketoimintakriittisestä Sähköpostin Infrastruktuurista](#case-studies-in-mission-critical-email-infrastructure)
+* [Kymmenen Vuotta Avoimen Lähdekoodin Parissa: Katsaus Tulevaan](#a-decade-of-open-source-looking-forward)
 ## Esipuhe {#foreword}
 
-[JavaScript](https://en.wikipedia.org/wiki/JavaScript)- ja [Node.js](https://en.wikipedia.org/wiki/Node.js)-maailmassa jotkin paketit ovat välttämättömiä – niitä ladataan miljoonia kertoja päivässä ja ne pyörittävät sovelluksia maailmanlaajuisesti. Näiden työkalujen takana ovat kehittäjät, jotka keskittyvät avoimen lähdekoodin laatuun. Tänään näytämme, kuinka tiimimme auttaa rakentamaan ja ylläpitämään npm-paketteja, joista on tullut JavaScript-ekosysteemin keskeisiä osia.
+[JavaScriptin](https://en.wikipedia.org/wiki/JavaScript) ja [Node.js:n](https://en.wikipedia.org/wiki/Node.js) maailmassa jotkut paketit ovat välttämättömiä—niitä ladataan miljoonia kertoja päivittäin ja ne pyörittävät sovelluksia ympäri maailmaa. Näiden työkalujen takana ovat kehittäjät, jotka keskittyvät avoimen lähdekoodin laatuun. Tänään näytämme, miten tiimimme auttaa rakentamaan ja ylläpitämään npm-paketteja, jotka ovat muodostuneet keskeisiksi osiksi JavaScript-ekosysteemiä.
 
-## Pioneerit, jotka luottavat meihin: Isaac Z. Schlueter ja sähköpostin välitys {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
 
-Olemme ylpeitä siitä, että [Isaac Z. Schlueter](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)) on käyttäjämme. Isaac loi [npm](https://en.wikipedia.org/wiki/Npm_\(software\):n ja auttoi rakentamaan [Node.js](https://en.wikipedia.org/wiki/Node.js):n. Hänen luottamuksensa Forward Emailiin osoittaa keskittymisemme laatuun ja turvallisuuteen. Isaac käyttää Forward Emailia useilla verkkotunnuksilla, mukaan lukien izs.me.
+## Edelläkävijät, jotka luottavat meihin: Isaac Z. Schlueter ja Forward Email {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
 
-Isaacin vaikutus JavaScriptiin on valtava. Vuonna 2009 hän oli ensimmäisten joukossa, jotka näkivät Node.js:n potentiaalin työskennellessään alustan luoneen [Ryan Dahl](https://en.wikipedia.org/wiki/Ryan_Dahl):n kanssa. Kuten Isaac sanoi [haastattelu Increment-lehden kanssa](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/)-viestissä: "Tämän hyvin pienen ihmisyhteisön keskellä, joka yritti selvittää, miten palvelinpuolen JS saataisiin toteutettua, Ryan Dahl esitteli Noden, joka oli selvästi oikea lähestymistapa. Panostin siihen ja aloin todella innostua vuoden 2009 puolivälissä."
+Olemme ylpeitä saadessamme käyttäjäksemme [Isaac Z. Schlueterin](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)). Isaac loi [npm:n](https://en.wikipedia.org/wiki/Npm_\(software\)) ja auttoi rakentamaan [Node.js:n](https://en.wikipedia.org/wiki/Node.js). Hänen luottamuksensa Forward Emailiin osoittaa sitoutumisemme laatuun ja turvallisuuteen. Isaac käyttää Forward Emailia useilla domaineilla, mukaan lukien izs.me.
+
+Isaacin vaikutus JavaScriptiin on valtava. Vuonna 2009 hän oli yksi ensimmäisistä, joka näki Node.js:n potentiaalin, työskennellen yhdessä [Ryan Dahlin](https://en.wikipedia.org/wiki/Ryan_Dahl) kanssa, joka loi alustan. Kuten Isaac sanoi [Increment-lehden haastattelussa](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/): "Tämän hyvin pienen yhteisön keskellä, jossa joukko ihmisiä yritti keksiä, miten palvelinpuolen JS saataisiin toimimaan, Ryan Dahl tuli esiin Noden kanssa, joka oli selvästi oikea lähestymistapa. Panin panokseni siihen ja osallistuin hyvin aktiivisesti noin vuoden 2009 puolivälissä."
 
 > \[!NOTE]
-> Node.js:n historiasta kiinnostuneille on saatavilla erinomaisia dokumentteja, jotka kertovat sen kehityksestä, mukaan lukien [Node.js:n tarina](https://www.youtube.com/watch?v=LB8KwiiUGy0) ja [10 asiaa, joita kadun Node.js:ssä - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). Myös Ryan Dahlin [henkilökohtainen verkkosivusto](https://tinyclouds.org/) sisältää arvokkaita näkemyksiä hänen työstään.
+> Node.js:n historiasta kiinnostuneille on saatavilla erinomaisia dokumentteja, jotka kertovat sen kehityksestä, mukaan lukien [The Story of Node.js](https://www.youtube.com/watch?v=LB8KwiiUGy0) ja [10 Things I Regret About Node.js - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). Ryan Dahlin [henkilökohtainen verkkosivusto](https://tinyclouds.org/) sisältää myös arvokkaita näkemyksiä hänen työstään.
 
 ### Npm:n luomisesta Node.js:n johtajuuteen {#from-npms-creation-to-nodejs-leadership}
 
-Isaac loi npm:n syyskuussa 2009, ja ensimmäinen käyttökelpoinen versio julkaistiin vuoden 2010 alussa. Tämä pakettihallinta täytti Node.js:n keskeisen tarpeen, sillä se mahdollisti kehittäjille koodin helpon jakamisen ja uudelleenkäytön. [Node.js:n Wikipedia-sivu](https://en.wikipedia.org/wiki/Node.js):n mukaan "Tammikuussa 2010 Node.js-ympäristöön esiteltiin pakettihallinta nimeltä npm. Pakethallinta mahdollistaa ohjelmoijien julkaista ja jakaa Node.js-paketteja sekä niihin liittyvää lähdekoodia, ja se on suunniteltu yksinkertaistamaan pakettien asennusta, päivittämistä ja poistamista."
+Isaac loi npm:n syyskuussa 2009, ja ensimmäinen käyttökelpoinen versio julkaistiin vuoden 2010 alussa. Tämä pakettienhallinta täytti keskeisen tarpeen Node.js:ssä, mahdollistaen kehittäjien jakaa ja käyttää koodia helposti uudelleen. [Node.js:n Wikipedia-sivun](https://en.wikipedia.org/wiki/Node.js) mukaan "Tammikuussa 2010 Node.js-ympäristöön otettiin käyttöön pakettienhallinta nimeltä npm. Pakettienhallinta antaa ohjelmoijille mahdollisuuden julkaista ja jakaa Node.js-paketteja sekä niihin liittyvää lähdekoodia, ja se on suunniteltu helpottamaan pakettien asennusta, päivitystä ja poistamista."
 
-Kun Ryan Dahl jäi pois Node.js:ltä tammikuussa 2012, Isaac otti projektin vetäjän tehtävät. Kuten [hänen yhteenvetonsa](https://izs.me/resume)-sivustolla todetaan, hän "johti useiden Node.js:n perustavanlaatuisten ydin-API-rajapintojen, mukaan lukien CommonJS-moduulijärjestelmän, tiedostojärjestelmä-API-rajapintojen ja striimien, kehitystä" ja "toimi projektin BDFL:nä (Benevolent Dictator For Life) kahden vuoden ajan varmistaen jatkuvasti parantuvan laadun ja luotettavan käännösprosessin Node.js-versioille v0.6–v0.10".
+Kun Ryan Dahl vetäytyi Node.js:n kehityksestä tammikuussa 2012, Isaac otti projektin johtajuuden. Kuten hänen [ansioluettelossaan](https://izs.me/resume) todetaan, hän "Johti useiden keskeisten Node.js-ydin-API:en kehitystä, mukaan lukien CommonJS-moduulijärjestelmä, tiedostojärjestelmä-API:t ja streamit" ja "Toimi projektin BDFL:nä (Benevolent Dictator For Life) 2 vuoden ajan varmistaen jatkuvasti kasvavan laadun ja luotettavan rakennusprosessin Node.js-versioille v0.6–v0.10."
 
-Isaac johdatti Node.js:ää tärkeän kasvukauden läpi ja asetti standardeja, jotka edelleen muokkaavat alustaa. Myöhemmin hän perusti npm, Inc:n vuonna 2014 tukemaan npm-rekisteriä, jota hän oli aiemmin hoitanut itse.
+Isaac ohjasi Node.js:n keskeisen kasvuvaiheen, asettaen standardeja, jotka muokkaavat alustaa edelleen tänä päivänä. Hän perusti myöhemmin npm, Inc.:n vuonna 2014 tukemaan npm-rekisteriä, jota hän oli aiemmin pyörittänyt yksin.
 
-Kiitämme Isaacia hänen valtavista panoksistaan JavaScriptiin ja käytämme edelleen monia hänen luomiaan paketteja. Hänen työnsä on muuttanut tapaamme rakentaa ohjelmistoja ja sitä, miten miljoonat kehittäjät jakavat koodia maailmanlaajuisesti.
+Kiitämme Isaacia hänen valtavista panoksistaan JavaScriptiin ja jatkamme monien hänen luomiensa pakettien käyttöä. Hänen työnsä on muuttanut tapaa, jolla rakennamme ohjelmistoja ja miten miljoonat kehittäjät jakavat koodia maailmanlaajuisesti.
 
-## Koodin takana oleva arkkitehti: Nick Baughin matka {#the-architect-behind-the-code-nick-baughs-journey}
 
-Avoimen lähdekoodin menestyksemme ytimessä on Nick Baugh, Forward Emailin perustaja ja omistaja. Hänen työnsä JavaScriptin parissa kestää lähes 20 vuotta ja on muokannut lukemattomien kehittäjien tapoja rakentaa sovelluksia. Hänen avoimen lähdekoodin matkansa osoittaa sekä teknistä taitoa että yhteisöjohtajuutta.
+## Koodin arkkitehti: Nick Baughin matka {#the-architect-behind-the-code-nick-baughs-journey}
 
-### Express-tekninen komitea ja ydinpanokset {#express-technical-committee-and-core-contributions}
+Avoimen lähdekoodin menestyksemme ytimessä on Nick Baugh, Forward Emailin perustaja ja omistaja. Hänen työnsä JavaScriptin parissa kattaa lähes 20 vuotta ja on muokannut lukemattomien kehittäjien tapaa rakentaa sovelluksia. Hänen avoimen lähdekoodin matkansa osoittaa sekä teknistä taitoa että yhteisön johtajuutta.
 
-Nickin web-kehysosaaminen ansaitsi hänelle paikan [Expressin tekninen komitea](https://expressjs.com/en/resources/community.html)-listalla, jossa hän auttoi yhden käytetyimmän Node.js-kehyksen kanssa. Nick on nyt listattu passiiviseksi jäseneksi [Express-yhteisösivu](https://expressjs.com/en/resources/community.html)-listalla.
+### Expressin tekninen komitea ja ydspanokset {#express-technical-committee-and-core-contributions}
 
+Nickin web-kehysosaaminen ansaitsi hänelle paikan [Expressin teknisessä komiteassa](https://expressjs.com/en/resources/community.html), jossa hän auttoi yhdessä käytetyimmistä Node.js-kehyksistä. Nick on nyt merkitty passiiviseksi jäseneksi [Expressin yhteisösivulla](https://expressjs.com/en/resources/community.html).
 > \[!IMPORTANT]
-> Expressin loi alun perin TJ Holowaychuk, tuottelias avoimen lähdekoodin kehittäjä, joka on muokannut suurta osaa Node.js-ekosysteemistä. Olemme kiitollisia TJ:n perustavanlaatuisesta työstä ja kunnioitamme hänen [päätös pitää tauko](https://news.ycombinator.com/item?id=37687017) -panostaan laajoista avoimen lähdekoodin panoksistaan.
+> Express luotiin alun perin TJ Holowaychukin toimesta, tuotteliaan avoimen lähdekoodin kontribuuttorin, joka on muokannut merkittävästi Node.js-ekosysteemiä. Olemme kiitollisia TJ:n perustavanlaatuisesta työstä ja kunnioitamme hänen [päätöstään pitää taukoa](https://news.ycombinator.com/item?id=37687017) laajoista avoimen lähdekoodin panoksistaan.
 
-[Expressin tekninen komitea](https://expressjs.com/en/resources/community.html)-ryhmän jäsenenä Nick osoitti suurta huomiota yksityiskohtiin esimerkiksi `req.originalUrl`-ryhmän dokumentaation selventämisessä ja moniosaisten lomakkeiden käsittelyongelmien korjaamisessa.
+Expressin teknisen komitean jäsenenä [Express Technical Committee](https://expressjs.com/en/resources/community.html) Nick osoitti suurta tarkkuutta yksityiskohdissa, kuten `req.originalUrl` -dokumentaation selkeyttämisessä ja moniosaisen lomakkeen käsittelyongelmien korjaamisessa.
 
-### Koa-kehyksen kontribuutiot {#koa-framework-contributions}
+### Koa Framework Contributions {#koa-framework-contributions}
 
-Nickin työ [Koa-kehys](https://github.com/koajs/koa):n parissa – TJ Holowaychukin kehittämässä modernissa ja kevyemmässä Express-vaihtoehdossa – osoittaa entisestään hänen sitoutumisensa parempiin web-kehitystyökaluihin. Hänen Koa-panoksensa sisältävät sekä ongelmia että koodia pull-pyyntöjen kautta, virheiden käsittelyn, sisällön tyypin hallinnan ja dokumentaation parannuksia.
+Nickin työ [Koa-kehyksen](https://github.com/koajs/koa) parissa — modernin, kevyemmän vaihtoehdon Expressille, jonka myös TJ Holowaychuk loi — osoittaa hänen sitoutumisensa parempiin web-kehitystyökaluihin. Hänen Koa-panoksensa sisältävät sekä ongelmien raportointia että koodia pull requestien kautta, käsitellen virheenkäsittelyä, sisältötyyppien hallintaa ja dokumentaation parannuksia.
 
-Hänen työnsä sekä Expressin että Koan parissa antaa hänelle ainutlaatuisen näkökulman Node.js-verkkokehitykseen ja auttaa tiimiämme luomaan paketteja, jotka toimivat hyvin useiden kehysekosysteemien kanssa.
+Hänen työnsä sekä Expressin että Koan parissa antaa hänelle ainutlaatuisen näkemyksen Node.js-verkkokehityksestä, auttaen tiimiämme luomaan paketteja, jotka toimivat hyvin useiden kehys-ekosysteemien kanssa.
 
-### Yksittäisestä avustajasta organisaation johtajaksi {#from-individual-contributor-to-organization-leader}
+### From Individual Contributor to Organization Leader {#from-individual-contributor-to-organization-leader}
 
-Se, mikä alkoi olemassa olevien projektien auttamisena, kasvoi kokonaisten pakettiekosysteemien luomiseksi ja ylläpitämiseksi. Nick perusti useita GitHub-organisaatioita – mukaan lukien [Mökki](https://github.com/cabinjs), [Roskapostiskanneri](https://github.com/spamscanner), [Lähetä sähköpostia eteenpäin](https://github.com/forwardemail), [Poika](https://github.com/ladjs) ja [Bree](https://github.com/breejs) – joista jokainen ratkaisi JavaScript-yhteisön erityistarpeita.
+Mikä alkoi olemassa olevien projektien auttamisesta, kasvoi kokonaisiksi pakettiekosysteemeiksi. Nick perusti useita GitHub-organisaatioita — mukaan lukien [Cabin](https://github.com/cabinjs), [Spam Scanner](https://github.com/spamscanner), [Forward Email](https://github.com/forwardemail), [Lad](https://github.com/ladjs) ja [Bree](https://github.com/breejs) — jotka kukin ratkaisevat JavaScript-yhteisön erityistarpeita.
 
-Tämä siirtyminen avustajasta johtajaksi osoittaa Nickin vision hyvin suunnitellusta ohjelmistosta, joka ratkaisee todellisia ongelmia. Järjestämällä toisiinsa liittyviä paketteja kohdennettujen GitHub-organisaatioiden alle hän on rakentanut työkaluekosysteemejä, jotka toimivat yhdessä ja pysyvät modulaarisina ja joustavina laajemmalle kehittäjäyhteisölle.
+Tämä siirtymä kontribuuttorista johtajaksi osoittaa Nickin vision hyvin suunnitellusta ohjelmistosta, joka ratkaisee todellisia ongelmia. Järjestämällä liittyvät paketit keskittyneiden GitHub-organisaatioiden alle hän on rakentanut työkaluekosysteemejä, jotka toimivat yhdessä pysyen samalla modulaarisina ja joustavina laajemmalle kehittäjäyhteisölle.
 
-## GitHub-organisaatiomme: Innovaatioekosysteemit {#our-github-organizations-ecosystems-of-innovation}
 
-Järjestämme avoimen lähdekoodin työmme GitHub-organisaatioiden ympärille, joista jokainen ratkaisee tiettyjä JavaScript-tarpeita. Tämä rakenne luo yhtenäisiä pakettiperheitä, jotka toimivat hyvin yhdessä pysyen samalla modulaarisina.
+## Our GitHub Organizations: Ecosystems of Innovation {#our-github-organizations-ecosystems-of-innovation}
 
-### Cabin: Rakenteinen lokikirjaus nykyaikaisille sovelluksille {#cabin-structured-logging-for-modern-applications}
+Järjestämme avoimen lähdekoodin työmme keskittyneiden GitHub-organisaatioiden ympärille, jotka kukin ratkaisevat JavaScriptin erityistarpeita. Tämä rakenne luo yhtenäisiä pakettiperheitä, jotka toimivat hyvin yhdessä pysyen samalla modulaarisina.
 
-[Matkustamon organisointi](https://github.com/cabinjs) on meidän versiomme yksinkertaisesta ja tehokkaasta sovellusten lokikirjauksesta. [`cabin`](https://github.com/cabinjs/cabin)-pääpaketilla on lähes 900 GitHub-tähteä ja yli 100 000 viikoittaista latausta\[^1]. Cabin tarjoaa jäsennellyn lokikirjauksen, joka toimii suosittujen palveluiden, kuten Sentryn, LogDNA:n ja Papertrailin, kanssa.
+### Cabin: Structured Logging for Modern Applications {#cabin-structured-logging-for-modern-applications}
 
-Cabinin erityispiirre on sen harkittu API-rajapinta ja laajennusjärjestelmä. Tukemamme paketit, kuten [`axe`](https://github.com/cabinjs/axe) Express-väliohjelmistoille ja [`parse-request`](https://github.com/cabinjs/parse-request) HTTP-pyyntöjen jäsentämiseen, osoittavat sitoutumisemme kokonaisvaltaisiin ratkaisuihin yksittäisten työkalujen sijaan.
+[Cabin-organisaatio](https://github.com/cabinjs) on meidän näkemyksemme yksinkertaisesta, tehokkaasta sovelluslokituksesta. Pääasiallisella [`cabin`](https://github.com/cabinjs/cabin) paketilla on lähes 900 GitHub-tähteä ja yli 100 000 viikoittaista latausta\[^1]. Cabin tarjoaa jäsennellyn lokituksen, joka toimii suosittujen palveluiden kuten Sentryn, LogDNAn ja Papertrailin kanssa.
 
-[`bson-objectid`](https://github.com/cabinjs/bson-objectid)-paketti ansaitsee erityismaininnan, sillä sitä on ladattu yli 1,7 miljoonaa kertaa vain kahdessa kuukaudessa\[^2]. Tästä kevyestä MongoDB ObjectID -toteutuksesta on tullut kehittäjien, jotka tarvitsevat tunnisteita ilman täysiä MongoDB-riippuvuuksia, ensisijainen valinta.
+Cabinin erityisyyden muodostaa sen harkittu API ja laajennusjärjestelmä. Tukipaketit kuten [`axe`](https://github.com/cabinjs/axe) Expressin middlewarelle ja [`parse-request`](https://github.com/cabinjs/parse-request) HTTP-pyyntöjen jäsentämiseen osoittavat sitoutumisemme kokonaisvaltaisiin ratkaisuihin erillisten työkalujen sijaan.
 
-### Roskapostiskanneri: Sähköpostin väärinkäytön torjunta {#spam-scanner-fighting-email-abuse}
+[`bson-objectid`](https://github.com/cabinjs/bson-objectid) paketti ansaitsee erityismaininnan, sillä sillä on yli 1,7 miljoonaa latausta vain kahdessa kuukaudessa\[^2]. Tämä kevyt MongoDB ObjectID -toteutus on muodostunut kehittäjien suosikiksi, jotka tarvitsevat tunnisteita ilman täydellisiä MongoDB-riippuvuuksia.
 
-[Roskapostiskanneriorganisaatio](https://github.com/spamscanner) osoittaa sitoutumisemme todellisten ongelmien ratkaisemiseen. Pääasiallinen [`spamscanner`](https://github.com/spamscanner/spamscanner)-paketti tarjoaa edistyneen sähköpostiroskapostin tunnistuksen, mutta [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe)-paketti on ottanut sen erittäin hyvin käyttöön.
+### Spam Scanner: Fighting Email Abuse {#spam-scanner-fighting-email-abuse}
 
-Yli 1,2 miljoonalla latauksella kahdessa kuukaudessa\[^3] `url-regex-safe` korjaa kriittisiä tietoturvaongelmia muissa URL-tunnistuksen säännöllisissä lausekkeissa. Tämä paketti esittelee lähestymistapamme avoimeen lähdekoodiin: yleisen ongelman (tässä tapauksessa [Tee uudelleen](https://en.wikipedia.org/wiki/ReDoS) haavoittuvuudet URL-validoinnissa) löytämisen, vankan ratkaisun luomisen ja sen huolellisen ylläpidon.
+[Spam Scanner -organisaatio](https://github.com/spamscanner) osoittaa sitoutumisemme todellisten ongelmien ratkaisemiseen. Pääasiallinen [`spamscanner`](https://github.com/spamscanner/spamscanner) paketti tarjoaa kehittynyttä sähköpostin roskapostin tunnistusta, mutta [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe) paketti on saanut uskomatonta suosiota.
 
-### Bree: Nykyaikainen työaikataulutus työntekijäsäikeillä {#bree-modern-job-scheduling-with-worker-threads}
+Yli 1,2 miljoonalla latauksella kahdessa kuukaudessa\[^3], `url-regex-safe` korjaa kriittisiä turvallisuusongelmia muissa URL-tunnistuksen säännöllisissä lausekkeissa. Tämä paketti kuvastaa lähestymistapaamme avoimeen lähdekoodiin: löytää yleinen ongelma (tässä tapauksessa [ReDoS](https://en.wikipedia.org/wiki/ReDoS) haavoittuvuudet URL-validoinnissa), luoda vankka ratkaisu ja ylläpitää sitä huolellisesti.
+### Bree: Moderni työn ajoitus worker threadien avulla {#bree-modern-job-scheduling-with-worker-threads}
 
-[Bree-organisaatio](https://github.com/breejs) on vastauksemme yleiseen Node.js:n haasteeseen: luotettavaan töiden ajoitukseen. Pääasiallinen [`bree`](https://github.com/breejs/bree)-paketti, jossa on yli 3 100 GitHub-tähteä, tarjoaa modernin töiden ajoittajan, joka käyttää Node.js:n työsäikeitä paremman suorituskyvyn ja luotettavuuden saavuttamiseksi.
+[Bree-organisaatio](https://github.com/breejs) on vastauksemme yleiseen Node.js-haasteeseen: luotettava työn ajoitus. Pääasiallinen [`bree`](https://github.com/breejs/bree) -paketti, jolla on yli 3 100 GitHub-tähteä, tarjoaa modernin työn ajastimen käyttäen Node.js worker threadeja paremman suorituskyvyn ja luotettavuuden saavuttamiseksi.
 
 > \[!NOTE]
-> Bree luotiin sen jälkeen, kun olimme auttaneet ylläpitämään [Esityslista](https://github.com/agenda/agenda):tä ja soveltaneet saatuja oppeja paremman työaikatauluttajan rakentamiseen. Agenda-työhön osallistumisemme auttoivat meitä löytämään tapoja parantaa työaikataulutusta.
+> Bree luotiin sen jälkeen, kun autoimme ylläpitämään [Agenda](https://github.com/agenda/agenda) -projektia, soveltaen opittuja asioita paremman työn ajastimen rakentamiseksi. Agenda-panoksemme auttoivat meitä löytämään tapoja parantaa työn ajoitusta.
 
-Mikä erottaa Breen muista aikataulutustyökaluista, kuten Agendasta:
+Mikä erottaa Breen muista ajastimista kuten Agendasta:
 
-* **Ei ulkoisia riippuvuuksia**: Toisin kuin Agenda, joka tarvitsee MongoDB:tä, Bree ei vaadi Redisiä tai MongoDB:tä työtilan hallintaan.
-* **Työsäikeet**: Bree käyttää Node.js:n työsäikeitä hiekkalaatikkoprosesseille, mikä parantaa eristystä ja suorituskykyä.
-* **Yksinkertainen API**: Bree tarjoaa yksityiskohtaista hallintaa yksinkertaisesti, mikä helpottaa monimutkaisten aikataulutustarpeiden toteuttamista.
-* **Sisäänrakennettu tuki**: Oletusarvoisesti mukana ovat esimerkiksi sujuva uudelleenlataus, cron-työt, päivämäärät ja käyttäjäystävälliset ajat.
+* **Ei ulkoisia riippuvuuksia**: Toisin kuin Agenda, joka tarvitsee MongoDB:n, Bree ei vaadi Redis- tai MongoDB-palvelimia työn tilan hallintaan.
+* **Worker Threadit**: Bree käyttää Node.js worker threadeja hiekkalaatikkoprosesseihin, tarjoten paremman eristyksen ja suorituskyvyn.
+* **Yksinkertainen API**: Bree tarjoaa yksityiskohtaista hallintaa yksinkertaisuudella, tehden monimutkaisten ajoitustarpeiden toteuttamisesta helpompaa.
+* **Sisäänrakennettu tuki**: Ominaisuudet kuten sulava uudelleenlataus, cron-työt, päivämäärät ja ihmisläheiset ajat sisältyvät oletuksena.
 
-Bree on keskeinen osa [forwardemail.net](https://github.com/forwardemail/forwardemail.net):aa, ja se hoitaa kriittisiä taustatehtäviä, kuten sähköpostien käsittelyä, siivousta ja aikataulun mukaista ylläpitoa. Breen käyttö sähköpostin välittämisessä osoittaa sitoutumisemme omien työkalujemme käyttöön tuotannossa ja varmistaa, että ne täyttävät korkeat luotettavuusstandardit.
+Bree on keskeinen osa [forwardemail.net](https://github.com/forwardemail/forwardemail.net) -palvelua, hoitaen kriittisiä taustatehtäviä kuten sähköpostin käsittelyä, siivousta ja ajoitettua ylläpitoa. Breen käyttö Forward Emailissa osoittaa sitoutumisemme käyttää omia työkaluja tuotannossa varmistaen niiden korkean luotettavuuden.
 
-Käytämme ja arvostamme myös muita loistavia työsäikepaketteja, kuten [uima-allas](https://github.com/piscinajs/piscina), ja HTTP-asiakasohjelmia, kuten [yksitoista](https://github.com/nodejs/undici). Piscina, kuten Bree, käyttää Node.js:n työsäikeitä tehokkaaseen tehtävien käsittelyyn. Kiitämme [Matthew Hill](https://github.com/mcollina):ta, joka ylläpitää sekä undiciä että piscinaa, hänen merkittävästä panoksestaan Node.js:ään. Matteo toimii Node.js:n teknisessä ohjausryhmässä ja on parantanut huomattavasti HTTP-asiakasohjelman ominaisuuksia Node.js:ssä.
+Käytämme ja arvostamme myös muita erinomaisia worker thread -paketteja kuten [piscina](https://github.com/piscinajs/piscina) ja HTTP-asiakkaita kuten [undici](https://github.com/nodejs/undici). Piscina, kuten Bree, käyttää Node.js worker threadeja tehokkaaseen tehtävien käsittelyyn. Kiitämme [Matteo Collinaa](https://github.com/mcollina), joka ylläpitää sekä undicia että piscinaa, hänen merkittävistä panoksistaan Node.js:ään. Matteo toimii Node.js:n teknisen ohjauskomitean jäsenenä ja on parantanut merkittävästi HTTP-asiakasominaisuuksia Node.js:ssä.
 
-### Sähköpostin edelleenlähetys: Avoimen lähdekoodin sähköpostiinfrastruktuuri {#forward-email-open-source-email-infrastructure}
+### Forward Email: Avoimen lähdekoodin sähköpostin infrastruktuuri {#forward-email-open-source-email-infrastructure}
 
-Kunnianhimoisin projektimme on [Lähetä sähköpostia eteenpäin](https://github.com/forwardemail), avoimen lähdekoodin sähköpostipalvelu, joka tarjoaa sähköpostin edelleenlähetystä, tallennusta ja API-palveluita. Pääarkistolla on yli 1 100 GitHub-tähteä\[^4], mikä osoittaa yhteisön arvostusta tälle vaihtoehdolle omille sähköpostipalveluille.
+Kehityshankkeistamme kunnianhimoisin on [Forward Email](https://github.com/forwardemail), avoimen lähdekoodin sähköpostipalvelu, joka tarjoaa sähköpostin edelleenlähetyksen, tallennuksen ja API-palvelut. Päävarastolla on yli 1 100 GitHub-tähteä\[^4], mikä osoittaa yhteisön arvostuksen tätä vaihtoehtoa omistettuihin sähköpostipalveluihin kohtaan.
 
-Tämän organisaation [`preview-email`](https://github.com/forwardemail/preview-email)-paketti, jota ladattiin yli 2,5 miljoonaa kertaa kahdessa kuukaudessa\[^5], on tullut välttämättömäksi työkaluksi sähköpostimallien kanssa työskenteleville kehittäjille. Tarjoamalla yksinkertaisen tavan esikatsella sähköposteja kehitysvaiheessa, se ratkaisee yleisen ongelman sähköpostisovellusten kehittämisessä.
+Tämän organisaation [`preview-email`](https://github.com/forwardemail/preview-email) -paketti, jolla on yli 2,5 miljoonaa latausta kahden kuukauden aikana\[^5], on muodostunut olennaiseksi työkaluksi kehittäjille, jotka työskentelevät sähköpostipohjien kanssa. Tarjoamalla yksinkertaisen tavan esikatsella sähköposteja kehityksen aikana, se ratkaisee yleisen kipupisteen sähköpostia tukevien sovellusten rakentamisessa.
 
-### Lad: Olennaiset Koa-apuohjelmat ja -työkalut {#lad-essential-koa-utilities-and-tools}
+### Lad: Välttämättömät Koa-apuvälineet ja työkalut {#lad-essential-koa-utilities-and-tools}
 
-[Lad-järjestö](https://github.com/ladjs) tarjoaa kokoelman keskeisiä apuohjelmia ja työkaluja, jotka keskittyvät ensisijaisesti Koa-kehysekosysteemin parantamiseen. Nämä paketit ratkaisevat yleisiä web-kehityksen haasteita ja ne on suunniteltu toimimaan saumattomasti yhdessä ja samalla itsenäisesti hyödyllisinä.
+[Lad-organisaatio](https://github.com/ladjs) tarjoaa kokoelman välttämättömiä apuvälineitä ja työkaluja, jotka keskittyvät ensisijaisesti Koa-kehyksen ekosysteemin parantamiseen. Nämä paketit ratkaisevat yleisiä web-kehityksen haasteita ja on suunniteltu toimimaan saumattomasti yhdessä säilyttäen samalla itsenäisen hyödyllisyyden.
 
-#### koa-better-error-handler: Parannettu virheiden käsittely Koa-kohteelle {#koa-better-error-handler-improved-error-handling-for-koa}
+#### koa-better-error-handler: Parannettu virheenkäsittely Koalle {#koa-better-error-handler-improved-error-handling-for-koa}
 
-[`koa-better-error-handler`](https://github.com/ladjs/koa-better-error-handler) tarjoaa paremman virheidenkäsittelyratkaisun Koa-sovelluksille. Yli 50 GitHub-tähden ansiosta tämä paketti saa `ctx.throw`:n tuottamaan käyttäjäystävällisiä virheilmoituksia ja samalla korjaa useita Koa:n sisäänrakennetun virheenkäsittelijän rajoituksia:
+[`koa-better-error-handler`](https://github.com/ladjs/koa-better-error-handler) tarjoaa paremman virheenkäsittelyratkaisun Koa-sovelluksille. Yli 50 GitHub-tähden arvoinen paketti saa `ctx.throw`-kutsun tuottamaan käyttäjäystävällisiä virheilmoituksia samalla kun se korjaa useita Koa:n sisäänrakennetun virheenkäsittelijän rajoituksia:
 
-* Havaitsee ja käsittelee oikein Node.js DNS-virheet, Mongoose-virheet ja Redis-virheet
-* Käyttää [Puomi](https://github.com/hapijs/boom)-metodia johdonmukaisten ja hyvin muotoiltujen virhevastausten luomiseen
-* Säilyttää otsikot (toisin kuin Koan sisäänrakennettu käsittelijä)
-* Säilyttää asianmukaiset tilakoodit oletusarvon 500 sijaan
-* Tukee flash-viestejä ja istunnon säilytystä
-* Tarjoaa HTML-virheluetteloita validointivirheille
+* Havaitsee ja käsittelee oikein Node.js:n DNS-virheitä, Mongoose-virheitä ja Redis-virheitä
+* Käyttää [Boomia](https://github.com/hapijs/boom) johdonmukaisten, hyvin muotoiltujen virhevastausten luomiseen
+* Säilyttää otsikot (toisin kuin Koa:n sisäänrakennettu käsittelijä)
+* Säilyttää asianmukaiset tilakoodit sen sijaan, että oletusarvoisesti käyttäisi 500:aa
+* Tukee flash-viestejä ja istunnon säilyttämistä
+* Tarjoaa HTML-virhelistoja validointivirheille
 * Tukee useita vastaustyyppejä (HTML, JSON ja pelkkä teksti)
+Tämä paketti on erityisen arvokas käytettäessä yhdessä [`koa-404-handler`](https://github.com/ladjs/koa-404-handler) kanssa kattavaan virheiden hallintaan Koa-sovelluksissa.
 
-Tämä paketti on erityisen hyödyllinen käytettynä [`koa-404-handler`](https://github.com/ladjs/koa-404-handler):n rinnalla Koa-sovellusten kattavaan virheiden hallintaan.
+#### passport: Autentikointi Ladille {#passport-authentication-for-lad}
 
-#### passi: Todennus käyttäjälle {#passport-authentication-for-lad}
+[`@ladjs/passport`](https://github.com/ladjs/passport) laajentaa suositun Passport.js-autentikointiväliohjelman nykyaikaisten web-sovellusten erityisillä parannuksilla. Tämä paketti tukee useita autentikointistrategioita suoraan laatikosta:
 
-[`@ladjs/passport`](https://github.com/ladjs/passport) laajentaa suosittua Passport.js-todennusväliohjelmistoa tietyillä parannuksilla nykyaikaisia verkkosovelluksia varten. Tämä paketti tukee useita todennusstrategioita suoraan paketista:
+* Paikallinen autentikointi sähköpostilla
+* Kirjautuminen Applella
+* GitHub-autentikointi
+* Google-autentikointi
+* Kertakäyttöinen salasana (OTP) -autentikointi
 
-* Paikallinen todennus sähköpostitse
-* Kirjaudu sisään Applella
-* GitHub-todennus
-* Google-todennus
-* Kertakäyttösalasanan (OTP) todennus
+Paketti on erittäin muokattavissa, jolloin kehittäjät voivat säätää kenttien nimiä ja lauseita sovelluksensa vaatimusten mukaisesti. Se on suunniteltu integroitumaan saumattomasti Mongooseen käyttäjähallintaa varten, tehden siitä ihanteellisen ratkaisun Koa-pohjaisille sovelluksille, jotka tarvitsevat vankan autentikoinnin.
 
-Paketti on erittäin muokattavissa, minkä ansiosta kehittäjät voivat mukauttaa kenttien nimiä ja lauseita sovelluksensa vaatimusten mukaisesti. Se on suunniteltu integroitumaan saumattomasti Mongooseen käyttäjähallintaa varten, mikä tekee siitä ihanteellisen ratkaisun Koa-pohjaisille sovelluksille, jotka tarvitsevat vankan todennuksen.
+#### graceful: Tyylikäs sovelluksen sammutus {#graceful-elegant-application-shutdown}
 
-#### graceful: Elegantti sovelluksen sammutus {#graceful-elegant-application-shutdown}
+[`@ladjs/graceful`](https://github.com/ladjs/graceful) ratkaisee kriittisen haasteen Node.js-sovellusten tyylikkäässä sammutuksessa. Yli 70 GitHub-tähdellä tämä paketti varmistaa, että sovelluksesi voi sulkeutua siististi menettämättä dataa tai jättämättä yhteyksiä roikkumaan. Keskeisiä ominaisuuksia ovat:
 
-[`@ladjs/graceful`](https://github.com/ladjs/graceful) ratkaisee Node.js-sovellusten sujuvan sulkemisen kriittisen haasteen. Yli 70 GitHub-tähden ansiosta tämä paketti varmistaa, että sovelluksesi voi sulkeutua siististi menettämättä tietoja tai jättämättä yhteyksiä jumiin. Tärkeimpiä ominaisuuksia ovat:
-
-* Tuki HTTP-palvelimien sulavalle sulkemiselle (Express/Koa/Fastify)
-* Tietokantayhteyksien siisti sulkeminen (MongoDB/Mongoose)
+* Tuki HTTP-palvelimien (Express/Koa/Fastify) tyylikkäälle sulkemiselle
+* Tietokantayhteyksien (MongoDB/Mongoose) siisti sammutus
 * Redis-asiakkaiden asianmukainen sulkeminen
-* Bree-työaikataulutusten käsittely
-* Tuki mukautetuille sulkemiskäsittelijöille
-* Määritettävät aikakatkaisuasetukset
-* Integrointi lokikirjausjärjestelmiin
+* Bree-työaikatauluttimien käsittely
+* Tuki mukautetuille sammutuskäsittelijöille
+* Konfiguroitavat aikakatkaisuasetukset
+* Integraatio lokitusjärjestelmiin
 
-Tämä paketti on välttämätön tuotantosovelluksille, joissa odottamattomat sammumiset voivat johtaa tietojen menetykseen tai vioittumiseen. Toteuttamalla asianmukaiset sammutusmenettelyt `@ladjs/graceful` auttaa varmistamaan sovelluksesi luotettavuuden ja vakauden.
+Tämä paketti on välttämätön tuotantosovelluksille, joissa odottamattomat sammutukset voivat johtaa datan menetykseen tai vioittumiseen. Toteuttamalla asianmukaiset sammutusmenettelyt `@ladjs/graceful` auttaa varmistamaan sovelluksesi luotettavuuden ja vakauden.
 
-### Käyttöaika: Avoimen lähdekoodin käyttöajan valvonta {#upptime-open-source-uptime-monitoring}
+### Upptime: Avoimen lähdekoodin käyttöaikavalvonta {#upptime-open-source-uptime-monitoring}
 
-[Käyttöaikaorganisaatio](https://github.com/upptime) edustaa sitoutumistamme läpinäkyvään ja avoimen lähdekoodin valvontaan. [`upptime`](https://github.com/upptime/upptime)-pääarkistossa on yli 13 000 GitHub-tähteä, mikä tekee siitä yhden suosituimmista projekteista, joihin osallistumme. Upptime tarjoaa GitHub-pohjaisen käyttöajan valvonnan ja tilasivun, joka toimii kokonaan ilman palvelinta.
+[Upptime-organisaatio](https://github.com/upptime) edustaa sitoutumistamme läpinäkyvään, avoimen lähdekoodin valvontaan. Pääasiallisella [`upptime`](https://github.com/upptime/upptime) -varastolla on yli 13 000 GitHub-tähteä, mikä tekee siitä yhden suosituimmista projekteista, joihin osallistumme. Upptime tarjoaa GitHubin voimalla toimivan käyttöaikavalvonnan ja tilasivun, joka toimii täysin ilman palvelinta.
 
 Käytämme Upptimea omalla tilasivullamme osoitteessa <https://status.forwardemail.net>, jonka lähdekoodi on saatavilla osoitteessa <https://github.com/forwardemail/status.forwardemail.net>.
 
-Uptimen erityispiirre on sen arkkitehtuuri:
+Mikä tekee Upptimesta erityisen, on sen arkkitehtuuri:
 
 * **100 % avoimen lähdekoodin**: Jokainen komponentti on täysin avoimen lähdekoodin ja muokattavissa.
-* **GitHubin tarjoama**: Hyödyntää GitHubin toimintoja, ongelmia ja sivuja palvelimettomassa valvontaratkaisussa.
-* **Palvelinta ei tarvita**: Toisin kuin perinteiset valvontatyökalut, Upptime ei vaadi palvelimen suorittamista tai ylläpitoa.
-* **Automaattinen tilasivu**: Luo kauniin tilasivun, jota voidaan isännöidä GitHub-sivuilla.
-* **Tehokkaat ilmoitukset**: Integroituu useisiin ilmoituskanaviin, kuten sähköpostiin, tekstiviesteihin ja Slackiin.
+* **GitHubin voimalla**: Hyödyntää GitHub Actionsia, Issuesia ja Pagesia palvelimettomaan valvontaratkaisuun.
+* **Ei palvelinta vaadita**: Toisin kuin perinteiset valvontatyökalut, Upptime ei vaadi palvelimen ajamista tai ylläpitoa.
+* **Automaattinen tilasivu**: Luo kauniin tilasivun, joka voidaan isännöidä GitHub Pagesissa.
+* **Tehokkaat ilmoitukset**: Integroituu useisiin ilmoituskanaviin, kuten sähköposti, SMS ja Slack.
 
-Parantaaksemme käyttäjäkokemusta olemme integroineet [@octokit/core](https://github.com/octokit/core.js/)-luokituksen forwardemail.net-koodikantaan, jotta reaaliaikaiset tilannepäivitykset ja ongelmat näkyvät suoraan verkkosivustollamme. Tämä integraatio tarjoaa käyttäjillemme selkeän läpinäkyvyyden mahdollisten ongelmien varalta koko palvelussamme (verkkosivusto, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree jne.) välittömien ilmoitusten, merkkikuvakkeiden muutosten, varoitusvärien ja muiden avulla.
+Parantaaksemme käyttäjiemme kokemusta, olemme integroineet [@octokit/core](https://github.com/octokit/core.js/) forwardemail.net-koodipohjaan näyttämään reaaliaikaiset tilapäivitykset ja häiriöt suoraan verkkosivustollamme. Tämä integraatio tarjoaa selkeän läpinäkyvyyden käyttäjillemme mahdollisissa ongelmatilanteissa koko pinossamme (Verkkosivusto, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree jne.) välittömillä toast-ilmoituksilla, tunnistekuvakkeen muutoksilla, varoitusväreillä ja muulla.
 
-@octokit/core-kirjaston avulla voimme hakea reaaliaikaista dataa Upptime GitHub -arkistostamme, käsitellä sitä ja näyttää sen käyttäjäystävällisellä tavalla. Kun palvelussa on käyttökatkos tai sen suorituskyky heikkenee, käyttäjille ilmoitetaan siitä välittömästi visuaalisten ilmaisimien avulla ilman, että heidän tarvitsee poistua pääsovelluksesta. Tämä saumaton integraatio varmistaa, että käyttäjillämme on aina ajantasaista tietoa järjestelmämme tilasta, mikä parantaa läpinäkyvyyttä ja luottamusta.
+@octokit/core-kirjasto mahdollistaa reaaliaikaisten tietojen hakemisen Upptime GitHub -varastostamme, niiden käsittelyn ja käyttäjäystävällisen esittämisen. Kun jokin palvelu kokee katkoksia tai suorituskyvyn heikkenemistä, käyttäjät saavat välittömästi visuaaliset ilmoitukset ilman, että heidän tarvitsee poistua pääsovelluksesta. Tämä saumaton integraatio varmistaa, että käyttäjillämme on aina ajantasaiset tiedot järjestelmän tilasta, mikä lisää läpinäkyvyyttä ja luottamusta.
 
-Sadat organisaatiot ovat ottaneet Uptimen käyttöön etsiessään läpinäkyvää ja luotettavaa tapaa valvoa palveluitaan ja viestiä niiden tilasta käyttäjille. Projektin menestys osoittaa, että työkaluja voidaan rakentaa hyödyntämään olemassa olevaa infrastruktuuria (tässä tapauksessa GitHubia) yleisten ongelmien ratkaisemiseksi uusilla tavoilla.
+Upptime on otettu käyttöön sadoissa organisaatioissa, jotka etsivät läpinäkyvää ja luotettavaa tapaa valvoa palveluitaan ja viestiä tilasta käyttäjille. Projektin menestys osoittaa työkalujen rakentamisen voiman, jotka hyödyntävät olemassa olevaa infrastruktuuria (tässä tapauksessa GitHubia) ratkaistakseen yleisiä ongelmia uusilla tavoilla.
+## Panoksemme Forward Email -ekosysteemiin {#our-contributions-to-the-forward-email-ecosystem}
 
-## Panoksemme sähköpostin edelleenlähetysekosysteemiin {#our-contributions-to-the-forward-email-ecosystem}
-
-Vaikka avoimen lähdekoodin pakettejamme käyttävät kehittäjät maailmanlaajuisesti, ne muodostavat myös oman sähköpostinvälityspalvelumme perustan. Tämä kaksoisrooli – sekä näiden työkalujen luojina että käyttäjinä – antaa meille ainutlaatuisen näkökulman niiden käytännön sovelluksiin ja edistää jatkuvaa parantamista.
+Vaikka avoimen lähdekoodin pakettejamme käyttävät kehittäjät ympäri maailmaa, ne muodostavat myös oman Forward Email -palvelumme perustan. Tämä kaksoisrooli — sekä työkalujen luojina että käyttäjinä — antaa meille ainutlaatuisen näkökulman niiden käytännön soveltamiseen ja ohjaa jatkuvaa parantamista.
 
 ### Paketeista tuotantoon {#from-packages-to-production}
 
-Matka yksittäisistä paketeista yhtenäiseksi tuotantojärjestelmäksi vaatii huolellista integrointia ja laajentamista. Forward Emailin osalta tämä prosessi sisältää seuraavat:
+Matka yksittäisistä paketeista yhtenäiseksi tuotantojärjestelmäksi vaatii huolellista integrointia ja laajentamista. Forward Emailin osalta tämä prosessi sisältää:
 
-* **Mukautetut laajennukset**: Sähköpostikohtaisten laajennusten rakentaminen avoimen lähdekoodin paketteihimme, jotka vastaavat ainutlaatuisiin vaatimuksiimme.
-* **Integraatiomallit**: Mallien kehittäminen näiden pakettien vuorovaikutukselle tuotantoympäristössä.
-* **Suorituskyvyn optimoinnit**: Suorituskyvyn pullonkaulojen tunnistaminen ja ratkaiseminen, joita esiintyy vain skaalautuvasti.
-* **Tietojen suojaamisen vahvistaminen**: Sähköpostin käsittelyyn ja käyttäjätietojen suojaukseen liittyvien lisätietoturvakerrosten lisääminen.
+* **Mukautetut laajennukset**: Forward Email -kohtaiset laajennukset avoimen lähdekoodin paketteihimme, jotka vastaavat ainutlaatuisiin vaatimuksiimme.
+* **Integraatiomallit**: Mallien kehittäminen sille, miten nämä paketit toimivat yhdessä tuotantoympäristössä.
+* **Suorituskyvyn optimoinnit**: Suorituskykyongelmien tunnistaminen ja ratkaiseminen, jotka ilmenevät vasta suuressa mittakaavassa.
+* **Turvallisuuden vahvistaminen**: Lisäturvakerrosten lisääminen erityisesti sähköpostin käsittelyyn ja käyttäjätietojen suojaamiseen.
 
-Tämä työ edustaa tuhansia tunteja kehitystyötä ydinpakettien ulkopuolella, minkä tuloksena on syntynyt vankka ja turvallinen sähköpostipalvelu, joka hyödyntää parhaita avoimen lähdekoodin panoksiamme.
+Tämä työ edustaa tuhansia kehitystunteja ydinkomponenttien ulkopuolella, mikä johtaa vankkaan, turvalliseen sähköpostipalveluun, joka hyödyntää parhaita avoimen lähdekoodin panoksiamme.
 
 ### Palautesilmukka {#the-feedback-loop}
 
-Ehkä arvokkain puoli omien pakettien käyttämisessä tuotannossa on sen luoma palautesilmukka. Kun kohtaamme rajoituksia tai reunatapauksia Forward Emailissa, emme vain korjaa niitä paikallisesti – parannamme pohjana olevia paketteja, mikä hyödyttää sekä palveluamme että laajempaa yhteisöä.
+Ehkä arvokkain osa omien pakettiemme käyttöä tuotannossa on palautesilmukka, jonka se luo. Kun kohtaamme rajoituksia tai erityistapauksia Forward Emailissa, emme vain korjaa niitä paikallisesti — parannamme taustalla olevia paketteja, hyödyttäen sekä palveluamme että laajempaa yhteisöä.
 
 Tämä lähestymistapa on johtanut lukuisiin parannuksiin:
 
-* **Breen sulava sulkeminen**: Forward Emailin tarve nollakäyttöisille käyttöönotuksille johti parannettuihin sulaviin sulkemisominaisuuksiin Breessä.
-* **Roskapostiskannerin kuvioiden tunnistus**: Forward Emailissa havaitut reaalimaailman roskapostikuviot ovat vaikuttaneet roskapostiskannerin tunnistusalgoritmeihin.
-* **Cabinin suorituskyvyn optimoinnit**: Suuren volyymin lokitietojen kerääminen tuotannossa paljasti Cabinissa optimointimahdollisuuksia, jotka hyödyttävät kaikkia käyttäjiä.
+* **Breen sulava sammutus**: Forward Emailin tarve nollakatkon käyttöönottoihin johti parannettuihin sulavan sammutuksen ominaisuuksiin Breessä.
+* **Spam Scannerin kuvion tunnistus**: Forward Emailissa kohdattujen todellisten roskapostikuvioiden perusteella Spam Scannerin tunnistusalgoritmeja on kehitetty.
+* **Cabinin suorituskyvyn optimoinnit**: Suurten lokimäärien käsittely tuotannossa paljasti optimointimahdollisuuksia Cabinissa, jotka hyödyttävät kaikkia käyttäjiä.
 
-Ylläpitämällä tätä hyveellistä kierrettä avoimen lähdekoodin työmme ja tuotantopalvelumme välillä varmistamme, että pakettimme pysyvät käytännöllisinä ja käytännössä testattuina ratkaisuina teoreettisten toteutusten sijaan.
+Ylläpitämällä tätä hyveellistä sykliä avoimen lähdekoodin työn ja tuotantopalvelun välillä varmistamme, että paketit pysyvät käytännöllisinä, koeteltuina ratkaisuna eivätkä pelkkinä teoreettisina toteutuksina.
 
-## Sähköpostin edelleenlähetyksen ydinperiaatteet: Erinomaisuuden perusta {#forward-emails-core-principles-a-foundation-for-excellence}
 
-Sähköpostin edelleenlähetys on suunniteltu tiettyjen ydinperiaatteiden mukaisesti, jotka ohjaavat kaikkia kehityspäätöksiämme. Nämä periaatteet, jotka on yksityiskohtaisesti kuvattu [verkkosivusto](/blog/docs/best-quantum-safe-encrypted-email-service#principles)-sivullamme, varmistavat, että palvelumme pysyy kehittäjäystävällisenä, turvallisena ja keskittyy käyttäjien yksityisyyteen.
+## Forward Emailin keskeiset periaatteet: Perusta erinomaisuudelle {#forward-emails-core-principles-a-foundation-for-excellence}
 
-### Aina kehittäjäystävällinen, tietoturvakeskeinen ja läpinäkyvä {#always-developer-friendly-security-focused-and-transparent}
+Forward Email on suunniteltu joukolla keskeisiä periaatteita, jotka ohjaavat kaikkia kehityspäätöksiämme. Nämä periaatteet, jotka on kuvattu tarkemmin [verkkosivuillamme](/blog/docs/best-quantum-safe-encrypted-email-service#principles), varmistavat, että palvelumme pysyy kehittäjäystävällisenä, turvallisena ja käyttäjän yksityisyyteen keskittyvänä.
 
-Ensimmäinen ja tärkein periaatteemme on luoda ohjelmistoja, jotka ovat kehittäjäystävällisiä ja samalla ylläpitävät korkeimpia turvallisuus- ja yksityisyysstandardeja. Uskomme, että tekninen huippuosaaminen ei saisi koskaan tulla käytettävyyden kustannuksella ja että läpinäkyvyys rakentaa luottamusta yhteisössämme.
+### Aina kehittäjäystävällinen, turvallisuuteen keskittyvä ja läpinäkyvä {#always-developer-friendly-security-focused-and-transparent}
 
-Tämä periaate näkyy yksityiskohtaisessa dokumentaatiossamme, selkeissä virheilmoituksissamme ja avoimessa viestinnässämme sekä onnistumisista että haasteista. Tekemällä koko koodikannastamme avoimen lähdekoodin, kannustamme tarkasteluun ja yhteistyöhön, mikä vahvistaa sekä ohjelmistoamme että laajempaa ekosysteemiä.
+Ensimmäinen ja tärkein periaatteemme on luoda ohjelmisto, joka on kehittäjäystävällinen säilyttäen samalla korkeimmat turvallisuus- ja yksityisyysstandardit. Uskomme, että tekninen huippuosaaminen ei saa koskaan tapahtua käytettävyyden kustannuksella, ja että läpinäkyvyys rakentaa luottamusta yhteisöömme.
 
-### Aikaansa testattujen ohjelmistokehitysperiaatteiden noudattaminen {#adherence-to-time-tested-software-development-principles}
+Tämä periaate näkyy yksityiskohtaisessa dokumentaatiossamme, selkeissä virheilmoituksissa ja avoimessa viestinnässä sekä onnistumisista että haasteista. Tekemällä koko koodipohjamme avoimeksi lähdekoodiksi kutsumme tarkasteluun ja yhteistyöhön, vahvistaen sekä ohjelmistoamme että laajempaa ekosysteemiä.
 
-Noudatamme useita vakiintuneita ohjelmistokehityksen periaatteita, jotka ovat osoittaneet arvonsa vuosikymmenten ajan:
+### Ajan koeteltujen ohjelmistokehityksen periaatteiden noudattaminen {#adherence-to-time-tested-software-development-principles}
 
-* **[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Erilaisten ongelmien erottaminen Model-View-Controller-mallin avulla
+Noudatamme useita vakiintuneita ohjelmistokehityksen periaatteita, jotka ovat osoittaneet arvonsa vuosikymmenten aikana:
+
+* **[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Huolien erottelu Model-View-Controller-mallin avulla
 * **[Unix-filosofia](https://en.wikipedia.org/wiki/Unix_philosophy)**: Modulaaristen komponenttien luominen, jotka tekevät yhden asian hyvin
-* **[KISS](https://en.wikipedia.org/wiki/KISS_principle)**: Yksinkertaisena ja suoraviivaisena
-* **[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)**: Älä toista itseäsi, edistä koodin uudelleenkäyttöä
-* **[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)**: Et tule tarvitsemaan sitä, vältä ennenaikaista optimointia
-* **[Kaksitoista tekijää](https://12factor.net/)**: Parhaiden käytäntöjen noudattaminen nykyaikaisten, skaalautuvien sovellusten rakentamiseksi
-* **[Occamin partakone](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Yksinkertaisimman ratkaisun valitseminen, joka täyttää vaatimukset
-* **[Koiratestaus](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**: Omien tuotteidemme laaja käyttö
+* **[KISS](https://en.wikipedia.org/wiki/KISS_principle)**: Pidä asiat yksinkertaisina ja suoraviivaisina
+* **[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)**: Älä toista itseäsi, edistää koodin uudelleenkäyttöä
+* **[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)**: Et tule tarvitsemaan sitä, välttää ennenaikaista optimointia
+* **[Twelve Factor](https://12factor.net/)**: Parhaiden käytäntöjen noudattaminen modernien, skaalautuvien sovellusten rakentamisessa
+* **[Occamin partaveitsi](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Yksinkertaisimman vaatimukset täyttävän ratkaisun valinta
+* **[Dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**: Omien tuotteidemme laaja käyttö
+Nämä periaatteet eivät ole pelkkiä teoreettisia käsitteitä — ne ovat sisäänrakennettuja päivittäisiin kehityskäytäntöihimme. Esimerkiksi sitoutumisemme Unix-filosofiaan näkyy siinä, miten olemme jäsentäneet npm-pakettimme: pieniä, keskittyneitä moduuleja, joita voidaan yhdistellä ratkaisemaan monimutkaisia ongelmia.
 
-Nämä periaatteet eivät ole vain teoreettisia käsitteitä – ne ovat osa päivittäisiä kehityskäytäntöjämme. Esimerkiksi sitoutumisemme Unix-filosofiaan näkyy siinä, miten olemme jäsentäneet npm-pakettimme: pienet, kohdennetut moduulit, jotka voidaan koota yhteen monimutkaisten ongelmien ratkaisemiseksi.
+### Kohdistaminen sitkeälle, omarahoitteiselle kehittäjälle {#targeting-the-scrappy-bootstrapped-developer}
 
-### Kohdistettuna rähjäisille ja motivoituneille kehittäjille {#targeting-the-scrappy-bootstrapped-developer}
+Kohdistamme erityisesti sitkeään, omarahoitteiseen ja [ramen-profitable](https://www.paulgraham.com/ramenprofitable.html) kehittäjään. Tämä painopiste muokkaa kaikkea hinnoittelumallistamme teknisiin päätöksiimme. Ymmärrämme tuotteiden rakentamisen haasteet rajallisilla resursseilla, koska olemme itse olleet samassa tilanteessa.
 
-Kohdistamme erityisesti sinnikkäät, itseohjautuneet ja [ramen-kannattava](https://www.paulgraham.com/ramenprofitable.html)-kehittäjät. Tämä keskittyminen muokkaa kaikkea hinnoittelumallista teknisiin päätöksiimme. Ymmärrämme tuotteiden rakentamisen haasteet rajallisilla resursseilla, koska olemme itse kokeneet sen.
+Tämä periaate on erityisen tärkeä lähestymistavassamme avoimeen lähdekoodiin. Luomme ja ylläpidämme paketteja, jotka ratkaisevat todellisia ongelmia kehittäjille ilman yritysbudjetteja, tehden tehokkaista työkaluista kaikkien saatavilla olevia riippumatta heidän resursseistaan.
 
-Tämä periaate on erityisen tärkeä siinä, miten lähestymme avoimen lähdekoodin ratkaisuja. Luomme ja ylläpidämme paketteja, jotka ratkaisevat kehittäjien todellisia ongelmia ilman yritysbudjetteja, tehden tehokkaista työkaluista kaikkien saatavilla resursseista riippumatta.
+### Periaatteet käytännössä: Forward Email -koodikanta {#principles-in-practice-the-forward-email-codebase}
 
-### Käytännön periaatteet: Sähköpostin edelleenlähetyskoodisto {#principles-in-practice-the-forward-email-codebase}
+Nämä periaatteet näkyvät selvästi Forward Email -koodikannassa. package.json-tiedostomme paljastaa harkitun riippuvuuksien valinnan, joista jokainen on valittu vastaamaan ydinarvojamme:
 
-Nämä periaatteet näkyvät selvästi Forward Email -koodikannassa. Package.json-tiedostomme paljastaa harkitun valikoiman riippuvuuksia, joista jokainen on valittu ydinarvojemme mukaisesti:
+* Turvallisuuteen keskittyneet paketit kuten `mailauth` sähköpostin todennukseen
+* Kehittäjäystävälliset työkalut kuten `preview-email` helpompaan virheenkorjaukseen
+* Modulaariset komponentit kuten erilaiset Sindre Sorhuksen `p-*`-apuohjelmat
 
-* Turvallisuuteen keskittyvät paketit, kuten `mailauth` sähköpostin todennukseen
-* Kehittäjäystävälliset työkalut, kuten `preview-email` helpompaan virheenkorjaukseen
-* Modulaariset komponentit, kuten Sindre Sorhusin erilaiset `p-*`-apuohjelmat
+Noudattamalla näitä periaatteita johdonmukaisesti ajan myötä olemme rakentaneet palvelun, johon kehittäjät voivat luottaa sähköpostin infrastruktuurissaan — turvallinen, luotettava ja avoimen lähdekoodin yhteisön arvojen mukainen.
 
-Noudattamalla näitä periaatteita johdonmukaisesti ajan kuluessa olemme rakentaneet palvelun, johon kehittäjät voivat luottaa sähköposti-infrastruktuurinsa suhteen – turvallisen, luotettavan ja avoimen lähdekoodin yhteisön arvojen mukaisen.
+### Yksityisyys suunnittelussa {#privacy-by-design}
 
-### Sisäänrakennettu tietosuoja {#privacy-by-design}
+Yksityisyys ei ole Forward Emailille jälkikäteen lisätty tai markkinointiominaisuus — se on perustavanlaatuinen suunnitteluperiaate, joka ohjaa palvelumme ja koodimme jokaista osa-aluetta:
 
-Tietosuoja ei ole jälkikäteen mietitty tai markkinointiominaisuus Forward Email -palvelussa – se on perusperiaate, joka ohjaa palvelumme ja koodimme jokaista osa-aluetta:
+* **Nolla-pääsy-salaus**: Olemme toteuttaneet järjestelmiä, jotka tekevät teknisesti mahdottomaksi lukea käyttäjien sähköposteja.
+* **Minimaalinen tiedonkeruu**: Keräämme vain palvelumme tarjoamiseen välttämättömät tiedot, emme mitään ylimääräistä.
+* **Läpinäkyvät käytännöt**: Tietosuojakäytäntömme on kirjoitettu selkeällä, ymmärrettävällä kielellä ilman juridista ammattikieltä.
+* **Avoimen lähdekoodin varmennus**: Avoin lähdekoodimme mahdollistaa tietoturvatutkijoiden vahvistaa yksityisyysväitteemme.
 
-* **Zero-Access Encryption**: Olemme ottaneet käyttöön järjestelmiä, jotka tekevät käyttäjien sähköpostien lukemisen teknisesti mahdottomaksi.
-* **Minimaalinen tiedonkeruu**: Keräämme vain palvelumme tarjoamiseen tarvittavat tiedot, ei mitään muuta.
-* **Läpinäkyvät käytännöt**: Tietosuojakäytäntömme on kirjoitettu selkeällä ja ymmärrettävällä kielellä ilman lakikieltä.
-* **Avoimen lähdekoodin varmennus**: Avoimen lähdekoodin koodikantaamme avulla tietoturvatutkijat voivat varmentaa tietosuojaväitteemme.
+Tämä sitoutuminen ulottuu myös avoimen lähdekoodin paketteihimme, jotka on suunniteltu turvallisuus- ja yksityisyyskäytäntöjen parhaiden käytäntöjen mukaisesti alusta alkaen.
 
-Tämä sitoutuminen ulottuu avoimen lähdekoodin paketteihimme, jotka on suunniteltu alusta alkaen turvallisuus- ja yksityisyyskäytäntöjä noudattaen.
+### Kestävä avoin lähdekoodi {#sustainable-open-source}
 
-### Kestävä avoimen lähdekoodin {#sustainable-open-source}
+Uskomme, että avoimen lähdekoodin ohjelmistojen on oltava kestäviä menestyäkseen pitkällä aikavälillä. Lähestymistapamme sisältää:
 
-Uskomme, että avoimen lähdekoodin ohjelmistot tarvitsevat kestäviä malleja menestyäkseen pitkällä aikavälillä. Lähestymistapaamme kuuluu:
-
-* **Kaupallinen tuki**: Tarjoamme ensiluokkaista tukea ja palveluita avoimen lähdekoodin työkaluillemme.
+* **Kaupallinen tuki**: Tarjoamme premium-tukea ja palveluita avoimen lähdekoodin työkalujemme ympärillä.
 * **Tasapainoinen lisensointi**: Käytämme lisenssejä, jotka suojaavat sekä käyttäjien vapauksia että projektin kestävyyttä.
-* **Yhteisön osallistaminen**: Aktiivinen vuorovaikutus avustajien kanssa tukevan yhteisön rakentamiseksi.
-* **Läpinäkyvät etenemissuunnitelmat**: Jaamme kehityssuunnitelmiamme, jotta käyttäjät voivat suunnitella niitä niiden mukaisesti.
+* **Yhteisön osallistaminen**: Osallistumme aktiivisesti yhteisön jäseniin rakentaaksemme tukevan yhteisön.
+* **Läpinäkyvät tiekartat**: Jaamme kehityssuunnitelmamme, jotta käyttäjät voivat suunnitella niiden mukaisesti.
 
-Keskittymällä kestävään kehitykseen varmistamme, että avoimen lähdekoodin tuotokset voivat kasvaa ja parantua ajan myötä sen sijaan, että ne jäisivät unohduksiin.
+Keskittymällä kestävyyteen varmistamme, että avoimen lähdekoodin panoksemme voivat jatkaa kasvuaan ja kehittymistään ajan myötä sen sijaan, että ne jäisivät unohduksiin.
+
 
 ## Numerot eivät valehtele: Hämmästyttävät npm-lataustilastomme {#the-numbers-dont-lie-our-staggering-npm-download-statistics}
 
-Kun puhumme avoimen lähdekoodin ohjelmistojen vaikutuksesta, lataustilastot tarjoavat konkreettisen mittarin käyttöönotosta ja luottamuksesta. Monet paketeista, joita autamme ylläpitämään, ovat saavuttaneet mittakaavan, johon harvat avoimen lähdekoodin projektit koskaan pääsevät, ja yhteenlaskettujen latausten määrä on miljardeja.
+Kun puhumme avoimen lähdekoodin ohjelmistojen vaikutuksesta, lataustilastot tarjoavat konkreettisen mittarin käyttöönotosta ja luottamuksesta. Monet ylläpitämistämme paketeista ovat saavuttaneet mittakaavan, johon harvat avoimen lähdekoodin projektit koskaan yltävät, yhdistettyjen latausten määrän ollessa miljardeja.
 
-![Suosituimmat npm-paketit latausten mukaan](/img/art/top_packages_bar_chart.svg)
+![Top npm Packages by Downloads](/img/art/top_packages_bar_chart.svg)
 
 > \[!IMPORTANT]
-> Vaikka olemme ylpeitä voidessamme auttaa ylläpitämään useita JavaScript-ekosysteemin erittäin ladattuja paketteja, haluamme tunnustaa, että monet näistä paketeista ovat alun perin muiden lahjakkaiden kehittäjien luomia. Paketit, kuten superagent ja supertest, on alun perin luonut TJ Holowaychuk, jonka tuottelias panos avoimeen lähdekoodiin on ollut keskeisessä asemassa Node.js-ekosysteemin muokkaamisessa.
+> Vaikka olemme ylpeitä siitä, että autamme ylläpitämään useita erittäin ladattuja paketteja JavaScript-ekosysteemissä, haluamme tunnustaa, että monet näistä paketeista ovat alun perin muiden lahjakkaiden kehittäjien luomia. Paketit kuten superagent ja supertest ovat alun perin TJ Holowaychukin luomia, jonka runsaat panokset avoimeen lähdekoodiin ovat olleet keskeisiä Node.js-ekosysteemin muovaamisessa.
+### Yleisnäkymä Vaikutuksestamme {#a-birds-eye-view-of-our-impact}
 
-### Vaikutuksemme yleiskatsaus {#a-birds-eye-view-of-our-impact}
+Vain kahden kuukauden aikana helmikuusta maaliskuuhun 2025, tärkeimmät pakettimme, joihin osallistumme ja joita autamme ylläpitämään, rekisteröivät huikeat latausmäärät:
 
-Vain kahden kuukauden aikana helmikuusta maaliskuuhun 2025 tärkeimmät paketit, joihin osallistumme ja joita autamme ylläpitämään, ennättivät hämmästyttävät latausmäärät:
-
-* **[superagentti](https://www.npmjs.com/package/superagent)**: 84 575 829 latausta\[^7] (alkuperäinen luoja TJ Holowaychuk)
-* **[supertesti](https://www.npmjs.com/package/supertest)**: 76 432 591 latausta\[^8] (alkuperäinen luoja TJ Holowaychuk)
-* **[myös](https://www.npmjs.com/package/koa)**: 28 539 295 latausta\[^34] (alkuperäinen luoja TJ Holowaychuk)
-* **[@koa/reititin](https://www.npmjs.com/package/@koa/router)**: 11 007 327 latausta\[^35]
-* **[koa-reititin](https://www.npmjs.com/package/koa-router)**: 3 498 918 latausta\[^36]
-* **[url-säännöllinen lauseke](https://www.npmjs.com/package/url-regex)**: 2 819 520 latausta\[^37]
-* **[esikatselusähköposti](https://www.npmjs.com/package/preview-email)**: 2 500 000 lataukset\[^9]
-* **[mökki](https://www.npmjs.com/package/cabin)**: 1 800 000 latausta\[^10]
+* **[superagent](https://www.npmjs.com/package/superagent)**: 84 575 829 latausta\[^7] (alkuperäisen luoja TJ Holowaychuk)
+* **[supertest](https://www.npmjs.com/package/supertest)**: 76 432 591 latausta\[^8] (alkuperäisen luoja TJ Holowaychuk)
+* **[koa](https://www.npmjs.com/package/koa)**: 28 539 295 latausta\[^34] (alkuperäisen luoja TJ Holowaychuk)
+* **[@koa/router](https://www.npmjs.com/package/@koa/router)**: 11 007 327 latausta\[^35]
+* **[koa-router](https://www.npmjs.com/package/koa-router)**: 3 498 918 latausta\[^36]
+* **[url-regex](https://www.npmjs.com/package/url-regex)**: 2 819 520 latausta\[^37]
+* **[preview-email](https://www.npmjs.com/package/preview-email)**: 2 500 000 latausta\[^9]
+* **[cabin](https://www.npmjs.com/package/cabin)**: 1 800 000 latausta\[^10]
 * **[@breejs/later](https://www.npmjs.com/package/@breejs/later)**: 1 709 938 latausta\[^38]
-* **[sähköpostimallit](https://www.npmjs.com/package/email-templates)**: 1 128 139 latausta\[^39]
-* **__PROTECTED_LINK_259__0**: 1 124 686 latausta\[^40]
-* **__PROTECTED_LINK_259__1**: 1 200 000 latausta\[^11]
-* **__PROTECTED_LINK_259__2**: 894 666 latausta\[^41]
-* **__PROTECTED_LINK_259__3**: 839 585 latausta\[^42]
-* **__PROTECTED_LINK_259__4**: 145 000 lataukset\[^12]
-* **__PROTECTED_LINK_259__5**: 24 270 latausta\[^30]
+* **[email-templates](https://www.npmjs.com/package/email-templates)**: 1 128 139 latausta\[^39]
+* **[get-paths](https://www.npmjs.com/package/get-paths)**: 1 124 686 latausta\[^40]
+* **[url-regex-safe](https://www.npmjs.com/package/url-regex-safe)**: 1 200 000 latausta\[^11]
+* **[dotenv-parse-variables](https://www.npmjs.com/package/dotenv-parse-variables)**: 894 666 latausta\[^41]
+* **[@koa/multer](https://www.npmjs.com/package/@koa/multer)**: 839 585 latausta\[^42]
+* **[spamscanner](https://www.npmjs.com/package/spamscanner)**: 145 000 latausta\[^12]
+* **[bree](https://www.npmjs.com/package/bree)**: 24 270 latausta\[^30]
 
 > \[!NOTE]
-> Useilla muilla paketeilla, joiden ylläpidossa olemme auttaneet, mutta joita emme ole luoneet, on vielä suurempia latausmääriä, mukaan lukien `form-data` (yli 738 miljoonaa latausta), `toidentifier` (yli 309 miljoonaa latausta), `stackframe` (yli 116 miljoonaa latausta) ja `error-stack-parser` (yli 113 miljoonaa latausta). Olemme ylpeitä voidessamme osallistua näiden pakettien kehittämiseen samalla kunnioittaen niiden alkuperäisten tekijöiden työtä.
+> Useat muut paketit, joita autamme ylläpitämään mutta emme ole luoneet, ovat vielä suuremmilla latausmäärillä, mukaan lukien `form-data` (yli 738M latausta), `toidentifier` (yli 309M latausta), `stackframe` (yli 116M latausta) ja `error-stack-parser` (yli 113M latausta). Olemme kunnia-asiamme osallistua näiden pakettien ylläpitoon kunnioittaen niiden alkuperäisten tekijöiden työtä.
 
-Nämä eivät ole vain vaikuttavia lukuja – ne edustavat oikeita kehittäjiä, jotka ratkaisevat oikeita ongelmia koodilla, jonka ylläpidossa autamme. Jokainen lataus on esimerkki siitä, miten nämä paketit ovat auttaneet jotakuta rakentamaan jotain merkityksellistä, harrastelijaprojekteista miljoonien käyttämiin yrityssovelluksiin.
+Nämä eivät ole pelkästään vaikuttavia lukuja — ne edustavat todellisia kehittäjiä, jotka ratkaisevat todellisia ongelmia koodilla, jota me autamme ylläpitämään. Jokainen lataus on hetki, jolloin nämä paketit ovat auttaneet jotakuta rakentamaan jotain merkityksellistä, harrastusprojekteista miljoonien käyttämien yrityssovellusten kehittämiseen.
 
-![Pakkausluokat Jakelu](/img/art/category_pie_chart.svg)
+![Package Categories Distribution](/img/art/category_pie_chart.svg)
 
-### Päivittäinen vaikutus mittakaavassa {#daily-impact-at-scale}
+### Päivittäinen Vaikutus Suurissa Määrissä {#daily-impact-at-scale}
 
-Päivittäiset latausmallit paljastavat tasaisen, suuren käyttömäärän, ja huippujen mukaan latauksia on miljoonia päivässä\[^13]. Tämä yhdenmukaisuus kertoo näiden pakettien vakaudesta ja luotettavuudesta – kehittäjät eivät vain kokeile niitä, vaan he integroivat ne ydintoimintoihinsa ja ovat riippuvaisia niistä päivästä toiseen.
+Päivittäiset latauskuviot paljastavat johdonmukaisen, suuren volyymin käytön, huippujen yltäessä miljooniin latauksiin päivässä\[^13]. Tämä johdonmukaisuus kertoo näiden pakettien vakaudesta ja luotettavuudesta — kehittäjät eivät vain kokeile niitä; he integroivat ne ydintyöprosesseihinsa ja luottavat niihin päivä toisensa jälkeen.
 
-Viikoittaiset latauskäyttäytymiset osoittavat vieläkin vaikuttavampia lukuja, pysyen jatkuvasti kymmenien miljoonien latausten ympärillä viikossa\[^14]. Tämä edustaa valtavaa jalanjälkeä JavaScript-ekosysteemissä, sillä näitä paketteja käytetään tuotantoympäristöissä ympäri maailmaa.
+Viikoittaiset latauskuviot näyttävät vielä vaikuttavampia lukuja, pysyen johdonmukaisesti kymmenissä miljoonissa latauksissa viikossa\[^14]. Tämä edustaa valtavaa jalanjälkeä JavaScript-ekosysteemissä, näiden pakettien toimiessa tuotantoympäristöissä ympäri maailmaa.
 
-### Raakojen lukujen tuolla puolen {#beyond-the-raw-numbers}
+### Pelkkien Lukujen Tuolla Puolen {#beyond-the-raw-numbers}
 
-Vaikka lataustilastot itsessään ovat vaikuttavia, ne kertovat syvemmän tarinan yhteisön näihin paketteihin kohdistamasta luottamuksesta. Pakettien ylläpitäminen tässä mittakaavassa vaatii horjumatonta sitoutumista:
+Vaikka lataustilastot ovat vaikuttavia itsessään, ne kertovat syvemmän tarinan yhteisön luottamuksesta näihin paketteihin. Pakettien ylläpito näin suuressa mittakaavassa vaatii horjumatonta sitoutumista:
 
-* **Takaisinpäin yhteensopivuus**: Muutoksia on harkittava huolellisesti, jotta vältetään olemassa olevien toteutusten rikkoutuminen.
-* **Tietoturva**: Koska miljoonat sovellukset ovat riippuvaisia näistä paketeista, tietoturvahaavoittuvuuksilla voi olla kauaskantoisia seurauksia.
-* **Suorituskyky**: Tässä mittakaavassa jopa pienillä suorituskyvyn parannuksilla voi olla merkittäviä kokonaishyötyjä.
-* **Dokumentaatio**: Selkeä ja kattava dokumentaatio on välttämätöntä kaiken tasoisten kehittäjien käyttämille paketeille.
+* **Taaksepäin Yhteensopivuus**: Muutokset on harkittava huolellisesti, jotta olemassa olevat toteutukset eivät rikkoudu.
+* **Turvallisuus**: Miljoonien sovellusten luottaessa näihin paketteihin, turvallisuusaukot voivat aiheuttaa laajoja seurauksia.
+* **Suorituskyky**: Tässä mittakaavassa jopa pienet suorituskyvyn parannukset voivat tuoda merkittäviä kokonaisetuja.
+* **Dokumentaatio**: Selkeä ja kattava dokumentaatio on välttämätöntä kehittäjille kaikilla kokemustasoilla.
 
-Latausmäärien tasainen kasvu ajan myötä heijastaa onnistumista näiden sitoumusten täyttämisessä ja luottamuksen rakentamisessa kehittäjäyhteisön kanssa luotettavien ja hyvin ylläpidettyjen pakettien avulla.
-
+Latausmäärien johdonmukainen kasvu ajan myötä heijastaa onnistumista näiden sitoumusten täyttämisessä, rakentaen luottamusta kehittäjäyhteisöön luotettavien, hyvin ylläpidettyjen pakettien kautta.
 ## Ekosysteemin tukeminen: Avoimen lähdekoodin sponsorointimme {#supporting-the-ecosystem-our-open-source-sponsorships}
 
 > \[!TIP]
-> Avoimen lähdekoodin kestävä kehitys ei tarkoita pelkästään koodin tuottamista – se koskee myös kriittisen infrastruktuurin ylläpitäjien tukemista.
+> Avoimen lähdekoodin kestävyys ei tarkoita pelkästään koodin kontribuointia — se tarkoittaa myös kehittäjien tukemista, jotka ylläpitävät kriittistä infrastruktuuria.
 
-JavaScript-ekosysteemille antamamme suoran panoksen lisäksi olemme ylpeitä voidessamme tukea merkittäviä Node.js-avustajia, joiden työ muodostaa monien nykyaikaisten sovellusten perustan. Sponsoroihimme kuuluvat:
+Suorien panostustemme lisäksi JavaScript-ekosysteemiin olemme ylpeitä sponsoroidessamme merkittäviä Node.js:n kontribuuttoreita, joiden työ muodostaa perustan monille nykyaikaisille sovelluksille. Sponsorointimme kattaa:
 
-### Andris Reinman: Sähköpostiinfrastruktuurin edelläkävijä {#andris-reinman-email-infrastructure-pioneer}
+### Andris Reinman: Sähköpostin infrastruktuurin edelläkävijä {#andris-reinman-email-infrastructure-pioneer}
 
-[Andris Reinman](https://github.com/andris9) on [Nodemailer](https://github.com/nodemailer/nodemailer):n luoja. __PROTECTED_LINK_276__ on Node.js:n suosituin sähköpostin lähetyskirjasto, jota ladataan yli 14 miljoonaa kertaa viikossa\[^15]. Hänen työnsä ulottuu muihin kriittisiin sähköpostiinfrastruktuurikomponentteihin, kuten [SMTP-palvelin](https://github.com/nodemailer/smtp-server):een, [Sähköpostin jäsentäjä](https://github.com/nodemailer/mailparser):een ja [Villiankka](https://github.com/nodemailer/wildduck):ään.
+[Andris Reinman](https://github.com/andris9) on [Nodemailer](https://github.com/nodemailer/nodemailer) luoja, joka on suosituin sähköpostin lähetyskirjasto Node.js:lle yli 14 miljoonalla viikoittaisella latauksella\[^15]. Hänen työnsä ulottuu myös muihin kriittisiin sähköpostin infrastruktuurikomponentteihin kuten [SMTP Server](https://github.com/nodemailer/smtp-server), [Mailparser](https://github.com/nodemailer/mailparser) ja [WildDuck](https://github.com/nodemailer/wildduck).
 
-Sponsorointimme auttaa varmistamaan näiden olennaisten työkalujen jatkuvan ylläpidon ja kehityksen, jotka tukevat sähköpostiviestintää lukemattomissa Node.js-sovelluksissa, mukaan lukien oma sähköpostin edelleenlähetyspalvelumme.
+Sponsorointimme auttaa varmistamaan näiden olennaisten työkalujen jatkuvan ylläpidon ja kehityksen, jotka mahdollistavat sähköpostiviestinnän lukemattomille Node.js-sovelluksille, mukaan lukien oma Forward Email -palvelumme.
 
-### Sindre Sorhus: Utility Package Mastermind {#sindre-sorhus-utility-package-mastermind}
+### Sindre Sorhus: Apupakettien mestari {#sindre-sorhus-utility-package-mastermind}
 
-[Sindre Sorhus](https://github.com/sindresorhus) on yksi JavaScript-ekosysteemin tuotteliaimmista avoimen lähdekoodin kehittäjistä, ja hänellä on yli 1 000 npm-pakettia. Hänen apuohjelmansa, kuten [p-kartta](https://github.com/sindresorhus/p-map), [p-uudelleenyritys](https://github.com/sindresorhus/p-retry) ja [on-stream](https://github.com/sindresorhus/is-stream), ovat Node.js-ekosysteemin perustavanlaatuisia rakennuspalikoita.
+[Sindre Sorhus](https://github.com/sindresorhus) on yksi tuotteliaimmista avoimen lähdekoodin kontribuuttoreista JavaScript-ekosysteemissä, yli 1 000 npm-paketin tekijä. Hänen apuvälineensä kuten [p-map](https://github.com/sindresorhus/p-map), [p-retry](https://github.com/sindresorhus/p-retry) ja [is-stream](https://github.com/sindresorhus/is-stream) ovat keskeisiä rakennuspalikoita, joita käytetään laajasti Node.js-ekosysteemissä.
 
-Tukemalla Sindren työtä autamme ylläpitämään näiden kriittisten apuohjelmien kehitystä, jotka tekevät JavaScript-kehityksestä tehokkaampaa ja luotettavampaa.
+Sponsoroimalla Sindren työtä autamme ylläpitämään näiden kriittisten apuvälineiden kehitystä, jotka tekevät JavaScript-kehityksestä tehokkaampaa ja luotettavampaa.
 
-Nämä sponsoroinnit heijastavat sitoutumistamme laajempaan avoimen lähdekoodin ekosysteemiin. Ymmärrämme, että oma menestyksemme perustuu näiden ja muiden osallistujien luomaan perustaan, ja olemme sitoutuneet varmistamaan koko ekosysteemin kestävyyden.
+Nämä sponsoroinnit heijastavat sitoutumistamme laajempaan avoimen lähdekoodin ekosysteemiin. Tunnustamme, että oma menestyksemme rakentuu näiden ja muiden kontribuuttoreiden luomalle perustalle, ja olemme omistautuneet varmistamaan koko ekosysteemin kestävyyden.
 
-## JavaScript-ekosysteemin tietoturvahaavoittuvuuksien paljastaminen {#uncovering-security-vulnerabilities-in-the-javascript-ecosystem}
 
-Sitoutumisemme avoimeen lähdekoodiin ulottuu ominaisuuksien kehittämisen ulkopuolelle ja kattaa myös miljooniin kehittäjiin mahdollisesti vaikuttavien tietoturvahaavoittuvuuksien tunnistamisen ja korjaamisen. Useat merkittävimmistä panoksistamme JavaScript-ekosysteemiin ovat olleet tietoturvan alueella.
+## Turva-aukkojen paljastaminen JavaScript-ekosysteemissä {#uncovering-security-vulnerabilities-in-the-javascript-ecosystem}
 
-### Koa-reitittimen pelastus {#the-koa-router-rescue}
+Sitoutumisemme avoimeen lähdekoodiin ulottuu ominaisuuksien kehittämisen lisäksi myös turvallisuusaukkojen tunnistamiseen ja korjaamiseen, jotka voisivat vaikuttaa miljooniin kehittäjiin. Useimmat merkittävimmistä panoksistamme JavaScript-ekosysteemiin liittyvät turvallisuuteen.
 
-Helmikuussa 2019 Nick tunnisti kriittisen ongelman suositun koa-router-paketin ylläpidossa. Koska hän oli [raportoitu Hacker Newsissa](https://news.ycombinator.com/item?id=19156707), alkuperäinen ylläpitäjä oli hylännyt paketin, minkä vuoksi tietoturva-aukkoihin ei puututtu eikä yhteisölle jäänyt päivityksiä.
+### Koa-routerin pelastus {#the-koa-router-rescue}
+
+Helmikuussa 2019 Nick havaitsi kriittisen ongelman suositun koa-router-paketin ylläpidossa. Kuten hän [raportoi Hacker Newsissa](https://news.ycombinator.com/item?id=19156707), paketti oli hylätty alkuperäisen ylläpitäjän toimesta, jättäen turvallisuusaukot korjaamatta ja yhteisön ilman päivityksiä.
 
 > \[!WARNING]
-> Hylätyt paketit, joissa on tietoturva-aukkoja, aiheuttavat merkittäviä riskejä koko ekosysteemille, varsinkin kun niitä ladataan miljoonia kertoja viikossa.
+> Hylätyt paketit, joissa on turvallisuusaukkoja, aiheuttavat merkittäviä riskejä koko ekosysteemille, erityisesti kun niitä ladataan miljoonia kertoja viikossa.
 
-Vastauksena tähän Nick loi [@koa/reititin](https://github.com/koajs/router):n ja auttoi ilmoittamaan tilanteesta yhteisölle. Hän on ylläpitänyt tätä kriittistä pakettia siitä lähtien varmistaen, että Koa-käyttäjillä on turvallinen ja hyvin ylläpidetty reititysratkaisu.
+Vastauksena Nick loi [@koa/router](https://github.com/koajs/router) ja auttoi varoittamaan yhteisöä tilanteesta. Hän on ylläpitänyt tätä kriittistä pakettia siitä lähtien varmistaen, että Koa-käyttäjillä on turvallinen ja hyvin ylläpidetty reititysrakenne.
 
 ### ReDoS-haavoittuvuuksien korjaaminen {#addressing-redos-vulnerabilities}
 
-Vuonna 2020 Nick tunnisti ja korjasi kriittisen [Säännöllisten lausekkeiden palvelunesto (ReDoS)](https://en.wikipedia.org/wiki/ReDoS)-haavoittuvuuden laajalti käytetyssä `url-regex`-paketissa. Tämä haavoittuvuus ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) voi antaa hyökkääjille mahdollisuuden aiheuttaa palvelunestohyökkäyksiä antamalla erityisesti muotoiltua syötettä, joka voi aiheuttaa katastrofaalisen takaisinjäljityksen säännöllisessä lausekkeessa.
+Vuonna 2020 Nick tunnisti ja korjasi kriittisen [Regular Expression Denial of Service (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) -haavoittuvuuden laajasti käytetyssä `url-regex`-paketissa. Tämä haavoittuvuus ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) saattoi antaa hyökkääjille mahdollisuuden aiheuttaa palvelunestohyökkäyksen toimittamalla erityisesti muotoiltua syötettä, joka aiheutti katastrofaalista takautuvaa etsintää säännöllisessä lausekkeessa.
 
-Sen sijaan, että Nick olisi vain korjannut olemassa olevan paketin, hän loi [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe):n, täysin uudelleenkirjoitetun toteutuksen, joka korjaa haavoittuvuuden säilyttäen samalla yhteensopivuuden alkuperäisen API:n kanssa. Hän julkaisi myös [kattava blogikirjoitus](/blog/docs/url-regex-javascript-node-js):n, jossa selitettiin haavoittuvuus ja sen lieventämismenetelmät.
+Sen sijaan, että olisi vain korjannut olemassa olevan paketin, Nick loi [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), täysin uudelleen kirjoitetun toteutuksen, joka korjaa haavoittuvuuden säilyttäen yhteensopivuuden alkuperäisen API:n kanssa. Hän julkaisi myös [laajan blogikirjoituksen](/blog/docs/url-regex-javascript-node-js), jossa selitetään haavoittuvuus ja miten sitä voidaan lieventää.
+Tämä työ esittelee lähestymistapamme turvallisuuteen: emme pelkästään korjaa ongelmia, vaan koulutamme yhteisöä ja tarjoamme vahvoja vaihtoehtoja, jotka estävät samanlaisten ongelmien syntymisen tulevaisuudessa.
 
-Tämä työ osoittaa lähestymistapamme tietoturvaan: emme ainoastaan korjaa ongelmia, vaan koulutamme yhteisöä ja tarjoamme vankkoja vaihtoehtoja, jotka estävät vastaavia ongelmia tulevaisuudessa.
+### Node.js:n ja Chromiumin turvallisuuden puolesta {#advocating-for-nodejs-and-chromium-security}
 
-### Node.js:n ja Chromiumin tietoturvan puolustaminen {#advocating-for-nodejs-and-chromium-security}
+Nick on myös ollut aktiivinen turvallisuuden parantamisen puolestapuhujana laajemmassa ekosysteemissä. Elokuussa 2020 hän havaitsi merkittävän turvallisuusongelman Node.js:ssä, joka liittyi HTTP-otsikoiden käsittelyyn, ja tästä raportoitiin [The Registerissä](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/).
 
-Nick on myös aktiivisesti ajanut tietoturvaparannuksia laajemmassa ekosysteemissä. Elokuussa 2020 hän tunnisti Node.js:ssä merkittävän tietoturvaongelman, joka liittyi sen HTTP-otsikoiden käsittelyyn. Ongelmasta raportoitiin [Rekisteri](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/)-julkaisussa.
+Tämä ongelma, joka johtui Chromiumin korjauksesta, olisi voinut mahdollistaa hyökkääjien ohittaa turvatoimia. Nickin puolestapuhuminen varmisti, että ongelma korjattiin nopeasti, suojellen miljoonia Node.js-sovelluksia mahdolliselta hyväksikäytöltä.
 
-Tämä Chromiumin korjauspäivityksestä johtuva ongelma saattoi antaa hyökkääjille mahdollisuuden ohittaa turvatoimenpiteitä. Nickin edunvalvonta auttoi varmistamaan, että ongelmaan puututtiin nopeasti, mikä suojasi miljoonia Node.js-sovelluksia mahdollisilta hyökkäyksiltä.
+### npm-infrastruktuurin suojaaminen {#securing-npm-infrastructure}
 
-### Npm-infrastruktuurin suojaaminen {#securing-npm-infrastructure}
+Saman kuukauden aikana Nick havaitsi toisen kriittisen turvallisuusongelman, tällä kertaa npm:n sähköpostiinfrastruktuurissa. Kuten [The Registerissä](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/) raportoitiin, npm ei toteuttanut DMARC-, SPF- ja DKIM-sähköpostin todennusprotokollia asianmukaisesti, mikä olisi voinut sallia hyökkääjien lähettää kalastelusähköposteja, jotka näyttivät tulevan npm:ltä.
 
-Myöhemmin samassa kuussa Nick tunnisti toisen kriittisen tietoturvaongelman, tällä kertaa npm:n sähköpostiinfrastruktuurissa. Kuten [Rekisteri](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/)-tiedostossa raportoitiin, npm ei toteuttanut DMARC-, SPF- ja DKIM-sähköpostin todennusprotokollia oikein, minkä vuoksi hyökkääjät saattoivat lähettää tietojenkalasteluviestejä, jotka näyttivät tulevan npm:ltä.
+Nickin raportti johti parannuksiin npm:n sähköpostiturvallisuudessa, suojellen miljoonia kehittäjiä, jotka luottavat npm:ään pakettien hallinnassa, mahdollisilta kalasteluhyökkäyksiltä.
 
-Nickin raportti johti npm:n sähköpostin tietoturvan parannuksiin, suojaten miljoonia kehittäjiä, jotka ovat riippuvaisia npm:stä pakettienhallinnassa, mahdollisilta tietojenkalasteluhyökkäyksiltä.
 
-## Panoksemme sähköpostin edelleenlähetysekosysteemiin {#our-contributions-to-the-forward-email-ecosystem-1}
+## Panoksemme Forward Email -ekosysteemiin {#our-contributions-to-the-forward-email-ecosystem-1}
 
-Forward Email on rakennettu useiden kriittisten avoimen lähdekoodin projektien, kuten Nodemailerin, WildDuckin ja mailauthin, päälle. Tiimimme on antanut merkittäviä panoksia näihin projekteihin auttaen tunnistamaan ja korjaamaan sähköpostin toimitukseen ja tietoturvaan vaikuttavia vakavia ongelmia.
+Forward Email rakentuu useiden kriittisten avoimen lähdekoodin projektien päälle, mukaan lukien Nodemailer, WildDuck ja mailauth. Tiimimme on tehnyt merkittäviä panoksia näihin projekteihin, auttaen tunnistamaan ja korjaamaan syvällisiä ongelmia, jotka vaikuttavat sähköpostin toimitukseen ja turvallisuuteen.
 
-### Nodemailerin ydintoimintojen parantaminen {#enhancing-nodemailers-core-functionality}
+### Nodemailerin ydintoiminnallisuuden parantaminen {#enhancing-nodemailers-core-functionality}
 
-[Nodemailer](https://github.com/nodemailer/nodemailer) on sähköpostin lähettämisen selkäranka Node.js:ssä, ja panoksemme ovat auttaneet tekemään siitä entistä vankemman:
+[Nodemailer](https://github.com/nodemailer/nodemailer) on sähköpostin lähettämisen selkäranka Node.js:ssä, ja panoksemme ovat auttaneet tekemään siitä luotettavamman:
 
-* **SMTP-palvelimen parannukset**: Olemme korjanneet jäsennysvirheitä, datavirran käsittelyongelmia ja TLS-määritysongelmia SMTP-palvelinkomponentissa\[^16]\[^17].
-* **Sähköpostin jäsentimen parannukset**: Olemme korjanneet merkkijonojen dekoodausvirheitä ja jäsenninongelmia, jotka saattoivat aiheuttaa sähköpostin käsittelyvirheitä\[^18]\[^19].
+* **SMTP-palvelimen parannukset**: Olemme korjanneet jäsentämisvirheitä, virtojen käsittelyongelmia ja TLS-konfiguraatio-ongelmia SMTP-palvelinkomponentissa\[^16]\[^17].
+* **Sähköpostin jäsentimen parannukset**: Olemme korjanneet merkkijonojen dekoodausvirheitä ja osoitteiden jäsentämisongelmia, jotka olisivat voineet aiheuttaa sähköpostin käsittelyvirheitä\[^18]\[^19].
 
-Nämä panokset varmistavat, että Nodemailer pysyy luotettavana perustana sähköpostin käsittelylle Node.js-sovelluksissa, mukaan lukien Forward Email.
+Nämä panokset varmistavat, että Nodemailer pysyy luotettavana perustana sähköpostin käsittelyssä Node.js-sovelluksissa, mukaan lukien Forward Email.
 
-### Sähköpostin todennuksen tehostaminen Mailauthilla {#advancing-email-authentication-with-mailauth}
+### Sähköpostin todennuksen edistäminen Mailauthilla {#advancing-email-authentication-with-mailauth}
 
-[Mailauth](https://github.com/postalsys/mailauth) tarjoaa kriittisen sähköpostin todennustoiminnon, ja panoksemme ovat parantaneet sen ominaisuuksia merkittävästi:
+[Mailauth](https://github.com/postalsys/mailauth) tarjoaa kriittisen sähköpostin todennustoiminnallisuuden, ja panoksemme ovat merkittävästi parantaneet sen kykyjä:
 
-* **DKIM-vahvistuksen parannukset**: Havaitsimme ja raportoimme, että X/Twitterillä oli DNS-välimuistiongelmia, jotka aiheuttivat DKIM-virheen lähtevissä viesteissä. Raportoimme tästä Hacker Onella\[^20].
-* **DMARC- ja ARC-parannukset**: Olemme korjanneet DMARC- ja ARC-vahvistuksen ongelmia, jotka saattoivat johtaa virheellisiin todennustuloksiin\[^21]\[^22].
-* **Suorituskyvyn optimoinnit**: Olemme tehneet optimointeja, jotka parantavat sähköpostin todennusprosessien suorituskykyä\[^23]\[^24]\[^25]\[^26].
+* **DKIM-varmennuksen parannukset**: Löysimme ja raportoitimme, että X/Twitterillä oli DNS-välimuistiongelmia, jotka aiheuttivat DKIM-epäonnistumisia heidän lähtevissä viesteissään, ja raportointi tehtiin Hacker Onelle\[^20].
+* **DMARC- ja ARC-parannukset**: Olemme korjanneet DMARC- ja ARC-varmennukseen liittyviä ongelmia, jotka olisivat voineet johtaa virheellisiin todennustuloksiin\[^21]\[^22].
+* **Suorituskyvyn optimoinnit**: Olemme osallistuneet optimointeihin, jotka parantavat sähköpostin todennusprosessien suorituskykyä\[^23]\[^24]\[^25]\[^26].
 
-Nämä parannukset auttavat varmistamaan, että sähköpostin todennus on tarkkaa ja luotettavaa, ja suojaavat käyttäjiä tietojenkalastelu- ja väärennyshyökkäyksiltä.
+Nämä parannukset auttavat varmistamaan, että sähköpostin todennus on tarkkaa ja luotettavaa, suojellen käyttäjiä kalastelu- ja väärentämishyökkäyksiltä.
 
-### Tärkeimmät käyttöajan parannukset {#key-upptime-enhancements}
+### Keskeiset Upptimen parannukset {#key-upptime-enhancements}
 
-Upptimelle antamamme panokset sisältävät:
+Panoksemme Upptimeen sisältävät:
 
-* **SSL-varmenteen valvonta**: Lisäsimme toiminnon SSL-varmenteen vanhenemisen valvontaan, mikä estää odottamattomat käyttökatkokset vanhentuneiden varmenteiden vuoksi\[^27].
-* **Useiden tekstiviestinumeroiden tuki**: Otimme käyttöön tuen useiden tiimin jäsenten hälyttämiseen tekstiviestitse häiriöistä, mikä parantaa vasteaikoja\[^28].
-* **IPv6-tarkistusten korjaukset**: Korjasimme IPv6-yhteystarkistuksiin liittyviä ongelmia, mikä varmistaa tarkemman valvonnan nykyaikaisissa verkkoympäristöissä\[^29].
-* **Tumma/vaalea tila -tuki**: Lisäsimme teematuen parantaaksemme tilasivujen käyttökokemusta\[^31].
-* **Parempi TCP-ping-tuki**: Paransimme TCP-ping-toimintoa luotettavamman yhteystestauksen tarjoamiseksi\[^32].
+* **SSL-varmenteiden seuranta**: Lisäsimme toiminnallisuuden seurata SSL-varmenteiden vanhenemista, estäen odottamattomat käyttökatkot vanhentuneiden varmenteiden vuoksi\[^27].
+* **Useiden SMS-numeroiden tuki**: Toteutimme tuen useiden tiimin jäsenten hälyttämiselle SMS:llä, kun tapahtuu häiriöitä, parantaen reagointiaikoja\[^28].
+* **IPv6-tarkistusten korjaukset**: Korjasimme ongelmia IPv6-yhteystarkistuksissa, varmistaen tarkemman valvonnan nykyaikaisissa verkkoympäristöissä\[^29].
+* **Tumma/vaalea tila -tuki**: Lisäsimme teematuki parantamaan tilasivujen käyttökokemusta\[^31].
+* **Parempi TCP-ping-tuki**: Paransimme TCP-ping-toiminnallisuutta tarjoamaan luotettavampaa yhteyden testausta\[^32].
+Nämä parannukset hyödyttävät paitsi Forward Emailin tilan seurantaa myös koko Upptimen käyttäjäyhteisöä, mikä osoittaa sitoutumisemme parantaa työkaluja, joihin luotamme.
 
-Nämä parannukset eivät ainoastaan hyödytä Forward Emailin tilanvalvontaa, vaan ne ovat saatavilla koko Upptimen käyttäjäyhteisölle, mikä osoittaa sitoutumisemme työkalujen parantamiseen, joihin luotamme.
 
-## Kaiken yhdistävä tekijä: Mukautettu koodi skaalautuvasti {#the-glue-that-holds-it-all-together-custom-code-at-scale}
+## Liima, joka pitää kaiken koossa: Räätälöity koodi suuressa mittakaavassa {#the-glue-that-holds-it-all-together-custom-code-at-scale}
 
-Vaikka npm-pakettimme ja panoksemme olemassa oleviin projekteihin ovat merkittäviä, juuri nämä komponentit integroiva mukautettu koodi todella osoittaa teknisen asiantuntemuksemme. Forward Email -koodikanta edustaa vuosikymmenen kehitystyötä, joka ulottuu vuoteen 2017, jolloin projekti alkoi nimellä [ilmainen sähköpostin edelleenlähetys](https://github.com/forwardemail/free-email-forwarding) ennen kuin se yhdistettiin monorepoon.
+Vaikka npm-pakettimme ja panoksemme olemassa oleviin projekteihin ovat merkittäviä, on räätälöity koodi, joka yhdistää nämä komponentit, se joka todella osoittaa teknisen asiantuntemuksemme. Forward Emailin koodikanta edustaa vuosikymmenen kehitystyötä, joka alkoi vuonna 2017 projektina nimeltä [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding) ennen kuin se yhdistettiin monorepoon.
 
-### Massiivinen kehitysponnistus {#a-massive-development-effort}
+### Massiivinen kehitystyö {#a-massive-development-effort}
 
-Tämän mukautetun integraatiokoodin mittakaava on vaikuttava:
+Tämän räätälöidyn integraatiokoodin laajuus on vaikuttava:
 
-* **Kokonaismuutoksia**: Yli 3 217 committia
-* **Koodikannan koko**: Yli 421 545 riviä koodia JavaScript-, Pug-, CSS- ja JSON-tiedostoissa\[^33]
+* **Yhteensä kontribuutioita**: Yli 3 217 committia
+* **Koodikannan koko**: Yli 421 545 koodiriviä JavaScript-, Pug-, CSS- ja JSON-tiedostoissa\[^33]
 
-Tämä edustaa tuhansia tunteja kehitystyötä, virheenkorjausistuntoja ja suorituskyvyn optimointeja. Se on "salainen resepti", joka muuttaa yksittäiset paketit yhtenäiseksi ja luotettavaksi palveluksi, jota tuhannet asiakkaat käyttävät päivittäin.
+Tämä edustaa tuhansia tunteja kehitystyötä, virheenkorjaussessioita ja suorituskyvyn optimointeja. Se on "salainen kastike", joka muuttaa yksittäiset paketit yhtenäiseksi, luotettavaksi palveluksi, jota tuhannet asiakkaat käyttävät päivittäin.
 
-### Ydinriippuvuuksien integrointi {#core-dependencies-integration}
+### Ydiriippuvuuksien integrointi {#core-dependencies-integration}
 
-Sähköpostin välityskoodisto yhdistää lukuisia riippuvuuksia saumattomaksi kokonaisuudeksi:
+Forward Emailin koodikanta integroi lukuisia riippuvuuksia saumattomaksi kokonaisuudeksi:
 
-* **Sähköpostin käsittely**: Integroi Nodemailerin lähettämiseen, SMTP-palvelimen vastaanottamiseen ja Mailparserin jäsentämiseen.
-* **Todennus**: Käyttää Mailauth-palvelua DKIM-, SPF-, DMARC- ja ARC-vahvistukseen.
-* **DNS-selvitys**: Hyödyntää Tangerine-palvelua DNS-over-HTTPS:ään globaalilla välimuistilla.
-* **MX-yhteys**: Käyttää mx-connectia Tangerine-integraation kanssa luotettavien sähköpostipalvelinyhteyksien luomiseksi.
-* **Työn aikataulutus**: Käyttää Bree-palvelua luotettavaan taustatehtävien käsittelyyn työsäikeiden kanssa.
-* **Mallipohjat**: Käyttää sähköpostimalleja verkkosivuston tyylitiedostojen uudelleenkäyttöön asiakasviestinnässä.
-* **Sähköpostin tallennus**: Toteuttaa yksilöllisesti salatut SQLite-postilaatikot käyttämällä parempia sqlite3-monisalauksia ChaCha20-Poly1305-salauksella kvanttiturvallisen yksityisyyden takaamiseksi, varmistaen täydellisen eristyksen käyttäjien välillä ja sen, että vain käyttäjällä on pääsy postilaatikkoonsa.
+* **Sähköpostin käsittely**: Integroi Nodemailerin lähettämiseen, SMTP Serverin vastaanottamiseen ja Mailparserin jäsentämiseen
+* **Todennus**: Käyttää Mailauthia DKIM-, SPF-, DMARC- ja ARC-varmennukseen
+* **DNS-ratkaisu**: Hyödyntää Tangerinea DNS-over-HTTPS:lle globaalilla välimuistilla
+* **MX-yhteys**: Käyttää mx-connectiä Tangerine-integraatiolla luotettaviin postipalvelinyhteyksiin
+* **Työaikataulutus**: Käyttää Bree:tä luotettavaan taustatehtävien käsittelyyn worker-threadien avulla
+* **Mallipohjat**: Käyttää email-templatesia uudelleenkäyttämään verkkosivuston tyylit asiakasviestinnässä
+* **Sähköpostin tallennus**: Toteuttaa yksilöllisesti salatut SQLite-postilaatikot better-sqlite3-multiple-ciphersillä ChaCha20-Poly1305-salauksella kvanttiturvalliseen yksityisyyteen, varmistaen täydellisen eristyksen käyttäjien välillä ja että vain käyttäjällä on pääsy omaan postilaatikkoonsa
 
-Jokainen näistä integraatioista vaatii huolellista harkintaa reunatapauksissa, suorituskykyyn liittyvissä vaikutuksissa ja tietoturvaongelmissa. Tuloksena on vankka järjestelmä, joka käsittelee miljoonia sähköpostitapahtumia luotettavasti. SQLite-toteutuksemme hyödyntää myös msgpackr:ää tehokkaaseen binäärisarjoitukseen ja WebSocketsia (ws:n kautta) reaaliaikaisiin tilapäivityksiin koko infrastruktuurissamme.
+Jokainen näistä integraatioista vaatii huolellista reunaehtojen, suorituskyvyn ja turvallisuuden huomioimista. Tuloksena on vankka järjestelmä, joka käsittelee miljoonia sähköpostitapahtumia luotettavasti. SQLite-toteutuksemme hyödyntää myös msgpackria tehokkaaseen binääriseen serialisointiin ja WebSocketeja (ws:n kautta) reaaliaikaisiin tilapäivityksiin infrastruktuurissamme.
 
 ### DNS-infrastruktuuri Tangerinen ja mx-connectin avulla {#dns-infrastructure-with-tangerine-and-mx-connect}
 
-Forward Emailin infrastruktuurin kriittinen osa on DNS-selvitysjärjestelmämme, joka on rakennettu kahden keskeisen paketin ympärille:
+Keskeinen osa Forward Emailin infrastruktuuria on DNS-ratkaisujärjestelmämme, joka rakentuu kahden keskeisen paketin ympärille:
 
-* **[Mandariini](https://github.com/forwardemail/nodejs-dns-over-https-tangerine)**: Node.js DNS-over-HTTPS -toteutuksemme tarjoaa valmiin korvaajan tavalliselle DNS-resolverille, ja siinä on sisäänrakennetut uudelleenyritykset, aikakatkaisut, älykäs palvelimen rotaatio ja välimuistituki.
+* **[Tangerine](https://github.com/forwardemail/nodejs-dns-over-https-tangerine)**: Node.js-pohjainen DNS-over-HTTPS -toteutuksemme tarjoaa suoran korvaajan standardille DNS-resolverille, sisältäen sisäänrakennetut uudelleenyrittämiset, aikakatkaisut, älykkään palvelinpyörityksen ja välimuistituen.
 
-* **[mx-connect](https://github.com/zone-eu/mx-connect)**: Tämä paketti muodostaa TCP-yhteyksiä MX-palvelimiin ottamalla kohdeverkkotunnuksen tai sähköpostiosoitteen, selvittämällä sopivat MX-palvelimet ja muodostamalla niihin yhteyden prioriteettijärjestyksessä.
+* **[mx-connect](https://github.com/zone-eu/mx-connect)**: Tämä paketti muodostaa TCP-yhteydet MX-palvelimille, ottaen kohdeverkkotunnuksen tai sähköpostiosoitteen, ratkaisten sopivat MX-palvelimet ja yhdistäen niihin prioriteettijärjestyksessä.
 
-Olemme integroineet Tangerinen mx-connectin kanssa [pull-pyyntö #4](https://github.com/zone-eu/mx-connect/pull/4), varmistaen sovelluskerroksen DNS:n HTTP-pyyntöjen kautta koko Forward Email -palvelun ajan. Tämä tarjoaa globaalin välimuistin DNS:lle skaalautuvasti 1:1-yhdenmukaisuudella millä tahansa alueella, sovelluksessa tai prosessissa – kriittistä luotettavalle sähköpostin toimitukselle hajautetussa järjestelmässä.
+Olemme integroineet Tangerinen mx-connectiin [pull requestin #4](https://github.com/zone-eu/mx-connect/pull/4) kautta, varmistaen sovelluskerroksen DNS-over-HTTP -pyynnöt koko Forward Emailissa. Tämä tarjoaa globaalin välimuistin DNS:lle suuressa mittakaavassa 1:1-yhtenäisyydellä missä tahansa alueella, sovelluksessa tai prosessissa—välttämätöntä luotettavalle sähköpostin toimitukselle hajautetussa järjestelmässä.
 
-## Vaikutus yrityksiin: Avoimesta lähdekoodista kriittisiin ratkaisuihin {#enterprise-impact-from-open-source-to-mission-critical-solutions}
 
-Kymmenen vuotta kestäneen avoimen lähdekoodin kehitystyömme huipentuma on mahdollistanut Forward Emailin palvelemisen paitsi yksittäisten kehittäjien myös suurten yritysten ja oppilaitosten kanssa, jotka muodostavat itse avoimen lähdekoodin liikkeen selkärangan.
+## Yritysvaikutus: Avoimen lähdekoodin projekteista kriittisiin ratkaisuihin {#enterprise-impact-from-open-source-to-mission-critical-solutions}
 
-### Case-tutkimukset kriittisestä sähköposti-infrastruktuurista {#case-studies-in-mission-critical-email-infrastructure}
+Kymmenvuotisen avoimen lähdekoodin kehitysmatkamme huipentuma on mahdollistanut Forward Emailin palvelevan paitsi yksittäisiä kehittäjiä myös suuria yrityksiä ja oppilaitoksia, jotka muodostavat avoimen lähdekoodin liikkeen selkärangan.
+### Tapaustutkimuksia kriittisessä sähköpostiinfrastruktuurissa {#case-studies-in-mission-critical-email-infrastructure}
 
-Sitoutumisemme luotettavuuteen, yksityisyyteen ja avoimen lähdekoodin periaatteisiin on tehnyt Forward Emailista luotettavan valinnan organisaatioille, joilla on vaativia sähköpostivaatimuksia:
+Sitoutumisemme luotettavuuteen, yksityisyyteen ja avoimen lähdekoodin periaatteisiin on tehnyt Forward Emailista luotetun valinnan organisaatioille, joilla on vaativat sähköpostitarpeet:
 
-* **Oppilaitokset**: Kuten yksityiskohtaisesti kerrotaan [alumnien sähköpostin edelleenlähetystä koskevassa tapaustutkimuksessamme]](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study):n kautta. Suuret yliopistot luottavat infrastruktuuriimme ylläpitääkseen elinikäisiä yhteyksiä satoihin tuhansiin alumneihin luotettavien sähköpostin edelleenlähetyspalveluiden kautta.
+* **Koulutuslaitokset**: Kuten yksityiskohtaisesti kerrotaan [alumni-sähköpostin edelleenlähetyksen tapaustutkimuksessa](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), suuret yliopistot luottavat infrastruktuuriimme ylläpitääkseen elinikäisiä yhteyksiä satoihin tuhansiin alumneihin luotettavien sähköpostin edelleenlähetyspalveluiden avulla.
 
-* **Yrityskäyttöön tarkoitetut Linux-ratkaisut**: [Canonical Ubuntu -sähköpostiyritysten tapaustutkimus](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) osoittaa, kuinka avoimen lähdekoodin lähestymistapamme sopii täydellisesti yrityskäyttöön tarkoitettujen Linux-palveluntarjoajien tarpeisiin ja tarjoaa heille tarvittavaa läpinäkyvyyttä ja hallintaa.
+* **Yritysten Linux-ratkaisut**: [Canonical Ubuntun sähköpostin yritystapaustutkimus](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) osoittaa, kuinka avoimen lähdekoodin lähestymistapamme sopii täydellisesti yritysten Linux-toimittajien tarpeisiin tarjoten heille vaaditun läpinäkyvyyden ja hallinnan.
 
-* **Avoimen lähdekoodin säätiöt**: Ehkäpä kaikkein validoin on kumppanuutemme Linux Foundationin kanssa, kuten [Linux Foundationin sähköpostiyritysten tapaustutkimus](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)-dokumentissa on dokumentoitu. Palvelumme mahdollistaa viestinnän juuri Linux-kehitystä valvovalle organisaatiolle.
+* **Avoimen lähdekoodin säätiöt**: Ehkä kaikkein vakuuttavin on yhteistyömme Linux Foundationin kanssa, kuten on dokumentoitu [Linux Foundationin sähköpostin yritystapaustutkimuksessa](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), jossa palvelumme tukee viestintää juuri siinä organisaatiossa, joka ohjaa Linuxin kehitystä.
 
-Avoimen lähdekoodin pakettiemme huolella vuosien varrella ylläpitämässä sähköpostipalvelussa on kaunis symmetria, jonka avulla olemme voineet rakentaa juuri niitä yhteisöjä ja organisaatioita, jotka ajavat avoimen lähdekoodin ohjelmistoja. Tämä kokonaisvaltainen matka – yksittäisten pakettien luomisesta yritystason sähköposti-infrastruktuurin tarjoamiseen avoimen lähdekoodin johtajille – edustaa lopullista vahvistusta lähestymistavallemme ohjelmistokehitykseen.
+On kaunista nähdä, miten avoimen lähdekoodin paketit, joita on ylläpidetty huolella monien vuosien ajan, ovat mahdollistaneet sähköpostipalvelun rakentamisen, joka nyt tukee juuri niitä yhteisöjä ja organisaatioita, jotka puolustavat avointa lähdekoodia. Tämä täysi ympyrä – yksittäisistä paketeista yritystason sähköpostiinfrastruktuurin ylläpitoon avoimen lähdekoodin johtajille – edustaa lähestymistapamme lopullista vahvistusta ohjelmistokehityksessä.
 
-## Avoimen lähdekoodin vuosikymmen: Katse tulevaan {#a-decade-of-open-source-looking-forward}
 
-Kun katsomme taaksepäin kymmenen vuoden avoimen lähdekoodin projekteihin panostamiseen ja katsomme eteenpäin seuraaviin kymmeneen vuoteen, olemme täynnä kiitollisuutta työtämme tukeneelle yhteisölle ja innostusta tulevasta.
+## Kymmenen vuotta avointa lähdekoodia: katse tulevaisuuteen {#a-decade-of-open-source-looking-forward}
 
-Matkamme yksittäisistä pakettien kehittäjistä suurten yritysten ja avoimen lähdekoodin säätiöiden käyttämän kattavan sähköposti-infrastruktuurin ylläpitäjiksi on ollut merkittävä. Se on osoitus avoimen lähdekoodin kehityksen voimasta ja siitä, miten harkittu ja hyvin ylläpidetty ohjelmisto voi vaikuttaa laajempaan ekosysteemiin.
+Kun katsomme taaksepäin kymmenen vuoden avoimen lähdekoodin panostuksiin ja eteenpäin seuraaviin kymmeneen vuoteen, olemme täynnä kiitollisuutta yhteisölle, joka on tukenut työtämme, ja innostusta tulevasta.
 
-Tulevina vuosina olemme sitoutuneet:
+Matkamme yksittäisistä pakettien tekijöistä kattavan sähköpostiinfrastruktuurin ylläpitäjiksi, jota käyttävät suuret yritykset ja avoimen lähdekoodin säätiöt, on ollut merkittävä. Se on osoitus avoimen lähdekoodin kehityksen voimasta ja siitä vaikutuksesta, jonka harkittu, hyvin ylläpidetty ohjelmisto voi saada laajempaan ekosysteemiin.
 
-* **Jatkamme olemassa olevien pakettiemme ylläpitoa ja parantamista** varmistaen, että ne pysyvät luotettavina työkaluina kehittäjille maailmanlaajuisesti.
-* **Laajennamme osallistumistamme kriittisiin infrastruktuurihankkeisiin**, erityisesti sähköpostin ja tietoturvan aloilla.
-* **Parantamme Forward Emailin ominaisuuksia** säilyttäen samalla sitoutumisemme yksityisyyteen, tietoturvaan ja läpinäkyvyyteen.
-* **Tuemme seuraavan sukupolven avoimen lähdekoodin kehittäjiä** mentoroinnin, sponsoroinnin ja yhteisötyön avulla.
+Tulevina vuosina sitoudumme:
 
-Uskomme, että ohjelmistokehityksen tulevaisuus on avoin, yhteistyöhön perustuva ja luottamuksen varaan rakennettu. Jatkamalla korkealaatuisten ja tietoturvaan keskittyvien pakettien tuottamista JavaScript-ekosysteemiin toivomme voivamme olla pienellä osalla tämän tulevaisuuden rakentamista.
+* **Jatkamaan olemassa olevien pakettiemme ylläpitoa ja parantamista**, varmistaen, että ne pysyvät luotettavina työkaluina kehittäjille maailmanlaajuisesti.
+* **Laajentamaan panostuksiamme kriittisiin infrastruktuurihankkeisiin**, erityisesti sähköpostin ja tietoturvan aloilla.
+* **Parantamaan Forward Emailin ominaisuuksia** säilyttäen samalla sitoutumisemme yksityisyyteen, turvallisuuteen ja läpinäkyvyyteen.
+* **Tukemaan seuraavaa sukupolvea avoimen lähdekoodin tekijöitä** mentoroinnin, sponsoroinnin ja yhteisön osallistamisen kautta.
 
-Kiitos kaikille, jotka ovat käyttäneet pakettejamme, osallistuneet projekteihimme, ilmoittaneet ongelmista tai yksinkertaisesti levittäneet tietoa työstämme. Tukenne on mahdollistanut tämän vuosikymmenen vaikuttavuuden, ja olemme innoissamme nähdessämme, mitä voimme yhdessä saavuttaa seuraavien kymmenen vuoden aikana.
+Uskomme, että ohjelmistokehityksen tulevaisuus on avoin, yhteistyöhön perustuva ja luottamuksen varaan rakennettu. Jatkamalla korkealaatuisten, tietoturvaan keskittyvien pakettien tarjoamista JavaScript-ekosysteemiin toivomme olevan pieni osa tämän tulevaisuuden rakentamista.
 
-\[^1]: npm lataustilastot cabinille, huhtikuu 2025
-\[^2]: npm lataustilastot bson-objectidille, helmi-maaliskuu 2025
-\[^3]: npm lataustilastot url-regex-safelle, huhtikuu 2025
-\[^4]: GitHub-tähtien määrä forwardemailille/forwardemail.netille huhtikuusta 2025 lähtien
-\[^5]: npm lataustilastot preview-emailille, huhtikuu 2025
-\[^7]: npm lataustilastot superagentille, helmi-maaliskuu 2025
-\[^8]: npm lataustilastot supertestille, helmi-maaliskuu 2025
-\[^9]: npm lataustilastot preview-emailille, helmi-maaliskuu 2025
-\[^10]: npm lataustilastot cabinille, helmi-maaliskuu 2025
-\[^11]: npm lataustilastot url-regex-safelle, helmi-maaliskuu 2025
-\[^12]: npm-lataustilastot roskapostin skannerille, helmi-maaliskuu 2025
-\[^13]: Päivittäiset latausmallit npm-tilastoista, huhtikuu 2025
-\[^14]: Viikoittaiset latausmallit npm-tilastoista, huhtikuu 2025
-\[^15]: npm-lataustilastot nodemailerille, huhtikuu 2025
-\[^16]: <https://github.com/nodemailer/smtp-server/issues/155>
-\[^17]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>
-\[^18]: <https://github.com/nodemailer/mailparser/issues/261>
-\[^19]: <https://github.com/nodemailer/nodemailer/issues/1102>
-\[^20]: <https://github.com/postalsys/mailauth/issues/30>
-\[^21]: <https://github.com/postalsys/mailauth/issues/58>
-\[^22]: <https://github.com/postalsys/mailauth/issues/48>
-\[^23]: <https://github.com/postalsys/mailauth/issues/74>
-\[^24]: <https://github.com/postalsys/mailauth/issues/75>
-\[^25]: <https://github.com/postalsys/mailauth/issues/60>
-\[^26]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>0
-\[^27]: Perustuu GitHub-ongelmiin Upptime-arkistossa
-\[^28]: Perustuu GitHub-ongelmiin Upptime-arkistossa
-\[^29]: Perustuu GitHub-ongelmiin Upptime-arkistossa
-\[^30]: npm lataustilastot breelle, helmikuu-maaliskuu 2025
-\[^31]: Perustuu GitHubin pull-pyyntöihin Upptimelle
-\[^32]: Perustuu GitHubin pull-pyyntöihin Upptimelle
-\[^34]: npm lataustilastot koalle, helmikuu-maaliskuu 2025
-\[^35]: npm lataustilastot @koa/routerille, helmikuu-maaliskuu 2025
-\[^36]: npm lataustilastot koa-routerille, helmikuu-maaliskuu 2025
-\[^37]: npm lataustilastot url-regexille, helmikuu-maaliskuu 2025
-\[^38]: npm lataustilastot @breejs/laterille, helmikuu-maaliskuu 2025
-\[^39]: npm lataustilastot sähköpostimalleille, helmikuu-maaliskuu 2025
-\[^40]: npm lataustilastot get-pathsille, helmikuu-maaliskuu 2025
-\[^41]: npm lataustilastot dotenv-parse-variablesille, helmikuu-maaliskuu 2025
-\[^42]: npm lataustilastot @koa/multerille, helmikuu-maaliskuu 2025
+Kiitos kaikille, jotka ovat käyttäneet pakettejamme, osallistuneet projekteihimme, raportoineet ongelmista tai yksinkertaisesti levittäneet sanaa työstämme. Tukenne on tehnyt tämän vaikuttavan vuosikymmenen mahdolliseksi, ja olemme innoissamme siitä, mitä voimme saavuttaa yhdessä seuraavien kymmenen vuoden aikana.
+
+\[^1]: npm-lataustilastot paketille cabin, huhtikuu 2025  
+\[^2]: npm-lataustilastot paketille bson-objectid, helmikuu-maaliskuu 2025  
+\[^3]: npm-lataustilastot paketille url-regex-safe, huhtikuu 2025  
+\[^4]: GitHub-tähtien määrä forwardemail/forwardemail.net -projektissa huhtikuussa 2025  
+\[^5]: npm-lataustilastot paketille preview-email, huhtikuu 2025  
+\[^7]: npm-lataustilastot paketille superagent, helmikuu-maaliskuu 2025  
+\[^8]: npm-lataustilastot paketille supertest, helmikuu-maaliskuu 2025  
+\[^9]: npm-lataustilastot paketille preview-email, helmikuu-maaliskuu 2025  
+\[^10]: npm-lataustilastot paketille cabin, helmikuu-maaliskuu 2025  
+\[^11]: npm-lataustilastot paketille url-regex-safe, helmikuu-maaliskuu 2025  
+\[^12]: npm-lataustilastot paketille spamscanner, helmikuu-maaliskuu 2025  
+\[^13]: Päivittäiset latauskuviot npm-tilastoista, huhtikuu 2025  
+\[^14]: Viikoittaiset latauskuviot npm-tilastoista, huhtikuu 2025  
+\[^15]: npm-lataustilastot paketille nodemailer, huhtikuu 2025  
+\[^16]: <https://github.com/nodemailer/smtp-server/issues/155>  
+\[^17]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>  
+\[^18]: <https://github.com/nodemailer/mailparser/issues/261>  
+\[^19]: <https://github.com/nodemailer/nodemailer/issues/1102>  
+\[^20]: <https://github.com/postalsys/mailauth/issues/30>  
+\[^21]: <https://github.com/postalsys/mailauth/issues/58>  
+\[^22]: <https://github.com/postalsys/mailauth/issues/48>  
+\[^23]: <https://github.com/postalsys/mailauth/issues/74>  
+\[^24]: <https://github.com/postalsys/mailauth/issues/75>  
+\[^25]: <https://github.com/postalsys/mailauth/issues/60>  
+\[^26]: <https://github.com/postalsys/mailauth/issues/73>  
+\[^27]: Perustuu GitHub-ongelmiin Upptime-repositoriossa  
+\[^28]: Perustuu GitHub-ongelmiin Upptime-repositoriossa  
+\[^29]: Perustuu GitHub-ongelmiin Upptime-repositoriossa  
+\[^30]: npm-lataustilastot paketille bree, helmikuu-maaliskuu 2025  
+\[^31]: Perustuu GitHub-pull requesteihin Upptimessa  
+\[^32]: Perustuu GitHub-pull requesteihin Upptimessa  
+\[^34]: npm-lataustilastot paketille koa, helmikuu-maaliskuu 2025  
+\[^35]: npm-lataustilastot paketille @koa/router, helmikuu-maaliskuu 2025  
+\[^36]: npm-lataustilastot paketille koa-router, helmikuu-maaliskuu 2025  
+\[^37]: npm-lataustilastot paketille url-regex, helmikuu-maaliskuu 2025  
+\[^38]: npm-lataustilastot paketille @breejs/later, helmikuu-maaliskuu 2025  
+\[^39]: npm-lataustilastot paketille email-templates, helmikuu-maaliskuu 2025  
+\[^40]: npm-lataustilastot paketille get-paths, helmikuu-maaliskuu 2025  
+\[^41]: npm-lataustilastot paketille dotenv-parse-variables, helmikuu-maaliskuu 2025  
+\[^42]: npm-lataustilastot paketille @koa/multer, helmikuu-maaliskuu 2025

@@ -1,38 +1,42 @@
-# Introduktion av kryptobetalningar: Förbättrad integritet för din e-posttjänst {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
+# Introduktion av Crypto Payments: Förbättrad Integritet för Din E-posttjänst {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
 <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
+
 
 ## Innehållsförteckning {#table-of-contents}
 
 * [Förord](#foreword)
-* [Varför kryptobetalningar är viktiga](#why-crypto-payments-matter)
-* [Hur det fungerar](#how-it-works)
-* [Fördelar med integritet](#privacy-benefits)
-* [Tekniska detaljer](#technical-details)
-* [Konfigurera din krypto-plånbok](#setting-up-your-crypto-wallet)
+* [Varför Crypto Payments är Viktigt](#why-crypto-payments-matter)
+* [Hur Det Fungerar](#how-it-works)
+* [Integritetsfördelar](#privacy-benefits)
+* [Tekniska Detaljer](#technical-details)
+* [Ställa In Din Crypto Wallet](#setting-up-your-crypto-wallet)
   * [MetaMask](#metamask)
-  * [Fantom](#phantom)
-  * [Coinbase-plånbok](#coinbase-wallet)
+  * [Phantom](#phantom)
+  * [Coinbase Wallet](#coinbase-wallet)
   * [WalletConnect](#walletconnect)
-* [Komma igång](#getting-started)
-* [Ser framåt](#looking-forward)
+* [Komma Igång](#getting-started)
+* [Framtidsutsikter](#looking-forward)
+
 
 ## Förord {#foreword}
 
-På [Vidarebefordra e-post](https://forwardemail.net) letar vi ständigt efter sätt att förbättra din [privatliv](https://en.wikipedia.org/wiki/Privacy)-säkerhet och samtidigt göra vår tjänst mer tillgänglig. Idag är vi glada att kunna meddela att vi nu accepterar [kryptovaluta](https://en.wikipedia.org/wiki/Cryptocurrency)-betalningar via [Stripes](https://stripe.com)-kryptobetalningsintegrationen.
+På [Forward Email](https://forwardemail.net) letar vi ständigt efter sätt att förbättra din [integritet](https://en.wikipedia.org/wiki/Privacy) och säkerhet samtidigt som vi gör vår tjänst mer tillgänglig. Idag är vi glada att kunna meddela att vi nu accepterar [kryptovalutabetalningar](https://en.wikipedia.org/wiki/Cryptocurrency) via [Stripes](https://stripe.com) integration för kryptobetalningar.
 
-## Varför kryptobetalningar är viktiga {#why-crypto-payments-matter}
 
-[Privatliv](https://en.wikipedia.org/wiki/Internet_privacy) har alltid varit kärnan i vår tjänst. Även om vi tidigare har erbjudit olika betalningsmetoder, ger kryptovalutabetalningar ett extra lager av integritet som passar perfekt i linje med vårt uppdrag. Genom att betala med krypto kan du:
+## Varför Crypto Payments är Viktigt {#why-crypto-payments-matter}
 
-* Bibehåll större anonymitet när du köper våra e-posttjänster
-* Minska den personliga information som är kopplad till ditt e-postkonto
-* Håll dina ekonomiska och e-postidentiteter separerade
-* Stöd det växande [decentraliserad finansiering](https://en.wikipedia.org/wiki/Decentralized_finance)-ekosystemet
+[Integritet](https://en.wikipedia.org/wiki/Internet_privacy) har alltid varit kärnan i vår tjänst. Medan vi tidigare erbjudit olika betalningsmetoder, ger kryptovalutabetalningar ett extra lager av integritet som passar perfekt med vårt uppdrag. Genom att betala med krypto kan du:
 
-## Så fungerar det {#how-it-works}
+* Behålla större anonymitet när du köper våra e-posttjänster
+* Minska den personliga informationen kopplad till ditt e-postkonto
+* Hålla dina finansiella och e-postidentiteter separata
+* Stödja det växande [decentraliserade finans](https://en.wikipedia.org/wiki/Decentralized_finance)-ekosystemet
 
-Vi har integrerat kryptobetalningssystemet [Stripes](https://docs.stripe.com/crypto) för att göra processen så smidig som möjligt. Så här kan du betala för vidarebefordran av e-post med kryptovaluta:
+
+## Hur Det Fungerar {#how-it-works}
+
+Vi har integrerat [Stripes](https://docs.stripe.com/crypto) kryptobetalningssystem för att göra processen så smidig som möjligt. Så här kan du betala för Forward Email-tjänster med kryptovaluta:
 
 ```mermaid
 flowchart LR
@@ -44,60 +48,61 @@ flowchart LR
     F --> G[Service Activated]
 ```
 
-1. **Välj krypto som betalningsmetod**: När du betalar ser du "Krypto" som ett betalningsalternativ tillsammans med traditionella metoder som kreditkort.
+1. **Välj Krypto som Betalningsmetod**: När du checkar ut kommer du att se "Crypto" som ett betalningsalternativ bredvid traditionella metoder som kreditkort.
 
-2. **Välj din kryptovaluta**: För närvarande accepterar vi [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD-mynt) på flera blockkedjor, inklusive [Ethereum](https://ethereum.org), [Solana](https://solana.com) och [Polygon](https://polygon.technology). USDC är en stabil kryptovaluta som bibehåller ett värde på 1:1 i förhållande till den amerikanska dollarn.
+2. **Välj Din Kryptovaluta**: För närvarande accepterar vi [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) på flera blockkedjor inklusive [Ethereum](https://ethereum.org), [Solana](https://solana.com) och [Polygon](https://polygon.technology). USDC är en stabil kryptovaluta som behåller ett värde på 1:1 med den amerikanska dollarn.
 
-3. **Anslut din plånbok**: Du kommer att omdirigeras till en säker sida där du kan ansluta din föredragna kryptoplånbok. Vi stöder flera plånboksalternativ, inklusive:
-* [MetaMask](https://metamask.io)
-* [Fantom](https://phantom.app)
-* [Coinbase-plånbok](https://www.coinbase.com/wallet)
-* [WalletConnect](https://walletconnect.com) (kompatibel med många andra plånböcker)
+3. **Anslut Din Wallet**: Du kommer att omdirigeras till en säker sida där du kan ansluta din föredragna kryptoplånbok. Vi stödjer flera wallet-alternativ inklusive:
+   * [MetaMask](https://metamask.io)
+   * [Phantom](https://phantom.app)
+   * [Coinbase Wallet](https://www.coinbase.com/wallet)
+   * [WalletConnect](https://walletconnect.com) (kompatibel med många andra wallets)
 
-4. **Slutför din betalning**: Bekräfta transaktionen i din plånbok, så är du klar! Betalningen kommer att behandlas och din vidarebefordran av e-post aktiveras omedelbart.
+4. **Slutför Din Betalning**: Bekräfta transaktionen i din wallet, och du är klar! Betalningen kommer att behandlas och din Forward Email-tjänst aktiveras omedelbart.
 
-## Sekretessfördelar {#privacy-benefits}
 
-Att använda kryptovaluta för din prenumeration på vidarebefordran av e-post förbättrar din integritet på flera sätt:
+## Integritetsfördelar {#privacy-benefits}
+
+Att använda kryptovaluta för din Forward Email-prenumeration förbättrar din integritet på flera sätt:
 
 ```mermaid
 graph TD
-    subgraph "Traditional Payment"
-    A[Credit Card Payment] --> B[Personal Info Required]
-    B --> C[Linked to Banking History]
-    C --> D[Identity Easily Traced]
+    subgraph "Traditionell Betalning"
+    A[Betalning med Kreditkort] --> B[Personlig Info Krävs]
+    B --> C[Kopplat till Bankhistorik]
+    C --> D[Identitet Lätt Att Spåra]
     end
 
-    subgraph "Crypto Payment"
-    E[Crypto Payment] --> F[Minimal Personal Info]
-    F --> G[Pseudonymous Transaction]
-    G --> H[Enhanced Privacy]
+    subgraph "Kryptobetalning"
+    E[Kryptobetalning] --> F[Minimal Personlig Info]
+    F --> G[Pseudonym Transaktion]
+    G --> H[Förbättrad Integritet]
     end
 ```
 
-* **Minskad personlig information**: Till skillnad från kreditkortsbetalningar kräver inte kryptotransaktioner ditt namn, faktureringsadress eller andra personliga uppgifter. Läs mer om [transaktionssekretess](https://en.wikipedia.org/wiki/Privacy_coin).
-* **Separation från traditionell bankverksamhet**: Din betalning kan inte kopplas till ditt bankkonto eller din kredithistorik. Läs om [ekonomisk integritet](https://en.wikipedia.org/wiki/Financial_privacy).
-* **Blockchain-sekretess**: Även om blockchain-transaktioner är offentliga är de pseudonyma och inte direkt kopplade till din verkliga identitet. Se [blockkedjeintegritetstekniker](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
-* **I överensstämmelse med våra värderingar**: Som en integritetsfokuserad e-posttjänst tror vi på att ge dig kontroll över din personliga information i varje steg. Kolla in vår [integritetspolicy](/privacy).
+* **Minskad Personlig Information**: Till skillnad från kreditkortsbetalningar kräver kryptotransaktioner inte ditt namn, faktureringsadress eller andra personuppgifter. Läs mer om [transaktionsintegritet](https://en.wikipedia.org/wiki/Privacy_coin).
+* **Separation från Traditionell Bankverksamhet**: Din betalning kan inte kopplas till ditt bankkonto eller kredit historia. Läs om [finansiell integritet](https://en.wikipedia.org/wiki/Financial_privacy).
+* **Blockkedjeintegritet**: Även om blockkedjetransaktioner är offentliga är de pseudonyma och inte direkt kopplade till din verkliga identitet. Se [blockkedjeintegritetstekniker](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
+* **I Linje med Våra Värderingar**: Som en integritetsfokuserad e-posttjänst tror vi på att ge dig kontroll över din personliga information i varje steg. Kolla in vår [integritetspolicy](/privacy).
+## Tekniska Detaljer {#technical-details}
 
-## Tekniska detaljer {#technical-details}
+För de som är intresserade av de tekniska aspekterna:
 
-För er som är intresserade av de tekniska aspekterna:
+* Vi använder [Stripes](https://docs.stripe.com/crypto/stablecoin-payments) kryptobetalningsinfrastruktur, som hanterar all komplexitet kring blockkedjetransaktioner.
+* Betalningar görs i [USDC](https://www.circle.com/en/usdc) på flera blockkedjor inklusive [Ethereum](https://ethereum.org), [Solana](https://solana.com) och [Polygon](https://polygon.technology).
+* Även om du betalar med kryptovaluta, tar vi emot motsvarande värde i USD, vilket gör att vi kan behålla stabila priser.
 
-* Vi använder kryptobetalningsinfrastrukturen [Stripes](https://docs.stripe.com/crypto/stablecoin-payments), som hanterar all komplexitet i blockkedjetransaktioner.
-* Betalningar görs i [USDC](https://www.circle.com/en/usdc) på flera blockkedjor, inklusive [Ethereum](https://ethereum.org), [Solana](https://solana.com) och [Polygon](https://polygon.technology).
-* Medan du betalar i kryptovaluta får vi motsvarande värde i USD, vilket gör att vi kan upprätthålla stabila priser.
 
-## Konfigurera din kryptoplånbok {#setting-up-your-crypto-wallet}
+## Ställa In Din Kryptoplånbok {#setting-up-your-crypto-wallet}
 
-Nybörjare på kryptovalutor? Så här konfigurerar du plånböckerna vi stöder:
+Ny inom kryptovalutor? Så här ställer du in de plånböcker vi stödjer:
 
 ```mermaid
 flowchart LR
-    A[Choose a Wallet] --> B[Install & Create Account]
-    B --> C[Secure Your Recovery Phrase]
-    C --> D[Add Funds to Your Wallet]
-    D --> E[Ready for Payment]
+    A[Välj en Plånbok] --> B[Installera & Skapa Konto]
+    B --> C[Säkra Din Återställningsfras]
+    C --> D[Lägg Till Medel i Din Plånbok]
+    D --> E[Redo för Betalning]
 ```
 
 ### MetaMask {#metamask}
@@ -106,66 +111,68 @@ flowchart LR
 
 1. Besök [MetaMask nedladdningssida](https://metamask.io/download/)
 2. Installera webbläsartillägget eller mobilappen
-3. Följ installationsanvisningarna för att skapa en ny plånbok
-4. **Viktigt**: Lagra din återställningsfras säkert
-5. Lägg till ETH eller USDC i din plånbok genom en växling eller direktköp
-6. [Detaljerad installationsguide för MetaMask](https://metamask.io/faqs/)
+3. Följ installationsinstruktionerna för att skapa en ny plånbok
+4. **Viktigt**: Säkra din återställningsfras på ett säkert sätt
+5. Lägg till ETH eller USDC i din plånbok via en börs eller direktköp
+6. [Detaljerad MetaMask installationsguide](https://metamask.io/faqs/)
 
-### Fantom {#phantom}
+### Phantom {#phantom}
 
-[Fantom](https://phantom.app) är en ledande Solana-plånbok.
+[Phantom](https://phantom.app) är en ledande Solana-plånbok.
 
-1. Besök [Phantom-webbplats](https://phantom.app/)
+1. Besök [Phantom webbplats](https://phantom.app/)
 2. Ladda ner rätt version för din enhet
-3. Skapa en ny plånbok genom att följa instruktionerna på skärmen
+3. Skapa en ny plånbok enligt instruktionerna på skärmen
 4. Säkerhetskopiera din återställningsfras på ett säkert sätt
 5. Lägg till SOL eller USDC i din plånbok
-6. [Guide till Phantom-plånboken](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
+6. [Phantom Plånboksguide](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
 
-### Coinbase-plånbok {#coinbase-wallet}
+### Coinbase Wallet {#coinbase-wallet}
 
-[Coinbase-plånbok](https://www.coinbase.com/wallet) stöder flera blockkedjor.
+[Coinbase Wallet](https://www.coinbase.com/wallet) stödjer flera blockkedjor.
 
-1. Ladda ner [Coinbase-plånbok](https://www.coinbase.com/wallet/downloads)
-2. Skapa en ny plånbok (separat från Coinbase-börskontot)
+1. Ladda ner [Coinbase Wallet](https://www.coinbase.com/wallet/downloads)
+2. Skapa en ny plånbok (separat från Coinbase-börskonto)
 3. Säkra din återställningsfras
 4. Överför eller köp kryptovaluta direkt i appen
-5. [Coinbase plånboksguide](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
+5. [Coinbase Wallet Guide](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
 
 ### WalletConnect {#walletconnect}
 
 [WalletConnect](https://walletconnect.com) är ett protokoll som kopplar plånböcker till webbplatser.
 
-1. Ladda först ner en WalletConnect-kompatibel plånbok (många alternativ finns tillgängliga)
-2. Välj WalletConnect i kassan
+1. Ladda först ner en WalletConnect-kompatibel plånbok (många alternativ finns)
+2. Välj WalletConnect vid utcheckning
 3. Skanna QR-koden med din plånboksapp
 4. Godkänn anslutningen
-5. [WalletConnect-kompatibla plånböcker](https://walletconnect.com/registry/wallets)
+5. [WalletConnect Kompatibla Plånböcker](https://walletconnect.com/registry/wallets)
 
-## Komma igång {#getting-started}
 
-Redo att förbättra din integritet med kryptobetalningar? Välj helt enkelt alternativet "Krypto" i kassan nästa gång du förnyar din prenumeration eller uppgraderar din plan.
+## Komma Igång {#getting-started}
+
+Redo att förbättra din integritet med kryptobetalningar? Välj helt enkelt alternativet "Krypto" vid utcheckningen nästa gång du förnyar din prenumeration eller uppgraderar din plan.
 
 För mer information om kryptovalutor och blockkedjeteknik, kolla in dessa resurser:
 
-* [Vad är kryptovaluta?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedia
-* [Blockkedjan förklaras](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedia
-* [Guide för digital integritet](https://www.eff.org/issues/privacy) - Electronic Frontier Foundation
+* [Vad är Kryptovaluta?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedia
+* [Blockkedjan Förklarad](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedia
+* [Guide till Digital Integritet](https://www.eff.org/issues/privacy) - Electronic Frontier Foundation
 
-## Ser fram emot {#looking-forward}
 
-Att lägga till kryptovalutabetalningar är bara ytterligare ett steg i vårt fortsatta engagemang för [privatliv](https://en.wikipedia.org/wiki/Privacy), [säkerhet](https://en.wikipedia.org/wiki/Computer_security) och användarnas val. Vi anser att din e-posttjänst bör respektera din integritet på alla nivåer – från de meddelanden du skickar till hur du betalar för tjänsten.
+## Framåtblickande {#looking-forward}
 
-Som alltid välkomnar vi din feedback om detta nya betalningsalternativ. Om du har frågor om hur du använder kryptovaluta med vidarebefordran av e-post, vänligen kontakta vår [supportteam](/help).
+Att lägga till kryptobetalningar är bara ett steg till i vårt pågående engagemang för [integritet](https://en.wikipedia.org/wiki/Privacy), [säkerhet](https://en.wikipedia.org/wiki/Computer_security) och användarval. Vi tror att din e-posttjänst ska respektera din integritet på alla nivåer – från de meddelanden du skickar till hur du betalar för tjänsten.
+
+Som alltid välkomnar vi din feedback om detta nya betalningsalternativ. Om du har frågor om att använda kryptovaluta med Forward Email, vänligen kontakta vårt [supportteam](/help).
 
 ---
 
 **Referenser:**
 
-1. [Stripe Crypto-dokumentation](https://docs.stripe.com/crypto)
+1. [Stripe Crypto Dokumentation](https://docs.stripe.com/crypto)
 2. [USDC Stablecoin](https://www.circle.com/en/usdc)
-3. [Ethereum Blockchain](https://ethereum.org)
-4. [Solana Blockchain](https://solana.com)
-5. [Polygonnätverk](https://polygon.technology)
-6. [Electronic Frontier Foundation - Sekretesspolicy](https://www.eff.org/issues/privacy)
-7. [Sekretesspolicy för vidarebefordran av e-post](/privacy)
+3. [Ethereum Blockkedja](https://ethereum.org)
+4. [Solana Blockkedja](https://solana.com)
+5. [Polygon Nätverk](https://polygon.technology)
+6. [Electronic Frontier Foundation - Integritet](https://www.eff.org/issues/privacy)
+7. [Forward Email Integritetspolicy](/privacy)

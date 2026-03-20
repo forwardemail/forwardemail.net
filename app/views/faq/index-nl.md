@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# Veelgestelde Vragen {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email veelgestelde vragen" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## Inhoudsopgave {#table-of-contents}
+
+* [Snel aan de slag](#quick-start)
+* [Introductie](#introduction)
+  * [Wat is Forward Email](#what-is-forward-email)
+  * [Wie gebruikt Forward Email](#who-uses-forward-email)
+  * [Wat is de geschiedenis van Forward Email](#what-is-forward-emails-history)
+  * [Hoe snel is deze dienst](#how-fast-is-this-service)
+* [E-mailclients](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [Mobiele apparaten](#mobile-devices)
+  * [Sendmail SMTP Relay Configuratie](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Configuratie](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP Client Configuratie](#msmtp-smtp-client-configuration)
+  * [Command-line E-mailclients](#command-line-email-clients)
+  * [Windows E-mail Configuratie](#windows-email-configuration)
+  * [Postfix SMTP Relay Configuratie](#postfix-smtp-relay-configuration)
+  * [Hoe mail te verzenden als met Gmail](#how-to-send-mail-as-using-gmail)
+  * [Wat is de legacy gratis gids voor Send Mail As met Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Geavanceerde Gmail Routing Configuratie](#advanced-gmail-routing-configuration)
+  * [Geavanceerde Outlook Routing Configuratie](#advanced-outlook-routing-configuration)
+* [Probleemoplossing](#troubleshooting)
+  * [Waarom ontvang ik mijn testmails niet](#why-am-i-not-receiving-my-test-emails)
+  * [Hoe configureer ik mijn e-mailclient om met Forward Email te werken](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Waarom komen mijn e-mails in Spam en Ongewenste mail terecht en hoe kan ik mijn domeinreputatie controleren](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [Wat moet ik doen als ik spam-e-mails ontvang](#what-should-i-do-if-i-receive-spam-emails)
+  * [Waarom worden mijn testmails die ik naar mezelf stuur in Gmail als "verdacht" weergegeven](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Kan ik de via forwardemail dot net in Gmail verwijderen](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Gegevensbeheer](#data-management)
+  * [Waar bevinden uw servers zich](#where-are-your-servers-located)
+  * [Hoe exporteer en back-up ik mijn mailbox](#how-do-i-export-and-backup-my-mailbox)
+  * [Hoe importeer en migreer ik mijn bestaande mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Hoe gebruik ik mijn eigen S3-compatibele opslag voor back-ups](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [Hoe converteer ik SQLite-back-ups naar EML-bestanden](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [Ondersteunt u zelfhosting](#do-you-support-self-hosting)
+* [E-mailconfiguratie](#email-configuration)
+  * [Hoe begin ik en stel ik e-mail forwarding in](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Kan ik meerdere MX-uitwisselingen en servers gebruiken voor geavanceerde forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [Hoe stel ik een afwezigheidsassistent in (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Hoe stel ik SPF in voor Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [Hoe stel ik DKIM in voor Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [Hoe stel ik DMARC in voor Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [Hoe bekijk ik DMARC-rapporten](#how-do-i-view-dmarc-reports)
+  * [Hoe verbind en configureer ik mijn contacten](#how-do-i-connect-and-configure-my-contacts)
+  * [Hoe verbind en configureer ik mijn agenda's](#how-do-i-connect-and-configure-my-calendars)
+  * [Hoe voeg ik meer agenda's toe en beheer ik bestaande agenda's](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [Hoe verbind en configureer ik taken en herinneringen](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Waarom kan ik geen taken aanmaken in macOS Herinneringen](#why-cant-i-create-tasks-in-macos-reminders)
+  * [Hoe stel ik Tasks.org in op Android](#how-do-i-set-up-tasksorg-on-android)
+  * [Hoe stel ik SRS in voor Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [Hoe stel ik MTA-STS in voor Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [Hoe voeg ik een profielfoto toe aan mijn e-mailadres](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Geavanceerde functies](#advanced-features)
+  * [Ondersteunt u nieuwsbrieven of mailinglijsten voor marketinggerelateerde e-mail](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Ondersteunt u het verzenden van e-mail met API](#do-you-support-sending-email-with-api)
+  * [Ondersteunt u het ontvangen van e-mail met IMAP](#do-you-support-receiving-email-with-imap)
+  * [Ondersteunt u POP3](#do-you-support-pop3)
+  * [Ondersteunt u agenda's (CalDAV)](#do-you-support-calendars-caldav)
+  * [Ondersteunt u taken en herinneringen (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Ondersteunt u contacten (CardDAV)](#do-you-support-contacts-carddav)
+  * [Ondersteunt u het verzenden van e-mail met SMTP](#do-you-support-sending-email-with-smtp)
+  * [Ondersteunt u OpenPGP/MIME, end-to-end encryptie ("E2EE") en Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Ondersteunt u S/MIME encryptie](#do-you-support-smime-encryption)
+  * [Ondersteunt u Sieve e-mailfiltering](#do-you-support-sieve-email-filtering)
+  * [Ondersteunt u MTA-STS](#do-you-support-mta-sts)
+  * [Ondersteunt u passkeys en WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Ondersteunt u e-mail best practices](#do-you-support-email-best-practices)
+  * [Ondersteunt u bounce webhooks](#do-you-support-bounce-webhooks)
+  * [Ondersteunt u webhooks](#do-you-support-webhooks)
+  * [Ondersteunt u reguliere expressies of regex](#do-you-support-regular-expressions-or-regex)
+  * [Wat zijn uw uitgaande SMTP-limieten](#what-are-your-outbound-smtp-limits)
+  * [Heb ik goedkeuring nodig om SMTP in te schakelen](#do-i-need-approval-to-enable-smtp)
+  * [Wat zijn uw SMTP-serverconfiguratie-instellingen](#what-are-your-smtp-server-configuration-settings)
+  * [Wat zijn uw IMAP-serverconfiguratie-instellingen](#what-are-your-imap-server-configuration-settings)
+  * [Wat zijn uw POP3-serverconfiguratie-instellingen](#what-are-your-pop3-server-configuration-settings)
+  * [Hoe stel ik e-mail autodiscovery in voor mijn domein](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [Beveiliging](#security-1)
+  * [Geavanceerde serververhardingstechnieken](#advanced-server-hardening-techniques)
+  * [Heeft u SOC 2 of ISO 27001 certificeringen](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Gebruikt u TLS-encryptie voor e-mail forwarding](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Behoudt u e-mail authenticatieheaders](#do-you-preserve-email-authentication-headers)
+  * [Behoudt u originele e-mailheaders en voorkomt u spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [Hoe beschermt u tegen spam en misbruik](#how-do-you-protect-against-spam-and-abuse)
+  * [Slaat u e-mailinhoud op schijf op](#do-you-store-email-content-on-disk)
+  * [Kan e-mailinhoud worden blootgesteld tijdens systeemcrashes](#can-email-content-be-exposed-during-system-crashes)
+  * [Wie heeft toegang tot uw e-mailinfrastructuur](#who-has-access-to-your-email-infrastructure)
+  * [Welke infrastructuurproviders gebruikt u](#what-infrastructure-providers-do-you-use)
+  * [Biedt u een gegevensverwerkingsovereenkomst (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [Hoe gaat u om met meldingen van datalekken](#how-do-you-handle-data-breach-notifications)
+  * [Biedt u een testomgeving](#do-you-offer-a-test-environment)
+  * [Biedt u monitoring- en waarschuwingshulpmiddelen](#do-you-provide-monitoring-and-alerting-tools)
+  * [Hoe zorgt u voor hoge beschikbaarheid](#how-do-you-ensure-high-availability)
+  * [Voldoet u aan Sectie 889 van de National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [Systeem- en technische details](#system-and-technical-details)
+  * [Slaat u e-mails en hun inhoud op](#do-you-store-emails-and-their-contents)
+  * [Hoe werkt uw e-mail forwarding systeem](#how-does-your-email-forwarding-system-work)
+  * [Hoe verwerkt u een e-mail voor forwarding](#how-do-you-process-an-email-for-forwarding)
+  * [Hoe gaat u om met problemen bij e-mailbezorging](#how-do-you-handle-email-delivery-issues)
+  * [Hoe gaat u om met het blokkeren van uw IP-adressen](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [Wat zijn postmaster-adressen](#what-are-postmaster-addresses)
+  * [Wat zijn no-reply-adressen](#what-are-no-reply-addresses)
+  * [Wat zijn de IP-adressen van uw server](#what-are-your-servers-ip-addresses)
+  * [Heeft u een allowlist](#do-you-have-an-allowlist)
+  * [Welke domeinnaamextensies zijn standaard allowlisted](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [Wat is uw allowlist-criteria](#what-is-your-allowlist-criteria)
+  * [Welke domeinnaamextensies kunnen gratis worden gebruikt](#what-domain-name-extensions-can-be-used-for-free)
+  * [Heeft u een greylist](#do-you-have-a-greylist)
+  * [Heeft u een denylist](#do-you-have-a-denylist)
+  * [Heeft u rate limiting](#do-you-have-rate-limiting)
+  * [Hoe beschermt u tegen backscatter](#how-do-you-protect-against-backscatter)
+  * [Voorkom bounces van bekende MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
+  * [Voorkom onnodige bounces ter bescherming tegen backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [Hoe bepaalt u een e-mail fingerprint](#how-do-you-determine-an-email-fingerprint)
+  * [Kan ik e-mails doorsturen naar andere poorten dan 25 (bijv. als mijn ISP poort 25 heeft geblokkeerd)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Ondersteunt het het plus + symbool voor Gmail aliassen](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Ondersteunt het subdomeinen](#does-it-support-sub-domains)
+  * [Stuurt dit mijn e-mailheaders door](#does-this-forward-my-emails-headers)
+  * [Is dit goed getest](#is-this-well-tested)
+  * [Geeft u SMTP-responsberichten en codes door](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [Hoe voorkomt u spammers en zorgt u voor een goede e-mail forwarding reputatie](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Hoe voert u DNS-zoekopdrachten uit op domeinnamen](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Account en facturering](#account-and-billing)
+  * [Biedt u een geld-terug-garantie op betaalde abonnementen](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [Als ik van abonnement wissel, past u dan pro rata aan en vergoedt u het verschil](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Kan ik deze e-mail forwarding dienst gewoon gebruiken als een "fallback" of "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Kan ik specifieke aliassen uitschakelen](#can-i-disable-specific-aliases)
+  * [Kan ik e-mails doorsturen naar meerdere ontvangers](#can-i-forward-emails-to-multiple-recipients)
+  * [Kan ik meerdere globale catch-all ontvangers hebben](#can-i-have-multiple-global-catch-all-recipients)
+  * [Is er een maximumlimiet voor het aantal e-mailadressen waar ik per alias naar kan doorsturen](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Kan ik e-mails recursief doorsturen](#can-i-recursively-forward-emails)
+  * [Kunnen mensen mijn e-mail forwarding registreren of deregistreren zonder mijn toestemming](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [Hoe is het gratis](#how-is-it-free)
+  * [Wat is de maximale e-mailgrootte](#what-is-the-max-email-size-limit)
+  * [Slaat u logs van e-mails op](#do-you-store-logs-of-emails)
+  * [Slaat u foutlogs op](#do-you-store-error-logs)
+  * [Leest u mijn e-mails](#do-you-read-my-emails)
+  * [Kan ik "send mail as" gebruiken in Gmail hiermee](#can-i-send-mail-as-in-gmail-with-this)
+  * [Kan ik "send mail as" gebruiken in Outlook hiermee](#can-i-send-mail-as-in-outlook-with-this)
+  * [Kan ik "send mail as" gebruiken in Apple Mail en iCloud Mail hiermee](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Kan ik hiermee onbeperkt e-mails doorsturen](#can-i-forward-unlimited-emails-with-this)
+  * [Biedt u onbeperkte domeinen voor één prijs](#do-you-offer-unlimited-domains-for-one-price)
+  * [Welke betaalmethoden accepteert u](#which-payment-methods-do-you-accept)
+* [Aanvullende bronnen](#additional-resources)
+## Snel aan de slag {#quick-start}
 
-## Quick Start {#quick-start}
+Om te beginnen met Forward Email:
 
-To get started with Forward Email:
+1. **Maak een account aan** op [forwardemail.net/register](https://forwardemail.net/register)
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **Voeg je domein toe en verifieer het** onder [Mijn Account → Domeinen](/my-account/domains)
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **Voeg e-mailaliassen/postvakken toe en configureer ze** onder [Mijn Account → Domeinen](/my-account/domains) → Aliassen
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
-
-> \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
-
-> \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
-
-## Introduction {#introduction}
-
-### What is Forward Email {#what-is-forward-email}
-
-> \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
-
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
-
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
-
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
-
-Key features of Forward Email:
-
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
-
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+4. **Test je setup** door een e-mail te sturen naar een van je nieuwe aliassen
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> DNS-wijzigingen kunnen tot 24-48 uur duren om wereldwijd door te voeren, hoewel ze vaak veel sneller van kracht zijn.
 
-### Who uses Forward Email {#who-uses-forward-email}
+> \[!BELANGRIJK]
+> Voor verbeterde afleverbaarheid raden we aan om [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) en [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records in te stellen.
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
-| Customer | Case Study |
+## Introductie {#introduction}
+
+### Wat is Forward Email {#what-is-forward-email}
+
+> \[!OPMERKING]
+> Forward Email is perfect voor particulieren, kleine bedrijven en ontwikkelaars die professionele e-mailadressen willen zonder de kosten en het onderhoud van een volledige e-mailhostingoplossing.
+
+Forward Email is een **volledig uitgeruste e-mailserviceprovider** en **e-mailhostingprovider voor aangepaste domeinnamen**.
+
+Het is de enige gratis en open-source service, en stelt je in staat om aangepaste domein-e-mailadressen te gebruiken zonder de complexiteit van het opzetten en onderhouden van je eigen e-mailserver.
+
+Onze service stuurt e-mails die naar je aangepaste domein worden gestuurd door naar je bestaande e-mailaccount – en je kunt ons zelfs gebruiken als je toegewijde e-mailhostingprovider.
+
+Belangrijke kenmerken van Forward Email:
+
+* **Aangepaste domein-e-mail**: Gebruik professionele e-mailadressen met je eigen domeinnaam
+* **Gratis niveau**: Basis e-maildoorsturing zonder kosten
+* **Verbeterde privacy**: We lezen je e-mails niet en verkopen je gegevens niet
+* **Open Source**: Onze volledige codebase is beschikbaar op GitHub
+* **SMTP-, IMAP- en POP3-ondersteuning**: Volledige mogelijkheden voor het verzenden en ontvangen van e-mail
+* **End-to-End encryptie**: Ondersteuning voor OpenPGP/MIME
+* **Aangepaste catch-all aliassen**: Maak onbeperkt e-mailaliassen aan
+
+Je kunt ons vergelijken met 56+ andere e-mailserviceproviders op [onze pagina met e-mailvergelijkingen](/blog/best-email-service).
+
+> \[!TIP]
+> Leer meer over Forward Email door ons gratis [Technisch Whitepaper](/technical-whitepaper.pdf) te lezen
+
+### Wie gebruikt Forward Email {#who-uses-forward-email}
+
+We bieden e-mailhosting en e-maildoorstuurservice aan 500.000+ domeinen en deze opmerkelijke gebruikers:
+
+| Klant                                   | Case Study                                                                                               |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| U.S. Naval Academy                       | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant)         |
+| Canonical                                | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Netflix Games                            |                                                                                                          |
+| The Linux Foundation                     | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| The PHP Foundation                       |                                                                                                          |
+| Fox News Radio                           |                                                                                                          |
+| Disney Ad Sales                          |                                                                                                          |
+| jQuery                                   | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| LineageOS                                |                                                                                                          |
+| Ubuntu                                   | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Kubuntu                                  | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Lubuntu                                  | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| The University of Cambridge              | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| The University of Maryland               | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| The University of Washington             | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Tufts University                         | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Swarthmore College                       | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Government of South Australia            |                                                                                                          |
+| Government of Dominican Republic         |                                                                                                          |
+| Fly<span>.</span>io                      |                                                                                                          |
+| RCD Hotels                               |                                                                                                          |
+| Isaac Z. Schlueter (npm)                 | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### Wat is de geschiedenis van Forward Email {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+Je kunt meer over Forward Email lezen op [onze Over-pagina](/about).
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### Hoe snel is deze dienst {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Ons systeem is ontworpen voor snelheid en betrouwbaarheid, met meerdere redundante servers om ervoor te zorgen dat je e-mails snel worden afgeleverd.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Email levert berichten met minimale vertraging, meestal binnen enkele seconden na ontvangst.
 
-Performance metrics:
+Prestatiegegevens:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **Gemiddelde bezorgtijd**: Minder dan 5-10 seconden van ontvangst tot doorsturen ([zie onze Time to Inbox "TTI" monitoringpagina](/tti))
+* **Uptime**: 99,9%+ beschikbaarheid van de dienst
+* **Wereldwijde infrastructuur**: Servers strategisch geplaatst voor optimale routering
+* **Automatische schaalvergroting**: Ons systeem schaalt tijdens piekperiodes van e-mailverkeer
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+Wij werken in realtime, in tegenstelling tot andere providers die gebruikmaken van vertraagde wachtrijen.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+We schrijven niet naar schijf en slaan geen logs op – met de [uitzondering van fouten](#do-you-store-error-logs) en [uitgaande SMTP](#do-you-support-sending-email-with-smtp) (zie ons [Privacybeleid](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Alles gebeurt in het geheugen en [onze broncode staat op GitHub](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## E-mailclients {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Maak een nieuw alias aan en genereer een wachtwoord in je Forward Email dashboard
+2. Open Thunderbird en ga naar **Bewerken → Accountinstellingen → Accountacties → E-mailaccount toevoegen**
+3. Voer je naam, Forward Email-adres en wachtwoord in
+4. Klik op **Handmatig configureren** en voer in:
+   * Binnenkomend: IMAP, `imap.forwardemail.net`, poort 993, SSL/TLS
+   * Uitgaand: SMTP, `smtp.forwardemail.net`, poort 465, SSL/TLS (aanbevolen; poort 587 met STARTTLS wordt ook ondersteund)
+5. Klik op **Gereed**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Maak een nieuw alias aan en genereer een wachtwoord in je Forward Email dashboard
+2. Ga naar **Bestand → Account toevoegen**
+3. Voer je Forward Email-adres in en klik op **Verbinden**
+4. Kies **Geavanceerde opties** en selecteer **Laat me mijn account handmatig instellen**
+5. Selecteer **IMAP** en voer in:
+   * Binnenkomend: `imap.forwardemail.net`, poort 993, SSL
+   * Uitgaand: `smtp.forwardemail.net`, poort 465, SSL/TLS (aanbevolen; poort 587 met STARTTLS wordt ook ondersteund)
+   * Gebruikersnaam: Je volledige e-mailadres
+   * Wachtwoord: Je gegenereerde wachtwoord
+6. Klik op **Verbinden**
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Maak een nieuw alias aan en genereer een wachtwoord in je Forward Email dashboard
+2. Ga naar **Mail → Voorkeuren → Accounts → +**
+3. Selecteer **Ander e-mailaccount**
+4. Voer je naam, Forward Email-adres en wachtwoord in
+5. Voor serverinstellingen, voer in:
+   * Binnenkomend: `imap.forwardemail.net`
+   * Uitgaand: `smtp.forwardemail.net`
+   * Gebruikersnaam: Je volledige e-mailadres
+   * Wachtwoord: Je gegenereerde wachtwoord
+6. Klik op **Log in**
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Maak een nieuw alias aan en genereer een wachtwoord in je Forward Email dashboard
+2. Open eM Client en ga naar **Menu → Accounts → + Account toevoegen**
+3. Klik op **Mail** en selecteer vervolgens **Anders**
+4. Voer je Forward Email-adres in en klik op **Volgende**
+5. Voer de volgende serverinstellingen in:
+   * **Binnenkomende server**: `imap.forwardemail.net`
+   * **Uitgaande server**: `smtp.forwardemail.net`
+6. Voer je volledige e-mailadres in als **Gebruikersnaam** en je gegenereerde wachtwoord als **Wachtwoord** voor zowel binnenkomende als uitgaande servers.
+7. eM Client test de verbinding. Zodra deze slaagt, klik je op **Volgende**.
+8. Voer je naam in en kies een accountnaam.
+9. Klik op **Voltooien**.
 
-### Mobile Devices {#mobile-devices}
+### Mobiele apparaten {#mobile-devices}
 
-For iOS:
+Voor iOS:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Ga naar **Instellingen → Mail → Accounts → Account toevoegen → Anders**
+2. Tik op **E-mailaccount toevoegen** en voer je gegevens in
+3. Gebruik voor serverinstellingen dezelfde IMAP- en SMTP-instellingen als hierboven
 
-For Android:
+Voor Android:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. Ga naar **Instellingen → Accounts → Account toevoegen → Persoonlijk (IMAP)**
+2. Voer je Forward Email-adres en wachtwoord in
+3. Gebruik voor serverinstellingen dezelfde IMAP- en SMTP-instellingen als hierboven
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Sendmail SMTP Relay Configuratie {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+Je kunt Sendmail configureren om e-mails te relayen via de SMTP-servers van Forward Email. Dit is een veelvoorkomende setup voor legacy-systemen of applicaties die afhankelijk zijn van Sendmail.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">Geschatte Installatietijd:</strong>
+  <span>Minder dan 20 minuten</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Dit vereist een betaald abonnement met ingeschakelde SMTP-toegang.
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### Configuratie {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. Bewerk je `sendmail.mc` bestand, meestal te vinden op `/etc/mail/sendmail.mc`:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. Voeg de volgende regels toe om de smart host en authenticatie te definiëren:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. Maak het authenticatiebestand `/etc/mail/authinfo` aan:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. Voeg je Forward Email inloggegevens toe aan het `authinfo` bestand:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. Genereer de authenticatiedatabase en beveilig de bestanden:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Bouw de Sendmail configuratie opnieuw en herstart de service:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### Testen {#testing}
 
-Send a test email to verify the configuration:
+Stuur een testmail om de configuratie te verifiëren:
 
 ```bash
 echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Exim4 SMTP Relay Configuratie {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4 is een populaire MTA op Debian-gebaseerde systemen. Je kunt het configureren om Forward Email als smarthost te gebruiken.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Geschatte Installatietijd:</strong>
+  <span>Minder dan 15 minuten</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Dit vereist een betaald abonnement met ingeschakelde SMTP-toegang.
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### Configuratie {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Start de Exim4 configuratietool:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. Selecteer de volgende opties:
+   * **Algemeen type mailconfiguratie:** mail verzonden via smarthost; ontvangen via SMTP of fetchmail
+   * **Systeem mailnaam:** your.hostname
+   * **IP-adressen om te luisteren voor inkomende SMTP-verbindingen:** 127.0.0.1 ; ::1
+   * **Andere bestemmingen waarvoor mail wordt geaccepteerd:** (leeg laten)
+   * **Domeinen waarvoor mail wordt doorgestuurd:** (leeg laten)
+   * **IP-adres of hostnaam van de uitgaande smarthost:** smtp.forwardemail.net::465
+   * **Lokale mailnaam verbergen in uitgaande mail?** Nee
+   * **Aantal DNS-queries minimaliseren (Dial-on-Demand)?** Nee
+   * **Bezorgmethode voor lokale mail:** Mbox-formaat in /var/mail/
+   * **Configuratie opsplitsen in kleine bestanden?** Nee
 
-3. Edit the `passwd.client` file to add your credentials:
+3. Bewerk het `passwd.client` bestand om je inloggegevens toe te voegen:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. Voeg de volgende regel toe:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. Werk de configuratie bij en herstart Exim4:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### Testen {#testing-1}
 
-Send a test email:
+Stuur een testmail:
 
 ```bash
 echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### msmtp SMTP Client Configuratie {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp is een lichte SMTP-client die handig is voor het verzenden van e-mails vanuit scripts of command-line applicaties.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Geschatte Installatietijd:</strong>
+  <span>Minder dan 10 minuten</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Dit vereist een betaald abonnement met ingeschakelde SMTP-toegang.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### Configuratie {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. Maak het msmtp-configuratiebestand aan of bewerk het op `~/.msmtprc`:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. Voeg de volgende configuratie toe:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. Stel de juiste rechten in voor het configuratiebestand:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### Testen {#testing-2}
 
-Send a test email:
+Stuur een testmail:
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### Command-line e-mailclients {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+Populaire command-line e-mailclients zoals [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), en [Alpine](https://alpine.x10.mx/alpine/release/) kunnen worden geconfigureerd om de SMTP-servers van Forward Email te gebruiken voor het verzenden van e-mail. De configuratie zal vergelijkbaar zijn met de `msmtp`-instelling, waarbij je de SMTP-servergegevens en je inloggegevens opgeeft in de respectievelijke configuratiebestanden (`.muttrc`, `.neomuttrc`, of `.pinerc`).
 
-### Windows Email Configuration {#windows-email-configuration}
+### Windows e-mailconfiguratie {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+Voor Windows-gebruikers kun je populaire e-mailclients zoals **Microsoft Outlook** en **eM Client** configureren met de IMAP- en SMTP-instellingen die in je Forward Email-account worden verstrekt. Voor command-line of scripting gebruik kun je PowerShell's `Send-MailMessage` cmdlet gebruiken (hoewel deze als verouderd wordt beschouwd) of een lichte SMTP-relay tool zoals [E-MailRelay](https://github.com/graeme-walker/emailrelay).
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Postfix SMTP Relay Configuratie {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Je kunt Postfix configureren om e-mails te relayen via de SMTP-servers van Forward Email. Dit is handig voor serverapplicaties die e-mails moeten versturen.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">Geschatte installatietijd:</strong>
+  <span>Minder dan 15 minuten</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    Dit vereist een betaald abonnement met ingeschakelde SMTP-toegang.
   </span>
 </div>
 
-#### Installation {#installation}
+#### Installatie {#installation}
 
-1. Install Postfix on your server:
+1. Installeer Postfix op je server:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. Kies tijdens de installatie "Internet Site" wanneer gevraagd wordt naar het configuratietype.
 
-#### Configuration {#configuration-3}
+#### Configuratie {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Bewerk het hoofdconfiguratiebestand van Postfix:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. Voeg deze instellingen toe of wijzig ze:
 
 ```
-# SMTP relay configuration
+# SMTP relay configuratie
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. Maak het SASL-wachtwoordbestand aan:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Voeg je Forward Email-inloggegevens toe:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. Beveilig en hash het wachtwoordbestand:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Herstart Postfix:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### Testen {#testing-3}
 
-Test your configuration by sending a test email:
+Test je configuratie door een testmail te sturen:
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Hoe mail verzenden als met Gmail {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Geschatte Installatietijd:</strong>
+  <span>Minder dan 10 minuten</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Aan de slag:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Als je de bovenstaande instructies hebt gevolgd onder <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Hoe begin ik en stel ik e-maildoorsturing in</a>, dan kun je hieronder verder lezen.
   </span>
 </div>
 
@@ -631,86 +635,85 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Zorg ervoor dat je onze <a href="/terms" class="alert-link" target="_blank">Voorwaarden</a>, <a href="/privacy" class="alert-link" target="_blank">Privacybeleid</a> en <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP-limieten</a> hebt gelezen – jouw gebruik wordt beschouwd als erkenning en akkoord.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Als je een ontwikkelaar bent, raadpleeg dan onze <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API-documentatie</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Outbound SMTP-configuratie en volg de installatie-instructies
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Maak een nieuw alias aan voor je domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast het zojuist aangemaakte alias. Kopieer naar je klembord en bewaar het gegenereerde wachtwoord veilig dat op het scherm wordt weergegeven.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. Ga naar [Gmail](https://gmail.com) en onder [Instellingen <i class="fa fa-angle-right"></i> Accounts en import <i class="fa fa-angle-right"></i> Verzenden als](https://mail.google.com/mail/u/0/#settings/accounts), klik op "Een ander e-mailadres toevoegen"
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. Wanneer gevraagd om "Naam", voer de naam in waaronder je wilt dat je e-mail wordt weergegeven als "Van" (bijv. "Linus Torvalds").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. Wanneer gevraagd om "E-mailadres", voer het volledige e-mailadres in van een alias die je hebt aangemaakt onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. Haal het vinkje weg bij "Behandelen als alias"
 
-8. Click "Next Step" to proceed
+8. Klik op "Volgende stap" om door te gaan
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. Wanneer gevraagd om "SMTP-server", voer <code>smtp.forwardemail.net</code> in en wijzig de poort naar <code>465</code>
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. Wanneer gevraagd om "Gebruikersnaam", voer het volledige e-mailadres in van een alias die je hebt aangemaakt onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. Wanneer gevraagd om "Wachtwoord", plak het wachtwoord van <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> uit stap 3 hierboven
 
-12. Select the radio button for "Secured connection using SSL"
+12. Selecteer de radioknop voor "Beveiligde verbinding met SSL"
 
-13. Click "Add Account" to proceed
+13. Klik op "Account toevoegen" om door te gaan
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. Open een nieuw tabblad naar [Gmail](https://gmail.com) en wacht tot je verificatie-e-mail aankomt (je ontvangt een verificatiecode die bevestigt dat jij de eigenaar bent van het e-mailadres waarvan je probeert te "Verzenden als")
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. Zodra deze aankomt, kopieer en plak je de verificatiecode bij de prompt die je in de vorige stap hebt ontvangen
+16. Zodra je dat gedaan hebt, ga je terug naar de e-mail en klik je op de link om de aanvraag te "bevestigen". Je zult deze stap en de vorige stap waarschijnlijk moeten doen om de e-mail correct te configureren.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gefeliciteerd!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Je hebt alle stappen succesvol voltooid.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Wat is de legacy free gids voor Send Mail As met Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Belangrijk:</strong> Deze legacy free gids is verouderd sinds mei 2023 omdat <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we nu uitgaand SMTP ondersteunen</a>. Als je de onderstaande gids gebruikt, dan <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">zal dit ervoor zorgen dat je uitgaande e-mail</a> in Gmail "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" vermeldt.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Geschatte installatietijd:</strong>
+  <span>Minder dan 10 minuten</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Aan de slag:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    Als je de instructies hierboven hebt gevolgd onder <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Hoe begin ik en stel ik e-mail forwarding in</a>, dan kun je hieronder verder lezen.
   </span>
 </div>
 
@@ -718,149 +721,147 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. Je moet [Gmail's Two-Factor Authentication][gmail-2fa] ingeschakeld hebben om dit te laten werken. Bezoek <https://www.google.com/landing/2step/> als je het nog niet hebt ingeschakeld.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. Zodra Two-Factor Authentication is ingeschakeld (of als je het al had ingeschakeld), bezoek dan <https://myaccount.google.com/apppasswords>.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. Wanneer gevraagd wordt om "Selecteer de app en het apparaat waarvoor je het app-wachtwoord wilt genereren":
+   * Selecteer "Mail" in het dropdownmenu bij "Selecteer app"
+   * Selecteer "Anders" in het dropdownmenu bij "Selecteer apparaat"
+   * Wanneer om tekstinvoer wordt gevraagd, voer je het e-mailadres van je eigen domein in waarvan je doorstuurt (bijv. <code><hello@example.com></code> - dit helpt je bij het bijhouden als je deze service voor meerdere accounts gebruikt)
 
-4. Copy the password to your clipboard that is automatically generated
+4. Kopieer het automatisch gegenereerde wachtwoord naar je klembord
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       Belangrijk:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       Als je G Suite gebruikt, bezoek dan je beheerderspaneel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Instellingen voor Gmail <i class="fa fa-angle-right"></i> Instellingen</a> en zorg ervoor dat "Gebruikers toestaan om e-mail te verzenden via een externe SMTP-server..." is aangevinkt. Er zal enige vertraging zijn voordat deze wijziging actief wordt, wacht daarom een paar minuten.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. Ga naar [Gmail](https://gmail.com) en klik onder [Instellingen <i class="fa fa-angle-right"></i> Accounts en Import <i class="fa fa-angle-right"></i> Verstuur mail als](https://mail.google.com/mail/u/0/#settings/accounts) op "Een ander e-mailadres toevoegen"
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. Wanneer gevraagd wordt om "Naam", voer dan de naam in waaronder je wilt dat je e-mail wordt weergegeven als "Van" (bijv. "Linus Torvalds")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. Wanneer gevraagd wordt om "E-mailadres", voer dan het e-mailadres met je eigen domein in dat je hierboven hebt gebruikt (bijv. <code><hello@example.com></code>)
+8. Vink "Behandelen als alias" uit
 
-8. Uncheck "Treat as an alias"
+9. Klik op "Volgende stap" om door te gaan
 
-9. Click "Next Step" to proceed
+10. Wanneer gevraagd om "SMTP-server", voer <code>smtp.gmail.com</code> in en laat de poort op <code>587</code>
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. Wanneer gevraagd om "Gebruikersnaam", voer het gedeelte van je Gmail-adres in zonder het <span>gmail.com</span> gedeelte (bijv. alleen "user" als mijn e-mail <span><user@gmail.com></span> is)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        Belangrijk:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        Als het gedeelte "Gebruikersnaam" automatisch wordt ingevuld, dan <u><strong>moet je dit wijzigen</strong></u> naar het gebruikersnaamgedeelte van je Gmail-adres.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. Wanneer gevraagd om "Wachtwoord", plak dan het wachtwoord dat je in stap 2 hierboven hebt gegenereerd vanuit je klembord
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. Laat de radioknop aangevinkt voor "Beveiligde verbinding met TLS"
 
-14. Click "Add Account" to proceed
+14. Klik op "Account toevoegen" om door te gaan
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. Open een nieuw tabblad naar [Gmail](https://gmail.com) en wacht tot je verificatie-e-mail arriveert (je ontvangt een verificatiecode die bevestigt dat jij de eigenaar bent van het e-mailadres dat je probeert te "Verzenden als")
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. Zodra deze arriveert, kopieer en plak je de verificatiecode bij de prompt die je in de vorige stap hebt ontvangen
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. Zodra je dat hebt gedaan, ga je terug naar de e-mail en klik je op de link om "de aanvraag te bevestigen". Waarschijnlijk moet je deze stap en de vorige stap uitvoeren om de e-mail correct te configureren.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### Geavanceerde Gmail-routeringsconfiguratie {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Geschatte installatietijd:</strong>
+  <span>15-30 minuten</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+Als je geavanceerde routering in Gmail wilt instellen zodat aliassen die niet overeenkomen met een mailbox worden doorgestuurd naar de mailservers van Forward Email, volg dan deze stappen:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. Log in op je Google Admin-console via [admin.google.com](https://admin.google.com)
+2. Ga naar **Apps → Google Workspace → Gmail → Routering**
+3. Klik op **Route toevoegen** en configureer de volgende instellingen:
 
-**Single Recipient Settings:**
+**Instellingen voor enkele ontvanger:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* Selecteer "Wijzig envelopontvanger" en voer je primaire Gmail-adres in
+* Vink "Voeg X-Gm-Original-To-header toe met originele ontvanger" aan
 
-**Envelope Recipient Patterns:**
+**Patronen voor envelopontvanger:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* Voeg een patroon toe dat alle niet-bestaande mailboxen matcht (bijv. `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**E-mailserverinstellingen:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* Selecteer "Routeren naar host" en voer `mx1.forwardemail.net` in als primaire server
+* Voeg `mx2.forwardemail.net` toe als back-upserver
+* Stel poort in op 25
+* Selecteer "TLS vereisen" voor beveiliging
 
-4. Click **Save** to create the route
+4. Klik op **Opslaan** om de route aan te maken
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    Deze configuratie werkt alleen voor Google Workspace-accounts met aangepaste domeinen, niet voor reguliere Gmail-accounts.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### Geavanceerde Outlook-routeringsconfiguratie {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">Geschatte installatietijd:</strong>
+  <span>15-30 minuten</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Voor Microsoft 365 (voorheen Office 365) gebruikers die geavanceerde routering willen instellen zodat aliassen die niet overeenkomen met een mailbox worden doorgestuurd naar de mailservers van Forward Email:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
-   * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
-   * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
-   * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+1. Log in op het Microsoft 365-beheercentrum via [admin.microsoft.com](https://admin.microsoft.com)
+2. Ga naar **Exchange → Mailflow → Regels**
+3. Klik op **Regel toevoegen** en selecteer **Maak een nieuwe regel**
+4. Geef je regel een naam (bijv. "Niet-bestaande mailboxen doorsturen naar Forward Email")
+5. Onder **Pas deze regel toe als**, selecteer:
+   * "Het ontvangeradres komt overeen met..."
+   * Voer een patroon in dat alle adressen op je domein matcht (bijv. `*@yourdomain.com`)
+6. Onder **Doe het volgende**, selecteer:
+   * "Stuur het bericht door naar..."
+   * Kies "De volgende mailserver"
+   * Voer `mx1.forwardemail.net` in en poort 25
+   * Voeg `mx2.forwardemail.net` toe als back-upserver
+7. Onder **Behalve als**, selecteer:
+   * "De ontvanger is..."
+   * Voeg al je bestaande mailboxen toe die niet doorgestuurd mogen worden
+8. Stel de regelprioriteit in zodat deze na andere mailflowregels wordt uitgevoerd
+9. Klik op **Opslaan** om de regel te activeren
+## Problemen oplossen {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### Waarom ontvang ik mijn test-e-mails niet {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+Als je een test-e-mail naar jezelf stuurt, kan het zijn dat deze niet in je inbox verschijnt omdat deze dezelfde "Message-ID" header heeft.
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+Dit is een algemeen bekend probleem en treft ook diensten zoals Gmail.  <a href="https://support.google.com/a/answer/1703601">Hier is het officiële antwoord van Gmail over dit probleem</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+Als je nog steeds problemen ondervindt, is het waarschijnlijk een probleem met DNS-propagatie.  Je zult iets langer moeten wachten en het opnieuw proberen (of proberen een lagere TTL-waarde in te stellen op je <strong class="notranslate">TXT</strong>-records).
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**Nog steeds problemen?**  Neem dan <a href="/help">contact met ons op</a> zodat we kunnen helpen het probleem te onderzoeken en snel op te lossen.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Hoe configureer ik mijn e-mailclient om te werken met Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  Onze dienst werkt met populaire e-mailclients zoals:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
@@ -875,7 +876,7 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  Je gebruikersnaam is het e-mailadres van je alias en het wachtwoord is van <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> ("Normaal wachtwoord").
 </div>
 
 <div class="alert my-3 alert-warning">
@@ -883,180 +884,227 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
   <strong class="font-weight-bold">
     Tip:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Als je Thunderbird gebruikt, zorg er dan voor dat "Verbindingsbeveiliging" is ingesteld op "SSL/TLS" en de authenticatiemethode is ingesteld op "Normaal wachtwoord".</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| Type |         Hostnaam        |         Protocol        |                                            Poorten                                           |
+| :--: | :---------------------: | :---------------------: | :------------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |  SSL/TLS **Voorkeur**   |                                      `993` en `2993`                                        |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Aanbevolen**  | `465` en `2465` voor SSL/TLS (aanbevolen) of `587`, `2587`, `2525` en `25` voor STARTTLS    |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Waarom komen mijn e-mails in Spam en Ongewenste e-mail terecht en hoe kan ik de reputatie van mijn domein controleren {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+Deze sectie begeleidt je als je uitgaande mail onze SMTP-servers gebruikt (bijv. `smtp.forwardemail.net`) (of doorgestuurd via `mx1.forwardemail.net` of `mx2.forwardemail.net`) en deze wordt afgeleverd in de Spam- of Ongewenste map van ontvangers.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+We monitoren routinematig onze [IP-adressen](#what-are-your-servers-ip-addresses) tegen [alle gerenommeerde DNS-denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **dus het is hoogstwaarschijnlijk een domein-reputatie specifiek probleem**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+E-mails kunnen om verschillende redenen in spamfolders terechtkomen:
 
-Emails can land in spam folders for several reasons:
+1. **Ontbrekende authenticatie**: Stel [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) en [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records in.
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **Domeinreputatie**: Nieuwe domeinen hebben vaak een neutrale reputatie totdat ze een verzendgeschiedenis opbouwen.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **Content triggers**: Bepaalde woorden of zinnen kunnen spamfilters activeren.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **Verzendpatronen**: Plotselinge stijgingen in e-mailvolume kunnen verdacht lijken.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+Je kunt proberen een of meer van deze tools te gebruiken om de reputatie en categorisering van je domein te controleren:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### Reputation and Blocklist Check Tools {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| Tool Naam                                  | URL                                                          | Type                   |
+| ------------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare Domain Categorization Feedback   | <https://radar.cloudflare.com/domains/feedback>              | Categorisatie          |
+| Spamhaus IP and Domain Reputation Checker   | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center>            | Reputatie              |
+| Barracuda IP and Domain Reputation Lookup   | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox Blacklist Check                  | <https://mxtoolbox.com/blacklists.aspx>                      | Zwarte lijst           |
+| Google Postmaster Tools                     | <https://www.gmail.com/postmaster/>                          | Reputatie              |
+| Yahoo Sender Hub                            | <https://senders.yahooinc.com/>                              | Reputatie              |
+| MultiRBL.valli.org Blacklist Check          | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | Reputatie              |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT's Levels 1, 2, and 3             | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT's backscatterer.org              | <https://www.backscatterer.org/>                             | Backscatter Protection |
+| UCEPROTECT's whitelisted.org                | <https://www.whitelisted.org/> (requires a fee)              | DNSWL                  |
 
+#### IP Removal Request Forms by Provider {#ip-removal-request-forms-by-provider}
+
+Als je IP-adres door een specifieke e-mailprovider is geblokkeerd, gebruik dan het juiste verwijderingsformulier of contact hieronder:
+
+| Provider                               | Verwijderingsformulier / Contact                                                                                     | Opmerkingen                                  |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | Bulk verzender contactformulier              |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | Office 365 IP delist portal                   |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | Yahoo Sender Hub                              |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | Apple gebruikt Proofpoint voor IP-reputatie  |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | Proofpoint IP-check en verwijdering           |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | Barracuda reputatie lookup en verwijdering    |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | Cloudmark CSI reset aanvraag                   |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | GoDaddy IP unblock aanvraagformulier           |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | Comcast IP verwijderingsverzoek                |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | Neem contact op met Spectrum support voor verwijdering |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | E-mail voor verwijderingsverzoek               |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | E-mail voor verwijderingsverzoek               |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | Gebruikt Cloudfilter                            |
+| Windstream                             | `abuse@windstream.net`                                                                                     | E-mail voor verwijderingsverzoek               |
+| t-online.de (Duitsland)                | `tobr@rx.t-online.de`                                                                                      | E-mail voor verwijderingsverzoek               |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | Gebruik contactformulier of e-mail `abuse@orange.fr` |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | GMX postmaster contactformulier                 |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | Mail.ru postmaster portal                       |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | Yandex postmaster portal                        |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | QQ Mail whitelist aanvraag (Chinees)           |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | Netease postmaster portal                       |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | Contact via Alibaba Cloud console               |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | AWS SES console > Blacklist Removal             |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | Contact SendGrid support                        |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | Gebruikt derde partij RBLs - contacteer specifieke RBL |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | Contact Fastmail support                        |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | Contact Zoho support                            |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | Contact Proton support                          |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | Contact Tutanota support                        |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | Contact Hushmail support                        |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | Contact Mailbox.org support                     |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | Contact Posteo support                          |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | Contact DuckDuckGo support                      |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | Contact Sonic support                           |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | Contact Telus support                           |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | Contact Vodafone support                        |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | Contact Spark NZ support                        |
+| UOL/BOL (Brazilië)                     | <https://ajuda.uol.com.br/>                                                                                | Contact UOL support (Portugees)                 |
+| Libero (Italië)                       | <https://aiuto.libero.it/>                                                                                 | Contact Libero support (Italiaans)              |
+| Telenet (België)                      | <https://www2.telenet.be/en/support/>                                                                      | Contact Telenet support                         |
+| Facebook/WhatsApp                      | <https://www.facebook.com/business/help>                                                                   | Contact Facebook business support               |
+| LinkedIn                               | <https://www.linkedin.com/help/linkedin>                                                                   | Contact LinkedIn support                        |
+| Groups.io                              | <https://groups.io/helpcenter>                                                                             | Contact Groups.io support                       |
+| Earthlink/Vade Secure                  | <https://sendertool.vadesecure.com/en/>                                                                    | Vade Secure verzendtool                         |
+| Cloudflare Email Security              | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | Contact Cloudflare support                      |
+| Hornetsecurity/Expurgate               | <https://www.hornetsecurity.com/>                                                                          | Contact Hornetsecurity support                  |
+| SpamExperts/Antispamcloud              | <https://www.spamexperts.com/>                                                                             | Contact via hostingprovider                      |
+| Mail2World                             | <https://www.mail2world.com/support/>                                                                      | Contact Mail2World support                      |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Begin met een laag volume aan e-mails van hoge kwaliteit om een positieve reputatie op te bouwen voordat je grotere volumes verstuurt.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Als je domein op een blacklist staat, heeft elke blacklist zijn eigen verwijderingsproces. Controleer hun websites voor instructies.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Als je extra hulp nodig hebt of merkt dat wij ten onrechte als spam worden gemarkeerd door een bepaalde e-mailprovider, neem dan <a href="/help">contact met ons op</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### Wat moet ik doen als ik spam-e-mails ontvang {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+Je moet je afmelden voor de mailinglijst (indien mogelijk) en de afzender blokkeren.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+Rapporteer het bericht niet als spam, maar stuur het in plaats daarvan door naar ons handmatig samengestelde en privacygerichte misbruikpreventiesysteem.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**Het e-mailadres om spam naartoe te sturen is:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Waarom worden mijn test-e-mails die ik naar mezelf stuur in Gmail als "verdacht" weergegeven {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+Als je deze foutmelding in Gmail ziet wanneer je een test naar jezelf stuurt, of wanneer iemand met wie je e-mailt via je alias voor het eerst een e-mail van je ontvangt, maak je dan **geen zorgen** – dit is een ingebouwde veiligheidsfunctie van Gmail.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+Je kunt simpelweg op "Lijkt veilig" klikken. Bijvoorbeeld, als je een testbericht zou sturen met de functie 'verzenden als' (naar iemand anders), dan zullen zij dit bericht niet zien.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+Als zij dit bericht wel zien, komt dat omdat ze normaal gesproken gewend zijn je e-mails te ontvangen van <john@gmail.com> in plaats van <john@customdomain.com> (slechts een voorbeeld). Gmail waarschuwt gebruikers om zeker te zijn dat alles veilig is, er is geen omweg.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Kan ik de via forwardemail dot net in Gmail verwijderen {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+Dit onderwerp heeft betrekking op een [breed bekend probleem in Gmail waarbij extra info naast de naam van de afzender verschijnt](https://support.google.com/mail/answer/1311182).
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+Vanaf mei 2023 ondersteunen we het verzenden van e-mail via SMTP als add-on voor alle betaalde gebruikers – wat betekent dat je de <span class="notranslate">via forwardemail dot net</span> in Gmail kunt verwijderen.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+Let op dat deze FAQ specifiek is voor degenen die de [Hoe mail verzenden als met Gmail](#how-to-send-mail-as-using-gmail) functie gebruiken.
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+Zie de sectie over [Ondersteunen jullie het verzenden van e-mail via SMTP](#do-you-support-sending-email-with-smtp) voor configuratie-instructies.
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## Gegevensbeheer {#data-management}
+
+### Waar bevinden zich jullie servers {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> We zullen binnenkort onze EU-datacenterlocatie aankondigen die wordt gehost onder [forwardemail.eu](https://forwardemail.eu). Abonneer je op de discussie via <https://github.com/orgs/forwardemail/discussions/336> voor updates.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+Onze servers bevinden zich voornamelijk in Denver, Colorado – zie <https://forwardemail.net/ips> voor onze volledige lijst met IP-adressen.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+Je kunt meer leren over onze subprocessors op onze [GDPR](/gdpr), [DPA](/dpa), en [Privacy](/privacy) pagina's.
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### Hoe exporteer en back-up ik mijn mailbox {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+Je kunt op elk moment je mailboxen exporteren als [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), of versleutelde [SQLite](https://en.wikipedia.org/wiki/SQLite) formaten.
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen <i class="fa fa-angle-right"></i> Download Back-up en selecteer je gewenste exportformaat.
 
-You will be emailed a link to download the export once it has finished.
+Je ontvangt een e-mail met een link om de export te downloaden zodra deze klaar is.
 
-Note that this export download link expires after 4 hours for security concerns.
+Let op dat deze downloadlink voor de export na 4 uur verloopt vanwege beveiligingsredenen.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+Als je je geëxporteerde EML- of Mbox-formaten wilt inspecteren, kunnen deze open-source tools nuttig zijn:
 
-| Name | Format | Platform | GitHub URL |
-| --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
+| Naam            | Formaat | Platform      | GitHub URL                                          |
+| --------------- | :-----: | ------------- | -------------------------------------------------- |
+| MBox Viewer     |  Mbox   | Windows       | <https://github.com/eneam/mboxviewer>              |
+| mbox-web-viewer |  Mbox   | Alle platformen | <https://github.com/PHMRanger/mbox-web-viewer>    |
+| EmlReader       |   EML   | Windows       | <https://github.com/ayamadori/EmlReader>           |
+| Email viewer    |   EML   | VSCode        | <https://github.com/joelharkes/vscode_email_viewer>|
+| eml-reader      |   EML   | Alle platformen | <https://github.com/s0ph1e/eml-reader>             |
+Daarnaast, als je een Mbox-bestand naar een EML-bestand moet converteren, kun je <https://github.com/noelmartinon/mboxzilla> gebruiken.
 
-Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
+### Hoe importeer en migreer ik mijn bestaande mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
-
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+Je kunt eenvoudig je e-mail importeren naar Forward Email (bijv. met [Thunderbird](https://www.thunderbird.net)) met de onderstaande instructies:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    Je moet alle onderstaande stappen volgen om je bestaande e-mail te importeren.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. Exporteer je e-mail van je huidige e-mailprovider:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | E-mailprovider | Exportformaat                                  | Exportinstructies                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail          | MBOX                                           | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook        | PST                                            | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>Als je Outlook gebruikt (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST exportformaat</a>), kun je eenvoudig de instructies onder "Overig" hieronder volgen. We hebben echter ook links toegevoegd om PST naar MBOX/EML te converteren op basis van je besturingssysteem:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba voor Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst voor Windows cygwin</a> – (bijv. <code>readpst -u -o $OUT_DIR $IN_DIR</code> waarbij je <code>$OUT_DIR</code> en <code>$IN_DIR</code> vervangt door de paden van de uitvoer- en invoermap).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst voor Ubuntu/Linux</a> – (bijv. <code>sudo apt-get install readpst</code> en daarna <code>readpst -u -o $OUT_DIR $IN_DIR</code>, waarbij je <code>$OUT_DIR</code> en <code>$IN_DIR</code> vervangt door de paden van de uitvoer- en invoermap).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst voor macOS (via brew)</a> – (bijv. <code>brew install libpst</code> en daarna <code>readpst -u -o $OUT_DIR $IN_DIR</code>, waarbij je <code>$OUT_DIR</code> en <code>$IN_DIR</code> vervangt door de paden van de uitvoer- en invoermap).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter voor Windows (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail     | MBOX                                           | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail       | EML                                            | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail    | MBOX/EML                                       | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota       | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi          | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho           | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | Overig         | [Gebruik Thunderbird](https://www.thunderbird.net) | Stel je bestaande e-mailaccount in Thunderbird in en gebruik vervolgens de [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin om je e-mail te exporteren en importeren.  **Je kunt mogelijk ook eenvoudig e-mails kopiëren/plakken of slepen/neerzetten tussen accounts.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. Download, installeer en open [Thunderbird](https://www.thunderbird.net).
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. Maak een nieuw account aan met het volledige e-mailadres van je alias (bijv. <code><you@yourdomain.com></code>) en je gegenereerde wachtwoord.  <strong>Als je nog geen gegenereerd wachtwoord hebt, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">raadpleeg dan onze installatie-instructies</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. Download en installeer de [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird-plugin.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. Maak een nieuwe lokale map aan in Thunderbird, klik er vervolgens met de rechtermuisknop op → selecteer de optie `ImportExportTools NG` → kies `Import mbox file` (voor MBOX exportformaat) – of – `Import messages` / `Import all messages from a directory` (voor EML exportformaat).
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. Sleep/verplaats vanuit de lokale map naar een nieuwe (of bestaande) IMAP-map in Thunderbird waar je berichten naartoe wilt uploaden in IMAP-opslag met onze service.  Dit zorgt ervoor dat ze online worden geback-upt met onze SQLite versleutelde opslag.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Als je niet zeker weet hoe je moet importeren in Thunderbird, kun je de officiële instructies raadplegen op <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> en <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    Zodra je het export- en importproces hebt voltooid, wil je misschien ook doorsturen inschakelen op je bestaande e-mailaccount en een automatische beantwoorder instellen om afzenders te informeren dat je een nieuw e-mailadres hebt (bijv. als je eerder Gmail gebruikte en nu een e-mail met je eigen domeinnaam gebruikt).
   </span>
 </div>
 
@@ -1064,51 +1112,260 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gefeliciteerd!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Je hebt alle stappen succesvol voltooid.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### Hoe gebruik ik mijn eigen S3-compatibele opslag voor backups {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+Betaalde gebruikers kunnen hun eigen [S3](https://en.wikipedia.org/wiki/Amazon_S3)-compatibele opslagprovider configureren per domein voor IMAP/SQLite backups.  Dit betekent dat je versleutelde mailbox-backups kunnen worden opgeslagen op je eigen infrastructuur in plaats van (of naast) onze standaardopslag.
 
-## Email Configuration {#email-configuration}
+Ondersteunde providers zijn onder andere [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces) en elke andere S3-compatibele dienst.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### Installatie {#setup}
+
+1. Maak een **privé** bucket aan bij je S3-compatibele provider. De bucket mag niet publiek toegankelijk zijn.
+2. Maak toegangsreferenties aan (access key ID en secret access key) met lees-/schrijfrechten voor de bucket.
+3. Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Geavanceerde Instellingen <i class="fa fa-angle-right"></i> Aangepaste S3-Compatibele Opslag.
+4. Vink **"Aangepaste S3-compatibele opslag inschakelen"** aan en vul je endpoint-URL, access key ID, secret access key, regio en bucketnaam in.
+5. Klik op **"Test verbinding"** om je referenties, buckettoegang en schrijfrechten te verifiëren.
+6. Klik op **"Opslaan"** om de instellingen toe te passen.
+
+#### Hoe Backups Werken {#how-backups-work}
+
+Backups worden automatisch gestart voor elke verbonden IMAP-alias. De IMAP-server controleert elk uur alle actieve verbindingen en start een backup voor elke verbonden alias. Een op Redis gebaseerde lock voorkomt dat dubbele backups binnen 30 minuten worden uitgevoerd, en de daadwerkelijke backup wordt overgeslagen als er binnen de laatste 24 uur al een succesvolle backup is voltooid (tenzij de backup expliciet door een gebruiker is aangevraagd voor download).
+Back-ups kunnen ook handmatig worden gestart door te klikken op **"Download Backup"** voor een alias in het dashboard. Handmatige back-ups worden altijd uitgevoerd, ongeacht het 24-uurs venster.
+
+Het back-upproces werkt als volgt:
+
+1. De SQLite-database wordt gekopieerd met `VACUUM INTO`, wat een consistente snapshot maakt zonder actieve verbindingen te onderbreken en de database-encryptie behoudt.
+2. Het back-upbestand wordt geverifieerd door het te openen om te bevestigen dat de encryptie nog geldig is.
+3. Er wordt een SHA-256-hash berekend en vergeleken met de bestaande back-up in opslag. Als de hash overeenkomt, wordt de upload overgeslagen (geen wijzigingen sinds de laatste back-up).
+4. De back-up wordt geüpload naar S3 met multipart upload via de [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage) bibliotheek.
+5. Er wordt een ondertekende download-URL (geldig voor 4 uur) gegenereerd en per e-mail naar de gebruiker gestuurd.
+
+#### Backup Formats {#backup-formats}
+
+Drie back-upformaten worden ondersteund:
+
+| Formaat  | Extensie  | Beschrijving                                                                 |
+| -------- | --------- | --------------------------------------------------------------------------- |
+| `sqlite` | `.sqlite` | Ruwe versleutelde SQLite database snapshot (standaard voor automatische IMAP-back-ups) |
+| `mbox`   | `.zip`    | Wachtwoordbeveiligde ZIP met mailbox in mbox-formaat                        |
+| `eml`    | `.zip`    | Wachtwoordbeveiligde ZIP met individuele `.eml` bestanden per bericht       |
+
+> **Tip:** Als je `.sqlite` back-upbestanden hebt en deze lokaal wilt converteren naar `.eml` bestanden, gebruik dan onze standalone CLI-tool **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Deze werkt op Windows, Linux en macOS en vereist geen netwerkverbinding.
+
+#### File Naming and Key Structure {#file-naming-and-key-structure}
+
+Bij gebruik van **aangepaste S3-opslag** worden back-upbestanden opgeslagen met een [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) tijdstempelprefix zodat elke back-up als een apart object wordt bewaard. Dit geeft je een volledige back-upgeschiedenis in je eigen bucket.
+
+Het sleutel-formaat is:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+Bijvoorbeeld:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+De `alias_id` is de MongoDB ObjectId van de alias. Je kunt deze vinden op de alias-instellingenpagina of via de API.
+
+Bij gebruik van de **standaard (systeem) opslag** is de sleutel vlak (bijv. `65a31c53c36b75ed685f3fda.sqlite`) en overschrijft elke back-up de vorige.
+
+> **Opmerking:** Omdat aangepaste S3-opslag alle back-upversies bewaart, zal het opslaggebruik in de loop van de tijd toenemen. We raden aan om [lifecycle regels](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) in te stellen op je bucket om oude back-ups automatisch te verwijderen (bijv. objecten ouder dan 30 of 90 dagen verwijderen).
+
+#### Data Ownership and Deletion Policy {#data-ownership-and-deletion-policy}
+
+Je aangepaste S3-bucket staat volledig onder jouw controle. Wij **verwijderen of wijzigen nooit** bestanden in jouw aangepaste S3-bucket — niet wanneer een alias wordt verwijderd, niet wanneer een domein wordt verwijderd, en niet tijdens opruimacties. We schrijven alleen nieuwe back-upbestanden naar jouw bucket.
+
+Dit betekent:
+
+* **Alias verwijderen** — Wanneer je een alias verwijdert, verwijderen wij de back-up alleen uit onze standaard systeemopslag. Back-ups die eerder naar jouw aangepaste S3-bucket zijn geschreven blijven onaangeroerd.
+* **Domein verwijderen** — Het verwijderen van een domein heeft geen invloed op bestanden in jouw aangepaste bucket.
+* **Bewaarbeheer** — Jij bent verantwoordelijk voor het beheren van opslag in je eigen bucket, inclusief het instellen van lifecycle regels om oude back-ups te verwijderen.
+
+Als je aangepaste S3-opslag uitschakelt of terugschakelt naar onze standaardopslag, blijven bestaande bestanden in je bucket behouden. Toekomstige back-ups worden dan gewoon naar onze standaardopslag geschreven.
+
+#### Security {#security}
+
+* Je access key ID en secret access key zijn **versleuteld in rust** met [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) voordat ze in onze database worden opgeslagen. Ze worden alleen ontsleuteld tijdens runtime bij het uitvoeren van back-upoperaties.
+* We valideren automatisch dat je bucket **niet publiek toegankelijk** is. Als een publieke bucket wordt gedetecteerd, wordt de configuratie geweigerd bij opslaan. Als publieke toegang wordt gedetecteerd tijdens back-up, schakelen we terug naar onze standaardopslag en informeren we alle domeinbeheerders per e-mail.
+* Referenties worden gevalideerd bij opslaan via een [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html) oproep om te controleren of de bucket bestaat en de referenties correct zijn. Als validatie faalt, wordt aangepaste S3-opslag automatisch uitgeschakeld.
+* Elk back-upbestand bevat een SHA-256-hash in zijn S3-metadata, die wordt gebruikt om ongewijzigde databases te detecteren en overbodige uploads over te slaan.
+#### Foutmeldingen {#error-notifications}
+
+Als een back-up mislukt bij het gebruik van je aangepaste S3-opslag (bijv. door verlopen referenties of een verbindingsprobleem), worden alle domeinbeheerders per e-mail op de hoogte gebracht. Deze meldingen worden beperkt tot eenmaal per 6 uur om dubbele waarschuwingen te voorkomen. Als je bucket tijdens de back-up als openbaar toegankelijk wordt gedetecteerd, worden beheerders eenmaal per dag geïnformeerd.
+
+#### API {#api}
+
+Je kunt ook aangepaste S3-opslag configureren via de API:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+Om de verbinding via de API te testen:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### Hoe converteer ik SQLite-back-ups naar EML-bestanden {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+Als je SQLite-back-ups downloadt of opslaat (ofwel van onze standaardopslag of je eigen [aangepaste S3-bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), kun je deze converteren naar standaard `.eml`-bestanden met onze zelfstandige CLI-tool **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-bestanden kunnen worden geopend met elke e-mailclient ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), enz.) of geïmporteerd in andere mailservers.
+
+#### Installatie {#installation-1}
+
+Je kunt een vooraf gebouwde binary downloaden (geen [Node.js](https://github.com/nodejs/node) vereist) of het direct uitvoeren met [Node.js](https://github.com/nodejs/node):
+
+**Vooraf gebouwde binaries** — Download de nieuwste release voor jouw platform van [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+
+| Platform | Architectuur  | Bestand                              |
+| -------- | ------------- | ----------------------------------- |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`   |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64` |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64`|
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe` |
+
+> **macOS-gebruikers:** Na het downloaden moet je mogelijk het quarantaine-attribuut verwijderen voordat je de binary uitvoert:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (Vervang `./convert-sqlite-to-eml-darwin-arm64` door het daadwerkelijke pad naar het gedownloade bestand.)
+
+> **Linux-gebruikers:** Na het downloaden moet je mogelijk de binary uitvoerbaar maken:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (Vervang `./convert-sqlite-to-eml-linux-x64` door het daadwerkelijke pad naar het gedownloade bestand.)
+
+**Vanuit de bron** (vereist [Node.js](https://github.com/nodejs/node) >= 18):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### Gebruik {#usage}
+
+De tool ondersteunt zowel interactieve als niet-interactieve modi.
+
+**Interactieve modus** — voer uit zonder argumenten en je wordt gevraagd om alle invoer:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - Converteer SQLite-back-up naar EML
+  ================================================
+
+  Pad naar SQLite-back-upbestand: /path/to/backup.sqlite
+  IMAP/alias wachtwoord: ********
+  Uitvoer ZIP-pad [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**Niet-interactieve modus** — geef argumenten door via commandoregelvlaggen voor scripting en automatisering:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| Vlag                | Beschrijving                                                                   |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `--path <path>`     | Pad naar het versleutelde SQLite-back-upbestand                               |
+| `--password <pass>` | IMAP/alias wachtwoord voor decryptie                                          |
+| `--output <path>`   | Uitvoerpad voor het ZIP-bestand (standaard: automatisch gegenereerd met ISO 8601-tijdstempel) |
+| `--help`            | Toon helpbericht                                                              |
+#### Output Formaat {#output-format}
+
+De tool produceert een met een wachtwoord beveiligd ZIP-archief (AES-256 versleuteld) met daarin:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+EML-bestanden zijn georganiseerd per mailboxmap. Het ZIP-wachtwoord is hetzelfde als je IMAP/alias wachtwoord. Elk `.eml` bestand is een standaard [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) e-mailbericht met volledige headers, berichttekst en bijlagen die zijn gereconstrueerd uit de SQLite-database.
+
+#### Hoe Het Werkt {#how-it-works}
+
+1. Opent de versleutelde SQLite-database met je IMAP/alias wachtwoord (ondersteunt zowel [ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) als [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) ciphers).
+2. Leest de Mailboxes-tabel om de mappenstructuur te ontdekken.
+3. Voor elk bericht decodeert het de mimeTree (opgeslagen als [Brotli](https://github.com/google/brotli)-gecomprimeerde JSON) uit de Messages-tabel.
+4. Reconstrueert de volledige EML door de MIME-boom te doorlopen en bijlagen op te halen uit de Attachments-tabel.
+5. Verpakt alles in een met een wachtwoord beveiligd ZIP-archief met behulp van [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted).
+
+### Ondersteunen jullie zelf-hosting? {#do-you-support-self-hosting}
+
+Ja, vanaf maart 2025 ondersteunen we een zelf-gehoste optie. Lees de blog [hier](https://forwardemail.net/blog/docs/self-hosted-solution). Bekijk de [zelf-gehoste gids](https://forwardemail.net/self-hosted) om aan de slag te gaan. En voor wie geïnteresseerd is in een meer stapsgewijze versie, zie onze [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) of [Debian](https://forwardemail.net/guides/selfhosted-on-debian) gebaseerde handleidingen.
+
+
+## E-mailconfiguratie {#email-configuration}
+
+### Hoe begin ik en stel ik e-mail forwarding in? {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">Geschatte Installatietijd:</strong>
+  <span>Minder dan 10 minuten</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    Aan de slag:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    Lees zorgvuldig en volg de stappen één tot en met acht hieronder. Vervang zeker het e-mailadres <code>user@gmail.com</code> door het e-mailadres waar je e-mails naartoe wilt doorsturen (als dit nog niet correct is). Vervang ook <code>example.com</code> door je eigen domeinnaam (als dit nog niet correct is).
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">Als je je domeinnaam al ergens hebt geregistreerd, sla dan deze stap volledig over en ga door naar stap twee! Anders kun je <a href="/domain-registration" rel="noopener noreferrer">hier klikken om je domeinnaam te registreren</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  Weet je nog waar je je domein hebt geregistreerd? Zodra je dat weet, volg dan de onderstaande instructies:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    Je moet een nieuw tabblad openen en inloggen bij je domeinregistrar. Je kunt eenvoudig op je "Registrar" hieronder klikken om dit automatisch te doen. In dit nieuwe tabblad moet je navigeren naar de DNS-beheerpagina bij je registrar – we hebben de stapsgewijze navigatiestappen hieronder onder de kolom "Stappen om te configureren" gegeven. Zodra je op deze pagina bent in het nieuwe tabblad, kun je terugkeren naar dit tabblad en doorgaan met stap drie hieronder.
+    <strong class="font-weight-bold">Sluit het geopende tabblad nog niet; je hebt het nodig voor toekomstige stappen!</strong>
   </span>
 </div>
 
@@ -1116,172 +1373,170 @@ Yes, as of March 2025, we support a self-hosted option. Read the blog [here](htt
   <thead class="thead-dark">
     <tr>
       <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>Stappen om te configureren</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> DNS-instellingen bewerken</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Selecteer je domein)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domeinbeheer <i class="fa fa-angle-right"></i> DNS Manager</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>VOOR ROCK: Inloggen <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Klik op het ▼-icoon naast beheren) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      VOOR LEGACY: Inloggen <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Selecteer je domein)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Selecteer je domein)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> (Selecteer je domein)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Beheren</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Meer <i class="fa fa-angle-right"></i> Domein beheren</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> In kaartweergave, klik beheren op je domein <i class="fa fa-angle-right"></i> In lijstweergave, klik op het tandwiel-icoon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Bekijk</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Beheren <i class="fa fa-angle-right"></i> (klik op het tandwiel-icoon) <i class="fa fa-angle-right"></i> Klik op DNS &amp; Nameservers in het menu aan de linkerkant</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Beheer <i class="fa fa-angle-right"></i> Bewerk de zone</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Bekijk</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Manage DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Bekijk</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Configureer DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Bekijk</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Beheren <i class="fa fa-angle-right"></i> Geavanceerde DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Stel Netlify DNS in</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> Beheren <i class="fa fa-angle-right"></i> Wijzig waar domein naar wijst <i class="fa fa-angle-right"></i> Geavanceerde DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Bekijk</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> DNS-instellingen</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Home-menu <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i>
+Geavanceerde instellingen <i class="fa fa-angle-right"></i> Aangepaste records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>Gebruik "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Domains-pagina <i class="fa fa-angle-right"></i> (Selecteer je domein) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Domains-pagina <i class="fa fa-angle-right"></i> (Klik op het <i class="fa fa-ellipsis-h"></i> icoon) <i class="fa fa-angle-right"></i> Selecteer Beheer DNS-records</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>Inloggen <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Mijn domeinen</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>Overig</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Belangrijk:</strong> Zie je je registrar niet in deze lijst? Zoek dan eenvoudig op internet naar "hoe DNS-records wijzigen bij $REGISTRAR" (vervang $REGISTRAR door de naam van je registrar – bijvoorbeeld "hoe DNS-records wijzigen bij GoDaddy" als je GoDaddy gebruikt).</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">Gebruikmakend van de DNS-beheerpagina van je registrar (het andere tabblad dat je hebt geopend), stel de volgende "MX" records in:
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    Let op dat er GEEN andere MX-records ingesteld mogen zijn. Beide hieronder getoonde records MOETEN bestaan. Zorg ervoor dat er geen typefouten zijn; en dat je zowel mx1 als mx2 correct gespeld hebt. Als er al MX-records bestonden, verwijder deze dan volledig.
+    De "TTL"-waarde hoeft niet 3600 te zijn, het kan indien nodig een lagere of hogere waarde zijn.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Priority</th>
-      <th>Answer/Value</th>
+      <th>Prioriteit</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1545,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Gebruik de DNS-beheerpagina van je registrar (het andere tabblad dat je hebt geopend) en stel de volgende <strong class="notranslate">TXT</strong>-record(s) in:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    Als je een betaald abonnement hebt, moet je deze stap volledig overslaan en doorgaan naar stap vijf! Als je geen betaald abonnement hebt, dan zijn je doorgestuurde adressen openbaar doorzoekbaar – ga naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> en upgrade je domein naar een betaald abonnement indien gewenst. Als je meer wilt weten over betaalde abonnementen, zie onze <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Prijsinformatie</a> pagina. Anders kun je doorgaan en een of meer combinaties kiezen uit Optie A tot en met Optie F hieronder.
   </span>
 </div>
 
@@ -1307,25 +1562,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    Optie A:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    Als je alle e-mails van je domein doorstuurt, (bijv. "all@example.com", "hello@example.com", enz.) naar een specifiek adres "user@gmail.com":
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1341,7 +1596,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    Zorg ervoor dat je de waarden hierboven in de kolom "Waarde" vervangt door je eigen e-mailadres. De "TTL"-waarde hoeft niet 3600 te zijn, het kan indien nodig een lagere of hogere waarde zijn. Een lagere time to live ("TTL") waarde zorgt ervoor dat eventuele toekomstige wijzigingen aan je DNS-records sneller over het internet worden verspreid – beschouw dit als hoe lang het in het geheugen wordt gecached (in seconden). Je kunt meer leren over <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL op Wikipedia</a>.
   </span>
 </div>
 
@@ -1350,25 +1605,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    Optie B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    Als je slechts één e-mailadres hoeft door te sturen (bijv. <code>hello@example.com</code> naar <code>user@gmail.com</code>; dit stuurt ook automatisch "hello+test@example.com" door naar "user+test@gmail.com"):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1637,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    Optie C:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    Als je meerdere e-mails doorstuurt, wil je ze scheiden met een komma:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1670,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    Optie D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    Je kunt een oneindig aantal doorstuur-e-mails instellen – zorg er gewoon voor dat je niet meer dan 255 tekens in één regel gebruikt en dat elke regel begint met "forward-email=". Hieronder staat een voorbeeld:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1696,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1704,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1712,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1720,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1735,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    Optie E:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    Je kunt ook een domeinnaam opgeven in je <strong class="notranslate">TXT</strong>-record om globale alias-doorsturing te hebben (bijv. "user@example.com" wordt doorgestuurd naar "user@example.net"):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1768,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    Optie F:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    Je kunt zelfs webhooks gebruiken als globale of individuele alias om e-mails naartoe door te sturen. Zie het voorbeeld en de volledige sectie over webhooks getiteld <a href="#do-you-support-webhooks" class="alert-link">Ondersteunen jullie webhooks</a> hieronder.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1800,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    Optie G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    Je kunt zelfs reguliere expressies ("regex") gebruiken om aliassen te matchen en om substituties te verwerken om e-mails door te sturen. Zie de voorbeelden en de volledige sectie over regex getiteld <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Ondersteunen jullie reguliere expressies of regex</a> hieronder.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>Geavanceerde regex met substitutie nodig?</strong> Zie de voorbeelden en de volledige sectie over regex getiteld <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Ondersteunen jullie reguliere expressies of regex</a> hieronder.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Eenvoudig voorbeeld:</strong> Als ik wil dat alle e-mails die naar `linus@example.com` of `torvalds@example.com` gaan worden doorgestuurd naar `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1841,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    Catch-all doorstuurregels kunnen ook worden omschreven als "fall-through".
+    Dit betekent dat binnenkomende e-mails die overeenkomen met ten minste één specifieke doorstuurregel worden gebruikt in plaats van de catch-all.
+    Specifieke regels omvatten e-mailadressen en reguliere expressies.
     <br /><br />
-    For example:
+    Bijvoorbeeld:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    E-mails gestuurd naar <code>hello@example.com</code> worden **niet** doorgestuurd naar <code>second@gmail.com</code> (catch-all) met deze configuratie, en worden in plaats daarvan alleen afgeleverd bij <code>first@gmail.com</code>.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Gebruikmakend van de DNS-beheerpagina van je registrar (het andere tabblad dat je hebt geopend), stel daarnaast de volgende <strong class="notranslate">TXT</strong>-record in:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1882,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Als je Gmail gebruikt (bijv. Send Mail As) of G Suite, dan moet je <code>include:_spf.google.com</code> toevoegen aan de bovenstaande waarde, bijvoorbeeld:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1644,19 +1897,18 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Als je al een vergelijkbare regel hebt met "v=spf1", dan moet je <code>include:spf.forwardemail.net</code> toevoegen vlak voor bestaande "include:host.com" records en vóór de "-all" in dezelfde regel, bijvoorbeeld:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Let op dat er een verschil is tussen "-all" en "~all". De "-" geeft aan dat de SPF-controle MOET FAILEN als het niet overeenkomt, en "~" geeft aan dat de SPF-controle SOFTFAIL moet zijn. Wij raden aan de "-all" methode te gebruiken om domeinvervalsing te voorkomen.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Mogelijk moet je ook de SPF-record opnemen voor de host waarvan je e-mail verstuurt (bijv. Outlook).
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">Controleer uw DNS-records met onze tool "Records Verifiëren" beschikbaar op <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Stuur een testmail om te bevestigen dat het werkt. Houd er rekening mee dat het enige tijd kan duren voordat uw DNS-records zijn doorgevoerd.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1665,10 +1917,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    Als u geen testmails ontvangt, of een testmail ontvangt met de melding "Wees voorzichtig met dit bericht", bekijk dan de antwoorden op <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Waarom ontvang ik mijn testmails niet</a> en <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Waarom worden mijn testmails die ik naar mezelf in Gmail stuur als "verdacht" weergegeven</a>.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Als u "Mail Verzenden Als" vanuit Gmail wilt gebruiken, moet u <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">deze video bekijken</a></strong>, of de stappen volgen onder <a href="#how-to-send-mail-as-using-gmail">Hoe Mail Verzenden Als te gebruiken met Gmail</a> hieronder.
 
 </li></ol>
 
@@ -1676,10 +1928,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gefeliciteerd!
     </strong>
     <span>
-      You've successfully completed all steps.
+      U heeft alle stappen succesvol voltooid.
     </span>
   </div>
 </div>
@@ -1690,90 +1942,89 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    Optionele add-ons staan hieronder vermeld. Houd er rekening mee dat deze add-ons volledig optioneel zijn en mogelijk niet nodig. We wilden u in ieder geval aanvullende informatie bieden indien nodig.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    Optionele Add-on:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    Als u de functie <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Hoe Mail Verzenden Als te gebruiken met Gmail</a> gebruikt, wilt u uzelf misschien aan een allowlist toevoegen. Zie <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">deze instructies van Gmail</a> over dit onderwerp.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Kan ik meerdere MX-exchanges en servers gebruiken voor geavanceerde doorsturing {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+Ja, maar **u mag slechts één MX-exchange in uw DNS-records hebben staan**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+Probeer niet "Prioriteit" te gebruiken als manier om meerdere MX-exchanges te configureren.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+In plaats daarvan moet u uw bestaande MX-exchange zo configureren dat deze mail doorstuurt voor alle niet-overeenkomende aliassen naar de exchanges van onze service (`mx1.forwardemail.net` en/of `mx2.forwardemail.net`).
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Als u Google Workspace gebruikt en u wilt alle niet-overeenkomende aliassen naar onze service doorsturen, zie dan <https://support.google.com/a/answer/6297084>.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Als u Microsoft 365 (Outlook) gebruikt en u wilt alle niet-overeenkomende aliassen naar onze service doorsturen, zie dan <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> en <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Hoe stel ik een afwezigheidsassistent in (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen en maak een alias aan of bewerk de alias waarvoor u een afwezigheidsassistent wilt instellen.
+Je hebt de mogelijkheid om een startdatum, einddatum, onderwerp en bericht te configureren, en deze op elk moment in of uit te schakelen:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* Alleen platte tekst onderwerp en bericht worden momenteel ondersteund (we gebruiken intern het `striptags` pakket om eventuele HTML te verwijderen).
+* Het onderwerp is beperkt tot 100 tekens.
+* Het bericht is beperkt tot 1000 tekens.
+* De setup vereist Outbound SMTP-configuratie (bijv. je moet DKIM, DMARC en Return-Path DNS-records instellen).
+  * Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Outbound SMTP-configuratie en volg de setup-instructies.
+* De vakantie-responder kan niet worden ingeschakeld op globale vanity-domeinnamen (bijv. [wegwerpadressen](/disposable-addresses) worden niet ondersteund).
+* De vakantie-responder kan niet worden ingeschakeld voor aliassen met wildcard/catch-all (`*`) noch reguliere expressies.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+In tegenstelling tot mailsystemen zoals `postfix` (bijv. die de `sieve` vacation filter extensie gebruiken) – voegt Forward Email automatisch je DKIM-handtekening toe, voorkomt het problemen met verbindingen bij het verzenden van vakantie-antwoorden (bijv. door veelvoorkomende SSL/TLS verbindingsproblemen en legacy onderhouden servers), en ondersteunt het zelfs Open WKD en PGP-encryptie voor vakantie-antwoorden.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* Om misbruik te voorkomen, wordt er 1 outbound SMTP-credit afgetrokken voor elk verzonden vakantie-responder bericht.
+  * Alle betaalde accounts bevatten standaard 300 credits per dag. Als je een groter aantal nodig hebt, neem dan contact met ons op.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. We sturen slechts één keer per [toegelaten](#do-you-have-an-allowlist) afzender elke 4 dagen (wat vergelijkbaar is met het gedrag van Gmail).
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Onze Redis-cache gebruikt een vingerafdruk van `alias_id` en `sender`, waarbij `alias_id` de alias MongoDB ID is en `sender` ofwel het From-adres (als toegelaten) of het rootdomein in het From-adres (als niet toegelaten). Voor de eenvoud is de vervaltijd van deze vingerafdruk in de cache ingesteld op 4 dagen.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * Onze aanpak om het rootdomein te gebruiken dat geparsed is uit het From-adres voor niet-toegelaten afzenders voorkomt misbruik door relatief onbekende afzenders (bijv. kwaadwillenden) die vakantie-responder berichten willen overspoelen.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. We sturen alleen als de MAIL FROM en/of From niet leeg is en geen (hoofdletterongevoelige) [postmaster gebruikersnaam](#what-are-postmaster-addresses) bevat (het gedeelte vóór de @ in een e-mailadres).
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. We sturen niet als het originele bericht een van de volgende headers bevatte (hoofdletterongevoelig):
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * Header `auto-submitted` met een waarde ongelijk aan `no`.
+   * Header `x-auto-response-suppress` met een waarde van `dr`, `autoreply`, `auto-reply`, `auto_reply`, of `all`.
+   * Header `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, of `x-auto-respond` (ongeacht de waarde).
+   * Header `precedence` met een waarde van `bulk`, `autoreply`, `auto-reply`, `auto_reply`, of `list`.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. We sturen niet als het MAIL FROM of From e-mailadres eindigt op `+donotreply`, `-donotreply`, `+noreply`, of `-noreply`.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. We sturen niet als het gebruikersnaamgedeelte van het From e-mailadres `mdaemon` was en het een hoofdletterongevoelige header `X-MDDSN-Message` had.
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. We sturen niet als er een hoofdletterongevoelige `content-type` header was van `multipart/report`.
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Hoe stel ik SPF in voor Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+Gebruik de DNS-beheerpagina van je registrar en stel het volgende <strong class="notranslate">TXT</strong> record in:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2035,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Als je Gmail gebruikt (bijv. Send Mail As) of G Suite, dan moet je <code>include:_spf.google.com</code> toevoegen aan bovenstaande waarde, bijvoorbeeld:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Als u Microsoft Outlook of Live.com gebruikt, moet u <code>include:spf.protection.outlook.com</code> toevoegen aan uw SPF <strong class="notranslate">TXT</strong>-record, bijvoorbeeld:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1811,447 +2061,498 @@ Using your registrar's DNS management page, set the following <strong class="not
     Tip:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    Als u al een vergelijkbare regel met "v=spf1" hebt, moet u <code>include:spf.forwardemail.net</code> toevoegen direct vóór bestaande "include:host.com" records en vóór de "-all" in dezelfde regel, bijvoorbeeld:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    Let op dat er een verschil is tussen "-all" en "~all". De "-" geeft aan dat de SPF-controle MOET FAILEN als het niet overeenkomt, en "~" geeft aan dat de SPF-controle SOFTFAIL moet zijn. Wij raden aan de "-all" methode te gebruiken om domeinvervalsing te voorkomen.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    Mogelijk moet u ook het SPF-record opnemen voor de host waarvan u e-mail verzendt (bijv. Outlook).
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Hoe stel ik DKIM in voor Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Uitgaande SMTP-configuratie en volg de installatie-instructies.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Hoe stel ik DMARC in voor Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Uitgaande SMTP-configuratie en volg de installatie-instructies.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### Hoe bekijk ik DMARC-rapporten {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email biedt een uitgebreid DMARC-rapportagedashboard waarmee u de prestaties van uw e-mailauthenticatie over al uw domeinen vanuit één interface kunt volgen.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**Wat zijn DMARC-rapporten?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+DMARC (Domain-based Message Authentication, Reporting, and Conformance) rapporten zijn XML-bestanden die door ontvangende mailservers worden verzonden en u vertellen hoe uw e-mails worden geverifieerd. Deze rapporten helpen u te begrijpen:
+
+* Hoeveel e-mails er vanaf uw domein worden verzonden
+* Of die e-mails SPF- en DKIM-authenticatie doorstaan
+* Welke acties ontvangende servers ondernemen (accepteren, in quarantaine plaatsen of weigeren)
+* Welke IP-adressen namens uw domein e-mail verzenden
+
+**Hoe krijg ik toegang tot DMARC-rapporten**
+
+Ga naar <a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> DMARC-rapporten</a> om uw dashboard te bekijken. U kunt ook domeinspecifieke rapporten openen via <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> door op de knop "DMARC" naast een domein te klikken.
+
+**Dashboardfuncties**
+
+Het DMARC-rapportagedashboard biedt:
+
+* **Samenvattende statistieken**: Totaal ontvangen rapporten, totaal geanalyseerde berichten, SPF-uitlijningspercentage, DKIM-uitlijningspercentage en algemene slaagpercentage
+* **Berichten in de tijd-grafiek**: Visuele trend van e-mailvolume en authenticatiepercentages over de afgelopen 30 dagen
+* **Uitlijningssamenvatting**: Donutgrafiek die de verdeling van SPF- versus DKIM-uitlijning toont
+* **Berichtdispositie**: Gestapelde staafgrafiek die laat zien hoe ontvangende servers uw e-mails hebben behandeld (geaccepteerd, in quarantaine geplaatst of geweigerd)
+* **Recente rapportentabel**: Gedetailleerde lijst van individuele DMARC-rapporten met filter- en paginatiemogelijkheden
+* **Domeinfiltering**: Filter rapporten op specifiek domein bij het beheren van meerdere domeinen
+**Waarom Dit Belangrijk Is**
+
+Voor organisaties die meerdere domeinen beheren (zoals ondernemingen, non-profitorganisaties of bureaus), zijn DMARC-rapporten essentieel voor:
+
+* **Het identificeren van ongeautoriseerde afzenders**: Detecteer of iemand je domein spoofet
+* **Het verbeteren van de afleverbaarheid**: Zorg ervoor dat je legitieme e-mails authenticatie doorstaan
+* **Het monitoren van e-mailinfrastructuur**: Volg welke diensten en IP's namens jou verzenden
+* **Naleving**: Behoud zichtbaarheid in e-mailauthenticatie voor beveiligingsaudits
+
+In tegenstelling tot andere diensten die aparte DMARC-monitoringtools vereisen, bevat Forward Email DMARC-rapportverwerking en visualisatie als onderdeel van je account zonder extra kosten.
+
+**Vereisten**
+
+* DMARC-rapporten zijn alleen beschikbaar voor betaalde abonnementen
+* Je domein moet DMARC geconfigureerd hebben (zie [Hoe stel ik DMARC in voor Forward Email](#how-do-i-set-up-dmarc-for-forward-email))
+* Rapporten worden automatisch verzameld wanneer ontvangende mailservers ze naar je geconfigureerde DMARC-rapportageadres sturen
+
+**Wekelijkse E-mailrapporten**
+
+Gebruikers met een betaald abonnement ontvangen automatisch wekelijkse samenvattingen van DMARC-rapporten via e-mail. Deze e-mails bevatten:
+
+* Samenvattende statistieken voor al je domeinen
+* SPF- en DKIM-uitlijningspercentages
+* Overzicht van berichtafhandeling (geaccepteerd, in quarantaine, geweigerd)
+* Top rapporterende organisaties (Google, Microsoft, Yahoo, enz.)
+* IP-adressen met uitlijningsproblemen die mogelijk aandacht vereisen
+* Directe links naar je DMARC-rapportagedashboard
+
+Wekelijkse rapporten worden automatisch verzonden en kunnen niet afzonderlijk worden uitgeschakeld van andere e-mailmeldingen.
+
+### Hoe verbind en configureer ik mijn contacten {#how-do-i-connect-and-configure-my-contacts}
+
+**Om je contacten te configureren, gebruik de CardDAV-URL van:** `https://carddav.forwardemail.net` (of gewoon `carddav.forwardemail.net` als je client dit toestaat)
+
+### Hoe verbind en configureer ik mijn agenda's {#how-do-i-connect-and-configure-my-calendars}
+
+**Om je agenda te configureren, gebruik de CalDAV-URL van:** `https://caldav.forwardemail.net` (of gewoon `caldav.forwardemail.net` als je client dit toestaat)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### Hoe voeg ik meer agenda's toe en beheer ik bestaande agenda's {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+Als je extra agenda's wilt toevoegen, voeg dan gewoon een nieuwe agenda-URL toe van: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**vergeet niet `calendar-name` te vervangen door de gewenste agendanaam**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+Je kunt de naam en kleur van een agenda na aanmaak wijzigen – gebruik gewoon je favoriete agenda-applicatie (bijv. Apple Mail of [Thunderbird](https://thunderbird.net)).
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### Hoe verbind en configureer ik taken en herinneringen {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**Om taken en herinneringen te configureren, gebruik je dezelfde CalDAV-URL als voor agenda's:** `https://caldav.forwardemail.net` (of gewoon `caldav.forwardemail.net` als je client dit toestaat)
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+Taken en herinneringen worden automatisch gescheiden van agendagebeurtenissen in hun eigen "Herinneringen" of "Taken" agenda-collectie.
 
-**Setup instructions by platform:**
+**Installatie-instructies per platform:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. Voeg een nieuw CalDAV-account toe in Systeemvoorkeuren > Internetaccounts (of Instellingen > Accounts op iOS)
+2. Gebruik `caldav.forwardemail.net` als server
+3. Voer je Forward Email-alias en gegenereerd wachtwoord in
+4. Na installatie zie je zowel "Agenda" als "Herinneringen" collecties
+5. Gebruik de Herinneringen-app om taken te maken en beheren
 
-**Android with Tasks.org:**
+**Android met Tasks.org:**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Installeer Tasks.org vanuit Google Play Store of F-Droid
+2. Ga naar Instellingen > Synchronisatie > Account toevoegen > CalDAV
+3. Voer server in: `https://caldav.forwardemail.net`
+4. Voer je Forward Email-alias en gegenereerd wachtwoord in
+5. Tasks.org ontdekt automatisch je takenagenda's
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Installeer de Lightning-add-on als deze nog niet geïnstalleerd is
+2. Maak een nieuwe agenda aan met type "CalDAV"
+3. Gebruik URL: `https://caldav.forwardemail.net`
+4. Voer je Forward Email-inloggegevens in
+5. Zowel evenementen als taken zijn beschikbaar in de agenda-interface
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### Waarom kan ik geen taken aanmaken in macOS Herinneringen {#why-cant-i-create-tasks-in-macos-reminders}
+Als je problemen hebt met het aanmaken van taken in macOS Herinneringen, probeer dan deze stappen voor probleemoplossing:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **Controleer accountinstellingen**: Zorg ervoor dat je CalDAV-account correct is geconfigureerd met `caldav.forwardemail.net`
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **Controleer aparte agenda's**: Je zou zowel "Agenda" als "Herinneringen" in je account moeten zien. Als je alleen "Agenda" ziet, is de taakondersteuning mogelijk nog niet volledig geactiveerd.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **Ververs account**: Probeer je CalDAV-account te verwijderen en opnieuw toe te voegen in Systeemvoorkeuren > Internetaccounts
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **Controleer serververbinding**: Test of je toegang hebt tot `https://caldav.forwardemail.net` in je browser
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **Controleer inloggegevens**: Zorg dat je het juiste alias-e-mailadres en het gegenereerde wachtwoord gebruikt (niet je accountwachtwoord)
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **Forceer synchronisatie**: Probeer in de Herinneringen-app een taak aan te maken en vervolgens handmatig de synchronisatie te verversen
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**Veelvoorkomende problemen:**
 
-**Common issues:**
+* **"Herinneringen-agenda niet gevonden"**: De server heeft mogelijk even tijd nodig om de Herinneringen-collectie aan te maken bij de eerste toegang
+* **Taken synchroniseren niet**: Controleer of beide apparaten dezelfde CalDAV-accountgegevens gebruiken
+* **Gemengde inhoud**: Zorg dat taken worden aangemaakt in de "Herinneringen" agenda, niet in de algemene "Agenda"
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### Hoe stel ik Tasks.org in op Android {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.org is een populaire open-source takenbeheerder die uitstekend werkt met Forward Email's CalDAV-taakondersteuning.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**Installatie en configuratie:**
 
-**Installation and Setup:**
+1. **Installeer Tasks.org**:
+   * Vanuit Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * Vanuit F-Droid: [Tasks.org op F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
-
-2. **Configure CalDAV sync**:
+2. **Configureer CalDAV-synchronisatie**:
    * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+   * Ga naar ☰ Menu > Instellingen > Synchronisatie
+   * Tik op "Account toevoegen"
+   * Selecteer "CalDAV"
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+3. **Voer Forward Email-instellingen in**:
+   * **Server-URL**: `https://caldav.forwardemail.net`
+   * **Gebruikersnaam**: Je Forward Email alias (bijv. `jij@jouwdomein.com`)
+   * **Wachtwoord**: Je alias-specifiek gegenereerde wachtwoord
+   * Tik op "Account toevoegen"
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+4. **Accountdetectie**:
+   * Tasks.org zal automatisch je taakagenda's ontdekken
+   * Je zou je "Herinneringen" collectie moeten zien verschijnen
+   * Tik op "Abonneren" om synchronisatie voor de taakagenda in te schakelen
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+5. **Test synchronisatie**:
+   * Maak een testtaak aan in Tasks.org
+   * Controleer of deze verschijnt in andere CalDAV-clients (zoals macOS Herinneringen)
+   * Verifieer dat wijzigingen in beide richtingen synchroniseren
 
-**Features available:**
+**Beschikbare functies:**
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+* ✅ Taak aanmaken en bewerken
+* ✅ Vervaldatums en herinneringen
+* ✅ Taakvoltooiing en status
+* ✅ Prioriteitsniveaus
+* ✅ Subtaken en taakhiërarchie
+* ✅ Labels en categorieën
+* ✅ Tweezijdige synchronisatie met andere CalDAV-clients
 
-**Troubleshooting:**
+**Probleemoplossing:**
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+* Als er geen taakagenda's verschijnen, probeer dan handmatig te verversen in de instellingen van Tasks.org
+* Zorg dat je minstens één taak op de server hebt aangemaakt (je kunt er eerst één aanmaken in macOS Herinneringen)
+* Controleer netwerkverbinding met `caldav.forwardemail.net`
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+### Hoe stel ik SRS in voor Forward Email {#how-do-i-set-up-srs-for-forward-email}
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+We configureren automatisch [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – je hoeft dit zelf niet te doen.
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+### Hoe stel ik MTA-STS in voor Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+Zie [onze sectie over MTA-STS](#do-you-support-mta-sts) voor meer informatie.
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+### Hoe voeg ik een profielfoto toe aan mijn e-mailadres {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-If you're using Gmail, then follow these steps below:
+Als je Gmail gebruikt, volg dan onderstaande stappen:
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+1. Ga naar <https://google.com> en log uit bij alle e-mailaccounts
+2. Klik op "Inloggen" en klik in het dropdownmenu op "ander account"
+3. Selecteer "Gebruik een ander account"
+4. Selecteer "Account aanmaken"
+5. Selecteer "Gebruik in plaats daarvan mijn huidige e-mailadres"
+6. Voer je e-mailadres van je eigen domein in
+7. Haal de verificatiemail op die naar je e-mailadres is gestuurd
+8. Voer de verificatiecode uit deze mail in
+9. Vul de profielinformatie in voor je nieuwe Google-account
+10. Ga akkoord met alle privacy- en gebruiksvoorwaarden
+11. Ga naar <https://google.com> en klik rechtsboven op je profielfoto, klik op de knop "wijzigen"
+12. Upload een nieuwe foto of avatar voor je account
+13. Wijzigingen worden binnen ongeveer 1-2 uur doorgevoerd, maar soms kan het ook sneller zijn.
+14. Stuur een testmail en de profielfoto zou moeten verschijnen.
+## Geavanceerde Functies {#advanced-features}
 
-## Advanced Features {#advanced-features}
+### Ondersteunt u nieuwsbrieven of mailinglijsten voor marketing gerelateerde e-mail {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+Ja, u kunt meer lezen op <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+Houd er rekening mee dat om de IP-reputatie te behouden en de afleverbaarheid te waarborgen, Forward Email een handmatig beoordelingsproces per domein heeft voor **goedkeuring van nieuwsbrieven**. Stuur een e-mail naar <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) voor goedkeuring. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat uw e-mails de inbox bereiken en uw berichten niet als spam worden gemarkeerd.
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+### Ondersteunt u het verzenden van e-mail via API {#do-you-support-sending-email-with-api}
 
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+Ja, sinds mei 2023 ondersteunen we het verzenden van e-mail via API als een add-on voor alle betaalde gebruikers.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Zorg ervoor dat u onze <a href="/terms" class="alert-link" target="_blank">Voorwaarden</a>, <a href="/privacy" class="alert-link" target="_blank">Privacybeleid</a> en <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP-limieten</a> hebt gelezen – uw gebruik wordt beschouwd als erkenning en akkoord.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+Bekijk onze sectie over [E-mails](/email-api#outbound-emails) in onze API-documentatie voor opties, voorbeelden en meer inzicht.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+Om uitgaande e-mail te verzenden met onze API, moet u uw API-token gebruiken dat beschikbaar is onder [Mijn Beveiliging](/my-account/security).
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### Ondersteunt u het ontvangen van e-mail via IMAP {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Ja, sinds 16 oktober 2023 ondersteunen we het ontvangen van e-mail via IMAP als een add-on voor alle betaalde gebruikers.  **Lees alstublieft ons diepgaande artikel** over [hoe onze versleutelde SQLite mailbox opslagfunctie werkt](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Zorg ervoor dat u onze <a href="/terms" class="alert-link" target="_blank">Voorwaarden</a> en <a href="/privacy" class="alert-link" target="_blank">Privacybeleid</a> hebt gelezen – uw gebruik wordt beschouwd als erkenning en akkoord.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Maak een nieuw alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast het nieuw aangemaakte alias.  Kopieer naar uw klembord en bewaar het gegenereerde wachtwoord veilig dat op het scherm wordt weergegeven.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Gebruik uw favoriete e-mailapplicatie om een account toe te voegen of te configureren met uw nieuw aangemaakte alias (bijv. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We raden aan <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> of <a href="/blog/open-source" class="alert-link" target="_blank">een open-source en privacygerichte alternatief</a> te gebruiken.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. Wanneer u wordt gevraagd om de IMAP-servernaam, voer in `imap.forwardemail.net`
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. Wanneer u wordt gevraagd om de IMAP-serverpoort, voer in `993` (SSL/TLS) – zie [alternatieve IMAP-poorten](/faq#what-are-your-imap-server-configuration-settings) indien nodig
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Als u Thunderbird gebruikt, zorg er dan voor dat "Verbindingsbeveiliging" is ingesteld op "SSL/TLS" en de authenticatiemethode is ingesteld op "Normaal wachtwoord".</span>
    </div>
+6. Wanneer om het IMAP-serverwachtwoord wordt gevraagd, plak dan het wachtwoord van <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> in stap 2 hierboven
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Sla uw instellingen op** – als u problemen ondervindt, neem dan <a href="/help">contact met ons op</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gefeliciteerd!
     </strong>
     <span>
-      You've successfully completed all steps.
+      U heeft alle stappen succesvol voltooid.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### Ondersteunt u POP3 {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Ja, vanaf 4 december 2023 ondersteunen we [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) als een add-on voor alle betalende gebruikers.  **Lees alstublieft ons diepgaande artikel** over [hoe onze versleutelde SQLite mailboxopslagfunctie werkt](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    Zorg ervoor dat u onze <a href="/terms" class="alert-link" target="_blank">Voorwaarden</a> en <a href="/privacy" class="alert-link" target="_blank">Privacybeleid</a> hebt gelezen – uw gebruik wordt beschouwd als erkenning en instemming.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Maak een nieuw alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast het nieuw aangemaakte alias.  Kopieer naar uw klembord en bewaar het gegenereerde wachtwoord veilig dat op het scherm wordt weergegeven.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. Voeg met uw favoriete e-mailapplicatie een account toe of configureer een account met uw nieuw aangemaakte alias (bijv. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We raden aan om <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, of <a href="/blog/open-source" class="alert-link" target="_blank">een open-source en privacygerichte alternatief</a> te gebruiken.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. Wanneer om de POP3-servernaam wordt gevraagd, voer in `pop3.forwardemail.net`
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. Wanneer om de POP3-serverpoort wordt gevraagd, voer in `995` (SSL/TLS) – zie [alternatieve POP3-poorten](/faq#what-are-your-pop3-server-configuration-settings) indien nodig
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Als u Thunderbird gebruikt, zorg er dan voor dat "Verbindingsbeveiliging" is ingesteld op "SSL/TLS" en de authenticatiemethode is ingesteld op "Normaal wachtwoord".</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. Wanneer om het POP3-serverwachtwoord wordt gevraagd, plak dan het wachtwoord van <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> in stap 2 hierboven
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **Sla uw instellingen op** – als u problemen ondervindt, neem dan <a href="/help">contact met ons op</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gefeliciteerd!
     </strong>
     <span>
-      You've successfully completed all steps.
+      U heeft alle stappen succesvol voltooid.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### Ondersteunt u agenda's (CalDAV) {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Ja, vanaf 5 februari 2024 hebben we deze functie toegevoegd. Onze server is `caldav.forwardemail.net` en wordt ook gemonitord op onze <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statuspagina</a>.
+Het ondersteunt zowel IPv4 als IPv6 en is beschikbaar via poort `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| Inloggen | Voorbeeld                  | Beschrijving                                                                                                                                                                              |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Gebruikersnaam | `user@example.com`         | E-mailadres van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>. |
+| Wachtwoord | `************************` | Alias-specifiek gegenereerd wachtwoord.                                                                                                                                                   |
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+Om kalenderondersteuning te gebruiken, moet de **gebruiker** het e-mailadres zijn van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> – en het **wachtwoord** moet een alias-specifiek gegenereerd wachtwoord zijn.
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+### Ondersteunt u taken en herinneringen (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+Ja, sinds 14 oktober 2025 hebben we CalDAV VTODO-ondersteuning toegevoegd voor taken en herinneringen. Dit gebruikt dezelfde server als onze kalenderondersteuning: `caldav.forwardemail.net`.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+Onze CalDAV-server ondersteunt zowel kalenderevenementen (VEVENT) als taken (VTODO) componenten met behulp van **geünificeerde kalenders**. Dit betekent dat elke kalender zowel evenementen als taken kan bevatten, wat maximale flexibiliteit en compatibiliteit biedt met alle CalDAV-clients.
 
-**How calendars and lists work:**
+**Hoe kalenders en lijsten werken:**
 
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+* **Elke kalender ondersteunt zowel evenementen als taken** - Je kunt evenementen, taken of beide toevoegen aan elke kalender
+* **Apple Herinneringen-lijsten** - Elke lijst die je maakt in Apple Herinneringen wordt een aparte kalender op de server
+* **Meerdere kalenders** - Je kunt zoveel kalenders maken als je nodig hebt, elk met een eigen naam, kleur en organisatie
+* **Synchronisatie tussen clients** - Taken en evenementen synchroniseren naadloos tussen alle compatibele clients
 
-**Supported task clients:**
+**Ondersteunde taakclients:**
 
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
+* **macOS Herinneringen** - Volledige native ondersteuning voor het aanmaken, bewerken, voltooien en synchroniseren van taken
+* **iOS Herinneringen** - Volledige native ondersteuning op alle iOS-apparaten
+* **Tasks.org (Android)** - Populaire open-source takenbeheerder met CalDAV-synchronisatie
+* **Thunderbird** - Taak- en kalenderondersteuning in desktop e-mailclient
+* **Elke CalDAV-compatibele takenbeheerder** - Standaard VTODO-componentondersteuning
 
-**Task features supported:**
+**Ondersteunde taakfuncties:**
 
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
+* Aanmaken, bewerken en verwijderen van taken
+* Vervaldatums en startdatums
+* Taakvoltooiingsstatus (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Taakprioriteitsniveaus
+* Terugkerende taken
+* Taakomschrijvingen en notities
+* Synchronisatie op meerdere apparaten
+* Subtaken met RELATED-TO-eigenschap
+* Taakherinneringen met VALARM
 
-The login credentials are the same as for calendar support:
+De inloggegevens zijn hetzelfde als voor kalenderondersteuning:
 
-| Login | Example | Description |
+| Inloggen | Voorbeeld                  | Beschrijving                                                                                                                                                                              |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Gebruikersnaam | `user@example.com`         | E-mailadres van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>. |
+| Wachtwoord | `************************` | Alias-specifiek gegenereerd wachtwoord.                                                                                                                                                   |
 
-**Important notes:**
+**Belangrijke opmerkingen:**
 
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
+* **Elke Herinneringen-lijst is een aparte kalender** - Wanneer je een nieuwe lijst maakt in Apple Herinneringen, wordt er een nieuwe kalender aangemaakt op de CalDAV-server
+* **Thunderbird-gebruikers** - Je moet handmatig abonneren op elke kalender/lijst die je wilt synchroniseren, of gebruik maken van de kalender home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple-gebruikers** - Kalenderontdekking gebeurt automatisch, dus al je kalenders en lijsten verschijnen in Calendar.app en Reminders.app
+* **Geünificeerde kalenders** - Alle kalenders ondersteunen zowel evenementen als taken, wat je flexibiliteit geeft in hoe je je gegevens organiseert
+### Ondersteunt u contacten (CardDAV) {#do-you-support-contacts-carddav}
 
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
+Ja, vanaf 12 juni 2025 hebben we deze functie toegevoegd. Onze server is `carddav.forwardemail.net` en wordt ook gemonitord op onze <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statuspagina</a>.
 
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Het ondersteunt zowel IPv4 als IPv6 en is beschikbaar via poort `443` (HTTPS).
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
+| Inloggen | Voorbeeld                  | Beschrijving                                                                                                                                                                              |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| Gebruikersnaam | `user@example.com`         | E-mailadres van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>. |
+| Wachtwoord | `************************` | Alias-specifiek gegenereerd wachtwoord.                                                                                                                                                   |
 
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+Om contactondersteuning te gebruiken, moet de **gebruiker** het e-mailadres zijn van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> – en het **wachtwoord** moet een alias-specifiek gegenereerd wachtwoord zijn.
 
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
+### Ondersteunt u het verzenden van e-mail met SMTP {#do-you-support-sending-email-with-smtp}
 
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+Ja, vanaf mei 2023 ondersteunen we het verzenden van e-mail met SMTP als een add-on voor alle betaalde gebruikers.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    Zorg ervoor dat u onze <a href="/terms" class="alert-link" target="_blank">Voorwaarden</a>, <a href="/privacy" class="alert-link" target="_blank">Privacybeleid</a> en <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP-limieten</a> hebt gelezen – uw gebruik wordt beschouwd als erkenning en akkoord.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Als u Gmail gebruikt, raadpleeg dan onze <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Handleiding Verzenden als met Gmail</a>. Als u een ontwikkelaar bent, raadpleeg dan onze <a class="alert-link" href="/email-api#outbound-emails" target="_blank">e-mail API-documentatie</a>.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Outbound SMTP-configuratie en volg de installatie-instructies
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Maak een nieuwe alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast de nieuw aangemaakte alias. Kopieer naar uw klembord en bewaar het gegenereerde wachtwoord dat op het scherm wordt weergegeven veilig.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. Gebruik uw favoriete e-mailapplicatie om een account toe te voegen of te configureren met uw nieuw aangemaakte alias (bijv. <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We raden aan om <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> of <a href="/blog/open-source" class="alert-link" target="_blank">een open-source en privacygerichte alternatief</a> te gebruiken.</span>
    </div>
+5. Wanneer u wordt gevraagd om de naam van de SMTP-server, voer dan `smtp.forwardemail.net` in
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. Wanneer u wordt gevraagd om de poort van de SMTP-server, voer dan `465` (SSL/TLS) in – zie [alternatieve SMTP-poorten](/faq#what-are-your-smtp-server-configuration-settings) indien nodig
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Als u Thunderbird gebruikt, zorg er dan voor dat "Verbindingsbeveiliging" is ingesteld op "SSL/TLS" en dat de authenticatiemethode is ingesteld op "Normaal wachtwoord".</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. Wanneer u wordt gevraagd om het wachtwoord van de SMTP-server, plak dan het wachtwoord van <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> in stap 3 hierboven
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **Sla uw instellingen op en stuur uw eerste testmail** – als u problemen ondervindt, neem dan contact met ons op via <a href="/help">contact</a>
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    Houd er rekening mee dat we om de IP-reputatie te behouden en de afleverbaarheid te waarborgen, een handmatig beoordelingsproces per domein hebben voor goedkeuring van uitgaande SMTP. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat uw e-mails de inbox bereiken en uw berichten niet als spam worden gemarkeerd.
   </span>
 </div>
 
@@ -2259,98 +2560,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gefeliciteerd!
     </strong>
     <span>
-      You've successfully completed all steps.
+      U heeft alle stappen succesvol voltooid.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### Ondersteunt u OpenPGP/MIME, end-to-end encryptie ("E2EE") en Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Ja, wij ondersteunen [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryptie ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), en het vinden van publieke sleutels via [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD). U kunt OpenPGP configureren met [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) of [host uw eigen sleutels](https://wiki.gnupg.org/WKDHosting) (raadpleeg [deze gist voor WKD-serverconfiguratie](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* WKD-zoekopdrachten worden 1 uur gecachet om tijdige e-mailbezorging te garanderen → als u uw WKD-sleutel toevoegt, wijzigt of verwijdert, stuur dan een e-mail naar `support@forwardemail.net` met uw e-mailadres zodat wij de cache handmatig kunnen legen.
+* Wij ondersteunen PGP-encryptie voor berichten die worden doorgestuurd via WKD-zoekopdracht of met een geüploade PGP-sleutel via onze interface.
+* Geüploade sleutels hebben voorrang zolang het PGP-vakje is ingeschakeld/aangevinkt.
+* Berichten die naar webhooks worden gestuurd, zijn momenteel niet versleuteld met PGP.
+* Als u meerdere aliassen heeft die overeenkomen met een bepaald doorstuuradres (bijv. regex/wildcard/exacte combinatie) en als meer dan één hiervan een geüploade PGP-sleutel bevat en PGP is aangevinkt → dan sturen wij u een foutmelding per e-mail en versleutelen wij het bericht niet met uw geüploade PGP-sleutel. Dit is zeer zeldzaam en geldt meestal alleen voor gevorderde gebruikers met complexe aliasregels.
+* **PGP-encryptie wordt niet toegepast op e-maildoorsturing via onze MX-servers als de afzender een DMARC-beleid van reject had. Als u PGP-encryptie op *alle* mail wilt, raden wij aan onze IMAP-service te gebruiken en uw PGP-sleutel voor uw alias te configureren voor inkomende mail.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**U kunt uw Web Key Directory-configuratie valideren op <https://wkd.chimbosonic.com/> (open-source) of <https://www.webkeydirectory.com/> (proprietair).**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    Automatische encryptie:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>Als u onze <a href="#do-you-support-sending-email-with-smtp" class="alert-link">uitgaande SMTP-service</a> gebruikt en onversleutelde berichten verstuurt, zullen wij automatisch proberen berichten per ontvanger te versleutelen met behulp van <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    U moet alle onderstaande stappen volgen om OpenPGP in te schakelen voor uw aangepaste domeinnaam.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. Download en installeer de aanbevolen plugin voor uw e-mailclient hieronder:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | E-mailclient   | Platform | Aanbevolen plugin                                                                                                                                                                    | Opmerkingen                                                                                                                                                                                                                                                                                                                                                                                                                              |
+   | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird    | Desktop  | [OpenPGP configureren in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird heeft ingebouwde ondersteuning voor OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                |
+   | Gmail          | Browser  | [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) (proprietaire licentie)                                                                        | Gmail ondersteunt OpenPGP niet, maar u kunt de open-source plugin [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) downloaden.                                                                                                                                                                                                                                                                       |
+   | Apple Mail     | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                        | Apple Mail ondersteunt OpenPGP niet, maar u kunt de open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) downloaden.                                                                                                                                                                                                                                                           |
+   | Apple Mail     | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) of [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietaire licentie)                       | Apple Mail ondersteunt OpenPGP niet, maar u kunt de open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) of [FlowCrypt](https://flowcrypt.com/download) downloaden.                                                                                                                                                                                                                                                      |
+   | Outlook        | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                        | De desktop mailclient van Outlook ondersteunt OpenPGP niet, maar u kunt de open-source plugin [gpg4win](https://www.gpg4win.de/index.html) downloaden.                                                                                                                                                                                                                                                                                  |
+   | Outlook        | Browser  | [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) (proprietaire licentie)                                                                        | De webmailclient van Outlook ondersteunt OpenPGP niet, maar u kunt de open-source plugin [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) downloaden.                                                                                                                                                                                                                                                |
+   | Android        | Mobiel   | [OpenKeychain](https://www.openkeychain.org/) of [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                   | [Android mailclients](/blog/open-source/android-email-clients) zoals [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) en [FairEmail](https://github.com/M66B/FairEmail) ondersteunen beide de open-source plugin [OpenKeychain](https://www.openkeychain.org/). U kunt ook de open-source (proprietaire licentie) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) gebruiken.                      |
+   | Google Chrome  | Browser  | [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) (proprietaire licentie)                                                                        | U kunt de open-source browserextensie [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) downloaden.                                                                                                                                                                                                                                                                                                   |
+   | Mozilla Firefox| Browser  | [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) (proprietaire licentie)                                                                        | U kunt de open-source browserextensie [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) downloaden.                                                                                                                                                                                                                                                                                                   |
+   | Microsoft Edge | Browser  | [Mailvelope](https://mailvelope.com/)                                                                                                                                               | U kunt de open-source browserextensie [Mailvelope](https://mailvelope.com/) downloaden.                                                                                                                                                                                                                                                                                                                                                  |
+   | Brave          | Browser  | [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) (proprietaire licentie)                                                                        | U kunt de open-source browserextensie [Mailvelope](https://mailvelope.com/) of [FlowCrypt](https://flowcrypt.com/download) downloaden.                                                                                                                                                                                                                                                                                                   |
+   | Balsa          | Desktop  | [OpenPGP configureren in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                        | Balsa heeft ingebouwde ondersteuning voor OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                      |
+   | KMail          | Desktop  | [OpenPGP configureren in KMail](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                           | KMail heeft ingebouwde ondersteuning voor OpenPGP.                                                                                                                                                                                                                                                                                                                                                                                      |
+   | GNOME Evolution| Desktop  | [OpenPGP configureren in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                         | GNOME Evolution heeft ingebouwde ondersteuning voor OpenPGP.                                                                                                                                                                                                                                                                                                                                                                            |
+   | Terminal       | Desktop  | [gpg configureren in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                     | U kunt de open-source [gpg command line tool](https://www.gnupg.org/download/) gebruiken om een nieuwe sleutel via de opdrachtregel te genereren.                                                                                                                                                                                                                                                                                        |
+2. Open de plugin, maak je publieke sleutel aan en configureer je e-mailclient om deze te gebruiken.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. Upload je publieke sleutel op <https://keys.openpgp.org/upload>.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>Je kunt <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> bezoeken om je sleutel in de toekomst te beheren.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       Optionele toevoeging:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       Als je onze <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">versleutelde opslag (IMAP/POP3)</a> service gebruikt en wilt dat <i>alle</i> e-mail die in je (al versleutelde) SQLite-database wordt opgeslagen, wordt versleuteld met je publieke sleutel, ga dan naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Bewerken <i class="fa fa-angle-right"></i> OpenPGP en upload je publieke sleutel.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. Voeg een nieuw `CNAME` record toe aan je domeinnaam (bijv. `example.com`):
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>Naam/Host/Alias</th>
          <th class="text-center">TTL</th>
          <th>Type</th>
-         <th>Answer/Value</th>
+         <th>Antwoord/Waarde</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,90 +2662,272 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>Als je alias gebruikmaakt van onze <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domeinen</a> (bijv. <code>hideaddress.net</code>), dan kun je deze stap overslaan.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      Gefeliciteerd!
     </strong>
     <span>
-      You've successfully completed all steps.
+      Je hebt alle stappen succesvol voltooid.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### Ondersteunen jullie S/MIME-encryptie {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+Ja, wij ondersteunen [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) encryptie zoals gedefinieerd in [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551). S/MIME biedt end-to-end encryptie met behulp van X.509-certificaten, die breed worden ondersteund door zakelijke e-mailclients.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+We ondersteunen zowel RSA- als ECC (Elliptic Curve Cryptography) certificaten:
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **RSA-certificaten**: minimaal 2048-bit, aanbevolen 4096-bit
+* **ECC-certificaten**: P-256, P-384 en P-521 NIST-curves
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+Om S/MIME-encryptie voor je alias te configureren:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. Verkrijg een S/MIME-certificaat van een vertrouwde Certificate Authority (CA) of genereer een zelfondertekend certificaat voor testdoeleinden.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>Gratis S/MIME-certificaten zijn beschikbaar bij aanbieders zoals <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> of <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. Exporteer je certificaat in PEM-formaat (alleen het publieke certificaat, niet de private sleutel).
 
-Learn more about passkeys at the following links:
+3. Ga naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Bewerken <i class="fa fa-angle-right"></i> S/MIME en upload je publieke certificaat.
+4. Zodra geconfigureerd, worden alle binnenkomende e-mails naar uw alias versleuteld met uw S/MIME-certificaat voordat ze worden opgeslagen of doorgestuurd.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Opmerking:
+     </strong>
+     <span>
+       S/MIME-versleuteling wordt toegepast op binnenkomende berichten die nog niet versleuteld zijn. Als een bericht al versleuteld is met OpenPGP of S/MIME, wordt het niet opnieuw versleuteld.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Belangrijk:
+     </strong>
+     <span>
+       S/MIME-versleuteling wordt niet toegepast op e-maildoorsturing via onze MX-servers als de afzender een DMARC-beleid van reject had. Als u S/MIME-versleuteling op <em>alle</em> mail nodig heeft, raden wij aan onze IMAP-service te gebruiken en uw S/MIME-certificaat te configureren voor uw alias voor inkomende mail.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+De volgende e-mailclients hebben ingebouwde S/MIME-ondersteuning:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| E-mailclient      | Platform | Opmerkingen                                                                                                         |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| Apple Mail        | macOS    | Ingebouwde S/MIME-ondersteuning. Ga naar Mail > Voorkeuren > Accounts > uw account > Vertrouwen om certificaten te configureren.      |
+| Apple Mail        | iOS      | Ingebouwde S/MIME-ondersteuning. Ga naar Instellingen > Mail > Accounts > uw account > Geavanceerd > S/MIME om te configureren.          |
+| Microsoft Outlook | Windows  | Ingebouwde S/MIME-ondersteuning. Ga naar Bestand > Opties > Vertrouwenscentrum > Instellingen Vertrouwenscentrum > E-mailbeveiliging om te configureren. |
+| Microsoft Outlook | macOS    | Ingebouwde S/MIME-ondersteuning. Ga naar Extra > Accounts > Geavanceerd > Beveiliging om te configureren.                                 |
+| Thunderbird       | Desktop  | Ingebouwde S/MIME-ondersteuning. Ga naar Accountinstellingen > End-To-End Encryptie > S/MIME om te configureren.                      |
+| GNOME Evolution   | Desktop  | Ingebouwde S/MIME-ondersteuning. Ga naar Bewerken > Voorkeuren > Mailaccounts > uw account > Beveiliging om te configureren.           |
+| KMail             | Desktop  | Ingebouwde S/MIME-ondersteuning. Ga naar Instellingen > Configureer KMail > Identiteiten > uw identiteit > Cryptografie om te configureren. |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Gefeliciteerd!
+    </strong>
+    <span>
+      U heeft S/MIME-versleuteling succesvol geconfigureerd voor uw alias.
+    </span>
+  </div>
+</div>
+
+### Ondersteunt u Sieve e-mailfiltering {#do-you-support-sieve-email-filtering}
+
+Ja! Wij ondersteunen [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) e-mailfiltering zoals gedefinieerd in [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve is een krachtige, gestandaardiseerde scripttaal voor server-side e-mailfiltering waarmee u binnenkomende berichten automatisch kunt organiseren, filteren en beantwoorden.
+
+#### Ondersteunde Sieve-extensies {#supported-sieve-extensions}
+
+Wij ondersteunen een uitgebreide set Sieve-extensies:
+
+| Extensie                    | RFC                                                                                    | Beschrijving                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Plaats berichten in specifieke mappen             |
+| `reject` / `ereject`         | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Weiger berichten met een foutmelding              |
+| `vacation`                   | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Automatische vakantie-/afwezigheidsantwoorden     |
+| `vacation-seconds`           | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Fijnmazige vakantieantwoordintervallen            |
+| `imap4flags`                 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Stel IMAP-vlaggen in (\Seen, \Flagged, enz.)      |
+| `envelope`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Test afzender/ontvanger van de envelop            |
+| `body`                       | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Test inhoud van het bericht                        |
+| `variables`                  | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sla variabelen op en gebruik ze in scripts        |
+| `relational`                 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Relationele vergelijkingen (groter dan, kleiner dan) |
+| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Numerieke vergelijkingen                           |
+| `copy`                       | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Kopieer berichten tijdens het doorsturen          |
+| `editheader`                 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Voeg berichtkoppen toe of verwijder ze            |
+| `date`                       | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Test datum/tijd waarden                            |
+| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Toegang tot specifieke header-voorkomens          |
+| `regex`                      | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Reguliere expressie matching                       |
+| `enotify`                    | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Verstuur notificaties (bijv. mailto:)              |
+| `environment`                | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Toegang tot omgevingsinformatie                    |
+| `mailbox`                    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Test bestaan mailbox, maak mailboxen aan           |
+| `special-use`                | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Plaats in speciale mailboxen (\Junk, \Trash)      |
+| `duplicate`                  | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Detecteer dubbele berichten                        |
+| `ihave`                      | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Test beschikbaarheid van extensies                 |
+| `subaddress`                 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Toegang tot user+detail adresdelen                 |
+#### Extensies Niet Ondersteund {#extensions-not-supported}
+
+De volgende extensies worden momenteel niet ondersteund:
+
+| Extensie                                                       | Reden                                                              |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `include`                                                       | Beveiligingsrisico (scriptinjectie) en vereist globale scriptopslag |
+| `mboxmetadata` / `servermetadata`                               | Vereist IMAP METADATA extensie-ondersteuning                        |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | Complexe MIME-boom manipulatie nog niet geïmplementeerd             |
+
+#### Voorbeeld Sieve Scripts {#example-sieve-scripts}
+
+**Nieuwsbrieven in een map plaatsen:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Automatisch antwoord bij afwezigheid:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "Ik ben momenteel afwezig en zal reageren zodra ik terug ben.";
+```
+
+**Berichten van belangrijke afzenders markeren:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**Spam afwijzen met specifieke onderwerpen:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Bericht afgewezen vanwege spaminhoud.";
+}
+```
+
+#### Sieve Scripts Beheren {#managing-sieve-scripts}
+
+Je kunt je Sieve scripts op verschillende manieren beheren:
+
+1. **Webinterface**: Ga naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen <i class="fa fa-angle-right"></i> Sieve Scripts om scripts aan te maken en te beheren.
+
+2. **ManageSieve Protocol**: Verbind met elke ManageSieve-compatibele client (zoals de Sieve add-on van Thunderbird of [sieve-connect](https://github.com/philpennock/sieve-connect)) met `imap.forwardemail.net`. Gebruik poort `2190` met STARTTLS (aanbevolen voor de meeste clients) of poort `4190` met impliciete TLS.
+
+3. **API**: Gebruik onze [REST API](/api#sieve-scripts) om scripts programmatisch te beheren.
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Opmerking:
+  </strong>
+  <span>
+    Sieve filtering wordt toegepast op binnenkomende berichten voordat ze in je mailbox worden opgeslagen. Scripts worden uitgevoerd op volgorde van prioriteit, en de eerste passende actie bepaalt hoe het bericht wordt afgehandeld.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Beveiliging:
+  </strong>
+  <span>
+    Om veiligheidsredenen zijn doorstuuracties beperkt tot 10 per script en 100 per dag. Afwezigheidsantwoorden zijn gelimiteerd om misbruik te voorkomen.
+  </span>
+</div>
+
+### Ondersteunen jullie MTA-STS {#do-you-support-mta-sts}
+
+Ja, sinds 2 maart 2023 ondersteunen we [MTA-STS](https://www.hardenize.com/blog/mta-sts). Je kunt [deze template](https://github.com/jpawlowski/mta-sts.template) gebruiken als je het op je domein wilt inschakelen.
+
+Onze configuratie is openbaar te vinden op GitHub via <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+
+### Ondersteunen jullie passkeys en WebAuthn {#do-you-support-passkeys-and-webauthn}
+
+Ja! Sinds 13 december 2023 hebben we ondersteuning toegevoegd voor passkeys [vanwege grote vraag](https://github.com/orgs/forwardemail/discussions/182).
+
+Passkeys stellen je in staat om veilig in te loggen zonder een wachtwoord en tweefactorauthenticatie.
+
+Je kunt je identiteit valideren met aanraking, gezichtsherkenning, apparaatgebonden wachtwoord of pincode.
+
+We laten je tot 30 passkeys tegelijk beheren, zodat je gemakkelijk met al je apparaten kunt inloggen.
+
+Lees meer over passkeys via de volgende links:
+
+* [Inloggen bij je apps en websites met passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Gebruik passkeys om in te loggen bij apps en websites op iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Wikipedia-artikel over Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Ondersteunt u de beste praktijken voor e-mail {#do-you-support-email-best-practices}
+
+Ja. We hebben ingebouwde ondersteuning voor SPF, DKIM, DMARC, ARC en SRS in alle plannen. We hebben ook uitgebreid samengewerkt met de oorspronkelijke auteurs van deze specificaties en andere e-mailexperts om perfectie en een hoge afleverbaarheid te garanderen.
+
+### Ondersteunt u bounce-webhooks {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+    Op zoek naar documentatie over e-mailwebhooks? Zie <a href="/faq#do-you-support-webhooks" class="alert-link">Ondersteunt u webhooks?</a> voor meer inzicht.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+Ja, vanaf 14 augustus 2024 hebben we deze functie toegevoegd. U kunt nu naar Mijn Account → Domeinen → Instellingen → Bounce Webhook URL gaan en een `http://` of `https://` URL configureren waar we een `POST`-verzoek naartoe sturen telkens wanneer uitgaande SMTP-e-mails bounce.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+Dit is nuttig voor u om uw uitgaande SMTP te beheren en te monitoren – en kan worden gebruikt om abonnees te onderhouden, afmeldingen te verwerken en te detecteren wanneer bounces optreden.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+Bounce webhook payloads worden verzonden als een JSON met deze eigenschappen:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (String) - e-mail-ID die overeenkomt met een e-mail in Mijn Account → E-mails (uitgaande SMTP)
+* `list_id` (String) - de waarde van de `List-ID` header (niet-hoofdlettergevoelig), indien aanwezig, uit de originele uitgaande e-mail
+* `list_unsubscribe` (String) - de waarde van de `List-Unsubscribe` header (niet-hoofdlettergevoelig), indien aanwezig, uit de originele uitgaande e-mail
+* `feedback_id` (String) - de waarde van de `Feedback-ID` header (niet-hoofdlettergevoelig), indien aanwezig, uit de originele uitgaande e-mail
+* `recipient` (String) - het e-mailadres van de ontvanger dat is gebounced of een fout gaf
+* `message` (String) - een gedetailleerd foutbericht voor de bounce
+* `response` (String) - het SMTP-responsbericht
+* `response_code` (Number) - de geparseerde SMTP-responscode
+* `truth_source` (String) - als de responscode van een vertrouwde bron kwam, wordt deze waarde gevuld met de root-domeinnaam (bijv. `google.com` of `yahoo.com`)
+* `bounce` (Object) - een object met de volgende eigenschappen die de bounce- en afwijzingsstatus beschrijven
+  * `action` (String) - bounce-actie (bijv. `"reject"`)
+  * `message` (String) - bounce-reden (bijv. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - bounce-categorie (bijv. `"block"`)
+  * `code` (Number) - bounce-statuscode (bijv. `554`)
+  * `status` (String) - bounce-code uit het responsbericht (bijv. `5.7.1`)
+  * `line` (Number) - geparseerd regelnummer, indien aanwezig, [vanuit de Zone-MTA bounce parse lijst](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (bijv. `526`)
+* `headers` (Object) - sleutel-waarde paar van headers voor de uitgaande e-mail
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) geformatteerde datum waarop de bounce-fout optrad
 
-For example:
+Bijvoorbeeld:
 
 ```json
 {
@@ -2469,59 +2950,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+Hier zijn een paar aanvullende opmerkingen over bounce-webhooks:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* Als de webhook payload een `list_id`, `list_unsubscribe` of `feedback_id` waarde bevat, dan moet u passende actie ondernemen om de `recipient` indien nodig van de lijst te verwijderen.
+  * Als de waarde van `bounce.category` één van `"block"`, `"recipient"`, `"spam"` of `"virus"` was, dan moet u de gebruiker zeker van de lijst verwijderen.
+* Als u webhook payloads moet verifiëren (om te verzekeren dat ze daadwerkelijk van onze server komen), dan kunt u [het IP-adres van de externe client hostnaam opzoeken met een reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – dit moet `smtp.forwardemail.net` zijn.
+  * U kunt ook het IP controleren tegen [onze gepubliceerde IP-adressen](#what-are-your-servers-ip-addresses).
+  * Ga naar Mijn Account → Domeinen → Instellingen → Webhook Signature Payload Verification Key om uw webhook-sleutel te verkrijgen.
+    * U kunt deze sleutel op elk moment roteren om veiligheidsredenen.
+    * Bereken en vergelijk de `X-Webhook-Signature` waarde van ons webhook-verzoek met de berekende body-waarde met deze sleutel. Een voorbeeld hiervan is beschikbaar in [deze Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * Zie de discussie op <https://github.com/forwardemail/free-email-forwarding/issues/235> voor meer inzicht.
+* We wachten tot maximaal `5` seconden op uw webhook-eindpunt om te reageren met een `200` statuscode, en we proberen het maximaal `1` keer opnieuw.
+* Als we detecteren dat uw bounce webhook URL een fout heeft terwijl we proberen een verzoek te sturen, dan sturen we u eenmaal per week een beleefde e-mail.
+### Ondersteunt u webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    Op zoek naar documentatie over bounce webhooks? Zie <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Ondersteunt u bounce webhooks?</a> voor meer inzicht.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+Ja, sinds 15 mei 2020 hebben we deze functie toegevoegd. U kunt eenvoudig webhook(s) toevoegen precies zoals u dat met elke ontvanger zou doen! Zorg ervoor dat u het "http" of "https" protocol voorvoegt in de URL van de webhook.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Verbeterde privacybescherming:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Als u een betaald abonnement heeft (dat verbeterde privacybescherming biedt), ga dan naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> en klik op "Aliassen" naast uw domein om uw webhooks te configureren. Wilt u meer weten over betaalde abonnementen, zie dan onze <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Prijzen</a> pagina. Anders kunt u de onderstaande instructies blijven volgen.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+Als u het gratis abonnement gebruikt, voeg dan eenvoudig een nieuw DNS <strong class="notranslate">TXT</strong> record toe zoals hieronder weergegeven:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+Bijvoorbeeld, als ik alle e-mails die naar `alias@example.com` gaan wil doorsturen naar een nieuwe [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3009,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+Of misschien wilt u alle e-mails die naar `example.com` gaan doorsturen naar dit endpoint:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3030,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**Hier zijn aanvullende opmerkingen over webhooks:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* Als u webhook payloads moet verifiëren (om te verzekeren dat ze daadwerkelijk van onze server komen), dan kunt u [het IP-adres van de externe client hostnaam opzoeken met een reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – dit moet ofwel `mx1.forwardemail.net` of `mx2.forwardemail.net` zijn.
+  * U kunt ook het IP controleren tegen [onze gepubliceerde IP-adressen](#what-are-your-servers-ip-addresses).
+  * Als u een betaald abonnement heeft, ga dan naar Mijn Account → Domeinen → Instellingen → Webhook Signature Payload Verification Key om uw webhook sleutel te verkrijgen.
+    * U kunt deze sleutel op elk moment om veiligheidsredenen roteren.
+    * Bereken en vergelijk de `X-Webhook-Signature` waarde van ons webhook verzoek met de berekende body waarde met deze sleutel. Een voorbeeld hoe dit te doen is beschikbaar op [deze Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * Zie de discussie op <https://github.com/forwardemail/free-email-forwarding/issues/235> voor meer inzicht.
+* Als een webhook niet reageert met een `200` statuscode, slaan we de reactie op in het [foutlogboek dat wordt aangemaakt](#do-you-store-error-logs) – wat nuttig is voor het debuggen.
+* Webhook HTTP-verzoeken worden tot 3 keer opnieuw geprobeerd bij elke SMTP-verbinding poging, met een maximale timeout van 60 seconden per endpoint POST-verzoek. **Let op dat dit niet betekent dat het maar 3 keer opnieuw probeert**, het zal eigenlijk continu opnieuw proberen door een SMTP-code 421 te sturen (wat aangeeft aan de verzender om later opnieuw te proberen) na de 3e mislukte HTTP POST poging. Dit betekent dat de e-mail continu opnieuw zal proberen gedurende dagen totdat een 200 statuscode wordt behaald.
+* We proberen automatisch opnieuw op basis van de standaard status- en foutcodes die worden gebruikt in de [retry-methode van superagent](https://ladjs.github.io/superagent/#retrying-requests) (wij zijn onderhouders).
+* We groeperen webhook HTTP-verzoeken naar hetzelfde endpoint in één verzoek in plaats van meerdere, om middelen te besparen en de responstijd te versnellen. Bijvoorbeeld, als u een e-mail stuurt naar <webhook1@example.com>, <webhook2@example.com>, en <webhook3@example.com>, en al deze zijn geconfigureerd om hetzelfde *exacte* endpoint URL te raken, dan wordt er slechts één verzoek gedaan. We groeperen op exacte endpoint-overeenkomst met strikte gelijkheid.
+* Let op dat we de [mailparser](https://nodemailer.com/extras/mailparser/) bibliotheek's "simpleParser" methode gebruiken om het bericht te parseren naar een JSON-vriendelijk object.
+* De ruwe e-mailwaarde als String wordt gegeven als de eigenschap "raw".
+* Authenticatieresultaten worden gegeven als eigenschappen "dkim", "spf", "arc", "dmarc", en "bimi".
+* De geparseerde e-mailheaders worden gegeven als de eigenschap "headers" – maar let ook op dat u "headerLines" kunt gebruiken voor eenvoudigere iteratie en parsing.
+* De gegroepeerde ontvangers voor deze webhook zijn gegroepeerd en gegeven als de eigenschap "recipients".
+* De SMTP-sessie-informatie wordt gegeven als de eigenschap "session". Dit bevat informatie over de afzender van het bericht, aankomsttijd van het bericht, HELO, en client hostnaam. De client hostnaam waarde als `session.clientHostname` is ofwel de FQDN (van een reverse PTR lookup) of het is `session.remoteAddress` tussen haakjes (bijv. `"[127.0.0.1]"`).
+* Als u snel de waarde van `X-Original-To` wilt krijgen, kunt u de waarde van `session.recipient` gebruiken (zie voorbeeld hieronder). De header `X-Original-To` is een header die we toevoegen aan berichten voor debugging met de originele ontvanger (voor gemaskeerde forwarding) van het bericht.
+* Als u `attachments` en/of `raw` eigenschappen uit de payload body wilt verwijderen, voeg dan eenvoudig `?attachments=false`, `?raw=false`, of `?attachments=false&raw=false` toe aan uw webhook endpoint als querystring parameter (bijv. `https://example.com/webhook?attachments=false&raw=false`).
+* Als er bijlagen zijn, worden deze toegevoegd aan de `attachments` Array met Buffer waarden. U kunt ze terug parseren naar inhoud met een aanpak in JavaScript zoals:
   ```js
   const data = [
     104,
@@ -2785,34 +3264,34 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### Ondersteunt u reguliere expressies of regex {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+Ja, sinds 27 september 2021 hebben we deze functie toegevoegd. U kunt eenvoudig reguliere expressies ("regex") schrijven om aliassen te matchen en substituties uit te voeren.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+Reguliere expressie-ondersteunde aliassen zijn degene die beginnen met een `/` en eindigen met een `/` en waarvan de ontvangers e-mailadressen of webhooks zijn. De ontvangers kunnen ook regex-substitutie ondersteunen (bijv. `$1`, `$2`).
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+We ondersteunen twee reguliere expressie-vlaggen, namelijk `i` en `g`. De hoofdletterongevoelige vlag `i` is een permanente standaard en wordt altijd afgedwongen. De globale vlag `g` kan door u worden toegevoegd door de afsluitende `/` te voorzien van `/g`.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+Let op dat we ook onze <a href="#can-i-disable-specific-aliases">uitgeschakelde alias-functie</a> voor het ontvanger-gedeelte ondersteunen met onze regex-ondersteuning.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+Reguliere expressies worden niet ondersteund op <a href="/disposable-addresses" target="_blank">globale vanity-domeinen</a> (aangezien dit een beveiligingsrisico kan zijn).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Verbeterde Privacybescherming:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    Als u een betaald abonnement heeft (met verbeterde privacybescherming), ga dan naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> en klik op "Aliassen" naast uw domein om aliassen te configureren, inclusief die met reguliere expressies. Wilt u meer weten over betaalde abonnementen, zie dan onze <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Prijzen</a> pagina.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### Voorbeelden voor Verbeterde Privacybescherming {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
+      <th>Aliasnaam</th>
       <th>Effect</th>
       <th>Test</th>
     </tr>
@@ -2820,13 +3299,13 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-mails naar `linus@example.com` of `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">bekijk test op RegExr</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>E-mails naar `24highst@example.com` of `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">bekijk test op RegExr</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2836,32 +3315,32 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    Om deze te testen op <a href="https://regexr.com" class="alert-link">RegExr</a>, schrijf de expressie in het bovenste vak en typ vervolgens een voorbeeldalias in het tekstvak eronder. Als het overeenkomt, wordt het blauw.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### Voorbeelden voor het gratis abonnement {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+Als u het gratis abonnement gebruikt, voeg dan eenvoudig een nieuw DNS <strong class="notranslate">TXT</strong>-record toe met een of meer van de onderstaande voorbeelden:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>Eenvoudig voorbeeld:</strong> Als ik wil dat alle e-mails die naar `linus@example.com` of `torvalds@example.com` gaan worden doorgestuurd naar `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3350,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>Voorbeeld voor voornaam achternaam substitutie:</strong> Stel dat al uw bedrijfs-e-mailadressen het patroon `voornaam.achternaam@example.com` hebben. Als ik wil dat alle e-mails die naar het patroon `voornaam.achternaam@example.com` gaan worden doorgestuurd naar `voornaam.achternaam@bedrijf.com` met substitutie-ondersteuning (<a href="https://regexr.com/66hnu" class="alert-link">bekijk test op RegExr</a>):
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3373,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>Voorbeeld van substitutie met plustekenfiltering:</strong> Als ik wil dat alle e-mails die naar `info@example.com` of `support@example.com` gaan respectievelijk worden doorgestuurd naar `user+info@gmail.com` of `user+support@gmail.com` (met substitutie-ondersteuning) (<a href="https://regexr.com/66ho7" class="alert-link">bekijk test op RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3397,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>Voorbeeld van webhook querystring substitutie:</strong> Misschien wil je dat alle e-mails die naar `example.com` gaan naar een <a href="#do-you-support-webhooks" class="alert-link">webhook</a> gaan en een dynamische querystring sleutel "to" hebben met een waarde van het gebruikersnaamgedeelte van het e-mailadres (<a href="https://regexr.com/66ho4" class="alert-link">bekijk test op RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3421,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>Voorbeeld van stille afwijzing:</strong> Als je wilt dat alle e-mails die aan een bepaald patroon voldoen worden uitgeschakeld en stil worden afgewezen (verschijnt voor de afzender alsof het bericht succesvol is verzonden, maar gaat eigenlijk nergens heen) met statuscode `250` (zie <a href="#can-i-disable-specific-aliases" class="alert-link">Kan ik specifieke aliassen uitschakelen</a>), gebruik dan gewoon dezelfde aanpak met een enkel uitroepteken "!". Dit geeft aan de afzender aan dat het bericht succesvol is afgeleverd, maar het ging eigenlijk nergens heen (bijv. blackhole of `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3445,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>Voorbeeld van zachte afwijzing:</strong> Als je wilt dat alle e-mails die aan een bepaald patroon voldoen worden uitgeschakeld en zacht worden afgewezen met statuscode `421` (zie <a href="#can-i-disable-specific-aliases" class="alert-link">Kan ik specifieke aliassen uitschakelen</a>), gebruik dan gewoon dezelfde aanpak met een dubbel uitroepteken "!!". Dit geeft aan de afzender aan om de e-mail opnieuw te proberen, en e-mails naar deze alias worden ongeveer 5 dagen opnieuw geprobeerd en daarna permanent afgewezen.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>Voorbeeld van harde afwijzing:</strong> Als je wilt dat alle e-mails die aan een bepaald patroon voldoen worden uitgeschakeld en hard worden afgewezen met statuscode `550` (zie <a href="#can-i-disable-specific-aliases" class="alert-link">Kan ik specifieke aliassen uitschakelen</a>), gebruik dan gewoon dezelfde methode met een drievoudig uitroepteken "!!!". Dit geeft aan de afzender een permanente fout aan en e-mails worden niet opnieuw geprobeerd, ze worden voor deze alias afgewezen.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3018,572 +3495,612 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    Benieuwd hoe je een reguliere expressie schrijft of wil je je vervanging testen? Je kunt naar de gratis website voor het testen van reguliere expressies <a href="https://regexr.com" class="alert-link">RegExr</a> gaan op <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### Wat zijn jullie limieten voor uitgaande SMTP {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+We beperken gebruikers en domeinen tot 300 uitgaande SMTP-berichten per 1 dag. Dit komt gemiddeld neer op meer dan 9000 e-mails in een kalendermaand. Als je deze hoeveelheid moet overschrijden of consequent grote e-mails hebt, neem dan contact met ons op via [contact](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### Heb ik goedkeuring nodig om SMTP in te schakelen {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Ja, houd er rekening mee dat Forward Email een handmatig beoordelingsproces per domein hanteert voor goedkeuring van uitgaande SMTP om de IP-reputatie te behouden en de afleverbaarheid te waarborgen. Stuur een e-mail naar <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) voor goedkeuring. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat je e-mails de inbox bereiken en je berichten niet als spam worden gemarkeerd.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### Wat zijn jullie SMTP-serverconfiguratie-instellingen {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Onze server is `smtp.forwardemail.net` en wordt ook gemonitord op onze <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statuspagina</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+Hij ondersteunt zowel IPv4 als IPv6 en is beschikbaar via poorten `465` en `2465` voor SSL/TLS (aanbevolen) en `587`, `2587`, `2525` en `25` voor TLS (STARTTLS).
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**Vanaf oktober 2025** ondersteunen we nu **legacy TLS 1.0** verbindingen op poorten `2455` (SSL/TLS) en `2555` (STARTTLS) voor oudere apparaten zoals printers, scanners, camera's en legacy e-mailclients die geen moderne TLS-versies kunnen ondersteunen. Deze poorten worden aangeboden als alternatief voor Gmail, Yahoo, Outlook en andere providers die de ondersteuning voor oudere TLS-protocollen hebben stopgezet.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **Legacy TLS 1.0-ondersteuning (poorten 2455 en 2555)**: Deze poorten gebruiken het verouderde TLS 1.0-protocol dat bekende beveiligingsproblemen heeft (BEAST, POODLE). Gebruik deze poorten alleen als je apparaat absoluut geen TLS 1.2 of hoger kan ondersteunen. We raden sterk aan om de firmware van je apparaat te upgraden of over te schakelen naar moderne e-mailclients waar mogelijk. Deze poorten zijn uitsluitend bedoeld voor compatibiliteit met legacy hardware (oude printers, scanners, camera's, IoT-apparaten).
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
-| :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+|                                     Protocol                                     | Hostnaam                |            Poorten            |        IPv4        |        IPv6        | Opmerkingen                            |
+| :------------------------------------------------------------------------------: | ----------------------- | :---------------------------: | :----------------: | :----------------: | ------------------------------------- |
+|                              `SSL/TLS` **Aanbevolen**                            | `smtp.forwardemail.net` |        `465`, `2465`          | :white_check_mark: | :white_check_mark: | Moderne TLS 1.2+ (Aanbevolen)         |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25`   | :white_check_mark: | :white_check_mark: | Ondersteund (bij voorkeur SSL/TLS poort `465`) |
+|                             `SSL/TLS` **Alleen legacy**                          | `smtp.forwardemail.net` |            `2455`             | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 alleen voor oude apparaten |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Alleen legacy** | `smtp.forwardemail.net` |            `2555`             | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 alleen voor oude apparaten |
+| Login    | Voorbeeld                 | Beschrijving                                                                                                                                                                              |
+| -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Gebruikersnaam | `user@example.com`         | E-mailadres van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>. |
+| Wachtwoord | `************************` | Alias                                                                                                                                                                                    |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+Om uitgaande e-mail te verzenden met SMTP, moet de **SMTP-gebruiker** het e-mailadres zijn van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> – en het **SMTP-wachtwoord** moet een alias-specifiek gegenereerd wachtwoord zijn.
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+Zie [Ondersteunt u het verzenden van e-mail met SMTP](#do-you-support-sending-email-with-smtp) voor stapsgewijze instructies.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+### Wat zijn uw IMAP-serverconfiguratie-instellingen {#what-are-your-imap-server-configuration-settings}
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+Onze server is `imap.forwardemail.net` en wordt ook gemonitord op onze <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statuspagina</a>.
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Deze ondersteunt zowel IPv4 als IPv6 en is beschikbaar via poorten `993` en `2993` voor SSL/TLS.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
+|         Protocol        | Hostnaam                |     Poorten     |        IPv4        |        IPv6        |
+| :---------------------: | ----------------------- | :-------------: | :----------------: | :----------------: |
+| `SSL/TLS` **Voorkeur**  | `imap.forwardemail.net` | `993`, `2993`   | :white_check_mark: | :white_check_mark: |
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| Login    | Voorbeeld                 | Beschrijving                                                                                                                                                                              |
+| -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Gebruikersnaam | `user@example.com`         | E-mailadres van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>. |
+| Wachtwoord | `************************` | Alias-specifiek gegenereerd wachtwoord.                                                                                                                                                   |
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Om verbinding te maken met IMAP, moet de **IMAP-gebruiker** het e-mailadres zijn van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> – en het **IMAP-wachtwoord** moet een alias-specifiek gegenereerd wachtwoord zijn.
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+Zie [Ondersteunt u het ontvangen van e-mail met IMAP](#do-you-support-receiving-email-with-imap) voor stapsgewijze instructies.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+### Wat zijn uw POP3-serverconfiguratie-instellingen {#what-are-your-pop3-server-configuration-settings}
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+Onze server is `pop3.forwardemail.net` en wordt ook gemonitord op onze <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statuspagina</a>.
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Deze ondersteunt zowel IPv4 als IPv6 en is beschikbaar via poorten `995` en `2995` voor SSL/TLS.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+|         Protocol        | Hostnaam                |     Poorten     |        IPv4        |        IPv6        |
+| :---------------------: | ----------------------- | :-------------: | :----------------: | :----------------: |
+| `SSL/TLS` **Voorkeur**  | `pop3.forwardemail.net` | `995`, `2995`   | :white_check_mark: | :white_check_mark: |
+| Login    | Voorbeeld                 | Beschrijving                                                                                                                                                                              |
+| -------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Gebruikersnaam | `user@example.com`         | E-mailadres van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>. |
+| Wachtwoord | `************************` | Alias-specifiek gegenereerd wachtwoord.                                                                                                                                                   |
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+Om verbinding te maken met POP3, moet de **POP3-gebruiker** het e-mailadres zijn van een alias die bestaat voor het domein bij <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> – en het **IMAP-wachtwoord** moet een alias-specifiek gegenereerd wachtwoord zijn.
 
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+Zie [Ondersteunt u POP3](#do-you-support-pop3) voor stapsgewijze instructies.
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+### Hoe stel ik e-mail autodiscovery in voor mijn domein {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+E-mail autodiscovery stelt e-mailclients zoals **Thunderbird**, **Apple Mail**, **Microsoft Outlook** en mobiele apparaten in staat om automatisch de juiste IMAP-, SMTP-, POP3-, CalDAV- en CardDAV-serverinstellingen te detecteren wanneer een gebruiker zijn e-mailaccount toevoegt. Dit wordt gedefinieerd door [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (e-mail) en [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) en maakt gebruik van DNS SRV-records.
 
-## Security {#security}
+Forward Email publiceert autodiscovery-records op `forwardemail.net`. Je kunt ofwel SRV-records direct aan je domein toevoegen, of een eenvoudigere CNAME-aanpak gebruiken.
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+#### Optie A: CNAME-records (eenvoudigst) {#option-a-cname-records-simplest}
+
+Voeg deze twee CNAME-records toe aan de DNS van je domein. Dit delegeert autodiscovery aan de servers van Forward Email:
+
+|  Type | Naam/Host      | Doel/Waarde                    |
+| :---: | -------------- | ----------------------------- |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net` |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+Het `autoconfig`-record wordt gebruikt door **Thunderbird** en andere Mozilla-gebaseerde clients. Het `autodiscover`-record wordt gebruikt door **Microsoft Outlook**.
+
+#### Optie B: SRV-records (direct) {#option-b-srv-records-direct}
+
+Als je de records liever direct toevoegt (of als je DNS-provider geen CNAME op subdomeinen ondersteunt), voeg dan deze SRV-records toe aan je domein:
+
+| Type | Naam/Host           | Prioriteit | Gewicht | Poort | Doel/Waarde               | Doel                                  |
+| :--: | ------------------- | :--------: | :-----: | :----: | ------------------------- | ------------------------------------ |
+|  SRV | `_imaps._tcp`       |     0      |    1    |  993   | `imap.forwardemail.net`    | IMAP over SSL/TLS (voorkeur)         |
+|  SRV | `_imap._tcp`        |     0      |    0    |   0    | `.`                        | Plaintext IMAP uitgeschakeld         |
+|  SRV | `_submissions._tcp` |     0      |    1    |  465   | `smtp.forwardemail.net`    | SMTP-submissie (SSL/TLS, aanbevolen) |
+|  SRV | `_submission._tcp`  |     5      |    1    |  587   | `smtp.forwardemail.net`    | SMTP-submissie (STARTTLS)             |
+|  SRV | `_pop3s._tcp`       |    10      |    1    |  995   | `pop3.forwardemail.net`    | POP3 over SSL/TLS                    |
+|  SRV | `_pop3._tcp`        |     0      |    0    |   0    | `.`                        | Plaintext POP3 uitgeschakeld         |
+|  SRV | `_caldavs._tcp`     |     0      |    1    |  443   | `caldav.forwardemail.net`  | CalDAV over TLS (agenda's)            |
+|  SRV | `_caldav._tcp`      |     0      |    0    |   0    | `.`                        | Plaintext CalDAV uitgeschakeld       |
+|  SRV | `_carddavs._tcp`    |     0      |    1    |  443   | `carddav.forwardemail.net` | CardDAV over TLS (contacten)          |
+|  SRV | `_carddav._tcp`     |     0      |    0    |   0    | `.`                        | Plaintext CardDAV uitgeschakeld      |
+> \[!NOTE]
+> IMAP heeft een lagere prioriteitswaarde (0) dan POP3 (10), wat e-mailclients vertelt om IMAP te verkiezen boven POP3 wanneer beide beschikbaar zijn. De records met een target van `.` (een enkele punt) geven aan dat de platte tekst (niet-versleutelde) versies van die protocollen opzettelijk zijn uitgeschakeld volgens [RFC 6186 Sectie 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4). De CalDAV- en CardDAV-SRV-records volgen [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) voor automatische ontdekking van agenda- en contactgegevens.
+
+#### Welke e-mailclients ondersteunen autodiscovery? {#which-email-clients-support-autodiscovery}
+
+| Client             | E-mail                                           | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | `autoconfig` CNAME- of SRV-records               | `autoconfig` XML- of SRV-records (RFC 6764) |
+| Apple Mail (macOS) | SRV-records (RFC 6186)                            | SRV-records (RFC 6764)                     |
+| Apple Mail (iOS)   | SRV-records (RFC 6186)                            | SRV-records (RFC 6764)                     |
+| Microsoft Outlook  | `autodiscover` CNAME of `_autodiscover._tcp` SRV | Niet ondersteund                           |
+| GNOME (Evolution)  | SRV-records (RFC 6186)                            | SRV-records (RFC 6764)                     |
+| KDE (KMail)        | SRV-records (RFC 6186)                            | SRV-records (RFC 6764)                     |
+| eM Client          | `autoconfig` of `autodiscover`                    | SRV-records (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Voor de beste compatibiliteit met alle clients raden we aan **Optie A** (CNAME-records) te gebruiken in combinatie met de SRV-records uit **Optie B**. De CNAME-methode dekt de meerderheid van de e-mailclients. De CalDAV/CardDAV SRV-records zorgen ervoor dat agenda- en contactclients ook automatisch je serverinstellingen kunnen ontdekken.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## Beveiliging {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### Geavanceerde technieken voor serververharding {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
+> \[!TIP]
+> Lees meer over onze beveiligingsinfrastructuur op [onze beveiligingspagina](/security).
+
+Forward Email implementeert talrijke technieken voor serververharding om de beveiliging van onze infrastructuur en jouw gegevens te waarborgen:
+
+1. **Netwerkbeveiliging**:
+   * IP tables firewall met strikte regels
+   * Fail2ban voor bescherming tegen brute force
+   * Regelmatige beveiligingsaudits en penetratietests
+   * Alleen VPN-toegang voor administratie
+
+2. **Systeemverharding**:
+   * Minimale pakketinstallatie
+   * Regelmatige beveiligingsupdates
+   * SELinux in afdwingmodus
+   * Uitgeschakelde root SSH-toegang
+   * Alleen sleutelgebaseerde authenticatie
+
+3. **Applicatiebeveiliging**:
    * Content Security Policy (CSP) headers
    * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+   * XSS-beschermingsheaders
+   * Frame-opties en referrer policy headers
+   * Regelmatige afhankelijkheidsaudits
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+4. **Gegevensbescherming**:
+   * Volledige schijfversleuteling met LUKS
+   * Veilige sleutelbeheer
+   * Regelmatige back-ups met encryptie
+   * Praktijken voor dataminimalisatie
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+5. **Monitoring en respons**:
+   * Real-time inbraakdetectie
+   * Geautomatiseerde beveiligingsscans
+   * Gecentraliseerde logging en analyse
+   * Procedures voor incidentrespons
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Onze beveiligingspraktijken worden continu bijgewerkt om nieuwe bedreigingen en kwetsbaarheden aan te pakken.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Voor maximale beveiliging raden we aan onze dienst te gebruiken met end-to-end encryptie via OpenPGP.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### Heb je SOC 2 of ISO 27001 certificeringen {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email draait op infrastructuur die wordt geleverd door gecertificeerde subprocessors om te voldoen aan industrienormen.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email beschikt niet direct over SOC 2 Type II of ISO 27001 certificeringen. De dienst draait echter op infrastructuur die wordt geleverd door gecertificeerde subprocessors:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: SOC 2 Type II en SOC 3 Type II gecertificeerd (geaudit door Schellman & Company LLC), ISO 27001 gecertificeerd in meerdere datacenters. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: SOC 2+ (HIPAA) gecertificeerd, ISO/IEC certificeringen: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: SOC 2 compliant (neem rechtstreeks contact op met DataPacket om certificering te verkrijgen), infrastructuurprovider van ondernemingsniveau (locatie Denver). Details: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Email volgt de beste praktijken in de industrie voor beveiligingsaudits en werkt regelmatig samen met onafhankelijke beveiligingsonderzoekers. Bron: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### Gebruikt u TLS-encryptie voor e-mail forwarding {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+Ja. Forward Email handhaaft strikt TLS 1.2+ voor alle verbindingen (HTTPS, SMTP, IMAP, POP3) en implementeert MTA-STS voor verbeterde TLS-ondersteuning. De implementatie omvat:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* TLS 1.2+ afdwinging voor alle e-mailverbindingen
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) sleuteluitwisseling voor perfecte forward secrecy
+* Moderne cipher suites met regelmatige beveiligingsupdates
+* HTTP/2 ondersteuning voor verbeterde prestaties en beveiliging
+* HSTS (HTTP Strict Transport Security) met preloading in grote browsers
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** voor strikte TLS-handhaving
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+Bron: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**MTA-STS Implementatie**: Forward Email implementeert strikte MTA-STS afdwinging in de codebase. Wanneer TLS-fouten optreden en MTA-STS wordt afgedwongen, retourneert het systeem 421 SMTP-statuscodes om ervoor te zorgen dat e-mails later opnieuw worden geprobeerd in plaats van onveilig te worden afgeleverd. Implementatiedetails:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* TLS-foutdetectie: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* MTA-STS afdwinging in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+Validatie door derden: <https://www.hardenize.com/report/forwardemail.net/1750312779> toont "Good" beoordelingen voor alle TLS- en transportbeveiligingsmaatregelen.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### Bewaart u e-mail authenticatieheaders {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+Ja. Forward Email implementeert en bewaart e-mail authenticatieheaders uitgebreid:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (Sender Policy Framework)**: Correct geïmplementeerd en bewaard
+* **DKIM (DomainKeys Identified Mail)**: Volledige ondersteuning met correct sleutelbeheer
+* **DMARC**: Beleidsafdwinging voor e-mails die SPF- of DKIM-validatie niet doorstaan
+* **ARC**: Hoewel niet expliciet gedetailleerd, suggereren de perfecte compliance scores van de dienst een uitgebreide afhandeling van authenticatieheaders
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+Bron: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Validatie: Internet.nl Mail Test toont een score van 100/100 specifiek voor de implementatie van "SPF, DKIM en DMARC". Hardenize beoordeling bevestigt "Good" beoordelingen voor SPF en DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Bewaart u originele e-mailheaders en voorkomt u spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email implementeert geavanceerde anti-spoofing bescherming om misbruik van e-mail te voorkomen.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email bewaart originele e-mailheaders terwijl het uitgebreide anti-spoofing bescherming implementeert via de MX codebase:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **Headerbehoud**: Originele authenticatieheaders worden behouden tijdens het doorsturen
+* **Anti-Spoofing**: DMARC beleidsafdwinging voorkomt header spoofing door e-mails die SPF- of DKIM-validatie niet doorstaan te weigeren
+* **Voorkoming van headerinjectie**: Invoervalidatie en sanering met behulp van de striptags bibliotheek
+* **Geavanceerde bescherming**: Geavanceerde phishingdetectie met spoofingdetectie, impersonatiepreventie en gebruikersnotificatiesystemen
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**MX Implementatiedetails**: De kernlogica voor e-mailverwerking wordt afgehandeld door de MX server codebase, specifiek:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Hoofd MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Willekeurige e-mail filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+De `isArbitrary` helper implementeert geavanceerde anti-spoofing regels inclusief detectie van domeinimitatie, geblokkeerde zinnen en diverse phishingpatronen.
+### Hoe beschermt u tegen spam en misbruik {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email implementeert uitgebreide meerlaagse bescherming:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **Rate Limiting**: Toegepast op authenticatiepogingen, API-eindpunten en SMTP-verbindingen
+* **Resource-isolatie**: Tussen gebruikers om impact van gebruikers met hoog volume te voorkomen
+* **DDoS-bescherming**: Meerlaagse bescherming via het Shield-systeem van DataPacket en Cloudflare
+* **Automatische schaalvergroting**: Dynamische aanpassing van middelen op basis van vraag
+* **Misbruikpreventie**: Gebruikersspecifieke misbruikpreventiecontroles en op hashes gebaseerde blokkering voor kwaadaardige inhoud
+* **E-mailauthenticatie**: SPF-, DKIM-, DMARC-protocollen met geavanceerde phishingdetectie
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+Bronnen:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (Details DDoS-bescherming)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### Slaat u e-mailinhoud op de schijf op {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email gebruikt een zero-knowledge architectuur die voorkomt dat e-mailinhoud naar de schijf wordt geschreven.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **Zero-Knowledge Architectuur**: Individueel versleutelde SQLite-mailboxen betekenen dat Forward Email geen toegang heeft tot e-mailinhoud
+* **In-Memory Verwerking**: E-mailverwerking vindt volledig in het geheugen plaats, zonder opslag op schijf
+* **Geen Inhoudslogging**: "We loggen of bewaren geen e-mailinhoud of metadata op de schijf"
+* **Sandboxed Encryptie**: Encryptiesleutels worden nooit in platte tekst op de schijf opgeslagen
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX Codebase Bewijs**: De MX-server verwerkt e-mails volledig in het geheugen zonder inhoud naar de schijf te schrijven. De hoofdhandler voor e-mailverwerking toont deze in-memory aanpak: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sources:
+Bronnen:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryptie)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+### Kan e-mailinhoud worden blootgesteld tijdens systeemcrashes {#can-email-content-be-exposed-during-system-crashes}
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+Nee. Forward Email implementeert uitgebreide beveiligingen tegen blootstelling van gegevens bij crashes:
 
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
+* **Core Dumps Uitgeschakeld**: Voorkomt blootstelling van geheugen tijdens crashes
+* **Swapgeheugen Uitgeschakeld**: Volledig uitgeschakeld om extractie van gevoelige gegevens uit swapbestanden te voorkomen
+* **In-Memory Architectuur**: E-mailinhoud bestaat alleen in vluchtig geheugen tijdens verwerking
+* **Bescherming Encryptiesleutels**: Sleutels worden nooit in platte tekst op de schijf opgeslagen
+* **Fysieke Beveiliging**: LUKS v2 versleutelde schijven voorkomen fysieke toegang tot data
+* **USB-opslag Uitgeschakeld**: Voorkomt ongeautoriseerde data-extractie
 
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+**Foutafhandeling voor Systeemproblemen**: Forward Email gebruikt helperfuncties `isCodeBug` en `isTimeoutError` om ervoor te zorgen dat bij databaseconnectiviteitsproblemen, DNS-netwerk-/blocklistproblemen of upstream-connectiviteitsproblemen het systeem 421 SMTP-statuscodes retourneert zodat e-mails later opnieuw geprobeerd worden in plaats van verloren te gaan of blootgesteld te worden.
 
-Implementation details:
+Implementatiedetails:
 
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Foutclassificatie: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Timeout-foutafhandeling in MX-verwerking: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Bron: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+### Wie heeft toegang tot uw e-mailinfrastructuur {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+Forward Email implementeert uitgebreide toegangscontroles voor de minimale 2-3 koppige engineeringteamtoegang met strikte 2FA-vereisten:
 
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+* **Role-Based Access Control**: Voor teamaccounts met op middelen gebaseerde permissies
+* **Least Privilege Principe**: Toegepast in alle systemen
+* **Scheiding van Taken**: Tussen operationele rollen
+* **Gebruikersbeheer**: Gescheiden deploy- en devops-gebruikers met verschillende permissies
+* **Root-login Uitgeschakeld**: Dwingt toegang via correct geauthenticeerde accounts af
+* **Strikte 2FA**: Geen SMS-gebaseerde 2FA vanwege risico op MiTM-aanvallen - alleen app-gebaseerde of hardwaretokens
+* **Uitgebreide Auditlogging**: Met redactie van gevoelige gegevens
+* **Geautomatiseerde Anomaliedetectie**: Voor ongebruikelijke toegangs-patronen
+* **Regelmatige Beveiligingsreviews**: Van toegangslogs
+* **Evil Maid Attack Preventie**: USB-opslag uitgeschakeld en andere fysieke beveiligingsmaatregelen
+Bronnen:
 
-Sources:
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Autorisatiecontroles)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Netwerkbeveiliging)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Preventie van evil maid-aanvallen)
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### Welke infrastructuurproviders gebruikt u {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email gebruikt meerdere infrastructuur subprocessors met uitgebreide compliance-certificeringen.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+Volledige details zijn beschikbaar op onze GDPR-compliancepagina: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**Primaire infrastructuur subprocessors:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Provider         | Data Privacy Framework gecertificeerd | GDPR-compliancepagina                                                                    |
+| ---------------- | ------------------------------------ | ---------------------------------------------------------------------------------------- |
+| **Cloudflare**   | ✅ Ja                                | <https://www.cloudflare.com/trust-hub/gdpr/>                                            |
+| **DataPacket**   | ❌ Nee                               | <https://www.datapacket.com/privacy-policy>                                             |
+| **DigitalOcean** | ❌ Nee                               | <https://www.digitalocean.com/legal/gdpr>                                               |
+| **GitHub**       | ✅ Ja                                | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**        | ❌ Nee                               | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                         |
 
-**Detailed Certifications:**
+**Gedetailleerde certificeringen:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
+* SOC 2 Type II & SOC 3 Type II (geaudit door Schellman & Company LLC)
+* ISO 27001 gecertificeerd in meerdere datacenters
 * PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
+* CSA STAR Level 1 gecertificeerd
+* APEC CBPR PRP gecertificeerd
 * Details: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
+* SOC 2+ (HIPAA) gecertificeerd
 * PCI Merchant compliant
-* CSA STAR Level 1 certified
+* CSA STAR Level 1 gecertificeerd
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
 * Details: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
+* SOC 2 compliant (neem rechtstreeks contact op met DataPacket om certificering te verkrijgen)
+* Enterprise-grade infrastructuur (locatie Denver)
+* DDoS-bescherming via Shield cybersecurity stack
+* 24/7 technische ondersteuning
+* Wereldwijd netwerk met 58 datacenters
 * Details: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
+* Data Privacy Framework gecertificeerd (EU-VS, Zwitserland-VS en UK Extension)
+* Hosting van broncode, CI/CD en projectbeheer
+* GitHub Data Protection Agreement beschikbaar
 * Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**Betalingsverwerkers:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Data Privacy Framework gecertificeerd - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Niet DPF gecertificeerd - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Biedt u een Data Processing Agreement (DPA) aan {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+Ja, Forward Email biedt een uitgebreide Data Processing Agreement (DPA) die kan worden ondertekend met onze enterprise-overeenkomst. Een kopie van onze DPA is beschikbaar op: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**DPA-details:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* Omvat GDPR-compliance en EU-VS/Zwitserland-VS Privacy Shield-kaders
+* Wordt automatisch geaccepteerd bij akkoord gaan met onze Servicevoorwaarden
+* Geen aparte handtekening vereist voor standaard DPA
+* Maatwerk DPA-regelingen beschikbaar via Enterprise License
 
 **GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+Onze DPA beschrijft de naleving van GDPR evenals internationale vereisten voor gegevensoverdracht. Volledige informatie is beschikbaar op: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+Voor enterprise-klanten die maatwerk DPA-voorwaarden of specifieke contractuele regelingen nodig hebben, kunnen deze worden geregeld via ons **Enterprise License ($250/maand)** programma.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### Hoe gaat u om met meldingen van datalekken {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> De zero-knowledge architectuur van Forward Email beperkt de impact van een datalek aanzienlijk.
+* **Beperkte Gegevensblootstelling**: Kan geen toegang krijgen tot versleutelde e-mailinhoud vanwege zero-knowledge architectuur
+* **Minimale Gegevensverzameling**: Alleen basisinformatie van abonnees en beperkte IP-logs voor beveiliging
+* **Subprocessor Kaders**: DigitalOcean, GitHub en Vultr hanteren GDPR-conforme procedures voor incidentrespons
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**GDPR Vertegenwoordiger Informatie:**
+Forward Email heeft GDPR-vertegenwoordigers aangesteld in overeenstemming met Artikel 27:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
+**EU Vertegenwoordiger:**
 Osano International Compliance Services Limited
 ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**UK Representative:**
+**VK Vertegenwoordiger:**
 Osano UK Compliance LTD
 ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+Voor zakelijke klanten die specifieke meldings-SLA's voor datalekken vereisen, dienen deze te worden besproken als onderdeel van een **Enterprise License** overeenkomst.
 
-Sources:
+Bronnen:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### Biedt u een testomgeving aan {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+De technische documentatie van Forward Email beschrijft niet expliciet een toegewijde sandbox-modus. Mogelijke testbenaderingen zijn echter:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **Zelfhosting Optie**: Uitgebreide zelfhostingmogelijkheden voor het creëren van testomgevingen
+* **API Interface**: Mogelijkheid voor programmatische tests van configuraties
+* **Open Source**: 100% open-source code stelt klanten in staat de doorstuurlogica te onderzoeken
+* **Meerdere Domeinen**: Ondersteuning voor meerdere domeinen kan het aanmaken van testdomeinen mogelijk maken
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+Voor zakelijke klanten die formele sandbox-mogelijkheden vereisen, dient dit te worden besproken als onderdeel van een **Enterprise License** regeling.
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+Bron: <https://github.com/forwardemail/forwardemail.net> (Details ontwikkelomgeving)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### Biedt u monitoring- en waarschuwingshulpmiddelen aan {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+Forward Email biedt realtime monitoring met enkele beperkingen:
 
-**Available:**
+**Beschikbaar:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **Realtime Leveringsmonitoring**: Openbaar zichtbare prestatiestatistieken voor grote e-mailproviders
+* **Automatische Waarschuwingen**: Engineeringteam wordt gewaarschuwd wanneer levertijden langer dan 10 seconden zijn
+* **Transparante Monitoring**: 100% open-source monitoringsystemen
+* **Infrastructuurmonitoring**: Geautomatiseerde anomaliedetectie en uitgebreide auditlogging
 
-**Limitations:**
+**Beperkingen:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* Klantgerichte webhooks of API-gebaseerde leveringsstatusmeldingen zijn niet expliciet gedocumenteerd
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+Voor zakelijke klanten die gedetailleerde leveringsstatus-webhooks of aangepaste monitoringintegraties vereisen, kunnen deze mogelijkheden beschikbaar zijn via **Enterprise License** regelingen.
 
-Sources:
+Bronnen:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (Realtime monitoring weergave)
+* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementatie)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### Hoe zorgt u voor hoge beschikbaarheid {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email implementeert uitgebreide redundantie via meerdere infrastructuurproviders.
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **Gedistribueerde Infrastructuur**: Meerdere providers (DigitalOcean, Vultr, DataPacket) verspreid over geografische regio's
+* **Geografische Load Balancing**: Cloudflare-gebaseerde geo-gelokaliseerde load balancing met automatische failover
+* **Automatische Schaling**: Dynamische aanpassing van resources op basis van vraag
+* **Meervoudige DDoS-bescherming**: Via DataPacket's Shield-systeem en Cloudflare
+* **Serverredundantie**: Meerdere servers per regio met automatische failover
+* **Database Replicatie**: Realtime datasynchronisatie over meerdere locaties
+* **Monitoring en Waarschuwing**: 24/7 monitoring met automatische incidentrespons
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**Beschikbaarheidsgarantie**: 99,9%+ servicebeschikbaarheid met transparante monitoring beschikbaar op <https://forwardemail.net>
 
-Sources:
+Bronnen:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Voldoet u aan Sectie 889 van de National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email voldoet volledig aan Sectie 889 door zorgvuldige selectie van infrastructuurpartners.
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+Ja, Forward Email is **Sectie 889 compliant**. Sectie 889 van de National Defense Authorization Act (NDAA) verbiedt overheidsinstanties het gebruik van of contracteren met entiteiten die telecommunicatie- en videobewakingsapparatuur gebruiken van specifieke bedrijven (Huawei, ZTE, Hikvision, Dahua en Hytera).
+**Hoe Forward Email Sectie 889 naleving bereikt:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+Forward Email vertrouwt uitsluitend op twee belangrijke infrastructuurproviders, die geen van beiden apparatuur gebruiken die verboden is volgens Sectie 889:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: Onze primaire partner voor netwerkdiensten en e-mailbeveiliging
+2. **DataPacket**: Onze primaire leverancier voor serverinfrastructuur (exclusief gebruikmakend van Arista Networks en Cisco apparatuur)
+3. **Backup Providers**: Onze backup providers Digital Ocean en Vultr zijn bovendien schriftelijk bevestigd als Sectie 889 compliant.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**De toezegging van Cloudflare**: Cloudflare stelt expliciet in hun Third Party Code of Conduct dat zij geen telecommunicatieapparatuur, videobewakingsproducten of diensten gebruiken van entiteiten die verboden zijn volgens Sectie 889.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**Overheidsgebruik**: Onze Sectie 889 naleving werd gevalideerd toen de **US Naval Academy** Forward Email selecteerde voor hun veilige e-mail forwarding behoeften, waarbij documentatie van onze federale nalevingsnormen werd vereist.
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+Voor volledige details over ons overheidsnalevingskader, inclusief bredere federale regelgeving, lees onze uitgebreide case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## Systeem- en technische details {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### Slaat u e-mails en hun inhoud op {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nee, wij schrijven niet naar schijf en slaan geen logs op – met uitzondering van [fouten](#do-you-store-error-logs) en [uitgaande SMTP](#do-you-support-sending-email-with-smtp) (zie ons [Privacybeleid](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Alles gebeurt in het geheugen en [onze broncode staat op GitHub](https://github.com/forwardemail).
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### Hoe werkt uw e-mail forwarding systeem {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+E-mail maakt gebruik van het [SMTP-protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Dit protocol bestaat uit commando’s die naar een server worden gestuurd (meestal draaiend op poort 25). Er is een initiële verbinding, daarna geeft de afzender aan van wie de mail is ("MAIL FROM"), gevolgd door waar het naartoe gaat ("RCPT TO"), en tenslotte de headers en de inhoud van de e-mail zelf ("DATA"). De flow van ons e-mail forwarding systeem wordt hieronder beschreven aan de hand van elk SMTP protocolcommando:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* Initiële verbinding (geen commando naam, bv. `telnet example.com 25`) - Dit is de initiële verbinding. We controleren afzenders die niet op onze [allowlist](#do-you-have-an-allowlist) staan tegen onze [denylist](#do-you-have-a-denylist). Ten slotte, als een afzender niet op onze allowlist staat, controleren we of deze [greylisted](#do-you-have-a-greylist) is.
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` - Dit geeft een begroeting aan om de FQDN, IP-adres of mail handler naam van de afzender te identificeren. Deze waarde kan worden gespoofd, dus vertrouwen wij niet op deze data en gebruiken we in plaats daarvan de reverse hostname lookup van het IP-adres van de verbinding.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` - Dit geeft het enveloppe mail from adres van de e-mail aan. Als er een waarde wordt ingevoerd, moet dit een geldig RFC 5322 e-mailadres zijn. Lege waarden zijn toegestaan. We [controleren hier op backscatter](#how-do-you-protect-against-backscatter) en we controleren ook de MAIL FROM tegen onze [denylist](#do-you-have-a-denylist). We controleren ten slotte afzenders die niet op de allowlist staan op rate limiting (zie de sectie over [Rate Limiting](#do-you-have-rate-limiting) en [allowlist](#do-you-have-an-allowlist) voor meer informatie).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` - Dit geeft de ontvanger(s) van de e-mail aan. Dit moeten geldige RFC 5322 e-mailadressen zijn. We staan maximaal 50 enveloppe ontvangers per bericht toe (dit is anders dan de "To" header van een e-mail). We controleren hier ook op een geldig [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") adres om spoofing tegen te gaan met onze SRS domeinnaam.
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` - Dit is het kernonderdeel van onze service die een e-mail verwerkt. Zie de sectie [Hoe verwerkt u een e-mail voor forwarding](#how-do-you-process-an-email-for-forwarding) hieronder voor meer inzicht.
+### Hoe verwerk je een e-mail voor doorsturen {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+Deze sectie beschrijft ons proces met betrekking tot het SMTP-protocolcommando `DATA` in de sectie [Hoe werkt jullie e-mail doorstuur systeem](#how-does-your-email-forwarding-system-work) hierboven – het is hoe wij de headers, de inhoud, de beveiliging van een e-mail verwerken, bepalen waar deze afgeleverd moet worden, en hoe wij verbindingen afhandelen.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. Als het bericht de maximale grootte van 50mb overschrijdt, wordt het geweigerd met een 552-foutcode.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. Als het bericht geen "From" header bevatte, of als een van de waarden in de "From" header geen geldige RFC 5322 e-mailadressen waren, wordt het geweigerd met een 550-foutcode.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. Als het bericht meer dan 25 "Received" headers had, werd vastgesteld dat het vastzat in een redirect-lus, en wordt het geweigerd met een 550-foutcode.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. Met behulp van de vingerafdruk van de e-mail (zie de sectie over [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), controleren we of er geprobeerd is het bericht langer dan 5 dagen opnieuw te verzenden (wat overeenkomt met het [standaardgedrag van postfix](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), en zo ja, dan wordt het geweigerd met een 550-foutcode.
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. We slaan in het geheugen de resultaten op van het scannen van de e-mail met behulp van [Spam Scanner](https://spamscanner.net).
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Als er willekeurige resultaten van Spam Scanner waren, wordt het geweigerd met een 554-foutcode. Willekeurige resultaten omvatten op het moment van schrijven alleen de GTUBE-test. Zie <https://spamassassin.apache.org/gtube/> voor meer inzicht.
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. We voegen de volgende headers toe aan het bericht voor debugging en misbruikpreventie:
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` - we voegen deze standaard Received-header toe met oorsprong IP en host, transmissietype, TLS-verbindinginformatie, datum/tijd en ontvanger.
+   * `X-Original-To` - de oorspronkelijke ontvanger van het bericht:
+     * Dit is nuttig om te bepalen waar een e-mail oorspronkelijk naartoe is afgeleverd (naast de "Received" header).
+     * Dit wordt per ontvanger toegevoegd op het moment van IMAP en/of gemaskeerd doorsturen (om privacy te beschermen).
+   * `X-Forward-Email-Website` - bevat een link naar onze website <https://forwardemail.net>
+   * `X-Forward-Email-Version` - de huidige [SemVer](https://semver.org/) versie uit `package.json` van onze codebase.
+   * `X-Forward-Email-Session-ID` - een sessie-ID waarde gebruikt voor debugdoeleinden (geldt alleen in niet-productieomgevingen).
+   * `X-Forward-Email-Sender` - een door komma's gescheiden lijst met het originele envelope MAIL FROM-adres (als dit niet leeg was), de reverse PTR client FQDN (indien aanwezig), en het IP-adres van de afzender.
+   * `X-Forward-Email-ID` - dit is alleen van toepassing op uitgaande SMTP en correleert met het e-mail-ID opgeslagen in Mijn Account → E-mails
+   * `X-Report-Abuse` - met de waarde `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - met de waarde `abuse@forwardemail.net`.
+   * `X-Complaints-To` - met de waarde `abuse@forwardemail.net`.
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. We controleren vervolgens het bericht op [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), en [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * Als het bericht DMARC niet doorstond en het domein een afwijzingsbeleid had (bijv. `p=reject` [was in het DMARC-beleid](https://wikipedia.org/wiki/DMARC)), wordt het geweigerd met een 550-foutcode. Meestal is een DMARC-beleid voor een domein te vinden in het `_dmarc` subdomein <strong class="notranslate">TXT</strong> record, (bijv. `dig _dmarc.example.com txt`).
+   * Als het bericht SPF niet doorstond en het domein een hard fail beleid had (bijv. `-all` stond in het SPF-beleid in plaats van `~all` of helemaal geen beleid), wordt het geweigerd met een 550-foutcode. Meestal is een SPF-beleid voor een domein te vinden in het <strong class="notranslate">TXT</strong> record van het hoofddomein (bijv. `dig example.com txt`). Zie deze sectie voor meer informatie over [mail verzenden als met Gmail](#can-i-send-mail-as-in-gmail-with-this) met betrekking tot SPF.
+9. Nu verwerken we de ontvangers van het bericht zoals verzameld uit het `RCPT TO`-commando in de sectie [Hoe werkt jouw e-mail doorstuur systeem](#how-does-your-email-forwarding-system-work) hierboven. Voor elke ontvanger voeren we de volgende handelingen uit:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * We zoeken de <strong class="notranslate">TXT</strong>-records op van de domeinnaam (het deel na het `@`-symbool, bijvoorbeeld `example.com` als het e-mailadres `test@example.com` was). Bijvoorbeeld, als het domein `example.com` is, doen we een DNS-lookup zoals `dig example.com txt`.
+   * We parseren alle <strong class="notranslate">TXT</strong>-records die beginnen met `forward-email=` (gratis plannen) of `forward-email-site-verification=` (betaalde plannen). Let op dat we beide parseren om e-mails te verwerken terwijl een gebruiker een upgrade of downgrade van plannen uitvoert.
+   * Uit deze geparseerde <strong class="notranslate">TXT</strong>-records itereren we om de doorstuurconfiguratie te extraheren (zoals beschreven in de sectie [Hoe begin ik en stel ik e-mail doorsturen in](#how-do-i-get-started-and-set-up-email-forwarding) hierboven). Let op dat we slechts één `forward-email-site-verification=` waarde ondersteunen, en als er meer dan één wordt opgegeven, zal een 550-fout optreden en ontvangt de afzender een bounce voor deze ontvanger.
+   * We itereren recursief over de geëxtraheerde doorstuurconfiguratie om globale doorsturing, regex-gebaseerde doorsturing en alle andere ondersteunde doorstuurconfiguraties te bepalen – die nu bekendstaan als onze "Doorstuuradressen".
+   * Voor elk Doorstuuradres ondersteunen we één recursieve lookup (die deze reeks operaties opnieuw start voor het gegeven adres). Als een recursieve match wordt gevonden, wordt het ouderresultaat verwijderd uit Doorstuuradressen en worden de kinderen toegevoegd.
+   * Doorstuuradressen worden geparsed op uniekheid (omdat we geen duplicaten naar één adres willen sturen of onnodige extra SMTP-clientverbindingen willen maken).
+   * Voor elk Doorstuuradres zoeken we de domeinnaam op via onze API-endpoint `/v1/max-forwarded-addresses` (om te bepalen naar hoeveel adressen het domein e-mail mag doorsturen per alias, bijvoorbeeld standaard 10 – zie de sectie over [maximale limiet op doorsturen per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Als deze limiet wordt overschreden, treedt een 550-fout op en ontvangt de afzender een bounce voor deze ontvanger.
+   * We zoeken de instellingen van de originele ontvanger op via onze API-endpoint `/v1/settings`, die een lookup ondersteunt voor betaalde gebruikers (met een fallback voor gratis gebruikers). Dit retourneert een configuratieobject voor geavanceerde instellingen voor `port` (Nummer, bijvoorbeeld `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), en `has_virus_protection` (Boolean).
+   * Op basis van deze instellingen controleren we vervolgens de resultaten van de Spam Scanner en als er fouten optreden, wordt het bericht afgewezen met een 554-foutcode (bijvoorbeeld als `has_virus_protection` is ingeschakeld, controleren we de Spam Scanner-resultaten op virussen). Let op dat alle gebruikers van het gratis plan automatisch zijn ingeschreven voor controles op volwassen inhoud, phishing, uitvoerbare bestanden en virussen. Standaard zijn ook alle betaalde gebruikers ingeschreven, maar deze configuratie kan worden aangepast op de Instellingenpagina voor een domein in het Forward Email-dashboard).
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. Voor elk verwerkte Doorstuuradres van de ontvanger voeren we vervolgens de volgende handelingen uit:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * Het adres wordt gecontroleerd tegen onze [denylist](#do-you-have-a-denylist), en als het op de lijst staat, treedt een 421-foutcode op (geeft aan de afzender aan om later opnieuw te proberen).
+    * Als het adres een webhook is, zetten we een Boolean voor toekomstige operaties (zie hieronder – we groeperen vergelijkbare webhooks om één POST-verzoek te doen in plaats van meerdere voor aflevering).
+    * Als het adres een e-mailadres is, parseren we de host voor toekomstige operaties (zie hieronder – we groeperen vergelijkbare hosts om één verbinding te maken in plaats van meerdere individuele verbindingen voor aflevering).
+11. Als er geen ontvangers zijn en er zijn geen bounces, dan reageren we met een 550-foutmelding "Ongeldige ontvangers".
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. Als er ontvangers zijn, dan itereren we over hen (gegroepeerd per dezelfde host) en bezorgen we de e-mails. Zie de sectie [Hoe gaat u om met problemen bij e-mailbezorging](#how-do-you-handle-email-delivery-issues) hieronder voor meer inzicht.
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * Als er fouten optreden tijdens het verzenden van e-mails, slaan we deze in het geheugen op voor latere verwerking.
+    * We nemen de laagste foutcode (indien aanwezig) van het verzenden van e-mails – en gebruiken die als de responscode op het `DATA`-commando. Dit betekent dat e-mails die niet zijn afgeleverd doorgaans opnieuw worden geprobeerd door de oorspronkelijke afzender, terwijl e-mails die al zijn afgeleverd niet opnieuw worden verzonden bij de volgende keer dat het bericht wordt verzonden (omdat we gebruikmaken van [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * Als er geen fouten zijn opgetreden, sturen we een 250 succesvolle SMTP-responsstatuscode.
+    * Een bounce wordt bepaald als elke bezorgpoging die resulteert in een statuscode >= 500 (permanente fouten).
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. Als er geen bounces zijn opgetreden (permanente fouten), dan retourneren we een SMTP-responsstatuscode van de laagste foutcode van niet-permanente fouten (of een 250 succesvolle statuscode als die er niet waren).
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. Als er wel bounces zijn opgetreden, dan sturen we bounce-e-mails op de achtergrond nadat we de laagste van alle foutcodes aan de afzender hebben geretourneerd. Echter, als de laagste foutcode >= 500 is, sturen we geen bounce-e-mails. Dit komt omdat als we dat wel deden, afzenders een dubbele bounce-e-mail zouden ontvangen (bijvoorbeeld één van hun uitgaande MTA, zoals Gmail – en ook één van ons). Zie de sectie over [Hoe beschermt u tegen backscatter](#how-do-you-protect-against-backscatter) hieronder voor meer inzicht.
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+### Hoe gaat u om met problemen bij e-mailbezorging {#how-do-you-handle-email-delivery-issues}
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+Let op dat we een "Friendly-From" herschrijving uitvoeren op de e-mails als en alleen als het DMARC-beleid van de afzender niet slaagde EN er geen DKIM-handtekeningen waren die overeenkwamen met de "From"-header. Dit betekent dat we de "From"-header in het bericht aanpassen, "X-Original-From" instellen, en ook een "Reply-To" instellen als die nog niet was ingesteld. We verzegelen ook opnieuw de ARC-seal op het bericht nadat we deze headers hebben aangepast.
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+We gebruiken ook slimme parsing van foutmeldingen op elk niveau van onze stack – in onze code, DNS-verzoeken, Node.js-internals, HTTP-verzoeken (bijv. 408, 413 en 429 worden gemapt naar de SMTP-responscode 421 als de ontvanger een webhook is), en mailserver-responsen (bijv. responsen met "defer" of "slowdown" worden opnieuw geprobeerd als 421-fouten).
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+Onze logica is idiot-proof en zal ook opnieuw proberen bij SSL/TLS-fouten, verbindingsproblemen en meer. Het doel van idiot-proofing is om de afleverbaarheid aan alle ontvangers voor een doorstuurconfiguratie te maximaliseren.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+Als de ontvanger een webhook is, dan staan we een time-out van 60 seconden toe voor het voltooien van het verzoek met maximaal 3 pogingen (dus 4 verzoeken in totaal voordat het faalt). Let op dat we foutcodes 408, 413 en 429 correct parseren en mappen naar een SMTP-responscode van 421.
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+Als de ontvanger een e-mailadres is, proberen we de e-mail te verzenden met opportunistische TLS (we proberen STARTTLS te gebruiken als dat beschikbaar is op de mailserver van de ontvanger). Als er een SSL/TLS-fout optreedt tijdens het verzenden van de e-mail, proberen we de e-mail te verzenden zonder TLS (zonder STARTTLS te gebruiken).
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+Als er DNS- of verbindingsfouten optreden, retourneren we een SMTP-responscode van 421 op het `DATA`-commando, anders als er >= 500 niveau fouten zijn, worden bounces verzonden.
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+Als we detecteren dat een e-mailserver waar we naar proberen te leveren een of meer van onze mail exchange IP-adressen heeft geblokkeerd (bijv. door welke technologie ze ook gebruiken om spammers uit te stellen), sturen we een SMTP-responscode van 421 zodat de afzender het bericht later opnieuw kan proberen (en we worden op de hoogte gesteld van het probleem zodat we het hopelijk kunnen oplossen vóór de volgende poging).
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+### Hoe gaat u om met het blokkeren van uw IP-adressen {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+We controleren routinematig alle grote DNS-denylijsten en als een van onze mail exchange ("MX") IP-adressen op een grote denylist staat, halen we deze indien mogelijk uit de relevante DNS A-record round robin totdat het probleem is opgelost.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+Op het moment van schrijven staan we ook op verschillende DNS-toestemmingslijsten en nemen we het monitoren van denylijsten serieus. Als u problemen ziet voordat wij de kans hebben gehad ze op te lossen, neem dan schriftelijk contact met ons op via <support@forwardemail.net>.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+Onze IP-adressen zijn openbaar beschikbaar, [zie deze sectie hieronder voor meer inzicht](#what-are-your-servers-ip-addresses).
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Wat zijn postmaster-adressen {#what-are-postmaster-addresses}
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+Om verkeerd gerichte bounces en het verzenden van afwezigheidsmeldingen naar niet-gemonitorde of niet-bestaande mailboxen te voorkomen, onderhouden we een lijst met mailer-daemon-achtige gebruikersnamen:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4119,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [en elk no-reply adres](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+Zie [RFC 5320 Sectie 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) voor meer inzicht in hoe dergelijke lijsten worden gebruikt om efficiënte e-mailsystemen te creëren.
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### Wat zijn no-reply-adressen {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+E-mailgebruikersnamen gelijk aan een van de volgende (ongevoelig voor hoofdletters) worden beschouwd als no-reply-adressen:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4146,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Deze lijst wordt onderhouden [als een open-source project op GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### Wat zijn de IP-adressen van uw server {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+We publiceren onze IP-adressen op <https://forwardemail.net/ips>.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### Heeft u een toestemmingslijst {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+Ja, we hebben een [lijst van domeinnaamextensies](#what-domain-name-extensions-are-allowlisted-by-default) die standaard op de toestemmingslijst staan en een dynamische, gecachte en rollende toestemmingslijst gebaseerd op [strikte criteria](#what-is-your-allowlist-criteria).
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+Alle domeinen, e-mails en IP-adressen die door betalende klanten worden gebruikt, worden automatisch elk uur gecontroleerd tegen onze denylist – wat beheerders waarschuwt die indien nodig handmatig kunnen ingrijpen.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+Daarnaast, als een van uw domeinen of e-mailadressen op een denylist staat (bijvoorbeeld vanwege het verzenden van spam, virussen of vanwege imitatie-aanvallen) – dan worden de domeinbeheerders (u) en onze teambeheerders onmiddellijk per e-mail op de hoogte gebracht. We raden sterk aan dat u [DMARC configureert](#how-do-i-set-up-dmarc-for-forward-email) om dit te voorkomen.
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### Welke domeinnaamextensies staan standaard op de toestemmingslijst {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+De volgende domeinnaamextensies worden standaard als toegestaan beschouwd (ongeacht of ze op de Umbrella Popularity List staan of niet):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4373,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+Daarnaast zijn deze [brand- en corporate top-level domeinen](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) standaard toegestaan (bijv. `apple` voor `applecard.apple` voor Apple Card bankafschriften):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4436,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4798,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+Vanaf 18 maart 2025 hebben we ook deze Franse overzeese gebieden aan deze lijst toegevoegd ([volgens dit GitHub-verzoek](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4814,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+Vanaf 8 juli 2025 hebben we deze specifiek Europese landen toegevoegd:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4834,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+In oktober 2025 hebben we ook <code class="notranslate">cz</code> (Tsjechië) toegevoegd vanwege de vraag.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+We hebben specifiek `ru` en `ua` niet opgenomen vanwege hoge spamactiviteit.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### Wat zijn uw criteria voor de allowlist {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+We hebben een statische lijst van [domeinnaamextensies die standaard op de allowlist staan](#what-domain-name-extensions-are-allowlisted-by-default) – en we onderhouden ook een dynamische, gecachte, rollende allowlist gebaseerd op de volgende strikte criteria:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* De rootdomein van de afzender moet een [domeinnaamextensie zijn die overeenkomt met de lijst die we aanbieden in ons gratis plan](#what-domain-name-extensions-can-be-used-for-free) (met de toevoeging van `biz` en `info`). We nemen ook gedeeltelijke overeenkomsten op met `edu`, `gov` en `mil`, zoals `xyz.gov.au` en `xyz.edu.au`.
+* De rootdomein van de afzender moet binnen de top 100.000 unieke rootdomeinen staan volgens de resultaten van de [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* De rootdomein van de afzender moet binnen de top 50.000 resultaten staan van unieke rootdomeinen die in ten minste 4 van de afgelopen 7 dagen van UPL voorkomen (~50%+).
+* De rootdomein van de afzender mag niet [gecategoriseerd](https://radar.cloudflare.com/categorization-feedback/) zijn als adult-content of malware door Cloudflare.
+* De rootdomein van de afzender moet A- of MX-records ingesteld hebben.
+* De rootdomein van de afzender moet A-record(s), MX-record(s), een DMARC-record met `p=reject` of `p=quarantine`, of een SPF-record met `-all` of `~all` qualifier hebben.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+Als aan deze criteria wordt voldaan, wordt de rootdomein van de afzender 7 dagen gecachet. Let op dat onze geautomatiseerde taak dagelijks draait – dit is dus een rollende allowlist-cache die dagelijks wordt bijgewerkt.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+Onze geautomatiseerde taak downloadt de voorgaande 7 dagen van UPL's in het geheugen, pakt ze uit en verwerkt ze vervolgens in het geheugen volgens bovenstaande strikte criteria.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+Populaire domeinen op het moment van schrijven zoals Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify en meer – zijn natuurlijk inbegrepen.
+Als u een afzender bent die niet op onze allowlist staat, wordt u de eerste keer dat uw FQDN rootdomein of IP-adres een e-mail verzendt, [rate limited](#do-you-have-rate-limiting) en [greylisted](#do-you-have-a-greylist). Let op dat dit standaardpraktijk is die als e-mailstandaard is aangenomen. De meeste e-mailserverclients zullen proberen opnieuw te verzenden als ze een rate limit- of greylist-fout ontvangen (bijv. een 421- of 4xx-foutstatuscode).
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**Let op dat specifieke afzenders zoals `a@gmail.com`, `b@xyz.edu` en `c@gov.au` nog steeds kunnen worden [denylisted](#do-you-have-a-denylist)** (bijv. als we automatisch spam, phishing of malware van die afzenders detecteren).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### Welke domeinnaamextensies kunnen gratis worden gebruikt {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+Vanaf 31 maart 2023 hebben we een nieuwe algemene spamregel ingevoerd om onze gebruikers en dienst te beschermen.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+Deze nieuwe regel staat alleen de volgende domeinnaamextensies toe op ons gratis abonnement:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4982,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### Heeft u een greylist {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+Ja, we hanteren een zeer soepele [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy. Greylisting geldt alleen voor afzenders die niet op onze allowlist staan en blijft 30 dagen in onze cache.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+Voor elke nieuwe afzender slaan we een sleutel op in onze Redis-database voor 30 dagen met een waarde die is ingesteld op de initiële aankomsttijd van hun eerste verzoek. Vervolgens weigeren we hun e-mail met een retry-statuscode 450 en laten we deze pas door zodra er 5 minuten zijn verstreken.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+Als ze succesvol 5 minuten hebben gewacht vanaf deze initiële aankomsttijd, worden hun e-mails geaccepteerd en ontvangen ze deze 450-statuscode niet meer.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+De sleutel bestaat uit ofwel het FQDN rootdomein of het IP-adres van de afzender. Dit betekent dat elk subdomein dat de greylist passeert ook zal slagen voor het rootdomein, en vice versa (dit is wat we bedoelen met een "zeer soepele" policy).
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+Bijvoorbeeld, als een e-mail afkomstig is van `test.example.com` voordat we een e-mail van `example.com` zien, dan moet elke e-mail van `test.example.com` en/of `example.com` 5 minuten wachten vanaf de initiële aankomsttijd van de verbinding. We laten zowel `test.example.com` als `example.com` niet elk hun eigen 5 minuten wachten (onze greylisting policy geldt op rootdomeinniveau).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+Let op dat greylisting niet geldt voor afzenders op onze [allowlist](#do-you-have-an-allowlist) (bijv. Meta, Amazon, Netflix, Google, Microsoft op het moment van schrijven).
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### Heeft u een denylist {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+Ja, we beheren onze eigen denylist en werken deze automatisch in realtime en handmatig bij op basis van gedetecteerde spam en kwaadaardige activiteiten.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+We halen ook elk uur alle IP-adressen van de UCEPROTECT Level 1 denylist op via <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> en voeren deze in onze denylist in met een vervaltijd van 7 dagen.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+Afzenders die op de denylist staan ontvangen een 421-foutcode (geeft aan dat de afzender het later opnieuw moet proberen) als ze [niet op de allowlist staan](#do-you-have-an-allowlist).
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+Door een 421-statuscode te gebruiken in plaats van een 554-statuscode, kunnen mogelijke false positives realtime worden verminderd en kan het bericht bij de volgende poging succesvol worden afgeleverd.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**Dit is anders dan bij andere maildiensten**, waar als je op een blocklist komt te staan, er een harde en permanente fout optreedt. Het is vaak moeilijk om afzenders te vragen berichten opnieuw te proberen (vooral van grote organisaties), en daarom geeft deze aanpak ongeveer 5 dagen vanaf de eerste e-mailpoging om door de afzender, ontvanger of ons te worden ingegrepen en het probleem op te lossen (door verwijdering van de denylist aan te vragen).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+Alle verzoeken tot verwijdering van de denylist worden realtime door beheerders gemonitord (bijv. zodat terugkerende false positives permanent door beheerders op de allowlist kunnen worden gezet).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+Verzoeken tot verwijdering van de denylist kunnen worden ingediend via <https://forwardemail.net/denylist>. Betaalde gebruikers krijgen hun verzoeken tot verwijdering direct verwerkt, terwijl niet-betaalde gebruikers moeten wachten tot beheerders hun verzoek verwerken.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+Afzenders die worden gedetecteerd als het verzenden van spam of virusinhoud worden als volgt aan de denylist toegevoegd:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. De [initiële berichtfingerprint](#how-do-you-determine-an-email-fingerprint) wordt greylisted bij detectie van spam of blocklist van een "vertrouwde" afzender (bijv. `gmail.com`, `microsoft.com`, `apple.com`).
+   * Als de afzender op de allowlist stond, wordt het bericht 1 uur greylisted.
+   * Als de afzender niet op de allowlist staat, wordt het bericht 6 uur greylisted.
+2. We halen denylist-sleutels uit informatie van de afzender en het bericht, en voor elk van deze sleutels maken we (indien nog niet aanwezig) een teller aan, verhogen deze met 1 en cachen deze 24 uur.
+   * Voor allowlisted afzenders:
+     * Voeg een sleutel toe voor het envelope "MAIL FROM" e-mailadres als het een geslaagde SPF had of geen SPF, en het geen [postmaster gebruikersnaam](#what-are-postmaster-addresses) of [no-reply gebruikersnaam](#what-are-no-reply-addresses) was.
+     * Als de "From" header op de allowlist stond, voeg dan een sleutel toe voor het "From" header e-mailadres als het een geslaagde SPF of geslaagde en uitgelijnde DKIM had.
+     * Als de "From" header niet op de allowlist stond, voeg dan een sleutel toe voor het "From" header e-mailadres en het root geparseerde domeinnaam.
+   * Voor niet-allowlisted afzenders:
+     * Voeg een sleutel toe voor het envelope "MAIL FROM" e-mailadres als het een geslaagde SPF had.
+     * Als de "From" header op de allowlist stond, voeg dan een sleutel toe voor het "From" header e-mailadres als het een geslaagde SPF of geslaagde en uitgelijnde DKIM had.
+     * Als de "From" header niet op de allowlist stond, voeg dan een sleutel toe voor het "From" header e-mailadres en het root geparseerde domeinnaam.
+     * Voeg een sleutel toe voor het externe IP-adres van de afzender.
+     * Voeg een sleutel toe voor de client-resolved hostname via reverse lookup van het IP-adres van de afzender (indien aanwezig).
+     * Voeg een sleutel toe voor het rootdomein van de client-resolved hostname (indien aanwezig en als dit verschilt van de client-resolved hostname).
+3. Als de teller 5 bereikt voor een niet-allowlisted afzender en sleutel, dan zetten we de sleutel 30 dagen op de denylist en wordt er een e-mail naar ons abuse-team gestuurd. Deze aantallen kunnen veranderen en updates worden hier weergegeven terwijl we het misbruik monitoren.
+4. Als de teller 10 bereikt voor een allowlisted afzender en sleutel, dan zetten we de sleutel 7 dagen op de denylist en wordt er een e-mail naar ons abuse-team gestuurd. Deze aantallen kunnen veranderen en updates worden hier weergegeven terwijl we het misbruik monitoren.
+> **OPMERKING:** In de nabije toekomst zullen we reputatiemonitoring introduceren. Reputatiemonitoring zal in plaats daarvan berekenen wanneer een afzender op de denylist moet worden geplaatst op basis van een percentage drempelwaarde (in plaats van een rudimentaire teller zoals hierboven vermeld).
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### Heeft u rate limiting {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+Sender rate limiting gebeurt ofwel op basis van het rootdomein dat wordt geparseerd uit een reverse PTR lookup op het IP-adres van de afzender – of als dat geen resultaat oplevert, dan wordt gewoon het IP-adres van de afzender gebruikt.  Merk op dat we hieronder naar dit verwijzen als `Sender`.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+Onze MX-servers hebben dagelijkse limieten voor binnenkomende mail die wordt ontvangen voor [versleutelde IMAP-opslag](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* In plaats van rate limiting toe te passen op binnenkomende mail per individuele alias (bijv. `you@yourdomain.com`) – passen we rate limiting toe op de domeinnaam van de alias zelf (bijv. `yourdomain.com`). Dit voorkomt dat `Senders` de inboxen van alle aliassen binnen uw domein tegelijk overspoelen.
+* We hebben algemene limieten die gelden voor alle `Senders` binnen onze dienst ongeacht de ontvanger:
+  * `Senders` die wij als "vertrouwd" beschouwen als bron van waarheid (bijv. `gmail.com`, `microsoft.com`, `apple.com`) mogen maximaal 100 GB per dag verzenden.
+  * `Senders` die [allowlisted](#do-you-have-an-allowlist) zijn mogen maximaal 10 GB per dag verzenden.
+  * Alle andere `Senders` mogen maximaal 1 GB en/of 1000 berichten per dag verzenden.
+* We hebben een specifieke limiet per `Sender` en `yourdomain.com` van 1 GB en/of 1000 berichten per dag.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+De MX-servers beperken ook het aantal berichten dat wordt doorgestuurd naar een of meer ontvangers via rate limiting – maar dit geldt alleen voor `Senders` die niet op de [allowlist](#do-you-have-an-allowlist) staan:
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* We staan maximaal 100 verbindingen per uur toe, per `Sender` opgelost FQDN rootdomein (of) `Sender` remote IP-adres (als er geen reverse PTR beschikbaar is), en per envelope ontvanger. We slaan de sleutel voor rate limiting op als een cryptografische hash in onze Redis-database.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* Als u e-mail via ons systeem verzendt, zorg er dan voor dat u een reverse PTR heeft ingesteld voor al uw IP-adressen (anders wordt elk uniek FQDN rootdomein of IP-adres waarvan u verzendt beperkt).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Merk op dat als u verzendt via een populair systeem zoals Amazon SES, u niet wordt beperkt aangezien (op het moment van schrijven) Amazon SES op onze allowlist staat.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* Als u verzendt vanaf een domein zoals `test.abc.123.example.com`, dan wordt de rate limit opgelegd op `example.com`. Veel spammers gebruiken honderden subdomeinen om spamfilters te omzeilen die alleen unieke hostnamen beperken in plaats van unieke FQDN rootdomeinen.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* `Senders` die de rate limit overschrijden, worden geweigerd met een 421-fout.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+Onze IMAP- en SMTP-servers beperken uw aliassen tot niet meer dan `60` gelijktijdige verbindingen tegelijk.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+Onze MX-servers beperken [niet-allowlisted](#do-you-have-an-allowlist) afzenders tot niet meer dan 10 gelijktijdige verbindingen (met een cache-verval van 3 minuten voor de teller, wat overeenkomt met onze socket timeout van 3 minuten).
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### Hoe beschermt u tegen backscatter {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+Verkeerd gerichte bounces of bounce spam (bekend als "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") kunnen een negatieve reputatie veroorzaken voor het IP-adres van de afzender.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+We nemen twee stappen om te beschermen tegen backscatter, die worden toegelicht in de volgende secties [Voorkom bounces van bekende MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) en [Voorkom onnodige bounces ter bescherming tegen backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) hieronder.
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### Voorkom bounces van bekende MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+We halen de lijst van [Backscatter.org](https://www.backscatterer.org/) (aangedreven door [UCEPROTECT](https://www.uceprotect.net/)) op via <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> elk uur en voeren deze in onze Redis-database in (we vergelijken ook vooraf het verschil; voor het geval IP's zijn verwijderd die nog steeds moeten worden gehonoreerd).
+Als de MAIL FROM leeg is OF gelijk is aan (ongevoelig voor hoofdletters) een van de [postmaster-adressen](#what-are-postmaster-addresses) (het gedeelte vóór de @ in een e-mailadres), dan controleren we of het IP-adres van de afzender overeenkomt met een uit deze lijst.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+Als het IP-adres van de afzender op de lijst staat (en niet in onze [allowlist](#do-you-have-an-allowlist)), dan sturen we een 554-fout met het bericht `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. We worden gewaarschuwd als een afzender zowel op de Backscatterer-lijst als in onze allowlist staat, zodat we het probleem indien nodig kunnen oplossen.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+De in deze sectie beschreven technieken volgen de "SAFE MODE"-aanbeveling op <https://www.backscatterer.org/?target=usage> – waarbij we het IP-adres van de afzender alleen controleren als aan bepaalde voorwaarden is voldaan.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### Voorkom onnodige bounces ter bescherming tegen backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+Bounces zijn e-mails die aangeven dat het doorsturen van e-mail volledig is mislukt naar de ontvanger en de e-mail niet opnieuw zal worden geprobeerd.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+Een veelvoorkomende reden om op de Backscatterer-lijst te komen is verkeerd gerichte bounces of bounce-spam, dus moeten we ons hier op een paar manieren tegen beschermen:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. We sturen alleen wanneer >= 500 statuscode-fouten optreden (wanneer e-mails die geprobeerd zijn door te sturen zijn mislukt, bijvoorbeeld als Gmail reageert met een 500-niveau fout).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. We sturen slechts één keer en slechts één keer (we gebruiken een berekende bounce fingerprint key en slaan deze op in de cache om het verzenden van duplicaten te voorkomen). De bounce fingerprint is een sleutel die de fingerprint van het bericht combineert met een hash van het bounce-adres en de foutcode). Zie de sectie over [Fingerprinting](#how-do-you-determine-an-email-fingerprint) voor meer inzicht in hoe de message fingerprint wordt berekend. Succesvol verzonden bounce fingerprints verlopen na 7 dagen in onze Redis-cache.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. We sturen alleen wanneer de MAIL FROM en/of From niet leeg is en niet (ongevoelig voor hoofdletters) een [postmaster-gebruikersnaam](#what-are-postmaster-addresses) bevat (het gedeelte vóór de @ in een e-mailadres).
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. We sturen niet als het originele bericht een van de volgende headers bevatte (ongevoelig voor hoofdletters):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * Header `auto-submitted` met een waarde die niet gelijk is aan `no`.
+   * Header `x-auto-response-suppress` met een waarde van `dr`, `autoreply`, `auto-reply`, `auto_reply`, of `all`
+   * Header `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, of `x-auto-respond` (ongeacht de waarde).
+   * Header `precedence` met een waarde van `bulk`, `autoreply`, `auto-reply`, `auto_reply`, of `list`.
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. We sturen niet als het MAIL FROM- of From-e-mailadres eindigt op `+donotreply`, `-donotreply`, `+noreply`, of `-noreply`.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. We sturen niet als het gebruikersnaamgedeelte van het From-e-mailadres `mdaemon` was en het een ongevoelige header `X-MDDSN-Message` had.
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. We sturen niet als er een ongevoelige `content-type` header was van `multipart/report`.
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### Hoe bepaal je een e-mail fingerprint {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+De fingerprint van een e-mail wordt gebruikt om de uniekheid van een e-mail te bepalen en om te voorkomen dat dubbele berichten worden afgeleverd en [dubbele bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) worden verzonden.
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+De fingerprint wordt berekend uit de volgende lijst:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* Door de client opgeloste FQDN-hostnaam of IP-adres
+* `Message-ID` headerwaarde (indien aanwezig)
+* `Date` headerwaarde (indien aanwezig)
+* `From` headerwaarde (indien aanwezig)
+* `To` headerwaarde (indien aanwezig)
+* `Cc` headerwaarde (indien aanwezig)
+* `Subject` headerwaarde (indien aanwezig)
+* `Body` waarde (indien aanwezig)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### Kan ik e-mails doorsturen naar andere poorten dan 25 (bijv. als mijn ISP poort 25 heeft geblokkeerd) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+Ja, sinds 5 mei 2020 hebben we deze functie toegevoegd. Op dit moment is de functie domeinspecifiek, in plaats van aliasspecifiek. Als u het aliasspecifiek nodig heeft, neem dan contact met ons op om uw wensen door te geven.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    Verbeterde privacybescherming:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    Als u een betaald abonnement heeft (met verbeterde privacybescherming), ga dan naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>, klik op "Instellen" naast uw domein, en klik vervolgens op "Instellingen". Als u meer wilt weten over betaalde abonnementen, zie dan onze <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Prijzen</a>-pagina. Anders kunt u de onderstaande instructies blijven volgen.
   </span>
 </div>
+Als je het gratis abonnement gebruikt, voeg dan eenvoudig een nieuw DNS <strong class="notranslate">TXT</strong>-record toe zoals hieronder weergegeven, maar wijzig de poort van 25 naar de poort van jouw keuze.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+Als voorbeeld, als ik wil dat alle e-mails die naar `example.com` gaan worden doorgestuurd naar de SMTP-poort 1337 van aliasontvangers in plaats van 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4648,7 +5158,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    Het meest voorkomende scenario voor het instellen van aangepaste poortdoorsturing is wanneer je alle e-mails die naar example.com gaan wilt doorsturen naar een andere poort bij example.com, anders dan de SMTP-standaardpoort 25. Om dit in te stellen, voeg je eenvoudig het volgende <strong class="notranslate">TXT</strong> catch-all record toe.
   <span>
   </span>
 </div>
@@ -4656,15 +5166,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5182,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Ondersteunt het het plus + symbool voor Gmail-aliasen {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+Ja, absoluut.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### Ondersteunt het subdomeinen {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+Ja, absoluut. In plaats van "@", ".", of leeg als naam/host/alias te gebruiken, gebruik je gewoon de subdomeinnaam als waarde.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+Als je `foo.example.com` e-mails wilt laten doorsturen, voer dan `foo` in als naam/host/alias waarde in je DNS-instellingen (voor zowel MX als <strong class="notranslate">TXT</strong> records).
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### Worden de headers van mijn e-mails doorgestuurd {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+Ja, absoluut.
 
-### Is this well-tested {#is-this-well-tested}
+### Is dit goed getest {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+Ja, er zijn tests geschreven met [ava](https://github.com/avajs/ava) en er is ook code coverage.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### Worden SMTP-responsberichten en codes doorgegeven {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+Ja, absoluut. Bijvoorbeeld, als je een e-mail stuurt naar `hello@example.com` en deze is geregistreerd om door te sturen naar `user@gmail.com`, dan wordt het SMTP-responsbericht en de code van de "gmail.com" SMTP-server teruggegeven in plaats van de proxyserver op "mx1.forwardemail.net" of "mx2.forwardemail.net".
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### Hoe voorkom je spammers en zorg je voor een goede reputatie bij e-maildoorsturing {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+Zie onze secties over [Hoe werkt jullie e-maildoorsturingssysteem](#how-does-your-email-forwarding-system-work), [Hoe gaan jullie om met problemen bij e-mailbezorging](#how-do-you-handle-email-delivery-issues), en [Hoe gaan jullie om met het blokkeren van jullie IP-adressen](#how-do-you-handle-your-ip-addresses-becoming-blocked) hierboven.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### Hoe voer je DNS-zoekopdrachten uit op domeinnamen {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+We hebben een open-source softwareproject :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) gemaakt en gebruiken dit voor DNS-zoekopdrachten. De standaard DNS-servers die worden gebruikt zijn `1.1.1.1` en `1.0.0.1`, en DNS-query's verlopen via [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") op applicatieniveau.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) gebruikt standaard de privacygerichte consumenten-DNS-service van [CloudFlare][cloudflare-dns].
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## Account en facturatie {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### Bieden jullie een geld-terug-garantie op betaalde abonnementen {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+Ja! Automatische terugbetalingen vinden plaats wanneer je je account binnen 30 dagen na de start van je abonnement upgrade, downgrade of annuleert. Dit geldt alleen voor nieuwe klanten.
+### Als ik van abonnement wissel, verrekenen en vergoeden jullie dan het verschil {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+Wij verrekenen noch vergoeden het verschil wanneer je van abonnement wisselt. In plaats daarvan zetten we de resterende duur vanaf de vervaldatum van je huidige abonnement om naar de dichtstbijzijnde relatieve duur voor je nieuwe abonnement (afgerond naar beneden op maandbasis).
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+Let op dat als je binnen een periode van 30 dagen na het starten van een betaald abonnement upgrade of downgrade tussen betaalde abonnementen, wij automatisch het volledige bedrag van je huidige abonnement terugbetalen.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Kan ik deze e-mail doorstuurservice gewoon gebruiken als een "fallback" of "fallover" MX-server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+Nee, dat wordt niet aanbevolen, omdat je maar één mail exchange-server tegelijk kunt gebruiken. Fallbacks worden meestal nooit opnieuw geprobeerd vanwege prioriteitsfouten in de configuratie en mailservers die de MX-exchange prioriteitscontrole niet respecteren.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### Kan ik specifieke aliassen uitschakelen {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    Als je een betaald abonnement hebt, moet je naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen <i class="fa fa-angle-right"></i> Alias bewerken <i class="fa fa-angle-right"></i> Vink het vakje "Actief" uit <i class="fa fa-angle-right"></i> Doorgaan.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+Ja, bewerk eenvoudig je DNS <strong class="notranslate">TXT</strong>-record en zet een, twee of drie uitroeptekens voor de alias (zie hieronder).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+Let op dat je de ":"-mapping *moet* behouden, omdat dit nodig is als je dit ooit weer wilt inschakelen (en het wordt ook gebruikt voor importeren als je upgrade naar een van onze betaalde abonnementen).
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**Voor stille weigering (voor de afzender lijkt het alsof het bericht succesvol is verzonden, maar het gaat eigenlijk nergens heen) (statuscode `250`):** Als je een alias voorziet van een "!" (één uitroepteken) dan zal het een succesvolle statuscode `250` teruggeven aan afzenders die naar dit adres proberen te sturen, maar de e-mails gaan zelf nergens heen (bijv. een blackhole of `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**Voor zachte weigering (statuscode `421`):** Als je een alias voorziet van "!!" (twee uitroeptekens) dan zal het een zachte foutstatuscode `421` teruggeven aan afzenders die naar dit adres proberen te sturen, en de e-mails worden vaak tot 5 dagen opnieuw geprobeerd voordat ze worden geweigerd en teruggestuurd.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**Voor harde weigering (statuscode `550`):** Als je een alias voorziet van "!!!" (drie uitroeptekens) dan zal het een permanente foutstatuscode `550` teruggeven aan afzenders die naar dit adres proberen te sturen en de e-mails worden geweigerd en teruggestuurd.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+Bijvoorbeeld, als ik wil dat alle e-mails die naar `alias@example.com` gaan niet meer worden doorgestuurd naar `user@gmail.com` en worden geweigerd en teruggestuurd (bijv. gebruik drie uitroeptekens):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4769,51 +5279,50 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     Tip:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    Je kunt ook het doorgestuurde ontvangersadres herschrijven naar simpelweg "nobody@forwardemail.net", wat het naar niemand zal routeren zoals in het onderstaande voorbeeld.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
     Tip:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    Als je meer beveiliging wilt, kun je ook het gedeelte ":user@gmail.com" (of ":nobody@forwardemail.net") verwijderen, zodat alleen "!!!alias" overblijft zoals in het onderstaande voorbeeld.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5330,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### Kan ik e-mails doorsturen naar meerdere ontvangers {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+Ja, absoluut. Geef gewoon meerdere ontvangers op in je <strong class="notranslate">TXT</strong> records.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Bijvoorbeeld, als ik een e-mail die naar `hello@example.com` gaat wil doorsturen naar `user+a@gmail.com` en `user+b@gmail.com`, dan zou mijn <strong class="notranslate">TXT</strong> record er zo uitzien:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5355,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Of je kunt ze op twee aparte regels specificeren, zoals dit:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5382,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+Het is aan jou!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### Kan ik meerdere globale catch-all ontvangers hebben {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+Ja, dat kan. Geef gewoon meerdere globale catch-all ontvangers op in je <strong class="notranslate">TXT</strong> records.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+Bijvoorbeeld, als ik wil dat elke e-mail die naar `*@example.com` gaat (de asterisk betekent dat het een wildcard oftewel catch-all is) wordt doorgestuurd naar `user+a@gmail.com` en `user+b@gmail.com`, dan zou mijn <strong class="notranslate">TXT</strong> record er zo uitzien:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,38 +5409,37 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+Of je kunt ze op twee aparte regels specificeren, zoals dit:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>Naam/Host/Alias</th>
       <th class="text-center">TTL</th>
       <th>Type</th>
-      <th>Answer/Value</th>
+      <th>Antwoord/Waarde</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", of leeg</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+Het is aan jou!
 
-It's up to you!
+### Is er een maximumlimiet voor het aantal e-mailadressen waarnaar ik per alias kan doorsturen {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+Ja, de standaardlimiet is 10. Dit betekent NIET dat je slechts 10 aliassen op je domeinnaam kunt hebben. Je kunt zoveel aliassen hebben als je wilt (een onbeperkt aantal). Het betekent dat je slechts één alias kunt doorsturen naar 10 unieke e-mailadressen. Je zou `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (van 1-10) kunnen hebben – en alle e-mails naar `hello@example.com` worden doorgestuurd naar `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (van 1-10).
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4939,151 +5447,150 @@ Yes, the default limit is 10.  This does NOT mean that you can only have 10 alia
     Tip:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    Heb je meer dan 10 ontvangers per alias nodig? Stuur ons een e-mail en we verhogen graag de limiet van je account.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### Kan ik e-mails recursief doorsturen {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+Ja, dat kan, maar je moet nog steeds de maximumlimiet respecteren. Als je `hello:linus@example.com` en `linus:user@gmail.com` hebt, dan worden e-mails naar `hello@example.com` doorgestuurd naar `linus@example.com` en `user@gmail.com`. Let op dat er een foutmelding wordt gegeven als je probeert e-mails recursief door te sturen boven de maximumlimiet.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Kunnen mensen mijn e-maildoorsturing registreren of afmelden zonder mijn toestemming {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+We gebruiken MX- en <strong class="notranslate">TXT</strong>-recordverificatie, dus als je de respectievelijke MX- en <strong class="notranslate">TXT</strong>-records van deze dienst toevoegt, ben je geregistreerd. Als je ze verwijdert, ben je afgemeld. Jij hebt het eigendom van je domein en DNS-beheer, dus als iemand daar toegang toe heeft, is dat een probleem.
 
-### How is it free {#how-is-it-free}
+### Hoe is het gratis {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Email biedt een gratis laag via een combinatie van open-source ontwikkeling, efficiënte infrastructuur en optionele betaalde abonnementen die de dienst ondersteunen.
 
-Our free tier is supported by:
+Onze gratis laag wordt ondersteund door:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **Open Source Ontwikkeling**: Onze codebasis is open source, wat bijdragen van de gemeenschap en transparante werking mogelijk maakt.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **Efficiënte Infrastructuur**: We hebben onze systemen geoptimaliseerd om e-maildoorsturing met minimale middelen te verwerken.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **Betaalde Premium Abonnementen**: Gebruikers die extra functies nodig hebben zoals SMTP-verzending, IMAP-ontvangst of verbeterde privacy-opties, nemen een betaald abonnement.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **Redelijke Gebruikslimieten**: De gratis laag heeft eerlijke gebruiksregels om misbruik te voorkomen.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> We zetten ons in om basis e-maildoorsturing gratis te houden terwijl we premium functies aanbieden voor gebruikers met meer geavanceerde behoeften.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Als je onze dienst waardeert, overweeg dan te upgraden naar een betaald abonnement om de voortdurende ontwikkeling en het onderhoud te ondersteunen.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### Wat is de maximale e-mailgrootte {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+De standaardlimiet is 50MB, inclusief inhoud, headers en bijlagen. Let op dat diensten zoals Gmail en Outlook slechts een limiet van 25MB toestaan, en als je die limiet overschrijdt bij het verzenden naar adressen bij die providers, ontvang je een foutmelding.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+Er wordt een fout met de juiste responscode teruggegeven als de bestandsgrootte limiet wordt overschreden.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### Slaan jullie logs van e-mails op {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+Nee, we schrijven niet naar schijf en slaan geen logs op – met uitzondering van [fouten](#do-you-store-error-logs) en [uitgaande SMTP](#do-you-support-sending-email-with-smtp) (zie ons [Privacybeleid](/privacy)).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+Alles gebeurt in het geheugen en [onze broncode staat op GitHub](https://github.com/forwardemail).
 
-### Do you store error logs {#do-you-store-error-logs}
+### Slaan jullie foutlogs op {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**Ja. Je kunt foutlogs bekijken onder [Mijn Account → Logs](/my-account/logs) of [Mijn Account → Domeinen](/my-account/domains).**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+Vanaf februari 2023 slaan we foutlogs op voor `4xx` en `5xx` SMTP-responscodes gedurende een periode van 7 dagen – deze bevatten de SMTP-fout, envelop en e-mailheaders (we slaan **niet** de e-mailinhoud of bijlagen op).
+Foutlogboeken stellen je in staat om te controleren op ontbrekende belangrijke e-mails en om valse positieven van spam te verminderen voor [je domeinen](/my-account/domains). Ze zijn ook een geweldige bron voor het debuggen van problemen met [e-mail webhooks](#do-you-support-webhooks) (aangezien de foutlogboeken de webhook endpoint respons bevatten).
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+Foutlogboeken voor [rate limiting](#do-you-have-rate-limiting) en [greylisting](#do-you-have-a-greylist) zijn niet toegankelijk omdat de verbinding vroegtijdig wordt beëindigd (bijv. voordat `RCPT TO` en `MAIL FROM` commando's kunnen worden verzonden).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+Zie ons [Privacybeleid](/privacy) voor meer inzicht.
 
-See our [Privacy Policy](/privacy) for more insight.
+### Leest u mijn e-mails {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+Nee, absoluut niet. Zie ons [Privacybeleid](/privacy).
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+Veel andere e-mail doorstuurdiensten slaan je e-mail op en zouden deze mogelijk kunnen lezen. Er is geen reden waarom doorgestuurde e-mails op schijfopslag moeten worden opgeslagen – daarom hebben wij de eerste open-source oplossing ontworpen die alles in het geheugen doet.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+Wij geloven dat je recht hebt op privacy en wij respecteren dat strikt. De code die op de server wordt ingezet is [open-source software op GitHub](https://github.com/forwardemail) voor transparantie en om vertrouwen op te bouwen.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### Kan ik "mail verzenden als" in Gmail met dit {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+Ja! Sinds 2 oktober 2018 hebben we deze functie toegevoegd. Zie [Hoe mail te verzenden als met Gmail](#how-to-send-mail-as-using-gmail) hierboven!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Je moet ook het SPF-record voor Gmail instellen in je DNS-configuratie <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Als je Gmail gebruikt (bijv. Mail verzenden als) of G Suite, moet je <code>include:_spf.google.com</code> toevoegen aan je SPF <strong class="notranslate">TXT</strong> record, bijvoorbeeld:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### Kan ik "mail verzenden als" in Outlook met dit {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+Ja! Sinds 2 oktober 2018 hebben we deze functie toegevoegd. Bekijk simpelweg deze twee links van Microsoft hieronder:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+Je moet ook het SPF-record voor Outlook instellen in je DNS-configuratie <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    Belangrijk:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Als je Microsoft Outlook of Live.com gebruikt, moet je <code>include:spf.protection.outlook.com</code> toevoegen aan je SPF <strong class="notranslate">TXT</strong> record, bijvoorbeeld:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Kan ik "mail verzenden als" in Apple Mail en iCloud Mail met dit {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+Als je een abonnee bent van iCloud+, kun je een aangepast domein gebruiken. [Onze dienst is ook compatibel met Apple Mail](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+Zie <https://support.apple.com/en-us/102540> voor meer informatie.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### Kan ik onbeperkt e-mails doorsturen met dit {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+Ja, echter worden "relatief onbekende" afzenders beperkt tot 100 verbindingen per uur per hostnaam of IP. Zie de sectie over [Rate Limiting](#do-you-have-rate-limiting) en [Greylisting](#do-you-have-a-greylist) hierboven.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+Met "relatief onbekend" bedoelen we afzenders die niet voorkomen in de [whitelist](#do-you-have-an-allowlist).
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+Als deze limiet wordt overschreden, sturen we een 421-responscode die de mailserver van de afzender vertelt om het later opnieuw te proberen.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### Biedt u onbeperkte domeinen voor één prijs aan {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+Ja. Ongeacht welk abonnement je hebt, betaal je slechts één maandtarief – dat alle je domeinen dekt.
+### Welke betaalmethoden accepteert u {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email accepteert de volgende eenmalige of maandelijkse/kwartaal-/jaarlijkse betaalmethoden:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **Creditcard/Debetkaart/Bankoverschrijvingen**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, enz.
+2. **PayPal**: Verbind uw PayPal-account voor gemakkelijke betalingen
+3. **Cryptocurrency**: We accepteren betalingen via Stripe's stablecoin-betalingen op Ethereum-, Polygon- en Solana-netwerken
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> We slaan beperkte betalingsinformatie op onze servers op, die alleen betalingsidentificaties en verwijzingen naar [Stripe](https://stripe.com/global) en [PayPal](https://www.paypal.com) transactie-, klant-, abonnement- en betalings-ID's bevatten.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Voor maximale privacy kunt u overwegen om betalingen met cryptocurrency te gebruiken.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+Alle betalingen worden veilig verwerkt via Stripe of PayPal. Uw betalingsgegevens worden nooit op onze servers opgeslagen.
 
-## Additional Resources {#additional-resources}
+
+## Aanvullende bronnen {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Onze onderstaande artikelen worden regelmatig bijgewerkt met nieuwe handleidingen, tips en technische informatie. Kom vaak terug voor de nieuwste inhoud.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [Case Studies & Ontwikkelaarsdocumentatie](/blog/docs)
+* [Bronnen](/resources)
+* [Handleidingen](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

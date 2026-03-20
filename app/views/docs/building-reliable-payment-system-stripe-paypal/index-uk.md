@@ -1,54 +1,58 @@
-# Як ми створили надійну платіжну систему за допомогою Stripe та PayPal: Потрійний підхід {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Як ми побудували надійну платіжну систему з Stripe і PayPal: підхід тріо {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Платіжна система з Stripe і PayPal" class="rounded-lg" />
+
 
 ## Зміст {#table-of-contents}
 
 * [Передмова](#foreword)
-* [Проблема: Кілька платіжних систем, одне джерело правди](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [Підхід Trifecta: три рівні надійності](#the-trifecta-approach-three-layers-of-reliability)
-* [Рівень 1: Перенаправлення після оформлення замовлення](#layer-1-post-checkout-redirects)
+* [Виклик: кілька платіжних процесорів, одне джерело правди](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Підхід тріо: три рівні надійності](#the-trifecta-approach-three-layers-of-reliability)
+* [Рівень 1: перенаправлення після оформлення замовлення](#layer-1-post-checkout-redirects)
   * [Реалізація Stripe Checkout](#stripe-checkout-implementation)
-  * [Процес оплати PayPal](#paypal-payment-flow)
-* [Рівень 2: Обробники вебхуків з перевіркою підпису](#layer-2-webhook-handlers-with-signature-verification)
-  * [Реалізація вебхука Stripe](#stripe-webhook-implementation)
-  * [Реалізація вебхука PayPal](#paypal-webhook-implementation)
-* [Рівень 3: Автоматизовані завдання з Bree](#layer-3-automated-jobs-with-bree)
+  * [Платіжний потік PayPal](#paypal-payment-flow)
+* [Рівень 2: обробники webhook з перевіркою підпису](#layer-2-webhook-handlers-with-signature-verification)
+  * [Реалізація Stripe Webhook](#stripe-webhook-implementation)
+  * [Реалізація PayPal Webhook](#paypal-webhook-implementation)
+* [Рівень 3: автоматизовані завдання з Bree](#layer-3-automated-jobs-with-bree)
   * [Перевірка точності підписки](#subscription-accuracy-checker)
   * [Синхронізація підписок PayPal](#paypal-subscription-synchronization)
-* [Обробка пограничних випадків](#handling-edge-cases)
+* [Обробка крайніх випадків](#handling-edge-cases)
   * [Виявлення та запобігання шахрайству](#fraud-detection-and-prevention)
-  * [Вирішення спорів](#dispute-handling)
-* [Повторне використання коду: принципи KISS та DRY](#code-reuse-kiss-and-dry-principles)
-* [Впровадження вимог до підписки VISA](#visa-subscription-requirements-implementation)
-  * [Автоматичні сповіщення електронною поштою про попереднє поновлення](#automated-pre-renewal-email-notifications)
-  * [Обробка пограничних випадків](#handling-edge-cases-1)
+  * [Обробка спорів](#dispute-handling)
+* [Повторне використання коду: принципи KISS і DRY](#code-reuse-kiss-and-dry-principles)
+* [Реалізація вимог підписки VISA](#visa-subscription-requirements-implementation)
+  * [Автоматизовані email-повідомлення перед поновленням](#automated-pre-renewal-email-notifications)
+  * [Обробка крайніх випадків](#handling-edge-cases-1)
   * [Пробні періоди та умови підписки](#trial-periods-and-subscription-terms)
-* [Висновок: Переваги нашого Trifecta підходу](#conclusion-the-benefits-of-our-trifecta-approach)
+* [Висновок: переваги нашого підходу тріо](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## Передмова {#foreword}
 
-У Forward Email ми завжди надавали пріоритет створенню надійних, точних та зручних у використанні систем. Коли справа дійшла до впровадження нашої системи обробки платежів, ми знали, що нам потрібне рішення, яке могло б обробляти кілька платіжних процесорів, зберігаючи при цьому ідеальну узгодженість даних. У цій публікації блогу детально описано, як наша команда розробників інтегрувала Stripe та PayPal, використовуючи потрійний підхід, який забезпечує точність 1:1 у режимі реального часу в усій нашій системі.
+У Forward Email ми завжди ставили пріоритет на створення систем, які є надійними, точними та зручними для користувачів. Коли настав час впроваджувати нашу платіжну систему, ми знали, що нам потрібне рішення, яке зможе працювати з кількома платіжними процесорами, зберігаючи при цьому ідеальну узгодженість даних. У цьому дописі ми детально розповідаємо, як наша команда розробників інтегрувала Stripe і PayPal, використовуючи підхід тріо, що забезпечує 1:1 точність у реальному часі по всій системі.
 
-## Виклик: Кілька платіжних систем, одне джерело достовірної інформації {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Як сервіс електронної пошти, орієнтований на конфіденційність, ми хотіли надати нашим користувачам варіанти оплати. Деякі віддають перевагу простоті платежів кредитними картками через Stripe, тоді як інші цінують додатковий рівень розділення, який надає PayPal. Однак підтримка кількох платіжних систем створює значні складнощі:
+## Виклик: кілька платіжних процесорів, одне джерело правди {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-1. Як ми забезпечуємо узгодженість даних у різних платіжних системах?
-2. Як ми вирішуємо граничні випадки, такі як суперечки, повернення коштів або невдалі платежі?
-3. Як ми підтримуємо єдине джерело достовірної інформації в нашій базі даних?
+Як сервіс електронної пошти, орієнтований на конфіденційність, ми хотіли надати нашим користувачам варіанти оплати. Дехто віддає перевагу простоті оплати кредитною карткою через Stripe, інші цінують додатковий рівень відокремлення, який надає PayPal. Однак підтримка кількох платіжних процесорів ускладнює систему:
 
-Нашим рішенням було впровадження того, що ми називаємо «потрійним підходом» – трирівневої системи, яка забезпечує резервування та гарантує узгодженість даних незалежно від обставин.
+1. Як забезпечити узгодженість даних між різними платіжними системами?
+2. Як обробляти крайні випадки, такі як спори, повернення коштів або невдалі платежі?
+3. Як підтримувати єдине джерело правди в нашій базі даних?
 
-## Підхід Trifecta: три рівні надійності {#the-trifecta-approach-three-layers-of-reliability}
+Наше рішення — впровадити те, що ми називаємо «підхід тріо» — тришарову систему, яка забезпечує резервування і гарантує узгодженість даних незалежно від обставин.
 
-Наша платіжна система складається з трьох критично важливих компонентів, які працюють разом для забезпечення ідеальної синхронізації даних:
 
-1. **Переадресації після оформлення замовлення** – Збір інформації про оплату одразу після оформлення замовлення
-2. **Обробники вебхуків** – Обробка подій у режимі реального часу від платіжних процесорів
-3. **Автоматизовані завдання** – Періодична перевірка та узгодження даних про оплату
+## Підхід тріо: три рівні надійності {#the-trifecta-approach-three-layers-of-reliability}
 
-Давайте заглибимося в кожен компонент і подивимося, як вони працюють разом.
+Наша платіжна система складається з трьох ключових компонентів, які працюють разом, щоб забезпечити ідеальну синхронізацію даних:
+
+1. **Перенаправлення після оформлення замовлення** — фіксація інформації про платіж одразу після оформлення
+2. **Обробники webhook** — обробка подій у реальному часі від платіжних процесорів
+3. **Автоматизовані завдання** — періодична перевірка та узгодження платіжних даних
+
+Давайте розглянемо кожен компонент і подивимось, як вони працюють разом.
 
 ```mermaid
 flowchart TD
@@ -109,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
+## Шар 1: Перенаправлення після оформлення замовлення {#layer-1-post-checkout-redirects}
 
-## Рівень 1: Перенаправлення після оформлення замовлення {#layer-1-post-checkout-redirects}
+Перший шар нашого підходу з трьох частин відбувається одразу після того, як користувач завершує оплату. І Stripe, і PayPal надають механізми для перенаправлення користувачів назад на наш сайт з інформацією про транзакцію.
 
-Перший рівень нашого потрійного підходу реалізується одразу після того, як користувач завершує платіж. Як Stripe, так і PayPal надають механізми для перенаправлення користувачів назад на наш сайт з інформацією про транзакцію.
+### Реалізація Stripe Checkout {#stripe-checkout-implementation}
 
-### Реалізація оформлення замовлення Stripe {#stripe-checkout-implementation}
-
-Для Stripe ми використовуємо їхній API Checkout Sessions для створення безперебійного процесу оплати. Коли користувач вибирає план і вирішує оплатити кредитною карткою, ми створюємо сеанс оформлення замовлення з певними успішними результатами та скасовуємо URL-адреси:
+Для Stripe ми використовуємо їхній API Checkout Sessions, щоб створити безшовний досвід оплати. Коли користувач обирає план і вирішує оплатити кредитною карткою, ми створюємо сесію Checkout з конкретними URL для успіху та скасування:
 
 ```javascript
 const options = {
@@ -154,11 +157,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Найважливішою частиною тут є параметр `success_url`, який включає `session_id` як параметр запиту. Коли Stripe перенаправляє користувача назад на наш сайт після успішної оплати, ми можемо використовувати цей ідентифікатор сеансу для перевірки транзакції та відповідного оновлення нашої бази даних.
+Критичною частиною тут є параметр `success_url`, який включає `session_id` як параметр запиту. Коли Stripe перенаправляє користувача назад на наш сайт після успішної оплати, ми можемо використати цей ідентифікатор сесії для перевірки транзакції та відповідного оновлення нашої бази даних.
 
-### Процес оплати PayPal {#paypal-payment-flow}
+### Потік оплати PayPal {#paypal-payment-flow}
 
-Для PayPal ми використовуємо аналогічний підхід з їхнім API замовлень:
+Для PayPal ми використовуємо подібний підхід з їхнім API Orders:
 
 ```javascript
 const requestBody = {
@@ -210,7 +213,7 @@ const requestBody = {
 };
 ```
 
-Подібно до Stripe, ми вказуємо параметри `return_url` та `cancel_url` для обробки переадресацій після оплати. Коли PayPal перенаправляє користувача назад на наш сайт, ми можемо зібрати платіжні дані та оновити нашу базу даних.
+Подібно до Stripe, ми вказуємо параметри `return_url` та `cancel_url` для обробки перенаправлень після оплати. Коли PayPal перенаправляє користувача назад на наш сайт, ми можемо зафіксувати деталі оплати та оновити нашу базу даних.
 
 ```mermaid
 sequenceDiagram
@@ -222,74 +225,73 @@ sequenceDiagram
     participant Bree as Bree Job Scheduler
 
     %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    User->>FE: Обрати план і спосіб оплати
 
-    alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
-    else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+    alt Оплата кредитною карткою
+        FE->>Stripe: Створити сесію Checkout
+        Stripe-->>FE: Повернути URL сесії
+        FE->>User: Перенаправити до Stripe Checkout
+        User->>Stripe: Завершити оплату
+        Stripe->>User: Перенаправити на URL успіху з session_id
+        User->>FE: Повернутися на сторінку успіху
+        FE->>Stripe: Перевірити сесію за session_id
+        Stripe-->>FE: Повернути деталі сесії
+        FE->>DB: Оновити план користувача та статус оплати
+    else Оплата через PayPal
+        FE->>PayPal: Створити замовлення
+        PayPal-->>FE: Повернути URL для підтвердження
+        FE->>User: Перенаправити до PayPal
+        User->>PayPal: Підтвердити оплату
+        PayPal->>User: Перенаправити на URL повернення
+        User->>FE: Повернутися на сторінку успіху
+        FE->>PayPal: Зафіксувати оплату
+        PayPal-->>FE: Повернути деталі оплати
+        FE->>DB: Оновити план користувача та статус оплати
     end
 
     %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    Note over Stripe,PayPal: Події оплати відбуваються (асинхронно)
 
-    alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
-    else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+    alt Вебхук Stripe
+        Stripe->>FE: Надіслати повідомлення про подію
+        FE->>FE: Перевірити підпис вебхука
+        FE->>DB: Обробити подію та оновити дані
+        FE-->>Stripe: Підтвердити отримання (200 OK)
+    else Вебхук PayPal
+        PayPal->>FE: Надіслати повідомлення про подію
+        FE->>FE: Перевірити підпис вебхука
+        FE->>DB: Обробити подію та оновити дані
+        FE-->>PayPal: Підтвердити отримання (200 OK)
     end
 
-    %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    %% Автоматизовані завдання Bree
+    Note over Bree: Заплановані завдання виконуються періодично
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: Отримати всіх клієнтів і підписки
+    Stripe-->>Bree: Повернути дані клієнтів
+    Bree->>DB: Порівняти та узгодити дані
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: Отримати всі підписки та транзакції
+    PayPal-->>Bree: Повернути дані підписок
+    Bree->>DB: Порівняти та узгодити дані
 
-    %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    %% Крайній випадок: Обробка спорів
+    Note over User,PayPal: Користувач оскаржує платіж
 
-    PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    PayPal->>FE: Вебхук DISPUTE.CREATED
+    FE->>PayPal: Автоматично прийняти претензію
+    FE->>DB: Оновити статус користувача
+    FE->>User: Надіслати повідомлення електронною поштою
 ```
+## Layer 2: Обробники вебхуків із перевіркою підпису {#layer-2-webhook-handlers-with-signature-verification}
 
-## Рівень 2: Обробники вебхуків з перевіркою підпису {#layer-2-webhook-handlers-with-signature-verification}
+Хоча перенаправлення після оформлення замовлення добре працюють у більшості випадків, вони не є бездоганними. Користувачі можуть закрити браузер до перенаправлення, або мережеві проблеми можуть завадити завершенню перенаправлення. Саме тут на допомогу приходять вебхуки.
 
-Хоча перенаправлення після оформлення замовлення добре працюють у більшості сценаріїв, вони не є надійними. Користувачі можуть закрити браузер перед перенаправленням, або проблеми з мережею можуть перешкодити завершенню перенаправлення. Ось тут і знадобляться вебхуки.
-
-Як Stripe, так і PayPal пропонують системи вебхуків, які надсилають сповіщення про платежі в режимі реального часу. Ми реалізували надійні обробники вебхуків, які перевіряють справжність цих сповіщень та обробляють їх відповідно.
+І Stripe, і PayPal надають системи вебхуків, які надсилають сповіщення в режимі реального часу про події оплати. Ми реалізували надійні обробники вебхуків, які перевіряють автентичність цих сповіщень і відповідно їх обробляють.
 
 ### Реалізація вебхука Stripe {#stripe-webhook-implementation}
 
-Наш обробник вебхуків Stripe перевіряє підпис вхідних подій вебхуків, щоб переконатися в їх легітимності:
+Наш обробник вебхуків Stripe перевіряє підпис вхідних подій вебхука, щоб переконатися в їхній легітимності:
 
 ```javascript
 async function webhook(ctx) {
@@ -334,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-Функція `stripe.webhooks.constructEvent` перевіряє підпис за допомогою нашого секретного коду кінцевої точки. Якщо підпис дійсний, ми обробляємо подію асинхронно, щоб уникнути блокування відповіді вебхука.
+Функція `stripe.webhooks.constructEvent` перевіряє підпис за допомогою нашого секрету кінцевої точки. Якщо підпис дійсний, ми асинхронно обробляємо подію, щоб не блокувати відповідь вебхука.
 
 ### Реалізація вебхука PayPal {#paypal-webhook-implementation}
 
-Аналогічно, наш обробник вебхуків PayPal перевіряє справжність вхідних сповіщень:
+Аналогічно, наш обробник вебхуків PayPal перевіряє автентичність вхідних сповіщень:
 
 ```javascript
 async function webhook(ctx) {
@@ -377,16 +379,16 @@ async function webhook(ctx) {
 }
 ```
 
-Обидва обробники вебхуків дотримуються одного шаблону: перевіряють підпис, підтверджують отримання та обробляють подію асинхронно. Це гарантує, що ми ніколи не пропустимо подію оплати, навіть якщо перенаправлення після оформлення замовлення завершиться невдачею.
+Обидва обробники вебхуків дотримуються однакової схеми: перевірка підпису, підтвердження отримання та асинхронна обробка події. Це гарантує, що ми ніколи не пропустимо подію оплати, навіть якщо перенаправлення після оформлення замовлення не відбулося.
 
-## Рівень 3: Автоматизовані завдання з Bree {#layer-3-automated-jobs-with-bree}
 
-Останній рівень нашого потрійного підходу — це набір автоматизованих завдань, які періодично перевіряють та узгоджують дані про платежі. Ми використовуємо Bree, планувальник завдань для Node.js, для запуску цих завдань через регулярні проміжки часу.
+## Layer 3: Автоматизовані завдання з Bree {#layer-3-automated-jobs-with-bree}
+
+Останній рівень нашого підходу — це набір автоматизованих завдань, які періодично перевіряють і звіряють дані про платежі. Ми використовуємо Bree, планувальник завдань для Node.js, щоб запускати ці завдання з регулярними інтервалами.
 
 ### Перевірка точності підписки {#subscription-accuracy-checker}
 
-Одним з наших ключових завдань є перевірка точності підписок, яка гарантує, що наша база даних точно відображає стан підписок у Stripe:
-
+Одне з ключових завдань — перевірка точності підписки, яка гарантує, що наша база даних точно відображає статус підписки в Stripe:
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -452,11 +454,11 @@ async function mapper(customer) {
 }
 ```
 
-Це завдання перевіряє наявність розбіжностей між нашою базою даних та Stripe, таких як невідповідні адреси електронної пошти або кілька активних підписок. Якщо виявляється будь-яка проблема, вона реєструє її та надсилає сповіщення нашій команді адміністраторів.
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### Синхронізація підписки PayPal {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-У нас є схожа робота для підписок PayPal:
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +489,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Ці автоматизовані завдання слугують нашою останньою системою безпеки, гарантуючи, що наша база даних завжди відображає справжній стан підписок і платежів як у Stripe, так і в PayPal.
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## Обробка граничних випадків {#handling-edge-cases}
 
-Надійна платіжна система повинна коректно обробляти пограничні випадки. Давайте розглянемо, як ми обробляємо деякі поширені сценарії.
+## Handling Edge Cases {#handling-edge-cases}
 
-### Виявлення та запобігання шахрайству {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-Ми впровадили складні механізми виявлення шахрайства, які автоматично виявляють та обробляють підозрілі платежі:
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -540,30 +543,30 @@ case 'charge.failed': {
 }
 ```
 
-Цей код автоматично блокує користувачів, у яких було кілька невдалих платежів та немає перевірених доменів, що є вагомим показником шахрайської діяльності.
+Цей код автоматично блокує користувачів, які мають кілька невдалих спроб оплати та не мають підтверджених доменів, що є сильним індикатором шахрайської діяльності.
 
-### Розгляд суперечок {#dispute-handling}
+### Обробка спорів {#dispute-handling}
 
-Коли користувач оскаржує стягнення плати, ми автоматично приймаємо претензію та вживаємо відповідних заходів:
+Коли користувач оскаржує платіж, ми автоматично приймаємо претензію та вживаємо відповідних заходів:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
-  // accept claim
+  // прийняти претензію
   const agent = await paypalAgent();
   await agent
     .post(`/v1/customer/disputes/${body.resource.dispute_id}/accept-claim`)
     .send({
-      note: 'Full refund to the customer.'
+      note: 'Повне повернення коштів клієнту.'
     });
 
-  // Find the payment in our database
+  // Знайти платіж у нашій базі даних
   const payment = await Payments.findOne({ $or });
-  if (!payment) throw new Error('Payment does not exist');
+  if (!payment) throw new Error('Платіж не існує');
 
   const user = await Users.findById(payment.user);
-  if (!user) throw new Error('User did not exist for customer');
+  if (!user) throw new Error('Користувач не існував для клієнта');
 
-  // Cancel the user's subscription if they have one
+  // Скасувати підписку користувача, якщо вона є
   if (isSANB(user[config.userFields.paypalSubscriptionID])) {
     try {
       const agent = await paypalAgent();
@@ -573,30 +576,31 @@ case 'CUSTOMER.DISPUTE.CREATED': {
         }/cancel`
       );
     } catch (err) {
-      // Handle subscription cancellation errors
+      // Обробка помилок скасування підписки
     }
   }
 }
 ```
 
-Такий підхід мінімізує вплив суперечок на наш бізнес, водночас забезпечуючи хороший клієнтський досвід.
+Такий підхід мінімізує вплив спорів на наш бізнес, одночасно забезпечуючи хороший досвід для клієнтів.
+
 
 ## Повторне використання коду: принципи KISS та DRY {#code-reuse-kiss-and-dry-principles}
 
-У всій нашій платіжній системі ми дотримуємося принципів KISS (Keep It Simple, Stupid) та DRY (Don't Repeat Yourself). Ось кілька прикладів:
+У всій нашій платіжній системі ми дотримуємося принципів KISS (Keep It Simple, Stupid — тримай просто) та DRY (Don't Repeat Yourself — не повторюйся). Ось кілька прикладів:
 
-1. **Спільні допоміжні функції**: Ми створили допоміжні функції багаторазового використання для поширених завдань, таких як синхронізація платежів та надсилання електронних листів.
+1. **Спільні допоміжні функції**: Ми створили багаторазові допоміжні функції для типових завдань, таких як синхронізація платежів та надсилання електронних листів.
 
-2. **Узгоджена обробка помилок**: Обробники вебхуків Stripe та PayPal використовують однаковий шаблон для обробки помилок та сповіщень адміністратора.
+2. **Послідовна обробка помилок**: Обробники вебхуків Stripe та PayPal використовують однаковий шаблон для обробки помилок та повідомлень адміністратору.
 
-3. **Уніфікована схема бази даних**: Наша схема бази даних розроблена для врахування даних Stripe та PayPal, зі спільними полями для статусу платежу, суми та інформації про план.
+3. **Уніфікована схема бази даних**: Наша схема бази даних розроблена для роботи як з даними Stripe, так і PayPal, з загальними полями для статусу платежу, суми та інформації про план.
 
-4. **Централізована конфігурація**: конфігурація, пов’язана з оплатою, централізована в одному файлі, що спрощує оновлення цін та інформації про продукт.
+4. **Централізована конфігурація**: Конфігурація, пов’язана з платежами, централізована в одному файлі, що полегшує оновлення цін та інформації про продукти.
 
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        A[Helper Functions] --> B[syncStripePaymentIntent]
+        A[Допоміжні функції] --> B[syncStripePaymentIntent]
         A --> C[syncPayPalOrderPaymentByPaymentId]
         A --> D[syncPayPalSubscriptionPaymentsByUser]
     end
@@ -611,9 +615,9 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        E[Error Handling] --> F[Common Error Logging]
-        E --> G[Admin Email Notifications]
-        E --> H[User Notifications]
+        E[Обробка помилок] --> F[Загальне логування помилок]
+        E --> G[Повідомлення адміністратору електронною поштою]
+        E --> H[Повідомлення користувачів]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -626,8 +630,8 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        I[Configuration] --> J[Centralized Payment Config]
-        I --> K[Shared Environment Variables]
+        I[Конфігурація] --> J[Централізована конфігурація платежів]
+        I --> K[Спільні змінні середовища]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -640,9 +644,9 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Code Reuse Patterns"
-        L[Webhook Processing] --> M[Signature Verification]
-        L --> N[Async Event Processing]
-        L --> O[Background Processing]
+        L[Обробка вебхуків] --> M[Перевірка підпису]
+        L --> N[Асинхронна обробка подій]
+        L --> O[Фонове оброблення]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -655,11 +659,11 @@ graph TD
 ```mermaid
 graph TD
     subgraph "KISS Principle"
-        P[Simple Data Flow] --> Q[Unidirectional Updates]
-        P --> R[Clear Responsibility Separation]
+        P[Простий потік даних] --> Q[Унідирекційні оновлення]
+        P --> R[Чітке розмежування відповідальності]
 
-        S[Explicit Error Handling] --> T[No Silent Failures]
-        S --> U[Comprehensive Logging]
+        S[Явна обробка помилок] --> T[Відсутність прихованих збоїв]
+        S --> U[Повне логування]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -668,16 +672,14 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
-    subgraph "DRY Principle"
-        V[Shared Logic] --> W[Payment Processing Functions]
-        V --> X[Email Templates]
-        V --> Y[Validation Logic]
+    subgraph "Принцип DRY"
+        V[Спільна логіка] --> W[Функції обробки платежів]
+        V --> X[Шаблони електронних листів]
+        V --> Y[Логіка валідації]
 
-        Z[Common Database Operations] --> AA[User Updates]
-        Z --> AB[Payment Recording]
+        Z[Загальні операції з базою даних] --> AA[Оновлення користувачів]
+        Z --> AB[Запис платежів]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -687,25 +689,26 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
-## Впровадження вимог до підписки VISA {#visa-subscription-requirements-implementation}
 
-Окрім нашого тривимірного підходу, ми впровадили спеціальні функції, щоб відповідати вимогам VISA щодо підписки, одночасно покращуючи взаємодію з користувачами. Одна з ключових вимог VISA полягає в тому, що користувачів необхідно повідомляти перед стягненням плати за підписку, особливо під час переходу з пробної версії на платну.
+## Реалізація вимог підписки VISA {#visa-subscription-requirements-implementation}
 
-### Автоматичні сповіщення електронною поштою про попереднє поновлення {#automated-pre-renewal-email-notifications}
+Окрім нашого підходу з тріадою, ми реалізували конкретні функції для відповідності вимогам підписки VISA, одночасно покращуючи користувацький досвід. Однією з ключових вимог VISA є те, що користувачі повинні бути повідомлені перед тим, як з них буде стягнуто плату за підписку, особливо при переході з пробного періоду на платну підписку.
 
-Ми створили автоматизовану систему, яка ідентифікує користувачів з активними пробними підписками та надсилає їм сповіщення електронною поштою перед першим стягненням коштів. Це не лише забезпечує дотримання вимог VISA, але й зменшує кількість повернень платежів та підвищує задоволеність клієнтів.
+### Автоматизовані повідомлення електронною поштою перед поновленням {#automated-pre-renewal-email-notifications}
+
+Ми створили автоматизовану систему, яка визначає користувачів з активними пробними підписками та надсилає їм повідомлення електронною поштою перед першим стягненням плати. Це не лише забезпечує відповідність вимогам VISA, але й зменшує кількість повернень платежів і підвищує задоволеність клієнтів.
 
 Ось як ми реалізували цю функцію:
 
 ```javascript
-// Find users with trial subscriptions who haven't received a notification yet
+// Знайти користувачів з пробними підписками, які ще не отримали повідомлення
 const users = await Users.find({
   $or: [
     {
       $and: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
         { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Виключити підписки, за які вже були платежі
         ...(paidStripeSubscriptionIds.length > 0
           ? [
               {
@@ -721,7 +724,7 @@ const users = await Users.find({
       $and: [
         { [config.userFields.paypalSubscriptionID]: { $exists: true } },
         { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Виключити підписки, за які вже були платежі
         ...(paidPayPalSubscriptionIds.length > 0
           ? [
               {
@@ -736,22 +739,22 @@ const users = await Users.find({
   ]
 });
 
-// Process each user and send notification
+// Обробити кожного користувача та надіслати повідомлення
 for (const user of users) {
-  // Get subscription details from payment processor
+  // Отримати деталі підписки від платіжного процесора
   const subscription = await getSubscriptionDetails(user);
 
-  // Calculate subscription duration and frequency
+  // Обчислити тривалість підписки та частоту
   const duration = getDurationFromPlanId(subscription.plan_id);
   const frequency = getHumanReadableFrequency(duration, user.locale);
   const amount = getPlanAmount(user.plan, duration);
 
-  // Get user's domains for personalized email
+  // Отримати домени користувача для персоналізованого листа
   const domains = await Domains.find({
     'members.user': user._id
   }).sort('name').lean().exec();
 
-  // Send VISA-compliant notification email
+  // Надіслати повідомлення, що відповідає вимогам VISA
   await emailHelper({
     template: 'visa-trial-subscription-requirement',
     message: {
@@ -767,7 +770,7 @@ for (const user of users) {
     }
   });
 
-  // Record that notification was sent
+  // Зареєструвати, що повідомлення було надіслано
   await Users.findByIdAndUpdate(user._id, {
     $set: {
       [config.userFields.paypalTrialSentAt]: new Date()
@@ -776,18 +779,17 @@ for (const user of users) {
 }
 ```
 
-Ця реалізація гарантує, що користувачі завжди будуть поінформовані про майбутні платежі, а також отримають чітку інформацію про:
+Ця реалізація гарантує, що користувачі завжди інформовані про майбутні стягнення з чіткими деталями щодо:
 
-1. Коли відбудеться перше стягнення плати
-2. Частота майбутніх стягнень плати (щомісяця, щорічно тощо)
-3. Точна сума, яка з них стягуватиметься
-4. На які домени поширюється їхня підписка
+1. Коли відбудеться перше стягнення
+2. Частоти майбутніх стягнень (щомісяця, щорічно тощо)
+3. Точної суми, яку з них стягнуть
+4. Які домени покриває їхня підписка
 
-Автоматизуючи цей процес, ми забезпечуємо повну відповідність вимогам VISA (які вимагають повідомлення щонайменше за 7 днів до стягнення плати), одночасно зменшуючи кількість запитів до служби підтримки та покращуючи загальний досвід користувачів.
+Автоматизуючи цей процес, ми підтримуємо ідеальну відповідність вимогам VISA (які вимагають повідомлення щонайменше за 7 днів до стягнення), одночасно зменшуючи кількість звернень до служби підтримки та покращуючи загальний користувацький досвід.
+### Обробка крайніх випадків {#handling-edge-cases-1}
 
-### Обробка граничних випадків {#handling-edge-cases-1}
-
-Наша реалізація також включає надійну обробку помилок. Якщо під час процесу сповіщення щось піде не так, наша система автоматично попередить нашу команду:
+Наша реалізація також включає надійну обробку помилок. Якщо щось піде не так під час процесу сповіщення, наша система автоматично повідомляє нашу команду:
 
 ```javascript
 try {
@@ -813,13 +815,13 @@ try {
 }
 ```
 
-Це гарантує, що навіть якщо виникне проблема із системою сповіщень, наша команда зможе швидко її вирішити та забезпечити дотримання вимог VISA.
+Це гарантує, що навіть якщо виникне проблема з системою сповіщень, наша команда зможе швидко її вирішити та підтримувати відповідність вимогам VISA.
 
-Система сповіщень про підписки VISA – це ще один приклад того, як ми побудували нашу платіжну інфраструктуру з урахуванням як відповідності вимогам, так і зручності користувачів, доповнюючи наш потрійний підхід до забезпечення надійної та прозорої обробки платежів.
+Система сповіщень про підписку VISA є ще одним прикладом того, як ми побудували нашу платіжну інфраструктуру з урахуванням як відповідності, так і зручності для користувача, доповнюючи наш підхід триєдності для забезпечення надійної та прозорої обробки платежів.
 
 ### Пробні періоди та умови підписки {#trial-periods-and-subscription-terms}
 
-Для користувачів, які ввімкнули автоматичне поновлення існуючих планів, ми розраховуємо відповідний пробний період, щоб гарантувати, що з них не стягуватиметься плата, доки не закінчиться термін дії їхнього поточного плану:
+Для користувачів, які вмикають автоматичне поновлення на існуючих планах, ми розраховуємо відповідний пробний період, щоб гарантувати, що з них не стягуватиметься плата до закінчення їхнього поточного плану:
 
 ```javascript
 if (
@@ -836,22 +838,23 @@ if (
 }
 ```
 
-Ми також надаємо чітку інформацію про умови підписки, включаючи частоту виставлення рахунків та політику скасування, а також додаємо детальні метадані до кожної підписки для забезпечення належного відстеження та управління.
+Ми також надаємо чітку інформацію про умови підписки, включаючи частоту виставлення рахунків та політику скасування, а також додаємо детальні метадані до кожної підписки для забезпечення правильного відстеження та управління.
 
-## Висновок: Переваги нашого підходу Trifecta {#conclusion-the-benefits-of-our-trifecta-approach}
 
-Наш потрійний підхід до обробки платежів забезпечив кілька ключових переваг:
+## Висновок: Переваги нашого підходу триєдності {#conclusion-the-benefits-of-our-trifecta-approach}
 
-1. **Надійність**: Завдяки впровадженню трьох рівнів перевірки платежів ми гарантуємо, що жоден платіж не буде пропущено або неправильно оброблено.
+Наш підхід триєдності до обробки платежів забезпечив кілька ключових переваг:
 
-2. **Точність**: Наша база даних завжди відображає справжній стан підписок і платежів як у Stripe, так і в PayPal.
+1. **Надійність**: Завдяки впровадженню трьох рівнів перевірки платежів ми гарантуємо, що жоден платіж не буде пропущений або оброблений неправильно.
 
-3. **Гнучкість**: Користувачі можуть обрати бажаний спосіб оплати, не ставлячи під загрозу надійність нашої системи.
+2. **Точність**: Наша база даних завжди відображає реальний стан підписок і платежів як у Stripe, так і в PayPal.
 
-4. **Надійність**: Наша система плавно обробляє крайні випадки, від збоїв мережі до шахрайської діяльності.
+3. **Гнучкість**: Користувачі можуть обирати зручний для них спосіб оплати без шкоди для надійності нашої системи.
 
-Якщо ви впроваджуєте платіжну систему, яка підтримує кілька процесорів, ми наполегливо рекомендуємо цей потрійний підхід. Він вимагає більше початкових зусиль з розробки, але довгострокові переваги з точки зору надійності та точності того варті.
+4. **Стійкість**: Наша система коректно обробляє крайні випадки, від збоїв мережі до шахрайських дій.
 
-Щоб отримати докладнішу інформацію про пересилання електронної пошти та наші послуги електронної пошти, орієнтовані на конфіденційність, відвідайте нашу сторінку [вебсайт](https://forwardemail.net).
+Якщо ви впроваджуєте платіжну систему, яка підтримує кілька процесорів, ми настійно рекомендуємо цей підхід триєдності. Він вимагає більше початкових зусиль на розробку, але довгострокові переваги у надійності та точності того варті.
 
-<!-- *Ключові слова: обробка платежів, інтеграція Stripe, інтеграція PayPal, обробка вебхуків, синхронізація платежів, управління підписками, запобігання шахрайству, вирішення суперечок, платіжна система Node.js, багатопроцесорна платіжна система, інтеграція платіжних шлюзів, перевірка платежів у режимі реального часу, узгодженість даних платежів, виставлення рахунків за підписку, безпека платежів, автоматизація платежів, платіжні вебхуки, узгодження платежів, крайні випадки платежів, обробка помилок платежу, вимоги до підписки VISA, сповіщення про попереднє поновлення, відповідність підписки* -->
+Для отримання додаткової інформації про Forward Email та наші сервіси електронної пошти з орієнтацією на конфіденційність відвідайте наш [вебсайт](https://forwardemail.net).
+
+<!-- *Keywords: payment processing, Stripe integration, PayPal integration, webhook handling, payment synchronization, subscription management, fraud prevention, dispute handling, Node.js payment system, multi-processor payment system, payment gateway integration, real-time payment verification, payment data consistency, subscription billing, payment security, payment automation, payment webhooks, payment reconciliation, payment edge cases, payment error handling, VISA subscription requirements, pre-renewal notifications, subscription compliance* -->

@@ -1,145 +1,164 @@
-# Про пересилання електронної пошти {#about-forward-email}
+# Про Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Команда Forward Email та історія компанії" class="rounded-lg" />
 
-# Про пересилання електронної пошти {#about-forward-email-1}
+# Про Forward Email {#about-forward-email-1}
+
 
 ## Зміст {#table-of-contents}
 
 * [Огляд](#overview)
-* [Засновник та місія](#founder-and-mission)
+* [Засновник і місія](#founder-and-mission)
 * [Хронологія](#timeline)
-  * [2017 – Заснування та запуск](#2017---founding-and-launch)
-  * [2018 – Інфраструктура та інтеграція](#2018---infrastructure-and-integration)
-  * [2019 – Революція продуктивності](#2019---performance-revolution)
-  * [2020 – Фокус на конфіденційності та безпеці](#2020---privacy-and-security-focus)
-  * [2021 – Модернізація платформи](#2021---platform-modernization)
-  * [2023 – Розширення інфраструктури та функцій](#2023---infrastructure-and-feature-expansion)
-  * [2024 – Оптимізація послуг та розширені функції](#2024---service-optimization-and-advanced-features)
-  * [2025 – Постійні інновації](#2025---continued-innovation)
+  * [2017 - Заснування та запуск](#2017---founding-and-launch)
+  * [2018 - Інфраструктура та інтеграція](#2018---infrastructure-and-integration)
+  * [2019 - Революція продуктивності](#2019---performance-revolution)
+  * [2020 - Фокус на конфіденційність та безпеку](#2020---privacy-and-security-focus)
+  * [2021 - Модернізація платформи](#2021---platform-modernization)
+  * [2023 - Розширення інфраструктури та функцій](#2023---infrastructure-and-feature-expansion)
+  * [2024 - Оптимізація сервісу та розширені функції](#2024---service-optimization-and-advanced-features)
+  * [2025 - Покращення конфіденційності та підтримка протоколів {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
+  * [2026 - Відповідність RFC та розширене фільтрування {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
 * [Основні принципи](#core-principles)
 * [Поточний стан](#current-status)
+
 
 ## Огляд {#overview}
 
 > \[!TIP]
-> Технічні деталі щодо нашої архітектури, впровадження безпеки та плану дій див. у [Технічний документ](https://forwardemail.net/technical-whitepaper.pdf).
+> Для технічних деталей про нашу архітектуру, реалізацію безпеки та дорожню карту дивіться [Технічний Whitepaper](https://forwardemail.net/technical-whitepaper.pdf).
 
-«Пересилання електронної пошти» – це послуга [безкоштовний та з відкритим вихідним кодом](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [пересилання електронної пошти](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding"), орієнтована на [право на приватність](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy") користувача. Те, що починалося як просте рішення для пересилання електронної пошти у 2017 році, перетворилося на комплексну платформу електронної пошти, що пропонує необмежену кількість користувацьких доменних імен, необмежену кількість адрес електронної пошти та псевдонімів, необмежену кількість одноразових адрес електронної пошти, захист від спаму та фішингу, зашифроване сховище поштової скриньки та численні розширені функції.
+Forward Email — це [безкоштовний та відкритий](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") сервіс [пересилання електронної пошти](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding"), орієнтований на [право користувача на конфіденційність](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). Те, що почалося як просте рішення для пересилання пошти у 2017 році, перетворилося на комплексну платформу електронної пошти з необмеженою кількістю власних доменних імен, необмеженою кількістю електронних адрес та псевдонімів, необмеженою кількістю одноразових адрес, захистом від спаму та фішингу, зашифрованим зберіганням поштових скриньок та численними розширеними функціями.
 
-Сервіс підтримується та належить його початковій команді засновників, дизайнерам та розробникам. Він створений на 100% з відкритим програмним забезпеченням з використанням [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript"), [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"), [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), [HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS"), [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS") та [SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP").
+Сервіс підтримується та належить оригінальній команді засновників — дизайнерам і розробникам. Він побудований на 100% відкритому програмному забезпеченні з використанням [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript"), [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"), [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), [HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS"), [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS") та [SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP").
 
-## Засновник та місія {#founder-and-mission}
 
-Компанію Forward Email заснував **Ніколас Бо** у 2017 році. За словами [Технічний документ з пересилання електронних листів](https://forwardemail.net/technical-whitepaper.pdf), Бо спочатку шукав економічно ефективне та просте рішення для активації електронної пошти на доменних іменах для своїх сторонніх проектів. Після дослідження доступних варіантів він почав кодувати власне рішення та придбав домен `forwardemail.net` 2 жовтня 2017 року.
+## Засновник і місія {#founder-and-mission}
 
-Місія Forward Email виходить за рамки надання послуг електронної пошти — вона спрямована на трансформацію підходу галузі до конфіденційності та безпеки електронної пошти. Основні цінності компанії включають прозорість, контроль користувачів та захист конфіденційності шляхом технічної реалізації, а не лише обіцянок політики.
+Forward Email був заснований **Ніколасом Боу** у 2017 році. Згідно з [Технічним Whitepaper Forward Email](https://forwardemail.net/technical-whitepaper.pdf), Боу спочатку шукав недороге та просте рішення для налаштування електронної пошти на доменах для своїх побічних проєктів. Після дослідження доступних варіантів він почав писати власне рішення і 2 жовтня 2017 року придбав домен `forwardemail.net`.
+
+Місія Forward Email виходить за межі надання поштових послуг — вона прагне змінити підхід індустрії до конфіденційності та безпеки електронної пошти. Основні цінності компанії включають прозорість, контроль користувача та захист конфіденційності через технічну реалізацію, а не лише політичні обіцянки.
+
 
 ## Хронологія {#timeline}
 
-### 2017 – Заснування та запуск {#2017---founding-and-launch}
+### 2017 - Заснування та запуск {#2017---founding-and-launch}
 
-**2 жовтня 2017 р.**: Ніколас Бо придбав домен `forwardemail.net` після дослідження економічно ефективних рішень електронної пошти для своїх побічних проектів.
+**2 жовтня 2017**: Ніколас Боу придбав домен `forwardemail.net` після дослідження недорогих рішень для електронної пошти для своїх побічних проєктів.
 
-**5 листопада 2017 р.**: Бау створив 634-рядковий JavaScript-файл за допомогою [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") для пересилання електронних листів для будь-якого користувацького доменного імені. Цю початкову реалізацію було опубліковано як програмне забезпечення з відкритим вихідним кодом для [GitHub](https://github.com/forwardemail), а сервіс було запущено за допомогою GitHub Pages.
+**5 листопада 2017**: Боу створив JavaScript-файл на 634 рядки з використанням [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") для пересилання листів для будь-якого власного доменного імені. Цю початкову реалізацію було опубліковано як відкритий код на [GitHub](https://github.com/forwardemail), і сервіс було запущено за допомогою GitHub Pages.
+**Листопад 2017**: Forward Email офіційно запущено після початкового релізу. Рання версія була повністю DNS-базованою без реєстрації акаунту чи процесу підписки — просто README файл, написаний у Markdown з інструкціями. Користувачі могли налаштувати переадресацію електронної пошти, конфігуруючи MX записи, які вказували на `mx1.forwardemail.net` та `mx2.forwardemail.net`, і додаючи TXT запис з `forward-email=user@gmail.com`.
 
-**Листопад 2017 р.**: Офіційний запуск функції «Пересилання електронної пошти» після першого випуску. Рання версія була повністю заснована на DNS, без реєстрації облікового запису чи процесу реєстрації — просто файл README, написаний мовою Markdown, з інструкціями. Користувачі могли налаштувати пересилання електронної пошти, налаштувавши записи MX, щоб вони вказували на `mx1.forwardemail.net` та `mx2.forwardemail.net`, та додавши запис TXT із `forward-email=user@gmail.com`.
+Простота та ефективність цього рішення привернули увагу відомих розробників, зокрема [Девіда Хайнемейєра Ханссона](https://dhh.dk) (творця Ruby on Rails), який і досі використовує Forward Email на своєму домені `dhh.dk`.
 
-Простота та ефективність цього рішення привернули увагу відомих розробників, зокрема [Девід Хайнемаєр Ганссон](https://dhh.dk) (творця Ruby on Rails), який продовжує використовувати Forward Email на своєму домені `dhh.dk` донині.
+### 2018 - Інфраструктура та інтеграція {#2018---infrastructure-and-integration}
 
-### 2018 – Інфраструктура та інтеграція {#2018---infrastructure-and-integration}
+**Квітень 2018**: Коли [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") запустив свій [приватний DNS-сервіс для споживачів](https://blog.cloudflare.com/announcing-1111/), Forward Email перейшов з використання [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") на [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") для обробки [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System") запитів, демонструючи прихильність компанії до інфраструктурних рішень, орієнтованих на конфіденційність.
 
-**Квітень 2018 р.**: Коли [Хмарний сплеск](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") запустила свій [DNS-сервіс для споживачів, що орієнтований на конфіденційність](https://blog.cloudflare.com/announcing-1111/), служба переадресації електронної пошти перейшла з використання [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") на [Хмарний сплеск](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") для обробки пошукових запитів [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), що демонструє відданість компанії вибору інфраструктури, орієнтованої на конфіденційність.
+**Жовтень 2018**: Forward Email дозволив користувачам "Відправляти листи від імені" з [Gmail](https://en.wikipedia.org/wiki/Gmail "Gmail") та [Outlook](https://en.wikipedia.org/wiki/Outlook "Outlook"), розширюючи можливості інтеграції з популярними поштовими провайдерами.
 
-**Жовтень 2018 р.**: Функція пересилання електронної пошти дозволила користувачам «Надсилати пошту від імені» з параметрами [Gmail](https://en.wikipedia.org/wiki/Gmail "Gmail") та [Перспективи](https://en.wikipedia.org/wiki/Outlook "Outlook"), що розширило можливості інтеграції з популярними постачальниками послуг електронної пошти.
+### 2019 - Революція продуктивності {#2019---performance-revolution}
 
-### 2019 – Революція продуктивності {#2019---performance-revolution}
+**Травень 2019**: Forward Email випустив версію v2, яка стала суттєвим переписуванням початкових версій. Це оновлення було зосереджене на покращенні [продуктивності](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing") за допомогою використання [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") [потоків](https://en.wikipedia.org/wiki/Streams "Streams"), закладаючи основу для масштабованості платформи.
 
-**Травень 2019 р.**: Випущено версію 2 Forward Email, яка являла собою суттєве перероблення початкових версій. Це оновлення було зосереджено на покращеннях [продуктивність](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing") шляхом використання [потоки](https://en.wikipedia.org/wiki/Streams "Streams") з [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"), що заклало основу для масштабованості платформи.
+### 2020 - Фокус на конфіденційність та безпеку {#2020---privacy-and-security-focus}
 
-### 2020 – Фокус на конфіденційності та безпеці {#2020---privacy-and-security-focus}
+**Лютий 2020**: Forward Email випустив план Enhanced Privacy Protection, який дозволяє користувачам вимикати публічне встановлення DNS записів з їхніми псевдонімами для переадресації електронної пошти. Завдяки цьому плану інформація про псевдоніми користувача прихована від публічного пошуку в Інтернеті. Компанія також випустила функцію для увімкнення або вимкнення конкретних псевдонімів, при цьому вони залишаються дійсними електронними адресами і повертають успішні [SMTP статус-коди](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes"), а листи негайно відкидаються (подібно до перенаправлення виводу в [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")).
 
-**Лютий 2020**: Компанія Forward Email випустила план розширеного захисту конфіденційності, який дозволяє користувачам вимкнути налаштування записів публічного DNS разом із псевдонімами конфігурації пересилання електронної пошти. Завдяки цьому плану інформація про псевдонім електронної адреси користувача приховується від публічного пошуку в Інтернеті. Компанія також випустила функцію, яка дозволяє вмикати або вимикати певні псевдоніми, водночас дозволяючи їм відображатися як дійсні адреси електронної пошти та повертати успішне [Коди стану SMTP](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes"), при цьому електронні листи негайно відкидаються (аналогічно пересиланню виводу до [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")).
+**Квітень 2020**: Після численних перешкод з існуючими рішеннями для виявлення спаму, які не дотримувалися політики конфіденційності Forward Email, компанія випустила початкову альфа-версію Spam Scanner. Це повністю безкоштовне та відкрите [антиспам-фільтрування](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") рішення використовує підхід [наївного баєсівського спам-фільтра](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") у поєднанні з захистом від [фішингу](https://en.wikipedia.org/wiki/Phishing "Phishing") та [атак гомографів IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email також випустив [двофакторну аутентифікацію](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) з використанням [одноразових паролів](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) для підвищення безпеки акаунтів.
 
-**Квітень 2020**: Зіткнувшись із незліченними перешкодами для існуючих рішень для виявлення спаму, які не дотримувалися політики конфіденційності Forward Email, компанія випустила свою першу альфа-версію Spam Scanner. Це повністю безкоштовне рішення з відкритим кодом [фільтрація спаму](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") використовує підхід [Наївний баєсівський спам-фільтр](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") у поєднанні із захистом [антифішинг](https://en.wikipedia.org/wiki/Phishing "Phishing") та [Атака на гомограф IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email також випустила [двофакторна автентифікація](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) з використанням [одноразові паролі](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) для покращеного захисту облікового запису.
+**Травень 2020**: Forward Email дозволив користувачам налаштовувати власне [перенаправлення портів](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") як обхід блокування портів їхнім [Інтернет-провайдером](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Компанія також випустила свій [безкоштовний RESTful API для переадресації електронної пошти](email-api) з повною документацією та прикладами запитів і відповідей у реальному часі, а також підтримкою вебхуків.
+**Серпень 2020**: Forward Email додав підтримку системи автентифікації електронної пошти [Authenticated Received Chain](arc) ("ARC"), що ще більше посилило безпеку та доставку електронної пошти.
 
-**Травень 2020**: Функція переадресації електронної пошти дозволила використовувати користувацький [переадресація портів](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") як тимчасовий шлях для користувачів, щоб обійти блокування портів їхнім [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Компанія також випустила свій [Безкоштовний RESTful API для переадресації електронної пошти](email-api) з повною документацією та прикладами запитів і відповідей у режимі реального часу, а також підтримкою вебхуків.
+**23 листопада 2020**: Forward Email офіційно вийшов з бета-програми, що стало важливою віхою у розвитку платформи.
 
-**Серпень 2020 р.**: У функції «Пересилання електронної пошти» додано підтримку системи автентифікації електронної пошти [Автентифікований отриманий ланцюжок](arc) («ARC»), що ще більше посилює безпеку та доставку електронної пошти.
+### 2021 - Модернізація платформи {#2021---platform-modernization}
 
-**23 листопада 2020 року**: Служба Forward Email публічно вийшла з бета-версії, що стало важливою віхою в розвитку платформи.
+**Лютий 2021**: Forward Email рефакторив свій код, щоб видалити всі залежності від [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\) "Python (programming language)"), що дозволило стеку стати на 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") та [Node.js](https://en.wikipedia.org/wiki/Node.js). Це архітектурне рішення відповідало прагненню компанії підтримувати послідовний відкритий технологічний стек.
 
-### 2021 – Модернізація платформи {#2021---platform-modernization}
+**27 вересня 2021**: Forward Email [додав підтримку](email-forwarding-regex-pattern-filter) для псевдонімів переадресації електронної пошти з використанням [регулярних виразів](https://en.wikipedia.org/wiki/Regular_expression "Regular expression"), надаючи користувачам більш складні можливості маршрутизації пошти.
 
-**Лютий 2021 р.**: Компанія Forward Email рефакторувала свою кодову базу, видаливши всі залежності [Пітон](https://en.wikipedia.org/wiki/Python_\(programming_language\) («Python (мова програмування)»), що дозволило їхньому стеку стати на 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") та [Node.js](https://en.wikipedia.org/wiki/Node.js). Це архітектурне рішення відповідало зобов'язанню компанії підтримувати узгоджений стек технологій з відкритим вихідним кодом.
+### 2023 - Розширення інфраструктури та функціоналу {#2023---infrastructure-and-feature-expansion}
 
-**27 вересня 2021 р.**: Пересилання електронної пошти [додаткова підтримка](email-forwarding-regex-pattern-filter) для псевдонімів пересилання електронної пошти відповідно до [регулярні вирази](https://en.wikipedia.org/wiki/Regular_expression "Regular expression"), що надає користувачам розширені можливості маршрутизації електронної пошти.
+**Січень 2023**: Forward Email запустив оновлений та оптимізований за швидкістю завантаження вебсайт, покращивши користувацький досвід та продуктивність.
 
-### 2023 – Розширення інфраструктури та функцій {#2023---infrastructure-and-feature-expansion}
+**Лютий 2023**: Компанія додала підтримку [журналів помилок](/faq#do-you-store-error-logs) та впровадила [темну тему](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme) для сайту, реагуючи на вподобання користувачів та потреби доступності.
 
-**Січень 2023 р.**: Forward Email запустив оновлений вебсайт із оптимізованим дизайном та швидкістю завантаження сторінок, покращивши взаємодію з користувачем та продуктивність.
+**Березень 2023**: Forward Email випустив [Tangerine](https://github.com/forwardemail/tangerine#readme) та інтегрував його у всю інфраструктуру, що дозволило використовувати [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") на рівні застосунку. Компанія також додала підтримку [MTA-STS](/faq#do-you-support-mta-sts) та перейшла з [hCaptcha](/) на [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile).
 
-**Лютий 2023 р.**: Компанія додала підтримку для [журнали помилок](/faq#do-you-store-error-logs) та впровадила колірну схему веб-сайту [темний режим](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme), реагуючи на вподобання користувачів та потреби у доступності.
+**Квітень 2023**: Forward Email впровадив та повністю автоматизував нову інфраструктуру. Весь сервіс почав працювати на глобально балансованому за навантаженням та близькістю DNS з перевірками стану та аварійним переключенням за допомогою [Cloudflare](https://cloudflare.com), замінивши попередній підхід round-robin DNS. Компанія перейшла на **bare metal сервери** у кількох провайдерів, включно з [Vultr](https://www.vultr.com/?ref=429848) та [Digital Ocean](https://m.do.co/c/a7cecd27e071), обидва провайдери з відповідністю SOC 2 Type 1. Бази даних MongoDB та Redis були переведені у кластерні конфігурації з основними та резервними вузлами для високої доступності, наскрізним SSL-шифруванням, шифруванням даних у стані спокою та відновленням у точці часу (PITR).
 
-**Березень 2023 р.**: Компанія Forward Email випустила [Мандарин](https://github.com/forwardemail/tangerine#readme) та інтегрувала його в усю свою інфраструктуру, що дозволило використовувати [DNS через HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") на рівні програми. Компанія також додала підтримку для [MTA-STS](/faq#do-you-support-mta-sts) та перейшла з [hCaptcha](/) на [Турнікет Cloudflare](https://developers.cloudflare.com/turnstile).
+**Травень 2023**: Forward Email запустив функцію **вихідного SMTP** для [відправки пошти через SMTP](/faq#do-you-support-sending-email-with-smtp) та [відправки пошти через API](/faq#do-you-support-sending-email-with-api). Ця функція включає вбудовані засоби захисту для забезпечення високої доставності, сучасну та надійну систему черг і повторних спроб, а також [підтримує журнали помилок у реальному часі](/faq#do-you-store-error-logs).
 
-**Квітень 2023**: Впроваджено та автоматизовано повністю нову інфраструктуру для переадресації електронної пошти. Весь сервіс почав працювати на глобально збалансованому навантаженні та на основі близькості DNS з перевірками справності та відновленням після збою за допомогою [Хмарний сплеск](https://cloudflare.com), замінивши попередній циклічний підхід DNS. Компанія перейшла на **голі сервери** від кількох провайдерів, включаючи [Вультр](https://www.vultr.com/?ref=429848) та [Цифровий океан](https://m.do.co/c/a7cecd27e071), обидва провайдери, сумісні з SOC 2 Type 1. Бази даних MongoDB та Redis було переміщено до кластерних конфігурацій з основними та резервними вузлами для високої доступності, наскрізного SSL-шифрування, шифрування в стані спокою та відновлення в момент часу (PITR).
+**Листопад 2023**: Forward Email запустив функцію [**шифрованого зберігання поштової скриньки**](/blog/docs/best-quantum-safe-encrypted-email-service) для [підтримки IMAP](/faq#do-you-support-receiving-email-with-imap), що стало значним кроком уперед у приватності та безпеці електронної пошти.
 
-**Травень 2023 р.**: Forward Email запустила функцію **вихідного SMTP** для запитів [надсилання електронної пошти через SMTP](/faq#do-you-support-sending-email-with-smtp) та [надсилання електронної пошти за допомогою API](/faq#do-you-support-sending-email-with-api). Ця функція включає вбудовані засоби захисту для забезпечення високої доставляльності, сучасну та надійну систему черги та повторних спроб, а також [підтримує журнали помилок у режимі реального часу](/faq#do-you-store-error-logs).
+**Грудень 2023**: Компанія [додала підтримку](/faq#do-you-support-pop3) для [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys та WebAuthn](/faq#do-you-support-passkeys-and-webauthn), моніторингу [time to inbox](/faq#i) та [OpenPGP для IMAP Storage](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
-**Листопад 2023 р.**: Компанія Forward Email запустила функцію [**зашифроване сховище поштової скриньки**](/blog/docs/best-quantum-safe-encrypted-email-service) для [Підтримка IMAP](/faq#do-you-support-receiving-email-with-imap), що є значним кроком у сфері конфіденційності та безпеки електронної пошти.
+### 2024 - Оптимізація сервісу та розширені функції {#2024---service-optimization-and-advanced-features}
 
-**Грудень 2023 р.**: Компанія [додаткова підтримка](/faq#do-you-support-pop3) для моніторингу [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [ключі доступу та веб-автентифікація](/faq#do-you-support-passkeys-and-webauthn), [час для вхідних повідомлень](/faq#i) та [OpenPGP для сховища IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Лютий 2024**: Forward Email [додав підтримку календарів (CalDAV)](/faq#do-you-support-calendars-caldav), розширивши можливості платформи за межі електронної пошти для синхронізації календарів.
+**Березень — липень 2024**: Forward Email випустив значні оптимізації та покращення своїх сервісів IMAP, POP3 та CalDAV, з метою зробити свій сервіс таким же швидким, якщо не швидшим, за альтернативи.
 
-### 2024 – Оптимізація послуг та розширені функції {#2024---service-optimization-and-advanced-features}
+**Липень 2024**: Компанія [додала підтримку iOS Push](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) для вирішення проблеми відсутності підтримки команди IMAP `IDLE` в Apple Mail на iOS, що дозволило отримувати сповіщення в реальному часі на пристроях Apple iOS. Forward Email також додала моніторинг часу до отримання листа ("TTI") для власного сервісу та Yahoo/AOL, а також почала дозволяти користувачам шифрувати весь свій DNS TXT запис навіть на безкоштовному тарифі. За запитом у [обговореннях Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) та [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254), компанія додала можливість для псевдонімів або тихо відхиляти з кодом `250`, або м’яко відхиляти з кодом `421`, або ж жорстко відхиляти з кодом `550` при вимкненні.
 
-**Лютий 2024 р.**: Пересилання електронної пошти [додано підтримку календаря (CalDAV)](/faq#do-you-support-calendars-caldav) розширює можливості платформи за межі електронної пошти, включаючи синхронізацію календаря.
+**Серпень 2024**: Forward Email додала підтримку експорту поштових скриньок у форматах [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) та [Mbox](https://en.wikipedia.org/wiki/Mbox) (на додаток до існуючого формату експорту [SQLite](https://en.wikipedia.org/wiki/SQLite)). [Додано підтримку підписів для webhook](https://forwardemail.net/faq#do-you-support-bounce-webhooks), а також компанія почала дозволяти користувачам надсилати розсилки, оголошення та email-маркетинг через свій вихідний SMTP сервіс. Також було впроваджено квоти на зберігання для IMAP/POP3/CalDAV на рівні домену та окремих псевдонімів.
 
-**Березень – липень 2024 р.**: Forward Email випустила суттєві оптимізації та вдосконалення своїх сервісів IMAP, POP3 та CalDAV з метою зробити свій сервіс таким же швидким, якщо не швидшим, ніж альтернативні варіанти.
+### 2025 — Покращення конфіденційності та підтримка протоколів {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
 
-**Липень 2024 р.**: Компанія [додано підтримку iOS Push](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) вирішує проблему відсутності підтримки команди IMAP `IDLE` в Apple Mail на iOS, що дозволить надсилати сповіщення в режимі реального часу для пристроїв Apple iOS. Функція «Пересилання електронної пошти» також додала час для моніторингу вхідних повідомлень («TTI») для власного сервісу та Yahoo/AOL, а також почала дозволяти користувачам шифрувати весь свій TXT-запис DNS навіть у безкоштовному плані. Як було запропоновано в [Обговорення Посібників з конфіденційності](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) та [Проблеми з GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), компанія додала можливість для псевдонімів або непомітно відхиляти `250`, м’яко відхиляти `421`, або апаратно відхиляти `550`, якщо цю функцію вимкнено.
+**Вересень 2024 — січень 2025**: Forward Email [додала довгоочікувану функцію автоответчика на відпустку та шифрування OpenPGP/WKD для пересилання пошти](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), розширюючи вже реалізовані можливості зашифрованого зберігання поштових скриньок.
 
-**Серпень 2024 р.**: У Forward Email додано підтримку експорту поштових скриньок у форматах [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) та [Mbox](https://en.wikipedia.org/wiki/Mbox) (на додаток до існуючого формату експорту [SQLite](https://en.wikipedia.org/wiki/SQLite)). [Додано підтримку підписів вебхуків](https://forwardemail.net/faq#do-you-support-bounce-webhooks), і компанія почала дозволяти користувачам надсилати інформаційні бюлетені, оголошення та маркетингові електронні листи через свою службу вихідної пошти SMTP. Також було впроваджено квоти сховища для IMAP/POP3/CalDAV на рівні домену та для окремих псевдонімів.
+**21 січня 2025**: Найкращий друг засновника "Джек", його вірний собачий компаньйон, мирно пішов з життя у віці майже 11 років. Джек [завжди буде пам’ятатися](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) за свою непохитну дружбу, яка підтримувала створення Forward Email. [Технічний документ Forward Email](https://forwardemail.net/technical-whitepaper.pdf) присвячений Джеку, визнаючи його роль у розвитку сервісу.
 
-### 2025 – Продовження інновацій {#2025---continued-innovation}
+**Лютий 2025**: Forward Email перейшла на [DataPacket](https://www.datapacket.com) як свого нового основного провайдера дата-центрів, впровадивши спеціалізоване, орієнтоване на продуктивність, bare-metal обладнання для подальшого підвищення надійності та швидкості сервісу.
 
-**Вересень 2024 – січень 2025**: Пересилання електронної пошти [додано дуже запитувану функцію відповіді на відпустку та шифрування OpenPGP/WKD для пересилання електронної пошти](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), спираючись на вже впроваджені можливості зашифрованого зберігання поштових скриньок.
+**Березень 2025**: Офіційно випущено версію 1.0 Forward Email.
 
-**21 січня 2025 року**: Найкращий друг засновника «Джек», його вірний собака-компаньйон, мирно помер у віці майже 11 років. Джеку [завжди пам'ятатимуть](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) висловлюється за його непохитну підтримку та підтримку у створенні Forward Email. [Технічний документ з пересилання електронних листів](https://forwardemail.net/technical-whitepaper.pdf) присвячено Джеку, визнаючи його роль у розвитку сервісу.
+**Квітень 2025**: Опубліковано першу версію [Технічного документа Forward Email](https://forwardemail.net/technical-whitepaper.pdf), а компанія почала приймати платежі в криптовалюті.
 
-**Лютий 2025**: Компанія Forward Email перейшла на [Пакет даних](https://www.datapacket.com) як нового основного постачальника послуг центру обробки даних, впровадивши спеціалізоване, орієнтоване на продуктивність обладнання без підзарядки для подальшого підвищення надійності та швидкості обслуговування.
+**Травень 2025**: Сервіс запустив нову документацію API з використанням [Scalar](https://github.com/scalar/scalar).
 
-**Червень 2025 р.**: У Forward Email запущено підтримку [Протокол CardDAV](/faq#do-you-support-contacts-carddav), що розширює можливості платформи, включаючи синхронізацію контактів поряд із існуючими службами електронної пошти та календаря.
+**Червень 2025**: Forward Email запустила підтримку протоколу [CardDAV](/faq#do-you-support-contacts-carddav), розширюючи можливості платформи для синхронізації контактів поряд із існуючими сервісами електронної пошти та календаря.
 
-### 2026 - Відповідність RFC та розширена фільтрація {#2026---rfc-compliance-and-advanced-filtering}
+**Серпень 2025**: Платформа додала підтримку [CalDAV VTODO/завдань](https://en.wikipedia.org/wiki/ICalendar#To-do_\(VTODO\)), що дозволяє керувати завданнями поряд із подіями календаря.
 
-**Січень 2026**: Forward Email випустив комплексний [документ про відповідність протоколу RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison), що детально описує повну підтримку стандартів SMTP, IMAP, POP3 та CalDAV. Платформа також додала [підтримку REQUIRETLS (RFC 8689)](/faq#requiretls-support) для примусового TLS-шифрування при передачі електронної пошти, [шифрування S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) для безпечного підписування та шифрування повідомлень, а також комплексну [фільтрацію електронної пошти Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) з [протоколом ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) для серверної фільтрації електронної пошти. [REST API](/email-api) було розширено до 39 кінцевих точок, що охоплюють повідомлення, папки, контакти, календарі та події календаря.
+**Листопад 2025**: Безпека платформи була покращена шляхом переходу від PBKDF2 до [Argon2id](https://en.wikipedia.org/wiki/Argon2) для хешування паролів, а інфраструктура була мігрувана з Redis на [Valkey](https://github.com/valkey-io/valkey).
+
+**Грудень 2025**: Випущено версію 2.0, яка додала підтримку [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) для примусової TLS-шифрації при передачі пошти та оновилася до [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) версії 6.
+### 2026 - Відповідність RFC та розширене фільтрування {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+
+**Січень 2026**: Forward Email випустив комплексний [документ відповідності протоколам RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) та додав підтримку [шифрування S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) і комплексного [фільтрування електронної пошти Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) з підтримкою протоколу [ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). REST API також було розширено до 39 кінцевих точок.
+
+**Лютий 2026**: Офіційний, відкритий вебпоштовий клієнт запущено на [mail.forwardemail.net](https://mail.forwardemail.net) ([вихідний код на GitHub](https://github.com/forwardemail/mail.forwardemail.net)). Платформа також додала підтримку [розширень планування CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) та [Domain Connect](https://domainconnect.org) для налаштування DNS в один клік. Запущено push-повідомлення в реальному часі для IMAP, CalDAV і CardDAV за допомогою WebSockets.
+
+**Березень 2026**: Додано підтримку індивідуального сховища, сумісного з S3, для кожного домену, а також інструмент командного рядка для керування. Розпочато роботу над кросплатформеними десктопними та мобільними додатками для macOS, Windows, Linux, iOS та Android на основі того ж відкритого вебпоштового коду, створеного за допомогою [Tauri](https://tauri.app).
+
 
 ## Основні принципи {#core-principles}
 
-З моменту свого створення Forward Email неухильно дотримується принципів конфіденційності та безпеки:
+Від самого початку Forward Email дотримується непохитних принципів конфіденційності та безпеки:
 
-**Філософія 100% відкритого коду**: На відміну від конкурентів, які надають відкритий код лише своїм фронтендам, залишаючи бекенд закритим, Forward Email зробив всю свою кодову базу — як фронтенд, так і бекенд — доступною для публічного ознайомлення на [GitHub](https://github.com/forwardemail).
+**100% відкритий код**: На відміну від конкурентів, які відкривають лише фронтенд, залишаючи бекенд закритим, Forward Email зробив весь свій код — і фронтенд, і бекенд — доступним для публічного перегляду на [GitHub](https://github.com/forwardemail).
 
-**Дизайн, орієнтований на конфіденційність**: З першого дня Forward Email реалізував унікальний підхід до обробки в пам’яті, який дозволяє уникнути запису електронних листів на диск, що відрізняє його від традиційних поштових служб, які зберігають повідомлення в базах даних або файлових системах.
+**Дизайн із пріоритетом конфіденційності**: З першого дня Forward Email впровадив унікальний підхід обробки в пам’яті, який уникає запису листів на диск, що відрізняє його від звичайних поштових сервісів, які зберігають повідомлення у базах даних або файлових системах.
 
-**Безперервні інновації**: Сервіс еволюціонував від простого рішення для пересилання електронної пошти до комплексної платформи електронної пошти з такими функціями, як зашифровані поштові скриньки, квантово-стійке шифрування та підтримка стандартних протоколів, включаючи SMTP, IMAP, POP3 та CalDAV.
+**Постійні інновації**: Сервіс розвинувся від простого рішення для пересилання пошти до комплексної платформи з функціями, такими як зашифровані поштові скриньки, квантово-стійке шифрування та підтримка стандартних протоколів, включно з SMTP, IMAP, POP3 і CalDAV.
 
-**Прозорість**: Зробити весь код відкритим та доступним для ознайомлення, забезпечивши користувачам можливість перевіряти заяви про конфіденційність, а не просто довіряти маркетинговим заявам.
+**Прозорість**: Весь код відкритий і доступний для перевірки, що дозволяє користувачам самостійно підтверджувати заяви про конфіденційність, а не просто довіряти маркетинговим твердженням.
 
-**Контроль користувачів**: Розширення можливостей для користувачів, зокрема можливість самостійно розміщувати всю платформу за бажанням.
+**Контроль користувача**: Надання користувачам можливостей, включно з опцією самостійного розгортання всієї платформи за бажанням.
 
-## Поточний статус {#current-status}
 
-Станом на 2025 рік, Forward Email обслуговує понад 500 000 доменів по всьому світу, включаючи відомі організації та лідерів галузі, таких як:
+## Поточний стан {#current-status}
+
+Станом на березень 2026 року Forward Email обслуговує понад 500 000 доменів по всьому світу, включно з відомими організаціями та лідерами галузі, такими як:
 
 * **Технологічні компанії**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Медіаорганізації**: Fox News Radio, Disney Ad Sales
-* **Освітні заклади**: Кембриджський університет, Університет Меріленду, Вашингтонський університет, Університет Тафтса, Коледж Свортмор
+* **Освітні установи**: Кембриджський університет, Університет Меріленду, Університет Вашингтона, Університет Тафтса, Коледж Свартмор
 * **Державні установи**: Уряд Південної Австралії, Уряд Домініканської Республіки
 * **Інші організації**: RCD Hotels, Fly<span>.</span>io
-* **Відомі розробники**: Ісаак З. Шлютер (розробник npm), Девід Хайнемайєр Ханссон (розробник Ruby on Rails)
+* **Відомі розробники**: Ісаак З. Шлютер (творець npm), Девід Хейнемайєр Ханссон (творець Ruby on Rails)
 
-Платформа продовжує розвиватися з регулярними випусками функцій та вдосконаленнями інфраструктури, зберігаючи свою позицію єдиного доступного сьогодні сервісу електронної пошти зі 100% відкритим кодом, зашифрованим, орієнтованим на конфіденційність, прозорим та квантово-стійким кодом.
+Платформа продовжує розвиватися з регулярними оновленнями функцій та покращеннями інфраструктури, зберігаючи позицію єдиного 100% відкритого, зашифрованого, орієнтованого на конфіденційність, прозорого та квантово-стійкого поштового сервісу, доступного сьогодні.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

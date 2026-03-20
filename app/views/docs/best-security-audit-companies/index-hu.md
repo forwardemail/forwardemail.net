@@ -1,6 +1,7 @@
-# Legjobb biztonsági auditáló cégek {#best-security-audit-companies}
+# Legjobb Biztonsági Audit Cégek {#best-security-audit-companies}
 
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
@@ -8,111 +9,113 @@
 * [Értékelési folyamatunk](#our-evaluation-process)
 * [Ajánlott biztonsági audit cégek](#recommended-security-audit-companies)
   * [Cure53](#cure53)
-  * [Radikálisan nyitott biztonság](#radically-open-security)
-  * [Biztosított AB](#assured-ab)
-  * [Bitek nyomában](#trail-of-bits)
-* [Cégek összehasonlítása](#company-comparison)
-* [Kiválasztási kritériumok](#selection-criteria)
+  * [Radically Open Security](#radically-open-security)
+  * [Assured AB](#assured-ab)
+  * [Trail of Bits](#trail-of-bits)
+* [Cég összehasonlítás](#company-comparison)
+* [Kiválasztási szempontok](#selection-criteria)
+
 
 ## Áttekintés {#overview}
 
-A Forward Email aktívan értékeli a kiberbiztonsági kutatócégeket, hogy átfogó auditokat végezzenek a [GitHub](https://github.com/forwardemail) szerveren és a szerverinfrastruktúránkon található nyílt forráskódú kódbázisunkon. Az elmúlt években végzett kiterjedt kutatások és értékelések után számos kivételes biztonsági auditcéget azonosítottunk, amelyek következetesen magas színvonalú munkát, műszaki szakértelmet és az adatvédelemre összpontosító értékeinkkel való összhangot mutatnak.
+A Forward Email aktívan értékeli a kiberbiztonsági kutatócégeket, hogy átfogó auditokat végezzenek nyílt forráskódú kódbázisunkon a [GitHub](https://github.com/forwardemail) oldalon és a szerver infrastruktúránkon. Az elmúlt évek alapos kutatása és értékelése után több kivételes biztonsági audit céget azonosítottunk, amelyek következetesen magas színvonalú munkát, technikai szakértelmet és adatvédelmi értékeinkkel való összhangot mutatnak.
 
-Ez a dokumentum a professzionális biztonsági audit szolgáltatásokat kereső szervezetek számára tett megállapításainkat és ajánlásainkat tartalmazza. Az itt felsorolt vállalatok kivételes képességeket mutattak be a penetrációs tesztelés, a kódáttekintés, az infrastruktúra-felmérés és a biztonsági kutatás területén.
+Ez a dokumentum az eredményeinket és ajánlásainkat tartalmazza azoknak a szervezeteknek, amelyek professzionális biztonsági audit szolgáltatásokat keresnek. Az itt felsorolt cégek mind kimagasló képességeket mutattak be behatolás-tesztelés, kódáttekintés, infrastruktúra értékelés és biztonsági kutatás terén.
+
 
 ## Értékelési folyamatunk {#our-evaluation-process}
 
-Értékelési folyamatunk számos kulcsfontosságú tényezőre összpontosított, amelyek kritikus fontosságúak az alapos biztonsági értékelést igénylő szervezetek számára. Megvizsgáltuk az egyes vállalatok eredményeit, műszaki szakértelmét, a jelentéstétel átláthatóságát és a nyílt forráskódú elvek iránti elkötelezettségét. Az ebben az útmutatóban szereplő vállalatok mind következetes kiválóságot mutattak a többéves értékelési időszakunk során.
+Értékelési folyamatunk több kulcsfontosságú tényezőre összpontosított, amelyek kritikusak azoknak a szervezeteknek, amelyek alapos biztonsági értékeléseket igényelnek. Megvizsgáltuk minden cég múltbeli eredményeit, technikai szakértelmét, az átláthatóságot a jelentésekben, valamint az open-source elvek iránti elkötelezettségét. Az ebben az útmutatóban szereplő cégek mind következetes kiválóságot mutattak többéves értékelési időszakunk során.
 
-Fontos megjegyezni, hogy az alább felsorolt vállalatok nincsenek rangsorolva. Minden szervezet egyedi erősségekkel és specializációkkal rendelkezik a kiberbiztonság területén, és a legjobb választás a konkrét projektkövetelményektől, a költségvetési megfontolásoktól és a szervezeti igényektől függ.
+Fontos megjegyezni, hogy az alábbi cégek nem rangsorolva vannak semmilyen sorrendben. Minden szervezet egyedi erősségeket és specializációkat hoz a kiberbiztonság területére, és a legjobb választás a konkrét projektkövetelményektől, költségvetési megfontolásoktól és szervezeti igényektől függ.
 
-## Ajánlott biztonsági auditcégek {#recommended-security-audit-companies}
 
-IDEIGLENES_PLACE_HOLDER_0 Cure53 {IDEIGLENES_PLACE_HOLDER_1
+## Ajánlott biztonsági audit cégek {#recommended-security-audit-companies}
 
-**Helyszín**: Berlin, Németország
-**Weboldal**: <https://cure53.de/>
-**Szakterület**: "Finom behatolási tesztek megbízható weboldalakhoz"
+### Cure53 {#cure53}
 
-A Cure53 egy német kiberbiztonsági cég, amely a webes alkalmazások biztonsági tesztelésének és penetrációs tesztelésének aprólékos megközelítéséről ismert. A berlini székhelyű cég átfogó tesztelési módszertanainak és részletes jelentéstételi gyakorlatának köszönhetően vezető szerepet töltött be a területen.
+**Helyszín**: Berlin, Németország  
+**Weboldal**: <https://cure53.de/>  
+**Specializáció**: „Precíz behatolás-tesztek precíz weboldalakhoz”
 
-A cég lenyűgöző biztonsági értékelési portfóliót épített ki nagy hírű ügyfelek és nyílt forráskódú projektek számára. Munkájuk a modern webes technológiák, a kriptográfiai implementációk és az infrastruktúra biztonságának mélyreható ismeretét mutatja. A Cure53 jelentései különösen figyelemre méltóak technikai mélységük és gyakorlatias ajánlásaik miatt.
+A Cure53 egy német kiberbiztonsági cég, amely híres a webalkalmazás-biztonsági tesztelés és behatolás-tesztelés alapos megközelítéséről. Berlinben található, és átfogó tesztelési módszertanával és részletes jelentési gyakorlatával vezető szerepet tölt be a területen.
 
-**Nevezetes publikációk és jelentések**:
+A cég lenyűgöző portfóliót épített ki magas szintű ügyfelek és nyílt forráskódú projektek biztonsági értékeléseiből. Munkájuk mély megértést mutat a modern webes technológiák, kriptográfiai megvalósítások és infrastruktúra-biztonság terén. A Cure53 jelentései különösen kiemelkednek technikai mélységükkel és gyakorlati ajánlásaikkal.
 
-* [Mullvad szerverek biztonsági felmérése 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Átfogó infrastruktúra-biztonsági értékelés
-* [Mullvad alkalmazások/API biztonsági felmérés 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Alkalmazás- és API-biztonsági elemzés
-* [Mullvad szerverek biztonsági felmérése 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Utókövetési infrastruktúra-értékelés
+**Figyelemre méltó kiadványok és jelentések**:
 
-### Radikálisan nyílt biztonság {#radically-open-security}
+* [Mullvad szerverek biztonsági értékelése 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) – Átfogó infrastruktúra-biztonsági értékelés  
+* [Mullvad alkalmazások/API biztonsági értékelése 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) – Alkalmazás- és API-biztonsági elemzés  
+* [Mullvad szerverek biztonsági értékelése 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) – Utólagos infrastruktúra-értékelés  
 
-**Helyszín**: Amszterdam, Hollandia
-**Weboldal**: <https://www.radicallyopensecurity.com/>
-**Szakterület**: "Nonprofit számítógépes biztonsági tanácsadás"
+### Radically Open Security {#radically-open-security}
 
-A Radically Open Security (ROS) egyedülálló, nonprofit számítógép-biztonsági tanácsadó cégként működik, amely tökéletesen összhangban van a nyílt forráskódú elvekkel és az átláthatósági értékekkel. Az amszterdami székhelyű ROS úttörő szerepet játszott a biztonsági tanácsadás innovatív megközelítésében azáltal, hogy módszertanait és eredményeit, amikor csak lehetséges, nyilvánosan elérhetővé teszi.
+**Helyszín**: Amszterdam, Hollandia  
+**Weboldal**: <https://www.radicallyopensecurity.com/>  
+**Specializáció**: „Nonprofit számítógépes biztonsági tanácsadás”
 
-Nonprofit modelljük lehetővé teszi számukra, hogy kizárólag a biztonsági eredményekre összpontosítsanak a profitmaximalizálás helyett, ami gyakran alaposabb értékelésekhez és valódi ajánlásokhoz vezet. A ROS különös szakértelemmel rendelkezik az adatvédelemre összpontosító technológiák, a VPN-szolgáltatások és az érzékeny felhasználói adatokat kezelő alkalmazások terén.
+A Radically Open Security (ROS) egy egyedülálló nonprofit számítógépes biztonsági tanácsadó cég, amely tökéletesen illeszkedik a nyílt forráskódú elvekhez és az átláthatóság értékeihez. Amszterdamban működve a ROS úttörő megközelítést alkalmaz a biztonsági tanácsadásban azzal, hogy módszertanait és eredményeit lehetőség szerint nyilvánosan elérhetővé teszi.
 
-**Nevezetes publikációk és jelentések**:
+Nonprofit modelljük lehetővé teszi, hogy kizárólag a biztonsági eredményekre koncentráljanak a profitmaximalizálás helyett, ami gyakran alaposabb értékelésekhez és őszinte ajánlásokhoz vezet. A ROS különös szakértelemmel rendelkezik adatvédelmi fókuszú technológiák, VPN szolgáltatások és érzékeny felhasználói adatokat kezelő alkalmazások terén.
+**Figyelemre méltó kiadványok és jelentések**:
 
-* [Droid2Tracking biztonsági értékelés](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Mobilkövetési elemzés
-* [Tauri Program Biztonsági Felmérése 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Többplatformos alkalmazáskeretrendszer-értékelés
-* [Mullvad VPN biztonsági felmérés 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN-szolgáltatás biztonsági elemzése
+* [Droid2Tracking biztonsági értékelés](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Mobil követés elemzése
+* [Tauri Program biztonsági értékelés 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Többplatformos alkalmazáskeret értékelése
+* [Mullvad VPN biztonsági értékelés 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN szolgáltatás biztonsági elemzése
 
-### Biztosított AB {#assured-ab}
+### Assured AB {#assured-ab}
 
-**Helyszín**: Göteborg, Svédország
-**Weboldal**: <https://www.assured.se/>
-**Szakterület**: "Műszaki kiberbiztonsági szakértők"
+**Helyszín**: Göteborg, Svédország  
+**Weboldal**: <https://www.assured.se/>  
+**Specializáció**: „Szakértők a technikai kiberbiztonságban”
 
-Az Assured AB egy svéd kiberbiztonsági tanácsadó cég, amely vezető szerepet tölt be a műszaki kiberbiztonsági értékelések terén. Göteborgban található székhelyük mélyreható műszaki szakértelemmel állnak hozzá az összetett biztonsági kihívásokhoz, különösen az e-mail infrastruktúra, a DNS-biztonság és az API-értékelések területén.
+Az Assured AB egy svéd kiberbiztonsági tanácsadó cég, amely vezető szerepet tölt be a technikai kiberbiztonsági értékelések terén. Göteborgban székelnek, és mély technikai szakértelmet hoznak összetett biztonsági kihívásokhoz, különösen az e-mail infrastruktúra, a DNS biztonság és az API értékelések területén.
 
-A vállalat megközelítése az alapos műszaki elemzést hangsúlyozza, amelyet a gyakorlatias, megvalósítható ajánlások ötvöznek. Jelentésük kivételes odafigyelést mutat a részletekre, valamint a modern biztonsági fenyegetések és azok enyhítésére irányuló stratégiák átfogó ismeretét.
+A cég megközelítése alapos technikai elemzést hangsúlyoz, amelyet gyakorlati, megvalósítható ajánlások egészítenek ki. Jelentéseik kivételes részletességet és a modern biztonsági fenyegetések, valamint azok enyhítési stratégiáinak átfogó megértését tükrözik.
 
-**Nevezetes publikációk és jelentések**:
+**Figyelemre méltó kiadványok és jelentések**:
 
-* [Mullvad e-mail szerverek biztonsági auditja 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - E-mail infrastruktúra biztonsági felmérése
-* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API biztonsági felmérése
-* [Mullvad DNS-kiszolgáló biztonsági audit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - DNS infrastruktúra felmérése
+* [Mullvad e-mail szerverek biztonsági auditja 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit_2024.pdf) - E-mail infrastruktúra biztonsági értékelése
+* [Mullvad API biztonsági audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report_2022.pdf) - API biztonsági értékelés
+* [Mullvad DNS szerver biztonsági audit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report_2022.pdf) - DNS infrastruktúra értékelése
 
-### Bitsorozat {#trail-of-bits}
+### Trail of Bits {#trail-of-bits}
 
-**Helyszín**: New York, New York, Egyesült Államok
-**Weboldal**: <https://www.trailofbits.com/>
-**Szakterület**: „Nem csak hibákat javítunk, szoftvereket is.”
+**Helyszín**: New York, New York, Egyesült Államok  
+**Weboldal**: <https://www.trailofbits.com/>  
+**Specializáció**: „Nem csak hibákat javítunk, hanem szoftvert is.”
 
-A Trail of Bits egy kiemelkedő amerikai kiberbiztonsági cég, amely elismerést szerzett innovatív szoftverbiztonsági megközelítéséért. New York-i székhelyű cégük élvonalbeli eszközöket és módszertanokat fejlesztett ki, amelyek a teljes kiberbiztonsági területet előremozdították. Mottójuk: „Nem csak hibákat javítunk, szoftvereket is javítunk” – tükrözi elkötelezettségüket a rendszerszintű biztonsági problémák, nem pedig a felszíni szintű sebezhetőségek kezelése iránt.
+A Trail of Bits egy kiemelkedő amerikai kiberbiztonsági cég, amely innovatív megközelítésével szerzett elismerést a szoftverbiztonság terén. New Yorkban székelnek, és élvonalbeli eszközöket és módszereket fejlesztettek ki, amelyek előmozdították az egész kiberbiztonsági szakterületet. Jelmondatuk, „Nem csak hibákat javítunk, hanem szoftvert is,” tükrözi elkötelezettségüket a rendszerszintű biztonsági problémák kezelése iránt, nem csupán a felszíni sérülékenységek javítását.
 
-A vállalat különös szakértelemmel rendelkezik a blokklánc-biztonság, a kriptográfiai implementációk és az összetett szoftverrendszerek területén. A Trail of Bits ismert a nyílt forráskódú biztonsági eszközökhöz való hozzájárulásáról és a feltörekvő biztonsági területeken betöltött gondolatvezető szerepéről is.
+A cég különleges szakértelemmel rendelkezik a blokklánc biztonság, a kriptográfiai megvalósítások és az összetett szoftverrendszerek terén. A Trail of Bits ismert nyílt forráskódú biztonsági eszközökhöz való hozzájárulásairól és vezető gondolkodásáról a feltörekvő biztonsági területeken.
 
-**Nevezetes publikációk és jelentések**:
+**Figyelemre méltó kiadványok és jelentések**:
 
 * [Homebrew biztonsági áttekintés 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Csomagkezelő biztonsági értékelése
-* [Hé, biztonsági áttekintés](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - E-mail szolgáltatás biztonsági értékelése
+* [Hey biztonsági áttekintés](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - E-mail szolgáltatás biztonsági értékelése
 * [cURL biztonsági áttekintés 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Hálózati könyvtár biztonsági elemzése
 
-## Cégösszehasonlítás {#company-comparison}
 
-| Vállalat | Elhelyezkedés | Fókuszterület | Figyelemre méltó erősségek | Nyilvános jelentések |
-| --------------------------- | ---------------------- | ------------------------ | ----------------------------------------------------- | -------------------------- |
-| **Cure53** | Berlin, Németország | Webalkalmazás-biztonság | Részletes penetrációs tesztelés, átfogó jelentéskészítés | 3+ Mullvad értékelés |
-| **Radikálisan nyílt biztonság** | Amszterdam, Hollandia | Adatvédelem és nyílt forráskód | Nonprofit modell, átláthatóság, VPN szakértelem | Nyilvános módszertanmegosztás |
-| **Biztosított AB** | Göteborg, Svédország | Műszaki infrastruktúra | E-mail/DNS biztonság, API-felmérések | Speciális szerverauditok |
-| **Bitek nyomában** | New York, Amerikai Egyesült Államok | Szoftverbiztonság | Blokklánc, kriptográfia, biztonsági eszközök | Nyílt forráskódú közreműködések |
+## Cégek összehasonlítása {#company-comparison}
 
-## Kiválasztási kritériumok {#selection-criteria}
+| Cég                        | Helyszín               | Fókuszterület           | Jelentős erősségek                                  | Nyilvános jelentések       |
+| -------------------------- | ---------------------- | ----------------------- | -------------------------------------------------- | -------------------------- |
+| **Cure53**                 | Berlin, Németország    | Webalkalmazás biztonság | Részletes behatolási tesztelés, átfogó jelentések  | 3+ Mullvad értékelés       |
+| **Radically Open Security**| Amszterdam, Hollandia  | Adatvédelem & Nyílt forrás | Nonprofit modell, átláthatóság, VPN szakértelem    | Nyilvános módszertan megosztás |
+| **Assured AB**             | Göteborg, Svédország   | Technikai infrastruktúra| E-mail/DNS biztonság, API értékelések              | Specializált szerver auditok |
+| **Trail of Bits**          | New York, USA          | Szoftverbiztonság       | Blokklánc, kriptográfia, biztonsági eszközök      | Nyílt forráskódú hozzájárulások |
+## Kiválasztási Kritériumok {#selection-criteria}
 
-Ezen biztonsági auditcégek értékelésekor számos kritikus tényezőt vettünk figyelembe, amelyeket a szervezeteknek értékelniük kell egy biztonsági partner kiválasztásakor:
+Ezeknek a biztonsági audit cégeknek az értékelésekor több kritikus tényezőt vettünk figyelembe, amelyeket a szervezeteknek mérlegelniük kell biztonsági partner kiválasztásakor:
 
-**Műszaki szakértelem**: Minden ajánlott vállalat mélyreható műszaki ismeretekkel rendelkezik több területen, beleértve a webes alkalmazásbiztonságot, az infrastruktúra-felmérést, a kriptográfiai megvalósításokat és az újonnan megjelenő technológiákat.
+**Műszaki Szakértelem**: Az összes ajánlott cég mély műszaki tudást mutat több területen, beleértve a webalkalmazás-biztonságot, infrastruktúra értékelést, kriptográfiai megvalósításokat és a feltörekvő technológiákat.
 
-**Átláthatóság és jelentéstétel**: Minden cég átfogó, gyakorlatias jelentéseket készít, amelyek világosan közlik az eredményeket, a kockázatértékeléseket és a korrekciós stratégiákat. Sokan közülük nyilvános kutatásokon és nyílt forráskódú eszközökön keresztül is hozzájárulnak a tágabb biztonsági közösséghez.
+**Átláthatóság és Jelentéskészítés**: Minden cég átfogó, cselekvésre ösztönző jelentéseket nyújt, amelyek világosan kommunikálják a megállapításokat, kockázatértékeléseket és javítási stratégiákat. Sokuk hozzájárul a szélesebb biztonsági közösséghez nyilvános kutatásokkal és nyílt forráskódú eszközökkel.
 
-**Tapasztalat**: A felsorolt vállalatok bizonyított eredményeket értek el nagy hírű ügyfelekkel és összetett biztonsági kihívásokkal. Nyilvános jelentéseik következetes minőséget és alaposságot mutatnak.
+**Eredményesség**: A felsorolt cégek bizonyított eredményeket mutatnak fel magas szintű ügyfelekkel és összetett biztonsági kihívásokkal kapcsolatban. Nyilvános jelentéseik következetes minőséget és alapos munkát tükröznek.
 
-**Összhangban az értékekkel**: Azok a szervezetek, amelyek az adatvédelmet, a nyílt forráskódú elveket és az átláthatóságot helyezik előtérbe, munkájukon és üzleti gyakorlatukon keresztül elkötelezettséget mutattak ezen értékek iránt.
+**Értékekhez Való Igazodás**: Azoknak a szervezeteknek, amelyek a magánélet védelmét, a nyílt forráskódú elveket és az átláthatóságot helyezik előtérbe, ezek a cégek elkötelezettséget mutattak ezen értékek iránt munkájuk és üzleti gyakorlataik során.
 
-**Folyamatos fejlesztés**: Minden ajánlott cég naprakész a változó fenyegetési környezetekkel és az újonnan megjelenő technológiákkal kapcsolatban, biztosítva, hogy értékeléseik relevánsak és átfogóak maradjanak.
+**Folyamatos Fejlődés**: Az összes ajánlott cég naprakész marad a változó fenyegetési környezettel és a feltörekvő technológiákkal kapcsolatban, biztosítva, hogy értékeléseik relevánsak és átfogóak legyenek.
 
-A biztonsági auditok környezete folyamatosan fejlődik, és azt javasoljuk, hogy a szervezetek saját maguk végezzék el az értékelést az adott igények, költségvetési korlátok és projektkövetelmények alapján. Ezen vállalatok bármelyike kivételes biztonsági értékelési szolgáltatásokat nyújtana azoknak a szervezeteknek, amelyek komolyan gondolják infrastruktúrájuk és felhasználói adataik védelmét.
+A biztonsági audit piac folyamatosan fejlődik, ezért javasoljuk, hogy a szervezetek saját értékelést végezzenek az egyedi igények, költségvetési korlátok és projektkövetelmények alapján. Mindazonáltal bármelyik cég kiváló biztonsági értékelési szolgáltatásokat nyújt azoknak a szervezeteknek, amelyek komolyan veszik infrastruktúrájuk és felhasználói adataik védelmét.

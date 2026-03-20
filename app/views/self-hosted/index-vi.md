@@ -1,83 +1,85 @@
-# Tự lưu trữ {#self-hosted}
+# Tự Lưu Trữ {#self-hosted}
 
-## Mục lục {#table-of-contents}
+
+## Mục Lục {#table-of-contents}
 
 * [Bắt đầu](#getting-started)
 * [Yêu cầu](#requirements)
-  * [Cloud-init / Dữ liệu người dùng](#cloud-init--user-data)
+  * [Cloud-init / User-data](#cloud-init--user-data)
 * [Cài đặt](#install)
-  * [Gỡ lỗi tập lệnh cài đặt](#debug-install-script)
-  * [Lời nhắc](#prompts)
+  * [Gỡ lỗi script cài đặt](#debug-install-script)
+  * [Các lời nhắc](#prompts)
   * [Thiết lập ban đầu (Tùy chọn 1)](#initial-setup-option-1)
 * [Dịch vụ](#services)
   * [Đường dẫn tệp quan trọng](#important-file-paths)
 * [Cấu hình](#configuration)
   * [Thiết lập DNS ban đầu](#initial-dns-setup)
-* [Lên tàu](#onboarding)
+* [Hướng dẫn sử dụng](#onboarding)
 * [Kiểm tra](#testing)
   * [Tạo bí danh đầu tiên của bạn](#creating-your-first-alias)
   * [Gửi / Nhận email đầu tiên của bạn](#sending--receiving-your-first-email)
-* [Xử lý sự cố](#troubleshooting)
-  * [Tên người dùng và mật khẩu xác thực cơ bản là gì?](#what-is-the-basic-auth-username-and-password)
-  * [Làm sao tôi biết cái gì đang chạy](#how-do-i-know-what-is-running)
-  * [Làm sao tôi biết được có thứ gì đó không chạy mà đáng lẽ phải chạy?](#how-do-i-know-if-something-isnt-running-that-should-be)
-  * [Làm thế nào để tôi tìm thấy nhật ký](#how-do-i-find-logs)
-  * [Tại sao email gửi đi của tôi lại hết thời gian chờ](#why-are-my-outgoing-emails-timing-out)
+* [Khắc phục sự cố](#troubleshooting)
+  * [Tên đăng nhập và mật khẩu xác thực cơ bản là gì](#what-is-the-basic-auth-username-and-password)
+  * [Làm sao tôi biết những gì đang chạy](#how-do-i-know-what-is-running)
+  * [Làm sao tôi biết nếu có thứ gì đó không chạy mà lẽ ra phải chạy](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [Làm sao tôi tìm nhật ký](#how-do-i-find-logs)
+  * [Tại sao email gửi đi của tôi bị hết thời gian chờ](#why-are-my-outgoing-emails-timing-out)
+
 
 ## Bắt đầu {#getting-started}
 
-Giải pháp email tự lưu trữ của chúng tôi, giống như tất cả các sản phẩm khác, đều là mã nguồn mở 100%—cả giao diện người dùng và giao diện quản trị. Điều này có nghĩa là:
+Giải pháp email tự lưu trữ của chúng tôi, giống như tất cả các sản phẩm của chúng tôi, hoàn toàn mã nguồn mở — cả frontend và backend. Điều này có nghĩa:
 
-1. **Minh bạch hoàn toàn**: Mọi dòng mã xử lý email của bạn đều được công khai để công chúng giám sát.
-2. **Đóng góp của cộng đồng**: Bất kỳ ai cũng có thể đóng góp cải tiến hoặc khắc phục sự cố.
-3. **Bảo mật thông qua tính minh bạch**: Các lỗ hổng có thể được xác định và khắc phục bởi cộng đồng toàn cầu.
-4. **Không bị ràng buộc bởi nhà cung cấp**: Bạn không bao giờ phụ thuộc vào sự tồn tại của công ty chúng tôi
+1. **Minh bạch hoàn toàn**: Mọi dòng mã xử lý email của bạn đều có sẵn để công khai xem xét
+2. **Đóng góp từ cộng đồng**: Bất kỳ ai cũng có thể đóng góp cải tiến hoặc sửa lỗi
+3. **Bảo mật nhờ sự minh bạch**: Các lỗ hổng có thể được phát hiện và sửa chữa bởi cộng đồng toàn cầu
+4. **Không bị ràng buộc nhà cung cấp**: Bạn không bao giờ phụ thuộc vào sự tồn tại của công ty chúng tôi
 
-Toàn bộ cơ sở mã có sẵn trên GitHub tại <https://github.com/forwardemail/forwardemail.net>, được cấp phép theo Giấy phép MIT.
+Toàn bộ mã nguồn có trên GitHub tại <https://github.com/forwardemail/forwardemail.net>, được cấp phép theo giấy phép MIT.
 
-Kiến trúc bao gồm các thùng chứa cho:
+Kiến trúc bao gồm các container cho:
 
 * Máy chủ SMTP cho email gửi đi
-* Máy chủ IMAP/POP3 để truy xuất email
+* Máy chủ IMAP/POP3 để lấy email
 * Giao diện web để quản trị
 * Cơ sở dữ liệu để lưu trữ cấu hình
-* Redis để lưu trữ bộ nhớ đệm và tăng hiệu suất
+* Redis để cache và tăng hiệu suất
 * SQLite để lưu trữ hộp thư an toàn, được mã hóa
 
 > \[!NOTE]
-> Đừng quên xem [blog tự lưu trữ](https://forwardemail.net/blog/docs/self-hosted-solution) của chúng tôi
+> Hãy chắc chắn xem qua [blog tự lưu trữ của chúng tôi](https://forwardemail.net/blog/docs/self-hosted-solution)
 >
-> Và nếu bạn quan tâm đến phiên bản hướng dẫn chi tiết hơn, hãy xem hướng dẫn [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) hoặc [Debian](https://forwardemail.net/guides/selfhosted-on-debian) của chúng tôi.
+> Và dành cho những ai quan tâm đến phiên bản hướng dẫn chi tiết từng bước, xem các hướng dẫn dựa trên [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) hoặc [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
 
 ## Yêu cầu {#requirements}
 
-Trước khi chạy tập lệnh cài đặt, hãy đảm bảo bạn có những điều sau:
+Trước khi chạy script cài đặt, hãy đảm bảo bạn có những điều sau:
 
-* **Hệ điều hành**: Máy chủ chạy Linux (hiện hỗ trợ Ubuntu 22.04 trở lên).
+* **Hệ điều hành**: Máy chủ dựa trên Linux (hiện hỗ trợ Ubuntu 22.04+).
 * **Tài nguyên**: 1 vCPU và 2GB RAM
-* **Quyền truy cập gốc**: Quyền quản trị để thực thi lệnh.
-* **Tên miền**: Tên miền tùy chỉnh, sẵn sàng cho cấu hình DNS.
-* **IP sạch**: Đảm bảo máy chủ của bạn có địa chỉ IP sạch, không có tiền sử spam bằng cách kiểm tra danh sách đen. Thông tin thêm [đây](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
-* Địa chỉ IP công cộng hỗ trợ cổng 25
-* Khả năng thiết lập [PTR đảo ngược](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
+* **Quyền root**: Quyền quản trị để thực thi các lệnh.
+* **Tên miền**: Một tên miền tùy chỉnh sẵn sàng cho cấu hình DNS.
+* **IP sạch**: Đảm bảo máy chủ của bạn có địa chỉ IP sạch, không có lịch sử spam bằng cách kiểm tra các danh sách đen. Thêm thông tin [tại đây](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* Địa chỉ IP công khai hỗ trợ cổng 25
+* Khả năng thiết lập [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
 * Hỗ trợ IPv4 và IPv6
 
 > \[!TIP]
-> Xem danh sách [nhà cung cấp máy chủ thư tuyệt vời](https://github.com/forwardemail/awesome-mail-server-providers) của chúng tôi
+> Xem danh sách các [nhà cung cấp máy chủ mail tuyệt vời](https://github.com/forwardemail/awesome-mail-server-providers)
 
-### Khởi tạo đám mây / Dữ liệu người dùng {#cloud-init--user-data}
+### Cloud-init / User-data {#cloud-init--user-data}
 
-Hầu hết các nhà cung cấp dịch vụ đám mây đều hỗ trợ cấu hình cloud-init khi máy chủ riêng ảo (VPS) được cung cấp. Đây là một cách tuyệt vời để thiết lập trước một số tệp và biến môi trường để logic thiết lập ban đầu của tập lệnh sử dụng, giúp bỏ qua việc phải nhắc nhở trong khi tập lệnh đang chạy để lấy thêm thông tin.
+Hầu hết các nhà cung cấp đám mây hỗ trợ cấu hình cloud-init khi máy chủ ảo riêng (VPS) được cấp phát. Đây là cách tuyệt vời để thiết lập một số tệp và biến môi trường trước để sử dụng trong logic thiết lập ban đầu của script, giúp bỏ qua việc hỏi thêm thông tin khi script đang chạy.
 
 **Tùy chọn**
 
-* `EMAIL` - email dùng để nhắc nhở certbot hết hạn
-* `DOMAIN` - tên miền tùy chỉnh (ví dụ: `example.com`) dùng để thiết lập tự lưu trữ
-* `AUTH_BASIC_USERNAME` - tên người dùng được sử dụng trong lần thiết lập đầu tiên để bảo vệ trang web
-* `AUTH_BASIC_PASSWORD` - mật khẩu được sử dụng trong lần thiết lập đầu tiên để bảo vệ trang web
-* `/root/.cloudflare.ini` - (**Chỉ dành cho người dùng Cloudflare**) tệp cấu hình Cloudflare được certbot sử dụng để cấu hình DNS. Tệp này yêu cầu bạn thiết lập mã thông báo API thông qua `dns_cloudflare_api_token`. Đọc thêm [đây](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
-
-Ví dụ:
+* `EMAIL` - email dùng để nhắc nhở hết hạn certbot
+* `DOMAIN` - tên miền tùy chỉnh (ví dụ `example.com`) dùng cho thiết lập tự lưu trữ
+* `AUTH_BASIC_USERNAME` - tên đăng nhập dùng trong lần thiết lập đầu tiên để bảo vệ trang
+* `AUTH_BASIC_PASSWORD` - mật khẩu dùng trong lần thiết lập đầu tiên để bảo vệ trang
+* `/root/.cloudflare.ini` - (**Chỉ dành cho người dùng Cloudflare**) tệp cấu hình cloudflare dùng bởi certbot để cấu hình DNS. Yêu cầu bạn thiết lập token API qua `dns_cloudflare_api_token`. Đọc thêm [tại đây](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+Example:
 
 ```sh
 #cloud-config
@@ -98,21 +100,21 @@ runcmd:
 
 ## Cài đặt {#install}
 
-Chạy lệnh sau trên máy chủ của bạn để tải xuống và thực thi tập lệnh cài đặt:
+Chạy lệnh sau trên máy chủ của bạn để tải xuống và thực thi script cài đặt:
 
 ```sh
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Tập lệnh cài đặt gỡ lỗi {#debug-install-script}
+### Gỡ lỗi script cài đặt {#debug-install-script}
 
-Thêm `DEBUG=true` vào trước tập lệnh cài đặt để có đầu ra chi tiết:
+Thêm `DEBUG=true` trước script cài đặt để có đầu ra chi tiết:
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Nhắc nhở {#prompts}
+### Các lựa chọn {#prompts}
 
 ```sh
 1. Initial setup
@@ -124,188 +126,189 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 7. Exit
 ```
 
-* **Thiết lập ban đầu**: Tải xuống mã email chuyển tiếp mới nhất, cấu hình môi trường, nhắc nhở cho tên miền tùy chỉnh của bạn và thiết lập tất cả chứng chỉ, khóa và bí mật cần thiết.
-* **Thiết lập Sao lưu**: Sẽ thiết lập cron để sao lưu mongoDB và redis bằng kho lưu trữ tương thích với S3 để lưu trữ từ xa an toàn. Riêng sqlite sẽ được sao lưu khi đăng nhập nếu có thay đổi đối với các bản sao lưu được mã hóa an toàn.
-* **Thiết lập Nâng cấp**: Thiết lập cron để tìm kiếm các bản cập nhật hàng đêm, giúp xây dựng lại và khởi động lại các thành phần cơ sở hạ tầng một cách an toàn.
-* **Gia hạn chứng chỉ**: Certbot / lets encrypt được sử dụng cho chứng chỉ SSL và khóa sẽ hết hạn sau mỗi 3 tháng. Thao tác này sẽ gia hạn chứng chỉ cho tên miền của bạn và đặt chúng vào thư mục cần thiết để các thành phần liên quan sử dụng. Xem [đường dẫn tập tin quan trọng](#important-file-paths)
-* **Khôi phục từ bản sao lưu**: Sẽ kích hoạt mongodb và redis khôi phục từ dữ liệu sao lưu.
+* **Initial setup**: Tải xuống mã forward email mới nhất, cấu hình môi trường, yêu cầu nhập tên miền tùy chỉnh của bạn và thiết lập tất cả các chứng chỉ, khóa và bí mật cần thiết.
+* **Setup Backup**: Sẽ thiết lập một cron để sao lưu mongoDB và redis sử dụng kho lưu trữ tương thích S3 để lưu trữ an toàn, từ xa. Riêng biệt, sqlite sẽ được sao lưu khi đăng nhập nếu có thay đổi để sao lưu an toàn, mã hóa.
+* **Setup Upgrade**: Thiết lập một cron để kiểm tra cập nhật hàng đêm, sẽ xây dựng lại và khởi động lại các thành phần hạ tầng một cách an toàn.
+* **Renew certificates**: Certbot / lets encrypt được sử dụng cho chứng chỉ SSL và các khóa sẽ hết hạn sau mỗi 3 tháng. Điều này sẽ gia hạn chứng chỉ cho tên miền của bạn và đặt chúng vào thư mục cần thiết để các thành phần liên quan sử dụng. Xem [đường dẫn tệp quan trọng](#important-file-paths)
+* **Restore from backup**: Sẽ kích hoạt mongodb và redis để khôi phục từ dữ liệu sao lưu.
 
-### Thiết lập ban đầu (Tùy chọn 1) {#initial-setup-option-1}
+### Thiết lập ban đầu (Lựa chọn 1) {#initial-setup-option-1}
 
-Chọn tùy chọn `1. Initial setup` để bắt đầu.
+Chọn lựa chọn `1. Initial setup` để bắt đầu.
 
-Sau khi hoàn tất, bạn sẽ thấy thông báo thành công. Bạn thậm chí có thể chạy `docker ps` để xem **các** thành phần** đã được tạo. Thông tin thêm về các thành phần bên dưới.
+Khi hoàn tất, bạn sẽ thấy thông báo thành công. Bạn thậm chí có thể chạy `docker ps` để xem **các** thành phần đã được khởi động. Thông tin thêm về các thành phần bên dưới.
 
 ## Dịch vụ {#services}
 
-| Tên dịch vụ | Cổng mặc định | Sự miêu tả |
-| ------------ | :----------: | ------------------------------------------------------ |
-| Web | `443` | Giao diện web cho tất cả các tương tác của quản trị viên |
-| API | `4000` | Lớp API để trừu tượng hóa cơ sở dữ liệu |
-| Bree | Không có | Trình chạy tác vụ và công việc nền |
-| SMTP | `465` (recommended) / `587` | Máy chủ SMTP cho email gửi đi |
-| SMTP Bree | Không có | Công việc nền SMTP |
-| MX | `2525` | Trao đổi thư cho email đến và chuyển tiếp email |
-| IMAP | `993/2993` | Máy chủ IMAP để quản lý email đến và hộp thư |
-| POP3 | `995/2995` | Máy chủ POP3 để quản lý email đến và hộp thư |
-| SQLite | `3456` | Máy chủ SQLite để tương tác với cơ sở dữ liệu SQLite |
-| SQLite Bree | Không có | Công việc nền SQLite |
-| CalDAV | `5000` | Máy chủ CalDAV để quản lý lịch |
-| ThẻDAV | `6000` | Máy chủ CardDAV để quản lý lịch |
-| MongoDB | `27017` | Cơ sở dữ liệu MongoDB cho hầu hết việc quản lý dữ liệu |
-| Redis | `6379` | Redis để lưu trữ đệm và quản lý trạng thái |
-| SQLite | Không có | Cơ sở dữ liệu SQLite cho hộp thư được mã hóa |
+| Tên dịch vụ |         Cổng mặc định        | Mô tả                                                  |
+| ------------ | :-------------------------: | ------------------------------------------------------ |
+| Web          |            `443`            | Giao diện web cho tất cả các tương tác quản trị        |
+| API          |            `4000`           | Lớp API để trừu tượng hóa cơ sở dữ liệu                 |
+| Bree         |             Không           | Công việc nền và trình chạy tác vụ                      |
+| SMTP         | `465` (khuyến nghị) / `587` | Máy chủ SMTP cho email gửi đi                           |
+| SMTP Bree    |             Không           | Công việc nền SMTP                                      |
+| MX           |            `2525`           | Máy chủ trao đổi thư cho email đến và chuyển tiếp email |
+| IMAP         |          `993/2993`         | Máy chủ IMAP cho email đến và quản lý hộp thư          |
+| POP3         |          `995/2995`         | Máy chủ POP3 cho email đến và quản lý hộp thư          |
+| SQLite       |            `3456`           | Máy chủ SQLite cho tương tác với cơ sở dữ liệu sqlite   |
+| SQLite Bree  |             Không           | Công việc nền SQLite                                    |
+| CalDAV       |            `5000`           | Máy chủ CalDAV cho quản lý lịch                         |
+| CardDAV      |            `6000`           | Máy chủ CardDAV cho quản lý lịch                        |
+| MongoDB      |           `27017`           | Cơ sở dữ liệu MongoDB cho phần lớn quản lý dữ liệu      |
+| Redis        |            `6379`           | Redis cho bộ nhớ đệm và quản lý trạng thái              |
+| SQLite       |             Không           | Cơ sở dữ liệu SQLite cho các hộp thư được mã hóa        |
 
 ### Đường dẫn tệp quan trọng {#important-file-paths}
 
-Lưu ý: *Đường dẫn máy chủ* bên dưới liên quan đến `/root/forwardemail.net/self-hosting/`.
+Lưu ý: *Đường dẫn máy chủ* bên dưới là tương đối so với `/root/forwardemail.net/self-hosting/`.
 
-| Thành phần | Đường dẫn máy chủ | Đường dẫn chứa |
-| ---------------------- | :-------------------: | ---------------------------- |
-| MongoDB | `./mongo-backups` | `/backups` |
-| Redis | `./redis-data` | `/data` |
-| Sqlite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| Tệp env | `./.env` | `/app/.env` |
-| Chứng chỉ/khóa SSL | `./ssl` | `/app/ssl/` |
-| Khóa riêng tư | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| Chứng chỉ chuỗi đầy đủ | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| CA được chứng nhận | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
-| Khóa riêng DKIM | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
-
+| Thành phần             |       Đường dẫn máy chủ       | Đường dẫn trong container       |
+| ---------------------- | :---------------------------: | ------------------------------ |
+| MongoDB                |   `./mongo-backups`           | `/backups`                     |
+| Redis                  |     `./redis-data`            | `/data`                        |
+| Sqlite                 |    `./sqlite-data`            | `/mnt/{SQLITE_STORAGE_PATH}`   |
+| Tệp Env                |        `./.env`               | `/app/.env`                    |
+| Chứng chỉ/khóa SSL     |        `./ssl`                | `/app/ssl/`                    |
+| Khóa riêng             |  `./ssl/privkey.pem`          | `/app/ssl/privkey.pem`         |
+| Chứng chỉ chuỗi đầy đủ | `./ssl/fullchain.pem`         | `/app/ssl/fullchain.pem`       |
+| Chứng chỉ CA           |    `./ssl/cert.pem`           | `/app/ssl/cert.pem`            |
+| Khóa riêng DKIM        |    `./ssl/dkim.key`           | `/app/ssl/dkim.key`            |
 > \[!IMPORTANT]
-> Lưu tệp `.env` một cách an toàn. Điều này rất quan trọng để khôi phục trong trường hợp xảy ra lỗi.
-> Bạn có thể tìm thấy tệp này trong `/root/forwardemail.net/self-hosting/.env`.
+> Lưu trữ file `.env` một cách an toàn. Đây là điều quan trọng để khôi phục trong trường hợp sự cố.
+> Bạn có thể tìm thấy file này tại `/root/forwardemail.net/self-hosting/.env`.
+
 
 ## Cấu hình {#configuration}
 
 ### Thiết lập DNS ban đầu {#initial-dns-setup}
 
-Trong nhà cung cấp DNS bạn chọn, hãy cấu hình các bản ghi DNS phù hợp. Lưu ý rằng bất kỳ thông tin nào trong ngoặc (`<>`) đều là thông tin động và cần được cập nhật theo giá trị của bạn.
+Trong nhà cung cấp DNS bạn chọn, cấu hình các bản ghi DNS phù hợp. Lưu ý bất cứ thứ gì trong dấu ngoặc nhọn (`<>`) là động và cần được cập nhật với giá trị của bạn.
 
-| Kiểu | Tên | Nội dung | TTL |
+| Loại  | Tên                | Nội dung                      | TTL  |
 | ----- | ------------------ | ----------------------------- | ---- |
-| A | "@", ".", hoặc để trống | <địa chỉ IP> | tự động |
-| CNAME | API | <tên_miền> | tự động |
-| CNAME | caldav | <tên_miền> | tự động |
-| CNAME | carddav | <tên_miền> | tự động |
-| CNAME | fe-bounces | <tên_miền> | tự động |
-| CNAME | imap | <tên_miền> | tự động |
-| CNAME | mx | <tên_miền> | tự động |
-| CNAME | nhạc pop3 | <tên_miền> | tự động |
-| CNAME | smtp | <tên_miền> | tự động |
-| MX | "@", ".", hoặc để trống | mx.<tên_miền> (mức độ ưu tiên 0) | tự động |
-| TXT | "@", ".", hoặc để trống | "v=spf1 a -all" | tự động |
+| A     | "@", ".", hoặc để trống | <ip_address>                  | auto |
+| CNAME | api                | <domain_name>                 | auto |
+| CNAME | caldav             | <domain_name>                 | auto |
+| CNAME | carddav            | <domain_name>                 | auto |
+| CNAME | fe-bounces         | <domain_name>                 | auto |
+| CNAME | imap               | <domain_name>                 | auto |
+| CNAME | mx                 | <domain_name>                 | auto |
+| CNAME | pop3               | <domain_name>                 | auto |
+| CNAME | smtp               | <domain_name>                 | auto |
+| MX    | "@", ".", hoặc để trống | mx.<domain_name> (ưu tiên 0) | auto |
+| TXT   | "@", ".", hoặc để trống | "v=spf1 a -all"               | auto |
 
-#### Bản ghi DNS / PTR ngược {#reverse-dns--ptr-record}
+#### Reverse DNS / bản ghi PTR {#reverse-dns--ptr-record}
 
-Bản ghi DNS ngược (rDNS) hoặc bản ghi con trỏ ngược (bản ghi PTR) rất cần thiết cho máy chủ email vì chúng giúp xác minh tính hợp lệ của máy chủ gửi email. Mỗi nhà cung cấp dịch vụ đám mây thực hiện việc này theo cách khác nhau, vì vậy bạn sẽ cần tìm hiểu cách thêm "DNS ngược" để ánh xạ máy chủ và IP với tên máy chủ tương ứng. Nhiều khả năng là trong phần mạng của nhà cung cấp.
+Reverse DNS (rDNS) hoặc bản ghi con trỏ ngược (PTR records) rất quan trọng đối với máy chủ email vì chúng giúp xác minh tính hợp pháp của máy chủ gửi email. Mỗi nhà cung cấp đám mây làm việc này khác nhau, vì vậy bạn cần tìm hiểu cách thêm "Reverse DNS" để ánh xạ host và IP với tên máy chủ tương ứng. Thông thường nằm trong phần mạng của nhà cung cấp.
 
 #### Cổng 25 bị chặn {#port-25-blocked}
 
-Một số ISP và nhà cung cấp dịch vụ đám mây chặn cổng 25 để tránh kẻ xấu. Bạn có thể cần gửi yêu cầu hỗ trợ để mở cổng 25 cho SMTP/email gửi đi.
+Một số ISP và nhà cung cấp đám mây chặn cổng 25 để tránh các tác nhân xấu. Bạn có thể cần gửi yêu cầu hỗ trợ để mở cổng 25 cho SMTP / email đi.
 
-## Đang tích hợp {#onboarding}
+
+## Đăng ký {#onboarding}
 
 1. Mở Trang Đích
-Điều hướng đến https\://\<tên_miền>, thay thế \<tên_miền> bằng tên miền đã được cấu hình trong cài đặt DNS của bạn. Bạn sẽ thấy trang đích Chuyển tiếp Email.
+   Truy cập https\://\<domain_name>, thay thế \<domain_name> bằng tên miền đã cấu hình trong cài đặt DNS của bạn. Bạn sẽ thấy trang đích Forward Email.
 
-2. Đăng nhập và đưa tên miền của bạn lên tàu
+2. Đăng nhập và Đăng ký Tên miền của bạn
 
 * Đăng nhập bằng email và mật khẩu hợp lệ.
-* Nhập tên miền bạn muốn thiết lập (tên miền này phải khớp với cấu hình DNS).
+* Nhập tên miền bạn muốn thiết lập (phải khớp với cấu hình DNS).
 * Làm theo hướng dẫn để thêm các bản ghi **MX** và **TXT** cần thiết để xác minh.
 
-3. Hoàn tất thiết lập
+3. Hoàn tất Thiết lập
 
-* Sau khi xác minh, hãy truy cập trang Bí danh để tạo bí danh đầu tiên của bạn.
-* Tùy chọn, hãy cấu hình **SMTP cho email gửi đi** trong **Cài đặt tên miền**. Thao tác này yêu cầu thêm bản ghi DNS.
+* Khi đã xác minh, truy cập trang Aliases để tạo bí danh đầu tiên.
+* Tùy chọn, cấu hình **SMTP cho email đi** trong **Cài đặt Tên miền**. Điều này yêu cầu thêm các bản ghi DNS.
 
 > \[!NOTE]
-> Không có thông tin nào được gửi ra ngoài máy chủ của bạn. Tùy chọn tự lưu trữ và tài khoản ban đầu chỉ dành cho đăng nhập quản trị viên và chế độ xem web để quản lý tên miền, bí danh và cấu hình email liên quan.
+> Không có thông tin nào được gửi ra ngoài máy chủ của bạn. Tùy chọn tự lưu trữ và tài khoản ban đầu chỉ dành cho đăng nhập quản trị và giao diện web để quản lý tên miền, bí danh và các cấu hình email liên quan.
+
 
 ## Kiểm tra {#testing}
 
 ### Tạo bí danh đầu tiên của bạn {#creating-your-first-alias}
 
-1. Điều hướng đến Trang Biệt danh
-Mở trang quản lý biệt danh:
+1. Truy cập Trang Aliases
+   Mở trang quản lý bí danh:
 
 ```sh
 https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 ```
 
-2. Thêm bí danh mới
+2. Thêm Bí danh Mới
 
-* Nhấp vào **Thêm Biệt danh** (góc trên bên phải).
-* Nhập tên biệt danh và điều chỉnh cài đặt email nếu cần.
+* Nhấn **Add Alias** (góc trên bên phải).
+* Nhập tên bí danh và điều chỉnh cài đặt email theo nhu cầu.
 * (Tùy chọn) Bật hỗ trợ **IMAP/POP3/CalDAV/CardDAV** bằng cách chọn hộp kiểm.
-* Nhấp vào **Tạo Biệt danh**
+* Nhấn **Create Alias.**
 
-3. Đặt mật khẩu
+3. Đặt Mật khẩu
 
-* Nhấp vào **Tạo mật khẩu** để tạo mật khẩu an toàn.
-* Mật khẩu này sẽ được yêu cầu để đăng nhập vào ứng dụng email của bạn.
+* Nhấn **Generate Password** để tạo mật khẩu an toàn.
+* Mật khẩu này sẽ cần để đăng nhập vào ứng dụng email của bạn.
 
-4. Cấu hình máy khách email của bạn
+4. Cấu hình Ứng dụng Email của bạn
 
 * Sử dụng ứng dụng email như Thunderbird.
 * Nhập tên bí danh và mật khẩu đã tạo.
-* Cấu hình cài đặt **IMAP** và **SMTP** cho phù hợp.
+* Cấu hình các cài đặt **IMAP** và **SMTP** tương ứng.
 
 #### Cài đặt máy chủ email {#email-server-settings}
 
-Tên người dùng: `<alias name>`
+Tên đăng nhập: `<alias name>`
 
-| Kiểu | Tên máy chủ | Cảng | Bảo mật kết nối | Xác thực |
-| ---- | ------------------ | ---- | ------------------- | --------------- |
-| SMTP | smtp.<tên_miền> | 465 | SSL / TLS | Mật khẩu thông thường |
-| IMAP | imap.<tên_miền> | 993 | SSL / TLS | Mật khẩu thông thường |
+| Loại | Tên máy chủ        | Cổng | Bảo mật kết nối    | Xác thực        |
+| ---- | ------------------ | ---- | ------------------ | --------------- |
+| SMTP | smtp.<domain_name> | 465  | SSL / TLS          | Mật khẩu bình thường |
+| IMAP | imap.<domain_name> | 993  | SSL / TLS          | Mật khẩu bình thường |
 
-### Đang gửi / Nhận email đầu tiên của bạn {#sending--receiving-your-first-email}
+### Gửi / Nhận email đầu tiên của bạn {#sending--receiving-your-first-email}
 
-Sau khi cấu hình xong, bạn sẽ có thể gửi và nhận email đến địa chỉ email mới tạo và tự lưu trữ của mình!
-
+Khi đã cấu hình, bạn sẽ có thể gửi và nhận email tới địa chỉ email tự lưu trữ và mới tạo của bạn!
 ## Khắc phục sự cố {#troubleshooting}
 
-#### Tại sao điều này không hoạt động bên ngoài Ubuntu và Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
+#### Tại sao điều này không hoạt động ngoài Ubuntu và Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Hiện tại, chúng tôi đang tìm kiếm sự hỗ trợ cho MacOS và sẽ xem xét các dự án khác. Vui lòng mở [cuộc thảo luận](https://github.com/orgs/forwardemail/discussions) hoặc đóng góp nếu bạn muốn thấy các dự án khác được hỗ trợ.
+Chúng tôi hiện đang tìm cách hỗ trợ MacOS và sẽ xem xét các hệ điều hành khác. Vui lòng mở một [thảo luận](https://github.com/orgs/forwardemail/discussions) hoặc đóng góp nếu bạn muốn thấy các hệ điều hành khác được hỗ trợ.
 
 #### Tại sao thử thách certbot acme lại thất bại {#why-is-the-certbot-acme-challenge-failing}
 
-Lỗi thường gặp nhất là certbot / letsencrypt đôi khi sẽ yêu cầu **2** thử thách. Bạn cần đảm bảo thêm **CẢ HAI** bản ghi txt.
+Sai lầm phổ biến nhất là certbot / letsencrypt đôi khi sẽ yêu cầu **2** thử thách. Bạn cần chắc chắn thêm **CẢ HAI** bản ghi txt.
 
 Ví dụ:
-Bạn có thể thấy hai thử thách như thế này:
+Bạn có thể thấy hai thử thách như sau:
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-Cũng có thể quá trình truyền DNS chưa hoàn tất. Bạn có thể sử dụng các công cụ như: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Công cụ này sẽ cho bạn biết liệu các thay đổi trong bản ghi TXT của bạn có cần được phản ánh hay không. Cũng có thể bộ nhớ đệm DNS cục bộ trên máy chủ của bạn vẫn đang sử dụng giá trị cũ, không cập nhật hoặc chưa nhận được các thay đổi gần đây.
+Cũng có thể việc truyền DNS chưa hoàn tất. Bạn có thể sử dụng các công cụ như: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Điều này sẽ cho bạn biết liệu các thay đổi bản ghi TXT của bạn đã được phản ánh chưa. Cũng có thể bộ nhớ đệm DNS cục bộ trên máy chủ của bạn vẫn đang sử dụng giá trị cũ hoặc chưa nhận được các thay đổi gần đây.
 
-Một lựa chọn khác là sử dụng tính năng tự động thay đổi DNS của cerbot bằng cách đặt tệp `/root/.cloudflare.ini` với mã thông báo api trong cloud-init/user-data khi thiết lập VPS ban đầu hoặc tạo tệp này và chạy lại tập lệnh. Thao tác này sẽ tự động quản lý các thay đổi DNS và cập nhật thử thách.
+Một lựa chọn khác là sử dụng các thay đổi DNS tự động của certbot bằng cách thiết lập tệp `/root/.cloudflare.ini` với token api trong cloud-init / user-data khi thiết lập VPS ban đầu hoặc tạo tệp này và chạy lại script. Điều này sẽ quản lý các thay đổi DNS và cập nhật thử thách một cách tự động.
 
-### Tên người dùng và mật khẩu xác thực cơ bản là gì {#what-is-the-basic-auth-username-and-password}
+### Tên đăng nhập và mật khẩu xác thực cơ bản là gì {#what-is-the-basic-auth-username-and-password}
 
-Đối với dịch vụ tự lưu trữ, chúng tôi thêm một cửa sổ bật lên xác thực gốc trên trình duyệt lần đầu với tên người dùng đơn giản (`admin`) và mật khẩu (được tạo ngẫu nhiên khi thiết lập ban đầu). Chúng tôi chỉ thêm điều này như một biện pháp bảo vệ trong trường hợp tự động hóa/trình thu thập dữ liệu nào đó đánh bại bạn trong việc đăng ký trải nghiệm web đầu tiên. Bạn có thể tìm thấy mật khẩu này sau khi thiết lập ban đầu trong tệp `.env` của mình tại `AUTH_BASIC_USERNAME` và `AUTH_BASIC_PASSWORD`.
+Đối với tự lưu trữ, chúng tôi thêm một cửa sổ xác thực gốc trình duyệt lần đầu với tên đăng nhập đơn giản (`admin`) và mật khẩu (được tạo ngẫu nhiên khi thiết lập ban đầu). Chúng tôi chỉ thêm điều này như một biện pháp bảo vệ trong trường hợp tự động hóa / trình thu thập dữ liệu nào đó đăng ký trước bạn trên trải nghiệm web. Bạn có thể tìm mật khẩu này sau khi thiết lập ban đầu trong tệp `.env` dưới `AUTH_BASIC_USERNAME` và `AUTH_BASIC_PASSWORD`.
 
-### Làm sao tôi biết được {#how-do-i-know-what-is-running} đang chạy cái gì
+### Làm sao tôi biết cái gì đang chạy {#how-do-i-know-what-is-running}
 
-Bạn có thể chạy lệnh `docker ps` để xem tất cả các container đang chạy được tạo từ tệp `docker-compose-self-hosting.yml`. Bạn cũng có thể chạy lệnh `docker ps -a` để xem tất cả (bao gồm cả các container không chạy).
+Bạn có thể chạy `docker ps` để xem tất cả các container đang chạy được khởi tạo từ tệp `docker-compose-self-hosting.yml`. Bạn cũng có thể chạy `docker ps -a` để xem tất cả (bao gồm cả các container không chạy).
 
-### Làm sao tôi biết được có thứ gì đó không chạy trong khi nó phải là {#how-do-i-know-if-something-isnt-running-that-should-be}
+### Làm sao tôi biết nếu có thứ gì đó không chạy mà lẽ ra phải chạy {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-Bạn có thể chạy lệnh `docker ps -a` để xem mọi thứ (bao gồm cả các container không chạy). Bạn có thể thấy nhật ký thoát hoặc ghi chú.
+Bạn có thể chạy `docker ps -a` để xem tất cả (bao gồm cả các container không chạy). Bạn có thể thấy một nhật ký thoát hoặc ghi chú.
 
-### Làm thế nào để tìm nhật ký {#how-do-i-find-logs}
+### Làm sao tôi tìm nhật ký {#how-do-i-find-logs}
 
-Bạn có thể lấy thêm nhật ký qua `docker logs -f <container_name>`. Nếu có bất kỳ lỗi nào xảy ra, có thể liên quan đến việc tệp `.env` được cấu hình không chính xác.
+Bạn có thể lấy thêm nhật ký qua `docker logs -f <container_name>`. Nếu có container nào thoát, rất có thể liên quan đến việc cấu hình tệp `.env` không chính xác.
 
-Trong giao diện người dùng web, bạn có thể xem `/admin/emails` và `/admin/logs` cho nhật ký email gửi đi và nhật ký lỗi tương ứng.
+Trong giao diện web, bạn có thể xem `/admin/emails` và `/admin/logs` để xem nhật ký email gửi đi và nhật ký lỗi tương ứng.
 
-### Tại sao email gửi đi của tôi lại hết thời gian chờ {#why-are-my-outgoing-emails-timing-out}
+### Tại sao email gửi đi của tôi bị hết thời gian chờ {#why-are-my-outgoing-emails-timing-out}
 
-Nếu bạn thấy thông báo "Kết nối đã hết thời gian chờ" khi kết nối với máy chủ MX... thì có thể bạn cần kiểm tra xem cổng 25 có bị chặn hay không. Các nhà cung cấp dịch vụ Internet (ISP) hoặc nhà cung cấp dịch vụ đám mây thường mặc định chặn cổng này, do đó bạn có thể cần liên hệ với bộ phận hỗ trợ/gửi yêu cầu để mở cổng này.
+Nếu bạn thấy thông báo như Connection timed out when connecting to MX server... thì bạn có thể cần kiểm tra xem cổng 25 có bị chặn không. Nhà cung cấp dịch vụ Internet hoặc nhà cung cấp đám mây thường chặn cổng này theo mặc định, bạn có thể cần liên hệ bộ phận hỗ trợ / gửi yêu cầu để mở cổng này.
 
-#### Tôi nên sử dụng công cụ nào để kiểm tra các biện pháp thực hành tốt nhất về cấu hình email và danh tiếng IP {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### Tôi nên sử dụng công cụ nào để kiểm tra cấu hình email theo thực tiễn tốt nhất và uy tín IP {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-Hãy xem [Câu hỏi thường gặp ở đây](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation) của chúng tôi.
+Hãy xem qua [Câu hỏi thường gặp của chúng tôi ở đây](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).

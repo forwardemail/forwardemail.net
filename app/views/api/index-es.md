@@ -1,59 +1,63 @@
-# API de correo electrónico {#email-api}
+# API de Email {#email-api}
 
-## Tabla de contenido {#table-of-contents}
+
+## Tabla de Contenidos {#table-of-contents}
 
 * [Bibliotecas](#libraries)
-* [URI base](#base-uri)
+* [URI Base](#base-uri)
 * [Autenticación](#authentication)
+  * [Autenticación con Token API (Recomendado para la mayoría de los endpoints)](#api-token-authentication-recommended-for-most-endpoints)
+  * [Autenticación con Credenciales de Alias (Para correo saliente)](#alias-credentials-authentication-for-outbound-email)
+  * [Endpoints Solo Alias](#alias-only-endpoints)
 * [Errores](#errors)
 * [Localización](#localization)
 * [Paginación](#pagination)
 * [Registros](#logs)
   * [Recuperar registros](#retrieve-logs)
 * [Cuenta](#account)
-  * [Crear una cuenta](#create-account)
+  * [Crear cuenta](#create-account)
   * [Recuperar cuenta](#retrieve-account)
   * [Actualizar cuenta](#update-account)
-* [Contactos de alias (CardDAV)](#alias-contacts-carddav)
-  * [Lista de contactos](#list-contacts)
+* [Contactos de Alias (CardDAV)](#alias-contacts-carddav)
+  * [Listar contactos](#list-contacts)
   * [Crear contacto](#create-contact)
   * [Recuperar contacto](#retrieve-contact)
   * [Actualizar contacto](#update-contact)
   * [Eliminar contacto](#delete-contact)
-* [Calendarios de alias (CalDAV)](#alias-calendars-caldav)
-  * [Lista de calendarios](#list-calendars)
+* [Calendarios de Alias (CalDAV)](#alias-calendars-caldav)
+  * [Listar calendarios](#list-calendars)
   * [Crear calendario](#create-calendar)
   * [Recuperar calendario](#retrieve-calendar)
   * [Actualizar calendario](#update-calendar)
   * [Eliminar calendario](#delete-calendar)
-* [Mensajes de alias (IMAP/POP3)](#alias-messages-imappop3)
-  * [Listado y búsqueda de mensajes](#list-and-search-for-messages)
+* [Mensajes de Alias (IMAP/POP3)](#alias-messages-imappop3)
+  * [Listar y buscar mensajes](#list-and-search-for-messages)
   * [Crear mensaje](#create-message)
   * [Recuperar mensaje](#retrieve-message)
-  * [Mensaje de actualización](#update-message)
+  * [Actualizar mensaje](#update-message)
   * [Eliminar mensaje](#delete-message)
-* [Carpetas de alias (IMAP/POP3)](#alias-folders-imappop3)
-  * [Lista de carpetas](#list-folders)
+* [Carpetas de Alias (IMAP/POP3)](#alias-folders-imappop3)
+  * [Listar carpetas](#list-folders)
   * [Crear carpeta](#create-folder)
   * [Recuperar carpeta](#retrieve-folder)
   * [Actualizar carpeta](#update-folder)
   * [Eliminar carpeta](#delete-folder)
   * [Copiar carpeta](#copy-folder)
-* [Correos electrónicos salientes](#outbound-emails)
-  * [Obtener el límite de correo electrónico SMTP saliente](#get-outbound-smtp-email-limit)
-  * [Lista de correos electrónicos SMTP salientes](#list-outbound-smtp-emails)
-  * [Crear correo electrónico SMTP saliente](#create-outbound-smtp-email)
-  * [Recuperar correo electrónico SMTP saliente](#retrieve-outbound-smtp-email)
-  * [Eliminar correo electrónico SMTP saliente](#delete-outbound-smtp-email)
+* [Correos Salientes](#outbound-emails)
+  * [Obtener límite de correos SMTP salientes](#get-outbound-smtp-email-limit)
+  * [Listar correos SMTP salientes](#list-outbound-smtp-emails)
+  * [Crear correo SMTP saliente](#create-outbound-smtp-email)
+  * [Recuperar correo SMTP saliente](#retrieve-outbound-smtp-email)
+  * [Eliminar correo SMTP saliente](#delete-outbound-smtp-email)
 * [Dominios](#domains)
-  * [Lista de dominios](#list-domains)
+  * [Listar dominios](#list-domains)
   * [Crear dominio](#create-domain)
   * [Recuperar dominio](#retrieve-domain)
   * [Verificar registros de dominio](#verify-domain-records)
-  * [Verificar los registros SMTP del dominio](#verify-domain-smtp-records)
-  * [Lista de contraseñas generales para todo el dominio](#list-domain-wide-catch-all-passwords)
-  * [Crear una contraseña general para todo el dominio](#create-domain-wide-catch-all-password)
-  * [Eliminar la contraseña general de todo el dominio](#remove-domain-wide-catch-all-password)
+  * [Verificar registros SMTP de dominio](#verify-domain-smtp-records)
+  * [Listar contraseñas catch-all a nivel de dominio](#list-domain-wide-catch-all-passwords)
+  * [Crear contraseña catch-all a nivel de dominio](#create-domain-wide-catch-all-password)
+  * [Eliminar contraseña catch-all a nivel de dominio](#remove-domain-wide-catch-all-password)
   * [Actualizar dominio](#update-domain)
   * [Eliminar dominio](#delete-domain)
 * [Invitaciones](#invites)
@@ -61,94 +65,125 @@
   * [Crear invitación de dominio](#create-domain-invite)
   * [Eliminar invitación de dominio](#remove-domain-invite)
 * [Miembros](#members)
-  * [Actualizar miembro del dominio](#update-domain-member)
-  * [Eliminar miembro del dominio](#remove-domain-member)
-* [Alias](#aliases)
-  * [Generar una contraseña de alias](#generate-an-alias-password)
-  * [Lista de alias de dominio](#list-domain-aliases)
-  * [Crear un nuevo alias de dominio](#create-new-domain-alias)
+  * [Actualizar miembro de dominio](#update-domain-member)
+  * [Eliminar miembro de dominio](#remove-domain-member)
+* [Aliases](#aliases)
+  * [Generar una contraseña para alias](#generate-an-alias-password)
+  * [Listar aliases de dominio](#list-domain-aliases)
+  * [Crear nuevo alias de dominio](#create-new-domain-alias)
   * [Recuperar alias de dominio](#retrieve-domain-alias)
-  * [Actualizar el alias del dominio](#update-domain-alias)
+  * [Actualizar alias de dominio](#update-domain-alias)
   * [Eliminar alias de dominio](#delete-domain-alias)
 * [Encriptar](#encrypt)
-  * [Cifrar registro TXT](#encrypt-txt-record)
+  * [Encriptar Registro TXT](#encrypt-txt-record)
+
 
 ## Bibliotecas {#libraries}
 
-Todavía no hemos publicado ningún contenedor de API, pero planeamos hacerlo próximamente. Envíe un correo electrónico a <api@forwardemail.net> si desea recibir notificaciones cuando se publique el contenedor de API de un lenguaje de programación en particular. Mientras tanto, puede usar estas bibliotecas de solicitudes HTTP recomendadas en su aplicación o simplemente usar [rizo](https://stackoverflow.com/a/27442239/3586413) como en los ejemplos a continuación.
+Por ahora no hemos lanzado ningún wrapper de API, pero planeamos hacerlo en un futuro cercano. Envía un correo a <api@forwardemail.net> si deseas ser notificado cuando se lance el wrapper de API para un lenguaje de programación en particular. Mientras tanto, puedes usar estas bibliotecas recomendadas para solicitudes HTTP en tu aplicación, o simplemente usar [curl](https://stackoverflow.com/a/27442239/3586413) como en los ejemplos a continuación.
 
-| Idioma | Biblioteca |
-| ---------- | ---------------------------------------------------------------------- |
-| Rubí | [Faraday](https://github.com/lostisland/faraday) |
-| Pitón | [requests](https://github.com/psf/requests) |
-| Java | [OkHttp](https://github.com/square/okhttp/) |
-| PHP | [guzzle](https://github.com/guzzle/guzzle) |
-| JavaScript | [superagent](https://github.com/ladjs/superagent) (somos mantenedores) |
-| Node.js | [superagent](https://github.com/ladjs/superagent) (somos mantenedores) |
-| Ir | [net/http](https://golang.org/pkg/net/http/) |
-| .NET | [RestSharp](https://github.com/restsharp/RestSharp) |
+| Lenguaje  | Biblioteca                                                             |
+| --------- | --------------------------------------------------------------------- |
+| Ruby      | [Faraday](https://github.com/lostisland/faraday)                      |
+| Python    | [requests](https://github.com/psf/requests)                           |
+| Java      | [OkHttp](https://github.com/square/okhttp/)                           |
+| PHP       | [guzzle](https://github.com/guzzle/guzzle)                            |
+| JavaScript| [superagent](https://github.com/ladjs/superagent) (somos mantenedores)|
+| Node.js   | [superagent](https://github.com/ladjs/superagent) (somos mantenedores)|
+| Go        | [net/http](https://golang.org/pkg/net/http/)                          |
+| .NET      | [RestSharp](https://github.com/restsharp/RestSharp)                   |
+## Base URI {#base-uri}
 
-## URI base {#base-uri}
+La ruta base HTTP actual es: `BASE_URI`.
 
-La ruta URI base HTTP actual es: `BASE_URI`.
 
 ## Autenticación {#authentication}
 
-Todos los puntos finales requieren que su [Clave API](https://forwardemail.net/my-account/security) se configure como el valor de "nombre de usuario" del encabezado [Autorización básica](https://en.wikipedia.org/wiki/Basic_access_authentication) de la solicitud (con la excepción de [Contactos de alias](#alias-contacts), [Calendarios de alias](#alias-calendars) y [Buzones de alias](#alias-mailboxes) que usan un [nombre de usuario y contraseña alias generados](/faq#do-you-support-receiving-email-with-imap)).
+Todos los endpoints requieren autenticación usando [Autorización Básica](https://en.wikipedia.org/wiki/Basic_access_authentication). Soportamos dos métodos de autenticación:
 
-No te preocupes, a continuación te proporcionamos ejemplos si no estás seguro de qué es esto.
+### Autenticación con Token API (Recomendado para la mayoría de los endpoints) {#api-token-authentication-recommended-for-most-endpoints}
+
+Establece tu [clave API](https://forwardemail.net/my-account/security) como el valor "usuario" con una contraseña vacía:
+
+```sh
+curl BASE_URI/v1/account \
+  -u API_TOKEN:
+```
+
+Nota el dos puntos (`:`) después del token API – esto indica una contraseña vacía en formato de Autenticación Básica.
+
+### Autenticación con Credenciales de Alias (Para correo saliente) {#alias-credentials-authentication-for-outbound-email}
+
+El endpoint [Crear correo SMTP saliente](#create-outbound-smtp-email) también soporta autenticación usando tu dirección de correo alias y una [contraseña de alias generada](/faq#do-you-support-receiving-email-with-imap):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@yourdomain.com:your_generated_password" \
+  -d "to=recipient@example.com" \
+  -d "subject=Hola" \
+  -d "text=Correo de prueba"
+```
+
+Este método es útil cuando se envían correos desde aplicaciones que ya usan credenciales SMTP y facilita la migración de SMTP a nuestra API sin problemas.
+
+### Endpoints Solo para Alias {#alias-only-endpoints}
+
+Los endpoints [Contactos de Alias](#alias-contacts-carddav), [Calendarios de Alias](#alias-calendars-caldav), [Mensajes de Alias](#alias-messages-imappop3) y [Carpetas de Alias](#alias-folders-imappop3) requieren credenciales de alias y no soportan autenticación con token API.
+
+No te preocupes – a continuación se proporcionan ejemplos para ti si no estás seguro de qué es esto.
+
 
 ## Errores {#errors}
 
-Si ocurre algún error, el cuerpo de respuesta de la solicitud de API contendrá un mensaje de error detallado.
+Si ocurre algún error, el cuerpo de la respuesta de la solicitud API contendrá un mensaje de error detallado.
 
-| Código | Nombre |
-| ---- | --------------------- |
-| 200 | OK |
-| 400 | Solicitud incorrecta |
-| 401 | No autorizado |
-| 403 | Prohibido |
-| 404 | Extraviado |
-| 429 | Demasiadas solicitudes |
-| 500 | Error Interno del Servidor |
-| 501 | No implementado |
-| 502 | Puerta de enlace defectuosa |
-| 503 | Servicio No Disponible |
-| 504 | Tiempo de espera de la puerta de enlace |
+| Código | Nombre                |
+| ------ | --------------------- |
+| 200    | OK                    |
+| 400    | Solicitud Incorrecta  |
+| 401    | No Autorizado         |
+| 403    | Prohibido             |
+| 404    | No Encontrado         |
+| 429    | Demasiadas Solicitudes|
+| 500    | Error Interno del Servidor |
+| 501    | No Implementado       |
+| 502    | Puerta de Enlace Incorrecta |
+| 503    | Servicio No Disponible|
+| 504    | Tiempo de Espera de Puerta de Enlace Agotado |
 
 > \[!TIP]
-> Si recibe un código de estado 5xx (lo cual no debería ocurrir), contáctenos a <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> y le ayudaremos a resolver su problema de inmediato.
+> Si recibes un código de estado 5xx (lo cual no debería ocurrir), por favor contáctanos en <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> y te ayudaremos a resolver tu problema inmediatamente.
+
 
 ## Localización {#localization}
 
-Nuestro servicio está traducido a más de 25 idiomas. Todos los mensajes de respuesta de la API se traducen a la última configuración regional detectada del usuario que realizó la solicitud. Puede anular esta configuración pasando un encabezado `Accept-Language` personalizado. Pruébelo en el menú desplegable de idiomas al final de esta página.
+Nuestro servicio está traducido a más de 25 idiomas diferentes. Todos los mensajes de respuesta de la API se traducen al último idioma detectado del usuario que realiza la solicitud API. Puedes sobrescribir esto pasando un encabezado `Accept-Language` personalizado. Siéntete libre de probarlo usando el selector de idioma en la parte inferior de esta página.
+
 
 ## Paginación {#pagination}
 
 > \[!NOTE]
-> A partir del 1 de noviembre de 2024, los puntos de conexión de la API para [Lista de dominios](#list-domains) y [Lista de alias de dominio](#list-domain-aliases) tendrán como valor predeterminado `1000`, el máximo de resultados por página. Si desea activar este comportamiento anticipadamente, puede pasar `?paginate=true` como parámetro de cadena de consulta adicional a la URL de la consulta del punto de conexión.
+> A partir del 1 de noviembre de 2024, los endpoints de API para [Listar dominios](#list-domains) y [Listar alias de dominio](#list-domain-aliases) tendrán por defecto un máximo de `1000` resultados por página. Si deseas optar por este comportamiento antes, puedes pasar `?paginate=true` como un parámetro adicional en la cadena de consulta de la URL para la consulta del endpoint.
 
-La paginación es compatible con todos los puntos finales de API que enumeran resultados.
+La paginación es soportada por todos los endpoints de API que listan resultados.
 
-Simplemente proporcione las propiedades de la cadena de consulta `page` (y opcionalmente `limit`).
+Simplemente proporciona las propiedades en la cadena de consulta `page` (y opcionalmente `limit`).
 
-La propiedad `page` debe ser un número mayor o igual que `1`. Si proporciona `limit` (también un número), el valor mínimo será `10` y el máximo será `50` (a menos que se indique lo contrario).
+La propiedad `page` debe ser un número mayor o igual a `1`. Si proporcionas `limit` (también un número), el valor mínimo es `10` y el máximo es `50` (a menos que se indique lo contrario).
 
-| Parámetros de la cadena de consulta | Requerido | Tipo | Descripción |
-| --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `page` | No | Número | Página de resultados a devolver. Si no se especifica, el valor de `page` será `1`. Debe ser un número mayor o igual que `1`. |
-| `limit` | No | Número | Número de resultados que se devolverán por página. El valor predeterminado es `10` si no se especifica. Debe ser un número mayor o igual a `1` y menor o igual a `50`. |
-
+| Parámetro en la cadena de consulta | Requerido | Tipo   | Descripción                                                                                                                                               |
+| --------------------------------- | --------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `page`                            | No        | Número | Página de resultados a devolver. Si no se especifica, el valor de `page` será `1`. Debe ser un número mayor o igual a `1`.                               |
+| `limit`                           | No        | Número | Número de resultados a devolver por página. Por defecto es `10` si no se especifica. Debe ser un número mayor o igual a `1`, y menor o igual a `50`.      |
 Para determinar si hay más resultados disponibles o no, proporcionamos estos encabezados de respuesta HTTP (que puede analizar para paginar programáticamente):
 
-| Encabezado de respuesta HTTP | Ejemplo | Descripción |
+| HTTP Response Header | Ejemplo                                                                                                                                                                                                                                                  | Descripción                                                                                                                                                                                                                                                                                                                                                        |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `X-Page-Count` | `X-Page-Count: 3` | El número total de páginas disponibles. |
-| `X-Page-Current` | `X-Page-Current: 1` | La página actual de resultados devueltos (por ejemplo, según el parámetro de cadena de consulta `page`). |
-| `X-Page-Size` | `X-Page-Size: 10` | La cantidad total de resultados devueltos en la página (por ejemplo, según el parámetro de cadena de consulta `limit` y los resultados reales devueltos). |
-| `X-Item-Count` | `X-Item-Count: 30` | El número total de elementos disponibles en todas las páginas. |
-| `Link` | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | Proporcionamos un encabezado de respuesta HTTP `Link` que puede analizar como se muestra en el ejemplo. Este es [similar to GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (p. ej., no se proporcionarán todos los valores si no son relevantes o no están disponibles; p. ej., `"next"` no se proporcionará si no hay otra página). |
-
+| `X-Page-Count`       | `X-Page-Count: 3`                                                                                                                                                                                                                                        | El recuento total de páginas disponibles.                                                                                                                                                                                                                                                                                                                        |
+| `X-Page-Current`     | `X-Page-Current: 1`                                                                                                                                                                                                                                      | La página actual de resultados devuelta (por ejemplo, basada en el parámetro de cadena de consulta `page`).                                                                                                                                                                                                                                                      |
+| `X-Page-Size`        | `X-Page-Size: 10`                                                                                                                                                                                                                                        | El número total de resultados en la página devuelta (por ejemplo, basado en el parámetro de cadena de consulta `limit` y los resultados reales devueltos).                                                                                                                                                                                                       |
+| `X-Item-Count`       | `X-Item-Count: 30`                                                                                                                                                                                                                                       | El número total de elementos disponibles en todas las páginas.                                                                                                                                                                                                                                                                                                  |
+| `Link`               | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | Proporcionamos un encabezado de respuesta HTTP `Link` que puede analizar como se muestra en el ejemplo. Esto es [similar a GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (por ejemplo, no se proporcionarán todos los valores si no son relevantes o no están disponibles, por ejemplo, `"next"` no se proporcionará si no hay otra página). |
 > Ejemplo de solicitud:
 
 ```sh
@@ -156,24 +191,25 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
+
 ## Registros {#logs}
 
 ### Recuperar registros {#retrieve-logs}
 
-Nuestra API le permite descargar los registros de su cuenta de forma programática. Al enviar una solicitud a este punto final, se procesarán todos los registros de su cuenta y se los enviaremos por correo electrónico como archivo adjunto (archivo de hoja de cálculo comprimido [Gzip](https://en.wikipedia.org/wiki/Gzip) [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) una vez completados.
+Nuestra API permite programáticamente descargar registros para su cuenta. Enviar una solicitud a este endpoint procesará todos los registros de su cuenta y se los enviará por correo electrónico como un archivo adjunto (hoja de cálculo [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) comprimida con [Gzip](https://en.wikipedia.org/wiki/Gzip)) una vez completado.
 
-Esto le permite crear trabajos en segundo plano con un [Trabajo cron](https://en.wikipedia.org/wiki/Cron) o usar nuestro [Software de programación de tareas Node.js Bree](https://github.com/breejs/bree) para recibir registros cuando lo desee. Tenga en cuenta que este punto final está limitado a `10` solicitudes por día.
+Esto le permite crear trabajos en segundo plano con un [trabajo Cron](https://en.wikipedia.org/wiki/Cron) o usando nuestro [software de programación de trabajos Node.js Bree](https://github.com/breejs/bree) para recibir registros cuando lo desee. Tenga en cuenta que este endpoint está limitado a `10` solicitudes por día.
 
-El archivo adjunto es `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` en minúsculas y el correo electrónico contiene un breve resumen de los registros recuperados. También puede descargar los registros en cualquier momento desde [Mi cuenta → Registros](/my-account/logs).
+El archivo adjunto tiene el formato en minúsculas `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` y el correo electrónico contiene un breve resumen de los registros recuperados. También puede descargar registros en cualquier momento desde [Mi Cuenta → Registros](/my-account/logs)
 
 > `GET /v1/logs/download`
 
-| Parámetros de la cadena de consulta | Requerido | Tipo | Descripción |
-| --------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | No | Cadena (FQDN) | Filtrar registros por dominio completo ("FQDN"). Si no lo proporciona, se recuperarán todos los registros de todos los dominios. |
-| `q` | No | Cadena | Busque registros por correo electrónico, dominio, nombre de alias, dirección IP o fecha (formato `M/Y`, `M/D/YY`, `M-D`, `M-D-YY` o `M.D.YY`). |
-| `bounce_category` | No | Cadena | Busque registros por una categoría de rebote específica (por ejemplo, `blocklist`). |
-| `response_code` | No | Número | Busque registros por un código de respuesta de error específico (por ejemplo, `421` o `550`). |
+| Parámetro de consulta | Obligatorio | Tipo          | Descripción                                                                                                                     |
+| --------------------- | ----------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`              | No          | String (FQDN) | Filtrar registros por dominio completamente calificado ("FQDN"). Si no lo proporciona, se recuperarán todos los registros de todos los dominios. |
+| `q`                   | No          | String        | Buscar registros por correo electrónico, dominio, nombre de alias, dirección IP o fecha (formato `M/Y`, `M/D/YY`, `M-D`, `M-D-YY` o `M.D.YY`).       |
+| `bounce_category`     | No          | String        | Buscar registros por una categoría específica de rebote (por ejemplo, `blocklist`).                                                               |
+| `response_code`       | No          | Number        | Buscar registros por un código de respuesta de error específico (por ejemplo, `421` o `550`).                                                        |
 
 > Ejemplo de solicitud:
 
@@ -188,7 +224,7 @@ curl BASE_URI/v1/logs/download \
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-Tenga en cuenta que puede utilizar servicios como [Crontab.guru](https://crontab.guru/) para validar la sintaxis de la expresión de su trabajo cron.
+Tenga en cuenta que puede usar servicios como [Crontab.guru](https://crontab.guru/) para validar la sintaxis de su expresión de trabajo cron.
 
 > Ejemplo de trabajo Cron (a medianoche todos los días **y con registros del día anterior**):
 
@@ -204,16 +240,17 @@ Para Linux y Ubuntu:
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date --date "-1 days" -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
+
 ## Cuenta {#account}
 
 ### Crear cuenta {#create-account}
 
 > `POST /v1/account`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| -------------- | -------- | -------------- | ------------- |
-| `email` | Sí | Cadena (correo electrónico) | Dirección de correo electrónico |
-| `password` | Sí | Cadena | Contraseña |
+| Parámetro del cuerpo | Obligatorio | Tipo           | Descripción    |
+| -------------------- | ----------- | -------------- | -------------- |
+| `email`              | Sí          | String (Email) | Dirección de correo electrónico |
+| `password`           | Sí          | String         | Contraseña     |
 
 > Ejemplo de solicitud:
 
@@ -238,12 +275,12 @@ curl BASE_URI/v1/account \
 
 > `PUT /v1/account`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| -------------- | -------- | -------------- | -------------------- |
-| `email` | No | Cadena (correo electrónico) | Dirección de correo electrónico |
-| `given_name` | No | Cadena | Nombre de pila |
-| `family_name` | No | Cadena | Apellido |
-| `avatar_url` | No | Cadena (URL) | Enlace a la imagen del avatar |
+| Parámetro del cuerpo | Obligatorio | Tipo           | Descripción          |
+| -------------------- | ----------- | -------------- | -------------------- |
+| `email`              | No          | String (Email) | Dirección de correo electrónico |
+| `given_name`         | No          | String         | Nombre               |
+| `family_name`        | No          | String         | Apellido             |
+| `avatar_url`         | No          | String (URL)   | Enlace a la imagen del avatar |
 
 > Ejemplo de solicitud:
 
@@ -253,180 +290,183 @@ curl -X PUT BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
+
 ## Contactos de alias (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> A diferencia de otros puntos finales de API, estos requieren [Autenticación](#authentication) "nombre de usuario" igual al nombre de usuario del alias y "contraseña" igual a la contraseña generada por el alias como encabezados de autorización básica.
-
+> A diferencia de otros endpoints de la API, estos requieren que la [Autenticación](#authentication) tenga el "nombre de usuario" igual al nombre de usuario del alias y la "contraseña" igual a la contraseña generada del alias como encabezados de autorización básica.
 > \[!WARNING]
-> Esta sección de punto final está en desarrollo y se lanzará (con suerte) en 2024. Mientras tanto, utilice un cliente IMAP del menú desplegable "Aplicaciones" en la navegación de nuestro sitio web.
+> Esta sección de endpoints está en desarrollo y se lanzará (esperemos) en 2024. Mientras tanto, por favor use un cliente IMAP desde el menú desplegable "Apps" en la navegación de nuestro sitio web.
 
-### Lista de contactos {#list-contacts}
+### Listar contactos {#list-contacts}
 
 > `GET /v1/contacts`
 
-**Muy pronto**
+**Próximamente**
 
 ### Crear contacto {#create-contact}
 
 > `POST /v1/contacts`
 
-**Muy pronto**
+**Próximamente**
 
 ### Recuperar contacto {#retrieve-contact}
 
 > `GET /v1/contacts/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Actualizar contacto {#update-contact}
 
 > `PUT /v1/contacts/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Eliminar contacto {#delete-contact}
 
 > `DELETE /v1/contacts/:id`
 
-**Muy pronto**
+**Próximamente**
 
-## Alias Calendarios (CalDAV) {#alias-calendars-caldav}
+
+## Calendarios Alias (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> A diferencia de otros puntos finales de API, estos requieren [Autenticación](#authentication) "nombre de usuario" igual al nombre de usuario del alias y "contraseña" igual a la contraseña generada por el alias como encabezados de autorización básica.
+> A diferencia de otros endpoints de la API, estos requieren que la [Autenticación](#authentication) tenga el "nombre de usuario" igual al nombre de usuario del alias y la "contraseña" igual a la contraseña generada para el alias como encabezados de Autorización Básica.
 
 > \[!WARNING]
-> Esta sección de punto final está en desarrollo y se lanzará (con suerte) en 2024. Mientras tanto, utilice un cliente IMAP del menú desplegable "Aplicaciones" en la navegación de nuestro sitio web.
+> Esta sección de endpoints está en desarrollo y se lanzará (esperemos) en 2024. Mientras tanto, por favor use un cliente IMAP desde el menú desplegable "Apps" en la navegación de nuestro sitio web.
 
-### Lista de calendarios {#list-calendars}
+### Listar calendarios {#list-calendars}
 
 > `GET /v1/calendars`
 
-**Muy pronto**
+**Próximamente**
 
 ### Crear calendario {#create-calendar}
 
 > `POST /v1/calendars`
 
-**Muy pronto**
+**Próximamente**
 
 ### Recuperar calendario {#retrieve-calendar}
 
 > `GET /v1/calendars/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Actualizar calendario {#update-calendar}
 
 > `PUT /v1/calendars/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Eliminar calendario {#delete-calendar}
 
 > `DELETE /v1/calendars/:id`
 
-**Muy pronto**
+**Próximamente**
 
-## Mensajes de alias (IMAP/POP3) {#alias-messages-imappop3}
+
+## Mensajes Alias (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> A diferencia de otros puntos finales de API, estos requieren [Autenticación](#authentication) "nombre de usuario" igual al nombre de usuario del alias y "contraseña" igual a la contraseña generada por el alias como encabezados de autorización básica.
+> A diferencia de otros endpoints de la API, estos requieren que la [Autenticación](#authentication) tenga el "nombre de usuario" igual al nombre de usuario del alias y la "contraseña" igual a la contraseña generada para el alias como encabezados de Autorización Básica.
 
 > \[!WARNING]
-> Esta sección de punto final está en desarrollo y se lanzará (con suerte) en 2024. Mientras tanto, utilice un cliente IMAP del menú desplegable "Aplicaciones" en la navegación de nuestro sitio web.
+> Esta sección de endpoints está en desarrollo y se lanzará (esperemos) en 2024. Mientras tanto, por favor use un cliente IMAP desde el menú desplegable "Apps" en la navegación de nuestro sitio web.
 
-Asegúrese de haber seguido las instrucciones de configuración para su dominio.
+Por favor asegúrese de haber seguido las instrucciones de configuración para su dominio.
 
-Estas instrucciones se pueden encontrar en nuestra sección de preguntas frecuentes [¿Es compatible la recepción de correo electrónico con IMAP?](/faq#do-you-support-receiving-email-with-imap).
+Estas instrucciones se pueden encontrar en nuestra sección de FAQ [¿Soportan recibir correo electrónico con IMAP?](/faq#do-you-support-receiving-email-with-imap).
 
 ### Listar y buscar mensajes {#list-and-search-for-messages}
 
 > `GET /v1/messages`
 
-**Muy pronto**
+**Próximamente**
 
 ### Crear mensaje {#create-message}
 
 > \[!NOTE]
-> Esto **NO** enviará un correo electrónico; simplemente añadirá el mensaje a su carpeta de correo (por ejemplo, es similar al comando IMAP `APPEND`). Si desea enviar un correo electrónico, consulte [Crear correo electrónico SMTP saliente](#create-outbound-smtp-email) a continuación. Después de crear el correo SMTP saliente, puede adjuntar una copia usando este punto final al buzón de su alias para fines de almacenamiento.
+> Esto **NO** enviará un correo electrónico – solo añadirá el mensaje a la carpeta de su buzón (por ejemplo, esto es similar al comando IMAP `APPEND`). Si desea enviar un correo electrónico, consulte [Crear correo SMTP saliente](#create-outbound-smtp-email) a continuación. Después de crear el correo SMTP saliente, puede añadir una copia usando este endpoint a su buzón de alias para fines de almacenamiento.
 
 > `POST /v1/messages`
 
-**Muy pronto**
+**Próximamente**
 
 ### Recuperar mensaje {#retrieve-message}
 
 > `GET /v1/messages/:id`
 
-**Muy pronto**
+**Próximamente**
 
-### Mensaje de actualización {#update-message}
+### Actualizar mensaje {#update-message}
 
 > `PUT /v1/messages/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Eliminar mensaje {#delete-message}
 
 > `DELETE /v1/messages:id`
 
-**Muy pronto**
+**Próximamente**
 
-## Carpetas de alias (IMAP/POP3) {#alias-folders-imappop3}
+
+## Carpetas Alias (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Los puntos finales de carpeta con la ruta <code>/v1/folders/:path</code> como punto final son intercambiables con el ID de carpeta <code>:id</code>. Esto significa que puede referirse a la carpeta por su valor <code>path</code> o <code>id</code>.
+> Los endpoints de carpetas con la ruta de carpeta <code>/v1/folders/:path</code> como su endpoint son intercambiables con el ID de la carpeta <code>:id</code>. Esto significa que puede referirse a la carpeta por su <code>path</code> o por su valor <code>id</code>.
 
 > \[!WARNING]
-> Esta sección de punto final está en desarrollo y se lanzará (con suerte) en 2024. Mientras tanto, utilice un cliente IMAP del menú desplegable "Aplicaciones" en la navegación de nuestro sitio web.
+> Esta sección de endpoints está en desarrollo y se lanzará (esperemos) en 2024. Mientras tanto, por favor use un cliente IMAP desde el menú desplegable "Apps" en la navegación de nuestro sitio web.
 
-### Lista de carpetas {#list-folders}
+### Listar carpetas {#list-folders}
 
 > `GET /v1/folders`
 
-**Muy pronto**
+**Próximamente**
 
 ### Crear carpeta {#create-folder}
 
 > `POST /v1/folders`
 
-**Muy pronto**
+**Próximamente**
 
 ### Recuperar carpeta {#retrieve-folder}
 
 > `GET /v1/folders/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Actualizar carpeta {#update-folder}
 
 > `PUT /v1/folders/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Eliminar carpeta {#delete-folder}
 
 > `DELETE /v1/folders/:id`
 
-**Muy pronto**
+**Próximamente**
 
 ### Copiar carpeta {#copy-folder}
 
 > `POST /v1/folders/:id/copy`
 
-**Muy pronto**
+**Próximamente**
 
-## Correos electrónicos salientes {#outbound-emails}
 
-Asegúrese de haber seguido las instrucciones de configuración para su dominio.
+## Correos Salientes {#outbound-emails}
 
-Estas instrucciones se encuentran en [Mi cuenta → Dominios → Configuración → Configuración SMTP saliente](/my-account/domains). Debe asegurarse de configurar DKIM, Return-Path y DMARC para enviar SMTP saliente con su dominio.
+Por favor asegúrese de haber seguido las instrucciones de configuración para su dominio.
 
-### Obtener el límite de correo electrónico SMTP saliente {#get-outbound-smtp-email-limit}
+Estas instrucciones se encuentran en [Mi Cuenta → Dominios → Configuración → Configuración SMTP Saliente](/my-account/domains). Debe asegurarse de configurar DKIM, Return-Path y DMARC para enviar SMTP saliente con su dominio.
+### Obtener límite de correo SMTP saliente {#get-outbound-smtp-email-limit}
 
-Este es un punto final simple que devuelve un objeto JSON que contiene `count` y `limit` para la cantidad de mensajes SMTP salientes diarios por cuenta.
+Este es un endpoint simple que devuelve un objeto JSON que contiene el `count` y `limit` para el número de mensajes SMTP salientes diarios por cuenta.
 
 > `GET /v1/emails/limit`
 
@@ -437,21 +477,21 @@ curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### Lista de correos electrónicos SMTP salientes {#list-outbound-smtp-emails}
+### Listar correos SMTP salientes {#list-outbound-smtp-emails}
 
-Tenga en cuenta que este punto final no devuelve valores de propiedad para `message`, `headers` ni `rejectedErrors` de un correo electrónico.
+Tenga en cuenta que este endpoint no devuelve los valores de las propiedades `message`, `headers` ni `rejectedErrors` de un correo.
 
-Para devolver esas propiedades y sus valores, utilice el punto final [Recuperar correo electrónico](#retrieve-email) con una ID de correo electrónico.
+Para devolver esas propiedades y sus valores, utilice el endpoint [Recuperar correo](#retrieve-email) con un ID de correo.
 
 > `GET /v1/emails`
 
-| Parámetros de la cadena de consulta | Requerido | Tipo | Descripción |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | No | Cadena (compatible con RegExp) | Buscar correos electrónicos por metadatos |
-| `domain` | No | Cadena (compatible con RegExp) | Buscar correos electrónicos por nombre de dominio |
-| `sort` | No | Cadena | Ordenar por un campo específico (anteponga un guion `-` para ordenar en sentido inverso). El valor predeterminado es `created_at` si no se configura. |
-| `page` | No | Número | Consulte [Pagination](#pagination) para obtener más información |
-| `limit` | No | Número | Consulte [Pagination](#pagination) para obtener más información |
+| Parámetro de consulta | Obligatorio | Tipo                      | Descripción                                                                                                                                      |
+| --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No          | String (RegExp soportado) | Buscar correos por metadatos                                                                                                                    |
+| `domain`              | No          | String (RegExp soportado) | Buscar correos por nombre de dominio                                                                                                           |
+| `sort`                | No          | String                    | Ordenar por un campo específico (prefijar con un guion simple `-` para ordenar en dirección inversa a ese campo). Por defecto es `created_at` si no se establece. |
+| `page`                | No          | Number                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
+| `limit`               | No          | Number                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
 
 > Ejemplo de solicitud:
 
@@ -460,58 +500,70 @@ curl BASE_URI/v1/emails?limit=1 \
   -u API_TOKEN:
 ```
 
-### Crear correo electrónico SMTP saliente {#create-outbound-smtp-email}
+### Crear correo SMTP saliente {#create-outbound-smtp-email}
 
-Nuestra API para crear un correo electrónico se inspira en la configuración de opciones de mensaje de Nodemailer y la aprovecha. Por favor, utilice [Configuración de mensajes de Nodemailer](https://nodemailer.com/message/) para todos los parámetros del cuerpo a continuación.
+Nuestra API para crear un correo está inspirada y aprovecha la configuración de opciones de mensaje de Nodemailer. Por favor, consulte la [configuración de mensaje de Nodemailer](https://nodemailer.com/message/) para todos los parámetros del cuerpo a continuación.
 
-Tenga en cuenta que, con la excepción de `envelope` y `dkim` (ya que las configuramos automáticamente), todas las opciones de Nodemailer son compatibles. Por seguridad, configuramos automáticamente las opciones `disableFileAccess` y `disableUrlAccess` en `true`.
+Tenga en cuenta que, con la excepción de `envelope` y `dkim` (ya que los configuramos automáticamente por usted), soportamos todas las opciones de Nodemailer. Automáticamente configuramos las opciones `disableFileAccess` y `disableUrlAccess` a `true` por razones de seguridad.
 
-Debes pasar la opción única de `raw` con tu correo electrónico completo sin procesar, incluidos los encabezados **o** pasar opciones de parámetros de cuerpo individuales a continuación.
+Debe pasar la opción única `raw` con su correo completo en bruto incluyendo encabezados **o** pasar las opciones individuales de parámetros del cuerpo a continuación.
 
-Este punto final de la API codificará automáticamente los emojis si se encuentran en los encabezados (por ejemplo, una línea de asunto con `Subject: 🤓 Hello` se convierte automáticamente en `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Nuestro objetivo era crear una API de correo electrónico extremadamente intuitiva y a prueba de errores.
+Este endpoint de la API codificará automáticamente los emojis si se encuentran en los encabezados (por ejemplo, una línea de asunto `Subject: 🤓 Hello` se convierte automáticamente en `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Nuestro objetivo fue crear una API de correo extremadamente amigable para desarrolladores y a prueba de errores.
+
+**Autenticación:** Este endpoint soporta tanto [autenticación con token API](#api-token-authentication-recommended-for-most-endpoints) como [autenticación con credenciales de alias](#alias-credentials-authentication-for-outbound-email). Consulte la sección [Autenticación](#authentication) arriba para más detalles.
 
 > `POST /v1/emails`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| ---------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `from` | No | Cadena (correo electrónico) | La dirección de correo electrónico del remitente (debe existir como un alias del dominio). |
-| `to` | No | Cadena o matriz | Lista separada por comas o una matriz de destinatarios para el encabezado "Para". |
-| `cc` | No | Cadena o matriz | Lista separada por comas o una matriz de destinatarios para el encabezado "Cc". |
-| `bcc` | No | Cadena o matriz | Lista separada por comas o una matriz de destinatarios para el encabezado "Cco". |
-| `subject` | No | Cadena | El asunto del correo electrónico. |
-| `text` | No | Cadena o búfer | La versión de texto simple del mensaje. |
-| `html` | No | Cadena o búfer | La versión HTML del mensaje. |
-| `attachments` | No | Formación | Una matriz de objetos adjuntos (ver [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
-| `sender` | No | Cadena | La dirección de correo electrónico para el encabezado "Remitente" (ver [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)). |
-| `replyTo` | No | Cadena | La dirección de correo electrónico para el encabezado "Responder a". |
-| `inReplyTo` | No | Cadena | El ID del mensaje al que responde el mensaje. |
-| `references` | No | Cadena o matriz | Lista separada por espacios o una matriz de ID de mensajes. |
-| `attachDataUrls` | No | Booleano | Si `true` entonces convierte `data:` imágenes en el contenido HTML del mensaje en archivos adjuntos incrustados. |
-| `watchHtml` | No | Cadena | Una versión HTML específica del mensaje para Apple Watch ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), los relojes más recientes no requieren que esta opción esté configurada). |
-| `amp` | No | Cadena | Una versión HTML específica de AMP4EMAIL del mensaje (ver [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
-| `icalEvent` | No | Objeto | Un evento de iCalendar para usar como contenido de mensaje alternativo (ver [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
-| `alternatives` | No | Formación | Una matriz de contenido de mensaje alternativo (ver [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
-| `encoding` | No | Cadena | Codificación para el texto y las cadenas HTML (el valor predeterminado es `"utf-8"`, pero también admite valores de codificación `"hex"` y `"base64"`). |
-| `raw` | No | Cadena o búfer | Un mensaje con formato RFC822 generado a medida para utilizar (en lugar de uno generado por Nodemailer; consulte [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
-| `textEncoding` | No | Cadena | Codificación que se fuerza a usar para valores de texto (`"quoted-printable"` o `"base64"`). El valor predeterminado es el más cercano detectado (para ASCII, use `"quoted-printable"`). |
-| `priority` | No | Cadena | Nivel de prioridad del correo electrónico (puede ser `"high"`, `"normal"` (predeterminado) o `"low"`). Tenga en cuenta que el valor `"normal"` no establece un encabezado de prioridad (este es el comportamiento predeterminado). Si se establece un valor `"high"` o `"low"`, los encabezados `X-Priority`, `X-MSMail-Priority` y `Importance` serán [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
-| `headers` | No | Objeto o matriz | Un objeto o una matriz de campos de encabezado adicionales para configurar (ver [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)). |
-| `messageId` | No | Cadena | Un valor de Message-ID opcional para el encabezado "Message-ID" (se creará automáticamente un valor predeterminado si no se configura; tenga en cuenta que el valor debe ser [adhere to the RFC2822 specification](https://stackoverflow.com/a/4031705)). |
-| `date` | No | Cadena o fecha | Un valor de fecha opcional que se usará si el encabezado de fecha falta después del análisis; de lo contrario, se usará la cadena UTC actual si no se configura. El encabezado de fecha no puede tener más de 30 días de antelación respecto a la hora actual. |
-| `list` | No | Objeto | Un objeto opcional de encabezados `List-*` (ver [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)). |
-
-> Ejemplo de solicitud:
+| Parámetro del cuerpo | Obligatorio | Tipo             | Descripción                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------------------- | ----------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `from`               | No          | String (Email)   | La dirección de correo del remitente (debe existir como un alias del dominio).                                                                                                                                                                                                                                                                                                                                                                                  |
+| `to`                 | No          | String o Array   | Lista separada por comas o un Array de destinatarios para el encabezado "To".                                                                                                                                                                                                                                                                                                                                                                                    |
+| `cc`                 | No          | String o Array   | Lista separada por comas o un Array de destinatarios para el encabezado "Cc".                                                                                                                                                                                                                                                                                                                                                                                    |
+| `bcc`                | No          | String o Array   | Lista separada por comas o un Array de destinatarios para el encabezado "Bcc".                                                                                                                                                                                                                                                                                                                                                                                   |
+| `subject`            | No          | String           | El asunto del correo.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `text`               | No          | String o Buffer  | La versión en texto plano del mensaje.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `html`               | No          | String o Buffer  | La versión en HTML del mensaje.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `attachments`        | No          | Array            | Un array de objetos adjuntos (ver [campos comunes de Nodemailer](https://nodemailer.com/message/#common-fields)).                                                                                                                                                                                                                                                                                                                                                |
+| `sender`             | No          | String           | La dirección de correo para el encabezado "Sender" (ver [campos más avanzados de Nodemailer](https://nodemailer.com/message/#more-advanced-fields)).                                                                                                                                                                                                                                                                                                             |
+| `replyTo`            | No          | String           | La dirección de correo para el encabezado "Reply-To".                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `inReplyTo`          | No          | String           | El Message-ID al que responde el mensaje.                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `references`         | No          | String o Array   | Lista separada por espacios o un Array de Message-ID's.                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `attachDataUrls`     | No          | Boolean          | Si es `true`, convierte imágenes `data:` en el contenido HTML del mensaje en adjuntos embebidos.                                                                                                                                                                                                                                                                                                                                                                |
+| `watchHtml`          | No          | String           | Una versión HTML específica para Apple Watch del mensaje ([según la documentación de Nodemailer](https://nodemailer.com/message/#content-options]), los relojes más recientes no requieren que esto se establezca).                                                                                                                                                                                                                                               |
+| `amp`                | No          | String           | Una versión HTML específica AMP4EMAIL del mensaje (ver [ejemplo de Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                   |
+| `icalEvent`          | No          | Object           | Un evento iCalendar para usar como contenido alternativo del mensaje (ver [eventos de calendario de Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                               |
+| `alternatives`       | No          | Array            | Un Array de contenido alternativo del mensaje (ver [contenido alternativo de Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                        |
+| `encoding`           | No          | String           | Codificación para las cadenas de texto y HTML (por defecto `"utf-8"`, pero también soporta valores de codificación `"hex"` y `"base64"`).                                                                                                                                                                                                                                                                                                                       |
+| `raw`                | No          | String o Buffer  | Un mensaje personalizado generado en formato RFC822 para usar (en lugar de uno generado por Nodemailer – ver [fuente personalizada de Nodemailer](https://nodemailer.com/message/custom-source/)).                                                                                                                                                                                                                                                             |
+| `textEncoding`       | No          | String           | Codificación que se fuerza a usar para valores de texto (puede ser `"quoted-printable"` o `"base64"`). El valor por defecto es el valor más cercano detectado (para ASCII usar `"quoted-printable"`).                                                                                                                                                                                                                                                           |
+| `priority`           | No          | String           | Nivel de prioridad para el correo (puede ser `"high"`, `"normal"` (por defecto), o `"low"`). Note que un valor de `"normal"` no establece un encabezado de prioridad (este es el comportamiento por defecto). Si se establece un valor de `"high"` o `"low"`, entonces los encabezados `X-Priority`, `X-MSMail-Priority` y `Importance` [se establecerán en consecuencia](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
+| `headers`            | No          | Object o Array   | Un objeto o un array de campos de encabezado adicionales para establecer (ver [encabezados personalizados de Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                        |
+| `messageId`          | No          | String           | Un valor opcional de Message-ID para el encabezado "Message-ID" (se creará un valor por defecto automáticamente si no se establece – tenga en cuenta que el valor debe [cumplir con la especificación RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                          |
+| `date`               | No          | String o Date    | Un valor opcional de Fecha que se usará si falta el encabezado Date después del análisis, de lo contrario se usará la cadena UTC actual si no se establece. El encabezado de fecha no puede ser más de 30 días en el futuro respecto al tiempo actual.                                                                                                                                                                                                          |
+| `list`               | No          | Object           | Un objeto opcional de encabezados `List-*` (ver [encabezados de lista de Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                            |
+> Solicitud de ejemplo (Token API):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
   -u API_TOKEN: \
   -d "from=alias@DOMAIN_NAME" \
   -d "to=EMAIL" \
-  -d "subject=test" \
-  -d "text=test"
+  -d "subject=prueba" \
+  -d "text=prueba"
 ```
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo (Credenciales de alias):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@DOMAIN_NAME:GENERATED_PASSWORD" \
+  -d "from=alias@DOMAIN_NAME" \
+  -d "to=EMAIL" \
+  -d "subject=prueba" \
+  -d "text=prueba"
+```
+
+> Solicitud de ejemplo (Correo electrónico en bruto):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -519,51 +571,52 @@ curl -X POST BASE_URI/v1/emails \
   -d "raw=`cat file.eml`"
 ```
 
-### Recuperar correo electrónico SMTP saliente {#retrieve-outbound-smtp-email}
+### Recuperar correo SMTP saliente {#retrieve-outbound-smtp-email}
 
 > `GET /v1/emails/:id`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### Eliminar correo electrónico SMTP saliente {#delete-outbound-smtp-email}
+### Eliminar correo SMTP saliente {#delete-outbound-smtp-email}
 
-La eliminación de correos electrónicos establecerá el estado en `"rejected"` (y posteriormente no se procesará en la cola) solo si el estado actual es `"pending"`, `"queued"` o `"deferred"`. Es posible que eliminemos los correos electrónicos automáticamente 30 días después de su creación o envío; por lo tanto, le recomendamos conservar una copia de los correos electrónicos SMTP salientes en su cliente, base de datos o aplicación. Si lo desea, puede consultar el valor de nuestro ID de correo electrónico en su base de datos; este valor se devuelve desde los endpoints [Crear correo electrónico](#create-email) y [Recuperar correo electrónico](#retrieve-email).
+La eliminación de correos establecerá el estado a `"rejected"` (y posteriormente no lo procesará en la cola) si y solo si el estado actual es uno de `"pending"`, `"queued"` o `"deferred"`. Podemos purgar correos automáticamente después de 30 días desde que fueron creados y/o enviados – por lo tanto, debe mantener una copia de los correos SMTP salientes en su cliente, base de datos o aplicación. Puede referenciar nuestro valor de ID de correo en su base de datos si lo desea – este valor se devuelve tanto en los endpoints de [Crear correo](#create-email) como de [Recuperar correo](#retrieve-email).
 
 > `DELETE /v1/emails/:id`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X DELETE BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
+
 ## Dominios {#domains}
 
 > \[!TIP]
-> Los puntos finales de dominio cuyo nombre de dominio <code>/v1/domains/:domain_name</code> es intercambiable con el ID de dominio <code>:domain_id</code>. Esto significa que puede referirse al dominio por su valor <code>name</code> o <code>id</code>.
+> Los endpoints de dominio con el nombre de dominio <code>/v1/domains/:domain_name</code> como su endpoint son intercambiables con el ID del dominio <code>:domain_id</code>. Esto significa que puede referirse al dominio por su <code>nombre</code> o <code>id</code>.
 
-### Lista de dominios {#list-domains}
+### Listar dominios {#list-domains}
 
 > \[!NOTE]
-> A partir del 1 de noviembre de 2024, los puntos de conexión de la API para [Lista de dominios](#list-domains) y [Lista de alias de dominio](#list-domain-aliases) tendrán como valor predeterminado `1000`, el máximo de resultados por página. Si desea activar este comportamiento anticipadamente, puede pasar `?paginate=true` como parámetro de cadena de consulta adicional a la URL de la consulta del punto de conexión. Consulte [Paginación](#pagination) para obtener más información.
+> A partir del 1 de noviembre de 2024, los endpoints de API para [Listar dominios](#list-domains) y [Listar alias de dominio](#list-domain-aliases) tendrán un máximo predeterminado de `1000` resultados por página. Si desea optar por este comportamiento antes, puede pasar `?paginate=true` como un parámetro adicional en la cadena de consulta de la URL para la consulta del endpoint. Vea [Paginación](#pagination) para más detalles.
 
 > `GET /v1/domains`
 
-| Parámetros de la cadena de consulta | Requerido | Tipo | Descripción |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | No | Cadena (compatible con RegExp) | Buscar dominios por nombre |
-| `name` | No | Cadena (compatible con RegExp) | Buscar dominios por nombre |
-| `sort` | No | Cadena | Ordenar por un campo específico (anteponga un guion `-` para ordenar en sentido inverso). El valor predeterminado es `created_at` si no se configura. |
-| `page` | No | Número | Consulte [Pagination](#pagination) para obtener más información |
-| `limit` | No | Número | Consulte [Pagination](#pagination) para obtener más información |
+| Parámetro de consulta | Obligatorio | Tipo                      | Descripción                                                                                                                                      |
+| --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No          | Cadena (RegExp soportado) | Buscar dominios por nombre                                                                                                                       |
+| `name`                | No          | Cadena (RegExp soportado) | Buscar dominios por nombre                                                                                                                       |
+| `sort`                | No          | Cadena                    | Ordenar por un campo específico (prefijar con un guion simple `-` para ordenar en dirección inversa de ese campo). Por defecto es `created_at` si no se establece. |
+| `page`                | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
+| `limit`               | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains \
@@ -574,23 +627,22 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | Sí | Cadena (FQDN o IP) | Nombre de dominio completo ("FQDN") o dirección IP |
-| `team_domain` | No | Cadena (ID de dominio o nombre de dominio; FQDN) | Asignar automáticamente este dominio al mismo equipo desde otro dominio. Esto significa que todos los miembros de este dominio se asignarán como miembros del equipo y que `plan` también se establecerá automáticamente en `team`. Puede establecerlo en `"none"` si es necesario para deshabilitarlo explícitamente, pero no es necesario. |
-| `plan` | No | Cadena (enumerable) | Tipo de plan (debe ser `"free"`, `"enhanced_protection"` o `"team"`, el valor predeterminado es `"free"` o el plan pago actual del usuario si tiene uno) |
-| `catchall` | No | Cadena (direcciones de correo electrónico delimitadas) o booleano | Crea un alias general predeterminado, cuyo valor predeterminado es `true` (si es `true`, se usará la dirección de correo electrónico del usuario de la API como destinatario; si es `false`, no se creará ningún alias general). Si se pasa una cadena, se trata de una lista delimitada de direcciones de correo electrónico para usar como destinatarios (separadas por salto de línea, espacio o coma). |
-| `has_adult_content_protection` | No | Booleano | Si se debe habilitar la protección de contenido para adultos de Spam Scanner en este dominio |
-| `has_phishing_protection` | No | Booleano | Si se debe habilitar la protección contra phishing de Spam Scanner en este dominio |
-| `has_executable_protection` | No | Booleano | Si se debe habilitar la protección ejecutable de Spam Scanner en este dominio |
-| `has_virus_protection` | No | Booleano | Si se debe habilitar la protección antivirus Spam Scanner en este dominio |
-| `has_recipient_verification` | No | Booleano | Dominio global predeterminado que determina si se requiere que los destinatarios de alias hagan clic en un enlace de verificación de correo electrónico para que los correos electrónicos fluyan. |
-| `ignore_mx_check` | No | Booleano | Si se ignora la comprobación de registros MX en el dominio para su verificación. Esto es principalmente para usuarios con reglas de configuración avanzadas de intercambio MX y que necesitan mantener su intercambio MX existente y reenviarlo al nuestro. |
-| `retention_days` | No | Número | Entero entre `0` y `30` que corresponde al número de días de retención para almacenar los correos electrónicos SMTP salientes una vez entregados correctamente o con errores permanentes. El valor predeterminado es `0`, lo que significa que los correos electrónicos SMTP salientes se purgan y redactan inmediatamente para su seguridad. |
-| `bounce_webhook` | No | Cadena (URL) o booleano (falso) | La URL del webhook `http://` o `https://` que elija para enviar los webhooks de rebote. Enviaremos una solicitud `POST` a esta URL con información sobre fallos de SMTP salientes (por ejemplo, fallos leves o graves, para que pueda gestionar sus suscriptores y su correo electrónico saliente de forma programática). |
-| `max_quota_per_alias` | No | Cadena | Cuota máxima de almacenamiento para alias en este nombre de dominio. Introduzca un valor como "1 GB" que será analizado por [bytes](https://github.com/visionmedia/bytes.js). |
-
-> Ejemplo de solicitud:
+| Parámetro en el cuerpo         | Obligatorio | Tipo                                          | Descripción                                                                                                                                                                                                                                                                                                          |
+| ------------------------------ | ----------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`                       | Sí          | Cadena (FQDN o IP)                           | Nombre de dominio completamente calificado ("FQDN") o dirección IP                                                                                                                                                                                                                                                   |
+| `team_domain`                  | No          | Cadena (ID de dominio o nombre de dominio; FQDN) | Asignar automáticamente este dominio al mismo equipo que otro dominio. Esto significa que todos los miembros de este dominio serán asignados como miembros del equipo, y el `plan` se establecerá automáticamente en `team`. Puede establecer esto en `"none"` si es necesario para deshabilitarlo explícitamente, aunque no es necesario. |
+| `plan`                         | No          | Cadena (enumerable)                           | Tipo de plan (debe ser `"free"`, `"enhanced_protection"` o `"team"`, por defecto `"free"` o el plan pagado actual del usuario si tiene uno)                                                                                                                                                                         |
+| `catchall`                     | No          | Cadena (direcciones de correo delimitadas) o Booleano | Crear un alias catch-all predeterminado, por defecto `true` (si es `true` usará la dirección de correo del usuario API como destinatario, y si es `false` no se creará catch-all). Si se pasa una cadena, es una lista delimitada de direcciones de correo para usar como destinatarios (separadas por salto de línea, espacio y/o coma) |
+| `has_adult_content_protection` | No          | Booleano                                       | Si se habilita la protección de contenido adulto del Escáner de Spam en este dominio                                                                                                                                                                                                                                  |
+| `has_phishing_protection`      | No          | Booleano                                       | Si se habilita la protección contra phishing del Escáner de Spam en este dominio                                                                                                                                                                                                                                       |
+| `has_executable_protection`    | No          | Booleano                                       | Si se habilita la protección contra ejecutables del Escáner de Spam en este dominio                                                                                                                                                                                                                                   |
+| `has_virus_protection`         | No          | Booleano                                       | Si se habilita la protección contra virus del Escáner de Spam en este dominio                                                                                                                                                                                                                                         |
+| `has_recipient_verification`   | No          | Booleano                                       | Valor predeterminado global del dominio para si se requiere que los destinatarios de alias hagan clic en un enlace de verificación de correo para que los correos fluyan                                                                                                                                             |
+| `ignore_mx_check`              | No          | Booleano                                       | Si se ignora la verificación del registro MX en el dominio para la verificación. Esto es principalmente para usuarios que tienen reglas avanzadas de configuración de intercambio MX y necesitan mantener su intercambio MX existente y reenviar al nuestro.                                                        |
+| `retention_days`               | No          | Número                                        | Entero entre `0` y `30` que corresponde al número de días de retención para almacenar correos SMTP salientes una vez entregados con éxito o con error permanente. Por defecto es `0`, lo que significa que los correos SMTP salientes se purgan y redactan inmediatamente por su seguridad.                            |
+| `bounce_webhook`               | No          | Cadena (URL) o Booleano (false)               | La URL webhook `http://` o `https://` de su elección para enviar webhooks de rebote. Enviaremos una solicitud `POST` a esta URL con información sobre fallos SMTP salientes (por ejemplo, fallos suaves o duros – para que pueda gestionar sus suscriptores y administrar programáticamente su correo saliente).          |
+| `max_quota_per_alias`          | No          | Cadena                                        | Cuota máxima de almacenamiento para alias en este nombre de dominio. Ingrese un valor como "1 GB" que será analizado por [bytes](https://github.com/visionmedia/bytes.js).                                                                                                                                          |
+> Solicitud de ejemplo:
 
 ```sh
 curl -X POST BASE_URI/v1/domains \
@@ -603,18 +655,18 @@ curl -X POST BASE_URI/v1/domains \
 
 > `GET /v1/domains/DOMAIN_NAME`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### Verificar registros de dominio {#verify-domain-records}
+### Verificar registros del dominio {#verify-domain-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-records`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
@@ -625,45 +677,45 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### Lista de contraseñas generales de todo el dominio {#list-domain-wide-catch-all-passwords}
+### Listar contraseñas catch-all a nivel de dominio {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Crear contraseña general para todo el dominio {#create-domain-wide-catch-all-password}
+### Crear contraseña catch-all a nivel de dominio {#create-domain-wide-catch-all-password}
 
 > `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | No | Cadena | Su nueva contraseña personalizada para la contraseña general del dominio. Tenga en cuenta que puede dejarla en blanco o incluso omitirla en el cuerpo de su solicitud de API si desea obtener una contraseña segura y generada aleatoriamente. |
-| `description` | No | Cadena | Descripción sólo para fines organizativos. |
+| Parámetro en el cuerpo | Obligatorio | Tipo   | Descripción                                                                                                                                                                                                                  |
+| --------------------- | ----------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password`        | No          | String | Su nueva contraseña personalizada para usar como contraseña catch-all a nivel de dominio. Tenga en cuenta que puede dejar este campo en blanco o ausente en el cuerpo de su solicitud API si desea obtener una contraseña fuerte generada aleatoriamente. |
+| `description`         | No          | String | Descripción solo para fines organizativos.                                                                                                                                                                                  |
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Eliminar la contraseña general de todo el dominio {#remove-domain-wide-catch-all-password}
+### Eliminar contraseña catch-all a nivel de dominio {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
@@ -674,20 +726,19 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `smtp_port` | No | Cadena o número | Puerto personalizado para configurar para el reenvío SMTP (el valor predeterminado es `"25"`) |
-| `has_adult_content_protection` | No | Booleano | Si se debe habilitar la protección de contenido para adultos de Spam Scanner en este dominio |
-| `has_phishing_protection` | No | Booleano | Si se debe habilitar la protección contra phishing de Spam Scanner en este dominio |
-| `has_executable_protection` | No | Booleano | Si se debe habilitar la protección ejecutable de Spam Scanner en este dominio |
-| `has_virus_protection` | No | Booleano | Si se debe habilitar la protección antivirus Spam Scanner en este dominio |
-| `has_recipient_verification` | No | Booleano | Dominio global predeterminado que determina si se requiere que los destinatarios de alias hagan clic en un enlace de verificación de correo electrónico para que los correos electrónicos fluyan. |
-| `ignore_mx_check` | No | Booleano | Si se ignora la comprobación de registros MX en el dominio para su verificación. Esto es principalmente para usuarios con reglas de configuración avanzadas de intercambio MX y que necesitan mantener su intercambio MX existente y reenviarlo al nuestro. |
-| `retention_days` | No | Número | Entero entre `0` y `30` que corresponde al número de días de retención para almacenar los correos electrónicos SMTP salientes una vez entregados correctamente o con errores permanentes. El valor predeterminado es `0`, lo que significa que los correos electrónicos SMTP salientes se purgan y redactan inmediatamente para su seguridad. |
-| `bounce_webhook` | No | Cadena (URL) o booleano (falso) | La URL del webhook `http://` o `https://` que elija para enviar los webhooks de rebote. Enviaremos una solicitud `POST` a esta URL con información sobre fallos de SMTP salientes (por ejemplo, fallos leves o graves, para que pueda gestionar sus suscriptores y su correo electrónico saliente de forma programática). |
-| `max_quota_per_alias` | No | Cadena | Cuota máxima de almacenamiento para alias en este nombre de dominio. Introduzca un valor como "1 GB" que será analizado por [bytes](https://github.com/visionmedia/bytes.js). |
-
-> Ejemplo de solicitud:
+| Parámetro en el cuerpo          | Obligatorio | Tipo                            | Descripción                                                                                                                                                                                                                                                                                  |
+| ------------------------------ | ----------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `smtp_port`                    | No          | String o Número                 | Puerto personalizado para configurar el reenvío SMTP (el valor predeterminado es `"25"`)                                                                                                                                                                                                   |
+| `has_adult_content_protection` | No          | Boolean                        | Si se debe habilitar la protección de contenido para adultos del Escáner de Spam en este dominio                                                                                                                                                                                          |
+| `has_phishing_protection`      | No          | Boolean                        | Si se debe habilitar la protección contra phishing del Escáner de Spam en este dominio                                                                                                                                                                                                      |
+| `has_executable_protection`    | No          | Boolean                        | Si se debe habilitar la protección contra ejecutables del Escáner de Spam en este dominio                                                                                                                                                                                                  |
+| `has_virus_protection`         | No          | Boolean                        | Si se debe habilitar la protección contra virus del Escáner de Spam en este dominio                                                                                                                                                                                                         |
+| `has_recipient_verification`   | No          | Boolean                        | Valor predeterminado global del dominio para si se requiere que los destinatarios de alias hagan clic en un enlace de verificación de correo electrónico para que los correos fluyan                                                                                                                                             |
+| `ignore_mx_check`              | No          | Boolean                        | Si se debe ignorar la verificación del registro MX en el dominio para la verificación. Esto es principalmente para usuarios que tienen reglas avanzadas de configuración de intercambio MX y necesitan mantener su intercambio MX existente y reenviar al nuestro.                        |
+| `retention_days`               | No          | Número                         | Entero entre `0` y `30` que corresponde al número de días de retención para almacenar correos SMTP salientes una vez entregados con éxito o con error permanente. El valor predeterminado es `0`, lo que significa que los correos SMTP salientes se eliminan y redactan inmediatamente por seguridad. |
+| `bounce_webhook`               | No          | String (URL) o Boolean (false) | La URL webhook `http://` o `https://` de su elección para enviar webhooks de rebote. Enviaremos una solicitud `POST` a esta URL con información sobre fallos SMTP salientes (por ejemplo, fallos suaves o duros, para que pueda gestionar sus suscriptores y administrar programáticamente su correo saliente). |
+| `max_quota_per_alias`          | No          | String                         | Cuota máxima de almacenamiento para alias en este nombre de dominio. Ingrese un valor como "1 GB" que será analizado por [bytes](https://github.com/visionmedia/bytes.js).                                                                                                               |
+> Solicitud de ejemplo:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
@@ -698,20 +749,21 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
 
 > `DELETE /v1/domains/:domain_name`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-## Invita a {#invites}
+
+## Invitaciones {#invites}
 
 ### Aceptar invitación de dominio {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/invites \
@@ -722,12 +774,12 @@ curl BASE_URI/v1/domains/:domain_name/invites \
 
 > `POST /v1/domains/DOMAIN_NAME/invites`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| -------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
-| `email` | Sí | Cadena (correo electrónico) | Dirección de correo electrónico para invitar a la lista de miembros del dominio |
-| `group` | Sí | Cadena (enumerable) | Grupo al que se agregará el usuario a la membresía del dominio (puede ser uno de `"admin"` o `"user"`) |
+| Parámetro en el cuerpo | Obligatorio | Tipo                | Descripción                                                                               |
+| --------------------- | ----------- | ------------------- | ----------------------------------------------------------------------------------------- |
+| `email`               | Sí          | String (Email)      | Dirección de correo electrónico para invitar a la lista de miembros del dominio          |
+| `group`               | Sí          | String (enumerable) | Grupo al que se añadirá el usuario en la membresía del dominio (puede ser `"admin"` o `"user"`) |
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
@@ -737,22 +789,23 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Si el usuario invitado ya es miembro aceptado de algún otro dominio del que es miembro el administrador que lo invita, se aceptará automáticamente la invitación y no se enviará un correo electrónico.
+> Si el usuario invitado ya es miembro aceptado de otros dominios de los que el administrador que lo invita también es miembro, entonces la invitación se aceptará automáticamente y no se enviará un correo electrónico.
 
 ### Eliminar invitación de dominio {#remove-domain-invite}
 
 > `DELETE /v1/domains/:domain_name/invites`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| -------------- | -------- | -------------- | ------------------------------------------------ |
-| `email` | Sí | Cadena (correo electrónico) | Dirección de correo electrónico para eliminar de la lista de miembros del dominio |
+| Parámetro en el cuerpo | Obligatorio | Tipo           | Descripción                                      |
+| --------------------- | ----------- | -------------- | ------------------------------------------------ |
+| `email`               | Sí          | String (Email) | Dirección de correo electrónico para eliminar de la lista de miembros del dominio |
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
+
 
 ## Miembros {#members}
 
@@ -760,11 +813,11 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 
 > `PUT /v1/domains/DOMAIN_NAME/members/MEMBER_ID`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| -------------- | -------- | ------------------- | -------------------------------------------------------------------------------------------- |
-| `group` | Sí | Cadena (enumerable) | Grupo para actualizar al usuario a la membresía del dominio (puede ser uno de `"admin"` o `"user"`) |
+| Parámetro en el cuerpo | Obligatorio | Tipo                | Descripción                                                                                  |
+| --------------------- | ----------- | ------------------- | -------------------------------------------------------------------------------------------- |
+| `group`               | Sí          | String (enumerable) | Grupo al que se actualizará el usuario en la membresía del dominio (puede ser `"admin"` o `"user"`) |
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
@@ -775,28 +828,28 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
   -u API_TOKEN:
 ```
 
+
 ## Alias {#aliases}
 
-### Generar una contraseña de alias {#generate-an-alias-password}
+### Generar una contraseña para alias {#generate-an-alias-password}
 
-Tenga en cuenta que si no envía instrucciones por correo electrónico, el nombre de usuario y la contraseña estarán en el cuerpo de la respuesta JSON de una solicitud exitosa en el formato `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
+Tenga en cuenta que si no envía instrucciones por correo electrónico, entonces el nombre de usuario y la contraseña estarán en el cuerpo de la respuesta JSON de una solicitud exitosa en el formato `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | No | Cadena | Su nueva contraseña personalizada para el alias. Tenga en cuenta que puede dejarla en blanco o incluso omitirla en el cuerpo de la solicitud de API si desea obtener una contraseña segura y generada aleatoriamente. |
-| `password` | No | Cadena | Contraseña existente para el alias para cambiar la contraseña sin eliminar el almacenamiento del buzón IMAP existente (consulte la opción `is_override` a continuación si ya no tiene la contraseña existente). |
-| `is_override` | No | Booleano | **PRECAUCIÓN**: Esto anulará por completo la contraseña y la base de datos del alias, eliminará permanentemente el almacenamiento IMAP y restablecerá por completo la base de datos de correo electrónico SQLite del alias. Si tiene un buzón asociado a este alias, haga una copia de seguridad. |
-| `emailed_instructions` | No | Cadena | Dirección de correo electrónico a la que enviar la contraseña del alias y las instrucciones de configuración. |
-
+| Parámetro en el cuerpo  | Obligatorio | Tipo    | Descripción                                                                                                                                                                                                                                                                                         |
+| ---------------------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password`         | No          | String  | Su nueva contraseña personalizada para usar con el alias. Tenga en cuenta que puede dejar este campo vacío o no incluirlo en absoluto en el cuerpo de su solicitud API si desea obtener una contraseña generada aleatoriamente y segura.                                                                                                    |
+| `password`             | No          | String  | Contraseña existente del alias para cambiar la contraseña sin eliminar el almacenamiento IMAP existente (vea la opción `is_override` abajo si ya no tiene la contraseña existente).                                                                                                                 |
+| `is_override`          | No          | Boolean | **USAR CON PRECAUCIÓN**: Esto sobrescribirá completamente la contraseña y la base de datos del alias existente, y eliminará permanentemente el almacenamiento IMAP existente y restablecerá completamente la base de datos de correo electrónico SQLite del alias. Por favor, haga una copia de seguridad si es posible si tiene un buzón existente asociado a este alias. |
+| `emailed_instructions` | No          | String  | Dirección de correo electrónico a la que se enviarán la contraseña del alias y las instrucciones de configuración.                                                                                                                                                                                                                                |
 > Ejemplo de solicitud:
 
 ```sh
@@ -804,21 +857,21 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
   -u API_TOKEN:
 ```
 
-### Lista de alias de dominio {#list-domain-aliases}
+### Listar alias de dominio {#list-domain-aliases}
 
 > \[!NOTE]
-> A partir del 1 de noviembre de 2024, los puntos de conexión de la API para [Lista de dominios](#list-domains) y [Lista de alias de dominio](#list-domain-aliases) tendrán como valor predeterminado `1000`, el máximo de resultados por página. Si desea activar este comportamiento anticipadamente, puede pasar `?paginate=true` como parámetro de cadena de consulta adicional a la URL de la consulta del punto de conexión. Consulte [Paginación](#pagination) para obtener más información.
+> A partir del 1 de noviembre de 2024, los endpoints de la API para [Listar dominios](#list-domains) y [Listar alias de dominio](#list-domain-aliases) tendrán por defecto un máximo de `1000` resultados por página. Si desea optar por este comportamiento antes, puede pasar `?paginate=true` como un parámetro adicional en la cadena de consulta de la URL para la consulta del endpoint. Vea [Paginación](#pagination) para más detalles.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
-| Parámetros de la cadena de consulta | Requerido | Tipo | Descripción |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q` | No | Cadena (compatible con RegExp) | Busque alias en un dominio por nombre, etiqueta o destinatario |
-| `name` | No | Cadena (compatible con RegExp) | Buscar alias en un dominio por nombre |
-| `recipient` | No | Cadena (compatible con RegExp) | Buscar alias en un dominio por destinatario |
-| `sort` | No | Cadena | Ordenar por un campo específico (anteponga un guion `-` para ordenar en sentido inverso). El valor predeterminado es `created_at` si no se configura. |
-| `page` | No | Número | Consulte [Pagination](#pagination) para obtener más información |
-| `limit` | No | Número | Consulte [Pagination](#pagination) para obtener más información |
+| Parámetro de consulta | Obligatorio | Tipo                      | Descripción                                                                                                                                      |
+| --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No          | String (RegExp soportado) | Buscar alias en un dominio por nombre, etiqueta o destinatario                                                                                   |
+| `name`                | No          | String (RegExp soportado) | Buscar alias en un dominio por nombre                                                                                                           |
+| `recipient`           | No          | String (RegExp soportado) | Buscar alias en un dominio por destinatario                                                                                                     |
+| `sort`                | No          | String                    | Ordenar por un campo específico (prefijar con un guion simple `-` para ordenar en dirección inversa a ese campo). Por defecto es `created_at` si no se establece. |
+| `page`                | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                |
+| `limit`               | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                |
 
 > Ejemplo de solicitud:
 
@@ -831,26 +884,25 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 
 > `POST /v1/domains/DOMAIN_NAME/aliases`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | No | Cadena | Nombre de alias (si no se proporciona o está en blanco, se genera un alias aleatorio) |
-| `recipients` | No | Cadena o matriz | Lista de destinatarios (debe ser una cadena o matriz separada por saltos de línea, espacios o comas de direcciones de correo electrónico válidas, nombres de dominio completos ("FQDN"), direcciones IP y/o URL de webhook; si no se proporciona o es una matriz vacía, se establecerá como destinatario el correo electrónico del usuario que realiza la solicitud de API) |
-| `description` | No | Cadena | Descripción del alias |
-| `labels` | No | Cadena o matriz | Lista de etiquetas (debe ser una cadena o matriz separada por saltos de línea, espacios o comas) |
-| `has_recipient_verification` | No | Booleano | Requerir que los destinatarios hagan clic en un enlace de verificación de correo electrónico para que los correos electrónicos fluyan (el valor predeterminado es la configuración del dominio si no se configura explícitamente en el cuerpo de la solicitud) |
-| `is_enabled` | No | Booleano | Si se activa o desactiva este alias (si se desactiva, los correos electrónicos no se redirigirán a ninguna parte, pero mostrarán códigos de estado correctos). Si se pasa un valor, se convierte a un booleano mediante [boolean](https://github.com/thenativeweb/boolean#quick-start). |
-| `error_code_if_disabled` | No | Número (ya sea `250`, `421` o `550`) | Los correos electrónicos entrantes a este alias se rechazarán si `is_enabled` es `false` con `250` (entrega discreta, p. ej., blackhole o `/dev/null`), `421` (rechazo temporal; reintento durante un máximo de ~5 días) o `550` (error permanente y rechazo). El valor predeterminado es `250`. |
-| `has_imap` | No | Booleano | Si se debe habilitar o deshabilitar el almacenamiento IMAP para este alias (si está deshabilitado, los correos electrónicos entrantes recibidos no se almacenarán en [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Si se pasa un valor, se convierte a un booleano usando [boolean](https://github.com/thenativeweb/boolean#quick-start)). |
-| `has_pgp` | No | Booleano | Si habilitar o deshabilitar [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) para [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) usando el alias `public_key`. |
-| `public_key` | No | Cadena | Clave pública OpenPGP en formato ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); p. ej., clave GPG para `support@forwardemail.net`). Esto solo aplica si `has_pgp` está configurado en `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | No | Cadena | Cuota máxima de almacenamiento para este alias. Déjelo en blanco para restablecer la cuota máxima actual del dominio o introduzca un valor como "1 GB" que será analizado por [bytes](https://github.com/visionmedia/bytes.js). Este valor solo puede ser ajustado por los administradores del dominio. |
-| `vacation_responder_is_enabled` | No | Booleano | Si desea habilitar o deshabilitar una respuesta automática en caso de vacaciones. |
-| `vacation_responder_start_date` | No | Cadena | Fecha de inicio del respondedor automático (si está habilitado y no se establece una fecha de inicio aquí, se asume que ya se inició). Admitimos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros mediante análisis inteligente con `dayjs`. |
-| `vacation_responder_end_date` | No | Cadena | Fecha de finalización del respondedor automático (si está habilitado y no se establece una fecha de finalización aquí, se asume que nunca finaliza y responde indefinidamente). Admitimos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros mediante análisis inteligente con `dayjs`. |
-| `vacation_responder_subject` | No | Cadena | Asunto en texto plano para la respuesta de vacaciones, p. ej., "Fuera de la oficina". Usamos `striptags` para eliminar todo el HTML. |
-| `vacation_responder_message` | No | Cadena | Mensaje en texto plano para el respondedor de vacaciones, p. ej.: "Estaré fuera de la oficina hasta febrero". Usamos `striptags` para eliminar todo el HTML. |
-
-> Ejemplo de solicitud:
+| Parámetro en el cuerpo         | Obligatorio | Tipo                                   | Descripción                                                                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------- | ----------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                        | No          | String                               | Nombre del alias (si no se proporciona o está vacío, se genera un alias aleatorio)                                                                                                                                                                                                                                                                                                          |
+| `recipients`                  | No          | String o Array                      | Lista de destinatarios (debe ser un String separado por saltos de línea/espacios/comas o un Array de direcciones de correo válidas, nombres de dominio completamente calificados ("FQDN"), direcciones IP y/o URLs de webhook – y si no se proporciona o es un Array vacío, se establecerá el correo del usuario que realiza la solicitud API como destinatario)                                                                                     |
+| `description`                 | No          | String                               | Descripción del alias                                                                                                                                                                                                                                                                                                                                                                       |
+| `labels`                      | No          | String o Array                      | Lista de etiquetas (debe ser un String separado por saltos de línea/espacios/comas o un Array)                                                                                                                                                                                                                                                                                             |
+| `has_recipient_verification`  | No          | Boolean                              | Requerir que los destinatarios hagan clic en un enlace de verificación por correo para que los emails se transmitan (por defecto usa la configuración del dominio si no se establece explícitamente en el cuerpo de la solicitud)                                                                                                                                                              |
+| `is_enabled`                  | No          | Boolean                              | Indica si se habilita o deshabilita este alias (si está deshabilitado, los correos no se enrutarán a ningún lado pero devolverán códigos de estado exitosos). Si se pasa un valor, se convierte a booleano usando [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                                                                                           |
+| `error_code_if_disabled`      | No          | Número (puede ser `250`, `421` o `550`) | El correo entrante a este alias será rechazado si `is_enabled` es `false` con código `250` (entrega silenciosa a ningún lado, por ejemplo agujero negro o `/dev/null`), `421` (rechazo temporal; y reintento por hasta ~5 días) o `550` (fallo permanente y rechazo). Por defecto es `250`.                                                                                                                               |
+| `has_imap`                    | No          | Boolean                              | Indica si se habilita o deshabilita el almacenamiento IMAP para este alias (si está deshabilitado, los correos entrantes no se almacenarán en [almacenamiento IMAP](/blog/docs/best-quantum-safe-encrypted-email-service). Si se pasa un valor, se convierte a booleano usando [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                  |
+| `has_pgp`                     | No          | Boolean                              | Indica si se habilita o deshabilita la [encriptación OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) para el [almacenamiento de correo cifrado IMAP/POP3/CalDAV/CardDAV](/blog/docs/best-quantum-safe-encrypted-email-service) usando la `public_key` del alias.                                                                                                         |
+| `public_key`                  | No          | String                               | Clave pública OpenPGP en formato ASCII Armor ([haga clic aquí para ver un ejemplo](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); por ejemplo clave GPG para `support@forwardemail.net`). Esto solo aplica si tiene `has_pgp` configurado en `true`. [Aprenda más sobre cifrado de extremo a extremo en nuestro FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
+| `max_quota`                   | No          | String                               | Cuota máxima de almacenamiento para este alias. Dejar en blanco para restablecer a la cuota máxima actual del dominio o ingresar un valor como "1 GB" que será interpretado por [bytes](https://github.com/visionmedia/bytes.js). Este valor solo puede ser ajustado por administradores del dominio.                                                                                                                                      |
+| `vacation_responder_is_enabled` | No        | Boolean                              | Indica si se habilita o deshabilita un contestador automático de vacaciones.                                                                                                                                                                                                                                                                                                               |
+| `vacation_responder_start_date` | No        | String                               | Fecha de inicio para el contestador de vacaciones (si está habilitado y no se establece fecha de inicio aquí, se asume que ya está iniciado). Soportamos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros formatos mediante análisis inteligente usando `dayjs`.                                                                                                                                                      |
+| `vacation_responder_end_date` | No          | String                               | Fecha de fin para el contestador de vacaciones (si está habilitado y no se establece fecha de fin aquí, se asume que nunca termina y responde para siempre). Soportamos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros formatos mediante análisis inteligente usando `dayjs`.                                                                                                                                            |
+| `vacation_responder_subject`  | No          | String                               | Asunto en texto plano para el contestador de vacaciones, por ejemplo "Fuera de la oficina". Usamos `striptags` para eliminar todo HTML aquí.                                                                                                                                                                                                                                                                         |
+| `vacation_responder_message`  | No          | String                               | Mensaje en texto plano para el contestador de vacaciones, por ejemplo "Estaré fuera de la oficina hasta febrero.". Usamos `striptags` para eliminar todo HTML aquí.                                                                                                                                                                                                                                               |
+> Solicitud de ejemplo:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
@@ -859,11 +911,11 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 ### Recuperar alias de dominio {#retrieve-domain-alias}
 
-Puede recuperar un alias de dominio por su valor `id` o `name`.
+Puedes recuperar un alias de dominio ya sea por su valor `id` o por su valor `name`.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
@@ -872,37 +924,36 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 > `GET /v1/domains/:domain_name/aliases/:alias_name`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
   -u API_TOKEN:
 ```
 
-### Actualizar el alias del dominio {#update-domain-alias}
+### Actualizar alias de dominio {#update-domain-alias}
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
+| Parámetro del cuerpo            | Requerido | Tipo                                   | Descripción                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name` | No | Cadena | Alias |
-| `recipients` | No | Cadena o matriz | Lista de destinatarios (debe ser una cadena o matriz de direcciones de correo electrónico válidas, nombres de dominio completos ("FQDN"), direcciones IP y/o URL de webhook separados por saltos de línea, espacios o comas) |
-| `description` | No | Cadena | Descripción del alias |
-| `labels` | No | Cadena o matriz | Lista de etiquetas (debe ser una cadena o matriz separada por saltos de línea, espacios o comas) |
-| `has_recipient_verification` | No | Booleano | Requerir que los destinatarios hagan clic en un enlace de verificación de correo electrónico para que los correos electrónicos fluyan (el valor predeterminado es la configuración del dominio si no se configura explícitamente en el cuerpo de la solicitud) |
-| `is_enabled` | No | Booleano | Si se activa o desactiva este alias (si se desactiva, los correos electrónicos no se redirigirán a ninguna parte, pero mostrarán códigos de estado correctos). Si se pasa un valor, se convierte a un booleano mediante [boolean](https://github.com/thenativeweb/boolean#quick-start). |
-| `error_code_if_disabled` | No | Número (ya sea `250`, `421` o `550`) | Los correos electrónicos entrantes a este alias se rechazarán si `is_enabled` es `false` con `250` (entrega discreta, p. ej., blackhole o `/dev/null`), `421` (rechazo temporal; reintento durante un máximo de ~5 días) o `550` (error permanente y rechazo). El valor predeterminado es `250`. |
-| `has_imap` | No | Booleano | Si se debe habilitar o deshabilitar el almacenamiento IMAP para este alias (si está deshabilitado, los correos electrónicos entrantes recibidos no se almacenarán en [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Si se pasa un valor, se convierte a un booleano usando [boolean](https://github.com/thenativeweb/boolean#quick-start)). |
-| `has_pgp` | No | Booleano | Si habilitar o deshabilitar [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) para [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) usando el alias `public_key`. |
-| `public_key` | No | Cadena | Clave pública OpenPGP en formato ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); p. ej., clave GPG para `support@forwardemail.net`). Esto solo aplica si `has_pgp` está configurado en `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
-| `max_quota` | No | Cadena | Cuota máxima de almacenamiento para este alias. Déjelo en blanco para restablecer la cuota máxima actual del dominio o introduzca un valor como "1 GB" que será analizado por [bytes](https://github.com/visionmedia/bytes.js). Este valor solo puede ser ajustado por los administradores del dominio. |
-| `vacation_responder_is_enabled` | No | Booleano | Si desea habilitar o deshabilitar una respuesta automática en caso de vacaciones. |
-| `vacation_responder_start_date` | No | Cadena | Fecha de inicio del respondedor automático (si está habilitado y no se establece una fecha de inicio aquí, se asume que ya se inició). Admitimos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros mediante análisis inteligente con `dayjs`. |
-| `vacation_responder_end_date` | No | Cadena | Fecha de finalización del respondedor automático (si está habilitado y no se establece una fecha de finalización aquí, se asume que nunca finaliza y responde indefinidamente). Admitimos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros mediante análisis inteligente con `dayjs`. |
-| `vacation_responder_subject` | No | Cadena | Asunto en texto plano para la respuesta de vacaciones, p. ej., "Fuera de la oficina". Usamos `striptags` para eliminar todo el HTML. |
-| `vacation_responder_message` | No | Cadena | Mensaje en texto plano para el respondedor de vacaciones, p. ej.: "Estaré fuera de la oficina hasta febrero". Usamos `striptags` para eliminar todo el HTML. |
-
-> Ejemplo de solicitud:
+| `name`                          | No       | String                                 | Nombre del alias                                                                                                                                                                                                                                                                                                                                                                            |
+| `recipients`                    | No       | String o Array                        | Lista de destinatarios (debe ser una cadena separada por saltos de línea/espacios/comas o un Array de direcciones de correo electrónico válidas, nombres de dominio completamente calificados ("FQDN"), direcciones IP y/o URLs de webhook)                                                                                                                                                   |
+| `description`                   | No       | String                                 | Descripción del alias                                                                                                                                                                                                                                                                                                                                                                       |
+| `labels`                        | No       | String o Array                        | Lista de etiquetas (debe ser una cadena separada por saltos de línea/espacios/comas o un Array)                                                                                                                                                                                                                                                                                             |
+| `has_recipient_verification`    | No       | Boolean                                | Requiere que los destinatarios hagan clic en un enlace de verificación por correo electrónico para que los correos fluyan (por defecto usa la configuración del dominio si no se establece explícitamente en el cuerpo de la solicitud)                                                                                                                                                        |
+| `is_enabled`                    | No       | Boolean                                | Indica si se habilita o deshabilita este alias (si está deshabilitado, los correos no se enrutarán a ningún lado pero devolverán códigos de estado exitosos). Si se pasa un valor, se convierte a booleano usando [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                                                                           |
+| `error_code_if_disabled`        | No       | Número (ya sea `250`, `421` o `550`) | El correo entrante a este alias será rechazado si `is_enabled` es `false` con `250` (entrega silenciosa a ningún lado, por ejemplo agujero negro o `/dev/null`), `421` (rechazo temporal; y reintento por hasta ~5 días) o `550` fallo permanente y rechazo. Por defecto es `250`.                                                                                                           |
+| `has_imap`                      | No       | Boolean                                | Indica si se habilita o deshabilita el almacenamiento IMAP para este alias (si está deshabilitado, los correos entrantes no se almacenarán en el [almacenamiento IMAP](/blog/docs/best-quantum-safe-encrypted-email-service). Si se pasa un valor, se convierte a booleano usando [boolean](https://github.com/thenativeweb/boolean#quick-start))                                                  |
+| `has_pgp`                       | No       | Boolean                                | Indica si se habilita o deshabilita la [encriptación OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) para el [almacenamiento de correo cifrado IMAP/POP3/CalDAV/CardDAV](/blog/docs/best-quantum-safe-encrypted-email-service) usando la `public_key` del alias.                                                                                   |
+| `public_key`                    | No       | String                                 | Clave pública OpenPGP en formato ASCII Armor ([haz clic aquí para ver un ejemplo](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); por ejemplo clave GPG para `support@forwardemail.net`). Esto solo aplica si tienes `has_pgp` configurado en `true`. [Aprende más sobre cifrado de extremo a extremo en nuestro FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
+| `max_quota`                     | No       | String                                 | Cuota máxima de almacenamiento para este alias. Déjalo en blanco para restablecer a la cuota máxima actual del dominio o ingresa un valor como "1 GB" que será analizado por [bytes](https://github.com/visionmedia/bytes.js). Este valor solo puede ser ajustado por administradores del dominio.                                                                                         |
+| `vacation_responder_is_enabled` | No       | Boolean                                | Indica si se habilita o deshabilita un contestador automático de vacaciones.                                                                                                                                                                                                                                                                                                               |
+| `vacation_responder_start_date` | No       | String                                 | Fecha de inicio para el contestador de vacaciones (si está habilitado y no se establece fecha de inicio aquí, se asume que ya ha comenzado). Soportamos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros formatos mediante análisis inteligente usando `dayjs`.                                                                                                                   |
+| `vacation_responder_end_date`   | No       | String                                 | Fecha de fin para el contestador de vacaciones (si está habilitado y no se establece fecha de fin aquí, se asume que nunca termina y responde para siempre). Soportamos formatos de fecha como `MM/DD/YYYY`, `YYYY-MM-DD` y otros formatos mediante análisis inteligente usando `dayjs`.                                                                                                   |
+| `vacation_responder_subject`    | No       | String                                 | Asunto en texto plano para el contestador de vacaciones, por ejemplo "Fuera de la oficina". Usamos `striptags` para eliminar todo HTML aquí.                                                                                                                                                                                                                                             |
+| `vacation_responder_message`    | No       | String                                 | Mensaje en texto plano para el contestador de vacaciones, por ejemplo "Estaré fuera de la oficina hasta febrero.". Usamos `striptags` para eliminar todo HTML aquí.                                                                                                                                                                                                                         |
+> Solicitud de ejemplo:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
@@ -913,26 +964,27 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
 
 > `DELETE /v1/domains/:domain_name/aliases/:alias_id`
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
   -u API_TOKEN:
 ```
 
-## Cifrar {#encrypt}
 
-Le permitimos cifrar registros, incluso con el plan gratuito, sin costo alguno. La privacidad no debería ser una característica, sino una característica inherente a todos los aspectos del producto. Como se solicitó encarecidamente en [Discusión sobre las Guías de Privacidad](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) y [nuestros problemas de GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), hemos añadido esto.
+## Encriptar {#encrypt}
 
-### Cifrar registro TXT {#encrypt-txt-record}
+Permitimos que encripte registros incluso en el plan gratuito sin costo alguno. La privacidad no debería ser una característica, debería estar inherentemente integrada en todos los aspectos de un producto. Como se solicitó mucho en una [discusión de Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) y en [nuestros issues de GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) lo hemos añadido.
+
+### Encriptar registro TXT {#encrypt-txt-record}
 
 > `POST /v1/encrypt`
 
-| Parámetros corporales | Requerido | Tipo | Descripción |
-| -------------- | -------- | ------ | -------------------------------------------- |
-| `input` | Sí | Cadena | Cualquier registro TXT de texto sin formato de correo electrónico de reenvío válido |
+| Parámetro del cuerpo | Obligatorio | Tipo   | Descripción                                  |
+| -------------------- | ----------- | ------ | -------------------------------------------- |
+| `input`              | Sí          | String | Cualquier registro TXT de texto plano válido de Forward Email |
 
-> Ejemplo de solicitud:
+> Solicitud de ejemplo:
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \

@@ -1,423 +1,431 @@
-# Complete Guide to NAS Email Setup with Forward Email {#complete-guide-to-nas-email-setup-with-forward-email}
+# 使用 Forward Email 完整设置 NAS 邮件指南 {#complete-guide-to-nas-email-setup-with-forward-email}
 
-Setting up email notifications on your NAS shouldn't be a pain. Whether you've got a Synology, QNAP, or even a Raspberry Pi setup, this guide will get your device talking to Forward Email so you actually know when something goes wrong.
+在您的 NAS 上设置邮件通知不应该是一件麻烦事。无论您使用的是 Synology、QNAP，还是 Raspberry Pi，本指南都将帮助您的设备与 Forward Email 连接，让您真正知道何时出现问题。
 
-Most NAS devices can send email alerts for drive failures, temperature warnings, backup completion, and security events. The problem? Many email providers have gotten picky about security, and older devices often can't keep up. That's where Forward Email comes in - we support both modern and legacy devices.
+大多数 NAS 设备可以发送驱动器故障、温度警告、备份完成和安全事件的邮件提醒。问题是？许多邮件服务提供商对安全要求越来越严格，而旧设备往往跟不上。这就是 Forward Email 的用武之地——我们支持现代和传统设备。
 
-This guide covers email setup for 75+ NAS providers with step-by-step instructions, compatibility info, and troubleshooting tips. No matter what device you're using, we'll get your notifications working.
+本指南涵盖了 75+ NAS 供应商的邮件设置，提供逐步说明、兼容性信息和故障排除技巧。无论您使用什么设备，我们都能帮您让通知正常工作。
 
-## Table of Contents {#table-of-contents}
 
-* [Why You Need NAS Email Notifications](#why-you-need-nas-email-notifications)
-* [The TLS Problem (And How We Fix It)](#the-tls-problem-and-how-we-fix-it)
-* [Forward Email SMTP Settings](#forward-email-smtp-settings)
-* [Comprehensive NAS Provider Compatibility Matrix](#comprehensive-nas-provider-compatibility-matrix)
-* [Synology NAS Email Configuration](#synology-nas-email-configuration)
-  * [Configuration Steps](#configuration-steps)
-* [QNAP NAS Email Configuration](#qnap-nas-email-configuration)
-  * [Configuration Steps](#configuration-steps-1)
-  * [Common QNAP Troubleshooting Issues](#common-qnap-troubleshooting-issues)
-* [ReadyNAS Legacy Configuration](#readynas-legacy-configuration)
-  * [Legacy Configuration Steps](#legacy-configuration-steps)
-  * [ReadyNAS Troubleshooting](#readynas-troubleshooting)
-* [TerraMaster NAS Configuration](#terramaster-nas-configuration)
-* [ASUSTOR NAS Configuration](#asustor-nas-configuration)
-* [Buffalo TeraStation Configuration](#buffalo-terastation-configuration)
-* [Western Digital My Cloud Configuration](#western-digital-my-cloud-configuration)
-* [TrueNAS Email Configuration](#truenas-email-configuration)
-* [OpenMediaVault Configuration](#openmediavault-configuration)
-* [Raspberry Pi NAS Configuration](#raspberry-pi-nas-configuration)
-  * [Initial Raspberry Pi Setup](#initial-raspberry-pi-setup)
-  * [Samba File Sharing Configuration](#samba-file-sharing-configuration)
-  * [FTP Server Setup](#ftp-server-setup)
-  * [Email Notification Configuration](#email-notification-configuration)
-  * [Advanced Raspberry Pi NAS Features](#advanced-raspberry-pi-nas-features)
-  * [Raspberry Pi Email Troubleshooting](#raspberry-pi-email-troubleshooting)
-  * [Performance Optimization](#performance-optimization)
-  * [Security Considerations](#security-considerations)
+## 目录 {#table-of-contents}
 
-## Why You Need NAS Email Notifications {#why-you-need-nas-email-notifications}
+* [为什么您需要 NAS 邮件通知](#why-you-need-nas-email-notifications)
+* [TLS 问题（以及我们的解决方案）](#the-tls-problem-and-how-we-fix-it)
+* [Forward Email SMTP 设置](#forward-email-smtp-settings)
+* [全面的 NAS 供应商兼容性矩阵](#comprehensive-nas-provider-compatibility-matrix)
+* [Synology NAS 邮件配置](#synology-nas-email-configuration)
+  * [配置步骤](#configuration-steps)
+* [QNAP NAS 邮件配置](#qnap-nas-email-configuration)
+  * [配置步骤](#configuration-steps-1)
+  * [常见 QNAP 故障排除问题](#common-qnap-troubleshooting-issues)
+* [ReadyNAS 传统配置](#readynas-legacy-configuration)
+  * [传统配置步骤](#legacy-configuration-steps)
+  * [ReadyNAS 故障排除](#readynas-troubleshooting)
+* [TerraMaster NAS 配置](#terramaster-nas-configuration)
+* [ASUSTOR NAS 配置](#asustor-nas-configuration)
+* [Buffalo TeraStation 配置](#buffalo-terastation-configuration)
+* [Western Digital My Cloud 配置](#western-digital-my-cloud-configuration)
+* [TrueNAS 邮件配置](#truenas-email-configuration)
+* [OpenMediaVault 配置](#openmediavault-configuration)
+* [Raspberry Pi NAS 配置](#raspberry-pi-nas-configuration)
+  * [Raspberry Pi 初始设置](#initial-raspberry-pi-setup)
+  * [Samba 文件共享配置](#samba-file-sharing-configuration)
+  * [FTP 服务器设置](#ftp-server-setup)
+  * [邮件通知配置](#email-notification-configuration)
+  * [高级 Raspberry Pi NAS 功能](#advanced-raspberry-pi-nas-features)
+  * [Raspberry Pi 邮件故障排除](#raspberry-pi-email-troubleshooting)
+  * [性能优化](#performance-optimization)
+  * [安全注意事项](#security-considerations)
 
-Your NAS monitors tons of stuff - drive health, temperature, network issues, security events. Without email alerts, problems can go unnoticed for weeks, potentially causing data loss or security breaches.
 
-Email notifications give you immediate alerts when drives start failing, warn about unauthorized access attempts, confirm successful backups, and keep you informed about system health. Forward Email makes sure these critical notifications actually reach you.
+## 为什么您需要 NAS 邮件通知 {#why-you-need-nas-email-notifications}
 
-## The TLS Problem (And How We Fix It) {#the-tls-problem-and-how-we-fix-it}
+您的 NAS 监控大量内容——驱动器健康、温度、网络问题、安全事件。没有邮件提醒，问题可能会被忽视数周，可能导致数据丢失或安全漏洞。
 
-Here's the deal: if your NAS was made before 2020, it probably only supports TLS 1.0. Gmail, Outlook, and most providers dropped support for that years ago. Your device tries to send email, gets rejected, and you're left in the dark.
+邮件通知能在驱动器开始故障时立即提醒您，警告未经授权的访问尝试，确认备份成功，并让您随时了解系统健康状况。Forward Email 确保这些关键通知真正送达您手中。
 
-Forward Email fixes this with dual-port support. Modern devices use our standard ports (`465` and `587`), while older devices can use our legacy ports (`2455` and `2555`) that still support TLS 1.0.
+
+## TLS 问题（以及我们的解决方案） {#the-tls-problem-and-how-we-fix-it}
+
+情况是这样的：如果您的 NAS 是 2020 年之前制造的，它很可能只支持 TLS 1.0。Gmail、Outlook 以及大多数服务提供商多年前就停止支持该协议。您的设备尝试发送邮件时被拒绝，您却一无所知。
+
+Forward Email 通过双端口支持解决了这个问题。现代设备使用我们的标准端口（`465` 和 `587`），而旧设备可以使用我们的传统端口（`2455` 和 `2555`），这些端口仍支持 TLS 1.0。
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy NAS devices through our dual-port strategy. Use ports 465/587 for modern devices with TLS 1.2+ support, and ports 2455/2555 for legacy devices that only support TLS 1.0.
+> Forward Email 通过双端口策略支持现代和传统 NAS 设备。现代设备请使用支持 TLS 1.2+ 的端口 465/587，传统设备请使用仅支持 TLS 1.0 的端口 2455/2555。
 
-## Forward Email SMTP Settings {#forward-email-smtp-settings}
 
-Here's what you need to know about our SMTP setup:
+## Forward Email SMTP 设置 {#forward-email-smtp-settings}
+以下是您需要了解的 SMTP 设置：
 
-**For modern NAS devices (2020+):** Use `smtp.forwardemail.net` with port `465` (SSL/TLS) or port `587` (STARTTLS). These work with current firmware that supports TLS 1.2+.
+**对于现代 NAS 设备（2020 年及以后）：** 使用 `smtp.forwardemail.net`，端口为 `465`（SSL/TLS）或 `587`（STARTTLS）。这些端口适用于支持 TLS 1.2+ 的当前固件。
 
-**For older NAS devices:** Use `smtp.forwardemail.net` with port `2455` (SSL/TLS) or port `2555` (STARTTLS). These support TLS 1.0 for legacy devices.
+**对于较旧的 NAS 设备：** 使用 `smtp.forwardemail.net`，端口为 `2455`（SSL/TLS）或 `2555`（STARTTLS）。这些端口支持 TLS 1.0，适用于旧设备。
 
-**Authentication:** Use your Forward Email alias as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) (not your account password).
+**身份验证：** 使用您的 Forward Email 别名作为用户名，密码使用从 [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) 生成的密码（不是您的账户密码）。
 
 > \[!CAUTION]
-> Never use your account login password for SMTP authentication. Always use the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) for NAS configuration.
+> 切勿使用您的账户登录密码进行 SMTP 身份验证。配置 NAS 时，请始终使用从 [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) 生成的密码。
 
 > \[!TIP]
-> Check your NAS device's firmware version and TLS support before configuration. Most devices manufactured after 2020 support modern TLS protocols, while older devices typically require legacy compatibility ports.
+> 配置前请检查您的 NAS 设备固件版本及 TLS 支持情况。大多数 2020 年以后生产的设备支持现代 TLS 协议，而较旧设备通常需要使用兼容旧版的端口。
 
-## Comprehensive NAS Provider Compatibility Matrix {#comprehensive-nas-provider-compatibility-matrix}
 
-The following matrix provides detailed compatibility information for major NAS providers, including TLS support levels, firmware status, and recommended Forward Email configuration settings.
+## 综合 NAS 供应商兼容性矩阵 {#comprehensive-nas-provider-compatibility-matrix}
 
-| NAS Provider | Current Models | TLS Support | Firmware Status | Recommended Ports | Common Issues | Setup Guide/Screenshots |
-| ---------------- | --------------- | ------------ | --------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Synology | DSM 7.x | TLS 1.2+ | Active | `465`, `587` | [STARTTLS configuration](https://community.synology.com/enu/forum/2/post/124584) | [DSM Email Notification Setup](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/system_notification_email) |
-| QNAP | QTS 5.x | TLS 1.2+ | Active | `465`, `587` | [Notification Center failures](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525) | [QTS Email Server Configuration](https://docs.qnap.com/operating-system/qts/5.1.x/en-us/configuring-an-email-notification-server-EB4E6D7F.html) |
-| Raspberry Pi | Raspberry Pi OS | TLS 1.2+ | Active | `465`, `587` | [DNS resolution issues](https://www.raspberrypi.org/forums/viewtopic.php?t=294014) | [Raspberry Pi Email Setup Guide](#raspberry-pi-nas-configuration) |
-| ASUSTOR | ADM 4.x | TLS 1.2+ | Active | `465`, `587` | [Certificate validation](https://forum.asustor.com/viewtopic.php?f=134&t=12345) | [ASUSTOR Notification Setup](https://www.asustor.com/en/online/online_help?id=8) |
-| TerraMaster | TOS 6.x | TLS 1.2 | Active | `465`, `587` | [SMTP authentication](https://www.terra-master.com/global/forum/) | [TerraMaster Email Configuration](https://www.terra-master.com/global/support/download.php) |
-| TrueNAS | SCALE/CORE | TLS 1.2+ | Active | `465`, `587` | [SSL certificate setup](https://www.truenas.com/community/threads/email-notifications-not-working.95234/) | [TrueNAS Email Setup Guide](https://www.truenas.com/docs/scale/scaletutorials/systemsettings/general/settingupsystememail/) |
-| Buffalo | TeraStation | TLS 1.2 | Limited | `465`, `587` | [Firmware compatibility](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) | [TeraStation Email Setup](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation) |
-| Western Digital | My Cloud OS 5 | TLS 1.2 | Limited | `465`, `587` | [Legacy OS compatibility](https://community.wd.com/t/my-cloud-email-notifications-not-working/265432) | [My Cloud Email Configuration](https://support-en.wd.com/app/answers/detailweb/a_id/10222) |
-| OpenMediaVault | OMV 7.x | TLS 1.2+ | Active | `465`, `587` | [Plugin dependencies](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/) | [OMV Notification Setup](https://docs.openmediavault.org/en/latest/administration/general/notifications.html) |
-| Netgear ReadyNAS | OS 6.x | TLS 1.0 only | Discontinued | `2455`, `2555` | [Legacy TLS support](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) | [ReadyNAS Email Alert Setup](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) |
-| Drobo | Dashboard | TLS 1.2 | Discontinued | `465`, `587` | [Limited support](https://myprojects.drobo.com/support/) | [Drobo Email Notifications](https://www.drobo.com/support/) |
+下表提供了主要 NAS 供应商的详细兼容性信息，包括 TLS 支持级别、固件状态及推荐的 Forward Email 配置设置。
 
-This matrix demonstrates the clear division between modern, actively maintained NAS systems and legacy devices that require special compatibility considerations. The majority of current NAS devices support modern TLS standards and can use Forward Email's primary SMTP ports without any special configuration.
+| NAS 供应商       | 当前型号        | TLS 支持     | 固件状态        | 推荐端口          | 常见问题                                                                                                                                               | 设置指南/截图                                                                                                                                    |
+| ---------------- | --------------- | ------------ | --------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Synology         | DSM 7.x         | TLS 1.2+     | 活跃            | `465`, `587`      | [STARTTLS 配置](https://community.synology.com/enu/forum/2/post/124584)                                                                               | [DSM 邮件通知设置](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/system_notification_email)                                            |
+| QNAP             | QTS 5.x         | TLS 1.2+     | 活跃            | `465`, `587`      | [通知中心失败](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525)               | [QTS 邮件服务器配置](https://docs.qnap.com/operating-system/qts/5.1.x/en-us/configuring-an-email-notification-server-EB4E6D7F.html)               |
+| Raspberry Pi     | Raspberry Pi OS | TLS 1.2+     | 活跃            | `465`, `587`      | [DNS 解析问题](https://www.raspberrypi.org/forums/viewtopic.php?t=294014)                                                                             | [Raspberry Pi 邮件设置指南](#raspberry-pi-nas-configuration)                                                                                     |
+| ASUSTOR          | ADM 4.x         | TLS 1.2+     | 活跃            | `465`, `587`      | [证书验证](https://forum.asustor.com/viewtopic.php?f=134&t=12345)                                                                                    | [ASUSTOR 通知设置](https://www.asustor.com/en/online/online_help?id=8)                                                                           |
+| TerraMaster      | TOS 6.x         | TLS 1.2      | 活跃            | `465`, `587`      | [SMTP 身份验证](https://www.terra-master.com/global/forum/)                                                                                          | [TerraMaster 邮件配置](https://www.terra-master.com/global/support/download.php)                                                                 |
+| TrueNAS          | SCALE/CORE      | TLS 1.2+     | 活跃            | `465`, `587`      | [SSL 证书设置](https://www.truenas.com/community/threads/email-notifications-not-working.95234/)                                                    | [TrueNAS 邮件设置指南](https://www.truenas.com/docs/scale/scaletutorials/systemsettings/general/settingupsystememail/)                           |
+| Buffalo          | TeraStation     | TLS 1.2      | 有限            | `465`, `587`      | [固件兼容性](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation)                    | [TeraStation 邮件设置](https://buffaloamericas.com/knowledge-base/configuring-email-notifications-on-a-ts3010-or-ts5010-series-terastation)       |
+| Western Digital  | My Cloud OS 5   | TLS 1.2      | 有限            | `465`, `587`      | [旧版操作系统兼容性](https://community.wd.com/t/my-cloud-email-notifications-not-working/265432)                                                    | [My Cloud 邮件配置](https://support-en.wd.com/app/answers/detailweb/a_id/10222)                                                                  |
+| OpenMediaVault   | OMV 7.x         | TLS 1.2+     | 活跃            | `465`, `587`      | [插件依赖](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/)                                                | [OMV 通知设置](https://docs.openmediavault.org/en/latest/administration/general/notifications.html)                                              |
+| Netgear ReadyNAS | OS 6.x          | 仅 TLS 1.0   | 已停产          | `2455`, `2555`    | [旧版 TLS 支持](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)                              | [ReadyNAS 邮件警报设置](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)                   |
+| Drobo            | Dashboard       | TLS 1.2      | 已停产          | `465`, `587`      | [支持有限](https://myprojects.drobo.com/support/)                                                                                                   | [Drobo 邮件通知](https://www.drobo.com/support/)                                                                                                |
+此矩阵展示了现代、积极维护的 NAS 系统与需要特殊兼容性考虑的传统设备之间的明确区分。大多数当前的 NAS 设备支持现代 TLS 标准，并且可以在无需特殊配置的情况下使用 Forward Email 的主要 SMTP 端口。
 
-## Synology NAS Email Configuration {#synology-nas-email-configuration}
 
-Synology devices with DSM are pretty straightforward to set up. They support modern TLS, so you can use our standard ports without any issues.
+## Synology NAS 邮件配置 {#synology-nas-email-configuration}
+
+带有 DSM 的 Synology 设备设置相当简单。它们支持现代 TLS，因此您可以无忧使用我们的标准端口。
 
 > \[!NOTE]
-> Synology DSM 7.x provides the most comprehensive email notification features. Older DSM versions may have limited configuration options.
+> Synology DSM 7.x 提供了最全面的邮件通知功能。较旧的 DSM 版本可能配置选项有限。
 
-### Configuration Steps {#configuration-steps}
+### 配置步骤 {#configuration-steps}
 
-1. **Access the DSM web interface** by entering your NAS device's IP address or QuickConnect ID in a web browser.
+1. **通过在浏览器中输入 NAS 设备的 IP 地址或 QuickConnect ID 访问 DSM 网页界面。**
 
-2. **Navigate to Control Panel** and select the "Notification" section, then click on the "Email" tab to access email configuration options.
+2. **导航到控制面板**，选择“通知”部分，然后点击“电子邮件”标签以访问邮件配置选项。
 
-3. **Enable email notifications** by checking the "Enable email notifications" checkbox.
+3. **启用邮件通知**，勾选“启用邮件通知”复选框。
 
-4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the server address.
+4. **配置 SMTP 服务器**，输入 `smtp.forwardemail.net` 作为服务器地址。
 
-5. **Set the port configuration** to port 465 for SSL/TLS connections (recommended). Port 587 with STARTTLS is also supported as an alternative.
+5. **设置端口配置**，推荐使用端口 465 进行 SSL/TLS 连接。端口 587 及 STARTTLS 也作为备选支持。
 
-6. **Configure authentication** by selecting "SMTP authentication required" and entering your Forward Email alias in the username field.
+6. **配置身份验证**，选择“需要 SMTP 身份验证”，并在用户名字段中输入您的 Forward Email 别名。
 
-7. **Enter your password** using the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **输入密码**，使用从 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码。
 
-8. **Set up recipient addresses** by entering up to five email addresses that should receive notifications.
+8. **设置收件人地址**，输入最多五个应接收通知的电子邮件地址。
 
-9. **Configure notification filtering** to control which events trigger email alerts, preventing notification overload while ensuring critical events are reported.
+9. **配置通知过滤**，控制哪些事件触发邮件提醒，防止通知过载，同时确保关键事件被报告。
 
-10. **Test the configuration** using DSM's built-in test function to verify that all settings are correct and communication with Forward Email's servers is working properly.
+10. **使用 DSM 内置测试功能测试配置**，验证所有设置正确且与 Forward Email 服务器的通信正常。
 
 > \[!TIP]
-> Synology allows different notification types for different recipients, providing flexibility in how alerts are distributed across your team.
+> Synology 允许为不同收件人设置不同的通知类型，灵活分配团队内的警报。
 
-## QNAP NAS Email Configuration {#qnap-nas-email-configuration}
 
-QNAP devices with QTS work great with Forward Email. They support modern TLS and have a nice web interface for configuration.
+## QNAP NAS 邮件配置 {#qnap-nas-email-configuration}
+
+带有 QTS 的 QNAP 设备与 Forward Email 配合良好。它们支持现代 TLS，并且拥有便捷的网页配置界面。
 
 > \[!IMPORTANT]
-> QNAP QTS 5.2.4 had a known issue with email notifications that was [fixed in QTS 5.2.5](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525). Ensure your firmware is updated to avoid notification failures.
+> QNAP QTS 5.2.4 存在邮件通知的已知问题，已在 [QTS 5.2.5 中修复](https://www.qnap.com/en/how-to/faq/article/email-notifications-fail-after-updating-to-qts-524%E2%80%93fixed-in-qts-525)。请确保固件已更新以避免通知失败。
 
-### Configuration Steps {#configuration-steps-1}
+### 配置步骤 {#configuration-steps-1}
 
-1. **Access your QNAP device's web interface** by entering its IP address in a web browser.
+1. **通过在浏览器中输入 QNAP 设备的 IP 地址访问其网页界面。**
 
-2. **Navigate to the Control Panel** and select "Service Account and Device Pairing," then click on the "E-mail" section to begin email configuration.
+2. **导航到控制面板**，选择“服务账户与设备配对”，然后点击“电子邮件”部分开始邮件配置。
 
-3. **Click "Add SMTP Service"** to create a new email configuration.
+3. **点击“添加 SMTP 服务”** 创建新的邮件配置。
 
-4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the SMTP server address.
+4. **配置 SMTP 服务器**，输入 `smtp.forwardemail.net` 作为 SMTP 服务器地址。
 
-5. **Select the appropriate security protocol** - choose "SSL/TLS" with port `465` (recommended). Port `587` with STARTTLS is also supported.
+5. **选择合适的安全协议** — 选择“SSL/TLS”并使用端口 `465`（推荐）。端口 `587` 及 STARTTLS 也支持。
 
-6. **Configure the port number** - port `465` with SSL/TLS is recommended. Port `587` with STARTTLS is also available if needed.
+6. **配置端口号** — 推荐使用端口 `465` 的 SSL/TLS。若需要，也可使用端口 `587` 的 STARTTLS。
 
-7. **Enter your authentication credentials** using your Forward Email alias as the username and your generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+7. **输入身份验证凭据**，用户名使用您的 Forward Email 别名，密码使用从 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码。
 
-8. **Configure sender information** by entering a descriptive name for the "From" field, such as "QNAP NAS System" or your device's hostname.
+8. **配置发件人信息**，在“发件人”字段输入描述性名称，如“QNAP NAS 系统”或设备主机名。
 
-9. **Set up recipient addresses** for different notification types. QNAP allows you to configure multiple recipient groups for different alert types.
+9. **设置不同通知类型的收件人地址**。QNAP 允许为不同警报类型配置多个收件人组。
 
-10. **Test the configuration** using QNAP's built-in email test function to verify all settings are working properly.
+10. **使用 QNAP 内置邮件测试功能测试配置**，验证所有设置正常工作。
 
 > \[!TIP]
-> If you encounter [Gmail SMTP configuration issues](https://forum.qnap.com/viewtopic.php?t=152466), the same troubleshooting steps apply to Forward Email. Ensure authentication is properly enabled and credentials are correct.
-
+> 如果遇到 [Gmail SMTP 配置问题](https://forum.qnap.com/viewtopic.php?t=152466)，同样的故障排除步骤适用于 Forward Email。确保身份验证已正确启用且凭据无误。
 > \[!NOTE]
-> QNAP devices support advanced notification scheduling, allowing you to configure quiet hours when non-critical notifications are suppressed. This is particularly useful in business environments.
+> QNAP 设备支持高级通知调度，允许您配置静默时间段，在此期间非关键通知将被抑制。这在商业环境中特别有用。
 
-### Common QNAP Troubleshooting Issues {#common-qnap-troubleshooting-issues}
+### 常见 QNAP 故障排除问题 {#common-qnap-troubleshooting-issues}
 
-If your QNAP device [fails to send notification emails](https://www.reddit.com/r/qnap/comments/1dc6z03/qnap_nas_will_not_send_notification_emails/), check the following:
+如果您的 QNAP 设备[无法发送通知邮件](https://www.reddit.com/r/qnap/comments/1dc6z03/qnap_nas_will_not_send_notification_emails/)，请检查以下内容：
 
-* Verify your Forward Email credentials are correct
-* Ensure the SMTP server address is exactly `smtp.forwardemail.net`
-* Confirm the port matches your encryption method (`465` for SSL/TLS is recommended; `587` for STARTTLS is also supported)
-* Check that your [SMTP server configuration](https://www.qnap.com/en/how-to/faq/article/why-does-notification-center-fail-to-send-emails-to-my-smtp-server) allows the connection
+* 验证您的 Forward Email 凭据是否正确
+* 确保 SMTP 服务器地址准确为 `smtp.forwardemail.net`
+* 确认端口与您的加密方式匹配（推荐使用 SSL/TLS 的 `465` 端口；也支持 STARTTLS 的 `587` 端口）
+* 检查您的[SMTP 服务器配置](https://www.qnap.com/en/how-to/faq/article/why-does-notification-center-fail-to-send-emails-to-my-smtp-server)是否允许连接
 
-## ReadyNAS Legacy Configuration {#readynas-legacy-configuration}
 
-Netgear ReadyNAS devices present unique challenges due to their discontinued firmware support and reliance on legacy TLS 1.0 protocols. However, Forward Email's legacy port support ensures these devices can continue to send email notifications reliably.
+## ReadyNAS 旧版配置 {#readynas-legacy-configuration}
+
+Netgear ReadyNAS 设备由于其固件已停止支持且依赖旧版 TLS 1.0 协议，存在独特的挑战。然而，Forward Email 的旧版端口支持确保这些设备能够继续可靠地发送邮件通知。
 
 > \[!CAUTION]
-> ReadyNAS OS 6.x only supports TLS 1.0, which requires Forward Email's legacy compatibility ports `2455` and `2555`. Modern ports `465` and `587` will not work with these devices.
+> ReadyNAS OS 6.x 仅支持 TLS 1.0，这需要使用 Forward Email 的旧版兼容端口 `2455` 和 `2555`。现代端口 `465` 和 `587` 无法与这些设备配合使用。
 
-### Legacy Configuration Steps {#legacy-configuration-steps}
+### 旧版配置步骤 {#legacy-configuration-steps}
 
-1. **Access the ReadyNAS web interface** by entering the device's IP address in a web browser.
+1. **通过在浏览器中输入设备的 IP 地址访问 ReadyNAS 网页界面。**
 
-2. **Navigate to System > Settings > Alerts** to access the email configuration section.
+2. **导航至系统 > 设置 > 警报，进入邮件配置部分。**
 
-3. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the server address.
+3. **配置 SMTP 服务器，输入 `smtp.forwardemail.net` 作为服务器地址。**
 
-4. **Set the port configuration** to either `2455` for SSL/TLS connections or `2555` for STARTTLS connections - these are Forward Email's legacy compatibility ports.
+4. **设置端口配置，选择 `2455` 用于 SSL/TLS 连接，或 `2555` 用于 STARTTLS 连接——这些是 Forward Email 的旧版兼容端口。**
 
-5. **Enable authentication** and enter your Forward Email alias as the username and your generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
+5. **启用身份验证，输入您的 Forward Email 别名作为用户名，以及您在 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码。**
 
-6. **Configure sender information** with a descriptive "From" address to identify the ReadyNAS device.
+6. **配置发件人信息，使用描述性的“发件人”地址以识别 ReadyNAS 设备。**
 
-7. **Add recipient email addresses** using the + button in the email contacts section.
+7. **使用邮件联系人部分的 + 按钮添加收件人邮箱地址。**
 
-8. **Test the configuration** to ensure the legacy TLS connection is working properly.
+8. **测试配置，确保旧版 TLS 连接正常工作。**
 
 > \[!IMPORTANT]
-> ReadyNAS devices require the legacy ports because they cannot establish secure connections using modern TLS protocols. This is a [known limitation](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system) of the discontinued firmware.
+> ReadyNAS 设备需要使用旧版端口，因为它们无法使用现代 TLS 协议建立安全连接。这是已停止支持的固件的[已知限制](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)。
 
-### ReadyNAS Troubleshooting {#readynas-troubleshooting}
+### ReadyNAS 故障排除 {#readynas-troubleshooting}
 
-Common issues with ReadyNAS email configuration include:
+ReadyNAS 邮件配置的常见问题包括：
 
-* **TLS version mismatch**: Ensure you're using ports `2455` or `2555`, not the modern ports
-* **Authentication failures**: Verify your Forward Email credentials are correct
-* **Network connectivity**: Check that the ReadyNAS can reach `smtp.forwardemail.net`
-* **Firmware limitations**: Some older ReadyNAS models may have additional [HTTPS configuration requirements](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
+* **TLS 版本不匹配**：确保使用端口 `2455` 或 `2555`，而非现代端口
+* **身份验证失败**：验证您的 Forward Email 凭据是否正确
+* **网络连接问题**：检查 ReadyNAS 是否能访问 `smtp.forwardemail.net`
+* **固件限制**：某些较旧的 ReadyNAS 型号可能有额外的[HTTPS 配置要求](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
 
-ReadyNAS devices running OS 6.x and earlier versions only support TLS 1.0 connections, which most modern email providers no longer accept. Forward Email's dedicated legacy ports (2455 and 2555) specifically support these older protocols, ensuring continued functionality for ReadyNAS users.
+运行 OS 6.x 及更早版本的 ReadyNAS 设备仅支持 TLS 1.0 连接，而大多数现代邮件服务提供商已不再接受此协议。Forward Email 专用的旧版端口（2455 和 2555）专门支持这些旧协议，确保 ReadyNAS 用户的持续功能。
 
-To configure email on ReadyNAS devices, access the device's web interface through its IP address. Navigate to the System section and select "Notifications" to access email configuration options.
+要在 ReadyNAS 设备上配置邮件，请通过其 IP 地址访问设备的网页界面。导航至系统部分，选择“通知”以进入邮件配置选项。
 
-In the email configuration section, enable email notifications and enter smtp.forwardemail.net as the SMTP server. This is crucial - use Forward Email's legacy-compatible ports rather than standard SMTP ports.
+在邮件配置部分，启用邮件通知并输入 smtp.forwardemail.net 作为 SMTP 服务器。这一点至关重要——请使用 Forward Email 的旧版兼容端口，而非标准 SMTP 端口。
 
-For SSL/TLS connections, configure port 2455 instead of the standard port 465 (recommended). For STARTTLS connections, use port 2555 instead of port 587. These special ports maintain TLS 1.0 compatibility while providing the best available security for legacy devices.
+对于 SSL/TLS 连接，配置端口为 2455，而非标准的 465（推荐）。对于 STARTTLS 连接，使用端口 2555，而非 587。这些特殊端口保持了 TLS 1.0 的兼容性，同时为旧设备提供了最佳可用的安全性。
+输入您的 Forward Email 别名作为用户名，以及您生成的密码进行身份验证。ReadyNAS 设备支持 SMTP 身份验证，这是 Forward Email 连接所必需的。
 
-Enter your Forward Email alias as the username and your generated password for authentication. ReadyNAS devices support SMTP authentication, which is required for Forward Email connections.
+根据您的通知需求配置发件人邮箱地址和收件人地址。ReadyNAS 允许多个收件人地址，使您能够将警报分发给不同的团队成员或邮箱账户。
 
-Configure the sender email address and recipient addresses according to your notification requirements. ReadyNAS allows multiple recipient addresses, enabling you to distribute alerts to different team members or email accounts.
+请仔细测试配置，因为 ReadyNAS 设备在配置失败时可能不会提供详细的错误信息。如果标准测试无效，请确认您使用的是正确的旧版端口（2455 或 2555），而非现代 SMTP 端口。
 
-Test the configuration carefully, as ReadyNAS devices may not provide detailed error messages if the configuration fails. If standard testing doesn't work, verify that you're using the correct legacy ports (2455 or 2555) rather than modern SMTP ports.
+请考虑使用旧版 TLS 协议的安全影响。虽然 Forward Email 的旧版端口为较旧设备提供了最佳可用安全性，但建议在可能的情况下升级到支持当前 TLS 的现代 NAS 系统。
 
-Consider the security implications of using legacy TLS protocols. While Forward Email's legacy ports provide the best available security for older devices, upgrading to a modern NAS system with current TLS support is recommended when possible.
 
-## TerraMaster NAS Configuration {#terramaster-nas-configuration}
+## TerraMaster NAS 配置 {#terramaster-nas-configuration}
 
-TerraMaster devices running TOS 6.x support modern TLS and work well with Forward Email's standard ports.
+运行 TOS 6.x 的 TerraMaster 设备支持现代 TLS，并且与 Forward Email 的标准端口兼容良好。
 
 > \[!NOTE]
-> TerraMaster TOS 6.x provides comprehensive email notification features. Make sure your firmware is up to date for the best compatibility.
+> TerraMaster TOS 6.x 提供全面的邮件通知功能。请确保您的固件是最新版本，以获得最佳兼容性。
 
-1. **Access System Settings**
-   * Log into your TerraMaster web interface
-   * Navigate to **Control Panel** > **Notification**
+1. **访问系统设置**
+   * 登录您的 TerraMaster 网页界面
+   * 导航至 **控制面板** > **通知**
 
-2. **Configure SMTP Settings**
-   * Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+2. **配置 SMTP 设置**
+   * 服务器：`smtp.forwardemail.net`
+   * 端口：`465`（SSL/TLS，推荐）或 `587`（STARTTLS）
+   * 用户名：您的 Forward Email 别名
+   * 密码：从 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码
 
-3. **Enable Notifications**
-   * Check the notification types you want to receive
-   * Test the configuration with the built-in test function
+3. **启用通知**
+   * 勾选您希望接收的通知类型
+   * 使用内置测试功能测试配置
 
 > \[!TIP]
-> TerraMaster devices work best with port `465` for SSL/TLS connections (recommended). If you experience issues, port `587` with STARTTLS is also supported.
+> TerraMaster 设备使用端口 `465` 进行 SSL/TLS 连接效果最佳（推荐）。如果遇到问题，也支持使用端口 `587` 的 STARTTLS。
 
-## ASUSTOR NAS Configuration {#asustor-nas-configuration}
 
-ASUSTOR devices with ADM 4.x have solid email notification support and work seamlessly with Forward Email.
+## ASUSTOR NAS 配置 {#asustor-nas-configuration}
+
+搭载 ADM 4.x 的 ASUSTOR 设备具备完善的邮件通知支持，并能与 Forward Email 无缝配合。
 
 > \[!NOTE]
-> ASUSTOR ADM 4.x includes advanced notification filtering options. You can customize which events trigger email alerts.
+> ASUSTOR ADM 4.x 包含高级通知过滤选项。您可以自定义哪些事件触发邮件提醒。
 
-1. **Open Notification Settings**
-   * Access ADM web interface
-   * Go to **Settings** > **Notification**
+1. **打开通知设置**
+   * 访问 ADM 网页界面
+   * 进入 **设置** > **通知**
 
-2. **Set Up SMTP Configuration**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Authentication: Enable
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+2. **设置 SMTP 配置**
+   * SMTP 服务器：`smtp.forwardemail.net`
+   * 端口：`465`（SSL/TLS，推荐）或 `587`（STARTTLS）
+   * 认证：启用
+   * 用户名：您的 Forward Email 别名
+   * 密码：从 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码
 
-3. **Configure Alert Types**
-   * Select which system events should trigger emails
-   * Set up recipient addresses
-   * Test the configuration
+3. **配置警报类型**
+   * 选择哪些系统事件应触发邮件
+   * 设置收件人地址
+   * 测试配置
 
 > \[!IMPORTANT]
-> ASUSTOR devices require authentication to be explicitly enabled in the SMTP settings. Don't forget to check this option.
+> ASUSTOR 设备要求在 SMTP 设置中明确启用身份验证。请务必勾选此选项。
 
-## Buffalo TeraStation Configuration {#buffalo-terastation-configuration}
 
-Buffalo TeraStation devices have limited but functional email notification capabilities. Setup is straightforward once you know where to look.
+## Buffalo TeraStation 配置 {#buffalo-terastation-configuration}
+
+Buffalo TeraStation 设备的邮件通知功能有限但可用。了解配置位置后，设置过程相对简单。
 
 > \[!CAUTION]
-> Buffalo TeraStation firmware updates are infrequent. Make sure you're using the latest available firmware for your model before configuring email.
+> Buffalo TeraStation 固件更新不频繁。配置邮件前，请确保您使用的是该型号的最新固件。
 
-1. **Access Web Configuration**
-   * Connect to your TeraStation's web interface
-   * Navigate to **System** > **Notification**
+1. **访问网页配置**
+   * 连接到您的 TeraStation 网页界面
+   * 导航至 **系统** > **通知**
 
-2. **Configure Email Settings**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable SSL/TLS encryption
+2. **配置邮件设置**
+   * SMTP 服务器：`smtp.forwardemail.net`
+   * 端口：`465`（SSL/TLS，推荐）或 `587`（STARTTLS）
+   * 用户名：您的 Forward Email 别名
+   * 密码：从 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码
+   * 启用 SSL/TLS 加密
 
-3. **Set Notification Preferences**
-   * Choose which events trigger emails (disk errors, temperature alerts, etc.)
-   * Enter recipient email addresses
-   * Save and test the configuration
+3. **设置通知偏好**
+   * 选择触发邮件的事件（磁盘错误、温度警报等）
+   * 输入收件人邮箱地址
+   * 保存并测试配置
 
 > \[!NOTE]
-> Some older TeraStation models may have limited SMTP configuration options. Check your model's documentation for specific capabilities.
+> 某些较旧的 TeraStation 型号可能具有有限的 SMTP 配置选项。请查阅您型号的文档以了解具体功能。
+## Western Digital My Cloud 配置 {#western-digital-my-cloud-configuration}
 
-## Western Digital My Cloud Configuration {#western-digital-my-cloud-configuration}
-
-Western Digital My Cloud devices running OS 5 support email notifications, though the interface can be a bit buried in the settings.
+运行 OS 5 的 Western Digital My Cloud 设备支持电子邮件通知，尽管该界面在设置中可能有些隐藏。
 
 > \[!WARNING]
-> Western Digital has discontinued support for many My Cloud models. Check if your device still receives firmware updates before relying on email notifications for critical alerts.
+> Western Digital 已停止支持许多 My Cloud 型号。在依赖电子邮件通知关键警报之前，请检查您的设备是否仍然接收固件更新。
 
-1. **Navigate to Settings**
-   * Open the My Cloud web dashboard
-   * Go to **Settings** > **General** > **Notifications**
+1. **导航到设置**
+   * 打开 My Cloud 网络仪表盘
+   * 进入 **Settings** > **General** > **Notifications**
 
-2. **Configure SMTP Details**
-   * Mail Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable encryption
+2. **配置 SMTP 详情**
+   * 邮件服务器：`smtp.forwardemail.net`
+   * 端口：`465`（SSL/TLS，推荐）或 `587`（STARTTLS）
+   * 用户名：您的 Forward Email 别名
+   * 密码：从 [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) 生成的密码
+   * 启用加密
 
-3. **Set Up Alert Types**
-   * Select notification categories (system alerts, disk health, etc.)
-   * Add recipient email addresses
-   * Test the email configuration
+3. **设置警报类型**
+   * 选择通知类别（系统警报、磁盘健康等）
+   * 添加收件人电子邮件地址
+   * 测试电子邮件配置
 
 > \[!TIP]
-> We recommend using port `465` with SSL/TLS. If you experience issues, port `587` with STARTTLS is also supported.
+> 我们推荐使用端口 `465` 和 SSL/TLS。如果遇到问题，也支持使用端口 `587` 和 STARTTLS。
 
-## TrueNAS Email Configuration {#truenas-email-configuration}
 
-TrueNAS (both SCALE and CORE) has excellent email notification support with detailed configuration options.
+## TrueNAS 电子邮件配置 {#truenas-email-configuration}
+
+TrueNAS（包括 SCALE 和 CORE）具有出色的电子邮件通知支持和详细的配置选项。
 
 > \[!NOTE]
-> TrueNAS provides some of the most comprehensive email notification features among NAS systems. You can configure detailed alert rules and multiple recipients.
+> TrueNAS 提供了 NAS 系统中最全面的电子邮件通知功能之一。您可以配置详细的警报规则和多个收件人。
 
-1. **Access System Settings**
-   * Log into the TrueNAS web interface
-   * Navigate to **System** > **Email**
+1. **访问系统设置**
+   * 登录 TrueNAS 网络界面
+   * 导航至 **System** > **Email**
 
-2. **Configure SMTP Settings**
-   * Outgoing Mail Server: `smtp.forwardemail.net`
-   * Mail Server Port: `465` (recommended) or `587`
-   * Security: SSL/TLS (for 465, recommended) or STARTTLS (for 587)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+2. **配置 SMTP 设置**
+   * 发件服务器：`smtp.forwardemail.net`
+   * 邮件服务器端口：`465`（推荐）或 `587`
+   * 安全性：SSL/TLS（465 推荐）或 STARTTLS（587）
+   * 用户名：您的 Forward Email 别名
+   * 密码：从 [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) 生成的密码
 
-3. **Set Up Alerts**
-   * Go to **System** > **Alert Services**
-   * Configure which alerts should be sent via email
-   * Set recipient addresses and alert levels
-   * Test the configuration with the built-in test function
+3. **设置警报**
+   * 进入 **System** > **Alert Services**
+   * 配置哪些警报应通过电子邮件发送
+   * 设置收件人地址和警报级别
+   * 使用内置测试功能测试配置
 
 > \[!IMPORTANT]
-> TrueNAS allows you to configure different alert levels (INFO, NOTICE, WARNING, ERROR, CRITICAL). Choose appropriate levels to avoid email spam while ensuring critical issues are reported.
+> TrueNAS 允许您配置不同的警报级别（INFO、NOTICE、WARNING、ERROR、CRITICAL）。请选择合适的级别以避免邮件垃圾，同时确保关键问题得到报告。
 
-## OpenMediaVault Configuration {#openmediavault-configuration}
 
-OpenMediaVault provides solid email notification capabilities through its web interface. The setup process is clean and straightforward.
+## OpenMediaVault 配置 {#openmediavault-configuration}
+
+OpenMediaVault 通过其网络界面提供了稳健的电子邮件通知功能。设置过程简洁明了。
 
 > \[!NOTE]
-> OpenMediaVault's notification system is plugin-based. Make sure you have the email notification plugin installed and enabled.
+> OpenMediaVault 的通知系统基于插件。请确保已安装并启用电子邮件通知插件。
 
-1. **Access Notification Settings**
-   * Open the OpenMediaVault web interface
-   * Go to **System** > **Notification** > **Email**
+1. **访问通知设置**
+   * 打开 OpenMediaVault 网络界面
+   * 进入 **System** > **Notification** > **Email**
 
-2. **Configure SMTP Parameters**
-   * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
-   * Username: Your Forward Email alias
-   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
-   * Enable SSL/TLS
+2. **配置 SMTP 参数**
+   * SMTP 服务器：`smtp.forwardemail.net`
+   * 端口：`465`（SSL/TLS，推荐）或 `587`（STARTTLS）
+   * 用户名：您的 Forward Email 别名
+   * 密码：从 [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) 生成的密码
+   * 启用 SSL/TLS
 
-3. **Set Up Notification Rules**
-   * Navigate to **System** > **Notification** > **Notifications**
-   * Configure which system events should trigger emails
-   * Set recipient addresses
-   * Test the email functionality
-
-> \[!TIP]
-> OpenMediaVault allows you to configure notification schedules. You can set quiet hours or limit notification frequency to avoid being overwhelmed by alerts.
-
-## Raspberry Pi NAS Configuration {#raspberry-pi-nas-configuration}
-
-The Raspberry Pi represents an excellent entry point into NAS functionality, offering a cost-effective solution for home and small office environments. Setting up a Raspberry Pi as a NAS device involves configuring file sharing protocols, email notifications, and essential network services.
+3. **设置通知规则**
+   * 导航至 **System** > **Notification** > **Notifications**
+   * 配置哪些系统事件应触发电子邮件
+   * 设置收件人地址
+   * 测试电子邮件功能
 
 > \[!TIP]
-> For Raspberry Pi enthusiasts, we highly recommend complementing your NAS setup with [PiKVM](https://pikvm.org/) for remote server management and [Pi-hole](https://pi-hole.net/) for network-wide ad blocking and DNS management. These tools create a comprehensive home lab environment.
+> OpenMediaVault 允许您配置通知时间表。您可以设置静音时间或限制通知频率，以避免被警报淹没。
 
-### Initial Raspberry Pi Setup {#initial-raspberry-pi-setup}
 
-Before configuring NAS services, ensure your Raspberry Pi is running the latest Raspberry Pi OS and has adequate storage. A high-quality microSD card (Class 10 or better) or USB 3.0 SSD provides better performance and reliability for NAS operations.
+## Raspberry Pi NAS 配置 {#raspberry-pi-nas-configuration}
 
-1. **Update the system** by running `sudo apt update && sudo apt upgrade -y` to ensure all packages are current.
+Raspberry Pi 是进入 NAS 功能的极佳入门选择，为家庭和小型办公环境提供了经济实惠的解决方案。将 Raspberry Pi 设置为 NAS 设备涉及配置文件共享协议、电子邮件通知和基本网络服务。
 
-2. **Enable SSH access** using `sudo systemctl enable ssh && sudo systemctl start ssh` for remote administration.
+> \[!TIP]
+> 对于 Raspberry Pi 爱好者，我们强烈推荐配合使用 [PiKVM](https://pikvm.org/) 进行远程服务器管理，以及 [Pi-hole](https://pi-hole.net/) 实现全网广告拦截和 DNS 管理。这些工具共同打造了一个全面的家庭实验室环境。
+### 初始 Raspberry Pi 设置 {#initial-raspberry-pi-setup}
 
-3. **Configure static IP addressing** by editing `/etc/dhcpcd.conf` to ensure consistent network access.
+在配置 NAS 服务之前，确保您的 Raspberry Pi 运行的是最新的 Raspberry Pi OS，并且具有足够的存储空间。高质量的 microSD 卡（Class 10 或更高）或 USB 3.0 SSD 可为 NAS 操作提供更好的性能和可靠性。
 
-4. **Set up external storage** by connecting and mounting USB drives or configuring RAID arrays for data redundancy.
+1. **更新系统**，运行 `sudo apt update && sudo apt upgrade -y` 以确保所有软件包都是最新的。
 
-### Samba File Sharing Configuration {#samba-file-sharing-configuration}
+2. **启用 SSH 访问**，使用 `sudo systemctl enable ssh && sudo systemctl start ssh` 进行远程管理。
 
-Samba provides Windows-compatible file sharing, making your Raspberry Pi accessible from any device on your network. The configuration process involves installing Samba, creating shares, and setting up user authentication.
+3. **配置静态 IP 地址**，通过编辑 `/etc/dhcpcd.conf` 以确保网络访问的一致性。
 
-Install Samba using `sudo apt install samba samba-common-bin` and configure the main configuration file at `/etc/samba/smb.conf`. Create shared directories and set appropriate permissions using `sudo mkdir -p /srv/samba/shared && sudo chmod 755 /srv/samba/shared`.
+4. **设置外部存储**，连接并挂载 USB 驱动器或配置 RAID 阵列以实现数据冗余。
 
-Configure Samba shares by adding sections to the configuration file for each shared directory. Set up user authentication using `sudo smbpasswd -a username` to create Samba-specific passwords for network access.
+### Samba 文件共享配置 {#samba-file-sharing-configuration}
+
+Samba 提供与 Windows 兼容的文件共享，使您的 Raspberry Pi 可从网络上的任何设备访问。配置过程包括安装 Samba、创建共享和设置用户认证。
+
+使用 `sudo apt install samba samba-common-bin` 安装 Samba，并配置主配置文件 `/etc/samba/smb.conf`。使用 `sudo mkdir -p /srv/samba/shared && sudo chmod 755 /srv/samba/shared` 创建共享目录并设置适当的权限。
+
+通过在配置文件中为每个共享目录添加部分来配置 Samba 共享。使用 `sudo smbpasswd -a username` 设置用户认证，为网络访问创建 Samba 专用密码。
 
 > \[!IMPORTANT]
-> Always use strong passwords for Samba users and consider enabling guest access only for non-sensitive shared folders. Review the [official Samba documentation](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) for advanced security configurations.
+> 始终为 Samba 用户使用强密码，并考虑仅对非敏感共享文件夹启用访客访问。请查阅 [官方 Samba 文档](https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html) 以获取高级安全配置。
 
-### FTP Server Setup {#ftp-server-setup}
+### FTP 服务器设置 {#ftp-server-setup}
 
-FTP provides another method for file access, particularly useful for automated backups and remote file management. Install and configure vsftpd (Very Secure FTP Daemon) for reliable FTP services.
+FTP 提供另一种文件访问方式，特别适用于自动备份和远程文件管理。安装并配置 vsftpd（非常安全的 FTP 守护进程）以获得可靠的 FTP 服务。
 
-Install vsftpd using `sudo apt install vsftpd` and configure the service by editing `/etc/vsftpd.conf`. Enable local user access, configure passive mode settings, and set up appropriate security restrictions.
+使用 `sudo apt install vsftpd` 安装 vsftpd，并通过编辑 `/etc/vsftpd.conf` 配置服务。启用本地用户访问，配置被动模式设置，并设置适当的安全限制。
 
-Create FTP users and configure directory access permissions. Consider using SFTP (SSH File Transfer Protocol) instead of traditional FTP for enhanced security, as it encrypts all data transmission.
+创建 FTP 用户并配置目录访问权限。考虑使用 SFTP（SSH 文件传输协议）替代传统 FTP，以增强安全性，因为它加密所有数据传输。
 
 > \[!CAUTION]
-> Traditional FTP transmits passwords in plain text. Always use SFTP or configure FTP with TLS encryption for secure file transfers. Review [vsftpd security best practices](https://security.appspot.com/vsftpd.html) before deployment.
+> 传统 FTP 以明文传输密码。始终使用 SFTP 或配置带有 TLS 加密的 FTP 以确保文件传输安全。部署前请查阅 [vsftpd 安全最佳实践](https://security.appspot.com/vsftpd.html)。
 
-### Email Notification Configuration {#email-notification-configuration}
+### 邮件通知配置 {#email-notification-configuration}
 
-Configure your Raspberry Pi NAS to send email notifications for system events, storage alerts, and backup completion status. This involves installing and configuring a mail transfer agent and setting up Forward Email integration.
+配置您的 Raspberry Pi NAS 以发送系统事件、存储警报和备份完成状态的邮件通知。这涉及安装和配置邮件传输代理以及设置 Forward Email 集成。
 
-Install `msmtp` as a lightweight SMTP client using `sudo apt install msmtp msmtp-mta`. Create the configuration file at `/etc/msmtprc` with the following settings:
+使用 `sudo apt install msmtp msmtp-mta` 安装轻量级 SMTP 客户端 `msmtp`。在 `/etc/msmtprc` 创建配置文件，内容如下：
 
 ```
 defaults
@@ -435,49 +443,48 @@ user           your-alias@yourdomain.com
 password       your-generated-password
 ```
 
-Configure system notifications by setting up cron jobs and system monitoring scripts that use `msmtp` to send alerts. Create scripts for disk space monitoring, temperature alerts, and backup completion notifications.
+通过设置使用 `msmtp` 发送警报的定时任务和系统监控脚本来配置系统通知。创建磁盘空间监控、温度警报和备份完成通知的脚本。
 
-### Advanced Raspberry Pi NAS Features {#advanced-raspberry-pi-nas-features}
+### 高级 Raspberry Pi NAS 功能 {#advanced-raspberry-pi-nas-features}
 
-Enhance your Raspberry Pi NAS with additional services and monitoring capabilities. Install and configure network monitoring tools, automated backup solutions, and remote access services.
+通过额外的服务和监控功能增强您的 Raspberry Pi NAS。安装并配置网络监控工具、自动备份解决方案和远程访问服务。
 
-Set up [Nextcloud](https://nextcloud.com/) for cloud-like functionality with web-based file access, calendar synchronization, and collaborative features. Install using Docker or the official Nextcloud installation guide for Raspberry Pi.
+设置 [Nextcloud](https://nextcloud.com/) 实现类似云的功能，支持基于网页的文件访问、日历同步和协作功能。可通过 Docker 或官方 Raspberry Pi Nextcloud 安装指南进行安装。
+使用 `rsync` 和 `cron` 配置自动备份，以创建关键数据的定时备份。使用您的 Forward Email 配置设置备份完成和失败警报的电子邮件通知。
 
-Configure automated backups using `rsync` and `cron` to create scheduled backups of critical data. Set up email notifications for backup completion and failure alerts using your Forward Email configuration.
-
-Implement network monitoring using tools like [Nagios](https://www.nagios.org/) or [Zabbix](https://www.zabbix.com/) to monitor system health, network connectivity, and service availability.
+使用诸如 [Nagios](https://www.nagios.org/) 或 [Zabbix](https://www.zabbix.com/) 等工具实现网络监控，以监测系统健康状况、网络连接性和服务可用性。
 
 > \[!NOTE]
-> For users managing network infrastructure, consider integrating [Switchbot](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) with your PiKVM setup for remote physical switch control. This [Python integration guide](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) provides detailed instructions for automating physical device management.
+> 对于管理网络基础设施的用户，考虑将 [Switchbot](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) 与您的 PiKVM 设置集成，实现远程物理开关控制。此 [Python 集成指南](https://www.reddit.com/r/pikvm/comments/skhxkm/pikvm_with_switchbot/) 提供了自动化物理设备管理的详细说明。
 
-### Raspberry Pi Email Troubleshooting {#raspberry-pi-email-troubleshooting}
+### Raspberry Pi 邮件故障排除 {#raspberry-pi-email-troubleshooting}
 
-Common issues with Raspberry Pi email configuration include DNS resolution problems, firewall restrictions, and authentication failures. The lightweight nature of Raspberry Pi systems can sometimes cause timing issues with SMTP connections.
+Raspberry Pi 邮件配置的常见问题包括 DNS 解析问题、防火墙限制和身份验证失败。Raspberry Pi 系统的轻量级特性有时会导致 SMTP 连接的时序问题。
 
-If email notifications fail, check the `msmtp` log file at `/var/log/msmtp.log` for detailed error messages. Verify that your Forward Email credentials are correct and that the Raspberry Pi can resolve `smtp.forwardemail.net`.
+如果电子邮件通知失败，请检查 `/var/log/msmtp.log` 中的 `msmtp` 日志文件以获取详细错误信息。确认您的 Forward Email 凭据正确，且 Raspberry Pi 能够解析 `smtp.forwardemail.net`。
 
-Test email functionality using the command line: `echo "Test message" | msmtp recipient@example.com`. This helps isolate configuration issues from application-specific problems.
+使用命令行测试邮件功能：`echo "Test message" | msmtp recipient@example.com`。这有助于将配置问题与特定应用问题区分开。
 
-Configure proper DNS settings in `/etc/resolv.conf` if you encounter DNS resolution issues. Consider using public DNS servers like `8.8.8.8` or `1.1.1.1` if local DNS is unreliable.
+如果遇到 DNS 解析问题，请在 `/etc/resolv.conf` 中配置正确的 DNS 设置。若本地 DNS 不可靠，可考虑使用公共 DNS 服务器如 `8.8.8.8` 或 `1.1.1.1`。
 
-### Performance Optimization {#performance-optimization}
+### 性能优化 {#performance-optimization}
 
-Optimize your Raspberry Pi NAS performance through proper configuration of storage, network settings, and system resources. Use high-quality storage devices and configure appropriate file system options for your use case.
+通过合理配置存储、网络设置和系统资源来优化您的 Raspberry Pi NAS 性能。使用高质量存储设备，并根据您的使用场景配置合适的文件系统选项。
 
-Enable USB 3.0 boot for better storage performance if using external drives. Configure the GPU memory split using `sudo raspi-config` to allocate more RAM to system operations rather than graphics processing.
+如果使用外部驱动器，启用 USB 3.0 启动以提升存储性能。使用 `sudo raspi-config` 配置 GPU 内存分配，将更多 RAM 分配给系统操作而非图形处理。
 
-Monitor system performance using tools like `htop`, `iotop`, and `nethogs` to identify bottlenecks and optimize resource usage. Consider upgrading to a Raspberry Pi 4 with 8GB RAM for demanding NAS applications.
+使用 `htop`、`iotop` 和 `nethogs` 等工具监控系统性能，识别瓶颈并优化资源使用。对于要求较高的 NAS 应用，考虑升级到配备 8GB RAM 的 Raspberry Pi 4。
 
-Implement proper cooling solutions to prevent thermal throttling during intensive operations. Monitor CPU temperature using `/opt/vc/bin/vcgencmd measure_temp` and ensure adequate ventilation.
+实施适当的散热方案，防止高强度操作时的热节流。使用 `/opt/vc/bin/vcgencmd measure_temp` 监控 CPU 温度，确保通风良好。
 
-### Security Considerations {#security-considerations}
+### 安全注意事项 {#security-considerations}
 
-Secure your Raspberry Pi NAS by implementing proper access controls, network security measures, and regular security updates. Change default passwords, disable unnecessary services, and configure firewall rules.
+通过实施适当的访问控制、网络安全措施和定期安全更新来保护您的 Raspberry Pi NAS。更改默认密码，禁用不必要的服务，并配置防火墙规则。
 
-Install and configure `fail2ban` to protect against brute force attacks on SSH and other services. Set up automatic security updates using `unattended-upgrades` to ensure critical security patches are applied promptly.
+安装并配置 `fail2ban`，防止 SSH 和其他服务的暴力破解攻击。使用 `unattended-upgrades` 设置自动安全更新，确保关键安全补丁及时应用。
 
-Configure network segmentation to isolate your NAS from other network devices when possible. Use VPN access for remote connections rather than exposing services directly to the internet.
+配置网络分段，在可能的情况下将 NAS 与其他网络设备隔离。远程连接时使用 VPN 访问，而非直接暴露服务到互联网。
 
-Regular backup your Raspberry Pi configuration and data to prevent data loss from hardware failures or security incidents. Test backup restoration procedures to ensure data recovery capabilities.
+定期备份您的 Raspberry Pi 配置和数据，以防止因硬件故障或安全事件导致的数据丢失。测试备份恢复流程，确保具备数据恢复能力。
 
-The Raspberry Pi NAS configuration provides an excellent foundation for learning network storage concepts while delivering practical functionality for home and small office environments. The combination with Forward Email ensures reliable notification delivery for system monitoring and maintenance alerts.
+Raspberry Pi NAS 配置为学习网络存储概念提供了极佳基础，同时为家庭和小型办公环境提供实用功能。与 Forward Email 结合确保系统监控和维护警报的可靠通知传递。

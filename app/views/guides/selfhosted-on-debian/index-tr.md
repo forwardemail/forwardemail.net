@@ -1,98 +1,102 @@
-# Debian {#forward-email-self-hosting-installation-guide-for-debian} için E-postayı İlet Kendi Kendine Barındırma Kurulum Kılavuzu
+# Forward Email Kendi Kendine Barındırma Kurulum Rehberi Debian için {#forward-email-self-hosting-installation-guide-for-debian}
+
 
 ## İçindekiler {#table-of-contents}
 
 * [Genel Bakış](#overview)
-* [Ön koşullar](#prerequisites)
+* [Ön Koşullar](#prerequisites)
 * [Sistem Gereksinimleri](#system-requirements)
 * [Adım Adım Kurulum](#step-by-step-installation)
   * [Adım 1: İlk Sistem Kurulumu](#step-1-initial-system-setup)
-  * [Adım 2: DNS Çözücülerini Yapılandırın](#step-2-configure-dns-resolvers)
-  * [Adım 3: Sistem Bağımlılıklarını Yükleyin](#step-3-install-system-dependencies)
-  * [Adım 4: Snapd'i Kurun ve Yapılandırın](#step-4-install-and-configure-snapd)
-  * [Adım 5: Snap Paketlerini Yükleyin](#step-5-install-snap-packages)
-  * [Adım 6: Docker'ı yükleyin](#step-6-install-docker)
-  * [Adım 7: Docker Hizmetini Yapılandırın](#step-7-configure-docker-service)
-  * [Adım 8: UFW Güvenlik Duvarını Kurun ve Yapılandırın](#step-8-install-and-configure-ufw-firewall)
-  * [Adım 9: Forward E-posta Deposunu Klonlayın](#step-9-clone-forward-email-repository)
-  * [Adım 10: Ortam Yapılandırmasını Ayarlayın](#step-10-set-up-environment-configuration)
-  * [Adım 11: Alan Adınızı Yapılandırın](#step-11-configure-your-domain)
-  * [Adım 12: SSL Sertifikaları Oluşturun](#step-12-generate-ssl-certificates)
-  * [Adım 13: Şifreleme Anahtarlarını Oluşturun](#step-13-generate-encryption-keys)
-  * [Adım 14: Yapılandırmada SSL Yollarını Güncelleyin](#step-14-update-ssl-paths-in-configuration)
-  * [Adım 15: Temel Kimlik Doğrulamayı Ayarlayın](#step-15-set-up-basic-authentication)
-  * [Adım 16: Docker Compose ile dağıtım](#step-16-deploy-with-docker-compose)
-  * [Adım 17: Kurulumu Doğrulayın](#step-17-verify-installation)
+  * [Adım 2: DNS Çözücülerini Yapılandırma](#step-2-configure-dns-resolvers)
+  * [Adım 3: Sistem Bağımlılıklarını Yükleme](#step-3-install-system-dependencies)
+  * [Adım 4: Snapd Kurulumu ve Yapılandırması](#step-4-install-and-configure-snapd)
+  * [Adım 5: Snap Paketlerini Yükleme](#step-5-install-snap-packages)
+  * [Adım 6: Docker Kurulumu](#step-6-install-docker)
+  * [Adım 7: Docker Servisini Yapılandırma](#step-7-configure-docker-service)
+  * [Adım 8: UFW Güvenlik Duvarını Kurma ve Yapılandırma](#step-8-install-and-configure-ufw-firewall)
+  * [Adım 9: Forward Email Deposu Klonlama](#step-9-clone-forward-email-repository)
+  * [Adım 10: Ortam Yapılandırmasını Ayarlama](#step-10-set-up-environment-configuration)
+  * [Adım 11: Alan Adınızı Yapılandırma](#step-11-configure-your-domain)
+  * [Adım 12: SSL Sertifikaları Oluşturma](#step-12-generate-ssl-certificates)
+  * [Adım 13: Şifreleme Anahtarları Oluşturma](#step-13-generate-encryption-keys)
+  * [Adım 14: Yapılandırmadaki SSL Yollarını Güncelleme](#step-14-update-ssl-paths-in-configuration)
+  * [Adım 15: Temel Kimlik Doğrulamayı Ayarlama](#step-15-set-up-basic-authentication)
+  * [Adım 16: Docker Compose ile Dağıtım](#step-16-deploy-with-docker-compose)
+  * [Adım 17: Kurulumu Doğrulama](#step-17-verify-installation)
 * [Kurulum Sonrası Yapılandırma](#post-installation-configuration)
-  * [DNS Kayıtları Kurulumu](#dns-records-setup)
+  * [DNS Kayıtlarının Ayarlanması](#dns-records-setup)
   * [İlk Giriş](#first-login)
 * [Yedekleme Yapılandırması](#backup-configuration)
   * [S3 Uyumlu Yedekleme Kurulumu](#set-up-s3-compatible-backup)
-  * [Yedekleme Cron İşlerini Ayarlayın](#set-up-backup-cron-jobs)
+  * [Yedekleme Cron İşlerinin Ayarlanması](#set-up-backup-cron-jobs)
 * [Otomatik Güncelleme Yapılandırması](#auto-update-configuration)
-* [Debian'a Özgü Hususlar](#debian-specific-considerations)
+* [Debian’a Özgü Hususlar](#debian-specific-considerations)
   * [Paket Yönetimi Farklılıkları](#package-management-differences)
-  * [Hizmet Yönetimi](#service-management)
+  * [Servis Yönetimi](#service-management)
   * [Ağ Yapılandırması](#network-configuration)
 * [Bakım ve İzleme](#maintenance-and-monitoring)
-  * [Günlük Konumları](#log-locations)
+  * [Log Konumları](#log-locations)
   * [Düzenli Bakım Görevleri](#regular-maintenance-tasks)
   * [Sertifika Yenileme](#certificate-renewal)
-* [Sorun giderme](#troubleshooting)
-  * [Debian'a Özgü Sorunlar](#debian-specific-issues)
-  * [Ortak Sorunlar](#common-issues)
+* [Sorun Giderme](#troubleshooting)
+  * [Debian’a Özgü Sorunlar](#debian-specific-issues)
+  * [Yaygın Sorunlar](#common-issues)
   * [Yardım Alma](#getting-help)
 * [Güvenlik En İyi Uygulamaları](#security-best-practices)
-* [Çözüm](#conclusion)
+* [Sonuç](#conclusion)
+
 
 ## Genel Bakış {#overview}
 
-Bu kılavuz, Forward Email'in kendi barındırdığı çözümün Debian sistemlerine kurulumu için adım adım talimatlar sunar. Bu kılavuz, özellikle Debian 11 (Bullseye) ve Debian 12 (Bookworm) için tasarlanmıştır.
+Bu rehber, Forward Email’in kendi kendine barındırılan çözümünün Debian sistemlerine kurulumu için adım adım talimatlar sağlar. Bu rehber özellikle Debian 11 (Bullseye) ve Debian 12 (Bookworm) için hazırlanmıştır.
 
-## Önkoşullar {#prerequisites}
 
-Kuruluma başlamadan önce şunlara sahip olduğunuzdan emin olun:
+## Ön Koşullar {#prerequisites}
 
-* **Debian Sunucusu**: Sürüm 11 (Bullseye) veya 12 (Bookworm)
-* **Kök Erişimi**: Komutları kök olarak çalıştırabilmeniz gerekir (sudo erişimi)
-* **Alan Adı**: DNS yönetim erişimiyle kontrol ettiğiniz bir alan
-* **Temiz Sunucu**: Yeni bir Debian kurulumu kullanmanız önerilir
-* **İnternet Bağlantısı**: Paketleri ve Docker imajlarını indirmek için gereklidir
+Kuruluma başlamadan önce, aşağıdakilere sahip olduğunuzdan emin olun:
+
+* **Debian Sunucu**: Sürüm 11 (Bullseye) veya 12 (Bookworm)
+* **Root Erişimi**: Komutları root olarak çalıştırabilmelisiniz (sudo erişimi)
+* **Alan Adı**: DNS yönetim erişimine sahip kontrol ettiğiniz bir alan adı
+* **Temiz Sunucu**: Taze bir Debian kurulumu kullanmanız önerilir
+* **İnternet Bağlantısı**: Paketler ve Docker imajları indirmek için gereklidir
+
 
 ## Sistem Gereksinimleri {#system-requirements}
 
-* **RAM**: Minimum 2 GB (üretim için 4 GB önerilir)
-* **Depolama**: Minimum 20 GB kullanılabilir alan (üretim için 50 GB+ önerilir)
+* **RAM**: Minimum 2GB (üretim için 4GB önerilir)
+* **Depolama**: Minimum 20GB boş alan (üretim için 50GB+ önerilir)
 * **CPU**: Minimum 1 vCPU (üretim için 2+ vCPU önerilir)
-* **Ağ**: Aşağıdaki bağlantı noktalarına erişilebilen genel IP adresi:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **Ağ**: Aşağıdaki portların erişilebilir olduğu genel IP adresi:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## Adım Adım Kurulum {#step-by-step-installation}
 
 ### Adım 1: İlk Sistem Kurulumu {#step-1-initial-system-setup}
 
-Öncelikle sisteminizin güncel olduğundan emin olun ve root kullanıcısına geçin:
+Öncelikle, sisteminizin güncel olduğundan emin olun ve root kullanıcısına geçin:
 
 ```bash
-# Update system packages
+# Sistem paketlerini güncelle
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Root kullanıcısına geç (kurulum için gerekli)
 sudo su -
 ```
+### Adım 2: DNS Çözücülerini Yapılandırma {#step-2-configure-dns-resolvers}
 
-### Adım 2: DNS Çözücülerini Yapılandırın {#step-2-configure-dns-resolvers}
-
-Güvenilir sertifika üretimi için sisteminizi Cloudflare'in DNS sunucularını kullanacak şekilde yapılandırın:
+Sisteminizin güvenilir sertifika oluşturma için Cloudflare'ın DNS sunucularını kullanacak şekilde yapılandırın:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# systemd-resolved çalışıyorsa durdur ve devre dışı bırak
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -100,7 +104,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Cloudflare DNS çözücülerini yapılandır
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -113,15 +117,15 @@ nameserver 2001:4860:4860::8844
 EOF
 ```
 
-### Adım 3: Sistem Bağımlılıklarını Yükleyin {#step-3-install-system-dependencies}
+### Adım 3: Sistem Bağımlılıklarını Yükleme {#step-3-install-system-dependencies}
 
-Debian'da E-postayı İletmek için gerekli paketleri kurun:
+Debian üzerinde Forward Email için gerekli paketleri yükleyin:
 
 ```bash
-# Update package list
+# Paket listesini güncelle
 apt-get update -y
 
-# Install basic dependencies (Debian-specific package list)
+# Temel bağımlılıkları yükle (Debian'a özgü paket listesi)
 apt-get install -y \
     ca-certificates \
     curl \
@@ -133,187 +137,186 @@ apt-get install -y \
     software-properties-common
 ```
 
-### Adım 4: Snapd'i Kurun ve Yapılandırın {#step-4-install-and-configure-snapd}
+### Adım 4: Snapd'i Yükleyip Yapılandırma {#step-4-install-and-configure-snapd}
 
-Debian varsayılan olarak snapd'yi içermez, bu yüzden onu kurup yapılandırmamız gerekir:
+Debian varsayılan olarak snapd içermez, bu yüzden yükleyip yapılandırmamız gerekiyor:
 
 ```bash
-# Install snapd
+# Snapd'i yükle
 apt-get install -y snapd
 
-# Enable and start snapd service
+# Snapd servisini etkinleştir ve başlat
 systemctl enable snapd
 systemctl start snapd
 
-# Create symlink for snap to work properly
+# Snap'ın düzgün çalışması için sembolik bağlantı oluştur
 ln -sf /var/lib/snapd/snap /snap
 
-# Wait for snapd to be ready
+# Snapd'nin hazır olmasını bekle
 sleep 10
 
-# Verify snapd is working
+# Snapd'nin çalıştığını doğrula
 snap version
 ```
 
-### Adım 5: Snap Paketlerini Yükleyin {#step-5-install-snap-packages}
+### Adım 5: Snap Paketlerini Yükleme {#step-5-install-snap-packages}
 
-AWS CLI ve Certbot'u snap üzerinden kurun:
+AWS CLI ve Certbot'u snap ile yükleyin:
 
 ```bash
-# Install AWS CLI
+# AWS CLI'yı yükle
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Certbot ve DNS eklentisini yükle
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 
-# Verify installations
+# Yüklemeleri doğrula
 aws --version
 certbot --version
 ```
 
-### Adım 6: Docker'ı yükleyin {#step-6-install-docker}
+### Adım 6: Docker'ı Yükleme {#step-6-install-docker}
 
-Debian'a Docker CE ve Docker Compose'u kurun:
+Debian üzerinde Docker CE ve Docker Compose'u yükleyin:
 
 ```bash
-# Add Docker's official GPG key (Debian-specific)
+# Docker'ın resmi GPG anahtarını ekle (Debian'a özgü)
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository (Debian-specific)
+# Docker deposunu ekle (Debian'a özgü)
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Paket indeksini güncelle ve Docker'ı yükle
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Install standalone docker-compose as fallback (if plugin doesn't work)
+# Eklenti çalışmazsa yedek olarak bağımsız docker-compose'u yükle
 if ! command -v docker-compose &> /dev/null; then
     apt-get install -y docker-compose
 fi
 
-# Verify Docker installation
+# Docker kurulumunu doğrula
 docker --version
 docker compose version || docker-compose --version
 ```
 
-### Adım 7: Docker Hizmetini Yapılandırın {#step-7-configure-docker-service}
+### Adım 7: Docker Servisini Yapılandırma {#step-7-configure-docker-service}
 
-Docker'ın otomatik olarak başladığından ve çalıştığından emin olun:
+Docker'ın otomatik başlamasını sağlayın ve çalıştığından emin olun:
 
 ```bash
-# Enable and start Docker service
+# Docker servisini etkinleştir ve başlat
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Docker'ın çalıştığını doğrula
 docker info
 ```
 
-Docker başlatılamazsa, manuel olarak başlatmayı deneyin:
+Docker başlamazsa, elle başlatmayı deneyin:
 
 ```bash
-# Alternative startup method if systemctl fails
+# systemctl başarısız olursa alternatif başlatma yöntemi
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### Adım 8: UFW Güvenlik Duvarını Kurun ve Yapılandırın {#step-8-install-and-configure-ufw-firewall}
+### Adım 8: UFW Güvenlik Duvarını Yükleyip Yapılandırma {#step-8-install-and-configure-ufw-firewall}
 
-Debian'ın minimal kurulumları UFW'yi içermeyebilir, bu yüzden önce onu kurun:
+Debian minimal kurulumlarında UFW olmayabilir, önce yükleyin:
 
 ```bash
-# Install UFW if not present
+# UFW yoksa yükle
 if ! command -v ufw &> /dev/null; then
     apt-get update -y
     apt-get install -y ufw
 fi
 
-# Set default policies
+# Varsayılan politikaları ayarla
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# SSH'ye izin ver (önemli - kendinizi kilitlemeyin!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# E-posta ile ilgili portlara izin ver
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (Let's Encrypt için)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (alternatif port)
+ufw allow 2995/tcp  # POP3 (alternatif port)
+ufw allow 3456/tcp  # Özel servis portu
+ufw allow 4000/tcp  # Özel servis portu
+ufw allow 5000/tcp  # Özel servis portu
 
-# Allow local database connections
+# Yerel veritabanı bağlantılarına izin ver
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Güvenlik duvarını etkinleştir
 echo "y" | ufw enable
 
-# Check firewall status
+# Güvenlik duvarı durumunu kontrol et
 ufw status numbered
 ```
-
-### Adım 9: İletme E-posta Deposunu Klonla {#step-9-clone-forward-email-repository}
+### Adım 9: Forward Email Deposu Klonlama {#step-9-clone-forward-email-repository}
 
 Forward Email kaynak kodunu indirin:
 
 ```bash
-# Set up variables
+# Değişkenleri ayarla
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# Depoyu klonla
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# Klonlamanın başarılı olduğunu doğrula
 ls -la
 ```
 
-### Adım 10: Ortam Yapılandırmasını Ayarlayın {#step-10-set-up-environment-configuration}
+### Adım 10: Ortam Yapılandırmasını Ayarlama {#step-10-set-up-environment-configuration}
 
 Ortam yapılandırmasını hazırlayın:
 
 ```bash
-# Set up directory variables
+# Dizin değişkenlerini ayarla
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# Varsayılan ortam dosyasını kopyala
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# SSL dizini oluştur
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# Veritabanı dizinlerini oluştur
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Adım 11: Etki Alanınızı Yapılandırın {#step-11-configure-your-domain}
+### Adım 11: Alan Adınızı Yapılandırma {#step-11-configure-your-domain}
 
-Alan adınızı ayarlayın ve ortam değişkenlerini güncelleyin:
+Alan adınızı belirleyin ve ortam değişkenlerini güncelleyin:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# 'yourdomain.com' yerine gerçek alan adınızı yazın
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# Ortam dosyasını güncelleme fonksiyonu
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -325,7 +328,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# Alan adı ile ilgili ortam değişkenlerini güncelle
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -348,12 +351,12 @@ update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
 
-### Adım 12: SSL Sertifikaları Oluşturun {#step-12-generate-ssl-certificates}
+### Adım 12: SSL Sertifikaları Oluşturma {#step-12-generate-ssl-certificates}
 
-#### Seçenek A: Manuel DNS Sorgulaması (Çoğu kullanıcı için önerilir) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Seçenek A: Manuel DNS Doğrulaması (Çoğu kullanıcı için önerilir) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# Manuel DNS doğrulaması kullanarak sertifikaları oluştur
 certbot certonly \
   --manual \
   --agree-tos \
@@ -362,23 +365,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Önemli**: İstendiğinde, DNS'inizde TXT kayıtları oluşturmanız gerekecektir. Aynı alan adı için birden fazla sorgu görebilirsiniz - **TÜMÜNÜ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını kaldırmayın.
+**Önemli**: İstendiğinde DNS'inize TXT kayıtları oluşturmanız gerekecek. Aynı alan adı için birden fazla doğrulama görebilirsiniz - **HEPSİNİ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını silmeyin.
 
 #### Seçenek B: Cloudflare DNS (Cloudflare kullanıyorsanız) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
 Alan adınız DNS için Cloudflare kullanıyorsa, sertifika oluşturmayı otomatikleştirebilirsiniz:
 
 ```bash
-# Create Cloudflare credentials file
+# Cloudflare kimlik bilgileri dosyasını oluştur
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# Doğru izinleri ayarla
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# Sertifikaları otomatik oluştur
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -389,55 +392,54 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Sertifikaları Kopyala {#copy-certificates}
+#### Sertifikaları Kopyalama {#copy-certificates}
 
-Sertifika oluşturulduktan sonra bunları uygulama dizinine kopyalayın:
+Sertifika oluşturulduktan sonra, uygulama dizinine kopyalayın:
 
 ```bash
-# Copy certificates to application SSL directory
+# Sertifikaları uygulamanın SSL dizinine kopyala
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# Sertifikaların kopyalandığını doğrula
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### Adım 13: Şifreleme Anahtarlarını Oluşturun {#step-13-generate-encryption-keys}
+### Adım 13: Şifreleme Anahtarları Oluşturma {#step-13-generate-encryption-keys}
 
-Güvenli işlem için gereken çeşitli şifreleme anahtarlarını oluşturun:
+Güvenli çalışma için gerekli çeşitli şifreleme anahtarlarını oluşturun:
 
 ```bash
-# Generate helper encryption key
+# Yardımcı şifreleme anahtarı oluştur
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# E-posta yönlendirme için SRS sırrı oluştur
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# TXT şifreleme anahtarı oluştur
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# E-posta imzalama için DKIM özel anahtarı oluştur
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# Webhook imza anahtarı oluştur
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# SMTP taşıma şifresi ayarla
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Tüm şifreleme anahtarları başarıyla oluşturuldu"
 ```
+### Adım 14: Yapılandırmadaki SSL Yollarını Güncelle {#step-14-update-ssl-paths-in-configuration}
 
-### Adım 14: {#step-14-update-ssl-paths-in-configuration} Yapılandırmasında SSL Yollarını Güncelleyin
-
-Ortam dosyasında SSL sertifika yollarını yapılandırın:
+Ortam dosyasındaki SSL sertifika yollarını yapılandırın:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# SSL yollarını doğru sertifika dosyalarına işaret edecek şekilde güncelle
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -445,63 +447,63 @@ sed -i -E \
   "$SELF_HOST_DIR/$ENV_FILE"
 ```
 
-### Adım 15: Temel Kimlik Doğrulamasını Ayarlayın {#step-15-set-up-basic-authentication}
+### Adım 15: Temel Kimlik Doğrulamayı Kur {#step-15-set-up-basic-authentication}
 
-Geçici temel kimlik doğrulama kimlik bilgilerini oluşturun:
+Geçici temel kimlik doğrulama bilgileri oluşturun:
 
 ```bash
-# Generate a secure random password
+# Güvenli rastgele bir parola oluştur
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Ortam dosyasını temel kimlik bilgileri ile güncelle
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Kimlik bilgilerini göster (bunları kaydedin!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 ÖNEMLİ: Bu giriş bilgilerini kaydedin!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "Kullanıcı Adı: admin"
+echo "Parola: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Kurulumdan sonra web arayüzüne erişmek için bunlara ihtiyacınız olacak."
 echo ""
 ```
 
-### Adım 16: Docker Compose ile dağıtım {#step-16-deploy-with-docker-compose}
+### Adım 16: Docker Compose ile Dağıtım Yap {#step-16-deploy-with-docker-compose}
 
-Tüm E-posta İletme hizmetlerini başlatın:
+Tüm Forward Email servislerini başlatın:
 
 ```bash
-# Set Docker Compose file path
+# Docker Compose dosya yolunu ayarla
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Var olan konteynerleri durdur
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" down
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" down
 fi
 
-# Pull the latest images
+# En son imajları çek
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" pull
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" pull
 fi
 
-# Start all services in detached mode
+# Tüm servisleri ayrık modda başlat
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 fi
 
-# Wait a moment for services to start
+# Servislerin başlaması için biraz bekle
 sleep 10
 
-# Check service status
+# Servis durumunu kontrol et
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" ps
 else
@@ -509,31 +511,32 @@ else
 fi
 ```
 
-### Adım 17: Kurulumu Doğrulayın {#step-17-verify-installation}
+### Adım 17: Kurulumu Doğrula {#step-17-verify-installation}
 
-Tüm servislerin doğru şekilde çalıştığını kontrol edin:
+Tüm servislerin doğru çalıştığını kontrol edin:
 
 ```bash
-# Check Docker containers
+# Docker konteynerlerini kontrol et
 docker ps
 
-# Check service logs for any errors
+# Servis loglarını hata için kontrol et
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 fi
 
-# Test web interface connectivity
+# Web arayüzü bağlantısını test et
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Portların dinlenip dinlenmediğini kontrol et
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
+
 ## Kurulum Sonrası Yapılandırma {#post-installation-configuration}
 
-### DNS Kayıtları Kurulumu {#dns-records-setup}
+### DNS Kayıtlarının Ayarlanması {#dns-records-setup}
 
 Alan adınız için aşağıdaki DNS kayıtlarını yapılandırmanız gerekir:
 
@@ -564,14 +567,14 @@ carddav A YOUR_SERVER_IP
 
 #### DKIM Kaydı {#dkim-record}
 
-DKIM genel anahtarınızı alın:
+DKIM açık anahtarınızı alın:
 
 ```bash
-# Extract DKIM public key
+# DKIM açık anahtarını çıkar
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-DKIM DNS kaydı oluşturun:
+DKIM DNS kaydını oluşturun:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
@@ -585,117 +588,120 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### İlk Giriş {#first-login}
 
-1. Web tarayıcınızı açın ve `https://yourdomain.com` adresine gidin.
-2. Daha önce kaydettiğiniz temel kimlik doğrulama bilgilerini girin.
-3. İlk kurulum sihirbazını tamamlayın.
-4. İlk e-posta hesabınızı oluşturun.
+1. Web tarayıcınızı açın ve `https://yourdomain.com` adresine gidin
+2. Daha önce kaydettiğiniz temel kimlik doğrulama bilgilerini girin
+3. İlk kurulum sihirbazını tamamlayın
+4. İlk e-posta hesabınızı oluşturun
+
 
 ## Yedekleme Yapılandırması {#backup-configuration}
 
-### S3 Uyumlu Yedeklemeyi Ayarla {#set-up-s3-compatible-backup}
+### S3-Uyumlu Yedekleme Kurulumu {#set-up-s3-compatible-backup}
 
-S3 uyumlu depolamaya otomatik yedeklemeleri yapılandırın:
+Otomatik yedeklemeleri S3-uyumlu depolamaya yapılandırın:
 
 ```bash
-# Create AWS credentials directory
+# AWS kimlik bilgileri dizini oluştur
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# AWS kimlik bilgilerini yapılandır
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# AWS ayarlarını yapılandır
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# AWS dışı S3 için (örneğin Cloudflare R2) endpoint URL'si ekle
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
-
-### Yedekleme Cron İşlerini Ayarla {#set-up-backup-cron-jobs}
+### Yedekleme Cron İşlerini Kurma {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Yedekleme betiklerini çalıştırılabilir yap
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# MongoDB yedekleme cron işi ekle (her gün gece yarısı çalışır)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Redis yedekleme cron işi ekle (her gün gece yarısı çalışır)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Cron işlerinin eklendiğini doğrula
 crontab -l
 ```
+
 
 ## Otomatik Güncelleme Yapılandırması {#auto-update-configuration}
 
 Forward Email kurulumunuz için otomatik güncellemeleri ayarlayın:
 
 ```bash
-# Create auto-update command (use appropriate docker compose command)
+# Otomatik güncelleme komutunu oluştur (uygun docker compose komutunu kullan)
 if command -v docker-compose &> /dev/null; then
     DOCKER_UPDATE_CMD="docker-compose -f $DOCKER_COMPOSE_FILE pull && docker-compose -f $DOCKER_COMPOSE_FILE up -d"
 else
     DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 fi
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Otomatik güncelleme cron işi ekle (her gün saat 1'de çalışır)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Cron işinin eklendiğini doğrula
 crontab -l
 ```
+
 
 ## Debian'a Özgü Hususlar {#debian-specific-considerations}
 
 ### Paket Yönetimi Farklılıkları {#package-management-differences}
 
-* **Snapd**: Debian'da varsayılan olarak kurulu değildir, manuel kurulum gerektirir.
-* **Docker**: Debian'a özgü depoları ve GPG anahtarlarını kullanır.
-* **UFW**: Minimum Debian kurulumlarına dahil olmayabilir.
-* **systemd**: Davranışı Ubuntu'dan biraz farklı olabilir.
+* **Snapd**: Debian'da varsayılan olarak yüklü değildir, manuel kurulum gerektirir
+* **Docker**: Debian'a özgü depolar ve GPG anahtarları kullanır
+* **UFW**: Minimal Debian kurulumlarında bulunmayabilir
+* **systemd**: Davranış Ubuntu'dan biraz farklı olabilir
 
-### Hizmet Yönetimi {#service-management}
+### Servis Yönetimi {#service-management}
 
 ```bash
-# Check service status (Debian-specific commands)
+# Servis durumunu kontrol et (Debian'a özgü komutlar)
 systemctl status snapd
 systemctl status docker
 systemctl status ufw
 
-# Restart services if needed
+# Gerekirse servisleri yeniden başlat
 systemctl restart snapd
 systemctl restart docker
 ```
 
 ### Ağ Yapılandırması {#network-configuration}
 
-Debian'ın farklı ağ arayüzü adları veya yapılandırmaları olabilir:
+Debian farklı ağ arayüzü isimlerine veya yapılandırmalarına sahip olabilir:
 
 ```bash
-# Check network interfaces
+# Ağ arayüzlerini kontrol et
 ip addr show
 
-# Check routing
+# Yönlendirmeyi kontrol et
 ip route show
 
-# Check DNS resolution
+# DNS çözümlemesini kontrol et
 nslookup google.com
 ```
 
+
 ## Bakım ve İzleme {#maintenance-and-monitoring}
 
-### Günlük Konumları {#log-locations}
+### Günlük Dosyalarının Konumları {#log-locations}
 
-* **Docker Compose günlükleri**: Kuruluma bağlı olarak uygun Docker Compose komutunu kullanın.
+* **Docker Compose günlükleri**: Kuruluma bağlı uygun docker compose komutunu kullanın
 * **Sistem günlükleri**: `/var/log/syslog`
 * **Yedekleme günlükleri**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Otomatik güncelleme günlükleri**: `/var/log/autoupdate.log`
@@ -704,29 +710,30 @@ nslookup google.com
 ### Düzenli Bakım Görevleri {#regular-maintenance-tasks}
 
 1. **Disk alanını izle**: `df -h`
-2. **Hizmet durumunu kontrol et**: Uygun docker compose komutunu kullan
-3. **Günlükleri incele**: Hem uygulama hem de sistem günlüklerini kontrol et
+2. **Servis durumunu kontrol et**: Uygun docker compose komutunu kullan
+3. **Günlükleri incele**: Hem uygulama hem sistem günlüklerini kontrol et
 4. **Sistem paketlerini güncelle**: `apt update && apt upgrade`
-5. **Snapd'yi izle**: `snap list` ve `snap refresh`
+5. **Snapd'i izle**: `snap list` ve `snap refresh`
 
 ### Sertifika Yenileme {#certificate-renewal}
 
-Sertifikalar otomatik olarak yenilenmelidir, ancak gerekirse manuel olarak yenileyebilirsiniz:
+Sertifikalar otomatik yenilenmelidir, ancak gerekirse manuel yenileyebilirsiniz:
 
 ```bash
-# Manual certificate renewal
+# Manuel sertifika yenileme
 certbot renew
 
-# Copy renewed certificates
+# Yenilenmiş sertifikaları kopyala
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Yeni sertifikaları kullanmak için servisleri yeniden başlat
 if command -v docker-compose &> /dev/null; then
     docker-compose -f "$DOCKER_COMPOSE_FILE" restart
 else
     docker compose -f "$DOCKER_COMPOSE_FILE" restart
 fi
 ```
+
 
 ## Sorun Giderme {#troubleshooting}
 
@@ -735,16 +742,16 @@ fi
 #### 1. Snapd Çalışmıyor {#1-snapd-not-working}
 
 ```bash
-# Check snapd status
+# Snapd durumunu kontrol et
 systemctl status snapd
 
-# Restart snapd
+# Snapd'i yeniden başlat
 systemctl restart snapd
 
-# Check snap path
+# Snap yolunu kontrol et
 echo $PATH | grep snap
 
-# Add snap to PATH if missing
+# Eksikse snap'i PATH'e ekle
 echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -752,28 +759,27 @@ source ~/.bashrc
 #### 2. Docker Compose Komutu Bulunamadı {#2-docker-compose-command-not-found}
 
 ```bash
-# Check which docker compose command is available
+# Hangi docker compose komutunun mevcut olduğunu kontrol et
 command -v docker-compose
 command -v docker
 
-# Use the appropriate command in scripts
+# Betiklerde uygun komutu kullan
 if command -v docker-compose &> /dev/null; then
-    echo "Using docker-compose"
+    echo "docker-compose kullanılıyor"
 else
-    echo "Using docker compose"
+    echo "docker compose kullanılıyor"
 fi
 ```
-
-#### 3. Paket Yükleme Sorunları {#3-package-installation-issues}
+#### 3. Paket Kurulum Sorunları {#3-package-installation-issues}
 
 ```bash
-# Update package cache
+# Paket önbelleğini güncelle
 apt update
 
-# Fix broken packages
+# Kırık paketleri düzelt
 apt --fix-broken install
 
-# Check for held packages
+# Tutulan paketleri kontrol et
 apt-mark showhold
 ```
 
@@ -782,23 +788,23 @@ apt-mark showhold
 #### 1. Docker Servisi Başlamıyor {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Docker durumunu kontrol et
 systemctl status docker
 
-# Check Docker logs
+# Docker günlüklerini kontrol et
 journalctl -u docker
 
-# Try alternative startup
+# Alternatif başlatmayı dene
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Sertifika Oluşturma Başarısız {#2-certificate-generation-fails}
+#### 2. Sertifika Oluşturma Başarısız Oluyor {#2-certificate-generation-fails}
 
 * 80 ve 443 portlarının erişilebilir olduğundan emin olun
-* DNS kayıtlarının sunucunuzu gösterdiğini doğrulayın
-* Güvenlik duvarı ayarlarını `ufw status` ile kontrol edin
+* DNS kayıtlarının sunucunuza işaret ettiğini doğrulayın
+* `ufw status` ile güvenlik duvarı ayarlarını kontrol edin
 
-#### 3. E-posta Teslimat Sorunları {#3-email-delivery-issues}
+#### 3. E-posta Teslim Sorunları {#3-email-delivery-issues}
 
 * MX kayıtlarının doğru olduğunu doğrulayın
 * SPF, DKIM ve DMARC kayıtlarını kontrol edin
@@ -806,31 +812,33 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 ### Yardım Alma {#getting-help}
 
-* **Belgeler**: <https://forwardemail.net/self-hosted>
+* **Dokümantasyon**: <https://forwardemail.net/self-hosted>
 * **GitHub Sorunları**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Debian Belgeleri**: <https://www.debian.org/doc/>
+* **Debian Dokümantasyonu**: <https://www.debian.org/doc/>
+
 
 ## Güvenlik En İyi Uygulamaları {#security-best-practices}
 
 1. **Sistemi Güncel Tutun**: Debian ve paketleri düzenli olarak güncelleyin
-2. **Günlükleri İzleyin**: Günlük izleme ve uyarıları ayarlayın
-3. **Düzenli Olarak Yedekleyin**: Yedekleme ve geri yükleme prosedürlerini test edin
+2. **Günlükleri İzleyin**: Günlük izleme ve uyarı sistemi kurun
+3. **Düzenli Yedek Alın**: Yedekleme ve geri yükleme prosedürlerini test edin
 4. **Güçlü Parolalar Kullanın**: Tüm hesaplar için güçlü parolalar oluşturun
-5. **Fail2Ban'ı Etkinleştirin**: Ek güvenlik için fail2ban'ı yüklemeyi düşünün
-6. **Düzenli Güvenlik Denetimleri**: Yapılandırmanızı düzenli olarak inceleyin
-7. **Snapd'yi İzleyin**: Snap paketlerini `snap refresh` ile güncel tutun
+5. **Fail2Ban Etkinleştirin**: Ek güvenlik için fail2ban kurmayı düşünün
+6. **Düzenli Güvenlik Denetimleri Yapın**: Yapılandırmanızı periyodik olarak gözden geçirin
+7. **Snapd’yi İzleyin**: Snap paketlerini `snap refresh` ile güncel tutun
+
 
 ## Sonuç {#conclusion}
 
-Forward Email'inizin kendi barındırdığınız kurulumu artık tamamlanmış ve Debian'da çalışıyor olmalı. Unutmayın:
+Forward Email kendi kendine barındırma kurulumunuz artık tamamlanmış ve Debian üzerinde çalışıyor olmalıdır. Unutmayın:
 
-1. DNS kayıtlarınızı doğru şekilde yapılandırın
-2. E-posta gönderme ve alma işlemlerini test edin
-3. Düzenli yedeklemeler ayarlayın
-4. Sisteminizi düzenli olarak izleyin
+1. DNS kayıtlarınızı doğru yapılandırın
+2. E-posta gönderme ve alma testleri yapın
+3. Düzenli yedeklemeler kurun
+4. Sistemizi düzenli olarak izleyin
 5. Kurulumunuzu güncel tutun
-6. Snapd ve Snap paketlerini izleyin
+6. Snapd ve snap paketlerini izleyin
 
-Ubuntu'dan temel farkları, snapd kurulumu ve Docker deposu yapılandırmasıdır. Bunlar doğru şekilde ayarlandıktan sonra, Forward Email uygulaması her iki sistemde de aynı şekilde çalışır.
+Ubuntu’dan temel farklar snapd kurulumu ve Docker depo yapılandırmasıdır. Bunlar doğru şekilde ayarlandığında, Forward Email uygulaması her iki sistemde de aynı şekilde çalışır.
 
-Ek yapılandırma seçenekleri ve gelişmiş özellikler için <https://forwardemail.net/self-hosted#configuration>. adresindeki resmi E-posta İletme belgelerine bakın
+Ek yapılandırma seçenekleri ve gelişmiş özellikler için resmi Forward Email dokümantasyonuna <https://forwardemail.net/self-hosted#configuration> adresinden bakabilirsiniz.

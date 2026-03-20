@@ -1,118 +1,121 @@
-# Beste beveiligingsauditbedrijven {#best-security-audit-companies}
+# Beste Security Audit Bedrijven {#best-security-audit-companies}
 
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+
 
 ## Inhoudsopgave {#table-of-contents}
 
 * [Overzicht](#overview)
-* [Ons evaluatieproces](#our-evaluation-process)
-* [Aanbevolen beveiligingsauditbedrijven](#recommended-security-audit-companies)
+* [Ons Evaluatieproces](#our-evaluation-process)
+* [Aanbevolen Security Audit Bedrijven](#recommended-security-audit-companies)
   * [Cure53](#cure53)
-  * [Radicaal open beveiliging](#radically-open-security)
-  * [Verzekerde AB](#assured-ab)
-  * [Spoor van Bits](#trail-of-bits)
-* [Bedrijfsvergelijking](#company-comparison)
+  * [Radically Open Security](#radically-open-security)
+  * [Assured AB](#assured-ab)
+  * [Trail of Bits](#trail-of-bits)
+* [Bedrijvenvergelijking](#company-comparison)
 * [Selectiecriteria](#selection-criteria)
+
 
 ## Overzicht {#overview}
 
-Forward Email evalueert actief cybersecurityonderzoeksbureaus om uitgebreide audits uit te voeren van onze open-source codebase op [GitHub](https://github.com/forwardemail) en serverinfrastructuur. Na uitgebreid onderzoek en evaluatie in de afgelopen jaren hebben we verschillende uitzonderlijke beveiligingsauditbureaus geïdentificeerd die consistent blijk geven van hoogwaardig werk, technische expertise en afstemming op onze privacygerichte waarden.
+Forward Email beoordeelt actief cybersecurity onderzoeksbedrijven om uitgebreide audits uit te voeren van onze open-source codebase op [GitHub](https://github.com/forwardemail) en serverinfrastructuur. Na uitgebreid onderzoek en evaluatie in de afgelopen jaren, hebben we verschillende uitzonderlijke security audit bedrijven geïdentificeerd die consequent werk van hoge kwaliteit, technische expertise en afstemming op onze privacygerichte waarden tonen.
 
-Dit document bevat onze bevindingen en aanbevelingen voor organisaties die op zoek zijn naar professionele beveiligingsauditdiensten. De hier vermelde bedrijven hebben allemaal uitzonderlijke vaardigheden getoond op het gebied van penetratietests, codebeoordelingen, infrastructuurbeoordeling en beveiligingsonderzoek.
+Dit document vertegenwoordigt onze bevindingen en aanbevelingen voor organisaties die op zoek zijn naar professionele security audit diensten. De hier genoemde bedrijven hebben allemaal uitzonderlijke capaciteiten getoond in penetratietesten, codebeoordeling, infrastructuurevaluatie en security onderzoek.
 
-## Ons evaluatieproces {#our-evaluation-process}
 
-Ons evaluatieproces richtte zich op verschillende belangrijke factoren die cruciaal zijn voor organisaties die grondige beveiligingsbeoordelingen nodig hebben. We onderzochten de staat van dienst, technische expertise, transparantie in rapportage en toewijding aan open-sourceprincipes van elk bedrijf. De bedrijven die in deze gids worden genoemd, hebben allemaal consistente uitmuntendheid getoond tijdens onze meerjarige evaluatieperiode.
+## Ons Evaluatieproces {#our-evaluation-process}
 
-Het is belangrijk om te weten dat de onderstaande bedrijven niet in een bepaalde volgorde staan. Elke organisatie brengt unieke sterke punten en specialisaties in het cybersecurityveld met zich mee, en de beste keuze hangt af van de specifieke projectvereisten, budgettaire overwegingen en organisatorische behoeften.
+Ons evaluatieproces richtte zich op verschillende belangrijke factoren die cruciaal zijn voor organisaties die grondige security beoordelingen nodig hebben. We hebben de staat van dienst, technische expertise, transparantie in rapportage en toewijding aan open-source principes van elk bedrijf onderzocht. De bedrijven die in deze gids worden genoemd, hebben allemaal consistente uitmuntendheid getoond tijdens onze meerjarige evaluatieperiode.
 
-## Aanbevolen beveiligingsauditbedrijven {#recommended-security-audit-companies}
+Het is belangrijk op te merken dat de onderstaande bedrijven niet in een bepaalde volgorde zijn gerangschikt. Elke organisatie brengt unieke sterke punten en specialisaties mee in het cybersecurity veld, en de beste keuze hangt af van specifieke projectvereisten, budgetoverwegingen en organisatorische behoeften.
 
-### Genezing53 {#cure53}
 
-**Locatie**: Berlijn, Duitsland
-**Website**: <https://cure53.de/>
-**Specialisatie**: "Goede penetratietests voor goede websites"
+## Aanbevolen Security Audit Bedrijven {#recommended-security-audit-companies}
 
-Cure53 is een Duits cybersecuritybedrijf dat bekend staat om zijn nauwgezette aanpak van beveiligingstests en penetratietests voor webapplicaties. Gevestigd in Berlijn, heeft het bedrijf zich gevestigd als leider in de branche dankzij zijn uitgebreide testmethodologieën en gedetailleerde rapportagepraktijken.
+### Cure53 {#cure53}
 
-Het bedrijf heeft een indrukwekkend portfolio opgebouwd van beveiligingsbeoordelingen voor vooraanstaande klanten en open-sourceprojecten. Hun werk getuigt van een diepgaand begrip van moderne webtechnologieën, cryptografische implementaties en infrastructuurbeveiliging. De rapporten van Cure53 vallen vooral op door hun technische diepgang en bruikbare aanbevelingen.
+**Locatie**: Berlijn, Duitsland  
+**Website**: <https://cure53.de/>  
+**Specialisatie**: "Fijne penetratietesten voor fijne websites"
 
-**Opmerkelijke publicaties en rapporten**:
+Cure53 is een Duits cybersecurity bedrijf dat bekend staat om hun nauwgezette aanpak van webapplicatiebeveiligingstesten en penetratietesten. Gevestigd in Berlijn, hebben ze zich gevestigd als leiders in het veld door hun uitgebreide testmethodologieën en gedetailleerde rapportagepraktijken.
 
-* [Beveiligingsbeoordeling van Mullvad-servers 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Uitgebreide evaluatie van de infrastructuurbeveiliging
-* [Mullvad Apps/API-beveiligingsbeoordeling 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Analyse van de applicatie- en API-beveiliging
-* [Beveiligingsbeoordeling van Mullvad-servers 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Vervolgbeoordeling van de infrastructuur
+Het bedrijf heeft een indrukwekkend portfolio opgebouwd van security assessments voor hoogprofielklanten en open-source projecten. Hun werk toont een diepgaand begrip van moderne webtechnologieën, cryptografische implementaties en infrastructuurbeveiliging. De rapporten van Cure53 zijn bijzonder opmerkelijk vanwege hun technische diepgang en bruikbare aanbevelingen.
 
-### Radicaal open beveiliging {#radically-open-security}
+**Opmerkelijke Publicaties en Rapporten**:
 
-**Locatie**: Amsterdam, Nederland
-**Website**: <https://www.radicallyopensecurity.com/>
-**Specialisatie**: "Non-profit computerbeveiligingsadviesbureau"
+* [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Uitgebreide infrastructuurbeveiligingsevaluatie  
+* [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Applicatie- en API-beveiligingsanalyse  
+* [Mullvad Servers Security Assessment 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Vervolg infrastructuurevaluatie  
 
-Radically Open Security (ROS) is een uniek non-profit adviesbureau voor computerbeveiliging dat perfect aansluit bij de principes van open source en transparantie. ROS, gevestigd in Amsterdam, is een pionier op het gebied van beveiligingsadvies door zijn methodologieën en bevindingen waar mogelijk openbaar te maken.
+### Radically Open Security {#radically-open-security}
 
-Dankzij hun non-profitmodel kunnen ze zich puur richten op beveiligingsresultaten in plaats van winstmaximalisatie, wat vaak resulteert in grondigere beoordelingen en oprechte aanbevelingen. ROS heeft specifieke expertise in privacygerichte technologieën, VPN-diensten en applicaties die gevoelige gebruikersgegevens verwerken.
+**Locatie**: Amsterdam, Nederland  
+**Website**: <https://www.radicallyopensecurity.com/>  
+**Specialisatie**: "Non-profit computerbeveiligingsadvies"
 
-**Opmerkelijke publicaties en rapporten**:
+Radically Open Security (ROS) opereert als een uniek non-profit computerbeveiligingsadviesbureau dat perfect aansluit bij open-source principes en transparantiewaarden. Gevestigd in Amsterdam, heeft ROS een innovatieve benadering van security consulting ontwikkeld door hun methodologieën en bevindingen waar mogelijk openbaar te maken.
 
-* [Droid2Tracking-beveiligingsbeoordeling](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Analyse van mobiele tracking
-* [Tauri Programma Veiligheidsbeoordeling 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluatie van platformonafhankelijk applicatieframework
-* [Mullvad VPN-beveiligingsbeoordeling 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Beveiligingsanalyse van VPN-service
+Hun non-profitmodel stelt hen in staat zich puur te richten op securityresultaten in plaats van winstmaximalisatie, wat vaak resulteert in grondigere beoordelingen en oprechte aanbevelingen. ROS heeft bijzondere expertise in privacygerichte technologieën, VPN-diensten en applicaties die gevoelige gebruikersgegevens verwerken.
+**Opmerkelijke Publicaties en Rapporten**:
 
-### Gegarandeerde AB {#assured-ab}
+* [Droid2Tracking Security Assessment](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Analyse van mobiele tracking
+* [Tauri Programme Security Assessment 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluatie van cross-platform applicatiekader
+* [Mullvad VPN Security Assessment 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Beveiligingsanalyse van VPN-dienst
 
-**Locatie**: Göteborg, Zweden
-**Website**: <https://www.assured.se/>
+### Assured AB {#assured-ab}
+
+**Locatie**: Göteborg, Zweden  
+**Website**: <https://www.assured.se/>  
 **Specialisatie**: "Experts in technische cybersecurity"
 
-Assured AB is een Zweeds cybersecurityadviesbureau dat zich heeft gevestigd als leider in technische cybersecuritybeoordelingen. Gevestigd in Göteborg, bieden zij diepgaande technische expertise voor complexe beveiligingsuitdagingen, met name op het gebied van e-mailinfrastructuur, DNS-beveiliging en API-beoordelingen.
+Assured AB is een Zweeds cybersecurity adviesbureau dat zich heeft gevestigd als een leider in technische cybersecurity beoordelingen. Gevestigd in Göteborg, brengen zij diepgaande technische expertise naar complexe beveiligingsuitdagingen, met name op gebieden die te maken hebben met e-mailinfrastructuur, DNS-beveiliging en API-beoordelingen.
 
-De aanpak van het bedrijf legt de nadruk op grondige technische analyse in combinatie met praktische, implementeerbare aanbevelingen. Hun rapporten getuigen van uitzonderlijke aandacht voor detail en een diepgaand begrip van moderne beveiligingsbedreigingen en -strategieën.
+De aanpak van het bedrijf legt de nadruk op grondige technische analyse gecombineerd met praktische, implementeerbare aanbevelingen. Hun rapporten tonen uitzonderlijke aandacht voor detail en een uitgebreid begrip van moderne beveiligingsdreigingen en mitigatiestrategieën.
 
-**Opmerkelijke publicaties en rapporten**:
+**Opmerkelijke Publicaties en Rapporten**:
 
-* [Beveiligingsaudit van Mullvad-e-mailservers 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Beoordeling van de beveiliging van de e-mailinfrastructuur
-* [Mullvad API-beveiligingsaudit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Evaluatie van de API-beveiliging
-* [Mullvad DNS-serverbeveiligingsaudit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Beoordeling van de DNS-infrastructuur
+* [Mullvad Email Servers Security Audit 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Beoordeling van e-mailinfrastructuurbeveiliging
+* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Evaluatie van API-beveiliging
+* [Mullvad DNS Server Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Beoordeling van DNS-infrastructuur
 
 ### Trail of Bits {#trail-of-bits}
 
-**Locatie**: New York, New York, Verenigde Staten
-**Website**: <https://www.trailofbits.com/>
-**Specialisatie**: "We lossen niet alleen bugs op, we repareren software."
+**Locatie**: New York, New York, Verenigde Staten  
+**Website**: <https://www.trailofbits.com/>  
+**Specialisatie**: "We repareren niet alleen bugs, we repareren software."
 
-Trail of Bits is een vooraanstaand Amerikaans cybersecuritybedrijf dat erkenning heeft gekregen voor hun innovatieve aanpak van softwarebeveiliging. Gevestigd in New York, hebben ze geavanceerde tools en methodologieën ontwikkeld die de gehele cybersecuritybranche vooruit hebben geholpen. Hun motto, "We repareren niet alleen bugs, we repareren software", weerspiegelt hun toewijding om systemische beveiligingsproblemen aan te pakken in plaats van alleen oppervlakkige kwetsbaarheden.
+Trail of Bits is een vooraanstaand Amerikaans cybersecuritybedrijf dat erkenning heeft gekregen voor hun innovatieve aanpak van softwarebeveiliging. Gevestigd in New York, hebben zij geavanceerde tools en methodologieën ontwikkeld die het gehele cybersecurityveld vooruit hebben geholpen. Hun motto, "We repareren niet alleen bugs, we repareren software," weerspiegelt hun inzet om systemische beveiligingsproblemen aan te pakken in plaats van alleen oppervlakkige kwetsbaarheden.
 
-Het bedrijf heeft specifieke expertise in blockchainbeveiliging, cryptografische implementaties en complexe softwaresystemen. Trail of Bits staat ook bekend om hun bijdragen aan open-source beveiligingstools en hun thought leadership in opkomende beveiligingsdomeinen.
+Het bedrijf heeft bijzondere expertise in blockchainbeveiliging, cryptografische implementaties en complexe softwaresystemen. Trail of Bits staat ook bekend om hun bijdragen aan open-source beveiligingstools en hun thought leadership in opkomende beveiligingsdomeinen.
 
-**Opmerkelijke publicaties en rapporten**:
+**Opmerkelijke Publicaties en Rapporten**:
 
-* [Homebrew-beveiligingsbeoordeling 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Beveiligingsbeoordeling van de pakketbeheerder
-* [Hey Beveiligingsbeoordeling](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Beveiligingsevaluatie van de e-mailservice
-* [cURL-beveiligingsbeoordeling 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Beveiligingsanalyse van de netwerkbibliotheek
+* [Homebrew Security Review 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Beoordeling van pakketbeheerbeveiliging
+* [Hey Security Review](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Evaluatie van e-maildienstbeveiliging
+* [cURL Security Review 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Analyse van netwerkbibliotheekbeveiliging
 
-## Bedrijfsvergelijking {#company-comparison}
 
-| Bedrijf | Locatie | Focusgebied | Opvallende sterke punten | Openbare rapporten |
-| --------------------------- | ---------------------- | ------------------------ | ----------------------------------------------------- | -------------------------- |
-| **Cure53** | Berlijn, Duitsland | Webapplicatiebeveiliging | Gedetailleerde penetratietesten, uitgebreide rapportage | 3+ Mullvad-beoordelingen |
-| **Radicaal open beveiliging** | Amsterdam, Nederland | Privacy en open source | Non-profitmodel, transparantie, VPN-expertise | Publieke methodologiedeling |
-| **Verzekerde AB** | Göteborg, Zweden | Technische infrastructuur | E-mail-/DNS-beveiliging, API-beoordelingen | Gespecialiseerde serveraudits |
-| **Spoor van Bits** | New York, VS | Softwarebeveiliging | Blockchain, cryptografie, beveiligingstools | Open-source bijdragen |
+## Bedrijf Vergelijking {#company-comparison}
 
+| Bedrijf                     | Locatie                | Focusgebied             | Opmerkelijke Sterktes                                | Openbare Rapporten         |
+| --------------------------- | ---------------------- | ----------------------- | --------------------------------------------------- | -------------------------- |
+| **Cure53**                  | Berlijn, Duitsland     | Webapplicatiebeveiliging| Gedetailleerde penetratietests, uitgebreide rapportage | 3+ Mullvad beoordelingen   |
+| **Radically Open Security** | Amsterdam, Nederland   | Privacy & Open Source   | Non-profit model, transparantie, VPN-expertise      | Openbare methodologie delen|
+| **Assured AB**              | Göteborg, Zweden       | Technische Infrastructuur| E-mail/DNS-beveiliging, API-beoordelingen           | Gespecialiseerde serveraudits |
+| **Trail of Bits**           | New York, VS           | Softwarebeveiliging     | Blockchain, cryptografie, beveiligingstools          | Open-source bijdragen      |
 ## Selectiecriteria {#selection-criteria}
 
-Bij het evalueren van deze beveiligingsauditbedrijven hebben we rekening gehouden met een aantal belangrijke factoren waar organisaties op moeten letten bij het selecteren van een beveiligingspartner:
+Bij het evalueren van deze beveiligingsauditbedrijven hebben we verschillende kritieke factoren overwogen die organisaties moeten beoordelen bij het kiezen van een beveiligingspartner:
 
-**Technische expertise**: Alle aanbevolen bedrijven beschikken over diepgaande technische kennis op meerdere gebieden, waaronder beveiliging van webapplicaties, infrastructuurbeoordeling, cryptografische implementaties en opkomende technologieën.
+**Technische Expertise**: Alle aanbevolen bedrijven tonen diepgaande technische kennis op meerdere gebieden, waaronder webapplicatiebeveiliging, infrastructuurevaluatie, cryptografische implementaties en opkomende technologieën.
 
-**Transparantie en rapportage**: Elk bedrijf levert uitgebreide, bruikbare rapporten die bevindingen, risicobeoordelingen en herstelstrategieën duidelijk communiceren. Veel bedrijven dragen ook bij aan de bredere beveiligingsgemeenschap via openbaar onderzoek en open-sourcetools.
+**Transparantie en Rapportage**: Elk bedrijf levert uitgebreide, bruikbare rapporten die bevindingen, risicobeoordelingen en herstelstrategieën duidelijk communiceren. Velen dragen ook bij aan de bredere beveiligingsgemeenschap via openbaar onderzoek en open-source tools.
 
-**Trackrecord**: De genoemde bedrijven hebben een bewezen trackrecord opgebouwd bij vooraanstaande klanten en complexe beveiligingsuitdagingen. Hun openbare rapportages getuigen van consistente kwaliteit en grondigheid.
+**Track Record**: De vermelde bedrijven hebben bewezen ervaring met hoogprofielklanten en complexe beveiligingsuitdagingen. Hun openbare rapporten tonen consistente kwaliteit en grondigheid.
 
-**Overeenkomst met waarden**: Voor organisaties die prioriteit geven aan privacy, open-sourceprincipes en transparantie, tonen deze bedrijven hun toewijding aan deze waarden via hun werk en bedrijfspraktijken.
+**Afstemming op Waarden**: Voor organisaties die prioriteit geven aan privacy, open-source principes en transparantie, hebben deze bedrijven hun betrokkenheid bij deze waarden aangetoond via hun werk en bedrijfspraktijken.
 
-**Continue verbetering**: Alle aanbevolen bedrijven blijven op de hoogte van de veranderende dreigingslandschappen en opkomende technologieën, waardoor hun beoordelingen relevant en uitgebreid blijven.
+**Continue Verbetering**: Alle aanbevolen bedrijven blijven op de hoogte van de evoluerende dreigingslandschappen en opkomende technologieën, waardoor hun beoordelingen relevant en uitgebreid blijven.
 
-Het beveiligingsauditlandschap blijft zich ontwikkelen en we raden organisaties aan hun eigen evaluatie uit te voeren op basis van specifieke behoeften, budgetbeperkingen en projectvereisten. Elk van deze bedrijven zou echter uitzonderlijke beveiligingsbeoordelingsdiensten kunnen bieden aan organisaties die serieus werk maken van de bescherming van hun infrastructuur en gebruikersgegevens.
+Het landschap van beveiligingsaudits blijft zich ontwikkelen, en we raden organisaties aan hun eigen evaluatie uit te voeren op basis van specifieke behoeften, budgetbeperkingen en projectvereisten. Echter, elk van deze bedrijven zou uitzonderlijke beveiligingsbeoordelingsdiensten leveren voor organisaties die serieus zijn over het beschermen van hun infrastructuur en gebruikersgegevens.

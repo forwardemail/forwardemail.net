@@ -1,23 +1,26 @@
-# Приклад коду Node.js для контактних форм на JavaScript {#javascript-contact-forms-nodejs-code-example}
+# JavaScript Контактні Форми Приклад Коду Node.js {#javascript-contact-forms-nodejs-code-example}
+
 
 ## Зміст {#table-of-contents}
 
-* [Встановлення та вимоги](#install-and-requirements)
-* [Вихідний код та приклад](#source-code-and-example)
+* [Встановлення та Вимоги](#install-and-requirements)
+* [Вихідний Код та Приклад](#source-code-and-example)
 
-## Встановлення та вимоги {#install-and-requirements}
 
-Вам потрібно буде встановити залежність `nodemailer` від npm:
+## Встановлення та Вимоги {#install-and-requirements}
+
+Вам потрібно встановити npm-залежність `nodemailer`:
 
 ```sh
 npm install nodemailer
 ```
 
-## Вихідний код та приклад {#source-code-and-example}
 
-У цьому прикладі використовується бібліотека **[Nodemailer](https://github.com/nodemailer/nodemailer)** та її офіційного спонсора **[Переслати електронний лист](https://forwardemail.net)** для надсилання та попереднього перегляду вихідної пошти.
+## Вихідний Код та Приклад {#source-code-and-example}
 
-Вам потрібно буде <strong class="text-success"><i class="fa fa-key"></i>Згенерувати пароль</strong>, щоб надсилати вихідну пошту – будь ласка, дотримуйтесь наших інструкцій **[Посібник з надсилання електронної пошти за допомогою SMTP-адреси користувацького домену](/guides/send-email-with-custom-domain-smtp)**.
+Цей приклад використовує бібліотеку **[Nodemailer](https://github.com/nodemailer/nodemailer)** та її офіційного спонсора **[Forward Email](https://forwardemail.net)** для відправки та перегляду вихідної пошти.
+
+Вам потрібно <strong class="text-success"><i class="fa fa-key"></i> Згенерувати Пароль</strong> для відправки вихідної пошти – будь ласка, дотримуйтесь нашого **[Посібника з Відправки Листів через SMTP з Користувацьким Доменом](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: замініть значення `user` та `pass` з:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -45,12 +48,12 @@ await transporter.sendMail({
 });
 ```
 
-Запустіть програму, щоб надіслати електронний лист:
+Запустіть додаток для відправки листа:
 
 ```sh
 node app
 ```
 
-Тепер ви можете перейти до **[Мій обліковий запис → Електронні листи](/my-account/emails)**, щоб переглянути статус доставки електронної пошти в режимі реального часу, журнали доставки електронної пошти та попередній перегляд HTML/звичайного тексту/вкладень.
+Тепер ви можете перейти до **[Мій Кабінет → Листи](/my-account/emails)**, щоб побачити статус доставки листів у реальному часі, журнали доставляння та перегляди HTML/текстових/вкладених файлів.
 
-> P.S. :tada: Ви також можете **[попередній перегляд електронних листів у браузерах та симуляторі iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** та **[створення шаблонів електронних листів за допомогою Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Ви також можете **[переглядати листи у браузерах та iOS-симуляторі](/docs/test-preview-email-rendering-browsers-ios-simulator)** та **[створювати шаблони листів з Node.js](/docs/send-emails-with-node-js-javascript)**.

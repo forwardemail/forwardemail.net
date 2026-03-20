@@ -1,25 +1,29 @@
-# ポート25はISPの回避策によってブロックされています {#port-25-blocked-by-isp-workaround}
+# ISPによるポート25ブロックの回避方法 {#port-25-blocked-by-isp-workaround}
+
 
 ## 目次 {#table-of-contents}
 
-* [ISPがポート25の受信SMTPをブロックするのを回避する方法](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
-* [ISPがポート25の送信SMTPをブロックするのを回避する方法](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
-* [ISPがポートをブロックしているかどうかを確認するにはどうすればいいですか？](#how-can-i-check-if-my-isp-blocks-ports)
+* [ISPがポート25の受信SMTPをブロックしている場合の回避方法](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
+* [ISPがポート25の送信SMTPをブロックしている場合の回避方法](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
+* [ISPがポートをブロックしているかどうかの確認方法](#how-can-i-check-if-my-isp-blocks-ports)
 
-## ISPがポート25の受信SMTPをブロックするのを回避する方法 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
-メール サーバーの IP アドレスでポート 25 が開いていない場合は、このガイドが役立ちます。
+## ISPがポート25の受信SMTPをブロックしている場合の回避方法 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
-たとえば、自宅でカスタム メール サーバーを実行しており、インターネット サービス プロバイダー (ISP) が送信ポート 25 をブロックしているとします。
+メールサーバーのIPアドレスでポート25が開いていない場合は、このガイドが役立ちます。
 
-ポート 25 では送信トラフィックが不可能なので、このブロックによりポート 25 では受信トラフィックも不可能になる可能性が高くなります。
+例えば、自宅でカスタムメールサーバーを運用していて、インターネットサービスプロバイダー（「ISP」）が送信ポート25をブロックしている場合です。
 
-メールを転送するために弊社のサービスをご利用の場合、[この問題を回避するには、こちらのFAQをご覧ください。](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25) となります。
+送信ポート25のトラフィックが許可されていないため、このブロックにより受信ポート25のトラフィックもおそらく許可されていません。
 
-## ISPがポート25の送信SMTPをブロックするのを回避する方法 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
+当社のサービスを使ってメールを転送している場合は、[こちらのFAQの回答からこの問題を回避できます](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)。
 
-ISP が送信ポート 25 をブロックしている場合は、別の解決策を見つけるか、ISP に連絡する必要があります。
 
-## ISPがポートをブロックしているかどうかを確認するにはどうすればいいですか？ {#how-can-i-check-if-my-isp-blocks-ports}
+## ISPがポート25の送信SMTPをブロックしている場合の回避方法 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 
-コマンドラインまたはターミナルから `telnet smtp.forwardemail.net 25` を実行して、送信ポート 25 接続がブロックされているかどうかを確認できます。
+ISPが送信ポート25をブロックしている場合は、代替の解決策を見つけるか、ISPに連絡する必要があります。
+
+
+## ISPがポートをブロックしているかどうかの確認方法 {#how-can-i-check-if-my-isp-blocks-ports}
+
+コマンドラインやターミナルで `telnet smtp.forwardemail.net 25` を実行して、送信ポート25の接続がブロックされているか確認できます。

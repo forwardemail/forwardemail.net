@@ -1,113 +1,116 @@
-# SMTP-integraatioesimerkkejä {#smtp-integration-examples}
+# SMTP-integrointiesimerkit {#smtp-integration-examples}
+
 
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
-* [Miten sähköpostin edelleenlähetyksen SMTP-käsittely toimii](#how-forward-emails-smtp-processing-works)
+* [Miten Forward Emailin SMTP-käsittely toimii](#how-forward-emails-smtp-processing-works)
   * [Sähköpostijono ja uudelleenyritysjärjestelmä](#email-queue-and-retry-system)
-  * [Luotettavuus on testattu testitestillä](#dummy-proofed-for-reliability)
-* [Node.js-integraatio](#nodejs-integration)
-  * [Nodemailerin käyttäminen](#using-nodemailer)
+  * [Luotettavuus varmistettu yksinkertaisuudella](#dummy-proofed-for-reliability)
+* [Node.js-integrointi](#nodejs-integration)
+  * [Nodemailerin käyttö](#using-nodemailer)
   * [Express.js:n käyttö](#using-expressjs)
-* [Python-integraatio](#python-integration)
-  * [smtplibin käyttäminen](#using-smtplib)
+* [Python-integrointi](#python-integration)
+  * [smtplibin käyttö](#using-smtplib)
   * [Djangon käyttö](#using-django)
-* [PHP-integraatio](#php-integration)
+* [PHP-integrointi](#php-integration)
   * [PHPMailerin käyttö](#using-phpmailer)
   * [Laravelin käyttö](#using-laravel)
-* [Ruby-integraatio](#ruby-integration)
+* [Ruby-integrointi](#ruby-integration)
   * [Ruby Mail Gemin käyttö](#using-ruby-mail-gem)
-* [Java-integraatio](#java-integration)
-  * [Java Mail -rajapinnan käyttäminen](#using-javamail-api)
-* [Sähköpostiohjelman määritys](#email-client-configuration)
+* [Java-integrointi](#java-integration)
+  * [JavaMail API:n käyttö](#using-javamail-api)
+* [Sähköpostiohjelman asetukset](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (Lähetä sähköpostia nimellä)](#gmail-send-mail-as)
+  * [Gmail (Lähetä sähköpostina)](#gmail-send-mail-as)
 * [Vianmääritys](#troubleshooting)
-  * [Yleisiä ongelmia ja ratkaisuja](#common-issues-and-solutions)
-  * [Avun saaminen](#getting-help)
+  * [Yleiset ongelmat ja ratkaisut](#common-issues-and-solutions)
+  * [Apua saaminen](#getting-help)
 * [Lisäresurssit](#additional-resources)
-* [Johtopäätös](#conclusion)
+* [Yhteenveto](#conclusion)
+
 
 ## Esipuhe {#foreword}
 
-Tämä opas tarjoaa yksityiskohtaisia esimerkkejä siitä, miten Forward Emailin SMTP-palvelu integroidaan käyttämällä erilaisia ohjelmointikieliä, kehyksiä ja sähköpostiohjelmia. SMTP-palvelumme on suunniteltu luotettavaksi, turvalliseksi ja helposti integroitavaksi olemassa oleviin sovelluksiisi.
+Tämä opas tarjoaa yksityiskohtaisia esimerkkejä siitä, miten integroit Forward Emailin SMTP-palveluun eri ohjelmointikielillä, kehyksillä ja sähköpostiohjelmilla. SMTP-palvelumme on suunniteltu olemaan luotettava, turvallinen ja helppo integroida olemassa oleviin sovelluksiisi.
 
-## Sähköpostin edelleenlähetyksen SMTP-käsittelyn toimintaperiaate {#how-forward-emails-smtp-processing-works}
 
-Ennen integraatioesimerkkien syventämistä on tärkeää ymmärtää, miten SMTP-palvelumme käsittelee sähköposteja:
+## Miten Forward Emailin SMTP-käsittely toimii {#how-forward-emails-smtp-processing-works}
+
+Ennen kuin siirryt integrointiesimerkkeihin, on tärkeää ymmärtää, miten SMTP-palvelumme käsittelee sähköposteja:
 
 ### Sähköpostijono ja uudelleenyritysjärjestelmä {#email-queue-and-retry-system}
 
-Kun lähetät sähköpostin palvelimillemme SMTP:n kautta:
+Kun lähetät sähköpostin SMTP:n kautta palvelimillemme:
 
-1. **Alkukäsittely**: Sähköposti validoidaan, skannataan haittaohjelmien varalta ja tarkistetaan roskapostisuodattimia vasten.
-2. **Älykäs jonotus**: Sähköpostit asetetaan kehittyneeseen jonotusjärjestelmään toimitusta varten.
-3. **Älykäs uudelleenyritysmekanismi**: Jos toimitus epäonnistuu tilapäisesti, järjestelmämme:
-* Analysoi virhevastauksen `getBounceInfo`-funktiolla.
-* Määrittää, onko ongelma tilapäinen (esim. "yritä myöhemmin uudelleen", "tilapäisesti lykätty") vai pysyvä (esim. "käyttäjä tuntematon").
-* Tilapäisten ongelmien tapauksessa merkitsee sähköpostin uudelleenyritystä varten.
-* Pysyvien ongelmien tapauksessa luo palautusilmoituksen.
-4. **5 päivän uudelleenyritysjakso**: Yritämme toimitusta uudelleen jopa 5 päivän ajan (samanlainen kuin alan standardit, kuten Postfix), jolloin tilapäisille ongelmille annetaan aikaa ratkaista.
-5. **Toimituksen tilailmoitukset**: Lähettäjät saavat ilmoituksia sähköpostiensa tilasta (toimitettu, viivästynyt tai palautettu).
+1. **Alkukäsittely**: Sähköposti validoidaan, tarkistetaan haittaohjelmien varalta ja suodatetaan roskapostisuodattimilla
+2. **Älykäs jonotus**: Sähköpostit asetetaan kehittyneeseen jonotusjärjestelmään toimitusta varten
+3. **Älykäs uudelleenyritysmekanismi**: Jos toimitus epäonnistuu väliaikaisesti, järjestelmämme:
+   * Analysoi virhevastauksen `getBounceInfo`-funktiollamme
+   * Määrittää, onko ongelma väliaikainen (esim. "yritä myöhemmin uudelleen", "väliaikaisesti lykätty") vai pysyvä (esim. "käyttäjää ei tunnistettu")
+   * Väliaikaisissa ongelmissa merkitsee sähköpostin uudelleenyritystä varten
+   * Pysyvien ongelmien kohdalla luo palautusilmoituksen
+4. **5 päivän uudelleenyritysjakso**: Yritämme toimitusta enintään 5 päivän ajan (kuten alan standardit, esim. Postfix), antaen väliaikaisten ongelmien ratketa
+5. **Toimitusilmoitukset**: Lähettäjät saavat ilmoituksia sähköpostien tilasta (toimitettu, viivästynyt tai palautettu)
 
 > \[!NOTE]
-> Onnistuneen toimituksen jälkeen lähtevän SMTP-sähköpostin sisältö sensuroidaan määritettävän säilytysajan (oletusarvo 30 päivää) jälkeen turvallisuus- ja yksityisyyssyistä. Jäljelle jää vain paikkamerkkiviesti, joka osoittaa toimituksen onnistumisen.
+> Onnistuneen toimituksen jälkeen lähtevän SMTP-sähköpostin sisältö poistetaan määritettävän säilytysajan (oletuksena 30 päivää) jälkeen turvallisuuden ja yksityisyyden vuoksi. Jäljelle jää vain paikkamerkki, joka ilmoittaa onnistuneesta toimituksesta.
 
-### Luotettavuuden varmistamiseksi tehty testitestaus {#dummy-proofed-for-reliability}
+### Luotettavuus varmistettu yksinkertaisuudella {#dummy-proofed-for-reliability}
 
 Järjestelmämme on suunniteltu käsittelemään erilaisia reunatapauksia:
 
-* Jos estolista havaitaan, sähköpostia yritetään automaattisesti uudelleen.
-* Jos verkko-ongelmia ilmenee, toimitusta yritetään uudelleen.
-* Jos vastaanottajan postilaatikko on täynnä, järjestelmä yrittää uudelleen myöhemmin.
-* Jos vastaanottava palvelin on tilapäisesti poissa käytöstä, jatkamme yrittämistä.
+* Jos estolista havaitaan, sähköpostia yritetään automaattisesti uudelleen
+* Jos verkko-ongelmia ilmenee, toimitusta yritetään uudelleen
+* Jos vastaanottajan postilaatikko on täynnä, järjestelmä yrittää myöhemmin uudelleen
+* Jos vastaanottava palvelin on väliaikaisesti poissa käytöstä, yritämme uudelleen
 
-Tämä lähestymistapa parantaa merkittävästi toimitusnopeuksia säilyttäen samalla yksityisyyden ja turvallisuuden.
+Tämä lähestymistapa parantaa merkittävästi toimitusprosentteja samalla kun säilyttää yksityisyyden ja turvallisuuden.
 
-## Node.js-integraatio {#nodejs-integration}
 
-### Käytetään Nodemaileria {#using-nodemailer}
+## Node.js-integrointi {#nodejs-integration}
+
+### Nodemailerin käyttö {#using-nodemailer}
 
 [Nodemailer](https://nodemailer.com/) on suosittu moduuli sähköpostien lähettämiseen Node.js-sovelluksista.
 
 ```javascript
 const nodemailer = require('nodemailer');
 
-// Create a transporter object
+// Luo transporter-objekti
 const transporter = nodemailer.createTransport({
   host: 'smtp.forwardemail.net',
   port: 465,
-  secure: true, // Use TLS
+  secure: true, // Käytä TLS:ää
   auth: {
     user: 'your-username@your-domain.com',
     pass: 'your-password'
   }
 });
 
-// Send mail with defined transport object
+// Lähetä sähköposti määritellyllä transporter-objektilla
 async function sendEmail() {
   try {
     const info = await transporter.sendMail({
       from: '"Your Name" <your-username@your-domain.com>',
       to: 'recipient@example.com',
-      subject: 'Hello from Forward Email',
-      text: 'Hello world! This is a test email sent using Nodemailer and Forward Email SMTP.',
-      html: '<b>Hello world!</b> This is a test email sent using Nodemailer and Forward Email SMTP.'
+      subject: 'Hei Forward Emaililta',
+      text: 'Hei maailma! Tämä on testisähköposti, joka on lähetetty Nodemailerilla ja Forward Emailin SMTP:llä.',
+      html: '<b>Hei maailma!</b> Tämä on testisähköposti, joka on lähetetty Nodemailerilla ja Forward Emailin SMTP:llä.'
     });
 
-    console.log('Message sent: %s', info.messageId);
+    console.log('Viesti lähetetty: %s', info.messageId);
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Virhe sähköpostin lähetyksessä:', error);
   }
 }
 
 sendEmail();
 ```
+### Using Express.js {#using-expressjs}
 
-### Käytetään Express.js:ää {#using-expressjs}
-
-Näin integroit Forward Email SMTP:n Express.js-sovellukseen:
+Tässä ohjeet Forward Email SMTP:n integroimiseksi Express.js-sovellukseen:
 
 ```javascript
 const express = require('express');
@@ -117,7 +120,7 @@ const port = 3000;
 
 app.use(express.json());
 
-// Configure email transporter
+// Määritä sähköpostin lähettäjä
 const transporter = nodemailer.createTransport({
   host: 'smtp.forwardemail.net',
   port: 465,
@@ -128,7 +131,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// API endpoint for sending emails
+// API-päätepiste sähköpostien lähettämiseen
 app.post('/send-email', async (req, res) => {
   const { to, subject, text, html } = req.body;
 
@@ -159,39 +162,40 @@ app.listen(port, () => {
 });
 ```
 
-## Python-integraatio {#python-integration}
 
-### Käytetään smtplib-tiedostoa {#using-smtplib}
+## Python Integration {#python-integration}
+
+### Using smtplib {#using-smtplib}
 
 ```python
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Email configuration
+# Sähköpostin asetukset
 sender_email = "your-username@your-domain.com"
 receiver_email = "recipient@example.com"
 password = "your-password"
 
-# Create message
+# Luo viesti
 message = MIMEMultipart("alternative")
 message["Subject"] = "Hello from Forward Email"
 message["From"] = sender_email
 message["To"] = receiver_email
 
-# Create the plain-text and HTML version of your message
+# Luo viestin tekstiversio ja HTML-versio
 text = "Hello world! This is a test email sent using Python and Forward Email SMTP."
 html = "<html><body><b>Hello world!</b> This is a test email sent using Python and Forward Email SMTP.</body></html>"
 
-# Turn these into plain/html MIMEText objects
+# Muunna nämä tavalliseksi/html MIMEText-objekteiksi
 part1 = MIMEText(text, "plain")
 part2 = MIMEText(html, "html")
 
-# Add HTML/plain-text parts to MIMEMultipart message
+# Lisää HTML/tavalliset tekstiosat MIMEMultipart-viestiin
 message.attach(part1)
 message.attach(part2)
 
-# Send email
+# Lähetä sähköposti
 try:
     server = smtplib.SMTP_SSL("smtp.forwardemail.net", 465)
     server.login(sender_email, password)
@@ -202,12 +206,12 @@ except Exception as e:
     print(f"Error sending email: {e}")
 ```
 
-### Käytetään Djangoa {#using-django}
+### Using Django {#using-django}
 
-Django-sovelluksissa lisää seuraava `settings.py`-kohtaan:
+Django-sovelluksissa lisää seuraavat asetukset tiedostoon `settings.py`:
 
 ```python
-# Email settings
+# Sähköpostiasetukset
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.forwardemail.net'
 EMAIL_PORT = 465
@@ -234,9 +238,10 @@ def send_email_view(request):
     return HttpResponse('Email sent!')
 ```
 
-## PHP-integraatio {#php-integration}
 
-### Käytetään PHPMaileria {#using-phpmailer}
+## PHP Integration {#php-integration}
+
+### Using PHPMailer {#using-phpmailer}
 
 ```php
 <?php
@@ -248,7 +253,7 @@ require 'vendor/autoload.php';
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
+    // Palvelinasetukset
     $mail->isSMTP();
     $mail->Host       = 'smtp.forwardemail.net';
     $mail->SMTPAuth   = true;
@@ -257,12 +262,12 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
     $mail->Port       = 465;
 
-    // Recipients
+    // Vastaanottajat
     $mail->setFrom('your-username@your-domain.com', 'Your Name');
     $mail->addAddress('recipient@example.com', 'Recipient Name');
     $mail->addReplyTo('your-username@your-domain.com', 'Your Name');
 
-    // Content
+    // Sisältö
     $mail->isHTML(true);
     $mail->Subject = 'Hello from Forward Email';
     $mail->Body    = '<b>Hello world!</b> This is a test email sent using PHPMailer and Forward Email SMTP.';
@@ -274,10 +279,9 @@ try {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
 ```
+### Laravelin käyttäminen {#using-laravel}
 
-### Laravelin käyttö {#using-laravel}
-
-Laravel-sovellusten osalta päivitä `.env`-tiedostosi:
+Laravel-sovelluksissa päivitä `.env`-tiedostosi:
 
 ```sh
 MAIL_MAILER=smtp
@@ -290,7 +294,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Lähetä sitten sähköposteja Laravelin Mail-fasadilla:
+Lähetä sitten sähköposteja Laravelin Mail-fasadin avulla:
 
 ```php
 <?php
@@ -307,14 +311,15 @@ class EmailController extends Controller
     {
         Mail::to('recipient@example.com')->send(new WelcomeEmail());
 
-        return 'Email sent successfully!';
+        return 'Sähköposti lähetetty onnistuneesti!';
     }
 }
 ```
 
+
 ## Ruby-integraatio {#ruby-integration}
 
-### Käytetään Ruby Mail Gemiä {#using-ruby-mail-gem}
+### Ruby Mail Gem -kirjaston käyttäminen {#using-ruby-mail-gem}
 
 ```ruby
 require 'mail'
@@ -335,25 +340,26 @@ end
 mail = Mail.new do
   from     'your-username@your-domain.com'
   to       'recipient@example.com'
-  subject  'Hello from Forward Email'
+  subject  'Hei Forward Emaililtä'
 
   text_part do
-    body 'Hello world! This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body 'Hei maailma! Tämä on testisähköposti, joka on lähetetty Ruby Maililla ja Forward Emailin SMTP:llä.'
   end
 
   html_part do
     content_type 'text/html; charset=UTF-8'
-    body '<b>Hello world!</b> This is a test email sent using Ruby Mail and Forward Email SMTP.'
+    body '<b>Hei maailma!</b> Tämä on testisähköposti, joka on lähetetty Ruby Maililla ja Forward Emailin SMTP:llä.'
   end
 end
 
 mail.deliver!
-puts "Email sent successfully!"
+puts "Sähköposti lähetetty onnistuneesti!"
 ```
+
 
 ## Java-integraatio {#java-integration}
 
-### Käytetään JavaMail-rajapintaa {#using-javamail-api}
+### JavaMail API:n käyttäminen {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -362,11 +368,11 @@ import javax.mail.internet.*;
 
 public class SendEmail {
     public static void main(String[] args) {
-        // Sender's email and password
+        // Lähettäjän sähköposti ja salasana
         final String username = "your-username@your-domain.com";
         final String password = "your-password";
 
-        // SMTP server properties
+        // SMTP-palvelimen asetukset
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -375,7 +381,7 @@ public class SendEmail {
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-        // Create session with authenticator
+        // Luo istunto autentikointia varten
         Session session = Session.getInstance(props,
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -384,34 +390,34 @@ public class SendEmail {
             });
 
         try {
-            // Create message
+            // Luo viesti
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("recipient@example.com"));
-            message.setSubject("Hello from Forward Email");
+            message.setSubject("Hei Forward Emaililtä");
 
-            // Create multipart message
+            // Luo moniosainen viesti
             Multipart multipart = new MimeMultipart("alternative");
 
-            // Text part
+            // Tekstiosa
             BodyPart textPart = new MimeBodyPart();
-            textPart.setText("Hello world! This is a test email sent using JavaMail and Forward Email SMTP.");
+            textPart.setText("Hei maailma! Tämä on testisähköposti, joka on lähetetty JavaMaililla ja Forward Emailin SMTP:llä.");
 
-            // HTML part
+            // HTML-osa
             BodyPart htmlPart = new MimeBodyPart();
-            htmlPart.setContent("<b>Hello world!</b> This is a test email sent using JavaMail and Forward Email SMTP.", "text/html");
+            htmlPart.setContent("<b>Hei maailma!</b> Tämä on testisähköposti, joka on lähetetty JavaMaililla ja Forward Emailin SMTP:llä.", "text/html");
 
-            // Add parts to multipart
+            // Lisää osat moniosaiseen viestiin
             multipart.addBodyPart(textPart);
             multipart.addBodyPart(htmlPart);
 
-            // Set content
+            // Aseta sisältö
             message.setContent(multipart);
 
-            // Send message
+            // Lähetä viesti
             Transport.send(message);
 
-            System.out.println("Email sent successfully!");
+            System.out.println("Sähköposti lähetetty onnistuneesti!");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -420,105 +426,108 @@ public class SendEmail {
 }
 ```
 
-## Sähköpostiohjelman määritys {#email-client-configuration}
 
-VÄLIAIKAINEN_PAIKKAPIDÄN_0 Thunderbird {VÄLIAIKAINEN_PAIKKAPIDÄN_1
+## Sähköpostiohjelman asetukset {#email-client-configuration}
+
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
-    B --> C[Account Actions]
-    C --> D[Add Mail Account]
-    D --> E[Enter Name, Email, Password]
-    E --> F[Manual Config]
-    F --> G[Enter Server Details]
+    A[Open Thunderbird] --> B[Tilin asetukset]
+    B --> C[Tilin toiminnot]
+    C --> D[Lisää sähköpostitili]
+    D --> E[Syötä nimi, sähköposti, salasana]
+    E --> F[Käsin asetukset]
+    F --> G[Syötä palvelimen tiedot]
     G --> H[SMTP: smtp.forwardemail.net]
-    H --> I[Port: 465]
-    I --> J[Connection: SSL/TLS]
-    J --> K[Authentication: Normal Password]
-    K --> L[Username: full email address]
-    L --> M[Test and Create Account]
+    H --> I[Portti: 465]
+    I --> J[Yhteys: SSL/TLS]
+    J --> K[Autentikointi: Tavallinen salasana]
+    K --> L[Käyttäjätunnus: koko sähköpostiosoite]
+    L --> M[Testaa ja luo tili]
 ```
-
-1. Avaa Thunderbird ja siirry kohtaan Tilin asetukset.
-2. Napsauta "Tilin toiminnot" ja valitse "Lisää sähköpostitili".
-3. Anna nimesi, sähköpostiosoitteesi ja salasanasi.
-4. Napsauta "Manuaalinen määritys" ja anna seuraavat tiedot:
-* Saapuvan postin palvelin:
-* IMAP: imap.forwardemail.net, portti: 993, SSL/TLS
-* POP3: pop3.forwardemail.net, portti: 995, SSL/TLS
-* Lähtevän postin palvelin (SMTP): smtp.forwardemail.net, portti: 465, SSL/TLS
-* Todennus: Normaali salasana
-* Käyttäjänimi: koko sähköpostiosoitteesi.
-5. Napsauta "Testi" ja sitten "Valmis".
+1. Avaa Thunderbird ja siirry Tilin asetuksiin
+2. Napsauta "Tilitoiminnot" ja valitse "Lisää sähköpostitili"
+3. Syötä nimesi, sähköpostiosoitteesi ja salasanasi
+4. Napsauta "Manuaalinen määritys" ja syötä seuraavat tiedot:
+   * Saapuva palvelin:
+     * IMAP: imap.forwardemail.net, Portti: 993, SSL/TLS
+     * POP3: pop3.forwardemail.net, Portti: 995, SSL/TLS
+   * Lähtevä palvelin (SMTP): smtp.forwardemail.net, Portti: 465, SSL/TLS
+   * Todennus: Normaali salasana
+   * Käyttäjätunnus: koko sähköpostiosoitteesi
+5. Napsauta "Testaa" ja sitten "Valmis"
 
 ### Apple Mail {#apple-mail}
 
-1. Avaa Mail ja siirry kohtaan Mail > Asetukset > Tilit.
-2. Lisää uusi tili napsauttamalla +-painiketta.
-3. Valitse "Muu sähköpostitili" ja napsauta "Jatka".
-4. Anna nimesi, sähköpostiosoitteesi ja salasanasi ja napsauta sitten "Kirjaudu sisään".
-5. Jos automaattinen asennus epäonnistuu, anna seuraavat tiedot:
-* Saapuvan postin palvelin: imap.forwardemail.net (tai pop3.forwardemail.net POP3:lle)
-* Lähtevän postin palvelin: smtp.forwardemail.net
-* Käyttäjätunnus: koko sähköpostiosoitteesi
-* Salasana: salasanasi
-6. Viimeistele asennus napsauttamalla "Kirjaudu sisään".
+1. Avaa Mail ja siirry Mail > Asetukset > Tilit
+2. Napsauta "+"-painiketta lisätäksesi uuden tilin
+3. Valitse "Muu sähköpostitili" ja napsauta "Jatka"
+4. Syötä nimesi, sähköpostiosoitteesi ja salasanasi, sitten napsauta "Kirjaudu sisään"
+5. Kun automaattinen määritys epäonnistuu, syötä seuraavat tiedot:
+   * Saapuvan postin palvelin: imap.forwardemail.net (tai pop3.forwardemail.net POP3:lle)
+   * Lähtevän postin palvelin: smtp.forwardemail.net
+   * Käyttäjätunnus: koko sähköpostiosoitteesi
+   * Salasana: salasanasi
+6. Napsauta "Kirjaudu sisään" viimeistelläksesi määrityksen
 
-### Gmail (Lähetä viesti osoitteena) {#gmail-send-mail-as}
+### Gmail (Lähetä sähköpostina) {#gmail-send-mail-as}
 
-1. Avaa Gmail ja siirry kohtaan Asetukset > Tilit ja tuonti.
-2. Napsauta Lähetä sähköpostia osoitteena -kohdassa Lisää toinen sähköpostiosoite.
-3. Anna nimesi ja sähköpostiosoitteesi ja napsauta sitten Seuraava vaihe.
-4. Anna seuraavat SMTP-palvelimen tiedot:
-* SMTP-palvelin: smtp.forwardemail.net
-* Portti: 465
-* Käyttäjänimi: koko sähköpostiosoitteesi
-* Salasana: salasanasi
-* Valitse SSL-suojattu yhteys.
-5. Napsauta Lisää tili ja vahvista sähköpostiosoitteesi.
+1. Avaa Gmail ja siirry Asetukset > Tilit ja tuonti
+2. "Lähetä sähköpostina" -kohdassa napsauta "Lisää toinen sähköpostiosoite"
+3. Syötä nimesi ja sähköpostiosoitteesi, sitten napsauta "Seuraava vaihe"
+4. Syötä seuraavat SMTP-palvelimen tiedot:
+   * SMTP-palvelin: smtp.forwardemail.net
+   * Portti: 465
+   * Käyttäjätunnus: koko sähköpostiosoitteesi
+   * Salasana: salasanasi
+   * Valitse "Suojattu yhteys SSL:llä"
+5. Napsauta "Lisää tili" ja vahvista sähköpostiosoitteesi
+
 
 ## Vianmääritys {#troubleshooting}
 
-### Yleisiä ongelmia ja ratkaisuja {#common-issues-and-solutions}
+### Yleiset ongelmat ja ratkaisut {#common-issues-and-solutions}
 
 1. **Todennus epäonnistui**
-* Vahvista käyttäjätunnuksesi (koko sähköpostiosoitteesi) ja salasanasi
-* Varmista, että käytät oikeaa porttia (465 SSL/TLS:lle)
-* Tarkista, onko tililläsi SMTP-käyttö käytössä
+   * Varmista käyttäjätunnuksesi (koko sähköpostiosoite) ja salasana
+   * Varmista, että käytät oikeaa porttia (465 SSL/TLS:lle)
+   * Tarkista, onko tililläsi SMTP-käyttöoikeus käytössä
 
 2. **Yhteyden aikakatkaisu**
-* Tarkista internetyhteytesi
-* Varmista, että palomuuriasetukset eivät estä SMTP-liikennettä
-* Käytä porttia 465 SSL/TLS:llä (suositeltu) tai porttia 587 STARTTLS:llä
+   * Tarkista internet-yhteytesi
+   * Varmista, ettei palomuuri estä SMTP-liikennettä
+   * Kokeile porttia 465 SSL/TLS:llä (suositeltu) tai porttia 587 STARTTLS:llä
 
 3. **Viesti hylätty**
-* Varmista, että "Lähettäjä"-osoite vastaa todennettua sähköpostiosoitettasi
-* Tarkista, onko IP-osoitteesi mustalla listalla
-* Varmista, ettei viestisi sisältö laukaise roskapostisuodattimia
+   * Varmista, että "Lähettäjä"-osoite vastaa todennettua sähköpostiasi
+   * Tarkista, onko IP-osoitteesi mustalistalla
+   * Varmista, ettei viestisi sisältö laukaise roskapostisuodattimia
 
 4. **TLS/SSL-virheet**
-* Päivitä sovelluksesi/kirjastosi tukemaan nykyaikaisia TLS-versioita
-* Varmista, että järjestelmäsi CA-varmenteet ovat ajan tasalla
-* Kokeile eksplisiittistä TLS:ää implisiittisen TLS:n sijaan
+   * Päivitä sovelluksesi/kirjastosi tukemaan nykyaikaisia TLS-versioita
+   * Varmista, että järjestelmäsi CA-varmenteet ovat ajan tasalla
+   * Kokeile eksplisiittistä TLS:ää implisiittisen sijaan
 
-### Avun saaminen {#getting-help}
+### Apua {#getting-help}
 
-Jos kohtaat ongelmia, joita ei ole käsitelty tässä:
+Jos kohtaat tässä käsiteltyjä ongelmia, tee seuraavat:
 
-1. Katso yleisiä kysymyksiä [Usein kysytyt kysymykset -sivu](/faq)-sivultamme.
-2. Katso lisätietoja [blogikirjoitus sähköpostin toimituksesta](/blog/docs/best-email-forwarding-service)-sivultamme.
-3. Ota yhteyttä tukitiimiimme osoitteessa <support@forwardemail.net>.
+1. Tarkista [UKK-sivumme](/faq) yleisimmistä kysymyksistä
+2. Lue [blogikirjoituksemme sähköpostin toimituksesta](/blog/docs/best-email-forwarding-service) saadaksesi yksityiskohtaista tietoa
+3. Ota yhteyttä tukitiimiimme osoitteessa <support@forwardemail.net>
+
 
 ## Lisäresurssit {#additional-resources}
 
-* [Sähköpostin välitysdokumentaatio](/docs)
-* [SMTP-palvelimen rajoitukset ja konfigurointi](/faq#what-are-your-outbound-smtp-limits)
-* [Sähköpostin parhaiden käytäntöjen opas](/blog/docs/best-email-forwarding-service)
-* [Turvallisuuskäytännöt](/security)
+* [Forward Email -dokumentaatio](/docs)
+* [SMTP-palvelimen rajoitukset ja määritys](/faq#what-are-your-outbound-smtp-limits)
+* [Sähköpostin parhaat käytännöt -opas](/blog/docs/best-email-forwarding-service)
+* [Turvakäytännöt](/security)
 
-## Johtopäätös {#conclusion}
 
-Forward Emailin SMTP-palvelu tarjoaa luotettavan, turvallisen ja yksityisyyttä kunnioittavan tavan lähettää sähköposteja sovelluksistasi ja sähköpostiohjelmistasi. Älykkään jonotusjärjestelmämme, viiden päivän uudelleenyritysmekanismimme ja kattavien toimitustilailmoitusten ansiosta voit olla varma, että sähköpostisi saapuvat perille.
+## Yhteenveto {#conclusion}
 
-Edistyneempien käyttötapausten tai mukautettujen integraatioiden osalta ota yhteyttä tukitiimiimme.
+Forward Emailin SMTP-palvelu tarjoaa luotettavan, turvallisen ja yksityisyyttä kunnioittavan tavan lähettää sähköposteja sovelluksistasi ja sähköpostiohjelmistasi. Älykkään jonojärjestelmämme, 5 päivän uudelleenyritysmekanismin ja kattavien toimitusilmoitusten ansiosta voit olla varma, että sähköpostisi saavuttavat määränpäänsä.
+
+Edistyneempiä käyttötapauksia tai räätälöityjä integraatioita varten ota yhteyttä tukitiimiimme.

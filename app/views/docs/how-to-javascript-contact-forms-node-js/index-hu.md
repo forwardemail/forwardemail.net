@@ -1,23 +1,26 @@
-# JavaScript kapcsolatfelvételi űrlapok Node.js kódpélda {#javascript-contact-forms-nodejs-code-example}
+# JavaScript Kapcsolati Űrlapok Node.js Kód Példa {#javascript-contact-forms-nodejs-code-example}
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Telepítés és követelmények](#install-and-requirements)
 * [Forráskód és példa](#source-code-and-example)
 
+
 ## Telepítés és követelmények {#install-and-requirements}
 
-Telepítenie kell a `nodemailer` npm függőséget:
+Telepítened kell a `nodemailer` npm függőséget:
 
 ```sh
 npm install nodemailer
 ```
 
+
 ## Forráskód és példa {#source-code-and-example}
 
-Ez a példa a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és hivatalos szponzorát, a **[E-mail továbbítása](https://forwardemail.net)**-et használja a kimenő levelek küldéséhez és megtekintéséhez.
+Ez a példa a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és annak hivatalos támogatóját, a **[Forward Email](https://forwardemail.net)** szolgáltatást használja a kimenő levelek küldésére és előnézetére.
 
-A kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i>jelszó generálása</strong> szükséges – kérjük, kövesse az **IDEIGLENES_HELYTARTÓS_0** irányelveinket.
+Kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i> Jelszót kell generálnod</strong> – kérjük, kövesd a **[Egyedi domain SMTP-vel történő e-mail küldés útmutatónkat](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: cseréld ki a `user` és `pass` értékeket innen:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -45,12 +48,12 @@ await transporter.sendMail({
 });
 ```
 
-Futtassa az alkalmazást az e-mail küldéséhez:
+Futtasd az alkalmazást az e-mail elküldéséhez:
 
 ```sh
 node app
 ```
 
-Mostantól a **[Fiókom → E-mailek](/my-account/emails)** oldalon megtekintheti a valós idejű e-mail kézbesítési állapotát, az e-mail kézbesíthetőségi naplókat, valamint a HTML/szöveges/mellékletek előnézeteit.
+Most már meglátogathatod a **[Fiókom → E-mailek](/my-account/emails)** oldalt, hogy valós időben lásd az e-mailek kézbesítési állapotát, a kézbesítési naplókat, valamint az HTML/szöveges/melléklet előnézeteket.
 
-> Ui.: :tada: Használhatod a **[e-mailek előnézete böngészőkben és az iOS-szimulátorban](/docs/test-preview-email-rendering-browsers-ios-simulator)** és a **[e-mail sablonok létrehozása Node.js segítségével](/docs/send-emails-with-node-js-javascript)** értékeket is.
+> U.I. :tada: Ezenkívül **[böngészőkben és iOS szimulátorban is megtekintheted az e-mailek előnézetét](/docs/test-preview-email-rendering-browsers-ios-simulator)**, valamint **[Node.js-sel is készíthetsz e-mail sablonokat](/docs/send-emails-with-node-js-javascript)**.

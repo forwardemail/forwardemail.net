@@ -1,343 +1,349 @@
-# Frequently Asked Questions {#frequently-asked-questions}
+# 자주 묻는 질문 {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email 자주 묻는 질문" class="rounded-lg" />
 
-## Table of Contents {#table-of-contents}
 
-* [Quick Start](#quick-start)
-* [Introduction](#introduction)
-  * [What is Forward Email](#what-is-forward-email)
-  * [Who uses Forward Email](#who-uses-forward-email)
-  * [What is Forward Email's history](#what-is-forward-emails-history)
-  * [How fast is this service](#how-fast-is-this-service)
-* [Email Clients](#email-clients)
+## 목차 {#table-of-contents}
+
+* [빠른 시작](#quick-start)
+* [소개](#introduction)
+  * [Forward Email이란 무엇인가요](#what-is-forward-email)
+  * [누가 Forward Email을 사용하나요](#who-uses-forward-email)
+  * [Forward Email의 역사](#what-is-forward-emails-history)
+  * [이 서비스는 얼마나 빠른가요](#how-fast-is-this-service)
+* [이메일 클라이언트](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
-  * [Mobile Devices](#mobile-devices)
-  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
-  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
-  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
-  * [Command-line Email Clients](#command-line-email-clients)
-  * [Windows Email Configuration](#windows-email-configuration)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
-  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
-  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
-  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
-* [Troubleshooting](#troubleshooting)
-  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
-  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Data Management](#data-management)
-  * [Where are your servers located](#where-are-your-servers-located)
-  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
-  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Do you support self-hosting](#do-you-support-self-hosting)
-* [Email Configuration](#email-configuration)
-  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
-  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
-  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
-  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
-  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
-  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
-  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
-  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
-  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
-  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Advanced Features](#advanced-features)
-  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
-  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
-  * [Do you support POP3](#do-you-support-pop3)
-  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
-  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
-  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
-  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
-  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Do you support MTA-STS](#do-you-support-mta-sts)
-  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
-  * [Do you support email best practices](#do-you-support-email-best-practices)
-  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Do you support webhooks](#do-you-support-webhooks)
-  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
-  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
-  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
-  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
-  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-* [Security](#security)
-  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
-  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
-  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
-  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
-  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
-  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
-  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
-  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
-  * [Do you offer a test environment](#do-you-offer-a-test-environment)
-  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
-  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
-  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System and Technical Details](#system-and-technical-details)
-  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
-  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
-  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
-  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
-  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [What are postmaster addresses](#what-are-postmaster-addresses)
-  * [What are no-reply addresses](#what-are-no-reply-addresses)
-  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
-  * [Do you have an allowlist](#do-you-have-an-allowlist)
-  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
-  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
-  * [Do you have a greylist](#do-you-have-a-greylist)
-  * [Do you have a denylist](#do-you-have-a-denylist)
-  * [Do you have rate limiting](#do-you-have-rate-limiting)
-  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
-  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
-  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
-  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Does it support sub-domains](#does-it-support-sub-domains)
-  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
-  * [Is this well-tested](#is-this-well-tested)
-  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Account and Billing](#account-and-billing)
-  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
-  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
-  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
-  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
-  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
-  * [What is the max email size limit](#what-is-the-max-email-size-limit)
-  * [Do you store logs of emails](#do-you-store-logs-of-emails)
-  * [Do you store error logs](#do-you-store-error-logs)
-  * [Do you read my emails](#do-you-read-my-emails)
-  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
-  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
-  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
-  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
-  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Additional Resources](#additional-resources)
+  * [모바일 기기](#mobile-devices)
+  * [Sendmail SMTP 릴레이 구성](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP 릴레이 구성](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP 클라이언트 구성](#msmtp-smtp-client-configuration)
+  * [명령줄 이메일 클라이언트](#command-line-email-clients)
+  * [Windows 이메일 구성](#windows-email-configuration)
+  * [Postfix SMTP 릴레이 구성](#postfix-smtp-relay-configuration)
+  * [Gmail을 사용하여 메일 보내기 설정 방법](#how-to-send-mail-as-using-gmail)
+  * [Gmail을 사용한 메일 보내기 구식 무료 가이드란 무엇인가요](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [고급 Gmail 라우팅 구성](#advanced-gmail-routing-configuration)
+  * [고급 Outlook 라우팅 구성](#advanced-outlook-routing-configuration)
+* [문제 해결](#troubleshooting)
+  * [테스트 이메일을 받지 못하는 이유는 무엇인가요](#why-am-i-not-receiving-my-test-emails)
+  * [Forward Email과 함께 이메일 클라이언트를 구성하는 방법](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [내 이메일이 스팸 및 정크로 가는 이유와 도메인 평판 확인 방법](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [스팸 이메일을 받으면 어떻게 해야 하나요](#what-should-i-do-if-i-receive-spam-emails)
+  * [Gmail에서 나에게 보낸 테스트 이메일이 "의심스러움"으로 표시되는 이유](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Gmail에서 via forwardemail dot net 제거할 수 있나요](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [데이터 관리](#data-management)
+  * [서버 위치는 어디인가요](#where-are-your-servers-located)
+  * [메일박스 내보내기 및 백업 방법](#how-do-i-export-and-backup-my-mailbox)
+  * [기존 메일박스 가져오기 및 마이그레이션 방법](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [자체 S3 호환 스토리지를 백업에 사용하는 방법](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [SQLite 백업을 EML 파일로 변환하는 방법](#how-do-i-convert-sqlite-backups-to-eml-files)
+  * [셀프 호스팅을 지원하나요](#do-you-support-self-hosting)
+* [이메일 구성](#email-configuration)
+  * [이메일 전달 설정 시작 방법](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [고급 전달을 위해 여러 MX 교환기 및 서버를 사용할 수 있나요](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [부재중 자동응답기(휴가 응답기) 설정 방법](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Forward Email용 SPF 설정 방법](#how-do-i-set-up-spf-for-forward-email)
+  * [Forward Email용 DKIM 설정 방법](#how-do-i-set-up-dkim-for-forward-email)
+  * [Forward Email용 DMARC 설정 방법](#how-do-i-set-up-dmarc-for-forward-email)
+  * [DMARC 보고서 보는 방법](#how-do-i-view-dmarc-reports)
+  * [연락처 연결 및 구성 방법](#how-do-i-connect-and-configure-my-contacts)
+  * [캘린더 연결 및 구성 방법](#how-do-i-connect-and-configure-my-calendars)
+  * [캘린더 추가 및 기존 캘린더 관리 방법](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [작업 및 알림 연결 및 구성 방법](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [macOS 알림에서 작업을 생성할 수 없는 이유](#why-cant-i-create-tasks-in-macos-reminders)
+  * [Android에서 Tasks.org 설정 방법](#how-do-i-set-up-tasksorg-on-android)
+  * [Forward Email용 SRS 설정 방법](#how-do-i-set-up-srs-for-forward-email)
+  * [Forward Email용 MTA-STS 설정 방법](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [이메일 주소에 프로필 사진 추가 방법](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [고급 기능](#advanced-features)
+  * [마케팅 관련 이메일용 뉴스레터 또는 메일링 리스트를 지원하나요](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [API를 통한 이메일 발송을 지원하나요](#do-you-support-sending-email-with-api)
+  * [IMAP을 통한 이메일 수신을 지원하나요](#do-you-support-receiving-email-with-imap)
+  * [POP3를 지원하나요](#do-you-support-pop3)
+  * [캘린더(CalDAV)를 지원하나요](#do-you-support-calendars-caldav)
+  * [작업 및 알림(CalDAV VTODO)를 지원하나요](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [연락처(CardDAV)를 지원하나요](#do-you-support-contacts-carddav)
+  * [SMTP를 통한 이메일 발송을 지원하나요](#do-you-support-sending-email-with-smtp)
+  * [OpenPGP/MIME, 종단 간 암호화("E2EE"), Web Key Directory("WKD")를 지원하나요](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [S/MIME 암호화를 지원하나요](#do-you-support-smime-encryption)
+  * [Sieve 이메일 필터링을 지원하나요](#do-you-support-sieve-email-filtering)
+  * [MTA-STS를 지원하나요](#do-you-support-mta-sts)
+  * [패스키 및 WebAuthn을 지원하나요](#do-you-support-passkeys-and-webauthn)
+  * [이메일 모범 사례를 지원하나요](#do-you-support-email-best-practices)
+  * [바운스 웹훅을 지원하나요](#do-you-support-bounce-webhooks)
+  * [웹훅을 지원하나요](#do-you-support-webhooks)
+  * [정규 표현식 또는 regex를 지원하나요](#do-you-support-regular-expressions-or-regex)
+  * [발신 SMTP 제한은 어떻게 되나요](#what-are-your-outbound-smtp-limits)
+  * [SMTP 활성화에 승인이 필요한가요](#do-i-need-approval-to-enable-smtp)
+  * [SMTP 서버 구성 설정은 어떻게 되나요](#what-are-your-smtp-server-configuration-settings)
+  * [IMAP 서버 구성 설정은 어떻게 되나요](#what-are-your-imap-server-configuration-settings)
+  * [POP3 서버 구성 설정은 어떻게 되나요](#what-are-your-pop3-server-configuration-settings)
+  * [도메인용 이메일 자동 검색 설정 방법](#how-do-i-set-up-email-autodiscovery-for-my-domain)
+* [보안](#security-1)
+  * [고급 서버 강화 기술](#advanced-server-hardening-techniques)
+  * [SOC 2 또는 ISO 27001 인증이 있나요](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [이메일 전달에 TLS 암호화를 사용하나요](#do-you-use-tls-encryption-for-email-forwarding)
+  * [이메일 인증 헤더를 보존하나요](#do-you-preserve-email-authentication-headers)
+  * [원본 이메일 헤더를 보존하고 스푸핑을 방지하나요](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [스팸 및 악용으로부터 어떻게 보호하나요](#how-do-you-protect-against-spam-and-abuse)
+  * [이메일 내용을 디스크에 저장하나요](#do-you-store-email-content-on-disk)
+  * [시스템 충돌 시 이메일 내용이 노출될 수 있나요](#can-email-content-be-exposed-during-system-crashes)
+  * [누가 이메일 인프라에 접근할 수 있나요](#who-has-access-to-your-email-infrastructure)
+  * [어떤 인프라 제공업체를 사용하나요](#what-infrastructure-providers-do-you-use)
+  * [데이터 처리 계약서(DPA)를 제공하나요](#do-you-offer-a-data-processing-agreement-dpa)
+  * [데이터 유출 알림을 어떻게 처리하나요](#how-do-you-handle-data-breach-notifications)
+  * [테스트 환경을 제공하나요](#do-you-offer-a-test-environment)
+  * [모니터링 및 경고 도구를 제공하나요](#do-you-provide-monitoring-and-alerting-tools)
+  * [고가용성을 어떻게 보장하나요](#how-do-you-ensure-high-availability)
+  * [국방수권법(NDAA) 섹션 889를 준수하나요](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [시스템 및 기술 세부사항](#system-and-technical-details)
+  * [이메일과 그 내용을 저장하나요](#do-you-store-emails-and-their-contents)
+  * [이메일 전달 시스템은 어떻게 작동하나요](#how-does-your-email-forwarding-system-work)
+  * [이메일 전달을 위해 이메일을 어떻게 처리하나요](#how-do-you-process-an-email-for-forwarding)
+  * [이메일 전달 문제를 어떻게 처리하나요](#how-do-you-handle-email-delivery-issues)
+  * [IP 주소가 차단되면 어떻게 처리하나요](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [포스트마스터 주소란 무엇인가요](#what-are-postmaster-addresses)
+  * [회신 금지 주소란 무엇인가요](#what-are-no-reply-addresses)
+  * [서버의 IP 주소는 무엇인가요](#what-are-your-servers-ip-addresses)
+  * [허용 목록이 있나요](#do-you-have-an-allowlist)
+  * [기본적으로 허용된 도메인 이름 확장자는 무엇인가요](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [허용 목록 기준은 무엇인가요](#what-is-your-allowlist-criteria)
+  * [무료로 사용할 수 있는 도메인 이름 확장자는 무엇인가요](#what-domain-name-extensions-can-be-used-for-free)
+  * [그레이리스트가 있나요](#do-you-have-a-greylist)
+  * [거부 목록이 있나요](#do-you-have-a-denylist)
+  * [속도 제한이 있나요](#do-you-have-rate-limiting)
+  * [백스캐터를 어떻게 방지하나요](#how-do-you-protect-against-backscatter)
+  * [알려진 MAIL FROM 스패머로부터의 바운스 방지](#prevent-bounces-from-known-mail-from-spammers)
+  * [불필요한 바운스를 방지하여 백스캐터 보호](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [이메일 지문을 어떻게 결정하나요](#how-do-you-determine-an-email-fingerprint)
+  * [포트 25 이외의 포트로 이메일을 전달할 수 있나요 (예: ISP가 포트 25를 차단한 경우)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Gmail 별칭에 + 기호를 지원하나요](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [서브도메인을 지원하나요](#does-it-support-sub-domains)
+  * [이메일 헤더를 전달하나요](#does-this-forward-my-emails-headers)
+  * [충분히 테스트되었나요](#is-this-well-tested)
+  * [SMTP 응답 메시지 및 코드를 전달하나요](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [스패머를 방지하고 좋은 이메일 전달 평판을 유지하는 방법](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [도메인 이름에 대해 DNS 조회를 수행하는 방법](#how-do-you-perform-dns-lookups-on-domain-names)
+* [계정 및 결제](#account-and-billing)
+  * [유료 플랜에 환불 보증이 있나요](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [플랜 변경 시 차액을 비례 환불하나요](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [이 이메일 전달 서비스를 "대체" 또는 "백업" MX 서버로만 사용할 수 있나요](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [특정 별칭을 비활성화할 수 있나요](#can-i-disable-specific-aliases)
+  * [이메일을 여러 수신자에게 전달할 수 있나요](#can-i-forward-emails-to-multiple-recipients)
+  * [여러 글로벌 캐치올 수신자를 가질 수 있나요](#can-i-have-multiple-global-catch-all-recipients)
+  * [별칭당 전달할 수 있는 이메일 주소 수에 최대 한도가 있나요](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [이메일을 재귀적으로 전달할 수 있나요](#can-i-recursively-forward-emails)
+  * [내 허락 없이 내 이메일 전달을 등록하거나 등록 해제할 수 있나요](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [어떻게 무료인가요](#how-is-it-free)
+  * [최대 이메일 크기 제한은 무엇인가요](#what-is-the-max-email-size-limit)
+  * [이메일 로그를 저장하나요](#do-you-store-logs-of-emails)
+  * [오류 로그를 저장하나요](#do-you-store-error-logs)
+  * [내 이메일을 읽나요](#do-you-read-my-emails)
+  * [이 서비스로 Gmail에서 "메일 보내기"를 할 수 있나요](#can-i-send-mail-as-in-gmail-with-this)
+  * [이 서비스로 Outlook에서 "메일 보내기"를 할 수 있나요](#can-i-send-mail-as-in-outlook-with-this)
+  * [이 서비스로 Apple Mail 및 iCloud Mail에서 "메일 보내기"를 할 수 있나요](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [무제한 이메일 전달이 가능한가요](#can-i-forward-unlimited-emails-with-this)
+  * [한 가격에 무제한 도메인을 제공하나요](#do-you-offer-unlimited-domains-for-one-price)
+  * [어떤 결제 수단을 받나요](#which-payment-methods-do-you-accept)
+* [추가 자료](#additional-resources)
+## 빠른 시작 {#quick-start}
 
-## Quick Start {#quick-start}
+Forward Email을 시작하려면:
 
-To get started with Forward Email:
+1. **계정 생성** [forwardemail.net/register](https://forwardemail.net/register)에서
 
-1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
+2. **도메인 추가 및 인증** [내 계정 → 도메인](/my-account/domains)에서
 
-2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
+3. **이메일 별칭/메일박스 추가 및 구성** [내 계정 → 도메인](/my-account/domains) → 별칭에서
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
-
-4. **Test your setup** by sending an email to one of your new aliases
+4. **설정 테스트** 새 별칭 중 하나로 이메일을 보내 확인
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> DNS 변경 사항은 전 세계에 전파되는 데 최대 24-48시간이 걸릴 수 있지만, 보통 훨씬 빨리 적용됩니다.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> 향상된 전달 가능성을 위해 [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), [DMARC](#how-do-i-set-up-dmarc-for-forward-email) 레코드 설정을 권장합니다.
 
-## Introduction {#introduction}
 
-### What is Forward Email {#what-is-forward-email}
+## 소개 {#introduction}
+
+### Forward Email이란? {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email은 전문적인 이메일 주소를 원하지만 전체 이메일 호스팅 솔루션의 비용과 유지 관리를 원하지 않는 개인, 소규모 비즈니스, 개발자에게 완벽합니다.
 
-Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+Forward Email은 **완전한 기능을 갖춘 이메일 서비스 제공자**이자 **맞춤 도메인 이름용 이메일 호스팅 제공자**입니다.
 
-It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+유일한 무료 오픈 소스 서비스로, 자체 이메일 서버를 설정하고 유지하는 복잡함 없이 맞춤 도메인 이메일 주소를 사용할 수 있습니다.
 
-Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+우리 서비스는 맞춤 도메인으로 보내진 이메일을 기존 이메일 계정으로 전달하며, 전용 이메일 호스팅 제공자로도 사용할 수 있습니다.
 
-Key features of Forward Email:
+Forward Email의 주요 기능:
 
-* **Custom Domain Email**: Use professional email addresses with your own domain name
-* **Free Tier**: Basic email forwarding at no cost
-* **Enhanced Privacy**: We don't read your emails or sell your data
-* **Open Source**: Our entire codebase is available on GitHub
-* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
-* **End-to-End Encryption**: Support for OpenPGP/MIME
-* **Custom Catch-All Aliases**: Create unlimited email aliases
+* **맞춤 도메인 이메일**: 자신의 도메인 이름으로 전문적인 이메일 주소 사용
+* **무료 요금제**: 기본 이메일 전달 무료 제공
+* **향상된 개인정보 보호**: 이메일을 읽거나 데이터를 판매하지 않음
+* **오픈 소스**: 전체 코드베이스가 GitHub에 공개됨
+* **SMTP, IMAP, POP3 지원**: 완전한 이메일 송수신 기능
+* **종단 간 암호화**: OpenPGP/MIME 지원
+* **맞춤 캐치올 별칭**: 무제한 이메일 별칭 생성 가능
 
-You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+[우리의 이메일 비교 페이지](/blog/best-email-service)에서 56개 이상의 다른 이메일 서비스 제공자와 비교할 수 있습니다.
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> 무료 [기술 백서](/technical-whitepaper.pdf)를 읽어 Forward Email에 대해 더 알아보세요.
 
-### Who uses Forward Email {#who-uses-forward-email}
+### Forward Email 사용자 {#who-uses-forward-email}
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+우리는 500,000개 이상의 도메인에 이메일 호스팅 및 이메일 전달 서비스를 제공하며, 다음과 같은 주목할 만한 사용자가 있습니다:
 
-| Customer | Case Study |
+| 고객                                    | 사례 연구                                                                                               |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix Games |  |
-| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| The PHP Foundation |  |
-| Fox News Radio |  |
-| Disney Ad Sales |  |
-| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Government of South Australia |  |
-| Government of Dominican Republic |  |
-| Fly<span>.</span>io |  |
-| RCD Hotels |  |
-| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails) |  |
+| 미국 해군사관학교                       | [:page_facing_up: 사례 연구](/blog/docs/federal-government-email-service-section-889-compliant)         |
+| 캐노니컬                                | [:page_facing_up: 사례 연구](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| 넷플릭스 게임                          |                                                                                                          |
+| 리눅스 재단                            | [:page_facing_up: 사례 연구](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| PHP 재단                               |                                                                                                          |
+| 폭스 뉴스 라디오                       |                                                                                                          |
+| 디즈니 광고 판매                      |                                                                                                          |
+| jQuery                                 | [:page_facing_up: 사례 연구](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| LineageOS                             |                                                                                                          |
+| 우분투                                 | [:page_facing_up: 사례 연구](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| 쿠분투                                 | [:page_facing_up: 사례 연구](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| 루분투                                 | [:page_facing_up: 사례 연구](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| 케임브리지 대학교                     | [:page_facing_up: 사례 연구](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| 메릴랜드 대학교                       | [:page_facing_up: 사례 연구](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| 워싱턴 대학교                         | [:page_facing_up: 사례 연구](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| 터프츠 대학교                         | [:page_facing_up: 사례 연구](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| 스와스모어 칼리지                   | [:page_facing_up: 사례 연구](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| 남호주 정부                         |                                                                                                          |
+| 도미니카 공화국 정부                 |                                                                                                          |
+| Fly<span>.</span>io                   |                                                                                                          |
+| RCD 호텔                             |                                                                                                          |
+| Isaac Z. Schlueter (npm)             | [:page_facing_up: 사례 연구](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
+### Forward Email의 역사란? {#what-is-forward-emails-history}
 
-### What is Forward Email's history {#what-is-forward-emails-history}
+Forward Email에 대해 더 알고 싶다면 [우리의 소개 페이지](/about)를 방문하세요.
 
-You can learn more about Forward Email on [our About page](/about).
-
-### How fast is this service {#how-fast-is-this-service}
+### 이 서비스는 얼마나 빠른가요? {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> 저희 시스템은 속도와 신뢰성을 위해 설계되었으며, 여러 중복 서버를 통해 이메일이 신속하게 전달되도록 보장합니다.
 
-Forward Email delivers messages with minimal delay, typically within seconds of receipt.
+Forward Email은 메시지를 거의 지연 없이, 일반적으로 수신 후 몇 초 내에 전달합니다.
 
-Performance metrics:
+성능 지표:
 
-* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
-* **Uptime**: 99.9%+ service availability
-* **Global Infrastructure**: Servers strategically located for optimal routing
-* **Automatic Scaling**: Our system scales during peak email periods
+* **평균 전달 시간**: 수신 후 전달까지 5-10초 미만 ([우리의 Time to Inbox "TTI" 모니터링 페이지](/tti) 참조)
+* **가동 시간**: 99.9% 이상의 서비스 가용성
+* **글로벌 인프라**: 최적의 라우팅을 위한 전략적 서버 배치
+* **자동 확장**: 이메일 피크 기간 동안 시스템 자동 확장
 
-We operate in real-time, unlike other providers which rely upon delayed queues.
+저희는 지연 큐에 의존하는 다른 제공업체와 달리 실시간으로 운영합니다.
 
-We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+디스크에 기록하거나 로그를 저장하지 않습니다 – [오류 로그 저장 예외](#do-you-store-error-logs) 및 [발신 SMTP](#do-you-support-sending-email-with-smtp)만 해당됩니다 (자세한 내용은 [개인정보 처리방침](/privacy) 참조).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+모든 처리는 메모리 내에서 이루어지며 [소스 코드는 GitHub에 공개되어 있습니다](https://github.com/forwardemail).
 
-## Email Clients {#email-clients}
+
+## 이메일 클라이언트 {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
-3. Enter your name, Forward Email address, and password
-4. Click **Configure manually** and enter:
-   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-5. Click **Done**
+1. Forward Email 대시보드에서 새 별칭을 만들고 비밀번호를 생성하세요
+2. Thunderbird를 열고 **편집 → 계정 설정 → 계정 작업 → 메일 계정 추가**로 이동하세요
+3. 이름, Forward Email 주소, 비밀번호를 입력하세요
+4. **수동 구성**을 클릭하고 다음을 입력하세요:
+   * 수신: IMAP, `imap.forwardemail.net`, 포트 993, SSL/TLS
+   * 발신: SMTP, `smtp.forwardemail.net`, 포트 465, SSL/TLS (권장; 포트 587 STARTTLS도 지원)
+5. **완료**를 클릭하세요
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **File → Add Account**
-3. Enter your Forward Email address and click **Connect**
-4. Choose **Advanced options** and select **Let me set up my account manually**
-5. Select **IMAP** and enter:
-   * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Connect**
+1. Forward Email 대시보드에서 새 별칭을 만들고 비밀번호를 생성하세요
+2. **파일 → 계정 추가**로 이동하세요
+3. Forward Email 주소를 입력하고 **연결**을 클릭하세요
+4. **고급 옵션**을 선택하고 **내 계정을 수동으로 설정**을 선택하세요
+5. **IMAP**을 선택하고 다음을 입력하세요:
+   * 수신: `imap.forwardemail.net`, 포트 993, SSL
+   * 발신: `smtp.forwardemail.net`, 포트 465, SSL/TLS (권장; 포트 587 STARTTLS도 지원)
+   * 사용자 이름: 전체 이메일 주소
+   * 비밀번호: 생성한 비밀번호
+6. **연결**을 클릭하세요
 
 ### Apple Mail {#apple-mail}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Go to **Mail → Preferences → Accounts → +**
-3. Select **Other Mail Account**
-4. Enter your name, Forward Email address, and password
-5. For server settings, enter:
-   * Incoming: `imap.forwardemail.net`
-   * Outgoing: `smtp.forwardemail.net`
-   * Username: Your full email address
-   * Password: Your generated password
-6. Click **Sign In**
+1. Forward Email 대시보드에서 새 별칭을 만들고 비밀번호를 생성하세요
+2. **메일 → 환경설정 → 계정 → +**로 이동하세요
+3. **기타 메일 계정**을 선택하세요
+4. 이름, Forward Email 주소, 비밀번호를 입력하세요
+5. 서버 설정에 다음을 입력하세요:
+   * 수신: `imap.forwardemail.net`
+   * 발신: `smtp.forwardemail.net`
+   * 사용자 이름: 전체 이메일 주소
+   * 비밀번호: 생성한 비밀번호
+6. **로그인**을 클릭하세요
 
 ### eM Client {#em-client}
 
-1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open eM Client and go to **Menu → Accounts → + Add Account**
-3. Click on **Mail** and then select **Other**
-4. Enter your Forward Email address and click **Next**
-5. Enter the following server settings:
-   * **Incoming server**: `imap.forwardemail.net`
-   * **Outgoing server**: `smtp.forwardemail.net`
-6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
-7. eM Client will test the connection. Once it passes, click **Next**.
-8. Enter your name and choose an account name.
-9. Click **Finish**.
+1. Forward Email 대시보드에서 새 별칭을 만들고 비밀번호를 생성하세요
+2. eM Client를 열고 **메뉴 → 계정 → + 계정 추가**로 이동하세요
+3. **메일**을 클릭한 후 **기타**를 선택하세요
+4. Forward Email 주소를 입력하고 **다음**을 클릭하세요
+5. 다음 서버 설정을 입력하세요:
+   * **수신 서버**: `imap.forwardemail.net`
+   * **발신 서버**: `smtp.forwardemail.net`
+6. 수신 및 발신 서버 모두에 대해 전체 이메일 주소를 **사용자 이름**으로, 생성한 비밀번호를 **비밀번호**로 입력하세요.
+7. eM Client가 연결을 테스트합니다. 성공하면 **다음**을 클릭하세요.
+8. 이름을 입력하고 계정 이름을 선택하세요.
+9. **완료**를 클릭하세요.
 
-### Mobile Devices {#mobile-devices}
+### 모바일 기기 {#mobile-devices}
 
-For iOS:
+iOS의 경우:
 
-1. Go to **Settings → Mail → Accounts → Add Account → Other**
-2. Tap **Add Mail Account** and enter your details
-3. For server settings, use the same IMAP and SMTP settings as above
+1. **설정 → 메일 → 계정 → 계정 추가 → 기타**로 이동하세요
+2. **메일 계정 추가**를 탭하고 정보를 입력하세요
+3. 서버 설정은 위의 IMAP 및 SMTP 설정과 동일하게 사용하세요
 
-For Android:
+Android의 경우:
 
-1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
-2. Enter your Forward Email address and password
-3. For server settings, use the same IMAP and SMTP settings as above
+1. **설정 → 계정 → 계정 추가 → 개인(IMAP)**으로 이동하세요
+2. Forward Email 주소와 비밀번호를 입력하세요
+3. 서버 설정은 위의 IMAP 및 SMTP 설정과 동일하게 사용하세요
 
-### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+### Sendmail SMTP 릴레이 구성 {#sendmail-smtp-relay-configuration}
 
-You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
-
+Sendmail을 Forward Email의 SMTP 서버를 통해 이메일을 릴레이하도록 구성할 수 있습니다. 이는 Sendmail에 의존하는 레거시 시스템이나 애플리케이션에서 흔히 사용하는 설정입니다.
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 20 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>20분 미만</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    SMTP 액세스가 활성화된 유료 플랜이 필요합니다.
   </span>
 </div>
 
-#### Configuration {#configuration}
+#### 구성 {#configuration}
 
-1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. 일반적으로 `/etc/mail/sendmail.mc`에 위치한 `sendmail.mc` 파일을 편집합니다:
 
    ```bash
    sudo nano /etc/mail/sendmail.mc
    ```
 
-2. Add the following lines to define the smart host and authentication:
+2. 스마트 호스트와 인증을 정의하기 위해 다음 줄을 추가합니다:
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
@@ -346,136 +352,135 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
 
-3. Create the authentication file `/etc/mail/authinfo`:
+3. 인증 파일 `/etc/mail/authinfo`를 생성합니다:
 
    ```bash
    sudo nano /etc/mail/authinfo
    ```
 
-4. Add your Forward Email credentials to the `authinfo` file:
+4. `authinfo` 파일에 Forward Email 자격 증명을 추가합니다:
 
    ```
    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
    ```
 
-5. Generate the authentication database and secure the files:
+5. 인증 데이터베이스를 생성하고 파일 권한을 설정합니다:
 
    ```bash
    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
    ```
 
-6. Rebuild the Sendmail configuration and restart the service:
+6. Sendmail 구성을 다시 빌드하고 서비스를 재시작합니다:
 
    ```bash
    sudo make -C /etc/mail
    sudo systemctl restart sendmail
    ```
 
-#### Testing {#testing}
+#### 테스트 {#testing}
 
-Send a test email to verify the configuration:
+구성을 확인하기 위해 테스트 이메일을 보냅니다:
 
 ```bash
 echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
 ```
 
-### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+### Exim4 SMTP 릴레이 구성 {#exim4-smtp-relay-configuration}
 
-Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+Exim4는 Debian 기반 시스템에서 인기 있는 MTA입니다. Forward Email을 스마트호스트로 사용하도록 구성할 수 있습니다.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>15분 미만</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    SMTP 액세스가 활성화된 유료 플랜이 필요합니다.
   </span>
 </div>
 
-#### Configuration {#configuration-1}
+#### 구성 {#configuration-1}
 
-1. Run the Exim4 configuration tool:
+1. Exim4 구성 도구를 실행합니다:
 
    ```bash
    sudo dpkg-reconfigure exim4-config
    ```
 
-2. Select the following options:
-   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-   * **System mail name:** your.hostname
-   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-   * **Other destinations for which mail is accepted:** (leave blank)
-   * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
-   * **Hide local mail name in outgoing mail?** No
-   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-   * **Delivery method for local mail:** Mbox format in /var/mail/
-   * **Split configuration into small files?** No
+2. 다음 옵션을 선택합니다:
+   * **메일 구성의 일반 유형:** 스마트호스트를 통해 발송; SMTP 또는 fetchmail로 수신
+   * **시스템 메일 이름:** your.hostname
+   * **수신 SMTP 연결을 위한 IP 주소:** 127.0.0.1 ; ::1
+   * **메일을 수락하는 기타 대상:** (비워둠)
+   * **메일 릴레이 대상 도메인:** (비워둠)
+   * **발신 스마트호스트의 IP 주소 또는 호스트 이름:** smtp.forwardemail.net::465
+   * **발신 메일에서 로컬 메일 이름 숨기기?** 아니요
+   * **DNS 쿼리 수 최소화 (Dial-on-Demand)?** 아니요
+   * **로컬 메일 배달 방법:** /var/mail/의 Mbox 형식
+   * **구성을 작은 파일로 분할?** 아니요
 
-3. Edit the `passwd.client` file to add your credentials:
+3. 자격 증명을 추가하기 위해 `passwd.client` 파일을 편집합니다:
 
    ```bash
    sudo nano /etc/exim4/passwd.client
    ```
 
-4. Add the following line:
+4. 다음 줄을 추가합니다:
 
    ```
    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
    ```
 
-5. Update the configuration and restart Exim4:
+5. 구성을 업데이트하고 Exim4를 재시작합니다:
 
    ```bash
    sudo update-exim4.conf
    sudo systemctl restart exim4
    ```
 
-#### Testing {#testing-1}
+#### 테스트 {#testing-1}
 
-Send a test email:
+테스트 이메일을 보냅니다:
 
 ```bash
 echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
 ```
 
-### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+### msmtp SMTP 클라이언트 구성 {#msmtp-smtp-client-configuration}
 
-msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+msmtp는 스크립트나 명령줄 애플리케이션에서 이메일을 보내는 데 유용한 경량 SMTP 클라이언트입니다.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>10분 미만</span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    이 기능은 SMTP 액세스가 활성화된 유료 플랜이 필요합니다.
   </span>
 </div>
 
-#### Configuration {#configuration-2}
+#### 구성 {#configuration-2}
 
-1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. `~/.msmtprc`에 msmtp 구성 파일을 생성하거나 편집합니다:
 
    ```bash
    nano ~/.msmtprc
    ```
 
-2. Add the following configuration:
+2. 다음 구성을 추가합니다:
 
    ```
    defaults
@@ -495,51 +500,51 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
    account default : forwardemail
    ```
 
-3. Set the correct permissions for the configuration file:
+3. 구성 파일에 올바른 권한을 설정합니다:
 
    ```bash
    chmod 600 ~/.msmtprc
    ```
 
-#### Testing {#testing-2}
+#### 테스트 {#testing-2}
 
-Send a test email:
+테스트 이메일을 보냅니다:
 
 ```bash
 echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
-### Command-line Email Clients {#command-line-email-clients}
+### 커맨드라인 이메일 클라이언트 {#command-line-email-clients}
 
-Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+[Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), [Alpine](https://alpine.x10.mx/alpine/release/) 같은 인기 있는 커맨드라인 이메일 클라이언트는 Forward Email의 SMTP 서버를 사용하도록 구성할 수 있습니다. 구성은 `msmtp` 설정과 유사하며, 각 클라이언트의 구성 파일(`.muttrc`, `.neomuttrc`, 또는 `.pinerc`)에 SMTP 서버 정보와 자격 증명을 입력하면 됩니다.
 
-### Windows Email Configuration {#windows-email-configuration}
+### 윈도우 이메일 구성 {#windows-email-configuration}
 
-For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+윈도우 사용자는 Forward Email 계정에서 제공하는 IMAP 및 SMTP 설정을 사용하여 **Microsoft Outlook** 및 **eM Client** 같은 인기 이메일 클라이언트를 구성할 수 있습니다. 커맨드라인 또는 스크립트 용도로는 PowerShell의 `Send-MailMessage` cmdlet(비록 구식으로 간주됨)이나 [E-MailRelay](https://github.com/graeme-walker/emailrelay) 같은 경량 SMTP 릴레이 도구를 사용할 수 있습니다.
 
-### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+### Postfix SMTP 릴레이 구성 {#postfix-smtp-relay-configuration}
 
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+Postfix를 구성하여 Forward Email의 SMTP 서버를 통해 이메일을 릴레이할 수 있습니다. 이는 이메일을 보내야 하는 서버 애플리케이션에 유용합니다.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>15분 미만</span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    This requires a paid plan with SMTP access enabled.
+    이 기능은 SMTP 액세스가 활성화된 유료 플랜이 필요합니다.
   </span>
 </div>
 
-#### Installation {#installation}
+#### 설치 {#installation}
 
-1. Install Postfix on your server:
+1. 서버에 Postfix를 설치합니다:
 
 ```bash
 # Ubuntu/Debian
@@ -552,20 +557,20 @@ sudo yum install postfix
 brew install postfix
 ```
 
-2. During installation, select "Internet Site" when prompted for configuration type.
+2. 설치 중 구성 유형을 묻는 질문에 "Internet Site"를 선택합니다.
 
-#### Configuration {#configuration-3}
+#### 구성 {#configuration-3}
 
-1. Edit the main Postfix configuration file:
+1. Postfix 메인 구성 파일을 편집합니다:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-2. Add or modify these settings:
+2. 다음 설정을 추가하거나 수정합니다:
 
 ```
-# SMTP relay configuration
+# SMTP 릴레이 구성
 relayhost = [smtp.forwardemail.net]:465
 smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
@@ -575,54 +580,53 @@ smtp_sasl_security_options = noanonymous
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 ```
 
-3. Create the SASL password file:
+3. SASL 비밀번호 파일을 생성합니다:
 
 ```bash
 sudo nano /etc/postfix/sasl_passwd
 ```
 
-4. Add your Forward Email credentials:
+4. Forward Email 자격 증명을 추가합니다:
 
 ```
 [smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
-5. Secure and hash the password file:
+5. 비밀번호 파일을 보호하고 해시합니다:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-6. Restart Postfix:
+6. Postfix를 재시작합니다:
 
 ```bash
 sudo systemctl restart postfix
 ```
 
-#### Testing {#testing-3}
+#### 테스트 {#testing-3}
 
-Test your configuration by sending a test email:
+테스트 이메일을 보내 구성 상태를 확인합니다:
 
 ```bash
 echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ```
 
-### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
-
+### Gmail을 사용하여 메일 보내기 방법 {#how-to-send-mail-as-using-gmail}
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>10분 미만</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    시작하기:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    위의 <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">시작 방법 및 이메일 전달 설정</a> 지침을 따르셨다면, 아래 내용을 계속 읽으실 수 있습니다.
   </span>
 </div>
 
@@ -631,86 +635,85 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    반드시 <a href="/terms" class="alert-link" target="_blank">이용 약관</a>, <a href="/privacy" class="alert-link" target="_blank">개인정보 처리방침</a>, 그리고 <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">발신 SMTP 제한</a>을 읽었는지 확인해 주세요 – 사용하시는 것은 동의 및 인정을 의미합니다.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    개발자이신 경우, <a class="alert-link" href="/email-api#outbound-emails" target="_blank">이메일 API 문서</a>를 참조하세요.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 발신 SMTP 구성으로 이동하여 설정 지침을 따르세요
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
-4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+4. [Gmail](https://gmail.com)로 이동하여 [설정 <i class="fa fa-angle-right"></i> 계정 및 가져오기 <i class="fa fa-angle-right"></i> 메일 보내기](https://mail.google.com/mail/u/0/#settings/accounts)에서 "다른 이메일 주소 추가"를 클릭하세요
 
-5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+5. "이름" 입력 요청 시, 이메일 발신자 이름으로 표시할 이름을 입력하세요 (예: "Linus Torvalds").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. "이메일 주소" 입력 요청 시, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 생성한 전체 이메일 주소를 입력하세요 (예: <code><hello@example.com></code>)
 
-7. Uncheck "Treat as an alias"
+7. "별칭으로 취급" 선택을 해제하세요
 
-8. Click "Next Step" to proceed
+8. "다음 단계"를 클릭하여 진행하세요
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
+9. "SMTP 서버" 입력 요청 시, <code>smtp.forwardemail.net</code>을 입력하고 포트를 <code>465</code>로 변경하세요
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. "사용자 이름" 입력 요청 시, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 생성한 전체 이메일 주소를 입력하세요 (예: <code><hello@example.com></code>)
 
-11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+11. "비밀번호" 입력 요청 시, 3단계에서 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>에서 복사한 비밀번호를 붙여넣으세요
 
-12. Select the radio button for "Secured connection using SSL"
+12. "SSL을 사용한 보안 연결" 라디오 버튼을 선택하세요
 
-13. Click "Add Account" to proceed
+13. "계정 추가"를 클릭하여 진행하세요
 
-14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+14. 새 탭에서 [Gmail](https://gmail.com)을 열고 인증 이메일이 도착할 때까지 기다리세요 (이메일 주소 소유자임을 확인하는 인증 코드가 포함된 이메일을 받게 됩니다)
 
-15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
-
-16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+15. 이메일이 도착하면, 이전 단계에서 받은 입력란에 인증 코드를 복사하여 붙여넣으세요
+16. 완료하셨으면 이메일로 돌아가서 "요청 확인" 링크를 클릭하세요. 이메일이 올바르게 구성되려면 이 단계와 이전 단계를 모두 수행해야 할 가능성이 높습니다.
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      축하합니다!
     </strong>
     <span>
-      You've successfully completed all steps.
+      모든 단계를 성공적으로 완료하셨습니다.
     </span>
   </div>
 </div>
 
 </div>
 
-### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Gmail을 사용한 Send Mail As의 레거시 무료 가이드란 무엇인가요 {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">중요:</strong> 이 레거시 무료 가이드는 2023년 5월부터 <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">이제 아웃바운드 SMTP를 지원하기 때문에</a> 더 이상 사용되지 않습니다. 아래 가이드를 사용하면 <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">Gmail에서 아웃바운드 이메일에 "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>"가 표시됩니다.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>10분 미만</span>
 </div>
 
 <div class="alert mb-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    시작하기:
   </strong>
   <span>
-    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+    위의 <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">시작 방법 및 이메일 전달 설정</a> 지침을 따르셨다면 아래 내용을 계속 읽으시면 됩니다.
   </span>
 </div>
 
@@ -718,345 +721,390 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 <div id="legacy-free-guide">
 
-1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
+1. 이 방법을 사용하려면 [Gmail의 2단계 인증][gmail-2fa]이 활성화되어 있어야 합니다. 활성화되어 있지 않다면 <https://www.google.com/landing/2step/>를 방문하세요.
 
-2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
+2. 2단계 인증이 활성화된 후(또는 이미 활성화되어 있다면) <https://myaccount.google.com/apppasswords>를 방문하세요.
 
-3. When prompted for "Select the app and device you want to generate the app password for":
-   * Select "Mail" under the drop-down for "Select app"
-   * Select "Other" under the drop-down for "Select device"
-   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
+3. "앱 비밀번호를 생성할 앱 및 기기 선택" 요청 시:
+   * "앱 선택" 드롭다운에서 "메일"을 선택하세요
+   * "기기 선택" 드롭다운에서 "기타"를 선택하세요
+   * 텍스트 입력 요청 시, 전달하려는 맞춤 도메인의 이메일 주소를 입력하세요 (예: <code><hello@example.com></code> - 여러 계정에 이 서비스를 사용하는 경우 추적에 도움이 됩니다)
 
-4. Copy the password to your clipboard that is automatically generated
+4. 자동으로 생성된 비밀번호를 클립보드에 복사하세요
    <div class="alert my-3 alert-warning">
      <i class="fa fa-exclamation-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Important:
+       중요:
      </strong>
      <span>
-       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+       G Suite를 사용하는 경우, 관리자 패널 <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">앱 <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Gmail 설정 <i class="fa fa-angle-right"></i> 설정</a>으로 이동하여 "사용자가 외부 SMTP 서버를 통해 메일을 보낼 수 있도록 허용..."을 반드시 체크하세요. 이 변경 사항이 활성화되기까지 약간의 지연이 있으니 몇 분 기다려 주세요.
      </span>
    </div>
 
-5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+5. [Gmail](https://gmail.com)로 이동하여 [설정 <i class="fa fa-angle-right"></i> 계정 및 가져오기 <i class="fa fa-angle-right"></i> 메일 보내기](https://mail.google.com/mail/u/0/#settings/accounts)에서 "다른 이메일 주소 추가"를 클릭하세요
 
-6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+6. "이름" 요청 시, 이메일 발신자 이름으로 표시할 이름을 입력하세요 (예: "Linus Torvalds")
 
-7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+7. "이메일 주소" 요청 시, 위에서 사용한 맞춤 도메인의 이메일 주소를 입력하세요 (예: <code><hello@example.com></code>)
+8. "별칭으로 처리" 선택 해제
 
-8. Uncheck "Treat as an alias"
+9. "다음 단계"를 클릭하여 진행
 
-9. Click "Next Step" to proceed
+10. "SMTP 서버" 입력 요청 시 <code>smtp.gmail.com</code>을 입력하고 포트는 <code>587</code>로 둡니다
 
-10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
-
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. "사용자 이름" 입력 요청 시 Gmail 주소에서 <span>gmail.com</span> 부분을 제외한 부분만 입력합니다 (예: 이메일이 <span><user@gmail.com></span>이라면 "user"만 입력)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
-        Important:
+        중요:
       </strong>
       <span>
-        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+        "사용자 이름" 부분이 자동 입력된 경우, <u><strong>반드시 이를 Gmail 주소의 사용자 이름 부분으로 변경해야 합니다</strong></u>.
       </span>
     </div>
 
-12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+12. "비밀번호" 입력 요청 시 위 2단계에서 생성한 비밀번호를 클립보드에서 붙여넣기 합니다
 
-13. Leave the radio button checked for "Secured connection using TLS"
+13. "TLS를 사용한 보안 연결" 라디오 버튼이 선택된 상태로 둡니다
 
-14. Click "Add Account" to proceed
+14. "계정 추가"를 클릭하여 진행
 
-15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+15. 새 탭에서 [Gmail](https://gmail.com)을 열고 인증 이메일이 도착할 때까지 기다립니다 (이메일 주소 소유자임을 확인하는 인증 코드가 포함되어 있습니다)
 
-16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+16. 인증 코드가 도착하면 이전 단계에서 받은 입력란에 복사하여 붙여넣기 합니다
 
-17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+17. 완료 후 이메일로 돌아가 "요청 확인" 링크를 클릭합니다. 이메일이 올바르게 설정되려면 이 단계와 이전 단계를 모두 수행해야 할 가능성이 높습니다.
 
 </div>
 
-### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
+### 고급 Gmail 라우팅 구성 {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>15-30분</span>
 </div>
 
-If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
+메일박스와 일치하지 않는 별칭이 Forward Email의 메일 교환기로 전달되도록 Gmail에서 고급 라우팅을 설정하려면 다음 단계를 따르세요:
 
-1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
-2. Go to **Apps → Google Workspace → Gmail → Routing**
-3. Click on **Add Route** and configure the following settings:
+1. [admin.google.com](https://admin.google.com)에서 Google 관리자 콘솔에 로그인
+2. **앱 → Google Workspace → Gmail → 라우팅**으로 이동
+3. **라우트 추가**를 클릭하고 다음 설정을 구성:
 
-**Single Recipient Settings:**
+**단일 수신자 설정:**
 
-* Select "Change envelope recipient" and enter your primary Gmail address
-* Check "Add X-Gm-Original-To header with original recipient"
+* "봉투 수신자 변경" 선택 후 기본 Gmail 주소 입력
+* "원래 수신자와 함께 X-Gm-Original-To 헤더 추가" 체크
 
-**Envelope Recipient Patterns:**
+**봉투 수신자 패턴:**
 
-* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
+* 존재하지 않는 모든 메일박스에 일치하는 패턴 추가 (예: `.*@yourdomain.com`)
 
-**Email Server Settings:**
+**이메일 서버 설정:**
 
-* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
-* Add `mx2.forwardemail.net` as the backup server
-* Set port to 25
-* Select "Require TLS" for security
+* "호스트로 라우팅" 선택 후 기본 서버에 `mx1.forwardemail.net` 입력
+* 백업 서버로 `mx2.forwardemail.net` 추가
+* 포트는 25로 설정
+* 보안 설정에서 "TLS 필요" 선택
 
-4. Click **Save** to create the route
+4. **저장**을 클릭하여 라우트를 생성
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+    이 구성은 일반 Gmail 계정이 아닌 맞춤 도메인이 있는 Google Workspace 계정에서만 작동합니다.
   </span>
 </div>
 
-### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
+### 고급 Outlook 라우팅 구성 {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>15-30 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>15-30분</span>
 </div>
 
-For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
+Microsoft 365(이전 Office 365) 사용자가 메일박스와 일치하지 않는 별칭이 Forward Email의 메일 교환기로 전달되도록 고급 라우팅을 설정하려면:
 
-1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
-2. Go to **Exchange → Mail flow → Rules**
-3. Click **Add a rule** and select **Create a new rule**
-4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
-5. Under **Apply this rule if**, select:
-   * "The recipient address matches..."
-   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
-6. Under **Do the following**, select:
-   * "Redirect the message to..."
-   * Choose "The following mail server"
-   * Enter `mx1.forwardemail.net` and port 25
-   * Add `mx2.forwardemail.net` as a backup server
-7. Under **Except if**, select:
-   * "The recipient is..."
-   * Add all your existing mailboxes that should not be forwarded
-8. Set the rule priority to ensure it runs after other mail flow rules
-9. Click **Save** to activate the rule
+1. [admin.microsoft.com](https://admin.microsoft.com)에서 Microsoft 365 관리 센터에 로그인
+2. **Exchange → 메일 흐름 → 규칙**으로 이동
+3. **규칙 추가**를 클릭하고 **새 규칙 만들기** 선택
+4. 규칙 이름 지정 (예: "존재하지 않는 메일박스 Forward Email로 전달")
+5. **이 규칙 적용 대상**에서 다음 선택:
+   * "수신자 주소가 일치하는 경우..."
+   * 도메인의 모든 주소에 일치하는 패턴 입력 (예: `*@yourdomain.com`)
+6. **다음 작업 수행**에서 다음 선택:
+   * "메시지를 다음으로 리디렉션..."
+   * "다음 메일 서버" 선택
+   * `mx1.forwardemail.net` 및 포트 25 입력
+   * 백업 서버로 `mx2.forwardemail.net` 추가
+7. **예외 조건**에서 다음 선택:
+   * "수신자가 다음인 경우..."
+   * 전달하지 않을 기존 모든 메일박스 추가
+8. 규칙 우선순위를 설정하여 다른 메일 흐름 규칙 이후에 실행되도록 함
+9. **저장**을 클릭하여 규칙 활성화
+## 문제 해결 {#troubleshooting}
 
-## Troubleshooting {#troubleshooting}
+### 테스트 이메일을 받지 못하는 이유 {#why-am-i-not-receiving-my-test-emails}
 
-### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
+자신에게 테스트 이메일을 보내는 경우, 동일한 "Message-ID" 헤더 때문에 받은편지함에 나타나지 않을 수 있습니다.
 
-If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
+이 문제는 널리 알려져 있으며 Gmail과 같은 서비스에도 영향을 미칩니다.  <a href="https://support.google.com/a/answer/1703601">이 문제에 대한 공식 Gmail 답변은 여기에서 확인할 수 있습니다</a>.
 
-This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
+문제가 계속된다면, 대부분 DNS 전파 문제일 가능성이 큽니다.  조금 더 기다렸다가 다시 시도하거나 <strong class="notranslate">TXT</strong> 레코드의 TTL 값을 낮게 설정해 보세요.
 
-If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
+**여전히 문제가 있나요?**  <a href="/help">문의해 주세요</a> 저희가 문제를 조사하고 빠른 해결책을 찾을 수 있도록 도와드리겠습니다.
 
-**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
-
-### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Forward Email과 함께 이메일 클라이언트를 설정하는 방법 {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-  Our service works with popular email clients such as:
+  저희 서비스는 다음과 같은 인기 있는 이메일 클라이언트와 함께 작동합니다:
   <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> 데스크톱</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
-    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> 터미널</a></li>
   </ul>
 </div>
 
 <div class="alert alert-primary">
-  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
+  사용자 이름은 별칭 이메일 주소이며 비밀번호는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong> ("일반 비밀번호")에서 가져옵니다.
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>Thunderbird를 사용하는 경우 "연결 보안"이 "SSL/TLS"로 설정되어 있고 인증 방법이 "일반 비밀번호"로 설정되어 있는지 확인하세요.</span>
 </div>
 
-| Type | Hostname | Protocol | Ports |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| 유형 |         호스트명         |         프로토콜         |                                            포트                                            |
+| :--: | :---------------------: | :---------------------: | :----------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |  SSL/TLS **권장**        |                                      `993` 및 `2993`                                      |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **권장**         | SSL/TLS(권장)용 `465` 및 `2465` 또는 STARTTLS용 `587`, `2587`, `2525`, `25` |
 
-### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### 내 이메일이 스팸 및 정크 메일함에 도착하는 이유와 도메인 평판을 확인하는 방법 {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+이 섹션은 아웃바운드 메일이 당사 SMTP 서버(예: `smtp.forwardemail.net`)를 사용하거나(`mx1.forwardemail.net` 또는 `mx2.forwardemail.net`을 통해 전달되는 경우) 수신자의 스팸 또는 정크 폴더에 배달되는 경우를 안내합니다.
 
-This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+당사는 정기적으로 [IP 주소](#what-are-your-servers-ip-addresses)를 [모든 신뢰할 수 있는 DNS 차단 목록](#how-do-you-handle-your-ip-addresses-becoming-blocked)과 대조하여 모니터링하며, **따라서 이는 도메인 평판과 관련된 문제일 가능성이 가장 높습니다**.
 
-We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+이메일이 스팸 폴더에 들어가는 이유는 여러 가지가 있습니다:
 
-Emails can land in spam folders for several reasons:
+1. **인증 누락**: [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), [DMARC](#how-do-i-set-up-dmarc-for-forward-email) 레코드를 설정하세요.
 
-1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+2. **도메인 평판**: 신규 도메인은 발송 이력이 쌓일 때까지 중립적인 평판을 가집니다.
 
-2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
+3. **내용 트리거**: 특정 단어나 구문이 스팸 필터를 작동시킬 수 있습니다.
 
-3. **Content Triggers**: Certain words or phrases can trigger spam filters.
+4. **발송 패턴**: 이메일 발송량이 갑자기 증가하면 의심스러워 보일 수 있습니다.
 
-4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
+도메인의 평판과 분류를 확인하기 위해 다음 도구 중 하나 이상을 사용해 볼 수 있습니다:
 
-You can try to use one or more of these tools to check your domain's reputation and categorization:
+#### 평판 및 차단 목록 확인 도구 {#reputation-and-blocklist-check-tools}
 
-| Tool Name | URL | Type |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
-| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
-| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
-| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
-| SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
-| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
-| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
-| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Removal |
-| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
-| Cox Communications | `unblock.request@cox.net` | Removal |
-| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
+| 도구 이름                                   | URL                                                          | 유형                   |
+| ------------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare 도메인 분류 피드백               | <https://radar.cloudflare.com/domains/feedback>              | 분류                   |
+| Spamhaus IP 및 도메인 평판 확인기           | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP 및 도메인 평판 센터           | <https://talosintelligence.com/reputation_center>            | 평판                   |
+| Barracuda IP 및 도메인 평판 조회             | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox 블랙리스트 확인                   | <https://mxtoolbox.com/blacklists.aspx>                      | 블랙리스트             |
+| Google Postmaster 도구                      | <https://www.gmail.com/postmaster/>                          | 평판                   |
+| Yahoo 발신자 허브                           | <https://senders.yahooinc.com/>                              | 평판                   |
+| MultiRBL.valli.org 블랙리스트 확인           | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | 평판                   |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT의 레벨 1, 2, 3                   | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT의 backscatterer.org              | <https://www.backscatterer.org/>                             | 백스캐터 보호          |
+| UCEPROTECT의 whitelisted.org                | <https://www.whitelisted.org/> (유료)                         | DNSWL                  |
 
+#### 공급자별 IP 제거 요청 양식 {#ip-removal-request-forms-by-provider}
+
+특정 이메일 공급자가 귀하의 IP 주소를 차단한 경우, 아래 적절한 제거 양식이나 연락처를 사용하세요:
+
+| 공급자                                 | 제거 양식 / 연락처                                                                                         | 비고                                         |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | 대량 발송자 연락 양식                        |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | Office 365 IP 제거 포털                      |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | Yahoo 발신자 허브                           |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | Apple은 IP 평판에 Proofpoint 사용           |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | Proofpoint IP 확인 및 제거                   |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | Barracuda 평판 조회 및 제거                  |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | Cloudmark CSI 재설정 요청                    |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | GoDaddy IP 차단 해제 요청 양식              |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | Comcast IP 제거 요청                         |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | 제거 요청은 Spectrum 지원에 문의             |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | 제거 요청 이메일                            |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | 제거 요청 이메일                            |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | Cloudfilter 사용                            |
+| Windstream                             | `abuse@windstream.net`                                                                                     | 제거 요청 이메일                            |
+| t-online.de (독일)                     | `tobr@rx.t-online.de`                                                                                      | 제거 요청 이메일                            |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | 연락 양식 또는 이메일 `abuse@orange.fr` 사용 |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | GMX 포스트마스터 연락 양식                  |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | Mail.ru 포스트마스터 포털                   |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | Yandex 포스트마스터 포털                    |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | QQ Mail 화이트리스트 신청 (중국어)           |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | Netease 포스트마스터 포털                   |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | Alibaba Cloud 콘솔 통해 연락                |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | AWS SES 콘솔 > 블랙리스트 제거              |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | SendGrid 지원에 연락                        |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | 타사 RBL 사용 - 특정 RBL에 연락             |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | Fastmail 지원에 연락                        |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | Zoho 지원에 연락                            |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | Proton 지원에 연락                          |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | Tutanota 지원에 연락                        |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | Hushmail 지원에 연락                        |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | Mailbox.org 지원에 연락                     |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | Posteo 지원에 연락                          |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | DuckDuckGo 지원에 연락                      |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | Sonic 지원에 연락                           |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | Telus 지원에 연락                           |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | Vodafone 지원에 연락                        |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | Spark NZ 지원에 연락                        |
+| UOL/BOL (브라질)                      | <https://ajuda.uol.com.br/>                                                                                | UOL 지원에 연락 (포르투갈어)                 |
+| Libero (이탈리아)                     | <https://aiuto.libero.it/>                                                                                 | Libero 지원에 연락 (이탈리아어)              |
+| Telenet (벨기에)                      | <https://www2.telenet.be/en/support/>                                                                      | Telenet 지원에 연락                         |
+| Facebook/WhatsApp                      | <https://www.facebook.com/business/help>                                                                   | Facebook 비즈니스 지원에 연락               |
+| LinkedIn                               | <https://www.linkedin.com/help/linkedin>                                                                   | LinkedIn 지원에 연락                        |
+| Groups.io                              | <https://groups.io/helpcenter>                                                                             | Groups.io 지원에 연락                       |
+| Earthlink/Vade Secure                  | <https://sendertool.vadesecure.com/en/>                                                                    | Vade Secure 발신자 도구                     |
+| Cloudflare Email Security              | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | Cloudflare 지원에 연락                      |
+| Hornetsecurity/Expurgate               | <https://www.hornetsecurity.com/>                                                                          | Hornetsecurity 지원에 연락                  |
+| SpamExperts/Antispamcloud              | <https://www.spamexperts.com/>                                                                             | 호스팅 공급자를 통해 연락                   |
+| Mail2World                             | <https://www.mail2world.com/support/>                                                                      | Mail2World 지원에 연락                      |
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> 더 큰 용량으로 이메일을 보내기 전에 긍정적인 평판을 쌓기 위해 적은 양의 고품질 이메일부터 시작하세요.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> 도메인이 블랙리스트에 올라가 있다면, 각 블랙리스트마다 제거 절차가 다릅니다. 해당 웹사이트에서 지침을 확인하세요.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> 추가 도움이 필요하거나 특정 이메일 서비스 제공업체에서 저희가 스팸으로 오인되어 등록된 경우, <a href="/help">문의해 주세요</a>.
 
-### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
+### 스팸 이메일을 받으면 어떻게 해야 하나요 {#what-should-i-do-if-i-receive-spam-emails}
 
-You should unsubscribe from the emailing list (if possible) and block the sender.
+가능하다면 메일링 리스트에서 구독을 취소하고 발신자를 차단해야 합니다.
 
-Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
+메시지를 스팸으로 신고하지 말고, 대신 수동으로 관리되고 개인정보 보호에 중점을 둔 저희 남용 방지 시스템으로 전달해 주세요.
 
-**The email address to forward spam to is:** <abuse@forwardemail.net>
+**스팸을 전달할 이메일 주소는:** <abuse@forwardemail.net>
 
-### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Gmail에서 나에게 보낸 테스트 이메일이 "의심스러움"으로 표시되는 이유는 무엇인가요 {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
+자신에게 테스트 메일을 보낼 때 또는 별칭으로 이메일을 주고받는 사람이 처음으로 당신의 이메일을 받았을 때 Gmail에서 이 오류 메시지가 표시된다면, **걱정하지 마세요** – 이것은 Gmail의 내장 안전 기능입니다.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+간단히 "안전해 보임"을 클릭하면 됩니다. 예를 들어, 보내기 기능을 사용해 테스트 메시지를 다른 사람에게 보낸다면 그들은 이 메시지를 보지 않습니다.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+하지만 만약 그들이 이 메시지를 본다면, 이는 보통 <john@gmail.com>에서 오는 이메일을 보던 사용자가 <john@customdomain.com> (예시)에서 온 이메일을 처음 봤기 때문입니다. Gmail은 안전을 위해 사용자에게 알림을 표시하며, 이를 우회하는 방법은 없습니다.
 
-### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Gmail에서 via forwardemail dot net을 제거할 수 있나요 {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
+이 주제는 [발신자 이름 옆에 추가 정보가 표시되는 Gmail의 널리 알려진 문제](https://support.google.com/mail/answer/1311182)와 관련이 있습니다.
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+2023년 5월부터 모든 유료 사용자에게 SMTP를 통한 이메일 전송을 애드온으로 지원하므로, Gmail에서 <span class="notranslate">via forwardemail dot net</span>을 제거할 수 있습니다.
 
-Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
+이 FAQ 주제는 [Gmail을 사용한 메일 보내기 기능](#how-to-send-mail-as-using-gmail)을 사용하는 분들을 위한 것입니다.
 
-Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
+설정 방법은 [SMTP를 통한 이메일 전송 지원 여부](#do-you-support-sending-email-with-smtp) 섹션을 참고하세요.
 
-## Data Management {#data-management}
 
-### Where are your servers located {#where-are-your-servers-located}
+## 데이터 관리 {#data-management}
+
+### 서버 위치는 어디인가요 {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> 곧 [forwardemail.eu](https://forwardemail.eu)에서 호스팅하는 EU 데이터센터 위치를 발표할 예정입니다. 업데이트를 원하시면 <https://github.com/orgs/forwardemail/discussions/336>에서 토론을 구독하세요.
 
-Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
+저희 서버는 주로 콜로라도 덴버에 위치해 있습니다 – 전체 IP 주소 목록은 <https://forwardemail.net/ips>에서 확인하세요.
 
-You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
+서브프로세서에 관한 내용은 저희 [GDPR](/gdpr), [DPA](/dpa), [개인정보 보호](/privacy) 페이지에서 확인할 수 있습니다.
 
-### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
+### 메일박스를 어떻게 내보내고 백업하나요 {#how-do-i-export-and-backup-my-mailbox}
 
-At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+언제든지 메일박스를 [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), 또는 암호화된 [SQLite](https://en.wikipedia.org/wiki/SQLite) 형식으로 내보낼 수 있습니다.
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> 백업 다운로드로 이동하여 원하는 내보내기 형식을 선택하세요.
 
-You will be emailed a link to download the export once it has finished.
+내보내기가 완료되면 다운로드 링크가 이메일로 전송됩니다.
 
-Note that this export download link expires after 4 hours for security concerns.
+보안상의 이유로 이 내보내기 다운로드 링크는 4시간 후 만료됩니다.
 
-If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+내보낸 EML 또는 Mbox 형식을 검사해야 한다면, 다음 오픈 소스 도구들이 유용할 수 있습니다:
 
-| Name | Format | Platform | GitHub URL |
+| 이름             | 형식  | 플랫폼       | GitHub URL                                          |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer     |  Mbox  | Windows       | <https://github.com/eneam/mboxviewer>               |
+| mbox-web-viewer |  Mbox  | 모든 플랫폼   | <https://github.com/PHMRanger/mbox-web-viewer>      |
+| EmlReader       |   EML  | Windows       | <https://github.com/ayamadori/EmlReader>            |
+| Email viewer    |   EML  | VSCode        | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader      |   EML  | 모든 플랫폼   | <https://github.com/s0ph1e/eml-reader>              |
+또한 Mbox 파일을 EML 파일로 변환해야 하는 경우 <https://github.com/noelmartinon/mboxzilla>를 사용할 수 있습니다.
 
-Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
+### 기존 메일박스를 어떻게 가져오고 마이그레이션하나요 {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
-
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+아래 지침을 따라 Forward Email로 이메일을 쉽게 가져올 수 있습니다(예: [Thunderbird](https://www.thunderbird.net) 사용).
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    You must follow all of the following steps in order to import your existing email.
+    기존 이메일을 가져오려면 아래 모든 단계를 반드시 따라야 합니다.
   </span>
 </div>
 
-1. Export your email from your existing email provider:
+1. 기존 이메일 제공자에서 이메일을 내보내기:
 
-| Email Provider | Export Format | Export Instructions |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
-| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+   | 이메일 제공자 | 내보내기 형식                                  | 내보내기 지침                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+   | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Gmail          | MBOX                                           | <https://takeout.google.com/settings/takeout/custom/gmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+   | Outlook        | PST                                            | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">팁:</strong> <span>Outlook을 사용 중이라면 (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST 내보내기 형식</a>) 아래 "기타" 항목의 지침을 따를 수 있습니다. 그러나 운영 체제에 따라 PST를 MBOX/EML 형식으로 변환하는 링크도 아래에 제공했습니다:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Windows용 Zinkuba</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">Windows cygwin용 readpst</a> – (예: <code>readpst -u -o $OUT_DIR $IN_DIR</code> 여기서 <code>$OUT_DIR</code>와 <code>$IN_DIR</code>는 각각 출력 디렉터리와 입력 디렉터리 경로로 교체).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">Ubuntu/Linux용 readpst</a> – (예: <code>sudo apt-get install readpst</code> 후 <code>readpst -u -o $OUT_DIR $IN_DIR</code>, 여기서 <code>$OUT_DIR</code>와 <code>$IN_DIR</code>는 각각 출력 디렉터리와 입력 디렉터리 경로로 교체).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">macOS용 readpst (brew 사용)</a> – (예: <code>brew install libpst</code> 후 <code>readpst -u -o $OUT_DIR $IN_DIR</code>, 여기서 <code>$OUT_DIR</code>와 <code>$IN_DIR</code>는 각각 출력 디렉터리와 입력 디렉터리 경로로 교체).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">Windows용 PST 변환기 (GitHub)</a></li></ul><br /></span></div> |
+   | Apple Mail     | MBOX                                           | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Fastmail       | EML                                            | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+   | Proton Mail    | MBOX/EML                                       | <https://proton.me/support/export-emails-import-export-app>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+   | Tutanota       | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | Gandi          | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Zoho           | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+   | 기타           | [Thunderbird 사용](https://www.thunderbird.net) | Thunderbird에 기존 이메일 계정을 설정한 후 [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) 플러그인을 사용하여 이메일을 내보내고 가져옵니다.  **또한 한 계정에서 다른 계정으로 이메일을 복사/붙여넣기 또는 드래그/드롭으로 간단히 이동할 수도 있습니다.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+2. [Thunderbird](https://www.thunderbird.net)를 다운로드, 설치하고 실행합니다.
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+3. 별칭의 전체 이메일 주소(예: <code><you@yourdomain.com></code>)와 생성된 비밀번호를 사용하여 새 계정을 만듭니다.  <strong>아직 생성된 비밀번호가 없다면, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">설치 지침을 참고하세요</a></strong>.
 
-3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
+4. [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird 플러그인을 다운로드하고 설치합니다.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+5. Thunderbird에서 새 로컬 폴더를 만들고, 해당 폴더를 마우스 오른쪽 버튼으로 클릭 → `ImportExportTools NG` 옵션 선택 → `Import mbox file`(MBOX 내보내기 형식용) 또는 `Import messages` / `Import all messages from a directory`(EML 내보내기 형식용)를 선택합니다.
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+6. 로컬 폴더에서 Thunderbird의 새 IMAP 폴더(또는 기존 폴더)로 메시지를 드래그/드롭하여 IMAP 저장소에 업로드합니다.  이렇게 하면 SQLite 암호화 저장소를 통해 온라인으로 백업됩니다.
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       Thunderbird로 가져오는 방법이 헷갈린다면, 공식 지침을 <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> 및 <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>에서 참고할 수 있습니다.
      </span>
    </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+    내보내기 및 가져오기 과정을 완료한 후에는 기존 이메일 계정에서 전달 설정을 활성화하고 자동 응답기를 설정하여 발신자에게 새 이메일 주소가 있음을 알리는 것이 좋습니다(예: 이전에 Gmail을 사용하다가 이제는 맞춤 도메인 이메일을 사용하는 경우).
   </span>
 </div>
 
@@ -1064,201 +1112,408 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      축하합니다!
     </strong>
     <span>
-      You've successfully completed all steps.
+      모든 단계를 성공적으로 완료했습니다.
     </span>
   </div>
 </div>
 
-### Do you support self-hosting {#do-you-support-self-hosting}
+### 백업을 위해 내 S3 호환 스토리지를 사용하는 방법 {#how-do-i-use-my-own-s3-compatible-storage-for-backups}
 
-Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+유료 플랜 사용자는 도메인별로 자신의 [S3](https://en.wikipedia.org/wiki/Amazon_S3) 호환 스토리지 공급자를 IMAP/SQLite 백업용으로 구성할 수 있습니다.  이는 암호화된 메일박스 백업을 기본 저장소 대신(또는 추가로) 자신의 인프라에 저장할 수 있음을 의미합니다.
 
-## Email Configuration {#email-configuration}
+지원되는 공급자는 [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces) 및 기타 모든 S3 호환 서비스입니다.
 
-### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
+#### 설정 {#setup}
+
+1. S3 호환 공급자에서 **비공개** 버킷을 만듭니다. 버킷은 공개 접근이 불가능해야 합니다.
+2. 버킷에 대한 읽기/쓰기 권한이 있는 액세스 자격 증명(액세스 키 ID 및 비밀 액세스 키)을 생성합니다.
+3. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 고급 설정 <i class="fa fa-angle-right"></i> 맞춤 S3 호환 스토리지로 이동합니다.
+4. **"맞춤 S3 호환 스토리지 활성화"**를 체크하고 엔드포인트 URL, 액세스 키 ID, 비밀 액세스 키, 리전, 버킷 이름을 입력합니다.
+5. **"연결 테스트"**를 클릭하여 자격 증명, 버킷 접근 및 쓰기 권한을 확인합니다.
+6. **"저장"**을 클릭하여 설정을 적용합니다.
+
+#### 백업 작동 방식 {#how-backups-work}
+
+백업은 연결된 모든 IMAP 별칭에 대해 자동으로 트리거됩니다. IMAP 서버는 활성 연결을 매시간 확인하고 각 연결된 별칭에 대해 백업을 실행합니다. Redis 기반 잠금 장치는 30분 이내 중복 백업 실행을 방지하며, 최근 24시간 내에 성공적인 백업이 완료된 경우(사용자가 다운로드를 위해 명시적으로 백업을 요청한 경우 제외) 실제 백업은 건너뜁니다.
+백업은 대시보드에서 모든 별칭에 대해 **"백업 다운로드"**를 클릭하여 수동으로도 실행할 수 있습니다. 수동 백업은 24시간 창과 상관없이 항상 실행됩니다.
+
+백업 프로세스는 다음과 같이 작동합니다:
+
+1. SQLite 데이터베이스는 `VACUUM INTO`를 사용하여 복사되며, 이는 활성 연결을 중단하지 않고 일관된 스냅샷을 생성하며 데이터베이스 암호화를 유지합니다.
+2. 백업 파일을 열어 암호화가 여전히 유효한지 확인하여 검증합니다.
+3. SHA-256 해시를 계산하고 저장된 기존 백업과 비교합니다. 해시가 일치하면 업로드를 건너뜁니다(마지막 백업 이후 변경 사항 없음).
+4. 백업은 [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage) 라이브러리를 통해 멀티파트 업로드 방식으로 S3에 업로드됩니다.
+5. 서명된 다운로드 URL(4시간 유효)이 생성되어 사용자에게 이메일로 전송됩니다.
+
+#### 백업 형식 {#backup-formats}
+
+세 가지 백업 형식이 지원됩니다:
+
+| 형식     | 확장자    | 설명                                                                        |
+| -------- | --------- | --------------------------------------------------------------------------- |
+| `sqlite` | `.sqlite` | 원시 암호화된 SQLite 데이터베이스 스냅샷 (자동 IMAP 백업의 기본값)            |
+| `mbox`   | `.zip`    | mbox 형식의 메일박스를 포함하는 비밀번호 보호 ZIP                           |
+| `eml`    | `.zip`    | 메시지별 개별 `.eml` 파일을 포함하는 비밀번호 보호 ZIP                      |
+
+> **팁:** `.sqlite` 백업 파일을 가지고 있고 로컬에서 `.eml` 파일로 변환하려면 독립 실행형 CLI 도구 **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**를 사용하세요. Windows, Linux, macOS에서 작동하며 네트워크 연결이 필요 없습니다.
+
+#### 파일 명명 및 키 구조 {#file-naming-and-key-structure}
+
+**사용자 지정 S3 스토리지**를 사용할 때 백업 파일은 [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) 타임스탬프 접두사와 함께 저장되어 각 백업이 별도의 객체로 보존됩니다. 이를 통해 자신의 버킷에서 전체 백업 기록을 확인할 수 있습니다.
+
+키 형식은 다음과 같습니다:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+예를 들어:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+`alias_id`는 별칭의 MongoDB ObjectId입니다. 별칭 설정 페이지나 API를 통해 확인할 수 있습니다.
+
+**기본(시스템) 스토리지**를 사용할 경우 키는 평면 구조이며(예: `65a31c53c36b75ed685f3fda.sqlite`), 각 백업은 이전 백업을 덮어씁니다.
+
+> **참고:** 사용자 지정 S3 스토리지는 모든 백업 버전을 보존하므로 저장 공간 사용량이 시간이 지남에 따라 증가합니다. 버킷에 [수명 주기 규칙](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html)을 구성하여 오래된 백업을 자동으로 만료시키는 것을 권장합니다(예: 30일 또는 90일 이상 된 객체 삭제).
+
+#### 데이터 소유권 및 삭제 정책 {#data-ownership-and-deletion-policy}
+
+사용자 지정 S3 버킷은 전적으로 귀하의 관리 하에 있습니다. 우리는 별칭 삭제, 도메인 제거, 정리 작업 중에도 사용자 지정 S3 버킷 내 파일을 **절대 삭제하거나 수정하지 않습니다**. 새 백업 파일만 버킷에 씁니다.
+
+즉:
+
+* **별칭 삭제** — 별칭을 삭제하면 기본 시스템 스토리지에서만 백업을 제거합니다. 사용자 지정 S3 버킷에 이전에 작성된 백업은 그대로 유지됩니다.
+* **도메인 제거** — 도메인 제거는 사용자 지정 버킷 내 파일에 영향을 주지 않습니다.
+* **보존 관리** — 오래된 백업 만료를 위한 수명 주기 규칙 구성 등 저장소 관리는 귀하의 책임입니다.
+
+사용자 지정 S3 스토리지를 비활성화하거나 기본 스토리지로 전환해도 버킷 내 기존 파일은 보존됩니다. 이후 백업은 기본 스토리지에 작성됩니다.
+
+#### 보안 {#security}
+
+* 액세스 키 ID와 비밀 액세스 키는 데이터베이스에 저장되기 전에 [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode)을 사용해 **휴지 상태 암호화**됩니다. 백업 작업 시에만 런타임에 복호화됩니다.
+* 버킷이 **공개 접근이 불가능한지** 자동으로 검증합니다. 공개 버킷이 감지되면 저장 시 구성이 거부됩니다. 백업 시 공개 접근이 감지되면 기본 스토리지로 대체하며 모든 도메인 관리자에게 이메일로 알립니다.
+* 저장 시 [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html) 호출을 통해 버킷 존재 여부와 자격 증명 유효성을 검증합니다. 검증 실패 시 사용자 지정 S3 스토리지가 자동으로 비활성화됩니다.
+* 각 백업 파일에는 S3 메타데이터에 SHA-256 해시가 포함되어 있어 변경되지 않은 데이터베이스를 감지하고 중복 업로드를 건너뜁니다.
+#### 오류 알림 {#error-notifications}
+
+사용자 지정 S3 스토리지를 사용할 때 백업이 실패하면(예: 만료된 자격 증명 또는 연결 문제로 인해) 모든 도메인 관리자가 이메일로 알림을 받습니다. 이러한 알림은 중복 경고를 방지하기 위해 6시간에 한 번씩 제한됩니다. 백업 시 버킷이 공개적으로 액세스 가능한 것으로 감지되면 관리자는 하루에 한 번 알림을 받습니다.
+
+#### API {#api}
+
+API를 통해서도 사용자 지정 S3 스토리지를 구성할 수 있습니다:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+API를 통해 연결을 테스트하려면:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### SQLite 백업을 EML 파일로 변환하는 방법 {#how-do-i-convert-sqlite-backups-to-eml-files}
+
+SQLite 백업을 다운로드하거나 저장한 경우(기본 스토리지 또는 자신의 [사용자 지정 S3 버킷](#how-do-i-use-my-own-s3-compatible-storage-for-backups)에서), 독립 실행형 CLI 도구 **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** 를 사용하여 표준 `.eml` 파일로 변환할 수 있습니다. EML 파일은 모든 이메일 클라이언트([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) 등)에서 열거나 다른 메일 서버로 가져올 수 있습니다.
+
+#### 설치 {#installation-1}
+
+사전 빌드된 바이너리( [Node.js](https://github.com/nodejs/node) 필요 없음)를 다운로드하거나 [Node.js](https://github.com/nodejs/node)로 직접 실행할 수 있습니다:
+
+**사전 빌드된 바이너리** — 플랫폼에 맞는 최신 릴리스를 [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases)에서 다운로드하세요:
+
+| 플랫폼  | 아키텍처       | 파일                                   |
+| ------- | -------------- | ------------------------------------ |
+| Linux   | x64            | `convert-sqlite-to-eml-linux-x64`    |
+| Linux   | arm64          | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS   | Apple Silicon  | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows | x64            | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **macOS 사용자:** 다운로드 후 바이너리를 실행하기 전에 격리 속성을 제거해야 할 수 있습니다:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (`./convert-sqlite-to-eml-darwin-arm64`를 다운로드한 파일의 실제 경로로 바꾸세요.)
+
+> **Linux 사용자:** 다운로드 후 바이너리에 실행 권한을 부여해야 할 수 있습니다:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (`./convert-sqlite-to-eml-linux-x64`를 다운로드한 파일의 실제 경로로 바꾸세요.)
+
+**소스에서 설치** ([Node.js](https://github.com/nodejs/node) >= 18 필요):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### 사용법 {#usage}
+
+이 도구는 대화형 및 비대화형 모드를 모두 지원합니다.
+
+**대화형 모드** — 인수 없이 실행하면 모든 입력을 안내받습니다:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - SQLite 백업을 EML로 변환
+  ========================================
+
+  SQLite 백업 파일 경로: /path/to/backup.sqlite
+  IMAP/별칭 비밀번호: ********
+  출력 ZIP 경로 [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**비대화형 모드** — 스크립팅 및 자동화를 위해 명령줄 플래그로 인수를 전달합니다:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| 플래그               | 설명                                                                            |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `--path <path>`      | 암호화된 SQLite 백업 파일 경로                                                  |
+| `--password <pass>`  | 복호화를 위한 IMAP/별칭 비밀번호                                                |
+| `--output <path>`    | ZIP 파일 출력 경로 (기본값: ISO 8601 타임스탬프로 자동 생성)                   |
+| `--help`             | 도움말 메시지 표시                                                              |
+#### 출력 형식 {#output-format}
+
+이 도구는 다음을 포함하는 비밀번호로 보호된 ZIP 아카이브(AES-256 암호화)를 생성합니다:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+EML 파일은 메일박스 폴더별로 정리됩니다. ZIP 비밀번호는 IMAP/별칭 비밀번호와 동일합니다. 각 `.eml` 파일은 SQLite 데이터베이스에서 재구성된 전체 헤더, 본문 텍스트 및 첨부파일이 포함된 표준 [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) 이메일 메시지입니다.
+
+#### 작동 방식 {#how-it-works}
+
+1. IMAP/별칭 비밀번호를 사용하여 암호화된 SQLite 데이터베이스를 엽니다 ([ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) 및 [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) 암호화 방식 모두 지원).
+2. Mailboxes 테이블을 읽어 폴더 구조를 확인합니다.
+3. 각 메시지에 대해 Messages 테이블에 저장된 [Brotli](https://github.com/google/brotli) 압축 JSON 형식의 mimeTree를 디코딩합니다.
+4. MIME 트리를 순회하며 Attachments 테이블에서 첨부파일 본문을 가져와 전체 EML을 재구성합니다.
+5. 모든 내용을 [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted)를 사용해 비밀번호로 보호된 ZIP 아카이브로 패키징합니다.
+
+### 자체 호스팅을 지원하나요? {#do-you-support-self-hosting}
+
+네, 2025년 3월부터 자체 호스팅 옵션을 지원합니다. 블로그를 [여기](https://forwardemail.net/blog/docs/self-hosted-solution)에서 읽어보세요. 시작하려면 [자체 호스팅 가이드](https://forwardemail.net/self-hosted)를 참고하세요. 좀 더 세분화된 단계별 버전을 원하시면 [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) 또는 [Debian](https://forwardemail.net/guides/selfhosted-on-debian) 기반 가이드를 확인하세요.
+
+
+## 이메일 설정 {#email-configuration}
+
+### 이메일 전달 설정을 어떻게 시작하나요? {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
   <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 10 minutes</span>
+  <strong class="font-weight-bold">예상 설정 시간:</strong>
+  <span>10분 미만</span>
 </div>
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-bullhorn font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Getting Started:
+    시작하기:
   </strong>
   <span>
-    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+    아래 나열된 1단계부터 8단계까지를 주의 깊게 읽고 따라 하세요. <code>user@gmail.com</code> 이메일 주소를 이메일을 전달할 실제 이메일 주소로 반드시 교체하세요(이미 정확하지 않은 경우). 마찬가지로 <code>example.com</code>도 맞춤 도메인 이름으로 반드시 교체하세요(이미 정확하지 않은 경우).
   </span>
 </div>
 
 <ol>
-  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">이미 도메인 이름을 등록한 경우 이 단계를 완전히 건너뛰고 2단계로 이동하세요! 그렇지 않으면 <a href="/domain-registration" rel="noopener noreferrer">여기에서 도메인 이름을 등록하세요</a>.</li>
   <li class="mb-2 mb-md-3 mb-lg-5">
-  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
+  도메인을 어디에 등록했는지 기억나나요? 기억나면 아래 지침을 따르세요:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
-    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+    새 탭을 열고 도메인 등록기관에 로그인해야 합니다. 아래 "등록기관"을 클릭하면 자동으로 로그인 페이지가 열립니다. 새 탭에서 등록기관의 DNS 관리 페이지로 이동하세요 – "설정 단계" 열에 단계별 안내가 제공되어 있습니다. 새 탭에서 해당 페이지로 이동한 후 이 탭으로 돌아와 3단계로 진행하세요.
+    <strong class="font-weight-bold">열어둔 탭을 아직 닫지 마세요; 이후 단계에서 필요합니다!</strong>
   </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Registrar</th>
-      <th>Steps to Configure</th>
+      <th>등록기관</th>
+      <th>설정 단계</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 도메인 센터 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> DNS 설정 편집</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 호스티드 존 <i class="fa fa-angle-right"></i> (도메인 선택)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 내 서버 <i class="fa fa-angle-right"></i> 도메인 관리 <i class="fa fa-angle-right"></i> DNS 관리자</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <td>ROCK 버전: 로그인 <i class="fa fa-angle-right"></i> 도메인 <i class="fa fa-angle-right"></i> (관리 옆 ▼ 아이콘 클릭) <i class="fa fa-angle-right"></i> DNS
       <br />
-      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      LEGACY 버전: 로그인 <i class="fa fa-angle-right"></i> 도메인 <i class="fa fa-angle-right"></i> 존 편집기 <i class="fa fa-angle-right"></i> (도메인 선택)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (도메인 선택)</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> 관리</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 네트워킹 <i class="fa fa-angle-right"></i> 도메인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> 더보기 <i class="fa fa-angle-right"></i> 도메인 관리</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
-the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 카드 뷰에서 도메인 관리 클릭 <i class="fa fa-angle-right"></i> 리스트 뷰에서 톱니바퀴 아이콘 클릭 <i class="fa fa-angle-right"></i> DNS 및 네임서버 <i class="fa fa-angle-right"></i> DNS 레코드</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> 시청</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> 관리 <i class="fa fa-angle-right"></i> (톱니바퀴 아이콘 클릭) <i class="fa fa-angle-right"></i> 왼쪽 메뉴에서 DNS 및 네임서버 클릭</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 패널 <i class="fa fa-angle-right"></i> 도메인 <i class="fa fa-angle-right"></i> 도메인 관리 <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 개요 <i class="fa fa-angle-right"></i> 관리 <i class="fa fa-angle-right"></i> 간단 편집기 <i class="fa fa-angle-right"></i> 레코드</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> 관리 <i class="fa fa-angle-right"></i> 존 편집</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> 시청</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 내 도메인 관리 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> DNS 관리</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> 시청</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> DNS 구성</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> 시청</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 도메인 목록 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> 관리 <i class="fa fa-angle-right"></i> 고급 DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> Netlify DNS 설정</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 계정 관리자 <i class="fa fa-angle-right"></i> 내 도메인 이름 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> 관리 <i class="fa fa-angle-right"></i> 도메인 포인트 변경 <i class="fa fa-angle-right"></i> 고급 DNS</td>
     </tr>
     <tr>
       <td>
         <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
         <br />
-        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> 시청</a>
       </td>
-      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 관리 도메인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> DNS 설정</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
-Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 홈 메뉴 <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 도메인 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i>
+고급 설정 <i class="fa fa-angle-right"></i> 사용자 정의 레코드</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+      <td>"now" CLI 사용 <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 도메인 페이지 <i class="fa fa-angle-right"></i> (도메인 선택) <i class="fa fa-angle-right"></i> DNS</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 도메인 페이지 <i class="fa fa-angle-right"></i> (<i class="fa fa-ellipsis-h"></i> 아이콘 클릭) <i class="fa fa-angle-right"></i> DNS 레코드 관리 선택</td>
     </tr>
     <tr>
       <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
-      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+      <td>로그인 <i class="fa fa-angle-right"></i> 도메인 <i class="fa fa-angle-right"></i> 내 도메인</td>
     </tr>
     <tr>
-      <td>Other</td>
+      <td>기타</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">중요:</strong> 등록기관 이름이 목록에 없나요? 인터넷에서 "how to change DNS records on $REGISTRAR" (여기서 $REGISTRAR는 등록기관 이름, 예: GoDaddy 사용 시 "how to change DNS records on GoDaddy")를 검색하세요.</div>
       </td>
     </tr>
   </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
-
+<li class="mb-2 mb-md-3 mb-lg-5">등록기관의 DNS 관리 페이지(열어둔 다른 탭)를 사용하여 다음 "MX" 레코드를 설정하세요:
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
-    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+    다른 MX 레코드는 절대 설정하면 안 됩니다. 아래에 표시된 두 레코드가 반드시 존재해야 합니다. 오타가 없는지, mx1과 mx2가 정확히 맞게 입력되었는지 꼭 확인하세요. 이미 MX 레코드가 존재한다면 완전히 삭제해 주세요.
+    "TTL" 값은 반드시 3600일 필요는 없으며, 필요에 따라 더 낮거나 높은 값으로 설정할 수 있습니다.
   </span>
 </div>
 
@@ -1274,14 +1529,14 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
       <td><code>mx1.forwardemail.net</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td>MX</td>
       <td>0</td>
@@ -1290,15 +1545,15 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">등록기관의 DNS 관리 페이지(열어둔 다른 탭)에서 다음 <strong class="notranslate">TXT</strong> 레코드를 설정하세요:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+    유료 플랜을 사용 중이라면 이 단계를 완전히 건너뛰고 5단계로 바로 이동하세요! 유료 플랜이 아니라면, 전달된 주소들이 공개적으로 검색 가능해집니다 – <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>으로 가서 원한다면 도메인을 유료 플랜으로 업그레이드하세요. 유료 플랜에 대해 더 알고 싶다면 <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">가격 정책</a> 페이지를 참고하세요. 그렇지 않으면 아래 옵션 A부터 옵션 F 중 하나 이상을 선택해 계속 진행할 수 있습니다.
   </span>
 </div>
 
@@ -1307,10 +1562,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option A:
+    옵션 A:
   </strong>
   <span>
-    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+    도메인의 모든 이메일(예: "all@example.com", "hello@example.com" 등)을 특정 주소 "user@gmail.com"으로 전달하는 경우:
   </span>
 </div>
 
@@ -1325,7 +1580,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1338,10 +1593,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
-    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+    위 "값" 열의 내용을 반드시 본인의 이메일 주소로 바꾸세요. "TTL" 값은 반드시 3600일 필요 없으며, 필요에 따라 더 낮거나 높은 값으로 설정할 수 있습니다. TTL 값이 낮을수록 DNS 레코드 변경 사항이 인터넷 전역에 더 빨리 전파됩니다 – 이는 메모리 내 캐시 유지 시간(초 단위)과 같습니다. <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">위키피디아의 TTL 설명</a>에서 더 자세히 알아볼 수 있습니다.
   </span>
 </div>
 
@@ -1350,25 +1605,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option B:
+    옵션 B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    단일 이메일 주소만 전달하려는 경우(예: <code>hello@example.com</code>을 <code>user@gmail.com</code>으로; 이 경우 "hello+test@example.com"도 자동으로 "user+test@gmail.com"으로 전달됨):
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1383,25 +1637,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option C:
+    옵션 C:
   </strong>
   <span>
-    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+    여러 이메일을 전달하는 경우 쉼표로 구분해야 합니다:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1416,25 +1670,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option D:
+    옵션 D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    무한한 수의 전달 이메일을 설정할 수 있습니다 – 단일 줄에 255자를 넘지 않도록 하고 각 줄은 "forward-email="로 시작해야 합니다. 아래에 예시가 제공되어 있습니다:
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1442,7 +1696,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1450,7 +1704,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1458,7 +1712,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1466,7 +1720,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       </td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1481,25 +1735,25 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option E:
+    옵션 E:
   </strong>
   <span>
-    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+    <strong class="notranslate">TXT</strong> 레코드에 도메인 이름을 지정하여 전역 별칭 전달을 할 수도 있습니다 (예: "user@example.com"이 "user@example.net"으로 전달됨):
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1514,25 +1768,24 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option F:
+    옵션 F:
   </strong>
   <span>
-    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+    웹훅을 전역 또는 개별 별칭으로 사용하여 이메일을 전달할 수도 있습니다. 아래 <a href="#do-you-support-webhooks" class="alert-link">웹훅을 지원하나요</a> 섹션에서 예시와 전체 내용을 확인하세요.
   </span>
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1547,35 +1800,35 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Option G:
+    옵션 G:
   </strong>
   <span>
-    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+    별칭을 매칭하고 이메일 전달을 위한 치환을 처리하기 위해 정규 표현식("regex")을 사용할 수도 있습니다. 아래 <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">정규 표현식 또는 regex를 지원하나요</a> 섹션과 예제를 참조하세요.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  <strong>치환이 포함된 고급 정규식이 필요하신가요?</strong> 아래 <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">정규 표현식 또는 regex를 지원하나요</a> 섹션과 예제를 참조하세요.
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>간단한 예:</strong> `linus@example.com` 또는 `torvalds@example.com`으로 가는 모든 이메일을 `user@gmail.com`으로 전달하고 싶다면:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td>
@@ -1588,37 +1841,37 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Catch-all forwarding rules could also be described as "fall-through".
-    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
-    Specific rules include email addresses and regular expressions.
+    캐치올 전달 규칙은 "낙차(fall-through)"라고도 설명할 수 있습니다.
+    이는 최소 하나의 특정 전달 규칙과 일치하는 수신 이메일이 캐치올 대신 사용된다는 의미입니다.
+    특정 규칙에는 이메일 주소와 정규 표현식이 포함됩니다.
     <br /><br />
-    For example:
+    예를 들어:
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    이 구성에서는 <code>hello@example.com</code>으로 보내진 이메일이 <code>second@gmail.com</code>(캐치올)로 전달되지 않고, 오직 <code>first@gmail.com</code>으로만 전달됩니다.
   </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+</li><li class="mb-2 mb-md-3 mb-lg-5">등록기관의 DNS 관리 페이지(열어둔 다른 탭)를 사용하여 다음 <strong class="notranslate">TXT</strong> 레코드를 추가로 설정하세요:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1629,10 +1882,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Gmail(예: 메일 보내기 기능) 또는 G Suite를 사용하는 경우 위 값에 <code>include:_spf.google.com</code>을 추가해야 합니다. 예를 들어:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
@@ -1641,34 +1894,33 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    이미 "v=spf1"이 포함된 유사한 라인이 있다면, 기존 "include:host.com" 레코드 바로 앞과 같은 줄의 "-all" 앞에 <code>include:spf.forwardemail.net</code>을 추가해야 합니다. 예를 들어:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    "-all"과 "~all"은 차이가 있습니다. "-"는 SPF 검사가 일치하지 않을 경우 실패(FAIL)해야 함을 나타내고, "~"는 소프트 실패(SOFTFAIL)를 의미합니다. 도메인 위조 방지를 위해 "-all" 방식을 사용하는 것을 권장합니다.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    또한 메일을 보내는 호스트(예: Outlook)의 SPF 레코드를 포함해야 할 수도 있습니다.
   </span>
 </div>
+</li><li class="mb-2 mb-md-3 mb-lg-5">우리의 "레코드 확인" 도구를 사용하여 DNS 레코드를 확인하세요. 도구는 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정에서 이용할 수 있습니다.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
+</li><li class="mb-2 mb-md-3 mb-lg-5">작동 여부를 확인하기 위해 테스트 이메일을 보내세요. DNS 레코드가 전파되는 데 시간이 걸릴 수 있다는 점을 유의하세요.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
   </span>
-    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
+    테스트 이메일을 받지 못하거나 "이 메시지에 주의하세요"라는 내용의 테스트 이메일을 받는 경우, 각각 <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">테스트 이메일을 받지 못하는 이유</a>와 <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Gmail에서 자신에게 보낸 테스트 이메일이 "의심스러움"으로 표시되는 이유</a>에 대한 답변을 참조하세요.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Gmail에서 "다른 이름으로 메일 보내기"를 사용하려면 <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">이 영상을 시청</a></strong>하거나 아래 <a href="#how-to-send-mail-as-using-gmail">Gmail을 사용하여 메일 보내기 설정 방법</a> 단계를 따르세요.
 
 </li></ol>
 
@@ -1676,10 +1928,10 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      축하합니다!
     </strong>
     <span>
-      You've successfully completed all steps.
+      모든 단계를 성공적으로 완료하셨습니다.
     </span>
   </div>
 </div>
@@ -1687,93 +1939,92 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    선택적 추가 기능이 아래에 나열되어 있습니다. 이 추가 기능들은 완전히 선택 사항이며 반드시 필요하지 않을 수 있습니다. 필요할 경우 추가 정보를 제공하고자 합니다.
   </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Optional Add-on:
+    선택적 추가 기능:
   </strong>
   <span>
-    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+    <a class="alert-link" href="#how-to-send-mail-as-using-gmail">Gmail을 사용하여 메일 보내기</a> 기능을 사용하는 경우, 허용 목록에 자신을 추가하는 것이 좋습니다. 이 주제에 관한 <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">Gmail의 지침</a>을 참조하세요.
   </span>
 </div>
 
-### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### 고급 전달을 위해 여러 MX 교환기 및 서버를 사용할 수 있나요? {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Yes, but **you should only have one MX exchange listed in your DNS records**.
+예, 하지만 **DNS 레코드에는 하나의 MX 교환기만 등록해야 합니다**.
 
-Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+여러 MX 교환기를 구성하기 위해 "우선순위"를 사용하는 시도는 하지 마세요.
 
-Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+대신, 기존 MX 교환기를 구성하여 일치하지 않는 모든 별칭에 대한 메일을 우리 서비스의 교환기(`mx1.forwardemail.net` 및/또는 `mx2.forwardemail.net`)로 전달하도록 해야 합니다.
 
-If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+Google Workspace를 사용 중이며 일치하지 않는 모든 별칭을 우리 서비스로 전달하려면 <https://support.google.com/a/answer/6297084>를 참조하세요.
 
-If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Microsoft 365(Outlook)를 사용 중이며 일치하지 않는 모든 별칭을 우리 서비스로 전달하려면 <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> 및 <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>를 참조하세요.
 
-### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### 휴가 자동응답기(부재중 자동응답기)를 어떻게 설정하나요? {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭으로 이동하여 휴가 자동응답기를 설정하려는 별칭을 생성하거나 편집하세요.
+시작 날짜, 종료 날짜, 제목 및 메시지를 구성하고 언제든지 활성화 또는 비활성화할 수 있습니다:
 
-You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+* 현재는 일반 텍스트 제목과 메시지만 지원됩니다 (`striptags` 패키지를 내부적으로 사용하여 모든 HTML을 제거합니다).
+* 제목은 100자 이내로 제한됩니다.
+* 메시지는 1000자 이내로 제한됩니다.
+* 설정하려면 아웃바운드 SMTP 구성이 필요합니다 (예: DKIM, DMARC 및 Return-Path DNS 레코드를 설정해야 합니다).
+  * <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 아웃바운드 SMTP 구성으로 이동하여 설정 지침을 따르세요.
+* 글로벌 바니티 도메인 이름에서는 휴가 응답기를 활성화할 수 없습니다 (예: [일회용 주소](/disposable-addresses)는 지원되지 않습니다).
+* 와일드카드/캐치올(`*`) 또는 정규 표현식을 사용하는 별칭에는 휴가 응답기를 활성화할 수 없습니다.
 
-* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
-* Subject is limited to 100 characters.
-* Message is limited to 1000 characters.
-* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
-  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
-* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
-* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
-
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+`postfix`와 같은 메일 시스템(예: `sieve` 휴가 필터 확장 사용)과 달리 – Forward Email은 자동으로 DKIM 서명을 추가하고, 휴가 응답을 보낼 때 연결 문제를 방지하며(예: 일반적인 SSL/TLS 연결 문제 및 유지 관리되는 레거시 서버로 인한 문제), 휴가 응답에 대해 Open WKD 및 PGP 암호화도 지원합니다.
 
 <!--
-* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
-  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+* 남용을 방지하기 위해, 휴가 응답 메시지 1건당 아웃바운드 SMTP 크레딧 1개가 차감됩니다.
+  * 모든 유료 계정은 기본적으로 하루 300 크레딧을 포함합니다. 더 많은 크레딧이 필요하면 문의해 주세요.
 -->
 
-1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+1. [허용 목록](#do-you-have-an-allowlist)에 있는 발신자에게는 4일마다 한 번만 보냅니다 (이는 Gmail의 동작과 유사합니다).
 
-* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+   * Redis 캐시는 `alias_id`와 `sender`의 지문을 사용하며, 여기서 `alias_id`는 별칭 MongoDB ID이고 `sender`는 허용 목록에 있으면 From 주소, 없으면 From 주소의 루트 도메인입니다. 간단히 하기 위해 이 지문의 캐시 만료 시간은 4일로 설정되어 있습니다.
 
-* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+   * 허용 목록에 없는 발신자에 대해 From 주소에서 파싱한 루트 도메인을 사용하는 방식은 비교적 알려지지 않은 발신자(예: 악의적인 행위자)가 휴가 응답 메시지를 대량으로 보내는 것을 방지합니다.
 
-2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+2. MAIL FROM 및/또는 From이 비어 있지 않고 (대소문자 구분 없이) [postmaster 사용자 이름](#what-are-postmaster-addresses)(이메일의 @ 앞 부분)을 포함하지 않을 때만 보냅니다.
 
-3. We don't send if the original message had any of the following headers (case-insensitive):
+3. 원본 메시지에 다음 헤더가 있으면 (대소문자 구분 없이) 보내지 않습니다:
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+   * 값이 `no`가 아닌 `auto-submitted` 헤더.
+   * 값이 `dr`, `autoreply`, `auto-reply`, `auto_reply`, 또는 `all`인 `x-auto-response-suppress` 헤더.
+   * 값과 상관없이 `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, 또는 `x-auto-respond` 헤더.
+   * 값이 `bulk`, `autoreply`, `auto-reply`, `auto_reply`, 또는 `list`인 `precedence` 헤더.
 
-4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+4. MAIL FROM 또는 From 이메일 주소가 `+donotreply`, `-donotreply`, `+noreply`, 또는 `-noreply`로 끝나면 보내지 않습니다.
 
-5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+5. From 이메일 주소의 사용자 이름 부분이 `mdaemon`이고 대소문자 구분 없이 `X-MDDSN-Message` 헤더가 있으면 보내지 않습니다.
 
-6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+6. 대소문자 구분 없이 `content-type` 헤더가 `multipart/report`인 경우 보내지 않습니다.
 
-### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
+### Forward Email용 SPF 설정 방법 {#how-do-i-set-up-spf-for-forward-email}
 
-Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
+등록기관의 DNS 관리 페이지에서 다음 <strong class="notranslate">TXT</strong> 레코드를 설정하세요:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
@@ -1784,22 +2035,21 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    Gmail(예: 보내는 사람으로 메일 보내기) 또는 G Suite를 사용하는 경우 위 값에 <code>include:_spf.google.com</code>을 추가해야 합니다. 예를 들어:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
-
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Microsoft Outlook 또는 Live.com을 사용하는 경우, SPF <strong class="notranslate">TXT</strong> 레코드에 <code>include:spf.protection.outlook.com</code>을 추가해야 합니다. 예를 들어:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
@@ -1808,450 +2058,501 @@ Using your registrar's DNS management page, set the following <strong class="not
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
-    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    이미 "v=spf1"이 포함된 유사한 줄이 있다면, 기존의 "include:host.com" 레코드 바로 앞과 같은 줄의 "-all" 앞에 <code>include:spf.forwardemail.net</code>을 추가해야 합니다. 예를 들어:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
-    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    "-all"과 "~all"은 차이가 있습니다. "-"는 SPF 검사가 일치하지 않을 경우 실패(FAIL)해야 함을 의미하고, "~"는 SPF 검사가 소프트 실패(SOFTFAIL)해야 함을 의미합니다. 도메인 위조를 방지하기 위해 "-all" 방식을 사용하는 것을 권장합니다.
     <br /><br />
-    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+    또한 메일을 보내는 호스트(예: Outlook)에 대한 SPF 레코드를 포함해야 할 수도 있습니다.
   </span>
 </div>
 
-### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
+### Forward Email용 DKIM 설정 방법 {#how-do-i-set-up-dkim-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 아웃바운드 SMTP 구성으로 이동하여 설정 지침을 따르세요.
 
-### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Forward Email용 DMARC 설정 방법 {#how-do-i-set-up-dmarc-for-forward-email}
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 아웃바운드 SMTP 구성으로 이동하여 설정 지침을 따르세요.
 
-### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
+### DMARC 보고서 보는 방법 {#how-do-i-view-dmarc-reports}
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+Forward Email은 모든 도메인에서 이메일 인증 성능을 단일 인터페이스로 모니터링할 수 있는 종합적인 DMARC 보고서 대시보드를 제공합니다.
 
-### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
+**DMARC 보고서란?**
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+DMARC(도메인 기반 메시지 인증, 보고 및 준수) 보고서는 수신 메일 서버가 보내는 XML 파일로, 이메일이 어떻게 인증되고 있는지 알려줍니다. 이 보고서는 다음을 이해하는 데 도움이 됩니다:
+
+* 도메인에서 얼마나 많은 이메일이 발송되고 있는지
+* 해당 이메일이 SPF 및 DKIM 인증을 통과하는지 여부
+* 수신 서버가 취하는 조치(수락, 격리, 거부)
+* 도메인을 대신해 이메일을 보내는 IP 주소
+
+**DMARC 보고서 접근 방법**
+
+<a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> DMARC 보고서</a>로 이동하여 대시보드를 확인하세요. 또한 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에서 각 도메인 옆의 "DMARC" 버튼을 클릭하여 도메인별 보고서에 접근할 수 있습니다.
+
+**대시보드 기능**
+
+DMARC 보고서 대시보드는 다음을 제공합니다:
+
+* **요약 지표**: 수신된 총 보고서 수, 분석된 총 메시지 수, SPF 정렬률, DKIM 정렬률, 전체 통과율
+* **시간별 메시지 차트**: 지난 30일간 이메일 발송량 및 인증률의 시각적 추세
+* **정렬 요약**: SPF와 DKIM 정렬 분포를 보여주는 도넛 차트
+* **메시지 처리 현황**: 수신 서버가 이메일을 어떻게 처리했는지(수락, 격리, 거부)를 보여주는 누적 막대 차트
+* **최근 보고서 표**: 개별 DMARC 보고서의 상세 목록(필터링 및 페이지네이션 가능)
+* **도메인 필터링**: 여러 도메인을 관리할 때 특정 도메인별로 보고서를 필터링 가능
+**이것이 중요한 이유**
+
+여러 도메인을 관리하는 조직(기업, 비영리 단체, 에이전시 등)의 경우, DMARC 보고서는 다음을 위해 필수적입니다:
+
+* **무단 발신자 식별**: 누군가가 귀하의 도메인을 스푸핑하는지 감지
+* **전달률 향상**: 합법적인 이메일이 인증을 통과하도록 보장
+* **이메일 인프라 모니터링**: 어떤 서비스와 IP가 귀하를 대신해 발송하는지 추적
+* **규정 준수**: 보안 감사용 이메일 인증 가시성 유지
+
+별도의 DMARC 모니터링 도구가 필요한 다른 서비스와 달리, Forward Email은 추가 비용 없이 계정 내에서 DMARC 보고서 처리 및 시각화를 포함합니다.
+
+**요구 사항**
+
+* DMARC 보고서는 유료 플랜에서만 제공됩니다
+* 도메인에 DMARC가 구성되어 있어야 합니다 ([Forward Email용 DMARC 설정 방법](#how-do-i-set-up-dmarc-for-forward-email) 참조)
+* 보고서는 수신 메일 서버가 구성된 DMARC 보고 주소로 전송할 때 자동으로 수집됩니다
+
+**주간 이메일 보고서**
+
+유료 플랜 사용자는 주간 DMARC 보고서 요약을 이메일로 자동 수신합니다. 이 이메일에는 다음이 포함됩니다:
+
+* 모든 도메인에 대한 요약 통계
+* SPF 및 DKIM 정렬 비율
+* 메시지 처리 결과 분류(수락, 격리, 거부)
+* 주요 보고 기관(Google, Microsoft, Yahoo 등)
+* 주의가 필요한 정렬 문제 IP 주소
+* DMARC 보고서 대시보드로 직접 연결되는 링크
+
+주간 보고서는 자동으로 발송되며 다른 이메일 알림과 별도로 비활성화할 수 없습니다.
+
+### 연락처 연결 및 구성 방법 {#how-do-i-connect-and-configure-my-contacts}
+
+**연락처를 구성하려면 다음 CardDAV URL을 사용하세요:** `https://carddav.forwardemail.net` (또는 클라이언트가 허용하면 단순히 `carddav.forwardemail.net`)
+
+### 캘린더 연결 및 구성 방법 {#how-do-i-connect-and-configure-my-calendars}
+
+**캘린더를 구성하려면 다음 CalDAV URL을 사용하세요:** `https://caldav.forwardemail.net` (또는 클라이언트가 허용하면 단순히 `caldav.forwardemail.net`)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### 추가 캘린더 추가 및 기존 캘린더 관리 방법 {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+추가 캘린더를 추가하려면 새 캘린더 URL로 다음을 추가하세요: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**`calendar-name`을 원하는 캘린더 이름으로 반드시 교체하세요**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+캘린더 생성 후 이름과 색상을 변경할 수 있습니다 – 선호하는 캘린더 애플리케이션(예: Apple Mail 또는 [Thunderbird](https://thunderbird.net))을 사용하세요.
 
-### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
+### 작업 및 알림 연결 및 구성 방법 {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**작업 및 알림을 구성하려면 캘린더와 동일한 CalDAV URL을 사용하세요:** `https://caldav.forwardemail.net` (또는 클라이언트가 허용하면 단순히 `caldav.forwardemail.net`)
 
-Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
+작업과 알림은 자동으로 캘린더 이벤트와 분리되어 별도의 "Reminders" 또는 "Tasks" 캘린더 컬렉션으로 관리됩니다.
 
-**Setup instructions by platform:**
+**플랫폼별 설정 지침:**
 
 **macOS/iOS:**
 
-1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
-2. Use `caldav.forwardemail.net` as the server
-3. Enter your Forward Email alias and generated password
-4. After setup, you'll see both "Calendar" and "Reminders" collections
-5. Use the Reminders app to create and manage tasks
+1. 시스템 환경설정 > 인터넷 계정(또는 iOS의 설정 > 계정)에서 새 CalDAV 계정 추가
+2. 서버에 `caldav.forwardemail.net` 입력
+3. Forward Email 별칭과 생성된 비밀번호 입력
+4. 설정 후 "Calendar"와 "Reminders" 컬렉션 모두 표시됨
+5. Reminders 앱을 사용해 작업 생성 및 관리
 
-**Android with Tasks.org:**
+**Android (Tasks.org 사용 시):**
 
-1. Install Tasks.org from Google Play Store or F-Droid
-2. Go to Settings > Synchronization > Add Account > CalDAV
-3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password
-5. Tasks.org will automatically discover your task calendars
+1. Google Play 스토어나 F-Droid에서 Tasks.org 설치
+2. 설정 > 동기화 > 계정 추가 > CalDAV 선택
+3. 서버에 `https://caldav.forwardemail.net` 입력
+4. Forward Email 별칭과 생성된 비밀번호 입력
+5. Tasks.org가 자동으로 작업 캘린더를 발견
 
 **Thunderbird:**
 
-1. Install the Lightning add-on if not already installed
-2. Create a new calendar with type "CalDAV"
-3. Use URL: `https://caldav.forwardemail.net`
-4. Enter your Forward Email credentials
-5. Both events and tasks will be available in the calendar interface
+1. Lightning 애드온이 설치되어 있지 않으면 설치
+2. 새 캘린더를 "CalDAV" 유형으로 생성
+3. URL에 `https://caldav.forwardemail.net` 입력
+4. Forward Email 자격 증명 입력
+5. 이벤트와 작업 모두 캘린더 인터페이스에서 사용 가능
 
-### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
+### macOS Reminders에서 작업을 생성할 수 없는 이유 {#why-cant-i-create-tasks-in-macos-reminders}
+macOS 미리 알림에서 작업 생성에 문제가 있는 경우, 다음 문제 해결 단계를 시도해 보세요:
 
-If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
+1. **계정 설정 확인**: CalDAV 계정이 `caldav.forwardemail.net`으로 올바르게 구성되었는지 확인하세요
 
-1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+2. **별도의 캘린더 확인**: 계정에서 "캘린더"와 "미리 알림"이 모두 보여야 합니다. "캘린더"만 보인다면 작업 지원이 아직 완전히 활성화되지 않은 것일 수 있습니다.
 
-2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+3. **계정 새로 고침**: 시스템 환경설정 > 인터넷 계정에서 CalDAV 계정을 제거한 후 다시 추가해 보세요
 
-3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+4. **서버 연결 확인**: 브라우저에서 `https://caldav.forwardemail.net`에 접속할 수 있는지 테스트하세요
 
-4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+5. **자격 증명 확인**: 올바른 별칭 이메일과 생성된 비밀번호(계정 비밀번호가 아님)를 사용하고 있는지 확인하세요
 
-5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+6. **강제 동기화**: 미리 알림 앱에서 작업을 생성한 후 수동으로 동기화를 새로 고침해 보세요
 
-6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+**일반적인 문제:**
 
-**Common issues:**
+* **"미리 알림 캘린더를 찾을 수 없음"**: 서버가 처음 접근 시 미리 알림 컬렉션을 생성하는 데 시간이 필요할 수 있습니다
+* **작업이 동기화되지 않음**: 두 장치 모두 동일한 CalDAV 계정 자격 증명을 사용하는지 확인하세요
+* **혼합된 콘텐츠**: 작업이 일반 "캘린더"가 아닌 "미리 알림" 캘린더에 생성되고 있는지 확인하세요
 
-* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+### Android에서 Tasks.org 설정 방법 {#how-do-i-set-up-tasksorg-on-android}
 
-### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+Tasks.org는 Forward Email의 CalDAV 작업 지원과 훌륭하게 작동하는 인기 있는 오픈 소스 작업 관리자입니다.
 
-Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+**설치 및 설정:**
 
-**Installation and Setup:**
+1. **Tasks.org 설치**:
+   * 구글 플레이 스토어에서: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * F-Droid에서: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
 
-1. **Install Tasks.org**:
-   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+2. **CalDAV 동기화 구성**:
+   * Tasks.org를 엽니다
+   * ☰ 메뉴 > 설정 > 동기화로 이동합니다
+   * "계정 추가"를 탭합니다
+   * "CalDAV"를 선택합니다
 
-2. **Configure CalDAV sync**:
-   * Open Tasks.org
-   * Go to ☰ Menu > Settings > Synchronization
-   * Tap "Add Account"
-   * Select "CalDAV"
+3. **Forward Email 설정 입력**:
+   * **서버 URL**: `https://caldav.forwardemail.net`
+   * **사용자 이름**: Forward Email 별칭 (예: `you@yourdomain.com`)
+   * **비밀번호**: 별칭별로 생성된 비밀번호
+   * "계정 추가"를 탭합니다
 
-3. **Enter Forward Email settings**:
-   * **Server URL**: `https://caldav.forwardemail.net`
-   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   * **Password**: Your alias-specific generated password
-   * Tap "Add Account"
+4. **계정 검색**:
+   * Tasks.org가 자동으로 작업 캘린더를 검색합니다
+   * "미리 알림" 컬렉션이 나타나야 합니다
+   * 작업 캘린더 동기화를 활성화하려면 "구독"을 탭하세요
 
-4. **Account discovery**:
-   * Tasks.org will automatically discover your task calendars
-   * You should see your "Reminders" collection appear
-   * Tap "Subscribe" to enable sync for the task calendar
+5. **동기화 테스트**:
+   * Tasks.org에서 테스트 작업을 생성합니다
+   * 다른 CalDAV 클라이언트(예: macOS 미리 알림)에서 작업이 나타나는지 확인합니다
+   * 양방향 동기화가 정상 작동하는지 검증합니다
 
-5. **Test sync**:
-   * Create a test task in Tasks.org
-   * Check that it appears in other CalDAV clients (like macOS Reminders)
-   * Verify changes sync both ways
+**사용 가능한 기능:**
 
-**Features available:**
+* ✅ 작업 생성 및 편집
+* ✅ 마감일 및 알림
+* ✅ 작업 완료 및 상태
+* ✅ 우선순위 수준
+* ✅ 하위 작업 및 작업 계층 구조
+* ✅ 태그 및 카테고리
+* ✅ 다른 CalDAV 클라이언트와의 양방향 동기화
 
-* ✅ Task creation and editing
-* ✅ Due dates and reminders
-* ✅ Task completion and status
-* ✅ Priority levels
-* ✅ Subtasks and task hierarchy
-* ✅ Tags and categories
-* ✅ Two-way sync with other CalDAV clients
+**문제 해결:**
 
-**Troubleshooting:**
+* 작업 캘린더가 나타나지 않으면 Tasks.org 설정에서 수동 새로 고침을 시도하세요
+* 서버에 최소한 하나의 작업이 생성되어 있는지 확인하세요 (macOS 미리 알림에서 먼저 생성 가능)
+* `caldav.forwardemail.net`에 대한 네트워크 연결을 확인하세요
 
-* If no task calendars appear, try manually refreshing in Tasks.org settings
-* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-* Check network connectivity to `caldav.forwardemail.net`
+### Forward Email용 SRS 설정 방법 {#how-do-i-set-up-srs-for-forward-email}
 
-### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+[발신자 재작성 스킴](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)("SRS")는 자동으로 구성되므로 직접 설정할 필요가 없습니다.
 
-We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+### Forward Email용 MTA-STS 설정 방법 {#how-do-i-set-up-mta-sts-for-forward-email}
 
-### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+자세한 내용은 [MTA-STS 관련 섹션](#do-you-support-mta-sts)을 참고하세요.
 
-Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+### 이메일 주소에 프로필 사진 추가 방법 {#how-do-i-add-a-profile-picture-to-my-email-address}
 
-### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+Gmail을 사용 중이라면 아래 단계를 따르세요:
 
-If you're using Gmail, then follow these steps below:
+1. <https://google.com>에 접속하여 모든 이메일 계정에서 로그아웃합니다
+2. "로그인"을 클릭하고 드롭다운에서 "다른 계정"을 클릭합니다
+3. "다른 계정 사용"을 선택합니다
+4. "계정 만들기"를 선택합니다
+5. "대신 현재 이메일 주소 사용"을 선택합니다
+6. 사용자 지정 도메인 이메일 주소를 입력합니다
+7. 이메일 주소로 전송된 확인 이메일을 받습니다
+8. 이메일에 있는 확인 코드를 입력합니다
+9. 새 Google 계정의 프로필 정보를 완성합니다
+10. 모든 개인정보 보호 및 이용 약관에 동의합니다
+11. <https://google.com>에 접속하여 오른쪽 상단의 프로필 아이콘을 클릭한 후 "변경" 버튼을 클릭합니다
+12. 계정용 새 사진 또는 아바타를 업로드합니다
+13. 변경 사항이 전파되는 데 약 1-2시간이 걸리지만 때로는 매우 빠를 수 있습니다
+14. 테스트 이메일을 보내면 프로필 사진이 표시됩니다.
+## 고급 기능 {#advanced-features}
 
-1. Go to <https://google.com> and sign out of all email accounts
-2. Click "Sign In" and on the drop-down click on "other account"
-3. Select "Use another account"
-4. Select "Create account"
-5. Select "Use my current email address instead"
-6. Enter your custom domain name email address
-7. Retrieve the verification email sent to your email address
-8. Enter the verification code from this email
-9. Complete profile information for your new Google account
-10. Agree to all Privacy and Terms of Use policies
-11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
-12. Upload a new photo or avatar for your account
-13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
-14. Send a test email and the profile photo should appear.
+### 마케팅 관련 이메일을 위한 뉴스레터 또는 메일링 리스트를 지원하나요? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-## Advanced Features {#advanced-features}
+네, 자세한 내용은 <https://forwardemail.net/guides/newsletter-with-listmonk>에서 확인할 수 있습니다.
 
-### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+IP 평판을 유지하고 전달 가능성을 보장하기 위해 Forward Email은 **뉴스레터 승인**을 위해 도메인별 수동 검토 절차를 운영하고 있습니다. 승인을 위해 <support@forwardemail.net>으로 이메일을 보내거나 [도움 요청](https://forwardemail.net/help)을 열어주세요. 일반적으로 24시간 이내에 처리되며 대부분의 요청은 1-2시간 내에 승인됩니다. 가까운 미래에는 추가 스팸 제어 및 알림 기능과 함께 이 절차를 즉시 처리할 수 있도록 할 예정입니다. 이 절차는 이메일이 받은편지함에 도달하고 메시지가 스팸으로 표시되지 않도록 보장합니다.
 
-Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+### API를 통한 이메일 발송을 지원하나요? {#do-you-support-sending-email-with-api}
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
-### Do you support sending email with API {#do-you-support-sending-email-with-api}
-
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+네, 2023년 5월부터 모든 유료 사용자에게 추가 기능으로 API를 통한 이메일 발송을 지원합니다.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    <a href="/terms" class="alert-link" target="_blank">이용 약관</a>, <a href="/privacy" class="alert-link" target="_blank">개인정보 처리방침</a>, 그리고 <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">아웃바운드 SMTP 제한</a>을 반드시 읽어보시기 바랍니다 – 사용하시는 것은 이에 대한 인정과 동의로 간주됩니다.
   </span>
 </div>
 
-Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
+API 문서 내 [이메일](/email-api#outbound-emails) 섹션에서 옵션, 예제 및 추가 정보를 확인하세요.
 
-In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+API를 통해 아웃바운드 이메일을 보내려면 [내 보안](/my-account/security)에서 확인할 수 있는 API 토큰을 사용해야 합니다.
 
-### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
+### IMAP을 통한 이메일 수신을 지원하나요? {#do-you-support-receiving-email-with-imap}
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+네, 2023년 10월 16일부터 모든 유료 사용자에게 추가 기능으로 IMAP을 통한 이메일 수신을 지원합니다. **[암호화된 SQLite 메일박스 저장 기능 작동 방식](/blog/docs/best-quantum-safe-encrypted-email-service)**에 관한 심층 기사를 꼭 읽어보시기 바랍니다.
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    <a href="/terms" class="alert-link" target="_blank">이용 약관</a>과 <a href="/privacy" class="alert-link" target="_blank">개인정보 처리방침</a>을 반드시 읽어보시기 바랍니다 – 사용하시는 것은 이에 대한 인정과 동의로 간주됩니다.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 생성하세요 (예: <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. 선호하는 이메일 애플리케이션을 사용하여 새로 생성한 별칭(예: <code><hello@example.com></code>)으로 계정을 추가하거나 구성하세요.
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> 또는 <a href="/blog/open-source" class="alert-link" target="_blank">오픈 소스 및 개인정보 보호 중심 대안</a> 사용을 권장합니다.</span>
    </div>
 
-4. When prompted for IMAP server name, enter `imap.forwardemail.net`
+4. IMAP 서버 이름을 묻는 경우 `imap.forwardemail.net`을 입력하세요.
 
-5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. IMAP 서버 포트를 묻는 경우 `993` (SSL/TLS)을 입력하세요 – 필요 시 [대체 IMAP 포트](/faq#what-are-your-imap-server-configuration-settings)를 참고하세요.
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbird를 사용하는 경우 "연결 보안"이 "SSL/TLS"로 설정되어 있고 인증 방법이 "일반 비밀번호"로 설정되어 있는지 확인하세요.</span>
    </div>
+6. IMAP 서버 비밀번호를 입력하라는 메시지가 표시되면 위 2단계에서 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>에서 복사한 비밀번호를 붙여넣으세요.
 
-6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
-
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **설정을 저장하세요** – 문제가 발생하면 <a href="/help">문의해 주세요</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      축하합니다!
     </strong>
     <span>
-      You've successfully completed all steps.
+      모든 단계를 성공적으로 완료하셨습니다.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support POP3 {#do-you-support-pop3}
+### POP3를 지원하나요? {#do-you-support-pop3}
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+네, 2023년 12월 4일부터 모든 유료 사용자에게 추가 기능으로 [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)를 지원합니다. **저희의 암호화된 SQLite 메일박스 저장 기능이 어떻게 작동하는지에 대한 심층 기사**를 꼭 읽어보세요: [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+    <a href="/terms" class="alert-link" target="_blank">이용 약관</a>과 <a href="/privacy" class="alert-link" target="_blank">개인정보 처리방침</a>을 반드시 읽으시기 바랍니다 – 사용하시는 것은 동의 및 인정을 의미합니다.
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
 
-2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+2. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
-3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+3. 선호하는 이메일 애플리케이션을 사용하여 새로 만든 별칭으로 계정을 추가하거나 구성하세요 (예: <code><hello@example.com></code>)
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> 또는 <a href="/blog/open-source" class="alert-link" target="_blank">오픈 소스 및 개인정보 보호 중심 대안</a> 사용을 권장합니다.</span>
    </div>
 
-4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
+4. POP3 서버 이름을 입력하라는 메시지가 표시되면 `pop3.forwardemail.net`을 입력하세요.
 
-5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. POP3 서버 포트를 입력하라는 메시지가 표시되면 `995` (SSL/TLS)를 입력하세요 – 필요시 [대체 POP3 포트](/faq#what-are-your-pop3-server-configuration-settings)를 참조하세요.
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbird를 사용하는 경우 "연결 보안"이 "SSL/TLS"로 설정되어 있고 인증 방법이 "일반 비밀번호"로 설정되어 있는지 확인하세요.</span>
    </div>
 
-6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
+6. POP3 서버 비밀번호를 입력하라는 메시지가 표시되면 위 2단계에서 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>에서 복사한 비밀번호를 붙여넣으세요.
 
-7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
+7. **설정을 저장하세요** – 문제가 발생하면 <a href="/help">문의해 주세요</a>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      축하합니다!
     </strong>
     <span>
-      You've successfully completed all steps.
+      모든 단계를 성공적으로 완료하셨습니다.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
+### 캘린더(CalDAV)를 지원하나요? {#do-you-support-calendars-caldav}
 
-Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+네, 2024년 2월 5일부터 이 기능을 추가했습니다. 저희 서버는 `caldav.forwardemail.net`이며 <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">상태 페이지</a>에서 모니터링 중입니다.
+IPv4와 IPv6를 모두 지원하며 포트 `443` (HTTPS)에서 사용할 수 있습니다.
 
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+| 로그인    | 예시                       | 설명                                                                                                                                                                                    |
+| -------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 사용자명 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소입니다.                          |
+| 비밀번호 | `************************` | 별칭별로 생성된 비밀번호입니다.                                                                                                                                                          |
 
-| Login | Example | Description |
+캘린더 지원을 사용하려면, **사용자**는 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소여야 하며, **비밀번호**는 별칭별로 생성된 비밀번호여야 합니다.
+
+### 작업 및 알림(CalDAV VTODO)을 지원하나요? {#do-you-support-tasks-and-reminders-caldav-vtodo}
+
+네, 2025년 10월 14일부터 작업 및 알림을 위한 CalDAV VTODO 지원을 추가했습니다. 이는 캘린더 지원과 동일한 서버인 `caldav.forwardemail.net`을 사용합니다.
+
+우리의 CalDAV 서버는 **통합 캘린더**를 사용하여 캘린더 이벤트(VEVENT)와 작업(VTODO) 구성 요소를 모두 지원합니다. 즉, 각 캘린더는 이벤트와 작업을 모두 포함할 수 있어 모든 CalDAV 클라이언트에서 최대한의 유연성과 호환성을 제공합니다.
+
+**캘린더와 목록 작동 방식:**
+
+* **각 캘린더는 이벤트와 작업을 모두 지원** - 어떤 캘린더에도 이벤트, 작업 또는 둘 다 추가할 수 있습니다
+* **Apple 알림 목록** - Apple 알림에서 생성하는 각 목록은 서버에서 별도의 캘린더가 됩니다
+* **다중 캘린더** - 필요에 따라 원하는 만큼 캘린더를 생성할 수 있으며, 각 캘린더는 고유한 이름, 색상 및 구성을 가집니다
+* **클라이언트 간 동기화** - 작업과 이벤트가 모든 호환 클라이언트 간에 원활하게 동기화됩니다
+
+**지원되는 작업 클라이언트:**
+
+* **macOS 알림** - 작업 생성, 편집, 완료 및 동기화를 완벽하게 네이티브 지원
+* **iOS 알림** - 모든 iOS 기기에서 완벽한 네이티브 지원
+* **Tasks.org (Android)** - CalDAV 동기화를 지원하는 인기 오픈소스 작업 관리자
+* **Thunderbird** - 데스크톱 이메일 클라이언트에서 작업 및 캘린더 지원
+* **모든 CalDAV 호환 작업 관리자** - 표준 VTODO 구성 요소 지원
+
+**지원되는 작업 기능:**
+
+* 작업 생성, 편집 및 삭제
+* 마감일 및 시작일
+* 작업 완료 상태 (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* 작업 우선순위 수준
+* 반복 작업
+* 작업 설명 및 메모
+* 다중 기기 동기화
+* RELATED-TO 속성을 가진 하위 작업
+* VALARM을 이용한 작업 알림
+
+로그인 자격 증명은 캘린더 지원과 동일합니다:
+
+| 로그인    | 예시                       | 설명                                                                                                                                                                                    |
+| -------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 사용자명 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소입니다.                          |
+| 비밀번호 | `************************` | 별칭별로 생성된 비밀번호입니다.                                                                                                                                                          |
+
+**중요 참고 사항:**
+
+* **각 알림 목록은 별도의 캘린더입니다** - Apple 알림에서 새 목록을 생성하면 CalDAV 서버에 새 캘린더가 생성됩니다
+* **Thunderbird 사용자** - 동기화하려는 각 캘린더/목록을 수동으로 구독하거나 캘린더 홈 URL `https://caldav.forwardemail.net/dav/your-email@domain.com/`을 사용해야 합니다
+* **Apple 사용자** - 캘린더 검색이 자동으로 이루어져 모든 캘린더와 목록이 Calendar.app 및 Reminders.app에 표시됩니다
+* **통합 캘린더** - 모든 캘린더가 이벤트와 작업을 모두 지원하여 데이터를 조직하는 데 유연성을 제공합니다
+### 연락처(CardDAV)를 지원하나요? {#do-you-support-contacts-carddav}
+
+네, 2025년 6월 12일부터 이 기능을 추가했습니다. 저희 서버는 `carddav.forwardemail.net`이며 <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">상태 페이지</a>에서도 모니터링되고 있습니다.
+
+IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합니다.
+
+| 로그인    | 예시                       | 설명                                                                                                                                                                                      |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| 사용자명 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소입니다.                      |
+| 비밀번호 | `************************` | 별칭별로 생성된 비밀번호입니다.                                                                                                                                                            |
 
-In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+연락처 지원을 사용하려면, **사용자명**은 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소여야 하며, **비밀번호**는 별칭별로 생성된 비밀번호여야 합니다.
 
-### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
+### SMTP로 이메일 전송을 지원하나요? {#do-you-support-sending-email-with-smtp}
 
-Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
-
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
-
-**How calendars and lists work:**
-
-* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
-* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
-* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
-
-**Supported task clients:**
-
-* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-* **iOS Reminders** - Full native support across all iOS devices
-* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
-* **Any CalDAV-compatible task manager** - Standard VTODO component support
-
-**Task features supported:**
-
-* Task creation, editing, and deletion
-* Due dates and start dates
-* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-* Task priority levels
-* Recurring tasks
-* Task descriptions and notes
-* Multi-device synchronization
-* Subtasks with RELATED-TO property
-* Task reminders with VALARM
-
-The login credentials are the same as for calendar support:
-
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
-
-**Important notes:**
-
-* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
-* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
-* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
-
-### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
-
-Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
-
-It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
-
-| Login | Example | Description |
-| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
-
-In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
-
-### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
-
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+네, 2023년 5월부터 모든 유료 사용자에게 SMTP를 통한 이메일 전송 기능을 애드온으로 지원합니다.
 
 <div id="smtp-instructions">
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+    저희 <a href="/terms" class="alert-link" target="_blank">이용 약관</a>, <a href="/privacy" class="alert-link" target="_blank">개인정보 처리방침</a>, 그리고 <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">아웃바운드 SMTP 제한</a>을 반드시 읽어주세요 – 사용하시는 것은 동의와 인정을 의미합니다.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+    Gmail을 사용 중이라면 <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Gmail 맞춤 도메인으로 메일 보내기 가이드</a>를 참고하세요. 개발자라면 <a class="alert-link" href="/email-api#outbound-emails" target="_blank">이메일 API 문서</a>를 참고하세요.
   </span>
 </div>
 
-1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 아웃바운드 SMTP 구성으로 이동하여 설정 지침을 따르세요.
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
 
-3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+3. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
-4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+4. 선호하는 이메일 애플리케이션에서 새로 생성한 별칭(예: <code><hello@example.com></code>)으로 계정을 추가하거나 구성하세요.
    <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> 또는 <a href="/blog/open-source" class="alert-link" target="_blank">오픈 소스 및 개인정보 보호 중심 대안</a> 사용을 권장합니다.</span>
    </div>
+5. SMTP 서버 이름을 묻는 메시지가 표시되면 `smtp.forwardemail.net`을 입력하세요.
 
-5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
-
-6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. SMTP 서버 포트를 묻는 메시지가 표시되면 `465` (SSL/TLS)를 입력하세요 – 필요 시 [대체 SMTP 포트](/faq#what-are-your-smtp-server-configuration-settings)를 참조하세요.
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>Thunderbird를 사용하는 경우 "연결 보안"이 "SSL/TLS"로 설정되어 있고 인증 방법이 "일반 암호"로 설정되어 있는지 확인하세요.</span>
    </div>
 
-7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+7. SMTP 서버 비밀번호를 묻는 메시지가 표시되면 위 3단계에서 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>에서 복사한 비밀번호를 붙여넣으세요.
 
-8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+8. **설정을 저장하고 첫 번째 테스트 이메일을 보내세요** – 문제가 발생하면 <a href="/help">문의해 주세요</a>.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    IP 평판을 유지하고 전달 가능성을 보장하기 위해, 발신 SMTP 승인에 대해 도메인별 수동 검토 절차가 있음을 알려드립니다. 이 절차는 일반적으로 24시간 이내에 완료되며, 대부분의 요청은 1-2시간 내에 처리됩니다. 가까운 미래에는 추가 스팸 제어 및 알림 기능을 통해 이 과정을 즉시 처리할 수 있도록 할 예정입니다. 이 절차는 이메일이 받은편지함에 도달하고 메시지가 스팸으로 표시되지 않도록 보장합니다.
   </span>
 </div>
 
@@ -2259,98 +2560,96 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      축하합니다!
     </strong>
     <span>
-      You've successfully completed all steps.
+      모든 단계를 성공적으로 완료하셨습니다.
     </span>
   </div>
 </div>
 
 </div>
 
-### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### OpenPGP/MIME, 종단 간 암호화("E2EE"), 및 웹 키 디렉토리("WKD")를 지원하나요? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+네, 저희는 [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [종단 간 암호화("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), 그리고 공개 키 검색을 위한 [웹 키 디렉토리("WKD")](https://wiki.gnupg.org/WKD)를 지원합니다. OpenPGP는 [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service)를 사용하거나 [직접 키를 호스팅](https://wiki.gnupg.org/WKDHosting)하여 구성할 수 있습니다 (WKD 서버 설정에 대해서는 [이 gist](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)를 참조하세요).
 
-* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
-* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
-* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
-* Messages sent to webhooks are not currently encrypted with PGP.
-* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
-* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* WKD 조회 결과는 1시간 동안 캐시되어 신속한 이메일 전달을 보장합니다 → 따라서 WKD 키를 추가, 변경 또는 제거한 경우, 수동으로 캐시를 삭제할 수 있도록 이메일 주소와 함께 `support@forwardemail.net`으로 연락해 주세요.
+* WKD 조회를 통해 전달되거나 인터페이스에 업로드된 PGP 키를 사용하는 메시지에 대해 PGP 암호화를 지원합니다.
+* 업로드된 키는 PGP 체크박스가 활성화/선택된 경우 우선 적용됩니다.
+* 웹훅으로 전송되는 메시지는 현재 PGP로 암호화되지 않습니다.
+* 특정 전달 주소에 대해 여러 별칭이 일치하고(예: 정규식/와일드카드/정확한 조합) 이 중 둘 이상에 업로드된 PGP 키가 있고 PGP가 선택된 경우 → 오류 알림 이메일을 보내며 업로드된 PGP 키로 메시지를 암호화하지 않습니다. 이는 매우 드물며 주로 복잡한 별칭 규칙을 가진 고급 사용자에게 해당됩니다.
+* **발신자가 DMARC 정책을 reject로 설정한 경우, 저희 MX 서버를 통한 이메일 전달에는 PGP 암호화가 적용되지 않습니다. 모든 메일에 대해 PGP 암호화가 필요하다면, IMAP 서비스를 사용하고 별칭에 대해 PGP 키를 구성하여 수신 메일에 적용할 것을 권장합니다.**
 
-**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
+**웹 키 디렉토리 설정은 <https://wkd.chimbosonic.com/> (오픈 소스) 또는 <https://www.webkeydirectory.com/> (상용)에서 검증할 수 있습니다.**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Automatic Encryption:
+    자동 암호화:
   </strong>
-  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <span>저희 <a href="#do-you-support-sending-email-with-smtp" class="alert-link">발신 SMTP 서비스</a>를 사용하여 암호화되지 않은 메시지를 보내는 경우, 수신자별로 <a class="alert-link" href="https://wiki.gnupg.org/WKD">웹 키 디렉토리("WKD")</a>를 사용하여 자동으로 메시지 암호화를 시도합니다.</span>
 </div>
-
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+    맞춤 도메인 이름에 대해 OpenPGP를 활성화하려면 다음 모든 단계를 반드시 따라야 합니다.
   </span>
 </div>
 
-1. Download and install your email client's recommended plugin below:
+1. 아래에서 이메일 클라이언트에 권장되는 플러그인을 다운로드하고 설치하세요:
 
-| Email Client | Platform | Recommended Plugin | Notes |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
-| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
-| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
-| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
-| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
-| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
+   | 이메일 클라이언트    | 플랫폼 | 권장 플러그인                                                                                                                                                                    | 참고                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+   | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | Thunderbird     | 데스크톱  | [Thunderbird에서 OpenPGP 구성하기](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird는 OpenPGP를 기본 지원합니다.                                                                                                                                                                                                                                                                                                                                                                                            |
+   | Gmail           | 브라우저  | [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download) (독점 라이선스)                                                                            | Gmail은 OpenPGP를 지원하지 않지만, 오픈 소스 플러그인 [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                                                    |
+   | Apple Mail      | macOS    | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)                                                                                          | Apple Mail은 OpenPGP를 지원하지 않지만, 오픈 소스 플러그인 [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                                       |
+   | Apple Mail      | iOS      | [PGPro](https://github.com/opensourceios/PGPro/) 또는 [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (독점 라이선스)                           | Apple Mail은 OpenPGP를 지원하지 않지만, 오픈 소스 플러그인 [PGPro](https://github.com/opensourceios/PGPro/) 또는 [FlowCrypt](https://flowcrypt.com/download)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                                    |
+   | Outlook         | Windows  | [gpg4win](https://www.gpg4win.de/index.html)                                                                                                                                          | Outlook 데스크톱 메일 클라이언트는 OpenPGP를 지원하지 않지만, 오픈 소스 플러그인 [gpg4win](https://www.gpg4win.de/index.html)을 다운로드할 수 있습니다.                                                                                                                                                                                                                                                                                    |
+   | Outlook         | 브라우저  | [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download) (독점 라이선스)                                                                            | Outlook 웹 기반 메일 클라이언트는 OpenPGP를 지원하지 않지만, 오픈 소스 플러그인 [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                          |
+   | Android         | 모바일   | [OpenKeychain](https://www.openkeychain.org/) 또는 [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)                                                       | [Android 메일 클라이언트](/blog/open-source/android-email-clients)인 [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/)과 [FairEmail](https://github.com/M66B/FairEmail)은 모두 오픈 소스 플러그인 [OpenKeychain](https://www.openkeychain.org/)을 지원합니다. 또는 오픈 소스(독점 라이선스) 플러그인 [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)를 사용할 수 있습니다. |
+   | Google Chrome   | 브라우저  | [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download) (독점 라이선스)                                                                            | 오픈 소스 브라우저 확장 프로그램 [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                                                                                 |
+   | Mozilla Firefox | 브라우저  | [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download) (독점 라이선스)                                                                            | 오픈 소스 브라우저 확장 프로그램 [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                                                                                 |
+   | Microsoft Edge  | 브라우저  | [Mailvelope](https://mailvelope.com/)                                                                                                                                                 | 오픈 소스 브라우저 확장 프로그램 [Mailvelope](https://mailvelope.com/)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                                                                                                                                |
+   | Brave           | 브라우저  | [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download) (독점 라이선스)                                                                            | 오픈 소스 브라우저 확장 프로그램 [Mailvelope](https://mailvelope.com/) 또는 [FlowCrypt](https://flowcrypt.com/download)를 다운로드할 수 있습니다.                                                                                                                                                                                                                                                                                                 |
+   | Balsa           | 데스크톱  | [Balsa에서 OpenPGP 구성하기](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING)                                                                            | Balsa는 OpenPGP를 기본 지원합니다.                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | KMail           | 데스크톱  | [KMail에서 OpenPGP 구성하기](https://userbase.kde.org/KMail/PGP_MIME)                                                                                                                 | KMail은 OpenPGP를 기본 지원합니다.                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | GNOME Evolution | 데스크톱  | [Evolution에서 OpenPGP 구성하기](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en)                                                                               | GNOME Evolution은 OpenPGP를 기본 지원합니다.                                                                                                                                                                                                                                                                                                                                                                                        |
+   | Terminal        | 데스크톱  | [터미널에서 gpg 구성하기](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key)                           | 오픈 소스 [gpg 명령줄 도구](https://www.gnupg.org/download/)를 사용하여 명령줄에서 새 키를 생성할 수 있습니다.                                                                                                                                                                                                                                                                                                            |
+2. 플러그인을 열고 공개 키를 생성한 후 이메일 클라이언트가 이를 사용하도록 설정하세요.
 
-2. Open the plugin, create your public key, and configure your email client to use it.
+3. 공개 키를 <https://keys.openpgp.org/upload>에 업로드하세요.
 
-3. Upload your public key at <https://keys.openpgp.org/upload>.
-
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+     <span>나중에 키를 관리하려면 <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a>를 방문할 수 있습니다.</span>
    </div>
 
-<div class="alert my-3 alert-secondary">
+   <div class="alert my-3 alert-secondary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Optional Add-on:
+       선택적 추가 기능:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       당사의 <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">암호화 저장소(IMAP/POP3)</a> 서비스를 사용 중이며 (이미 암호화된) SQLite 데이터베이스에 저장된 <i>모든</i> 이메일을 공개 키로 암호화하려면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭(예: <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> 편집 <i class="fa fa-angle-right"></i> OpenPGP로 이동하여 공개 키를 업로드하세요.
      </span>
    </div>
 
-4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
+4. 도메인 이름(예: `example.com`)에 새 `CNAME` 레코드를 추가하세요:
 
-<table class="table table-striped table-hover my-3">
+   <table class="table table-striped table-hover my-3">
      <thead class="thead-dark">
        <tr>
-         <th>Name/Host/Alias</th>
+         <th>이름/호스트/별칭</th>
          <th class="text-center">TTL</th>
-         <th>Type</th>
-         <th>Answer/Value</th>
+         <th>유형</th>
+         <th>응답/값</th>
        </tr>
      </thead>
      <tbody>
@@ -2363,90 +2662,272 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
      </tbody>
    </table>
 
-<div class="alert my-3 alert-primary">
+   <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
-       Tip:
+       팁:
      </strong>
-     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+     <span>별칭이 당사의 <a class="alert-link" href="/disposable-addresses" target="_blank">바니티/일회용 도메인</a>(예: <code>hideaddress.net</code>)을 사용하는 경우 이 단계를 건너뛸 수 있습니다.</span>
    </div>
 
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>
     <strong class="font-weight-bold">
-      Congratulations!
+      축하합니다!
     </strong>
     <span>
-      You've successfully completed all steps.
+      모든 단계를 성공적으로 완료하셨습니다.
     </span>
   </div>
 </div>
 
-### Do you support MTA-STS {#do-you-support-mta-sts}
+### S/MIME 암호화를 지원하나요? {#do-you-support-smime-encryption}
 
-Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
+네, 저희는 [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551)에 정의된 대로 [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) 암호화를 지원합니다. S/MIME은 X.509 인증서를 사용하여 종단 간 암호화를 제공하며, 기업용 이메일 클라이언트에서 널리 지원됩니다.
 
-Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+저희는 RSA와 ECC(타원 곡선 암호화) 인증서를 모두 지원합니다:
 
-### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
+* **RSA 인증서**: 최소 2048비트, 권장 4096비트
+* **ECC 인증서**: P-256, P-384, P-521 NIST 곡선
 
-Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
+별칭에 대해 S/MIME 암호화를 설정하려면:
 
-Passkeys allow you to securely log in without requiring a password and two-factor authentication.
+1. 신뢰할 수 있는 인증 기관(CA)에서 S/MIME 인증서를 받거나 테스트용으로 자체 서명 인증서를 생성하세요.
 
-You can validate your identity with touch, facial recognition, device-based password, or PIN.
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       팁:
+     </strong>
+     <span>무료 S/MIME 인증서는 <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> 또는 <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>와 같은 제공업체에서 받을 수 있습니다.</span>
+   </div>
 
-We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
+2. 인증서를 PEM 형식으로 내보내세요(공개 인증서만, 개인 키는 제외).
 
-Learn more about passkeys at the following links:
+3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭(예: <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> 편집 <i class="fa fa-angle-right"></i> S/MIME로 이동하여 공개 인증서를 업로드하세요.
+4. 구성되면, 별칭으로 들어오는 모든 이메일은 저장되거나 전달되기 전에 S/MIME 인증서를 사용하여 암호화됩니다.
 
-* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       참고:
+     </strong>
+     <span>
+       S/MIME 암호화는 이미 암호화되지 않은 수신 메시지에 적용됩니다. 메시지가 이미 OpenPGP 또는 S/MIME으로 암호화된 경우, 다시 암호화되지 않습니다.
+     </span>
+   </div>
 
-### Do you support email best practices {#do-you-support-email-best-practices}
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       중요:
+     </strong>
+     <span>
+       발신자가 DMARC 정책을 거부(reject)로 설정한 경우, 당사의 MX 서버를 통한 이메일 전달에는 S/MIME 암호화가 적용되지 않습니다. <em>모든</em> 메일에 대해 S/MIME 암호화가 필요하다면, 당사의 IMAP 서비스를 사용하고 별칭에 대해 수신 메일용 S/MIME 인증서를 구성할 것을 권장합니다.
+     </span>
+   </div>
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+다음 이메일 클라이언트는 내장된 S/MIME 지원을 제공합니다:
 
-### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
+| 이메일 클라이언트    | 플랫폼   | 참고사항                                                                                                           |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | 내장된 S/MIME 지원. Mail > 환경설정 > 계정 > 해당 계정 > 신뢰에서 인증서 구성 가능.                                  |
+| Apple Mail        | iOS      | 내장된 S/MIME 지원. 설정 > 메일 > 계정 > 해당 계정 > 고급 > S/MIME에서 구성 가능.                                   |
+| Microsoft Outlook | Windows  | 내장된 S/MIME 지원. 파일 > 옵션 > 신뢰 센터 > 신뢰 센터 설정 > 이메일 보안에서 구성 가능.                            |
+| Microsoft Outlook | macOS    | 내장된 S/MIME 지원. 도구 > 계정 > 고급 > 보안에서 구성 가능.                                                        |
+| Thunderbird       | 데스크톱 | 내장된 S/MIME 지원. 계정 설정 > 종단 간 암호화 > S/MIME에서 구성 가능.                                              |
+| GNOME Evolution   | 데스크톱 | 내장된 S/MIME 지원. 편집 > 환경설정 > 메일 계정 > 해당 계정 > 보안에서 구성 가능.                                    |
+| KMail             | 데스크톱 | 내장된 S/MIME 지원. 설정 > KMail 구성 > 신원 > 해당 신원 > 암호화에서 구성 가능.                                     |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      축하합니다!
+    </strong>
+    <span>
+      별칭에 대해 S/MIME 암호화를 성공적으로 구성하셨습니다.
+    </span>
+  </div>
+</div>
+
+### Sieve 이메일 필터링을 지원하나요? {#do-you-support-sieve-email-filtering}
+
+네! 저희는 [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)에 정의된 대로 [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) 이메일 필터링을 지원합니다. Sieve는 서버 측 이메일 필터링을 위한 강력하고 표준화된 스크립팅 언어로, 수신 메시지를 자동으로 정리, 필터링 및 응답할 수 있게 해줍니다.
+
+#### 지원하는 Sieve 확장 {#supported-sieve-extensions}
+
+저희는 다음과 같은 포괄적인 Sieve 확장 세트를 지원합니다:
+
+| 확장                        | RFC                                                                                     | 설명                                             |
+| ---------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | 메시지를 특정 폴더에 저장                         |
+| `reject` / `ereject`         | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | 오류와 함께 메시지 거부                           |
+| `vacation`                   | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | 자동 부재중/휴가 응답                             |
+| `vacation-seconds`           | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | 세분화된 휴가 응답 간격                           |
+| `imap4flags`                 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | IMAP 플래그 설정 (\Seen, \Flagged 등)             |
+| `envelope`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | 봉투 발신자/수신자 테스트                         |
+| `body`                       | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | 메시지 본문 내용 테스트                           |
+| `variables`                  | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | 스크립트 내 변수 저장 및 사용                      |
+| `relational`                 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | 관계 비교 (크다, 작다)                            |
+| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | 숫자 비교                                        |
+| `copy`                       | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | 리디렉션 시 메시지 복사                           |
+| `editheader`                 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | 메시지 헤더 추가 또는 삭제                        |
+| `date`                       | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | 날짜/시간 값 테스트                              |
+| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | 특정 헤더 발생 위치 접근                          |
+| `regex`                      | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | 정규 표현식 매칭                                 |
+| `enotify`                    | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | 알림 전송 (예: mailto:)                          |
+| `environment`                | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | 환경 정보 접근                                   |
+| `mailbox`                    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | 메일박스 존재 테스트, 메일박스 생성               |
+| `special-use`                | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | 특수 용도 메일박스에 저장 (\Junk, \Trash 등)      |
+| `duplicate`                  | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | 중복 메시지 감지                                |
+| `ihave`                      | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | 확장 기능 사용 가능 여부 테스트                    |
+| `subaddress`                 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | 사용자+세부 주소 부분 접근                        |
+#### 지원되지 않는 확장 기능 {#extensions-not-supported}
+
+다음 확장 기능은 현재 지원되지 않습니다:
+
+| 확장 기능                                                       | 이유                                                              |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `include`                                                       | 보안 위험(스크립트 인젝션) 및 전역 스크립트 저장소 필요               |
+| `mboxmetadata` / `servermetadata`                               | IMAP METADATA 확장 기능 지원 필요                                   |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | 복잡한 MIME 트리 조작이 아직 구현되지 않음                          |
+
+#### 예제 Sieve 스크립트 {#example-sieve-scripts}
+
+**뉴스레터를 폴더에 분류하기:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**휴가 중 자동 응답:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "현재 부재 중이며 복귀 후 답변드리겠습니다.";
+```
+
+**중요 발신자 메시지 표시:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**특정 제목의 스팸 거부:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "스팸 내용으로 인해 메시지가 거부되었습니다.";
+}
+```
+
+#### Sieve 스크립트 관리 {#managing-sieve-scripts}
+
+Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
+
+1. **웹 인터페이스**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> Sieve 스크립트에서 스크립트를 생성하고 관리하세요.
+
+2. **ManageSieve 프로토콜**: Thunderbird의 Sieve 애드온이나 [sieve-connect](https://github.com/philpennock/sieve-connect) 같은 ManageSieve 호환 클라이언트를 사용해 `imap.forwardemail.net`에 연결하세요. 대부분 클라이언트에 권장되는 STARTTLS 포트 `2190` 또는 암시적 TLS 포트 `4190`을 사용합니다.
+
+3. **API**: [REST API](/api#sieve-scripts)를 사용해 프로그래밍 방식으로 스크립트를 관리할 수 있습니다.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    참고:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+    Sieve 필터링은 메일함에 저장되기 전에 수신 메시지에 적용됩니다. 스크립트는 우선순위 순서대로 실행되며, 첫 번째 일치하는 동작이 메시지 처리 방식을 결정합니다.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    보안:
+  </strong>
+  <span>
+    보안을 위해 리디렉션 동작은 스크립트당 10회, 하루 100회로 제한됩니다. 휴가 응답은 남용 방지를 위해 속도 제한이 적용됩니다.
+  </span>
+</div>
+
+### MTA-STS를 지원하나요? {#do-you-support-mta-sts}
+
+네, 2023년 3월 2일부터 [MTA-STS](https://www.hardenize.com/blog/mta-sts)를 지원합니다. 도메인에서 활성화하려면 [이 템플릿](https://github.com/jpawlowski/mta-sts.template)을 사용할 수 있습니다.
+
+구성은 GitHub에서 공개되어 있습니다: <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+
+### 패스키 및 WebAuthn을 지원하나요? {#do-you-support-passkeys-and-webauthn}
+
+네! 2023년 12월 13일부터 높은 수요에 따라 [패스키](https://github.com/orgs/forwardemail/discussions/182) 지원을 추가했습니다.
+
+패스키를 사용하면 비밀번호와 2단계 인증 없이 안전하게 로그인할 수 있습니다.
+
+터치, 얼굴 인식, 기기 기반 비밀번호 또는 PIN으로 신원을 확인할 수 있습니다.
+
+최대 30개의 패스키를 한 번에 관리할 수 있어 모든 기기에서 쉽게 로그인할 수 있습니다.
+
+패스키에 대해 더 알아보려면 다음 링크를 참고하세요:
+
+* [패스키로 애플리케이션 및 웹사이트에 로그인하기](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [iPhone에서 앱 및 웹사이트에 패스키로 로그인하기](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [패스키에 관한 위키피디아 문서](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### 이메일 모범 사례를 지원하나요? {#do-you-support-email-best-practices}
+
+네. 모든 요금제에서 SPF, DKIM, DMARC, ARC, SRS에 대한 내장 지원을 제공합니다. 또한 이러한 사양의 원저자 및 다른 이메일 전문가들과 광범위하게 협력하여 완벽함과 높은 전달률을 보장하고 있습니다.
+
+### 바운스 웹훅을 지원하나요? {#do-you-support-bounce-webhooks}
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    팁:
+  </strong>
+    이메일 웹훅 문서를 찾고 계신가요? 자세한 내용은 <a href="/faq#do-you-support-webhooks" class="alert-link">웹훅을 지원하나요?</a>를 참조하세요.
   <span>
   </span>
 </div>
 
-Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
+네, 2024년 8월 14일부터 이 기능을 추가했습니다. 이제 내 계정 → 도메인 → 설정 → 바운스 웹훅 URL로 이동하여 아웃바운드 SMTP 이메일이 바운스될 때마다 `POST` 요청을 보낼 `http://` 또는 `https://` URL을 구성할 수 있습니다.
 
-This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
+이 기능은 아웃바운드 SMTP를 관리하고 모니터링하는 데 유용하며, 구독자 유지, 옵트아웃 처리, 바운스 발생 시 감지 등에 사용할 수 있습니다.
 
-Bounce webhook payloads are sent as a JSON with these properties:
+바운스 웹훅 페이로드는 다음 속성을 포함하는 JSON 형식으로 전송됩니다:
 
-* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
-* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
-* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
-* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
-* `recipient` (String) - the email address of the recipient that bounced or errored
-* `message` (String) - a detailed error message for the bounce
-* `response` (String) - the SMTP response message
-* `response_code` (Number) - the parsed SMTP response code
-* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
-* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
-  * `action` (String) - bounce action (e.g. `"reject"`)
-  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
-  * `category` (String) - bounce category (e.g. `"block"`)
-  * `code` (Number) - bounce status code (e.g. `554`)
-  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
-  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
-* `headers` (Object) - key value pair of headers for the outbound email
-* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
+* `email_id` (문자열) - 내 계정 → 이메일(아웃바운드 SMTP)에서 해당 이메일 ID
+* `list_id` (문자열) - 원본 아웃바운드 이메일의 `List-ID` 헤더(대소문자 구분 없음) 값, 있으면
+* `list_unsubscribe` (문자열) - 원본 아웃바운드 이메일의 `List-Unsubscribe` 헤더(대소문자 구분 없음) 값, 있으면
+* `feedback_id` (문자열) - 원본 아웃바운드 이메일의 `Feedback-ID` 헤더(대소문자 구분 없음) 값, 있으면
+* `recipient` (문자열) - 바운스되거나 오류가 발생한 수신자 이메일 주소
+* `message` (문자열) - 바운스에 대한 상세 오류 메시지
+* `response` (문자열) - SMTP 응답 메시지
+* `response_code` (숫자) - 파싱된 SMTP 응답 코드
+* `truth_source` (문자열) - 응답 코드가 신뢰할 수 있는 출처에서 온 경우, 루트 도메인 이름(예: `google.com` 또는 `yahoo.com`)이 채워짐
+* `bounce` (객체) - 바운스 및 거부 상태를 상세히 나타내는 다음 속성을 포함하는 객체
+  * `action` (문자열) - 바운스 동작 (예: `"reject"`)
+  * `message` (문자열) - 바운스 사유 (예: `"Message Sender Blocked By Receiving Server"`)
+  * `category` (문자열) - 바운스 카테고리 (예: `"block"`)
+  * `code` (숫자) - 바운스 상태 코드 (예: `554`)
+  * `status` (문자열) - 응답 메시지의 바운스 코드 (예: `5.7.1`)
+  * `line` (숫자) - 파싱된 라인 번호, 있으면, [Zone-MTA 바운스 파싱 리스트](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt)에서 (예: `526`)
+* `headers` (객체) - 아웃바운드 이메일의 헤더 키-값 쌍
+* `bounced_at` (문자열) - 바운스 오류가 발생한 시점의 [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) 형식 날짜
 
-For example:
+예를 들어:
 
 ```json
 {
@@ -2469,59 +2950,58 @@ For example:
 }
 ```
 
-Here are a few additional notes regarding bounce webhooks:
+바운스 웹훅에 관한 추가 참고 사항은 다음과 같습니다:
 
-* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
-  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
-* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
-
-### Do you support webhooks {#do-you-support-webhooks}
+* 웹훅 페이로드에 `list_id`, `list_unsubscribe`, 또는 `feedback_id` 값이 포함되어 있으면, 필요에 따라 `recipient`를 목록에서 제거하는 적절한 조치를 취해야 합니다.
+  * `bounce.category` 값이 `"block"`, `"recipient"`, `"spam"`, 또는 `"virus"` 중 하나라면 반드시 사용자를 목록에서 제거해야 합니다.
+* 웹훅 페이로드가 실제로 우리 서버에서 온 것인지 확인하려면, [역방향 조회를 사용하여 원격 클라이언트 IP 주소의 호스트 이름을 확인](https://nodejs.org/api/dns.html#dnspromisesreverseip)할 수 있습니다 – `smtp.forwardemail.net`이어야 합니다.
+  * 또한 [공개된 IP 주소](#what-are-your-servers-ip-addresses)와 IP를 대조할 수 있습니다.
+  * 내 계정 → 도메인 → 설정 → 웹훅 서명 페이로드 검증 키에서 웹훅 키를 얻을 수 있습니다.
+    * 보안상의 이유로 언제든지 이 키를 교체할 수 있습니다.
+    * 이 키를 사용하여 웹훅 요청의 `X-Webhook-Signature` 값과 계산된 본문 값을 비교하여 검증할 수 있습니다. 방법 예시는 [이 Stack Overflow 게시물](https://stackoverflow.com/a/68885281)에서 확인할 수 있습니다.
+  * 자세한 내용은 <https://github.com/forwardemail/free-email-forwarding/issues/235> 토론을 참조하세요.
+* 웹훅 엔드포인트가 `200` 상태 코드를 반환할 때까지 최대 `5`초간 기다리며, 최대 `1`회 재시도합니다.
+* 바운스 웹훅 URL에 오류가 감지되면, 주 1회 예의상 이메일을 보내드립니다.
+### 웹훅을 지원하나요 {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    바운스 웹훅에 대한 문서를 찾고 계신가요? 자세한 내용은 <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">바운스 웹훅을 지원하나요?</a>를 참고하세요.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+네, 2020년 5월 15일부터 이 기능이 추가되었습니다. 수신자와 동일하게 웹훅을 간단히 추가할 수 있습니다! 웹훅 URL에 "http" 또는 "https" 프로토콜이 접두사로 붙어 있는지 반드시 확인하세요.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    강화된 개인정보 보호:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    유료 플랜(강화된 개인정보 보호 기능 포함)을 사용 중이라면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>으로 이동하여 도메인 옆의 "별칭"을 클릭해 웹훅을 설정하세요. 유료 플랜에 대해 더 알고 싶다면 <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">가격 정책</a> 페이지를 참고하세요. 그렇지 않으면 아래 지침을 계속 따라주세요.
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+무료 플랜을 사용 중이라면 아래와 같이 새 DNS <strong class="notranslate">TXT</strong> 레코드를 추가하세요:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+예를 들어, `alias@example.com`으로 가는 모든 이메일을 새 [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) 테스트 엔드포인트로 전달하고 싶다면:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2529,20 +3009,20 @@ For example, if I want all emails that go to `alias@example.com` to forward to a
   </tbody>
 </table>
 
-Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
+또는 `example.com`으로 가는 모든 이메일을 이 엔드포인트로 전달하고 싶다면:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2550,28 +3030,27 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   </tbody>
 </table>
 
-**Here are additional notes regarding webhooks:**
+**웹훅에 관한 추가 참고 사항은 다음과 같습니다:**
 
-* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
-  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
-    * You can rotate this key at anytime for security reasons.
-    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
-  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
-* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
-* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
-* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
-* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
-* Raw email value as a String is given as the property "raw".
-* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
-* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
-* The grouped recipients for this webhook are grouped together and given as the property "recipients".
-* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
-* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
-* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
-
+* 웹훅 페이로드가 실제로 우리 서버에서 온 것인지 확인해야 한다면, [역방향 조회를 사용해 원격 클라이언트 IP 주소의 클라이언트 호스트명을 확인할 수 있습니다](https://nodejs.org/api/dns.html#dnspromisesreverseip) – `mx1.forwardemail.net` 또는 `mx2.forwardemail.net`이어야 합니다.
+  * 또한 IP를 [공개된 IP 주소](#what-are-your-servers-ip-addresses)와 대조할 수 있습니다.
+  * 유료 플랜 사용자는 내 계정 → 도메인 → 설정 → 웹훅 서명 페이로드 검증 키에서 웹훅 키를 얻을 수 있습니다.
+    * 보안을 위해 언제든지 이 키를 교체할 수 있습니다.
+    * 이 키를 사용해 웹훅 요청의 `X-Webhook-Signature` 값과 계산된 본문 값을 비교하세요. 방법 예시는 [이 Stack Overflow 게시물](https://stackoverflow.com/a/68885281)에서 확인할 수 있습니다.
+  * 자세한 내용은 <https://github.com/forwardemail/free-email-forwarding/issues/235> 토론을 참고하세요.
+* 웹훅이 `200` 상태 코드를 응답하지 않으면, [오류 로그가 생성되어 저장됩니다](#do-you-store-error-logs) – 디버깅에 유용합니다.
+* 웹훅 HTTP 요청은 SMTP 연결 시도마다 최대 3회 재시도하며, 엔드포인트 POST 요청당 최대 60초 타임아웃이 있습니다. **이는 3회만 재시도한다는 뜻이 아니며**, 3번째 실패 후 SMTP 코드 421(나중에 재시도하라는 의미)을 보내 지속적으로 재시도합니다. 즉, 200 상태 코드가 나올 때까지 며칠간 계속 재시도합니다.
+* 기본 상태 및 오류 코드는 [superagent의 재시도 메서드](https://ladjs.github.io/superagent/#retrying-requests)를 기반으로 자동 재시도됩니다(저희가 유지 관리 중입니다).
+* 동일한 엔드포인트에 대한 웹훅 HTTP 요청은 여러 개가 아닌 하나로 묶어 리소스를 절약하고 응답 속도를 높입니다. 예를 들어, <webhook1@example.com>, <webhook2@example.com>, <webhook3@example.com>으로 이메일을 보내고 모두 정확히 같은 엔드포인트 URL로 설정되어 있다면, 요청은 하나만 발생합니다. 엄격한 일치로 엔드포인트를 그룹화합니다.
+* 메시지를 JSON 친화적인 객체로 파싱하기 위해 [mailparser](https://nodemailer.com/extras/mailparser/) 라이브러리의 "simpleParser" 메서드를 사용합니다.
+* 원시 이메일 값은 문자열로 "raw" 속성에 제공됩니다.
+* 인증 결과는 "dkim", "spf", "arc", "dmarc", "bimi" 속성으로 제공됩니다.
+* 파싱된 이메일 헤더는 "headers" 속성에 제공되며, 반복 및 파싱이 쉬운 "headerLines"도 사용할 수 있습니다.
+* 이 웹훅에 대한 그룹화된 수신자는 "recipients" 속성에 함께 묶여 제공됩니다.
+* SMTP 세션 정보는 "session" 속성에 제공됩니다. 여기에는 메시지 발신자, 도착 시간, HELO, 클라이언트 호스트명이 포함됩니다. 클라이언트 호스트명 값인 `session.clientHostname`은 역방향 PTR 조회에서 얻은 FQDN이거나, `session.remoteAddress`를 대괄호로 감싼 형태(e.g. `"[127.0.0.1]"`)입니다.
+* `X-Original-To` 값을 빠르게 얻고 싶다면 `session.recipient` 값을 사용할 수 있습니다(아래 예시 참조). `X-Original-To` 헤더는 마스킹 전달 전 원래 수신자를 디버깅용으로 메시지에 추가하는 헤더입니다.
+* 페이로드 본문에서 `attachments` 및/또는 `raw` 속성을 제거하려면 웹훅 엔드포인트에 쿼리 문자열 파라미터로 `?attachments=false`, `?raw=false`, 또는 `?attachments=false&raw=false`를 추가하세요(e.g. `https://example.com/webhook?attachments=false&raw=false`).
+* 첨부파일이 있을 경우, Buffer 값과 함께 `attachments` 배열에 추가됩니다. JavaScript를 사용해 다시 콘텐츠로 파싱할 수 있습니다:
   ```js
   const data = [
     104,
@@ -2785,48 +3264,48 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 }
 ```
 
-### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
+### 정규 표현식 또는 regex를 지원하나요? {#do-you-support-regular-expressions-or-regex}
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+네, 2021년 9월 27일부터 이 기능이 추가되었습니다. 별칭(alias) 매칭 및 치환(substitution)을 위해 정규 표현식("regex")을 간단히 작성할 수 있습니다.
 
-Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
+정규 표현식이 지원되는 별칭은 `/`로 시작하고 `/`로 끝나며, 수신자는 이메일 주소 또는 웹훅(webhook)입니다. 수신자는 또한 정규식 치환 지원(e.g. `$1`, `$2`)을 포함할 수 있습니다.
 
-We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
+`i`와 `g` 두 가지 정규 표현식 플래그를 지원합니다. 대소문자 구분 없는 `i` 플래그는 영구 기본값이며 항상 적용됩니다. 전역 플래그 `g`는 끝 `/` 뒤에 `/g`를 붙여서 추가할 수 있습니다.
 
-Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
+또한 정규식 지원 시 수신자 부분에 대해 <a href="#can-i-disable-specific-aliases">비활성화된 별칭 기능</a>도 지원합니다.
 
-Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
+정규 표현식은 <a href="/disposable-addresses" target="_blank">글로벌 바니티 도메인</a>에서는 지원되지 않습니다(보안 취약점이 될 수 있기 때문입니다).
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    향상된 개인정보 보호:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+    유료 플랜(향상된 개인정보 보호 기능 포함)을 사용 중이라면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>으로 이동하여 도메인 옆의 "별칭"을 클릭해 정규 표현식을 포함한 별칭을 구성하세요. 유료 플랜에 대해 더 알고 싶다면 <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">가격 정책</a> 페이지를 참고하세요.
   </span>
 </div>
 
-#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
+#### 향상된 개인정보 보호 예시 {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Alias Name</th>
-      <th>Effect</th>
-      <th>Test</th>
+      <th>별칭 이름</th>
+      <th>효과</th>
+      <th>테스트</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>/^(linus|torvalds)$/</code></td>
-      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
-      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+      <td>`linus@example.com` 또는 `torvalds@example.com`으로 이메일 전달</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">RegExr에서 테스트 보기</a>)</td>
     </tr>
     <tr>
       <td><code>/^24highst(reet)$/</code></td>
-      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
-      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+      <td>`24highst@example.com` 또는 `24highstreet@example.com`으로 이메일 전달</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">RegExr에서 테스트 보기</a>)</td>
     </tr>
   </tbody>
 </table>
@@ -2834,34 +3313,34 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
-    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+    <a href="https://regexr.com" class="alert-link">RegExr</a>에서 테스트하려면, 상단 박스에 표현식을 작성하고 아래 텍스트 박스에 예시 별칭을 입력하세요. 일치하면 파란색으로 표시됩니다.
   <span>
   </span>
 </div>
 
-#### Examples for the free plan {#examples-for-the-free-plan}
+#### 무료 플랜 예시 {#examples-for-the-free-plan}
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+무료 플랜을 사용 중이라면, 아래 제공된 예시 중 하나 이상을 사용하여 새 DNS <strong class="notranslate">TXT</strong> 레코드를 추가하세요:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+  <strong>간단한 예시:</strong> `linus@example.com` 또는 `torvalds@example.com`으로 가는 모든 이메일을 `user@gmail.com`으로 전달하려면:
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>타입</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
@@ -2871,21 +3350,20 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+  <strong>이름 치환 예시:</strong> 회사 이메일 주소가 모두 `firstname.lastname@example.com` 패턴이라고 가정해 보겠습니다. `firstname.lastname@example.com` 패턴으로 오는 모든 이메일을 치환 지원과 함께 `firstname.lastname@company.com`으로 전달하려면 (<a href="https://regexr.com/66hnu" class="alert-link">RegExr에서 테스트 보기</a>):
 </div>
-
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2895,21 +3373,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+  <strong>플러스 기호 필터링 치환 예시:</strong> `info@example.com` 또는 `support@example.com` 으로 가는 모든 이메일을 각각 `user+info@gmail.com` 또는 `user+support@gmail.com` 으로 전달하고 싶을 때 (치환 지원 포함) (<a href="https://regexr.com/66ho7" class="alert-link">RegExr에서 테스트 보기</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
@@ -2919,21 +3397,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+  <strong>웹훅 쿼리스트링 치환 예시:</strong> `example.com` 으로 가는 모든 이메일을 <a href="#do-you-support-webhooks" class="alert-link">웹훅</a> 으로 보내고, 이메일 주소의 사용자 이름 부분을 값으로 하는 "to"라는 동적 쿼리스트링 키를 포함시키고 싶을 때 (<a href="https://regexr.com/66ho4" class="alert-link">RegExr에서 테스트 보기</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2943,21 +3421,21 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>조용한 거부 예시:</strong> 특정 패턴과 일치하는 모든 이메일을 비활성화하고 조용히 거부하려면 (발신자에게는 메시지가 성공적으로 전송된 것처럼 보이지만 실제로는 어디에도 가지 않음) 상태 코드 `250` (참조 <a href="#can-i-disable-specific-aliases" class="alert-link">특정 별칭을 비활성화할 수 있나요</a>)을 사용하여, 단일 느낌표 "!"를 사용하면 됩니다. 이는 발신자에게 메시지가 성공적으로 전달되었음을 나타내지만 실제로는 어디에도 전달되지 않음을 의미합니다 (예: 블랙홀 또는 `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
@@ -2967,45 +3445,44 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>소프트 거부 예시:</strong> 특정 패턴과 일치하는 모든 이메일을 비활성화하고 상태 코드 `421` (참조 <a href="#can-i-disable-specific-aliases" class="alert-link">특정 별칭을 비활성화할 수 있나요</a>)로 소프트 거부하려면, 이중 느낌표 "!!"를 사용하면 됩니다. 이는 발신자에게 이메일을 재시도하라는 신호를 보내며, 이 별칭으로 가는 이메일은 약 5일간 재시도되고 이후 영구적으로 거부됩니다.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>강제 거부 예시:</strong> 특정 패턴과 일치하는 모든 이메일을 비활성화하고 상태 코드 `550`으로 강제 거부하려면 (자세한 내용은 <a href="#can-i-disable-specific-aliases" class="alert-link">특정 별칭을 비활성화할 수 있나요</a> 참조), 삼중 느낌표 "!!!"를 사용하면 됩니다. 이는 발신자에게 영구 오류를 알리며 이메일은 재시도되지 않고 해당 별칭에 대해 거부됩니다.
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
@@ -3016,574 +3493,614 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    정규 표현식을 작성하는 방법이 궁금하거나 대체할 내용을 테스트해야 한다면, 무료 정규 표현식 테스트 웹사이트 <a href="https://regexr.com" class="alert-link">RegExr</a>를 방문하세요: <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
 
-### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+### 귀하의 아웃바운드 SMTP 제한은 무엇인가요 {#what-are-your-outbound-smtp-limits}
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+저희는 사용자 및 도메인별로 1일당 300건의 아웃바운드 SMTP 메시지로 속도 제한을 둡니다. 이는 한 달 기준으로 평균 9000건 이상의 이메일에 해당합니다. 이 수치를 초과해야 하거나 지속적으로 대용량 이메일을 보내야 하는 경우, [문의해 주세요](https://forwardemail.net/help).
 
-### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+### SMTP 활성화를 위해 승인이 필요한가요 {#do-i-need-approval-to-enable-smtp}
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+네, IP 평판 유지 및 전달 보장을 위해 Forward Email은 도메인별로 아웃바운드 SMTP 승인을 위한 수동 검토 절차를 운영합니다. 승인 요청은 <support@forwardemail.net>으로 이메일을 보내거나 [도움 요청](https://forwardemail.net/help)을 열어주세요. 일반적으로 24시간 이내에 처리되며 대부분 1~2시간 내에 승인됩니다. 가까운 미래에는 추가 스팸 제어 및 알림과 함께 이 절차를 즉시 처리할 수 있도록 할 예정입니다. 이 절차는 이메일이 받은편지함에 도달하고 메시지가 스팸으로 표시되지 않도록 보장합니다.
 
-### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+### SMTP 서버 구성 설정은 무엇인가요 {#what-are-your-smtp-server-configuration-settings}
 
-Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+저희 서버는 `smtp.forwardemail.net`이며 <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">상태 페이지</a>에서 모니터링됩니다.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+IPv4와 IPv6를 모두 지원하며 SSL/TLS(권장)용 포트 `465`와 `2465`, TLS(STARTTLS)용 포트 `587`, `2587`, `2525`, `25`를 통해 이용 가능합니다.
 
-**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+**2025년 10월부터**, 프린터, 스캐너, 카메라 및 최신 TLS 버전을 지원하지 않는 레거시 이메일 클라이언트와 같은 구형 장치를 위해 포트 `2455`(SSL/TLS)와 `2555`(STARTTLS)에서 **레거시 TLS 1.0** 연결을 지원합니다. 이 포트들은 Gmail, Yahoo, Outlook 등에서 구형 TLS 프로토콜 지원을 중단한 것에 대한 대안으로 제공됩니다.
 
 > \[!CAUTION]
-> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+> **레거시 TLS 1.0 지원 (포트 2455 및 2555)**: 이 포트들은 알려진 보안 취약점(BEAST, POODLE)이 있는 구식 TLS 1.0 프로토콜을 사용합니다. 장치가 TLS 1.2 이상을 절대 지원하지 못하는 경우에만 이 포트를 사용하세요. 가능하면 장치 펌웨어를 업그레이드하거나 최신 이메일 클라이언트로 전환할 것을 강력히 권장합니다. 이 포트들은 구형 하드웨어 호환성(구형 프린터, 스캐너, 카메라, IoT 장치)을 위해서만 의도되었습니다.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
-| :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
-| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
-| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
-
-| Login | Example | Description |
+|                                     프로토콜                                     | 호스트명                  |            포트             |        IPv4        |        IPv6        | 비고                                   |
+| :------------------------------------------------------------------------------: | ------------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
+|                              `SSL/TLS` **권장**                                | `smtp.forwardemail.net`   |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | 최신 TLS 1.2 이상 (권장)               |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net`   | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | 지원됨 (SSL/TLS 포트 `465` 권장)       |
+|                             `SSL/TLS` **레거시 전용**                           | `smtp.forwardemail.net`   |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: 구형 장치 전용 TLS 1.0        |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **레거시 전용** | `smtp.forwardemail.net`   |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: 구형 장치 전용 TLS 1.0        |
+| 로그인    | 예시                       | 설명                                                                                                                                                                                     |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias |
+| 사용자명 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소입니다.                              |
+| 비밀번호 | `************************` | 별칭                                                                                                                                                                                     |
 
-In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
+SMTP로 아웃바운드 이메일을 보내기 위해서는 **SMTP 사용자**가 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소여야 하며, **SMTP 비밀번호**는 별칭별로 생성된 비밀번호여야 합니다.
 
-Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
+단계별 지침은 [SMTP로 이메일 전송을 지원하나요](#do-you-support-sending-email-with-smtp)를 참조하세요.
 
-### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
+### IMAP 서버 구성 설정은 무엇인가요 {#what-are-your-imap-server-configuration-settings}
 
-Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+저희 서버는 `imap.forwardemail.net`이며 <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">상태 페이지</a>에서도 모니터링되고 있습니다.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
+IPv4와 IPv6를 모두 지원하며 SSL/TLS용 포트 `993`과 `2993`에서 사용할 수 있습니다.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         프로토콜         | 호스트명                  |     포트      |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+| `SSL/TLS` **권장**       | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Login | Example | Description |
+| 로그인    | 예시                       | 설명                                                                                                                                                                                     |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| 사용자명 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소입니다.                              |
+| 비밀번호 | `************************` | 별칭별로 생성된 비밀번호입니다.                                                                                                                                                           |
 
-In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+IMAP에 연결하려면 **IMAP 사용자**가 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소여야 하며, **IMAP 비밀번호**는 별칭별로 생성된 비밀번호여야 합니다.
 
-Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
+단계별 지침은 [IMAP으로 이메일 수신을 지원하나요](#do-you-support-receiving-email-with-imap)를 참조하세요.
 
-### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
+### POP3 서버 구성 설정은 무엇인가요 {#what-are-your-pop3-server-configuration-settings}
 
-Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+저희 서버는 `pop3.forwardemail.net`이며 <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">상태 페이지</a>에서도 모니터링되고 있습니다.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
+IPv4와 IPv6를 모두 지원하며 SSL/TLS용 포트 `995`와 `2995`에서 사용할 수 있습니다.
 
-| Protocol | Hostname | Ports | IPv4 | IPv6 |
+|         프로토콜         | 호스트명                  |     포트      |        IPv4        |        IPv6        |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
-
-| Login | Example | Description |
+| `SSL/TLS` **권장**       | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+| 로그인    | 예시                       | 설명                                                                                                                                                                                     |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
-| Password | `************************` | Alias-specific generated password. |
+| 사용자명 | `user@example.com`         | <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소입니다.                                      |
+| 비밀번호 | `************************` | 별칭별로 생성된 비밀번호입니다.                                                                                                                                                            |
 
-In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
+POP3에 연결하려면, **POP3 사용자**는 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>에 존재하는 도메인의 별칭 이메일 주소여야 하며, **IMAP 비밀번호**는 별칭별로 생성된 비밀번호여야 합니다.
 
-Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+단계별 지침은 [POP3를 지원하나요](#do-you-support-pop3)를 참조하세요.
 
-## Security {#security}
+### 내 도메인에 이메일 자동 검색을 설정하는 방법 {#how-do-i-set-up-email-autodiscovery-for-my-domain}
 
-### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
+이메일 자동 검색은 **Thunderbird**, **Apple Mail**, **Microsoft Outlook** 및 모바일 장치와 같은 이메일 클라이언트가 사용자가 이메일 계정을 추가할 때 올바른 IMAP, SMTP, POP3, CalDAV 및 CardDAV 서버 설정을 자동으로 감지할 수 있게 합니다. 이는 [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (이메일) 및 [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV)에 정의되어 있으며 DNS SRV 레코드를 사용합니다.
+
+Forward Email은 `forwardemail.net`에 자동 검색 레코드를 게시합니다. 도메인에 SRV 레코드를 직접 추가하거나 더 간단한 CNAME 방식을 사용할 수 있습니다.
+
+#### 옵션 A: CNAME 레코드 (가장 간단) {#option-a-cname-records-simplest}
+
+도메인의 DNS에 다음 두 개의 CNAME 레코드를 추가하세요. 이는 자동 검색을 Forward Email 서버로 위임합니다:
+
+|  유형 | 이름/호스트    | 대상/값                        |
+| :---: | -------------- | ----------------------------- |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net` |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+`autoconfig` 레코드는 **Thunderbird** 및 기타 Mozilla 기반 클라이언트에서 사용됩니다. `autodiscover` 레코드는 **Microsoft Outlook**에서 사용됩니다.
+
+#### 옵션 B: SRV 레코드 (직접) {#option-b-srv-records-direct}
+
+레코드를 직접 추가하거나 DNS 공급자가 하위 도메인에 CNAME을 지원하지 않는 경우, 도메인에 다음 SRV 레코드를 추가하세요:
+
+| 유형 | 이름/호스트           | 우선순위 | 가중치 | 포트 | 대상/값                    | 용도                                   |
+| :--: | --------------------- | :------: | :----: | :--: | -------------------------- | ------------------------------------- |
+|  SRV | `_imaps._tcp`         |     0    |    1   |  993 | `imap.forwardemail.net`    | SSL/TLS를 사용하는 IMAP (권장)         |
+|  SRV | `_imap._tcp`          |     0    |    0   |   0  | `.`                        | 일반 텍스트 IMAP 비활성화              |
+|  SRV | `_submissions._tcp`   |     0    |    1   |  465 | `smtp.forwardemail.net`    | SMTP 제출 (SSL/TLS, 권장)              |
+|  SRV | `_submission._tcp`    |     5    |    1   |  587 | `smtp.forwardemail.net`    | SMTP 제출 (STARTTLS)                   |
+|  SRV | `_pop3s._tcp`         |    10    |    1   |  995 | `pop3.forwardemail.net`    | SSL/TLS를 사용하는 POP3                 |
+|  SRV | `_pop3._tcp`          |     0    |    0   |   0  | `.`                        | 일반 텍스트 POP3 비활성화              |
+|  SRV | `_caldavs._tcp`       |     0    |    1   |  443 | `caldav.forwardemail.net`  | TLS를 사용하는 CalDAV (캘린더)          |
+|  SRV | `_caldav._tcp`        |     0    |    0   |   0  | `.`                        | 일반 텍스트 CalDAV 비활성화            |
+|  SRV | `_carddavs._tcp`      |     0    |    1   |  443 | `carddav.forwardemail.net` | TLS를 사용하는 CardDAV (연락처)         |
+|  SRV | `_carddav._tcp`       |     0    |    0   |   0  | `.`                        | 일반 텍스트 CardDAV 비활성화           |
+> \[!NOTE]
+> IMAP은 POP3(10)보다 낮은 우선순위 값(0)을 가지며, 이는 이메일 클라이언트가 두 프로토콜이 모두 사용 가능할 때 IMAP을 우선하도록 지시합니다. 대상이 `.` (단일 점)인 레코드는 해당 프로토콜의 평문(암호화되지 않은) 버전이 [RFC 6186 섹션 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4)에 따라 의도적으로 비활성화되었음을 나타냅니다. CalDAV 및 CardDAV SRV 레코드는 일정 및 연락처 자동 검색을 위해 [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html)를 따릅니다.
+
+#### 어떤 이메일 클라이언트가 자동 검색을 지원하나요? {#which-email-clients-support-autodiscovery}
+
+| 클라이언트           | 이메일                                            | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | `autoconfig` CNAME 또는 SRV 레코드                | `autoconfig` XML 또는 SRV 레코드 (RFC 6764) |
+| Apple Mail (macOS) | SRV 레코드 (RFC 6186)                           | SRV 레코드 (RFC 6764)                     |
+| Apple Mail (iOS)   | SRV 레코드 (RFC 6186)                           | SRV 레코드 (RFC 6764)                     |
+| Microsoft Outlook  | `autodiscover` CNAME 또는 `_autodiscover._tcp` SRV | 지원하지 않음                              |
+| GNOME (Evolution)  | SRV 레코드 (RFC 6186)                           | SRV 레코드 (RFC 6764)                     |
+| KDE (KMail)        | SRV 레코드 (RFC 6186)                           | SRV 레코드 (RFC 6764)                     |
+| eM Client          | `autoconfig` 또는 `autodiscover`                   | SRV 레코드 (RFC 6764)                     |
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> 모든 클라이언트에서 최고의 호환성을 위해, **옵션 A**(CNAME 레코드)와 **옵션 B**의 SRV 레코드를 함께 사용하는 것을 권장합니다. CNAME 방식만으로도 대부분의 이메일 클라이언트를 지원합니다. CalDAV/CardDAV SRV 레코드는 일정 및 연락처 클라이언트가 서버 설정을 자동으로 검색할 수 있도록 보장합니다.
 
-Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Network Security**:
-   * IP tables firewall with strict rules
-   * Fail2ban for brute force protection
-   * Regular security audits and penetration testing
-   * VPN-only administrative access
+## 보안 {#security-1}
 
-2. **System Hardening**:
-   * Minimal package installation
-   * Regular security updates
-   * SELinux in enforcing mode
-   * Disabled root SSH access
-   * Key-based authentication only
+### 고급 서버 강화 기법 {#advanced-server-hardening-techniques}
 
-3. **Application Security**:
-   * Content Security Policy (CSP) headers
-   * HTTPS Strict Transport Security (HSTS)
-   * XSS protection headers
-   * Frame options and referrer policy headers
-   * Regular dependency audits
+> \[!TIP]
+> 보안 인프라에 대해 더 알아보려면 [보안 페이지](/security)를 방문하세요.
 
-4. **Data Protection**:
-   * Full disk encryption with LUKS
-   * Secure key management
-   * Regular backups with encryption
-   * Data minimization practices
+Forward Email은 인프라와 귀하의 데이터를 보호하기 위해 다양한 서버 강화 기법을 구현합니다:
 
-5. **Monitoring and Response**:
-   * Real-time intrusion detection
-   * Automated security scanning
-   * Centralized logging and analysis
-   * Incident response procedures
+1. **네트워크 보안**:
+   * 엄격한 규칙의 IP 테이블 방화벽
+   * 무차별 대입 공격 방지를 위한 Fail2ban
+   * 정기적인 보안 감사 및 침투 테스트
+   * VPN 전용 관리자 접근
+
+2. **시스템 강화**:
+   * 최소한의 패키지 설치
+   * 정기적인 보안 업데이트
+   * 강제 모드의 SELinux
+   * 루트 SSH 접근 비활성화
+   * 키 기반 인증만 허용
+
+3. **애플리케이션 보안**:
+   * 콘텐츠 보안 정책(CSP) 헤더
+   * HTTPS 엄격 전송 보안(HSTS)
+   * XSS 보호 헤더
+   * 프레임 옵션 및 리퍼러 정책 헤더
+   * 정기적인 의존성 감사
+
+4. **데이터 보호**:
+   * LUKS를 이용한 전체 디스크 암호화
+   * 안전한 키 관리
+   * 암호화된 정기 백업
+   * 데이터 최소화 관행
+
+5. **모니터링 및 대응**:
+   * 실시간 침입 탐지
+   * 자동화된 보안 스캔
+   * 중앙 집중식 로깅 및 분석
+   * 사고 대응 절차
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> 당사의 보안 관행은 새로운 위협과 취약점에 대응하기 위해 지속적으로 업데이트됩니다.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> 최대 보안을 위해 OpenPGP를 통한 종단 간 암호화와 함께 서비스를 사용하는 것을 권장합니다.
 
-### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
+### SOC 2 또는 ISO 27001 인증을 보유하고 있나요? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email은 업계 표준 준수를 보장하기 위해 인증된 하위 프로세서가 제공하는 인프라에서 운영됩니다.
 
-Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+Forward Email은 SOC 2 Type II 또는 ISO 27001 인증을 직접 보유하고 있지 않습니다. 그러나 서비스는 인증된 하위 프로세서가 제공하는 인프라에서 운영됩니다:
 
-* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: SOC 2 Type II 및 SOC 3 Type II 인증(감사 기관: Schellman & Company LLC), 여러 데이터 센터에서 ISO 27001 인증 보유. 자세한 내용: <https://www.digitalocean.com/trust/certification-reports>
+* **Vultr**: SOC 2+ (HIPAA) 인증, ISO/IEC 인증: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. 세부사항: <https://www.vultr.com/legal/compliance/>
 
-* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+* **DataPacket**: SOC 2 준수 (인증 획득을 위해 DataPacket에 직접 문의), 엔터프라이즈급 인프라 제공업체 (덴버 위치). 세부사항: <https://www.datapacket.com/datacenters/denver>
 
-* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+Forward Email은 보안 감사에 대한 업계 모범 사례를 따르며 정기적으로 독립 보안 연구원과 협력합니다. 출처: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+### 이메일 전달에 TLS 암호화를 사용하나요? {#do-you-use-tls-encryption-for-email-forwarding}
 
-### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+예. Forward Email은 모든 연결(HTTPS, SMTP, IMAP, POP3)에 대해 TLS 1.2+를 엄격히 적용하며 향상된 TLS 지원을 위해 MTA-STS를 구현합니다. 구현 내용은 다음과 같습니다:
 
-Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+* 모든 이메일 연결에 대해 TLS 1.2+ 적용
+* 완벽한 전달 보안을 위한 ECDHE(타원 곡선 디피-헬만 임시) 키 교환
+* 정기적인 보안 업데이트가 이루어지는 최신 암호화 스위트
+* 향상된 성능과 보안을 위한 HTTP/2 지원
+* 주요 브라우저에서 사전 로딩되는 HSTS(HTTP 엄격 전송 보안)
+* 엄격한 TLS 적용을 위한 **MTA-STS (메일 전송 에이전트 엄격 전송 보안)**
 
-* TLS 1.2+ enforcement for all email connections
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
-* Modern cipher suites with regular security updates
-* HTTP/2 support for improved performance and security
-* HSTS (HTTP Strict Transport Security) with preloading in major browsers
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+출처: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+**MTA-STS 구현**: Forward Email은 코드베이스에서 엄격한 MTA-STS 적용을 구현합니다. TLS 오류가 발생하고 MTA-STS가 적용될 때, 시스템은 이메일이 안전하지 않게 전달되는 대신 나중에 재시도되도록 421 SMTP 상태 코드를 반환합니다. 구현 세부사항:
 
-**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+* TLS 오류 감지: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* send-email 헬퍼에서 MTA-STS 적용: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+서드파티 검증: <https://www.hardenize.com/report/forwardemail.net/1750312779> 에서 모든 TLS 및 전송 보안 조치에 대해 "Good" 등급을 받았습니다.
 
-Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+### 이메일 인증 헤더를 보존하나요? {#do-you-preserve-email-authentication-headers}
 
-### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+예. Forward Email은 이메일 인증 헤더를 포괄적으로 구현하고 보존합니다:
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+* **SPF (발신자 정책 프레임워크)**: 적절히 구현 및 보존
+* **DKIM (도메인키 식별 메일)**: 적절한 키 관리와 함께 완전 지원
+* **DMARC**: SPF 또는 DKIM 검증 실패 시 정책 적용
+* **ARC**: 명시적으로 상세하지는 않으나, 완벽한 준수 점수로 보아 포괄적인 인증 헤더 처리가 이루어짐을 시사
 
-* **SPF (Sender Policy Framework)**: Properly implemented and preserved
-* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+출처: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+검증: Internet.nl 메일 테스트에서 "SPF, DKIM, DMARC" 구현에 대해 100/100 점수를 받았습니다. Hardenize 평가에서도 SPF 및 DMARC에 대해 "Good" 등급을 확인할 수 있습니다: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### 원본 이메일 헤더를 보존하고 스푸핑을 방지하나요? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email은 이메일 남용을 방지하기 위해 정교한 안티 스푸핑 보호를 구현합니다.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email은 원본 이메일 헤더를 보존하면서 MX 코드베이스를 통해 포괄적인 안티 스푸핑 보호를 구현합니다:
 
-* **Header Preservation**: Original authentication headers are maintained during forwarding
-* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
-* **Header Injection Prevention**: Input validation and sanitization using striptags library
-* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+* **헤더 보존**: 전달 중 원본 인증 헤더 유지
+* **안티 스푸핑**: DMARC 정책 적용으로 SPF 또는 DKIM 검증 실패 시 헤더 스푸핑 방지 및 이메일 거부
+* **헤더 인젝션 방지**: striptags 라이브러리를 사용한 입력 검증 및 정화
+* **고급 보호**: 스푸핑 탐지, 사칭 방지, 사용자 알림 시스템을 포함한 정교한 피싱 탐지
 
-**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+**MX 구현 세부사항**: 핵심 이메일 처리 로직은 MX 서버 코드베이스에서 처리되며, 구체적으로:
 
-* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* 주요 MX 데이터 핸들러: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* 임의 이메일 필터링(안티 스푸핑): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+`isArbitrary` 헬퍼는 도메인 사칭 탐지, 차단된 문구, 다양한 피싱 패턴을 포함한 정교한 안티 스푸핑 규칙을 구현합니다.
+### 스팸 및 남용으로부터 어떻게 보호하나요 {#how-do-you-protect-against-spam-and-abuse}
 
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Forward Email은 포괄적인 다중 계층 보호를 구현합니다:
 
-### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+* **속도 제한**: 인증 시도, API 엔드포인트, SMTP 연결에 적용
+* **자원 격리**: 대량 사용자로 인한 영향 방지를 위해 사용자 간 격리
+* **DDoS 보호**: DataPacket의 Shield 시스템과 Cloudflare를 통한 다중 계층 보호
+* **자동 확장**: 수요에 따른 동적 자원 조정
+* **남용 방지**: 사용자별 남용 방지 검사 및 악성 콘텐츠에 대한 해시 기반 차단
+* **이메일 인증**: 고급 피싱 탐지가 포함된 SPF, DKIM, DMARC 프로토콜
 
-Forward Email implements comprehensive multi-layer protection:
-
-* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
-* **Resource Isolation**: Between users to prevent impact from high-volume users
-* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
-
-Sources:
+출처:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://www.datapacket.com/datacenters/denver> (DDoS 보호 세부사항)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Do you store email content on disk {#do-you-store-email-content-on-disk}
+### 이메일 내용을 디스크에 저장하나요 {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email은 이메일 내용이 디스크에 기록되는 것을 방지하는 제로 지식 아키텍처를 사용합니다.
 
-* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
-* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
-* **No Content Logging**: "We do not log or store email content or metadata to disk"
-* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+* **제로 지식 아키텍처**: 개별 암호화된 SQLite 메일박스로 Forward Email이 이메일 내용에 접근할 수 없음
+* **메모리 내 처리**: 이메일 처리가 전적으로 메모리 내에서 이루어져 디스크 저장을 회피
+* **내용 로그 없음**: "이메일 내용이나 메타데이터를 디스크에 기록하거나 저장하지 않습니다"
+* **샌드박스 암호화**: 암호화 키는 평문으로 디스크에 절대 저장되지 않음
 
-**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX 코드베이스 증거**: MX 서버는 이메일을 디스크에 기록하지 않고 전적으로 메모리 내에서 처리합니다. 주요 이메일 처리 핸들러는 이 메모리 내 접근 방식을 보여줍니다: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
+출처:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (요약)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (제로 지식 세부사항)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (샌드박스 암호화)
+
+### 시스템 충돌 시 이메일 내용이 노출될 수 있나요 {#can-email-content-be-exposed-during-system-crashes}
+
+아니요. Forward Email은 충돌 관련 데이터 노출을 방지하기 위한 포괄적인 안전장치를 구현합니다:
+
+* **코어 덤프 비활성화**: 충돌 시 메모리 노출 방지
+* **스왑 메모리 비활성화**: 스왑 파일에서 민감 데이터 추출 방지를 위해 완전 비활성화
+* **메모리 내 아키텍처**: 이메일 내용은 처리 중 휘발성 메모리에만 존재
+* **암호화 키 보호**: 키는 평문으로 디스크에 절대 저장되지 않음
+* **물리적 보안**: LUKS v2 암호화 디스크로 물리적 데이터 접근 방지
+* **USB 저장장치 비활성화**: 무단 데이터 추출 방지
+
+**시스템 문제에 대한 오류 처리**: Forward Email은 `isCodeBug` 및 `isTimeoutError` 헬퍼 함수를 사용하여 데이터베이스 연결 문제, DNS 네트워크/차단 목록 문제, 업스트림 연결 문제 발생 시 시스템이 421 SMTP 상태 코드를 반환하도록 하여 이메일이 손실되거나 노출되지 않고 나중에 재시도되도록 보장합니다.
+
+구현 세부사항:
+
+* 오류 분류: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* MX 처리 내 타임아웃 오류 처리: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+
+출처: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+
+### 누가 이메일 인프라에 접근할 수 있나요 {#who-has-access-to-your-email-infrastructure}
+
+Forward Email은 최소 2-3명의 엔지니어링 팀 접근에 대해 엄격한 2단계 인증 요구사항과 함께 포괄적인 접근 제어를 구현합니다:
+
+* **역할 기반 접근 제어**: 리소스 기반 권한이 부여된 팀 계정용
+* **최소 권한 원칙**: 모든 시스템에 적용
+* **직무 분리**: 운영 역할 간 분리
+* **사용자 관리**: 별도의 배포 및 데브옵스 사용자로 구분된 권한 부여
+* **루트 로그인 비활성화**: 적절히 인증된 계정을 통한 접근 강제
+* **엄격한 2단계 인증**: MiTM 공격 위험으로 인해 SMS 기반 2FA 금지 - 앱 기반 또는 하드웨어 토큰만 허용
+* **포괄적 감사 로그**: 민감 데이터는 마스킹 처리
+* **자동 이상 탐지**: 비정상 접근 패턴 감지
+* **정기 보안 검토**: 접근 로그에 대해 수행
+* **이빌 메이드 공격 방지**: USB 저장장치 비활성화 및 기타 물리적 보안 조치
 Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (권한 제어)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (네트워크 보안)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (이블 메이드 공격 방지)
 
-### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
-
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
-
-* **Core Dumps Disabled**: Prevents memory exposure during crashes
-* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
-* **In-Memory Architecture**: Email content exists only in volatile memory during processing
-* **Encryption Key Protection**: Keys are never stored on disk in plaintext
-* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
-* **USB Storage Disabled**: Prevents unauthorized data extraction
-
-**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
-
-Implementation details:
-
-* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-
-Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
-
-### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
-
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
-
-* **Role-Based Access Control**: For team accounts with resource-based permissions
-* **Least Privilege Principle**: Applied throughout all systems
-* **Segregation of Duties**: Between operational roles
-* **User Management**: Separate deploy and devops users with distinct permissions
-* **Root Login Disabled**: Forces access through properly authenticated accounts
-* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
-* **Comprehensive Audit Logging**: With sensitive data redaction
-* **Automated Anomaly Detection**: For unusual access patterns
-* **Regular Security Reviews**: Of access logs
-* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
-
-Sources:
-
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
-
-### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+### 어떤 인프라 제공업체를 사용하나요 {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email은 포괄적인 컴플라이언스 인증을 갖춘 여러 인프라 하위 처리업체를 사용합니다.
 
-Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+자세한 내용은 당사의 GDPR 준수 페이지에서 확인할 수 있습니다: <https://forwardemail.net/gdpr>
 
-**Primary Infrastructure Subprocessors:**
+**주요 인프라 하위 처리업체:**
 
-| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
-| **GitHub** | ✅ Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
-| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| 제공업체         | 데이터 프라이버시 프레임워크 인증 여부 | GDPR 준수 페이지                                                                        |
+| ---------------- | ------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Cloudflare**   | ✅ 예                                | <https://www.cloudflare.com/trust-hub/gdpr/>                                           |
+| **DataPacket**   | ❌ 아니요                            | <https://www.datapacket.com/privacy-policy>                                            |
+| **DigitalOcean** | ❌ 아니요                            | <https://www.digitalocean.com/legal/gdpr>                                              |
+| **GitHub**       | ✅ 예                                | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**        | ❌ 아니요                            | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                        |
 
-**Detailed Certifications:**
+**상세 인증 내역:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
-* ISO 27001 certified at multiple data centers
-* PCI-DSS compliant
-* CSA STAR Level 1 certified
-* APEC CBPR PRP certified
-* Details: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II 및 SOC 3 Type II (Schellman & Company LLC 감사)
+* 여러 데이터 센터에서 ISO 27001 인증
+* PCI-DSS 준수
+* CSA STAR 레벨 1 인증
+* APEC CBPR PRP 인증
+* 상세 정보: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certified
-* PCI Merchant compliant
-* CSA STAR Level 1 certified
+* SOC 2+ (HIPAA) 인증
+* PCI 상인 준수
+* CSA STAR 레벨 1 인증
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Details: <https://www.vultr.com/legal/compliance/>
+* 상세 정보: <https://www.vultr.com/legal/compliance/>
 
 **DataPacket**
 
-* SOC 2 compliant (contact DataPacket directly to obtain certification)
-* Enterprise-grade infrastructure (Denver location)
-* DDoS protection through Shield cybersecurity stack
-* 24/7 technical support
-* Global network across 58 data centers
-* Details: <https://www.datapacket.com/datacenters/denver>
+* SOC 2 준수 (인증서 획득을 위해 DataPacket에 직접 문의)
+* 엔터프라이즈급 인프라 (덴버 위치)
+* Shield 사이버보안 스택을 통한 DDoS 보호
+* 24/7 기술 지원
+* 58개 데이터 센터에 걸친 글로벌 네트워크
+* 상세 정보: <https://www.datapacket.com/datacenters/denver>
 
 **GitHub**
 
-* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
-* Source code hosting, CI/CD, and project management
-* GitHub Data Protection Agreement available
-* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+* 데이터 프라이버시 프레임워크 인증 (EU-US, Swiss-US, UK 확장)
+* 소스 코드 호스팅, CI/CD, 프로젝트 관리
+* GitHub 데이터 보호 계약 제공
+* 상세 정보: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
 
-**Payment Processors:**
+**결제 처리업체:**
 
-* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: 데이터 프라이버시 프레임워크 인증 - <https://stripe.com/legal/privacy-center>
+* **PayPal**: DPF 인증 없음 - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### 데이터 처리 계약서(DPA)를 제공하나요 {#do-you-offer-a-data-processing-agreement-dpa}
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+네, Forward Email은 엔터프라이즈 계약과 함께 서명할 수 있는 포괄적인 데이터 처리 계약서(DPA)를 제공합니다. DPA 사본은 다음에서 확인할 수 있습니다: <https://forwardemail.net/dpa>
 
-**DPA Details:**
+**DPA 세부사항:**
 
-* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
-* Automatically accepted when agreeing to our Terms of Service
-* No separate signature required for standard DPA
-* Custom DPA arrangements available through Enterprise License
+* GDPR 준수 및 EU-US/Swiss-US 프라이버시 실드 프레임워크 포함
+* 서비스 약관 동의 시 자동 수락
+* 표준 DPA는 별도의 서명 필요 없음
+* 엔터프라이즈 라이선스를 통한 맞춤형 DPA 제공 가능
 
-**GDPR Compliance Framework:**
-Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+**GDPR 준수 프레임워크:**
+당사의 DPA는 GDPR 및 국제 데이터 전송 요건 준수를 상세히 다룹니다. 자세한 정보는 다음에서 확인할 수 있습니다: <https://forwardemail.net/gdpr>
 
-For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+맞춤형 DPA 조건이나 특정 계약 조항이 필요한 엔터프라이즈 고객은 **엔터프라이즈 라이선스(월 $250)** 프로그램을 통해 지원받을 수 있습니다.
 
-### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+### 데이터 유출 통지는 어떻게 처리하나요 {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Forward Email의 제로 지식 아키텍처는 유출 영향 범위를 크게 제한합니다.
+* **제한된 데이터 노출**: 제로 지식 아키텍처로 인해 암호화된 이메일 내용에 접근 불가
+* **최소한의 데이터 수집**: 보안을 위해 기본 구독자 정보와 제한된 IP 로그만 수집
+* **하위 처리자 프레임워크**: DigitalOcean, GitHub, Vultr는 GDPR 준수 사고 대응 절차를 유지
 
-* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
-* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
+**GDPR 대표자 정보:**
+Forward Email은 제27조에 따라 GDPR 대표자를 지정했습니다:
 
-**GDPR Representative Information:**
-Forward Email has appointed GDPR representatives in accordance with Article 27:
-
-**EU Representative:**
+**EU 대표자:**
 Osano International Compliance Services Limited
 ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**UK Representative:**
+**영국 대표자:**
 Osano UK Compliance LTD
 ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+특정 침해 통지 SLA가 필요한 기업 고객은 **Enterprise License** 계약의 일부로 논의해야 합니다.
 
-Sources:
+출처:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Do you offer a test environment {#do-you-offer-a-test-environment}
+### 테스트 환경을 제공하나요? {#do-you-offer-a-test-environment}
 
-Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+Forward Email의 기술 문서에는 전용 샌드박스 모드가 명시적으로 설명되어 있지 않습니다. 그러나 가능한 테스트 접근법은 다음과 같습니다:
 
-* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
-* **API Interface**: Potential for programmatic testing of configurations
-* **Open Source**: 100% open-source code allows customers to examine forwarding logic
-* **Multiple Domains**: Support for multiple domains could enable test domain creation
+* **셀프 호스팅 옵션**: 테스트 환경 구축을 위한 포괄적인 셀프 호스팅 기능
+* **API 인터페이스**: 구성의 프로그래밍 방식 테스트 가능성
+* **오픈 소스**: 100% 오픈 소스 코드로 전달 로직 검토 가능
+* **다중 도메인**: 다중 도메인 지원으로 테스트 도메인 생성 가능
 
-For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+공식 샌드박스 기능이 필요한 기업 고객은 **Enterprise License** 계약의 일부로 논의해야 합니다.
 
-Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+출처: <https://github.com/forwardemail/forwardemail.net> (개발 환경 세부 정보)
 
-### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
+### 모니터링 및 알림 도구를 제공하나요? {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email provides real-time monitoring with some limitations:
+Forward Email은 일부 제한 사항이 있는 실시간 모니터링을 제공합니다:
 
-**Available:**
+**제공 항목:**
 
-* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
-* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
-* **Transparent Monitoring**: 100% open-source monitoring systems
-* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+* **실시간 전달 모니터링**: 주요 이메일 제공업체에 대한 공개 성능 지표
+* **자동 알림**: 전달 시간이 10초를 초과하면 엔지니어링 팀에 알림
+* **투명한 모니터링**: 100% 오픈 소스 모니터링 시스템
+* **인프라 모니터링**: 자동 이상 탐지 및 포괄적 감사 로그
 
-**Limitations:**
+**제한 사항:**
 
-* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+* 고객 대상 웹훅 또는 API 기반 전달 상태 알림은 명확히 문서화되어 있지 않음
 
-For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+상세한 전달 상태 웹훅 또는 맞춤형 모니터링 통합이 필요한 기업 고객은 **Enterprise License** 계약을 통해 가능할 수 있습니다.
 
-Sources:
+출처:
 
-* <https://forwardemail.net> (Real-time monitoring display)
-* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+* <https://forwardemail.net> (실시간 모니터링 표시)
+* <https://github.com/forwardemail/forwardemail.net> (모니터링 구현)
 
-### How do you ensure high availability {#how-do-you-ensure-high-availability}
+### 고가용성을 어떻게 보장하나요? {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email은 여러 인프라 제공업체에 걸친 포괄적인 중복성을 구현합니다.
 
-* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
-* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
-* **Automatic Scaling**: Dynamic resource adjustment based on demand
-* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
-* **Server Redundancy**: Multiple servers per region with automatic failover
-* **Database Replication**: Real-time data synchronization across multiple locations
-* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+* **분산 인프라**: 지리적 지역에 걸친 여러 제공업체(DigitalOcean, Vultr, DataPacket)
+* **지리적 부하 분산**: Cloudflare 기반 지리 위치 부하 분산 및 자동 장애 조치
+* **자동 확장**: 수요에 따른 동적 자원 조정
+* **다중 계층 DDoS 보호**: DataPacket의 Shield 시스템과 Cloudflare를 통한 보호
+* **서버 중복성**: 지역별 다중 서버 및 자동 장애 조치
+* **데이터베이스 복제**: 여러 위치 간 실시간 데이터 동기화
+* **모니터링 및 알림**: 24/7 모니터링 및 자동 사고 대응
 
-**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+**가동 시간 약속**: 99.9% 이상의 서비스 가용성, 투명한 모니터링은 <https://forwardemail.net>에서 확인 가능
 
-Sources:
+출처:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### 국가 방위 승인법(NDAA) 제889조를 준수하나요? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email은 신중한 인프라 파트너 선정으로 제889조를 완전히 준수합니다.
 
-Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+네, Forward Email은 **제889조 준수** 상태입니다. 국가 방위 승인법(NDAA) 제889조는 정부 기관이 특정 회사(Huawei, ZTE, Hikvision, Dahua, Hytera)의 통신 및 영상 감시 장비를 사용하는 업체와 계약하거나 사용하는 것을 금지합니다.
+**Forward Email이 섹션 889 준수를 달성하는 방법:**
 
-**How Forward Email Achieves Section 889 Compliance:**
+Forward Email은 섹션 889에서 금지된 장비를 사용하지 않는 두 개의 주요 인프라 제공업체에만 전적으로 의존합니다:
 
-Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+1. **Cloudflare**: 네트워크 서비스 및 이메일 보안을 위한 주요 파트너
+2. **DataPacket**: 서버 인프라 제공업체 (Arista Networks 및 Cisco 장비만 사용)
+3. **백업 제공업체**: Digital Ocean과 Vultr 백업 제공업체도 서면으로 섹션 889 준수를 확인받았습니다.
 
-1. **Cloudflare**: Our primary partner for network services and email security
-2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
-3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+**Cloudflare의 약속**: Cloudflare는 제3자 행동 강령에서 섹션 889 금지 대상 업체의 통신 장비, 비디오 감시 제품 또는 서비스를 사용하지 않는다고 명확히 밝히고 있습니다.
 
-**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+**정부 사용 사례**: Forward Email의 섹션 889 준수는 **미 해군사관학교(US Naval Academy)**가 보안 이메일 전달 요구를 위해 Forward Email을 선택하면서 검증되었으며, 연방 준수 기준 문서 제출이 요구되었습니다.
 
-**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+정부 준수 프레임워크 및 광범위한 연방 규정에 대한 자세한 내용은 다음 종합 사례 연구를 참조하세요: [연방 정부 이메일 서비스 섹션 889 준수](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System and Technical Details {#system-and-technical-details}
+## 시스템 및 기술 세부사항 {#system-and-technical-details}
 
-### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
+### 이메일과 그 내용을 저장하나요? {#do-you-store-emails-and-their-contents}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+아니요, 우리는 디스크에 기록하거나 로그를 저장하지 않습니다 – [오류](#do-you-store-error-logs) 및 [발신 SMTP](#do-you-support-sending-email-with-smtp) 경우를 제외하고 (자세한 내용은 [개인정보 보호정책](/privacy) 참조).
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+모든 처리는 메모리 내에서 이루어지며 [소스 코드는 GitHub에 공개되어 있습니다](https://github.com/forwardemail).
 
-### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
+### 이메일 전달 시스템은 어떻게 작동하나요? {#how-does-your-email-forwarding-system-work}
 
-Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
+이메일은 [SMTP 프로토콜](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)에 의존합니다. 이 프로토콜은 서버(일반적으로 포트 25에서 실행)에 명령을 전송하는 방식으로 구성됩니다. 초기 연결 후 발신자가 메일 발신자("MAIL FROM")를 지정하고, 수신자("RCPT TO")를 지정하며, 마지막으로 이메일 헤더와 본문("DATA")이 전송됩니다. 이메일 전달 시스템의 흐름은 각 SMTP 명령에 따라 아래와 같이 설명됩니다:
 
-* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
+* 초기 연결 (명령 이름 없음, 예: `telnet example.com 25`) - 초기 연결입니다. [허용 목록](#do-you-have-an-allowlist)에 없는 발신자는 [차단 목록](#do-you-have-a-denylist)과 대조합니다. 마지막으로, 허용 목록에 없는 발신자는 [그레이리스트](#do-you-have-a-greylist) 여부를 확인합니다.
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` - 발신자의 FQDN, IP 주소 또는 메일 핸들러 이름을 식별하는 인사 명령입니다. 이 값은 위조될 수 있으므로, 우리는 이 데이터를 신뢰하지 않고 연결 IP 주소의 역방향 호스트 이름 조회를 사용합니다.
 
-* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
+* `MAIL FROM` - 이메일의 봉투 발신자 주소를 나타냅니다. 값이 입력되면 유효한 RFC 5322 이메일 주소여야 합니다. 빈 값도 허용됩니다. 여기서 [백스캐터 방지](#how-do-you-protect-against-backscatter)를 수행하며, MAIL FROM를 [차단 목록](#do-you-have-a-denylist)과 대조합니다. 마지막으로 허용 목록에 없는 발신자는 속도 제한을 확인합니다 ([속도 제한](#do-you-have-rate-limiting) 및 [허용 목록](#do-you-have-an-allowlist) 섹션 참조).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
+* `RCPT TO` - 이메일 수신자를 나타냅니다. 유효한 RFC 5322 이메일 주소여야 하며, 메시지당 최대 50명의 봉투 수신자만 허용합니다(이메일의 "To" 헤더와는 다릅니다). 또한 위조 방지를 위해 유효한 [발신자 재작성 스킴](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)("SRS") 주소를 확인합니다.
 
-* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
+* `DATA` - 이메일을 처리하는 핵심 부분입니다. 자세한 내용은 아래 [이메일 전달을 위해 이메일을 어떻게 처리하나요](#how-do-you-process-an-email-for-forwarding) 섹션을 참조하세요.
+### 이메일 전달을 위해 이메일을 어떻게 처리합니까 {#how-do-you-process-an-email-for-forwarding}
 
-### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
+이 섹션에서는 위의 [이메일 전달 시스템은 어떻게 작동합니까](#how-does-your-email-forwarding-system-work) 섹션에서 SMTP 프로토콜 명령어 `DATA`와 관련된 프로세스를 설명합니다 – 이메일의 헤더, 본문, 보안 처리, 전달 대상 결정 및 연결 처리 방법에 관한 내용입니다.
 
-This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
+1. 메시지 크기가 최대 50mb를 초과하면 552 오류 코드와 함께 거부됩니다.
 
-1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
+2. 메시지에 "From" 헤더가 없거나 "From" 헤더의 값 중 하나라도 유효한 RFC 5322 이메일 주소가 아니면 550 오류 코드와 함께 거부됩니다.
 
-2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
+3. 메시지에 "Received" 헤더가 25개를 초과하면 리디렉션 루프에 갇힌 것으로 판단되어 550 오류 코드와 함께 거부됩니다.
 
-3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
+4. 이메일의 지문(자세한 내용은 [지문 확인](#how-do-you-determine-an-email-fingerprint) 섹션 참조)을 사용하여 메시지가 5일 이상 재시도된 적이 있는지 확인합니다(이는 [기본 postfix 동작](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)과 일치). 해당하는 경우 550 오류 코드와 함께 거부됩니다.
 
-4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
+5. [Spam Scanner](https://spamscanner.net)를 사용하여 이메일을 스캔한 결과를 메모리에 저장합니다.
 
-5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
+6. Spam Scanner에서 임의의 결과가 있으면 554 오류 코드와 함께 거부됩니다. 임의의 결과는 이 문서 작성 시점에서 GTUBE 테스트만 포함합니다. 자세한 내용은 <https://spamassassin.apache.org/gtube/>를 참조하세요.
 
-6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
+7. 디버깅 및 악용 방지를 위해 메시지에 다음 헤더를 추가합니다:
 
-7. We will add the following headers to the message for debugging and abuse prevention purposes:
+   * `Received` - 원본 IP 및 호스트, 전송 유형, TLS 연결 정보, 날짜/시간, 수신자를 포함하는 표준 Received 헤더를 추가합니다.
+   * `X-Original-To` - 메시지의 원래 수신자:
+     * 이메일이 원래 어디로 전달되었는지 확인하는 데 유용합니다("Received" 헤더 외에도).
+     * IMAP 및/또는 마스킹 전달 시 수신자별로 추가되어 개인정보를 보호합니다.
+   * `X-Forward-Email-Website` - <https://forwardemail.net> 웹사이트 링크를 포함합니다.
+   * `X-Forward-Email-Version` - 코드베이스의 `package.json`에 명시된 현재 [SemVer](https://semver.org/) 버전입니다.
+   * `X-Forward-Email-Session-ID` - 디버그 용도의 세션 ID 값(비생산 환경에만 적용).
+   * `X-Forward-Email-Sender` - 원래 봉투 MAIL FROM 주소(비어 있지 않은 경우), 역방향 PTR 클라이언트 FQDN(존재하는 경우), 발신자 IP 주소를 쉼표로 구분한 목록입니다.
+   * `X-Forward-Email-ID` - 아웃바운드 SMTP에만 적용되며, 내 계정 → 이메일에 저장된 이메일 ID와 연관됩니다.
+   * `X-Report-Abuse` - 값은 `abuse@forwardemail.net`입니다.
+   * `X-Report-Abuse-To` - 값은 `abuse@forwardemail.net`입니다.
+   * `X-Complaints-To` - 값은 `abuse@forwardemail.net`입니다.
 
-* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
-   * `X-Original-To` - the original recipient for the message:
-     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
-     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
-   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
-   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
-   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
-   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
-   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
+8. 메시지에 대해 [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), [DMARC](https://en.wikipedia.org/wiki/DMARC)를 검사합니다.
 
-8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
+   * 메시지가 DMARC 검사에 실패했고 도메인에 거부 정책(e.g. `p=reject` [DMARC 정책에 포함](https://wikipedia.org/wiki/DMARC))이 있으면 550 오류 코드와 함께 거부됩니다. 일반적으로 도메인의 DMARC 정책은 `_dmarc` 서브도메인의 <strong class="notranslate">TXT</strong> 레코드에서 확인할 수 있습니다(예: `dig _dmarc.example.com txt`).
+   * 메시지가 SPF 검사에 실패했고 도메인에 하드 실패 정책(e.g. SPF 정책에 `-all`이 포함되어 있고 `~all` 또는 정책 없음과는 다름)이 있으면 550 오류 코드와 함께 거부됩니다. 일반적으로 도메인의 SPF 정책은 루트 도메인의 <strong class="notranslate">TXT</strong> 레코드에서 확인할 수 있습니다(예: `dig example.com txt`). SPF 관련 자세한 내용은 [Gmail에서 메일 보내기](#can-i-send-mail-as-in-gmail-with-this) 섹션을 참조하세요.
+9. 이제 위의 [이메일 전달 시스템은 어떻게 작동하나요](#how-does-your-email-forwarding-system-work) 섹션에서 `RCPT TO` 명령어로 수집한 메시지 수신자를 처리합니다. 각 수신자에 대해 다음 작업을 수행합니다:
 
-* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
-   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * 도메인 이름(예: 이메일 주소가 `test@example.com`일 경우 `@` 기호 뒤의 부분인 `example.com`)의 <strong class="notranslate">TXT</strong> 레코드를 조회합니다. 예를 들어 도메인이 `example.com`이라면 `dig example.com txt`와 같은 DNS 조회를 수행합니다.
+   * `forward-email=` (무료 플랜) 또는 `forward-email-site-verification=` (유료 플랜)로 시작하는 모든 <strong class="notranslate">TXT</strong> 레코드를 파싱합니다. 사용자가 플랜을 업그레이드하거나 다운그레이드하는 동안 이메일을 처리하기 위해 두 가지 모두 파싱한다는 점에 유의하세요.
+   * 파싱한 <strong class="notranslate">TXT</strong> 레코드에서 전달 구성(위의 [이메일 전달 시작 및 설정 방법](#how-do-i-get-started-and-set-up-email-forwarding) 섹션에 설명된 대로)을 추출하기 위해 반복합니다. `forward-email-site-verification=` 값은 하나만 지원하며, 둘 이상 제공되면 550 오류가 발생하고 발신자는 해당 수신자에 대해 반송 메일을 받게 됩니다.
+   * 추출한 전달 구성을 재귀적으로 반복하여 전역 전달, 정규식 기반 전달 및 기타 지원되는 모든 전달 구성을 결정합니다. 이들은 이제 "전달 주소"로 알려져 있습니다.
+   * 각 전달 주소에 대해 하나의 재귀 조회를 지원합니다(이 작업은 해당 주소에 대해 이 일련의 작업을 다시 시작합니다). 재귀 일치가 발견되면 상위 결과는 전달 주소에서 제거되고 하위 항목이 추가됩니다.
+   * 전달 주소는 중복 전송이나 불필요한 SMTP 클라이언트 연결 생성을 방지하기 위해 고유성 검사를 거칩니다.
+   * 각 전달 주소에 대해 도메인 이름을 API 엔드포인트 `/v1/max-forwarded-addresses`에 조회하여 도메인이 별칭당 이메일을 전달할 수 있는 최대 주소 수(기본값 10 – [별칭당 전달 최대 제한](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) 섹션 참조)를 확인합니다. 이 제한을 초과하면 550 오류가 발생하고 발신자는 해당 수신자에 대해 반송 메일을 받게 됩니다.
+   * 원래 수신자의 설정을 API 엔드포인트 `/v1/settings`에 조회합니다. 이 엔드포인트는 유료 사용자 조회를 지원하며 무료 사용자에 대한 대체 경로도 제공합니다. 이 조회는 `port` (숫자, 예: `25`), `has_adult_content_protection` (불리언), `has_phishing_protection` (불리언), `has_executable_protection` (불리언), `has_virus_protection` (불리언)에 대한 고급 설정 구성 객체를 반환합니다.
+   * 이러한 설정을 기반으로 스팸 스캐너 결과를 확인하고 오류가 발생하면 554 오류 코드로 메시지를 거부합니다(예: `has_virus_protection`이 활성화된 경우 스팸 스캐너 결과에서 바이러스를 검사합니다). 모든 무료 플랜 사용자는 성인 콘텐츠, 피싱, 실행 파일, 바이러스 검사에 기본적으로 옵트인됩니다. 기본적으로 모든 유료 플랜 사용자도 옵트인되어 있지만, 이 구성은 Forward Email 대시보드의 도메인 설정 페이지에서 변경할 수 있습니다.
 
-9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
+10. 처리된 각 수신자의 전달 주소에 대해 다음 작업을 수행합니다:
 
-* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
-   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
-   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
-   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
-   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
-   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
-   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
+    * 주소가 [거부 목록](#do-you-have-a-denylist)에 있는지 확인하고, 목록에 있으면 421 오류 코드가 발생합니다(발신자에게 나중에 다시 시도하라는 신호).
+    * 주소가 웹훅인 경우, 이후 작업을 위해 불리언 값을 설정합니다(아래 참조 – 유사한 웹훅을 그룹화하여 여러 번의 POST 요청 대신 한 번의 POST 요청으로 전달).
+    * 주소가 이메일 주소인 경우, 이후 작업을 위해 호스트를 파싱합니다(아래 참조 – 유사한 호스트를 그룹화하여 여러 개별 연결 대신 한 번의 연결로 전달).
+11. 수신자가 없고 반송도 없으면 "Invalid recipients"라는 550 오류로 응답합니다.
 
-10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
+12. 수신자가 있으면 동일한 호스트별로 그룹화하여 반복 처리하고 이메일을 전달합니다. 자세한 내용은 아래 [이메일 전달 문제를 어떻게 처리합니까](#how-do-you-handle-email-delivery-issues) 섹션을 참조하세요.
 
-* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
-    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
-    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
+    * 이메일 전송 중 오류가 발생하면 나중에 처리할 수 있도록 메모리에 저장합니다.
+    * 이메일 전송 시 발생한 가장 낮은 오류 코드를 `DATA` 명령에 대한 응답 코드로 사용합니다. 이는 전달되지 않은 이메일은 일반적으로 원래 발신자가 재시도하지만, 이미 전달된 이메일은 메시지가 다시 전송될 때 재전송되지 않음을 의미합니다 ([Fingerprinting](#how-do-you-determine-an-email-fingerprint) 사용).
+    * 오류가 없으면 250 성공 SMTP 응답 상태 코드를 보냅니다.
+    * 반송은 상태 코드가 500 이상인 (영구 실패) 모든 전달 시도로 판단합니다.
 
-11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
+13. 반송(영구 실패)이 없으면 영구 실패가 아닌 오류 중 가장 낮은 오류 코드의 SMTP 응답 상태 코드를 반환하거나 오류가 없으면 250 성공 상태 코드를 반환합니다.
 
-12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
+14. 반송이 발생하면 모든 오류 코드 중 가장 낮은 코드를 발신자에게 반환한 후 백그라운드에서 반송 이메일을 보냅니다. 그러나 가장 낮은 오류 코드가 500 이상이면 반송 이메일을 보내지 않습니다. 이는 그렇지 않으면 발신자가 이중 반송 이메일(예: Gmail과 같은 발신 MTA에서 하나, 우리로부터 하나)을 받게 되기 때문입니다. 자세한 내용은 아래 [백스캐터 방지 방법](#how-do-you-protect-against-backscatter) 섹션을 참조하세요.
 
-* If any errors occur while sending emails, then we will store them in-memory for later processing.
-    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
-    * If no errors occurred, then we will send a 250 successful SMTP response status code.
-    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
+### 이메일 전달 문제를 어떻게 처리합니까 {#how-do-you-handle-email-delivery-issues}
 
-13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
+발신자의 DMARC 정책이 통과하지 못했고 "From" 헤더와 정렬된 DKIM 서명이 없을 경우에만 이메일에 대해 "Friendly-From" 재작성 작업을 수행합니다. 이는 메시지의 "From" 헤더를 변경하고 "X-Original-From"을 설정하며, "Reply-To"가 설정되어 있지 않으면 이를 설정함을 의미합니다. 또한 이러한 헤더를 변경한 후 메시지의 ARC 봉인을 다시 봉인합니다.
 
-14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
+또한 코드, DNS 요청, Node.js 내부, HTTP 요청(예: 408, 413, 429는 수신자가 웹훅인 경우 SMTP 응답 코드 421로 매핑) 및 메일 서버 응답(예: "defer" 또는 "slowdown" 응답은 421 오류로 재시도) 등 스택의 모든 수준에서 오류 메시지를 스마트하게 파싱합니다.
 
-### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
+우리의 로직은 매우 견고하며 SSL/TLS 오류, 연결 문제 등도 재시도합니다. 견고성의 목표는 전달 구성을 위한 모든 수신자에 대한 전달 가능성을 극대화하는 것입니다.
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+수신자가 웹훅인 경우 요청 완료를 위해 최대 60초 타임아웃과 최대 3회 재시도(총 4회 요청)를 허용합니다. 408, 413, 429 오류 코드를 올바르게 파싱하여 SMTP 응답 코드 421로 매핑합니다.
 
-We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
+수신자가 이메일 주소인 경우 수신자 메일 서버에서 STARTTLS가 가능하면 기회주의적 TLS로 이메일을 전송하려 시도합니다. 이메일 전송 중 SSL/TLS 오류가 발생하면 TLS 없이(STARTTLS 사용 안 함) 이메일 전송을 시도합니다.
 
-Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421을 반환하며, 500 이상 오류가 있으면 반송이 전송됩니다.
 
-If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
+전달하려는 이메일 서버가 당사의 메일 교환 IP 주소 중 하나 이상을 차단한 경우(예: 스패머 차단 기술 사용 시), 발신자가 나중에 메시지를 재시도하도록 SMTP 응답 코드 421을 보내며, 문제 해결을 위해 알림을 받습니다.
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+### IP 주소가 차단되는 경우 어떻게 처리합니까 {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+우리는 모든 주요 DNS 차단 목록을 정기적으로 모니터링하며, 만약 우리의 메일 교환("MX") IP 주소가 주요 차단 목록에 등재될 경우, 문제가 해결될 때까지 해당 DNS A 레코드 라운드 로빈에서 가능한 한 제외합니다.
 
-If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
+이 글을 작성하는 시점에서, 우리는 여러 DNS 허용 목록에도 등재되어 있으며, 차단 목록 모니터링을 매우 중요하게 생각합니다. 문제가 발생했을 때 우리가 해결할 기회가 있기 전에 문제를 발견하면, <support@forwardemail.net>으로 서면 통지해 주시기 바랍니다.
 
-If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
+우리의 IP 주소는 공개되어 있으며, [아래 섹션에서 더 자세한 정보를 확인하세요](#what-are-your-servers-ip-addresses).
 
-### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### 우편 관리자 주소란 무엇인가요 {#what-are-postmaster-addresses}
 
-We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
-
-At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
-
-Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
-
-### What are postmaster addresses {#what-are-postmaster-addresses}
-
-In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+잘못된 반송 메일과 모니터링되지 않거나 존재하지 않는 메일박스에 휴가 자동응답 메시지가 전송되는 것을 방지하기 위해, 우리는 메일러 데몬과 유사한 사용자 이름 목록을 유지합니다:
 
 * `automailer`
 * `autoresponder`
@@ -3602,13 +4119,13 @@ In order to prevent misdirected bounces and sending vacation responder messages 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [and any no-reply address](#what-are-no-reply-addresses)
+* [그리고 모든 no-reply 주소](#what-are-no-reply-addresses)
 
-See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
+효율적인 이메일 시스템을 만들기 위해 이러한 목록이 어떻게 사용되는지에 대한 자세한 내용은 [RFC 5320 섹션 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6)을 참조하세요.
 
-### What are no-reply addresses {#what-are-no-reply-addresses}
+### no-reply 주소란 무엇인가요 {#what-are-no-reply-addresses}
 
-Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
+다음 중 어느 하나와 동일한 이메일 사용자 이름(대소문자 구분 없음)은 no-reply 주소로 간주됩니다:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3629,23 +4146,23 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreply`
 * `noreplys`
 
-This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+이 목록은 [GitHub에서 오픈 소스 프로젝트로 유지 관리되고 있습니다](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
+### 서버의 IP 주소는 무엇인가요 {#what-are-your-servers-ip-addresses}
 
-We publish our IP addresses at <https://forwardemail.net/ips>.
+우리의 IP 주소는 <https://forwardemail.net/ips>에서 공개하고 있습니다.
 
-### Do you have an allowlist {#do-you-have-an-allowlist}
+### 허용 목록이 있나요 {#do-you-have-an-allowlist}
 
-Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+네, 기본적으로 허용된 [도메인 이름 확장자 목록](#what-domain-name-extensions-are-allowlisted-by-default)과 엄격한 기준에 기반한 동적, 캐시 및 순환 허용 목록이 있습니다([허용 목록 기준은 무엇인가요](#what-is-your-allowlist-criteria)).
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
+유료 고객이 사용하는 모든 도메인, 이메일 및 IP 주소는 매시간 자동으로 차단 목록과 대조되어, 필요 시 관리자가 수동으로 개입할 수 있도록 알림을 받습니다.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+또한, 귀하의 도메인 또는 이메일 주소가 차단 목록에 등재된 경우(예: 스팸, 바이러스 전송 또는 사칭 공격으로 인해) 도메인 관리자(귀하)와 우리 팀 관리자에게 즉시 이메일로 통지됩니다. 이를 방지하기 위해 [DMARC 설정을 강력히 권장합니다](#how-do-i-set-up-dmarc-for-forward-email).
 
-### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
+### 기본적으로 허용된 도메인 이름 확장자는 무엇인가요 {#what-domain-name-extensions-are-allowlisted-by-default}
 
-The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+다음 도메인 이름 확장자는 Umbrella 인기 목록에 포함되어 있든 아니든 기본적으로 허용된 것으로 간주됩니다:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">edu</code></li>
@@ -3856,8 +4373,7 @@ The following domain name extensions are considered to be allowlisted by default
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
-
-Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
+추가로, 이 [브랜드 및 기업 최상위 도메인](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains)은 기본적으로 허용 목록에 포함되어 있습니다 (예: Apple Card 은행 명세서의 `applecard.apple`에서 `apple`):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3920,7 +4436,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>
@@ -4282,8 +4798,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
-
-As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
+2025년 3월 18일 기준으로 다음 프랑스 해외 영토도 이 목록에 추가되었습니다 ([이 GitHub 요청에 따라](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -4299,7 +4814,7 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-As of July 8, 2025 we have added these Europe-specific countries:
+2025년 7월 8일 기준으로 다음 유럽 특정 국가들이 추가되었습니다:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ax</code></li>
@@ -4319,36 +4834,35 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+2025년 10월에는 수요에 따라 <code class="notranslate">cz</code> (체코 공화국)도 추가되었습니다.
 
-We specifically did not include `ru` and `ua` due to high spam activity.
+`ru`와 `ua`는 스팸 활동이 많아 특별히 포함하지 않았습니다.
 
-### What is your allowlist criteria {#what-is-your-allowlist-criteria}
+### 허용 목록 기준이 무엇인가요 {#what-is-your-allowlist-criteria}
 
-We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
+우리는 [기본적으로 허용된 도메인 이름 확장자 목록](#what-domain-name-extensions-are-allowlisted-by-default)을 고정적으로 가지고 있으며, 다음 엄격한 기준에 따라 동적이고 캐시된 롤링 허용 목록도 유지합니다:
 
-* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
-* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
-* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
-* Sender root domain must have either A or MX records set.
-* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
+* 발신자 루트 도메인은 [무료 플랜에서 제공하는 도메인 이름 확장자 목록과 일치하는 도메인 이름 확장자](#what-domain-name-extensions-can-be-used-for-free)여야 합니다 (`biz`와 `info` 추가 포함). 또한 `edu`, `gov`, `mil`의 부분 일치도 포함하며, 예를 들어 `xyz.gov.au`와 `xyz.edu.au`가 있습니다.
+* 발신자 루트 도메인은 [Umbrella 인기 목록](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List")("UPL")에서 상위 100,000개의 고유 루트 도메인 파싱 결과 내에 있어야 합니다.
+* 발신자 루트 도메인은 UPL의 지난 7일 중 최소 4일 이상(약 50% 이상) 나타난 고유 루트 도메인 중 상위 50,000개 내에 있어야 합니다.
+* 발신자 루트 도메인은 Cloudflare에서 성인 콘텐츠 또는 악성코드로 [분류](https://radar.cloudflare.com/categorization-feedback/)되지 않아야 합니다.
+* 발신자 루트 도메인은 A 레코드 또는 MX 레코드가 설정되어 있어야 합니다.
+* 발신자 루트 도메인은 A 레코드, MX 레코드, `p=reject` 또는 `p=quarantine`이 포함된 DMARC 레코드, 또는 `-all` 또는 `~all` 한정자가 포함된 SPF 레코드 중 하나 이상을 가지고 있어야 합니다.
 
-If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
+이 기준을 충족하면 발신자 루트 도메인은 7일간 캐시됩니다. 자동 작업은 매일 실행되므로, 이는 매일 업데이트되는 롤링 허용 목록 캐시입니다.
 
-Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
+자동 작업은 지난 7일간의 UPL을 메모리 내에서 다운로드하고 압축을 해제한 후, 위 엄격한 기준에 따라 메모리 내에서 파싱합니다.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+작성 시점에 인기 있는 도메인들, 예를 들어 Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify 등도 물론 포함됩니다.
+허용 목록에 없는 발신자인 경우, FQDN 루트 도메인 또는 IP 주소가 처음으로 이메일을 보내면 [비율 제한](#do-you-have-rate-limiting) 및 [그레이리스트](#do-you-have-a-greylist)가 적용됩니다. 이는 이메일 표준으로 채택된 일반적인 관행임을 참고하세요. 대부분의 이메일 서버 클라이언트는 비율 제한 또는 그레이리스트 오류(예: 421 또는 4xx 수준 오류 상태 코드)를 받으면 재시도하려고 시도합니다.
 
-If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
+**`a@gmail.com`, `b@xyz.edu`, `c@gov.au`와 같은 특정 발신자는 여전히 [차단 목록](#do-you-have-a-denylist)에 포함될 수 있습니다** (예: 해당 발신자로부터 스팸, 피싱 또는 악성코드가 자동으로 감지되는 경우).
 
-**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
+### 무료로 사용할 수 있는 도메인 이름 확장자 {#what-domain-name-extensions-can-be-used-for-free}
 
-### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
+2023년 3월 31일부터 사용자와 서비스를 보호하기 위해 새로운 포괄적 스팸 규칙을 시행했습니다.
 
-As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
-
-This new rule allows only the following domain name extensions to be used on our free plan:
+이 새로운 규칙은 무료 플랜에서 다음 도메인 이름 확장자만 사용할 수 있도록 허용합니다:
 
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
@@ -4468,174 +4982,170 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+### 그레이리스트가 있나요? {#do-you-have-a-greylist}
 
-### Do you have a greylist {#do-you-have-a-greylist}
+네, 저희는 매우 느슨한 [이메일 그레이리스트](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 정책을 사용하고 있습니다. 그레이리스트는 허용 목록에 없는 발신자에게만 적용되며, 캐시에 30일 동안 유지됩니다.
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+새로운 발신자에 대해서는 Redis 데이터베이스에 30일 동안 키를 저장하며, 값은 첫 요청의 초기 도착 시간으로 설정됩니다. 이후 이메일을 450 재시도 상태 코드로 거부하고 5분이 경과한 후에만 통과를 허용합니다.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+초기 도착 시간으로부터 5분을 성공적으로 기다린 경우, 해당 발신자의 이메일은 수락되며 450 상태 코드를 받지 않습니다.
 
-If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
+키는 FQDN 루트 도메인 또는 발신자의 IP 주소로 구성됩니다. 이는 하위 도메인이 그레이리스트를 통과하면 루트 도메인도 통과하며, 그 반대도 마찬가지임을 의미합니다(이것이 "매우 느슨한" 정책이라는 의미입니다).
 
-The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
+예를 들어, `test.example.com`에서 이메일이 먼저 도착하고 `example.com`에서 이메일이 도착하기 전이라면, `test.example.com` 및/또는 `example.com`에서 오는 모든 이메일은 연결의 초기 도착 시간으로부터 5분을 기다려야 합니다. `test.example.com`과 `example.com` 각각이 별도의 5분 대기 시간을 갖지 않습니다(그레이리스트 정책은 루트 도메인 수준에서 적용됩니다).
 
-For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
+그레이리스트는 저희 [허용 목록](#do-you-have-an-allowlist)에 있는 발신자(예: 이 문서 작성 시점의 Meta, Amazon, Netflix, Google, Microsoft)에는 적용되지 않습니다.
 
-Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+### 거부 목록이 있나요? {#do-you-have-a-denylist}
 
-### Do you have a denylist {#do-you-have-a-denylist}
+네, 저희는 자체 거부 목록을 운영하며, 스팸 및 악성 활동이 감지될 때 실시간으로 자동 업데이트하고 수동으로도 갱신합니다.
 
-Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
+또한 매시간 <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz>에서 UCEPROTECT 레벨 1 거부 목록의 모든 IP 주소를 가져와 7일 만료 기간으로 저희 거부 목록에 추가합니다.
 
-We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
+거부 목록에 있는 발신자는 [허용 목록에 없을 경우](#do-you-have-an-allowlist) 421 오류 코드(발신자에게 나중에 다시 시도하라는 의미)를 받게 됩니다.
 
-Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
+554 상태 코드 대신 421 상태 코드를 사용함으로써 잠재적인 오탐을 실시간으로 완화할 수 있으며, 다음 시도에서 메시지가 성공적으로 전달될 수 있습니다.
 
-By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
+**이는 다른 메일 서비스와 다르게 설계된 것입니다.** 블랙리스트에 오르면 영구적이고 강력한 실패가 발생하는 대신, 발신자에게 메시지 재시도를 요청하는 것이 어려운 경우가 많기 때문에(특히 대규모 조직의 경우), 이 방식은 초기 이메일 시도 후 약 5일 동안 발신자, 수신자 또는 저희가 개입하여 문제를 해결할 수 있도록 합니다(거부 목록 제거 요청을 통해).
 
-**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
+모든 거부 목록 제거 요청은 관리자에 의해 실시간으로 모니터링됩니다(예: 반복되는 오탐은 관리자가 영구 허용 목록에 추가할 수 있도록).
 
-All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
+거부 목록 제거 요청은 <https://forwardemail.net/denylist>에서 할 수 있습니다. 유료 사용자는 거부 목록 제거 요청이 즉시 처리되며, 비유료 사용자는 관리자의 처리를 기다려야 합니다.
 
-Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
+스팸 또는 바이러스 콘텐츠를 보내는 것으로 감지된 발신자는 다음 절차에 따라 거부 목록에 추가됩니다:
 
-Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
+1. [초기 메시지 지문](#how-do-you-determine-an-email-fingerprint)은 "신뢰된" 발신자(예: `gmail.com`, `microsoft.com`, `apple.com`)로부터 스팸 또는 블랙리스트가 감지되면 그레이리스트 처리됩니다.
+   * 발신자가 허용 목록에 있으면 메시지는 1시간 동안 그레이리스트 처리됩니다.
+   * 발신자가 허용 목록에 없으면 메시지는 6시간 동안 그레이리스트 처리됩니다.
+2. 발신자 및 메시지 정보에서 거부 목록 키를 파싱하고, 각 키에 대해(존재하지 않으면) 카운터를 생성하여 1씩 증가시키고 24시간 동안 캐시합니다.
+   * 허용 목록 발신자의 경우:
+     * SPF가 통과했거나 SPF가 없고 [postmaster 사용자 이름](#what-are-postmaster-addresses) 또는 [no-reply 사용자 이름](#what-are-no-reply-addresses)이 아닌 경우, 봉투 "MAIL FROM" 이메일 주소에 대한 키를 추가합니다.
+     * "From" 헤더가 허용 목록에 있으면, SPF가 통과했거나 DKIM이 통과 및 정렬된 경우 "From" 헤더 이메일 주소에 대한 키를 추가합니다.
+     * "From" 헤더가 허용 목록에 없으면, "From" 헤더 이메일 주소와 그 루트 파싱 도메인 이름에 대한 키를 추가합니다.
+   * 허용 목록에 없는 발신자의 경우:
+     * SPF가 통과한 경우 봉투 "MAIL FROM" 이메일 주소에 대한 키를 추가합니다.
+     * "From" 헤더가 허용 목록에 있으면, SPF가 통과했거나 DKIM이 통과 및 정렬된 경우 "From" 헤더 이메일 주소에 대한 키를 추가합니다.
+     * "From" 헤더가 허용 목록에 없으면, "From" 헤더 이메일 주소와 그 루트 파싱 도메인 이름에 대한 키를 추가합니다.
+     * 발신자의 원격 IP 주소에 대한 키를 추가합니다.
+     * 발신자의 IP 주소로부터 역방향 조회된 클라이언트 호스트 이름에 대한 키를 추가합니다(있는 경우).
+     * 클라이언트 호스트 이름의 루트 도메인에 대한 키를 추가합니다(있는 경우 및 클라이언트 호스트 이름과 다를 경우).
+3. 허용 목록에 없는 발신자 및 키에 대해 카운터가 5에 도달하면 해당 키를 30일 동안 거부 목록에 추가하고, 저희 남용 팀에 이메일이 발송됩니다. 이 숫자는 변경될 수 있으며, 모니터링하면서 여기에 업데이트됩니다.
+4. 허용 목록 발신자 및 키에 대해 카운터가 10에 도달하면 해당 키를 7일 동안 거부 목록에 추가하고, 저희 남용 팀에 이메일이 발송됩니다. 이 숫자도 변경될 수 있으며, 모니터링하면서 여기에 업데이트됩니다.
+> **참고:** 가까운 미래에 평판 모니터링을 도입할 예정입니다. 평판 모니터링은 위에서 언급한 원시 카운터 대신 백분율 임계값을 기반으로 발신자를 거부 목록에 올릴 시기를 계산합니다.
 
-1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
-2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
-   * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-   * For non-allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
-     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
-     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
-     * Add a key for the remote IP address of the sender.
-     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
-     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
-3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
-4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+### 속도 제한이 있나요 {#do-you-have-rate-limiting}
 
-> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
+발신자 속도 제한은 발신자 IP 주소에 대한 역 PTR 조회에서 파싱된 루트 도메인별로 적용되거나, 결과가 없으면 단순히 발신자 IP 주소를 사용합니다. 아래에서는 이를 `발신자`라고 합니다.
 
-### Do you have rate limiting {#do-you-have-rate-limiting}
+우리 MX 서버는 [암호화된 IMAP 저장](/blog/docs/best-quantum-safe-encrypted-email-service)을 위해 수신된 메일에 대해 일일 제한을 둡니다:
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+* 개별 별칭(예: `you@yourdomain.com`) 기준으로 수신 메일을 속도 제한하는 대신, 별칭의 도메인 이름 자체(예: `yourdomain.com`)로 속도 제한을 합니다. 이는 `발신자`가 도메인 내 모든 별칭의 받은편지함을 한꺼번에 폭주시키는 것을 방지합니다.
+* 수신자와 관계없이 서비스 전반에 적용되는 일반 제한이 있습니다:
+  * 진실된 출처로 간주되는 "신뢰된" `발신자`(예: `gmail.com`, `microsoft.com`, `apple.com`)는 하루에 100GB 전송으로 제한됩니다.
+  * [허용 목록](#do-you-have-an-allowlist)에 있는 `발신자`는 하루에 10GB 전송으로 제한됩니다.
+  * 기타 모든 `발신자`는 하루에 1GB 및/또는 1000 메시지로 제한됩니다.
+* `발신자`와 `yourdomain.com`별로 하루에 1GB 및/또는 1000 메시지의 구체적인 제한이 있습니다.
 
-Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
+MX 서버는 또한 [허용 목록](#do-you-have-an-allowlist)에 없는 `발신자`에 대해 한 명 이상의 수신자에게 전달되는 메시지에 대해 속도 제한을 적용합니다:
 
-* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
-* We have general limits that apply to all `Senders` across our service regardless of recipient:
-  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
-  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
-* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
+* 시간당 최대 100 연결만 허용하며, 이는 `발신자`의 FQDN 루트 도메인(또는 역 PTR이 없으면) 원격 IP 주소별, 그리고 봉투 수신자별로 적용됩니다. 속도 제한 키는 Redis 데이터베이스에 암호화 해시로 저장됩니다.
 
-The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
+* 시스템을 통해 이메일을 보내는 경우 모든 IP 주소에 대해 역 PTR이 설정되어 있는지 확인하세요(설정되지 않으면 보내는 각 고유 FQDN 루트 도메인 또는 IP 주소별로 속도 제한이 적용됩니다).
 
-* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
+* Amazon SES와 같은 인기 시스템을 통해 보내는 경우, (작성 시점 기준) Amazon SES가 허용 목록에 포함되어 있어 속도 제한이 적용되지 않습니다.
 
-* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
+* `test.abc.123.example.com`과 같은 도메인에서 보내는 경우, 속도 제한은 `example.com`에 적용됩니다. 많은 스패머가 고유 FQDN 루트 도메인 대신 고유 호스트 이름만 속도 제한하는 일반 스팸 필터를 우회하기 위해 수백 개의 하위 도메인을 사용합니다.
 
-* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
+* 속도 제한을 초과하는 `발신자`는 421 오류로 거부됩니다.
 
-* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
+우리 IMAP 및 SMTP 서버는 별칭이 동시에 `60`개 이상의 연결을 갖지 못하도록 제한합니다.
 
-* `Senders` that exceed the rate limit will be rejected with a 421 error.
+우리 MX 서버는 [허용 목록에 없는](#do-you-have-an-allowlist) 발신자가 10개 이상의 동시 연결을 설정하지 못하도록 제한하며, 카운터는 3분 캐시 만료(소켓 타임아웃 3분과 동일)를 가집니다.
 
-Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
+### 백스캐터를 어떻게 방지하나요 {#how-do-you-protect-against-backscatter}
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
+잘못 전달된 반송 메일 또는 반송 스팸(일명 "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))")은 발신자 IP 주소의 평판에 부정적인 영향을 줄 수 있습니다.
 
-### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
+우리는 다음 섹션 [알려진 MAIL FROM 스패머로부터 반송 방지](#prevent-bounces-from-known-mail-from-spammers) 및 [백스캐터 방지를 위한 불필요한 반송 방지](#prevent-unnecessary-bounces-to-protect-against-backscatter)에서 자세히 설명하는 두 가지 조치를 취합니다.
 
-Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
+### 알려진 MAIL FROM 스패머로부터 반송 방지 {#prevent-bounces-from-known-mail-from-spammers}
 
-We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
+우리는 [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/))에서 매시간 <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> 목록을 가져와 Redis 데이터베이스에 입력합니다(또한 사전에 차이를 비교하여 존중해야 할 IP가 제거되었는지 확인합니다).
+MAIL FROM가 비어 있거나 (대소문자 구분 없이) [postmaster 주소들](#what-are-postmaster-addresses) 중 하나와 같으면 (이메일에서 @ 앞부분), 발신자 IP가 이 목록에 있는지 확인합니다.
 
-### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
+발신자 IP가 목록에 있고 (우리의 [허용 목록](#do-you-have-an-allowlist)에 없으면), `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}` 메시지와 함께 554 오류를 보냅니다. 발신자가 Backscatterer 목록과 허용 목록 모두에 있을 경우 문제를 해결할 수 있도록 알림을 받습니다.
 
-We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
+이 섹션에서 설명하는 기술은 <https://www.backscatterer.org/?target=usage>의 "SAFE MODE" 권고사항을 준수하며 – 특정 조건이 충족된 경우에만 발신자 IP를 확인합니다.
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
+### 백스캐터 방지를 위한 불필요한 반송 방지 {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
+반송은 이메일 전달이 수신자에게 완전히 실패했음을 나타내며 이메일이 재시도되지 않는 경우입니다.
 
-The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
+Backscatterer 목록에 오르는 일반적인 이유는 잘못된 반송 또는 반송 스팸이므로, 다음과 같은 방법으로 이를 방지해야 합니다:
 
-### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+1. 500 이상 상태 코드 오류가 발생한 경우에만 전송합니다 (예: 이메일 전달 시도가 실패하여 Gmail이 500 수준 오류를 응답할 때).
 
-Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
+2. 한 번만 전송합니다 (중복 전송 방지를 위해 계산된 반송 지문 키를 캐시에 저장). 반송 지문은 메시지 지문과 반송 주소 및 오류 코드의 해시를 결합한 키입니다. 메시지 지문 계산 방법에 대한 자세한 내용은 [Fingerprinting](#how-do-you-determine-an-email-fingerprint) 섹션을 참조하세요. 성공적으로 전송된 반송 지문은 Redis 캐시에서 7일 후 만료됩니다.
 
-A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+3. MAIL FROM 및/또는 From이 비어 있지 않고 (대소문자 구분 없이) [postmaster 사용자 이름](#what-are-postmaster-addresses)을 포함하지 않을 때만 전송합니다.
 
-1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+4. 원본 메시지에 다음 헤더가 있으면 전송하지 않습니다 (대소문자 구분 없음):
 
-2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+   * 값이 `no`가 아닌 `auto-submitted` 헤더
+   * 값이 `dr`, `autoreply`, `auto-reply`, `auto_reply`, 또는 `all`인 `x-auto-response-suppress` 헤더
+   * 값과 상관없이 `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, 또는 `x-auto-respond` 헤더
+   * 값이 `bulk`, `autoreply`, `auto-reply`, `auto_reply`, 또는 `list`인 `precedence` 헤더
 
-3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+5. MAIL FROM 또는 From 이메일 주소가 `+donotreply`, `-donotreply`, `+noreply`, 또는 `-noreply`로 끝나면 전송하지 않습니다.
 
-4. We don't send if the original message had any of the following headers (case-insensitive):
+6. From 이메일 주소의 사용자 이름 부분이 `mdaemon`이고 대소문자 구분 없이 `X-MDDSN-Message` 헤더가 있으면 전송하지 않습니다.
 
-* Header of `auto-submitted` with a value not equal to `no`.
-   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
-   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
-   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+7. 대소문자 구분 없이 `content-type` 헤더가 `multipart/report`인 경우 전송하지 않습니다.
 
-5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+### 이메일 지문은 어떻게 결정합니까? {#how-do-you-determine-an-email-fingerprint}
 
-6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+이메일 지문은 이메일의 고유성을 판단하고 중복 메시지 전달 및 [중복 반송](#prevent-unnecessary-bounces-to-protect-against-backscatter) 전송을 방지하는 데 사용됩니다.
 
-7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+지문은 다음 목록에서 계산됩니다:
 
-### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+* 클라이언트가 확인한 FQDN 호스트명 또는 IP 주소
+* `Message-ID` 헤더 값 (있을 경우)
+* `Date` 헤더 값 (있을 경우)
+* `From` 헤더 값 (있을 경우)
+* `To` 헤더 값 (있을 경우)
+* `Cc` 헤더 값 (있을 경우)
+* `Subject` 헤더 값 (있을 경우)
+* `Body` 값 (있을 경우)
 
-An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+### 25번 포트 이외의 포트로 이메일을 전달할 수 있나요? (예: ISP가 25번 포트를 차단한 경우) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-The fingerprint is calculated from the following list:
-
-* Client resolved FQDN hostname or IP address
-* `Message-ID` header value (if any)
-* `Date` header value (if any)
-* `From` header value (if any)
-* `To` header value (if any)
-* `Cc` header value (if any)
-* `Subject` header value (if any)
-* `Body` value (if any)
-
-### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
+네, 2020년 5월 5일부터 이 기능이 추가되었습니다. 현재 이 기능은 별칭별이 아닌 도메인별로 적용됩니다. 별칭별 적용이 필요하시면 저희에게 연락하여 필요 사항을 알려주세요.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
+    강화된 개인정보 보호:
   </strong>
   <span>
-    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+    유료 플랜(강화된 개인정보 보호 기능 포함)을 사용 중이시면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>으로 이동하여 도메인 옆의 "설정"을 클릭한 후 "환경 설정"을 클릭하세요. 유료 플랜에 대해 더 알고 싶으시면 <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">가격</a> 페이지를 참조하세요. 그렇지 않으면 아래 지침을 계속 따라주세요.
   </span>
 </div>
+무료 플랜을 사용 중이라면, 아래와 같이 새 DNS <strong class="notranslate">TXT</strong> 레코드를 추가하되, 포트를 25에서 원하는 포트로 변경하면 됩니다.
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
-
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+예를 들어, `example.com`으로 가는 모든 이메일을 25번 대신 별도의 SMTP 포트 1337로 별칭 수신자에게 전달하고 싶다면:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email-port=1337</code></td>
@@ -4646,9 +5156,9 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    커스텀 포트 포워딩 설정에서 가장 흔한 시나리오는 example.com으로 가는 모든 이메일을 SMTP 표준 포트 25가 아닌 example.com의 다른 포트로 전달하고 싶을 때입니다. 이를 설정하려면, 다음과 같은 <strong class="notranslate">TXT</strong> 캐치올 레코드를 추가하면 됩니다.
   <span>
   </span>
 </div>
@@ -4656,15 +5166,15 @@ For example, if I want all emails that go to `example.com` to forward to alias r
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=example.com</code></td>
@@ -4672,90 +5182,90 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   </tbody>
 </table>
 
-### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Gmail 별칭에 대해 플러스 + 기호를 지원하나요? {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Yes, absolutely.
+네, 물론입니다.
 
-### Does it support sub-domains {#does-it-support-sub-domains}
+### 서브도메인을 지원하나요? {#does-it-support-sub-domains}
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+네, 물론입니다. 이름/호스트/별칭으로 "@", ".", 또는 빈칸 대신 서브도메인 이름을 값으로 사용하면 됩니다.
 
-If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
+예를 들어 `foo.example.com`으로 이메일을 전달하려면 DNS 설정에서 이름/호스트/별칭 값으로 `foo`를 입력하세요 (MX 및 <strong class="notranslate">TXT</strong> 레코드 모두).
 
-### Does this forward my email's headers {#does-this-forward-my-emails-headers}
+### 이메일 헤더도 전달되나요? {#does-this-forward-my-emails-headers}
 
-Yes, absolutely.
+네, 물론입니다.
 
-### Is this well-tested {#is-this-well-tested}
+### 충분히 테스트되었나요? {#is-this-well-tested}
 
-Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
+네, [ava](https://github.com/avajs/ava)로 작성된 테스트와 코드 커버리지가 있습니다.
 
-### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
+### SMTP 응답 메시지와 코드를 전달하나요? {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
+네, 물론입니다. 예를 들어 `hello@example.com`으로 이메일을 보내고 이 주소가 `user@gmail.com`으로 전달되도록 등록되어 있다면, "mx1.forwardemail.net" 또는 "mx2.forwardemail.net" 프록시 서버 대신 "gmail.com" SMTP 서버의 응답 메시지와 코드가 반환됩니다.
 
-### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### 스패머를 어떻게 차단하고 좋은 이메일 전달 평판을 유지하나요? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+위의 [이메일 전달 시스템은 어떻게 작동하나요](#how-does-your-email-forwarding-system-work), [이메일 전달 문제는 어떻게 처리하나요](#how-do-you-handle-email-delivery-issues), [IP 주소가 차단되면 어떻게 하나요](#how-do-you-handle-your-ip-addresses-becoming-blocked) 섹션을 참고하세요.
 
-### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
+### 도메인 이름에 대해 DNS 조회는 어떻게 수행하나요? {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
+우리는 오픈 소스 소프트웨어 프로젝트 :tangerine: [Tangerine](https://github.com/forwardemail/tangerine)을 만들어 DNS 조회에 사용합니다. 기본 DNS 서버는 `1.1.1.1`과 `1.0.0.1`이며, DNS 쿼리는 애플리케이션 계층에서 [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH")를 통해 수행됩니다.
 
-:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine)은 기본적으로 [CloudFlare의 개인정보 보호 우선 소비자 DNS 서비스][cloudflare-dns]를 사용합니다.
 
-## Account and Billing {#account-and-billing}
 
-### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+## 계정 및 결제 {#account-and-billing}
 
-Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
+### 유료 플랜에 환불 보증이 있나요? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+네! 플랜 시작일로부터 30일 이내에 업그레이드, 다운그레이드 또는 계정 취소 시 자동 환불이 이루어집니다. 이는 첫 구매 고객에 한해 적용됩니다.
+### 플랜을 변경하면 차액을 비례 계산하여 환불해 주나요? {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
+플랜을 변경할 때 차액을 비례 계산하거나 환불하지 않습니다. 대신 기존 플랜의 만료일로부터 남은 기간을 새 플랜에 가장 근접한 기간(월 단위로 내림)으로 변환합니다.
 
-Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
+유료 플랜을 처음 시작한 후 30일 이내에 업그레이드 또는 다운그레이드하는 경우 기존 플랜의 금액을 전액 자동 환불해 드립니다.
 
-### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### 이 이메일 전달 서비스를 "대체" 또는 "백업" MX 서버로만 사용할 수 있나요? {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
+아니요, 권장하지 않습니다. 한 번에 하나의 메일 교환 서버만 사용할 수 있기 때문입니다. 백업 서버는 우선순위 설정 오류와 메일 서버가 MX 우선순위 확인을 준수하지 않아 일반적으로 재시도되지 않습니다.
 
-### Can I disable specific aliases {#can-i-disable-specific-aliases}
+### 특정 별칭을 비활성화할 수 있나요? {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    유료 플랜을 사용 중이라면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> 별칭 편집 <i class="fa fa-angle-right"></i> "활성" 체크박스 선택 해제 <i class="fa fa-angle-right"></i> 계속 진행해야 합니다.
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+네, DNS <strong class="notranslate">TXT</strong> 레코드를 편집하고 별칭 앞에 느낌표 한 개, 두 개 또는 세 개를 붙이면 됩니다(아래 참조).
 
-Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+":" 매핑은 유지하는 것이 좋습니다. 이는 나중에 이 기능을 끄거나 유료 플랜으로 업그레이드할 때 가져오기용으로 필요합니다.
 
-**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**조용한 거부(발신자에게는 메시지가 성공적으로 전송된 것처럼 보이나 실제로는 어디에도 전달되지 않음) (상태 코드 `250`):** 별칭 앞에 "!"(느낌표 한 개)를 붙이면 이 주소로 보내는 발신자에게 성공 상태 코드 `250`을 반환하지만 이메일은 어디에도 전달되지 않습니다(예: 블랙홀 또는 `/dev/null`).
 
-**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+**소프트 거부(상태 코드 `421`):** 별칭 앞에 "!!"(느낌표 두 개)를 붙이면 이 주소로 보내는 발신자에게 소프트 오류 상태 코드 `421`을 반환하며, 이메일은 최대 5일 동안 재시도된 후 거부되고 반송됩니다.
 
-**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+**하드 거부(상태 코드 `550`):** 별칭 앞에 "!!!"(느낌표 세 개)를 붙이면 이 주소로 보내는 발신자에게 영구 오류 상태 코드 `550`을 반환하며, 이메일은 거부되고 반송됩니다.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+예를 들어, `alias@example.com`으로 가는 모든 이메일이 `user@gmail.com`으로 전달되지 않고 거부 및 반송되도록 하려면(느낌표 세 개 사용):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:user@gmail.com</code></td>
@@ -4766,54 +5276,53 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    전달 대상 주소를 단순히 "nobody@forwardemail.net"으로 재작성하여 아래 예시처럼 아무도 받지 않도록 라우팅할 수도 있습니다.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>응답/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 공백</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
     </tr>
   </tbody>
 </table>
-
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+    보안을 강화하고 싶다면, 아래 예시처럼 ":user@gmail.com" (또는 ":nobody@forwardemail.net") 부분을 제거하고 "!!!alias"만 남길 수도 있습니다.
   </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=!!!alias</code></td>
@@ -4821,24 +5330,24 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
   </tbody>
 </table>
 
-### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+### 여러 수신자에게 이메일을 전달할 수 있나요? {#can-i-forward-emails-to-multiple-recipients}
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+네, 물론입니다. <strong class="notranslate">TXT</strong> 레코드에 여러 수신자를 지정하면 됩니다.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+예를 들어, `hello@example.com`으로 오는 이메일을 `user+a@gmail.com`과 `user+b@gmail.com`으로 전달하고 싶다면, <strong class="notranslate">TXT</strong> 레코드는 다음과 같이 설정합니다:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
@@ -4846,26 +5355,26 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+또는, 다음과 같이 두 줄로 나누어 지정할 수도 있습니다:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4873,26 +5382,26 @@ Or, you could specify them in two separate lines, such as this:
   </tbody>
 </table>
 
-It's up to you!
+선택은 여러분에게 달려 있습니다!
 
-### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+### 여러 글로벌 캐치올 수신자를 가질 수 있나요? {#can-i-have-multiple-global-catch-all-recipients}
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+네, 가능합니다. <strong class="notranslate">TXT</strong> 레코드에 여러 글로벌 캐치올 수신자를 지정하면 됩니다.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+예를 들어, `*@example.com` (별표는 와일드카드, 즉 캐치올을 의미)으로 오는 모든 이메일을 `user+a@gmail.com`과 `user+b@gmail.com`으로 전달하고 싶다면, <strong class="notranslate">TXT</strong> 레코드는 다음과 같이 설정합니다:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4900,190 +5409,188 @@ For example, if I want every email that goes to `*@example.com` (the asterisk me
   </tbody>
 </table>
 
-Or, you could specify them in two separate lines, such as this:
+또는, 다음과 같이 두 줄로 나누어 지정할 수도 있습니다:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
     <tr>
-      <th>Name/Host/Alias</th>
+      <th>이름/호스트/별칭</th>
       <th class="text-center">TTL</th>
-      <th>Type</th>
-      <th>Answer/Value</th>
+      <th>유형</th>
+      <th>답변/값</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><em>"@", ".", or blank</em></td>
+      <td><em>"@", ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+a@gmail.com</code></td>
     </tr>
     <tr>
-      <td><em>@, ".", or blank</em></td>
+      <td><em>@, ".", 또는 빈칸</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
       <td><code>forward-email=user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>
+당신에게 달려 있습니다!
 
-It's up to you!
+### 별칭당 전달할 수 있는 이메일 주소 수에 최대 한도가 있나요? {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+네, 기본 한도는 10개입니다. 이것은 도메인 이름에 별칭을 10개만 가질 수 있다는 의미가 아닙니다. 원하는 만큼 많은 별칭을 가질 수 있습니다(무제한). 이는 하나의 별칭이 10개의 고유 이메일 주소로만 전달될 수 있다는 뜻입니다. 예를 들어 `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (1~10까지) 가 있을 수 있으며, `hello@example.com`으로 오는 모든 이메일은 `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (1~10까지) 으로 전달됩니다.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Tip:
+    팁:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    별칭당 10명 이상의 수신자가 필요하신가요? 저희에게 이메일을 보내주시면 계정 한도를 늘려드리겠습니다.
   </span>
 </div>
 
-### Can I recursively forward emails {#can-i-recursively-forward-emails}
+### 이메일을 재귀적으로 전달할 수 있나요? {#can-i-recursively-forward-emails}
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+네, 가능합니다. 다만 최대 한도는 반드시 준수해야 합니다. 예를 들어 `hello:linus@example.com` 과 `linus:user@gmail.com` 이 있다면, `hello@example.com` 으로 오는 이메일은 `linus@example.com` 과 `user@gmail.com` 으로 전달됩니다. 최대 한도를 초과하여 재귀적으로 이메일을 전달하려고 하면 오류가 발생합니다.
 
-### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### 내 허락 없이 누군가 내 이메일 전달을 등록하거나 해제할 수 있나요? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+저희는 MX 및 <strong class="notranslate">TXT</strong> 레코드 검증을 사용합니다. 따라서 이 서비스의 해당 MX 및 <strong class="notranslate">TXT</strong> 레코드를 추가하면 등록된 것이고, 제거하면 등록 해제된 것입니다. 도메인과 DNS 관리는 본인이 소유하고 있으므로, 누군가가 그에 접근할 수 있다면 문제가 될 수 있습니다.
 
-### How is it free {#how-is-it-free}
+### 어떻게 무료인가요? {#how-is-it-free}
 
-Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+Forward Email은 오픈 소스 개발, 효율적인 인프라, 그리고 선택적 유료 플랜의 조합을 통해 무료 서비스를 제공합니다.
 
-Our free tier is supported by:
+저희 무료 플랜은 다음에 의해 지원됩니다:
 
-1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+1. **오픈 소스 개발**: 저희 코드베이스는 오픈 소스로, 커뮤니티 기여와 투명한 운영이 가능합니다.
 
-2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+2. **효율적인 인프라**: 최소한의 자원으로 이메일 전달을 처리하도록 시스템을 최적화했습니다.
 
-3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+3. **유료 프리미엄 플랜**: SMTP 발송, IMAP 수신, 향상된 개인정보 보호 옵션 등 추가 기능이 필요한 사용자는 유료 플랜을 구독합니다.
 
-4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+4. **합리적인 사용 한도**: 무료 플랜은 남용을 방지하기 위한 공정한 사용 정책을 가지고 있습니다.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> 기본 이메일 전달은 무료로 유지하면서, 고급 기능은 더 많은 필요가 있는 사용자에게 프리미엄으로 제공합니다.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> 저희 서비스를 가치 있게 느끼신다면, 지속적인 개발과 유지 관리를 지원하기 위해 유료 플랜으로 업그레이드하는 것을 고려해 주세요.
 
-### What is the max email size limit {#what-is-the-max-email-size-limit}
+### 최대 이메일 크기 제한은 얼마인가요? {#what-is-the-max-email-size-limit}
 
-We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+기본적으로 50MB 크기 제한을 적용하며, 여기에는 콘텐츠, 헤더, 첨부파일이 포함됩니다. Gmail과 Outlook 같은 서비스는 25MB 크기 제한만 허용하므로, 해당 제공자 주소로 보낼 때 이 한도를 초과하면 오류 메시지가 표시됩니다.
 
-An error with the proper response code is returned if the file size limit is exceeded.
+파일 크기 제한을 초과하면 적절한 응답 코드와 함께 오류가 반환됩니다.
 
-### Do you store logs of emails {#do-you-store-logs-of-emails}
+### 이메일 로그를 저장하나요? {#do-you-store-logs-of-emails}
 
-No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+아니요, 디스크에 기록하거나 로그를 저장하지 않습니다 – [오류 로그](#do-you-store-error-logs)와 [발신 SMTP](#do-you-support-sending-email-with-smtp) (자세한 내용은 [개인정보 처리방침](/privacy) 참조)를 제외하고는요.
 
-Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+모든 처리는 메모리 내에서 이루어지며, [저희 소스 코드는 GitHub에 공개되어 있습니다](https://github.com/forwardemail).
 
-### Do you store error logs {#do-you-store-error-logs}
+### 오류 로그를 저장하나요? {#do-you-store-error-logs}
 
-**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+**네. 오류 로그는 [내 계정 → 로그](/my-account/logs) 또는 [내 계정 → 도메인](/my-account/domains)에서 확인할 수 있습니다.**
 
-As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+2023년 2월 기준으로, `4xx` 및 `5xx` SMTP 응답 코드에 대한 오류 로그를 7일간 저장하며, 여기에는 SMTP 오류, 봉투, 이메일 헤더가 포함됩니다 (이메일 본문과 첨부파일은 저장하지 않습니다).
+오류 로그를 통해 [귀하의 도메인](/my-account/domains)에 대한 중요한 이메일 누락 여부를 확인하고 스팸 오탐지를 완화할 수 있습니다. 또한 오류 로그에는 웹훅 엔드포인트 응답이 포함되어 있어 [이메일 웹훅](#do-you-support-webhooks) 문제를 디버깅하는 데도 훌륭한 자료입니다.
 
-Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+[속도 제한](#do-you-have-rate-limiting) 및 [그레이리스트](#do-you-have-a-greylist) 관련 오류 로그는 연결이 조기에 종료되기 때문에 접근할 수 없습니다(예: `RCPT TO` 및 `MAIL FROM` 명령이 전송되기 전에).
 
-Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+자세한 내용은 [개인정보 처리방침](/privacy)을 참조하세요.
 
-See our [Privacy Policy](/privacy) for more insight.
+### 내 이메일을 읽나요 {#do-you-read-my-emails}
 
-### Do you read my emails {#do-you-read-my-emails}
+아니요, 절대 아닙니다. [개인정보 처리방침](/privacy)을 참조하세요.
 
-No, absolutely not.  See our [Privacy Policy](/privacy).
+다른 많은 이메일 전달 서비스는 이메일을 저장하고 잠재적으로 읽을 수 있습니다. 전달된 이메일을 디스크 저장소에 저장할 이유가 없으며, 따라서 우리는 모든 처리를 메모리 내에서 수행하는 최초의 오픈 소스 솔루션을 설계했습니다.
 
-Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+우리는 사용자가 프라이버시 권리를 가져야 한다고 믿으며 이를 엄격히 존중합니다. 서버에 배포된 코드는 투명성과 신뢰 구축을 위해 [GitHub의 오픈 소스 소프트웨어](https://github.com/forwardemail)입니다.
 
-We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+### Gmail에서 "보내는 사람으로 메일 보내기" 기능을 사용할 수 있나요 {#can-i-send-mail-as-in-gmail-with-this}
 
-### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+네! 2018년 10월 2일부터 이 기능을 추가했습니다. 위의 [Gmail을 사용하여 보내는 사람으로 메일 보내기 방법](#how-to-send-mail-as-using-gmail)을 참조하세요!
 
-Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
-
-You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+또한 DNS 구성의 SPF <strong class="notranslate">TXT</strong> 레코드에 Gmail용 SPF 레코드를 설정해야 합니다.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Gmail(예: 보내는 사람으로 메일 보내기) 또는 G Suite를 사용하는 경우 SPF <strong class="notranslate">TXT</strong> 레코드에 <code>include:_spf.google.com</code>을 추가해야 합니다. 예를 들어:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+### Outlook에서 "보내는 사람으로 메일 보내기" 기능을 사용할 수 있나요 {#can-i-send-mail-as-in-outlook-with-this}
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+네! 2018년 10월 2일부터 이 기능을 추가했습니다. 아래 Microsoft의 두 링크를 참조하세요:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
+또한 DNS 구성의 SPF <strong class="notranslate">TXT</strong> 레코드에 Outlook용 SPF 레코드를 설정해야 합니다.
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Important:
+    중요:
   </strong>
   <span>
-    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    Microsoft Outlook 또는 Live.com을 사용하는 경우 SPF <strong class="notranslate">TXT</strong> 레코드에 <code>include:spf.protection.outlook.com</code>을 추가해야 합니다. 예를 들어:
     <br /><br />
     <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
-### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Apple Mail 및 iCloud Mail에서 "보내는 사람으로 메일 보내기" 기능을 사용할 수 있나요 {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
+iCloud+ 구독자라면 커스텀 도메인을 사용할 수 있습니다. [우리 서비스는 Apple Mail과도 호환됩니다](#apple-mail).
 
-Please see <https://support.apple.com/en-us/102540> for more information.
+자세한 내용은 <https://support.apple.com/en-us/102540>를 참조하세요.
 
-### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
+### 무제한 이메일 전달이 가능한가요 {#can-i-forward-unlimited-emails-with-this}
 
-Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
+네, 다만 "상대적으로 알려지지 않은" 발신자는 호스트명 또는 IP당 시간당 100회 연결로 속도 제한됩니다. 위의 [속도 제한](#do-you-have-rate-limiting) 및 [그레이리스트](#do-you-have-a-greylist) 섹션을 참조하세요.
 
-By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
+"상대적으로 알려지지 않은"이란 [허용 목록](#do-you-have-an-allowlist)에 없는 발신자를 의미합니다.
 
-If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+이 제한을 초과하면 421 응답 코드를 보내 발신자의 메일 서버에 나중에 다시 시도하도록 알립니다.
 
-### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
+### 한 가격으로 무제한 도메인을 제공하나요 {#do-you-offer-unlimited-domains-for-one-price}
 
-Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
+네. 어떤 요금제를 사용하든 모든 도메인을 포함하는 월 요금은 하나만 지불하면 됩니다.
+### 어떤 결제 수단을 받나요 {#which-payment-methods-do-you-accept}
 
-### Which payment methods do you accept {#which-payment-methods-do-you-accept}
+Forward Email은 다음과 같은 일회성 또는 월간/분기별/연간 결제 수단을 받습니다:
 
-Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
-
-1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
-2. **PayPal**: Connect your PayPal account for easy payments
-3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
+1. **신용/직불 카드/은행 송금**: Visa, Mastercard, American Express, Discover, JCB, Diners Club 등
+2. **PayPal**: 간편 결제를 위해 PayPal 계정을 연결하세요
+3. **암호화폐**: Ethereum, Polygon, Solana 네트워크에서 Stripe의 스테이블코인 결제를 통해 결제 가능합니다
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> 저희는 결제 식별자와 [Stripe](https://stripe.com/global) 및 [PayPal](https://www.paypal.com) 거래, 고객, 구독, 결제 ID에 대한 참조만 포함하는 제한된 결제 정보를 서버에 저장합니다.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> 최대한의 프라이버시를 위해 암호화폐 결제를 고려해 보세요.
 
-All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
+모든 결제는 Stripe 또는 PayPal을 통해 안전하게 처리됩니다. 결제 정보는 절대 저희 서버에 저장되지 않습니다.
 
-## Additional Resources {#additional-resources}
+
+## 추가 자료 {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> 아래의 저희 글들은 정기적으로 새로운 가이드, 팁, 기술 정보를 업데이트합니다. 최신 내용을 위해 자주 확인하세요.
 
-* [Case Studies & Developer Documentation](/blog/docs)
-* [Resources](/resources)
-* [Guides](/guides)
+* [사례 연구 및 개발자 문서](/blog/docs)
+* [자료](/resources)
+* [가이드](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

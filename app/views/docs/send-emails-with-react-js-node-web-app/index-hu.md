@@ -1,21 +1,24 @@
-# E-mailek küldése React.js-sel Node webalkalmazás-példa {#send-emails-with-reactjs-node-web-app-example}
+# E-mailek küldése React.js Node Webalkalmazással – Példa {#send-emails-with-reactjs-node-web-app-example}
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Telepítés és követelmények](#install-and-requirements)
 * [Forráskód és példa](#source-code-and-example)
 
+
 ## Telepítés és követelmények {#install-and-requirements}
 
-Telepítenie kell a `@react-email/render` és `nodemailer` npm függőségeket:
+Telepítened kell az `@react-email/render` és a `nodemailer` npm csomagokat:
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
+
 ## Forráskód és példa {#source-code-and-example}
 
-Hozd létre az e-mail sablonodat egy `.jsx` vagy egy `.js` fájllal:
+Hozd létre az e-mail sablonodat egy `.jsx` vagy `.js` fájlban:
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>Látogasd meg weboldalunkat</Button>
     </Html>
   );
 }
 ```
 
-Ebben a példában a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és hivatalos szponzorát, a **[E-mail továbbítása](https://forwardemail.net)**-et használjuk a kimenő levelek küldéséhez és megtekintéséhez.
+Ebben a példában a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és annak hivatalos támogatóját, a **[Forward Email](https://forwardemail.net)** szolgáltatást használjuk a kimenő levelek küldésére és előnézetére.
 
-A kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i>jelszó generálása</strong> szükséges – kérjük, kövesse az **IDEIGLENES_HELYTARTÓS_0** irányelveinket.
+A kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i> jelszót kell generálnod</strong> – kérjük, kövesd a **[E-mail küldése egyedi domain SMTP-vel útmutatónkat](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: cseréld ki a `user` és `pass` értékeket innen:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -70,12 +73,12 @@ const options = {
 transporter.sendMail(options);
 ```
 
-Futtassa az alkalmazást az e-mail küldéséhez:
+Futtasd az alkalmazást az e-mail elküldéséhez:
 
 ```sh
 node app
 ```
 
-Mostantól a **[Fiókom → E-mailek](/my-account/emails)** oldalon megtekintheti a valós idejű e-mail kézbesítési állapotát, az e-mail kézbesíthetőségi naplókat, valamint a HTML/szöveges/mellékletek előnézeteit.
+Most már meglátogathatod a **[Saját fiók → E-mailek](/my-account/emails)** oldalt, hogy valós időben lásd az e-mailek kézbesítési állapotát, a kézbesítési naplókat, valamint az HTML/szöveges/melléklet előnézeteket.
 
-> Ui.: :tada: Használhatod a **[e-mailek előnézete böngészőkben és az iOS-szimulátorban](/docs/test-preview-email-rendering-browsers-ios-simulator)** és a **[e-mail sablonok létrehozása Node.js segítségével](/docs/send-emails-with-node-js-javascript)** értékeket is.
+> Ui.: :tada: Ezen felül **[böngészőkben és iOS szimulátorban is megtekintheted az e-mailek előnézetét](/docs/test-preview-email-rendering-browsers-ios-simulator)**, valamint **[Node.js segítségével is készíthetsz e-mail sablonokat](/docs/send-emails-with-node-js-javascript)**.

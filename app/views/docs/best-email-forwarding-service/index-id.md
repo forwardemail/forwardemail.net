@@ -1,50 +1,53 @@
-# Bagaimana Email Terusan Melindungi Privasi, Domain, dan Keamanan Anda: Penjelasan Teknis Mendalam {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
+# Bagaimana Forward Email Melindungi Privasi, Domain, dan Keamanan Anda: Penjelajahan Teknis Mendalam {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Perbandingan layanan penerusan email terbaik" class="rounded-lg" />
+
 
 ## Daftar Isi {#table-of-contents}
 
-* [Kata pengantar](#foreword)
-* [Filosofi Privasi Email Teruskan](#the-forward-email-privacy-philosophy)
-* [Implementasi SQLite: Daya Tahan dan Portabilitas untuk Data Anda](#sqlite-implementation-durability-and-portability-for-your-data)
-* [Antrean Cerdas dan Mekanisme Coba Ulang: Memastikan Pengiriman Email](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
-* [Sumber Daya Tak Terbatas dengan Pembatasan Kecepatan Cerdas](#unlimited-resources-with-intelligent-rate-limiting)
-* [Enkripsi Sandbox untuk Keamanan yang Ditingkatkan](#sandboxed-encryption-for-enhanced-security)
-* [Pemrosesan Email Dalam Memori: Tanpa Penyimpanan Disk untuk Privasi Maksimum](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
-* [Enkripsi Ujung-ke-Ujung dengan OpenPGP untuk Privasi Lengkap](#end-to-end-encryption-with-openpgp-for-complete-privacy)
-* [Perlindungan Konten Berlapis-lapis untuk Keamanan Komprehensif](#multi-layered-content-protection-for-comprehensive-security)
-* [Bagaimana Kami Berbeda dari Layanan Email Lainnya: Keunggulan Privasi Teknis](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
-  * [Transparansi Sumber Terbuka untuk Privasi yang Dapat Diverifikasi](#open-source-transparency-for-verifiable-privacy)
-  * [Tidak Ada Vendor Lock-In untuk Privasi Tanpa Kompromi](#no-vendor-lock-in-for-privacy-without-compromise)
-  * [Data Sandbox untuk Isolasi Sejati](#sandboxed-data-for-true-isolation)
+* [Kata Pengantar](#foreword)
+* [Filosofi Privasi Forward Email](#the-forward-email-privacy-philosophy)
+* [Implementasi SQLite: Ketahanan dan Portabilitas untuk Data Anda](#sqlite-implementation-durability-and-portability-for-your-data)
+* [Antrian Pintar dan Mekanisme Ulang Coba: Menjamin Pengiriman Email](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [Sumber Daya Tak Terbatas dengan Pembatasan Laju Cerdas](#unlimited-resources-with-intelligent-rate-limiting)
+* [Enkripsi Terisolasi untuk Keamanan yang Ditingkatkan](#sandboxed-encryption-for-enhanced-security)
+* [Pemrosesan Email Dalam Memori: Tanpa Penyimpanan Disk untuk Privasi Maksimal](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [Enkripsi End-to-End dengan OpenPGP untuk Privasi Lengkap](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [Perlindungan Konten Berlapis untuk Keamanan Komprehensif](#multi-layered-content-protection-for-comprehensive-security)
+* [Bagaimana Kami Berbeda dari Layanan Email Lain: Keunggulan Privasi Teknis](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+  * [Transparansi Open Source untuk Privasi yang Dapat Diverifikasi](#open-source-transparency-for-verifiable-privacy)
+  * [Tanpa Vendor Lock-In untuk Privasi Tanpa Kompromi](#no-vendor-lock-in-for-privacy-without-compromise)
+  * [Data Terisolasi untuk Isolasi Sejati](#sandboxed-data-for-true-isolation)
   * [Portabilitas dan Kontrol Data](#data-portability-and-control)
-* [Tantangan Teknis Penerusan Email yang Mengutamakan Privasi](#the-technical-challenges-of-privacy-first-email-forwarding)
+* [Tantangan Teknis Penerusan Email Berbasis Privasi](#the-technical-challenges-of-privacy-first-email-forwarding)
   * [Manajemen Memori untuk Pemrosesan Email Tanpa Pencatatan](#memory-management-for-no-logging-email-processing)
   * [Deteksi Spam Tanpa Analisis Konten untuk Penyaringan yang Menjaga Privasi](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
-  * [Menjaga Kompatibilitas dengan Desain yang Mengutamakan Privasi](#maintaining-compatibility-with-privacy-first-design)
-* [Praktik Terbaik Privasi untuk Pengguna Email Terusan](#privacy-best-practices-for-forward-email-users)
+  * [Mempertahankan Kompatibilitas dengan Desain Berbasis Privasi](#maintaining-compatibility-with-privacy-first-design)
+* [Praktik Terbaik Privasi untuk Pengguna Forward Email](#privacy-best-practices-for-forward-email-users)
 * [Kesimpulan: Masa Depan Penerusan Email Pribadi](#conclusion-the-future-of-private-email-forwarding)
+
 
 ## Kata Pengantar {#foreword}
 
-Di lanskap digital saat ini, privasi email menjadi semakin penting. Dengan adanya pelanggaran data, kekhawatiran pengawasan, dan iklan bertarget berdasarkan konten email, pengguna semakin mencari solusi yang memprioritaskan privasi mereka. Di Forward Email, kami membangun layanan kami dari nol dengan privasi sebagai landasan arsitektur kami. Tulisan blog ini membahas implementasi teknis yang menjadikan layanan kami salah satu solusi penerusan email yang paling berfokus pada privasi.
+Dalam lanskap digital saat ini, privasi email menjadi lebih penting dari sebelumnya. Dengan pelanggaran data, kekhawatiran pengawasan, dan iklan yang ditargetkan berdasarkan isi email, pengguna semakin mencari solusi yang mengutamakan privasi mereka. Di Forward Email, kami membangun layanan kami dari dasar dengan privasi sebagai fondasi arsitektur kami. Posting blog ini mengeksplorasi implementasi teknis yang menjadikan layanan kami salah satu solusi penerusan email yang paling fokus pada privasi yang tersedia.
 
-## Filosofi Privasi Email Terusan {#the-forward-email-privacy-philosophy}
 
-Sebelum membahas detail teknisnya, penting untuk memahami filosofi privasi fundamental kami: **email Anda adalah milik Anda dan hanya Anda**. Prinsip ini memandu setiap keputusan teknis yang kami buat, mulai dari cara kami menangani penerusan email hingga cara kami menerapkan enkripsi.
+## Filosofi Privasi Forward Email {#the-forward-email-privacy-philosophy}
 
-Tidak seperti banyak penyedia email yang memindai pesan Anda untuk tujuan periklanan atau menyimpannya tanpa batas waktu di server mereka, Forward Email beroperasi dengan pendekatan yang sangat berbeda:
+Sebelum menyelami detail teknis, penting untuk memahami filosofi privasi dasar kami: **email Anda adalah milik Anda dan hanya Anda**. Prinsip ini membimbing setiap keputusan teknis yang kami buat, dari cara kami menangani penerusan email hingga cara kami mengimplementasikan enkripsi.
 
-1. **Hanya pemrosesan dalam memori** - Kami tidak menyimpan email yang Anda teruskan ke disk
-2. **Tidak ada penyimpanan metadata** - Kami tidak menyimpan catatan siapa yang mengirim email kepada siapa
-3. **100% sumber terbuka** - Seluruh basis kode kami transparan dan dapat diaudit
-4. **Enkripsi ujung ke ujung** - Kami mendukung OpenPGP untuk komunikasi yang benar-benar privat
+Berbeda dengan banyak penyedia email yang memindai pesan Anda untuk tujuan iklan atau menyimpannya tanpa batas waktu di server mereka, Forward Email beroperasi dengan pendekatan yang sangat berbeda:
 
-Implementasi SQLite ##: Daya Tahan dan Portabilitas untuk Data Anda {#sqlite-implementation-durability-and-portability-for-your-data}
+1. **Pemrosesan hanya dalam memori** - Kami tidak menyimpan email yang diteruskan ke disk
+2. **Tidak menyimpan metadata** - Kami tidak menyimpan catatan siapa mengirim email kepada siapa
+3. **100% open-source** - Seluruh kode kami transparan dan dapat diaudit
+4. **Enkripsi end-to-end** - Kami mendukung OpenPGP untuk komunikasi yang benar-benar pribadi
 
-Salah satu keunggulan privasi Forward Email yang paling signifikan adalah implementasi [SQLite](https://en.wikipedia.org/wiki/SQLite) kami yang dirancang dengan cermat. Kami telah menyempurnakan SQLite dengan pengaturan PRAGMA khusus dan [Pencatatan Awal (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) untuk memastikan ketahanan dan portabilitas data Anda, sekaligus mempertahankan standar privasi dan keamanan tertinggi.
 
-Berikut ini gambaran bagaimana kami mengimplementasikan SQLite dengan [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) sebagai sandi untuk enkripsi tahan kuantum:
+## Implementasi SQLite: Ketahanan dan Portabilitas untuk Data Anda {#sqlite-implementation-durability-and-portability-for-your-data}
+
+Salah satu keuntungan privasi paling signifikan dari Forward Email adalah implementasi [SQLite](https://en.wikipedia.org/wiki/SQLite) yang kami rancang dengan cermat. Kami telah menyetel SQLite dengan pengaturan PRAGMA tertentu dan [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) untuk memastikan ketahanan dan portabilitas data Anda, sambil mempertahankan standar tertinggi privasi dan keamanan.
+Berikut adalah gambaran bagaimana kami mengimplementasikan SQLite dengan [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) sebagai cipher untuk enkripsi tahan kuantum:
 
 ```javascript
 // Initialize the database with better-sqlite3-multiple-ciphers
@@ -81,13 +84,14 @@ db.pragma('optimize=0x10002;');
 db.pragma('temp_store=1;');
 ```
 
-Implementasi ini memastikan data Anda tidak hanya aman tetapi juga portabel. Anda dapat mengambil email dan pergi kapan saja dengan mengekspornya dalam format [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage), atau SQLite. Dan ketika Anda ingin menghapus data, data tersebut benar-benar hilang – kami cukup menghapus file dari penyimpanan disk alih-alih menjalankan perintah SQL DELETE ROW, yang dapat meninggalkan jejak di basis data.
+Implementasi ini memastikan bahwa data Anda tidak hanya aman tetapi juga portabel. Anda dapat membawa email Anda kapan saja dengan mengekspor dalam format [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage), atau SQLite. Dan ketika Anda ingin menghapus data Anda, data tersebut benar-benar hilang – kami cukup menghapus file dari penyimpanan disk daripada menjalankan perintah SQL DELETE ROW, yang dapat meninggalkan jejak di database.
 
-Aspek enkripsi kuantum dari implementasi kami menggunakan ChaCha20-Poly1305 sebagai sandi saat kami menginisialisasi basis data, memberikan perlindungan yang kuat terhadap ancaman saat ini dan di masa mendatang terhadap privasi data Anda.
+Aspek enkripsi kuantum dari implementasi kami menggunakan ChaCha20-Poly1305 sebagai cipher saat kami menginisialisasi database, memberikan perlindungan kuat terhadap ancaman saat ini maupun di masa depan terhadap privasi data Anda.
 
-## Antrean Cerdas dan Mekanisme Coba Ulang: Memastikan Pengiriman Email {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-Alih-alih hanya berfokus pada penanganan header, kami telah menerapkan mekanisme antrean pintar dan coba ulang yang canggih dengan metode `getBounceInfo`. Sistem ini memastikan email Anda memiliki peluang terbaik untuk terkirim, bahkan ketika terjadi masalah sementara.
+## Antrian Pintar dan Mekanisme Ulang Coba: Menjamin Pengiriman Email {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
+
+Alih-alih hanya fokus pada penanganan header, kami telah mengimplementasikan antrian pintar dan mekanisme ulang coba yang canggih dengan metode `getBounceInfo` kami. Sistem ini memastikan bahwa email Anda memiliki peluang terbaik untuk dikirimkan, bahkan ketika terjadi masalah sementara.
 
 ```javascript
 function getBounceInfo(err) {
@@ -121,21 +125,21 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> Ini adalah cuplikan dari metode `getBounceInfo`, bukan implementasi ekstensif yang sebenarnya. Untuk kode lengkapnya, Anda dapat meninjaunya di [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+> Ini adalah kutipan dari metode `getBounceInfo` dan bukan implementasi lengkap yang ekstensif. Untuk kode lengkapnya, Anda dapat meninjaunya di [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-Kami mencoba pengiriman ulang surat selama 5 hari, serupa dengan standar industri seperti [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), memberikan waktu bagi masalah sementara untuk teratasi. Pendekatan ini secara signifikan meningkatkan kecepatan pengiriman sekaligus menjaga privasi.
+Kami mencoba ulang pengiriman email selama 5 hari, mirip dengan standar industri seperti [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), memberi waktu bagi masalah sementara untuk terselesaikan sendiri. Pendekatan ini secara signifikan meningkatkan tingkat pengiriman sambil menjaga privasi.
 
-Senada dengan itu, kami juga menyunting isi pesan email SMTP keluar setelah pengiriman berhasil. Hal ini dikonfigurasi dalam sistem penyimpanan kami dengan periode retensi default 30 hari, yang dapat Anda sesuaikan di Pengaturan Lanjutan domain Anda. Setelah periode ini, isi email secara otomatis disunting dan dihapus, sehingga hanya tersisa pesan pengganti:
+Dalam catatan yang sama, kami juga menghapus isi pesan email SMTP keluar setelah pengiriman berhasil. Ini dikonfigurasi dalam sistem penyimpanan kami dengan periode retensi default selama 30 hari, yang dapat Anda sesuaikan di Pengaturan Lanjutan domain Anda. Setelah periode ini, isi email secara otomatis dihapus dan dibersihkan, hanya menyisakan pesan placeholder berikut:
 
 ```txt
 This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
 ```
+Pendekatan ini memastikan bahwa email yang Anda kirim tidak tersimpan secara permanen, mengurangi risiko pelanggaran data atau akses tidak sah ke komunikasi Anda.
 
-Pendekatan ini memastikan bahwa email yang Anda kirim tidak tersimpan tanpa batas waktu, mengurangi risiko pelanggaran data atau akses tidak sah ke komunikasi Anda.
 
-## Sumber Daya Tak Terbatas dengan Pembatasan Kecepatan Cerdas {#unlimited-resources-with-intelligent-rate-limiting}
+## Sumber Daya Tak Terbatas dengan Pembatasan Laju Cerdas {#unlimited-resources-with-intelligent-rate-limiting}
 
-Meskipun Forward Email menawarkan domain dan alias tanpa batas, kami telah menerapkan pembatasan tarif cerdas untuk melindungi sistem kami dari penyalahgunaan dan memastikan penggunaan yang wajar bagi semua pengguna. Misalnya, pelanggan non-perusahaan dapat membuat hingga 50+ alias per hari, yang mencegah basis data kami dibanjiri spam dan spam, serta memungkinkan fitur perlindungan dan penyalahgunaan real-time kami berfungsi secara efektif.
+Meskipun Forward Email menawarkan domain dan alias tanpa batas, kami telah menerapkan pembatasan laju cerdas untuk melindungi sistem kami dari penyalahgunaan dan memastikan penggunaan yang adil bagi semua pengguna. Misalnya, pelanggan non-enterprise dapat membuat hingga 50+ alias per hari, yang mencegah database kami dari spam dan banjir, serta memungkinkan fitur perlindungan dan deteksi penyalahgunaan waktu nyata kami berfungsi secara efektif.
 
 ```javascript
 // Rate limiter implementation
@@ -155,28 +159,30 @@ if (limit.remaining <= 0) {
 }
 ```
 
-Pendekatan yang seimbang ini memberi Anda fleksibilitas untuk membuat alamat email sebanyak yang Anda perlukan untuk manajemen privasi yang komprehensif, sambil tetap menjaga integritas dan kinerja layanan kami untuk semua pengguna.
+Pendekatan seimbang ini memberi Anda fleksibilitas untuk membuat sebanyak mungkin alamat email yang Anda butuhkan untuk pengelolaan privasi yang komprehensif, sambil tetap menjaga integritas dan performa layanan kami untuk semua pengguna.
 
-## Enkripsi Sandbox untuk Keamanan yang Ditingkatkan {#sandboxed-encryption-for-enhanced-security}
 
-Pendekatan enkripsi sandbox kami yang unik memberikan keunggulan keamanan penting yang sering diabaikan pengguna saat memilih layanan email. Mari kita telusuri mengapa data sandbox, terutama email, begitu penting.
+## Enkripsi Terisolasi untuk Keamanan yang Ditingkatkan {#sandboxed-encryption-for-enhanced-security}
 
-Layanan seperti Gmail dan Proton kemungkinan besar menggunakan [basis data relasional](https://en.wikipedia.org/wiki/Relational_database) bersama, yang menciptakan kerentanan keamanan mendasar. Dalam lingkungan basis data bersama, jika seseorang mendapatkan akses ke data salah satu pengguna, mereka berpotensi memiliki jalur untuk mengakses data pengguna lain juga. Hal ini karena semua data pengguna berada dalam tabel basis data yang sama, hanya dipisahkan oleh ID pengguna atau pengenal serupa.
+Pendekatan enkripsi terisolasi unik kami memberikan keuntungan keamanan penting yang sering diabaikan banyak pengguna saat memilih layanan email. Mari kita jelajahi mengapa isolasi data, terutama email, sangat penting.
 
-Forward Email mengambil pendekatan yang berbeda secara mendasar dengan enkripsi kotak pasir kami:
+Layanan seperti Gmail dan Proton kemungkinan besar menggunakan [database relasional](https://en.wikipedia.org/wiki/Relational_database) bersama, yang menciptakan kerentanan keamanan mendasar. Dalam lingkungan database bersama, jika seseorang mendapatkan akses ke data satu pengguna, mereka berpotensi memiliki jalur untuk mengakses data pengguna lain juga. Ini karena semua data pengguna berada dalam tabel database yang sama, hanya dipisahkan oleh ID pengguna atau pengenal serupa.
 
-1. **Isolasi penuh**: Data setiap pengguna disimpan dalam berkas basis data SQLite terenkripsi tersendiri, sepenuhnya terisolasi dari pengguna lain.
-2. **Kunci enkripsi independen**: Setiap basis data dienkripsi dengan kunci uniknya sendiri yang berasal dari kata sandi pengguna.
-3. **Tanpa penyimpanan bersama**: Tidak seperti basis data relasional di mana semua email pengguna mungkin berada dalam satu tabel "email", pendekatan kami memastikan tidak ada pencampuran data.
-4. **Pertahanan berlapis**: Sekalipun basis data salah satu pengguna disusupi, basis data tersebut tidak akan memberikan akses ke data pengguna lain.
+Forward Email mengambil pendekatan yang sangat berbeda dengan enkripsi terisolasi kami:
 
-Pendekatan sandbox ini serupa dengan menyimpan email Anda di brankas fisik terpisah, alih-alih di fasilitas penyimpanan bersama dengan sekat internal. Ini adalah perbedaan arsitektur mendasar yang secara signifikan meningkatkan privasi dan keamanan Anda.
+1. **Isolasi lengkap**: Data setiap pengguna disimpan dalam file database SQLite terenkripsi sendiri, sepenuhnya terisolasi dari pengguna lain
+2. **Kunci enkripsi independen**: Setiap database dienkripsi dengan kunci unik yang berasal dari kata sandi pengguna
+3. **Tidak ada penyimpanan bersama**: Berbeda dengan database relasional di mana semua email pengguna mungkin berada dalam satu tabel "emails", pendekatan kami memastikan tidak ada pencampuran data
+4. **Pertahanan berlapis**: Bahkan jika database satu pengguna berhasil dibobol, itu tidak memberikan akses ke data pengguna lain
 
-Pemrosesan Email Dalam Memori ##: Tanpa Penyimpanan Disk untuk Privasi Maksimum {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+Pendekatan terisolasi ini mirip dengan memiliki email Anda di brankas fisik terpisah daripada di fasilitas penyimpanan bersama dengan pembatas internal. Ini adalah perbedaan arsitektur mendasar yang secara signifikan meningkatkan privasi dan keamanan Anda.
 
-Untuk layanan penerusan email kami, kami memproses email sepenuhnya di RAM dan tidak pernah menulisnya ke penyimpanan disk atau basis data. Pendekatan ini memberikan perlindungan tak tertandingi terhadap pengawasan email dan pengumpulan metadata.
 
-Berikut ini tampilan sederhana tentang cara kerja pemrosesan email kami:
+## Pemrosesan Email di Memori: Tanpa Penyimpanan Disk untuk Privasi Maksimal {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+
+Untuk layanan penerusan email kami, kami memproses email sepenuhnya di RAM dan tidak pernah menulisnya ke penyimpanan disk atau database. Pendekatan ini memberikan perlindungan tiada tara terhadap pengawasan email dan pengumpulan metadata.
+
+Berikut gambaran sederhana tentang bagaimana pemrosesan email kami bekerja:
 
 ```javascript
 async function onData(stream, _session, fn) {
@@ -207,14 +213,14 @@ async function onData(stream, _session, fn) {
   }
 }
 ```
+Pendekatan ini berarti bahwa meskipun server kami disusupi, tidak akan ada data email historis yang dapat diakses oleh penyerang. Email Anda hanya melewati sistem kami dan langsung diteruskan ke tujuan tanpa meninggalkan jejak. Pendekatan penerusan email tanpa pencatatan ini sangat penting untuk melindungi komunikasi Anda dari pengawasan.
 
-Pendekatan ini berarti bahwa meskipun server kami disusupi, tidak akan ada data email historis yang dapat diakses oleh penyerang. Email Anda hanya melewati sistem kami dan langsung diteruskan ke tujuannya tanpa meninggalkan jejak. Pendekatan penerusan email tanpa pencatatan ini sangat penting untuk melindungi komunikasi Anda dari pengawasan.
 
-## Enkripsi Ujung-ke-Ujung dengan OpenPGP untuk Privasi Lengkap {#end-to-end-encryption-with-openpgp-for-complete-privacy}
+## Enkripsi End-to-End dengan OpenPGP untuk Privasi Lengkap {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-Bagi pengguna yang membutuhkan perlindungan privasi tingkat tertinggi dari pengawasan email, kami mendukung [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) untuk enkripsi ujung ke ujung. Tidak seperti banyak penyedia email yang memerlukan jembatan atau aplikasi khusus, implementasi kami kompatibel dengan klien email standar, sehingga komunikasi aman dapat diakses oleh semua orang.
+Untuk pengguna yang membutuhkan tingkat perlindungan privasi tertinggi dari pengawasan email, kami mendukung [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) untuk enkripsi end-to-end. Berbeda dengan banyak penyedia email yang memerlukan jembatan atau aplikasi proprietary, implementasi kami bekerja dengan klien email standar, sehingga komunikasi aman dapat diakses oleh semua orang.
 
-Berikut ini cara kami menerapkan enkripsi OpenPGP:
+Berikut cara kami mengimplementasikan enkripsi OpenPGP:
 
 ```javascript
 async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
@@ -247,71 +253,75 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-Implementasi ini memastikan email Anda terenkripsi sebelum dikirim dan hanya dapat didekripsi oleh penerima yang dituju, sehingga komunikasi Anda tetap pribadi, bahkan dari kami. Hal ini penting untuk melindungi komunikasi sensitif dari akses dan pengawasan yang tidak sah.
+Implementasi ini memastikan bahwa email Anda dienkripsi sebelum meninggalkan perangkat Anda dan hanya dapat didekripsi oleh penerima yang dituju, menjaga komunikasi Anda tetap pribadi bahkan dari kami. Ini sangat penting untuk melindungi komunikasi sensitif dari akses tidak sah dan pengawasan.
+
 
 ## Perlindungan Konten Berlapis untuk Keamanan Komprehensif {#multi-layered-content-protection-for-comprehensive-security}
 
-Forward Email menawarkan beberapa lapisan perlindungan konten yang diaktifkan secara default untuk memberikan keamanan komprehensif terhadap berbagai ancaman:
+Forward Email menawarkan beberapa lapisan perlindungan konten yang diaktifkan secara default untuk memberikan keamanan menyeluruh terhadap berbagai ancaman:
 
-1. **Perlindungan konten dewasa** - Memfilter konten yang tidak pantas tanpa mengorbankan privasi
-2. **Perlindungan [Penipuan](https://en.wikipedia.org/wiki/Phishing)** - Memblokir upaya pencurian informasi Anda sambil menjaga anonimitas
-3. **Perlindungan yang dapat dieksekusi** - Mencegah lampiran yang berpotensi berbahaya tanpa memindai konten
-4. **Perlindungan [Virus](https://en.wikipedia.org/wiki/Computer_virus)** - Memindai malware menggunakan teknik yang menjaga privasi
+1. **Perlindungan konten dewasa** - Menyaring konten yang tidak pantas tanpa mengorbankan privasi
+2. **Perlindungan [phishing](https://en.wikipedia.org/wiki/Phishing)** - Memblokir upaya pencurian informasi sambil menjaga anonimitas
+3. **Perlindungan eksekusi** - Mencegah lampiran yang berpotensi berbahaya tanpa memindai konten
+4. **Perlindungan [virus](https://en.wikipedia.org/wiki/Computer_virus)** - Memindai malware menggunakan teknik yang menjaga privasi
 
-Berbeda dengan banyak penyedia yang menyediakan fitur-fitur ini secara opsional, kami telah menyediakan opsi untuk tidak menggunakannya, memastikan semua pengguna mendapatkan manfaat dari perlindungan ini secara default. Pendekatan ini mencerminkan komitmen kami terhadap privasi dan keamanan, memberikan keseimbangan yang gagal dicapai oleh banyak layanan email.
+Berbeda dengan banyak penyedia yang membuat fitur ini bersifat opt-in, kami menjadikannya opt-out, memastikan semua pengguna mendapatkan perlindungan ini secara default. Pendekatan ini mencerminkan komitmen kami terhadap privasi dan keamanan, memberikan keseimbangan yang sering gagal dicapai oleh banyak layanan email.
 
-## Apa yang Membedakan Kami dari Layanan Email Lainnya: Keunggulan Privasi Teknis {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-Saat membandingkan Forward Email dengan layanan email lainnya, beberapa perbedaan teknis utama menyoroti pendekatan kami yang mengutamakan privasi:
+## Bagaimana Kami Berbeda dari Layanan Email Lain: Keunggulan Privasi Teknis {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-### Transparansi Sumber Terbuka untuk Privasi yang Dapat Diverifikasi {#open-source-transparency-for-verifiable-privacy}
+Saat membandingkan Forward Email dengan layanan email lain, beberapa perbedaan teknis utama menyoroti pendekatan kami yang mengutamakan privasi:
 
-Meskipun banyak penyedia email mengklaim sebagai sumber terbuka, mereka sering kali menjaga kode backend mereka tetap tertutup. Forward Email 100% [sumber terbuka](https://en.wikipedia.org/wiki/Open_source), termasuk kode frontend dan backend. Transparansi ini memungkinkan audit keamanan independen untuk semua komponen, memastikan bahwa klaim privasi kami dapat diverifikasi oleh siapa pun.
+### Transparansi Open Source untuk Privasi yang Dapat Diverifikasi {#open-source-transparency-for-verifiable-privacy}
 
-### Tanpa Vendor Lock-In demi Privasi Tanpa Kompromi {#no-vendor-lock-in-for-privacy-without-compromise}
+Meskipun banyak penyedia email mengklaim open source, mereka sering menutup kode backend mereka. Forward Email adalah 100% [open source](https://en.wikipedia.org/wiki/Open_source), termasuk kode frontend dan backend. Transparansi ini memungkinkan audit keamanan independen dari semua komponen, memastikan klaim privasi kami dapat diverifikasi oleh siapa saja.
 
-Banyak penyedia email yang mengutamakan privasi mengharuskan Anda menggunakan aplikasi atau bridge milik mereka. Forward Email berfungsi dengan semua klien email standar melalui protokol [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), dan [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), memberi Anda kebebasan untuk memilih perangkat lunak email pilihan Anda tanpa mengorbankan privasi.
+### Tanpa Ketergantungan Vendor untuk Privasi Tanpa Kompromi {#no-vendor-lock-in-for-privacy-without-compromise}
 
-### Data Sandbox untuk Isolasi Sejati {#sandboxed-data-for-true-isolation}
+Banyak penyedia email yang fokus pada privasi mengharuskan Anda menggunakan aplikasi atau jembatan proprietary mereka. Forward Email bekerja dengan klien email standar apa pun melalui protokol [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), dan [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), memberi Anda kebebasan memilih perangkat lunak email favorit tanpa mengorbankan privasi.
+### Data Terisolasi untuk Isolasi Sejati {#sandboxed-data-for-true-isolation}
 
-Berbeda dengan layanan yang menggunakan basis data bersama di mana semua data pengguna tercampur, pendekatan sandbox kami memastikan bahwa data setiap pengguna sepenuhnya terisolasi. Perbedaan arsitektur mendasar ini memberikan jaminan privasi yang jauh lebih kuat dibandingkan yang ditawarkan sebagian besar layanan email.
+Berbeda dengan layanan yang menggunakan database bersama di mana data semua pengguna tercampur, pendekatan sandbox kami memastikan bahwa data setiap pengguna benar-benar terisolasi. Perbedaan arsitektur mendasar ini memberikan jaminan privasi yang jauh lebih kuat dibandingkan dengan yang ditawarkan oleh sebagian besar layanan email.
 
 ### Portabilitas dan Kontrol Data {#data-portability-and-control}
 
-Kami yakin bahwa data Anda adalah milik Anda, oleh karena itu kami memudahkan Anda untuk mengekspor email dalam format standar (MBOX, EML, SQLite) dan menghapus data Anda kapan pun Anda mau. Tingkat kontrol ini jarang ditemukan di antara penyedia email, tetapi penting untuk privasi yang sesungguhnya.
+Kami percaya bahwa data Anda adalah milik Anda, itulah sebabnya kami memudahkan Anda untuk mengekspor email dalam format standar (MBOX, EML, SQLite) dan benar-benar menghapus data Anda kapan pun Anda mau. Tingkat kontrol ini jarang dimiliki oleh penyedia email tetapi sangat penting untuk privasi sejati.
 
-## Tantangan Teknis Penerusan Email yang Mengutamakan Privasi {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-Membangun layanan email yang mengutamakan privasi memiliki tantangan teknis yang signifikan. Berikut beberapa kendala yang telah kami atasi:
+## Tantangan Teknis dalam Pengalihan Email Berbasis Privasi {#the-technical-challenges-of-privacy-first-email-forwarding}
+
+Membangun layanan email yang mengutamakan privasi datang dengan tantangan teknis yang signifikan. Berikut beberapa hambatan yang telah kami atasi:
 
 ### Manajemen Memori untuk Pemrosesan Email Tanpa Pencatatan {#memory-management-for-no-logging-email-processing}
 
-Memproses email dalam memori tanpa penyimpanan disk memerlukan manajemen memori yang cermat agar dapat menangani lalu lintas email bervolume tinggi secara efisien. Kami telah menerapkan teknik optimasi memori tingkat lanjut untuk memastikan kinerja yang andal tanpa mengorbankan kebijakan tanpa penyimpanan, sebuah komponen penting dari strategi perlindungan privasi kami.
+Memproses email di memori tanpa penyimpanan disk memerlukan manajemen memori yang cermat untuk menangani volume lalu lintas email yang tinggi secara efisien. Kami telah menerapkan teknik optimasi memori tingkat lanjut untuk memastikan kinerja yang andal tanpa mengorbankan kebijakan tanpa penyimpanan kami, yang merupakan komponen penting dari strategi perlindungan privasi kami.
 
 ### Deteksi Spam Tanpa Analisis Konten untuk Penyaringan yang Menjaga Privasi {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-Sebagian besar sistem deteksi [spam](https://en.wikipedia.org/wiki/Email_spam) mengandalkan analisis konten email, yang bertentangan dengan prinsip privasi kami. Kami telah mengembangkan teknik untuk mengidentifikasi pola spam tanpa membaca konten email Anda, menciptakan keseimbangan antara privasi dan kegunaan yang menjaga kerahasiaan komunikasi Anda.
+Sebagian besar sistem [spam](https://en.wikipedia.org/wiki/Email_spam) mengandalkan analisis konten email, yang bertentangan dengan prinsip privasi kami. Kami telah mengembangkan teknik untuk mengidentifikasi pola spam tanpa membaca isi email Anda, menyeimbangkan antara privasi dan kegunaan yang menjaga kerahasiaan komunikasi Anda.
 
-### Menjaga Kompatibilitas dengan Desain yang Mengutamakan Privasi {#maintaining-compatibility-with-privacy-first-design}
+### Mempertahankan Kompatibilitas dengan Desain Berbasis Privasi {#maintaining-compatibility-with-privacy-first-design}
 
-Memastikan kompatibilitas dengan semua klien email sekaligus menerapkan fitur privasi tingkat lanjut membutuhkan solusi rekayasa yang kreatif. Tim kami telah bekerja tanpa lelah untuk menjadikan privasi lancar, sehingga Anda tidak perlu memilih antara kenyamanan dan keamanan saat melindungi komunikasi email Anda.
+Memastikan kompatibilitas dengan semua klien email sambil menerapkan fitur privasi canggih memerlukan solusi rekayasa yang kreatif. Tim kami telah bekerja tanpa lelah untuk membuat privasi menjadi mulus, sehingga Anda tidak perlu memilih antara kenyamanan dan keamanan saat melindungi komunikasi email Anda.
 
-Praktik Terbaik Privasi ## untuk Pengguna Email Terusan {#privacy-best-practices-for-forward-email-users}
 
-Untuk memaksimalkan perlindungan Anda terhadap pengawasan email dan memaksimalkan privasi Anda saat menggunakan Forward Email, kami merekomendasikan praktik terbaik berikut:
+## Praktik Terbaik Privasi untuk Pengguna Forward Email {#privacy-best-practices-for-forward-email-users}
 
-1. **Gunakan alias unik untuk berbagai layanan** - Buat alias email yang berbeda untuk setiap layanan yang Anda daftarkan guna mencegah pelacakan lintas layanan.
-2. **Aktifkan enkripsi OpenPGP** - Untuk komunikasi sensitif, gunakan enkripsi ujung ke ujung guna memastikan privasi sepenuhnya.
-3. **Rotasi alias email Anda secara berkala** - Perbarui alias secara berkala untuk layanan penting guna meminimalkan pengumpulan data jangka panjang.
-4. **Gunakan kata sandi yang kuat dan unik** - Lindungi akun Email Terusan Anda dengan kata sandi yang kuat untuk mencegah akses tidak sah.
-5. **Terapkan anonimisasi [alamat IP](https://en.wikipedia.org/wiki/IP_address)** - Pertimbangkan untuk menggunakan [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) bersama dengan Email Terusan demi anonimitas sepenuhnya.
+Untuk memaksimalkan perlindungan Anda terhadap pengawasan email dan meningkatkan privasi saat menggunakan Forward Email, kami merekomendasikan praktik terbaik berikut:
 
-Kesimpulan ##: Masa Depan Penerusan Email Pribadi {#conclusion-the-future-of-private-email-forwarding}
+1. **Gunakan alias unik untuk layanan yang berbeda** - Buat alias email berbeda untuk setiap layanan yang Anda daftarkan guna mencegah pelacakan lintas layanan
+2. **Aktifkan enkripsi OpenPGP** - Untuk komunikasi sensitif, gunakan enkripsi ujung-ke-ujung untuk memastikan privasi penuh
+3. **Secara berkala ganti alias email Anda** - Perbarui alias untuk layanan penting secara berkala untuk meminimalkan pengumpulan data jangka panjang
+4. **Gunakan kata sandi yang kuat dan unik** - Lindungi akun Forward Email Anda dengan kata sandi yang kuat untuk mencegah akses tidak sah
+5. **Terapkan anonimisasi [alamat IP](https://en.wikipedia.org/wiki/IP_address)** - Pertimbangkan menggunakan [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) bersamaan dengan Forward Email untuk anonimitas penuh
 
-Di Forward Email, kami percaya bahwa privasi bukan sekadar fitur—melainkan hak asasi. Implementasi teknis kami mencerminkan keyakinan ini, menyediakan penerusan email yang menghormati privasi Anda di setiap level dan melindungi Anda dari pengawasan email dan pengumpulan metadata.
 
-Seiring kami terus mengembangkan dan meningkatkan layanan, komitmen kami terhadap privasi tetap teguh. Kami terus meneliti metode enkripsi baru, mengeksplorasi perlindungan privasi tambahan, dan menyempurnakan basis kode kami untuk memberikan pengalaman email seaman mungkin.
+## Kesimpulan: Masa Depan Pengalihan Email Pribadi {#conclusion-the-future-of-private-email-forwarding}
 
-Dengan memilih Teruskan Email, Anda tidak hanya memilih layanan email—Anda mendukung visi internet yang mengutamakan privasi, bukan pengecualian. Bergabunglah dengan kami dalam membangun masa depan digital yang lebih privat, satu email dalam satu waktu.
+Di Forward Email, kami percaya bahwa privasi bukan hanya fitur—melainkan hak fundamental. Implementasi teknis kami mencerminkan keyakinan ini, memberikan Anda pengalihan email yang menghormati privasi Anda di setiap tingkat dan melindungi Anda dari pengawasan email serta pengumpulan metadata.
 
-<!-- *Kata kunci: penerusan email pribadi, perlindungan privasi email, layanan email aman, email sumber terbuka, enkripsi aman kuantum, email OpenPGP, pemrosesan email dalam memori, layanan email tanpa log, perlindungan metadata email, privasi header email, email terenkripsi ujung ke ujung, email yang mengutamakan privasi, penerusan email anonim, praktik terbaik keamanan email, perlindungan konten email, perlindungan phishing, pemindaian virus email, penyedia email yang berfokus pada privasi, header email aman, implementasi privasi email, perlindungan dari pengawasan email, penerusan email tanpa log, mencegah kebocoran metadata email, teknik privasi email, anonimisasi alamat IP untuk email, alias email pribadi, keamanan penerusan email, privasi email dari pengiklan, enkripsi email tahan kuantum, privasi email tanpa kompromi, penyimpanan email SQLite, enkripsi email sandbox, portabilitas data untuk email* -->
+Seiring kami terus mengembangkan dan meningkatkan layanan kami, komitmen kami terhadap privasi tetap teguh. Kami terus meneliti metode enkripsi baru, mengeksplorasi perlindungan privasi tambahan, dan menyempurnakan basis kode kami untuk memberikan pengalaman email yang paling aman.
+
+Dengan memilih Forward Email, Anda tidak hanya memilih layanan email—Anda mendukung visi internet di mana privasi adalah default, bukan pengecualian. Bergabunglah dengan kami dalam membangun masa depan digital yang lebih privat, satu email pada satu waktu.
+<!-- *Keywords: private email forwarding, email privacy protection, secure email service, open-source email, quantum-safe encryption, OpenPGP email, in-memory email processing, no-log email service, email metadata protection, email header privacy, end-to-end encrypted email, privacy-first email, anonymous email forwarding, email security best practices, email content protection, phishing protection, email virus scanning, privacy-focused email provider, secure email headers, email privacy implementation, protection from email surveillance, no-logging email forwarding, prevent email metadata leakage, email privacy techniques, IP address anonymization for email, private email aliases, email forwarding security, email privacy from advertisers, quantum-resistant email encryption, email privacy without compromise, SQLite email storage, sandboxed email encryption, data portability for email* -->
+

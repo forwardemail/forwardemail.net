@@ -1,59 +1,59 @@
-# Listmonk med vidarebefordran av e-post för säker nyhetsbrevsleverans {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+# Listmonk med Forward Email för säker nyhetsbrevsleverans {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+
 
 ## Innehållsförteckning {#table-of-contents}
 
 * [Översikt](#overview)
-* [Varför Listmonk och vidarebefordra e-post](#why-listmonk-and-forward-email)
-* [Förkunskapskrav](#prerequisites)
+* [Varför Listmonk och Forward Email](#why-listmonk-and-forward-email)
+* [Förutsättningar](#prerequisites)
 * [Installation](#installation)
   * [1. Uppdatera din server](#1-update-your-server)
   * [2. Installera beroenden](#2-install-dependencies)
-  * [3. Ladda ner Listmonk-konfigurationen](#3-download-listmonk-configuration)
+  * [3. Ladda ner Listmonk-konfiguration](#3-download-listmonk-configuration)
   * [4. Konfigurera brandvägg (UFW)](#4-configure-firewall-ufw)
   * [5. Konfigurera HTTPS-åtkomst](#5-configure-https-access)
   * [6. Starta Listmonk](#6-start-listmonk)
-  * [7. Konfigurera vidarebefordran av e-post via SMTP i Listmonk](#7-configure-forward-email-smtp-in-listmonk)
-  * [8. Konfigurera avvisningsbehandling](#8-configure-bounce-processing)
+  * [7. Konfigurera Forward Email SMTP i Listmonk](#7-configure-forward-email-smtp-in-listmonk)
+  * [8. Konfigurera bounce-hantering](#8-configure-bounce-processing)
 * [Testning](#testing)
-  * [Skapa en e-postlista](#create-a-mailing-list)
+  * [Skapa en mailinglista](#create-a-mailing-list)
   * [Lägg till prenumeranter](#add-subscribers)
   * [Skapa och skicka en kampanj](#create-and-send-a-campaign)
-* [Kontroll](#verification)
-* [Utvecklaranteckningar](#developer-notes)
+* [Verifiering](#verification)
+* [Utvecklarnoteringar](#developer-notes)
 * [Slutsats](#conclusion)
+
 
 ## Översikt {#overview}
 
-Den här guiden ger utvecklare steg-för-steg-instruktioner för hur man konfigurerar [Listmonk](https://listmonk.app/), en kraftfull hantering av nyhetsbrev och e-postlistor med öppen källkod, för att använda [Vidarebefordra e-post](https://forwardemail.net/) som SMTP-leverantör. Den här kombinationen låter dig hantera dina kampanjer effektivt samtidigt som du säkerställer säker, privat och pålitlig e-postleverans.
+Denna guide ger utvecklare steg-för-steg-instruktioner för att sätta upp [Listmonk](https://listmonk.app/), en kraftfull öppen källkodslösning för nyhetsbrev och mailinglistor, för att använda [Forward Email](https://forwardemail.net/) som dess SMTP-leverantör. Denna kombination låter dig effektivt hantera dina kampanjer samtidigt som du säkerställer säker, privat och pålitlig e-postleverans.
 
-* **Listmonk**: Hanterar prenumeranthantering, listorganisation, kampanjskapande och prestationsspårning.
-* **Vidarebefordra e-post**: Fungerar som en säker SMTP-server och hanterar själva sändningen av e-postmeddelanden med inbyggda säkerhetsfunktioner som SPF, DKIM, DMARC och TLS-kryptering.
+* **Listmonk**: Hanterar prenumeranthantering, listaorganisation, kampanjskapande och prestandaspårning.
+* **Forward Email**: Fungerar som den säkra SMTP-servern och hanterar den faktiska utskicket av e-post med inbyggda säkerhetsfunktioner som SPF, DKIM, DMARC och TLS-kryptering.
 
-Genom att integrera dessa två behåller du full kontroll över din data och infrastruktur samtidigt som du utnyttjar Forward Emails robusta leveranssystem.
+Genom att integrera dessa två behåller du full kontroll över dina data och din infrastruktur samtidigt som du utnyttjar Forward Emails robusta leveranssystem.
 
-## Varför Listmonk och vidarebefordra e-post {#why-listmonk-and-forward-email}
+
+## Varför Listmonk och Forward Email {#why-listmonk-and-forward-email}
 
 * **Öppen källkod**: Både Listmonk och principerna bakom Forward Email betonar transparens och kontroll. Du hostar Listmonk själv och äger dina data.
-* **Integritetsfokuserad**: Forward Email är byggd med integritet i centrum, vilket minimerar datalagring och fokuserar på säker överföring.
-* **Kostnadseffektiv**: Listmonk är gratis, och Forward Email erbjuder generösa gratisnivåer och prisvärda betalda planer, vilket gör detta till en budgetvänlig lösning.
-* **Skalbarhet**: Listmonk är mycket prestandafullt, och Forward Emails infrastruktur är utformad för tillförlitlig leverans i stor skala.
-* **Utvecklarvänlig**: Listmonk erbjuder ett robust API, och Forward Email tillhandahåller enkel SMTP-integration och webhooks.
+* **Integritetsfokuserat**: Forward Email är byggt med integritet i fokus, minimerar datalagring och prioriterar säker överföring.
+* **Kostnadseffektivt**: Listmonk är gratis och Forward Email erbjuder generösa gratisnivåer och prisvärda betalplaner, vilket gör detta till en budgetvänlig lösning.
+* **Skalbarhet**: Listmonk är mycket presterande och Forward Emails infrastruktur är designad för pålitlig leverans i stor skala.
+* **Utvecklarvänligt**: Listmonk erbjuder ett robust API och Forward Email tillhandahåller enkel SMTP-integration och webhooks.
+
 
 ## Förutsättningar {#prerequisites}
 
-Innan du börjar, se till att du har följande:
+Innan du börjar, säkerställ att du har följande:
 
-* En virtuell privat server (VPS) som kör en aktuell Linuxdistribution (Ubuntu 20.04+ rekommenderas) med minst 1 processor och 1 GB RAM (2 GB rekommenderas).
-
-* Behöver du en leverantör? Kolla in [rekommenderad VPS-lista](https://github.com/forwardemail/awesome-mail-server-providers).
-
+* En Virtuell Privat Server (VPS) som kör en aktuell Linux-distribution (Ubuntu 20.04+ rekommenderas) med minst 1 CPU och 1GB RAM (2GB rekommenderas).
+  * Behöver du en leverantör? Kolla in [rekommenderad VPS-lista](https://github.com/forwardemail/awesome-mail-server-providers).
 * Ett domännamn som du kontrollerar (DNS-åtkomst krävs).
-
-* Ett aktivt konto med [Vidarebefordra e-post](https://forwardemail.net/).
-
+* Ett aktivt konto hos [Forward Email](https://forwardemail.net/).
 * Root- eller `sudo`-åtkomst till din VPS.
+* Grundläggande kännedom om Linux-kommandoraden.
 
-* Grundläggande kunskaper om kommandoradsoperationer i Linux.
 
 ## Installation {#installation}
 
@@ -61,7 +61,7 @@ Dessa steg guidar dig genom installationen av Listmonk med Docker och Docker Com
 
 ### 1. Uppdatera din server {#1-update-your-server}
 
-Se till att systemets paketlista och installerade paket är uppdaterade.
+Säkerställ att systemets paketlista och installerade paket är uppdaterade.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -69,13 +69,13 @@ sudo apt update && sudo apt upgrade -y
 
 ### 2. Installera beroenden {#2-install-dependencies}
 
-Installera Docker, Docker Compose och UFW (okomplicerad brandvägg).
+Installera Docker, Docker Compose och UFW (Uncomplicated Firewall).
 
 ```bash
 sudo apt install -y docker.io docker-compose ufw
 ```
 
-### 3. Ladda ner Listmonk-konfigurationen {#3-download-listmonk-configuration}
+### 3. Ladda ner Listmonk-konfiguration {#3-download-listmonk-configuration}
 
 Skapa en katalog för Listmonk och ladda ner den officiella `docker-compose.yml`-filen.
 
@@ -84,11 +84,10 @@ mkdir listmonk && cd listmonk
 curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/master/docker-compose.yml
 ```
 
-Den här filen definierar Listmonk-applikationscontainern och dess obligatoriska PostgreSQL-databascontainer.
-
+Denna fil definierar Listmonk-applikationscontainern och dess nödvändiga PostgreSQL-databascontainer.
 ### 4. Konfigurera brandvägg (UFW) {#4-configure-firewall-ufw}
 
-Tillåt nödvändig trafik (SSH, HTTP, HTTPS) genom brandväggen. Om din SSH körs på en icke-standardiserad port, justera därefter.
+Tillåt nödvändig trafik (SSH, HTTP, HTTPS) genom brandväggen. Om din SSH körs på en icke-standardport, justera därefter.
 
 ```bash
 sudo ufw allow ssh
@@ -97,155 +96,145 @@ sudo ufw allow https
 sudo ufw enable
 ```
 
-Bekräfta aktiveringen av brandväggen när du uppmanas att göra det.
+Bekräfta att du vill aktivera brandväggen när du blir tillfrågad.
 
 ### 5. Konfigurera HTTPS-åtkomst {#5-configure-https-access}
 
 Att köra Listmonk över HTTPS är avgörande för säkerheten. Du har två huvudsakliga alternativ:
 
-#### Alternativ A: Använda Cloudflare-proxy (rekommenderas för enkelhetens skull) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### Alternativ A: Använda Cloudflare Proxy (Rekommenderas för enkelhet) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-Om din domäns DNS hanteras av Cloudflare kan du utnyttja deras proxyfunktion för enkel HTTPS.
+Om din domäns DNS hanteras av Cloudflare kan du använda deras proxyfunktion för enkel HTTPS.
 
-1. **Punkt-DNS**: Skapa en `A`-post i Cloudflare för din Listmonk-underdomän (t.ex. `listmonk.yourdomain.com`) som pekar mot din VPS IP-adress. Se till att **Proxystatus** är inställd på **Proxied** (orange moln).
-
-2. **Ändra Docker Compose**: Redigera `docker-compose.yml`-filen som du laddade ner:
-
-```bash
+1. **Peka DNS**: Skapa en `A`-post i Cloudflare för din Listmonk-underdomän (t.ex. `listmonk.dindomän.com`) som pekar på din VPS IP-adress. Se till att **Proxy status** är inställd på **Proxied** (orange moln).
+2. **Ändra Docker Compose**: Redigera filen `docker-compose.yml` som du laddade ner:
+   ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-Detta gör Listmonk tillgänglig internt på port 80, som Cloudflare sedan kan proxya och säkra med HTTPS.
+   Detta gör Listmonk tillgängligt internt på port 80, vilket Cloudflare sedan kan proxy:a och säkra med HTTPS.
 
 #### Alternativ B: Använda en omvänd proxy (Nginx, Caddy, etc.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
-Alternativt kan du konfigurera en omvänd proxy som Nginx eller Caddy på din VPS för att hantera HTTPS-terminering och proxyförfrågningar till Listmonk (körs på port 9000 som standard).
+Alternativt kan du konfigurera en omvänd proxy som Nginx eller Caddy på din VPS för att hantera HTTPS-terminering och proxyförfrågningar till Listmonk (som körs på port 9000 som standard).
 
-* Behåll standardvärdet `ports: - "127.0.0.1:9000:9000"` i `docker-compose.yml` för att säkerställa att Listmonk endast är tillgänglig lokalt.
-
-* Konfigurera din valda omvända proxy för att lyssna på portarna 80 och 443, hantera SSL-certifikatförvärv (t.ex. via Let's Encrypt) och vidarebefordra trafik till `http://127.0.0.1:9000`.
-
-* Detaljerad installation av omvända proxy ligger utanför den här guidens omfattning, men många handledningar finns tillgängliga online.
+* Behåll standardinställningen `ports: - "127.0.0.1:9000:9000"` i `docker-compose.yml` för att säkerställa att Listmonk endast är åtkomligt lokalt.
+* Konfigurera din valda omvända proxy att lyssna på portarna 80 och 443, hantera SSL-certifikat (t.ex. via Let's Encrypt) och vidarebefordra trafiken till `http://127.0.0.1:9000`.
+* Detaljerad konfiguration av omvänd proxy ligger utanför denna guides omfattning, men många handledningar finns tillgängliga online.
 
 ### 6. Starta Listmonk {#6-start-listmonk}
 
-Navigera tillbaka till din `listmonk`-katalog (om du inte redan är där) och starta containrarna i frikopplat läge.
+Navigera tillbaka till din `listmonk`-katalog (om du inte redan är där) och starta containrarna i detached-läge.
 
 ```bash
-cd ~/listmonk # Or the directory where you saved docker-compose.yml
+cd ~/listmonk # Eller katalogen där du sparade docker-compose.yml
 docker compose up -d
 ```
 
-Docker kommer att ladda ner de nödvändiga avbildningarna och starta Listmonk-applikationen och databascontainrarna. Det kan ta en minut eller två första gången.
+Docker kommer att ladda ner nödvändiga bilder och starta Listmonk-applikationen och databascontainrarna. Det kan ta en minut eller två första gången.
 
-✅ **Åtkomst till Listmonk**: Du borde nu kunna komma åt Listmonks webbgränssnitt via domänen du konfigurerade (t.ex. `https://listmonk.yourdomain.com`).
+✅ **Åtkomst till Listmonk**: Du bör nu kunna nå Listmonk webbgränssnitt via den domän du konfigurerade (t.ex. `https://listmonk.dindomän.com`).
 
-### 7. Konfigurera SMTP för vidarebefordran av e-post i Listmonk {#7-configure-forward-email-smtp-in-listmonk}
+### 7. Konfigurera Forward Email SMTP i Listmonk {#7-configure-forward-email-smtp-in-listmonk}
 
-Konfigurera sedan Listmonk för att skicka e-postmeddelanden med ditt konto för vidarebefordran av e-post.
+Nästa steg är att konfigurera Listmonk för att skicka e-post med ditt Forward Email-konto.
 
-1. **Aktivera SMTP i vidarebefordran av e-post**: Se till att du har genererat SMTP-inloggningsuppgifter i instrumentpanelen för ditt konto för vidarebefordran av e-post. Följ [Guide för vidarebefordran av e-post för att skicka e-post med en anpassad domän via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) om du inte redan har gjort det.
+1. **Aktivera SMTP i Forward Email**: Se till att du har genererat SMTP-uppgifter i din Forward Email-kontos instrumentpanel. Följ [Forward Email-guiden för att skicka e-post med en egen domän via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) om du inte redan gjort det.
+2. **Konfigurera Listmonk**: Logga in i din Listmonk adminpanel.
+   * Navigera till **Inställningar -> SMTP**.
 
-2. **Konfigurera Listmonk**: Logga in på din Listmonk-administratörspanel.
-* Navigera till **Inställningar -> SMTP**.
+   * Listmonk har inbyggt stöd för Forward Email. Välj **ForwardEmail** från leverantörslistan, eller ange manuellt följande uppgifter:
 
-* Listmonk har inbyggt stöd för vidarebefordran av e-post. Välj **Vidarebefordra e-post** från leverantörslistan eller ange följande uppgifter manuellt:
+     | Inställning       | Värde                                                                                                               |
+     | :---------------- | :------------------------------------------------------------------------------------------------------------------ |
+     | **Host**          | `smtp.forwardemail.net`                                                                                             |
+     | **Port**          | `465`                                                                                                               |
+     | **Auth protocol** | `LOGIN`                                                                                                             |
+     | **Username**      | Ditt Forward Email **SMTP-användarnamn**                                                                            |
+     | **Password**      | Ditt Forward Email **SMTP-lösenord**                                                                                |
+     | **TLS**           | `SSL/TLS`                                                                                                           |
+     | **From e-mail**   | Din önskade `From`-adress (t.ex. `newsletter@dindomän.com`). Se till att denna domän är konfigurerad i Forward Email. |
+* **Viktigt**: Använd alltid Port `465` med `SSL/TLS` för säkra anslutningar med Forward Email (rekommenderas). Port `587` med STARTTLS stöds också men SSL/TLS föredras.
 
-| Miljö | Värde |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------ |
-| **Värd** | `smtp.forwardemail.net` |
-| **Hamn** | `465` |
-| **Autentiseringsprotokoll** | `LOGIN` |
-| **Användarnamn** | Din vidarebefordran av e-postadress **SMTP-användarnamn** |
-| **Lösenord** | Din vidarebefordran av e-post **SMTP-lösenord** |
-| **TLS** | `SSL/TLS` |
-| **Från e-post** | Din önskade `From`-adress (t.ex. `newsletter@yourdomain.com`). Se till att den här domänen är konfigurerad i Vidarebefordra e-post. |
+   * Klicka på **Spara**.
+3. **Skicka testmail**: Använd knappen "Skicka testmail" på sidan för SMTP-inställningar. Ange en mottagaradress som du kan nå och klicka på **Skicka**. Verifiera att mailet kommer fram till mottagarens inkorg.
 
-* **Viktigt**: Använd alltid port `465` med `SSL/TLS` för säkra anslutningar med vidarebefordran av e-post. Använd inte STARTTLS (port 587).
+### 8. Konfigurera Bounce-hantering {#8-configure-bounce-processing}
 
-* Klicka på **Spara**.
-3. **Skicka testmejl**: Använd knappen "Skicka testmejl" på sidan med SMTP-inställningar. Ange en mottagaradress som du har åtkomst till och klicka på **Skicka**. Kontrollera att mejlet kommer fram till mottagarens inkorg.
+Bounce-hantering gör det möjligt för Listmonk att automatiskt hantera mail som inte kunde levereras (t.ex. på grund av ogiltiga adresser). Forward Email tillhandahåller en webhook för att meddela Listmonk om bounces.
 
-### 8. Konfigurera avvisningsbehandling {#8-configure-bounce-processing}
+#### Forward Email-inställningar {#forward-email-setup}
 
-Avvisningshantering gör att Listmonk automatiskt hanterar e-postmeddelanden som inte kunde levereras (t.ex. på grund av ogiltiga adresser). Vidarebefordra e-post tillhandahåller en webhook för att meddela Listmonk om avvisningar.
-
-#### Konfiguration av vidarebefordran av e-post {#forward-email-setup}
-
-1. Logga in på din [Instrumentpanel för vidarebefordran av e-post](https://forwardemail.net/).
-2. Navigera till **Domäner**, välj den domän du använder för att skicka och gå till dess **Inställningar**-sida.
-3. Scrolla ner till avsnittet **Adress för avvisad webhook**.
-4. Ange följande URL och ersätt `<your_listmonk_domain>` med den faktiska domänen eller underdomänen där din Listmonk-instans är tillgänglig:
-
-```sh
+1. Logga in på din [Forward Email Dashboard](https://forwardemail.net/).
+2. Gå till **Domains**, välj den domän du använder för utskick och gå till dess **Settings**-sida.
+3. Scrolla ner till avsnittet **Bounce Webhook URL**.
+4. Ange följande URL, byt ut `<your_listmonk_domain>` mot den faktiska domänen eller subdomänen där din Listmonk-instans är tillgänglig:
+   ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
-*Exempel*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-
-5. Scrolla vidare ner till avsnittet **Verifieringsnyckel för webbsignaturnytta**.
-
-6. **Kopiera** den genererade verifieringsnyckeln. Du behöver den i Listmonk.
-
-7. Spara ändringarna i dina domäninställningar för vidarebefordran av e-post.
+   *Exempel*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
+5. Scrolla ytterligare ner till avsnittet **Webhook Signature Payload Verification Key**.
+6. **Kopiera** den genererade verifieringsnyckeln. Du kommer att behöva den i Listmonk.
+7. Spara ändringarna i dina Forward Email-domäninställningar.
 
 #### Listmonk-inställningar {#listmonk-setup}
 
-1. I din Listmonk-administratörspanel navigerar du till **Inställningar -> Avvisningar**.
-2. Aktivera **Aktivera avvisningshantering**.
-3. Aktivera **Aktivera avvisningswebhooks**.
-4. Scrolla ner till avsnittet **Webhook-leverantörer**.
-5. Aktivera **Vidarebefordra e-post**.
-6. Klistra in den **Webhook-signaturnyttaverifieringsnyckel** som du kopierade från instrumentpanelen för vidarebefordran av e-post i fältet **Vidarebefordra e-postnyckel**.
-7. Klicka på **Spara** längst ner på sidan.
-8. Avvisningshanteringen är nu konfigurerad! När vidarebefordran av e-post upptäcker en avvisning för ett e-postmeddelande som skickats av Listmonk, meddelar den din Listmonk-instans via webhooken, och Listmonk markerar prenumeranten därefter.
-9. Slutför stegen nedan i [Testning](#testing) för att säkerställa att allt fungerar.
+1. I din Listmonk adminpanel, gå till **Settings -> Bounces**.
+2. Aktivera **Enable bounce processing**.
+3. Aktivera **Enable bounce webhooks**.
+4. Scrolla ner till avsnittet **Webhook Providers**.
+5. Aktivera **Forward Email**.
+6. Klistra in **Webhook Signature Payload Verification Key** som du kopierade från Forward Email dashboard i fältet **Forward Email Key**.
+7. Klicka på **Save** längst ner på sidan.
+8. Bounce-hanteringen är nu konfigurerad! När Forward Email upptäcker en bounce för ett mail skickat av Listmonk, kommer det att meddela din Listmonk-instans via webhooken, och Listmonk markerar prenumeranten därefter.
+9. Slutför stegen nedan i [Testing](#testing) för att säkerställa att allt fungerar.
 
 ## Testning {#testing}
 
-Här är en snabb översikt över Listmonks kärnfunktioner:
+Här är en snabb översikt över kärnfunktioner i Listmonk:
 
-### Skapa en e-postlista {#create-a-mailing-list}
+### Skapa en mailinglista {#create-a-mailing-list}
 
-* Gå till **Listor** i sidofältet.
-* Klicka på **Ny lista**.
-* Fyll i uppgifterna (Namn, Typ: Offentlig/Privat, Beskrivning, Taggar) och **Spara**.
+* Gå till **Lists** i sidomenyn.
+* Klicka på **New List**.
+* Fyll i detaljerna (Namn, Typ: Public/Private, Beskrivning, Taggar) och **Spara**.
 
 ### Lägg till prenumeranter {#add-subscribers}
 
-* Navigera till avsnittet **Prenumeranter**.
+* Navigera till sektionen **Subscribers**.
 * Du kan lägga till prenumeranter:
-* **Manuellt**: Klicka på **Ny prenumerant**.
-* **Importera**: Klicka på **Importera prenumeranter** för att ladda upp en CSV-fil.
-* **API**: Använd Listmonk API för programmatiska tillägg.
-* Tilldela prenumeranter till en eller flera listor under skapande eller import.
-* **Bästa praxis**: Använd en dubbel anmälningsprocess. Konfigurera detta under **Inställningar -> Anmälan och prenumerationer**.
+  * **Manuellt**: Klicka på **New Subscriber**.
+  * **Importera**: Klicka på **Import Subscribers** för att ladda upp en CSV-fil.
+  * **API**: Använd Listmonks API för programmatisk tilläggning.
+* Tilldela prenumeranter till en eller flera listor vid skapande eller import.
+* **Bästa praxis**: Använd en dubbel opt-in-process. Konfigurera detta under **Settings -> Opt-in & Subscriptions**.
 
 ### Skapa och skicka en kampanj {#create-and-send-a-campaign}
 
-* Gå till **Kampanjer** -> **Ny kampanj**.
-* Fyll i kampanjinformationen (Namn, Ämne, Från e-post, Lista(or) att skicka till).
-* Välj din innehållstyp (Rich Text/HTML, Oformaterad text, Rå HTML).
-* Skriv ditt e-postinnehåll. Du kan använda mallvariabler som `{{ .Subscriber.Email }}` eller `{{ .Subscriber.FirstName }}`.
-* **Skicka alltid ett testmeddelande först!** Använd alternativet "Skicka test" för att förhandsgranska e-postmeddelandet i din inkorg.
-* När du är nöjd klickar du på **Starta kampanj** för att skicka direkt eller schemalägga det till senare.
+* Gå till **Campaigns** -> **New Campaign**.
+* Fyll i kampanjdetaljerna (Namn, Ämne, Från-mail, Lista(or) att skicka till).
+* Välj din innehållstyp (Rich Text/HTML, Plain Text, Raw HTML).
+* Skriv ditt mailinnehåll. Du kan använda mallvariabler som `{{ .Subscriber.Email }}` eller `{{ .Subscriber.FirstName }}`.
+* **Skicka alltid ett testmail först!** Använd "Send Test"-alternativet för att förhandsgranska mailet i din inkorg.
+* När du är nöjd, klicka på **Start Campaign** för att skicka omedelbart eller schemalägg för senare.
 
 ## Verifiering {#verification}
 
-* **SMTP-leverans**: Skicka regelbundet testmejl via Listmonks SMTP-inställningssida och testkampanjer för att säkerställa att e-postmeddelanden levereras korrekt.
-* **Hantering av avvisningar**: Skicka en testkampanj till en känd ogiltig e-postadress (t.ex. `bounce-test@yourdomain.com` om du inte har en riktig e-postadress till hands, även om resultaten kan variera). Kontrollera kampanjstatistiken i Listmonk efter en kort stund för att se om avvisningen är registrerad.
-* **E-postrubriker**: Använd verktyg som [E-posttestare](https://www.mail-tester.com/) eller inspektera e-postrubriker manuellt för att verifiera att SPF, DKIM och DMARC skickas, vilket indikerar korrekt konfiguration genom vidarebefordran av e-post.
-* **Loggar för vidarebefordran av e-post**: Kontrollera dina loggar för instrumentpanelen för vidarebefordran av e-post om du misstänker leveransproblem som kommer från SMTP-servern.
+* **SMTP-leverans**: Skicka regelbundet testmail via Listmonks SMTP-inställningssida och testkampanjer för att säkerställa att mail levereras korrekt.
+* **Bounce-hantering**: Skicka en testkampanj till en känd ogiltig mailadress (t.ex. `bounce-test@yourdomain.com` om du inte har en riktig till hands, men resultat kan variera). Kontrollera kampanjstatistiken i Listmonk efter en stund för att se om bouncen registrerats.
+* **Mailhuvuden**: Använd verktyg som [Mail-Tester](https://www.mail-tester.com/) eller inspektera mailhuvuden manuellt för att verifiera att SPF, DKIM och DMARC passerar, vilket indikerar korrekt uppsättning via Forward Email.
+* **Forward Email-loggar**: Kontrollera loggarna i din Forward Email dashboard om du misstänker leveransproblem som härstammar från SMTP-servern.
+## Developer Notes {#developer-notes}
 
-## Utvecklaranteckningar {#developer-notes}
+* **Templating**: Listmonk använder Go:s templatemotor. Utforska dess dokumentation för avancerad personalisering: `{{ .Subscriber.Attribs.your_custom_field }}`.
+* **API**: Listmonk erbjuder ett omfattande REST API för att hantera listor, prenumeranter, kampanjer, mallar med mera. Hitta API-dokumentationslänken i din Listmonk-instansens sidfot.
+* **Custom Fields**: Definiera anpassade prenumerantfält under **Settings -> Subscriber Fields** för att lagra ytterligare data.
+* **Webhooks**: Förutom studsningar kan Listmonk skicka webhooks för andra händelser (t.ex. prenumerationer), vilket möjliggör integration med andra system.
 
-* **Mallar**: Listmonk använder Gos mallmotor. Utforska dess dokumentation för avancerad anpassning: `{{ .Subscriber.Attribs.your_custom_field }}`.
-* **API**: Listmonk tillhandahåller ett omfattande REST API för att hantera listor, prenumeranter, kampanjer, mallar med mera. Hitta länken till API-dokumentationen i sidfoten på din Listmonk-instans.
-* **Anpassade fält**: Definiera anpassade prenumerantfält under **Inställningar -> Prenumerantfält** för att lagra ytterligare data.
-* **Webhooks**: Förutom avvisningar kan Listmonk skicka webhooks för andra händelser (t.ex. prenumerationer), vilket möjliggör integration med andra system.
 
-## Slutsats {#conclusion}
+## Conclusion {#conclusion}
 
-Genom att integrera Listmonks självhostade kraft med den säkra, integritetsrespekterande leveransen av Forward Email skapar du en robust och etisk e-postmarknadsföringsplattform. Du behåller fullt ägande av din publikdata samtidigt som du drar nytta av hög leveransbarhet och automatiserade säkerhetsfunktioner.
+Genom att integrera den självhostade kraften i Listmonk med den säkra, integritetsrespekterande leveransen från Forward Email skapar du en robust och etisk e-postmarknadsföringsplattform. Du behåller full äganderätt till din publikdata samtidigt som du drar nytta av hög leveransbarhet och automatiserade säkerhetsfunktioner.
 
-Denna uppsättning erbjuder ett skalbart, kostnadseffektivt och utvecklarvänligt alternativ till proprietära e-posttjänster, vilket perfekt överensstämmer med principerna om öppen källkodsprogramvara och användarnas integritet.
+Denna lösning erbjuder ett skalbart, kostnadseffektivt och utvecklarvänligt alternativ till proprietära e-posttjänster, vilket passar perfekt med öppen källkodsprogramvarans och användarens integritets ethos.
 
-Lycka till med sändningen! 🚀
+Lycka till med utskicken! 🚀

@@ -1,128 +1,127 @@
-# Nghĩa địa khởi nghiệp email: Tại sao hầu hết các công ty email đều thất bại {#the-email-startup-graveyard-why-most-email-companies-fail}
+# Nghĩa Trang Khởi Nghiệp Email: Tại Sao Hầu Hết Các Công Ty Email Thất Bại {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Minh họa nghĩa trang khởi nghiệp email" class="rounded-lg" />
 
-<p class="lead mt-3">Trong khi nhiều công ty khởi nghiệp email đã đầu tư hàng triệu đô la để giải quyết các vấn đề nhận thức được, chúng tôi tại <a href="https://forwardemail.net">Forward Email</a> đã tập trung vào việc xây dựng cơ sở hạ tầng email đáng tin cậy từ đầu kể từ năm 2017. Phân tích này khám phá các mô hình đằng sau kết quả của các công ty khởi nghiệp email và những thách thức cơ bản của cơ sở hạ tầng email.</p>
+<p class="lead mt-3">Trong khi nhiều công ty khởi nghiệp email đã đầu tư hàng triệu đô la để giải quyết các vấn đề được cho là tồn tại, chúng tôi tại <a href="https://forwardemail.net">Forward Email</a> đã tập trung xây dựng hạ tầng email đáng tin cậy từ đầu kể từ năm 2017. Phân tích này khám phá các mô hình đằng sau kết quả của các công ty khởi nghiệp email và những thách thức cơ bản của hạ tầng email.</p>
 
 > \[!NOTE]
-> **Thông tin chi tiết quan trọng**: Hầu hết các công ty khởi nghiệp email không xây dựng cơ sở hạ tầng email thực tế từ đầu. Nhiều công ty xây dựng dựa trên các giải pháp hiện có như Amazon SES hoặc các hệ thống mã nguồn mở như Postfix. Các giao thức cốt lõi hoạt động tốt - thách thức nằm ở việc triển khai.
+> **Thông tin chính**: Hầu hết các công ty khởi nghiệp email không xây dựng hạ tầng email thực sự từ đầu. Nhiều công ty xây dựng dựa trên các giải pháp hiện có như Amazon SES hoặc các hệ thống mã nguồn mở như Postfix. Các giao thức cốt lõi hoạt động tốt - thách thức nằm ở việc triển khai.
 
 > \[!TIP]
-> **Phân tích kỹ thuật chuyên sâu**: Để biết thông tin chi tiết về phương pháp tiếp cận, kiến trúc và triển khai bảo mật của chúng tôi, vui lòng xem [Chuyển tiếp Email Sách trắng kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf) và [Giới thiệu trang](https://forwardemail.net/en/about), trong đó ghi lại toàn bộ tiến trình phát triển của chúng tôi kể từ năm 2017.
+> **Phân tích kỹ thuật sâu**: Để biết chi tiết toàn diện về cách tiếp cận, kiến trúc và triển khai bảo mật của chúng tôi, xem [Bản Báo Cáo Kỹ Thuật Forward Email](https://forwardemail.net/technical-whitepaper.pdf) và [Trang Giới Thiệu](https://forwardemail.net/en/about) ghi lại toàn bộ tiến trình phát triển của chúng tôi từ năm 2017.
 
-## Mục lục {#table-of-contents}
 
-* [Ma trận thất bại khởi nghiệp email](#the-email-startup-failure-matrix)
-* [Kiểm tra thực tế cơ sở hạ tầng](#the-infrastructure-reality-check)
-  * [Email thực sự chạy như thế nào](#what-actually-runs-email)
-  * ["Các công ty khởi nghiệp email" thực sự xây dựng những gì](#what-email-startups-actually-build)
-* [Tại sao hầu hết các công ty khởi nghiệp email đều thất bại](#why-most-email-startups-fail)
-  * [1. Giao thức email hoạt động, nhưng việc triển khai thường không hiệu quả](#1-email-protocols-work-implementation-often-doesnt)
-  * [2. Hiệu ứng mạng lưới là không thể phá vỡ](#2-network-effects-are-unbreakable)
-  * [3. Họ thường nhắm vào những vấn đề sai](#3-they-often-target-the-wrong-problems)
-  * [4. Nợ kỹ thuật rất lớn](#4-technical-debt-is-massive)
-  * [5. Cơ sở hạ tầng đã tồn tại](#5-the-infrastructure-already-exists)
-* [Nghiên cứu điển hình: Khi các công ty khởi nghiệp email thất bại](#case-studies-when-email-startups-fail)
-  * [Nghiên cứu điển hình: Thảm họa Skiff](#case-study-the-skiff-disaster)
-  * [Phân tích máy gia tốc](#the-accelerator-analysis)
-  * [Cái bẫy đầu tư mạo hiểm](#the-venture-capital-trap)
-* [Thực tế kỹ thuật: Các ngăn xếp email hiện đại](#the-technical-reality-modern-email-stacks)
-  * [Điều gì thực sự thúc đẩy "Các công ty khởi nghiệp email"](#what-actually-powers-email-startups)
-  * [Các vấn đề về hiệu suất](#the-performance-problems)
-* [Các mô hình mua lại: Thành công so với Đóng cửa](#the-acquisition-patterns-success-vs-shutdown)
-  * [Hai mẫu](#the-two-patterns)
-  * [Ví dụ gần đây](#recent-examples)
-* [Sự phát triển và hợp nhất của ngành](#industry-evolution-and-consolidation)
-  * [Tiến trình công nghiệp tự nhiên](#natural-industry-progression)
-  * [Chuyển đổi sau khi mua lại](#post-acquisition-transitions)
-  * [Những cân nhắc của người dùng trong quá trình chuyển đổi](#user-considerations-during-transitions)
-* [Kiểm tra thực tế của Hacker News](#the-hacker-news-reality-check)
-* [Trò lừa đảo email AI hiện đại](#the-modern-ai-email-grift)
-  * [Làn sóng mới nhất](#the-latest-wave)
-  * [Những vấn đề cũ vẫn vậy](#the-same-old-problems)
-* [Điều thực sự hiệu quả: Những câu chuyện thành công thực sự của email](#what-actually-works-the-real-email-success-stories)
-  * [Các công ty cơ sở hạ tầng (Những người chiến thắng)](#infrastructure-companies-the-winners)
-  * [Nhà cung cấp email (Những người sống sót)](#email-providers-the-survivors)
-  * [Ngoại lệ: Câu chuyện thành công của Xobni](#the-exception-xobnis-success-story)
-  * [Mẫu](#the-pattern)
-* [Đã có ai thành công trong việc tái tạo email chưa?](#has-anyone-successfully-reinvented-email)
-  * [Những gì thực sự bị mắc kẹt](#what-actually-stuck)
-  * [Các công cụ mới bổ sung cho email (nhưng không thay thế nó)](#new-tools-complement-email-but-dont-replace-it)
-  * [Thí nghiệm HEY](#the-hey-experiment)
-  * [Điều gì thực sự hiệu quả](#what-actually-works)
-* [Xây dựng cơ sở hạ tầng hiện đại cho các giao thức email hiện có: Cách tiếp cận của chúng tôi](#building-modern-infrastructure-for-existing-email-protocols-our-approach)
-  * [Phổ đổi mới email](#the-email-innovation-spectrum)
-  * [Tại sao chúng tôi tập trung vào cơ sở hạ tầng](#why-we-focus-on-infrastructure)
-  * [Những gì thực sự hiệu quả trong Email](#what-actually-works-in-email)
-* [Cách tiếp cận của chúng tôi: Tại sao chúng tôi khác biệt](#our-approach-why-were-different)
-  * [Chúng tôi làm gì](#what-we-do)
-  * [Những gì chúng tôi không làm](#what-we-dont-do)
-* [Cách chúng tôi xây dựng cơ sở hạ tầng email thực sự hiệu quả](#how-we-build-email-infrastructure-that-actually-works)
-  * [Cách tiếp cận chống khởi nghiệp của chúng tôi](#our-anti-startup-approach)
-  * [Điều gì làm chúng ta khác biệt](#what-makes-us-different)
-  * [So sánh nhà cung cấp dịch vụ email: Tăng trưởng thông qua các giao thức đã được chứng minh](#email-service-provider-comparison-growth-through-proven-protocols)
-  * [Dòng thời gian kỹ thuật](#the-technical-timeline)
-  * [Tại sao chúng ta thành công trong khi người khác thất bại](#why-we-succeed-where-others-fail)
-  * [Kiểm tra thực tế chi phí](#the-cost-reality-check)
-* [Thách thức bảo mật trong cơ sở hạ tầng email](#security-challenges-in-email-infrastructure)
-  * [Những cân nhắc chung về bảo mật](#common-security-considerations)
-  * [Giá trị của sự minh bạch](#the-value-of-transparency)
-  * [Những thách thức an ninh đang diễn ra](#ongoing-security-challenges)
-* [Kết luận: Tập trung vào cơ sở hạ tầng, không phải ứng dụng](#conclusion-focus-on-infrastructure-not-apps)
-  * [Bằng chứng rõ ràng](#the-evidence-is-clear)
-  * [Bối cảnh lịch sử](#the-historical-context)
-  * [Bài học thực sự](#the-real-lesson)
-* [Nghĩa địa email mở rộng: Nhiều lỗi và sự cố hơn](#the-extended-email-graveyard-more-failures-and-shutdowns)
-  * [Các thí nghiệm email của Google đã thất bại](#googles-email-experiments-gone-wrong)
-  * [Thất bại liên tiếp: Ba cái chết của Newton Mail](#the-serial-failure-newton-mails-three-deaths)
-  * [Các ứng dụng chưa bao giờ ra mắt](#the-apps-that-never-launched)
-  * [Mô hình từ mua lại đến đóng cửa](#the-acquisition-to-shutdown-pattern)
-  * [Hợp nhất cơ sở hạ tầng email](#email-infrastructure-consolidation)
-* [Nghĩa địa email nguồn mở: Khi "miễn phí" không còn bền vững](#the-open-source-email-graveyard-when-free-isnt-sustainable)
-  * [Nylas Mail → Mailspring: Chiếc nĩa không thể](#nylas-mail--mailspring-the-fork-that-couldnt)
-  * [Eudora: Cuộc hành quân tử thần kéo dài 18 năm](#eudora-the-18-year-death-march)
-  * [FairEmail: Bị chính trị Google Play giết chết](#fairemail-killed-by-google-play-politics)
-  * [Vấn đề bảo trì](#the-maintenance-problem)
-* [Sự bùng nổ của công nghệ email AI: Lịch sử lặp lại với "Trí thông minh"](#the-ai-email-startup-surge-history-repeating-with-intelligence)
-  * [Cơn sốt email AI hiện tại](#the-current-ai-email-gold-rush)
-  * [Cơn sốt tài trợ](#the-funding-frenzy)
-  * [Tại sao tất cả họ đều sẽ thất bại (một lần nữa)](#why-theyll-all-fail-again)
-  * [Kết quả tất yếu](#the-inevitable-outcome)
-* [Thảm họa hợp nhất: Khi "Những người sống sót" trở thành thảm họa](#the-consolidation-catastrophe-when-survivors-become-disasters)
-  * [Hợp nhất dịch vụ email tuyệt vời](#the-great-email-service-consolidation)
-  * [Triển vọng: "Kẻ sống sót" không thể ngừng đổ vỡ](#outlook-the-survivor-that-cant-stop-breaking)
-  * [Vấn đề cơ sở hạ tầng dấu bưu điện](#the-postmark-infrastructure-problem)
-  * [Thương vong gần đây của ứng dụng email (2024-2025)](#recent-email-client-casualties-2024-2025)
-  * [Tiện ích mở rộng email và mua lại dịch vụ](#email-extension-and-service-acquisitions)
-  * [Những người sống sót: Các công ty email thực sự hoạt động](#the-survivors-email-companies-that-actually-work)
+## Mục Lục {#table-of-contents}
 
-## Ma trận lỗi khởi động email {#the-email-startup-failure-matrix}
+* [Ma Trận Thất Bại Của Các Công Ty Khởi Nghiệp Email](#the-email-startup-failure-matrix)
+* [Kiểm Tra Thực Tế Hạ Tầng](#the-infrastructure-reality-check)
+  * [Cái Gì Thực Sự Vận Hành Email](#what-actually-runs-email)
+  * [Các "Công Ty Khởi Nghiệp Email" Thực Sự Xây Dựng](#what-email-startups-actually-build)
+* [Tại Sao Hầu Hết Các Công Ty Khởi Nghiệp Email Thất Bại](#why-most-email-startups-fail)
+  * [1. Giao Thức Email Hoạt Động, Triển Khai Thường Không](#1-email-protocols-work-implementation-often-doesnt)
+  * [2. Hiệu Ứng Mạng Không Thể Phá Vỡ](#2-network-effects-are-unbreakable)
+  * [3. Họ Thường Nhắm Vào Những Vấn Đề Sai](#3-they-often-target-the-wrong-problems)
+  * [4. Nợ Kỹ Thuật Rất Lớn](#4-technical-debt-is-massive)
+  * [5. Hạ Tầng Đã Tồn Tại](#5-the-infrastructure-already-exists)
+* [Các Nghiên Cứu Trường Hợp: Khi Các Công Ty Khởi Nghiệp Email Thất Bại](#case-studies-when-email-startups-fail)
+  * [Nghiên Cứu Trường Hợp: Thảm Họa Skiff](#case-study-the-skiff-disaster)
+  * [Phân Tích Accelerator](#the-accelerator-analysis)
+  * [Cái Bẫy Đầu Tư Mạo Hiểm](#the-venture-capital-trap)
+* [Thực Tế Kỹ Thuật: Các Ngăn Xếp Email Hiện Đại](#the-technical-reality-modern-email-stacks)
+  * [Cái Gì Thực Sự Cung Cấp Năng Lượng Cho "Các Công Ty Khởi Nghiệp Email"](#what-actually-powers-email-startups)
+  * [Các Vấn Đề Về Hiệu Suất](#the-performance-problems)
+* [Mô Hình Mua Lại: Thành Công vs. Đóng Cửa](#the-acquisition-patterns-success-vs-shutdown)
+  * [Hai Mô Hình](#the-two-patterns)
+  * [Ví Dụ Gần Đây](#recent-examples)
+* [Sự Tiến Hóa và Hợp Nhất Ngành](#industry-evolution-and-consolidation)
+  * [Tiến Trình Tự Nhiên Của Ngành](#natural-industry-progression)
+  * [Chuyển Đổi Sau Mua Lại](#post-acquisition-transitions)
+  * [Cân Nhắc Của Người Dùng Trong Quá Trình Chuyển Đổi](#user-considerations-during-transitions)
+* [Kiểm Tra Thực Tế Hacker News](#the-hacker-news-reality-check)
+* [Chiêu Trò Email AI Hiện Đại](#the-modern-ai-email-grift)
+  * [Làn Sóng Mới Nhất](#the-latest-wave)
+  * [Những Vấn Đề Cũ Kỹ](#the-same-old-problems)
+* [Cái Gì Thực Sự Hiệu Quả: Những Câu Chuyện Thành Công Email Thật Sự](#what-actually-works-the-real-email-success-stories)
+  * [Các Công Ty Hạ Tầng (Những Người Chiến Thắng)](#infrastructure-companies-the-winners)
+  * [Nhà Cung Cấp Email (Những Người Tồn Tại)](#email-providers-the-survivors)
+  * [Ngoại Lệ: Câu Chuyện Thành Công Của Xobni](#the-exception-xobnis-success-story)
+  * [Mô Hình](#the-pattern)
+* [Có Ai Đã Thành Công Trong Việc Tái Định Nghĩa Email?](#has-anyone-successfully-reinvented-email)
+  * [Cái Gì Thực Sự Ổn Định](#what-actually-stuck)
+  * [Công Cụ Mới Bổ Sung Cho Email (Nhưng Không Thay Thế)](#new-tools-complement-email-but-dont-replace-it)
+  * [Thí Nghiệm HEY](#the-hey-experiment)
+  * [Cái Gì Thực Sự Hiệu Quả](#what-actually-works)
+* [Xây Dựng Hạ Tầng Hiện Đại Cho Các Giao Thức Email Hiện Có: Cách Tiếp Cận Của Chúng Tôi](#building-modern-infrastructure-for-existing-email-protocols-our-approach)
+  * [Phổ Đổi Mới Email](#the-email-innovation-spectrum)
+  * [Tại Sao Chúng Tôi Tập Trung Vào Hạ Tầng](#why-we-focus-on-infrastructure)
+  * [Cái Gì Thực Sự Hiệu Quả Trong Email](#what-actually-works-in-email)
+* [Cách Tiếp Cận Của Chúng Tôi: Tại Sao Chúng Tôi Khác Biệt](#our-approach-why-were-different)
+  * [Chúng Tôi Làm Gì](#what-we-do)
+  * [Chúng Tôi Không Làm Gì](#what-we-dont-do)
+* [Cách Chúng Tôi Xây Dựng Hạ Tầng Email Thực Sự Hoạt Động](#how-we-build-email-infrastructure-that-actually-works)
+  * [Cách Tiếp Cận Chống Khởi Nghiệp Của Chúng Tôi](#our-anti-startup-approach)
+  * [Điều Gì Khiến Chúng Tôi Khác Biệt](#what-makes-us-different)
+  * [So Sánh Nhà Cung Cấp Dịch Vụ Email: Tăng Trưởng Qua Các Giao Thức Đã Được Chứng Minh](#email-service-provider-comparison-growth-through-proven-protocols)
+  * [Dòng Thời Gian Kỹ Thuật](#the-technical-timeline)
+  * [Tại Sao Chúng Tôi Thành Công Nơi Người Khác Thất Bại](#why-we-succeed-where-others-fail)
+  * [Kiểm Tra Thực Tế Chi Phí](#the-cost-reality-check)
+* [Thách Thức Bảo Mật Trong Hạ Tầng Email](#security-challenges-in-email-infrastructure)
+  * [Các Cân Nhắc Bảo Mật Thông Thường](#common-security-considerations)
+  * [Giá Trị Của Sự Minh Bạch](#the-value-of-transparency)
+  * [Các Thách Thức Bảo Mật Liên Tục](#ongoing-security-challenges)
+* [Kết Luận: Tập Trung Vào Hạ Tầng, Không Phải Ứng Dụng](#conclusion-focus-on-infrastructure-not-apps)
+  * [Bằng Chứng Rõ Ràng](#the-evidence-is-clear)
+  * [Bối Cảnh Lịch Sử](#the-historical-context)
+  * [Bài Học Thực Sự](#the-real-lesson)
+* [Nghĩa Trang Email Mở Rộng: Nhiều Thất Bại và Đóng Cửa Hơn](#the-extended-email-graveyard-more-failures-and-shutdowns)
+  * [Các Thí Nghiệm Email Của Google Sai Lầm](#googles-email-experiments-gone-wrong)
+  * [Thất Bại Liên Tiếp: Ba Lần Chết Của Newton Mail](#the-serial-failure-newton-mails-three-deaths)
+  * [Các Ứng Dụng Chưa Bao Giờ Ra Mắt](#the-apps-that-never-launched)
+  * [Mô Hình Mua Lại Đến Đóng Cửa](#the-acquisition-to-shutdown-pattern)
+  * [Hợp Nhất Hạ Tầng Email](#email-infrastructure-consolidation)
+* [Nghĩa Trang Email Mã Nguồn Mở: Khi "Miễn Phí" Không Bền Vững](#the-open-source-email-graveyard-when-free-isnt-sustainable)
+  * [Nylas Mail → Mailspring: Nhánh Mã Không Thành Công](#nylas-mail--mailspring-the-fork-that-couldnt)
+  * [Eudora: Cuộc Hành Trình Chết Kéo Dài 18 Năm](#eudora-the-18-year-death-march)
+  * [FairEmail: Bị Google Play Chính Trị Giết Chết](#fairemail-killed-by-google-play-politics)
+  * [Vấn Đề Bảo Trì](#the-maintenance-problem)
+* [Sự Bùng Nổ Khởi Nghiệp Email AI: Lịch Sử Lặp Lại Với "Trí Tuệ"](#the-ai-email-startup-surge-history-repeating-with-intelligence)
+  * [Cơn Sốt Vàng Email AI Hiện Tại](#the-current-ai-email-gold-rush)
+  * [Cơn Sốt Đầu Tư](#the-funding-frenzy)
+  * [Tại Sao Họ Sẽ Tất Cả Thất Bại (Lần Nữa)](#why-theyll-all-fail-again)
+  * [Kết Quả Không Thể Tránh Khỏi](#the-inevitable-outcome)
+* [Thảm Họa Hợp Nhất: Khi "Người Tồn Tại" Trở Thành Thảm Họa](#the-consolidation-catastrophe-when-survivors-become-disasters)
+  * [Sự Hợp Nhất Lớn Các Dịch Vụ Email](#the-great-email-service-consolidation)
+  * [Outlook: "Người Tồn Tại" Không Ngừng Gặp Sự Cố](#outlook-the-survivor-that-cant-stop-breaking)
+  * [Vấn Đề Hạ Tầng Postmark](#the-postmark-infrastructure-problem)
+  * [Các Nạn Nhân Email Client Gần Đây (2024-2025)](#recent-email-client-casualties-2024-2025)
+  * [Mở Rộng và Mua Lại Dịch Vụ Email](#email-extension-and-service-acquisitions)
+  * [Những Người Tồn Tại: Các Công Ty Email Thực Sự Hoạt Động](#the-survivors-email-companies-that-actually-work)
+## Ma trận thất bại của các startup email {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Cảnh báo tỷ lệ lỗi**: [Chỉ riêng Techstars đã có 28 công ty liên quan đến email](https://www.techstars.com/portfolio) chỉ có 5 lối thoát - tỷ lệ lỗi cực kỳ cao (đôi khi được tính toán là hơn 80%).
+> **Cảnh báo tỷ lệ thất bại**: [Techstars riêng đã có 28 công ty liên quan đến email](https://www.techstars.com/portfolio) với chỉ 5 công ty thoát ra - một tỷ lệ thất bại cực kỳ cao (đôi khi được tính trên 80%).
 
-Sau đây là mọi thất bại lớn của các công ty khởi nghiệp email mà chúng tôi có thể tìm thấy, được sắp xếp theo đơn vị tăng tốc, nguồn tài trợ và kết quả:
+Dưới đây là mọi thất bại lớn của các startup email mà chúng tôi có thể tìm thấy, được tổ chức theo accelerator, vốn đầu tư và kết quả:
 
-| Công ty | Năm | Máy gia tốc | Tài trợ | Kết quả | Trạng thái | Vấn đề chính |
-| ----------------- | ---- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **Thuyền nhỏ** | 2024 | - | [$14.2M total](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/) | Được Notion mua lại → Đóng cửa | 😵 Đã chết | [Founders left Notion for Cursor](https://x.com/skeptrune/status/1939763513695903946) |
-| **Chim sẻ** | 2012 | - | [$247K seed](https://techcrunch.com/2012/07/20/google-acquires-iosmac-email-client-sparrow/), [<$25M acquisition](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client) | Được Google mua lại → Đóng cửa | 😵 Đã chết | [Talent acquisition only](https://money.cnn.com/2012/07/20/technology/google-acquires-sparrow/index.htm) |
-| **Email Copilot** | 2012 | Techstars | ~$120K (tiêu chuẩn Techstars) | Đã mua → Tắt máy | 😵 Đã chết | [Now redirects to Validity](https://www.validity.com/blog/validity-return-path-announcement/) |
-| **Trả lờiGửi** | 2012 | Techstars | ~$120K (tiêu chuẩn Techstars) | Thất bại | 😵 Đã chết | [Vague value proposition](https://www.f6s.com/company/replysend) |
-| **Đã đóng gói** | 2012 | Techstars | ~$120K (tiêu chuẩn Techstars) | Thất bại | 😵 Đã chết | ["Easy. Secure. Email"](https://www.geekwire.com/2012/techstars-spotlight-nveloped/) |
-| **Bối rối** | 2015 | Techstars | ~$120K (tiêu chuẩn Techstars) | Thất bại | 😵 Đã chết | [Email encryption](https://www.siliconrepublic.com/start-ups/irish-start-up-jumble-one-of-11-included-in-techstars-cloud-accelerator) |
-| **Hộp thư đến sốt** | 2011 | Techstars | ~$118K (Techstars 2011) | Thất bại | 😵 Đã chết | [API for email apps](https://twitter.com/inboxfever) |
-| **E-mail** | 2014 | YC | ~$120K (tiêu chuẩn YC) | Xoay trục | 🧟 Thây ma | [Mobile email → "wellness"](https://www.ycdb.co/company/emailio) |
-| **MailTime** | 2016 | YC | ~$120K (tiêu chuẩn YC) | Xoay trục | 🧟 Thây ma | [Email client → analytics](https://www.ycdb.co/company/mailtime) |
-| **gửi lại** | 2009 | YC | ~$20K (YC 2009) | [Acquired by Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Tắt máy | 😵 Đã chết | [iPhone email search](https://www.ycombinator.com/companies/remail) |
-| **Mailhaven** | 2016 | 500 Toàn cầu | ~$100K (tiêu chuẩn 500) | Đã thoát | Không rõ | [Package tracking](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06) |
-
-## Kiểm tra thực tế cơ sở hạ tầng {#the-infrastructure-reality-check}
+| Công ty           | Năm  | Accelerator | Vốn đầu tư                                                                                                                                                                                                   | Kết quả                                                                                  | Tình trạng | Vấn đề chính                                                                                                                          |
+| ----------------- | ---- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Skiff**         | 2024 | -           | [$14.2M tổng cộng](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)                                                                                                                  | Được Notion mua lại → Đóng cửa                                                          | 😵 Chết    | [Nhà sáng lập rời Notion sang Cursor](https://x.com/skeptrune/status/1939763513695903946)                                            |
+| **Sparrow**       | 2012 | -           | [$247K seed](https://techcrunch.com/2012/07/20/google-acquires-iosmac-email-client-sparrow/), [mua lại dưới $25M](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client) | Được Google mua lại → Đóng cửa                                                          | 😵 Chết    | [Chỉ mua lại nhân tài](https://money.cnn.com/2012/07/20/technology/google-acquires-sparrow/index.htm)                               |
+| **Email Copilot** | 2012 | Techstars   | ~120K$ (chuẩn Techstars)                                                                                                                                                                                     | Được mua lại → Đóng cửa                                                                 | 😵 Chết    | [Hiện chuyển hướng sang Validity](https://www.validity.com/blog/validity-return-path-announcement/)                                  |
+| **ReplySend**     | 2012 | Techstars   | ~120K$ (chuẩn Techstars)                                                                                                                                                                                     | Thất bại                                                                                | 😵 Chết    | [Giá trị đề xuất mơ hồ](https://www.f6s.com/company/replysend)                                                                       |
+| **Nveloped**      | 2012 | Techstars   | ~120K$ (chuẩn Techstars)                                                                                                                                                                                     | Thất bại                                                                                | 😵 Chết    | ["Dễ dàng. An toàn. Email"](https://www.geekwire.com/2012/techstars-spotlight-nveloped/)                                             |
+| **Jumble**        | 2015 | Techstars   | ~120K$ (chuẩn Techstars)                                                                                                                                                                                     | Thất bại                                                                                | 😵 Chết    | [Mã hóa email](https://www.siliconrepublic.com/start-ups/irish-start-up-jumble-one-of-11-included-in-techstars-cloud-accelerator)    |
+| **InboxFever**    | 2011 | Techstars   | ~118K$ (Techstars 2011)                                                                                                                                                                                     | Thất bại                                                                                | 😵 Chết    | [API cho ứng dụng email](https://twitter.com/inboxfever)                                                                             |
+| **Emailio**       | 2014 | YC          | ~120K$ (chuẩn YC)                                                                                                                                                                                            | Chuyển hướng                                                                           | 🧟 Zombie | [Email di động → "sức khỏe"](https://www.ycdb.co/company/emailio)                                                                   |
+| **MailTime**      | 2016 | YC          | ~120K$ (chuẩn YC)                                                                                                                                                                                            | Chuyển hướng                                                                           | 🧟 Zombie | [Ứng dụng email → phân tích](https://www.ycdb.co/company/mailtime)                                                                   |
+| **reMail**        | 2009 | YC          | ~20K$ (YC 2009)                                                                                                                                                                                              | [Được Google mua lại](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Đóng cửa | 😵 Chết    | [Tìm kiếm email trên iPhone](https://www.ycombinator.com/companies/remail)                                                          |
+| **Mailhaven**     | 2016 | 500 Global  | ~100K$ (chuẩn 500)                                                                                                                                                                                           | Thoát vốn                                                                               | Không rõ  | [Theo dõi gói hàng](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06)          |
+## Kiểm Tra Thực Tế Hạ Tầng {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **Sự thật ẩn giấu**: Mọi "công ty khởi nghiệp email" đều chỉ đang xây dựng giao diện người dùng trên cơ sở hạ tầng hiện có. Họ không xây dựng máy chủ email thực sự - họ đang xây dựng các ứng dụng kết nối với cơ sở hạ tầng email thực sự.
+> **Sự Thật Ẩn Giấu**: Mỗi "startup email" đều chỉ xây dựng giao diện người dùng trên nền tảng hạ tầng hiện có. Họ không xây dựng máy chủ email thực sự - họ xây dựng các ứng dụng kết nối với hạ tầng email thật.
 
-### Email thực sự chạy gì {#what-actually-runs-email}
+### Thực Sự Điều Khiển Email Là Gì {#what-actually-runs-email}
 
 ```mermaid
 graph TD
@@ -139,7 +138,7 @@ graph TD
     F --> K[Authentication that works]
 ```
 
-### "Các công ty khởi nghiệp email" thực sự xây dựng những gì {#what-email-startups-actually-build}
+### Những Gì "Startup Email" Thực Sự Xây Dựng {#what-email-startups-actually-build}
 
 ```mermaid
 graph LR
@@ -157,120 +156,120 @@ graph LR
 ```
 
 > \[!TIP]
-> **Mô hình then chốt cho sự thành công của email**: Các công ty thực sự thành công trong lĩnh vực email không cố gắng phát minh lại bánh xe. Thay vào đó, họ xây dựng **cơ sở hạ tầng và các công cụ giúp cải thiện** quy trình làm việc email hiện có. [Gửi Lưới](https://sendgrid.com/), [Súng thư](https://www.mailgun.com/) và [Dấu bưu điện](https://postmarkapp.com/) đã trở thành những công ty tỷ đô bằng cách cung cấp các API SMTP và dịch vụ phân phối đáng tin cậy - chúng hoạt động **với** các giao thức email, chứ không phải chống lại chúng. Đây cũng chính là cách tiếp cận mà chúng tôi áp dụng tại Forward Email.
+> **Mẫu Mực Chính Để Thành Công Với Email**: Các công ty thực sự thành công trong email không cố gắng phát minh lại bánh xe. Thay vào đó, họ xây dựng **hạ tầng và công cụ nâng cao** các quy trình email hiện có. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), và [Postmark](https://postmarkapp.com/) trở thành các công ty tỷ đô bằng cách cung cấp API SMTP và dịch vụ giao hàng đáng tin cậy - họ làm việc **với** các giao thức email, không chống lại chúng. Đây cũng là cách tiếp cận mà chúng tôi áp dụng tại Forward Email.
 
-## Tại sao hầu hết các công ty khởi nghiệp email đều thất bại {#why-most-email-startups-fail}
+
+## Tại Sao Hầu Hết Các Startup Email Thất Bại {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **Mô hình cơ bản**: Các công ty khởi nghiệp *khách hàng* email thường thất bại vì họ cố gắng thay thế các giao thức làm việc, trong khi các công ty *cơ sở hạ tầng* email có thể thành công bằng cách cải thiện quy trình làm việc hiện có. Điều quan trọng là hiểu người dùng thực sự cần gì so với những gì doanh nhân nghĩ họ cần.
+> **Mẫu Mực Cơ Bản**: Các startup *client* email thường thất bại vì họ cố gắng thay thế các giao thức đang hoạt động, trong khi các công ty *hạ tầng* email có thể thành công bằng cách nâng cao các quy trình hiện có. Chìa khóa là hiểu người dùng thực sự cần gì so với những gì doanh nhân nghĩ họ cần.
 
-### 1. Giao thức email hoạt động, nhưng việc triển khai thường không {#1-email-protocols-work-implementation-often-doesnt}
+### 1. Giao Thức Email Hoạt Động, Nhưng Việc Triển Khai Thường Không {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Thống kê email**: [347,3 tỷ email được gửi mỗi ngày](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) không có vấn đề gì lớn, đang phục vụ [4,37 tỷ người dùng email trên toàn thế giới](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) tính đến năm 2023.
+> **Thống Kê Email**: [347,3 tỷ email được gửi hàng ngày](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) mà không gặp sự cố lớn, phục vụ [4,37 tỷ người dùng email trên toàn thế giới](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) tính đến năm 2023.
 
-Các giao thức email cốt lõi rất vững chắc, nhưng chất lượng triển khai lại rất khác nhau:
+Các giao thức email cốt lõi rất vững chắc, nhưng chất lượng triển khai rất khác nhau:
 
-* **Khả năng tương thích toàn cầu**: Mọi thiết bị, mọi nền tảng đều hỗ trợ [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) và [POP3](https://tools.ietf.org/html/rfc1939)
-* **Phi tập trung**: Không có điểm lỗi đơn lẻ nào trên [hàng tỷ máy chủ email trên toàn thế giới](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
-* **Chuẩn hóa**: SMTP, IMAP, POP3 là những giao thức đã được kiểm chứng thực tế từ những năm 1980-1990
-* **Độ tin cậy**: [347,3 tỷ email được gửi mỗi ngày](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) mà không gặp sự cố lớn
+* **Tương thích toàn cầu**: Mọi thiết bị, mọi nền tảng đều hỗ trợ [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), và [POP3](https://tools.ietf.org/html/rfc1939)
+* **Phi tập trung**: Không có điểm thất bại duy nhất trên [hàng tỷ máy chủ email toàn cầu](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
+* **Chuẩn hóa**: SMTP, IMAP, POP3 là các giao thức đã được thử nghiệm từ những năm 1980-1990
+* **Đáng tin cậy**: [347,3 tỷ email được gửi hàng ngày](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) mà không gặp sự cố lớn
 
-**Cơ hội thực sự**: Triển khai tốt hơn các giao thức hiện có, chứ không phải thay thế giao thức.
+**Cơ hội thực sự**: Triển khai tốt hơn các giao thức hiện có, không phải thay thế giao thức.
 
-### 2. Hiệu ứng mạng không thể phá vỡ {#2-network-effects-are-unbreakable}
+### 2. Hiệu Ứng Mạng Là Không Thể Phá Vỡ {#2-network-effects-are-unbreakable}
 
-Hiệu ứng mạng lưới của email là tuyệt đối:
+Hiệu ứng mạng của email là tuyệt đối:
 
-* **Mọi người đều có email**: [4,37 tỷ người dùng email trên toàn thế giới](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) tính đến năm 2023
+* **Ai cũng có email**: [4,37 tỷ người dùng email trên toàn thế giới](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) tính đến năm 2023
 * **Đa nền tảng**: Hoạt động liền mạch giữa tất cả các nhà cung cấp
-* **Quan trọng đối với doanh nghiệp**: [99% doanh nghiệp sử dụng email hàng ngày](https://blog.hubspot.com/marketing/email-marketing-stats) cho hoạt động
-* **Chi phí chuyển đổi**: Thay đổi địa chỉ email làm gián đoạn mọi thứ được kết nối với nó
+* **Quan trọng với doanh nghiệp**: [99% doanh nghiệp sử dụng email hàng ngày](https://blog.hubspot.com/marketing/email-marketing-stats) cho hoạt động
+* **Chi phí chuyển đổi**: Thay đổi địa chỉ email phá vỡ mọi thứ liên quan đến nó
 
-### 3. Họ thường nhắm vào những vấn đề sai {#3-they-often-target-the-wrong-problems}
+### 3. Họ Thường Nhắm Vào Những Vấn Đề Sai {#3-they-often-target-the-wrong-problems}
 
-Nhiều công ty khởi nghiệp về email tập trung vào các vấn đề nhận thức được hơn là những điểm khó khăn thực sự:
+Nhiều startup email tập trung vào các vấn đề cảm nhận thay vì điểm đau thực sự:
 
-* **"Email quá phức tạp"**: Quy trình làm việc cơ bản rất đơn giản - [gửi, nhận, sắp xếp từ năm 1971](https://en.wikipedia.org/wiki/History_of_email)
-* **"Email cần AI"**: [Gmail đã có những tính năng thông minh hiệu quả](https://support.google.com/mail/answer/9116836) như Trả lời thông minh và Hộp thư ưu tiên
-* **"Email cần bảo mật tốt hơn"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) và [DMARC](https://tools.ietf.org/html/rfc7489) cung cấp khả năng xác thực mạnh mẽ
-* **"Email cần một giao diện mới"**: Giao diện [Triển vọng](https://outlook.com/) và [Gmail](https://gmail.com/) được tinh chỉnh qua nhiều thập kỷ nghiên cứu người dùng
+* **"Email quá phức tạp"**: Quy trình cơ bản rất đơn giản - [gửi, nhận, tổ chức từ năm 1971](https://en.wikipedia.org/wiki/History_of_email)
+* **"Email cần AI"**: [Gmail đã có các tính năng thông minh hiệu quả](https://support.google.com/mail/answer/9116836) như Trả lời Thông minh và Hộp thư Ưu tiên
+* **"Email cần bảo mật tốt hơn"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), và [DMARC](https://tools.ietf.org/html/rfc7489) cung cấp xác thực vững chắc
+* **"Email cần giao diện mới"**: Giao diện của [Outlook](https://outlook.com/) và [Gmail](https://gmail.com/) được tinh chỉnh qua nhiều thập kỷ nghiên cứu người dùng
+**Những vấn đề thực sự đáng để giải quyết**: Độ tin cậy hạ tầng, khả năng gửi thư, lọc thư rác và công cụ dành cho nhà phát triển.
 
-**Các vấn đề thực tế đáng giải quyết**: Độ tin cậy của cơ sở hạ tầng, khả năng phân phối, lọc thư rác và các công cụ dành cho nhà phát triển.
+### 4. Nợ Kỹ Thuật Rất Lớn {#4-technical-debt-is-massive}
 
-### 4. Nợ kỹ thuật rất lớn {#4-technical-debt-is-massive}
+Xây dựng hạ tầng email thực sự đòi hỏi:
 
-Việc xây dựng cơ sở hạ tầng email thực sự đòi hỏi:
-
-* **Máy chủ SMTP**: Phân phối phức tạp và [quản lý danh tiếng](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
-* **Lọc thư rác**: [bối cảnh đe dọa](https://www.spamhaus.org/) liên tục phát triển
+* **Máy chủ SMTP**: Giao hàng phức tạp và [quản lý danh tiếng](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
+* **Lọc thư rác**: Cảnh quan [mối đe dọa](https://www.spamhaus.org/) liên tục thay đổi
 * **Hệ thống lưu trữ**: Triển khai [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) đáng tin cậy
 * **Xác thực**: Tuân thủ [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617)
-* **Khả năng phân phối**: Mối quan hệ với ISP và [quản lý danh tiếng](https://sendgrid.com/blog/what-is-email-deliverability/)
+* **Khả năng gửi thư**: Quan hệ với ISP và [quản lý danh tiếng](https://sendgrid.com/blog/what-is-email-deliverability/)
 
-### 5. Cơ sở hạ tầng đã tồn tại {#5-the-infrastructure-already-exists}
+### 5. Hạ Tầng Đã Tồn Tại {#5-the-infrastructure-already-exists}
 
-Tại sao phải sáng tạo lại khi bạn có thể sử dụng:
+Tại sao phải phát minh lại khi bạn có thể sử dụng:
 
-* **[Amazon SES](https://aws.amazon.com/ses/)**: Cơ sở hạ tầng phân phối đã được chứng minh
-* **[Hậu tố](http://www.postfix.org/)**: Máy chủ SMTP đã được kiểm nghiệm thực tế
-* **[chuồng bồ câu](https://www.dovecot.org/)**: Máy chủ IMAP/POP3 đáng tin cậy
+* **[Amazon SES](https://aws.amazon.com/ses/)**: Hạ tầng giao hàng đã được chứng minh
+* **[Postfix](http://www.postfix.org/)**: Máy chủ SMTP đã được thử nghiệm thực chiến
+* **[Dovecot](https://www.dovecot.org/)**: Máy chủ IMAP/POP3 đáng tin cậy
 * **[SpamAssassin](https://spamassassin.apache.org/)**: Lọc thư rác hiệu quả
-* **Các nhà cung cấp hiện tại**: [Gmail](https://gmail.com/), [Triển vọng](https://outlook.com/), [FastMail](https://www.fastmail.com/) hoạt động tốt
+* **Các nhà cung cấp hiện có**: [Gmail](https://gmail.com/), [Outlook](https://outlook.com/), [FastMail](https://www.fastmail.com/) hoạt động tốt
 
-## Nghiên cứu điển hình: Khi các công ty khởi nghiệp email thất bại {#case-studies-when-email-startups-fail}
 
-### Nghiên cứu điển hình: Thảm họa Skiff {#case-study-the-skiff-disaster}
+## Nghiên Cứu Trường Hợp: Khi Các Startup Email Thất Bại {#case-studies-when-email-startups-fail}
 
-Skiff là ví dụ điển hình cho mọi sai lầm của các công ty khởi nghiệp về email.
+### Nghiên Cứu Trường Hợp: Thảm Họa Skiff {#case-study-the-skiff-disaster}
 
-#### Thiết lập {#the-setup}
+Skiff là ví dụ điển hình cho mọi vấn đề của các startup email.
+
+#### Thiết Lập {#the-setup}
 
 * **Định vị**: "Nền tảng email và năng suất ưu tiên quyền riêng tư"
-* **Tài trợ**: [Vốn đầu tư mạo hiểm đáng kể](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
-* **Cam kết**: Email tốt hơn nhờ quyền riêng tư và mã hóa
+* **Vốn đầu tư**: [Vốn mạo hiểm đáng kể](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
+* **Lời hứa**: Email tốt hơn nhờ quyền riêng tư và mã hóa
 
-#### Việc mua lại {#the-acquisition}
+#### Việc Mua Lại {#the-acquisition}
 
-[Notion đã mua lại Skiff vào tháng 2 năm 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) với những cam kết mua lại điển hình về tích hợp và phát triển liên tục.
+[Notion mua lại Skiff vào tháng 2 năm 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) với những lời hứa điển hình về tích hợp và phát triển tiếp tục.
 
-#### Thực tế {#the-reality}
+#### Thực Tế {#the-reality}
 
-* **Tắt máy ngay lập tức**: [Skiff đóng cửa trong vòng vài tháng](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
-* **Người sáng lập rời đi**: [Những người sáng lập Skiff rời Notion và gia nhập Cursor](https://x.com/skeptrune/status/1939763513695903946)
-* **Người dùng bỏ cuộc**: Hàng ngàn người dùng buộc phải di chuyển
+* **Đóng cửa ngay lập tức**: [Skiff đóng cửa chỉ trong vài tháng](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
+* **Sự ra đi của nhà sáng lập**: [Các nhà sáng lập Skiff rời Notion và gia nhập Cursor](https://x.com/skeptrune/status/1939763513695903946)
+* **Người dùng bị bỏ rơi**: Hàng ngàn người dùng buộc phải di cư
 
-### Phân tích Accelerator {#the-accelerator-analysis}
+### Phân Tích Từ Các Accelerator {#the-accelerator-analysis}
 
-#### Y Combinator: Nhà máy ứng dụng email {#y-combinator-the-email-app-factory}
+#### Y Combinator: Nhà Máy Ứng Dụng Email {#y-combinator-the-email-app-factory}
 
-[Y Combinator](https://www.ycombinator.com/) đã tài trợ cho hàng chục công ty khởi nghiệp về email. Dưới đây là mô hình:
+[Y Combinator](https://www.ycombinator.com/) đã tài trợ cho hàng chục startup email. Đây là mô hình:
 
-* **[E-mail](https://www.ycdb.co/company/emailio)** (2014): Ứng dụng email di động → chuyển sang "sức khỏe"
-* **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Email dạng trò chuyện → chuyển sang phân tích
-* **[gửi lại thư](https://www.ycombinator.com/companies/remail)** (2009): Tìm kiếm email trên iPhone → [được Google mua lại](https://techcrunch.com/2010/02/17/google-remail-iphone/) → tắt
-* **[Tương tác](https://www.ycombinator.com/companies/rapportive)** (2012): Hồ sơ mạng xã hội Gmail → [được LinkedIn mua lại](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → tắt
+* **[Emailio](https://www.ycdb.co/company/emailio)** (2014): Ứng dụng email di động → chuyển hướng sang "sức khỏe"
+* **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Email kiểu chat → chuyển hướng sang phân tích
+* **[reMail](https://www.ycombinator.com/companies/remail)** (2009): Tìm kiếm email trên iPhone → [được Google mua lại](https://techcrunch.com/2010/02/17/google-remail-iphone/) → đóng cửa
+* **[Rapportive](https://www.ycombinator.com/companies/rapportive)** (2012): Hồ sơ xã hội Gmail → [được LinkedIn mua lại](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → đóng cửa
 
-**Tỷ lệ thành công**: Kết quả trái chiều với một số thương vụ thoái vốn đáng chú ý. Một số công ty đã thành công trong việc mua lại (reMail sang Google, Rapportive sang LinkedIn), trong khi một số khác chuyển hướng khỏi email hoặc được mua lại để thu hút nhân tài.
+**Tỷ lệ thành công**: Kết quả hỗn hợp với một số thương vụ thoát đáng chú ý. Một vài công ty đã được mua lại thành công (reMail cho Google, Rapportive cho LinkedIn), trong khi những công ty khác chuyển hướng khỏi email hoặc bị mua lại để lấy nhân tài.
 
-#### Techstars: Nghĩa địa Email {#techstars-the-email-graveyard}
+#### Techstars: Nghĩa Trang Email {#techstars-the-email-graveyard}
 
-[Techstars](https://www.techstars.com/) thậm chí còn tệ hơn:
+[Techstars](https://www.techstars.com/) có thành tích còn tệ hơn:
 
-* **[Email Copilot](https://www.validity.com/everest/returnpath/)** (2012): Đã mua → tắt
-* **[Trả lờiGửi](https://www.crunchbase.com/organization/replysend)** (2012): Thất bại hoàn toàn
-* **[Nveloped](https://www.crunchbase.com/organization/nveloped)** (2012): "Email dễ dàng. Bảo mật" → thất bại
-* **[lộn xộn](https://www.crunchbase.com/organization/jumble/technology)** (2015): Mã hóa email → thất bại
+* **[Email Copilot](https://www.validity.com/everest/returnpath/)** (2012): Được mua lại → đóng cửa
+* **[ReplySend](https://www.crunchbase.com/organization/replysend)** (2012): Thất bại hoàn toàn
+* **[Nveloped](https://www.crunchbase.com/organization/nveloped)** (2012): "Dễ dàng. An toàn. Email" → thất bại
+* **[Jumble](https://www.crunchbase.com/organization/jumble/technology)** (2015): Mã hóa email → thất bại
 * **[InboxFever](https://www.crunchbase.com/organization/inboxfever)** (2011): API email → thất bại
+**Mô hình**: Đề xuất giá trị mơ hồ, không có đổi mới kỹ thuật thực sự, thất bại nhanh chóng.
 
-**Mẫu**: Giá trị đề xuất mơ hồ, không có cải tiến kỹ thuật thực sự, thất bại nhanh chóng.
-
-### Cái bẫy của nhà đầu tư mạo hiểm {#the-venture-capital-trap}
+### Cạm Bẫy Đầu Tư Mạo Hiểm {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **Nghịch lý tài trợ vốn mạo hiểm**: Các nhà đầu tư mạo hiểm ưa chuộng các startup email vì chúng nghe có vẻ đơn giản nhưng thực chất lại bất khả thi. Chính những giả định cơ bản thu hút đầu tư lại là yếu tố đảm bảo thất bại.
+> **Nghịch lý Tài trợ VC**: Các nhà đầu tư mạo hiểm thích các startup email vì chúng nghe có vẻ đơn giản nhưng thực tế là không thể. Những giả định cơ bản thu hút đầu tư chính là điều đảm bảo thất bại.
 
-Các nhà đầu tư mạo hiểm thích các công ty khởi nghiệp về email vì chúng nghe có vẻ đơn giản nhưng thực tế là không thể:
+Các nhà đầu tư mạo hiểm thích các startup email vì chúng nghe có vẻ đơn giản nhưng thực tế là không thể:
 
 ```mermaid
 graph TD
@@ -290,13 +289,14 @@ graph TD
     I --> M[Reality: Network effects unbreakable]
 ```
 
-**Thực tế**: Không có giả định nào trong số này là đúng với email.
+**Thực tế**: Không giả định nào trong số này đúng với email.
 
-## Thực tế kỹ thuật: Các ngăn xếp email hiện đại {#the-technical-reality-modern-email-stacks}
 
-### Điều gì thực sự thúc đẩy "Các công ty khởi nghiệp email" {#what-actually-powers-email-startups}
+## Thực Tế Kỹ Thuật: Các Ngăn Xếp Email Hiện Đại {#the-technical-reality-modern-email-stacks}
 
-Hãy cùng xem những công ty này thực sự đang kinh doanh những gì:
+### Điều Thực Sự Vận Hành "Các Startup Email" {#what-actually-powers-email-startups}
+
+Hãy xem những công ty này thực sự vận hành gì:
 
 ```mermaid
 graph LR
@@ -309,31 +309,32 @@ graph LR
     G --> H[Built From Scratch]
 ```
 
-### Các vấn đề về hiệu suất {#the-performance-problems}
+### Các Vấn Đề Về Hiệu Suất {#the-performance-problems}
 
-**Bộ nhớ phình to**: Hầu hết các ứng dụng email đều là ứng dụng web dựa trên Electron, tiêu tốn rất nhiều RAM:
+**Tiêu tốn bộ nhớ**: Hầu hết các ứng dụng email là ứng dụng web dựa trên Electron tiêu thụ lượng RAM rất lớn:
 
 * **[Mailspring](https://getmailspring.com/)**: [500MB+ cho email cơ bản](https://github.com/Foundry376/Mailspring/issues/1758)
-* **Nylas Mail**: [Sử dụng bộ nhớ 1GB+](https://github.com/nylas/nylas-mail/issues/3501) trước khi tắt máy
-* **[Hộp thư](https://www.postbox-inc.com/)**: [Bộ nhớ nhàn rỗi 300MB+](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
-* **[Canary Mail](https://canarymail.io/)**: [Thường xuyên xảy ra sự cố do vấn đề bộ nhớ](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Chim Sấm Sét](https://www.thunderbird.net/)**: [Sử dụng RAM cao lên đến 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) bộ nhớ hệ thống
+* **Nylas Mail**: [Sử dụng bộ nhớ hơn 1GB](https://github.com/nylas/nylas-mail/issues/3501) trước khi tắt
+* **[Postbox](https://www.postbox-inc.com/)**: [300MB+ bộ nhớ khi nhàn rỗi](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
+* **[Canary Mail](https://canarymail.io/)**: [Thường xuyên bị crash do vấn đề bộ nhớ](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
+* **[Thunderbird](https://www.thunderbird.net/)**: [Sử dụng RAM cao lên đến 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) bộ nhớ hệ thống
 
 > \[!WARNING]
-> **Khủng hoảng Hiệu suất Electron**: Các ứng dụng email hiện đại được xây dựng bằng Electron và React Native gặp phải tình trạng quá tải bộ nhớ nghiêm trọng và các vấn đề về hiệu suất. Các nền tảng đa nền tảng này, mặc dù tiện lợi cho các nhà phát triển, nhưng lại tạo ra các ứng dụng nặng về tài nguyên, tiêu tốn hàng trăm megabyte đến hàng gigabyte RAM cho các chức năng email cơ bản.
+> **Khủng hoảng Hiệu suất Electron**: Các ứng dụng email hiện đại xây dựng bằng Electron và React Native gặp phải tình trạng tiêu tốn bộ nhớ nghiêm trọng và các vấn đề hiệu suất. Những framework đa nền tảng này, mặc dù tiện lợi cho nhà phát triển, tạo ra các ứng dụng nặng tài nguyên tiêu thụ hàng trăm megabyte đến gigabyte RAM cho chức năng email cơ bản.
 
-**Tiêu hao pin**: Đồng bộ hóa liên tục và mã không hiệu quả:
+**Tiêu hao pin**: Đồng bộ liên tục và mã không hiệu quả:
 
 * Các tiến trình nền không bao giờ ngủ
-* Các lệnh gọi API không cần thiết cứ sau vài giây
+* Các cuộc gọi API không cần thiết mỗi vài giây
 * Quản lý kết nối kém
-* Không có sự phụ thuộc của bên thứ ba, ngoại trừ những phụ thuộc bắt buộc cho chức năng cốt lõi
+* Không có phụ thuộc bên thứ ba ngoại trừ những gì thực sự cần thiết cho chức năng cốt lõi
 
-## Các mô hình thu hút: Thành công so với Đóng cửa {#the-acquisition-patterns-success-vs-shutdown}
 
-### Hai mẫu {#the-two-patterns}
+## Các Mô Hình Thu Hút Người Dùng: Thành Công vs. Đóng Cửa {#the-acquisition-patterns-success-vs-shutdown}
 
-**Mẫu ứng dụng khách hàng (thường thất bại)**:
+### Hai Mô Hình {#the-two-patterns}
+
+**Mô hình Ứng dụng Khách hàng (Thường Thất Bại)**:
 
 ```mermaid
 flowchart TD
@@ -342,14 +343,14 @@ flowchart TD
     C --> D[Talent Acquisition]
     D --> E[Service Shutdown]
 
-    A -.-> A1["Revolutionary interface"]
-    B -.-> B1["$5-50M raised"]
-    C -.-> C1["Acquire users, burn cash"]
-    D -.-> D1["Acqui-hire for talent"]
-    E -.-> E1["Service discontinued"]
+    A -.-> A1["Giao diện cách mạng"]
+    B -.-> B1["Huy động $5-50M"]
+    C -.-> C1["Thu hút người dùng, đốt tiền"]
+    D -.-> D1["Mua lại nhân tài"]
+    E -.-> E1["Dịch vụ bị ngừng"]
 ```
 
-**Mô hình cơ sở hạ tầng (Thường thành công)**:
+**Mô hình Hạ tầng (Thường Thành Công)**:
 
 ```mermaid
 flowchart TD
@@ -358,268 +359,272 @@ flowchart TD
     H --> I[Strategic Acquisition]
     I --> J[Continued Operation]
 
-    F -.-> F1["SMTP/API services"]
-    G -.-> G1["Profitable operations"]
-    H -.-> H1["Market leadership"]
-    I -.-> I1["Strategic integration"]
-    J -.-> J1["Enhanced service"]
+    F -.-> F1["Dịch vụ SMTP/API"]
+    G -.-> G1["Hoạt động có lợi nhuận"]
+    H -.-> H1["Lãnh đạo thị trường"]
+    I -.-> I1["Tích hợp chiến lược"]
+    J -.-> J1["Dịch vụ được cải thiện"]
 ```
 
-### Ví dụ gần đây {#recent-examples}
+### Ví dụ Gần Đây {#recent-examples}
 
-**Lỗi ứng dụng khách hàng**:
+**Các thất bại của Ứng dụng Khách hàng**:
 
-* **Hộp thư → Dropbox → Tắt** (2013-2015)
-* **[Chim sẻ → Google → Tắt máy](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[reMail → Google → Tắt máy](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **[Skiff → Notion → Tắt máy](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
-
+* **Mailbox → Dropbox → Đóng cửa** (2013-2015)
+* **[Sparrow → Google → Đóng cửa](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
+* **[reMail → Google → Đóng cửa](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
+* **[Skiff → Notion → Đóng cửa](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
 **Ngoại lệ đáng chú ý**:
 
-* **[Siêu nhân → Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025): Việc mua lại thành công với sự tích hợp chiến lược vào nền tảng năng suất
+* **[Superhuman → Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025): Mua lại thành công với tích hợp chiến lược vào nền tảng năng suất
 
-**Thành công về cơ sở hạ tầng**:
+**Thành công về hạ tầng**:
 
 * **[SendGrid → Twilio](https://en.wikipedia.org/wiki/SendGrid)** (2019): Mua lại 3 tỷ đô la, tiếp tục tăng trưởng
 * **[Mailgun → Sinch](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021): Tích hợp chiến lược
-* **[Dấu bưu điện → ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022): Nền tảng nâng cao
+* **[Postmark → ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022): Nâng cao nền tảng
 
-## Sự phát triển và hợp nhất của ngành {#industry-evolution-and-consolidation}
 
-### Tiến trình công nghiệp tự nhiên {#natural-industry-progression}
+## Sự tiến hóa và hợp nhất ngành {#industry-evolution-and-consolidation}
 
-Ngành công nghiệp email đã tự nhiên phát triển theo hướng hợp nhất, với các công ty lớn hơn mua lại các công ty nhỏ hơn để tích hợp các tính năng hoặc loại bỏ đối thủ cạnh tranh. Điều này không hẳn là tiêu cực - đó là cách phát triển của hầu hết các ngành công nghiệp đã trưởng thành.
+### Tiến trình tự nhiên của ngành {#natural-industry-progression}
+
+Ngành email đã tiến hóa tự nhiên theo hướng hợp nhất, với các công ty lớn hơn mua lại các công ty nhỏ hơn để tích hợp tính năng hoặc loại bỏ cạnh tranh. Điều này không nhất thiết là tiêu cực - đó là cách hầu hết các ngành công nghiệp trưởng thành phát triển.
 
 ### Chuyển đổi sau khi mua lại {#post-acquisition-transitions}
 
-Khi các công ty email được mua lại, người dùng thường phải đối mặt với:
+Khi các công ty email bị mua lại, người dùng thường gặp phải:
 
 * **Di chuyển dịch vụ**: Chuyển sang nền tảng mới
 * **Thay đổi tính năng**: Mất chức năng chuyên biệt
-* **Điều chỉnh giá**: Các mô hình đăng ký khác nhau
+* **Điều chỉnh giá cả**: Mô hình đăng ký khác nhau
 * **Thời gian tích hợp**: Gián đoạn dịch vụ tạm thời
 
-### Những cân nhắc của người dùng trong quá trình chuyển đổi {#user-considerations-during-transitions}
+### Những điều người dùng cần cân nhắc trong quá trình chuyển đổi {#user-considerations-during-transitions}
 
-Trong quá trình hợp nhất ngành, người dùng được hưởng lợi từ:
+Trong quá trình hợp nhất ngành, người dùng được lợi từ:
 
-* **Đánh giá các lựa chọn thay thế**: Nhiều nhà cung cấp cung cấp các dịch vụ tương tự
-* **Hiểu rõ lộ trình di chuyển**: Hầu hết các dịch vụ đều cung cấp công cụ xuất khẩu
-* **Cân nhắc tính ổn định lâu dài**: Các nhà cung cấp uy tín thường cung cấp tính liên tục cao hơn
+* **Đánh giá các lựa chọn thay thế**: Nhiều nhà cung cấp cung cấp dịch vụ tương tự
+* **Hiểu rõ lộ trình di chuyển**: Hầu hết dịch vụ cung cấp công cụ xuất dữ liệu
+* **Xem xét sự ổn định lâu dài**: Các nhà cung cấp đã thiết lập thường cung cấp sự liên tục hơn
 
-## Kiểm tra thực tế của Hacker News {#the-hacker-news-reality-check}
 
-Mọi email khởi động đều nhận được cùng một bình luận trên [Tin tức Hacker](https://news.ycombinator.com/):
+## Kiểm tra thực tế từ Hacker News {#the-hacker-news-reality-check}
 
-* ["Email hoạt động tốt, điều này giải quyết được vấn đề không đáng quan tâm"](https://news.ycombinator.com/item?id=35982757)
-* ["Chỉ cần sử dụng Gmail/Outlook như mọi người khác"](https://news.ycombinator.com/item?id=36001234)
-* ["Một ứng dụng email khác sẽ bị đóng cửa sau 2 năm nữa"](https://news.ycombinator.com/item?id=36012345)
-* ["Vấn đề thực sự là thư rác và điều này không giải quyết được vấn đề đó"](https://news.ycombinator.com/item?id=36023456)
+Mỗi startup email đều nhận được những bình luận giống nhau trên [Hacker News](https://news.ycombinator.com/):
 
-**Cộng đồng nói đúng**. Những bình luận này xuất hiện trên mọi email khởi động khởi nghiệp vì những vấn đề cơ bản luôn giống nhau.
+* ["Email hoạt động tốt, điều này giải quyết một vấn đề không tồn tại"](https://news.ycombinator.com/item?id=35982757)
+* ["Chỉ cần dùng Gmail/Outlook như mọi người khác"](https://news.ycombinator.com/item?id=36001234)
+* ["Một ứng dụng email khác sẽ bị đóng cửa trong 2 năm"](https://news.ycombinator.com/item?id=36012345)
+* ["Vấn đề thực sự là spam, và điều này không giải quyết được"](https://news.ycombinator.com/item?id=36023456)
 
-## Trò lừa đảo email AI hiện đại {#the-modern-ai-email-grift}
+**Cộng đồng đã đúng**. Những bình luận này xuất hiện ở mọi lần ra mắt startup email vì các vấn đề cơ bản luôn giống nhau.
+
+
+## Chiêu trò email AI hiện đại {#the-modern-ai-email-grift}
 
 ### Làn sóng mới nhất {#the-latest-wave}
 
-Năm 2024 đánh dấu làn sóng mới của các công ty khởi nghiệp "email hỗ trợ AI", với sự ra mắt thành công lớn đầu tiên:
+Năm 2024 mang đến làn sóng mới của các startup "email được hỗ trợ bởi AI", với thương vụ thành công lớn đầu tiên đã xảy ra:
 
-* **[Siêu nhân](https://superhuman.com/)**: [Đã huy động được 33 triệu đô la](https://superhuman.com/), [đã được Grammarly mua lại thành công](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - một lần thoát ứng dụng khách thành công hiếm hoi
-* **[Sóng ngắn](https://www.shortwave.com/)**: Trình bao bọc Gmail với tóm tắt AI
-* **[SaneBox](https://www.sanebox.com/)**: Lọc email AI (thực sự hoạt động, nhưng không mang tính đột phá)
+* **[Superhuman](https://superhuman.com/)**: [Gây quỹ 33 triệu đô](https://superhuman.com/), [được Grammarly mua lại thành công](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - một thương vụ thoát ra ứng dụng khách hiếm hoi thành công
+* **[Shortwave](https://www.shortwave.com/)**: Giao diện Gmail với tóm tắt AI
+* **[SaneBox](https://www.sanebox.com/)**: Lọc email bằng AI (thực sự hiệu quả, nhưng không mang tính cách mạng)
 
-### Những vấn đề cũ rích {#the-same-old-problems}
+### Những vấn đề cũ vẫn vậy {#the-same-old-problems}
 
-Việc thêm "AI" không giải quyết được những thách thức cơ bản:
+Thêm "AI" không giải quyết được các thách thức cơ bản:
 
-* **Tóm tắt AI**: Hầu hết các email đều đã ngắn gọn
-* **Trả lời thông minh**: [Gmail đã có những thứ này trong nhiều năm](https://support.google.com/mail/answer/9116836) và chúng hoạt động tốt
-* **Lên lịch email**: [Outlook thực hiện điều này một cách tự nhiên](https://support.microsoft.com/en-us/office/delay-or-schedule-sending-email-messages-026af69f-c287-490a-a72f-6c65793744ba)
-* **Phát hiện ưu tiên**: Các ứng dụng email hiện có có hệ thống lọc hiệu quả
+* **Tóm tắt AI**: Hầu hết email đã khá ngắn gọn
+* **Trả lời thông minh**: [Gmail đã có từ nhiều năm](https://support.google.com/mail/answer/9116836) và hoạt động tốt
+* **Lên lịch email**: [Outlook hỗ trợ tính năng này sẵn](https://support.microsoft.com/en-us/office/delay-or-schedule-sending-email-messages-026af69f-c287-490a-a72f-6c65793744ba)
+* **Phát hiện ưu tiên**: Các ứng dụng email hiện tại có hệ thống lọc hiệu quả
 
-**Thách thức thực sự**: Các tính năng AI đòi hỏi đầu tư đáng kể vào cơ sở hạ tầng trong khi vẫn giải quyết được những điểm khó khăn tương đối nhỏ.
+**Thách thức thực sự**: Các tính năng AI đòi hỏi đầu tư hạ tầng lớn trong khi chỉ giải quyết các điểm đau tương đối nhỏ.
+
 
 ## Điều gì thực sự hiệu quả: Những câu chuyện thành công thực sự về email {#what-actually-works-the-real-email-success-stories}
 
-### Các công ty cơ sở hạ tầng (Những người chiến thắng) {#infrastructure-companies-the-winners}
+### Các công ty hạ tầng (Những người chiến thắng) {#infrastructure-companies-the-winners}
 
-* **[Gửi Lưới](https://sendgrid.com/)**: [Twilio mua lại với giá 3 tỷ đô la](https://en.wikipedia.org/wiki/SendGrid)
-* **[Súng thư](https://www.mailgun.com/)**: [Doanh thu trên 50 triệu đô la](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), được Sinch mua lại
-* **[Dấu bưu điện](https://postmarkapp.com/)**: Có lãi, [được mua lại bởi ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
-* **[Amazon SES](https://aws.amazon.com/ses/)**: Doanh thu hàng tỷ đô la
+* **[SendGrid](https://sendgrid.com/)**: [Mua lại 3 tỷ đô bởi Twilio](https://en.wikipedia.org/wiki/SendGrid)
+* **[Mailgun](https://www.mailgun.com/)**: [Doanh thu trên 50 triệu đô](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), được Sinch mua lại
+* **[Postmark](https://postmarkapp.com/)**: Có lợi nhuận, [được ActiveCampaign mua lại](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
+* **[Amazon SES](https://aws.amazon.com/ses/)**: Doanh thu hàng tỷ đô
+**Mẫu**: Họ xây dựng hạ tầng, không phải ứng dụng.
 
-**Mẫu**: Họ xây dựng cơ sở hạ tầng chứ không phải ứng dụng.
+### Nhà cung cấp Email (Những người sống sót) {#email-providers-the-survivors}
 
-### Nhà cung cấp email (Những người sống sót) {#email-providers-the-survivors}
-
-* **[FastMail](https://www.fastmail.com/)**: [25+ năm](https://www.fastmail.com/about/), có lợi nhuận, độc lập
+* **[FastMail](https://www.fastmail.com/)**: [Hơn 25 năm](https://www.fastmail.com/about/), có lợi nhuận, độc lập
 * **[ProtonMail](https://proton.me/)**: Tập trung vào quyền riêng tư, tăng trưởng bền vững
-* **[Thư Zoho](https://www.zoho.com/mail/)**: Một phần của bộ doanh nghiệp lớn hơn
+* **[Zoho Mail](https://www.zoho.com/mail/)**: Một phần của bộ công cụ doanh nghiệp lớn hơn
 * **Chúng tôi**: Hơn 7 năm, có lợi nhuận, đang phát triển
 
 > \[!WARNING]
-> **Câu hỏi về Đầu tư JMAP**: Mặc dù Fastmail đầu tư nguồn lực vào [JMAP](https://jmap.io/), một giao thức [Trên 10 tuổi với số lượng nhận con nuôi hạn chế](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), nhưng họ đồng thời cũng đầu tư vào [từ chối thực hiện mã hóa PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) mà nhiều người dùng yêu cầu. Điều này thể hiện một lựa chọn chiến lược nhằm ưu tiên cải tiến giao thức hơn là các tính năng theo yêu cầu của người dùng. Liệu JMAP có được áp dụng rộng rãi hơn hay không vẫn còn phải chờ xem, nhưng hệ sinh thái ứng dụng email hiện tại vẫn chủ yếu dựa vào IMAP/SMTP.
+> **Câu hỏi Đầu tư JMAP**: Trong khi Fastmail đầu tư tài nguyên vào [JMAP](https://jmap.io/), một giao thức đã [hơn 10 năm tuổi với mức độ áp dụng hạn chế](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), họ đồng thời [từ chối triển khai mã hóa PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) mà nhiều người dùng yêu cầu. Điều này thể hiện một lựa chọn chiến lược ưu tiên đổi mới giao thức hơn là các tính năng theo yêu cầu người dùng. Liệu JMAP có được áp dụng rộng rãi hơn hay không vẫn còn phải chờ xem, nhưng hệ sinh thái ứng dụng email hiện tại vẫn chủ yếu dựa vào IMAP/SMTP.
 
 > \[!TIP]
-> **Thành công của doanh nghiệp**: Email chuyển tiếp hỗ trợ [giải pháp email cựu sinh viên cho các trường đại học hàng đầu](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), bao gồm Đại học Cambridge với 30.000 địa chỉ cựu sinh viên, giúp tiết kiệm 87.000 đô la chi phí hàng năm so với các giải pháp truyền thống.
+> **Thành công Doanh nghiệp**: Forward Email cung cấp [giải pháp email cựu sinh viên cho các trường đại học hàng đầu](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), bao gồm Đại học Cambridge với 30.000 địa chỉ cựu sinh viên, tiết kiệm 87.000 đô la chi phí hàng năm so với các giải pháp truyền thống.
 
-**Mẫu**: Chúng cải thiện email chứ không thay thế nó.
+**Mẫu**: Họ cải tiến email, không thay thế nó.
 
 ### Ngoại lệ: Câu chuyện thành công của Xobni {#the-exception-xobnis-success-story}
 
-[Hobney](https://en.wikipedia.org/wiki/Xobni) nổi bật là một trong số ít công ty khởi nghiệp liên quan đến email thực sự thành công nhờ áp dụng đúng phương pháp.
+[Xobni](https://en.wikipedia.org/wiki/Xobni) nổi bật là một trong số ít các startup liên quan đến email thực sự thành công bằng cách đi đúng hướng.
 
-**Những điều Xobni đã làm đúng**:
+**Điều Xobni làm đúng**:
 
-* **Cải thiện email hiện có**: Được xây dựng trên nền tảng Outlook thay vì thay thế nó
-* **Giải quyết các vấn đề thực tế**: Quản lý danh bạ và tìm kiếm email
-* **Tập trung vào tích hợp**: Hoạt động với các quy trình làm việc hiện có
-* **Tập trung vào doanh nghiệp**: Nhắm mục tiêu đến người dùng doanh nghiệp có những khó khăn thực tế
+* **Cải tiến email hiện có**: Xây dựng trên Outlook thay vì thay thế nó
+* **Giải quyết vấn đề thực sự**: Quản lý liên hệ và tìm kiếm email
+* **Tập trung vào tích hợp**: Làm việc với các quy trình hiện có
+* **Tập trung doanh nghiệp**: Nhắm đến người dùng doanh nghiệp với các điểm đau thực sự
 
-**Thành công**: [Xobni đã được Yahoo mua lại với giá 60 triệu đô la vào năm 2013](https://en.wikipedia.org/wiki/Xobni), mang lại lợi nhuận vững chắc cho các nhà đầu tư và là lối thoát thành công cho những người sáng lập.
+**Thành công**: [Xobni được Yahoo mua lại với giá 60 triệu đô la vào năm 2013](https://en.wikipedia.org/wiki/Xobni), mang lại lợi nhuận vững chắc cho nhà đầu tư và một lối thoát thành công cho các nhà sáng lập.
 
 #### Tại sao Xobni thành công trong khi những người khác thất bại {#why-xobni-succeeded-where-others-failed}
 
-1. **Được xây dựng trên cơ sở hạ tầng đã được chứng minh**: Sử dụng tính năng xử lý email hiện có của Outlook
-2. **Giải quyết các vấn đề thực tế**: Quản lý danh bạ thực sự bị lỗi
+1. **Xây dựng trên hạ tầng đã được chứng minh**: Sử dụng khả năng xử lý email hiện có của Outlook
+2. **Giải quyết vấn đề thực tế**: Quản lý liên hệ thực sự bị lỗi
 3. **Thị trường doanh nghiệp**: Doanh nghiệp trả tiền cho các công cụ năng suất
-4. **Phương pháp tích hợp**: Cải tiến thay vì thay thế các quy trình làm việc hiện có
+4. **Phương pháp tích hợp**: Cải tiến thay vì thay thế các quy trình hiện có
 
-#### Thành công liên tục của những người sáng lập {#the-founders-continued-success}
+#### Thành công tiếp tục của các nhà sáng lập {#the-founders-continued-success}
 
 [Matt Brezina](https://www.linkedin.com/in/mattbrezina/) và [Adam Smith](https://www.linkedin.com/in/adamjsmith/) không dừng lại sau Xobni:
 
-* **Matt Brezina**: Trở thành [nhà đầu tư thiên thần](https://mercury.com/investor-database/matt-brezina) tích cực với các khoản đầu tư vào Dropbox, Mailbox và các công ty khác
+* **Matt Brezina**: Trở thành một [nhà đầu tư thiên thần](https://mercury.com/investor-database/matt-brezina) tích cực với các khoản đầu tư vào Dropbox, Mailbox và nhiều công ty khác
 * **Adam Smith**: Tiếp tục xây dựng các công ty thành công trong lĩnh vực năng suất
-* **Cả hai nhà sáng lập**: Chứng minh rằng thành công của email đến từ việc cải tiến, chứ không phải thay thế
+* **Cả hai nhà sáng lập**: Chứng minh rằng thành công trong email đến từ việc cải tiến, không phải thay thế
 
-### Mẫu {#the-pattern}
+### Mẫu hình {#the-pattern}
 
-Các công ty thành công trong việc sử dụng email khi họ:
+Các công ty thành công trong email khi họ:
 
-1. **Xây dựng cơ sở hạ tầng** ([Gửi Lưới](https://sendgrid.com/), [Súng thư](https://www.mailgun.com/))
-2. **Cải thiện quy trình làm việc hiện có** ([Hobney](https://en.wikipedia.org/wiki/Xobni), [FastMail](https://www.fastmail.com/))
-3. **Tập trung vào độ tin cậy** ([Amazon SES](https://aws.amazon.com/ses/), [Dấu bưu điện](https://postmarkapp.com/))
+1. **Xây dựng hạ tầng** ([SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/))
+2. **Cải tiến quy trình hiện có** ([Xobni](https://en.wikipedia.org/wiki/Xobni), [FastMail](https://www.fastmail.com/))
+3. **Tập trung vào độ tin cậy** ([Amazon SES](https://aws.amazon.com/ses/), [Postmark](https://postmarkapp.com/))
 4. **Phục vụ nhà phát triển** (API và công cụ, không phải ứng dụng người dùng cuối)
 
-## Đã có ai thành công trong việc tái tạo email chưa? {#has-anyone-successfully-reinvented-email}
 
-Đây là một câu hỏi then chốt, đi thẳng vào cốt lõi của sự đổi mới email. Câu trả lời ngắn gọn là: **chưa ai thay thế email thành công, nhưng một số người đã cải tiến nó thành công**.
+## Có Ai Đã Thành Công Trong Việc Tái Định Nghĩa Email? {#has-anyone-successfully-reinvented-email}
 
-### Thực sự bị kẹt {#what-actually-stuck}
+Đây là câu hỏi quan trọng đi thẳng vào cốt lõi của đổi mới email. Câu trả lời ngắn gọn là: **chưa ai thành công thay thế email, nhưng một số đã thành công trong việc cải tiến nó**.
 
-Nhìn lại những đổi mới về email trong 20 năm qua:
+### Những gì thực sự được giữ lại {#what-actually-stuck}
 
-* **[Luồng của Gmail](https://support.google.com/mail/answer/5900)**: Cải thiện khả năng sắp xếp email
-* **[Tích hợp lịch của Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)**: Cải thiện khả năng lên lịch
-* **Ứng dụng email di động**: Cải thiện khả năng truy cập
-* **[DKIM](https://tools.ietf.org/html/rfc6376)/[SPF](https://tools.ietf.org/html/rfc7208)/[DMARC](https://tools.ietf.org/html/rfc7489)**: Cải thiện bảo mật
+Nhìn vào các đổi mới email trong 20 năm qua:
 
-**Mẫu**: Tất cả các cải tiến thành công đều **cải thiện** các giao thức email hiện có thay vì thay thế chúng.
+* **[Tính năng nhóm thư của Gmail](https://support.google.com/mail/answer/5900)**: Cải tiến tổ chức email
+* **[Tích hợp lịch của Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)**: Cải tiến lên lịch
+* **Ứng dụng email trên di động**: Cải tiến khả năng truy cập
+* **[DKIM](https://tools.ietf.org/html/rfc6376)/[SPF](https://tools.ietf.org/html/rfc7208)/[DMARC](https://tools.ietf.org/html/rfc7489)**: Cải tiến bảo mật
+**Mẫu**: Tất cả các đổi mới thành công đều **nâng cao** các giao thức email hiện có thay vì thay thế chúng.
 
-### Các công cụ mới bổ sung cho email (nhưng không thay thế nó) {#new-tools-complement-email-but-dont-replace-it}
+### Công Cụ Mới Bổ Sung Cho Email (Nhưng Không Thay Thế Nó) {#new-tools-complement-email-but-dont-replace-it}
 
-* **[Chùng xuống](https://slack.com/)**: Tuyệt vời cho trò chuyện nhóm, nhưng vẫn gửi thông báo qua email
-* **[Bất hòa](https://discord.com/)**: Tuyệt vời cho cộng đồng, nhưng sử dụng email để quản lý tài khoản
+* **[Slack](https://slack.com/)**: Tuyệt vời cho trò chuyện nhóm, nhưng vẫn gửi thông báo qua email
+* **[Discord](https://discord.com/)**: Xuất sắc cho cộng đồng, nhưng sử dụng email để quản lý tài khoản
 * **[WhatsApp](https://www.whatsapp.com/)**: Hoàn hảo cho nhắn tin, nhưng doanh nghiệp vẫn sử dụng email
-* **[Phóng](https://zoom.us/)**: Cần thiết cho các cuộc gọi video, nhưng lời mời họp sẽ được gửi qua email
+* **[Zoom](https://zoom.us/)**: Thiết yếu cho cuộc gọi video, nhưng lời mời họp được gửi qua email
 
-### Thí nghiệm HEY {#the-hey-experiment}
+### Thí Nghiệm HEY {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Xác thực thực tế**: Nhà sáng lập HEY, [DHH](https://dhh.dk/), thực sự sử dụng dịch vụ của chúng tôi tại Forward Email cho tên miền cá nhân `dhh.dk` của mình trong nhiều năm, chứng minh rằng ngay cả những nhà đổi mới email cũng dựa vào cơ sở hạ tầng đã được chứng minh.
+> **Xác Thực Thực Tế**: Người sáng lập HEY [DHH](https://dhh.dk/) thực sự sử dụng dịch vụ của chúng tôi tại Forward Email cho tên miền cá nhân `dhh.dk` của ông trong nhiều năm, chứng minh rằng ngay cả những người đổi mới email cũng dựa vào hạ tầng đã được chứng minh.
 
-[HEY](https://hey.com/) của [Trại căn cứ](https://basecamp.com/) đại diện cho nỗ lực gần đây nhất nhằm "tái tạo" email:
+[HEY](https://hey.com/) của [Basecamp](https://basecamp.com/) đại diện cho nỗ lực nghiêm túc gần đây nhất để "tái phát minh" email:
 
-* **Đã ra mắt**: [2020 với sự phô trương đáng kể](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
-* **Cách tiếp cận**: Mô hình email hoàn toàn mới với tính năng sàng lọc, đóng gói và quy trình làm việc
-* **Phản hồi**: Có sự khác biệt - một số người thích, hầu hết vẫn giữ nguyên email hiện tại
+* **Ra mắt**: [2020 với sự chú ý lớn](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
+* **Phương pháp**: Mô hình email hoàn toàn mới với sàng lọc, gộp nhóm và quy trình làm việc
+* **Phản hồi**: Đa dạng - một số yêu thích, phần lớn vẫn dùng email hiện có
 * **Thực tế**: Vẫn là email (SMTP/IMAP) với giao diện khác
 
-### Điều gì thực sự hiệu quả {#what-actually-works}
+### Điều Gì Thực Sự Hiệu Quả {#what-actually-works}
 
-Những cải tiến thành công nhất về email là:
+Các đổi mới email thành công nhất là:
 
-1. **Cơ sở hạ tầng tốt hơn**: Máy chủ nhanh hơn, lọc thư rác tốt hơn, khả năng phân phối được cải thiện
-2. **Giao diện được cải tiến**: [Chế độ xem cuộc trò chuyện của Gmail](https://support.google.com/mail/answer/5900), [Tích hợp lịch của Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
-3. **Công cụ dành cho nhà phát triển**: API để gửi email, webhooks để theo dõi
-4. **Quy trình làm việc chuyên biệt**: Tích hợp CRM, tự động hóa tiếp thị, email giao dịch
+1. **Hạ tầng tốt hơn**: Máy chủ nhanh hơn, lọc spam tốt hơn, cải thiện khả năng gửi thư
+2. **Giao diện nâng cao**: [Chế độ xem hội thoại của Gmail](https://support.google.com/mail/answer/5900), [tích hợp lịch của Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
+3. **Công cụ dành cho nhà phát triển**: API để gửi email, webhook để theo dõi
+4. **Quy trình làm việc chuyên biệt**: Tích hợp CRM, tự động hóa marketing, email giao dịch
 
-**Không có cái nào trong số này thay thế được email - chúng chỉ làm cho nó tốt hơn.**
+**Không cái nào trong số này thay thế email - chúng làm cho email tốt hơn.**
 
-## Xây dựng cơ sở hạ tầng hiện đại cho các giao thức email hiện có: Phương pháp tiếp cận của chúng tôi {#building-modern-infrastructure-for-existing-email-protocols-our-approach}
 
-Trước khi đi sâu vào những thất bại, điều quan trọng là phải hiểu những gì thực sự hiệu quả trong email. Vấn đề không phải là email bị lỗi - mà là hầu hết các công ty đều cố gắng "sửa" một thứ vốn đã hoạt động hoàn hảo.
+## Xây Dựng Hạ Tầng Hiện Đại Cho Các Giao Thức Email Hiện Có: Cách Tiếp Cận Của Chúng Tôi {#building-modern-infrastructure-for-existing-email-protocols-our-approach}
 
-### Phổ đổi mới email {#the-email-innovation-spectrum}
+Trước khi đi vào các thất bại, điều quan trọng là hiểu điều gì thực sự hiệu quả trong email. Thách thức không phải là email bị hỏng - mà là hầu hết các công ty cố gắng "sửa chữa" thứ đã hoạt động hoàn hảo.
 
-Đổi mới email được chia thành ba loại:
+### Phổ Đổi Mới Email {#the-email-innovation-spectrum}
+
+Đổi mới email thuộc ba loại:
 
 ```mermaid
 graph TD
-    A[Email Innovation Spectrum] --> B[Infrastructure Enhancement]
-    A --> C[Workflow Integration]
-    A --> D[Protocol Replacement]
+    A[Phổ Đổi Mới Email] --> B[Nâng Cao Hạ Tầng]
+    A --> C[Tích Hợp Quy Trình Làm Việc]
+    A --> D[Thay Thế Giao Thức]
 
-    B --> E[What works: Better servers, delivery systems, developer tools]
-    C --> F[Sometimes works: Adding email to existing business processes]
-    D --> G[Always fails: Trying to replace SMTP, IMAP, or POP3]
+    B --> E[Điều hiệu quả: Máy chủ tốt hơn, hệ thống gửi thư, công cụ phát triển]
+    C --> F[Đôi khi hiệu quả: Thêm email vào quy trình kinh doanh hiện có]
+    D --> G[Luôn thất bại: Cố gắng thay thế SMTP, IMAP, hoặc POP3]
 ```
 
-### Tại sao chúng tôi tập trung vào cơ sở hạ tầng {#why-we-focus-on-infrastructure}
+### Tại Sao Chúng Tôi Tập Trung Vào Hạ Tầng {#why-we-focus-on-infrastructure}
 
-Chúng tôi quyết định xây dựng cơ sở hạ tầng email hiện đại vì:
+Chúng tôi chọn xây dựng hạ tầng email hiện đại vì:
 
-* **Giao thức email đã được chứng minh**: [SMTP đã hoạt động đáng tin cậy kể từ năm 1982](https://tools.ietf.org/html/rfc821)
-* **Vấn đề nằm ở khâu triển khai**: Hầu hết các dịch vụ email đều sử dụng các ngăn xếp phần mềm lỗi thời
-* **Người dùng muốn độ tin cậy**: Không phải các tính năng mới làm gián đoạn quy trình làm việc hiện tại
+* **Giao thức email đã được chứng minh**: [SMTP hoạt động ổn định từ năm 1982](https://tools.ietf.org/html/rfc821)
+* **Vấn đề là ở triển khai**: Hầu hết dịch vụ email dùng phần mềm lỗi thời
+* **Người dùng muốn độ tin cậy**: Không phải tính năng mới làm hỏng quy trình hiện có
 * **Nhà phát triển cần công cụ**: API và giao diện quản lý tốt hơn
 
-### Điều thực sự hiệu quả trong Email {#what-actually-works-in-email}
+### Điều Gì Thực Sự Hiệu Quả Trong Email {#what-actually-works-in-email}
 
-Mô hình thành công rất đơn giản: **cải thiện quy trình làm việc email hiện có thay vì thay thế chúng**. Điều này có nghĩa là:
+Mẫu thành công rất đơn giản: **nâng cao quy trình email hiện có thay vì thay thế chúng**. Điều này có nghĩa:
 
 * Xây dựng máy chủ SMTP nhanh hơn, đáng tin cậy hơn
-* Tạo bộ lọc thư rác tốt hơn mà không làm hỏng email hợp lệ
+* Tạo bộ lọc spam tốt hơn mà không làm hỏng email hợp lệ
 * Cung cấp API thân thiện với nhà phát triển cho các giao thức hiện có
-* Cải thiện khả năng phân phối thông qua cơ sở hạ tầng phù hợp
+* Cải thiện khả năng gửi thư qua hạ tầng phù hợp
 
-## Cách tiếp cận của chúng tôi: Tại sao chúng tôi khác biệt {#our-approach-why-were-different}
 
-### Chúng tôi làm gì {#what-we-do}
+## Cách Tiếp Cận Của Chúng Tôi: Tại Sao Chúng Tôi Khác Biệt {#our-approach-why-were-different}
 
-* **Xây dựng cơ sở hạ tầng thực tế**: Máy chủ SMTP/IMAP tùy chỉnh từ đầu
-* **Tập trung vào độ tin cậy**: [Thời gian hoạt động 99,99%](https://status.forwardemail.net), xử lý lỗi phù hợp
-* **Cải thiện quy trình làm việc hiện có**: Làm việc với tất cả các ứng dụng email
-* **Phục vụ nhà phát triển**: API và công cụ thực sự hoạt động
-* **Duy trì khả năng tương thích**: Tuân thủ đầy đủ [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
+### Chúng Tôi Làm Gì {#what-we-do}
 
-### Những gì chúng tôi không làm {#what-we-dont-do}
+* **Xây dựng hạ tầng thực sự**: Máy chủ SMTP/IMAP tùy chỉnh từ đầu
+* **Tập trung vào độ tin cậy**: [99.99% thời gian hoạt động](https://status.forwardemail.net), xử lý lỗi đúng cách
+* **Nâng cao quy trình hiện có**: Hỗ trợ tất cả các client email
+* **Phục vụ nhà phát triển**: API và công cụ thực sự hiệu quả
+* **Duy trì tương thích**: Tuân thủ đầy đủ [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
+### Những Điều Chúng Tôi Không Làm {#what-we-dont-do}
 
-* Xây dựng các ứng dụng email "mang tính cách mạng"
+* Xây dựng các ứng dụng email "cách mạng"
 * Cố gắng thay thế các giao thức email hiện có
 * Thêm các tính năng AI không cần thiết
 * Hứa hẹn sẽ "sửa chữa" email
 
-## Cách chúng tôi xây dựng cơ sở hạ tầng email thực sự hiệu quả {#how-we-build-email-infrastructure-that-actually-works}
 
-### Phương pháp tiếp cận chống khởi nghiệp của chúng tôi {#our-anti-startup-approach}
+## Cách Chúng Tôi Xây Dựng Hạ Tầng Email Thực Sự Hoạt Động {#how-we-build-email-infrastructure-that-actually-works}
 
-Trong khi các công ty khác tiêu tốn hàng triệu đô la để cố gắng cải tiến email, chúng tôi tập trung vào việc xây dựng cơ sở hạ tầng đáng tin cậy:
+### Phương Pháp Chống Startup Của Chúng Tôi {#our-anti-startup-approach}
 
-* **Không có sự thay đổi**: Chúng tôi đã xây dựng cơ sở hạ tầng email trong hơn 7 năm
-* **Không có chiến lược mua lại**: Chúng tôi đang xây dựng cho dài hạn
-* **Không có tuyên bố "mang tính cách mạng"**: Chúng tôi chỉ làm cho email hoạt động tốt hơn
+Trong khi các công ty khác đốt hàng triệu đô la để cố gắng tái phát minh email, chúng tôi tập trung xây dựng hạ tầng đáng tin cậy:
 
-### Điều gì làm nên sự khác biệt của chúng tôi {#what-makes-us-different}
+* **Không đổi hướng**: Chúng tôi đã xây dựng hạ tầng email hơn 7 năm
+* **Không chiến lược mua lại**: Chúng tôi xây dựng cho dài hạn
+* **Không tuyên bố "cách mạng"**: Chúng tôi chỉ làm cho email hoạt động tốt hơn
+
+### Điều Gì Làm Chúng Tôi Khác Biệt {#what-makes-us-different}
 
 > \[!TIP]
-> **Tuân thủ cấp chính phủ**: Email chuyển tiếp là [Tuân thủ Mục 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) và phục vụ các tổ chức như Học viện Hải quân Hoa Kỳ, thể hiện cam kết của chúng tôi trong việc đáp ứng các yêu cầu an ninh nghiêm ngặt của liên bang.
+> **Tuân thủ cấp chính phủ**: Forward Email là [tuân thủ Mục 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) và phục vụ các tổ chức như Học viện Hải quân Hoa Kỳ, thể hiện cam kết của chúng tôi trong việc đáp ứng các yêu cầu bảo mật nghiêm ngặt của liên bang.
 
 > \[!NOTE]
-> **Triển khai OpenPGP và OpenWKD**: Không giống như Fastmail, [từ chối thực hiện PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) nêu ra những lo ngại về tính phức tạp, Forward Email cung cấp hỗ trợ OpenPGP đầy đủ với tính năng tương thích OpenWKD (Web Key Directory), mang đến cho người dùng khả năng mã hóa mà họ thực sự mong muốn mà không buộc họ phải sử dụng các giao thức thử nghiệm như JMAP.
+> **Triển khai OpenPGP và OpenWKD**: Khác với Fastmail, vốn [từ chối triển khai PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) vì lo ngại về độ phức tạp, Forward Email cung cấp hỗ trợ đầy đủ OpenPGP với tuân thủ OpenWKD (Thư mục Khóa Web), mang đến cho người dùng mã hóa mà họ thực sự muốn mà không ép buộc họ sử dụng các giao thức thử nghiệm như JMAP.
 
-**So sánh ngăn xếp kỹ thuật**:
+**So sánh Ngăn xếp Kỹ thuật**:
 
 ```mermaid
 graph TD
@@ -640,46 +645,45 @@ graph TD
     H --> N[Web-native design]
 ```
 
-* \= [Bài đăng trên blog của APNIC](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) xác nhận Proton sử dụng postfix-mta-sts-resolver, cho biết họ chạy ngăn xếp Postfix
+* \= [bài đăng blog APNIC](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) xác nhận Proton sử dụng postfix-mta-sts-resolver, cho thấy họ chạy ngăn xếp Postfix
 
-**Sự khác biệt chính**:
+**Khác biệt chính**:
 
-* **Ngôn ngữ hiện đại**: JavaScript trên toàn bộ ngăn xếp so với mã C những năm 1980
-* **Mã không cần cố định**: Ngôn ngữ đơn giúp loại bỏ sự phức tạp trong tích hợp
-* **Web-native**: Được xây dựng cho phát triển web hiện đại ngay từ đầu
-* **Có thể bảo trì**: Bất kỳ nhà phát triển web nào cũng có thể hiểu và đóng góp
-* **Không có nợ cũ**: Cơ sở mã sạch, hiện đại mà không cần nhiều thập kỷ vá lỗi
-
-> \[!NOTE]
-> **Quyền riêng tư theo thiết kế**: [chính sách bảo mật](https://forwardemail.net/en/privacy) của chúng tôi đảm bảo chúng tôi không lưu trữ email đã chuyển tiếp vào bộ nhớ đĩa hoặc cơ sở dữ liệu, không lưu trữ siêu dữ liệu về email và không lưu trữ nhật ký hoặc địa chỉ IP - chỉ hoạt động trong bộ nhớ dành cho các dịch vụ chuyển tiếp email.
-
-**Tài liệu kỹ thuật**: Để biết thông tin chi tiết về phương pháp, kiến trúc và triển khai bảo mật của chúng tôi, hãy xem [sách trắng kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf) và tài liệu kỹ thuật mở rộng của chúng tôi.
-
-### So sánh nhà cung cấp dịch vụ email: Tăng trưởng thông qua các giao thức đã được chứng minh {#email-service-provider-comparison-growth-through-proven-protocols}
+* **Ngôn ngữ hiện đại**: JavaScript trên toàn bộ ngăn xếp so với mã C thập niên 1980
+* **Không cần glue code**: Một ngôn ngữ duy nhất loại bỏ sự phức tạp tích hợp
+* **Thiết kế web-native**: Xây dựng cho phát triển web hiện đại từ đầu
+* **Dễ bảo trì**: Bất kỳ nhà phát triển web nào cũng có thể hiểu và đóng góp
+* **Không nợ kỹ thuật cũ**: Mã nguồn sạch, hiện đại không có hàng thập kỷ bản vá
 
 > \[!NOTE]
-> **Số liệu tăng trưởng thực tế**: Trong khi các nhà cung cấp khác theo đuổi các giao thức thử nghiệm, Forward Email tập trung vào những gì người dùng thực sự mong muốn - IMAP, POP3, SMTP, CalDAV và CardDAV đáng tin cậy, hoạt động trên mọi thiết bị. Sự tăng trưởng của chúng tôi chứng minh giá trị của phương pháp này.
+> **Bảo mật theo thiết kế**: [Chính sách bảo mật](https://forwardemail.net/en/privacy) của chúng tôi đảm bảo không lưu trữ email được chuyển tiếp trên ổ đĩa hoặc cơ sở dữ liệu, không lưu trữ metadata về email, và không lưu trữ nhật ký hay địa chỉ IP - hoạt động chỉ trong bộ nhớ cho dịch vụ chuyển tiếp email.
 
-| Nhà cung cấp | Tên miền (2024 qua [SecurityTrails](https://securitytrails.com/)) | Tên miền (2025 qua [ViewDNS](https://viewdns.info/reversemx/)) | Phần trăm thay đổi | Bản ghi MX |
-| ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
-| **Chuyển tiếp Email** | 418,477 | 506,653 | **+21.1%** | `mx1.forwardemail.net` |
-| **Thư Proton** | 253,977 | 334,909 | **+31.9%** | `mail.protonmail.ch` |
-| **Fastmail** | 168,433 | 192,075 | **+14%** | `in1-smtp.messagingengine.com` |
-| **Hộp thư** | 38,659 | 43,337 | **+12.1%** | `mxext1.mailbox.org` |
-| **Tổng cộng** | 18,781 | 21,720 | **+15.6%** | `mail.tutanota.de` |
-| **Skiff (đã ngừng hoạt động)** | 7,504 | 3,361 | **-55.2%** | `inbound-smtp.skiff.com` |
+**Tài liệu kỹ thuật**: Để biết chi tiết toàn diện về phương pháp, kiến trúc và triển khai bảo mật của chúng tôi, xem [bản trắng kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf) và tài liệu kỹ thuật mở rộng.
 
-**Thông tin chi tiết chính**:
+### So Sánh Nhà Cung Cấp Dịch Vụ Email: Tăng Trưởng Qua Các Giao Thức Đã Được Chứng Minh {#email-service-provider-comparison-growth-through-proven-protocols}
 
-* **Forward Email** cho thấy sự tăng trưởng mạnh mẽ (+21,1%) với hơn 500.000 tên miền sử dụng bản ghi MX của chúng tôi
-* **Cơ sở hạ tầng đã được chứng minh là thành công**: Các dịch vụ với IMAP/SMTP đáng tin cậy cho thấy sự chấp nhận tên miền ổn định
-* **JMAP không còn phù hợp**: Khoản đầu tư vào JMAP của Fastmail cho thấy sự tăng trưởng chậm hơn (+14%) so với các nhà cung cấp tập trung vào giao thức chuẩn
-* **Skiff sụp đổ**: Công ty khởi nghiệp đã phá sản này mất 55,2% tên miền, cho thấy sự thất bại của các phương pháp tiếp cận email "mang tính cách mạng"
-* **Xác minh thị trường**: Sự tăng trưởng số lượng tên miền phản ánh sự chấp nhận của người dùng thực tế, chứ không phải các chỉ số tiếp thị
+> \[!NOTE]
+> **Số liệu tăng trưởng thực tế**: Trong khi các nhà cung cấp khác chạy theo các giao thức thử nghiệm, Forward Email tập trung vào những gì người dùng thực sự muốn - IMAP, POP3, SMTP, CalDAV và CardDAV đáng tin cậy hoạt động trên tất cả thiết bị. Tăng trưởng của chúng tôi chứng minh giá trị của phương pháp này.
 
-### Dòng thời gian kỹ thuật {#the-technical-timeline}
+| Nhà Cung Cấp       | Tên Miền (2024 qua [SecurityTrails](https://securitytrails.com/)) | Tên Miền (2025 qua [ViewDNS](https://viewdns.info/reversemx/)) | Tỷ Lệ Thay Đổi | Bản Ghi MX                    |
+| ------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------- | -------------- | ----------------------------- |
+| **Forward Email**  | 418,477                                                           | 506,653                                                        | **+21.1%**     | `mx1.forwardemail.net`        |
+| **Proton Mail**    | 253,977                                                           | 334,909                                                        | **+31.9%**     | `mail.protonmail.ch`          |
+| **Fastmail**       | 168,433                                                           | 192,075                                                        | **+14%**       | `in1-smtp.messagingengine.com`|
+| **Mailbox**        | 38,659                                                            | 43,337                                                         | **+12.1%**     | `mxext1.mailbox.org`          |
+| **Tuta**           | 18,781                                                            | 21,720                                                         | **+15.6%**     | `mail.tutanota.de`            |
+| **Skiff (đã ngừng)**| 7,504                                                             | 3,361                                                          | **-55.2%**     | `inbound-smtp.skiff.com`      |
+**Những Thông Tin Quan Trọng**:
 
-Dựa trên [dòng thời gian chính thức của công ty](https://forwardemail.net/en/about) của chúng tôi, đây là cách chúng tôi xây dựng cơ sở hạ tầng email thực sự hoạt động:
+* **Forward Email** thể hiện sự tăng trưởng mạnh (+21,1%) với hơn 500K tên miền sử dụng bản ghi MX của chúng tôi
+* **Cơ sở hạ tầng đã được chứng minh**: Các dịch vụ với IMAP/SMTP đáng tin cậy cho thấy việc áp dụng tên miền ổn định
+* **JMAP không quan trọng**: Đầu tư JMAP của Fastmail tăng trưởng chậm hơn (+14%) so với các nhà cung cấp tập trung vào các giao thức tiêu chuẩn
+* **Sự sụp đổ của Skiff**: Startup đã ngừng hoạt động mất 55,2% tên miền, cho thấy sự thất bại của các phương pháp email "cách mạng"
+* **Xác nhận thị trường**: Tăng trưởng số lượng tên miền phản ánh việc người dùng thực sự áp dụng, không phải chỉ số tiếp thị
+
+### Lịch Trình Kỹ Thuật {#the-technical-timeline}
+
+Dựa trên [lịch trình chính thức của công ty](https://forwardemail.net/en/about), đây là cách chúng tôi xây dựng cơ sở hạ tầng email thực sự hoạt động:
 
 ```mermaid
 timeline
@@ -693,15 +697,15 @@ timeline
     2024 : February - CalDAV support : March-July - IMAP/POP3/CalDAV optimizations : July - iOS Push support and TTI monitoring : August - EML/Mbox export and webhook signatures : September-January 2025 - Vacation responder and OpenPGP/WKD encryption
 ```
 
-### Tại sao chúng tôi thành công trong khi người khác thất bại {#why-we-succeed-where-others-fail}
+### Tại Sao Chúng Tôi Thành Công Trong Khi Người Khác Thất Bại {#why-we-succeed-where-others-fail}
 
 1. **Chúng tôi xây dựng cơ sở hạ tầng, không phải ứng dụng**: Tập trung vào máy chủ và giao thức
-2. **Chúng tôi cải tiến, không thay thế**: Làm việc với các ứng dụng email hiện có
-3. **Chúng tôi có lợi nhuận**: Không áp lực VC phải "phát triển nhanh và đột phá"
-4. **Chúng tôi hiểu rõ về email**: Hơn 7 năm kinh nghiệm kỹ thuật chuyên sâu
-5. **Chúng tôi phục vụ các nhà phát triển**: API và công cụ thực sự giải quyết vấn đề
+2. **Chúng tôi nâng cao, không thay thế**: Làm việc với các ứng dụng email hiện có
+3. **Chúng tôi có lợi nhuận**: Không chịu áp lực từ VC để "tăng trưởng nhanh và phá vỡ mọi thứ"
+4. **Chúng tôi hiểu email**: Hơn 7 năm kinh nghiệm kỹ thuật sâu sắc
+5. **Chúng tôi phục vụ nhà phát triển**: API và công cụ thực sự giải quyết vấn đề
 
-### Kiểm tra thực tế chi phí {#the-cost-reality-check}
+### Kiểm Tra Thực Tế Chi Phí {#the-cost-reality-check}
 
 ```mermaid
 graph TD
@@ -716,276 +720,271 @@ graph TD
     F --> J[Organic growth]
 ```
 
-## Thách thức bảo mật trong cơ sở hạ tầng email {#security-challenges-in-email-infrastructure}
+## Thách Thức Bảo Mật Trong Cơ Sở Hạ Tầng Email {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Bảo mật Email Lượng tử**: Chuyển tiếp Email là [dịch vụ email đầu tiên và duy nhất trên thế giới sử dụng hộp thư SQLite được mã hóa riêng và chống lượng tử](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), cung cấp khả năng bảo mật chưa từng có trước các mối đe dọa điện toán lượng tử trong tương lai.
+> **Bảo Mật Email An Toàn Trước Máy Tính Lượng Tử**: Forward Email là [dịch vụ email đầu tiên và duy nhất trên thế giới sử dụng hộp thư SQLite được mã hóa cá nhân và chống lượng tử](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), cung cấp bảo mật chưa từng có trước các mối đe dọa từ máy tính lượng tử trong tương lai.
 
-Bảo mật email là một thách thức phức tạp ảnh hưởng đến tất cả các nhà cung cấp trong ngành. Thay vì chỉ tập trung vào các sự cố riêng lẻ, việc hiểu rõ những cân nhắc chung về bảo mật mà tất cả các nhà cung cấp cơ sở hạ tầng email phải giải quyết sẽ có giá trị hơn.
+Bảo mật email là một thách thức phức tạp ảnh hưởng đến tất cả các nhà cung cấp trong ngành. Thay vì nhấn mạnh các sự cố cá nhân, điều quan trọng hơn là hiểu các cân nhắc bảo mật chung mà tất cả nhà cung cấp cơ sở hạ tầng email phải giải quyết.
 
-### Những cân nhắc chung về bảo mật {#common-security-considerations}
+### Các Cân Nhắc Bảo Mật Chung {#common-security-considerations}
 
-Tất cả các nhà cung cấp email đều phải đối mặt với những thách thức bảo mật tương tự:
+Tất cả các nhà cung cấp email đều đối mặt với các thách thức bảo mật tương tự:
 
-* **Bảo vệ dữ liệu**: Bảo mật dữ liệu và thông tin liên lạc của người dùng
-* **Kiểm soát truy cập**: Quản lý xác thực và ủy quyền
+* **Bảo vệ dữ liệu**: Bảo mật dữ liệu và giao tiếp của người dùng
+* **Kiểm soát truy cập**: Quản lý xác thực và phân quyền
 * **Bảo mật cơ sở hạ tầng**: Bảo vệ máy chủ và cơ sở dữ liệu
-* **Tuân thủ**: Đáp ứng các yêu cầu quy định khác nhau như [GDPR](https://gdpr.eu/) và [CCPA](https://oag.ca.gov/privacy/ccpa)
+* **Tuân thủ**: Đáp ứng các yêu cầu pháp lý khác nhau như [GDPR](https://gdpr.eu/) và [CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Mã hóa nâng cao**: [thực hành an ninh](https://forwardemail.net/en/security) của chúng tôi bao gồm mã hóa ChaCha20-Poly1305 cho hộp thư, mã hóa toàn bộ ổ đĩa với LUKS v2 và bảo vệ toàn diện với mã hóa khi lưu trữ, mã hóa trong bộ nhớ và mã hóa khi truyền tải.
+> **Mã Hóa Tiên Tiến**: Các [thực hành bảo mật](https://forwardemail.net/en/security) của chúng tôi bao gồm mã hóa ChaCha20-Poly1305 cho hộp thư, mã hóa toàn bộ ổ đĩa với LUKS v2, và bảo vệ toàn diện với mã hóa khi lưu trữ, mã hóa trong bộ nhớ, và mã hóa khi truyền tải.
+### Giá Trị của Sự Minh Bạch {#the-value-of-transparency}
 
-### Giá trị của sự minh bạch {#the-value-of-transparency}
+Khi xảy ra các sự cố bảo mật, phản ứng có giá trị nhất là sự minh bạch và hành động nhanh chóng. Các công ty:
 
-Khi sự cố an ninh xảy ra, phản ứng có giá trị nhất là sự minh bạch và hành động nhanh chóng. Các công ty:
+* **Công bố sự cố kịp thời**: Giúp người dùng đưa ra quyết định sáng suốt
+* **Cung cấp dòng thời gian chi tiết**: Cho thấy họ hiểu rõ phạm vi vấn đề
+* **Triển khai sửa chữa nhanh chóng**: Thể hiện năng lực kỹ thuật
+* **Chia sẻ bài học kinh nghiệm**: Góp phần cải thiện bảo mật toàn ngành
 
-* **Kịp thời tiết lộ sự cố**: Giúp người dùng đưa ra quyết định sáng suốt
-* **Cung cấp mốc thời gian chi tiết**: Cho thấy họ hiểu rõ phạm vi của sự cố
-* **Triển khai bản sửa lỗi nhanh chóng**: Thể hiện năng lực kỹ thuật
-* **Chia sẻ bài học kinh nghiệm**: Đóng góp vào các cải tiến bảo mật toàn ngành
+Những phản ứng này mang lại lợi ích cho toàn bộ hệ sinh thái email bằng cách thúc đẩy các thực hành tốt nhất và khuyến khích các nhà cung cấp khác duy trì tiêu chuẩn bảo mật cao.
 
-Những phản hồi này có lợi cho toàn bộ hệ sinh thái email bằng cách thúc đẩy các biện pháp tốt nhất và khuyến khích các nhà cung cấp khác duy trì các tiêu chuẩn bảo mật cao.
+### Những Thách Thức Bảo Mật Liên Tục {#ongoing-security-challenges}
 
-### Những thách thức bảo mật đang diễn ra {#ongoing-security-challenges}
-
-Ngành công nghiệp email tiếp tục phát triển các biện pháp bảo mật của mình:
+Ngành email tiếp tục phát triển các thực hành bảo mật:
 
 * **Tiêu chuẩn mã hóa**: Triển khai các phương pháp mã hóa tốt hơn như [TLS 1.3](https://tools.ietf.org/html/rfc8446)
-* **Giao thức xác thực**: Cải thiện [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) và [DMARC](https://tools.ietf.org/html/rfc7489)
-* **Phát hiện mối đe dọa**: Phát triển các bộ lọc thư rác và lừa đảo tốt hơn
-* **Củng cố cơ sở hạ tầng**: Bảo mật máy chủ và cơ sở dữ liệu
-* **Quản lý danh tiếng tên miền**: Xử lý [thư rác chưa từng có từ tên miền onmicrosoft.com của Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) yêu cầu [quy tắc chặn tùy ý](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) và [các cuộc thảo luận MSP bổ sung](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
+* **Giao thức xác thực**: Cải thiện [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), và [DMARC](https://tools.ietf.org/html/rfc7489)
+* **Phát hiện mối đe dọa**: Phát triển bộ lọc spam và lừa đảo tốt hơn
+* **Tăng cường hạ tầng**: Bảo mật máy chủ và cơ sở dữ liệu
+* **Quản lý uy tín tên miền**: Đối phó với [spam chưa từng có từ tên miền onmicrosoft.com của Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) đòi hỏi [quy tắc chặn tùy ý](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) và [thảo luận thêm của MSP](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
 
-Những thách thức này đòi hỏi sự đầu tư liên tục và chuyên môn từ tất cả các nhà cung cấp trong lĩnh vực này.
+Những thách thức này đòi hỏi sự đầu tư và chuyên môn liên tục từ tất cả các nhà cung cấp trong lĩnh vực.
 
-## Kết luận: Tập trung vào cơ sở hạ tầng, không phải ứng dụng {#conclusion-focus-on-infrastructure-not-apps}
+## Kết Luận: Tập Trung Vào Hạ Tầng, Không Phải Ứng Dụng {#conclusion-focus-on-infrastructure-not-apps}
 
-### Bằng chứng rõ ràng {#the-evidence-is-clear}
+### Bằng Chứng Rõ Ràng {#the-evidence-is-clear}
 
-Sau khi phân tích hàng trăm công ty khởi nghiệp về email:
+Sau khi phân tích hàng trăm startup email:
 
-* **[Tỷ lệ thất bại 80%+](https://www.techstars.com/portfolio)**: Hầu hết các công ty khởi nghiệp email đều thất bại hoàn toàn (con số này có thể cao hơn 80% rất nhiều; chúng tôi đang nói một cách tử tế)
-* **Ứng dụng khách hàng thường thất bại**: Bị mua lại thường đồng nghĩa với việc các ứng dụng khách hàng email bị phá sản
-* **Cơ sở hạ tầng có thể thành công**: Các công ty xây dựng dịch vụ SMTP/API thường phát triển mạnh
-* **Vốn đầu tư mạo hiểm tạo ra áp lực**: Vốn đầu tư mạo hiểm tạo ra kỳ vọng tăng trưởng không thực tế
-* **Nợ kỹ thuật tích tụ**: Xây dựng cơ sở hạ tầng email khó hơn bạn nghĩ
+* **[Tỷ lệ thất bại trên 80%](https://www.techstars.com/portfolio)**: Hầu hết các startup email hoàn toàn thất bại (con số này có thể CAO HƠN nhiều so với 80%; chúng tôi đang nói nhẹ nhàng)
+* **Ứng dụng khách thường thất bại**: Việc bị mua lại thường đồng nghĩa với sự kết thúc của các ứng dụng email khách
+* **Hạ tầng có thể thành công**: Các công ty xây dựng dịch vụ SMTP/API thường phát triển mạnh
+* **Vốn đầu tư mạo hiểm tạo áp lực**: Vốn đầu tư mạo hiểm tạo ra kỳ vọng tăng trưởng không thực tế
+* **Nợ kỹ thuật tích tụ**: Xây dựng hạ tầng email khó hơn bạn nghĩ
 
-### Bối cảnh lịch sử {#the-historical-context}
+### Bối Cảnh Lịch Sử {#the-historical-context}
 
-Theo các công ty khởi nghiệp, email đã "chết" trong hơn 20 năm:
+Email đã bị cho là "chết" hơn 20 năm theo các startup:
 
 * **2004**: "Mạng xã hội sẽ thay thế email"
-* **2008**: "Nhắn tin di động sẽ giết chết email"
-* **2012**: "[Chùng xuống](https://slack.com/) sẽ thay thế email"
+* **2008**: "Tin nhắn di động sẽ giết chết email"
+* **2012**: "[Slack](https://slack.com/) sẽ thay thế email"
 * **2016**: "AI sẽ cách mạng hóa email"
-* **2020**: "Làm việc từ xa cần những công cụ giao tiếp mới"
-* **2024**: "AI cuối cùng sẽ khắc phục được email"
+* **2020**: "Làm việc từ xa cần công cụ giao tiếp mới"
+* **2024**: "AI cuối cùng sẽ sửa được email"
 
-**Email vẫn còn đó**. Nó vẫn đang phát triển. Nó vẫn thiết yếu.
+**Email vẫn còn đây**. Nó vẫn đang phát triển. Nó vẫn thiết yếu.
 
-### Bài học thực sự {#the-real-lesson}
+### Bài Học Thực Sự {#the-real-lesson}
 
-Bài học ở đây không phải là email không thể được cải thiện. Mà là việc lựa chọn phương pháp tiếp cận phù hợp:
+Bài học không phải là email không thể cải thiện. Mà là chọn cách tiếp cận đúng:
 
-1. **Giao thức email hoạt động**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) đã được kiểm chứng thực tế
-2. **Cơ sở hạ tầng quan trọng**: Độ tin cậy và hiệu suất vượt trội hơn các tính năng hào nhoáng
-3. **Cải tiến vượt trội hơn thay thế**: Làm việc với email, đừng chống lại nó
-4. **Tính bền vững vượt trội hơn tăng trưởng**: Doanh nghiệp có lợi nhuận tồn tại lâu hơn doanh nghiệp được VC tài trợ
-5. **Phục vụ nhà phát triển**: Công cụ và API tạo ra nhiều giá trị hơn ứng dụng người dùng cuối
+1. **Giao thức email hoạt động**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) đã được thử thách qua thời gian
+2. **Hạ tầng quan trọng**: Độ tin cậy và hiệu suất quan trọng hơn tính năng hào nhoáng
+3. **Cải tiến hơn thay thế**: Làm việc cùng email, đừng chống lại nó
+4. **Bền vững hơn tăng trưởng**: Doanh nghiệp có lợi nhuận tồn tại lâu hơn doanh nghiệp được VC tài trợ
+5. **Phục vụ nhà phát triển**: Công cụ và API tạo ra giá trị nhiều hơn ứng dụng người dùng cuối
 
-**Cơ hội**: Triển khai tốt hơn các giao thức đã được chứng minh, chứ không phải thay thế giao thức.
+**Cơ hội**: Triển khai tốt hơn các giao thức đã được chứng minh, không phải thay thế giao thức.
 
 > \[!TIP]
-> **Phân tích Dịch vụ Email Toàn diện**: Để so sánh chuyên sâu 79 dịch vụ email năm 2025, bao gồm các đánh giá chi tiết, ảnh chụp màn hình và phân tích kỹ thuật, hãy xem hướng dẫn toàn diện của chúng tôi: [79 Dịch vụ Email Tốt nhất](https://forwardemail.net/en/blog/best-email-service). Phân tích này chứng minh lý do tại sao Forward Email luôn được xếp hạng là lựa chọn được đề xuất về độ tin cậy, bảo mật và tuân thủ các tiêu chuẩn.
+> **Phân Tích Toàn Diện Dịch Vụ Email**: Để có so sánh chi tiết 79 dịch vụ email năm 2025, bao gồm đánh giá chi tiết, ảnh chụp màn hình và phân tích kỹ thuật, xem hướng dẫn toàn diện của chúng tôi: [79 Dịch Vụ Email Tốt Nhất](https://forwardemail.net/en/blog/best-email-service). Phân tích này chứng minh tại sao Forward Email luôn được xếp hạng là lựa chọn được khuyến nghị về độ tin cậy, bảo mật và tuân thủ tiêu chuẩn.
 
 > \[!NOTE]
-> **Xác thực trong thế giới thực**: Phương pháp của chúng tôi phù hợp với các tổ chức từ [các cơ quan chính phủ yêu cầu tuân thủ Mục 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) đến [các trường đại học lớn quản lý hàng chục ngàn địa chỉ cựu sinh viên](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), chứng minh rằng xây dựng cơ sở hạ tầng đáng tin cậy chính là con đường dẫn đến thành công trong lĩnh vực email.
+> **Xác Thực Thực Tế**: Cách tiếp cận của chúng tôi phù hợp với các tổ chức từ [cơ quan chính phủ yêu cầu tuân thủ Mục 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) đến [các trường đại học lớn quản lý hàng chục nghìn địa chỉ cựu sinh viên](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), chứng minh rằng xây dựng hạ tầng đáng tin cậy là con đường dẫn đến thành công email.
+Nếu bạn đang nghĩ đến việc xây dựng một startup email, hãy cân nhắc xây dựng hạ tầng email thay vào đó. Thế giới cần các máy chủ email tốt hơn, không phải thêm nhiều ứng dụng email.
 
-Nếu bạn đang nghĩ đến việc xây dựng một công ty khởi nghiệp về email, hãy cân nhắc xây dựng cơ sở hạ tầng email. Thế giới cần máy chủ email tốt hơn, chứ không phải nhiều ứng dụng email hơn.
+## Nghĩa trang Email Mở Rộng: Nhiều Thất Bại và Đóng Cửa Hơn {#the-extended-email-graveyard-more-failures-and-shutdowns}
 
-## Nghĩa địa email mở rộng: Thêm nhiều lỗi và sự cố ngừng hoạt động {#the-extended-email-graveyard-more-failures-and-shutdowns}
+### Các Thí Nghiệm Email Của Google Bị Sai Lầm {#googles-email-experiments-gone-wrong}
 
-### Các thử nghiệm email của Google đã sai {#googles-email-experiments-gone-wrong}
+Google, mặc dù sở hữu [Gmail](https://gmail.com/), đã đóng nhiều dự án email:
 
-Google, mặc dù sở hữu [Gmail](https://gmail.com/), đã hủy bỏ nhiều dự án email:
+* **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "Kẻ giết email" mà không ai hiểu
+* **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Thảm họa tích hợp email xã hội
+* **[Inbox by Gmail](https://killedbygoogle.com/)** (2014-2019): Người kế nhiệm "thông minh" của Gmail, bị bỏ rơi
+* **[Google+](https://killedbygoogle.com/)** các tính năng email (2011-2019): Tích hợp email mạng xã hội
 
-* **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "Sát thủ email" mà chẳng ai hiểu nổi
-* **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Thảm họa tích hợp email mạng xã hội
-* **[Hộp thư đến của Gmail](https://killedbygoogle.com/)** (2014-2019): Người kế nhiệm "thông minh" của Gmail, bị bỏ rơi
-* **[Google+](https://killedbygoogle.com/)** tính năng email (2011-2019): Tích hợp email mạng xã hội
+**Mẫu hình**: Ngay cả Google cũng không thể tái tạo thành công email.
 
-**Mẫu**: Ngay cả Google cũng không thể tái tạo thành công email.
+### Thất Bại Liên Tiếp: Ba Lần Chết Của Newton Mail {#the-serial-failure-newton-mails-three-deaths}
 
-### Sự cố hàng loạt: Ba cái chết của Newton Mail {#the-serial-failure-newton-mails-three-deaths}
+[Newton Mail](https://en.wikipedia.org/wiki/CloudMagic) đã chết **ba lần**:
 
-[Thư Newton](https://en.wikipedia.org/wiki/CloudMagic) đã chết **ba lần**:
-
-1. **[Đám mây Magic](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Ứng dụng email được Newton mua lại
+1. **[CloudMagic](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Ứng dụng email được Newton mua lại
 2. **Newton Mail** (2016-2018): Đổi thương hiệu, mô hình đăng ký thất bại
-3. **[Newton Mail Revival](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Cố gắng quay lại, lại thất bại
+3. **[Newton Mail Revival](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Cố gắng trở lại, lại thất bại
 
 **Bài học**: Các ứng dụng email không thể duy trì mô hình đăng ký.
 
-### Các ứng dụng chưa bao giờ ra mắt {#the-apps-that-never-launched}
+### Các Ứng Dụng Chưa Bao Giờ Ra Mắt {#the-apps-that-never-launched}
 
-Nhiều công ty khởi nghiệp về email đã thất bại trước khi ra mắt:
+Nhiều startup email đã chết trước khi ra mắt:
 
-* **Tempo** (2014): Tích hợp lịch-email, ngừng hoạt động trước khi ra mắt
-* **[Luồng thư](https://mailstrom.co/)** (2011): Công cụ quản lý email, được mua trước khi phát hành
+* **Tempo** (2014): Tích hợp lịch-email, đóng cửa trước khi ra mắt
+* **[Mailstrom](https://mailstrom.co/)** (2011): Công cụ quản lý email, được mua lại trước khi phát hành
 * **Fluent** (2013): Ứng dụng email, ngừng phát triển
 
-### Mẫu Thu thập-Tắt máy {#the-acquisition-to-shutdown-pattern}
+### Mẫu Hình Mua Lại Rồi Đóng Cửa {#the-acquisition-to-shutdown-pattern}
 
-* **[Chim sẻ → Google → Tắt máy](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[reMail → Google → Tắt máy](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **Mailbox → Dropbox → Tắt** (2013-2015)
-* **[Accompli → Microsoft → Tắt máy](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (trở thành Outlook Mobile)
-* **[Acompli → Microsoft → Tích hợp](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (hiếm khi thành công)
+* **[Sparrow → Google → Đóng cửa](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
+* **[reMail → Google → Đóng cửa](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
+* **Mailbox → Dropbox → Đóng cửa** (2013-2015)
+* **[Accompli → Microsoft → Đóng cửa](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (trở thành Outlook Mobile)
+* **[Acompli → Microsoft → Tích hợp](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (thành công hiếm hoi)
 
-### Hợp nhất cơ sở hạ tầng email {#email-infrastructure-consolidation}
+### Hợp Nhất Hạ Tầng Email {#email-infrastructure-consolidation}
 
-* **[Hộp thư → eM Client](https://www.postbox-inc.com/)** (2024): Hộp thư bị tắt ngay lập tức sau khi được mua lại
-* **Nhiều lần mua lại**: [ImprovMX](https://improvmx.com/) đã được mua lại nhiều lần, với [những lo ngại về quyền riêng tư được nêu ra](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [thông báo mua lại](https://improvmx.com/blog/improvmx-has-been-acquired) và [danh sách doanh nghiệp](https://quietlight.com/listings/15877422)
-* **Dịch vụ xuống cấp**: Nhiều dịch vụ trở nên kém hơn sau khi được mua lại
+* **[Postbox → eM Client](https://www.postbox-inc.com/)** (2024): Postbox đóng cửa ngay sau khi bị mua lại
+* **Nhiều lần mua lại**: [ImprovMX](https://improvmx.com/) đã bị mua lại nhiều lần, với [lo ngại về quyền riêng tư được nêu ra](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) và [thông báo mua lại](https://improvmx.com/blog/improvmx-has-been-acquired) và [danh sách kinh doanh](https://quietlight.com/listings/15877422)
+* **Suy giảm dịch vụ**: Nhiều dịch vụ trở nên tệ hơn sau khi bị mua lại
 
-## Nghĩa địa email nguồn mở: Khi "Miễn phí" không còn bền vững {#the-open-source-email-graveyard-when-free-isnt-sustainable}
+## Nghĩa Trang Email Mã Nguồn Mở: Khi "Miễn Phí" Không Bền Vững {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
-### Nylas Mail → Mailspring: Cái nĩa không thể {#nylas-mail--mailspring-the-fork-that-couldnt}
+### Nylas Mail → Mailspring: Nhánh Phân Tách Không Thành Công {#nylas-mail--mailspring-the-fork-that-couldnt}
 
-* **[Thư Nylas](https://github.com/nylas/nylas-mail)**: Ứng dụng email nguồn mở, [ngừng sản xuất năm 2017](https://github.com/nylas/nylas-mail) và có [vấn đề sử dụng bộ nhớ lớn](https://github.com/nylas/nylas-mail/issues/3501)
-* **[Mailspring](https://getmailspring.com/)**: Phân nhánh cộng đồng, đang gặp khó khăn trong việc bảo trì và [vấn đề sử dụng RAM cao](https://github.com/Foundry376/Mailspring/issues/1758)
-* **Thực tế**: Ứng dụng email nguồn mở không thể cạnh tranh với các ứng dụng gốc
+* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Ứng dụng email mã nguồn mở, [ngừng phát triển 2017](https://github.com/nylas/nylas-mail) và gặp [vấn đề sử dụng bộ nhớ lớn](https://github.com/nylas/nylas-mail/issues/3501)
+* **[Mailspring](https://getmailspring.com/)**: Nhánh cộng đồng, gặp khó khăn trong bảo trì và [vấn đề sử dụng RAM cao](https://github.com/Foundry376/Mailspring/issues/1758)
+* **Thực tế**: Các ứng dụng email mã nguồn mở không thể cạnh tranh với ứng dụng gốc
 
-### Eudora: Hành trình tử thần 18 năm {#eudora-the-18-year-death-march}
+### Eudora: Cuộc Hành Trình Chết 18 Năm {#eudora-the-18-year-death-march}
 
-* **1988-2006**: Ứng dụng email phổ biến trên Mac/Windows
-* **2006**: [Qualcomm đã ngừng phát triển](https://en.wikipedia.org/wiki/Eudora_\(email_client\))
-* **2007**: Mã nguồn mở với tên gọi "Eudora OSE"
-* **2010**: Dự án bị bỏ dở
-* **Bài học**: Ngay cả những ứng dụng email thành công cuối cùng cũng chết
+* **1988-2006**: Ứng dụng email thống trị cho Mac/Windows
+* **2006**: [Qualcomm ngừng phát triển](https://en.wikipedia.org/wiki/Eudora_\(email_client\))
+* **2007**: Mã nguồn mở dưới tên "Eudora OSE"
+* **2010**: Dự án bị bỏ rơi
+* **Bài học**: Ngay cả các ứng dụng email thành công cuối cùng cũng chết đi
+### FairEmail: Bị Google Play Chính Trị Giết Chết {#fairemail-killed-by-google-play-politics}
 
-### FairEmail: Bị Google Play Politics tiêu diệt {#fairemail-killed-by-google-play-politics}
+* **[FairEmail](https://email.faircode.eu/)**: Ứng dụng email Android tập trung vào quyền riêng tư  
+* **Google Play**: [Bị cấm vì "vi phạm chính sách"](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)  
+* **Thực tế**: Chính sách nền tảng có thể giết chết các ứng dụng email ngay lập tức  
 
-* **[FairEmail](https://email.faircode.eu/)**: Ứng dụng email Android tập trung vào quyền riêng tư
-* **Google Play**: [Bị cấm vì "vi phạm chính sách"](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
-* **Thực tế**: Chính sách nền tảng có thể vô hiệu hóa ứng dụng email ngay lập tức
+### Vấn Đề Bảo Trì {#the-maintenance-problem}
 
-### Vấn đề bảo trì {#the-maintenance-problem}
+Các dự án email mã nguồn mở thất bại vì:
 
-Các dự án email nguồn mở thất bại vì:
+* **Phức tạp**: Các giao thức email phức tạp để triển khai đúng  
+* **Bảo mật**: Cần cập nhật bảo mật liên tục  
+* **Tương thích**: Phải hoạt động với tất cả nhà cung cấp email  
+* **Nguồn lực**: Các nhà phát triển tình nguyện bị kiệt sức  
 
-* **Độ phức tạp**: Giao thức email rất phức tạp để triển khai chính xác
-* **Bảo mật**: Cần cập nhật bảo mật liên tục
-* **Khả năng tương thích**: Phải hoạt động với tất cả các nhà cung cấp dịch vụ email
-* **Nguồn lực**: Sự kiệt sức của các nhà phát triển tình nguyện
+## Sự Bùng Nổ Các Startup Email AI: Lịch Sử Lặp Lại Với "Trí Tuệ" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
-## Sự bùng nổ của công nghệ email AI: Lịch sử lặp lại với "Trí thông minh" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
+### Cơn Sốt Vàng Email AI Hiện Tại {#the-current-ai-email-gold-rush}
 
-### Cơn sốt email AI hiện tại {#the-current-ai-email-gold-rush}
+Các startup email AI năm 2024:
 
-Các công ty khởi nghiệp email AI năm 2024:
+* **[Superhuman](https://superhuman.com/)**: [Gây quỹ 33 triệu đô](https://superhuman.com/), [được Grammarly mua lại](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)  
+* **[Shortwave](https://www.shortwave.com/)**: Y Combinator, Gmail + AI  
+* **[SaneBox](https://www.sanebox.com/)**: Lọc email bằng AI (thực sự có lợi nhuận)  
+* **[Boomerang](https://www.boomeranggmail.com/)**: Lên lịch và trả lời email bằng AI  
+* **[Mail-0/Zero](https://github.com/Mail-0/Zero)**: Startup ứng dụng email dùng AI xây dựng giao diện email mới  
+* **[Inbox Zero](https://github.com/elie222/inbox-zero)**: Trợ lý email AI mã nguồn mở cố gắng tự động hóa quản lý email  
 
-* **[Siêu nhân](https://superhuman.com/)**: [Đã huy động được 33 triệu đô la](https://superhuman.com/), [được Grammarly mua lại](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)
-* **[Sóng ngắn](https://www.shortwave.com/)**: Y Combinator, Gmail + AI
-* **[SaneBox](https://www.sanebox.com/)**: Lọc email bằng AI (thực sự có lợi nhuận)
-* **[Boomerang](https://www.boomeranggmail.com/)**: Lên lịch và phản hồi bằng AI
-* **[Thư-0/Không](https://github.com/Mail-0/Zero)**: Công ty khởi nghiệp về ứng dụng email hỗ trợ AI đang xây dựng thêm một giao diện email khác
-* **[Hộp thư đến số không](https://github.com/elie222/inbox-zero)**: Trợ lý email AI nguồn mở đang nỗ lực tự động hóa việc quản lý email
+### Cơn Sốt Đầu Tư {#the-funding-frenzy}
 
-### Cơn sốt tài trợ {#the-funding-frenzy}
+Các quỹ đầu tư mạo hiểm đang đổ tiền vào "AI + Email":
 
-Các nhà đầu tư mạo hiểm đang đổ tiền vào "AI + Email":
+* **[Đầu tư hơn 100 triệu đô](https://pitchbook.com/)** vào các startup email AI năm 2024  
+* **Lời hứa giống nhau**: "Trải nghiệm email cách mạng"  
+* **Vấn đề giống nhau**: Xây dựng trên cơ sở hạ tầng hiện có  
+* **Kết quả giống nhau**: Phần lớn sẽ thất bại trong vòng 3 năm  
 
-* **[Đã đầu tư hơn 100 triệu đô la](https://pitchbook.com/)** trong các công ty khởi nghiệp email AI năm 2024
-* **Cùng một lời hứa**: "Trải nghiệm email mang tính cách mạng"
-* **Vấn đề tương tự**: Xây dựng trên nền tảng cơ sở hạ tầng hiện có
-* **Kết quả tương tự**: Hầu hết sẽ thất bại trong vòng 3 năm
+### Tại Sao Tất Cả Sẽ Thất Bại (Lần Nữa) {#why-theyll-all-fail-again}
 
-### Tại sao tất cả bọn họ đều sẽ thất bại (một lần nữa) {#why-theyll-all-fail-again}
+1. **AI không giải quyết các vấn đề không tồn tại của email**: Email vẫn hoạt động tốt  
+2. **[Gmail đã có AI](https://support.google.com/mail/answer/9116836)**: Trả lời thông minh, hộp thư ưu tiên, lọc thư rác  
+3. **Lo ngại về quyền riêng tư**: AI cần đọc tất cả email của bạn  
+4. **Cơ cấu chi phí**: Xử lý AI tốn kém, email là hàng hóa phổ thông  
+5. **Hiệu ứng mạng lưới**: Không thể phá vỡ sự thống trị của Gmail/Outlook  
 
-1. **AI không giải quyết được những vấn đề không liên quan đến email**: Email hoạt động tốt
-2. **[Gmail đã có AI](https://support.google.com/mail/answer/9116836)**: Trả lời thông minh, hộp thư đến ưu tiên, lọc thư rác
-3. **Mối quan ngại về quyền riêng tư**: AI yêu cầu đọc tất cả email của bạn
-4. **Cấu trúc chi phí**: Xử lý AI tốn kém, email là hàng hóa thông thường
-5. **Hiệu ứng mạng**: Không thể phá vỡ sự thống trị của Gmail/Outlook
+### Kết Quả Không Thể Tránh Khỏi {#the-inevitable-outcome}
 
-### Kết quả tất yếu {#the-inevitable-outcome}
+* **2025**: [Superhuman được Grammarly mua lại thành công](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) - một thương vụ thoát vốn hiếm hoi thành công cho ứng dụng email  
+* **2025-2026**: Phần lớn các startup email AI còn lại sẽ chuyển hướng hoặc đóng cửa  
+* **2027**: Những người sống sót sẽ bị mua lại, với kết quả hỗn hợp  
+* **2028**: "Email blockchain" hoặc xu hướng tiếp theo sẽ xuất hiện  
 
-* **2025**: [Superhuman đã được Grammarly mua lại thành công](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) - một sự thoái vốn thành công hiếm hoi cho một ứng dụng email
-* **2025-2026**: Hầu hết các công ty khởi nghiệp email AI còn lại sẽ chuyển hướng hoặc đóng cửa
-* **2027**: Những công ty sống sót sẽ bị mua lại, với kết quả trái chiều
-* **2028**: "Email blockchain" hoặc xu hướng tiếp theo sẽ xuất hiện
+## Thảm Họa Hợp Nhất: Khi "Người Sống Sót" Trở Thành Thảm Họa {#the-consolidation-catastrophe-when-survivors-become-disasters}
 
-## Thảm họa hợp nhất: Khi "Những kẻ sống sót" trở thành thảm họa {#the-consolidation-catastrophe-when-survivors-become-disasters}
+### Sự Hợp Nhất Lớn Của Dịch Vụ Email {#the-great-email-service-consolidation}
 
-### Hợp nhất dịch vụ email tuyệt vời {#the-great-email-service-consolidation}
+Ngành email đã hợp nhất mạnh mẽ:
 
-Ngành công nghiệp email đã được củng cố đáng kể:
+* **[ActiveCampaign mua lại Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)  
+* **[Sinch mua lại Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)  
+* **[Twilio mua lại SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)  
+* **Nhiều lần [ImprovMX](https://improvmx.com/) bị mua lại** (đang diễn ra) kèm theo [lo ngại về quyền riêng tư](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) và [thông báo mua lại](https://improvmx.com/blog/improvmx-has-been-acquired) cùng [danh sách kinh doanh](https://quietlight.com/listings/15877422)  
 
-* **[ActiveCampaign đã mua lại Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
-* **[Sinch đã mua lại Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
-* **[Twilio đã mua lại SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **Nhiều lần mua lại [ImprovMX](https://improvmx.com/)** (đang diễn ra) với [mối quan ngại về quyền riêng tư](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [thông báo mua lại](https://improvmx.com/blog/improvmx-has-been-acquired) và [danh sách doanh nghiệp](https://quietlight.com/listings/15877422)
+### Outlook: "Người Sống Sót" Không Ngừng Gặp Sự Cố {#outlook-the-survivor-that-cant-stop-breaking}
 
-### Triển vọng: "Kẻ sống sót" không thể ngừng phá vỡ {#outlook-the-survivor-that-cant-stop-breaking}
+[Microsoft Outlook](https://outlook.com/), mặc dù là "người sống sót," liên tục gặp vấn đề:
 
-[Microsoft Outlook](https://outlook.com/), mặc dù là "người sống sót", vẫn liên tục gặp sự cố:
+* **Rò rỉ bộ nhớ**: [Outlook tiêu thụ gigabyte RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) và [cần khởi động lại thường xuyên](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)  
+* **Vấn đề đồng bộ**: Email biến mất và xuất hiện lại ngẫu nhiên  
+* **Vấn đề hiệu suất**: Khởi động chậm, thường xuyên bị treo  
+* **Vấn đề tương thích**: Gặp lỗi với các nhà cung cấp email bên thứ ba
+**Kinh Nghiệm Thực Tế Của Chúng Tôi**: Chúng tôi thường xuyên giúp khách hàng mà cấu hình Outlook của họ làm hỏng triển khai IMAP hoàn toàn tuân thủ của chúng tôi.
 
-* **Rò rỉ bộ nhớ**: [Outlook tiêu tốn hàng gigabyte RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) và [yêu cầu khởi động lại thường xuyên](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
-* **Sự cố đồng bộ hóa**: Email biến mất và xuất hiện lại ngẫu nhiên
-* **Sự cố hiệu suất**: Khởi động chậm, thường xuyên gặp sự cố
-* **Sự cố tương thích**: Không tương thích với các nhà cung cấp email bên thứ ba
+### Vấn Đề Hạ Tầng Postmark {#the-postmark-infrastructure-problem}
 
-**Kinh nghiệm thực tế của chúng tôi**: Chúng tôi thường xuyên giúp đỡ những khách hàng có thiết lập Outlook không tuân thủ đúng quy trình triển khai IMAP của chúng tôi.
+Sau [việc mua lại của ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
 
-### Vấn đề về cơ sở hạ tầng dấu bưu điện {#the-postmark-infrastructure-problem}
+* **Lỗi Chứng Chỉ SSL**: [Sự cố gián đoạn gần 10 giờ vào tháng 9 năm 2024](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) do chứng chỉ SSL hết hạn
+* **Từ Chối Người Dùng**: [Marc Köhlbrugge bị từ chối](https://x.com/marckohlbrugge/status/1935041134729769379) mặc dù sử dụng hợp pháp
+* **Sự Ra Đi Của Các Nhà Phát Triển**: [@levelsio tuyên bố "Amazon SES là hy vọng cuối cùng của chúng tôi"](https://x.com/levelsio/status/1934197733989999084)
+* **Vấn Đề Với MailGun**: [Scott báo cáo](https://x.com/_SMBaxter/status/1934175626375704675): "Dịch vụ tệ nhất từ @Mail_Gun... chúng tôi không thể gửi email trong 2 tuần"
 
-Sau [Việc mua lại ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
+### Các Nạn Nhân Gần Đây Của Ứng Dụng Email (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-* **Lỗi chứng chỉ SSL**: [Gần 10 giờ mất điện vào tháng 9 năm 2024](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) do chứng chỉ SSL đã hết hạn
-* **Từ chối của người dùng**: [Marc Köhlbrugge bị từ chối](https://x.com/marckohlbrugge/status/1935041134729769379) mặc dù sử dụng hợp lệ
-* **Nhà phát triển rời đi**: [@levelsio tuyên bố "Amazon SES là hy vọng cuối cùng của chúng ta"](https://x.com/levelsio/status/1934197733989999084)
-* **Sự cố MailGun**: [Scott đã báo cáo](https://x.com/\_SMBaxter/status/1934175626375704675): "Dịch vụ tệ nhất từ @Mail_Gun... chúng tôi đã không thể gửi email trong 2 tuần"
+**[Postbox → eM Client](https://www.postbox-inc.com/) Mua Lại**: Năm 2024, eM Client đã mua lại Postbox và [ngay lập tức đóng cửa](https://www.postbox-inc.com/), buộc hàng ngàn người dùng phải di cư.
 
-### Thương vong gần đây của khách hàng email (2024-2025) {#recent-email-client-casualties-2024-2025}
+**Vấn Đề Với [Canary Mail](https://canarymail.io/)**: Mặc dù có [sự hậu thuẫn của Sequoia](https://www.sequoiacap.com/), người dùng báo cáo các tính năng không hoạt động và hỗ trợ khách hàng kém.
 
-**[Hộp thư → eM Client](https://www.postbox-inc.com/) được mua lại**: Vào năm 2024, eM Client đã mua lại Postbox và [ngay lập tức tắt nó đi](https://www.postbox-inc.com/), buộc hàng nghìn người dùng phải di chuyển.
+**[Spark by Readdle](https://sparkmailapp.com/)**: Người dùng ngày càng báo cáo trải nghiệm kém với ứng dụng email này.
 
-**Sự cố [Canary Mail](https://canarymail.io/)**: Mặc dù có [Sự ủng hộ của Sequoia](https://www.sequoiacap.com/), người dùng vẫn báo cáo các tính năng không hoạt động và dịch vụ hỗ trợ khách hàng kém.
+**Vấn Đề Cấp Phép [Mailbird](https://www.getmailbird.com/)**: Người dùng Windows gặp vấn đề về cấp phép và sự nhầm lẫn về đăng ký.
 
-**[Spark của Readdle](https://sparkmailapp.com/)**: Người dùng ngày càng báo cáo trải nghiệm kém với ứng dụng email.
+**Sự Suy Giảm Của [Airmail](https://airmailapp.com/)**: Ứng dụng email Mac/iOS, dựa trên mã nguồn Sparrow thất bại, tiếp tục nhận được [đánh giá kém](https://airmailapp.com/) về độ tin cậy.
 
-**[Chim đưa thư](https://www.getmailbird.com/) Vấn đề cấp phép**: Người dùng Windows gặp phải các vấn đề về cấp phép và nhầm lẫn về đăng ký.
+### Mua Lại Tiện Ích Mở Rộng Và Dịch Vụ Email {#email-extension-and-service-acquisitions}
 
-**[Đường hàng không](https://airmailapp.com/) Từ chối**: Ứng dụng email Mac/iOS, dựa trên cơ sở mã Sparrow bị lỗi, tiếp tục nhận [đánh giá kém](https://airmailapp.com/) do các vấn đề về độ tin cậy.
+**[HubSpot Sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Ngừng Hoạt Động**: Tiện ích theo dõi email của HubSpot đã [ngừng hoạt động vào năm 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) và được thay thế bằng "HubSpot Sales."
 
-### Phần mở rộng email và Mua lại dịch vụ {#email-extension-and-service-acquisitions}
+**[Engage for Gmail](https://help.salesforce.com/s/articleView?id=000394547&type=1) → Ngừng Sử Dụng**: Tiện ích mở rộng Gmail của Salesforce đã [ngừng sử dụng vào tháng 6 năm 2024](https://help.salesforce.com/s/articleView?id=000394547&type=1), buộc người dùng phải chuyển sang các giải pháp khác.
 
-**[HubSpot Sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Đã ngừng cung cấp**: Tiện ích mở rộng theo dõi email của HubSpot trước đây là [ngừng sản xuất vào năm 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) và được thay thế bằng "HubSpot Sales".
+### Những Người Tồn Tại: Các Công Ty Email Thực Sự Hoạt Động {#the-survivors-email-companies-that-actually-work}
 
-**[Tham gia Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Đã ngừng sử dụng**: Tiện ích mở rộng Gmail của Salesforce là [nghỉ hưu vào tháng 6 năm 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), buộc người dùng phải chuyển sang các giải pháp khác.
+Không phải tất cả các công ty email đều thất bại. Dưới đây là những công ty thực sự hoạt động:
 
-### Những người sống sót: Các công ty email thực sự hoạt động {#the-survivors-email-companies-that-actually-work}
+**[Mailmodo](https://www.mailmodo.com/)**: [Câu chuyện thành công của Y Combinator](https://www.ycombinator.com/companies/mailmodo), [$2M từ Sequoia's Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) tập trung vào các chiến dịch email tương tác.
 
-Không phải tất cả các công ty email đều thất bại. Dưới đây là những công ty thực sự hiệu quả:
+**[Mixmax](https://mixmax.com/)**: Đã huy động [$13.3M tổng vốn](https://www.mixmax.com/about) và tiếp tục hoạt động như một nền tảng tương tác bán hàng thành công.
 
-**[Mailmodo](https://www.mailmodo.com/)**: [Câu chuyện thành công của Y Combinator](https://www.ycombinator.com/companies/mailmodo), [2 triệu đô la từ Surge của Sequoia](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) bằng cách tập trung vào các chiến dịch email tương tác.
+**[Outreach.io](https://www.outreach.io/)**: Đạt được [$4.4 tỷ+ định giá](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) và đang chuẩn bị cho khả năng IPO như một nền tảng tương tác bán hàng.
 
-**[Mixmax](https://mixmax.com/)**: Đã nâng cấp [Tổng số tiền tài trợ là 13,3 triệu đô la](https://www.mixmax.com/about) và tiếp tục hoạt động như một nền tảng tương tác bán hàng thành công.
+**[Apollo.io](https://www.apollo.io/)**: Đạt được [$1.6 tỷ định giá](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) với vòng gọi vốn Series D 100 triệu USD năm 2023 cho nền tảng trí tuệ bán hàng của họ.
 
-**[Outreach.io](https://www.outreach.io/)**: Đã đạt [Định giá 4,4 tỷ đô la trở lên](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) và đang chuẩn bị cho đợt IPO tiềm năng với tư cách là nền tảng tương tác bán hàng.
+**[GMass](https://www.gmass.co/)**: Câu chuyện thành công tự thân tạo ra [$140K/tháng](https://www.indiehackers.com/product/gmass) như một tiện ích mở rộng Gmail cho tiếp thị email.
 
-**[Apollo.io](https://www.apollo.io/)**: Đạt được [Định giá 1,6 tỷ đô la](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) với vòng gọi vốn Series D trị giá 100 triệu đô la vào năm 2023 cho nền tảng thông tin bán hàng của họ.
+**[Streak CRM](https://www.streak.com/)**: CRM dựa trên Gmail thành công đã hoạt động [từ năm 2012](https://www.streak.com/about) mà không gặp sự cố lớn.
 
-**[GMass](https://www.gmass.co/)**: Câu chuyện thành công của Bootstrap khi tạo [140.000 đô la/tháng](https://www.indiehackers.com/product/gmass) dưới dạng tiện ích mở rộng của Gmail cho tiếp thị qua email.
+**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: Được [Marketo mua lại thành công vào năm 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) sau khi huy động hơn 15 triệu USD vốn.
+**[Bananatag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Được Staffbase mua lại vào năm 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) và tiếp tục hoạt động dưới tên "Staffbase Email."
 
-**[Streak CRM](https://www.streak.com/)**: CRM thành công dựa trên Gmail đã hoạt động [từ năm 2012](https://www.streak.com/about) mà không có sự cố lớn nào.
-
-**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: Đã thành công [được Marketo mua lại vào năm 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) sau khi huy động được hơn 15 triệu đô la tiền tài trợ.
-
-**[Bananatag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Được Staffbase mua lại vào năm 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) và tiếp tục hoạt động với tên "Email Staffbase".
-
-**Mô hình chính**: Những công ty này thành công vì họ **cải thiện quy trình làm việc email hiện có** thay vì cố gắng thay thế hoàn toàn email. Họ xây dựng các công cụ hoạt động **với** cơ sở hạ tầng email, chứ không phải chống lại nó.
+**Mẫu Chính**: Những công ty này thành công vì họ **nâng cao quy trình làm việc email hiện có** thay vì cố gắng thay thế hoàn toàn email. Họ xây dựng các công cụ hoạt động **cùng với** hạ tầng email, không chống lại nó.
 
 > \[!TIP]
-> **Bạn không thấy nhà cung cấp nào được đề cập ở đây?** (ví dụ: Posteo, Mailbox.org, Migadu, v.v.) Hãy tham khảo [trang so sánh dịch vụ email toàn diện](https://forwardemail.net/en/blog/best-email-service) của chúng tôi để biết thêm thông tin chi tiết.
+> **Không thấy nhà cung cấp bạn biết được đề cập ở đây?** (ví dụ Posteo, Mailbox.org, Migadu, v.v.) Tham khảo [trang so sánh dịch vụ email toàn diện của chúng tôi](https://forwardemail.net/en/blog/best-email-service) để có thêm thông tin chi tiết.

@@ -1,8 +1,9 @@
-# Tietoja sähköpostin edelleenlähetyksestä {#about-forward-email}
+# Tietoa Forward Emailista {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email -tiimi ja yrityksen tarina" class="rounded-lg" />
 
-# Tietoja sähköpostin edelleenlähetyksestä {#about-forward-email-1}
+# Tietoa Forward Emailista {#about-forward-email-1}
+
 
 ## Sisällysluettelo {#table-of-contents}
 
@@ -11,136 +12,153 @@
 * [Aikajana](#timeline)
   * [2017 - Perustaminen ja lanseeraus](#2017---founding-and-launch)
   * [2018 - Infrastruktuuri ja integraatio](#2018---infrastructure-and-integration)
-  * [2019 - Suorituskyvyn vallankumous](#2019---performance-revolution)
-  * [2020 - Yksityisyyden ja turvallisuuden painopiste](#2020---privacy-and-security-focus)
+  * [2019 - Suorituskykymurros](#2019---performance-revolution)
+  * [2020 - Yksityisyys- ja turvallisuuskeskittymä](#2020---privacy-and-security-focus)
   * [2021 - Alustan modernisointi](#2021---platform-modernization)
   * [2023 - Infrastruktuurin ja ominaisuuksien laajennus](#2023---infrastructure-and-feature-expansion)
   * [2024 - Palvelun optimointi ja edistyneet ominaisuudet](#2024---service-optimization-and-advanced-features)
-  * [2025 - Yksityisyyden parannukset ja protokollatuki](#2025---privacy-enhancements-and-protocol-support)
-  * [2026 - RFC-yhteensopivuus ja edistynyt suodatus](#2026---rfc-compliance-and-advanced-filtering)
+  * [2025 - Yksityisyyden parannukset ja protokollatuki {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC-yhteensopivuus ja edistynyt suodatus {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
 * [Keskeiset periaatteet](#core-principles)
-* [Nykyinen tila](#current-status)
+* [Nykytila](#current-status)
+
 
 ## Yleiskatsaus {#overview}
 
 > \[!TIP]
-> Teknisiä tietoja arkkitehtuuristamme, tietoturvatoteutuksistamme ja etenemissuunnitelmastamme on kohdassa [Tekninen raportti](https://forwardemail.net/technical-whitepaper.pdf).
+> Teknisiä yksityiskohtia arkkitehtuuristamme, turvallisuusratkaisuistamme ja tiekartastamme varten katso [Tekninen valkoinen kirja](https://forwardemail.net/technical-whitepaper.pdf).
 
-Sähköpostin edelleenlähetys on [ilmainen ja avoimen lähdekoodin](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [sähköpostin edelleenlähetys](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") -palvelu, joka keskittyy käyttäjän [oikeus yksityisyyteen](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy")-tilille. Vuonna 2017 yksinkertaisena sähköpostin edelleenlähetysratkaisuna alkanut palvelu on kehittynyt kattavaksi sähköpostialustaksi, joka tarjoaa rajattomasti mukautettuja verkkotunnuksia, rajattomasti sähköpostiosoitteita ja aliaksia, rajattomasti kertakäyttöisiä sähköpostiosoitteita, roskaposti- ja tietojenkalastelusuojauksen, salatun postilaatikon tallennuksen ja lukuisia edistyneitä ominaisuuksia.
+Forward Email on [ilmainen ja avoimen lähdekoodin](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [sähköpostin edelleenlähetyspalvelu](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding"), joka keskittyy käyttäjän [yksityisyyden suojaan](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). Vuonna 2017 yksinkertaisena sähköpostin edelleenlähetysratkaisuna alkanut palvelu on kehittynyt kattavaksi sähköpostialustaksi, joka tarjoaa rajattomasti omia verkkotunnuksia, rajattomasti sähköpostiosoitteita ja aliaksia, rajattomasti kertakäyttöisiä sähköpostiosoitteita, roskaposti- ja tietojenkalastelusuojausta, salatun postilaatikon tallennuksen sekä lukuisia edistyneitä ominaisuuksia.
 
-Palvelua ylläpitää ja omistaa sen alkuperäinen perustajatiimi, joka koostuu suunnittelijoista ja kehittäjistä. Se on rakennettu 100 % avoimen lähdekoodin ohjelmistolla käyttäen [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript"):aa, [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"):tä, [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"):ta, [HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS"):a, [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS"):ää ja [SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP"):tä.
+Palvelua ylläpitää ja omistaa sen alkuperäinen perustajatiimi, joka koostuu suunnittelijoista ja kehittäjistä. Se on rakennettu 100 % avoimen lähdekoodin ohjelmistoilla käyttäen [JavaScriptiä](https://en.wikipedia.org/wiki/JavaScript "JavaScript"), [Node.js:ää](https://en.wikipedia.org/wiki/Node.js "Node.js"), [DNS:ää](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), [HTTPS:ää](https://en.wikipedia.org/wiki/HTTPS "HTTPS"), [TLS:ää](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS") ja [SMTP:tä](https://en.wikipedia.org/wiki/SMTP "SMTP").
+
 
 ## Perustaja ja missio {#founder-and-mission}
 
-**Nicholas Baugh** perusti Forward Emailin vuonna 2017. [Sähköpostin edelleenlähetyksen tekninen raportti](https://forwardemail.net/technical-whitepaper.pdf):n mukaan Baugh etsi aluksi kustannustehokasta ja yksinkertaista ratkaisua sähköpostin käyttöönottoon verkkotunnuksissa sivuprojekteissaan. Tutkittuaan saatavilla olevia vaihtoehtoja hän alkoi koodata omaa ratkaisuaan ja osti verkkotunnuksen `forwardemail.net` 2. lokakuuta 2017.
+Forward Emailin perusti **Nicholas Baugh** vuonna 2017. [Forward Emailin teknisen valkoisen kirjan](https://forwardemail.net/technical-whitepaper.pdf) mukaan Baugh etsi aluksi kustannustehokasta ja yksinkertaista ratkaisua sähköpostin käyttöönottoon verkkotunnuksilleen sivuprojekteissaan. Saatuaan tietoa saatavilla olevista vaihtoehdoista hän alkoi koodata omaa ratkaisuaan ja osti verkkotunnuksen `forwardemail.net` 2. lokakuuta 2017.
 
-Forward Emailin missio ulottuu sähköpostipalveluiden tarjoamisen ulkopuolelle – se pyrkii mullistamaan alan lähestymistavan sähköpostin yksityisyyteen ja tietoturvaan. Yrityksen ydinarvoihin kuuluvat läpinäkyvyys, käyttäjien hallinta ja yksityisyyden suoja teknisen toteutuksen kautta pelkkien käytäntölupausten sijaan.
+Forward Emailin missio ulottuu sähköpostipalveluiden tarjoamista pidemmälle — se pyrkii muuttamaan alan lähestymistapaa sähköpostin yksityisyyteen ja turvallisuuteen. Yrityksen keskeisiä arvoja ovat läpinäkyvyys, käyttäjän hallinta ja yksityisyyden suoja teknisten toteutusten kautta, ei pelkästään politiikkalupausten avulla.
+
 
 ## Aikajana {#timeline}
 
 ### 2017 - Perustaminen ja lanseeraus {#2017---founding-and-launch}
 
-**2. lokakuuta 2017**: Nicholas Baugh osti verkkotunnuksen `forwardemail.net` tutkittuaan kustannustehokkaita sähköpostiratkaisuja sivuprojekteilleen.
+**2. lokakuuta 2017**: Nicholas Baugh osti verkkotunnuksen `forwardemail.net` tutustuttuaan kustannustehokkaisiin sähköpostiratkaisuihin sivuprojektejaan varten.
 
-**5. marraskuuta 2017**: Baugh loi 634-rivisen JavaScript-tiedoston käyttämällä [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js")-palvelua sähköpostien edelleenlähettämiseen mille tahansa mukautetulle verkkotunnukselle. Tämä alustava toteutus julkaistiin avoimen lähdekoodin palveluna [GitHub](https://github.com/forwardemail):lle, ja palvelu käynnistettiin GitHub Pagesin avulla.
+**5. marraskuuta 2017**: Baugh loi 634 rivin JavaScript-tiedoston käyttäen [Node.js:ää](https://en.wikipedia.org/wiki/Node.js "Node.js") edelleenlähettääkseen sähköposteja mille tahansa omalle verkkotunnukselle. Tämä alkuperäinen toteutus julkaistiin avoimen lähdekoodin projektina [GitHubissa](https://github.com/forwardemail) ja palvelu lanseerattiin GitHub Pagesin avulla.
+**Marraskuu 2017**: Forward Email julkaistiin virallisesti alkuperäisen julkaisun jälkeen. Varhainen versio perustui pelkästään DNS:ään ilman tilin rekisteröintiä tai kirjautumisprosessia—pelkkä README-tiedosto kirjoitettuna Markdownilla ohjeineen. Käyttäjät pystyivät määrittämään sähköpostin edelleenlähetyksen konfiguroimalla MX-tietueet osoittamaan `mx1.forwardemail.net` ja `mx2.forwardemail.net` -osoitteisiin sekä lisäämällä TXT-tietueen, jossa oli `forward-email=user@gmail.com`.
 
-**Marraskuu 2017**: Sähköpostin edelleenlähetys julkaistiin virallisesti alkuperäisen julkaisun jälkeen. Varhainen versio oli puhtaasti DNS-pohjainen ilman tilin rekisteröintiä tai rekisteröitymisprosessia – se oli vain Markdownilla kirjoitettu README-tiedosto ohjeineen. Käyttäjät pystyivät määrittämään sähköpostin edelleenlähetyksen määrittämällä MX-tietueet osoittamaan `mx1.forwardemail.net`- ja `mx2.forwardemail.net`-tietueisiin ja lisäämällä TXT-tietueen `forward-email=user@gmail.com`-tietueella.
-
-Tämän ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehittäjien keskuudessa, mukaan lukien [David Heinemeier Hansson](https://dhh.dk) (Ruby on Railsin luoja), joka jatkaa sähköpostin edelleen lähettämistä verkkotunnuksellaan `dhh.dk`.
+Ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehittäjien keskuudessa, mukaan lukien [David Heinemeier Hansson](https://dhh.dk) (Ruby on Railsin luoja), joka käyttää edelleen Forward Emailia omalla `dhh.dk`-verkkotunnuksellaan tähän päivään asti.
 
 ### 2018 - Infrastruktuuri ja integraatio {#2018---infrastructure-and-integration}
 
-**Huhtikuu 2018**: Kun [Pilvimyrsky](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") julkaisi [yksityisyyttä ensisijaisesti huomioiva kuluttajille suunnattu DNS-palvelu](https://blog.cloudflare.com/announcing-1111/)-palvelunsa, Forward Email -palvelu vaihtoi [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS")-palvelusta [Pilvimyrsky](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare")-palveluun [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System")-hakujen käsittelyssä, mikä osoittaa yrityksen sitoutumisen yksityisyyttä suojaaviin infrastruktuurivalintoihin.
+**Huhtikuu 2018**: Kun [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") julkaisi [yksityisyyttä korostavan kuluttajille suunnatun DNS-palvelunsa](https://blog.cloudflare.com/announcing-1111/), Forward Email vaihtoi käyttämään [Cloudflarea](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") [OpenDNS:n](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") sijaan DNS-kyselyiden käsittelyssä, osoittaen yrityksen sitoutumisen yksityisyyttä painottaviin infrastruktuurivalintoihin.
 
-**Lokakuu 2018**: Sähköpostin edelleenlähetystoiminto mahdollisti käyttäjille sähköpostin lähettämisen osoitteena [Gmail](https://en.wikipedia.org/wiki/Gmail "Gmail")- ja [Näkymät](https://en.wikipedia.org/wiki/Outlook "Outlook")-ominaisuuksien avulla, mikä laajensi integrointimahdollisuuksia suosittujen sähköpostipalveluntarjoajien kanssa.
+**Lokakuu 2018**: Forward Email mahdollisti käyttäjille "Lähetä sähköpostina" -toiminnon [Gmailin](https://en.wikipedia.org/wiki/Gmail "Gmail") ja [Outlookin](https://en.wikipedia.org/wiki/Outlook "Outlook") kanssa, laajentaen integraatiomahdollisuuksia suosittujen sähköpostipalveluntarjoajien kanssa.
 
-### 2019 - Suorituskyvyn vallankumous {#2019---performance-revolution}
+### 2019 - Suorituskykyvallankumous {#2019---performance-revolution}
 
-**Toukokuu 2019**: Forward Email julkaisi version 2, joka edusti merkittävää uudelleenkirjoitusta alkuperäisiin versioihin verrattuna. Tämä päivitys keskittyi [suorituskyky](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing")-version parannuksiin [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js")-version [purot](https://en.wikipedia.org/wiki/Streams "Streams")-version avulla, mikä loi perustan alustan skaalautuvuudelle.
+**Toukokuu 2019**: Forward Email julkaisi v2-version, joka edusti merkittävää uudelleenkirjoitusta alkuperäisistä versioista. Tämä päivitys keskittyi [suorituskyvyn](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing") parantamiseen hyödyntämällä [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") [streamsejä](https://en.wikipedia.org/wiki/Streams "Streams"), luoden perustan alustan skaalautuvuudelle.
 
-### 2020 - Tietosuoja ja tietoturva keskittyvät {#2020---privacy-and-security-focus}
+### 2020 - Yksityisyys- ja turvallisuuspainotus {#2020---privacy-and-security-focus}
 
-**Helmikuu 2020**: Forward Email julkaisi Enhanced Privacy Protection -paketin, jonka avulla käyttäjät voivat poistaa käytöstä julkisten DNS-tietueiden asettamisen sähköpostin edelleenlähetysmääritysaliaksiensa yhteydessä. Tämän paketin avulla käyttäjän sähköpostialiasten tiedot piilotetaan julkisesti internetistä haettavilta. Yritys julkaisi myös ominaisuuden, jolla voi ottaa käyttöön tai poistaa käytöstä tiettyjä aliaksia, mutta ne voivat silti näkyä kelvollisina sähköpostiosoitteina ja palauttaa onnistuneen [SMTP-tilakoodit](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes")-muuttujan, jolloin sähköpostit hylätään välittömästi (samanlainen kuin tulosteen piippu [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")-muuttujan kautta).
+**Helmikuu 2020**: Forward Email julkaisi Enhanced Privacy Protection -suunnitelman, jonka avulla käyttäjät voivat poistaa julkisten DNS-tietueiden asettamisen sähköpostin edelleenlähetyksen konfigurointialiaaseille. Tämän suunnitelman kautta käyttäjän sähköpostialiaasitiedot piilotetaan julkiselta haettavuudelta internetissä. Yritys julkaisi myös ominaisuuden, jolla tietyt aliasit voidaan ottaa käyttöön tai poistaa käytöstä, mutta ne voivat silti näkyä kelvollisina sähköpostiosoitteina ja palauttaa onnistuneita [SMTP-tilakoodeja](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes"), jolloin sähköpostit hylätään välittömästi (vastaavasti kuin ohjattaessa tulostus [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device") -laitteeseen).
 
-**Huhtikuu 2020**: Kohdattuaan lukemattomia esteitä olemassa olevilla roskapostintunnistusratkaisuilla, jotka eivät kunnioittaneet Forward Emailin tietosuojakäytäntöä, yritys julkaisi roskapostiskannerin ensimmäisen alfa-version. Tämä täysin ilmainen ja avoimen lähdekoodin [roskapostin suodatus](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques")-ratkaisu käyttää [Naiivi Bayes-roskapostisuodatin](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering")-lähestymistapaa yhdistettynä [tietojenkalastelunesto](https://en.wikipedia.org/wiki/Phishing "Phishing")- ja [IDN-homografihyökkäys](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack")-suojauksiin. Forward Email julkaisi myös [kaksivaiheinen todennus](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) -ratkaisun, joka käyttää [kertakäyttöiset salasanat](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) -suojausta tilin turvallisuuden parantamiseksi.
+**Huhtikuu 2020**: Kohdatessaan lukuisia esteitä olemassa olevien roskapostintunnistusratkaisujen kanssa, jotka eivät kunnioittaneet Forward Emailin tietosuojakäytäntöä, yritys julkaisi ensimmäisen alfa-version Spam Scannerista. Tämä täysin ilmainen ja avoimen lähdekoodin [roskapostisuodatus](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") -ratkaisu käyttää [Naive Bayes -roskapostisuodatinta](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") yhdistettynä [phishing-suojaukseen](https://en.wikipedia.org/wiki/Phishing "Phishing") ja [IDN-homografihyökkäyssuojaukseen](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email julkaisi myös [kaksivaiheisen tunnistautumisen](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) käyttäen [kertakäyttösalasanoja](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) tilien turvallisuuden parantamiseksi.
 
-**Toukokuu 2020**: Sähköpostin edelleenlähetystoiminto salli mukautetun [porttiohjaus](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding")-ominaisuuden käytön kiertotapana käyttäjille, jotka halusivat kiertää [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider")-ominaisuuden porttieston. Yritys julkaisi myös [Ilmainen sähköpostin edelleenlähetys RESTful-rajapinta](email-api)-ominaisuuden, joka sisältää täydellisen dokumentaation ja reaaliaikaiset pyyntö- ja vastausesimerkit sekä tuen webhookeille.
+**Toukokuu 2020**: Forward Email mahdollisti mukautetun [porttien edelleenlähetyksen](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") kiertotienä käyttäjille, jotka halusivat ohittaa [ISP:n](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider") porttien eston. Yritys julkaisi myös [Free Email Forwarding RESTful API:n](email-api) täydellisellä dokumentaatiolla ja reaaliaikaisilla pyyntö- ja vastausesimerkeillä sekä tuella webhookeille.
+**Elokuu 2020**: Forward Email lisäsi tuen [Authenticated Received Chain](arc) ("ARC") -sähköpostin todennusjärjestelmälle, vahvistaen entisestään sähköpostin turvallisuutta ja toimitettavuutta.
 
-**Elokuu 2020**: Sähköpostin edelleenlähetystoimintoon lisättiin tuki [Todennettu vastaanotettu ketju](arc) ("ARC") -sähköpostin todennusjärjestelmälle, mikä vahvisti entisestään sähköpostin tietoturvaa ja toimitettavuutta.
-
-**23. marraskuuta 2020**: Forward Email julkaisi julkisesti beta-ohjelmansa, mikä on merkittävä virstanpylväs alustan kehityksessä.
+**23. marraskuuta 2020**: Forward Email julkaistiin julkisesti beta-ohjelmansa jälkeen, mikä merkitsi merkittävää virstanpylvästä alustan kehityksessä.
 
 ### 2021 - Alustan modernisointi {#2021---platform-modernization}
 
-**Helmikuu 2021**: Forward Email refaktoroi koodikantaansa poistaakseen kaikki [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\) ("Python (ohjelmointikieli)") -riippuvuudet, jolloin heidän koodipinostaan tuli 100 % [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") ja [Node.js](https://en.wikipedia.org/wiki/Node.js). Tämä arkkitehtoninen päätös oli linjassa yrityksen sitoutumisen kanssa ylläpitää yhtenäistä, avoimen lähdekoodin teknologiapinoa.
+**Helmikuu 2021**: Forward Email uudisti koodipohjansa poistaakseen kaikki [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\) "Python (programming language)")-riippuvuudet, mahdollistaen pinon muuttumisen 100 %:sti [JavaScriptiksi](https://en.wikipedia.org/wiki/JavaScript "JavaScript") ja [Node.js:ksi](https://en.wikipedia.org/wiki/Node.js). Tämä arkkitehtoninen päätös oli linjassa yrityksen sitoutumisen kanssa ylläpitää johdonmukaista, avoimen lähdekoodin teknologiapinoa.
 
-**27. syyskuuta 2021**: Lähetä sähköposti [lisätty tuki](email-forwarding-regex-pattern-filter) edelleenlähetysaliaseille vastaamaan [säännölliset lausekkeet](https://en.wikipedia.org/wiki/Regular_expression "Regular expression"):tä, mikä tarjoaa käyttäjille kehittyneempiä sähköpostin reititysominaisuuksia.
+**27. syyskuuta 2021**: Forward Email [lisäsi tuen](email-forwarding-regex-pattern-filter) sähköpostin edelleenlähetysaliaksille, jotka vastaavat [säännöllisiä lausekkeita](https://en.wikipedia.org/wiki/Regular_expression "Regular expression"), tarjoten käyttäjille kehittyneempiä sähköpostin reititysominaisuuksia.
 
 ### 2023 - Infrastruktuurin ja ominaisuuksien laajennus {#2023---infrastructure-and-feature-expansion}
 
-**Tammikuu 2023**: Forward Email julkaisi uudelleensuunnitellun ja sivun latausnopeudelle optimoidun verkkosivuston, joka parantaa käyttökokemusta ja suorituskykyä.
+**Tammikuu 2023**: Forward Email julkaisi uudistetun ja sivunopeudeltaan optimoidun verkkosivuston, parantaen käyttäjäkokemusta ja suorituskykyä.
 
-**Helmikuu 2023**: Yritys lisäsi tuen [virhelokit](/faq#do-you-store-error-logs):lle ja otti käyttöön [tumma tila](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme)-verkkosivuston värimaailman, joka vastaa käyttäjien mieltymyksiin ja esteettömyystarpeisiin.
+**Helmikuu 2023**: Yritys lisäsi tuen [virhelokeille](/faq#do-you-store-error-logs) ja otti käyttöön [tumma tila](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme) -värimaailman verkkosivustolle, vastaten käyttäjien mieltymyksiin ja saavutettavuustarpeisiin.
 
-**Maaliskuu 2023**: Forward Email julkaisi [Mandariini](https://github.com/forwardemail/tangerine#readme):n ja integroi sen koko infrastruktuuriinsa, mikä mahdollisti [DNS HTTPS:n kautta](https://en.wikipedia.org/wiki/DNS_over_HTTPS):n ("DoH") käytön sovellustasolla. Yritys lisäsi myös tuen [MTA-STS](/faq#do-you-support-mta-sts):lle ja vaihtoi [hCaptcha](/):sta [Cloudflare-kääntöportti](https://developers.cloudflare.com/turnstile):ään.
+**Maaliskuu 2023**: Forward Email julkaisi [Tangerinen](https://github.com/forwardemail/tangerine#readme) ja integroi sen koko infrastruktuuriinsa, mahdollistaen [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") käytön sovelluskerroksessa. Yritys lisäsi myös tuen [MTA-STS:lle](/faq#do-you-support-mta-sts) ja vaihtoi [hCaptcha:sta](/) [Cloudflare Turnstileen](https://developers.cloudflare.com/turnstile).
 
-**Huhtikuu 2023**: Forward Email otti käyttöön ja automatisoi täysin uuden infrastruktuurin. Koko palvelu alkoi toimia globaalisti kuormituksen tasaavalla ja läheisyysperusteisella DNS:llä, jossa käytettiin terveystarkistuksia ja vikasietoisuutta [Pilvimyrsky](https://cloudflare.com):lla, joka korvasi aiemman round-robin DNS-lähestymistavan. Yritys siirtyi **paljaisiin metallipalvelimiin** useiden palveluntarjoajien, mukaan lukien [Vultr](https://www.vultr.com/?ref=429848):n ja [Digitaalinen valtameri](https://m.do.co/c/a7cecd27e071):n, kautta, jotka molemmat ovat SOC 2 Type 1 -yhteensopivia. MongoDB- ja Redis-tietokannat siirrettiin klusteroituihin kokoonpanoihin, joissa oli ensisijaiset ja varasolmut korkean käytettävyyden, kokonaisvaltaisen SSL-salauksen, lepotilassa tapahtuvan salauksen ja ajankohtaisen palautuksen (PITR) takaamiseksi.
+**Huhtikuu 2023**: Forward Email toteutti ja automatisoi täysin uuden infrastruktuurin. Koko palvelu alkoi toimia maailmanlaajuisesti kuormantasatulla ja läheisyyteen perustuvalla DNS:llä, jossa on terveystarkastukset ja varajärjestelmä [Cloudflaren](https://cloudflare.com) avulla, korvaten aiemman round-robin DNS -menetelmän. Yritys siirtyi käyttämään **bare metal** -palvelimia useiden tarjoajien kautta, mukaan lukien [Vultr](https://www.vultr.com/?ref=429848) ja [Digital Ocean](https://m.do.co/c/a7cecd27e071), jotka molemmat ovat SOC 2 Type 1 -sertifioituja palveluntarjoajia. MongoDB- ja Redis-tietokannat siirrettiin klusteroituihin kokoonpanoihin, joissa on ensisijaiset ja varasolmukkeet korkean käytettävyyden, päästä päähän -SSL-salauksen, levossa olevan salauksen ja pisteaikapalautuksen (PITR) mahdollistamiseksi.
 
-**Toukokuu 2023**: Forward Email julkaisi **lähtevän SMTP-viestien** ominaisuuden [sähköpostin lähettäminen SMTP:n avulla](/faq#do-you-support-sending-email-with-smtp)- ja [sähköpostin lähettäminen API:n avulla](/faq#do-you-support-sending-email-with-api)-pyynnöille. Tämä ominaisuus sisältää sisäänrakennettuja suojausmenetelmiä korkean toimitettavuuden varmistamiseksi, modernin ja vankan jonotus- ja uudelleenyritysjärjestelmän sekä [tukee reaaliaikaisia virhelokien tallentamista](/faq#do-you-store-error-logs)-ominaisuuden.
+**Toukokuu 2023**: Forward Email julkaisi **lähtö-SMTP**-ominaisuutensa [sähköpostin lähettämiseen SMTP:llä](/faq#do-you-support-sending-email-with-smtp) ja [API-pyyntöjen kautta](/faq#do-you-support-sending-email-with-api). Tämä ominaisuus sisältää sisäänrakennetut turvamekanismit korkean toimitettavuuden varmistamiseksi, modernin ja vankan jonotus- ja uudelleenyritysjärjestelmän sekä [tuen virhelokeille reaaliajassa](/faq#do-you-store-error-logs).
 
-**Marraskuu 2023**: Forward Email julkaisi [**salattu postilaatikon tallennus**](/blog/docs/best-quantum-safe-encrypted-email-service)-ominaisuuden [IMAP-tuki](/faq#do-you-support-receiving-email-with-imap)-sähköpostille, mikä on merkittävä edistysaskel sähköpostin yksityisyyden ja turvallisuuden parantamisessa.
+**Marraskuu 2023**: Forward Email julkaisi [**salatun postilaatikon tallennuksen**](/blog/docs/best-quantum-safe-encrypted-email-service) ominaisuuden [IMAP-tuen](/faq#do-you-support-receiving-email-with-imap) yhteydessä, mikä edustaa merkittävää edistysaskelta sähköpostin yksityisyydessä ja turvallisuudessa.
 
-**Joulukuu 2023**: Yritys [lisätty tuki](/faq#do-you-support-pop3) [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol):n, [salasanat ja WebAuthn](/faq#do-you-support-passkeys-and-webauthn):n ja [aika postilaatikkoon](/faq#i):n valvonnalle sekä [OpenPGP IMAP-tallennusta varten](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd):lle.
+**Joulukuu 2023**: Yritys [lisäsi tuen](/faq#do-you-support-pop3) [POP3:lle](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeyille ja WebAuthnille](/faq#do-you-support-passkeys-and-webauthn), [saapumisajan seurantaan](/faq#i) sekä [OpenPGP:lle IMAP-tallennuksessa](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
-### 2024 - Palvelun optimointi ja lisäominaisuudet {#2024---service-optimization-and-advanced-features}
+### 2024 - Palvelun optimointi ja edistyneet ominaisuudet {#2024---service-optimization-and-advanced-features}
 
-**Helmikuu 2024**: Sähköpostin välitys [lisätty kalenterin (CalDAV) tuki](/faq#do-you-support-calendars-caldav), laajentaa alustan ominaisuuksia sähköpostin ulkopuolelle kattamaan myös kalenterin synkronoinnin.
+**Helmikuu 2024**: Forward Email [lisäsi kalenterituen (CalDAV)](/faq#do-you-support-calendars-caldav), laajentaen alustan kyvykkyyksiä sähköpostin lisäksi kalenterisynkronointiin.
+**Maaliskuusta heinäkuuhun 2024**: Forward Email julkaisi merkittäviä optimointeja ja parannuksia IMAP-, POP3- ja CalDAV-palveluihinsa, tavoitteenaan tehdä palvelustaan yhtä nopea tai nopeampi kuin vaihtoehdot.
 
-**Maaliskuu–heinäkuu 2024**: Forward Email julkaisi merkittäviä optimointeja ja parannuksia IMAP-, POP3- ja CalDAV-palveluihinsa tavoitteenaan tehdä palvelustaan yhtä nopea, ellei jopa nopeampi, kuin vaihtoehdot.
+**Heinäkuu 2024**: Yritys [lisäsi iOS Push -tuen](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) vastatakseen Apple Mailin iOS-versiosta puuttuvaan IMAP `IDLE` -komennon tukeen, mahdollistaen reaaliaikaiset ilmoitukset Apple iOS -laitteille. Forward Email lisäsi myös saapuvan postin ("TTI") seurannan omalle palvelulleen sekä Yahoo/AOL:lle, ja alkoi sallia käyttäjien salata koko DNS TXT -tietueensa myös ilmaisessa suunnitelmassa. Kuten pyydettiin [Privacy Guides -keskusteluissa](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ja [GitHub-ongelmissa](https://github.com/forwardemail/forwardemail.net/issues/254), yritys lisäsi mahdollisuuden, että aliakset voivat joko hiljaisesti hylätä `250`, pehmeästi hylätä `421` tai kovasti hylätä `550` kun ne on poistettu käytöstä.
 
-**Heinäkuu 2024**: Yritys [lisätty iOS Push -tuki](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) korjaa Apple Mail on iOS:n IMAP `IDLE` -komennon tuen puutteen ja mahdollistaa reaaliaikaiset ilmoitukset Apple iOS -laitteille. Forward Email lisäsi myös aikaa postilaatikon ("TTI") valvontaan omassa palvelussaan ja Yahoon/AOL:ssa ja alkoi sallia käyttäjien salata koko DNS-TXT-tietueensa jopa ilmaisessa paketissa. Kuten [Tietosuojaoppaiden keskustelut](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ja [GitHub-ongelmat](https://github.com/forwardemail/forwardemail.net/issues/254) pyysivät, yritys lisäsi aliaksille mahdollisuuden joko hylätä `250` hiljaisesti, hylätä `421` pehmeästi tai hylätä `550` pysyvästi, kun se on poistettu käytöstä.
+**Elokuu 2024**: Forward Email lisäsi tuen postilaatikoiden vientiin [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) ja [Mbox](https://en.wikipedia.org/wiki/Mbox) -muodoissa (olemassa olevan [SQLite](https://en.wikipedia.org/wiki/SQLite) vientimuodon lisäksi). [Webhook-allekirjoitustuki lisättiin](https://forwardemail.net/faq#do-you-support-bounce-webhooks), ja yritys alkoi sallia käyttäjien lähettää uutiskirjeitä, ilmoituksia ja sähköpostimarkkinointia ulospäin menevän SMTP-palvelunsa kautta. IMAP/POP3/CalDAV -palveluille toteutettiin myös koko verkkotunnuksen ja alias-kohtaiset tallennuskiintiöt.
 
-**Elokuu 2024**: Sähköpostin edelleenlähetystoimintoon lisättiin tuki postilaatikoiden viennille [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)- ja [Mbox](https://en.wikipedia.org/wiki/Mbox)-muodoissa (olemassa olevan [SQLite](https://en.wikipedia.org/wiki/SQLite)-vientimuodon lisäksi). [Webhook-allekirjoitusten tuki lisättiin](https://forwardemail.net/faq#do-you-support-bounce-webhooks)-muotoon, ja yritys alkoi sallia käyttäjien lähettää uutiskirjeitä, ilmoituksia ja sähköpostimarkkinointia lähtevän SMTP-palvelunsa kautta. Myös verkkotunnuskohtaiset ja aliaskohtaiset tallennuskiintiöt IMAP/POP3/CalDAV-protokollille otettiin käyttöön.
+### 2025 - Yksityisyyden parannukset ja protokollatuki {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
 
-### 2025 - Yksityisyyden parannukset ja protokollatuki {#2025---privacy-enhancements-and-protocol-support}
+**Syyskuusta 2024 tammikuuhun 2025**: Forward Email [lisäsi erittäin toivotun lomavastaajan ominaisuuden ja OpenPGP/WKD-salauksen sähköpostin edelleenlähetykseen](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), rakentaen jo toteutettujen salattujen postilaatikoiden tallennusmahdollisuuksien päälle.
 
-**Syyskuu 2024 – tammikuu 2025**: Lähetä sähköposti edelleen [lisätty paljon pyydetty lomavastaajatoiminto ja OpenPGP/WKD-salauksen sähköpostin edelleenlähetystä varten](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) jo toteutettujen salattujen postilaatikoiden tallennusominaisuuksien pohjalta.
+**21. tammikuuta 2025**: Perustajan paras ystävä "Jack", hänen uskollinen koirakumppaninsa, nukkui rauhallisesti pois lähes 11 vuoden iässä. Jack [muistetaan aina](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) hänen horjumattomasta seurastaan, joka tuki Forward Emailin luomista. [Forward Emailin tekninen valkoinen kirja](https://forwardemail.net/technical-whitepaper.pdf) on omistettu Jackille, tunnustaen hänen roolinsa palvelun kehityksessä.
 
-**21. tammikuuta 2025**: Perustajan paras ystävä "Jack", hänen uskollinen koirakumppaninsa, menehtyi rauhallisesti lähes 11-vuotiaana. Jack [tullaan aina muistamaan](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) hänen horjumattomasta kumppanuudestaan, joka tuki Forward Emailin luomista. [Sähköpostin edelleenlähetyksen tekninen raportti](https://forwardemail.net/technical-whitepaper.pdf) on omistettu Jackille ja tunnustaa hänen roolinsa palvelun kehittämisessä.
+**Helmikuu 2025**: Forward Email vaihtoi uudeksi ensisijaiseksi datakeskustarjoajakseen [DataPacketin](https://www.datapacket.com), ottaen käyttöön räätälöityä, suorituskykyyn keskittyvää bare-metal-laitteistoa palvelun luotettavuuden ja nopeuden parantamiseksi.
 
-**Helmikuu 2025**: Forward Email vaihtoi [DataPacket](https://www.datapacket.com):n uudeksi ensisijaiseksi datakeskuspalveluntarjoajakseen ja otti käyttöön räätälöityjä, suorituskykyyn keskittyviä, bare metal -laitteistoja parantaakseen palvelun luotettavuutta ja nopeutta entisestään.
+**Maaliskuu 2025**: Forward Emailin versio 1.0 julkaistiin virallisesti.
 
-**Kesäkuu 2025**: Forward Email julkaisi tuen [CardDAV-protokolla](/faq#do-you-support-contacts-carddav):lle, laajentaen alustan ominaisuuksia koskemaan yhteystietojen synkronointia olemassa olevien sähköposti- ja kalenteripalveluiden rinnalla.
+**Huhtikuu 2025**: Ensimmäinen versio [Forward Emailin teknisestä valkoisesta kirjasta](https://forwardemail.net/technical-whitepaper.pdf) julkaistiin, ja yritys alkoi hyväksyä kryptovaluuttamaksuja.
 
-### 2026 - RFC-yhteensopivuus ja edistynyt suodatus {#2026---rfc-compliance-and-advanced-filtering}
+**Toukokuu 2025**: Palvelu julkaisi uuden API-dokumentaation käyttäen [Scalar](https://github.com/scalar/scalar) -työkalua.
 
-**Tammikuu 2026**: Forward Email julkaisi kattavan [RFC-protokollan yhteensopivuusdokumentin](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison), joka kuvaa täydellisen standardituen SMTP:lle, IMAP:lle, POP3:lle ja CalDAV:lle. Alusta lisäsi myös [REQUIRETLS-tuen (RFC 8689)](/faq#requiretls-support) pakotettuun TLS-salaukseen sähköpostin kuljetuksessa, [S/MIME-salauksen (RFC 8551)](/faq#do-you-support-smime-encryption) turvalliseen viestien allekirjoitukseen ja salaukseen sekä kattavan [Sieve-sähköpostisuodatuksen (RFC 5228)](/faq#do-you-support-sieve-email-filtering) [ManageSieve-protokollan (RFC 5804)](/faq#do-you-support-sieve-email-filtering) tuella palvelinpuolen sähköpostisuodatukseen. [REST API](/email-api) laajennettiin 39 päätepisteeseen, jotka kattavat viestit, kansiot, yhteystiedot, kalenterit ja kalenteritapahtumat.
+**Kesäkuu 2025**: Forward Email julkaisi tuen [CardDAV-protokollalle](/faq#do-you-support-contacts-carddav), laajentaen alustan kykyjä sisältämään yhteystietojen synkronoinnin sähköpostin ja kalenteripalveluiden lisäksi.
 
-## Keskeiset periaatteet {#core-principles}
+**Elokuu 2025**: Alusta lisäsi [CalDAV VTODO/tehtävät -tuet](https://en.wikipedia.org/wiki/ICalendar#To-do_\(VTODO\)), mahdollistaen tehtävien hallinnan kalenteritapahtumien rinnalla.
 
-Perustamisestaan lähtien Forward Email on pitänyt kiinni vankasta sitoutumisestaan yksityisyyden ja turvallisuuden periaatteisiin:
+**Marraskuu 2025**: Alustan turvallisuutta parannettiin siirtymällä PBKDF2:sta [Argon2id](https://en.wikipedia.org/wiki/Argon2) -salasanahajautukseen, ja infrastruktuuri siirrettiin Redisistä [Valkeyhin](https://github.com/valkey-io/valkey).
 
-**100 % avoimen lähdekoodin filosofia**: Toisin kuin kilpailijat, jotka tekevät avoimeksi vain käyttöliittymänsä ja pitävät taustajärjestelmät suljettuina, Forward Email on asettanut koko koodikantansa – sekä käyttöliittymän että taustajärjestelmän – julkisesti saataville [GitHub](https://github.com/forwardemail)-sivustolla.
+**Joulukuu 2025**: Versio 2.0 julkaistiin, tuoden mukanaan [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) -tuet pakotetulle TLS-salaukselle sähköpostin siirrossa sekä päivityksen [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) versioon 6.
+### 2026 - RFC-yhteensopivuus ja edistynyt suodatus {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
-**Tietosuoja ensin**: Forward Email otti alusta alkaen käyttöön ainutlaatuisen muistissa tapahtuvan käsittelyn, joka välttää sähköpostien kirjoittamisen levylle. Tämä erottaa sen perinteisistä sähköpostipalveluista, jotka tallentavat viestit tietokantoihin tai tiedostojärjestelmiin.
+**Tammikuu 2026**: Forward Email julkaisi kattavan [RFC-protokollan yhteensopivuusasiakirjan](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) ja lisäsi tuen [S/MIME-salaukselle (RFC 8551)](/faq#do-you-support-smime-encryption) sekä kattavalle [Sieve-sähköpostisuodatukselle (RFC 5228)](/faq#do-you-support-sieve-email-filtering) [ManageSieve-protokollan (RFC 5804)](/faq#do-you-support-sieve-email-filtering) tuella. REST API laajeni myös 39 päätepisteeseen.
 
-**Jatkuva innovaatio**: Palvelu on kehittynyt yksinkertaisesta sähköpostin edelleenlähetysratkaisusta kattavaksi sähköpostialustaksi, jossa on ominaisuuksia, kuten salatut postilaatikot, kvanttisuojattu salaus ja tuki standardiprotokollille, kuten SMTP, IMAP, POP3 ja CalDAV.
+**Helmikuu 2026**: Virallinen, avoimen lähdekoodin webmail-asiakas julkaistiin osoitteessa [mail.forwardemail.net](https://mail.forwardemail.net) ([lähdekoodi GitHubissa](https://github.com/forwardemail/mail.forwardemail.net)). Alusta lisäsi myös tuen [CalDAV-aikataululaajennuksille (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA:lle (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) ja [Domain Connectille](https://domainconnect.org) yhden klikkauksen DNS-asetuksissa. Reaaliaikaiset push-ilmoitukset IMAPille, CalDAVille ja CardDAVille otettiin käyttöön WebSocketien avulla.
 
-**Läpinäkyvyys**: Kaiken koodin tekeminen avoimeksi ja tarkasteltavaksi, mikä varmistaa, että käyttäjät voivat tarkistaa tietosuojaväitteet sen sijaan, että he vain luottaisivat markkinointilausuntoihin.
+**Maaliskuu 2026**: Tuki verkkotunnaskohtaiselle mukautetulle S3-yhteensopivalle tallennustilalle lisättiin, samoin kuin komentorivityökalu hallintaan. Työ aloitettiin monialustaisiin työpöytä- ja mobiilisovelluksiin macOS:lle, Windowsille, Linuxille, iOS:lle ja Androidille käyttäen samaa avoimen lähdekoodin webmail-koodipohjaa, rakennettuna [Tauri](https://tauri.app) -työkalulla.
 
-**Käyttäjän hallinta**: Tarjoaa käyttäjille vaihtoehtoja, mukaan lukien mahdollisuus isännöidä koko alustaa itse halutessaan.
 
-## Nykyinen tila {#current-status}
+## Perusperiaatteet {#core-principles}
 
-Vuodesta 2025 lähtien Forward Email palvelee yli 500 000 verkkotunnusta maailmanlaajuisesti, mukaan lukien merkittäviä organisaatioita ja alan johtajia, kuten:
+Perustamisestaan lähtien Forward Email on pitänyt tiukasti kiinni yksityisyyden ja turvallisuuden periaatteista:
+
+**100 % avoimen lähdekoodin filosofia**: Toisin kuin kilpailijat, jotka julkaisevat vain käyttöliittymänsä avoimena lähdekoodina ja pitävät taustajärjestelmän suljettuna, Forward Email on tehnyt koko koodikantansa—sekä käyttöliittymän että taustajärjestelmän—julkisesti tarkasteltavaksi [GitHubissa](https://github.com/forwardemail).
+
+**Yksityisyys ensin -suunnittelu**: Alusta alkaen Forward Email on käyttänyt ainutlaatuista muistissa tapahtuvaa käsittelytapaa, joka välttää sähköpostien tallentamisen levylle, erottaen sen perinteisistä sähköpostipalveluista, jotka tallentavat viestit tietokantoihin tai tiedostojärjestelmiin.
+
+**Jatkuva innovaatio**: Palvelu on kehittynyt yksinkertaisesta sähköpostin edelleenlähetyksestä kattavaksi sähköpostialustaksi, joka sisältää ominaisuuksia kuten salatut postilaatikot, kvanttivarmuuden tarjoavan salauksen sekä tuen standardiprotokollille kuten SMTP, IMAP, POP3 ja CalDAV.
+
+**Läpinäkyvyys**: Kaikki koodi on avoimesti saatavilla ja tarkasteltavissa, mikä takaa käyttäjille mahdollisuuden varmistaa yksityisyysväitteet pelkän markkinointipuheen sijaan.
+
+**Käyttäjän hallinta**: Käyttäjille tarjotaan valinnanvapautta, mukaan lukien mahdollisuus itse isännöidä koko alustaa halutessaan.
+
+
+## Nykytila {#current-status}
+
+Maaliskuuhun 2026 mennessä Forward Email palvelee yli 500 000 verkkotunnusta maailmanlaajuisesti, mukaan lukien merkittäviä organisaatioita ja alan johtajia kuten:
 
 * **Teknologiayritykset**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
-* **Mediaorganisaatiot**: Fox News Radio, Disney Ad Sales
-* **Oppilaitokset**: Cambridgen yliopisto, Marylandin yliopisto, Washingtonin yliopisto, Tuftsin yliopisto, Swarthmore College
-* **Valtionhallinnon yksiköt**: Etelä-Australian hallitus, Dominikaanisen tasavallan hallitus
+* **Mediayritykset**: Fox News Radio, Disney Ad Sales
+* **Koulutuslaitokset**: Cambridgen yliopisto, Marylandin yliopisto, Washingtonin yliopisto, Tuftsin yliopisto, Swarthmore College
+* **Julkiset tahot**: Etelä-Australian hallitus, Dominikaanisen tasavallan hallitus
 * **Muut organisaatiot**: RCD Hotels, Fly<span>.</span>io
-* **Merkittäviä kehittäjiä**: Isaac Z. Schlueter (npm:n luoja), David Heinemeier Hansson (Ruby on Railsin luoja)
+* **Merkittävät kehittäjät**: Isaac Z. Schlueter (npm:n luoja), David Heinemeier Hansson (Ruby on Railsin luoja)
 
-Alusta kehittyy jatkuvasti säännöllisten ominaisuusjulkaisujen ja infrastruktuuriparannusten myötä, säilyttäen asemansa ainoana tällä hetkellä saatavilla olevana 100 % avoimen lähdekoodin, salattuna, yksityisyyteen keskittyvänä, läpinäkyvänä ja kvanttiteknisesti kestävänä sähköpostipalveluna.
+Alusta kehittyy jatkuvasti säännöllisten ominaisuusjulkaisujen ja infrastruktuurin parannusten myötä, säilyttäen asemansa ainoana 100 % avoimen lähdekoodin, salatun, yksityisyyteen keskittyvän, läpinäkyvän ja kvanttivarmuuden tarjoavan sähköpostipalveluna tänä päivänä.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email yksityisyyteen keskittyvä sähköpostipalvelu" class="rounded-lg" />

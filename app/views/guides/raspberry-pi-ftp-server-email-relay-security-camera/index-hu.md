@@ -1,135 +1,138 @@
-# Turn Your Raspberry Pi into a Secure FTP Server with Email Relay {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
+# Alakítsd Raspberry Pi-d biztonságos FTP szerverré email továbbítással {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide will show you how to turn it into a powerful, automated file server with email relay capabilities. Perfect for security cameras, IoT devices, and more.
+Porosodik egy Raspberry Pi-d? Legyen az legújabb Pi 5, Pi 4, Pi Zero vagy akár egy régebbi modell, ez az útmutató megmutatja, hogyan alakíthatod át egy erőteljes, automatizált fájlszerverré email továbbítási képességekkel. Tökéletes biztonsági kamerákhoz, IoT eszközökhöz és még sok máshoz.
 
-**Compatible with:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, and Raspberry Pi Zero.
-
-> \[!NOTE]
-> This guide was tested and verified on a Raspberry Pi 3 Model B running Ubuntu Server 22.04 LTS.
-
-## Table of Contents {#table-of-contents}
-
-* [What We're Building](#what-were-building)
-* [Part 1: Getting Ubuntu Server on Your Pi](#part-1-getting-ubuntu-server-on-your-pi)
-  * [What You'll Need](#what-youll-need)
-  * [Flashing the OS](#flashing-the-os)
-  * [Booting Up & Connecting](#booting-up--connecting)
-* [Part 2: Setting Up a Secure FTP Server](#part-2-setting-up-a-secure-ftp-server)
-  * [Installation & Configuration](#installation--configuration)
-  * [Creating an FTP User](#creating-an-ftp-user)
-* [Part 3: Firewall and Brute-Force Protection](#part-3-firewall-and-brute-force-protection)
-  * [Setting Up UFW](#setting-up-ufw)
-  * [Setting Up Fail2ban](#setting-up-fail2ban)
-* [Part 4: Automated File Processing with Email Notifications](#part-4-automated-file-processing-with-email-notifications)
-  * [Option 1: Using Forward Email API (Recommended)](#option-1-using-forward-email-api-recommended)
-  * [Option 2: Using Other Email Providers](#option-2-using-other-email-providers)
-  * [Create a Systemd Service](#create-a-systemd-service)
-* [Part 5: Email Options for Legacy Devices](#part-5-email-options-for-legacy-devices)
-  * [Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
-  * [Option 2: Set Up a Postfix SMTP Relay](#option-2-set-up-a-postfix-smtp-relay)
-* [Troubleshooting](#troubleshooting)
-* [Wrapping Up](#wrapping-up)
-
-## What We're Building {#what-were-building}
-
-This guide will walk you through setting up a complete system that includes:
-
-* **Ubuntu Server 22.04 LTS:** A rock-solid, lightweight OS for the Pi.
-* **A Secure FTP Server (vsftpd):** For dropping off files securely.
-* **A Firewall (UFW) & Fail2ban:** To keep the bad guys out.
-* **An Automated File Processor:** A script that grabs new files, emails them as attachments, and then cleans up after itself.
-* **Email Options for Legacy Devices:** Two approaches for devices that don't support modern TLS:
-  * Use Forward Email's legacy TLS 1.0 ports (easiest)
-  * Set up a Postfix SMTP relay (works with any email provider)
-
-Ready? Let's dive in.
-
-## Part 1: Getting Ubuntu Server on Your Pi {#part-1-getting-ubuntu-server-on-your-pi}
-
-First things first, get Ubuntu Server running on the Raspberry Pi. This is surprisingly easy thanks to the Raspberry Pi Imager.
-
-### What You'll Need {#what-youll-need}
-
-* Any compatible Raspberry Pi (see list above)
-* A microSD card (8GB minimum, 16GB+ recommended)
-* A computer with a microSD card reader
-* Appropriate power supply for your Pi model
-* Internet access (Ethernet or Wi-Fi)
+**Kompatibilis:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W és Raspberry Pi Zero.
 
 > \[!NOTE]
-> Older models like the Raspberry Pi 2 or Pi Zero may be slower but will work fine for this setup.
+> Ezt az útmutatót egy Raspberry Pi 3 Model B-n teszteltük és igazoltuk Ubuntu Server 22.04 LTS futtatásával.
 
-### Flashing the OS {#flashing-the-os}
 
-1. **Get the Raspberry Pi Imager:** Download it from the [official website](https://www.raspberrypi.com/software/).
+## Tartalomjegyzék {#table-of-contents}
 
-2. **Choose the OS:** In the imager, select "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu".
-   * For 64-bit models (Pi 3, 4, 5, Zero 2 W), choose **"Ubuntu Server 22.04.1 LTS (64-bit)"**.
-   * For older 32-bit models (Pi 2, Pi Zero, Pi Zero W), choose **"Ubuntu Server 22.04.1 LTS (32-bit)"**.
+* [Mit építünk](#what-were-building)
+* [1. rész: Ubuntu Server telepítése a Pi-dre](#part-1-getting-ubuntu-server-on-your-pi)
+  * [Amire szükséged lesz](#what-youll-need)
+  * [Az operációs rendszer telepítése](#flashing-the-os)
+  * [Indítás és csatlakozás](#booting-up--connecting)
+* [2. rész: Biztonságos FTP szerver beállítása](#part-2-setting-up-a-secure-ftp-server)
+  * [Telepítés és konfiguráció](#installation--configuration)
+  * [FTP felhasználó létrehozása](#creating-an-ftp-user)
+* [3. rész: Tűzfal és brute-force védelem](#part-3-firewall-and-brute-force-protection)
+  * [UFW beállítása](#setting-up-ufw)
+  * [Fail2ban beállítása](#setting-up-fail2ban)
+* [4. rész: Automatizált fájlkezelés email értesítéssel](#part-4-automated-file-processing-with-email-notifications)
+  * [1. opció: Forward Email API használata (ajánlott)](#option-1-using-forward-email-api-recommended)
+  * [2. opció: Más email szolgáltatók használata](#option-2-using-other-email-providers)
+  * [Systemd szolgáltatás létrehozása](#create-a-systemd-service)
+* [5. rész: Email opciók régebbi eszközökhöz](#part-5-email-options-for-legacy-devices)
+  * [1. opció: Forward Email régi TLS 1.0 portok használata (ajánlott)](#option-1-use-forward-emails-legacy-tls-10-ports-recommended)
+  * [2. opció: Postfix SMTP relay beállítása](#option-2-set-up-a-postfix-smtp-relay)
+* [Hibaelhárítás](#troubleshooting)
+* [Összefoglalás](#wrapping-up)
 
-3. **Pick Your Storage:** Select your microSD card.
+
+## Mit építünk {#what-were-building}
+
+Ez az útmutató végigvezet egy teljes rendszer beállításán, amely tartalmazza:
+
+* **Ubuntu Server 22.04 LTS:** Egy szilárd, könnyű operációs rendszer a Pi-hez.
+* **Biztonságos FTP szerver (vsftpd):** Biztonságos fájlátvitelhez.
+* **Tűzfal (UFW) és Fail2ban:** Hogy távol tartsuk a rosszindulatúkat.
+* **Automatizált fájlkezelő:** Egy script, amely új fájlokat fogad, email mellékletként elküldi, majd takarít maga után.
+* **Email opciók régebbi eszközökhöz:** Két megoldás olyan eszközöknek, amelyek nem támogatják a modern TLS-t:
+  * Forward Email régi TLS 1.0 portjainak használata (legkönnyebb)
+  * Postfix SMTP relay beállítása (bármely email szolgáltatóval működik)
+
+Készen állsz? Vágjunk bele.
+
+
+## 1. rész: Ubuntu Server telepítése a Pi-dre {#part-1-getting-ubuntu-server-on-your-pi}
+
+Először is, futtasd az Ubuntu Servert a Raspberry Pi-n. Ez meglepően egyszerű a Raspberry Pi Imager segítségével.
+
+### Amire szükséged lesz {#what-youll-need}
+
+* Bármely kompatibilis Raspberry Pi (lásd fent)
+* Egy microSD kártya (minimum 8GB, ajánlott 16GB+)
+* Egy számítógép microSD kártya olvasóval
+* Megfelelő tápegység a Pi modellhez
+* Internetkapcsolat (Ethernet vagy Wi-Fi)
+
+> \[!NOTE]
+> Régebbi modellek, mint a Raspberry Pi 2 vagy Pi Zero lassabbak lehetnek, de ez a beállítás jól működik velük is.
+
+### Az operációs rendszer telepítése {#flashing-the-os}
+
+1. **Szerezd be a Raspberry Pi Imager-t:** Töltsd le a [hivatalos weboldalról](https://www.raspberrypi.com/software/).
+
+2. **Válaszd ki az operációs rendszert:** Az imagerben válaszd a "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu" menüpontot.
+   * 64-bites modellekhez (Pi 3, 4, 5, Zero 2 W) válaszd a **"Ubuntu Server 22.04.1 LTS (64-bit)"** verziót.
+   * Régebbi 32-bites modellekhez (Pi 2, Pi Zero, Pi Zero W) válaszd a **"Ubuntu Server 22.04.1 LTS (32-bit)"** verziót.
+
+3. **Válaszd ki a tárolót:** Válaszd ki a microSD kártyádat.
 
 > \[!WARNING]
-> This will wipe your microSD card clean. Make sure you've backed up anything important.
+> Ez törölni fogja a microSD kártyád tartalmát. Győződj meg róla, hogy minden fontos adatot lementettél.
 
-4. **Advanced Options are Your Friend:** Click the gear icon (⚙️) to set up the Pi for headless mode (no monitor or keyboard needed).
-   * **Hostname:** Give your Pi a name (e.g., `pi-server`).
-   * **SSH:** Enable it and set a username and password.
-   * **Wi-Fi:** If you're not using Ethernet, enter your Wi-Fi details.
-   * **Locale:** Set your timezone and keyboard layout.
+4. **Haladó beállítások a barátod:** Kattints a fogaskerék ikonra (⚙️), hogy beállítsd a Pi-t headless módra (monitor és billentyűzet nélkül).
+   * **Hostname:** Adj nevet a Pi-dnek (pl. `pi-server`).
+   * **SSH:** Engedélyezd, és állíts be felhasználónevet és jelszót.
+   * **Wi-Fi:** Ha nem Ethernetet használsz, add meg a Wi-Fi adataidat.
+   * **Locale:** Állítsd be az időzónát és a billentyűzetkiosztást.
+5. **Írj!** Kattints a "WRITE" gombra, és hagyd, hogy az imager elvégezze a dolgát.
 
-5. **Write!** Click the "WRITE" button and let the imager do its thing.
+### Indítás és csatlakozás {#booting-up--connecting}
 
-### Booting Up & Connecting {#booting-up--connecting}
-
-Once the imager is done, pop the microSD card into the Pi and plug it in. Give it a few minutes to boot up. It's doing some initial setup in the background. Find its IP address from your router's admin page, then connect via SSH:
+Miután az imager befejezte, helyezd be a microSD kártyát a Pi-be, és csatlakoztasd. Adj neki néhány percet az indításhoz. Háttérben némi kezdeti beállítást végez. Keresd meg az IP-címét a router admin oldalán, majd csatlakozz SSH-n keresztül:
 
 ```bash
 ssh your_username@your_pi_ip_address
 ```
 
-You're in! The Raspberry Pi is now ready for configuration.
+Bent vagy! A Raspberry Pi most már készen áll a konfigurálásra.
 
-## Part 2: Setting Up a Secure FTP Server {#part-2-setting-up-a-secure-ftp-server}
 
-Next, set up `vsftpd` (Very Secure FTP Daemon), configured for maximum security.
+## 2. rész: Biztonságos FTP szerver beállítása {#part-2-setting-up-a-secure-ftp-server}
 
-### Installation & Configuration {#installation--configuration}
+Ezután állítsd be a `vsftpd`-t (Very Secure FTP Daemon), maximális biztonságra konfigurálva.
 
-1. **Install vsftpd:**
+### Telepítés és konfiguráció {#installation--configuration}
+
+1. **Telepítsd a vsftpd-t:**
 
    ```bash
    sudo apt update
    sudo apt install vsftpd -y
    ```
 
-2. **Backup the config file:**
+2. **Készíts biztonsági másolatot a konfigurációs fájlról:**
 
    ```bash
    sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
    ```
 
-3. **Edit the configuration:**
+3. **Szerkeszd a konfigurációt:**
 
    ```bash
    sudo nano /etc/vsftpd.conf
    ```
 
 > \[!TIP]
-> If a line is commented out (starts with a `#`), uncomment it by removing the `#`.
+> Ha egy sor ki van kommentelve (a `#` jellel kezdődik), távolítsd el a `#`-t a sor elejéről.
 
-Make these changes:
+Végezd el ezeket a módosításokat:
 
-| Setting | Érték | Purpose |
+| Beállítás                | Érték | Cél                                                       |
 | ------------------------ | ----- | --------------------------------------------------------- |
-| `anonymous_enable` | `NO` | Disable anonymous FTP access |
-| `local_enable` | `YES` | Allow local users to log in |
-| `write_enable` | `YES` | Enable file uploads |
-| `local_umask` | `022` | Set file permissions (644 for files, 755 for directories) |
-| `chroot_local_user` | `YES` | Jail users to their home directory |
-| `allow_writeable_chroot` | `YES` | Allow uploads in chroot jail |
+| `anonymous_enable`       | `NO`  | Anonim FTP hozzáférés letiltása                            |
+| `local_enable`           | `YES` | Helyi felhasználók bejelentkezésének engedélyezése        |
+| `write_enable`           | `YES` | Fájl feltöltések engedélyezése                             |
+| `local_umask`            | `022` | Fájl jogosultságok beállítása (644 fájloknak, 755 könyvtáraknak) |
+| `chroot_local_user`      | `YES` | Felhasználók korlátozása a saját home könyvtárukra        |
+| `allow_writeable_chroot` | `YES` | Feltöltések engedélyezése a chroot jail-ben                |
 
-4. **Add Passive Port Range:** Add these lines to the end of the file. This is needed for the firewall.
+4. **Passzív port tartomány hozzáadása:** Add hozzá ezeket a sorokat a fájl végéhez. Ez szükséges a tűzfalhoz.
 
    ```
    pasv_enable=YES
@@ -137,7 +140,7 @@ Make these changes:
    pasv_max_port=50000
    ```
 
-5. **Enable Logging:** Add these lines to enable logging for Fail2ban.
+5. **Naplózás engedélyezése:** Add hozzá ezeket a sorokat a Fail2ban naplózásának engedélyezéséhez.
 
    ```
    xferlog_enable=YES
@@ -145,34 +148,34 @@ Make these changes:
    log_ftp_protocol=YES
    ```
 
-6. **Save and Restart:** Press `Ctrl+O`, `Enter`, `Ctrl+X`, then restart the service:
+6. **Mentés és újraindítás:** Nyomd meg a `Ctrl+O`, `Enter`, `Ctrl+X` billentyűket, majd indítsd újra a szolgáltatást:
 
    ```bash
    sudo systemctl restart vsftpd
    ```
 
-### Creating an FTP User {#creating-an-ftp-user}
+### FTP felhasználó létrehozása {#creating-an-ftp-user}
 
-Create a dedicated, restricted user for FTP access.
+Hozz létre egy dedikált, korlátozott felhasználót az FTP hozzáféréshez.
 
-1. **Create the user:**
+1. **Felhasználó létrehozása:**
 
    ```bash
    sudo adduser ftpuser
    ```
 
-Follow the prompts to set a password. The other fields (name, phone, etc.) can be left blank.
+   Kövesd az utasításokat a jelszó beállításához. A többi mezőt (név, telefon, stb.) hagyhatod üresen.
 
-2. **Create the directory structure:**
+2. **Könyvtárstruktúra létrehozása:**
 
    ```bash
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-* `/home/ftpuser/ftp` - Main FTP directory
-   * `/home/ftpuser/ftp/uploads` - Where files will be uploaded
+   * `/home/ftpuser/ftp` - Fő FTP könyvtár
+   * `/home/ftpuser/ftp/uploads` - Ide kerülnek a feltöltött fájlok
 
-3. **Set permissions:**
+3. **Jogosultságok beállítása:**
 
    ```bash
    sudo chown -R ftpuser:ftpuser /home/ftpuser/ftp
@@ -180,35 +183,36 @@ Follow the prompts to set a password. The other fields (name, phone, etc.) can b
    sudo chmod 755 /home/ftpuser/ftp/uploads
    ```
 
-## Part 3: Firewall and Brute-Force Protection {#part-3-firewall-and-brute-force-protection}
 
-Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
+## 3. rész: Tűzfal és brute-force védelem {#part-3-firewall-and-brute-force-protection}
 
-### Setting Up UFW {#setting-up-ufw}
+Biztosítsd a Pi-t UFW-vel (Egyszerűsített tűzfal) és Fail2ban-nel.
 
-1. **Install UFW:**
+### UFW beállítása {#setting-up-ufw}
+
+1. **Telepítsd az UFW-t:**
 
    ```bash
    sudo apt install ufw -y
    ```
 
-2. **Set default policies:**
+2. **Állítsd be az alapértelmezett szabályokat:**
 
    ```bash
    sudo ufw default deny incoming
    sudo ufw default allow outgoing
    ```
 
-3. **Allow SSH (critical!):**
+3. **Engedélyezd az SSH-t (kritikus!):**
 
    ```bash
    sudo ufw allow ssh comment 'SSH access'
    ```
 
 > \[!WARNING]
-> Always allow SSH before enabling the firewall, or you'll lock yourself out!
+> Mindig engedélyezd az SSH-t a tűzfal bekapcsolása előtt, különben kizárod magad!
 
-4. **Allow FTP ports:**
+4. **Engedélyezd az FTP portokat:**
 
    ```bash
    sudo ufw allow 20/tcp comment 'FTP data'
@@ -216,30 +220,29 @@ Secure the Pi with UFW (Uncomplicated Firewall) and Fail2ban.
    sudo ufw allow 40000:50000/tcp comment 'FTP passive mode'
    ```
 
-5. **Enable the firewall:**
+5. **Kapcsold be a tűzfalat:**
 
    ```bash
    sudo ufw enable
    ```
 
-### Setting Up Fail2ban {#setting-up-fail2ban}
+### Fail2ban beállítása {#setting-up-fail2ban}
 
-Fail2ban automatically blocks IP addresses after repeated failed login attempts.
+A Fail2ban automatikusan blokkolja az IP-címeket ismételt sikertelen bejelentkezési kísérletek után.
 
-1. **Install Fail2ban:**
+1. **Telepítsd a Fail2ban-t:**
 
    ```bash
    sudo apt install fail2ban -y
    ```
 
-2. **Create a local configuration:**
+2. **Hozz létre egy helyi konfigurációt:**
 
    ```bash
    sudo nano /etc/fail2ban/jail.local
    ```
 
-3. **Add these configurations:**
-
+3. **Add hozzá ezeket a konfigurációkat:**
    ```ini
    [DEFAULT]
    bantime = 3600
@@ -263,6 +266,7 @@ Fail2ban automatically blocks IP addresses after repeated failed login attempts.
    ```bash
    sudo systemctl restart fail2ban
    ```
+
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
@@ -458,19 +462,19 @@ do
 done
 ```
 
-Make it executable:
+Tedd futtathatóvá:
 
 ```bash
 sudo chmod +x /usr/local/bin/ftp-monitor.sh
 ```
 
-### Create a Systemd Service {#create-a-systemd-service}
+### Hozz létre egy Systemd szolgáltatást {#create-a-systemd-service}
 
 ```bash
 sudo nano /etc/systemd/system/ftp-monitor.service
 ```
 
-Add this content:
+Add hozzá ezt a tartalmat:
 
 ```ini
 [Unit]
@@ -487,7 +491,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable and start the service:
+Engedélyezd és indítsd el a szolgáltatást:
 
 ```bash
 sudo systemctl daemon-reload
@@ -495,98 +499,98 @@ sudo systemctl enable ftp-monitor.service
 sudo systemctl start ftp-monitor.service
 ```
 
-Check the status:
+Ellenőrizd az állapotot:
 
 ```bash
 sudo systemctl status ftp-monitor.service
 ```
 
-## Part 5: Email Options for Legacy Devices {#part-5-email-options-for-legacy-devices}
 
-Devices like FOSSCAM cameras often don't support modern TLS versions. There are two solutions:
+## 5. rész: E-mail beállítások régi eszközökhöz {#part-5-email-options-for-legacy-devices}
 
-### Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
+Az olyan eszközök, mint a FOSSCAM kamerák gyakran nem támogatják a modern TLS verziókat. Két megoldás létezik:
 
-If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports specifically for older devices like cameras, printers, scanners, and fax machines.
+### 1. lehetőség: Használd a Forward Email régi TLS 1.0 portjait (ajánlott) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-#### Pricing {#pricing}
+Ha Forward Emailt használsz, ez a legegyszerűbb megoldás. A Forward Email dedikált régi TLS 1.0 portokat biztosít kifejezetten régebbi eszközök, például kamerák, nyomtatók, szkennerek és faxgépek számára.
 
-Forward Email offers several plans:
+#### Árazás {#pricing}
 
-| Plan | Price | Features |
-| ----------------------- | ------------ | -------------------------------------- |
-| Free | $0/month | Email forwarding only (no sending) |
-| **Enhanced Protection** | **$3/month** | **SMTP access + legacy TLS 1.0 ports** |
-| Team | $9/month | Enhanced + team features |
-| Enterprise | $250/month | Team + unlimited API requests |
+A Forward Email több csomagot kínál:
+
+| Csomag                  | Ár           | Jellemzők                              |
+| ----------------------- | ------------ | ------------------------------------ |
+| Ingyenes                | $0/hó        | Csak e-mail továbbítás (küldés nélkül) |
+| **Fokozott védelem**    | **$3/hó**    | **SMTP hozzáférés + régi TLS 1.0 portok** |
+| Csapat                  | $9/hó        | Fokozott + csapat funkciók            |
+| Vállalati               | $250/hó      | Csapat + korlátlan API kérések        |
 
 > \[!IMPORTANT]
-> The **Enhanced Protection plan ($3/month)** or higher is required for SMTP access and legacy TLS 1.0 port support.
+> Az **Fokozott védelem csomag ($3/hó)** vagy magasabb szükséges az SMTP hozzáféréshez és a régi TLS 1.0 port támogatásához.
 
-Learn more at [Forward Email Pricing](https://forwardemail.net/en/pricing).
+További információk: [Forward Email Árazás](https://forwardemail.net/en/pricing).
 
-#### Generate Your Password {#generate-your-password}
+#### Jelszó generálása {#generate-your-password}
 
-Before configuring your device, generate a password in Forward Email:
+A készülék konfigurálása előtt generálj jelszót a Forward Emailben:
 
-1. Log in to [Forward Email](https://forwardemail.net)
-2. Navigate to **My Account → Domains → \[Your Domain] → Aliases**
-3. Create or select an alias (e.g., `camera@yourdomain.com`)
-4. Click **"Generate Password"** next to the alias
-5. Copy the generated password - you'll use this for SMTP authentication
+1. Jelentkezz be a [Forward Email](https://forwardemail.net) oldalra
+2. Navigálj a **Saját fiók → Domain-ek → \[A te domain-ed] → Álnév** menüpontra
+3. Hozz létre vagy válassz ki egy álnevet (pl. `camera@yourdomain.com`)
+4. Kattints az **"Jelszó generálása"** gombra az álnév mellett
+5. Másold ki a generált jelszót – ezt fogod használni az SMTP hitelesítéshez
 
 > \[!TIP]
-> Each alias can have its own password. This is useful for tracking which device sent which email.
+> Minden álnévhez külön jelszó rendelhető. Ez hasznos, hogy nyomon tudd követni, melyik eszköz melyik e-mailt küldte.
 
-#### Configure Your Device {#configure-your-device}
+#### A készülék konfigurálása {#configure-your-device}
 
-Use these settings in your camera, printer, scanner, or other legacy device:
+Használd ezeket a beállításokat a kamerádban, nyomtatódban, szkenneredben vagy más régi eszközödben:
 
-| Setting | Érték |
+| Beállítás       | Érték                                            |
 | --------------- | ------------------------------------------------ |
-| SMTP Server | `smtp.forwardemail.net` |
-| Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` (alternative) |
-| Username | Your alias email (e.g., `camera@yourdomain.com`) |
-| Password | The password from "Generate Password" |
-| Authentication | Szükséges |
-| Encryption | SSL/TLS or STARTTLS |
+| SMTP szerver    | `smtp.forwardemail.net`                          |
+| Port (SSL/TLS)  | `2455`                                           |
+| Port (STARTTLS) | `2555` (alternatív)                              |
+| Felhasználónév  | Az álneved e-mail címe (pl. `camera@yourdomain.com`) |
+| Jelszó          | A "Jelszó generálása" által létrehozott jelszó   |
+| Hitelesítés     | Kötelező                                         |
+| Titkosítás      | SSL/TLS (ajánlott) vagy STARTTLS                  |
 
 > \[!WARNING]
-> These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Use only if your device cannot support modern TLS 1.2+.
+> Ezek a portok az elavult TLS 1.0 protokollt használják, amely ismert biztonsági sebezhetőségekkel rendelkezik (BEAST, POODLE). Csak akkor használd, ha az eszközöd nem támogatja a modern TLS 1.2+-t.
 
-Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
+Egyszerűen konfiguráld az eszközöd ezekkel a beállításokkal, és az e-maileket közvetlenül a Forward Emailen keresztül küldi majd, helyi relay szerver nélkül.
 
-For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
+További részletekért lásd a [Forward Email GYIK a régi TLS támogatásról](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
-### Option 2: Set Up a Postfix SMTP Relay {#option-2-set-up-a-postfix-smtp-relay}
+### 2. lehetőség: Postfix SMTP relay beállítása {#option-2-set-up-a-postfix-smtp-relay}
 
-If you're not using Forward Email, or prefer a local relay solution, set up Postfix on the Raspberry Pi to act as a middleman. This works with any email provider (Gmail, Outlook, Yahoo, AOL, etc.).
+Ha nem használod a Forward Emailt, vagy helyi relay megoldást szeretnél, állítsd be a Postfixet a Raspberry Pi-n, hogy közvetítőként működjön. Ez bármely e-mail szolgáltatóval működik (Gmail, Outlook, Yahoo, AOL stb.).
 
-#### Install Postfix {#install-postfix}
+#### Postfix telepítése {#install-postfix}
 
 ```bash
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules -y
 ```
+Telepítés közben:
 
-During installation:
+* Válassza a **"Internet Site"** lehetőséget
+* Adja meg a Pi hosztnevét (pl. `raspberrypi-ftp`) a "System mail name" mezőbe
 
-* Select **"Internet Site"**
-* Enter your Pi's hostname (e.g., `raspberrypi-ftp`) for "System mail name"
+#### Válassza ki az e-mail szolgáltatóját {#choose-your-email-provider}
 
-#### Choose Your Email Provider {#choose-your-email-provider}
+| Szolgáltató | SMTP szerver          | Port | Szükséges alkalmazásjelszó? |
+| ----------- | --------------------- | ---- | --------------------------- |
+| Gmail       | smtp.gmail.com        | 587  | Igen                        |
+| Outlook     | smtp-mail.outlook.com | 587  | Igen                        |
+| Yahoo       | smtp.mail.yahoo.com   | 465  | Igen                        |
+| AOL         | smtp.aol.com          | 587  | Igen                        |
 
-| Szolgáltatás | SMTP Server | Kikötő | App Password Required? |
-| -------- | --------------------- | ---- | ---------------------- |
-| Gmail | smtp.gmail.com | 587 | Igen |
-| Outlook | smtp-mail.outlook.com | 587 | Igen |
-| Yahoo | smtp.mail.yahoo.com | 465 | Igen |
-| AOL | smtp.aol.com | 587 | Igen |
+#### Szerezzen alkalmazás-specifikus jelszót {#get-an-app-specific-password}
 
-#### Get an App-Specific Password {#get-an-app-specific-password}
-
-Most providers require app passwords for third-party applications. Generate one from your email provider's security settings:
+A legtöbb szolgáltató alkalmazásjelszót kér harmadik féltől származó alkalmazásokhoz. Generáljon egyet az e-mail szolgáltatója biztonsági beállításaiban:
 
 * **Gmail:** [Google Account Security](https://myaccount.google.com/security)
 * **Outlook:** [Microsoft Account Security](https://account.microsoft.com/security)
@@ -594,11 +598,11 @@ Most providers require app passwords for third-party applications. Generate one 
 * **AOL:** [AOL Account Security](https://login.aol.com/account/security)
 
 > \[!IMPORTANT]
-> Never use your regular email password. Always use an app-specific password.
+> Soha ne használja a szokásos e-mail jelszavát. Mindig alkalmazás-specifikus jelszót használjon.
 
-#### Configure SASL Authentication {#configure-sasl-authentication}
+#### SASL hitelesítés beállítása {#configure-sasl-authentication}
 
-Create the password file for your chosen provider. This example uses Yahoo:
+Hozza létre a jelszófájlt a választott szolgáltatóhoz. Ez a példa a Yahoo-t használja:
 
 ```bash
 sudo mkdir -p /etc/postfix/sasl
@@ -606,28 +610,28 @@ sudo chmod 700 /etc/postfix/sasl
 sudo nano /etc/postfix/sasl/sasl_passwd
 ```
 
-Add this line (adjust server and port for your provider):
+Adja hozzá ezt a sort (állítsa be a szervert és portot a szolgáltatója szerint):
 
 ```
 [smtp.mail.yahoo.com]:465 your_email@yahoo.com:your_app_password
 ```
 
-For Gmail, use:
+Gmail esetén használja:
 
 ```
 [smtp.gmail.com]:587 your_email@gmail.com:your_app_password
 ```
 
-Secure and hash the file:
+Biztosítsa és titkosítsa a fájlt:
 
 ```bash
 sudo chmod 600 /etc/postfix/sasl/sasl_passwd
 sudo postmap /etc/postfix/sasl/sasl_passwd
 ```
 
-#### Configure Email Address Mapping {#configure-email-address-mapping}
+#### E-mail cím leképezés beállítása {#configure-email-address-mapping}
 
-Rewrite local email addresses to match your email provider:
+Írja át a helyi e-mail címeket, hogy megfeleljenek az e-mail szolgáltatójának:
 
 ```bash
 sudo mkdir -p /etc/postfix/map
@@ -635,42 +639,42 @@ sudo chmod 700 /etc/postfix/map
 sudo nano /etc/postfix/map/regex_map
 ```
 
-Add this line (replace `HOSTNAME` with your Pi's hostname and use your email):
+Adja hozzá ezt a sort (cserélje le a `HOSTNAME`-et a Pi hosztnevére, és használja a saját e-mail címét):
 
 ```
 /.+@HOSTNAME/    your_email@provider.com
 ```
 
-Example:
+Példa:
 
 ```
 /.+@raspberrypi-ftp/    john@yahoo.com
 ```
 
-Secure the file:
+Biztosítsa a fájlt:
 
 ```bash
 sudo chmod 600 /etc/postfix/map/regex_map
 ```
 
-#### Configure Postfix Main Settings {#configure-postfix-main-settings}
+#### Postfix fő beállításainak konfigurálása {#configure-postfix-main-settings}
 
-Edit the main configuration:
+Szerkessze a fő konfigurációt:
 
 ```bash
 sudo nano /etc/postfix/main.cf
 ```
 
-Find and update the relay host (or add at the end):
+Keresse meg és frissítse a relay hostot (vagy adja hozzá a végén):
 
 ```
 relayhost = [smtp.mail.yahoo.com]:465
 ```
 
-Add these settings at the end of the file:
+Adja hozzá ezeket a beállításokat a fájl végéhez:
 
 ```
-# SMTP Relay Configuration
+# SMTP Relay konfiguráció
 smtp_use_tls = yes
 smtp_sasl_auth_enable = yes
 smtp_sasl_security_options = noanonymous
@@ -680,69 +684,69 @@ smtp_tls_wrappermode = yes
 smtp_tls_security_level = encrypt
 smtp_generic_maps = regexp:/etc/postfix/map/regex_map
 
-# Network settings
+# Hálózati beállítások
 inet_interfaces = all
 inet_protocols = ipv4
 mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 ```
 
 > \[!TIP]
-> For Gmail (port 587), set `smtp_tls_wrappermode = no` instead of `yes`.
+> Gmail esetén (587-es port) állítsa a `smtp_tls_wrappermode = no` értékre a `yes` helyett.
 
 > \[!WARNING]
-> Update `mynetworks` with your actual network range. Only add trusted networks - any device on these networks can relay mail without authentication.
+> Frissítse a `mynetworks` értékét a tényleges hálózati tartományával. Csak megbízható hálózatokat adjon hozzá – ezekről a hálózatokról bármely eszköz hitelesítés nélkül képes levelet továbbítani.
 
-**Common network ranges:**
+**Gyakori hálózati tartományok:**
 
-| Network Range | IP Address Range |
-| ---------------- | --------------------------- |
-| `192.168.0.0/24` | 192.168.0.1 - 192.168.0.254 |
-| `192.168.1.0/24` | 192.168.1.1 - 192.168.1.254 |
-| `10.0.0.0/8` | 10.0.0.0 - 10.255.255.255 |
+| Hálózati tartomány | IP cím tartomány           |
+| ------------------ | -------------------------- |
+| `192.168.0.0/24`   | 192.168.0.1 - 192.168.0.254 |
+| `192.168.1.0/24`   | 192.168.1.1 - 192.168.1.254 |
+| `10.0.0.0/8`       | 10.0.0.0 - 10.255.255.255   |
 
-#### Update Firewall and Restart {#update-firewall-and-restart}
+#### Tűzfal frissítése és újraindítás {#update-firewall-and-restart}
 
 ```bash
 sudo ufw allow 25/tcp comment 'SMTP for local devices'
 sudo systemctl restart postfix
 ```
 
-Verify Postfix is running:
+Ellenőrizze, hogy a Postfix fut-e:
 
 ```bash
 sudo systemctl status postfix
 ```
 
-#### Test the Relay {#test-the-relay}
+#### Tesztelje a relay-t {#test-the-relay}
 
-Send a test email:
+Küldjön teszt e-mailt:
 
 ```bash
 echo "Test from Postfix" | mail -s "Test" your_email@provider.com
 ```
 
-Check the logs:
+Ellenőrizze a naplókat:
 
 ```bash
 sudo tail -f /var/log/mail.log
 ```
 
-Look for `status=sent` to confirm success.
+Keresse a `status=sent` bejegyzést a siker megerősítéséhez.
 
-#### Configure Your Device {#configure-your-device-1}
+#### Eszköz konfigurálása {#configure-your-device-1}
 
-In your camera or device settings:
+A kamerája vagy eszköze beállításaiban:
+* **SMTP szerver:** A Pi IP-címe (pl. `192.168.1.100`)
+* **SMTP port:** `25`
+* **Hitelesítés:** Nincs
+* **Titkosítás:** Nincs (csak helyi hálózat)
 
-* **SMTP Server:** Your Pi's IP address (e.g., `192.168.1.100`)
-* **SMTP Port:** `25`
-* **Authentication:** None
-* **Encryption:** None (local network only)
 
-## Troubleshooting {#troubleshooting}
+## Hibakeresés {#troubleshooting}
 
-If issues arise, check these log files:
+Ha problémák merülnek fel, ellenőrizze ezeket a naplófájlokat:
 
-**FTP Server:**
+**FTP szerver:**
 
 ```bash
 sudo tail -f /var/log/vsftpd.log
@@ -755,19 +759,20 @@ sudo fail2ban-client status
 sudo tail -f /var/log/fail2ban.log
 ```
 
-**File Monitor:**
+**Fájlfigyelő:**
 
 ```bash
 sudo journalctl -u ftp-monitor.service -f
 ```
 
-**Postfix Mail:**
+**Postfix levél:**
 
 ```bash
 sudo tail -f /var/log/mail.log
-mailq  # View mail queue
+mailq  # Levél sor megtekintése
 ```
 
-## Wrapping Up {#wrapping-up}
 
-The Raspberry Pi is now a complete automated system with secure file uploads, automatic email notifications with attachments, and SMTP relay capabilities for legacy devices. Whether using Forward Email's legacy TLS ports or a local Postfix relay, older devices can now send emails reliably through modern email providers.
+## Befejezés {#wrapping-up}
+
+A Raspberry Pi most már egy teljesen automatizált rendszer biztonságos fájlfeltöltéssel, automatikus e-mail értesítésekkel mellékletekkel, és SMTP átjátszó képességekkel régebbi eszközök számára. Akár a Forward Email régi TLS portjait, akár egy helyi Postfix átjátszót használ, a régebbi eszközök most már megbízhatóan küldhetnek e-maileket modern e-mail szolgáltatókon keresztül.

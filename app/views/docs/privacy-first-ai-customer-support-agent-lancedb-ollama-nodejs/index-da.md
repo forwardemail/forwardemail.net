@@ -1,219 +1,219 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# Bygning af en Privacy-First AI Kundesupport Agent med LanceDB, Ollama og Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
 <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
+> Dette dokument dækker vores rejse med at bygge en selvhostet AI support agent. Vi skrev om lignende udfordringer i vores [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blogindlæg. Vi overvejede ærligt at skrive en opfølger kaldet "AI Startup Graveyard", men måske må vi vente et år eller to, indtil AI-boblen potentielt brister(?). For nu er dette vores hjerneudladning af, hvad der virkede, hvad der ikke gjorde, og hvorfor vi gjorde det på denne måde.
 
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
+Sådan byggede vi vores egen AI kundesupport agent. Vi gjorde det på den hårde måde: selvhostet, privacy-first og fuldstændig under vores kontrol. Hvorfor? Fordi vi ikke stoler på tredjepartstjenester med vores kunders data. Det er et GDPR- og DPA-krav, og det er det rigtige at gøre.
 
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
+Dette var ikke et sjovt weekendprojekt. Det var en måneds lang rejse gennem ødelagte afhængigheder, vildledende dokumentation og den generelle kaos i open source AI-økosystemet i 2025. Dette dokument er en registrering af, hvad vi byggede, hvorfor vi byggede det, og de forhindringer vi stødte på undervejs.
 
-## Table of Contents {#table-of-contents}
 
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
+## Indholdsfortegnelse {#table-of-contents}
 
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
+* [Kundens Fordele: AI-Augmenteret Menneskelig Support](#customer-benefits-ai-augmented-human-support)
+  * [Hurtigere, Mere Præcise Svar](#faster-more-accurate-responses)
+  * [Konsistens Uden Udbrændthed](#consistency-without-burnout)
+  * [Hvad Du Får](#what-you-get)
+* [En Personlig Refleksion: To Årtiers Slid](#a-personal-reflection-the-two-decade-grind)
+* [Hvorfor Privacy Er Vigtigt](#why-privacy-matters)
+* [Omkostningsanalyse: Cloud AI vs Selvhostet](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [Sammenligning af Cloud AI Tjenester](#cloud-ai-service-comparison)
+  * [Omkostningsopdeling: 5GB Vidensbase](#cost-breakdown-5gb-knowledge-base)
+  * [Selvhostede Hardwareomkostninger](#self-hosted-hardware-costs)
+* [Dogfooding af Vores Egen API](#dogfooding-our-own-api)
+  * [Hvorfor Dogfooding Er Vigtigt](#why-dogfooding-matters)
+  * [API Brugseksempler](#api-usage-examples)
+  * [Ydelsesfordele](#performance-benefits)
+* [Krypteringsarkitektur](#encryption-architecture)
+  * [Lag 1: Mailboks Kryptering (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [Lag 2: Beskedniveau PGP Kryptering](#layer-2-message-level-pgp-encryption)
+  * [Hvorfor Dette Er Vigtigt for Træning](#why-this-matters-for-training)
+  * [Lagringssikkerhed](#storage-security)
+  * [Lokal Lagring er Standardpraksis](#local-storage-is-standard-practice)
+* [Arkitekturen](#the-architecture)
+  * [Overordnet Flow](#high-level-flow)
+  * [Detaljeret Scraper Flow](#detailed-scraper-flow)
+* [Hvordan Det Virker](#how-it-works)
+  * [Opbygning af Vidensbasen](#building-the-knowledge-base)
+  * [Træning fra Historiske Emails](#training-from-historical-emails)
+  * [Behandling af Indkommende Emails](#processing-incoming-emails)
+  * [Vector Store Administration](#vector-store-management)
+* [Vector Database Gravpladsen](#the-vector-database-graveyard)
+* [Systemkrav](#system-requirements)
+* [Cron Job Konfiguration](#cron-job-configuration)
+  * [Miljøvariabler](#environment-variables)
+  * [Cron Jobs for Flere Indbakker](#cron-jobs-for-multiple-inboxes)
+  * [Cron Tidsplan Opdeling](#cron-schedule-breakdown)
+  * [Dynamisk Dato Beregning](#dynamic-date-calculation)
+  * [Initial Opsætning: Udtræk URL-liste fra Sitemap](#initial-setup-extract-url-list-from-sitemap)
+  * [Test af Cron Jobs Manuel](#testing-cron-jobs-manually)
+  * [Overvågning af Logs](#monitoring-logs)
+* [Kodeeksempler](#code-examples)
+  * [Scraping og Behandling](#scraping-and-processing)
+  * [Træning fra Historiske Emails](#training-from-historical-emails-1)
+  * [Forespørgsel efter Kontekst](#querying-for-context)
+* [Fremtiden: Spam Scanner F\&U](#the-future-spam-scanner-rd)
+* [Fejlfinding](#troubleshooting)
+  * [Vector Dimension Mismatch Fejl](#vector-dimension-mismatch-error)
+  * [Tom Vidensbase Kontekst](#empty-knowledge-base-context)
+  * [PGP Dekrypteringsfejl](#pgp-decryption-failures)
+* [Brugertips](#usage-tips)
+  * [Opnå Inbox Zero](#achieving-inbox-zero)
+  * [Brug af skip-ai Label](#using-the-skip-ai-label)
+  * [Email Trådning og Svar-Alle](#email-threading-and-reply-all)
+  * [Overvågning og Vedligeholdelse](#monitoring-and-maintenance)
+* [Testning](#testing)
+  * [Kørsel af Tests](#running-tests)
+  * [Testdækning](#test-coverage)
+  * [Testmiljø](#test-environment)
+* [Vigtige Pointer](#key-takeaways)
+## Kunde Fordele: AI-Forstærket Menneskelig Support {#customer-benefits-ai-augmented-human-support}
 
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
+Vores AI-system erstatter ikke vores supportteam – det gør dem bedre. Her er hvad det betyder for dig:
 
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
+### Hurtigere, Mere Præcise Svar {#faster-more-accurate-responses}
 
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
+**Menneske-i-Loop**: Hvert AI-genereret udkast bliver gennemgået, redigeret og kurateret af vores menneskelige supportteam, før det sendes til dig. AI’en håndterer den indledende research og udkast, hvilket frigør vores team til at fokusere på kvalitetskontrol og personalisering.
 
-**Trained on Human Expertise**: The AI learns from:
+**Trænet på Menneskelig Ekspertise**: AI’en lærer fra:
 
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
+* Vores håndskrevne vidensbase og dokumentation
+* Menneskeskrevne blogindlæg og tutorials
+* Vores omfattende FAQ (skrevet af mennesker)
+* Tidligere kundesamtaler (alle håndteret af rigtige mennesker)
 
-You're getting responses informed by years of human expertise, just delivered faster.
+Du får svar, der er baseret på års menneskelig ekspertise, blot leveret hurtigere.
 
-### Consistency Without Burnout {#consistency-without-burnout}
+### Konsistens Uden Udbrændthed {#consistency-without-burnout}
 
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
+Vores lille team håndterer hundredvis af supporthenvendelser dagligt, hver med forskellig teknisk viden og mental kontekstskift:
 
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
+* Faktureringsspørgsmål kræver kendskab til finansielle systemer
+* DNS-problemer kræver netværksekspertise
+* API-integration kræver programmeringsviden
+* Sikkerhedsrapporter kræver sårbarhedsvurdering
 
-Without AI assistance, this constant context-switching leads to:
+Uden AI-assistance fører denne konstante kontekstskift til:
 
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
+* Langsommere svartider
+* Menneskelige fejl på grund af træthed
+* Inkonsekvent svar kvalitet
+* Teamudbrændthed
 
-**With AI augmentation**, our team:
+**Med AI-forstærkning**:
 
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
+* Svarer teamet hurtigere (AI laver udkast på sekunder)
+* Laver færre fejl (AI fanger almindelige fejl)
+* Opretholder ensartet kvalitet (AI refererer til samme vidensbase hver gang)
+* Forbliver frisk og fokuseret (mindre tid på research, mere tid på at hjælpe)
 
-### What You Get {#what-you-get}
+### Hvad Du Får {#what-you-get}
 
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
+✅ **Hastighed**: AI laver udkast til svar på sekunder, mennesker gennemgår og sender inden for få minutter
 
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
+✅ **Præcision**: Svar baseret på vores faktiske dokumentation og tidligere løsninger
 
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
+✅ **Konsistens**: Samme høje kvalitet uanset om det er kl. 9 eller 21
 
-✅ **Human touch**: Every response reviewed and personalized by our team
+✅ **Menneskelig berøring**: Hvert svar gennemgås og personaliseres af vores team
 
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+✅ **Ingen hallucinationer**: AI bruger kun vores verificerede vidensbase, ikke generiske internetdata
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> **Du taler altid med mennesker**. AI’en er en forskningsassistent, der hjælper vores team med at finde det rigtige svar hurtigere. Tænk på det som en bibliotekar, der øjeblikkeligt finder den relevante bog – men et menneske læser den stadig og forklarer den for dig.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+## En Personlig Refleksion: To Årtiers Slid {#a-personal-reflection-the-two-decade-grind}
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
+Før vi dykker ned i de tekniske detaljer, en personlig note. Jeg har været i gang i næsten to årtier. De endeløse timer ved tastaturet, den utrættelige jagt på en løsning, det dybe, fokuserede slid – det er virkeligheden ved at bygge noget meningsfuldt. Det er en virkelighed, der ofte overses i hypen omkring ny teknologi.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+Den nylige eksplosion af AI har været særligt frustrerende. Vi bliver solgt en drøm om automatisering, om AI-assistenter, der vil skrive vores kode og løse vores problemer. Virkeligheden? Outputtet er ofte skralde-kode, der kræver mere tid at rette, end det ville have taget at skrive fra bunden. Løftet om at gøre vores liv lettere er falsk. Det er en distraktion fra det hårde, nødvendige arbejde med at bygge.
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+Og så er der catch-22 ved at bidrage til open source. Du er allerede spredt tyndt, udmattet af sliddet. Du bruger en AI til at hjælpe dig med at skrive en detaljeret, velstruktureret fejlrapport, i håb om at gøre det lettere for vedligeholdere at forstå og rette problemet. Og hvad sker der? Du bliver irettesat. Dit bidrag afvises som "off-topic" eller lav indsats, som vi så i en nylig [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Det er et slag i ansigtet på seniorudviklere, der bare prøver at hjælpe.
 
-## Why Privacy Matters {#why-privacy-matters}
+Dette er virkeligheden i det økosystem, vi arbejder i. Det handler ikke kun om ødelagte værktøjer; det handler om en kultur, der ofte ikke respekterer tiden og [indsatsen fra sine bidragydere](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Dette indlæg er en krønike over den virkelighed. Det er en historie om værktøjerne, ja, men det er også om den menneskelige pris ved at bygge i et ødelagt økosystem, der trods alle løfter er fundamentalt ødelagt.
+## Hvorfor Privatliv Er Vigtigt {#why-privacy-matters}
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+Vores [tekniske whitepaper](https://forwardemail.net/technical-whitepaper.pdf) dækker vores privatlivsfilosofi i dybden. Den korte version: vi sender aldrig kundedata til tredjepart. Aldrig. Det betyder ingen OpenAI, ingen Anthropic, ingen cloud-hostede vektordatabaser. Alt kører lokalt på vores infrastruktur. Dette er ikke til forhandling for GDPR-overholdelse og vores DPA-forpligtelser.
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+## Omkostningsanalyse: Cloud AI vs Selvhostet {#cost-analysis-cloud-ai-vs-self-hosted}
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+Før vi dykker ned i den tekniske implementering, lad os tale om, hvorfor selvhosting betyder noget fra et omkostningsperspektiv. Prisstrukturerne for cloud AI-tjenester gør dem urimeligt dyre for brugsscenarier med højt volumen som kundesupport.
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
-| --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+### Sammenligning af Cloud AI-tjenester {#cloud-ai-service-comparison}
+
+| Service         | Udbyder             | Embedding-omkostning                                           | LLM-omkostning (Input)                                                    | LLM-omkostning (Output) | Privatlivspolitik                                   | GDPR/DPA        | Hosting           | Data Deling       |
+| --------------- | ------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------- | -------------------------------------------------- | --------------- | ----------------- | ----------------- |
+| **OpenAI**      | OpenAI (US)         | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/)        | $0.15-20/1M tokens                                                        | $0.60-80/1M tokens      | [Link](https://openai.com/policies/privacy-policy/) | Begrænset DPA   | Azure (US)        | Ja (træning)      |
+| **Claude**      | Anthropic (US)      | N/A                                                            | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing)  | $15-80/1M tokens        | [Link](https://www.anthropic.com/legal/privacy)    | Begrænset DPA   | AWS/GCP (US)      | Nej (påstået)     |
+| **Gemini**      | Google (US)         | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens                                                     | $2.50/1M tokens         | [Link](https://policies.google.com/privacy)        | Begrænset DPA   | GCP (US)          | Ja (forbedring)   |
+| **DeepSeek**    | DeepSeek (Kina)     | N/A                                                            | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens         | [Link](https://www.deepseek.com/en)                | Ukendt          | Kina              | Ukendt            |
+| **Mistral**     | Mistral AI (Frankrig) | [$0.10/1M tokens](https://mistral.ai/pricing)                  | $0.40/1M tokens                                                          | $2.00/1M tokens         | [Link](https://mistral.ai/terms/)                  | EU GDPR         | EU                | Ukendt            |
+| **Selvhostet**  | Dig                 | $0 (eksisterende hardware)                                     | $0 (eksisterende hardware)                                               | $0 (eksisterende hardware) | Din politik                                        | Fuld overholdelse | MacBook M5 + cron | Aldrig            |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Bekymringer om datasuverænitet**: Amerikanske udbydere (OpenAI, Claude, Gemini) er underlagt CLOUD Act, som giver den amerikanske regering adgang til data. DeepSeek (Kina) opererer under kinesiske datalove. Selvom Mistral (Frankrig) tilbyder EU-hosting og GDPR-overholdelse, er selvhosting stadig den eneste mulighed for fuldstændig datasuverænitet og kontrol.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Omkostningsopdeling: 5GB Vidensbase {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Lad os beregne omkostningerne ved at behandle en 5GB vidensbase (typisk for en mellemstor virksomhed med dokumenter, e-mails og supporthistorik).
 
-**Assumptions:**
+**Antagelser:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB tekst ≈ 1,25 milliarder tokens (forudsat \~4 tegn/token)
+* Initial embedding-generering
+* Månedlig genuddannelse (fuld re-embedding)
+* 10.000 supportforespørgsler pr. måned
+* Gennemsnitlig forespørgsel: 500 tokens input, 300 tokens output
+**Detaljeret omkostningsoversigt:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
+| Komponent                             | OpenAI           | Claude          | Gemini               | Selv-hostet        |
 | -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **Initial embedding** (1,25 mia. tokens) | $25,000          | N/A             | $187,500             | $0                 |
+| **Månedlige forespørgsler** (10K × 800 tokens) | $1,200-16,000    | $2,400-16,000   | $2,400-3,200         | $0                 |
+| **Månedlig gen-træning** (1,25 mia. tokens) | $25,000          | N/A             | $187,500             | $0                 |
+| **Første års total**                  | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (elektricitet) |
+| **Privatlivsoverholdelse**            | ❌ Begrænset      | ❌ Begrænset     | ❌ Begrænset          | ✅ Fuld             |
+| **Data suverænitet**                  | ❌ Nej           | ❌ Nej          | ❌ Nej                | ✅ Ja               |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **Geminis embedding-omkostninger er katastrofale** ved $0,15/1M tokens. En enkelt 5GB vidensbase embedding ville koste $187,500. Det er 37x dyrere end OpenAI og gør det fuldstændig ubrugeligt til produktion.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Selv-hostede hardwareomkostninger {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+Vores setup kører på eksisterende hardware, vi allerede ejer:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Hardware**: MacBook M5 (allerede ejet til udvikling)
+* **Yderligere omkostning**: $0 (bruger eksisterende hardware)
+* **Elektricitet**: \~$5/måned (estimeret)
+* **Første års total**: \~$60
+* **Løbende**: $60/år
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**ROI**: Selv-hosting har reelt set nul marginalomkostninger, da vi bruger eksisterende udviklingshardware. Systemet kører via cron-jobs uden for spidsbelastningstider.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
+## Dogfooding af vores egen API {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+En af de vigtigste arkitektoniske beslutninger, vi tog, var at lade alle AI-opgaver bruge [Forward Email API](https://forwardemail.net/email-api) direkte. Det er ikke bare god praksis — det er en drivkraft for performanceoptimering.
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+### Hvorfor dogfooding er vigtigt {#why-dogfooding-matters}
 
-When our AI jobs use the same API endpoints as our customers:
+Når vores AI-opgaver bruger de samme API-endpoints som vores kunder:
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+1. **Performance-flaskehalse rammer os først** – Vi mærker problemerne før kunderne
+2. **Optimering gavner alle** – Forbedringer for vores opgaver forbedrer automatisk kundeoplevelsen
+3. **Test i virkeligheden** – Vores opgaver behandler tusindvis af e-mails og leverer kontinuerlig belastningstest
+4. **Kodegenbrug** – Samme autentificering, rate limiting, fejlhåndtering og caching-logik
 
-### API Usage Examples {#api-usage-examples}
+### API-brugseksempler {#api-usage-examples}
 
-**Listing Messages (train-from-history.js):**
+**Liste over beskeder (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// Bruger GET /v1/messages?folder=INBOX med BasicAuth
+// Ekskluderer eml, raw, nodemailer for at reducere svarstørrelse (brug kun IDs)
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +232,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Returnerer: [{ id, subject, date, ... }, ...]
+// Fuld beskedindhold hentes senere via GET /v1/messages/:id
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Hentning af fulde beskeder (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// Bruger GET /v1/messages/:id for at hente fuld besked med råt indhold
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +251,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Returnerer: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Oprettelse af kladde-svar (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// Bruger POST /v1/messages til at oprette kladde-svar
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +275,56 @@ const response = await axios.post(
   }
 );
 ```
+### Performancefordele {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Fordi vores AI-job kører på den samme API-infrastruktur:
 
-Because our AI jobs run on the same API infrastructure:
+* **Caching-optimeringer** gavner både job og kunder
+* **Ratebegrænsning** testes under reel belastning
+* **Fejlhåndtering** er gennemprøvet i praksis
+* **API-responstider** overvåges konstant
+* **Databaseforespørgsler** er optimerede til begge brugsscenarier
+* **Båndbreddeoptimering** – Udelukkelse af `eml`, `raw`, `nodemailer` ved listing reducerer responsstørrelse med \~90%
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+Når `train-from-history.js` behandler 1.000 e-mails, foretages der 1.000+ API-kald. Enhver ineffektivitet i API’en bliver straks tydelig. Det tvinger os til at optimere IMAP-adgang, databaseforespørgsler og responsserialisering – forbedringer, der direkte gavner vores kunder.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Eksempel på optimering**: Listing af 100 beskeder med fuldt indhold = \~10MB respons. Listing med `eml: false, raw: false, nodemailer: false` = \~100KB respons (100x mindre).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Krypteringsarkitektur {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+Vores e-mail-lagring bruger flere lag af kryptering, som AI-jobbene skal dekryptere i realtid til træning.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### Lag 1: Mailboks-kryptering (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Alle IMAP-mailbokse gemmes som SQLite-databaser krypteret med **chacha20-poly1305**, en kvantesikker krypteringsalgoritme. Dette er beskrevet i vores [blogindlæg om kvantesikker krypteret e-mail-service](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**Nøgleegenskaber:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Algoritme**: ChaCha20-Poly1305 (AEAD-krypteringsalgoritme)
+* **Kvantesikker**: Modstandsdygtig over for kvantecomputing-angreb
+* **Lagring**: SQLite-databasefiler på disk
+* **Adgang**: Dekrypteres i hukommelsen ved adgang via IMAP/API
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### Lag 2: Beskedniveau PGP-kryptering {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Mange support-e-mails er yderligere krypteret med PGP (OpenPGP-standarden). AI-jobbene skal dekryptere disse for at udtrække indhold til træning.
 
-**Decryption Flow:**
+**Dekrypteringsflow:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. API returnerer besked med krypteret råindhold
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Tjek om råindholdet er PGP-krypteret
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Dekrypter med vores private nøgle
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Parse dekrypteret MIME-besked
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Udfyld nodemailer med dekrypteret indhold
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +336,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**PGP-konfiguration:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Privat nøgle til dekryptering (sti til ASCII-armoreret nøglefil)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Adgangskode til privat nøgle (hvis krypteret)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+`pgp-decrypt.js` hjælperen:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Læser den private nøgle fra disk én gang (cachet i hukommelsen)
+2. Dekrypterer nøglen med adgangskoden
+3. Bruger den dekrypterede nøgle til al beskeddekryptering
+4. Understøtter rekursiv dekryptering for indlejrede krypterede beskeder
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Hvorfor det betyder noget for træning {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Uden korrekt dekryptering ville AI’en træne på krypteret vrøvl:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +365,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+Med dekryptering træner AI’en på faktisk indhold:
 
 ```
 Subject: Re: Bug Report
@@ -376,55 +376,55 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Lagringssikkerhed {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+Dekrypteringen sker i hukommelsen under jobudførelse, og det dekrypterede indhold konverteres til embeddings, som derefter gemmes i LanceDB-vektordatabasen på disk.
 
-**Where the data lives:**
+**Hvor dataene befinder sig:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Vektordatabasen**: Gemt på krypterede MacBook M5-arbejdsstationer
+* **Fysisk sikkerhed**: Arbejdsstationerne forbliver hos os hele tiden (ikke i datacentre)
+* **Diskkryptering**: Fuld diskkryptering på alle arbejdsstationer
+* **Netværkssikkerhed**: Firewall og isoleret fra offentlige netværk
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Fremtidig datacenter-udrulning:**
+Hvis vi nogensinde flytter til datacenter-hosting, vil serverne have:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* LUKS fuld diskkryptering
+* USB-adgang deaktiveret
+* Fysiske sikkerhedsforanstaltninger
+* Netværksisolation
+For komplette detaljer om vores sikkerhedspraksis, se vores [Sikkerhedsside](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> Vektordatabasen indeholder embeddings (matematiske repræsentationer), ikke den oprindelige almindelige tekst. Dog kan embeddings potentielt blive reverse-engineered, hvilket er grunden til, at vi opbevarer dem på krypterede, fysisk sikrede arbejdsstationer.
 
-### High-Level Flow {#high-level-flow}
+### Lokal lagring er standardpraksis {#local-storage-is-standard-practice}
+
+At gemme embeddings på vores teams arbejdsstationer er ikke anderledes end, hvordan vi allerede håndterer e-mail:
+
+* **Thunderbird**: Downloader og gemmer fuldt e-mailindhold lokalt i mbox/maildir-filer
+* **Webmail-klienter**: Cache e-maildata i browserlagring og lokale databaser
+* **IMAP-klienter**: Opretholder lokale kopier af beskeder til offline adgang
+* **Vores AI-system**: Gemmer matematiske embeddings (ikke almindelig tekst) i LanceDB
+
+Den væsentlige forskel: embeddings er **mere sikre** end almindelig tekst e-mail, fordi de er:
+
+1. Matematiske repræsentationer, ikke læsbar tekst
+2. Sværere at reverse-engineere end almindelig tekst
+3. Stadig underlagt samme fysiske sikkerhed som vores e-mail-klienter
+
+Hvis det er acceptabelt for vores team at bruge Thunderbird eller webmail på krypterede arbejdsstationer, er det lige så acceptabelt (og måske mere sikkert) at gemme embeddings på samme måde.
+
+
+## Arkitekturen {#the-architecture}
+
+Her er det grundlæggende flow. Det ser simpelt ud. Det var det ikke.
+
+> \[!NOTE]
+> Alle jobs bruger Forward Email API direkte, hvilket sikrer, at performanceoptimeringer gavner både vores AI-system og vores kunder.
+
+### Overordnet flow {#high-level-flow}
 
 ```mermaid
 graph TD
@@ -451,9 +451,9 @@ graph TD
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Detaljeret scraper-flow {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+`scraper.js` er kernen i dataindsamlingen. Det er en samling af parsere til forskellige dataformater.
 
 ```mermaid
 graph TD
@@ -475,29 +475,29 @@ graph TD
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## Hvordan det virker {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+Processen er opdelt i tre hoveddele: opbygning af vidensbasen, træning fra historiske e-mails og behandling af nye e-mails.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### Opbygning af vidensbasen {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: Dette er hovedjobbet. Det kører natligt, rydder den gamle vektorbutik og genopbygger den fra bunden. Det bruger `scraper.js` til at hente indhold fra alle kilder, `processor.js` til at opdele det i bidder, og `ollama-client.js` til at generere embeddings. Endelig gemmer `vector-store.js` alt i LanceDB.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
+**Datakilder:**
+
+* Lokale Markdown-filer (`docs/*.md`)
+* Teknisk whitepaper PDF (`assets/technical-whitepaper.pdf`)
+* API-spec JSON (`assets/api-spec.json`)
 * GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
+* GitHub diskussioner (via Octokit)
 * GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+* Sitemap URL-liste (`$LANCEDB_PATH/valid-urls.json`)
 
-### Training from Historical Emails {#training-from-historical-emails}
+### Træning fra historiske e-mails {#training-from-historical-emails}
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
-
-**Email Processing Flow:**
+**`train-from-history.js`**: Dette job scanner historiske e-mails fra alle mapper, dekrypterer PGP-krypterede beskeder og tilføjer dem til en separat vektorbutik (`customer_support_history`). Dette giver kontekst fra tidligere supportinteraktioner.
+**Emailbehandlingsflow:**
 
 ```mermaid
 sequenceDiagram
@@ -535,25 +535,25 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**Nøglefunktioner:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **PGP-dekryptering**: Bruger `pgp-decrypt.js` hjælper med `GPG_SECURITY_KEY` miljøvariablen
+* **Trådgruppering**: Grupperer relaterede e-mails i samtaletråde
+* **Bevarelse af metadata**: Gemmer mappe, emne, dato, krypteringsstatus
+* **Svar-kontekst**: Knytter beskeder med deres svar for bedre kontekst
 
-**Configuration:**
+**Konfiguration:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# Miljøvariabler for train-from-history
+HISTORY_SCAN_LIMIT=1000              # Maks antal beskeder der skal behandles
+HISTORY_SCAN_SINCE="2024-01-01"      # Behandl kun beskeder efter denne dato
+HISTORY_DECRYPT_PGP=true             # Forsøg PGP-dekryptering
+GPG_SECURITY_KEY="/path/to/key.asc"  # Sti til PGP privatnøgle
+GPG_SECURITY_PASSPHRASE="passphrase" # Nøgleadgangskode (valgfri)
 ```
 
-**What Gets Stored:**
+**Hvad gemmes:**
 
 ```javascript
 {
@@ -575,39 +575,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Kør `train-from-history` efter den indledende opsætning for at udfylde den historiske kontekst. Dette forbedrer svarenes kvalitet markant ved at lære af tidligere supportinteraktioner.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Behandling af indkommende e-mails {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Denne job kører på e-mails i vores `support@forwardemail.net`, `abuse@forwardemail.net` og `security@forwardemail.net` postkasser (specifikt `INBOX` IMAP-mappestien). Den benytter vores API på <https://forwardemail.net/email-api> (f.eks. `GET /v1/messages?folder=INBOX` med BasicAuth adgang via vores IMAP-legitimationsoplysninger for hver postkasse). Den analyserer e-mailens indhold, forespørger både vidensbasen (`forward_email_knowledge_base`) og den historiske e-mail vektor-lager (`customer_support_history`), og sender derefter den samlede kontekst til `response-generator.js`. Generatoren bruger `mxbai-embed-large` via Ollama til at udforme et svar.
 
-**Automated Workflow Features:**
+**Automatiserede workflow-funktioner:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Inbox Zero Automation**: Efter en vellykket oprettelse af et udkast flyttes den oprindelige besked automatisk til Arkiv-mappen. Dette holder din indbakke ren og hjælper med at opnå inbox zero uden manuel indgriben.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **Spring AI-behandling over**: Tilføj blot et `skip-ai` label (case-insensitive) til en hvilken som helst besked for at forhindre AI-behandling. Beskeden forbliver uberørt i din indbakke, så du kan håndtere den manuelt. Dette er nyttigt for følsomme beskeder eller komplekse sager, der kræver menneskelig vurdering.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Korrekt e-mail-trådning**: Alle udkastssvar inkluderer den oprindelige besked citeret nedenfor (med standard ` >  ` præfiks), efter e-mail-svarskonventioner med "På \[dato], \[afsender] skrev:" format. Dette sikrer korrekt samtalekontekst og trådning i e-mail-klienter.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Svar-alle-adfærd**: Systemet håndterer automatisk Reply-To headers og CC-modtagere:
+   * Hvis en Reply-To header findes, bliver den til To-adressen, og den oprindelige From tilføjes til CC
+   * Alle oprindelige To- og CC-modtagere inkluderes i svar-CC (undtagen din egen adresse)
+   * Følger standard e-mail svar-alle konventioner for gruppe-samtaler
+**Kilde Rangering**: Systemet bruger **vægtet rangering** til at prioritere kilder:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
-
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
+* FAQ: 100% (højeste prioritet)
+* Teknisk whitepaper: 95%
+* API-specifikation: 90%
+* Officielle dokumenter: 85%
 * GitHub issues: 70%
-* Historical emails: 50%
+* Historiske e-mails: 50%
 
 ### Vector Store Management {#vector-store-management}
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
+`VectorStore`-klassen i `helpers/customer-support-ai/vector-store.js` er vores interface til LanceDB.
 
-**Adding Documents:**
+**Tilføjelse af dokumenter:**
 
 ```javascript
 // vector-store.js
@@ -621,126 +620,127 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Rydning af lageret:**
 
 ```javascript
-// Option 1: Use the clear() method
+// Option 1: Brug clear() metoden
 await vectorStore.clear();
 
-// Option 2: Delete the local database directory
+// Option 2: Slet den lokale database-mappe
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+`LANCEDB_PATH` miljøvariablen peger på den lokale indlejrede databasedirektorium. LanceDB er serverløs og indlejret, så der er ingen separat proces at administrere.
+
 
 ## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+Dette var den første store forhindring. Vi prøvede flere vektordatabaser, før vi valgte LanceDB. Her er hvad der gik galt med hver enkelt.
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
-| ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+| Database     | GitHub                                                      | Hvad gik galt                                                                                                                                                                                                       | Specifikke problemer                                                                                                                                                                                                                                                                                                                                                      | Sikkerhedsbekymringer                                                                                                                                                                                             |
+| ------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` giver dig en version fra stenalderen med `PydanticImportError`. Den eneste måde at få en fungerende version er at kompilere fra kilden. Ikke udviklervenligt.                              | Python afhængighedskaos. Flere brugere rapporterer ødelagte pip-installationer ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). Dokumentationen siger "brug bare Docker", hvilket er et ikke-svar for lokal udvikling. Crasher på Windows med >99 poster ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Vilkårlig kodeudførelse via ChromaDB-integration i MindsDB. Kritiske OS-sårbarheder i Docker-image ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                                   |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | Homebrew tap (`qdrant/qdrant/qdrant`) nævnt i deres gamle dokumentation er væk. Forsvundet. Ingen forklaring. De officielle dokumenter siger nu bare "brug Docker."                                                  | Manglende Homebrew tap. Ingen native macOS binær. Kun Docker er en barriere for hurtig lokal test.                                                                                                                                                                                                                                                                          | **CVE-2024-2221**: Vilkårlig filupload-sårbarhed, der tillader fjernkodeudførelse (fikset i v1.9.0). Svag sikkerhedsmodenhedsscore fra [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/).        |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | Homebrew-versionen havde en kritisk clustering-fejl (`leader not found`). De dokumenterede flag til at rette det (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) virkede ikke. Fundamentalt ødelagt for enkelt-node opsætninger. | Clustering-fejl selv i enkelt-node tilstand. Over-engineered til simple brugsscenarier.                                                                                                                                                                                                                                                                                    | Ingen større CVE’er fundet, men kompleksitet øger angrebsoverfladen.                                                                                                                                               |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Denne virkede. Den er indlejret og serverløs. Ingen separat proces. Den eneste irritation er den forvirrende pakke-navngivning (`vectordb` er forældet, brug `@lancedb/lancedb`) og spredte dokumenter. Vi kan leve med det. | Forvirring omkring pakkenavne (`vectordb` vs `@lancedb/lancedb`), men ellers solid. Indlejret arkitektur eliminerer hele klasser af sikkerhedsproblemer.                                                                                                                                                                                                                     | Ingen kendte CVE’er. Indlejret design betyder ingen netværksangrebsoverflade.                                                                                                                                      |
+> \[!WARNING]
+> **ChromaDB har kritiske sikkerhedssårbarheder.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) tillader vilkårlig kodeudførelse. Pip-installationen er fundamentalt brudt med Pydantic-afhængighedsproblemer. Undgå til produktionsbrug.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **Qdrant havde en filupload RCE-sårbarhed** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)), som kun blev rettet i v1.9.0. Hvis du skal bruge Qdrant, skal du sikre dig, at du har den nyeste version.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Det open source vektordatabasesystem er ustabilt. Stol ikke på dokumentationen. Antag at alt er brudt, indtil det modsatte er bevist. Test lokalt før du binder dig til en stack.
 
-## System Requirements {#system-requirements}
+
+## Systemkrav {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
+* **Ollama:** Seneste ([GitHub](https://github.com/ollama/ollama))
 * **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Vektordatabse:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **GitHub-adgang:** `@octokit/rest` til scraping af issues ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Til primær database (via `mongoose-to-sqlite`)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## Cron Job Konfiguration {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+Alle AI-jobs kører via cron på en MacBook M5. Her er hvordan du opsætter cron jobs til at køre ved midnat på tværs af flere indbakker.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### Miljøvariabler {#environment-variables}
 
-**In `.env` file:**
+Jobbene kræver disse miljøvariabler. De fleste kan sættes i `.env`-filen (indlæst via `@ladjs/env`), men `HISTORY_SCAN_SINCE` skal beregnes dynamisk i crontab.
+
+**I `.env`-fil:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Forward Email API legitimationsoplysninger (ændres pr. indbakke)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
 FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
 
-# PGP decryption (shared across all inboxes)
+# PGP dekryptering (deles på tværs af alle indbakker)
 GPG_SECURITY_KEY=/path/to/private-key.asc
 GPG_SECURITY_PASSPHRASE=your-passphrase
 
-# Historical scan configuration
+# Historisk scanningskonfiguration
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# LanceDB sti
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**I crontab (beregnet dynamisk):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE skal sættes inline i crontab med shell-dato beregning
+# Kan ikke være i .env fil da @ladjs/env ikke evaluerer shell-kommandoer
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Cron Jobs for Flere Indbakker {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Rediger din crontab med `crontab -e` og tilføj:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Opdater vidensbase (kører én gang, deles på tværs af alle indbakker)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Træn fra historik - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Træn fra historik - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Træn fra historik - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Behandl indbakke - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Behandl indbakke - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Behandl indbakke - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Cron Tidsplan Oversigt {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
+| Job                     | Tidsplan     | Beskrivelse                                                                       |
+| ----------------------- | ------------ | --------------------------------------------------------------------------------- |
+| `train-from-sitemap.js` | `0 0 * * 0`  | Ugentligt (søndag midnat) - Henter alle URL'er fra sitemap og træner vidensbase   |
+| `train-from-history.js` | `0 0 * * *`  | Dagligt ved midnat - Scanner gårsdagens e-mails pr. indbakke                      |
+| `process-inbox.js`      | `*/5 * * * *`| Hvert 5. minut - Behandler nye e-mails og genererer udkast                        |
 
-| Job | Schedule | Description |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+### Dynamisk Dato Beregning {#dynamic-date-calculation}
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+Variablen `HISTORY_SCAN_SINCE` **skal beregnes inline i crontab** fordi:
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+1. `.env` filer læses som bogstavelige strenge af `@ladjs/env`
+2. Shell kommando substitution `$(...)` virker ikke i `.env` filer
+3. Datoen skal beregnes frisk hver gang cron kører
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
-
-**Correct approach (in crontab):**
+**Korrekt tilgang (i crontab):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +750,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Forkert tilgang (virker ikke i .env):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Dette vil blive læst som bogstavelig streng "$(date -v-1d +%Y-%m-%d)"
+# IKKE evalueret som en shell kommando
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Dette sikrer, at hver natlig kørsel dynamisk beregner gårsdagens dato og undgår unødvendigt arbejde.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### Første Opsætning: Udtræk URL-liste fra Sitemap {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+Før du kører process-inbox jobbet første gang, **skal** du udtrække URL-listen fra sitemap. Dette skaber en ordbog af gyldige URL'er, som LLM kan referere til og forhindrer URL-hallucination.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# Første opsætning: Udtræk URL-liste fra sitemap
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Hvad dette gør:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. Henter alle URL'er fra <https://forwardemail.net/sitemap.xml>
+2. Filtrerer kun ikke-lokaliserede URL'er eller /en/ URL'er (undgår duplikeret indhold)
+3. Fjerner lokaliseringspræfikser (/en/faq → /faq)
+4. Gemmer en simpel JSON-fil med URL-listen til `$LANCEDB_PATH/valid-urls.json`
+5. Ingen crawling, ingen metadata scraping - bare en flad liste af gyldige URL'er
 
-**Why this matters:**
+**Hvorfor det er vigtigt:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* Forhindrer at LLM hallucinerer falske URL'er som `/dashboard` eller `/login`
+* Giver en whitelist af gyldige URL'er som svar-generatoren kan referere til
+* Simpelt, hurtigt og kræver ikke lagring i vektordatabase
+* Svar-generatoren loader denne liste ved opstart og inkluderer den i prompten
 
-**Add to crontab for weekly updates:**
+**Tilføj til crontab for ugentlige opdateringer:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# Udtræk URL-liste fra sitemap - ugentligt søndag midnat
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Test Cron Jobs Manuel {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+For at teste et job før det tilføjes til cron:
 
 ```bash
-# Test sitemap training
+# Test sitemap træning
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Test support indbakke træning
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +814,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Overvågning af Logs {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Hvert job logger til en separat fil for nem fejlfinding:
 
 ```bash
-# Watch support inbox processing in real-time
+# Overvåg support indbakke behandling i realtid
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Tjek gårsdagens træningskørsel
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Se alle fejl på tværs af jobs
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Brug separate logfiler pr. indbakke for at isolere problemer. Hvis en indbakke har autentificeringsproblemer, forurener det ikke logs for andre indbakker.
+## Codeeksempler {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Scraping og behandling {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +842,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Ryd op i gamle data
 await vectorStore.clear();
 
-// Scrape all sources
+// Scrape alle kilder
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`Scraped ${documents.length} dokumenter`);
 
-// Process into chunks
+// Behandl til chunks
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`Genererede ${allChunks.length} chunks`);
 
-// Generate embeddings and store
+// Generer embeddings og gem
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +869,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Træning fra historiske e-mails {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +883,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Scan alle mapper (INBOX, Sendt post osv.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Gruppér i samtaletråde
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Behandl hver tråd
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Spring krypterede beskeder over, som ikke kunne dekrypteres
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Brug allerede-parset indhold fra nodemailer
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // Chunk og gem
+    const chunks = processor.chunkText(`Emne: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +928,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Forespørgsel efter kontekst {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,67 +937,68 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Forespørg begge lagre
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Vægtet rangering og deduplikering sker her
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Generer svar
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## Fremtiden: Spam Scanner F\&U {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Hele dette projekt var ikke kun for kundesupport. Det var F\&U. Vi kan nu tage alt, hvad vi har lært om lokale embeddings, vector stores og kontekstgenfinding og anvende det på vores næste store projekt: LLM-laget til [Spam Scanner](https://spamscanner.net). De samme principper om privatliv, selvhosting og semantisk forståelse vil være nøglen.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Fejlfinding {#troubleshooting}
+
+### Fejl ved vektordimension mismatch {#vector-dimension-mismatch-error}
+
+**Fejl:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Årsag:** Denne fejl opstår, når du skifter embeddingsmodel (f.eks. fra `mistral-small` til `mxbai-embed-large`), men den eksisterende LanceDB-database blev oprettet med en anden vektordimension.
+**Løsning:** Du skal genoplære vidensbasen med den nye embedding-model:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Stop alle kørende customer support AI jobs
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Slet den eksisterende LanceDB database
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Bekræft at embedding-modellen er sat korrekt i .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Skal vise: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Hent embedding-modellen i Ollama
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Genoplær vidensbasen
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Genstart process-inbox jobbet via Bree
+# Jobbet kører automatisk hvert 5. minut
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Hvorfor det sker:** Forskellige embedding-modeller producerer vektorer med forskellige dimensioner:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 dimensioner
+* `mxbai-embed-large`: 1024 dimensioner
+* `nomic-embed-text`: 768 dimensioner
+* `all-minilm`: 384 dimensioner
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB gemmer vektordimensionen i tabelskemaet. Når du forespørger med en anden dimension, fejler det. Den eneste løsning er at genskabe databasen med den nye model.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Tom Vidensbase Kontekst {#empty-knowledge-base-context}
 
 **Symptom:**
 
@@ -1010,220 +1010,222 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Årsag:** Vidensbasen er ikke blevet trænet endnu, eller LanceDB-tabellen findes ikke.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Løsning:** Kør træningsjobbet for at fylde vidensbasen:
 
 ```bash
-# Train from historical emails
+# Træn fra historiske emails
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Eller træn fra website/docs (hvis du har en scraper)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### PGP Dekrypteringsfejl {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Symptom:** Beskeder vises som krypterede, men indholdet er tomt.
 
-**Solution:**
+**Løsning:**
 
-1. Verify GPG key path is set correctly:
+1. Bekræft at GPG-nøglestien er sat korrekt:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Skal pege på din private nøglefil
 ```
 
-2. Test decryption manually:
+2. Test dekryptering manuelt:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Tjek nøgle-tilladelser:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# Skal kunne læses af brugeren, der kører jobbet
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Brugertips {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Opnå Inbox Zero {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+Systemet er designet til automatisk at hjælpe dig med at opnå inbox zero:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Automatisk Arkivering**: Når et udkast er oprettet succesfuldt, flyttes den oprindelige besked automatisk til Arkiv-mappen. Dette holder din indbakke ren uden manuel indgriben.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Gennemgå Udkast**: Tjek Udkast-mappen regelmæssigt for at gennemgå AI-genererede svar. Rediger efter behov før afsendelse.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Manuel Overstyring**: For beskeder, der kræver særlig opmærksomhed, tilføj blot `skip-ai` etiketten før jobbet kører.
 
-To prevent AI processing for specific messages:
+### Brug af skip-ai etiketten {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+For at forhindre AI-behandling af specifikke beskeder:
 
-**When to use skip-ai:**
+1. **Tilføj etiketten**: I din email-klient, tilføj en `skip-ai` etiket/tag til enhver besked (case-insensitive)
+2. **Beskeden forbliver i indbakken**: Beskeden bliver ikke behandlet eller arkiveret
+3. **Håndter manuelt**: Du kan selv svare uden AI-indblanding
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**Hvornår du skal bruge skip-ai:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Følsomme eller fortrolige beskeder
+* Komplekse sager der kræver menneskelig vurdering
+* Beskeder fra VIP-kunder
+* Juridiske eller compliance-relaterede forespørgsler
+* Beskeder der kræver øjeblikkelig menneskelig opmærksomhed
 
-The system follows standard email conventions:
+### Email-trådning og Svar-Alle {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+Systemet følger standard email-konventioner:
+
+**Citerede Originalbeskeder:**
 
 ```
-Hi there,
+Hej,
 
-[AI-generated response]
+[AI-genereret svar]
 
 --
-Thank you,
+Tak,
 Forward Email
 https://forwardemail.net
 
 On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
-> This is the original message
-> with each line quoted
-> using the standard "> " prefix
+> Dette er den oprindelige besked
+> med hver linje citeret
+> ved brug af standard "> " præfiks
 ```
 
-**Reply-To Handling:**
+**Reply-To Håndtering:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Hvis den oprindelige besked har en Reply-To header, svarer udkastet til den adresse
+* Den oprindelige From-adresse tilføjes i CC
+* Alle andre oprindelige To og CC modtagere bevares
 
-**Example:**
+**Eksempel:**
 
 ```
-Original message:
-  From: john@company.com
+Original besked:
+  Fra: john@company.com
   Reply-To: support@company.com
-  To: support@forwardemail.net
+  Til: support@forwardemail.net
   CC: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
+Udkast svar:
+  Til: support@company.com (fra Reply-To)
   CC: john@company.com, manager@company.com
 ```
+### Overvågning og Vedligeholdelse {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Tjek udkastskvalitet regelmæssigt:**
 
 ```bash
-# View recent drafts
+# Vis nylige udkast
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Overvåg arkivering:**
 
 ```bash
-# Check for archiving errors
+# Tjek for arkiveringsfejl
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Gennemgå sprunget beskeder:**
 
 ```bash
-# See which messages were skipped
+# Se hvilke beskeder der blev sprunget over
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Testning {#testing}
 
-### Running Tests {#running-tests}
+Kundesupport AI-systemet inkluderer omfattende testdækning med 23 Ava-tests.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Kørsel af Tests {#running-tests}
+
+På grund af npm-pakkeoverstyringskonflikter med `better-sqlite3`, brug det medfølgende testscript:
 
 ```bash
-# Run all customer support AI tests
+# Kør alle kundesupport AI-tests
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Kør med detaljeret output
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Kør specifik testfil
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Alternativt kan tests køres direkte:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Testdækning {#test-coverage}
 
 **Sitemap Fetcher (6 tests):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* Locale mønster regex-matching
+* URL-sti-ekstraktion og locale-fjernelse
+* URL-filtreringslogik for locales
+* XML-parselogik
+* Dedupliceringslogik
+* Kombineret filtrering, fjernelse og deduplicering
 
 **Message Utils (9 tests):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Ekstraher afsendertekst med navn og email
+* Håndter kun email når navn matcher præfiks
+* Brug from.text hvis tilgængelig
+* Brug Reply-To hvis til stede
+* Brug From hvis ingen Reply-To
+* Inkluder originale CC-modtagere
+* Ekskluder vores egen adresse fra CC
+* Håndter Reply-To med From i CC
+* Deduplicer CC-adresser
 
 **Response Generator (8 tests):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* URL-grupperingslogik til prompt
+* Afsendernavn-detekteringslogik
+* Promptstruktur inkluderer alle nødvendige sektioner
+* URL-listeformatering uden vinkelparenteser
+* Håndtering af tom URL-liste
+* Forbudte URL-liste i prompt
+* Inkludering af historisk kontekst
+* Korrekte URL’er for konto-relaterede emner
 
-### Test Environment {#test-environment}
+### Testmiljø {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+Tests bruger `.env.test` til konfiguration. Testmiljøet inkluderer:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Mock PayPal og Stripe legitimationsoplysninger
+* Test krypteringsnøgler
+* Deaktiverede autentifikationsudbydere
+* Sikker testdatastier
 
-All tests are designed to run without external dependencies or network calls.
+Alle tests er designet til at køre uden eksterne afhængigheder eller netværkskald.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Vigtige Pointer {#key-takeaways}
+
+1. **Privatliv først:** Selvhosting er ufravigeligt for GDPR/DPA-overholdelse.
+2. **Omkostninger betyder noget:** Cloud AI-tjenester er 50-1000x dyrere end selvhosting til produktionsarbejdsmængder.
+3. **Økosystemet er brudt:** De fleste vektordatabaser er ikke udviklervenlige. Test alt lokalt.
+4. **Sikkerhedssårbarheder er reelle:** ChromaDB og Qdrant har haft kritiske RCE-sårbarheder.
+5. **LanceDB virker:** Det er indlejret, serverløst og kræver ikke en separat proces.
+6. **Ollama er solid:** Lokal LLM-inferens med `mxbai-embed-large` fungerer godt til vores brug.
+7. **Typefejl dræber dig:** `text` vs. `content`, ObjectID vs. string. Disse fejl er stille og brutale.
+8. **Vægtet rangering betyder noget:** Ikke al kontekst er lige. FAQ > GitHub issues > Historiske emails.
+9. **Historisk kontekst er guld:** Træning på tidligere supportemails forbedrer svarenes kvalitet dramatisk.
+10. **PGP-dekryptering er essentielt:** Mange supportemails er krypterede; korrekt dekryptering er kritisk for træning.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Lær mere om Forward Email og vores privatlivsfokuserede tilgang til email på [forwardemail.net](https://forwardemail.net).

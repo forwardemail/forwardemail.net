@@ -1,82 +1,84 @@
-# Auto-ospitato {#self-hosted}
+# Self Hosted {#self-hosted}
 
-## Indice {#table-of-contents}
+
+## Table of Contents {#table-of-contents}
 
 * [Iniziare](#getting-started)
 * [Requisiti](#requirements)
-  * [Cloud-init / Dati utente](#cloud-init--user-data)
-* [Installare](#install)
-  * [Script di installazione di debug](#debug-install-script)
-  * [Richiede](#prompts)
-  * [Configurazione iniziale (opzione 1)](#initial-setup-option-1)
+  * [Cloud-init / User-data](#cloud-init--user-data)
+* [Installazione](#install)
+  * [Debug script di installazione](#debug-install-script)
+  * [Prompt](#prompts)
+  * [Configurazione iniziale (Opzione 1)](#initial-setup-option-1)
 * [Servizi](#services)
-  * [Percorsi di file importanti](#important-file-paths)
+  * [Percorsi file importanti](#important-file-paths)
 * [Configurazione](#configuration)
   * [Configurazione DNS iniziale](#initial-dns-setup)
 * [Onboarding](#onboarding)
 * [Test](#testing)
-  * [Creazione del tuo primo alias](#creating-your-first-alias)
-  * [Invio/ricezione della prima email](#sending--receiving-your-first-email)
+  * [Creare il tuo primo alias](#creating-your-first-alias)
+  * [Invio / Ricezione della tua prima email](#sending--receiving-your-first-email)
 * [Risoluzione dei problemi](#troubleshooting)
-  * [Quali sono il nome utente e la password di autenticazione di base?](#what-is-the-basic-auth-username-and-password)
-  * [Come faccio a sapere cosa è in esecuzione?](#how-do-i-know-what-is-running)
-  * [Come faccio a sapere se qualcosa che dovrebbe funzionare non è in esecuzione?](#how-do-i-know-if-something-isnt-running-that-should-be)
-  * [Come trovo i registri](#how-do-i-find-logs)
-  * [Perché le mie e-mail in uscita scadono?](#why-are-my-outgoing-emails-timing-out)
+  * [Qual è il nome utente e la password per l'autenticazione base](#what-is-the-basic-auth-username-and-password)
+  * [Come faccio a sapere cosa è in esecuzione](#how-do-i-know-what-is-running)
+  * [Come faccio a sapere se qualcosa non è in esecuzione ma dovrebbe esserlo](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [Come trovo i log](#how-do-i-find-logs)
+  * [Perché le mie email in uscita vanno in timeout](#why-are-my-outgoing-emails-timing-out)
 
-## Per iniziare {#getting-started}
 
-La nostra soluzione di posta elettronica self-hosted, come tutti i nostri prodotti, è open source al 100%, sia nel frontend che nel backend. Questo significa:
+## Getting started {#getting-started}
 
-1. **Trasparenza totale**: Ogni riga di codice che elabora le tue email è disponibile al pubblico
-2. **Contributi della community**: Chiunque può contribuire a miglioramenti o risolvere problemi
-3. **Sicurezza attraverso la trasparenza**: Le vulnerabilità possono essere identificate e risolte da una community globale
-4. **Nessun vincolo con il fornitore**: Non dipendi mai dall'esistenza della nostra azienda
+La nostra soluzione email self-hosted, come tutti i nostri prodotti, è 100% open-source—sia frontend che backend. Questo significa:
 
-L'intero codice sorgente è disponibile su GitHub all'indirizzo <https://github.com/forwardemail/forwardemail.net>,, sotto licenza MIT.
+1. **Trasparenza Completa**: Ogni riga di codice che elabora le tue email è disponibile per la revisione pubblica
+2. **Contributi dalla Comunità**: Chiunque può contribuire con miglioramenti o correggere problemi
+3. **Sicurezza tramite Trasparenza**: Le vulnerabilità possono essere identificate e risolte da una comunità globale
+4. **Nessun Lock-in con il Fornitore**: Non dipendi mai dall'esistenza della nostra azienda
 
-L'architettura include contenitori per:
+L'intero codice è disponibile su GitHub all'indirizzo <https://github.com/forwardemail/forwardemail.net>, con licenza MIT.
 
-* Server SMTP per la posta in uscita
-* Server IMAP/POP3 per il recupero della posta
+L'architettura include container per:
+
+* Server SMTP per email in uscita
+* Server IMAP/POP3 per il recupero delle email
 * Interfaccia web per l'amministrazione
-* Database per l'archiviazione della configurazione
-* Redis per la memorizzazione nella cache e le prestazioni
-* SQLite per l'archiviazione sicura e crittografata delle caselle di posta
+* Database per la memorizzazione della configurazione
+* Redis per caching e prestazioni
+* SQLite per l'archiviazione sicura e criptata delle caselle di posta
 
 > \[!NOTE]
-> Non dimenticate di dare un'occhiata alle nostre guide [blog auto-ospitato](https://forwardemail.net/blog/docs/self-hosted-solution)
+> Assicurati di dare un'occhiata al nostro [blog self-hosted](https://forwardemail.net/blog/docs/self-hosted-solution)
 >
-> E se siete interessati a una versione più dettagliata e dettagliata, consultate le nostre guide basate su [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) o [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+> E per chi è interessato a una versione più dettagliata passo-passo, consulta le nostre guide basate su [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) o [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## Requisiti {#requirements}
+
+## Requirements {#requirements}
 
 Prima di eseguire lo script di installazione, assicurati di avere quanto segue:
 
-* **Sistema operativo**: Un server basato su Linux (attualmente supporta Ubuntu 22.04+).
-* **Risorse**: 1 vCPU e 2 GB di RAM
-* **Accesso root**: Privilegi amministrativi per eseguire comandi.
-* **Nome di dominio**: Un dominio personalizzato pronto per la configurazione DNS.
-* **IP pulito**: Assicurati che il tuo server abbia un indirizzo IP pulito e senza reputazione di spam verificando le blacklist. Ulteriori informazioni su [Qui](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
-* Indirizzo IP pubblico con supporto per la porta 25
-* Possibilità di impostare [PTR inverso](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
+* **Sistema Operativo**: Un server basato su Linux (attualmente supporta Ubuntu 22.04+).
+* **Risorse**: 1 vCPU e 2GB di RAM
+* **Accesso Root**: Privilegi amministrativi per eseguire comandi.
+* **Nome Dominio**: Un dominio personalizzato pronto per la configurazione DNS.
+* **IP Pulito**: Assicurati che il tuo server abbia un indirizzo IP pulito senza precedenti reputazioni di spam controllando le blacklist. Maggiori informazioni [qui](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* Indirizzo IP pubblico con supporto porta 25
+* Capacità di impostare il [PTR inverso](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
 * Supporto IPv4 e IPv6
 
 > \[!TIP]
-> Consulta il nostro elenco di [fantastici fornitori di server di posta](https://github.com/forwardemail/awesome-mail-server-providers)
+> Consulta la nostra lista di [ottimi provider di server mail](https://github.com/forwardemail/awesome-mail-server-providers)
 
-### Cloud-init / Dati utente {#cloud-init--user-data}
+### Cloud-init / User-data {#cloud-init--user-data}
 
-La maggior parte dei fornitori di servizi cloud supporta una configurazione cloud-init per il provisioning del server privato virtuale (VPS). Questo è un ottimo modo per impostare in anticipo alcuni file e variabili d'ambiente da utilizzare nella logica di configurazione iniziale degli script, evitando così la necessità di richiedere informazioni aggiuntive durante l'esecuzione dello script.
+La maggior parte dei fornitori cloud supporta una configurazione cloud-init per quando il server virtuale privato (VPS) viene provisionato. Questo è un ottimo modo per impostare alcuni file e variabili d'ambiente in anticipo da utilizzare dalla logica di configurazione iniziale degli script, che eviterà la necessità di prompt durante l'esecuzione dello script per ulteriori informazioni.
 
 **Opzioni**
 
-* `EMAIL` - email utilizzata per i promemoria di scadenza di certbot
-* `DOMAIN` - dominio personalizzato (ad esempio `example.com`) utilizzato per la configurazione self-hosting
-* `AUTH_BASIC_USERNAME` - nome utente utilizzato nella prima configurazione per proteggere il sito
-* `AUTH_BASIC_PASSWORD` - password utilizzata nella prima configurazione per proteggere il sito
-* `/root/.cloudflare.ini` - (**Solo per utenti Cloudflare**) file di configurazione di Cloudflare utilizzato da certbot per la configurazione DNS. Richiede l'impostazione del token API tramite `dns_cloudflare_api_token`. Scopri di più su [Qui](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
-
+* `EMAIL` - email usata per i promemoria di scadenza di certbot
+* `DOMAIN` - dominio personalizzato (es. `example.com`) usato per la configurazione self-hosted
+* `AUTH_BASIC_USERNAME` - nome utente usato nella configurazione iniziale per proteggere il sito
+* `AUTH_BASIC_PASSWORD` - password usata nella configurazione iniziale per proteggere il sito
+* `/root/.cloudflare.ini` - (**solo utenti Cloudflare**) file di configurazione cloudflare usato da certbot per la configurazione DNS. Richiede di impostare il tuo token API tramite `dns_cloudflare_api_token`. Leggi di più [qui](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 Esempio:
 
 ```sh
@@ -96,7 +98,8 @@ runcmd:
   - chmod +x /etc/profile.d/env.sh
 ```
 
-## Installa {#install}
+
+## Installazione {#install}
 
 Esegui il seguente comando sul tuo server per scaricare ed eseguire lo script di installazione:
 
@@ -104,131 +107,134 @@ Esegui il seguente comando sul tuo server per scaricare ed eseguire lo script di
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Script di installazione di debug {#debug-install-script}
+### Debug dello script di installazione {#debug-install-script}
 
-Aggiungere `DEBUG=true` davanti allo script di installazione per un output più dettagliato:
+Aggiungi `DEBUG=true` davanti allo script di installazione per un output dettagliato:
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Richieste {#prompts}
+### Prompt {#prompts}
 
 ```sh
-1. Initial setup
-2. Setup Backups
-3. Setup Auto Upgrades
-4. Renew certificates
-5. Restore from Backup
-6. Help
-7. Exit
+1. Configurazione iniziale
+2. Configura Backup
+3. Configura Aggiornamenti Automatici
+4. Rinnova certificati
+5. Ripristina da Backup
+6. Aiuto
+7. Esci
 ```
 
-* **Configurazione iniziale**: Scarica l'ultimo codice email di inoltro, configura l'ambiente, richiedi il tuo dominio personalizzato e imposta tutti i certificati, le chiavi e i segreti necessari.
-* **Configura backup**: Imposta un cron per il backup di mongoDB e redis utilizzando uno store compatibile con S3 per un'archiviazione remota sicura. Separatamente, il backup di sqlite verrà eseguito all'accesso in caso di modifiche per i backup sicuri e crittografati.
-* **Configura aggiornamento**: Imposta un cron per la ricerca di aggiornamenti notturni che ricostruiranno e riavvieranno in modo sicuro i componenti dell'infrastruttura.
-* **Rinnova certificati**: Certbot / lets encrypt viene utilizzato per i certificati SSL e le chiavi scadranno ogni 3 mesi. Questo rinnoverà i certificati per il tuo dominio e li inserirà nella cartella necessaria per l'utilizzo dei componenti correlati. Vedi [percorsi di file importanti](#important-file-paths)
-* **Ripristina da backup**: Innescherà il ripristino di mongoDB e redis dai dati di backup.
+* **Configurazione iniziale**: Scarica l'ultima versione del codice forward email, configura l'ambiente, richiede il tuo dominio personalizzato e configura tutti i certificati, le chiavi e i segreti necessari.
+* **Configura Backup**: Configurerà un cron per eseguire il backup di mongoDB e redis utilizzando un archivio compatibile S3 per uno storage remoto sicuro. Separatamente, sqlite verrà salvato al login se ci sono modifiche per backup sicuri e criptati.
+* **Configura Aggiornamento**: Configura un cron per cercare aggiornamenti notturni che ricostruiranno e riavvieranno in sicurezza i componenti dell'infrastruttura.
+* **Rinnova certificati**: Certbot / lets encrypt viene utilizzato per i certificati SSL e le chiavi scadono ogni 3 mesi. Questo rinnova i certificati per il tuo dominio e li posiziona nella cartella necessaria affinché i componenti correlati li utilizzino. Vedi [percorsi file importanti](#important-file-paths)
+* **Ripristina da backup**: Attiverà mongodb e redis per ripristinare dai dati di backup.
 
-### Configurazione iniziale (opzione 1) {#initial-setup-option-1}
+### Configurazione iniziale (Opzione 1) {#initial-setup-option-1}
 
-Selezionare l'opzione `1. Initial setup` per iniziare.
+Scegli l'opzione `1. Configurazione iniziale` per iniziare.
 
-Una volta completato, dovresti visualizzare un messaggio di successo. Puoi anche eseguire `docker ps` per vedere **i** componenti avviati. Maggiori informazioni sui componenti sono disponibili di seguito.
+Una volta completato, dovresti vedere un messaggio di successo. Puoi anche eseguire `docker ps` per vedere **i** componenti avviati. Maggiori informazioni sui componenti di seguito.
+
 
 ## Servizi {#services}
 
-| Nome del servizio | Porta predefinita | Descrizione |
-| ------------ | :----------: | ------------------------------------------------------ |
-| Rete | `443` | Interfaccia web per tutte le interazioni amministrative |
-| API | `4000` | Livello API per database astratti |
-| Bree | Nessuno | Esecuzione di attività e lavori in background |
-| SMTP | `465` (recommended) / `587` | Server SMTP per la posta elettronica in uscita |
-| SMTP Bree | Nessuno | Lavoro in background SMTP |
-| MX | `2525` | Scambio di posta per posta in entrata e inoltro di posta elettronica |
-| IMAP | `993/2993` | Server IMAP per la gestione della posta elettronica in entrata e delle caselle di posta |
-| POP3 | `995/2995` | Server POP3 per la gestione della posta elettronica in entrata e delle caselle di posta |
-| SQLite | `3456` | Server SQLite per le interazioni con i database SQLite |
-| SQLite Bree | Nessuno | Lavoro in background di SQLite |
-| CalDAV | `5000` | Server CalDAV per la gestione del calendario |
-| CardDAV | `6000` | Server CardDAV per la gestione del calendario |
-| MongoDB | `27017` | Database MongoDB per la maggior parte della gestione dei dati |
-| Redis | `6379` | Redis per la memorizzazione nella cache e la gestione dello stato |
-| SQLite | Nessuno | Database SQLite per cassette postali crittografate |
+| Nome Servizio |         Porta Predefinita        | Descrizione                                            |
+| ------------ | :------------------------------: | ------------------------------------------------------ |
+| Web          |            `443`                 | Interfaccia web per tutte le interazioni amministrative |
+| API          |            `4000`                | Livello API per astrarre i database                    |
+| Bree         |             Nessuna              | Job in background e task runner                         |
+| SMTP         | `465` (consigliato) / `587`     | Server SMTP per email in uscita                         |
+| SMTP Bree    |             Nessuna              | Job SMTP in background                                  |
+| MX           |            `2525`                | Mail exchange per email in entrata e inoltro email     |
+| IMAP         |          `993/2993`              | Server IMAP per email in entrata e gestione caselle    |
+| POP3         |          `995/2995`              | Server POP3 per email in entrata e gestione caselle    |
+| SQLite       |            `3456`                | Server SQLite per interazioni con database sqlite      |
+| SQLite Bree  |             Nessuna              | Job SQLite in background                                |
+| CalDAV       |            `5000`                | Server CalDAV per gestione calendario                   |
+| CardDAV      |            `6000`                | Server CardDAV per gestione calendario                  |
+| MongoDB      |           `27017`                | Database MongoDB per la maggior parte della gestione dati |
+| Redis        |            `6379`                | Redis per caching e gestione dello stato                |
+| SQLite       |             Nessuna              | Database SQLite per caselle email criptate              |
 
 ### Percorsi file importanti {#important-file-paths}
 
-Nota: il *percorso host* riportato di seguito è relativo a `/root/forwardemail.net/self-hosting/`.
+Nota: *Percorso host* qui sotto è relativo a `/root/forwardemail.net/self-hosting/`.
 
-| Componente | Percorso host | Percorso del contenitore |
-| ---------------------- | :-------------------: | ---------------------------- |
-| MongoDB | `./mongo-backups` | `/backups` |
-| Redis | `./redis-data` | `/data` |
-| SQLite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| File Env | `./.env` | `/app/.env` |
-| Certificati/chiavi SSL | `./ssl` | `/app/ssl/` |
-| Chiave privata | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| Certificato di catena completa | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| CA certificate | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
-| Chiave privata DKIM | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
-
+| Componente             |       Percorso host       | Percorso container           |
+| ---------------------- | :-----------------------: | ---------------------------- |
+| MongoDB                |   `./mongo-backups`       | `/backups`                   |
+| Redis                  |     `./redis-data`        | `/data`                      |
+| Sqlite                 |    `./sqlite-data`        | `/mnt/{SQLITE_STORAGE_PATH}` |
+| File Env               |        `./.env`           | `/app/.env`                  |
+| Certificati/chiavi SSL |        `./ssl`            | `/app/ssl/`                  |
+| Chiave privata         |  `./ssl/privkey.pem`      | `/app/ssl/privkey.pem`       |
+| Certificato catena completa | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem`     |
+| Certificato CA         |    `./ssl/cert.pem`       | `/app/ssl/cert.pem`          |
+| Chiave privata DKIM    |    `./ssl/dkim.key`       | `/app/ssl/dkim.key`          |
 > \[!IMPORTANT]
-> Salva il file `.env` in modo sicuro. È fondamentale per il ripristino in caso di errore.
+> Salva il file `.env` in modo sicuro. È fondamentale per il recupero in caso di guasto.
 > Puoi trovarlo in `/root/forwardemail.net/self-hosting/.env`.
+
 
 ## Configurazione {#configuration}
 
 ### Configurazione DNS iniziale {#initial-dns-setup}
 
-Nel provider DNS che hai scelto, configura i record DNS appropriati. Tieni presente che tutto ciò che è tra parentesi (`<>`) è dinamico e deve essere aggiornato con il tuo valore.
+Nel tuo provider DNS preferito, configura i record DNS appropriati. Nota che tutto ciò che è tra parentesi angolari (`<>`) è dinamico e deve essere aggiornato con il tuo valore.
 
-| Tipo | Nome | Contenuto | TTL |
-| ----- | ------------------ | ----------------------------- | ---- |
-| A | "@", "." o vuoto | <indirizzo_ip> | auto |
-| CNAME | API | <nome_dominio> | auto |
-| CNAME | caldav | <nome_dominio> | auto |
-| CNAME | carddav | <nome_dominio> | auto |
-| CNAME | fe-rimbalzi | <nome_dominio> | auto |
-| CNAME | mappa dei nomi | <nome_dominio> | auto |
-| CNAME | mx | <nome_dominio> | auto |
-| CNAME | pop3 | <nome_dominio> | auto |
-| CNAME | SMTP | <nome_dominio> | auto |
-| MX | "@", "." o vuoto | mx.<nome_dominio> (priorità 0) | auto |
-| TXT | "@", "." o vuoto | "v=spf1 a -all" | auto |
+| Tipo  | Nome               | Contenuto                    | TTL  |
+| ----- | ------------------ | ---------------------------- | ---- |
+| A     | "@", ".", o vuoto  | <ip_address>                 | auto |
+| CNAME | api                | <domain_name>                | auto |
+| CNAME | caldav             | <domain_name>                | auto |
+| CNAME | carddav            | <domain_name>                | auto |
+| CNAME | fe-bounces         | <domain_name>                | auto |
+| CNAME | imap               | <domain_name>                | auto |
+| CNAME | mx                 | <domain_name>                | auto |
+| CNAME | pop3               | <domain_name>                | auto |
+| CNAME | smtp               | <domain_name>                | auto |
+| MX    | "@", ".", o vuoto  | mx.<domain_name> (priorità 0) | auto |
+| TXT   | "@", ".", o vuoto  | "v=spf1 a -all"              | auto |
 
-#### Record DNS/PTR inverso {#reverse-dns--ptr-record}
+#### Reverse DNS / record PTR {#reverse-dns--ptr-record}
 
-Il DNS inverso (rDNS) o i record di puntamento inverso (PTR) sono essenziali per i server di posta elettronica perché aiutano a verificare la legittimità del server che invia l'email. Ogni provider cloud utilizza questo metodo in modo diverso, quindi è necessario cercare come aggiungere "DNS inverso" per mappare l'host e l'IP al nome host corrispondente. Molto probabilmente nella sezione dedicata alle reti del provider.
+Il Reverse DNS (rDNS) o i record puntatori inversi (record PTR) sono essenziali per i server di posta elettronica perché aiutano a verificare la legittimità del server che invia l'email. Ogni provider cloud lo fa in modo diverso, quindi dovrai cercare come aggiungere il "Reverse DNS" per mappare l'host e l'IP al corrispondente nome host. Molto probabilmente si trova nella sezione networking del provider.
 
 #### Porta 25 bloccata {#port-25-blocked}
 
-Alcuni ISP e provider cloud bloccano la porta 25 per evitare malintenzionati. Potrebbe essere necessario inviare un ticket di supporto per aprire la porta 25 per SMTP/email in uscita.
+Alcuni ISP e provider cloud bloccano la porta 25 per evitare abusi. Potrebbe essere necessario aprire un ticket di supporto per sbloccare la porta 25 per SMTP / posta in uscita.
 
-## Inserimento {#onboarding}
 
-1. Apri la landing page
-Vai a https\://\<nome_dominio>, sostituendo \<nome_dominio> con il dominio configurato nelle impostazioni DNS. Dovresti visualizzare la landing page "Inoltra email".
+## Onboarding {#onboarding}
 
-2. Accedi e aggiungi il tuo dominio
+1. Apri la Landing Page
+   Naviga su https\://\<domain_name>, sostituendo \<domain_name> con il dominio configurato nelle impostazioni DNS. Dovresti vedere la pagina di benvenuto di Forward Email.
 
-* Accedi con un indirizzo email e una password validi.
-* Inserisci il nome di dominio che desideri configurare (deve corrispondere alla configurazione DNS).
-* Segui le istruzioni per aggiungere i record **MX** e **TXT** richiesti per la verifica.
+2. Accedi e configura il tuo dominio
 
-3. Configurazione completa
+* Accedi con un'email e una password valide.
+* Inserisci il nome del dominio che desideri configurare (deve corrispondere alla configurazione DNS).
+* Segui le istruzioni per aggiungere i record **MX** e **TXT** necessari per la verifica.
+
+3. Completa la configurazione
 
 * Una volta verificato, accedi alla pagina Alias per creare il tuo primo alias.
-* Facoltativamente, configura **SMTP per le email in uscita** nelle **Impostazioni dominio**. Questa operazione richiede record DNS aggiuntivi.
+* Facoltativamente, configura **SMTP per la posta in uscita** nelle **Impostazioni Dominio**. Questo richiede record DNS aggiuntivi.
 
 > \[!NOTE]
-> Nessuna informazione viene inviata all'esterno del tuo server. L'opzione self-hosted e l'account iniziale servono solo per l'accesso amministrativo e la visualizzazione web per gestire domini, alias e relative configurazioni email.
+> Nessuna informazione viene inviata fuori dal tuo server. L'opzione self hosted e l'account iniziale servono solo per l'accesso admin e la gestione web di domini, alias e configurazioni email correlate.
 
-## Test di {#testing}
 
-### Creazione del tuo primo alias {#creating-your-first-alias}
+## Test {#testing}
+
+### Creare il tuo primo alias {#creating-your-first-alias}
 
 1. Vai alla pagina Alias
-Apri la pagina di gestione degli alias:
+   Apri la pagina di gestione alias:
 
 ```sh
 https://<domain_name>/en/my-account/domains/<domain_name>/aliases
@@ -236,76 +242,75 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 2. Aggiungi un nuovo alias
 
-* Fai clic su **Aggiungi alias** (in alto a destra).
-* Inserisci il nome dell'alias e modifica le impostazioni email secondo le tue esigenze.
-* (Facoltativo) Abilita il supporto **IMAP/POP3/CalDAV/CardDAV** selezionando la casella di controllo.
-* Fai clic su **Crea alias**
+* Clicca su **Aggiungi Alias** (in alto a destra).
+* Inserisci il nome alias e regola le impostazioni email secondo necessità.
+* (Facoltativo) Abilita il supporto **IMAP/POP3/CalDAV/CardDAV** selezionando la casella.
+* Clicca su **Crea Alias.**
 
 3. Imposta una password
 
-* Fai clic su **Genera password** per creare una password sicura.
-* Questa password sarà necessaria per accedere al tuo client di posta elettronica.
+* Clicca su **Genera Password** per creare una password sicura.
+* Questa password sarà necessaria per accedere al client email.
 
-4. Configura il tuo client di posta elettronica
+4. Configura il tuo client email
 
-* Utilizza un client di posta elettronica come Thunderbird.
+* Usa un client email come Thunderbird.
 * Inserisci il nome alias e la password generata.
 * Configura le impostazioni **IMAP** e **SMTP** di conseguenza.
 
-#### Impostazioni del server di posta elettronica {#email-server-settings}
+#### Impostazioni server email {#email-server-settings}
 
-Nome utente: `<alias name>`
+Username: `<alias name>`
 
-| Tipo | Nome host | Porta | Sicurezza della connessione | Autenticazione |
-| ---- | ------------------ | ---- | ------------------- | --------------- |
-| SMTP | smtp.<nome_dominio> | 465 | SSL / TLS | Password normale |
-| IMAP | imap.<nome_dominio> | 993 | SSL / TLS | Password normale |
+| Tipo | Hostname           | Porta | Sicurezza Connessione | Autenticazione  |
+| ---- | ------------------ | ----- | --------------------- | --------------- |
+| SMTP | smtp.<domain_name> | 465   | SSL / TLS             | Password Normale |
+| IMAP | imap.<domain_name> | 993   | SSL / TLS             | Password Normale |
 
-### Invio/Ricezione della tua prima email {#sending--receiving-your-first-email}
+### Inviare / Ricevere la tua prima email {#sending--receiving-your-first-email}
 
-Una volta configurata, dovresti essere in grado di inviare e ricevere email al tuo indirizzo email appena creato e auto-ospitato!
-
+Una volta configurato, dovresti essere in grado di inviare e ricevere email al tuo indirizzo email appena creato e self hosted!
 ## Risoluzione dei problemi {#troubleshooting}
 
-#### Perché questo non funziona al di fuori di Ubuntu e Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
+#### Perché non funziona fuori da Ubuntu e Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Al momento stiamo cercando di supportare macOS e presto ne cercheremo altri. Apri un [discussione](https://github.com/orgs/forwardemail/discussions) o contribuisci se desideri che altri utenti siano supportati.
+Attualmente stiamo cercando di supportare MacOS e valuteremo altri sistemi. Per favore apri una [discussione](https://github.com/orgs/forwardemail/discussions) o contribuisci se desideri vedere supportati altri sistemi.
 
-#### Perché la sfida acme di certbot fallisce {#why-is-the-certbot-acme-challenge-failing}
+#### Perché fallisce la sfida acme di certbot {#why-is-the-certbot-acme-challenge-failing}
 
-L'errore più comune è che certbot/letsencrypt a volte richiede **2** richieste di verifica. È necessario assicurarsi di aggiungere **ENTRAMBI** i record txt.
+L'errore più comune è che certbot / letsencrypt a volte richiede **2** sfide. Devi assicurarti di aggiungere **ENTRAMBI** i record txt.
 
 Esempio:
-Potresti visualizzare due sfide come questa:
+Potresti vedere due sfide come queste:
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-È anche possibile che la propagazione DNS non sia stata completata. Puoi utilizzare strumenti come: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Questo ti darà un'idea se le modifiche al record TXT debbano essere applicate. È anche possibile che la cache DNS locale sul tuo host utilizzi ancora un valore obsoleto o non abbia rilevato le modifiche recenti.
+È anche possibile che la propagazione DNS non sia ancora completata. Puoi usare strumenti come: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Questo ti darà un'idea se le modifiche al record TXT dovrebbero essere riflesse. È anche possibile che la cache DNS locale sul tuo host stia ancora usando un valore vecchio o non abbia ancora rilevato le modifiche recenti.
 
-Un'altra opzione è utilizzare le modifiche DNS automatiche del cerbot impostando il file `/root/.cloudflare.ini` con il token API in cloud-init / user-data durante la configurazione iniziale del VPS, oppure creando questo file ed eseguendo nuovamente lo script. Questo gestirà automaticamente le modifiche DNS e gli aggiornamenti di challenge.
+Un'altra opzione è usare le modifiche DNS automatiche di certbot impostando il file `/root/.cloudflare.ini` con il token API nel tuo cloud-init / user-data durante la configurazione iniziale del VPS oppure creare questo file e rieseguire lo script. Questo gestirà automaticamente le modifiche DNS e gli aggiornamenti delle sfide.
 
-### Quali sono il nome utente e la password di autenticazione di base {#what-is-the-basic-auth-username-and-password}
+### Qual è il nome utente e la password per l'autenticazione base {#what-is-the-basic-auth-username-and-password}
 
-Per l'auto-hosting, aggiungiamo un pop-up di autenticazione nativo del browser per la prima volta con un semplice nome utente (`admin`) e una password (generata casualmente durante la configurazione iniziale). Aggiungiamo questo solo come protezione nel caso in cui automazioni/scrap riescano in qualche modo a precorrere i tempi di registrazione. Puoi trovare questa password dopo la configurazione iniziale nel file `.env`, sotto `AUTH_BASIC_USERNAME` e `AUTH_BASIC_PASSWORD`.
+Per l'hosting autonomo, aggiungiamo un popup di autenticazione nativa del browser la prima volta con un semplice nome utente (`admin`) e una password (generata casualmente all'installazione iniziale). Lo facciamo come protezione nel caso in cui automazioni / scraper riescano a registrarsi prima di te nell'esperienza web. Puoi trovare questa password dopo l'installazione iniziale nel tuo file `.env` sotto `AUTH_BASIC_USERNAME` e `AUTH_BASIC_PASSWORD`.
 
 ### Come faccio a sapere cosa è in esecuzione {#how-do-i-know-what-is-running}
 
-Puoi eseguire `docker ps` per visualizzare tutti i container in esecuzione che vengono avviati dal file `docker-compose-self-hosting.yml`. Puoi anche eseguire `docker ps -a` per visualizzare tutto (inclusi i container non in esecuzione).
+Puoi eseguire `docker ps` per vedere tutti i container in esecuzione che vengono avviati dal file `docker-compose-self-hosting.yml`. Puoi anche eseguire `docker ps -a` per vedere tutto (inclusi i container non in esecuzione).
 
-### Come faccio a sapere se qualcosa non è in esecuzione e dovrebbe essere {#how-do-i-know-if-something-isnt-running-that-should-be}
+### Come faccio a sapere se qualcosa che dovrebbe essere in esecuzione non lo è {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-Puoi eseguire `docker ps -a` per visualizzare tutto (inclusi i contenitori non in esecuzione). Potresti visualizzare un registro di uscita o una nota.
+Puoi eseguire `docker ps -a` per vedere tutto (inclusi i container non in esecuzione). Potresti vedere un log di uscita o una nota.
 
-### Come trovo i registri {#how-do-i-find-logs}
+### Come trovo i log {#how-do-i-find-logs}
 
-Puoi ottenere altri log tramite `docker logs -f <container_name>`. Se qualcosa è terminato, è probabile che sia dovuto a una configurazione errata del file `.env`.
+Puoi ottenere più log tramite `docker logs -f <container_name>`. Se qualcosa è uscito, probabilmente è correlato a una configurazione errata del file `.env`.
 
-Nell'interfaccia utente Web è possibile visualizzare `/admin/emails` e `/admin/logs` rispettivamente per i registri delle e-mail in uscita e per i registri degli errori.
+Nell'interfaccia web, puoi visualizzare `/admin/emails` e `/admin/logs` rispettivamente per i log delle email in uscita e i log degli errori.
 
-### Perché le mie email in uscita scadono {#why-are-my-outgoing-emails-timing-out}
+### Perché le mie email in uscita vanno in timeout {#why-are-my-outgoing-emails-timing-out}
 
-Se vedi un messaggio del tipo "Connessione scaduta durante la connessione al server MX...", potresti dover verificare se la porta 25 è bloccata. È comune che gli ISP o i provider cloud blocchino questa porta per impostazione predefinita, quindi potrebbe essere necessario contattare l'assistenza o inviare un ticket per risolvere il problema.
+Se vedi un messaggio come Connection timed out when connecting to MX server... allora potresti dover verificare se la porta 25 è bloccata. È comune che gli ISP o i provider cloud blocchino questa porta di default e potresti dover contattare il supporto / aprire un ticket per farla sbloccare.
 
-#### Quali strumenti dovrei utilizzare per testare le best practice di configurazione della posta elettronica e la reputazione dell'IP {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### Quali strumenti dovrei usare per testare le migliori pratiche di configurazione email e la reputazione IP {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-Dai un'occhiata al nostro [Domande frequenti qui](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).
+Dai un'occhiata alla nostra [FAQ qui](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).

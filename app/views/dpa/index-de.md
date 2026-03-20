@@ -1,265 +1,272 @@
 # Datenverarbeitungsvereinbarung {#data-processing-agreement}
 
-<!-- v1.0 von <https://github.com/CommonPaper/DPA> -->
+<!-- v1.0 from <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email data processing agreement" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email Datenverarbeitungsvereinbarung" class="rounded-lg" />
+
 
 ## Inhaltsverzeichnis {#table-of-contents}
 
-* [Schlüsselbegriffe](#key-terms)
+* [Wichtige Begriffe](#key-terms)
 * [Änderungen der Vereinbarung](#changes-to-the-agreement)
-* [1. Auftragsverarbeiter- und Unterauftragsverarbeiter-Beziehungen](#1-processor-and-subprocessor-relationships)
+* [1. Beziehungen zwischen Auftragsverarbeiter und Unterauftragsverarbeiter](#1-processor-and-subprocessor-relationships)
   * [1. Anbieter als Auftragsverarbeiter](#1-provider-as-processor)
   * [2. Anbieter als Unterauftragsverarbeiter](#2-provider-as-subprocessor)
 * [2. Verarbeitung](#2-processing)
   * [1. Verarbeitungsdetails](#1-processing-details)
-  * [2. Verarbeitungshinweise](#2-processing-instructions)
+  * [2. Verarbeitungsanweisungen](#2-processing-instructions)
   * [3. Verarbeitung durch den Anbieter](#3-processing-by-provider)
-  * [4. Kundenabwicklung](#4-customer-processing)
+  * [4. Verarbeitung durch den Kunden](#4-customer-processing)
   * [5. Einwilligung zur Verarbeitung](#5-consent-to-processing)
   * [6. Unterauftragsverarbeiter](#6-subprocessors)
-* [3. Eingeschränkte Übertragungen](#3-restricted-transfers)
+* [3. Eingeschränkte Übermittlungen](#3-restricted-transfers)
   * [1. Autorisierung](#1-authorization)
-  * [2. Übertragungen außerhalb des EWR](#2-ex-eea-transfers)
-  * [3. Überweisungen außerhalb des Vereinigten Königreichs](#3-ex-uk-transfers)
+  * [2. Übermittlungen außerhalb des EWR](#2-ex-eea-transfers)
+  * [3. Übermittlungen außerhalb des Vereinigten Königreichs](#3-ex-uk-transfers)
   * [4. Andere internationale Übermittlungen](#4-other-international-transfers)
 * [4. Reaktion auf Sicherheitsvorfälle](#4-security-incident-response)
-* [5. Audit & Berichte](#5-audit--reports)
+* [5. Prüfung & Berichte](#5-audit--reports)
   * [1. Prüfungsrechte](#1-audit-rights)
   * [2. Sicherheitsberichte](#2-security-reports)
-  * [3. Sicherheitsprüfung](#3-security-due-diligence)
-* [6. Koordination und Zusammenarbeit](#6-coordination--cooperation)
-  * [1. Beantwortung von Anfragen](#1-response-to-inquiries)
-  * [2. Datenschutz-Folgenabschätzungen und Datenschutz-Folgenabschätzungen](#2-dpias-and-dtias)
-* [7. Löschung personenbezogener Kundendaten](#7-deletion-of-customer-personal-data)
+  * [3. Sicherheits-Due-Diligence](#3-security-due-diligence)
+* [6. Koordination & Zusammenarbeit](#6-coordination--cooperation)
+  * [1. Reaktion auf Anfragen](#1-response-to-inquiries)
+  * [2. Datenschutz-Folgenabschätzungen (DPIAs) und Datenschutz-Technische Bewertungen (DTIAs)](#2-dpias-and-dtias)
+* [7. Löschung von personenbezogenen Kundendaten](#7-deletion-of-customer-personal-data)
   * [1. Löschung durch den Kunden](#1-deletion-by-customer)
-  * [2. Löschung bei Ablauf des DPA](#2-deletion-at-dpa-expiration)
+  * [2. Löschung bei Ablauf der DPA](#2-deletion-at-dpa-expiration)
 * [8. Haftungsbeschränkung](#8-limitation-of-liability)
-  * [1. Haftungsbegrenzungen und Schadensersatzverzicht](#1-liability-caps-and-damages-waiver)
-  * [2. Ansprüche verbundener Unternehmen](#2-related-party-claims)
+  * [1. Haftungsobergrenzen und Verzicht auf Schadensersatz](#1-liability-caps-and-damages-waiver)
+  * [2. Ansprüche Dritter](#2-related-party-claims)
   * [3. Ausnahmen](#3-exceptions)
 * [9. Konflikte zwischen Dokumenten](#9-conflicts-between-documents)
-* [10. Vertragsdauer](#10-term-of-agreement)
-* [11. Geltendes Recht und Gerichtsstand](#11-governing-law-and-chosen-courts)
-* [12. Verhältnis zum Dienstanbieter](#12-service-provider-relationship)
+* [10. Vertragslaufzeit](#10-term-of-agreement)
+* [11. Anwendbares Recht und Gerichtsstand](#11-governing-law-and-chosen-courts)
+* [12. Dienstleisterbeziehung](#12-service-provider-relationship)
 * [13. Definitionen](#13-definitions)
 * [Credits](#credits)
 
-## Schlüsselbegriffe {#key-terms}
 
-| Begriff | Wert |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <strong>Vereinbarung</strong> | Diese DPA ergänzt die [Terms of Service](/terms) |
-| <strong>Genehmigte Unterauftragsverarbeiter</strong> | [Cloudflare](https://cloudflare.com) (USA; DNS-, Netzwerk- und Sicherheitsanbieter), [DataPacket](https://www.datapacket.com/) (USA/UK; Hosting-Anbieter), [Digital Ocean](https://digitalocean.com) (USA; Hosting-Anbieter), [GitHub](https://github.com) (USA; Quellcode-Hosting, CI/CD und Projektverwaltung), [Vultr](https://www.vultr.com) (USA; Hosting-Anbieter), [Stripe](https://stripe.com) (USA; Zahlungsabwickler), [PayPal](https://paypal.com) (USA; Zahlungsabwickler) |
-| <strong>Sicherheitskontakt des Anbieters</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
-| <strong>Sicherheitsrichtlinie</strong> | [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) anzeigen |
-| <strong>Regierender Staat</strong> | Der Staat Delaware, USA |
+## Wichtige Begriffe {#key-terms}
 
-## Änderungen an der Vereinbarung {#changes-to-the-agreement}
+| Begriff                                    | Wert                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <strong>Vereinbarung</strong>               | Diese DPA ergänzt die [Nutzungsbedingungen](/terms)                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| <strong>Genehmigte Unterauftragsverarbeiter</strong> | [Cloudflare](https://cloudflare.com) (USA; DNS-, Netzwerk- und Sicherheitsanbieter), [DataPacket](https://www.datapacket.com/) (USA/UK; Hosting-Anbieter), [Digital Ocean](https://digitalocean.com) (USA; Hosting-Anbieter), [GitHub](https://github.com) (USA; Quellcode-Hosting, CI/CD und Projektmanagement), [Vultr](https://www.vultr.com) (USA; Hosting-Anbieter), [Stripe](https://stripe.com) (USA; Zahlungsabwickler), [PayPal](https://paypal.com) (USA; Zahlungsabwickler) |
+| <strong>Kontakt für Sicherheit beim Anbieter</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a>                                                                                                                                                                                                                                                                                                                                                                                                         |
+| <strong>Sicherheitsrichtlinie</strong>     | Siehe [unsere Sicherheitsrichtlinie auf GitHub](https://github.com/forwardemail/forwardemail.net/security/policy)                                                                                                                                                                                                                                                                                                                                                                 |
+| <strong>Geltender Staat</strong>            | Der Bundesstaat Delaware, Vereinigte Staaten                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+## Änderungen der Vereinbarung {#changes-to-the-agreement}
 
-Dieses Dokument ist eine Ableitung von [Gemeinsame Standardbedingungen für das DPA-Papier (Version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) und es wurden die folgenden Änderungen vorgenommen:
+Dieses Dokument ist eine Ableitung der [Common Paper DPA Standard Terms (Version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) und folgende Änderungen wurden vorgenommen:
 
-1. [Geltendes Recht und Gerichtsstand](#11-governing-law-and-chosen-courts) wurde unten als Abschnitt mit dem oben genannten `Governing State` eingefügt.
-2. [Dienstanbieterbeziehung](#12-service-provider-relationship) wurde unten als Abschnitt eingefügt.
+1. [Anwendbares Recht und Gerichtsstand](#11-governing-law-and-chosen-courts) wurde als nachfolgender Abschnitt aufgenommen, wobei der `Governing State` oben angegeben ist.
+2. [Beziehung zum Dienstleister](#12-service-provider-relationship) wurde als nachfolgender Abschnitt aufgenommen.
 
-## 1. Prozessor- und Subprozessorbeziehungen {#1-processor-and-subprocessor-relationships}
 
-### 1. Anbieter als Verarbeiter {#1-provider-as-processor}
+## 1. Beziehungen zwischen Auftragsverarbeiter und Unterauftragsverarbeiter {#1-processor-and-subprocessor-relationships}
 
-In Situationen, in denen der <strong>Kunde</strong> ein Verantwortlicher für die personenbezogenen Daten des Kunden ist, wird der <strong>Anbieter</strong> als Verarbeiter betrachtet, der personenbezogene Daten im Auftrag des <strong>Kunden</strong> verarbeitet.
+### 1. Anbieter als Auftragsverarbeiter {#1-provider-as-processor}
+
+In Fällen, in denen <strong>Kunde</strong> Verantwortlicher der Kundendaten ist, gilt <strong>Anbieter</strong> als Auftragsverarbeiter, der personenbezogene Daten im Auftrag des <strong>Kunden</strong> verarbeitet.
 
 ### 2. Anbieter als Unterauftragsverarbeiter {#2-provider-as-subprocessor}
 
-In Situationen, in denen der <strong>Kunde</strong> ein Verarbeiter der personenbezogenen Daten des Kunden ist, wird der <strong>Anbieter</strong> als Unterverarbeiter der personenbezogenen Daten des Kunden betrachtet.
+In Fällen, in denen <strong>Kunde</strong> Auftragsverarbeiter der Kundendaten ist, gilt <strong>Anbieter</strong> als Unterauftragsverarbeiter der Kundendaten.
+
 
 ## 2. Verarbeitung {#2-processing}
 
 ### 1. Verarbeitungsdetails {#1-processing-details}
 
-Anhang I(B) auf dem Deckblatt beschreibt Gegenstand, Art, Zweck und Dauer dieser Verarbeitung sowie die <strong>Kategorien der erfassten personenbezogenen Daten</strong> und die <strong>Kategorien der betroffenen Personen</strong>.
+Anhang I(B) auf der Titelseite beschreibt den Gegenstand, die Art, den Zweck und die Dauer dieser Verarbeitung sowie die <strong>Kategorien personenbezogener Daten</strong> und die <strong>Kategorien betroffener Personen</strong>.
 
 ### 2. Verarbeitungsanweisungen {#2-processing-instructions}
 
-Der <strong>Kunde</strong> weist den <strong>Anbieter</strong> an, personenbezogene Daten des Kunden zu verarbeiten: (a) um den Dienst bereitzustellen und aufrechtzuerhalten; (b) wie durch die Nutzung des Dienstes durch den <strong>Kunden</strong> näher spezifiziert; (c) wie in der <strong>Vereinbarung</strong> dokumentiert; und (d) wie in anderen schriftlichen Anweisungen des <strong>Kunden</strong> dokumentiert, die vom <strong>Anbieter</strong> zur Verarbeitung personenbezogener Daten des Kunden im Rahmen dieser DPA erteilt und bestätigt wurden. Der <strong>Anbieter</strong> wird diese Anweisungen befolgen, sofern ihm dies nicht durch geltende Gesetze untersagt ist. Der <strong>Anbieter</strong> wird den <strong>Kunden</strong> unverzüglich informieren, falls er den Verarbeitungsanweisungen nicht folgen kann. Der <strong>Kunde</strong> hat nur Anweisungen erteilt und wird dies auch weiterhin tun, wenn diese den geltenden Gesetzen entsprechen.
+<strong>Kunde</strong> weist <strong>Anbieter</strong> an, Kundendaten zu verarbeiten: (a) zur Bereitstellung und Wartung des Dienstes; (b) wie möglicherweise weiter spezifiziert durch die Nutzung des Dienstes durch den <strong>Kunden</strong>; (c) wie im <strong>Vertrag</strong> dokumentiert; und (d) wie in sonstigen schriftlichen Anweisungen des <strong>Kunden</strong> zur Verarbeitung von Kundendaten unter dieser DPA dokumentiert und vom <strong>Anbieter</strong> bestätigt. <strong>Anbieter</strong> wird diese Anweisungen befolgen, es sei denn, dies ist durch geltendes Recht untersagt. <strong>Anbieter</strong> wird <strong>Kunde</strong> unverzüglich informieren, wenn er die Verarbeitungsanweisungen nicht befolgen kann. <strong>Kunde</strong> hat Anweisungen gegeben und wird nur solche geben, die mit geltendem Recht übereinstimmen.
 
 ### 3. Verarbeitung durch Anbieter {#3-processing-by-provider}
 
-Der <strong>Anbieter</strong> verarbeitet personenbezogene Daten des Kunden nur in Übereinstimmung mit dieser Datenverarbeitungsvereinbarung, einschließlich der Details auf dem Deckblatt. Wenn der <strong>Anbieter</strong> den Dienst aktualisiert, um bestehende Produkte, Features oder Funktionen zu aktualisieren oder neue hinzuzufügen, kann der <strong>Anbieter</strong> die <strong>Kategorien betroffener Personen</strong>, die <strong>Kategorien personenbezogener Daten</strong>, die <strong>Daten besonderer Kategorien</strong>, die <strong>Einschränkungen oder Schutzmaßnahmen für Daten besonderer Kategorien</strong>, die <strong>Häufigkeit der Übertragung</strong>, die <strong>Art und den Zweck der Verarbeitung</strong> und die <strong>Dauer der Verarbeitung</strong> nach Bedarf ändern, um die Aktualisierungen widerzuspiegeln, indem er den <strong>Kunden</strong> über die Aktualisierungen und Änderungen informiert.
+<strong>Anbieter</strong> wird Kundendaten nur gemäß dieser DPA verarbeiten, einschließlich der Angaben auf der Titelseite. Wenn <strong>Anbieter</strong> den Dienst aktualisiert, um bestehende oder neue Produkte, Funktionen oder Funktionalitäten einzuführen, kann <strong>Anbieter</strong> die <strong>Kategorien betroffener Personen</strong>, <strong>Kategorien personenbezogener Daten</strong>, <strong>besondere Kategorien von Daten</strong>, <strong>Einschränkungen oder Schutzmaßnahmen für besondere Kategorien von Daten</strong>, <strong>Häufigkeit der Übermittlung</strong>, <strong>Art und Zweck der Verarbeitung</strong> sowie <strong>Dauer der Verarbeitung</strong> nach Bedarf anpassen, um die Aktualisierungen widerzuspiegeln, indem <strong>Kunde</strong> über die Aktualisierungen und Änderungen informiert wird.
 
-### 4. Kundenabwicklung {#4-customer-processing}
+### 4. Verarbeitung durch Kunde {#4-customer-processing}
 
-Ist der Kunde Auftragsverarbeiter und der Anbieter Unterauftragsverarbeiter, verpflichtet sich der Kunde zur Einhaltung aller geltenden Gesetze, die für die Verarbeitung personenbezogener Daten des Kunden gelten. Die Vereinbarung mit dem Verantwortlichen verpflichtet den Kunden ebenfalls zur Einhaltung aller geltenden Gesetze als Auftragsverarbeiter. Darüber hinaus verpflichtet sich der Kunde zur Einhaltung der Anforderungen an Unterauftragsverarbeiter in der Vereinbarung mit dem Verantwortlichen.
+Wenn <strong>Kunde</strong> Auftragsverarbeiter und <strong>Anbieter</strong> Unterauftragsverarbeiter ist, wird <strong>Kunde</strong> alle geltenden Gesetze einhalten, die für die Verarbeitung von Kundendaten durch <strong>Kunde</strong> gelten. Die Vereinbarung des <strong>Kunden</strong> mit seinem Verantwortlichen wird ebenfalls verlangen, dass <strong>Kunde</strong> alle geltenden Gesetze einhält, die für <strong>Kunde</strong> als Auftragsverarbeiter gelten. Darüber hinaus wird <strong>Kunde</strong> die Anforderungen an Unterauftragsverarbeiter in der Vereinbarung mit seinem Verantwortlichen einhalten.
 
 ### 5. Einwilligung zur Verarbeitung {#5-consent-to-processing}
 
-Der <strong>Kunde</strong> hat alle geltenden Datenschutzgesetze hinsichtlich der Bereitstellung personenbezogener Kundendaten an den <strong>Anbieter</strong> und/oder den Dienst eingehalten und wird dies auch weiterhin tun. Dies umfasst die Vornahme aller Offenlegungen, die Einholung aller Einwilligungen, die Bereitstellung angemessener Auswahlmöglichkeiten und die Umsetzung der gemäß den geltenden Datenschutzgesetzen erforderlichen Sicherheitsvorkehrungen.
+<strong>Kunde</strong> hat alle geltenden Datenschutzgesetze im Zusammenhang mit der Bereitstellung von Kundendaten an <strong>Anbieter</strong> und/oder den Dienst eingehalten und wird dies weiterhin tun, einschließlich aller Offenlegungen, Einholung aller Einwilligungen, Bereitstellung angemessener Wahlmöglichkeiten und Umsetzung relevanter Schutzmaßnahmen, die nach geltendem Datenschutzrecht erforderlich sind.
+### 6. Subprozessoren {#6-subprocessors}
 
-### 6. Unterprozessoren {#6-subprocessors}
+a. <strong>Provider</strong> wird keine Kundendaten an einen Subprozessor bereitstellen, übertragen oder übergeben, es sei denn, <strong>Kunde</strong> hat den Subprozessor genehmigt. Die aktuelle Liste der <strong>Genehmigten Subprozessoren</strong> enthält die Identitäten der Subprozessoren, deren Standortland und die voraussichtlichen Verarbeitungstätigkeiten. <strong>Provider</strong> wird <strong>Kunde</strong> mindestens 10 Werktage im Voraus und schriftlich über beabsichtigte Änderungen der <strong>Genehmigten Subprozessoren</strong> informieren, sei es durch Hinzufügung oder Ersatz eines Subprozessors, sodass <strong>Kunde</strong> genügend Zeit hat, den Änderungen zu widersprechen, bevor <strong>Provider</strong> den neuen Subprozessor(en) nutzt. <strong>Provider</strong> wird <strong>Kunde</strong> die notwendigen Informationen zur Verfügung stellen, damit <strong>Kunde</strong> sein Recht ausüben kann, der Änderung der <strong>Genehmigten Subprozessoren</strong> zu widersprechen. <strong>Kunde</strong> hat 30 Tage nach Mitteilung einer Änderung der <strong>Genehmigten Subprozessoren</strong> Zeit, Widerspruch einzulegen, andernfalls gilt die Änderung als akzeptiert. Wenn <strong>Kunde</strong> innerhalb von 30 Tagen nach Mitteilung Widerspruch einlegt, werden <strong>Kunde</strong> und <strong>Provider</strong> in gutem Glauben zusammenarbeiten, um den Widerspruch oder die Bedenken von <strong>Kunde</strong> zu klären.
 
-a. Der <strong>Anbieter</strong> stellt keine personenbezogenen Daten des Kunden einem Unterauftragsverarbeiter zur Verfügung, überträgt sie oder händigt sie diesem aus, es sei denn, der <strong>Kunde</strong> hat den Unterauftragsverarbeiter genehmigt. Die aktuelle Liste der <strong>Genehmigten Unterauftragsverarbeiter</strong> enthält die Identität der Unterauftragsverarbeiter, ihr Sitzland und ihre voraussichtlichen Verarbeitungsaufgaben. Der <strong>Anbieter</strong> informiert den <strong>Kunden</strong> mindestens 10 Werktage im Voraus schriftlich über geplante Änderungen der <strong>Genehmigten Unterauftragsverarbeiter</strong>, sei es durch Hinzufügung oder Austausch eines Unterauftragsverarbeiters, sodass dem <strong>Kunden</strong> genügend Zeit bleibt, Einspruch gegen die Änderungen zu erheben, bevor der <strong>Anbieter</strong> den/die neuen Unterauftragsverarbeiter einsetzt. Der <strong>Anbieter</strong> stellt dem <strong>Kunden</strong> die erforderlichen Informationen zur Verfügung, damit der <strong>Kunde</strong> sein Widerspruchsrecht gegen die Änderung der <strong>Genehmigten Unterauftragsverarbeiter</strong> ausüben kann. Der Kunde hat nach Bekanntgabe einer Änderung der <strong>genehmigten Unterauftragsverarbeiter</strong> 30 Tage Zeit, Einspruch zu erheben. Andernfalls gelten die Änderungen als vom Kunden akzeptiert. Erhebt der Kunde innerhalb von 30 Tagen nach Bekanntgabe Einspruch, arbeiten Kunde und Anbieter nach Treu und Glauben zusammen, um den Einspruch oder die Bedenken des Kunden zu klären.
+b. Bei der Beauftragung eines Subprozessors wird <strong>Provider</strong> eine schriftliche Vereinbarung mit dem Subprozessor abschließen, die sicherstellt, dass der Subprozessor nur auf Kundendaten zugreift und diese nur (i) im erforderlichen Umfang zur Erfüllung der an ihn vergebenen Verpflichtungen nutzt und (ii) im Einklang mit den Bedingungen der <strong>Vereinbarung</strong>.
 
-b. Bei der Beauftragung eines Unterauftragsverarbeiters schließt der <strong>Anbieter</strong> mit dem Unterauftragsverarbeiter eine schriftliche Vereinbarung ab, die sicherstellt, dass der Unterauftragsverarbeiter auf personenbezogene Daten des Kunden nur zugreift und diese verwendet, (i) soweit dies zur Erfüllung der ihm übertragenen Verpflichtungen erforderlich ist, und (ii) im Einklang mit den Bedingungen der <strong>Vereinbarung</strong>.
+c. Wenn die DSGVO auf die Verarbeitung von Kundendaten anwendbar ist, (i) gelten die in diesem DPA beschriebenen Datenschutzpflichten (wie in Artikel 28 Absatz 3 der DSGVO genannt, falls zutreffend) auch für den Subprozessor, und (ii) wird die Vereinbarung von <strong>Provider</strong> mit dem Subprozessor diese Pflichten einbeziehen, einschließlich Details darüber, wie <strong>Provider</strong> und sein Subprozessor bei Anfragen oder Anforderungen bezüglich der Verarbeitung von Kundendaten zusammenarbeiten. Darüber hinaus wird <strong>Provider</strong> auf Anfrage von <strong>Kunde</strong> eine Kopie seiner Vereinbarungen (einschließlich etwaiger Änderungen) mit seinen Subprozessoren bereitstellen. Soweit erforderlich zum Schutz von Geschäftsgeheimnissen oder anderen vertraulichen Informationen, einschließlich personenbezogener Daten, kann <strong>Provider</strong> den Text seiner Vereinbarung mit dem Subprozessor vor der Weitergabe schwärzen.
 
-c. Wenn die DSGVO auf die Verarbeitung personenbezogener Kundendaten Anwendung findet, (i) gelten die in dieser Datenverarbeitungsvereinbarung beschriebenen Datenschutzpflichten (wie in Artikel 28(3) der DSGVO, falls anwendbar) auch für den Unterauftragsverarbeiter und (ii) wird die Vereinbarung zwischen dem <strong>Anbieter</strong> und dem Unterauftragsverarbeiter diese Pflichten beinhalten, einschließlich Einzelheiten darüber, wie sich der <strong>Anbieter</strong> und sein Unterauftragsverarbeiter abstimmen, um auf Anfragen oder Anforderungen bezüglich der Verarbeitung personenbezogener Kundendaten zu reagieren. Darüber hinaus wird der <strong>Anbieter</strong> auf Anfrage des <strong>Kunden</strong> eine Kopie seiner Vereinbarungen (einschließlich aller Änderungen) mit seinen Unterauftragsverarbeitern teilen. Soweit dies zum Schutz von Geschäftsgeheimnissen oder sonstigen vertraulichen Informationen, einschließlich personenbezogener Daten, erforderlich ist, kann der <strong>Anbieter</strong> den Text seiner Vereinbarung mit seinem Unterauftragsverarbeiter redigieren, bevor er eine Kopie weitergibt.
+d. <strong>Provider</strong> bleibt voll verantwortlich für alle an seine Subprozessoren vergebenen Verpflichtungen, einschließlich der Handlungen und Unterlassungen seiner Subprozessoren bei der Verarbeitung von Kundendaten. <strong>Provider</strong> wird <strong>Kunde</strong> über jegliches Versäumnis seiner Subprozessoren informieren, eine wesentliche Verpflichtung bezüglich der Kundendaten aus der Vereinbarung zwischen <strong>Provider</strong> und dem Subprozessor zu erfüllen.
 
-d. Der <strong>Anbieter</strong> bleibt voll haftbar für alle an seine Unterauftragsverarbeiter übertragenen Verpflichtungen, einschließlich der Handlungen und Unterlassungen seiner Unterauftragsverarbeiter bei der Verarbeitung personenbezogener Kundendaten. Der <strong>Anbieter</strong> wird den Kunden über jegliche Nichterfüllung wesentlicher Verpflichtungen seiner Unterauftragsverarbeiter in Bezug auf personenbezogene Kundendaten gemäß der Vereinbarung zwischen dem <strong>Anbieter</strong> und dem Unterauftragsverarbeiter informieren.
 
-## 3. Eingeschränkte Übertragungen {#3-restricted-transfers}
+## 3. Eingeschränkte Übermittlungen {#3-restricted-transfers}
 
-### 1. Autorisierung {#1-authorization}
+### 1. Genehmigung {#1-authorization}
 
-Der <strong>Kunde</strong> erklärt sich damit einverstanden, dass der <strong>Anbieter</strong> personenbezogene Daten des Kunden außerhalb des EWR, des Vereinigten Königreichs oder anderer relevanter geografischer Gebiete übermitteln darf, soweit dies zur Bereitstellung des Dienstes erforderlich ist. Überträgt der <strong>Anbieter</strong> personenbezogene Daten des Kunden in ein Gebiet, für das die Europäische Kommission oder eine andere relevante Aufsichtsbehörde keinen Angemessenheitsbeschluss erlassen hat, wird der <strong>Anbieter</strong> angemessene Sicherheitsvorkehrungen für die Übermittlung personenbezogener Daten des Kunden in dieses Gebiet im Einklang mit den geltenden Datenschutzgesetzen treffen.
+<strong>Kunde</strong> stimmt zu, dass <strong>Provider</strong> Kundendaten außerhalb des EWR, des Vereinigten Königreichs oder eines anderen relevanten geografischen Gebiets übertragen darf, soweit dies zur Erbringung der Dienstleistung erforderlich ist. Überträgt <strong>Provider</strong> Kundendaten in ein Gebiet, für das die Europäische Kommission oder eine andere zuständige Aufsichtsbehörde keine Angemessenheitsentscheidung erlassen hat, wird <strong>Provider</strong> geeignete Schutzmaßnahmen für die Übermittlung der Kundendaten in dieses Gebiet gemäß den geltenden Datenschutzgesetzen umsetzen.
 
-### 2. Überweisungen außerhalb des EWR {#2-ex-eea-transfers}
+### 2. Übermittlungen außerhalb des EWR {#2-ex-eea-transfers}
 
-<strong>Kunde</strong> und <strong>Anbieter</strong> vereinbaren, dass, sofern die DSGVO die Übermittlung personenbezogener Kundendaten schützt, die Übermittlung vom <strong>Kunden</strong> innerhalb des EWR an den <strong>Anbieter</strong> außerhalb des EWR erfolgt und die Übermittlung keinem Angemessenheitsbeschluss der Europäischen Kommission unterliegt, mit dem Abschluss dieser Datenverarbeitungsvereinbarung (DPA) die EWR-Standardvertragsklauseln und deren Anhänge als unterzeichnet gelten, die durch Verweis einbezogen werden. Jede derartige Übermittlung erfolgt gemäß den EWR-Standardvertragsklauseln, die wie folgt ausgefüllt werden:
+<strong>Kunde</strong> und <strong>Provider</strong> sind sich einig, dass, wenn die DSGVO die Übermittlung von Kundendaten schützt, die Übermittlung von <strong>Kunde</strong> aus dem EWR an <strong>Provider</strong> außerhalb des EWR erfolgt und die Übermittlung nicht durch eine Angemessenheitsentscheidung der Europäischen Kommission geregelt ist, durch den Abschluss dieses DPA <strong>Kunde</strong> und <strong>Provider</strong> als unterzeichnete die EWR-Standardvertragsklauseln (EEA SCCs) und deren Anhänge, die durch Verweis einbezogen sind. Jede solche Übermittlung erfolgt gemäß den EWR SCCs, die wie folgt ausgefüllt werden:
+a. Modul Zwei (Verantwortlicher zum Auftragsverarbeiter) der EWR-Standardvertragsklauseln (SCCs) gilt, wenn der <strong>Kunde</strong> ein Verantwortlicher ist und der <strong>Provider</strong> personenbezogene Daten des Kunden im Auftrag des <strong>Kunden</strong> als Auftragsverarbeiter verarbeitet.
 
-a. Modul Zwei (Verantwortlicher gegenüber Auftragsverarbeiter) der EWR-Standardvertragsklauseln gilt, wenn der <strong>Kunde</strong> Verantwortlicher ist und der <strong>Anbieter</strong> als Auftragsverarbeiter personenbezogene Daten des Kunden für den <strong>Kunden</strong> verarbeitet.
+b. Modul Drei (Auftragsverarbeiter zum Unterauftragsverarbeiter) der EWR-SCCs gilt, wenn der <strong>Kunde</strong> ein Auftragsverarbeiter ist und der <strong>Provider</strong> personenbezogene Daten des Kunden im Auftrag des <strong>Kunden</strong> als Unterauftragsverarbeiter verarbeitet.
 
-b. Modul Drei (Auftragsverarbeiter an Unterauftragsverarbeiter) der EWR-Standardvertragsklauseln gilt, wenn der <strong>Kunde</strong> ein Auftragsverarbeiter ist und der <strong>Anbieter</strong> personenbezogene Daten des Kunden im Auftrag des <strong>Kunden</strong> als Unterauftragsverarbeiter verarbeitet.
-
-c. Für jedes Modul gilt (sofern zutreffend):
+c. Für jedes Modul gilt Folgendes (sofern anwendbar):
 
 1. Die optionale Andockklausel in Klausel 7 findet keine Anwendung;
 
-2. In Klausel 9 gilt Option 2 (allgemeine schriftliche Genehmigung) und die Mindestfrist für die Vorankündigung von Änderungen beim Unterauftragsverarbeiter beträgt 10 Werktage;
+2. In Klausel 9 gilt Option 2 (allgemeine schriftliche Genehmigung), und die Mindestfrist für die vorherige Mitteilung von Änderungen bei Unterauftragsverarbeitern beträgt 10 Werktage;
 
-3. In Klausel 11 findet die optionale Formulierung keine Anwendung;
+3. In Klausel 11 gilt die optionale Sprache nicht;
 
-4. Alle eckigen Klammern in Abschnitt 13 werden entfernt;
+4. Alle eckigen Klammern in Klausel 13 werden entfernt;
 
-5. In Klausel 17 (Option 1) unterliegen die Standardvertragsklauseln des EWR den Gesetzen des <strong>maßgebenden Mitgliedstaats</strong>.
+5. In Klausel 17 (Option 1) unterliegen die EWR-SCCs dem Recht des <strong>geltenden Mitgliedstaats</strong>;
 
-6. In Klausel 18(b) werden Streitigkeiten vor den Gerichten des <strong>Regierungsmitgliedstaats</strong> beigelegt; und
+6. In Klausel 18(b) werden Streitigkeiten vor den Gerichten des <strong>geltenden Mitgliedstaats</strong> beigelegt; und
 
-7. Das Deckblatt dieser DPA enthält die in Anhang I, Anhang II und Anhang III der EWR-Standardvertragsklauseln geforderten Informationen.
+7. Die Titelseite dieses DPA enthält die in Anhang I, Anhang II und Anhang III der EWR-SCCs erforderlichen Informationen.
 
-### 3. Überweisungen außerhalb des Vereinigten Königreichs {#3-ex-uk-transfers}
+### 3. Ex-UK-Übermittlungen {#3-ex-uk-transfers}
 
-<strong>Kunde</strong> und <strong>Anbieter</strong> vereinbaren, dass, sofern die UK-DSGVO die Übertragung personenbezogener Kundendaten schützt, die Übertragung vom <strong>Kunden</strong> innerhalb des Vereinigten Königreichs an den <strong>Anbieter</strong> außerhalb des Vereinigten Königreichs erfolgt und die Übertragung nicht durch einen Angemessenheitsbeschluss des britischen Außenministers geregelt ist, mit dem Abschluss dieser DPA der UK-Nachtrag und seine Anhänge als unterzeichnet gelten, die durch Bezugnahme Bestandteil dieser Vereinbarung werden. Jede derartige Übertragung erfolgt gemäß dem UK-Nachtrag, der wie folgt ausgefüllt wird:
+<strong>Kunde</strong> und <strong>Provider</strong> vereinbaren, dass, wenn die UK GDPR die Übermittlung personenbezogener Daten des Kunden schützt, die Übermittlung vom <strong>Kunden</strong> innerhalb des Vereinigten Königreichs an den <strong>Provider</strong> außerhalb des Vereinigten Königreichs erfolgt und die Übermittlung nicht durch eine Angemessenheitsentscheidung des britischen Staatssekretärs geregelt wird, durch den Abschluss dieses DPA der <strong>Kunde</strong> und der <strong>Provider</strong> als unterzeichnete UK-Zusatzvereinbarung und deren Anhänge gelten, die durch Verweis einbezogen sind. Jede solche Übermittlung erfolgt gemäß der UK-Zusatzvereinbarung, die wie folgt ausgefüllt wird:
 
-a. Abschnitt 3.2 dieser DPA enthält die in Tabelle 2 des UK-Nachtrags erforderlichen Informationen.
+a. Abschnitt 3.2 dieses DPA enthält die in Tabelle 2 der UK-Zusatzvereinbarung erforderlichen Informationen.
 
-b. Tabelle 4 des UK-Nachtrags wird wie folgt geändert: Keine der Parteien darf den UK-Nachtrag gemäß Abschnitt 19 des UK-Nachtrags beenden. Sofern das ICO einen überarbeiteten genehmigten Nachtrag gemäß Abschnitt 18 des UK-Nachtrags herausgibt, werden die Parteien nach Treu und Glauben daran arbeiten, diese DPA entsprechend zu überarbeiten.
+b. Tabelle 4 der UK-Zusatzvereinbarung wird wie folgt geändert: Keine Partei darf die UK-Zusatzvereinbarung gemäß Abschnitt 19 der UK-Zusatzvereinbarung beenden; soweit die ICO eine überarbeitete genehmigte Zusatzvereinbarung gemäß Abschnitt ‎18 der UK-Zusatzvereinbarung herausgibt, werden die Parteien in gutem Glauben zusammenarbeiten, um dieses DPA entsprechend zu überarbeiten.
 
-c. Das Deckblatt enthält die in Anhang 1A, Anhang 1B, Anhang II und Anhang III des UK-Nachtrags geforderten Informationen.
+c. Die Titelseite enthält die von Anhang 1A, Anhang 1B, Anhang II und Anhang III der UK-Zusatzvereinbarung geforderten Informationen.
 
-### 4. Andere internationale Überweisungen {#4-other-international-transfers}
+### 4. Andere internationale Übermittlungen {#4-other-international-transfers}
 
-Bei der Übermittlung personenbezogener Daten, bei der aufgrund des internationalen Charakters der Übermittlung Schweizer Recht (und nicht das Recht eines EWR-Mitgliedstaats oder des Vereinigten Königreichs) gilt, werden die Verweise auf die DSGVO in Klausel 4 der Standardvertragsklauseln für den EWR, soweit gesetzlich erforderlich, dahingehend geändert, dass sie stattdessen auf das Schweizer Bundesgesetz über den Datenschutz oder dessen Nachfolgegesetz verweisen. Der Begriff der Aufsichtsbehörde umfasst dann den Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten.
+Für Übermittlungen personenbezogener Daten, bei denen schweizerisches Recht (und nicht das Recht eines EWR-Mitgliedstaats oder des Vereinigten Königreichs) auf die internationale Natur der Übermittlung anwendbar ist, werden Verweise auf die DSGVO in Klausel 4 der EWR-SCCs, soweit gesetzlich erforderlich, stattdessen auf das Schweizer Bundesgesetz über den Datenschutz oder dessen Nachfolger geändert, und das Konzept der Aufsichtsbehörde umfasst die Schweizerische Datenschutz- und Öffentlichkeitsbeauftragte.
 
 ## 4. Reaktion auf Sicherheitsvorfälle {#4-security-incident-response}
 
-1. Sobald der <strong>Anbieter</strong> von einem Sicherheitsvorfall Kenntnis erlangt, wird er: (a) den <strong>Kunden</strong> nach Möglichkeit unverzüglich, spätestens jedoch 72 Stunden nach Kenntniserlangung des Sicherheitsvorfalls, benachrichtigen; (b) zeitnah Informationen über den Sicherheitsvorfall bereitstellen, sobald dieser bekannt wird oder auf begründete Anfrage des <strong>Kunden</strong>; und (c) umgehend angemessene Schritte unternehmen, um den Sicherheitsvorfall einzudämmen und zu untersuchen. Die Benachrichtigung oder Reaktion des <strong>Anbieters</strong> über einen Sicherheitsvorfall gemäß dieser DPA gilt nicht als Eingeständnis eines Verschuldens oder einer Haftung des <strong>Anbieters</strong> für den Sicherheitsvorfall.
+1. Sobald <strong>Provider</strong> von einem Sicherheitsvorfall Kenntnis erlangt, wird er: (a) <strong>Kunde</strong> unverzüglich benachrichtigen, wenn möglich, spätestens jedoch 72 Stunden nach Kenntnisnahme des Sicherheitsvorfalls; (b) zeitnah Informationen über den Sicherheitsvorfall bereitstellen, sobald diese bekannt werden oder von <strong>Kunde</strong> vernünftigerweise angefordert werden; und (c) unverzüglich angemessene Maßnahmen ergreifen, um den Sicherheitsvorfall einzudämmen und zu untersuchen. Die Benachrichtigung oder Reaktion des <strong>Providers</strong> auf einen Sicherheitsvorfall gemäß diesem DPA wird nicht als Anerkennung einer Schuld oder Haftung des <strong>Providers</strong> für den Sicherheitsvorfall ausgelegt.
 
-## 5. Audit und Berichte {#5-audit--reports}
+## 5. Prüfung & Berichte {#5-audit--reports}
 
-### 1. Prüfrechte {#1-audit-rights}
+### 1. Prüfungsrechte {#1-audit-rights}
 
-Der <strong>Anbieter</strong> stellt dem <strong>Kunden</strong> alle Informationen zur Verfügung, die zum Nachweis seiner Einhaltung dieser DPA erforderlich sind, und der <strong>Anbieter</strong> ermöglicht und unterstützt Audits, darunter Inspektionen durch den <strong>Kunden</strong>, um die Einhaltung dieser DPA durch den <strong>Anbieter</strong> zu beurteilen. Der <strong>Anbieter</strong> darf jedoch den Zugriff auf Daten oder Informationen einschränken, wenn der Zugriff des <strong>Kunden</strong> auf die Informationen die geistigen Eigentumsrechte, Vertraulichkeitsverpflichtungen oder andere Verpflichtungen des <strong>Anbieters</strong> gemäß geltendem Recht beeinträchtigen würde. Der <strong>Kunde</strong> erkennt an und erklärt sich damit einverstanden, dass er seine Auditrechte gemäß dieser DPA und alle ihm durch geltendes Datenschutzrecht gewährten Auditrechte nur dann ausübt, wenn er den <strong>Anbieter</strong> anweist, die unten aufgeführten Berichts- und Sorgfaltspflichten zu erfüllen. Der <strong>Anbieter</strong> führt Aufzeichnungen über seine Einhaltung dieser DPA für drei Jahre nach Ende der DPA.
-
+<strong>Provider</strong> wird <strong>Kunde</strong> alle vernünftigerweise erforderlichen Informationen zur Verfügung stellen, um die Einhaltung dieses DPA nachzuweisen, und <strong>Provider</strong> wird Prüfungen, einschließlich Inspektionen durch <strong>Kunde</strong>, zulassen und unterstützen, um die Einhaltung dieses DPA durch <strong>Provider</strong> zu bewerten. <strong>Provider</strong> kann jedoch den Zugang zu Daten oder Informationen einschränken, wenn der Zugang von <strong>Kunde</strong> zu den Informationen die geistigen Eigentumsrechte, Vertraulichkeitsverpflichtungen oder andere Verpflichtungen des <strong>Providers</strong> nach geltendem Recht negativ beeinträchtigen würde. <strong>Kunde</strong> erkennt an und stimmt zu, dass er seine Prüfungsrechte gemäß diesem DPA und etwaigen durch geltende Datenschutzgesetze gewährten Prüfungsrechten nur ausübt, indem er <strong>Provider</strong> anweist, die nachstehenden Berichts- und Sorgfaltspflichten einzuhalten. <strong>Provider</strong> wird Aufzeichnungen über die Einhaltung dieses DPA für 3 Jahre nach Beendigung des DPA aufbewahren.
 ### 2. Sicherheitsberichte {#2-security-reports}
 
-Der Kunde nimmt zur Kenntnis, dass der Anbieter regelmäßig von unabhängigen Prüfern auf die Einhaltung der in der Sicherheitsrichtlinie festgelegten Standards geprüft wird. Auf schriftliche Anfrage stellt der Anbieter dem Kunden vertraulich eine Zusammenfassung seines jeweils aktuellen Berichts zur Verfügung, damit dieser die Einhaltung der in der Sicherheitsrichtlinie festgelegten Standards durch den Anbieter überprüfen kann.
+<strong>Kunde</strong> erkennt an, dass <strong>Anbieter</strong> regelmäßig von unabhängigen Dritten anhand der in der <strong>Sicherheitsrichtlinie</strong> definierten Standards geprüft wird. Auf schriftliche Anfrage wird <strong>Anbieter</strong> dem <strong>Kunden</strong> vertraulich eine Zusammenfassung seines jeweils aktuellen Berichts zur Verfügung stellen, damit der <strong>Kunde</strong> die Einhaltung der in der <strong>Sicherheitsrichtlinie</strong> definierten Standards durch den <strong>Anbieter</strong> überprüfen kann.
 
-### 3. Sicherheitsprüfung {#3-security-due-diligence}
+### 3. Sicherheits-Due-Diligence {#3-security-due-diligence}
 
-Zusätzlich zum Bericht beantwortet der <strong>Anbieter</strong> angemessene Informationsanfragen des <strong>Kunden</strong>, um die Einhaltung dieser DPA durch den <strong>Anbieter</strong> zu bestätigen. Dies umfasst Antworten auf Informationssicherheits-, Due-Diligence- und Audit-Fragebögen oder die Bereitstellung zusätzlicher Informationen zu seinem Informationssicherheitsprogramm. Alle derartigen Anfragen müssen schriftlich erfolgen und an den <strong>Sicherheitskontakt des Anbieters</strong> gerichtet werden und dürfen nur einmal jährlich gestellt werden.
+Zusätzlich zum Bericht wird <strong>Anbieter</strong> auf angemessene Informationsanfragen des <strong>Kunden</strong> reagieren, um die Einhaltung dieser DPA durch den <strong>Anbieter</strong> zu bestätigen, einschließlich Antworten auf Informationssicherheits-, Due-Diligence- und Audit-Fragebögen oder durch die Bereitstellung zusätzlicher Informationen über sein Informationssicherheitsprogramm. Alle derartigen Anfragen müssen schriftlich erfolgen und an den <strong>Provider Security Contact</strong> gerichtet sein und dürfen nur einmal jährlich gestellt werden.
 
-## 6. Koordination und Zusammenarbeit {#6-coordination--cooperation}
 
-### 1. Antwort auf Anfragen {#1-response-to-inquiries}
+## 6. Koordination & Zusammenarbeit {#6-coordination--cooperation}
 
-Erhält der <strong>Anbieter</strong> eine Anfrage oder Aufforderung zur Verarbeitung personenbezogener Kundendaten, benachrichtigt er den <strong>Anbieter</strong> hierüber und beantwortet diese nicht ohne dessen vorherige Zustimmung. Beispiele hierfür sind gerichtliche, behördliche oder behördliche Anordnungen zu personenbezogenen Kundendaten, sofern die Benachrichtigung des <strong>Kunden</strong> nicht durch geltendes Recht untersagt ist, oder Anfragen von betroffenen Personen. Soweit gesetzlich zulässig, befolgt der <strong>Anbieter</strong> die angemessenen Anweisungen des <strong>Kunden</strong> zu diesen Anfragen, einschließlich der Bereitstellung von Statusaktualisierungen und anderen vom <strong>Kunden</strong> in angemessener Weise angeforderten Informationen. Wenn eine betroffene Person gemäß den geltenden Datenschutzgesetzen eine gültige Anfrage zur Löschung oder zum Widerspruch gegen die Weitergabe personenbezogener Kundendaten an den <strong>Anbieter</strong> stellt, unterstützt der <strong>Anbieter</strong> den <strong>Kunden</strong> bei der Erfüllung der Anfrage gemäß den geltenden Datenschutzgesetzen. Der <strong>Anbieter</strong> kooperiert mit dem <strong>Kunden</strong> und bietet ihm auf Kosten des <strong>Kunden</strong> angemessene Unterstützung bei allen rechtlichen Antworten oder anderen Verfahrensschritten, die der <strong>Kunde</strong> als Reaktion auf eine Anfrage eines Dritten bezüglich der Verarbeitung personenbezogener Kundendaten durch den <strong>Anbieter</strong> gemäß dieser DPA unternimmt.
+### 1. Reaktion auf Anfragen {#1-response-to-inquiries}
+
+Wenn <strong>Anbieter</strong> eine Anfrage oder Aufforderung von Dritten bezüglich der Verarbeitung von Kundendaten erhält, wird <strong>Anbieter</strong> den <strong>Kunden</strong> über die Anfrage informieren und ohne vorherige Zustimmung des <strong>Kunden</strong> nicht auf die Anfrage reagieren. Beispiele für solche Anfragen und Aufforderungen sind gerichtliche, administrative oder behördliche Anordnungen bezüglich Kundendaten, sofern die Benachrichtigung des <strong>Kunden</strong> durch geltendes Recht nicht untersagt ist, oder eine Anfrage einer betroffenen Person. Sofern gesetzlich zulässig, wird <strong>Anbieter</strong> den angemessenen Anweisungen des <strong>Kunden</strong> zu diesen Anfragen folgen, einschließlich der Bereitstellung von Statusaktualisierungen und anderer vom <strong>Kunden</strong> vernünftigerweise angeforderter Informationen. Wenn eine betroffene Person gemäß den geltenden Datenschutzgesetzen eine gültige Anfrage zur Löschung oder zum Widerruf der Weitergabe von Kundendaten an <strong>Anbieter</strong> stellt, wird <strong>Anbieter</strong> den <strong>Kunden</strong> bei der Erfüllung dieser Anfrage gemäß den geltenden Datenschutzgesetzen unterstützen. <strong>Anbieter</strong> wird mit dem <strong>Kunden</strong> zusammenarbeiten und auf dessen Kosten angemessene Unterstützung bei rechtlichen Reaktionen oder sonstigen Verfahrenshandlungen leisten, die der <strong>Kunde</strong> als Reaktion auf eine Drittanfrage bezüglich der Verarbeitung von Kundendaten durch <strong>Anbieter</strong> im Rahmen dieser DPA unternimmt.
 
 ### 2. DPIAs und DTIAs {#2-dpias-and-dtias}
 
-Falls gemäß den geltenden Datenschutzgesetzen erforderlich, wird der <strong>Anbieter</strong> den <strong>Kunden</strong> in angemessenem Umfang bei der Durchführung aller vorgeschriebenen Datenschutz-Folgenabschätzungen oder Datenübertragungs-Folgenabschätzungen sowie bei Konsultationen mit den zuständigen Datenschutzbehörden unterstützen und dabei die Art der Verarbeitung und der personenbezogenen Daten des Kunden berücksichtigen.
+Sofern von den geltenden Datenschutzgesetzen verlangt, wird <strong>Anbieter</strong> den <strong>Kunden</strong> angemessen bei der Durchführung vorgeschriebener Datenschutz-Folgenabschätzungen oder Datenübertragungs-Folgenabschätzungen sowie bei Konsultationen mit den zuständigen Datenschutzbehörden unterstützen, wobei die Art der Verarbeitung und der Kundendaten berücksichtigt wird.
 
-## 7. Löschung personenbezogener Kundendaten {#7-deletion-of-customer-personal-data}
+
+## 7. Löschung von Kundendaten {#7-deletion-of-customer-personal-data}
 
 ### 1. Löschung durch den Kunden {#1-deletion-by-customer}
 
-Der <strong>Anbieter</strong> ermöglicht dem <strong>Kunden</strong>, personenbezogene Kundendaten in einer Weise zu löschen, die mit der Funktionalität der Dienste vereinbar ist. Der <strong>Anbieter</strong> wird dieser Anweisung so schnell wie möglich nachkommen, es sei denn, eine weitere Speicherung personenbezogener Kundendaten ist gesetzlich vorgeschrieben.
+<strong>Anbieter</strong> wird dem <strong>Kunden</strong> ermöglichen, Kundendaten in einer mit der Funktionalität der Dienste vereinbaren Weise zu löschen. <strong>Anbieter</strong> wird dieser Anweisung so bald wie vernünftigerweise möglich nachkommen, außer wenn die weitere Speicherung der Kundendaten durch geltendes Recht erforderlich ist.
 
-### 2. Löschung bei Ablauf des DPA {#2-deletion-at-dpa-expiration}
+### 2. Löschung nach Ablauf der DPA {#2-deletion-at-dpa-expiration}
 
-a. Nach Ablauf der DPA wird der <strong>Anbieter</strong> die personenbezogenen Kundendaten auf Anweisung des <strong>Kunden</strong> zurückgeben oder löschen, es sei denn, eine weitere Speicherung der personenbezogenen Kundendaten ist gesetzlich vorgeschrieben oder zulässig. Ist die Rückgabe oder Vernichtung nicht durchführbar oder gesetzlich verboten, wird der <strong>Anbieter</strong> angemessene Anstrengungen unternehmen, um eine weitere Verarbeitung der personenbezogenen Kundendaten zu verhindern und die in seinem Besitz, seiner Obhut oder seiner Kontrolle verbleibenden personenbezogenen Kundendaten weiterhin zu schützen. Beispielsweise kann der <strong>Anbieter</strong> gesetzlich verpflichtet sein, die personenbezogenen Kundendaten weiterhin zu hosten oder zu verarbeiten.
+a. Nach Ablauf der DPA wird <strong>Anbieter</strong> die Kundendaten auf Anweisung des <strong>Kunden</strong> zurückgeben oder löschen, es sei denn, die weitere Speicherung der Kundendaten ist durch geltendes Recht erforderlich oder erlaubt. Wenn die Rückgabe oder Vernichtung unpraktikabel oder durch geltendes Recht verboten ist, wird <strong>Anbieter</strong> angemessene Anstrengungen unternehmen, um eine weitere Verarbeitung der Kundendaten zu verhindern und die verbleibenden Kundendaten in seinem Besitz, seiner Obhut oder Kontrolle weiterhin schützen. Zum Beispiel können geltende Gesetze <strong>Anbieter</strong> dazu verpflichten, Kundendaten weiterhin zu hosten oder zu verarbeiten.
+b. Wenn <strong>Kunde</strong> und <strong>Anbieter</strong> die EWR SCCs oder das UK Addendum als Teil dieses DPA vereinbart haben, wird <strong>Anbieter</strong> <strong>Kunde</strong> die in Klausel 8.1(d) und Klausel 8.5 der EWR SCCs beschriebene Löschbescheinigung personenbezogener Daten nur dann ausstellen, wenn <strong>Kunde</strong> eine solche anfordert.
 
-b. Wenn <strong>Kunde</strong> und <strong>Anbieter</strong> im Rahmen dieser DPA die EWR-Standardvertragsklauseln oder den UK-Nachtrag abgeschlossen haben, stellt <strong>Anbieter</strong> dem <strong>Kunden</strong> die in Klausel 8.1(d) und Klausel 8.5 der EWR-Standardvertragsklauseln beschriebene Bescheinigung über die Löschung der personenbezogenen Daten nur dann aus, wenn <strong>Kunde</strong> danach fragt.
 
 ## 8. Haftungsbeschränkung {#8-limitation-of-liability}
 
-### 1. Haftungsbegrenzungen und Schadensersatzverzicht {#1-liability-caps-and-damages-waiver}
+### 1. Haftungsobergrenzen und Verzicht auf Schadensersatz {#1-liability-caps-and-damages-waiver}
 
-**Soweit es die geltenden Datenschutzgesetze zulassen, unterliegt die gesamte kumulative Haftung jeder Partei gegenüber der anderen Partei, die sich aus dieser DPA ergibt oder damit in Zusammenhang steht, den in der <strong>Vereinbarung</strong> genannten Haftungsverzichten, -ausschlüssen und -beschränkungen.**
+**Soweit nach den anwendbaren Datenschutzgesetzen zulässig, unterliegt die gesamte kumulative Haftung jeder Partei gegenüber der anderen Partei, die sich aus oder im Zusammenhang mit diesem DPA ergibt, den im <strong>Vertrag</strong> festgelegten Verzichtserklärungen, Ausschlüssen und Haftungsbeschränkungen.**
 
-### 2. Ansprüche verbundener Unternehmen {#2-related-party-claims}
+### 2. Ansprüche Dritter {#2-related-party-claims}
 
-**Alle Ansprüche, die gegen den <strong>Anbieter</strong> oder seine verbundenen Unternehmen geltend gemacht werden und die sich aus dieser DPA ergeben oder damit in Zusammenhang stehen, können nur von der <strong>Kunden</strong>-Einheit geltend gemacht werden, die Vertragspartei der <strong>Vereinbarung</strong> ist.**
+**Jegliche Ansprüche gegen <strong>Anbieter</strong> oder seine verbundenen Unternehmen, die sich aus oder im Zusammenhang mit diesem DPA ergeben, dürfen nur von der <strong>Kunden</strong>-Einheit geltend gemacht werden, die Partei des <strong>Vertrags</strong> ist.**
 
 ### 3. Ausnahmen {#3-exceptions}
 
-1. Diese DPA beschränkt nicht die Haftung gegenüber einer Person hinsichtlich ihrer Datenschutzrechte gemäß den geltenden Datenschutzgesetzen. Darüber hinaus beschränkt diese DPA nicht die Haftung zwischen den Parteien für Verstöße gegen die EWR-Standardvertragsklauseln oder den UK-Nachtrag.
+1. Dieses DPA beschränkt keine Haftung gegenüber einer Person hinsichtlich der Datenschutzrechte dieser Person nach den anwendbaren Datenschutzgesetzen. Darüber hinaus beschränkt dieses DPA keine Haftung zwischen den Parteien für Verstöße gegen die EWR SCCs oder das UK Addendum.
 
-## 9. Konflikte zwischen Dokumenten {#9-conflicts-between-documents}
 
-1. Diese DPA ist Bestandteil der Vereinbarung und ergänzt diese. Bei Widersprüchen zwischen dieser DPA, der <strong>Vereinbarung</strong> oder deren Teilen hat der zuvor genannte Teil Vorrang vor dem später genannten Teil: (1) die EWR-Standardvertragsklauseln oder der UK-Nachtrag, (2) diese DPA und (3) die <strong>Vereinbarung</strong>.
+## 9. Widersprüche zwischen Dokumenten {#9-conflicts-between-documents}
 
-## 10. Vertragsdauer {#10-term-of-agreement}
+1. Dieses DPA ist Bestandteil des Vertrags und ergänzt diesen. Bei Unstimmigkeiten zwischen diesem DPA, dem <strong>Vertrag</strong> oder Teilen davon gilt für diese Unstimmigkeit die zuerst genannte Regelung vorrangig gegenüber der später genannten: (1) die EWR SCCs oder das UK Addendum, (2) dieses DPA und dann (3) der <strong>Vertrag</strong>.
 
-Diese DPA beginnt, sobald <strong>Anbieter</strong> und <strong>Kunde</strong> einem Deckblatt für die DPA zustimmen und die <strong>Vereinbarung</strong> unterzeichnen oder elektronisch akzeptieren. Sie gilt bis zum Ablauf oder der Kündigung der <strong>Vereinbarung</strong>. <strong>Anbieter</strong> und <strong>Kunde</strong> unterliegen jedoch weiterhin den Verpflichtungen dieser DPA und den geltenden Datenschutzgesetzen, bis <strong>Kunde</strong> die Übermittlung personenbezogener Kundendaten an <strong>Anbieter</strong> einstellt und <strong>Anbieter</strong> die Verarbeitung personenbezogener Kundendaten einstellt.
 
-## 11. Geltendes Recht und Gerichtsstand {#11-governing-law-and-chosen-courts}
+## 10. Vertragslaufzeit {#10-term-of-agreement}
 
-Ungeachtet des geltenden Rechts oder ähnlicher Klauseln dieser <strong>Vereinbarung</strong> unterliegen sämtliche Auslegungen und Streitigkeiten im Zusammenhang mit dieser DPA den Gesetzen des <strong>Staates</strong>, unter Ausschluss der Kollisionsnormen. Darüber hinaus vereinbaren die Parteien ungeachtet der Gerichtsstandsvereinbarung, der Zuständigkeit oder ähnlicher Klauseln dieser <strong>Vereinbarung</strong>, sämtliche Rechtsstreitigkeiten, Klagen oder Verfahren im Zusammenhang mit dieser DPA vor den Gerichten des <strong>Staates</strong> zu führen, und jede Partei unterwirft sich unwiderruflich der ausschließlichen Zuständigkeit dieser Gerichte.
+Dieses DPA beginnt, wenn <strong>Anbieter</strong> und <strong>Kunde</strong> einer Deckblattseite für das DPA zustimmen und den <strong>Vertrag</strong> unterzeichnen oder elektronisch akzeptieren, und läuft bis zum Ablauf oder zur Beendigung des <strong>Vertrags</strong>. <strong>Anbieter</strong> und <strong>Kunde</strong> bleiben jedoch jeweils den Verpflichtungen dieses DPA und den anwendbaren Datenschutzgesetzen unterworfen, bis <strong>Kunde</strong> die Übermittlung personenbezogener Kundendaten an <strong>Anbieter</strong> einstellt und <strong>Anbieter</strong> die Verarbeitung personenbezogener Kundendaten einstellt.
 
-## 12. Dienstanbieterbeziehung {#12-service-provider-relationship}
 
-Soweit der California Consumer Privacy Act, Cal. Civ. Code § 1798.100 ff. („CCPA“) Anwendung findet, erkennen die Parteien an und vereinbaren, dass der <strong>Anbieter</strong> ein Dienstanbieter ist und personenbezogene Daten vom <strong>Kunden</strong> erhält, um den Dienst wie in der <strong>Vereinbarung</strong> vereinbart bereitzustellen, was einen Geschäftszweck darstellt. Der <strong>Anbieter</strong> wird keine vom <strong>Kunden</strong> im Rahmen der <strong>Vereinbarung</strong> bereitgestellten personenbezogenen Daten verkaufen. Darüber hinaus wird der <strong>Anbieter</strong> keine vom <strong>Kunden</strong> im Rahmen der <strong>Vereinbarung</strong> bereitgestellten personenbezogenen Daten aufbewahren, verwenden oder offenlegen, außer wenn dies zur Bereitstellung des Dienstes für den <strong>Kunden</strong> erforderlich ist, wie in der <strong>Vereinbarung</strong> angegeben, oder wie nach geltendem Datenschutzrecht zulässig. Der <strong>Anbieter</strong> bestätigt, dass er die Beschränkungen dieses Absatzes versteht.
+## 11. Anwendbares Recht und Gerichtsstand {#11-governing-law-and-chosen-courts}
 
+Ungeachtet der Rechtswahl- oder ähnlichen Klauseln des <strong>Vertrags</strong> unterliegen alle Auslegungen und Streitigkeiten über dieses DPA dem Recht des <strong>Governing State</strong> ohne Berücksichtigung seiner kollisionsrechtlichen Bestimmungen. Zusätzlich und ungeachtet der Gerichtsstands-, Zuständigkeits- oder ähnlichen Klauseln des <strong>Vertrags</strong> vereinbaren die Parteien, dass alle Rechtsstreitigkeiten, Klagen oder Verfahren bezüglich dieses DPA vor den Gerichten des <strong>Governing State</strong> zu führen sind, und jede Partei sich unwiderruflich der ausschließlichen Zuständigkeit dieser Gerichte unterwirft.
+
+
+## 12. Dienstleisterbeziehung {#12-service-provider-relationship}
+
+Soweit das California Consumer Privacy Act, Cal. Civ. Code § 1798.100 ff. ("CCPA") anwendbar ist, erkennen die Parteien an und stimmen zu, dass <strong>Anbieter</strong> ein Dienstleister ist und personenbezogene Daten von <strong>Kunde</strong> erhält, um die Dienstleistung wie im <strong>Vertrag</strong> vereinbart zu erbringen, was einen Geschäftszweck darstellt. <strong>Anbieter</strong> wird keine personenbezogenen Daten, die von <strong>Kunde</strong> im Rahmen des <strong>Vertrags</strong> bereitgestellt wurden, verkaufen. Darüber hinaus wird <strong>Anbieter</strong> keine personenbezogenen Daten, die von <strong>Kunde</strong> im Rahmen des <strong>Vertrags</strong> bereitgestellt wurden, aufbewahren, verwenden oder offenlegen, außer soweit dies zur Erbringung der Dienstleistung für <strong>Kunde</strong>, wie im <strong>Vertrag</strong> angegeben, oder gemäß den anwendbaren Datenschutzgesetzen zulässig ist. <strong>Anbieter</strong> bestätigt, dass er die Beschränkungen dieses Absatzes versteht.
 ## 13. Definitionen {#13-definitions}
 
-1. **„Geltende Gesetze“** bezeichnet die Gesetze, Regeln, Vorschriften, Gerichtsbeschlüsse und sonstigen verbindlichen Anforderungen einer zuständigen Regierungsbehörde, die für eine Partei gelten oder für sie gelten.
+1. **„Anwendbare Gesetze“** bezeichnet die Gesetze, Regeln, Vorschriften, Gerichtsbeschlüsse und sonstigen verbindlichen Anforderungen einer zuständigen Regierungsbehörde, die für eine Partei gelten oder diese regeln.
 
-2. **„Geltende Datenschutzgesetze“** bezeichnet die geltenden Gesetze, die regeln, wie der Dienst personenbezogene Informationen, persönliche Daten, persönlich identifizierbare Informationen oder andere ähnliche Begriffe einer Person verarbeiten oder verwenden darf.
+2. **„Anwendbare Datenschutzgesetze“** bezeichnet die Anwendbaren Gesetze, die regeln, wie der Dienst personenbezogene Informationen, personenbezogene Daten, persönlich identifizierbare Informationen oder einen anderen ähnlichen Begriff verarbeiten oder verwenden darf.
 
-3. **„Verantwortlicher“** hat die in den geltenden Datenschutzgesetzen angegebene(n) Bedeutung(en) für das Unternehmen, das den Zweck und den Umfang der Verarbeitung personenbezogener Daten bestimmt.
+3. **„Verantwortlicher“** hat die Bedeutung(en), die ihm in den Anwendbaren Datenschutzgesetzen für das Unternehmen zugewiesen werden, das den Zweck und das Ausmaß der Verarbeitung personenbezogener Daten bestimmt.
 
-4. **„Deckblatt“** bezeichnet ein von den Parteien unterzeichnetes oder elektronisch akzeptiertes Dokument, das diese DPA-Standardbedingungen enthält und den <strong>Anbieter</strong>, den <strong>Kunden</strong> sowie den Gegenstand und die Einzelheiten der Datenverarbeitung identifiziert.
+4. **„Deckblatt“** bezeichnet ein Dokument, das von den Parteien unterzeichnet oder elektronisch akzeptiert wird, diese DPA-Standardbedingungen einbezieht und <strong>Provider</strong>, <strong>Customer</strong> sowie den Gegenstand und die Details der Datenverarbeitung identifiziert.
 
-5. **„Personenbezogene Daten des Kunden“** sind personenbezogene Daten, die der <strong>Kunde</strong> im Rahmen des Dienstes hochlädt oder dem <strong>Anbieter</strong> bereitstellt und die dieser Datenverarbeitungsvereinbarung unterliegen.
+5. **„Kundendaten“** bezeichnet personenbezogene Daten, die <strong>Customer</strong> im Rahmen des Dienstes an <strong>Provider</strong> hochlädt oder bereitstellt und die dieser DPA unterliegen.
 
-6. **„DPA“** bezeichnet diese DPA-Standardbedingungen, das Deckblatt zwischen <strong>Anbieter</strong> und <strong>Kunden</strong> sowie die Richtlinien und Dokumente, auf die im Deckblatt verwiesen wird oder die diesem beigefügt sind.
+6. **„DPA“** bezeichnet diese DPA-Standardbedingungen, das Deckblatt zwischen <strong>Provider</strong> und <strong>Customer</strong> sowie die in oder an das Deckblatt angehängten oder darin referenzierten Richtlinien und Dokumente.
 
-7. **„EWR-Standardvertragsklauseln“** bezeichnet die Standardvertragsklauseln im Anhang des Durchführungsbeschlusses 2021/914 der Europäischen Kommission vom 4. Juni 2021 über Standardvertragsklauseln für die Übermittlung personenbezogener Daten in Drittländer gemäß der Verordnung (EU) 2016/679 des Europäischen Parlaments und des Europäischen Rates.
+7. **„EWR-Standardvertragsklauseln (EEA SCCs)“** bezeichnet die der Durchführungsentscheidung 2021/914 der Europäischen Kommission vom 4. Juni 2021 über Standardvertragsklauseln für die Übermittlung personenbezogener Daten an Drittländer gemäß der Verordnung (EU) 2016/679 des Europäischen Parlaments und des Rates beigefügten Standardvertragsklauseln.
 
 8. **„Europäischer Wirtschaftsraum“** oder **„EWR“** bezeichnet die Mitgliedstaaten der Europäischen Union, Norwegen, Island und Liechtenstein.
 
-9. **„DSGVO“** bezeichnet die Verordnung 2016/679 der Europäischen Union, wie sie in den jeweiligen EWR-Mitgliedsstaaten durch lokales Recht umgesetzt wird.
+9. **„DSGVO“** bezeichnet die Verordnung (EU) 2016/679, wie sie durch nationales Recht im jeweiligen EWR-Mitgliedstaat umgesetzt wird.
 
-10. **„Personenbezogene Daten“** haben die Bedeutung(en), die in den geltenden Datenschutzgesetzen für persönliche Informationen, personenbezogene Daten oder andere ähnliche Begriffe festgelegt werden.
+10. **„Personenbezogene Daten“** hat die Bedeutung(en), die ihm in den Anwendbaren Datenschutzgesetzen für personenbezogene Informationen, personenbezogene Daten oder einen anderen ähnlichen Begriff zugewiesen werden.
 
-11. **„Verarbeitung“** oder **„Verarbeiten“** hat/haben die in den geltenden Datenschutzgesetzen angegebene(n) Bedeutung(en) für jede Verwendung oder Durchführung von Computeroperationen mit personenbezogenen Daten, auch mit automatischen Methoden.
+11. **„Verarbeitung“** oder **„Verarbeiten“** hat die Bedeutung(en), die ihm in den Anwendbaren Datenschutzgesetzen für jede Nutzung von oder Durchführung eines Computerverfahrens mit personenbezogenen Daten, einschließlich automatischer Verfahren, zugewiesen werden.
 
-12. **„Auftragsverarbeiter“** hat die in den geltenden Datenschutzgesetzen angegebene(n) Bedeutung(en) für das Unternehmen, das personenbezogene Daten im Auftrag des Verantwortlichen verarbeitet.
+12. **„Auftragsverarbeiter“** hat die Bedeutung(en), die ihm in den Anwendbaren Datenschutzgesetzen für das Unternehmen zugewiesen werden, das personenbezogene Daten im Auftrag des Verantwortlichen verarbeitet.
 
-13. **„Bericht“** bezeichnet Prüfberichte, die von einem anderen Unternehmen gemäß den in der Sicherheitsrichtlinie festgelegten Standards im Auftrag des Anbieters erstellt werden.
+13. **„Bericht“** bezeichnet Prüfberichte, die von einem anderen Unternehmen gemäß den im Sicherheitsleitfaden definierten Standards im Auftrag des Providers erstellt werden.
 
-14. **„Eingeschränkte Übermittlung“** bedeutet (a) sofern die DSGVO gilt, eine Übermittlung personenbezogener Daten aus dem EWR in ein Land außerhalb des EWR, das keiner Angemessenheitsfeststellung der Europäischen Kommission unterliegt; und (b) sofern die UK-DSGVO gilt, eine Übermittlung personenbezogener Daten aus dem Vereinigten Königreich in ein anderes Land, das nicht den gemäß Abschnitt 17A des britischen Datenschutzgesetzes 2018 erlassenen Angemessenheitsbestimmungen unterliegt.
+14. **„Eingeschränkte Übermittlung“** bezeichnet (a) im Anwendungsbereich der DSGVO eine Übermittlung personenbezogener Daten aus dem EWR in ein Land außerhalb des EWR, das nicht von der Europäischen Kommission als angemessen eingestuft wurde; und (b) im Anwendungsbereich des UK GDPR eine Übermittlung personenbezogener Daten aus dem Vereinigten Königreich in ein anderes Land, das nicht den Angemessenheitsregelungen gemäß Abschnitt 17A des britischen Datenschutzgesetzes 2018 unterliegt.
 
-15. **„Sicherheitsvorfall“** bezeichnet eine Verletzung des Schutzes personenbezogener Daten gemäß der Definition in Artikel 4 der DSGVO.
+15. **„Sicherheitsvorfall“** bezeichnet eine Verletzung des Schutzes personenbezogener Daten im Sinne von Artikel 4 der DSGVO.
 
-16. **„Dienstleistung“** bezeichnet das in der <strong>Vereinbarung</strong> beschriebene Produkt und/oder die beschriebenen Dienstleistungen.
+16. **„Dienst“** bezeichnet das im <strong>Vertrag</strong> beschriebene Produkt und/oder die beschriebenen Dienstleistungen.
 
-17. **„Daten besonderer Kategorien“** haben die in Artikel 9 der DSGVO angegebene Bedeutung.
+17. **„Besondere Kategorien von Daten“** hat die Bedeutung, die ihm in Artikel 9 der DSGVO zugewiesen wird.
 
-18. **„Unterauftragsverarbeiter“** hat die in den geltenden Datenschutzgesetzen angegebene(n) Bedeutung(en) für ein Unternehmen, das mit Genehmigung und Zustimmung des Verantwortlichen den Auftragsverarbeiter bei der Verarbeitung personenbezogener Daten im Auftrag des Verantwortlichen unterstützt.
+18. **„Unterauftragsverarbeiter“** hat die Bedeutung(en), die ihm in den Anwendbaren Datenschutzgesetzen für ein Unternehmen zugewiesen werden, das mit Zustimmung und Annahme des Verantwortlichen den Auftragsverarbeiter bei der Verarbeitung personenbezogener Daten im Auftrag des Verantwortlichen unterstützt.
 
-19. **„UK GDPR“** bezeichnet die Verordnung 2016/679 der Europäischen Union, wie sie im Vereinigten Königreich durch Abschnitt 3 des European Union (Withdrawal) Act des Vereinigten Königreichs von 2018 umgesetzt wird.
+19. **„UK GDPR“** bezeichnet die Verordnung (EU) 2016/679, wie sie durch Abschnitt 3 des britischen European Union (Withdrawal) Act von 2018 im Vereinigten Königreich umgesetzt wird.
 
-20. **„UK-Nachtrag“** bezeichnet den Nachtrag zum internationalen Datentransfer zu den Standardvertragsklauseln des EWR, der vom Information Commissioner für Parteien herausgegeben wird, die eingeschränkte Transfers gemäß S119A(1) Data Protection Act 2018 vornehmen.
+20. **„UK Zusatzvereinbarung“** bezeichnet die internationale Zusatzvereinbarung zu den EWR-Standardvertragsklauseln, die vom Information Commissioner für Parteien herausgegeben wurde, die Eingeschränkte Übermittlungen gemäß S119A(1) des britischen Datenschutzgesetzes 2018 vornehmen.
 
-## Guthaben {#credits}
 
-Dieses Dokument ist eine Ableitung von [Gemeinsame Standardbedingungen für das DPA-Papier (Version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) und ist unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) lizenziert.
+## Credits {#credits}
+
+Dieses Dokument ist eine Ableitung der [Common Paper DPA Standard Terms (Version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) und steht unter der Lizenz [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

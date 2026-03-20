@@ -1,68 +1,73 @@
-# Listmonk 带有转发电子邮件功能，可安全发送新闻稿 {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+# 使用 Forward Email 的 Listmonk 实现安全的新闻通讯发送 {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+
 
 ## 目录 {#table-of-contents}
 
 * [概述](#overview)
-* [为什么使用 Listmonk 和转发电子邮件](#why-listmonk-and-forward-email)
+* [为什么选择 Listmonk 和 Forward Email](#why-listmonk-and-forward-email)
 * [先决条件](#prerequisites)
 * [安装](#installation)
-  * [1.更新您的服务器](#1-update-your-server)
-  * [2.安装依赖项](#2-install-dependencies)
-  * [3.下载Listmonk配置](#3-download-listmonk-configuration)
-  * [4.配置防火墙（UFW）](#4-configure-firewall-ufw)
-  * [5.配置HTTPS访问](#5-configure-https-access)
+  * [1. 更新服务器](#1-update-your-server)
+  * [2. 安装依赖](#2-install-dependencies)
+  * [3. 下载 Listmonk 配置](#3-download-listmonk-configuration)
+  * [4. 配置防火墙 (UFW)](#4-configure-firewall-ufw)
+  * [5. 配置 HTTPS 访问](#5-configure-https-access)
   * [6. 启动 Listmonk](#6-start-listmonk)
-  * [7. 在 Listmonk 中配置转发电子邮件 SMTP](#7-configure-forward-email-smtp-in-listmonk)
-  * [8. 配置退回处理](#8-configure-bounce-processing)
+  * [7. 在 Listmonk 中配置 Forward Email SMTP](#7-configure-forward-email-smtp-in-listmonk)
+  * [8. 配置退信处理](#8-configure-bounce-processing)
 * [测试](#testing)
   * [创建邮件列表](#create-a-mailing-list)
   * [添加订阅者](#add-subscribers)
-  * [创建并发送营销活动](#create-and-send-a-campaign)
-* [确认](#verification)
+  * [创建并发送活动](#create-and-send-a-campaign)
+* [验证](#verification)
 * [开发者笔记](#developer-notes)
-* [结论](#conclusion)
+* [总结](#conclusion)
 
-## 概览 {#overview}
 
-本指南为开发者提供分步说明，指导他们如何设置 [Listmonk](https://listmonk.app/)（一款功能强大的开源新闻通讯和邮件列表管理器），并使用 [转发电子邮件](https://forwardemail.net/) 作为其 SMTP 提供商。这种组合让您能够有效地管理营销活动，同时确保电子邮件的安全、私密和可靠。
+## 概述 {#overview}
 
-* **Listmonk**：处理订阅者管理、列表组织、活动创建和绩效跟踪。
-* **转发电子邮件**：充当安全的 SMTP 服务器，使用内置安全功能（如 SPF、DKIM、DMARC 和 TLS 加密）处理电子邮件的实际发送。
+本指南为开发者提供了使用 [Listmonk](https://listmonk.app/)（一个强大的开源新闻通讯和邮件列表管理器）结合 [Forward Email](https://forwardemail.net/) 作为 SMTP 提供商的逐步设置说明。此组合让您能够有效管理活动，同时确保邮件发送的安全、私密和可靠。
 
-通过整合这两者，您可以完全控制您的数据和基础设施，同时利用 Forward Email 强大的交付系统。
+* **Listmonk**：负责订阅者管理、列表组织、活动创建和性能跟踪。
+* **Forward Email**：作为安全的 SMTP 服务器，处理邮件的实际发送，内置 SPF、DKIM、DMARC 和 TLS 加密等安全功能。
 
-## 为什么使用 Listmonk 并转发电子邮件 {#why-listmonk-and-forward-email}
+通过整合这两者，您可以完全控制自己的数据和基础设施，同时利用 Forward Email 强大的投递系统。
 
-* **开源**：Listmonk 和 Forward Email 背后的原则都强调透明度和控制力。您可以自行托管 Listmonk，拥有自己的数据。
-* **注重隐私**：Forward Email 以隐私为核心，最大限度地减少数据保留，并专注于安全传输。
-* **经济高效**：Listmonk 完全免费，Forward Email 提供丰富的免费套餐和价格实惠的付费方案，使其成为一款经济实惠的解决方案。
-* **可扩展性**：Listmonk 性能卓越，Forward Email 的基础架构专为大规模可靠交付而设计。
-* **开发者友好**：Listmonk 提供强大的 API，Forward Email 提供便捷的 SMTP 集成和 Webhook。
+
+## 为什么选择 Listmonk 和 Forward Email {#why-listmonk-and-forward-email}
+
+* **开源**：Listmonk 和 Forward Email 背后的理念都强调透明和控制。您自行托管 Listmonk，拥有自己的数据。
+* **注重隐私**：Forward Email 以隐私为核心，最小化数据保留，专注于安全传输。
+* **成本效益**：Listmonk 免费，Forward Email 提供慷慨的免费额度和实惠的付费计划，是经济实惠的解决方案。
+* **可扩展性**：Listmonk 性能优异，Forward Email 的基础设施设计用于大规模可靠投递。
+* **开发者友好**：Listmonk 提供强大的 API，Forward Email 提供简洁的 SMTP 集成和 Webhook 支持。
+
 
 ## 先决条件 {#prerequisites}
 
-开始之前，请确保您已准备好以下内容：
+开始之前，请确保您具备以下条件：
 
-* 一台运行最新 Linux 发行版（推荐 Ubuntu 20.04+）的虚拟专用服务器 (VPS)，至少配备 1 个 CPU 和 1GB 内存（推荐 2GB）。
-* 需要提供商？请查看 [推荐VPS列表](https://github.com/forwardemail/awesome-mail-server-providers)。
-* 一个您控制的域名（需要 DNS 访问权限）。
-* 一个拥有 [转发电子邮件](https://forwardemail.net/) 权限的有效账户。
-* 拥有 VPS 的 Root 权限或 `sudo` 权限。
-* 熟悉 Linux 命令行操作。
+* 一台运行较新 Linux 发行版（推荐 Ubuntu 20.04+）的虚拟专用服务器（VPS），至少 1 个 CPU 和 1GB 内存（推荐 2GB）。
+  * 需要提供商？查看 [推荐 VPS 列表](https://github.com/forwardemail/awesome-mail-server-providers)。
+* 您控制的域名（需要 DNS 访问权限）。
+* 一个有效的 [Forward Email](https://forwardemail.net/) 账户。
+* VPS 的 root 或 `sudo` 权限。
+* 基本的 Linux 命令行操作知识。
+
 
 ## 安装 {#installation}
 
-这些步骤指导您在 VPS 上使用 Docker 和 Docker Compose 安装 Listmonk。
+以下步骤指导您在 VPS 上使用 Docker 和 Docker Compose 安装 Listmonk。
 
-### 1. 更新您的服务器 {#1-update-your-server}
+### 1. 更新服务器 {#1-update-your-server}
 
-确保系统的软件包列表和已安装的软件包都是最新的。
+确保系统的软件包列表和已安装的软件包是最新的。
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2. 安装依赖项 {#2-install-dependencies}
+### 2. 安装依赖 {#2-install-dependencies}
 
 安装 Docker、Docker Compose 和 UFW（简单防火墙）。
 
@@ -72,18 +77,17 @@ sudo apt install -y docker.io docker-compose ufw
 
 ### 3. 下载 Listmonk 配置 {#3-download-listmonk-configuration}
 
-为 Listmonk 创建一个目录并下载官方 `docker-compose.yml` 文件。
+创建 Listmonk 目录并下载官方的 `docker-compose.yml` 文件。
 
 ```bash
 mkdir listmonk && cd listmonk
 curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/master/docker-compose.yml
 ```
 
-该文件定义了 Listmonk 应用程序容器及其所需的 PostgreSQL 数据库容器。
+该文件定义了 Listmonk 应用容器及其所需的 PostgreSQL 数据库容器。
+### 4. 配置防火墙 (UFW) {#4-configure-firewall-ufw}
 
-### 4. 配置防火墙（UFW）{#4-configure-firewall-ufw}
-
-允许必要的流量（SSH、HTTP、HTTPS）通过防火墙。如果您的 SSH 在非标准端口上运行，请进行相应调整。
+允许必要的流量（SSH、HTTP、HTTPS）通过防火墙。如果你的 SSH 使用非标准端口，请相应调整。
 
 ```bash
 sudo ufw allow ssh
@@ -92,146 +96,144 @@ sudo ufw allow https
 sudo ufw enable
 ```
 
-出现提示时确认启用防火墙。
+在提示时确认启用防火墙。
 
 ### 5. 配置 HTTPS 访问 {#5-configure-https-access}
 
-通过 HTTPS 运行 Listmonk 对安全性至关重要。您有两个主要选项：
+通过 HTTPS 运行 Listmonk 对安全性至关重要。你有两个主要选项：
 
-#### 选项 A：使用 Cloudflare 代理（为简单起见推荐）{#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### 选项 A：使用 Cloudflare 代理（推荐，简单易用） {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-如果您的域名的 DNS 由 Cloudflare 管理，您可以利用其代理功能轻松实现 HTTPS。
+如果你的域名 DNS 由 Cloudflare 管理，可以利用他们的代理功能轻松实现 HTTPS。
 
-1. **指向 DNS**：在 Cloudflare 中为您的 Listmonk 子域名（例如 `listmonk.yourdomain.com`）创建一条指向您 VPS IP 地址的 `A` 记录。确保**代理状态**设置为**已代理**（橙色云）。
-2. **修改 Docker Compose**：编辑您下载的 `docker-compose.yml` 文件：
-```bash
+1. **指向 DNS**：在 Cloudflare 中为你的 Listmonk 子域（例如 `listmonk.yourdomain.com`）创建一个 `A` 记录，指向你的 VPS IP 地址。确保 **代理状态** 设置为 **已代理**（橙色云朵）。
+2. **修改 Docker Compose**：编辑你下载的 `docker-compose.yml` 文件：
+   ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-这将使 Listmonk 能够在端口 80 上内部访问，然后 Cloudflare 可以使用代理并使用 HTTPS 进行安全保护。
+   这样 Listmonk 在内部将通过端口 80 访问，Cloudflare 可以代理该端口并通过 HTTPS 保护。
 
-#### 选项 B：使用反向代理（Nginx、Caddy 等）{#option-b-using-a-reverse-proxy-nginx-caddy-etc}
+#### 选项 B：使用反向代理（Nginx、Caddy 等） {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
-或者，您可以在 VPS 上设置像 Nginx 或 Caddy 这样的反向代理来处理对 Listmonk 的 HTTPS 终止和代理请求（默认在端口 9000 上运行）。
+或者，你可以在 VPS 上设置反向代理（如 Nginx 或 Caddy）来处理 HTTPS 终止，并将请求代理到默认运行在端口 9000 的 Listmonk。
 
-* 保留 `docker-compose.yml` 中的默认 `ports: - "127.0.0.1:9000:9000"`，以确保 Listmonk 只能在本地访问。
-* 配置您选择的反向代理，使其监听端口 80 和 443，处理 SSL 证书获取（例如，通过 Let's Encrypt 获取），并将流量转发到 `http://127.0.0.1:9000`。
-* 详细的反向代理设置超出了本指南的范围，但网上有很多教程可供参考。
+* 保持 `docker-compose.yml` 中默认的 `ports: - "127.0.0.1:9000:9000"`，确保 Listmonk 仅在本地可访问。
+* 配置你选择的反向代理监听端口 80 和 443，处理 SSL 证书获取（例如通过 Let's Encrypt），并将流量转发到 `http://127.0.0.1:9000`。
+* 详细的反向代理设置超出本指南范围，但网上有许多教程可供参考。
 
 ### 6. 启动 Listmonk {#6-start-listmonk}
 
-导航回您的 `listmonk` 目录（如果您尚未到达该目录）并以分离模式启动容器。
+返回你的 `listmonk` 目录（如果你还不在该目录），并以后台模式启动容器。
 
 ```bash
-cd ~/listmonk # Or the directory where you saved docker-compose.yml
+cd ~/listmonk # 或你保存 docker-compose.yml 的目录
 docker compose up -d
 ```
 
-Docker 将下载必要的镜像并启动 Listmonk 应用程序和数据库容器。首次启动可能需要一两分钟。
+Docker 会下载所需镜像并启动 Listmonk 应用和数据库容器。首次启动可能需要一两分钟。
 
-✅ **访问 Listmonk**：您现在应该能够通过您配置的域（例如，`https://listmonk.yourdomain.com`）访问 Listmonk 网络界面。
+✅ **访问 Listmonk**：现在你应该可以通过配置的域名访问 Listmonk 网页界面（例如 `https://listmonk.yourdomain.com`）。
 
-### 7. 在 Listmonk 中配置转发电子邮件 SMTP {#7-configure-forward-email-smtp-in-listmonk}
+### 7. 在 Listmonk 中配置 Forward Email SMTP {#7-configure-forward-email-smtp-in-listmonk}
 
-接下来，配置 Listmonk 使用您的转发电子邮件帐户发送电子邮件。
+接下来，配置 Listmonk 使用你的 Forward Email 账户发送邮件。
 
-1. **在“转发邮件”中启用 SMTP**：确保您已在“转发邮件”账户信息中心中生成 SMTP 凭据。如果您尚未执行此操作，请按照 [转发电子邮件指南，通过 SMTP 发送带有自定义域的电子邮件](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) 操作。
-2. **配置 Listmonk**：登录您的 Listmonk 管理面板。
-* 前往**设置 -> SMTP**。
+1. **启用 Forward Email SMTP**：确保你已在 Forward Email 账户仪表盘生成 SMTP 凭据。如果还没有，请参阅 [Forward Email 使用自定义域通过 SMTP 发送邮件指南](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp)。
+2. **配置 Listmonk**：登录你的 Listmonk 管理面板。
+   * 进入 **设置 -> SMTP**。
 
-* Listmonk 内置了“转发邮件”功能。请从提供商列表中选择“转发邮件”，或手动输入以下详细信息：
+   * Listmonk 内置支持 Forward Email。你可以从提供商列表中选择 **ForwardEmail**，或者手动输入以下信息：
 
-| 环境 | 价值 |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------ |
-| **主持人** | `smtp.forwardemail.net` |
-| **港口** | `465` |
-| **授权协议** | `LOGIN` |
-| **用户名** | 您的转发电子邮件**SMTP 用户名** |
-| **密码** | 您的转发电子邮件**SMTP 密码** |
-| **TLS** | `SSL/TLS` |
-| **来自电子邮件** | 您想要的 `From` 地址（例如 `newsletter@yourdomain.com`）。请确保在“转发电子邮件”中配置了此域名。 |
+     | 设置             | 值                                                                                                                  |
+     | :--------------- | :------------------------------------------------------------------------------------------------------------------ |
+     | **主机**         | `smtp.forwardemail.net`                                                                                             |
+     | **端口**         | `465`                                                                                                               |
+     | **认证协议**     | `LOGIN`                                                                                                             |
+     | **用户名**       | 你的 Forward Email **SMTP 用户名**                                                                                  |
+     | **密码**         | 你的 Forward Email **SMTP 密码**                                                                                     |
+     | **TLS**          | `SSL/TLS`                                                                                                           |
+     | **发件邮箱**     | 你想使用的 `From` 地址（例如 `newsletter@yourdomain.com`）。确保该域名已在 Forward Email 中配置。                      |
+* **重要**：始终使用端口 `465` 和 `SSL/TLS` 以确保与 Forward Email 的安全连接（推荐）。端口 `587` 和 STARTTLS 也受支持，但优先使用 SSL/TLS。
 
-* **重要提示**：请务必使用端口 `465` 和 `SSL/TLS` 来建立转发邮件的安全连接。请勿使用 STARTTLS（端口 587）。
+   * 点击 **保存**。
+3. **发送测试邮件**：在 SMTP 设置页面使用“发送测试邮件”按钮。输入一个您可以访问的收件人地址，点击 **发送**。确认邮件已到达收件人的收件箱。
 
-* 点击**保存**。
-3. **发送测试邮件**：使用 SMTP 设置页面中的“发送测试邮件”按钮。输入您可以访问的收件人地址，然后点击**发送**。验证邮件是否到达收件人的收件箱。
+### 8. 配置退信处理 {#8-configure-bounce-processing}
 
-### 8. 配置退回处理 {#8-configure-bounce-processing}
+退信处理允许 Listmonk 自动处理无法投递的邮件（例如，因地址无效）。Forward Email 提供了一个 webhook 来通知 Listmonk 有关退信的信息。
 
-退回处理功能允许 Listmonk 自动处理无法投递的邮件（例如，由于地址无效）。“转发邮件”提供了一个 Webhook，用于通知 Listmonk 邮件退回的情况。
+#### Forward Email 设置 {#forward-email-setup}
 
-#### 转发电子邮件设置 {#forward-email-setup}
-
-1. 登录您的 [转发电子邮件仪表板](https://forwardemail.net/)。
-2. 导航至“域”，选择您用于发送邮件的域，然后进入其“设置”页面。
-3. 向下滚动到“反弹 Webhook URL”部分。
-4. 输入以下 URL，将 `<your_listmonk_domain>` 替换为您的 Listmonk 实例可访问的实际域或子域：
-```sh
+1. 登录您的 [Forward Email 控制面板](https://forwardemail.net/)。
+2. 进入 **Domains**，选择您用于发送的域名，进入其 **Settings** 页面。
+3. 向下滚动到 **Bounce Webhook URL** 部分。
+4. 输入以下 URL，将 `<your_listmonk_domain>` 替换为您的 Listmonk 实例可访问的实际域名或子域名：
+   ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
-*示例*：`https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-5. 进一步向下滚动到“Webhook 签名负载验证密钥”部分。
-6. **复制**生成的验证密钥。您将在 Listmonk 中需要此密钥。
-7. 保存“转发电子邮件”域设置中的更改。
+   *示例*：`https://listmonk.yourdomain.com/webhooks/service/forwardemail`
+5. 继续向下滚动到 **Webhook Signature Payload Verification Key** 部分。
+6. **复制**生成的验证密钥。您将在 Listmonk 中使用它。
+7. 保存 Forward Email 域名设置中的更改。
 
 #### Listmonk 设置 {#listmonk-setup}
 
-1. 在您的 Listmonk 管理面板中，导航至“设置”->“退回”。
-2. 启用“启用退回处理”。
-3. 启用“启用退回 webhook”。
-4. 向下滚动到“Webhook 提供程序”部分。
-5. 启用“转发电子邮件”。
-6. 将您从“转发电子邮件”仪表板复制的“Webhook 签名负载验证密钥”粘贴到“转发电子邮件密钥”字段中。
-7. 点击页面底部的“保存”。
-8. 退回处理现已配置完毕！当“转发电子邮件”检测到 Listmonk 发送的电子邮件被退回时，它将通过 webhook 通知您的 Listmonk 实例，Listmonk 会相应地标记订阅者。
-9. 在 [测试](#testing) 中完成以下步骤，以确保一切正常。
+1. 在您的 Listmonk 管理面板中，导航到 **Settings -> Bounces**。
+2. 启用 **启用退信处理**。
+3. 启用 **启用退信 webhook**。
+4. 向下滚动到 **Webhook Providers** 部分。
+5. 启用 **Forward Email**。
+6. 将您从 Forward Email 控制面板复制的 **Webhook Signature Payload Verification Key** 粘贴到 **Forward Email Key** 字段。
+7. 点击页面底部的 **保存**。
+8. 退信处理现已配置完成！当 Forward Email 检测到 Listmonk 发送的邮件退信时，会通过 webhook 通知您的 Listmonk 实例，Listmonk 会相应地标记订阅者。
+9. 按照下面的 [测试](#testing) 步骤完成，确保一切正常。
 
 ## 测试 {#testing}
 
-以下是 Listmonk 核心功能的简要概述：
+以下是 Listmonk 核心功能的快速概览：
 
 ### 创建邮件列表 {#create-a-mailing-list}
 
-* 前往侧边栏的**列表**。
-* 点击**新建列表**。
-* 填写详细信息（名称、类型：公开/私密、描述、标签）并**保存**。
+* 进入侧边栏的 **Lists**。
+* 点击 **新建列表**。
+* 填写详细信息（名称、类型：公开/私密、描述、标签），然后 **保存**。
 
 ### 添加订阅者 {#add-subscribers}
 
-* 导航至“订阅者”部分。
+* 导航到 **Subscribers** 部分。
 * 您可以添加订阅者：
-* **手动**：点击“新建订阅者”。
-* **导入**：点击“导入订阅者”上传 CSV 文件。
-* **API**：使用 Listmonk API 进行编程添加。
-* 在创建或导入期间将订阅者分配到一个或多个列表。
-* **最佳实践**：使用双重确认流程。请在“设置”->“确认加入和订阅”下进行配置。
+  * **手动**：点击 **新建订阅者**。
+  * **导入**：点击 **导入订阅者** 上传 CSV 文件。
+  * **API**：使用 Listmonk API 进行程序化添加。
+* 在创建或导入时，将订阅者分配到一个或多个列表。
+* **最佳实践**：使用双重确认流程。可在 **Settings -> Opt-in & Subscriptions** 中配置。
 
 ### 创建并发送活动 {#create-and-send-a-campaign}
 
-* 前往 **营销活动** -> **新建营销活动**。
-* 填写营销活动详情（名称、主题、发件人邮箱、收件人列表）。
+* 进入 **Campaigns** -> **新建活动**。
+* 填写活动详情（名称、主题、发件邮箱、发送列表）。
 * 选择内容类型（富文本/HTML、纯文本、原始 HTML）。
-* 撰写电子邮件内容。您可以使用模板变量，例如 `{{ .Subscriber.Email }}` 或 `{{ .Subscriber.FirstName }}`。
-* **请务必先发送测试邮件！** 使用“发送测试”选项在收件箱中预览邮件。
-* 满意后，点击 **开始营销活动** 立即发送或安排稍后发送。
+* 撰写邮件内容。您可以使用模板变量，如 `{{ .Subscriber.Email }}` 或 `{{ .Subscriber.FirstName }}`。
+* **务必先发送测试邮件！** 使用“发送测试”选项在收件箱预览邮件。
+* 满意后，点击 **开始活动** 立即发送或安排稍后发送。
 
 ## 验证 {#verification}
 
-* **SMTP 投递**：定期通过 Listmonk 的 SMTP 设置页面发送测试邮件，并测试邮件发送情况，以确保邮件正确投递。
-* **退回处理**：向已知无效的电子邮件地址发送测试邮件（例如，如果您手边没有真实的电子邮件地址，可以发送 `bounce-test@yourdomain.com`，但结果可能会有所不同）。过一会儿，在 Listmonk 中查看邮件发送情况统计信息，看看是否出现退回邮件。
-* **邮件标头**：使用 [邮件测试器](https://www.mail-tester.com/) 等工具或手动检查邮件标头，验证 SPF、DKIM 和 DMARC 是否通过，这表明“转发邮件”设置正确。
-* **转发邮件日志**：如果您怀疑投递问题源自 SMTP 服务器，请检查“转发邮件”仪表板日志。
+* **SMTP 发送**：定期通过 Listmonk 的 SMTP 设置页面和测试活动发送测试邮件，确保邮件正确投递。
+* **退信处理**：向一个已知无效的邮箱地址发送测试活动（例如，如果没有真实地址，可用 `bounce-test@yourdomain.com`，但结果可能不同）。稍后检查 Listmonk 中的活动统计，确认是否记录了退信。
+* **邮件头验证**：使用 [Mail-Tester](https://www.mail-tester.com/) 等工具或手动检查邮件头，验证 SPF、DKIM 和 DMARC 是否通过，确认通过 Forward Email 正确设置。
+* **Forward Email 日志**：如果怀疑 SMTP 服务器导致投递问题，请检查 Forward Email 控制面板的日志。
+## 开发者说明 {#developer-notes}
 
-## 开发者笔记 {#developer-notes}
-
-* **模板**：Listmonk 使用 Go 的模板引擎。探索其文档，了解高级个性化设置：`{{ .Subscriber.Attribs.your_custom_field }}`。
-* **API**：Listmonk 提供全面的 REST API，用于管理列表、订阅者、活动、模板等。API 文档链接位于 Listmonk 实例的页脚中。
-* **自定义字段**：在“设置”->“订阅者字段”下定义自定义订阅者字段，以存储其他数据。
-* **Webhook**：除了退回邮件，Listmonk 还可以为其他事件（例如订阅）发送 Webhook，从而实现与其他系统集成。
+* **模板引擎**：Listmonk 使用 Go 的模板引擎。探索其文档以实现高级个性化：`{{ .Subscriber.Attribs.your_custom_field }}`。
+* **API**：Listmonk 提供了全面的 REST API，用于管理列表、订阅者、活动、模板等。API 文档链接位于您的 Listmonk 实例页脚。
+* **自定义字段**：在 **设置 -> 订阅者字段** 下定义自定义订阅者字段以存储额外数据。
+* **Webhook**：除了退信，Listmonk 还可以为其他事件（例如订阅）发送 webhook，便于与其他系统集成。
 
 ## 结论 {#conclusion}
 
-通过将 Listmonk 的自托管功能与 Forward Email 的安全、尊重隐私的交付功能相结合，您可以创建一个强大且符合道德规范的电子邮件营销平台。您可以完全掌控您的受众数据，同时享受高送达率和自动化安全功能。
+通过将自托管的 Listmonk 强大功能与 Forward Email 安全且尊重隐私的投递相结合，您打造了一个强大且合乎道德的电子邮件营销平台。您完全拥有受众数据的所有权，同时享受高投递率和自动化安全功能。
 
-此设置提供了一种可扩展、经济高效且开发人员友好的专有电子邮件服务替代方案，完全符合开源软件和用户隐私的精神。
+此方案提供了一个可扩展、经济高效且开发者友好的替代专有电子邮件服务的选择，完美契合开源软件和用户隐私的理念。
 
-发送愉快！🚀
+祝发送愉快！🚀

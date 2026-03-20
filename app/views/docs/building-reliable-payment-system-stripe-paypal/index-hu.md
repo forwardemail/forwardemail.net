@@ -1,56 +1,58 @@
-# Hogyan építettünk fel egy robusztus fizetési rendszert a Stripe és a PayPal segítségével: Trifecta megközelítés {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Hogyan építettünk ki egy robusztus fizetési rendszert Stripe és PayPal segítségével: Egy trifecta megközelítés {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
 <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [A kihívás: Több fizetési processzor, egyetlen igazságforrás](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [A Trifecta megközelítés: A megbízhatóság három rétege](#the-trifecta-approach-three-layers-of-reliability)
-* [1. réteg: Pénztár utáni átirányítások](#layer-1-post-checkout-redirects)
-  * [Stripe pénztár implementáció](#stripe-checkout-implementation)
+* [A kihívás: Több fizetési feldolgozó, egyetlen igazságforrás](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [A trifecta megközelítés: Három megbízhatósági réteg](#the-trifecta-approach-three-layers-of-reliability)
+* [1. réteg: Vásárlás utáni átirányítások](#layer-1-post-checkout-redirects)
+  * [Stripe Checkout megvalósítás](#stripe-checkout-implementation)
   * [PayPal fizetési folyamat](#paypal-payment-flow)
-* [2. réteg: Webhook-kezelők aláírás-ellenőrzéssel](#layer-2-webhook-handlers-with-signature-verification)
-  * [Stripe webhook implementáció](#stripe-webhook-implementation)
-  * [PayPal webhook implementáció](#paypal-webhook-implementation)
-* [3. réteg: Automatizált feladatok Bree-vel](#layer-3-automated-jobs-with-bree)
-  * [Előfizetés pontosságának ellenőrzője](#subscription-accuracy-checker)
-  * [PayPal előfizetés szinkronizálása](#paypal-subscription-synchronization)
-* [Edge esetek kezelése](#handling-edge-cases)
-  * [Csalásészlelés és -megelőzés](#fraud-detection-and-prevention)
-  * [Vitarendezés](#dispute-handling)
-* [Kód újrafelhasználása: KISS és DRY alapelvek](#code-reuse-kiss-and-dry-principles)
-* [VISA előfizetési követelmények végrehajtása](#visa-subscription-requirements-implementation)
-  * [Automatikus megújítás előtti e-mail értesítések](#automated-pre-renewal-email-notifications)
-  * [Edge esetek kezelése](#handling-edge-cases-1)
-  * [Próbaidőszakok és előfizetési feltételek](#trial-periods-and-subscription-terms)
-* [Konklúzió: A Trifecta megközelítésünk előnyei](#conclusion-the-benefits-of-our-trifecta-approach)
+* [2. réteg: Webhook kezelők aláírás ellenőrzéssel](#layer-2-webhook-handlers-with-signature-verification)
+  * [Stripe webhook megvalósítás](#stripe-webhook-implementation)
+  * [PayPal webhook megvalósítás](#paypal-webhook-implementation)
+* [3. réteg: Automatikus feladatok Bree-vel](#layer-3-automated-jobs-with-bree)
+  * [Előfizetés pontosság ellenőrző](#subscription-accuracy-checker)
+  * [PayPal előfizetés szinkronizáció](#paypal-subscription-synchronization)
+* [Szélsőséges esetek kezelése](#handling-edge-cases)
+  * [Csalásfelderítés és megelőzés](#fraud-detection-and-prevention)
+  * [Vita kezelése](#dispute-handling)
+* [Kód újrafelhasználás: KISS és DRY elvek](#code-reuse-kiss-and-dry-principles)
+* [VISA előfizetési követelmények megvalósítása](#visa-subscription-requirements-implementation)
+  * [Automatikus megújítás előtti email értesítések](#automated-pre-renewal-email-notifications)
+  * [Szélsőséges esetek kezelése](#handling-edge-cases-1)
+  * [Próbaidők és előfizetési feltételek](#trial-periods-and-subscription-terms)
+* [Összegzés: A trifecta megközelítés előnyei](#conclusion-the-benefits-of-our-trifecta-approach)
+
 
 ## Előszó {#foreword}
 
-A Forward Emailnél mindig is prioritásként kezeltük a megbízható, pontos és felhasználóbarát rendszerek létrehozását. Amikor a fizetésfeldolgozó rendszerünk megvalósítására került a sor, tudtuk, hogy egy olyan megoldásra van szükségünk, amely több fizetésfeldolgozót is képes kezelni, miközben tökéletes adatkonzisztenciát biztosít. Ez a blogbejegyzés részletezi, hogyan integrálta fejlesztőcsapatunk a Stripe-ot és a PayPalt egy trifecta megközelítéssel, amely 1:1 valós idejű pontosságot biztosít a teljes rendszerünkben.
+A Forward Email-nél mindig is elsődleges célunk volt megbízható, pontos és felhasználóbarát rendszerek létrehozása. Amikor a fizetési feldolgozó rendszerünk megvalósítására került sor, tudtuk, hogy olyan megoldásra van szükségünk, amely képes több fizetési feldolgozó kezelésére, miközben tökéletes adatkonzisztenciát tart fenn. Ez a blogbejegyzés részletezi, hogyan integrálta fejlesztőcsapatunk a Stripe-ot és a PayPalt egy trifecta megközelítéssel, amely 1:1 valós idejű pontosságot biztosít az egész rendszerünkben.
 
-## A kihívás: Több fizetési processzor, egyetlen igazságforrás {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Adatvédelem-központú e-mail szolgáltatásként fizetési lehetőségeket szerettünk volna biztosítani felhasználóinknak. Vannak, akik a Stripe-on keresztüli bankkártyás fizetés egyszerűségét részesítik előnyben, míg mások a PayPal által biztosított további elkülönítési réteget értékelik. Több fizetési processzor támogatása azonban jelentős bonyolultságot okoz:
+## A kihívás: Több fizetési feldolgozó, egyetlen igazságforrás {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-1. Hogyan biztosítjuk az adatok konzisztenciáját a különböző fizetési rendszerek között?
+Adatvédelmi fókuszú email szolgáltatóként szerettünk volna fizetési lehetőségeket kínálni felhasználóinknak. Egyesek a Stripe-on keresztüli bankkártyás fizetés egyszerűségét részesítik előnyben, míg mások értékelik a PayPal által nyújtott további elkülönítési réteget. Azonban több fizetési feldolgozó támogatása jelentős bonyolultságot hoz magával:
 
-2. Hogyan kezeljük a szélsőséges eseteket, például a vitákat, visszatérítéseket vagy sikertelen fizetéseket?
+1. Hogyan biztosítsuk az adatok konzisztenciáját a különböző fizetési rendszerek között?
+2. Hogyan kezeljük a szélsőséges eseteket, mint a viták, visszatérítések vagy sikertelen fizetések?
+3. Hogyan tartsunk fenn egyetlen igazságforrást az adatbázisunkban?
 
-3. Hogyan tartsuk fenn az adatok egyetlen, megbízható forrását az adatbázisunkban?
+Megoldásunk az úgynevezett "trifecta megközelítés" bevezetése volt – egy háromrétegű rendszer, amely redundanciát biztosít és garantálja az adatkonzisztenciát bármi történjék is.
 
-A megoldásunk az úgynevezett „trifecta megközelítés” bevezetése volt – egy háromrétegű rendszer, amely redundanciát biztosít, és garantálja az adatok konzisztenciáját, bármi is történjen.
 
-## A Trifecta megközelítés: A megbízhatóság három rétege {#the-trifecta-approach-three-layers-of-reliability}
+## A trifecta megközelítés: Három megbízhatósági réteg {#the-trifecta-approach-three-layers-of-reliability}
 
-Fizetési rendszerünk három kritikus összetevőből áll, amelyek együttesen biztosítják a tökéletes adatszinkronizációt:
+Fizetési rendszerünk három kritikus összetevőből áll, amelyek együttműködve biztosítják a tökéletes adat szinkronizációt:
 
-1. **Pénztár utáni átirányítások** – Fizetési információk rögzítése közvetlenül a fizetés után
-2. **Webhook-kezelők** – Valós idejű események feldolgozása a fizetésfeldolgozóktól
-3. **Automatizált feladatok** – Fizetési adatok időszakos ellenőrzése és egyeztetése
+1. **Vásárlás utáni átirányítások** – A fizetési információk azonnali rögzítése a vásárlás után
+2. **Webhook kezelők** – Valós idejű események feldolgozása a fizetési feldolgozóktól
+3. **Automatikus feladatok** – Időszakos ellenőrzés és egyeztetés a fizetési adatok között
 
-Merüljünk el az egyes komponensekben, és nézzük meg, hogyan működnek együtt.
+Nézzük meg részletesen az egyes összetevőket és működésüket.
 
 ```mermaid
 flowchart TD
@@ -111,14 +113,13 @@ flowchart TD
     class Stripe,PayPal,StripeWebhook,PayPalWebhook,BreeScheduler secondary;
     class FraudCheck,DisputeHandler tertiary;
 ```
+## 1. réteg: Vásárlás utáni átirányítások {#layer-1-post-checkout-redirects}
 
-## 1. réteg: Pénztár utáni átirányítások {#layer-1-post-checkout-redirects}
+A háromlépcsős megközelítésünk első rétege közvetlenül a felhasználó fizetésének befejezése után történik. Mind a Stripe, mind a PayPal biztosít mechanizmusokat arra, hogy a felhasználókat tranzakciós információkkal visszairányítsák a weboldalunkra.
 
-A trifecta megközelítésünk első rétege közvetlenül azután történik, hogy a felhasználó végrehajtott egy fizetést. Mind a Stripe, mind a PayPal olyan mechanizmusokat kínál, amelyekkel a felhasználókat tranzakciós információkkal visszairányíthatjuk oldalunkra.
+### Stripe Checkout megvalósítás {#stripe-checkout-implementation}
 
-### Stripe fizetési implementáció {#stripe-checkout-implementation}
-
-A Stripe esetében a Checkout Sessions API-t használjuk a zökkenőmentes fizetési élmény biztosításához. Amikor egy felhasználó kiválaszt egy csomagot, és úgy dönt, hogy hitelkártyával fizet, létrehozunk egy Checkout Session-t egy sikeres fizetéssel, és töröljük az URL-eket:
+A Stripe esetében a Checkout Sessions API-jukat használjuk egy zökkenőmentes fizetési élmény létrehozásához. Amikor a felhasználó kiválaszt egy csomagot és hitelkártyával szeretne fizetni, létrehozunk egy Checkout Session-t konkrét siker és megszakítás URL-ekkel:
 
 ```javascript
 const options = {
@@ -156,7 +157,7 @@ if (ctx.accepts('html')) {
 }
 ```
 
-A kritikus rész itt a `success_url` paraméter, amely lekérdezési paraméterként tartalmazza a `session_id` paramétert. Amikor a Stripe a sikeres fizetés után visszairányítja a felhasználót az oldalunkra, ezt a munkamenet-azonosítót használhatjuk a tranzakció ellenőrzésére és az adatbázisunk ennek megfelelő frissítésére.
+A kritikus rész itt a `success_url` paraméter, amely tartalmazza a `session_id`-t lekérdezési paraméterként. Amikor a Stripe sikeres fizetés után visszairányítja a felhasználót az oldalunkra, ezt a session ID-t használhatjuk a tranzakció ellenőrzésére és az adatbázisunk frissítésére.
 
 ### PayPal fizetési folyamat {#paypal-payment-flow}
 
@@ -212,7 +213,7 @@ const requestBody = {
 };
 ```
 
-A Stripe-hoz hasonlóan a `return_url` és `cancel_url` paramétereket adjuk meg a fizetés utáni átirányítások kezeléséhez. Amikor a PayPal visszairányítja a felhasználót az oldalunkra, rögzíthetjük a fizetési adatokat és frissíthetjük az adatbázisunkat.
+Hasonlóan a Stripe-hoz, megadjuk a `return_url` és `cancel_url` paramétereket a fizetés utáni átirányítások kezelésére. Amikor a PayPal visszairányítja a felhasználót az oldalunkra, rögzíthetjük a fizetés részleteit és frissíthetjük az adatbázisunkat.
 
 ```mermaid
 sequenceDiagram
@@ -224,79 +225,78 @@ sequenceDiagram
     participant Bree as Bree Job Scheduler
 
     %% Initial checkout flow
-    User->>FE: Select plan & payment method
+    User->>FE: Válasszon csomagot és fizetési módot
 
-    alt Credit Card Payment
-        FE->>Stripe: Create Checkout Session
-        Stripe-->>FE: Return session URL
-        FE->>User: Redirect to Stripe Checkout
-        User->>Stripe: Complete payment
-        Stripe->>User: Redirect to success URL with session_id
-        User->>FE: Return to success page
-        FE->>Stripe: Verify session using session_id
-        Stripe-->>FE: Return session details
-        FE->>DB: Update user plan & payment status
-    else PayPal Payment
-        FE->>PayPal: Create Order
-        PayPal-->>FE: Return approval URL
-        FE->>User: Redirect to PayPal
-        User->>PayPal: Approve payment
-        PayPal->>User: Redirect to return URL
-        User->>FE: Return to success page
-        FE->>PayPal: Capture payment
-        PayPal-->>FE: Return payment details
-        FE->>DB: Update user plan & payment status
+    alt Hitelkártyás fizetés
+        FE->>Stripe: Checkout Session létrehozása
+        Stripe-->>FE: Session URL visszaadása
+        FE->>User: Átirányítás a Stripe Checkout-ra
+        User->>Stripe: Fizetés befejezése
+        Stripe->>User: Átirányítás a sikeres URL-re session_id-vel
+        User->>FE: Visszatérés a sikeres oldalra
+        FE->>Stripe: Session ellenőrzése session_id alapján
+        Stripe-->>FE: Session részletek visszaadása
+        FE->>DB: Felhasználói csomag és fizetési státusz frissítése
+    else PayPal fizetés
+        FE->>PayPal: Rendelés létrehozása
+        PayPal-->>FE: Jóváhagyási URL visszaadása
+        FE->>User: Átirányítás a PayPal-ra
+        User->>PayPal: Fizetés jóváhagyása
+        PayPal->>User: Átirányítás a visszatérési URL-re
+        User->>FE: Visszatérés a sikeres oldalra
+        FE->>PayPal: Fizetés rögzítése
+        PayPal-->>FE: Fizetési részletek visszaadása
+        FE->>DB: Felhasználói csomag és fizetési státusz frissítése
     end
 
     %% Webhook flow (asynchronous)
-    Note over Stripe,PayPal: Payment events occur (async)
+    Note over Stripe,PayPal: Fizetési események történnek (aszinron)
 
-    alt Stripe Webhook
-        Stripe->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>Stripe: Acknowledge receipt (200 OK)
-    else PayPal Webhook
-        PayPal->>FE: Send event notification
-        FE->>FE: Verify webhook signature
-        FE->>DB: Process event & update data
-        FE-->>PayPal: Acknowledge receipt (200 OK)
+    alt Stripe webhook
+        Stripe->>FE: Esemény értesítés küldése
+        FE->>FE: Webhook aláírás ellenőrzése
+        FE->>DB: Esemény feldolgozása és adatfrissítés
+        FE-->>Stripe: Visszaigazolás (200 OK)
+    else PayPal webhook
+        PayPal->>FE: Esemény értesítés küldése
+        FE->>FE: Webhook aláírás ellenőrzése
+        FE->>DB: Esemény feldolgozása és adatfrissítés
+        FE-->>PayPal: Visszaigazolás (200 OK)
     end
 
-    %% Bree automated jobs
-    Note over Bree: Scheduled jobs run periodically
+    %% Bree automatizált feladatok
+    Note over Bree: Ütemezett feladatok időszakosan futnak
 
-    Bree->>Stripe: Get all customers & subscriptions
-    Stripe-->>Bree: Return customer data
-    Bree->>DB: Compare & reconcile data
+    Bree->>Stripe: Összes ügyfél és előfizetés lekérése
+    Stripe-->>Bree: Ügyféladatok visszaadása
+    Bree->>DB: Adatok összehasonlítása és egyeztetése
 
-    Bree->>PayPal: Get all subscriptions & transactions
-    PayPal-->>Bree: Return subscription data
-    Bree->>DB: Compare & reconcile data
+    Bree->>PayPal: Összes előfizetés és tranzakció lekérése
+    PayPal-->>Bree: Előfizetési adatok visszaadása
+    Bree->>DB: Adatok összehasonlítása és egyeztetése
 
-    %% Edge case: Dispute handling
-    Note over User,PayPal: User disputes a charge
+    %% Különleges eset: Vitakezelés
+    Note over User,PayPal: Felhasználó vitat egy terhelést
 
     PayPal->>FE: DISPUTE.CREATED webhook
-    FE->>PayPal: Accept claim automatically
-    FE->>DB: Update user status
-    FE->>User: Send notification email
+    FE->>PayPal: Igény automatikus elfogadása
+    FE->>DB: Felhasználói státusz frissítése
+    FE->>User: Értesítő email küldése
 ```
+## 2. réteg: Webhook kezelők aláírás ellenőrzéssel {#layer-2-webhook-handlers-with-signature-verification}
 
-## 2. réteg: Webhook-kezelők aláírás-ellenőrzéssel {#layer-2-webhook-handlers-with-signature-verification}
+Bár a post-checkout átirányítások a legtöbb esetben jól működnek, nem tökéletesek. A felhasználók bezárhatják a böngészőt az átirányítás előtt, vagy hálózati problémák akadályozhatják az átirányítás befejezését. Itt jönnek képbe a webhookok.
 
-Bár a fizetés utáni átirányítások a legtöbb esetben jól működnek, nem tévedhetetlenek. Előfordulhat, hogy a felhasználók bezárják a böngészőjüket az átirányítás előtt, vagy hálózati problémák akadályozhatják meg az átirányítás befejeződését. Itt jönnek képbe a webhookok.
+Mind a Stripe, mind a PayPal webhook rendszert biztosít, amely valós idejű értesítéseket küld a fizetési eseményekről. Mi robusztus webhook kezelőket valósítottunk meg, amelyek ellenőrzik ezeknek az értesítéseknek a hitelességét, és ennek megfelelően dolgozzák fel őket.
 
-Mind a Stripe, mind a PayPal webhook rendszereket kínál, amelyek valós idejű értesítéseket küldenek a fizetési eseményekről. Robusztus webhook-kezelőket implementáltunk, amelyek ellenőrzik az értesítések hitelességét, és ennek megfelelően dolgozzák fel azokat.
+### Stripe webhook megvalósítás {#stripe-webhook-implementation}
 
-### Stripe webhook implementáció {#stripe-webhook-implementation}
-
-A Stripe webhook-kezelőnk ellenőrzi a bejövő webhook események aláírását, hogy megbizonyosodjon azok jogosságáról:
+A Stripe webhook kezelőnk ellenőrzi a bejövő webhook események aláírását, hogy megbizonyosodjon azok hitelességéről:
 
 ```javascript
 async function webhook(ctx) {
   const sig = ctx.request.get('stripe-signature');
-  // throw an error if something was wrong
+  // dobjon hibát, ha valami nem stimmel
   if (!isSANB(sig))
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   const event = stripe.webhooks.constructEvent(
@@ -304,23 +304,23 @@ async function webhook(ctx) {
     sig,
     env.STRIPE_ENDPOINT_SECRET
   );
-  // throw an error if something was wrong
+  // dobjon hibát, ha valami nem stimmel
   if (!event)
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
   ctx.logger.info('stripe webhook', { event });
-  // return a response to acknowledge receipt of the event
+  // válasz visszaküldése az esemény átvételének megerősítésére
   ctx.body = { received: true };
-  // run in background
+  // háttérben futtatás
   processEvent(ctx, event)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err, { event });
-      // email admin errors
+      // adminisztrátornak email hibaüzenet
       emailHelper({
         template: 'alert',
         message: {
           to: config.email.message.from,
-          subject: `Error with Stripe Webhook (Event ID ${event.id})`
+          subject: `Hiba a Stripe Webhook-kal (Esemény ID ${event.id})`
         },
         locals: {
           message: `<pre><code>${safeStringify(
@@ -336,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-A `stripe.webhooks.constructEvent` függvény a végponti titkos kódunk segítségével ellenőrzi az aláírást. Ha az aláírás érvényes, az eseményt aszinkron módon dolgozzuk fel, hogy elkerüljük a webhook válasz blokkolását.
+A `stripe.webhooks.constructEvent` függvény az aláírást az endpoint titkunk segítségével ellenőrzi. Ha az aláírás érvényes, az eseményt aszinkron módon dolgozzuk fel, hogy ne blokkoljuk a webhook válaszát.
 
-### PayPal webhook implementáció {#paypal-webhook-implementation}
+### PayPal webhook megvalósítás {#paypal-webhook-implementation}
 
-Hasonlóképpen, a PayPal webhook kezelőnk ellenőrzi a bejövő értesítések hitelességét:
+Hasonlóan, a PayPal webhook kezelőnk is ellenőrzi a bejövő értesítések hitelességét:
 
 ```javascript
 async function webhook(ctx) {
@@ -348,22 +348,22 @@ async function webhook(ctx) {
     paypal.notification.webhookEvent.verify,
     paypal.notification.webhookEvent
   )(ctx.request.headers, ctx.request.body, env.PAYPAL_WEBHOOK_ID);
-  // throw an error if something was wrong
+  // dobjon hibát, ha valami nem stimmel
   if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
     throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
-  // return a response to acknowledge receipt of the event
+  // válasz visszaküldése az esemény átvételének megerősítésére
   ctx.body = { received: true };
-  // run in background
+  // háttérben futtatás
   processEvent(ctx)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err);
-      // email admin errors
+      // adminisztrátornak email hibaüzenet
       emailHelper({
         template: 'alert',
         message: {
           to: config.email.message.from,
-          subject: `Error with PayPal Webhook (Event ID ${ctx.request.body.id})`
+          subject: `Hiba a PayPal Webhook-kal (Esemény ID ${ctx.request.body.id})`
         },
         locals: {
           message: `<pre><code>${safeStringify(
@@ -379,16 +379,15 @@ async function webhook(ctx) {
 }
 ```
 
-Mindkét webhook-kezelő ugyanazt a mintát követi: ellenőrzi az aláírást, visszaigazolja a kézhezvételt, és aszinkron módon feldolgozza az eseményt. Ez biztosítja, hogy soha ne hagyjunk ki fizetési eseményt, még akkor sem, ha a fizetés utáni átirányítás sikertelen.
+Mindkét webhook kezelő ugyanazt a mintát követi: ellenőrzi az aláírást, visszaigazolja az átvételt, és aszinkron módon dolgozza fel az eseményt. Ez biztosítja, hogy soha ne maradjunk le egy fizetési eseményről, még akkor sem, ha a post-checkout átirányítás sikertelen.
 
-## 3. réteg: Automatizált feladatok Bree-vel {#layer-3-automated-jobs-with-bree}
+## 3. réteg: Automatikus feladatok Bree-vel {#layer-3-automated-jobs-with-bree}
 
-A trifecta megközelítésünk utolsó rétege egy sor automatizált feladat, amelyek rendszeresen ellenőrzik és egyeztetik a fizetési adatokat. A Bree-t, a Node.js feladatütemezőjét használjuk ezen feladatok rendszeres időközönkénti futtatásához.
+A háromlépcsős megközelítésünk utolsó rétege egy sor automatikus feladat, amelyek időszakosan ellenőrzik és egyeztetik a fizetési adatokat. A Bree-t, egy Node.js feladatütemezőt használjuk ezeknek a feladatoknak a rendszeres futtatására.
 
-### Előfizetés pontosságának ellenőrzője {#subscription-accuracy-checker}
+### Előfizetés pontosság ellenőrző {#subscription-accuracy-checker}
 
-Az egyik legfontosabb feladatunk az előfizetések pontosságának ellenőrzése, amely biztosítja, hogy adatbázisunk pontosan tükrözze az előfizetés állapotát a Stripe-ban:
-
+Az egyik kulcsfontosságú feladatunk az előfizetés pontosság ellenőrző, amely biztosítja, hogy adatbázisunk pontosan tükrözze az előfizetés állapotát a Stripe-ban:
 ```javascript
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
@@ -454,11 +453,11 @@ async function mapper(customer) {
 }
 ```
 
-Ez a feladat eltéréseket keres az adatbázisunk és a Stripe között, például eltérő e-mail címeket vagy több aktív előfizetést. Ha bármilyen problémát talál, naplózza azokat, és riasztásokat küld az adminisztrációs csapatunknak.
+This job checks for discrepancies between our database and Stripe, such as mismatched email addresses or multiple active subscriptions. If it finds any issues, it logs them and sends alerts to our admin team.
 
-### PayPal előfizetés szinkronizálása {#paypal-subscription-synchronization}
+### PayPal Subscription Synchronization {#paypal-subscription-synchronization}
 
-Hasonló feladatunk van a PayPal-előfizetésekkel kapcsolatban:
+We have a similar job for PayPal subscriptions:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -489,15 +488,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Ezek az automatizált feladatok végső biztonsági hálóként szolgálnak, biztosítva, hogy adatbázisunk mindig tükrözze az előfizetések és fizetések valós állapotát mind a Stripe-ban, mind a PayPalban.
+These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
 
-## Szélső esetek kezelése {#handling-edge-cases}
 
-Egy robusztus fizetési rendszernek gördülékenyen kell kezelnie a szélsőséges eseteket. Nézzük meg, hogyan kezelünk néhány gyakori forgatókönyvet.
+## Handling Edge Cases {#handling-edge-cases}
 
-### Csalásészlelés és -megelőzés {#fraud-detection-and-prevention}
+A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
 
-Kifinomult csalásészlelő mechanizmusokat vezettünk be, amelyek automatikusan azonosítják és kezelik a gyanús fizetési tevékenységeket:
+### Fraud Detection and Prevention {#fraud-detection-and-prevention}
+
+We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -542,30 +542,30 @@ case 'charge.failed': {
 }
 ```
 
-Ez a kód automatikusan kitiltja azokat a felhasználókat, akiknek több sikertelen terhelésük van, és nincsenek ellenőrzött domainjeik, ami a csalárd tevékenység erős mutatója.
+Ez a kód automatikusan kitiltja azokat a felhasználókat, akiknek több sikertelen terhelésük van és nincs ellenőrzött domainjük, ami erős csalási tevékenységre utal.
 
-### Vitarendezés {#dispute-handling}
+### Vitakezelés {#dispute-handling}
 
-Amikor egy felhasználó vitat egy terhelést, automatikusan elfogadjuk a reklamációt, és megtesszük a megfelelő lépéseket:
+Amikor egy felhasználó vitat egy terhelést, automatikusan elfogadjuk az igényt és megfelelő intézkedéseket teszünk:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
-  // accept claim
+  // igény elfogadása
   const agent = await paypalAgent();
   await agent
     .post(`/v1/customer/disputes/${body.resource.dispute_id}/accept-claim`)
     .send({
-      note: 'Full refund to the customer.'
+      note: 'Teljes visszatérítés az ügyfélnek.'
     });
 
-  // Find the payment in our database
+  // Fizetés keresése az adatbázisunkban
   const payment = await Payments.findOne({ $or });
-  if (!payment) throw new Error('Payment does not exist');
+  if (!payment) throw new Error('A fizetés nem létezik');
 
   const user = await Users.findById(payment.user);
-  if (!user) throw new Error('User did not exist for customer');
+  if (!user) throw new Error('A felhasználó nem létezett az ügyfélhez');
 
-  // Cancel the user's subscription if they have one
+  // A felhasználó előfizetésének lemondása, ha van ilyen
   if (isSANB(user[config.userFields.paypalSubscriptionID])) {
     try {
       const agent = await paypalAgent();
@@ -575,30 +575,31 @@ case 'CUSTOMER.DISPUTE.CREATED': {
         }/cancel`
       );
     } catch (err) {
-      // Handle subscription cancellation errors
+      // Előfizetés lemondási hibák kezelése
     }
   }
 }
 ```
 
-Ez a megközelítés minimalizálja a viták üzleti tevékenységünkre gyakorolt hatását, miközben biztosítja a jó ügyfélélményt.
+Ez a megközelítés minimalizálja a viták üzletünkre gyakorolt hatását, miközben biztosítja a jó ügyfélélményt.
 
-## Kód újrafelhasználása: KISS és DRY alapelvek {#code-reuse-kiss-and-dry-principles}
 
-Fizetési rendszerünkben végig a KISS (Keep It Simple, Stupid) és a DRY (Don't Repeat Yourself) alapelveket követtük. Íme néhány példa:
+## Kód újrafelhasználás: KISS és DRY elvek {#code-reuse-kiss-and-dry-principles}
 
-1. **Megosztott segédfüggvények**: Újrafelhasználható segédfüggvényeket hoztunk létre olyan gyakori feladatokhoz, mint a fizetések szinkronizálása és az e-mailek küldése.
+Fizetési rendszerünkben követjük a KISS (Keep It Simple, Stupid - Tartsd egyszerűen, hülye) és DRY (Don't Repeat Yourself - Ne ismételd magad) elveket. Íme néhány példa:
 
-2. **Konzisztens hibakezelés**: A Stripe és a PayPal webhook-kezelői ugyanazt a mintát használják a hibakezeléshez és az adminisztrátori értesítésekhez.
+1. **Megosztott segédfüggvények**: Újrafelhasználható segédfüggvényeket hoztunk létre gyakori feladatokra, mint a fizetések szinkronizálása és e-mailek küldése.
 
-3. **Egységes adatbázisséma**: Adatbázissémánk úgy lett kialakítva, hogy mind a Stripe, mind a PayPal adatait kezelje, közös mezőkkel a fizetési állapot, az összeg és a csomaginformációk tekintetében.
+2. **Konzisztens hibakezelés**: Mind a Stripe, mind a PayPal webhook kezelők ugyanazt a mintát használják a hibakezelésre és admin értesítésekre.
 
-4. **Központosított konfiguráció**: A fizetéssel kapcsolatos konfiguráció egyetlen fájlban van központosítva, így könnyen frissíthetők az árak és a termékinformációk.
+3. **Egységes adatbázis séma**: Adatbázis sémánk úgy van kialakítva, hogy mind a Stripe, mind a PayPal adatait kezelje, közös mezőkkel a fizetési státusz, összeg és előfizetési információk számára.
+
+4. **Központosított konfiguráció**: A fizetéssel kapcsolatos konfiguráció egyetlen fájlban van központosítva, így könnyű az árak és termékinformációk frissítése.
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        A[Helper Functions] --> B[syncStripePaymentIntent]
+    subgraph "Kód újrafelhasználási minták"
+        A[Segédfüggvények] --> B[syncStripePaymentIntent]
         A --> C[syncPayPalOrderPaymentByPaymentId]
         A --> D[syncPayPalSubscriptionPaymentsByUser]
     end
@@ -612,10 +613,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        E[Error Handling] --> F[Common Error Logging]
-        E --> G[Admin Email Notifications]
-        E --> H[User Notifications]
+    subgraph "Kód újrafelhasználási minták"
+        E[Hibakezelés] --> F[Általános hibalogolás]
+        E --> G[Admin e-mail értesítések]
+        E --> H[Felhasználói értesítések]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -627,9 +628,9 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        I[Configuration] --> J[Centralized Payment Config]
-        I --> K[Shared Environment Variables]
+    subgraph "Kód újrafelhasználási minták"
+        I[Konfiguráció] --> J[Központosított fizetési konfiguráció]
+        I --> K[Megosztott környezeti változók]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -641,10 +642,10 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "Code Reuse Patterns"
-        L[Webhook Processing] --> M[Signature Verification]
-        L --> N[Async Event Processing]
-        L --> O[Background Processing]
+    subgraph "Kód újrafelhasználási minták"
+        L[Webhook feldolgozás] --> M[Aláírás ellenőrzés]
+        L --> N[Aszinkron esemény feldolgozás]
+        L --> O[Háttérfeldolgozás]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -656,12 +657,12 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "KISS Principle"
-        P[Simple Data Flow] --> Q[Unidirectional Updates]
-        P --> R[Clear Responsibility Separation]
+    subgraph "KISS elv"
+        P[Egyszerű adatfolyam] --> Q[Egységes irányú frissítések]
+        P --> R[Tiszta felelősségmegosztás]
 
-        S[Explicit Error Handling] --> T[No Silent Failures]
-        S --> U[Comprehensive Logging]
+        S[Explicit hibakezelés] --> T[Nincs néma hiba]
+        S --> U[Átfogó naplózás]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -670,16 +671,14 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
-
-```mermaid
 graph TD
-    subgraph "DRY Principle"
-        V[Shared Logic] --> W[Payment Processing Functions]
-        V --> X[Email Templates]
-        V --> Y[Validation Logic]
+    subgraph "DRY Elv"
+        V[Megosztott Logika] --> W[Fizetési Feldolgozó Funkciók]
+        V --> X[Email Sablonok]
+        V --> Y[Érvényesítési Logika]
 
-        Z[Common Database Operations] --> AA[User Updates]
-        Z --> AB[Payment Recording]
+        Z[Általános Adatbázis Műveletek] --> AA[Felhasználói Frissítések]
+        Z --> AB[Fizetések Rögzítése]
     end
 
     classDef primary fill:blue,stroke:#333,stroke-width:2px;
@@ -689,25 +688,26 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
-## VISA előfizetési követelmények megvalósítása {#visa-subscription-requirements-implementation}
 
-A trifecta megközelítésünk mellett speciális funkciókat is bevezettünk a VISA előfizetési követelményeinek való megfelelés, miközben javítjuk a felhasználói élményt. A VISA egyik kulcsfontosságú követelménye, hogy a felhasználókat értesíteni kell, mielőtt az előfizetésért fizetnének, különösen próbaidőszakról fizetős előfizetésre való áttéréskor.
+## VISA Előfizetési Követelmények Megvalósítása {#visa-subscription-requirements-implementation}
 
-### Automatikus megújítás előtti e-mail értesítések {#automated-pre-renewal-email-notifications}
+A hárompontos megközelítésünk mellett specifikus funkciókat valósítottunk meg a VISA előfizetési követelményeinek való megfelelés érdekében, miközben javítjuk a felhasználói élményt. Egy kulcsfontosságú követelmény a VISA részéről, hogy a felhasználókat értesíteni kell, mielőtt előfizetésükért díjat számítanak fel, különösen a próbaidőszakról fizetős előfizetésre való átálláskor.
 
-Létrehoztunk egy automatizált rendszert, amely azonosítja az aktív próbaidőszakos előfizetéssel rendelkező felhasználókat, és értesítő e-mailt küld nekik az első terhelés előtt. Ez nemcsak a VISA követelményeinek való megfelelést biztosítja számunkra, hanem csökkenti a visszaterheléseket és javítja az ügyfelek elégedettségét is.
+### Automatikus Megújítás Előtti Email Értesítések {#automated-pre-renewal-email-notifications}
+
+Létrehoztunk egy automatikus rendszert, amely azonosítja az aktív próba előfizetéssel rendelkező felhasználókat, és értesítő emailt küld nekik az első díj felszámítása előtt. Ez nemcsak a VISA követelményeknek való megfelelést biztosítja, hanem csökkenti a visszaterheléseket és javítja az ügyfél-elégedettséget.
 
 Így valósítottuk meg ezt a funkciót:
 
 ```javascript
-// Find users with trial subscriptions who haven't received a notification yet
+// Keressük azokat a felhasználókat, akiknek próba előfizetésük van és még nem kaptak értesítést
 const users = await Users.find({
   $or: [
     {
       $and: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
         { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Kizárjuk azokat az előfizetéseket, amelyeknél már volt fizetés
         ...(paidStripeSubscriptionIds.length > 0
           ? [
               {
@@ -723,7 +723,7 @@ const users = await Users.find({
       $and: [
         { [config.userFields.paypalSubscriptionID]: { $exists: true } },
         { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-        // Exclude subscriptions that have already had payments
+        // Kizárjuk azokat az előfizetéseket, amelyeknél már volt fizetés
         ...(paidPayPalSubscriptionIds.length > 0
           ? [
               {
@@ -738,22 +738,22 @@ const users = await Users.find({
   ]
 });
 
-// Process each user and send notification
+// Feldolgozzuk az egyes felhasználókat és elküldjük az értesítést
 for (const user of users) {
-  // Get subscription details from payment processor
+  // Lekérjük az előfizetés részleteit a fizetési szolgáltatótól
   const subscription = await getSubscriptionDetails(user);
 
-  // Calculate subscription duration and frequency
+  // Kiszámoljuk az előfizetés időtartamát és gyakoriságát
   const duration = getDurationFromPlanId(subscription.plan_id);
   const frequency = getHumanReadableFrequency(duration, user.locale);
   const amount = getPlanAmount(user.plan, duration);
 
-  // Get user's domains for personalized email
+  // Lekérjük a felhasználó domainjeit a személyre szabott emailhez
   const domains = await Domains.find({
     'members.user': user._id
   }).sort('name').lean().exec();
 
-  // Send VISA-compliant notification email
+  // Küldjük a VISA-kompatibilis értesítő emailt
   await emailHelper({
     template: 'visa-trial-subscription-requirement',
     message: {
@@ -769,7 +769,7 @@ for (const user of users) {
     }
   });
 
-  // Record that notification was sent
+  // Rögzítjük, hogy az értesítés elküldésre került
   await Users.findByIdAndUpdate(user._id, {
     $set: {
       [config.userFields.paypalTrialSentAt]: new Date()
@@ -778,18 +778,17 @@ for (const user of users) {
 }
 ```
 
-Ez a megvalósítás biztosítja, hogy a felhasználók mindig tájékozottak legyenek a közelgő terhelésekről, egyértelmű részletekkel a következőkről:
+Ez a megvalósítás biztosítja, hogy a felhasználók mindig értesüljenek a közelgő díjakról, világos részletekkel arról, hogy:
 
-1. Mikor történik az első terhelés
-2. A jövőbeni terhelések gyakorisága (havi, éves stb.)
-3. A pontos összeg, amelyet felszámítanak
-4. Mely domaineket fedi le az előfizetésük
+1. Mikor történik az első díj felszámítása
+2. Milyen gyakorisággal lesznek a további díjak (havonta, évente, stb.)
+3. Pontosan mekkora összeget fognak felszámítani
+4. Mely domainek tartoznak az előfizetésükhöz
 
-A folyamat automatizálásával tökéletesen megfelelünk a VISA követelményeinek (amelyek legalább 7 nappal a terhelés előtti értesítést írnak elő), miközben csökkentjük a támogatási megkeresések számát és javítjuk az általános felhasználói élményt.
+Az automatizált folyamat révén tökéletesen megfelelünk a VISA követelményeinek (amely előírja az értesítést legalább 7 nappal a díj felszámítása előtt), miközben csökkentjük a támogatási megkereséseket és javítjuk az általános felhasználói élményt.
+### Kezelési szélsőséges esetek {#handling-edge-cases-1}
 
-### Szélső esetek kezelése {#handling-edge-cases-1}
-
-A megvalósításunk robusztus hibakezelést is tartalmaz. Ha bármi probléma adódik az értesítési folyamat során, rendszerünk automatikusan értesíti csapatunkat:
+Megvalósításunk tartalmaz egy robusztus hibakezelést is. Ha bármi probléma adódik az értesítési folyamat során, rendszerünk automatikusan értesíti a csapatunkat:
 
 ```javascript
 try {
@@ -797,12 +796,12 @@ try {
 } catch (err) {
   logger.error(err);
 
-  // Send alert to administrators
+  // Értesítés küldése az adminisztrátoroknak
   await emailHelper({
     template: 'alert',
     message: {
       to: config.email.message.from,
-      subject: 'VISA Trial Subscription Requirement Error'
+      subject: 'VISA próba előfizetési követelmény hiba'
     },
     locals: {
       message: `<pre><code>${safeStringify(
@@ -815,13 +814,13 @@ try {
 }
 ```
 
-Ez biztosítja, hogy még ha probléma is adódna az értesítési rendszerrel, csapatunk gyorsan kezelni tudja azt, és fenntartsa a VISA követelményeinek való megfelelést.
+Ez biztosítja, hogy még ha probléma is adódik az értesítési rendszerrel, csapatunk gyorsan tud reagálni és fenntartani a VISA követelményeinek való megfelelést.
 
-A VISA előfizetési értesítési rendszer egy másik példa arra, hogyan építettük fel fizetési infrastruktúránkat a megfelelőség és a felhasználói élmény szem előtt tartásával, kiegészítve trifecta megközelítésünket a megbízható és átlátható fizetésfeldolgozás biztosítása érdekében.
+A VISA előfizetés értesítési rendszere egy másik példa arra, hogyan építettük fel fizetési infrastruktúránkat egyszerre megfelelőség és felhasználói élmény szem előtt tartásával, kiegészítve trifecta megközelítésünket a megbízható, átlátható fizetési feldolgozás biztosítása érdekében.
 
 ### Próbaidőszakok és előfizetési feltételek {#trial-periods-and-subscription-terms}
 
-Azoknál a felhasználóknál, akik engedélyezik az automatikus megújítást a meglévő csomagjaikban, kiszámítjuk a megfelelő próbaidőszakot, hogy biztosítsuk, hogy ne terheljük meg őket a jelenlegi csomagjuk lejárta előtt:
+Azoknak a felhasználóknak, akik meglévő csomagokon engedélyezik az automatikus megújítást, kiszámoljuk a megfelelő próbaidőszakot, hogy biztosítsuk, ne számoljunk fel díjat, amíg a jelenlegi csomagjuk le nem jár:
 
 ```javascript
 if (
@@ -834,26 +833,27 @@ if (
     ctx.state.user[config.userFields.planExpiresAt]
   ).diff(dayjs(), 'hours');
 
-  // Handle trial period calculation
+  // Próbaidőszak számításának kezelése
 }
 ```
 
-Világos tájékoztatást nyújtunk az előfizetési feltételekről, beleértve a számlázási gyakoriságot és a lemondási szabályzatokat, és minden előfizetéshez részletes metaadatokat mellékelünk a megfelelő nyomon követés és kezelés biztosítása érdekében.
+Továbbá világos információkat nyújtunk az előfizetési feltételekről, beleértve a számlázási gyakoriságot és a lemondási szabályzatokat, valamint részletes metaadatokat mellékelünk minden előfizetéshez a megfelelő nyomon követés és kezelés érdekében.
 
-## Konklúzió: A Trifecta megközelítésünk előnyei {#conclusion-the-benefits-of-our-trifecta-approach}
 
-A fizetésfeldolgozás trifecta megközelítésünk számos kulcsfontosságú előnnyel járt:
+## Összegzés: Trifecta megközelítésünk előnyei {#conclusion-the-benefits-of-our-trifecta-approach}
 
-1. **Megbízhatóság**: A fizetés-ellenőrzés három rétegének bevezetésével biztosítjuk, hogy egyetlen fizetés se maradjon figyelmen kívül, vagy ne kerüljön helytelenül feldolgozásra.
+Fizetési feldolgozásunk trifecta megközelítése számos kulcsfontosságú előnyt biztosított:
+
+1. **Megbízhatóság**: Három rétegű fizetésellenőrzés bevezetésével biztosítjuk, hogy egyetlen fizetés se maradjon ki vagy legyen helytelenül feldolgozva.
 
 2. **Pontosság**: Adatbázisunk mindig tükrözi az előfizetések és fizetések valós állapotát mind a Stripe-ban, mind a PayPal-ban.
 
-3. **Rugalmasság**: A felhasználók a rendszer megbízhatóságának feláldozása nélkül választhatják ki a kívánt fizetési módot.
+3. **Rugalmasság**: A felhasználók választhatják a preferált fizetési módjukat anélkül, hogy a rendszer megbízhatósága csorbulna.
 
-4. **Robusztusság**: Rendszerünk gördülékenyen kezeli a szélsőséges eseteket, a hálózati hibáktól a csalárd tevékenységekig.
+4. **Robusztusság**: Rendszerünk szélsőséges eseteket is elegánsan kezeli, a hálózati hibáktól a csalárd tevékenységekig.
 
-Ha olyan fizetési rendszert valósít meg, amely több processzort támogat, erősen ajánljuk ezt a trifecta megközelítést. Több előzetes fejlesztési erőfeszítést igényel, de a megbízhatóság és a pontosság tekintetében a hosszú távú előnyök megérik a fáradságot.
+Ha több fizetési feldolgozót támogató rendszert valósítasz meg, erősen ajánljuk ezt a trifecta megközelítést. Több kezdeti fejlesztési erőfeszítést igényel, de a hosszú távú előnyök a megbízhatóság és pontosság terén megérik.
 
-A Forward Email szolgáltatással és az adatvédelmet támogató e-mail szolgáltatásainkkal kapcsolatos további információkért látogassa meg a [weboldal](https://forwardemail.net) oldalunkat.
+További információkért a Forward Email-ről és adatvédelmi fókuszú e-mail szolgáltatásainkról látogass el a [weboldalunkra](https://forwardemail.net).
 
-<!-- *Kulcsszavak: fizetésfeldolgozás, Stripe integráció, PayPal integráció, webhook kezelés, fizetésszinkronizáció, előfizetés-kezelés, csalásmegelőzés, vitarendezés, Node.js fizetési rendszer, többprocesszoros fizetési rendszer, fizetési átjáró integráció, valós idejű fizetés-ellenőrzés, fizetési adatok konzisztenciája, előfizetéses számlázás, fizetésbiztonság, fizetésautomatizálás, fizetési webhookok, fizetésegyeztetés, fizetési élproblémák, fizetési hibakezelés, VISA előfizetési követelmények, megújítás előtti értesítések, előfizetés-megfelelőség* -->
+<!-- *Keywords: payment processing, Stripe integration, PayPal integration, webhook handling, payment synchronization, subscription management, fraud prevention, dispute handling, Node.js payment system, multi-processor payment system, payment gateway integration, real-time payment verification, payment data consistency, subscription billing, payment security, payment automation, payment webhooks, payment reconciliation, payment edge cases, payment error handling, VISA subscription requirements, pre-renewal notifications, subscription compliance* -->

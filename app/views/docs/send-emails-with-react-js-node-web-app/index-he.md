@@ -1,21 +1,24 @@
-# שליחת מיילים עם דוגמה לאפליקציית אינטרנט של Node React.js {#send-emails-with-reactjs-node-web-app-example}
+# שליחת מיילים עם דוגמת אפליקציית React.js Node {#send-emails-with-reactjs-node-web-app-example}
 
-## תוכן עניינים
+
+## תוכן העניינים {#table-of-contents}
 
 * [התקנה ודרישות](#install-and-requirements)
 * [קוד מקור ודוגמה](#source-code-and-example)
 
+
 ## התקנה ודרישות {#install-and-requirements}
 
-תצטרך להתקין את התלויות npm של `@react-email/render` ו- `nodemailer`:
+תצטרכו להתקין את התלויות `@react-email/render` ו-`nodemailer` באמצעות npm:
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
-## קוד מקור ודוגמה של {#source-code-and-example}
 
-צור את תבנית האימייל שלך עם קובץ `.jsx` או `.js`:
+## קוד מקור ודוגמה {#source-code-and-example}
+
+צרו את תבנית המייל שלכם בקובץ `.jsx` או `.js`:
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>בקרו באתר שלנו</Button>
     </Html>
   );
 }
 ```
 
-בדוגמה זו, אנו משתמשים בספרייה **[Nodemailer](https://github.com/nodemailer/nodemailer)** ובנותנת החסות הרשמי שלה **[העברת דוא"ל](https://forwardemail.net)** כדי לשלוח ולצפות בתצוגה מקדימה של דואר יוצא.
+בדוגמה זו, אנו משתמשים בספריית **[Nodemailer](https://github.com/nodemailer/nodemailer)** ובספונסר הרשמי שלה **[Forward Email](https://forwardemail.net)** כדי לשלוח ולתצוגה מקדימה של מיילים יוצאים.
 
-תצטרך <strong class="text-success"><i class="fa fa-key"></i>ליצור סיסמה</strong> כדי לשלוח דואר יוצא - אנא עקוב אחר **[מדריך לשליחת דוא"ל עם דומיין מותאם אישית (SMTP)](/guides/send-email-with-custom-domain-smtp)** שלנו.
+תצטרכו <strong class="text-success"><i class="fa fa-key"></i> ליצור סיסמה</strong> כדי לשלוח מייל יוצא – אנא עקבו אחר **[המדריך לשליחת מייל עם SMTP בדומיין מותאם אישית](/guides/send-email-with-custom-domain-smtp)** שלנו.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: החליפו את הערכים `user` ו-`pass` מ:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -70,12 +73,12 @@ const options = {
 transporter.sendMail(options);
 ```
 
-הפעל את האפליקציה כדי לשלוח את האימייל:
+הריצו את האפליקציה כדי לשלוח את המייל:
 
 ```sh
 node app
 ```
 
-כעת תוכל לעבור אל **[החשבון שלי → אימיילים](/my-account/emails)** כדי לראות את סטטוס מסירת הדוא"ל בזמן אמת, יומני מסירה ותצוגות מקדימות של HTML/טקסט רגיל/קבצים מצורפים.
+כעת תוכלו לגשת ל**[החשבון שלי → מיילים](/my-account/emails)** כדי לראות את סטטוס משלוח המייל בזמן אמת, יומני נגישות המייל, ותצוגות מקדימות של HTML/טקסט רגיל/קבצים מצורפים.
 
-> נ.ב. :tada: אתה יכול גם **[תצוגה מקדימה של אימיילים בדפדפנים ובסימולטור iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** ו- **[צור תבניות דוא"ל עם Node.js](/docs/send-emails-with-node-js-javascript)**.
+> הערה: :tada: תוכלו גם **[לתצוגת מקדימה של מיילים בדפדפנים ובאימולטור iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** ו-**[ליצור תבניות מייל עם Node.js](/docs/send-emails-with-node-js-javascript)**.

@@ -1,4 +1,5 @@
-# E-mail továbbításának saját tárhelyszolgáltatás telepítési útmutatója Ubuntuhoz {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# Forward Email Önmagad Által Üzemeltetett Telepítési Útmutató Ubuntuhoz {#forward-email-self-hosting-installation-guide-for-ubuntu}
+
 
 ## Tartalomjegyzék {#table-of-contents}
 
@@ -7,86 +8,90 @@
 * [Rendszerkövetelmények](#system-requirements)
 * [Lépésről lépésre telepítés](#step-by-step-installation)
   * [1. lépés: Kezdeti rendszerbeállítás](#step-1-initial-system-setup)
-  * [2. lépés: DNS-feloldók konfigurálása](#step-2-configure-dns-resolvers)
+  * [2. lépés: DNS feloldók konfigurálása](#step-2-configure-dns-resolvers)
   * [3. lépés: Rendszerfüggőségek telepítése](#step-3-install-system-dependencies)
-  * [4. lépés: Telepítse a Snap csomagokat](#step-4-install-snap-packages)
+  * [4. lépés: Snap csomagok telepítése](#step-4-install-snap-packages)
   * [5. lépés: Docker telepítése](#step-5-install-docker)
   * [6. lépés: Docker szolgáltatás konfigurálása](#step-6-configure-docker-service)
   * [7. lépés: Tűzfal konfigurálása](#step-7-configure-firewall)
-  * [8. lépés: Klónozza a továbbított e-mail-tárházat](#step-8-clone-forward-email-repository)
+  * [8. lépés: Forward Email tárház klónozása](#step-8-clone-forward-email-repository)
   * [9. lépés: Környezeti konfiguráció beállítása](#step-9-set-up-environment-configuration)
-  * [10. lépés: A domain konfigurálása](#step-10-configure-your-domain)
-  * [11. lépés: SSL-tanúsítványok generálása](#step-11-generate-ssl-certificates)
+  * [10. lépés: Domain konfigurálása](#step-10-configure-your-domain)
+  * [11. lépés: SSL tanúsítványok generálása](#step-11-generate-ssl-certificates)
   * [12. lépés: Titkosítási kulcsok generálása](#step-12-generate-encryption-keys)
-  * [13. lépés: SSL-útvonalak frissítése a konfigurációban](#step-13-update-ssl-paths-in-configuration)
+  * [13. lépés: SSL útvonalak frissítése a konfigurációban](#step-13-update-ssl-paths-in-configuration)
   * [14. lépés: Alapvető hitelesítés beállítása](#step-14-set-up-basic-authentication)
-  * [15. lépés: Telepítés a Docker Compose segítségével](#step-15-deploy-with-docker-compose)
-  * [16. lépés: A telepítés ellenőrzése](#step-16-verify-installation)
+  * [15. lépés: Telepítés Docker Compose-szal](#step-15-deploy-with-docker-compose)
+  * [16. lépés: Telepítés ellenőrzése](#step-16-verify-installation)
 * [Telepítés utáni konfiguráció](#post-installation-configuration)
-  * [DNS-rekordok beállítása](#dns-records-setup)
+  * [DNS rekordok beállítása](#dns-records-setup)
   * [Első bejelentkezés](#first-login)
-* [Biztonsági mentés konfigurációja](#backup-configuration)
+* [Biztonsági mentés konfiguráció](#backup-configuration)
   * [S3-kompatibilis biztonsági mentés beállítása](#set-up-s3-compatible-backup)
-  * [Cron biztonsági mentési feladatok beállítása](#set-up-backup-cron-jobs)
-* [Automatikus frissítési konfiguráció](#auto-update-configuration)
+  * [Biztonsági mentés cron feladatok beállítása](#set-up-backup-cron-jobs)
+* [Automatikus frissítés konfiguráció](#auto-update-configuration)
 * [Karbantartás és felügyelet](#maintenance-and-monitoring)
-  * [Naplóhelyek](#log-locations)
+  * [Naplófájl helyek](#log-locations)
   * [Rendszeres karbantartási feladatok](#regular-maintenance-tasks)
-  * [Tanúsítvány megújítása](#certificate-renewal)
+  * [Tanúsítvány megújítás](#certificate-renewal)
 * [Hibaelhárítás](#troubleshooting)
   * [Gyakori problémák](#common-issues)
   * [Segítségkérés](#getting-help)
-* [Biztonsági bevált gyakorlatok](#security-best-practices)
-* [Következtetés](#conclusion)
+* [Biztonsági legjobb gyakorlatok](#security-best-practices)
+* [Összefoglalás](#conclusion)
+
 
 ## Áttekintés {#overview}
 
-Ez az útmutató lépésről lépésre bemutatja a Forward Email saját üzemeltetésű megoldásának telepítését Ubuntu rendszerekre. Ez az útmutató kifejezetten az Ubuntu 20.04, 22.04 és 24.04 LTS verziókhoz készült.
+Ez az útmutató lépésről lépésre ad utasításokat a Forward Email önmagad által üzemeltetett megoldásának telepítéséhez Ubuntu rendszereken. Az útmutató kifejezetten az Ubuntu 20.04, 22.04 és 24.04 LTS verziókra készült.
+
 
 ## Előfeltételek {#prerequisites}
 
-A telepítés megkezdése előtt győződjön meg arról, hogy rendelkezik:
+A telepítés megkezdése előtt győződj meg róla, hogy rendelkezel:
 
-* **Ubuntu szerver**: 20.04, 22.04 vagy 24.04 LTS
-* **Root hozzáférés**: Képesnek kell lenned parancsok futtatására root felhasználóként (sudo hozzáférés)
-* **Domain név**: Egy olyan domain, amelyet DNS-kezelési hozzáféréssel vezérelsz
-* **Tiszta szerver**: Friss Ubuntu telepítés használata ajánlott
-* **Internetkapcsolat**: Csomagok és Docker képek letöltéséhez szükséges
+* **Ubuntu Server**: 20.04, 22.04 vagy 24.04 LTS
+* **Root hozzáférés**: Képesnek kell lenned parancsokat rootként futtatni (sudo hozzáférés)
+* **Domain név**: Egy olyan domain, amelyet te irányítasz DNS kezelési hozzáféréssel
+* **Tiszta szerver**: Ajánlott egy friss Ubuntu telepítést használni
+* **Internet kapcsolat**: Szükséges a csomagok és Docker képek letöltéséhez
+
 
 ## Rendszerkövetelmények {#system-requirements}
 
-* **RAM**: Minimum 2 GB (4 GB ajánlott éles környezetben)
-* **Tárhely**: Minimum 20 GB szabad tárhely (50 GB+ ajánlott éles környezetben)
-* **CPU**: Minimum 1 vCPU (2+ vCPU ajánlott éles környezetben)
-* **Hálózat**: Nyilvános IP-cím a következő elérhető portokkal:
-* 22 (SSH)
-* 25 (SMTP)
-* 80 (HTTP)
-* 443 (HTTPS)
-* 465 (SMTPS)
-* 993 (IMAPS)
-* 995 (POP3S)
+* **RAM**: Minimum 2GB (termeléshez 4GB ajánlott)
+* **Tárhely**: Minimum 20GB szabad hely (termeléshez 50GB+ ajánlott)
+* **CPU**: Minimum 1 vCPU (termeléshez 2+ vCPU ajánlott)
+* **Hálózat**: Nyilvános IP cím a következő portok elérhetőségével:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## Lépésről lépésre telepítés {#step-by-step-installation}
 
 ### 1. lépés: Kezdeti rendszerbeállítás {#step-1-initial-system-setup}
 
-Először is győződj meg róla, hogy a rendszered naprakész, és válts root felhasználóra:
+Először győződj meg róla, hogy a rendszer naprakész, majd válts root felhasználóra:
 
 ```bash
-# Update system packages
+# Rendszer csomagok frissítése
 sudo apt update && sudo apt upgrade -y
 
-# Switch to root user (required for the installation)
+# Váltás root felhasználóra (a telepítéshez szükséges)
 sudo su -
 ```
 
-### 2. lépés: DNS-feloldók konfigurálása {#step-2-configure-dns-resolvers}
+### 2. lépés: DNS feloldók konfigurálása {#step-2-configure-dns-resolvers}
 
-Konfigurálja rendszerét úgy, hogy a Cloudflare DNS-kiszolgálóit használja a megbízható tanúsítványgeneráláshoz:
+Állítsd be a rendszered, hogy a Cloudflare DNS szervereit használja a megbízható tanúsítvány generáláshoz:
 
 ```bash
-# Stop and disable systemd-resolved if running
+# systemd-resolved leállítása és letiltása, ha fut
 if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
     systemctl stop systemd-resolved
@@ -94,7 +99,7 @@ if systemctl is-active --quiet systemd-resolved; then
     systemctl mask systemd-resolved
 fi
 
-# Configure Cloudflare DNS resolvers
+# Cloudflare DNS feloldók konfigurálása
 tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -106,16 +111,15 @@ nameserver 8.8.4.4
 nameserver 2001:4860:4860::8844
 EOF
 ```
+### Step 3: Telepítse a rendszerfüggőségeket {#step-3-install-system-dependencies}
 
-### 3. lépés: Rendszerfüggőségek telepítése {#step-3-install-system-dependencies}
-
-Telepítse a szükséges csomagokat az e-mail továbbításához:
+Telepítse a Forward Emailhez szükséges csomagokat:
 
 ```bash
-# Update package list
+# Csomaglista frissítése
 apt-get update -y
 
-# Install basic dependencies
+# Alapvető függőségek telepítése
 apt-get install -y \
     ca-certificates \
     curl \
@@ -126,150 +130,150 @@ apt-get install -y \
     snapd
 ```
 
-### 4. lépés: Snap csomagok telepítése {#step-4-install-snap-packages}
+### Step 4: Telepítse a Snap csomagokat {#step-4-install-snap-packages}
 
-Az AWS CLI és a Certbot telepítése snap-en keresztül:
+Telepítse az AWS CLI-t és a Certbotot snap segítségével:
 
 ```bash
-# Install AWS CLI
+# AWS CLI telepítése
 snap install aws-cli --classic
 
-# Install Certbot and DNS plugin
+# Certbot és DNS plugin telepítése
 snap install certbot --classic
 snap set certbot trust-plugin-with-root=ok
 snap install certbot-dns-cloudflare
 ```
 
-### 5. lépés: Docker telepítése {#step-5-install-docker}
+### Step 5: Telepítse a Dockert {#step-5-install-docker}
 
-Docker CE és Docker Compose telepítése:
+Telepítse a Docker CE-t és a Docker Compose-t:
 
 ```bash
-# Add Docker's official GPG key
+# Docker hivatalos GPG kulcsának hozzáadása
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository
+# Docker tároló hozzáadása
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
 
-# Update package index and install Docker
+# Csomagindex frissítése és Docker telepítése
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Verify Docker installation
+# Docker telepítés ellenőrzése
 docker --version
 docker compose version
 ```
 
-### 6. lépés: Docker szolgáltatás konfigurálása {#step-6-configure-docker-service}
+### Step 6: Docker szolgáltatás konfigurálása {#step-6-configure-docker-service}
 
-Győződjön meg arról, hogy a Docker automatikusan elindul és fut:
+Győződjön meg róla, hogy a Docker automatikusan indul és fut:
 
 ```bash
-# Enable and start Docker service
+# Docker szolgáltatás engedélyezése és indítása
 systemctl unmask docker
 systemctl enable docker
 systemctl start docker
 
-# Verify Docker is running
+# Ellenőrizze, hogy a Docker fut-e
 docker info
 ```
 
-Ha a Docker nem indul el, próbálja meg manuálisan elindítani:
+Ha a Docker nem indul el, próbálja meg kézzel indítani:
 
 ```bash
-# Alternative startup method if systemctl fails
+# Alternatív indítási mód, ha a systemctl nem működik
 nohup dockerd >/dev/null 2>/dev/null &
 sleep 5
 docker info
 ```
 
-### 7. lépés: Tűzfal konfigurálása {#step-7-configure-firewall}
+### Step 7: Tűzfal konfigurálása {#step-7-configure-firewall}
 
-UFW tűzfal beállítása a szerver védelme érdekében:
+Állítsa be az UFW tűzfalat a szerver védelméhez:
 
 ```bash
-# Set default policies
+# Alapértelmezett szabályok beállítása
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow SSH (important - don't lock yourself out!)
+# SSH engedélyezése (fontos - ne zárja ki saját magát!)
 ufw allow 22/tcp
 
-# Allow email-related ports
+# E-mailhez kapcsolódó portok engedélyezése
 ufw allow 25/tcp    # SMTP
-ufw allow 80/tcp    # HTTP (for Let's Encrypt)
+ufw allow 80/tcp    # HTTP (Let's Encrypt számára)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
-ufw allow 2993/tcp  # IMAP (alternative port)
-ufw allow 2995/tcp  # POP3 (alternative port)
-ufw allow 3456/tcp  # Custom service port
-ufw allow 4000/tcp  # Custom service port
-ufw allow 5000/tcp  # Custom service port
+ufw allow 2993/tcp  # IMAP (alternatív port)
+ufw allow 2995/tcp  # POP3 (alternatív port)
+ufw allow 3456/tcp  # Egyedi szolgáltatás port
+ufw allow 4000/tcp  # Egyedi szolgáltatás port
+ufw allow 5000/tcp  # Egyedi szolgáltatás port
 
-# Allow local database connections
+# Helyi adatbázis kapcsolatok engedélyezése
 ufw allow from 127.0.0.1 to any port 27017  # MongoDB
 ufw allow from 127.0.0.1 to any port 6379   # Redis
 
-# Enable firewall
+# Tűzfal engedélyezése
 echo "y" | ufw enable
 
-# Check firewall status
+# Tűzfal állapotának ellenőrzése
 ufw status numbered
 ```
 
-### 8. lépés: Továbbított e-mail-tárház klónozása {#step-8-clone-forward-email-repository}
+### Step 8: Klónozza a Forward Email tárolót {#step-8-clone-forward-email-repository}
 
-Töltsd le az Email továbbítása forráskódját:
+Töltse le a Forward Email forráskódját:
 
 ```bash
-# Set up variables
+# Változók beállítása
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
 ROOT_DIR="/root/$REPO_FOLDER_NAME"
 
-# Clone the repository
+# Tároló klónozása
 git clone "$REPO_URL" "$ROOT_DIR"
 cd "$ROOT_DIR"
 
-# Verify the clone was successful
+# Klónozás sikerességének ellenőrzése
 ls -la
 ```
 
-### 9. lépés: Környezeti konfiguráció beállítása {#step-9-set-up-environment-configuration}
+### Step 9: Környezeti konfiguráció beállítása {#step-9-set-up-environment-configuration}
 
-A környezet konfigurációjának előkészítése:
+Készítse elő a környezeti konfigurációt:
 
 ```bash
-# Set up directory variables
+# Könyvtár változók beállítása
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 ENV_FILE_DEFAULTS=".env.defaults"
 ENV_FILE=".env"
 
-# Copy default environment file
+# Alapértelmezett környezeti fájl másolása
 cp "$ROOT_DIR/$ENV_FILE_DEFAULTS" "$SELF_HOST_DIR/$ENV_FILE"
 
-# Create SSL directory
+# SSL könyvtár létrehozása
 mkdir -p "$SELF_HOST_DIR/ssl"
 
-# Create database directories
+# Adatbázis könyvtárak létrehozása
 mkdir -p "$SELF_HOST_DIR/sqlite-data"
 mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### 10. lépés: A domain konfigurálása {#step-10-configure-your-domain}
+### Step 10: Domain konfigurálása {#step-10-configure-your-domain}
 
-Állítsa be a domainnevet és frissítse a környezeti változókat:
+Állítsa be a domain nevét és frissítse a környezeti változókat:
 
 ```bash
-# Replace 'yourdomain.com' with your actual domain
+# Cserélje ki a 'yourdomain.com'-ot a saját domain nevére
 DOMAIN="yourdomain.com"
 
-# Function to update environment file
+# Függvény a környezeti fájl frissítéséhez
 update_env_file() {
   local key="$1"
   local value="$2"
@@ -281,7 +285,7 @@ update_env_file() {
   fi
 }
 
-# Update domain-related environment variables
+# Domainhoz kapcsolódó környezeti változók frissítése
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
@@ -303,13 +307,12 @@ update_env_file "SELF_HOSTED" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
+### 11. lépés: SSL tanúsítványok generálása {#step-11-generate-ssl-certificates}
 
-### 11. lépés: SSL-tanúsítványok generálása {#step-11-generate-ssl-certificates}
-
-#### A lehetőség: Manuális DNS-lekérdezés (A legtöbb felhasználó számára ajánlott) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### A lehetőség: Manuális DNS kihívás (ajánlott a legtöbb felhasználónak) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
-# Generate certificates using manual DNS challenge
+# Tanúsítványok generálása manuális DNS kihívással
 certbot certonly \
   --manual \
   --agree-tos \
@@ -318,23 +321,23 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Fontos**: Amikor a rendszer kéri, létre kell hoznod TXT rekordokat a DNS-edben. Előfordulhat, hogy több kihívással is találkozol ugyanahhoz a domainhez – **hozd létre az összeset**. Ne távolítsd el az első TXT rekordot a második hozzáadásakor.
+**Fontos**: Amikor kéri, létre kell hoznod TXT rekordokat a DNS-edben. Több kihívást is láthatsz ugyanarra a domainre - **mindet hozd létre**. Ne távolítsd el az első TXT rekordot, amikor a másodikat hozzáadod.
 
-#### B. lehetőség: Cloudflare DNS (Ha Cloudflare-t használ) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### B lehetőség: Cloudflare DNS (ha Cloudflare-t használsz) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
-Ha a domained Cloudflare-t használ DNS-hez, automatizálhatod a tanúsítványok generálását:
+Ha a domained Cloudflare-t használ DNS-hez, automatizálhatod a tanúsítvány generálást:
 
 ```bash
-# Create Cloudflare credentials file
+# Cloudflare hitelesítő adatok fájl létrehozása
 cat > /root/.cloudflare.ini <<EOF
 dns_cloudflare_email = "your-email@example.com"
 dns_cloudflare_api_key = "your-cloudflare-global-api-key"
 EOF
 
-# Set proper permissions
+# Megfelelő jogosultságok beállítása
 chmod 600 /root/.cloudflare.ini
 
-# Generate certificates automatically
+# Tanúsítványok automatikus generálása
 certbot certonly \
   --dns-cloudflare \
   --dns-cloudflare-credentials /root/.cloudflare.ini \
@@ -347,53 +350,53 @@ certbot certonly \
 
 #### Tanúsítványok másolása {#copy-certificates}
 
-A tanúsítványok létrehozása után másolja azokat az alkalmazás könyvtárába:
+A tanúsítványok generálása után másold őket az alkalmazás könyvtárába:
 
 ```bash
-# Copy certificates to application SSL directory
+# Tanúsítványok másolása az alkalmazás SSL könyvtárába
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Verify certificates were copied
+# Ellenőrizd, hogy a tanúsítványok másolva lettek-e
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
 ### 12. lépés: Titkosítási kulcsok generálása {#step-12-generate-encryption-keys}
 
-Hozza létre a biztonságos működéshez szükséges különféle titkosítási kulcsokat:
+Hozd létre a biztonságos működéshez szükséges különböző titkosítási kulcsokat:
 
 ```bash
-# Generate helper encryption key
+# Segéd titkosítási kulcs generálása
 helper_encryption_key=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "HELPER_ENCRYPTION_KEY" "$helper_encryption_key"
 
-# Generate SRS secret for email forwarding
+# SRS titok generálása az email továbbításhoz
 srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
 update_env_file "SRS_SECRET" "$srs_secret"
 
-# Generate TXT encryption key
+# TXT titkosítási kulcs generálása
 txt_encryption_key=$(openssl rand -hex 16)
 update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
-# Generate DKIM private key for email signing
+# DKIM privát kulcs generálása az email aláíráshoz
 openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
 update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
-# Generate webhook signature key
+# Webhook aláírási kulcs generálása
 webhook_signature_key=$(openssl rand -hex 16)
 update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-# Set SMTP transport password
+# SMTP szállítási jelszó beállítása
 update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 
-echo "✅ All encryption keys generated successfully"
+echo "✅ Minden titkosítási kulcs sikeresen generálva"
 ```
 
-### 13. lépés: SSL-útvonalak frissítése a {#step-13-update-ssl-paths-in-configuration}} konfigurációban
+### 13. lépés: SSL útvonalak frissítése a konfigurációban {#step-13-update-ssl-paths-in-configuration}
 
-Konfigurálja az SSL tanúsítványok elérési útjait a környezeti fájlban:
+Állítsd be az SSL tanúsítvány útvonalakat a környezeti fájlban:
 
 ```bash
-# Update SSL paths to point to the correct certificate files
+# SSL útvonalak frissítése a megfelelő tanúsítvány fájlokra mutatva
 sed -i -E \
   -e 's|^(.*_)?SSL_KEY_PATH=.*|\1SSL_KEY_PATH=/app/ssl/privkey.pem|' \
   -e 's|^(.*_)?SSL_CERT_PATH=.*|\1SSL_CERT_PATH=/app/ssl/fullchain.pem|' \
@@ -403,83 +406,83 @@ sed -i -E \
 
 ### 14. lépés: Alapvető hitelesítés beállítása {#step-14-set-up-basic-authentication}
 
-Ideiglenes alapvető hitelesítési adatok létrehozása:
+Hozz létre ideiglenes alapvető hitelesítési adatokat:
 
 ```bash
-# Generate a secure random password
+# Biztonságos véletlenszerű jelszó generálása
 PASSWORD=$(openssl rand -base64 16)
 
-# Update environment file with basic auth credentials
+# Környezeti fájl frissítése alapvető hitelesítési adatokkal
 update_env_file "AUTH_BASIC_USERNAME" "admin"
 update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
 
-# Display credentials (save these!)
+# Hitelesítési adatok megjelenítése (mentse el ezeket!)
 echo ""
-echo "🔐 IMPORTANT: Save these login credentials!"
+echo "🔐 FONTOS: Mentse el ezeket a bejelentkezési adatokat!"
 echo "=================================="
-echo "Username: admin"
-echo "Password: $PASSWORD"
+echo "Felhasználónév: admin"
+echo "Jelszó: $PASSWORD"
 echo "=================================="
 echo ""
-echo "You'll need these to access the web interface after installation."
+echo "Ezekre szükséged lesz a webes felület eléréséhez a telepítés után."
 echo ""
 ```
 
-### 15. lépés: Telepítés a Docker Compose {#step-15-deploy-with-docker-compose} használatával
+### 15. lépés: Telepítés Docker Compose-szal {#step-15-deploy-with-docker-compose}
 
-Indítsa el az összes e-mail továbbítási szolgáltatást:
+Indítsd el az összes Forward Email szolgáltatást:
 
 ```bash
-# Set Docker Compose file path
+# Docker Compose fájl elérési útjának beállítása
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
 
-# Stop any existing containers
+# Létező konténerek leállítása
 docker compose -f "$DOCKER_COMPOSE_FILE" down
 
-# Pull the latest images
+# Legfrissebb képek lehúzása
 docker compose -f "$DOCKER_COMPOSE_FILE" pull
 
-# Start all services in detached mode
+# Minden szolgáltatás indítása leválasztott módban
 docker compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Wait a moment for services to start
+# Várj egy kicsit, hogy elinduljanak a szolgáltatások
 sleep 10
 
-# Check service status
+# Szolgáltatások állapotának ellenőrzése
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
-
 ### 16. lépés: Telepítés ellenőrzése {#step-16-verify-installation}
 
-Ellenőrizd, hogy minden szolgáltatás megfelelően fut-e:
+Ellenőrizze, hogy minden szolgáltatás megfelelően fut-e:
 
 ```bash
-# Check Docker containers
+# Docker konténerek ellenőrzése
 docker ps
 
-# Check service logs for any errors
+# Szolgáltatás naplók ellenőrzése hibák után
 docker compose -f "$DOCKER_COMPOSE_FILE" logs --tail=50
 
-# Test web interface connectivity
+# Webes felület kapcsolat tesztelése
 curl -I https://$DOMAIN
 
-# Check if ports are listening
+# Ellenőrizze, hogy a portok figyelnek-e
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## Telepítés utáni konfiguráció {#post-installation-configuration}
 
-### DNS-rekordok beállítása {#dns-records-setup}
+## Telepítés utáni beállítások {#post-installation-configuration}
 
-A következő DNS-rekordokat kell konfigurálnia a domainjéhez:
+### DNS rekordok beállítása {#dns-records-setup}
 
-#### MX rekord {#mx-record}}
+A következő DNS rekordokat kell beállítania a domainjéhez:
+
+#### MX rekord {#mx-record}
 
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
-#### A Rekordok {#a-records}
+#### A rekordok {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -492,7 +495,7 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-#### SPF-rekord {#spf-record}
+#### SPF rekord {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
@@ -500,14 +503,14 @@ carddav A YOUR_SERVER_IP
 
 #### DKIM rekord {#dkim-record}
 
-Szerezd meg a DKIM nyilvános kulcsodat:
+Szerezze be a DKIM nyilvános kulcsát:
 
 ```bash
-# Extract DKIM public key
+# DKIM nyilvános kulcs kinyerése
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-DKIM DNS-rekord létrehozása:
+Hozza létre a DKIM DNS rekordot:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
@@ -521,154 +524,162 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Első bejelentkezés {#first-login}
 
-1. Nyissa meg a webböngészőjét, és navigáljon a `https://yourdomain.com` oldalra.
-2. Adja meg a korábban mentett alapvető hitelesítési adatokat.
-3. Fejezze be a kezdeti beállítási varázslót.
-4. Hozza létre első e-mail fiókját.
+1. Nyissa meg a böngészőjét, és navigáljon a `https://yourdomain.com` címre
+2. Adja meg a korábban elmentett alapvető hitelesítési adatokat
+3. Fejezze be az első beállító varázslót
+4. Hozza létre az első e-mail fiókját
 
-## Biztonsági mentés konfigurációja {#backup-configuration}
+
+## Biztonsági mentés beállítása {#backup-configuration}
 
 ### S3-kompatibilis biztonsági mentés beállítása {#set-up-s3-compatible-backup}
 
-Automatikus biztonsági mentések konfigurálása S3-kompatibilis tárolóra:
+Állítson be automatikus biztonsági mentéseket S3-kompatibilis tárolóra:
 
 ```bash
-# Create AWS credentials directory
+# AWS hitelesítő adatok könyvtár létrehozása
 mkdir -p ~/.aws
 
-# Configure AWS credentials
+# AWS hitelesítő adatok konfigurálása
 cat > ~/.aws/credentials <<EOF
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 EOF
 
-# Configure AWS settings
+# AWS beállítások konfigurálása
 cat > ~/.aws/config <<EOF
 [default]
 region = auto
 output = json
 EOF
 
-# For non-AWS S3 (like Cloudflare R2), add endpoint URL
+# Nem AWS S3 esetén (pl. Cloudflare R2) adja hozzá az endpoint URL-t
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Cron biztonsági mentési feladatok beállítása {#set-up-backup-cron-jobs}
+### Biztonsági mentés cron feladatok beállítása {#set-up-backup-cron-jobs}
 
 ```bash
-# Make backup scripts executable
+# Biztonsági mentés script-ek futtathatóvá tétele
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-mongo.sh"
 chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 
-# Add MongoDB backup cron job (runs daily at midnight)
+# MongoDB biztonsági mentés cron feladat hozzáadása (naponta éjfélkor fut)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Add Redis backup cron job (runs daily at midnight)
+# Redis biztonsági mentés cron feladat hozzáadása (naponta éjfélkor fut)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
-# Verify cron jobs were added
+# Ellenőrizze, hogy a cron feladatok hozzáadásra kerültek
 crontab -l
 ```
 
-## Automatikus frissítési konfiguráció {#auto-update-configuration}
 
-Automatikus frissítések beállítása az e-mail továbbítási telepítéséhez:
+## Automatikus frissítés beállítása {#auto-update-configuration}
+
+Állítsa be a Forward Email telepítés automatikus frissítését:
 
 ```bash
-# Create auto-update command
+# Automatikus frissítés parancs létrehozása
 DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
 
-# Add auto-update cron job (runs daily at 1 AM)
+# Automatikus frissítés cron feladat hozzáadása (naponta 1 órakor fut)
 (crontab -l 2>/dev/null; echo "0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1") | crontab -
 
-# Verify the cron job was added
+# Ellenőrizze, hogy a cron feladat hozzáadásra került
 crontab -l
 ```
+
 
 ## Karbantartás és felügyelet {#maintenance-and-monitoring}
 
-### Naplóhelyek {#log-locations}
+### Napló helyek {#log-locations}
 
 * **Docker Compose naplók**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
-* **Rendszernaplók**: `/var/log/syslog`
-* **Biztonsági mentési naplók**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Automatikus frissítési naplók**: `/var/log/autoupdate.log`
+* **Rendszer naplók**: `/var/log/syslog`
+* **Biztonsági mentés naplók**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Automatikus frissítés naplók**: `/var/log/autoupdate.log`
 
 ### Rendszeres karbantartási feladatok {#regular-maintenance-tasks}
 
 1. **Lemezterület figyelése**: `df -h`
-2. **Szolgáltatás állapotának ellenőrzése**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
+2. **Szolgáltatások állapotának ellenőrzése**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Naplók áttekintése**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
-4. **Rendszercsomagok frissítése**: `apt update && apt upgrade`
-5. **Tanúsítványok megújítása**: A tanúsítványok automatikusan megújulnak, de figyelik a lejáratukat
+4. **Rendszer csomagok frissítése**: `apt update && apt upgrade`
+5. **Tanúsítványok megújítása**: A tanúsítványok automatikusan megújulnak, de figyelje a lejáratot
 
 ### Tanúsítvány megújítása {#certificate-renewal}
 
-A tanúsítványoknak automatikusan megújulniuk kellene, de szükség esetén manuálisan is megújíthatja őket:
+A tanúsítványoknak automatikusan meg kell újulniuk, de szükség esetén manuálisan is megújíthatja:
 
 ```bash
-# Manual certificate renewal
+# Tanúsítvány manuális megújítása
 certbot renew
 
-# Copy renewed certificates
+# Megújult tanúsítványok másolása
 cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 
-# Restart services to use new certificates
+# Szolgáltatások újraindítása az új tanúsítványok használatához
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
-
-## Hibaelhárítás {#troubleshooting}
+## Hibakeresés {#troubleshooting}
 
 ### Gyakori problémák {#common-issues}
 
 #### 1. A Docker szolgáltatás nem indul el {#1-docker-service-wont-start}
 
 ```bash
-# Check Docker status
+# Ellenőrizze a Docker állapotát
 systemctl status docker
 
-# Try alternative startup
+# Próbáljon alternatív indítást
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. A tanúsítvány létrehozása sikertelen {#2-certificate-generation-fails}
+#### 2. Tanúsítvány generálás sikertelen {#2-certificate-generation-fails}
 
-* Győződjön meg arról, hogy a 80-as és 443-as portok elérhetők.* Ellenőrizze, hogy a DNS-rekordok a szerverére mutatnak-e.* Ellenőrizze a tűzfal beállításait.
+* Győződjön meg róla, hogy a 80-as és 443-as portok elérhetőek
+* Ellenőrizze, hogy a DNS rekordok a szerverére mutatnak
+* Nézze meg a tűzfal beállításait
 
 #### 3. E-mail kézbesítési problémák {#3-email-delivery-issues}
 
-* Ellenőrizze az MX rekordok helyességét.* Ellenőrizze az SPF, DKIM és DMARC rekordokat.* Győződjön meg arról, hogy a tárhelyszolgáltatója nem blokkolja a 25-ös portot.
+* Ellenőrizze, hogy az MX rekordok helyesek-e
+* Nézze meg az SPF, DKIM és DMARC rekordokat
+* Győződjön meg róla, hogy a 25-ös port nincs blokkolva a tárhelyszolgáltatója által
 
-#### 4. A webes felület nem elérhető {#4-web-interface-not-accessible}
+#### 4. Webes felület nem elérhető {#4-web-interface-not-accessible}
 
-* Tűzfalbeállítások ellenőrzése: `ufw status`
-* SSL-tanúsítványok ellenőrzése: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* Alapvető hitelesítő adatok ellenőrzése
+* Ellenőrizze a tűzfal beállításait: `ufw status`
+* Ellenőrizze az SSL tanúsítványokat: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
+* Ellenőrizze az alapvető hitelesítési adatokat
 
-### Segítség kérése {#getting-help}
+### Segítségkérés {#getting-help}
 
 * **Dokumentáció**: <https://forwardemail.net/self-hosted>
-* **GitHub problémák**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Közösségi támogatás**: Nézd meg a projekt GitHub beszélgetéseit
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Közösségi támogatás**: Nézze meg a projekt GitHub beszélgetéseit
 
-## Biztonsági bevált gyakorlatok {#security-best-practices}
 
-1. **A rendszer naprakészen tartása**: Az Ubuntu és a csomagok rendszeres frissítése
-2. **Naplók figyelése**: Naplófigyelés és riasztások beállítása
-3. **Rendszeres biztonsági mentés**: A biztonsági mentési és visszaállítási eljárások tesztelése
-4. **Erős jelszavak használata**: Erős jelszavak generálása minden fiókhoz
-5. **Fail2Ban engedélyezése**: A fokozott biztonság érdekében érdemes megfontolni a fail2ban telepítését
-6. **Rendszeres biztonsági auditok**: A konfiguráció rendszeres ellenőrzése
+## Biztonsági legjobb gyakorlatok {#security-best-practices}
 
-## Következtetés {#conclusion}
+1. **Rendszer frissítése**: Rendszeresen frissítse az Ubuntut és a csomagokat
+2. **Naplók figyelése**: Állítson be naplófigyelést és riasztásokat
+3. **Rendszeres biztonsági mentés**: Tesztelje a mentési és visszaállítási eljárásokat
+4. **Erős jelszavak használata**: Generáljon erős jelszavakat minden fiókhoz
+5. **Fail2Ban engedélyezése**: Fontolja meg a fail2ban telepítését további védelemként
+6. **Rendszeres biztonsági auditok**: Időszakosan vizsgálja felül a konfigurációt
 
-A Forward Email önállóan üzemeltetett telepítésének most már be kell fejeződnie és futnia kell Ubuntu rendszeren. Ne feledd:
 
-1. Konfigurálja megfelelően a DNS-rekordjait.
-2. Tesztelje az e-mail küldését és fogadását.
-3. Állítson be rendszeres biztonsági mentéseket.
-4. Rendszeresen figyelje a rendszerét.
-5. Tartsa naprakészen a telepítését.
+## Összefoglalás {#conclusion}
 
-További konfigurációs lehetőségekért és speciális funkciókért tekintse meg a hivatalos e-mail-továbbítási dokumentációt a <https://forwardemail.net/self-hosted#configuration>. címen.
+A Forward Email önálló telepítése most már befejeződött és fut Ubuntu alatt. Ne feledje:
+
+1. Állítsa be helyesen a DNS rekordjait
+2. Tesztelje az e-mailek küldését és fogadását
+3. Állítson be rendszeres biztonsági mentéseket
+4. Rendszeresen figyelje a rendszerét
+5. Tartsa naprakészen a telepítését
+
+További konfigurációs lehetőségekért és haladó funkciókért tekintse meg a hivatalos Forward Email dokumentációt a <https://forwardemail.net/self-hosted#configuration> címen.

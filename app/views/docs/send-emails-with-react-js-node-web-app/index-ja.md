@@ -1,21 +1,24 @@
-# React.js Node Webアプリの例でメールを送信する {#send-emails-with-reactjs-node-web-app-example}
+# React.js Node Webアプリでメールを送信する例 {#send-emails-with-reactjs-node-web-app-example}
+
 
 ## 目次 {#table-of-contents}
 
 * [インストールと要件](#install-and-requirements)
 * [ソースコードと例](#source-code-and-example)
 
+
 ## インストールと要件 {#install-and-requirements}
 
-`@react-email/render` および `nodemailer` npm 依存関係をインストールする必要があります。
+`@react-email/render` と `nodemailer` のnpm依存関係をインストールする必要があります：
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
+
 ## ソースコードと例 {#source-code-and-example}
 
-`.jsx` または `.js` ファイルを使用して電子メール テンプレートを作成します。
+`.jsx` または `.js` ファイルでメールテンプレートを作成します：
 
 ```jsx
 // email.jsx
@@ -28,15 +31,15 @@ export function Email(props) {
 
   return (
     <Html lang="en">
-      <Button href={url}>Visit our website</Button>
+      <Button href={url}>当社のウェブサイトを訪問する</Button>
     </Html>
   );
 }
 ```
 
-この例では、**[ノードメーラー](https://github.com/nodemailer/nodemailer)** ライブラリとその公式スポンサーである **[メールを転送する](https://forwardemail.net)** を使用して、送信メールを送信およびプレビューします。
+この例では、**[Nodemailer](https://github.com/nodemailer/nodemailer)** ライブラリとその公式スポンサー **[Forward Email](https://forwardemail.net)** を使用して、送信メールの送信とプレビューを行います。
 
-送信メールを送信するには、<strong class="text-success"><i class="fa fa-key"></i>パスワードを生成</strong>する必要があります。**[カスタムドメインでメールを送信するSMTPガイド](/guides/send-email-with-custom-domain-smtp)** に従ってください。
+送信メールを送るには <strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong> する必要があります – ぜひ当社の **[カスタムドメインSMTPでメールを送信するガイド](/guides/send-email-with-custom-domain-smtp)** に従ってください。
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,7 +54,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: 以下の `user` と `pass` の値を置き換えてください:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -70,12 +73,12 @@ const options = {
 transporter.sendMail(options);
 ```
 
-アプリを実行してメールを送信します。
+アプリを実行してメールを送信します：
 
 ```sh
 node app
 ```
 
-**[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信ステータス、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できるようになりました。
+これで **[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信状況、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できます。
 
-> P.S. :tada: **[ブラウザとiOSシミュレータでメールをプレビューする](/docs/test-preview-email-rendering-browsers-ios-simulator)** と **[Node.jsでメールテンプレートを作成する](/docs/send-emails-with-node-js-javascript)** も使用できます。
+> P.S. :tada: また、**[ブラウザやiOSシミュレーターでメールをプレビューする](/docs/test-preview-email-rendering-browsers-ios-simulator)** や **[Node.jsでメールテンプレートを作成する](/docs/send-emails-with-node-js-javascript)** こともできます。

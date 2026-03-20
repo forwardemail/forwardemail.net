@@ -1,219 +1,220 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# Создание AI-агента поддержки клиентов с приоритетом конфиденциальности с LanceDB, Ollama и Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
 <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
+> В этом документе описывается наш путь создания саморазмещённого AI-агента поддержки. Мы писали о похожих проблемах в нашем блоге [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Мы всерьёз думали написать продолжение под названием «AI Startup Graveyard», но, возможно, придётся подождать ещё год или около того, пока пузырь AI потенциально не лопнет(?). Пока что это наш мозговой штурм о том, что сработало, что нет и почему мы сделали именно так.
 
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
+Вот как мы создали собственного AI-агента поддержки клиентов. Мы сделали это по сложному пути: саморазмещение, приоритет конфиденциальности и полный контроль. Почему? Потому что мы не доверяем сторонним сервисам данные наших клиентов. Это требование GDPR и DPA, и это правильно.
 
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
+Это не был весёлый проект на выходные. Это было месячное путешествие через сломанные зависимости, вводящую в заблуждение документацию и общий хаос экосистемы open-source AI в 2025 году. Этот документ — запись того, что мы построили, почему и с какими препятствиями столкнулись.
 
-## Table of Contents {#table-of-contents}
 
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
+## Содержание {#table-of-contents}
 
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
+* [Преимущества для клиентов: AI, дополняющий человеческую поддержку](#customer-benefits-ai-augmented-human-support)
+  * [Быстрее и точнее ответы](#faster-more-accurate-responses)
+  * [Последовательность без выгорания](#consistency-without-burnout)
+  * [Что вы получаете](#what-you-get)
+* [Личный опыт: двадцатилетняя работа](#a-personal-reflection-the-two-decade-grind)
+* [Почему важна конфиденциальность](#why-privacy-matters)
+* [Анализ затрат: облачный AI против саморазмещения](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [Сравнение облачных AI-сервисов](#cloud-ai-service-comparison)
+  * [Разбивка затрат: база знаний 5 ГБ](#cost-breakdown-5gb-knowledge-base)
+  * [Затраты на оборудование для саморазмещения](#self-hosted-hardware-costs)
+* [Использование собственного API](#dogfooding-our-own-api)
+  * [Почему важно использовать собственный продукт](#why-dogfooding-matters)
+  * [Примеры использования API](#api-usage-examples)
+  * [Преимущества производительности](#performance-benefits)
+* [Архитектура шифрования](#encryption-architecture)
+  * [Уровень 1: шифрование почтового ящика (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [Уровень 2: шифрование сообщений PGP](#layer-2-message-level-pgp-encryption)
+  * [Почему это важно для обучения](#why-this-matters-for-training)
+  * [Безопасность хранения](#storage-security)
+  * [Локальное хранение — стандартная практика](#local-storage-is-standard-practice)
+* [Архитектура](#the-architecture)
+  * [Общий поток](#high-level-flow)
+  * [Подробный поток скрейпера](#detailed-scraper-flow)
+* [Как это работает](#how-it-works)
+  * [Создание базы знаний](#building-the-knowledge-base)
+  * [Обучение на исторических письмах](#training-from-historical-emails)
+  * [Обработка входящих писем](#processing-incoming-emails)
+  * [Управление векторным хранилищем](#vector-store-management)
+* [Кладбище векторных баз данных](#the-vector-database-graveyard)
+* [Системные требования](#system-requirements)
+* [Настройка Cron-заданий](#cron-job-configuration)
+  * [Переменные окружения](#environment-variables)
+  * [Cron-задания для нескольких почтовых ящиков](#cron-jobs-for-multiple-inboxes)
+  * [Разбор расписания Cron](#cron-schedule-breakdown)
+  * [Динамический расчёт даты](#dynamic-date-calculation)
+  * [Первоначальная настройка: извлечение списка URL из Sitemap](#initial-setup-extract-url-list-from-sitemap)
+  * [Ручное тестирование Cron-заданий](#testing-cron-jobs-manually)
+  * [Мониторинг логов](#monitoring-logs)
+* [Примеры кода](#code-examples)
+  * [Скрейпинг и обработка](#scraping-and-processing)
+  * [Обучение на исторических письмах](#training-from-historical-emails-1)
+  * [Запросы для контекста](#querying-for-context)
+* [Будущее: исследование и разработка спам-сканера](#the-future-spam-scanner-rd)
+* [Устранение неполадок](#troubleshooting)
+  * [Ошибка несоответствия размерности векторов](#vector-dimension-mismatch-error)
+  * [Пустой контекст базы знаний](#empty-knowledge-base-context)
+  * [Сбои при расшифровке PGP](#pgp-decryption-failures)
+* [Советы по использованию](#usage-tips)
+  * [Достижение «пустого» почтового ящика](#achieving-inbox-zero)
+  * [Использование метки skip-ai](#using-the-skip-ai-label)
+  * [Потоки писем и ответ всем](#email-threading-and-reply-all)
+  * [Мониторинг и обслуживание](#monitoring-and-maintenance)
+* [Тестирование](#testing)
+  * [Запуск тестов](#running-tests)
+  * [Покрытие тестами](#test-coverage)
+  * [Тестовая среда](#test-environment)
+* [Основные выводы](#key-takeaways)
+## Преимущества для клиентов: поддержка с помощью ИИ и человека {#customer-benefits-ai-augmented-human-support}
 
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
+Наша система ИИ не заменяет нашу команду поддержки — она делает её лучше. Вот что это значит для вас:
 
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
+### Быстрее и точнее ответы {#faster-more-accurate-responses}
 
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
+**Человек в цикле**: Каждый черновик, созданный ИИ, проверяется, редактируется и курируется нашей командой поддержки перед отправкой вам. ИИ занимается первоначальными исследованиями и составлением черновика, освобождая нашу команду для контроля качества и персонализации.
 
-**Trained on Human Expertise**: The AI learns from:
+**Обучен на человеческом опыте**: ИИ учится на:
 
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
+* Нашей написанной вручную базе знаний и документации
+* Блогах и руководствах, написанных людьми
+* Нашем полном FAQ (созданном людьми)
+* Прошлых разговорах с клиентами (все handled реальными людьми)
 
-You're getting responses informed by years of human expertise, just delivered faster.
+Вы получаете ответы, основанные на многолетнем опыте людей, но доставленные быстрее.
 
-### Consistency Without Burnout {#consistency-without-burnout}
+### Последовательность без выгорания {#consistency-without-burnout}
 
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
+Наша небольшая команда обрабатывает сотни запросов в день, каждый из которых требует разных технических знаний и переключения контекста:
 
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
+* Вопросы по биллингу требуют знаний финансовой системы
+* Проблемы с DNS требуют знаний сетей
+* Интеграция API требует знаний программирования
+* Отчёты по безопасности требуют оценки уязвимостей
 
-Without AI assistance, this constant context-switching leads to:
+Без помощи ИИ такое постоянное переключение контекста приводит к:
 
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
+* Замедлению времени ответа
+* Ошибкам из-за усталости
+* Непоследовательному качеству ответов
+* Выгоранию команды
 
-**With AI augmentation**, our team:
+**С помощью ИИ** наша команда:
 
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
+* Отвечает быстрее (ИИ создаёт черновики за секунды)
+* Делает меньше ошибок (ИИ ловит распространённые ошибки)
+* Поддерживает стабильное качество (ИИ всегда обращается к одной и той же базе знаний)
+* Остаётся свежей и сосредоточенной (меньше времени на исследования, больше на помощь)
 
-### What You Get {#what-you-get}
+### Что вы получаете {#what-you-get}
 
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
+✅ **Скорость**: ИИ создаёт черновики за секунды, люди проверяют и отправляют за минуты
 
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
+✅ **Точность**: Ответы основаны на нашей документации и прошлых решениях
 
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
+✅ **Последовательность**: Одни и те же качественные ответы, будь то 9 утра или 9 вечера
 
-✅ **Human touch**: Every response reviewed and personalized by our team
+✅ **Человеческий подход**: Каждый ответ проверяется и персонализируется нашей командой
 
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+✅ **Отсутствие галлюцинаций**: ИИ использует только нашу проверенную базу знаний, а не общедоступные данные из интернета
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> **Вы всегда общаетесь с людьми**. ИИ — это помощник-исследователь, который помогает нашей команде быстрее находить правильный ответ. Представьте его как библиотекаря, который мгновенно находит нужную книгу — но читать и объяснять её вам всё равно будет человек.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+## Личный взгляд: двадцатилетний труд {#a-personal-reflection-the-two-decade-grind}
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
+Прежде чем углубиться в технические детали, личное замечание. Я занимаюсь этим почти два десятилетия. Бесконечные часы за клавиатурой, неустанный поиск решения, глубокая сосредоточенная работа — вот реальность создания чего-то значимого. Это реальность, которую часто обходят стороной в период хайпа вокруг новых технологий.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+Недавний взрыв ИИ особенно раздражает. Нам продают мечту об автоматизации, об ИИ-помощниках, которые будут писать наш код и решать наши проблемы. Реальность? Часто получается мусорный код, который требует больше времени на исправление, чем написание с нуля. Обещание облегчить нашу жизнь — ложное. Это отвлечение от тяжёлой, необходимой работы по созданию.
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+И есть замкнутый круг участия в open-source. Вы и так перегружены, устали от постоянной работы. Вы используете ИИ, чтобы помочь написать подробный, хорошо структурированный отчёт об ошибке, надеясь облегчить работу мейнтейнерам по пониманию и исправлению проблемы. И что происходит? Вас ругают. Ваш вклад отклоняют как «не по теме» или низкокачественный, как мы видели в недавнем [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Это пощёчина опытным разработчикам, которые просто пытаются помочь.
 
-## Why Privacy Matters {#why-privacy-matters}
+Это реальность экосистемы, в которой мы работаем. Дело не только в сломанных инструментах; это культура, которая часто не уважает время и [усилия своих участников](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Этот пост — хроника этой реальности. Это история о инструментах, да, но также и о человеческой цене создания в сломанной экосистеме, которая, несмотря на все обещания, по сути сломана.
+## Почему важна конфиденциальность {#why-privacy-matters}
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+Наш [технический документ](https://forwardemail.net/technical-whitepaper.pdf) подробно раскрывает нашу философию конфиденциальности. Кратко: мы никогда не передаем данные клиентов третьим лицам. Никогда. Это значит ни OpenAI, ни Anthropic, ни облачные векторные базы данных. Всё работает локально на нашей инфраструктуре. Это обязательное условие для соблюдения GDPR и наших обязательств по DPA.
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+## Анализ затрат: облачный ИИ против самостоятельного хостинга {#cost-analysis-cloud-ai-vs-self-hosted}
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+Прежде чем перейти к технической реализации, давайте обсудим, почему самостоятельный хостинг важен с точки зрения затрат. Модели ценообразования облачных ИИ-сервисов делают их чрезмерно дорогими для сценариев с большим объемом, таких как поддержка клиентов.
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
+### Сравнение облачных ИИ-сервисов {#cloud-ai-service-comparison}
+
+| Сервис         | Провайдер           | Стоимость эмбеддингов                                           | Стоимость LLM (вход)                                                      | Стоимость LLM (выход)   | Политика конфиденциальности                          | GDPR/DPA        | Хостинг           | Обмен данными    |
 | --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+| **OpenAI**      | OpenAI (США)        | [$0.02-0.13/1M токенов](https://openai.com/api/pricing/)         | $0.15-20/1M токенов                                                       | $0.60-80/1M токенов    | [Ссылка](https://openai.com/policies/privacy-policy/) | Ограниченный DPA | Azure (США)       | Да (обучение)    |
+| **Claude**      | Anthropic (США)     | Н/Д                                                              | [$3-20/1M токенов](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M токенов      | [Ссылка](https://www.anthropic.com/legal/privacy)    | Ограниченный DPA | AWS/GCP (США)     | Нет (заявлено)   |
+| **Gemini**      | Google (США)        | [$0.15/1M токенов](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M токенов                                                    | $2.50/1M токенов       | [Ссылка](https://policies.google.com/privacy)        | Ограниченный DPA | GCP (США)         | Да (улучшение)   |
+| **DeepSeek**    | DeepSeek (Китай)    | Н/Д                                                              | [$0.028-0.28/1M токенов](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M токенов       | [Ссылка](https://www.deepseek.com/en)                | Неизвестно      | Китай             | Неизвестно       |
+| **Mistral**     | Mistral AI (Франция)| [$0.10/1M токенов](https://mistral.ai/pricing)                   | $0.40/1M токенов                                                         | $2.00/1M токенов       | [Ссылка](https://mistral.ai/terms/)                  | GDPR ЕС         | ЕС                | Неизвестно       |
+| **Самостоятельный хостинг** | Вы                 | $0 (существующее оборудование)                                  | $0 (существующее оборудование)                                           | $0 (существующее оборудование) | Ваша политика                                    | Полное соблюдение | MacBook M5 + cron | Никогда          |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Проблемы суверенитета данных**: провайдеры из США (OpenAI, Claude, Gemini) подпадают под действие CLOUD Act, который позволяет правительству США получать доступ к данным. DeepSeek (Китай) действует в рамках китайских законов о данных. Хотя Mistral (Франция) предлагает хостинг в ЕС и соблюдение GDPR, самостоятельный хостинг остается единственным вариантом для полного суверенитета и контроля над данными.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Разбивка затрат: база знаний 5 ГБ {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Давайте рассчитаем стоимость обработки базы знаний объемом 5 ГБ (типично для компании среднего размера с документацией, электронной почтой и историей поддержки).
 
-**Assumptions:**
+**Предположения:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5 ГБ текста ≈ 1,25 миллиарда токенов (при ~4 символах на токен)
+* Первоначальное создание эмбеддингов
+* Ежемесячное переобучение (полное переэмбеддинг)
+* 10 000 запросов в поддержку в месяц
+* Средний запрос: 500 токенов на вход, 300 токенов на выход
+**Подробный разбор затрат:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
-| -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| Компонент                             | OpenAI           | Claude          | Gemini               | Самостоятельный хостинг |
+| ------------------------------------ | ---------------- | --------------- | -------------------- | ----------------------- |
+| **Начальное встраивание** (1,25 млрд токенов) | $25,000          | Н/Д             | $187,500             | $0                      |
+| **Ежемесячные запросы** (10K × 800 токенов) | $1,200-16,000    | $2,400-16,000   | $2,400-3,200         | $0                      |
+| **Ежемесячное переобучение** (1,25 млрд токенов) | $25,000          | Н/Д             | $187,500             | $0                      |
+| **Итого за первый год**              | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~60$ (электричество)    |
+| **Соответствие требованиям конфиденциальности** | ❌ Ограничено     | ❌ Ограничено    | ❌ Ограничено         | ✅ Полное               |
+| **Суверенитет данных**               | ❌ Нет           | ❌ Нет          | ❌ Нет               | ✅ Да                   |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **Затраты на встраивание Gemini катастрофичны** — $0.15 за 1 млн токенов. Встраивание базы знаний объемом 5 ГБ обойдется в $187,500. Это в 37 раз дороже, чем у OpenAI, и делает использование Gemini в продакшене невозможным.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Затраты на оборудование для самостоятельного хостинга {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+Наша система работает на уже имеющемся у нас оборудовании:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Оборудование**: MacBook M5 (уже есть для разработки)
+* **Дополнительные затраты**: $0 (используется существующее оборудование)
+* **Электричество**: ~5$/месяц (оценочно)
+* **Итого за первый год**: ~60$
+* **Текущие затраты**: 60$/год
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**ROI**: Самостоятельный хостинг практически не имеет предельных затрат, так как мы используем существующее оборудование для разработки. Система работает через cron-задания в непиковое время.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+## Использование собственного API {#dogfooding-our-own-api}
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+Одно из важнейших архитектурных решений — чтобы все AI-задачи использовали [Forward Email API](https://forwardemail.net/email-api) напрямую. Это не просто хорошая практика — это стимул для оптимизации производительности.
 
-When our AI jobs use the same API endpoints as our customers:
+### Почему важно использовать собственный продукт {#why-dogfooding-matters}
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+Когда наши AI-задачи используют те же API, что и наши клиенты:
 
-### API Usage Examples {#api-usage-examples}
+1. **Узкие места в производительности затрагивают нас первыми** — мы ощущаем проблемы раньше клиентов
+2. **Оптимизация выгодна всем** — улучшения для наших задач автоматически улучшают опыт клиентов
+3. **Тестирование в реальных условиях** — наши задачи обрабатывают тысячи писем, обеспечивая постоянное нагрузочное тестирование
+4. **Повторное использование кода** — одинаковая аутентификация, ограничение скорости, обработка ошибок и кэширование
 
-**Listing Messages (train-from-history.js):**
+### Примеры использования API {#api-usage-examples}
+
+**Получение списка сообщений (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// Использует GET /v1/messages?folder=INBOX с BasicAuth
+// Исключает eml, raw, nodemailer для уменьшения размера ответа (нужны только ID)
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +233,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Возвращает: [{ id, subject, date, ... }, ...]
+// Полное содержимое сообщения запрашивается позже через GET /v1/messages/:id
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Получение полного сообщения (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// Использует GET /v1/messages/:id для получения полного сообщения с raw-контентом
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +252,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Возвращает: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Создание черновиков ответов (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// Использует POST /v1/messages для создания черновиков ответов
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +276,56 @@ const response = await axios.post(
   }
 );
 ```
+### Преимущества производительности {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Поскольку наши AI-задачи работают на той же API-инфраструктуре:
 
-Because our AI jobs run on the same API infrastructure:
+* **Оптимизации кэширования** приносят пользу как задачам, так и клиентам
+* **Ограничение скорости** тестируется под реальной нагрузкой
+* **Обработка ошибок** проверена в боевых условиях
+* **Время отклика API** постоянно мониторится
+* **Запросы к базе данных** оптимизированы для обоих случаев использования
+* **Оптимизация пропускной способности** — исключение `eml`, `raw`, `nodemailer` при листинге уменьшает размер ответа примерно на 90%
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+Когда `train-from-history.js` обрабатывает 1000 писем, он делает более 1000 вызовов API. Любая неэффективность в API становится сразу заметной. Это заставляет нас оптимизировать доступ к IMAP, запросы к базе данных и сериализацию ответов — улучшения, которые напрямую выгодны нашим клиентам.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Пример оптимизации**: Листинг 100 сообщений с полным содержимым = примерно 10 МБ ответа. Листинг с `eml: false, raw: false, nodemailer: false` = примерно 100 КБ ответа (в 100 раз меньше).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Архитектура шифрования {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+Наше хранилище электронной почты использует несколько уровней шифрования, которые AI-задачи должны расшифровывать в реальном времени для обучения.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### Уровень 1: Шифрование почтового ящика (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Все IMAP-почтовые ящики хранятся в виде баз данных SQLite, зашифрованных с помощью **chacha20-poly1305**, квантово-устойчивого алгоритма шифрования. Подробнее об этом в нашем [блоге о квантово-устойчивом зашифрованном почтовом сервисе](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**Ключевые свойства:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Алгоритм**: ChaCha20-Poly1305 (AEAD-шифр)
+* **Квантово-устойчивый**: устойчив к атакам квантовых компьютеров
+* **Хранение**: файлы базы данных SQLite на диске
+* **Доступ**: расшифровывается в памяти при доступе через IMAP/API
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### Уровень 2: Шифрование сообщений на уровне PGP {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Многие служебные письма дополнительно зашифрованы с помощью PGP (стандарт OpenPGP). AI-задачи должны расшифровывать их для извлечения содержимого для обучения.
 
-**Decryption Flow:**
+**Процесс расшифровки:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. API возвращает сообщение с зашифрованным raw-содержимым
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Проверяем, зашифровано ли raw-содержимое PGP
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Расшифровываем с помощью нашего приватного ключа
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Парсим расшифрованное MIME-сообщение
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Заполняем nodemailer расшифрованным содержимым
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +337,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**Конфигурация PGP:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Приватный ключ для расшифровки (путь к ASCII-армированному файлу ключа)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Пароль для приватного ключа (если зашифрован)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+Хелпер `pgp-decrypt.js`:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Один раз считывает приватный ключ с диска (кэшируется в памяти)
+2. Расшифровывает ключ с помощью пароля
+3. Использует расшифрованный ключ для всех сообщений
+4. Поддерживает рекурсивную расшифровку вложенных зашифрованных сообщений
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Почему это важно для обучения {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Без правильной расшифровки AI обучался бы на зашифрованном бессмысленном тексте:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +366,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+С расшифровкой AI обучается на реальном содержимом:
 
 ```
 Subject: Re: Bug Report
@@ -376,128 +377,128 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Безопасность хранения {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+Расшифровка происходит в памяти во время выполнения задачи, а расшифрованное содержимое преобразуется в эмбеддинги, которые затем сохраняются в векторной базе данных LanceDB на диске.
 
-**Where the data lives:**
+**Где хранятся данные:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Векторная база данных**: хранится на зашифрованных рабочих станциях MacBook M5
+* **Физическая безопасность**: рабочие станции всегда находятся у нас (не в датацентрах)
+* **Шифрование диска**: полное шифрование диска на всех рабочих станциях
+* **Сетевая безопасность**: защищены файрволом и изолированы от публичных сетей
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Будущие развертывания в датацентрах:**
+Если мы когда-либо перейдем на хостинг в датацентрах, серверы будут иметь:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* Полное шифрование диска LUKS
+* Отключенный доступ к USB
+* Меры физической безопасности
+* Сетевую изоляцию
+Для полного ознакомления с нашими мерами безопасности смотрите нашу [страницу безопасности](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> Векторная база данных содержит эмбеддинги (математические представления), а не исходный открытый текст. Однако эмбеддинги потенциально могут быть обратимо восстановлены, поэтому мы храним их на зашифрованных, физически защищённых рабочих станциях.
 
-### High-Level Flow {#high-level-flow}
+### Локальное хранение — стандартная практика {#local-storage-is-standard-practice}
+
+Хранение эмбеддингов на рабочих станциях нашей команды ничем не отличается от того, как мы уже обрабатываем электронную почту:
+
+* **Thunderbird**: загружает и хранит полный контент писем локально в файлах mbox/maildir
+* **Веб-клиенты почты**: кэшируют данные писем в хранилище браузера и локальных базах данных
+* **IMAP-клиенты**: поддерживают локальные копии сообщений для офлайн-доступа
+* **Наша AI-система**: хранит математические эмбеддинги (не открытый текст) в LanceDB
+
+Ключевое отличие: эмбеддинги **более безопасны**, чем открытый текст писем, потому что они:
+
+1. Математические представления, а не читаемый текст
+2. Сложнее поддаются обратной инженерии, чем открытый текст
+3. Всё ещё подчинены той же физической безопасности, что и наши почтовые клиенты
+
+Если для нашей команды приемлемо использовать Thunderbird или веб-почту на зашифрованных рабочих станциях, то хранить эмбеддинги таким же образом не менее приемлемо (и, возможно, даже безопаснее).
+
+
+## Архитектура {#the-architecture}
+
+Вот базовый поток. Он выглядит просто. Но это не так.
+
+> \[!NOTE]
+> Все задачи используют API Forward Email напрямую, что обеспечивает оптимизацию производительности как для нашей AI-системы, так и для наших клиентов.
+
+### Общий поток {#high-level-flow}
 
 ```mermaid
 graph TD
-    subgraph "Data Ingestion (Nightly Job)"
-        A[Data Sources] --> B{Scraper}
-        B --> C{Processor<br/>Chunks text}
-        C --> D{Ollama Client<br/>Generates embeddings}
-        D --> E[LanceDB<br/>Vector Store]
+    subgraph "Загрузка данных (ночная задача)"
+        A[Источники данных] --> B{Скрапер}
+        B --> C{Процессор<br/>Разбивает текст на части}
+        C --> D{Клиент Ollama<br/>Генерирует эмбеддинги}
+        D --> E[LanceDB<br/>Векторное хранилище]
     end
 
-    subgraph "Historical Email Training"
-        F[Email API] --> G{Email Scanner<br/>Decrypt PGP}
-        G --> H{Parse with mailparser}
-        H --> I{Processor<br/>Chunks text}
+    subgraph "Обучение на исторических письмах"
+        F[Email API] --> G{Сканер писем<br/>Расшифровка PGP}
+        G --> H{Парсер mailparser}
+        H --> I{Процессор<br/>Разбивает текст на части}
         I --> D
     end
 
-    subgraph "Live Email Processing"
-        J[New Email] --> K{Email Scanner<br/>Analyze content}
-        K --> L{Response Generator}
-        L -- Query --> E
-        E -- Context --> L
-        L -- Generates --> M[Email Response]
+    subgraph "Обработка новых писем"
+        J[Новое письмо] --> K{Сканер писем<br/>Анализ контента}
+        K --> L{Генератор ответов}
+        L -- Запрос --> E
+        E -- Контекст --> L
+        L -- Генерирует --> M[Ответ на письмо]
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Детальный поток скрапера {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+`scraper.js` — это ядро загрузки данных. Это набор парсеров для разных форматов данных.
 
 ```mermaid
 graph TD
-    subgraph "Scraper Components"
-        A[scraper.js] --> B[Local Markdown Parser<br/>docs/*.md]
-        A --> C[PDF Parser<br/>technical-whitepaper.pdf]
-        A --> D[GitHub Issue Parser<br/>@octokit/rest API]
-        A --> E[GitHub Discussion Parser<br/>@octokit/rest API]
-        A --> F[GitHub PR Parser<br/>@octokit/rest API]
-        A --> G[JSON Parser<br/>api-spec.json]
+    subgraph "Компоненты скрапера"
+        A[scraper.js] --> B[Локальный Markdown парсер<br/>docs/*.md]
+        A --> C[PDF парсер<br/>technical-whitepaper.pdf]
+        A --> D[Парсер GitHub Issues<br/>@octokit/rest API]
+        A --> E[Парсер GitHub Discussions<br/>@octokit/rest API]
+        A --> F[Парсер GitHub PR<br/>@octokit/rest API]
+        A --> G[JSON парсер<br/>api-spec.json]
     end
-    B --> I{Processor<br/>Chunks text}
+    B --> I{Процессор<br/>Разбивает текст на части}
     C --> I
     D --> I
     E --> I
     F --> I
     G --> I
-    I --> J{Ollama Client<br/>mxbai-embed-large embeddings}
+    I --> J{Клиент Ollama<br/>эмбеддинги mxbai-embed-large}
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## Как это работает {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+Процесс разделён на три основные части: построение базы знаний, обучение на исторических письмах и обработка новых писем.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### Построение базы знаний {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: основная задача. Запускается ночью, очищает старое векторное хранилище и перестраивает его с нуля. Использует `scraper.js` для получения контента из всех источников, `processor.js` для разбиения на части и `ollama-client.js` для генерации эмбеддингов. В конце `vector-store.js` сохраняет всё в LanceDB.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+**Источники данных:**
 
-### Training from Historical Emails {#training-from-historical-emails}
+* Локальные Markdown файлы (`docs/*.md`)
+* Технический whitepaper в PDF (`assets/technical-whitepaper.pdf`)
+* JSON спецификация API (`assets/api-spec.json`)
+* GitHub issues (через Octokit)
+* GitHub discussions (через Octokit)
+* GitHub pull requests (через Octokit)
+* Список URL из Sitemap (`$LANCEDB_PATH/valid-urls.json`)
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
+### Обучение на исторических письмах {#training-from-historical-emails}
 
-**Email Processing Flow:**
+**`train-from-history.js`**: эта задача сканирует исторические письма из всех папок, расшифровывает сообщения, зашифрованные PGP, и добавляет их в отдельное векторное хранилище (`customer_support_history`). Это обеспечивает контекст из прошлых взаимодействий службы поддержки.
+**Поток обработки электронной почты:**
 
 ```mermaid
 sequenceDiagram
@@ -512,48 +513,48 @@ sequenceDiagram
     Job->>API: GET /v1/messages (list)
     API-->>Job: Message IDs + metadata
 
-    loop For each message
+    loop Для каждого сообщения
         Job->>API: GET /v1/messages/:id
-        API-->>Client: Full message (with raw)
+        API-->>Client: Полное сообщение (с raw)
 
-        alt Message is PGP encrypted
-            Client->>Client: Decrypt raw with pgp-decrypt
-            Client->>Parser: Parse decrypted raw
-        else Message is plaintext
-            Client->>Parser: Parse raw directly
+        alt Сообщение зашифровано PGP
+            Client->>Client: Расшифровать raw с помощью pgp-decrypt
+            Client->>Parser: Разобрать расшифрованный raw
+        else Сообщение в открытом виде
+            Client->>Parser: Разобрать raw напрямую
         end
 
-        Parser-->>Client: Parsed message (nodemailer)
-        Client-->>Scanner: Message with nodemailer.text
-        Scanner->>Scanner: Extract conversation context
-        Scanner->>Scanner: Group into threads
-        Scanner-->>Job: Processed messages
+        Parser-->>Client: Разобранное сообщение (nodemailer)
+        Client-->>Scanner: Сообщение с nodemailer.text
+        Scanner->>Scanner: Извлечь контекст переписки
+        Scanner->>Scanner: Сгруппировать в цепочки
+        Scanner-->>Job: Обработанные сообщения
 
-        Job->>Ollama: Generate embedding (text)
-        Ollama-->>Job: Embedding vector
-        Job->>DB: Store with metadata
+        Job->>Ollama: Сгенерировать embedding (текст)
+        Ollama-->>Job: Вектор embedding
+        Job->>DB: Сохранить с метаданными
     end
 ```
 
-**Key Features:**
+**Ключевые особенности:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **PGP расшифровка**: Использует вспомогательный скрипт `pgp-decrypt.js` с переменной окружения `GPG_SECURITY_KEY`
+* **Группировка цепочек**: Группирует связанные письма в цепочки переписки
+* **Сохранение метаданных**: Сохраняет папку, тему, дату, статус шифрования
+* **Контекст ответов**: Связывает сообщения с их ответами для лучшего контекста
 
-**Configuration:**
+**Конфигурация:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# Переменные окружения для train-from-history
+HISTORY_SCAN_LIMIT=1000              # Максимальное количество сообщений для обработки
+HISTORY_SCAN_SINCE="2024-01-01"      # Обрабатывать только сообщения после этой даты
+HISTORY_DECRYPT_PGP=true             # Пытаться расшифровать PGP
+GPG_SECURITY_KEY="/path/to/key.asc"  # Путь к приватному ключу PGP
+GPG_SECURITY_PASSPHRASE="passphrase" # Парольная фраза ключа (опционально)
 ```
 
-**What Gets Stored:**
+**Что сохраняется:**
 
 ```javascript
 {
@@ -575,39 +576,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Запустите `train-from-history` после первоначальной настройки, чтобы заполнить исторический контекст. Это значительно улучшит качество ответов, обучаясь на прошлых взаимодействиях службы поддержки.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Обработка входящих писем {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Эта задача запускается для писем в наших почтовых ящиках `support@forwardemail.net`, `abuse@forwardemail.net` и `security@forwardemail.net` (конкретно в папке IMAP `INBOX`). Она использует наш API по адресу <https://forwardemail.net/email-api> (например, `GET /v1/messages?folder=INBOX` с BasicAuth доступом, используя IMAP учетные данные для каждого ящика). Анализирует содержимое письма, обращается как к базе знаний (`forward_email_knowledge_base`), так и к векторному хранилищу исторических писем (`customer_support_history`), а затем передаёт объединённый контекст в `response-generator.js`. Генератор использует `mxbai-embed-large` через Ollama для создания ответа.
 
-**Automated Workflow Features:**
+**Особенности автоматизированного рабочего процесса:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Автоматизация Inbox Zero**: После успешного создания черновика исходное сообщение автоматически перемещается в папку Архив. Это помогает поддерживать чистоту входящих и достигать состояния inbox zero без ручного вмешательства.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **Пропуск обработки ИИ**: Просто добавьте метку `skip-ai` (без учёта регистра) к любому сообщению, чтобы предотвратить обработку ИИ. Сообщение останется в вашем входящем без изменений, позволяя обрабатывать его вручную. Это полезно для чувствительных сообщений или сложных случаев, требующих человеческого решения.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Правильное формирование цепочек писем**: Все черновики ответов включают оригинальное сообщение в цитате ниже (с использованием стандартного префикса ` >  `), следуя конвенциям ответов по электронной почте с форматом "On \[дата], \[отправитель] wrote:". Это обеспечивает правильный контекст переписки и формирование цепочек в почтовых клиентах.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Поведение Reply-All**: Система автоматически обрабатывает заголовки Reply-To и получателей CC:
+   * Если существует заголовок Reply-To, он становится адресом To, а оригинальный From добавляется в CC
+   * Все оригинальные получатели To и CC включаются в ответ в CC (кроме вашего собственного адреса)
+   * Следует стандартным конвенциям reply-all для групповых переписок
+**Ранжирование источников**: Система использует **взвешенное ранжирование** для приоритизации источников:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
-
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
+* FAQ: 100% (наивысший приоритет)
+* Технический whitepaper: 95%
+* Спецификация API: 90%
+* Официальная документация: 85%
 * GitHub issues: 70%
-* Historical emails: 50%
+* Исторические письма: 50%
 
-### Vector Store Management {#vector-store-management}
+### Управление векторным хранилищем {#vector-store-management}
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
+Класс `VectorStore` в `helpers/customer-support-ai/vector-store.js` — наш интерфейс к LanceDB.
 
-**Adding Documents:**
+**Добавление документов:**
 
 ```javascript
 // vector-store.js
@@ -621,126 +621,127 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Очистка хранилища:**
 
 ```javascript
-// Option 1: Use the clear() method
+// Вариант 1: Использовать метод clear()
 await vectorStore.clear();
 
-// Option 2: Delete the local database directory
+// Вариант 2: Удалить локальную директорию базы данных
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+Переменная окружения `LANCEDB_PATH` указывает на локальную директорию встроенной базы данных. LanceDB — безсерверная и встроенная, поэтому отдельного процесса для управления нет.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## Кладбище векторных баз данных {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
-| ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+Это была первая серьёзная преграда. Мы попробовали несколько векторных баз данных, прежде чем остановиться на LanceDB. Вот что пошло не так с каждой из них.
+
+| База данных | GitHub                                                      | Что пошло не так                                                                                                                                                                                                     | Конкретные проблемы                                                                                                                                                                                                                                                                                                                                                      | Вопросы безопасности                                                                                                                                                                                            |
+| ------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` устанавливает версию из каменного века с ошибкой `PydanticImportError`. Единственный способ получить рабочую версию — собрать из исходников. Неудобно для разработчиков.                      | Хаос с зависимостями Python. Множество пользователей жалуются на сломанные установки pip ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). В документации написано «просто используйте Docker», что не подходит для локальной разработки. Сбои на Windows при >99 записях ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Выполнение произвольного кода через интеграцию ChromaDB в MindsDB. Критические уязвимости ОС в Docker-образе ([#3170](https://github.com/chroma-core/chroma/issues/3170)).                      |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | Homebrew tap (`qdrant/qdrant/qdrant`), упомянутый в старой документации, исчез. Без объяснений. В официальной документации теперь просто написано «используйте Docker».                                            | Отсутствует Homebrew tap. Нет нативного бинарника для macOS. Только Docker — препятствие для быстрого локального тестирования.                                                                                                                                                                                                                                         | **CVE-2024-2221**: Уязвимость загрузки произвольных файлов, позволяющая удалённое выполнение кода (исправлено в v1.9.0). Низкий уровень зрелости безопасности по оценке [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | Версия для Homebrew имела критическую ошибку кластеризации (`leader not found`). Документированные флаги для исправления (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) не работали. Фундаментально сломано для однузловых установок. | Ошибки кластеризации даже в однузловом режиме. Слишком сложная архитектура для простых случаев использования.                                                                                                                                                                                                                                                           | Критических CVE не найдено, но сложность увеличивает поверхность атаки.                                                                                                                                           |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Эта база сработала. Она встроенная и безсерверная. Нет отдельного процесса. Единственное неудобство — запутанное именование пакетов (`vectordb` устарел, используйте `@lancedb/lancedb`) и разрозненная документация. Мы можем с этим жить. | Запутанное именование пакетов (`vectordb` против `@lancedb/lancedb`), но в остальном надёжно. Встроенная архитектура исключает целые классы проблем безопасности.                                                                                                                                                                                                       | Известных CVE нет. Встроенный дизайн исключает сетевую поверхность атаки.                                                                                                                                          |
+> \[!WARNING]
+> **ChromaDB имеет критические уязвимости безопасности.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) позволяет выполнять произвольный код. Установка через pip принципиально сломана из-за проблем с зависимостью Pydantic. Избегайте использования в продакшене.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **В Qdrant была уязвимость RCE при загрузке файлов** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)), которая была исправлена только в версии v1.9.0. Если вы обязаны использовать Qdrant, убедитесь, что у вас последняя версия.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Экосистема open-source векторных баз данных нестабильна. Не доверяйте документации. Считайте, что всё сломано, пока не доказано обратное. Тестируйте локально перед выбором стека.
 
-## System Requirements {#system-requirements}
+
+## Системные требования {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** Последняя версия ([GitHub](https://github.com/ollama/ollama))
+* **Модель:** `mxbai-embed-large` через Ollama
+* **Векторная база данных:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **Доступ к GitHub:** `@octokit/rest` для сбора issues ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Для основной базы данных (через `mongoose-to-sqlite`)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## Настройка Cron Job {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+Все AI задачи запускаются через cron на MacBook M5. Вот как настроить cron задачи для запуска в полночь для нескольких почтовых ящиков.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### Переменные окружения {#environment-variables}
 
-**In `.env` file:**
+Для работы задач требуются следующие переменные окружения. Большинство можно задать в файле `.env` (загружается через `@ladjs/env`), но `HISTORY_SCAN_SINCE` должен вычисляться динамически в crontab.
+
+**В файле `.env`:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Учетные данные Forward Email API (для каждого почтового ящика свои)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
 FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
 
-# PGP decryption (shared across all inboxes)
+# PGP расшифровка (общая для всех почтовых ящиков)
 GPG_SECURITY_KEY=/path/to/private-key.asc
 GPG_SECURITY_PASSPHRASE=your-passphrase
 
-# Historical scan configuration
+# Конфигурация исторического сканирования
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# Путь к LanceDB
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**В crontab (вычисляется динамически):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE должен задаваться inline в crontab с помощью вычисления даты в shell
+# Нельзя задавать в .env, так как @ladjs/env не выполняет shell команды
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Cron задачи для нескольких почтовых ящиков {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Отредактируйте crontab с помощью `crontab -e` и добавьте:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Обновление базы знаний (запускается один раз, общий для всех почтовых ящиков)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Обучение по истории - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Обучение по истории - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Обучение по истории - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Обработка входящих - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Обработка входящих - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Обработка входящих - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Разбор расписания Cron {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
+| Задача                   | Расписание   | Описание                                                                          |
+| ------------------------ | ------------ | --------------------------------------------------------------------------------- |
+| `train-from-sitemap.js`  | `0 0 * * 0`  | Еженедельно (в полночь в воскресенье) — Получает все URL из sitemap и обучает базу знаний |
+| `train-from-history.js`  | `0 0 * * *`  | Ежедневно в полночь — Сканирует письма за предыдущий день по каждому почтовому ящику |
+| `process-inbox.js`       | `*/5 * * * *`| Каждые 5 минут — Обрабатывает новые письма и генерирует черновики                  |
 
-| Job | Schedule | Description |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+### Динамический расчет даты {#dynamic-date-calculation}
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+Переменная `HISTORY_SCAN_SINCE` **должна вычисляться непосредственно в crontab**, потому что:
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+1. Файлы `.env` читаются как буквальные строки с помощью `@ladjs/env`
+2. Подстановка команд оболочки `$(...)` не работает в файлах `.env`
+3. Дата должна вычисляться заново при каждом запуске cron
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
-
-**Correct approach (in crontab):**
+**Правильный подход (в crontab):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +751,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Неправильный подход (не работает в .env):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Это будет прочитано как буквальная строка "$(date -v-1d +%Y-%m-%d)"
+# НЕ будет выполнено как команда оболочки
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Это гарантирует, что при каждом ночном запуске дата предыдущего дня вычисляется динамически, избегая избыточной работы.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### Первоначальная настройка: извлечение списка URL из Sitemap {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+Перед первым запуском задачи process-inbox вы **должны** извлечь список URL из sitemap. Это создаёт словарь валидных URL, к которым LLM может обращаться, и предотвращает галлюцинации URL.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# Первоначальная настройка: извлечение списка URL из sitemap
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Что это делает:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. Получает все URL с <https://forwardemail.net/sitemap.xml>
+2. Фильтрует только не локализованные URL или URL с /en/ (избегает дублирования контента)
+3. Убирает префиксы локализации (/en/faq → /faq)
+4. Сохраняет простой JSON-файл со списком URL в `$LANCEDB_PATH/valid-urls.json`
+5. Без краулинга и сбора метаданных — просто плоский список валидных URL
 
-**Why this matters:**
+**Почему это важно:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* Предотвращает галлюцинации LLM с вымышленными URL, такими как `/dashboard` или `/login`
+* Обеспечивает белый список валидных URL для генератора ответов
+* Просто, быстро и не требует хранения в векторной базе данных
+* Генератор ответов загружает этот список при запуске и включает его в подсказку
 
-**Add to crontab for weekly updates:**
+**Добавьте в crontab для еженедельного обновления:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# Извлечение списка URL из sitemap — еженедельно в полночь воскресенья
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Ручное тестирование задач Cron {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+Чтобы протестировать задачу перед добавлением в cron:
 
 ```bash
-# Test sitemap training
+# Тестирование обучения по sitemap
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Тестирование обучения по истории поддержки
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +815,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Мониторинг логов {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Каждая задача пишет в отдельный файл для удобства отладки:
 
 ```bash
-# Watch support inbox processing in real-time
+# Просмотр обработки входящих писем поддержки в реальном времени
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Проверка запуска обучения за прошлую ночь
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Просмотр всех ошибок по задачам
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Используйте отдельные файлы логов для каждого почтового ящика, чтобы изолировать проблемы. Если у одного ящика возникают проблемы с аутентификацией, это не повлияет на логи других ящиков.
+## Примеры кода {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Скрапинг и обработка {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +843,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Очистить старые данные
 await vectorStore.clear();
 
-// Scrape all sources
+// Скрапить все источники
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`Скраплено ${documents.length} документов`);
 
-// Process into chunks
+// Обработать в чанки
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`Сгенерировано ${allChunks.length} чанков`);
 
-// Generate embeddings and store
+// Сгенерировать эмбеддинги и сохранить
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +870,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Обучение на исторических письмах {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +884,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Сканировать все папки (Входящие, Отправленные и т.д.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Группировать в цепочки переписки
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Обрабатывать каждую цепочку
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Пропустить зашифрованные сообщения, которые не удалось расшифровать
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Использовать уже распарсенный контент из nodemailer
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // Разбить на чанки и сохранить
+    const chunks = processor.chunkText(`Тема: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +929,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Запрос контекста {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +938,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Запрос к обоим хранилищам
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Здесь происходит взвешенное ранжирование и удаление дубликатов
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Генерация ответа
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## Будущее: R\&D сканера спама {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Весь этот проект был не только для поддержки клиентов. Это была исследовательская работа (R\&D). Теперь мы можем применить всё, что узнали о локальных эмбеддингах, векторных хранилищах и извлечении контекста, к нашему следующему крупному проекту: LLM-слою для [Spam Scanner](https://spamscanner.net). Те же принципы конфиденциальности, самостоятельного хостинга и семантического понимания будут ключевыми.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Устранение неполадок {#troubleshooting}
+
+### Ошибка несоответствия размерности вектора {#vector-dimension-mismatch-error}
+
+**Ошибка:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Причина:** Эта ошибка возникает, когда вы меняете модель эмбеддингов (например, с `mistral-small` на `mxbai-embed-large`), но существующая база данных LanceDB была создана с другой размерностью вектора.
+**Решение:** Вам нужно переобучить базу знаний с новым моделью встраивания:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Остановите все запущенные задачи AI поддержки клиентов
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Удалите существующую базу данных LanceDB
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Проверьте, что модель встраивания правильно указана в .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Должно показать: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Загрузите модель встраивания в Ollama
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Переобучите базу знаний
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Перезапустите задачу process-inbox через Bree
+# Задача будет автоматически запускаться каждые 5 минут
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Почему это происходит:** Разные модели встраивания создают векторы разной размерности:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 измерения
+* `mxbai-embed-large`: 1024 измерения
+* `nomic-embed-text`: 768 измерений
+* `all-minilm`: 384 измерения
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB хранит размерность вектора в схеме таблицы. При запросе с другой размерностью происходит ошибка. Единственное решение — пересоздать базу данных с новой моделью.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Контекст пустой базы знаний {#empty-knowledge-base-context}
 
-**Symptom:**
+**Симптом:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,220 +1011,222 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Причина:** База знаний ещё не обучена или таблица LanceDB не существует.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Решение:** Запустите задачу обучения для заполнения базы знаний:
 
 ```bash
-# Train from historical emails
+# Обучение на исторических письмах
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Или обучение с сайта/документов (если у вас есть скрейпер)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### Ошибки расшифровки PGP {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Симптом:** Сообщения отображаются как зашифрованные, но содержимое пустое.
 
-**Solution:**
+**Решение:**
 
-1. Verify GPG key path is set correctly:
+1. Проверьте правильность пути к GPG ключу:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Должен указывать на ваш приватный ключ
 ```
 
-2. Test decryption manually:
+2. Проверьте расшифровку вручную:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Проверьте права доступа к ключу:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# Файл должен быть доступен для чтения пользователю, запускающему задачу
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Советы по использованию {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Достижение "Пустого входящего" {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+Система разработана, чтобы помочь вам автоматически достичь "пустого входящего":
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Автоматическое архивирование**: Когда черновик успешно создан, исходное сообщение автоматически перемещается в папку Архив. Это поддерживает ваш входящий в чистоте без ручного вмешательства.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Проверка черновиков**: Регулярно проверяйте папку Черновики, чтобы просмотреть ответы, сгенерированные ИИ. При необходимости редактируйте перед отправкой.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Ручное управление**: Для сообщений, требующих особого внимания, просто добавьте метку `skip-ai` до запуска задачи.
 
-To prevent AI processing for specific messages:
+### Использование метки skip-ai {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+Чтобы предотвратить обработку ИИ для конкретных сообщений:
 
-**When to use skip-ai:**
+1. **Добавьте метку**: В вашем почтовом клиенте добавьте метку/тег `skip-ai` к любому сообщению (без учёта регистра)
+2. **Сообщение остаётся во входящих**: Сообщение не будет обработано и не будет архивировано
+3. **Обработка вручную**: Вы можете ответить на него самостоятельно без вмешательства ИИ
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**Когда использовать skip-ai:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Конфиденциальные или чувствительные сообщения
+* Сложные случаи, требующие человеческого суждения
+* Сообщения от VIP-клиентов
+* Юридические или связанные с соблюдением требований запросы
+* Сообщения, требующие немедленного внимания человека
 
-The system follows standard email conventions:
+### Поток писем и ответ всем {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+Система следует стандартным почтовым соглашениям:
+
+**Цитирование исходных сообщений:**
 
 ```
-Hi there,
+Привет,
 
-[AI-generated response]
+[Ответ, сгенерированный ИИ]
 
 --
-Thank you,
+Спасибо,
 Forward Email
 https://forwardemail.net
 
-On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
-> This is the original message
-> with each line quoted
-> using the standard "> " prefix
+В пн, 15 янв. 2024, 15:45 Джон Доу <john@example.com> написал:
+> Это исходное сообщение
+> с каждой строкой, цитируемой
+> с помощью стандартного префикса "> "
 ```
 
-**Reply-To Handling:**
+**Обработка Reply-To:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Если в исходном сообщении есть заголовок Reply-To, черновик отвечает на этот адрес
+* Исходный адрес From добавляется в CC
+* Все остальные исходные получатели To и CC сохраняются
 
-**Example:**
+**Пример:**
 
 ```
-Original message:
-  From: john@company.com
+Исходное сообщение:
+  От: john@company.com
   Reply-To: support@company.com
-  To: support@forwardemail.net
-  CC: manager@company.com
+  Кому: support@forwardemail.net
+  Копия: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
-  CC: john@company.com, manager@company.com
+Черновик ответа:
+  Кому: support@company.com (из Reply-To)
+  Копия: john@company.com, manager@company.com
 ```
+### Мониторинг и обслуживание {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Регулярно проверяйте качество черновиков:**
 
 ```bash
-# View recent drafts
+# Просмотр последних черновиков
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Мониторинг архивирования:**
 
 ```bash
-# Check for archiving errors
+# Проверка ошибок архивирования
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Просмотр пропущенных сообщений:**
 
 ```bash
-# See which messages were skipped
+# Просмотр пропущенных сообщений
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Тестирование {#testing}
 
-### Running Tests {#running-tests}
+Система поддержки клиентов на базе ИИ включает комплексное покрытие тестами с 23 тестами Ava.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Запуск тестов {#running-tests}
+
+Из-за конфликтов переопределения npm-пакетов с `better-sqlite3` используйте предоставленный скрипт тестирования:
 
 ```bash
-# Run all customer support AI tests
+# Запуск всех тестов поддержки клиентов на базе ИИ
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Запуск с подробным выводом
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Запуск конкретного тестового файла
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Альтернативно, запустите тесты напрямую:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Покрытие тестами {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Sitemap Fetcher (6 тестов):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* Сопоставление с регулярным выражением шаблона локали
+* Извлечение пути URL и удаление локали
+* Логика фильтрации URL по локалям
+* Логика парсинга XML
+* Логика удаления дубликатов
+* Комбинированная фильтрация, удаление и очистка
 
-**Message Utils (9 tests):**
+**Message Utils (9 тестов):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Извлечение текста отправителя с именем и email
+* Обработка только email, если имя совпадает с префиксом
+* Использование from.text, если доступно
+* Использование Reply-To, если присутствует
+* Использование From, если Reply-To нет
+* Включение оригинальных получателей CC
+* Исключение нашего адреса из CC
+* Обработка Reply-To с From в CC
+* Удаление дубликатов адресов CC
 
-**Response Generator (8 tests):**
+**Response Generator (8 тестов):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* Логика группировки URL для подсказки
+* Логика определения имени отправителя
+* Структура подсказки включает все необходимые разделы
+* Форматирование списка URL без угловых скобок
+* Обработка пустого списка URL
+* Список запрещённых URL в подсказке
+* Включение исторического контекста
+* Корректные URL для тем, связанных с аккаунтом
 
-### Test Environment {#test-environment}
+### Тестовая среда {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+Тесты используют `.env.test` для конфигурации. Тестовая среда включает:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Мок-учётные данные PayPal и Stripe
+* Тестовые ключи шифрования
+* Отключённые провайдеры аутентификации
+* Безопасные пути для тестовых данных
 
-All tests are designed to run without external dependencies or network calls.
+Все тесты разработаны для запуска без внешних зависимостей и сетевых вызовов.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Основные выводы {#key-takeaways}
+
+1. **Приватность прежде всего:** Самостоятельный хостинг обязателен для соответствия GDPR/DPA.
+2. **Стоимость имеет значение:** Облачные AI-сервисы в 50-1000 раз дороже самостоятельного хостинга для производственных нагрузок.
+3. **Экосистема сломана:** Большинство векторных баз данных неудобны для разработчиков. Тестируйте всё локально.
+4. **Уязвимости безопасности реальны:** В ChromaDB и Qdrant были критические уязвимости RCE.
+5. **LanceDB работает:** Встроенная, безсерверная, не требует отдельного процесса.
+6. **Ollama надёжен:** Локальный вывод LLM с `mxbai-embed-large` хорошо подходит для нашего случая.
+7. **Несоответствие типов убьёт вас:** `text` против `content`, ObjectID против строки. Эти баги тихие и жестокие.
+8. **Взвешенный рейтинг важен:** Не весь контекст одинаково важен. FAQ > GitHub issues > Исторические письма.
+9. **Исторический контекст — золото:** Обучение на прошлых письмах поддержки значительно улучшает качество ответов.
+10. **PGP-дешифровка необходима:** Многие письма поддержки зашифрованы; правильное расшифрование критично для обучения.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Узнайте больше о Forward Email и нашем подходе к приватности электронной почты на [forwardemail.net](https://forwardemail.net).

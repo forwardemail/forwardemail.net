@@ -1,134 +1,142 @@
 # Điều khoản {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email terms of service" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="Điều khoản dịch vụ Forward Email" class="rounded-lg" />
+
 
 ## Mục lục {#table-of-contents}
 
-* [Tuyên bố miễn trừ trách nhiệm](#disclaimer)
+* [Tuyên bố từ chối trách nhiệm](#disclaimer)
 * [Sử dụng không giới hạn](#unlimited-usage)
 * [Hạn chế](#limitations)
 * [Hoàn tiền](#refunds)
 * [Tranh chấp](#disputes)
-* [Thỏa thuận mức dịch vụ ("SLA")](#service-level-agreement-sla)
+* [Thỏa thuận cấp độ dịch vụ ("SLA")](#service-level-agreement-sla)
   * [Điều khoản](#terms-1)
-  * [Hiệp định](#agreement)
+  * [Thỏa thuận](#agreement)
   * [Tín dụng](#credits)
-  * [Điều kiện đủ tư cách](#eligibility)
-* [Sửa đổi và lỗi chính tả](#revisions-and-errata)
+  * [Điều kiện đủ](#eligibility)
+* [Sửa đổi và đính chính](#revisions-and-errata)
 * [Liên kết](#links)
-* [Sửa đổi Điều khoản sử dụng trang web](#site-terms-of-use-modifications)
-* [Luật quản lý](#governing-law)
+* [Sửa đổi điều khoản sử dụng trang web](#site-terms-of-use-modifications)
+* [Luật áp dụng](#governing-law)
 * [Tiết lộ bổ sung](#additional-disclosures)
 
-## Tuyên bố miễn trừ trách nhiệm {#disclaimer}
 
-Khi truy cập trang web này, bạn đồng ý chịu ràng buộc bởi các Điều khoản và Điều kiện Sử dụng này, tất cả luật và quy định hiện hành và đồng ý rằng bạn có trách nhiệm tuân thủ mọi luật pháp địa phương hiện hành.
+## Tuyên bố từ chối trách nhiệm {#disclaimer}
 
-Bạn phải ít nhất mười tám (18) tuổi hoặc từ mười ba (13) đến mười bảy (17) tuổi và sử dụng Dịch vụ với sự đồng ý và giám sát của cha mẹ hoặc người giám hộ hợp pháp.
+Bằng cách truy cập trang web này, bạn đồng ý bị ràng buộc bởi các Điều khoản và Điều kiện Sử dụng này, tất cả các luật và quy định áp dụng, và đồng ý rằng bạn chịu trách nhiệm tuân thủ bất kỳ luật địa phương nào có liên quan.
 
-<u>**Nếu bạn không đồng ý với bất kỳ điều khoản nào trong số các điều khoản này hoặc bất kỳ điều khoản nào dưới đây, bạn bị cấm sử dụng hoặc truy cập trang web này.**</u>
+Bạn phải ít nhất mười tám (18) tuổi, hoặc từ mười ba (13) đến mười bảy (17) tuổi và sử dụng Dịch vụ với sự đồng ý và giám sát của cha mẹ hoặc người giám hộ hợp pháp.
 
-Các tài liệu trên trang web của Forward Email và các dịch vụ liên quan ("Dịch vụ") được cung cấp "nguyên trạng".
+<u>**Nếu bạn không đồng ý với bất kỳ điều khoản nào trong số này hoặc bất kỳ điều khoản nào dưới đây, bạn bị cấm sử dụng hoặc truy cập trang web này.**</u>
 
-Forward Email không đưa ra bất kỳ bảo đảm nào, dù rõ ràng hay ngụ ý, và từ chối và phủ nhận mọi bảo đảm khác, bao gồm nhưng không giới hạn ở bảo đảm ngụ ý hoặc điều kiện về khả năng bán được, tính phù hợp cho một mục đích cụ thể hoặc không vi phạm quyền sở hữu trí tuệ hoặc vi phạm quyền khác.
+Các tài liệu trên trang web Forward Email và các dịch vụ liên quan ("Dịch vụ") được cung cấp "nguyên trạng".
 
-Ngoài ra, Forward Email không bảo đảm hoặc đưa ra bất kỳ tuyên bố nào liên quan đến tính chính xác, kết quả có thể xảy ra hoặc độ tin cậy của việc sử dụng các tài liệu trên Dịch vụ của mình hoặc liên quan đến các tài liệu đó hoặc trên bất kỳ trang web nào được liên kết đến trang web này.
+Forward Email không đưa ra bất kỳ bảo đảm nào, dù rõ ràng hay ngụ ý, và bằng đây từ chối và bác bỏ tất cả các bảo đảm khác, bao gồm nhưng không giới hạn, các bảo đảm hoặc điều kiện ngụ ý về khả năng thương mại, sự phù hợp cho một mục đích cụ thể, hoặc không vi phạm quyền sở hữu trí tuệ hoặc các vi phạm quyền khác.
 
-<u>**Bạn đặc biệt đồng ý rằng bạn sẽ không sử dụng Dịch vụ cho bất kỳ mục đích kinh doanh hoặc tài liệu liên quan nào cho cả [Các doanh nghiệp bị cấm của Stripe](https://stripe.com/legal/restricted-businesses) và [Các hoạt động bị cấm của PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
+Hơn nữa, Forward Email không bảo đảm hoặc đưa ra bất kỳ tuyên bố nào liên quan đến độ chính xác, kết quả có thể đạt được, hoặc độ tin cậy của việc sử dụng các tài liệu trên Dịch vụ của mình hoặc liên quan đến các tài liệu đó hoặc trên bất kỳ trang web nào được liên kết với trang này.
 
-<u>**Bạn đặc biệt đồng ý rằng khi sử dụng Dịch vụ, Forward Email sẽ không chịu trách nhiệm, sẽ không chịu trách nhiệm pháp lý và bạn sẽ không tạo, đọc, sửa đổi hoặc truyền bất kỳ nội dung nào sau đây bằng Dịch vụ:**</u>
+<u>**Bạn đồng ý cụ thể rằng bạn sẽ không sử dụng Dịch vụ cho bất kỳ doanh nghiệp hoặc tài liệu liên quan nào thuộc cả [Doanh nghiệp bị cấm của Stripe](https://stripe.com/legal/restricted-businesses) và [Hoạt động bị cấm của PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
 
-* **Bạn sẽ không sử dụng dịch vụ của chúng tôi để vận hành một dịch vụ cho phép bên thứ ba (ngoài nhân viên và nhà thầu của bạn) truy cập, sử dụng hoặc hưởng lợi từ dịch vụ của chúng tôi. Nếu bạn cần chúng tôi tạo ngoại lệ cho bạn về vấn đề này, vui lòng liên hệ với chúng tôi để thảo luận về thỏa thuận doanh nghiệp. Xem [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) của chúng tôi để biết thêm thông tin.**
-* Nếu bạn đang sử dụng dịch vụ [SMTP gửi đi](/faq#do-you-support-sending-email-with-smtp) của chúng tôi, bạn đồng ý với những điều khoản sau:
-* Bạn được phép sử dụng dịch vụ này cho [email giao dịch](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) và [tiếp thị qua email](https://en.wikipedia.org/wiki/Email_marketing).
-* Nếu bạn đang gửi tài liệu tiếp thị qua email, bạn phải bao gồm tiêu đề `List-Unsubscribe` và người đăng ký của bạn phải chọn tham gia.
-* Chúng tôi khuyên bạn nên sử dụng trình quản lý bản tin nguồn mở như [ListMonk](https://github.com/knadh/listmonk) tại <https://github.com/knadh/listmonk>.
-* Lưu ý rằng chúng tôi dự định sẽ phát hành trình quản lý bản tin riêng trong tương lai.
-* Tài liệu tiếp thị qua email bao gồm email quảng cáo, email hàng loạt hoặc email thương mại gửi đến danh sách liên hệ có nội dung, dòng tiêu đề và nội dung thư tương tự (ví dụ: bản tin và thông báo).
-* Bạn phải tuân thủ [Đạo luật CAN-SPAM năm 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
-* Bạn phải xóa ngay lập tức hoặc trong vòng 24 giờ những người dùng đã chọn không tham gia, hủy đăng ký hoặc đánh dấu email của bạn là thư rác.
-* Lần đầu tiên tên miền của bạn thử gửi bản tin, quản trị viên sẽ xem xét và phê duyệt tên miền của bạn để gửi bản tin (thường trong vòng 2-4 giờ, nhưng đôi khi có thể mất nhiều thời gian hơn).
-* Bất kỳ điều gì gây cản trở đến việc gián đoạn Dịch vụ, hoạt động của Dịch vụ và/hoặc khách hàng của Dịch vụ.
-* Tài liệu mang tính lăng mạ, phỉ báng, sai sự thật, quấy rối, khiếm nhã, bôi nhọ, gây hiểu lầm, phản cảm, khiêu dâm, xúc phạm, tục tĩu, đe dọa, bất hợp pháp và/hoặc thô tục.
-* Tài liệu có bản quyền hoặc bí mật trái phép và/hoặc tài liệu xâm phạm quyền sở hữu trí tuệ, bí mật thương mại và/hoặc quyền riêng tư của người khác.
+<u>**Bạn đồng ý cụ thể rằng khi sử dụng Dịch vụ, Forward Email sẽ không chịu trách nhiệm, không chịu trách nhiệm pháp lý, và bạn sẽ không tạo, đọc, sửa đổi hoặc truyền tải bất kỳ điều gì sau đây bằng Dịch vụ:**</u>
 
-* Bất kỳ nội dung nào khuyến khích hành vi phạm tội, có khả năng gây ra trách nhiệm dân sự và/hoặc vi phạm luật pháp hoặc quy định của bất kỳ khu vực pháp lý nào.
-* Tài liệu gây hại hoặc có khả năng gây hại cho trẻ vị thành niên, mạo danh cá nhân hoặc tổ chức khác và/hoặc xuyên tạc mối liên hệ với một cá nhân hoặc tổ chức.
-* Tài liệu chứa thư rác, vi-rút, phần mềm độc hại, nội dung NSFW (nội dung khiếm nhã, khiêu khích hoặc tục tĩu), tệp bị hỏng và/hoặc bất kỳ phần mềm hoặc chương trình nào khác có thể gây hại hoặc có khả năng gây hại cho cá nhân, tổ chức, máy tính, mạng, chính phủ, dịch vụ và/hoặc bất kỳ vấn đề nào khác.
+* **Bạn sẽ không sử dụng dịch vụ của chúng tôi để vận hành một dịch vụ cho phép bên thứ ba (ngoài nhân viên và nhà thầu của bạn) truy cập, sử dụng hoặc hưởng lợi từ dịch vụ của chúng tôi. Nếu bạn cần chúng tôi tạo ngoại lệ cho bạn về điều này, vui lòng liên hệ với chúng tôi để thảo luận về thỏa thuận doanh nghiệp. Xem [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) của chúng tôi để biết thêm thông tin.**
+* Nếu bạn đang sử dụng dịch vụ [SMTP gửi đi](/faq#do-you-support-sending-email-with-smtp) của chúng tôi, thì bạn đồng ý với các điều sau:
+  * Bạn được phép sử dụng nó cho [email giao dịch](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) và [email marketing](https://en.wikipedia.org/wiki/Email_marketing).
+  * Nếu bạn gửi tài liệu email marketing, bạn phải bao gồm tiêu đề `List-Unsubscribe` và người đăng ký của bạn phải đồng ý tham gia.
+    * Chúng tôi khuyến nghị bạn sử dụng trình quản lý bản tin mã nguồn mở như [ListMonk](https://github.com/knadh/listmonk) tại <https://github.com/knadh/listmonk>.
+      * Lưu ý rằng chúng tôi dự định phát hành trình quản lý bản tin riêng trong tương lai.
+    * Tài liệu email marketing bao gồm email quảng cáo, gửi hàng loạt hoặc thương mại đến danh sách liên hệ với nội dung, dòng chủ đề và nội dung thân bài tương tự (ví dụ: bản tin và thông báo).
+    * Bạn phải tuân thủ [Đạo luật CAN-SPAM năm 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
+    * Bạn phải loại bỏ người dùng đã từ chối, hủy đăng ký hoặc đánh dấu email của bạn là thư rác ngay lập tức hoặc trong vòng 24 giờ.
+    * Lần đầu tiên tên miền của bạn cố gắng gửi bản tin, một quản trị viên sẽ xem xét và phê duyệt tên miền của bạn để gửi bản tin (thường trong vòng 2-4 giờ, nhưng đôi khi có thể lâu hơn).
+* Bất cứ điều gì gây cản trở hoặc gián đoạn Dịch vụ, hoạt động của nó và/hoặc khách hàng của nó.
+* Tài liệu có tính chất lạm dụng, phỉ báng, sai sự thật, quấy rối, khiếm nhã, vu khống, gây hiểu lầm, khó chịu, khiêu dâm, xúc phạm, tục tĩu, đe dọa, bất hợp pháp và/hoặc thô tục.
+* Tài liệu bản quyền hoặc bí mật không được phép và/hoặc tài liệu vi phạm quyền sở hữu trí tuệ, bí mật thương mại và/hoặc quyền riêng tư của người khác.
+* Bất cứ điều gì khuyến khích hành vi phạm tội, có khả năng gây trách nhiệm dân sự, và/hoặc vi phạm luật hoặc quy định của bất kỳ khu vực pháp lý nào.
+* Tài liệu gây hại hoặc có khả năng gây hại cho trẻ vị thành niên, giả mạo cá nhân hoặc tổ chức khác, và/hoặc giả mạo mối quan hệ với cá nhân hoặc tổ chức.
+* Tài liệu chứa thư rác, virus, phần mềm độc hại, tài liệu NSFW (nội dung khiếm nhã, khiêu khích hoặc tục tĩu), tập tin bị hỏng, và/hoặc bất kỳ phần mềm hoặc chương trình nào có thể gây hại hoặc có khả năng gây hại cho cá nhân, tổ chức, máy tính, mạng, chính phủ, dịch vụ và/hoặc bất kỳ vấn đề nào khác.
+Các tài liệu chứa trong trang web này được bảo vệ bởi luật bản quyền và nhãn hiệu thương mại hiện hành.
 
-Các tài liệu có trong trang web này được bảo vệ bởi luật bản quyền và nhãn hiệu hiện hành.
+Việc bạn truy cập trang web của chúng tôi và sử dụng dịch vụ của chúng tôi cho thấy bạn đã đồng ý với [Chính sách Bảo mật](/privacy) và [Thỏa thuận Xử lý Dữ liệu](/dpa) của chúng tôi (ví dụ như để tuân thủ GDPR).
 
-Việc bạn truy cập trang web và sử dụng dịch vụ của chúng tôi cho thấy bạn đã đồng ý với [Chính sách bảo mật](/privacy) và [Thỏa thuận xử lý dữ liệu](/dpa) của chúng tôi (ví dụ: để tuân thủ GDPR).
 
-## Sử dụng không giới hạn {#unlimited-usage}
+## Sử Dụng Không Giới Hạn {#unlimited-usage}
 
-Về việc sử dụng "không giới hạn" trong dịch vụ của chúng tôi, chúng tôi tự động giới hạn mức giá và có thể tạm thời hạn chế hoặc làm chậm việc sử dụng khi cần thiết để duy trì chất lượng dịch vụ cho tất cả khách hàng.
+Về việc sử dụng "không giới hạn" trong dịch vụ của chúng tôi, chúng tôi tự động giới hạn tốc độ và có thể tạm thời hạn chế hoặc làm chậm việc sử dụng khi cần thiết để duy trì chất lượng dịch vụ cho tất cả khách hàng.
 
-Nếu chúng tôi xác định cách bạn sử dụng dịch vụ khác với hành vi thông thường của người dùng, bị nhóm của chúng tôi coi là hoạt động spam hoặc độc hại hoặc vì bất kỳ lý do nào khác theo quyết định riêng của chúng tôi, thì chúng tôi có thể hạn chế hoặc làm chậm quá trình sử dụng.
+Nếu chúng tôi xác định việc sử dụng dịch vụ của bạn khác với hành vi người dùng bình thường, bị đội ngũ chúng tôi coi là spam hoặc hoạt động độc hại, hoặc vì bất kỳ lý do nào khác theo quyết định riêng của chúng tôi – thì chúng tôi có thể hạn chế hoặc làm chậm việc sử dụng.
 
-Chúng tôi có thể hoặc không thông báo trước cho bạn về những hạn chế đã áp dụng hoặc sẽ áp dụng cho tài khoản của bạn và dịch vụ nói chung.
+Chúng tôi có thể hoặc không thông báo trước cho bạn về các hạn chế đã áp đặt hoặc sẽ áp đặt trên tài khoản và dịch vụ nói chung.
 
-## Giới hạn {#limitations}
 
-Trong mọi trường hợp, Forward Email hoặc các nhà cung cấp của Forward Email sẽ không chịu trách nhiệm cho bất kỳ thiệt hại nào (bao gồm, nhưng không giới hạn, thiệt hại do mất dữ liệu hoặc lợi nhuận, hoặc do gián đoạn kinh doanh) phát sinh từ việc sử dụng hoặc không thể sử dụng các tài liệu trên trang web của Forward Email, ngay cả khi Forward Email hoặc đại diện được ủy quyền của Forward Email đã được thông báo bằng miệng hoặc bằng văn bản về khả năng xảy ra thiệt hại đó. Do một số khu vực pháp lý không cho phép giới hạn bảo hành ngụ ý hoặc giới hạn trách nhiệm đối với thiệt hại do hậu quả hoặc ngẫu nhiên, những giới hạn này có thể không áp dụng cho bạn.
+## Giới Hạn {#limitations}
 
-## Hoàn tiền {#refunds}
+Trong bất kỳ trường hợp nào, Forward Email hoặc nhà cung cấp của nó sẽ không chịu trách nhiệm về bất kỳ thiệt hại nào (bao gồm, nhưng không giới hạn, thiệt hại do mất dữ liệu hoặc lợi nhuận, hoặc do gián đoạn kinh doanh,) phát sinh từ việc sử dụng hoặc không thể sử dụng các tài liệu trên trang Internet của Forward Email, ngay cả khi Forward Email hoặc đại diện được ủy quyền của Forward Email đã được thông báo bằng lời hoặc bằng văn bản về khả năng xảy ra thiệt hại đó. Vì một số khu vực pháp lý không cho phép giới hạn về bảo đảm ngụ ý, hoặc giới hạn trách nhiệm đối với thiệt hại gián tiếp hoặc ngẫu nhiên, nên các giới hạn này có thể không áp dụng cho bạn.
 
-Hoàn tiền tự động sẽ được áp dụng khi bạn nâng cấp, hạ cấp hoặc hủy tài khoản trong vòng 30 ngày kể từ ngày gói cước của bạn bắt đầu. Điều này chỉ áp dụng cho khách hàng lần đầu đăng ký.
 
-Chúng tôi không tính tỷ lệ hoặc hoàn lại khoản chênh lệch khi bạn chuyển đổi gói cước. Thay vào đó, chúng tôi sẽ chuyển đổi thời hạn còn lại từ ngày hết hạn của gói cước hiện tại sang thời hạn tương đối gần nhất của gói cước mới (làm tròn xuống theo tháng).
+## Hoàn Tiền {#refunds}
 
-Xin lưu ý rằng nếu bạn nâng cấp hoặc hạ cấp giữa các gói trả phí trong vòng 30 ngày kể từ lần đầu tiên bắt đầu gói trả phí, chúng tôi sẽ tự động hoàn lại toàn bộ số tiền từ gói hiện tại của bạn.
+Hoàn tiền tự động xảy ra khi bạn nâng cấp, hạ cấp hoặc hủy tài khoản trong vòng 30 ngày kể từ khi gói dịch vụ của bạn bắt đầu. Điều này chỉ áp dụng cho khách hàng lần đầu.
 
-## Tranh chấp {#disputes}
+Chúng tôi không tính tỷ lệ theo thời gian hoặc hoàn tiền phần chênh lệch khi bạn chuyển đổi gói. Thay vào đó, chúng tôi chuyển đổi thời gian còn lại từ ngày hết hạn của gói hiện tại sang thời gian tương ứng gần nhất cho gói mới của bạn (làm tròn xuống theo tháng).
 
-Vui lòng liên hệ với chúng tôi nếu bạn muốn khiếu nại giao dịch hoặc khoản phí từ dịch vụ của chúng tôi. Vui lòng không liên hệ với nhà cung cấp thẻ tín dụng, ngân hàng hoặc PayPal của bạn.
+Lưu ý rằng nếu bạn nâng cấp hoặc hạ cấp giữa các gói trả phí trong vòng 30 ngày kể từ khi bắt đầu gói trả phí đầu tiên, thì chúng tôi sẽ tự động hoàn trả toàn bộ số tiền từ gói hiện tại của bạn.
 
-Tài khoản của bạn sẽ tự động bị cấm vĩnh viễn nếu bạn mở tranh chấp với nhà cung cấp thẻ tín dụng, ngân hàng hoặc PayPal.
 
-## Thỏa thuận mức dịch vụ ("SLA") {#service-level-agreement-sla}
+## Tranh Chấp {#disputes}
 
-### Điều khoản {#terms-1}
+Vui lòng liên hệ với chúng tôi nếu bạn muốn tranh chấp một giao dịch hoặc khoản phí từ dịch vụ của chúng tôi. Đừng liên hệ với nhà cung cấp thẻ tín dụng, ngân hàng hoặc PayPal của bạn.
 
-* "Thời gian ngừng hoạt động" là hệ số tỷ lệ lỗi của người dùng lớn hơn 5%, được xác định bởi tỷ lệ lỗi phía máy chủ.
-* "Tỷ lệ phần trăm thời gian hoạt động hàng tháng" là tổng số phút trong một tháng dương lịch trừ đi số phút thời gian ngừng hoạt động xảy ra trong tháng dương lịch, chia cho tổng số phút trong tháng dương lịch đó.
+Tài khoản của bạn sẽ bị cấm vĩnh viễn và tự động nếu bạn mở tranh chấp với nhà cung cấp thẻ tín dụng, ngân hàng hoặc PayPal của bạn.
 
-### Thỏa thuận {#agreement}
 
-Forward Email sẽ nỗ lực hết sức để đảm bảo dịch vụ Forward Email luôn sẵn sàng phục vụ khách hàng trả phí 99,99% thời gian trong bất kỳ tháng dương lịch nào. Nếu không, bạn có thể đủ điều kiện nhận [Tín dụng](#credits) được mô tả bên dưới theo [Điều kiện đủ tư cách](#eligibility).
+## Thỏa Thuận Mức Dịch Vụ ("SLA") {#service-level-agreement-sla}
 
-### Tín dụng {#credits}
+### Điều Khoản {#terms-1}
 
-| Tỷ lệ thời gian hoạt động hàng tháng | Số ngày phục vụ* |
+* "Thời gian ngừng hoạt động" đề cập đến tỷ lệ lỗi người dùng vượt quá 5%, được xác định bởi tỷ lệ lỗi phía máy chủ.
+* "Tỷ lệ Thời gian Hoạt động Hàng tháng" đề cập đến tổng số phút trong một tháng dương lịch trừ đi số phút bị Thời gian ngừng hoạt động trong tháng đó, chia cho tổng số phút trong tháng dương lịch.
+
+### Thỏa Thuận {#agreement}
+
+Forward Email sẽ sử dụng mọi nỗ lực thương mại hợp lý (không thấp hơn tiêu chuẩn ngành chấp nhận và hợp lý) để đảm bảo dịch vụ Forward Email có sẵn cho khách hàng trả phí 99,99% thời gian trong bất kỳ tháng dương lịch nào. Nếu không đạt được, bạn có thể đủ điều kiện nhận [Tín dụng](#credits) được mô tả dưới đây theo [Điều kiện](#eligibility).
+
+### Tín Dụng {#credits}
+
+| Tỷ lệ Thời gian Hoạt động Hàng tháng | Số ngày dịch vụ* |
 | ------------------------- | ---------------- |
-| < 99.99% – >= 99.90% | 3 |
-| < 99.90% – >= 95.00% | 7 |
-| < 95.50% | 15 |
+| < 99.99% – >= 99.90%      | 3                |
+| < 99.90% – >= 95.00%      | 7                |
+| < 95.50%                  | 15               |
 
-\* Thay vì nhận được Số ngày dịch vụ được cộng vào tài khoản của bạn, bạn cũng có thể chọn yêu cầu chúng tôi hoàn lại tiền theo tỷ lệ.
+\* Thay vì nhận số ngày dịch vụ được cộng vào tài khoản, bạn cũng có thể chọn để chúng tôi hoàn tiền theo tỷ lệ tương ứng.
 
-### Điều kiện đủ tư cách {#eligibility}
+### Điều Kiện {#eligibility}
 
-Số tiền tín dụng tối thiểu phải ít nhất là 1,00 đô la để đủ điều kiện. Số tiền tín dụng tối đa được giới hạn trong 30 ngày hoặc tổng số tiền khách hàng đang thanh toán trong tháng dương lịch gần nhất liên quan đến Thời gian ngừng hoạt động (tùy theo số nào lớn hơn). Khách hàng thanh toán bị ảnh hưởng bởi bất kỳ Thời gian ngừng hoạt động nào phải yêu cầu Tín dụng bằng cách nộp [Yêu cầu trợ giúp](/help) trong vòng 30 ngày kể từ ngày Thời gian ngừng hoạt động. Tín dụng chỉ áp dụng cho các yếu tố Thời gian ngừng hoạt động nằm trong tầm kiểm soát chính của Forward Email.
+Số tiền tín dụng tối thiểu phải ít nhất $1.00 để đủ điều kiện. Tín dụng tối đa được giới hạn ở 30 ngày hoặc tổng số tiền khách hàng trả trong tháng dương lịch gần nhất liên quan đến Thời gian ngừng hoạt động (tùy theo giá trị nào lớn hơn). Khách hàng trả phí bị ảnh hưởng bởi bất kỳ Thời gian ngừng hoạt động nào phải yêu cầu Tín dụng bằng cách gửi [Yêu cầu Hỗ trợ](/help) trong vòng 30 ngày kể từ ngày xảy ra Thời gian ngừng hoạt động. Tín dụng chỉ áp dụng cho các yếu tố Thời gian ngừng hoạt động nằm trong quyền kiểm soát chính của Forward Email.
+## Sửa đổi và Lỗi {#revisions-and-errata}
 
-## Bản sửa đổi và lỗi chính tả {#revisions-and-errata}
+Các tài liệu xuất hiện trên trang web của Forward Email có thể bao gồm các lỗi kỹ thuật, lỗi đánh máy hoặc lỗi chụp ảnh. Forward Email không đảm bảo rằng bất kỳ tài liệu nào trên trang web của mình là chính xác, đầy đủ hoặc cập nhật. Forward Email có thể thay đổi các tài liệu chứa trên trang web của mình bất cứ lúc nào mà không cần thông báo. Tuy nhiên, Forward Email không cam kết cập nhật các tài liệu đó.
 
-Tài liệu xuất hiện trên trang web của Forward Email có thể bao gồm lỗi kỹ thuật, lỗi đánh máy hoặc lỗi ảnh. Forward Email không đảm bảo rằng bất kỳ tài liệu nào trên trang web của mình là chính xác, đầy đủ hoặc cập nhật. Forward Email có thể thay đổi tài liệu trên trang web của mình bất cứ lúc nào mà không cần thông báo trước. Tuy nhiên, Forward Email không cam kết cập nhật tài liệu.
 
 ## Liên kết {#links}
 
-Forward Email chưa xem xét tất cả các trang web được liên kết đến Dịch vụ của mình và không chịu trách nhiệm về nội dung của bất kỳ trang web được liên kết nào. Việc đưa vào bất kỳ liên kết nào không có nghĩa là Forward Email xác nhận trang web đó. Việc sử dụng bất kỳ trang web được liên kết nào như vậy là do người dùng tự chịu rủi ro.
+Forward Email chưa xem xét tất cả các trang web được liên kết đến Dịch vụ của mình và không chịu trách nhiệm về nội dung của bất kỳ trang web liên kết nào như vậy. Việc bao gồm bất kỳ liên kết nào không ngụ ý sự ủng hộ của Forward Email đối với trang web đó. Việc sử dụng bất kỳ trang web liên kết nào như vậy là rủi ro của người dùng.
+
 
 ## Sửa đổi Điều khoản Sử dụng Trang web {#site-terms-of-use-modifications}
 
-Forward Email có thể sửa đổi các điều khoản sử dụng này cho trang web của mình bất cứ lúc nào mà không cần thông báo trước. Bằng việc sử dụng trang web này, bạn đồng ý bị ràng buộc bởi phiên bản hiện hành của các Điều khoản và Điều kiện Sử dụng này.
+Forward Email có thể sửa đổi các điều khoản sử dụng này cho trang web của mình bất cứ lúc nào mà không cần thông báo. Bằng cách sử dụng trang web này, bạn đồng ý bị ràng buộc bởi phiên bản hiện hành của các Điều khoản và Điều kiện Sử dụng này.
 
-## Luật áp dụng {#governing-law}
 
-Mọi khiếu nại liên quan đến trang web Forward Email sẽ được điều chỉnh bởi luật pháp của Tiểu bang Delaware mà không tính đến các điều khoản xung đột luật pháp của tiểu bang này.
+## Luật Áp dụng {#governing-law}
 
-Điều khoản và Điều kiện chung áp dụng cho việc sử dụng Trang web.
+Bất kỳ khiếu nại nào liên quan đến trang web của Forward Email sẽ được điều chỉnh bởi luật pháp của Bang Delaware mà không xét đến các quy định về xung đột pháp luật của nó.
 
-## Thông tin bổ sung {#additional-disclosures}
+Các Điều khoản và Điều kiện Chung áp dụng cho Việc Sử dụng Trang web.
 
-Trang web này được bảo vệ bởi Cloudflare và [Chính sách bảo mật](https://www.cloudflare.com/privacypolicy/) và [Điều khoản dịch vụ](https://www.cloudflare.com/website-terms/) được áp dụng.
+
+## Tiết lộ Bổ sung {#additional-disclosures}
+
+Trang web này được bảo vệ bởi Cloudflare và [Chính sách Bảo mật](https://www.cloudflare.com/privacypolicy/) và [Điều khoản Dịch vụ](https://www.cloudflare.com/website-terms/) của họ được áp dụng.

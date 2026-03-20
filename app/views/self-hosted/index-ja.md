@@ -1,83 +1,85 @@
 # セルフホスト {#self-hosted}
 
+
 ## 目次 {#table-of-contents}
 
-* [はじめる](#getting-started)
+* [はじめに](#getting-started)
 * [要件](#requirements)
-  * [クラウド初期化 / ユーザーデータ](#cloud-init--user-data)
+  * [Cloud-init / ユーザーデータ](#cloud-init--user-data)
 * [インストール](#install)
   * [インストールスクリプトのデバッグ](#debug-install-script)
   * [プロンプト](#prompts)
   * [初期設定（オプション1）](#initial-setup-option-1)
 * [サービス](#services)
   * [重要なファイルパス](#important-file-paths)
-* [構成](#configuration)
+* [設定](#configuration)
   * [初期DNS設定](#initial-dns-setup)
 * [オンボーディング](#onboarding)
 * [テスト](#testing)
-  * [最初のエイリアスを作成する](#creating-your-first-alias)
+  * [最初のエイリアスの作成](#creating-your-first-alias)
   * [最初のメールの送受信](#sending--receiving-your-first-email)
 * [トラブルシューティング](#troubleshooting)
-  * [基本認証のユーザー名とパスワードは何ですか](#what-is-the-basic-auth-username-and-password)
-  * [何が実行されているかを知るには](#how-do-i-know-what-is-running)
-  * [実行されるべき何かが実行されていないかどうかを知るにはどうすればいいですか？](#how-do-i-know-if-something-isnt-running-that-should-be)
-  * [ログを見つけるにはどうすればいいですか](#how-do-i-find-logs)
-  * [送信メールがタイムアウトするのはなぜですか](#why-are-my-outgoing-emails-timing-out)
+  * [ベーシック認証のユーザー名とパスワードは何ですか](#what-is-the-basic-auth-username-and-password)
+  * [何が動作しているかどうやってわかりますか](#how-do-i-know-what-is-running)
+  * [動作すべきものが動作していないかどうやってわかりますか](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [ログはどのように見つけますか](#how-do-i-find-logs)
+  * [なぜ送信メールがタイムアウトするのですか](#why-are-my-outgoing-emails-timing-out)
+
 
 ## はじめに {#getting-started}
 
-当社のセルフホスト型メールソリューションは、他のすべての製品と同様に、フロントエンドとバックエンドの両方で100%オープンソースです。つまり、
+当社のセルフホスト型メールソリューションは、すべての製品と同様に、フロントエンドとバックエンドの両方が100％オープンソースです。これにより：
 
-1. **完全な透明性**: メールを処理するすべてのコード行が公開されており、誰でも精査できます。
-2. **コミュニティへの貢献**: 誰でも改善や問題の修正に貢献できます。
-3. **オープン性によるセキュリティ**: 脆弱性はグローバルコミュニティによって特定・修正されます。
-4. **ベンダーロックインなし**: お客様は当社の存在に依存する必要はありません。
+1. **完全な透明性**：メールを処理するすべてのコードが公開されており、誰でも確認可能です
+2. **コミュニティの貢献**：誰でも改善や問題修正に参加できます
+3. **オープン性によるセキュリティ**：脆弱性は世界中のコミュニティによって特定・修正されます
+4. **ベンダーロックインなし**：当社の存続に依存しません
 
-コードベース全体は、MIT ライセンスに基づいて GitHub の <https://github.com/forwardemail/forwardemail.net>, で入手できます。
+コードベース全体はGitHubの <https://github.com/forwardemail/forwardemail.net> にてMITライセンスのもと公開されています。
 
-アーキテクチャには次のコンテナが含まれます。
+アーキテクチャには以下のコンテナが含まれます：
 
 * 送信メール用のSMTPサーバー
 * メール取得用のIMAP/POP3サーバー
-* 管理用のWebインターフェース
+* 管理用のウェブインターフェース
 * 設定保存用のデータベース
 * キャッシュとパフォーマンス向上のためのRedis
-* 安全で暗号化されたメールボックス保存用のSQLite
+* セキュアで暗号化されたメールボックス保存用のSQLite
 
 > \[!NOTE]
-> [セルフホストブログ](https://forwardemail.net/blog/docs/self-hosted-solution) もぜひご覧ください。
+> 当社の [セルフホストブログ](https://forwardemail.net/blog/docs/self-hosted-solution) もぜひご覧ください
 >
-> より詳細な手順を知りたい方は、[ウブントゥ](https://forwardemail.net/guides/selfhosted-on-ubuntu) または [デビアン](https://forwardemail.net/guides/selfhosted-on-debian) ベースのガイドをご覧ください。
+> また、より詳細なステップバイステップ版をお求めの方は、[Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) または [Debian](https://forwardemail.net/guides/selfhosted-on-debian) ベースのガイドをご参照ください。
+
 
 ## 要件 {#requirements}
 
-インストール スクリプトを実行する前に、次のものがあることを確認してください。
+インストールスクリプトを実行する前に、以下を確認してください：
 
-* **オペレーティング システム**: Linux ベースのサーバー (現在 Ubuntu 22.04 以降をサポート)。
-* **リソース**: vCPU 1 基と RAM 2GB
-* **ルートアクセス**: コマンド実行に必要な管理者権限。
-* **ドメイン名**: DNS 設定可能なカスタムドメイン。
-* **クリーン IP**: ブラックリストをチェックし、スパム評価のないクリーンな IP アドレスをサーバーに割り当ててください。詳細については、[ここ](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation) を参照してください。
-* ポート 25 をサポートするパブリック IP アドレス
-* [逆PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) を設定可能
-* IPv4 および IPv6 をサポート
+* **オペレーティングシステム**：Linuxベースのサーバー（現在はUbuntu 22.04以上をサポート）
+* **リソース**：1 vCPU と 2GB RAM
+* **ルートアクセス**：コマンド実行のための管理者権限
+* **ドメイン名**：DNS設定が可能なカスタムドメイン
+* **クリーンなIP**：スパムの評判がないクリーンなIPアドレスであること。ブラックリストを確認してください。詳細は [こちら](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation)
+* ポート25が利用可能なパブリックIPアドレス
+* [逆引きPTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) の設定が可能
+* IPv4およびIPv6のサポート
 
 > \[!TIP]
-> [素晴らしいメールサーバープロバイダー](https://github.com/forwardemail/awesome-mail-server-providers)のリストをご覧ください
+> 当社の [素晴らしいメールサーバープロバイダー一覧](https://github.com/forwardemail/awesome-mail-server-providers) をご覧ください
 
-### クラウド初期化 / ユーザーデータ {#cloud-init--user-data}
+### Cloud-init / ユーザーデータ {#cloud-init--user-data}
 
-ほとんどのクラウドベンダーは、仮想プライベートサーバー（VPS）のプロビジョニング時にcloud-init構成をサポートしています。これは、スクリプトの初期セットアップロジックで使用するファイルや環境変数を事前に設定しておくための優れた方法です。これにより、スクリプト実行中に追加情報の入力を求めるプロンプトが表示される必要がなくなります。
+ほとんどのクラウドベンダーは、仮想プライベートサーバー（VPS）をプロビジョニングする際にcloud-init設定をサポートしています。これは、スクリプトの初期セットアップロジックで使用するファイルや環境変数を事前に設定し、スクリプト実行中の追加情報入力を省略するのに便利です。
 
 **オプション**
 
-* `EMAIL` - certbot の有効期限リマインダーに使用するメールアドレス
-* `DOMAIN` - セルフホスティング設定で使用するカスタムドメイン（例：`example.com`）
-* `AUTH_BASIC_USERNAME` - サイト保護のために初回設定で使用するユーザー名
-* `AUTH_BASIC_PASSWORD` - サイト保護のために初回設定で使用するパスワード
-* `/root/.cloudflare.ini` - （**Cloudflare ユーザーのみ**）certbot が DNS 設定に使用する Cloudflare 設定ファイル。`dns_cloudflare_api_token` で API トークンを設定する必要があります。詳しくは [ここ](https://certbot-dns-cloudflare.readthedocs.io/en/stable/) をご覧ください。
-
-例：
+* `EMAIL` - certbotの有効期限リマインダーに使用するメールアドレス
+* `DOMAIN` - セルフホスティング設定に使用するカスタムドメイン（例：`example.com`）
+* `AUTH_BASIC_USERNAME` - 初回セットアップ時にサイト保護のために使用するユーザー名
+* `AUTH_BASIC_PASSWORD` - 初回セットアップ時にサイト保護のために使用するパスワード
+* `/root/.cloudflare.ini` - （**Cloudflareユーザーのみ**）certbotがDNS設定に使用するCloudflare設定ファイル。`dns_cloudflare_api_token`でAPIトークンを設定する必要があります。詳細は [こちら](https://certbot-dns-cloudflare.readthedocs.io/en/stable/) をご覧ください。
+Example:
 
 ```sh
 #cloud-config
@@ -98,15 +100,15 @@ runcmd:
 
 ## インストール {#install}
 
-サーバーで次のコマンドを実行して、インストール スクリプトをダウンロードして実行します。
+サーバーで以下のコマンドを実行して、インストールスクリプトをダウンロードし実行してください：
 
 ```sh
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### デバッグインストールスクリプト {#debug-install-script}
+### インストールスクリプトのデバッグ {#debug-install-script}
 
-詳細出力の場合は、インストール スクリプトの前に `DEBUG=true` を追加します。
+詳細な出力を得るには、インストールスクリプトの前に `DEBUG=true` を追加してください：
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -115,120 +117,123 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 ### プロンプト {#prompts}
 
 ```sh
-1. Initial setup
-2. Setup Backups
-3. Setup Auto Upgrades
-4. Renew certificates
-5. Restore from Backup
-6. Help
-7. Exit
+1. 初期設定
+2. バックアップの設定
+3. 自動アップグレードの設定
+4. 証明書の更新
+5. バックアップからの復元
+6. ヘルプ
+7. 終了
 ```
 
-* **初期設定**: 最新の転送メールコードをダウンロードし、環境を設定し、カスタムドメインの入力を求め、必要なすべての証明書、キー、シークレットを設定します。
-* **バックアップの設定**: 安全なリモートストレージとして、S3 互換ストアを使用して mongoDB と redis をバックアップするための cron を設定します。また、安全で暗号化されたバックアップのために、変更があった場合はログイン時に sqlite もバックアップされます。
-* **アップグレードの設定**: インフラストラクチャコンポーネントを安全に再構築して再起動するための夜間更新を確認する cron を設定します。
-* **証明書の更新**: SSL 証明書には Certbot / lets encrypt が使用され、キーは 3 か月ごとに期限切れになります。これにより、ドメインの証明書が更新され、関連コンポーネントが使用する適切なフォルダに配置されます。[重要なファイルパス](#important-file-paths) を参照してください。
-* **バックアップからの復元**: mongoDB と redis をトリガーしてバックアップデータから復元します。
+* **初期設定**: 最新の forward email コードをダウンロードし、環境を設定し、カスタムドメインを入力して必要な証明書、鍵、シークレットをすべてセットアップします。
+* **バックアップの設定**: mongoDB と redis のバックアップ用に S3 互換ストアを使った安全なリモートストレージ用の cron を設定します。別途、sqlite は変更があればログイン時にバックアップされ、安全で暗号化されたバックアップが行われます。
+* **アップグレードの設定**: 夜間の更新を確認し、安全にインフラコンポーネントを再構築・再起動する cron を設定します。
+* **証明書の更新**: SSL 証明書には Certbot / lets encrypt を使用し、鍵は3ヶ月ごとに期限切れになります。これによりドメインの証明書を更新し、関連コンポーネントが利用できるように必要なフォルダに配置します。[重要なファイルパス](#important-file-paths)を参照してください。
+* **バックアップからの復元**: mongodb と redis のバックアップデータからの復元をトリガーします。
 
-### 初期セットアップ（オプション1） {#initial-setup-option-1}
+### 初期設定（オプション1） {#initial-setup-option-1}
 
-開始するにはオプション `1. Initial setup` を選択してください。
+`1. 初期設定` を選択して開始してください。
 
-完了すると、成功メッセージが表示されます。`docker ps` を実行して、**コンポーネント**が起動していることを確認することもできます。コンポーネントの詳細については、以下をご覧ください。
+完了すると成功メッセージが表示されます。`docker ps` を実行して起動したコンポーネントを確認することもできます。コンポーネントの詳細は以下をご覧ください。
+
 
 ## サービス {#services}
 
-| サービス名 | デフォルトポート | 説明 |
-| ------------ | :----------: | ------------------------------------------------------ |
-| ウェブ | `443` | すべての管理者とのやり取りのためのWebインターフェース |
-| API | `4000` | データベースを抽象化するAPIレイヤー |
-| ブリー | なし | バックグラウンドジョブとタスクランナー |
-| SMTP | `465` (recommended) / `587` | 送信メール用のSMTPサーバー |
-| SMTPブリー | なし | SMTPバックグラウンドジョブ |
-| MX | `2525` | 受信メールとメール転送のためのメール交換 |
-| IMAP | `993/2993` | 受信メールとメールボックス管理用の IMAP サーバー |
-| POP3 | `995/2995` | 受信メールとメールボックス管理用の POP3 サーバー |
-| SQLite | `3456` | SQLite データベースとのやり取りのための SQLite サーバー |
-| SQLite ブリー | なし | SQLite バックグラウンドジョブ |
-| CalDAV | `5000` | カレンダー管理用のCalDAVサーバー |
-| カードDAV | `6000` | カレンダー管理用のCardDAVサーバー |
-| モンゴDB | `27017` | ほとんどのデータ管理にMongoDBデータベースを使用 |
-| レディス | `6379` | キャッシュと状態管理のためのRedis |
-| SQLite | なし | 暗号化されたメールボックス用の SQLite データベース |
+| サービス名    |         デフォルトポート         | 説明                                                    |
+| ------------ | :-----------------------------: | ------------------------------------------------------- |
+| Web          |            `443`                | すべての管理操作用のウェブインターフェース             |
+| API          |            `4000`               | データベースを抽象化する API レイヤー                   |
+| Bree         |             なし                | バックグラウンドジョブおよびタスクランナー             |
+| SMTP         | `465`（推奨） / `587`           | 送信メール用 SMTP サーバー                              |
+| SMTP Bree    |             なし                | SMTP バックグラウンドジョブ                              |
+| MX           |            `2525`               | 受信メールおよびメール転送用のメール交換サーバー       |
+| IMAP         |          `993/2993`             | 受信メールおよびメールボックス管理用 IMAP サーバー     |
+| POP3         |          `995/2995`             | 受信メールおよびメールボックス管理用 POP3 サーバー     |
+| SQLite       |            `3456`               | sqlite データベースとのやりとり用 SQLite サーバー       |
+| SQLite Bree  |             なし                | SQLite バックグラウンドジョブ                            |
+| CalDAV       |            `5000`               | カレンダー管理用 CalDAV サーバー                         |
+| CardDAV      |            `6000`               | カレンダー管理用 CardDAV サーバー                        |
+| MongoDB      |           `27017`               | ほとんどのデータ管理用 MongoDB データベース             |
+| Redis        |            `6379`               | キャッシュおよび状態管理用 Redis                         |
+| SQLite       |             なし                | 暗号化されたメールボックス用 SQLite データベース群      |
 
 ### 重要なファイルパス {#important-file-paths}
 
-注: 以下の *ホスト パス* は `/root/forwardemail.net/self-hosting/` を基準としています。
+注：以下の *ホストパス* は `/root/forwardemail.net/self-hosting/` を基準としています。
 
-| 成分 | ホストパス | コンテナパス |
-| ---------------------- | :-------------------: | ---------------------------- |
-| モンゴDB | `./mongo-backups` | `/backups` |
-| レディス | `./redis-data` | `/data` |
-| スクライト | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| 環境変数ファイル | `./.env` | `/app/.env` |
-| SSL証明書/キー | `./ssl` | `/app/ssl/` |
-| 秘密鍵 | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| フルチェーン証明書 | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| 認定CA | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
-| DKIM秘密鍵 | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
-
+| コンポーネント          |       ホストパス        | コンテナパス                  |
+| ---------------------- | :--------------------: | ---------------------------- |
+| MongoDB                |   `./mongo-backups`    | `/backups`                   |
+| Redis                  |     `./redis-data`     | `/data`                      |
+| Sqlite                 |    `./sqlite-data`     | `/mnt/{SQLITE_STORAGE_PATH}` |
+| Env ファイル           |        `./.env`        | `/app/.env`                  |
+| SSL 証明書/鍵          |        `./ssl`         | `/app/ssl/`                  |
+| 秘密鍵                 |  `./ssl/privkey.pem`   | `/app/ssl/privkey.pem`       |
+| フルチェーン証明書     | `./ssl/fullchain.pem`  | `/app/ssl/fullchain.pem`     |
+| CA 証明書              |    `./ssl/cert.pem`    | `/app/ssl/cert.pem`          |
+| DKIM 秘密鍵            |    `./ssl/dkim.key`    | `/app/ssl/dkim.key`          |
 > \[!IMPORTANT]
-> `.env` ファイルを安全に保存してください。これは障害発生時の復旧に不可欠です。
-> このファイルは `/root/forwardemail.net/self-hosting/.env` にあります。
+> `.env` ファイルは安全に保存してください。障害発生時の復旧に不可欠です。
+> `/root/forwardemail.net/self-hosting/.env` にあります。
 
-## 構成 {#configuration}
 
-### 初期DNSセットアップ {#initial-dns-setup}
+## 設定 {#configuration}
 
-ご利用のDNSプロバイダーで、適切なDNSレコードを設定してください。括弧内（`<>`）は動的であるため、変更後の値に更新する必要があります。
+### 初期DNS設定 {#initial-dns-setup}
 
-| タイプ | 名前 | コンテンツ | TTL |
+お使いのDNSプロバイダーで、適切なDNSレコードを設定してください。角括弧 (`<>`) 内のものは動的な値であり、ご自身の値に更新する必要があります。
+
+| 種類  | 名前               | 内容                         | TTL  |
 | ----- | ------------------ | ----------------------------- | ---- |
-| A | 「@」、「.」、または空白 | <IPアドレス> | 自動車 |
-| CNAME | API | <ドメイン名> | 自動車 |
-| CNAME | カルダブ | <ドメイン名> | 自動車 |
-| CNAME | カードダブ | <ドメイン名> | 自動車 |
-| CNAME | feバウンス | <ドメイン名> | 自動車 |
-| CNAME | imap | <ドメイン名> | 自動車 |
-| CNAME | ミックス | <ドメイン名> | 自動車 |
-| CNAME | ポップ3 | <ドメイン名> | 自動車 |
-| CNAME | SMTP | <ドメイン名> | 自動車 |
-| MX | 「@」、「.」、または空白 | mx.<ドメイン名> (優先度 0) | 自動車 |
-| TXT | 「@」、「.」、または空白 | 「v=spf1 a -all」 | 自動車 |
+| A     | "@", ".", または空欄 | <ip_address>                  | auto |
+| CNAME | api                | <domain_name>                 | auto |
+| CNAME | caldav             | <domain_name>                 | auto |
+| CNAME | carddav            | <domain_name>                 | auto |
+| CNAME | fe-bounces         | <domain_name>                 | auto |
+| CNAME | imap               | <domain_name>                 | auto |
+| CNAME | mx                 | <domain_name>                 | auto |
+| CNAME | pop3               | <domain_name>                 | auto |
+| CNAME | smtp               | <domain_name>                 | auto |
+| MX    | "@", ".", または空欄 | mx.<domain_name> (優先度 0)   | auto |
+| TXT   | "@", ".", または空欄 | "v=spf1 a -all"               | auto |
 
-#### 逆DNS / PTRレコード {#reverse-dns--ptr-record}
+#### 逆引きDNS / PTRレコード {#reverse-dns--ptr-record}
 
-逆DNS（rDNS）または逆ポインタレコード（PTRレコード）は、メールサーバーにとって不可欠です。これらは、メールを送信するサーバーの正当性を検証するのに役立ちます。クラウドプロバイダーごとに実装方法が異なるため、「逆DNS」を追加してホストとIPアドレスを対応するホスト名にマッピングする方法を調べる必要があります。おそらくプロバイダーのネットワーク設定セクションに記載されているでしょう。
+逆引きDNS（rDNS）または逆ポインタレコード（PTRレコード）は、メールサーバーにとって重要です。送信元サーバーの正当性を検証するのに役立ちます。クラウドプロバイダーごとに設定方法が異なるため、「逆引きDNS」を追加してホストとIPを対応するホスト名にマッピングする方法を調べてください。多くの場合、プロバイダーのネットワーク設定セクションにあります。
 
-#### ポート25がブロックされています {#port-25-blocked}
+#### ポート25がブロックされている場合 {#port-25-blocked}
 
-一部のISPやクラウドプロバイダーは、悪意のある攻撃者を防ぐためにポート25をブロックしています。SMTP/送信メール用にポート25を開放するには、サポートチケットを提出する必要がある場合があります。
+一部のISPやクラウドプロバイダーは悪意ある利用を防ぐためにポート25をブロックしています。SMTP / 送信メール用にポート25を開放するにはサポートチケットを提出する必要があるかもしれません。
+
 
 ## オンボーディング {#onboarding}
 
-1. ランディングページを開く
-https://<domain_name> にアクセスします。<domain_name> は、DNS設定で設定したドメインに置き換えてください。メール転送のランディングページが表示されます。
+1. ランディングページを開く  
+   https\://\<domain_name> にアクセスしてください。\<domain_name> はDNS設定で指定したドメインに置き換えます。Forward Emailのランディングページが表示されます。
 
 2. ログインしてドメインを登録する
 
-* 有効なメールアドレスとパスワードでサインインしてください。
-* 設定するドメイン名を入力してください（DNS設定と一致する必要があります）。
-* プロンプトに従って、確認に必要な**MX**レコードと**TXT**レコードを追加してください。
+* 有効なメールアドレスとパスワードでサインインします。
+* 設定したいドメイン名を入力します（DNS設定と一致している必要があります）。
+* 検証のために必要な **MX** および **TXT** レコードを追加するよう指示に従います。
 
-3. セットアップを完了する
+3. 設定を完了する
 
-* 確認が完了したら、「エイリアス」ページにアクセスして最初のエイリアスを作成してください。
-* 必要に応じて、**ドメイン設定** で **送信メール用の SMTP** を設定します。これには追加の DNS レコードが必要です。
+* 検証が完了したら、エイリアスページにアクセスして最初のエイリアスを作成します。
+* 必要に応じて、**ドメイン設定**で **SMTPによる送信メール** を設定します。追加のDNSレコードが必要です。
 
 > \[!NOTE]
-> サーバー外部に情報は送信されません。セルフホストオプションと初期アカウントは、ドメイン、エイリアス、および関連するメール設定を管理するための管理者ログインとWebビューのみを目的としています。
+> 情報はサーバー外に送信されません。セルフホストオプションと初期アカウントは管理者ログインとドメイン、エイリアス、関連メール設定の管理用ウェブビューのみです。
+
 
 ## テスト {#testing}
 
-### 最初のエイリアスを作成しています {#creating-your-first-alias}
+### 最初のエイリアスを作成する {#creating-your-first-alias}
 
-1. エイリアスページに移動します
-エイリアス管理ページを開きます。
+1. エイリアスページに移動する  
+   エイリアス管理ページを開きます：
 
 ```sh
 https://<domain_name>/en/my-account/domains/<domain_name>/aliases
@@ -236,76 +241,75 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 2. 新しいエイリアスを追加する
 
-* **エイリアスを追加** (右上) をクリックします。
+* 右上の **Add Alias** をクリックします。
 * エイリアス名を入力し、必要に応じてメール設定を調整します。
-* (オプション) チェックボックスをオンにして、**IMAP/POP3/CalDAV/CardDAV** サポートを有効にします。
-* **エイリアスを作成** をクリックします。
+* （任意）**IMAP/POP3/CalDAV/CardDAV** サポートを有効にするにはチェックボックスを選択します。
+* **Create Alias** をクリックします。
 
 3. パスワードを設定する
 
-* 安全なパスワードを作成するには、[**パスワードを生成**] をクリックします。
-* このパスワードは、メールクライアントにログインする際に必要になります。
+* **Generate Password** をクリックして安全なパスワードを作成します。
+* このパスワードはメールクライアントのログインに必要です。
 
 4. メールクライアントを設定する
 
-* Thunderbird などのメールクライアントを使用します。
-* エイリアス名と生成されたパスワードを入力します。
-* **IMAP** と **SMTP** の設定を適宜行います。
+* Thunderbirdなどのメールクライアントを使用します。
+* エイリアス名と生成したパスワードを入力します。
+* **IMAP** と **SMTP** の設定を適切に行います。
 
-#### メールサーバーの設定 {#email-server-settings}
+#### メールサーバー設定 {#email-server-settings}
 
 ユーザー名: `<alias name>`
 
-| タイプ | ホスト名 | ポート | 接続セキュリティ | 認証 |
-| ---- | ------------------ | ---- | ------------------- | --------------- |
-| SMTP | smtp.<ドメイン名> | 465 | SSL / TLS | 通常のパスワード |
-| IMAP | imap.<ドメイン名> | 993 | SSL / TLS | 通常のパスワード |
+| 種類 | ホスト名             | ポート | 接続セキュリティ     | 認証方式         |
+| ---- | -------------------- | ------ | -------------------- | ---------------- |
+| SMTP | smtp.<domain_name>   | 465    | SSL / TLS            | 通常パスワード   |
+| IMAP | imap.<domain_name>   | 993    | SSL / TLS            | 通常パスワード   |
 
-### 最初のメールの送受信 {#sending--receiving-your-first-email}
+### 最初のメールを送受信する {#sending--receiving-your-first-email}
 
-設定が完了すると、新しく作成して自己ホストした電子メール アドレスで電子メールを送受信できるようになります。
-
+設定が完了すると、新しく作成したセルフホストのメールアドレスでメールの送受信ができるようになります！
 ## トラブルシューティング {#troubleshooting}
 
-#### UbuntuとDebian以外ではなぜ動作しないのか {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
+#### なぜUbuntuやDebian以外で動作しないのか {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-現在、macOSのサポートを検討しており、他のOSへの対応も検討しています。他のOSへの対応をご希望の場合は、[議論](https://github.com/orgs/forwardemail/discussions)を開設するか、ご寄付をお願いいたします。
+現在MacOSのサポートを検討しており、他の環境も対応を検討しています。サポートしてほしい環境があれば、[ディスカッション](https://github.com/orgs/forwardemail/discussions)を開くか、貢献してください。
 
-#### certbot acmeチャレンジが失敗する理由 {#why-is-the-certbot-acme-challenge-failing}
+#### なぜcertbotのacmeチャレンジが失敗するのか {#why-is-the-certbot-acme-challenge-failing}
 
-最もよくある落とし穴は、certbot / letsencrypt が **2** 回のチャレンジを要求する場合があることです。必ず **両方** の txt レコードを追加してください。
+最も一般的な落とし穴は、certbot / letsencryptが時々**2つ**のチャレンジを要求することです。**両方の**TXTレコードを必ず追加する必要があります。
 
-例:
-次のような2つのチャレンジが表示される場合があります:
+例：
+以下のように2つのチャレンジが表示されることがあります：
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-DNSの伝播が完了していない可能性もあります。`https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`などのツールが利用可能です。これにより、TXTレコードの変更が反映されているかどうかを確認できます。また、ホスト上のローカルDNSキャッシュが古い値を使用しているか、最近の変更が反映されていない可能性もあります。
+また、DNSの伝播が完了していない可能性もあります。`https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>` のようなツールを使うと、TXTレコードの変更が反映されているか確認できます。ホストのローカルDNSキャッシュが古い値を使っているか、最近の変更をまだ取得していない可能性もあります。
 
-もう一つの選択肢は、CerbotのDNS自動変更機能を利用することです。VPSの初期セットアップ時に、cloud-init / user-data内の`/root/.cloudflare.ini`ファイルにAPIトークンを設定するか、このファイルを作成してスクリプトを再度実行します。これにより、DNSの変更とチャレンジの更新が自動的に管理されます。
+もう一つの方法は、初期VPSセットアップ時にcloud-init / user-dataでAPIトークンを設定した`/root/.cloudflare.ini`ファイルを使い、自動的にcertbotのDNS変更を行うことです。このファイルを作成してスクリプトを再実行すると、DNS変更とチャレンジの更新を自動で管理します。
 
-### 基本認証のユーザー名とパスワードは何ですか？ {#what-is-the-basic-auth-username-and-password}
+### ベーシック認証のユーザー名とパスワードは何ですか {#what-is-the-basic-auth-username-and-password}
 
-セルフホスティングの場合、初回ログイン時にブラウザネイティブの認証ポップアップを追加し、ユーザー名（`admin`）とパスワード（初期設定時にランダムに生成）を入力します。これは、自動化ツールやスクレーパーが何らかの理由でウェブ上での初回登録を先取りした場合の保護対策です。このパスワードは、初期設定後、`.env` ファイルの `AUTH_BASIC_USERNAME` と `AUTH_BASIC_PASSWORD` 配下にあります。
+セルフホスティングの場合、初回ブラウザでネイティブ認証ポップアップを表示し、シンプルなユーザー名（`admin`）とパスワード（初期セットアップ時にランダム生成）を設定しています。これは、もし自動化ツールやスクレイパーが先にウェブ体験のサインアップをしてしまうのを防ぐための保護です。初期セットアップ後、このパスワードは`.env`ファイルの`AUTH_BASIC_USERNAME`と`AUTH_BASIC_PASSWORD`で確認できます。
 
-### 何が実行されているかを知るにはどうすればいいですか？{#how-do-i-know-what-is-running}
+### 何が動いているかどうやって確認するの？ {#how-do-i-know-what-is-running}
 
-`docker ps` を実行すると、`docker-compose-self-hosting.yml` ファイルから起動されているすべての実行中コンテナを確認できます。また、`docker ps -a` を実行すると、すべて（実行されていないコンテナも含む）を確認できます。
+`docker ps`を実行すると、`docker-compose-self-hosting.yml`ファイルから起動しているすべてのコンテナが表示されます。`docker ps -a`を実行すると、停止中のコンテナも含めてすべてが見られます。
 
-### 実行されているはずの何かが実行されていないかどうかを知るにはどうすればいいですか？{#how-do-i-know-if-something-isnt-running-that-should-be}
+### 動いているはずのものが動いていないかどうやってわかるの？ {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-`docker ps -a` を実行すると、すべて（実行されていないコンテナも含む）を確認できます。終了ログまたはメモが表示される場合があります。
+`docker ps -a`を実行すると、停止中のコンテナも含めてすべてが見られます。終了ログやメモが表示されることがあります。
 
-### ログを見つけるにはどうすればいいですか？ {#how-do-i-find-logs}
+### ログはどうやって見つけるの？ {#how-do-i-find-logs}
 
-`docker logs -f <container_name>` からさらにログを取得できます。何かログが残っている場合は、`.env` ファイルの設定が間違っている可能性があります。
+`docker logs -f <container_name>`で詳細なログを取得できます。もし何かが終了している場合は、`.env`ファイルの設定ミスが原因である可能性が高いです。
 
-Web UI 内では、送信メール ログとエラー ログのそれぞれ `/admin/emails` と `/admin/logs` を表示できます。
+ウェブUI内では、送信メールログは`/admin/emails`、エラーログは`/admin/logs`で確認できます。
 
-### 送信メールがタイムアウトするのはなぜですか？ {#why-are-my-outgoing-emails-timing-out}
+### なぜ送信メールがタイムアウトするの？ {#why-are-my-outgoing-emails-timing-out}
 
-MXサーバーへの接続時に「接続がタイムアウトしました...」のようなメッセージが表示された場合は、ポート25がブロックされていないか確認する必要があるかもしれません。ISPやクラウドプロバイダーはデフォルトでこのポートをブロックしていることが多いため、サポートに問い合わせるか、チケットを発行してポート25を開放してもらう必要があるかもしれません。
+「Connection timed out when connecting to MX server...」のようなメッセージが表示される場合、ポート25がブロックされている可能性があります。ISPやクラウドプロバイダーがデフォルトでブロックしていることが多いため、サポートに連絡するかチケットを提出して開放してもらう必要があります。
 
-#### メール設定のベストプラクティスとIPレピュテーションをテストするにはどのツールを使用すればよいですか？{#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### メール設定のベストプラクティスやIP評価をテストするにはどんなツールを使えばいい？ {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-[よくある質問はこちら](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation) をご覧ください。
+[こちらのFAQ](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)をご覧ください。

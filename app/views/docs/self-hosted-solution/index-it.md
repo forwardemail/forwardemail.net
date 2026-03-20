@@ -1,96 +1,99 @@
-# Email auto-ospitata: impegno verso l'open source {#self-hosted-email-commitment-to-open-source}
+# Email Self-Hosted: Impegno verso l'Open Source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustrazione della soluzione email self-hosted" class="rounded-lg" />
+
 
 ## Indice {#table-of-contents}
 
 * [Prefazione](#foreword)
-* [Perché è importante la posta elettronica self-hosted](#why-self-hosted-email-matters)
-  * [Il problema con i servizi di posta elettronica tradizionali](#the-problem-with-traditional-email-services)
-  * [L'alternativa self-hosted](#the-self-hosted-alternative)
-* [La nostra implementazione self-hosted: panoramica tecnica](#our-self-hosted-implementation-technical-overview)
-  * [Architettura basata su Docker per semplicità e portabilità](#docker-based-architecture-for-simplicity-and-portability)
-  * [Installazione dello script Bash: l'accessibilità incontra la sicurezza](#bash-script-installation-accessibility-meets-security)
-  * [Crittografia quantistica sicura per una privacy a prova di futuro](#quantum-safe-encryption-for-future-proof-privacy)
-  * [Manutenzione e aggiornamenti automatizzati](#automated-maintenance-and-updates)
-* [L'impegno Open Source](#the-open-source-commitment)
-* [Self-hosted vs. Managed: fare la scelta giusta](#self-hosted-vs-managed-making-the-right-choice)
-  * [La realtà dell'email self-hosting](#the-reality-of-self-hosting-email)
-  * [Quando scegliere il nostro servizio gestito](#when-to-choose-our-managed-service)
-* [Introduzione all'inoltro e-mail auto-ospitato](#getting-started-with-self-hosted-forward-email)
-  * [Requisiti di sistema](#system-requirements)
-  * [Fasi di installazione](#installation-steps)
-* [Il futuro della posta elettronica self-hosted](#the-future-of-self-hosted-email)
-* [Conclusione: libertà di posta elettronica per tutti](#conclusion-email-freedom-for-everyone)
+* [Perché l'Email Self-Hosted è Importante](#why-self-hosted-email-matters)
+  * [Il Problema dei Servizi Email Tradizionali](#the-problem-with-traditional-email-services)
+  * [L'Alternativa Self-Hosted](#the-self-hosted-alternative)
+* [La Nostra Implementazione Self-Hosted: Panoramica Tecnica](#our-self-hosted-implementation-technical-overview)
+  * [Architettura Basata su Docker per Semplicità e Portabilità](#docker-based-architecture-for-simplicity-and-portability)
+  * [Installazione con Script Bash: Accessibilità e Sicurezza](#bash-script-installation-accessibility-meets-security)
+  * [Crittografia Quantum-Safe per una Privacy a Prova di Futuro](#quantum-safe-encryption-for-future-proof-privacy)
+  * [Manutenzione e Aggiornamenti Automatizzati](#automated-maintenance-and-updates)
+* [L'Impegno Open Source](#the-open-source-commitment)
+* [Self-Hosted vs. Gestito: Fare la Scelta Giusta](#self-hosted-vs-managed-making-the-right-choice)
+  * [La Realtà del Self-Hosting Email](#the-reality-of-self-hosting-email)
+  * [Quando Scegliere il Nostro Servizio Gestito](#when-to-choose-our-managed-service)
+* [Iniziare con Self-Hosted Forward Email](#getting-started-with-self-hosted-forward-email)
+  * [Requisiti di Sistema](#system-requirements)
+  * [Passaggi per l'Installazione](#installation-steps)
+* [Il Futuro dell'Email Self-Hosted](#the-future-of-self-hosted-email)
+* [Conclusione: Libertà Email per Tutti](#conclusion-email-freedom-for-everyone)
 * [Riferimenti](#references)
+
 
 ## Prefazione {#foreword}
 
-Nel panorama digitale odierno, la posta elettronica rimane il fulcro della nostra identità e comunicazione online. Tuttavia, con l'aumento delle preoccupazioni sulla privacy, molti utenti si trovano di fronte a una scelta difficile: la comodità a scapito della privacy, o la privacy a scapito della comodità. Noi di Forward Email siamo sempre stati convinti che non si debba scegliere tra le due opzioni.
+Nell'attuale panorama digitale, l'email rimane la spina dorsale della nostra identità e comunicazione online. Tuttavia, con l'aumento delle preoccupazioni sulla privacy, molti utenti si trovano di fronte a una scelta difficile: comodità a scapito della privacy, o privacy a scapito della comodità. In Forward Email, abbiamo sempre creduto che non si debba scegliere tra le due.
 
-Oggi siamo lieti di annunciare una pietra miliare significativa del nostro percorso: il lancio della nostra soluzione di posta elettronica self-hosted. Questa funzionalità rappresenta il nostro più profondo impegno nei confronti dei principi open source, della progettazione incentrata sulla privacy e della responsabilizzazione degli utenti. Con la nostra opzione self-hosted, mettiamo il pieno potere e il controllo delle tue comunicazioni email direttamente nelle tue mani.
+Oggi, siamo entusiasti di annunciare un traguardo significativo nel nostro percorso: il lancio della nostra soluzione email self-hosted. Questa funzionalità rappresenta il nostro impegno più profondo verso i principi open source, il design focalizzato sulla privacy e l'empowerment degli utenti. Con la nostra opzione self-hosted, mettiamo il pieno potere e controllo della tua comunicazione email direttamente nelle tue mani.
 
-Questo articolo del blog esplora la filosofia alla base della nostra soluzione self-hosted, la sua implementazione tecnica e perché è importante per gli utenti che danno priorità sia alla privacy che alla proprietà nelle loro comunicazioni digitali.
+Questo post esplora la filosofia dietro la nostra soluzione self-hosted, la sua implementazione tecnica e perché è importante per gli utenti che danno priorità sia alla privacy che alla proprietà nelle loro comunicazioni digitali.
 
-## Perché è importante la posta elettronica self-hosted {#why-self-hosted-email-matters}
 
-La nostra soluzione di posta elettronica self-hosted è la più chiara espressione della nostra convinzione che la vera privacy significhi controllo, e il controllo inizia con l'open source. Per gli utenti che esigono la piena proprietà delle proprie comunicazioni digitali, l'hosting autonomo non è più un'idea marginale, ma un diritto essenziale. Siamo orgogliosi di sostenere questa convinzione con una piattaforma completamente aperta e verificabile, che puoi gestire secondo le tue esigenze.
+## Perché l'Email Self-Hosted è Importante {#why-self-hosted-email-matters}
 
-### Il problema con i servizi di posta elettronica tradizionali {#the-problem-with-traditional-email-services}
+La nostra soluzione email self-hosted è l'espressione più chiara della nostra convinzione che la vera privacy significa controllo, e il controllo inizia con l'open source. Per gli utenti che richiedono la piena proprietà delle loro comunicazioni digitali, il self-hosting non è più un'idea di nicchia — è un diritto essenziale. Siamo orgogliosi di sostenere questa convinzione con una piattaforma completamente aperta e verificabile che puoi gestire secondo i tuoi termini.
 
-I servizi di posta elettronica tradizionali presentano diverse sfide fondamentali per gli utenti attenti alla privacy:
+### Il Problema dei Servizi Email Tradizionali {#the-problem-with-traditional-email-services}
 
-1. **Requisiti di affidabilità**: devi fidarti del fornitore per non accedere, analizzare o condividere i tuoi dati
-2. **Controllo centralizzato**: il tuo accesso può essere revocato in qualsiasi momento e per qualsiasi motivo
-3. **Vulnerabilità di sorveglianza**: i servizi centralizzati sono obiettivi principali per la sorveglianza
-4. **Trasparenza limitata**: la maggior parte dei servizi utilizza software proprietario e closed-source
-5. **Blocco del fornitore**: abbandonare questi servizi può essere difficile o impossibile
+I servizi email tradizionali presentano diverse sfide fondamentali per gli utenti attenti alla privacy:
 
-Anche i provider di posta elettronica "incentrati sulla privacy" spesso falliscono, limitandosi a rendere open source le proprie applicazioni front-end, mantenendo proprietari e chiusi i sistemi back-end. Questo crea un divario di fiducia significativo: ti viene chiesto di credere alle loro promesse di privacy senza la possibilità di verificarle.
+1. **Requisiti di Fiducia**: Devi fidarti che il provider non acceda, analizzi o condivida i tuoi dati
+2. **Controllo Centralizzato**: Il tuo accesso può essere revocato in qualsiasi momento e per qualsiasi motivo
+3. **Vulnerabilità alla Sorveglianza**: I servizi centralizzati sono obiettivi privilegiati per la sorveglianza
+4. **Trasparenza Limitata**: La maggior parte dei servizi utilizza software proprietario e closed-source
+5. **Vincolo al Fornitore**: Migrare da questi servizi può essere difficile o impossibile
 
-### L'alternativa auto-ospitata {#the-self-hosted-alternative}
+Anche i provider email "focalizzati sulla privacy" spesso non sono all'altezza, aprendo solo il codice delle loro applicazioni frontend mentre mantengono i sistemi backend proprietari e chiusi. Questo crea un significativo divario di fiducia—ti viene chiesto di credere alle loro promesse di privacy senza la possibilità di verificarle.
 
-L'auto-hosting della posta elettronica offre un approccio fondamentalmente diverso:
+### L'Alternativa Self-Hosted {#the-self-hosted-alternative}
+L'auto-gestione della tua email offre un approccio fondamentalmente diverso:
 
-1. **Controllo completo**: possiedi e controlli l'intera infrastruttura di posta elettronica
-2. **Privacy verificabile**: l'intero sistema è trasparente e verificabile
-3. **Nessuna fiducia richiesta**: non devi affidare le tue comunicazioni a terzi
-4. **Libertà di personalizzazione**: adatta il sistema alle tue esigenze specifiche
-5. **Resilienza**: il tuo servizio continua a funzionare indipendentemente dalle decisioni aziendali
+1. **Controllo Completo**: Possiedi e controlli l'intera infrastruttura email
+2. **Privacy Verificabile**: L'intero sistema è trasparente e verificabile
+3. **Nessuna Fiducia Necessaria**: Non devi fidarti di terze parti per le tue comunicazioni
+4. **Libertà di Personalizzazione**: Adatta il sistema alle tue esigenze specifiche
+5. **Resilienza**: Il tuo servizio continua indipendentemente dalle decisioni di qualsiasi azienda
 
-Come ha detto un utente: "Ospitare autonomamente la mia posta elettronica è l'equivalente digitale di coltivare il mio cibo: richiede più lavoro, ma so esattamente cosa contiene".
+Come ha detto un utente: "Auto-gestire la mia email è l'equivalente digitale di coltivare il mio cibo—richiede più lavoro, ma so esattamente cosa contiene."
 
-## La nostra implementazione self-hosted: panoramica tecnica {#our-self-hosted-implementation-technical-overview}
 
-La nostra soluzione di posta elettronica self-hosted si basa sugli stessi principi di privacy che guidano tutti i nostri prodotti. Esploriamo l'implementazione tecnica che la rende possibile.
+## La Nostra Implementazione Auto-Gestita: Panoramica Tecnica {#our-self-hosted-implementation-technical-overview}
 
-### Architettura basata su Docker per semplicità e portabilità {#docker-based-architecture-for-simplicity-and-portability}
+La nostra soluzione email auto-gestita è costruita sugli stessi principi di privacy-first che guidano tutti i nostri prodotti. Esploriamo l'implementazione tecnica che rende tutto questo possibile.
 
-Abbiamo impacchettato l'intera infrastruttura email utilizzando Docker, semplificandone l'implementazione su praticamente qualsiasi sistema basato su Linux. Questo approccio containerizzato offre diversi vantaggi chiave:
+### Architettura Basata su Docker per Semplicità e Portabilità {#docker-based-architecture-for-simplicity-and-portability}
 
-1. **Deployment semplificato**: un singolo comando configura l'intera infrastruttura
-2. **Ambiente coerente**: elimina i problemi di "funziona sulla mia macchina"
-3. **Componenti isolati**: ogni servizio viene eseguito nel proprio contenitore per motivi di sicurezza
-4. **Aggiornamenti facili**: comandi semplici per aggiornare l'intero stack
-5. **Dipendenze minime**: richiede solo Docker e Docker Compose
+Abbiamo impacchettato l'intera infrastruttura email usando Docker, rendendo facile il deployment su praticamente qualsiasi sistema basato su Linux. Questo approccio containerizzato offre diversi vantaggi chiave:
 
-L'architettura include contenitori per:
+1. **Deployment Semplificato**: Un singolo comando configura l'intera infrastruttura
+2. **Ambiente Consistente**: Elimina i problemi del tipo "funziona sulla mia macchina"
+3. **Componenti Isolati**: Ogni servizio gira nel proprio container per sicurezza
+4. **Aggiornamenti Facili**: Comandi semplici per aggiornare l'intero stack
+5. **Dipendenze Minime**: Richiede solo Docker e Docker Compose
+
+L'architettura include container per:
 
 * Interfaccia web per l'amministrazione
-* Server SMTP per la posta in uscita
-* Server IMAP/POP3 per il recupero della posta elettronica
-* Server CalDAV per i calendari
-* Server CardDAV per i contatti
-* Database per l'archiviazione della configurazione
-* Redis per la memorizzazione nella cache e le prestazioni
-* SQLite per l'archiviazione sicura e crittografata delle caselle di posta
+* Server SMTP per email in uscita
+* Server IMAP/POP3 per il recupero email
+* Server CalDAV per calendari
+* Server CardDAV per contatti
+* Database per la memorizzazione della configurazione
+* Redis per caching e performance
+* SQLite per l'archiviazione sicura e criptata delle caselle email
 
 > \[!NOTE]
-> Non dimenticarti di dare un'occhiata al nostro [guida per sviluppatori auto-ospitati](https://forwardemail.net/self-hosted)
+> Assicurati di consultare la nostra [guida per sviluppatori auto-gestita](https://forwardemail.net/self-hosted)
 
-### Installazione dello script Bash: accessibilità e sicurezza si incontrano {#bash-script-installation-accessibility-meets-security}
+### Installazione con Script Bash: Accessibilità e Sicurezza {#bash-script-installation-accessibility-meets-security}
 
-Abbiamo progettato il processo di installazione per renderlo il più semplice possibile, mantenendo al contempo le migliori pratiche di sicurezza:
+Abbiamo progettato il processo di installazione per essere il più semplice possibile mantenendo le migliori pratiche di sicurezza:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -99,154 +102,157 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 Questo singolo comando:
 
 1. Verifica i requisiti di sistema
-2. Guida l'utente attraverso la configurazione
+2. Ti guida nella configurazione
 3. Imposta i record DNS
 4. Configura i certificati TLS
 5. Distribuisce i container Docker
-6. Esegue il rafforzamento iniziale della sicurezza
+6. Esegue un primo rafforzamento della sicurezza
 
-Per chi è preoccupato di dover reindirizzare gli script a bash (come è giusto che sia!), consigliamo di esaminare lo script prima dell'esecuzione. È completamente open source e disponibile per l'ispezione.
+Per chi è preoccupato di eseguire script tramite pipe su bash (come dovrebbe essere!), consigliamo di rivedere lo script prima dell'esecuzione. È completamente open-source e disponibile per l'ispezione.
 
-### Crittografia quantistica sicura per una privacy a prova di futuro {#quantum-safe-encryption-for-future-proof-privacy}
+### Crittografia Quantum-Safe per una Privacy a Prova di Futuro {#quantum-safe-encryption-for-future-proof-privacy}
 
-Come il nostro servizio in hosting, la nostra soluzione self-hosted implementa la crittografia quantistica utilizzando ChaCha20-Poly1305 come cifrario per i database SQLite. Questo approccio protegge i dati delle tue email non solo dalle minacce attuali, ma anche da futuri attacchi di calcolo quantistico.
+Come il nostro servizio ospitato, la nostra soluzione auto-gestita implementa una crittografia resistente al quantum usando ChaCha20-Poly1305 come cifrario per i database SQLite. Questo approccio protegge i tuoi dati email non solo contro le minacce attuali, ma anche contro futuri attacchi di calcolo quantistico.
 
-Ogni casella di posta è archiviata nel proprio file di database SQLite crittografato, garantendo un isolamento completo tra gli utenti: un vantaggio significativo in termini di sicurezza rispetto ai tradizionali approcci di database condivisi.
+Ogni casella email è memorizzata in un proprio file di database SQLite criptato, fornendo un'isolamento completo tra gli utenti—un vantaggio di sicurezza significativo rispetto agli approcci tradizionali con database condivisi.
 
-### Manutenzione e aggiornamenti automatizzati {#automated-maintenance-and-updates}
+### Manutenzione e Aggiornamenti Automatizzati {#automated-maintenance-and-updates}
 
-Abbiamo integrato utilità di manutenzione complete direttamente nella soluzione self-hosted:
+Abbiamo integrato utilità di manutenzione complete direttamente nella soluzione auto-gestita:
 
-1. **Backup automatici**: Backup pianificati di tutti i dati critici
-2. **Rinnovo certificati**: Gestione automatizzata dei certificati Let's Encrypt
-3. **Aggiornamenti di sistema**: Semplice comando per aggiornare alla versione più recente
-4. **Monitoraggio dello stato**: Controlli integrati per garantire l'integrità del sistema
+1. **Backup Automatici**: Backup programmati di tutti i dati critici
+2. **Rinnovo Certificati**: Gestione automatica dei certificati Let's Encrypt
+3. **Aggiornamenti di Sistema**: Comando semplice per aggiornare all'ultima versione
+4. **Monitoraggio dello Stato**: Controlli integrati per garantire l'integrità del sistema
 
 Queste utilità sono accessibili tramite un semplice menu interattivo:
 
 ```bash
 # script prompt
 
-1. Initial setup
-2. Setup Backups
-3. Setup Auto Upgrades
-4. Renew certificates
-5. Restore from Backup
-6. Help
-7. Exit
+1. Configurazione iniziale
+2. Configura Backup
+3. Configura Aggiornamenti Automatici
+4. Rinnova certificati
+5. Ripristina da Backup
+6. Aiuto
+7. Esci
 ```
 
-## L'impegno Open Source {#the-open-source-commitment}
 
-La nostra soluzione di posta elettronica self-hosted, come tutti i nostri prodotti, è open source al 100%, sia nel frontend che nel backend. Questo significa:
+## L'Impegno Open-Source {#the-open-source-commitment}
 
-1. **Trasparenza totale**: Ogni riga di codice che elabora le tue email è disponibile al pubblico
-2. **Contributi della community**: Chiunque può contribuire a miglioramenti o risolvere problemi
-3. **Sicurezza attraverso la trasparenza**: Le vulnerabilità possono essere identificate e risolte da una community globale
-4. **Nessun vincolo con il fornitore**: Non dipendi mai dall'esistenza della nostra azienda
+La nostra soluzione email auto-gestita, come tutti i nostri prodotti, è 100% open-source—sia frontend che backend. Questo significa:
+1. **Trasparenza Completa**: Ogni riga di codice che elabora le tue email è disponibile per la revisione pubblica  
+2. **Contributi della Comunità**: Chiunque può contribuire con miglioramenti o correggere problemi  
+3. **Sicurezza Attraverso l'Apertura**: Le vulnerabilità possono essere identificate e risolte da una comunità globale  
+4. **Nessun Vincolo con il Fornitore**: Non dipendi mai dall'esistenza della nostra azienda  
 
-L'intero codice di base è disponibile su GitHub all'indirizzo <https://github.com/forwardemail/forwardemail.net>.
+L'intero codice è disponibile su GitHub all'indirizzo <https://github.com/forwardemail/forwardemail.net>.
 
-## Self-hosted vs. Managed: fare la scelta giusta {#self-hosted-vs-managed-making-the-right-choice}
 
-Sebbene siamo orgogliosi di offrire un'opzione self-hosted, riconosciamo che non è la scelta giusta per tutti. L'auto-hosting della posta elettronica comporta responsabilità e sfide reali:
+## Self-Hosted vs. Managed: Fare la Scelta Giusta {#self-hosted-vs-managed-making-the-right-choice}
 
-### La realtà dell'auto-hosting della posta elettronica {#the-reality-of-self-hosting-email}
+Sebbene siamo orgogliosi di offrire un'opzione self-hosted, riconosciamo che non è la scelta giusta per tutti. Gestire autonomamente le email comporta responsabilità e sfide reali:
 
-#### Considerazioni tecniche {#technical-considerations}
+### La Realtà del Self-Hosting Email {#the-reality-of-self-hosting-email}
 
-* **Gestione del server**: dovrai gestire un VPS o un server dedicato
-* **Configurazione DNS**: una corretta configurazione del DNS è fondamentale per la consegna
-* **Aggiornamenti di sicurezza**: è essenziale rimanere aggiornati con le patch di sicurezza
-* **Gestione dello spam**: dovrai gestire il filtro antispam
-* **Strategia di backup**: l'implementazione di backup affidabili è una tua responsabilità
+#### Considerazioni Tecniche {#technical-considerations}
 
-#### Investimento di tempo {#time-investment}
+* **Gestione del Server**: Dovrai mantenere un VPS o un server dedicato  
+* **Configurazione DNS**: Una corretta configurazione DNS è fondamentale per la deliverability  
+* **Aggiornamenti di Sicurezza**: È essenziale mantenersi aggiornati con le patch di sicurezza  
+* **Gestione dello Spam**: Dovrai occuparti del filtraggio dello spam  
+* **Strategia di Backup**: Implementare backup affidabili è tua responsabilità  
 
-* **Configurazione iniziale**: Tempo per configurare, verificare e leggere la documentazione
-* **Manutenzione continua**: Aggiornamenti e monitoraggio occasionali
-* **Risoluzione dei problemi**: Tempo occasionale per risolvere eventuali problemi
+#### Investimento di Tempo {#time-investment}
 
-#### Considerazioni finanziarie {#financial-considerations}
+* **Configurazione Iniziale**: Tempo per configurare, verificare e leggere la documentazione  
+* **Manutenzione Continua**: Aggiornamenti e monitoraggio occasionali  
+* **Risoluzione dei Problemi**: Tempo occasionale per risolvere problemi  
 
-* **Costi del server**: $5-$20/mese per un VPS base
-* **Registrazione del dominio**: $10-$20/anno
-* **Valore del tempo**: il tuo investimento di tempo ha un valore reale
+#### Considerazioni Finanziarie {#financial-considerations}
 
-### Quando scegliere il nostro servizio gestito {#when-to-choose-our-managed-service}
+* **Costi del Server**: 5-20$ al mese per un VPS base  
+* **Registrazione del Dominio**: 10-20$ all'anno  
+* **Valore del Tempo**: Il tuo investimento di tempo ha un valore reale  
 
-Per molti utenti, il nostro servizio gestito rimane l'opzione migliore:
+### Quando Scegliere il Nostro Servizio Gestito {#when-to-choose-our-managed-service}
 
-1. **Comodità**: Gestiamo noi tutta la manutenzione, gli aggiornamenti e il monitoraggio
-2. **Affidabilità**: Beneficia della nostra infrastruttura consolidata e della nostra competenza
-3. **Supporto**: Ricevi assistenza in caso di problemi
-4. **Consegna**: Sfrutta la nostra consolidata reputazione in materia di proprietà intellettuale
-5. **Economia**: Considerando i costi di tempo, il nostro servizio è spesso più economico
+Per molti utenti, il nostro servizio gestito rimane la scelta migliore:
 
-Entrambe le opzioni garantiscono gli stessi vantaggi in termini di privacy e trasparenza open source: la differenza sta semplicemente in chi gestisce l'infrastruttura.
+1. **Comodità**: Gestiamo tutta la manutenzione, gli aggiornamenti e il monitoraggio  
+2. **Affidabilità**: Approfitta della nostra infrastruttura consolidata e competenza  
+3. **Supporto**: Ricevi assistenza quando sorgono problemi  
+4. **Deliverability**: Sfrutta la nostra reputazione IP consolidata  
+5. **Convenienza**: Considerando il costo del tempo, il nostro servizio è spesso più economico  
 
-## Introduzione all'inoltro e-mail auto-ospitato {#getting-started-with-self-hosted-forward-email}
+Entrambe le opzioni offrono gli stessi benefici in termini di privacy e trasparenza open-source—la differenza è semplicemente chi gestisce l'infrastruttura.
 
-Pronti a prendere il controllo della vostra infrastruttura email? Ecco come iniziare:
 
-### Requisiti di sistema {#system-requirements}
+## Iniziare con Forward Email Self-Hosted {#getting-started-with-self-hosted-forward-email}
 
-* Ubuntu 20.04 LTS o versione successiva (consigliato)
-* Almeno 1 GB di RAM (consigliati 2 GB o più)
-* 20 GB di spazio di archiviazione consigliati
-* Un nome di dominio di tua proprietà
-* Indirizzo IP pubblico con supporto per la porta 25
-* Possibilità di impostare [PTR inverso](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
-* Supporto IPv4 e IPv6
+Pronto a prendere il controllo della tua infrastruttura email? Ecco come iniziare:
 
-> \[!TIP]
-> Consigliamo diversi provider di server di posta elettronica all'indirizzo <https://forwardemail.net/blog/docs/best-mail-server-providers> (fonte all'indirizzo <https://github.com/forwardemail/awesome-mail-server-providers>)
+### Requisiti di Sistema {#system-requirements}
 
-### Passaggi di installazione {#installation-steps}
+* Ubuntu 20.04 LTS o versione più recente (consigliato)  
+* Minimo 1GB di RAM (consigliati 2GB+)  
+* 20GB di spazio di archiviazione consigliati  
+* Un nome di dominio che controlli  
+* Indirizzo IP pubblico con supporto porta 25  
+* Capacità di impostare il [PTR inverso](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)  
+* Supporto IPv4 e IPv6  
 
-1. **Esegui lo script di installazione**:
-```bash
+> \[!TIP]  
+> Raccomandiamo diversi provider di server mail su <https://forwardemail.net/blog/docs/best-mail-server-providers> (sorgente su <https://github.com/forwardemail/awesome-mail-server-providers>)  
+
+### Passaggi per l'Installazione {#installation-steps}
+
+1. **Esegui lo Script di Installazione**:  
+   ```bash
    bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
    ```
 
-2. **Segui le istruzioni interattive**:
-* Inserisci il tuo nome di dominio
-* Configura le credenziali di amministratore
-* Imposta i record DNS come indicato
-* Scegli le opzioni di configurazione preferite
+2. **Segui le Istruzioni Interattive**:  
+   * Inserisci il nome del tuo dominio  
+   * Configura le credenziali dell'amministratore  
+   * Imposta i record DNS come indicato  
+   * Scegli le opzioni di configurazione preferite  
 
-3. **Verifica installazione**:
-Una volta completata l'installazione, puoi verificare che tutto funzioni correttamente:
-* Controllando lo stato del contenitore: `docker ps`
-* Inviando un'email di prova
-* Accedendo all'interfaccia web
+3. **Verifica l'Installazione**:  
+   Una volta completata l'installazione, puoi verificare che tutto funzioni:  
+   * Controllando lo stato dei container: `docker ps`  
+   * Inviando una email di prova  
+   * Accedendo all'interfaccia web  
 
-## Il futuro della posta elettronica self-hosted {#the-future-of-self-hosted-email}
 
-La nostra soluzione self-hosted è solo l'inizio. Ci impegniamo a migliorare costantemente questa offerta con:
+## Il Futuro delle Email Self-Hosted {#the-future-of-self-hosted-email}
 
-1. **Strumenti di amministrazione avanzati**: gestione web più potente
-2. **Opzioni di autenticazione aggiuntive**: incluso il supporto per chiavi di sicurezza hardware
-3. **Monitoraggio avanzato**: informazioni più approfondite sullo stato e sulle prestazioni del sistema
-4. **Implementazione multi-server**: opzioni per configurazioni ad alta disponibilità
-5. **Miglioramenti basati sulla community**: integrazione dei contributi degli utenti
+La nostra soluzione self-hosted è solo l'inizio. Siamo impegnati a migliorare continuamente questa offerta con:
 
-## Conclusione: libertà di posta elettronica per tutti {#conclusion-email-freedom-for-everyone}
+1. **Strumenti di Amministrazione Potenziati**: Gestione web più potente  
+2. **Opzioni di Autenticazione Aggiuntive**: Incluso il supporto per chiavi di sicurezza hardware  
+3. **Monitoraggio Avanzato**: Migliori informazioni sulla salute e prestazioni del sistema  
+4. **Distribuzione Multi-Server**: Opzioni per configurazioni ad alta disponibilità  
+5. **Miglioramenti Guidati dalla Comunità**: Incorporando contributi dagli utenti
+## Conclusione: Libertà della Email per Tutti {#conclusion-email-freedom-for-everyone}
 
-Il lancio della nostra soluzione di posta elettronica self-hosted rappresenta una pietra miliare significativa nella nostra missione: fornire servizi di posta elettronica trasparenti e incentrati sulla privacy. Che scegliate il nostro servizio gestito o l'opzione self-hosted, beneficerete del nostro incrollabile impegno nei confronti dei principi open source e di una progettazione che mette la privacy al primo posto.
+Il lancio della nostra soluzione email self-hosted rappresenta una pietra miliare significativa nella nostra missione di fornire servizi email trasparenti e incentrati sulla privacy. Che tu scelga il nostro servizio gestito o l'opzione self-hosted, benefici del nostro impegno incrollabile verso i principi open-source e il design orientato alla privacy.
 
-La posta elettronica è troppo importante per essere gestita da sistemi chiusi e proprietari che privilegiano la raccolta dati rispetto alla privacy degli utenti. Con la soluzione self-hosted di Forward Email, siamo orgogliosi di offrire una vera alternativa, che ti dà il controllo completo delle tue comunicazioni digitali.
+L'email è troppo importante per essere controllata da sistemi chiusi e proprietari che danno priorità alla raccolta dati rispetto alla privacy degli utenti. Con la soluzione self-hosted di Forward Email, siamo orgogliosi di offrire una vera alternativa—una che ti mette in completo controllo delle tue comunicazioni digitali.
 
-Crediamo che la privacy non sia solo una funzionalità, ma un diritto fondamentale. E con la nostra opzione di posta elettronica self-hosted, rendiamo questo diritto più accessibile che mai.
+Crediamo che la privacy non sia solo una funzionalità; è un diritto fondamentale. E con la nostra opzione email self-hosted, stiamo rendendo questo diritto più accessibile che mai.
 
-Pronto a prendere il controllo della tua email? [Inizia oggi](https://forwardemail.net/self-hosted) o esplora il nostro [Repository GitHub](https://github.com/forwardemail/forwardemail.net) per saperne di più.
+Pronto a prendere il controllo della tua email? [Inizia oggi](https://forwardemail.net/self-hosted) o esplora il nostro [repository GitHub](https://github.com/forwardemail/forwardemail.net) per saperne di più.
+
 
 ## Riferimenti {#references}
 
-\[1] Inoltra email Repository GitHub: <https://github.com/forwardemail/forwardemail.net>
+\[1] Repository GitHub di Forward Email: <https://github.com/forwardemail/forwardemail.net>
 
-\[2] Documentazione auto-ospitata: <https://forwardemail.net/en/self-hosted>
+\[2] Documentazione Self-Hosted: <https://forwardemail.net/en/self-hosted>
 
-\[3] Implementazione tecnica della privacy della posta elettronica: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
+\[3] Implementazione Tecnica della Privacy Email: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
 
-\[4] Perché la posta elettronica open source è importante: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>
+\[4] Perché l'Email Open-Source è Importante: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>

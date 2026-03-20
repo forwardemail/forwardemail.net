@@ -1,265 +1,274 @@
-# Accordo sul trattamento dei dati {#data-processing-agreement}
+# Accordo sul Trattamento dei Dati {#data-processing-agreement}
 
-<!-- v1.0 da <https://github.com/CommonPaper/DPA> -->
+<!-- v1.0 from <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email data processing agreement" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="Accordo sul trattamento dei dati di Forward Email" class="rounded-lg" />
+
 
 ## Indice {#table-of-contents}
 
-* [Termini chiave](#key-terms)
-* [Modifiche all'accordo](#changes-to-the-agreement)
-* [1. Rapporti tra responsabile del trattamento e sub-responsabile del trattamento](#1-processor-and-subprocessor-relationships)
-  * [1. Fornitore come Responsabile del Trattamento](#1-provider-as-processor)
-  * [2. Fornitore come sub-responsabile](#2-provider-as-subprocessor)
-* [2. Elaborazione](#2-processing)
-  * [1. Dettagli di elaborazione](#1-processing-details)
-  * [2. Istruzioni per l'elaborazione](#2-processing-instructions)
-  * [3. Elaborazione da parte del Fornitore](#3-processing-by-provider)
-  * [4. Elaborazione dei dati del cliente](#4-customer-processing)
-  * [5. Consenso al trattamento](#5-consent-to-processing)
-  * [6. Sub-responsabili del trattamento](#6-subprocessors)
-* [3. Trasferimenti limitati](#3-restricted-transfers)
+* [Termini Chiave](#key-terms)
+* [Modifiche all'Accordo](#changes-to-the-agreement)
+* [1. Rapporti tra Titolare e Subtitolare del Trattamento](#1-processor-and-subprocessor-relationships)
+  * [1. Fornitore come Titolare del Trattamento](#1-provider-as-processor)
+  * [2. Fornitore come Subtitolare del Trattamento](#2-provider-as-subprocessor)
+* [2. Trattamento](#2-processing)
+  * [1. Dettagli del Trattamento](#1-processing-details)
+  * [2. Istruzioni per il Trattamento](#2-processing-instructions)
+  * [3. Trattamento da parte del Fornitore](#3-processing-by-provider)
+  * [4. Trattamento da parte del Cliente](#4-customer-processing)
+  * [5. Consenso al Trattamento](#5-consent-to-processing)
+  * [6. Subtitolari del Trattamento](#6-subprocessors)
+* [3. Trasferimenti Limitati](#3-restricted-transfers)
   * [1. Autorizzazione](#1-authorization)
-  * [2. Trasferimenti ex-SEE](#2-ex-eea-transfers)
-  * [3. Trasferimenti ex-Regno Unito](#3-ex-uk-transfers)
-  * [4. Altri trasferimenti internazionali](#4-other-international-transfers)
-* [4. Risposta agli incidenti di sicurezza](#4-security-incident-response)
-* [5. Audit e relazioni](#5-audit--reports)
-  * [1. Diritti di revisione](#1-audit-rights)
-  * [2. Rapporti sulla sicurezza](#2-security-reports)
-  * [3. Due diligence sulla sicurezza](#3-security-due-diligence)
-* [6. Coordinamento e cooperazione](#6-coordination--cooperation)
-  * [1. Risposta alle richieste](#1-response-to-inquiries)
+  * [2. Trasferimenti fuori dall'EEA](#2-ex-eea-transfers)
+  * [3. Trasferimenti fuori dal Regno Unito](#3-ex-uk-transfers)
+  * [4. Altri Trasferimenti Internazionali](#4-other-international-transfers)
+* [4. Risposta agli Incidenti di Sicurezza](#4-security-incident-response)
+* [5. Audit e Rapporti](#5-audit--reports)
+  * [1. Diritti di Audit](#1-audit-rights)
+  * [2. Rapporti di Sicurezza](#2-security-reports)
+  * [3. Due Diligence sulla Sicurezza](#3-security-due-diligence)
+* [6. Coordinamento e Cooperazione](#6-coordination--cooperation)
+  * [1. Risposta alle Richieste](#1-response-to-inquiries)
   * [2. DPIA e DTIA](#2-dpias-and-dtias)
-* [7. Cancellazione dei dati personali del cliente](#7-deletion-of-customer-personal-data)
-  * [1. Cancellazione da parte del cliente](#1-deletion-by-customer)
-  * [2. Cancellazione alla scadenza del DPA](#2-deletion-at-dpa-expiration)
-* [8. Limitazione di responsabilità](#8-limitation-of-liability)
-  * [1. Limiti di responsabilità e rinuncia al risarcimento danni](#1-liability-caps-and-damages-waiver)
-  * [2. Reclami tra parti correlate](#2-related-party-claims)
+* [7. Cancellazione dei Dati Personali del Cliente](#7-deletion-of-customer-personal-data)
+  * [1. Cancellazione da parte del Cliente](#1-deletion-by-customer)
+  * [2. Cancellazione alla Scadenza del DPA](#2-deletion-at-dpa-expiration)
+* [8. Limitazione di Responsabilità](#8-limitation-of-liability)
+  * [1. Limiti di Responsabilità e Rinuncia ai Danni](#1-liability-caps-and-damages-waiver)
+  * [2. Reclami di Parti Correlate](#2-related-party-claims)
   * [3. Eccezioni](#3-exceptions)
-* [9. Conflitti tra documenti](#9-conflicts-between-documents)
-* [10. Durata dell'accordo](#10-term-of-agreement)
-* [11. Legge applicabile e tribunali prescelti](#11-governing-law-and-chosen-courts)
-* [12. Rapporto con il fornitore di servizi](#12-service-provider-relationship)
+* [9. Conflitti tra Documenti](#9-conflicts-between-documents)
+* [10. Durata dell'Accordo](#10-term-of-agreement)
+* [11. Legge Applicabile e Foro Competente](#11-governing-law-and-chosen-courts)
+* [12. Rapporto con il Fornitore di Servizi](#12-service-provider-relationship)
 * [13. Definizioni](#13-definitions)
 * [Crediti](#credits)
 
-## Termini chiave {#key-terms}
 
-| Termine | Valore |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <strong>Accordo</strong> | Il presente DPA integra il [Terms of Service](/terms) |
-| <strong>Subprocessori Approvati</strong> | [Cloudflare](https://cloudflare.com) (Stati Uniti; fornitore di DNS, reti e sicurezza), [DataPacket](https://www.datapacket.com/) (Stati Uniti/Regno Unito; fornitore di hosting), [Digital Ocean](https://digitalocean.com) (Stati Uniti; fornitore di hosting), [GitHub](https://github.com) (US; source code hosting, CI/CD, and project management), [Vultr](https://www.vultr.com) (Stati Uniti; fornitore di hosting), [Stripe](https://stripe.com) (Stati Uniti; processore di pagamento), [PayPal](https://paypal.com) (Stati Uniti; processore di pagamento) |
-| <strong>Contatto per la sicurezza del fornitore</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
-| <strong>Politica di sicurezza</strong> | Visualizza [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
-| <strong>Stato governante</strong> | Lo Stato del Delaware, Stati Uniti |
+## Termini Chiave {#key-terms}
 
-## Modifiche all'accordo {#changes-to-the-agreement}
+| Termine                                    | Valore                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <strong>Accordo</strong>                   | Questo DPA integra i [Termini di Servizio](/terms)                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| <strong>Subtitolari Approvati</strong>     | [Cloudflare](https://cloudflare.com) (USA; fornitore DNS, networking e sicurezza), [DataPacket](https://www.datapacket.com/) (USA/UK; fornitore hosting), [Digital Ocean](https://digitalocean.com) (USA; fornitore hosting), [GitHub](https://github.com) (USA; hosting codice sorgente, CI/CD e gestione progetti), [Vultr](https://www.vultr.com) (USA; fornitore hosting), [Stripe](https://stripe.com) (USA; processore di pagamenti), [PayPal](https://paypal.com) (USA; processore di pagamenti) |
+| <strong>Contatto Sicurezza Fornitore</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a>                                                                                                                                                                                                                                                                                                                                                                                                         |
+| <strong>Politica di Sicurezza</strong>     | Visualizza la [nostra Politica di Sicurezza su GitHub](https://github.com/forwardemail/forwardemail.net/security/policy)                                                                                                                                                                                                                                                                                                                                                           |
+| <strong>Stato Governativo</strong>         | Lo Stato del Delaware, Stati Uniti                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+## Modifiche all'Accordo {#changes-to-the-agreement}
 
-Questo documento è un derivato di [Condizioni standard del DPA comune (versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) e sono state apportate le seguenti modifiche:
+Questo documento è un derivato dei [Termini Standard DPA di Common Paper (Versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) e sono state apportate le seguenti modifiche:
 
-1. [Legge applicabile e tribunali scelti](#11-governing-law-and-chosen-courts) è stato incluso come sezione sottostante, insieme a `Governing State` identificato sopra.
-2. [Rapporto con il fornitore di servizi](#12-service-provider-relationship) è stato incluso come sezione sottostante.
+1. [Legge Applicabile e Tribunali Scelti](#11-governing-law-and-chosen-courts) è stata inclusa come sezione qui sotto con lo `Stato Governante` identificato sopra.
+2. [Rapporto con il Fornitore di Servizi](#12-service-provider-relationship) è stata inclusa come sezione qui sotto.
 
-## 1. Relazioni tra processore e sub-processore {#1-processor-and-subprocessor-relationships}
 
-### 1. Fornitore come Processore {#1-provider-as-processor}
+## 1. Rapporti tra Titolare del trattamento e Subincaricato {#1-processor-and-subprocessor-relationships}
 
-Nei casi in cui il <strong>Cliente</strong> è titolare del trattamento dei dati personali del cliente, il <strong>Fornitore</strong> sarà considerato un responsabile del trattamento che elabora i dati personali per conto del <strong>Cliente</strong>.
+### 1. Fornitore come Titolare del trattamento {#1-provider-as-processor}
 
-### 2. Fornitore come sub-responsabile {#2-provider-as-subprocessor}
+Nelle situazioni in cui il <strong>Cliente</strong> è un Titolare del trattamento dei Dati Personali del Cliente, il <strong>Fornitore</strong> sarà considerato un Titolare del trattamento che tratta i Dati Personali per conto del <strong>Cliente</strong>.
 
-Nei casi in cui il <strong>Cliente</strong> è un Responsabile del trattamento dei dati personali del cliente, il <strong>Fornitore</strong> sarà considerato un Sub-responsabile del trattamento dei dati personali del cliente.
+### 2. Fornitore come Subincaricato {#2-provider-as-subprocessor}
 
-## 2. Elaborazione di {#2-processing}
+Nelle situazioni in cui il <strong>Cliente</strong> è un Titolare del trattamento dei Dati Personali del Cliente, il <strong>Fornitore</strong> sarà considerato un Subincaricato dei Dati Personali del Cliente.
 
-### 1. Dettagli di elaborazione {#1-processing-details}
 
-L'Allegato I(B) nella pagina di copertina descrive l'oggetto, la natura, lo scopo e la durata del presente Trattamento, nonché le <strong>Categorie di Dati Personali</strong> raccolti e le <strong>Categorie di Interessati</strong>.
+## 2. Trattamento {#2-processing}
 
-### 2. Istruzioni di elaborazione {#2-processing-instructions}
+### 1. Dettagli del Trattamento {#1-processing-details}
 
-Il Cliente incarica il Fornitore di elaborare i Dati Personali del Cliente: (a) per fornire e mantenere il Servizio; (b) come ulteriormente specificato tramite l'utilizzo del Servizio da parte del Cliente; (c) come documentato nel Contratto; e (d) come documentato in qualsiasi altra istruzione scritta fornita dal Cliente e riconosciuta dal Fornitore in merito all'elaborazione dei Dati Personali del Cliente ai sensi del presente DPA. Il Fornitore si atterrà a tali istruzioni, salvo divieto imposto dalle Leggi Applicabili. Il Fornitore informerà immediatamente il Cliente qualora non fosse in grado di seguire le istruzioni di elaborazione. Il Cliente ha fornito e fornirà solo istruzioni conformi alle Leggi Applicabili.
+L'Allegato I(B) nella Copertina descrive l'oggetto, la natura, lo scopo e la durata di questo Trattamento, così come le <strong>Categorie di Dati Personali</strong> raccolti e le <strong>Categorie di Interessati</strong>.
 
-### 3. Elaborazione da parte del fornitore {#3-processing-by-provider}
+### 2. Istruzioni per il Trattamento {#2-processing-instructions}
 
-Il Fornitore tratterà i Dati Personali del Cliente esclusivamente in conformità con il presente DPA, inclusi i dettagli riportati nella Pagina di Copertina. Qualora il Fornitore aggiorni il Servizio per aggiornare prodotti, caratteristiche o funzionalità esistenti o includerne di nuovi, il Fornitore potrà modificare le Categorie di Interessati, le Categorie di Dati Personali, i Dati di Categoria Speciale, le Limitazioni o Garanzie relative ai Dati di Categoria Speciale, la Frequenza di Trasferimento, la Natura e le Finalità del Trattamento e la Durata del Trattamento, secondo necessità, per riflettere gli aggiornamenti, notificando al Cliente gli aggiornamenti e le modifiche.
+Il <strong>Cliente</strong> istruisce il <strong>Fornitore</strong> a trattare i Dati Personali del Cliente: (a) per fornire e mantenere il Servizio; (b) come ulteriormente specificato tramite l'uso del Servizio da parte del <strong>Cliente</strong>; (c) come documentato nell'<strong>Accordo</strong>; e (d) come documentato in qualsiasi altra istruzione scritta fornita dal <strong>Cliente</strong> e riconosciuta dal <strong>Fornitore</strong> riguardo al Trattamento dei Dati Personali del Cliente ai sensi di questo DPA. Il <strong>Fornitore</strong> si atterrà a queste istruzioni salvo sia vietato dalle Leggi Applicabili. Il <strong>Fornitore</strong> informerà immediatamente il <strong>Cliente</strong> se non è in grado di seguire le istruzioni di Trattamento. Il <strong>Cliente</strong> ha fornito e fornirà solo istruzioni conformi alle Leggi Applicabili.
 
-### 4. Elaborazione clienti {#4-customer-processing}
+### 3. Trattamento da parte del Fornitore {#3-processing-by-provider}
 
-Laddove il <strong>Cliente</strong> sia un Responsabile del trattamento e il <strong>Fornitore</strong> un Sub-responsabile del trattamento, il <strong>Cliente</strong> si impegna a rispettare tutte le Leggi applicabili al Trattamento dei Dati Personali da parte del <strong>Cliente</strong>. Analogamente, il contratto del <strong>Cliente</strong> con il suo Titolare del trattamento richiederà al <strong>Cliente</strong> di rispettare tutte le Leggi applicabili al <strong>Cliente</strong> in qualità di Responsabile del trattamento. Inoltre, il <strong>Cliente</strong> si impegna a rispettare i requisiti del Sub-responsabile del trattamento previsti dal contratto del <strong>Cliente</strong> con il suo Titolare del trattamento.
+Il <strong>Fornitore</strong> tratterà i Dati Personali del Cliente solo in conformità con questo DPA, inclusi i dettagli nella Copertina. Se il <strong>Fornitore</strong> aggiorna il Servizio per aggiornare prodotti, funzionalità o caratteristiche esistenti o includerne di nuove, il <strong>Fornitore</strong> potrà modificare le <strong>Categorie di Interessati</strong>, le <strong>Categorie di Dati Personali</strong>, i <strong>Dati di Categoria Speciale</strong>, le <strong>Restrizioni o Garanzie sui Dati di Categoria Speciale</strong>, la <strong>Frequenza di Trasferimento</strong>, la <strong>Natura e Scopo del Trattamento</strong> e la <strong>Durata del Trattamento</strong> secondo necessità per riflettere gli aggiornamenti, notificando al <strong>Cliente</strong> le modifiche e gli aggiornamenti.
 
-### 5. Consenso al trattamento {#5-consent-to-processing}
+### 4. Trattamento da parte del Cliente {#4-customer-processing}
 
-Il <strong>Cliente</strong> ha rispettato e continuerà a rispettare tutte le Leggi sulla protezione dei dati applicabili in relazione alla fornitura dei Dati personali del cliente al <strong>Fornitore</strong> e/o al Servizio, comprese tutte le divulgazioni, l'ottenimento di tutti i consensi, la fornitura di una scelta adeguata e l'implementazione delle garanzie pertinenti richieste dalle Leggi sulla protezione dei dati applicabili.
+Quando il <strong>Cliente</strong> è un Titolare del trattamento e il <strong>Fornitore</strong> è un Subincaricato, il <strong>Cliente</strong> si conformerà a tutte le Leggi Applicabili che si applicano al Trattamento dei Dati Personali del Cliente da parte del <strong>Cliente</strong>. L'accordo del <strong>Cliente</strong> con il proprio Titolare del trattamento richiederà analogamente al <strong>Cliente</strong> di conformarsi a tutte le Leggi Applicabili che si applicano al <strong>Cliente</strong> come Titolare del trattamento. Inoltre, il <strong>Cliente</strong> si conformerà ai requisiti per i Subincaricati previsti nell'accordo del <strong>Cliente</strong> con il proprio Titolare del trattamento.
 
-### 6. Sub-responsabili {#6-subprocessors}
+### 5. Consenso al Trattamento {#5-consent-to-processing}
 
-a. Il Fornitore non fornirà, trasferirà o consegnerà alcun Dato Personale del Cliente a un Sub-responsabile del trattamento a meno che il Cliente non abbia approvato il Sub-responsabile del trattamento. L'elenco attuale dei Sub-responsabili del trattamento approvati include le identità dei Sub-responsabili del trattamento, il loro Paese di residenza e le attività di Trattamento previste. Il Fornitore informerà il Cliente con almeno 10 giorni lavorativi di anticipo e per iscritto di eventuali modifiche previste ai Sub-responsabili del trattamento approvati, sia mediante l'aggiunta che la sostituzione di un Sub-responsabile del trattamento, consentendo al Cliente di avere tempo sufficiente per opporsi alle modifiche prima che il Fornitore inizi a utilizzare il/i nuovo/i Sub-responsabile/i. Il Fornitore fornirà al Cliente le informazioni necessarie per consentirgli di esercitare il proprio diritto di opposizione alla modifica dei Sub-responsabili del trattamento approvati. Il Cliente ha 30 giorni di tempo dalla notifica di una modifica ai Sub-responsabili Approvati per opporsi, in caso contrario si riterrà che abbia accettato le modifiche. Se il Cliente si oppone alla modifica entro 30 giorni dalla notifica, il Cliente e il Fornitore collaboreranno in buona fede per risolvere l'obiezione o il problema del Cliente.
+Il <strong>Cliente</strong> ha rispettato e continuerà a rispettare tutte le Leggi sulla Protezione dei Dati Applicabili riguardanti la fornitura dei Dati Personali del Cliente al <strong>Fornitore</strong> e/o al Servizio, inclusa la comunicazione di tutte le informazioni, l'ottenimento di tutti i consensi, la fornitura di adeguate scelte e l'implementazione delle garanzie rilevanti richieste dalle Leggi sulla Protezione dei Dati Applicabili.
+### 6. Subprocessori {#6-subprocessors}
 
-b. Quando si affida un Sub-responsabile del trattamento, il <strong>Fornitore</strong> dovrà stipulare un accordo scritto con il Sub-responsabile del trattamento che garantisca che il Sub-responsabile del trattamento acceda e utilizzi i Dati personali del Cliente solo (i) nella misura necessaria per adempiere agli obblighi ad esso subappaltati e (ii) in conformità con i termini dell'<strong>Accordo</strong>.
+a. <strong>Fornitore</strong> non fornirà, trasferirà o consegnerà alcun Dato Personale del Cliente a un Subprocessore a meno che il <strong>Cliente</strong> non abbia approvato il Subprocessore. L'elenco attuale dei <strong>Subprocessori Approvati</strong> include le identità dei Subprocessori, il loro paese di ubicazione e le attività di trattamento previste. Il <strong>Fornitore</strong> informerà il <strong>Cliente</strong> almeno 10 giorni lavorativi prima e per iscritto di qualsiasi modifica prevista ai <strong>Subprocessori Approvati</strong>, sia per aggiunta che per sostituzione di un Subprocessore, consentendo al <strong>Cliente</strong> di avere tempo sufficiente per opporsi alle modifiche prima che il <strong>Fornitore</strong> inizi a utilizzare il/i nuovo/i Subprocessore/i. Il <strong>Fornitore</strong> fornirà al <strong>Cliente</strong> le informazioni necessarie per permettere al <strong>Cliente</strong> di esercitare il diritto di opporsi alla modifica dei <strong>Subprocessori Approvati</strong>. Il <strong>Cliente</strong> ha 30 giorni dalla notifica di una modifica ai <strong>Subprocessori Approvati</strong> per opporsi, altrimenti si riterrà che il <strong>Cliente</strong> accetti le modifiche. Se il <strong>Cliente</strong> si oppone alla modifica entro 30 giorni dalla notifica, <strong>Cliente</strong> e <strong>Fornitore</strong> collaboreranno in buona fede per risolvere l'obiezione o la preoccupazione del <strong>Cliente</strong>.
 
-c. Qualora il GDPR si applichi al Trattamento dei Dati Personali del Cliente, (i) gli obblighi di protezione dei dati descritti nel presente DPA (come indicato nell'Articolo 28(3) del GDPR, ove applicabile) sono imposti anche al Sub-responsabile del trattamento e (ii) l'accordo tra il Fornitore e il Sub-responsabile del trattamento includerà tali obblighi, inclusi i dettagli su come il Fornitore e il suo Sub-responsabile si coordineranno per rispondere a richieste o quesiti relativi al Trattamento dei Dati Personali del Cliente. Inoltre, il Fornitore condividerà, su richiesta del Cliente, una copia dei propri accordi (inclusi eventuali emendamenti) con i propri Sub-responsabili del trattamento. Nella misura necessaria a proteggere segreti aziendali o altre informazioni riservate, inclusi i dati personali, il Fornitore può redigere il testo dell'accordo con il proprio Sub-responsabile del trattamento prima di condividerne una copia.
+b. Quando ingaggia un Subprocessore, il <strong>Fornitore</strong> stipulerà un accordo scritto con il Subprocessore che garantisca che il Subprocessore acceda e utilizzi i Dati Personali del Cliente (i) solo nella misura necessaria per eseguire gli obblighi a lui subappaltati, e (ii) in conformità con i termini del <strong>Contratto</strong>.
 
-d. Il <strong>Fornitore</strong> rimane pienamente responsabile di tutti gli obblighi subappaltati ai propri Sub-responsabili, inclusi gli atti e le omissioni dei propri Sub-responsabili nel Trattamento dei Dati Personali del Cliente. Il <strong>Fornitore</strong> informerà il Cliente di qualsiasi inadempimento da parte dei propri Sub-responsabili di un obbligo sostanziale relativo ai Dati Personali del Cliente ai sensi dell'accordo tra il <strong>Fornitore</strong> e il Sub-responsabile.
+c. Se il GDPR si applica al trattamento dei Dati Personali del Cliente, (i) gli obblighi di protezione dei dati descritti in questo DPA (come previsto dall'Articolo 28(3) del GDPR, se applicabile) si applicano anche al Subprocessore, e (ii) l'accordo del <strong>Fornitore</strong> con il Subprocessore incorporerà tali obblighi, inclusi i dettagli su come il <strong>Fornitore</strong> e il suo Subprocessore coordineranno le risposte a richieste o domande riguardanti il trattamento dei Dati Personali del Cliente. Inoltre, il <strong>Fornitore</strong> condividerà, su richiesta del <strong>Cliente</strong>, una copia dei suoi accordi (inclusi eventuali emendamenti) con i suoi Subprocessori. Nella misura necessaria a proteggere segreti commerciali o altre informazioni riservate, inclusi i dati personali, il <strong>Fornitore</strong> potrà oscurare il testo del suo accordo con il Subprocessore prima di condividere una copia.
 
-## 3. Trasferimenti limitati {#3-restricted-transfers}
+d. Il <strong>Fornitore</strong> rimane pienamente responsabile per tutti gli obblighi subappaltati ai suoi Subprocessori, inclusi gli atti e le omissioni dei suoi Subprocessori nel trattamento dei Dati Personali del Cliente. Il <strong>Fornitore</strong> notificherà al Cliente qualsiasi inadempienza da parte dei suoi Subprocessori nel soddisfare un obbligo materiale relativo ai Dati Personali del Cliente ai sensi dell'accordo tra <strong>Fornitore</strong> e il Subprocessore.
+
+
+## 3. Trasferimenti Limitati {#3-restricted-transfers}
 
 ### 1. Autorizzazione {#1-authorization}
 
-Il Cliente accetta che il Fornitore possa trasferire i Dati Personali del Cliente al di fuori del SEE, del Regno Unito o di altri territori geografici pertinenti, se necessario per fornire il Servizio. Qualora il Fornitore trasferisca i Dati Personali del Cliente in un territorio per il quale la Commissione Europea o altra autorità di vigilanza competente non abbia emesso una decisione di adeguatezza, il Fornitore adotterà misure di sicurezza appropriate per il trasferimento dei Dati Personali del Cliente in tale territorio, in conformità con le Leggi Applicabili sulla Protezione dei Dati.
+Il <strong>Cliente</strong> accetta che il <strong>Fornitore</strong> possa trasferire i Dati Personali del Cliente al di fuori dello SEE, del Regno Unito o di altro territorio geografico rilevante, se necessario per fornire il Servizio. Se il <strong>Fornitore</strong> trasferisce i Dati Personali del Cliente in un territorio per il quale la Commissione Europea o altra autorità di controllo rilevante non ha emesso una decisione di adeguatezza, il <strong>Fornitore</strong> implementerà adeguate garanzie per il trasferimento dei Dati Personali del Cliente in quel territorio in conformità con le Leggi Applicabili sulla Protezione dei Dati.
 
-### 2. Trasferimenti ex-SEE {#2-ex-eea-transfers}
+### 2. Trasferimenti Extra-SEE {#2-ex-eea-transfers}
 
-Il <strong>Cliente</strong> e il <strong>Fornitore</strong> convengono che, qualora il GDPR protegga il trasferimento dei Dati Personali del Cliente, il trasferimento avvenga dal <strong>Cliente</strong> all'interno del SEE al <strong>Fornitore</strong> al di fuori del SEE e non sia regolato da una decisione di adeguatezza della Commissione Europea, con la sottoscrizione del presente DPA, il <strong>Cliente</strong> e il <strong>Fornitore</strong> si considerano firmatari delle Condizioni Generali di Contratto (SCC) SEE e dei relativi Allegati, che sono incorporati per riferimento. Qualsiasi trasferimento di questo tipo viene effettuato ai sensi delle Condizioni Generali di Contratto (SCC) SEE, che sono completate come segue:
+Il <strong>Cliente</strong> e il <strong>Fornitore</strong> concordano che se il GDPR protegge il trasferimento dei Dati Personali del Cliente, il trasferimento avviene dal <strong>Cliente</strong> all'interno dello SEE al <strong>Fornitore</strong> al di fuori dello SEE, e il trasferimento non è regolato da una decisione di adeguatezza della Commissione Europea, allora con la sottoscrizione di questo DPA, il <strong>Cliente</strong> e il <strong>Fornitore</strong> si considerano aver firmato le SCC SEE e i loro Allegati, che sono incorporati per riferimento. Qualsiasi trasferimento di questo tipo è effettuato ai sensi delle SCC SEE, che sono completate come segue:
+a. Il Modulo Due (Titolare del trattamento a Responsabile del trattamento) delle SCC SEE si applica quando il <strong>Cliente</strong> è un Titolare del trattamento e il <strong>Fornitore</strong> tratta i Dati Personali del Cliente per conto del <strong>Cliente</strong> in qualità di Responsabile del trattamento.
 
-a. Il Modulo 2 (dal Titolare del trattamento al Responsabile del trattamento) delle Condizioni Generali di Contratto SEE si applica quando il <strong>Cliente</strong> è un Titolare del trattamento e il <strong>Fornitore</strong> elabora i Dati personali del Cliente per il <strong>Cliente</strong> in qualità di Responsabile del trattamento.
+b. Il Modulo Tre (Responsabile del trattamento a Sub-responsabile) delle SCC SEE si applica quando il <strong>Cliente</strong> è un Responsabile del trattamento e il <strong>Fornitore</strong> tratta i Dati Personali del Cliente per conto del <strong>Cliente</strong> in qualità di Sub-responsabile.
 
-b. Il Modulo Tre (da Responsabile del trattamento a Sub-Responsabile del trattamento) delle Condizioni Generali di Contratto SEE si applica quando il <strong>Cliente</strong> è un Responsabile del trattamento e il <strong>Fornitore</strong> elabora i Dati personali del Cliente per conto del <strong>Cliente</strong> in qualità di Sub-Responsabile del trattamento.
+c. Per ogni modulo, si applica quanto segue (quando pertinente):
 
-c. Per ciascun modulo, si applica quanto segue (ove applicabile):
+1. La clausola opzionale di docking nella Clausola 7 non si applica;
 
-1. La clausola di attracco facoltativo di cui alla clausola 7 non si applica;
+2. Nella Clausola 9, si applica l’Opzione 2 (autorizzazione scritta generale), e il periodo minimo di preavviso per le modifiche al Sub-responsabile è di 10 giorni lavorativi;
 
-2. Nella clausola 9, si applica l'opzione 2 (autorizzazione scritta generale) e il periodo di tempo minimo per la notifica preventiva delle modifiche del sub-responsabile è di 10 giorni lavorativi;
+3. Nella Clausola 11, il testo opzionale non si applica;
 
-3. Nella clausola 11, la formulazione facoltativa non si applica;
+4. Tutte le parentesi quadre nella Clausola 13 sono rimosse;
 
-4. Tutte le parentesi quadre nella clausola 13 vengono rimosse;
+5. Nella Clausola 17 (Opzione 1), le SCC SEE saranno regolate dalle leggi del <strong>Paese Membro Governante</strong>;
 
-5. Nella clausola 17 (opzione 1), le clausole contrattuali standard dello SEE saranno disciplinate dalle leggi dello <strong>Stato membro di riferimento</strong>;
+6. Nella Clausola 18(b), le controversie saranno risolte nei tribunali del <strong>Paese Membro Governante</strong>; e
 
-6. Nella clausola 18(b), le controversie saranno risolte nei tribunali dello <strong>Stato membro governante</strong>; e
+7. La Copertina di questo DPA contiene le informazioni richieste negli Allegati I, II e III delle SCC SEE.
 
-7. La pagina di copertina del presente DPA contiene le informazioni richieste nell'allegato I, nell'allegato II e nell'allegato III delle clausole contrattuali tipo del SEE.
+### 3. Trasferimenti ex-UK {#3-ex-uk-transfers}
 
-### 3. Trasferimenti ex-Regno Unito {#3-ex-uk-transfers}
+<strong>Cliente</strong> e <strong>Fornitore</strong> concordano che se il GDPR del Regno Unito protegge il trasferimento dei Dati Personali del Cliente, il trasferimento avviene dal <strong>Cliente</strong> all’interno del Regno Unito al <strong>Fornitore</strong> al di fuori del Regno Unito, e il trasferimento non è regolato da una decisione di adeguatezza adottata dal Segretario di Stato del Regno Unito, allora con la sottoscrizione di questo DPA, il <strong>Cliente</strong> e il <strong>Fornitore</strong> sono considerati aver firmato l’Addendum UK e i suoi Allegati, che sono incorporati per riferimento. Qualsiasi trasferimento di questo tipo è effettuato ai sensi dell’Addendum UK, che è completato come segue:
 
-Il <strong>Cliente</strong> e il <strong>Fornitore</strong> convengono che, qualora il GDPR del Regno Unito protegga il trasferimento dei Dati Personali del Cliente, il trasferimento avvenga dal <strong>Cliente</strong> all'interno del Regno Unito al <strong>Fornitore</strong> al di fuori del Regno Unito e non sia regolato da una decisione di adeguatezza adottata dal Segretario di Stato del Regno Unito, allora, sottoscrivendo il presente DPA, il <strong>Cliente</strong> e il <strong>Fornitore</strong> si considerano firmatari dell'Addendum del Regno Unito e dei relativi Allegati, che sono incorporati per riferimento. Qualsiasi trasferimento di questo tipo viene effettuato ai sensi dell'Addendum del Regno Unito, che viene completato come segue:
+a. La Sezione 3.2 di questo DPA contiene le informazioni richieste nella Tabella 2 dell’Addendum UK.
 
-a. La Sezione 3.2 del presente DPA contiene le informazioni richieste nella Tabella 2 dell'Addendum del Regno Unito.
+b. La Tabella 4 dell’Addendum UK è modificata come segue: Nessuna delle parti può terminare l’Addendum UK come previsto nella Sezione 19 dell’Addendum UK; nella misura in cui l’ICO emetta un Addendum Approvato rivisto ai sensi della Sezione ‎18 dell’Addendum UK, le parti collaboreranno in buona fede per rivedere di conseguenza questo DPA.
 
-b. La Tabella 4 dell'Addendum del Regno Unito è modificata come segue: Nessuna delle parti può porre fine all'Addendum del Regno Unito come stabilito nella Sezione 19 dell'Addendum del Regno Unito; nella misura in cui l'ICO emette un Addendum approvato rivisto ai sensi della Sezione 18 dell'Addendum del Regno Unito, le parti lavoreranno in buona fede per rivedere di conseguenza il presente DPA.
+c. La Copertina contiene le informazioni richieste dagli Allegati 1A, 1B, II e III dell’Addendum UK.
 
-c. La pagina di copertina contiene le informazioni richieste dall'Allegato 1A, dall'Allegato 1B, dall'Allegato II e dall'Allegato III dell'Addendum del Regno Unito.
+### 4. Altri Trasferimenti Internazionali {#4-other-international-transfers}
 
-### 4. Altri trasferimenti internazionali {#4-other-international-transfers}
+Per i trasferimenti di Dati Personali in cui si applica la legge svizzera (e non la legge di alcuno Stato membro SEE o del Regno Unito) alla natura internazionale del trasferimento, i riferimenti al GDPR nella Clausola 4 delle SCC SEE sono, nella misura legalmente richiesta, modificati per riferirsi invece alla Legge federale svizzera sulla protezione dei dati o al suo successore, e il concetto di autorità di controllo includerà il Commissario federale svizzero per la protezione dei dati e la trasparenza.
 
-Per i trasferimenti di dati personali in cui la legge svizzera (e non la legge di uno degli stati membri dello SEE o del Regno Unito) si applica alla natura internazionale del trasferimento, i riferimenti al GDPR nella clausola 4 delle clausole contrattuali tipo dello SEE sono, nella misura in cui richiesto dalla legge, modificati per fare riferimento alla legge federale svizzera sulla protezione dei dati o alla sua versione successiva, e il concetto di autorità di controllo includerà l'Incaricato federale svizzero per la protezione dei dati e la trasparenza.
 
-## 4. Risposta agli incidenti di sicurezza {#4-security-incident-response}
+## 4. Risposta agli Incidenti di Sicurezza {#4-security-incident-response}
 
-1. Una volta venuto a conoscenza di un Incidente di sicurezza, il <strong>Fornitore</strong> dovrà: (a) informare il <strong>Cliente</strong> senza indebito ritardo, ove possibile, ma non oltre 72 ore dal momento in cui è venuto a conoscenza dell'Incidente di sicurezza; (b) fornire tempestivamente informazioni sull'Incidente di sicurezza non appena vengono a conoscenza o su ragionevole richiesta del <strong>Cliente</strong>; e (c) adottare tempestivamente misure ragionevoli per contenere e indagare sull'Incidente di sicurezza. La notifica o la risposta del <strong>Fornitore</strong> a un Incidente di sicurezza, come richiesto dal presente DPA, non sarà interpretata come un riconoscimento da parte del <strong>Fornitore</strong> di alcuna colpa o responsabilità per l'Incidente di sicurezza.
+1. Non appena viene a conoscenza di un Incidente di Sicurezza, il <strong>Fornitore</strong>: (a) notificherà il <strong>Cliente</strong> senza ingiustificato ritardo quando possibile, ma non oltre 72 ore dal momento in cui viene a conoscenza dell’Incidente di Sicurezza; (b) fornirà tempestivamente informazioni sull’Incidente di Sicurezza man mano che diventano note o come ragionevolmente richiesto dal <strong>Cliente</strong>; e (c) prenderà prontamente misure ragionevoli per contenere e indagare sull’Incidente di Sicurezza. La notifica o la risposta del <strong>Fornitore</strong> a un Incidente di Sicurezza come richiesto da questo DPA non sarà interpretata come un’ammissione da parte del <strong>Fornitore</strong> di alcuna colpa o responsabilità per l’Incidente di Sicurezza.
 
-## 5. Audit e report {#5-audit--reports}
 
-### 1. Diritti di controllo {#1-audit-rights}
+## 5. Audit e Rapporti {#5-audit--reports}
 
-Il Fornitore fornirà al Cliente tutte le informazioni ragionevolmente necessarie per dimostrare la propria conformità al presente DPA e consentirà e contribuirà a condurre audit, incluse ispezioni da parte del Cliente, per valutare la conformità del Fornitore al presente DPA. Tuttavia, il Fornitore può limitare l'accesso ai dati o alle informazioni qualora l'accesso del Cliente alle informazioni influisca negativamente sui diritti di proprietà intellettuale, sugli obblighi di riservatezza o su altri obblighi del Fornitore ai sensi delle Leggi Applicabili. Il Cliente riconosce e accetta che eserciterà i propri diritti di audit ai sensi del presente DPA e di qualsiasi diritto di audit concesso dalle Leggi Applicabili sulla Protezione dei Dati solo incaricando il Fornitore di conformarsi ai requisiti di segnalazione e due diligence di seguito indicati. Il Fornitore conserverà la documentazione relativa alla propria conformità al presente DPA per 3 anni dalla sua cessazione.
+### 1. Diritti di Audit {#1-audit-rights}
 
-### 2. Rapporti di sicurezza {#2-security-reports}
+Il <strong>Fornitore</strong> fornirà al <strong>Cliente</strong> tutte le informazioni ragionevolmente necessarie per dimostrare la conformità a questo DPA e consentirà e contribuirà agli audit, comprese le ispezioni da parte del <strong>Cliente</strong>, per valutare la conformità del <strong>Fornitore</strong> a questo DPA. Tuttavia, il <strong>Fornitore</strong> può limitare l’accesso ai dati o alle informazioni se l’accesso del <strong>Cliente</strong> alle informazioni comprometterebbe negativamente i diritti di proprietà intellettuale, gli obblighi di riservatezza o altri obblighi del <strong>Fornitore</strong> ai sensi delle Leggi Applicabili. Il <strong>Cliente</strong> riconosce e accetta che eserciterà i propri diritti di audit ai sensi di questo DPA e di qualsiasi diritto di audit concesso dalle Leggi sulla Protezione dei Dati Applicabili solo istruendo il <strong>Fornitore</strong> a conformarsi ai requisiti di rendicontazione e due diligence di seguito. Il <strong>Fornitore</strong> manterrà i registri della propria conformità a questo DPA per 3 anni dopo la cessazione del DPA.
+### 2. Rapporti sulla Sicurezza {#2-security-reports}
 
-Il <strong>Cliente</strong> riconosce che il <strong>Fornitore</strong> viene regolarmente sottoposto a verifiche in base agli standard definiti nella <strong>Politica di Sicurezza</strong> da parte di revisori terzi indipendenti. Su richiesta scritta, il <strong>Fornitore</strong> fornirà al <strong>Cliente</strong>, in via riservata, una copia riassuntiva del suo Rapporto aggiornato in modo che il <strong>Cliente</strong> possa verificare la conformità del <strong>Fornitore</strong> agli standard definiti nella <strong>Politica di Sicurezza</strong>.
+<strong>Cliente</strong> riconosce che il <strong>Fornitore</strong> è regolarmente sottoposto a verifiche conformi agli standard definiti nella <strong>Politica di Sicurezza</strong> da parte di revisori indipendenti terzi. Su richiesta scritta, il <strong>Fornitore</strong> fornirà al <strong>Cliente</strong>, in modo confidenziale, una copia riassuntiva del proprio Rapporto attualmente in vigore affinché il <strong>Cliente</strong> possa verificare la conformità del <strong>Fornitore</strong> agli standard definiti nella <strong>Politica di Sicurezza</strong>.
 
-### 3. Due diligence sulla sicurezza {#3-security-due-diligence}
+### 3. Due Diligence sulla Sicurezza {#3-security-due-diligence}
 
-Oltre al Rapporto, il Fornitore risponderà a richieste di informazioni ragionevoli presentate dal Cliente per confermare la conformità del Fornitore al presente DPA, incluse le risposte ai questionari sulla sicurezza delle informazioni, sulla due diligence e sugli audit, oppure fornendo ulteriori informazioni sul proprio programma di sicurezza delle informazioni. Tutte le richieste devono essere presentate per iscritto al Referente per la Sicurezza del Fornitore e possono essere presentate solo una volta all'anno.
+Oltre al Rapporto, il <strong>Fornitore</strong> risponderà a richieste ragionevoli di informazioni fatte dal <strong>Cliente</strong> per confermare la conformità del <strong>Fornitore</strong> al presente DPA, incluse risposte a questionari su sicurezza delle informazioni, due diligence e audit, o fornendo ulteriori informazioni sul proprio programma di sicurezza delle informazioni. Tutte tali richieste devono essere fatte per iscritto e indirizzate al <strong>Contatto per la Sicurezza del Fornitore</strong> e possono essere effettuate solo una volta all’anno.
 
-## 6. Coordinamento e cooperazione {#6-coordination--cooperation}
 
-### 1. Risposta alle richieste {#1-response-to-inquiries}
+## 6. Coordinamento e Cooperazione {#6-coordination--cooperation}
 
-Se il Fornitore riceve qualsiasi richiesta o quesito da chiunque altro in merito al Trattamento dei Dati Personali del Cliente, il Fornitore informerà il Cliente della richiesta e non risponderà alla richiesta senza il previo consenso del Cliente. Esempi di questo tipo di richieste e quesiti includono un ordine di un'agenzia giudiziaria, amministrativa o di regolamentazione relativo ai Dati Personali del Cliente, laddove la notifica al Cliente non sia vietata dalla Legge Applicabile, o una richiesta da parte di un interessato. Se consentito dalla Legge Applicabile, il Fornitore seguirà le istruzioni ragionevoli del Cliente in merito a tali richieste, incluso fornire aggiornamenti sullo stato e altre informazioni ragionevolmente richieste dal Cliente. Se un interessato presenta una richiesta valida ai sensi delle Leggi applicabili in materia di protezione dei dati per eliminare o rifiutare la comunicazione dei Dati personali del Cliente al Fornitore, il Fornitore assisterà il Cliente nell'evasione della richiesta in conformità con le Leggi applicabili in materia di protezione dei dati. Il Fornitore collaborerà con il Cliente e gli fornirà ragionevole assistenza, a spese del Cliente, in qualsiasi risposta legale o altra azione procedurale intrapresa dal Cliente in risposta a una richiesta di terzi relativa al Trattamento dei Dati personali del Cliente da parte del Fornitore ai sensi del presente DPA.
+### 1. Risposta alle Richieste {#1-response-to-inquiries}
+
+Se il <strong>Fornitore</strong> riceve qualsiasi richiesta o domanda da parte di terzi riguardo al Trattamento dei Dati Personali del Cliente, il <strong>Fornitore</strong> notificherà al <strong>Cliente</strong> la richiesta e non risponderà senza il previo consenso del <strong>Cliente</strong>. Esempi di tali richieste includono un ordine giudiziario, amministrativo o di un’agenzia regolatoria riguardante i Dati Personali del Cliente, ove la notifica al <strong>Cliente</strong> non sia vietata dalla Legge Applicabile, o una richiesta da parte di un interessato. Se consentito dalla Legge Applicabile, il <strong>Fornitore</strong> seguirà le istruzioni ragionevoli del <strong>Cliente</strong> riguardo a tali richieste, inclusa la fornitura di aggiornamenti sullo stato e altre informazioni ragionevolmente richieste dal <strong>Cliente</strong>. Se un interessato presenta una richiesta valida ai sensi delle Leggi Applicabili sulla Protezione dei Dati per cancellare o rinunciare alla comunicazione da parte del <strong>Cliente</strong> dei Dati Personali al <strong>Fornitore</strong>, il <strong>Fornitore</strong> assisterà il <strong>Cliente</strong> nell’adempimento della richiesta secondo la Legge Applicabile sulla Protezione dei Dati. Il <strong>Fornitore</strong> collaborerà e fornirà assistenza ragionevole al <strong>Cliente</strong>, a spese del <strong>Cliente</strong>, in qualsiasi risposta legale o altra azione procedurale intrapresa dal <strong>Cliente</strong> in risposta a una richiesta di terzi riguardante il Trattamento da parte del <strong>Fornitore</strong> dei Dati Personali del Cliente ai sensi del presente DPA.
 
 ### 2. DPIA e DTIA {#2-dpias-and-dtias}
 
-Se richiesto dalle leggi applicabili sulla protezione dei dati, il <strong>Fornitore</strong> assisterà ragionevolmente il <strong>Cliente</strong> nello svolgimento di eventuali valutazioni d'impatto sulla protezione dei dati o valutazioni d'impatto sul trasferimento dei dati e consultazioni con le autorità competenti per la protezione dei dati, tenendo in considerazione la natura del trattamento e dei dati personali del cliente.
+Se richiesto dalle Leggi Applicabili sulla Protezione dei Dati, il <strong>Fornitore</strong> assisterà ragionevolmente il <strong>Cliente</strong> nello svolgimento di qualsiasi valutazione d’impatto sulla protezione dei dati o valutazione d’impatto sul trasferimento dei dati obbligatoria e nelle consultazioni con le autorità competenti per la protezione dei dati, tenendo conto della natura del Trattamento e dei Dati Personali del Cliente.
 
-## 7. Cancellazione dei dati personali del cliente {#7-deletion-of-customer-personal-data}
 
-### 1. Eliminazione da parte del cliente {#1-deletion-by-customer}
+## 7. Cancellazione dei Dati Personali del Cliente {#7-deletion-of-customer-personal-data}
 
-Il <strong>Fornitore</strong> consentirà al <strong>Cliente</strong> di eliminare i Dati personali del Cliente in modo coerente con la funzionalità dei Servizi. Il <strong>Fornitore</strong> rispetterà questa istruzione non appena ragionevolmente possibile, salvo nei casi in cui l'ulteriore conservazione dei Dati personali del Cliente sia richiesta dalla Legge applicabile.
+### 1. Cancellazione da parte del Cliente {#1-deletion-by-customer}
 
-### 2. Eliminazione alla scadenza del DPA {#2-deletion-at-dpa-expiration}
+Il <strong>Fornitore</strong> consentirà al <strong>Cliente</strong> di cancellare i Dati Personali del Cliente in modo coerente con le funzionalità dei Servizi. Il <strong>Fornitore</strong> si conformerà a questa istruzione non appena ragionevolmente possibile, salvo che la conservazione ulteriore dei Dati Personali del Cliente sia richiesta dalla Legge Applicabile.
 
-a. Dopo la scadenza del DPA, il Fornitore restituirà o cancellerà i Dati Personali del Cliente su istruzione del Cliente, a meno che l'ulteriore conservazione dei Dati Personali del Cliente non sia richiesta o autorizzata dalla Legge Applicabile. Qualora la restituzione o la distruzione siano impraticabili o vietate dalla Legge Applicabile, il Fornitore compirà ogni ragionevole sforzo per impedire l'ulteriore Trattamento dei Dati Personali del Cliente e continuerà a proteggere i Dati Personali del Cliente rimasti in suo possesso, custodia o controllo. Ad esempio, la Legge Applicabile potrebbe richiedere al Fornitore di continuare a ospitare o trattare i Dati Personali del Cliente.
+### 2. Cancellazione alla Scadenza del DPA {#2-deletion-at-dpa-expiration}
 
-b. Se il <strong>Cliente</strong> e il <strong>Fornitore</strong> hanno sottoscritto le Condizioni Generali di Contratto (SCC) dello Spazio Economico Europeo o l'Addendum del Regno Unito come parte del presente DPA, il <strong>Fornitore</strong> fornirà al <strong>Cliente</strong> la certificazione di cancellazione dei Dati Personali descritta nella Clausola 8.1(d) e nella Clausola 8.5 delle Condizioni Generali di Contratto (SCC) dello Spazio Economico Europeo solo se il <strong>Cliente</strong> ne fa richiesta.
+a. Dopo la scadenza del DPA, il <strong>Fornitore</strong> restituirà o cancellerà i Dati Personali del Cliente su istruzione del <strong>Cliente</strong>, salvo che la conservazione ulteriore dei Dati Personali del Cliente sia richiesta o autorizzata dalla Legge Applicabile. Se la restituzione o la distruzione risultano impraticabili o vietate dalle Leggi Applicabili, il <strong>Fornitore</strong> farà ragionevoli sforzi per prevenire ulteriori Trattamenti dei Dati Personali del Cliente e continuerà a proteggere i Dati Personali del Cliente rimasti in suo possesso, custodia o controllo. Ad esempio, le Leggi Applicabili possono richiedere al <strong>Fornitore</strong> di continuare a ospitare o trattare i Dati Personali del Cliente.
+b. Se <strong>Cliente</strong> e <strong>Fornitore</strong> hanno inserito le SCC SEE o l'Addendum UK come parte di questo DPA, <strong>Fornitore</strong> fornirà a <strong>Cliente</strong> la certificazione di cancellazione dei Dati Personali descritta nella Clausola 8.1(d) e nella Clausola 8.5 delle SCC SEE solo se <strong>Cliente</strong> ne fa richiesta.
 
-## 8. Limitazione di responsabilità {#8-limitation-of-liability}
 
-### 1. Limiti di responsabilità e rinuncia al risarcimento danni {#1-liability-caps-and-damages-waiver}
+## 8. Limitazione di Responsabilità {#8-limitation-of-liability}
 
-**Nella misura massima consentita dalle leggi applicabili in materia di protezione dei dati, la responsabilità cumulativa totale di ciascuna parte nei confronti dell'altra parte derivante da o correlata al presente DPA sarà soggetta alle rinunce, esclusioni e limitazioni di responsabilità indicate nel <strong>Contratto</strong>.**
+### 1. Limiti di Responsabilità e Rinuncia ai Danni {#1-liability-caps-and-damages-waiver}
 
-### 2. Reclami tra parti correlate {#2-related-party-claims}
+**Nella massima misura consentita dalle Leggi sulla Protezione dei Dati Applicabili, la responsabilità cumulativa totale di ciascuna parte nei confronti dell'altra derivante da o correlata a questo DPA sarà soggetta alle rinunce, esclusioni e limitazioni di responsabilità indicate nel <strong>Contratto</strong>.**
 
-**Qualsiasi reclamo presentato contro il <strong>Fornitore</strong> o le sue affiliate derivante da o correlato al presente DPA può essere presentato solo dall'entità <strong>Cliente</strong> che è parte del <strong>Contratto</strong>.**
+### 2. Reclami da Parti Correlate {#2-related-party-claims}
+
+**Eventuali reclami presentati contro <strong>Fornitore</strong> o le sue Affiliate derivanti da o correlati a questo DPA possono essere avanzati solo dall'entità <strong>Cliente</strong> che è parte del <strong>Contratto</strong>.**
 
 ### 3. Eccezioni {#3-exceptions}
 
-1. Il presente DPA non limita alcuna responsabilità nei confronti di un individuo in merito ai suoi diritti di protezione dei dati personali ai sensi delle Leggi applicabili in materia di protezione dei dati. Inoltre, il presente DPA non limita alcuna responsabilità tra le parti per violazioni delle Condizioni Generali di Contratto (SCC) SEE o dell'Addendum del Regno Unito.
+1. Questo DPA non limita alcuna responsabilità nei confronti di un individuo riguardo ai diritti di protezione dei dati personali dell'individuo ai sensi delle Leggi sulla Protezione dei Dati Applicabili. Inoltre, questo DPA non limita alcuna responsabilità tra le parti per violazioni delle SCC SEE o dell'Addendum UK.
 
-## 9. Conflitti tra documenti {#9-conflicts-between-documents}
 
-1. Il presente DPA costituisce parte integrante e integra l'Accordo. In caso di incongruenza tra il presente DPA, l'Accordo o una qualsiasi delle loro parti, la parte indicata in precedenza prevarrà sulla parte indicata in seguito per tale incongruenza: (1) le Condizioni Generali di Contratto SEE o l'Addendum del Regno Unito, (2) il presente DPA e, in seguito, (3) l'Accordo.
+## 9. Conflitti tra Documenti {#9-conflicts-between-documents}
 
-## 10. Durata dell'accordo {#10-term-of-agreement}
+1. Questo DPA fa parte e integra il Contratto. In caso di incongruenza tra questo DPA, il <strong>Contratto</strong> o qualsiasi loro parte, prevarrà la parte elencata prima rispetto a quella elencata dopo per tale incongruenza: (1) le SCC SEE o l'Addendum UK, (2) questo DPA, e poi (3) il <strong>Contratto</strong>.
 
-Il presente DPA avrà inizio nel momento in cui il Fornitore e il Cliente concorderanno una pagina di copertina per il DPA e firmeranno o accetteranno elettronicamente il Contratto e continuerà fino alla scadenza o alla risoluzione del Contratto. Tuttavia, il Fornitore e il Cliente rimarranno entrambi soggetti agli obblighi previsti dal presente DPA e dalle Leggi applicabili in materia di protezione dei dati fino a quando il Cliente non cesserà di trasferire i Dati Personali al Fornitore e il Fornitore non cesserà di elaborare i Dati Personali del Cliente.
 
-## 11. Legge applicabile e tribunali prescelti {#11-governing-law-and-chosen-courts}
+## 10. Durata del Contratto {#10-term-of-agreement}
 
-Fermo restando il diritto applicabile o clausole simili del <strong>Contratto</strong>, tutte le interpretazioni e le controversie relative al presente DPA saranno regolate dalle leggi dello <strong>Stato Governante</strong>, senza riguardo alle disposizioni in materia di conflitto di leggi. Inoltre, e nonostante la scelta del foro competente, la giurisdizione o clausole simili del <strong>Contratto</strong>, le parti concordano di intentare qualsiasi azione legale, causa o procedimento relativo al presente DPA presso i tribunali dello <strong>Stato Governante</strong>, e ciascuna parte si sottomette irrevocabilmente alla giurisdizione esclusiva di tali tribunali.
+Questo DPA avrà inizio quando <strong>Fornitore</strong> e <strong>Cliente</strong> concordano una Copertina per il DPA e firmano o accettano elettronicamente il <strong>Contratto</strong> e continuerà fino alla scadenza o risoluzione del <strong>Contratto</strong>. Tuttavia, <strong>Fornitore</strong> e <strong>Cliente</strong> rimarranno ciascuno soggetti agli obblighi di questo DPA e alle Leggi sulla Protezione dei Dati Applicabili fino a quando <strong>Cliente</strong> non cesserà di trasferire Dati Personali del Cliente a <strong>Fornitore</strong> e <strong>Fornitore</strong> non cesserà di Trattare i Dati Personali del Cliente.
 
-## 12. Relazione con il fornitore del servizio {#12-service-provider-relationship}
 
-Nella misura in cui si applica il California Consumer Privacy Act, Cal. Civ. Code § 1798.100 e segg. ("CCPA"), le parti riconoscono e concordano che il Fornitore è un fornitore di servizi e riceve Dati Personali dal Cliente per fornire il Servizio come concordato nel Contratto, il che costituisce uno scopo commerciale. Il Fornitore non venderà alcun Dato Personale fornito dal Cliente ai sensi del Contratto. Inoltre, il Fornitore non conserverà, utilizzerà o divulgherà alcun Dato Personale fornito dal Cliente ai sensi del Contratto, salvo quanto necessario per fornire il Servizio al Cliente, come indicato nel Contratto o come consentito dalle Leggi Applicabili sulla Protezione dei Dati. Il <strong>fornitore</strong> certifica di aver compreso le restrizioni del presente paragrafo.
+## 11. Legge Applicabile e Foro Competente {#11-governing-law-and-chosen-courts}
 
+Nonostante le clausole sulla legge applicabile o simili del <strong>Contratto</strong>, tutte le interpretazioni e controversie relative a questo DPA saranno regolate dalle leggi dello <strong>Stato Governante</strong> senza riguardo alle sue disposizioni sui conflitti di legge. Inoltre, e nonostante la selezione del foro, la giurisdizione o clausole simili del <strong>Contratto</strong>, le parti concordano di portare qualsiasi causa legale, azione o procedimento relativo a questo DPA presso, e ciascuna parte si sottomette irrevocabilmente alla giurisdizione esclusiva, dei tribunali dello <strong>Stato Governante</strong>.
+
+
+## 12. Rapporto di Fornitore di Servizi {#12-service-provider-relationship}
+
+Nella misura in cui si applica il California Consumer Privacy Act, Cal. Civ. Code § 1798.100 e ss. ("CCPA"), le parti riconoscono e concordano che <strong>Fornitore</strong> è un fornitore di servizi e riceve Dati Personali da <strong>Cliente</strong> per fornire il Servizio come concordato nel <strong>Contratto</strong>, il quale costituisce uno scopo commerciale. <strong>Fornitore</strong> non venderà alcun Dato Personale fornito da <strong>Cliente</strong> ai sensi del <strong>Contratto</strong>. Inoltre, <strong>Fornitore</strong> non tratterrà, utilizzerà o divulgherà alcun Dato Personale fornito da <strong>Cliente</strong> ai sensi del <strong>Contratto</strong> se non nella misura necessaria per fornire il Servizio per <strong>Cliente</strong>, come indicato nel <strong>Contratto</strong>, o come consentito dalle Leggi sulla Protezione dei Dati Applicabili. <strong>Fornitore</strong> certifica di comprendere le restrizioni di questo paragrafo.
 ## 13. Definizioni {#13-definitions}
 
-1. **"Leggi applicabili"** indica le leggi, le norme, i regolamenti, gli ordini dei tribunali e altri requisiti vincolanti di un'autorità governativa competente che si applicano a una parte o la disciplinano.
+1. **"Leggi Applicabili"** indica le leggi, regole, regolamenti, ordini giudiziari e altri requisiti vincolanti di un'autorità governativa rilevante che si applicano o regolano una parte.
 
-2. **"Leggi applicabili sulla protezione dei dati"** indica le Leggi applicabili che regolano il modo in cui il Servizio può elaborare o utilizzare le informazioni personali, i dati personali, le informazioni di identificazione personale o altri termini simili di un individuo.
+2. **"Leggi Applicabili sulla Protezione dei Dati"** indica le Leggi Applicabili che regolano come il Servizio può trattare o utilizzare le informazioni personali, i dati personali, le informazioni identificabili personalmente o altro termine simile di un individuo.
 
-3. **"Titolare del trattamento"** avrà il significato attribuitogli dalle Leggi applicabili in materia di protezione dei dati per la società che determina lo scopo e l'entità del trattamento dei dati personali.
+3. **"Titolare del trattamento"** avrà il significato/i dato/i nelle Leggi Applicabili sulla Protezione dei Dati per la società che determina lo scopo e l'estensione del Trattamento dei Dati Personali.
 
-4. **"Pagina di copertina"** indica un documento firmato o accettato elettronicamente dalle parti che incorpora i presenti Termini standard del DPA e identifica il <strong>Fornitore</strong>, il <strong>Cliente</strong> e l'oggetto e i dettagli del trattamento dei dati.
+4. **"Pagina di Copertina"** indica un documento firmato o accettato elettronicamente dalle parti che incorpora questi Termini Standard DPA e identifica <strong>Fornitore</strong>, <strong>Cliente</strong>, e l'oggetto e i dettagli del trattamento dei dati.
 
-5. **"Dati personali del cliente"** indica i Dati personali che il <strong>Cliente</strong> carica o fornisce al <strong>Fornitore</strong> come parte del Servizio e che sono disciplinati dal presente DPA.
+5. **"Dati Personali del Cliente"** indica i Dati Personali che il <strong>Cliente</strong> carica o fornisce al <strong>Fornitore</strong> come parte del Servizio e che sono regolati da questo DPA.
 
-6. **"DPA"** indica i presenti Termini standard DPA, la pagina di copertina tra <strong>Fornitore</strong> e <strong>Cliente</strong>, nonché le policy e i documenti a cui si fa riferimento o che sono allegati alla pagina di copertina.
+6. **"DPA"** indica questi Termini Standard DPA, la Pagina di Copertina tra <strong>Fornitore</strong> e <strong>Cliente</strong>, e le politiche e i documenti richiamati o allegati alla Pagina di Copertina.
 
-7. **"SCC SEE"** indica le clausole contrattuali tipo allegate alla decisione di esecuzione 2021/914 della Commissione europea, del 4 giugno 2021, relativa alle clausole contrattuali tipo per il trasferimento di dati personali verso paesi terzi ai sensi del regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio europeo.
+7. **"Clausole Contrattuali Standard SEE"** indica le clausole contrattuali standard allegate alla Decisione di esecuzione 2021/914 della Commissione Europea del 4 giugno 2021 sulle clausole contrattuali standard per il trasferimento di dati personali verso paesi terzi ai sensi del Regolamento (UE) 2016/679 del Parlamento Europeo e del Consiglio Europeo.
 
-8. **"Spazio economico europeo"** o **"SEE"** indica gli stati membri dell'Unione Europea, Norvegia, Islanda e Liechtenstein.
+8. **"Spazio Economico Europeo"** o **"SEE"** indica gli stati membri dell'Unione Europea, Norvegia, Islanda e Liechtenstein.
 
-9. **"GDPR"** indica il Regolamento dell'Unione Europea 2016/679, come recepito dalla legge locale nel relativo paese membro dello SEE.
+9. **"GDPR"** indica il Regolamento dell'Unione Europea 2016/679 come attuato dalla legge locale nella nazione membro SEE rilevante.
 
-10. **"Dati personali"** avrà il significato attribuito nelle Leggi applicabili sulla protezione dei dati a informazioni personali, dati personali o altri termini simili.
+10. **"Dati Personali"** avrà il significato/i dato/i nelle Leggi Applicabili sulla Protezione dei Dati per informazioni personali, dati personali o altro termine simile.
 
-11. **"Elaborazione"** o **"Processo"** avrà il significato attribuitogli dalle Leggi applicabili in materia di protezione dei dati per qualsiasi utilizzo o esecuzione di un'operazione informatica sui Dati personali, anche mediante metodi automatici.
+11. **"Trattamento"** o **"Trattare"** avrà il significato/i dato/i nelle Leggi Applicabili sulla Protezione dei Dati per qualsiasi uso di, o esecuzione di un'operazione informatica su, Dati Personali, inclusi metodi automatici.
 
-12. **"Responsabile del trattamento"** avrà il significato attribuitogli dalle Leggi applicabili in materia di protezione dei dati per la società che elabora i dati personali per conto del Titolare del trattamento.
+12. **"Responsabile del trattamento"** avrà il significato/i dato/i nelle Leggi Applicabili sulla Protezione dei Dati per la società che Tratta i Dati Personali per conto del Titolare del trattamento.
 
-13. **"Report"** indica i report di audit predisposti da un'altra società secondo gli standard definiti nella Politica di sicurezza per conto del Fornitore.
+13. **"Rapporto"** indica i rapporti di audit preparati da un'altra società secondo gli standard definiti nella Politica di Sicurezza per conto del Fornitore.
 
-14. **"Trasferimento limitato"** significa (a) laddove si applica il GDPR, un trasferimento di dati personali dallo SEE a un paese al di fuori dello SEE che non è soggetto a una determinazione di adeguatezza da parte della Commissione europea; e (b) laddove si applica il GDPR del Regno Unito, un trasferimento di dati personali dal Regno Unito a qualsiasi altro paese che non è soggetto a regolamenti di adeguatezza adottati ai sensi della Sezione 17A del Data Protection Act 2018 del Regno Unito.
+14. **"Trasferimento Limitato"** indica (a) quando si applica il GDPR, un trasferimento di dati personali dal SEE a un paese al di fuori del SEE che non è soggetto a una decisione di adeguatezza della Commissione Europea; e (b) quando si applica il GDPR del Regno Unito, un trasferimento di dati personali dal Regno Unito a qualsiasi altro paese che non è soggetto a regolamenti di adeguatezza adottati ai sensi della Sezione 17A del Data Protection Act 2018 del Regno Unito.
 
-15. **"Incidente di sicurezza"** indica una violazione dei dati personali come definita nell'articolo 4 del GDPR.
+15. **"Incidente di Sicurezza"** indica una Violazione dei Dati Personali come definita nell'Articolo 4 del GDPR.
 
 16. **"Servizio"** indica il prodotto e/o i servizi descritti nel <strong>Contratto</strong>.
 
-17. **"Dati di categoria speciale"** avrà il significato attribuitogli nell'articolo 9 del GDPR.
+17. **"Dati di Categoria Speciale"** avrà il significato dato nell'Articolo 9 del GDPR.
 
-18. **"Sub-responsabile del trattamento"** avrà il significato attribuitogli dalle Leggi applicabili in materia di protezione dei dati per una società che, con l'approvazione e l'accettazione del Titolare del trattamento, assiste il Responsabile del trattamento nell'elaborazione dei dati personali per conto del Titolare del trattamento.
+18. **"Sub-responsabile"** avrà il significato/i dato/i nelle Leggi Applicabili sulla Protezione dei Dati per una società che, con l'approvazione e accettazione del Titolare del trattamento, assiste il Responsabile del trattamento nel Trattamento dei Dati Personali per conto del Titolare del trattamento.
 
-19. **"GDPR del Regno Unito"** indica il Regolamento dell'Unione Europea 2016/679, come attuato dalla sezione 3 dell'European Union (Withdrawal) Act del Regno Unito del 2018 nel Regno Unito.
+19. **"GDPR del Regno Unito"** indica il Regolamento dell'Unione Europea 2016/679 come attuato dalla sezione 3 del European Union (Withdrawal) Act del 2018 nel Regno Unito.
 
-20. **"Addendum del Regno Unito"** indica l'addendum sul trasferimento internazionale di dati alle SCC SEE emesso dall'Information Commissioner per le parti che effettuano trasferimenti limitati ai sensi della sezione 119A(1) del Data Protection Act 2018.
+20. **"Addendum UK"** indica l'addendum per il trasferimento internazionale dei dati alle Clausole Contrattuali Standard SEE emesso dal Commissario per l'Informazione per le Parti che effettuano Trasferimenti Limitati ai sensi della Sezione 119A(1) del Data Protection Act 2018.
+
 
 ## Crediti {#credits}
 
-Il presente documento è derivato da [Condizioni standard del DPA comune (versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) ed è concesso in licenza con [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Questo documento è una derivazione dei [Termini Standard DPA Common Paper (Versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) ed è concesso in licenza sotto [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

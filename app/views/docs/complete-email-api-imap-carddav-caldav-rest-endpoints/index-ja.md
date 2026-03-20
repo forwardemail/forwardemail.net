@@ -1,291 +1,290 @@
-# 最初の完全なメールAPI：Forward Emailがメール管理に革命をもたらした方法 {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# 最初の完全なメールAPI：Forward Emailがメール管理を革命的に変えた方法 {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>TL;DR:</strong> 私たちは、他のサービスにはない高度な検索機能を備えた、世界初のメール管理向けREST APIを構築しました。Gmail、Outlook、Appleといったサービスでは、開発者がIMAP地獄やレート制限のあるAPIに縛られているのに対し、Forward Emailは、15以上の検索パラメータを備えた統合RESTインターフェースを通じて、メッセージ、フォルダ、連絡先、カレンダーに対する超高速CRUD操作を提供します。これこそ、開発者が待ち望んでいたメールAPIです。
+  <strong>要約:</strong> 私たちは、他のどのサービスも提供していない高度な検索機能を備えた、世界初の完全なREST APIによるメール管理システムを構築しました。Gmail、Outlook、Appleが開発者をIMAPの地獄やレート制限されたAPIに追い込む一方で、Forward Emailは15以上の検索パラメータを備えた統一されたRESTインターフェースを通じて、メッセージ、フォルダ、連絡先、カレンダーのCRUD操作を超高速で提供します。これは開発者が待ち望んでいたメールAPIです。
 </p>
+
 
 ## 目次 {#table-of-contents}
 
-* [メールAPIの問題](#the-email-api-problem)
-* [開発者の実際の声](#what-developers-are-actually-saying)
-* [メール転送の革新的なソリューション](#forward-emails-revolutionary-solution)
+* [メールAPIの問題点](#the-email-api-problem)
+* [開発者が実際に言っていること](#what-developers-are-actually-saying)
+* [Forward Emailの革命的なソリューション](#forward-emails-revolutionary-solution)
   * [なぜこれを作ったのか](#why-we-built-this)
   * [シンプルな認証](#simple-authentication)
 * [すべてを変える20のエンドポイント](#20-endpoints-that-change-everything)
   * [メッセージ（5つのエンドポイント）](#messages-5-endpoints)
-  * [フォルダー（5つのエンドポイント）](#folders-5-endpoints)
+  * [フォルダ（5つのエンドポイント）](#folders-5-endpoints)
   * [連絡先（5つのエンドポイント）](#contacts-5-endpoints)
   * [カレンダー（5つのエンドポイント）](#calendars-5-endpoints)
-* [高度な検索: 他のサービスに匹敵するものはありません](#advanced-search-no-other-service-compares)
-  * [検索API環境は壊れている](#the-search-api-landscape-is-broken)
-  * [Forward Emailの革新的な検索API](#forward-emails-revolutionary-search-api)
+* [高度な検索：他のサービスとは比較にならない](#advanced-search-no-other-service-compares)
+  * [検索APIの現状は壊れている](#the-search-api-landscape-is-broken)
+  * [Forward Emailの革命的な検索API](#forward-emails-revolutionary-search-api)
   * [実際の検索例](#real-world-search-examples)
-  * [パフォーマンス上の利点](#performance-advantages)
-  * [他社にはない検索機能](#search-features-no-one-else-has)
-  * [開発者にとってこれが重要な理由](#why-this-matters-for-developers)
-  * [技術的実装](#the-technical-implementation)
+  * [パフォーマンスの利点](#performance-advantages)
+  * [他にない検索機能](#search-features-no-one-else-has)
+  * [開発者にとってなぜ重要か](#why-this-matters-for-developers)
+  * [技術的な実装](#the-technical-implementation)
 * [超高速パフォーマンスアーキテクチャ](#blazing-fast-performance-architecture)
   * [パフォーマンスベンチマーク](#performance-benchmarks)
-  * [プライバシー重視のアーキテクチャ](#privacy-first-architecture)
-* [私たちが他社と違う理由：徹底比較](#why-were-different-the-complete-comparison)
+  * [プライバシーファーストのアーキテクチャ](#privacy-first-architecture)
+* [私たちが違う理由：完全比較](#why-were-different-the-complete-comparison)
   * [主要プロバイダーの制限](#major-provider-limitations)
-  * [メール転送のメリット](#forward-email-advantages)
-  * [オープンソースの透明性の問題](#the-open-source-transparency-problem)
+  * [Forward Emailの利点](#forward-email-advantages)
+  * [オープンソースの透明性問題](#the-open-source-transparency-problem)
 * [30以上の実際の統合例](#30-real-world-integration-examples)
-  * [1. WordPressのお問い合わせフォームの強化](#1-wordpress-contact-form-enhancement)
-  * [2. メール自動化のためのZapierの代替](#2-zapier-alternative-for-email-automation)
+  * [1. WordPressのコンタクトフォーム強化](#1-wordpress-contact-form-enhancement)
+  * [2. Zapierの代替となるメール自動化](#2-zapier-alternative-for-email-automation)
   * [3. CRMメール同期](#3-crm-email-synchronization)
-  * [4. 電子商取引の注文処理](#4-e-commerce-order-processing)
-  * [5. サポートチケットの統合](#5-support-ticket-integration)
+  * [4. Eコマースの注文処理](#4-e-commerce-order-processing)
+  * [5. サポートチケット統合](#5-support-ticket-integration)
   * [6. ニュースレター管理システム](#6-newsletter-management-system)
   * [7. メールベースのタスク管理](#7-email-based-task-management)
-  * [8. 複数アカウントのメール集約](#8-multi-account-email-aggregation)
+  * [8. マルチアカウントメール集約](#8-multi-account-email-aggregation)
   * [9. 高度なメール分析ダッシュボード](#9-advanced-email-analytics-dashboard)
-  * [10. スマートなメールアーカイブ](#10-smart-email-archiving)
-  * [11. メールとカレンダーの統合](#11-email-to-calendar-integration)
-  * [12. メールのバックアップとコンプライアンス](#12-email-backup-and-compliance)
+  * [10. スマートメールアーカイブ](#10-smart-email-archiving)
+  * [11. メールからカレンダーへの統合](#11-email-to-calendar-integration)
+  * [12. メールバックアップとコンプライアンス](#12-email-backup-and-compliance)
   * [13. メールベースのコンテンツ管理](#13-email-based-content-management)
-  * [14. メールテンプレートの管理](#14-email-template-management)
+  * [14. メールテンプレート管理](#14-email-template-management)
   * [15. メールベースのワークフロー自動化](#15-email-based-workflow-automation)
   * [16. メールセキュリティ監視](#16-email-security-monitoring)
-  * [17. メールによるアンケート収集](#17-email-based-survey-collection)
+  * [17. メールベースのアンケート収集](#17-email-based-survey-collection)
   * [18. メールパフォーマンス監視](#18-email-performance-monitoring)
-  * [19. メールベースのリード選別](#19-email-based-lead-qualification)
+  * [19. メールベースのリード評価](#19-email-based-lead-qualification)
   * [20. メールベースのプロジェクト管理](#20-email-based-project-management)
   * [21. メールベースの在庫管理](#21-email-based-inventory-management)
   * [22. メールベースの請求書処理](#22-email-based-invoice-processing)
-  * [23. メールによるイベント登録](#23-email-based-event-registration)
-  * [24. メールベースの文書承認ワークフロー](#24-email-based-document-approval-workflow)
+  * [23. メールベースのイベント登録](#23-email-based-event-registration)
+  * [24. メールベースのドキュメント承認ワークフロー](#24-email-based-document-approval-workflow)
   * [25. メールベースの顧客フィードバック分析](#25-email-based-customer-feedback-analysis)
   * [26. メールベースの採用パイプライン](#26-email-based-recruitment-pipeline)
-  * [27. メールベースの経費報告書処理](#27-email-based-expense-report-processing)
-  * [28. メールベースの品質保証レポート](#28-email-based-quality-assurance-reporting)
+  * [27. メールベースの経費報告処理](#27-email-based-expense-report-processing)
+  * [28. メールベースの品質保証報告](#28-email-based-quality-assurance-reporting)
   * [29. メールベースのベンダー管理](#29-email-based-vendor-management)
-  * [30. メールベースのソーシャルメディアモニタリング](#30-email-based-social-media-monitoring)
-* [はじめる](#getting-started)
-  * [1. 転送用メールアカウントを作成する](#1-create-your-forward-email-account)
+  * [30. メールベースのソーシャルメディア監視](#30-email-based-social-media-monitoring)
+* [はじめに](#getting-started)
+  * [1. Forward Emailアカウントを作成する](#1-create-your-forward-email-account)
   * [2. API認証情報を生成する](#2-generate-api-credentials)
-  * [3. 最初のAPI呼び出しを行う](#3-make-your-first-api-call)
-  * [4. ドキュメントを調べる](#4-explore-the-documentation)
+  * [3. 最初のAPIコールを行う](#3-make-your-first-api-call)
+  * [4. ドキュメントを探索する](#4-explore-the-documentation)
 * [技術リソース](#technical-resources)
-
 ## メールAPIの問題 {#the-email-api-problem}
 
-メール API は根本的に壊れています。以上です。
+メールAPIは根本的に壊れています。以上です。
 
-すべての主要なメールプロバイダーは、開発者に次の 2 つの恐ろしい選択のいずれかを強制します。
+すべての主要なメールプロバイダーは開発者に次の2つのひどい選択肢のいずれかを強制します：
 
-1. **IMAP地獄**: 最新のアプリケーションではなくデスクトップクライアント向けに設計された30年前のプロトコルとの格闘
-2. **機能不全のAPI**: レート制限があり、読み取り専用で、OAuthが複雑に絡み合うAPIでは、実際のメールデータを管理できない
+1. **IMAP地獄**：デスクトップクライアント向けに設計された30年前のプロトコルと格闘し、現代のアプリケーションには不向き
+2. **制限されたAPI**：レート制限があり、読み取り専用で、OAuthが複雑なAPIで実際のメールデータを管理できない
 
-その結果、開発者は電子メールの統合を完全に断念するか、頻繁に壊れる脆弱な IMAP ラッパーの構築に何週間も費やすことになります。
+結果は？開発者はメール統合を完全にあきらめるか、壊れやすいIMAPラッパーを何週間もかけて作成し続けるかのどちらかです。
 
 > \[!WARNING]
-> **隠された秘密**：ほとんどの「メールAPI」は送信APIに過ぎません。シンプルなRESTインターフェースを使って、プログラムでフォルダを整理したり、連絡先を同期したり、カレンダーを管理したりすることはできません。しかし、これまではそうでした。
+> **汚い秘密**：ほとんどの「メールAPI」は単なる送信APIです。単純なRESTインターフェースでフォルダの整理、連絡先の同期、カレンダーの管理はプログラム的にできません。今までは。
 
-## 開発者の実際の声 {#what-developers-are-actually-saying}
+## 開発者が実際に言っていること {#what-developers-are-actually-saying}
 
-このフラストレーションは現実であり、あらゆるところで文書化されています。
+フラストレーションは現実で、あらゆるところで記録されています：
 
-> 「最近、アプリにGmailを統合しようとしたのですが、時間がかかりすぎてしまいました。Gmailをサポートする価値はないと判断しました。」
+> 「最近アプリにGmailを統合しようとしましたが、時間をかけすぎました。Gmailをサポートする価値はないと判断しました。」
 >
-> *- [Hacker News開発者](https://news.ycombinator.com/item?id=42106944)、147件の賛成票*
+> *- [Hacker Newsの開発者](https://news.ycombinator.com/item?id=42106944)、147アップボート*
 
-> 「メールAPIはどれも凡庸なのでしょうか？ 何か制限や制約があるように思えます。」
+> 「すべてのメールAPIは平凡なの？どこか制限や制約があるように見えます。」
 >
-> *- [Reddit r/SaaS の議論](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
+> *- [Reddit r/SaaSの議論](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> 「なぜメール開発はつまらないのか？」
+> 「なぜメール開発はこんなに面倒なのか？」
 >
-> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/)、開発者の苦悩に関するコメント89件*
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/)、89件の開発者の苦悩コメント*
 
-> 「Gmail API が IMAP よりも効率的なのはなぜでしょうか？ Gmail API がはるかに効率的なもう一つの理由は、各メッセージを一度だけダウンロードするだけで済むことです。IMAP では、すべてのメッセージをダウンロードしてインデックスに登録する必要があります…」
+> 「Gmail APIがIMAPより効率的なのはなぜ？もう一つの理由は、Gmail APIは各メッセージを一度だけダウンロードすればよいからです。IMAPでは各メッセージをダウンロードしてインデックス化しなければなりません…」
 >
-> *- [スタックオーバーフローの質問](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap)（47 件の賛成票）*
+> *- [Stack Overflowの質問](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap)、47アップボート*
 
-証拠はどこにでもある。
+証拠はあらゆるところにあります：
 
-* **WordPress SMTPの問題**: [631 件の GitHub の問題](https://github.com/awesomemotive/WP-Mail-SMTP/issues) メール配信エラーについて
-* **Zapierの制限**: [コミュニティからの苦情](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) 1時間あたり10通のメール送信制限とIMAP検出エラーについて
-* **IMAP APIプロジェクト**: [複数](https://github.com/ewildgoose/imap-api) [オープンソース](https://emailengine.app/) [プロジェクト](https://www.npmjs.com/package/imapflow) は、IMAPをRESTに変換することに特化したものですが、これを提供するプロバイダーは存在しません。
-* **Gmail APIの不満**: [スタックオーバーフロー](https://stackoverflow.com/questions/tagged/gmail-api)には、「gmail-api」タグが付けられた質問が4,847件あり、レート制限や複雑さに関するよくある不満が挙げられています。
+* **WordPress SMTPの問題**：メール配信失敗に関する[631件のGitHubイシュー](https://github.com/awesomemotive/WP-Mail-SMTP/issues)
+* **Zapierの制限**：[10通/時の制限やIMAP検出失敗に関するコミュニティの不満](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
+* **IMAP APIプロジェクト**：IMAPをRESTに変換するために存在する[複数の](https://github.com/ewildgoose/imap-api) [オープンソース](https://emailengine.app/) [プロジェクト](https://www.npmjs.com/package/imapflow)、なぜならどのプロバイダーもこれを提供していないから
+* **Gmail APIの不満**：[Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api)には「gmail-api」タグ付きの4,847件の質問があり、レート制限や複雑さに関する共通の不満がある
 
-## メール転送の革新的なソリューション {#forward-emails-revolutionary-solution}
+## Forward Emailの革命的な解決策 {#forward-emails-revolutionary-solution}
 
-**当社は、統合された REST API を通じてすべての電子メール データに対する完全な CRUD 操作を提供する最初の電子メール サービスです。**
+**私たちはすべてのメールデータに対して統一されたREST APIを通じて完全なCRUD操作を提供する最初のメールサービスです。**
 
-これは単なる送信APIではありません。以下の項目を完全にプログラムで制御できます。
+これは単なる送信APIではありません。完全なプログラム制御が可能です：
 
-* **メッセージ**: 作成、閲覧、更新、削除、検索、移動、フラグ設定
-* **フォルダ**: RESTエンドポイントを介した完全なIMAPフォルダ管理
-* **連絡先**: [カードDAV](https://tools.ietf.org/html/rfc6352) 連絡先の保存と同期
-* **カレンダー**: [CalDAV](https://tools.ietf.org/html/rfc4791) カレンダーイベントとスケジュール
+* **メッセージ**：作成、読み取り、更新、削除、検索、移動、フラグ付け
+* **フォルダ**：RESTエンドポイントを通じた完全なIMAPフォルダ管理
+* **連絡先**：[CardDAV](https://tools.ietf.org/html/rfc6352)による連絡先の保存と同期
+* **カレンダー**：[CalDAV](https://tools.ietf.org/html/rfc4791)によるカレンダーイベントとスケジューリング
 
-### この製品を作った理由 {#why-we-built-this}
+### なぜこれを作ったのか {#why-we-built-this}
 
-**問題**: どのメールプロバイダーもメールをブラックボックスとして扱っています。メールを送信したり、複雑なOAuthを使って読み取ったりすることはできますが、メールデータをプログラムで真に*管理*することはできません。
+**問題点**：すべてのメールプロバイダーはメールをブラックボックスとして扱います。メールを送信できるかもしれませんし、複雑なOAuthで読み取ることもできますが、メールデータをプログラム的に*管理*することはできません。
 
-**私たちのビジョン**: メールは、あらゆる最新APIと同じくらい簡単に統合できるべきです。IMAPライブラリは不要。OAuthの複雑さも不要。レート制限の悪夢もありません。シンプルで機能するRESTエンドポイントだけで実現します。
+**私たちのビジョン**：メールはどんな最新APIと同じくらい簡単に統合できるべきです。IMAPライブラリ不要。OAuthの複雑さ不要。レート制限の悪夢も不要。ただ動作するシンプルなRESTエンドポイントだけ。
 
-**結果**: HTTP リクエストのみを使用して、完全な電子メール クライアント、CRM 統合、または自動化システムを構築できる最初の電子メール サービス。
+**結果**：HTTPリクエストだけで完全なメールクライアント、CRM統合、または自動化システムを構築できる最初のメールサービス。
 
-### シンプル認証 {#simple-authentication}
+### シンプルな認証 {#simple-authentication}
 
-[OAuthの複雑さ](https://oauth.net/2/) は不要です。[アプリ固有のパスワード](https://support.google.com/accounts/answer/185833) も不要です。エイリアスの認証情報のみを入力してください。
+[OAuthの複雑さ](https://oauth.net/2/)なし。[アプリ固有パスワード](https://support.google.com/accounts/answer/185833)なし。あなたのエイリアス認証情報だけ：
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
-
 ## すべてを変える20のエンドポイント {#20-endpoints-that-change-everything}
 
-### メッセージ（5つのエンドポイント）{#messages-5-endpoints}
+### メッセージ（5つのエンドポイント） {#messages-5-endpoints}
 
-* `GET /v1/messages` - フィルタリング（`?folder=`、`?is_unread=`、`?is_flagged=`）を使用してメッセージを一覧表示します。
-* `POST /v1/messages` - 新着メッセージをフォルダに直接送信します。
-* `GET /v1/messages/:id` - 特定のメッセージを完全なメタデータとともに取得します。
-* `PUT /v1/messages/:id` - メッセージを更新します（フラグ、フォルダ、既読ステータス）。
-* `DELETE /v1/messages/:id` - メッセージを完全に削除します。
+* `GET /v1/messages` - フィルタリング付きメッセージ一覧取得（`?folder=`, `?is_unread=`, `?is_flagged=`）
+* `POST /v1/messages` - 新しいメッセージをフォルダに直接送信
+* `GET /v1/messages/:id` - 特定メッセージの完全なメタデータ取得
+* `PUT /v1/messages/:id` - メッセージの更新（フラグ、フォルダ、既読状態）
+* `DELETE /v1/messages/:id` - メッセージを完全に削除
 
 ### フォルダ（5つのエンドポイント） {#folders-5-endpoints}
 
-* `GET /v1/folders` - サブスクリプションステータスを持つすべてのフォルダを一覧表示します
-* `POST /v1/folders` - カスタムプロパティを使用して新しいフォルダを作成します
-* `GET /v1/folders/:id` - フォルダの詳細とメッセージ数を取得します
-* `PUT /v1/folders/:id` - フォルダのプロパティとサブスクリプションを更新します
-* `DELETE /v1/folders/:id` - フォルダを削除し、メッセージの再配置を処理します
+* `GET /v1/folders` - すべてのフォルダと購読状況の一覧取得
+* `POST /v1/folders` - カスタムプロパティ付きの新規フォルダ作成
+* `GET /v1/folders/:id` - フォルダの詳細とメッセージ数取得
+* `PUT /v1/folders/:id` - フォルダのプロパティと購読の更新
+* `DELETE /v1/folders/:id` - フォルダ削除とメッセージの移動処理
 
-### 連絡先（5つのエンドポイント）{#contacts-5-endpoints}
+### 連絡先（5つのエンドポイント） {#contacts-5-endpoints}
 
-* `GET /v1/contacts` - 検索とページ区切り機能を使用して連絡先を一覧表示します
-* `POST /v1/contacts` - vCardをフルサポートして連絡先を新規作成します
-* `GET /v1/contacts/:id` - すべてのフィールドとメタデータを使用して連絡先を取得します
-* `PUT /v1/contacts/:id` - ETag検証を使用して連絡先情報を更新します
-* `DELETE /v1/contacts/:id` - カスケード処理を使用して連絡先を削除します
+* `GET /v1/contacts` - 検索・ページネーション付き連絡先一覧取得
+* `POST /v1/contacts` - フルvCard対応の新規連絡先作成
+* `GET /v1/contacts/:id` - すべてのフィールドとメタデータ付き連絡先取得
+* `PUT /v1/contacts/:id` - ETag検証付き連絡先情報の更新
+* `DELETE /v1/contacts/:id` - カスケード処理付き連絡先削除
 
-### カレンダー（5つのエンドポイント）{#calendars-5-endpoints}
+### カレンダー（5つのエンドポイント） {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - 日付フィルタリング付きでカレンダーイベントを一覧表示
-* `POST /v1/calendars` - 参加者と定期的な予定を指定してカレンダーイベントを作成
-* `GET /v1/calendars/:id` - タイムゾーン処理付きでイベントの詳細を取得
-* `PUT /v1/calendars/:id` - 競合検出付きでイベントを更新
-* `DELETE /v1/calendars/:id` - 参加者通知付きでイベントを削除
+* `GET /v1/calendars` - 日付フィルタリング付きカレンダーイベント一覧取得
+* `POST /v1/calendars` - 参加者と繰り返し対応のカレンダーイベント作成
+* `GET /v1/calendars/:id` - タイムゾーン対応のイベント詳細取得
+* `PUT /v1/calendars/:id` - 競合検出付きイベント更新
+* `DELETE /v1/calendars/:id` - 参加者通知付きイベント削除
 
-## 詳細検索: 他のサービスに匹敵するものはありません {#advanced-search-no-other-service-compares}
 
-**Forward Email は、REST API を通じてすべてのメッセージ フィールドにわたる包括的なプログラム検索を提供する唯一の電子メール サービスです。**
+## 高度な検索：他のサービスは比較にならない {#advanced-search-no-other-service-compares}
 
-他のプロバイダはせいぜい基本的なフィルタリング機能しか提供していませんが、私たちはこれまでで最も高度なメール検索APIを構築しました。Gmail API、Outlook API、その他いかなるサービスも、私たちの検索機能に匹敵するものはありません。
+**Forward Emailは、すべてのメッセージフィールドにわたる包括的でプログラム可能な検索をREST APIで提供する唯一のメールサービスです。**
 
-### 検索API環境が壊れている {#the-search-api-landscape-is-broken}
+他のプロバイダーは基本的なフィルタリングしか提供していませんが、私たちはこれまでで最も高度なメール検索APIを構築しました。Gmail API、Outlook API、その他のサービスは私たちの検索機能に及びません。
 
-**Gmail API 検索の制限:**
+### 検索APIの現状は壊れている {#the-search-api-landscape-is-broken}
 
-* ✅ 基本的な`q`パラメータのみ
+**Gmail APIの検索制限:**
+
+* ✅ 基本的な `q` パラメータのみ
 * ❌ フィールド指定検索なし
 * ❌ 日付範囲フィルタリングなし
-* ❌ サイズに基づくフィルタリングなし
+* ❌ サイズベースのフィルタリングなし
 * ❌ 添付ファイルフィルタリングなし
-* ❌ Gmailの検索構文に制限されます
+* ❌ Gmailの検索構文に限定
 
-**Outlook API 検索の制限:**
+**Outlook APIの検索制限:**
 
-* ✅ 基本的な`$search`パラメータ
-* ❌ 高度なフィールドターゲティングは不要
-* ❌ 複雑なクエリの組み合わせは不要
-* ❌ 厳格なレート制限
+* ✅ 基本的な `$search` パラメータ
+* ❌ 高度なフィールド指定なし
+* ❌ 複雑なクエリの組み合わせ不可
+* ❌ 厳しいレート制限
 * ❌ 複雑なOData構文が必要
 
 **Apple iCloud:**
 
-* ❌ APIは一切ありません
-* ❌ IMAP検索のみ（動作確認済みの場合）
+* ❌ APIは一切なし
+* ❌ IMAP検索のみ（動作させられれば）
 
-**ProtonMailとTuta:**
+**ProtonMail & Tuta:**
 
 * ❌ 公開APIなし
-* ❌ プログラムによる検索機能なし
+* ❌ プログラム可能な検索機能なし
 
-### Forward Emailの革新的な検索API {#forward-emails-revolutionary-search-api}
+### Forward Emailの革命的な検索API {#forward-emails-revolutionary-search-api}
 
-**他のサービスでは提供されていない15以上の検索パラメータを提供しています:**
+**他のサービスにはない15以上の検索パラメータを提供しています：**
 
-| 検索機能 | メールを転送する | Gmail API | Outlook API | その他 |
+| 検索機能                      | Forward Email                          | Gmail API    | Outlook API        | その他 |
 | ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
-| **分野別検索** | ✅ 件名、本文、送信者、宛先、CC、ヘッダー | ❌ | ❌ | ❌ |
-| **複数フィールドの一般検索** | ✅ すべてのフィールドで`?search=` | ✅ 基本 `q=` | ✅ 基本 `$search=` | ❌ |
-| **日付範囲フィルタリング** | ✅ `?since=` & `?before=` | ❌ | ❌ | ❌ |
-| **サイズベースのフィルタリング** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
-| **添付ファイルフィルタリング** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
-| **ヘッダー検索** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **メッセージID検索** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **複合フィルター** | ✅ ANDロジックを使用した複数のパラメータ | ❌ | ❌ | ❌ |
-| **大文字と小文字を区別しません** | ✅ すべての検索 | ✅ | ✅ | ❌ |
-| **ページネーションのサポート** | ✅ すべての検索パラメータで動作します | ✅ | ✅ | ❌ |
-
+| **フィールド指定検索**          | ✅ 件名、本文、送信者、宛先、CC、ヘッダー | ❌            | ❌                  | ❌      |
+| **複数フィールドの一般検索**    | ✅ 全フィールド対象の `?search=`       | ✅ 基本的な `q=` | ✅ 基本的な `$search=` | ❌      |
+| **日付範囲フィルタリング**      | ✅ `?since=` & `?before=`               | ❌            | ❌                  | ❌      |
+| **サイズベースのフィルタリング**| ✅ `?min_size=` & `?max_size=`          | ❌            | ❌                  | ❌      |
+| **添付ファイルフィルタリング**  | ✅ `?has_attachments=true/false`        | ❌            | ❌                  | ❌      |
+| **ヘッダー検索**                | ✅ `?headers=X-Priority`                | ❌            | ❌                  | ❌      |
+| **メッセージID検索**            | ✅ `?message_id=abc123`                 | ❌            | ❌                  | ❌      |
+| **複合フィルタ**                | ✅ 複数パラメータのANDロジック          | ❌            | ❌                  | ❌      |
+| **大文字小文字を区別しない**    | ✅ すべての検索で対応                   | ✅            | ✅                  | ❌      |
+| **ページネーション対応**        | ✅ すべての検索パラメータで動作         | ✅            | ✅                  | ❌      |
 ### 実際の検索例 {#real-world-search-examples}
 
-**前四半期のすべての請求書を検索:**
+**前四半期のすべての請求書を見つける:**
 
 ```bash
-# Forward Email - Simple and powerful
+# Forward Email - シンプルで強力
 GET /v1/messages?subject=invoice&since=2024-01-01T00:00:00Z&before=2024-04-01T00:00:00Z
 
-# Gmail API - Impossible with their limited search
-# No date range filtering available
+# Gmail API - 制限された検索で不可能
+# 日付範囲のフィルタリング不可
 
-# Outlook API - Complex OData syntax, limited functionality
+# Outlook API - 複雑なOData構文、機能制限あり
 GET /me/messages?$search="invoice"&$filter=receivedDateTime ge 2024-01-01T00:00:00Z
 ```
 
 **特定の送信者からの大きな添付ファイルを検索:**
 
 ```bash
-# Forward Email - Comprehensive filtering
+# Forward Email - 包括的なフィルタリング
 GET /v1/messages?from=finance@company.com&has_attachments=true&min_size=1000000
 
-# Gmail API - Cannot filter by size or attachments programmatically
-# Outlook API - No size filtering available
-# Others - No APIs available
+# Gmail API - サイズや添付ファイルでのプログラムによるフィルタリング不可
+# Outlook API - サイズフィルタリング不可
+# その他 - APIなし
 ```
 
 **複雑な複数フィールド検索:**
 
 ```bash
-# Forward Email - Advanced query capabilities
+# Forward Email - 高度なクエリ機能
 GET /v1/messages?body=quarterly&from=manager&is_flagged=true&folder=Reports
 
-# Gmail API - Limited to basic text search only
+# Gmail API - 基本的なテキスト検索のみ
 GET /gmail/v1/users/me/messages?q=quarterly
 
-# Outlook API - Basic search without field targeting
+# Outlook API - フィールド指定なしの基本検索
 GET /me/messages?$search="quarterly"
 ```
 
-### パフォーマンス上の利点 {#performance-advantages}
+### パフォーマンスの利点 {#performance-advantages}
 
-**転送メール検索のパフォーマンス:**
+**Forward Emailの検索パフォーマンス:**
 
-* ⚡ 複雑な検索でも**100ミリ秒未満の応答時間**
-* 🔍 適切なインデックスによる**正規表現の最適化**
-* 📊 カウントとデータに対する**並列クエリ実行**
-* 💾 無駄のないクエリによる**効率的なメモリ使用**
+* ⚡ **複雑な検索でも100ms未満の応答時間**
+* 🔍 **適切なインデックスによる正規表現最適化**
+* 📊 **カウントとデータの並列クエリ実行**
+* 💾 **軽量クエリによる効率的なメモリ使用**
 
-**競合他社のパフォーマンスの問題:**
+**競合他社のパフォーマンス問題:**
 
-* 🐌 **Gmail API**: 1ユーザーあたり1秒あたり250クォータユニットに制限されています
-* 🐌 **Outlook API**: 複雑なバックオフ要件を伴う積極的なスロットリング
-* 🐌 **その他**: 比較対象となるAPIはありません
+* 🐌 **Gmail API**: ユーザーごとに1秒あたり250クォータユニットのレート制限
+* 🐌 **Outlook API**: 複雑なバックオフ要件を伴う厳しいスロットリング
+* 🐌 **その他**: 比較可能なAPIなし
 
-### 他社にはない検索機能 {#search-features-no-one-else-has}
+### 他にない検索機能 {#search-features-no-one-else-has}
 
-#### 1. ヘッダー固有の検索 {#1-header-specific-search}
+#### 1. ヘッダー特定検索 {#1-header-specific-search}
 
 ```bash
-# Find messages with specific headers
+# 特定のヘッダーを持つメッセージを検索
 GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
@@ -293,51 +292,51 @@ GET /v1/messages?headers=X-Spam-Score
 #### 2. サイズベースのインテリジェンス {#2-size-based-intelligence}
 
 ```bash
-# Find newsletter emails (typically large)
+# ニュースレターのメールを検索（通常大きい）
 GET /v1/messages?min_size=50000&from=newsletter
 
-# Find quick replies (typically small)
+# クイック返信を検索（通常小さい）
 GET /v1/messages?max_size=1000&to=support
 ```
 
 #### 3. 添付ファイルベースのワークフロー {#3-attachment-based-workflows}
 
 ```bash
-# Find all documents sent to legal team
+# 法務チーム宛のすべてのドキュメントを検索
 GET /v1/messages?to=legal&has_attachments=true&body=contract
 
-# Find emails without attachments for cleanup
+# 添付ファイルなしのメールをクリーンアップ用に検索
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
-#### 4. 統合ビジネスロジック {#4-combined-business-logic}
+#### 4. 複合ビジネスロジック {#4-combined-business-logic}
 
 ```bash
-# Find urgent flagged messages from VIPs with attachments
+# 添付ファイル付きのVIPからの緊急フラグ付きメッセージを検索
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
-### 開発者にとってこれが重要な理由 {#why-this-matters-for-developers}
+### 開発者にとっての重要性 {#why-this-matters-for-developers}
 
-**これまで不可能だったアプリケーションの構築:**
+**これまで不可能だったアプリケーションを構築:**
 
-1. **高度なメール分析**: サイズ、送信者、内容に基づいてメールのパターンを分析します
-2. **インテリジェントなメール管理**: 複雑な基準に基づいてメールを自動整理します
-3. **コンプライアンスと検出**: 法的要件を満たす特定のメールを検索します
-4. **ビジネスインテリジェンス**: メールのコミュニケーションパターンからインサイトを抽出します
-5. **自動ワークフロー**: 高度なメールフィルターに基づいてアクションをトリガーします
+1. **高度なメール分析**: サイズ、送信者、内容によるメールパターン分析
+2. **インテリジェントなメール管理**: 複雑な条件に基づく自動整理
+3. **コンプライアンスとディスカバリー**: 法的要件に応じた特定メールの検索
+4. **ビジネスインテリジェンス**: メール通信パターンからの洞察抽出
+5. **自動化ワークフロー**: 高度なメールフィルターに基づくアクションのトリガー
 
-### 技術的実装 {#the-technical-implementation}
+### 技術的な実装 {#the-technical-implementation}
 
-当社の検索 API では以下を使用します。
+当社の検索APIは以下を使用:
 
-* 適切なインデックス戦略による **正規表現の最適化**
-* パフォーマンス向上のための **並列実行**
-* セキュリティ向上のための **入力検証**
-* 信頼性向上のための **包括的なエラー処理**
+* **適切なインデックス戦略による正規表現最適化**
+* **パフォーマンス向上のための並列実行**
+* **セキュリティのための入力検証**
+* **信頼性のための包括的なエラーハンドリング**
 
 ```javascript
-// Example: Complex search implementation
+// 例: 複雑な検索の実装
 const searchConditions = [];
 
 if (ctx.query.subject) {
@@ -355,18 +354,17 @@ if (ctx.query.from) {
   });
 }
 
-// Combine with AND logic
+// ANDロジックで結合
 if (searchConditions.length > 0) {
   query.$and = searchConditions;
 }
 ```
 
 > \[!TIP]
-> **開発者のメリット**: Forward Email の検索 API を使用すると、REST API のシンプルさを維持しながら、デスクトップ クライアントに匹敵する機能を備えたメール アプリケーションを構築できます。
-
+> **開発者の利点**: Forward Emailの検索APIを使えば、REST APIのシンプルさを保ちながら、デスクトップクライアントに匹敵する機能を持つメールアプリケーションを構築できます。
 ## 超高速パフォーマンスアーキテクチャ {#blazing-fast-performance-architecture}
 
-当社の技術スタックはスピードと信頼性を重視して構築されています。
+当社の技術スタックは速度と信頼性のために構築されています：
 
 ```mermaid
 graph LR
@@ -378,103 +376,103 @@ graph LR
 
 ### パフォーマンスベンチマーク {#performance-benchmarks}
 
-**なぜ私たちは超高速なのか:**
+**なぜ私たちは超高速なのか：**
 
-| 成分 | テクノロジー | パフォーマンス上の利点 |
-| ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
-| **ストレージ** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | 従来のSATAより10倍高速 |
-| **データベース** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | ゼロネットワーク遅延、最適化されたシリアル化 |
-| **ハードウェア** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) ベアメタル | 仮想化のオーバーヘッドなし |
-| **キャッシング** | インメモリ + 永続 | 1ミリ秒未満の応答時間 |
-| **バックアップ** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) 暗号化されました | エンタープライズグレードの信頼性 |
+| コンポーネント | 技術                                                                                 | パフォーマンスの利点                            |
+| -------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| **ストレージ** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express)                              | 従来のSATAより10倍高速                         |
+| **データベース** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr)    | ネットワーク遅延ゼロ、最適化されたシリアライズ |
+| **ハードウェア** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) ベアメタル  | 仮想化オーバーヘッドなし                        |
+| **キャッシュ** | インメモリ + 永続化                                                                 | サブミリ秒の応答時間                            |
+| **バックアップ** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) 暗号化済み               | エンタープライズグレードの信頼性                |
 
-**実際のパフォーマンス数値:**
+**実際のパフォーマンス数値：**
 
-* **API応答時間**: 平均50ミリ秒未満
-* **メッセージ取得**: キャッシュされたメッセージの場合10ミリ秒未満
-* **フォルダ操作**: メタデータ操作の場合5ミリ秒未満
-* **連絡先同期**: 1秒あたり1,000件以上の連絡先
-* **稼働時間**: 冗長化されたインフラストラクチャにより99.99%のSLA
+* **API応答時間**：平均 < 50ms
+* **メッセージ取得**：キャッシュ済みメッセージで < 10ms
+* **フォルダー操作**：メタデータ操作で < 5ms
+* **連絡先同期**：毎秒1000件以上
+* **稼働率**：冗長インフラによる99.99% SLA
 
-### プライバシー優先アーキテクチャ {#privacy-first-architecture}
+### プライバシーファーストアーキテクチャ {#privacy-first-architecture}
 
-**ゼロ知識設計**：IMAPパスワードを知っているのはあなただけ。私たちはあなたのメールを読むことはできません。[ゼロ知識アーキテクチャ](https://forwardemail.net/en/security)は、完全なプライバシーを確保しながら、驚異的なパフォーマンスを実現します。
+**ゼロ知識設計**：IMAPパスワードを持つあなただけがアクセス可能で、私たちはメールを読むことができません。当社の[ゼロ知識アーキテクチャ](https://forwardemail.net/en/security)は、超高速パフォーマンスを提供しながら完全なプライバシーを保証します。
 
-## 私たちが他社と違う理由：完全な比較 {#why-were-different-the-complete-comparison}
 
-### 主要プロバイダーの制限事項 {#major-provider-limitations}
+## 私たちが違う理由：完全比較 {#why-were-different-the-complete-comparison}
 
-| プロバイダー | 中核問題 | 特定の制限 |
-| ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gmail API** | 読み取り専用、複雑な OAuth、個別の API | • [Cannot modify existing messages](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [Labels ≠ folders](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1 billion quota units/day limit](https://developers.google.com/gmail/api/reference/quota)<br>• [Requires separate APIs](https://developers.google.com/workspace) （連絡先/カレンダー用） |
-| **Outlook API** | 非推奨、わかりにくい、エンタープライズ向け | • [REST endpoints deprecated March 2024](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [Multiple confusing APIs](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook) (EWS、グラフ、REST)<br>• [Microsoft Graph complexity](https://learn.microsoft.com/en-us/graph/overview)<br>• [Aggressive throttling](https://learn.microsoft.com/en-us/graph/throttling) |
-| **Apple iCloud** | 公開APIなし | • [No public API whatsoever](https://support.apple.com/en-us/102654)<br>• [IMAP-only with 1000 emails/day limit](https://support.apple.com/en-us/102654)<br>• [App-specific passwords required](https://support.apple.com/en-us/102654)<br>• [500 recipients per message limit](https://support.apple.com/en-us/102654) |
-| **プロトンメール** | APIなし、オープンソースの虚偽の主張 | • [No public API available](https://proton.me/support/protonmail-bridge-clients)<br>• IMAP アクセスの場合は [Bridge software required](https://proton.me/mail/bridge)<br>• [Claims "open source"](https://proton.me/blog/open-source) ですが [server code is proprietary](https://github.com/ProtonMail)<br>• [Limited to paid plans only](https://proton.me/pricing) |
-| **合計** | APIなし、誤解を招く透明性 | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) ですが、[backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) は標準統合を妨げます |
-| **Zapier メール** | 厳しいレート制限 | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
+### 主要プロバイダーの制限 {#major-provider-limitations}
 
-### メール転送のメリット {#forward-email-advantages}
+| プロバイダー       | 主な問題点                              | 具体的な制限                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gmail API**      | 読み取り専用、複雑なOAuth、別API       | • [既存メッセージの変更不可](https://developers.google.com/gmail/api/reference/rest/v1/users.messages)<br>• [ラベル ≠ フォルダー](https://developers.google.com/gmail/api/reference/rest/v1/users.labels)<br>• [1日あたり10億クォータユニット制限](https://developers.google.com/gmail/api/reference/quota)<br>• 連絡先/カレンダーには[別APIが必要](https://developers.google.com/workspace)                                                           |
+| **Outlook API**    | 廃止予定、混乱を招く、企業向け         | • [RESTエンドポイントは2024年3月に廃止予定](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)<br>• [複数の混乱するAPI](https://learn.microsoft.com/en-us/office/client-developer/outlook/selecting-an-api-or-technology-for-developing-solutions-for-outlook)（EWS、Graph、REST）<br>• [Microsoft Graphの複雑さ](https://learn.microsoft.com/en-us/graph/overview)<br>• [厳しいスロットリング](https://learn.microsoft.com/en-us/graph/throttling) |
+| **Apple iCloud**   | 公開APIなし                           | • [公開APIは一切なし](https://support.apple.com/en-us/102654)<br>• [IMAPのみで1日1000通の制限](https://support.apple.com/en-us/102654)<br>• [アプリ固有パスワードが必要](https://support.apple.com/en-us/102654)<br>• [1メッセージあたり500受信者の制限](https://support.apple.com/en-us/102654)                                                                                                                                              |
+| **ProtonMail**     | APIなし、偽のオープンソース主張       | • [公開APIは利用不可](https://proton.me/support/protonmail-bridge-clients)<br>• IMAPアクセスには[Bridgeソフトウェアが必要](https://proton.me/mail/bridge)<br>• [「オープンソース」と主張](https://proton.me/blog/open-source)しているが[サーバーコードは独自](https://github.com/ProtonMail)<br>• [有料プラン限定](https://proton.me/pricing)                                                                                                         |
+| **Tuta**           | APIなし、誤解を招く透明性             | • メール管理用の[REST APIなし](https://tuta.com/support#technical)<br>• [「オープンソース」と主張](https://tuta.com/blog/posts/open-source-email)しているが[バックエンドは非公開](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP非対応](https://tuta.com/support#imap)<br>• [独自暗号化](https://tuta.com/encryption)により標準統合が不可能                                                                                               |
+| **Zapier Email**   | 厳しいレート制限                     | • [1時間あたり10通の制限](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [IMAPフォルダーアクセスなし](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [限定的な解析機能](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)                                 |
+### 転送メールの利点 {#forward-email-advantages}
 
-| 特徴 | メールを転送する | 競争 |
+| 機能               | 転送メール                                                                                  | 競合                                     |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **完全なCRUD** | ✅ すべてのデータに対する完全な作成、読み取り、更新、削除 | ❌ 読み取り専用または制限された操作 |
-| **統合API** | ✅ メッセージ、フォルダー、連絡先、カレンダーを 1 つの API にまとめました | ❌ 別々のAPIまたは欠落した機能 |
-| **シンプル認証** | ✅ エイリアス認証を使用した基本認証 | ❌ 複数のスコープを持つ複雑なOAuth |
-| **レート制限なし** | ✅ 実際のアプリケーション向けに設計された寛大な制限 | ❌ ワークフローを中断させる制限的なクォータ |
-| **セルフホスティング** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ ベンダーロックインのみ |
-| **プライバシー** | ✅ ゼロ知識、暗号化、プライベート | ❌ データマイニングとプライバシーに関する懸念 |
-| **パフォーマンス** | ✅ 50ms未満の応答速度、NVMeストレージ | ❌ ネットワーク遅延、スロットリング遅延 |
+| **完全なCRUD**     | ✅ すべてのデータに対する作成、読み取り、更新、削除が可能                                    | ❌ 読み取り専用または限定的な操作           |
+| **統合API**       | ✅ メッセージ、フォルダ、連絡先、カレンダーを1つのAPIで提供                                  | ❌ 別々のAPIまたは機能不足                   |
+| **シンプル認証**   | ✅ エイリアス認証情報による基本認証                                                          | ❌ 複雑なOAuthで複数のスコープが必要         |
+| **レート制限なし** | ✅ 実際のアプリケーション向けに設計された寛大な制限                                          | ❌ ワークフローを妨げる制限的なクォータ       |
+| **セルフホスティング** | ✅ [完全なセルフホスティングオプション](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ ベンダーロックインのみ                     |
+| **プライバシー**   | ✅ ゼロ知識、暗号化、プライベート                                                          | ❌ データマイニングとプライバシーの懸念       |
+| **パフォーマンス** | ✅ 50ms未満の応答、NVMeストレージ                                                           | ❌ ネットワーク遅延、スロットリングによる遅延  |
 
-### オープンソースの透明性の問題 {#the-open-source-transparency-problem}
+### オープンソースの透明性問題 {#the-open-source-transparency-problem}
 
-**ProtonMail と Tuta は自らを「オープンソース」かつ「透明性」があると宣伝していますが、これは誤解を招くマーケティングであり、現代のプライバシー原則に違反しています。**
+**ProtonMailとTutaは「オープンソース」かつ「透明性がある」としてマーケティングしていますが、これは現代のプライバシー原則に反する誤解を招く宣伝です。**
 
 > \[!WARNING]
-> **虚偽の透明性の主張**: ProtonMailとTutaはどちらも「オープンソース」の資格を大々的に宣伝していますが、最も重要なサーバーサイドコードは独自仕様のままで、非公開のままです。
+> **誤った透明性の主張**：ProtonMailとTutaは「オープンソース」を大々的に宣伝していますが、最も重要なサーバー側コードは独自で非公開のままです。
 
-**ProtonMailの欺瞞:**
+**ProtonMailの欺瞞：**
 
-* **主張**: [「私たちはオープンソースです」](https://proton.me/blog/open-source) がマーケティングで大きく取り上げられている
-* **現実**: [サーバーコードは完全に独自のものである](https://github.com/ProtonMail) - クライアントアプリのみがオープンソース
-* **影響**: ユーザーはサーバー側の暗号化、データ処理、プライバシーに関する主張を検証できない
-* **透明性の侵害**: 実際のメール処理および保存システムを監査する方法がない
+* **主張**：マーケティングで「[私たちはオープンソースです](https://proton.me/blog/open-source)」と強調
+* **実態**：[サーバーコードは完全に独自](https://github.com/ProtonMail) - クライアントアプリのみがオープンソース
+* **影響**：ユーザーはサーバー側の暗号化、データ処理、プライバシー主張を検証できない
+* **透明性違反**：実際のメール処理と保存システムを監査する方法がない
 
-**Tuta の誤解を招くマーケティング:**
+**Tutaの誤解を招くマーケティング：**
 
-* **主張**: [「オープンソースメール」](https://tuta.com/blog/posts/open-source-email) がセールスポイント
-* **現実**: [バックエンドのインフラストラクチャはクローズドソースです](https://github.com/tutao/tutanota) - フロントエンドのみ利用可能
-* **影響**: 独自の暗号化により、標準的なメールプロトコル (IMAP/SMTP) が利用できない
-* **ロックイン戦略**: カスタム暗号化により、ベンダーへの依存が強まる
+* **主張**：「[オープンソースメール](https://tuta.com/blog/posts/open-source-email)」を主要な売りにしている
+* **実態**：[バックエンドインフラはクローズドソース](https://github.com/tutao/tutanota) - フロントエンドのみ公開
+* **影響**：独自の暗号化により標準メールプロトコル（IMAP/SMTP）が使えない
+* **ロックイン戦略**：カスタム暗号化によりベンダー依存を強制
 
-**現代のプライバシーにとってこれが重要な理由:**
+**なぜこれが現代のプライバシーに重要か：**
 
-2025年、真のプライバシーには**完全な透明性**が不可欠です。メールプロバイダーが「オープンソース」を謳いながら、サーバーコードを隠蔽している場合、次のような事態が起こります。
+2025年には、真のプライバシーは**完全な透明性**を必要とします。メールプロバイダーが「オープンソース」と主張しながらサーバーコードを隠すと：
 
-1. **検証不可能な暗号化**: データが実際にどのように暗号化されているかを監査できない
-2. **秘匿データ処理**: サーバー側のデータ処理はブラックボックスのまま
-3. **信頼に基づくセキュリティ**: 検証なしにベンダーの主張を信頼する必要がある
-4. **ベンダーロックイン**: 独自のシステムによりデータのポータビリティが妨げられる
+1. **検証不可能な暗号化**：データがどのように暗号化されているか監査できない
+2. **隠されたデータ処理**：サーバー側のデータ処理がブラックボックスのまま
+3. **信頼に基づくセキュリティ**：主張を検証せずに信頼しなければならない
+4. **ベンダーロックイン**：独自システムによりデータ移行が困難
 
-**メール転送の真の透明性:**
+**Forward Emailの真の透明性：**
 
-* ✅ **[完全なオープンソース](https://github.com/forwardemail/forwardemail.net)** - サーバーおよびクライアントコード
-* ✅ **[セルフホスティング可能](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - 独自のインスタンスを実行
-* ✅ **標準プロトコル** - IMAP、SMTP、CardDAV、CalDAVとの互換性
-* ✅ **監査可能なセキュリティ** - すべてのコード行を検査可能
-* ✅ **ベンダーロックインなし** - データはあなたのもの、コントロールはあなたのもの
+* ✅ **[完全なオープンソース](https://github.com/forwardemail/forwardemail.net)** - サーバーとクライアントコード
+* ✅ **[セルフホスティング可能](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - 自分のインスタンスを運用可能
+* ✅ **標準プロトコル対応** - IMAP、SMTP、CardDAV、CalDAV対応
+* ✅ **監査可能なセキュリティ** - すべてのコードを検査可能
+* ✅ **ベンダーロックインなし** - あなたのデータ、あなたの管理
 
 > \[!TIP]
-> **真のオープンソースとは、すべての主張を検証できることを意味します。** Forward Email では、暗号化の監査、データ処理の確認、さらには独自のインスタンスの実行も可能です。これが真の透明性です。
+> **本当のオープンソースとは、すべての主張を検証できることです。** Forward Emailなら暗号化を監査し、データ処理をレビューし、自分のインスタンスを運用できます。これが真の透明性です。
 
-## 30以上の実際の統合例 {#30-real-world-integration-examples}
+
+## 30以上の実世界統合例 {#30-real-world-integration-examples}
 
 ### 1. WordPressお問い合わせフォームの強化 {#1-wordpress-contact-form-enhancement}
-
-**問題**: [WordPressのSMTP設定の失敗](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 件の GitHub の問題](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**解決策**: 直接API連携により[SMTP](https://tools.ietf.org/html/rfc5321)が完全にバイパスされる
+**問題**: [WordPress SMTP 設定の失敗](https://github.com/awesomemotive/WP-Mail-SMTP/issues)（[631件のGitHub問題](https://github.com/awesomemotive/WP-Mail-SMTP/issues)）
+**解決策**: 直接API統合により[SMTP](https://tools.ietf.org/html/rfc5321)を完全に回避
 
 ```javascript
-// WordPress contact form that saves to Sent folder
+// 送信済みフォルダに保存するWordPressのコンタクトフォーム
 await fetch('https://api.forwardemail.net/v1/messages', {
   method: 'POST',
   headers: {
@@ -483,20 +481,20 @@ await fetch('https://api.forwardemail.net/v1/messages', {
   },
   body: JSON.stringify({
     to: [{ address: 'owner@site.com' }],
-    subject: 'Contact Form: ' + formData.subject,
+    subject: 'お問い合わせフォーム: ' + formData.subject,
     text: formData.message,
     folder: 'Sent'
   })
 });
 ```
 
-### 2. メール自動化のためのZapierの代替 {#2-zapier-alternative-for-email-automation}
+### 2. メール自動化のためのZapier代替 {#2-zapier-alternative-for-email-automation}
 
-**問題**: [Zapierの1時間あたり10通のメール制限](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) と [IMAP検出の失敗](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-**解決策**: メールを完全に制御し、無制限の自動化を実現
+**問題**: [Zapierの1時間あたり10通のメール制限](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)および[IMAP検出の失敗](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
+**解決策**: 完全なメール制御による無制限の自動化
 
 ```javascript
-// Auto-organize emails by sender domain
+// 送信者ドメインごとにメールを自動整理
 const messages = await fetch('/v1/messages?folder=INBOX');
 for (const message of messages) {
   const domain = message.from.split('@')[1];
@@ -509,11 +507,11 @@ for (const message of messages) {
 
 ### 3. CRMメール同期 {#3-crm-email-synchronization}
 
-**問題**: メールと[CRMシステム](https://en.wikipedia.org/wiki/Customer_relationship_management)間の連絡先の手動管理
-**解決策**: [カードDAV](https://tools.ietf.org/html/rfc6352)の連絡先APIとの双方向同期
+**問題**: メールと[CRMシステム](https://en.wikipedia.org/wiki/Customer_relationship_management)間の手動連絡先管理
+**解決策**: [CardDAV](https://tools.ietf.org/html/rfc6352)連絡先APIによる双方向同期
 
 ```javascript
-// Sync new email contacts to CRM
+// 新しいメール連絡先をCRMに同期
 const newContacts = await fetch('/v1/contacts');
 for (const contact of newContacts) {
   await crmAPI.createContact({
@@ -526,11 +524,11 @@ for (const contact of newContacts) {
 
 ### 4. Eコマース注文処理 {#4-e-commerce-order-processing}
 
-**問題**: [電子商取引プラットフォーム](https://en.wikipedia.org/wiki/E-commerce) の注文メールを手動で処理する
+**問題**: [Eコマースプラットフォーム](https://en.wikipedia.org/wiki/E-commerce)の注文メールの手動処理
 **解決策**: 自動化された注文管理パイプライン
 
 ```javascript
-// Process order confirmation emails
+// 注文確認メールを処理
 const orders = await fetch('/v1/messages?folder=Orders');
 const orderEmails = orders.filter(msg =>
   msg.subject.includes('Order Confirmation')
@@ -546,13 +544,13 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. サポートチケットの統合 {#5-support-ticket-integration}
+### 5. サポートチケット統合 {#5-support-ticket-integration}
 
-**問題**: メールスレッドが[ヘルプデスクプラットフォーム](https://en.wikipedia.org/wiki/Help_desk_software)に分散している
-**解決策**: メールスレッドの完全な追跡
+**問題**: [ヘルプデスクプラットフォーム](https://en.wikipedia.org/wiki/Help_desk_software)に散在するメールスレッド
+**解決策**: 完全なメールスレッド追跡
 
 ```javascript
-// Create support ticket from email thread
+// メールスレッドからサポートチケットを作成
 const messages = await fetch('/v1/messages?folder=Support');
 const supportEmails = messages.filter(msg =>
   msg.to.some(addr => addr.includes('support@'))
@@ -570,11 +568,11 @@ for (const email of supportEmails) {
 
 ### 6. ニュースレター管理システム {#6-newsletter-management-system}
 
-**問題**: [ニュースレタープラットフォーム](https://en.wikipedia.org/wiki/Email_marketing) の連携が限られている
-**解決策**: 加入者ライフサイクルの包括的な管理
+**問題**: 限られた[ニュースレタープラットフォーム](https://en.wikipedia.org/wiki/Email_marketing)統合
+**解決策**: 完全な購読者ライフサイクル管理
 
 ```javascript
-// Auto-manage newsletter subscriptions
+// ニュースレター購読管理の自動化
 const messages = await fetch('/v1/messages?folder=Newsletter');
 const unsubscribes = messages.filter(msg =>
   msg.subject.toLowerCase().includes('unsubscribe')
@@ -591,9 +589,8 @@ for (const msg of unsubscribes) {
 
 ### 7. メールベースのタスク管理 {#7-email-based-task-management}
 
-**問題**: 受信トレイの混雑と[タスク追跡](https://en.wikipedia.org/wiki/Task_management)
-**解決策**: メールを実行可能なタスクに変換する
-
+**問題**: 受信箱の過負荷と[タスク追跡](https://en.wikipedia.org/wiki/Task_management)
+**解決策**: メールを実行可能なタスクに変換
 ```javascript
 // Create tasks from flagged emails
 const messages = await fetch('/v1/messages?is_flagged=true');
@@ -607,10 +604,10 @@ for (const email of messages) {
 }
 ```
 
-### 8. 複数アカウントのメール集約 {#8-multi-account-email-aggregation}
+### 8. Multi-Account Email Aggregation {#8-multi-account-email-aggregation}
 
-**問題**: 複数のプロバイダ間で[複数のメールアカウント](https://en.wikipedia.org/wiki/Email_client)を管理する
-**解決策**: 統合受信トレイインターフェース
+**Problem**: Managing [multiple email accounts](https://en.wikipedia.org/wiki/Email_client) across providers
+**Solution**: Unified inbox interface
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -625,10 +622,10 @@ for (const account of accounts) {
 }
 ```
 
-### 9. 高度なメール分析ダッシュボード {#9-advanced-email-analytics-dashboard}
+### 9. Advanced Email Analytics Dashboard {#9-advanced-email-analytics-dashboard}
 
-**問題**: 高度なフィルタリングを行っても [メールパターン](https://en.wikipedia.org/wiki/Email_analytics) に関する情報が得られない
-**解決策**: 高度な検索機能を使用したカスタムメール分析
+**Problem**: No insights into [email patterns](https://en.wikipedia.org/wiki/Email_analytics) with sophisticated filtering
+**Solution**: Custom email analytics using advanced search capabilities
 
 ```javascript
 // Generate comprehensive email analytics using advanced search
@@ -675,10 +672,10 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. スマートメールアーカイブ {#10-smart-email-archiving}
+### 10. Smart Email Archiving {#10-smart-email-archiving}
 
-**問題**: 手動の[電子メールの組織](https://en.wikipedia.org/wiki/Email_management)
-**解決策**: インテリジェントなメール分類
+**Problem**: Manual [email organization](https://en.wikipedia.org/wiki/Email_management)
+**Solution**: Intelligent email categorization
 
 ```javascript
 // Auto-archive old emails by category
@@ -696,10 +693,10 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. メールとカレンダーの統合 {#11-email-to-calendar-integration}
+### 11. Email-to-Calendar Integration {#11-email-to-calendar-integration}
 
-**問題**: メールからの[カレンダーイベント](https://tools.ietf.org/html/rfc4791)の手動作成
-**解決策**: イベントの自動抽出と作成
+**Problem**: Manual [calendar event](https://tools.ietf.org/html/rfc4791) creation from emails
+**Solution**: Automatic event extraction and creation
 
 ```javascript
 // Extract meeting details from emails
@@ -723,10 +720,10 @@ for (const email of meetingEmails) {
 }
 ```
 
-### 12. メールのバックアップとコンプライアンス {#12-email-backup-and-compliance}
+### 12. Email Backup and Compliance {#12-email-backup-and-compliance}
 
-**問題**: [メールの保持](https://en.wikipedia.org/wiki/Email_retention_policy) とコンプライアンス要件
-**解決策**: メタデータ保存機能を備えた自動バックアップ
+**問題**: [メール保持](https://en.wikipedia.org/wiki/Email_retention_policy) とコンプライアンス要件  
+**解決策**: メタデータを保持した自動バックアップ
 
 ```javascript
 // Backup emails with full metadata
@@ -745,10 +742,10 @@ const backup = {
 await saveToComplianceStorage(backup);
 ```
 
-### 13. メールベースのコンテンツ管理 {#13-email-based-content-management}
+### 13. Email-Based Content Management {#13-email-based-content-management}
 
-**問題**: [CMSプラットフォーム](https://en.wikipedia.org/wiki/Content_management_system) へのコンテンツ投稿をメールで管理する
-**解決策**: メールをコンテンツ管理システムとして使用する
+**問題**: [CMSプラットフォーム](https://en.wikipedia.org/wiki/Content_management_system)向けのメールによるコンテンツ提出の管理  
+**解決策**: コンテンツ管理システムとしてのメール利用
 
 ```javascript
 // Process content submissions from email
@@ -767,10 +764,10 @@ for (const submission of submissions) {
 }
 ```
 
-### 14. メールテンプレートの管理 {#14-email-template-management}
+### 14. Email Template Management {#14-email-template-management}
 
-**問題**: チーム全体で[メールテンプレート](https://en.wikipedia.org/wiki/Email_template)の一貫性がない
-**解決策**: APIを使用した一元的なテンプレートシステム
+**問題**: チーム内での[メールテンプレート](https://en.wikipedia.org/wiki/Email_template)の不統一  
+**解決策**: APIによる集中管理テンプレートシステム
 
 ```javascript
 // Send templated emails with dynamic content
@@ -786,9 +783,9 @@ await fetch('/v1/messages', {
 });
 ```
 
-### 15. メールベースのワークフロー自動化 {#15-email-based-workflow-automation}
+### 15. Email-Based Workflow Automation {#15-email-based-workflow-automation}
 
-**問題**: メールで[承認プロセス](https://en.wikipedia.org/wiki/Workflow)を手動で送信
+**問題**: メールによる手動の[承認プロセス](https://en.wikipedia.org/wiki/Workflow)  
 **解決策**: 自動化されたワークフロートリガー
 
 ```javascript
@@ -808,10 +805,10 @@ for (const approval of approvals) {
 }
 ```
 
-### 16. メールセキュリティ監視 {#16-email-security-monitoring}
+### 16. Email Security Monitoring {#16-email-security-monitoring}
 
-**問題**: 手動[セキュリティ脅威検出](https://en.wikipedia.org/wiki/Email_security)
-**解決策**: 自動脅威分析
+**問題**: 手動による[セキュリティ脅威検出](https://en.wikipedia.org/wiki/Email_security)  
+**解決策**: 自動化された脅威分析
 
 ```javascript
 // Monitor for suspicious emails
@@ -828,10 +825,10 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. メールによるアンケート収集 {#17-email-based-survey-collection}
+### 17. Email-Based Survey Collection {#17-email-based-survey-collection}
 
-**問題**: [調査回答](https://en.wikipedia.org/wiki/Survey_methodology) の手動処理
-**解決策**: 自動レスポンス集計
+**問題**: 手動による[アンケート回答](https://en.wikipedia.org/wiki/Survey_methodology)の処理  
+**解決策**: 自動化された回答集計
 
 ```javascript
 // Collect and process survey responses
@@ -848,9 +845,9 @@ const surveyData = responses.map(email => ({
 await updateSurveyResults(surveyData);
 ```
 
-### 18. メールパフォーマンス監視 {#18-email-performance-monitoring}
+### 18. Email Performance Monitoring {#18-email-performance-monitoring}
 
-**問題**: [メール配信パフォーマンス](https://en.wikipedia.org/wiki/Email_deliverability) が表示されない
+**問題**: [メール配信パフォーマンス](https://en.wikipedia.org/wiki/Email_deliverability)の可視化不足  
 **解決策**: リアルタイムのメール指標
 
 ```javascript
@@ -863,14 +860,13 @@ const deliveryStats = {
 };
 await updateDashboard(deliveryStats);
 ```
+### 19. メールベースのリード評価 {#19-email-based-lead-qualification}
 
-### 19. メールベースのリード選定 {#19-email-based-lead-qualification}
-
-**問題**: メールのやり取りから手動で[リードスコアリング](https://en.wikipedia.org/wiki/Lead_scoring)を取得する
-**解決策**: 自動化されたリード選別パイプライン
+**問題**: メールのやり取りからの手動による[リードスコアリング](https://en.wikipedia.org/wiki/Lead_scoring)  
+**解決策**: 自動化されたリード評価パイプライン
 
 ```javascript
-// Score leads based on email engagement
+// メールのエンゲージメントに基づいてリードをスコアリング
 const prospects = await fetch('/v1/contacts');
 for (const prospect of prospects) {
   const messages = await fetch('/v1/messages');
@@ -884,11 +880,11 @@ for (const prospect of prospects) {
 
 ### 20. メールベースのプロジェクト管理 {#20-email-based-project-management}
 
-**問題**: [プロジェクトの最新情報](https://en.wikipedia.org/wiki/Project_management) がメールスレッドに散在している
-**解決策**: 一元化されたプロジェクトコミュニケーションハブ
+**問題**: メールスレッドに散在する[プロジェクト更新](https://en.wikipedia.org/wiki/Project_management)  
+**解決策**: 集中管理されたプロジェクトコミュニケーションハブ
 
 ```javascript
-// Extract project updates from emails
+// メールからプロジェクト更新を抽出
 const messages = await fetch('/v1/messages?folder=Projects');
 const projectEmails = messages.filter(msg =>
   msg.subject.includes('Project Update')
@@ -906,11 +902,11 @@ for (const email of projectEmails) {
 
 ### 21. メールベースの在庫管理 {#21-email-based-inventory-management}
 
-**問題**: サプライヤーからのメールによる在庫更新の手動実行
-**解決策**: メール通知による自動在庫追跡
+**問題**: 仕入先からのメールによる手動の在庫更新  
+**解決策**: メール通知からの自動在庫追跡
 
 ```javascript
-// Process inventory updates from supplier emails
+// 仕入先メールからの在庫更新を処理
 const messages = await fetch('/v1/messages?folder=Suppliers');
 const inventoryEmails = messages.filter(msg =>
   msg.subject.includes('Inventory Update') || msg.subject.includes('Stock Alert')
@@ -925,7 +921,7 @@ for (const email of inventoryEmails) {
     timestamp: email.date
   });
 
-  // Move to processed folder
+  // 処理済みフォルダへ移動
   await fetch(`/v1/messages/${email.id}`, {
     method: 'PUT',
     body: JSON.stringify({ folder: 'Suppliers/Processed' })
@@ -935,11 +931,11 @@ for (const email of inventoryEmails) {
 
 ### 22. メールベースの請求書処理 {#22-email-based-invoice-processing}
 
-**問題**: [請求書処理](https://en.wikipedia.org/wiki/Invoice_processing)と会計システムの手動統合
-**解決策**: 請求書の自動抽出と会計システムの同期
+**問題**: 手動の[請求書処理](https://en.wikipedia.org/wiki/Invoice_processing)および会計システム連携  
+**解決策**: 請求書の自動抽出と会計システム同期
 
 ```javascript
-// Extract invoice data from email attachments
+// メール添付ファイルから請求書データを抽出
 const messages = await fetch('/v1/messages?folder=Invoices');
 const invoiceEmails = messages.filter(msg =>
   msg.subject.toLowerCase().includes('invoice') && msg.attachments.length > 0
@@ -954,7 +950,7 @@ for (const email of invoiceEmails) {
     items: invoiceData.lineItems
   });
 
-  // Flag as processed
+  // 処理済みとしてフラグを設定
   await fetch(`/v1/messages/${email.id}`, {
     method: 'PUT',
     body: JSON.stringify({ flags: ['\\Seen', '\\Flagged'] })
@@ -962,13 +958,13 @@ for (const email of invoiceEmails) {
 }
 ```
 
-### 23. メールによるイベント登録 {#23-email-based-event-registration}
+### 23. メールベースのイベント登録 {#23-email-based-event-registration}
 
-**問題**: メール返信からの[イベント登録](https://en.wikipedia.org/wiki/Event_management)の手動処理
-**解決策**: 出席者管理とカレンダーの統合の自動化
+**問題**: メール返信による手動の[イベント登録](https://en.wikipedia.org/wiki/Event_management)処理  
+**解決策**: 自動化された参加者管理とカレンダー連携
 
 ```javascript
-// Process event registration emails
+// イベント登録メールを処理
 const messages = await fetch('/v1/messages?folder=Events');
 const registrations = messages.filter(msg =>
   msg.subject.includes('Registration') || msg.subject.includes('RSVP')
@@ -977,7 +973,7 @@ const registrations = messages.filter(msg =>
 for (const registration of registrations) {
   const attendeeData = parseRegistration(registration.text);
 
-  // Add to attendee list
+  // 参加者リストに追加
   await events.addAttendee({
     event: attendeeData.eventId,
     name: attendeeData.name,
@@ -985,7 +981,7 @@ for (const registration of registrations) {
     dietary: attendeeData.dietaryRestrictions
   });
 
-  // Create calendar event for attendee
+  // 参加者用のカレンダーイベントを作成
   await fetch('/v1/calendars', {
     method: 'POST',
     body: JSON.stringify({
@@ -996,11 +992,10 @@ for (const registration of registrations) {
   });
 }
 ```
+### 24. メールベースの文書承認ワークフロー {#24-email-based-document-approval-workflow}
 
-### 24. 電子メールベースのドキュメント承認ワークフロー {#24-email-based-document-approval-workflow}
-
-**問題**: メール経由の複雑な[文書承認](https://en.wikipedia.org/wiki/Document_management_system)チェーン
-**解決策**: 承認の追跡とドキュメントのバージョン管理の自動化
+**問題**: 複雑なメールによる[文書承認](https://en.wikipedia.org/wiki/Document_management_system)チェーン  
+**解決策**: 承認追跡と文書バージョン管理の自動化
 
 ```javascript
 // Track document approval workflow
@@ -1030,7 +1025,7 @@ for (const email of approvalEmails) {
 
 ### 25. メールベースの顧客フィードバック分析 {#25-email-based-customer-feedback-analysis}
 
-**問題**: [顧客からのフィードバック](https://en.wikipedia.org/wiki/Customer_feedback) の手動収集と感情分析
+**問題**: 手動による[顧客フィードバック](https://en.wikipedia.org/wiki/Customer_feedback)収集と感情分析  
 **解決策**: フィードバック処理と感情追跡の自動化
 
 ```javascript
@@ -1062,8 +1057,8 @@ for (const email of feedbackEmails) {
 
 ### 26. メールベースの採用パイプライン {#26-email-based-recruitment-pipeline}
 
-**問題**: [採用](https://en.wikipedia.org/wiki/Recruitment) と候補者の追跡を手動で行う
-**解決策**: 候補者管理と面接スケジュールの自動化
+**問題**: 手動による[採用](https://en.wikipedia.org/wiki/Recruitment)と候補者管理  
+**解決策**: 候補者管理と面接スケジューリングの自動化
 
 ```javascript
 // Process job application emails
@@ -1094,10 +1089,10 @@ for (const application of applications) {
 }
 ```
 
-### 27. メールベースの経費精算書処理 {#27-email-based-expense-report-processing}
+### 27. メールベースの経費報告処理 {#27-email-based-expense-report-processing}
 
-**問題**: [経費報告書](https://en.wikipedia.org/wiki/Expense_report) の手動送信と承認
-**解決策**: 経費の抽出と承認のワークフローを自動化
+**問題**: 手動による[経費報告](https://en.wikipedia.org/wiki/Expense_report)の提出と承認  
+**解決策**: 経費抽出と承認ワークフローの自動化
 
 ```javascript
 // Process expense report emails
@@ -1128,11 +1123,10 @@ for (const email of expenseEmails) {
   }
 }
 ```
+### 28. Email-Based Quality Assurance Reporting {#28-email-based-quality-assurance-reporting}
 
-### 28. メールベースの品質保証レポート {#28-email-based-quality-assurance-reporting}
-
-**問題**: [品質保証](https://en.wikipedia.org/wiki/Quality_assurance) の手動による問題追跡
-**解決策**: 自動化された QA 問題管理とバグ追跡
+**問題**: 手動の[品質保証](https://en.wikipedia.org/wiki/Quality_assurance)問題追跡  
+**解決策**: 自動化されたQA問題管理とバグ追跡
 
 ```javascript
 // Process QA bug reports from email
@@ -1169,10 +1163,10 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. メールベースのベンダー管理 {#29-email-based-vendor-management}
+### 29. Email-Based Vendor Management {#29-email-based-vendor-management}
 
-**問題**: [ベンダーとのコミュニケーション](https://en.wikipedia.org/wiki/Vendor_management) と契約の追跡を手動で行う
-**解決策**: ベンダー関係管理を自動化する
+**問題**: 手動の[ベンダーコミュニケーション](https://en.wikipedia.org/wiki/Vendor_management)および契約追跡  
+**解決策**: 自動化されたベンダー関係管理
 
 ```javascript
 // Track vendor communications and contracts
@@ -1211,10 +1205,10 @@ for (const email of vendorEmails) {
 }
 ```
 
-### 30. メールベースのソーシャルメディアモニタリング {#30-email-based-social-media-monitoring}
+### 30. Email-Based Social Media Monitoring {#30-email-based-social-media-monitoring}
 
-**問題**: [ソーシャルメディア](https://en.wikipedia.org/wiki/Social_media_monitoring) メンションの手動追跡と対応
-**解決策**: ソーシャルメディアアラート処理と対応調整の自動化
+**問題**: 手動の[ソーシャルメディア](https://en.wikipedia.org/wiki/Social_media_monitoring)言及追跡と対応  
+**解決策**: 自動化されたソーシャルメディアアラート処理と対応調整
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1256,24 +1250,24 @@ for (const alert of socialAlerts) {
 }
 ```
 
-## はじめに {#getting-started}
 
-### 1. 転送用メールアカウントを作成する {#1-create-your-forward-email-account}
+## Getting Started {#getting-started}
 
-[forwardemail.net](https://forwardemail.net) にサインアップしてドメインを確認してください。
+### 1. Create Your Forward Email Account {#1-create-your-forward-email-account}
 
-### 2. API認証情報を生成する {#2-generate-api-credentials}
+[forwardemail.net](https://forwardemail.net) にサインアップし、ドメインを確認してください。
 
-エイリアスのメール アドレスとパスワードは API 認証情報として機能します。追加の設定は必要ありません。
+### 2. Generate API Credentials {#2-generate-api-credentials}
 
-### 3. 最初のAPI呼び出しを実行する {#3-make-your-first-api-call}
+あなたのエイリアスメールとパスワードがAPI認証情報として機能します — 追加の設定は不要です。
+### 3. 最初のAPIコールを行う {#3-make-your-first-api-call}
 
 ```bash
-# List your messages
+# メッセージを一覧表示する
 curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/messages
 
-# Create a new contact
+# 新しい連絡先を作成する
 curl -u "your-alias@domain.com:password" \
   -X POST \
   -H "Content-Type: application/json" \
@@ -1281,20 +1275,21 @@ curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/contacts
 ```
 
-### 4. ドキュメントを調べる {#4-explore-the-documentation}
+### 4. ドキュメントを探る {#4-explore-the-documentation}
 
-インタラクティブな例を含む完全な API ドキュメントについては、[forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) をご覧ください。
+完全なAPIドキュメントとインタラクティブな例については、[forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) をご覧ください。
+
 
 ## 技術リソース {#technical-resources}
 
-* **[完全なAPIドキュメント](https://forwardemail.net/en/email-api)** - インタラクティブな OpenAPI 3.0 仕様
-* **[セルフホスティングガイド](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - 貴社インフラストラクチャへのメール転送の導入
-* **[セキュリティホワイトペーパー](https://forwardemail.net/technical-whitepaper.pdf)** - 技術アーキテクチャとセキュリティの詳細
-* **[GitHubリポジトリ](https://github.com/forwardemail/forwardemail.net)** - オープンソースのコードベース
+* **[完全なAPIドキュメント](https://forwardemail.net/en/email-api)** - インタラクティブなOpenAPI 3.0仕様
+* **[セルフホスティングガイド](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Forward Emailをあなたのインフラにデプロイする方法
+* **[セキュリティホワイトペーパー](https://forwardemail.net/technical-whitepaper.pdf)** - 技術的アーキテクチャとセキュリティの詳細
+* **[GitHubリポジトリ](https://github.com/forwardemail/forwardemail.net)** - オープンソースコードベース
 * **[開発者サポート](mailto:api@forwardemail.net)** - エンジニアリングチームへの直接アクセス
 
 ---
 
-**電子メール統合に革命を起こす準備はできていますか?** [今すぐForward EmailのAPIを使って構築を始めましょう](https://forwardemail.net/en/email-api) 開発者向けに設計された初の完全な電子メール管理プラットフォームを体験してください。
+**メール統合を革新する準備はできましたか？** [Forward EmailのAPIで今すぐ構築を始めましょう](https://forwardemail.net/en/email-api) 。開発者のために設計された初の完全なメール管理プラットフォームを体験してください。
 
-*Forward Email: ついに API を正しく使用できるメール サービス。*
+*Forward Email: APIを本当に理解したメールサービス。*

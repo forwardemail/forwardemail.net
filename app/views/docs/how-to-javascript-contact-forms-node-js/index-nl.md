@@ -1,23 +1,26 @@
 # JavaScript Contactformulieren Node.js Codevoorbeeld {#javascript-contact-forms-nodejs-code-example}
 
+
 ## Inhoudsopgave {#table-of-contents}
 
-* [Installatie en vereisten](#install-and-requirements)
-* [Broncode en voorbeeld](#source-code-and-example)
+* [Installatie en Vereisten](#install-and-requirements)
+* [Broncode en Voorbeeld](#source-code-and-example)
 
-## Installatie en vereisten {#install-and-requirements}
 
-U moet de npm-afhankelijkheid `nodemailer` installeren:
+## Installatie en Vereisten {#install-and-requirements}
+
+Je moet de `nodemailer` npm-afhankelijkheid installeren:
 
 ```sh
 npm install nodemailer
 ```
 
-## Broncode en voorbeeld {#source-code-and-example}
 
-In dit voorbeeld worden de bibliotheek **[Nodemailer](https://github.com/nodemailer/nodemailer)** en de officiële sponsor **[E-mail doorsturen](https://forwardemail.net)** gebruikt om uitgaande e-mail te verzenden en vooraf te bekijken.
+## Broncode en Voorbeeld {#source-code-and-example}
 
-U moet een <strong class="text-success"><i class="fa fa-key"></i>wachtwoord genereren</strong> om uitgaande e-mail te kunnen versturen. Volg hiervoor onze **[E-mail verzenden met aangepaste domein SMTP-handleiding](/guides/send-email-with-custom-domain-smtp)**.
+Dit voorbeeld gebruikt de **[Nodemailer](https://github.com/nodemailer/nodemailer)** bibliotheek en zijn officiële sponsor **[Forward Email](https://forwardemail.net)** om uitgaande e-mail te verzenden en te bekijken.
+
+Je moet <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord Genereren</strong> om uitgaande e-mail te verzenden – volg hiervoor onze **[Handleiding E-mail Verzenden met Eigen Domein SMTP](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from:
+    // TODO: vervang `user` en `pass` waarden via:
     // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
     user: 'you@example.com',
     pass: '****************************'
@@ -51,6 +54,6 @@ Start de app om de e-mail te verzenden:
 node app
 ```
 
-U kunt nu naar **[Mijn account → E-mails](/my-account/emails)** gaan om de realtimestatus van uw e-mailbezorging, logboeken over de bezorging van e-mails en voorbeelden van HTML/platte tekst/bijlagen te bekijken.
+Ga nu naar **[Mijn Account → E-mails](/my-account/emails)** om je realtime e-mailbezorgstatus, e-mailbezorglogs en HTML/tekst/attachment previews te bekijken.
 
-> P.S. :tada: Je kunt ook **[e-mails bekijken in browsers en de iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** en **[e-mailsjablonen maken met Node.js](/docs/send-emails-with-node-js-javascript)** gebruiken.
+> P.S. :tada: Je kunt ook **[e-mails bekijken in browsers en de iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** en **[e-mailsjablonen maken met Node.js](/docs/send-emails-with-node-js-javascript)**.

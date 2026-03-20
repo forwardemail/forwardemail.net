@@ -1,249 +1,254 @@
-# Sähköpostin edelleenlähetys toimii sähköpostin edelleenlähetyksen kanssa: Perimmäinen opas {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
+# Kuinka Sähköpostin Uudelleenlähetys Toimii Forward Emailin Kanssa: Täydellinen Opas {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Sähköpostin yksityisyyden suojaamisen tekninen toteutus" class="rounded-lg" />
+
 
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
-* [Mikä on sähköpostin edelleenlähetys](#what-is-email-forwarding)
-* [Sähköpostin edelleenlähetys toimii: tekninen selitys](#how-email-forwarding-works-the-technical-explanation)
-  * [Sähköpostin edelleenlähetysprosessi](#the-email-forwarding-process)
-  * [SRS:n (lähettäjän uudelleenkirjoitusjärjestelmän) rooli](#the-role-of-srs-sender-rewriting-scheme)
-* [Sähköpostin edelleenlähetys toimii: Yksinkertainen selitys](#how-email-forwarding-works-the-simple-explanation)
-* [Sähköpostin edelleenlähetyksen määrittäminen Lähetä sähköpostia -toiminnolla](#setting-up-email-forwarding-with-forward-email)
-  * [1. Rekisteröidy tilille](#1-sign-up-for-an-account)
-  * [2. Lisää verkkotunnuksesi](#2-add-your-domain)
-  * [3. DNS-tietueiden määrittäminen](#3-configure-dns-records)
-  * [4. Luo sähköpostin edelleenlähetyksiä](#4-create-email-forwards)
-  * [5. Aloita uusien sähköpostiosoitteidesi käyttö](#5-start-using-your-new-email-addresses)
-* [Sähköpostin edelleenlähetyksen lisäominaisuudet](#advanced-features-of-forward-email)
-  * [Kertakäyttöiset osoitteet](#disposable-addresses)
-  * [Useita vastaanottajia ja jokerimerkkejä](#multiple-recipients-and-wildcards)
-  * ["Lähetä sähköpostia osoitteena" -integraatio](#send-mail-as-integration)
-  * [Kvanttiresistentti turvallisuus](#quantum-resistant-security)
-  * [Yksittäin salatut SQLite-postilaatikot](#individually-encrypted-sqlite-mailboxes)
-* [Miksi valita sähköpostin edelleenlähetys kilpailijoiden sijaan](#why-choose-forward-email-over-competitors)
-  * [1. 100 % avoimen lähdekoodin](#1-100-open-source)
-  * [2. Yksityisyyteen keskittynyt](#2-privacy-focused)
-  * [3. Ei riippuvuutta kolmansista osapuolista](#3-no-third-party-reliance)
-  * [4. Kustannustehokas hinnoittelu](#4-cost-effective-pricing)
-  * [5. Rajattomat resurssit](#5-unlimited-resources)
-  * [6. Suurten organisaatioiden luottama](#6-trusted-by-major-organizations)
-* [Yleisiä käyttötapauksia sähköpostin edelleenlähetykselle](#common-use-cases-for-email-forwarding)
+* [Mitä on Sähköpostin Uudelleenlähetys](#what-is-email-forwarding)
+* [Kuinka Sähköpostin Uudelleenlähetys Toimii: Tekninen Selitys](#how-email-forwarding-works-the-technical-explanation)
+  * [Sähköpostin Uudelleenlähetysprosessi](#the-email-forwarding-process)
+  * [SRS:n (Sender Rewriting Scheme) Rooli](#the-role-of-srs-sender-rewriting-scheme)
+* [Kuinka Sähköpostin Uudelleenlähetys Toimii: Yksinkertainen Selitys](#how-email-forwarding-works-the-simple-explanation)
+* [Sähköpostin Uudelleenlähetyksen Asettaminen Forward Emaililla](#setting-up-email-forwarding-with-forward-email)
+  * [1. Luo Tili](#1-sign-up-for-an-account)
+  * [2. Lisää Verkkotunnuksesi](#2-add-your-domain)
+  * [3. Määritä DNS-tietueet](#3-configure-dns-records)
+  * [4. Luo Sähköpostin Uudelleenlähetykset](#4-create-email-forwards)
+  * [5. Ala Käyttää Uusia Sähköpostiosoitteitasi](#5-start-using-your-new-email-addresses)
+* [Forward Emailin Edistyneet Ominaisuudet](#advanced-features-of-forward-email)
+  * [Kertakäyttöiset Osoitteet](#disposable-addresses)
+  * [Useat Vastaanottajat ja Jokerimerkit](#multiple-recipients-and-wildcards)
+  * ["Lähetä Sähköpostina" Integraatio](#send-mail-as-integration)
+  * [Kvanttikestävä Turvallisuus](#quantum-resistant-security)
+  * [Yksilöllisesti Salatut SQLite-sähköpostilaatikot](#individually-encrypted-sqlite-mailboxes)
+* [Miksi Valita Forward Email Kilpailijoiden Sijaan](#why-choose-forward-email-over-competitors)
+  * [1. 100 % Avoimen Lähdekoodin](#1-100-open-source)
+  * [2. Yksityisyyttä Korostava](#2-privacy-focused)
+  * [3. Ei Riippuvuutta Kolmansista Osapuolista](#3-no-third-party-reliance)
+  * [4. Edullinen Hinnoittelu](#4-cost-effective-pricing)
+  * [5. Rajoittamattomat Resurssit](#5-unlimited-resources)
+  * [6. Suurten Organisaatioiden Luottama](#6-trusted-by-major-organizations)
+* [Yleiset Käyttötarkoitukset Sähköpostin Uudelleenlähetykselle](#common-use-cases-for-email-forwarding)
   * [Yrityksille](#for-businesses)
   * [Kehittäjille](#for-developers)
-  * [Yksityisyyttä arvostaville henkilöille](#for-privacy-conscious-individuals)
-* [Sähköpostin edelleenlähetyksen parhaat käytännöt](#best-practices-for-email-forwarding)
-  * [1. Käytä kuvailevia osoitteita](#1-use-descriptive-addresses)
-  * [2. Toteuta asianmukainen todennus](#2-implement-proper-authentication)
-  * [3. Tarkista säännöllisesti välityspyyntösi](#3-regularly-review-your-forwards)
-  * [4. Määritä "Lähetä sähköpostia osoitteena" saumattomien vastausten saamiseksi](#4-set-up-send-mail-as-for-seamless-replies)
-  * [5. Käytä yleisiä osoitteita varoen](#5-use-catch-all-addresses-cautiously)
-* [Johtopäätös](#conclusion)
+  * [Yksityisyyttä Arvostaville Henkilöille](#for-privacy-conscious-individuals)
+* [Parhaat Käytännöt Sähköpostin Uudelleenlähetyksessä](#best-practices-for-email-forwarding)
+  * [1. Käytä Kuvaavia Osoitteita](#1-use-descriptive-addresses)
+  * [2. Toteuta Oikea Todennus](#2-implement-proper-authentication)
+  * [3. Tarkista Uudelleenlähetykset Säännöllisesti](#3-regularly-review-your-forwards)
+  * [4. Aseta "Lähetä Sähköpostina" Saumattomia Vastauksia Varten](#4-set-up-send-mail-as-for-seamless-replies)
+  * [5. Käytä Catch-All-osoitteita Varovaisesti](#5-use-catch-all-addresses-cautiously)
+* [Yhteenveto](#conclusion)
+
 
 ## Esipuhe {#foreword}
 
-Sähköpostin edelleenlähetys on tehokas työkalu, joka voi mullistaa verkkoviestinnän hallinnan. Oletpa sitten yrityksen omistaja, joka haluaa luoda ammattimaisia sähköpostiosoitteita omalla verkkotunnuksellasi, yksityisyyttäsi arvostava henkilö, joka haluaa suojata ensisijaista sähköpostiaan, tai kehittäjä, joka tarvitsee joustavaa sähköpostinhallintaa, sähköpostin edelleenlähetyksen ymmärtäminen on olennaista nykypäivän digitaalisessa maisemassa.
+Sähköpostin uudelleenlähetys on tehokas työkalu, joka voi muuttaa tapasi hallita verkkoviestintääsi. Olitpa sitten yrityksen omistaja, joka haluaa luoda ammattimaisia sähköpostiosoitteita omalla verkkotunnuksellasi, yksityisyyttä arvostava henkilö, joka haluaa suojata pääsähköpostinsa, tai kehittäjä, joka tarvitsee joustavaa sähköpostinhallintaa, sähköpostin uudelleenlähetyksen ymmärtäminen on olennaista nykypäivän digitaalisessa maailmassa.
 
-Forward Emaililla olemme rakentaneet maailman turvallisimman, yksityisimmän ja joustavimman sähköpostin edelleenlähetyspalvelun. Tässä kattavassa oppaassa selitämme, miten sähköpostin edelleenlähetys toimii (sekä teknisestä että käytännön näkökulmasta), käymme läpi yksinkertaisen asennusprosessimme ja korostamme, miksi palvelumme erottuu kilpailijoista.
+Forward Emaililla olemme rakentaneet maailman turvallisimman, yksityisimmän ja joustavimman sähköpostin uudelleenlähetyspalvelun. Tässä kattavassa oppaassa selitämme, kuinka sähköpostin uudelleenlähetys toimii (sekä teknisestä että käytännön näkökulmasta), opastamme sinut yksinkertaisen asennusprosessimme läpi ja korostamme, miksi palvelumme erottuu kilpailijoista.
 
-## Mikä on sähköpostin edelleenlähetys {#what-is-email-forwarding}
 
-Sähköpostin edelleenlähetys on prosessi, joka uudelleenohjaa automaattisesti yhteen sähköpostiosoitteeseen lähetetyt sähköpostit toiseen kohdeosoitteeseen. Esimerkiksi kun joku lähettää sähköpostia osoitteeseen <contact@yourdomain.com>, viesti voidaan automaattisesti edelleenlähettää henkilökohtaiseen Gmail-, Outlook- tai mihin tahansa muuhun sähköpostitiliisi.
+## Mitä on Sähköpostin Uudelleenlähetys {#what-is-email-forwarding}
 
-Tämä näennäisen yksinkertainen ominaisuus tarjoaa tehokkaita etuja:
+Sähköpostin uudelleenlähetys on prosessi, joka automaattisesti ohjaa yhdelle sähköpostiosoitteelle lähetetyt viestit toiseen kohdeosoitteeseen. Esimerkiksi, kun joku lähettää sähköpostin osoitteeseen <contact@yourdomain.com>, viesti voidaan automaattisesti uudelleenohjata henkilökohtaiseen Gmail-, Outlook- tai muuhun sähköpostitiliisi.
 
-* **Ammattimainen brändäys**: Käytä sähköpostiosoitteita mukautetulla verkkotunnuksellasi (<sinä@verkkotunnuksesi.com>) ja hallinnoi kaikkea olemassa olevasta henkilökohtaisesta postilaatikostasi.
-* **Tietosuojaus**: Luo kertakäyttöisiä tai käyttötarkoitukseen sopivia osoitteita, jotka suojaavat ensisijaista sähköpostiasi.
-* **Yksinkertaistettu hallinta**: Yhdistä useita sähköpostiosoitteita yhteen postilaatikkoon.
-* **Joustavuus**: Luo rajattomasti osoitteita eri tarkoituksiin ilman useiden tilien hallintaa.
+Tämä näennäisen yksinkertainen ominaisuus tarjoaa voimakkaita etuja:
 
-## Sähköpostin edelleenlähetyksen toimintaperiaate: tekninen selitys {#how-email-forwarding-works-the-technical-explanation}
+* **Ammattimainen Brändäys**: Käytä sähköpostiosoitteita omalla verkkotunnuksellasi (<you@yourdomain.com>) hallinnoiden kaikkea nykyisestä henkilökohtaisesta postilaatikostasi
+* **Yksityisyyden Suoja**: Luo kertakäyttöisiä tai tarkoitukseen sidottuja osoitteita, jotka suojaavat pääsähköpostiasi
+* **Yksinkertaistettu Hallinta**: Yhdistä useita sähköpostiosoitteita yhteen postilaatikkoon
+* **Joustavuus**: Luo rajattomasti osoitteita eri tarkoituksiin ilman, että sinun tarvitsee hallita useita tilejä
+## Kuinka Sähköpostin Uudelleenlähetys Toimii: Tekninen Selitys {#how-email-forwarding-works-the-technical-explanation}
 
-Teknisistä yksityiskohdista kiinnostuneille tutkitaanpa, mitä kulissien takana tapahtuu, kun sähköposti lähetetään edelleen.
+Niille, joita kiinnostavat tekniset yksityiskohdat, tutkitaan mitä tapahtuu kulissien takana, kun sähköposti uudelleenlähetetään.
 
-### Sähköpostin edelleenlähetysprosessi {#the-email-forwarding-process}
+### Sähköpostin Uudelleenlähetysprosessi {#the-email-forwarding-process}
 
-1. **DNS-konfigurointi**: Prosessi alkaa verkkotunnuksesi DNS-tietueista. Kun määrität sähköpostin edelleenlähetyksen, määrität MX (Mail Exchange) -tietueet, jotka kertovat internetille, minne verkkotunnuksesi sähköpostit tulisi toimittaa. Nämä tietueet osoittavat sähköpostipalvelimillemme.
+1. **DNS-konfiguraatio**: Prosessi alkaa verkkotunnuksesi DNS-tietueista. Kun asetat sähköpostin uudelleenlähetyksen, määrität MX (Mail Exchange) -tietueet, jotka kertovat internetille, minne sähköpostit verkkotunnuksellesi tulee toimittaa. Nämä tietueet osoittavat sähköpostipalvelimillemme.
 
-2. **Sähköpostin vastaanotto**: Kun joku lähettää sähköpostia mukautettuun verkkotunnukseesi (esim. <sinä@omaverkkotunnus.com>), heidän sähköpostipalvelimensa hakee verkkotunnuksesi MX-tietueet ja toimittaa viestin palvelimillemme.
+2. **Sähköpostin vastaanotto**: Kun joku lähettää sähköpostin mukautettuun verkkotunnuksesi osoitteeseen (esim. <you@yourdomain.com>), heidän sähköpostipalvelimensa hakee verkkotunnuksesi MX-tietueet ja toimittaa viestin palvelimillemme.
 
 3. **Käsittely ja todennus**: Palvelimemme vastaanottavat sähköpostin ja suorittavat useita kriittisiä toimintoja:
-* Lähettäjän aitouden tarkistaminen SPF:n, DKIM:n ja DMARC:n kaltaisilla protokollilla
-* Haitallisen sisällön tarkistaminen
-* Vastaanottajan tarkistaminen edelleenlähetyssääntöjen mukaisesti
+   * Varmistavat lähettäjän aitouden protokollien kuten SPF, DKIM ja DMARC avulla
+   * Skannaavat haitallisen sisällön varalta
+   * Tarkistavat vastaanottajan uudelleenlähetyssääntöjesi mukaan
 
-4. **Lähettäjän uudelleenkirjoitus**: Tässä kohtaa taika tapahtuu. Käytämme lähettäjän uudelleenkirjoitusjärjestelmää (SRS) sähköpostin paluureitin muokkaamiseksi. Tämä on ratkaisevan tärkeää, koska monet sähköpostipalveluntarjoajat hylkäävät edelleenlähetetyt sähköpostit ilman asianmukaista SRS-toteutusta, koska ne voivat vaikuttaa väärennöksiltä.
+4. **Lähettäjän uudelleenkirjoitus**: Tässä tapahtuu taika. Toteutamme Sender Rewriting Scheme (SRS) -menetelmän muuttaaksemme sähköpostin paluupolkua. Tämä on ratkaisevan tärkeää, koska monet sähköpostipalveluntarjoajat hylkäävät uudelleenlähetetyt sähköpostit ilman asianmukaista SRS-toteutusta, sillä ne voivat näyttää väärennetyiltä.
 
-5. **Edelleenlähetys**: Sähköposti lähetetään sitten kohdeosoitteeseesi alkuperäisen sisällön säilyttäen.
+5. **Uudelleenlähetys**: Sähköposti lähetetään sitten määränpääosoitteeseesi alkuperäinen sisältö säilyttäen.
 
-6. **Toimitus**: Sähköposti saapuu postilaatikkoosi ja näyttää siltä kuin se olisi lähetetty edelleenlähetysosoitteeseesi, säilyttäen mukautetun verkkotunnuksesi ammattimaisen ulkoasun.
+6. **Toimitus**: Sähköposti saapuu postilaatikkoosi näyttäen siltä kuin se olisi lähetetty uudelleenlähetysosoitteeseesi, säilyttäen ammattimaisen ilmeen mukautetulle verkkotunnuksellesi.
 
-### SRS:n (lähettäjän uudelleenkirjoitusjärjestelmän) rooli {#the-role-of-srs-sender-rewriting-scheme}
+### SRS:n (Sender Rewriting Scheme) Rooli {#the-role-of-srs-sender-rewriting-scheme}
 
-SRS ansaitsee erityistä huomiota, koska se on olennainen luotettavan sähköpostin edelleenlähetyksen kannalta. Kun sähköposti lähetetään edelleen, lähettäjän osoite on kirjoitettava uudelleen, jotta varmistetaan, että sähköposti läpäisee SPF-tarkistukset lopullisessa määränpäässä.
+SRS ansaitsee erityishuomion, koska se on välttämätön luotettavalle sähköpostin uudelleenlähetykselle. Kun sähköposti uudelleenlähetetään, lähettäjän osoite täytyy kirjoittaa uudelleen, jotta sähköposti läpäisee SPF-tarkistukset lopullisessa määränpäässä.
 
-Ilman SRS:ää edelleenlähetetyt sähköpostit usein epäonnistuvat SPF-vahvistuksessa ja ne merkitään roskapostiksi tai hylätään kokonaan. SRS-toteutuksemme varmistaa, että edelleenlähetetyt sähköpostisi toimitetaan luotettavasti ja samalla alkuperäisen lähettäjän tiedot säilyvät sinulle läpinäkyvästi.
+Ilman SRS:ää uudelleenlähetetyt sähköpostit epäonnistuvat usein SPF-varmennuksessa ja merkitään roskapostiksi tai ne hylätään kokonaan. Meidän SRS-toteutuksemme varmistaa, että uudelleenlähetetyt sähköpostisi toimitetaan luotettavasti samalla kun alkuperäinen lähettäjätieto säilyy tavalla, joka on sinulle läpinäkyvä.
 
-## Sähköpostin edelleenlähetyksen toimintaperiaate: Yksinkertainen selitys {#how-email-forwarding-works-the-simple-explanation}
 
-Jos tekniset yksityiskohdat tuntuvat ylivoimaisilta, tässä on yksinkertaisempi tapa ymmärtää sähköpostin edelleenlähetystä:
+## Kuinka Sähköpostin Uudelleenlähetys Toimii: Yksinkertainen Selitys {#how-email-forwarding-works-the-simple-explanation}
 
-Ajattele sähköpostin edelleenlähetystä kuin fyysisen postin edelleenlähetystä. Kun muutat uuteen kotiin, voit pyytää postipalvelua välittämään kaiken postin vanhasta osoitteestasi uuteen. Sähköpostin edelleenlähetys toimii samalla tavalla, mutta digitaalisten viestien osalta.
+Jos tekniset yksityiskohdat tuntuvat ylivoimaisilta, tässä on yksinkertaisempi tapa ymmärtää sähköpostin uudelleenlähetys:
 
-Sähköpostin edelleenlähetys:
+Ajattele sähköpostin uudelleenlähetystä kuin postin uudelleenlähetystä fyysiselle postille. Kun muutat uuteen kotiin, voit pyytää postipalvelua uudelleenlähettämään kaiken postin vanhasta osoitteestasi uuteen. Sähköpostin uudelleenlähetys toimii samalla tavalla, mutta digitaalisille viesteille.
 
-1. Kerro meille, mitkä sähköpostiosoitteet verkkotunnuksellasi haluat määrittää (kuten <myynti@verkkotunnuksesi.com> tai <yhteystiedot@verkkotunnuksesi.com>).
+Forward Emailin kanssa:
 
-2. Kerro meille, minne haluat sähköpostien toimitettavan (kuten Gmail- tai Outlook-tilillesi).
+1. Kerrot meille, mitkä sähköpostiosoitteet verkkotunnuksellasi haluat määrittää (kuten <sales@yourdomain.com> tai <contact@yourdomain.com>)
+2. Kerrot meille, mihin haluat näiden sähköpostien toimitettavan (kuten Gmail- tai Outlook-tilillesi)
+3. Me hoidamme kaikki tekniset yksityiskohdat varmistaaksemme, että mukautettuihin osoitteisiisi lähetetyt sähköpostit saapuvat turvallisesti määritettyyn postilaatikkoosi
 
-3. Hoidamme kaikki tekniset yksityiskohdat varmistaaksemme, että mukautettuihin osoitteisiin lähetetyt sähköpostit saapuvat turvallisesti määritettyyn postilaatikkoosi.
+Se on niin yksinkertaista! Saat käyttää ammattimaisia sähköpostiosoitteita muuttamatta nykyistä sähköpostityöskentelyäsi.
 
-Niin yksinkertaista se on! Voit käyttää ammattimaisia sähköpostiosoitteita muuttamatta nykyistä sähköpostin työnkulkuasi.
 
-## Sähköpostin edelleenlähetyksen määrittäminen sähköpostin edelleenlähetystoiminnolla {#setting-up-email-forwarding-with-forward-email}
+## Sähköpostin Uudelleenlähetyksen Määrittäminen Forward Emailin Kanssa {#setting-up-email-forwarding-with-forward-email}
 
-Yksi sähköpostin edelleenlähetyksen suurimmista eduista on sen helppo käyttöönotto. Tässä vaiheittainen opas:
+Yksi Forward Emailin suurimmista eduista on sen helppokäyttöisyys. Tässä vaiheittainen opas:
 
-### 1. Luo tili {#1-sign-up-for-an-account}
+### 1. Luo Tili {#1-sign-up-for-an-account}
 
-Käy osoitteessa [forwardemail.net](https://forwardemail.net) ja luo ilmainen tili. Rekisteröitymisprosessimme kestää alle minuutin.
+Vieraile osoitteessa [forwardemail.net](https://forwardemail.net) ja luo ilmainen tili. Rekisteröitymisprosessimme kestää alle minuutin.
 
-### 2. Lisää verkkotunnuksesi {#2-add-your-domain}
+### 2. Lisää Verkkotunnuksesi {#2-add-your-domain}
 
-Kun olet kirjautunut sisään, lisää verkkotunnus, jota haluat käyttää sähköpostin edelleenlähetykseen. Jos sinulla ei vielä ole verkkotunnusta, sinun on ensin ostettava sellainen verkkotunnusten rekisteröijältä.
+Kirjautumisen jälkeen lisää verkkotunnus, jota haluat käyttää sähköpostin uudelleenlähetykseen. Jos sinulla ei vielä ole verkkotunnusta, sinun täytyy ensin ostaa sellainen verkkotunnusrekisteröijältä.
 
-### 3. DNS-tietueiden määrittäminen {#3-configure-dns-records}
+### 3. Määritä DNS-tietueet {#3-configure-dns-records}
 
-Toimitamme sinulle tarkat DNS-tietueet, jotka sinun on lisättävä verkkotunnukseesi. Tyypillisesti tämä sisältää seuraavat:
+Annamme sinulle tarkat DNS-tietueet, jotka sinun tulee lisätä verkkotunnukseesi. Tyypillisesti tämä sisältää:
 
-* Sähköpostipalvelimiimme osoittavien MX-tietueiden lisääminen
-* TXT-tietueiden lisääminen vahvistusta ja turvallisuutta varten
+* MX-tietueiden lisäämisen, jotka osoittavat sähköpostipalvelimillemme
+* TXT-tietueiden lisäämisen varmennusta ja turvallisuutta varten
 
-Useimmilla verkkotunnusten rekisteröijillä on yksinkertainen käyttöliittymä näiden tietueiden lisäämiseen. Tarjoamme yksityiskohtaiset oppaat kaikille tärkeimmille verkkotunnusten rekisteröijille, jotta tämä prosessi olisi mahdollisimman sujuva.
+Useimmilla verkkotunnusrekisteröijillä on yksinkertainen käyttöliittymä näiden tietueiden lisäämiseen. Tarjoamme yksityiskohtaiset ohjeet kaikille suurimmille verkkotunnusrekisteröijille, jotta tämä prosessi sujuu mahdollisimman vaivattomasti.
+### 4. Luo Sähköpostin Uudelleenlähetyksiä {#4-create-email-forwards}
 
-### 4. Luo sähköpostin edelleenlähetyksiä {#4-create-email-forwards}
+Kun DNS-tietueesi on vahvistettu (mikä yleensä kestää vain muutaman minuutin), voit luoda sähköpostin uudelleenlähetyksiä. Määritä yksinkertaisesti:
 
-Kun DNS-tietueesi on vahvistettu (mikä yleensä kestää vain muutaman minuutin), voit luoda sähköpostin edelleenlähetyksiä. Määritä vain:
-
-* Verkkotunnuksesi sähköpostiosoite (esim. <contact@yourdomain.com>)
+* Sähköpostiosoite omalla verkkotunnuksellasi (esim. <contact@yourdomain.com>)
 * Kohde, johon haluat sähköpostien lähetettävän (esim. henkilökohtainen Gmail-osoitteesi)
 
-### 5. Aloita uusien sähköpostiosoitteidesi käyttö {#5-start-using-your-new-email-addresses}
+### 5. Aloita Uusien Sähköpostiosoitteidesi Käyttö {#5-start-using-your-new-email-addresses}
 
-Siinä kaikki! Mukautettuihin verkkotunnusosoitteisiin lähetetyt sähköpostit välitetään nyt määrittämääsi kohteeseen. Voit luoda niin monta edelleenlähetystä kuin tarvitset, mukaan lukien keräilyosoitteita, jotka välittävät kaikki verkkotunnuksesi osoitteisiin lähetetyt sähköpostit.
+Siinä kaikki! Verkkotunnuksesi mukaisiin osoitteisiin lähetetyt sähköpostit uudelleenlähetetään nyt määrittämääsi kohteeseen. Voit luoda niin monta uudelleenlähetystä kuin tarvitset, mukaan lukien catch-all-osoitteet, jotka uudelleenlähettävät kaikki verkkotunnuksesi mille tahansa osoitteelle lähetetyt sähköpostit.
 
-## Sähköpostin edelleenlähetyksen lisäominaisuudet {#advanced-features-of-forward-email}
 
-Vaikka perussähköpostin edelleenlähetys on itsessään tehokasta, Lähetä sähköpostia tarjoaa useita edistyneitä ominaisuuksia, jotka erottavat meidät muista:
+## Forward Emailin Edistyneet Ominaisuudet {#advanced-features-of-forward-email}
 
-### Kertakäyttöiset osoitteet {#disposable-addresses}
+Vaikka perussähköpostin uudelleenlähetys onkin itsessään tehokas, Forward Email tarjoaa useita edistyneitä ominaisuuksia, jotka erottavat meidät muista:
 
-Luo erityisiä tai anonyymejä sähköpostiosoitteita, jotka lähettävät viestit päätilillesi. Voit liittää näihin osoitteisiin tunnisteita ja ottaa ne käyttöön tai poistaa ne käytöstä milloin tahansa pitääksesi postilaatikkosi järjestyksessä. Todellista sähköpostiosoitettasi ei koskaan paljasteta.
+### Kertakäyttöiset Osoitteet {#disposable-addresses}
 
-### Useita vastaanottajia ja jokerimerkkejä {#multiple-recipients-and-wildcards}
+Luo tiettyjä tai anonyymejä sähköpostiosoitteita, jotka uudelleenlähetetään päätilillesi. Voit liittää näihin osoitteisiin tunnisteita ja ottaa ne käyttöön tai poistaa käytöstä milloin tahansa pitääksesi postilaatikkosi järjestyksessä. Todellinen sähköpostiosoitteesi ei koskaan paljastu.
 
-Lähetä yksi osoite edelleen useille vastaanottajille, mikä helpottaa tiedon jakamista tiimin kanssa. Voit myös käyttää jokerimerkkiosoitteita (kaikkien sähköpostien edelleenlähetys) vastaanottaaksesi sähköposteja, jotka lähetetään mihin tahansa verkkotunnuksesi osoitteeseen.
+### Useita Vastaanottajia ja Jokerimerkkejä {#multiple-recipients-and-wildcards}
 
-### "Lähetä sähköpostia osoitteena" -integraatio {#send-mail-as-integration}
+Uudelleenlähetä yksi osoite useille vastaanottajille, mikä helpottaa tiedon jakamista tiimissä. Voit myös käyttää jokerimerkki-osoitteita (catch-all-uudelleenlähetys) vastaanottaaksesi sähköposteja, jotka on lähetetty mille tahansa verkkotunnuksesi osoitteelle.
 
-Sinun ei koskaan tarvitse poistua postilaatikostasi lähettääksesi sähköposteja mukautetusta verkkotunnuksestasi. Lähetä ja vastaa viesteihin aivan kuin ne olisivat tulleet osoitteesta <sinä@omaverkkotunnus.com> suoraan Gmail- tai Outlook-tililtäsi.
+### "Lähetä Sähköpostina" -integraatio {#send-mail-as-integration}
 
-### Kvanttiresistentti suojaus {#quantum-resistant-security}
+Sinun ei koskaan tarvitse poistua postilaatikostasi lähettääksesi sähköposteja omalla verkkotunnuksellasi. Lähetä ja vastaa viesteihin ikään kuin ne olisivat osoitteesta <you@yourdomain.com> suoraan Gmail- tai Outlook-tililtäsi.
 
-Olemme maailman ensimmäinen ja ainoa sähköpostipalvelu, joka käyttää kvanttisuojattua salausta, joka suojaa viestintääsi jopa tulevaisuuden kehittyneimmiltä uhilta.
+### Kvanttikestävä Tietoturva {#quantum-resistant-security}
 
-### Yksittäin salatut SQLite-postilaatikot {#individually-encrypted-sqlite-mailboxes}
+Olemme maailman ensimmäinen ja ainoa sähköpostipalvelu, joka käyttää kvanttikestävää salausta, suojaten viestintäsi jopa kehittyneimmiltä tulevaisuuden uhkilta.
 
-Toisin kuin muut palveluntarjoajat, jotka tallentavat kaikki käyttäjien sähköpostit jaettuihin tietokantoihin, me käytämme yksilöllisesti salattuja SQLite-postilaatikoita vertaansa vailla olevan yksityisyyden ja turvallisuuden takaamiseksi.
+### Yksilöllisesti Salatut SQLite-postilaatikot {#individually-encrypted-sqlite-mailboxes}
 
-## Miksi valita sähköpostin edelleenlähetys kilpailijoiden sijaan {#why-choose-forward-email-over-competitors}
+Toisin kuin muut palveluntarjoajat, jotka tallentavat kaikki käyttäjien sähköpostit jaettuihin tietokantoihin, me käytämme yksilöllisesti salattuja SQLite-postilaatikoita vertaansa vailla olevan yksityisyyden ja tietoturvan takaamiseksi.
 
-Sähköpostin edelleenlähetysmarkkinoilla on useita toimijoita, mutta Forward Email erottuu joukosta useilla tärkeillä tavoilla:
 
-### 1. 100 % avoimen lähdekoodin {#1-100-open-source}
+## Miksi Valita Forward Email Kilpailijoiden Sijaan {#why-choose-forward-email-over-competitors}
 
-Olemme ainoa sähköpostin edelleenlähetyspalvelu, joka on täysin avoimen lähdekoodin, myös taustakoodimme, mukainen. Tämä läpinäkyvyys rakentaa luottamusta ja mahdollistaa riippumattomat tietoturvatarkastukset. Muut palvelut saattavat väittää olevansa avoimen lähdekoodin tarjoajia, mutta eivät julkaise taustakoodiaan.
+Sähköpostin uudelleenlähetyksen markkinoilla on useita toimijoita, mutta Forward Email erottuu useilla tärkeillä tavoilla:
 
-### 2. Tietosuojaan keskittyvä {#2-privacy-focused}
+### 1. 100 % Avoimen Lähdekoodin {#1-100-open-source}
 
-Loimme tämän palvelun, koska sinulla on oikeus yksityisyyteen. Käytämme vankkaa TLS-salausta, emme tallenna SMTP-lokeja (virheitä ja lähtevää SMTP-viestintää lukuun ottamatta) emmekä kirjoita sähköpostejasi levylle.
+Olemme ainoa täysin avoimen lähdekoodin sähköpostin uudelleenlähetyspalvelu, mukaan lukien taustajärjestelmämme koodi. Tämä läpinäkyvyys rakentaa luottamusta ja mahdollistaa riippumattomat tietoturvatarkastukset. Muut palvelut saattavat väittää olevansa avoimen lähdekoodin, mutta eivät julkaise taustakoodiaan.
 
-### 3. Ei kolmannen osapuolen riippuvuutta {#3-no-third-party-reliance}
+### 2. Yksityisyyttä Korostava {#2-privacy-focused}
 
-Toisin kuin kilpailijamme, jotka luottavat Amazon SES:ään tai muihin kolmansien osapuolten palveluihin, meillä on täysi hallinta infrastruktuuriimme, mikä parantaa sekä luotettavuutta että yksityisyyttä.
+Loimme tämän palvelun, koska sinulla on oikeus yksityisyyteen. Käytämme vahvaa salausta TLS:llä, emme tallenna SMTP-lokeja (paitsi virheistä ja lähtevästä SMTP:stä), emmekä kirjoita sähköpostejasi levylle.
 
-### 4. Kustannustehokas hinnoittelu {#4-cost-effective-pricing}
+### 3. Ei Kolmansien Osapuolien Riippuvuutta {#3-no-third-party-reliance}
 
-Hinnoittelumallimme ansiosta voit skaalata tallennustilaa kustannustehokkaasti. Emme veloita käyttäjäkohtaisesti, ja voit maksaa tallennustilasta käytön mukaan. 3 dollarin kuukausihinnalla tarjoamme enemmän ominaisuuksia halvemmalla hinnalla kuin kilpailijamme, kuten Gandi (3,99 dollaria/kk).
+Toisin kuin kilpailijat, jotka luottavat Amazon SES:ään tai muihin kolmannen osapuolen palveluihin, me hallitsemme infrastruktuuriamme kokonaan itse, mikä parantaa sekä luotettavuutta että yksityisyyttä.
 
-### 5. Rajattomat resurssit {#5-unlimited-resources}
+### 4. Kustannustehokas Hinnoittelu {#4-cost-effective-pricing}
 
-Emme aseta keinotekoisia rajoituksia verkkotunnuksille, aliaksille tai sähköpostiosoitteille, kuten monet kilpailijat tekevät.
+Hinnoittelumallimme mahdollistaa kustannustehokkaan skaalautuvuuden. Emme veloita käyttäjää kohden, ja voit maksaa tallennustilasta käytön mukaan. 3 dollarilla kuukaudessa tarjoamme enemmän ominaisuuksia edullisemmin kuin kilpailijat kuten Gandi (3,99 $/kk).
 
-### 6. Suurien organisaatioiden luottama {#6-trusted-by-major-organizations}
+### 5. Rajoittamattomat Resurssit {#5-unlimited-resources}
 
-Palveluamme käyttää yli 500 000 verkkotunnusta, mukaan lukien merkittäviä organisaatioita, kuten [Yhdysvaltain laivastoakatemia](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [Linux-säätiö](/blog/docs/linux-foundation-email-enterprise-case-study), [Kanoninen/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales ja monet muut.
+Emme aseta keinotekoisia rajoja verkkotunnuksille, aliaksille tai sähköpostiosoitteille kuten monet kilpailijat tekevät.
 
-## Yleisiä käyttötapauksia sähköpostin edelleenlähetykselle {#common-use-cases-for-email-forwarding}
+### 6. Suurten Organisaatioiden Luottama {#6-trusted-by-major-organizations}
 
-Sähköpostin edelleenlähetys ratkaisee lukuisia haasteita erityyppisille käyttäjille:
+Palveluamme käyttää yli 500 000 verkkotunnusta, mukaan lukien merkittäviä organisaatioita kuten [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales ja monet muut.
+
+
+## Yleiset Käyttötapaukset Sähköpostin Uudelleenlähetykselle {#common-use-cases-for-email-forwarding}
+Sähköpostin edelleenlähetys ratkaisee monia haasteita eri käyttäjätyypeille:
 
 ### Yrityksille {#for-businesses}
 
-* Luo ammattimaiset sähköpostiosoitteet eri osastoille (myynti@, tuki@, info@)
-* Hallitse helposti tiimin sähköpostiviestintää
+* Luo ammattimaisia sähköpostiosoitteita eri osastoille (sales@, support@, info@)
+* Hallitse tiimin sähköpostiviestintää helposti
 * Säilytä brändin yhtenäisyys kaikessa viestinnässä
-* Yksinkertaista sähköpostinhallintaa henkilöstövaihdosten aikana
+* Yksinkertaista sähköpostinhallintaa henkilöstömuutosten aikana
 
 ### Kehittäjille {#for-developers}
 
-* Luo automatisoituja ilmoitusjärjestelmiä
-* Luo käyttötarkoitukseen sopivia osoitteita eri projekteille
-* Integroi webhookien kanssa edistynyttä automaatiota varten
-* Hyödynnä API-rajapintaamme mukautettuihin toteutuksiin
+* Määritä automatisoituja ilmoitusjärjestelmiä
+* Luo tarkoituksenmukaisia osoitteita eri projekteille
+* Integroi webhooksien avulla edistyneeseen automaatioon
+* Hyödynnä APIamme räätälöityihin toteutuksiin
 
-### Tietosuojaa arvostaville henkilöille {#for-privacy-conscious-individuals}
+### Yksityisyyttä arvostaville {#for-privacy-conscious-individuals}
 
-* Luo erilliset sähköpostiosoitteet eri palveluille seurataksesi, kuka jakaa tietojasi
-* Käytä kertakäyttöisiä osoitteita kertakäyttöisiin rekisteröitymisiin
-* Säilytä yksityisyys suojaamalla ensisijainen sähköpostiosoitteesi
+* Luo erillisiä sähköpostiosoitteita eri palveluille seuratakseen, kuka jakaa tietojasi
+* Käytä kertakäyttöisiä osoitteita yksittäisiin rekisteröitymisiin
+* Säilytä yksityisyys suojaamalla pääsähköpostiosoitteesi
 * Poista helposti käytöstä osoitteet, jotka alkavat vastaanottaa roskapostia
 
-## Sähköpostin edelleenlähetyksen parhaat käytännöt {#best-practices-for-email-forwarding}
 
-Saadaksesi kaiken irti sähköpostin edelleenlähetyksestä, harkitse näitä parhaita käytäntöjä:
+## Parhaat käytännöt sähköpostin edelleenlähetykseen {#best-practices-for-email-forwarding}
+
+Saadaksesi parhaan hyödyn sähköpostin edelleenlähetyksestä, ota huomioon nämä parhaat käytännöt:
 
 ### 1. Käytä kuvaavia osoitteita {#1-use-descriptive-addresses}
 
-Luo sähköpostiosoitteita, jotka osoittavat selvästi niiden tarkoituksen (esim. <uutiskirje@omaverkkotunnus.com>, <ostokset@omaverkkotunnus.com>) saapuvan postin järjestämiseksi.
+Luo sähköpostiosoitteita, jotka selkeästi ilmaisevat tarkoituksensa (esim. <newsletter@yourdomain.com>, <shopping@yourdomain.com>) auttaaksesi saapuvan postin järjestämisessä.
 
 ### 2. Ota käyttöön asianmukainen todennus {#2-implement-proper-authentication}
 
-Varmista, että verkkotunnuksellasi on asianmukaiset SPF-, DKIM- ja DMARC-tietueet maksimoidaksesi toimituksen. Sähköpostin edelleenlähetys tekee tästä helppoa ohjatun asennuksemme avulla.
+Varmista, että verkkotunnuksellasi on asianmukaiset SPF-, DKIM- ja DMARC-tietueet toimitettavuuden maksimoimiseksi. Forward Email tekee tämän helpoksi opastetun asennuksen avulla.
 
-### 3. Tarkista säännöllisesti edelleenlähetyksesi {#3-regularly-review-your-forwards}
+### 3. Tarkista edelleenlähetykset säännöllisesti {#3-regularly-review-your-forwards}
 
-Tarkista sähköpostien edelleenlähetyksesi säännöllisesti ja poista käytöstä sellaiset viestit, joita ei enää tarvita tai jotka saavat liikaa roskapostia.
+Tarkasta ajoittain sähköpostin edelleenlähetykset poistaaksesi käytöstä tarpeettomat tai liikaa roskapostia vastaanottavat osoitteet.
 
-### 4. Määritä "Lähetä sähköpostia osoitteena" saumattomia vastauksia varten {#4-set-up-send-mail-as-for-seamless-replies}
+### 4. Määritä "Lähetä sähköpostina" saumattomia vastauksia varten {#4-set-up-send-mail-as-for-seamless-replies}
 
-Määritä pääasiallinen sähköpostiohjelmasi lähettämään sähköpostia mukautettuina verkkotunnusosoitteinasi, jotta saat yhdenmukaisen kokemuksen vastatessasi edelleenlähetettyihin sähköposteihin.
+Konfiguroi pääsähköpostiohjelmasi lähettämään sähköpostia mukautetuilla verkkotunnusosoitteillasi yhtenäisen kokemuksen takaamiseksi vastatessasi edelleenlähetettyihin sähköposteihin.
 
-### 5. Käytä keräilyosoitteita varoen {#5-use-catch-all-addresses-cautiously}
+### 5. Käytä catch-all-osoitteita varoen {#5-use-catch-all-addresses-cautiously}
 
-Vaikka keräilyosoitteet ovat käteviä, ne voivat mahdollisesti vastaanottaa enemmän roskapostia. Harkitse erityisten edelleenlähetysten luomista tärkeille viesteille.
+Vaikka catch-all-osoitteet ovat käteviä, ne voivat vastaanottaa enemmän roskapostia. Harkitse erityisten edelleenlähetysten luomista tärkeille viestinnöille.
 
-## Johtopäätös {#conclusion}
 
-Sähköpostin edelleenlähetys on tehokas työkalu, joka tuo ammattimaisuutta, yksityisyyttä ja yksinkertaisuutta sähköpostiviestintään. Sähköpostin edelleenlähetyksen avulla saat käyttöösi turvallisimman, yksityisimmän ja joustavimman saatavilla olevan sähköpostin edelleenlähetyspalvelun.
+## Yhteenveto {#conclusion}
 
-Ainoana täysin avoimen lähdekoodin tarjoajana, joka käyttää kvanttisuojattua salausta ja keskittyy yksityisyyteen, olemme rakentaneet palvelun, joka kunnioittaa oikeuksiasi ja tarjoaa samalla poikkeuksellisen toiminnallisuuden.
+Sähköpostin edelleenlähetys on tehokas työkalu, joka tuo ammattimaisuutta, yksityisyyttä ja yksinkertaisuutta sähköpostiviestintään. Forward Emailin avulla saat turvallisimman, yksityisimmän ja joustavimman sähköpostin edelleenlähetyspalvelun.
 
-Etsitpä sitten ammattimaisia sähköpostiosoitteita yrityksellesi, haluatko suojata yksityisyyttäsi kertakäyttöisillä osoitteilla tai yksinkertaistaa useiden sähköpostitilien hallintaa, Forward Email tarjoaa täydellisen ratkaisun.
+Ainoana 100 % avoimen lähdekoodin tarjoajana, jolla on kvanttiturvallinen salaus ja yksityisyyteen keskittyminen, olemme rakentaneet palvelun, joka kunnioittaa oikeuksiasi tarjoten samalla poikkeuksellista toiminnallisuutta.
 
-Oletko valmis mullistamaan sähköpostikokemuksesi? [Rekisteröidy ilmaiseksi](https://forwardemail.net) tänään ja liity yli 500 000 verkkotunnuksen joukkoon, jotka jo hyötyvät palvelustamme.
+Etsitpä sitten ammattimaisia sähköpostiosoitteita yrityksellesi, yksityisyyden suojaa kertakäyttöisillä osoitteilla tai haluat yksinkertaistaa useiden sähköpostitilien hallintaa, Forward Email tarjoaa täydellisen ratkaisun.
+
+Valmis muuttamaan sähköpostikokemuksesi? [Rekisteröidy ilmaiseksi](https://forwardemail.net) jo tänään ja liity yli 500 000 verkkotunnuksen joukkoon, jotka hyötyvät palvelustamme.
 
 ---
 
-*Tämän blogikirjoituksen kirjoitti Forward Email -tiimi, maailman turvallisimman, yksityisimmän ja joustavimman sähköpostin edelleenlähetyspalvelun luoja. Käy osoitteessa [forwardemail.net](https://forwardemail.net) saadaksesi lisätietoja palvelustamme ja aloittaaksesi sähköpostien edelleenlähettämisen luottavaisin mielin.*
+*Tämän blogikirjoituksen on kirjoittanut Forward Email -tiimi, maailman turvallisimman, yksityisimmän ja joustavimman sähköpostin edelleenlähetyspalvelun luojat. Vieraile osoitteessa [forwardemail.net](https://forwardemail.net) saadaksesi lisätietoja palvelustamme ja aloittaaksesi sähköpostien edelleenlähetyksen luottavaisin mielin.*

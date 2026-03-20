@@ -1,219 +1,220 @@
-# Building a Privacy-First AI Customer Support Agent with LanceDB, Ollama, and Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
+# Yksityisyyttä Korostavan AI-asiakastukiedustajan Rakentaminen LanceDB:n, Ollaman ja Node.js:n Avulla {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
 <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
 
 > \[!NOTE]
-> This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
+> Tämä dokumentti käsittelee matkaamme itseisännöidyn AI-tukiedustajan rakentamisessa. Kirjoitimme samanlaisista haasteista blogikirjoituksessamme [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Pohdimme rehellisesti jatkokirjoituksen tekemistä nimeltä "AI Startup Graveyard", mutta ehkä joudumme odottamaan vielä vuoden tai niin, kunnes AI-kupla mahdollisesti puhkeaa(?). Tällä hetkellä tämä on aivopierumme siitä, mikä toimi, mikä ei, ja miksi teimme sen näin.
 
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
+Näin rakensimme oman AI-asiakastukiedustajamme. Teimme sen vaikeimman kautta: itseisännöitynä, yksityisyyttä korostaen ja täysin omassa hallinnassamme. Miksi? Koska emme luota kolmansien osapuolten palveluihin asiakkaidemme tietojen kanssa. Se on GDPR:n ja DPA:n vaatimus, ja se on oikea tapa toimia.
 
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
+Tämä ei ollut hauska viikonlopun projekti. Se oli kuukauden mittainen matka rikkinäisten riippuvuuksien, harhaanjohtavan dokumentaation ja avoimen lähdekoodin AI-ekosysteemin yleisen kaaoksen läpi vuonna 2025. Tämä dokumentti on tallenne siitä, mitä rakensimme, miksi rakensimme sen ja mitä esteitä kohtasimme matkan varrella.
 
-## Table of Contents {#table-of-contents}
 
-* [Customer Benefits: AI-Augmented Human Support](#customer-benefits-ai-augmented-human-support)
-  * [Faster, More Accurate Responses](#faster-more-accurate-responses)
-  * [Consistency Without Burnout](#consistency-without-burnout)
-  * [What You Get](#what-you-get)
-* [A Personal Reflection: The Two-Decade Grind](#a-personal-reflection-the-two-decade-grind)
-* [Why Privacy Matters](#why-privacy-matters)
-* [Cost Analysis: Cloud AI vs Self-Hosted](#cost-analysis-cloud-ai-vs-self-hosted)
-  * [Cloud AI Service Comparison](#cloud-ai-service-comparison)
-  * [Cost Breakdown: 5GB Knowledge Base](#cost-breakdown-5gb-knowledge-base)
-  * [Self-Hosted Hardware Costs](#self-hosted-hardware-costs)
-* [Dogfooding Our Own API](#dogfooding-our-own-api)
-  * [Why Dogfooding Matters](#why-dogfooding-matters)
-  * [API Usage Examples](#api-usage-examples)
-  * [Performance Benefits](#performance-benefits)
-* [Encryption Architecture](#encryption-architecture)
-  * [Layer 1: Mailbox Encryption (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
-  * [Layer 2: Message-Level PGP Encryption](#layer-2-message-level-pgp-encryption)
-  * [Why This Matters for Training](#why-this-matters-for-training)
-  * [Storage Security](#storage-security)
-  * [Local Storage is Standard Practice](#local-storage-is-standard-practice)
-* [The Architecture](#the-architecture)
-  * [High-Level Flow](#high-level-flow)
-  * [Detailed Scraper Flow](#detailed-scraper-flow)
-* [How It Works](#how-it-works)
-  * [Building the Knowledge Base](#building-the-knowledge-base)
-  * [Training from Historical Emails](#training-from-historical-emails)
-  * [Processing Incoming Emails](#processing-incoming-emails)
-  * [Vector Store Management](#vector-store-management)
-* [The Vector Database Graveyard](#the-vector-database-graveyard)
-* [System Requirements](#system-requirements)
-* [Cron Job Configuration](#cron-job-configuration)
-  * [Environment Variables](#environment-variables)
-  * [Cron Jobs for Multiple Inboxes](#cron-jobs-for-multiple-inboxes)
-  * [Cron Schedule Breakdown](#cron-schedule-breakdown)
-  * [Dynamic Date Calculation](#dynamic-date-calculation)
-  * [Initial Setup: Extract URL List from Sitemap](#initial-setup-extract-url-list-from-sitemap)
-  * [Testing Cron Jobs Manually](#testing-cron-jobs-manually)
-  * [Monitoring Logs](#monitoring-logs)
-* [Code Examples](#code-examples)
-  * [Scraping and Processing](#scraping-and-processing)
-  * [Training from Historical Emails](#training-from-historical-emails-1)
-  * [Querying for Context](#querying-for-context)
-* [The Future: Spam Scanner R\&D](#the-future-spam-scanner-rd)
-* [Troubleshooting](#troubleshooting)
-  * [Vector Dimension Mismatch Error](#vector-dimension-mismatch-error)
-  * [Empty Knowledge Base Context](#empty-knowledge-base-context)
-  * [PGP Decryption Failures](#pgp-decryption-failures)
-* [Usage Tips](#usage-tips)
-  * [Achieving Inbox Zero](#achieving-inbox-zero)
-  * [Using the skip-ai Label](#using-the-skip-ai-label)
-  * [Email Threading and Reply-All](#email-threading-and-reply-all)
-  * [Monitoring and Maintenance](#monitoring-and-maintenance)
-* [Testing](#testing)
-  * [Running Tests](#running-tests)
-  * [Test Coverage](#test-coverage)
-  * [Test Environment](#test-environment)
-* [Key Takeaways](#key-takeaways)
+## Sisällysluettelo {#table-of-contents}
 
-## Customer Benefits: AI-Augmented Human Support {#customer-benefits-ai-augmented-human-support}
+* [Asiakkaan Hyödyt: AI:n Avustama Ihmistuki](#customer-benefits-ai-augmented-human-support)
+  * [Nopeammat, Tarkemmat Vastaukset](#faster-more-accurate-responses)
+  * [Johdonmukaisuus Ilman Uupumusta](#consistency-without-burnout)
+  * [Mitä Saat](#what-you-get)
+* [Henkilökohtainen Pohdinta: Kaksikymmenvuotinen Ponnistus](#a-personal-reflection-the-two-decade-grind)
+* [Miksi Yksityisyys On Tärkeää](#why-privacy-matters)
+* [Kustannusanalyysi: Pilvi-AI vs Itseisännöity](#cost-analysis-cloud-ai-vs-self-hosted)
+  * [Pilvi-AI-palveluiden Vertailu](#cloud-ai-service-comparison)
+  * [Kustannusten Erittely: 5GB Tietopohja](#cost-breakdown-5gb-knowledge-base)
+  * [Itseisännöidyn Laitteiston Kustannukset](#self-hosted-hardware-costs)
+* [Oman API:n Käyttö (Dogfooding)](#dogfooding-our-own-api)
+  * [Miksi Dogfooding On Tärkeää](#why-dogfooding-matters)
+  * [API:n Käyttöesimerkit](#api-usage-examples)
+  * [Suorituskyvyn Edut](#performance-benefits)
+* [Salausarkkitehtuuri](#encryption-architecture)
+  * [Kerros 1: Postilaatikon Salaus (chacha20-poly1305)](#layer-1-mailbox-encryption-chacha20-poly1305)
+  * [Kerros 2: Viestitason PGP-salaus](#layer-2-message-level-pgp-encryption)
+  * [Miksi Tämä On Tärkeää Koulutuksessa](#why-this-matters-for-training)
+  * [Tallennusturva](#storage-security)
+  * [Paikallinen Tallennus On Vakio käytäntö](#local-storage-is-standard-practice)
+* [Arkkitehtuuri](#the-architecture)
+  * [Korkean Tason Prosessi](#high-level-flow)
+  * [Yksityiskohtainen Scraper-prosessi](#detailed-scraper-flow)
+* [Miten Se Toimii](#how-it-works)
+  * [Tietopohjan Rakentaminen](#building-the-knowledge-base)
+  * [Koulutus Historiallisista Sähköposteista](#training-from-historical-emails)
+  * [Saapuvien Sähköpostien Käsittely](#processing-incoming-emails)
+  * [Vektorivaraston Hallinta](#vector-store-management)
+* [Vektoridatabasien Hautausmaa](#the-vector-database-graveyard)
+* [Järjestelmävaatimukset](#system-requirements)
+* [Cron-tehtävien Konfigurointi](#cron-job-configuration)
+  * [Ympäristömuuttujat](#environment-variables)
+  * [Cron-tehtävät Useille Postilaatikoille](#cron-jobs-for-multiple-inboxes)
+  * [Cron-aikataulun Erittely](#cron-schedule-breakdown)
+  * [Dynaaminen Päivämäärän Laskenta](#dynamic-date-calculation)
+  * [Alkuasetukset: URL-listan Poiminta Sivukartasta](#initial-setup-extract-url-list-from-sitemap)
+  * [Cron-tehtävien Manuaalinen Testaus](#testing-cron-jobs-manually)
+  * [Lokien Seuranta](#monitoring-logs)
+* [Koodiesimerkit](#code-examples)
+  * [Tietojen Keruu ja Käsittely](#scraping-and-processing)
+  * [Koulutus Historiallisista Sähköposteista](#training-from-historical-emails-1)
+  * [Kontekstikyselyt](#querying-for-context)
+* [Tulevaisuus: Roskapostin Skannaus R\&D](#the-future-spam-scanner-rd)
+* [Vianetsintä](#troubleshooting)
+  * [Vektoridimension Yhteensopimattomuusvirhe](#vector-dimension-mismatch-error)
+  * [Tyhjä Tietopohjan Konteksti](#empty-knowledge-base-context)
+  * [PGP-purkuvirheet](#pgp-decryption-failures)
+* [Käyttövinkit](#usage-tips)
+  * [Saavuttaminen Inbox Zero](#achieving-inbox-zero)
+  * [skip-ai-tunnisteen Käyttö](#using-the-skip-ai-label)
+  * [Sähköpostiketjutus ja Vastaa Kaikille](#email-threading-and-reply-all)
+  * [Seuranta ja Ylläpito](#monitoring-and-maintenance)
+* [Testaus](#testing)
+  * [Testien Suorittaminen](#running-tests)
+  * [Testikattavuus](#test-coverage)
+  * [Testausympäristö](#test-environment)
+* [Keskeiset Opit](#key-takeaways)
+## Asiakkaan Hyödyt: Ihmisen Avustama AI-Tuki {#customer-benefits-ai-augmented-human-support}
 
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
+AI-järjestelmämme ei korvaa tukitiimiämme – se tekee heistä parempia. Tässä mitä se tarkoittaa sinulle:
 
-### Faster, More Accurate Responses {#faster-more-accurate-responses}
+### Nopeammat, Tarkemmat Vastaukset {#faster-more-accurate-responses}
 
-**Human-in-the-Loop**: Every AI-generated draft is reviewed, edited, and curated by our human support team before being sent to you. The AI handles the initial research and drafting, freeing our team to focus on quality control and personalization.
+**Ihminen Mukana Prosessissa**: Jokainen AI:n luoma luonnos tarkistetaan, muokataan ja kuratoidaan tukitiimimme toimesta ennen kuin se lähetetään sinulle. AI hoitaa alkuperäisen tutkimuksen ja luonnostelun, vapauttaen tiimimme keskittymään laadunvalvontaan ja personointiin.
 
-**Trained on Human Expertise**: The AI learns from:
+**Koulutettu Ihmisen Asiantuntemuksella**: AI oppii:
 
-* Our hand-written knowledge base and documentation
-* Human-authored blog posts and tutorials
-* Our comprehensive FAQ (written by humans)
-* Past customer conversations (all handled by real humans)
+* Käsin kirjoitetusta tietopohjastamme ja dokumentaatiosta
+* Ihmisten kirjoittamista blogikirjoituksista ja tutoriaaleista
+* Laajasta UKK:stamme (ihmisten kirjoittama)
+* Aikaisemmista asiakaskeskusteluista (kaikki käsitelty oikeiden ihmisten toimesta)
 
-You're getting responses informed by years of human expertise, just delivered faster.
+Saat vastauksia, jotka perustuvat vuosien ihmisen asiantuntemukseen, mutta toimitettuna nopeammin.
 
-### Consistency Without Burnout {#consistency-without-burnout}
+### Johdonmukaisuus Ilman Uupumusta {#consistency-without-burnout}
 
-Our small team handles hundreds of support requests daily, each requiring different technical knowledge and mental context-switching:
+Pieni tiimimme käsittelee päivittäin satoja tukipyyntöjä, joista jokainen vaatii erilaista teknistä tietämystä ja mentaalista kontekstinvaihtoa:
 
-* Billing questions require financial system knowledge
-* DNS issues require networking expertise
-* API integration requires programming knowledge
-* Security reports require vulnerability assessment
+* Laskutuskysymykset vaativat talousjärjestelmän tuntemusta
+* DNS-ongelmat vaativat verkkoasiantuntemusta
+* API-integraatio vaatii ohjelmointitietämystä
+* Turvaraportit vaativat haavoittuvuuksien arviointia
 
-Without AI assistance, this constant context-switching leads to:
+Ilman AI-avustusta tämä jatkuva kontekstinvaihto johtaa:
 
-* Slower response times
-* Human error from fatigue
-* Inconsistent answer quality
-* Team burnout
+* Hitaampiin vastausaikoihin
+* Ihmisen virheisiin väsymyksen vuoksi
+* Epäjohdonmukaiseen vastausten laatuun
+* Tiimin uupumukseen
 
-**With AI augmentation**, our team:
+**AI-avustuksella** tiimimme:
 
-* Responds faster (AI drafts in seconds)
-* Makes fewer errors (AI catches common mistakes)
-* Maintains consistent quality (AI references the same knowledge base every time)
-* Stays fresh and focused (less time researching, more time helping)
+* Vastaa nopeammin (AI luonnostelee sekunneissa)
+* Tekee vähemmän virheitä (AI havaitsee yleiset virheet)
+* Säilyttää johdonmukaisen laadun (AI viittaa aina samaan tietopohjaan)
+* Pysyy virkeänä ja keskittyneenä (vähemmän aikaa tutkimukseen, enemmän aikaa auttamiseen)
 
-### What You Get {#what-you-get}
+### Mitä Saat {#what-you-get}
 
-✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
+✅ **Nopeus**: AI luonnostelee vastaukset sekunneissa, ihmiset tarkistavat ja lähettävät minuuteissa
 
-✅ **Accuracy**: Responses based on our actual documentation and past solutions
+✅ **Tarkkuus**: Vastaukset perustuvat todelliseen dokumentaatioomme ja aiempiin ratkaisuihin
 
-✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
+✅ **Johdonmukaisuus**: Sama korkealaatuinen vastaus, olipa kello 9 aamulla tai 9 illalla
 
-✅ **Human touch**: Every response reviewed and personalized by our team
+✅ **Ihmisen kosketus**: Jokainen vastaus tarkistetaan ja personoidaan tiimimme toimesta
 
-✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
+✅ **Ei harhakuvitelmia**: AI käyttää vain vahvistettua tietopohjaamme, ei yleistä internet-dataa
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> **Puhut aina ihmisten kanssa**. AI on tutkimusavustaja, joka auttaa tiimiämme löytämään oikean vastauksen nopeammin. Ajattele sitä kirjastonhoitajana, joka löytää välittömästi relevantin kirjan – mutta ihminen lukee sen ja selittää sinulle.
 
-## A Personal Reflection: The Two-Decade Grind {#a-personal-reflection-the-two-decade-grind}
 
-Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
+## Henkilökohtainen Pohdinta: Kaksi vuosikymmentä kestävä uurastus {#a-personal-reflection-the-two-decade-grind}
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
+Ennen kuin sukellamme teknisiin yksityiskohtiin, henkilökohtainen huomautus. Olen ollut tässä lähes kaksi vuosikymmentä. Loputtomat tunnit näppäimistön ääressä, väsymätön ratkaisun etsintä, syvä, keskittynyt uurastus – tämä on todellisuus, kun rakentaa jotain merkityksellistä. Todellisuus, jota usein vähätellään uusien teknologioiden hypessä.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+Viimeaikainen AI:n räjähdys on ollut erityisen turhauttava. Meille myydään unelmaa automaatiosta, AI-avustajista, jotka kirjoittavat koodimme ja ratkaisevat ongelmamme. Todellisuus? Tuotos on usein roskakoodia, jonka korjaamiseen kuluu enemmän aikaa kuin sen kirjoittamiseen alusta alkaen. Lupaus helpommasta elämästä on väärä. Se on häiriötekijä kovalle, välttämättömälle rakentamisen työlle.
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+Ja sitten on avoimen lähdekoodin osallistumisen catch-22. Olet jo levällään, uupunut uurastuksesta. Käytät AI:ta auttamaan yksityiskohtaisen, hyvin rakennetun bugiraportin kirjoittamisessa, toivoen helpottavasi ylläpitäjien työtä ymmärtää ja korjata ongelma. Ja mitä tapahtuu? Sinua moititaan. Panostustasi pidetään "aiheesta poikkeavana" tai vähäisenä, kuten näimme äskettäisessä [Node.js GitHub -ongelmassa](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Se on isku kasvoille kokeneille kehittäjille, jotka vain yrittävät auttaa.
 
-## Why Privacy Matters {#why-privacy-matters}
+Tämä on ekosysteemin todellisuus, jossa työskentelemme. Kyse ei ole pelkästään rikkinäisistä työkaluista; kyse on kulttuurista, joka usein epäonnistuu kunnioittamaan aikaansa ja [panostaan osallistujilta](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Tämä kirjoitus on kronikka tästä todellisuudesta. Se on tarina työkaluista, kyllä, mutta myös ihmiskustannuksista rakentaa rikkinäisessä ekosysteemissä, joka kaikesta lupauksestaan huolimatta on pohjimmiltaan rikki.
+## Miksi yksityisyys on tärkeää {#why-privacy-matters}
 
-Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) covers our privacy philosophy in depth. The short version: we don't send customer data to third parties. Ever. That means no OpenAI, no Anthropic, no cloud-hosted vector databases. Everything runs locally on our infrastructure. This is non-negotiable for GDPR compliance and our DPA commitments.
+Meidän [tekninen whitepaper](https://forwardemail.net/technical-whitepaper.pdf) käsittelee yksityisyysfilosofiaamme syvällisesti. Lyhyt versio: emme koskaan lähetä asiakastietoja kolmansille osapuolille. Ikinä. Tämä tarkoittaa, ettei OpenAI:ta, ei Anthropicia, ei pilvipohjaisia vektoritietokantoja. Kaikki toimii paikallisesti infrastruktuurillamme. Tämä on kiistaton vaatimus GDPR-vaatimustenmukaisuuden ja tietojenkäsittelysopimustemme vuoksi.
 
-## Cost Analysis: Cloud AI vs Self-Hosted {#cost-analysis-cloud-ai-vs-self-hosted}
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+## Kustannusanalyysi: Pilvi-AI vs Oma Isännöinti {#cost-analysis-cloud-ai-vs-self-hosted}
 
-### Cloud AI Service Comparison {#cloud-ai-service-comparison}
+Ennen tekniseen toteutukseen sukeltamista, puhutaan miksi oma isännöinti on tärkeää kustannusten näkökulmasta. Pilvi-AI-palveluiden hinnoittelumallit tekevät niistä kalliita suurten volyymien käyttötapauksiin, kuten asiakastukeen.
 
-| Service | Provider | Embedding Cost | LLM Cost (Input) | LLM Cost (Output) | Privacy Policy | GDPR/DPA | Hosting | Data Sharing |
-| --------------- | ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ----------------- |
-| **OpenAI** | OpenAI (US) | [$0.02-0.13/1M tokens](https://openai.com/api/pricing/) | $0.15-20/1M tokens | $0.60-80/1M tokens | [Link](https://openai.com/policies/privacy-policy/) | Limited DPA | Azure (US) | Yes (training) |
-| **Claude** | Anthropic (US) | N/A | [$3-20/1M tokens](https://docs.claude.com/en/docs/about-claude/pricing) | $15-80/1M tokens | [Link](https://www.anthropic.com/legal/privacy) | Limited DPA | AWS/GCP (US) | No (claimed) |
-| **Gemini** | Google (US) | [$0.15/1M tokens](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokens | $2.50/1M tokens | [Link](https://policies.google.com/privacy) | Limited DPA | GCP (US) | Yes (improvement) |
-| **DeepSeek** | DeepSeek (China) | N/A | [$0.028-0.28/1M tokens](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokens | [Link](https://www.deepseek.com/en) | Unknown | China | Unknown |
-| **Mistral** | Mistral AI (France) | [$0.10/1M tokens](https://mistral.ai/pricing) | $0.40/1M tokens | $2.00/1M tokens | [Link](https://mistral.ai/terms/) | EU GDPR | EU | Unknown |
-| **Self-Hosted** | You | $0 (existing hardware) | $0 (existing hardware) | $0 (existing hardware) | Your policy | Full compliance | MacBook M5 + cron | Never |
+### Pilvi-AI-palveluiden vertailu {#cloud-ai-service-comparison}
+
+| Palvelu        | Tarjoaja            | Upotuskustannus                                                | LLM-kustannus (syöte)                                                     | LLM-kustannus (tulos)  | Yksityisyyskäytäntö                                  | GDPR/DPA        | Isännöinti        | Tietojen jakaminen |
+| -------------- | ------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | --------------- | ----------------- | ------------------ |
+| **OpenAI**     | OpenAI (US)         | [$0.02-0.13/1M tokenia](https://openai.com/api/pricing/)       | $0.15-20/1M tokenia                                                        | $0.60-80/1M tokenia    | [Linkki](https://openai.com/policies/privacy-policy/) | Rajoitettu DPA  | Azure (US)        | Kyllä (koulutus)   |
+| **Claude**     | Anthropic (US)      | Ei saatavilla                                                  | [$3-20/1M tokenia](https://docs.claude.com/en/docs/about-claude/pricing)  | $15-80/1M tokenia      | [Linkki](https://www.anthropic.com/legal/privacy)     | Rajoitettu DPA  | AWS/GCP (US)      | Ei (väitetty)      |
+| **Gemini**     | Google (US)         | [$0.15/1M tokenia](https://ai.google.dev/gemini-api/docs/pricing) | $0.30-1.00/1M tokenia                                                     | $2.50/1M tokenia       | [Linkki](https://policies.google.com/privacy)         | Rajoitettu DPA  | GCP (US)          | Kyllä (parannus)   |
+| **DeepSeek**   | DeepSeek (Kiina)    | Ei saatavilla                                                  | [$0.028-0.28/1M tokenia](https://api-docs.deepseek.com/quick_start/pricing) | $0.42/1M tokenia       | [Linkki](https://www.deepseek.com/en)                 | Tuntematon      | Kiina             | Tuntematon         |
+| **Mistral**    | Mistral AI (Ranska) | [$0.10/1M tokenia](https://mistral.ai/pricing)                 | $0.40/1M tokenia                                                          | $2.00/1M tokenia       | [Linkki](https://mistral.ai/terms/)                   | EU GDPR         | EU                | Tuntematon         |
+| **Oma Isännöinti** | Sinä              | $0 (olemassa oleva laitteisto)                                | $0 (olemassa oleva laitteisto)                                            | $0 (olemassa oleva laitteisto) | Oma käytäntö                                      | Täysi vaatimustenmukaisuus | MacBook M5 + cron | Ei koskaan        |
 
 > \[!WARNING]
-> **Data sovereignty concerns**: US providers (OpenAI, Claude, Gemini) are subject to the CLOUD Act, allowing US government access to data. DeepSeek (China) operates under Chinese data laws. While Mistral (France) offers EU hosting and GDPR compliance, self-hosting remains the only option for complete data sovereignty and control.
+> **Tietosuojaongelmat**: Yhdysvaltalaiset tarjoajat (OpenAI, Claude, Gemini) ovat CLOUD Actin alaisia, mikä sallii Yhdysvaltain hallituksen pääsyn tietoihin. DeepSeek (Kiina) toimii kiinalaisten tietolakien alaisena. Vaikka Mistral (Ranska) tarjoaa EU-isännöinnin ja GDPR-vaatimustenmukaisuuden, oma isännöinti on ainoa vaihtoehto täydelliselle tietosuvereniteetille ja hallinnalle.
 
-### Cost Breakdown: 5GB Knowledge Base {#cost-breakdown-5gb-knowledge-base}
+### Kustannusten erittely: 5GB tietopohja {#cost-breakdown-5gb-knowledge-base}
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Lasketaan 5GB tietopohjan käsittelyn kustannukset (tyypillinen keskisuuren yrityksen dokumenteille, sähköposteille ja tukihistorialle).
 
-**Assumptions:**
+**Oletukset:**
 
-* 5GB of text ≈ 1.25 billion tokens (assuming \~4 chars/token)
-* Initial embedding generation
-* Monthly retraining (full re-embedding)
-* 10,000 support queries per month
-* Average query: 500 tokens input, 300 tokens output
+* 5GB tekstiä ≈ 1,25 miljardia tokenia (olettaen \~4 merkkiä/token)
+* Alkuperäinen upotusten luonti
+* Kuukausittainen uudelleenkoulutus (täysi uudelleenupotus)
+* 10 000 tukipyyntöä kuukaudessa
+* Keskimääräinen pyyntö: 500 tokenia syötettä, 300 tokenia tulosta
+**Yksityiskohtainen kustannuserittely:**
 
-**Detailed Cost Breakdown:**
-
-| Component | OpenAI | Claude | Gemini | Self-Hosted |
-| -------------------------------------- | ---------------- | --------------- | -------------------- | ------------------ |
-| **Initial Embedding** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **Monthly Queries** (10K × 800 tokens) | $1,200-16,000 | $2,400-16,000 | $2,400-3,200 | $0 |
-| **Monthly Retraining** (1.25B tokens) | $25,000 | N/A | $187,500 | $0 |
-| **First Year Total** | $325,200-217,000 | $28,800-192,000 | $2,278,800-2,226,000 | ~$60 (electricity) |
-| **Privacy Compliance** | ❌ Limited | ❌ Limited | ❌ Limited | ✅ Full |
-| **Data Sovereignty** | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| Komponentti                           | OpenAI           | Claude          | Gemini               | Itse-isännöity      |
+| ------------------------------------ | ---------------- | --------------- | -------------------- | ------------------- |
+| **Alkuperäinen upotus** (1,25 miljardia tokenia) | 25 000 $         | Ei saatavilla   | 187 500 $            | 0 $                 |
+| **Kuukausittaiset kyselyt** (10K × 800 tokenia) | 1 200-16 000 $   | 2 400-16 000 $  | 2 400-3 200 $        | 0 $                 |
+| **Kuukausittainen uudelleenkoulutus** (1,25 miljardia tokenia) | 25 000 $         | Ei saatavilla   | 187 500 $            | 0 $                 |
+| **Ensimmäisen vuoden kokonaiskustannus** | 325 200-217 000 $ | 28 800-192 000 $ | 2 278 800-2 226 000 $ | ~60 $ (sähkö)       |
+| **Tietosuojavaatimusten noudattaminen** | ❌ Rajoitettu     | ❌ Rajoitettu   | ❌ Rajoitettu         | ✅ Täysi             |
+| **Datan suvereniteetti**             | ❌ Ei            | ❌ Ei           | ❌ Ei                 | ✅ Kyllä             |
 
 > \[!CAUTION]
-> **Gemini's embedding costs are catastrophic** at $0.15/1M tokens. A single 5GB knowledge base embedding would cost $187,500. This is 37x more expensive than OpenAI and makes it completely unusable for production.
+> **Geminin upotuskustannukset ovat katastrofaaliset** 0,15 $/1M tokenia kohden. Yhden 5 Gt:n tietopohjan upotus maksaisi 187 500 $. Tämä on 37 kertaa kalliimpaa kuin OpenAI ja tekee siitä täysin käyttökelvottoman tuotantoon.
 
-### Self-Hosted Hardware Costs {#self-hosted-hardware-costs}
+### Itse-isännöity laitteistokustannukset {#self-hosted-hardware-costs}
 
-Our setup runs on existing hardware we already own:
+Meidän kokoonpanomme toimii olemassa olevalla laitteistolla, joka meillä jo on:
 
-* **Hardware**: MacBook M5 (already owned for development)
-* **Additional cost**: $0 (uses existing hardware)
-* **Electricity**: \~$5/month (estimated)
-* **First year total**: \~$60
-* **Ongoing**: $60/year
+* **Laitteisto**: MacBook M5 (jo kehityskäytössä)
+* **Lisäkustannus**: 0 $ (käyttää olemassa olevaa laitteistoa)
+* **Sähkö**: ~5 $/kuukausi (arvioitu)
+* **Ensimmäisen vuoden kokonaiskustannus**: ~60 $
+* **Jatkuvat kustannukset**: 60 $/vuosi
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**Sijoitetun pääoman tuotto (ROI)**: Itse-isännöinti on käytännössä marginaalikustannuksiltaan nolla, koska käytämme olemassa olevaa kehityslaitteistoa. Järjestelmä toimii cron-tehtävien kautta ruuhkahuippujen ulkopuolella.
 
-## Dogfooding Our Own API {#dogfooding-our-own-api}
+## Käytämme omaa APIamme {#dogfooding-our-own-api}
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+Yksi tärkeimmistä arkkitehtuuripäätöksistämme oli, että kaikki tekoälytehtävät käyttävät suoraan [Forward Email APIa](https://forwardemail.net/email-api). Tämä ei ole pelkästään hyvä käytäntö — se on suorituskyvyn optimoinnin pakottava tekijä.
 
-### Why Dogfooding Matters {#why-dogfooding-matters}
+### Miksi oman API:n käyttö on tärkeää {#why-dogfooding-matters}
 
-When our AI jobs use the same API endpoints as our customers:
+Kun tekoälytehtävämme käyttävät samoja API-päätepisteitä kuin asiakkaamme:
 
-1. **Performance bottlenecks affect us first** - We feel the pain before customers do
-2. **Optimization benefits everyone** - Improvements for our jobs automatically improve customer experience
-3. **Real-world testing** - Our jobs process thousands of emails, providing continuous load testing
-4. **Code reuse** - Same authentication, rate limiting, error handling, and caching logic
+1. **Suorituskykyongelmat vaikuttavat meihin ensin** – Koemme ongelmat ennen asiakkaita
+2. **Optimointi hyödyttää kaikkia** – Parannukset omissa tehtävissämme parantavat automaattisesti asiakaskokemusta
+3. **Todellisen maailman testaus** – Tehtävämme käsittelevät tuhansia sähköposteja, tarjoten jatkuvaa kuormitustestausta
+4. **Koodin uudelleenkäyttö** – Sama autentikointi, nopeusrajoitus, virheenkäsittely ja välimuistilogiikka
 
-### API Usage Examples {#api-usage-examples}
+### API:n käyttöesimerkit {#api-usage-examples}
 
-**Listing Messages (train-from-history.js):**
+**Viestien listaaminen (train-from-history.js):**
 
 ```javascript
-// Uses GET /v1/messages?folder=INBOX with BasicAuth
-// Excludes eml, raw, nodemailer to reduce response size (only need IDs)
+// Käyttää GET /v1/messages?folder=INBOX BasicAuthilla
+// Sulkee pois eml, raw, nodemailer vastauksen koon pienentämiseksi (tarvitsemme vain ID:t)
+//
 const response = await axios.get(
   `${this.apiBase}/v1/messages`,
   {
@@ -232,14 +233,14 @@ const response = await axios.get(
 );
 
 const messages = response.data;
-// Returns: [{ id, subject, date, ... }, ...]
-// Full message content fetched later via GET /v1/messages/:id
+// Palauttaa: [{ id, subject, date, ... }, ...]
+// Koko viestin sisältö haetaan myöhemmin GET /v1/messages/:id -kutsulla
 ```
 
-**Fetching Full Messages (forward-email-client.js):**
+**Koko viestin hakeminen (forward-email-client.js):**
 
 ```javascript
-// Uses GET /v1/messages/:id to get full message with raw content
+// Käyttää GET /v1/messages/:id saadakseen koko viestin raakatiedot
 const response = await axios.get(
   `${this.apiBase}/v1/messages/${messageId}`,
   {
@@ -251,13 +252,13 @@ const response = await axios.get(
 );
 
 const message = response.data;
-// Returns: { id, subject, raw, eml, nodemailer: { ... }, ... }
+// Palauttaa: { id, subject, raw, eml, nodemailer: { ... }, ... }
 ```
 
-**Creating Draft Responses (process-inbox.js):**
+**Vastausluonnosten luominen (process-inbox.js):**
 
 ```javascript
-// Uses POST /v1/messages to create draft replies
+// Käyttää POST /v1/messages luodakseen luonnoksia vastauksista
 const response = await axios.post(
   `${this.apiBase}/v1/messages`,
   {
@@ -275,56 +276,56 @@ const response = await axios.post(
   }
 );
 ```
+### Suorituskyvyn edut {#performance-benefits}
 
-### Performance Benefits {#performance-benefits}
+Koska tekoälytyömme pyörivät samalla API-infrastruktuurilla:
 
-Because our AI jobs run on the same API infrastructure:
+* **Välimuistien optimoinnit** hyödyttävät sekä töitä että asiakkaita
+* **Nopeusrajoitukset** testataan todellisessa kuormituksessa
+* **Virheenkäsittely** on taistelukokemuksella testattu
+* **API-vastausajat** ovat jatkuvassa seurannassa
+* **Tietokantakyselyt** on optimoitu molempiin käyttötapauksiin
+* **Kaistanleveyden optimointi** – `eml`, `raw`, `nodemailer` poisjättäminen listauksesta pienentää vastauskokoa noin 90 %
 
-* **Caching optimizations** benefit both jobs and customers
-* **Rate limiting** is tested under real load
-* **Error handling** is battle-tested
-* **API response times** are constantly monitored
-* **Database queries** are optimized for both use cases
-* **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
+Kun `train-from-history.js` käsittelee 1 000 sähköpostia, se tekee yli 1 000 API-kutsua. Mikä tahansa tehottomuus API:ssa tulee välittömästi ilmi. Tämä pakottaa meidät optimoimaan IMAP-käyttöä, tietokantakyselyjä ja vastausten sarjallistamista — parannuksia, jotka hyödyttävät suoraan asiakkaitamme.
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+**Esimerkki optimoinnista**: 100 viestin listaaminen koko sisällöllä = noin 10 Mt vastaus. Listaaminen asetuksilla `eml: false, raw: false, nodemailer: false` = noin 100 kt vastaus (100 kertaa pienempi).
 
-**Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
-## Encryption Architecture {#encryption-architecture}
+## Salausarkkitehtuuri {#encryption-architecture}
 
-Our email storage uses multiple layers of encryption, which the AI jobs must decrypt in real-time for training.
+Sähköpostivarastomme käyttää useita salauskerroksia, jotka tekoälytyöt purkavat reaaliajassa koulutusta varten.
 
-### Layer 1: Mailbox Encryption (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
+### Kerros 1: Postilaatikon salaus (chacha20-poly1305) {#layer-1-mailbox-encryption-chacha20-poly1305}
 
-All IMAP mailboxes are stored as SQLite databases encrypted with **chacha20-poly1305**, a quantum-safe encryption algorithm. This is detailed in our [quantum-safe encrypted email service blog post](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
+Kaikki IMAP-postilaatikot tallennetaan SQLite-tietokantoina, jotka on salattu **chacha20-poly1305**-algoritmilla, joka on kvanttiturvallinen salausalgoritmi. Tämä on kuvattu yksityiskohtaisesti blogikirjoituksessamme [quantum-safe encrypted email service](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service).
 
-**Key Properties:**
+**Keskeiset ominaisuudet:**
 
-* **Algorithm**: ChaCha20-Poly1305 (AEAD cipher)
-* **Quantum-safe**: Resistant to quantum computing attacks
-* **Storage**: SQLite database files on disk
-* **Access**: Decrypted in-memory when accessed via IMAP/API
+* **Algoritmi**: ChaCha20-Poly1305 (AEAD-salaus)
+* **Kvanttiturvallinen**: Vastustuskyky kvanttilaskennan hyökkäyksille
+* **Tallennus**: SQLite-tietokantatiedostot levyllä
+* **Käyttö**: Puretaan muistiin käytön yhteydessä IMAP/API:n kautta
 
-### Layer 2: Message-Level PGP Encryption {#layer-2-message-level-pgp-encryption}
+### Kerros 2: Viestitason PGP-salaus {#layer-2-message-level-pgp-encryption}
 
-Many support emails are additionally encrypted with PGP (OpenPGP standard). The AI jobs must decrypt these to extract content for training.
+Monet tukisähköpostit on lisäksi salattu PGP:llä (OpenPGP-standardi). Tekoälytyöt purkavat nämä sisällön poimimiseksi koulutusta varten.
 
-**Decryption Flow:**
+**Purkuprosessi:**
 
 ```javascript
-// 1. API returns message with encrypted raw content
+// 1. API palauttaa viestin salatulla raakasisällöllä
 const message = await forwardEmailClient.getMessage(id);
 
-// 2. Check if raw content is PGP-encrypted
+// 2. Tarkista onko raakasisältö PGP-salattu
 if (isMessageEncrypted(message.raw)) {
-  // 3. Decrypt with our private key
+  // 3. Pura yksityisellä avaimellamme
   const decryptedRaw = await pgpDecrypt(message.raw);
 
-  // 4. Parse decrypted MIME message
+  // 4. Jäsennä purettu MIME-viesti
   const parsed = await simpleParser(decryptedRaw);
 
-  // 5. Populate nodemailer with decrypted content
+  // 5. Täytä nodemailer puretulla sisällöllä
   message.nodemailer = {
     text: parsed.text,
     html: parsed.html,
@@ -336,26 +337,26 @@ if (isMessageEncrypted(message.raw)) {
 }
 ```
 
-**PGP Configuration:**
+**PGP-konfiguraatio:**
 
 ```bash
-# Private key for decryption (path to ASCII-armored key file)
+# Yksityinen avain purkua varten (polku ASCII-haarniskaiseen avaintiedostoon)
 GPG_SECURITY_KEY="/path/to/private-key.asc"
 
-# Passphrase for private key (if encrypted)
+# Salasana yksityiselle avaimelle (jos salattu)
 GPG_SECURITY_PASSPHRASE="your-passphrase"
 ```
 
-The `pgp-decrypt.js` helper:
+`pgp-decrypt.js`-apuri:
 
-1. Reads the private key from disk once (cached in memory)
-2. Decrypts the key with the passphrase
-3. Uses the decrypted key for all message decryption
-4. Supports recursive decryption for nested encrypted messages
+1. Lukee yksityisavaimen levyltä kerran (välimuistissa muistissa)
+2. Purkaa avaimen salasanalla
+3. Käyttää purettua avainta kaikkien viestien purkuun
+4. Tukee rekursiivista purkua sisäkkäisille salatuille viesteille
 
-### Why This Matters for Training {#why-this-matters-for-training}
+### Miksi tämä on tärkeää koulutukselle {#why-this-matters-for-training}
 
-Without proper decryption, the AI would train on encrypted gibberish:
+Ilman asianmukaista purkua tekoäly kouluttautuisi salattuun sekasotkuun:
 
 ```
 -----BEGIN PGP MESSAGE-----
@@ -365,7 +366,7 @@ wcBMA8Z3lHJnFnNUAQgAqK7F8...
 -----END PGP MESSAGE-----
 ```
 
-With decryption, the AI trains on actual content:
+Purun jälkeen tekoäly kouluttautuu oikeaan sisältöön:
 
 ```
 Subject: Re: Bug Report
@@ -376,55 +377,55 @@ Thanks for reporting this issue. I've confirmed the bug
 and created a fix in PR #1234...
 ```
 
-### Storage Security {#storage-security}
+### Tallennusturvallisuus {#storage-security}
 
-The decryption happens in-memory during job execution, and the decrypted content is converted to embeddings which are then stored in the LanceDB vector database on disk.
+Purku tapahtuu muistissa työn suorituksen aikana, ja purettu sisältö muunnetaan upotuksiksi, jotka tallennetaan LanceDB-vektoritietokantaan levylle.
 
-**Where the data lives:**
+**Missä data sijaitsee:**
 
-* **Vector database**: Stored on encrypted MacBook M5 workstations
-* **Physical security**: Workstations stay with us at all times (not in datacenters)
-* **Disk encryption**: Full disk encryption on all workstations
-* **Network security**: Firewalled and isolated from public networks
+* **Vektoripohjainen tietokanta**: Tallennettu salatuille MacBook M5 -työasemille
+* **Fyysinen turvallisuus**: Työasemat pysyvät aina hallussamme (eivät datakeskuksissa)
+* **Levyn salaus**: Koko levyn salaus kaikilla työasemilla
+* **Verkkoturvallisuus**: Palomuurin takana ja eristetty julkisista verkoista
 
-**Future datacenter deployment:**
-If we ever move to datacenter hosting, the servers will have:
+**Tuleva datakeskuskäyttöönotto:**
+Jos siirrymme datakeskusympäristöön, palvelimilla on:
 
-* LUKS full-disk encryption
-* USB access disabled
-* Physical security measures
-* Network isolation
-
-For complete details on our security practices, see our [Security page](https://forwardemail.net/en/security).
-
-> \[!NOTE]
-> The vector database contains embeddings (mathematical representations), not the original plaintext. However, embeddings can potentially be reverse-engineered, which is why we keep them on encrypted, physically-secured workstations.
-
-### Local Storage is Standard Practice {#local-storage-is-standard-practice}
-
-Storing embeddings on our team's workstations is no different than how we already handle email:
-
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
-* **Webmail clients**: Cache email data in browser storage and local databases
-* **IMAP clients**: Maintain local copies of messages for offline access
-* **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
-
-The key difference: embeddings are **more secure** than plaintext email because they're:
-
-1. Mathematical representations, not readable text
-2. Harder to reverse-engineer than plaintext
-3. Still subject to the same physical security as our email clients
-
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
-
-## The Architecture {#the-architecture}
-
-Here's the basic flow. It looks simple. It wasn't.
+* LUKS-kokolevyn salaus
+* USB-porttien käytön estäminen
+* Fyysiset turvatoimet
+* Verkon eristäminen
+Täydelliset tiedot turvallisuuskäytännöistämme löydät [Turvallisuus-sivultamme](https://forwardemail.net/en/security).
 
 > \[!NOTE]
-> All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
+> Vektorikanta sisältää upotuksia (matemaattisia esityksiä), ei alkuperäistä selkokieltä. Kuitenkin upotukset voidaan mahdollisesti purkaa takaisin, minkä vuoksi säilytämme ne salatuilla, fyysisesti suojatuilla työasemilla.
 
-### High-Level Flow {#high-level-flow}
+### Paikallinen tallennus on vakiokäytäntö {#local-storage-is-standard-practice}
+
+Upotusten tallentaminen tiimimme työasemille ei eroa siitä, miten käsittelemme sähköpostia jo nyt:
+
+* **Thunderbird**: Lataa ja tallentaa koko sähköpostisisällön paikallisesti mbox/maildir-tiedostoihin
+* **Webmail-asiakkaat**: Välimuistittavat sähköpostitiedot selaimen tallennustilaan ja paikallisiin tietokantoihin
+* **IMAP-asiakkaat**: Säilyttävät viestien paikalliset kopiot offline-käyttöä varten
+* **AI-järjestelmämme**: Tallentaa matemaattiset upotukset (ei selkokieltä) LanceDB:hen
+
+Keskeinen ero: upotukset ovat **turvallisempia** kuin selkokielinen sähköposti, koska ne ovat:
+
+1. Matemaattisia esityksiä, eivät luettavaa tekstiä
+2. Vaikeampia purkaa takaisin kuin selkokieli
+3. Silti saman fyysisen turvallisuuden alaisia kuin sähköpostiasiakkaamme
+
+Jos tiimimme voi käyttää Thunderbirdiä tai webmailia salatuilla työasemilla, on yhtä hyväksyttävää (ja jopa turvallisempaa) tallentaa upotukset samalla tavalla.
+
+
+## Arkkitehtuuri {#the-architecture}
+
+Tässä on perusvirtaus. Se näyttää yksinkertaiselta. Se ei ollut.
+
+> \[!NOTE]
+> Kaikki tehtävät käyttävät suoraan Forward Email API:a, varmistaen, että suorituskyvyn optimoinnit hyödyttävät sekä AI-järjestelmäämme että asiakkaitamme.
+
+### Korkean tason virtaus {#high-level-flow}
 
 ```mermaid
 graph TD
@@ -451,9 +452,9 @@ graph TD
     end
 ```
 
-### Detailed Scraper Flow {#detailed-scraper-flow}
+### Yksityiskohtainen scraper-virtaus {#detailed-scraper-flow}
 
-The `scraper.js` is the heart of the data ingestion. It's a collection of parsers for different data formats.
+`scraper.js` on datan keruun sydän. Se on kokoelma eri tietomuotojen jäseniä.
 
 ```mermaid
 graph TD
@@ -475,29 +476,29 @@ graph TD
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
-## How It Works {#how-it-works}
 
-The process is split into three main parts: building the knowledge base, training from historical emails, and processing new emails.
+## Miten se toimii {#how-it-works}
 
-### Building the Knowledge Base {#building-the-knowledge-base}
+Prosessi on jaettu kolmeen pääosaan: tietopohjan rakentaminen, koulutus historiallisista sähköposteista ja uusien sähköpostien käsittely.
 
-**`update-knowledge-base.js`**: This is the main job. It runs nightly, clears the old vector store, and rebuilds it from scratch. It uses `scraper.js` to fetch content from all sources, `processor.js` to chunk it, and `ollama-client.js` to generate embeddings. Finally, `vector-store.js` stores everything in LanceDB.
+### Tietopohjan rakentaminen {#building-the-knowledge-base}
 
-**Data Sources:**
+**`update-knowledge-base.js`**: Tämä on päätehtävä. Se suoritetaan yöllä, tyhjentää vanhan vektorivaraston ja rakentaa sen uudelleen alusta alkaen. Se käyttää `scraper.js`-tiedostoa sisällön hakemiseen kaikista lähteistä, `processor.js`-tiedostoa tekstin pilkkomiseen ja `ollama-client.js`-tiedostoa upotusten luomiseen. Lopuksi `vector-store.js` tallentaa kaiken LanceDB:hen.
 
-* Local Markdown files (`docs/*.md`)
-* Technical whitepaper PDF (`assets/technical-whitepaper.pdf`)
-* API spec JSON (`assets/api-spec.json`)
-* GitHub issues (via Octokit)
-* GitHub discussions (via Octokit)
-* GitHub pull requests (via Octokit)
-* Sitemap URL list (`$LANCEDB_PATH/valid-urls.json`)
+**Tietolähteet:**
 
-### Training from Historical Emails {#training-from-historical-emails}
+* Paikalliset Markdown-tiedostot (`docs/*.md`)
+* Tekninen whitepaper PDF (`assets/technical-whitepaper.pdf`)
+* API-määrittely JSON (`assets/api-spec.json`)
+* GitHub-ongelmat (Octokitin kautta)
+* GitHub-keskustelut (Octokitin kautta)
+* GitHub-pull requestit (Octokitin kautta)
+* Sivukartta URL-lista (`$LANCEDB_PATH/valid-urls.json`)
 
-**`train-from-history.js`**: This job scans historical emails from all folders, decrypts PGP-encrypted messages, and adds them to a separate vector store (`customer_support_history`). This provides context from past support interactions.
+### Koulutus historiallisista sähköposteista {#training-from-historical-emails}
 
-**Email Processing Flow:**
+**`train-from-history.js`**: Tämä tehtävä skannaa historialliset sähköpostit kaikista kansioista, purkaa PGP-salatut viestit ja lisää ne erilliseen vektorivarastoon (`customer_support_history`). Tämä tarjoaa kontekstin aiemmista tukikeskusteluista.
+**Sähköpostin käsittelyprosessi:**
 
 ```mermaid
 sequenceDiagram
@@ -535,25 +536,25 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
+**Keskeiset ominaisuudet:**
 
-* **PGP Decryption**: Uses `pgp-decrypt.js` helper with `GPG_SECURITY_KEY` environment variable
-* **Thread Grouping**: Groups related emails into conversation threads
-* **Metadata Preservation**: Stores folder, subject, date, encryption status
-* **Reply Context**: Links messages with their replies for better context
+* **PGP-salauspurku**: Käyttää `pgp-decrypt.js` -apuria yhdessä `GPG_SECURITY_KEY` -ympäristömuuttujan kanssa
+* **Keskusteluketjujen ryhmittely**: Ryhmittelee toisiinsa liittyvät sähköpostit keskusteluketjuiksi
+* **Metatietojen säilytys**: Tallentaa kansion, aiheen, päivämäärän, salausstatuksen
+* **Vastauskonteksti**: Linkittää viestit niiden vastauksiin paremman kontekstin saamiseksi
 
-**Configuration:**
+**Konfigurointi:**
 
 ```bash
-# Environment variables for train-from-history
-HISTORY_SCAN_LIMIT=1000              # Max messages to process
-HISTORY_SCAN_SINCE="2024-01-01"      # Only process messages after this date
-HISTORY_DECRYPT_PGP=true             # Attempt PGP decryption
-GPG_SECURITY_KEY="/path/to/key.asc"  # Path to PGP private key
-GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
+# Ympäristömuuttujat train-from-historylle
+HISTORY_SCAN_LIMIT=1000              # Maksimimäärä käsiteltäviä viestejä
+HISTORY_SCAN_SINCE="2024-01-01"      # Käsittele vain tämän päivämäärän jälkeiset viestit
+HISTORY_DECRYPT_PGP=true             # Yritä PGP-salauksen purkua
+GPG_SECURITY_KEY="/path/to/key.asc"  # Polku PGP:n yksityisavaimeen
+GPG_SECURITY_PASSPHRASE="passphrase" # Avaimen salasana (valinnainen)
 ```
 
-**What Gets Stored:**
+**Mitä tallennetaan:**
 
 ```javascript
 {
@@ -575,39 +576,38 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 ```
 
 > \[!TIP]
-> Run `train-from-history` after initial setup to populate the historical context. This dramatically improves response quality by learning from past support interactions.
+> Suorita `train-from-history` alkuasetuksen jälkeen täyttääksesi historialliset kontekstitiedot. Tämä parantaa merkittävästi vastausten laatua oppimalla aiemmista tukitilanteista.
 
-### Processing Incoming Emails {#processing-incoming-emails}
+### Saapuvien sähköpostien käsittely {#processing-incoming-emails}
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
+**`process-inbox.js`**: Tämä tehtävä käsittelee sähköposteja postilaatikoissamme `support@forwardemail.net`, `abuse@forwardemail.net` ja `security@forwardemail.net` (erityisesti `INBOX` IMAP-kansion polku). Se hyödyntää APIamme osoitteessa <https://forwardemail.net/email-api> (esim. `GET /v1/messages?folder=INBOX` käyttäen BasicAuth-kirjautumista IMAP-tunnuksillamme kullekin postilaatikolle). Se analysoi sähköpostin sisällön, kysyy sekä tietopankista (`forward_email_knowledge_base`) että historiallisesta sähköpostivektorivarastosta (`customer_support_history`), ja välittää yhdistetyn kontekstin `response-generator.js`-moduulille. Generaattori käyttää `mxbai-embed-large` Ollaman kautta vastauksen luomiseen.
 
-**Automated Workflow Features:**
+**Automaattisen työnkulun ominaisuudet:**
 
-1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
+1. **Inbox Zero -automaatio**: Luotuaan luonnoksen onnistuneesti alkuperäinen viesti siirretään automaattisesti Arkistokansioon. Tämä pitää postilaatikkosi siistinä ja auttaa saavuttamaan inbox zero -tilan ilman manuaalista työtä.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **Ohita AI-käsittely**: Lisää vain `skip-ai` -tunniste (kirjaimista riippumatta) mihin tahansa viestiin estääksesi AI-käsittelyn. Viesti pysyy koskemattomana postilaatikossasi, jolloin voit käsitellä sen manuaalisesti. Tämä on hyödyllistä arkaluonteisissa viesteissä tai monimutkaisissa tapauksissa, jotka vaativat ihmisen harkintaa.
 
-3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
+3. **Oikea sähköpostiketjujen hallinta**: Kaikki luonnosvastaukset sisältävät alkuperäisen viestin lainattuna alla (käyttäen standardia ` >  ` -etuliitettä), noudattaen sähköpostivastausten käytäntöjä muodossa "On \[päivämäärä], \[lähettäjä] kirjoitti:". Tämä varmistaa oikean keskustelukontekstin ja ketjutuksen sähköpostiohjelmissa.
 
-4. **Reply-All Behavior**: The system automatically handles Reply-To headers and CC recipients:
-   * If a Reply-To header exists, it becomes the To address and the original From is added to CC
-   * All original To and CC recipients are included in the reply CC (except your own address)
-   * Follows standard email reply-all conventions for group conversations
+4. **Vastaa kaikille -käyttäytyminen**: Järjestelmä käsittelee automaattisesti Reply-To-otsikot ja CC-vastaanottajat:
+   * Jos Reply-To-otsikko on olemassa, siitä tulee Vastaanottaja (To) ja alkuperäinen Lähettäjä lisätään Kopio-kenttään (CC)
+   * Kaikki alkuperäiset Vastaanottajat (To) ja Kopio-vastaanottajat (CC) sisällytetään vastauksen Kopio-kenttään (paitsi oma osoitteesi)
+   * Noudattaa standardeja sähköpostin vastaa-kaikille -käytäntöjä ryhmäkeskusteluissa
+**Lähdejärjestys**: Järjestelmä käyttää **painotettua järjestystä** lähteiden priorisointiin:
 
-**Source Ranking**: The system uses **weighted ranking** to prioritize sources:
+* FAQ: 100 % (korkein prioriteetti)
+* Tekninen whitepaper: 95 %
+* API-määrittely: 90 %
+* Viralliset dokumentit: 85 %
+* GitHub-ongelmat: 70 %
+* Historialliset sähköpostit: 50 %
 
-* FAQ: 100% (highest priority)
-* Technical whitepaper: 95%
-* API spec: 90%
-* Official docs: 85%
-* GitHub issues: 70%
-* Historical emails: 50%
+### Vektorivaraston hallinta {#vector-store-management}
 
-### Vector Store Management {#vector-store-management}
+`VectorStore`-luokka tiedostossa `helpers/customer-support-ai/vector-store.js` on rajapintamme LanceDB:hen.
 
-The `VectorStore` class in `helpers/customer-support-ai/vector-store.js` is our interface to LanceDB.
-
-**Adding Documents:**
+**Dokumenttien lisääminen:**
 
 ```javascript
 // vector-store.js
@@ -621,126 +621,127 @@ async addDocument(text, metadata) {
 }
 ```
 
-**Clearing the Store:**
+**Varaston tyhjentäminen:**
 
 ```javascript
-// Option 1: Use the clear() method
+// Vaihtoehto 1: Käytä clear()-metodia
 await vectorStore.clear();
 
-// Option 2: Delete the local database directory
+// Vaihtoehto 2: Poista paikallinen tietokantakansio
 await fs.rm(process.env.LANCEDB_PATH, { recursive: true, force: true });
 ```
 
-The `LANCEDB_PATH` environment variable points to the local embedded database directory. LanceDB is serverless and embedded, so there's no separate process to manage.
+`LANCEDB_PATH`-ympäristömuuttuja osoittaa paikalliseen upotettuun tietokantakansioon. LanceDB on palvelimeton ja upotettu, joten erillistä prosessia ei tarvitse hallita.
 
-## The Vector Database Graveyard {#the-vector-database-graveyard}
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+## Vektoritietokannan hautausmaa {#the-vector-database-graveyard}
 
-| Database | GitHub | What Went Wrong | Specific Issues | Security Concerns |
+Tämä oli ensimmäinen suuri este. Kokeilimme useita vektoritietokantoja ennen kuin päädyimme LanceDB:hen. Tässä mitä kussakin meni pieleen.
+
+| Tietokanta   | GitHub                                                      | Mitä meni pieleen                                                                                                                                                                                                    | Erityisongelmat                                                                                                                                                                                                                                                                                                                                                          | Turvallisuushuomiot                                                                                                                                                                                              |
 | ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` gives you a version from the stone age with `PydanticImportError`. The only way to get a working version is to compile from source. Not dev-friendly. | Python dependency chaos. Multiple users reporting broken pip installs ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). The docs say "just use Docker" which is a non-answer for local development. Crashes on Windows with >99 records ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Arbitrary code execution via ChromaDB integration in MindsDB. Critical OS vulnerabilities in Docker image ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
-| **Qdrant** | [qdrant/qdrant](https://github.com/qdrant/qdrant) | The Homebrew tap (`qdrant/qdrant/qdrant`) referenced in their old docs is gone. Vanished. No explanation. The official docs now just say "use Docker." | Missing Homebrew tap. No native macOS binary. Docker-only is a barrier for quick local testing. | **CVE-2024-2221**: Arbitrary file upload vulnerability allowing remote code execution (fixed in v1.9.0). Weak security maturity score from [IronCore Labs](https://ironcorelabs.com/vectordbs/qdrant-security/). |
-| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate) | The Homebrew version had a critical clustering bug (`leader not found`). The documented flags to fix it (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) didn't work. Fundamentally broken for single-node setups. | Clustering bugs even in single-node mode. Over-engineered for simple use cases. | No major CVEs found, but complexity increases attack surface. |
-| **LanceDB** | [lancedb/lancedb](https://github.com/lancedb/lancedb) | This one worked. It's embedded and serverless. No separate process. The only annoyance is the confusing package naming (`vectordb` is deprecated, use `@lancedb/lancedb`) and scattered docs. We can live with that. | Package naming confusion (`vectordb` vs `@lancedb/lancedb`), but otherwise solid. Embedded architecture eliminates entire classes of security issues. | No known CVEs. Embedded design means no network attack surface. |
+| **ChromaDB** | [chroma-core/chroma](https://github.com/chroma-core/chroma) | `pip3 install chromadb` asentaa kivikauden version, jossa on `PydanticImportError`. Ainoa tapa saada toimiva versio on kääntää lähdekoodista. Ei kehittäjäystävällinen.                                              | Python-riippuvuuksien sekasorto. Useita käyttäjiä raportoivat rikkinäisiä pip-asennuksia ([#774](https://github.com/chroma-core/chroma/issues/774), [#163](https://github.com/chroma-core/chroma/issues/163)). Dokumentaatio kehottaa "käyttämään Dockeria", mikä ei ole vastaus paikalliseen kehitykseen. Kaatuu Windowsilla yli 99 tietueella ([#3058](https://github.com/chroma-core/chroma/issues/3058)). | **CVE-2024-45848**: Mielivaltaisen koodin suoritus MindsDB:n ChromaDB-integraation kautta. Kriittiset käyttöjärjestelmän haavoittuvuudet Docker-kuvassa ([#3170](https://github.com/chroma-core/chroma/issues/3170)). |
+| **Qdrant**   | [qdrant/qdrant](https://github.com/qdrant/qdrant)           | Homebrew-tappi (`qdrant/qdrant/qdrant`), johon heidän vanhat dokumenttinsa viittaavat, on kadonnut. Ei selitystä. Virallisissa dokumenteissa lukee nyt vain "käytä Dockeria".                                        | Puuttuva Homebrew-tappi. Ei natiivia macOS-binaaria. Dockerin käyttö ainoana vaihtoehtona hidastaa nopeaa paikallista testausta.                                                                                                                                                                                                                                         | **CVE-2024-2221**: Mielivaltaisen tiedoston lataus -haavoittuvuus, joka mahdollistaa etäkoodin suorittamisen (korjattu versiossa 1.9.0). Heikko turvallisuuskypsyysarvio [IronCore Labsilta](https://ironcorelabs.com/vectordbs/qdrant-security/). |
+| **Weaviate** | [weaviate/weaviate](https://github.com/weaviate/weaviate)   | Homebrew-versiossa oli kriittinen klusterointivirhe (`leader not found`). Dokumentoidut liput sen korjaamiseksi (`RAFT_JOIN`, `CLUSTER_HOSTNAME`) eivät toimineet. Perustavanlaatuisesti viallinen yhden solmun kokoonpanoissa. | Klusterointivirheitä jopa yhden solmun tilassa. Ylisuunniteltu yksinkertaisiin käyttötapauksiin.                                                                                                                                                                                                                                                                          | Ei merkittäviä CVE-haavoittuvuuksia, mutta monimutkaisuus lisää hyökkäyspintaa.                                                                                                                                      |
+| **LanceDB**  | [lancedb/lancedb](https://github.com/lancedb/lancedb)       | Tämä toimi. Se on upotettu ja palvelimeton. Ei erillistä prosessia. Ainoa harmi on sekava pakettinimike (`vectordb` on vanhentunut, käytä `@lancedb/lancedb`) ja hajanaiset dokumentit. Voimme elää sen kanssa.       | Pakettinimikkeiden sekavuus (`vectordb` vs `@lancedb/lancedb`), mutta muuten vakaa. Upotettu arkkitehtuuri poistaa kokonaisia luokkia turvallisuusongelmia.                                                                                                                                                                                                              | Ei tunnettuja CVE-haavoittuvuuksia. Upotettu rakenne tarkoittaa, ettei verkko-hyökkäyspintaa ole.                                                                                                                                 |
+> \[!WARNING]
+> **ChromaDB:ssä on kriittisiä tietoturva-aukkoja.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) mahdollistaa mielivaltaisen koodin suorittamisen. Pip install on periaatteessa rikki Pydantic-riippuvuuksien vuoksi. Vältä tuotantokäytössä.
 
 > \[!WARNING]
-> **ChromaDB has critical security vulnerabilities.** [CVE-2024-45848](https://nvd.nist.gov/vuln/detail/CVE-2024-45848) allows arbitrary code execution. The pip install is fundamentally broken with Pydantic dependency issues. Avoid for production use.
-
-> \[!WARNING]
-> **Qdrant had a file upload RCE vulnerability** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)) that was only fixed in v1.9.0. If you must use Qdrant, ensure you're on the latest version.
+> **Qdrantilla oli tiedostojen latauksen RCE-haavoittuvuus** ([CVE-2024-2221](https://qdrant.tech/blog/cve-2024-2221-response/)), joka korjattiin vasta versiossa 1.9.0. Jos sinun täytyy käyttää Qdrantia, varmista, että käytössäsi on uusin versio.
 
 > \[!CAUTION]
-> The open-source vector database ecosystem is rough. Don't trust the documentation. Assume everything is broken until proven otherwise. Test locally before committing to a stack.
+> Avoimen lähdekoodin vektoritietokantaekosysteemi on raakile. Älä luota dokumentaatioon. Oleta, että kaikki on rikki, kunnes toisin todistetaan. Testaa paikallisesti ennen kuin sitoudut pinoon.
 
-## System Requirements {#system-requirements}
+
+## Järjestelmävaatimukset {#system-requirements}
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
-* **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `mxbai-embed-large` via Ollama
-* **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
-* **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
-* **SQLite:** For primary database (via `mongoose-to-sqlite`)
+* **Ollama:** Uusin ([GitHub](https://github.com/ollama/ollama))
+* **Malli:** `mxbai-embed-large` Ollaman kautta
+* **Vektoritietokanta:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
+* **GitHub-käyttö:** `@octokit/rest` issuejen keräämiseen ([GitHub](https://github.com/octokit/rest.js))
+* **SQLite:** Pääasialliseksi tietokannaksi (via `mongoose-to-sqlite`)
 
-## Cron Job Configuration {#cron-job-configuration}
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+## Cron-tehtävien asetukset {#cron-job-configuration}
 
-### Environment Variables {#environment-variables}
+Kaikki tekoälytehtävät ajetaan cronilla MacBook M5:llä. Näin asetat cron-tehtävät ajamaan keskiyöllä useissa postilaatikoissa.
 
-The jobs require these environment variables. Most can be set in `.env` file (loaded via `@ladjs/env`), but `HISTORY_SCAN_SINCE` must be calculated dynamically in the crontab.
+### Ympäristömuuttujat {#environment-variables}
 
-**In `.env` file:**
+Tehtävät tarvitsevat nämä ympäristömuuttujat. Useimmat voi asettaa `.env`-tiedostoon (ladataan `@ladjs/env`-kirjastolla), mutta `HISTORY_SCAN_SINCE` täytyy laskea dynaamisesti crontabissa.
+
+**`.env`-tiedostossa:**
 
 ```bash
-# Forward Email API credentials (changes per inbox)
+# Forward Email API -tunnukset (muuttuvat postilaatikoittain)
 FORWARD_EMAIL_ALIAS_USERNAME=support@forwardemail.net
 FORWARD_EMAIL_ALIAS_PASSWORD=your-imap-password
 
-# PGP decryption (shared across all inboxes)
+# PGP-salaus (jaettu kaikille postilaatikoille)
 GPG_SECURITY_KEY=/path/to/private-key.asc
 GPG_SECURITY_PASSPHRASE=your-passphrase
 
-# Historical scan configuration
+# Historiallinen skannausasetukset
 HISTORY_SCAN_LIMIT=1000
 
-# LanceDB path
+# LanceDB-polku
 LANCEDB_PATH=/path/to/lancedb
 ```
 
-**In crontab (calculated dynamically):**
+**Crontabissa (lasketaan dynaamisesti):**
 
 ```bash
-# HISTORY_SCAN_SINCE must be set inline in crontab with shell date calculation
-# Cannot be in .env file since @ladjs/env doesn't evaluate shell commands
+# HISTORY_SCAN_SINCE täytyy asettaa crontabissa inline-kuin shell-komennolla
+# Ei voi olla .env-tiedostossa, koska @ladjs/env ei suorita shell-komentoja
 HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)"  # macOS
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)"  # Linux
 ```
 
-### Cron Jobs for Multiple Inboxes {#cron-jobs-for-multiple-inboxes}
+### Cron-tehtävät useille postilaatikoille {#cron-jobs-for-multiple-inboxes}
 
-Edit your crontab with `crontab -e` and add:
+Muokkaa crontabiasi komennolla `crontab -e` ja lisää:
 
 ```bash
-# Update knowledge base (runs once, shared across all inboxes)
+# Päivitä tietopohja (ajetaan kerran, jaettu kaikille postilaatikoille)
 0 0 * * * cd /path/to/forwardemail.net && LANCEDB_PATH="/path/to/lancedb" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" node jobs/customer-support-ai/update-knowledge-base.js >> /var/log/update-knowledge-base.log 2>&1
 
-# Train from history - support@forwardemail.net
+# Koulutus historiasta - support@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-support.log 2>&1
 
-# Train from history - abuse@forwardemail.net
+# Koulutus historiasta - abuse@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-abuse.log 2>&1
 
-# Train from history - security@forwardemail.net
+# Koulutus historiasta - security@forwardemail.net
 0 0 * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" HISTORY_SCAN_LIMIT=1000 GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/train-from-history.js >> /var/log/train-security.log 2>&1
 
-# Process inbox - support@forwardemail.net
+# Käsittele postilaatikko - support@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="support-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-support.log 2>&1
 
-# Process inbox - abuse@forwardemail.net
+# Käsittele postilaatikko - abuse@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="abuse@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="abuse-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-abuse.log 2>&1
 
-# Process inbox - security@forwardemail.net
+# Käsittele postilaatikko - security@forwardemail.net
 */5 * * * * cd /path/to/forwardemail.net && FORWARD_EMAIL_ALIAS_USERNAME="security@forwardemail.net" FORWARD_EMAIL_ALIAS_PASSWORD="security-password" GPG_SECURITY_KEY="/path/to/key.asc" GPG_SECURITY_PASSPHRASE="pass" LANCEDB_PATH="/path/to/lancedb" node jobs/customer-support-ai/process-inbox.js >> /var/log/process-security.log 2>&1
 ```
+### Cron-aikataulun erittely {#cron-schedule-breakdown}
 
-### Cron Schedule Breakdown {#cron-schedule-breakdown}
+| Työ                      | Aikataulu    | Kuvaus                                                                            |
+| ------------------------ | ------------ | --------------------------------------------------------------------------------- |
+| `train-from-sitemap.js`  | `0 0 * * 0`  | Viikoittain (sunnuntain puolilta öin) - Hakee kaikki URL-osoitteet sivukartasta ja kouluttaa tietokantaa |
+| `train-from-history.js`  | `0 0 * * *`  | Puolilta öin päivittäin - Skannaa edellisen päivän sähköpostit postilaatikoittain  |
+| `process-inbox.js`       | `*/5 * * * *`| Joka 5. minuutti - Käsittelee uudet sähköpostit ja luo luonnoksia                  |
 
-| Job | Schedule | Description |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `train-from-sitemap.js` | `0 0 * * 0` | Weekly (Sunday midnight) - Fetches all URLs from sitemap and trains knowledge base |
-| `train-from-history.js` | `0 0 * * *` | Midnight daily - Scans previous day's emails per inbox |
-| `process-inbox.js` | `*/5 * * * *` | Every 5 minutes - Processes new emails and generates drafts |
+### Dynaaminen päivämäärän laskenta {#dynamic-date-calculation}
 
-### Dynamic Date Calculation {#dynamic-date-calculation}
+`HISTORY_SCAN_SINCE`-muuttuja **täytyy laskea suoraan crontabissa** koska:
 
-The `HISTORY_SCAN_SINCE` variable **must be calculated inline in the crontab** because:
+1. `.env`-tiedostot luetaan kirjaimellisina merkkijonoina `@ladjs/env`-kirjastolla
+2. Shell-komentojen korvaus `$(...)` ei toimi `.env`-tiedostoissa
+3. Päivämäärä pitää laskea aina uudelleen, kun cron suoritetaan
 
-1. `.env` files are read as literal strings by `@ladjs/env`
-2. Shell command substitution `$(...)` doesn't work in `.env` files
-3. The date needs to be calculated fresh each time cron runs
-
-**Correct approach (in crontab):**
+**Oikea tapa (crontabissa):**
 
 ```bash
 # macOS (BSD date)
@@ -750,59 +751,59 @@ HISTORY_SCAN_SINCE="$(date -v-1d +%Y-%m-%d)" node jobs/...
 HISTORY_SCAN_SINCE="$(date -d 'yesterday' +%Y-%m-%d)" node jobs/...
 ```
 
-**Incorrect approach (doesn't work in .env):**
+**Väärä tapa (ei toimi .env-tiedostossa):**
 
 ```bash
-# This will be read as literal string "$(date -v-1d +%Y-%m-%d)"
-# NOT evaluated as a shell command
+# Tämä luetaan kirjaimellisena merkkijonona "$(date -v-1d +%Y-%m-%d)"
+# EI arvioida shell-komennoksi
 HISTORY_SCAN_SINCE=$(date -v-1d +%Y-%m-%d)
 ```
 
-This ensures each nightly run calculates the previous day's date dynamically, avoiding redundant work.
+Tämä varmistaa, että jokainen yöaikainen ajo laskee edellisen päivän päivämäärän dynaamisesti, välttäen turhaa työtä.
 
-### Initial Setup: Extract URL List from Sitemap {#initial-setup-extract-url-list-from-sitemap}
+### Alkuasetukset: URL-listan poiminta sivukartasta {#initial-setup-extract-url-list-from-sitemap}
 
-Before running the process-inbox job for the first time, you **must** extract the URL list from the sitemap. This creates a dictionary of valid URLs that the LLM can reference and prevents URL hallucination.
+Ennen kuin suoritat `process-inbox`-työn ensimmäistä kertaa, sinun **täytyy** poimia URL-lista sivukartasta. Tämä luo sanakirjan kelvollisista URL-osoitteista, joita LLM voi käyttää viitteinä, ja estää URL-harhojen syntymisen.
 
 ```bash
-# First-time setup: Extract URL list from sitemap
+# Ensimmäinen käynnistys: Poimi URL-lista sivukartasta
 cd /path/to/forwardemail.net
 node jobs/customer-support-ai/train-from-sitemap.js
 ```
 
-**What this does:**
+**Mitä tämä tekee:**
 
-1. Fetches all URLs from <https://forwardemail.net/sitemap.xml>
-2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
-3. Strips locale prefixes (/en/faq → /faq)
-4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+1. Hakee kaikki URL-osoitteet osoitteesta <https://forwardemail.net/sitemap.xml>
+2. Suodattaa vain ei-lokalisoidut URL-osoitteet tai /en/-alkuiset URL-osoitteet (välttää päällekkäisen sisällön)
+3. Poistaa kieliprefiksit (/en/faq → /faq)
+4. Tallentaa yksinkertaisen JSON-tiedoston URL-listasta polkuun `$LANCEDB_PATH/valid-urls.json`
+5. Ei tee indeksointia, ei metatietojen keruuta – pelkkä tasainen lista kelvollisista URL-osoitteista
 
-**Why this matters:**
+**Miksi tämä on tärkeää:**
 
-* Prevents the LLM from hallucinating fake URLs like `/dashboard` or `/login`
-* Provides a whitelist of valid URLs for the response generator to reference
-* Simple, fast, and doesn't require vector database storage
-* The response generator loads this list on startup and includes it in the prompt
+* Estää LLM:ää keksimästä vääriä URL-osoitteita kuten `/dashboard` tai `/login`
+* Tarjoaa valkoisen listan kelvollisista URL-osoitteista vastauksen generointia varten
+* Yksinkertainen, nopea eikä vaadi vektoritietokantaa
+* Vastausgeneraattori lataa tämän listan käynnistyksessä ja käyttää sitä kehotteessa
 
-**Add to crontab for weekly updates:**
+**Lisää crontabiin viikoittaiseksi päivitykseksi:**
 
 ```bash
-# Extract URL list from sitemap - weekly on Sunday midnight
+# Poimi URL-lista sivukartasta - viikoittain sunnuntain puolilta öin
 0 0 * * 0 cd /path/to/forwardemail.net && node jobs/customer-support-ai/train-from-sitemap.js >> /var/log/train-sitemap.log 2>&1
 ```
 
-### Testing Cron Jobs Manually {#testing-cron-jobs-manually}
+### Cron-töiden manuaalinen testaus {#testing-cron-jobs-manually}
 
-To test a job before adding to cron:
+Testataksesi työtä ennen cronin lisäämistä:
 
 ```bash
-# Test sitemap training
+# Testaa sivukartan koulutus
 cd /path/to/forwardemail.net
 export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-sitemap.js
 
-# Test support inbox training
+# Testaa tukipostilaatikon koulutus
 cd /path/to/forwardemail.net
 export FORWARD_EMAIL_ALIAS_USERNAME="support@forwardemail.net"
 export FORWARD_EMAIL_ALIAS_PASSWORD="support-password"
@@ -814,27 +815,26 @@ export LANCEDB_PATH="/path/to/lancedb"
 node jobs/customer-support-ai/train-from-history.js
 ```
 
-### Monitoring Logs {#monitoring-logs}
+### Lokien valvonta {#monitoring-logs}
 
-Each job logs to a separate file for easy debugging:
+Jokainen työ kirjaa lokit erilliseen tiedostoon helppoa virheenkorjausta varten:
 
 ```bash
-# Watch support inbox processing in real-time
+# Seuraa tukipostilaatikon käsittelyä reaaliajassa
 tail -f /var/log/process-support.log
 
-# Check last night's training run
+# Tarkista viime yön koulutuskerta
 cat /var/log/train-support.log | grep "$(date -v-1d +%Y-%m-%d)"
 
-# View all errors across jobs
+# Näytä kaikki virheet töissä
 grep -i error /var/log/train-*.log /var/log/process-*.log
 ```
 
 > \[!TIP]
-> Use separate log files per inbox to isolate issues. If one inbox has authentication problems, it won't pollute logs for other inboxes.
+> Käytä erillisiä lokitiedostoja postilaatikoittain ongelmien eristämiseksi. Jos yhdessä postilaatikossa on todennusongelmia, se ei sotke muiden postilaatikoiden lokeja.
+## Koodiesimerkit {#code-examples}
 
-## Code Examples {#code-examples}
-
-### Scraping and Processing {#scraping-and-processing}
+### Tietojen keruu ja käsittely {#scraping-and-processing}
 
 ```javascript
 // jobs/customer-support-ai/update-knowledge-base.js
@@ -843,22 +843,22 @@ const processor = new Processor();
 const ollamaClient = new OllamaClient();
 const vectorStore = new VectorStore();
 
-// Clear old data
+// Tyhjennä vanhat tiedot
 await vectorStore.clear();
 
-// Scrape all sources
+// Kerää tiedot kaikista lähteistä
 const documents = await scraper.scrapeAll();
-console.log(`Scraped ${documents.length} documents`);
+console.log(`Kerätty ${documents.length} dokumenttia`);
 
-// Process into chunks
+// Käsittele paloiksi
 const allChunks = [];
 for (const doc of documents) {
   const chunks = processor.processDocuments([doc]);
   allChunks.push(...chunks);
 }
-console.log(`Generated ${allChunks.length} chunks`);
+console.log(`Luotu ${allChunks.length} palaa`);
 
-// Generate embeddings and store
+// Luo upotukset ja tallenna
 const texts = allChunks.map(chunk => chunk.text);
 const embeddings = await ollamaClient.generateEmbeddings(texts);
 
@@ -870,7 +870,7 @@ for (let i = 0; i < allChunks.length; i++) {
 }
 ```
 
-### Training from Historical Emails {#training-from-historical-emails-1}
+### Koulutus historiallisista sähköposteista {#training-from-historical-emails-1}
 
 ```javascript
 // jobs/customer-support-ai/train-from-history.js
@@ -884,30 +884,30 @@ const vectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Scan all folders (INBOX, Sent Mail, etc.)
+// Skannaa kaikki kansiot (SAAPUNEET, Lähetetyt, jne.)
 const messages = await scanner.scanAllFolders({
   limit: 1000,
   since: new Date('2024-01-01'),
   decryptPGP: true
 });
 
-// Group into conversation threads
+// Ryhmittele keskusteluketjuiksi
 const threads = scanner.groupIntoThreads(messages);
 
-// Process each thread
+// Käsittele jokainen ketju
 for (const thread of threads) {
   const context = scanner.extractConversationContext(thread);
 
   for (const message of context.messages) {
-    // Skip encrypted messages that couldn't be decrypted
+    // Ohita salatut viestit, joita ei voitu purkaa
     if (message.encrypted && !message.decrypted) continue;
 
-    // Use already-parsed content from nodemailer
+    // Käytä nodemailerilla jo jäsenneltyä sisältöä
     const text = message.nodemailer?.text || '';
     if (!text.trim()) continue;
 
-    // Chunk and store
-    const chunks = processor.chunkText(`Subject: ${message.subject}\n\n${text}`, {
+    // Paloittele ja tallenna
+    const chunks = processor.chunkText(`Aihe: ${message.subject}\n\n${text}`, {
       chunkSize: 1000,
       chunkOverlap: 200
     });
@@ -929,7 +929,7 @@ for (const thread of threads) {
 }
 ```
 
-### Querying for Context {#querying-for-context}
+### Kysely kontekstin hakemiseksi {#querying-for-context}
 
 ```javascript
 // jobs/customer-support-ai/process-inbox.js
@@ -938,69 +938,70 @@ const historyVectorStore = new VectorStore({
   collectionName: 'customer_support_history'
 });
 
-// Query both stores
+// Kysy molemmista tietokannoista
 const knowledgeContext = await vectorStore.query(emailEmbedding, { limit: 8 });
 const historyContext = await historyVectorStore.query(emailEmbedding, { limit: 3 });
 
-// Weighted ranking and deduplication happen here
+// Painotettu järjestys ja duplikaattien poisto tapahtuvat tässä
 const rankedContext = rankAndDeduplicateContext(knowledgeContext, historyContext);
 
-// Generate response
+// Luo vastaus
 const response = await responseGenerator.generate(email, rankedContext);
 ```
 
-## The Future: Spam Scanner R\&D {#the-future-spam-scanner-rd}
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+## Tulevaisuus: Roskapostin skannerin T\&K {#the-future-spam-scanner-rd}
 
-## Troubleshooting {#troubleshooting}
+Tämä koko projekti ei ollut pelkästään asiakastuen vuoksi. Se oli tutkimus- ja kehitystyötä. Voimme nyt hyödyntää kaikkea oppimaamme paikallisista upotuksista, vektoritietokannoista ja kontekstin hakemisesta ja soveltaa sitä seuraavaan suureen projektiimme: LLM-kerros [Spam Scannerille](https://spamscanner.net). Samat periaatteet yksityisyydestä, itseisännöinnistä ja semanttisesta ymmärryksestä ovat avainasemassa.
 
-### Vector Dimension Mismatch Error {#vector-dimension-mismatch-error}
 
-**Error:**
+## Vianmääritys {#troubleshooting}
+
+### Vektoridimension yhteensopimattomuusvirhe {#vector-dimension-mismatch-error}
+
+**Virhe:**
 
 ```
 Error: Failed to execute query stream: GenericFailure, Invalid input, No vector column found to match with the query vector dimension: 1024
 ```
 
-**Cause:** This error occurs when you switch embedding models (e.g., from `mistral-small` to `mxbai-embed-large`) but the existing LanceDB database was created with a different vector dimension.
-
-**Solution:** You need to retrain the knowledge base with the new embedding model:
+**Syy:** Tämä virhe ilmenee, kun vaihdat upotusmallia (esim. `mistral-small` -> `mxbai-embed-large`), mutta olemassa oleva LanceDB-tietokanta on luotu eri vektoridimensiolla.
+**Ratkaisu:** Sinun täytyy kouluttaa tietopohja uudelleen uudella upotusmallilla:
 
 ```bash
-# 1. Stop any running customer support AI jobs
+# 1. Pysäytä kaikki käynnissä olevat asiakastuen AI-työt
 pkill -f customer-support-ai
 
-# 2. Delete the existing LanceDB database
+# 2. Poista olemassa oleva LanceDB-tietokanta
 rm -rf ~/.local/share/lancedb/forward_email_knowledge_base.lance
 rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
-# 3. Verify the embedding model is set correctly in .env
+# 3. Varmista, että upotusmalli on asetettu oikein tiedostossa .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+# Näyttää: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
-# 4. Pull the embedding model in Ollama
+# 4. Lataa upotusmalli Ollamassa
 ollama pull mxbai-embed-large
 
-# 5. Retrain the knowledge base
+# 5. Kouluta tietopohja uudelleen
 node jobs/customer-support-ai/train-from-history.js
 
-# 6. Restart the process-inbox job via Bree
-# The job will automatically run every 5 minutes
+# 6. Käynnistä process-inbox-työ uudelleen Bree:n kautta
+# Työ suoritetaan automaattisesti joka 5. minuutti
 ```
 
-**Why this happens:** Different embedding models produce vectors of different dimensions:
+**Miksi näin tapahtuu:** Eri upotusmallit tuottavat vektoreita eri ulottuvuuksilla:
 
-* `mistral-small`: 1024 dimensions
-* `mxbai-embed-large`: 1024 dimensions
-* `nomic-embed-text`: 768 dimensions
-* `all-minilm`: 384 dimensions
+* `mistral-small`: 1024 ulottuvuutta
+* `mxbai-embed-large`: 1024 ulottuvuutta
+* `nomic-embed-text`: 768 ulottuvuutta
+* `all-minilm`: 384 ulottuvuutta
 
-LanceDB stores the vector dimension in the table schema. When you query with a different dimension, it fails. The only solution is to recreate the database with the new model.
+LanceDB tallentaa vektorin ulottuvuuden taulukkoskeemaan. Kun teet kyselyn eri ulottuvuudella, se epäonnistuu. Ainoa ratkaisu on luoda tietokanta uudelleen uudella mallilla.
 
-### Empty Knowledge Base Context {#empty-knowledge-base-context}
+### Tyhjä tietopohjan konteksti {#empty-knowledge-base-context}
 
-**Symptom:**
+**Oire:**
 
 ```
 debug     Retrieved knowledge base context {
@@ -1010,220 +1011,222 @@ debug     Retrieved knowledge base context {
 }
 ```
 
-**Cause:** The knowledge base hasn't been trained yet, or the LanceDB table doesn't exist.
+**Syy:** Tietopohjaa ei ole vielä koulutettu tai LanceDB-taulukkoa ei ole olemassa.
 
-**Solution:** Run the training job to populate the knowledge base:
+**Ratkaisu:** Suorita koulutustyö täyttääksesi tietopohjan:
 
 ```bash
-# Train from historical emails
+# Kouluta historiallisten sähköpostien perusteella
 node jobs/customer-support-ai/train-from-history.js
 
-# Or train from website/docs (if you have a scraper)
+# Tai kouluta verkkosivustolta/dokumenteista (jos sinulla on scraper)
 node jobs/customer-support-ai/train-from-website.js
 ```
 
-### PGP Decryption Failures {#pgp-decryption-failures}
+### PGP-salauksen purkuvirheet {#pgp-decryption-failures}
 
-**Symptom:** Messages show as encrypted but content is empty.
+**Oire:** Viestit näkyvät salattuina, mutta sisältö on tyhjä.
 
-**Solution:**
+**Ratkaisu:**
 
-1. Verify GPG key path is set correctly:
+1. Varmista, että GPG-avaimen polku on asetettu oikein:
 
 ```bash
 grep GPG_SECURITY_KEY .env
-# Should point to your private key file
+# Pitäisi osoittaa yksityiseen avaintiedostoosi
 ```
 
-2. Test decryption manually:
+2. Testaa purku manuaalisesti:
 
 ```bash
 node -e "const decrypt = require('./helpers/customer-support-ai/pgp-decrypt'); decrypt.testDecryption();"
 ```
 
-3. Check key permissions:
+3. Tarkista avaimen käyttöoikeudet:
 
 ```bash
 ls -la /path/to/your/gpg-key.asc
-# Should be readable by the user running the job
+# Käyttäjän, joka suorittaa työn, tulisi pystyä lukemaan tiedosto
 ```
 
-## Usage Tips {#usage-tips}
 
-### Achieving Inbox Zero {#achieving-inbox-zero}
+## Käyttövinkit {#usage-tips}
 
-The system is designed to help you achieve inbox zero automatically:
+### Saavuta Saapuneet-kansion nollataso {#achieving-inbox-zero}
 
-1. **Automatic Archiving**: When a draft is successfully created, the original message is automatically moved to the Archive folder. This keeps your inbox clean without manual intervention.
+Järjestelmä on suunniteltu auttamaan sinua saavuttamaan saapuneet-kansion nollatila automaattisesti:
 
-2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
+1. **Automaattinen arkistointi**: Kun luonnos on onnistuneesti luotu, alkuperäinen viesti siirretään automaattisesti Arkisto-kansioon. Tämä pitää saapuneet-kansion siistinä ilman manuaalista puuttumista.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+2. **Tarkista luonnokset**: Tarkista Luonnokset-kansio säännöllisesti AI:n luomien vastausten läpikäymiseksi. Muokkaa tarpeen mukaan ennen lähettämistä.
 
-### Using the skip-ai Label {#using-the-skip-ai-label}
+3. **Manuaalinen ohitus**: Viesteille, jotka vaativat erityishuomiota, lisää vain `skip-ai` -tunniste ennen työn suorittamista.
 
-To prevent AI processing for specific messages:
+### skip-ai-tunnisteen käyttö {#using-the-skip-ai-label}
 
-1. **Add the label**: In your email client, add a `skip-ai` label/tag to any message (case-insensitive)
-2. **Message stays in inbox**: The message won't be processed or archived
-3. **Handle manually**: You can respond to it yourself without AI interference
+Estääksesi AI-käsittelyn tietyille viesteille:
 
-**When to use skip-ai:**
+1. **Lisää tunniste**: Sähköpostiohjelmassasi lisää `skip-ai` -tunniste/määritys mihin tahansa viestiin (kirjaimista riippumaton)
+2. **Viesti pysyy saapuneissa**: Viestiä ei käsitellä eikä arkistoida
+3. **Käsittele manuaalisesti**: Voit vastata siihen itse ilman AI:n puuttumista
 
-* Sensitive or confidential messages
-* Complex cases requiring human judgment
-* Messages from VIP customers
-* Legal or compliance-related inquiries
-* Messages that need immediate human attention
+**Milloin käyttää skip-ai:tä:**
 
-### Email Threading and Reply-All {#email-threading-and-reply-all}
+* Herkät tai luottamukselliset viestit
+* Monimutkaiset tapaukset, jotka vaativat ihmisen harkintaa
+* Viestit VIP-asiakkailta
+* Oikeudelliset tai sääntelyyn liittyvät kyselyt
+* Viestit, jotka vaativat välitöntä ihmisen huomiota
 
-The system follows standard email conventions:
+### Sähköpostiketjut ja Vastaa kaikille {#email-threading-and-reply-all}
 
-**Quoted Original Messages:**
+Järjestelmä noudattaa standardeja sähköpostikäytäntöjä:
+
+**Alkuperäiset lainatut viestit:**
 
 ```
-Hi there,
+Hei,
 
-[AI-generated response]
+[AI:n luoma vastaus]
 
 --
-Thank you,
+Kiitos,
 Forward Email
 https://forwardemail.net
 
-On Mon, Jan 15, 2024, 3:45 PM John Doe <john@example.com> wrote:
-> This is the original message
-> with each line quoted
-> using the standard "> " prefix
+Maanantaina 15. tammikuuta 2024 klo 15.45 John Doe <john@example.com> kirjoitti:
+> Tämä on alkuperäinen viesti
+> jokainen rivi lainattu
+> käyttäen standardia "> " etuliitettä
 ```
 
-**Reply-To Handling:**
+**Vastaa-kentän käsittely:**
 
-* If the original message has a Reply-To header, the draft replies to that address
-* The original From address is added to CC
-* All other original To and CC recipients are preserved
+* Jos alkuperäisessä viestissä on Reply-To-otsikko, luonnos vastaa siihen osoitteeseen
+* Alkuperäinen Lähettäjä-osoite lisätään Kopio-kenttään (CC)
+* Kaikki muut alkuperäiset Vastaanottajat ja Kopiot säilytetään
 
-**Example:**
+**Esimerkki:**
 
 ```
-Original message:
-  From: john@company.com
-  Reply-To: support@company.com
-  To: support@forwardemail.net
-  CC: manager@company.com
+Alkuperäinen viesti:
+  Lähettäjä: john@company.com
+  Vastaa-kenttä: support@company.com
+  Vastaanottaja: support@forwardemail.net
+  Kopio: manager@company.com
 
-Draft response:
-  To: support@company.com (from Reply-To)
-  CC: john@company.com, manager@company.com
+Luonnosvastaus:
+  Vastaanottaja: support@company.com (Vastaa-kentästä)
+  Kopio: john@company.com, manager@company.com
 ```
+### Valvonta ja ylläpito {#monitoring-and-maintenance}
 
-### Monitoring and Maintenance {#monitoring-and-maintenance}
-
-**Check draft quality regularly:**
+**Tarkista luonnosten laatu säännöllisesti:**
 
 ```bash
-# View recent drafts
+# Näytä viimeisimmät luonnokset
 tail -f /var/log/process-support.log | grep "Draft created"
 ```
 
-**Monitor archiving:**
+**Valvo arkistointia:**
 
 ```bash
-# Check for archiving errors
+# Tarkista arkistointivirheet
 grep "archive message" /var/log/process-*.log
 ```
 
-**Review skipped messages:**
+**Tarkastele ohitettuja viestejä:**
 
 ```bash
-# See which messages were skipped
+# Katso mitkä viestit ohitettiin
 grep "skip-ai label" /var/log/process-*.log
 ```
 
-## Testing {#testing}
 
-The customer support AI system includes comprehensive test coverage with 23 Ava tests.
+## Testaus {#testing}
 
-### Running Tests {#running-tests}
+Asiakastuen tekoälyjärjestelmä sisältää kattavan testikattavuuden, jossa on 23 Ava-testiä.
 
-Due to npm package override conflicts with `better-sqlite3`, use the provided test script:
+### Testien suorittaminen {#running-tests}
+
+Koska npm-pakettien ylikirjoitus aiheuttaa ristiriitoja `better-sqlite3` kanssa, käytä annettua testiskriptiä:
 
 ```bash
-# Run all customer support AI tests
+# Suorita kaikki asiakastuen tekoälytestit
 ./scripts/test-customer-support-ai.sh
 
-# Run with verbose output
+# Suorita yksityiskohtaisella tulostuksella
 ./scripts/test-customer-support-ai.sh --verbose
 
-# Run specific test file
+# Suorita tietty testitiedosto
 ./scripts/test-customer-support-ai.sh test/customer-support-ai/message-utils.js
 ```
 
-Alternatively, run tests directly:
+Vaihtoehtoisesti suorita testit suoraan:
 
 ```bash
 NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai
 ```
 
-### Test Coverage {#test-coverage}
+### Testikattavuus {#test-coverage}
 
-**Sitemap Fetcher (6 tests):**
+**Sivukartan hakija (6 testiä):**
 
-* Locale pattern regex matching
-* URL path extraction and locale stripping
-* URL filtering logic for locales
-* XML parsing logic
-* Deduplication logic
-* Combined filtering, stripping, and deduplication
+* Paikalliskielen kuvion regex-osuma
+* URL-polun poiminta ja paikalliskielen poistaminen
+* URL-suodatuslogiikka paikalliskielille
+* XML-jäsennyslogiikka
+* Duplikaattien poisto
+* Yhdistetty suodatus, poisto ja duplikaattien poisto
 
-**Message Utils (9 tests):**
+**Viestin apuvälineet (9 testiä):**
 
-* Extract sender text with name and email
-* Handle email-only when name matches prefix
-* Use from.text if available
-* Use Reply-To if present
-* Use From if no Reply-To
-* Include original CC recipients
-* Exclude our own address from CC
-* Handle Reply-To with From in CC
-* Deduplicate CC addresses
+* Lähettäjän tekstin poiminta nimellä ja sähköpostilla
+* Käsittele pelkkä sähköposti, kun nimi vastaa etuliitettä
+* Käytä from.text-arvoa, jos saatavilla
+* Käytä Reply-To-arvoa, jos olemassa
+* Käytä From-arvoa, jos Reply-To puuttuu
+* Sisällytä alkuperäiset CC-vastaanottajat
+* Poissulje oma osoitteemme CC:stä
+* Käsittele Reply-To ja From CC:ssä
+* Poista duplikaatit CC-osoitteista
 
-**Response Generator (8 tests):**
+**Vastausten generaattori (8 testiä):**
 
-* URL grouping logic for prompt
-* Sender name detection logic
-* Prompt structure includes all required sections
-* URL list formatting without angle brackets
-* Empty URL list handling
-* Forbidden URLs list in prompt
-* Historical context inclusion
-* Correct URLs for account-related topics
+* URL-ryhmittelylogiikka kehotteelle
+* Lähettäjän nimen tunnistuslogiikka
+* Kehotteen rakenne sisältää kaikki vaaditut osiot
+* URL-listan muotoilu ilman kulmasulkeita
+* Tyhjän URL-listan käsittely
+* Kiellettyjen URL-osoitteiden lista kehotteessa
+* Historiallisen kontekstin sisällyttäminen
+* Oikeat URL-osoitteet tiliaiheisiin
 
-### Test Environment {#test-environment}
+### Testiympäristö {#test-environment}
 
-Tests use `.env.test` for configuration. The test environment includes:
+Testit käyttävät `.env.test` -konfiguraatiota. Testiympäristö sisältää:
 
-* Mock PayPal and Stripe credentials
-* Test encryption keys
-* Disabled authentication providers
-* Safe test data paths
+* Mockatut PayPal- ja Stripe-tunnukset
+* Testauksen salausavaimet
+* Poistetut todennuspalveluntarjoajat
+* Turvalliset testidatan polut
 
-All tests are designed to run without external dependencies or network calls.
+Kaikki testit on suunniteltu toimimaan ilman ulkoisia riippuvuuksia tai verkkoyhteyksiä.
 
-## Key Takeaways {#key-takeaways}
 
-1. **Privacy first:** Self-hosting is non-negotiable for GDPR/DPA compliance.
-2. **Cost matters:** Cloud AI services are 50-1000x more expensive than self-hosting for production workloads.
-3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
-4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
-5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
-7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
-8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
-9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
-10. **PGP decryption is essential:** Many support emails are encrypted; proper decryption is critical for training.
+## Keskeiset opit {#key-takeaways}
+
+1. **Yksityisyys ensin:** Itseisännöinti on ehdoton vaatimus GDPR/DPA-vaatimusten täyttämiseksi.
+2. **Kustannukset ratkaisevat:** Pilvipohjaiset tekoälypalvelut ovat 50–1000 kertaa kalliimpia kuin itseisännöinti tuotantokuormissa.
+3. **Ekosysteemi on rikki:** Useimmat vektoritietokannat eivät ole kehittäjäystävällisiä. Testaa kaikki paikallisesti.
+4. **Turva-aukot ovat todellisia:** ChromaDB:ssä ja Qdrantissa on ollut kriittisiä RCE-haavoittuvuuksia.
+5. **LanceDB toimii:** Se on upotettu, palvelimeton eikä vaadi erillistä prosessia.
+6. **Ollama on luotettava:** Paikallinen LLM-päätelmä `mxbai-embed-large` toimii hyvin käyttötarkoitukseemme.
+7. **Tyyppivirheet tappavat:** `text` vs. `content`, ObjectID vs. merkkijono. Nämä virheet ovat hiljaisia ja julmia.
+8. **Painotettu järjestys on tärkeä:** Kaikki konteksti ei ole yhtä arvokasta. FAQ > GitHub-ongelmat > Historialliset sähköpostit.
+9. **Historiallinen konteksti on kultaa:** Menneiden tukisähköpostien opettaminen parantaa vastausten laatua merkittävästi.
+10. **PGP-salauksen purku on välttämätöntä:** Monet tukisähköpostit ovat salattuja; oikea purku on kriittistä koulutukselle.
 
 ---
 
-Learn more about Forward Email and our privacy-first approach to email at [forwardemail.net](https://forwardemail.net).
+Lue lisää Forward Emailista ja yksityisyyslähtöisestä sähköpostin käsittelystä osoitteessa [forwardemail.net](https://forwardemail.net).
